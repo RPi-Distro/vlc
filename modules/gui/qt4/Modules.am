@@ -1,0 +1,135 @@
+# vim:syntax=make
+## Howto
+# For each Q_OBJECT:
+#   - Add it without extension to TOMOC
+#   - Add the moc.cpp to BUILT_SOURCES and nodist_SOURCES_qt4
+#   - Add the cpp to SOURCES_qt4
+#   - Add the hpp to EXTRA_DIST
+# For each UI
+#   - Add it without extension to TOUI
+#   - Add it to EXTRA_DIST
+
+AUTOMAKE_OPTIONS = subdir-objects
+
+TOUI = ui/input_stats ui/main_interface ui/file_open \
+       ui/logindialog ui/inputdialog ui/progressdialog
+UIH = $(TOUI:%=%.h)
+
+TOMOC = main_interface \
+	menus \
+	dialogs_provider \
+	input_manager \
+	playlist_model \
+	dialogs/playlist \
+	dialogs/prefs_dialog \
+	dialogs/messages \
+	dialogs/streaminfo \
+	dialogs/interaction \
+	components/infopanels \
+	components/preferences_widgets \
+	components/preferences \
+	components/open \
+	components/video_widget \
+	components/playlist/panels \
+	components/playlist/selector \
+	util/input_slider
+MOCCPP = $(TOMOC:%=%.moc.cpp)
+
+nodist_SOURCES_qt4 = \
+		main_interface.moc.cpp \
+		menus.moc.cpp \
+		dialogs_provider.moc.cpp \
+		input_manager.moc.cpp \
+		playlist_model.moc.cpp \
+		dialogs/playlist.moc.cpp \
+		dialogs/streaminfo.moc.cpp \
+		dialogs/messages.moc.cpp \
+		dialogs/prefs_dialog.moc.cpp \
+		dialogs/interaction.moc.cpp \
+		components/infopanels.moc.cpp \
+	 	components/preferences_widgets.moc.cpp \
+	 	components/preferences.moc.cpp \
+		components/open.moc.cpp \
+		components/video_widget.moc.cpp \
+		components/playlist/panels.moc.cpp \
+		components/playlist/selector.moc.cpp \
+		util/input_slider.moc.cpp \
+		resources.cpp
+
+if ENABLE_QT4
+BUILT_SOURCES += $(UIH) $(nodist_SOURCES_qt4)
+endif
+
+resources.cpp: res.qrc
+	$(RCC) -name vlc -o $@ $<
+
+$(MOCCPP): %.moc.cpp: %.hpp
+	@echo "$(MOC) $< -> $@"
+	$(MOC) -o $@ $<
+
+$(UIH): %.h: %.ui
+	$(install_sh) -d ui
+	@echo "$(UIC) $< -> $@"
+	rm -f $@
+	echo "#define Q_(a,b) QString::fromUtf8(_(a))" > $@
+	$(UIC) -tr "Q_" $< >> $@
+	sed -i -e 's/Q_(\"_(\\\"\(.*\)\\\")"/Q_("\1"/' $@
+
+
+SOURCES_qt4 = 	qt4.cpp \
+		menus.cpp \
+		main_interface.cpp \
+		dialogs_provider.cpp \
+		input_manager.cpp \
+		playlist_model.cpp \
+		dialogs/playlist.cpp \
+		dialogs/prefs_dialog.cpp \
+		dialogs/streaminfo.cpp \
+		dialogs/messages.cpp \
+		dialogs/interaction.cpp \
+		components/infopanels.cpp \
+		components/preferences_widgets.cpp \
+		components/preferences.cpp \
+		components/open.cpp \
+		components/video_widget.cpp \
+		components/playlist/standardpanel.cpp \
+		components/playlist/selector.cpp \
+		util/input_slider.cpp \
+		$(NULL)
+
+EXTRA_DIST += \
+	qt4.hpp \
+	menus.hpp \
+	main_interface.hpp \
+	dialogs_provider.hpp \
+	input_manager.hpp \
+	playlist_model.hpp \
+	res.qrc \
+	dialogs/playlist.hpp \
+	dialogs/streaminfo.hpp \
+	dialogs/messages.hpp \
+	dialogs/prefs_dialog.hpp \
+	dialogs/interaction.hpp \
+	components/infopanels.hpp \
+	components/preferences_widgets.hpp \
+	components/preferences.hpp \
+	components/open.hpp \
+	components/video_widget.hpp \
+	components/playlist/panels.hpp \
+    components/playlist/selector.hpp \
+	util/input_slider.hpp \
+	util/directslider.hpp \
+	util/qvlcframe.hpp \
+	ui/input_stats.ui \
+	ui/file_open.ui \
+	ui/main_interface.ui \
+    ui/logindialog.ui \
+    ui/inputdialog.ui \
+    ui/progressdialog.ui \
+	pixmaps/advanced.xpm \
+	pixmaps/audio.xpm \
+	pixmaps/codec.xpm \
+	pixmaps/intf.xpm \
+	pixmaps/type_net.xpm \
+	pixmaps/type_playlist.xpm \
+	pixmaps/video.xpm

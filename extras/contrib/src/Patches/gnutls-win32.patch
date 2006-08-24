@@ -1,0 +1,29 @@
+--- gnutls-1.4.0/lib/gnutls_buffers.c	2006-03-08 11:44:59.000000000 +0100
++++ gnutls/lib/gnutls_buffers.c	2006-07-12 14:29:06.000000000 +0200
+@@ -275,9 +275,12 @@
+ 	{
+ 	  _gnutls_read_log ("READ: %d returned from %d, errno=%d\n", i,
+ 			    fd, errno);
+-
++#ifdef _WIN32
++       if (WSAGetLastError() == WSAEWOULDBLOCK) {
++#else
+ 	  if (errno == EAGAIN || errno == EINTR)
+ 	    {
++#endif
+ 	      if (sizeOfPtr - left > 0)
+ 		{
+ 
+@@ -707,8 +710,12 @@
+ 
+       if (i == -1)
+ 	{
++#ifdef _WIN32
++      if (WSAGetLastError() == WSAEWOULDBLOCK) {
++#else
+ 	  if (errno == EAGAIN || errno == EINTR)
+ 	    {
++#endif
+ 	      session->internals.record_send_buffer_prev_size += n - left;
+ 
+ 	      retval =

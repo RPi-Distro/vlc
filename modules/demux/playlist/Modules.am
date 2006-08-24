@@ -1,0 +1,19 @@
+SOURCES_playlist = \
+	playlist.c \
+	playlist.h \
+	old.c \
+	m3u.c \
+	b4s.c \
+	pls.c \
+	dvb.c \
+	podcast.c \
+	xspf.c \
+	xspf.h \
+	shoutcast.c \
+	asx.c \
+	sgimb.c \
+	qtl.c \
+	gvp.c \
+	$(NULL)
+
+
