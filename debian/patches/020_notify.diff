@@ -1,0 +1,13 @@
+Index: vlc/modules/misc/notify.c
+===================================================================
+--- vlc/modules/misc/notify.c	(revision 15844)
++++ vlc/modules/misc/notify.c	(revision 15843)
+@@ -180,7 +178,7 @@
+     NotifyNotification * notification;
+     notification = notify_notification_new( _("Now Playing"),
+                              psz_temp,
+-                             DATA_PATH "/vlc128x128.png",NULL);
++                             "/usr/share/pixmaps/vlc.png",NULL);
+     notify_notification_set_timeout( notification,
+                                      config_GetInt(p_this, "notify-timeout") );
+     notify_notification_set_urgency( notification, NOTIFY_URGENCY_LOW );

@@ -1,0 +1,15 @@
+Index: vlc-0.8.5-test3.debian/modules/gui/wxwidgets/interface.cpp
+===================================================================
+--- vlc-0.8.5-test3.debian.orig/modules/gui/wxwidgets/interface.cpp	2006-04-19 09:25:08.000000000 +0200
++++ vlc-0.8.5-test3.debian/modules/gui/wxwidgets/interface.cpp	2006-04-24 16:21:44.000000000 +0200
+@@ -603,8 +603,8 @@
+     /* Create the "Help" menu */
+     wxMenu *help_menu = new wxMenu;
+     help_menu->Append( About_Event, wxU(_("About...")) );
+-    help_menu->AppendSeparator();
+-    help_menu->Append( UpdateVLC_Event, wxU(_("Check for Updates...")) );
++//    help_menu->AppendSeparator();
++//    help_menu->Append( UpdateVLC_Event, wxU(_("Check for Updates...")) );
+ 
+     /* Append the freshly created menus to the menu bar... */
+     wxMenuBar *menubar = new wxMenuBar();
