@@ -54,7 +54,7 @@ vlc_confflags += \
 	--enable-pvr \
 	--disable-speex \
 	--enable-caca \
-	--enable-livedotcom \
+	--enable-live555 \
 	--enable-libmpeg2 \
 	--enable-dts \
 	--enable-fribidi \
