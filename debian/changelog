@@ -1,3 +1,11 @@
+vlc (0.8.6-svn20060823.debian-3) unstable; urgency=low
+
+  * debian/control:
+    + Added missing build-dep on libdc1394-13-dev (Closes: #384568, #384582).
+    + Build-depend on a newer libcaca for better colour ASCII rendering.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri, 25 Aug 2006 11:19:00 +0200
+
 vlc (0.8.6-svn20060823.debian-2) unstable; urgency=low
 
   * debian/control:
