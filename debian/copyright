@@ -4,61 +4,563 @@ Mon, 13 Mar 2000 02:21:45 +0100.
 It was taken from http://download.videolan.org/pub/vlc/, and the source
 tarball also contains the faad2 and x264 trees.
 
-Upstream authors: The VideoLAN Team <videolan@videolan.org>
+1. Copyright holders list
+=========================
 
-faad2 authors: M. Bakker (mbakker(at)nero.com)
-               Alexander Kurpiers (a.kurpiers(at)nt.tu-darmstadt.de)
-               Volker Fischer (v.fischer(at)nt.tu-darmstadt.de)
+With the exception of other files mentioned in this document, all code and
+artwork belongs to members of the VideoLAN team <videolan@videolan.org>. See
+each file for precise details about its respective authors.
+  Copyright (c) 1996-2006 Laurent Aimar <fenrir@via.ecp.fr>
+                          Marc Ariberti <marcari@via.ecp.fr>
+                          Stephan Assmus <stippi@yellowbites.com>
+                          Olivier Aubert <oaubert at lisi dot univ-lyon1 dot fr>
+                          Sigmund Augdal Helberg <dnumgis@videolan.org>
+                          Pierre Baillet <oct@zoy.org>
+                          Gildas Bazin <gbazin@videolan.org>
+                          Rocky Bernstein <rocky@panix.com>
+                          Johan Bilien <jobi@via.ecp.fr>
+                          Stéphane Borel <stef@via.ecp.fr>
+                          Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>
+                          Filippo Carone <filippo[dontspam]@carone.org>
+                          Tony Castley <tony@castley.net>
+                          Antoine Cellerier <dionoea@videolan.org>
+                          Renaud Dartus <reno@via.ecp.fr>
+                          Cyril Deguet <asmax@via.ecp.fr>
+                          Rémi Denis-Courmont <rem#videolan.org>
+                          Colin Delacroix <colin@zoy.org>
+                          Boris Dorès <babal(at)via.ecp.fr>
+                          Jean-Marc Dressler <polux@via.ecp.fr>
+                          Henri Fallon <henri@via.ecp.fr>
+                          Andrew Flintham <amf@cus.org.uk>
+                          Damien Fouilleul <Damien.Fouilleul@laposte.net>
+                          Alexis Guillard <alexis.guillard@bt.com>
+                          Gerald Hansink <gerald.hansink@ordina.nl>
+                          Shane Harper <shanegh@optusnet.com.au>
+                          Derk-Jan Hartman <hartman@videolan.org>
+                          Gaël Hendryckx <jimmy@via.ecp.fr>
+                          Sam Hocevar <sam@zoy.org>
+                          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
+                          Jon Lech Johansen <jon-vl@nanocrew.net>
+                          Michel Kaempf <maxx@via.ecp.fr>
+                          Felix Kühne <fkuehne@users.sourceforge.net>
+                          Simon Latapie <garf@via.ecp.fr>
+                          Pascal Levesque <pascal.levesque@mindready.com>
+                          Christophe Massiot <massiot@via.ecp.fr>
+                          Loïc Minier <lool@via.ecp.fr>
+                          Florian G. Pflug <fgp@phlo.org>
+                          Heiko Panther <heiko.panther@web.de>
+                          Eric Petit <titer@videolan.org>
+                          Benjamin Pracht <bigben@videolan.org>
+                          Emmanuel Puig <karibu@videolan.org>
+                          Frédéric RUGET <frederic.ruget@free.fr>
+                          Jean-Paul Saman <jp_dot_saman#videolan_dot_nl>
+                          Arnaud Schauly <gitan@via.ecp.fr>
+                          Vincent Seguin <seguin@via.ecp.fr>
+                          Richard Shepherd <richard@rshepherd.demon.co.uk>
+                          Clément Stenac <zorglub@videolan.org>
+                          Peter Surda <shurdeek@panorama.sth.ac.at>
+                          Olivier Teulière <ipkiss@via.ecp.fr>
+  Licensed under the GNU General Public License, version 2 or later.
 
-x264 authors: Laurent Aimar <fenrir@via.ecp.fr>
-              Eric Petit <titer@videolan.org>
-              Min Chen <chenm001@163.com>
-              Justin Clay (justin_clay(at)hotmail.com)
-              Måns Rullgård (mru(at)mru.ath.cx)
+extras/faad2/common/faad/getopt.c:
+  Copyright (C) 1987, 88, 89, 90, 91, 92, 1993 Free Software Foundation, Inc.
+  Licensed under the GNU General Public License, version 2 or later.
 
-Most of the VideoLAN code is Copyright 1996-2006 The VideoLAN Team
+extras/faad2/common/mp4ff/drms.c:
+  Copyright (C) 2004 Jon Lech Johansen <jon-vl@nanocrew.net>
+                     Sam Hocevar <sam@zoy.org>
+  Licensed under the GNU General Public License, version 2 or later.
 
-  This program is free software; you can redistribute it and/or modify
-  it under the terms of the GNU General Public License as published by
-  the Free Software Foundation; either version 2, or (at your option)
-  any later version.
+extras/faad2/plugins/mpeg4ip:
+  Copyright (C) 2003 Bill May wmay@cisco.com
+  Licensed under the GNU General Public License, version 2 or later.
 
-  This program is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
-  General Public License for more details.
+extras/faad2/plugins/xmms:
+  Copyright (c) 2002-2004 Frederic Fondriest <frederic.fondriest@laposte.net>
+  Licensed under the GNU General Public license, version 2, as can be seen
+  in http://fondriest.frederic.free.fr/fichiers/xmms-mp4_20050213.tar.bz2,
+  found on the author’s website. This code is not used in the build process
+  hence does not cancel the “version 2 or later” clause for binaries.
 
-  You should have received a copy of the GNU General Public License
-  along with this program; if not, write to the Free Software
-  Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
+Other files in extras/faad2:
+  Copyright (C) 2003-2005 M. Bakker, Ahead Software AG <mbakker(at)nero.com>
+                          Alexander Kurpiers (a.kurpiers(at)nt.tu-darmstadt.de)
+                          Volker Fischer (v.fischer(at)nt.tu-darmstadt.de)
+                          Gian-Carlo Pascutto (gpascutto(at)nero.com)
+  Licensed under the GNU General Public License, version 2 or later.
 
-* Some parts of the network layer (src/network, include/vlc_acl.h) are Copyright (C) 2005 Rémi Denis-Courmont
-* The OSD menu (src/osd, modules/video_filter/osdemenu.c) are Copyright (C) 2005 M2X
-* Some parts of the unicode handling routines (src/misc/unicode.c) are Copyright (C) 1998-2002, Larry Wall
-* Some parts of the charset handling routines (src/misc/charset.c) are Copyright (C) 2001-2003 The Mape Project
-* The XSPF playlist handling code (modules/demux/playlist/xspf and modules/misc/playlist/xspf) is Copyright (C) 2006 Daniel Stränger <vlc at schmaller dot de>
-* Some parts of the TY demux (modules/demux/ty.c) are Copyright (C) 2005 by Neal Symms (tivo@freakinzoo.com) - February 2005
-* The VLC tables for transrating are Copyright (C) 1996, MPEG Software Simulation Group. All Rights Reserved. 
-* Some parts of the transrating module (modules/stream_out/transrate) are Copyright (C) 2003 Antoine Missout, Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>, Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
-* The Unzip library used in skins2 (modules/gui/skins2/unzip) is Copyright (C) 1998-2005 Gilles Vollant and Copyright (c) 1990-2000 Info-ZIP.  All rights reserved.
-* The GnuTLS module (module/misc/gnutls.c) is Copyright (C) 2004-2006 Rémi Denis-Courmont
-* The Xtag XML parser (modules/misc/xml/xtag*) is Copyright (C) 2003-2004 Commonwealth Scientific and Industrial Research
-* The Real RTSP access plugin (modules/access/rtsp) is Copyright (C) 2002-2003 the xine project and Copyright (C) 2002-2004 the xine project
-* The DV access module (modules/access/dv.c) is Copyright (C) 2005 M2X and Copyright by Arne Schirmacher <dvgrab@schirmacher.de>
-* The VCDx input module (modules/access/vcdx/) is Copyright (C) 2003, 2004 Rocky Bernstein <rocky@panix.com>
-* Some parts of the V4L input module (modules/access/v4l/videodev_mjpeg.h) are Copyright (C) lavrec (see http://mjpeg.sourceforge.net)
-* Some parts of the DVB input module (modules/access/dvb/en50221.c) are Copyright (C) 2000 Klaus Schmidinger
-* The RTCP handling routines (modules/mux/rtp/rtcp, modules/mux/rtp/rtp.h) are Copyright (C) 2005 M2X
-* Some parts of the TS muxer (modules/mux/mpeg/csa*) are Copyright (C) 2004-2005 Laurent Aimar and Copyright (C) 2004 Laurent Aimar
-* The Swscale module is Copyright (C) 1999, Aaron Holtzman <aholtzma@ess.engr.uvic.ca>, Copyright (C) 2001-2003 Michael Niedermayer <michaelni@gmx.at>,  Copyright (C) 2004 Romain Dolbeau <romain@dolbeau.org>, Copyright (C) 2000, Håkan Hjort <d95hjort@dtek.chalmers.se> and opyright (C) 2000, Silicon Integrated System Corp.
-* The CMML decoder (modules/codec/cmml) is Copyright (C) 2003-2004 Commonwealth Scientific and Industrial Research
-* The DVB subtitles decoder (modules/codec/dvbsub.c) is Copyright (C) 2003 ANEVIA
-* Some MMX routines (include/mmx.h) are Copyright (C) 1997-1999 H. Dietz and R. Fisher
-* The binary loader is Copyright       1994    Eric Youndale & Erik Bos, Copyright       1995    Martin von Löwis, Copyright   1996-98 Marcus Meissner, Copyright 1995 Thomas Sandford, Copyright 1993 Robert J. Amstadt, Copyright 1995 Alexandre Julliard, Copyright 2000 Eugene Kuznetsov (divx@euro.ru)
-* The atof testsuite (src/test/i18n_atof.c) is Copyright (C) 2006 Rémi Denis-Courmont
-* Faad2 (extras/faad2) is  Copyright (C) 2003-2005 M. Bakker, Ahead Software AG, http://www.nero.com
-* The MPEG4IP plugin for Faad2 (extras/faad2/plugins/mpeg4ip) is Copyright (C) 2003 Bill May wmay@cisco.com
-* X264 (extras/x264) is Copyright (C) 2003 Laurent Aimar, Copyright (C) 2005 Loren Merritt, Copyright (C) 2003 x264 project, Copyright (c) 2002 Michael Niedermayer <michaelni@gmx.at>, Copyright (c) 2000 The NetBSD Foundation, Inc., Copyright 2005 Laurent Aimar, Justin Clay, Min Chen,Eric Petit, Måns Rullgård, Loren Merritt
+extras/x264/extras/getopt.c:
+  Copyright (c) 2000 The NetBSD Foundation, Inc.
+  This code is derived from software contributed to The NetBSD Foundation
+  by Dieter Baron and Thomas Klausner.
+  Licensed under the NetBSD license (see below).
+
+Other files in extras/x264:
+  Copyright (c) 2003-2006 Laurent Aimar <fenrir@via.ecp.fr>
+                          Alex Izvorski (aizvorski(at)gmail.com)
+                          Alex Wright (alexw0885(at)hotmail.com)
+                          Andrew Dunstan
+                          bobololo
+                          Christian Heine (sennindemokrit(at)gmx.net)
+                          Eric Petit <titer@videolan.org>
+                          Francesco Corriga
+                          Justin Clay (justin_clay(at)hotmail.com)
+                          Loren Merritt (lorenm(at)u.washington.edu)
+                          Måns Rullgård (mru(at)mru.ath.cx)
+                          Michael Niedermayer (michaelni(at)gmx.at)
+                          Mike Matsnev (mike(at)po.cs.msu.su)
+                          Min Chen <chenm001@163.com>
+                          Phil Jensen (philj(at)csufresno.edu)
+                          Radek Czyz (radoslaw(at)syskin.cjb.net)
+                          Riccardo Stievano (walkunafraid(at)tin.it)
+                          Tuukka Toivonen (tuukkat(at)ee.oulu.fi)
+                          Vincent Torri (Vincent.Torri(at)iecn.u-nancy.fr)
+  Licensed under the GNU General Public License, version 2 or later.
+
+mozilla/support/npunix.c:
+mozilla/support/npwin.cpp:
+  Copyright (c) 1998 Netscape Communications Corporation
+                     dp Suresh <dp@netscape.com>
+                     Stephen Mak <smak@sun.com>
+  Advertised as being under the Mozilla Public License, but effectively
+  under the MPL/GPL/LGPL triple license since the Mozilla relicensing,
+  hence used under the GNU General Public License, version 2 or later.
+
+src/extras/getopt.c:
+src/extras/getopt.h:
+src/extras/getopt1.c:
+  Copyright (c) 1987, 88, 89, 90, 91, 92, 93, 94, 95, 96, 97
+                Free Software Foundation, Inc.
+  Licensed under the GNU General Public License, version 2 or later.
+
+src/misc/unicode.c:
+  Copyright (c) 2005-2006 Rémi Denis-Courmont <rem # videolan.org>
+                1998-2002 Larry Wall
+  Licensed under the GNU General Public License, version 2 or later.
+
+src/misc/charset.c:
+  Copyright (c) 2003-2006 Derk-Jan Hartman <thedj at users.sf.net>
+                          Christophe Massiot <massiot@via.ecp.fr>
+                          Rémi Denis-Courmont <rem#videolan.org>
+                2001-2003 The Mape Project
+                          Karel Zak  <zakkr@zf.jcu.cz>
+  Licensed under the GNU General Public License, version 2 or later.
+
+Files in loader/:
+  Copyright (C) the Wine project
+                1993 Robert J. Amstadt
+                1993, 1994 Martin Ayotte
+                1994 Eric Youndale & Erik Bos
+                1995 Thomas Sandford
+                1995, 1996 Martin von Löwis
+                1996-1998 Marcus Meissner
+                1998 Patrick Stridvall
+                1999 Éric Pouech
+                1995-1999 Alexandre Julliard
+                2000 Eugene Kuznetsov (divx@euro.ru)
+                2005 Rémi Denis-Courmont <rem#videolan.org>
+  Originally distributed under LPGL 2.1 (or later) by the Wine project.
+  Licensed under the GNU General Public License, version 2 or later.
+
+Files in intl/:
+  Copyright (C) 1984, 1989, 1990, 1995-2002 Free Software Foundation, Inc.
+  Licensed under the GNU General Public License, version 2 or later.
+
+include/mmx.h:
+  Copyright (C) 1997-1999 H. Dietz and R. Fisher
+  Licensed under the GNU General Public License, version 2 or later.
+
+Files in modules/gui/skins2/unzip:
+  Copyright (C) 1998-2005 Gilles Vollant
+  Copyright (c) 1990-2000 Info-ZIP.  All rights reserved.
+  Licensed under the Info-ZIP license (see below).
+
+modules/access/dvb/en50221.c:
+  Copyright (c) 2004-2005 Christophe Massiot <massiot@via.ecp.fr>
+                2000 Klaus Schmidinger
+  Licensed under the GNU General Public License, version 2 or later.
+
+modules/stream_out/transrate/putvlc.h:
+  Copyright (C) 1996, MPEG Software Simulation Group. All Rights Reserved.
+  This file has a purely functional purpose and does henceforth not qualify
+  for copyright.
+
+Other files in modules/stream_out/transrate/:
+  Copyright (C) 2003 Antoine Missout <antoine.missout@metakine.com>
+                     Laurent Aimar <fenrir@via.ecp.fr>
+                     Christophe Massiot <massiot@via.ecp.fr>
+                2000-2003 Michel Lespinasse <walken@zoy.org>
+                1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
+  Licensed under the GNU General Public License, version 2 or later.
+
+Files in modules/codec/cmml/:
+modules/misc/xml/xtag.c:
+  Copyright (C) 2003-2004 Commonwealth Scientific and Industrial Research
+                          Organisation (CSIRO) Australia
+                2003-2004 Conrad Parker <Conrad.Parker@csiro.au>
+                2003-2004 Andre Pang <Andre.Pang@csiro.au>
+                2004 Gildas Bazin <gbazin@videolan.org>
+  Licensed under the GNU General Public License, version 2 or later.
+
+modules/codec/dvbsub.c:
+  Copyright (c) 2003 Damien LUCAS <damien.lucas@anevia.com>
+                2003 ANEVIA
+                2003-2005 Gildas Bazin <gbazin@videolan.org>
+                2003-2005 Laurent Aimar <fenrir@via.ecp.fr>
+                2003-2005 Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
+  Licensed under the GNU General Public License, version 2 or later.
+
+Files in modules/video_filter/swscale/:
+  Copyright (C) 1999 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
+                1999 Franck Sicard <Franck.Sicard@solsoft.fr>
+                2000 Håkan Hjort <d95hjort@dtek.chalmers.se>
+                2000 Silicon Integrated System Corp.
+                2001 Nick Kurshev
+                2001-2003 Michael Niedermayer <michaelni@gmx.at>
+                2003-2004 Gildas Bazin <gbazin@videolan.org>
+                2004 Marc Hoffman <marc.hoffman@analog.com>
+                2004 Romain Dolbeau <romain@dolbeau.org>
+  Licensed under the GNU General Public License, version 2 or later.
+
+modules/misc/playlist/xspf.[ch]:
+modules/demux/playlist/xspf.[ch]:
+  Copyright (c) 2006 Daniel Stränger <vlc at schmaller dot de>
+                2006 Yoann Peronneau <yoann@videolan.org>
+  Licensed under the GNU General Public License, version 2 or later.
+
+modules/demux/ty.c:
+  Copyright (C) 2005 Neal Symms <tivo@freakinzoo.com>  
+                2005 Christopher Wingert for tivo-mplayer
+  Licensed under the GNU General Public License, version 2 or later.
+
+Files in modules/access/rtsp/:
+  Copyright (c) 2005 Gildas Bazin <gbazin@videolan.org>
+                2002-2004 the xine project
+  Licensed under the GNU General Public License, version 2 or later.
+
+modules/access/v4l.c:
+  Copyright (c) 2002-2004 Laurent Aimar <fenrir@via.ecp.fr>
+                2002-2004 Paul Forgey <paulf at aphrodite dot com>
+                2002-2004 Gildas Bazin <gbazin@videolan.org>
+                2002-2004 Benjamin Pracht <bigben at videolan dot org>
+  Licensed under the GNU General Public License, version 2 or later.
+
+modules/access/videodev_mjpeg.h:
+  Copyright (c) 2006 lavrec <http://mjpeg.sourceforge.net>
+                2006 Rainer Johanni <rainer@johanni.de>
+  Licensed under the GNU General Public License, version 2 or later.
+
+Files in src/osd/:
+modules/mux/rtp/rtcp.[ch]:
+modules/mux/rtp/rtp.h:
+  Copyright (c) 2005 M2X
+                2005 Jean-Paul Saman <jpsaman #_at_# videolan dot org>
+                2005 Sigmund Augdal Helberg <dnumgis@videolan.org>
+  Licensed under the GNU General Public License, version 2 or later.
+
+modules/access/dv.c:
+  Copyright (c) 2005 M2X
+                2005 Jean-Paul Saman <jpsaman #_at_# videolan dot org>
+  Copyright Arne Schirmacher <dvgrab@schirmacher.de>
+            Dan Dennedy <dan@dennedy.org> and others
+  Licensed under the GNU General Public License, version 2 or later.
+
+share/skins2/fonts/FreeSans.ttf:
+share/skins2/fonts/FreeSansBold.ttf:
+  Copyright (C) 2002 Free Software Foundation.
+                Primoz Peterlin <primoz.peterlin@biofiz.mf.uni-lj.si>
+  Licensed under the GNU General Public License, version 2 or later.
+
+Other files in share/skins2/:
+  Copyright (c) 2006 aLtgLasS <http://www.d-gfx.net.tc/>
+                1994-1996 Jos Buivenga <http://www.josbuivenga.demon.nl/>
+  Licensed under the Creative Commons Attribution 2.5 Scotland license
+
+2. License list
+===============
+
+The blurb for the GNU General Publice License, version 2 or later:
+
+ | This program is free software; you can redistribute it and/or modify
+ | it under the terms of the GNU General Public License as published by
+ | the Free Software Foundation; either version 2, or (at your option)
+ | any later version.
+ |
+ |  This program is distributed in the hope that it will be useful,
+ | but WITHOUT ANY WARRANTY; without even the implied warranty of
+ | MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ | General Public License for more details.
+ |
+ |  You should have received a copy of the GNU General Public License
+ | along with this program; if not, write to the Free Software
+ | Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
 On Debian GNU/Linux systems, the complete text of the GNU General
 Public License can be found in `/usr/share/common-licenses/GPL'.
+
+The NetBSD license:
+
+ | Redistribution and use in source and binary forms, with or without
+ | modification, are permitted provided that the following conditions
+ | are met:
+ | 1. Redistributions of source code must retain the above copyright
+ |    notice, this list of conditions and the following disclaimer.
+ | 2. Redistributions in binary form must reproduce the above copyright
+ |    notice, this list of conditions and the following disclaimer in the
+ |    documentation and/or other materials provided with the distribution.
+ | 3. All advertising materials mentioning features or use of this software
+ |    must display the following acknowledgement:
+ |        This product includes software developed by the NetBSD
+ |        Foundation, Inc. and its contributors.
+ | 4. Neither the name of The NetBSD Foundation nor the names of its
+ |    contributors may be used to endorse or promote products derived
+ |    from this software without specific prior written permission.
+ |
+ | THIS SOFTWARE IS PROVIDED BY THE NETBSD FOUNDATION, INC. AND CONTRIBUTORS
+ | ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED
+ | TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+ | PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE FOUNDATION OR CONTRIBUTORS
+ | BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+ | CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+ | SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+ | INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+ | CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+ | ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+ | POSSIBILITY OF SUCH DAMAGE.
+
+The Info-ZIP license:
+
+ | For the purposes of this copyright and license, "Info-ZIP" is defined as
+ | the following set of individuals:
+ |
+ |    Mark Adler, John Bush, Karl Davis, Harald Denker, Jean-Michel Dubois,
+ |    Jean-loup Gailly, Hunter Goatley, Ed Gordon, Ian Gorman, Chris Herborth,
+ |    Dirk Haase, Greg Hartwig, Robert Heath, Jonathan Hudson, Paul Kienitz,
+ |    David Kirschbaum, Johnny Lee, Onno van der Linden, Igor Mandrichenko,
+ |    Steve P. Miller, Sergio Monesi, Keith Owens, George Petrov, Greg Roelofs,
+ |    Kai Uwe Rommel, Steve Salisbury, Dave Smith, Steven M. Schweda,
+ |    Christian Spieler, Cosmin Truta, Antoine Verheijen, Paul von Behren,
+ |    Rich Wales, Mike White
+ |
+ | This software is provided "as is," without warranty of any kind, express
+ | or implied.  In no event shall Info-ZIP or its contributors be held liable
+ | for any direct, indirect, incidental, special or consequential damages
+ | arising out of the use of or inability to use this software.
+ |
+ | Permission is granted to anyone to use this software for any purpose,
+ | including commercial applications, and to alter it and redistribute it
+ | freely, subject to the following restrictions:
+ |
+ |  1. Redistributions of source code must retain the above copyright notice,
+ |     definition, disclaimer, and this list of conditions.
+ |
+ |  2. Redistributions in binary form (compiled executables) must reproduce
+ |     the above copyright notice, definition, disclaimer, and this list of
+ |     conditions in documentation and/or other materials provided with the
+ |     distribution.  The sole exception to this condition is redistribution
+ |     of a standard UnZipSFX binary (including SFXWiz) as part of a
+ |     self-extracting archive; that is permitted without inclusion of this
+ |     license, as long as the normal SFX banner has not been removed from
+ |     the binary or disabled.
+ |
+ |  3. Altered versions--including, but not limited to, ports to new operating
+ |     systems, existing ports with new graphical interfaces, and dynamic,
+ |     shared, or static library versions--must be plainly marked as such
+ |     and must not be misrepresented as being the original source.  Such
+ |     altered versions also must not be misrepresented as being Info-ZIP
+ |     releases--including, but not limited to, labeling of the altered
+ |     versions with the names "Info-ZIP" (or any variation thereof, including,
+ |     but not limited to, different capitalizations), "Pocket UnZip," "WiZ"
+ |     or "MacZip" without the explicit permission of Info-ZIP.  Such altered
+ |     versions are further prohibited from misrepresentative use of the
+ |     Zip-Bugs or Info-ZIP e-mail addresses or of the Info-ZIP URL(s).
+ |
+ |  4. Info-ZIP retains the right to use the names "Info-ZIP," "Zip," "UnZip,"
+ |     "UnZipSFX," "WiZ," "Pocket UnZip," "Pocket Zip," and "MacZip" for its
+ |     own source and binary releases.
+
+The Creative Commons Attribution 2.5 Scotland license:
+
+ |  This Creative Commons Scotland public licence enables You to Use the
+ |  Work worldwide provided that You keep to the terms of this Licence.
+ |
+ |  'The Licensor' (the Person offering the Work under the terms and
+ |  conditions of this Licence)
+ |
+ |  and
+ |
+ |  'You' (the Person acquiring rights under this Licence)
+ |
+ |  agree as follows:
+ |
+ |  1. Definitions of Capitalised Words
+ |    1. "Collective Work" means a work made up of the Work in its entirety
+ |       in unmodified form, along with other work, assembled into a
+ |       collective whole.
+ |    2. "Derivative Work" means a work that Uses the Work (or any
+ |       substantial part of the Work) in any material form whatsoever
+ |       (such as a translation, dramatisation, or abridgment), other than
+ |       (i) as a whole and in unmodified form or (ii) by modifying it as
+ |       may be technically necessary to Use it in a different mode or
+ |       format; but a Collective Work is not a Derivative Work for the
+ |       purpose of this Licence.
+ |    3. "Derogatory Treatment" means derogatory treatment as defined by
+ |       section 80 of the Copyright Design and Patents Act 1988, except as
+ |       allowed by that Act: and it has that meaning wherever that
+ |       treatment may take place and whoever may carry it out.
+ |    4. "Licence Elements" means the following licence attributes
+ |       indicated in the title of this Licence: Attribution.
+ |    5. "Original Author" means the Person who created the Work.
+ |    6. "Person" means a natural person or a body of persons corporate or
+ |       incorporate.
+ |    7. "Use", as a verb, means doing any act which is restricted by
+ |       copyright, whether in the original medium or any other; and
+ |       includes modifying the Work as may be technically necessary to Use
+ |       it in a different mode or format.
+ |    8. "Work" means the work protected by copyright which is offered
+ |       under the terms of this Licence, and includes the Work as
+ |       incorporated in any Collective Work.
+ |    9. Words in the singular include the plural and vice versa.
+ |
+ |  2. The Rights Granted
+ |
+ |  2.1 The Licensor grants to You a worldwide, royalty-free,
+ |  non-exclusive, licence to Use the Work for the duration of its
+ |  copyright.
+ |
+ |  So you may, for example:
+ |    1. copy the Work, or create Derivative Works or incorporate it into a
+ |       Collective Work;
+ |    2. copy Derivative Works, or the Work as incorporated in any
+ |       Collective Work; and
+ |    3. publish, perform or communicate the Work and/or Derivative Works
+ |       and/or the Work as incorporated in any Collective Work to anyone;
+ |
+ |  in any medium whether now known or created in the future.
+ |
+ |  2.2 However, this Licence does not allow you to:
+ |    1. impose any terms or any technological measures on the Work, or a
+ |       Derivative Work, that alter or restrict the terms of this Licence
+ |       or any rights granted under it or have the effect or intent of
+ |       restricting the ability of any person to exercise those rights;
+ |    2. sublicense the Work; or
+ |    3. subject the Work to Derogatory Treatment.
+ |
+ |  2.3 You must, if you publish or distribute the Work or any Derivative
+ |  Work to anyone else in any way, give reasonable credit to the Original
+ |  Author as follows:
+ |    1. by giving the name of the Original Author if that has been
+ |       supplied; or a pseudonym if that has been supplied instead; and/or
+ |       the name of any other person if that has been supplied for
+ |       attribution in place of the Original Author;
+ |    2. by giving the title of the Work if that has been supplied;
+ |    3. by giving the Uniform Resource Identifier of the Work if that has
+ |       been supplied, but you need not do so if this does not refer to
+ |       its copyright terms or to its licensing information;
+ |    4. in the case of a Derivative Work, by identifying how the Work has
+ |       been used (for example, "French translation of the Work by X", or
+ |       "Screenplay based on original work by X"); and
+ |    5. in the case of a Derivative Work or a Collective Work, placing
+ |       that credit in the same place, and at least as prominently, as any
+ |       comparable authorship credit.
+ |
+ |          But, if what you are publishing or distributing is a Derivative
+ |          Work or a Collective Work, you must remove any of these credits
+ |          if you are asked to do so by the Licensor and if it is
+ |          practicable to do so.
+ |
+ |  These are important conditions of this licence and if you fail to do
+ |  so you will be in material breach of its terms.
+ |
+ |  2.4 The Original Author asserts the right to be identified as the
+ |  original author of the Work; but only as and when required by clause
+ |  2.3 above.
+ |
+ |  2.5 You must also, if you publish or distribute the Work or any
+ |  Derivative Work to anyone else in any way:
+ |    1. include a copy of this Licence (or its Uniform Resource
+ |       Identifier) with it; and
+ |    2. keep intact any copyright notices for the Work and notices that
+ |       refer to this Licence.
+ |
+ |  These are important conditions of this licence and if you fail to do
+ |  so you will be in material breach of its terms.
+ |
+ |  2.6 Each time You publish the Work or any Derivative Work to anyone
+ |  else in any way, the Licensor offers to the recipient a licence to the
+ |  Work on the same terms and conditions as this Licence.
+ |
+ |  2.7 And:
+ |    1. the right to release the Work under different terms, or to stop
+ |       distributing the Work, is reserved; and
+ |    2. all other rights not expressly granted by the Licensor are
+ |       reserved.
+ |
+ |  2.8 This Licence does not affect any rights that You or anyone else
+ |  may independently have under any applicable law (including fair
+ |  dealing, fair use, or any other legally recognised limitation or
+ |  exception to copyright infringement) to make any Use of this Work.
+ |
+ |  3. Warranties and Disclaimer
+ |
+ |  3.1 The Work is licensed by the Licensor "as is" and without any
+ |  warranty of any kind, either express or implied, whether of title, of
+ |  accuracy, of fitness for purpose, or otherwise.
+ |
+ |  4. Limit of Liability
+ |
+ |  4.1 Subject to any liability which may not be excluded or limited by
+ |  law, the Licensor shall not be liable for, and expressly excludes, all
+ |  liability for loss or damage however and whenever caused to anyone by
+ |  any Use under this Licence, whether by You or by anyone else, and
+ |  whether caused by any fault on the part of the Licensor or not. If
+ |  liability may not be excluded by law, it is limited to actual and
+ |  direct financial loss to the extent it is caused by proved negligence
+ |  on the part of the Licensor.
+ |
+ |  5. Termination
+ |
+ |  5.1 Any breach by You of the terms of this licence (for example, by
+ |  distributing the work licensed without attributing authorship as
+ |  appropriate) entitles the Licensor to terminate this Licence with
+ |  immediate effect and without notice to you. Persons who have received
+ |  the Work, Derivative Works, or Collective Works from You under this
+ |  Licence, however, will not have their licences terminated provided
+ |  their use is in full compliance with this Licence or a licence granted
+ |  under clause 2.6 of this Licence.
+ |
+ |  5.2 If You are not in breach of the terms of this licence, the
+ |  Licensor may not terminate your rights under it.
+ |
+ |  5.3 Unless terminated under clause 5.1, this Licence is granted to you
+ |  for the duration of copyright in the Work.
+ |
+ |  6. General
+ |
+ |  6.1 If any provision of this Licence is held to be invalid or
+ |  unenforceable, that shall not affect the validity or enforceability of
+ |  the remainder of the terms of this Licence.
+ |
+ |  6.2 This Licence is the entire agreement between the parties with
+ |  respect to the Work licensed here. It replaces any earlier
+ |  understandings, agreements or representations with respect to the Work
+ |  not specified here.
+ |
+ |  6.3 If You are in breach of the terms of this Licence (for example, by
+ |  distributing the work licensed without attributing authorship as
+ |  appropriate) you will not be entitled to rely on the terms of this
+ |  Licence or to complain of any breach by the Licensor.
+ |
+ |  6.4 Neither You, nor anyone else, may enforce any provision of this
+ |  Licence by specific implement or interdict.
+ |
+ |  6.5 This Licence is governed by the law of Scotland and the parties
+ |  accept the exclusive jurisdiction of the Courts of Scotland to decide
+ |  any action or claim directed against the Licensor.
+ |
+ |  6.6 If there is any dispute as to the meaning or effect of any
+ |  provision of this Licence, it must so far as possible be read and
+ |  given effect in a way that is compatible with the provisions of the
+ |  Creative Commons generic licence, version 2.5, which has the same
+ |  Licence Elements.
+

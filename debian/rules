@@ -52,7 +52,7 @@ vlc_confflags += \
 	--enable-mkv \
 	--enable-v4l \
 	--enable-pvr \
-	--disable-speex \
+	--enable-speex \
 	--enable-caca \
 	--enable-live555 \
 	--enable-libmpeg2 \
@@ -194,6 +194,11 @@ install: build
 	#cp doc/fortunes.txt debian/vlc/usr/share/games/fortunes/vlc
 	#strfile doc/fortunes.txt debian/vlc/usr/share/games/fortunes/vlc.dat
 
+	rm -f debian/vlc/usr/share/vlc/skins2/fonts/FreeSans.ttf
+	rm -f debian/vlc/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
+	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/vlc/usr/share/vlc/skins2/fonts/FreeSans.ttf
+	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/vlc/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
+
 	rm -Rf debian/vlc/$(VIDDIR)/skins
 	ln -s vlc.1.gz debian/vlc/usr/share/man/man1/svlc.1.gz
 
@@ -281,12 +286,11 @@ binary-arch: build install
 	dh_installman doc/vlc.1 -p vlc
 	dh_installman doc/vlc-config.1 -p libvlc0-dev
 	dh_installchangelogs ChangeLog -p vlc
-	for x in doc/ChangeLog-* ; do cp "doc/ChangeLog-$${x#*-}" "debian/vlc/usr/share/doc/vlc/changelog$${x#*-}" ; done
 	dh_link -s
 	dh_strip -s
 	dh_compress -s
 	dh_fixperms -s
-	dh_makeshlibs -pvlc -V 'vlc (>= 0.8.6-svn20060823.debian-1)'
+	dh_makeshlibs -pvlc -V 'vlc (>= 0.8.6-svn20060910.0.8.5-1-svn.debian-1)'
 	dh_installdeb -s
 #	dh_perl
 	dh_shlibdeps -s -ldebian/vlc/usr/lib

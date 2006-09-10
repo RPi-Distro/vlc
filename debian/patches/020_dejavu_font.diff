@@ -7,7 +7,7 @@ Index: vlc-0.8.5-test3.debian/modules/misc/freetype.c
  #define DEFAULT_FONT "" /* Default font found at run-time */
  #else
 -#define DEFAULT_FONT "/usr/share/fonts/truetype/freefont/FreeSerifBold.ttf"
-+#define DEFAULT_FONT ""
++#define DEFAULT_FONT "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf"
  #endif
  
  #if defined(HAVE_FRIBIDI)

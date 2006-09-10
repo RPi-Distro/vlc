@@ -2,5 +2,5 @@
 010_no-wx-updates.diff 
 010_osdmenu-paths.diff 
 #020_xulrunner.diff
-020_freetype_font.diff
+020_dejavu_font.diff
 #020_notify.diff
