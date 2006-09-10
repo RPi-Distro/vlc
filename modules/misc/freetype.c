@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2005 the VideoLAN team
- * $Id: freetype.c 16204 2006-08-03 16:58:10Z zorglub $
+ * $Id: freetype.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -754,12 +754,12 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
     }
 
     {
-        char *p_out_buffer;
-        const char *p_in_buffer = psz_string;
+        char *p_in_buffer, *p_out_buffer;
         size_t i_in_bytes, i_out_bytes, i_out_bytes_left, i_ret;
         i_in_bytes = strlen( psz_string );
         i_out_bytes = i_in_bytes * sizeof( uint32_t );
         i_out_bytes_left = i_out_bytes;
+        p_in_buffer = psz_string;
         p_out_buffer = (char *)psz_unicode;
         i_ret = vlc_iconv( iconv_handle, &p_in_buffer, &i_in_bytes,
                            &p_out_buffer, &i_out_bytes_left );

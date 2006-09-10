@@ -2,7 +2,7 @@
  * vout.c: Windows DirectX video output display method
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: directx.c 16094 2006-07-20 13:21:16Z damienf $
+ * $Id: directx.c 15002 2006-03-31 16:12:31Z fkuehne $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -56,19 +56,6 @@
 #endif
 
 #include "vout.h"
-
-/*****************************************************************************
- * picture_sys_t: direct buffer method descriptor
- *****************************************************************************
- * This structure is part of the picture descriptor, it describes the
- * DirectX specific properties of a direct buffer.
- *****************************************************************************/
-struct picture_sys_t
-{
-    LPDIRECTDRAWSURFACE2 p_surface;
-    LPDIRECTDRAWSURFACE2 p_front_surface;
-    DDSURFACEDESC        ddsd;
-};
 
 /*****************************************************************************
  * DirectDraw GUIDs.
@@ -921,7 +908,7 @@ BOOL WINAPI DirectXEnumCallback( GUID* p_guid, LPTSTR psz_desc,
                     rect.left = monitor_info.rcWork.left;
                     rect.top = monitor_info.rcWork.top;
                     msg_Dbg( p_vout, "DirectXEnumCallback: setting window "
-                             "position to %ld,%ld", rect.left, rect.top );
+                             "position to %d,%d", rect.left, rect.top );
                     SetWindowPos( p_vout->p_sys->hwnd, NULL,
                                   rect.left, rect.top, 0, 0,
                                   SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE );
@@ -1053,7 +1040,7 @@ static int DirectXInitDDraw( vout_thread_t *p_vout )
         p_vout->p_sys->rect_display.bottom = GetSystemMetrics(SM_CYSCREEN);
     }
 
-    msg_Dbg( p_vout, "screen dimensions (%lix%li,%lix%li)",
+    msg_Dbg( p_vout, "screen dimensions (%ix%i,%ix%i)",
              p_vout->p_sys->rect_display.left,
              p_vout->p_sys->rect_display.top,
              p_vout->p_sys->rect_display.right,

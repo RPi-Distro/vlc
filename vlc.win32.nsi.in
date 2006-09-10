@@ -36,6 +36,7 @@ CRCCheck on
 InstType "Recommended"
 InstType "Minimum"
 InstType "Full"
+InstType "Recommended"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; NSIS Modern User Interface configuration ;
@@ -631,7 +632,6 @@ Section "Uninstall" SEC91
     ReadRegStr $R2 HKLM "SOFTWARE\Mozilla\$R0\Extensions" "Plugins"
     StrCmp $R2 "" "${Index}-Loop" ""
 
-    Delete "$R2\vlcintf.xpt"
     Delete "$R2\npvlc.dll"
     Goto "${Index}-Loop"
 

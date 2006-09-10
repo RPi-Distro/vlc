@@ -2,7 +2,7 @@
  * id3tag.c: id3 tag parser/skipper based on libid3tag
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: id3tag.c 15726 2006-05-25 13:19:44Z hartman $
+ * $Id: id3tag.c 14719 2006-03-11 17:35:55Z zorglub $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -70,21 +70,16 @@ static void ParseID3Tag( demux_t *p_demux, uint8_t *p_data, int i_size )
 
     if( !p_demux->p_private ) p_demux->p_private = (void *)vlc_meta_New();
 
-#define ID_IS( a ) (!strcmp(  p_frame->id, a ))
-#define DESCR_IS( a) strstr( (char*)p_frame->description, a )
-
     while( ( p_frame = id3_tag_findframe( p_id3_tag , "T", i ) ) )
     {
         int i_strings = id3_field_getnstrings( &p_frame->fields[1] );
 
         while( i_strings > 0 )
         {
-            vlc_meta_t *p_meta = (vlc_meta_t *)(p_demux->p_private);
-
             char *psz_temp = id3_ucs4_utf8duplicate(
                 id3_field_getstrings( &p_frame->fields[1], --i_strings ) );
 
-            if( ID_IS( ID3_FRAME_GENRE ) )
+            if( !strcmp( p_frame->id, ID3_FRAME_GENRE ) )
             {
                 char *psz_endptr;
                 int i_genre = strtol( psz_temp, &psz_endptr, 10 );
@@ -92,53 +87,51 @@ static void ParseID3Tag( demux_t *p_demux, uint8_t *p_data, int i_size )
                 if( psz_temp != psz_endptr &&
                     i_genre >= 0 && i_genre < NUM_GENRES )
                 {
-                    vlc_meta_SetGenre( p_meta, ppsz_genres[atoi(psz_temp)]);
+                    vlc_meta_Add( (vlc_meta_t *)p_demux->p_private,
+                                  VLC_META_GENRE, ppsz_genres[atoi(psz_temp)]);
                 }
                 else
                 {
                     /* Unknown genre */
-                    vlc_meta_SetGenre( p_meta,psz_temp );
+                    vlc_meta_Add( (vlc_meta_t *)p_demux->p_private,
+                                  VLC_META_GENRE, psz_temp );
                 }
             }
-            else if( ID_IS( ID3_FRAME_TITLE ) )
+            else if( !strcmp(p_frame->id, ID3_FRAME_TITLE ) )
             {
-                vlc_meta_SetTitle( p_meta, psz_temp );
+                vlc_meta_Add( (vlc_meta_t *)p_demux->p_private,
+                              VLC_META_TITLE, psz_temp );
             }
-            else if( ID_IS( ID3_FRAME_ARTIST ) )
+            else if( !strcmp(p_frame->id, ID3_FRAME_ARTIST ) )
             {
-                vlc_meta_SetArtist( p_meta, psz_temp );
+                vlc_meta_Add( (vlc_meta_t *)p_demux->p_private,
+                              VLC_META_ARTIST, psz_temp );
             }
-            else if( ID_IS( ID3_FRAME_YEAR ) )
+            else if( !strcmp(p_frame->id, ID3_FRAME_YEAR ) )
             {
-                vlc_meta_SetDate( p_meta, psz_temp );
+                vlc_meta_Add( (vlc_meta_t *)p_demux->p_private,
+                              VLC_META_DATE, psz_temp );
             }
-            else if( ID_IS( ID3_FRAME_COMMENT ) )
+            else if( !strcmp(p_frame->id, ID3_FRAME_COMMENT ) )
             {
-                vlc_meta_SetDescription( p_meta, psz_temp );
+                vlc_meta_Add( (vlc_meta_t *)p_demux->p_private,
+                              VLC_META_DESCRIPTION, psz_temp );
             }
-            else if( DESCR_IS( "Copyright" ) )
+            else if( strstr( (char*)p_frame->description, "Copyright" ) )
             {
-                vlc_meta_SetCopyright( p_meta, psz_temp );
+                vlc_meta_Add( (vlc_meta_t *)p_demux->p_private,
+                              VLC_META_COPYRIGHT, psz_temp );
             }
-            else if( DESCR_IS( "Publisher" ) )
+            else if( strstr( (char*)p_frame->description, "Publisher" ) )
             {
-                vlc_meta_SetPublisher( p_meta, psz_temp );
+                vlc_meta_Add( (vlc_meta_t *)p_demux->p_private,
+                              VLC_META_PUBLISHER, psz_temp );
             }
-            else if( DESCR_IS( "Track number/position in set" ) )
+            else
             {
-                vlc_meta_SetTracknum( p_meta, psz_temp );
-            }
-            else if( DESCR_IS( "Album/movie/show title" ) )
-            {
-                vlc_meta_SetAlbum( p_meta, psz_temp );
-            }
-            else if( DESCR_IS( "Encoded by" ) )
-            {
-                vlc_meta_SetEncodedBy( p_meta, psz_temp );
-            }
-            else if( p_frame->description )
-            { /* Unhandled meta*/
-                msg_Warn( p_demux, "Fixme: unhandled ID3 metatag, %s", p_frame->description );
+                /* Unknown meta info */
+                vlc_meta_Add( (vlc_meta_t *)p_demux->p_private,
+                              (char *)p_frame->description, psz_temp );
             }
             free( psz_temp );
         }

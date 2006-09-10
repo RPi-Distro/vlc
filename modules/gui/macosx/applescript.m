@@ -2,7 +2,7 @@
  * applescript.m: MacOS X AppleScript support
  *****************************************************************************
  * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: applescript.m 15629 2006-05-14 18:29:00Z zorglub $
+ * $Id: applescript.m 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *
@@ -52,21 +52,16 @@
         if ( o_urlString )
         {
             NSURL * o_url;
-            input_item_t *p_input;
-
-            p_input = input_ItemNew( p_playlist,
-                                    [o_urlString fileSystemRepresentation],
-                                    [[[NSFileManager defaultManager]
-                                    displayNameAtPath: o_urlString] UTF8String] );
-            playlist_PlaylistAddInput( p_playlist, p_input, PLAYLIST_INSERT,
-                                                                PLAYLIST_END );
-
+    
+            playlist_Add( p_playlist, [o_urlString fileSystemRepresentation],
+                          [[[NSFileManager defaultManager] displayNameAtPath: o_urlString] UTF8String],
+                          PLAYLIST_INSERT, PLAYLIST_END );
 
             o_url = [NSURL fileURLWithPath: o_urlString];
             if( o_url != nil )
-            {
+            { 
                 [[NSDocumentController sharedDocumentController]
-                    noteNewRecentDocumentURL: o_url];
+                    noteNewRecentDocumentURL: o_url]; 
             }
         }
         vlc_object_release( p_playlist );

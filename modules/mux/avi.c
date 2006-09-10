@@ -2,7 +2,7 @@
  * avi.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: avi.c 15476 2006-04-30 17:39:28Z zorglub $
+ * $Id: avi.c 14118 2006-02-01 18:06:48Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

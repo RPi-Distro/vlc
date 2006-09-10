@@ -2,7 +2,7 @@
  * es.c: Elementary stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: es.c 16319 2006-08-22 23:22:14Z fkuehne $
+ * $Id: es.c 15529 2006-05-02 20:08:41Z bigben $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -30,7 +30,6 @@
 #include <vlc/vlc.h>
 #include <vlc/input.h>
 #include <vlc/sout.h>
-#include <vlc_interaction.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -103,6 +102,8 @@ vlc_module_begin();
     set_callbacks( Open, Close );
 vlc_module_end();
 
+
+#define FREE( p ) if( p ) { free( p ); (p) = NULL; }
 /*****************************************************************************
  * Exported prototypes
  *****************************************************************************/
@@ -361,11 +362,6 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     {
         msg_Err( p_stream, "no suitable sout access module for `%s/%s://%s'",
                  psz_access, psz_mux, psz_dst );
-        intf_UserFatal( p_stream, VLC_FALSE, 
-                    _("Streaming / Transcoding failed"), 
-                    _("There is no suitable stream-output access module for \"%s/%s://%s\"."), 
-                          psz_access, 
-                          psz_mux, psz_dst );
         return( NULL );
     }
 
@@ -375,11 +371,6 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     {
         msg_Err( p_stream, "no suitable sout mux module for `%s/%s://%s'",
                  psz_access, psz_mux, psz_dst );
-        intf_UserFatal( p_stream, VLC_FALSE, 
-                        _("Streaming / Transcoding failed"), 
-                        _("There is no suitable stream-output access module "\
-                          "for \"%s/%s://%s\"."), 
-                          psz_access, psz_mux, psz_dst );
         sout_AccessOutDelete( p_access );
         return( NULL );
     }

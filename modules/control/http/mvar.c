@@ -2,7 +2,7 @@
  * mvar.c : Variables handling for the HTTP Interface
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: mvar.c 15629 2006-05-14 18:29:00Z zorglub $
+ * $Id: mvar.c 16434 2006-08-30 15:18:13Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -128,7 +128,7 @@ mvar_t *E_(mvar_GetVar)( mvar_t *s, const char *name )
 {
     /* format: name[index].field */
     char *field = strchr( name, '.' );
-    int i = 1 + ((field != NULL) ? (field - name) : strlen( name ));
+    int i = 1 + (field != NULL) ? (field - name) : strlen( name );
     char base[i];
     char *p;
     int i_index;
@@ -279,10 +279,19 @@ mvar_t *E_(mvar_IntegerSetNew)( const char *name, const char *arg )
 mvar_t *E_(mvar_PlaylistSetNew)( intf_thread_t *p_intf, char *name,
                                  playlist_t *p_pl )
 {
+    playlist_view_t *p_view;
     mvar_t *s = E_(mvar_New)( name, "set" );
+
+
     vlc_mutex_lock( &p_pl->object_lock );
-    E_(PlaylistListNode)( p_intf, p_pl, p_pl->p_root_category , name, s, 0 );
+
+    p_view = playlist_ViewFind( p_pl, VIEW_CATEGORY ); /* FIXME */
+
+    if( p_view != NULL )
+        E_(PlaylistListNode)( p_intf, p_pl, p_view->p_root, name, s, 0 );
+
     vlc_mutex_unlock( &p_pl->object_lock );
+
     return s;
 }
 

@@ -2,7 +2,7 @@
  * preferences.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: preferences.cpp 15729 2006-05-25 14:24:17Z zorglub $
+ * $Id: preferences.cpp 15370 2006-04-26 23:20:48Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -998,8 +998,6 @@ PrefsPanel::PrefsPanel( wxWindow* parent, intf_thread_t *_p_intf,
                 (p_item->i_type == CONFIG_CATEGORY ||
                   p_item->i_type == CONFIG_SUBCATEGORY ) )
                 break;
-
-            if( p_item->b_internal == VLC_TRUE ) continue;
 
             ConfigControl *control =
                 CreateConfigControl( VLC_OBJECT(p_intf),

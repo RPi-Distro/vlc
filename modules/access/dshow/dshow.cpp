@@ -2,7 +2,7 @@
  * dshow.cpp : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: dshow.cpp 16321 2006-08-23 09:44:27Z fkuehne $
+ * $Id: dshow.cpp 16457 2006-08-31 20:51:12Z hartman $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *         Damien Fouilleul <damienf@videolan.org>
@@ -32,7 +32,6 @@
 #include <vlc/vlc.h>
 #include <vlc/input.h>
 #include <vlc/vout.h>
-#include <vlc_interaction.h>
 
 #include "common.h"
 #include "filter.h"
@@ -77,16 +76,6 @@ static char *ppsz_adev_text[] = { N_("Default"), N_("None") };
 static int  pi_tuner_input[] = { 0, 1, 2 };
 static char *ppsz_tuner_input_text[] =
     {N_("Default"), N_("Cable"), N_("Antenna")};
-static int pi_amtuner_mode[] = { AMTUNER_MODE_DEFAULT,
-                                 AMTUNER_MODE_TV,
-                                 AMTUNER_MODE_FM_RADIO,
-                                 AMTUNER_MODE_AM_RADIO,
-                                 AMTUNER_MODE_DSS };
-static char *ppsz_amtuner_mode_text[] = { N_("Default"),
-                                          N_("TV"),
-                                          N_("FM radio"),
-                                          N_("AM radio"),
-                                          N_("DSS") };
 
 #define CACHING_TEXT N_("Caching value in ms")
 #define CACHING_LONGTEXT N_( \
@@ -150,10 +139,6 @@ static char *ppsz_amtuner_mode_text[] = { N_("Default"),
 #define AUDIO_OUT_LONGTEXT N_( \
   "Select the audio output type. See the \"video input\" option." )
 
-#define AMTUNER_MODE_TEXT N_("AM Tuner mode")
-#define AMTUNER_MODE_LONGTEXT N_( \
-    "AM Tuner mode. Can be one of DEFAULT, TV, AM_RADIO, FM_RADIO or DSS.")
-
 static int  CommonOpen ( vlc_object_t *, access_sys_t *, vlc_bool_t );
 static void CommonClose( vlc_object_t *, access_sys_t * );
 
@@ -216,10 +201,6 @@ vlc_module_begin();
 
     add_integer( "dshow-audio-output", -1, NULL, AUDIO_OUT_TEXT,
                  AUDIO_OUT_LONGTEXT, VLC_TRUE );
-
-    add_integer( "dshow-amtuner-mode", AMTUNER_MODE_TV, NULL,
-                AMTUNER_MODE_TEXT, AMTUNER_MODE_LONGTEXT, VLC_FALSE);
-        change_integer_list( pi_amtuner_mode, ppsz_amtuner_mode_text, 0 );
 
     add_shortcut( "dshow" );
     set_capability( "access_demux", 0 );
@@ -388,9 +369,6 @@ static int CommonOpen( vlc_object_t *p_this, access_sys_t *p_sys,
     var_Create( p_this, "dshow-tuner-country",
                 VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
     var_Create( p_this, "dshow-tuner-input",
-                VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-
-    var_Create( p_this, "dshow-amtuner-mode",
                 VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
 
     var_Create( p_this, "dshow-caching", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
@@ -891,9 +869,6 @@ static int OpenDevice( vlc_object_t *p_this, access_sys_t *p_sys,
     {
         msg_Err( p_this, "can't use device: %s, unsupported device type",
                  devicename.c_str() );
-        intf_UserFatal( p_this, VLC_FALSE, _("Capturing failed"), 
-                        _("VLC cannot use the device \"%s\", because its device "
-                          "type is not supported.") );
         return VLC_EGENERIC;
     }
 
@@ -941,9 +916,6 @@ static int OpenDevice( vlc_object_t *p_this, access_sys_t *p_sys,
     else {
         /* capture device */
         msg_Err( p_this, "capture device '%s' does not support required parameters !", devicename.c_str() );
-        intf_UserFatal( p_this, VLC_FALSE, _("Capturing failed"), 
-                        _("The capture device \"%s\" does not support the "
-                          "required parameters."), devicename.c_str() );
         p_device_filter->Release();
         return VLC_EGENERIC;
     }
@@ -2060,7 +2032,7 @@ static void ShowTunerProperties( vlc_object_t *p_this,
 static void ConfigTuner( vlc_object_t *p_this, ICaptureGraphBuilder2 *p_graph,
                          IBaseFilter *p_device_filter )
 {
-    int i_channel, i_country, i_input, i_amtuner_mode;
+    int i_channel, i_country, i_input;
     long l_modes = 0;
     IAMTVTuner *p_TV;
     HRESULT hr;
@@ -2070,7 +2042,6 @@ static void ConfigTuner( vlc_object_t *p_this, ICaptureGraphBuilder2 *p_graph,
     i_channel = var_GetInteger( p_this, "dshow-tuner-channel" );
     i_country = var_GetInteger( p_this, "dshow-tuner-country" );
     i_input = var_GetInteger( p_this, "dshow-tuner-input" );
-    i_amtuner_mode = var_GetInteger( p_this, "dshow-amtuner-mode" );
 
     if( !i_channel && !i_country && !i_input ) return; /* Nothing to do */
 
@@ -2101,9 +2072,9 @@ static void ConfigTuner( vlc_object_t *p_this, ICaptureGraphBuilder2 *p_graph,
     }
 
     hr = p_TV->GetAvailableModes( &l_modes );
-    if( SUCCEEDED(hr) && (l_modes & i_amtuner_mode) )
+    if( SUCCEEDED(hr) && (l_modes & AMTUNER_MODE_TV) )
     {
-        hr = p_TV->put_Mode( (AMTunerModeType)i_amtuner_mode );
+        hr = p_TV->put_Mode( AMTUNER_MODE_TV );
     }
 
     if( i_input == 1 ) p_TV->put_InputType( 0, TunerInputCable );

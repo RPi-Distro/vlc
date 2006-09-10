@@ -2,7 +2,7 @@
  * shout.c: This module forwards vorbis streams to an icecast server
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: shout.c 16281 2006-08-16 21:36:26Z Trax $
+ * $Id: shout.c 14974 2006-03-30 05:37:29Z zorglub $
  *
  * Authors: Daniel Fischer <dan at subsignal dot org>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -57,7 +57,7 @@ static void Close( vlc_object_t * );
 
 #define NAME_TEXT N_("Stream name")
 #define NAME_LONGTEXT N_("Name to give to this stream/channel on the " \
-                         "shoutcast/icecast server." )
+                         "icecast server." )
 
 #define DESCRIPTION_TEXT N_("Stream description")
 #define DESCRIPTION_LONGTEXT N_("Description of the stream content or " \
@@ -66,40 +66,8 @@ static void Close( vlc_object_t * );
 #define MP3_TEXT N_("Stream MP3")
 #define MP3_LONGTEXT N_("You normally have to feed the shoutcast module " \
                         "with Ogg streams. It is also possible to stream " \
-                        "MP3 instead, so you can forward MP3 streams to " \
-                        "the shoutcast/icecast server." )
-
-/* To be listed properly as a public stream on the Yellow Pages of shoutcast/icecast
-   the genres should match those used on the corresponding sites. Several examples
-   are Alternative, Classical, Comedy, Country etc. */
-
-#define GENRE_TEXT N_("Genre description")
-#define GENRE_LONGTEXT N_("Genre of the content. " )
-
-#define URL_TEXT N_("URL description")
-#define URL_LONGTEXT N_("URL with information about the stream or your channel. " )
-
-/* The shout module only "transmits" data. It does not have direct access to
-   "codec level" information. Stream information such as bitrate, samplerate,
-   channel numbers and quality (in case of Ogg streaming) need to be set manually */
-
-#define BITRATE_TEXT N_("Bitrate")
-#define BITRATE_LONGTEXT N_("Bitrate information of the transcoded stream. " )
-
-#define SAMPLERATE_TEXT N_("Samplerate")
-#define SAMPLERATE_LONGTEXT N_("Samplerate information of the transcoded stream. " )
-
-#define CHANNELS_TEXT N_("Number of channels")
-#define CHANNELS_LONGTEXT N_("Number of channels information of the transcoded stream. " )
-
-#define QUALITY_TEXT N_("Ogg Vorbis Quality")
-#define QUALITY_LONGTEXT N_("Ogg Vorbis Quality information of the transcoded stream. " )
-
-#define PUBLIC_TEXT N_("Stream public")
-#define PUBLIC_LONGTEXT N_("Make the server publicly available on the 'Yellow Pages' " \
-                           "(directory listing of streams) on the icecast/shoutcast " \
-                           "website. Requires the bitrate information specified for " \
-                           "shoutcast. Requires Ogg streaming for icecast." )
+                        "MP3 instead, so you can "\
+                        "forward MP3 streams to the icecast server." )
 
 vlc_module_begin();
     set_description( _("IceCAST output") );
@@ -111,24 +79,11 @@ vlc_module_begin();
     add_string( SOUT_CFG_PREFIX "name", "VLC media player - Live stream", NULL,
                 NAME_TEXT, NAME_LONGTEXT, VLC_FALSE );
     add_string( SOUT_CFG_PREFIX "description",
-                 "Live stream from VLC media player", NULL,
+                 "Live stream from VLC media player. " \
+                "http://www.videolan.org/vlc", NULL,
                 DESCRIPTION_TEXT, DESCRIPTION_LONGTEXT, VLC_FALSE );
     add_bool(   SOUT_CFG_PREFIX "mp3", VLC_FALSE, NULL,
                 MP3_TEXT, MP3_LONGTEXT, VLC_TRUE );
-    add_string( SOUT_CFG_PREFIX "genre", "Alternative", NULL,
-                GENRE_TEXT, GENRE_LONGTEXT, VLC_FALSE );
-    add_string( SOUT_CFG_PREFIX "url", "http://www.videolan.org/vlc", NULL,
-                URL_TEXT, URL_LONGTEXT, VLC_FALSE );
-    add_string( SOUT_CFG_PREFIX "bitrate", "", NULL,
-                BITRATE_TEXT, BITRATE_LONGTEXT, VLC_FALSE );
-    add_string( SOUT_CFG_PREFIX "samplerate", "", NULL,
-                SAMPLERATE_TEXT, SAMPLERATE_LONGTEXT, VLC_FALSE );
-    add_string( SOUT_CFG_PREFIX "channels", "", NULL,
-                CHANNELS_TEXT, CHANNELS_LONGTEXT, VLC_FALSE );
-    add_string( SOUT_CFG_PREFIX "quality", "", NULL,
-                QUALITY_TEXT, QUALITY_LONGTEXT, VLC_FALSE );
-    add_bool(   SOUT_CFG_PREFIX "public", VLC_FALSE, NULL,
-                PUBLIC_TEXT, PUBLIC_LONGTEXT, VLC_TRUE );
     set_callbacks( Open, Close );
 vlc_module_end();
 
@@ -136,8 +91,7 @@ vlc_module_end();
  * Exported prototypes
  *****************************************************************************/
 static const char *ppsz_sout_options[] = {
-    "name", "description", "mp3", "genre", "url", "bitrate", "samplerate",
-    "channels", "quality", "public", NULL
+    "name", "description", "mp3", NULL
 };
 
 
@@ -174,9 +128,7 @@ static int Open( vlc_object_t *p_this )
     char *psz_name = NULL;
     char *psz_description = NULL;
     char *tmp_port = NULL;
-    char *psz_genre = NULL;
-    char *psz_url = NULL;
-
+  
     sout_CfgParse( p_access, SOUT_CFG_PREFIX, ppsz_sout_options, p_access->p_cfg );
 
     psz_accessname = psz_parser = strdup( p_access->psz_name );
@@ -225,31 +177,18 @@ static int Open( vlc_object_t *p_this )
     else
         free( val.psz_string );
 
-    var_Get( p_access, SOUT_CFG_PREFIX "genre", &val );
-    if( *val.psz_string )
-        psz_genre = val.psz_string;
-    else
-        free( val.psz_string );
-
-    var_Get( p_access, SOUT_CFG_PREFIX "url", &val );
-    if( *val.psz_string )
-        psz_url = val.psz_string;
-    else
-        free( val.psz_string );
-
     p_shout = p_sys->p_shout = shout_new();
     if( !p_shout
          || shout_set_host( p_shout, psz_host ) != SHOUTERR_SUCCESS
-         || shout_set_protocol( p_shout, SHOUT_PROTOCOL_HTTP ) != SHOUTERR_SUCCESS
+         || shout_set_protocol( p_shout, SHOUT_PROTOCOL_HTTP )
+             != SHOUTERR_SUCCESS
          || shout_set_port( p_shout, i_port ) != SHOUTERR_SUCCESS
          || shout_set_password( p_shout, psz_pass ) != SHOUTERR_SUCCESS
          || shout_set_mount( p_shout, psz_mount ) != SHOUTERR_SUCCESS
          || shout_set_user( p_shout, psz_user ) != SHOUTERR_SUCCESS
          || shout_set_agent( p_shout, "VLC media player " VERSION ) != SHOUTERR_SUCCESS
          || shout_set_name( p_shout, psz_name ) != SHOUTERR_SUCCESS
-         || shout_set_description( p_shout, psz_description ) != SHOUTERR_SUCCESS
-         || shout_set_genre( p_shout, psz_genre ) != SHOUTERR_SUCCESS
-         || shout_set_url( p_shout, psz_url ) != SHOUTERR_SUCCESS
+         || shout_set_description( p_shout, psz_description ) != SHOUTERR_SUCCESS 
 //       || shout_set_nonblocking( p_shout, 1 ) != SHOUTERR_SUCCESS
       )
     {
@@ -262,8 +201,6 @@ static int Open( vlc_object_t *p_this )
 
     if( psz_name ) free( psz_name );
     if( psz_description ) free( psz_description );
-    if( psz_genre ) free( psz_genre );
-    if( psz_url ) free( psz_url );
 
     var_Get( p_access, SOUT_CFG_PREFIX "mp3", &val );
     if( val.b_bool == VLC_TRUE )
@@ -279,132 +216,10 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-
-    /* Don't force bitrate to 0 but only use when specified. This will otherwise
-       show an empty field on icecast directory listing instead of NA */
-    var_Get( p_access, SOUT_CFG_PREFIX "bitrate", &val );
-    if( *val.psz_string )
-    {
-        i_ret = shout_set_audio_info( p_shout, SHOUT_AI_BITRATE, val.psz_string );
-    }
-    else
-    {
-    	/* Bitrate information is used for icecast/shoutcast servers directory
-    	   listings (sorting, stream info etc.) */
-    	msg_Warn( p_access, "no bitrate information specified (required for listing " \
-    	                    "the server as public on the shoutcast website)" );
-        free( val.psz_string );
-    }
-
-    if( i_ret != SHOUTERR_SUCCESS )
-    {
-        msg_Err( p_access, "failed to set the information about the bitrate" );
-        free( p_access->p_sys );
-        free( psz_accessname );
-        return VLC_EGENERIC;
-    }
-
-    /* Information about samplerate, channels and quality will not be propagated
-       through the YP protocol for icecast to the public directory listing when
-       the icecast server is operating in shoutcast compatibility mode */
-
-    var_Get( p_access, SOUT_CFG_PREFIX "samplerate", &val );
-    if( *val.psz_string )
-        i_ret = shout_set_audio_info( p_shout, SHOUT_AI_SAMPLERATE, val.psz_string );
-    else
-        free( val.psz_string );
-
-    if( i_ret != SHOUTERR_SUCCESS )
-    {
-        msg_Err( p_access, "failed to set the information about the samplerate" );
-        free( p_access->p_sys );
-        free( psz_accessname );
-        return VLC_EGENERIC;
-    }
-
-    var_Get( p_access, SOUT_CFG_PREFIX "channels", &val );
-    if( *val.psz_string )
-        i_ret = shout_set_audio_info( p_shout, SHOUT_AI_CHANNELS, val.psz_string );
-    else
-        free( val.psz_string );
-
-    if( i_ret != SHOUTERR_SUCCESS )
-    {
-        msg_Err( p_access, "failed to set the information about the number of channels" );
-        free( p_access->p_sys );
-        free( psz_accessname );
-        return VLC_EGENERIC;
-    }
-
-    var_Get( p_access, SOUT_CFG_PREFIX "quality", &val );
-    if( *val.psz_string )
-        i_ret = shout_set_audio_info( p_shout, SHOUT_AI_QUALITY, val.psz_string );
-    else
-        free( val.psz_string );
-
-    if( i_ret != SHOUTERR_SUCCESS )
-    {
-        msg_Err( p_access, "failed to set the information about Ogg Vorbis quality" );
-        free( p_access->p_sys );
-        free( psz_accessname );
-        return VLC_EGENERIC;
-    }
-
-    var_Get( p_access, SOUT_CFG_PREFIX "public", &val );
-    if( val.b_bool == VLC_TRUE )
-        i_ret = shout_set_public( p_shout, 1 );
-
-    if( i_ret != SHOUTERR_SUCCESS )
-    {
-        msg_Err( p_access, "failed to set the server status setting to public" );
-        free( p_access->p_sys );
-        free( psz_accessname );
-        return VLC_EGENERIC;
-    }
-
     i_ret = shout_open( p_shout );
     if( i_ret == SHOUTERR_SUCCESS )
     {
         i_ret = SHOUTERR_CONNECTED;
-    }
-    else
-    {
-    	/* If default 'http' protocol for icecast 2.x fails, fall back to 'icy'
-    	   for shoutcast server */
-        msg_Warn( p_access, "failed to connect using 'http' (icecast 2.x) protocol, "
-                            "switching to 'icy' (shoutcast)" );
-
-    	i_ret = shout_get_format( p_shout );
-    	if( i_ret != SHOUT_FORMAT_MP3 )
-        {
-            msg_Err( p_access, "failed to use 'icy' protocol: only MP3 " \
-                               "streaming to shoutcast is supported" );
-            free( p_access->p_sys );
-            free( psz_accessname );
-            return VLC_EGENERIC;
-        }
-
-    	/* Shout parameters cannot be changed on an open connection */
-        i_ret = shout_close( p_shout );
-        if( i_ret == SHOUTERR_SUCCESS )
-        {
-            i_ret = SHOUTERR_UNCONNECTED;
-        }
-
-    	i_ret = shout_set_protocol( p_shout, SHOUT_PROTOCOL_ICY );
-        if( i_ret != SHOUTERR_SUCCESS )
-        {
-            msg_Err( p_access, "failed to set the protocol to 'icy'" );
-            free( p_access->p_sys );
-            free( psz_accessname );
-            return VLC_EGENERIC;
-        }
-
-        i_ret = shout_open( p_shout );
-        if( i_ret == SHOUTERR_SUCCESS )
-        {
-            i_ret = SHOUTERR_CONNECTED;
-        }
     }
 
 /*

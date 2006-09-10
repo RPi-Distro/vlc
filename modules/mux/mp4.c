@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 the VideoLAN team
- * $Id: mp4.c 16269 2006-08-15 16:17:59Z hartman $
+ * $Id: mp4.c 15006 2006-03-31 16:39:23Z zorglub $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -118,7 +118,6 @@ typedef struct
     struct
     {
         int     i_profile;
-        int     i_profile_compat;
         int     i_level;
 
         int     i_sps;
@@ -441,8 +440,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     p_stream->i_dts_start   = 0;
     p_stream->i_duration    = 0;
     p_stream->avc.i_profile = 77;
-    p_stream->avc.i_profile_compat = 64;
-    p_stream->avc.i_level   = 30;
+    p_stream->avc.i_level   = 51;
     p_stream->avc.i_sps     = 0;
     p_stream->avc.sps       = NULL;
     p_stream->avc.i_pps     = 0;
@@ -723,7 +721,6 @@ static void ConvertAVC1( sout_mux_t *p_mux, mp4_stream_t *tk, block_t *p_block )
             memcpy( tk->avc.sps, &last[4], i_size );
 
             tk->avc.i_profile = tk->avc.sps[1];
-            tk->avc.i_profile = tk->avc.sps[2];
             tk->avc.i_level   = tk->avc.sps[3];
         }
         else if( (last[4]&0x1f) == 8 && tk->avc.i_pps <= 0 )   /* PPS */
@@ -738,6 +735,7 @@ static void ConvertAVC1( sout_mux_t *p_mux, mp4_stream_t *tk, block_t *p_block )
         dat += 4;
     }
 }
+
 
 static int GetDescrLength( int i_size )
 {
@@ -932,7 +930,7 @@ static bo_t *GetAvcCTag( mp4_stream_t *p_stream )
     avcC = box_new( "avcC" );
     bo_add_8( avcC, 1 );      /* configuration version */
     bo_add_8( avcC, p_stream->avc.i_profile );
-    bo_add_8( avcC, p_stream->avc.i_profile_compat );
+    bo_add_8( avcC, p_stream->avc.i_profile );     /* profile compatible ??? */
     bo_add_8( avcC, p_stream->avc.i_level );       /* level, 5.1 */
     bo_add_8( avcC, 0xff );   /* 0b11111100 | lengthsize = 0x11 */
 
@@ -1033,28 +1031,38 @@ static bo_t *GetUdtaTag( sout_mux_t *p_mux )
     /* Misc atoms */
     if( p_meta )
     {
-#define ADD_META_BOX( type, box_string ) { \
-        bo_t *box = NULL;  \
-        if( p_meta->psz_##type ) box = box_new( "\251" box_string ); \
-        if( box ) \
-        { \
-            bo_add_16be( box, strlen( p_meta->psz_##type ) ); \
-            bo_add_16be( box, 0 ); \
-            bo_add_mem( box, strlen( p_meta->psz_##type ), \
-                        (uint8_t*)(p_meta->psz_##type ) ); \
-            box_fix( box ); \
-            box_gather( udta, box ); \
-        } }
+        int i;
+        for( i = 0; i < p_meta->i_meta; i++ )
+        {
+            bo_t *box = NULL;
 
-        ADD_META_BOX( title, "nam" );
-        ADD_META_BOX( author, "aut" );
-        ADD_META_BOX( artist, "ART" );
-        ADD_META_BOX( genre, "gen" );
-        ADD_META_BOX( copyright, "cpy" );
-        ADD_META_BOX( description, "des" );
-        ADD_META_BOX( date, "day" );
-        ADD_META_BOX( url, "url" );
-#undef ADD_META_BOX
+            if( !strcmp( p_meta->name[i], VLC_META_TITLE ) )
+                box = box_new( "\251nam" );
+            else if( !strcmp( p_meta->name[i], VLC_META_AUTHOR ) )
+                box = box_new( "\251aut" );
+            else if( !strcmp( p_meta->name[i], VLC_META_ARTIST ) )
+                box = box_new( "\251ART" );
+            else if( !strcmp( p_meta->name[i], VLC_META_GENRE ) )
+                box = box_new( "\251gen" );
+            else if( !strcmp( p_meta->name[i], VLC_META_COPYRIGHT ) )
+                box = box_new( "\251cpy" );
+            else if( !strcmp( p_meta->name[i], VLC_META_DESCRIPTION ) )
+                box = box_new( "\251des" );
+            else if( !strcmp( p_meta->name[i], VLC_META_DATE ) )
+                box = box_new( "\251day" );
+            else if( !strcmp( p_meta->name[i], VLC_META_URL ) )
+                box = box_new( "\251url" );
+
+            if( box )
+            {
+                bo_add_16be( box, strlen( p_meta->value[i] ) );
+                bo_add_16be( box, 0 );
+                bo_add_mem( box, strlen( p_meta->value[i] ),
+                            (uint8_t*)(p_meta->value[i]) );
+                box_fix( box );
+                box_gather( udta, box );
+            }
+        }
     }
 
     box_fix( udta );

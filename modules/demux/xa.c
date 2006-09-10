@@ -2,7 +2,7 @@
  * xa.c : xa file input module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: xa.c 15412 2006-04-29 13:30:10Z courmisch $
+ * $Id: xa.c 16434 2006-08-30 15:18:13Z hartman $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

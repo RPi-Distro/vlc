@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: es_out.c 15949 2006-06-28 15:16:23Z zorglub $
+ * $Id: es_out.c 15241 2006-04-15 16:29:24Z asmax $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -565,7 +565,7 @@ static void EsOutProgramMeta( es_out_t *out, int i_group, vlc_meta_t *p_meta )
     es_out_pgrm_t     *p_pgrm = NULL;
     input_thread_t    *p_input = p_sys->p_input;
     char              *psz_cat = malloc( strlen(_("Program")) + 10 );
-    char              *psz_title = NULL;
+    char              *psz_name = NULL;
     char              *psz_now_playing = NULL;
     char              *psz_provider = NULL;
     int i;
@@ -573,11 +573,21 @@ static void EsOutProgramMeta( es_out_t *out, int i_group, vlc_meta_t *p_meta )
     msg_Dbg( p_input, "EsOutProgramMeta: number=%d", i_group );
     sprintf( psz_cat, "%s %d", _("Program"), i_group );
 
-    if( p_meta->psz_title ) psz_title = p_meta->psz_title;
-    if( p_meta->psz_publisher ) psz_provider = p_meta->psz_publisher;
-    if( p_meta->psz_nowplaying ) psz_now_playing = p_meta->psz_nowplaying;
+    for( i = 0; i < p_meta->i_meta; i++ )
+    {
+        msg_Dbg( p_input, "  - %s = %s", p_meta->name[i], p_meta->value[i] );
 
-    if( !psz_title && !psz_now_playing )
+        input_Control( p_input, INPUT_ADD_INFO, psz_cat,
+                      _(p_meta->name[i]), "%s", p_meta->value[i] );
+        if( !strcasecmp( p_meta->name[i], "Name" ) )
+            psz_name = p_meta->value[i];
+        else if( !strcasecmp( p_meta->name[i], "Provider" ) )
+            psz_provider = p_meta->value[i];
+        else if( !strcasecmp( p_meta->name[i], VLC_META_NOW_PLAYING ) )
+            psz_now_playing = p_meta->value[i];
+    }
+
+    if( !psz_name && !psz_now_playing )
     {
         free( psz_cat );
         return;
@@ -596,7 +606,7 @@ static void EsOutProgramMeta( es_out_t *out, int i_group, vlc_meta_t *p_meta )
         p_pgrm = EsOutProgramAdd( out, i_group );
 
     /* Update the description text of the program */
-    if( psz_title && *psz_title )
+    if( psz_name && *psz_name )
     {
         vlc_value_t val;
         vlc_value_t text;
@@ -607,13 +617,13 @@ static void EsOutProgramMeta( es_out_t *out, int i_group, vlc_meta_t *p_meta )
 
         if( psz_provider && *psz_provider )
         {
-            asprintf( &text.psz_string, "%s [%s]", psz_title, psz_provider );
+            asprintf( &text.psz_string, "%s [%s]", psz_name, psz_provider );
             var_Change( p_input, "program", VLC_VAR_ADDCHOICE, &val, &text );
             free( text.psz_string );
         }
         else
         {
-            text.psz_string = psz_title;
+            text.psz_string = psz_name;
             var_Change( p_input, "program", VLC_VAR_ADDCHOICE, &val, &text );
         }
     }
@@ -624,8 +634,8 @@ static void EsOutProgramMeta( es_out_t *out, int i_group, vlc_meta_t *p_meta )
 
         if( p_sys->p_pgrm == p_pgrm )
         {
-            vlc_meta_SetNowPlaying( p_input->input.p_item->p_meta,
-                                    psz_now_playing );
+            input_Control( p_input, INPUT_ADD_INFO, _(VLC_META_INFO_CAT),
+                           _(VLC_META_NOW_PLAYING), "%s", psz_now_playing );
         }
     }
     free( psz_cat );
@@ -1026,12 +1036,9 @@ static int EsOutSend( es_out_t *out, es_out_id_t *es, block_t *p_block )
 
     if( p_input->p_libvlc->b_stats )
     {
-        vlc_mutex_lock( &p_input->counters.counters_lock );
-        stats_UpdateInteger( p_input, p_input->counters.p_demux_read,
-                             p_block->i_buffer, &i_total );
-        stats_UpdateFloat( p_input , p_input->counters.p_demux_bitrate,
-                           (float)i_total, NULL );
-        vlc_mutex_unlock( &p_input->counters.counters_lock );
+        stats_UpdateInteger( p_input, STATS_DEMUX_READ, p_block->i_buffer,
+                             &i_total );
+        stats_UpdateFloat( p_input , STATS_DEMUX_BITRATE, (float)i_total, NULL );
     }
 
     /* Mark preroll blocks */

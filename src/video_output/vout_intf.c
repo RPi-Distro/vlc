@@ -2,7 +2,7 @@
  * vout_intf.c : video output interface
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: vout_intf.c 16134 2006-07-26 21:21:48Z dionoea $
+ * $Id: vout_intf.c 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -187,14 +187,8 @@ void vout_IntfInit( vout_thread_t *p_vout )
 
     /* Create a few object variables we'll need later on */
     var_Create( p_vout, "snapshot-path", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-    var_Create( p_vout, "snapshot-prefix", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
     var_Create( p_vout, "snapshot-format", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
     var_Create( p_vout, "snapshot-preview", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Create( p_vout, "snapshot-sequential",
-                VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Create( p_vout, "snapshot-num", VLC_VAR_INTEGER );
-    var_SetInteger( p_vout, "snapshot-num", 1 );
-
     var_Create( p_vout, "width", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
     var_Create( p_vout, "height", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
     var_Create( p_vout, "align", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
@@ -440,7 +434,7 @@ int vout_Snapshot( vout_thread_t *p_vout, picture_t *p_pic )
 {
     image_handler_t *p_image = image_HandlerCreate( p_vout );
     video_format_t fmt_in = {0}, fmt_out = {0};
-    char *psz_filename = NULL;
+    char *psz_filename;
     subpicture_t *p_subpic;
     picture_t *p_pif;
     vlc_value_t val, format;
@@ -634,40 +628,20 @@ int vout_Snapshot( vout_thread_t *p_vout, picture_t *p_pic )
      * Did the user specify a directory? If not, path = NULL.
      */
     path = opendir ( (const char *)val.psz_string  );
-
+    
     if ( path != NULL )
     {
-        char *psz_prefix = var_GetString( p_vout, "snapshot-prefix" );
-        if( !psz_prefix ) psz_prefix = strdup( "vlcsnap-" );
-
+        
+        asprintf( &psz_filename, "%s/vlcsnap-%u.%s", val.psz_string,
+                  (unsigned int)(p_pic->date / 100000) & 0xFFFFFF,
+                  format.psz_string );
         closedir( path );
-        if( var_GetBool( p_vout, "snapshot-sequential" ) == VLC_TRUE )
-        {
-            int i_num = var_GetInteger( p_vout, "snapshot-num" );
-            FILE *p_file;
-            do
-            {
-                asprintf( &psz_filename, "%s/%s%05d.%s", val.psz_string,
-                          psz_prefix, i_num++, format.psz_string );
-            }
-            while( ( p_file = fopen( psz_filename, "r" ) ) && !fclose( p_file ) );
-            var_SetInteger( p_vout, "snapshot-num", i_num );
-        }
-        else
-        {
-            asprintf( &psz_filename, "%s/%s%u.%s", val.psz_string,
-                      psz_prefix,
-                      (unsigned int)(p_pic->date / 100000) & 0xFFFFFF,
-                      format.psz_string );
-        }
-
-        free( psz_prefix );
     }
     else // The user specified a full path name (including file name)
     {
         asprintf ( &psz_filename, "%s", val.psz_string );
     }
-
+    
     free( val.psz_string );
     free( format.psz_string );
 

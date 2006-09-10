@@ -1,5 +1,5 @@
 /*
- * $Id: pe_image.c 15988 2006-07-08 09:31:56Z courmisch $
+ * $Id: pe_image.c 16544 2006-09-07 23:05:11Z hartman $
  *
  *  Copyright	1994	Eric Youndale & Erik Bos
  *  Copyright	1995	Martin von Löwis

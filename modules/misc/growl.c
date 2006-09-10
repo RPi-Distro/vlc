@@ -2,7 +2,7 @@
  * growl.c : growl notification plugin
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: growl.c 15814 2006-06-04 20:53:54Z djc $
+ * $Id: growl.c 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Jérôme Decoodt <djc -at- videolan -dot- org>
  *
@@ -162,12 +162,12 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     }
 
     /* Playing something ... */
-    psz_artist = p_input->input.p_item->p_meta->psz_artist ?
-                  strdup( p_input->input.p_item->p_meta->psz_artist ) :
-                  strdup( "" );
-    psz_album = p_input->input.p_item->p_meta->psz_album ?
-                  strdup( p_input->input.p_item->p_meta->psz_album ) :
-                  strdup( "" );
+    psz_artist = vlc_input_item_GetInfo( p_input->input.p_item,
+                                         _("Meta-information"),
+                                         _(VLC_META_ARTIST) );
+    psz_album = vlc_input_item_GetInfo( p_input->input.p_item,
+                                         _("Meta-information"),
+                                         _("Album/movie/show title" ) );
     psz_title = strdup( p_input->input.p_item->psz_name );
     if( psz_title == NULL ) psz_title = strdup( N_("(no title)") );
     if( psz_artist == NULL ) psz_artist = strdup( N_("(no artist)") );

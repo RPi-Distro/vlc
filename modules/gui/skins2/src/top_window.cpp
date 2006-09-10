@@ -2,7 +2,7 @@
  * top_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: top_window.cpp 16303 2006-08-20 09:14:00Z ipkiss $
+ * $Id: top_window.cpp 16441 2006-08-30 21:36:35Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -439,18 +439,9 @@ void TopWindow::onTooltipChange( const CtrlGeneric &rCtrl )
     // Check that the control is the active one
     if( m_pLastHitControl && m_pLastHitControl == &rCtrl )
     {
-        if( rCtrl.getTooltipText().size() )
-        {
-            // Set the tooltip text variable
-            VarManager *pVarManager = VarManager::instance( getIntf() );
-            pVarManager->getTooltipText().set( rCtrl.getTooltipText() );
-            m_rWindowManager.showTooltip();
-        }
-        else
-        {
-            // Nothing to display, so hide the tooltip
-            m_rWindowManager.hideTooltip();
-        }
+        // Set the tooltip text variable
+        VarManager *pVarManager = VarManager::instance( getIntf() );
+        pVarManager->getTooltipText().set( rCtrl.getTooltipText() );
     }
 }
 

@@ -2,7 +2,7 @@
  * mp4.c : MP4 file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: mp4.c 16286 2006-08-17 20:53:27Z gbazin $
+ * $Id: mp4.c 16434 2006-08-30 15:18:13Z hartman $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -241,9 +241,7 @@ static inline int64_t MP4_GetMoviePTS(demux_sys_t *p_sys )
     return I64C(1000000) * p_sys->i_time / p_sys->i_timescale;
 }
 
-/* Function to lookup the currently playing item */
-static vlc_bool_t FindItem( demux_t *p_demux, playlist_t *p_playlist,
-                     playlist_item_t **pp_item );
+#define FREE( p ) if( p ) { free( p ); (p) = NULL;}
 
 /*****************************************************************************
  * Open: check file and initializes MP4 structures
@@ -346,7 +344,7 @@ static int Open( vlc_object_t * p_this )
     if( ( p_rmra = MP4_BoxGet( p_sys->p_root,  "/moov/rmra" ) ) )
     {
         playlist_t *p_playlist;
-        playlist_item_t *p_current, *p_item_in_category;
+        playlist_item_t *p_item;
         int        i_count = MP4_BoxCount( p_rmra, "rmda" );
         int        i;
         vlc_bool_t b_play = VLC_FALSE;
@@ -359,9 +357,9 @@ static int Open( vlc_object_t * p_this )
                                            FIND_ANYWHERE );
         if( p_playlist )
         {
-            b_play = FindItem( p_demux, p_playlist, &p_current );
-            p_item_in_category = playlist_ItemToNode( p_playlist, p_current );
-            p_current->p_input->i_type = ITEM_TYPE_PLAYLIST;
+            p_item = playlist_LockItemGetByInput( p_playlist,
+                      ((input_thread_t *)p_demux->p_parent)->input.p_item );
+            playlist_ItemToNode( p_playlist, p_item );
 
             for( i = 0; i < i_count; i++ )
             {
@@ -369,7 +367,7 @@ static int Open( vlc_object_t * p_this )
                 char      *psz_ref;
                 uint32_t  i_ref_type;
 
-                if( !p_rdrf || !( psz_ref = strdup( p_rdrf->data.p_rdrf->psz_ref ) ) )
+                if( !p_rdrf || !( psz_ref = p_rdrf->data.p_rdrf->psz_ref ) )
                 {
                     continue;
                 }
@@ -388,31 +386,58 @@ static int Open( vlc_object_t * p_this )
                     if( !strncmp( psz_ref, "http://", 7 ) ||
                         !strncmp( psz_ref, "rtsp://", 7 ) )
                     {
-                        ;
+                        msg_Dbg( p_demux, "adding ref = `%s'", psz_ref );
+                        if( p_item )
+                        {
+                            playlist_item_t *p_child =
+                                        playlist_ItemNew( p_playlist,
+                                                          psz_ref, psz_ref );
+                            if( p_child )
+                            {
+                                playlist_NodeAddItem( p_playlist, p_child,
+                                                 p_item->pp_parents[0]->i_view,
+                                                 p_item, PLAYLIST_APPEND,
+                                                 PLAYLIST_END );
+                                playlist_CopyParents( p_item, p_child );
+                                b_play = VLC_TRUE;
+                            }
+                        }
                     }
                     else
                     {
-                        char *psz_absolute;
-                        char *psz_path = strdup( p_demux->psz_path );
-                        char *end = strrchr( psz_path, '/' );
-                        if( end ) end[1] = '\0';
-                        else *psz_path = '\0';
+                        /* msg dbg relative ? */
+                        int i_path_size = strlen( p_demux->psz_access ) + 3 +
+                                         strlen( p_demux->psz_path ) + strlen( psz_ref ) + 1;
+                        char psz_absolute[i_path_size];
+                        char *end = strrchr( p_demux->psz_path, '/' );
 
-                        asprintf( &psz_absolute, "%s://%s%s",
-                                      p_demux->psz_access, psz_path, psz_ref );
-
-                        psz_ref = psz_absolute;
-                        free( psz_path );
-                    }
-                    if( p_current )
-                    {
-                        input_item_t *p_input;
-                        msg_Dbg( p_demux, "adding ref = `%s'", psz_ref );
-                        p_input = input_ItemNewExt( p_playlist, psz_ref, NULL,
-                                            0, NULL, -1 );
-                        vlc_input_item_CopyOptions( p_current->p_input, p_input );
-                        playlist_AddWhereverNeeded( p_playlist, p_input, p_current,
-                                p_item_in_category, VLC_FALSE, PLAYLIST_APPEND );
+                        if( end )
+                        {
+                            snprintf( psz_absolute, i_path_size, "%s://%s",
+                                      p_demux->psz_access, p_demux->psz_path );
+                        }
+                        else
+                        {
+                            *psz_absolute = '\0';
+                        }
+                        strcat( psz_absolute, psz_ref );
+                        msg_Dbg( p_demux, "adding ref = `%s'", psz_absolute );
+                        if( p_item )
+                        {
+                            playlist_item_t *p_child =
+                                        playlist_ItemNew( p_playlist,
+                                                          psz_absolute,
+                                                          psz_absolute );
+                            if( p_child )
+                            {
+                                playlist_NodeAddItem( p_playlist, p_child,
+                                                 p_item->pp_parents[0]->i_view,
+                                                 p_item, PLAYLIST_APPEND,
+                                                 PLAYLIST_END );
+                                playlist_CopyParents( p_item, p_child );
+                                b_play = VLC_TRUE;
+                            }
+                        }
                     }
                 }
                 else
@@ -420,13 +445,12 @@ static int Open( vlc_object_t * p_this )
                     msg_Err( p_demux, "unknown ref type=%4.4s FIXME (send a bug report)",
                              (char*)&p_rdrf->data.p_rdrf->i_ref_type );
                 }
-                if( psz_ref ) free( psz_ref );
             }
-            if( b_play && p_playlist->status.p_item &&
-                  p_playlist->status.p_item->i_children > 0)
+            if( b_play == VLC_TRUE )
             {
-                playlist_Control( p_playlist, PLAYLIST_VIEWPLAY,
-                                  p_playlist->status.p_item, NULL );
+                 playlist_Control( p_playlist, PLAYLIST_VIEWPLAY,
+                                   p_playlist->status.i_view,
+                                   p_playlist->status.p_item, NULL );
             }
             vlc_object_release( p_playlist );
         }
@@ -775,13 +799,15 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_GET_META:
         {
-            vlc_meta_t *p_meta = (vlc_meta_t *)va_arg( args, vlc_meta_t*);
+            vlc_meta_t **pp_meta = (vlc_meta_t**)va_arg( args, vlc_meta_t** );
+            vlc_meta_t *meta;
             MP4_Box_t  *p_udta   = MP4_BoxGet( p_sys->p_root, "/moov/udta" );
             MP4_Box_t  *p_0xa9xxx;
             if( p_udta == NULL )
             {
                 return VLC_EGENERIC;
             }
+            *pp_meta = meta = vlc_meta_New();
             for( p_0xa9xxx = p_udta->p_first; p_0xa9xxx != NULL;
                  p_0xa9xxx = p_0xa9xxx->p_next )
             {
@@ -798,25 +824,25 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 switch( p_0xa9xxx->i_type )
                 {
                 case FOURCC_0xa9nam: /* Full name */
-                    vlc_meta_SetArtist( p_meta, psz_utf );
+                    vlc_meta_Add( meta, VLC_META_TITLE, psz_utf );
                     break;
                 case FOURCC_0xa9aut:
-                    vlc_meta_SetAuthor( p_meta, psz_utf );
+                    vlc_meta_Add( meta, VLC_META_AUTHOR, psz_utf );
                     break;
                 case FOURCC_0xa9ART:
-                    vlc_meta_SetArtist( p_meta, psz_utf );
+                    vlc_meta_Add( meta, VLC_META_ARTIST, psz_utf );
                     break;
                 case FOURCC_0xa9cpy:
-                    vlc_meta_SetCopyright( p_meta, psz_utf );
+                    vlc_meta_Add( meta, VLC_META_COPYRIGHT, psz_utf );
                     break;
                 case FOURCC_0xa9day: /* Creation Date */
-                    vlc_meta_SetDate( p_meta, psz_utf );
+                    vlc_meta_Add( meta, VLC_META_DATE, psz_utf );
                     break;
                 case FOURCC_0xa9des: /* Description */
-                    vlc_meta_SetDescription( p_meta, psz_utf );
+                    vlc_meta_Add( meta, VLC_META_DESCRIPTION, psz_utf );
                     break;
                 case FOURCC_0xa9gen: /* Genre */
-                    vlc_meta_SetGenre( p_meta, psz_utf );
+                    vlc_meta_Add( meta, VLC_META_GENRE, psz_utf );
                     break;
 
                 case FOURCC_0xa9swr:
@@ -877,7 +903,7 @@ static void Close ( vlc_object_t * p_this )
     {
         MP4_TrackDestroy( p_demux, &p_sys->track[i_track] );
     }
-    FREENULL( p_sys->track );
+    FREE( p_sys->track );
 
     free( p_sys );
 }
@@ -1443,10 +1469,6 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
             p_track->fmt.video.i_aspect =
                 VOUT_ASPECT_FACTOR * p_track->i_width / p_track->i_height;
 
-        /* Support for cropping (eg. in H263 files) */
-        p_track->fmt.video.i_visible_width = p_track->fmt.video.i_width;
-        p_track->fmt.video.i_visible_height = p_track->fmt.video.i_height;
-
         /* Frame rate */
         p_track->fmt.video.i_frame_rate = p_track->i_timescale;
         p_track->fmt.video.i_frame_rate_base = 1;
@@ -1906,18 +1928,18 @@ static void MP4_TrackDestroy( demux_t *p_demux, mp4_track_t *p_track )
     {
         if( p_track->chunk )
         {
-           FREENULL(p_track->chunk[i_chunk].p_sample_count_dts);
-           FREENULL(p_track->chunk[i_chunk].p_sample_delta_dts );
+           FREE(p_track->chunk[i_chunk].p_sample_count_dts);
+           FREE(p_track->chunk[i_chunk].p_sample_delta_dts );
 
-           FREENULL(p_track->chunk[i_chunk].p_sample_count_pts);
-           FREENULL(p_track->chunk[i_chunk].p_sample_offset_pts );
+           FREE(p_track->chunk[i_chunk].p_sample_count_pts);
+           FREE(p_track->chunk[i_chunk].p_sample_offset_pts );
         }
     }
-    FREENULL( p_track->chunk );
+    FREE( p_track->chunk );
 
     if( !p_track->i_sample_size )
     {
-        FREENULL( p_track->p_sample_size );
+        FREE( p_track->p_sample_size );
     }
 }
 
@@ -2202,33 +2224,3 @@ static void MP4_TrackSetELST( demux_t *p_demux, mp4_track_t *tk,
         msg_Warn( p_demux, "elst old=%d new=%d", i_elst_last, tk->i_elst );
     }
 }
-
-static vlc_bool_t FindItem( demux_t *p_demux, playlist_t *p_playlist,
-                     playlist_item_t **pp_item )
-{
-     vlc_bool_t b_play = var_CreateGetBool( p_demux, "playlist-autostart" );
-
-     if( b_play && p_playlist->status.p_item &&
-             p_playlist->status.p_item->p_input ==
-                ((input_thread_t *)p_demux->p_parent)->input.p_item )
-     {
-         msg_Dbg( p_playlist, "starting playlist playback" );
-         *pp_item = p_playlist->status.p_item;
-         b_play = VLC_TRUE;
-     }
-     else
-     {
-         input_item_t *p_current = ( (input_thread_t*)p_demux->p_parent)->
-                                                        input.p_item;
-         *pp_item = playlist_LockItemGetByInput( p_playlist, p_current );
-         if( !*pp_item )
-         {
-             msg_Dbg( p_playlist, "unable to find item in playlist");
-         }
-         msg_Dbg( p_playlist, "not starting playlist playback");
-         b_play = VLC_FALSE;
-     }
-     return b_play;
-}
-
-

@@ -2,7 +2,7 @@
  * mpga.c : MPEG-I/II Audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: mpga.c 16083 2006-07-19 09:33:41Z zorglub $
+ * $Id: mpga.c 14923 2006-03-25 15:39:09Z zorglub $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -157,16 +157,35 @@ static int Open( vlc_object_t * p_this )
         if( !b_ok && !p_demux->b_force ) return VLC_EGENERIC;
     }
 
-    STANDARD_DEMUX_INIT; p_sys = p_demux->p_sys;
+    p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
     memset( p_sys, 0, sizeof( demux_sys_t ) );
     p_sys->p_es = 0;
+    p_sys->p_packetizer = 0;
     p_sys->b_start = VLC_TRUE;
     p_sys->meta = 0;
+    p_demux->pf_demux   = Demux;
+    p_demux->pf_control = Control;
 
-    /* Load the mpeg audio packetizer */
-    INIT_APACKETIZER( p_sys->p_packetizer, 'm', 'p', 'g', 'a' );
+    /*
+     * Load the mpeg audio packetizer
+     */
+    p_sys->p_packetizer = vlc_object_create( p_demux, VLC_OBJECT_PACKETIZER );
+    p_sys->p_packetizer->pf_decode_audio = NULL;
+    p_sys->p_packetizer->pf_decode_video = NULL;
+    p_sys->p_packetizer->pf_decode_sub = NULL;
+    p_sys->p_packetizer->pf_packetize = NULL;
+    es_format_Init( &p_sys->p_packetizer->fmt_in, AUDIO_ES,
+                    VLC_FOURCC( 'm', 'p', 'g', 'a' ) );
     es_format_Init( &p_sys->p_packetizer->fmt_out, UNKNOWN_ES, 0 );
-    LOAD_PACKETIZER_OR_FAIL( p_sys->p_packetizer, "mpga" );
+    p_sys->p_packetizer->p_module =
+        module_Need( p_sys->p_packetizer, "packetizer", NULL, 0 );
+
+    if( p_sys->p_packetizer->p_module == NULL )
+    {
+        msg_Err( p_demux, "cannot find mpga packetizer" );
+        Close( VLC_OBJECT(p_demux ) );
+        return VLC_EGENERIC;
+    }
 
     /* Xing header */
     if( HeaderCheck( header ) )
@@ -335,8 +354,12 @@ static void Close( vlc_object_t * p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    DESTROY_PACKETIZER( p_sys->p_packetizer );
     if( p_sys->meta ) vlc_meta_Delete( p_sys->meta );
+
+    if( p_sys->p_packetizer && p_sys->p_packetizer->p_module )
+        module_Unneed( p_sys->p_packetizer, p_sys->p_packetizer->p_module );
+    if( p_sys->p_packetizer )
+        vlc_object_destroy( p_sys->p_packetizer );
 
     free( p_sys );
 }
@@ -348,14 +371,15 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 {
     demux_sys_t *p_sys  = p_demux->p_sys;
     int64_t *pi64;
-    vlc_meta_t *p_meta;
+    vlc_meta_t **pp_meta;
     int i_ret;
 
     switch( i_query )
     {
         case DEMUX_GET_META:
-            p_meta = (vlc_meta_t *)va_arg( args, vlc_meta_t* );
-            vlc_meta_Merge( p_meta, p_sys->meta );
+            pp_meta = (vlc_meta_t **)va_arg( args, vlc_meta_t** );
+            if( p_sys->meta ) *pp_meta = vlc_meta_Duplicate( p_sys->meta );
+            else *pp_meta = NULL;
             return VLC_SUCCESS;
 
         case DEMUX_GET_TIME:

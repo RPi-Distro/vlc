@@ -2,7 +2,7 @@
  * glx.c: GLX OpenGL provider
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: glx.c 15790 2006-06-02 22:22:01Z xtophe $
+ * $Id: glx.c 16442 2006-08-30 22:15:52Z hartman $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>

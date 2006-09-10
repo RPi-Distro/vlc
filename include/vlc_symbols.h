@@ -258,62 +258,62 @@ struct module_symbols_t
     void (*vlc_list_release_inner) (vlc_list_t *);
     int (*playlist_Control_inner) (playlist_t *, int, ...);
     int (*playlist_LockControl_inner) (playlist_t *, int, ...);
-    void (*playlist_Clear_inner) (playlist_t *);
-    void (*playlist_LockClear_inner) (playlist_t *);
+    int (*playlist_Clear_inner) (playlist_t *);
+    int (*playlist_LockClear_inner) (playlist_t *);
     int (*playlist_PreparseEnqueue_inner) (playlist_t *, input_item_t *);
     int (*playlist_ServicesDiscoveryAdd_inner) (playlist_t *, const char *);
     int (*playlist_ServicesDiscoveryRemove_inner) (playlist_t *, const char *);
     int (*playlist_AddSDModules_inner) (playlist_t *, char *);
     vlc_bool_t (*playlist_IsServicesDiscoveryLoaded_inner) (playlist_t *,const char *);
-    void *__playlist_ItemNew_deprecated;
-    void *__playlist_ItemCopy_deprecated;
-    playlist_item_t* (*playlist_ItemNewWithType_inner) (vlc_object_t *,const char *,const char *, int , const char **, int, int);
+    playlist_item_t* (*__playlist_ItemNew_inner) (vlc_object_t *,const char *,const char *);
+    playlist_item_t* (*__playlist_ItemCopy_inner) (vlc_object_t *,playlist_item_t*);
+    playlist_item_t* (*playlist_ItemNewWithType_inner) (vlc_object_t *,const char *,const char *, int);
     int (*playlist_ItemDelete_inner) (playlist_item_t *);
-    void *playlist_ItemAddParent_deprecated;
-    void *playlist_CopyParents_deprecated;
+    int (*playlist_ItemAddParent_inner) (playlist_item_t *, int,playlist_item_t *);
+    int (*playlist_CopyParents_inner) (playlist_item_t *,playlist_item_t *);
     int (*playlist_ItemSetName_inner) (playlist_item_t *,  char *);
-    void *playlist_ItemSetDuration_deprecated;
-    void *playlist_ViewInsert_deprecated;
-    void *playlist_ViewDelete_deprecated;
-    void *playlist_ViewFind_deprecated;
-    void *playlist_ViewUpdate_deprecated;
-    void *playlist_ViewDump_deprecated;
-    void *playlist_ViewEmpty_deprecated;
-    playlist_item_t * (*playlist_NodeCreate_inner) (playlist_t *, char *, playlist_item_t * p_parent);
-    int (*playlist_NodeAppend_inner) (playlist_t *,playlist_item_t*,playlist_item_t *);
-    int (*playlist_NodeInsert_inner) (playlist_t *,playlist_item_t*,playlist_item_t *, int);
+    int (*playlist_ItemSetDuration_inner) (playlist_item_t *, mtime_t);
+    int (*playlist_ViewInsert_inner) (playlist_t *, int, char *);
+    int (*playlist_ViewDelete_inner) (playlist_t *,playlist_view_t*);
+    playlist_view_t * (*playlist_ViewFind_inner) (playlist_t *, int);
+    int (*playlist_ViewUpdate_inner) (playlist_t *, int);
+    int (*playlist_ViewDump_inner) (playlist_t *, playlist_view_t *);
+    int (*playlist_ViewEmpty_inner) (playlist_t *, int, vlc_bool_t);
+    playlist_item_t * (*playlist_NodeCreate_inner) (playlist_t *,int,char *, playlist_item_t * p_parent);
+    int (*playlist_NodeAppend_inner) (playlist_t *,int,playlist_item_t*,playlist_item_t *);
+    int (*playlist_NodeInsert_inner) (playlist_t *,int,playlist_item_t*,playlist_item_t *, int);
     int (*playlist_NodeRemoveItem_inner) (playlist_t *,playlist_item_t*,playlist_item_t *);
     int (*playlist_NodeChildrenCount_inner) (playlist_t *,playlist_item_t*);
     playlist_item_t * (*playlist_ChildSearchName_inner) (playlist_item_t*, const char*);
     int (*playlist_NodeDelete_inner) (playlist_t *, playlist_item_t *, vlc_bool_t , vlc_bool_t);
     int (*playlist_NodeEmpty_inner) (playlist_t *, playlist_item_t *, vlc_bool_t);
-    int (*playlist_Add_inner) (playlist_t *, const char *, const char *, int, int, vlc_bool_t);
-    int (*playlist_AddExt_inner) (playlist_t *, const char *, const char *, int, int, mtime_t, const char **,int, vlc_bool_t);
-    void *playlist_ItemAdd_deprecated;
-    void (*playlist_NodeAddItem_inner) (playlist_t *, playlist_item_t *, playlist_item_t *,int , int);
-    void *playlist_Delete_deprecated;
+    int (*playlist_Add_inner) (playlist_t *, const char *, const char *, int, int);
+    int (*playlist_AddExt_inner) (playlist_t *, const char *, const char *, int, int, mtime_t, const char **,int);
+    int (*playlist_ItemAdd_inner) (playlist_t *, playlist_item_t *, int, int);
+    int (*playlist_NodeAddItem_inner) (playlist_t *, playlist_item_t *,int,playlist_item_t *,int , int);
+    int (*playlist_Delete_inner) (playlist_t *, int);
     int (*playlist_LockDelete_inner) (playlist_t *, int);
-    void *playlist_Disable_deprecated;
-    void *playlist_Enable_deprecated;
-    playlist_item_t* (*playlist_ItemToNode_inner) (playlist_t *,playlist_item_t *);
-    playlist_item_t* (*playlist_LockItemToNode_inner) (playlist_t *,playlist_item_t *);
-    void *playlist_Replace_deprecated;
-    void *playlist_LockReplace_deprecated;
+    int (*playlist_Disable_inner) (playlist_t *, playlist_item_t *);
+    int (*playlist_Enable_inner) (playlist_t *, playlist_item_t *);
+    int (*playlist_ItemToNode_inner) (playlist_t *,playlist_item_t *);
+    int (*playlist_LockItemToNode_inner) (playlist_t *,playlist_item_t *);
+    int (*playlist_Replace_inner) (playlist_t *,playlist_item_t *, input_item_t*);
+    int (*playlist_LockReplace_inner) (playlist_t *,playlist_item_t *, input_item_t*);
     playlist_item_t * (*playlist_ItemGetById_inner) (playlist_t *, int);
-    void *playlist_LockItemGetById_deprecated;
-    void *playlist_ItemGetByPos_deprecated;
-    void *playlist_LockItemGetByPos_deprecated;
+    playlist_item_t * (*playlist_LockItemGetById_inner) (playlist_t *, int);
+    playlist_item_t * (*playlist_ItemGetByPos_inner) (playlist_t *, int);
+    playlist_item_t * (*playlist_LockItemGetByPos_inner) (playlist_t *, int);
     playlist_item_t * (*playlist_ItemGetByInput_inner) (playlist_t *,input_item_t *);
-    void *playlist_LockItemGetByInput_deprecated;
-    void *playlist_GetPositionById_deprecated;
-    void *playlist_ItemAddOption_deprecated;
-    void *playlist_Sort_deprecated;
-    void *playlist_Move_deprecated;
-    void *playlist_NodeGroup_deprecated;
+    playlist_item_t * (*playlist_LockItemGetByInput_inner) (playlist_t *,input_item_t *);
+    int (*playlist_GetPositionById_inner) (playlist_t *,int);
+    int (*playlist_ItemAddOption_inner) (playlist_item_t *, const char *);
+    int (*playlist_Sort_inner) (playlist_t *, int, int);
+    int (*playlist_Move_inner) (playlist_t *, int, int);
+    int (*playlist_NodeGroup_inner) (playlist_t *, int,playlist_item_t *,playlist_item_t **,int, int, int);
     int (*playlist_NodeSort_inner) (playlist_t *, playlist_item_t *,int, int);
     int (*playlist_RecursiveNodeSort_inner) (playlist_t *, playlist_item_t *,int, int);
-    int (*playlist_Import_inner) (playlist_t *, const char *, playlist_item_t *, vlc_bool_t);
-    int (*playlist_Export_inner) (playlist_t *, const char *, playlist_item_t *, const char *);
+    int (*playlist_Import_inner) (playlist_t *, const char *);
+    int (*playlist_Export_inner) (playlist_t *, const char *, const char *);
     spu_t * (*__spu_Create_inner) (vlc_object_t *);
     int (*spu_Init_inner) (spu_t *);
     void (*spu_Destroy_inner) (spu_t *);
@@ -379,7 +379,7 @@ struct module_symbols_t
     void (*net_ListenClose_inner) (int *fd);
     void (*DigestMD5_inner) (struct md5_s *, uint32_t *);
     int (*ACL_Check_inner) (vlc_acl_t *p_acl, const char *psz_ip);
-    void *playlist_NodeRemoveParent_deprecated;
+    int (*playlist_NodeRemoveParent_inner) (playlist_t *,playlist_item_t*,playlist_item_t *);
     vlc_acl_t * (*__ACL_Duplicate_inner) (vlc_object_t *p_this, const vlc_acl_t *p_acl);
     vlc_acl_t * (*__ACL_Create_inner) (vlc_object_t *p_this, vlc_bool_t b_allow);
     int (*ACL_LoadFile_inner) (vlc_acl_t *p_acl, const char *path);
@@ -429,24 +429,25 @@ struct module_symbols_t
     char * (*FromUTF32_inner) (const uint32_t *);
     int (*__input_Read_inner) (vlc_object_t *, input_item_t *, vlc_bool_t);
     int (*__net_ConnectUDP_inner) (vlc_object_t *p_this, const char *psz_host, int i_port, int hlim);
-    void *__intf_Interact_deprecated;
+    int (*__intf_Interact_inner) (vlc_object_t *,interaction_dialog_t *);
     void (*intf_InteractionManage_inner) (playlist_t *);
     void (*intf_InteractionDestroy_inner) (interaction_t *);
-    int (*__intf_UserFatal_inner) (vlc_object_t*, vlc_bool_t, const char*, const char*, ...);
+    void (*__intf_UserFatal_inner) (vlc_object_t*, const char*, const char*, ...);
     int (*__intf_UserLoginPassword_inner) (vlc_object_t*, const char*, const char*, char **, char **);
-    int (*__intf_UserYesNo_inner) (vlc_object_t*, const char*, const char*, const char*, const char*, const char*);
-    void *__intf_UserProgress_deprecated;
-    void *__intf_UserProgressUpdate_deprecated;
+    int (*__intf_UserYesNo_inner) (vlc_object_t*, const char*, const char*);
+    int (*__intf_UserProgress_inner) (vlc_object_t*, const char*, const char*, float);
+    void (*__intf_UserProgressUpdate_inner) (vlc_object_t*, int, const char*, float);
     void (*__intf_UserHide_inner) (vlc_object_t *, int);
-    void *__stats_Create_deprecated;
-    int (*__stats_Update_inner) (vlc_object_t*, counter_t *, vlc_value_t, vlc_value_t *);
-    int (*__stats_Get_inner) (vlc_object_t*, counter_t *, vlc_value_t*);
+    int (*__stats_Create_inner) (vlc_object_t*, const char *, unsigned int, int, int);
+    int (*__stats_Update_inner) (vlc_object_t*, unsigned int, vlc_value_t, vlc_value_t *);
+    int (*__stats_Get_inner) (vlc_object_t*, int, unsigned int, vlc_value_t*);
     void (*stats_ComputeInputStats_inner) (input_thread_t*, input_stats_t*);
     void (*stats_DumpInputStats_inner) (input_stats_t *);
     void (*stats_ReinitInputStats_inner) (input_stats_t *);
+    counter_t* (*__stats_CounterGet_inner) (vlc_object_t*, int, unsigned int);
     void *__stats_CounterGet_deprecated;
     input_thread_t * (*__input_CreateThread2_inner) (vlc_object_t *, input_item_t *, char *);
-    void *stats_HandlerDestroy_deprecated;
+    void (*stats_HandlerDestroy_inner) (stats_handler_t*);
     vlc_t * (*vlc_current_object_inner) (int);
     void (*__var_OptionParse_inner) (vlc_object_t *, const char *);
     void *__stats_TimerDumpAll_deprecated;
@@ -463,9 +464,9 @@ struct module_symbols_t
     unsigned int (*update_iterator_ChooseMirrorAndFile_inner) (update_iterator_t *, int, int, int);
     update_t * (*__update_New_inner) (vlc_object_t *);
     void (*update_download_inner) (update_iterator_t *, char *);
-    void *vlc_HashInsert_deprecated;
-    void *vlc_HashLookup_deprecated;
-    void *vlc_HashRetrieve_deprecated;
+    void (*vlc_HashInsert_inner) (hashtable_entry_t **, int *, int, const char *, void *);
+    int (*vlc_HashLookup_inner) (hashtable_entry_t *, int, int, const char *);
+    void* (*vlc_HashRetrieve_inner) (hashtable_entry_t*, int, int, const char *);
     void * (*utf8_opendir_inner) (const char *dirname);
     FILE * (*utf8_fopen_inner) (const char *filename, const char *mode);
     const char * (*utf8_readdir_inner) (void *dir);
@@ -474,7 +475,7 @@ struct module_symbols_t
     char * (*FromLocaleDup_inner) (const char *);
     int (*utf8_mkdir_inner) (const char *filename);
     vlm_media_t* (*vlm_MediaSearch_inner) (vlm_t *, const char *);
-    int (*playlist_TreeMove_inner) (playlist_t *, playlist_item_t *, playlist_item_t *, int);
+    int (*playlist_TreeMove_inner) (playlist_t *, playlist_item_t *, playlist_item_t *, int, int);
     const char * (*config_GetDataDir_inner) (const vlc_object_t *);
     double (*us_atof_inner) (const char *);
     double (*us_strtod_inner) (const char *, char **);
@@ -491,45 +492,7 @@ struct module_symbols_t
     void (*decode_URI_inner) (char *psz);
     char * (*encode_URI_component_inner) (const char *psz);
     size_t (*vlc_strlcpy_inner) (char *, const char *, size_t);
-    void *playlist_ItemNewFromInput_deprecated;
-    input_item_t * (*__input_ItemNewExt_inner) (vlc_object_t *, const char *, const char*, int, const char **, int);
-    input_item_t * (*input_ItemNewWithType_inner) (vlc_object_t *, const char *, const char *e, int, const char **, int, int);
-    playlist_item_t * (*playlist_NodeAddInput_inner) (playlist_t *, input_item_t *,playlist_item_t *,int , int);
-    void *playlist_PlaylistAdd_deprecated;
-    void *playlist_PlaylistAddExt_deprecated;
-    void *playlist_PlaylistAddInput_deprecated;
-    int (*playlist_BothAddInput_inner) (playlist_t *, input_item_t *,playlist_item_t *,int , int);
-    playlist_item_t * (*__playlist_ItemNewFromInput_inner) (vlc_object_t *p_obj,input_item_t *p_input);
-    input_item_t * (*input_ItemGetById_inner) (playlist_t *, int);
-    int (*playlist_LiveSearchUpdate_inner) (playlist_t *, playlist_item_t *, const char *);
-    void (*vlc_input_item_AddOption_inner) (input_item_t *p_input, const char *psz_option);
-    int (*playlist_DeleteFromInput_inner) (playlist_t *, int, playlist_item_t *, vlc_bool_t);
-    int (*playlist_DeleteAllFromInput_inner) (playlist_t *, int);
-    int (*playlist_LockDeleteAllFromInput_inner) (playlist_t *, int);
-    void (*playlist_AddWhereverNeeded_inner) (playlist_t* , input_item_t*, playlist_item_t*,playlist_item_t*,vlc_bool_t, int);
-    int (*playlist_DeleteFromItemId_inner) (playlist_t *, int);
-    void (*playlist_NodeDump_inner) (playlist_t *p_playlist, playlist_item_t *p_item, int i_level);
-    void *__intf_UserOkayCancel_deprecated;
-    int (*__intf_UserStringInput_inner) (vlc_object_t*, const char*, const char*, char **);
-    void (*playlist_NodesCreateForSD_inner) (playlist_t *, char *, playlist_item_t **, playlist_item_t **);
     vlc_bool_t (*input_AddSubtitles_inner) (input_thread_t *, char *, vlc_bool_t);
-    counter_t * (*__stats_CounterCreate_inner) (vlc_object_t*, int, int);
-    void *stats_TimerClean_deprecated;
-    void *stats_TimersClean_deprecated;
-    void (*__stats_TimersClean_inner) (vlc_object_t *);
-    void *__intf_IntfProgressUpdate_deprecated;
-    void *__intf_IntfProgress_deprecated;
-    void *streaming_ChainToPsz_deprecated;
-    int (*__intf_UserWarn_inner) (vlc_object_t*, const char*, const char*, ...);
-    vlc_bool_t (*__intf_UserProgressIsCancelled_inner) (vlc_object_t*, int);
-    int (*__intf_Progress_inner) (vlc_object_t*, const char*, const char*, float, int);
-    void (*__intf_ProgressUpdate_inner) (vlc_object_t*, int, const char*, float, int);
-    int (*playlist_AddInput_inner) (playlist_t *, input_item_t *,int , int, vlc_bool_t);
-    void (*vlc_DictInsert_inner) (dict_t *, int, const char *, void *);
-    void* (*vlc_DictGet_inner) (dict_t *, int, const char *);
-    int (*vlc_DictLookup_inner) (dict_t *, int, const char *);
-    void (*vlc_DictClear_inner) (dict_t *);
-    dict_t * (*vlc_DictNew_inner) (void);
 };
 # if defined (__PLUGIN__)
 #  define aout_FiltersCreatePipeline (p_symbols)->aout_FiltersCreatePipeline_inner
@@ -777,9 +740,20 @@ struct module_symbols_t
 #  define playlist_ServicesDiscoveryRemove (p_symbols)->playlist_ServicesDiscoveryRemove_inner
 #  define playlist_AddSDModules (p_symbols)->playlist_AddSDModules_inner
 #  define playlist_IsServicesDiscoveryLoaded (p_symbols)->playlist_IsServicesDiscoveryLoaded_inner
+#  define __playlist_ItemNew (p_symbols)->__playlist_ItemNew_inner
+#  define __playlist_ItemCopy (p_symbols)->__playlist_ItemCopy_inner
 #  define playlist_ItemNewWithType (p_symbols)->playlist_ItemNewWithType_inner
 #  define playlist_ItemDelete (p_symbols)->playlist_ItemDelete_inner
+#  define playlist_ItemAddParent (p_symbols)->playlist_ItemAddParent_inner
+#  define playlist_CopyParents (p_symbols)->playlist_CopyParents_inner
 #  define playlist_ItemSetName (p_symbols)->playlist_ItemSetName_inner
+#  define playlist_ItemSetDuration (p_symbols)->playlist_ItemSetDuration_inner
+#  define playlist_ViewInsert (p_symbols)->playlist_ViewInsert_inner
+#  define playlist_ViewDelete (p_symbols)->playlist_ViewDelete_inner
+#  define playlist_ViewFind (p_symbols)->playlist_ViewFind_inner
+#  define playlist_ViewUpdate (p_symbols)->playlist_ViewUpdate_inner
+#  define playlist_ViewDump (p_symbols)->playlist_ViewDump_inner
+#  define playlist_ViewEmpty (p_symbols)->playlist_ViewEmpty_inner
 #  define playlist_NodeCreate (p_symbols)->playlist_NodeCreate_inner
 #  define playlist_NodeAppend (p_symbols)->playlist_NodeAppend_inner
 #  define playlist_NodeInsert (p_symbols)->playlist_NodeInsert_inner
@@ -790,12 +764,27 @@ struct module_symbols_t
 #  define playlist_NodeEmpty (p_symbols)->playlist_NodeEmpty_inner
 #  define playlist_Add (p_symbols)->playlist_Add_inner
 #  define playlist_AddExt (p_symbols)->playlist_AddExt_inner
+#  define playlist_ItemAdd (p_symbols)->playlist_ItemAdd_inner
 #  define playlist_NodeAddItem (p_symbols)->playlist_NodeAddItem_inner
+#  define playlist_Delete (p_symbols)->playlist_Delete_inner
 #  define playlist_LockDelete (p_symbols)->playlist_LockDelete_inner
+#  define playlist_Disable (p_symbols)->playlist_Disable_inner
+#  define playlist_Enable (p_symbols)->playlist_Enable_inner
 #  define playlist_ItemToNode (p_symbols)->playlist_ItemToNode_inner
 #  define playlist_LockItemToNode (p_symbols)->playlist_LockItemToNode_inner
+#  define playlist_Replace (p_symbols)->playlist_Replace_inner
+#  define playlist_LockReplace (p_symbols)->playlist_LockReplace_inner
 #  define playlist_ItemGetById (p_symbols)->playlist_ItemGetById_inner
+#  define playlist_LockItemGetById (p_symbols)->playlist_LockItemGetById_inner
+#  define playlist_ItemGetByPos (p_symbols)->playlist_ItemGetByPos_inner
+#  define playlist_LockItemGetByPos (p_symbols)->playlist_LockItemGetByPos_inner
 #  define playlist_ItemGetByInput (p_symbols)->playlist_ItemGetByInput_inner
+#  define playlist_LockItemGetByInput (p_symbols)->playlist_LockItemGetByInput_inner
+#  define playlist_GetPositionById (p_symbols)->playlist_GetPositionById_inner
+#  define playlist_ItemAddOption (p_symbols)->playlist_ItemAddOption_inner
+#  define playlist_Sort (p_symbols)->playlist_Sort_inner
+#  define playlist_Move (p_symbols)->playlist_Move_inner
+#  define playlist_NodeGroup (p_symbols)->playlist_NodeGroup_inner
 #  define playlist_NodeSort (p_symbols)->playlist_NodeSort_inner
 #  define playlist_RecursiveNodeSort (p_symbols)->playlist_RecursiveNodeSort_inner
 #  define playlist_Import (p_symbols)->playlist_Import_inner
@@ -865,6 +854,7 @@ struct module_symbols_t
 #  define net_ListenClose (p_symbols)->net_ListenClose_inner
 #  define DigestMD5 (p_symbols)->DigestMD5_inner
 #  define ACL_Check (p_symbols)->ACL_Check_inner
+#  define playlist_NodeRemoveParent (p_symbols)->playlist_NodeRemoveParent_inner
 #  define __ACL_Duplicate (p_symbols)->__ACL_Duplicate_inner
 #  define __ACL_Create (p_symbols)->__ACL_Create_inner
 #  define ACL_LoadFile (p_symbols)->ACL_LoadFile_inner
@@ -914,18 +904,24 @@ struct module_symbols_t
 #  define FromUTF32 (p_symbols)->FromUTF32_inner
 #  define __input_Read (p_symbols)->__input_Read_inner
 #  define __net_ConnectUDP (p_symbols)->__net_ConnectUDP_inner
+#  define __intf_Interact (p_symbols)->__intf_Interact_inner
 #  define intf_InteractionManage (p_symbols)->intf_InteractionManage_inner
 #  define intf_InteractionDestroy (p_symbols)->intf_InteractionDestroy_inner
 #  define __intf_UserFatal (p_symbols)->__intf_UserFatal_inner
 #  define __intf_UserLoginPassword (p_symbols)->__intf_UserLoginPassword_inner
 #  define __intf_UserYesNo (p_symbols)->__intf_UserYesNo_inner
+#  define __intf_UserProgress (p_symbols)->__intf_UserProgress_inner
+#  define __intf_UserProgressUpdate (p_symbols)->__intf_UserProgressUpdate_inner
 #  define __intf_UserHide (p_symbols)->__intf_UserHide_inner
+#  define __stats_Create (p_symbols)->__stats_Create_inner
 #  define __stats_Update (p_symbols)->__stats_Update_inner
 #  define __stats_Get (p_symbols)->__stats_Get_inner
 #  define stats_ComputeInputStats (p_symbols)->stats_ComputeInputStats_inner
 #  define stats_DumpInputStats (p_symbols)->stats_DumpInputStats_inner
 #  define stats_ReinitInputStats (p_symbols)->stats_ReinitInputStats_inner
+#  define __stats_CounterGet (p_symbols)->__stats_CounterGet_inner
 #  define __input_CreateThread2 (p_symbols)->__input_CreateThread2_inner
+#  define stats_HandlerDestroy (p_symbols)->stats_HandlerDestroy_inner
 #  define vlc_current_object (p_symbols)->vlc_current_object_inner
 #  define __var_OptionParse (p_symbols)->__var_OptionParse_inner
 #  define __stats_TimerDump (p_symbols)->__stats_TimerDump_inner
@@ -941,6 +937,9 @@ struct module_symbols_t
 #  define update_iterator_ChooseMirrorAndFile (p_symbols)->update_iterator_ChooseMirrorAndFile_inner
 #  define __update_New (p_symbols)->__update_New_inner
 #  define update_download (p_symbols)->update_download_inner
+#  define vlc_HashInsert (p_symbols)->vlc_HashInsert_inner
+#  define vlc_HashLookup (p_symbols)->vlc_HashLookup_inner
+#  define vlc_HashRetrieve (p_symbols)->vlc_HashRetrieve_inner
 #  define utf8_opendir (p_symbols)->utf8_opendir_inner
 #  define utf8_fopen (p_symbols)->utf8_fopen_inner
 #  define utf8_readdir (p_symbols)->utf8_readdir_inner
@@ -966,35 +965,7 @@ struct module_symbols_t
 #  define decode_URI (p_symbols)->decode_URI_inner
 #  define encode_URI_component (p_symbols)->encode_URI_component_inner
 #  define vlc_strlcpy (p_symbols)->vlc_strlcpy_inner
-#  define __input_ItemNewExt (p_symbols)->__input_ItemNewExt_inner
-#  define input_ItemNewWithType (p_symbols)->input_ItemNewWithType_inner
-#  define playlist_NodeAddInput (p_symbols)->playlist_NodeAddInput_inner
-#  define playlist_BothAddInput (p_symbols)->playlist_BothAddInput_inner
-#  define __playlist_ItemNewFromInput (p_symbols)->__playlist_ItemNewFromInput_inner
-#  define input_ItemGetById (p_symbols)->input_ItemGetById_inner
-#  define playlist_LiveSearchUpdate (p_symbols)->playlist_LiveSearchUpdate_inner
-#  define vlc_input_item_AddOption (p_symbols)->vlc_input_item_AddOption_inner
-#  define playlist_DeleteFromInput (p_symbols)->playlist_DeleteFromInput_inner
-#  define playlist_DeleteAllFromInput (p_symbols)->playlist_DeleteAllFromInput_inner
-#  define playlist_LockDeleteAllFromInput (p_symbols)->playlist_LockDeleteAllFromInput_inner
-#  define playlist_AddWhereverNeeded (p_symbols)->playlist_AddWhereverNeeded_inner
-#  define playlist_DeleteFromItemId (p_symbols)->playlist_DeleteFromItemId_inner
-#  define playlist_NodeDump (p_symbols)->playlist_NodeDump_inner
-#  define __intf_UserStringInput (p_symbols)->__intf_UserStringInput_inner
-#  define playlist_NodesCreateForSD (p_symbols)->playlist_NodesCreateForSD_inner
 #  define input_AddSubtitles (p_symbols)->input_AddSubtitles_inner
-#  define __stats_CounterCreate (p_symbols)->__stats_CounterCreate_inner
-#  define __stats_TimersClean (p_symbols)->__stats_TimersClean_inner
-#  define __intf_UserWarn (p_symbols)->__intf_UserWarn_inner
-#  define __intf_UserProgressIsCancelled (p_symbols)->__intf_UserProgressIsCancelled_inner
-#  define __intf_Progress (p_symbols)->__intf_Progress_inner
-#  define __intf_ProgressUpdate (p_symbols)->__intf_ProgressUpdate_inner
-#  define playlist_AddInput (p_symbols)->playlist_AddInput_inner
-#  define vlc_DictInsert (p_symbols)->vlc_DictInsert_inner
-#  define vlc_DictGet (p_symbols)->vlc_DictGet_inner
-#  define vlc_DictLookup (p_symbols)->vlc_DictLookup_inner
-#  define vlc_DictClear (p_symbols)->vlc_DictClear_inner
-#  define vlc_DictNew (p_symbols)->vlc_DictNew_inner
 # elif defined (HAVE_DYNAMIC_PLUGINS) && !defined (__BUILTIN__)
 /******************************************************************
  * STORE_SYMBOLS: store VLC APIs into p_symbols for plugin access.
@@ -1245,9 +1216,20 @@ struct module_symbols_t
     ((p_symbols)->playlist_ServicesDiscoveryRemove_inner) = playlist_ServicesDiscoveryRemove; \
     ((p_symbols)->playlist_AddSDModules_inner) = playlist_AddSDModules; \
     ((p_symbols)->playlist_IsServicesDiscoveryLoaded_inner) = playlist_IsServicesDiscoveryLoaded; \
+    ((p_symbols)->__playlist_ItemNew_inner) = __playlist_ItemNew; \
+    ((p_symbols)->__playlist_ItemCopy_inner) = __playlist_ItemCopy; \
     ((p_symbols)->playlist_ItemNewWithType_inner) = playlist_ItemNewWithType; \
     ((p_symbols)->playlist_ItemDelete_inner) = playlist_ItemDelete; \
+    ((p_symbols)->playlist_ItemAddParent_inner) = playlist_ItemAddParent; \
+    ((p_symbols)->playlist_CopyParents_inner) = playlist_CopyParents; \
     ((p_symbols)->playlist_ItemSetName_inner) = playlist_ItemSetName; \
+    ((p_symbols)->playlist_ItemSetDuration_inner) = playlist_ItemSetDuration; \
+    ((p_symbols)->playlist_ViewInsert_inner) = playlist_ViewInsert; \
+    ((p_symbols)->playlist_ViewDelete_inner) = playlist_ViewDelete; \
+    ((p_symbols)->playlist_ViewFind_inner) = playlist_ViewFind; \
+    ((p_symbols)->playlist_ViewUpdate_inner) = playlist_ViewUpdate; \
+    ((p_symbols)->playlist_ViewDump_inner) = playlist_ViewDump; \
+    ((p_symbols)->playlist_ViewEmpty_inner) = playlist_ViewEmpty; \
     ((p_symbols)->playlist_NodeCreate_inner) = playlist_NodeCreate; \
     ((p_symbols)->playlist_NodeAppend_inner) = playlist_NodeAppend; \
     ((p_symbols)->playlist_NodeInsert_inner) = playlist_NodeInsert; \
@@ -1258,12 +1240,27 @@ struct module_symbols_t
     ((p_symbols)->playlist_NodeEmpty_inner) = playlist_NodeEmpty; \
     ((p_symbols)->playlist_Add_inner) = playlist_Add; \
     ((p_symbols)->playlist_AddExt_inner) = playlist_AddExt; \
+    ((p_symbols)->playlist_ItemAdd_inner) = playlist_ItemAdd; \
     ((p_symbols)->playlist_NodeAddItem_inner) = playlist_NodeAddItem; \
+    ((p_symbols)->playlist_Delete_inner) = playlist_Delete; \
     ((p_symbols)->playlist_LockDelete_inner) = playlist_LockDelete; \
+    ((p_symbols)->playlist_Disable_inner) = playlist_Disable; \
+    ((p_symbols)->playlist_Enable_inner) = playlist_Enable; \
     ((p_symbols)->playlist_ItemToNode_inner) = playlist_ItemToNode; \
     ((p_symbols)->playlist_LockItemToNode_inner) = playlist_LockItemToNode; \
+    ((p_symbols)->playlist_Replace_inner) = playlist_Replace; \
+    ((p_symbols)->playlist_LockReplace_inner) = playlist_LockReplace; \
     ((p_symbols)->playlist_ItemGetById_inner) = playlist_ItemGetById; \
+    ((p_symbols)->playlist_LockItemGetById_inner) = playlist_LockItemGetById; \
+    ((p_symbols)->playlist_ItemGetByPos_inner) = playlist_ItemGetByPos; \
+    ((p_symbols)->playlist_LockItemGetByPos_inner) = playlist_LockItemGetByPos; \
     ((p_symbols)->playlist_ItemGetByInput_inner) = playlist_ItemGetByInput; \
+    ((p_symbols)->playlist_LockItemGetByInput_inner) = playlist_LockItemGetByInput; \
+    ((p_symbols)->playlist_GetPositionById_inner) = playlist_GetPositionById; \
+    ((p_symbols)->playlist_ItemAddOption_inner) = playlist_ItemAddOption; \
+    ((p_symbols)->playlist_Sort_inner) = playlist_Sort; \
+    ((p_symbols)->playlist_Move_inner) = playlist_Move; \
+    ((p_symbols)->playlist_NodeGroup_inner) = playlist_NodeGroup; \
     ((p_symbols)->playlist_NodeSort_inner) = playlist_NodeSort; \
     ((p_symbols)->playlist_RecursiveNodeSort_inner) = playlist_RecursiveNodeSort; \
     ((p_symbols)->playlist_Import_inner) = playlist_Import; \
@@ -1333,6 +1330,7 @@ struct module_symbols_t
     ((p_symbols)->net_ListenClose_inner) = net_ListenClose; \
     ((p_symbols)->DigestMD5_inner) = DigestMD5; \
     ((p_symbols)->ACL_Check_inner) = ACL_Check; \
+    ((p_symbols)->playlist_NodeRemoveParent_inner) = playlist_NodeRemoveParent; \
     ((p_symbols)->__ACL_Duplicate_inner) = __ACL_Duplicate; \
     ((p_symbols)->__ACL_Create_inner) = __ACL_Create; \
     ((p_symbols)->ACL_LoadFile_inner) = ACL_LoadFile; \
@@ -1382,18 +1380,24 @@ struct module_symbols_t
     ((p_symbols)->FromUTF32_inner) = FromUTF32; \
     ((p_symbols)->__input_Read_inner) = __input_Read; \
     ((p_symbols)->__net_ConnectUDP_inner) = __net_ConnectUDP; \
+    ((p_symbols)->__intf_Interact_inner) = __intf_Interact; \
     ((p_symbols)->intf_InteractionManage_inner) = intf_InteractionManage; \
     ((p_symbols)->intf_InteractionDestroy_inner) = intf_InteractionDestroy; \
     ((p_symbols)->__intf_UserFatal_inner) = __intf_UserFatal; \
     ((p_symbols)->__intf_UserLoginPassword_inner) = __intf_UserLoginPassword; \
     ((p_symbols)->__intf_UserYesNo_inner) = __intf_UserYesNo; \
+    ((p_symbols)->__intf_UserProgress_inner) = __intf_UserProgress; \
+    ((p_symbols)->__intf_UserProgressUpdate_inner) = __intf_UserProgressUpdate; \
     ((p_symbols)->__intf_UserHide_inner) = __intf_UserHide; \
+    ((p_symbols)->__stats_Create_inner) = __stats_Create; \
     ((p_symbols)->__stats_Update_inner) = __stats_Update; \
     ((p_symbols)->__stats_Get_inner) = __stats_Get; \
     ((p_symbols)->stats_ComputeInputStats_inner) = stats_ComputeInputStats; \
     ((p_symbols)->stats_DumpInputStats_inner) = stats_DumpInputStats; \
     ((p_symbols)->stats_ReinitInputStats_inner) = stats_ReinitInputStats; \
+    ((p_symbols)->__stats_CounterGet_inner) = __stats_CounterGet; \
     ((p_symbols)->__input_CreateThread2_inner) = __input_CreateThread2; \
+    ((p_symbols)->stats_HandlerDestroy_inner) = stats_HandlerDestroy; \
     ((p_symbols)->vlc_current_object_inner) = vlc_current_object; \
     ((p_symbols)->__var_OptionParse_inner) = __var_OptionParse; \
     ((p_symbols)->__stats_TimerDump_inner) = __stats_TimerDump; \
@@ -1409,6 +1413,9 @@ struct module_symbols_t
     ((p_symbols)->update_iterator_ChooseMirrorAndFile_inner) = update_iterator_ChooseMirrorAndFile; \
     ((p_symbols)->__update_New_inner) = __update_New; \
     ((p_symbols)->update_download_inner) = update_download; \
+    ((p_symbols)->vlc_HashInsert_inner) = vlc_HashInsert; \
+    ((p_symbols)->vlc_HashLookup_inner) = vlc_HashLookup; \
+    ((p_symbols)->vlc_HashRetrieve_inner) = vlc_HashRetrieve; \
     ((p_symbols)->utf8_opendir_inner) = utf8_opendir; \
     ((p_symbols)->utf8_fopen_inner) = utf8_fopen; \
     ((p_symbols)->utf8_readdir_inner) = utf8_readdir; \
@@ -1434,83 +1441,10 @@ struct module_symbols_t
     ((p_symbols)->decode_URI_inner) = decode_URI; \
     ((p_symbols)->encode_URI_component_inner) = encode_URI_component; \
     ((p_symbols)->vlc_strlcpy_inner) = vlc_strlcpy; \
-    ((p_symbols)->__input_ItemNewExt_inner) = __input_ItemNewExt; \
-    ((p_symbols)->input_ItemNewWithType_inner) = input_ItemNewWithType; \
-    ((p_symbols)->playlist_NodeAddInput_inner) = playlist_NodeAddInput; \
-    ((p_symbols)->playlist_BothAddInput_inner) = playlist_BothAddInput; \
-    ((p_symbols)->__playlist_ItemNewFromInput_inner) = __playlist_ItemNewFromInput; \
-    ((p_symbols)->input_ItemGetById_inner) = input_ItemGetById; \
-    ((p_symbols)->playlist_LiveSearchUpdate_inner) = playlist_LiveSearchUpdate; \
-    ((p_symbols)->vlc_input_item_AddOption_inner) = vlc_input_item_AddOption; \
-    ((p_symbols)->playlist_DeleteFromInput_inner) = playlist_DeleteFromInput; \
-    ((p_symbols)->playlist_DeleteAllFromInput_inner) = playlist_DeleteAllFromInput; \
-    ((p_symbols)->playlist_LockDeleteAllFromInput_inner) = playlist_LockDeleteAllFromInput; \
-    ((p_symbols)->playlist_AddWhereverNeeded_inner) = playlist_AddWhereverNeeded; \
-    ((p_symbols)->playlist_DeleteFromItemId_inner) = playlist_DeleteFromItemId; \
-    ((p_symbols)->playlist_NodeDump_inner) = playlist_NodeDump; \
-    ((p_symbols)->__intf_UserStringInput_inner) = __intf_UserStringInput; \
-    ((p_symbols)->playlist_NodesCreateForSD_inner) = playlist_NodesCreateForSD; \
     ((p_symbols)->input_AddSubtitles_inner) = input_AddSubtitles; \
-    ((p_symbols)->__stats_CounterCreate_inner) = __stats_CounterCreate; \
-    ((p_symbols)->__stats_TimersClean_inner) = __stats_TimersClean; \
-    ((p_symbols)->__intf_UserWarn_inner) = __intf_UserWarn; \
-    ((p_symbols)->__intf_UserProgressIsCancelled_inner) = __intf_UserProgressIsCancelled; \
-    ((p_symbols)->__intf_Progress_inner) = __intf_Progress; \
-    ((p_symbols)->__intf_ProgressUpdate_inner) = __intf_ProgressUpdate; \
-    ((p_symbols)->playlist_AddInput_inner) = playlist_AddInput; \
-    ((p_symbols)->vlc_DictInsert_inner) = vlc_DictInsert; \
-    ((p_symbols)->vlc_DictGet_inner) = vlc_DictGet; \
-    ((p_symbols)->vlc_DictLookup_inner) = vlc_DictLookup; \
-    ((p_symbols)->vlc_DictClear_inner) = vlc_DictClear; \
-    ((p_symbols)->vlc_DictNew_inner) = vlc_DictNew; \
     (p_symbols)->net_ConvertIPv4_deprecated = NULL; \
-    (p_symbols)->__playlist_ItemNew_deprecated = NULL; \
-    (p_symbols)->__playlist_ItemCopy_deprecated = NULL; \
-    (p_symbols)->playlist_ItemAddParent_deprecated = NULL; \
-    (p_symbols)->playlist_CopyParents_deprecated = NULL; \
-    (p_symbols)->playlist_ItemSetDuration_deprecated = NULL; \
-    (p_symbols)->playlist_ViewInsert_deprecated = NULL; \
-    (p_symbols)->playlist_ViewDelete_deprecated = NULL; \
-    (p_symbols)->playlist_ViewFind_deprecated = NULL; \
-    (p_symbols)->playlist_ViewUpdate_deprecated = NULL; \
-    (p_symbols)->playlist_ViewDump_deprecated = NULL; \
-    (p_symbols)->playlist_ViewEmpty_deprecated = NULL; \
-    (p_symbols)->playlist_ItemAdd_deprecated = NULL; \
-    (p_symbols)->playlist_Delete_deprecated = NULL; \
-    (p_symbols)->playlist_Disable_deprecated = NULL; \
-    (p_symbols)->playlist_Enable_deprecated = NULL; \
-    (p_symbols)->playlist_Replace_deprecated = NULL; \
-    (p_symbols)->playlist_LockReplace_deprecated = NULL; \
-    (p_symbols)->playlist_LockItemGetById_deprecated = NULL; \
-    (p_symbols)->playlist_ItemGetByPos_deprecated = NULL; \
-    (p_symbols)->playlist_LockItemGetByPos_deprecated = NULL; \
-    (p_symbols)->playlist_LockItemGetByInput_deprecated = NULL; \
-    (p_symbols)->playlist_GetPositionById_deprecated = NULL; \
-    (p_symbols)->playlist_ItemAddOption_deprecated = NULL; \
-    (p_symbols)->playlist_Sort_deprecated = NULL; \
-    (p_symbols)->playlist_Move_deprecated = NULL; \
-    (p_symbols)->playlist_NodeGroup_deprecated = NULL; \
-    (p_symbols)->playlist_NodeRemoveParent_deprecated = NULL; \
-    (p_symbols)->__intf_Interact_deprecated = NULL; \
-    (p_symbols)->__intf_UserProgress_deprecated = NULL; \
-    (p_symbols)->__intf_UserProgressUpdate_deprecated = NULL; \
-    (p_symbols)->__stats_Create_deprecated = NULL; \
     (p_symbols)->__stats_CounterGet_deprecated = NULL; \
-    (p_symbols)->stats_HandlerDestroy_deprecated = NULL; \
     (p_symbols)->__stats_TimerDumpAll_deprecated = NULL; \
-    (p_symbols)->vlc_HashInsert_deprecated = NULL; \
-    (p_symbols)->vlc_HashLookup_deprecated = NULL; \
-    (p_symbols)->vlc_HashRetrieve_deprecated = NULL; \
-    (p_symbols)->playlist_ItemNewFromInput_deprecated = NULL; \
-    (p_symbols)->playlist_PlaylistAdd_deprecated = NULL; \
-    (p_symbols)->playlist_PlaylistAddExt_deprecated = NULL; \
-    (p_symbols)->playlist_PlaylistAddInput_deprecated = NULL; \
-    (p_symbols)->__intf_UserOkayCancel_deprecated = NULL; \
-    (p_symbols)->stats_TimerClean_deprecated = NULL; \
-    (p_symbols)->stats_TimersClean_deprecated = NULL; \
-    (p_symbols)->__intf_IntfProgressUpdate_deprecated = NULL; \
-    (p_symbols)->__intf_IntfProgress_deprecated = NULL; \
-    (p_symbols)->streaming_ChainToPsz_deprecated = NULL; \
 
 # endif /* __PLUGIN__ */
 #endif /* __VLC_SYMBOLS_H */

@@ -2,7 +2,7 @@
  * interaction.cpp: wxWidgets handling of interaction dialogs
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: interaction.cpp 16203 2006-08-03 15:34:08Z zorglub $
+ * $Id: interaction.cpp 16439 2006-08-30 19:33:55Z hartman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -27,6 +27,8 @@
 #include "dialogs/interaction.hpp"
 
 #include <wx/statline.h>
+
+#define FREE( i ) { if( i ) free( i ); i = NULL; }
 
 /*****************************************************************************
  * Event Table.
@@ -107,7 +109,7 @@ void InteractionDialog::Render()
     wxGauge      *gauge;
 
 
-    if( p_dialog->i_flags == DIALOG_BLOCKING_ERROR || p_dialog->i_flags == DIALOG_NONBLOCKING_ERROR )
+    if( p_dialog->i_id == DIALOG_ERRORS )
     {
         wxTextCtrl *errors ; // Special case
         label = new wxStaticText( widgets_panel, -1,
@@ -164,7 +166,16 @@ void InteractionDialog::Render()
     }
 
     //-------------- Buttons ------------------
-    if( p_dialog->i_flags & DIALOG_YES_NO_CANCEL )
+    if( p_dialog->i_flags & DIALOG_OK_CANCEL )
+    {
+        wxButton *ok = new wxButton( buttons_panel,
+                                     wxID_OK, wxU( _("&OK") ) );
+        wxButton *cancel = new wxButton( buttons_panel,
+                                         wxID_CANCEL, wxU( _("&Cancel") ) );
+        buttons_sizer->AddButton( ok );
+        buttons_sizer->AddButton( cancel );
+    }
+    else if( p_dialog->i_flags & DIALOG_YES_NO_CANCEL )
     {
         wxButton *yes = new wxButton( buttons_panel,
                                       wxID_YES, wxU( _("&Yes") ) );
@@ -176,7 +187,6 @@ void InteractionDialog::Render()
         buttons_sizer->AddButton( no );
         buttons_sizer->AddButton( cancel );
     }
-#if 0
     else if( p_dialog->i_flags & DIALOG_CLEAR_NOSHOW )
     {
         wxCheckBox *noshow = new wxCheckBox( buttons_panel,
@@ -195,7 +205,6 @@ void InteractionDialog::Render()
         buttons_sizer->AddButton( close );
         buttons_sizer->SetAffirmativeButton( close );
     }
-#endif
     widgets_sizer->Layout();
     widgets_panel->SetSizerAndFit( widgets_sizer );
     buttons_sizer->Realize();
@@ -234,8 +243,8 @@ void InteractionDialog::OnClear( wxCommandEvent& event )
     for( i = p_dialog->i_widgets - 1 ; i >= 0 ; i-- )
     {
         user_widget_t *p_widget = p_dialog->pp_widgets[i];
-        FREENULL( p_widget->psz_text );
-        FREENULL( p_widget->val.psz_string );
+        FREE( p_widget->psz_text );
+        FREE( p_widget->val.psz_string );
         REMOVE_ELEM( p_dialog->pp_widgets, p_dialog->i_widgets, i );
         free( p_widget );
     }
@@ -269,3 +278,5 @@ void InteractionDialog::Finish( int i_ret )
     p_dialog->i_return = i_ret;
     vlc_mutex_unlock( &p_dialog->p_interaction->object_lock );
 }
+
+#undef FREE

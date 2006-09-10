@@ -2,7 +2,7 @@
  * file_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: file_bitmap.cpp 15248 2006-04-17 12:46:51Z asmax $
+ * $Id: file_bitmap.cpp 15249 2006-04-17 15:18:05Z asmax $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -176,6 +176,8 @@ SOURCES_skins2 = \
 	\
 	vars/equalizer.cpp \
 	vars/equalizer.hpp \
+	vars/playlist.cpp \
+	vars/playlist.hpp \
 	vars/playtree.cpp \
 	vars/playtree.hpp \
 	vars/time.cpp \

@@ -2,7 +2,7 @@
  * cmd_playtree.cpp
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: cmd_playtree.cpp 15629 2006-05-14 18:29:00Z zorglub $
+ * $Id: cmd_playtree.cpp 14187 2006-02-07 16:37:40Z courmisch $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *
@@ -33,11 +33,10 @@ void CmdPlaytreeDel::execute()
 void CmdPlaytreeSort::execute()
 {
     /// \todo Choose sort method/order - Need more commands
-    /// \todo Choose the correct view
     playlist_t *p_playlist = getIntf()->p_sys->p_playlist;
     vlc_mutex_lock( &p_playlist->object_lock );
-    playlist_RecursiveNodeSort( p_playlist, p_playlist->p_root_onelevel,
-                                SORT_TITLE, ORDER_NORMAL );
+    playlist_view_t* p_view = playlist_ViewFind( p_playlist, p_playlist->status.i_view );
+    playlist_RecursiveNodeSort( p_playlist, p_view->p_root , SORT_TITLE, ORDER_NORMAL );
     vlc_mutex_unlock( &p_playlist->object_lock );
 
     // Ask for rebuild

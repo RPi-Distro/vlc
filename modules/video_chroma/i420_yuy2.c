@@ -2,7 +2,7 @@
  * i420_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: i420_yuy2.c 16137 2006-07-26 22:48:34Z titer $
+ * $Id: i420_yuy2.c 14276 2006-02-12 21:22:20Z titer $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -381,10 +381,6 @@ static void I420_UYVY( vout_thread_t *p_vout, picture_t *p_source,
 #else
             MMX_CALL( MMX_YUV420_UYVY );
 #endif
-        }
-        for( i_x = ( p_vout->render.i_width % 8 ) / 2; i_x--; )
-        {
-            C_YUV420_UYVY( );
         }
 
         p_y1 += i_source_margin;

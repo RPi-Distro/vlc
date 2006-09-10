@@ -2,7 +2,7 @@
  * http.c
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: http.c 16203 2006-08-03 15:34:08Z zorglub $
+ * $Id: http.c 16445 2006-08-31 01:49:34Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jon Lech Johansen <jon@nanocrew.net>
@@ -43,6 +43,8 @@
 #endif
 
 #include "vlc_httpd.h"
+
+#define FREE( p ) if( p ) { free( p); (p) = NULL; }
 
 #define DEFAULT_PORT        8080
 #define DEFAULT_SSL_PORT    8443
@@ -311,10 +313,10 @@ static int Open( vlc_object_t *p_this )
             return VLC_EGENERIC;
         }
 
-        psz_name = strrchr( p_playlist->status.p_item->p_input->psz_uri,
+        psz_name = strrchr( p_playlist->status.p_item->input.psz_uri,
                             DIRECTORY_SEPARATOR );
         if( psz_name != NULL ) psz_name++;
-        else psz_name = p_playlist->status.p_item->p_input->psz_uri;
+        else psz_name = p_playlist->status.p_item->input.psz_uri;
 
         asprintf( &psz_txt, "path=%s", psz_file_name );
 

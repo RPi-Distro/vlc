@@ -1,23 +1,7 @@
-$Id: NEWS 16062 2006-07-16 21:02:33Z dionoea $
+$Id: NEWS 15460 2006-04-30 15:48:29Z dionoea 0.8.5-1-svn $
 
-Changes between 0.8.5 and 0.8.6-svn (not released yet)
---------------------------------------------------
-Core support:
- * New playlist core
- * Video Filter2 filters can now be selected for local display using --video-filter
-
-Video Filters:
- * Adjust, Invert and Distort (now splited into Wave, Ripple, Gradient and Psychedelic) video filters have been ported to the Video Filter2 API. They can now be streamed.
-
-Nix Port
- * Notification plugin.
-
-Localization:
- * Add Czech 
-
-
-Changes between 0.8.4a and 0.8.5
----------------------------------
+Changes between 0.8.4a and 0.8.5:
+--------------------------------------------------------
 
 Core support:
  * Statistics collection (bitrates, packets, connections, ...)

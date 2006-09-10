@@ -2,7 +2,7 @@
  * vlcpeer.h: scriptable peer descriptor
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: vlcpeer.h 15232 2006-04-15 11:51:45Z damienf $
+ * $Id: vlcpeer.h 15273 2006-04-19 09:13:26Z damienf $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

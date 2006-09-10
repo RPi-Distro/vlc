@@ -2,7 +2,7 @@
  * ListViews.h: BeOS interface list view class implementation
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: ListViews.cpp 15735 2006-05-25 18:27:39Z zorglub $
+ * $Id: ListViews.cpp 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Authors: Stephan Aßmus <stippi@yellowbites.com>
  *
@@ -20,8 +20,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
-#if 0
 
 #include <stdio.h>
 #include <malloc.h>
@@ -1123,5 +1121,3 @@ PlaylistView::_SetPlayingIndex( BListItem* playingItem )
         }
     }
 }
-
-#endif

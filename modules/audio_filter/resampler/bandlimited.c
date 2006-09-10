@@ -2,7 +2,7 @@
  * bandlimited.c : band-limited interpolation resampler
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: bandlimited.c 16219 2006-08-06 13:11:49Z jpsaman $
+ * $Id: bandlimited.c 14997 2006-03-31 15:15:07Z fkuehne $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -177,7 +177,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
     /* Check if we really need to run the resampler */
     if( p_aout->mixer.mixer.i_rate == p_filter->input.i_rate )
     {
-        if( /*p_filter->b_continuity && /--* What difference does it make ? :) */
+        if( //p_filter->b_continuity && /* What difference does it make ? :) */
             p_filter->p_sys->i_old_wing &&
             p_in_buf->i_size >=
               p_in_buf->i_nb_bytes + p_filter->p_sys->i_old_wing *
@@ -275,7 +275,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
         {
             /* Just copy the samples */
             memcpy( p_out, p_in, 
-                    p_filter->input.i_bytes_per_frame );
+                    p_filter->input.i_bytes_per_frame );          
             p_in += i_nb_channels;
             p_out += i_nb_channels;
             i_out++;

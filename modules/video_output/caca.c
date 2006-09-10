@@ -2,7 +2,7 @@
  * caca.c: Color ASCII Art video output plugin using libcaca
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: caca.c 15778 2006-06-01 13:10:28Z xtophe $
+ * $Id: caca.c 16442 2006-08-30 22:15:52Z hartman $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *

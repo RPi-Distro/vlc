@@ -2,7 +2,7 @@
  * demux.c: demuxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: demux.c 16315 2006-08-21 07:26:31Z gbazin $
+ * $Id: demux.c 16603 2006-09-10 20:40:21Z sam $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -338,7 +338,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 *pf = (double)stream_Tell( p_demux->s ) / (double)i64;
             }
 
-            if( p_sys->ic->duration != AV_NOPTS_VALUE && p_sys->i_pcr > 0 )
+            if( (p_sys->ic->duration != AV_NOPTS_VALUE) && (p_sys->i_pcr > 0) )
             {
                 *pf = (double)p_sys->i_pcr / (double)p_sys->ic->duration;
             }
@@ -401,7 +401,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_GET_META:
         {
-            vlc_meta_t *p_meta = (vlc_meta_t*)va_arg( args, vlc_meta_t* );
+            vlc_meta_t **pp_meta = (vlc_meta_t**)va_arg( args, vlc_meta_t** );
+            vlc_meta_t *meta;
 
             if( !p_sys->ic->title[0] || !p_sys->ic->author[0] ||
                 !p_sys->ic->copyright[0] || !p_sys->ic->comment[0] ||
@@ -410,16 +411,18 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 return VLC_EGENERIC;
             }
 
+            *pp_meta = meta = vlc_meta_New();
+
             if( p_sys->ic->title[0] )
-                vlc_meta_SetTitle( p_meta, p_sys->ic->title );
+                vlc_meta_Add( meta, VLC_META_TITLE, p_sys->ic->title );
             if( p_sys->ic->author[0] )
-                vlc_meta_SetAuthor( p_meta, p_sys->ic->author );
+                vlc_meta_Add( meta, VLC_META_AUTHOR, p_sys->ic->author );
             if( p_sys->ic->copyright[0] )
-                vlc_meta_SetCopyright( p_meta, p_sys->ic->copyright );
+                vlc_meta_Add( meta, VLC_META_COPYRIGHT, p_sys->ic->copyright );
             if( p_sys->ic->comment[0] )
-                vlc_meta_SetDescription( p_meta, p_sys->ic->comment );
+                vlc_meta_Add( meta, VLC_META_DESCRIPTION, p_sys->ic->comment );
             if( p_sys->ic->genre[0] )
-                vlc_meta_SetGenre( p_meta, p_sys->ic->genre );
+                vlc_meta_Add( meta, VLC_META_GENRE, p_sys->ic->genre );
             return VLC_SUCCESS;
         }
 

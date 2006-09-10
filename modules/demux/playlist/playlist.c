@@ -2,7 +2,7 @@
  * playlist.c :  Playlist import module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: playlist.c 15986 2006-07-07 20:24:11Z dionoea $
+ * $Id: playlist.c 15386 2006-04-28 12:09:04Z dionoea $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -50,14 +50,19 @@ vlc_module_begin();
     add_bool( "playlist-autostart", 1, NULL,
               AUTOSTART_TEXT, AUTOSTART_LONGTEXT, VLC_FALSE );
 
-    add_integer( "parent-item", 0, NULL, NULL, NULL, VLC_TRUE );
-        change_internal();
-
     set_shortname( _("Playlist") );
     set_description( _("Playlist") );
     add_shortcut( "old-open" );
     set_capability( "demux2", 10 );
     set_callbacks( E_(Import_Old), NULL );
+#if 0
+    add_submodule();
+        set_description( _("Native playlist import") );
+        add_shortcut( "playlist" );
+        add_shortcut( "native-open" );
+        set_capability( "demux2", 10 );
+        set_callbacks( E_(Import_Native), E_(Close_Native) );
+#endif
     add_submodule();
         set_description( _("M3U playlist import") );
         add_shortcut( "m3u-open" );
@@ -96,26 +101,6 @@ vlc_module_begin();
         set_callbacks( E_(Import_Shoutcast), E_(Close_Shoutcast) );
         add_bool( "shoutcast-show-adult", VLC_FALSE, NULL,
                    SHOW_ADULT_TEXT, SHOW_ADULT_LONGTEXT, VLC_FALSE );
-    add_submodule();
-        set_description( _("ASX playlist import") );
-        add_shortcut( "asx-open" );
-        set_capability( "demux2", 10 );
-        set_callbacks( E_(Import_ASX), E_(Close_ASX) );
-    add_submodule();
-        set_description( _("Kasenna MediaBase parser") );
-        add_shortcut( "sgimb" );
-        set_capability( "demux2", 10 );
-        set_callbacks( E_(Import_SGIMB), E_(Close_SGIMB) );
-    add_submodule();
-        set_description( _("QuickTime Media Link importer") );
-        add_shortcut( "qtl" );
-        set_capability( "demux2", 10 );
-        set_callbacks( E_(Import_QTL), E_(Close_QTL) );
-    add_submodule();
-        set_description( _("Google Video Playlist importer") );
-        add_shortcut( "gvp" );
-        set_capability( "demux2", 10 );
-        set_callbacks( E_(Import_GVP), E_(Close_GVP) );
 vlc_module_end();
 
 
@@ -168,37 +153,13 @@ char *E_(ProcessMRL)( char *psz_mrl, char *psz_prefix )
     return psz_mrl;
 }
 
-void E_(AddToPlaylist)( demux_t *p_demux, playlist_t *p_playlist,
-                        input_item_t *p_input,
-                        playlist_item_t *p_item, int i_parent_id )
-{
-    // Only add to parent if specific parent requested or not current
-    // playlist item
-   if( i_parent_id > 0 || ! (
-         p_playlist->status.p_item &&
-         p_playlist->status.p_item->p_input ==
-              ((input_thread_t *)p_demux->p_parent)->input.p_item ) )
-   {
-       playlist_NodeAddInput( p_playlist, p_input, p_item,
-                              PLAYLIST_APPEND, PLAYLIST_END );
-   }
-   // Else, add to both
-   else
-   {
-       playlist_BothAddInput( p_playlist, p_input, p_item,
-                              PLAYLIST_APPEND, PLAYLIST_END );
-   }
-   vlc_input_item_CopyOptions( p_item->p_input, p_input );
-}
-
-
 vlc_bool_t E_(FindItem)( demux_t *p_demux, playlist_t *p_playlist,
                      playlist_item_t **pp_item )
 {
      vlc_bool_t b_play = var_CreateGetBool( p_demux, "playlist-autostart" );
 
      if( b_play && p_playlist->status.p_item &&
-             p_playlist->status.p_item->p_input ==
+             &p_playlist->status.p_item->input ==
                 ((input_thread_t *)p_demux->p_parent)->input.p_item )
      {
          msg_Dbg( p_playlist, "starting playlist playback" );

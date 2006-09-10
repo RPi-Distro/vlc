@@ -1,8 +1,8 @@
 /*****************************************************************************
  * extended.m: MacOS X Extended interface panel
  *****************************************************************************
- * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: extended.m 16065 2006-07-17 12:59:46Z fkuehne $
+ * Copyright (C) 2005 the VideoLAN team
+ * $Id: extended.m 15209 2006-04-14 09:37:39Z zorglub $
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net>
  *
@@ -83,30 +83,24 @@ static VLCExtended *_o_sharedInstance = nil;
     [o_lbl_videoFlts setStringValue: _NS("Video filters")];
     [o_lbl_adjustImage setStringValue: _NS("Image adjustment")];
     [o_btn_vidFlts_mrInfo setTitle: _NS("More Info")];
-    [o_ckb_wave setTitle: _NS("Wave")];
-    [o_ckb_ripple setTitle: _NS("Ripple")];
-    [o_ckb_psycho setTitle: _NS("Psychedelic")];
-    [o_ckb_gradient setTitle: _NS("Gradient")];
-    [o_lbl_general setStringValue: _NS("General editing filters")];
-    [o_lbl_distort setStringValue: _NS("Distortion filters")];
-    [o_ckb_blur setTitle: _NS("Blur")];
+    [o_ckb_blur setTitle: _NS("Blurring")];
     [o_ckb_blur setToolTip: _NS("Adds motion blurring to the image")];
+    [o_ckb_distortion setTitle: _NS("Distortion")];
+    [o_ckb_distortion setToolTip: _NS("Adds distortion effects")];
     [o_ckb_imgClone setTitle: _NS("Image clone")];
-    [o_ckb_imgClone setToolTip: _NS("Creates several copies of the Video "
+    [o_ckb_imgClone setToolTip: _NS("Creates several copies of the Video " \
                                     "output window" )];
     [o_ckb_imgCrop setTitle: _NS("Image cropping")];
     [o_ckb_imgCrop setToolTip: _NS("Crops a defined part of the image")];
-    [o_ckb_imgInvers setTitle: _NS("Invert colors")];
+    [o_ckb_imgInvers setTitle: _NS("Image inversion")];
     [o_ckb_imgInvers setToolTip: _NS("Inverts the colors of the image")];
     [o_ckb_trnsform setTitle: _NS("Transformation")];
     [o_ckb_trnsform setToolTip: _NS("Rotates or flips the image")];
-    [o_ckb_intZoom setTitle: _NS("Interactive Zoom")];
-    [o_ckb_intZoom setToolTip: _NS("Enables an interactive Zoom feature")];
     [o_ckb_vlme_norm setTitle: _NS("Volume normalization")];
-    [o_ckb_vlme_norm setToolTip: _NS("Prevents the audio output from going "
+    [o_ckb_vlme_norm setToolTip: _NS("Prevents the audio output from going " \
         "over a predefined value.")];
     [o_ckb_hdphnVirt setTitle: _NS("Headphone virtualization")];
-    [o_ckb_hdphnVirt setToolTip: _NS("Imitates the effect of surround sound "
+    [o_ckb_hdphnVirt setToolTip: _NS("Imitates the effect of surround sound " \
         "when using headphones.")];
     [o_lbl_maxLevel setStringValue: _NS("Maximum level")];
     [o_btn_rstrDefaults setTitle: _NS("Restore Defaults")];
@@ -152,25 +146,13 @@ static VLCExtended *_o_sharedInstance = nil;
     if( psz_vfilters )
     {
         [o_ckb_blur setState: (int)strstr( psz_vfilters, "motionblur")];
+        [o_ckb_distortion setState: (int)strstr( psz_vfilters, "distort")];
         [o_ckb_imgClone setState: (int)strstr( psz_vfilters, "clone")];
         [o_ckb_imgCrop setState: (int)strstr( psz_vfilters, "crop")];
+        [o_ckb_imgInvers setState: (int)strstr( psz_vfilters, "invert")];
         [o_ckb_trnsform setState: (int)strstr( psz_vfilters, "transform")];
-
+        
         free( psz_vfilters );
-    }
-    
-    /* set the video-filter checkboxes to the correct values */
-    char * psz_vifilters;
-    psz_vifilters = config_GetPsz( p_intf, "video-filter" );
-    if( psz_vifilters )
-    {
-        [o_ckb_wave setState: (int)strstr( psz_vifilters, "wave")];
-        [o_ckb_psycho setState: (int)strstr( psz_vifilters, "psychedelic")];
-        [o_ckb_ripple setState: (int)strstr( psz_vifilters, "ripple")];
-        [o_ckb_gradient setState: (int)strstr( psz_vifilters, "gradient")];
-        [o_ckb_imgInvers setState: (int)strstr( psz_vifilters, "invert")];
-
-        free( psz_vifilters );
     }
     
     /* set the audio-filter-checkboxes to the values taken from the prefs */
@@ -251,7 +233,7 @@ static VLCExtended *_o_sharedInstance = nil;
         [o_sld_maxLevel setFloatValue: f_value ];
     }
 
-    [o_sld_opaque setFloatValue: (config_GetFloat( p_intf,
+    [o_sld_opaque setFloatValue: (config_GetFloat( p_intf, \
         "macosx-opaqueness") * 100)];
 
 
@@ -271,7 +253,7 @@ static VLCExtended *_o_sharedInstance = nil;
         [o_sld_gamma setEnabled: YES];
         [o_sld_hue setEnabled: YES];
         [o_sld_saturation setEnabled: YES];
-        [self changeVoutFiltersString: "adjust" onOrOff: VLC_TRUE];
+        [self changeVFiltersString: "adjust" onOrOff: VLC_TRUE];
     }else{
         [o_btn_rstrDefaults setEnabled: NO];
         [o_sld_brightness setEnabled: NO];
@@ -279,7 +261,7 @@ static VLCExtended *_o_sharedInstance = nil;
         [o_sld_gamma setEnabled: NO];
         [o_sld_hue setEnabled: NO];
         [o_sld_saturation setEnabled: NO];
-        [self changeVoutFiltersString: "adjust" onOrOff: VLC_FALSE];
+        [self changeVFiltersString: "adjust" onOrOff: VLC_FALSE];
     }
 }
 
@@ -369,7 +351,7 @@ static VLCExtended *_o_sharedInstance = nil;
     id o_window = [NSApp keyWindow];
     NSArray *o_windows = [NSApp orderedWindows];
     NSEnumerator *o_enumerator = [o_windows objectEnumerator];
-    playlist_t * p_playlist = vlc_object_find( VLCIntf, VLC_OBJECT_PLAYLIST,
+    playlist_t * p_playlist = vlc_object_find( VLCIntf, VLC_OBJECT_PLAYLIST, \
         FIND_ANYWHERE );
     vout_thread_t *p_vout = vlc_object_find( VLCIntf, VLC_OBJECT_VOUT, FIND_ANYWHERE );
     vout_thread_t *p_real_vout;
@@ -453,20 +435,20 @@ static VLCExtended *_o_sharedInstance = nil;
     {
         /* move the window contents upwards (partially done through settings
          * inside the nib) and resize the window */
-        o_win_rect.size.height = o_win_rect.size.height - 193;
-        o_win_rect.origin.y = [o_extended_window frame].origin.y + 193;
-        o_box_audFlts_rect.origin.y = o_box_audFlts_rect.origin.y + 193;
-        o_box_vidFlts_rect.origin.y = o_box_vidFlts_rect.origin.y + 193;
+        o_win_rect.size.height = o_win_rect.size.height - 171;
+        o_win_rect.origin.y = [o_extended_window frame].origin.y + 171;
+        o_box_audFlts_rect.origin.y = o_box_audFlts_rect.origin.y + 171;
+        o_box_vidFlts_rect.origin.y = o_box_vidFlts_rect.origin.y + 171;
         
         /* remove the inserted view */
         [o_adjustImg_view removeFromSuperviewWithoutNeedingDisplay];
     }else{
     
         /* move the window contents downwards and resize the window */
-        o_win_rect.size.height = o_win_rect.size.height + 193;
-        o_win_rect.origin.y = [o_extended_window frame].origin.y - 193;
-        o_box_audFlts_rect.origin.y = o_box_audFlts_rect.origin.y - 193;
-        o_box_vidFlts_rect.origin.y = o_box_vidFlts_rect.origin.y - 193;
+        o_win_rect.size.height = o_win_rect.size.height + 171;
+        o_win_rect.origin.y = [o_extended_window frame].origin.y - 171;
+        o_box_audFlts_rect.origin.y = o_box_audFlts_rect.origin.y - 171;
+        o_box_vidFlts_rect.origin.y = o_box_vidFlts_rect.origin.y - 171;
     }
     
     [o_box_audFlts setFrameFromContentFrame: o_box_audFlts_rect];
@@ -476,15 +458,17 @@ static VLCExtended *_o_sharedInstance = nil;
     
     if (o_adjImg_expanded)
     {
-        o_box_adjImg_rect.size.height = [o_box_adjImg frame].size.height - 193;
+        o_box_adjImg_rect.size.height = [o_box_adjImg frame].size.height - 171;
+        msg_Dbg( VLCIntf, "collapsed adjust-image section");
         o_adjImg_expanded = NO;
     } else {
         /* insert view */
-        o_box_adjImg_rect.size.height = [o_box_adjImg frame].size.height + 193;
-        [o_adjustImg_view setFrame: NSMakeRect( 20, -10, 370, 203)];
+        o_box_adjImg_rect.size.height = [o_box_adjImg frame].size.height + 171;
+        [o_adjustImg_view setFrame: NSMakeRect( 20, -10, 370, 181)];
         [o_adjustImg_view setNeedsDisplay:YES];
         [o_adjustImg_view setAutoresizesSubviews: YES];
         [[o_box_adjImg contentView] addSubview: o_adjustImg_view];
+        msg_Dbg( VLCIntf, "expanded adjust-image section");
         o_adjImg_expanded = YES;
     }
     [o_box_adjImg setFrameFromContentFrame: o_box_adjImg_rect];
@@ -517,6 +501,7 @@ static VLCExtended *_o_sharedInstance = nil;
     if (o_audFlts_expanded)
     {
         o_box_audFlts_rect.size.height = [o_box_audFlts frame].size.height - 66;
+        msg_Dbg( VLCIntf, "collapsed audio-filters section");
         o_audFlts_expanded = NO;
     } else {
         /* insert view */
@@ -525,6 +510,7 @@ static VLCExtended *_o_sharedInstance = nil;
         [o_audioFlts_view setNeedsDisplay:YES];
         [o_audioFlts_view setAutoresizesSubviews: YES];
         [[o_box_audFlts contentView] addSubview: o_audioFlts_view];
+        msg_Dbg( VLCIntf, "expanded audio-filters section");
         o_audFlts_expanded = YES;
     }
     [o_box_audFlts setFrameFromContentFrame: o_box_audFlts_rect];
@@ -541,18 +527,18 @@ static VLCExtended *_o_sharedInstance = nil;
     {
         /* move the window contents upwards (partially done through settings
          * inside the nib) and resize the window */
-        o_win_rect.size.height = o_win_rect.size.height - 188;
-        o_win_rect.origin.y = [o_extended_window frame].origin.y + 188;
-        o_box_audFlts_rect.origin.y = o_box_audFlts_rect.origin.y + 188;
+        o_win_rect.size.height = o_win_rect.size.height - 134;
+        o_win_rect.origin.y = [o_extended_window frame].origin.y + 134;
+        o_box_audFlts_rect.origin.y = o_box_audFlts_rect.origin.y + 134;
         
         /* remove the inserted view */
         [o_videoFilters_view removeFromSuperviewWithoutNeedingDisplay];
     }else{
     
         /* move the window contents downwards and resize the window */
-        o_win_rect.size.height = o_win_rect.size.height + 188;
-        o_win_rect.origin.y = [o_extended_window frame].origin.y - 188;
-        o_box_audFlts_rect.origin.y = o_box_audFlts_rect.origin.y - 188;
+        o_win_rect.size.height = o_win_rect.size.height + 134;
+        o_win_rect.origin.y = [o_extended_window frame].origin.y - 134;
+        o_box_audFlts_rect.origin.y = o_box_audFlts_rect.origin.y - 134;
     }
     
     [o_box_audFlts setFrameFromContentFrame: o_box_audFlts_rect];
@@ -561,15 +547,17 @@ static VLCExtended *_o_sharedInstance = nil;
     
     if (o_vidFlts_expanded)
     {
-        o_box_vidFlts_rect.size.height = [o_box_vidFlts frame].size.height - 188;
+        o_box_vidFlts_rect.size.height = [o_box_vidFlts frame].size.height - 134;
+        msg_Dbg( VLCIntf, "collapsed video-filters section");
         o_vidFlts_expanded = NO;
     } else {
         /* insert view */
-        o_box_vidFlts_rect.size.height = [o_box_vidFlts frame].size.height + 188;
-        [o_videoFilters_view setFrame: NSMakeRect( 20, -10, 370, 188)];
+        o_box_vidFlts_rect.size.height = [o_box_vidFlts frame].size.height + 134;
+        [o_videoFilters_view setFrame: NSMakeRect( 20, -10, 370, 144)];
         [o_videoFilters_view setNeedsDisplay:YES];
         [o_videoFilters_view setAutoresizesSubviews: YES];
         [[o_box_vidFlts contentView] addSubview: o_videoFilters_view];
+        msg_Dbg( VLCIntf, "expanded video-filters section");
         o_vidFlts_expanded = YES;
     }
     [o_box_vidFlts setFrameFromContentFrame: o_box_vidFlts_rect];
@@ -579,50 +567,44 @@ static VLCExtended *_o_sharedInstance = nil;
 {
     /* en-/disable video filters */
     if (sender == o_ckb_blur)
-        [self changeVoutFiltersString: "motionblur" onOrOff: [o_ckb_blur state]];
-
+    {
+        [self changeVFiltersString: "motionblur" onOrOff: [o_ckb_blur state]];
+    }
+    else if (sender == o_ckb_distortion)
+    {
+        [self changeVFiltersString: "distort" onOrOff: [o_ckb_distortion state]];
+    }
     else if (sender == o_ckb_imgClone)
-        [self changeVoutFiltersString: "clone" onOrOff: [o_ckb_imgClone state]];
-
+    {
+        [self changeVFiltersString: "clone" onOrOff: [o_ckb_imgClone state]];
+    }
     else if (sender == o_ckb_imgCrop)
-        [self changeVoutFiltersString: "crop" onOrOff: [o_ckb_imgCrop state]];
-
+    {
+        [self changeVFiltersString: "crop" onOrOff: [o_ckb_imgCrop state]];
+    }
     else if (sender == o_ckb_imgInvers)
-        [self changeVideoFiltersString: "invert" onOrOff: [o_ckb_imgInvers state]];
-
+    {
+        [self changeVFiltersString: "invert" onOrOff: [o_ckb_imgInvers state]];
+    }
     else if (sender == o_ckb_trnsform)
-        [self changeVoutFiltersString: "transform" onOrOff: [o_ckb_trnsform state]];
-
-    else if (sender == o_ckb_intZoom )
-        [self changeVoutFiltersString: "magnify" onOrOff: [o_ckb_intZoom state]];
-
-    else if (sender == o_ckb_wave )
-        [self changeVideoFiltersString: "wave" onOrOff: [o_ckb_wave state]];
-
-    else if (sender == o_ckb_gradient )
-        [self changeVideoFiltersString: "gradient" onOrOff: [o_ckb_gradient state]];
-
-    else if (sender == o_ckb_psycho )
-        [self changeVideoFiltersString: "psychedelic" onOrOff: [o_ckb_psycho state]];
-
-    else if (sender == o_ckb_ripple )
-        [self changeVideoFiltersString: "ripple" onOrOff: [o_ckb_ripple state]];
-
-    else {
+    {
+        [self changeVFiltersString: "transform" onOrOff: [o_ckb_trnsform state]];
+    } else {
         /* this shouldn't happen */
-        msg_Warn (VLCIntf, "cannot find switched video-filter");
+        msg_Warn (VLCIntf, "cannot find selected video-filter");
     }
 }
 
 - (IBAction)vidFlts_mrInfo:(id)sender
 {
     /* show info sheet */
-    NSBeginInformationalAlertSheet(_NS("More Information"), _NS("OK"), @"", @"",
-        o_extended_window, nil, nil, nil, nil, _NS("This panel allows to "
-        "select video effects filters to apply.\n"
-        "The filters can be configured individually in the Preferences, in "
-        "the subsections of Video/Filters.\n"
-        "To choose the order in which the filter are applied, a filter "
+/// \bug [String] Misplaced \n
+    NSBeginInformationalAlertSheet(_NS("More Information"), _NS("OK"), @"", @"", \
+        o_extended_window, nil, nil, nil, nil, _NS("This panel allows to " \
+        "select video effects filters to apply.\n" \
+        "The filters can be configured indivudually in the Preferences, in " \
+        "the subsections of Video/Filters\n." \
+        "To choose the order in which the filter are applied, a filter " \
         "option string can be set in the Preferences, Video / Filters section."));
 }
 
@@ -631,13 +613,10 @@ static VLCExtended *_o_sharedInstance = nil;
  * methods to communicate changes to VLC's core
  *****************************************************************************/
 
-- (void)changeVoutFiltersString:(char *)psz_name onOrOff:(vlc_bool_t )b_add 
+- (void)changeVFiltersString:(char *)psz_name onOrOff:(vlc_bool_t )b_add 
 {
     /* copied from ../wxwidgets/extrapanel.cpp
      * renamed to conform with Cocoa's rules */
-    /* this method only changes 1st generation video filters (the ones which 
-     * can't be used for transcoding). Have a look at changeVideoFiltersString
-     * for the 2nd generation filters. */
      
     vout_thread_t *p_vout;
     intf_thread_t * p_intf = VLCIntf;
@@ -700,72 +679,6 @@ static VLCExtended *_o_sharedInstance = nil;
     o_config_changed = YES;
 }
 
-
-- (void)changeVideoFiltersString:(char *)psz_name onOrOff:(vlc_bool_t )b_add 
-{
-    /* same as changeVoutFiltersString but addressing the "video-filter"
-     * variable which represents the video filter 2 modules */
-     
-    vout_thread_t *p_vout;
-    intf_thread_t * p_intf = VLCIntf;
-    
-    char *psz_parser, *psz_string;
-    psz_string = config_GetPsz( p_intf, "video-filter" );
-    
-    if( !psz_string ) psz_string = strdup("");
-
-    psz_parser = strstr( psz_string, psz_name );
-
-    if( b_add )
-    {
-        if( !psz_parser )
-        {
-            psz_parser = psz_string;
-            asprintf( &psz_string, (*psz_string) ? "%s:%s" : "%s%s",
-                            psz_string, psz_name );
-            free( psz_parser );
-        }
-        else
-        {
-            return;
-        }
-    }
-    else
-    {
-        if( psz_parser )
-        {
-            memmove( psz_parser, psz_parser + strlen(psz_name) +
-                            (*(psz_parser + strlen(psz_name)) == ':' ? 1 : 0 ),
-                            strlen(psz_parser + strlen(psz_name)) + 1 );
-
-            /* Remove trailing : : */
-            if( *(psz_string+strlen(psz_string ) -1 ) == ':' )
-            {
-                *(psz_string+strlen(psz_string ) -1 ) = '\0';
-            }
-         }
-         else
-         {
-             free( psz_string );
-             return;
-         }
-    }
-    /* Vout is not kept, so put that in the config */
-    config_PutPsz( p_intf, "video-filter", psz_string );
-
-    /* Try to set on the fly */
-    p_vout = (vout_thread_t *)vlc_object_find( p_intf, VLC_OBJECT_VOUT,
-                                              FIND_ANYWHERE );
-    if( p_vout )
-    {
-        var_SetString( p_vout, "video-filter", psz_string );
-        vlc_object_release( p_vout );
-    }
-
-    free( psz_string );
-
-    o_config_changed = YES;
-}
 
 - (void)changeAFiltersString: (char *)psz_name onOrOff: (vlc_bool_t )b_add;
 {
@@ -848,24 +761,24 @@ static VLCExtended *_o_sharedInstance = nil;
 {    
     /* save the preferences to make sure that our module-changes will up on
      * next launch again */
-    playlist_t * p_playlist = vlc_object_find( VLCIntf, VLC_OBJECT_PLAYLIST,
+    playlist_t * p_playlist = vlc_object_find( VLCIntf, VLC_OBJECT_PLAYLIST, \
         FIND_ANYWHERE );
     int returnedValue;
     NSArray * theModules;
-    theModules = [[NSArray alloc] initWithObjects: @"main", @"headphone",
-        @"transform", @"adjust", @"invert", @"motionblur", @"distort",
-        @"clone", @"crop", @"normvol", @"headphone_channel_mixer", @"macosx",
+    theModules = [[NSArray alloc] initWithObjects: @"main", @"headphone", \
+        @"transform", @"adjust", @"invert", @"motionblur", @"distort", \
+        @"clone", @"crop", @"normvol", @"headphone_channel_mixer", @"macosx", \
         nil];
     unsigned int x = 0;
     
     while ( x != [theModules count] )
     {
-        returnedValue = config_SaveConfigFile( p_playlist, [[theModules
+        returnedValue = config_SaveConfigFile( p_playlist, [[theModules \
             objectAtIndex: x] UTF8String] );
 
         if (returnedValue != 0)
         {
-            msg_Err(p_playlist, "unable to save the preferences of the "
+            msg_Err(p_playlist, "unable to save the preferences of the " \
             "extended control attribute '%s' (%i)", 
             [[theModules objectAtIndex: x] UTF8String] , returnedValue);
             [theModules release];

@@ -2,7 +2,7 @@
  * cmd_dialogs.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cmd_dialogs.hpp 16174 2006-07-30 22:35:04Z fkuehne $
+ * $Id: cmd_dialogs.hpp 16431 2006-08-30 14:30:06Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -169,13 +169,20 @@ class CmdInteraction: public CmdGeneric
         /// This method does the real job of the command
         virtual void execute()
         {
-            /// Get the dialogs provider
-            Dialogs *pDialogs = Dialogs::instance( getIntf() );
-            if( pDialogs == NULL )
+            if( m_pDialog->i_type == INTERACT_PROGRESS )
             {
-                return;
+                 /// \todo Handle progress in the interface
             }
-            pDialogs->showInteraction( m_pDialog );
+            else
+            {
+                /// Get the dialogs provider
+                Dialogs *pDialogs = Dialogs::instance( getIntf() );
+                if( pDialogs == NULL )
+                {
+                    return;
+                }
+                pDialogs->showInteraction( m_pDialog );
+            }
         }
 
         virtual string getType() const { return "interaction"; }

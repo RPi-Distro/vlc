@@ -2,7 +2,7 @@
  * deinterlace.c : deinterlacer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 the VideoLAN team
- * $Id: deinterlace.c 15749 2006-05-27 11:12:22Z Trax $
+ * $Id: deinterlace.c 15030 2006-04-01 20:33:59Z sam $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *
@@ -1718,7 +1718,7 @@ static inline void XDeint8x8FieldMotion( uint8_t *dst, int i_dst,
 
 #if 0
 /* Kernel interpolation (1,-5,20,20,-5,1)
- * Lose a bit more details+add aliasing than edge interpol but avoid
+ * Loose a bit more details+add aliasing than edge interpol but avoid
  * more artifacts
  */
 static inline uint8_t clip1( int a )

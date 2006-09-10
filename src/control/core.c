@@ -2,7 +2,7 @@
  * core.c: Core libvlc new API functions : initialization, exceptions handling
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: core.c 16188 2006-08-01 09:22:35Z zorglub $
+ * $Id: core.c 14706 2006-03-10 17:21:33Z courmisch $
  *
  * Authors: Cl�ent Stenac <zorglub@videolan.org>
  *
@@ -61,26 +61,16 @@ inline void libvlc_exception_raise( libvlc_exception_t *p_exception,
                                     char *psz_format, ... )
 {
     va_list args;
-
-    /* does caller care about exceptions ? */
-    if( p_exception == NULL ) return;
-
-    /* remove previous exception if it wasn't cleared */
-    if( p_exception->b_raised && p_exception->psz_message )
-    {
-        free(p_exception->psz_message);
-        p_exception->psz_message = NULL;
-    }
-
     va_start( args, psz_format );
     vasprintf( &p_exception->psz_message, psz_format, args );
     va_end( args );
 
+    if( p_exception == NULL ) return;
     p_exception->b_raised = 1;
 }
 
 libvlc_instance_t * libvlc_new( int argc, char **argv,
-                                libvlc_exception_t *p_e )
+                                libvlc_exception_t *p_exception )
 {
     int i_vlc_id;
     libvlc_instance_t *p_new;
@@ -89,14 +79,21 @@ libvlc_instance_t * libvlc_new( int argc, char **argv,
     i_vlc_id = VLC_Create();
     p_vlc = (vlc_t* ) vlc_current_object( i_vlc_id );
 
-    if( !p_vlc ) RAISENULL( "VLC initialization failed" );
-
+    if( !p_vlc )
+    {
+        libvlc_exception_raise( p_exception, "VLC initialization failed" );
+        return NULL;
+    }
     p_new = (libvlc_instance_t *)malloc( sizeof( libvlc_instance_t ) );
-    if( !p_new ) RAISENULL( "Out of memory" );
 
     /** \todo Look for interface settings. If we don't have any, add -I dummy */
     /* Because we probably don't want a GUI by default */
 
+    if( !p_new )
+    {
+        libvlc_exception_raise( p_exception, "Out of memory" );
+        return NULL;
+    }
 
     VLC_Init( i_vlc_id, argc, argv );
 
@@ -105,9 +102,13 @@ libvlc_instance_t * libvlc_new( int argc, char **argv,
                                 VLC_OBJECT_PLAYLIST, FIND_CHILD );
     p_new->p_vlm = NULL;
 
-    if( !p_new->p_playlist ) RAISENULL( "Playlist creation failed" );
-    
+    if( !p_new->p_playlist )
+    {
+        libvlc_exception_raise( p_exception, "Playlist creation failed" );
+        return NULL;
+    }
     p_new->i_vlc_id = i_vlc_id;
+
     return p_new;
 }
 
@@ -118,9 +119,4 @@ void libvlc_destroy( libvlc_instance_t *p_instance )
     vlc_object_release( p_instance->p_vlc );
     VLC_CleanUp( p_instance->i_vlc_id );
     VLC_Destroy( p_instance->i_vlc_id );
-}
-
-int libvlc_get_vlc_id( libvlc_instance_t *p_instance )
-{
-    return p_instance->i_vlc_id;
 }

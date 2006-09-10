@@ -2,7 +2,7 @@
  * menus.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: menus.cpp 15858 2006-06-09 21:35:13Z gbazin $
+ * $Id: menus.cpp 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -645,7 +645,7 @@ static bool IsMenuEmpty( const char *psz_var, vlc_object_t *p_object,
 
     if( (i_type & VLC_VAR_TYPE) != VLC_VAR_VARIABLE )
     {
-        /* Very evil hack ! intf-switch can have only one value */ 
+        /* Very evil hack ! intf-switch can have only one value */
         if( !strcmp( psz_var, "intf-switch" ) ) return FALSE;
         if( val.i_int == 1 && b_root ) return TRUE;
         else return FALSE;

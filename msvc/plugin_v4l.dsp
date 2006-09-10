@@ -90,14 +90,14 @@ LINK32=link.exe
 # PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
 
 # Begin Source File
-SOURCE="..\modules\access\v4l.c"
+SOURCE="..\modules\access\v4l\v4l.c"
 # ADD CPP /D "__VLC__" /D "__PLUGIN__"  /D "MODULE_NAME=v4l" /D "MODULE_NAME_IS_v4l" 
 !IF "$(CFG)" == "plugin_v4l - Win32 Release"
-# PROP Output_Dir "Release\modules\access"
-# PROP Intermediate_Dir "Release\modules\access"
+# PROP Output_Dir "Release\modules\access\v4l"
+# PROP Intermediate_Dir "Release\modules\access\v4l"
 !ELSEIF "$(CFG)" == "plugin_v4l - Win32 Debug"
-# PROP Output_Dir "Debug\modules\access"
-# PROP Intermediate_Dir "Debug\modules\access"
+# PROP Output_Dir "Debug\modules\access\v4l"
+# PROP Intermediate_Dir "Debug\modules\access\v4l"
 # End Source File
 
 # End Group
@@ -107,7 +107,7 @@ SOURCE="..\modules\access\v4l.c"
 # PROP Default_Filter "h;hpp;hxx;hm;inl"
 
 # Begin Source File
-SOURCE="..\modules\access\videodev_mjpeg.h"
+SOURCE="..\modules\access\v4l\videodev_mjpeg.h"
 # End Source File
 
 # End Group

@@ -2,7 +2,7 @@
  * http.h: Headers for the HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: http.h 15629 2006-05-14 18:29:00Z zorglub $
+ * $Id: http.h 15082 2006-04-03 11:39:35Z courmisch $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -130,7 +130,7 @@ char *E_(ExtractURIValue)( char *psz_uri, const char *psz_name,
 int E_(TestURIParam)( char *psz_uri, const char *psz_name );
 
 /** This function parses a MRL */
-input_item_t *E_(MRLParse)( intf_thread_t *, char *psz, char *psz_name );
+playlist_item_t *E_(MRLParse)( intf_thread_t *, char *psz, char *psz_name );
 
 /** Return the first word from a string (works in-place) */
 char *E_(FirstWord)( char *psz, char *new );

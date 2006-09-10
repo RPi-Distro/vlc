@@ -1,8 +1,8 @@
 /*****************************************************************************
  * mux.c: muxer using ffmpeg (libavformat).
  *****************************************************************************
- * Copyright (C) 2006 VideoLAN
- * $Id: demux.c 8444 2004-08-17 08:21:07Z gbazin $
+ * Copyright (C) 2006 the VideoLAN team
+ * $Id: mux.c 16603 2006-09-10 20:40:21Z sam $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -79,6 +79,7 @@ static offset_t IOSeek( void *opaque, offset_t offset, int whence );
  *****************************************************************************/
 int E_(OpenMux)( vlc_object_t *p_this )
 {
+    AVOutputFormat *file_oformat; 
     sout_mux_t *p_mux = (sout_mux_t*)p_this;
     sout_mux_sys_t *p_sys;
     AVFormatParameters params, *ap = &params;
@@ -87,7 +88,7 @@ int E_(OpenMux)( vlc_object_t *p_this )
     av_register_all();
 
     /* Find the requested muxer */
-    AVOutputFormat *file_oformat =
+    file_oformat =
         guess_format(NULL, p_mux->p_access->psz_name, NULL);
     if (!file_oformat)
     {

@@ -2,7 +2,7 @@
  * ini_file.hpp
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: ini_file.hpp 15248 2006-04-17 12:46:51Z asmax $
+ * $Id: ini_file.hpp 15249 2006-04-17 15:18:05Z asmax $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * time.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: time.cpp 15414 2006-04-29 13:31:39Z zorglub $
+ * $Id: time.cpp 15416 2006-04-29 13:34:17Z zorglub $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

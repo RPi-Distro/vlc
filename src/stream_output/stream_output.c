@@ -2,7 +2,7 @@
  * stream_output.c : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: stream_output.c 16216 2006-08-06 13:09:42Z jpsaman $
+ * $Id: stream_output.c 16434 2006-08-30 15:18:13Z hartman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -63,6 +63,8 @@ static int  mrl_Parse( mrl_t *p_mrl, char *psz_mrl );
 /* mrl_Clean: clean p_mrl  after a call to mrl_Parse */
 static void mrl_Clean( mrl_t *p_mrl );
 
+#define FREE( p ) if( p ) { free( p ); (p) = NULL; }
+
 /*****************************************************************************
  * sout_NewInstance: creates a new stream output instance
  *****************************************************************************/
@@ -70,6 +72,7 @@ sout_instance_t *__sout_NewInstance( vlc_object_t *p_parent, char * psz_dest )
 {
     sout_instance_t *p_sout;
     vlc_value_t keep;
+    counter_t *p_counter;
 
     if( var_Get( p_parent, "sout-keep", &keep ) < 0 )
     {
@@ -139,14 +142,25 @@ sout_instance_t *__sout_NewInstance( vlc_object_t *p_parent, char * psz_dest )
     /* attach it for inherit */
     vlc_object_attach( p_sout, p_parent );
 
+    /* Create statistics */
+    stats_Create( p_parent, "sout_sent_packets", STATS_SOUT_SENT_PACKETS,
+                  VLC_VAR_INTEGER, STATS_COUNTER );
+    stats_Create( p_parent, "sout_sent_bytes", STATS_SOUT_SENT_BYTES,
+                  VLC_VAR_INTEGER, STATS_COUNTER );
+    stats_Create( p_parent, "sout_send_bitrate", STATS_SOUT_SEND_BITRATE,
+                  VLC_VAR_FLOAT, STATS_DERIVATIVE );
+    p_counter = stats_CounterGet( p_parent, p_parent->i_object_id,
+                                  STATS_SOUT_SEND_BITRATE );
+    if( p_counter) p_counter->update_interval = 1000000;
+
     p_sout->p_stream = sout_StreamNew( p_sout, p_sout->psz_chain );
 
     if( p_sout->p_stream == NULL )
     {
         msg_Err( p_sout, "stream chain failed for `%s'", p_sout->psz_chain );
 
-        FREENULL( p_sout->psz_sout );
-        FREENULL( p_sout->psz_chain );
+        FREE( p_sout->psz_sout );
+        FREE( p_sout->psz_chain );
 
         vlc_object_detach( p_sout );
         vlc_object_destroy( p_sout );
@@ -168,8 +182,8 @@ void sout_DeleteInstance( sout_instance_t * p_sout )
     sout_StreamDelete( p_sout->p_stream );
 
     /* *** free all string *** */
-    FREENULL( p_sout->psz_sout );
-    FREENULL( p_sout->psz_chain );
+    FREE( p_sout->psz_sout );
+    FREE( p_sout->psz_chain );
 
     /* delete meta */
     if( p_sout->p_meta )
@@ -358,7 +372,7 @@ int sout_AccessOutRead( sout_access_out_t *p_access, block_t *p_buffer )
  *****************************************************************************/
 int sout_AccessOutWrite( sout_access_out_t *p_access, block_t *p_buffer )
 {
-    int i_total = 0;
+    int i_total;
     p_access->i_writes++;
     p_access->i_sent_bytes += p_buffer->i_buffer;
     if( p_access->p_libvlc->b_stats && p_access->i_writes % 30 == 0 )
@@ -369,12 +383,11 @@ int sout_AccessOutWrite( sout_access_out_t *p_access, block_t *p_buffer )
                                                FIND_PARENT );
         if( p_input )
         {
-            stats_UpdateInteger( p_input, p_input->counters.p_sout_sent_packets,
-			         30, NULL );
-            stats_UpdateInteger( p_input, p_input->counters.p_sout_sent_bytes,
+            stats_UpdateInteger( p_input, STATS_SOUT_SENT_PACKETS, 30, NULL );
+            stats_UpdateInteger( p_input, STATS_SOUT_SENT_BYTES,
                                  p_access->i_sent_bytes, &i_total );
-            stats_UpdateFloat( p_input, p_input->counters.p_sout_send_bitrate,
-			   	 (float)i_total, NULL );
+            stats_UpdateFloat( p_input, STATS_SOUT_SEND_BITRATE, (float)i_total,
+                               NULL );
             p_access->i_sent_bytes = 0;
             vlc_object_release( p_input );
         }
@@ -424,7 +437,7 @@ sout_mux_t * sout_MuxNew( sout_instance_t *p_sout, char *psz_mux,
 
     if( p_mux->p_module == NULL )
     {
-        FREENULL( p_mux->psz_mux );
+        FREE( p_mux->psz_mux );
 
         vlc_object_detach( p_mux );
         vlc_object_destroy( p_mux );
@@ -721,9 +734,9 @@ static int mrl_Parse( mrl_t *p_mrl, char *psz_mrl )
 /* mrl_Clean: clean p_mrl  after a call to mrl_Parse */
 static void mrl_Clean( mrl_t *p_mrl )
 {
-    FREENULL( p_mrl->psz_access );
-    FREENULL( p_mrl->psz_way );
-    FREENULL( p_mrl->psz_name );
+    FREE( p_mrl->psz_access );
+    FREE( p_mrl->psz_way );
+    FREE( p_mrl->psz_name );
 }
 
 
@@ -921,8 +934,8 @@ static void sout_CfgDestroy( sout_cfg_t *p_cfg )
 
         p_next = p_cfg->p_next;
 
-        FREENULL( p_cfg->psz_name );
-        FREENULL( p_cfg->psz_value );
+        FREE( p_cfg->psz_name );
+        FREE( p_cfg->psz_value );
         free( p_cfg );
 
         p_cfg = p_next;
@@ -1141,8 +1154,8 @@ void sout_StreamDelete( sout_stream_t *p_stream )
     vlc_object_detach( p_stream );
     if( p_stream->p_module ) module_Unneed( p_stream, p_stream->p_module );
 
-    FREENULL( p_stream->psz_name );
-    FREENULL( p_stream->psz_next );
+    FREE( p_stream->psz_name );
+    FREE( p_stream->psz_next );
 
     sout_CfgDestroy( p_stream->p_cfg );
 

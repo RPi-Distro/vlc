@@ -2,7 +2,7 @@
  * ogg.c: ogg muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: ogg.c 16203 2006-08-03 15:34:08Z zorglub $
+ * $Id: ogg.c 14918 2006-03-25 12:54:27Z fkuehne $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -72,6 +72,7 @@ static block_t *OggCreateFooter( sout_mux_t *, mtime_t );
 /*****************************************************************************
  * Misc declarations
  *****************************************************************************/
+#define FREE( p ) if( p ) { free( p ); (p) = NULL; }
 
 /* Structures used for OggDS headers used in ogm files */
 
@@ -262,10 +263,10 @@ static void Close( vlc_object_t * p_this )
         {
             i_dts = p_sys->pp_del_streams[i]->i_dts;
             ogg_stream_clear( &p_sys->pp_del_streams[i]->os );
-            FREENULL( p_sys->pp_del_streams[i]->p_oggds_header );
-            FREENULL( p_sys->pp_del_streams[i] );
+            FREE( p_sys->pp_del_streams[i]->p_oggds_header );
+            FREE( p_sys->pp_del_streams[i] );
         }
-        FREENULL( p_sys->pp_del_streams );
+        FREE( p_sys->pp_del_streams );
         p_sys->i_streams -= p_sys->i_del_streams;
 
         /* Write footer */
@@ -386,7 +387,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             break;
 
         default:
-            FREENULL( p_input->p_sys );
+            FREE( p_input->p_sys );
             return VLC_EGENERIC;
         }
         break;
@@ -410,7 +411,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             fourcc_to_wf_tag( p_stream->i_fourcc, &i_tag );
             if( i_tag == WAVE_FORMAT_UNKNOWN )
             {
-                FREENULL( p_input->p_sys );
+                FREE( p_input->p_sys );
                 return VLC_EGENERIC;
             }
 
@@ -464,12 +465,12 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             break;
 
         default:
-            FREENULL( p_input->p_sys );
+            FREE( p_input->p_sys );
             return VLC_EGENERIC;
         }
         break;
     default:
-        FREENULL( p_input->p_sys );
+        FREE( p_input->p_sys );
         return VLC_EGENERIC;
     }
 
@@ -517,8 +518,8 @@ static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
         else
         {
             /* wasn't already added so get rid of it */
-            FREENULL( p_stream->p_oggds_header );
-            FREENULL( p_stream );
+            FREE( p_stream->p_oggds_header );
+            FREE( p_stream );
             p_sys->i_add_streams--;
         }
     }
@@ -889,10 +890,10 @@ static int Mux( sout_mux_t *p_mux )
             /* Remove deleted logical streams */
             for( i = 0; i < p_sys->i_del_streams; i++ )
             {
-                FREENULL( p_sys->pp_del_streams[i]->p_oggds_header );
-                FREENULL( p_sys->pp_del_streams[i] );
+                FREE( p_sys->pp_del_streams[i]->p_oggds_header );
+                FREE( p_sys->pp_del_streams[i] );
             }
-            FREENULL( p_sys->pp_del_streams );
+            FREE( p_sys->pp_del_streams );
             p_sys->i_streams = 0;
         }
 

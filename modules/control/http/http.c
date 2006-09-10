@@ -2,7 +2,7 @@
  * http.c : HTTP/HTTPS Remote control interface
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: http.c 15587 2006-05-10 21:47:22Z xtophe $
+ * $Id: http.c 16439 2006-08-30 19:33:55Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>

@@ -2,7 +2,7 @@
  * asf.c : ASF demux module
  *****************************************************************************
  * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: asf.c 16319 2006-08-22 23:22:14Z fkuehne $
+ * $Id: asf.c 14790 2006-03-18 02:06:16Z xtophe $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -28,7 +28,6 @@
 
 #include <vlc/vlc.h>
 #include <vlc/input.h>
-#include <vlc_interaction.h>
 
 #include "vlc_meta.h"
 
@@ -165,8 +164,6 @@ static int Demux( demux_t *p_demux )
                 if( DemuxInit( p_demux ) )
                 {
                     msg_Err( p_demux, "failed to load the new header" );
-                    intf_UserFatal( p_demux, VLC_FALSE, _("Could not demux ASF stream"), 
-                                    _("VLC failed to load the ASF header.") );
                     return 0;
                 }
                 continue;
@@ -222,7 +219,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     demux_sys_t *p_sys = p_demux->p_sys;
     int64_t     *pi64;
     int         i;
-    vlc_meta_t *p_meta;
+    vlc_meta_t **pp_meta;
 
     switch( i_query )
     {
@@ -235,8 +232,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_SUCCESS;
 
         case DEMUX_GET_META:
-            p_meta = (vlc_meta_t*)va_arg( args, vlc_meta_t* );
-            vlc_meta_Merge( p_meta, p_sys->meta );
+            pp_meta = (vlc_meta_t**)va_arg( args, vlc_meta_t** );
+            *pp_meta = vlc_meta_Duplicate( p_sys->meta );
             return VLC_SUCCESS;
 
         case DEMUX_SET_POSITION:
@@ -815,27 +812,25 @@ static int DemuxInit( demux_t *p_demux )
     {
         if( p_cd->psz_title && *p_cd->psz_title )
         {
-            vlc_meta_SetTitle( p_sys->meta, p_cd->psz_title );
+            vlc_meta_Add( p_sys->meta, VLC_META_TITLE, p_cd->psz_title );
         }
         if( p_cd->psz_author && *p_cd->psz_author )
         {
-             vlc_meta_SetAuthor( p_sys->meta, p_cd->psz_author );
+             vlc_meta_Add( p_sys->meta, VLC_META_AUTHOR, p_cd->psz_author );
         }
         if( p_cd->psz_copyright && *p_cd->psz_copyright )
         {
-            vlc_meta_SetCopyright( p_sys->meta, p_cd->psz_copyright );
+            vlc_meta_Add( p_sys->meta, VLC_META_COPYRIGHT, p_cd->psz_copyright );
         }
         if( p_cd->psz_description && *p_cd->psz_description )
         {
-            vlc_meta_SetDescription( p_sys->meta, p_cd->psz_description );
+            vlc_meta_Add( p_sys->meta, VLC_META_DESCRIPTION, p_cd->psz_description );
         }
         if( p_cd->psz_rating && *p_cd->psz_rating )
         {
-            vlc_meta_SetRating( p_sys->meta, p_cd->psz_rating );
+            vlc_meta_Add( p_sys->meta, VLC_META_RATING, p_cd->psz_rating );
         }
     }
-    /// \tood Fix Child meta for ASF tracks
-#if 0
     for( i_stream = 0, i = 0; i < 128; i++ )
     {
         asf_object_codec_list_t *p_cl = ASF_FindObject( p_sys->p_root->p_hdr,
@@ -864,7 +859,6 @@ static int DemuxInit( demux_t *p_demux )
             i_stream++;
         }
     }
-#endif
 
     es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
     return VLC_SUCCESS;

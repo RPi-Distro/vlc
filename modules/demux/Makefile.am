@@ -3,7 +3,7 @@
 # DO NOT EDIT - edit Modules.am or $(top_srcdir)/bootstrap instead
 
 basedir = demux
-mods = a52sys dtssys flac ogg demuxdump rawdv au wav mkv live555 nsv real ts ps mod pva aiff mjpeg subtitle ty vobsub voc xa nuv nsc mpc gme
+mods = a52sys dtssys flac ogg m3u demuxdump rawdv au wav mkv live555 nsv real ts ps mod pva aiff sgimb mjpeg subtitle ty vobsub voc xa nuv nsc mpc
 
 NULL =
 libvlc_LTLIBRARIES =
@@ -16,22 +16,19 @@ SUFFIXES = _plugin$(LIBEXT) _plugin.a
 
 libvlcdir = $(libdir)/vlc/$(basedir)
 
-EXTRA_LIBRARIES =  liba52sys_plugin.a liba52sys.a libdtssys_plugin.a libdtssys.a libflac_plugin.a libflac.a libogg_plugin.a libogg.a libdemuxdump_plugin.a libdemuxdump.a librawdv_plugin.a librawdv.a libau_plugin.a libau.a libwav_plugin.a libwav.a libmkv_plugin.a libmkv.a liblive555_plugin.a liblive555.a libnsv_plugin.a libnsv.a libreal_plugin.a libreal.a libts_plugin.a libts.a libps_plugin.a libps.a libmod_plugin.a libmod.a libpva_plugin.a libpva.a libaiff_plugin.a libaiff.a libmjpeg_plugin.a libmjpeg.a libsubtitle_plugin.a libsubtitle.a libty_plugin.a libty.a libvobsub_plugin.a libvobsub.a libvoc_plugin.a libvoc.a libxa_plugin.a libxa.a libnuv_plugin.a libnuv.a libnsc_plugin.a libnsc.a libmpc_plugin.a libmpc.a libgme_plugin.a libgme.a
-EXTRA_LTLIBRARIES =  liba52sys_plugin.la liba52sys_builtin.la libdtssys_plugin.la libdtssys_builtin.la libflac_plugin.la libflac_builtin.la libogg_plugin.la libogg_builtin.la libdemuxdump_plugin.la libdemuxdump_builtin.la librawdv_plugin.la librawdv_builtin.la libau_plugin.la libau_builtin.la libwav_plugin.la libwav_builtin.la libmkv_plugin.la libmkv_builtin.la liblive555_plugin.la liblive555_builtin.la libnsv_plugin.la libnsv_builtin.la libreal_plugin.la libreal_builtin.la libts_plugin.la libts_builtin.la libps_plugin.la libps_builtin.la libmod_plugin.la libmod_builtin.la libpva_plugin.la libpva_builtin.la libaiff_plugin.la libaiff_builtin.la libmjpeg_plugin.la libmjpeg_builtin.la libsubtitle_plugin.la libsubtitle_builtin.la libty_plugin.la libty_builtin.la libvobsub_plugin.la libvobsub_builtin.la libvoc_plugin.la libvoc_builtin.la libxa_plugin.la libxa_builtin.la libnuv_plugin.la libnuv_builtin.la libnsc_plugin.la libnsc_builtin.la libmpc_plugin.la libmpc_builtin.la libgme_plugin.la libgme_builtin.la
+EXTRA_LIBRARIES =  liba52sys_plugin.a liba52sys.a libdtssys_plugin.a libdtssys.a libflac_plugin.a libflac.a libogg_plugin.a libogg.a libm3u_plugin.a libm3u.a libdemuxdump_plugin.a libdemuxdump.a librawdv_plugin.a librawdv.a libau_plugin.a libau.a libwav_plugin.a libwav.a libmkv_plugin.a libmkv.a liblive555_plugin.a liblive555.a libnsv_plugin.a libnsv.a libreal_plugin.a libreal.a libts_plugin.a libts.a libps_plugin.a libps.a libmod_plugin.a libmod.a libpva_plugin.a libpva.a libaiff_plugin.a libaiff.a libsgimb_plugin.a libsgimb.a libmjpeg_plugin.a libmjpeg.a libsubtitle_plugin.a libsubtitle.a libty_plugin.a libty.a libvobsub_plugin.a libvobsub.a libvoc_plugin.a libvoc.a libxa_plugin.a libxa.a libnuv_plugin.a libnuv.a libnsc_plugin.a libnsc.a libmpc_plugin.a libmpc.a
+EXTRA_LTLIBRARIES =  liba52sys_plugin.la liba52sys_builtin.la libdtssys_plugin.la libdtssys_builtin.la libflac_plugin.la libflac_builtin.la libogg_plugin.la libogg_builtin.la libm3u_plugin.la libm3u_builtin.la libdemuxdump_plugin.la libdemuxdump_builtin.la librawdv_plugin.la librawdv_builtin.la libau_plugin.la libau_builtin.la libwav_plugin.la libwav_builtin.la libmkv_plugin.la libmkv_builtin.la liblive555_plugin.la liblive555_builtin.la libnsv_plugin.la libnsv_builtin.la libreal_plugin.la libreal_builtin.la libts_plugin.la libts_builtin.la libps_plugin.la libps_builtin.la libmod_plugin.la libmod_builtin.la libpva_plugin.la libpva_builtin.la libaiff_plugin.la libaiff_builtin.la libsgimb_plugin.la libsgimb_builtin.la libmjpeg_plugin.la libmjpeg_builtin.la libsubtitle_plugin.la libsubtitle_builtin.la libty_plugin.la libty_builtin.la libvobsub_plugin.la libvobsub_builtin.la libvoc_plugin.la libvoc_builtin.la libxa_plugin.la libxa_builtin.la libnuv_plugin.la libnuv_builtin.la libnsc_plugin.la libnsc_builtin.la libmpc_plugin.la libmpc_builtin.la
 
 include Modules.am
 
 LTLIBVLC = $(top_builddir)/src/libvlc.la
 
 if BUILD_SHARED
-LIBVLC = -L$(top_builddir)/src -lvlc
+LIBVLC = $(top_builddir)/src/libvlc$(LIBEXT)
 LIBADD = $(LIBVLC)
 endif
 
 all: all-modules
-
-nice:
-	$(top_builddir)/compile
 
 # Find out which modules were enabled and tell make to build them
 all-modules:
@@ -182,6 +179,29 @@ libogg_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) ogg`
 libogg_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin ogg`
 libogg_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin ogg`
 libogg_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin ogg`
+
+# The m3u plugin
+
+libm3u_plugin_a_SOURCES = $(SOURCES_m3u)
+libm3u_plugin_la_SOURCES = $(SOURCES_m3u)
+libm3u_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin m3u`
+libm3u_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin m3u`
+libm3u_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin m3u`
+libm3u_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin m3u`
+libm3u_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin m3u`
+libm3u_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin m3u`
+libm3u_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin m3u` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+libm3u_plugin_la_LIBADD = $(LTLIBVLC)
+
+libm3u_a_SOURCES = $(SOURCES_m3u)
+libm3u_builtin_la_SOURCES = $(SOURCES_m3u)
+libm3u_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) m3u`
+libm3u_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) m3u`
+libm3u_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) m3u`
+libm3u_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin m3u`
+libm3u_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin m3u`
+libm3u_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin m3u`
 
 # The demuxdump plugin
 
@@ -482,6 +502,29 @@ libaiff_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin aiff`
 libaiff_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin aiff`
 libaiff_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin aiff`
 
+# The sgimb plugin
+
+libsgimb_plugin_a_SOURCES = $(SOURCES_sgimb)
+libsgimb_plugin_la_SOURCES = $(SOURCES_sgimb)
+libsgimb_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin sgimb`
+libsgimb_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin sgimb`
+libsgimb_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin sgimb`
+libsgimb_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin sgimb`
+libsgimb_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin sgimb`
+libsgimb_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin sgimb`
+libsgimb_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin sgimb` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+libsgimb_plugin_la_LIBADD = $(LTLIBVLC)
+
+libsgimb_a_SOURCES = $(SOURCES_sgimb)
+libsgimb_builtin_la_SOURCES = $(SOURCES_sgimb)
+libsgimb_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) sgimb`
+libsgimb_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) sgimb`
+libsgimb_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) sgimb`
+libsgimb_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin sgimb`
+libsgimb_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin sgimb`
+libsgimb_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin sgimb`
+
 # The mjpeg plugin
 
 libmjpeg_plugin_a_SOURCES = $(SOURCES_mjpeg)
@@ -688,27 +731,4 @@ libmpc_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) mpc`
 libmpc_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin mpc`
 libmpc_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin mpc`
 libmpc_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin mpc`
-
-# The gme plugin
-
-libgme_plugin_a_SOURCES = $(SOURCES_gme)
-libgme_plugin_la_SOURCES = $(SOURCES_gme)
-libgme_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin gme`
-libgme_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin gme`
-libgme_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin gme`
-libgme_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin gme`
-libgme_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin gme`
-libgme_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin gme`
-libgme_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin gme` \
-	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
-libgme_plugin_la_LIBADD = $(LTLIBVLC)
-
-libgme_a_SOURCES = $(SOURCES_gme)
-libgme_builtin_la_SOURCES = $(SOURCES_gme)
-libgme_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) gme`
-libgme_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) gme`
-libgme_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) gme`
-libgme_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin gme`
-libgme_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin gme`
-libgme_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin gme`
 

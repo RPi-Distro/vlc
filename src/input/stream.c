@@ -2,7 +2,7 @@
  * stream.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: stream.c 16215 2006-08-06 13:09:24Z jpsaman $
+ * $Id: stream.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <vlc/vlc.h>
 #include <vlc/input.h>
-#include <assert.h>
 
 #include "input_internal.h"
 
@@ -1573,29 +1572,18 @@ static int AReadStream( stream_t *s, void *p_read, int i_read )
 {
     stream_sys_t *p_sys = s->p_sys;
     access_t *p_access = p_sys->p_access;
-    input_thread_t *p_input = NULL;
     int i_read_orig = i_read;
-    int i_total = 0;
-
-    if( s->p_parent && s->p_parent->p_parent &&
-        s->p_parent->p_parent->i_object_type == VLC_OBJECT_INPUT )
-        p_input = (input_thread_t *)s->p_parent->p_parent;
+    int i_total;
 
     if( !p_sys->i_list )
     {
         i_read = p_access->pf_read( p_access, p_read, i_read );
-        if( p_input )
-        {
-            vlc_object_yield( p_input );
-            vlc_mutex_lock( &p_input->counters.counters_lock );
-            stats_UpdateInteger( s, p_input->counters.p_read_bytes, i_read,
+        stats_UpdateInteger( s->p_parent->p_parent , STATS_READ_BYTES, i_read,
                              &i_total );
-            stats_UpdateFloat( s, p_input->counters.p_input_bitrate,
+        stats_UpdateFloat( s->p_parent->p_parent , STATS_INPUT_BITRATE,
                            (float)i_total, NULL );
-            stats_UpdateInteger( s, p_input->counters.p_read_packets, 1, NULL );
-            vlc_mutex_unlock( &p_input->counters.counters_lock );
-            vlc_object_release( p_input );
-        }
+        stats_UpdateInteger( s->p_parent->p_parent , STATS_READ_PACKETS, 1,
+                             NULL );
         return i_read;
     }
 
@@ -1624,17 +1612,11 @@ static int AReadStream( stream_t *s, void *p_read, int i_read )
     }
 
     /* Update read bytes in input */
-    if( p_input )
-    {
-        vlc_object_yield( p_input );
-        vlc_mutex_lock( &p_input->counters.counters_lock );
-        stats_UpdateInteger( s, p_input->counters.p_read_bytes, i_read, &i_total );
-        stats_UpdateFloat( s, p_input->counters.p_input_bitrate,
-                       (float)i_total, NULL );
-        stats_UpdateInteger( s, p_input->counters.p_read_packets, 1, NULL );
-        vlc_mutex_unlock( &p_input->counters.counters_lock );
-        vlc_object_release( p_input );
-    }
+    stats_UpdateInteger( s->p_parent->p_parent ,  STATS_READ_BYTES, i_read,
+                         &i_total );
+    stats_UpdateFloat( s->p_parent->p_parent ,  STATS_INPUT_BITRATE,
+                      (float)i_total, NULL );
+    stats_UpdateInteger( s->p_parent->p_parent ,  STATS_READ_PACKETS, 1, NULL );
     return i_read;
 }
 
@@ -1642,30 +1624,21 @@ static block_t *AReadBlock( stream_t *s, vlc_bool_t *pb_eof )
 {
     stream_sys_t *p_sys = s->p_sys;
     access_t *p_access = p_sys->p_access;
-    input_thread_t *p_input = NULL;
     block_t *p_block;
     vlc_bool_t b_eof;
-    int i_total = 0;
-
-    if( s->p_parent && s->p_parent->p_parent &&
-        s->p_parent->p_parent->i_object_type == VLC_OBJECT_INPUT )
-        p_input = (input_thread_t *)s->p_parent->p_parent;
+    int i_total;
 
     if( !p_sys->i_list )
     {
         p_block = p_access->pf_block( p_access );
         if( pb_eof ) *pb_eof = p_access->info.b_eof;
-        if( p_input &&  p_block && p_access->p_libvlc->b_stats )
+        if( p_block && p_access->p_libvlc->b_stats )
         {
-            vlc_object_yield( p_input );
-            vlc_mutex_lock( &p_input->counters.counters_lock );
-            stats_UpdateInteger( s, p_input->counters.p_read_bytes,
+            stats_UpdateInteger( s->p_parent->p_parent,  STATS_READ_BYTES,
                                  p_block->i_buffer, &i_total );
-            stats_UpdateFloat( s, p_input->counters.p_input_bitrate,
+            stats_UpdateFloat( s->p_parent->p_parent ,  STATS_INPUT_BITRATE,
                               (float)i_total, NULL );
-            stats_UpdateInteger( s, p_input->counters.p_read_packets, 1, NULL );
-            vlc_mutex_unlock( &p_input->counters.counters_lock );
-            vlc_object_release( p_input );
+            stats_UpdateInteger( s->p_parent->p_parent ,  STATS_READ_PACKETS, 1, NULL );
         }
         return p_block;
     }
@@ -1696,20 +1669,14 @@ static block_t *AReadBlock( stream_t *s, vlc_bool_t *pb_eof )
     }
     if( p_block )
     {
-        if( p_input )
-        {
-            vlc_object_yield( p_input );
-            vlc_mutex_lock( &p_input->counters.counters_lock );
-            stats_UpdateInteger( s, p_input->counters.p_read_bytes,
-                                 p_block->i_buffer, &i_total );
-            stats_UpdateFloat( s, p_input->counters.p_input_bitrate,
-                              (float)i_total, NULL );
-            stats_UpdateInteger( s, p_input->counters.p_read_packets,
-                                 1 , NULL);
-            vlc_mutex_unlock( &p_input->counters.counters_lock );
-            vlc_object_release( p_input );
-        }
+        stats_UpdateInteger( s->p_parent->p_parent,  STATS_READ_BYTES,
+                             p_block->i_buffer, &i_total );
+        stats_UpdateFloat( s->p_parent->p_parent ,  STATS_INPUT_BITRATE,
+                          (float)i_total, NULL );
+        stats_UpdateInteger( s->p_parent->p_parent ,  STATS_READ_PACKETS,
+                             1 , NULL);
     }
+
     return p_block;
 }
 

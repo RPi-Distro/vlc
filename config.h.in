@@ -118,9 +118,6 @@
 /* Define for the audio CD plugin using libcdio */
 #undef HAVE_CDDAX
 
-/* Define to 1 if you have clock_nanosleep. */
-#undef HAVE_CLOCK_NANOSLEEP
-
 /* Define to 1 if you have the <Cocoa/Cocoa.h> header file. */
 #undef HAVE_COCOA_COCOA_H
 
@@ -140,17 +137,8 @@
    */
 #undef HAVE_CYBERGARAGE_UPNP_MEDIASERVER_H
 
-/* Define to 1 if you have the <d3d9.h> header file. */
-#undef HAVE_D3D9_H
-
 /* Define to 1 if you have the `daemon' function. */
 #undef HAVE_DAEMON
-
-/* Define if you have the D-BUS library */
-#undef HAVE_DBUS
-
-/* Define if you have the new D-BUS library API */
-#undef HAVE_DBUS_1
 
 /* Define if the GNU dcgettext() function is already present or preinstalled.
    */

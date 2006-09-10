@@ -4,7 +4,7 @@
  * interface, such as command line.
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: interface.c 15561 2006-05-07 08:51:34Z zorglub $
+ * $Id: interface.c 15531 2006-05-03 21:27:32Z xtophe $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
  * Copyright (C) 2002-2004 Rémi Denis-Courmont
- * $Id: getaddrinfo.c 15929 2006-06-20 14:37:45Z courmisch $
+ * $Id: getaddrinfo.c 16460 2006-08-31 22:01:13Z hartman $
  *
  * Author: Rémi Denis-Courmont <rem # videolan.org>
  *

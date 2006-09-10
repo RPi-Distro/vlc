@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: directory.c 16206 2006-08-03 21:57:58Z gbazin $
+ * $Id: directory.c 16434 2006-08-30 15:18:13Z hartman $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -124,7 +124,7 @@ static int DemuxControl( demux_t *p_demux, int i_query, va_list args );
 
 
 static int ReadDir( playlist_t *, const char *psz_name, int i_mode,
-                    playlist_item_t *, playlist_item_t * );
+                    playlist_item_t * );
 
 /*****************************************************************************
  * Open: open the directory
@@ -198,10 +198,9 @@ static int Read( access_t *p_access, uint8_t *p_buffer, int i_len)
 {
     char *psz_name = NULL;
     char *psz;
-    char *ptr;
-    int  i_mode, i_activity;
+    int  i_mode, i_pos;
 
-    playlist_item_t *p_item, *p_root_category;
+    playlist_item_t *p_item;
     vlc_bool_t b_play = VLC_FALSE;
 
     playlist_t *p_playlist =
@@ -213,40 +212,54 @@ static int Read( access_t *p_access, uint8_t *p_buffer, int i_len)
         msg_Err( p_access, "can't find playlist" );
         goto end;
     }
-
-    psz_name = ToLocale( p_access->psz_path );
-    ptr = strdup( psz_name );
-    LocaleFree( psz_name );
-    if( ptr == NULL )
-        goto end;
-
-    psz_name = ptr;
-
-    /* Remove the ending '/' char */
-    ptr += strlen( ptr );
-    if( ( ptr > psz_name ) )
+    else
     {
-        switch( *--ptr )
+        char *ptr;
+
+        psz_name = ToLocale( p_access->psz_path );
+        ptr = strdup( psz_name );
+        LocaleFree( psz_name );
+        if( ptr == NULL )
+            goto end;
+
+        psz_name = ptr;
+
+        /* Remove the ending '/' char */
+        ptr += strlen( ptr );
+        if( ( ptr > psz_name ) )
         {
-            case '/':
-            case '\\':
-                *ptr = '\0';
+            switch( *--ptr )
+            {
+                case '/':
+                case '\\':
+                    *ptr = '\0';
+            }
         }
     }
 
-    /* Handle mode */
+    /* Initialize structure */
     psz = var_CreateGetString( p_access, "recursive" );
     if( *psz == '\0' || !strncmp( psz, "none" , 4 )  )
+    {
         i_mode = MODE_NONE;
+    }
     else if( !strncmp( psz, "collapse", 8 )  )
+    {
         i_mode = MODE_COLLAPSE;
+    }
     else
+    {
         i_mode = MODE_EXPAND;
+    }
     free( psz );
+
+    /* Make sure we are deleted when we are done */
+    /* The playlist position we will use for the add */
+    i_pos = p_playlist->i_index + 1;
 
     msg_Dbg( p_access, "opening directory `%s'", p_access->psz_path );
 
-    if( p_playlist->status.p_item->p_input ==
+    if( &p_playlist->status.p_item->input ==
         ((input_thread_t *)p_access->p_parent)->input.p_item )
     {
         p_item = p_playlist->status.p_item;
@@ -266,29 +279,19 @@ static int Read( access_t *p_access, uint8_t *p_buffer, int i_len)
         }
         b_play = VLC_FALSE;
     }
-    p_item->p_input->i_type = ITEM_TYPE_DIRECTORY;
 
-    p_root_category = playlist_LockItemToNode( p_playlist, p_item );
-
-    i_activity = var_GetInteger( p_playlist, "activity" );
-    var_SetInteger( p_playlist, "activity", i_activity +
-                    DIRECTORY_ACTIVITY );
-
-    ReadDir( p_playlist, psz_name , i_mode, p_item, p_root_category );
-
-    i_activity = var_GetInteger( p_playlist, "activity" );
-    var_SetInteger( p_playlist, "activity", i_activity -
-                    DIRECTORY_ACTIVITY );
+    p_item->input.i_type = ITEM_TYPE_DIRECTORY;
+    if( ReadDir( p_playlist, psz_name , i_mode, p_item ) != VLC_SUCCESS )
+    {
+    }
 end:
 
     /* Begin to read the directory */
     if( b_play )
     {
-#if 0
-       /// \bug we can start playing an already deleted item. Fix ?*/
-       playlist_Control( p_playlist, PLAYLIST_VIEWPLAY, 1242,
+        playlist_Control( p_playlist, PLAYLIST_VIEWPLAY,
+                          p_playlist->status.i_view,
                           p_playlist->status.p_item, NULL );
-#endif
     }
     if( psz_name ) free( psz_name );
     vlc_object_release( p_playlist );
@@ -384,33 +387,16 @@ static int Filter( const struct dirent *foo )
  * ReadDir: read a directory and add its content to the list
  *****************************************************************************/
 static int ReadDir( playlist_t *p_playlist, const char *psz_name,
-                    int i_mode, playlist_item_t *p_parent,
-                    playlist_item_t *p_parent_category )
+                    int i_mode, playlist_item_t *p_parent )
 {
-    struct dirent   **pp_dir_content = 0;
-    int             i_dir_content, i, i_return = VLC_SUCCESS;
+    struct dirent   **pp_dir_content;
+    int             i_dir_content, i;
     playlist_item_t *p_node;
 
+    /* Build array with ignores */
     char **ppsz_extensions = 0;
     int i_extensions = 0;
-    char *psz_ignore;
-
-    /* Get the first directory entry */
-    i_dir_content = scandir( psz_name, &pp_dir_content, Filter, alphasort );
-    if( i_dir_content == -1 )
-    {
-        msg_Warn( p_playlist, "failed to read directory" );
-        return VLC_EGENERIC;
-    }
-    else if( i_dir_content <= 0 )
-    {
-        /* directory is empty */
-        if( pp_dir_content ) free( pp_dir_content );
-        return VLC_SUCCESS;
-    }
-
-    /* Build array with ignores */
-    psz_ignore = var_CreateGetString( p_playlist, "ignore-filetypes" );
+    char *psz_ignore = var_CreateGetString( p_playlist, "ignore-filetypes" );
     if( psz_ignore && *psz_ignore )
     {
         char *psz_parser = psz_ignore;
@@ -436,6 +422,25 @@ static int ReadDir( playlist_t *p_playlist, const char *psz_name,
             ppsz_extensions[a] = tmp;
             psz_parser = ptr + 1;
         }
+    }
+
+    /* Change the item to a node */
+    if( p_parent->i_children == -1 )
+    {
+        playlist_LockItemToNode( p_playlist,p_parent );
+    }
+
+    /* get the first directory entry */
+    i_dir_content = scandir( psz_name, &pp_dir_content, Filter, alphasort );
+    if( i_dir_content == -1 )
+    {
+        msg_Warn( p_playlist, "failed to read directory" );
+        return VLC_EGENERIC;
+    }
+    else if( i_dir_content <= 0 )
+    {
+        /* directory is empty */
+        return VLC_SUCCESS;
     }
 
     /* While we still have entries in the directory */
@@ -493,34 +498,27 @@ static int ReadDir( playlist_t *p_playlist, const char *psz_name,
                                                 p_playlist, psz_tmp );
                     LocaleFree( psz_tmp );
 
-                    if( p_parent_category )
+                    p_node = playlist_NodeCreate( p_playlist,
+                                       p_parent->pp_parents[0]->i_view,
+                                       psz_newname, p_parent );
+
+                    playlist_CopyParents(  p_parent, p_node );
+
+                    p_node->input.i_type = ITEM_TYPE_DIRECTORY;
+
+                    if( ReadDir( p_playlist, psz_uri , MODE_EXPAND,
+                                 p_node ) != VLC_SUCCESS )
                     {
-                        p_node = playlist_NodeCreate( p_playlist, psz_newname,
-                                                      p_parent_category );
-                    }
-                    else
-                    {
-                        p_node = playlist_NodeCreate( p_playlist, psz_newname,
-                                                      p_parent_category );
+                        return VLC_EGENERIC;
                     }
 
                     /* an strdup() just because of Mac OS X */
                     free( psz_newname );
-
-                    /* If we had the parent in category, the it is now node.
-                     * Else, we still don't have  */
-                    if( ReadDir( p_playlist, psz_uri , MODE_EXPAND,
-                                 p_node, p_parent_category ? p_node : NULL )
-                          != VLC_SUCCESS )
-                    {
-                        i_return = VLC_EGENERIC;
-                        break;
-                    }
                 }
             }
             else
             {
-                input_item_t *p_input;
+                playlist_item_t *p_item;
                 char *psz_tmp1, *psz_tmp2, *psz_loc;
 
                 if( i_extensions > 0 )
@@ -553,27 +551,30 @@ static int ReadDir( playlist_t *p_playlist, const char *psz_name,
                                                     psz_loc );
                 LocaleFree( psz_loc );
 
-                p_input = input_ItemNewWithType( VLC_OBJECT(p_playlist),
-                                                 psz_tmp1, psz_tmp2, 0, NULL,
-                                                 -1, ITEM_TYPE_VFILE );
+                p_item = playlist_ItemNewWithType( VLC_OBJECT(p_playlist),
+                        psz_tmp1, psz_tmp2, ITEM_TYPE_VFILE );
+                playlist_NodeAddItem( p_playlist,p_item,
+                                      p_parent->pp_parents[0]->i_view,
+                                      p_parent,
+                                      PLAYLIST_APPEND | PLAYLIST_PREPARSE,
+                                      PLAYLIST_END );
 
-                playlist_AddWhereverNeeded( p_playlist, p_input, p_parent,
-                                            p_parent_category, VLC_FALSE,
-                                            PLAYLIST_APPEND|PLAYLIST_PREPARSE);
+                playlist_CopyParents( p_parent, p_item );
             }
         }
         free( psz_uri );
     }
 
     for( i = 0; i < i_extensions; i++ )
-        if( ppsz_extensions[i] ) free( ppsz_extensions[i] );
+    {
+        if( ppsz_extensions[i] )
+            free( ppsz_extensions[i] );
+    }
     if( ppsz_extensions ) free( ppsz_extensions );
-
     if( psz_ignore ) free( psz_ignore );
 
     for( i = 0; i < i_dir_content; i++ )
         if( pp_dir_content[i] ) free( pp_dir_content[i] );
     if( pp_dir_content ) free( pp_dir_content );
-
-    return i_return;
+    return VLC_SUCCESS;
 }

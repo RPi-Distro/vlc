@@ -3,10 +3,9 @@
  * Functions are prototyped in mtime.h.
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: mtime.c 15752 2006-05-27 17:40:15Z courmisch $
+ * $Id: mtime.c 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
- *          Rémi Denis-Courmont <rem$videolan,org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,12 +22,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+/*
+ * TODO:
+ *  see if using Linux real-time extensions is possible and profitable
+ */
+
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
 #include <stdio.h>                                              /* sprintf() */
-#include <time.h>                      /* clock_gettime(), clock_nanosleep() */
-#include <stdlib.h>                                               /* lldiv() */
 
 #include <vlc/vlc.h>
 
@@ -103,7 +105,6 @@ char *secstotimestr( char *psz_buffer, int i_seconds )
               (int) (i_seconds % 60) );
     return( psz_buffer );
 }
-
 
 /**
  * Return high precision date
@@ -187,24 +188,15 @@ mtime_t mdate( void )
         return usec_time;
     }
 
-#elif defined (HAVE_CLOCK_NANOSLEEP)
-    struct timespec ts;
-
-# if (_POSIX_MONOTONIC_CLOCK - 0 >= 0)
-    /* Try to use POSIX monotonic clock if available */
-    if( clock_gettime( CLOCK_MONOTONIC, &ts ) )
-# endif
-        /* Run-time fallback to real-time clock (always available) */
-        (void)clock_gettime( CLOCK_REALTIME, &ts );
-
-    return ((mtime_t)ts.tv_sec * (mtime_t)1000000)
-           + (mtime_t)(ts.tv_nsec / 1000);
 #else
     struct timeval tv_date;
 
-    /* gettimeofday() cannot fail given &tv_date is a valid address */
-    (void)gettimeofday( &tv_date, NULL );
+    /* gettimeofday() could return an error, and should be tested. However, the
+     * only possible error, according to 'man', is EFAULT, which can not happen
+     * here, since tv is a local variable. */
+    gettimeofday( &tv_date, NULL );
     return( (mtime_t) tv_date.tv_sec * 1000000 + (mtime_t) tv_date.tv_usec );
+
 #endif
 }
 
@@ -239,21 +231,6 @@ void mwait( mtime_t date )
     }
     msleep( delay );
 
-#elif defined (HAVE_CLOCK_NANOSLEEP)
-# if defined (HAVE_TIMER_ABSTIME_THAT_ACTUALLY_WORKS_WELL)
-    lldiv_t d = lldiv( date, 1000000 );
-    struct timespec ts = { d.quot, d.rem };
-
-#  if (_POSIX_MONOTONIC_CLOCK - 0 >= 0)
-    if( clock_nanosleep( CLOCK_MONOTONIC, TIMER_ABSTIME, &ts, NULL ) )
-#  endif
-        clock_nanosleep( CLOCK_REALTIME, TIMER_ABSTIME, &ts, NULL );
-# else
-    date -= mdate ();
-    if( date <= 0)
-        return;
-    msleep( date );
-# endif
 #else
 
     struct timeval tv_date;
@@ -322,15 +299,6 @@ void msleep( mtime_t delay )
 
 #elif defined( WIN32 ) || defined( UNDER_CE )
     Sleep( (int) (delay / 1000) );
-
-#elif defined( HAVE_CLOCK_NANOSLEEP ) 
-    lldiv_t d = lldiv( delay, 1000000 );
-    struct timespec ts = { d.quot, d.rem * 1000 };
-
-# if (_POSIX_CLOCK_MONOTONIC - 0 >= 0)
-    if( clock_nanosleep( CLOCK_MONOTONIC, 0, &ts, NULL ) )
-# endif
-        clock_nanosleep( CLOCK_REALTIME, 0, &ts, NULL );
 
 #elif defined( HAVE_NANOSLEEP )
     struct timespec ts_delay;

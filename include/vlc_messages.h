@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
- * $Id: vlc_messages.h 16155 2006-07-29 13:31:32Z zorglub $
+ * $Id: vlc_messages.h 16439 2006-08-30 19:33:55Z hartman $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -228,7 +228,8 @@ struct counter_sample_t
 
 struct counter_t
 {
-    unsigned int        i_id;
+    /* The list is *NOT* sorted at the moment, it could be ... */
+    uint64_t            i_index;
     char              * psz_name;
     int                 i_type;
     int                 i_compute_type;
@@ -266,62 +267,70 @@ enum
     STATS_TIMER_SKINS_PLAYTREE_IMAGE,
 };
 
-#define stats_Update(a,b,c) __stats_Update( VLC_OBJECT(a), b, c )
-VLC_EXPORT( int, __stats_Update, (vlc_object_t*, counter_t *, vlc_value_t, vlc_value_t *) );
-#define stats_CounterCreate(a,b,c) __stats_CounterCreate( VLC_OBJECT(a), b, c )
-VLC_EXPORT( counter_t *, __stats_CounterCreate, (vlc_object_t*, int, int) );
-#define stats_Get(a,b,c) __stats_Get( VLC_OBJECT(a), b, c)
-VLC_EXPORT( int, __stats_Get, (vlc_object_t*, counter_t *, vlc_value_t*) );
+struct stats_handler_t
+{
+    VLC_COMMON_MEMBERS
 
-VLC_EXPORT (void, stats_CounterClean, (counter_t * ) );
+    int                 i_counters;
+    counter_t         **pp_counters;
+};
 
-#define stats_GetInteger(a,b,c) __stats_GetInteger( VLC_OBJECT(a), b, c )
-static inline int __stats_GetInteger( vlc_object_t *p_obj, counter_t *p_counter,
-                                      int *value )
+VLC_EXPORT( void, stats_HandlerDestroy, (stats_handler_t*) );
+
+#define stats_Update(a,b,c,d) __stats_Update( VLC_OBJECT( a ), b, c, d )
+VLC_EXPORT( int, __stats_Update, (vlc_object_t*, unsigned int, vlc_value_t, vlc_value_t *) );
+#define stats_Create(a,b,c,d,e) __stats_Create( VLC_OBJECT(a), b, c, d,e )
+VLC_EXPORT( int, __stats_Create, (vlc_object_t*, const char *, unsigned int, int, int) );
+#define stats_Get(a,b,c,d) __stats_Get( VLC_OBJECT(a), b, c, d )
+VLC_EXPORT( int, __stats_Get, (vlc_object_t*, int, unsigned int, vlc_value_t*) );
+#define stats_CounterGet(a,b,c) __stats_CounterGet( VLC_OBJECT(a), b, c )
+VLC_EXPORT( counter_t*, __stats_CounterGet, (vlc_object_t*, int, unsigned int ) );
+
+#define stats_GetInteger(a,b,c,d) __stats_GetInteger( VLC_OBJECT(a), b, c, d )
+static inline int __stats_GetInteger( vlc_object_t *p_obj, int i_id,
+                                      unsigned int i_counter, int *value )
 {
     int i_ret;
     vlc_value_t val; val.i_int = 0;
-    if( !p_counter ) return VLC_EGENERIC;
-    i_ret = __stats_Get( p_obj, p_counter, &val );
+    i_ret = __stats_Get( p_obj, i_id, i_counter, &val );
     *value = val.i_int;
     return i_ret;
 }
 
-#define stats_GetFloat(a,b,c) __stats_GetFloat( VLC_OBJECT(a), b, c )
-static inline int __stats_GetFloat( vlc_object_t *p_obj, counter_t *p_counter,
-                                    float *value )
+#define stats_GetFloat(a,b,c,d) __stats_GetFloat( VLC_OBJECT(a), b, c, d )
+static inline int __stats_GetFloat( vlc_object_t *p_obj, int i_id,
+                                    unsigned int i_counter, float *value )
 {
     int i_ret;
-    vlc_value_t val; val.f_float = 0.0;
-    if( !p_counter ) return VLC_EGENERIC;
-    i_ret = __stats_Get( p_obj, p_counter, &val );
+    vlc_value_t val;val.f_float = 0.0;
+    i_ret = __stats_Get( p_obj, i_id, i_counter, &val );
     *value = val.f_float;
     return i_ret;
 }
 #define stats_UpdateInteger(a,b,c,d) __stats_UpdateInteger( VLC_OBJECT(a),b,c,d )
-static inline int __stats_UpdateInteger( vlc_object_t *p_obj,counter_t *p_co,
-                                         int i, int *pi_new )
+static inline int __stats_UpdateInteger( vlc_object_t *p_obj,
+                                         unsigned int i_counter, int i,
+                                         int *pi_new )
 {
     int i_ret;
     vlc_value_t val;
     vlc_value_t new_val; new_val.i_int = 0;
-    if( !p_co ) return VLC_EGENERIC;
     val.i_int = i;
-    i_ret = __stats_Update( p_obj, p_co, val, &new_val );
+    i_ret = __stats_Update( p_obj, i_counter, val , &new_val );
     if( pi_new )
         *pi_new = new_val.i_int;
     return i_ret;
 }
 #define stats_UpdateFloat(a,b,c,d) __stats_UpdateFloat( VLC_OBJECT(a),b,c,d )
-static inline int __stats_UpdateFloat( vlc_object_t *p_obj, counter_t *p_co,
-                                       float f, float *pf_new )
+static inline int __stats_UpdateFloat( vlc_object_t *p_obj,
+                                       unsigned int i_counter, float f,
+                                       float *pf_new )
 {
     vlc_value_t val;
     int i_ret;
     vlc_value_t new_val;new_val.f_float = 0.0;
-    if( !p_co ) return VLC_EGENERIC;
     val.f_float = f;
-    i_ret =  __stats_Update( p_obj, p_co, val, &new_val );
+    i_ret =  __stats_Update( p_obj, i_counter, val, &new_val );
     if( pf_new )
         *pf_new = new_val.f_float;
     return i_ret;
@@ -404,5 +413,3 @@ VLC_EXPORT( void,__stats_TimerStart, (vlc_object_t*, const char *, unsigned int 
 VLC_EXPORT( void,__stats_TimerStop, (vlc_object_t*, unsigned int) );
 VLC_EXPORT( void,__stats_TimerDump, (vlc_object_t*, unsigned int) );
 VLC_EXPORT( void,__stats_TimersDumpAll, (vlc_object_t*) );
-#define stats_TimersClean(a) __stats_TimersClean( VLC_OBJECT(a) )
-VLC_EXPORT( void, __stats_TimersClean, (vlc_object_t * ) );

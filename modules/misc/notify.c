@@ -2,7 +2,7 @@
  * notify.c : libnotify notification plugin
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: notify.c 15846 2006-06-08 21:01:09Z xtophe $
+ * $Id: notify.c 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Christophe Mutricy <xtophe -at- videolan -dot- org>
  *
@@ -139,7 +139,6 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     p_playlist = (playlist_t *)vlc_object_find( p_this, VLC_OBJECT_PLAYLIST,
                                                 FIND_ANYWHERE );
     if( !p_playlist ) return VLC_EGENERIC;
-
     p_input = p_playlist->p_input;
     vlc_object_release( p_playlist );
     if( !p_input ) return VLC_SUCCESS;
@@ -153,14 +152,16 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     }
 
     /* Playing something ... */
-    psz_artist = p_input->input.p_item->p_meta->psz_artist ?
-                  strdup( p_input->input.p_item->p_meta->psz_artist ) :
-                  strdup( _("no artist") );
-    psz_album = p_input->input.p_item->p_meta->psz_album ?
-                  strdup( p_input->input.p_item->p_meta->psz_album ) :
-                  strdup( _("no album") );
+    psz_artist = vlc_input_item_GetInfo( p_input->input.p_item,
+                                         _("Meta-information"),
+                                         _(VLC_META_ARTIST) );
+    psz_album = vlc_input_item_GetInfo( p_input->input.p_item,
+                                         _("Meta-information"),
+                                         _("Album/movie/show title" ) );
     psz_title = strdup( p_input->input.p_item->psz_name );
     if( psz_title == NULL ) psz_title = strdup( N_("(no title)") );
+    if( psz_artist == NULL ) psz_artist = strdup( N_("(no artist)") );
+    if( psz_album == NULL ) psz_album = strdup( N_("(no album)") );
     snprintf( psz_tmp, MAX_LENGTH, "<b>%s</b>\n%s - %s",
               psz_title, psz_artist, psz_album );
     free( psz_title );

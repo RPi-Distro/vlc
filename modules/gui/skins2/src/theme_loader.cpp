@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: theme_loader.cpp 16118 2006-07-23 22:19:46Z ipkiss $
+ * $Id: theme_loader.cpp 15008 2006-03-31 19:24:33Z zorglub $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -77,7 +77,7 @@ bool ThemeLoader::load( const string &fileName )
     // file...
     string path = getFilePath( fileName );
 #if defined( HAVE_ZLIB_H )
-    if( ! extract( sToLocale( fileName ) ) && ! parse( path, fileName ) )
+    if( ! extract( fileName ) && ! parse( path, fileName ) )
         return false;
 #else
     if( ! parse( path, fileName ) )
@@ -311,7 +311,7 @@ bool ThemeLoader::extract( const string &fileName )
             list<string>::const_iterator it;
             for( it = resPath.begin(); it != resPath.end(); it++ )
             {
-                if( findFile( sToLocale( *it ), WINAMP2_XML_FILE, xmlFile ) )
+                if( findFile( *it, WINAMP2_XML_FILE, xmlFile ) )
                     break;
             }
         }
@@ -456,7 +456,7 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
                 // Found the theme file?
                 if( rFileName == string( pDirContent->d_name ) )
                 {
-                    themeFilePath = sFromLocale( newURI );
+                    themeFilePath = newURI;
                     closedir( pCurrDir );
                     return true;
                 }

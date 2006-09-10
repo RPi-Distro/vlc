@@ -2,7 +2,7 @@
  * file.c: file input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: file.c 16319 2006-08-22 23:22:14Z fkuehne $
+ * $Id: file.c 16434 2006-08-30 15:18:13Z hartman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -27,7 +27,6 @@
  *****************************************************************************/
 #include <vlc/vlc.h>
 #include <vlc/input.h>
-#include <vlc_interaction.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -154,8 +153,11 @@ static int Open( vlc_object_t *p_this )
 #ifdef HAVE_SYS_STAT_H
     struct stat         stat_info;
 #endif
+    vlc_bool_t          b_stdin;
+
     file_entry_t *      p_file;
-    vlc_bool_t          b_stdin = psz_name[0] == '-' && psz_name[1] == '\0';
+
+    b_stdin = psz_name[0] == '-' && psz_name[1] == '\0';
 
     if( !b_stdin )
     {
@@ -176,7 +178,7 @@ static int Open( vlc_object_t *p_this )
             ** explorer can open path such as file:/C:/ or file:///C:/...
             ** hence remove leading / if found
             */
-            strcpy( psz_name, p_access->psz_path + 1 );
+            ++psz_name;
         }
 #endif
 
@@ -190,7 +192,17 @@ static int Open( vlc_object_t *p_this )
 #endif
     }
 
-    STANDARD_READ_ACCESS_INIT;
+    p_access->pf_read = Read;
+    p_access->pf_block = NULL;
+    p_access->pf_seek = Seek;
+    p_access->pf_control = Control;
+    p_access->info.i_update = 0;
+    p_access->info.i_size = 0;
+    p_access->info.i_pos = 0;
+    p_access->info.b_eof = VLC_FALSE;
+    p_access->info.i_title = 0;
+    p_access->info.i_seekpoint = 0;
+    p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
     p_sys->i_nb_reads = 0;
     p_sys->b_kfir = VLC_FALSE;
     p_sys->file = NULL;
@@ -245,10 +257,6 @@ static int Open( vlc_object_t *p_this )
         else
         {
             msg_Err( p_access, "unknown file type for `%s'", psz_name );
-            intf_UserFatal( p_access, VLC_FALSE, _("File reading failed"), 
-                            _("\"%s\"'s file type is unknown."),
-                            psz_name );
-            free( psz_name );
             return VLC_EGENERIC;
         }
     }
@@ -412,12 +420,7 @@ static int Read( access_t *p_access, uint8_t *p_buffer, int i_len )
     if( i_ret < 0 )
     {
         if( errno != EINTR && errno != EAGAIN )
-        {
             msg_Err( p_access, "read failed (%s)", strerror(errno) );
-            intf_UserFatal( p_access, VLC_FALSE, _("File reading failed"), 
-                            _("VLC could not read file \"%s\"."),
-                            strerror(errno) );
-        }
 
         /* Delay a bit to avoid consuming all the CPU. This is particularly
          * useful when reading from an unconnected FIFO. */
@@ -516,10 +519,6 @@ static int Seek( access_t *p_access, int64_t i_pos )
     if( p_access->info.i_size < p_access->info.i_pos )
     {
         msg_Err( p_access, "seeking too far" );
-        intf_UserFatal( p_access, VLC_FALSE, _("File reading failed"), 
-                        _("VLC seeked in the file too far. This usually means "
-                          "that your file is broken and therefore cannot be "
-                          "played." ) );
         p_access->info.i_pos = p_access->info.i_size;
     }
     else if( p_access->info.i_pos < 0 )
@@ -603,8 +602,6 @@ static int _OpenFile( access_t * p_access, const char * psz_name )
     if ( !p_sys->fd )
     {
         msg_Err( p_access, "cannot open file %s", psz_name );
-        intf_UserFatal( p_access, VLC_FALSE, _("File reading failed"), 
-                        _("VLC could not open file \"%s\"."), psz_name );
         return VLC_EGENERIC;
     }
 
@@ -628,9 +625,6 @@ static int _OpenFile( access_t * p_access, const char * psz_name )
     {
         msg_Err( p_access, "cannot open file %s (%s)", psz_name,
                  strerror(errno) );
-        intf_UserFatal( p_access, VLC_FALSE, _("File reading failed"), 
-                        _("VLC could not open file \"%s\" (%s)."),
-                        psz_name, strerror(errno) );
         return VLC_EGENERIC;
     }
 

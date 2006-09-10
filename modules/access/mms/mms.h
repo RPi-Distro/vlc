@@ -2,7 +2,7 @@
  * mms.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: mms.h 16203 2006-08-03 15:34:08Z zorglub $
+ * $Id: mms.h 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -34,3 +34,5 @@ void E_( MMSTUClose ) ( access_t * );
 /* mmsh */
 int  E_( MMSHOpen )  ( access_t * );
 void E_( MMSHClose ) ( access_t * );
+
+#define FREE( p ) if( p ) { free( p ); (p) = NULL; }

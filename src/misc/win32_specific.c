@@ -2,7 +2,7 @@
  * win32_specific.c: Win32 specific features
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: win32_specific.c 15928 2006-06-20 14:33:48Z courmisch $
+ * $Id: win32_specific.c 16460 2006-08-31 22:01:13Z hartman $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -321,13 +321,13 @@ LRESULT CALLBACK WMCOPYWNDPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
                 }
                 if( i_opt || config_GetInt( p_this, "playlist-enqueue" ) )
                 {
-                  playlist_PlaylistAddExt( p_playlist, ppsz_argv[i_opt],
+                  playlist_AddExt( p_playlist, ppsz_argv[i_opt],
                     ppsz_argv[i_opt], PLAYLIST_APPEND ,
                     PLAYLIST_END, -1,
                     (char const **)( i_options ? &ppsz_argv[i_opt+1] : NULL ),
                     i_options );
                 } else {
-                  playlist_PlaylistAddExt( p_playlist, ppsz_argv[i_opt],
+                  playlist_AddExt( p_playlist, ppsz_argv[i_opt],
                     ppsz_argv[i_opt], PLAYLIST_APPEND | PLAYLIST_GO,
                     PLAYLIST_END, -1,
                     (char const **)( i_options ? &ppsz_argv[i_opt+1] : NULL ),

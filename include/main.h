@@ -3,7 +3,7 @@
  * Declaration and extern access to global program object.
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
- * $Id: main.h 15965 2006-07-01 10:13:13Z thresh $
+ * $Id: main.h 14256 2006-02-12 11:39:00Z courmisch $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -33,28 +33,30 @@ struct libvlc_t
 {
     VLC_COMMON_MEMBERS
 
-    vlc_bool_t             b_ready;     ///< Initialization boolean
-    uint32_t               i_cpu;       ///< CPU extensions
-    
-    int                    i_verbose;   ///< info messages
-    vlc_bool_t             b_color;     ///< color messages?
+    /* Initialization boolean */
+    vlc_bool_t             b_ready;
+
+    /* CPU extensions */
+    uint32_t               i_cpu;
+
+    /* Generic settings */
+    int                    i_verbose;                       /* info messages */
+    vlc_bool_t             b_color;                       /* color messages? */
 
     /* Object structure data */
-    int                    i_counter;   ///< object counter
-    int                    i_objects;   ///< Attached objects count
-    vlc_object_t **        pp_objects;  ///< Array of all objects 
+    int                    i_counter;                      /* object counter */
+    int                    i_objects;              /* Attached objects count */
+    vlc_object_t **        pp_objects;               /* Array of all objects */
 
-    msg_bank_t             msg_bank;    ///< The message bank
+    /* The message bank */
+    msg_bank_t             msg_bank;
 
-    module_bank_t *        p_module_bank; ///< The module bank
+    /* The module bank */
+    module_bank_t *        p_module_bank;
 
-    vlc_bool_t             b_stats;         ///< Should we collect stats
-    /* Timers handling */
-    vlc_mutex_t            timer_lock;      ///< Lock to protect timers
-    int                    i_timers;        ///< Number of timers
-    counter_t            **pp_timers;       ///< Array of all timers
-
-    intf_thread_t         *p_probe;         ///< Devices prober
+    /* Do stats ? - We keep this boolean to avoid unneeded lookups */
+    vlc_bool_t             b_stats;
+    stats_handler_t       *p_stats;
 
     /* Arch-specific variables */
 #if !defined( WIN32 )

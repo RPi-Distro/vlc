@@ -2,7 +2,7 @@
  * cmd_playlist.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cmd_playlist.cpp 15998 2006-07-08 21:19:17Z xtophe $
+ * $Id: cmd_playlist.cpp 14118 2006-02-01 18:06:48Z courmisch $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -30,6 +30,18 @@
 void CmdPlaylistDel::execute()
 {
     m_rList.delSelected();
+}
+
+
+void CmdPlaylistSort::execute()
+{
+    // XXX add the mode and type
+    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
+    if( pPlaylist != NULL )
+    {
+        playlist_Sort( pPlaylist, SORT_TITLE, ORDER_NORMAL );
+    }
+
 }
 
 
@@ -94,9 +106,7 @@ void CmdPlaylistLoad::execute()
     playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
     if( pPlaylist != NULL )
     {
-        /*FIXME: Where do we want ot insert ?*/
-        playlist_Import( pPlaylist, m_file.c_str(),
-                         pPlaylist->p_local_category, VLC_TRUE );
+        playlist_Import( pPlaylist, m_file.c_str() );
     }
 }
 
@@ -108,8 +118,7 @@ void CmdPlaylistSave::execute()
     {
         // FIXME: when the PLS export will be working, we'll need to remove
         // this hardcoding...
-        msg_Err( getIntf(), "need to fix playlist save" );
-//        playlist_Export( pPlaylist, m_file.c_str(), "export-m3u" );
+        playlist_Export( pPlaylist, m_file.c_str(), "export-m3u" );
     }
 }
 

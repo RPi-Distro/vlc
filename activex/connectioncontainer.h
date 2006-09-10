@@ -39,11 +39,9 @@ public:
     // IUnknown methods
     STDMETHODIMP QueryInterface(REFIID riid, void **ppv)
     {
-        if( NULL == ppv )
-            return E_POINTER;
+        if( NULL == ppv ) return E_POINTER;
         if( (IID_IUnknown == riid) 
-         || (IID_IConnectionPoint == riid) )
-        {
+         && (IID_IConnectionPoint == riid) ) {
             AddRef();
             *ppv = reinterpret_cast<LPVOID>(this);
             return NOERROR;
@@ -97,11 +95,9 @@ public:
     // IUnknown methods
     STDMETHODIMP QueryInterface(REFIID riid, void **ppv)
     {
-        if( NULL == ppv)
-            return E_POINTER;
-        if( (IID_IUnknown == riid) 
-         || (IID_IConnectionPointContainer == riid) )
-        {
+        if( (NULL != ppv)
+         && (IID_IUnknown == riid) 
+         && (IID_IConnectionPointContainer == riid) ) {
             AddRef();
             *ppv = reinterpret_cast<LPVOID>(this);
             return NOERROR;

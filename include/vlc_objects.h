@@ -2,7 +2,7 @@
  * vlc_objects.h: vlc_object_t definition and manipulation methods
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: vlc_objects.h 15629 2006-05-14 18:29:00Z zorglub $
+ * $Id: vlc_objects.h 14811 2006-03-18 17:52:31Z zorglub $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -23,7 +23,7 @@
 
 /**
  * \file
- * This file defines the vlc_object_t structure and object types.
+ * This file defines the vlc_object_t structure and object types
  */
 
 /**
@@ -100,7 +100,6 @@ VLC_EXPORT( void, __vlc_object_release, ( vlc_object_t * ) );
 VLC_EXPORT( vlc_list_t *, __vlc_list_find, ( vlc_object_t *, int, int ) );
 VLC_EXPORT( void, vlc_list_release, ( vlc_list_t * ) );
 VLC_EXPORT( vlc_t *, vlc_current_object, ( int ) );
-
 /*}@*/
 
 #define vlc_object_create(a,b) \
@@ -130,3 +129,4 @@ VLC_EXPORT( vlc_t *, vlc_current_object, ( int ) );
 
 #define vlc_list_find(a,b,c) \
     __vlc_list_find( VLC_OBJECT(a),b,c)
+

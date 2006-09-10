@@ -2,7 +2,7 @@
  * timeshift.c: access filter implementing timeshifting capabilities
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: timeshift.c 15367 2006-04-26 21:04:47Z dionoea $
+ * $Id: timeshift.c 16434 2006-08-30 15:18:13Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

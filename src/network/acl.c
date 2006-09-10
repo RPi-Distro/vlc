@@ -2,7 +2,7 @@
  * acl.c:
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: acl.c 15565 2006-05-07 16:01:07Z courmisch $
+ * $Id: acl.c 16439 2006-08-30 19:33:55Z hartman $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

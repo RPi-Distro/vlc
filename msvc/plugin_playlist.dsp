@@ -179,46 +179,6 @@ SOURCE="..\modules\demux\playlist\shoutcast.c"
 # PROP Output_Dir "Debug\modules\demux\playlist"
 # PROP Intermediate_Dir "Debug\modules\demux\playlist"
 # End Source File
-# Begin Source File
-SOURCE="..\modules\demux\playlist\asx.c"
-# ADD CPP /D "__VLC__" /D "__PLUGIN__"  /D "MODULE_NAME=playlist" /D "MODULE_NAME_IS_playlist" 
-!IF "$(CFG)" == "plugin_playlist - Win32 Release"
-# PROP Output_Dir "Release\modules\demux\playlist"
-# PROP Intermediate_Dir "Release\modules\demux\playlist"
-!ELSEIF "$(CFG)" == "plugin_playlist - Win32 Debug"
-# PROP Output_Dir "Debug\modules\demux\playlist"
-# PROP Intermediate_Dir "Debug\modules\demux\playlist"
-# End Source File
-# Begin Source File
-SOURCE="..\modules\demux\playlist\sgimb.c"
-# ADD CPP /D "__VLC__" /D "__PLUGIN__"  /D "MODULE_NAME=playlist" /D "MODULE_NAME_IS_playlist" 
-!IF "$(CFG)" == "plugin_playlist - Win32 Release"
-# PROP Output_Dir "Release\modules\demux\playlist"
-# PROP Intermediate_Dir "Release\modules\demux\playlist"
-!ELSEIF "$(CFG)" == "plugin_playlist - Win32 Debug"
-# PROP Output_Dir "Debug\modules\demux\playlist"
-# PROP Intermediate_Dir "Debug\modules\demux\playlist"
-# End Source File
-# Begin Source File
-SOURCE="..\modules\demux\playlist\qtl.c"
-# ADD CPP /D "__VLC__" /D "__PLUGIN__"  /D "MODULE_NAME=playlist" /D "MODULE_NAME_IS_playlist" 
-!IF "$(CFG)" == "plugin_playlist - Win32 Release"
-# PROP Output_Dir "Release\modules\demux\playlist"
-# PROP Intermediate_Dir "Release\modules\demux\playlist"
-!ELSEIF "$(CFG)" == "plugin_playlist - Win32 Debug"
-# PROP Output_Dir "Debug\modules\demux\playlist"
-# PROP Intermediate_Dir "Debug\modules\demux\playlist"
-# End Source File
-# Begin Source File
-SOURCE="..\modules\demux\playlist\gvp.c"
-# ADD CPP /D "__VLC__" /D "__PLUGIN__"  /D "MODULE_NAME=playlist" /D "MODULE_NAME_IS_playlist" 
-!IF "$(CFG)" == "plugin_playlist - Win32 Release"
-# PROP Output_Dir "Release\modules\demux\playlist"
-# PROP Intermediate_Dir "Release\modules\demux\playlist"
-!ELSEIF "$(CFG)" == "plugin_playlist - Win32 Debug"
-# PROP Output_Dir "Debug\modules\demux\playlist"
-# PROP Intermediate_Dir "Debug\modules\demux\playlist"
-# End Source File
 
 # End Group
 

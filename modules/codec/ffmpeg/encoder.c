@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: encoder.c 16319 2006-08-22 23:22:14Z fkuehne $
+ * $Id: encoder.c 16603 2006-09-10 20:40:21Z sam $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -33,7 +33,6 @@
 #include <vlc/aout.h>
 #include <vlc/sout.h>
 #include <vlc/decoder.h>
-#include <vlc_interaction.h>
 
 /* ffmpeg header */
 #define HAVE_MMX 1
@@ -44,7 +43,7 @@
 #endif
 
 #if LIBAVCODEC_BUILD < 4704
-#   define AV_NOPTS_VALUE 0
+#   define AV_NOPTS_VALUE (int64_t)0
 #endif
 #if LIBAVCODEC_BUILD < 4684
 #    define FF_QP2LAMBDA 118
@@ -52,7 +51,6 @@
 
 #include "ffmpeg.h"
 
-#define AVCODEC_MAX_VIDEO_FRAME_SIZE (3*1024*1024)
 #define HURRY_UP_GUARD1 (450000)
 #define HURRY_UP_GUARD2 (300000)
 #define HURRY_UP_GUARD3 (100000)
@@ -222,35 +220,30 @@ int E_(OpenEncoder)( vlc_object_t *p_this )
         psz_namecodec = "Raw video";
     }
 
+
     if( p_enc->fmt_out.i_cat == VIDEO_ES && i_cat != VIDEO_ES )
     {
         msg_Err( p_enc, "\"%s\" is not a video encoder", psz_namecodec );
-        intf_UserFatal( p_enc, VLC_FALSE, _("Streaming / Transcoding failed"), 
-                        _("\"%s\" is no video encoder."), psz_namecodec );
         return VLC_EGENERIC;
     }
 
     if( p_enc->fmt_out.i_cat == AUDIO_ES && i_cat != AUDIO_ES )
     {
         msg_Err( p_enc, "\"%s\" is not an audio encoder", psz_namecodec );
-        intf_UserFatal( p_enc, VLC_FALSE, _("Streaming / Transcoding failed"), 
-                        _("\"%s\" is no audio encoder."), psz_namecodec );
         return VLC_EGENERIC;
     }
 
-    /* Initialization must be done before avcodec_find_encoder() */
+    /* Initialization must be done before avcodec_find_decoder() */
     E_(InitLibavcodec)(p_this);
 
     p_codec = avcodec_find_encoder( i_codec_id );
     if( !p_codec )
     {
         msg_Err( p_enc, "cannot find encoder %s", psz_namecodec );
-        intf_UserFatal( p_enc, VLC_FALSE, _("Streaming / Transcoding failed"), 
-                        _("VLC could not find encoder \"%s\"."), psz_namecodec );
         return VLC_EGENERIC;
     }
 
-    /* Allocate the memory needed to store the encoder's structure */
+    /* Allocate the memory needed to store the decoder's structure */
     if( ( p_sys = (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
     {
         msg_Err( p_enc, "out of memory" );
@@ -435,7 +428,7 @@ int E_(OpenEncoder)( vlc_object_t *p_this )
             VOUT_ASPECT_FACTOR;
 #endif
 
-        p_sys->p_buffer_out = malloc( AVCODEC_MAX_VIDEO_FRAME_SIZE );
+        p_sys->p_buffer_out = malloc( p_context->height * p_context->width * 3 );
 
         p_enc->fmt_in.i_codec = VLC_FOURCC('I','4','2','0');
         p_context->pix_fmt = E_(GetFfmpegChroma)( p_enc->fmt_in.i_codec );
@@ -616,8 +609,6 @@ int E_(OpenEncoder)( vlc_object_t *p_this )
             {
                 vlc_mutex_unlock( lockval.p_address );
                 msg_Err( p_enc, "cannot open encoder" );
-                intf_UserFatal( p_enc, VLC_FALSE, _("Streaming / Transcoding failed"), 
-                                _("VLC could not open the encoder.") );
                 free( p_sys );
                 return VLC_EGENERIC;
             }
@@ -625,8 +616,6 @@ int E_(OpenEncoder)( vlc_object_t *p_this )
         else
         {
             msg_Err( p_enc, "cannot open encoder" );
-            intf_UserFatal( p_enc, VLC_FALSE, _("Streaming / Transcoding failed"), 
-                            _("VLC could not open the encoder.") );
             free( p_sys );
             return VLC_EGENERIC;
         }
@@ -877,8 +866,8 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
 #endif
     /* End work-around */
 
-    i_out = avcodec_encode_video( p_sys->p_context, p_sys->p_buffer_out,
-                                  AVCODEC_MAX_VIDEO_FRAME_SIZE, &frame );
+    i_out = avcodec_encode_video( p_sys->p_context, (uint8_t*)p_sys->p_buffer_out,
+                                  p_sys->p_context->height * p_sys->p_context->width * 3, &frame );
 
     if( i_out > 0 )
     {
@@ -968,7 +957,7 @@ static block_t *EncodeAudio( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_block, *p_chain = NULL;
 
-    char *p_buffer = p_aout_buf->p_buffer;
+    uint8_t *p_buffer = p_aout_buf->p_buffer;
     int i_samples = p_aout_buf->i_nb_samples;
     int i_samples_delay = p_sys->i_samples_delay;
 
@@ -1001,7 +990,7 @@ static block_t *EncodeAudio( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
             p_samples = (int16_t *)p_buffer;
         }
 
-        i_out = avcodec_encode_audio( p_sys->p_context, p_sys->p_buffer_out,
+        i_out = avcodec_encode_audio( p_sys->p_context, (uint8_t *)p_sys->p_buffer_out,
                                       2 * AVCODEC_MAX_AUDIO_FRAME_SIZE,
                                       p_samples );
 

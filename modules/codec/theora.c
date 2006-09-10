@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: theora.c 15943 2006-06-27 13:32:30Z jpsaman $
+ * $Id: theora.c 16460 2006-08-31 22:01:13Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

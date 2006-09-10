@@ -1,4 +1,4 @@
-# $Id: AUTHORS 16160 2006-07-29 15:32:30Z fkuehne $
+# $Id: AUTHORS 15276 2006-04-19 10:19:13Z damienf $
 # 
 # The format of this file was inspired by the Linux kernel CREDITS file.
 # Authors are listed alphabetically.
@@ -258,7 +258,6 @@ N: Felix Kühne
 E: fkuehne@users.sourceforge.net
 C: fkuehne
 D: MacOS X Interface (Wizard, structure, extended controls panel, bookmarks window)
-D: Interface Interaction (core and OSX)
 D: German translation
 S: Germany
 

@@ -4,7 +4,7 @@ vim:syntax=html
 <  input: VLC media player web interface - input selection dialog
 < - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
 <  Copyright (C) 2005-2006 the VideoLAN team
-<  $Id: input 15239 2006-04-15 16:06:47Z dionoea $
+<  $Id: input 16431 2006-08-30 14:30:06Z hartman $
 < 
 <  Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
 < 

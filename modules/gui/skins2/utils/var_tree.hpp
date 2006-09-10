@@ -2,7 +2,7 @@
  * var_tree.hpp
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: var_tree.hpp 15805 2006-06-04 14:17:46Z ipkiss $
+ * $Id: var_tree.hpp 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *
