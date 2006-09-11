@@ -1,3 +1,9 @@
+vlc (0.8.6-svn20060911.0.8.5-1-svn.debian-1) unstable; urgency=low
+
+  * New upstream SVN snapshot, fixes an amd64 FTBFS.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Mon, 11 Sep 2006 13:56:19 +0200
+
 vlc (0.8.6-svn20060910.0.8.5-1-svn.debian-1) unstable; urgency=low
 
   * New upstream SVN snapshot, from the forthcoming 0.8.5-1 branch.
