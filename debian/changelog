@@ -1,3 +1,10 @@
+vlc (0.8.6-svn20060911.0.8.5-1-svn.debian-2) unstable; urgency=low
+
+  * debian/patches/000_dup_builtins.diff:
+    + Fix a powerpc FTBFS due to duplicate libraries in link lines.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Mon, 11 Sep 2006 18:32:04 +0200
+
 vlc (0.8.6-svn20060911.0.8.5-1-svn.debian-1) unstable; urgency=low
 
   * New upstream SVN snapshot, fixes an amd64 FTBFS.

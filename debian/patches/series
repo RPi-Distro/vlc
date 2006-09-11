@@ -1,4 +1,5 @@
 000_ltmain.diff
+000_dup_builtins.diff -p0
 010_no-wx-updates.diff 
 010_osdmenu-paths.diff 
 #020_xulrunner.diff

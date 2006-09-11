@@ -1,0 +1,30 @@
+Index: configure.ac
+===================================================================
+--- configure.ac.orig	2006-09-11 13:43:33.000000000 +0200
++++ configure.ac	2006-09-11 18:30:36.000000000 +0200
+@@ -1291,7 +1291,9 @@
+   VLC_ADD_CFLAGS([vlc],[${ac_cv_c_altivec}])
+   VLC_ADD_CFLAGS([idctaltivec motionaltivec],[${ac_cv_c_altivec}])
+   VLC_ADD_CFLAGS([i420_yuy2_altivec memcpyaltivec deinterlace],[${ac_cv_c_altivec} ${ac_cv_c_altivec_abi}])
+-  ACCEL_MODULES="${ACCEL_MODULES} ${ALTIVEC_MODULES}"
++  if test "${ac_cv_altivec_inline}" = "no"; then
++    ACCEL_MODULES="${ACCEL_MODULES} ${ALTIVEC_MODULES}"
++  fi
+ fi
+ 
+ AC_CACHE_CHECK([if linker needs -framework vecLib],
+Index: configure
+===================================================================
+--- configure.orig	2006-09-11 18:30:40.000000000 +0200
++++ configure	2006-09-11 18:31:17.000000000 +0200
+@@ -39385,7 +39385,9 @@
+     am_modules_with_cflags="${am_modules_with_cflags} ${element}"
+   done
+ 
+-  ACCEL_MODULES="${ACCEL_MODULES} ${ALTIVEC_MODULES}"
++  if test "${ac_cv_altivec_inline}" = "no"; then
++    ACCEL_MODULES="${ACCEL_MODULES} ${ALTIVEC_MODULES}"
++  fi
+ fi
+ 
+ { echo "$as_me:$LINENO: checking if linker needs -framework vecLib" >&5
