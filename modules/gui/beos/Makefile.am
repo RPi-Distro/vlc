@@ -104,9 +104,9 @@ libbeos_plugin_la_LIBADD = $(LTLIBVLC)
 
 libbeos_a_SOURCES = $(SOURCES_beos)
 libbeos_builtin_la_SOURCES = $(SOURCES_beos)
-libbeos_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) beos`
-libbeos_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) beos`
-libbeos_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) beos`
+libbeos_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic beos`
+libbeos_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic beos`
+libbeos_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic beos`
 libbeos_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin beos`
 libbeos_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin beos`
 libbeos_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin beos`

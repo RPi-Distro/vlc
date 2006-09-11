@@ -104,9 +104,9 @@ libxtag_plugin_la_LIBADD = $(LTLIBVLC)
 
 libxtag_a_SOURCES = $(SOURCES_xtag)
 libxtag_builtin_la_SOURCES = $(SOURCES_xtag)
-libxtag_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) xtag`
-libxtag_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) xtag`
-libxtag_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) xtag`
+libxtag_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic xtag`
+libxtag_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic xtag`
+libxtag_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic xtag`
 libxtag_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin xtag`
 libxtag_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin xtag`
 libxtag_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin xtag`
@@ -127,9 +127,9 @@ libxml_plugin_la_LIBADD = $(LTLIBVLC)
 
 libxml_a_SOURCES = $(SOURCES_xml)
 libxml_builtin_la_SOURCES = $(SOURCES_xml)
-libxml_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) xml`
-libxml_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) xml`
-libxml_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) xml`
+libxml_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic xml`
+libxml_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic xml`
+libxml_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic xml`
 libxml_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin xml`
 libxml_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin xml`
 libxml_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin xml`

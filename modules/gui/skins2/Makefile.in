@@ -584,9 +584,9 @@ libskins2_plugin_la_LIBADD = $(LTLIBVLC)
 
 libskins2_a_SOURCES = $(SOURCES_skins2)
 libskins2_builtin_la_SOURCES = $(SOURCES_skins2)
-libskins2_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) skins2`
-libskins2_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) skins2`
-libskins2_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) skins2`
+libskins2_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic skins2`
+libskins2_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic skins2`
+libskins2_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic skins2`
 libskins2_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin skins2`
 libskins2_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin skins2`
 libskins2_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin skins2`

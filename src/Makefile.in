@@ -418,9 +418,9 @@ HEADERS_include = \
 # Building libvlc
 ###############################################################################
 libvlc_a_SOURCES = $(SOURCES_libvlc)
-libvlc_a_CFLAGS = `$(VLC_CONFIG) --cflags vlc $(pic)`
-libvlc_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags vlc $(pic)`
-libvlc_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags vlc $(pic)`
+libvlc_a_CFLAGS = `$(VLC_CONFIG) --cflags vlc pic`
+libvlc_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags vlc pic`
+libvlc_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags vlc pic`
 
 libvlc_la_SOURCES = $(SOURCES_libvlc)
 libvlc_la_LIBADD = $(INCLUDED_LIBINTL)
@@ -8601,7 +8601,7 @@ stamp-builtins: Makefile ../vlc-config ../config.status
 @HAVE_WIN32_TRUE@libvlc.dll.a: libvlc$(LIBEXT)
 
 @HAVE_WIN32_TRUE@libvlc$(LIBEXT): $(OBJECTS_libvlc_so) stamp-builtins
-@HAVE_WIN32_TRUE@	@ldfl="`$(VLC_CONFIG) --libs plugin vlc builtin $(pic)` $(INCLUDED_LIBINTL)" ; \
+@HAVE_WIN32_TRUE@	@ldfl="`$(VLC_CONFIG) --libs plugin vlc builtin pic` $(INCLUDED_LIBINTL)" ; \
 @HAVE_WIN32_TRUE@	case `$(VLC_CONFIG) --linkage vlc builtin` in \
 @HAVE_WIN32_TRUE@	  c++)  ld="$(CXXLINK)" ;; \
 @HAVE_WIN32_TRUE@	  objc) ld="$(OBJCLINK)" ;; \

@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: transcode.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: transcode.c 16601 2006-09-10 20:21:46Z zorglub $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -143,7 +143,7 @@
     "associated options)." )
 #define SCODEC_TEXT N_("Destination subtitles codec")
 #define SCODEC_LONGTEXT N_( \
-    "This is the subtitles coded that will be used." )
+    "This is the subtitles codec that will be used." )
 
 #define SFILTER_TEXT N_("Overlays")
 #define SFILTER_LONGTEXT N_( \

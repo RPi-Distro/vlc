@@ -357,9 +357,9 @@ libswscale_plugin_la_LIBADD = $(LTLIBVLC)
 
 libswscale_a_SOURCES = $(SOURCES_swscale)
 libswscale_builtin_la_SOURCES = $(SOURCES_swscale)
-libswscale_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) swscale`
-libswscale_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) swscale`
-libswscale_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) swscale`
+libswscale_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic swscale`
+libswscale_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic swscale`
+libswscale_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic swscale`
 libswscale_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin swscale`
 libswscale_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin swscale`
 libswscale_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin swscale`

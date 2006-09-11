@@ -104,9 +104,9 @@ libdvb_plugin_la_LIBADD = $(LTLIBVLC)
 
 libdvb_a_SOURCES = $(SOURCES_dvb)
 libdvb_builtin_la_SOURCES = $(SOURCES_dvb)
-libdvb_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) dvb`
-libdvb_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) dvb`
-libdvb_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) dvb`
+libdvb_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic dvb`
+libdvb_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic dvb`
+libdvb_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic dvb`
 libdvb_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin dvb`
 libdvb_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin dvb`
 libdvb_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin dvb`

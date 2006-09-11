@@ -2,7 +2,7 @@
  * rtp.c: rtp stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: rtp.c 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: rtp.c 16610 2006-09-11 08:27:37Z sam $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -25,6 +25,9 @@
  * Preamble
  *****************************************************************************/
 #include <stdlib.h>
+#ifdef HAVE_UNISTD_H
+#   include <unistd.h>
+#endif
 
 #include <errno.h>
 
@@ -689,6 +692,13 @@ static void Close( vlc_object_t * p_this )
     {
         free( p_sys->psz_sdp );
         p_sys->psz_sdp = NULL;
+    }
+    if( p_sys->b_export_sdp_file )
+    {
+#ifdef HAVE_UNISTD_H
+        unlink( p_sys->psz_sdp_file );
+#endif
+        free( p_sys->psz_sdp_file );
     }
     free( p_sys );
 }

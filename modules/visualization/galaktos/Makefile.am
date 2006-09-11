@@ -104,9 +104,9 @@ libgalaktos_plugin_la_LIBADD = $(LTLIBVLC)
 
 libgalaktos_a_SOURCES = $(SOURCES_galaktos)
 libgalaktos_builtin_la_SOURCES = $(SOURCES_galaktos)
-libgalaktos_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) galaktos`
-libgalaktos_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) galaktos`
-libgalaktos_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) galaktos`
+libgalaktos_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic galaktos`
+libgalaktos_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic galaktos`
+libgalaktos_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic galaktos`
 libgalaktos_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin galaktos`
 libgalaktos_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin galaktos`
 libgalaktos_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin galaktos`

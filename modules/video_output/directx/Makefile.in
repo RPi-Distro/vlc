@@ -350,9 +350,9 @@ libvout_directx_plugin_la_LIBADD = $(LTLIBVLC)
 
 libvout_directx_a_SOURCES = $(SOURCES_vout_directx)
 libvout_directx_builtin_la_SOURCES = $(SOURCES_vout_directx)
-libvout_directx_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) vout_directx`
-libvout_directx_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) vout_directx`
-libvout_directx_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) vout_directx`
+libvout_directx_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic vout_directx`
+libvout_directx_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic vout_directx`
+libvout_directx_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic vout_directx`
 libvout_directx_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin vout_directx`
 libvout_directx_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin vout_directx`
 libvout_directx_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin vout_directx`
@@ -374,9 +374,9 @@ libglwin32_plugin_la_LIBADD = $(LTLIBVLC)
 
 libglwin32_a_SOURCES = $(SOURCES_glwin32)
 libglwin32_builtin_la_SOURCES = $(SOURCES_glwin32)
-libglwin32_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) glwin32`
-libglwin32_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) glwin32`
-libglwin32_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) glwin32`
+libglwin32_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic glwin32`
+libglwin32_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic glwin32`
+libglwin32_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic glwin32`
 libglwin32_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin glwin32`
 libglwin32_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin glwin32`
 libglwin32_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin glwin32`

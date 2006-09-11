@@ -104,9 +104,9 @@ libid3tag_plugin_la_LIBADD = $(LTLIBVLC)
 
 libid3tag_a_SOURCES = $(SOURCES_id3tag)
 libid3tag_builtin_la_SOURCES = $(SOURCES_id3tag)
-libid3tag_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) id3tag`
-libid3tag_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) id3tag`
-libid3tag_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) id3tag`
+libid3tag_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic id3tag`
+libid3tag_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic id3tag`
+libid3tag_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic id3tag`
 libid3tag_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin id3tag`
 libid3tag_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin id3tag`
 libid3tag_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin id3tag`

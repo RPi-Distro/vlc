@@ -343,9 +343,9 @@ libasf_plugin_la_LIBADD = $(LTLIBVLC)
 
 libasf_a_SOURCES = $(SOURCES_asf)
 libasf_builtin_la_SOURCES = $(SOURCES_asf)
-libasf_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) asf`
-libasf_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) asf`
-libasf_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) asf`
+libasf_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic asf`
+libasf_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic asf`
+libasf_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic asf`
 libasf_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin asf`
 libasf_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin asf`
 libasf_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin asf`

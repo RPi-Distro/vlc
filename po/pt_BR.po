@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pt_BR\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-10 22:40+0200\n"
+"POT-Creation-Date: 2006-09-11 13:47+0200\n"
 "PO-Revision-Date: 2004-04-06 11:41-0300\n"
 "Last-Translator: André de Barros Martins Ribeiro <andrerib@ajato.com.br>\n"
 "Language-Team: Brazilian Portuguese\n"
@@ -6753,7 +6753,7 @@ msgstr ""
 #: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
 #: modules/gui/macosx/wizard.m:1846
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:610
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:87
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:90
 #, fuzzy
 msgid "Time-To-Live (TTL)"
 msgstr "Tempo De Vida (TTL):"
@@ -9619,7 +9619,7 @@ msgstr ""
 #: modules/gui/macosx/open.m:180 modules/gui/macosx/output.m:147
 #: modules/gui/wxwidgets/dialogs/open.cpp:830
 #: modules/gui/wxwidgets/dialogs/open.cpp:857
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:531 modules/stream_out/rtp.c:77
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:531 modules/stream_out/rtp.c:80
 msgid "Port"
 msgstr "Porta"
 
@@ -12303,7 +12303,7 @@ msgstr ""
 "mesmo."
 
 #: modules/gui/macosx/wizard.m:407 modules/gui/macosx/wizard.m:462
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:1052 modules/stream_out/rtp.c:46
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:1052 modules/stream_out/rtp.c:49
 #, fuzzy
 msgid "Destination"
 msgstr "Alvo de destino:"
@@ -13779,7 +13779,7 @@ msgid "MMSH"
 msgstr "MMSH"
 
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:474
-#: modules/stream_out/rtp.c:101
+#: modules/stream_out/rtp.c:104
 msgid "RTP"
 msgstr "RTP"
 
@@ -15903,16 +15903,16 @@ msgstr "Alinhamento do vídeo"
 msgid "Mosaic bridge stream output"
 msgstr "Stream de arquivo de saída"
 
-#: modules/stream_out/rtp.c:48
+#: modules/stream_out/rtp.c:51
 msgid "This is the output URL that will be used."
 msgstr ""
 
-#: modules/stream_out/rtp.c:49
+#: modules/stream_out/rtp.c:52
 #, fuzzy
 msgid "SDP"
 msgstr "UDP"
 
-#: modules/stream_out/rtp.c:51
+#: modules/stream_out/rtp.c:54
 msgid ""
 "This allows you to specify how the SDP (Session Descriptor) for this RTP "
 "session will be made available. You must use an url: http://location to "
@@ -15920,109 +15920,109 @@ msgid ""
 "SDP to be announced via SAP."
 msgstr ""
 
-#: modules/stream_out/rtp.c:55
+#: modules/stream_out/rtp.c:58
 #, fuzzy
 msgid "Muxer"
 msgstr "Muxer:"
 
-#: modules/stream_out/rtp.c:57
+#: modules/stream_out/rtp.c:60
 #, fuzzy
 msgid ""
 "This allows you to specify the muxer used for the streaming output. Default "
 "is to use no muxer (standard RTP stream)."
 msgstr "Permite que você modifique a conta que será usada para a conexão."
 
-#: modules/stream_out/rtp.c:60 modules/stream_out/standard.c:51
+#: modules/stream_out/rtp.c:63 modules/stream_out/standard.c:51
 #, fuzzy
 msgid "Session name"
 msgstr "Nome do dispositivo"
 
-#: modules/stream_out/rtp.c:62
+#: modules/stream_out/rtp.c:65
 #, fuzzy
 msgid ""
 "This is the name of the session that will be announced in the SDP (Session "
 "Descriptor)."
 msgstr "Permite que você modifique a conta que será usada para a conexão."
 
-#: modules/stream_out/rtp.c:64
+#: modules/stream_out/rtp.c:67
 #, fuzzy
 msgid "Session description"
 msgstr "Descrição do Codec"
 
-#: modules/stream_out/rtp.c:66
+#: modules/stream_out/rtp.c:69
 #, fuzzy
 msgid ""
 "This allows you to give a broader description of the stream, that will be "
 "announced in the SDP (Session Descriptor)."
 msgstr "Permite que você modifique a senha que será usada na a conexão."
 
-#: modules/stream_out/rtp.c:68
+#: modules/stream_out/rtp.c:71
 #, fuzzy
 msgid "Session URL"
 msgstr "Nome do dispositivo"
 
-#: modules/stream_out/rtp.c:70
+#: modules/stream_out/rtp.c:73
 msgid ""
 "This allows you to give an URL with more details about the stream (often the "
 "website of the streaming organization), that will be announced in the SDP "
 "(Session Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:73
+#: modules/stream_out/rtp.c:76
 #, fuzzy
 msgid "Session email"
 msgstr "Nome do dispositivo"
 
-#: modules/stream_out/rtp.c:75
+#: modules/stream_out/rtp.c:78
 msgid ""
 "This allows you to give a contact mail address for the stream, that will be "
 "announced in the SDP (Session Descriptor)."
 msgstr ""
 
-#: modules/stream_out/rtp.c:79
+#: modules/stream_out/rtp.c:82
 #, fuzzy
 msgid "This allows you to specify the base port for the RTP streaming."
 msgstr "Permite que você modifique a senha que será usada na a conexão."
 
-#: modules/stream_out/rtp.c:80
+#: modules/stream_out/rtp.c:83
 #, fuzzy
 msgid "Audio port"
 msgstr "Opções de Audio"
 
-#: modules/stream_out/rtp.c:82
+#: modules/stream_out/rtp.c:85
 #, fuzzy
 msgid ""
 "This allows you to specify the default audio port for the RTP streaming."
 msgstr "Permite que você modifique a senha que será usada na a conexão."
 
-#: modules/stream_out/rtp.c:83
+#: modules/stream_out/rtp.c:86
 #, fuzzy
 msgid "Video port"
 msgstr "Taxa de bits do Vídeo:"
 
-#: modules/stream_out/rtp.c:85
+#: modules/stream_out/rtp.c:88
 #, fuzzy
 msgid ""
 "This allows you to specify the default video port for the RTP streaming."
 msgstr "Permite que você modifique a senha que será usada na a conexão."
 
-#: modules/stream_out/rtp.c:89
+#: modules/stream_out/rtp.c:92
 #, fuzzy
 msgid "This allows you to specify the Time-To-Live for the output stream."
 msgstr ""
 "Permite que você modifique o nome de usuário que será usado para a conexão."
 
-#: modules/stream_out/rtp.c:91
+#: modules/stream_out/rtp.c:94
 msgid "MP4A LATM"
 msgstr ""
 
-#: modules/stream_out/rtp.c:93
+#: modules/stream_out/rtp.c:96
 #, fuzzy
 msgid "This allows you to stream MPEG4 LATM audio streams (see RFC3016)."
 msgstr ""
 "Isto permite que você faça o stream de todos os ES (vídeo, audio e legendas)"
 
-#: modules/stream_out/rtp.c:102
+#: modules/stream_out/rtp.c:105
 msgid "RTP stream output"
 msgstr "Saída de Stream RTP"
 
@@ -16425,8 +16425,9 @@ msgid "Destination subtitles codec"
 msgstr "Alvo de Destino: "
 
 #: modules/stream_out/transcode.c:146
-msgid "This is the subtitles coded that will be used."
-msgstr ""
+#, fuzzy
+msgid "This is the subtitles codec that will be used."
+msgstr "Este é o dispositivo de DVD padrão."
 
 #: modules/stream_out/transcode.c:150
 msgid ""

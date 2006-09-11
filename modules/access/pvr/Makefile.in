@@ -338,9 +338,9 @@ libpvr_plugin_la_LIBADD = $(LTLIBVLC)
 
 libpvr_a_SOURCES = $(SOURCES_pvr)
 libpvr_builtin_la_SOURCES = $(SOURCES_pvr)
-libpvr_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) pvr`
-libpvr_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) pvr`
-libpvr_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) pvr`
+libpvr_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic pvr`
+libpvr_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic pvr`
+libpvr_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic pvr`
 libpvr_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin pvr`
 libpvr_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pvr`
 libpvr_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pvr`

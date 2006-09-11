@@ -338,9 +338,9 @@ libv4l_plugin_la_LIBADD = $(LTLIBVLC)
 
 libv4l_a_SOURCES = $(SOURCES_v4l)
 libv4l_builtin_la_SOURCES = $(SOURCES_v4l)
-libv4l_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) v4l`
-libv4l_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) v4l`
-libv4l_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) v4l`
+libv4l_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic v4l`
+libv4l_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic v4l`
+libv4l_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic v4l`
 libv4l_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin v4l`
 libv4l_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin v4l`
 libv4l_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin v4l`

@@ -342,9 +342,9 @@ libqnx_plugin_la_LIBADD = $(LTLIBVLC)
 
 libqnx_a_SOURCES = $(SOURCES_qnx)
 libqnx_builtin_la_SOURCES = $(SOURCES_qnx)
-libqnx_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) qnx`
-libqnx_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) qnx`
-libqnx_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) qnx`
+libqnx_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic qnx`
+libqnx_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic qnx`
+libqnx_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic qnx`
 libqnx_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin qnx`
 libqnx_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin qnx`
 libqnx_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin qnx`

@@ -13,7 +13,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: de\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-10 22:40+0200\n"
+"POT-Creation-Date: 2006-09-11 13:47+0200\n"
 "PO-Revision-Date: 2006-04-30 16:37+0200\n"
 "Last-Translator: Felix Kühne\n"
 "Language-Team: German\n"
@@ -6474,7 +6474,7 @@ msgstr ""
 #: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
 #: modules/gui/macosx/wizard.m:1846
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:610
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:87
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:90
 msgid "Time-To-Live (TTL)"
 msgstr "Time-To-Live (TTL)"
 
@@ -9318,7 +9318,7 @@ msgstr ""
 #: modules/gui/macosx/open.m:180 modules/gui/macosx/output.m:147
 #: modules/gui/wxwidgets/dialogs/open.cpp:830
 #: modules/gui/wxwidgets/dialogs/open.cpp:857
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:531 modules/stream_out/rtp.c:77
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:531 modules/stream_out/rtp.c:80
 msgid "Port"
 msgstr "Port"
 
@@ -11957,7 +11957,7 @@ msgid "This page allows to select how the input stream will be sent."
 msgstr "Diese Seite erlaubt die Auswahl, wie der Stream gesendet werden soll."
 
 #: modules/gui/macosx/wizard.m:407 modules/gui/macosx/wizard.m:462
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:1052 modules/stream_out/rtp.c:46
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:1052 modules/stream_out/rtp.c:49
 msgid "Destination"
 msgstr "Ziel"
 
@@ -13439,7 +13439,7 @@ msgid "MMSH"
 msgstr "MMSH"
 
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:474
-#: modules/stream_out/rtp.c:101
+#: modules/stream_out/rtp.c:104
 msgid "RTP"
 msgstr "RTP"
 
@@ -15561,15 +15561,15 @@ msgstr "Mosaic-Bridge"
 msgid "Mosaic bridge stream output"
 msgstr "Mosaic-Bridge-Streamausgabe"
 
-#: modules/stream_out/rtp.c:48
+#: modules/stream_out/rtp.c:51
 msgid "This is the output URL that will be used."
 msgstr "Diese Ausgabe-URL wird genutzt werden."
 
-#: modules/stream_out/rtp.c:49
+#: modules/stream_out/rtp.c:52
 msgid "SDP"
 msgstr "SDP"
 
-#: modules/stream_out/rtp.c:51
+#: modules/stream_out/rtp.c:54
 msgid ""
 "This allows you to specify how the SDP (Session Descriptor) for this RTP "
 "session will be made available. You must use an url: http://location to "
@@ -15581,11 +15581,11 @@ msgstr ""
 "auf den SDP via HTTP zuzugreifen, rtsp://Ort für RTSP-Zugriff und sap:// "
 "damit derSDP via SAP angekündigt wird."
 
-#: modules/stream_out/rtp.c:55
+#: modules/stream_out/rtp.c:58
 msgid "Muxer"
 msgstr "Muxer"
 
-#: modules/stream_out/rtp.c:57
+#: modules/stream_out/rtp.c:60
 msgid ""
 "This allows you to specify the muxer used for the streaming output. Default "
 "is to use no muxer (standard RTP stream)."
@@ -15593,11 +15593,11 @@ msgstr ""
 "Dies erlaubt Ihnen die Festlegung des für die Streamausgabe benutzten "
 "Muxers. Standardmäßig wird kein Muxer benutzt (Standard-RTP-Stream)."
 
-#: modules/stream_out/rtp.c:60 modules/stream_out/standard.c:51
+#: modules/stream_out/rtp.c:63 modules/stream_out/standard.c:51
 msgid "Session name"
 msgstr "Session-Name"
 
-#: modules/stream_out/rtp.c:62
+#: modules/stream_out/rtp.c:65
 msgid ""
 "This is the name of the session that will be announced in the SDP (Session "
 "Descriptor)."
@@ -15605,11 +15605,11 @@ msgstr ""
 "Dies ist der Name der Session, die im SDP (Sitzungsbeschreiber) angekündigt "
 "wird."
 
-#: modules/stream_out/rtp.c:64
+#: modules/stream_out/rtp.c:67
 msgid "Session description"
 msgstr "Sessionsbeschreibung"
 
-#: modules/stream_out/rtp.c:66
+#: modules/stream_out/rtp.c:69
 msgid ""
 "This allows you to give a broader description of the stream, that will be "
 "announced in the SDP (Session Descriptor)."
@@ -15617,11 +15617,11 @@ msgstr ""
 "Erlaubt Ihnen eine breite Beschreibung des Streams anzugeben, die im SDP "
 "(Sitzungsbeschreiber) bekannt gegeben wird."
 
-#: modules/stream_out/rtp.c:68
+#: modules/stream_out/rtp.c:71
 msgid "Session URL"
 msgstr "Session-URL"
 
-#: modules/stream_out/rtp.c:70
+#: modules/stream_out/rtp.c:73
 msgid ""
 "This allows you to give an URL with more details about the stream (often the "
 "website of the streaming organization), that will be announced in the SDP "
@@ -15631,11 +15631,11 @@ msgstr ""
 "Diese Information wird mit dem Session Descriptor SDP bekanntgegeben. Meist "
 "die Website des Herausgebers."
 
-#: modules/stream_out/rtp.c:73
+#: modules/stream_out/rtp.c:76
 msgid "Session email"
 msgstr "Session-eMail"
 
-#: modules/stream_out/rtp.c:75
+#: modules/stream_out/rtp.c:78
 msgid ""
 "This allows you to give a contact mail address for the stream, that will be "
 "announced in the SDP (Session Descriptor)."
@@ -15643,49 +15643,49 @@ msgstr ""
 "Hier können Sie eine Kontakt E-Mailadresse für den Stream angeben. Diese "
 "wird im Session Descriptor SDP bekannt gegeben."
 
-#: modules/stream_out/rtp.c:79
+#: modules/stream_out/rtp.c:82
 msgid "This allows you to specify the base port for the RTP streaming."
 msgstr ""
 "Dies erlaubt Ihnen den Basisport festzulegen, der für das für RTP-Streaming "
 "benutzt wird."
 
-#: modules/stream_out/rtp.c:80
+#: modules/stream_out/rtp.c:83
 msgid "Audio port"
 msgstr "Audio-Port"
 
-#: modules/stream_out/rtp.c:82
+#: modules/stream_out/rtp.c:85
 msgid ""
 "This allows you to specify the default audio port for the RTP streaming."
 msgstr ""
 "Dies erlaubt Ihnen den standardmäßigen Audio-Port für das RTP-Streaming "
 "festzulegen."
 
-#: modules/stream_out/rtp.c:83
+#: modules/stream_out/rtp.c:86
 msgid "Video port"
 msgstr "Video-Port"
 
-#: modules/stream_out/rtp.c:85
+#: modules/stream_out/rtp.c:88
 msgid ""
 "This allows you to specify the default video port for the RTP streaming."
 msgstr ""
 "Dies erlaubt Ihnen den standardmäßigen Video-Port für das RTP-Streaming "
 "festzulegen."
 
-#: modules/stream_out/rtp.c:89
+#: modules/stream_out/rtp.c:92
 msgid "This allows you to specify the Time-To-Live for the output stream."
 msgstr ""
 "Erlaubt Ihnen die Time-To-Live für den ausgegebenen Stream festzulegen."
 
-#: modules/stream_out/rtp.c:91
+#: modules/stream_out/rtp.c:94
 msgid "MP4A LATM"
 msgstr "MP4A LATM"
 
-#: modules/stream_out/rtp.c:93
+#: modules/stream_out/rtp.c:96
 msgid "This allows you to stream MPEG4 LATM audio streams (see RFC3016)."
 msgstr ""
 "Dies erlaubt Ihnen alle MPEG4 LATM Audiostreams zu streamen (siehe RFC 3016)."
 
-#: modules/stream_out/rtp.c:102
+#: modules/stream_out/rtp.c:105
 msgid "RTP stream output"
 msgstr "RTP-Streamausgabe"
 
@@ -16053,7 +16053,8 @@ msgid "Destination subtitles codec"
 msgstr "Ziel-Untertitelcodec"
 
 #: modules/stream_out/transcode.c:146
-msgid "This is the subtitles coded that will be used."
+#, fuzzy
+msgid "This is the subtitles codec that will be used."
 msgstr "Dies gibt den Untertitelcodec an, der benutzt wird."
 
 #: modules/stream_out/transcode.c:150
