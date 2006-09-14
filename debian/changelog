@@ -1,3 +1,15 @@
+vlc (0.8.6-svn20060911.0.8.5-1-svn.debian-3) unstable; urgency=low
+
+  * debian/control:
+    + Distribute libvlc0 in a separate package.
+    + Created vlc-nox package that contains VLC and all its non-X related
+      plugins.
+  * debian/rules:
+    + Use dh_install.
+    + Bail out with an error if a plugin from vlc-nox got linked to libX11.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Thu, 14 Sep 2006 18:39:59 +0200
+
 vlc (0.8.6-svn20060911.0.8.5-1-svn.debian-2) unstable; urgency=low
 
   * debian/patches/000_dup_builtins.diff:

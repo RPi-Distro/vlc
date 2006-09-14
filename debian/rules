@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # debian/rules for the VLC media player - uses debhelper.
-# $Id: rules 15296 2006-04-21 21:33:39Z xtophe $
+# $Id: rules 86 2006-09-14 16:43:00Z sam $
 # based on Joey Hess's one.
 
 # Uncomment this to turn on verbose mode.
@@ -146,6 +146,7 @@ build-stamp: configure-stamp
 	#### Build all the rest, with the PIC libs
 	###AM_MAKEFLAGS='builtin=no' $(MAKE)
 	$(MAKE)
+
 	# Minor test, to see which plugins were built and whether they load
 	# properly.
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
@@ -182,81 +183,62 @@ install: build
 	dh_clean -k
 	dh_installdirs
 
-	DESTDIR=`pwd`/debian/vlc/ $(MAKE) install prefix=/usr
+	$(MAKE) install DESTDIR=`pwd`/debian/tmp/
 
 	# Clean up libtool crap
-	find debian/vlc -name '*.la' -exec rm '{}' ';'
+	find debian/tmp -name '*.la' -exec rm '{}' ';'
 
-	# Package: vlc
-	mv debian/vlc/$(VIDDIR)/vlc48x48.png debian/vlc/$(PIXDIR)/vlc.png
-	mv debian/vlc/$(VIDDIR)/vlc32x32.xpm debian/vlc/$(VIDDIR)/vlc.xpm
+	# Remove useless stuff
+	rm -Rf debian/tmp/$(VIDDIR)/skins
+	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
+	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
+	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
+	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 
-	#cp doc/fortunes.txt debian/vlc/usr/share/games/fortunes/vlc
-	#strfile doc/fortunes.txt debian/vlc/usr/share/games/fortunes/vlc.dat
+	# Move stuff around
+	mkdir -p debian/tmp/$(PIXDIR)
+	-mv debian/tmp/$(VIDDIR)/vlc48x48.png debian/tmp/$(PIXDIR)/vlc.png
+	-mv debian/tmp/$(VIDDIR)/vlc32x32.xpm debian/tmp/$(VIDDIR)/vlc.xpm
 
-	rm -f debian/vlc/usr/share/vlc/skins2/fonts/FreeSans.ttf
-	rm -f debian/vlc/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
-	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/vlc/usr/share/vlc/skins2/fonts/FreeSans.ttf
-	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/vlc/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
+	# Install stuff
+	dh_install --fail-missing --sourcedir=debian/tmp
 
-	rm -Rf debian/vlc/$(VIDDIR)/skins
-	ln -s vlc.1.gz debian/vlc/usr/share/man/man1/svlc.1.gz
-
-	# Package: libvlc0-dev
-	mv debian/vlc/usr/bin/vlc-config debian/libvlc0-dev/usr/bin/
-	mv debian/vlc/usr/lib/libvlc.so debian/libvlc0-dev/usr/lib/
-	#mv debian/vlc/usr/lib/vlc/*.a debian/libvlc0-dev/usr/lib/
-	mv debian/vlc/usr/include/vlc/*.h debian/libvlc0-dev/usr/include/vlc/
-	rm -Rf debian/vlc/usr/include
-	ln -s vlc debian/libvlc0-dev/usr/share/doc/libvlc0-dev
-
-	# Package: vlc-plugin-esd
-	ln -s vlc debian/vlc-plugin-esd/usr/share/doc/vlc-plugin-esd
-	mv debian/vlc/usr/lib/vlc/audio_output/libesd_plugin.so* \
-	  debian/vlc-plugin-esd/usr/lib/vlc/audio_output/
-
-	# Package: vlc-plugin-sdl
-	ln -s vlc debian/vlc-plugin-sdl/usr/share/doc/vlc-plugin-sdl
-	mv debian/vlc/usr/lib/vlc/audio_output/libaout_sdl_plugin.so* \
-	  debian/vlc-plugin-sdl/usr/lib/vlc/audio_output/
-	mv debian/vlc/usr/lib/vlc/video_output/libvout_sdl_plugin.so* \
-	  debian/vlc-plugin-sdl/usr/lib/vlc/video_output/
-
-	# Package: vlc-plugin-ggi
-	ln -s vlc debian/vlc-plugin-ggi/usr/share/doc/vlc-plugin-ggi
-	mv debian/vlc/usr/lib/vlc/video_output/libggi_plugin.so* \
-	  debian/vlc-plugin-ggi/usr/lib/vlc/video_output/
-
-	# Package: vlc-plugin-glide
-ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH_CPU),i386)
-	ln -s vlc debian/vlc-plugin-glide/usr/share/doc/vlc-plugin-glide
-	mv debian/vlc/usr/lib/vlc/video_output/libglide_plugin.so* \
-	  debian/vlc-plugin-glide/usr/lib/vlc/video_output/
+	# Check that we did not install a plugin linked with libX11 in vlc-nox
+ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
+	BORKED=no; \
+	for file in $$(find debian/vlc-nox/usr/lib/vlc -name '*.so'); do \
+	  if ldd $$file | grep -q libX11; then \
+	    BORKED=yes; \
+	    echo $$file depends on libX11; \
+	  fi; \
+	done; \
+	if test "$$BORKED" = yes; then exit 1; fi
 endif
 
-	# Package: vlc-plugin-arts
-	ln -s vlc debian/vlc-plugin-arts/usr/share/doc/vlc-plugin-arts
-	mv debian/vlc/usr/lib/vlc/audio_output/libarts_plugin.so* \
-	  debian/vlc-plugin-arts/usr/lib/vlc/audio_output/
+	# manpage symlinks
+	ln -s vlc.1.gz debian/vlc/usr/share/man/man1/svlc.1.gz
+	ln -s vlc.1.gz debian/vlc/usr/share/man/man1/wxvlc.1.gz
 
-	# Package: mozilla-plugin-vlc
+	# /usr/share/doc symlinks
+	ln -s vlc debian/vlc-nox/usr/share/doc/vlc-nox
+	ln -s libvlc0 debian/libvlc0-dev/usr/share/doc/libvlc0-dev
+	ln -s vlc debian/vlc-plugin-esd/usr/share/doc/vlc-plugin-esd
+	ln -s vlc debian/vlc-plugin-sdl/usr/share/doc/vlc-plugin-sdl
+	ln -s vlc debian/vlc-plugin-ggi/usr/share/doc/vlc-plugin-ggi
+	ln -s vlc debian/vlc-plugin-arts/usr/share/doc/vlc-plugin-arts
 	ln -s vlc debian/mozilla-plugin-vlc/usr/share/doc/mozilla-plugin-vlc
-	mv debian/vlc/usr/lib/mozilla debian/mozilla-plugin-vlc/usr/lib
+ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH_CPU),i386)
+	ln -s vlc debian/vlc-plugin-glide/usr/share/doc/vlc-plugin-glide
+	ln -s vlc debian/vlc-plugin-svgalib/usr/share/doc/vlc-plugin-svgalib
+endif
+
 	# links for firefox
 	mkdir -p debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/plugins/
 	ln -s ../../mozilla/plugins/libvlcplugin.so debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/plugins/
 	mkdir -p debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/components/
 	ln -s ../../mozilla/components/vlcintf.xpt debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/components/
 
-	# Package: vlc-plugin-svgalib
-ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH_CPU),i386)
-	ln -s vlc debian/vlc-plugin-svgalib/usr/share/doc/vlc-plugin-svgalib
-	mv debian/vlc/usr/lib/vlc/video_output/libsvgalib_plugin.so* \
-	  debian/vlc-plugin-svgalib/usr/lib/vlc/video_output
-endif
-
 	cp debian/vlc/$(VIDDIR)/vlc.xpm debian/vlc/$(VIDDIR)/wxvlc.xpm
-	ln -s vlc.1.gz debian/vlc/usr/share/man/man1/wxvlc.1.gz
 
 	# Clean up
 	rm -f debian/vlc/$(VIDDIR)/*.png
@@ -278,22 +260,23 @@ binary-arch: build install
 	dh_testdir
 	dh_testroot
 #	dh_installdebconf	
-	dh_installdocs -p vlc
-	dh_buildinfo -p vlc
+	dh_installdocs -p vlc-nox
+	dh_installdocs -p libvlc0
+	dh_buildinfo -p vlc-nox
 #	dh_installexamples
 	dh_installmenu -s
 	dh_installmime -s
-	dh_installman doc/vlc.1 -p vlc
+	dh_installman doc/vlc.1 -p vlc-nox
 	dh_installman doc/vlc-config.1 -p libvlc0-dev
-	dh_installchangelogs ChangeLog -p vlc
+	dh_installchangelogs ChangeLog -p vlc-nox
+	dh_installchangelogs ChangeLog -p libvlc0
 	dh_link -s
 	dh_strip -s
 	dh_compress -s
 	dh_fixperms -s
-	dh_makeshlibs -pvlc -V 'vlc (>= 0.8.6-svn20060910.0.8.5-1-svn.debian-1)'
+	dh_makeshlibs -plibvlc0 -V # -V is nasty, but I mean it
 	dh_installdeb -s
-#	dh_perl
-	dh_shlibdeps -s -ldebian/vlc/usr/lib
+	dh_shlibdeps -s -ldebian/libvlc0/usr/lib
 	dh_gencontrol -s
 	dh_md5sums -s
 	dh_builddeb -s
