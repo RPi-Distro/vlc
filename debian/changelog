@@ -1,3 +1,11 @@
+vlc (0.8.6-svn20060911.0.8.5-1-svn.debian-5) unstable; urgency=low
+
+  * debian/control:
+    + Added proper conflicts/replaces to the libvlc0 package because it
+      overwrites files from old vlc packages (Closes: #387844).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun, 17 Sep 2006 01:38:24 +0200
+
 vlc (0.8.6-svn20060911.0.8.5-1-svn.debian-4) unstable; urgency=low
 
   * debian/control:

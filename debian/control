@@ -62,6 +62,8 @@ Package: libvlc0
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
+Replaces: vlc (<< 0.8.6-svn20060911.0.8.5-1-svn.debian-3)
+Conflicts: vlc (<< 0.8.6-svn20060911.0.8.5-1-svn.debian-3)
 Description: multimedia player and streamer library
  This package contains the shared library required by applications using VLC
  features.
