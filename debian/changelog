@@ -1,3 +1,12 @@
+vlc (0.8.6-svn20060911.0.8.5-1-svn.debian-4) unstable; urgency=low
+
+  * debian/control:
+    + Add libsdl-image1.2-dev to the build-dependencies.
+    + Shorten short descriptions and add “without X support” to the vlc-nox
+      short description.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sat, 16 Sep 2006 20:08:53 +0200
+
 vlc (0.8.6-svn20060911.0.8.5-1-svn.debian-3) unstable; urgency=low
 
   * debian/control:
