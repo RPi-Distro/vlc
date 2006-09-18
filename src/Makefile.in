@@ -220,6 +220,7 @@ RANLIB = @RANLIB@
 SDL11_CONFIG = @SDL11_CONFIG@
 SDL12_CONFIG = @SDL12_CONFIG@
 SDL_CONFIG = @SDL_CONFIG@
+SEAMONKEY_CONFIG = @SEAMONKEY_CONFIG@
 SET_MAKE = @SET_MAKE@
 SHELL = @SHELL@
 SHOUT_CFLAGS = @SHOUT_CFLAGS@
@@ -293,6 +294,7 @@ localstatedir = @localstatedir@
 mandir = @mandir@
 oldincludedir = @oldincludedir@
 pdfdir = @pdfdir@
+pic = @pic@
 prefix = @prefix@
 program_transform_name = @program_transform_name@
 psdir = @psdir@
@@ -8617,10 +8619,6 @@ stamp-builtins: Makefile ../vlc-config ../config.status
 # Cygwin work-around
 @HAVE_WIN32_TRUE@	@if test -f "$@.exe"; then mv -f "$@.exe" "$@"; fi
 
-@BUILD_SHARED_FALSE@@USE_LIBTOOL_FALSE@misc/version.c: FORCE
-@BUILD_SHARED_FALSE@@USE_LIBTOOL_FALSE@	$(TOOLBOX) --update-version
-@BUILD_SHARED_FALSE@@USE_LIBTOOL_FALSE@FORCE:
-
 # Install shared libvlc
 @USE_LIBTOOL_FALSE@install-exec-local:
 @USE_LIBTOOL_FALSE@	test -z "$(DATA_noinst_libvlc)" || $(INSTALL_PROGRAM) "$(DATA_noinst_libvlc)" "$(DESTDIR)$(libdir)"
@@ -8629,6 +8627,9 @@ stamp-builtins: Makefile ../vlc-config ../config.status
 @USE_LIBTOOL_FALSE@uninstall-local:
 @USE_LIBTOOL_FALSE@	test -z "$(DATA_noinst_libvlc)" || rm -f "$(DESTDIR)$(libdir)/$(DATA_noinst_libvlc)"
 
+misc/version.c: FORCE
+	$(TOOLBOX) --update-version
+
 ###############################################################################
 # Stamp rules
 ###############################################################################
@@ -8636,6 +8637,8 @@ stamp-api: Makefile.in $(HEADERS_include) ../vlc-api.pl
 	( cd $(srcdir) && cat $(HEADERS_include) ) | \
 	  top_srcdir="$(top_srcdir)" perl $(top_srcdir)/vlc-api.pl
 	touch stamp-api
+
+FORCE:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

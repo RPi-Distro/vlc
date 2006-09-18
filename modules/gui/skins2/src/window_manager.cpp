@@ -2,7 +2,7 @@
  * window_manager.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: window_manager.cpp 16454 2006-08-31 19:54:36Z hartman $
+ * $Id: window_manager.cpp 16647 2006-09-14 14:58:57Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -327,6 +327,37 @@ void WindowManager::synchVisibility() const
         {
             (*it)->innerShow();
         }
+    }
+}
+
+
+void WindowManager::saveVisibility()
+{
+    WinSet_t::const_iterator it;
+    m_savedWindows.clear();
+    for( it = m_allWindows.begin(); it != m_allWindows.end(); it++ )
+    {
+        // Remember the window if it is visible
+        if( (*it)->getVisibleVar().get() )
+        {
+            m_savedWindows.insert( *it );
+        }
+    }
+}
+
+
+void WindowManager::restoreVisibility() const
+{
+    // Warning in case we never called saveVisibility()
+    if( m_savedWindows.size() == 0 )
+    {
+        msg_Warn( getIntf(), "restoring visibility for no window" );
+    }
+
+    WinSet_t::const_iterator it;
+    for( it = m_savedWindows.begin(); it != m_savedWindows.end(); it++)
+    {
+        (*it)->show();
     }
 }
 

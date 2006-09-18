@@ -4,7 +4,7 @@
 #define CONFIGURE_LINE "eMbedded Visual C++"
 
 /* Copyright string */
-#define COPYRIGHT_MESSAGE "VLC media player - version 0.8.5-1-svn-debian Janus - (c) 1996-2004 VideoLAN"
+#define COPYRIGHT_MESSAGE "VLC media player - version 0.8.6 Janus - (c) 1996-2004 VideoLAN"
 
 /* Maximum supported data alignment */
 #define ATTRIBUTE_ALIGNED_MAX 16
@@ -61,10 +61,10 @@
 #define LIBEXT ".dll"
 
 /* String suffix for module functions */
-#define MODULE_SUFFIX "__0_8_5_1_svn_debian"
+#define MODULE_SUFFIX "__0_8_6"
 
 /* Symbol suffix for module functions */
-#define MODULE_SYMBOL 0_8_5_1_svn_debian
+#define MODULE_SYMBOL 0_8_6
 
 /* Name of package */
 #define PACKAGE "vlc"
@@ -76,22 +76,22 @@
 #define PACKAGE_NAME "vlc"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "vlc 0.8.5-1-svn-debian"
+#define PACKAGE_STRING "vlc 0.8.6"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "vlc"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.8.5-1-svn-debian"
+#define PACKAGE_VERSION "0.8.6"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
 
 /* Version number of package */
-#define VERSION "0.8.5-1-svn-debian"
+#define VERSION "0.8.6"
 
 /* Simple version string */
-#define VERSION_MESSAGE "0.8.5-1-svn-debian Janus"
+#define VERSION_MESSAGE "0.8.6 Janus"
 
 /* compiler */
 #define VLC_COMPILER "Microsoft eMbedded Visual C++"

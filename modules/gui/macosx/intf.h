@@ -2,11 +2,12 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: intf.h 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: intf.h 16647 2006-09-14 14:58:57Z hartman $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
+ *          Felix KŸhne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -267,6 +268,18 @@ struct intf_sys_t
     IBOutlet id o_dmi_previous;
     IBOutlet id o_dmi_mute;
 
+    /* vout menu */
+    IBOutlet id o_vout_menu;
+    IBOutlet id o_vmi_play;
+    IBOutlet id o_vmi_stop;
+    IBOutlet id o_vmi_prev;
+    IBOutlet id o_vmi_next;
+    IBOutlet id o_vmi_volup;
+    IBOutlet id o_vmi_voldown;
+    IBOutlet id o_vmi_mute;
+    IBOutlet id o_vmi_fullscreen;
+    IBOutlet id o_vmi_snapshot;
+
     bool b_small_window;
 
     mtime_t i_end_scroll;
@@ -290,6 +303,7 @@ struct intf_sys_t
 - (id)getBookmarks;
 - (id)getEmbeddedList;
 - (id)getInteractionList;
+- (id)getVoutMenu;
 - (void)terminate;
 - (NSString *)localizedString:(char *)psz;
 - (char *)delocalizeString:(NSString *)psz;

@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 VideoLAN (Centrale Réseaux) and its contributors
- * $Id: ts.c 16591 2006-09-10 17:41:49Z sam $
+ * $Id: ts.c 16647 2006-09-14 14:58:57Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -3124,10 +3124,76 @@ static void PMTCallBack( demux_t *p_demux, dvbpsi_pmt_t *p_pmt )
 
                 if( p_decoded )
                 {
+#if DR_0A_API_VER >= 2
+                    pid->es->fmt.psz_language = malloc( 4 );
+                    memcpy( pid->es->fmt.psz_language,
+                            p_decoded->code[0].iso_639_code, 3 );
+                    pid->es->fmt.psz_language[3] = 0;
+                    msg_Dbg( p_demux, "found language: %s", pid->es->fmt.psz_language);
+                    switch( p_decoded->code[0].i_audio_type ) {
+                    case 0:
+                        pid->es->fmt.psz_description = NULL;
+                        break;
+                    case 1:
+                        pid->es->fmt.psz_description =
+                            strdup(_("clean effects"));
+                        break;
+                    case 2:
+                        pid->es->fmt.psz_description =
+                            strdup(_("hearing impaired"));
+                        break;
+                    case 3:
+                        pid->es->fmt.psz_description =
+                            strdup(_("visual impaired commentary"));
+                        break;
+                    default:
+                        msg_Dbg( p_demux, "unknown audio type: %d",
+                                 p_decoded->code[0].i_audio_type);
+                        pid->es->fmt.psz_description = NULL;
+                        break;
+                    }
+                    pid->es->fmt.i_extra_languages = p_decoded->i_code_count-1;
+                    pid->es->fmt.p_extra_languages =
+                        malloc( sizeof(*pid->es->fmt.p_extra_languages) *
+                                pid->es->fmt.i_extra_languages );
+                    for( i = 0; i < pid->es->fmt.i_extra_languages; i++ ) {
+                        msg_Dbg( p_demux, "bang" );
+                        pid->es->fmt.p_extra_languages[i].psz_language =
+                            malloc(4);
+                        memcpy(pid->es->fmt.p_extra_languages[i].psz_language,
+                               p_decoded->code[i+1].iso_639_code, 3 );
+                        pid->es->fmt.p_extra_languages[i].psz_language[3] = '\0';
+                        switch( p_decoded->code[i].i_audio_type ) {
+                        case 0:
+                            pid->es->fmt.p_extra_languages[i].psz_description =
+                                NULL;
+                            break;
+                        case 1:
+                            pid->es->fmt.p_extra_languages[i].psz_description =
+                                strdup(_("clean effects"));
+                            break;
+                        case 2:
+                            pid->es->fmt.p_extra_languages[i].psz_description =
+                                strdup(_("hearing impaired"));
+                            break;
+                        case 3:
+                            pid->es->fmt.p_extra_languages[i].psz_description =
+                                strdup(_("visual impaired commentary"));
+                            break;
+                        default:
+                            msg_Dbg( p_demux, "unknown audio type: %d",
+                                     p_decoded->code[i].i_audio_type);
+                            pid->es->fmt.psz_description = NULL;
+                            break;
+                        }
+
+                    }
+#else
                     pid->es->fmt.psz_language = malloc( 4 );
                     memcpy( pid->es->fmt.psz_language,
                             p_decoded->i_iso_639_code, 3 );
                     pid->es->fmt.psz_language[3] = 0;
+#endif
                 }
             }
         }
