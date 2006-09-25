@@ -1,0 +1,15 @@
+Index: vlc-trunk/modules/misc/gnutls.c
+===================================================================
+--- vlc-trunk/modules/misc/gnutls.c	(revision 15766)
++++ vlc-trunk/modules/misc/gnutls.c	(working copy)
+@@ -614,6 +614,10 @@
+                                 p_sys->x509_cred, psz_path, VLC_FALSE );
+             free( psz_path );
+         }
++        gnutls_Addx509File( (vlc_object_t *)p_session,
++                            p_sys->x509_cred,
++                            "/etc/ssl/certs/ca-certificates.crt",VLC_FALSE );
++        
+         p_session->pf_handshake2 = gnutls_HandshakeAndValidate;
+     }
+     else

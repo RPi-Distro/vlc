@@ -1,3 +1,21 @@
+vlc (0.8.6-svn20060925.debian-1) unstable; urgency=low
+
+  [ Sam Hocevar ]
+  * New upstrean SVN snapshot.
+  * This release fixes issues with the French Freebox device (Closes: #388332).
+
+  * debian/control:
+    + Added Clément Stenac to the uploaders.
+
+  * 020_certificates_paths.diff:
+    + New patch from upstream that looks for SSL certificates in
+      /etc/ssl/certs/ca-certificates.crt (Closes: #365239).
+
+  [ Clément Stenac ]
+  * Add VCS information to control
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Mon, 25 Sep 2006 14:00:46 +0200
+
 vlc (0.8.6-svn20060918.debian-1) unstable; urgency=low
 
   * New upstream SVN snapshot, with a slightly saner version number.
