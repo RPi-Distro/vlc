@@ -2,7 +2,7 @@
  * ctrl_image.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ctrl_image.cpp 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: ctrl_image.cpp 16767 2006-09-21 14:32:45Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -100,17 +100,20 @@ void CtrlImage::draw( OSGraphics &rImage, int xDest, int yDest )
         if( m_resizeMethod == kScale )
         {
             // Use scaling method
-            if( width != m_pImage->getWidth() ||
-                height != m_pImage->getHeight() )
+            if( width > 0 && height > 0 )
             {
-                OSFactory *pOsFactory = OSFactory::instance( getIntf() );
-                // Rescale the image with the actual size of the control
-                ScaledBitmap bmp( getIntf(), m_rBitmap, width, height );
-                SKINS_DELETE( m_pImage );
-                m_pImage = pOsFactory->createOSGraphics( width, height );
-                m_pImage->drawBitmap( bmp, 0, 0 );
+                if( width != m_pImage->getWidth() ||
+                    height != m_pImage->getHeight() )
+                {
+                    OSFactory *pOsFactory = OSFactory::instance( getIntf() );
+                    // Rescale the image with the actual size of the control
+                    ScaledBitmap bmp( getIntf(), m_rBitmap, width, height );
+                    SKINS_DELETE( m_pImage );
+                    m_pImage = pOsFactory->createOSGraphics( width, height );
+                    m_pImage->drawBitmap( bmp, 0, 0 );
+                }
+                rImage.drawGraphics( *m_pImage, 0, 0, xDest, yDest );
             }
-            rImage.drawGraphics( *m_pImage, 0, 0, xDest, yDest );
         }
         else
         {

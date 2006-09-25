@@ -116,12 +116,13 @@ FFMPEG_LIBS = @FFMPEG_LIBS@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 FRIBIDI_CONFIG = @FRIBIDI_CONFIG@
-GCJ_OPTS = @GCJ_OPTS@
 GENCAT = @GENCAT@
 GLIBC21 = @GLIBC21@
 GMSGFMT = @GMSGFMT@
 GNOMEVFS_CFLAGS = @GNOMEVFS_CFLAGS@
 GNOMEVFS_LIBS = @GNOMEVFS_LIBS@
+GNUTLS_CFLAGS = @GNUTLS_CFLAGS@
+GNUTLS_LIBS = @GNUTLS_LIBS@
 GREP = @GREP@
 GTK2_CFLAGS = @GTK2_CFLAGS@
 GTK2_LIBS = @GTK2_LIBS@
@@ -153,9 +154,6 @@ INTLOBJS = @INTLOBJS@
 INTL_LIBTOOL_SUFFIX_PREFIX = @INTL_LIBTOOL_SUFFIX_PREFIX@
 JAVA = @JAVA@
 JAVAC = @JAVAC@
-JAVA_CC = @JAVA_CC@
-JAVA_CC_FLAGS = @JAVA_CC_FLAGS@
-JAVA_CC_OPTS = @JAVA_CC_OPTS@
 LD = @LD@
 LDFLAGS = @LDFLAGS@
 LIBCDDB_CFLAGS = @LIBCDDB_CFLAGS@
@@ -247,7 +245,6 @@ X_PRE_LIBS = @X_PRE_LIBS@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
 ac_ct_F77 = @ac_ct_F77@
-ac_ct_JAVA_CC = @ac_ct_JAVA_CC@
 am__fastdepCC_FALSE = @am__fastdepCC_FALSE@
 am__fastdepCC_TRUE = @am__fastdepCC_TRUE@
 am__fastdepCXX_FALSE = @am__fastdepCXX_FALSE@
@@ -802,9 +799,11 @@ uninstall-am: uninstall-dist_pkgdataDATA uninstall-info-am \
 
 skins2/default.vlt: $(skins2_default_vlt_FILES)
 
-skins2/%.vlt:
+skins2/default.vlt:
 	mkdir -p skins2
-	tar cvvzf $@ --exclude .svn -C $(srcdir)/skins2 $*/
+	tar cvvzf skins2/default.vlt --exclude .svn -C $(srcdir)/skins2 default/
+
+.PHONY: $(nobase_pkgdata_DATA)
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: subsdec.c 15081 2006-04-03 01:39:59Z hartman $
+ * $Id: subsdec.c 16774 2006-09-21 19:29:10Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -380,6 +380,8 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
         if( psz_subtitle ) free( psz_subtitle );
         return NULL;
     }
+
+    p_spu->b_pausable = VLC_TRUE;
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );

@@ -2,7 +2,7 @@
  * svcdsub.c : Overlay Graphics Text (SVCD subtitles) decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: svcdsub.c 14993 2006-03-31 13:46:39Z zorglub $
+ * $Id: svcdsub.c 16798 2006-09-22 23:56:12Z xtophe $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -42,10 +42,10 @@ static void DecoderClose  ( vlc_object_t * );
 #define DEBUG_TEXT \
      "Enable debug"
 
-#define DEBUG_LONGTEXT \
+#define DEBUG_LONGTEXT N_( \
     "This integer when viewed in binary is a debugging mask\n" \
     "calls                 1\n" \
-    "packet assembly info  2\n"
+    "packet assembly info  2\n")
 
 vlc_module_begin();
     set_description( _("Philips OGT (SVCD subtitle) decoder") );
@@ -465,6 +465,8 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
     /* Allocate the subpicture internal data. */
     p_spu = p_dec->pf_spu_buffer_new( p_dec );
     if( !p_spu ) return NULL;
+
+    p_spu->b_pausable = VLC_TRUE;
 
     p_spu->i_x = p_sys->i_x_start;
     p_spu->i_y = p_sys->i_y_start;

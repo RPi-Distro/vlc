@@ -2,7 +2,7 @@
  * cvd.c : CVD Subtitle decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: cvdsub.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: cvdsub.c 16774 2006-09-21 19:29:10Z hartman $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -495,6 +495,8 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
     /* Allocate the subpicture internal data. */
     p_spu = p_dec->pf_spu_buffer_new( p_dec );
     if( !p_spu ) return NULL;
+
+    p_spu->b_pausable = VLC_TRUE;
 
     p_spu->i_x = p_sys->i_x_start;
     p_spu->i_x = p_spu->i_x * 3 / 4; /* FIXME: use aspect ratio for x? */

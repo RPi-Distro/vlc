@@ -2,7 +2,7 @@
  * ctrl_text.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ctrl_text.hpp 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: ctrl_text.hpp 16767 2006-09-21 14:32:45Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -131,7 +131,9 @@ class CtrlText: public CtrlGeneric, public Observer<VarText>
         void adjust( int &position );
 
         /// Update the behaviour of the text whenever the control size changes
-        virtual void onChangePosition();
+        virtual void onPositionChange();
+        /// Update the behaviour of the text whenever the control size changes
+        virtual void onResize();
 };
 
 

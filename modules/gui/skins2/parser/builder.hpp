@@ -2,7 +2,7 @@
  * builder.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: builder.hpp 15249 2006-04-17 15:18:05Z asmax $
+ * $Id: builder.hpp 16778 2006-09-21 23:56:47Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -90,7 +90,8 @@ class Builder: public SkinObject
         const Position makePosition( const string &rLeftTop,
                                      const string &rRightBottom,
                                      int xPos, int yPos, int width, int height,
-                                     const Box &rBox ) const;
+                                     const Box &rBox, bool xKeepRatio = false,
+                                     bool yKeepRatio = false ) const;
 
         // Build the full path of a file
         string getFilePath( const string &fileName ) const;

@@ -2,7 +2,7 @@
  * mp4.c : MP4 file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: mp4.c 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: mp4.c 16773 2006-09-21 18:46:25Z hartman $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -29,6 +29,7 @@
 #include <vlc/input.h>
 #include <vlc_playlist.h>
 #include <vlc_md5.h>
+#include "charset.h"
 #include "iso_lang.h"
 #include "vlc_meta.h"
 
@@ -1468,6 +1469,10 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
             p_sample->data.p_sample_vide->i_width != p_track->i_width )
             p_track->fmt.video.i_aspect =
                 VOUT_ASPECT_FACTOR * p_track->i_width / p_track->i_height;
+
+        /* Support for cropping (eg. in H263 files) */
+        p_track->fmt.video.i_visible_width = p_track->fmt.video.i_width;
+        p_track->fmt.video.i_visible_height = p_track->fmt.video.i_height;
 
         /* Frame rate */
         p_track->fmt.video.i_frame_rate = p_track->i_timescale;

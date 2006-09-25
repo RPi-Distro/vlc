@@ -2,7 +2,7 @@
  * unicode.c: Unicode <-> locale functions
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: unicode.c 16707 2006-09-17 20:55:39Z thresh $
+ * $Id: unicode.c 16774 2006-09-21 19:29:10Z hartman $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -584,6 +584,8 @@ static char *CheckUTF8( char *str, char rep )
 #define isutf8cont( c ) (((c) >= 0x80) && ((c) <= 0xBF)) 
 {
     unsigned char *ptr, c;
+
+    assert (str != NULL);
 
     ptr = (unsigned char *)str;
     while( (c = *ptr) != '\0' )

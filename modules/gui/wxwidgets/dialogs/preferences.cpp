@@ -2,7 +2,7 @@
  * preferences.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: preferences.cpp 15370 2006-04-26 23:20:48Z xtophe $
+ * $Id: preferences.cpp 16798 2006-09-22 23:56:12Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -410,7 +410,7 @@ PrefsTreeCtrl::PrefsTreeCtrl( wxWindow *_p_parent, intf_thread_t *_p_intf,
                         i_image = 6; break;
                 }
                 current_item = AppendItem( root_item,
-                                           wxU( config_data->psz_name ),
+                                           wxU( _(config_data->psz_name) ),
                                            i_image, -1, config_data );
 
                 break;
@@ -483,7 +483,7 @@ PrefsTreeCtrl::PrefsTreeCtrl( wxWindow *_p_parent, intf_thread_t *_p_intf,
                 #else
                 i_image = -1;
                 #endif
-                AppendItem( current_item, wxU( config_data->psz_name ),
+                AppendItem( current_item, wxU( _(config_data->psz_name) ),
                             i_image, -1, config_data );
                 break;
             }

@@ -2,7 +2,7 @@
  * skin_main.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: skin_main.cpp 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: skin_main.cpp 16767 2006-09-21 14:32:45Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -365,16 +365,20 @@ static int onSystrayChange( vlc_object_t *pObj, const char *pVariable,
         return VLC_EGENERIC;
     }
 
-    AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
-    if( newVal.b_bool )
+    // Check that we found the correct interface (same check as for the demux)
+    if( var_Type( pIntf, "skin-to-load" ) == VLC_VAR_STRING )
     {
-        CmdAddInTray *pCmd = new CmdAddInTray( pIntf );
-        pQueue->push( CmdGenericPtr( pCmd ) );
-    }
-    else
-    {
-        CmdRemoveFromTray *pCmd = new CmdRemoveFromTray( pIntf );
-        pQueue->push( CmdGenericPtr( pCmd ) );
+        AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
+        if( newVal.b_bool )
+        {
+            CmdAddInTray *pCmd = new CmdAddInTray( pIntf );
+            pQueue->push( CmdGenericPtr( pCmd ) );
+        }
+        else
+        {
+            CmdRemoveFromTray *pCmd = new CmdRemoveFromTray( pIntf );
+            pQueue->push( CmdGenericPtr( pCmd ) );
+        }
     }
 
     vlc_object_release( pIntf );
@@ -395,16 +399,20 @@ static int onTaskBarChange( vlc_object_t *pObj, const char *pVariable,
         return VLC_EGENERIC;
     }
 
-    AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
-    if( newVal.b_bool )
+    // Check that we found the correct interface (same check as for the demux)
+    if( var_Type( pIntf, "skin-to-load" ) == VLC_VAR_STRING )
     {
-        CmdAddInTaskBar *pCmd = new CmdAddInTaskBar( pIntf );
-        pQueue->push( CmdGenericPtr( pCmd ) );
-    }
-    else
-    {
-        CmdRemoveFromTaskBar *pCmd = new CmdRemoveFromTaskBar( pIntf );
-        pQueue->push( CmdGenericPtr( pCmd ) );
+        AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
+        if( newVal.b_bool )
+        {
+            CmdAddInTaskBar *pCmd = new CmdAddInTaskBar( pIntf );
+            pQueue->push( CmdGenericPtr( pCmd ) );
+        }
+        else
+        {
+            CmdRemoveFromTaskBar *pCmd = new CmdRemoveFromTaskBar( pIntf );
+            pQueue->push( CmdGenericPtr( pCmd ) );
+        }
     }
 
     vlc_object_release( pIntf );

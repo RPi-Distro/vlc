@@ -2,7 +2,7 @@
  * osd_parser.c - The OSD Menu  parser core code.
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: osd_parser.c 15025 2006-04-01 11:27:40Z fkuehne $
+ * $Id: osd_parser.c 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -62,7 +62,10 @@ static picture_t *osd_LoadImage( vlc_object_t *p_this, const char *psz_filename 
 {
     picture_t *p_pic = NULL;
     image_handler_t *p_image;
-    video_format_t fmt_in = {0}, fmt_out = {0};
+    video_format_t fmt_in, fmt_out;
+
+    memset( &fmt_in, 0, sizeof(video_format_t) );
+    memset( &fmt_out, 0, sizeof(video_format_t) );
 
     fmt_out.i_chroma = VLC_FOURCC('Y','U','V','A');
     p_image = image_HandlerCreate( p_this );

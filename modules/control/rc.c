@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004 - 2005 the VideoLAN team
- * $Id: rc.c 16669 2006-09-16 10:31:26Z thresh $
+ * $Id: rc.c 16774 2006-09-21 19:29:10Z hartman $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -94,6 +94,8 @@ static int  Intf         ( vlc_object_t *, char const *,
 static int  Volume       ( vlc_object_t *, char const *,
                            vlc_value_t, vlc_value_t, void * );
 static int  VolumeMove   ( vlc_object_t *, char const *,
+                           vlc_value_t, vlc_value_t, void * );
+static int  VideoConfig  ( vlc_object_t *, char const *,
                            vlc_value_t, vlc_value_t, void * );
 static int  AudioConfig  ( vlc_object_t *, char const *,
                            vlc_value_t, vlc_value_t, void * );
@@ -372,6 +374,8 @@ static void RegisterCallbacks( intf_thread_t *p_intf )
 
     var_Create( p_intf, "add", VLC_VAR_STRING | VLC_VAR_ISCOMMAND );
     var_AddCallback( p_intf, "add", Playlist, NULL );
+    var_Create( p_intf, "enqueue", VLC_VAR_STRING | VLC_VAR_ISCOMMAND );
+    var_AddCallback( p_intf, "enqueue", Playlist, NULL );
     var_Create( p_intf, "playlist", VLC_VAR_VOID | VLC_VAR_ISCOMMAND );
     var_AddCallback( p_intf, "playlist", Playlist, NULL );
     var_Create( p_intf, "play", VLC_VAR_VOID | VLC_VAR_ISCOMMAND );
@@ -494,6 +498,21 @@ static void RegisterCallbacks( intf_thread_t *p_intf )
     var_AddCallback( p_intf, "slower", Input, NULL );
     var_Create( p_intf, "normal", VLC_VAR_VOID | VLC_VAR_ISCOMMAND );
     var_AddCallback( p_intf, "normal", Input, NULL );
+
+    var_Create( p_intf, "atrack", VLC_VAR_STRING | VLC_VAR_ISCOMMAND );
+    var_AddCallback( p_intf, "atrack", Input, NULL );
+    var_Create( p_intf, "vtrack", VLC_VAR_STRING | VLC_VAR_ISCOMMAND );
+    var_AddCallback( p_intf, "vtrack", Input, NULL );
+    var_Create( p_intf, "strack", VLC_VAR_STRING | VLC_VAR_ISCOMMAND );
+    var_AddCallback( p_intf, "strack", Input, NULL );
+
+    /* video commands */
+    var_Create( p_intf, "vratio", VLC_VAR_STRING | VLC_VAR_ISCOMMAND );
+    var_AddCallback( p_intf, "vratio", VideoConfig, NULL );
+    var_Create( p_intf, "vcrop", VLC_VAR_STRING | VLC_VAR_ISCOMMAND );
+    var_AddCallback( p_intf, "vcrop", VideoConfig, NULL );
+    var_Create( p_intf, "vzoom", VLC_VAR_STRING | VLC_VAR_ISCOMMAND );
+    var_AddCallback( p_intf, "vzoom", VideoConfig, NULL );
 
     /* audio commands */
     var_Create( p_intf, "volume", VLC_VAR_STRING | VLC_VAR_ISCOMMAND );
@@ -882,6 +901,7 @@ static void Help( intf_thread_t *p_intf, vlc_bool_t b_longhelp)
     msg_rc(_("+----[ Remote control commands ]"));
     msg_rc(  "| ");
     msg_rc(_("| add XYZ  . . . . . . . . . . add XYZ to playlist"));
+    msg_rc(_("| enqueue XYZ  . . . . . . . queue XYZ to playlist"));
     msg_rc(_("| playlist . . .  show items currently in playlist"));
     msg_rc(_("| play . . . . . . . . . . . . . . . . play stream"));
     msg_rc(_("| stop . . . . . . . . . . . . . . . . stop stream"));
@@ -916,6 +936,12 @@ static void Help( intf_thread_t *p_intf, vlc_bool_t b_longhelp)
     msg_rc(_("| voldown [X]  . . . .  lower audio volume X steps"));
     msg_rc(_("| adev [X] . . . . . . . . .  set/get audio device"));
     msg_rc(_("| achan [X]. . . . . . . .  set/get audio channels"));
+    msg_rc(_("| atrack [X] . . . . . . . . . set/get audio track"));
+    msg_rc(_("| vtrack [X] . . . . . . . . . set/get video track"));
+    msg_rc(_("| vratio [X]  . . . . . set/get video aspect ratio"));
+    msg_rc(_("| vcrop [X]  . . . . . . . . .  set/get video crop"));
+    msg_rc(_("| vzoom [X]  . . . . . . . . .  set/get video zoom"));
+    msg_rc(_("| strack [X] . . . . . . . set/get subtitles track"));
     msg_rc(_("| menu [on|off|up|down|left|right|select] use menu"));
     msg_rc(  "| ");
 
@@ -1216,6 +1242,81 @@ static int Input( vlc_object_t *p_this, char const *psz_cmd,
         vlc_object_release( p_input );
         return VLC_SUCCESS;
     }
+    else if(    !strcmp( psz_cmd, "atrack" )
+             || !strcmp( psz_cmd, "vtrack" )
+             || !strcmp( psz_cmd, "strack" ) )
+    {
+        char *psz_variable;
+        vlc_value_t val_name;
+        int i_error;
+
+        if( !strcmp( psz_cmd, "atrack" ) )
+        {
+            psz_variable = "audio-es";
+        }
+        else if( !strcmp( psz_cmd, "vtrack" ) )
+        {
+            psz_variable = "video-es";
+        }
+        else
+        {
+            psz_variable = "spu-es";
+        }
+
+        /* Get the descriptive name of the variable */
+        var_Change( p_input, psz_variable, VLC_VAR_GETTEXT,
+                     &val_name, NULL );
+        if( !val_name.psz_string ) val_name.psz_string = strdup(psz_variable);
+
+        if( newval.psz_string && *newval.psz_string )
+        {
+            /* set */
+            vlc_value_t val;
+            val.i_int = atoi( newval.psz_string );
+
+            i_error = var_Set( p_input, psz_variable, val );
+        }
+        else
+        {
+            /* get */
+            vlc_value_t val, text;
+            int i, i_value;
+
+            if ( var_Get( p_input, psz_variable, &val ) < 0 )
+            {
+                vlc_object_release( p_input );
+                return VLC_EGENERIC;
+            }
+            i_value = val.i_int;
+
+            if ( var_Change( p_input, psz_variable,
+                             VLC_VAR_GETLIST, &val, &text ) < 0 )
+            {
+                vlc_object_release( p_input );
+                return VLC_EGENERIC;
+            }
+
+            msg_rc( "+----[ %s ]", val_name.psz_string );
+            for ( i = 0; i < val.p_list->i_count; i++ )
+            {
+                if ( i_value == val.p_list->p_values[i].i_int )
+                    msg_rc( "| %i - %s *", val.p_list->p_values[i].i_int,
+                            text.p_list->p_values[i].psz_string );
+                else
+                    msg_rc( "| %i - %s", val.p_list->p_values[i].i_int,
+                            text.p_list->p_values[i].psz_string );
+            }
+            var_Change( p_input, psz_variable, VLC_VAR_FREELIST,
+                        &val, &text );
+            msg_rc( "+----[ end of %s ]", val_name.psz_string );
+
+            if( val_name.psz_string ) free( val_name.psz_string );
+
+            i_error = VLC_SUCCESS;
+        }
+        vlc_object_release( p_input );
+        return i_error;
+    }
 
     /* Never reached. */
     vlc_object_release( p_input );
@@ -1303,6 +1404,18 @@ static int Playlist( vlc_object_t *p_this, char const *psz_cmd,
             msg_rc( "Trying to add %s to playlist.", newval.psz_string );
             playlist_AddItem( p_playlist, p_item,
                               PLAYLIST_GO|PLAYLIST_APPEND, PLAYLIST_END );
+        }
+    }
+    else if( !strcmp( psz_cmd, "enqueue" ) &&
+             newval.psz_string && *newval.psz_string )
+    {
+        playlist_item_t *p_item = parse_MRL( p_intf, newval.psz_string );
+
+        if( p_item )
+        {
+            msg_rc( "trying to enqueue %s to playlist", newval.psz_string );
+            playlist_AddItem( p_playlist, p_item,
+                              PLAYLIST_APPEND, PLAYLIST_END );
         }
     }
     else if( !strcmp( psz_cmd, "playlist" ) )
@@ -1824,6 +1937,126 @@ static int VolumeMove( vlc_object_t *p_this, char const *psz_cmd,
     osd_Volume( p_this );
 
     if ( !i_error ) msg_rc( STATUS_CHANGE "( audio volume: %d )", i_volume );
+    return i_error;
+}
+
+
+static int VideoConfig( vlc_object_t *p_this, char const *psz_cmd,
+                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
+{
+    intf_thread_t *p_intf = (intf_thread_t*)p_this;
+    input_thread_t *p_input = NULL;
+    vout_thread_t * p_vout;
+    const char * psz_variable;
+    vlc_value_t val_name;
+    int i_error;
+
+    p_input = vlc_object_find( p_this, VLC_OBJECT_INPUT, FIND_ANYWHERE );
+    if( !p_input )
+        return VLC_ENOOBJ;
+
+    p_vout = vlc_object_find( p_input, VLC_OBJECT_VOUT, FIND_CHILD );
+    vlc_object_release( p_input );
+    if( !p_vout )
+        return VLC_ENOOBJ;
+
+    if( !strcmp( psz_cmd, "vcrop" ) )
+    {
+        psz_variable = "crop";
+    }
+    else if( !strcmp( psz_cmd, "vratio" ) )
+    {
+        psz_variable = "aspect-ratio";
+    }
+    else /* if( !strcmp( psz_cmd, "vzoom" ) ) */
+    {
+        psz_variable = "zoom";
+    }
+
+
+    /* Get the descriptive name of the variable */
+    var_Change( p_vout, psz_variable, VLC_VAR_GETTEXT,
+                 &val_name, NULL );
+    if( !val_name.psz_string ) val_name.psz_string = strdup(psz_variable);
+
+    if( newval.psz_string && *newval.psz_string )
+    {
+        /* set */
+        if( !strcmp( psz_variable, "zoom" ) )
+        {
+            vlc_value_t val;
+            val.f_float = atof( newval.psz_string );
+            i_error = var_Set( p_vout, psz_variable, val );
+        }
+        else
+        {
+            i_error = var_Set( p_vout, psz_variable, newval );
+        }
+    }
+    else
+    {
+        /* get */
+        vlc_value_t val, text;
+        int i;
+        float f_value;
+        char *psz_value = NULL;
+
+        if ( var_Get( p_vout, psz_variable, &val ) < 0 )
+        {
+            vlc_object_release( p_vout );
+            return VLC_EGENERIC;
+        }
+        if( !strcmp( psz_variable, "zoom" ) )
+        {
+            f_value = val.f_float;
+        }
+        else
+        {
+            psz_value = strdup( val.psz_string );
+        }
+
+        if ( var_Change( p_vout, psz_variable,
+                         VLC_VAR_GETLIST, &val, &text ) < 0 )
+        {
+            vlc_object_release( p_vout );
+            return VLC_EGENERIC;
+        }
+
+        msg_rc( "+----[ %s ]", val_name.psz_string );
+        if( !strcmp( psz_variable, "zoom" ) )
+        {
+            for ( i = 0; i < val.p_list->i_count; i++ )
+            {
+                if ( f_value == val.p_list->p_values[i].f_float )
+                    msg_rc( "| %f - %s *", val.p_list->p_values[i].f_float,
+                            text.p_list->p_values[i].psz_string );
+                else
+                    msg_rc( "| %f - %s", val.p_list->p_values[i].f_float,
+                            text.p_list->p_values[i].psz_string );
+            }
+        }
+        else
+        {
+            for ( i = 0; i < val.p_list->i_count; i++ )
+            {
+                if ( !strcmp( psz_value, val.p_list->p_values[i].psz_string ) )
+                    msg_rc( "| %s - %s *", val.p_list->p_values[i].psz_string,
+                            text.p_list->p_values[i].psz_string );
+                else
+                    msg_rc( "| %s - %s", val.p_list->p_values[i].psz_string,
+                            text.p_list->p_values[i].psz_string );
+            }
+            free( psz_value );
+        }
+        var_Change( p_vout, psz_variable, VLC_VAR_FREELIST,
+                    &val, &text );
+        msg_rc( "+----[ end of %s ]", val_name.psz_string );
+
+        if( val_name.psz_string ) free( val_name.psz_string );
+
+        i_error = VLC_SUCCESS;
+    }
+    vlc_object_release( p_vout );
     return i_error;
 }
 

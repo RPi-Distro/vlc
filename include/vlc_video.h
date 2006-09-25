@@ -4,7 +4,7 @@
  * includes all common video types and constants.
  *****************************************************************************
  * Copyright (C) 1999 - 2005 the VideoLAN team
- * $Id: vlc_video.h 15328 2006-04-23 13:56:24Z bigben $
+ * $Id: vlc_video.h 16774 2006-09-21 19:29:10Z hartman $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -246,6 +246,8 @@ struct subpicture_t
     vlc_bool_t      b_ephemer;    /**< If this flag is set to true the subtitle
                                 will be displayed untill the next one appear */
     vlc_bool_t      b_fade;                               /**< enable fading */
+    vlc_bool_t      b_pausable;               /**< subpicture will be paused if
+                                                            stream is paused */
     /**@}*/
 
     subpicture_region_t *p_region;  /**< region list composing this subtitle */

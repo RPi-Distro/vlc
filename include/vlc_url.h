@@ -2,7 +2,7 @@
  * vlc_url.h: URL related macros
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: vlc_url.h 15121 2006-04-06 21:20:33Z courmisch $
+ * $Id: vlc_url.h 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -217,11 +217,12 @@ static inline int vlc_UrlIsNotEncoded( const char *psz_url )
  *****************************************************************************
  *
  *****************************************************************************/
-static inline char *vlc_b64_encode( char *src )
+static inline char *vlc_b64_encode( const char *src )
 {
     static const char b64[] =
            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
     size_t len = strlen( src );
+    const uint8_t *in = (const uint8_t *)src;
 
     char *ret;
     char *dst = (char *)malloc( ( len + 4 ) * 4 / 3 );
@@ -232,38 +233,29 @@ static inline char *vlc_b64_encode( char *src )
 
     while( len > 0 )
     {
-        /* pops (up to) 3 bytes of input */
-        uint32_t v = *src++ << 24;
+        /* pops (up to) 3 bytes of input, push 4 bytes */
+        uint32_t v = *in++ << 24; // 1/3
+        *dst++ = b64[v >> 26]; // 1/4
+        v = v << 6;
 
         if( len >= 2 )
-        {
-            v |= *src++ << 16;
-            if( len >= 3 )
-                v |= *src++ << 8;
-        }
+            v |= *in++ << 22; // 2/3
+        *dst++ = b64[v >> 26]; // 2/4
+        v = v << 6;
 
-        /* pushes (up to) 4 bytes of output */
-        while( v )
-        {
-            *dst++ = b64[v >> 26];
-            v = v << 6;
-        }
+        if( len >= 3 )
+            v |= *in++ << 20; // 3/3
+        *dst++ = ( len >= 2 ) ? b64[v >> 26] : '='; // 3/4
+        v = v << 6;
 
-        switch( len )
+        *dst++ = ( len >= 3 ) ? b64[v >> 26] : '='; // 4/4
+
+        len--;
+        if( len > 0 )
         {
-            case 1:
-                *dst++ = '=';
-                *dst++ = '=';
+            len--;
+            if( len > 0 )
                 len--;
-                break;
-
-            case 2:
-                *dst++ = '=';
-                len -= 2;
-                break;
-
-            default:
-                len -= 3;
         }
     }
 

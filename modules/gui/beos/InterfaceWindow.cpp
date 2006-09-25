@@ -2,7 +2,7 @@
  * InterfaceWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: InterfaceWindow.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: InterfaceWindow.cpp 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -319,8 +319,10 @@ InterfaceWindow::InterfaceWindow( intf_thread_t * _p_intf, BRect frame,
 
     /* Add the Show menu */
     fShowMenu = new BMenu( _("Window") );
+#if 0
     ADD_ELLIPSIS( _("Playlist") );
     fShowMenu->AddItem( new BMenuItem( psz_tmp, new BMessage( OPEN_PLAYLIST ), 'P') );
+#endif
     ADD_ELLIPSIS( _("Messages") );
     fShowMenu->AddItem( new BMenuItem( psz_tmp, new BMessage( OPEN_MESSAGES ), 'M' ) );
     ADD_ELLIPSIS( _("Preferences") );

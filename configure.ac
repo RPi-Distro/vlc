@@ -91,13 +91,22 @@ dnl
 AC_ARG_WITH(contrib,
     [  --without-contrib       do not use the libraries in extras/contrib],[],[])
   if test "${with_contrib}" != "no"; then 
-
+    AC_MSG_CHECKING([for libs in extras/contrib])
     topdir="`dirname $0`"
     if test "`echo \"$topdir\" | cut -c 1`" != "/"; then
        topdir="`pwd`/$topdir"
     fi
-
+   if test "`grep HOST ${topdir}/extras/contrib/config.mak 2>/dev/null|awk '{print $3}'`" != "`$CC -dumpmachine`"; then
+      if test "${with_contrib}" = "yes"; then
+        AC_MSG_RESULT([no])
+	AC_MSG_ERROR([ not using the libs in extras/contrib as it is not the same host])
+      else
+        AC_MSG_RESULT([no])
+	AC_MSG_WARN([ not using the libs in extras/contrib as it is not the same host])
+      fi
+     else
   if test -d ${topdir}/extras/contrib/lib; then
+    AC_MSG_RESULT([yes])
     export PATH=${topdir}/extras/contrib/bin:$PATH
     CPPFLAGS="${CPPFLAGS} -I${topdir}/extras/contrib/include"
     CPPFLAGS_save="${CPPFLAGS_save} -I${topdir}/extras/contrib/include"
@@ -131,6 +140,9 @@ dnl kludge because only the debian package provides a ffmpeg-config
     if test -z $with_cyberlink_tree; then
        with_cyberlink_tree=${topdir}/extras/contrib/src/clinkcc
     fi
+    if test -z $with_libmpeg2_tree; then
+        with_libmpeg2_tree=${topdir}/extras/contrib/src/mpeg2dec
+    fi
 
     if test ".`uname -s`" = ".Darwin"; then
       export LD_LIBRARY_PATH=${topdir}/extras/contrib/lib:$LD_LIBRARY_PATH
@@ -139,6 +151,9 @@ dnl kludge because only the debian package provides a ffmpeg-config
       export LIBRARY_PATH=${topdir}/extras/contrib/lib:$LIBRARY_PATH
       export BELIBRARIES=${topdir}/extras/contrib/lib:$BELIBRARIES
     fi
+  else
+    AC_MSG_RESULT([no])
+  fi
   fi
 fi
 dnl
@@ -1315,7 +1330,7 @@ dnl  Special arch tuning
 dnl
 AC_ARG_WITH(tuning,
 [  --with-tuning=ARCH      enable special tuning for an architecture
-                          (default Pentium 2 on IA-32 and 750 on PPC)])
+                          (default Pentium 2 on IA-32 and G4 on PPC)])
 if test -n "${with_tuning}"; then
     if test "${with_tuning}" != "no"; then
         CFLAGS_TUNING="-mtune=${with_tuning}"
@@ -1326,7 +1341,7 @@ else
     elif test "${target_cpu}" = "x86_64"; then
         CFLAGS_TUNING="-mtune=athlon64"
     elif test "${target_cpu}" = "powerpc"; then
-        CFLAGS_TUNING="-mtune=750";
+        CFLAGS_TUNING="-mtune=G4";
     fi
 fi
 
@@ -1432,8 +1447,8 @@ if test "${enable_shout}" = "yes"; then
   PKG_CHECK_MODULES(SHOUT, shout >= 2.1,
     [AC_DEFINE(HAVE_SHOUT, [], [Define if you have the libshout library])
      VLC_ADD_PLUGINS([access_output_shout])
-     VLC_ADD_LDFLAGS([vlc access_output_shout],[$SHOUT_LIBS])
-     VLC_ADD_CFLAGS([vlc access_output_shout],[$SHOUT_CFLAGS])],
+     VLC_ADD_LDFLAGS([access_output_shout],[$SHOUT_LIBS])
+     VLC_ADD_CFLAGS([access_output_shout],[$SHOUT_CFLAGS])],
     [AC_MSG_WARN(libshout library not found)])
 fi
 
@@ -4688,10 +4703,12 @@ AC_ARG_ENABLE(macosx,
    then
      VLC_ADD_BUILTINS([macosx])
      VLC_ADD_LDFLAGS([macosx],[-framework IOKit -framework Cocoa -framework Carbon -framework QuickTime -lobjc -ObjC -framework OpenGL -framework AGL])
+     VLC_ADD_OBJCFLAGS( [macosx],[-fobjc-exceptions] )
    fi],
   [AC_CHECK_HEADERS(Cocoa/Cocoa.h,
      VLC_ADD_BUILTINS([macosx])
      VLC_ADD_LDFLAGS([macosx],[-framework IOKit -framework Cocoa -framework Carbon -framework QuickTime -lobjc -ObjC -framework OpenGL -framework AGL])
+     VLC_ADD_OBJCFLAGS( [macosx],[-fobjc-exceptions] )
    )])
 CFLAGS=$ORIGCFLAGS
 
@@ -4902,33 +4919,15 @@ AC_ARG_ENABLE(gnutls,
   [  --enable-gnutls         gnutls TLS/SSL support (default enabled)])
 
 AS_IF([test "${enable_gnutls}" != "no"], [
-  gcrypt_LIBS="-lgpg-error"
-  AS_IF([test "${SYS}" = "mingw32"], [
-    gcrypt_LIBS="${gcrypt_LIBS} -lws2_32"
-    VLC_ADD_LDFLAGS([gnutls],[-lws2_32])
-  ])
-
-  gnutls_LIBS="-lgcrypt -lz ${gcrypt_LIBS}"
-  AS_IF([test "${SYS}" = "darwin"], [
-    gnutls_LIBS="-lintl ${gnutls_LIBS}"
-    VLC_ADD_LDFLAGS([gnutls],[-lintl])
-  ])
-
-  AC_CHECK_HEADER(gcrypt.h, [
-    AC_CHECK_LIB(gcrypt, gcry_control, [
-      AC_CHECK_HEADER(gnutls/gnutls.h, [
-        AC_CHECK_LIB(gnutls, gnutls_certificate_verify_peers2,
-          [have_gnutls="yes"],[old_gnutls="yes"],[${gnutls_LIBS}])
-      ])
-    ],,[${gcrypt_LIBS}])
-  ])
+  PKG_CHECK_MODULES(GNUTLS, [gnutls >= 1.2.9], [have_gnutls="yes"], [have_gnutls="no"])
 
   AS_IF([test "${have_gnutls}" = "yes"], [
     VLC_ADD_PLUGINS([gnutls])
-    VLC_ADD_LDFLAGS([gnutls], [-lgnutls ${gnutls_LIBS}])
+    VLC_ADD_CFLAGS([gnutls], [$GNUTLS_CFLAGS])
+    VLC_ADD_LDFLAGS([gnutls], [$GNUTLS_LIBS])
   ], [
     AS_IF([test "${enable_gnutls}" = "yes"], [
-      AC_MSG_ERROR([gnutls not present or too old (version 1.0.17 required)])
+      AC_MSG_ERROR([gnutls not present or too old (version 1.2.9 required)])
     ])
   ])
 ])
@@ -5171,9 +5170,10 @@ dnl  Java bindings
 dnl
 AC_ARG_ENABLE(java-bindings,
   [  --enable-java-bindings  Enable Java bindings (default disabled)])
-if test "${enable-java-bindings}" = "yes"
+if test "${enable_java_bindings}" = "yes"
 then
-  AC_PROG_JAVA_CC(javac)
+  AS_IF([test "x${JAVA_HOME}" == "x"],
+	[AC_MSG_ERROR([Please set the JAVA_HOME variable to your JDK environment])])
   AC_PROG_JAVAC
   AC_PROG_JAVA
 fi

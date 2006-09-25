@@ -2,7 +2,7 @@
  * ctrl_move.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ctrl_move.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: ctrl_move.hpp 16767 2006-09-21 14:32:45Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -58,7 +58,10 @@ class CtrlMove: public CtrlFlat
         /// Get the position of the decorated control in the layout, if any
         virtual const Position *getPosition() const;
 
-          /// Get the type of control (custom RTTI)
+        /// Method called when the control is resized
+        virtual void onResize();
+
+        /// Get the type of control (custom RTTI)
         virtual string getType() const { return m_rCtrl.getType(); }
 
     private:

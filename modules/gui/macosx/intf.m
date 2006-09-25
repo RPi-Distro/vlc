@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: intf.m 16647 2006-09-14 14:58:57Z hartman $
+ * $Id: intf.m 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -725,6 +725,21 @@ static VLCMain *_o_sharedMainInstance = nil;
         case kRemoteButtonVolume_Minus:
             [o_controls volumeDown: self];
             break;
+        case kRemoteButtonRight:
+            [o_controls next: self];
+            break;
+        case kRemoteButtonLeft:
+            [o_controls prev: self];
+            break;
+        case kRemoteButtonRight_Hold:
+            [o_controls forward: self];
+            break;
+        case kRemoteButtonLeft_Hold:
+            [o_controls backward: self];
+            break;
+        case kRemoteButtonMenu:
+            [o_controls windowAction: self];
+            break;
 
         default:
             /* Add here whatever you want other buttons to do */
@@ -1388,6 +1403,7 @@ static VLCMain *_o_sharedMainInstance = nil;
         [o_btn_play setToolTip: _NS("Pause")];
         [o_mi_play setTitle: _NS("Pause")];
         [o_dmi_play setTitle: _NS("Pause")];
+        [o_vmi_play setTitle: _NS("Pause")];
     }
     else
     {
@@ -1396,6 +1412,7 @@ static VLCMain *_o_sharedMainInstance = nil;
         [o_btn_play setToolTip: _NS("Play")];
         [o_mi_play setTitle: _NS("Play")];
         [o_dmi_play setTitle: _NS("Play")];
+        [o_vmi_play setTitle: _NS("Play")];
     }
 }
 

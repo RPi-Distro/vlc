@@ -34,6 +34,10 @@
 
 #include <vlc/vlc.h>
 
+#ifndef WIN32
+#include <X11/Xlib.h>
+#endif
+
 # ifdef __cplusplus
 extern "C" {
 # endif
@@ -112,6 +116,14 @@ typedef struct libvlc_instance_t libvlc_instance_t;
  * \param exception an initialized exception pointer
  */
 libvlc_instance_t * libvlc_new( int , char **, libvlc_exception_t *);
+
+/**
+ * Returns a libvlc instance identifier for legacy APIs. Use of this
+ * function is discouraged, you should convert your program to use the
+ * new API.
+ * \param p_instance the instance
+ */
+int libvlc_get_vlc_id( libvlc_instance_t *p_instance );
 
 /**
  * Destroy a libvlc instance
@@ -195,20 +207,6 @@ void libvlc_playlist_prev( libvlc_instance_t *, libvlc_exception_t * );
 void libvlc_playlist_clear( libvlc_instance_t *, libvlc_exception_t * );
 
 /**
- * Go to next playlist item
- * \param p_instance the instance
- * \param p_exception an initialized exception
- */
-void libvlc_playlist_next( libvlc_instance_t *, libvlc_exception_t * );
-
-/**
- * Go to Previous playlist item
- * \param p_instance the instance
- * \param p_exception an initialized exception
- */
-void libvlc_playlist_prev( libvlc_instance_t *, libvlc_exception_t * );
-
-/**
  * Add an item at the end of the playlist
  * If you need more advanced options, \see libvlc_playlist_add_extended
  * \param p_instance the instance
@@ -226,13 +224,20 @@ int libvlc_playlist_add( libvlc_instance_t *, const char *, const char *,
  * \param psz_name a name that you might want to give or NULL
  * \param i_options the number of options to add
  * \param ppsz_options strings representing the options to add
+ * \param p_exception an initialized exception
  * \return the identifier of the new item
  */
 int libvlc_playlist_add_extended( libvlc_instance_t *, const char *,
                                   const char *, int, const char **,
                                   libvlc_exception_t * );
 
-
+/** 
+ * Delete the playlist item with the given ID.
+ * \param p_instance the instance
+ * \param i_id the id to remove
+ * \param p_exception an initialized exception
+ * \return
+ */
 int libvlc_playlist_delete_item( libvlc_instance_t *, int,
                                  libvlc_exception_t * );
     
@@ -245,8 +250,6 @@ typedef struct libvlc_input_t libvlc_input_t;
  */
 libvlc_input_t *libvlc_playlist_get_input( libvlc_instance_t *,
                                            libvlc_exception_t * );
-
-
 
 /** @}*/
 
@@ -267,10 +270,10 @@ void libvlc_input_free( libvlc_input_t * );
 /// \bug This might go away ... to be replaced by a broader system
 vlc_int64_t libvlc_input_get_length     ( libvlc_input_t *, libvlc_exception_t *);
 vlc_int64_t libvlc_input_get_time       ( libvlc_input_t *, libvlc_exception_t *);
+void        libvlc_input_set_time       ( libvlc_input_t *, vlc_int64_t, libvlc_exception_t *);
 float       libvlc_input_get_position   ( libvlc_input_t *, libvlc_exception_t *);
+void        libvlc_input_set_position   ( libvlc_input_t *, float, libvlc_exception_t *);
 vlc_bool_t  libvlc_input_will_play      ( libvlc_input_t *, libvlc_exception_t *);
-vlc_bool_t  libvlc_input_has_vout       ( libvlc_input_t *, libvlc_exception_t *);
-float       libvlc_input_get_fps        ( libvlc_input_t *, libvlc_exception_t *);
         
 /** @} */
 
@@ -279,6 +282,14 @@ float       libvlc_input_get_fps        ( libvlc_input_t *, libvlc_exception_t *
  * LibVLC Video handling
  * @{
  */
+
+/**
+ * Does this input have a video output ?
+ * \param p_input the input
+ * \param p_exception an initialized exception
+ */
+vlc_bool_t  libvlc_input_has_vout       ( libvlc_input_t *, libvlc_exception_t *);
+float       libvlc_input_get_fps        ( libvlc_input_t *, libvlc_exception_t *);
 
 /**
  * Toggle fullscreen status on video output
@@ -327,6 +338,35 @@ int libvlc_video_get_width( libvlc_input_t *, libvlc_exception_t * );
  */
 void libvlc_video_take_snapshot( libvlc_input_t *, char *, libvlc_exception_t * );
     
+int libvlc_video_destroy( libvlc_input_t *, libvlc_exception_t *);
+
+/**
+ * Resize the video output window
+ * \param p_instance libvlc instance
+ * \param width new width for video output window
+ * \param height new height for video output window
+ * \param p_exception an initialized exception
+ * \return the mute status (boolean)
+ */
+void libvlc_video_resize( libvlc_input_t *, int, int, libvlc_exception_t *);
+    
+/**
+* Downcast to this general type as placeholder for a platform specific one, such as:
+*  Drawable on X11,
+*  CGrafPort on MacOSX,
+*  HWND on win32
+*/
+typedef int libvlc_drawable_t;
+
+/**
+ * Get current mute status
+ * \param p_instance libvlc instance
+ * \param drawable the new parent window (Drawable on X11, CGrafPort on MacOSX, HWND on Win32)
+ * \param p_exception an initialized exception
+ * \return the mute status (boolean)
+ */
+int libvlc_video_reparent( libvlc_input_t *, libvlc_drawable_t, libvlc_exception_t * );
+
 
 /** @} */
 
@@ -435,8 +475,6 @@ void libvlc_vlm_set_output( libvlc_instance_t *, char *, char*,
  */
 void libvlc_vlm_set_input( libvlc_instance_t *, char *, char*,
                            libvlc_exception_t *);
-
-
 
 /**
  * Set output for a media

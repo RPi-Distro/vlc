@@ -2,7 +2,7 @@
  * fileinfo.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: fileinfo.cpp 15044 2006-04-02 07:58:36Z zorglub $
+ * $Id: fileinfo.cpp 16798 2006-09-22 23:56:12Z xtophe $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -90,7 +90,7 @@ FileInfo::FileInfo( intf_thread_t *_p_intf, wxWindow *p_parent ):
     panel_sizer->Add( notebook, 1, wxEXPAND | wxALL, 5 );
 #endif
 
-    panel_sizer->Add( new wxButton( panel, wxID_CLOSE ) ,
+    panel_sizer->Add( new wxButton( panel, wxID_CLOSE, wxU(_("&Close")) ) ,
                       0, wxALL|wxALIGN_RIGHT, 5 );
 
     panel_sizer->Layout();

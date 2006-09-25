@@ -2,7 +2,7 @@
  * vlc_help.h: Help strings
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: vlc_config_cat.h 15124 2006-04-06 23:00:24Z adn $
+ * $Id: vlc_config_cat.h 16798 2006-09-22 23:56:12Z xtophe $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Anil Daoud <anil@videolan.org>
@@ -352,7 +352,7 @@ inline char *config_CategoryNameGet( int i_value )
     {
         if( categories_array[i].i_id == i_value )
         {
-            return categories_array[i].psz_name;
+            return _(categories_array[i].psz_name);
         }
         i++;
     }
@@ -366,7 +366,7 @@ inline char *config_CategoryHelpGet( int i_value )
     {
         if( categories_array[i].i_id == i_value )
         {
-            return categories_array[i].psz_help;
+            return _(categories_array[i].psz_help);
         }
         i++;
     }

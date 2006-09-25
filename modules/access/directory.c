@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: directory.c 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: directory.c 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -28,6 +28,7 @@
 #include <vlc/vlc.h>
 #include <vlc/input.h>
 #include <vlc_playlist.h>
+#include <vlc_input.h>
 
 #include <stdlib.h>
 #include <string.h>
@@ -389,14 +390,30 @@ static int Filter( const struct dirent *foo )
 static int ReadDir( playlist_t *p_playlist, const char *psz_name,
                     int i_mode, playlist_item_t *p_parent )
 {
-    struct dirent   **pp_dir_content;
-    int             i_dir_content, i;
+    struct dirent   **pp_dir_content = 0;
+    int             i_dir_content, i, i_return = VLC_SUCCESS;
     playlist_item_t *p_node;
 
-    /* Build array with ignores */
     char **ppsz_extensions = 0;
     int i_extensions = 0;
-    char *psz_ignore = var_CreateGetString( p_playlist, "ignore-filetypes" );
+    char *psz_ignore;
+
+    /* Get the first directory entry */
+    i_dir_content = scandir( psz_name, &pp_dir_content, Filter, alphasort );
+    if( i_dir_content == -1 )
+    {
+        msg_Warn( p_playlist, "failed to read directory" );
+        return VLC_EGENERIC;
+    }
+    else if( i_dir_content <= 0 )
+    {
+        /* directory is empty */
+        if( pp_dir_content ) free( pp_dir_content );
+        return VLC_SUCCESS;
+    }
+
+    /* Build array with ignores */
+    psz_ignore = var_CreateGetString( p_playlist, "ignore-filetypes" );
     if( psz_ignore && *psz_ignore )
     {
         char *psz_parser = psz_ignore;
@@ -428,19 +445,6 @@ static int ReadDir( playlist_t *p_playlist, const char *psz_name,
     if( p_parent->i_children == -1 )
     {
         playlist_LockItemToNode( p_playlist,p_parent );
-    }
-
-    /* get the first directory entry */
-    i_dir_content = scandir( psz_name, &pp_dir_content, Filter, alphasort );
-    if( i_dir_content == -1 )
-    {
-        msg_Warn( p_playlist, "failed to read directory" );
-        return VLC_EGENERIC;
-    }
-    else if( i_dir_content <= 0 )
-    {
-        /* directory is empty */
-        return VLC_SUCCESS;
     }
 
     /* While we still have entries in the directory */
@@ -506,14 +510,17 @@ static int ReadDir( playlist_t *p_playlist, const char *psz_name,
 
                     p_node->input.i_type = ITEM_TYPE_DIRECTORY;
 
+                    /* an strdup() just because of Mac OS X */
+                    free( psz_newname );
+
+                    /* If we had the parent in category, the it is now node.
+                     * Else, we still don't have  */
                     if( ReadDir( p_playlist, psz_uri , MODE_EXPAND,
                                  p_node ) != VLC_SUCCESS )
                     {
-                        return VLC_EGENERIC;
+                        i_return = VLC_EGENERIC;
+                        break;
                     }
-
-                    /* an strdup() just because of Mac OS X */
-                    free( psz_newname );
                 }
             }
             else
@@ -566,15 +573,14 @@ static int ReadDir( playlist_t *p_playlist, const char *psz_name,
     }
 
     for( i = 0; i < i_extensions; i++ )
-    {
-        if( ppsz_extensions[i] )
-            free( ppsz_extensions[i] );
-    }
+        if( ppsz_extensions[i] ) free( ppsz_extensions[i] );
     if( ppsz_extensions ) free( ppsz_extensions );
+
     if( psz_ignore ) free( psz_ignore );
 
     for( i = 0; i < i_dir_content; i++ )
         if( pp_dir_content[i] ) free( pp_dir_content[i] );
     if( pp_dir_content ) free( pp_dir_content );
-    return VLC_SUCCESS;
+
+    return i_return;
 }

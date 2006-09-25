@@ -2,7 +2,7 @@
  * file.c: file input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: file.c 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: file.c 16767 2006-09-21 14:32:45Z hartman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -178,7 +178,7 @@ static int Open( vlc_object_t *p_this )
             ** explorer can open path such as file:/C:/ or file:///C:/...
             ** hence remove leading / if found
             */
-            ++psz_name;
+            strcpy( psz_name, p_access->psz_path + 1 );
         }
 #endif
 
@@ -257,6 +257,7 @@ static int Open( vlc_object_t *p_this )
         else
         {
             msg_Err( p_access, "unknown file type for `%s'", psz_name );
+            free( psz_name );
             return VLC_EGENERIC;
         }
     }

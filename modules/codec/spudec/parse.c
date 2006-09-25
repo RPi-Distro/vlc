@@ -2,7 +2,7 @@
  * parse.c: SPU parser
  *****************************************************************************
  * Copyright (C) 2000-2001, 2005, 2006 the VideoLAN team
- * $Id: parse.c 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: parse.c 16774 2006-09-21 19:29:10Z hartman $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -70,6 +70,8 @@ subpicture_t * E_(ParsePacket)( decoder_t *p_dec )
     /* Allocate the subpicture internal data. */
     p_spu = p_dec->pf_spu_buffer_new( p_dec );
     if( !p_spu ) return NULL;
+
+    p_spu->b_pausable = VLC_TRUE;
 
     /* Rationale for the "p_spudec->i_rle_size * 4": we are going to
      * expand the RLE stuff so that we won't need to read nibbles later

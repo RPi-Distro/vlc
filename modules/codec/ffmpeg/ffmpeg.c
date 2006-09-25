@@ -2,7 +2,7 @@
  * ffmpeg.c: video decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: ffmpeg.c 16603 2006-09-10 20:40:21Z sam $
+ * $Id: ffmpeg.c 16801 2006-09-23 11:13:16Z thresh $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -640,6 +640,8 @@ static struct
     { VLC_FOURCC('H','2','6','4'), CODEC_ID_H264,
       VIDEO_ES, "h264" },
     { VLC_FOURCC('x','2','6','4'), CODEC_ID_H264,
+      VIDEO_ES, "h264" },
+    { VLC_FOURCC('X','2','6','4'), CODEC_ID_H264,
       VIDEO_ES, "h264" },
     /* avc1: special case h264 */
     { VLC_FOURCC('a','v','c','1'), CODEC_ID_H264,

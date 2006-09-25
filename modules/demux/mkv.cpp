@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: mkv.cpp 16588 2006-09-10 17:09:03Z sam $
+ * $Id: mkv.cpp 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1997,7 +1997,7 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, mtime_t i_pts,
                 if ( f_mandatory )
                     p_block->i_dts = p_block->i_pts;
                 else
-                    p_block->i_dts = min( i_pts, tk->i_last_dts + (tk->i_default_duration >> 10));
+                    p_block->i_dts = min( i_pts, tk->i_last_dts + (mtime_t)(tk->i_default_duration >> 10));
                 p_sys->i_pts = p_block->i_dts;
             }
         }
@@ -2200,16 +2200,16 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
             {
                 tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'D', 'I', 'V', '3' );
             }
-            else if( !strcmp( tracks[i_track]->psz_codec, "V_MPEG4/ISO/AVC" ) )
+            else if( !strncmp( tracks[i_track]->psz_codec, "V_MPEG4/ISO", 11 ) )
             {
-                tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'a', 'v', 'c', '1' );
+                /* A MPEG 4 codec, SP, ASP, AP or AVC */
+                if( !strcmp( tracks[i_track]->psz_codec, "V_MPEG4/ISO/AVC" ) )
+                    tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'a', 'v', 'c', '1' );
+                else
+                    tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'm', 'p', '4', 'v' );
                 tracks[i_track]->fmt.i_extra = tracks[i_track]->i_extra_data;
                 tracks[i_track]->fmt.p_extra = malloc( tracks[i_track]->i_extra_data );
                 memcpy( tracks[i_track]->fmt.p_extra,tracks[i_track]->p_extra_data, tracks[i_track]->i_extra_data );
-            }
-            else
-            {
-                tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'm', 'p', '4', 'v' );
             }
         }
         else if( !strcmp( tracks[i_track]->psz_codec, "V_QUICKTIME" ) )
@@ -4923,8 +4923,6 @@ void matroska_segment_c::ParseCluster( )
  *****************************************************************************/
 void matroska_segment_c::InformationCreate( )
 {
-    size_t      i_track;
-
     sys.meta = vlc_meta_New();
 
     if( psz_title )
@@ -4935,6 +4933,7 @@ void matroska_segment_c::InformationCreate( )
     {
         vlc_meta_Add( sys.meta, VLC_META_DATE, psz_date_utc );
     }
+#if 0
     if( psz_segment_filename )
     {
         vlc_meta_Add( sys.meta, _("Segment filename"), psz_segment_filename );
@@ -4948,7 +4947,7 @@ void matroska_segment_c::InformationCreate( )
         vlc_meta_Add( sys.meta, _("Writing application"), psz_writing_application );
     }
 
-    for( i_track = 0; i_track < tracks.size(); i_track++ )
+    for( size_t i_track = 0; i_track < tracks.size(); i_track++ )
     {
         mkv_track_t *tk = tracks[i_track];
         vlc_meta_t *mtk = vlc_meta_New();
@@ -4978,6 +4977,7 @@ void matroska_segment_c::InformationCreate( )
             vlc_meta_Add( sys.meta, VLC_META_URL, tk->psz_codec_download_url );
         }
     }
+#endif
 
     if( i_tags_position >= 0 )
     {

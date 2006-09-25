@@ -2,7 +2,7 @@
  * interpreter.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: interpreter.cpp 16460 2006-08-31 22:01:13Z hartman $
+ * $Id: interpreter.cpp 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -95,8 +95,11 @@ Interpreter::Interpreter( intf_thread_t *pIntf ): SkinObject( pIntf )
     m_commandMap["playlist.setRepeat(false)"] =
         CmdGenericPtr( new CmdPlaylistRepeat( getIntf(), false ) );
     VarTree &rVarTree = VlcProc::instance( getIntf() )->getPlaytreeVar();
+    m_commandMap["playlist.del()"] =
+        CmdGenericPtr( new CmdPlaytreeDel( getIntf(), rVarTree ) );
     m_commandMap["playtree.del()"] =
         CmdGenericPtr( new CmdPlaytreeDel( getIntf(), rVarTree ) );
+    REGISTER_CMD( "playlist.sort()", CmdPlaytreeSort )
     REGISTER_CMD( "playtree.sort()", CmdPlaytreeSort )
     REGISTER_CMD( "vlc.fullscreen()", CmdFullscreen )
     REGISTER_CMD( "vlc.play()", CmdPlay )
