@@ -1,3 +1,9 @@
+vlc (0.8.6-svn20061001.debian-1) unstable; urgency=low
+
+  * New upstream SVN snapshot.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun,  1 Oct 2006 17:57:57 +0200
+
 vlc (0.8.6-svn20060925.debian-1) unstable; urgency=low
 
   [ Sam Hocevar ]
