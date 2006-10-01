@@ -337,6 +337,7 @@
                 "o_vmi_voldown" = id; 
                 "o_vmi_volup" = id; 
                 "o_volumeslider" = id; 
+                "o_vout_menu" = id; 
                 "o_window" = id; 
             }; 
             SUPERCLASS = NSObject; 

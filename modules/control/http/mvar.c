@@ -2,7 +2,7 @@
  * mvar.c : Variables handling for the HTTP Interface
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: mvar.c 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: mvar.c 16869 2006-09-26 21:07:43Z thresh $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -128,7 +128,7 @@ mvar_t *E_(mvar_GetVar)( mvar_t *s, const char *name )
 {
     /* format: name[index].field */
     char *field = strchr( name, '.' );
-    int i = 1 + (field != NULL) ? (field - name) : strlen( name );
+    int i = 1 + ((field != NULL) ? (field - name) : strlen( name ));
     char base[i];
     char *p;
     int i_index;

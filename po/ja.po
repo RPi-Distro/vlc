@@ -3,13 +3,13 @@
 # Copyright (C) 2002, 2004 the VideoLAN team
 # Fumio Nakayama <endymion@ca2.so-net.ne.jp>, 2002.
 # Tadashi Jokagi <fedora@elf.no-ip.org>, 2004.
-# $Id: ja.po 16799 2006-09-23 00:17:32Z xtophe $
+# $Id: ja.po 16862 2006-09-26 13:56:46Z xtophe $
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: ja\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-23 02:09+0200\n"
+"POT-Creation-Date: 2006-10-01 17:46+0200\n"
 "PO-Revision-Date: 2005-12-12 14:01+0900\n"
 "Last-Translator: Tadashi Jokagi <elf2000@users.sourceforge.net>\n"
 "Language-Team: Japanese <ja@li.org>\n"
@@ -366,7 +366,7 @@ msgstr ""
 msgid "General playlist behaviour"
 msgstr "再生一覧を開く"
 
-#: include/vlc_config_cat.h:188 modules/gui/macosx/playlist.m:489
+#: include/vlc_config_cat.h:188 modules/gui/macosx/playlist.m:486
 #, fuzzy
 msgid "Services discovery"
 msgstr "ソースディレクトリ"
@@ -484,7 +484,7 @@ msgstr ""
 "さい。\n"
 
 #: include/vlc_meta.h:28 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1296 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlist.m:1293 modules/gui/macosx/playlistinfo.m:205
 #: modules/gui/macosx/playlistinfo.m:310 modules/misc/growl.c:166
 #: modules/misc/growl.c:169 modules/misc/notify.c:156
 #: modules/misc/notify.c:159
@@ -507,7 +507,7 @@ msgid "Author"
 msgstr "作成者"
 
 #: include/vlc_meta.h:31 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1296 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlist.m:1293 modules/gui/macosx/playlistinfo.m:205
 #: modules/gui/macosx/playlistinfo.m:310
 msgid "Artist"
 msgstr "アーティスト"
@@ -5727,7 +5727,7 @@ msgid "IVTV MPEG Encoding cards input"
 msgstr ""
 
 #: modules/access/rtsp/access.c:40 modules/access_output/udp.c:75
-#: modules/demux/live555.cpp:62 modules/demux/livedotcom.cpp:61
+#: modules/demux/live555.cpp:62
 msgid "Caching value (ms)"
 msgstr "キャッシング値 (ミリ秒)"
 
@@ -9433,7 +9433,7 @@ msgstr "MPEG 1/2レイヤ1/2オーディオ・デコーダ"
 msgid "FLAC demuxer"
 msgstr "MPEG 1/2レイヤ1/2オーディオ・デコーダ"
 
-#: modules/demux/live555.cpp:64 modules/demux/livedotcom.cpp:63
+#: modules/demux/live555.cpp:64
 #, fuzzy
 msgid ""
 "Allows you to modify the default caching value for RTSP streams. This value "
@@ -9442,72 +9442,70 @@ msgstr ""
 "udpストリームで使用される既定のキャッシング値が変更可能です。単位はミリ秒で指"
 "定します。"
 
-#: modules/demux/live555.cpp:67 modules/demux/livedotcom.cpp:66
+#: modules/demux/live555.cpp:67
 msgid "Kasenna RTSP dialect"
 msgstr ""
 
-#: modules/demux/live555.cpp:68 modules/demux/livedotcom.cpp:67
+#: modules/demux/live555.cpp:68
 msgid ""
 "Kasenna servers use an old and unstandard dialect of RTSP. When you set this "
 "parameter, VLC will try this dialect for communication. In this mode you "
 "cannot connect to normal RTSP servers."
 msgstr ""
 
-#: modules/demux/live555.cpp:72 modules/demux/livedotcom.cpp:71
+#: modules/demux/live555.cpp:72
 #, fuzzy
 msgid "RTSP user name"
 msgstr "FTP ユーザー名"
 
-#: modules/demux/live555.cpp:73 modules/demux/livedotcom.cpp:72
+#: modules/demux/live555.cpp:73
 #, fuzzy
 msgid ""
 "Allows you to modify the user name that will be used for authenticating the "
 "connection."
 msgstr "VLCが選択するパケッタライザーの順序を選択します。"
 
-#: modules/demux/live555.cpp:75 modules/demux/livedotcom.cpp:74
+#: modules/demux/live555.cpp:75
 #, fuzzy
 msgid "RTSP password"
 msgstr "FTP パスワード"
 
-#: modules/demux/live555.cpp:76 modules/demux/livedotcom.cpp:75
+#: modules/demux/live555.cpp:76
 #, fuzzy
 msgid "Allows you to modify the password that will be used for the connection."
 msgstr "VLCが選択するパケッタライザーの順序を選択します。"
 
-#: modules/demux/live555.cpp:80 modules/demux/livedotcom.cpp:79
+#: modules/demux/live555.cpp:80
 msgid "RTP/RTSP/SDP demuxer (using Live555)"
 msgstr ""
 
-#: modules/demux/live555.cpp:90 modules/demux/livedotcom.cpp:89
+#: modules/demux/live555.cpp:90
 msgid "RTSP/RTP access and demux"
 msgstr ""
 
 #: modules/demux/live555.cpp:96 modules/demux/live555.cpp:97
-#: modules/demux/livedotcom.cpp:95 modules/demux/livedotcom.cpp:96
 msgid "Use RTP over RTSP (TCP)"
 msgstr "RTP オーバー RTSP (TCP)を使う"
 
-#: modules/demux/live555.cpp:99 modules/demux/livedotcom.cpp:98
+#: modules/demux/live555.cpp:99
 #, fuzzy
 msgid "Client port"
 msgstr "ビデオポート"
 
-#: modules/demux/live555.cpp:100 modules/demux/livedotcom.cpp:99
+#: modules/demux/live555.cpp:100
 msgid "Port to use for the RTP source of the session"
 msgstr ""
 
 #: modules/demux/live555.cpp:103 modules/demux/live555.cpp:104
-#: modules/demux/livedotcom.cpp:102 modules/demux/livedotcom.cpp:103
 msgid "Tunnel RTSP and RTP over HTTP"
 msgstr ""
 
-#: modules/demux/live555.cpp:106 modules/demux/livedotcom.cpp:105
+#: modules/demux/live555.cpp:106
 #, fuzzy
 msgid "HTTP tunnel port"
 msgstr "HTTP 入力"
 
-#: modules/demux/live555.cpp:107 modules/demux/livedotcom.cpp:106
+#: modules/demux/live555.cpp:107
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr ""
 
@@ -10425,9 +10423,9 @@ msgstr ""
 
 #: modules/gui/beos/InterfaceWindow.cpp:159 modules/gui/macosx/bookmarks.m:107
 #: modules/gui/macosx/controls.m:49 modules/gui/macosx/interaction.m:121
-#: modules/gui/macosx/open.m:158 modules/gui/macosx/playlistinfo.m:60
-#: modules/gui/macosx/prefs.m:122 modules/gui/macosx/prefs.m:142
-#: modules/gui/macosx/wizard.m:363
+#: modules/gui/macosx/interaction.m:179 modules/gui/macosx/open.m:158
+#: modules/gui/macosx/playlistinfo.m:60 modules/gui/macosx/prefs.m:122
+#: modules/gui/macosx/prefs.m:142 modules/gui/macosx/wizard.m:363
 msgid "Cancel"
 msgstr "取り消し"
 
@@ -10546,7 +10544,7 @@ msgid "Edit"
 msgstr "編集"
 
 #: modules/gui/beos/PlayListWindow.cpp:103 modules/gui/macosx/intf.m:531
-#: modules/gui/macosx/playlist.m:484
+#: modules/gui/macosx/playlist.m:481
 msgid "Select All"
 msgstr "すべてを選択"
 
@@ -10600,7 +10598,7 @@ msgid "Apply"
 msgstr "適用"
 
 #: modules/gui/beos/PreferencesWindow.cpp:254 modules/gui/macosx/output.m:526
-#: modules/gui/macosx/playlist.m:780 modules/gui/macosx/prefs.m:121
+#: modules/gui/macosx/playlist.m:777 modules/gui/macosx/prefs.m:121
 msgid "Save"
 msgstr "保存"
 
@@ -10681,7 +10679,7 @@ msgstr "展開"
 msgid "Time"
 msgstr "時間"
 
-#: modules/gui/macosx/bookmarks.m:136 modules/gui/macosx/playlist.m:776
+#: modules/gui/macosx/bookmarks.m:136 modules/gui/macosx/playlist.m:773
 msgid "Untitled"
 msgstr "タイトルなし"
 
@@ -10750,20 +10748,20 @@ msgid "Random Off"
 msgstr "ランダムオフ"
 
 #: modules/gui/macosx/controls.m:197 modules/gui/macosx/controls.m:725
-#: modules/gui/macosx/intf.m:541 modules/gui/macosx/playlist.m:499
-#: modules/gui/macosx/playlist.m:1243
+#: modules/gui/macosx/intf.m:541 modules/gui/macosx/playlist.m:496
+#: modules/gui/macosx/playlist.m:1240
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:54
 msgid "Repeat One"
 msgstr "1 回繰り返す"
 
 #: modules/gui/macosx/controls.m:202 modules/gui/macosx/controls.m:236
-#: modules/gui/macosx/playlist.m:1262
+#: modules/gui/macosx/playlist.m:1259
 msgid "Repeat Off"
 msgstr "繰り返しオフ"
 
 #: modules/gui/macosx/controls.m:231 modules/gui/macosx/controls.m:732
-#: modules/gui/macosx/intf.m:542 modules/gui/macosx/playlist.m:500
-#: modules/gui/macosx/playlist.m:1251
+#: modules/gui/macosx/intf.m:542 modules/gui/macosx/playlist.m:497
+#: modules/gui/macosx/playlist.m:1248
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:53
 msgid "Repeat All"
 msgstr "すべて繰り返す"
@@ -10794,7 +10792,7 @@ msgid "Fit to Screen"
 msgstr "画面にあわせる"
 
 #: modules/gui/macosx/controls.m:718 modules/gui/macosx/intf.m:540
-#: modules/gui/macosx/playlist.m:493
+#: modules/gui/macosx/playlist.m:490
 msgid "Random"
 msgstr "ランダム"
 
@@ -10823,7 +10821,7 @@ msgstr "転送"
 #: modules/gui/macosx/intf.m:534 modules/gui/macosx/intf.m:612
 #: modules/gui/macosx/intf.m:619 modules/gui/macosx/intf.m:1412
 #: modules/gui/macosx/intf.m:1413 modules/gui/macosx/intf.m:1414
-#: modules/gui/macosx/intf.m:1415 modules/gui/macosx/playlist.m:481
+#: modules/gui/macosx/intf.m:1415 modules/gui/macosx/playlist.m:478
 #: modules/gui/pda/pda_interface.c:262 modules/gui/pda/pda_interface.c:263
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:274
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:283
@@ -10999,6 +10997,21 @@ msgid ""
 "can be set in the Preferences, Video / Filters section."
 msgstr ""
 
+#: modules/gui/macosx/interaction.m:125 modules/gui/macosx/intf.m:630
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:81
+msgid "Error"
+msgstr "エラー"
+
+#: modules/gui/macosx/interaction.m:178
+#, fuzzy
+msgid "Yes"
+msgstr "はい"
+
+#: modules/gui/macosx/interaction.m:178
+#, fuzzy
+msgid "No"
+msgstr "なし"
+
 #: modules/gui/macosx/intf.m:485
 #, fuzzy
 msgid "VLC - Controller"
@@ -11124,7 +11137,7 @@ msgid "Extended Controls"
 msgstr "リモート・コントロール"
 
 #: modules/gui/macosx/intf.m:597 modules/gui/macosx/intf.m:639
-#: modules/gui/macosx/playlist.m:485 modules/gui/macosx/playlistinfo.m:55
+#: modules/gui/macosx/playlist.m:482 modules/gui/macosx/playlistinfo.m:55
 #: modules/gui/macosx/playlistinfo.m:371
 #, fuzzy
 msgid "Information"
@@ -11167,10 +11180,6 @@ msgstr "マケドニア語"
 #, fuzzy
 msgid "Online Forum"
 msgstr "オンラインドキュメント"
-
-#: modules/gui/macosx/intf.m:630 modules/gui/wxwidgets/dialogs/wizard.cpp:81
-msgid "Error"
-msgstr "エラー"
 
 #: modules/gui/macosx/intf.m:631
 #, fuzzy
@@ -11496,87 +11505,87 @@ msgstr "SDP URL"
 msgid "Save File"
 msgstr "ファイルの保存"
 
-#: modules/gui/macosx/playlist.m:480
+#: modules/gui/macosx/playlist.m:477
 msgid "Save Playlist..."
 msgstr "再生一覧の保存..."
 
-#: modules/gui/macosx/playlist.m:482 modules/gui/pda/pda_interface.c:1254
+#: modules/gui/macosx/playlist.m:479 modules/gui/pda/pda_interface.c:1254
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:278
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:285
 #: modules/gui/wxwidgets/dialogs/vlm/vlm_streampanel.cpp:105
 msgid "Delete"
 msgstr "削除"
 
-#: modules/gui/macosx/playlist.m:483
+#: modules/gui/macosx/playlist.m:480
 msgid "Expand Node"
 msgstr "ノードを展開する"
 
-#: modules/gui/macosx/playlist.m:486
+#: modules/gui/macosx/playlist.m:483
 #, fuzzy
 msgid "Get Stream Information"
 msgstr "メタ情報"
 
-#: modules/gui/macosx/playlist.m:487
+#: modules/gui/macosx/playlist.m:484
 msgid "Sort Node by Name"
 msgstr "名前でノードをソートする"
 
-#: modules/gui/macosx/playlist.m:488
+#: modules/gui/macosx/playlist.m:485
 msgid "Sort Node by Author"
 msgstr "著者でノードをソートする"
 
-#: modules/gui/macosx/playlist.m:491 modules/gui/macosx/playlist.m:541
-#: modules/gui/macosx/playlist.m:1590
+#: modules/gui/macosx/playlist.m:488 modules/gui/macosx/playlist.m:538
+#: modules/gui/macosx/playlist.m:1587
 msgid "No items in the playlist"
 msgstr "再生一覧に項目がありません"
 
-#: modules/gui/macosx/playlist.m:495
+#: modules/gui/macosx/playlist.m:492
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:323
 msgid "Search"
 msgstr "検索"
 
-#: modules/gui/macosx/playlist.m:497
+#: modules/gui/macosx/playlist.m:494
 #, fuzzy
 msgid "Search in Playlist"
 msgstr "再生一覧を開く"
 
-#: modules/gui/macosx/playlist.m:498
+#: modules/gui/macosx/playlist.m:495
 msgid "Standard Play"
 msgstr "標準再生"
 
-#: modules/gui/macosx/playlist.m:501
+#: modules/gui/macosx/playlist.m:498
 #, fuzzy
 msgid "Add Folder to Playlist"
 msgstr "再生一覧に追加"
 
-#: modules/gui/macosx/playlist.m:503
+#: modules/gui/macosx/playlist.m:500
 #, fuzzy
 msgid "File Format:"
 msgstr "字幕"
 
-#: modules/gui/macosx/playlist.m:504
+#: modules/gui/macosx/playlist.m:501
 #, fuzzy
 msgid "Extended M3U"
 msgstr "拡張 GUI を表示する"
 
-#: modules/gui/macosx/playlist.m:505
+#: modules/gui/macosx/playlist.m:502
 msgid "XML Shareable Playlist Format (XSPF)"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:535 modules/gui/macosx/playlist.m:1584
+#: modules/gui/macosx/playlist.m:532 modules/gui/macosx/playlist.m:1581
 #, fuzzy, c-format
 msgid "%i items in the playlist"
 msgstr "デフォルトで再生一覧に追加"
 
-#: modules/gui/macosx/playlist.m:545 modules/gui/macosx/playlist.m:1594
+#: modules/gui/macosx/playlist.m:542 modules/gui/macosx/playlist.m:1591
 #, fuzzy
 msgid "1 item in the playlist"
 msgstr "デフォルトで再生一覧に追加"
 
-#: modules/gui/macosx/playlist.m:779
+#: modules/gui/macosx/playlist.m:776
 msgid "Save Playlist"
 msgstr "再生一覧を保存"
 
-#: modules/gui/macosx/playlist.m:1559
+#: modules/gui/macosx/playlist.m:1556
 msgid "Empty Folder"
 msgstr ""
 

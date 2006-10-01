@@ -1,4 +1,4 @@
-$Id: THANKS 16774 2006-09-21 19:29:10Z hartman $
+$Id: THANKS 16908 2006-10-01 14:17:25Z jpsaman $
 
 VLC makes extensive use of the following persons' code:
 
@@ -149,4 +149,4 @@ Xavier Maillard <zedek at fxgsproject.org> - audio converters
 Xavier Marchesini <xav at alarue.net> - Win32 fixes
 Xènia Albà Cantero <xenia_alba at hotmail.com> - Catalan translation
 Yves Duret <yves at zarb.org> - RPM packages
-
+Ye zhang <yzhang90003 _at_ gmail dot com> - Fix for VLM RTSP concurent LEAVE make VLC crash
