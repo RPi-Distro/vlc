@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # debian/rules for the VLC media player - uses debhelper.
-# $Id: rules 87 2006-09-18 11:52:17Z sam $
+# $Id: rules 106 2006-10-04 12:03:16Z sam $
 # based on Joey Hess's one.
 
 # Uncomment this to turn on verbose mode.
@@ -37,7 +37,7 @@ vlc_confflags += \
 	--disable-kde \
 	--enable-mp4 \
 	--enable-dvb \
-	--enable-dv \
+	--disable-dv \
 	--disable-satellite \
 	--enable-ogg \
 	--enable-vorbis \

@@ -1,3 +1,10 @@
+vlc (0.8.6-svn20061001.debian-2) unstable; urgency=high
+
+  * Temporarily disable DV support because the libraw1394 transition does
+    not look like it will happen soon.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed,  4 Oct 2006 14:00:16 +0200
+
 vlc (0.8.6-svn20061001.debian-1) unstable; urgency=low
 
   * New upstream SVN snapshot.
