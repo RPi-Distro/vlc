@@ -4,6 +4,7 @@ usr/lib/vlc/access/libscreen_plugin.so
 usr/lib/vlc/codec/libsdl_image_plugin.so
 usr/lib/vlc/gui/libskins2_plugin.so
 usr/lib/vlc/gui/libwxwidgets_plugin.so
+usr/lib/vlc/misc/libnotify_plugin.so
 usr/lib/vlc/video_output/libx11_plugin.so
 usr/lib/vlc/video_output/libxvideo_plugin.so
 usr/lib/vlc/video_output/libglx_plugin.so

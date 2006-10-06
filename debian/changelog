@@ -1,3 +1,11 @@
+vlc (0.8.6-svn20061001.debian-4) unstable; urgency=low
+
+  * Build-depend on libnotify and explicitly activate the libnotify plugin
+    (Closes: #391308).
+  * Re-enable DV support. libraw1394 is not waiting for us anyway.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Fri,  6 Oct 2006 10:24:26 +0200
+
 vlc (0.8.6-svn20061001.debian-2) unstable; urgency=high
 
   * Temporarily disable DV support because the libraw1394 transition does
