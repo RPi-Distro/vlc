@@ -2,7 +2,7 @@
  * mp4.c : MP4 file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: mp4.c 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: mp4.c 16987 2006-10-08 12:54:12Z jpsaman $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -675,7 +675,7 @@ static int Demux( demux_t *p_demux )
                             p_block->i_buffer = i_size + 1;
 
                             /* convert \r -> \n */
-                            while( ( p = strchr( p_block->p_buffer, '\r' ) ) )
+                            while( ( p = strchr( (char*)p_block->p_buffer, '\r' ) ) )
                             {
                                 *p = '\n';
                             }

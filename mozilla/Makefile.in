@@ -135,6 +135,8 @@ HAL_CFLAGS = @HAL_CFLAGS@
 HAL_LIBS = @HAL_LIBS@
 HAS_MIDL_COMPILER_FALSE = @HAS_MIDL_COMPILER_FALSE@
 HAS_MIDL_COMPILER_TRUE = @HAS_MIDL_COMPILER_TRUE@
+HAS_WIDL_COMPILER_FALSE = @HAS_WIDL_COMPILER_FALSE@
+HAS_WIDL_COMPILER_TRUE = @HAS_WIDL_COMPILER_TRUE@
 HAVE_BEOS_FALSE = @HAVE_BEOS_FALSE@
 HAVE_BEOS_TRUE = @HAVE_BEOS_TRUE@
 HAVE_BUILTINS_FALSE = @HAVE_BUILTINS_FALSE@
@@ -235,7 +237,9 @@ VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
 VLC_CONFIG = @VLC_CONFIG@
 VLC_ENTRY = @VLC_ENTRY@
+WIDL = @WIDL@
 WINDRES = @WINDRES@
+WINE_SDK_PATH = @WINE_SDK_PATH@
 WX_CONFIG = @WX_CONFIG@
 XGETTEXT = @XGETTEXT@
 XMKMF = @XMKMF@
@@ -302,18 +306,20 @@ uudecode = @uudecode@
 
 noinst_LIBRARIES = $(noinst_LIBRARIES_mozilla)
 
-MOSTLYCLEANFILES = $(npvlc_DATA) $(vlcintf_xpt_DATA) $(am__append_1)
+MOSTLYCLEANFILES = $(npvlc_DATA) $(am__append_1)
 CLEANFILES = stamp-pic $(BUILT_SOURCES) $(am__append_2)
-EXTRA_DIST = $(DIST_sources) vlcintf.idl npvlc_rc.rc vlc.r
+EXTRA_DIST = $(DIST_sources) npvlc_rc.rc vlc.r
 
 SOURCES_mozilla_common = \
 	vlcshell.cpp \
 	vlcplugin.cpp \
 	vlcplugin.h \
-	vlcpeer.cpp \
-	vlcpeer.h \
-	vlcruntime.cpp \
-	vlcruntime.h \
+	control/npolibvlc.cpp \
+	control/npolibvlc.h \
+	control/npovlc.cpp \
+	control/npovlc.h \
+	control/nporuntime.cpp \
+	control/nporuntime.h \
 	support/classinfo.h
 
 
@@ -378,9 +384,6 @@ DIST_sources = $(SOURCES_mozilla_common) \
 
 @BUILD_MOZILLA_TRUE@noinst_LIBRARIES_mozilla = libnpvlc.a
 
-@BUILD_MOZILLA_TRUE@BUILT_SOURCES = vlcintf.h
-@BUILD_MOZILLA_TRUE@vlcintf_xpt_DATA = vlcintf.xpt
-
 # FIXME: name is incorrect on Win32 & Darwin
 @BUILD_MOZILLA_TRUE@@USE_LIBTOOL_TRUE@npvlc_LTLIBRARIES = libvlcplugin.la
 @BUILD_MOZILLA_TRUE@@USE_LIBTOOL_FALSE@npvlc_DATA = $(npvlc)
@@ -401,8 +404,6 @@ libnpvlc_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags mozilla pic` \
 
 LDFLAGS_libnpvlc = $(LDFLAGS_npvlc) `$(VLC_CONFIG) --libs mozilla vlc builtin pic`
 libnpvlc_a_DEPENDENCIES = $(DATA_npvlc_rc)
-
-vlcintf_xptdir = $(libdir)/mozilla/components
 subdir = mozilla
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/autotools/mkinstalldirs
@@ -413,12 +414,13 @@ LIBRARIES = $(noinst_LIBRARIES)
 libnpvlc_a_AR = $(AR) cru
 libnpvlc_a_LIBADD =
 am__libnpvlc_a_SOURCES_DIST = vlcshell.cpp vlcplugin.cpp vlcplugin.h \
-	vlcpeer.cpp vlcpeer.h vlcruntime.cpp vlcruntime.h \
+	control/npolibvlc.cpp control/npolibvlc.h control/npovlc.cpp \
+	control/npovlc.h control/nporuntime.cpp control/nporuntime.h \
 	support/classinfo.h support/npunix.c support/npwin.cpp \
 	support/npmac.cpp
 am__objects_1 = libnpvlc_a-vlcshell.$(OBJEXT) \
-	libnpvlc_a-vlcplugin.$(OBJEXT) libnpvlc_a-vlcpeer.$(OBJEXT) \
-	libnpvlc_a-vlcruntime.$(OBJEXT)
+	libnpvlc_a-vlcplugin.$(OBJEXT) libnpvlc_a-npolibvlc.$(OBJEXT) \
+	libnpvlc_a-npovlc.$(OBJEXT) libnpvlc_a-nporuntime.$(OBJEXT)
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__objects_2 = \
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@	libnpvlc_a-npunix.$(OBJEXT)
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__objects_2 = \
@@ -431,11 +433,13 @@ LTLIBRARIES = $(npvlc_LTLIBRARIES)
 
 libvlcplugin_la_DEPENDENCIES = ../src/libvlc.la
 am__libvlcplugin_la_SOURCES_DIST = vlcshell.cpp vlcplugin.cpp \
-	vlcplugin.h vlcpeer.cpp vlcpeer.h vlcruntime.cpp vlcruntime.h \
-	support/classinfo.h support/npunix.c support/npwin.cpp \
-	support/npmac.cpp
+	vlcplugin.h control/npolibvlc.cpp control/npolibvlc.h \
+	control/npovlc.cpp control/npovlc.h control/nporuntime.cpp \
+	control/nporuntime.h support/classinfo.h support/npunix.c \
+	support/npwin.cpp support/npmac.cpp
 am__objects_3 = libvlcplugin_la-vlcshell.lo libvlcplugin_la-vlcplugin.lo \
-	libvlcplugin_la-vlcpeer.lo libvlcplugin_la-vlcruntime.lo
+	libvlcplugin_la-npolibvlc.lo libvlcplugin_la-npovlc.lo \
+	libvlcplugin_la-nporuntime.lo
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am__objects_4 = \
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@	libvlcplugin_la-npunix.lo
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__objects_4 = \
@@ -449,18 +453,20 @@ DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
 am__depfiles_maybe = depfiles
 @AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libnpvlc_a-npmac.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libnpvlc_a-npolibvlc.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libnpvlc_a-nporuntime.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libnpvlc_a-npovlc.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libnpvlc_a-npunix.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libnpvlc_a-npwin.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/libnpvlc_a-vlcpeer.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libnpvlc_a-vlcplugin.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/libnpvlc_a-vlcruntime.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libnpvlc_a-vlcshell.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libvlcplugin_la-npmac.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libvlcplugin_la-npolibvlc.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libvlcplugin_la-nporuntime.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libvlcplugin_la-npovlc.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libvlcplugin_la-npunix.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libvlcplugin_la-npwin.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libvlcplugin_la-vlcpeer.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libvlcplugin_la-vlcplugin.Plo \
-@AMDEP_TRUE@	./$(DEPDIR)/libvlcplugin_la-vlcruntime.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libvlcplugin_la-vlcshell.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
@@ -479,14 +485,12 @@ CXXLINK = $(LIBTOOL) --mode=link $(CXXLD) $(AM_CXXFLAGS) $(CXXFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
 DIST_SOURCES = $(am__libnpvlc_a_SOURCES_DIST) \
 	$(am__libvlcplugin_la_SOURCES_DIST)
-DATA = $(noinst_DATA) $(noinst_npvlc_rc_DATA) $(npvlc_DATA) \
-	$(vlcintf_xpt_DATA)
+DATA = $(noinst_DATA) $(noinst_npvlc_rc_DATA) $(npvlc_DATA)
 
 DIST_COMMON = $(srcdir)/Makefile.in Makefile.am
 SOURCES = $(libnpvlc_a_SOURCES) $(libvlcplugin_la_SOURCES)
 
-all: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) all-am
+all: all-am
 
 .SUFFIXES:
 .SUFFIXES: .c .cpp .lo .o .obj
@@ -540,18 +544,20 @@ distclean-compile:
 	-rm -f *.tab.c
 
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnpvlc_a-npmac.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnpvlc_a-npolibvlc.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnpvlc_a-nporuntime.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnpvlc_a-npovlc.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnpvlc_a-npunix.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnpvlc_a-npwin.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnpvlc_a-vlcpeer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnpvlc_a-vlcplugin.Po@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnpvlc_a-vlcruntime.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libnpvlc_a-vlcshell.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-npmac.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-npolibvlc.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-nporuntime.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-npovlc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-npunix.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-npwin.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-vlcpeer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-vlcplugin.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-vlcruntime.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libvlcplugin_la-vlcshell.Plo@am__quote@
 
 .c.o:
@@ -752,71 +758,104 @@ libnpvlc_a-vlcplugin.lo: vlcplugin.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-vlcplugin.lo `test -f 'vlcplugin.cpp' || echo '$(srcdir)/'`vlcplugin.cpp
 
-libnpvlc_a-vlcpeer.o: vlcpeer.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-vlcpeer.o -MD -MP -MF "$(DEPDIR)/libnpvlc_a-vlcpeer.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-vlcpeer.o `test -f 'vlcpeer.cpp' || echo '$(srcdir)/'`vlcpeer.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-vlcpeer.Tpo" "$(DEPDIR)/libnpvlc_a-vlcpeer.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-vlcpeer.Tpo"; exit 1; \
+libnpvlc_a-npolibvlc.o: control/npolibvlc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-npolibvlc.o -MD -MP -MF "$(DEPDIR)/libnpvlc_a-npolibvlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-npolibvlc.o `test -f 'control/npolibvlc.cpp' || echo '$(srcdir)/'`control/npolibvlc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-npolibvlc.Tpo" "$(DEPDIR)/libnpvlc_a-npolibvlc.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-npolibvlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcpeer.cpp' object='libnpvlc_a-vlcpeer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-vlcpeer.Po' tmpdepfile='$(DEPDIR)/libnpvlc_a-vlcpeer.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npolibvlc.cpp' object='libnpvlc_a-npolibvlc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-npolibvlc.Po' tmpdepfile='$(DEPDIR)/libnpvlc_a-npolibvlc.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-vlcpeer.o `test -f 'vlcpeer.cpp' || echo '$(srcdir)/'`vlcpeer.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-npolibvlc.o `test -f 'control/npolibvlc.cpp' || echo '$(srcdir)/'`control/npolibvlc.cpp
 
-libnpvlc_a-vlcpeer.obj: vlcpeer.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-vlcpeer.obj -MD -MP -MF "$(DEPDIR)/libnpvlc_a-vlcpeer.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-vlcpeer.obj `if test -f 'vlcpeer.cpp'; then $(CYGPATH_W) 'vlcpeer.cpp'; else $(CYGPATH_W) '$(srcdir)/vlcpeer.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-vlcpeer.Tpo" "$(DEPDIR)/libnpvlc_a-vlcpeer.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-vlcpeer.Tpo"; exit 1; \
+libnpvlc_a-npolibvlc.obj: control/npolibvlc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-npolibvlc.obj -MD -MP -MF "$(DEPDIR)/libnpvlc_a-npolibvlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-npolibvlc.obj `if test -f 'control/npolibvlc.cpp'; then $(CYGPATH_W) 'control/npolibvlc.cpp'; else $(CYGPATH_W) '$(srcdir)/control/npolibvlc.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-npolibvlc.Tpo" "$(DEPDIR)/libnpvlc_a-npolibvlc.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-npolibvlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcpeer.cpp' object='libnpvlc_a-vlcpeer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-vlcpeer.Po' tmpdepfile='$(DEPDIR)/libnpvlc_a-vlcpeer.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npolibvlc.cpp' object='libnpvlc_a-npolibvlc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-npolibvlc.Po' tmpdepfile='$(DEPDIR)/libnpvlc_a-npolibvlc.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-vlcpeer.obj `if test -f 'vlcpeer.cpp'; then $(CYGPATH_W) 'vlcpeer.cpp'; else $(CYGPATH_W) '$(srcdir)/vlcpeer.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-npolibvlc.obj `if test -f 'control/npolibvlc.cpp'; then $(CYGPATH_W) 'control/npolibvlc.cpp'; else $(CYGPATH_W) '$(srcdir)/control/npolibvlc.cpp'; fi`
 
-libnpvlc_a-vlcpeer.lo: vlcpeer.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-vlcpeer.lo -MD -MP -MF "$(DEPDIR)/libnpvlc_a-vlcpeer.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-vlcpeer.lo `test -f 'vlcpeer.cpp' || echo '$(srcdir)/'`vlcpeer.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-vlcpeer.Tpo" "$(DEPDIR)/libnpvlc_a-vlcpeer.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-vlcpeer.Tpo"; exit 1; \
+libnpvlc_a-npolibvlc.lo: control/npolibvlc.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-npolibvlc.lo -MD -MP -MF "$(DEPDIR)/libnpvlc_a-npolibvlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-npolibvlc.lo `test -f 'control/npolibvlc.cpp' || echo '$(srcdir)/'`control/npolibvlc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-npolibvlc.Tpo" "$(DEPDIR)/libnpvlc_a-npolibvlc.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-npolibvlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcpeer.cpp' object='libnpvlc_a-vlcpeer.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-vlcpeer.Plo' tmpdepfile='$(DEPDIR)/libnpvlc_a-vlcpeer.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npolibvlc.cpp' object='libnpvlc_a-npolibvlc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-npolibvlc.Plo' tmpdepfile='$(DEPDIR)/libnpvlc_a-npolibvlc.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-vlcpeer.lo `test -f 'vlcpeer.cpp' || echo '$(srcdir)/'`vlcpeer.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-npolibvlc.lo `test -f 'control/npolibvlc.cpp' || echo '$(srcdir)/'`control/npolibvlc.cpp
 
-libnpvlc_a-vlcruntime.o: vlcruntime.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-vlcruntime.o -MD -MP -MF "$(DEPDIR)/libnpvlc_a-vlcruntime.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-vlcruntime.o `test -f 'vlcruntime.cpp' || echo '$(srcdir)/'`vlcruntime.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-vlcruntime.Tpo" "$(DEPDIR)/libnpvlc_a-vlcruntime.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-vlcruntime.Tpo"; exit 1; \
+libnpvlc_a-npovlc.o: control/npovlc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-npovlc.o -MD -MP -MF "$(DEPDIR)/libnpvlc_a-npovlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-npovlc.o `test -f 'control/npovlc.cpp' || echo '$(srcdir)/'`control/npovlc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-npovlc.Tpo" "$(DEPDIR)/libnpvlc_a-npovlc.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-npovlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcruntime.cpp' object='libnpvlc_a-vlcruntime.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-vlcruntime.Po' tmpdepfile='$(DEPDIR)/libnpvlc_a-vlcruntime.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npovlc.cpp' object='libnpvlc_a-npovlc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-npovlc.Po' tmpdepfile='$(DEPDIR)/libnpvlc_a-npovlc.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-vlcruntime.o `test -f 'vlcruntime.cpp' || echo '$(srcdir)/'`vlcruntime.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-npovlc.o `test -f 'control/npovlc.cpp' || echo '$(srcdir)/'`control/npovlc.cpp
 
-libnpvlc_a-vlcruntime.obj: vlcruntime.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-vlcruntime.obj -MD -MP -MF "$(DEPDIR)/libnpvlc_a-vlcruntime.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-vlcruntime.obj `if test -f 'vlcruntime.cpp'; then $(CYGPATH_W) 'vlcruntime.cpp'; else $(CYGPATH_W) '$(srcdir)/vlcruntime.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-vlcruntime.Tpo" "$(DEPDIR)/libnpvlc_a-vlcruntime.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-vlcruntime.Tpo"; exit 1; \
+libnpvlc_a-npovlc.obj: control/npovlc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-npovlc.obj -MD -MP -MF "$(DEPDIR)/libnpvlc_a-npovlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-npovlc.obj `if test -f 'control/npovlc.cpp'; then $(CYGPATH_W) 'control/npovlc.cpp'; else $(CYGPATH_W) '$(srcdir)/control/npovlc.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-npovlc.Tpo" "$(DEPDIR)/libnpvlc_a-npovlc.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-npovlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcruntime.cpp' object='libnpvlc_a-vlcruntime.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-vlcruntime.Po' tmpdepfile='$(DEPDIR)/libnpvlc_a-vlcruntime.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npovlc.cpp' object='libnpvlc_a-npovlc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-npovlc.Po' tmpdepfile='$(DEPDIR)/libnpvlc_a-npovlc.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-vlcruntime.obj `if test -f 'vlcruntime.cpp'; then $(CYGPATH_W) 'vlcruntime.cpp'; else $(CYGPATH_W) '$(srcdir)/vlcruntime.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-npovlc.obj `if test -f 'control/npovlc.cpp'; then $(CYGPATH_W) 'control/npovlc.cpp'; else $(CYGPATH_W) '$(srcdir)/control/npovlc.cpp'; fi`
 
-libnpvlc_a-vlcruntime.lo: vlcruntime.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-vlcruntime.lo -MD -MP -MF "$(DEPDIR)/libnpvlc_a-vlcruntime.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-vlcruntime.lo `test -f 'vlcruntime.cpp' || echo '$(srcdir)/'`vlcruntime.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-vlcruntime.Tpo" "$(DEPDIR)/libnpvlc_a-vlcruntime.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-vlcruntime.Tpo"; exit 1; \
+libnpvlc_a-npovlc.lo: control/npovlc.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-npovlc.lo -MD -MP -MF "$(DEPDIR)/libnpvlc_a-npovlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-npovlc.lo `test -f 'control/npovlc.cpp' || echo '$(srcdir)/'`control/npovlc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-npovlc.Tpo" "$(DEPDIR)/libnpvlc_a-npovlc.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-npovlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcruntime.cpp' object='libnpvlc_a-vlcruntime.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-vlcruntime.Plo' tmpdepfile='$(DEPDIR)/libnpvlc_a-vlcruntime.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npovlc.cpp' object='libnpvlc_a-npovlc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-npovlc.Plo' tmpdepfile='$(DEPDIR)/libnpvlc_a-npovlc.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-vlcruntime.lo `test -f 'vlcruntime.cpp' || echo '$(srcdir)/'`vlcruntime.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-npovlc.lo `test -f 'control/npovlc.cpp' || echo '$(srcdir)/'`control/npovlc.cpp
+
+libnpvlc_a-nporuntime.o: control/nporuntime.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-nporuntime.o -MD -MP -MF "$(DEPDIR)/libnpvlc_a-nporuntime.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-nporuntime.o `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-nporuntime.Tpo" "$(DEPDIR)/libnpvlc_a-nporuntime.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-nporuntime.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/nporuntime.cpp' object='libnpvlc_a-nporuntime.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-nporuntime.Po' tmpdepfile='$(DEPDIR)/libnpvlc_a-nporuntime.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-nporuntime.o `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp
+
+libnpvlc_a-nporuntime.obj: control/nporuntime.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-nporuntime.obj -MD -MP -MF "$(DEPDIR)/libnpvlc_a-nporuntime.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-nporuntime.obj `if test -f 'control/nporuntime.cpp'; then $(CYGPATH_W) 'control/nporuntime.cpp'; else $(CYGPATH_W) '$(srcdir)/control/nporuntime.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-nporuntime.Tpo" "$(DEPDIR)/libnpvlc_a-nporuntime.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-nporuntime.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/nporuntime.cpp' object='libnpvlc_a-nporuntime.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-nporuntime.Po' tmpdepfile='$(DEPDIR)/libnpvlc_a-nporuntime.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-nporuntime.obj `if test -f 'control/nporuntime.cpp'; then $(CYGPATH_W) 'control/nporuntime.cpp'; else $(CYGPATH_W) '$(srcdir)/control/nporuntime.cpp'; fi`
+
+libnpvlc_a-nporuntime.lo: control/nporuntime.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-nporuntime.lo -MD -MP -MF "$(DEPDIR)/libnpvlc_a-nporuntime.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libnpvlc_a-nporuntime.lo `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libnpvlc_a-nporuntime.Tpo" "$(DEPDIR)/libnpvlc_a-nporuntime.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libnpvlc_a-nporuntime.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/nporuntime.cpp' object='libnpvlc_a-nporuntime.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libnpvlc_a-nporuntime.Plo' tmpdepfile='$(DEPDIR)/libnpvlc_a-nporuntime.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libnpvlc_a-nporuntime.lo `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp
 
 libnpvlc_a-npmac.o: support/npmac.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libnpvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libnpvlc_a-npmac.o -MD -MP -MF "$(DEPDIR)/libnpvlc_a-npmac.Tpo" \
@@ -950,71 +989,104 @@ libvlcplugin_la-vlcplugin.lo: vlcplugin.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-vlcplugin.lo `test -f 'vlcplugin.cpp' || echo '$(srcdir)/'`vlcplugin.cpp
 
-libvlcplugin_la-vlcpeer.o: vlcpeer.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-vlcpeer.o -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-vlcpeer.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-vlcpeer.o `test -f 'vlcpeer.cpp' || echo '$(srcdir)/'`vlcpeer.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-vlcpeer.Tpo" "$(DEPDIR)/libvlcplugin_la-vlcpeer.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-vlcpeer.Tpo"; exit 1; \
+libvlcplugin_la-npolibvlc.o: control/npolibvlc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-npolibvlc.o -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-npolibvlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-npolibvlc.o `test -f 'control/npolibvlc.cpp' || echo '$(srcdir)/'`control/npolibvlc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-npolibvlc.Tpo" "$(DEPDIR)/libvlcplugin_la-npolibvlc.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-npolibvlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcpeer.cpp' object='libvlcplugin_la-vlcpeer.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-vlcpeer.Po' tmpdepfile='$(DEPDIR)/libvlcplugin_la-vlcpeer.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npolibvlc.cpp' object='libvlcplugin_la-npolibvlc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-npolibvlc.Po' tmpdepfile='$(DEPDIR)/libvlcplugin_la-npolibvlc.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-vlcpeer.o `test -f 'vlcpeer.cpp' || echo '$(srcdir)/'`vlcpeer.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-npolibvlc.o `test -f 'control/npolibvlc.cpp' || echo '$(srcdir)/'`control/npolibvlc.cpp
 
-libvlcplugin_la-vlcpeer.obj: vlcpeer.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-vlcpeer.obj -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-vlcpeer.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-vlcpeer.obj `if test -f 'vlcpeer.cpp'; then $(CYGPATH_W) 'vlcpeer.cpp'; else $(CYGPATH_W) '$(srcdir)/vlcpeer.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-vlcpeer.Tpo" "$(DEPDIR)/libvlcplugin_la-vlcpeer.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-vlcpeer.Tpo"; exit 1; \
+libvlcplugin_la-npolibvlc.obj: control/npolibvlc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-npolibvlc.obj -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-npolibvlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-npolibvlc.obj `if test -f 'control/npolibvlc.cpp'; then $(CYGPATH_W) 'control/npolibvlc.cpp'; else $(CYGPATH_W) '$(srcdir)/control/npolibvlc.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-npolibvlc.Tpo" "$(DEPDIR)/libvlcplugin_la-npolibvlc.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-npolibvlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcpeer.cpp' object='libvlcplugin_la-vlcpeer.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-vlcpeer.Po' tmpdepfile='$(DEPDIR)/libvlcplugin_la-vlcpeer.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npolibvlc.cpp' object='libvlcplugin_la-npolibvlc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-npolibvlc.Po' tmpdepfile='$(DEPDIR)/libvlcplugin_la-npolibvlc.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-vlcpeer.obj `if test -f 'vlcpeer.cpp'; then $(CYGPATH_W) 'vlcpeer.cpp'; else $(CYGPATH_W) '$(srcdir)/vlcpeer.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-npolibvlc.obj `if test -f 'control/npolibvlc.cpp'; then $(CYGPATH_W) 'control/npolibvlc.cpp'; else $(CYGPATH_W) '$(srcdir)/control/npolibvlc.cpp'; fi`
 
-libvlcplugin_la-vlcpeer.lo: vlcpeer.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-vlcpeer.lo -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-vlcpeer.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-vlcpeer.lo `test -f 'vlcpeer.cpp' || echo '$(srcdir)/'`vlcpeer.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-vlcpeer.Tpo" "$(DEPDIR)/libvlcplugin_la-vlcpeer.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-vlcpeer.Tpo"; exit 1; \
+libvlcplugin_la-npolibvlc.lo: control/npolibvlc.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-npolibvlc.lo -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-npolibvlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-npolibvlc.lo `test -f 'control/npolibvlc.cpp' || echo '$(srcdir)/'`control/npolibvlc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-npolibvlc.Tpo" "$(DEPDIR)/libvlcplugin_la-npolibvlc.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-npolibvlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcpeer.cpp' object='libvlcplugin_la-vlcpeer.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-vlcpeer.Plo' tmpdepfile='$(DEPDIR)/libvlcplugin_la-vlcpeer.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npolibvlc.cpp' object='libvlcplugin_la-npolibvlc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-npolibvlc.Plo' tmpdepfile='$(DEPDIR)/libvlcplugin_la-npolibvlc.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-vlcpeer.lo `test -f 'vlcpeer.cpp' || echo '$(srcdir)/'`vlcpeer.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-npolibvlc.lo `test -f 'control/npolibvlc.cpp' || echo '$(srcdir)/'`control/npolibvlc.cpp
 
-libvlcplugin_la-vlcruntime.o: vlcruntime.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-vlcruntime.o -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-vlcruntime.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-vlcruntime.o `test -f 'vlcruntime.cpp' || echo '$(srcdir)/'`vlcruntime.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-vlcruntime.Tpo" "$(DEPDIR)/libvlcplugin_la-vlcruntime.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-vlcruntime.Tpo"; exit 1; \
+libvlcplugin_la-npovlc.o: control/npovlc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-npovlc.o -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-npovlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-npovlc.o `test -f 'control/npovlc.cpp' || echo '$(srcdir)/'`control/npovlc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-npovlc.Tpo" "$(DEPDIR)/libvlcplugin_la-npovlc.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-npovlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcruntime.cpp' object='libvlcplugin_la-vlcruntime.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-vlcruntime.Po' tmpdepfile='$(DEPDIR)/libvlcplugin_la-vlcruntime.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npovlc.cpp' object='libvlcplugin_la-npovlc.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-npovlc.Po' tmpdepfile='$(DEPDIR)/libvlcplugin_la-npovlc.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-vlcruntime.o `test -f 'vlcruntime.cpp' || echo '$(srcdir)/'`vlcruntime.cpp
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-npovlc.o `test -f 'control/npovlc.cpp' || echo '$(srcdir)/'`control/npovlc.cpp
 
-libvlcplugin_la-vlcruntime.obj: vlcruntime.cpp
-@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-vlcruntime.obj -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-vlcruntime.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-vlcruntime.obj `if test -f 'vlcruntime.cpp'; then $(CYGPATH_W) 'vlcruntime.cpp'; else $(CYGPATH_W) '$(srcdir)/vlcruntime.cpp'; fi`; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-vlcruntime.Tpo" "$(DEPDIR)/libvlcplugin_la-vlcruntime.Po"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-vlcruntime.Tpo"; exit 1; \
+libvlcplugin_la-npovlc.obj: control/npovlc.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-npovlc.obj -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-npovlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-npovlc.obj `if test -f 'control/npovlc.cpp'; then $(CYGPATH_W) 'control/npovlc.cpp'; else $(CYGPATH_W) '$(srcdir)/control/npovlc.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-npovlc.Tpo" "$(DEPDIR)/libvlcplugin_la-npovlc.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-npovlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcruntime.cpp' object='libvlcplugin_la-vlcruntime.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-vlcruntime.Po' tmpdepfile='$(DEPDIR)/libvlcplugin_la-vlcruntime.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npovlc.cpp' object='libvlcplugin_la-npovlc.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-npovlc.Po' tmpdepfile='$(DEPDIR)/libvlcplugin_la-npovlc.TPo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-vlcruntime.obj `if test -f 'vlcruntime.cpp'; then $(CYGPATH_W) 'vlcruntime.cpp'; else $(CYGPATH_W) '$(srcdir)/vlcruntime.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-npovlc.obj `if test -f 'control/npovlc.cpp'; then $(CYGPATH_W) 'control/npovlc.cpp'; else $(CYGPATH_W) '$(srcdir)/control/npovlc.cpp'; fi`
 
-libvlcplugin_la-vlcruntime.lo: vlcruntime.cpp
-@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-vlcruntime.lo -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-vlcruntime.Tpo" \
-@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-vlcruntime.lo `test -f 'vlcruntime.cpp' || echo '$(srcdir)/'`vlcruntime.cpp; \
-@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-vlcruntime.Tpo" "$(DEPDIR)/libvlcplugin_la-vlcruntime.Plo"; \
-@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-vlcruntime.Tpo"; exit 1; \
+libvlcplugin_la-npovlc.lo: control/npovlc.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-npovlc.lo -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-npovlc.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-npovlc.lo `test -f 'control/npovlc.cpp' || echo '$(srcdir)/'`control/npovlc.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-npovlc.Tpo" "$(DEPDIR)/libvlcplugin_la-npovlc.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-npovlc.Tpo"; exit 1; \
 @am__fastdepCXX_TRUE@	fi
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlcruntime.cpp' object='libvlcplugin_la-vlcruntime.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-vlcruntime.Plo' tmpdepfile='$(DEPDIR)/libvlcplugin_la-vlcruntime.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/npovlc.cpp' object='libvlcplugin_la-npovlc.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-npovlc.Plo' tmpdepfile='$(DEPDIR)/libvlcplugin_la-npovlc.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-vlcruntime.lo `test -f 'vlcruntime.cpp' || echo '$(srcdir)/'`vlcruntime.cpp
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-npovlc.lo `test -f 'control/npovlc.cpp' || echo '$(srcdir)/'`control/npovlc.cpp
+
+libvlcplugin_la-nporuntime.o: control/nporuntime.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-nporuntime.o -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-nporuntime.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-nporuntime.o `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-nporuntime.Tpo" "$(DEPDIR)/libvlcplugin_la-nporuntime.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-nporuntime.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/nporuntime.cpp' object='libvlcplugin_la-nporuntime.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-nporuntime.Po' tmpdepfile='$(DEPDIR)/libvlcplugin_la-nporuntime.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-nporuntime.o `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp
+
+libvlcplugin_la-nporuntime.obj: control/nporuntime.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-nporuntime.obj -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-nporuntime.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-nporuntime.obj `if test -f 'control/nporuntime.cpp'; then $(CYGPATH_W) 'control/nporuntime.cpp'; else $(CYGPATH_W) '$(srcdir)/control/nporuntime.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-nporuntime.Tpo" "$(DEPDIR)/libvlcplugin_la-nporuntime.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-nporuntime.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/nporuntime.cpp' object='libvlcplugin_la-nporuntime.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-nporuntime.Po' tmpdepfile='$(DEPDIR)/libvlcplugin_la-nporuntime.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-nporuntime.obj `if test -f 'control/nporuntime.cpp'; then $(CYGPATH_W) 'control/nporuntime.cpp'; else $(CYGPATH_W) '$(srcdir)/control/nporuntime.cpp'; fi`
+
+libvlcplugin_la-nporuntime.lo: control/nporuntime.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-nporuntime.lo -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-nporuntime.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libvlcplugin_la-nporuntime.lo `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libvlcplugin_la-nporuntime.Tpo" "$(DEPDIR)/libvlcplugin_la-nporuntime.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libvlcplugin_la-nporuntime.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='control/nporuntime.cpp' object='libvlcplugin_la-nporuntime.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libvlcplugin_la-nporuntime.Plo' tmpdepfile='$(DEPDIR)/libvlcplugin_la-nporuntime.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -c -o libvlcplugin_la-nporuntime.lo `test -f 'control/nporuntime.cpp' || echo '$(srcdir)/'`control/nporuntime.cpp
 
 libvlcplugin_la-npmac.o: support/npmac.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlcplugin_la_CXXFLAGS) $(CXXFLAGS) -MT libvlcplugin_la-npmac.o -MD -MP -MF "$(DEPDIR)/libvlcplugin_la-npmac.Tpo" \
@@ -1127,24 +1199,6 @@ uninstall-npvlcDATA:
 	  echo " rm -f $(DESTDIR)$(npvlcdir)/$$f"; \
 	  rm -f $(DESTDIR)$(npvlcdir)/$$f; \
 	done
-vlcintf_xptDATA_INSTALL = $(INSTALL_DATA)
-install-vlcintf_xptDATA: $(vlcintf_xpt_DATA)
-	@$(NORMAL_INSTALL)
-	$(mkinstalldirs) $(DESTDIR)$(vlcintf_xptdir)
-	@list='$(vlcintf_xpt_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " $(vlcintf_xptDATA_INSTALL) $$d$$p $(DESTDIR)$(vlcintf_xptdir)/$$f"; \
-	  $(vlcintf_xptDATA_INSTALL) $$d$$p $(DESTDIR)$(vlcintf_xptdir)/$$f; \
-	done
-
-uninstall-vlcintf_xptDATA:
-	@$(NORMAL_UNINSTALL)
-	@list='$(vlcintf_xpt_DATA)'; for p in $$list; do \
-	  f="`echo $$p | sed -e 's|^.*/||'`"; \
-	  echo " rm -f $(DESTDIR)$(vlcintf_xptdir)/$$f"; \
-	  rm -f $(DESTDIR)$(vlcintf_xptdir)/$$f; \
-	done
 
 ETAGS = etags
 ETAGSFLAGS =
@@ -1205,7 +1259,7 @@ top_distdir = ..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
-	$(mkinstalldirs) $(distdir)/support
+	$(mkinstalldirs) $(distdir)/control $(distdir)/support
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -1233,14 +1287,12 @@ distdir: $(DISTFILES)
 	  fi; \
 	done
 check-am: all-am
-check: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) check-am
+check: check-am
 all-am: Makefile $(LIBRARIES) $(LTLIBRARIES) $(DATA)
 
 installdirs:
-	$(mkinstalldirs) $(DESTDIR)$(npvlcdir) $(DESTDIR)$(noinst_npvlc_rcdir) $(DESTDIR)$(npvlcdir) $(DESTDIR)$(vlcintf_xptdir)
-install: $(BUILT_SOURCES)
-	$(MAKE) $(AM_MAKEFLAGS) install-am
+	$(mkinstalldirs) $(DESTDIR)$(npvlcdir) $(DESTDIR)$(noinst_npvlc_rcdir) $(DESTDIR)$(npvlcdir)
+install: install-am
 install-exec: install-exec-am
 install-data: install-data-am
 uninstall: uninstall-am
@@ -1266,7 +1318,6 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-	-test -z "$(BUILT_SOURCES)" || rm -f $(BUILT_SOURCES)
 clean: clean-am
 
 clean-am: clean-generic clean-libtool clean-noinstLIBRARIES \
@@ -1287,7 +1338,7 @@ info: info-am
 info-am:
 
 install-data-am: install-noinst_npvlc_rcDATA install-npvlcDATA \
-	install-npvlcLTLIBRARIES install-vlcintf_xptDATA
+	install-npvlcLTLIBRARIES
 
 install-exec-am:
 
@@ -1316,8 +1367,7 @@ ps: ps-am
 ps-am:
 
 uninstall-am: uninstall-info-am uninstall-noinst_npvlc_rcDATA \
-	uninstall-npvlcDATA uninstall-npvlcLTLIBRARIES \
-	uninstall-vlcintf_xptDATA
+	uninstall-npvlcDATA uninstall-npvlcLTLIBRARIES
 
 .PHONY: CTAGS GTAGS all all-am check check-am clean clean-generic \
 	clean-libtool clean-noinstLIBRARIES clean-npvlcLTLIBRARIES \
@@ -1326,13 +1376,13 @@ uninstall-am: uninstall-info-am uninstall-noinst_npvlc_rcDATA \
 	info-am install install-am install-data install-data-am \
 	install-exec install-exec-am install-info install-info-am \
 	install-man install-noinst_npvlc_rcDATA install-npvlcDATA \
-	install-npvlcLTLIBRARIES install-strip install-vlcintf_xptDATA \
-	installcheck installcheck-am installdirs maintainer-clean \
+	install-npvlcLTLIBRARIES install-strip installcheck \
+	installcheck-am installdirs maintainer-clean \
 	maintainer-clean-generic mostlyclean mostlyclean-compile \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	tags uninstall uninstall-am uninstall-info-am \
 	uninstall-noinst_npvlc_rcDATA uninstall-npvlcDATA \
-	uninstall-npvlcLTLIBRARIES uninstall-vlcintf_xptDATA
+	uninstall-npvlcLTLIBRARIES
 
 
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@npvlc_rc.$(OBJEXT): npvlc_rc.rc
@@ -1385,20 +1435,11 @@ uninstall-am: uninstall-info-am uninstall-noinst_npvlc_rcDATA \
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	  done ; \
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	fi
 
-@BUILD_MOZILLA_TRUE@$(SOURCES_mozilla): vlcintf.h
-
 $(npvlc): $(libnpvlc_a_OBJECTS) $(libnpvlc_a_DEPENDENCIES) stamp-pic
 	$(CXXLINK) $(libnpvlc_a_OBJECTS) $(DATA_npvlc_rc) \
 	 $(LDFLAGS_libnpvlc)
 # Cygwin work-around
 	@if test -f "$@.exe"; then mv -f "$@.exe" "$@"; fi
-vlcintf.xpt: vlcintf.idl
-	$(XPIDL) $(XPIDL_INCL) \
-	  -m typelib -o vlcintf $(srcdir)/vlcintf.idl
-
-vlcintf.h: vlcintf.idl
-	$(XPIDL) $(XPIDL_INCL) \
-	  -m header -o vlcintf $(srcdir)/vlcintf.idl
 
 ###############################################################################
 # Stamp rules

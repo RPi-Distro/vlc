@@ -2,7 +2,7 @@
  * vout.c: Windows DirectX video output display method
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: directx.c 15002 2006-03-31 16:12:31Z fkuehne $
+ * $Id: directx.c 16931 2006-10-03 09:04:50Z damienf $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -58,11 +58,26 @@
 #include "vout.h"
 
 /*****************************************************************************
+ * picture_sys_t: direct buffer method descriptor
+ *****************************************************************************
+ * This structure is part of the picture descriptor, it describes the
+ * DirectX specific properties of a direct buffer.
+ *****************************************************************************/
+struct picture_sys_t
+{
+    LPDIRECTDRAWSURFACE2 p_surface;
+    LPDIRECTDRAWSURFACE2 p_front_surface;
+    DDSURFACEDESC        ddsd;
+};
+
+/*****************************************************************************
  * DirectDraw GUIDs.
  * Defining them here allows us to get rid of the dxguid library during
  * the linking stage.
  *****************************************************************************/
 #include <initguid.h>
+#undef GUID_EXT
+#define GUID_EXT
 DEFINE_GUID( IID_IDirectDraw2, 0xB3A6F3E0,0x2B43,0x11CF,0xA2,0xDE,0x00,0xAA,0x00,0xB9,0x33,0x56 );
 DEFINE_GUID( IID_IDirectDrawSurface2, 0x57805885,0x6eec,0x11cf,0x94,0x41,0xa8,0x23,0x03,0xc1,0x0e,0x27 );
 
@@ -908,7 +923,7 @@ BOOL WINAPI DirectXEnumCallback( GUID* p_guid, LPTSTR psz_desc,
                     rect.left = monitor_info.rcWork.left;
                     rect.top = monitor_info.rcWork.top;
                     msg_Dbg( p_vout, "DirectXEnumCallback: setting window "
-                             "position to %d,%d", rect.left, rect.top );
+                             "position to %ld,%ld", rect.left, rect.top );
                     SetWindowPos( p_vout->p_sys->hwnd, NULL,
                                   rect.left, rect.top, 0, 0,
                                   SWP_NOSIZE | SWP_NOZORDER | SWP_NOACTIVATE );
@@ -1040,7 +1055,7 @@ static int DirectXInitDDraw( vout_thread_t *p_vout )
         p_vout->p_sys->rect_display.bottom = GetSystemMetrics(SM_CYSCREEN);
     }
 
-    msg_Dbg( p_vout, "screen dimensions (%ix%i,%ix%i)",
+    msg_Dbg( p_vout, "screen dimensions (%lix%li,%lix%li)",
              p_vout->p_sys->rect_display.left,
              p_vout->p_sys->rect_display.top,
              p_vout->p_sys->rect_display.right,

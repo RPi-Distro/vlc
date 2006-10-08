@@ -2,7 +2,7 @@
  * m4v.c : MPEG-4 Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: m4v.c 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: m4v.c 16965 2006-10-07 16:02:30Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -69,33 +69,21 @@ static int Open( vlc_object_t * p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
-    vlc_bool_t   b_forced = VLC_FALSE;
 
     uint8_t     *p_peek;
 
-    es_format_t  fmt;
+    if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 ) return VLC_EGENERIC;
 
-    if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 )
+    if( p_peek[0] != 0x00 || p_peek[1] != 0x00 || p_peek[2] != 0x01 )
     {
-        msg_Err( p_demux, "cannot peek" );
-        return VLC_EGENERIC;
-    }
-
-    if( !strncmp( p_demux->psz_demux, "mp4v", 4 ) ||
-        !strncmp( p_demux->psz_demux, "m4v", 4 ) )
-    {
-        b_forced = VLC_TRUE;
-    }
-
-    if( p_peek[0] != 0x00 || p_peek[1] != 0x00 || p_peek[2] != 0x01 || p_peek[3] > 0x2f )
-    {
-        if( !b_forced )
+        if( !p_demux->b_force )
         {
             msg_Warn( p_demux, "m4v module discarded (no startcode)" );
             return VLC_EGENERIC;
         }
 
-        msg_Warn( p_demux, "this doesn't look like an MPEG-4 ES stream, continuing anyway" );
+        msg_Warn( p_demux, "this doesn't look like an MPEG-4 ES stream, "
+                  "continuing anyway" );
     }
 
     p_demux->pf_demux  = Demux;
@@ -126,7 +114,7 @@ static int Open( vlc_object_t * p_this )
         return VLC_EGENERIC;
     }
 
-    /* We need to wait until we gtt p_extra (VOL header) from the packetizer
+    /* We need to wait until we get p_extra (VOL header) from the packetizer
      * before we create the output */
 
     return VLC_SUCCESS;

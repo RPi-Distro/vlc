@@ -34,10 +34,6 @@
 
 #include <vlc/vlc.h>
 
-#ifndef WIN32
-#include <X11/Xlib.h>
-#endif
-
 # ifdef __cplusplus
 extern "C" {
 # endif
@@ -274,6 +270,9 @@ void        libvlc_input_set_time       ( libvlc_input_t *, vlc_int64_t, libvlc_
 float       libvlc_input_get_position   ( libvlc_input_t *, libvlc_exception_t *);
 void        libvlc_input_set_position   ( libvlc_input_t *, float, libvlc_exception_t *);
 vlc_bool_t  libvlc_input_will_play      ( libvlc_input_t *, libvlc_exception_t *);
+float       libvlc_input_get_rate       ( libvlc_input_t *, libvlc_exception_t *);
+void        libvlc_input_set_rate       ( libvlc_input_t *, float, libvlc_exception_t *);
+int         libvlc_input_get_state      ( libvlc_input_t *, libvlc_exception_t *);
         
 /** @} */
 
@@ -367,6 +366,42 @@ typedef int libvlc_drawable_t;
  */
 int libvlc_video_reparent( libvlc_input_t *, libvlc_drawable_t, libvlc_exception_t * );
 
+/**
+ * Embedding support: Set/change the default parent drawable for video outputs
+ * \param p_instance libvlc instance
+ * \param drawable the new parent window (Drawable on X11, CGrafPort on MacOSX, HWND on Win32)
+ * \param p_exception an initialized exception
+ */
+void libvlc_video_set_parent( libvlc_instance_t *, libvlc_drawable_t, libvlc_exception_t * );
+
+/**
+ * Embedding support: Set/change the default size for video outputs
+ * \param p_instance libvlc instance
+ * \param width new width for video drawable
+ * \param height new height for video drawable
+ * \param p_exception an initialized exception
+ */
+void libvlc_video_set_size( libvlc_instance_t *, int, int, libvlc_exception_t * );
+
+/**
+* Embedding support: rectangle for viewport
+*/
+typedef struct
+{
+    int top, left;
+    int bottom, right;
+}
+libvlc_rectangle_t;
+
+/**
+ * Embedding support: Set the video output viewport for a windowless video output (MacOS X only)
+ * \param p_instance libvlc instance
+ * \param view coordinates within video drawable
+ * \param clip coordinates within video drawable
+ * \param p_exception an initialized exception
+ */
+void libvlc_video_set_viewport( libvlc_instance_t *, const libvlc_rectangle_t *, const libvlc_rectangle_t *, libvlc_exception_t * );
+
 
 /** @} */
 
@@ -382,6 +417,14 @@ int libvlc_video_reparent( libvlc_input_t *, libvlc_drawable_t, libvlc_exception
  * LibVLC Audio handling
  * @{
  */
+
+/**
+ * Toggle mute status
+ * \param p_instance libvlc instance
+ * \param p_exception an initialized exception
+ * \return void
+ */
+void libvlc_audio_toggle_mute( libvlc_instance_t *, libvlc_exception_t * );
 
 /**
  * Get current mute status

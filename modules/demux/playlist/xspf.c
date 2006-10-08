@@ -33,7 +33,7 @@
 /**
  * \brief XSPF submodule initialization function
  */
-int E_(xspf_import_Activate)( vlc_object_t *p_this )
+int E_(Import_xspf)( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
     char    *psz_ext;
@@ -55,6 +55,12 @@ int E_(xspf_import_Activate)( vlc_object_t *p_this )
     p_demux->pf_demux = xspf_import_Demux;
 
     return VLC_SUCCESS;
+}
+
+void E_(Close_xspf)( vlc_object_t *p_this )
+{
+    demux_t *p_demux = (demux_t *)p_this;
+    msg_Dbg( p_demux, "closing xspf playlist" );	
 }
 
 /**
@@ -657,7 +663,7 @@ static vlc_bool_t insert_new_item( playlist_t *p_pl, playlist_item_t *p_cur,
                                    playlist_item_t **pp_new, char *psz_location )
 {
     char *psz_uri=NULL;
-    psz_uri = unescape_URI_duplicate( psz_location );
+    psz_uri = decode_URI_duplicate( psz_location );
 
     if ( psz_uri )
     {

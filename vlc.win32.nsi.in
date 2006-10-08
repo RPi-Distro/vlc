@@ -429,7 +429,6 @@ Section /o "Mozilla plugin" SEC03
   ;WriteRegStr HKLM ${Moz} "Product" "VLC media player"
   ;WriteRegStr HKLM ${Moz} "Vendor" "VideoLAN"
   ;WriteRegStr HKLM ${Moz} "Version" "${VERSION}"
-  ;WriteRegStr HKLM ${Moz} "XPTPath" "$INSTDIR\mozilla\vlcintf.xpt"
 
   Push $R0
   Push $R1

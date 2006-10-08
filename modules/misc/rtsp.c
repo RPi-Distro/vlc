@@ -2,7 +2,7 @@
  * rtsp.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: rtsp.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: rtsp.c 16987 2006-10-08 12:54:12Z jpsaman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -771,7 +771,7 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
 
         case HTTPD_MSG_PLAY:
         {
-            char *psz_output, *psz_position, ip[NI_MAXNUMERICHOST];
+            char *psz_output, ip[NI_MAXNUMERICHOST];
             int i, i_port_audio = 0, i_port_video = 0;
 
             /* for now only multicast so easy */

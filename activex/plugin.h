@@ -26,9 +26,10 @@
 #include <ole2.h>
 #include <olectl.h>
 
-#include <vlc/vlc.h>
+#include <vlc/libvlc.h>
 
 extern const GUID CLSID_VLCPlugin; 
+extern const GUID CLSID_VLCPlugin2; 
 extern const GUID LIBID_AXVLC; 
 extern const GUID DIID_DVLCEvents; 
 
@@ -37,7 +38,7 @@ class VLCPluginClass : public IClassFactory
 
 public:
 
-    VLCPluginClass(LONG *p_class_ref,HINSTANCE hInstance);
+    VLCPluginClass(LONG *p_class_ref, HINSTANCE hInstance, REFCLSID rclsid);
 
     /* IUnknown methods */
     STDMETHODIMP QueryInterface(REFIID riid, void **ppv);
@@ -47,6 +48,8 @@ public:
     /* IClassFactory methods */
     STDMETHODIMP CreateInstance(LPUNKNOWN pUnkOuter, REFIID riid, void **ppv);
     STDMETHODIMP LockServer(BOOL fLock);
+
+    REFCLSID getClassID(void) { return (REFCLSID)_classid; };
 
     LPCSTR getInPlaceWndClassName(void) const { return TEXT("VLC Plugin In-Place"); };
     LPCSTR getVideoWndClassName(void) const { return TEXT("VLC Plugin Video"); };
@@ -62,6 +65,7 @@ private:
 
     LPLONG      _p_class_ref;
     HINSTANCE   _hinstance;
+    CLSID       _classid;
     ATOM        _inplace_wndclass_atom;
     ATOM        _video_wndclass_atom;
     LPPICTURE   _inplace_picture;
@@ -81,7 +85,7 @@ public:
 
     /* custom methods */
     HRESULT getTypeLib(LCID lcid, ITypeLib **pTL) { return LoadRegTypeLib(LIBID_AXVLC, 1, 0, lcid, pTL); };
-    REFCLSID getClassID(void) { return (REFCLSID)CLSID_VLCPlugin; };
+    REFCLSID getClassID(void) { return _p_class->getClassID(); };
     REFIID getDispEventID(void) { return (REFIID)DIID_DVLCEvents; };
 
     /*
@@ -116,8 +120,23 @@ public:
     BOOL getVisible(void) { return _b_visible; };
     BOOL isVisible(void) { return _b_visible || (! _b_usermode); };
 
+    inline void setStartTime(int time)
+    {
+        _i_time = time;
+        setDirty(TRUE);
+    };
+    inline int getStartTime(void) { return _i_time; };
+
     void setTime(int time);
     int  getTime(void) { return _i_time; };
+
+    void setBaseURL(BSTR url)
+    {
+        SysFreeString(_bstr_baseurl);
+        _bstr_baseurl = SysAllocStringLen(url, SysStringLen(url));
+        setDirty(TRUE);
+    };
+    const BSTR getBaseURL(void) { return _bstr_baseurl; };
 
     // control size in HIMETRIC
     inline void setExtent(const SIZEL& extent)
@@ -165,9 +184,9 @@ public:
     inline BOOL isDirty(void) { return _b_dirty; };
     inline void setDirty(BOOL dirty) { _b_dirty = dirty; };
 
-    inline BOOL isRunning(void) { return 0 != _i_vlc; };
+    inline BOOL isRunning(void) { return NULL != _p_libvlc; };
     HRESULT getVLCObject(int *i_vlc);
-
+    HRESULT getVLC(libvlc_instance_t** p_vlc);
 
     // control geometry within container
     RECT getPosRect(void) { return _posRect; }; 
@@ -218,6 +237,7 @@ private:
     class VLCConnectionPointContainer *vlcConnectionPointContainer;
     class VLCObjectSafety *vlcObjectSafety;
     class VLCControl *vlcControl;
+    class VLCControl2 *vlcControl2;
     class VLCViewObject *vlcViewObject;
     class VLCDataObject *vlcDataObject;
 
@@ -226,15 +246,16 @@ private:
     // video window (Drawing window)
     HWND _videownd;
 
-    VLCPluginClass *_p_class;
+    VLCPluginClass* _p_class;
     ULONG _i_ref;
 
+    libvlc_instance_t* _p_libvlc;
     UINT _i_codepage;
     BOOL _b_usermode;
-    int  _i_vlc;
     RECT _posRect;
 
     // persistable properties
+    BSTR _bstr_baseurl;
     BSTR _bstr_mrl;
     BOOL _b_autoplay;
     BOOL _b_autoloop;

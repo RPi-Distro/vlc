@@ -2,7 +2,7 @@
  * mjpeg.c : demuxes mjpeg webcam http streams
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: mjpeg.c 14790 2006-03-18 02:06:16Z xtophe $
+ * $Id: mjpeg.c 16987 2006-10-08 12:54:12Z jpsaman $
  *
  * Authors: Henry Jen (slowhog) <henryjen@ztune.net>
  *          Derk-Jan Hartman (thedj)
@@ -157,7 +157,7 @@ static char* GetLine( demux_t *p_demux, int *p_pos )
         msg_Err( p_demux, "out of memory" );
         return NULL;
     }
-    strncpy ( p_line, p_buf, i );
+    strncpy ( p_line, (char *)p_buf, i );
     p_line[i] = '\0';
 //    msg_Dbg( p_demux, "i = %d, pos = %d, %s", i, *p_pos, p_line );
     return p_line;
@@ -215,8 +215,8 @@ static vlc_bool_t CheckMimeHeader( demux_t *p_demux, int *p_header_size )
             msg_Warn( p_demux, "separator %s does not match %s", psz_line,
                       p_sys->psz_separator );
         }
-        free( psz_line );
     }
+    free( psz_line );
     psz_line = GetLine( p_demux, &i_pos );
     while( psz_line && *psz_line )
     {

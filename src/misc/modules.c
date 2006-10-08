@@ -2,7 +2,7 @@
  * modules.c : Builtin and plugin modules management functions
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: modules.c 15084 2006-04-03 14:06:19Z xtophe $
+ * $Id: modules.c 16965 2006-10-07 16:02:30Z hartman $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -577,7 +577,7 @@ module_t * __module_Need( vlc_object_t *p_this, const char *psz_capability,
         /* Store this new module */
         p_list[ i_index ].p_module = p_module;
         p_list[ i_index ].i_score = p_module->i_score + i_shortcut_bonus;
-        p_list[ i_index ].b_force = !!i_shortcut_bonus;
+        p_list[ i_index ].b_force = i_shortcut_bonus && b_strict;
 
         /* Add it to the modules-to-probe list */
         if( i_index == 0 )

@@ -15,6 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *******************************************************************************/
+#ifndef _XSPF_H_
+#define _XSPF_H_ 1
+
 /**
  * \file modules/demux/playlist/xspf.h
  * \brief XSPF playlist import: prototypes, datatypes, defines
@@ -60,3 +63,5 @@ typedef struct
         vlc_bool_t (*cmplx) COMPLEX_INTERFACE;
     } pf_handler;
 } xml_elem_hnd_t;
+
+#endif /* _XSPF_H_ */

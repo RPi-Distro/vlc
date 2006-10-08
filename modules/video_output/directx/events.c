@@ -2,7 +2,7 @@
  * events.c: Windows DirectX video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: events.c 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: events.c 16931 2006-10-03 09:04:50Z damienf $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -44,7 +44,12 @@
 #include <windowsx.h>
 #include <shellapi.h>
 
+#ifdef MODULE_NAME_IS_vout_directx
 #include <ddraw.h>
+#endif
+#ifdef MODULE_NAME_IS_glwin32
+#include <GL/gl.h>
+#endif
 
 #include "vlc_keys.h"
 #include "vout.h"
@@ -261,7 +266,7 @@ void E_(DirectXEventThread)( event_thread_t *p_event )
                     val.i_int |= KEY_MODIFIER_ALT;
                 }
 
-                var_Set( p_event->p_vlc, "key-pressed", val );
+                var_Set( p_event->p_libvlc, "key-pressed", val );
             }
             break;
 
@@ -289,7 +294,7 @@ void E_(DirectXEventThread)( event_thread_t *p_event )
                     val.i_int |= KEY_MODIFIER_ALT;
                 }
 
-                var_Set( p_event->p_vlc, "key-pressed", val );
+                var_Set( p_event->p_libvlc, "key-pressed", val );
             }
             break;
 
@@ -301,7 +306,8 @@ void E_(DirectXEventThread)( event_thread_t *p_event )
 
 #ifdef MODULE_NAME_IS_glwin32
                 val.psz_string = strdup( VOUT_TITLE " (OpenGL output)" );
-#else
+#endif
+#ifdef MODULE_NAME_IS_vout_directx
                 if( p_event->p_vout->p_sys->b_using_overlay ) val.psz_string = 
                 strdup( VOUT_TITLE " (hardware YUV overlay DirectX output)" );
                 else if( p_event->p_vout->p_sys->b_hw_yuv ) val.psz_string = 
@@ -421,7 +427,7 @@ static int DirectXCreateWindow( vout_thread_t *p_vout )
          * then fine, otherwise return with an error. */
         if( !GetClassInfo( hInstance, _T("VLC DirectX"), &wndclass ) )
         {
-            msg_Err( p_vout, "DirectXCreateWindow RegisterClass FAILED" );
+            msg_Err( p_vout, "DirectXCreateWindow RegisterClass FAILED (err=%lu)", GetLastError() );
             return VLC_EGENERIC;
         }
     }
@@ -436,7 +442,7 @@ static int DirectXCreateWindow( vout_thread_t *p_vout )
          * then fine, otherwise return with an error. */
         if( !GetClassInfo( hInstance, _T("VLC DirectX video"), &wndclass ) )
         {
-            msg_Err( p_vout, "DirectXCreateWindow RegisterClass FAILED" );
+            msg_Err( p_vout, "DirectXCreateWindow RegisterClass FAILED (err=%lu)", GetLastError() );
             return VLC_EGENERIC;
         }
     }
@@ -481,9 +487,9 @@ static int DirectXCreateWindow( vout_thread_t *p_vout )
                     _T(VOUT_TITLE) _T(" (DirectX Output)"),  /* window title */
                     i_style,                                 /* window style */
                     (p_vout->p_sys->i_window_x < 0) ? CW_USEDEFAULT :
-                        p_vout->p_sys->i_window_x,   /* default X coordinate */
+                        (UINT)p_vout->p_sys->i_window_x,   /* default X coordinate */
                     (p_vout->p_sys->i_window_y < 0) ? CW_USEDEFAULT :
-                        p_vout->p_sys->i_window_y,   /* default Y coordinate */
+                        (UINT)p_vout->p_sys->i_window_y,   /* default Y coordinate */
                     rect_window.right - rect_window.left,    /* window width */
                     rect_window.bottom - rect_window.top,   /* window height */
                     p_vout->p_sys->hparent,                 /* parent window */
@@ -493,7 +499,7 @@ static int DirectXCreateWindow( vout_thread_t *p_vout )
 
     if( !p_vout->p_sys->hwnd )
     {
-        msg_Warn( p_vout, "DirectXCreateWindow create window FAILED" );
+        msg_Warn( p_vout, "DirectXCreateWindow create window FAILED (err=%lu)", GetLastError() );
         return VLC_EGENERIC;
     }
 
@@ -519,19 +525,32 @@ static int DirectXCreateWindow( vout_thread_t *p_vout )
                             NULL, NULL, hInstance, NULL );
     }
 
-    /* Now display the window */
-    ShowWindow( p_vout->p_sys->hwnd, SW_SHOW );
-
-    /* Create video sub-window. This sub window will always exactly match
-     * the size of the video, which allows us to use crazy overlay colorkeys
-     * without having them shown outside of the video area. */
-    SendMessage( p_vout->p_sys->hwnd, WM_VLC_CREATE_VIDEO_WIN, 0, 0 );
-
     /* Append a "Always On Top" entry in the system menu */
     hMenu = GetSystemMenu( p_vout->p_sys->hwnd, FALSE );
     AppendMenu( hMenu, MF_SEPARATOR, 0, _T("") );
     AppendMenu( hMenu, MF_STRING | MF_UNCHECKED,
                        IDM_TOGGLE_ON_TOP, _T("Always on &Top") );
+
+    /* Create video sub-window. This sub window will always exactly match
+     * the size of the video, which allows us to use crazy overlay colorkeys
+     * without having them shown outside of the video area. */
+    p_vout->p_sys->hvideownd =
+    CreateWindow( _T("VLC DirectX video"), _T(""),   /* window class */
+        WS_CHILD | WS_VISIBLE,                   /* window style */
+        0, 0,
+        p_vout->render.i_width,         /* default width */
+        p_vout->render.i_height,        /* default height */
+        p_vout->p_sys->hwnd,                    /* parent window */
+        NULL, hInstance,
+        (LPVOID)p_vout );            /* send p_vout to WM_CREATE */
+
+    if( !p_vout->p_sys->hvideownd )
+    msg_Warn( p_vout, "can't create video sub-window" );
+    else
+    msg_Dbg( p_vout, "created video sub-window" );
+
+    /* Now display the window */
+    ShowWindow( p_vout->p_sys->hwnd, SW_SHOW );
 
     return VLC_SUCCESS;
 }
@@ -613,6 +632,7 @@ void E_(DirectXUpdateRects)( vout_thread_t *p_vout, vlc_bool_t b_force )
     rect_dest.top = point.y + i_y;
     rect_dest.bottom = rect_dest.top + i_height;
 
+#ifdef MODULE_NAME_IS_vout_directx
     /* Apply overlay hardware constraints */
     if( p_vout->p_sys->b_using_overlay )
     {
@@ -626,6 +646,7 @@ void E_(DirectXUpdateRects)( vout_thread_t *p_vout, vlc_bool_t b_force )
                 p_vout->p_sys->i_align_dest_size / 2 ) & 
                 ~p_vout->p_sys->i_align_dest_size) + rect_dest.left;
     }
+#endif
 
     /* UpdateOverlay directdraw function doesn't automatically clip to the
      * display size so we need to do it otherwise it will fail */
@@ -675,6 +696,7 @@ void E_(DirectXUpdateRects)( vout_thread_t *p_vout, vlc_bool_t b_force )
       (rect_dest.bottom - rect_dest_clipped.bottom) *
       p_vout->fmt_out.i_visible_height / (rect_dest.bottom - rect_dest.top);
 
+#ifdef MODULE_NAME_IS_vout_directx
     /* Apply overlay hardware constraints */
     if( p_vout->p_sys->b_using_overlay )
     {
@@ -689,6 +711,7 @@ void E_(DirectXUpdateRects)( vout_thread_t *p_vout, vlc_bool_t b_force )
                 p_vout->p_sys->i_align_src_size / 2 ) & 
                 ~p_vout->p_sys->i_align_src_size) + rect_src_clipped.left;
     }
+#endif
 
 #if 0
     msg_Dbg( p_vout, "DirectXUpdateRects image_src_clipped"
@@ -704,8 +727,10 @@ void E_(DirectXUpdateRects)( vout_thread_t *p_vout, vlc_bool_t b_force )
     rect_dest_clipped.top -= p_vout->p_sys->rect_display.top;
     rect_dest_clipped.bottom -= p_vout->p_sys->rect_display.top;
 
+#ifdef MODULE_NAME_IS_vout_directx
     if( p_vout->p_sys->b_using_overlay )
         E_(DirectXUpdateOverlay)( p_vout );
+#endif
 
     /* Signal the change in size/position */
     p_vout->p_sys->i_changes |= DX_POSITION_CHANGE;
@@ -737,10 +762,17 @@ static long FAR PASCAL DirectXEventProc( HWND hwnd, UINT message,
         /* Store p_vout for future use */
         p_vout = (vout_thread_t *)((CREATESTRUCT *)lParam)->lpCreateParams;
         SetWindowLongPtr( hwnd, GWLP_USERDATA, (LONG_PTR)p_vout );
+        return TRUE;
     }
     else
     {
         p_vout = (vout_thread_t *)GetWindowLongPtr( hwnd, GWLP_USERDATA );
+        if( !p_vout )
+        {
+            /* Hmmm mozilla does manage somehow to save the pointer to our
+             * windowproc and still calls it after the vout has been closed. */
+            return DefWindowProc(hwnd, message, wParam, lParam);
+        }
     }
 
     /* Catch the screensaver and the monitor turn-off */
@@ -749,13 +781,6 @@ static long FAR PASCAL DirectXEventProc( HWND hwnd, UINT message,
     {
         //if( p_vout ) msg_Dbg( p_vout, "WinProc WM_SYSCOMMAND screensaver" );
         return 0; /* this stops them from happening */
-    }
-
-    if( !p_vout )
-    {
-        /* Hmmm mozilla does manage somehow to save the pointer to our
-         * windowproc and still calls it after the vout has been closed. */
-        return DefWindowProc(hwnd, message, wParam, lParam);
     }
 
     if( hwnd == p_vout->p_sys->hvideownd )
@@ -808,30 +833,12 @@ static long FAR PASCAL DirectXEventProc( HWND hwnd, UINT message,
         }
         break;
 
-    case WM_VLC_CREATE_VIDEO_WIN:
-        /* Create video sub-window */
-        p_vout->p_sys->hvideownd =
-            CreateWindow( _T("VLC DirectX video"), _T(""),   /* window class */
-                    WS_CHILD | WS_VISIBLE,                   /* window style */
-                    CW_USEDEFAULT, CW_USEDEFAULT,     /* default coordinates */
-                    CW_USEDEFAULT, CW_USEDEFAULT,
-                    hwnd,                                   /* parent window */
-                    NULL, GetModuleHandle(NULL),
-                    (LPVOID)p_vout );            /* send p_vout to WM_CREATE */
-
-        if( !p_vout->p_sys->hvideownd )
-            msg_Warn( p_vout, "can't create video sub-window" );
-        else
-            msg_Dbg( p_vout, "created video sub-window" );
-        break;
-
     case WM_PAINT:
     case WM_NCPAINT:
     case WM_ERASEBKGND:
         /* We do not want to relay these messages to the parent window
          * because we rely on the background color for the overlay. */
         return DefWindowProc(hwnd, message, wParam, lParam);
-        break;
 
     default:
         //msg_Dbg( p_vout, "WinProc WM Default %i", message );

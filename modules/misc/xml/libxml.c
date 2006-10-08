@@ -2,7 +2,7 @@
  * libxml.c: XML parser using libxml2
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: libxml.c 14958 2006-03-29 07:33:35Z fkuehne $
+ * $Id: libxml.c 16994 2006-10-08 14:40:02Z jpsaman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -120,9 +120,6 @@ static xml_reader_t *ReaderCreate( xml_t *p_xml, stream_t *p_stream )
     xml_reader_t *p_reader;
     xml_reader_sys_t *p_sys;
     xmlTextReaderPtr p_libxml_reader;
-    xmlParserInputBufferPtr p_read_context;
-
-    p_read_context = malloc( sizeof( xmlParserInputBuffer ) );
 
     p_libxml_reader = xmlReaderForIO( StreamRead, NULL, p_stream,
                                       NULL, NULL, 0 );
@@ -216,7 +213,7 @@ static char *ReaderName( xml_reader_t *p_reader )
     const xmlChar *psz_name =
         xmlTextReaderConstName( p_reader->p_sys->p_reader );
 
-    if( psz_name ) return strdup( psz_name );
+    if( psz_name ) return strdup( (const char *)psz_name );
     else return 0;
 }
 
@@ -225,7 +222,7 @@ static char *ReaderValue( xml_reader_t *p_reader )
     const xmlChar *psz_value =
         xmlTextReaderConstValue( p_reader->p_sys->p_reader );
 
-    if( psz_value ) return strdup( psz_value );
+    if( psz_value ) return strdup( (const char *)psz_value );
     else return 0;
 }
 

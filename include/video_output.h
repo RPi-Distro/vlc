@@ -2,7 +2,7 @@
  * video_output.h : video output thread
  *****************************************************************************
  * Copyright (C) 1999, 2000 the VideoLAN team
- * $Id: video_output.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: video_output.h 16931 2006-10-03 09:04:50Z damienf $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -260,7 +260,8 @@ enum output_query_e
     VOUT_REPARENT,
     VOUT_SNAPSHOT,
     VOUT_CLOSE,
-    VOUT_SET_FOCUS         /* arg1= vlc_bool_t       res=    */
+    VOUT_SET_FOCUS,         /* arg1= vlc_bool_t       res=    */
+    VOUT_SET_VIEWPORT      /* arg1= view rect, arg2=clip rect, res= */
 };
 
 /**

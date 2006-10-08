@@ -2,7 +2,7 @@
  * switcher.c: MPEG2 video switcher module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: switcher.c 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: switcher.c 16987 2006-10-08 12:54:12Z jpsaman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -162,7 +162,7 @@ struct sout_stream_id_t
     AVCodec         *ff_enc;
     AVCodecContext  *ff_enc_c;
     AVFrame         *p_frame;
-    char            *p_buffer_out;
+    uint8_t         *p_buffer_out;
     int             i_nb_pred;
     int16_t         *p_samples;
 };
@@ -650,7 +650,7 @@ static void NetCommand( sout_stream_t *p_stream )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     char psz_buffer[10];
-    int i_len = net_ReadNonBlock( p_stream, p_sys->i_fd, NULL, (char *)&psz_buffer[0],
+    int i_len = net_ReadNonBlock( p_stream, p_sys->i_fd, NULL, (uint8_t *)&psz_buffer[0],
                                   sizeof( psz_buffer ), 0 );
 
     if ( i_len > 0 )

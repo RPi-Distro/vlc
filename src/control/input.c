@@ -2,7 +2,7 @@
  * input.c: Libvlc new API input management functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: input.c 16767 2006-09-21 14:32:45Z hartman $
+ * $Id: input.c 16931 2006-10-03 09:04:50Z damienf $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -63,12 +63,12 @@ vlc_int64_t libvlc_input_get_length( libvlc_input_t *p_input,
     vlc_value_t val;
 
     p_input_thread = libvlc_get_input_thread ( p_input, p_e);
-    if( libvlc_exception_raised( p_e ) )  return -1.0;
+    if( libvlc_exception_raised( p_e ) )  return -1;
        
     var_Get( p_input_thread, "length", &val );
     vlc_object_release( p_input_thread );
 
-    return val.i_time / 1000;
+    return val.i_time / 1000LL;
 }
 
 vlc_int64_t libvlc_input_get_time( libvlc_input_t *p_input,
@@ -78,11 +78,11 @@ vlc_int64_t libvlc_input_get_time( libvlc_input_t *p_input,
     vlc_value_t val;
 
     p_input_thread = libvlc_get_input_thread ( p_input, p_e );
-    if( libvlc_exception_raised( p_e ) )  return -1.0;
+    if( libvlc_exception_raised( p_e ) )  return -1;
 
     var_Get( p_input_thread , "time", &val );
     vlc_object_release( p_input_thread );
-    return val.i_time / 1000;
+    return val.i_time / 1000LL;
 }
 
 void libvlc_input_set_time( libvlc_input_t *p_input, vlc_int64_t time,
@@ -94,7 +94,7 @@ void libvlc_input_set_time( libvlc_input_t *p_input, vlc_int64_t time,
     p_input_thread = libvlc_get_input_thread ( p_input, p_e );
     if( libvlc_exception_raised( p_e ) )  return;
     
-    value.i_time = time;
+    value.i_time = time*1000LL;
     var_Set( p_input_thread, "time", value );
     vlc_object_release( p_input_thread );
 }
@@ -165,3 +165,52 @@ vlc_bool_t libvlc_input_will_play( libvlc_input_t *p_input,
     vlc_object_release( p_input_thread );
     return VLC_FALSE;
 }
+
+void libvlc_input_set_rate( libvlc_input_t *p_input, float rate,
+                                libvlc_exception_t *p_e ) 
+{
+    input_thread_t *p_input_thread;
+    vlc_value_t val;
+
+    if( rate <= 0 )
+        RAISEVOID( "Rate value is invalid" );
+
+    val.i_int = 1000.0f/rate;
+    
+    p_input_thread = libvlc_get_input_thread ( p_input, p_e);
+    if ( libvlc_exception_raised( p_e ) ) return;
+
+    var_Set( p_input_thread, "rate", val );
+    vlc_object_release( p_input_thread );
+}
+
+float libvlc_input_get_rate( libvlc_input_t *p_input,
+                                 libvlc_exception_t *p_e )
+{
+    input_thread_t *p_input_thread;
+    vlc_value_t val;
+
+    p_input_thread = libvlc_get_input_thread ( p_input, p_e);
+    if ( libvlc_exception_raised( p_e ) )  return -1.0;
+
+    var_Get( p_input_thread, "rate", &val );
+    vlc_object_release( p_input_thread );
+
+    return (float)1000.0f/val.i_int;
+}
+
+int libvlc_input_get_state( libvlc_input_t *p_input,
+                                 libvlc_exception_t *p_e )
+{
+    input_thread_t *p_input_thread;
+    vlc_value_t val;
+
+    p_input_thread = libvlc_get_input_thread ( p_input, p_e);
+    if ( libvlc_exception_raised( p_e ) )  return 0;
+
+    var_Get( p_input_thread, "state", &val );
+    vlc_object_release( p_input_thread );
+
+    return val.i_int;
+}
+

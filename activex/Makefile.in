@@ -133,6 +133,8 @@ HAL_CFLAGS = @HAL_CFLAGS@
 HAL_LIBS = @HAL_LIBS@
 HAS_MIDL_COMPILER_FALSE = @HAS_MIDL_COMPILER_FALSE@
 HAS_MIDL_COMPILER_TRUE = @HAS_MIDL_COMPILER_TRUE@
+HAS_WIDL_COMPILER_FALSE = @HAS_WIDL_COMPILER_FALSE@
+HAS_WIDL_COMPILER_TRUE = @HAS_WIDL_COMPILER_TRUE@
 HAVE_BEOS_FALSE = @HAVE_BEOS_FALSE@
 HAVE_BEOS_TRUE = @HAVE_BEOS_TRUE@
 HAVE_BUILTINS_FALSE = @HAVE_BUILTINS_FALSE@
@@ -233,7 +235,9 @@ VERSION_MINOR = @VERSION_MINOR@
 VERSION_REVISION = @VERSION_REVISION@
 VLC_CONFIG = @VLC_CONFIG@
 VLC_ENTRY = @VLC_ENTRY@
+WIDL = @WIDL@
 WINDRES = @WINDRES@
+WINE_SDK_PATH = @WINE_SDK_PATH@
 WX_CONFIG = @WX_CONFIG@
 XGETTEXT = @XGETTEXT@
 XMKMF = @XMKMF@
@@ -334,6 +338,8 @@ SOURCES_activex = \
     viewobject.h \
     vlccontrol.cpp \
     vlccontrol.h \
+    vlccontrol2.cpp \
+    vlccontrol2.h \
     plugin.cpp \
     plugin.h \
     axvlc_idl.c \
@@ -359,7 +365,7 @@ DIST_misc = \
 
 @BUILD_SHARED_FALSE@LIBRARIES_libvlc = $(top_builddir)/src/libvlc.a
 
-@BUILD_SHARED_TRUE@LIBRARIES_libvlc = $(top_builddir)/src/libvlc.dll.a
+@BUILD_SHARED_TRUE@LIBRARIES_libvlc = $(top_builddir)/src/libvlc.dll
 
 @BUILD_ACTIVEX_TRUE@noinst_LIBRARIES_activex = libaxvlc.a
 @BUILD_ACTIVEX_TRUE@axvlc_DATA = axvlc$(LIBEXT)
@@ -370,7 +376,7 @@ DIST_misc = \
 @BUILD_ACTIVEX_TRUE@libaxvlc_a_SOURCES = $(SOURCES_activex) $(SOURCE_dll)
 @BUILD_ACTIVEX_TRUE@libaxvlc_a_CFLAGS = `$(VLC_CONFIG) --cflags activex`
 @BUILD_ACTIVEX_TRUE@libaxvlc_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags activex`
-@BUILD_ACTIVEX_TRUE@libaxvlc_a_DEPENDENCIES = axvlc.def $(DATA_axvlc_rc)
+@BUILD_ACTIVEX_TRUE@libaxvlc_a_DEPENDENCIES = axvlc.def $(DATA_axvlc_rc) $(LIBRARIES_libvlc)
 
 @BUILD_ACTIVEX_TRUE@DATA_axvlc_tlb = $(axvlc_tlb_DATA)
 @BUILD_ACTIVEX_TRUE@noinst_axvlc_tlb_DATA = axvlc.tlb
@@ -397,8 +403,8 @@ am__libaxvlc_a_SOURCES_DIST = main.cpp utils.cpp utils.h olecontrol.cpp \
 	provideclassinfo.h connectioncontainer.cpp \
 	connectioncontainer.h objectsafety.cpp objectsafety.h \
 	dataobject.cpp dataobject.h viewobject.cpp viewobject.h \
-	vlccontrol.cpp vlccontrol.h plugin.cpp plugin.h axvlc_idl.c \
-	axvlc_idl.h
+	vlccontrol.cpp vlccontrol.h vlccontrol2.cpp vlccontrol2.h \
+	plugin.cpp plugin.h axvlc_idl.c axvlc_idl.h
 am__objects_2 = libaxvlc_a-main.$(OBJEXT) libaxvlc_a-utils.$(OBJEXT) \
 	libaxvlc_a-olecontrol.$(OBJEXT) \
 	libaxvlc_a-oleinplaceactiveobject.$(OBJEXT) \
@@ -411,7 +417,8 @@ am__objects_2 = libaxvlc_a-main.$(OBJEXT) libaxvlc_a-utils.$(OBJEXT) \
 	libaxvlc_a-connectioncontainer.$(OBJEXT) \
 	libaxvlc_a-objectsafety.$(OBJEXT) \
 	libaxvlc_a-dataobject.$(OBJEXT) libaxvlc_a-viewobject.$(OBJEXT) \
-	libaxvlc_a-vlccontrol.$(OBJEXT) libaxvlc_a-plugin.$(OBJEXT) \
+	libaxvlc_a-vlccontrol.$(OBJEXT) \
+	libaxvlc_a-vlccontrol2.$(OBJEXT) libaxvlc_a-plugin.$(OBJEXT) \
 	libaxvlc_a-axvlc_idl.$(OBJEXT) $(am__objects_1)
 @BUILD_ACTIVEX_TRUE@am_libaxvlc_a_OBJECTS = $(am__objects_2) \
 @BUILD_ACTIVEX_TRUE@	$(am__objects_1)
@@ -436,7 +443,8 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-provideclassinfo.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-utils.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-viewobject.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-vlccontrol.Po
+@AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-vlccontrol.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-vlccontrol2.Po
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -501,6 +509,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-viewobject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-vlccontrol.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-vlccontrol2.Po@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
@@ -1096,6 +1105,39 @@ libaxvlc_a-vlccontrol.lo: vlccontrol.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libaxvlc_a-vlccontrol.lo `test -f 'vlccontrol.cpp' || echo '$(srcdir)/'`vlccontrol.cpp
 
+libaxvlc_a-vlccontrol2.o: vlccontrol2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libaxvlc_a-vlccontrol2.o -MD -MP -MF "$(DEPDIR)/libaxvlc_a-vlccontrol2.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libaxvlc_a-vlccontrol2.o `test -f 'vlccontrol2.cpp' || echo '$(srcdir)/'`vlccontrol2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaxvlc_a-vlccontrol2.Tpo" "$(DEPDIR)/libaxvlc_a-vlccontrol2.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libaxvlc_a-vlccontrol2.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlccontrol2.cpp' object='libaxvlc_a-vlccontrol2.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libaxvlc_a-vlccontrol2.Po' tmpdepfile='$(DEPDIR)/libaxvlc_a-vlccontrol2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libaxvlc_a-vlccontrol2.o `test -f 'vlccontrol2.cpp' || echo '$(srcdir)/'`vlccontrol2.cpp
+
+libaxvlc_a-vlccontrol2.obj: vlccontrol2.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libaxvlc_a-vlccontrol2.obj -MD -MP -MF "$(DEPDIR)/libaxvlc_a-vlccontrol2.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libaxvlc_a-vlccontrol2.obj `if test -f 'vlccontrol2.cpp'; then $(CYGPATH_W) 'vlccontrol2.cpp'; else $(CYGPATH_W) '$(srcdir)/vlccontrol2.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaxvlc_a-vlccontrol2.Tpo" "$(DEPDIR)/libaxvlc_a-vlccontrol2.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libaxvlc_a-vlccontrol2.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlccontrol2.cpp' object='libaxvlc_a-vlccontrol2.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libaxvlc_a-vlccontrol2.Po' tmpdepfile='$(DEPDIR)/libaxvlc_a-vlccontrol2.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libaxvlc_a-vlccontrol2.obj `if test -f 'vlccontrol2.cpp'; then $(CYGPATH_W) 'vlccontrol2.cpp'; else $(CYGPATH_W) '$(srcdir)/vlccontrol2.cpp'; fi`
+
+libaxvlc_a-vlccontrol2.lo: vlccontrol2.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libaxvlc_a-vlccontrol2.lo -MD -MP -MF "$(DEPDIR)/libaxvlc_a-vlccontrol2.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libaxvlc_a-vlccontrol2.lo `test -f 'vlccontrol2.cpp' || echo '$(srcdir)/'`vlccontrol2.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaxvlc_a-vlccontrol2.Tpo" "$(DEPDIR)/libaxvlc_a-vlccontrol2.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libaxvlc_a-vlccontrol2.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='vlccontrol2.cpp' object='libaxvlc_a-vlccontrol2.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libaxvlc_a-vlccontrol2.Plo' tmpdepfile='$(DEPDIR)/libaxvlc_a-vlccontrol2.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libaxvlc_a-vlccontrol2.lo `test -f 'vlccontrol2.cpp' || echo '$(srcdir)/'`vlccontrol2.cpp
+
 libaxvlc_a-plugin.o: plugin.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libaxvlc_a-plugin.o -MD -MP -MF "$(DEPDIR)/libaxvlc_a-plugin.Tpo" \
 @am__fastdepCXX_TRUE@	  -c -o libaxvlc_a-plugin.o `test -f 'plugin.cpp' || echo '$(srcdir)/'`plugin.cpp; \
@@ -1380,7 +1422,7 @@ uninstall-am: uninstall-axvlcDATA uninstall-info-am \
 
 
 @BUILD_ACTIVEX_TRUE@axvlc$(LIBEXT): $(libaxvlc_a_OBJECTS) \
-@BUILD_ACTIVEX_TRUE@	              $(libaxvlc_a_DEPENDENCIES) stamp-pic
+@BUILD_ACTIVEX_TRUE@	              $(libaxvlc_a_DEPENDENCIES) stamp-builtin
 @BUILD_ACTIVEX_TRUE@	$(CXXLINK) $(libaxvlc_a_OBJECTS) $(DATA_axvlc_rc) \
 @BUILD_ACTIVEX_TRUE@	$(srcdir)/axvlc.def \
 @BUILD_ACTIVEX_TRUE@	  $(LIBRARIES_libvlc) -shared $(LIBRARIES_libvlc) $(LDFLAGS_activex) \
@@ -1394,7 +1436,13 @@ uninstall-am: uninstall-axvlcDATA uninstall-info-am \
 @BUILD_ACTIVEX_TRUE@@HAS_MIDL_COMPILER_TRUE@clean-tlb:
 @BUILD_ACTIVEX_TRUE@@HAS_MIDL_COMPILER_TRUE@	rm -f axvlc.tlb axvlc_idl.c axvlc_idl.h
 
-@BUILD_ACTIVEX_TRUE@@HAS_MIDL_COMPILER_FALSE@clean-tlb:
+@BUILD_ACTIVEX_TRUE@@HAS_MIDL_COMPILER_FALSE@@HAS_WIDL_COMPILER_TRUE@axvlc.tlb axvlc_idl.c axvlc_idl.h: axvlc.idl
+@BUILD_ACTIVEX_TRUE@@HAS_MIDL_COMPILER_FALSE@@HAS_WIDL_COMPILER_TRUE@	$(WIDL) -I$(WINE_SDK_PATH)/include -tuh -T axvlc.tlb -U axvlc_idl.c -H axvlc_idl.h axvlc.idl
+
+@BUILD_ACTIVEX_TRUE@@HAS_MIDL_COMPILER_FALSE@@HAS_WIDL_COMPILER_TRUE@clean-tlb:
+@BUILD_ACTIVEX_TRUE@@HAS_MIDL_COMPILER_FALSE@@HAS_WIDL_COMPILER_TRUE@	rm -f axvlc.tlb axvlc_idl.c axvlc_idl.h
+
+@BUILD_ACTIVEX_TRUE@@HAS_MIDL_COMPILER_FALSE@@HAS_WIDL_COMPILER_FALSE@clean-tlb:
 @BUILD_ACTIVEX_TRUE@axvlc_rc.$(OBJEXT): axvlc_rc.rc inplace.bmp axvlc.tlb
 @BUILD_ACTIVEX_TRUE@	$(WINDRES) -DVERSION=$(VERSION) -DVERSION_NUMBER=`echo $(VERSION).0.0.0 | sed 's/[^0-9]*\([0-9]*\)[^.]*\.*\([0-9]*\)[^.]*\.*\([0-9]*\)[^.]*\.*\([0-9]*\).*/\1,\2,\3,\4/'` --include-dir $(srcdir) -i $< -o $@
 
@@ -1405,16 +1453,11 @@ uninstall-am: uninstall-axvlcDATA uninstall-info-am \
 ###############################################################################
 
 clean-stamp:
-	rm -f stamp-pic
+	rm -f stamp-builtin
 
-stamp-pic: FORCE
-	@for dep in "" `$(VLC_CONFIG) --target builtin`; do \
-	  if test "$${dep}" -nt "$(LIBRARIES_activex)"; then \
-	    rm -f $@; \
-	    break; \
-	  fi; \
-	done
-	@if test ! -f $@; then printf "" > $@; fi
+@BUILD_SHARED_TRUE@stamp-builtin:
+@BUILD_SHARED_FALSE@stamp-builtin: $(shell ${VLC_CONFIG} --target builtin)
+	@touch $@
 
 ###############################################################################
 # Clean rules
@@ -1424,9 +1467,8 @@ clean-local: clean-stamp clean-tlb
 	rm -f axvlc$(LIBEXT)
 
 ###############################################################################
-# Force rule
+# Force rules
 ###############################################################################
-FORCE:
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

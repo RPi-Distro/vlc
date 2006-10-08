@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>IFPkgDescriptionDescription</key>
-	<string>Safari and Firefox Plug-In for the VideoLAN VLC Multimedia player.</string>
+	<string>Internet browser Plug-In for the VideoLAN VLC Multimedia player.</string>
 	<key>IFPkgDescriptionTitle</key>
 	<string>VideoLAN VLC Internet Plug-In</string>
 </dict>

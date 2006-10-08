@@ -304,7 +304,7 @@ fi
 dnl
 dnl Gettext stuff
 dnl
-ALL_LINGUAS="ca cs da de en_GB es fr gl he hi hu it ja ka ko nl oc pt_BR ro ru sv tr zh_CN zh_TW"
+ALL_LINGUAS="ca cs da de en_GB es fr gl he hi hu it ja ka ko nl oc pt_BR ro ru sk sv tr zh_CN zh_TW"
 AM_GNU_GETTEXT_VERSION(0.11.5)
 AM_GNU_GETTEXT
 if test "${nls_cv_force_use_gnu_gettext}" = "yes"; then
@@ -5015,11 +5015,20 @@ dnl
 activex=false
 AC_ARG_ENABLE(activex,
   [  --enable-activex        build a vlc-based ActiveX control (default enabled on Win32)])
+AC_ARG_WITH(wine-sdk-path,
+  [    --with-wine-sdk-path=PATH path to wine sdk])
 if test "${enable_activex}" != "no"
 then
   if test "${SYS}" = "mingw32" -o "${SYS}" = "cygwin"
   then
-    AC_CHECK_PROGS(MIDL, [midl widl], no)
+    AC_CHECK_PROGS(MIDL, [midl], no)
+    if test "${with_wine_sdk_path}" != ""
+    then
+       WINE_SDK_PATH=${with_wine_sdk_path}
+       AC_PATH_PROG(WIDL, widl, no, [$WINE_SDK_PATH/bin:$WINE_SDK_PATH/tools/widl])
+    else
+       WIDL=no
+    fi
     AC_LANG_PUSH(C++)
     AC_CHECK_HEADERS(ole2.h olectl.h,
       [ VLC_ADD_CXXFLAGS([activex],[-fno-exceptions])
@@ -5039,6 +5048,8 @@ then
 fi
 AC_ARG_VAR(MIDL, [Microsoft IDL compiler (Win32 platform only)])
 AM_CONDITIONAL(HAS_MIDL_COMPILER, test "${MIDL}" != "no")
+AC_ARG_VAR(WIDL, [Wine IDL compiler (requires Wine SDK)])
+AM_CONDITIONAL(HAS_WIDL_COMPILER, test "${WIDL}" != "no")
 AM_CONDITIONAL(BUILD_ACTIVEX,${activex})
 
 dnl
@@ -5385,6 +5396,7 @@ AC_SUBST(ASM)
 AC_SUBST(MOC)
 AC_SUBST(WINDRES)
 AC_SUBST(MOZILLA_SDK_PATH)
+AC_SUBST(WINE_SDK_PATH)
 AC_SUBST(XPIDL)
 AC_SUBST(XPIDL_INCL)
 AC_SUBST(LIBEXT)

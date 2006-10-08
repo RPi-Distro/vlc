@@ -3,17 +3,17 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleGetInfoString</key>
-	<string>0.8.5, The VideoLAN Team, All Rights Reserved.</string>
+	<string>0.8.6, The VideoLAN Team, All Rights Reserved.</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.videolan.vlc</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.8.5</string>
+	<string>0.8.6</string>
 	<key>IFMajorVersion</key>
 	<integer>0</integer>
 	<key>IFMinorVersion</key>
-	<integer>8</integer>
+	<integer>86</integer>
 	<key>IFPkgFlagAllowBackRev</key>
-	<false/>
+	<true/>
 	<key>IFPkgFlagAuthorizationAction</key>
 	<string>AdminAuthorization</string>
 	<key>IFPkgFlagBackgroundAlignment</key>

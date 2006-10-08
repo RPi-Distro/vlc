@@ -2,7 +2,7 @@
  * old.c : Old playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: old.c 14377 2006-02-18 20:34:32Z courmisch $
+ * $Id: old.c 16994 2006-10-08 14:40:02Z jpsaman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -59,6 +59,12 @@ int E_(Import_Old)( vlc_object_t *p_this )
     p_demux->pf_demux = Demux;
 
     return VLC_SUCCESS;
+}
+
+void E_(Close_Old)( vlc_object_t *p_this )
+{
+    demux_t *p_demux = (demux_t *)p_this;
+    msg_Dbg( p_demux, "close old playlist file" );
 }
 
 static int Demux( demux_t *p_demux)
