@@ -1,3 +1,15 @@
+vlc (0.8.6-svn20061008.debian-1) unstable; urgency=high
+
+  * New upstream SVN snapshot. Fixes a heap smashing bug.
+  * debian/control:
+    + Build-depend on libgtk2.0-dev to work around #388521 (Closes: #391739).
+    + Replace XS-X-Vcs-Svn with -XS-Vcs-Svn.
+
+  * debian/patches/020_notify.diff:
+    + Fix notify support. Thanks to Christophe Mutricy.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun,  8 Oct 2006 18:54:30 +0200
+
 vlc (0.8.6-svn20061001.debian-4) unstable; urgency=low
 
   * Build-depend on libnotify and explicitly activate the libnotify plugin
