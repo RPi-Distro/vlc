@@ -2,7 +2,7 @@
  * distort.c : Misc video effects plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: distort.c 15002 2006-03-31 16:12:31Z fkuehne $
+ * $Id: distort.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -79,7 +79,7 @@ static char *mode_list_text[] = { N_("Wave"), N_("Ripple"), N_("Gradient"),
 
 vlc_module_begin();
     set_description( _("Distort video filter") );
-    set_shortname( N_( "Distortion" ));
+    set_shortname( _( "Distortion" ));
     set_capability( "video filter", 0 );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VFILTER );

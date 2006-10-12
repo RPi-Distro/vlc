@@ -1,4 +1,1697 @@
 ------------------------------------------------------------------------
+r17037 | funman | 2006-10-12 19:31:46 +0200 (Thu, 12 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/configure.ac
+
+Really finish to add Malay translation
+
+------------------------------------------------------------------------
+r17036 | funman | 2006-10-12 19:29:50 +0200 (Thu, 12 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/NEWS
+   M /branches/0.8.6/src/libvlc.h
+   M /branches/0.8.6/src/misc/darwin_specific.m
+
+Finish to add Malay translation
+
+------------------------------------------------------------------------
+r17034 | damienf | 2006-10-12 15:12:49 +0200 (Thu, 12 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/activex/Makefile.am
+
+- fix source distribution
+
+------------------------------------------------------------------------
+r17033 | funman | 2006-10-12 14:01:35 +0200 (Thu, 12 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/THANKS
+   A /branches/0.8.6/po/ms.po
+
+Added Malay translation
+
+------------------------------------------------------------------------
+r17025 | damienf | 2006-10-11 16:00:26 +0200 (Wed, 11 Oct 2006) | 2 lines
+Changed paths:
+   A /branches/0.8.6/activex/supporterrorinfo.cpp
+   A /branches/0.8.6/activex/supporterrorinfo.h
+   M /branches/0.8.6/modules/access/dshow/filter.cpp
+   M /branches/0.8.6/src/control/audio.c
+   M /branches/0.8.6/src/control/input.c
+
+- addendum to [17024], backport of [16946]
+
+------------------------------------------------------------------------
+r17024 | damienf | 2006-10-11 12:38:48 +0200 (Wed, 11 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/activex/Makefile.am
+   M /branches/0.8.6/activex/axvlc.idl
+   M /branches/0.8.6/activex/axvlc.tlb
+   M /branches/0.8.6/activex/axvlc_idl.h
+   M /branches/0.8.6/activex/plugin.cpp
+   M /branches/0.8.6/activex/plugin.h
+   M /branches/0.8.6/activex/vlccontrol2.cpp
+   M /branches/0.8.6/activex/vlccontrol2.h
+   M /branches/0.8.6/mozilla/control/npolibvlc.cpp
+
+- backport from trunk of [17018],[17006],[16944]
+
+------------------------------------------------------------------------
+r17022 | jpsaman | 2006-10-10 22:42:57 +0200 (Tue, 10 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/gui/macosx/voutgl.m
+
+Unbreak MacOS X (revert part of rev 16931)
+------------------------------------------------------------------------
+r17020 | fkuehne | 2006-10-10 20:33:26 +0200 (Tue, 10 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/access_output/http.c
+   M /branches/0.8.6/modules/access_output/udp.c
+   M /branches/0.8.6/modules/misc/growl.c
+   M /branches/0.8.6/modules/misc/msn.c
+
+* a couple of minor fixes (standardised abbreviations and trademarks can't be localised)
+------------------------------------------------------------------------
+r17017 | xtophe | 2006-10-10 10:52:27 +0200 (Tue, 10 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/audio_output/hd1000a.cpp
+
+yet another i18n fix
+
+------------------------------------------------------------------------
+r17015 | xtophe | 2006-10-10 10:38:37 +0200 (Tue, 10 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/access/dvb/access.c
+   M /branches/0.8.6/modules/audio_output/portaudio.c
+   M /branches/0.8.6/modules/gui/pda/pda.c
+   M /branches/0.8.6/modules/video_filter/osdmenu.c
+
+Oups. silly sed
+
+------------------------------------------------------------------------
+r17013 | xtophe | 2006-10-10 00:26:35 +0200 (Tue, 10 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/po/POTFILES.in
+   M /branches/0.8.6/po/ca.po
+   M /branches/0.8.6/po/cs.po
+   M /branches/0.8.6/po/da.po
+   M /branches/0.8.6/po/de.po
+   M /branches/0.8.6/po/en_GB.po
+   M /branches/0.8.6/po/es.po
+   M /branches/0.8.6/po/fr.po
+   M /branches/0.8.6/po/gl.po
+   M /branches/0.8.6/po/he.po
+   M /branches/0.8.6/po/hi.po
+   M /branches/0.8.6/po/hu.po
+   M /branches/0.8.6/po/it.po
+   M /branches/0.8.6/po/ja.po
+   M /branches/0.8.6/po/ka.po
+   M /branches/0.8.6/po/ko.po
+   M /branches/0.8.6/po/nl.po
+   M /branches/0.8.6/po/oc.po
+   M /branches/0.8.6/po/pt_BR.po
+   M /branches/0.8.6/po/ro.po
+   M /branches/0.8.6/po/ru.po
+   M /branches/0.8.6/po/sk.po
+   M /branches/0.8.6/po/sv.po
+   M /branches/0.8.6/po/tr.po
+   M /branches/0.8.6/po/vlc.pot
+   M /branches/0.8.6/po/zh_CN.po
+   M /branches/0.8.6/po/zh_TW.po
+
+make update-po
+
+------------------------------------------------------------------------
+r17012 | xtophe | 2006-10-10 00:11:32 +0200 (Tue, 10 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/access/cdda/cdda.c
+   M /branches/0.8.6/modules/access/dvb/access.c
+   M /branches/0.8.6/modules/access/screen/screen.c
+   M /branches/0.8.6/modules/access/vcdx/vcd.c
+   M /branches/0.8.6/modules/access_output/dummy.c
+   M /branches/0.8.6/modules/access_output/file.c
+   M /branches/0.8.6/modules/access_output/http.c
+   M /branches/0.8.6/modules/access_output/udp.c
+   M /branches/0.8.6/modules/audio_filter/channel_mixer/dolby.c
+   M /branches/0.8.6/modules/audio_filter/channel_mixer/headphone.c
+   M /branches/0.8.6/modules/audio_filter/equalizer.c
+   M /branches/0.8.6/modules/audio_filter/normvol.c
+   M /branches/0.8.6/modules/audio_filter/param_eq.c
+   M /branches/0.8.6/modules/audio_output/file.c
+   M /branches/0.8.6/modules/audio_output/portaudio.c
+   M /branches/0.8.6/modules/codec/svcdsub.c
+   M /branches/0.8.6/modules/demux/subtitle.c
+   M /branches/0.8.6/modules/gui/pda/pda.c
+   M /branches/0.8.6/modules/gui/wxwidgets/dialogs/preferences_widgets.cpp
+   M /branches/0.8.6/modules/gui/wxwidgets/dialogs.cpp
+   M /branches/0.8.6/modules/gui/wxwidgets/extrapanel.cpp
+   M /branches/0.8.6/modules/gui/wxwidgets/wxwidgets.cpp
+   M /branches/0.8.6/modules/misc/growl.c
+   M /branches/0.8.6/modules/misc/logger.c
+   M /branches/0.8.6/modules/misc/msn.c
+   M /branches/0.8.6/modules/misc/notify.c
+   M /branches/0.8.6/modules/video_filter/adjust.c
+   M /branches/0.8.6/modules/video_filter/clone.c
+   M /branches/0.8.6/modules/video_filter/crop.c
+   M /branches/0.8.6/modules/video_filter/deinterlace.c
+   M /branches/0.8.6/modules/video_filter/distort.c
+   M /branches/0.8.6/modules/video_filter/invert.c
+   M /branches/0.8.6/modules/video_filter/logo.c
+   M /branches/0.8.6/modules/video_filter/magnify.c
+   M /branches/0.8.6/modules/video_filter/marq.c
+   M /branches/0.8.6/modules/video_filter/mosaic.c
+   M /branches/0.8.6/modules/video_filter/motiondetect.c
+   M /branches/0.8.6/modules/video_filter/osdmenu.c
+   M /branches/0.8.6/modules/video_filter/time.c
+   M /branches/0.8.6/modules/video_filter/transform.c
+   M /branches/0.8.6/modules/video_filter/wall.c
+   M /branches/0.8.6/modules/video_output/snapshot.c
+   M /branches/0.8.6/src/interface/interface.c
+
+i18n fix. Thanks to Marian Hikanik for pointing the bugs.
+
+------------------------------------------------------------------------
+r17011 | Trax | 2006-10-09 21:17:26 +0200 (Mon, 09 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/codec/x264.c
+
+* backported [17009],[17010] modules/codec/x264.c: x264 options.
+------------------------------------------------------------------------
+r17005 | jpsaman | 2006-10-09 00:21:22 +0200 (Mon, 09 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/src/libvlc.c
+
+Revert part 16931 related to src/libvlc.c, because it causes x11/xvideo to crash on linux
+------------------------------------------------------------------------
+r16995 | jpsaman | 2006-10-08 17:09:27 +0200 (Sun, 08 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/demux/playlist/xspf.c
+
+Oops typo
+------------------------------------------------------------------------
+r16994 | jpsaman | 2006-10-08 16:40:02 +0200 (Sun, 08 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/demux/mp4/libmp4.c
+   M /branches/0.8.6/modules/demux/playlist/old.c
+   M /branches/0.8.6/modules/demux/playlist/playlist.c
+   M /branches/0.8.6/modules/demux/playlist/playlist.h
+   M /branches/0.8.6/modules/demux/playlist/xspf.c
+   M /branches/0.8.6/modules/demux/playlist/xspf.h
+   M /branches/0.8.6/modules/gui/wxwidgets/dialogs/playlist.cpp
+   M /branches/0.8.6/modules/misc/xml/libxml.c
+   M /branches/0.8.6/src/input/input.c
+
+Backport of rev 16972 (fixed bunch of memory leaks)
+------------------------------------------------------------------------
+r16993 | jpsaman | 2006-10-08 16:17:51 +0200 (Sun, 08 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/demux/mp4/drms.c
+
+Fix signedness compiler warning
+------------------------------------------------------------------------
+r16991 | xtophe | 2006-10-08 15:52:09 +0200 (Sun, 08 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/configure.ac
+
+Forgot that with [16988]
+
+------------------------------------------------------------------------
+r16990 | xtophe | 2006-10-08 15:35:21 +0200 (Sun, 08 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/THANKS
+
+fix utf8
+
+------------------------------------------------------------------------
+r16988 | xtophe | 2006-10-08 15:07:41 +0200 (Sun, 08 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/NEWS
+   M /branches/0.8.6/THANKS
+   A /branches/0.8.6/po/sk.po
+   M /branches/0.8.6/src/libvlc.h
+   M /branches/0.8.6/src/misc/darwin_specific.m
+
+Add Slovak localisation by  Marian Hikanik. Many thanks to him
+
+------------------------------------------------------------------------
+r16987 | jpsaman | 2006-10-08 14:54:12 +0200 (Sun, 08 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/codec/dts.c
+   M /branches/0.8.6/modules/codec/ffmpeg/demux.c
+   M /branches/0.8.6/modules/codec/x264.c
+   M /branches/0.8.6/modules/demux/avi/avi.c
+   M /branches/0.8.6/modules/demux/mjpeg.c
+   M /branches/0.8.6/modules/demux/mp4/drms.c
+   M /branches/0.8.6/modules/demux/mp4/libmp4.c
+   M /branches/0.8.6/modules/demux/mp4/mp4.c
+   M /branches/0.8.6/modules/demux/real.c
+   M /branches/0.8.6/modules/gui/wxwidgets/dialogs/playlist.cpp
+   M /branches/0.8.6/modules/misc/freetype.c
+   M /branches/0.8.6/modules/misc/rtsp.c
+   M /branches/0.8.6/modules/stream_out/mosaic_bridge.c
+   M /branches/0.8.6/modules/stream_out/switcher.c
+   M /branches/0.8.6/modules/video_chroma/i420_rgb8.c
+   M /branches/0.8.6/modules/video_output/sdl.c
+   M /branches/0.8.6/modules/video_output/x11/glx.c
+
+Fix a bunch of signedness warnings
+------------------------------------------------------------------------
+r16986 | jpsaman | 2006-10-08 14:37:14 +0200 (Sun, 08 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/stream_out/rtp.c
+
+Fix uninitialzed warnings and implicit unlink declaration
+------------------------------------------------------------------------
+r16985 | jpsaman | 2006-10-08 14:28:17 +0200 (Sun, 08 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/gui/skins2/src/skin_main.cpp
+
+Put ifdef WIN32 around functions only used for Windows
+------------------------------------------------------------------------
+r16984 | jpsaman | 2006-10-08 14:14:56 +0200 (Sun, 08 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/control/rc.c
+
+Fix unintialised variable warning
+------------------------------------------------------------------------
+r16983 | jpsaman | 2006-10-08 14:14:05 +0200 (Sun, 08 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/demux/live555.cpp
+
+Remove unused label
+------------------------------------------------------------------------
+r16982 | jpsaman | 2006-10-08 13:56:06 +0200 (Sun, 08 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/codec/flac.c
+
+Fix signed warning
+------------------------------------------------------------------------
+r16977 | jpsaman | 2006-10-08 11:41:25 +0200 (Sun, 08 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/video_output/x11/xcommon.c
+   M /branches/0.8.6/modules/video_output/x11/xcommon.h
+
+Fix bunch of compiler signedness warnings in x11/
+------------------------------------------------------------------------
+r16967 | hartman | 2006-10-07 18:29:34 +0200 (Sat, 07 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/include/vlc/libvlc.h
+
+* Remove X11 dependancy in the core from Branch. 
+
+------------------------------------------------------------------------
+r16966 | hartman | 2006-10-07 18:09:45 +0200 (Sat, 07 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/demux/playlist/xspf.c
+
+* unescape_URI -> decode_URI This is a "backport" of [16879] 
+
+------------------------------------------------------------------------
+r16965 | hartman | 2006-10-07 18:02:30 +0200 (Sat, 07 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/demux/mpeg/h264.c
+   M /branches/0.8.6/modules/demux/mpeg/m4v.c
+   M /branches/0.8.6/src/input/demux.c
+   M /branches/0.8.6/src/misc/modules.c
+
+* backport [16958] h264 and m4v detection fix
+
+------------------------------------------------------------------------
+r16964 | hartman | 2006-10-07 17:59:59 +0200 (Sat, 07 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/codec/faad.c
+
+* backport [16957] AAC SBR/PS fix
+
+------------------------------------------------------------------------
+r16963 | hartman | 2006-10-07 17:58:42 +0200 (Sat, 07 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/codec/x264.c
+
+backport [16929] (x264 interlaced options)
+
+------------------------------------------------------------------------
+r16962 | hartman | 2006-10-07 17:30:51 +0200 (Sat, 07 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/codec/mpeg_audio.c
+
+* backport the libmad fix [16933]
+
+------------------------------------------------------------------------
+r16961 | hartman | 2006-10-07 17:29:34 +0200 (Sat, 07 Oct 2006) | 3 lines
+Changed paths:
+   M /branches/0.8.6/extras/contrib/src/Makefile
+   A /branches/0.8.6/extras/contrib/src/Patches/goom2k4-0-mmx.patch (from /trunk/extras/contrib/src/Patches/goom2k4-0-mmx.patch:16926)
+
+* Backport [16925] (goom2k MMX patch)
+* Enabled x264 contrib
+
+------------------------------------------------------------------------
+r16956 | funman | 2006-10-05 18:41:21 +0200 (Thu, 05 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/control/http/http.c
+
+Backport 16954 from trunk
+
+------------------------------------------------------------------------
+r16953 | funman | 2006-10-05 18:20:44 +0200 (Thu, 05 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/control/http/http.c
+
+Fix "Fix httpd stack corruption"
+
+------------------------------------------------------------------------
+r16950 | funman | 2006-10-05 18:07:51 +0200 (Thu, 05 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/control/http/http.c
+
+remove duplicate comment
+
+------------------------------------------------------------------------
+r16949 | funman | 2006-10-05 18:02:37 +0200 (Thu, 05 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/control/http/http.c
+
+Fix stack corruption in httpd
+
+------------------------------------------------------------------------
+r16939 | sam | 2006-10-04 19:12:43 +0200 (Wed, 04 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/misc/logger.c
+
+  * modules/misc/logger.c: don't truncate logfile upon creation.
+
+------------------------------------------------------------------------
+r16937 | fkuehne | 2006-10-04 15:43:34 +0200 (Wed, 04 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/codec/x264.c
+
+* nope, you didn't see anything
+------------------------------------------------------------------------
+r16936 | fkuehne | 2006-10-04 11:09:19 +0200 (Wed, 04 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/codec/x264.c
+
+* temporarily fix x264 encoding on darwin/x86 by disabling all CPU optimisations
+------------------------------------------------------------------------
+r16934 | funman | 2006-10-04 05:47:39 +0200 (Wed, 04 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/po/fr.po
+
+typo in french translation
+
+------------------------------------------------------------------------
+r16931 | damienf | 2006-10-03 11:04:50 +0200 (Tue, 03 Oct 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/Makefile.am
+   M /branches/0.8.6/activex/Makefile.am
+   M /branches/0.8.6/activex/axvlc.idl
+   M /branches/0.8.6/activex/axvlc.inf.in
+   M /branches/0.8.6/activex/axvlc.tlb
+   M /branches/0.8.6/activex/axvlc_idl.c
+   M /branches/0.8.6/activex/axvlc_idl.h
+   M /branches/0.8.6/activex/connectioncontainer.cpp
+   M /branches/0.8.6/activex/connectioncontainer.h
+   M /branches/0.8.6/activex/dataobject.cpp
+   A /branches/0.8.6/activex/guiddef.h
+   M /branches/0.8.6/activex/main.cpp
+   M /branches/0.8.6/activex/persistpropbag.cpp
+   M /branches/0.8.6/activex/plugin.cpp
+   M /branches/0.8.6/activex/plugin.h
+   M /branches/0.8.6/activex/test.html
+   M /branches/0.8.6/activex/utils.cpp
+   M /branches/0.8.6/activex/utils.h
+   M /branches/0.8.6/activex/vlccontrol.cpp
+   M /branches/0.8.6/activex/vlccontrol.h
+   A /branches/0.8.6/activex/vlccontrol2.cpp
+   A /branches/0.8.6/activex/vlccontrol2.h
+   M /branches/0.8.6/bootstrap
+   M /branches/0.8.6/configure.ac
+   M /branches/0.8.6/extras/MacOSX/plugin/Info.plist
+   M /branches/0.8.6/extras/MacOSX/plugin/InstallerDescription.plist
+   M /branches/0.8.6/extras/MacOSX/plugin/InstallerInfo.plist
+   M /branches/0.8.6/extras/contrib/src/Patches/x264-svn-win32.patch
+   M /branches/0.8.6/include/video_output.h
+   M /branches/0.8.6/include/vlc/libvlc.h
+   M /branches/0.8.6/include/vlc_input.h
+   M /branches/0.8.6/modules/access/dshow/common.h
+   M /branches/0.8.6/modules/access/dshow/filter.h
+   M /branches/0.8.6/modules/gui/macosx/voutgl.m
+   M /branches/0.8.6/modules/video_output/directx/directx.c
+   M /branches/0.8.6/modules/video_output/directx/events.c
+   M /branches/0.8.6/modules/video_output/directx/glwin32.c
+   M /branches/0.8.6/modules/video_output/directx/vout.h
+   M /branches/0.8.6/mozilla/Makefile.am
+   A /branches/0.8.6/mozilla/control
+   A /branches/0.8.6/mozilla/control/npolibvlc.cpp
+   A /branches/0.8.6/mozilla/control/npolibvlc.h
+   A /branches/0.8.6/mozilla/control/nporuntime.cpp
+   A /branches/0.8.6/mozilla/control/nporuntime.h
+   A /branches/0.8.6/mozilla/control/npovlc.cpp
+   A /branches/0.8.6/mozilla/control/npovlc.h
+   M /branches/0.8.6/mozilla/npvlc_rc.rc
+   M /branches/0.8.6/mozilla/support/npmac.cpp
+   A /branches/0.8.6/mozilla/test.html
+   M /branches/0.8.6/mozilla/vlc.r
+   M /branches/0.8.6/mozilla/vlcplugin.cpp
+   M /branches/0.8.6/mozilla/vlcplugin.h
+   D /branches/0.8.6/mozilla/vlcruntime.cpp
+   D /branches/0.8.6/mozilla/vlcruntime.h
+   M /branches/0.8.6/mozilla/vlcshell.cpp
+   M /branches/0.8.6/src/control/input.c
+   M /branches/0.8.6/src/control/video.c
+   M /branches/0.8.6/src/input/input.c
+   M /branches/0.8.6/src/input/input_internal.h
+   M /branches/0.8.6/src/libvlc.c
+   M /branches/0.8.6/toolbox
+   M /branches/0.8.6/vlc.spec
+   M /branches/0.8.6/vlc.win32.nsi.in
+
+- backport from trunk of all the plugins work and some other nice to have changes
+
+------------------------------------------------------------------------
+r16908 | jpsaman | 2006-10-01 16:17:25 +0200 (Sun, 01 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/THANKS
+
+(forward port from trunk) OFforgot the put Ye Zhang in Thanks file.
+------------------------------------------------------------------------
+r16906 | jpsaman | 2006-10-01 16:15:23 +0200 (Sun, 01 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/src/misc/vlm.c
+
+Forward port of revision 16905
+------------------------------------------------------------------------
+r16902 | fkuehne | 2006-10-01 13:02:00 +0200 (Sun, 01 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/extras/MacOSX/Resources/English.lproj/MainMenu.nib/classes.nib
+   M /branches/0.8.6/extras/MacOSX/Resources/English.lproj/MainMenu.nib/info.nib
+   M /branches/0.8.6/extras/MacOSX/Resources/English.lproj/MainMenu.nib/keyedobjects.nib
+   M /branches/0.8.6/modules/gui/macosx/interaction.m
+
+* fix the messages panel and bring back the old error panel
+------------------------------------------------------------------------
+r16901 | fkuehne | 2006-10-01 12:54:22 +0200 (Sun, 01 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/gui/macosx/playlist.m
+
+* backport my compiler warning fix when using Apple's private API
+------------------------------------------------------------------------
+r16900 | fkuehne | 2006-10-01 12:20:20 +0200 (Sun, 01 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/extras/MacOSX/Resources/English.lproj/MainMenu.nib/classes.nib
+   M /branches/0.8.6/extras/MacOSX/Resources/English.lproj/MainMenu.nib/info.nib
+   M /branches/0.8.6/extras/MacOSX/Resources/English.lproj/MainMenu.nib/keyedobjects.nib
+
+* backport a modified version of [16346] to fix most nib problems. Please note that the error panel doesn't exist yet and that o_msg_panel can't be displayed atm.
+------------------------------------------------------------------------
+r16899 | fkuehne | 2006-10-01 12:18:25 +0200 (Sun, 01 Oct 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/modules/gui/macosx/interaction.m
+
+* few small backports to prettify this interaction implementation a bit
+------------------------------------------------------------------------
+r16885 | fkuehne | 2006-09-30 14:47:51 +0200 (Sat, 30 Sep 2006) | 1 line
+Changed paths:
+   M /branches/0.8.6/extras/contrib/src/Patches/dvdnav.patch
+   M /branches/0.8.6/extras/contrib/src/packages.mak
+
+* backport DJ's commits [16883] and [16884]
+------------------------------------------------------------------------
+r16876 | thresh | 2006-09-28 17:46:15 +0200 (Thu, 28 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/gui/skins2/src/vlcproc.cpp
+   M /branches/0.8.6/modules/gui/wxwidgets/video.cpp
+   M /branches/0.8.6/modules/video_output/x11/xcommon.c
+
+backport [16272]
+
+------------------------------------------------------------------------
+r16869 | thresh | 2006-09-26 23:07:43 +0200 (Tue, 26 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/control/http/mvar.c
+
+backport [15480] too
+
+------------------------------------------------------------------------
+r16862 | xtophe | 2006-09-26 15:56:46 +0200 (Tue, 26 Sep 2006) | 2 lines
+Changed paths:
+   D /branches/0.8.6/modules/demux/livedotcom.cpp
+   M /branches/0.8.6/po/POTFILES.in
+   M /branches/0.8.6/po/ca.po
+   M /branches/0.8.6/po/cs.po
+   M /branches/0.8.6/po/da.po
+   M /branches/0.8.6/po/de.po
+   M /branches/0.8.6/po/en_GB.po
+   M /branches/0.8.6/po/es.po
+   M /branches/0.8.6/po/fr.po
+   M /branches/0.8.6/po/gl.po
+   M /branches/0.8.6/po/he.po
+   M /branches/0.8.6/po/hi.po
+   M /branches/0.8.6/po/hu.po
+   M /branches/0.8.6/po/it.po
+   M /branches/0.8.6/po/ja.po
+   M /branches/0.8.6/po/ka.po
+   M /branches/0.8.6/po/ko.po
+   M /branches/0.8.6/po/nl.po
+   M /branches/0.8.6/po/oc.po
+   M /branches/0.8.6/po/pt_BR.po
+   M /branches/0.8.6/po/ro.po
+   M /branches/0.8.6/po/ru.po
+   M /branches/0.8.6/po/sv.po
+   M /branches/0.8.6/po/tr.po
+   M /branches/0.8.6/po/vlc.pot
+   M /branches/0.8.6/po/zh_CN.po
+   M /branches/0.8.6/po/zh_TW.po
+
+Somehow the old modules/demux/livedotcom.cpp get left behind. delete it and run make update-po.  Make distcheck run fine for 0.8.6.
+
+------------------------------------------------------------------------
+r16844 | sam | 2006-09-25 13:47:35 +0200 (Mon, 25 Sep 2006) | 3 lines
+Changed paths:
+   M /branches/0.8.6/modules/gui/skins2/parser/skin_parser.cpp
+
+  * modules/gui/skins2/parser/skin_parser.cpp: get code in sync with other
+    changes.
+
+------------------------------------------------------------------------
+r16801 | thresh | 2006-09-23 13:13:16 +0200 (Sat, 23 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/codec/ffmpeg/ffmpeg.c
+
+backport [16800] : add fourcc X264.
+
+------------------------------------------------------------------------
+r16799 | xtophe | 2006-09-23 02:17:32 +0200 (Sat, 23 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/po/POTFILES.in
+   M /branches/0.8.6/po/ca.po
+   M /branches/0.8.6/po/cs.po
+   M /branches/0.8.6/po/da.po
+   M /branches/0.8.6/po/de.po
+   M /branches/0.8.6/po/en_GB.po
+   M /branches/0.8.6/po/es.po
+   M /branches/0.8.6/po/fr.po
+   M /branches/0.8.6/po/gl.po
+   M /branches/0.8.6/po/he.po
+   M /branches/0.8.6/po/hi.po
+   M /branches/0.8.6/po/hu.po
+   M /branches/0.8.6/po/it.po
+   M /branches/0.8.6/po/ja.po
+   M /branches/0.8.6/po/ka.po
+   M /branches/0.8.6/po/ko.po
+   M /branches/0.8.6/po/nl.po
+   M /branches/0.8.6/po/oc.po
+   M /branches/0.8.6/po/pt_BR.po
+   M /branches/0.8.6/po/ro.po
+   M /branches/0.8.6/po/ru.po
+   M /branches/0.8.6/po/sv.po
+   M /branches/0.8.6/po/tr.po
+   M /branches/0.8.6/po/vlc.pot
+   M /branches/0.8.6/po/zh_CN.po
+   M /branches/0.8.6/po/zh_TW.po
+
+Make update-po
+
+------------------------------------------------------------------------
+r16798 | xtophe | 2006-09-23 01:56:12 +0200 (Sat, 23 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/include/vlc_config_cat.h
+   M /branches/0.8.6/modules/codec/ffmpeg/ffmpeg.h
+   M /branches/0.8.6/modules/codec/svcdsub.c
+   M /branches/0.8.6/modules/gui/wxwidgets/dialogs/bookmarks.cpp
+   M /branches/0.8.6/modules/gui/wxwidgets/dialogs/fileinfo.cpp
+   M /branches/0.8.6/modules/gui/wxwidgets/dialogs/preferences.cpp
+   M /branches/0.8.6/modules/gui/wxwidgets/dialogs/preferences_widgets.cpp
+
+Backports [16795] and [16796] - i18n fixes
+
+------------------------------------------------------------------------
+r16778 | hartman | 2006-09-22 01:56:47 +0200 (Fri, 22 Sep 2006) | 3 lines
+Changed paths:
+   M /branches/0.8.6/doc/skins/skins2-howto.xml
+   M /branches/0.8.6/modules/gui/skins2/parser/builder.cpp
+   M /branches/0.8.6/modules/gui/skins2/parser/builder.hpp
+   M /branches/0.8.6/modules/gui/skins2/parser/builder_data.def
+   M /branches/0.8.6/modules/gui/skins2/parser/builder_data.hpp
+   M /branches/0.8.6/modules/gui/skins2/parser/skin_parser.cpp
+   M /branches/0.8.6/modules/gui/skins2/utils/position.cpp
+   M /branches/0.8.6/modules/gui/skins2/utils/position.hpp
+   M /branches/0.8.6/share/skins2/skin.dtd
+
+* backport [16210]. which was ommitted earlier.
+  xkeepratio and ykeepratio for skins2 
+
+------------------------------------------------------------------------
+r16776 | xtophe | 2006-09-21 23:56:22 +0200 (Thu, 21 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/control/http/http.c
+
+Backport [16653] (fix for #740)
+
+------------------------------------------------------------------------
+r16775 | hartman | 2006-09-21 22:35:23 +0200 (Thu, 21 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/include/vlc_symbols.h
+   M /branches/0.8.6/modules/codec/ffmpeg/encoder.c
+   M /branches/0.8.6/modules/misc/gnutls.c
+   M /branches/0.8.6/src/video_output/video_output.c
+
+* Fix the branch
+
+------------------------------------------------------------------------
+r16774 | hartman | 2006-09-21 21:29:10 +0200 (Thu, 21 Sep 2006) | 21 lines
+Changed paths:
+   M /branches/0.8.6/THANKS
+   M /branches/0.8.6/configure.ac
+   M /branches/0.8.6/include/vlc_spu.h
+   M /branches/0.8.6/include/vlc_symbols.h
+   M /branches/0.8.6/include/vlc_video.h
+   M /branches/0.8.6/modules/access/ftp.c
+   M /branches/0.8.6/modules/access/http.c
+   M /branches/0.8.6/modules/codec/cvdsub.c
+   M /branches/0.8.6/modules/codec/spudec/parse.c
+   M /branches/0.8.6/modules/codec/subsdec.c
+   M /branches/0.8.6/modules/codec/svcdsub.c
+   M /branches/0.8.6/modules/control/corba/Modules.am
+   M /branches/0.8.6/modules/control/rc.c
+   M /branches/0.8.6/modules/gui/macosx/controls.m
+   M /branches/0.8.6/modules/gui/wxwidgets/menus.cpp
+   M /branches/0.8.6/modules/misc/gnutls.c
+   M /branches/0.8.6/modules/misc/rtsp.c
+   M /branches/0.8.6/modules/stream_out/rtp.c
+   M /branches/0.8.6/modules/stream_out/transcode.c
+   M /branches/0.8.6/share/Makefile.am
+   M /branches/0.8.6/src/misc/unicode.c
+   M /branches/0.8.6/src/network/httpd.c
+   M /branches/0.8.6/src/stream_output/sap.c
+   M /branches/0.8.6/src/video_output/video_output.c
+   M /branches/0.8.6/src/video_output/vout_intf.c
+   M /branches/0.8.6/src/video_output/vout_subpictures.c
+
+* End of backports:
+  [16483],[16485],[16488],[16492],[16493],[16495],[16496],[16503],[16507],[16526],[16536]-[16538],[16545],[16558],[16562]-[16566]
+
+  skipped:
+  play-and-exit 16489
+  seamonkeyconfig 507
+  intermediate state 513,514,515,517,519
+  opencv: 533
+  mozilla: 516
+  dscp
+  network rewrites: 546-552,577,578
+  duration calculation: 540,541
+
+  To Do:
+  - Finish the plugin backports: Quovodis
+  - Check skins2 (ipkiss? )
+  - Fix the .nibs
+  - Check stability
+
+  I advise everyone who has done some work lately, to check their 'own' areas, i might have missed something important. 
+
+------------------------------------------------------------------------
+r16773 | hartman | 2006-09-21 20:46:25 +0200 (Thu, 21 Sep 2006) | 6 lines
+Changed paths:
+   M /branches/0.8.6/AUTHORS
+   M /branches/0.8.6/configure.ac
+   M /branches/0.8.6/doc/Makefile.am
+   M /branches/0.8.6/include/libvlc_internal.h
+   M /branches/0.8.6/include/vlc_common.h
+   M /branches/0.8.6/include/vlc_es.h
+   M /branches/0.8.6/include/vlc_symbols.h
+   M /branches/0.8.6/include/vlc_url.h
+   M /branches/0.8.6/modules/access/directory.c
+   M /branches/0.8.6/modules/codec/ffmpeg/encoder.c
+   M /branches/0.8.6/modules/demux/mkv.cpp
+   M /branches/0.8.6/modules/demux/mp4/mp4.c
+   M /branches/0.8.6/modules/demux/subtitle.c
+   M /branches/0.8.6/modules/gui/beos/InterfaceWindow.cpp
+   M /branches/0.8.6/modules/gui/macosx/intf.m
+   M /branches/0.8.6/modules/gui/skins2/parser/interpreter.cpp
+   M /branches/0.8.6/modules/gui/skins2/src/top_window.cpp
+   M /branches/0.8.6/modules/gui/skins2/win32/win32_dragdrop.cpp
+   M /branches/0.8.6/modules/misc/playlist/xspf.c
+   M /branches/0.8.6/modules/packetizer/h264.c
+   M /branches/0.8.6/modules/stream_out/mosaic_bridge.c
+   M /branches/0.8.6/modules/stream_out/switcher.c
+   M /branches/0.8.6/modules/stream_out/transcode.c
+   M /branches/0.8.6/src/network/rootwrap.c
+   M /branches/0.8.6/src/osd/osd_parser.c
+   M /branches/0.8.6/src/test/url.c
+
+* More backports:
+  [16302]-[16304],[16310],[16317],[16323],[16325],[16327],[16329],[16330]-[16332],[16335],[16344],[16345],[16349],[16350],[16390]-[16394],[16406],[16422],[16423],[16427]-[16429],[16432],[16433],[16437],[16443],[16452],[16453],[16465],[16466],[16475],[16477]
+
+  Skipped some mozilla stuff: 16376,16395,402,403,416,417,418,426,435,440,470,471
+  Skipped v4l2, mono filter
+
+------------------------------------------------------------------------
+r16771 | sam | 2006-09-21 17:52:00 +0200 (Thu, 21 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/src/input/decoder.c
+   M /branches/0.8.6/src/input/input.c
+
+  * "synch" -> "sync" (gniihiihiimineeeeerveuh)
+
+------------------------------------------------------------------------
+r16769 | hartman | 2006-09-21 17:14:47 +0200 (Thu, 21 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/control/rc.c
+
+* fix rc backport 
+
+------------------------------------------------------------------------
+r16768 | hartman | 2006-09-21 16:34:11 +0200 (Thu, 21 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/modules/demux/live555.cpp
+
+* remove interaction from the update
+
+------------------------------------------------------------------------
+r16767 | hartman | 2006-09-21 16:32:45 +0200 (Thu, 21 Sep 2006) | 9 lines
+Changed paths:
+   M /branches/0.8.6/THANKS
+   M /branches/0.8.6/activex/utils.cpp
+   M /branches/0.8.6/configure.ac
+   M /branches/0.8.6/doc/skins/skins2-howto.xml
+   M /branches/0.8.6/extras/MacOSX/Resources/English.lproj/MainMenu.nib/classes.nib
+   M /branches/0.8.6/include/libvlc_internal.h
+   M /branches/0.8.6/include/vlc/libvlc.h
+   M /branches/0.8.6/modules/access/directory.c
+   M /branches/0.8.6/modules/access/file.c
+   M /branches/0.8.6/modules/control/rc.c
+   M /branches/0.8.6/modules/demux/live555.cpp
+   M /branches/0.8.6/modules/demux/mkv.cpp
+   M /branches/0.8.6/modules/demux/mp4/mp4.c
+   M /branches/0.8.6/modules/demux/ps.c
+   M /branches/0.8.6/modules/gui/macosx/AppleRemote.h
+   M /branches/0.8.6/modules/gui/macosx/AppleRemote.m
+   M /branches/0.8.6/modules/gui/macosx/intf.m
+   M /branches/0.8.6/modules/gui/macosx/vout.m
+   M /branches/0.8.6/modules/gui/skins2/controls/ctrl_image.cpp
+   M /branches/0.8.6/modules/gui/skins2/controls/ctrl_move.cpp
+   M /branches/0.8.6/modules/gui/skins2/controls/ctrl_move.hpp
+   M /branches/0.8.6/modules/gui/skins2/controls/ctrl_resize.cpp
+   M /branches/0.8.6/modules/gui/skins2/controls/ctrl_resize.hpp
+   M /branches/0.8.6/modules/gui/skins2/controls/ctrl_slider.cpp
+   M /branches/0.8.6/modules/gui/skins2/controls/ctrl_slider.hpp
+   M /branches/0.8.6/modules/gui/skins2/controls/ctrl_text.cpp
+   M /branches/0.8.6/modules/gui/skins2/controls/ctrl_text.hpp
+   M /branches/0.8.6/modules/gui/skins2/parser/builder.cpp
+   M /branches/0.8.6/modules/gui/skins2/parser/interpreter.cpp
+   M /branches/0.8.6/modules/gui/skins2/src/scaled_bitmap.cpp
+   M /branches/0.8.6/modules/gui/skins2/src/skin_main.cpp
+   M /branches/0.8.6/modules/mux/mp4.c
+   M /branches/0.8.6/modules/packetizer/h264.c
+   M /branches/0.8.6/modules/services_discovery/upnp_intel.cpp
+   M /branches/0.8.6/modules/stream_out/bridge.c
+   M /branches/0.8.6/modules/stream_out/rtp.c
+   M /branches/0.8.6/modules/stream_out/transcode.c
+   M /branches/0.8.6/modules/video_filter/logo.c
+   M /branches/0.8.6/modules/video_filter/marq.c
+   M /branches/0.8.6/modules/video_filter/time.c
+   M /branches/0.8.6/modules/video_output/x11/xcommon.c
+   M /branches/0.8.6/share/http/index.html
+   M /branches/0.8.6/src/control/audio.c
+   M /branches/0.8.6/src/control/core.c
+   M /branches/0.8.6/src/control/input.c
+   M /branches/0.8.6/src/control/playlist.c
+   M /branches/0.8.6/src/control/video.c
+   M /branches/0.8.6/src/input/decoder.c
+   M /branches/0.8.6/src/input/input.c
+   M /branches/0.8.6/src/misc/image.c
+   M /branches/0.8.6/src/misc/messages.c
+
+* More backports:
+  [16148],[16177]-[16179],[16181],[16184],[16188],[16189],[16191],[16206],[16222],[16227],[16228],[16230],[16231],[16234],[16236],[16241]-[16245],[16250],[16251],[16253],[16258],[16260]-[16262],[16264],[16268]-[16271],[16273],[16274],[16276]-[16280],[16284]-[16288],[16290],[16293],[16297],[16299],[16300],[16301]
+
+  Things demanding attention/testing:
+  - status of mozilla/activeX plugin
+  - bindings
+  - skins2
+ 
+
+------------------------------------------------------------------------
+r16724 | thresh | 2006-09-18 01:23:46 +0200 (Mon, 18 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.6/po/POTFILES.in
+   M /branches/0.8.6/po/ca.po
+   M /branches/0.8.6/po/cs.po
+   M /branches/0.8.6/po/da.po
+   M /branches/0.8.6/po/de.po
+   M /branches/0.8.6/po/en_GB.po
+   M /branches/0.8.6/po/es.po
+   M /branches/0.8.6/po/fr.po
+   M /branches/0.8.6/po/gl.po
+   M /branches/0.8.6/po/he.po
+   M /branches/0.8.6/po/hi.po
+   M /branches/0.8.6/po/hu.po
+   M /branches/0.8.6/po/it.po
+   M /branches/0.8.6/po/ja.po
+   M /branches/0.8.6/po/ka.po
+   M /branches/0.8.6/po/ko.po
+   M /branches/0.8.6/po/nl.po
+   M /branches/0.8.6/po/oc.po
+   M /branches/0.8.6/po/pt_BR.po
+   M /branches/0.8.6/po/ro.po
+   M /branches/0.8.6/po/ru.po
+   M /branches/0.8.6/po/sv.po
+   M /branches/0.8.6/po/tr.po
+   M /branches/0.8.6/po/vlc.pot
+   M /branches/0.8.6/po/zh_CN.po
+   M /branches/0.8.6/po/zh_TW.po
+
+update-po and backported russian translation [16449]
+
+------------------------------------------------------------------------
+r16718 | zorglub | 2006-09-18 00:00:20 +0200 (Mon, 18 Sep 2006) | 2 lines
+Changed paths:
+   D /branches/0.8.5-1
+   A /branches/0.8.6 (from /branches/0.8.5-1:16716)
+
+Move branch. Happy svn switch
+
+------------------------------------------------------------------------
+r16716 | zorglub | 2006-09-17 23:55:34 +0200 (Sun, 17 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/extras/MacOSX/Resources/English.lproj/InfoPlist.strings
+   M /branches/0.8.5-1/extras/MacOSX/vlc.pbproj/project.pbxproj
+
+Change version to 0.8.6
+
+------------------------------------------------------------------------
+r16713 | zorglub | 2006-09-17 23:37:22 +0200 (Sun, 17 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/NEWS
+
+Update branch NEWS
+
+------------------------------------------------------------------------
+r16707 | thresh | 2006-09-17 22:55:39 +0200 (Sun, 17 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/include/charset.h
+   M /branches/0.8.5-1/include/vlc_symbols.h
+   M /branches/0.8.5-1/src/misc/unicode.c
+
+backport [16453] -> this should fix macosx/win32 builds.
+
+------------------------------------------------------------------------
+r16669 | thresh | 2006-09-16 12:31:26 +0200 (Sat, 16 Sep 2006) | 4 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/control/rc.c
+   M /branches/0.8.5-1/src/misc/configuration.c
+
+backported [16465], [16494] from trunk:
+recode output in rc interface to current locale,
+write comments in config file in user locale
+
+------------------------------------------------------------------------
+r16647 | hartman | 2006-09-14 16:58:57 +0200 (Thu, 14 Sep 2006) | 4 lines
+Changed paths:
+   M /branches/0.8.5-1/activex/connectioncontainer.cpp
+   M /branches/0.8.5-1/activex/connectioncontainer.h
+   M /branches/0.8.5-1/activex/dataobject.h
+   M /branches/0.8.5-1/activex/objectsafety.h
+   M /branches/0.8.5-1/activex/olecontrol.h
+   M /branches/0.8.5-1/activex/oleinplaceactiveobject.h
+   M /branches/0.8.5-1/activex/oleinplaceobject.h
+   M /branches/0.8.5-1/activex/oleobject.h
+   M /branches/0.8.5-1/activex/persistpropbag.h
+   M /branches/0.8.5-1/activex/persiststorage.h
+   M /branches/0.8.5-1/activex/persiststreaminit.cpp
+   M /branches/0.8.5-1/activex/persiststreaminit.h
+   M /branches/0.8.5-1/activex/plugin.cpp
+   M /branches/0.8.5-1/activex/provideclassinfo.h
+   M /branches/0.8.5-1/activex/utils.h
+   M /branches/0.8.5-1/activex/viewobject.h
+   M /branches/0.8.5-1/activex/vlccontrol.h
+   M /branches/0.8.5-1/bindings/mediacontrol-python/setup.py
+   M /branches/0.8.5-1/bindings/mediacontrol-python/vlcglue.c
+   M /branches/0.8.5-1/bindings/mediacontrol-python/vlcwrapper.py
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/include/vlc/libvlc.h
+   M /branches/0.8.5-1/include/vlc/mediacontrol.h
+   M /branches/0.8.5-1/include/vlc_es.h
+   M /branches/0.8.5-1/modules/demux/live555.cpp
+   M /branches/0.8.5-1/modules/demux/ts.c
+   M /branches/0.8.5-1/modules/gui/macosx/AppleRemote.m
+   M /branches/0.8.5-1/modules/gui/macosx/intf.h
+   M /branches/0.8.5-1/modules/gui/macosx/intf.m
+   M /branches/0.8.5-1/modules/gui/macosx/vout.m
+   M /branches/0.8.5-1/modules/gui/skins2/commands/cmd_change_skin.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_generic.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/parser/builder.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/dialogs.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/generic_layout.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/generic_layout.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/skin_common.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/theme_loader.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/theme_loader.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/window_manager.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/window_manager.hpp
+   M /branches/0.8.5-1/modules/misc/svg.c
+   M /branches/0.8.5-1/modules/mux/mpeg/ts.c
+   M /branches/0.8.5-1/modules/video_chroma/i420_yuy2.c
+   M /branches/0.8.5-1/modules/video_chroma/i420_yuy2.h
+   M /branches/0.8.5-1/modules/visualization/galaktos/plugin.c
+   M /branches/0.8.5-1/src/Makefile.am
+   M /branches/0.8.5-1/src/control/mediacontrol_audio_video.c
+   M /branches/0.8.5-1/src/control/vlm.c
+   M /branches/0.8.5-1/src/libvlc.c
+   M /branches/0.8.5-1/src/libvlc.h
+   M /branches/0.8.5-1/src/video_output/vout_intf.c
+
+* backported: [16030],[16033],[16049],[16050],[16051],[16067],[16068],[16070],[16075],[16078]-[16080],[16088],[16089],[16099],[16102],[16109],[16110],[16114],[16118],[16120],[16127],[16133],[16134],[16137],[16049],[16152],[16164]-[16167],[16176]
+
+NOT backported: vfilter -> vfilter2, direct3D
+
+------------------------------------------------------------------------
+r16629 | thresh | 2006-09-12 19:24:08 +0200 (Tue, 12 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/configure.ac
+
+backport of [16524], [16525], [16527] : ffmpeg as plugin + fixes
+
+------------------------------------------------------------------------
+r16627 | thresh | 2006-09-12 18:02:18 +0200 (Tue, 12 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/configure.ac
+
+backport of [16506]
+
+------------------------------------------------------------------------
+r16626 | zorglub | 2006-09-12 15:38:32 +0200 (Tue, 12 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/NEWS
+
+News for 0.8.5-1
+
+------------------------------------------------------------------------
+r16620 | sam | 2006-09-11 17:13:29 +0200 (Mon, 11 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/configure.ac
+
+  * configure.ac: don't add AltiVec modules twice (from [16619]).
+
+------------------------------------------------------------------------
+r16614 | sam | 2006-09-11 12:54:26 +0200 (Mon, 11 Sep 2006) | 3 lines
+Changed paths:
+   M /branches/0.8.5-1/bootstrap
+   M /branches/0.8.5-1/mozilla/Makefile.am
+   M /branches/0.8.5-1/src/Makefile.am
+
+  * No longer use the $(pic) variable, since all flags are properly set
+    in the configure script (from [16613]).
+
+------------------------------------------------------------------------
+r16612 | sam | 2006-09-11 11:08:11 +0200 (Mon, 11 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/mozilla/Makefile.am
+   M /branches/0.8.5-1/src/Makefile.am
+
+  * Don't use PIC on WIN32 (from [16611]).
+
+------------------------------------------------------------------------
+r16610 | sam | 2006-09-11 10:27:37 +0200 (Mon, 11 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/stream_out/rtp.c
+
+  * modules/stream_out/rtp.c: remove SDP file when bailing out (from [16545]).
+
+------------------------------------------------------------------------
+r16609 | sam | 2006-09-11 10:23:37 +0200 (Mon, 11 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/mozilla/Makefile.am
+
+  * Always use PIC to build the Mozilla plugin (from [16608]).
+
+------------------------------------------------------------------------
+r16605 | xtophe | 2006-09-10 23:38:51 +0200 (Sun, 10 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/configure.ac
+
+Fix mozilla plugin build on AMD64. from trunk [16136]
+
+------------------------------------------------------------------------
+r16603 | sam | 2006-09-10 22:40:21 +0200 (Sun, 10 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/codec/ffmpeg/Modules.am
+   M /branches/0.8.5-1/modules/codec/ffmpeg/demux.c
+   M /branches/0.8.5-1/modules/codec/ffmpeg/encoder.c
+   M /branches/0.8.5-1/modules/codec/ffmpeg/ffmpeg.c
+   M /branches/0.8.5-1/modules/codec/ffmpeg/ffmpeg.h
+   A /branches/0.8.5-1/modules/codec/ffmpeg/mux.c
+   M /branches/0.8.5-1/modules/codec/ffmpeg/video.c
+
+  * modules/codec/ffmpeg: bring the ffmpeg module up to date with trunk.
+
+------------------------------------------------------------------------
+r16601 | zorglub | 2006-09-10 22:21:46 +0200 (Sun, 10 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/stream_out/transcode.c
+
+Backport [16599]: Fix typo
+
+------------------------------------------------------------------------
+r16595 | sam | 2006-09-10 20:51:22 +0200 (Sun, 10 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/codec/x264.c
+
+  * Backport [16298] to make the x264 plugin compatible with the newest API.
+
+------------------------------------------------------------------------
+r16594 | sam | 2006-09-10 20:32:09 +0200 (Sun, 10 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/codec/x264.c
+
+  * Bring the x264 codec up to date, from [16298] [16259] [16211] [16209].
+
+------------------------------------------------------------------------
+r16591 | sam | 2006-09-10 19:41:49 +0200 (Sun, 10 Sep 2006) | 3 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/demux/ts.c
+
+  * modules/demux/ts.c: don't output debug on fprintf by default (from [16394])
+    (Refs Debian #385008)
+
+------------------------------------------------------------------------
+r16588 | sam | 2006-09-10 19:09:03 +0200 (Sun, 10 Sep 2006) | 4 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/demux/mkv.cpp
+
+  * modules/demux/mkv.cpp: fix an issue with DAR vs. Canvas size with matroska
+    files, backported from [16424].
+
+
+------------------------------------------------------------------------
+r16587 | sam | 2006-09-10 19:02:54 +0200 (Sun, 10 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/control/http/rpn.c
+   M /branches/0.8.5-1/modules/demux/playlist/xspf.c
+   M /branches/0.8.5-1/modules/misc/playlist/xspf.c
+
+  * modules/*: fixed implicit function declarations.
+
+------------------------------------------------------------------------
+r16585 | sam | 2006-09-10 18:58:43 +0200 (Sun, 10 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/m4/Makefile.am
+
+  * m4/Makefile.am: don't try to distribute nonexistent libtool m4 files.
+
+------------------------------------------------------------------------
+r16584 | sam | 2006-09-10 18:38:45 +0200 (Sun, 10 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/Makefile.am
+
+  * Makefile.am: add empty versioning information to libvlc.so [from r16583].
+
+------------------------------------------------------------------------
+r16581 | sam | 2006-09-10 18:28:37 +0200 (Sun, 10 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/src/Makefile.am
+
+  * src/Makefile.am: do not use -avoid-version. library versioning is cool.
+
+------------------------------------------------------------------------
+r16544 | hartman | 2006-09-08 01:05:11 +0200 (Fri, 08 Sep 2006) | 4 lines
+Changed paths:
+   M /branches/0.8.5-1/THANKS
+   M /branches/0.8.5-1/bootstrap
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/doc/ChangeLog-2005
+   M /branches/0.8.5-1/doc/fortunes.txt
+   M /branches/0.8.5-1/loader/afl.c
+   M /branches/0.8.5-1/loader/driver.c
+   M /branches/0.8.5-1/loader/kludge.c
+   M /branches/0.8.5-1/loader/ldt_keeper.c
+   M /branches/0.8.5-1/loader/loader.h
+   M /branches/0.8.5-1/loader/module.c
+   M /branches/0.8.5-1/loader/pe_image.c
+   M /branches/0.8.5-1/loader/pe_resource.c
+   M /branches/0.8.5-1/loader/registry.c
+   M /branches/0.8.5-1/loader/resource.c
+   M /branches/0.8.5-1/loader/vfl.c
+   M /branches/0.8.5-1/loader/win32.c
+   M /branches/0.8.5-1/m4/Makefile.am
+   M /branches/0.8.5-1/modules/access/dvb/linux_dvb.c
+   M /branches/0.8.5-1/modules/demux/ps.c
+   M /branches/0.8.5-1/modules/demux/ps.h
+   M /branches/0.8.5-1/modules/gui/macosx/vout.h
+   M /branches/0.8.5-1/modules/gui/macosx/vout.m
+   M /branches/0.8.5-1/modules/misc/freetype.c
+   M /branches/0.8.5-1/modules/services_discovery/sap.c
+   M /branches/0.8.5-1/modules/stream_out/transcode.c
+   M /branches/0.8.5-1/modules/video_filter/transform.c
+   M /branches/0.8.5-1/src/Makefile.am
+   M /branches/0.8.5-1/src/audio_output
+   M /branches/0.8.5-1/src/audio_output/common.c
+   M /branches/0.8.5-1/src/control
+   M /branches/0.8.5-1/src/extras
+   M /branches/0.8.5-1/src/input
+   M /branches/0.8.5-1/src/input/stream.c
+   M /branches/0.8.5-1/src/interface
+   M /branches/0.8.5-1/src/misc
+   M /branches/0.8.5-1/src/misc/unicode.c
+   M /branches/0.8.5-1/src/network
+   M /branches/0.8.5-1/src/network/tcp.c
+   M /branches/0.8.5-1/src/osd
+   M /branches/0.8.5-1/src/playlist
+   M /branches/0.8.5-1/src/stream_output
+   M /branches/0.8.5-1/src/video_output
+
+backported: [15963](partial),[15973],[15974],[15975],[15977],[15978],[15981],[15982],[15983](edited),[15984],[15988],[16003],[16006],[16008]-[16011],[16018],[16019],[16021],[16023],[16025],[16026]
+
+skipped: pid writing, qtl, motion, restart flag, RTSP rewind/ffw
+
+------------------------------------------------------------------------
+r16468 | hartman | 2006-09-01 17:09:39 +0200 (Fri, 01 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/services_discovery/sap.c
+
+* Partially unbackport [15953] which removed some variables we still needed with the older playlist
+
+------------------------------------------------------------------------
+r16467 | hartman | 2006-09-01 16:34:56 +0200 (Fri, 01 Sep 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/control/http/util.c
+
+* Unbackport [15908]
+
+------------------------------------------------------------------------
+r16460 | hartman | 2006-09-01 00:01:13 +0200 (Fri, 01 Sep 2006) | 6 lines
+Changed paths:
+   M /branches/0.8.5-1/THANKS
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/modules/access/dvb/access.c
+   M /branches/0.8.5-1/modules/access/dvb/en50221.c
+   M /branches/0.8.5-1/modules/access/http.c
+   M /branches/0.8.5-1/modules/codec/dmo/dmo.c
+   M /branches/0.8.5-1/modules/codec/ffmpeg/ffmpeg.c
+   M /branches/0.8.5-1/modules/codec/png.c
+   M /branches/0.8.5-1/modules/codec/theora.c
+   M /branches/0.8.5-1/modules/control/http/rpn.c
+   M /branches/0.8.5-1/modules/control/http/util.c
+   M /branches/0.8.5-1/modules/demux/avi/avi.c
+   M /branches/0.8.5-1/modules/gui/macosx/voutgl.m
+   M /branches/0.8.5-1/modules/gui/skins2/parser/interpreter.cpp
+   M /branches/0.8.5-1/modules/misc/network/ipv6.c
+   M /branches/0.8.5-1/modules/services_discovery/sap.c
+   M /branches/0.8.5-1/mozilla/vlcshell.cpp
+   M /branches/0.8.5-1/share/http/dialogs/main
+   A /branches/0.8.5-1/share/http/images/snapshot.png (from /trunk/share/http/images/snapshot.png:15911)
+   M /branches/0.8.5-1/share/http/js/functions.js
+   M /branches/0.8.5-1/share/http/requests/status.xml
+   M /branches/0.8.5-1/src/input/input.c
+   M /branches/0.8.5-1/src/input/subtitles.c
+   M /branches/0.8.5-1/src/misc/stats.c
+   M /branches/0.8.5-1/src/misc/win32_specific.c
+   M /branches/0.8.5-1/src/network/getaddrinfo.c
+
+* backported: [15891]-[15893],[15895],[15908],[15910],[15911],[15914],[15922],[15924],[15928],[15929],[15935],[15939],[15942],[15952],[15953],[15960]-[15962],
+
+skipped: bindings, sfilter, xspf, new stats, probe and ASX.
+
+
+
+------------------------------------------------------------------------
+r16459 | hartman | 2006-08-31 23:20:00 +0200 (Thu, 31 Aug 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/configure.ac
+
+* oops with 'x' and vi 
+
+------------------------------------------------------------------------
+r16458 | hartman | 2006-08-31 23:03:13 +0200 (Thu, 31 Aug 2006) | 2 lines
+Changed paths:
+   A /branches/0.8.5-1/m4/ac_prog_java.m4
+   A /branches/0.8.5-1/m4/ac_prog_java_cc.m4
+   A /branches/0.8.5-1/m4/ac_prog_java_works.m4
+   A /branches/0.8.5-1/m4/ac_prog_javac.m4
+   A /branches/0.8.5-1/m4/ac_prog_javac_works.m4
+   A /branches/0.8.5-1/m4/ac_prog_javah.m4
+
+* For some reason these were not properly added in [16457]
+
+------------------------------------------------------------------------
+r16457 | hartman | 2006-08-31 22:51:12 +0200 (Thu, 31 Aug 2006) | 4 lines
+Changed paths:
+   M /branches/0.8.5-1/Makefile.am
+   M /branches/0.8.5-1/THANKS
+   M /branches/0.8.5-1/bootstrap
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/doc/fortunes.txt
+   M /branches/0.8.5-1/include/vlc/libvlc.h
+   M /branches/0.8.5-1/include/vlc_input.h
+   M /branches/0.8.5-1/include/vlc_symbols.h
+   M /branches/0.8.5-1/modules/access/dshow/dshow.cpp
+   M /branches/0.8.5-1/modules/access/dshow/filter.cpp
+   M /branches/0.8.5-1/modules/access/ftp.c
+   M /branches/0.8.5-1/modules/codec/dmo/dmo.c
+   M /branches/0.8.5-1/modules/codec/ffmpeg/audio.c
+   M /branches/0.8.5-1/modules/control/hotkeys.c
+   M /branches/0.8.5-1/modules/demux/mpeg/m4v.c
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_button.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_button.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_checkbox.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_checkbox.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_generic.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_generic.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_list.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_list.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_radialslider.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_radialslider.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_slider.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_slider.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_text.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_text.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_tree.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_tree.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_video.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_video.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/anim_bitmap.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/generic_window.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/generic_window.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/tooltip.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/tooltip.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/utils/observer.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/utils/position.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/utils/var_bool.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/utils/var_bool.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/utils/var_list.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/utils/var_percent.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/utils/var_text.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/utils/var_text.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/utils/var_tree.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/vars/equalizer.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/vars/equalizer.hpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/fileinfo.hpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/interface.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/interface.hpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/menus.cpp
+   M /branches/0.8.5-1/modules/misc/freetype.c
+   M /branches/0.8.5-1/modules/misc/growl.c
+   M /branches/0.8.5-1/modules/misc/notify.c
+   M /branches/0.8.5-1/modules/mux/mpeg/ts.c
+   M /branches/0.8.5-1/modules/packetizer/mpeg4video.c
+   M /branches/0.8.5-1/modules/stream_out/rtp.c
+   M /branches/0.8.5-1/modules/video_output/image.c
+   M /branches/0.8.5-1/mozilla/Makefile.am
+   M /branches/0.8.5-1/src/Makefile.am
+   M /branches/0.8.5-1/src/audio_output/intf.c
+   M /branches/0.8.5-1/src/control/audio.c
+   M /branches/0.8.5-1/src/control/input.c
+   M /branches/0.8.5-1/src/control/playlist.c
+   M /branches/0.8.5-1/src/control/video.c
+   M /branches/0.8.5-1/src/input/decoder.c
+   M /branches/0.8.5-1/src/input/input.c
+   M /branches/0.8.5-1/src/input/input_internal.h
+   M /branches/0.8.5-1/src/input/subtitles.c
+   M /branches/0.8.5-1/src/interface/interaction.c
+   M /branches/0.8.5-1/src/libvlc.h
+   M /branches/0.8.5-1/src/misc/stats.c
+   M /branches/0.8.5-1/src/video_output/video_output.c
+   M /branches/0.8.5-1/src/video_output/vout_intf.c
+   M /branches/0.8.5-1/vlc-config.in.in
+
+* backported: [15803]-[15815],[15817],[15819],[15821],[15822],[15824],[15826],[15829],[15831],[15832],[15834],[15836]-[15838],[15841],[15844],[15846],[15848]-[15853],[15859],[15861]-[15867],[15869]-[15871],[15874],[15878]-[15880],[15883],[15884]
+
+* skipped java bindings, new cdda (too many playlist conflicts)
+
+------------------------------------------------------------------------
+r16454 | hartman | 2006-08-31 21:54:36 +0200 (Thu, 31 Aug 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/doc/fortunes.txt
+   M /branches/0.8.5-1/doc/skins/skins2-howto.xml
+   M /branches/0.8.5-1/modules/gui/skins2/commands/cmd_resize.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/commands/cmd_resize.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_resize.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_resize.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/controls/ctrl_video.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/parser/builder.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/parser/builder_data.def
+   M /branches/0.8.5-1/modules/gui/skins2/parser/builder_data.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/parser/skin_parser.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/anchor.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/generic_layout.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/window_manager.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/window_manager.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/utils/position.hpp
+   M /branches/0.8.5-1/modules/misc/Modules.am
+   A /branches/0.8.5-1/modules/misc/notify.c (from /trunk/modules/misc/notify.c:15800)
+   M /branches/0.8.5-1/po/Makefile.in.in
+   M /branches/0.8.5-1/po/zh_CN.po
+   M /branches/0.8.5-1/share/skins2/skin.dtd
+
+* backported [15796]-[15800] and [15802]. Someone please check the notify plugin.
+
+------------------------------------------------------------------------
+r16446 | hartman | 2006-08-31 04:06:37 +0200 (Thu, 31 Aug 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/gui/wxwidgets/menus.cpp
+
+* I missed a conflict I guess
+
+------------------------------------------------------------------------
+r16445 | hartman | 2006-08-31 03:49:34 +0200 (Thu, 31 Aug 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/modules/access_output/http.c
+   M /branches/0.8.5-1/modules/gui/macosx/intf.m
+
+* Fix some backport conflicts due to not backported updated playlist core
+
+------------------------------------------------------------------------
+r16442 | hartman | 2006-08-31 00:15:52 +0200 (Thu, 31 Aug 2006) | 4 lines
+Changed paths:
+   M /branches/0.8.5-1/INSTALL.win32
+   M /branches/0.8.5-1/Makefile.am
+   M /branches/0.8.5-1/THANKS
+   M /branches/0.8.5-1/bootstrap
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/include/vlc/libvlc.h
+   M /branches/0.8.5-1/include/vlc_interface.h
+   M /branches/0.8.5-1/include/vlc_keys.h
+   M /branches/0.8.5-1/modules/access/http.c
+   M /branches/0.8.5-1/modules/codec/dmo/dmo.c
+   M /branches/0.8.5-1/modules/codec/ffmpeg/encoder.c
+   M /branches/0.8.5-1/modules/codec/realaudio.c
+   M /branches/0.8.5-1/modules/codec/x264.c
+   M /branches/0.8.5-1/modules/control/hotkeys.c
+   M /branches/0.8.5-1/modules/demux/Modules.am
+   A /branches/0.8.5-1/modules/demux/live555.cpp (from /trunk/modules/demux/live555.cpp:15702)
+   M /branches/0.8.5-1/modules/demux/livedotcom.cpp
+   M /branches/0.8.5-1/modules/demux/playlist/xspf.c
+   A /branches/0.8.5-1/modules/gui/macosx/AppleRemote.h (from /trunk/modules/gui/macosx/AppleRemote.h:15733)
+   A /branches/0.8.5-1/modules/gui/macosx/AppleRemote.m (from /trunk/modules/gui/macosx/AppleRemote.m:15733)
+   M /branches/0.8.5-1/modules/gui/macosx/Modules.am
+   M /branches/0.8.5-1/modules/gui/macosx/intf.h
+   M /branches/0.8.5-1/modules/gui/macosx/intf.m
+   M /branches/0.8.5-1/modules/gui/macosx/playlist.m
+   M /branches/0.8.5-1/modules/gui/macosx/voutgl.m
+   M /branches/0.8.5-1/modules/gui/skins2/win32/win32_loop.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/open.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/playlist.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/video.cpp
+   M /branches/0.8.5-1/modules/misc/rtsp.c
+   M /branches/0.8.5-1/modules/mux/asf.c
+   M /branches/0.8.5-1/modules/stream_out/rtp.c
+   M /branches/0.8.5-1/modules/video_output/caca.c
+   M /branches/0.8.5-1/modules/video_output/directx/events.c
+   M /branches/0.8.5-1/modules/video_output/x11/glx.c
+   M /branches/0.8.5-1/mozilla/vlc.r
+   M /branches/0.8.5-1/mozilla/vlcshell.cpp
+   M /branches/0.8.5-1/src/control/input.c
+   M /branches/0.8.5-1/src/control/video.c
+   M /branches/0.8.5-1/src/libvlc.h
+
+backport: [15701],[15702],[15704],[15705],[15707]-[15711],[15733],[15734],[15736],[15741],[15744],[15745],[15753]-[15757],[15762],[15763],[15767],[15774]-[15778],[15781]-[15783],[15785]-[15787],[15790],[15791]
+
+skipped: RTE code and BeOS fixes (if someone could look at [15735] and commit that which does not concern the new playlist, i would be thankful.) 
+
+------------------------------------------------------------------------
+r16441 | hartman | 2006-08-30 23:36:35 +0200 (Wed, 30 Aug 2006) | 5 lines
+Changed paths:
+   M /branches/0.8.5-1/THANKS
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/doc/skins/skins2-howto.xml
+   M /branches/0.8.5-1/include/vlc_keys.h
+   M /branches/0.8.5-1/modules/access/dv.c
+   M /branches/0.8.5-1/modules/access/http.c
+   M /branches/0.8.5-1/modules/access/rtsp/real.c
+   M /branches/0.8.5-1/modules/access/rtsp/rtsp.c
+   M /branches/0.8.5-1/modules/access_output/file.c
+   M /branches/0.8.5-1/modules/access_output/http.c
+   M /branches/0.8.5-1/modules/audio_output/alsa.c
+   M /branches/0.8.5-1/modules/codec/cmml/history.c
+   M /branches/0.8.5-1/modules/codec/cmml/intf.c
+   M /branches/0.8.5-1/modules/codec/spudec/parse.c
+   M /branches/0.8.5-1/modules/codec/x264.c
+   M /branches/0.8.5-1/modules/control/hotkeys.c
+   M /branches/0.8.5-1/modules/control/http/rpn.c
+   M /branches/0.8.5-1/modules/control/telnet.c
+   M /branches/0.8.5-1/modules/demux/asf/libasf.c
+   M /branches/0.8.5-1/modules/demux/mp4/drms.c
+   M /branches/0.8.5-1/modules/demux/ogg.c
+   M /branches/0.8.5-1/modules/demux/real.c
+   M /branches/0.8.5-1/modules/demux/sgimb.c
+   M /branches/0.8.5-1/modules/demux/ts.c
+   M /branches/0.8.5-1/modules/gui/macosx/intf.m
+   M /branches/0.8.5-1/modules/gui/skins2/commands/cmd_minimize.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/commands/cmd_minimize.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/macosx/macosx_factory.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/macosx/macosx_factory.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/parser/interpreter.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/parser/skin_parser.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/generic_layout.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/generic_layout.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/os_factory.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/skin_main.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/top_window.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/vlcproc.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/win32/win32_factory.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/win32/win32_factory.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/x11/x11_factory.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/x11/x11_factory.hpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/playlist.hpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/preferences_widgets.cpp
+   M /branches/0.8.5-1/po/Makefile.in.in
+   A /branches/0.8.5-1/po/cs.po (from /trunk/po/cs.po:15669)
+   M /branches/0.8.5-1/src/input/input.c
+   M /branches/0.8.5-1/src/libvlc.c
+   M /branches/0.8.5-1/src/libvlc.h
+   M /branches/0.8.5-1/src/misc/charset.c
+   M /branches/0.8.5-1/src/misc/darwin_specific.m
+   M /branches/0.8.5-1/src/video_output/vout_intf.c
+   M /branches/0.8.5-1/toolbox
+
+* backported: [15596]-[15603],[15605]-[15608],[15611],[15615],[15616],[15626]-[15628], [15631],[15636],[15637],[15639],[15643],[15647]-[15651],[15654],[15658],[15662],[15668],[15669],[15673]-[15675],[15678],[15680]-[15682],[15684],[15689]-[15700]
+as well as the intf.m part of [15638]
+
+The interaction framework updates and playlist changes were left out
+
+------------------------------------------------------------------------
+r16439 | hartman | 2006-08-30 21:33:55 +0200 (Wed, 30 Aug 2006) | 4 lines
+Changed paths:
+   M /branches/0.8.5-1/INSTALL
+   M /branches/0.8.5-1/Makefile.am
+   M /branches/0.8.5-1/THANKS
+   M /branches/0.8.5-1/activex/axvlc.inf.in
+   M /branches/0.8.5-1/configure.ac
+   D /branches/0.8.5-1/debian
+   M /branches/0.8.5-1/doc/fortunes.txt
+   M /branches/0.8.5-1/doc/skins/skins2-howto.xml
+   M /branches/0.8.5-1/extras/MacOSX/Resources/English.lproj/MainMenu.nib/classes.nib
+   M /branches/0.8.5-1/extras/MacOSX/Resources/English.lproj/MainMenu.nib/info.nib
+   M /branches/0.8.5-1/extras/MacOSX/Resources/English.lproj/MainMenu.nib/keyedobjects.nib
+   M /branches/0.8.5-1/include/codecs.h
+   M /branches/0.8.5-1/include/vlc/libvlc.h
+   M /branches/0.8.5-1/include/vlc_messages.h
+   M /branches/0.8.5-1/modules/codec/dmo/dmo.c
+   M /branches/0.8.5-1/modules/control/corba/corba.c
+   M /branches/0.8.5-1/modules/control/http/http.c
+   M /branches/0.8.5-1/modules/control/http/rpn.c
+   M /branches/0.8.5-1/modules/demux/livedotcom.cpp
+   M /branches/0.8.5-1/modules/demux/wav.c
+   M /branches/0.8.5-1/modules/gui/macosx/playlist.h
+   M /branches/0.8.5-1/modules/gui/macosx/playlist.m
+   M /branches/0.8.5-1/modules/gui/macosx/update.m
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/infopanels.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/infopanels.hpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/interaction.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/interaction.hpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/iteminfo.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/messages.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/open.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/streamout.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/subtitles.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/menus.cpp
+   M /branches/0.8.5-1/mozilla/Makefile.am
+   M /branches/0.8.5-1/po/POTFILES.in
+   M /branches/0.8.5-1/share/Makefile.am
+   A /branches/0.8.5-1/share/applications (from /trunk/share/applications:15575)
+   M /branches/0.8.5-1/src/control/vlm.c
+   M /branches/0.8.5-1/src/libvlc.h
+   M /branches/0.8.5-1/src/misc/charset.c
+   M /branches/0.8.5-1/src/network/acl.c
+   M /branches/0.8.5-1/src/network/httpd.c
+   M /branches/0.8.5-1/src/video_output/vout_intf.c
+
+* backported: [15445],[15449],[15451],[15457],[15477],[15490],[15560],[15563],[15564]-[15568],[15571]-[15585],[15587],[15588],[15591]-[15593]
+
+  On to the post 0.8.5 changes
+
+------------------------------------------------------------------------
+r16434 | hartman | 2006-08-30 17:18:13 +0200 (Wed, 30 Aug 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/include/variables.h
+   M /branches/0.8.5-1/include/vlc_common.h
+   M /branches/0.8.5-1/include/vlc_messages.h
+   M /branches/0.8.5-1/include/vlc_symbols.h
+   M /branches/0.8.5-1/modules/access/directory.c
+   M /branches/0.8.5-1/modules/access/dvb/access.c
+   M /branches/0.8.5-1/modules/access/file.c
+   M /branches/0.8.5-1/modules/access/pvr/pvr.c
+   M /branches/0.8.5-1/modules/access/smb.c
+   M /branches/0.8.5-1/modules/access_filter/timeshift.c
+   M /branches/0.8.5-1/modules/access_output/file.c
+   M /branches/0.8.5-1/modules/access_output/http.c
+   M /branches/0.8.5-1/modules/control/http/macro.c
+   M /branches/0.8.5-1/modules/control/http/mvar.c
+   M /branches/0.8.5-1/modules/control/http/rpn.c
+   M /branches/0.8.5-1/modules/demux/mp4/drms.c
+   M /branches/0.8.5-1/modules/demux/mp4/mp4.c
+   M /branches/0.8.5-1/modules/demux/voc.c
+   M /branches/0.8.5-1/modules/demux/xa.c
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/playlist.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs/preferences_widgets.cpp
+   M /branches/0.8.5-1/modules/misc/gnutls.c
+   M /branches/0.8.5-1/modules/services_discovery/shout.c
+   M /branches/0.8.5-1/modules/stream_out/rtp.c
+   M /branches/0.8.5-1/modules/video_output/caca.c
+   M /branches/0.8.5-1/src/extras/libc.c
+   M /branches/0.8.5-1/src/input/subtitles.c
+   M /branches/0.8.5-1/src/libvlc.h
+   M /branches/0.8.5-1/src/misc/threads.c
+   M /branches/0.8.5-1/src/network/getaddrinfo.c
+   M /branches/0.8.5-1/src/network/httpd.c
+   M /branches/0.8.5-1/src/network/io.c
+   M /branches/0.8.5-1/src/network/tcp.c
+   M /branches/0.8.5-1/src/network/tls.c
+   M /branches/0.8.5-1/src/stream_output/sap.c
+   M /branches/0.8.5-1/src/stream_output/stream_output.c
+   M /branches/0.8.5-1/vlc.win32.nsi.in
+
+* backported: [15327]-[15330],[15332],[15334],[15341],vlc.win32.nsi.in[trunk],[15345]-[15348],[15371],[15379],[15392]-[15395],[15403]-[15405],[15412]-[15414],[15419],[15422],[15424],[15425],[15428],[15429],[15432]-[15434],[15436]-[15441].
+
+------------------------------------------------------------------------
+r16431 | hartman | 2006-08-30 16:30:06 +0200 (Wed, 30 Aug 2006) | 6 lines
+Changed paths:
+   M /branches/0.8.5-1/bindings/java/org/videolan/jvlc/VideoIntf.java
+   M /branches/0.8.5-1/doc/Doxyfile
+   M /branches/0.8.5-1/doc/skins/skins2-howto.xml
+   M /branches/0.8.5-1/include/vlc_interface.h
+   M /branches/0.8.5-1/modules/demux/avi/avi.c
+   M /branches/0.8.5-1/modules/gui/macosx/about.m
+   M /branches/0.8.5-1/modules/gui/skins2/commands/cmd_dialogs.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/parser/interpreter.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/dialogs.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/dialogs.hpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/skin_main.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/vlcproc.cpp
+   M /branches/0.8.5-1/modules/gui/skins2/src/vlcproc.hpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/dialogs.cpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/interface.hpp
+   M /branches/0.8.5-1/modules/gui/wxwidgets/menus.cpp
+   M /branches/0.8.5-1/share/http/dialogs/input
+   M /branches/0.8.5-1/src/control/playlist.c
+   M /branches/0.8.5-1/src/libvlc.c
+   M /branches/0.8.5-1/src/libvlc.h
+
+* backported to stable: [15228],[15234],[15239],[15261],[15262],[15264],[15266]-[15271]
+[15279],[15289],[15292],[15300]
+
+ * specifically left out sfilters panel in OSX intf.
+ * this is the first batch, I don't want to frell my tree and have to start from scratch AGAIN :D
+
+------------------------------------------------------------------------
+r16404 | hartman | 2006-08-29 02:42:17 +0200 (Tue, 29 Aug 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/extras/contrib/bootstrap
+   M /branches/0.8.5-1/extras/contrib/src
+   M /branches/0.8.5-1/extras/contrib/src/Makefile
+   D /branches/0.8.5-1/extras/contrib/src/Patches/ffmpeg-cvs-beos.patch
+   D /branches/0.8.5-1/extras/contrib/src/Patches/ffmpeg-cvs-mactel.patch
+   D /branches/0.8.5-1/extras/contrib/src/Patches/ffmpeg-cvs-win32.patch
+   D /branches/0.8.5-1/extras/contrib/src/Patches/ffmpeg-cvs-wince.patch
+   A /branches/0.8.5-1/extras/contrib/src/Patches/ffmpeg-svn-beos.patch (from /trunk/extras/contrib/src/Patches/ffmpeg-svn-beos.patch:16403)
+   A /branches/0.8.5-1/extras/contrib/src/Patches/ffmpeg-svn-wince.patch (from /trunk/extras/contrib/src/Patches/ffmpeg-svn-wince.patch:16403)
+   M /branches/0.8.5-1/extras/contrib/src/Patches/gnutls-win32.patch
+   A /branches/0.8.5-1/extras/contrib/src/Patches/goom2k4-0-nommx.patch (from /trunk/extras/contrib/src/Patches/goom2k4-0-nommx.patch:16403)
+   A /branches/0.8.5-1/extras/contrib/src/Patches/libgpg-error.patch (from /trunk/extras/contrib/src/Patches/libgpg-error.patch:16403)
+   M /branches/0.8.5-1/extras/contrib/src/Patches/libogg-1.1-win32.patch
+   A /branches/0.8.5-1/extras/contrib/src/Patches/libogg-1.1.3.patch (from /trunk/extras/contrib/src/Patches/libogg-1.1.3.patch:16403)
+   M /branches/0.8.5-1/extras/contrib/src/Patches/libogg-1.1.patch
+   A /branches/0.8.5-1/extras/contrib/src/Patches/libpng-darwin-mactel.patch (from /trunk/extras/contrib/src/Patches/libpng-darwin-mactel.patch:16403)
+   A /branches/0.8.5-1/extras/contrib/src/Patches/libpng-makefile.patch (from /trunk/extras/contrib/src/Patches/libpng-makefile.patch:16403)
+   M /branches/0.8.5-1/extras/contrib/src/Patches/libpng-osx.patch
+   M /branches/0.8.5-1/extras/contrib/src/Patches/libpng-win32.patch
+   M /branches/0.8.5-1/extras/contrib/src/Patches/libvorbis-1.1.patch
+   M /branches/0.8.5-1/extras/contrib/src/Patches/live-osx.patch
+   A /branches/0.8.5-1/extras/contrib/src/Patches/speex-BeOS.patch (from /trunk/extras/contrib/src/Patches/speex-BeOS.patch:16403)
+   M /branches/0.8.5-1/extras/contrib/src/Patches/speex.patch
+   A /branches/0.8.5-1/extras/contrib/src/Patches/theora-1.0a7.patch (from /trunk/extras/contrib/src/Patches/theora-1.0a7.patch:16403)
+   M /branches/0.8.5-1/extras/contrib/src/Patches/theora.patch
+   A /branches/0.8.5-1/extras/contrib/src/Patches/twolame-BeOS.patch (from /trunk/extras/contrib/src/Patches/twolame-BeOS.patch:16403)
+   M /branches/0.8.5-1/extras/contrib/src/Patches/x264-svn-win32.patch
+   M /branches/0.8.5-1/extras/contrib/src/packages.mak
+
+* Backport to 0.8.5-1 of all contrib updates on trunk between [15211] and [16403]
+
+------------------------------------------------------------------------
+r16400 | fkuehne | 2006-08-28 23:54:39 +0200 (Mon, 28 Aug 2006) | 1 line
+Changed paths:
+   M /branches/0.8.5-1/modules/video_output/opengl.c
+
+* backport the recent OpenGL additions and fixes
+------------------------------------------------------------------------
+r16397 | hartman | 2006-08-28 21:26:21 +0200 (Mon, 28 Aug 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5-1/configure.ac
+   M /branches/0.8.5-1/extras/MacOSX/Resources/English.lproj/InfoPlist.strings
+   M /branches/0.8.5-1/extras/MacOSX/vlc.pbproj/project.pbxproj
+
+* Update the version number
+
+------------------------------------------------------------------------
+r16396 | hartman | 2006-08-28 21:04:40 +0200 (Mon, 28 Aug 2006) | 1 line
+Changed paths:
+   A /branches/0.8.5-1 (from /tags/0.8.5:16395)
+
+Create an 0.8.5-1 branch with security, bug fixes and WMV3
+------------------------------------------------------------------------
+r15610 | jpsaman | 2006-05-14 11:09:34 +0200 (Sun, 14 May 2006) | 4 lines
+Changed paths:
+   M /tags/0.8.5/extras/contrib/bootstrap
+   M /tags/0.8.5/extras/contrib/src/Makefile
+
+Compile fixes:
+- libiconv: removed CPPFLAGS="-D"-Dssize_t=long" needed for building on FC 5
+- live555 : add include path -I${PREFIX}/include for iconv.h
+
+------------------------------------------------------------------------
+r15609 | jpsaman | 2006-05-14 10:56:57 +0200 (Sun, 14 May 2006) | 1 line
+Changed paths:
+   A /tags/0.8.5/extras/contrib/src/Patches/wxwidgets_uri.patch
+
+Compiler fix gcc-4.1.0 on FC 5
+------------------------------------------------------------------------
+r15569 | dionoea | 2006-05-08 00:21:17 +0200 (Mon, 08 May 2006) | 2 lines
+Changed paths:
+   M /tags/0.8.5/vlc.win32.nsi.in
+
+Woops, error in [15363] which makes prefs file deletion in uninstaller unselectable.
+
+------------------------------------------------------------------------
+r15558 | dionoea | 2006-05-06 23:13:36 +0200 (Sat, 06 May 2006) | 2 lines
+Changed paths:
+   D /branches/0.8.5
+   A /tags/0.8.5 (from /branches/0.8.5:15557)
+
+Tag 0.8.5
+
+------------------------------------------------------------------------
+r15557 | dionoea | 2006-05-06 17:53:40 +0200 (Sat, 06 May 2006) | 2 lines
+Changed paths:
+   M /branches/0.8.5/ChangeLog
+
+ChangeLog once more
+
+------------------------------------------------------------------------
 r15556 | dionoea | 2006-05-06 15:33:07 +0200 (Sat, 06 May 2006) | 2 lines
 Changed paths:
    M /branches/0.8.5/vlc.win32.nsi.in
@@ -1330,7 +3023,7 @@ Changed paths:
    M /trunk/configure.ac
 
 Link some additionnal plugins against the math library
-Report and fix from Pavlov Konstantin ?\226?\128?\156thresh?\226?\128?\157
+Report and fix from Pavlov Konstantin “thresh”
 
 ------------------------------------------------------------------------
 r15179 | courmisch | 2006-04-11 18:24:46 +0200 (Tue, 11 Apr 2006) | 2 lines
@@ -1851,7 +3544,7 @@ Changed paths:
    M /trunk/debian/copyright
    M /trunk/extras/valgrind.suppressions
 
-This commit message is Copyright (C) 2006, Cl?\195?\169ment Stenac.
+This commit message is Copyright (C) 2006, Clément Stenac.
 
 ------------------------------------------------------------------------
 r15105 | massiot | 2006-04-05 19:17:22 +0200 (Wed, 05 Apr 2006) | 2 lines
@@ -2031,7 +3724,7 @@ Changed paths:
    M /trunk/modules/demux/playlist/xspf.c
    M /trunk/src/misc/strings.c
 
-- Do not rewrite ?\226?\128?\156+?\226?\128?\157 as a white space when unescaping URL parameters (fixes #625).
+- Do not rewrite “+” as a white space when unescaping URL parameters (fixes #625).
 - Rename decode_encoded_URI as unescape_URI as it really is what is done.
 
 ------------------------------------------------------------------------
@@ -4032,7 +5725,7 @@ Changed paths:
    M /trunk/modules/gui/wxwidgets/menus.cpp
 
 Fix G++ 4.1 compilation problem
-reported by Diego 'Flameeyes' Petten?\195?\178
+reported by Diego 'Flameeyes' Pettenò
 
 ------------------------------------------------------------------------
 r14851 | dionoea | 2006-03-21 01:45:31 +0100 (Tue, 21 Mar 2006) | 2 lines
@@ -5200,7 +6893,7 @@ r14721 | zorglub | 2006-03-11 19:34:39 +0100 (Sat, 11 Mar 2006) | 3 lines
 Changed paths:
    M /trunk/po/fr.po
 
-A number of fixes spotted by S?\195?\169bastien Raud < s d0t raud att yahoo d0t fr >
+A number of fixes spotted by Sébastien Raud < s d0t raud att yahoo d0t fr >
 Thanks.
 
 ------------------------------------------------------------------------
@@ -5509,14 +7202,14 @@ Changed paths:
 As a work-around, accept both decimal separators when...
 deserializing floats from configuration (fixes #589)
 
-I know this is NOT the ?\226?\128?\156right?\226?\128?\157 way to fix this.
-The ?\226?\128?\156right?\226?\128?\157 way would be to remove floats from the configuration...
+I know this is NOT the “right” way to fix this.
+The “right” way would be to remove floats from the configuration...
 but there are approximately one float parameter in the core and 46 ones
 in our current plugins set, none of which I use myself. So I am
 defintely not going to rewrite all^H^H^Hany of them.
 
-Of course, it would be cleaner to be ?\226?\128?\156strict?\226?\128?\157  in what we write to
-the configuration file, than ?\226?\128?\156liberal?\226?\128?\157 in what we accept... but IMHO,
+Of course, it would be cleaner to be “strict”  in what we write to
+the configuration file, than “liberal” in what we accept... but IMHO,
 it is way easier and more robust to be liberal in what we accept in
 this particular case (ie. accepting both decimal separators is trivial,
 while serializing float numbers manually is complex).
@@ -5906,7 +7599,7 @@ r14644 | courmisch | 2006-03-05 16:32:01 +0100 (Sun, 05 Mar 2006) | 2 lines
 Changed paths:
    M /trunk/include/vlc_threads_funcs.h
 
-Add some ?\226?\128?\156const?\226?\128?\157s
+Add some “const”s
 
 ------------------------------------------------------------------------
 r14643 | courmisch | 2006-03-05 16:29:52 +0100 (Sun, 05 Mar 2006) | 2 lines
@@ -8490,7 +10183,7 @@ Changed paths:
    M /trunk/src/input/input.c
    M /trunk/src/playlist/sort.c
 
-[patch] unifying meta-information access, the 2nd by Daniel Str?\195?\164nger
+[patch] unifying meta-information access, the 2nd by Daniel Stränger
 
 ------------------------------------------------------------------------
 r14332 | zorglub | 2006-02-16 08:22:57 +0100 (Thu, 16 Feb 2006) | 2 lines
@@ -8615,7 +10308,7 @@ Add a growl (http://growl.info/) notification plugin (most of code from msn.c)
 It is built by default since it sends notifications to network (perhaps
 we should only build it on macos).
 
-msn.c: should fix a refcount issue (*not?\194?\160tested*)
+msn.c: should fix a refcount issue (*not tested*)
 
 ------------------------------------------------------------------------
 r14316 | zorglub | 2006-02-14 23:50:13 +0100 (Tue, 14 Feb 2006) | 2 lines
@@ -9344,7 +11037,7 @@ Changed paths:
    M /trunk/include/vlc_symbols.h
    M /trunk/src/misc/unicode.c
 
-vlc_fopen() wrapper including required file name conversion (refs #528, refs?\194?\160#543)
+vlc_fopen() wrapper including required file name conversion (refs #528, refs #543)
 
 ------------------------------------------------------------------------
 r14234 | courmisch | 2006-02-11 16:12:06 +0100 (Sat, 11 Feb 2006) | 2 lines
@@ -9588,7 +11281,7 @@ Changed paths:
    M /trunk/modules/gui/skins2/utils/var_tree.hpp
    M /trunk/modules/gui/skins2/x11/x11_graphics.hpp
 
-gcc 4.1 compile fix from marvin24 #?\194?\160gmx.de
+gcc 4.1 compile fix from marvin24 # gmx.de
 
 ------------------------------------------------------------------------
 r14203 | sigmunau | 2006-02-10 16:05:45 +0100 (Fri, 10 Feb 2006) | 5 lines

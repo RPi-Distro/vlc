@@ -2,7 +2,7 @@
  * param_eq.c:
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: param_eq.c 15171 2006-04-11 13:05:50Z fkuehne $
+ * $Id: param_eq.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Antti Huovilainen
  *          Sigmund A. Helberg <dnumgis@videolan.org>
@@ -47,7 +47,7 @@ static void DoWork( aout_instance_t *, aout_filter_t *,
 
 vlc_module_begin();
     set_description( _("Parametric Equalizer") );
-    set_shortname( N_("Parametric Equalizer" ) );
+    set_shortname( _("Parametric Equalizer" ) );
     set_capability( "audio filter", 0 );
     set_category( CAT_AUDIO );
     set_subcategory( SUBCAT_AUDIO_AFILTER );

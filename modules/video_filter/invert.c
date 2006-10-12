@@ -2,7 +2,7 @@
  * invert.c : Invert video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 the VideoLAN team
- * $Id: invert.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: invert.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -50,7 +50,7 @@ static int  SendEvents( vlc_object_t *, char const *,
  *****************************************************************************/
 vlc_module_begin();
     set_description( _("Invert video filter") );
-    set_shortname( N_("Color inversion" ));
+    set_shortname( _("Color inversion" ));
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VFILTER );
     set_capability( "video filter", 0 );

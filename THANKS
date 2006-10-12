@@ -1,4 +1,4 @@
-$Id: THANKS 16990 2006-10-08 13:35:21Z xtophe $
+$Id: THANKS 17033 2006-10-12 12:01:35Z funman $
 
 VLC makes extensive use of the following persons' code:
 
@@ -89,6 +89,7 @@ Kevin H. Patterson <kevpatt at khptech dot com> - Theora framesize calculation p
 Laurent Jonqueres <laurent_jonqueres at yahoo.fr> - Occitan localization
 Laurent Mutricy <laurent.mutricy at ecl2005 dot ec-lyon dot fr> - HTTP interface fixes
 Lorena Gomes - Catalan translation
+Mahrazi Mohd Kamal <mahrazi at gmail.com> - Malay Translation
 Marc Nolette <nolette at videotron.ca> - PVR support in DirectShow input
 Marco Munderloh <Marco.Munderloh at web.de> - HTTP fix for Win32 to URL filenames
 Marián Hikaník- <podnety _at_ mojepreklady _dot_ net> - Slovak localisation

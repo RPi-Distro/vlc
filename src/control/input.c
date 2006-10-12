@@ -2,7 +2,7 @@
  * input.c: Libvlc new API input management functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: input.c 16931 2006-10-03 09:04:50Z damienf $
+ * $Id: input.c 17025 2006-10-11 14:00:26Z damienf $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -68,7 +68,7 @@ vlc_int64_t libvlc_input_get_length( libvlc_input_t *p_input,
     var_Get( p_input_thread, "length", &val );
     vlc_object_release( p_input_thread );
 
-    return val.i_time / 1000LL;
+    return (val.i_time+500LL)/1000LL;
 }
 
 vlc_int64_t libvlc_input_get_time( libvlc_input_t *p_input,
@@ -82,7 +82,7 @@ vlc_int64_t libvlc_input_get_time( libvlc_input_t *p_input,
 
     var_Get( p_input_thread , "time", &val );
     vlc_object_release( p_input_thread );
-    return val.i_time / 1000LL;
+    return (val.i_time+500LL)/1000LL;
 }
 
 void libvlc_input_set_time( libvlc_input_t *p_input, vlc_int64_t time,

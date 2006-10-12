@@ -2,7 +2,7 @@
  * marq.c : marquee display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: marq.c 16767 2006-09-21 14:32:45Z hartman $
+ * $Id: marq.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Mark Moriarty
  *
@@ -112,7 +112,7 @@ static char *ppsz_pos_descriptions[] =
  *****************************************************************************/
 vlc_module_begin();
     set_capability( "sub filter", 0 );
-    set_shortname( N_("Marquee" ));
+    set_shortname( _("Marquee" ));
     set_callbacks( CreateFilter, DestroyFilter );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_SUBPIC );

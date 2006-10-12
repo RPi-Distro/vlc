@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc using libcdio
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: cdda.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: cdda.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -112,7 +112,7 @@ vlc_module_begin();
     add_usage_hint( N_("cddax://[device-or-file][@[T]track]") );
     set_description( _("Compact Disc Digital Audio (CD-DA) input") );
     set_capability( "access2", 10 /* compare with priority of cdda */ );
-    set_shortname( N_("Audio Compact Disc"));
+    set_shortname( _("Audio Compact Disc"));
     set_callbacks( CDDAOpen, CDDAClose );
     add_shortcut( "cddax" );
     add_shortcut( "cd" );

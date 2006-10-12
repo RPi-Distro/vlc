@@ -2,7 +2,7 @@
  * growl.c : growl notification plugin
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: growl.c 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: growl.c 17020 2006-10-10 18:33:26Z fkuehne $
  *
  * Authors: Jérôme Decoodt <djc -at- videolan -dot- org>
  *
@@ -70,7 +70,7 @@ static int CheckAndSend( vlc_object_t *p_this, uint8_t* p_data, int i_offset );
 vlc_module_begin();
     set_category( CAT_INTERFACE );
     set_subcategory( SUBCAT_INTERFACE_CONTROL );
-    set_shortname( N_( "Growl" ) );
+    set_shortname( "Growl" );
     set_description( _("Growl Notification Plugin") );
 
     add_string( "growl-server", SERVER_DEFAULT, NULL,

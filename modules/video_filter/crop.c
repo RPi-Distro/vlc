@@ -2,7 +2,7 @@
  * crop.c : Crop video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: crop.c 14977 2006-03-30 08:40:51Z zorglub $
+ * $Id: crop.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -59,7 +59,7 @@ static int  SendEvents( vlc_object_t *, char const *,
 
 vlc_module_begin();
     set_description( _("Crop video filter") );
-    set_shortname( N_("Crop" ));
+    set_shortname( _("Crop" ));
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VFILTER );
     set_capability( "video filter", 0 );

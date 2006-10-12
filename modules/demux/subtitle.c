@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: subtitle.c 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: subtitle.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -44,15 +44,15 @@ static int  Open ( vlc_object_t *p_this );
 static void Close( vlc_object_t *p_this );
 
 #define SUB_DELAY_LONGTEXT \
-    "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
+    N_("Apply a delay to all subtitles (in 1/10s, eg 100 means 10s).")
 #define SUB_FPS_LONGTEXT \
-    "Override the normal frames per second settings. " \
-    "This will only work with MicroDVD and SubRIP (SRT) subtitles."
+    N_("Override the normal frames per second settings. " \
+    "This will only work with MicroDVD and SubRIP (SRT) subtitles.")
 #define SUB_TYPE_LONGTEXT \
-    "Force the subtiles format. Valid values are : \"microdvd\", \"subrip\"," \
-    "\"ssa1\", \"ssa2-4\", \"ass\", \"vplayer\" " \
+    N_("Force the subtiles format. Valid values are : \"microdvd\", " \
+    "\"subrip\",  \"ssa1\", \"ssa2-4\", \"ass\", \"vplayer\" " \
     "\"sami\", \"dvdsubtitle\" and \"auto\" (meaning autodetection, this " \
-    "should always work)."
+    "should always work).")
 static char *ppsz_sub_type[] =
 {
     "auto", "microdvd", "subrip", "subviewer", "ssa1",

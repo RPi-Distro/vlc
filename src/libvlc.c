@@ -2,7 +2,7 @@
  * libvlc.c: main libvlc source
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: libvlc.c 16931 2006-10-03 09:04:50Z damienf $
+ * $Id: libvlc.c 17005 2006-10-08 22:21:22Z jpsaman $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -803,15 +803,15 @@ int VLC_Init( int i_object, int i_argc, char *ppsz_argv[] )
     /*
      * FIXME: kludge to use a p_vlc-local variable for the Mozilla plugin
      */
-    var_Create( p_libvlc, "drawable", VLC_VAR_INTEGER );
-    var_Create( p_libvlc, "drawable-view-top", VLC_VAR_INTEGER );
-    var_Create( p_libvlc, "drawable-view-left", VLC_VAR_INTEGER );
-    var_Create( p_libvlc, "drawable-view-bottom", VLC_VAR_INTEGER );
-    var_Create( p_libvlc, "drawable-view-right", VLC_VAR_INTEGER );
-    var_Create( p_libvlc, "drawable-clip-top", VLC_VAR_INTEGER );
-    var_Create( p_libvlc, "drawable-clip-left", VLC_VAR_INTEGER );
-    var_Create( p_libvlc, "drawable-clip-bottom", VLC_VAR_INTEGER );
-    var_Create( p_libvlc, "drawable-clip-right", VLC_VAR_INTEGER );
+    var_Create( p_vlc, "drawable", VLC_VAR_INTEGER );
+    var_Create( p_vlc, "drawable-view-top", VLC_VAR_INTEGER );
+    var_Create( p_vlc, "drawable-view-left", VLC_VAR_INTEGER );
+    var_Create( p_vlc, "drawable-view-bottom", VLC_VAR_INTEGER );
+    var_Create( p_vlc, "drawable-view-right", VLC_VAR_INTEGER );
+    var_Create( p_vlc, "drawable-clip-top", VLC_VAR_INTEGER );
+    var_Create( p_vlc, "drawable-clip-left", VLC_VAR_INTEGER );
+    var_Create( p_vlc, "drawable-clip-bottom", VLC_VAR_INTEGER );
+    var_Create( p_vlc, "drawable-clip-right", VLC_VAR_INTEGER );
 
     /* Create volume callback system. */
     var_Create( p_vlc, "volume-change", VLC_VAR_BOOL );

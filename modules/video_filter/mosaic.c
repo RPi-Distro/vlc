@@ -2,7 +2,7 @@
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: mosaic.c 15199 2006-04-13 09:04:34Z zorglub $
+ * $Id: mosaic.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Antoine Cellerier <dionoea@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -174,8 +174,8 @@ static char *ppsz_align_descriptions[] =
 
 
 vlc_module_begin();
-    set_description( N_("Mosaic video sub filter") );
-    set_shortname( N_("Mosaic") );
+    set_description( _("Mosaic video sub filter") );
+    set_shortname( _("Mosaic") );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_SUBPIC);
     set_capability( "sub filter", 0 );

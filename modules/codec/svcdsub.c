@@ -2,7 +2,7 @@
  * svcdsub.c : Overlay Graphics Text (SVCD subtitles) decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: svcdsub.c 16798 2006-09-22 23:56:12Z xtophe $
+ * $Id: svcdsub.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -39,17 +39,16 @@ static int  DecoderOpen   ( vlc_object_t * );
 static int  PacketizerOpen( vlc_object_t * );
 static void DecoderClose  ( vlc_object_t * );
 
-#define DEBUG_TEXT \
-     "Enable debug"
+#define DEBUG_TEXT N_("Enable debug")
 
-#define DEBUG_LONGTEXT N_( \
-    "This integer when viewed in binary is a debugging mask\n" \
+#define DEBUG_LONGTEXT  \
+    N_("This integer when viewed in binary is a debugging mask\n" \
     "calls                 1\n" \
-    "packet assembly info  2\n")
+    "packet assembly info  2\n" )
 
 vlc_module_begin();
     set_description( _("Philips OGT (SVCD subtitle) decoder") );
-    set_shortname( N_("SVCD subtitles"));
+    set_shortname( _("SVCD subtitles") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_SCODEC );
     set_capability( "decoder", 50 );

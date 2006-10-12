@@ -336,6 +336,8 @@ SOURCES_activex = \
     dataobject.h \
     viewobject.cpp \
     viewobject.h \
+    supporterrorinfo.cpp \
+    supporterrorinfo.h \
     vlccontrol.cpp \
     vlccontrol.h \
     vlccontrol2.cpp \
@@ -344,6 +346,7 @@ SOURCES_activex = \
     plugin.h \
     axvlc_idl.c \
     axvlc_idl.h \
+    guiddef.h \
     $(NULL)
 
 
@@ -403,8 +406,9 @@ am__libaxvlc_a_SOURCES_DIST = main.cpp utils.cpp utils.h olecontrol.cpp \
 	provideclassinfo.h connectioncontainer.cpp \
 	connectioncontainer.h objectsafety.cpp objectsafety.h \
 	dataobject.cpp dataobject.h viewobject.cpp viewobject.h \
-	vlccontrol.cpp vlccontrol.h vlccontrol2.cpp vlccontrol2.h \
-	plugin.cpp plugin.h axvlc_idl.c axvlc_idl.h
+	supporterrorinfo.cpp supporterrorinfo.h vlccontrol.cpp \
+	vlccontrol.h vlccontrol2.cpp vlccontrol2.h plugin.cpp plugin.h \
+	axvlc_idl.c axvlc_idl.h guiddef.h
 am__objects_2 = libaxvlc_a-main.$(OBJEXT) libaxvlc_a-utils.$(OBJEXT) \
 	libaxvlc_a-olecontrol.$(OBJEXT) \
 	libaxvlc_a-oleinplaceactiveobject.$(OBJEXT) \
@@ -417,6 +421,7 @@ am__objects_2 = libaxvlc_a-main.$(OBJEXT) libaxvlc_a-utils.$(OBJEXT) \
 	libaxvlc_a-connectioncontainer.$(OBJEXT) \
 	libaxvlc_a-objectsafety.$(OBJEXT) \
 	libaxvlc_a-dataobject.$(OBJEXT) libaxvlc_a-viewobject.$(OBJEXT) \
+	libaxvlc_a-supporterrorinfo.$(OBJEXT) \
 	libaxvlc_a-vlccontrol.$(OBJEXT) \
 	libaxvlc_a-vlccontrol2.$(OBJEXT) libaxvlc_a-plugin.$(OBJEXT) \
 	libaxvlc_a-axvlc_idl.$(OBJEXT) $(am__objects_1)
@@ -441,6 +446,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-persiststreaminit.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-plugin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-provideclassinfo.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-supporterrorinfo.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-utils.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-viewobject.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libaxvlc_a-vlccontrol.Po \
@@ -506,6 +512,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-persiststreaminit.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-plugin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-provideclassinfo.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-supporterrorinfo.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-utils.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-viewobject.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libaxvlc_a-vlccontrol.Po@am__quote@
@@ -1071,6 +1078,39 @@ libaxvlc_a-viewobject.lo: viewobject.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libaxvlc_a-viewobject.Plo' tmpdepfile='$(DEPDIR)/libaxvlc_a-viewobject.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libaxvlc_a-viewobject.lo `test -f 'viewobject.cpp' || echo '$(srcdir)/'`viewobject.cpp
+
+libaxvlc_a-supporterrorinfo.o: supporterrorinfo.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libaxvlc_a-supporterrorinfo.o -MD -MP -MF "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libaxvlc_a-supporterrorinfo.o `test -f 'supporterrorinfo.cpp' || echo '$(srcdir)/'`supporterrorinfo.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Tpo" "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='supporterrorinfo.cpp' object='libaxvlc_a-supporterrorinfo.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libaxvlc_a-supporterrorinfo.Po' tmpdepfile='$(DEPDIR)/libaxvlc_a-supporterrorinfo.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libaxvlc_a-supporterrorinfo.o `test -f 'supporterrorinfo.cpp' || echo '$(srcdir)/'`supporterrorinfo.cpp
+
+libaxvlc_a-supporterrorinfo.obj: supporterrorinfo.cpp
+@am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libaxvlc_a-supporterrorinfo.obj -MD -MP -MF "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libaxvlc_a-supporterrorinfo.obj `if test -f 'supporterrorinfo.cpp'; then $(CYGPATH_W) 'supporterrorinfo.cpp'; else $(CYGPATH_W) '$(srcdir)/supporterrorinfo.cpp'; fi`; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Tpo" "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Po"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='supporterrorinfo.cpp' object='libaxvlc_a-supporterrorinfo.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libaxvlc_a-supporterrorinfo.Po' tmpdepfile='$(DEPDIR)/libaxvlc_a-supporterrorinfo.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libaxvlc_a-supporterrorinfo.obj `if test -f 'supporterrorinfo.cpp'; then $(CYGPATH_W) 'supporterrorinfo.cpp'; else $(CYGPATH_W) '$(srcdir)/supporterrorinfo.cpp'; fi`
+
+libaxvlc_a-supporterrorinfo.lo: supporterrorinfo.cpp
+@am__fastdepCXX_TRUE@	if $(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libaxvlc_a-supporterrorinfo.lo -MD -MP -MF "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Tpo" \
+@am__fastdepCXX_TRUE@	  -c -o libaxvlc_a-supporterrorinfo.lo `test -f 'supporterrorinfo.cpp' || echo '$(srcdir)/'`supporterrorinfo.cpp; \
+@am__fastdepCXX_TRUE@	then mv -f "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Tpo" "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Plo"; \
+@am__fastdepCXX_TRUE@	else rm -f "$(DEPDIR)/libaxvlc_a-supporterrorinfo.Tpo"; exit 1; \
+@am__fastdepCXX_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	source='supporterrorinfo.cpp' object='libaxvlc_a-supporterrorinfo.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	depfile='$(DEPDIR)/libaxvlc_a-supporterrorinfo.Plo' tmpdepfile='$(DEPDIR)/libaxvlc_a-supporterrorinfo.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(LIBTOOL) --mode=compile $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -c -o libaxvlc_a-supporterrorinfo.lo `test -f 'supporterrorinfo.cpp' || echo '$(srcdir)/'`supporterrorinfo.cpp
 
 libaxvlc_a-vlccontrol.o: vlccontrol.cpp
 @am__fastdepCXX_TRUE@	if $(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaxvlc_a_CXXFLAGS) $(CXXFLAGS) -MT libaxvlc_a-vlccontrol.o -MD -MP -MF "$(DEPDIR)/libaxvlc_a-vlccontrol.Tpo" \

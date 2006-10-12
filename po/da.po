@@ -1,6 +1,6 @@
 # Danish translation for VLC.
 # Copyright (C) 2004-2005 the VideoLAN team
-# $Id: da.po 16862 2006-09-26 13:56:46Z xtophe $
+# $Id: da.po 17013 2006-10-09 22:26:35Z xtophe $
 # Translated by:
 # Jonas Larsen <jonas@vrt.dk>
 # Morten Brix Pedersen <morten@wtf.dk>
@@ -17,26 +17,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: da\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 18:45+0200\n"
+"POT-Creation-Date: 2006-10-12 19:53+0200\n"
 "PO-Revision-Date: 2005-06-23 21:55+0100\n"
 "Last-Translator: Jonas A. Larsen <jonas@vrt.dk>\n"
 "Language-Team: Danish <da@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: include/vlc/vlc.h:578
-msgid ""
-"This program comes with NO WARRANTY, to the extent permitted by law.\n"
-"You may redistribute it under the terms of the GNU General Public License;\n"
-"see the file named COPYING for details.\n"
-"Written by the VideoLAN team; see the AUTHORS file.\n"
-msgstr ""
-"Dette program kommer med INGEN GARANTI, til hvad der omfang der tillades \n"
-"ved lov.\n"
-"Du må re-distribuere det under de forhold der gælder for GNU General Public\n"
-" License; se filen navngivet COPYING for detaljer.\n"
-"Skrevet af VdieoLAN-holdet; se AUTHORS-filen.\n"
 
 #: include/vlc_config_cat.h:32
 msgid "VLC preferences"
@@ -513,9 +500,9 @@ msgstr ""
 "åbne en dos kommandoprompt, og fra den mappe hvor VLC er installeret, køre "
 "\"vlc -I wxwin\"\n"
 
-#: include/vlc_meta.h:28 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1293 modules/gui/macosx/playlistinfo.m:205
-#: modules/gui/macosx/playlistinfo.m:310 modules/misc/growl.c:166
+#: include/vlc_meta.h:28 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlistinfo.m:310 modules/gui/macosx/playlist.m:318
+#: modules/gui/macosx/playlist.m:1293 modules/misc/growl.c:166
 #: modules/misc/growl.c:169 modules/misc/notify.c:156
 #: modules/misc/notify.c:159
 msgid "Meta-information"
@@ -530,15 +517,15 @@ msgstr "Meta-oplysninger"
 msgid "Title"
 msgstr "Titel"
 
-#: include/vlc_meta.h:30 modules/gui/macosx/playlist.m:134
-#: modules/gui/macosx/playlistinfo.m:58 modules/gui/macosx/wizard.m:393
+#: include/vlc_meta.h:30 modules/gui/macosx/playlistinfo.m:58
+#: modules/gui/macosx/playlist.m:134 modules/gui/macosx/wizard.m:393
 #: modules/gui/wince/playlist.cpp:674 modules/mux/asf.c:50
 msgid "Author"
 msgstr "Forfatter"
 
-#: include/vlc_meta.h:31 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1293 modules/gui/macosx/playlistinfo.m:205
-#: modules/gui/macosx/playlistinfo.m:310
+#: include/vlc_meta.h:31 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlistinfo.m:310 modules/gui/macosx/playlist.m:318
+#: modules/gui/macosx/playlist.m:1293
 msgid "Artist"
 msgstr "Kunstner"
 
@@ -680,6 +667,19 @@ msgstr "Codec navn"
 #: include/vlc_meta.h:69
 msgid "Codec Description"
 msgstr "Codec beskrivelse"
+
+#: include/vlc/vlc.h:578
+msgid ""
+"This program comes with NO WARRANTY, to the extent permitted by law.\n"
+"You may redistribute it under the terms of the GNU General Public License;\n"
+"see the file named COPYING for details.\n"
+"Written by the VideoLAN team; see the AUTHORS file.\n"
+msgstr ""
+"Dette program kommer med INGEN GARANTI, til hvad der omfang der tillades \n"
+"ved lov.\n"
+"Du må re-distribuere det under de forhold der gælder for GNU General Public\n"
+" License; se filen navngivet COPYING for detaljer.\n"
+"Skrevet af VdieoLAN-holdet; se AUTHORS-filen.\n"
 
 #: src/audio_output/input.c:80 src/audio_output/input.c:126
 #: src/input/es_out.c:361 src/libvlc.h:408 src/video_output/video_output.c:379
@@ -984,6 +984,26 @@ msgstr "Skift interface"
 msgid "Add Interface"
 msgstr "Tilføj grænseflade"
 
+#: src/interface/interface.c:380
+#, fuzzy
+msgid "Telnet Interface"
+msgstr "Telnet grænseflade port"
+
+#: src/interface/interface.c:382
+#, fuzzy
+msgid "Web Interface"
+msgstr "Grænseflade"
+
+#: src/interface/interface.c:384
+#, fuzzy
+msgid "Debug logging"
+msgstr "Fil logning"
+
+#: src/interface/interface.c:386
+#, fuzzy
+msgid "Mouse Gestures"
+msgstr "Fagter"
+
 #: src/libvlc.c:331 src/libvlc.c:479 src/misc/modules.c:1684
 #: src/misc/modules.c:1988
 msgid "C"
@@ -1109,6 +1129,10 @@ msgstr "Japansk"
 #: src/libvlc.h:40 src/misc/iso-639_def.h:79
 msgid "Georgian"
 msgstr ""
+
+#: src/libvlc.h:40 src/misc/iso-639_def.h:125
+msgid "Malay"
+msgstr "Malaisisk"
 
 #: src/libvlc.h:40 src/misc/iso-639_def.h:111
 msgid "Korean"
@@ -4090,10 +4114,6 @@ msgstr ""
 msgid "Marathi"
 msgstr ""
 
-#: src/misc/iso-639_def.h:125
-msgid "Malay"
-msgstr "Malaisisk"
-
 #: src/misc/iso-639_def.h:126
 msgid "Malagasy"
 msgstr ""
@@ -4456,7 +4476,7 @@ msgid "Aspect-ratio"
 msgstr "Udseendeforhold"
 
 #: modules/access/cdda.c:52 modules/access/dshow/dshow.cpp:80
-#: modules/access/dv.c:68 modules/access/dvb/access.c:72
+#: modules/access/dvb/access.c:72 modules/access/dv.c:68
 #: modules/access/dvdnav.c:63 modules/access/dvdread.c:61
 #: modules/access/fake.c:40 modules/access/file.c:79 modules/access/ftp.c:42
 #: modules/access/gnomevfs.c:44 modules/access/http.c:53
@@ -4521,7 +4541,7 @@ msgid "Audio CD - Track %i"
 msgstr "Lydspor"
 
 #: modules/access/cdda/cdda.c:42 modules/access/directory.c:78
-#: modules/codec/x264.c:306 modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/codec/x264.c:321 modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "none"
 msgstr "ingen"
 
@@ -5003,21 +5023,6 @@ msgstr "Opdater liste"
 msgid "Configure"
 msgstr "Indstil"
 
-#: modules/access/dv.c:70
-#, fuzzy
-msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
-msgstr ""
-"Lader dig indstille standard cache størelse for UDP streams. Angives i "
-"milisekunder."
-
-#: modules/access/dv.c:74
-msgid "Digital Video (Firewire/ieee1394)  input"
-msgstr ""
-
-#: modules/access/dv.c:75
-msgid "dv"
-msgstr ""
-
 #: modules/access/dvb/access.c:74
 #, fuzzy
 msgid ""
@@ -5259,6 +5264,21 @@ msgstr ""
 msgid "HTTP server"
 msgstr "HTTP brugernavn"
 
+#: modules/access/dv.c:70
+#, fuzzy
+msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
+msgstr ""
+"Lader dig indstille standard cache størelse for UDP streams. Angives i "
+"milisekunder."
+
+#: modules/access/dv.c:74
+msgid "Digital Video (Firewire/ieee1394)  input"
+msgstr ""
+
+#: modules/access/dv.c:75
+msgid "dv"
+msgstr ""
+
 #: modules/access/dvdnav.c:59 modules/access/dvdread.c:57
 msgid "DVD angle"
 msgstr "DVD vinkel"
@@ -5411,6 +5431,51 @@ msgstr "Falsk inddata"
 msgid "File"
 msgstr "Fil"
 
+#: modules/access_filter/record.c:43
+#, fuzzy
+msgid "Record directory"
+msgstr "Kildemappe"
+
+#: modules/access_filter/record.c:45
+#, fuzzy
+msgid "Directory where the record will be stored."
+msgstr "Lader dig indstille hvilken mappe video snapshots skal gemmes i."
+
+#: modules/access_filter/timeshift.c:44
+#, fuzzy
+msgid "Timeshift granularity"
+msgstr "Tidsforskydelse"
+
+#: modules/access_filter/timeshift.c:46
+#, fuzzy
+msgid ""
+"This is the size of the temporary files tha will be used to store the "
+"timeshifted streams."
+msgstr "Video filtre bruges til at efter-bearbejde video streamen."
+
+#: modules/access_filter/timeshift.c:48
+#, fuzzy
+msgid "Timeshift directory"
+msgstr "Video snapshot mappe"
+
+#: modules/access_filter/timeshift.c:49
+msgid "Directory used to store the timeshift temporary files."
+msgstr ""
+
+#: modules/access_filter/timeshift.c:51
+msgid "Force use of the timeshift module"
+msgstr ""
+
+#: modules/access_filter/timeshift.c:52
+msgid ""
+"Force use of the timeshift module even if the access declares that it can "
+"control pace or pause."
+msgstr ""
+
+#: modules/access_filter/timeshift.c:56 modules/access_filter/timeshift.c:57
+msgid "Timeshift"
+msgstr "Tidsforskydelse"
+
 #: modules/access/ftp.c:44
 #, fuzzy
 msgid ""
@@ -5557,6 +5622,174 @@ msgstr ""
 #: modules/access/mms/mms.c:62
 msgid "Microsoft Media Server (MMS) input"
 msgstr "Microsoft Media Server (MMS) inddata"
+
+#: modules/access_output/dummy.c:40 modules/stream_out/dummy.c:47
+msgid "Dummy stream output"
+msgstr "Attrap-stream uddata"
+
+#: modules/access_output/dummy.c:41 modules/misc/dummy/dummy.c:58
+msgid "Dummy"
+msgstr "Attrap"
+
+#: modules/access_output/file.c:61
+msgid "Append to file"
+msgstr "Tilføj til fil"
+
+#: modules/access_output/file.c:62
+msgid "Append to file if it exists instead of replacing it."
+msgstr ""
+"Tilføjer til filen hvis den findes i forvejen i stedet for at erstatte den"
+
+#: modules/access_output/file.c:66
+msgid "File stream output"
+msgstr "Fil-stream uddata"
+
+#: modules/access_output/http.c:60
+msgid "Username"
+msgstr "Brugernavn"
+
+#: modules/access_output/http.c:61
+msgid "User name that will be requested to access the stream."
+msgstr ""
+
+#: modules/access_output/http.c:64
+msgid "Password that will be requested to access the stream."
+msgstr ""
+
+#: modules/access_output/http.c:68
+msgid "Mime"
+msgstr "Mime"
+
+#: modules/access_output/http.c:69
+msgid "MIME returned by the server (autodetected if not specified."
+msgstr ""
+
+#: modules/access_output/http.c:73
+#, fuzzy
+msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
+msgstr "HTTP grændseflade x509 PEM certifikat (Aktivere SSL)"
+
+#: modules/access_output/http.c:76
+#, fuzzy
+msgid ""
+"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
+"empty if you don't have one."
+msgstr "HTTP grændseflade x509 PEM certifikat (Aktivere SSL)"
+
+#: modules/access_output/http.c:80
+#, fuzzy
+msgid ""
+"Path to the x509 PEM trusted root CA certificates (certificate authority) "
+"file that will be used for HTTPS. Leave empty if you don't have one."
+msgstr "HTTP grændseflade x509 PEM certifikat (Aktivere SSL)"
+
+#: modules/access_output/http.c:85
+msgid ""
+"Path to the x509 PEM Certificates Revocation List file that will be used for "
+"SSL. Leave empty if you don't have one."
+msgstr ""
+
+#: modules/access_output/http.c:88
+msgid "Advertise with Bonjour"
+msgstr ""
+
+#: modules/access_output/http.c:89
+msgid "Advertise the stream with the Bonjour protocol."
+msgstr ""
+
+#: modules/access_output/http.c:93
+msgid "HTTP stream output"
+msgstr "HTTP stream-uddata"
+
+#: modules/access_output/shout.c:58
+#, fuzzy
+msgid "Stream name"
+msgstr "Stream"
+
+#: modules/access_output/shout.c:59
+msgid "Name to give to this stream/channel on the icecast server."
+msgstr ""
+
+#: modules/access_output/shout.c:62
+#, fuzzy
+msgid "Stream description"
+msgstr "Sesions beskrivelse"
+
+#: modules/access_output/shout.c:63
+msgid "Description of the stream content or information about your channel."
+msgstr ""
+
+#: modules/access_output/shout.c:66
+#, fuzzy
+msgid "Stream MP3"
+msgstr "Stream"
+
+#: modules/access_output/shout.c:67
+msgid ""
+"You normally have to feed the shoutcast module with Ogg streams. It is also "
+"possible to stream MP3 instead, so you can forward MP3 streams to the "
+"icecast server."
+msgstr ""
+
+#: modules/access_output/shout.c:73
+#, fuzzy
+msgid "IceCAST output"
+msgstr "Uddata tilgang"
+
+#: modules/access_output/udp.c:75 modules/access/rtsp/access.c:40
+#: modules/demux/live555.cpp:62
+msgid "Caching value (ms)"
+msgstr "Cache størrelse (ms)"
+
+#: modules/access_output/udp.c:77
+#, fuzzy
+msgid ""
+"Default caching value for outbound UDP streams. This value should be set in "
+"milliseconds."
+msgstr ""
+"Lader dig indstille standard cache størelse for UDP streams. Angives i "
+"milisekunder."
+
+#: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
+#: modules/gui/macosx/wizard.m:1846
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:610
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:91
+msgid "Time-To-Live (TTL)"
+msgstr "Time-To-Live (TTL)"
+
+#: modules/access_output/udp.c:81
+#, fuzzy
+msgid "Time-To-Live of the outgoing stream."
+msgstr "Lader dig skalere videoen før encoding"
+
+#: modules/access_output/udp.c:84
+msgid "Group packets"
+msgstr "Gruppér pakker"
+
+#: modules/access_output/udp.c:85
+#, fuzzy
+msgid ""
+"Packets can be sent one by one at the right time or by groups. You can "
+"choose the number of packets that will be sent at a time. It helps reducing "
+"the scheduling load on heavily-loaded systems."
+msgstr ""
+"Pakker kan sendes en ad gangen eller via grupper. Dette tillader dig at "
+"kontrollere antallet af pakker der bliver sendt af gangen. Det kan hjælpe "
+"med frigive ressourcer på et presset system."
+
+#: modules/access_output/udp.c:90
+msgid "Raw write"
+msgstr ""
+
+#: modules/access_output/udp.c:91
+msgid ""
+"Packets will be sent directly, without trying to fill the MTU (ie, without "
+"trying to make the biggest possible packets in order to improve streaming)."
+msgstr ""
+
+#: modules/access_output/udp.c:97
+msgid "UDP stream output"
+msgstr "UDP stream uddata"
 
 #: modules/access/pvr/pvr.c:49
 #, fuzzy
@@ -5732,11 +5965,6 @@ msgstr "PVR"
 #: modules/access/pvr/pvr.c:117
 msgid "IVTV MPEG Encoding cards input"
 msgstr ""
-
-#: modules/access/rtsp/access.c:40 modules/access_output/udp.c:75
-#: modules/demux/live555.cpp:62
-msgid "Caching value (ms)"
-msgstr "Cache størrelse (ms)"
 
 #: modules/access/rtsp/access.c:42
 #, fuzzy
@@ -6212,224 +6440,6 @@ msgstr ""
 msgid "Format to use in the playlist's \"title\" field."
 msgstr ""
 
-#: modules/access_filter/record.c:43
-#, fuzzy
-msgid "Record directory"
-msgstr "Kildemappe"
-
-#: modules/access_filter/record.c:45
-#, fuzzy
-msgid "Directory where the record will be stored."
-msgstr "Lader dig indstille hvilken mappe video snapshots skal gemmes i."
-
-#: modules/access_filter/timeshift.c:44
-#, fuzzy
-msgid "Timeshift granularity"
-msgstr "Tidsforskydelse"
-
-#: modules/access_filter/timeshift.c:46
-#, fuzzy
-msgid ""
-"This is the size of the temporary files tha will be used to store the "
-"timeshifted streams."
-msgstr "Video filtre bruges til at efter-bearbejde video streamen."
-
-#: modules/access_filter/timeshift.c:48
-#, fuzzy
-msgid "Timeshift directory"
-msgstr "Video snapshot mappe"
-
-#: modules/access_filter/timeshift.c:49
-msgid "Directory used to store the timeshift temporary files."
-msgstr ""
-
-#: modules/access_filter/timeshift.c:51
-msgid "Force use of the timeshift module"
-msgstr ""
-
-#: modules/access_filter/timeshift.c:52
-msgid ""
-"Force use of the timeshift module even if the access declares that it can "
-"control pace or pause."
-msgstr ""
-
-#: modules/access_filter/timeshift.c:56 modules/access_filter/timeshift.c:57
-msgid "Timeshift"
-msgstr "Tidsforskydelse"
-
-#: modules/access_output/dummy.c:40 modules/stream_out/dummy.c:47
-msgid "Dummy stream output"
-msgstr "Attrap-stream uddata"
-
-#: modules/access_output/dummy.c:41 modules/misc/dummy/dummy.c:58
-msgid "Dummy"
-msgstr "Attrap"
-
-#: modules/access_output/file.c:61
-msgid "Append to file"
-msgstr "Tilføj til fil"
-
-#: modules/access_output/file.c:62
-msgid "Append to file if it exists instead of replacing it."
-msgstr ""
-"Tilføjer til filen hvis den findes i forvejen i stedet for at erstatte den"
-
-#: modules/access_output/file.c:66
-msgid "File stream output"
-msgstr "Fil-stream uddata"
-
-#: modules/access_output/http.c:60
-msgid "Username"
-msgstr "Brugernavn"
-
-#: modules/access_output/http.c:61
-msgid "User name that will be requested to access the stream."
-msgstr ""
-
-#: modules/access_output/http.c:64
-msgid "Password that will be requested to access the stream."
-msgstr ""
-
-#: modules/access_output/http.c:68
-msgid "Mime"
-msgstr "Mime"
-
-#: modules/access_output/http.c:69
-msgid "MIME returned by the server (autodetected if not specified."
-msgstr ""
-
-#: modules/access_output/http.c:73
-#, fuzzy
-msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
-msgstr "HTTP grændseflade x509 PEM certifikat (Aktivere SSL)"
-
-#: modules/access_output/http.c:76
-#, fuzzy
-msgid ""
-"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
-"empty if you don't have one."
-msgstr "HTTP grændseflade x509 PEM certifikat (Aktivere SSL)"
-
-#: modules/access_output/http.c:80
-#, fuzzy
-msgid ""
-"Path to the x509 PEM trusted root CA certificates (certificate authority) "
-"file that will be used for HTTPS. Leave empty if you don't have one."
-msgstr "HTTP grændseflade x509 PEM certifikat (Aktivere SSL)"
-
-#: modules/access_output/http.c:85
-msgid ""
-"Path to the x509 PEM Certificates Revocation List file that will be used for "
-"SSL. Leave empty if you don't have one."
-msgstr ""
-
-#: modules/access_output/http.c:88
-msgid "Advertise with Bonjour"
-msgstr ""
-
-#: modules/access_output/http.c:89
-msgid "Advertise the stream with the Bonjour protocol."
-msgstr ""
-
-#: modules/access_output/http.c:93
-msgid "HTTP stream output"
-msgstr "HTTP stream-uddata"
-
-#: modules/access_output/http.c:95 modules/control/http/http.c:61
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:472
-msgid "HTTP"
-msgstr "HTTP"
-
-#: modules/access_output/shout.c:58
-#, fuzzy
-msgid "Stream name"
-msgstr "Stream"
-
-#: modules/access_output/shout.c:59
-msgid "Name to give to this stream/channel on the icecast server."
-msgstr ""
-
-#: modules/access_output/shout.c:62
-#, fuzzy
-msgid "Stream description"
-msgstr "Sesions beskrivelse"
-
-#: modules/access_output/shout.c:63
-msgid "Description of the stream content or information about your channel."
-msgstr ""
-
-#: modules/access_output/shout.c:66
-#, fuzzy
-msgid "Stream MP3"
-msgstr "Stream"
-
-#: modules/access_output/shout.c:67
-msgid ""
-"You normally have to feed the shoutcast module with Ogg streams. It is also "
-"possible to stream MP3 instead, so you can forward MP3 streams to the "
-"icecast server."
-msgstr ""
-
-#: modules/access_output/shout.c:73
-#, fuzzy
-msgid "IceCAST output"
-msgstr "Uddata tilgang"
-
-#: modules/access_output/udp.c:77
-#, fuzzy
-msgid ""
-"Default caching value for outbound UDP streams. This value should be set in "
-"milliseconds."
-msgstr ""
-"Lader dig indstille standard cache størelse for UDP streams. Angives i "
-"milisekunder."
-
-#: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
-#: modules/gui/macosx/wizard.m:1846
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:610
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:91
-msgid "Time-To-Live (TTL)"
-msgstr "Time-To-Live (TTL)"
-
-#: modules/access_output/udp.c:81
-#, fuzzy
-msgid "Time-To-Live of the outgoing stream."
-msgstr "Lader dig skalere videoen før encoding"
-
-#: modules/access_output/udp.c:84
-msgid "Group packets"
-msgstr "Gruppér pakker"
-
-#: modules/access_output/udp.c:85
-#, fuzzy
-msgid ""
-"Packets can be sent one by one at the right time or by groups. You can "
-"choose the number of packets that will be sent at a time. It helps reducing "
-"the scheduling load on heavily-loaded systems."
-msgstr ""
-"Pakker kan sendes en ad gangen eller via grupper. Dette tillader dig at "
-"kontrollere antallet af pakker der bliver sendt af gangen. Det kan hjælpe "
-"med frigive ressourcer på et presset system."
-
-#: modules/access_output/udp.c:90
-msgid "Raw write"
-msgstr ""
-
-#: modules/access_output/udp.c:91
-msgid ""
-"Packets will be sent directly, without trying to fill the MTU (ie, without "
-"trying to make the biggest possible packets in order to improve streaming)."
-msgstr ""
-
-#: modules/access_output/udp.c:97
-msgid "UDP stream output"
-msgstr "UDP stream uddata"
-
-#: modules/access_output/udp.c:98
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:475
-msgid "UDP"
-msgstr "UDP"
-
 #: modules/audio_filter/channel_mixer/dolby.c:47
 msgid "Simple decoder for Dolby Surround encoded streams"
 msgstr ""
@@ -6845,8 +6855,8 @@ msgstr "Attrap S/PDIF lyd mixer"
 msgid "Trivial audio mixer"
 msgstr "Trivial lydmixer"
 
-#: modules/audio_output/alsa.c:84 modules/codec/x264.c:300
-#: modules/codec/x264.c:306 modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/audio_output/alsa.c:84 modules/codec/x264.c:315
+#: modules/codec/x264.c:321 modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "default"
 msgstr "standard"
 
@@ -7583,7 +7593,7 @@ msgid ""
 "same qscale for I and P frames)."
 msgstr ""
 
-#: modules/codec/ffmpeg/ffmpeg.h:232 modules/codec/x264.c:263
+#: modules/codec/ffmpeg/ffmpeg.h:232 modules/codec/x264.c:269
 #: modules/demux/mod.c:73
 msgid "Noise reduction"
 msgstr ""
@@ -7887,22 +7897,27 @@ msgid ""
 "Try manually setting a character-encoding before you open the file."
 msgstr ""
 
-#: modules/codec/svcdsub.c:46
+#: modules/codec/svcdsub.c:42
+#, fuzzy
+msgid "Enable debug"
+msgstr "Aktivér video"
+
+#: modules/codec/svcdsub.c:45
 msgid ""
 "This integer when viewed in binary is a debugging mask\n"
 "calls                 1\n"
 "packet assembly info  2\n"
 msgstr ""
 
-#: modules/codec/svcdsub.c:51
+#: modules/codec/svcdsub.c:50
 msgid "Philips OGT (SVCD subtitle) decoder"
 msgstr ""
 
-#: modules/codec/svcdsub.c:52
+#: modules/codec/svcdsub.c:51
 msgid "SVCD subtitles"
 msgstr "SVCD undertekster"
 
-#: modules/codec/svcdsub.c:62
+#: modules/codec/svcdsub.c:61
 msgid "Philips OGT (SVCD subtitle) packetizer"
 msgstr ""
 
@@ -8149,150 +8164,161 @@ msgid ""
 "beta parameters. -6 means light filter, 6 means strong."
 msgstr ""
 
-#: modules/codec/x264.c:110
+#: modules/codec/x264.c:106
+msgid "H.264 level"
+msgstr ""
+
+#: modules/codec/x264.c:107
+msgid ""
+"Specify H.264 level (as defined by Annex A of the standard). Levels are not "
+"enforced; it's up to the user to select a level compatible with the rest of "
+"the encoding options. Range 1 to 5.1 (10 to 51 is also allowed)."
+msgstr ""
+
+#: modules/codec/x264.c:116
 #, fuzzy
 msgid "Interlaced mode"
 msgstr "Grænseflade-modul"
 
-#: modules/codec/x264.c:111
+#: modules/codec/x264.c:117
 #, fuzzy
 msgid "Pure-interlaced mode."
 msgstr "Grænseflade-modul"
 
-#: modules/codec/x264.c:116
+#: modules/codec/x264.c:122
 msgid "Set QP"
 msgstr ""
 
-#: modules/codec/x264.c:117
+#: modules/codec/x264.c:123
 msgid ""
 "This selects the quantizer to use. Lower values result in better fidelity, "
 "but higher bitrates. 26 is a good default value. Range 0 (lossless) to 51."
 msgstr ""
 
-#: modules/codec/x264.c:121
+#: modules/codec/x264.c:127
 msgid "Quality-based VBR"
 msgstr ""
 
-#: modules/codec/x264.c:122
+#: modules/codec/x264.c:128
 msgid "1-pass Quality-based VBR. Range 0 to 51."
 msgstr ""
 
-#: modules/codec/x264.c:124
+#: modules/codec/x264.c:130
 msgid "Min QP"
 msgstr ""
 
-#: modules/codec/x264.c:125
+#: modules/codec/x264.c:131
 msgid "Minimum quantizer parameter. 15 to 35 seems to be a useful range."
 msgstr ""
 
-#: modules/codec/x264.c:128
+#: modules/codec/x264.c:134
 msgid "Max QP"
 msgstr ""
 
-#: modules/codec/x264.c:129
+#: modules/codec/x264.c:135
 msgid "Maximum quantizer parameter."
 msgstr ""
 
-#: modules/codec/x264.c:131
+#: modules/codec/x264.c:137
 msgid "Max QP step"
 msgstr ""
 
-#: modules/codec/x264.c:132
+#: modules/codec/x264.c:138
 msgid "Max QP step between frames."
 msgstr ""
 
-#: modules/codec/x264.c:134
+#: modules/codec/x264.c:140
 #, fuzzy
 msgid "Average bitrate tolerance"
 msgstr "Bitrate Tolerance:"
 
-#: modules/codec/x264.c:135
+#: modules/codec/x264.c:141
 #, fuzzy
 msgid "Allowed variance in average bitrate (in kbits/s)."
 msgstr "Vælg stream med højest bitrate"
 
-#: modules/codec/x264.c:138
+#: modules/codec/x264.c:144
 #, fuzzy
 msgid "Max local bitrate"
 msgstr "Maksimal indkodnings bitrate"
 
-#: modules/codec/x264.c:139
+#: modules/codec/x264.c:145
 #, fuzzy
 msgid "Sets a maximum local bitrate (in kbits/s)."
 msgstr "Vælg stream med højest bitrate"
 
-#: modules/codec/x264.c:141
+#: modules/codec/x264.c:147
 msgid "VBV buffer"
 msgstr ""
 
-#: modules/codec/x264.c:142
+#: modules/codec/x264.c:148
 #, fuzzy
 msgid "Averaging period for the maximum local bitrate (in kbits)."
 msgstr "Vælg stream med højest bitrate"
 
-#: modules/codec/x264.c:145
+#: modules/codec/x264.c:151
 msgid "Initial VBV buffer occupancy"
 msgstr ""
 
-#: modules/codec/x264.c:146
+#: modules/codec/x264.c:152
 msgid ""
 "Sets the initial buffer occupancy as a fraction of the buffer size. Range "
 "0.0 to 1.0."
 msgstr ""
 
-#: modules/codec/x264.c:150
+#: modules/codec/x264.c:156
 msgid "QP factor between I and P"
 msgstr ""
 
-#: modules/codec/x264.c:151
+#: modules/codec/x264.c:157
 msgid "QP factor between I and P. Range 1.0 to 2.0."
 msgstr ""
 
-#: modules/codec/x264.c:154
+#: modules/codec/x264.c:160
 msgid "QP factor between P and B"
 msgstr ""
 
-#: modules/codec/x264.c:155
+#: modules/codec/x264.c:161
 msgid "QP factor between P and B. Range 1.0 to 2.0."
 msgstr ""
 
-#: modules/codec/x264.c:157
+#: modules/codec/x264.c:163
 msgid "QP difference between chroma and luma"
 msgstr ""
 
-#: modules/codec/x264.c:158
+#: modules/codec/x264.c:164
 msgid "QP difference between chroma and luma."
 msgstr ""
 
-#: modules/codec/x264.c:160
+#: modules/codec/x264.c:166
 msgid "QP curve compression"
 msgstr ""
 
-#: modules/codec/x264.c:161
+#: modules/codec/x264.c:167
 msgid "QP curve compression. Range 0.0 (CBR) to 1.0 (QCP)."
 msgstr ""
 
-#: modules/codec/x264.c:163 modules/codec/x264.c:167
+#: modules/codec/x264.c:169 modules/codec/x264.c:173
 msgid "Reduce fluctuations in QP"
 msgstr ""
 
-#: modules/codec/x264.c:164
+#: modules/codec/x264.c:170
 msgid ""
 "This reduces the fluctuations in QP before curve compression. Temporally "
 "blurs complexity."
 msgstr ""
 
-#: modules/codec/x264.c:168
+#: modules/codec/x264.c:174
 msgid ""
 "This reduces the fluctations in QP after curve compression. Temporally blurs "
 "quants."
 msgstr ""
 
-#: modules/codec/x264.c:173
+#: modules/codec/x264.c:179
 msgid "Partitions to consider"
 msgstr ""
 
-#: modules/codec/x264.c:174
+#: modules/codec/x264.c:180
 msgid ""
 "Partitions to consider in analyse mode: \n"
 " - none  : \n"
@@ -8303,42 +8329,42 @@ msgid ""
 "(p4x4 requires p8x8. i8x8 requires 8x8dct)."
 msgstr ""
 
-#: modules/codec/x264.c:182
+#: modules/codec/x264.c:188
 #, fuzzy
 msgid "Direct MV prediction mode"
 msgstr "DirectMedia objekt decoder"
 
-#: modules/codec/x264.c:183
+#: modules/codec/x264.c:189
 #, fuzzy
 msgid "Direct MV prediction mode."
 msgstr "DirectMedia objekt decoder"
 
-#: modules/codec/x264.c:186
+#: modules/codec/x264.c:192
 #, fuzzy
 msgid "Direct prediction size"
 msgstr "DirectMedia objekt decoder"
 
-#: modules/codec/x264.c:187
+#: modules/codec/x264.c:193
 msgid ""
 "Direct prediction size:  -  0: 4x4\n"
 " -  1: 8x8\n"
 " - -1: smallest possible according to level\n"
 msgstr ""
 
-#: modules/codec/x264.c:193
+#: modules/codec/x264.c:199
 msgid "Weighted prediction for B-frames"
 msgstr ""
 
-#: modules/codec/x264.c:194
+#: modules/codec/x264.c:200
 msgid "Weighted prediction for B-frames."
 msgstr ""
 
-#: modules/codec/x264.c:196
+#: modules/codec/x264.c:202
 #, fuzzy
 msgid "Integer pixel motion estimation method"
 msgstr "Aktiver interlaced indkodning"
 
-#: modules/codec/x264.c:197
+#: modules/codec/x264.c:203
 msgid ""
 "Selects the motion estimation algorithm:  - dia: diamond search, radius 1 "
 "(fast)\n"
@@ -8347,90 +8373,90 @@ msgid ""
 " - esa: exhaustive search (extremely slow, primarily for testing)\n"
 msgstr ""
 
-#: modules/codec/x264.c:203
+#: modules/codec/x264.c:209
 msgid "Maximum motion vector search range"
 msgstr ""
 
-#: modules/codec/x264.c:204
+#: modules/codec/x264.c:210
 msgid ""
 "Maximum distance to search for motion estimation, measured from predicted "
 "position(s). Default of 16 is good for most footage, high motion sequences "
 "may benefit from settings between 24 and 32. Range 0 to 64."
 msgstr ""
 
-#: modules/codec/x264.c:209
+#: modules/codec/x264.c:215
 msgid "Subpixel motion estimation and partition decision quality"
 msgstr ""
 
-#: modules/codec/x264.c:213
+#: modules/codec/x264.c:219
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
 "motion estimation decision process (lower = quicker and higher = better "
 "quality). Range 1 to 7."
 msgstr ""
 
-#: modules/codec/x264.c:218
+#: modules/codec/x264.c:224
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
 "motion estimation decision process (lower = quicker and higher = better "
 "quality). Range 1 to 6."
 msgstr ""
 
-#: modules/codec/x264.c:223
+#: modules/codec/x264.c:229
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
 "motion estimation decision process (lower = quicker and higher = better "
 "quality). Range 1 to 5."
 msgstr ""
 
-#: modules/codec/x264.c:228
+#: modules/codec/x264.c:234
 msgid "RD based mode decision for B-frames"
 msgstr ""
 
-#: modules/codec/x264.c:229
+#: modules/codec/x264.c:235
 msgid "RD based mode decision for B-frames. This requires subme 6 (or higher)."
 msgstr ""
 
-#: modules/codec/x264.c:232
+#: modules/codec/x264.c:238
 msgid "Decide references on a per partition basis"
 msgstr ""
 
-#: modules/codec/x264.c:233
+#: modules/codec/x264.c:239
 msgid ""
 "Allows each 8x8 or 16x8 partition to independently select a reference frame, "
 "as opposed to only one ref per macroblock."
 msgstr ""
 
-#: modules/codec/x264.c:237
+#: modules/codec/x264.c:243
 #, fuzzy
 msgid "Ignore chroma in motion estimation"
 msgstr "Aktiver interlaced indkodning"
 
-#: modules/codec/x264.c:238
+#: modules/codec/x264.c:244
 msgid "Chroma ME for subpel and mode decision in P-frames."
 msgstr ""
 
-#: modules/codec/x264.c:241
+#: modules/codec/x264.c:247
 msgid "Jointly optimize both MVs in B-frames"
 msgstr ""
 
-#: modules/codec/x264.c:242
+#: modules/codec/x264.c:248
 msgid "Joint bidirectional motion refinement."
 msgstr ""
 
-#: modules/codec/x264.c:244
+#: modules/codec/x264.c:250
 msgid "Adaptive spatial transform size"
 msgstr ""
 
-#: modules/codec/x264.c:246
+#: modules/codec/x264.c:252
 msgid "SATD-based decision for 8x8 transform in inter-MBs."
 msgstr ""
 
-#: modules/codec/x264.c:248
+#: modules/codec/x264.c:254
 msgid "Trellis RD quantization"
 msgstr ""
 
-#: modules/codec/x264.c:249
+#: modules/codec/x264.c:255
 msgid ""
 "Trellis RD quantization: \n"
 " - 0: disabled\n"
@@ -8439,145 +8465,164 @@ msgid ""
 "This requires CABAC."
 msgstr ""
 
-#: modules/codec/x264.c:255
+#: modules/codec/x264.c:261
 msgid "Early SKIP detection on P-frames"
 msgstr ""
 
-#: modules/codec/x264.c:256
+#: modules/codec/x264.c:262
 msgid "Early SKIP detection on P-frames."
 msgstr ""
 
-#: modules/codec/x264.c:258
+#: modules/codec/x264.c:264
 msgid "Coefficient thresholding on P-frames"
 msgstr ""
 
-#: modules/codec/x264.c:259
+#: modules/codec/x264.c:265
 msgid ""
 "Coefficient thresholding on P-frames.Eliminate dct blocks containing only a "
 "small single coefficient."
 msgstr ""
 
-#: modules/codec/x264.c:264
+#: modules/codec/x264.c:270
 msgid ""
 "Dct-domain noise reduction. Adaptive pseudo-deadzone. 10 to 1000 seems to be "
 "a useful range."
 msgstr ""
 
-#: modules/codec/x264.c:268
+#: modules/codec/x264.c:274
 msgid "Inter luma quantization deadzone"
 msgstr ""
 
-#: modules/codec/x264.c:269
+#: modules/codec/x264.c:275
 msgid "Set the size of the inter luma quantization deadzone. Range 0 to 32."
 msgstr ""
 
-#: modules/codec/x264.c:272
+#: modules/codec/x264.c:278
 msgid "Intra luma quantization deadzone"
 msgstr ""
 
-#: modules/codec/x264.c:273
+#: modules/codec/x264.c:279
 msgid "Set the size of the intra luma quantization deadzone. Range 0 to 32."
 msgstr ""
 
-#: modules/codec/x264.c:279
+#: modules/codec/x264.c:285
 #, fuzzy
 msgid "CPU optimizations"
 msgstr "Polarisering"
 
-#: modules/codec/x264.c:280
+#: modules/codec/x264.c:286
 #, fuzzy
 msgid "Use assembler CPU optimizations."
 msgstr "Polarisering"
 
-#: modules/codec/x264.c:282
+#: modules/codec/x264.c:288
 #, fuzzy
 msgid "PSNR computation"
 msgstr "Mætning"
 
-#: modules/codec/x264.c:283
+#: modules/codec/x264.c:289
 msgid ""
 "Compute and print PSNR stats. This has no effect on the actual encoding "
 "quality."
 msgstr ""
 
-#: modules/codec/x264.c:286
+#: modules/codec/x264.c:292
 #, fuzzy
 msgid "SSIM computation"
 msgstr "SMB domæne"
 
-#: modules/codec/x264.c:287
+#: modules/codec/x264.c:293
 msgid ""
 "Compute and print SSIM stats. This has no effect on the actual encoding "
 "quality."
 msgstr ""
 
-#: modules/codec/x264.c:290
+#: modules/codec/x264.c:296
 #, fuzzy
 msgid "Quiet mode"
 msgstr "Stille-tilstand"
 
-#: modules/codec/x264.c:291
+#: modules/codec/x264.c:297
 #, fuzzy
 msgid "Quiet mode."
 msgstr "Stille-tilstand"
 
-#: modules/codec/x264.c:293 modules/gui/macosx/playlistinfo.m:64
+#: modules/codec/x264.c:299 modules/gui/macosx/playlistinfo.m:64
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:85
 msgid "Statistics"
 msgstr ""
 
-#: modules/codec/x264.c:294
+#: modules/codec/x264.c:300
 msgid "Print stats for each frame."
 msgstr ""
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:303
+msgid "SPS and PPS id numbers"
+msgstr ""
+
+#: modules/codec/x264.c:304
+msgid ""
+"Set SPS and PPS id numbers to allow concatenating streams with different "
+"settings."
+msgstr ""
+
+#: modules/codec/x264.c:308
+#, fuzzy
+msgid "Access unit delimiters"
+msgstr "Adgangfilter moduler"
+
+#: modules/codec/x264.c:309
+msgid "Generate access unit delimiter NAL units."
+msgstr ""
+
+#: modules/codec/x264.c:315
 msgid "dia"
 msgstr ""
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:315
 msgid "hex"
 msgstr ""
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:315
 msgid "umh"
 msgstr ""
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:315
 #, fuzzy
 msgid "esa"
 msgstr "Bytes"
 
-#: modules/codec/x264.c:306
+#: modules/codec/x264.c:321
 msgid "fast"
 msgstr "hurtig"
 
-#: modules/codec/x264.c:306
+#: modules/codec/x264.c:321
 msgid "normal"
 msgstr "normal"
 
-#: modules/codec/x264.c:307
+#: modules/codec/x264.c:322
 #, fuzzy
 msgid "slow"
 msgstr "Langsom"
 
-#: modules/codec/x264.c:307
+#: modules/codec/x264.c:322
 msgid "all"
 msgstr "kompleks"
 
-#: modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "spatial"
 msgstr ""
 
-#: modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "temporal"
 msgstr ""
 
-#: modules/codec/x264.c:313 modules/gui/pda/pda_interface.c:743
+#: modules/codec/x264.c:328 modules/gui/pda/pda_interface.c:743
 #: modules/video_filter/mosaic.c:168
 msgid "auto"
 msgstr "auto"
 
-#: modules/codec/x264.c:322
+#: modules/codec/x264.c:337
 #, fuzzy
 msgid "H.264/MPEG4 AVC encoder (using x264 library)"
 msgstr "h264 video indkodning vha. x264 biblioteket"
@@ -8725,6 +8770,11 @@ msgstr "HTTP grændseflade x509 PEM betroet CA certifikater"
 #, fuzzy
 msgid "HTTP interace Certificates Revocation List file."
 msgstr "HTTP grændseflade x509 PEM annuleringsliste fil"
+
+#: modules/control/http/http.c:61
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:472
+msgid "HTTP"
+msgstr "HTTP"
 
 #: modules/control/http/http.c:62
 msgid "HTTP remote control interface"
@@ -9937,6 +9987,26 @@ msgstr "Real demuxer"
 msgid "Kasenna MediaBase parser"
 msgstr ""
 
+#: modules/demux/subtitle.c:47
+msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
+msgstr ""
+
+#: modules/demux/subtitle.c:49
+#, fuzzy
+msgid ""
+"Override the normal frames per second settings. This will only work with "
+"MicroDVD and SubRIP (SRT) subtitles."
+msgstr ""
+"Ignorer frames per sekund og brug denne værdi. Virker kun med MicroDVD og "
+"SubRiP undertekster."
+
+#: modules/demux/subtitle.c:52
+msgid ""
+"Force the subtiles format. Valid values are : \"microdvd\", \"subrip\",  "
+"\"ssa1\", \"ssa2-4\", \"ass\", \"vplayer\" \"sami\", \"dvdsubtitle\" and "
+"\"auto\" (meaning autodetection, this should always work)."
+msgstr ""
+
 #: modules/demux/subtitle.c:64
 #, fuzzy
 msgid "Text subtitles parser"
@@ -11108,8 +11178,8 @@ msgid "Extended Controls"
 msgstr "Udvidet styring"
 
 #: modules/gui/macosx/intf.m:597 modules/gui/macosx/intf.m:639
-#: modules/gui/macosx/playlist.m:482 modules/gui/macosx/playlistinfo.m:55
-#: modules/gui/macosx/playlistinfo.m:371
+#: modules/gui/macosx/playlistinfo.m:55 modules/gui/macosx/playlistinfo.m:371
+#: modules/gui/macosx/playlist.m:482
 #, fuzzy
 msgid "Information"
 msgstr "Transformation"
@@ -11470,6 +11540,81 @@ msgstr "SDP adresse"
 msgid "Save File"
 msgstr "Gem fil"
 
+#: modules/gui/macosx/playlistinfo.m:56
+#: modules/gui/wxwidgets/dialogs/infopanels.cpp:63
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:591
+msgid "URI"
+msgstr "URI"
+
+#: modules/gui/macosx/playlistinfo.m:63
+#, fuzzy
+msgid "Advanced Information"
+msgstr "Advancerede indstillinger"
+
+#: modules/gui/macosx/playlistinfo.m:81
+msgid "Read at media"
+msgstr ""
+
+#: modules/gui/macosx/playlistinfo.m:82
+#, fuzzy
+msgid "Input bitrate"
+msgstr "Sout stream"
+
+#: modules/gui/macosx/playlistinfo.m:83
+#, fuzzy
+msgid "Demuxed"
+msgstr "Demuxere"
+
+#: modules/gui/macosx/playlistinfo.m:84
+#, fuzzy
+msgid "Stream bitrate"
+msgstr "Maksimal indkodnings bitrate"
+
+#: modules/gui/macosx/playlistinfo.m:87 modules/gui/macosx/playlistinfo.m:97
+#, fuzzy
+msgid "Decoded blocks"
+msgstr "Decoders"
+
+#: modules/gui/macosx/playlistinfo.m:88
+#, fuzzy
+msgid "Displayed frames"
+msgstr "Spring frames over"
+
+#: modules/gui/macosx/playlistinfo.m:89
+#, fuzzy
+msgid "Lost frames"
+msgstr "B-frames"
+
+#: modules/gui/macosx/playlistinfo.m:91 modules/gui/macosx/wizard.m:404
+#: modules/gui/wxwidgets/dialogs/infopanels.cpp:313
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:139
+#: modules/video_filter/deinterlace.c:137
+msgid "Streaming"
+msgstr "Streaming"
+
+#: modules/gui/macosx/playlistinfo.m:92
+#, fuzzy
+msgid "Sent packets"
+msgstr "Gruppér pakker"
+
+#: modules/gui/macosx/playlistinfo.m:93
+msgid "Sent bytes"
+msgstr ""
+
+#: modules/gui/macosx/playlistinfo.m:94
+#, fuzzy
+msgid "Send rate"
+msgstr "Sample rate"
+
+#: modules/gui/macosx/playlistinfo.m:98
+#, fuzzy
+msgid "Played buffers"
+msgstr "Afspil hurtigere"
+
+#: modules/gui/macosx/playlistinfo.m:99
+msgid "Lost buffers"
+msgstr ""
+
 #: modules/gui/macosx/playlist.m:477
 msgid "Save Playlist..."
 msgstr "Gem spilleliste..."
@@ -11556,81 +11701,6 @@ msgstr "Gem playlist"
 msgid "Empty Folder"
 msgstr ""
 
-#: modules/gui/macosx/playlistinfo.m:56
-#: modules/gui/wxwidgets/dialogs/infopanels.cpp:63
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:591
-msgid "URI"
-msgstr "URI"
-
-#: modules/gui/macosx/playlistinfo.m:63
-#, fuzzy
-msgid "Advanced Information"
-msgstr "Advancerede indstillinger"
-
-#: modules/gui/macosx/playlistinfo.m:81
-msgid "Read at media"
-msgstr ""
-
-#: modules/gui/macosx/playlistinfo.m:82
-#, fuzzy
-msgid "Input bitrate"
-msgstr "Sout stream"
-
-#: modules/gui/macosx/playlistinfo.m:83
-#, fuzzy
-msgid "Demuxed"
-msgstr "Demuxere"
-
-#: modules/gui/macosx/playlistinfo.m:84
-#, fuzzy
-msgid "Stream bitrate"
-msgstr "Maksimal indkodnings bitrate"
-
-#: modules/gui/macosx/playlistinfo.m:87 modules/gui/macosx/playlistinfo.m:97
-#, fuzzy
-msgid "Decoded blocks"
-msgstr "Decoders"
-
-#: modules/gui/macosx/playlistinfo.m:88
-#, fuzzy
-msgid "Displayed frames"
-msgstr "Spring frames over"
-
-#: modules/gui/macosx/playlistinfo.m:89
-#, fuzzy
-msgid "Lost frames"
-msgstr "B-frames"
-
-#: modules/gui/macosx/playlistinfo.m:91 modules/gui/macosx/wizard.m:404
-#: modules/gui/wxwidgets/dialogs/infopanels.cpp:313
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:139
-#: modules/video_filter/deinterlace.c:137
-msgid "Streaming"
-msgstr "Streaming"
-
-#: modules/gui/macosx/playlistinfo.m:92
-#, fuzzy
-msgid "Sent packets"
-msgstr "Gruppér pakker"
-
-#: modules/gui/macosx/playlistinfo.m:93
-msgid "Sent bytes"
-msgstr ""
-
-#: modules/gui/macosx/playlistinfo.m:94
-#, fuzzy
-msgid "Send rate"
-msgstr "Sample rate"
-
-#: modules/gui/macosx/playlistinfo.m:98
-#, fuzzy
-msgid "Played buffers"
-msgstr "Afspil hurtigere"
-
-#: modules/gui/macosx/playlistinfo.m:99
-msgid "Lost buffers"
-msgstr ""
-
 #: modules/gui/macosx/prefs.m:123
 #: modules/gui/wxwidgets/dialogs/preferences.cpp:213
 msgid "Reset All"
@@ -11662,6 +11732,7 @@ msgstr ""
 "indstillinger\" for at se dem."
 
 #: modules/gui/macosx/prefs_widgets.m:1222
+#: modules/gui/wxwidgets/dialogs.cpp:474
 msgid "Select a directory"
 msgstr "Vælg en mappe"
 
@@ -12897,11 +12968,6 @@ msgstr "WinCE grænseflademodul"
 msgid "WinCE dialogs provider"
 msgstr "WinCE dialogudbyder"
 
-#: modules/gui/wxwidgets/dialogs.cpp:433
-#: modules/gui/wxwidgets/dialogs/open.cpp:1267
-msgid "All Files (*.*)|*|Sound Files (*.mp3, *.ogg, etc.)|"
-msgstr ""
-
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:75
 msgid "Edit bookmark"
 msgstr "Redigér bogmærke"
@@ -12995,6 +13061,11 @@ msgstr ""
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:452
 msgid "Input has changed "
 msgstr "Inddata har ændret sig"
+
+#: modules/gui/wxwidgets/dialogs.cpp:433
+#: modules/gui/wxwidgets/dialogs/open.cpp:1267
+msgid "All Files (*.*)|*|Sound Files (*.mp3, *.ogg, etc.)|"
+msgstr ""
 
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:54
 #, fuzzy
@@ -13449,6 +13520,10 @@ msgstr "MMSH"
 msgid "RTP"
 msgstr "RTP"
 
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:475
+msgid "UDP"
+msgstr "UDP"
+
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:592
 msgid "Group name"
 msgstr "Gruppe navn"
@@ -13771,6 +13846,16 @@ msgstr ""
 
 #: modules/gui/wxwidgets/extrapanel.cpp:473
 msgid "Apply the equalizer twice. The resulting effect will be sharper."
+msgstr ""
+
+#: modules/gui/wxwidgets/extrapanel.cpp:485
+msgid "Smooth :"
+msgstr ""
+
+#: modules/gui/wxwidgets/extrapanel.cpp:516
+msgid ""
+"Preamp\n"
+"12.0dB"
 msgstr ""
 
 #: modules/gui/wxwidgets/extrapanel.cpp:999
@@ -14158,6 +14243,10 @@ msgstr ""
 msgid "wxWidgets interface module"
 msgstr "wxWindows grænseflademodul"
 
+#: modules/gui/wxwidgets/wxwidgets.cpp:165
+msgid "last config"
+msgstr ""
+
 #: modules/gui/wxwidgets/wxwidgets.cpp:170
 #, fuzzy
 msgid "wxWidgets dialogs provider"
@@ -14539,11 +14628,6 @@ msgstr "UDP Port"
 msgid "Growl UDP port on the server."
 msgstr "UDP Port"
 
-#: modules/misc/growl.c:73
-#, fuzzy
-msgid "Growl"
-msgstr "Gruppe"
-
 #: modules/misc/growl.c:74
 msgid "Growl Notification Plugin"
 msgstr ""
@@ -14610,6 +14694,10 @@ msgstr "Uddata fil"
 msgid "Output data for RRDTool in this file."
 msgstr ""
 
+#: modules/misc/memcpy/memcpyaltivec.c:56
+msgid "AltiVec memcpy"
+msgstr "AltiVec memcpy"
+
 #: modules/misc/memcpy/memcpy.c:83
 msgid "libc memcpy"
 msgstr "libc memcpy"
@@ -14626,10 +14714,6 @@ msgstr "MMX memcpy"
 msgid "MMX EXT memcpy"
 msgstr "MMX EXT memcpy"
 
-#: modules/misc/memcpy/memcpyaltivec.c:56
-msgid "AltiVec memcpy"
-msgstr "AltiVec memcpy"
-
 #: modules/misc/msn.c:64
 msgid "MSN Title format string"
 msgstr ""
@@ -14639,11 +14723,6 @@ msgid ""
 "Format of the string to send to MSN {0} Artist, {1} Title, {2} Album. "
 "Defaults to \"Artist - Title\" ({0} - {1})."
 msgstr ""
-
-#: modules/misc/msn.c:71
-#, fuzzy
-msgid "MSN"
-msgstr "MMS"
 
 #: modules/misc/msn.c:72
 #, fuzzy
@@ -17692,6 +17771,14 @@ msgid "XOSD interface"
 msgstr "XOSD grænseflade"
 
 #, fuzzy
+#~ msgid "Growl"
+#~ msgstr "Gruppe"
+
+#, fuzzy
+#~ msgid "MSN"
+#~ msgstr "MMS"
+
+#, fuzzy
 #~ msgid "Create"
 #~ msgstr "Framerate"
 
@@ -17933,10 +18020,6 @@ msgstr "XOSD grænseflade"
 
 #~ msgid "If enabled the interface will uninstall the Service and exit."
 #~ msgstr "Hvis aktiveret vil grænsefladen af-installere servicen og afslutte."
-
-#, fuzzy
-#~ msgid "Telnet Interface host"
-#~ msgstr "Telnet grænseflade port"
 
 #, fuzzy
 #~ msgid "Default to listen on all network interfaces"

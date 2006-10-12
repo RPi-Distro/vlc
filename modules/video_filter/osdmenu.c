@@ -2,7 +2,7 @@
  * osdmenu.c: osd filter module
  *****************************************************************************
  * Copyright (C) 2004-2005 M2X
- * $Id: osdmenu.c 15199 2006-04-13 09:04:34Z zorglub $
+ * $Id: osdmenu.c 17015 2006-10-10 08:38:37Z xtophe $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -115,8 +115,8 @@ vlc_module_begin();
         OSD_UPDATE_LONGTEXT, VLC_TRUE );
 
     set_capability( "sub filter", 100 );
-    set_description( N_("On Screen Display menu") );
-    set_shortname( N_("OSD menu") );
+    set_description( _("On Screen Display menu") );
+    set_shortname( _("OSD menu") );
     add_shortcut( "osdmenu" );
 /*
     set_category( CAT_VIDEO );
