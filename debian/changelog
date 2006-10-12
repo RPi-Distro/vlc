@@ -1,3 +1,10 @@
+vlc (0.8.6-svn20061012.debian-1) unstable; urgency=low
+
+  * New upstream SVN snapshot.
+  * Upstream fixed the BadWindow request issue (Closes: #392207).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Thu, 12 Oct 2006 20:43:45 +0200
+
 vlc (0.8.6-svn20061008.debian-1) unstable; urgency=high
 
   * New upstream SVN snapshot. Fixes a heap smashing bug.
