@@ -12,7 +12,6 @@ Section: graphics
 Architecture: any
 Depends: vlc-nox (= ${Source-Version}), ${shlibs:Depends}, ${misc:Depends}, ttf-dejavu
 Recommends: videolan-doc
-Suggests: mozilla-plugin-vlc
 Replaces: vlc-plugin-dvb (<< 0.5.2-2), vlc-plugin-xosd (<< 0.5.2-2), vlc-plugin-dv (<< 0.5.2-2), vlc-plugin-mad (<< 0.5.2-2), vlc-mad (<< 0.5.0), vlc-plugin-a52 (<< 0.5.2-2), vlc-plugin-ogg (<< 0.5.2-2), vlc-plugin-lirc (<< 0.5.2-2), vlc-lirc (<< 0.5.0), vlc-plugin-aa (<< 0.5.2-2), vlc-aa (<< 0.5.0), wxvlc (<< 0.8.5-test3.debian-4), vlc-plugin-alsa (<< 0.8.5-test3.debian-4)
 Conflicts: vlc-plugin-dvb (<< 0.5.2-2), vlc-plugin-xosd (<< 0.5.2-2), vlc-plugin-dv (<< 0.5.2-2), vlc-plugin-mad (<< 0.5.2-2), vlc-mad (<< 0.5.0), vlc-plugin-a52 (<< 0.5.2-2), vlc-plugin-ogg (<< 0.5.2-2), vlc-plugin-lirc (<< 0.5.2-2), vlc-lirc (<< 0.5.0), vlc-plugin-aa (<< 0.5.2-2), vlc-aa (<< 0.5.0), wxvlc (<< 0.8.5-test3.debian-4), vlc-plugin-alsa (<< 0.8.5-test3.debian-4)
 Provides: mp3-decoder
@@ -30,8 +29,7 @@ Description: multimedia player and streamer
  most output methods is provided by this package, but features can be added
  by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl,
  vlc-plugin-arts) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
- vlc-plugin-glide, vlc-plugin-svgalib). There is also a web browser plugin
- in the mozilla-plugin-vlc package.
+ vlc-plugin-glide, vlc-plugin-svgalib).
 
 Package: vlc-nox
 Section: net
@@ -54,8 +52,7 @@ Description: multimedia player and streamer (without X support)
  most output methods is provided by this package, but features can be added
  by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl,
  vlc-plugin-arts) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
- vlc-plugin-glide, vlc-plugin-svgalib). There is also a web browser plugin
- in the mozilla-plugin-vlc package.
+ vlc-plugin-glide, vlc-plugin-svgalib).
  .
  This package contains a version of VLC that does not require X and that is
  thus suitable for headless servers.
@@ -162,20 +159,6 @@ Description: aRts audio output plugin for VLC
  This plugin adds support for the aRts Sound System to the VLC media
  player. To activate it, use the `--aout arts' flag or select the `arts'
  audio output plugin from the preferences menu.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
-Package: mozilla-plugin-vlc
-Architecture: any
-Depends: vlc-nox (= ${Source-Version}), vlc, ${shlibs:Depends}, ${misc:Depends}
-Description: multimedia plugin for web browsers based on VLC
- This plugin adds support for MPEG, MPEG2, DVD, DivX, Ogg/Vorbis and many
- more formats to your Gecko-based web browser (Firefox, Galeon, etc.). The
- decoding process is done by VLC and the output window is embedded in a
- webpage or directly in the browser window. There is also support for
- fullscreen display and javascript control.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia

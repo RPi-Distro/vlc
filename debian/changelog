@@ -1,3 +1,10 @@
+vlc (0.8.6-svn20061012.debian-1.1) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * remove broken package mozilla-plugin-vlc. Closes: #400720, #403022
+
+ -- Andreas Barth <aba@not.so.argh.org>  Sat, 23 Dec 2006 19:17:40 +0000
+
 vlc (0.8.6-svn20061012.debian-1) unstable; urgency=low
 
   * New upstream SVN snapshot.
