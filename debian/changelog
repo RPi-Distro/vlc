@@ -1,3 +1,11 @@
+vlc (0.8.6-svn20061012.debian-1.2) unstable; urgency=high
+
+  * Non-maintainer upload.
+  * Fix format string vulnerability with patch
+    MOAB-02-01-2007-CVE-2007-0017.patch, CVE-2007-0017. Closes: #405425
+
+ -- Andreas Barth <aba@not.so.argh.org>  Sat,  6 Jan 2007 23:07:51 +0000
+
 vlc (0.8.6-svn20061012.debian-1.1) unstable; urgency=high
 
   * Non-maintainer upload.
