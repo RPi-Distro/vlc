@@ -1,0 +1,50 @@
+diff -puriN vlc-0.8.6/src/misc/modules.c vlc-0.8.6a/src/misc/modules.c
+--- vlc-0.8.6/src/misc/modules.c	2006-10-08 18:40:51.000000000 +0200
++++ vlc-0.8.6a/src/misc/modules.c	2007-01-07 23:06:39.000000000 +0100
+@@ -1726,7 +1726,7 @@ static void CacheLoad( vlc_object_t *p_t
+ 
+     for( i = 0; i < i_cache; i++ )
+     {
+-        int16_t i_size;
++        uint16_t i_size;
+         int i_submodules;
+ 
+         pp_cache[i] = malloc( sizeof(module_cache_t) );
+@@ -1805,7 +1805,7 @@ static void CacheLoad( vlc_object_t *p_t
+ int CacheLoadConfig( module_t *p_module, FILE *file )
+ {
+     int i, j, i_lines;
+-    int16_t i_size;
++    uint16_t i_size;
+ 
+     /* Calculate the structure length */
+     LOAD_IMMEDIATE( p_module->i_config_items );
+@@ -2006,8 +2006,8 @@ static void CacheSave( vlc_object_t *p_t
+ 
+     for( i = 0; i < i_cache; i++ )
+     {
+-        int16_t i_size;
+-        int32_t i_submodule;
++        uint16_t i_size;
++        uint32_t i_submodule;
+ 
+         /* Save common info */
+         SAVE_STRING( pp_cache[i]->psz_file );
+@@ -2040,7 +2040,7 @@ static void CacheSave( vlc_object_t *p_t
+ 
+         i_submodule = pp_cache[i]->p_module->i_children;
+         SAVE_IMMEDIATE( i_submodule );
+-        for( i_submodule = 0; i_submodule < pp_cache[i]->p_module->i_children;
++        for( i_submodule = 0; i_submodule < (unsigned)pp_cache[i]->p_module->i_children;
+              i_submodule++ )
+         {
+             module_t *p_module =
+@@ -2076,7 +2076,7 @@ void CacheSaveConfig( module_t *p_module
+ {
+     int i, j, i_lines = 0;
+     module_config_t *p_item;
+-    int16_t i_size;
++    uint16_t i_size;
+ 
+     SAVE_IMMEDIATE( p_module->i_config_items );
+     SAVE_IMMEDIATE( p_module->i_bool_items );

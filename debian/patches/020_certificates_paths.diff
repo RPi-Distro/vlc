@@ -1,8 +1,8 @@
-Index: vlc-trunk/modules/misc/gnutls.c
+Index: vlc-0.8.6-svn20061012.debian/modules/misc/gnutls.c
 ===================================================================
---- vlc-trunk/modules/misc/gnutls.c	(revision 15766)
-+++ vlc-trunk/modules/misc/gnutls.c	(working copy)
-@@ -614,6 +614,10 @@
+--- vlc-0.8.6-svn20061012.debian.orig/modules/misc/gnutls.c	2006-09-22 17:14:31.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/modules/misc/gnutls.c	2007-01-08 02:28:18.000000000 +0100
+@@ -681,6 +681,10 @@
                                  p_sys->x509_cred, psz_path, VLC_FALSE );
              free( psz_path );
          }

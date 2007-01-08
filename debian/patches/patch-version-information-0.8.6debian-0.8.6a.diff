@@ -1,0 +1,16 @@
+diff -puriN vlc-0.8.6/configure.ac vlc-0.8.6a/configure.ac
+--- vlc-0.8.6/configure.ac	2006-10-12 19:47:40.000000000 +0200
++++ vlc-0.8.6a/configure.ac	2007-01-07 23:08:03.000000000 +0100
+@@ -1,10 +1,10 @@
+ dnl Autoconf settings for vlc
+ 
+-AC_INIT(vlc,0.8.6)
++AC_INIT(vlc,0.8.6a)
+ VERSION_MAJOR="0"
+ VERSION_MINOR="8"
+ VERSION_REVISION="6"
+-VERSION_EXTRA=""
++VERSION_EXTRA="a"
+ 
+ CONFIGURE_LINE="$0 $*"
+ CODENAME="Janus"

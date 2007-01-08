@@ -1,0 +1,12 @@
+diff -puriN vlc-0.8.6/configure.ac vlc-0.8.6a/configure.ac
+--- vlc-0.8.6/configure.ac	2006-10-12 19:47:40.000000000 +0200
++++ vlc-0.8.6a/configure.ac	2007-01-07 23:08:03.000000000 +0100
+@@ -3987,7 +4032,7 @@ then
+     ],[
+       AC_MSG_ERROR([You don't have libglide. Install it or do not use --enable-glide])
+      ])
+-   CFAGS="${CFLAGS_save}"
++   CFLAGS="${CFLAGS_save}"
+ fi
+ 
+ dnl

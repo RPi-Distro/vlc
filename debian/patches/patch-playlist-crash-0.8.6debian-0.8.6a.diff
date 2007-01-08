@@ -1,0 +1,25 @@
+diff -puriN vlc-0.8.6/src/playlist/view.c vlc-0.8.6a/src/playlist/view.c
+--- vlc-0.8.6/src/playlist/view.c	2006-09-18 12:27:56.000000000 +0200
++++ vlc-0.8.6a/src/playlist/view.c	2007-01-07 23:06:39.000000000 +0100
+@@ -569,17 +569,17 @@ int playlist_NodeChildrenCount( playlist
+ {
+     int i;
+     int i_nb = 0;
++
+     if( p_node->i_children == -1 )
+     {
+         return 0;
+     }
+ 
+-    for( i=0 ; i< p_node->i_children;i++ )
++    i_nb += p_node->i_children;
++    for( i=0 ; i< p_node->i_children; i++ )
+     {
+         if( p_node->pp_children[i]->i_children == -1 )
+-        {
+-            i_nb++;
+-        }
++            break;
+         else
+         {
+             i_nb += playlist_NodeChildrenCount( p_playlist, 

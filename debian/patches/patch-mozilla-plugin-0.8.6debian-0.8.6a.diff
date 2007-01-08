@@ -1,0 +1,3329 @@
+diff -puriN vlc-0.8.6/include/vlc_messages.h vlc-0.8.6a/include/vlc_messages.h
+--- vlc-0.8.6/include/vlc_messages.h	2006-09-18 12:28:45.000000000 +0200
++++ vlc-0.8.6a/include/vlc_messages.h	2007-01-07 23:08:02.000000000 +0100
+@@ -196,6 +196,7 @@ void __msg_Destroy ( vlc_object_t * );
+ VLC_EXPORT( msg_subscription_t*, __msg_Subscribe, ( vlc_object_t *, int ) );
+ VLC_EXPORT( void, __msg_Unsubscribe, ( vlc_object_t *, msg_subscription_t * ) );
+ 
++extern const char *msg_GetObjectTypeName(int i_object_type );
+ 
+ /**
+  * @}
+diff -puriN vlc-0.8.6/src/Makefile.am vlc-0.8.6a/src/Makefile.am
+--- vlc-0.8.6/src/Makefile.am	2006-09-18 12:27:59.000000000 +0200
++++ vlc-0.8.6a/src/Makefile.am	2007-01-07 23:06:40.000000000 +0100
+@@ -320,6 +320,7 @@ SOURCES_libvlc_common = \
+ 	misc/hashtables.c \
+ 	extras/libc.c \
+ 	control/core.c \
++	control/log.c \
+ 	control/playlist.c \
+ 	control/vlm.c \
+ 	control/input.c \
+diff -puriN vlc-0.8.6/src/control/log.c vlc-0.8.6a/src/control/log.c
+--- vlc-0.8.6/src/control/log.c	1970-01-01 01:00:00.000000000 +0100
++++ vlc-0.8.6a/src/control/log.c	2007-01-07 23:06:38.000000000 +0100
+@@ -0,0 +1,182 @@
++/*****************************************************************************
++ * log.c: libvlc new API log functions
++ *****************************************************************************
++ * Copyright (C) 2005 the VideoLAN team
++ *
++ * $Id: core.c 14187 2006-02-07 16:37:40Z courmisch $
++ *
++ * Authors: Damien Fouilleul <damienf@videolan.org>
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License
++ * along with this program; if not, write to the Free Software
++ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
++ *****************************************************************************/
++
++#include <libvlc_internal.h>
++#include <vlc/libvlc.h>
++
++struct libvlc_log_t
++{
++    const libvlc_instance_t  *p_instance;
++    msg_subscription_t *p_messages;
++};
++
++struct libvlc_log_iterator_t
++{
++    msg_subscription_t *p_messages;
++    int i_start;
++    int i_pos;
++    int i_end;
++};
++
++unsigned libvlc_get_log_verbosity( const libvlc_instance_t *p_instance, libvlc_exception_t *p_e )
++{
++    if( p_instance )
++    {
++        return p_instance->p_vlc->p_libvlc->i_verbose;
++    }
++    RAISEZERO("Invalid VLC instance!");
++}
++
++void libvlc_set_log_verbosity( libvlc_instance_t *p_instance, unsigned level, libvlc_exception_t *p_e )
++{
++    if( p_instance )
++    {
++        p_instance->p_vlc->p_libvlc->i_verbose = level;
++    }
++    else
++        RAISEVOID("Invalid VLC instance!");
++}
++
++libvlc_log_t *libvlc_log_open( const libvlc_instance_t *p_instance, libvlc_exception_t *p_e )
++{
++    
++    struct libvlc_log_t *p_log =
++        (struct libvlc_log_t *)malloc(sizeof(struct libvlc_log_t));
++
++    if( !p_log ) RAISENULL( "Out of memory" );
++
++    p_log->p_instance = p_instance;
++    p_log->p_messages = msg_Subscribe(p_instance->p_vlc, MSG_QUEUE_NORMAL);
++
++    if( !p_log->p_messages ) RAISENULL( "Out of memory" );
++
++    return p_log;
++}
++
++void libvlc_log_close( libvlc_log_t *p_log, libvlc_exception_t *p_e )
++{
++    if( p_log && p_log->p_messages )
++    {
++        msg_Unsubscribe(p_log->p_instance->p_vlc, p_log->p_messages);
++        free(p_log);
++    }
++    else
++        RAISEVOID("Invalid log object!");
++}
++
++unsigned libvlc_log_count( const libvlc_log_t *p_log, libvlc_exception_t *p_e )
++{
++    if( p_log && p_log->p_messages )
++    {
++        int i_start = p_log->p_messages->i_start;
++        int i_stop  = *(p_log->p_messages->pi_stop);
++
++        return (i_stop - i_start) % VLC_MSG_QSIZE;
++    }
++    RAISEZERO("Invalid log object!");
++}
++
++void libvlc_log_clear( libvlc_log_t *p_log, libvlc_exception_t *p_e )
++{
++    if( p_log && p_log->p_messages )
++    {
++        vlc_mutex_lock(p_log->p_messages->p_lock);
++        p_log->p_messages->i_start = *(p_log->p_messages->pi_stop);
++        vlc_mutex_unlock(p_log->p_messages->p_lock);
++    }
++    else
++        RAISEVOID("Invalid log object!");
++}
++
++libvlc_log_iterator_t *libvlc_log_get_iterator( const libvlc_log_t *p_log, libvlc_exception_t *p_e )
++{
++    if( p_log && p_log->p_messages )
++    {
++        struct libvlc_log_iterator_t *p_iter =
++            (struct libvlc_log_iterator_t *)malloc(sizeof(struct libvlc_log_iterator_t));
++
++        if( !p_iter ) RAISENULL( "Out of memory" );
++
++        vlc_mutex_lock(p_log->p_messages->p_lock);
++        p_iter->p_messages = p_log->p_messages;
++        p_iter->i_start    = p_log->p_messages->i_start;
++        p_iter->i_pos      = p_log->p_messages->i_start;
++        p_iter->i_end      = *(p_log->p_messages->pi_stop);
++        vlc_mutex_unlock(p_log->p_messages->p_lock);
++
++        return p_iter;
++    }
++    RAISENULL("Invalid log object!");
++}
++
++void libvlc_log_iterator_free( libvlc_log_iterator_t *p_iter, libvlc_exception_t *p_e )
++{
++    if( p_iter )
++    {
++        free(p_iter);
++    }
++    else
++        RAISEVOID("Invalid log iterator!");
++}
++
++int libvlc_log_iterator_has_next( const libvlc_log_iterator_t *p_iter, libvlc_exception_t *p_e )
++{
++    if( p_iter )
++    {
++        return p_iter->i_pos != p_iter->i_end;
++    }
++    RAISEZERO("Invalid log iterator!");
++}
++
++libvlc_log_message_t *libvlc_log_iterator_next( libvlc_log_iterator_t *p_iter,
++                                                struct libvlc_log_message_t *buffer,
++                                                libvlc_exception_t *p_e )
++{
++    if( p_iter )
++    {
++        if( buffer && (sizeof(struct libvlc_log_message_t) == buffer->sizeof_msg) )
++        {
++            int i_pos = p_iter->i_pos;
++            if( i_pos != p_iter->i_end )
++            {
++                msg_item_t *msg;
++                vlc_mutex_lock(p_iter->p_messages->p_lock);
++                msg = p_iter->p_messages->p_msg+i_pos;
++                buffer->i_severity  = msg->i_type;
++                buffer->psz_type    = msg_GetObjectTypeName(msg->i_object_type);
++                buffer->psz_name    = msg->psz_module;
++                buffer->psz_header  = msg->psz_header;
++                buffer->psz_message = msg->psz_msg;
++                p_iter->i_pos = ++i_pos % VLC_MSG_QSIZE;
++                vlc_mutex_unlock(p_iter->p_messages->p_lock);
++
++                return buffer;
++            }
++            RAISENULL("No more messages");
++        }
++        RAISENULL("Invalid message buffer!");
++    }
++    RAISENULL("Invalid log iterator!");
++}
++
+diff -puriN vlc-0.8.6/src/misc/messages.c vlc-0.8.6a/src/misc/messages.c
+--- vlc-0.8.6/src/misc/messages.c	2006-09-21 17:50:20.000000000 +0200
++++ vlc-0.8.6a/src/misc/messages.c	2007-01-07 23:06:39.000000000 +0100
+@@ -4,7 +4,7 @@
+  * modules, especially intf modules. See config.h for output configuration.
+  *****************************************************************************
+  * Copyright (C) 1998-2005 the VideoLAN team
+- * $Id: messages.c 16767 2006-09-21 14:32:45Z hartman $
++ * $Id: messages.c 17413 2006-11-01 23:09:50Z damienf $
+  *
+  * Authors: Vincent Seguin <seguin@via.ecp.fr>
+  *          Samuel Hocevar <sam@zoy.org>
+@@ -231,6 +231,33 @@ void __msg_Unsubscribe( vlc_object_t *p_
+     vlc_mutex_unlock( &p_bank->lock );
+ }
+ 
++const char *msg_GetObjectTypeName(int i_object_type )
++{
++    switch( i_object_type )
++    {
++        case VLC_OBJECT_ROOT: return "root";
++        case VLC_OBJECT_MODULE: return "module";
++        case VLC_OBJECT_INTF: return "interface";
++        case VLC_OBJECT_PLAYLIST: return "playlist";
++        case VLC_OBJECT_ITEM: return "item";
++        case VLC_OBJECT_INPUT: return "input";
++        case VLC_OBJECT_DECODER: return "decoder";
++        case VLC_OBJECT_PACKETIZER: return "packetizer";
++        case VLC_OBJECT_ENCODER: return "encoder";
++        case VLC_OBJECT_VOUT: return "video output";
++        case VLC_OBJECT_AOUT: return "audio output";
++        case VLC_OBJECT_SOUT: return "stream output";
++        case VLC_OBJECT_HTTPD: return "http server";
++        case VLC_OBJECT_HTTPD_HOST: return "http server";
++        case VLC_OBJECT_DIALOGS: return "dialogs provider";
++        case VLC_OBJECT_VLM: return "vlm";
++        case VLC_OBJECT_ANNOUNCE: return "announce handler";
++        case VLC_OBJECT_DEMUX: return "demuxer";
++        case VLC_OBJECT_ACCESS: return "access";
++        default: return "private";
++    }
++}
++
+ /*****************************************************************************
+  * __msg_*: print a message
+  *****************************************************************************
+@@ -558,29 +585,7 @@ static void PrintMsg ( vlc_object_t * p_
+             break;
+     }
+ 
+-    switch( p_item->i_object_type )
+-    {
+-        case VLC_OBJECT_ROOT: psz_object = "root"; break;
+-        case VLC_OBJECT_VLC: psz_object = "vlc"; break;
+-        case VLC_OBJECT_MODULE: psz_object = "module"; break;
+-        case VLC_OBJECT_INTF: psz_object = "interface"; break;
+-        case VLC_OBJECT_PLAYLIST: psz_object = "playlist"; break;
+-        case VLC_OBJECT_ITEM: psz_object = "item"; break;
+-        case VLC_OBJECT_INPUT: psz_object = "input"; break;
+-        case VLC_OBJECT_DECODER: psz_object = "decoder"; break;
+-        case VLC_OBJECT_PACKETIZER: psz_object = "packetizer"; break;
+-        case VLC_OBJECT_ENCODER: psz_object = "encoder"; break;
+-        case VLC_OBJECT_VOUT: psz_object = "video output"; break;
+-        case VLC_OBJECT_AOUT: psz_object = "audio output"; break;
+-        case VLC_OBJECT_SOUT: psz_object = "stream output"; break;
+-        case VLC_OBJECT_HTTPD: psz_object = "http server"; break;
+-        case VLC_OBJECT_HTTPD_HOST: psz_object = "http server"; break;
+-        case VLC_OBJECT_DIALOGS: psz_object = "dialogs provider"; break;
+-        case VLC_OBJECT_VLM: psz_object = "vlm"; break;
+-        case VLC_OBJECT_ANNOUNCE: psz_object = "announce handler"; break;
+-        case VLC_OBJECT_DEMUX: psz_object = "demuxer"; break;
+-        case VLC_OBJECT_ACCESS: psz_object = "access"; break;
+-    }
++    psz_object = msg_GetObjectTypeName(p_item->i_object_type);
+ 
+ #ifdef UNDER_CE
+ #   define CE_WRITE(str) WriteFile( p_this->p_libvlc->msg_bank.pp_queues[MSG_QUEUE_NORMAL]->logfile, \
+diff -puriN vlc-0.8.6/src/control/video.c vlc-0.8.6a/src/control/video.c
+--- vlc-0.8.6/src/control/video.c	2006-10-04 15:47:05.000000000 +0200
++++ vlc-0.8.6a/src/control/video.c	2007-01-07 23:06:38.000000000 +0100
+@@ -325,6 +321,36 @@ void libvlc_video_set_viewport( libvlc_i
+     }
+ }
+ 
++char *libvlc_video_get_aspect_ratio( libvlc_input_t *p_input,
++                                   libvlc_exception_t *p_e )
++{
++    char *psz_aspect = 0;
++    vout_thread_t *p_vout = GetVout( p_input, p_e );
++
++    if( !p_vout )
++        return 0;
++
++    psz_aspect = var_GetString( p_vout, "aspect-ratio" );
++    vlc_object_release( p_vout );
++    return psz_aspect;
++}
++
++void libvlc_video_set_aspect_ratio( libvlc_input_t *p_input,
++                                    char *psz_aspect, libvlc_exception_t *p_e )
++{
++    vout_thread_t *p_vout = GetVout( p_input, p_e );
++    int i_ret = -1;
++
++    if( !p_vout )
++        return;
++
++    i_ret = var_SetString( p_vout, "aspect-ratio", psz_aspect );
++    if( i_ret )
++        libvlc_exception_raise( p_e,
++                        "Unexpected error while setting aspect-ratio value" );
++    vlc_object_release( p_vout );
++}
++
+ int libvlc_video_destroy( libvlc_input_t *p_input,
+                           libvlc_exception_t *p_e )
+ {
+diff -puriN vlc-0.8.6/mozilla/control/npolibvlc.cpp vlc-0.8.6a/mozilla/control/npolibvlc.cpp
+--- vlc-0.8.6/mozilla/control/npolibvlc.cpp	2006-10-12 19:47:40.000000000 +0200
++++ vlc-0.8.6a/mozilla/control/npolibvlc.cpp	2007-01-07 23:08:03.000000000 +0100
+@@ -43,6 +43,7 @@ LibvlcRootNPObject::LibvlcRootNPObject(N
+ {
+     audioObj = NPN_CreateObject(instance, RuntimeNPClass<LibvlcAudioNPObject>::getClass());
+     inputObj = NPN_CreateObject(instance, RuntimeNPClass<LibvlcInputNPObject>::getClass());
++    logObj = NPN_CreateObject(instance, RuntimeNPClass<LibvlcLogNPObject>::getClass());
+     playlistObj = NPN_CreateObject(instance, RuntimeNPClass<LibvlcPlaylistNPObject>::getClass());
+     videoObj = NPN_CreateObject(instance,RuntimeNPClass<LibvlcVideoNPObject>::getClass());
+ }
+@@ -51,6 +52,7 @@ LibvlcRootNPObject::~LibvlcRootNPObject(
+ {
+     NPN_ReleaseObject(audioObj);
+     NPN_ReleaseObject(inputObj);
++    NPN_ReleaseObject(logObj);
+     NPN_ReleaseObject(playlistObj);
+     NPN_ReleaseObject(videoObj);
+ }
+@@ -59,47 +61,114 @@ const NPUTF8 * const LibvlcRootNPObject:
+ {
+     "audio",
+     "input",
++    "log",
+     "playlist",
+     "video",
++    "VersionInfo",
+ };
+ 
+ const int LibvlcRootNPObject::propertyCount = sizeof(LibvlcRootNPObject::propertyNames)/sizeof(NPUTF8 *);
+ 
+ enum LibvlcRootNPObjectPropertyIds
+ {
+-    ID_audio = 0,
+-    ID_input,
+-    ID_playlist,
+-    ID_video,
++    ID_root_audio = 0,
++    ID_root_input,
++    ID_root_log,
++    ID_root_playlist,
++    ID_root_video,
++    ID_root_VersionInfo,
+ };
+ 
+ RuntimeNPObject::InvokeResult LibvlcRootNPObject::getProperty(int index, NPVariant &result)
+ {
+-    switch( index )
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
+     {
+-        case ID_audio:
+-            OBJECT_TO_NPVARIANT(NPN_RetainObject(audioObj), result);
+-            return INVOKERESULT_NO_ERROR;
+-        case ID_input:
+-            OBJECT_TO_NPVARIANT(NPN_RetainObject(inputObj), result);
+-            return INVOKERESULT_NO_ERROR;
+-        case ID_playlist:
+-            OBJECT_TO_NPVARIANT(NPN_RetainObject(playlistObj), result);
+-            return INVOKERESULT_NO_ERROR;
+-        case ID_video:
+-            OBJECT_TO_NPVARIANT(NPN_RetainObject(videoObj), result);
+-            return INVOKERESULT_NO_ERROR;
++        switch( index )
++        {
++            case ID_root_audio:
++                OBJECT_TO_NPVARIANT(NPN_RetainObject(audioObj), result);
++                return INVOKERESULT_NO_ERROR;
++            case ID_root_input:
++                OBJECT_TO_NPVARIANT(NPN_RetainObject(inputObj), result);
++                return INVOKERESULT_NO_ERROR;
++            case ID_root_log:
++                OBJECT_TO_NPVARIANT(NPN_RetainObject(logObj), result);
++                return INVOKERESULT_NO_ERROR;
++            case ID_root_playlist:
++                OBJECT_TO_NPVARIANT(NPN_RetainObject(playlistObj), result);
++                return INVOKERESULT_NO_ERROR;
++            case ID_root_video:
++                OBJECT_TO_NPVARIANT(NPN_RetainObject(videoObj), result);
++                return INVOKERESULT_NO_ERROR;
++            case ID_root_VersionInfo:
++            {
++                int len = strlen(VLC_Version());
++                NPUTF8 *retval =(NPUTF8*)NPN_MemAlloc(len);
++                if( retval )
++                {
++                    memcpy(retval, VLC_Version(), len);
++                    STRINGN_TO_NPVARIANT(retval, len, result);
++                }
++                else
++                {
++                    NULL_TO_NPVARIANT(result);
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            default:
++                ;
++        }
+     }
+     return INVOKERESULT_GENERIC_ERROR;
+ }
+ 
+ const NPUTF8 * const LibvlcRootNPObject::methodNames[] =
+ {
+-    /* no methods */
++    "versionInfo",
+ };
+ 
+ const int LibvlcRootNPObject::methodCount = sizeof(LibvlcRootNPObject::methodNames)/sizeof(NPUTF8 *);
+ 
++enum LibvlcRootNPObjectMethodIds
++{
++    ID_root_versionInfo,
++};
++
++RuntimeNPObject::InvokeResult LibvlcRootNPObject::invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        libvlc_exception_t ex;
++        libvlc_exception_init(&ex);
++
++        switch( index )
++        {
++            case ID_root_versionInfo:
++                if( argCount == 0 )
++                {
++                    int len = strlen(VLC_Version());
++                    NPUTF8 *retval =(NPUTF8*)NPN_MemAlloc(len);
++                    if( retval )
++                    {
++                        memcpy(retval, VLC_Version(), len);
++                        STRINGN_TO_NPVARIANT(retval, len, result);
++                    }
++                    else
++                    {
++                        NULL_TO_NPVARIANT(result);
++                    }
++                    return INVOKERESULT_NO_ERROR;
++                }
++                return INVOKERESULT_NO_SUCH_METHOD;
++            default:
++                ;
++        }
++    }
++    return INVOKERESULT_GENERIC_ERROR;
++}
++
+ /*
+ ** implementation of libvlc audio object
+ */
+@@ -114,8 +183,8 @@ const int LibvlcAudioNPObject::propertyC
+ 
+ enum LibvlcAudioNPObjectPropertyIds
+ {
+-    ID_mute,
+-    ID_volume,
++    ID_audio_mute,
++    ID_audio_volume,
+ };
+ 
+ RuntimeNPObject::InvokeResult LibvlcAudioNPObject::getProperty(int index, NPVariant &result)
+@@ -128,7 +197,7 @@ RuntimeNPObject::InvokeResult LibvlcAudi
+ 
+         switch( index )
+         {
+-            case ID_mute:
++            case ID_audio_mute:
+             {
+                 vlc_bool_t muted = libvlc_audio_get_mute(p_plugin->getVLC(), &ex);
+                 if( libvlc_exception_raised(&ex) )
+@@ -140,7 +209,7 @@ RuntimeNPObject::InvokeResult LibvlcAudi
+                 BOOLEAN_TO_NPVARIANT(muted, result);
+                 return INVOKERESULT_NO_ERROR;
+             }
+-            case ID_volume:
++            case ID_audio_volume:
+             {
+                 int volume = libvlc_audio_get_volume(p_plugin->getVLC(), &ex);
+                 if( libvlc_exception_raised(&ex) )
+@@ -152,6 +221,8 @@ RuntimeNPObject::InvokeResult LibvlcAudi
+                 INT32_TO_NPVARIANT(volume, result);
+                 return INVOKERESULT_NO_ERROR;
+             }
++            default:
++                ;
+         }
+     }
+     return INVOKERESULT_GENERIC_ERROR;
+@@ -167,7 +238,7 @@ RuntimeNPObject::InvokeResult LibvlcAudi
+ 
+         switch( index )
+         {
+-            case ID_mute:
++            case ID_audio_mute:
+                 if( NPVARIANT_IS_BOOLEAN(value) )
+                 {
+                     libvlc_audio_set_mute(p_plugin->getVLC(),
+@@ -181,7 +252,7 @@ RuntimeNPObject::InvokeResult LibvlcAudi
+                     return INVOKERESULT_NO_ERROR;
+                 }
+                 return INVOKERESULT_INVALID_VALUE;
+-            case ID_volume:
++            case ID_audio_volume:
+                 if( isNumberValue(value) )
+                 {
+                     libvlc_audio_set_volume(p_plugin->getVLC(),
+@@ -195,6 +266,8 @@ RuntimeNPObject::InvokeResult LibvlcAudi
+                     return INVOKERESULT_NO_ERROR;
+                 }
+                 return INVOKERESULT_INVALID_VALUE;
++            default:
++                ;
+         }
+     }
+     return INVOKERESULT_GENERIC_ERROR;
+@@ -209,7 +282,7 @@ const int LibvlcAudioNPObject::methodCou
+ 
+ enum LibvlcAudioNPObjectMethodIds
+ {
+-    ID_togglemute,
++    ID_audio_togglemute,
+ };
+ 
+ RuntimeNPObject::InvokeResult LibvlcAudioNPObject::invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result)
+@@ -222,7 +295,7 @@ RuntimeNPObject::InvokeResult LibvlcAudi
+ 
+         switch( index )
+         {
+-            case ID_togglemute:
++            case ID_audio_togglemute:
+                 if( argCount == 0 )
+                 {
+                     libvlc_audio_toggle_mute(p_plugin->getVLC(), &ex);
+@@ -240,7 +313,7 @@ RuntimeNPObject::InvokeResult LibvlcAudi
+                 }
+                 return INVOKERESULT_NO_SUCH_METHOD;
+             default:
+-                return INVOKERESULT_NO_SUCH_METHOD;
++                ;
+         }
+     }
+     return INVOKERESULT_GENERIC_ERROR;
+@@ -261,20 +334,769 @@ const NPUTF8 * const LibvlcInputNPObject
+     "hasVout",
+ };
+ 
+-const int LibvlcInputNPObject::propertyCount = sizeof(LibvlcInputNPObject::propertyNames)/sizeof(NPUTF8 *);
++const int LibvlcInputNPObject::propertyCount = sizeof(LibvlcInputNPObject::propertyNames)/sizeof(NPUTF8 *);
++
++enum LibvlcInputNPObjectPropertyIds
++{
++    ID_input_length,
++    ID_input_position,
++    ID_input_time,
++    ID_input_state,
++    ID_input_rate,
++    ID_input_fps,
++    ID_input_hasvout,
++};
++
++RuntimeNPObject::InvokeResult LibvlcInputNPObject::getProperty(int index, NPVariant &result)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        libvlc_exception_t ex;
++        libvlc_exception_init(&ex);
++
++        libvlc_input_t *p_input = libvlc_playlist_get_input(p_plugin->getVLC(), &ex);
++        if( libvlc_exception_raised(&ex) )
++        {
++            if( index != ID_input_state )
++            {
++                NPN_SetException(this, libvlc_exception_get_message(&ex));
++                libvlc_exception_clear(&ex);
++                return INVOKERESULT_GENERIC_ERROR;
++            }
++            else
++            {
++                /* for input state, return CLOSED rather than an exception */
++                INT32_TO_NPVARIANT(0, result);
++                return INVOKERESULT_NO_ERROR;
++            }
++        }
++
++        switch( index )
++        {
++            case ID_input_length:
++            {
++                double val = (double)libvlc_input_get_length(p_input, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                DOUBLE_TO_NPVARIANT(val, result);
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_input_position:
++            {
++                double val = libvlc_input_get_position(p_input, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                DOUBLE_TO_NPVARIANT(val, result);
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_input_time:
++            {
++                double val = (double)libvlc_input_get_time(p_input, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                DOUBLE_TO_NPVARIANT(val, result);
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_input_state:
++            {
++                int val = libvlc_input_get_state(p_input, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                INT32_TO_NPVARIANT(val, result);
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_input_rate:
++            {
++                float val = libvlc_input_get_rate(p_input, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                DOUBLE_TO_NPVARIANT(val, result);
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_input_fps:
++            {
++                double val = libvlc_input_get_fps(p_input, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                DOUBLE_TO_NPVARIANT(val, result);
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_input_hasvout:
++            {
++                vlc_bool_t val = libvlc_input_has_vout(p_input, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                BOOLEAN_TO_NPVARIANT(val, result);
++                return INVOKERESULT_NO_ERROR;
++            }
++            default:
++                ;
++        }
++        libvlc_input_free(p_input);
++    }
++    return INVOKERESULT_GENERIC_ERROR;
++}
++
++RuntimeNPObject::InvokeResult LibvlcInputNPObject::setProperty(int index, const NPVariant &value)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        libvlc_exception_t ex;
++        libvlc_exception_init(&ex);
++
++        libvlc_input_t *p_input = libvlc_playlist_get_input(p_plugin->getVLC(), &ex);
++        if( libvlc_exception_raised(&ex) )
++        {
++            NPN_SetException(this, libvlc_exception_get_message(&ex));
++            libvlc_exception_clear(&ex);
++            return INVOKERESULT_GENERIC_ERROR;
++        }
++
++        switch( index )
++        {
++            case ID_input_position:
++            {
++                if( ! NPVARIANT_IS_DOUBLE(value) )
++                {
++                    libvlc_input_free(p_input);
++                    return INVOKERESULT_INVALID_VALUE;
++                }
++
++                float val = (float)NPVARIANT_TO_DOUBLE(value);
++                libvlc_input_set_position(p_input, val, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_input_time:
++            {
++                vlc_int64_t val;
++                if( NPVARIANT_IS_INT32(value) )
++                    val = (vlc_int64_t)NPVARIANT_TO_INT32(value);
++                else if( NPVARIANT_IS_DOUBLE(value) )
++                    val = (vlc_int64_t)NPVARIANT_TO_DOUBLE(value);
++                else
++                {
++                    libvlc_input_free(p_input);
++                    return INVOKERESULT_INVALID_VALUE;
++                }
++
++                libvlc_input_set_time(p_input, val, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_input_rate:
++            {
++                float val;
++                if( NPVARIANT_IS_INT32(value) )
++                    val = (float)NPVARIANT_TO_INT32(value);
++                else if( NPVARIANT_IS_DOUBLE(value) )
++                    val = (float)NPVARIANT_TO_DOUBLE(value);
++                else
++                {
++                    libvlc_input_free(p_input);
++                    return INVOKERESULT_INVALID_VALUE;
++                }
++
++                libvlc_input_set_rate(p_input, val, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            default:
++                ;
++        }
++        libvlc_input_free(p_input);
++    }
++    return INVOKERESULT_GENERIC_ERROR;
++}
++
++const NPUTF8 * const LibvlcInputNPObject::methodNames[] =
++{
++    /* no methods */
++};
++
++const int LibvlcInputNPObject::methodCount = sizeof(LibvlcInputNPObject::methodNames)/sizeof(NPUTF8 *);
++
++/*
++** implementation of libvlc message object
++*/
++
++const NPUTF8 * const LibvlcMessageNPObject::propertyNames[] = 
++{
++    "severity",
++    "type",
++    "name",
++    "header",
++    "message",
++};
++
++const int LibvlcMessageNPObject::propertyCount = sizeof(LibvlcMessageNPObject::propertyNames)/sizeof(NPUTF8 *);
++
++enum LibvlcMessageNPObjectPropertyIds
++{
++    ID_message_severity,
++    ID_message_type,
++    ID_message_name,
++    ID_message_header,
++    ID_message_message,
++};
++
++RuntimeNPObject::InvokeResult LibvlcMessageNPObject::getProperty(int index, NPVariant &result)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        switch( index )
++        {
++            case ID_message_severity:
++            {
++                INT32_TO_NPVARIANT(_msg.i_severity, result);
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_message_type:
++            {
++                if( _msg.psz_type )
++                {
++                    int len = strlen(_msg.psz_type);
++                    NPUTF8* retval = (NPUTF8*)NPN_MemAlloc(len);
++                    if( retval )
++                    {
++                        memcpy(retval, _msg.psz_type, len);
++                        STRINGN_TO_NPVARIANT(retval, len, result);
++                    }
++                }
++                else
++                {
++                    NULL_TO_NPVARIANT(result);
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_message_name:
++            {
++                if( _msg.psz_name )
++                {
++                    int len = strlen(_msg.psz_name);
++                    NPUTF8* retval = (NPUTF8*)NPN_MemAlloc(len);
++                    if( retval )
++                    {
++                        memcpy(retval, _msg.psz_name, len);
++                        STRINGN_TO_NPVARIANT(retval, len, result);
++                    }
++                }
++                else
++                {
++                    NULL_TO_NPVARIANT(result);
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_message_header:
++            {
++                if( _msg.psz_header )
++                {
++                    int len = strlen(_msg.psz_header);
++                    NPUTF8* retval = (NPUTF8*)NPN_MemAlloc(len);
++                    if( retval )
++                    {
++                        memcpy(retval, _msg.psz_header, len);
++                        STRINGN_TO_NPVARIANT(retval, len, result);
++                    }
++                }
++                else
++                {
++                    NULL_TO_NPVARIANT(result);
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_message_message:
++            {
++                if( _msg.psz_message )
++                {
++                    int len = strlen(_msg.psz_message);
++                    NPUTF8* retval = (NPUTF8*)NPN_MemAlloc(len);
++                    if( retval )
++                    {
++                        memcpy(retval, _msg.psz_message, len);
++                        STRINGN_TO_NPVARIANT(retval, len, result);
++                    }
++                }
++                else
++                {
++                    NULL_TO_NPVARIANT(result);
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            default:
++                ;
++        }
++    }
++    return INVOKERESULT_GENERIC_ERROR;
++}
++
++const NPUTF8 * const LibvlcMessageNPObject::methodNames[] =
++{
++    /* no methods */
++};
++
++const int LibvlcMessageNPObject::methodCount = sizeof(LibvlcMessageNPObject::methodNames)/sizeof(NPUTF8 *);
++
++/*
++** implementation of libvlc message iterator object
++*/
++
++LibvlcMessageIteratorNPObject::LibvlcMessageIteratorNPObject(NPP instance, const NPClass *aClass) :
++    RuntimeNPObject(instance, aClass),
++    _p_iter(NULL)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        libvlc_log_t *p_log = p_plugin->getLog();
++        if( p_log )
++        {
++            _p_iter = libvlc_log_get_iterator(p_log, NULL);
++        }
++    }
++};
++
++LibvlcMessageIteratorNPObject::~LibvlcMessageIteratorNPObject()
++{
++    if( _p_iter )
++        libvlc_log_iterator_free(_p_iter, NULL);
++}
++
++const NPUTF8 * const LibvlcMessageIteratorNPObject::propertyNames[] = 
++{
++    "hasNext",
++};
++
++const int LibvlcMessageIteratorNPObject::propertyCount = sizeof(LibvlcMessageIteratorNPObject::propertyNames)/sizeof(NPUTF8 *);
++
++enum LibvlcMessageIteratorNPObjectPropertyIds
++{
++    ID_messageiterator_hasNext,
++};
++
++RuntimeNPObject::InvokeResult LibvlcMessageIteratorNPObject::getProperty(int index, NPVariant &result)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        switch( index )
++        {
++            case ID_messageiterator_hasNext:
++            {
++                if( _p_iter && p_plugin->getLog() )
++                {
++                    libvlc_exception_t ex;
++                    libvlc_exception_init(&ex);
++
++                    BOOLEAN_TO_NPVARIANT(libvlc_log_iterator_has_next(_p_iter, &ex), result);
++                    if( libvlc_exception_raised(&ex) )
++                    {
++                        NPN_SetException(this, libvlc_exception_get_message(&ex));
++                        libvlc_exception_clear(&ex);
++                        return INVOKERESULT_GENERIC_ERROR;
++                    }
++                }
++                else
++                {
++                    BOOLEAN_TO_NPVARIANT(0, result);
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            default:
++                ;
++        }
++    }
++    return INVOKERESULT_GENERIC_ERROR;
++}
++
++const NPUTF8 * const LibvlcMessageIteratorNPObject::methodNames[] =
++{
++    "next",
++};
++
++const int LibvlcMessageIteratorNPObject::methodCount = sizeof(LibvlcMessageIteratorNPObject::methodNames)/sizeof(NPUTF8 *);
++
++enum LibvlcMessageIteratorNPObjectMethodIds
++{
++    ID_messageiterator_next,
++};
++
++RuntimeNPObject::InvokeResult LibvlcMessageIteratorNPObject::invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        libvlc_exception_t ex;
++        libvlc_exception_init(&ex);
++
++        switch( index )
++        {
++            case ID_messageiterator_next:
++                if( argCount == 0 )
++                {
++                    if( _p_iter && p_plugin->getLog() )
++                    {
++                        struct libvlc_log_message_t buffer;
++
++                        buffer.sizeof_msg = sizeof(buffer);
++
++                        libvlc_log_iterator_next(_p_iter, &buffer, &ex);
++                        if( libvlc_exception_raised(&ex) )
++                        {
++                            NPN_SetException(this, libvlc_exception_get_message(&ex));
++                            libvlc_exception_clear(&ex);
++                            return INVOKERESULT_GENERIC_ERROR;
++                        }
++                        else
++                        {
++                            LibvlcMessageNPObject* message =
++                                static_cast<LibvlcMessageNPObject*>(NPN_CreateObject(_instance, RuntimeNPClass<LibvlcMessageNPObject>::getClass()));
++                            if( message )
++                            {
++                                message->setMessage(buffer);
++                                OBJECT_TO_NPVARIANT(message, result);
++                                return INVOKERESULT_NO_ERROR;
++                            }
++                            return INVOKERESULT_OUT_OF_MEMORY;
++                        }
++                    }
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                return INVOKERESULT_NO_SUCH_METHOD;
++            default:
++                ;
++        }
++    }
++    return INVOKERESULT_GENERIC_ERROR;
++}
++ 
++/*
++** implementation of libvlc message object
++*/
++
++const NPUTF8 * const LibvlcMessagesNPObject::propertyNames[] = 
++{
++    "count",
++};
++
++const int LibvlcMessagesNPObject::propertyCount = sizeof(LibvlcMessagesNPObject::propertyNames)/sizeof(NPUTF8 *);
++
++enum LibvlcMessagesNPObjectPropertyIds
++{
++    ID_messages_count,
++};
++
++RuntimeNPObject::InvokeResult LibvlcMessagesNPObject::getProperty(int index, NPVariant &result)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        switch( index )
++        {
++            case ID_messages_count:
++            {
++                libvlc_log_t *p_log = p_plugin->getLog();
++                if( p_log )
++                {
++                    libvlc_exception_t ex;
++                    libvlc_exception_init(&ex);
++
++                    INT32_TO_NPVARIANT(libvlc_log_count(p_log, &ex), result);
++                    if( libvlc_exception_raised(&ex) )
++                    {
++                        NPN_SetException(this, libvlc_exception_get_message(&ex));
++                        libvlc_exception_clear(&ex);
++                        return INVOKERESULT_GENERIC_ERROR;
++                    }
++                }
++                else
++                {
++                    INT32_TO_NPVARIANT(0, result);
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            default:
++                ;
++        }
++    }
++    return INVOKERESULT_GENERIC_ERROR;
++}
++
++const NPUTF8 * const LibvlcMessagesNPObject::methodNames[] =
++{
++    "clear",
++    "iterator",
++};
++
++const int LibvlcMessagesNPObject::methodCount = sizeof(LibvlcMessagesNPObject::methodNames)/sizeof(NPUTF8 *);
++
++enum LibvlcMessagesNPObjectMethodIds
++{
++    ID_messages_clear,
++    ID_messages_iterator,
++};
++
++RuntimeNPObject::InvokeResult LibvlcMessagesNPObject::invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        libvlc_exception_t ex;
++        libvlc_exception_init(&ex);
++
++        switch( index )
++        {
++            case ID_messages_clear:
++                if( argCount == 0 )
++                {
++                    libvlc_log_t *p_log = p_plugin->getLog();
++                    if( p_log )
++                    {
++                        libvlc_log_clear(p_log, &ex);
++                        if( libvlc_exception_raised(&ex) )
++                        {
++                            NPN_SetException(this, libvlc_exception_get_message(&ex));
++                            libvlc_exception_clear(&ex);
++                            return INVOKERESULT_GENERIC_ERROR;
++                        }
++                    }
++                    return INVOKERESULT_NO_ERROR;
++                }
++                return INVOKERESULT_NO_SUCH_METHOD;
++
++            case ID_messages_iterator:
++                if( argCount == 0 )
++                {
++                    LibvlcMessageIteratorNPObject* iter =
++                        static_cast<LibvlcMessageIteratorNPObject*>(NPN_CreateObject(_instance, RuntimeNPClass<LibvlcMessageIteratorNPObject>::getClass()));
++                    if( iter )
++                    {
++                        OBJECT_TO_NPVARIANT(iter, result);
++                        return INVOKERESULT_NO_ERROR;
++                    }
++                    return INVOKERESULT_OUT_OF_MEMORY;
++                }
++                return INVOKERESULT_NO_SUCH_METHOD;
++
++            default:
++                ;
++        }
++    }
++    return INVOKERESULT_GENERIC_ERROR;
++}
++
++ 
++/*
++** implementation of libvlc message object
++*/
++
++
++LibvlcLogNPObject::LibvlcLogNPObject(NPP instance, const NPClass *aClass) :
++    RuntimeNPObject(instance, aClass)
++{
++    _p_vlcmessages = static_cast<LibvlcMessagesNPObject*>(NPN_CreateObject(instance, RuntimeNPClass<LibvlcMessagesNPObject>::getClass()));
++};
++    
++LibvlcLogNPObject::~LibvlcLogNPObject()
++{
++    NPN_ReleaseObject(_p_vlcmessages);
++};
++
++const NPUTF8 * const LibvlcLogNPObject::propertyNames[] = 
++{
++    "messages",
++    "verbosity",
++};
++
++const int LibvlcLogNPObject::propertyCount = sizeof(LibvlcLogNPObject::propertyNames)/sizeof(NPUTF8 *);
++
++enum LibvlcLogNPObjectPropertyIds
++{
++    ID_log_messages,
++    ID_log_verbosity,
++};
++
++RuntimeNPObject::InvokeResult LibvlcLogNPObject::getProperty(int index, NPVariant &result)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        libvlc_exception_t ex;
++        libvlc_exception_init(&ex);
++
++        switch( index )
++        {
++            case ID_log_messages:
++            {
++                OBJECT_TO_NPVARIANT(NPN_RetainObject(_p_vlcmessages), result);
++                return INVOKERESULT_NO_ERROR;
++            }
++            case ID_log_verbosity:
++            {
++                if( p_plugin->getLog() )
++                {
++                    INT32_TO_NPVARIANT(libvlc_get_log_verbosity(p_plugin->getVLC(),
++                                                                    &ex), result);
++                    if( libvlc_exception_raised(&ex) )
++                    {
++                        NPN_SetException(this, libvlc_exception_get_message(&ex));
++                        libvlc_exception_clear(&ex);
++                        return INVOKERESULT_GENERIC_ERROR;
++                    }
++                }
++                else
++                {
++                    /* log is not enabled, return -1 */
++                    DOUBLE_TO_NPVARIANT(-1.0, result);
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
++            default:
++                ;
++        }
++    }
++    return INVOKERESULT_GENERIC_ERROR;
++}
++
++RuntimeNPObject::InvokeResult LibvlcLogNPObject::setProperty(int index, const NPVariant &value)
++{
++    VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
++    if( p_plugin )
++    {
++        libvlc_exception_t ex;
++        libvlc_exception_init(&ex);
++
++        switch( index )
++        {
++            case ID_log_verbosity:
++                if( isNumberValue(value) )
++                {
++                    libvlc_instance_t* p_libvlc = p_plugin->getVLC();
++                    libvlc_log_t *p_log = p_plugin->getLog();
++                    int verbosity = numberValue(value);
++                    if( verbosity >= 0 )
++                    {
++                        if( ! p_log )
++                        {
++                            p_log = libvlc_log_open(p_libvlc, &ex);
++                            if( libvlc_exception_raised(&ex) )
++                            {
++                                NPN_SetException(this, libvlc_exception_get_message(&ex));
++                                libvlc_exception_clear(&ex);
++                                return INVOKERESULT_GENERIC_ERROR;
++                            }
++                            p_plugin->setLog(p_log);
++                        }
++                        libvlc_set_log_verbosity(p_libvlc, (unsigned)verbosity, &ex);
++                        if( libvlc_exception_raised(&ex) )
++                        {
++                            NPN_SetException(this, libvlc_exception_get_message(&ex));
++                            libvlc_exception_clear(&ex);
++                            return INVOKERESULT_GENERIC_ERROR;
++                        }
++                    }
++                    else if( p_log )
++                    {
++                        /* close log  when verbosity is set to -1 */
++                        p_plugin->setLog(NULL);
++                        libvlc_log_close(p_log, &ex);
++                        if( libvlc_exception_raised(&ex) )
++                        {
++                            NPN_SetException(this, libvlc_exception_get_message(&ex));
++                            libvlc_exception_clear(&ex);
++                            return INVOKERESULT_GENERIC_ERROR;
++                        }
++                    }
++                    return INVOKERESULT_NO_ERROR;
++                }
++                return INVOKERESULT_INVALID_VALUE;
++            default:
++                ;
++        }
++    }
++    return INVOKERESULT_GENERIC_ERROR;
++}
++
++const NPUTF8 * const LibvlcLogNPObject::methodNames[] =
++{
++    /* no methods */
++};
++
++const int LibvlcLogNPObject::methodCount = sizeof(LibvlcLogNPObject::methodNames)/sizeof(NPUTF8 *);
++
++/*
++** implementation of libvlc playlist items object
++*/
++
++const NPUTF8 * const LibvlcPlaylistItemsNPObject::propertyNames[] = 
++{
++    "count",
++};
++
++const int LibvlcPlaylistItemsNPObject::propertyCount = sizeof(LibvlcPlaylistItemsNPObject::propertyNames)/sizeof(NPUTF8 *);
+ 
+-enum LibvlcInputNPObjectPropertyIds
++enum LibvlcPlaylistItemsNPObjectPropertyIds
+ {
+-    ID_length,
+-    ID_position,
+-    ID_time,
+-    ID_state,
+-    ID_rate,
+-    ID_fps,
+-    ID_hasvout,
++    ID_playlistitems_count,
+ };
+ 
+-RuntimeNPObject::InvokeResult LibvlcInputNPObject::getProperty(int index, NPVariant &result)
++RuntimeNPObject::InvokeResult LibvlcPlaylistItemsNPObject::getProperty(int index, NPVariant &result)
+ {
+     VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
+     if( p_plugin )
+@@ -282,68 +1104,11 @@ RuntimeNPObject::InvokeResult LibvlcInpu
+         libvlc_exception_t ex;
+         libvlc_exception_init(&ex);
+ 
+-        libvlc_input_t *p_input = libvlc_playlist_get_input(p_plugin->getVLC(), &ex);
+-        if( libvlc_exception_raised(&ex) )
+-        {
+-            if( index != ID_state )
+-            {
+-                NPN_SetException(this, libvlc_exception_get_message(&ex));
+-                libvlc_exception_clear(&ex);
+-                return INVOKERESULT_GENERIC_ERROR;
+-            }
+-            else
+-            {
+-                /* for input state, return CLOSED rather than an exception */
+-                INT32_TO_NPVARIANT(0, result);
+-                return INVOKERESULT_NO_ERROR;
+-            }
+-        }
+-
+         switch( index )
+         {
+-            case ID_length:
+-            {
+-                double val = (double)libvlc_input_get_length(p_input, &ex);
+-                libvlc_input_free(p_input);
+-                if( libvlc_exception_raised(&ex) )
+-                {
+-                    NPN_SetException(this, libvlc_exception_get_message(&ex));
+-                    libvlc_exception_clear(&ex);
+-                    return INVOKERESULT_GENERIC_ERROR;
+-                }
+-                DOUBLE_TO_NPVARIANT(val, result);
+-                return INVOKERESULT_NO_ERROR;
+-            }
+-            case ID_position:
+-            {
+-                double val = libvlc_input_get_position(p_input, &ex);
+-                libvlc_input_free(p_input);
+-                if( libvlc_exception_raised(&ex) )
+-                {
+-                    NPN_SetException(this, libvlc_exception_get_message(&ex));
+-                    libvlc_exception_clear(&ex);
+-                    return INVOKERESULT_GENERIC_ERROR;
+-                }
+-                DOUBLE_TO_NPVARIANT(val, result);
+-                return INVOKERESULT_NO_ERROR;
+-            }
+-            case ID_time:
+-            {
+-                double val = (double)libvlc_input_get_time(p_input, &ex);
+-                libvlc_input_free(p_input);
+-                if( libvlc_exception_raised(&ex) )
+-                {
+-                    NPN_SetException(this, libvlc_exception_get_message(&ex));
+-                    libvlc_exception_clear(&ex);
+-                    return INVOKERESULT_GENERIC_ERROR;
+-                }
+-                DOUBLE_TO_NPVARIANT(val, result);
+-                return INVOKERESULT_NO_ERROR;
+-            }
+-            case ID_state:
++            case ID_playlistitems_count:
+             {
+-                int val = libvlc_input_get_state(p_input, &ex);
+-                libvlc_input_free(p_input);
++                int val = libvlc_playlist_items_count(p_plugin->getVLC(), &ex);
+                 if( libvlc_exception_raised(&ex) )
+                 {
+                     NPN_SetException(this, libvlc_exception_get_message(&ex));
+@@ -353,52 +1118,28 @@ RuntimeNPObject::InvokeResult LibvlcInpu
+                 INT32_TO_NPVARIANT(val, result);
+                 return INVOKERESULT_NO_ERROR;
+             }
+-            case ID_rate:
+-            {
+-                float val = libvlc_input_get_rate(p_input, &ex);
+-                libvlc_input_free(p_input);
+-                if( libvlc_exception_raised(&ex) )
+-                {
+-                    NPN_SetException(this, libvlc_exception_get_message(&ex));
+-                    libvlc_exception_clear(&ex);
+-                    return INVOKERESULT_GENERIC_ERROR;
+-                }
+-                DOUBLE_TO_NPVARIANT(val, result);
+-                return INVOKERESULT_NO_ERROR;
+-            }
+-            case ID_fps:
+-            {
+-                double val = libvlc_input_get_fps(p_input, &ex);
+-                libvlc_input_free(p_input);
+-                if( libvlc_exception_raised(&ex) )
+-                {
+-                    NPN_SetException(this, libvlc_exception_get_message(&ex));
+-                    libvlc_exception_clear(&ex);
+-                    return INVOKERESULT_GENERIC_ERROR;
+-                }
+-                DOUBLE_TO_NPVARIANT(val, result);
+-                return INVOKERESULT_NO_ERROR;
+-            }
+-            case ID_hasvout:
+-            {
+-                vlc_bool_t val = libvlc_input_has_vout(p_input, &ex);
+-                libvlc_input_free(p_input);
+-                if( libvlc_exception_raised(&ex) )
+-                {
+-                    NPN_SetException(this, libvlc_exception_get_message(&ex));
+-                    libvlc_exception_clear(&ex);
+-                    return INVOKERESULT_GENERIC_ERROR;
+-                }
+-                BOOLEAN_TO_NPVARIANT(val, result);
+-                return INVOKERESULT_NO_ERROR;
+-            }
++            default:
++                ;
+         }
+-        libvlc_input_free(p_input);
+     }
+     return INVOKERESULT_GENERIC_ERROR;
+ }
+ 
+-RuntimeNPObject::InvokeResult LibvlcInputNPObject::setProperty(int index, const NPVariant &value)
++const NPUTF8 * const LibvlcPlaylistItemsNPObject::methodNames[] =
++{
++    "clear",
++    "remove",
++};
++
++const int LibvlcPlaylistItemsNPObject::methodCount = sizeof(LibvlcPlaylistItemsNPObject::methodNames)/sizeof(NPUTF8 *);
++
++enum LibvlcPlaylistItemsNPObjectMethodIds
++{
++    ID_playlistitems_clear,
++    ID_playlistitems_remove,
++};
++
++RuntimeNPObject::InvokeResult LibvlcPlaylistItemsNPObject::invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result)
+ {
+     VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(_instance->pdata);
+     if( p_plugin )
+@@ -406,111 +1147,79 @@ RuntimeNPObject::InvokeResult LibvlcInpu
+         libvlc_exception_t ex;
+         libvlc_exception_init(&ex);
+ 
+-        libvlc_input_t *p_input = libvlc_playlist_get_input(p_plugin->getVLC(), &ex);
+-        if( libvlc_exception_raised(&ex) )
+-        {
+-            NPN_SetException(this, libvlc_exception_get_message(&ex));
+-            libvlc_exception_clear(&ex);
+-            return INVOKERESULT_GENERIC_ERROR;
+-        }
+-
+         switch( index )
+         {
+-            case ID_position:
+-            {
+-                if( ! NPVARIANT_IS_DOUBLE(value) )
+-                {
+-                    libvlc_input_free(p_input);
+-                    return INVOKERESULT_INVALID_VALUE;
+-                }
+-
+-                float val = (float)NPVARIANT_TO_DOUBLE(value);
+-                libvlc_input_set_position(p_input, val, &ex);
+-                libvlc_input_free(p_input);
+-                if( libvlc_exception_raised(&ex) )
+-                {
+-                    NPN_SetException(this, libvlc_exception_get_message(&ex));
+-                    libvlc_exception_clear(&ex);
+-                    return INVOKERESULT_GENERIC_ERROR;
+-                }
+-                return INVOKERESULT_NO_ERROR;
+-            }
+-            case ID_time:
+-            {
+-                vlc_int64_t val;
+-                if( NPVARIANT_IS_INT32(value) )
+-                    val = (vlc_int64_t)NPVARIANT_TO_INT32(value);
+-                else if( NPVARIANT_IS_DOUBLE(value) )
+-                    val = (vlc_int64_t)NPVARIANT_TO_DOUBLE(value);
+-                else
+-                {
+-                    libvlc_input_free(p_input);
+-                    return INVOKERESULT_INVALID_VALUE;
+-                }
+-
+-                libvlc_input_set_time(p_input, val, &ex);
+-                libvlc_input_free(p_input);
+-                if( libvlc_exception_raised(&ex) )
+-                {
+-                    NPN_SetException(this, libvlc_exception_get_message(&ex));
+-                    libvlc_exception_clear(&ex);
+-                    return INVOKERESULT_GENERIC_ERROR;
+-                }
+-                return INVOKERESULT_NO_ERROR;
+-            }
+-            case ID_rate:
+-            {
+-                float val;
+-                if( NPVARIANT_IS_INT32(value) )
+-                    val = (float)NPVARIANT_TO_INT32(value);
+-                else if( NPVARIANT_IS_DOUBLE(value) )
+-                    val = (float)NPVARIANT_TO_DOUBLE(value);
+-                else
++            case ID_playlistitems_clear:
++                if( argCount == 0 )
+                 {
+-                    libvlc_input_free(p_input);
+-                    return INVOKERESULT_INVALID_VALUE;
++                    libvlc_playlist_clear(p_plugin->getVLC(), &ex);
++                    if( libvlc_exception_raised(&ex) )
++                    {
++                        NPN_SetException(this, libvlc_exception_get_message(&ex));
++                        libvlc_exception_clear(&ex);
++                        return INVOKERESULT_GENERIC_ERROR;
++                    }
++                    else
++                    {
++                        VOID_TO_NPVARIANT(result);
++                        return INVOKERESULT_NO_ERROR;
++                    }
+                 }
+-
+-                libvlc_input_set_rate(p_input, val, &ex);
+-                libvlc_input_free(p_input);
+-                if( libvlc_exception_raised(&ex) )
++                return INVOKERESULT_NO_SUCH_METHOD;
++            case ID_playlistitems_remove:
++                if( (argCount == 1) && isNumberValue(args[0]) )
+                 {
+-                    NPN_SetException(this, libvlc_exception_get_message(&ex));
+-                    libvlc_exception_clear(&ex);
+-                    return INVOKERESULT_GENERIC_ERROR;
++                    libvlc_playlist_delete_item(p_plugin->getVLC(), numberValue(args[0]), &ex);
++                    if( libvlc_exception_raised(&ex) )
++                    {
++                        NPN_SetException(this, libvlc_exception_get_message(&ex));
++                        libvlc_exception_clear(&ex);
++                        return INVOKERESULT_GENERIC_ERROR;
++                    }
++                    else
++                    {
++                        VOID_TO_NPVARIANT(result);
++                        return INVOKERESULT_NO_ERROR;
++                    }
+                 }
+-                return INVOKERESULT_NO_ERROR;
+-            }
++                return INVOKERESULT_NO_SUCH_METHOD;
++            default:
++                ;
+         }
+-        libvlc_input_free(p_input);
+     }
+     return INVOKERESULT_GENERIC_ERROR;
+ }
+ 
+-const NPUTF8 * const LibvlcInputNPObject::methodNames[] =
+-{
+-    /* no methods */
+-};
+-
+-const int LibvlcInputNPObject::methodCount = sizeof(LibvlcInputNPObject::methodNames)/sizeof(NPUTF8 *);
+-
+ /*
+ ** implementation of libvlc playlist object
+ */
+ 
+ 
++LibvlcPlaylistNPObject::LibvlcPlaylistNPObject(NPP instance, const NPClass *aClass) :
++    RuntimeNPObject(instance, aClass)
++{
++    _p_vlcplaylistitems = static_cast<LibvlcPlaylistItemsNPObject*>(NPN_CreateObject(instance, RuntimeNPClass<LibvlcPlaylistItemsNPObject>::getClass()));
++};
++    
++LibvlcPlaylistNPObject::~LibvlcPlaylistNPObject()
++{
++    NPN_ReleaseObject(_p_vlcplaylistitems);
++};
++
+ const NPUTF8 * const LibvlcPlaylistNPObject::propertyNames[] = 
+ {
+-    "itemCount",
++    "itemCount", /* deprecated */
+     "isPlaying",
++    "items",
+ };
+ 
+ const int LibvlcPlaylistNPObject::propertyCount = sizeof(LibvlcPlaylistNPObject::propertyNames)/sizeof(NPUTF8 *);
+ 
+ enum LibvlcPlaylistNPObjectPropertyIds
+ {
+-    ID_itemcount,
+-    ID_isplaying,
++    ID_playlist_itemcount,
++    ID_playlist_isplaying,
++    ID_playlist_items,
+ };
+ 
+ RuntimeNPObject::InvokeResult LibvlcPlaylistNPObject::getProperty(int index, NPVariant &result)
+@@ -523,7 +1232,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+ 
+         switch( index )
+         {
+-            case ID_itemcount:
++            case ID_playlist_itemcount: /* deprecated */
+             {
+                 int val = libvlc_playlist_items_count(p_plugin->getVLC(), &ex);
+                 if( libvlc_exception_raised(&ex) )
+@@ -535,7 +1244,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                 INT32_TO_NPVARIANT(val, result);
+                 return INVOKERESULT_NO_ERROR;
+             }
+-            case ID_isplaying:
++            case ID_playlist_isplaying:
+             {
+                 int val = libvlc_playlist_isplaying(p_plugin->getVLC(), &ex);
+                 if( libvlc_exception_raised(&ex) )
+@@ -547,6 +1256,13 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                 BOOLEAN_TO_NPVARIANT(val, result);
+                 return INVOKERESULT_NO_ERROR;
+             }
++            case ID_playlist_items:
++            {
++                OBJECT_TO_NPVARIANT(NPN_RetainObject(_p_vlcplaylistitems), result);
++                return INVOKERESULT_NO_ERROR;
++            }
++            default:
++                ;
+         }
+     }
+     return INVOKERESULT_GENERIC_ERROR;
+@@ -561,23 +1277,23 @@ const NPUTF8 * const LibvlcPlaylistNPObj
+     "stop",
+     "next",
+     "prev",
+-    "clear",
+-    "removeItem"
++    "clear", /* deprecated */
++    "removeItem", /* deprecated */
+ };
+ 
+ const int LibvlcPlaylistNPObject::methodCount = sizeof(LibvlcPlaylistNPObject::methodNames)/sizeof(NPUTF8 *);
+ 
+ enum LibvlcPlaylistNPObjectMethodIds
+ {
+-    ID_add,
+-    ID_play,
+-    ID_playItem,
+-    ID_togglepause,
+-    ID_stop,
+-    ID_next,
+-    ID_prev,
+-    ID_clear,
+-    ID_removeitem,
++    ID_playlist_add,
++    ID_playlist_play,
++    ID_playlist_playItem,
++    ID_playlist_togglepause,
++    ID_playlist_stop,
++    ID_playlist_next,
++    ID_playlist_prev,
++    ID_playlist_clear,
++    ID_playlist_removeitem
+ };
+ 
+ RuntimeNPObject::InvokeResult LibvlcPlaylistNPObject::invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result)
+@@ -590,7 +1306,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+ 
+         switch( index )
+         {
+-            case ID_add:
++            case ID_playlist_add:
+             {
+                 if( (argCount < 1) || (argCount > 3) )
+                     return INVOKERESULT_NO_SUCH_METHOD;
+@@ -604,10 +1320,11 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                     if( s )
+                     {
+                         url = p_plugin->getAbsoluteURL(s);
+-                        delete s;
+-                        if( ! url )
+-                            // what happened ?
+-                            return INVOKERESULT_GENERIC_ERROR;
++                        if( url )
++                            delete s;
++                        else
++                            // problem with combining url, use argument
++                            url = s;
+                     }
+                     else
+                         return INVOKERESULT_OUT_OF_MEMORY;
+@@ -680,7 +1397,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                     return INVOKERESULT_NO_ERROR;
+                 }
+             }
+-            case ID_play:
++            case ID_playlist_play:
+                 if( argCount == 0 )
+                 {
+                     libvlc_playlist_play(p_plugin->getVLC(), -1, 0, NULL, &ex);
+@@ -697,7 +1414,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                     }
+                 }
+                 return INVOKERESULT_NO_SUCH_METHOD;
+-            case ID_playItem:
++            case ID_playlist_playItem:
+                 if( (argCount == 1) && isNumberValue(args[0]) )
+                 {
+                     libvlc_playlist_play(p_plugin->getVLC(), numberValue(args[0]), 0, NULL, &ex);
+@@ -714,7 +1431,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                     }
+                 }
+                 return INVOKERESULT_NO_SUCH_METHOD;
+-            case ID_togglepause:
++            case ID_playlist_togglepause:
+                 if( argCount == 0 )
+                 {
+                     libvlc_playlist_pause(p_plugin->getVLC(), &ex);
+@@ -731,7 +1448,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                     }
+                 }
+                 return INVOKERESULT_NO_SUCH_METHOD;
+-            case ID_stop:
++            case ID_playlist_stop:
+                 if( argCount == 0 )
+                 {
+                     libvlc_playlist_stop(p_plugin->getVLC(), &ex);
+@@ -748,7 +1465,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                     }
+                 }
+                 return INVOKERESULT_NO_SUCH_METHOD;
+-            case ID_next:
++            case ID_playlist_next:
+                 if( argCount == 0 )
+                 {
+                     libvlc_playlist_next(p_plugin->getVLC(), &ex);
+@@ -765,7 +1482,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                     }
+                 }
+                 return INVOKERESULT_NO_SUCH_METHOD;
+-            case ID_prev:
++            case ID_playlist_prev:
+                 if( argCount == 0 )
+                 {
+                     libvlc_playlist_prev(p_plugin->getVLC(), &ex);
+@@ -782,7 +1499,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                     }
+                 }
+                 return INVOKERESULT_NO_SUCH_METHOD;
+-            case ID_clear:
++            case ID_playlist_clear: /* deprecated */
+                 if( argCount == 0 )
+                 {
+                     libvlc_playlist_clear(p_plugin->getVLC(), &ex);
+@@ -799,7 +1516,7 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                     }
+                 }
+                 return INVOKERESULT_NO_SUCH_METHOD;
+-            case ID_removeitem:
++            case ID_playlist_removeitem: /* deprecated */
+                 if( (argCount == 1) && isNumberValue(args[0]) )
+                 {
+                     libvlc_playlist_delete_item(p_plugin->getVLC(), numberValue(args[0]), &ex);
+@@ -817,12 +1534,12 @@ RuntimeNPObject::InvokeResult LibvlcPlay
+                 }
+                 return INVOKERESULT_NO_SUCH_METHOD;
+             default:
+-                return INVOKERESULT_NO_SUCH_METHOD;
++                ;
+         }
+     }
+     return INVOKERESULT_GENERIC_ERROR;
+ }
+- 
++
+ void LibvlcPlaylistNPObject::parseOptions(const NPString &s, int *i_options, char*** ppsz_options)
+ {
+     if( s.utf8length )
+@@ -959,13 +1676,15 @@ const NPUTF8 * const LibvlcVideoNPObject
+     "fullscreen",
+     "height",
+     "width",
++    "aspectRatio"
+ };
+ 
+ enum LibvlcVideoNPObjectPropertyIds
+ {
+-    ID_fullscreen,
+-    ID_height,
+-    ID_width,
++    ID_video_fullscreen,
++    ID_video_height,
++    ID_video_width,
++    ID_video_aspectratio
+ };
+ 
+ const int LibvlcVideoNPObject::propertyCount = sizeof(LibvlcVideoNPObject::propertyNames)/sizeof(NPUTF8 *);
+@@ -988,7 +1707,7 @@ RuntimeNPObject::InvokeResult LibvlcVide
+ 
+         switch( index )
+         {
+-            case ID_fullscreen:
++            case ID_video_fullscreen:
+             {
+                 int val = libvlc_get_fullscreen(p_input, &ex);
+                 libvlc_input_free(p_input);
+@@ -1001,7 +1720,7 @@ RuntimeNPObject::InvokeResult LibvlcVide
+                 BOOLEAN_TO_NPVARIANT(val, result);
+                 return INVOKERESULT_NO_ERROR;
+             }
+-            case ID_height:
++            case ID_video_height:
+             {
+                 int val = libvlc_video_get_height(p_input, &ex);
+                 libvlc_input_free(p_input);
+@@ -1014,7 +1733,7 @@ RuntimeNPObject::InvokeResult LibvlcVide
+                 INT32_TO_NPVARIANT(val, result);
+                 return INVOKERESULT_NO_ERROR;
+             }
+-            case ID_width:
++            case ID_video_width:
+             {
+                 int val = libvlc_video_get_width(p_input, &ex);
+                 libvlc_input_free(p_input);
+@@ -1027,6 +1746,22 @@ RuntimeNPObject::InvokeResult LibvlcVide
+                 INT32_TO_NPVARIANT(val, result);
+                 return INVOKERESULT_NO_ERROR;
+             }
++            case ID_video_aspectratio:
++            {
++                NPUTF8 *psz_aspect = libvlc_video_get_aspect_ratio(p_input, &ex);
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                if( !psz_aspect )
++                    return INVOKERESULT_GENERIC_ERROR;
++
++                STRINGZ_TO_NPVARIANT(psz_aspect, result);
++                return INVOKERESULT_NO_ERROR;
++            }
+         }
+         libvlc_input_free(p_input);
+     }
+@@ -1051,7 +1786,7 @@ RuntimeNPObject::InvokeResult LibvlcVide
+ 
+         switch( index )
+         {
+-            case ID_fullscreen:
++            case ID_video_fullscreen:
+             {
+                 if( ! NPVARIANT_IS_BOOLEAN(value) )
+                 {
+@@ -1070,6 +1805,33 @@ RuntimeNPObject::InvokeResult LibvlcVide
+                 }
+                 return INVOKERESULT_NO_ERROR;
+             }
++            case ID_video_aspectratio:
++            {
++                char *psz_aspect = NULL;
++
++                if( ! NPVARIANT_IS_STRING(value) )
++                {
++                    libvlc_input_free(p_input);
++                    return INVOKERESULT_INVALID_VALUE;
++                }
++
++                psz_aspect = stringValue(NPVARIANT_TO_STRING(value));
++                if( !psz_aspect )
++                    return INVOKERESULT_GENERIC_ERROR;
++
++                libvlc_video_set_aspect_ratio(p_input, psz_aspect, &ex);
++                if( psz_aspect )
++                    free(psz_aspect );
++
++                libvlc_input_free(p_input);
++                if( libvlc_exception_raised(&ex) )
++                {
++                    NPN_SetException(this, libvlc_exception_get_message(&ex));
++                    libvlc_exception_clear(&ex);
++                    return INVOKERESULT_GENERIC_ERROR;
++                }
++                return INVOKERESULT_NO_ERROR;
++            }
+         }
+         libvlc_input_free(p_input);
+     }
+@@ -1083,7 +1845,7 @@ const NPUTF8 * const LibvlcVideoNPObject
+ 
+ enum LibvlcVideoNPObjectMethodIds
+ {
+-    ID_togglefullscreen,
++    ID_video_togglefullscreen,
+ };
+ 
+ const int LibvlcVideoNPObject::methodCount = sizeof(LibvlcVideoNPObject::methodNames)/sizeof(NPUTF8 *);
+@@ -1106,7 +1868,7 @@ RuntimeNPObject::InvokeResult LibvlcVide
+ 
+         switch( index )
+         {
+-            case ID_togglefullscreen:
++            case ID_video_togglefullscreen:
+                 if( argCount == 0 )
+                 {
+                     libvlc_toggle_fullscreen(p_input, &ex);
+diff -puriN vlc-0.8.6/mozilla/control/npolibvlc.h vlc-0.8.6a/mozilla/control/npolibvlc.h
+--- vlc-0.8.6/mozilla/control/npolibvlc.h	2006-10-04 15:47:08.000000000 +0200
++++ vlc-0.8.6a/mozilla/control/npolibvlc.h	2007-01-07 23:08:03.000000000 +0100
+@@ -23,6 +23,7 @@
+ /*
+ ** defined runtime script objects
+ */
++#include <vlc/libvlc.h>
+ 
+ #include "nporuntime.h"
+ 
+@@ -42,8 +43,11 @@ protected:
+     static const int methodCount;
+     static const NPUTF8 * const methodNames[];
+ 
++    InvokeResult invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result);
++
+     NPObject *audioObj;
+     NPObject *inputObj;
++    NPObject *logObj;
+     NPObject *playlistObj;
+     NPObject *videoObj;
+ };
+@@ -76,7 +80,7 @@ protected:
+ 
+     LibvlcInputNPObject(NPP instance, const NPClass *aClass) :
+         RuntimeNPObject(instance, aClass) {};
+-	
++        
+     virtual ~LibvlcInputNPObject() {};
+ 
+     static const int propertyCount;
+@@ -89,14 +93,127 @@ protected:
+     static const NPUTF8 * const methodNames[];
+ };
+ 
++class LibvlcMessageNPObject: public RuntimeNPObject
++{
++public:
++    void setMessage(struct libvlc_log_message_t &msg)
++    {
++        _msg = msg;
++    };
++
++protected:
++    friend class RuntimeNPClass<LibvlcMessageNPObject>;
++
++    LibvlcMessageNPObject(NPP instance, const NPClass *aClass) :
++        RuntimeNPObject(instance, aClass) {};
++        
++    virtual ~LibvlcMessageNPObject() {};
++
++    static const int propertyCount;
++    static const NPUTF8 * const propertyNames[];
++
++    InvokeResult getProperty(int index, NPVariant &result);
++
++    static const int methodCount;
++    static const NPUTF8 * const methodNames[];
++
++private:
++    struct libvlc_log_message_t _msg;
++};
++
++class LibvlcLogNPObject;
++
++class LibvlcMessageIteratorNPObject: public RuntimeNPObject
++{
++protected:
++    friend class RuntimeNPClass<LibvlcMessageIteratorNPObject>;
++
++    LibvlcMessageIteratorNPObject(NPP instance, const NPClass *aClass);
++    virtual ~LibvlcMessageIteratorNPObject();
++
++    static const int propertyCount;
++    static const NPUTF8 * const propertyNames[];
++
++    InvokeResult getProperty(int index, NPVariant &result);
++
++    static const int methodCount;
++    static const NPUTF8 * const methodNames[];
++
++    InvokeResult invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result);
++
++private:
++    libvlc_log_iterator_t*  _p_iter;
++};
++
++class LibvlcMessagesNPObject: public RuntimeNPObject
++{
++protected:
++    friend class RuntimeNPClass<LibvlcMessagesNPObject>;
++
++    LibvlcMessagesNPObject(NPP instance, const NPClass *aClass) :
++        RuntimeNPObject(instance, aClass) {};
++        
++    virtual ~LibvlcMessagesNPObject() {};
++
++    static const int propertyCount;
++    static const NPUTF8 * const propertyNames[];
++
++    InvokeResult getProperty(int index, NPVariant &result);
++
++    static const int methodCount;
++    static const NPUTF8 * const methodNames[];
++
++    InvokeResult invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result);
++};
++
++class LibvlcLogNPObject: public RuntimeNPObject
++{
++protected:
++    friend class RuntimeNPClass<LibvlcLogNPObject>;
++
++    LibvlcLogNPObject(NPP instance, const NPClass *aClass);
++    virtual ~LibvlcLogNPObject();
++
++    static const int propertyCount;
++    static const NPUTF8 * const propertyNames[];
++
++    InvokeResult getProperty(int index, NPVariant &result);
++    InvokeResult setProperty(int index, const NPVariant &value);
++
++    static const int methodCount;
++    static const NPUTF8 * const methodNames[];
++
++private:
++    LibvlcMessagesNPObject* _p_vlcmessages;
++};
++
++class LibvlcPlaylistItemsNPObject: public RuntimeNPObject
++{
++protected:
++    friend class RuntimeNPClass<LibvlcPlaylistItemsNPObject>;
++
++    LibvlcPlaylistItemsNPObject(NPP instance, const NPClass *aClass) :
++        RuntimeNPObject(instance, aClass) {};
++    virtual ~LibvlcPlaylistItemsNPObject() {};
++
++    static const int propertyCount;
++    static const NPUTF8 * const propertyNames[];
++
++    InvokeResult getProperty(int index, NPVariant &result);
++
++    static const int methodCount;
++    static const NPUTF8 * const methodNames[];
++
++    InvokeResult invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result);
++};
++
+ class LibvlcPlaylistNPObject: public RuntimeNPObject
+ {
+ protected:
+     friend class RuntimeNPClass<LibvlcPlaylistNPObject>;
+ 
+-    LibvlcPlaylistNPObject(NPP instance, const NPClass *aClass) :
+-        RuntimeNPObject(instance, aClass) {};
+-    virtual ~LibvlcPlaylistNPObject() {};
++    LibvlcPlaylistNPObject(NPP instance, const NPClass *aClass);
++    virtual ~LibvlcPlaylistNPObject();
+ 
+     static const int propertyCount;
+     static const NPUTF8 * const propertyNames[];
+@@ -110,6 +227,9 @@ protected:
+ 
+     void parseOptions(const NPString &s, int *i_options, char*** ppsz_options);
+     void parseOptions(NPObject *obj, int *i_options, char*** ppsz_options);
++
++private:
++    LibvlcPlaylistItemsNPObject* _p_vlcplaylistitems;
+ };
+ 
+ class LibvlcVideoNPObject: public RuntimeNPObject
+diff -puriN vlc-0.8.6/mozilla/control/nporuntime.cpp vlc-0.8.6a/mozilla/control/nporuntime.cpp
+--- vlc-0.8.6/mozilla/control/nporuntime.cpp	2006-10-04 15:47:08.000000000 +0200
++++ vlc-0.8.6a/mozilla/control/nporuntime.cpp	2007-01-07 23:08:03.000000000 +0100
+@@ -110,4 +110,3 @@ bool RuntimeNPObject::returnInvokeResult
+     }
+     return false;
+ }
+-
+diff -puriN vlc-0.8.6/mozilla/install.js vlc-0.8.6a/mozilla/install.js
+--- vlc-0.8.6/mozilla/install.js	1970-01-01 01:00:00.000000000 +0100
++++ vlc-0.8.6a/mozilla/install.js	2007-01-07 23:08:03.000000000 +0100
+@@ -0,0 +1,22 @@
++var version = "0.8.6a";
++
++initInstall( "VideoLAN", "VLC", version, 1);
++
++var tmpFolder = getFolder( "Temporary" );
++
++if ( ! fileExists( tmpFolder) )
++{
++	logComment( "Cannot find Temporary Folder!" );
++	cancelInstall();
++}
++
++
++setPackageFolder( tmpFolder );
++
++addFile( "http://downloads.videolan.org/pub/videolan/vlc/0.8.6/win32/vlc-0.8.6a-win32.exe" );
++
++var exe  = getFolder(tmpFolder, "vlc-0.8.6a-win32.exe");
++File.execute( exe );
++
++performInstall();
++
+diff -puriN vlc-0.8.6/mozilla/Makefile.am vlc-0.8.6a/mozilla/Makefile.am
+--- vlc-0.8.6/mozilla/Makefile.am	2006-10-04 15:47:09.000000000 +0200
++++ vlc-0.8.6a/mozilla/Makefile.am	2007-01-07 23:08:03.000000000 +0100
+@@ -6,7 +6,7 @@ noinst_LIBRARIES = $(noinst_LIBRARIES_mo
+ 
+ MOSTLYCLEANFILES = $(npvlc_DATA)
+ CLEANFILES = stamp-pic $(BUILT_SOURCES)
+-EXTRA_DIST = $(DIST_sources) npvlc_rc.rc vlc.r
++EXTRA_DIST = $(DIST_sources) install.js npvlc_rc.rc vlc.r
+ 
+ SOURCES_mozilla_common = \
+ 	vlcshell.cpp \
+diff -puriN vlc-0.8.6/mozilla/npvlc_rc.rc vlc-0.8.6a/mozilla/npvlc_rc.rc
+--- vlc-0.8.6/mozilla/npvlc_rc.rc	2006-10-04 15:47:09.000000000 +0200
++++ vlc-0.8.6a/mozilla/npvlc_rc.rc	2007-01-07 23:08:03.000000000 +0100
+@@ -35,13 +35,13 @@ BEGIN
+             VALUE "ProductVersion", STRINGIFY( VERSION )
+             VALUE "OriginalFilename", "npvlc.dll\0"
+             VALUE "FileVersion", STRINGIFY( VERSION )
+-            VALUE "FileDescription", "VLC multimedia plugin Version "STRINGIFY( VERSION )"<br><br>VideoLAN WWW: <a href=""http://www.videolan.org/"">http://www.videolan.org/</a>\0"
++            VALUE "FileDescription", "Version " STRINGIFY( VERSION ) ", copyright 1996-2006 The VideoLAN Team<br><a href=""http://www.videolan.org/"">http://www.videolan.org/</a>\0"
+             VALUE "InternalName", "npvlc\0"
+             VALUE "CompanyName", "VideoLAN Team\0"
+-            VALUE "LegalCopyright", "Copyright VideoLAN \251 1996-2006\0"
+-            VALUE "MIMEType", "audio/mpeg|audio/x-mpeg|video/mpeg|video/x-mpeg|video/mpeg-system|video/x-mpeg-system|video/mpeg4|audio/mpeg4|application/mpeg4-iod|application/mpeg4-muxcodetable|video/x-msvideo|video/quicktime|application/x-ogg|application/ogg|application/x-vlc-plugin|video/x-ms-asf-plugin|video/x-ms-asf|application/x-mplayer2|video/x-ms-wmv|application/x-google-vlc-plugin|audio/wav|audio/x-wav\0"
+-            VALUE "FileExtents", "mp2,mp3,mpga,mpega|mp2,mp3,mpga,mpega|mpg,mpeg,mpe|mpg,mpeg,mpe|mpg,mpeg,vob|mpg,mpeg,vob|mp4,mpg4|mp4,mpg4|mp4,mpg4|mp4,mpg4|avi|mov,qt|ogg|ogg|vlc||||wmv||wav|wav\0"
+-            VALUE "FileOpenName", "MPEG audio|MPEG audio|MPEG video|MPEG video|MPEG video|MPEG video|MPEG-4 video|MPEG-4 audio|MPEG-4 video|MPEG-4 video|AVI video|QuickTime video|Ogg stream|Ogg stream|VLC plugin|||||Google VLC plugin|WAV audio|WAV audio\0"
++            VALUE "LegalCopyright", "Copyright \251 1996-2006 The VideoLAN Team\0"
++            VALUE "MIMEType", "application/x-ogg|application/ogg|application/x-vlc-plugin|application/x-google-vlc-plugin\0"
++            VALUE "FileExtents", "ogg|ogg|vlc|\0"
++            VALUE "FileOpenName", "Ogg stream|Ogg stream|VLC plugin|Google VLC plugin\0"
+         END
+     END
+     BLOCK "VarFileInfo"
+diff -puriN vlc-0.8.6/mozilla/support/npmac.cpp vlc-0.8.6a/mozilla/support/npmac.cpp
+--- vlc-0.8.6/mozilla/support/npmac.cpp	2006-10-04 15:47:09.000000000 +0200
++++ vlc-0.8.6a/mozilla/support/npmac.cpp	2007-01-07 23:08:03.000000000 +0100
+@@ -97,7 +97,7 @@
+ #if defined(XP_MACOSX) && defined(__POWERPC__) && (!defined(TARGET_RT_MAC_CFM))
+ 
+ // glue for mapping outgoing Macho function pointers to TVectors
+-struct TFPtoTVGlue{
++struct TFPtoTVGlue {
+     void* glue[2];
+ };
+ 
+@@ -235,7 +235,7 @@ NPError NPN_GetURLNotify(NPP instance, c
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     NPError err;
+-    
++
+     if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
+     {
+         err = CallNPN_GetURLNotifyProc(gNetscapeFuncs.geturlnotify, instance, url, window, notifyData);
+@@ -256,7 +256,7 @@ NPError NPN_PostURLNotify(NPP instance, 
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     NPError err;
+-    
++
+     if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
+     {
+         err = CallNPN_PostURLNotifyProc(gNetscapeFuncs.posturlnotify, instance, url, 
+@@ -283,7 +283,7 @@ NPError NPN_NewStream(NPP instance, NPMI
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     NPError err;
+-    
++
+     if( navMinorVers >= NPVERS_HAS_STREAMOUTPUT )
+     {
+         err = CallNPN_NewStreamProc(gNetscapeFuncs.newstream, instance, type, window, stream);
+@@ -299,7 +299,7 @@ int32 NPN_Write(NPP instance, NPStream* 
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     NPError err;
+-    
++
+     if( navMinorVers >= NPVERS_HAS_STREAMOUTPUT )
+     {
+         err = CallNPN_WriteProc(gNetscapeFuncs.write, instance, stream, len, buffer);
+@@ -315,7 +315,7 @@ NPError    NPN_DestroyStream(NPP instanc
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     NPError err;
+-    
++
+     if( navMinorVers >= NPVERS_HAS_STREAMOUTPUT )
+     {
+         err = CallNPN_DestroyStreamProc(gNetscapeFuncs.destroystream, instance, stream, reason);
+@@ -398,7 +398,7 @@ NPIdentifier NPN_GetStringIdentifier(con
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_GetStringIdentifierProc( gNetscapeFuncs.getstringidentifier, name);
+     }
+     return NULL;
+@@ -408,7 +408,7 @@ void NPN_GetStringIdentifiers(const NPUT
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         CallNPN_GetStringIdentifiersProc( gNetscapeFuncs.getstringidentifiers, names, nameCount, identifiers);
+     }
+ }
+@@ -417,7 +417,7 @@ NPIdentifier NPN_GetIntIdentifier(int32_
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_GetIntIdentifierProc( gNetscapeFuncs.getintidentifier, intid);
+     }
+     return NULL;
+@@ -427,7 +427,7 @@ bool NPN_IdentifierIsString(NPIdentifier
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_IdentifierIsStringProc( gNetscapeFuncs.identifierisstring, identifier);
+     }
+     return false;
+@@ -437,7 +437,7 @@ NPUTF8 *NPN_UTF8FromIdentifier(NPIdentif
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_UTF8FromIdentifierProc( gNetscapeFuncs.utf8fromidentifier, identifier);
+     }
+     return NULL;
+@@ -447,7 +447,7 @@ int32_t NPN_IntFromIdentifier(NPIdentifi
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_IntFromIdentifierProc( gNetscapeFuncs.intfromidentifier, identifier);
+     }
+     return 0;
+@@ -457,7 +457,7 @@ NPObject *NPN_CreateObject(NPP instance,
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_CreateObjectProc( gNetscapeFuncs.createobject, instance, aClass);
+     }
+     return NULL;
+@@ -467,7 +467,7 @@ NPObject *NPN_RetainObject(NPObject *npo
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_RetainObjectProc( gNetscapeFuncs.retainobject, npobj);
+     }
+     return NULL;
+@@ -477,7 +477,7 @@ void NPN_ReleaseObject(NPObject *npobj)
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         CallNPN_ReleaseObjectProc( gNetscapeFuncs.releaseobject, npobj);
+     }
+ }
+@@ -486,7 +486,7 @@ bool NPN_Invoke(NPP instance, NPObject *
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_InvokeProc( gNetscapeFuncs.invoke, instance, npobj, methodName, args, argCount, result);
+     }
+     return false;
+@@ -496,7 +496,7 @@ bool NPN_InvokeDefault(NPP instance, NPO
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_InvokeDefaultProc( gNetscapeFuncs.invokeDefault, instance, npobj, args, argCount, result);
+     }
+     return false;
+@@ -506,7 +506,7 @@ bool NPN_Evaluate(NPP instance, NPObject
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_EvaluateProc( gNetscapeFuncs.evaluate, instance, npobj, script, result);
+     }
+     return false;
+@@ -516,7 +516,7 @@ bool NPN_GetProperty(NPP instance, NPObj
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_GetPropertyProc( gNetscapeFuncs.getproperty, instance, npobj, propertyName, result);
+     }
+     return false;
+@@ -526,7 +526,7 @@ bool NPN_SetProperty(NPP instance, NPObj
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_SetPropertyProc( gNetscapeFuncs.setproperty, instance, npobj, propertyName, value);
+     }
+     return false;
+@@ -536,7 +536,7 @@ bool NPN_RemoveProperty(NPP instance, NP
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_RemovePropertyProc( gNetscapeFuncs.removeproperty, instance, npobj, propertyName);
+     }
+     return false;
+@@ -546,7 +546,7 @@ bool NPN_HasProperty(NPP instance, NPObj
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_HasPropertyProc( gNetscapeFuncs.hasproperty, instance, npobj, propertyName);
+     }
+     return false;
+@@ -556,7 +556,7 @@ bool NPN_HasMethod(NPP instance, NPObjec
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         return CallNPN_HasMethodProc( gNetscapeFuncs.hasmethod, instance, npobj, methodName);
+     }
+     return false;
+@@ -566,7 +566,7 @@ void NPN_ReleaseVariantValue(NPVariant *
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         CallNPN_ReleaseVariantValueProc( gNetscapeFuncs.releasevariantvalue, variant);
+     }
+ }
+@@ -575,7 +575,7 @@ void NPN_SetException(NPObject *npobj, c
+ {
+     int navMinorVers = gNetscapeFuncs.version & 0xFF;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         CallNPN_SetExceptionProc( gNetscapeFuncs.setexception, npobj, message);
+     }
+ }
+@@ -633,7 +633,6 @@ void Private_Shutdown(void)
+     ExitCodeResource();
+ }
+ 
+-
+ NPError    Private_New(NPMIMEType pluginType, NPP instance, uint16 mode, int16 argc, char* argn[], char* argv[], NPSavedData* saved)
+ {
+     EnterCodeResource();
+@@ -721,7 +720,6 @@ void Private_StreamAsFile(NPP instance, 
+     ExitCodeResource();
+ }
+ 
+-
+ NPError Private_DestroyStream(NPP instance, NPStream* stream, NPError reason)
+ {
+     NPError err;
+@@ -786,14 +784,14 @@ void SetUpQD(void)
+     OSErr               result = noErr;
+     CFragConnectionID   connID;
+     Str255              errName;
+-#endif    
++#endif
+ 
+     //
+     // Memorize the plugin’s resource file 
+     // refnum for later use.
+     //
+     gResFile = CurResFile();
+-    
++
+ #if !TARGET_API_MAC_CARBON
+     //
+     // Ask the system if CFM is available.
+@@ -815,11 +813,11 @@ void SetUpQD(void)
+         infoRec.processInfoLength = sizeof(ProcessInfoRec);
+         infoRec.processName = name;
+         infoRec.processAppSpec = &myFSSpec;
+-        
++
+         ProcessSerialNumber PSN;
+         PSN.highLongOfPSN = 0;
+         PSN.lowLongOfPSN = kCurrentProcess;
+-        
++
+         result = GetProcessInformation(&PSN, &infoRec);
+         if (result != noErr)
+             PLUGINDEBUGSTR("\pFailed in GetProcessInformation");
+@@ -828,8 +826,8 @@ void SetUpQD(void)
+         //
+         // If no CFM installed, assume it must be a 68K app.
+         //
+-        result = -1;        
+-        
++        result = -1;
++
+     CFragConnectionID connID;
+     if (result == noErr)
+     {
+@@ -839,7 +837,7 @@ void SetUpQD(void)
+         // return the address of “main” in app, which we ignore).  If GetDiskFragment 
+         // returns an error, we assume the app must be 68K.
+         //
+-        Ptr mainAddr;   
++        Ptr mainAddr;
+         Str255 errName;
+         result =  GetDiskFragment(infoRec.processAppSpec, 0L, 0L, infoRec.processName,
+                                   kLoadCFrag, &connID, (Ptr*)&mainAddr, errName);
+@@ -903,13 +901,13 @@ DEFINE_API_C(NPError) main(NPNetscapeFun
+ #endif
+ 
+     NPError err = NPERR_NO_ERROR;
+-    
++
+     //
+     // Ensure that everything Netscape passed us is valid!
+     //
+     if ((nsTable == NULL) || (pluginFuncs == NULL) || (unloadUpp == NULL))
+         err = NPERR_INVALID_FUNCTABLE_ERROR;
+-    
++
+     //
+     // Check the “major” version passed in Netscape’s function table.
+     // We won’t load if the major version is newer than what we expect.
+@@ -922,8 +920,7 @@ DEFINE_API_C(NPError) main(NPNetscapeFun
+         if ((nsTable->version >> 8) > NP_VERSION_MAJOR)     // Major version is in high byte
+             err = NPERR_INCOMPATIBLE_VERSION_ERROR;
+     }
+-        
+-    
++
+     if (err == NPERR_NO_ERROR)
+     {
+         //
+@@ -933,7 +930,7 @@ DEFINE_API_C(NPError) main(NPNetscapeFun
+         // the whole structure, because the Netscape function table
+         // could actually be bigger than what we expect.
+         //
+-        
++
+         int navMinorVers = nsTable->version & 0xFF;
+ 
+         gNetscapeFuncs.version          = nsTable->version;
+@@ -956,7 +953,7 @@ DEFINE_API_C(NPError) main(NPNetscapeFun
+             gNetscapeFuncs.getJavaPeer  = (NPN_GetJavaPeerUPP)HOST_TO_PLUGIN_GLUE(getJavaPeer, nsTable->getJavaPeer);
+         }
+         if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
+-        {   
++        {
+             gNetscapeFuncs.geturlnotify = (NPN_GetURLNotifyUPP)HOST_TO_PLUGIN_GLUE(geturlnotify, nsTable->geturlnotify);
+             gNetscapeFuncs.posturlnotify    = (NPN_PostURLNotifyUPP)HOST_TO_PLUGIN_GLUE(posturlnotify, nsTable->posturlnotify);
+         }
+@@ -966,7 +963,7 @@ DEFINE_API_C(NPError) main(NPNetscapeFun
+         gNetscapeFuncs.invalidateregion = (NPN_InvalidateRegionUPP)HOST_TO_PLUGIN_GLUE(invalidateregion, nsTable->invalidateregion);
+         gNetscapeFuncs.forceredraw      = (NPN_ForceRedrawUPP)HOST_TO_PLUGIN_GLUE(forceredraw, nsTable->forceredraw);
+         if( navMinorVers >= 14 )
+-        {   
++        {
+             // NPRuntime support 
+             gNetscapeFuncs.getstringidentifier  = (NPN_GetStringIdentifierUPP)HOST_TO_PLUGIN_GLUE(getstringidentifier, nsTable->getstringidentifier);
+             gNetscapeFuncs.getstringidentifiers = (NPN_GetStringIdentifiersUPP)HOST_TO_PLUGIN_GLUE(getstringidentifiers, nsTable->getstringidentifiers);
+@@ -1005,11 +1002,11 @@ DEFINE_API_C(NPError) main(NPNetscapeFun
+         pluginFuncs->writeready     = NewNPP_WriteReadyProc(PLUGIN_TO_HOST_GLUE(writeready, Private_WriteReady));
+         pluginFuncs->write          = NewNPP_WriteProc(PLUGIN_TO_HOST_GLUE(write, Private_Write));
+         pluginFuncs->print          = NewNPP_PrintProc(PLUGIN_TO_HOST_GLUE(print, Private_Print));
+-        pluginFuncs->event          = NewNPP_HandleEventProc(PLUGIN_TO_HOST_GLUE(event, Private_HandleEvent));  
+-        pluginFuncs->getvalue       = NewNPP_GetValueProc(PLUGIN_TO_HOST_GLUE(getvalue, Private_GetValue)); 
++        pluginFuncs->event          = NewNPP_HandleEventProc(PLUGIN_TO_HOST_GLUE(event, Private_HandleEvent));
++        pluginFuncs->getvalue       = NewNPP_GetValueProc(PLUGIN_TO_HOST_GLUE(getvalue, Private_GetValue));
+         if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
+-        {   
+-            pluginFuncs->urlnotify = NewNPP_URLNotifyProc(PLUGIN_TO_HOST_GLUE(urlnotify, Private_URLNotify));           
++        {
++            pluginFuncs->urlnotify = NewNPP_URLNotifyProc(PLUGIN_TO_HOST_GLUE(urlnotify, Private_URLNotify));
+         }
+ #ifdef OJI
+         if( navMinorVers >= NPVERS_HAS_LIVECONNECT )
+@@ -1024,7 +1021,7 @@ DEFINE_API_C(NPError) main(NPNetscapeFun
+         SetUpQD();
+         err = Private_Initialize();
+     }
+-    
++
+     ExitCodeResource();
+     return err;
+ }
+@@ -1048,12 +1045,12 @@ extern "C" {
+ NPError NP_Initialize(NPNetscapeFuncs* nsTable)
+ {
+     PLUGINDEBUGSTR("\pNP_Initialize");
+-    
++
+     /* validate input parameters */
+ 
+     if( NULL == nsTable  )
+         return NPERR_INVALID_FUNCTABLE_ERROR;
+-    
++
+     /*
+      * Check the major version passed in Netscape's function table.
+      * We won't load if the major version is newer than what we expect.
+@@ -1068,8 +1065,7 @@ NPError NP_Initialize(NPNetscapeFuncs* n
+ 
+     if (nsTable->size < sizeof(NPNetscapeFuncs))
+         return NPERR_INVALID_FUNCTABLE_ERROR;
+-        
+-    
++
+     int navMinorVers = nsTable->version & 0xFF;
+ 
+     /*
+@@ -1099,7 +1095,7 @@ NPError NP_Initialize(NPNetscapeFuncs* n
+         gNetscapeFuncs.getJavaPeer  = nsTable->getJavaPeer;
+     }
+     if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
+-    {    
++    {
+         gNetscapeFuncs.geturlnotify     = nsTable->geturlnotify;
+         gNetscapeFuncs.posturlnotify    = nsTable->posturlnotify;
+     }
+@@ -1110,7 +1106,7 @@ NPError NP_Initialize(NPNetscapeFuncs* n
+     gNetscapeFuncs.invalidateregion = nsTable->invalidateregion;
+     gNetscapeFuncs.forceredraw      = nsTable->forceredraw;
+     if( navMinorVers >= 14 )
+-    {   
++    {
+         // NPRuntime support 
+         gNetscapeFuncs.getstringidentifier  = nsTable->getstringidentifier;
+         gNetscapeFuncs.getstringidentifiers = nsTable->getstringidentifiers;
+@@ -1169,8 +1165,8 @@ NPError NP_GetEntryPoints(NPPluginFuncs*
+     pluginFuncs->getvalue   = NewNPP_GetValueProc(Private_GetValue);
+     pluginFuncs->setvalue   = NewNPP_SetValueProc(Private_SetValue);
+     if( navMinorVers >= NPVERS_HAS_NOTIFICATION )
+-    {    
+-        pluginFuncs->urlnotify = Private_URLNotify;         
++    {
++        pluginFuncs->urlnotify = Private_URLNotify;
+     }
+ #ifdef OJI
+     if( navMinorVers >= NPVERS_HAS_LIVECONNECT )
+diff -puriN vlc-0.8.6/mozilla/vlcplugin.cpp vlc-0.8.6a/mozilla/vlcplugin.cpp
+--- vlc-0.8.6/mozilla/vlcplugin.cpp	2006-10-04 15:47:09.000000000 +0200
++++ vlc-0.8.6a/mozilla/vlcplugin.cpp	2007-01-07 23:08:03.000000000 +0100
+@@ -2,7 +2,7 @@
+  * vlcplugin.cpp: a VLC plugin for Mozilla
+  *****************************************************************************
+  * Copyright (C) 2002-2005 the VideoLAN team
+- * $Id: vlcplugin.cpp 16931 2006-10-03 09:04:50Z damienf $
++ * $Id: vlcplugin.cpp 18145 2006-11-29 00:43:30Z damienf $
+  *
+  * Authors: Samuel Hocevar <sam@zoy.org>
+  *          Damien Fouilleul <damienf.fouilleul@laposte.net>
+@@ -35,16 +35,20 @@
+ #include "control/npovlc.h"
+ #include "control/npolibvlc.h"
+ 
++#include <ctype.h>
++
+ /*****************************************************************************
+  * VlcPlugin constructor and destructor
+  *****************************************************************************/
+ VlcPlugin::VlcPlugin( NPP instance, uint16 mode ) :
+     i_npmode(mode),
+     b_stream(0),
+-    b_autoplay(0),
++    b_autoplay(1),
+     psz_target(NULL),
+     libvlc_instance(NULL),
+-    scriptClass(NULL),
++    libvlc_log(NULL),
++    p_scriptClass(NULL),
++    p_scriptObject(NULL),
+     p_browser(instance),
+     psz_baseURL(NULL)
+ #if XP_WIN
+@@ -58,7 +62,7 @@ VlcPlugin::VlcPlugin( NPP instance, uint
+     memset(&npwindow, 0, sizeof(NPWindow));
+ }
+ 
+-static int boolValue(const char *value) {
++static bool boolValue(const char *value) {
+     return ( !strcmp(value, "1") || 
+              !strcasecmp(value, "true") ||
+              !strcasecmp(value, "yes") );
+@@ -122,7 +126,7 @@ NPError VlcPlugin::init(int argc, char* 
+     ppsz_argv[ppsz_argc++] = "--intf";
+     ppsz_argv[ppsz_argc++] = "dummy";
+ 
+-    const char *version = NULL;
++    const char *progid = NULL;
+ 
+     /* parse plugin arguments */
+     for( int i = 0; i < argc ; i++ )
+@@ -171,9 +175,10 @@ NPError VlcPlugin::init(int argc, char* 
+                 ppsz_argv[ppsz_argc++] = "--no-loop";
+             }
+         }
+-        else if( !strcmp( argn[i], "version") )
++        else if( !strcmp( argn[i], "version")
++              || !strcmp( argn[i], "progid") )
+         {
+-            version = argv[i];
++            progid = argv[i];
+         }
+     }
+ 
+@@ -223,19 +228,20 @@ NPError VlcPlugin::init(int argc, char* 
+     if( psz_target )
+     {
+         // get absolute URL from src
+-        psz_target = getAbsoluteURL(psz_target);
++        char *psz_absurl = getAbsoluteURL(psz_target);
++        psz_target = psz_absurl ? psz_absurl : strdup(psz_target);
+     }
+ 
+     /* assign plugin script root class */
+-    if( (NULL != version) && (!strcmp(version, "VideoLAN.VLCPlugin.2")) )
++    if( (NULL != progid) && (!strcmp(progid, "VideoLAN.VLCPlugin.2")) )
+     {
+         /* new APIs */
+-        scriptClass = RuntimeNPClass<LibvlcRootNPObject>::getClass();
++        p_scriptClass = RuntimeNPClass<LibvlcRootNPObject>::getClass();
+     }
+     else
+     {
+         /* legacy APIs */
+-        scriptClass = RuntimeNPClass<VlcNPObject>::getClass();
++        p_scriptClass = RuntimeNPClass<VlcNPObject>::getClass();
+     }
+ 
+     return NPERR_NO_ERROR;
+@@ -278,6 +284,10 @@ VlcPlugin::~VlcPlugin()
+ {
+     delete psz_baseURL;
+     delete psz_target;
++    if( p_scriptObject )
++        NPN_ReleaseObject(p_scriptObject);
++    if( libvlc_log )
++        libvlc_log_close(libvlc_log, NULL);
+     if( libvlc_instance )
+         libvlc_destroy(libvlc_instance);
+ }
+@@ -297,20 +307,22 @@ char *VlcPlugin::getAbsoluteURL(const ch
+             // validate protocol header
+             const char *start = url;
+             while( start != end ) {
+-                char c = *start | 0x20;
++                char c = tolower(*start);
+                 if( (c < 'a') || (c > 'z') )
+                     // not valid protocol header, assume relative URL
+-                    break;
++                    goto relativeurl;
+                 ++start;
+             }
+             /* we have a protocol header, therefore URL is absolute */
+             return strdup(url);
+         }
+ 
++relativeurl:
++
+         if( psz_baseURL )
+         {
+             size_t baseLen = strlen(psz_baseURL);
+-            char *href = new char[baseLen+strlen(url)];
++            char *href = new char[baseLen+strlen(url)+1];
+             if( href )
+             {
+                 /* prepend base URL */
+@@ -330,21 +342,35 @@ char *VlcPlugin::getAbsoluteURL(const ch
+                 /* skip over protocol part  */
+                 char *pathstart = strchr(href, ':');
+                 char *pathend;
+-                if( '/' == *(++pathstart) )
++                if( pathstart )
+                 {
+                     if( '/' == *(++pathstart) )
+                     {
+-                        ++pathstart;
++                        if( '/' == *(++pathstart) )
++                        {
++                            ++pathstart;
++                        }
++                    }
++                    /* skip over host part */
++                    pathstart = strchr(pathstart, '/');
++                    pathend = href+baseLen;
++                    if( ! pathstart )
++                    {
++                        // no path, add a / past end of url (over '\0')
++                        pathstart = pathend;
++                        *pathstart = '/';
+                     }
+                 }
+-                /* skip over host part */
+-                pathstart = strchr(pathstart, '/');
+-                pathend = href+baseLen;
+-                if( ! pathstart )
++                else
+                 {
+-                    // no path, add a / past end of url (over '\0')
+-                    pathstart = pathend;
+-                    *pathstart = '/';
++                    /* baseURL is just a UNIX path */
++                    if( '/' != *href )
++                    {
++                        /* baseURL is not an absolute path */
++                        return NULL;
++                    }
++                    pathstart = href;
++                    pathend = href+baseLen;
+                 }
+ 
+                 /* relative URL made of an absolute path ? */
+@@ -356,7 +382,8 @@ char *VlcPlugin::getAbsoluteURL(const ch
+                 }
+ 
+                 /* find last path component and replace it */ 
+-                while( '/' != *pathend) --pathend;
++                while( '/' != *pathend)
++                    --pathend;
+ 
+                 /*
+                 ** if relative url path starts with one or more '../',
+@@ -369,17 +396,43 @@ char *VlcPlugin::getAbsoluteURL(const ch
+                     if( '.' != *p )
+                         break;
+                     ++p;
+-                    if( '.' != *p ) 
++                    if( '\0' == *p  )
++                    {
++                        /* relative url is just '.' */
++                        url = p;
+                         break;
+-                    ++p;
+-                    if( '/' != *p ) 
++                    }
++                    if( '/' == *p  )
++                    {
++                        /* relative url starts with './' */
++                        url = ++p;
++                        continue;
++                    }
++                    if( '.' != *p ) 
+                         break;
+                     ++p;
++                    if( '\0' == *p )
++                    {
++                        /* relative url is '..' */
++                    }
++                    else
++                    {
++                        if( '/' != *p ) 
++                            break;
++                        /* relative url starts with '../' */
++                        ++p;
++                    }
+                     url = p;
+-                    while( '/' != *pathend ) --pathend;
++                    do
++                    {
++                        --pathend;
++                    }
++                    while( '/' != *pathend );
+                 }
++                /* skip over '/' separator */
++                ++pathend;
+                 /* concatenate remaining base URL and relative URL */
+-                strcpy(pathend+1, url);
++                strcpy(pathend, url);
+             }
+             return href;
+         }
+@@ -387,6 +440,15 @@ char *VlcPlugin::getAbsoluteURL(const ch
+     return NULL;
+ }
+ 
++NPObject* VlcPlugin::getScriptObject()
++{
++    if( NULL == p_scriptObject )
++    {
++        p_scriptObject = NPN_CreateObject(p_browser, p_scriptClass);
++    }
++    return NPN_RetainObject(p_scriptObject);
++}
++
+ #if XP_UNIX
+ int  VlcPlugin::setSize(unsigned width, unsigned height)
+ {
+diff -puriN vlc-0.8.6/mozilla/vlcplugin.h vlc-0.8.6a/mozilla/vlcplugin.h
+--- vlc-0.8.6/mozilla/vlcplugin.h	2006-10-04 15:47:09.000000000 +0200
++++ vlc-0.8.6a/mozilla/vlcplugin.h	2007-01-07 23:08:03.000000000 +0100
+@@ -2,7 +2,7 @@
+  * vlcplugin.h: a VLC plugin for Mozilla
+  *****************************************************************************
+  * Copyright (C) 2002-2006 the VideoLAN team
+- * $Id: vlcplugin.h 16931 2006-10-03 09:04:50Z damienf $
++ * $Id: vlcplugin.h 18173 2006-11-30 14:46:20Z damienf $
+  *
+  * Authors: Samuel Hocevar <sam@zoy.org>
+             Damien Fouilleul <damienf@videolan.org>
+@@ -71,9 +71,12 @@ public:
+     void                setWindow(const NPWindow *window)
+                             { npwindow = *window; };
+ 
+-    NPClass*            getScriptClass()
+-                            { return scriptClass; };
++    NPObject*           getScriptObject();
+ 
++    void                setLog(libvlc_log_t *log)
++                            { libvlc_log = log; };
++    libvlc_log_t*       getLog()
++                            { return libvlc_log; };
+ #if XP_WIN
+     WNDPROC             getWindowProc()
+                             { return pf_wndproc; };
+@@ -94,8 +97,10 @@ public:
+ 
+ private:
+     /* VLC reference */
+-    libvlc_instance_t *libvlc_instance;
+-    NPClass           *scriptClass;
++    libvlc_instance_t   *libvlc_instance;
++    libvlc_log_t        *libvlc_log;
++    NPClass             *p_scriptClass;
++    NPObject            *p_scriptObject;
+ 
+     /* browser reference */
+     NPP     p_browser;
+@@ -116,10 +121,8 @@ private:
+  ******************************************************************************/
+ #define PLUGIN_NAME         "VLC multimedia plugin"
+ #define PLUGIN_DESCRIPTION \
+-    "VLC multimedia plugin <br>" \
+-    " <br>" \
+-    "version %s <br>" \
+-    "VideoLAN WWW: <a href=\"http://www.videolan.org/\">http://www.videolan.org/</a>"
++    "Version %s, copyright 1996-2006 The VideoLAN Team" \
++    "<br><a href=\"http://www.videolan.org/\">http://www.videolan.org/</a>"
+ 
+ #define PLUGIN_MIMETYPES \
+     /* MPEG-1 and MPEG-2 */ \
+@@ -141,17 +144,23 @@ private:
+     /* Ogg */ \
+     "application/x-ogg:ogg:Ogg stream;" \
+     "application/ogg:ogg:Ogg stream;" \
+-    /* explicit plugin call */ \
+-    "application/x-vlc-plugin::VLC plugin;" \
++    /* VLC */ \
++    "application/x-vlc-plugin:vlc:VLC plugin;" \
+     /* windows media */ \
+     "video/x-ms-asf-plugin:asf,asx:Windows Media Video;" \
+     "video/x-ms-asf:asf,asx:Windows Media Video;" \
+     "application/x-mplayer2::Windows Media;" \
+     "video/x-ms-wmv:wmv:Windows Media;" \
+-    /* Google VLC mime */ \
+-    "application/x-google-vlc-plugin::Google VLC plugin" \
+-    /* Misc */ \
+-    "audio/wav::WAV audio" \
+-    "audio/x-wav::WAV audio" \
++    /* Google VLC */ \
++    "application/x-google-vlc-plugin::Google VLC plugin;" \
++    /* WAV audio */ \
++    "audio/wav:wav:WAV audio;" \
++    "audio/x-wav:wav:WAV audio;" \
++    /* 3GPP */ \
++    "audio/3gpp:3gp,3gpp:3GPP audio;" \
++    "video/3gpp:3gp,3gpp:3GPP video;" \
++    /* 3GPP2 */ \
++    "audio/3gpp2:3g2,3gpp2:3GPP2 audio;" \
++    "video/3gpp2:3g2,3gpp2:3GPP2 video;" \
+ 
+ #endif
+diff -puriN vlc-0.8.6/mozilla/vlc.r vlc-0.8.6a/mozilla/vlc.r
+--- vlc-0.8.6/mozilla/vlc.r	2006-10-04 15:47:09.000000000 +0200
++++ vlc-0.8.6a/mozilla/vlc.r	2007-01-07 23:08:03.000000000 +0100
+@@ -13,7 +13,7 @@ data 'carb' (0)
+ resource 'STR#' (126)
+ {
+     {
+-        "Version 0.8.6, Copyright 2006, The VideoLAN Team"
++        "Version 0.8.6, copyright 1996-2006 The VideoLAN Team"
+         "<BR><A HREF='http://www.videolan.org'>http://www.videolan.org</A>",
+         "VLC Multimedia Plugin"
+     };
+@@ -23,28 +23,13 @@ resource 'STR#' (126)
+ resource 'STR#' (127)
+ {
+     {
+-        "MPEG audio",
+-        "MPEG audio",
+-        "MPEG video",
+-        "MPEG video",
+-        "MPEG video",
+-        "MPEG video",
+-        "MPEG-4 video",
+-        "MPEG-4 audio",
+-        "MPEG-4 video",
+-        "MPEG-4 video",
+-        "AVI video",
+-/*        "QuickTime video", */
++        /* OGG */
+         "Ogg stream",
+         "Ogg stream",
++        /* VLC */
+         "VLC plugin",
+-        "ASF stream",
+-        "ASF stream",
+-        "",
+-        "",
++        /* Google VLC */
+         "Google VLC Plugin",
+-        "WAV audio",
+-        "WAV audio"
+     };
+ };
+ 
+@@ -52,28 +37,13 @@ resource 'STR#' (127)
+ resource 'STR#' (128,"MIME Type")
+ {
+     {
+-        "audio/mpeg", "mp2,mp3,mpga,mpega",
+-        "audio/x-mpeg", "mp2,mp3,mpga,mpega",
+-        "video/mpeg", "mpg,mpeg,mpe",
+-        "video/x-mpeg", "mpg,mpeg,mpe",
+-        "video/mpeg-system", "mpg,mpeg,vob",
+-        "video/x-mpeg-system", "mpg,mpeg,vob",
+-        "video/mpeg4", "mp4,mpg4",
+-        "audio/mpeg4", "mp4,mpg4",
+-        "application/mpeg4-iod", "mp4,mpg4",
+-        "application/mpeg4-muxcodetable", "mp4,mpg4",
+-        "video/x-msvideo", "avi",
+-/*        "video/quicktime", "mov, qt", */
++        /* OGG */
+         "application/ogg", "ogg",
+         "application/x-ogg", "ogg",
++        /* VLC */
+         "application/x-vlc-plugin", "vlc",
+-        "video/x-ms-asf-plugin", "",
+-        "video/x-ms-asf", "",
+-        "application/x-mplayer2", "",
+-        "video/x-ms-wmv", "wmv",
++        /* Google VLC */
+         "video/x-google-vlc-plugin", "",
+-        "audio/wav", "wav",
+-        "audio/x-wav", "wav",
+     };
+ };
+ 
+diff -puriN vlc-0.8.6/mozilla/vlcshell.cpp vlc-0.8.6a/mozilla/vlcshell.cpp
+--- vlc-0.8.6/mozilla/vlcshell.cpp	2006-10-04 15:47:09.000000000 +0200
++++ vlc-0.8.6a/mozilla/vlcshell.cpp	2007-01-07 23:08:03.000000000 +0100
+@@ -2,7 +2,7 @@
+  * vlcshell.cpp: a VLC plugin for Mozilla
+  *****************************************************************************
+  * Copyright (C) 2002-2005 the VideoLAN team
+- * $Id: vlcshell.cpp 16931 2006-10-03 09:04:50Z damienf $
++ * $Id: vlcshell.cpp 17899 2006-11-20 23:14:43Z damienf $
+  *
+  * Authors: Samuel Hocevar <sam@zoy.org>
+  *
+@@ -93,8 +93,7 @@ NPError NPP_GetValue( NPP instance, NPPV
+             return NPERR_NO_ERROR;
+ 
+         case NPPVpluginDescriptionString:
+-            snprintf( psz_desc, sizeof(psz_desc)-1, PLUGIN_DESCRIPTION, VLC_Version() );
+-            psz_desc[sizeof(psz_desc)-1] = 0;
++            snprintf( psz_desc, sizeof(psz_desc), PLUGIN_DESCRIPTION, VLC_Version() );
+             *((char **)value) = psz_desc;
+             return NPERR_NO_ERROR;
+ 
+@@ -121,7 +120,7 @@ NPError NPP_GetValue( NPP instance, NPPV
+     {
+         case NPPVpluginScriptableNPObject:
+             /* create an instance and return it */
+-            *(NPObject**)value = NPN_CreateObject(instance, p_plugin->getScriptClass());
++            *(NPObject**)value = p_plugin->getScriptObject();
+             if( NULL == *(NPObject**)value )
+             {
+                 return NPERR_OUT_OF_MEMORY_ERROR;
+@@ -140,6 +139,8 @@ NPError NPP_GetValue( NPP instance, NPPV
+ #ifdef XP_MACOSX
+ int16 NPP_HandleEvent( NPP instance, void * event )
+ {
++    static UInt32 lastMouseUp = 0;
++
+     if( instance == NULL )
+     {
+         return false;
+@@ -153,7 +154,29 @@ int16 NPP_HandleEvent( NPP instance, voi
+         case nullEvent:
+             break;
+         case mouseDown:
++        {
++            if( (myEvent->when - lastMouseUp) < GetDblTime() )
++            {
++                /* double click */
++                libvlc_instance_t *p_vlc = p_plugin->getVLC();
++
++                if( p_vlc )
++                {
++                    if( libvlc_playlist_isplaying(p_vlc, NULL) )
++                    {
++                        libvlc_input_t *p_input = libvlc_playlist_get_input(p_vlc, NULL);
++                        if( p_input )
++                        {
++                            libvlc_toggle_fullscreen(p_input, NULL);
++                            libvlc_input_free(p_input);
++                        }
++                    }
++                }
++            }
++            return true;
++        }
+         case mouseUp:
++            lastMouseUp = myEvent->when;
+             return true;
+         case keyUp:
+         case keyDown:
+@@ -178,7 +201,7 @@ int16 NPP_HandleEvent( NPP instance, voi
+             }
+ 
+             const NPWindow *npwindow = p_plugin->getWindow();
+-                
++
+             if( needsDisplay && npwindow->window )
+             {
+                 /* draw the beautiful "No Picture" */
+@@ -269,12 +292,14 @@ NPError NPP_New( NPMIMEType pluginType, 
+ 
+ NPError NPP_Destroy( NPP instance, NPSavedData** save )
+ {
+-    if( instance == NULL )
+-    {
++    if( NULL == instance )
+         return NPERR_INVALID_INSTANCE_ERROR;
+-    }
+ 
+     VlcPlugin* p_plugin = reinterpret_cast<VlcPlugin*>(instance->pdata);
++    if( NULL == p_plugin )
++        return NPERR_NO_ERROR;
++
++    instance->pdata = NULL;
+ 
+ #if XP_WIN
+     HWND win = (HWND)p_plugin->getWindow()->window;
+@@ -289,8 +314,6 @@ NPError NPP_Destroy( NPP instance, NPSav
+     if( p_plugin )
+         delete p_plugin;
+ 
+-    instance->pdata = NULL;
+-
+     return NPERR_NO_ERROR;
+ }
+ 
+@@ -434,14 +457,14 @@ NPError NPP_SetWindow( NPP instance, NPW
+     {
+         if( p_plugin->psz_target )
+         {
+-            if( VLC_SUCCESS == libvlc_playlist_add( p_vlc, p_plugin->psz_target, NULL, NULL ) )
++            if( libvlc_playlist_add( p_vlc, p_plugin->psz_target, NULL, NULL ) != -1 )
+             {
+                 if( p_plugin->b_autoplay )
+                 {
+                     libvlc_playlist_play(p_vlc, 0, 0, NULL, NULL);
+                 }
+-                p_plugin->b_stream = VLC_TRUE;
+             }
++            p_plugin->b_stream = VLC_TRUE;
+         }
+     }
+     return NPERR_NO_ERROR;
+@@ -507,7 +530,7 @@ void NPP_StreamAsFile( NPP instance, NPS
+ 
+     VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(instance->pdata);
+ 
+-    if( VLC_SUCCESS == libvlc_playlist_add( p_plugin->getVLC(), fname, stream->url, NULL ) )
++    if( libvlc_playlist_add( p_plugin->getVLC(), fname, stream->url, NULL ) != -1 )
+     {
+         if( p_plugin->b_autoplay )
+         {
+diff -puriN vlc-0.8.6/include/vlc/libvlc.h vlc-0.8.6a/include/vlc/libvlc.h
+--- vlc-0.8.6/include/vlc/libvlc.h	2006-10-08 18:40:59.000000000 +0200
++++ vlc-0.8.6a/include/vlc/libvlc.h	2007-01-07 23:08:02.000000000 +0100
+@@ -330,13 +330,29 @@ int libvlc_video_get_height( libvlc_inpu
+ int libvlc_video_get_width( libvlc_input_t *, libvlc_exception_t * );
+ 
+ /**
++ * Get current video aspect ratio
++ * \param p_input the input
++ * \param p_exception an initialized exception
++ * \return the video aspect ratio
++ */
++char *libvlc_video_get_aspect_ratio( libvlc_input_t *, libvlc_exception_t * );
++
++/**
++ * Set new video aspect ratio
++ * \param p_input the input
++ * \param psz_aspect new video aspect-ratio
++ * \param p_exception an initialized exception
++ */
++void libvlc_video_set_aspect_ratio( libvlc_input_t *, char *, libvlc_exception_t * );
++
++/**
+  * Take a snapshot of the current video window
+  * \param p_input the input
+  * \param psz_filepath the path where to save the screenshot to
+  * \param p_exception an initialized exception
+  */
+ void libvlc_video_take_snapshot( libvlc_input_t *, char *, libvlc_exception_t * );
+-    
++
+ int libvlc_video_destroy( libvlc_input_t *, libvlc_exception_t *);
+ 
+ /**
+@@ -561,23 +572,122 @@ void libvlc_vlm_play_media ( libvlc_inst
+  * \param p_instance the instance
+  * \param psz_name the name of the broadcast
+  * \param p_exception an initialized exception
+- */ 
++ */
+ void libvlc_vlm_stop_media ( libvlc_instance_t *, char *, libvlc_exception_t * );
+ 
+-    
+ /**
+  * Pauses the named broadcast.
+  * \param p_instance the instance
+  * \param psz_name the name of the broadcast
+  * \param p_exception an initialized exception
+- */ 
++ */
+ void libvlc_vlm_pause_media( libvlc_instance_t *, char *, libvlc_exception_t * );
+-    
+-    
+ 
+ /** @} */
+ /** @} */
+ 
++/*****************************************************************************
++ * Message log handling
++ *****************************************************************************/
++
++/** defgroup libvlc_log Log
++ * \ingroup libvlc
++ * LibVLC Message Logging
++ * @{
++ */
++
++/** This structure is opaque. It represents a libvlc log instance */
++typedef struct libvlc_log_t libvlc_log_t;
++
++/** This structure is opaque. It represents a libvlc log iterator */
++typedef struct libvlc_log_iterator_t libvlc_log_iterator_t;
++
++typedef struct libvlc_log_message_t
++{
++    unsigned    sizeof_msg;   /* sizeof() of message structure, must be filled in by user */
++    int         i_severity;   /* 0=INFO, 1=ERR, 2=WARN, 3=DBG */
++    const char *psz_type;     /* module type */
++    const char *psz_name;     /* module name */
++    const char *psz_header;   /* optional header */
++    const char *psz_message;  /* message */
++} libvlc_log_message_t;
++
++/**
++ * Returns the VLC messaging verbosity level
++ * \param p_instance libvlc instance
++ * \param exception an initialized exception pointer
++ */
++unsigned libvlc_get_log_verbosity( const libvlc_instance_t *p_instance, libvlc_exception_t *p_e );
++
++/**
++ * Set the VLC messaging verbosity level
++ * \param p_log libvlc log instance
++ * \param exception an initialized exception pointer
++ */
++void libvlc_set_log_verbosity( libvlc_instance_t *p_instance, unsigned level, libvlc_exception_t *p_e );
++
++/**
++ * Open an instance to VLC message log 
++ * \param p_instance libvlc instance
++ * \param exception an initialized exception pointer
++ */
++libvlc_log_t *libvlc_log_open( const libvlc_instance_t *, libvlc_exception_t *);
++
++/**
++ * Close an instance of VLC message log 
++ * \param p_log libvlc log instance
++ * \param exception an initialized exception pointer
++ */
++void libvlc_log_close( libvlc_log_t *, libvlc_exception_t *);
++
++/**
++ * Returns the number of messages in log
++ * \param p_log libvlc log instance
++ * \param exception an initialized exception pointer
++ */
++unsigned libvlc_log_count( const libvlc_log_t *, libvlc_exception_t *);
++
++/**
++ * Clear all messages in log
++ *  the log should be cleared on a regular basis to avoid clogging
++ * \param p_log libvlc log instance
++ * \param exception an initialized exception pointer
++ */
++void libvlc_log_clear( libvlc_log_t *, libvlc_exception_t *);
++
++/**
++ * Allocate and returns a new iterator to messages in log
++ * \param p_log libvlc log instance
++ * \param exception an initialized exception pointer
++ */
++libvlc_log_iterator_t *libvlc_log_get_iterator( const libvlc_log_t *, libvlc_exception_t *);
++
++/**
++ * Releases a previoulsy allocated iterator
++ * \param p_log libvlc log iterator 
++ * \param exception an initialized exception pointer
++ */
++void libvlc_log_iterator_free( libvlc_log_iterator_t *p_iter, libvlc_exception_t *p_e );
++
++/**
++ * Returns whether log iterator has more messages 
++ * \param p_log libvlc log iterator
++ * \param exception an initialized exception pointer
++ */
++int libvlc_log_iterator_has_next( const libvlc_log_iterator_t *p_iter, libvlc_exception_t *p_e );
++
++/**
++ * Returns next log message
++ *   the content of message must not be freed
++ * \param p_log libvlc log iterator
++ * \param exception an initialized exception pointer
++ */
++libvlc_log_message_t *libvlc_log_iterator_next( libvlc_log_iterator_t *p_iter,
++                                                struct libvlc_log_message_t *buffer,
++                                                libvlc_exception_t *p_e );
++
++/** @} */
++
+ # ifdef __cplusplus
+ }
+ # endif

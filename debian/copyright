@@ -2,7 +2,7 @@ This package was debianized by Sam Hocevar <sam@zoy.org> on
 Mon, 13 Mar 2000 02:21:45 +0100.
 
 It was taken from http://download.videolan.org/pub/vlc/, and the source
-tarball also contains the faad2 and x264 trees.
+tarball also contains the x264 tree.
 
 1. Copyright holders list
 =========================
@@ -60,33 +60,6 @@ each file for precise details about its respective authors.
                           Clément Stenac <zorglub@videolan.org>
                           Peter Surda <shurdeek@panorama.sth.ac.at>
                           Olivier Teulière <ipkiss@via.ecp.fr>
-  Licensed under the GNU General Public License, version 2 or later.
-
-extras/faad2/common/faad/getopt.c:
-  Copyright (C) 1987, 88, 89, 90, 91, 92, 1993 Free Software Foundation, Inc.
-  Licensed under the GNU General Public License, version 2 or later.
-
-extras/faad2/common/mp4ff/drms.c:
-  Copyright (C) 2004 Jon Lech Johansen <jon-vl@nanocrew.net>
-                     Sam Hocevar <sam@zoy.org>
-  Licensed under the GNU General Public License, version 2 or later.
-
-extras/faad2/plugins/mpeg4ip:
-  Copyright (C) 2003 Bill May wmay@cisco.com
-  Licensed under the GNU General Public License, version 2 or later.
-
-extras/faad2/plugins/xmms:
-  Copyright (c) 2002-2004 Frederic Fondriest <frederic.fondriest@laposte.net>
-  Licensed under the GNU General Public license, version 2, as can be seen
-  in http://fondriest.frederic.free.fr/fichiers/xmms-mp4_20050213.tar.bz2,
-  found on the author’s website. This code is not used in the build process
-  hence does not cancel the “version 2 or later” clause for binaries.
-
-Other files in extras/faad2:
-  Copyright (C) 2003-2005 M. Bakker, Ahead Software AG <mbakker(at)nero.com>
-                          Alexander Kurpiers (a.kurpiers(at)nt.tu-darmstadt.de)
-                          Volker Fischer (v.fischer(at)nt.tu-darmstadt.de)
-                          Gian-Carlo Pascutto (gpascutto(at)nero.com)
   Licensed under the GNU General Public License, version 2 or later.
 
 extras/x264/extras/getopt.c:

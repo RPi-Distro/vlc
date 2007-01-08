@@ -1,0 +1,2776 @@
+diff -puriN vlc-0.8.6/include/vlc/libvlc.h vlc-0.8.6a/include/vlc/libvlc.h
+--- vlc-0.8.6/include/vlc/libvlc.h	2006-10-08 18:40:59.000000000 +0200
++++ vlc-0.8.6a/include/vlc/libvlc.h	2007-01-07 23:08:02.000000000 +0100
+@@ -330,13 +330,29 @@ int libvlc_video_get_height( libvlc_inpu
+ int libvlc_video_get_width( libvlc_input_t *, libvlc_exception_t * );
+ 
+ /**
++ * Get current video aspect ratio
++ * \param p_input the input
++ * \param p_exception an initialized exception
++ * \return the video aspect ratio
++ */
++char *libvlc_video_get_aspect_ratio( libvlc_input_t *, libvlc_exception_t * );
++
++/**
++ * Set new video aspect ratio
++ * \param p_input the input
++ * \param psz_aspect new video aspect-ratio
++ * \param p_exception an initialized exception
++ */
++void libvlc_video_set_aspect_ratio( libvlc_input_t *, char *, libvlc_exception_t * );
++
++/**
+  * Take a snapshot of the current video window
+  * \param p_input the input
+  * \param psz_filepath the path where to save the screenshot to
+  * \param p_exception an initialized exception
+  */
+ void libvlc_video_take_snapshot( libvlc_input_t *, char *, libvlc_exception_t * );
+-    
++
+ int libvlc_video_destroy( libvlc_input_t *, libvlc_exception_t *);
+ 
+ /**
+@@ -561,23 +572,122 @@ void libvlc_vlm_play_media ( libvlc_inst
+  * \param p_instance the instance
+  * \param psz_name the name of the broadcast
+  * \param p_exception an initialized exception
+- */ 
++ */
+ void libvlc_vlm_stop_media ( libvlc_instance_t *, char *, libvlc_exception_t * );
+ 
+-    
+ /**
+  * Pauses the named broadcast.
+  * \param p_instance the instance
+  * \param psz_name the name of the broadcast
+  * \param p_exception an initialized exception
+- */ 
++ */
+ void libvlc_vlm_pause_media( libvlc_instance_t *, char *, libvlc_exception_t * );
+-    
+-    
+ 
+ /** @} */
+ /** @} */
+ 
++/*****************************************************************************
++ * Message log handling
++ *****************************************************************************/
++
++/** defgroup libvlc_log Log
++ * \ingroup libvlc
++ * LibVLC Message Logging
++ * @{
++ */
++
++/** This structure is opaque. It represents a libvlc log instance */
++typedef struct libvlc_log_t libvlc_log_t;
++
++/** This structure is opaque. It represents a libvlc log iterator */
++typedef struct libvlc_log_iterator_t libvlc_log_iterator_t;
++
++typedef struct libvlc_log_message_t
++{
++    unsigned    sizeof_msg;   /* sizeof() of message structure, must be filled in by user */
++    int         i_severity;   /* 0=INFO, 1=ERR, 2=WARN, 3=DBG */
++    const char *psz_type;     /* module type */
++    const char *psz_name;     /* module name */
++    const char *psz_header;   /* optional header */
++    const char *psz_message;  /* message */
++} libvlc_log_message_t;
++
++/**
++ * Returns the VLC messaging verbosity level
++ * \param p_instance libvlc instance
++ * \param exception an initialized exception pointer
++ */
++unsigned libvlc_get_log_verbosity( const libvlc_instance_t *p_instance, libvlc_exception_t *p_e );
++
++/**
++ * Set the VLC messaging verbosity level
++ * \param p_log libvlc log instance
++ * \param exception an initialized exception pointer
++ */
++void libvlc_set_log_verbosity( libvlc_instance_t *p_instance, unsigned level, libvlc_exception_t *p_e );
++
++/**
++ * Open an instance to VLC message log 
++ * \param p_instance libvlc instance
++ * \param exception an initialized exception pointer
++ */
++libvlc_log_t *libvlc_log_open( const libvlc_instance_t *, libvlc_exception_t *);
++
++/**
++ * Close an instance of VLC message log 
++ * \param p_log libvlc log instance
++ * \param exception an initialized exception pointer
++ */
++void libvlc_log_close( libvlc_log_t *, libvlc_exception_t *);
++
++/**
++ * Returns the number of messages in log
++ * \param p_log libvlc log instance
++ * \param exception an initialized exception pointer
++ */
++unsigned libvlc_log_count( const libvlc_log_t *, libvlc_exception_t *);
++
++/**
++ * Clear all messages in log
++ *  the log should be cleared on a regular basis to avoid clogging
++ * \param p_log libvlc log instance
++ * \param exception an initialized exception pointer
++ */
++void libvlc_log_clear( libvlc_log_t *, libvlc_exception_t *);
++
++/**
++ * Allocate and returns a new iterator to messages in log
++ * \param p_log libvlc log instance
++ * \param exception an initialized exception pointer
++ */
++libvlc_log_iterator_t *libvlc_log_get_iterator( const libvlc_log_t *, libvlc_exception_t *);
++
++/**
++ * Releases a previoulsy allocated iterator
++ * \param p_log libvlc log iterator 
++ * \param exception an initialized exception pointer
++ */
++void libvlc_log_iterator_free( libvlc_log_iterator_t *p_iter, libvlc_exception_t *p_e );
++
++/**
++ * Returns whether log iterator has more messages 
++ * \param p_log libvlc log iterator
++ * \param exception an initialized exception pointer
++ */
++int libvlc_log_iterator_has_next( const libvlc_log_iterator_t *p_iter, libvlc_exception_t *p_e );
++
++/**
++ * Returns next log message
++ *   the content of message must not be freed
++ * \param p_log libvlc log iterator
++ * \param exception an initialized exception pointer
++ */
++libvlc_log_message_t *libvlc_log_iterator_next( libvlc_log_iterator_t *p_iter,
++                                                struct libvlc_log_message_t *buffer,
++                                                libvlc_exception_t *p_e );
++
++/** @} */
++
+ # ifdef __cplusplus
+ }
+ # endif
+diff -puriN vlc-0.8.6/modules/access/vcd/cdrom.c vlc-0.8.6a/modules/access/vcd/cdrom.c
+--- vlc-0.8.6/modules/access/vcd/cdrom.c	2006-09-18 12:28:26.000000000 +0200
++++ vlc-0.8.6a/modules/access/vcd/cdrom.c	2007-01-07 23:07:26.000000000 +0100
+@@ -26,24 +26,25 @@
+ /*****************************************************************************
+  * Preamble
+  *****************************************************************************/
+-#include <stdio.h>
+-#include <stdlib.h>
+-
+ #include <vlc/vlc.h>
+-#include "charset.h"
++#include <vlc/input.h>
+ 
+ #ifdef HAVE_UNISTD_H
+ #   include <unistd.h>
+ #endif
+ 
+-#include <fcntl.h>
+-#include <sys/types.h>
+-#include <sys/stat.h>
++#include <stdio.h>
++#include <stdlib.h>
+ #include <string.h>
+ #include <errno.h>
+-
+-#ifdef HAVE_SYS_IOCTL_H
+-#   include <sys/ioctl.h>
++#ifdef HAVE_SYS_TYPES_H
++#   include <sys/types.h>
++#endif
++#ifdef HAVE_SYS_STAT_H
++#   include <sys/stat.h>
++#endif
++#ifdef HAVE_FCNTL_H 
++#   include <fcntl.h>
+ #endif
+ 
+ #if defined( SYS_BSDI )
+@@ -70,6 +71,7 @@
+ 
+ #include "cdrom_internals.h"
+ #include "cdrom.h"
++#include "charset.h"
+ 
+ /*****************************************************************************
+  * ioctl_Open: Opens a VCD device or file and returns an opaque handle
+@@ -830,14 +832,28 @@ static int OpenVCDImage( vlc_object_t * 
+     int i_ret = -1;
+     char *p_pos;
+     char *psz_vcdfile = NULL;
++    char *psz_vcdfile2 = NULL;
+     char *psz_cuefile = NULL;
+-    FILE *cuefile;
++    FILE *cuefile     = NULL;
+     char line[1024];
+ 
+     /* Check if we are dealing with a .cue file */
+     p_pos = strrchr( psz_dev, '.' );
+     if( p_pos && !strcmp( p_pos, ".cue" ) )
+     {
++        /* psz_dev must be the cue file. Let's assume there's a .bin
++         * file with the same filename */
++        if( p_pos )
++        {
++            psz_vcdfile = malloc( p_pos - psz_dev + 5 /* ".bin" */ );
++            strncpy( psz_vcdfile, psz_dev, p_pos - psz_dev );
++            strcpy( psz_vcdfile + (p_pos - psz_dev), ".bin");
++        }
++        else
++        {
++            psz_vcdfile = malloc( strlen(psz_dev) + 5 /* ".bin" */ );
++            sprintf( psz_vcdfile, "%s.bin", psz_dev );
++        }
+         psz_cuefile = strdup( psz_dev );
+     }
+     else
+@@ -855,14 +871,32 @@ static int OpenVCDImage( vlc_object_t * 
+             psz_cuefile = malloc( strlen(psz_dev) + 5 /* ".cue" */ );
+             sprintf( psz_cuefile, "%s.cue", psz_dev );
+         }
++        /* If we need to look up the .cue file, then we don't have to look for the vcd */
++        psz_vcdfile = strdup( psz_dev );
+     }
+ 
+     /* Open the cue file and try to parse it */
+     msg_Dbg( p_this,"trying .cue file: %s", psz_cuefile );
+     cuefile = utf8_fopen( psz_cuefile, "rt" );
+-    if( cuefile && fscanf( cuefile, "FILE %c", line ) &&
++    if( cuefile == NULL )
++    {
++        i_ret = -1;
++        msg_Dbg( p_this, "could not find .cue file" );
++        goto error;
++    }
++
++    psz_vcdfile2 = ToLocale( psz_vcdfile );
++    msg_Dbg( p_this,"using vcd image file: %s", psz_vcdfile );
++    p_vcddev->i_vcdimage_handle = open( psz_vcdfile2,
++                                    O_RDONLY | O_NONBLOCK | O_BINARY);
++    LocaleFree( psz_vcdfile2 );
++        
++    if( p_vcddev->i_vcdimage_handle == -1 && 
++        fscanf( cuefile, "FILE %c", line ) &&
+         fgets( line, 1024, cuefile ) )
+     {
++        /* We have a cue file, but no valid vcd file yet */
++        free( psz_vcdfile );
+         p_pos = strchr( line, '"' );
+         if( p_pos )
+         {
+@@ -879,15 +913,19 @@ static int OpenVCDImage( vlc_object_t * 
+             }
+             else psz_vcdfile = strdup( line );
+         }
++        psz_vcdfile2 = ToLocale( (const char *)psz_vcdfile );
++        msg_Dbg( p_this,"using vcd image file: %s", psz_vcdfile );
++        p_vcddev->i_vcdimage_handle = open( psz_vcdfile2,
++                                        O_RDONLY | O_NONBLOCK | O_BINARY);
++        LocaleFree( psz_vcdfile2 );
+     }
+ 
+-    if( psz_vcdfile )
++    if( p_vcddev->i_vcdimage_handle == -1)
+     {
+-        msg_Dbg( p_this,"using vcd image file: %s", psz_vcdfile );
+-        p_vcddev->i_vcdimage_handle = open( psz_vcdfile,
+-                                        O_RDONLY | O_NONBLOCK | O_BINARY );
+-        i_ret = (p_vcddev->i_vcdimage_handle == -1) ? -1 : 0;
++        i_ret = -1;
++        goto error;
+     }
++    else i_ret = 0;
+ 
+     /* Try to parse the i_tracks and p_sectors info so we can just forget
+      * about the cuefile */
+@@ -933,6 +971,7 @@ static int OpenVCDImage( vlc_object_t * 
+ 
+     }
+ 
++error:
+     if( cuefile ) fclose( cuefile );
+     if( psz_cuefile ) free( psz_cuefile );
+     if( psz_vcdfile ) free( psz_vcdfile );
+diff -puriN vlc-0.8.6/modules/access_output/file.c vlc-0.8.6a/modules/access_output/file.c
+--- vlc-0.8.6/modules/access_output/file.c	2006-10-12 19:47:03.000000000 +0200
++++ vlc-0.8.6a/modules/access_output/file.c	2007-01-07 23:07:05.000000000 +0100
+@@ -129,10 +129,9 @@ static int Open( vlc_object_t *p_this )
+     }
+     else
+     {
+-        char *psz_localname = ToLocale( p_access->psz_name );
+-        char *psz_tmp, *psz_tmp2, *psz_rewriten;
+-        int fd, i, i_length = strlen( psz_localname );
+-        for( i = 0, psz_tmp = psz_localname ;
++        char *psz_tmp, *psz_tmp2, *psz_localname, *psz_rewriten;
++        int fd, i, i_length = strlen( p_access->psz_name );
++        for( i = 0, psz_tmp = p_access->psz_name ;
+              ( psz_tmp = strstr( psz_tmp, "%T" ) ) ; psz_tmp++, i++ )
+             ;
+         if( i )
+@@ -141,7 +140,7 @@ static int Open( vlc_object_t *p_this )
+             psz_rewriten = (char *) malloc( i_length );
+             if( ! psz_rewriten )
+                 return ( VLC_EGENERIC );
+-            psz_tmp  = psz_localname;
++            psz_tmp  = p_access->psz_name;
+             psz_tmp2 = psz_rewriten;
+             while( *psz_tmp )
+             {
+@@ -156,15 +155,33 @@ static int Open( vlc_object_t *p_this )
+                     *psz_tmp2++ = *psz_tmp++;
+             }
+             *psz_tmp2 = *psz_tmp;
+-            fd = open( psz_rewriten, i_flags, 0666 );
+-            LocaleFree( psz_localname );
+-            free( psz_rewriten );
+         }
+         else
+         {
++            psz_rewriten =  p_access->psz_name;
++        }
++#if defined (WIN32)
++
++        if( GetVersion() < 0x80000000 )
++        {
++            /* for Windows NT and above */
++            wchar_t wpath[MAX_PATH + 1];
++
++            if( !MultiByteToWideChar( CP_UTF8, 0, psz_rewriten, -1,
++                wpath,MAX_PATH ) ) return VLC_EGENERIC;
++
++            wpath[MAX_PATH] = L'\0';
++
++            fd = _wopen( wpath, i_flags, 0666  );
++        }
++        else
++#endif
++        {
++            psz_localname = ToLocale( psz_rewriten );
+             fd = open( psz_localname, i_flags, 0666 );
+             LocaleFree( psz_localname );
+         }
++        if ( i ) free( psz_rewriten );
+         if( fd == -1 )
+         {
+             msg_Err( p_access, "cannot open `%s' (%s)", p_access->psz_name,
+diff -puriN vlc-0.8.6/modules/codec/fake.c vlc-0.8.6a/modules/codec/fake.c
+--- vlc-0.8.6/modules/codec/fake.c	2006-09-18 12:28:28.000000000 +0200
++++ vlc-0.8.6a/modules/codec/fake.c	2007-01-07 23:07:35.000000000 +0100
+@@ -64,7 +64,7 @@ static picture_t *DecodeBlock  ( decoder
+ #define DEINTERLACE_MODULE_LONGTEXT N_( \
+     "Deinterlace module to use." )
+ 
+-static char *ppsz_deinterlace_type[] =
++static const char *ppsz_deinterlace_type[] =
+ {
+     "deinterlace", "ffmpeg-deinterlace"
+ };
+@@ -106,7 +106,7 @@ static int OpenDecoder( vlc_object_t *p_
+     image_handler_t *p_handler;
+     video_format_t fmt_in, fmt_out;
+     picture_t *p_image;
+-    char *psz_file, *psz_local;
++    char *psz_file;
+     vlc_bool_t b_keep_ar;
+     int i_aspect = 0;
+ 
+@@ -161,9 +161,7 @@ static int OpenDecoder( vlc_object_t *p_
+     }
+ 
+     p_handler = image_HandlerCreate( p_dec );
+-    psz_local = ToLocale( psz_file );
+-    p_image = image_ReadUrl( p_handler, psz_local, &fmt_in, &fmt_out );
+-    LocaleFree( psz_local );
++    p_image = image_ReadUrl( p_handler, psz_file, &fmt_in, &fmt_out );
+     image_HandlerDelete( p_handler );
+ 
+     if ( p_image == NULL )
+diff -puriN vlc-0.8.6/modules/control/http/util.c vlc-0.8.6a/modules/control/http/util.c
+--- vlc-0.8.6/modules/control/http/util.c	2006-09-18 12:28:16.000000000 +0200
++++ vlc-0.8.6a/modules/control/http/util.c	2007-01-07 23:07:05.000000000 +0100
+@@ -253,7 +253,7 @@ int E_(ParseDirectory)( intf_thread_t *p
+             if( !f->name )
+             {
+                 msg_Err( p_intf , "unable to parse directory" );
+-                closedir( p_dir );
++                vlc_closedir_wrapper( p_dir );
+                 free( f );
+                 return( VLC_ENOMEM );
+             }
+@@ -336,7 +336,7 @@ int E_(ParseDirectory)( intf_thread_t *p
+     }
+ 
+     ACL_Destroy( p_acl );
+-    closedir( p_dir );
++    vlc_closedir_wrapper( p_dir );
+ 
+     return VLC_SUCCESS;
+ }
+diff -puriN vlc-0.8.6/modules/demux/mkv.cpp vlc-0.8.6a/modules/demux/mkv.cpp
+--- vlc-0.8.6/modules/demux/mkv.cpp	2006-09-22 17:14:29.000000000 +0200
++++ vlc-0.8.6a/modules/demux/mkv.cpp	2007-01-07 23:07:06.000000000 +0100
+@@ -38,6 +38,7 @@
+ #include <codecs.h>                        /* BITMAPINFOHEADER, WAVEFORMATEX */
+ #include "iso_lang.h"
+ #include "vlc_meta.h"
++#include "charset.h"
+ 
+ #include <iostream>
+ #include <cassert>
+@@ -1491,16 +1492,16 @@ static int Open( vlc_object_t * p_this )
+                 }
+             }
+ 
+-            struct dirent *p_file_item;
+-            DIR *p_src_dir = opendir(s_path.c_str());
++            DIR *p_src_dir = (DIR *)utf8_opendir(s_path.c_str());
+ 
+             if (p_src_dir != NULL)
+             {
+-                while ((p_file_item = (dirent *) readdir(p_src_dir)))
++                const char *psz_file;
++                while ((psz_file = utf8_readdir(p_src_dir)) != NULL)
+                 {
+-                    if (strlen(p_file_item->d_name) > 4)
++                    if (strlen(psz_file) > 4)
+                     {
+-                        s_filename = s_path + DIRECTORY_SEPARATOR + p_file_item->d_name;
++                        s_filename = s_path + DIRECTORY_SEPARATOR + psz_file;
+ 
+ #ifdef WIN32
+                         if (!strcasecmp(s_filename.c_str(), p_demux->psz_path))
+@@ -1545,8 +1546,9 @@ static int Open( vlc_object_t * p_this )
+                             }
+                         }
+                     }
++                    LocaleFree (psz_file);
+                 }
+-                closedir( p_src_dir );
++                vlc_closedir_wrapper( p_src_dir );
+             }
+         }
+ 
+@@ -2383,6 +2385,20 @@ bool matroska_segment_c::Select( mtime_t
+             tracks[i_track]->fmt.p_extra = malloc( tracks[i_track]->i_extra_data );
+             memcpy( tracks[i_track]->fmt.p_extra, tracks[i_track]->p_extra_data, tracks[i_track]->i_extra_data );
+         }
++        else if( !strcmp( tracks[i_track]->psz_codec, "A_WAVPACK4" ) )
++        {
++            tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'W', 'V', 'P', 'K' );
++            tracks[i_track]->fmt.i_extra = tracks[i_track]->i_extra_data;
++            tracks[i_track]->fmt.p_extra = malloc( tracks[i_track]->i_extra_data );
++            memcpy( tracks[i_track]->fmt.p_extra, tracks[i_track]->p_extra_data, tracks[i_track]->i_extra_data );
++        }
++        else if( !strcmp( tracks[i_track]->psz_codec, "A_TTA1" ) )
++        {
++            tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'T', 'T', 'A', '1' );
++            tracks[i_track]->fmt.i_extra = tracks[i_track]->i_extra_data;
++            tracks[i_track]->fmt.p_extra = malloc( tracks[i_track]->i_extra_data );
++            memcpy( tracks[i_track]->fmt.p_extra, tracks[i_track]->p_extra_data, tracks[i_track]->i_extra_data );
++        }
+         else if( !strcmp( tracks[i_track]->psz_codec, "A_PCM/INT/BIG" ) ||
+                  !strcmp( tracks[i_track]->psz_codec, "A_PCM/INT/LIT" ) ||
+                  !strcmp( tracks[i_track]->psz_codec, "A_PCM/FLOAT/IEEE" ) )
+@@ -2397,18 +2413,6 @@ bool matroska_segment_c::Select( mtime_t
+             }
+             tracks[i_track]->fmt.audio.i_blockalign = ( tracks[i_track]->fmt.audio.i_bitspersample + 7 ) / 8 * tracks[i_track]->fmt.audio.i_channels;
+         }
+-        else if( !strcmp( tracks[i_track]->psz_codec, "A_TTA1" ) )
+-        {
+-            /* FIXME: support this codec */
+-            msg_Err( &sys.demuxer, "TTA not supported yet[%d, n=%d]", (int)i_track, tracks[i_track]->i_number );
+-            tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'u', 'n', 'd', 'f' );
+-        }
+-        else if( !strcmp( tracks[i_track]->psz_codec, "A_WAVPACK4" ) )
+-        {
+-            /* FIXME: support this codec */
+-            msg_Err( &sys.demuxer, "Wavpack not supported yet[%d, n=%d]", (int)i_track, tracks[i_track]->i_number );
+-            tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'u', 'n', 'd', 'f' );
+-        }
+         else if( !strcmp( tracks[i_track]->psz_codec, "S_TEXT/UTF8" ) )
+         {
+             tracks[i_track]->fmt.i_codec = VLC_FOURCC( 's', 'u', 'b', 't' );
+diff -puriN vlc-0.8.6/modules/demux/mp4/mp4.c vlc-0.8.6a/modules/demux/mp4/mp4.c
+--- vlc-0.8.6/modules/demux/mp4/mp4.c	2006-10-08 18:40:54.000000000 +0200
++++ vlc-0.8.6a/modules/demux/mp4/mp4.c	2007-01-07 23:07:06.000000000 +0100
+@@ -368,7 +368,7 @@ static int Open( vlc_object_t * p_this )
+                 char      *psz_ref;
+                 uint32_t  i_ref_type;
+ 
+-                if( !p_rdrf || !( psz_ref = p_rdrf->data.p_rdrf->psz_ref ) )
++                if( !p_rdrf || !( psz_ref = strdup( p_rdrf->data.p_rdrf->psz_ref ) ) )
+                 {
+                     continue;
+                 }
+@@ -387,57 +387,38 @@ static int Open( vlc_object_t * p_this )
+                     if( !strncmp( psz_ref, "http://", 7 ) ||
+                         !strncmp( psz_ref, "rtsp://", 7 ) )
+                     {
+-                        msg_Dbg( p_demux, "adding ref = `%s'", psz_ref );
+-                        if( p_item )
+-                        {
+-                            playlist_item_t *p_child =
+-                                        playlist_ItemNew( p_playlist,
+-                                                          psz_ref, psz_ref );
+-                            if( p_child )
+-                            {
+-                                playlist_NodeAddItem( p_playlist, p_child,
+-                                                 p_item->pp_parents[0]->i_view,
+-                                                 p_item, PLAYLIST_APPEND,
+-                                                 PLAYLIST_END );
+-                                playlist_CopyParents( p_item, p_child );
+-                                b_play = VLC_TRUE;
+-                            }
+-                        }
++                        ;
+                     }
+                     else
+                     {
+-                        /* msg dbg relative ? */
+-                        int i_path_size = strlen( p_demux->psz_access ) + 3 +
+-                                         strlen( p_demux->psz_path ) + strlen( psz_ref ) + 1;
+-                        char psz_absolute[i_path_size];
+-                        char *end = strrchr( p_demux->psz_path, '/' );
+-
+-                        if( end )
+-                        {
+-                            snprintf( psz_absolute, i_path_size, "%s://%s",
+-                                      p_demux->psz_access, p_demux->psz_path );
+-                        }
+-                        else
+-                        {
+-                            *psz_absolute = '\0';
+-                        }
+-                        strcat( psz_absolute, psz_ref );
+-                        msg_Dbg( p_demux, "adding ref = `%s'", psz_absolute );
+-                        if( p_item )
++                        char *psz_absolute;
++                        char *psz_path = strdup( p_demux->psz_path );
++                        char *end = strrchr( psz_path, '/' );
++
++                        if( end ) end[1] = '\0';
++                        else *psz_path = '\0';
++
++                        asprintf( &psz_absolute, "%s://%s%s",
++                                       p_demux->psz_access, psz_path, psz_ref );
++
++                        if( psz_ref ) free( psz_ref );
++                        psz_ref = psz_absolute;
++                        free( psz_path );
++                    }
++                    msg_Dbg( p_demux, "adding ref = `%s'", psz_ref );
++                    if( p_item )
++                    {
++                        playlist_item_t *p_child =
++                                    playlist_ItemNew( p_playlist,
++                                                      psz_ref, psz_ref );
++                        if( p_child )
+                         {
+-                            playlist_item_t *p_child =
+-                                        playlist_ItemNew( p_playlist,
+-                                                          psz_absolute,
+-                                                          psz_absolute );
+-                            if( p_child )
+-                            {
+-                                playlist_NodeAddItem( p_playlist, p_child,
+-                                                 p_item->pp_parents[0]->i_view,
+-                                                 p_item, PLAYLIST_APPEND,
+-                                                 PLAYLIST_END );
+-                                playlist_CopyParents( p_item, p_child );
+-                                b_play = VLC_TRUE;
+-                            }
++                            playlist_NodeAddItem( p_playlist, p_child,
++                                             p_item->pp_parents[0]->i_view,
++                                             p_item, PLAYLIST_APPEND,
++                                             PLAYLIST_END );
++                            playlist_CopyParents( p_item, p_child );
++                            b_play = VLC_TRUE;
+                         }
+                     }
+                 }
+@@ -446,6 +427,7 @@ static int Open( vlc_object_t * p_this )
+                     msg_Err( p_demux, "unknown ref type=%4.4s FIXME (send a bug report)",
+                              (char*)&p_rdrf->data.p_rdrf->i_ref_type );
+                 }
++                if( psz_ref ) free( psz_ref );
+             }
+             if( b_play == VLC_TRUE )
+             {
+diff -puriN vlc-0.8.6/modules/demux/playlist/m3u.c vlc-0.8.6a/modules/demux/playlist/m3u.c
+--- vlc-0.8.6/modules/demux/playlist/m3u.c	2006-09-18 12:28:17.000000000 +0200
++++ vlc-0.8.6a/modules/demux/playlist/m3u.c	2007-01-07 23:07:06.000000000 +0100
+@@ -105,6 +105,27 @@ void E_(Close_M3U)( vlc_object_t *p_this
+     free( p_demux->p_sys );
+ }
+ 
++/* Kvik! */
++static inline char *MaybeFromLocaleDup (const char *str)
++{
++    if (str == NULL)
++        return NULL;
++
++    return IsUTF8 (str) ? strdup (str) : FromLocaleDup (str);
++}
++
++
++static inline void MaybeFromLocaleRep (char **str)
++{
++    char *const orig_str = *str;
++
++    if ((orig_str != NULL) && !IsUTF8 (orig_str))
++    {
++        *str = FromLocaleDup (orig_str);
++        free (orig_str);
++    }
++}
++
+ static int Demux( demux_t *p_demux )
+ {
+     playlist_t *p_playlist;
+@@ -176,7 +197,7 @@ static int Demux( demux_t *p_demux )
+                 psz_parse += sizeof("EXTVLCOPT:") -1;
+                 if( !*psz_parse ) goto error;
+ 
+-                psz_option = strdup( psz_parse );
++                psz_option = MaybeFromLocaleDup( psz_parse );
+                 if( psz_option )
+                     INSERT_ELEM( ppsz_options, i_options, i_options,
+                                  psz_option );
+@@ -188,21 +209,18 @@ static int Demux( demux_t *p_demux )
+             if( !psz_name || !*psz_name )
+             {
+                 /* Use filename as name for relative entries */
+-                psz_name = strdup( psz_parse );
++                psz_name = MaybeFromLocaleDup( psz_parse );
+             }
+ 
+             psz_mrl = E_(ProcessMRL)( psz_parse, p_demux->p_sys->psz_prefix );
++            MaybeFromLocaleRep( &psz_mrl);
+ 
+             b_cleanup = VLC_TRUE;
+             if( !psz_mrl ) goto error;
+ 
+-            EnsureUTF8( psz_name );
+-            EnsureUTF8( psz_mrl );
+-
+             p_item = playlist_ItemNew( p_playlist, psz_mrl, psz_name );
+             for( i = 0; i< i_options; i++ )
+             {
+-                EnsureUTF8( ppsz_options[i] );
+                 playlist_ItemAddOption( p_item, ppsz_options[i] );
+             }
+             p_item->input.i_duration = i_duration;
+diff -puriN vlc-0.8.6/modules/gui/ncurses.c vlc-0.8.6a/modules/gui/ncurses.c
+--- vlc-0.8.6/modules/gui/ncurses.c	2006-09-18 12:28:25.000000000 +0200
++++ vlc-0.8.6a/modules/gui/ncurses.c	2007-01-07 23:07:21.000000000 +0100
+@@ -2009,7 +2009,7 @@ static void ReadDir( intf_thread_t *p_in
+         qsort( p_sys->pp_dir_entries, p_sys->i_dir_entries,
+                sizeof(struct dir_entry_t*), &comp_dir_entries );
+ 
+-        closedir( p_current_dir );
++        vlc_closedir_wrapper( p_current_dir );
+         return;
+     }
+     else
+diff -puriN vlc-0.8.6/modules/gui/skins2/commands/cmd_fullscreen.cpp vlc-0.8.6a/modules/gui/skins2/commands/cmd_fullscreen.cpp
+--- vlc-0.8.6/modules/gui/skins2/commands/cmd_fullscreen.cpp	2006-09-18 12:28:22.000000000 +0200
++++ vlc-0.8.6a/modules/gui/skins2/commands/cmd_fullscreen.cpp	2007-01-07 23:07:16.000000000 +0100
+@@ -36,7 +36,10 @@ void CmdFullscreen::execute()
+     }
+ 
+     pVout = (vout_thread_t *)vlc_object_find( getIntf()->p_sys->p_input,
+-                                              VLC_OBJECT_VOUT, FIND_CHILD );
++                                            VLC_OBJECT_VOUT, FIND_CHILD );
++    if( !pVout )
++        pVout = (vout_thread_t *)vlc_object_find( getIntf()->p_sys->p_input,
++                                            VLC_OBJECT_VOUT, FIND_ANYWHERE );
+     if( pVout )
+     {
+         // Switch to fullscreen
+diff -puriN vlc-0.8.6/modules/gui/skins2/parser/skin_parser.cpp vlc-0.8.6a/modules/gui/skins2/parser/skin_parser.cpp
+--- vlc-0.8.6/modules/gui/skins2/parser/skin_parser.cpp	2006-09-25 13:47:38.000000000 +0200
++++ vlc-0.8.6a/modules/gui/skins2/parser/skin_parser.cpp	2007-01-07 23:07:18.000000000 +0100
+@@ -311,6 +311,7 @@ void SkinParser::handleBeginElement( con
+         RequireDefault( "id" );
+         RequireDefault( "font" );
+         CheckDefault( "visible", "true" );
++        CheckDefault( "flat", "true" ); // only difference here
+         CheckDefault( "x", "0" );
+         CheckDefault( "y", "0" );
+         CheckDefault( "width", "0" );
+@@ -320,6 +321,9 @@ void SkinParser::handleBeginElement( con
+         CheckDefault( "xkeepratio", "false" );
+         CheckDefault( "ykeepratio", "false" );
+         CheckDefault( "bgimage", "none" );
++        CheckDefault( "itemimage", "none" );
++        CheckDefault( "openimage", "none" );
++        CheckDefault( "closedimage", "none" );
+         CheckDefault( "fgcolor", "#000000" );
+         CheckDefault( "playcolor", "#FF0000" );
+         CheckDefault( "bgcolor1", "#FFFFFF" );
+@@ -543,6 +547,10 @@ void SkinParser::handleBeginElement( con
+ 
+     else if( rName == "ThemeInfo" )
+     {
++        CheckDefault( "name", "" );
++        CheckDefault( "author", "" );
++        CheckDefault( "email", "" );
++        CheckDefault( "website", "" );
+         msg_Info( getIntf(), "skin: %s  author: %s", attr["name"],
+                   attr["author"] );
+     }
+diff -puriN vlc-0.8.6/modules/gui/skins2/src/generic_layout.cpp vlc-0.8.6a/modules/gui/skins2/src/generic_layout.cpp
+--- vlc-0.8.6/modules/gui/skins2/src/generic_layout.cpp	2006-09-18 12:28:22.000000000 +0200
++++ vlc-0.8.6a/modules/gui/skins2/src/generic_layout.cpp	2007-01-07 23:07:17.000000000 +0100
+@@ -27,6 +27,7 @@
+ #include "os_factory.hpp"
+ #include "os_graphics.hpp"
+ #include "var_manager.hpp"
++#include "anchor.hpp"
+ #include "../controls/ctrl_generic.hpp"
+ #include "../controls/ctrl_video.hpp"
+ #include "../utils/var_bool.hpp"
+@@ -57,6 +58,11 @@ GenericLayout::~GenericLayout()
+     {
+         delete m_pImage;
+     }
++    list<Anchor*>::const_iterator it;
++    for( it = m_anchorList.begin(); it != m_anchorList.end(); it++ )
++    {
++        delete *it;
++    }
+ }
+ 
+ 
+diff -puriN vlc-0.8.6/modules/gui/skins2/src/skin_common.hpp vlc-0.8.6a/modules/gui/skins2/src/skin_common.hpp
+--- vlc-0.8.6/modules/gui/skins2/src/skin_common.hpp	2006-09-18 12:28:22.000000000 +0200
++++ vlc-0.8.6a/modules/gui/skins2/src/skin_common.hpp	2007-01-07 23:07:17.000000000 +0100
+@@ -76,6 +76,14 @@ static inline string sFromLocale( const 
+     return res;
+ }
+ 
++/// Wrapper around FromWide, to avoid the need to call free()
++static inline string sFromWide( const wstring &rWide )
++{
++    char *s = FromWide( rWide.c_str() );
++    string res = s;
++    free( s );
++    return res;
++}
+ 
+ /// Wrapper around ToLocale, to avoid the need to call LocaleFree()
+ static inline string sToLocale( const string &rUTF8 )
+diff -puriN vlc-0.8.6/modules/gui/skins2/src/skin_main.cpp vlc-0.8.6a/modules/gui/skins2/src/skin_main.cpp
+--- vlc-0.8.6/modules/gui/skins2/src/skin_main.cpp	2006-10-08 18:40:55.000000000 +0200
++++ vlc-0.8.6a/modules/gui/skins2/src/skin_main.cpp	2007-01-07 23:07:17.000000000 +0100
+@@ -437,6 +437,9 @@ static int onTaskBarChange( vlc_object_t
+ #define SKINS2_TRANSPARENCY_LONG N_("You can disable all transparency effects"\
+     " if you want. This is mainly useful when moving windows does not behave" \
+     " correctly.")
++#define SKINS2_PLAYLIST      N_("Enable skinned playlist")
++#define SKINS2_PLAYLIST_LONG N_("You can choose whether the playlist window"\
++    " is rendered using the skin or the default GUI.")
+ 
+ vlc_module_begin();
+     set_category( CAT_INTERFACE );
+@@ -456,8 +459,8 @@ vlc_module_begin();
+               SKINS2_TRANSPARENCY_LONG, VLC_FALSE );
+ #endif
+ 
+-    add_bool( "skinned-playlist", VLC_TRUE, NULL, SKINS2_TRANSPARENCY,
+-              SKINS2_TRANSPARENCY_LONG, VLC_FALSE );
++    add_bool( "skinned-playlist", VLC_TRUE, NULL, SKINS2_PLAYLIST,
++              SKINS2_PLAYLIST_LONG, VLC_FALSE );
+     set_shortname( _("Skins"));
+     set_description( _("Skinnable Interface") );
+     set_capability( "interface", 30 );
+diff -puriN vlc-0.8.6/modules/gui/skins2/src/theme.cpp vlc-0.8.6a/modules/gui/skins2/src/theme.cpp
+--- vlc-0.8.6/modules/gui/skins2/src/theme.cpp	2006-09-18 12:28:22.000000000 +0200
++++ vlc-0.8.6a/modules/gui/skins2/src/theme.cpp	2007-01-07 23:07:17.000000000 +0100
+@@ -23,6 +23,8 @@
+  *****************************************************************************/
+ 
+ #include "theme.hpp"
++#include "top_window.hpp"
++#include <sstream>
+ 
+ 
+ Theme::~Theme()
+@@ -50,39 +52,77 @@ void Theme::loadConfig()
+     // Is there an existing config?
+     if( !strcmp( save, "" ) )
+     {
+-        // Show the windows
++        // Show the windows as indicated by the XML file
+         m_windowManager.showAll( true );
+         return;
+     }
+ 
+-    // Initialization
+-    map<string, TopWindowPtr>::const_iterator it;
+-    int i = 0;
+-    int x, y, visible, scan;
++    istringstream inStream(save);
++    free( save );
+ 
+-    // Get config for each window
+-    for( it = m_windows.begin(); it != m_windows.end(); it++ )
++    char sep;
++    string winId, layId;
++    int x, y, width, height, visible;
++    bool somethingVisible = false;
++    while( !inStream.eof() )
+     {
+-        TopWindow *pWin = (*it).second.get();
+-        // Get config
+-        scan = sscanf( &save[i * 13], "(%4d,%4d,%1d)", &x, &y, &visible );
++        inStream >> sep;
++        if( sep != '[' ) goto invalid;
++        inStream >> winId >> layId >> x >> y >> width >> height >> visible >> sep >> ws;
++        if( sep != ']' ) goto invalid;
++
++        // Try to find the window and the layout
++        map<string, TopWindowPtr>::const_iterator itWin;
++        map<string, GenericLayoutPtr>::const_iterator itLay;
++        itWin = m_windows.find( winId );
++        itLay = m_layouts.find( layId );
++        if( itWin == m_windows.end() || itLay == m_layouts.end() )
++        {
++            goto invalid;
++        }
++        TopWindow *pWin = itWin->second.get();
++        GenericLayout *pLayout = itLay->second.get();
+ 
+-        // If config has the correct number of arguments
+-        if( scan > 2 )
++        // Restore the layout
++        m_windowManager.setActiveLayout( *pWin, *pLayout );
++        if( pLayout->getWidth() != width ||
++            pLayout->getHeight() != height )
+         {
++            // XXX FIXME XXX: big kludge
++            // As resizing a hidden window causes some trouble (at least on
++            // Windows), first show the window off screen, resize it, and
++            // hide it again.
++            // This has to be investigated more deeply!
+             m_windowManager.startMove( *pWin );
+-            m_windowManager.move( *pWin, x, y );
++            m_windowManager.move( *pWin, -width - pLayout->getWidth(), 0);
+             m_windowManager.stopMove();
+-            if( visible )
+-            {
+-                m_windowManager.show( *pWin );
+-            }
++            m_windowManager.show( *pWin );
++            m_windowManager.startResize( *pLayout, WindowManager::kResizeSE );
++            m_windowManager.resize( *pLayout, width, height );
++            m_windowManager.stopResize();
++            m_windowManager.hide( *pWin );
+         }
++        // Move the window (which incidentally takes care of the anchoring)
++        m_windowManager.startMove( *pWin );
++        m_windowManager.move( *pWin, x, y );
++        m_windowManager.stopMove();
++        if( visible )
++        {
++            somethingVisible = true;
++            m_windowManager.show( *pWin );
++        }
++    }
+ 
+-        // Next window
+-        i++;
++    if( !somethingVisible )
++    {
++        goto invalid;
+     }
+-    free( save );
++    return;
++
++invalid:
++    msg_Warn( getIntf(), "invalid config: %s", inStream.str().c_str() );
++    // Restore the visibility defined in the theme
++    m_windowManager.showAll( true );
+ }
+ 
+ 
+@@ -90,29 +130,32 @@ void Theme::saveConfig()
+ {
+     msg_Dbg( getIntf(), "saving theme configuration");
+ 
+-    // Initialize char where config is stored
+-    char *save  = new char[400];
+-    map<string, TopWindowPtr>::const_iterator it;
+-    int i = 0;
+-    int x, y;
+-
+-    // Save config of every window
+-    for( it = m_windows.begin(); it != m_windows.end(); it++ )
++    map<string, TopWindowPtr>::const_iterator itWin;
++    map<string, GenericLayoutPtr>::const_iterator itLay;
++    ostringstream outStream;
++    for( itWin = m_windows.begin(); itWin != m_windows.end(); itWin++ )
+     {
+-        TopWindow *pWin = (*it).second.get();
+-        // Print config
+-        x = pWin->getLeft();
+-        y = pWin->getTop();
+-        sprintf( &save[i * 13], "(%4d,%4d,%1d)", x, y,
+-            pWin->getVisibleVar().get() );
+-        i++;
++        TopWindow *pWin = itWin->second.get();
++
++        // Find the layout id for this window
++        string layoutId;
++        const GenericLayout *pLayout = &pWin->getActiveLayout();
++        for( itLay = m_layouts.begin(); itLay != m_layouts.end(); itLay++ )
++        {
++            if( itLay->second.get() == pLayout )
++            {
++                layoutId = itLay->first;
++            }
++        }
++
++        outStream << '[' << itWin->first << ' ' << layoutId << ' '
++            << pWin->getLeft() << ' ' << pWin->getTop() << ' '
++            << pLayout->getWidth() << ' ' << pLayout->getHeight() << ' '
++            << (pWin->getVisibleVar().get() ? 1 : 0) << ']';
+     }
+ 
+     // Save config to file
+-    config_PutPsz( getIntf(), "skins2-config", save );
+-
+-    // Free memory
+-    delete[] save;
++    config_PutPsz( getIntf(), "skins2-config", outStream.str().c_str() );
+ }
+ 
+ 
+diff -puriN vlc-0.8.6/modules/gui/skins2/src/vlcproc.cpp vlc-0.8.6a/modules/gui/skins2/src/vlcproc.cpp
+--- vlc-0.8.6/modules/gui/skins2/src/vlcproc.cpp	2006-10-01 17:34:21.000000000 +0200
++++ vlc-0.8.6a/modules/gui/skins2/src/vlcproc.cpp	2007-01-07 23:07:17.000000000 +0100
+@@ -225,8 +225,7 @@ void VlcProc::dropVout()
+ {
+     if( m_pVout )
+     {
+-        if( vout_Control( m_pVout, VOUT_REPARENT, 0 ) != VLC_SUCCESS )
+-            vout_Control( m_pVout, VOUT_CLOSE );
++        vout_Control( m_pVout, VOUT_CLOSE );
+         m_pVout = NULL;
+     }
+ }
+diff -puriN vlc-0.8.6/modules/gui/skins2/vars/equalizer.cpp vlc-0.8.6a/modules/gui/skins2/vars/equalizer.cpp
+--- vlc-0.8.6/modules/gui/skins2/vars/equalizer.cpp	2006-09-18 12:28:22.000000000 +0200
++++ vlc-0.8.6a/modules/gui/skins2/vars/equalizer.cpp	2007-01-07 23:07:18.000000000 +0100
+@@ -96,14 +96,15 @@ void EqualizerBands::onUpdate( Subject<V
+             ss << " " << val;
+         }
+ 
++
++        string bands = ss.str();
+         aout_instance_t *pAout = (aout_instance_t *)vlc_object_find( getIntf(),
+                 VLC_OBJECT_AOUT, FIND_ANYWHERE );
+-        char *bands = (char*)ss.str().c_str();
+-        config_PutPsz( getIntf(), "equalizer-bands", bands );
++        config_PutPsz( getIntf(), "equalizer-bands", bands.c_str() );
+         if( pAout )
+         {
+             // Update the audio output
+-            var_SetString( pAout, "equalizer-bands", bands );
++            var_SetString( pAout, "equalizer-bands", (char*)bands.c_str() );
+             vlc_object_release( pAout );
+         }
+     }
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/bookmarks.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/bookmarks.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/bookmarks.cpp	2006-09-24 19:09:01.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/bookmarks.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -119,10 +119,10 @@ BookmarkEditDialog::~BookmarkEditDialog(
+ void BookmarkEditDialog::OnOK( wxCommandEvent &event )
+ {
+     if( p_seekpoint->psz_name ) free( p_seekpoint->psz_name );
+-    p_seekpoint->psz_name = strdup( name_text->GetValue().mb_str() );
+-    p_seekpoint->i_byte_offset = atoi( bytes_text->GetValue().mb_str() );
++    p_seekpoint->psz_name = strdup( name_text->GetValue().mb_str(wxConvUTF8) );
++    p_seekpoint->i_byte_offset = atoi( bytes_text->GetValue().mb_str(wxConvUTF8) );
+     p_seekpoint->i_time_offset =  1000000 *
+-                                  atoll( time_text->GetValue().mb_str() ) ;
++                                  atoll( time_text->GetValue().mb_str(wxConvUTF8) ) ;
+     EndModal( wxID_OK );
+ }
+ 
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/infopanels.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/infopanels.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/infopanels.cpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/infopanels.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -146,12 +146,12 @@ void MetaDataPanel::Update( input_item_t
+ 
+ char* MetaDataPanel::GetURI( )
+ {
+-    return  strdup( uri_text->GetLineText(0).mb_str() );
++    return  strdup( uri_text->GetLineText(0).mb_str(wxConvUTF8) );
+ }
+ 
+ char* MetaDataPanel::GetName( )
+ {
+-    return  strdup( name_text->GetLineText(0).mb_str() );
++    return  strdup( name_text->GetLineText(0).mb_str(wxConvUTF8) );
+ }
+ 
+ void MetaDataPanel::Clear()
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/interaction.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/interaction.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/interaction.cpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/interaction.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -270,7 +270,7 @@ void InteractionDialog::Finish( int i_re
+     while ( it < input_widgets.end() )
+     {
+         if( (*it).i_type == WIDGET_INPUT_TEXT )
+-            (*it).val->psz_string = strdup( (*it).control->GetValue().mb_str());
++            (*it).val->psz_string = strdup( (*it).control->GetValue().mb_str(wxConvUTF8));
+         it++;
+     }
+     Hide();
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/open.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/open.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/open.cpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/open.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -51,9 +51,6 @@
+ #include <wx/statline.h>
+ #include <wx/tokenzr.h>
+ 
+-#include <vector>
+-
+-
+ #ifndef wxRB_SINGLE
+ #   define wxRB_SINGLE 0
+ #endif
+@@ -1131,7 +1128,7 @@ void OpenDialog::UpdateMRL( int i_access
+         }
+         else
+         {
+-            int i_value = config_GetInt( p_intf, caching_name.mb_str() );
++            int i_value = config_GetInt( p_intf, caching_name.mb_str(wxConvUTF8) );
+             caching_value->SetValue( i_value );
+         }
+     }
+@@ -1174,7 +1171,7 @@ void OpenDialog::OnOk( wxCommandEvent& W
+ 
+         /* Insert options */
+         while( i + 1 < (int)mrl.GetCount() &&
+-               ((const char *)mrl[i + 1].mb_str())[0] == ':' )
++               ((const char *)mrl[i + 1].mb_str(wxConvUTF8))[0] == ':' )
+         {
+             psz_utf8 = wxFromLocale( mrl[i + 1] );
+             playlist_ItemAddOption( p_item, psz_utf8 );
+@@ -1838,8 +1835,8 @@ void OpenDialog::OnSubsFileSettings( wxC
+                               (int)subsfile_dialog->size_combo->GetClientData(
+                               subsfile_dialog->size_combo->GetSelection()) ) );
+         }
+-        subsfile_mrl.Add( wxString::Format( wxT("sub-fps=%i"),
+-                          subsfile_dialog->fps_spinctrl->GetValue() ) );
++        subsfile_mrl.Add( wxString( wxT("sub-fps="))+
++                                    subsfile_dialog->fps_ctrl->GetValue()  );
+         subsfile_mrl.Add( wxString::Format( wxT("sub-delay=%i"),
+                           subsfile_dialog->delay_spinctrl->GetValue() ) );
+     }
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/playlist.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/playlist.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/playlist.cpp	2006-10-08 18:40:54.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/playlist.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -935,9 +935,9 @@ void Playlist::OnSave( wxCommandEvent& W
+ 
+     if( dialog.ShowModal() == wxID_OK )
+     {
+-        if( dialog.GetPath().mb_str() )
++        if( dialog.GetPath().mb_str(wxConvUTF8) )
+         {
+-            playlist_Export( p_playlist, dialog.GetPath().mb_str(),
++            playlist_Export( p_playlist, dialog.GetPath().mb_str(wxConvUTF8),
+                              formats[dialog.GetFilterIndex()].psz_module );
+         }
+     }
+@@ -951,7 +951,7 @@ void Playlist::OnOpen( wxCommandEvent& W
+ 
+     if( dialog.ShowModal() == wxID_OK )
+     {
+-        playlist_Import( p_playlist, dialog.GetPath().mb_str() );
++        playlist_Import( p_playlist, dialog.GetPath().mb_str(wxConvUTF8) );
+     }
+ }
+ 
+@@ -1041,16 +1041,23 @@ void Playlist::RecursiveDeleteSelection(
+ {
+     wxTreeItemIdValue cookie;
+     wxTreeItemId child = treectrl->GetFirstChild( root, cookie );
++    wxTreeItemId nextchild;
++    bool childIsSelected = FALSE;
++    bool nextchildIsSelected = FALSE;
++
++    if( child.IsOk() ) childIsSelected = treectrl->IsSelected( child );
++
+     while( child.IsOk() )
+     {
+-        if( treectrl->ItemHasChildren( child ) )
+-        {
+-            RecursiveDeleteSelection( child );
+-            if( treectrl->IsSelected(child ) ) DeleteTreeItem( child );
+-        }
+-        else if( treectrl->IsSelected( child ) )
++        nextchild = treectrl->GetNextChild( root, cookie );
++        if( nextchild.IsOk() )
++            nextchildIsSelected = treectrl->IsSelected( nextchild );
++        if( childIsSelected ) 
+             DeleteTreeItem( child );
+-        child = treectrl->GetNextChild( root, cookie );
++        else if( treectrl->ItemHasChildren( child ) )
++            RecursiveDeleteSelection( child );
++        child = nextchild;
++        childIsSelected = nextchildIsSelected;
+     }
+ }
+ 
+@@ -1135,7 +1142,7 @@ void Playlist::OnKeyDown( wxTreeEvent& e
+ {
+     long keycode = event.GetKeyCode();
+     /* Delete selected items */
+-    if( keycode == WXK_BACK || keycode == WXK_DELETE )
++    if( keycode == WXK_BACK || keycode == WXK_DELETE || keycode == WXK_NUMPAD_DELETE )
+     {
+         /* We send a dummy event */
+         OnDeleteSelection( event );
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/preferences.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/preferences.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/preferences.cpp	2006-09-24 19:09:01.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/preferences.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -1069,20 +1069,20 @@ void PrefsPanel::ApplyChanges()
+         case CONFIG_ITEM_MODULE_CAT:
+         case CONFIG_ITEM_MODULE_LIST:
+         case CONFIG_ITEM_MODULE_LIST_CAT:
+-            config_PutPsz( p_intf, control->GetName().mb_str(),
+-                           control->GetPszValue().mb_str() );
++            config_PutPsz( p_intf, control->GetName().mb_str(wxConvUTF8),
++                           control->GetPszValue().mb_str(wxConvUTF8) );
+             break;
+         case CONFIG_ITEM_KEY:
+             /* So you don't need to restart to have the changes take effect */
+             val.i_int = control->GetIntValue();
+-            var_Set( p_intf->p_vlc, control->GetName().mb_str(), val );
++            var_Set( p_intf->p_vlc, control->GetName().mb_str(wxConvUTF8), val );
+         case CONFIG_ITEM_INTEGER:
+         case CONFIG_ITEM_BOOL:
+-            config_PutInt( p_intf, control->GetName().mb_str(),
++            config_PutInt( p_intf, control->GetName().mb_str(wxConvUTF8),
+                            control->GetIntValue() );
+             break;
+         case CONFIG_ITEM_FLOAT:
+-            config_PutFloat( p_intf, control->GetName().mb_str(),
++            config_PutFloat( p_intf, control->GetName().mb_str(wxConvUTF8),
+                              control->GetFloatValue() );
+             break;
+         }
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/preferences_widgets.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/preferences_widgets.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/preferences_widgets.cpp	2006-10-12 19:47:03.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/preferences_widgets.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -634,15 +634,15 @@ void StringListConfigControl::OnAction( 
+ {
+     int i_action = event.GetId() - wxID_HIGHEST;
+ 
+-    module_config_t *p_item = config_FindConfig( p_this, GetName().mb_str() );
++    module_config_t *p_item = config_FindConfig( p_this, GetName().mb_str(wxConvUTF8) );
+     if( !p_item ) return;
+ 
+     if( i_action < 0 || i_action >= p_item->i_action ) return;
+ 
+     vlc_value_t val;
+     wxString value = GetPszValue();
+-    *((const char **)&val.psz_string) = value.mb_str();
+-    p_item->ppf_action[i_action]( p_this, GetName().mb_str(), val, val, 0 );
++    *((const char **)&val.psz_string) = value.mb_str(wxConvUTF8);
++    p_item->ppf_action[i_action]( p_this, GetName().mb_str(wxConvUTF8), val, val, 0 );
+ 
+     if( p_item->b_dirty )
+     {
+@@ -851,14 +851,14 @@ void IntegerListConfigControl::OnAction(
+     int i_action = event.GetId() - wxID_HIGHEST;
+ 
+     module_config_t *p_item;
+-    p_item = config_FindConfig( p_this, GetName().mb_str() );
++    p_item = config_FindConfig( p_this, GetName().mb_str(wxConvUTF8) );
+     if( !p_item ) return;
+ 
+     if( i_action < 0 || i_action >= p_item->i_action ) return;
+ 
+     vlc_value_t val;
+     val.i_int = GetIntValue();
+-    p_item->ppf_action[i_action]( p_this, GetName().mb_str(), val, val, 0 );
++    p_item->ppf_action[i_action]( p_this, GetName().mb_str(wxConvUTF8), val, val, 0 );
+ 
+     if( p_item->b_dirty )
+     {
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/subtitles.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/subtitles.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/subtitles.cpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/subtitles.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -201,17 +201,14 @@ SubsFileDialog::SubsFileDialog( intf_thr
+     wxStaticText *label =
+         new wxStaticText(panel, -1, wxU(_("Frames per second")));
+ 
+-    float f_fps = config_GetFloat( p_intf, "sub-fps" );
+-    /* Outside the new wxSpinCtrl to avoid an internal error in gcc2.95 ! */
+-    wxString format_fps(wxString::Format(wxT("%d"),(int)f_fps));
+-    fps_spinctrl = new wxSpinCtrl( panel, -1, format_fps,
+-                                   wxDefaultPosition, wxDefaultSize,
+-                                   wxSP_ARROW_KEYS,
+-                                   0, 16000, (int)f_fps );
+-    fps_spinctrl->SetToolTip( wxU(_("Override frames per second. "
++    fps_ctrl = new wxTextCtrl( panel, -1,
++                           wxString::Format(wxT("%.3f"),
++                                 config_GetFloat( p_intf, "sub-fps" )),
++                           wxDefaultPosition, wxDefaultSize);
++    fps_ctrl->SetToolTip( wxU(_("Override frames per second. "
+                "It will only work with MicroDVD and SubRIP subtitles.")) );
+     grid_sizer->Add( label, 0, wxALIGN_CENTER, 5 );
+-    grid_sizer->Add( fps_spinctrl, 0,wxALIGN_CENTER, 5 );
++    grid_sizer->Add( fps_ctrl, 0,wxALIGN_CENTER, 5 );
+ 
+ 
+     wxStaticText *label_delay =
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/subtitles.hpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/subtitles.hpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/subtitles.hpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/subtitles.hpp	2007-01-07 23:07:08.000000000 +0100
+@@ -41,7 +41,7 @@ public:
+     wxComboBox *encoding_combo;
+     wxComboBox *size_combo;
+     wxComboBox *align_combo;
+-    wxSpinCtrl *fps_spinctrl;
++    wxTextCtrl *fps_ctrl;
+     wxSpinCtrl *delay_spinctrl;
+ 
+ private:
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/updatevlc.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/updatevlc.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/updatevlc.cpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/updatevlc.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -200,7 +200,7 @@ void UpdateVLC::OnChooseItem( wxListEven
+                         wxSAVE | wxOVERWRITE_PROMPT );
+         if( filedialog->ShowModal() == wxID_OK )
+         {
+-            update_download( p_uit, filedialog->GetPath().mb_str() );
++            update_download( p_uit, filedialog->GetPath().mb_str(wxConvUTF8) );
+         }
+         update_iterator_Delete( p_uit );
+         delete filedialog;
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/vlm/vlm_panel.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/vlm/vlm_panel.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/vlm/vlm_panel.cpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/vlm/vlm_panel.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -217,7 +217,7 @@ void VLMPanel::OnLoad( wxCommandEvent &e
+     p_file_dialog->SetTitle( wxU(_("Load Configuration") ) );
+     if( p_file_dialog->ShowModal() == wxID_OK )
+     {
+-        vlm_Load( p_vlm->GetVLM(), p_file_dialog->GetPath().mb_str() );
++        vlm_Load( p_vlm->GetVLM(), p_file_dialog->GetPath().mb_str(wxConvUTF8));
+     }
+     Update();
+ }
+@@ -231,7 +231,7 @@ void VLMPanel::OnSave( wxCommandEvent &e
+     p_file_dialog->SetTitle( wxU(_("Save Configuration") ) );
+     if( p_file_dialog->ShowModal() == wxID_OK )
+     {
+-        vlm_Save( p_vlm->GetVLM(), p_file_dialog->GetPath().mb_str() );
++        vlm_Save( p_vlm->GetVLM(), p_file_dialog->GetPath().mb_str(wxConvUTF8));
+     }
+ }
+ 
+@@ -441,9 +441,9 @@ void VLMAddStreamPanel::Load( VLMStream 
+ 
+ void VLMAddStreamPanel::OnCreate( wxCommandEvent &event )
+ {
+-    char *psz_name = FromLocale( name_text->GetValue().mb_str() );
+-    char *psz_input = FromLocale(  input_text->GetValue().mb_str() );
+-    char *psz_output = FromLocale( output_text->GetValue().mb_str() );
++    char *psz_name = wxFromLocale( name_text->GetValue() );
++    char *psz_input = wxFromLocale(  input_text->GetValue() );
++    char *psz_output = wxFromLocale( output_text->GetValue() );
+     if( b_broadcast && ! b_edit )
+     {
+         p_vlm->AddBroadcast( psz_name, psz_input, psz_output,
+@@ -468,8 +468,8 @@ void VLMAddStreamPanel::OnCreate( wxComm
+                         enabled_checkbox->IsChecked() ? VLC_TRUE: VLC_FALSE,
+                         loop_checkbox->IsChecked() ? VLC_TRUE : VLC_FALSE );
+     }
+-    LocaleFree( psz_name) ; LocaleFree( psz_input ) ;
+-    LocaleFree( psz_output);
++    wxLocaleFree( psz_name) ; wxLocaleFree( psz_input ) ;
++    wxLocaleFree( psz_output);
+     if( !b_edit )
+         OnClear( event );
+     if( b_edit )
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/vlm/vlm_stream.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/vlm/vlm_stream.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/vlm/vlm_stream.cpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/vlm/vlm_stream.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -52,7 +52,7 @@ void VLMStream::Disable()
+ void VLMStream::Delete()
+ {
+     vlm_message_t *message;
+-    string command = "del " + string( p_media->psz_name );
++    string command = "del \"" + string( p_media->psz_name ) + "\"";
+     /* FIXME: Should be moved to vlm_Wrapper */
+     vlm_ExecuteCommand( p_vlm->GetVLM(), (char*)command.c_str(), & message );
+     vlm_MessageDelete( message );
+@@ -74,7 +74,7 @@ VLMBroadcastStream::~VLMBroadcastStream(
+ void VLMBroadcastStream::Play()
+ {
+     vlm_message_t *message;
+-    string command = "control " + string( p_media->psz_name ) + " play";
++    string command = "control \"" + string( p_media->psz_name ) + "\" play";
+     /* FIXME: Should be moved to vlm_Wrapper */
+     vlm_ExecuteCommand( p_vlm->GetVLM(), (char*)command.c_str(), & message );
+     vlm_MessageDelete( message );
+@@ -83,7 +83,7 @@ void VLMBroadcastStream::Play()
+ void VLMBroadcastStream::Stop()
+ {
+     vlm_message_t *message;
+-    string command = "control " + string( p_media->psz_name ) + " stop";
++    string command = "control \"" + string( p_media->psz_name ) + "\" stop";
+     vlm_ExecuteCommand( p_vlm->GetVLM(), (char*)command.c_str(), & message );
+     vlm_MessageDelete( message );
+ }
+@@ -91,7 +91,7 @@ void VLMBroadcastStream::Stop()
+ void VLMBroadcastStream::Pause()
+ {
+     vlm_message_t *message;
+-    string command = "control " + string( p_media->psz_name ) + " pause";
++    string command = "control \"" + string( p_media->psz_name ) + "\" pause";
+     vlm_ExecuteCommand( p_vlm->GetVLM(), (char*)command.c_str(), & message );
+     vlm_MessageDelete( message );
+ }
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/vlm/vlm_wrapper.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/vlm/vlm_wrapper.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/vlm/vlm_wrapper.cpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/vlm/vlm_wrapper.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -60,7 +60,7 @@ void VLMWrapper::AddBroadcast( const cha
+                                vlc_bool_t b_enabled, vlc_bool_t b_loop  )
+ {
+     vlm_message_t *message;
+-    string command = "new " + string(name) + " broadcast";
++    string command = "new \"" + string(name) + "\" broadcast";
+     vlm_ExecuteCommand( p_vlm, command.c_str(), &message );
+     vlm_MessageDelete( message );
+     EditBroadcast( name, input, output, b_enabled, b_loop );
+@@ -72,27 +72,27 @@ void VLMWrapper::EditBroadcast( const ch
+ {
+     vlm_message_t *message;
+     string command;
+-    command = "setup " + string(name) + " inputdel all";
++    command = "setup \"" + string(name) + "\" inputdel all";
+     vlm_ExecuteCommand( p_vlm, command.c_str(), &message );
+     vlm_MessageDelete( message );
+-    command = "setup " + string(name) + " input " + string(input);
++    command = "setup \"" + string(name) + "\" input \"" + string(input) + "\"";
+     vlm_ExecuteCommand( p_vlm, command.c_str(), &message );
+     vlm_MessageDelete( message );
+     if( strlen(output) > 0 )
+     {
+-        command = "setup " + string(name) + " output " + string(output);
++        command = "setup \"" + string(name) + "\" output \"" + string(output) + "\"";
+         vlm_ExecuteCommand( p_vlm, (char*)command.c_str(), &message );
+         vlm_MessageDelete( message );
+     }
+     if( b_enabled )
+     {
+-        command = "setup " + string(name) + " enabled";
++        command = "setup \"" + string(name) + "\" enabled";
+         vlm_ExecuteCommand( p_vlm, command.c_str(), &message );
+         vlm_MessageDelete( message );
+     }
+     if( b_loop )
+     {
+-        command = "setup " + string(name) + " loop";
++        command = "setup \"" + string(name) + "\" loop";
+         vlm_ExecuteCommand( p_vlm, command.c_str(), &message );
+         vlm_MessageDelete( message );
+     }
+@@ -103,7 +103,7 @@ void VLMWrapper::AddVod( const char* nam
+                          vlc_bool_t b_enabled, vlc_bool_t b_loop  )
+ {
+     vlm_message_t *message;
+-    string command = "new " + string(name) + " vod";
++    string command = "new \"" + string(name) + "\" vod";
+     vlm_ExecuteCommand( p_vlm, command.c_str(), &message );
+     vlm_MessageDelete( message );
+     EditVod( name, input, output, b_enabled, b_loop );
+@@ -115,18 +115,18 @@ void VLMWrapper::EditVod( const char* na
+ {
+     vlm_message_t *message;
+     string command;
+-    command = "setup " + string(name) + " input " + string(input);
++    command = "setup \"" + string(name) + "\" input \"" + string(input) + "\"";
+     vlm_ExecuteCommand( p_vlm, command.c_str(), &message );
+     vlm_MessageDelete( message );
+     if( strlen(output) > 0 )
+     {
+-        command = "setup " + string(name) + " output " + string(output);
++        command = "setup \"" + string(name) + "\" output \"" + string(output) + "\"";
+         vlm_ExecuteCommand( p_vlm, (char*)command.c_str(), &message );
+         vlm_MessageDelete( message );
+     }
+     if( b_enabled )
+     {
+-        command = "setup " + string(name) + " enabled";
++        command = "setup \"" + string(name) + "\" enabled";
+         vlm_ExecuteCommand( p_vlm, command.c_str(), &message );
+         vlm_MessageDelete( message );
+     }
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/wizard.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/wizard.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/wizard.cpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/wizard.cpp	2007-01-07 23:07:08.000000000 +0100
+@@ -718,7 +718,7 @@ void wizInputPage::OnWizardPageChanging(
+         }
+         else
+         {
+-            p_parent->SetMrl( (const char *)mrl_text->GetValue().mb_str() );
++            p_parent->SetMrl( (const char *)mrl_text->GetValue().mb_str(wxConvUTF8) );
+         }
+     }
+     else
+@@ -747,8 +747,8 @@ void wizInputPage::OnWizardPageChanging(
+     }
+     if( enable_checkbox->IsChecked() )
+     {
+-        int i_from = atoi( from_text->GetValue().mb_str() );
+-        int i_to = atoi( to_text->GetValue().mb_str() );
++        int i_from = atoi( from_text->GetValue().mb_str(wxConvUTF8) );
++        int i_to = atoi( to_text->GetValue().mb_str(wxConvUTF8) );
+         p_parent->SetPartial( i_from, i_to );
+     }
+     return;
+@@ -992,12 +992,12 @@ void wizTranscodeCodecPage::OnWizardPage
+                                        audio_combo->GetSelection() : i_audio_codec ));
+     acodec = strdup(c->psz_codec);
+ 
+-    int vb = atoi(vb_combo->GetValue().mb_str() );
++    int vb = atoi(vb_combo->GetValue().mb_str(wxConvUTF8) );
+     if( vb == 0 )
+     {
+          vb = 1024;
+     }
+-    int ab = atoi(ab_combo->GetValue().mb_str() );
++    int ab = atoi(ab_combo->GetValue().mb_str(wxConvUTF8) );
+     if( ab == 0)
+     {
+         ab = 192;
+@@ -1091,7 +1091,7 @@ void wizStreamingMethodPage::OnWizardPag
+     /* Check valid address */
+     if( i_method == 1
+      && !net_AddressIsMulticast( (vlc_object_t *)p_intf,
+-                                 address_txtctrl->GetValue().mb_str()) )
++                                 address_txtctrl->GetValue().mb_str(wxConvUTF8)) )
+     {
+         wxMessageBox( wxU( INVALID_MCAST_ADDRESS ) , wxU( ERROR_MSG ),
+                       wxICON_WARNING | wxOK, this->p_parent );
+@@ -1116,7 +1116,7 @@ void wizStreamingMethodPage::OnWizardPag
+         }
+     }
+     p_parent->SetStream( methods_array[i_method].psz_access ,
+-                         address_txtctrl->GetValue().mb_str() );
++                         address_txtctrl->GetValue().mb_str(wxConvUTF8) );
+ 
+     /* Set the action for the muxer page */
+     ((wizEncapPage*)GetNext())->SetAction( p_parent->GetAction() );
+@@ -1291,7 +1291,7 @@ void wizTranscodeExtraPage::OnSelectFile
+ 
+     if( file_dialog && file_dialog->ShowModal() == wxID_OK )
+     {
+-        if( file_dialog->GetFilename().mb_str() )
++        if( file_dialog->GetFilename().mb_str(wxConvUTF8) )
+         {
+             file_text->SetValue( file_dialog->GetPath() );
+         }
+@@ -1308,7 +1308,7 @@ void wizTranscodeExtraPage::OnWizardPage
+     }
+     if( event.GetDirection() )
+     {
+-       p_parent->SetTranscodeOut( file_text->GetValue().mb_str());
++       p_parent->SetTranscodeOut( file_text->GetValue() );
+     }
+ }
+ 
+@@ -1375,7 +1375,7 @@ void wizStreamingExtraPage::OnWizardPage
+         else
+         {
+             p_parent->SetSAP( true,
+-                             (const char *)sap_text->GetValue().mb_str() );
++                  (const char *)sap_text->GetValue().mb_str(wxConvUTF8) );
+         }
+     }
+     else
+@@ -1521,11 +1521,11 @@ void WizardDialog::SetStream( char const
+     this->address = strdup( address );
+ }
+ 
+-void WizardDialog::SetTranscodeOut( char const *address )
++void WizardDialog::SetTranscodeOut( wxString address )
+ {
+-    char *psz_utf8 = FromLocale( address );
++    char *psz_utf8 = wxFromLocale( address );
+     this->address = strdup( psz_utf8 );
+-    LocaleFree( psz_utf8 );
++    wxLocaleFree( psz_utf8 );
+ }
+ 
+ void WizardDialog::SetMux( char const *mux )
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs/wizard.hpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs/wizard.hpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs/wizard.hpp	2006-09-18 12:28:18.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs/wizard.hpp	2007-01-07 23:07:08.000000000 +0100
+@@ -42,7 +42,7 @@ namespace wxvlc
+         void SetTTL( int i_ttl );
+         void SetPartial( int, int );
+         void SetStream( char const *method, char const *address );
+-        void SetTranscodeOut( char const *address );
++        void SetTranscodeOut( wxString address );
+         void SetAction( int i_action );
+         int  GetAction();
+         void SetSAP( bool b_enabled, const char *psz_name );
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/dialogs.cpp vlc-0.8.6a/modules/gui/wxwidgets/dialogs.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/dialogs.cpp	2006-10-12 19:47:03.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/dialogs.cpp	2007-01-07 23:07:15.000000000 +0100
+@@ -392,7 +392,7 @@ void DialogsProvider::OnOpenFileGeneric(
+                                               sizeof(char *) );
+         for( size_t i = 0; i < paths.GetCount(); i++ )
+         {
+-            p_arg->psz_results[i] = strdup( paths[i].mb_str() );
++            p_arg->psz_results[i] = strdup( paths[i].mb_str(wxConvUTF8) );
+         }
+     }
+ 
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/extrapanel.cpp vlc-0.8.6a/modules/gui/wxwidgets/extrapanel.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/extrapanel.cpp	2006-10-12 19:47:03.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/extrapanel.cpp	2007-01-07 23:07:15.000000000 +0100
+@@ -980,7 +980,7 @@ void ExtraPanel::OnAdjustUpdate( wxScrol
+ /* FIXME */
+ void ExtraPanel::OnRatio( wxCommandEvent& event )
+ {
+-   config_PutPsz( p_intf, "aspect-ratio", ratio_combo->GetValue().mb_str() );
++   config_PutPsz( p_intf, "aspect-ratio", ratio_combo->GetValue().mb_str(wxConvUTF8) );
+ }
+ 
+ 
+@@ -1083,12 +1083,12 @@ static void ChangeVFiltersString( intf_t
+             {
+                 *(psz_string+strlen(psz_string ) -1 ) = '\0';
+             }
+-         }
+-         else
+-         {
+-             free( psz_string );
+-             return;
+-         }
++        }
++        else
++        {
++            free( psz_string );
++            return;
++        }
+     }
+     /* Vout is not kept, so put that in the config */
+     config_PutPsz( p_intf, "vout-filter", psz_string );
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/menus.cpp vlc-0.8.6a/modules/gui/wxwidgets/menus.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/menus.cpp	2006-09-22 17:14:30.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/menus.cpp	2007-01-07 23:07:15.000000000 +0100
+@@ -27,8 +27,10 @@
+ #include "wxwidgets.hpp"
+ #include "interface.hpp"
+ 
+-#include <vector>
+-using namespace std;
++#include <wx/dynarray.h>
++WX_DEFINE_ARRAY(int, ArrayOfInts);
++WX_DEFINE_ARRAY_PTR(const char *, ArrayOfStrings);
++
+ 
+ class wxMenuItemExt: public wxMenuItem
+ {
+@@ -53,7 +55,7 @@ public:
+     Menu( intf_thread_t *p_intf, int i_start_id );
+     virtual ~Menu();
+ 
+-    void Populate( vector<const char *> &, vector<int> &);
++    void Populate( ArrayOfStrings &, ArrayOfInts &);
+     void Clear();
+ 
+ private:
+@@ -142,11 +144,11 @@ wxMenu *MiscMenu( intf_thread_t *p_intf 
+ /*****************************************************************************
+  * Builders for the dynamic menus
+  *****************************************************************************/
+-#define PUSH_VAR( var ) rs_varnames.push_back( var ); \
+-                        ri_objects.push_back( p_object->i_object_id )
++#define PUSH_VAR( var ) rs_varnames.Add( var ); \
++                        ri_objects.Add( p_object->i_object_id )
+ 
+-int InputAutoMenuBuilder( vlc_object_t *p_object, vector<int> &ri_objects,
+-                          vector<const char *> &rs_varnames )
++int InputAutoMenuBuilder( vlc_object_t *p_object, ArrayOfInts &ri_objects,
++                          ArrayOfStrings &rs_varnames )
+ {
+     PUSH_VAR( "bookmark");
+     PUSH_VAR( "title" );
+@@ -157,8 +159,8 @@ int InputAutoMenuBuilder( vlc_object_t *
+     return VLC_SUCCESS;
+ }
+ 
+-int VideoAutoMenuBuilder( vlc_object_t *p_object, vector<int> &ri_objects,
+-                          vector<const char *> &rs_varnames )
++int VideoAutoMenuBuilder( vlc_object_t *p_object, ArrayOfInts &ri_objects,
++                          ArrayOfStrings &rs_varnames )
+ {
+     PUSH_VAR( "fullscreen" );
+     PUSH_VAR( "zoom" );
+@@ -181,8 +183,8 @@ int VideoAutoMenuBuilder( vlc_object_t *
+     return VLC_SUCCESS;
+ }
+ 
+-int AudioAutoMenuBuilder( vlc_object_t *p_object, vector<int> &ri_objects,
+-                          vector<const char *> &rs_varnames )
++int AudioAutoMenuBuilder( vlc_object_t *p_object, ArrayOfInts &ri_objects,
++                          ArrayOfStrings &rs_varnames )
+ {
+     PUSH_VAR( "audio-device" );
+     PUSH_VAR( "audio-channels" );
+@@ -191,8 +193,8 @@ int AudioAutoMenuBuilder( vlc_object_t *
+     return VLC_SUCCESS;
+ }
+ 
+-int IntfAutoMenuBuilder( intf_thread_t *p_intf, vector<int> &ri_objects,
+-                         vector<const char *> &rs_varnames, bool is_popup)
++int IntfAutoMenuBuilder( intf_thread_t *p_intf, ArrayOfInts &ri_objects,
++                         ArrayOfStrings &rs_varnames, bool is_popup)
+ {
+     /* vlc_object_find is needed because of the dialogs provider case */
+     vlc_object_t *p_object;
+@@ -221,18 +223,18 @@ int IntfAutoMenuBuilder( intf_thread_t *
+ /*****************************************************************************
+  * Popup menus
+  *****************************************************************************/
+-#define PUSH_VAR( var ) as_varnames.push_back( var ); \
+-                        ai_objects.push_back( p_object->i_object_id )
++#define PUSH_VAR( var ) as_varnames.Add( var ); \
++                        ai_objects.Add( p_object->i_object_id )
+ 
+-#define PUSH_SEPARATOR if( ai_objects.size() != i_last_separator ) { \
+-                            ai_objects.push_back( 0 ); \
+-                            as_varnames.push_back( "" ); \
+-                            i_last_separator = ai_objects.size(); }
++#define PUSH_SEPARATOR if( ai_objects.GetCount() != i_last_separator ) { \
++                            ai_objects.Add( 0 ); \
++                            as_varnames.Add( "" ); \
++                            i_last_separator = ai_objects.GetCount(); }
+ 
+ #define POPUP_BOILERPLATE \
+     unsigned int i_last_separator = 0; \
+-    vector<int> ai_objects; \
+-    vector<const char *> as_varnames; \
++    ArrayOfInts ai_objects; \
++    ArrayOfStrings as_varnames; \
+     playlist_t *p_playlist = (playlist_t *) vlc_object_find( p_intf, \
+                                           VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );\
+     if( !p_playlist ) \
+@@ -288,10 +290,10 @@ void VideoPopupMenu( intf_thread_t *p_in
+     if( p_input )
+     {
+         vlc_object_yield( p_input );
+-        as_varnames.push_back( "video-es" );
+-        ai_objects.push_back( p_input->i_object_id );
+-        as_varnames.push_back( "spu-es" );
+-        ai_objects.push_back( p_input->i_object_id );
++        as_varnames.Add( "video-es" );
++        ai_objects.Add( p_input->i_object_id );
++        as_varnames.Add( "spu-es" );
++        ai_objects.Add( p_input->i_object_id );
+         vlc_object_t *p_vout = (vlc_object_t *)vlc_object_find( p_input,
+                                                 VLC_OBJECT_VOUT, FIND_CHILD );
+         if( p_vout )
+@@ -312,8 +314,8 @@ void AudioPopupMenu( intf_thread_t *p_in
+     if( p_input )
+     {
+         vlc_object_yield( p_input );
+-        as_varnames.push_back( "audio-es" );
+-        ai_objects.push_back( p_input->i_object_id );
++        as_varnames.Add( "audio-es" );
++        ai_objects.Add( p_input->i_object_id );
+         vlc_object_t *p_aout = (vlc_object_t *)vlc_object_find( p_input,
+                                              VLC_OBJECT_AOUT, FIND_ANYWHERE );
+         if( p_aout )
+@@ -336,7 +338,7 @@ void MiscPopupMenu( intf_thread_t *p_int
+     if( p_input )
+     {
+         vlc_object_yield( p_input );
+-        as_varnames.push_back( "audio-es" );
++        as_varnames.Add( "audio-es" );
+         InputAutoMenuBuilder( VLC_OBJECT(p_input), ai_objects, as_varnames );
+         PUSH_SEPARATOR;
+     }
+@@ -367,10 +369,10 @@ void PopupMenu( intf_thread_t *p_intf, w
+ 
+         /* Video menu */
+         PUSH_SEPARATOR;
+-        as_varnames.push_back( "video-es" );
+-        ai_objects.push_back( p_input->i_object_id );
+-        as_varnames.push_back( "spu-es" );
+-        ai_objects.push_back( p_input->i_object_id );
++        as_varnames.Add( "video-es" );
++        ai_objects.Add( p_input->i_object_id );
++        as_varnames.Add( "spu-es" );
++        ai_objects.Add( p_input->i_object_id );
+         vlc_object_t *p_vout = (vlc_object_t *)vlc_object_find( p_input,
+                                                 VLC_OBJECT_VOUT, FIND_CHILD );
+         if( p_vout )
+@@ -380,8 +382,8 @@ void PopupMenu( intf_thread_t *p_intf, w
+         }
+         /* Audio menu */
+         PUSH_SEPARATOR
+-        as_varnames.push_back( "audio-es" );
+-        ai_objects.push_back( p_input->i_object_id );
++        as_varnames.Add( "audio-es" );
++        ai_objects.Add( p_input->i_object_id );
+         vlc_object_t *p_aout = (vlc_object_t *)vlc_object_find( p_input,
+                                              VLC_OBJECT_AOUT, FIND_ANYWHERE );
+         if( p_aout )
+@@ -417,8 +419,8 @@ void PopupMenu( intf_thread_t *p_intf, w
+ wxMenu *AudioMenu( intf_thread_t *_p_intf, wxWindow *p_parent, wxMenu *p_menu )
+ {
+     vlc_object_t *p_object;
+-    vector<int> ai_objects;
+-    vector<const char *> as_varnames;
++    ArrayOfInts ai_objects;
++    ArrayOfStrings as_varnames;
+ 
+     p_object = (vlc_object_t *)vlc_object_find( _p_intf, VLC_OBJECT_INPUT,
+                                                 FIND_ANYWHERE );
+@@ -451,8 +453,8 @@ wxMenu *AudioMenu( intf_thread_t *_p_int
+ wxMenu *VideoMenu( intf_thread_t *_p_intf, wxWindow *p_parent, wxMenu *p_menu )
+ {
+     vlc_object_t *p_object;
+-    vector<int> ai_objects;
+-    vector<const char *> as_varnames;
++    ArrayOfInts ai_objects;
++    ArrayOfStrings as_varnames;
+ 
+     p_object = (vlc_object_t *)vlc_object_find( _p_intf, VLC_OBJECT_INPUT,
+                                                 FIND_ANYWHERE );
+@@ -485,8 +487,8 @@ wxMenu *VideoMenu( intf_thread_t *_p_int
+ wxMenu *NavigMenu( intf_thread_t *_p_intf, wxWindow *p_parent, wxMenu *p_menu )
+ {
+     vlc_object_t *p_object;
+-    vector<int> ai_objects;
+-    vector<const char *> as_varnames;
++    ArrayOfInts ai_objects;
++    ArrayOfStrings as_varnames;
+ 
+     p_object = (vlc_object_t *)vlc_object_find( _p_intf, VLC_OBJECT_INPUT,
+                                                 FIND_ANYWHERE );
+@@ -514,8 +516,8 @@ wxMenu *SettingsMenu( intf_thread_t *_p_
+                       wxMenu *p_menu )
+ {
+     vlc_object_t *p_object;
+-    vector<int> ai_objects;
+-    vector<const char *> as_varnames;
++    ArrayOfInts ai_objects;
++    ArrayOfStrings as_varnames;
+ 
+     p_object = (vlc_object_t *)vlc_object_find( _p_intf, VLC_OBJECT_INTF,
+                                                 FIND_PARENT );
+@@ -555,8 +557,8 @@ Menu::~Menu()
+ /*****************************************************************************
+  * Public methods.
+  *****************************************************************************/
+-void Menu::Populate( vector<const char *> & ras_varnames,
+-                     vector<int> & rai_objects )
++void Menu::Populate( ArrayOfStrings & ras_varnames,
++                     ArrayOfInts & rai_objects )
+ {
+     vlc_object_t *p_object;
+     vlc_bool_t b_section_empty = VLC_FALSE;
+@@ -564,7 +566,7 @@ void Menu::Populate( vector<const char *
+ 
+     i_item_id = i_start_id;
+ 
+-    for( i = 0; i < (int)rai_objects.size() ; i++ )
++    for( i = 0; i < (int)rai_objects.GetCount() ; i++ )
+     {
+         if( !ras_varnames[i] || !*ras_varnames[i] )
+         {
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/wxwidgets.cpp vlc-0.8.6a/modules/gui/wxwidgets/wxwidgets.cpp
+--- vlc-0.8.6/modules/gui/wxwidgets/wxwidgets.cpp	2006-10-12 19:47:03.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/wxwidgets.cpp	2007-01-07 23:07:15.000000000 +0100
+@@ -593,7 +593,7 @@ WindowSettings::~WindowSettings( )
+                                      size[i].x, size[i].y );
+     }
+ 
+-    config_PutPsz( p_intf, "wx-config-last", sCfg.mb_str() );
++    config_PutPsz( p_intf, "wx-config-last", sCfg.mb_str(wxConvUTF8) );
+ }
+ 
+ void WindowSettings::SetScreen( int i_screen_w, int i_screen_h )
+diff -puriN vlc-0.8.6/modules/gui/wxwidgets/wxwidgets.hpp vlc-0.8.6a/modules/gui/wxwidgets/wxwidgets.hpp
+--- vlc-0.8.6/modules/gui/wxwidgets/wxwidgets.hpp	2006-09-18 12:28:21.000000000 +0200
++++ vlc-0.8.6a/modules/gui/wxwidgets/wxwidgets.hpp	2007-01-07 23:07:15.000000000 +0100
+@@ -95,10 +95,8 @@ DECLARE_LOCAL_EVENT_TYPE( wxEVT_INTF, 1 
+  * But heh, that's wxWidgets; you can't really expect it to actually
+  * work, let alone work like its documentation says.
+  *
+- * Did it work, we would be able to catch non-ANSI characters on Windows
+- * through wxString::wc_str(); while they are lost when using mb_str().
+- * This would be particularly useful to open files whose names contain
+- * non-ACP characters.
++ * Unicode needs to be enabled to catch non-ANSI characters on Windows
++ * through wxString::wc_str(); they are lost when using mb_str().
+  */
+ #if wxUSE_UNICODE
+ #   define wxFromLocale(wxstring) FromWide(wxstring.wc_str())
+@@ -107,18 +105,12 @@ DECLARE_LOCAL_EVENT_TYPE( wxEVT_INTF, 1 
+ #   define wxFromLocale(wxstring) FromLocale(wxstring.mb_str())
+ #   define wxLocaleFree(string) LocaleFree(string)
+ #endif
+-	
++
+ /* From Locale functions to use for File Drop targets ... go figure */
+-#ifdef wxUSE_UNICODE
++#if defined( wxUSE_UNICODE ) && !defined( WIN32 )
+ static inline char *wxDnDFromLocale( const wxChar *stupid )
+ {
+     /*
+-     * FIXME: this is yet another awful and ugly bug-to-bug work-around
+-     * for the painfully broken and brain-dead wxWidgets character
+-     * encoding internals. Maybe, one day the wxWidgets team will find out
+-     * and we will have to remove (phew) this kludge or autodetect whether
+-     * to trigger it (damn).
+-     *
+      * In Unicode mode, wxWidgets will encode file names in the locale
+      * encoding with each **bytes** (rather than characters) represented
+      * by a 32 bits unsigned integer. If you are lucky enough to be using
+@@ -128,14 +120,17 @@ static inline char *wxDnDFromLocale( con
+      * UTF-8 but also Windows-1252(!) and ISO-8859-15(!) or any
+      * non-western encoding, it obviously fails.
+      */
+-    const wxChar *braindead;
+-    for (braindead = stupid; *braindead; braindead++);
+-
+-    size_t i = (braindead - stupid);
+-    char psz_local[i + 1];
+-    do
+-        psz_local[i] = (char)stupid[i];
+-    while (i--);
++    size_t n = 0;
++    while (stupid[n])
++        n++;
++
++    char psz_local[n + 1];
++    for (size_t i = 0; i <= n; i++)
++        psz_local[i] = stupid[i];
++
++    // Kludge for (broken?) apps that adds a LF at the end of DnD
++    if ((n >= 1) && (strchr ("\n\r", stupid[n - 1]) != NULL))
++        psz_local[n - 1] = '\0';
+ 
+     return FromLocaleDup( psz_local );
+ }
+diff -puriN vlc-0.8.6/modules/misc/gnutls.c vlc-0.8.6a/modules/misc/gnutls.c
+--- vlc-0.8.6/modules/misc/gnutls.c	2006-09-22 17:14:31.000000000 +0200
++++ vlc-0.8.6a/modules/misc/gnutls.c	2007-01-07 23:07:23.000000000 +0100
+@@ -181,6 +181,42 @@ _get_Bool( vlc_object_t *p_this, const c
+ #define get_Bool( a, b ) _get_Bool( (vlc_object_t *)(a), (b) )
+ 
+ 
++static int gnutls_Error (vlc_object_t *obj, int val)
++{
++    switch (val)
++    {
++        case GNUTLS_E_AGAIN:
++#if defined(WIN32)
++            WSASetLastError(WSAEWOULDBLOCK);
++#else
++            errno = EAGAIN;
++#endif
++            break;
++
++        case GNUTLS_E_INTERRUPTED:
++#if defined(WIN32)
++            WSASetLastError(WSAEINTR);
++#else
++            errno = EINTR;
++#endif
++            break;
++
++        default:
++            msg_Err (obj, "%s", gnutls_strerror (val));
++#ifdef DEBUG
++            if (!gnutls_error_is_fatal (val))
++                msg_Err (obj, "Error above should be handled");
++#endif
++#if defined(WIN32)
++            WSASetLastError(WSAECONNRESET);
++#else
++            errno = ECONNRESET;
++#endif
++    }
++    return -1;
++}
++
++
+ /**
+  * Sends data through a TLS session.
+  */
+@@ -193,8 +229,7 @@ gnutls_Send( void *p_session, const void
+     p_sys = (tls_session_sys_t *)(((tls_session_t *)p_session)->p_sys);
+ 
+     val = gnutls_record_send( p_sys->session, buf, i_length );
+-    /* TODO: handle fatal error */
+-    return val < 0 ? -1 : val;
++    return (val < 0) ? gnutls_Error ((vlc_object_t *)p_session, val) : val;
+ }
+ 
+ 
+@@ -210,8 +245,7 @@ gnutls_Recv( void *p_session, void *buf,
+     p_sys = (tls_session_sys_t *)(((tls_session_t *)p_session)->p_sys);
+ 
+     val = gnutls_record_recv( p_sys->session, buf, i_length );
+-    /* TODO: handle fatal error */
+-    return val < 0 ? -1 : val;
++    return (val < 0) ? gnutls_Error ((vlc_object_t *)p_session, val) : val;
+ }
+ 
+ 
+@@ -244,7 +278,7 @@ gnutls_ContinueHandshake( tls_session_t 
+ #ifdef WIN32
+         msg_Dbg( p_session, "Winsock error %d", WSAGetLastError( ) );
+ #endif
+-        msg_Err( p_session, "TLS handshake failed: %s",
++        msg_Err( p_session, "TLS handshake error: %s",
+                  gnutls_strerror( val ) );
+         p_session->pf_close( p_session );
+         return -1;
+@@ -539,7 +573,7 @@ gnutls_Addx509Directory( vlc_object_t *p
+          || fstat( fd, &st1 ) || utf8_lstat( psz_dirname, &st2 )
+          || S_ISLNK( st2.st_mode ) || ( st1.st_ino != st2.st_ino ) )
+         {
+-            closedir( dir );
++            vlc_closedir_wrapper( dir );
+             return VLC_EGENERIC;
+         }
+     }
+@@ -564,7 +598,7 @@ gnutls_Addx509Directory( vlc_object_t *p
+         free( psz_filename );
+     }
+ 
+-    closedir( dir );
++    vlc_closedir_wrapper( dir );
+     return VLC_SUCCESS;
+ }
+ 
+diff -puriN vlc-0.8.6/modules/video_filter/rss.c vlc-0.8.6a/modules/video_filter/rss.c
+--- vlc-0.8.6/modules/video_filter/rss.c	2006-09-18 12:28:28.000000000 +0200
++++ vlc-0.8.6a/modules/video_filter/rss.c	2007-01-07 23:07:30.000000000 +0100
+@@ -503,12 +503,8 @@ picture_t *LoadImage( filter_t *p_filter
+     picture_t *p_orig, *p_pic=NULL;
+     image_handler_t *p_handler = image_HandlerCreate( p_filter );
+ 
+-    char *psz_local;
+-
+-    psz_local = ToLocale( psz_url );
+     fmt_out.i_chroma = VLC_FOURCC('Y','U','V','A');
+-    p_orig = image_ReadUrl( p_handler, psz_local, &fmt_in, &fmt_out );
+-    LocaleFree( psz_local );
++    p_orig = image_ReadUrl( p_handler, psz_url, &fmt_in, &fmt_out );
+ 
+     if( !p_orig )
+     {
+diff -puriN vlc-0.8.6/modules/visualization/galaktos/preset.c vlc-0.8.6a/modules/visualization/galaktos/preset.c
+--- vlc-0.8.6/modules/visualization/galaktos/preset.c	2006-09-18 12:28:27.000000000 +0200
++++ vlc-0.8.6a/modules/visualization/galaktos/preset.c	2007-01-07 23:07:27.000000000 +0100
+@@ -520,7 +520,7 @@ int load_preset_file(char * pathname, pr
+ 	  return FAILURE;
+   
+   /* Open the file corresponding to pathname */
+-  if ((fs = fopen(pathname, "r")) == 0) {
++  if ((fs = utf8_fopen(pathname, "r")) == 0) {
+     if (PRESET_DEBUG) printf("load_preset_file: loading of file %s failed!\n", pathname);
+     return ERROR;	
+   }
+@@ -792,7 +792,7 @@ void savePreset(char * filename) {
+     return;
+   
+   /* Open the file corresponding to pathname */
+-  if ((fs = fopen(filename, "w+")) == 0) {
++  if ((fs = utf8_fopen(filename, "w+")) == 0) {
+     if (PRESET_DEBUG) printf("savePreset: failed to create filename \"%s\"!\n", filename);
+     return;	
+   }
+diff -puriN vlc-0.8.6/modules/visualization/goom.c vlc-0.8.6a/modules/visualization/goom.c
+--- vlc-0.8.6/modules/visualization/goom.c	2006-09-18 12:28:27.000000000 +0200
++++ vlc-0.8.6a/modules/visualization/goom.c	2007-01-07 23:07:27.000000000 +0100
+@@ -413,19 +413,24 @@ static char *TitleGet( vlc_object_t *p_t
+ 
+     if( p_input )
+     {
+-        char *psz = strrchr( p_input->input.p_item->psz_uri, '/' );
+-
+-        if( psz )
+-        {
+-            psz++;
+-        }
+-        else
++        psz_title = vlc_input_item_GetInfo( p_input->input.p_item,
++                        _("Meta-information"), _(VLC_META_TITLE) );
++        if( !*psz_title )
+         {
+-            psz = p_input->input.p_item->psz_uri;
+-        }
+-        if( psz && *psz )
+-        {
+-            psz_title = strdup( psz );
++            char *psz = strrchr( p_input->input.p_item->psz_uri, '/' );
++
++            if( psz )
++            {
++                psz++;
++            }
++            else
++            {
++                psz = p_input->input.p_item->psz_uri;
++            }
++            if( psz && *psz )
++            {
++                psz_title = strdup( psz );
++            }
+         }
+         vlc_object_release( p_input );
+     }
+diff -puriN vlc-0.8.6/src/input/stream.c vlc-0.8.6a/src/input/stream.c
+--- vlc-0.8.6/src/input/stream.c	2006-09-18 12:27:56.000000000 +0200
++++ vlc-0.8.6a/src/input/stream.c	2007-01-07 23:06:39.000000000 +0100
+@@ -1488,16 +1488,70 @@ char * stream_ReadLine( stream_t *s )
+ 
+         if( i_data % s->i_char_width )
+         {
++            /* keep i_char_width boundary */
++            i_data = i_data - ( i_data % s->i_char_width );
+             msg_Warn( s, "the read is not i_char_width compatible");
+         }
+ 
++        if( i_data == 0 )
++            break;
++
+         /* Check if there is an EOL */
+-        if( ( psz_eol = memchr( p_data, '\n', i_data ) ) )
++        if( s->i_char_width == 1 )
+         {
+-            if( s->b_little_endian == VLC_TRUE && s->i_char_width > 1 )
++            /* UTF-8: 0A <LF> */
++            psz_eol = memchr( p_data, '\n', i_data );
++        }
++        else
++        {
++            uint8_t *p = p_data;
++            uint8_t *p_last = p + i_data - s->i_char_width;
++
++            if( s->i_char_width == 2 )
+             {
+-                psz_eol += ( s->i_char_width - 1 );
++                if( s->b_little_endian == VLC_TRUE)
++                {
++                    /* UTF-16LE: 0A 00 <LF> */
++                    while( p <= p_last && ( p[0] != 0x0A || p[1] != 0x00 ) )
++                        p += 2;
++                }
++                else
++                {
++                    /* UTF-16BE: 00 0A <LF> */
++                    while( p <= p_last && ( p[1] != 0x0A || p[0] != 0x00 ) )
++                        p += 2;
++                }
+             }
++            else if( s->i_char_width == 4 )
++            {
++                if( s->b_little_endian == VLC_TRUE)
++                {
++                    /* UTF-32LE: 0A 00 00 00 <LF> */
++                    while( p <= p_last && ( p[0] != 0x0A || p[1] != 0x00 ||
++                           p[2] != 0x00 || p[3] != 0x00 ) )
++                        p += 4;
++                }
++                else
++                {
++                    /* UTF-32BE: 00 00 00 0A <LF> */
++                    while( p <= p_last && ( p[3] != 0x0A || p[2] != 0x00 ||
++                           p[1] != 0x00 || p[0] != 0x00 ) )
++                        p += 4;
++                }
++            }
++
++            if( p > p_last )
++            {
++                psz_eol = NULL;
++            }
++            else
++            {
++                psz_eol = (char *)p + ( s->i_char_width - 1 );
++            }
++        }
++
++        if(psz_eol)
++        {
+             i_data = (psz_eol - (char *)p_data) + 1;
+             p_line = realloc( p_line, i_line + i_data + s->i_char_width ); /* add \0 */
+             i_data = stream_Read( s, &p_line[i_line], i_data );
+@@ -1550,7 +1604,7 @@ char * stream_ReadLine( stream_t *s )
+         }
+ 
+         /* Remove trailing LF/CR */
+-        while( i_line > 0 && ( p_line[i_line-2] == '\r' ||
++        while( i_line >= 2 && ( p_line[i_line-2] == '\r' ||
+             p_line[i_line-2] == '\n') ) i_line--;
+ 
+         /* Make sure the \0 is there */
+diff -puriN vlc-0.8.6/src/libvlc.c vlc-0.8.6a/src/libvlc.c
+--- vlc-0.8.6/src/libvlc.c	2006-10-12 19:47:01.000000000 +0200
++++ vlc-0.8.6a/src/libvlc.c	2007-01-07 23:06:40.000000000 +0100
+@@ -2044,12 +2044,25 @@ static int GetFilenames( vlc_t *p_vlc, i
+         /* TODO: write an internal function of this one, to avoid
+          *       unnecessary lookups. */
+         /* FIXME: should we convert options to UTF-8 as well ?? */
+-        psz_target = FromLocale( ppsz_argv[ i_opt ] );
+-        VLC_AddTarget( p_vlc->i_object_id, psz_target,
++
++#ifdef WIN32
++        if( GetVersion() < 0x80000000 )
++        {
++            VLC_AddTarget( p_vlc->i_object_id, ppsz_argv[i_opt],
+                        (char const **)( i_options ? &ppsz_argv[i_opt + 1] :
+                                         NULL ), i_options,
+                        PLAYLIST_INSERT, 0 );
+-        LocaleFree( psz_target );
++        }
++        else
++#endif
++        {
++            psz_target = FromLocale( ppsz_argv[ i_opt ] );
++            VLC_AddTarget( p_vlc->i_object_id, psz_target,
++                       (char const **)( i_options ? &ppsz_argv[i_opt + 1] :
++                                        NULL ), i_options,
++                       PLAYLIST_INSERT, 0 );
++            LocaleFree( psz_target );
++        }
+     }
+ 
+     return VLC_SUCCESS;
+diff -puriN vlc-0.8.6/src/misc/configuration.c vlc-0.8.6a/src/misc/configuration.c
+--- vlc-0.8.6/src/misc/configuration.c	2006-09-18 12:27:56.000000000 +0200
++++ vlc-0.8.6a/src/misc/configuration.c	2007-01-07 23:06:39.000000000 +0100
+@@ -814,6 +814,9 @@ int __config_LoadConfigFile( vlc_object_
+ 
+     for( i_index = 0; i_index < p_list->i_count; i_index++ )
+     {
++        char * (*convert) (const char *) = FromLocaleDup;
++        char bom[3];
++
+         p_parser = (module_t *)p_list->p_values[i_index].p_object ;
+ 
+         if( psz_module_name
+@@ -825,6 +828,15 @@ int __config_LoadConfigFile( vlc_object_
+         /* The config file is organized in sections, one per module. Look for
+          * the interesting section ( a section is of the form [foo] ) */
+         fseek( file, 0L, SEEK_SET );
++
++        /* Look for UTF-8 Byte Order Mark */
++
++        if ((fread (bom, 1, 3, file) == 3)
++         && (memcmp (bom, "\xEF\xBB\xBF", 3) == 0))
++            convert = strdup;
++        else
++            rewind (file); // no BOM, rewind
++
+         while( fgets( line, 1024, file ) )
+         {
+             if( (line[0] == '[')
+@@ -922,7 +934,7 @@ int __config_LoadConfigFile( vlc_object_
+                             free( p_item->psz_value );
+ 
+                         p_item->psz_value = *psz_option_value ?
+-                            strdup( psz_option_value ) : NULL;
++                            convert( psz_option_value ) : NULL;
+ 
+                         if( p_item->psz_value_saved )
+                             free( p_item->psz_value_saved );
+@@ -1149,8 +1161,17 @@ static int SaveConfigFile( vlc_object_t 
+         vlc_mutex_unlock( &p_this->p_vlc->config_lock );
+         return -1;
+     }
++    
++#ifdef WIN32
++    /* Ugly kludge to not save --started-from-file (and not break the ABI). 
++     * See [17898] and   #871 */
++    /* Just use the first mofule found*/
++    config_PutInt( (module_t *)p_list->p_values[0].p_object, 
++                   "started-from-file", 0 );
++
++#endif
+ 
+-    fprintf( file, "###\n###  " COPYRIGHT_MESSAGE "\n###\n\n"
++    fprintf( file, "\xEF\xBB\xBF###\n###  " COPYRIGHT_MESSAGE "\n###\n\n"
+        "###\n### lines begining with a '#' character are comments\n###\n\n" );
+ 
+     /* Look for the selected module, if NULL then save everything */
+@@ -1171,7 +1192,7 @@ static int SaveConfigFile( vlc_object_t 
+ 
+         fprintf( file, "[%s]", p_parser->psz_object_name );
+         if( p_parser->psz_longname )
+-            utf8_fprintf( file, " # %s\n\n", p_parser->psz_longname );
++            fprintf( file, " # %s\n\n", p_parser->psz_longname );
+         else
+             fprintf( file, "\n\n" );
+ 
+@@ -1207,11 +1228,11 @@ static int SaveConfigFile( vlc_object_t 
+             case CONFIG_ITEM_BOOL:
+             case CONFIG_ITEM_INTEGER:
+                 if( p_item->psz_text )
+-                    utf8_fprintf( file, "# %s (%s)\n", p_item->psz_text,
++                    fprintf( file, "# %s (%s)\n", p_item->psz_text,
+                              (p_item->i_type == CONFIG_ITEM_BOOL) ?
+                              _("boolean") : _("integer") );
+                 if( i_value == p_item->i_value_orig )
+-                    fprintf( file, "#" );
++                    fputc( '#', file );
+                 fprintf( file, "%s=%i\n", p_item->psz_name, i_value );
+ 
+                 p_item->i_value_saved = i_value;
+@@ -1219,10 +1240,10 @@ static int SaveConfigFile( vlc_object_t 
+ 
+             case CONFIG_ITEM_KEY:
+                 if( p_item->psz_text )
+-                    utf8_fprintf( file, "# %s (%s)\n", p_item->psz_text,
++                    fprintf( file, "# %s (%s)\n", p_item->psz_text,
+                              _("key") );
+                 if( i_value == p_item->i_value_orig )
+-                    fprintf( file, "#" );
++                    fputc( '#', file );
+                 psz_key = ConfigKeyToString( i_value );
+                 fprintf( file, "%s=%s\n", p_item->psz_name,
+                          psz_key ? psz_key : "" );
+@@ -1233,10 +1254,10 @@ static int SaveConfigFile( vlc_object_t 
+ 
+             case CONFIG_ITEM_FLOAT:
+                 if( p_item->psz_text )
+-                    utf8_fprintf( file, "# %s (%s)\n", p_item->psz_text,
++                    fprintf( file, "# %s (%s)\n", p_item->psz_text,
+                              _("float") );
+                 if( f_value == p_item->f_value_orig )
+-                    fprintf( file, "#" );
++                    fputc( '#', file );
+                 fprintf( file, "%s=%f\n", p_item->psz_name, (double)f_value );
+ 
+                 p_item->f_value_saved = f_value;
+@@ -1244,12 +1265,12 @@ static int SaveConfigFile( vlc_object_t 
+ 
+             default:
+                 if( p_item->psz_text )
+-                    utf8_fprintf( file, "# %s (%s)\n", p_item->psz_text,
++                    fprintf( file, "# %s (%s)\n", p_item->psz_text,
+                              _("string") );
+                 if( (!psz_value && !p_item->psz_value_orig) ||
+                     (psz_value && p_item->psz_value_orig &&
+                      !strcmp( psz_value, p_item->psz_value_orig )) )
+-                    fprintf( file, "#" );
++                    fputc( '#', file );
+                 fprintf( file, "%s=%s\n", p_item->psz_name,
+                          psz_value ? psz_value : "" );
+ 
+@@ -1264,7 +1285,7 @@ static int SaveConfigFile( vlc_object_t 
+             }
+         }
+ 
+-        fprintf( file, "\n" );
++        fputc( '\n', file );
+     }
+ 
+     vlc_list_release( p_list );
+diff -puriN vlc-0.8.6/src/misc/vlm.c vlc-0.8.6a/src/misc/vlm.c
+--- vlc-0.8.6/src/misc/vlm.c	2006-10-01 17:34:20.000000000 +0200
++++ vlc-0.8.6a/src/misc/vlm.c	2007-01-07 23:06:39.000000000 +0100
+@@ -51,12 +51,12 @@
+ /*****************************************************************************
+  * Local prototypes.
+  *****************************************************************************/
+-static vlm_message_t *vlm_Show( vlm_t *, vlm_media_t *, vlm_schedule_t *, char * );
++static vlm_message_t *vlm_Show( vlm_t *, vlm_media_t *, vlm_schedule_t *, const char * );
+ static vlm_message_t *vlm_Help( vlm_t *, char * );
+ 
+ static vlm_media_instance_t *vlm_MediaInstanceSearch( vlm_t *, vlm_media_t *, const char * );
+ 
+-static vlm_message_t *vlm_MessageNew( char *, const char *, ... );
++static vlm_message_t *vlm_MessageNew( const char *, const char *, ... );
+ static vlm_message_t *vlm_MessageAdd( vlm_message_t *, vlm_message_t * );
+ 
+ static vlm_schedule_t *vlm_ScheduleSearch( vlm_t *, const char * );
+@@ -255,87 +255,129 @@ int vlm_Load( vlm_t *p_vlm, const char *
+     return 0;
+ }
+ 
+-/*****************************************************************************
+- * FindEndCommand
+- *****************************************************************************/
+-static const char *FindEndCommand( const char *psz_sent )
++static const char quotes[] = "\"'";
++/**
++ * FindCommandEnd: look for the end of a possibly quoted string
++ * @return NULL on mal-formatted string,
++ * pointer past the last character otherwise.
++ */
++static const char *FindCommandEnd (const char *psz_sent)
+ {
+-    vlc_bool_t b_escape = VLC_FALSE;
++    char c, quote = 0;
+ 
+-    switch( *psz_sent )
++    while ((c = *psz_sent) != '\0')
+     {
+-    case '\"':
+-        psz_sent++;
+-        while( ( *psz_sent != '\"' || b_escape == VLC_TRUE )
+-               && ( *psz_sent != '\0' ) )
++        if (!quote) 
+         {
+-            if( *psz_sent == '\'' && b_escape == VLC_FALSE )
++            if (strchr(quotes,c))   // opening quote
++                quote = c;
++            else
++            if (isspace(c))         // non-escaped space
++                return psz_sent;
++            else
++            if( c == '\\' )
+             {
+-                psz_sent = FindEndCommand( psz_sent );
+-                if( psz_sent == NULL ) return NULL;
++                psz_sent++;         // skip escaped character
++                if (*psz_sent == '\0')
++                    return psz_sent;
+             }
+-            else if( *psz_sent++ == '\\' && b_escape == VLC_FALSE )
+-                b_escape = VLC_TRUE;
+-            else
+-                b_escape = VLC_FALSE;
+         }
+-
+-        if( *psz_sent == '\"' )
++        else
+         {
+-            psz_sent++;
+-            return psz_sent;
++            if (c == quote)         // non-escaped matching quote
++                quote = 0;
++            else
++            if ((quote == '"') && (c == '\\'))
++            {
++                psz_sent++;         // skip escaped character
++                if (*psz_sent == '\0')
++                    return NULL;    // error, closing quote missing
++            }
+         }
+ 
+-        /* *psz_sent == '\0' -> number of " is incorrect */
+-        else return NULL;
++        psz_sent++;
++    }
+ 
+-        break;
++    // error (NULL) if we could not find a matching quote
++    return quote ? NULL : psz_sent;
++}
+ 
+-    case '\'':
+-        psz_sent++;
+-        while( ( *psz_sent != '\'' || b_escape == VLC_TRUE )
+-                 && ( *psz_sent != '\0' ) )
++
++/**
++ * Unescape a nul-terminated string.
++ * Note that in and out can be identical.
++ *
++ * @param out output buffer (at least <strlen (in) + 1> characters long)
++ * @param in nul-terminated string to be unescaped
++ *
++ * @return 0 on success, -1 on error.
++ */
++static int Unescape (char *out, const char *in)
++{
++    char c, quote = 0;
++
++    while ((c = *in++) != '\0')
++    {
++        if (!quote)
+         {
+-            if( *psz_sent == '\"' && b_escape == VLC_FALSE )
++            if (strchr(quotes,c))   // opening quote
+             {
+-                psz_sent = FindEndCommand( psz_sent );
+-                if( psz_sent == NULL ) return NULL;
++                quote = c;
++                continue;
+             }
+-            else if( *psz_sent++ == '\\' && b_escape == VLC_FALSE )
+-                b_escape = VLC_TRUE;
+             else
+-                b_escape = VLC_FALSE;
+-        }
+-
+-        if( *psz_sent == '\'' )
+-        {
+-            psz_sent++;
+-            return psz_sent;
++            if( c == '\\' )
++            {
++                switch (c = *in++)
++                {
++                    case '"':
++                    case '\'':
++                    case '\\':
++                        *out++ = c;
++                        continue;
++
++                    case '\0':
++                        *out = '\0';
++                        return 0;
++                }
++                if (isspace(c))
++                {
++                    *out++ = c;
++                    continue;
++                }
++                /* None of the special cases - copy the backslash */
++                *out++ = '\\';
++            }
+         }
+-
+-        /* *psz_sent == '\0' -> number of " is incorrect */
+-        else return NULL;
+-
+-        break;
+-
+-    default: /* now we can look for spaces */
+-        while( ( *psz_sent != ' ' ) && ( *psz_sent != '\0' ) )
++        else
+         {
+-            if( ( ( *psz_sent == '\'' ) || ( *psz_sent == '\"' ) )
+-                && b_escape == VLC_FALSE )
++            if (c == quote)         // non-escaped matching quote
+             {
+-                psz_sent = FindEndCommand( psz_sent );
+-                if( psz_sent == NULL ) return NULL;
++                quote = 0;
++                continue;
++            }
++            if ((quote == '"') && (c == '\\'))
++            {
++                switch (c = *in++)
++                {
++                    case '"':
++                    case '\\':
++                        *out++ = c;
++                        continue;
++
++                    case '\0':   // should never happen
++                        *out = '\0';
++                        return -1;
++                }
++                /* None of the special cases - copy the backslash */
++                *out++ = '\\';
+             }
+-            else if( *psz_sent++ == '\\' && b_escape == VLC_FALSE )
+-                b_escape = VLC_TRUE;
+-            else
+-                b_escape = VLC_FALSE;
+-
+         }
+-
+-        return psz_sent;
++        *out++ = c;
+     }
++
++    *out = '\0';
++    return 0;
+ }
+ 
+ /*****************************************************************************
+@@ -356,17 +398,13 @@ static int ExecuteCommand( vlm_t *p_vlm,
+     while( *psz_cmd != '\0' )
+     {
+ 
+-        if( *psz_cmd == ' ' || *psz_cmd == '\t' )
++        if( isspace(*psz_cmd) )
+         {
+             psz_cmd++;
+         }
+         else
+         {
+             const char *psz_temp;
+-            const char *psz_buf;
+-            char *psz_dst;
+-            vlc_bool_t b_escape = VLC_FALSE;
+-            int   i_temp;
+ 
+             /* support for comments */
+             if( i_command == 0 && *psz_cmd == '#')
+@@ -375,7 +413,7 @@ static int ExecuteCommand( vlm_t *p_vlm,
+                 goto success;
+             }
+ 
+-            psz_temp = FindEndCommand( psz_cmd );
++            psz_temp = FindCommandEnd( psz_cmd );
+ 
+             if( psz_temp == NULL )
+             {
+@@ -383,31 +421,12 @@ static int ExecuteCommand( vlm_t *p_vlm,
+                 goto error;
+             }
+ 
+-            i_temp = psz_temp - psz_cmd;
+-
+             ppsz_command = realloc( ppsz_command, (i_command + 1) *
+                                     sizeof(char*) );
+-            ppsz_command[ i_command ] = malloc( (i_temp + 1) * sizeof(char) );
+-
+-            /* unescape ", ' and \ ... and everything else */
+-            psz_buf = psz_cmd;
+-            psz_dst = ppsz_command[ i_command ];
+-            while( i_temp-- )
+-            {
+-                if( *psz_buf == '\\' && b_escape == VLC_FALSE )
+-                    b_escape = VLC_TRUE;
+-                else
+-                {
+-                    b_escape = VLC_FALSE;
+-                    *psz_dst = *psz_buf;
+-                    psz_dst++;
+-                }
+-                psz_buf++;
+-            }
+-            *psz_dst = '\0';
++            ppsz_command[i_command] = strndup (psz_cmd, psz_temp - psz_cmd);
+ 
++            Unescape (ppsz_command[i_command], ppsz_command[i_command]);
+             i_command++;
+-
+             psz_cmd = psz_temp;
+         }
+     }
+@@ -621,6 +640,12 @@ static int ExecuteCommand( vlm_t *p_vlm,
+                 psz_instance = ppsz_command[2];
+ 
+                 if( i_command < 4 ) goto syntax_error;
++
++                if( strcmp( ppsz_command[3], "play" ) &&
++                    strcmp( ppsz_command[3], "stop" ) &&
++                    strcmp( ppsz_command[3], "pause" ) &&
++                    strcmp( ppsz_command[3], "seek" ) )
++                    goto syntax_error;
+             }
+ 
+             psz_command = ppsz_command[i_index];
+@@ -1018,20 +1043,7 @@ int vlm_MediaSetup( vlm_t *vlm, vlm_medi
+     {
+         char *input;
+ 
+-        if( psz_value != NULL && strlen(psz_value) > 1 &&
+-            ( psz_value[0] == '\'' || psz_value[0] == '\"' ) &&
+-            ( psz_value[ strlen(psz_value) - 1 ] == '\'' ||
+-              psz_value[ strlen(psz_value) - 1 ] == '\"' )  )
+-        {
+-            input = malloc( strlen(psz_value) - 1 );
+-
+-            memcpy( input, psz_value + 1, strlen(psz_value) - 2 );
+-            input[ strlen(psz_value) - 2 ] = '\0';
+-        }
+-        else
+-        {
+-            input = strdup( psz_value );
+-        }
++        input = strdup( psz_value );
+ 
+         TAB_APPEND( media->i_input, media->input, input );
+     }
+@@ -1047,20 +1059,7 @@ int vlm_MediaSetup( vlm_t *vlm, vlm_medi
+         char *input;
+         int i;
+ 
+-        if( psz_value != NULL && strlen(psz_value) > 1 &&
+-            ( psz_value[0] == '\'' || psz_value[0] == '\"' ) &&
+-            ( psz_value[ strlen(psz_value) - 1 ] == '\'' ||
+-              psz_value[ strlen(psz_value) - 1 ] == '\"' )  )
+-        {
+-            input = malloc( strlen(psz_value) - 1 );
+-
+-            memcpy( input, psz_value + 1, strlen(psz_value) - 2 );
+-            input[ strlen(psz_value) - 2 ] = '\0';
+-        }
+-        else
+-        {
+-            input = strdup( psz_value );
+-        }
++        input = strdup( psz_value );
+ 
+         for( i = 0; i < media->i_input; i++ )
+         {
+@@ -1263,16 +1262,57 @@ int vlm_MediaControl( vlm_t *vlm, vlm_me
+     if( !strcmp( psz_command, "seek" ) )
+     {
+         vlc_value_t val;
+-        float f_percentage;
+ 
+         if( psz_args )
+         {
+-            f_percentage = i18n_atof( psz_args );
+-            if( f_percentage >= 0.0 && f_percentage <= 100.0 )
++            vlc_bool_t i_rel;
++            float f_value = i18n_atof( psz_args );
++            if( psz_args[0] == '+' || psz_args[0] == '-' )
++               i_rel = VLC_TRUE;
++            else
++               i_rel = VLC_FALSE;
++            if( strstr( psz_args, "ms" ) )
+             {
+-                val.f_float = f_percentage / 100.0 ;
+-                var_Set( p_instance->p_input, "position", val );
+-                return VLC_SUCCESS;
++               /* milliseconds */
++               int64_t i_msec =  1000 * (int64_t)atoi( psz_args );
++               if( i_rel )
++               {
++                  var_SetTime( p_instance->p_input, "time-offset", i_msec );
++               }
++               else if( i_msec >= 0
++               && i_msec < var_GetTime( p_instance->p_input, "length" ) )
++               {
++                  var_SetTime( p_instance->p_input, "time", i_msec );
++               }
++            }
++            else if( strchr( psz_args, 's' ) )
++            {
++               /* seconds */
++               int64_t i_sec = 1000000 * (int64_t)atoi( psz_args );
++               if( i_rel )
++               {
++                  var_SetTime( p_instance->p_input, "time-offset", i_sec );
++               }
++               else if( i_sec >= 0
++                     && i_sec < var_GetTime( p_instance->p_input, "length" ) )
++               {
++                  var_SetTime( p_instance->p_input, "time", i_sec );
++               }
++            }
++            else
++            {
++               /* percentage */
++               f_value /= 100.;
++               if( i_rel )
++               {
++                  float f_orig = var_GetFloat( p_instance->p_input, "position" );
++                  f_value += f_orig;
++               }
++               if( f_value >= 0.0 && f_value <= 1.0 )
++               {
++                  var_SetFloat( p_instance->p_input, "position", f_value );
++                  return VLC_SUCCESS;
++               }
+             }
+         }
+     }
+@@ -1315,7 +1355,7 @@ int vlm_MediaControl( vlm_t *vlm, vlm_me
+ /*****************************************************************************
+  * Schedule handling
+  *****************************************************************************/
+-static int64_t vlm_Date()
++static int64_t vlm_Date( void )
+ {
+ #ifdef WIN32
+     struct timeb tm;
+@@ -1578,7 +1618,7 @@ int vlm_ScheduleSetup( vlm_schedule_t *s
+ /*****************************************************************************
+  * Message handling functions
+  *****************************************************************************/
+-static vlm_message_t *vlm_MessageNew( char *psz_name,
++static vlm_message_t *vlm_MessageNew( const char *psz_name,
+                                       const char *psz_format, ... )
+ {
+     vlm_message_t *p_message;
+@@ -1641,7 +1681,7 @@ static vlm_message_t *vlm_MessageAdd( vl
+  * Misc utility functions
+  *****************************************************************************/
+ static vlm_message_t *vlm_Show( vlm_t *vlm, vlm_media_t *media,
+-                                vlm_schedule_t *schedule, char *psz_filter )
++                                vlm_schedule_t *schedule, const char *psz_filter )
+ {
+     if( media != NULL )
+     {
+@@ -1713,8 +1753,8 @@ static vlm_message_t *vlm_Show( vlm_t *v
+             vlm_MessageAdd( msg_instance, vlm_MessageNew( a, psz_tmp ) ); \
+             free( psz_tmp );
+             APPEND_INPUT_INFO( "position", "%f", Float );
+-            APPEND_INPUT_INFO( "time", "%d", Integer );
+-            APPEND_INPUT_INFO( "length", "%d", Integer );
++            APPEND_INPUT_INFO( "time", I64Fi, Time );
++            APPEND_INPUT_INFO( "length", I64Fi, Time );
+             APPEND_INPUT_INFO( "rate", "%d", Integer );
+             APPEND_INPUT_INFO( "title", "%d", Integer );
+             APPEND_INPUT_INFO( "chapter", "%d", Integer );
+@@ -2010,7 +2050,7 @@ static vlm_message_t *vlm_Help( vlm_t *v
+         MessageAddChild( "play" );
+         MessageAddChild( "pause" );
+         MessageAddChild( "stop" );
+-        MessageAddChild( "seek (percentage)" );
++        MessageAddChild( "seek [+-](percentage) | [+-](seconds)s | [+-](milliseconds)ms" );
+ 
+         return message;
+     }
+diff -puriN vlc-0.8.6/src/video_output/vout_intf.c vlc-0.8.6a/src/video_output/vout_intf.c
+--- vlc-0.8.6/src/video_output/vout_intf.c	2006-09-22 17:14:26.000000000 +0200
++++ vlc-0.8.6a/src/video_output/vout_intf.c	2007-01-07 23:06:38.000000000 +0100
+@@ -36,6 +36,7 @@
+ #include "video_output.h"
+ #include "vlc_image.h"
+ #include "vlc_spu.h"
++#include "charset.h"
+ 
+ #include <snapshot.h>
+ 
+@@ -633,14 +634,14 @@ int vout_Snapshot( vout_thread_t *p_vout
+     /*
+      * Did the user specify a directory? If not, path = NULL.
+      */
+-    path = opendir ( (const char *)val.psz_string  );
++    path = utf8_opendir ( (const char *)val.psz_string  );
+ 
+     if ( path != NULL )
+     {
+         char *psz_prefix = var_GetString( p_vout, "snapshot-prefix" );
+         if( !psz_prefix ) psz_prefix = strdup( "vlcsnap-" );
+ 
+-        closedir( path );
++        vlc_closedir_wrapper( path );
+         if( var_GetBool( p_vout, "snapshot-sequential" ) == VLC_TRUE )
+         {
+             int i_num = var_GetInteger( p_vout, "snapshot-num" );
+@@ -650,7 +651,7 @@ int vout_Snapshot( vout_thread_t *p_vout
+                 asprintf( &psz_filename, "%s/%s%05d.%s", val.psz_string,
+                           psz_prefix, i_num++, format.psz_string );
+             }
+-            while( ( p_file = fopen( psz_filename, "r" ) ) && !fclose( p_file ) );
++            while( ( p_file = utf8_fopen( psz_filename, "r" ) ) && !fclose( p_file ) );
+             var_SetInteger( p_vout, "snapshot-num", i_num );
+         }
+         else

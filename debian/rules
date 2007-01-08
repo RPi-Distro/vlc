@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # debian/rules for the VLC media player - uses debhelper.
-# $Id: rules 108 2006-10-06 21:21:48Z sam $
+# $Id: rules 127 2007-01-08 08:40:15Z sam $
 # based on Joey Hess's one.
 
 # Uncomment this to turn on verbose mode.
@@ -10,6 +10,8 @@
 # from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+DEB_HOST_ARCH_OS    ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
+
 confflags = --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) 
 
 #
@@ -28,7 +30,6 @@ vlc_confflags += \
 	--disable-qt \
 	--enable-mad \
 	--enable-arts \
-	--enable-alsa \
 	--enable-lirc \
 	--enable-a52 \
 	--enable-aa \
@@ -37,7 +38,6 @@ vlc_confflags += \
 	--disable-kde \
 	--enable-mp4 \
 	--enable-dvb \
-	--enable-dv \
 	--disable-satellite \
 	--enable-ogg \
 	--enable-vorbis \
@@ -50,8 +50,6 @@ vlc_confflags += \
 	--enable-skins2 \
 	--enable-freetype \
 	--enable-mkv \
-	--enable-v4l \
-	--enable-pvr \
 	--enable-speex \
 	--enable-caca \
 	--enable-live555 \
@@ -75,14 +73,21 @@ vlc_confflags += \
 	--enable-xosd \
 	--enable-twolame \
 	--enable-notify \
+	--enable-faad \
+	--enable-mediacontrol-bindings \
 	$(NULL)
 
 # These ones are currently shipped with VLC
 vlc_confflags += --enable-faad --with-faad-tree=extras/faad2
 vlc_confflags += --enable-x264 --with-x264-tree=extras/x264
 
-# Glide and svgalib are only for x86
-ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH_CPU),i386)
+# These ones are only for Linux
+ifeq ($(DEB_HOST_ARCH_OS),linux)
+vlc_confflags += --enable-alsa --enable-dv --enable-v4l --enable-pvr
+endif
+
+# Glide and svgalib are only for x86 on Linux
+ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),i386)
 vlc_confflags += --enable-glide
 vlc_confflags += --enable-svgalib
 endif
@@ -158,6 +163,10 @@ endif
 clean:
 	dh_testdir
 	dh_testroot
+	sed -e '/lib\(alsa\|dv\|v4l\|pvr\)_/d' debian/vlc-nox.install \
+	  > debian/vlc-nox.install.kfreebsd-i386
+	cp debian/vlc-nox.install.kfreebsd-i386 \
+	  debian/vlc-nox.install.kfreebsd-amd64
 	rm -f configure-stamp build-stamp
 	# Check that we have an x264 tree in here (can be a symlink)
 	test -d extras/x264
@@ -196,9 +205,6 @@ install: build
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 
-	# kill mozilla-vlc-stuff
-	rm -rf debian/tmp/usr/lib/mozilla
-
 	# Move stuff around
 	mkdir -p debian/tmp/$(PIXDIR)
 	-mv debian/tmp/$(VIDDIR)/vlc48x48.png debian/tmp/$(PIXDIR)/vlc.png
@@ -230,12 +236,17 @@ endif
 	ln -s vlc debian/vlc-plugin-sdl/usr/share/doc/vlc-plugin-sdl
 	ln -s vlc debian/vlc-plugin-ggi/usr/share/doc/vlc-plugin-ggi
 	ln -s vlc debian/vlc-plugin-arts/usr/share/doc/vlc-plugin-arts
-ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH_CPU),i386)
+	ln -s vlc debian/mozilla-plugin-vlc/usr/share/doc/mozilla-plugin-vlc
+ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),i386)
 	ln -s vlc debian/vlc-plugin-glide/usr/share/doc/vlc-plugin-glide
 	ln -s vlc debian/vlc-plugin-svgalib/usr/share/doc/vlc-plugin-svgalib
 endif
 
 	# links for firefox
+	mkdir -p debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/plugins/
+	ln -s ../../mozilla/plugins/libvlcplugin.so debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/plugins/
+	mkdir -p debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/components/
+	ln -s ../../mozilla/components/vlcintf.xpt debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/components/
 
 	cp debian/vlc/$(VIDDIR)/vlc.xpm debian/vlc/$(VIDDIR)/wxvlc.xpm
 

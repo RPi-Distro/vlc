@@ -1,0 +1,148 @@
+diff -puriN vlc-0.8.6/modules/demux/mpeg/mpga.c vlc-0.8.6a/modules/demux/mpeg/mpga.c
+--- vlc-0.8.6/modules/demux/mpeg/mpga.c	2006-09-18 12:28:17.000000000 +0200
++++ vlc-0.8.6a/modules/demux/mpeg/mpga.c	2007-01-07 23:07:06.000000000 +0100
+@@ -304,7 +304,9 @@ static int Demux( demux_t *p_demux )
+     {
+         p_sys->b_start = VLC_FALSE;
+         p_block_in = p_sys->p_block_in;
++        p_sys->p_block_in = NULL;
+         p_block_out = p_sys->p_block_out;
++        p_sys->p_block_out = NULL;
+     }
+     else
+     {
+@@ -355,6 +357,7 @@ static void Close( vlc_object_t * p_this
+     demux_sys_t *p_sys = p_demux->p_sys;
+ 
+     if( p_sys->meta ) vlc_meta_Delete( p_sys->meta );
++    if( p_sys->p_block_out ) block_Release( p_sys->p_block_out );
+ 
+     if( p_sys->p_packetizer && p_sys->p_packetizer->p_module )
+         module_Unneed( p_sys->p_packetizer, p_sys->p_packetizer->p_module );
+diff -puriN vlc-0.8.6/modules/access/cdda/access.c vlc-0.8.6a/modules/access/cdda/access.c
+--- vlc-0.8.6/modules/access/cdda/access.c	2006-09-18 12:28:25.000000000 +0200
++++ vlc-0.8.6a/modules/access/cdda/access.c	2007-01-07 23:07:26.000000000 +0100
+@@ -495,7 +495,7 @@ CDDASeek( access_t * p_access, int64_t i
+     }
+     
+     p_access->info.i_pos = i_pos;
+-
++    p_access->info.b_eof = VLC_FALSE;
+     return VLC_SUCCESS;
+ }
+ 
+diff -puriN vlc-0.8.6/modules/access/vcd/vcd.c vlc-0.8.6a/modules/access/vcd/vcd.c
+--- vlc-0.8.6/modules/access/vcd/vcd.c	2006-09-18 12:28:26.000000000 +0200
++++ vlc-0.8.6a/modules/access/vcd/vcd.c	2007-01-07 23:07:26.000000000 +0100
+@@ -434,6 +434,9 @@ static int Seek( access_t *p_access, int
+         p_access->info.i_seekpoint = i_seekpoint;
+     }
+ 
++    /* Reset eof */
++    p_access->info.b_eof = VLC_FALSE;
++
+     return VLC_SUCCESS;
+ }
+ 
+diff -puriN vlc-0.8.6/modules/access/vcdx/access.c vlc-0.8.6a/modules/access/vcdx/access.c
+--- vlc-0.8.6/modules/access/vcdx/access.c	2006-09-18 12:28:26.000000000 +0200
++++ vlc-0.8.6a/modules/access/vcdx/access.c	2007-01-07 23:07:26.000000000 +0100
+@@ -316,6 +316,7 @@ VCDSeek( access_t * p_access, int64_t i_
+ 	}
+ 
+     }
++    p_access->info.b_eof = VLC_FALSE;
+     return VLC_SUCCESS;
+     
+ }
+diff -puriN vlc-0.8.6/modules/codec/dvbsub.c vlc-0.8.6a/modules/codec/dvbsub.c
+--- vlc-0.8.6/modules/codec/dvbsub.c	2006-09-18 12:28:28.000000000 +0200
++++ vlc-0.8.6a/modules/codec/dvbsub.c	2007-01-07 23:07:35.000000000 +0100
+@@ -419,8 +419,8 @@ static void default_clut_init( decoder_t
+         else R = G = B = 0x7F;
+ 
+         p_sys->default_clut.c_2b[i].Y = RGB_TO_Y(R,G,B);
+-        p_sys->default_clut.c_2b[i].Cr = RGB_TO_U(R,G,B);
+         p_sys->default_clut.c_2b[i].Cb = RGB_TO_V(R,G,B);
++        p_sys->default_clut.c_2b[i].Cr = RGB_TO_U(R,G,B);
+         p_sys->default_clut.c_2b[i].T = T;
+     }
+ 
+@@ -450,8 +450,8 @@ static void default_clut_init( decoder_t
+         }
+ 
+         p_sys->default_clut.c_4b[i].Y = RGB_TO_Y(R,G,B);
+-        p_sys->default_clut.c_4b[i].Cr = RGB_TO_U(R,G,B);
+-        p_sys->default_clut.c_4b[i].Cb = RGB_TO_V(R,G,B);
++        p_sys->default_clut.c_4b[i].Cr = RGB_TO_V(R,G,B);
++        p_sys->default_clut.c_4b[i].Cb = RGB_TO_U(R,G,B);
+         p_sys->default_clut.c_4b[i].T = T;
+     }
+ 
+@@ -1405,8 +1405,8 @@ static subpicture_t *render( decoder_t *
+         for( j = 0; j < fmt.p_palette->i_entries; j++ )
+         {
+             fmt.p_palette->palette[j][0] = p_color[j].Y;
+-            fmt.p_palette->palette[j][1] = p_color[j].Cr;
+-            fmt.p_palette->palette[j][2] = p_color[j].Cb;
++            fmt.p_palette->palette[j][1] = p_color[j].Cb; /* U == Cb */
++            fmt.p_palette->palette[j][2] = p_color[j].Cr; /* V == Cr */
+             fmt.p_palette->palette[j][3] = 0xff - p_color[j].T;
+         }
+ 
+@@ -1464,6 +1464,8 @@ static subpicture_t *render( decoder_t *
+     p_spu->i_flags = p_sys->i_spu_position;
+     p_spu->i_x = p_sys->i_spu_x;
+     p_spu->i_y = p_sys->i_spu_y;
++    p_spu->i_original_picture_width = 720;
++    p_spu->i_original_picture_height = 576;
+ 
+     return p_spu;
+ }
+diff -puriN vlc-0.8.6/modules/codec/ffmpeg/encoder.c vlc-0.8.6a/modules/codec/ffmpeg/encoder.c
+--- vlc-0.8.6/modules/codec/ffmpeg/encoder.c	2006-09-22 17:14:32.000000000 +0200
++++ vlc-0.8.6a/modules/codec/ffmpeg/encoder.c	2007-01-07 23:07:31.000000000 +0100
+@@ -383,6 +383,9 @@ int E_(OpenEncoder)( vlc_object_t *p_thi
+ 
+         p_context->width = p_enc->fmt_in.video.i_width;
+         p_context->height = p_enc->fmt_in.video.i_height;
++        if( p_enc->fmt_out.i_codec == VLC_FOURCC('m', 'p', '2', 'v')
++             && (p_context->width > 720 || p_context->height > 576) )
++            p_context->level = 4; /* High level */
+ 
+ #if LIBAVCODEC_BUILD >= 4754
+         p_context->time_base.num = p_enc->fmt_in.video.i_frame_rate_base;
+@@ -414,6 +417,10 @@ int E_(OpenEncoder)( vlc_object_t *p_thi
+         p_context->max_b_frames =
+             __MAX( __MIN( p_sys->i_b_frames, FF_MAX_B_FRAMES ), 0 );
+         p_context->b_frame_strategy = 0;
++        if( !p_context->max_b_frames  && 
++            (  p_enc->fmt_out.i_codec == VLC_FOURCC('m', 'p', '2', 'v') ||
++               p_enc->fmt_out.i_codec == VLC_FOURCC('m', 'p', '1', 'v') ) )
++            p_context->flags |= CODEC_FLAG_LOW_DELAY;
+ 
+ #if LIBAVCODEC_BUILD >= 4687
+         av_reduce( &i_aspect_num, &i_aspect_den,
+diff -puriN vlc-0.8.6/modules/demux/ty.c vlc-0.8.6a/modules/demux/ty.c
+--- vlc-0.8.6/modules/demux/ty.c	2006-09-18 12:28:17.000000000 +0200
++++ vlc-0.8.6a/modules/demux/ty.c	2007-01-07 23:07:07.000000000 +0100
+@@ -308,7 +308,7 @@ static int check_sync_pes( demux_t *p_de
+         if( offset < 0 )
+         {
+             /* no header found, fake some 00's (this works, believe me) */
+-            memset( p_sys->pes_buffer, 4, 0 );
++            memset( p_sys->pes_buffer, 0, 4 );
+             p_sys->i_pes_buf_cnt = 4;
+             if( rec_len > 4 )
+                 msg_Err( p_demux, "PES header not found in record of %d bytes!",
+diff -puriN vlc-0.8.6/modules/mux/avi.c vlc-0.8.6a/modules/mux/avi.c
+--- vlc-0.8.6/modules/mux/avi.c	2006-09-18 12:28:27.000000000 +0200
++++ vlc-0.8.6a/modules/mux/avi.c	2007-01-07 23:07:28.000000000 +0100
+@@ -473,6 +473,7 @@ static int Mux      ( sout_mux_t *p_mux 
+                 if( p_data->i_buffer & 0x01 )
+                 {
+                     p_data = block_Realloc( p_data, 0, p_data->i_buffer + 1 );
++                    p_data->p_buffer[ p_data->i_buffer - 1 ] = '\0';
+                 }
+ 
+                 p_sys->i_movi_size += p_data->i_buffer;

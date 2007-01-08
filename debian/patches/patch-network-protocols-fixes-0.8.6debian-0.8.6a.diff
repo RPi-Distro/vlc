@@ -1,0 +1,776 @@
+diff -puriN vlc-0.8.6/configure.ac vlc-0.8.6a/configure.ac
+--- vlc-0.8.6/configure.ac	2006-10-12 19:47:40.000000000 +0200
++++ vlc-0.8.6a/configure.ac	2007-01-07 23:08:03.000000000 +0100
+@@ -4930,6 +4975,9 @@ AS_IF([test "${enable_gnutls}" != "no"],
+       AC_MSG_ERROR([gnutls not present or too old (version 1.2.9 required)])
+     ])
+   ])
++  AC_CHECK_LIB([gcrypt], [gcry_control], [
++    VLC_ADD_LDFLAGS([gnutls], [-lgcrypt])
++  ])
+ ])
+ 
+ 
+diff -puriN vlc-0.8.6/modules/control/http/http.c vlc-0.8.6a/modules/control/http/http.c
+--- vlc-0.8.6/modules/control/http/http.c	2006-10-08 18:40:53.000000000 +0200
++++ vlc-0.8.6a/modules/control/http/http.c	2007-01-07 23:07:05.000000000 +0100
+@@ -125,8 +125,8 @@ static int Open( vlc_object_t *p_this )
+     int           i_port       = 0;
+     char          *psz_src;
+ 
+-    var_Create(p_intf->p_libvlc, "http-host", VLC_VAR_STRING );
+-    psz_address=var_GetString(p_intf->p_libvlc, "http-host");
++    var_Create( p_intf->p_libvlc, "http-host", VLC_VAR_STRING );
++    psz_address = var_GetString( p_intf->p_libvlc, "http-host");
+     if( !psz_address || !*psz_address )
+     {
+         psz_address = config_GetPsz( p_intf, "http-host" );
+@@ -148,9 +148,7 @@ static int Open( vlc_object_t *p_this )
+     {
+         return( VLC_ENOMEM );
+     }
+-    p_sys->p_playlist = NULL;
+-    p_sys->p_input    = NULL;
+-    p_sys->p_vlm      = NULL;
++    memset( p_intf->p_sys, 0, sizeof( intf_sys_t ) );
+     p_sys->psz_address = psz_address;
+     p_sys->i_port     = i_port;
+ 
+@@ -294,7 +292,7 @@ static int Open( vlc_object_t *p_this )
+         psz_src = malloc( strlen(psz_vlcpath) + strlen("/share/http" ) + 1 );
+         if( !psz_src ) return VLC_ENOMEM;
+ #if defined(WIN32)
+-        sprintf( psz_src, "%s/http", psz_vlcpath );
++        sprintf( psz_src, "%s\\http", psz_vlcpath );
+ #else
+         sprintf( psz_src, "%s/share/http", psz_vlcpath );
+ #endif
+@@ -521,9 +519,9 @@ static void ParseExecute( httpd_file_sys
+         var_Get( p_sys->p_input, "position", &val);
+         sprintf( position, "%d" , (int)((val.f_float) * 100.0));
+         var_Get( p_sys->p_input, "time", &val);
+-        sprintf( time, "%d" , (int)(val.i_time / 1000000) );
++        sprintf( time, I64Fi, val.i_time / 1000000LL );
+         var_Get( p_sys->p_input, "length", &val);
+-        sprintf( length, "%d" , (int)(val.i_time / 1000000) );
++        sprintf( length, I64Fi, val.i_time / 1000000LL );
+ 
+         var_Get( p_sys->p_input, "state", &val );
+         if( val.i_int == PLAYING_S )
+diff -puriN vlc-0.8.6/modules/misc/network/ipv4.c vlc-0.8.6a/modules/misc/network/ipv4.c
+--- vlc-0.8.6/modules/misc/network/ipv4.c	2006-09-18 12:28:25.000000000 +0200
++++ vlc-0.8.6a/modules/misc/network/ipv4.c	2007-01-07 23:07:22.000000000 +0100
+@@ -162,58 +162,42 @@ static int OpenUDP( vlc_object_t * p_thi
+     int i_server_port = p_socket->i_server_port;
+ 
+     int i_handle, i_opt;
+-    struct sockaddr_in sock;
++    struct sockaddr_in loc, rem;
+     vlc_value_t val;
++    vlc_bool_t do_connect = VLC_TRUE;
+ #if defined(WIN32) || defined(UNDER_CE)
+     char strerror_buf[WINSOCK_STRERROR_SIZE];
+ # define strerror( x ) winsock_strerror( strerror_buf )
+ #endif
+ 
+-    /* If IP_ADD_SOURCE_MEMBERSHIP is not defined in the headers
+-       (because it's not in glibc for example), we have to define the
+-       headers required for IGMPv3 here */
+-#ifndef IP_ADD_SOURCE_MEMBERSHIP
+-    #define IP_ADD_SOURCE_MEMBERSHIP  39
+-    struct ip_mreq_source {
+-        struct in_addr  imr_multiaddr;
+-        struct in_addr  imr_interface;
+-        struct in_addr  imr_sourceaddr;
+-     };
+-#endif
+-
+     p_socket->i_handle = -1;
+ 
++    /* Build the local socket */
++    if( BuildAddr( p_this, &loc, psz_bind_addr, i_bind_port )
++     || BuildAddr( p_this, &rem, psz_server_addr, i_server_port ) )
++        return 0;
++
+     /* Open a SOCK_DGRAM (UDP) socket, in the AF_INET domain, automatic (0)
+      * protocol */
+     if( (i_handle = socket( AF_INET, SOCK_DGRAM, 0 )) == -1 )
+     {
+-        msg_Warn( p_this, "cannot create socket (%s)", strerror(errno) );
++        msg_Err( p_this, "cannot create socket (%s)", strerror(errno) );
+         return 0;
+     }
+ 
+     /* We may want to reuse an already used socket */
+     i_opt = 1;
+-    if( setsockopt( i_handle, SOL_SOCKET, SO_REUSEADDR,
+-                    (void *) &i_opt, sizeof( i_opt ) ) == -1 )
+-    {
+-        msg_Warn( p_this, "cannot configure socket (SO_REUSEADDR: %s)",
+-                          strerror(errno));
+-        close( i_handle );
+-        return 0;
+-    }
+-
++    setsockopt( i_handle, SOL_SOCKET, SO_REUSEADDR, (void *) &i_opt,
++                    sizeof( i_opt ) );
+ #ifdef SO_REUSEPORT
+     i_opt = 1;
+-    if( setsockopt( i_handle, SOL_SOCKET, SO_REUSEPORT,
+-                    (void *) &i_opt, sizeof( i_opt ) ) == -1 )
+-    {
+-        msg_Warn( p_this, "cannot configure socket (SO_REUSEPORT)" );
+-    }
++    setsockopt( i_handle, SOL_SOCKET, SO_REUSEPORT, (void *) &i_opt,
++                    sizeof( i_opt ) );
+ #endif
+ 
+     /* Increase the receive buffer size to 1/2MB (8Mb/s during 1/2s) to avoid
+      * packet loss caused by scheduling problems */
+-#if !defined( SYS_BEOS )
++#ifdef SO_RCVBUF
+     i_opt = 0x80000;
+     if( setsockopt( i_handle, SOL_SOCKET, SO_RCVBUF, (void *) &i_opt,
+                     sizeof( i_opt ) ) == -1 )
+@@ -226,47 +210,39 @@ static int OpenUDP( vlc_object_t * p_thi
+                           strerror(errno));
+ #endif
+ 
+-    /* Build the local socket */
+-
+ #if defined( WIN32 ) || defined( UNDER_CE )
+-    /* Under Win32 and for multicasting, we bind to INADDR_ANY,
+-     * so let's call BuildAddr with "" instead of psz_bind_addr */
+-    if( BuildAddr( p_this, &sock,
+-        IN_MULTICAST( ntohl( inet_addr(psz_bind_addr) ) ) ?
+-                   "" : psz_bind_addr, i_bind_port ) == -1 )
+-#else
+-    if( BuildAddr( p_this, &sock, psz_bind_addr, i_bind_port ) == -1 )
+-#endif
++    /*
++     * Under Win32 and for multicasting, we bind to INADDR_ANY.
++     * This is of course a severe bug, since the socket would logically
++     * receive unicast traffic, and multicast traffic of groups subscribed
++     * to via other sockets. How this actually works in Winsock, I don't
++     * know.
++     */
++    if( IN_MULTICAST( ntohl( loc.sin_addr.s_addr ) ) )
+     {
+-        msg_Dbg( p_this, "could not build local address" );
+-        close( i_handle );
+-        return 0;
+-    }
++        struct sockaddr_in stupid = loc;
++        stupid.sin_addr.s_addr = INADDR_ANY;
+ 
+-    /* Bind it */
+-    if( bind( i_handle, (struct sockaddr *)&sock, sizeof( sock ) ) < 0 )
+-    {
+-        msg_Warn( p_this, "cannot bind socket (%s)", strerror(errno) );
+-        close( i_handle );
+-        return 0;
+-    }
+-
+-#if defined( WIN32 ) || defined( UNDER_CE )
+-    /* Restore the sock struct so we can spare a few #ifdef WIN32 later on */
+-    if( IN_MULTICAST( ntohl( inet_addr(psz_bind_addr) ) ) )
+-    {
+-        if ( BuildAddr( p_this, &sock, psz_bind_addr, i_bind_port ) == -1 )
++        if( bind( i_handle, (struct sockaddr *)&stupid, sizeof( stupid ) ) < 0 )
+         {
+-            msg_Dbg( p_this, "could not build local address" );
++            msg_Warn( p_this, "cannot bind socket (%d)", WSAGetLastError() );
+             close( i_handle );
+             return 0;
+         }
+     }
++    else
+ #endif
++    /* Bind it */
++    if( bind( i_handle, (struct sockaddr *)&loc, sizeof( loc ) ) < 0 )
++    {
++        msg_Warn( p_this, "cannot bind socket (%s)", strerror(errno) );
++        close( i_handle );
++        return 0;
++    }
+ 
+ #if !defined( SYS_BEOS )
+     /* Allow broadcast reception if we bound on INADDR_ANY */
+-    if( !*psz_bind_addr )
++    if( loc.sin_addr.s_addr == INADDR_ANY )
+     {
+         i_opt = 1;
+         if( setsockopt( i_handle, SOL_SOCKET, SO_BROADCAST, (void*) &i_opt,
+@@ -278,7 +254,7 @@ static int OpenUDP( vlc_object_t * p_thi
+ 
+ #if !defined( SYS_BEOS )
+     /* Join the multicast group if the socket is a multicast address */
+-    if( IN_MULTICAST( ntohl(sock.sin_addr.s_addr) ) )
++    if( IN_MULTICAST( ntohl(loc.sin_addr.s_addr) ) )
+     {
+         /* Determine interface to be used for multicast */
+         char * psz_if_addr = config_GetPsz( p_this, "miface-addr" );
+@@ -286,46 +262,52 @@ static int OpenUDP( vlc_object_t * p_thi
+         /* If we have a source address, we use IP_ADD_SOURCE_MEMBERSHIP
+            so that IGMPv3 aware OSes running on IGMPv3 aware networks
+            will do an IGMPv3 query on the network */
+-        if( *psz_server_addr )
++        if (( rem.sin_addr.s_addr != INADDR_ANY )
++         /*&& ((ntohl (loc.sin_addr.s_addr) >> 24) == 232)*/)
+         {
++#ifndef IP_ADD_SOURCE_MEMBERSHIP
++            errno = ENOSYS;
++#else
+             struct ip_mreq_source imr;
+ 
+-            imr.imr_multiaddr.s_addr = sock.sin_addr.s_addr;
+-            imr.imr_sourceaddr.s_addr = inet_addr(psz_server_addr);
++            imr.imr_multiaddr.s_addr = loc.sin_addr.s_addr;
++            imr.imr_sourceaddr.s_addr = rem.sin_addr.s_addr;
+ 
+             if( psz_if_addr != NULL && *psz_if_addr
+                 && inet_addr(psz_if_addr) != INADDR_NONE )
+-            {
+                 imr.imr_interface.s_addr = inet_addr(psz_if_addr);
+-            }
+             else
+-            {
+                 imr.imr_interface.s_addr = INADDR_ANY;
+-            }
+-            if( psz_if_addr != NULL ) free( psz_if_addr );
++
++            if( psz_if_addr != NULL )
++                free( psz_if_addr );
+ 
+             msg_Dbg( p_this, "IP_ADD_SOURCE_MEMBERSHIP multicast request" );
++
+             /* Join Multicast group with source filter */
+             if( setsockopt( i_handle, IPPROTO_IP, IP_ADD_SOURCE_MEMBERSHIP,
+                          (char*)&imr,
+-                         sizeof(struct ip_mreq_source) ) == -1 )
++                         sizeof(struct ip_mreq_source) ) == 0 )
++                do_connect = VLC_FALSE;
++            else
++#endif
+             {
+-                msg_Err( p_this, "failed to join IP multicast group (%s)",
+-                                  strerror(errno) );
+-                msg_Err( p_this, "are you sure your OS supports IGMPv3?" );
+-                close( i_handle );
+-                return 0;
++                msg_Warn( p_this, "Source specific multicast failed (%s) -"
++                          " check if your OS really supports IGMPv3",
++                          strerror(errno) );
++                goto igmpv2;
+             }
+-         }
+-         /* If there is no source address, we use IP_ADD_MEMBERSHIP */
+-         else
+-         {
+-             struct ip_mreq imr;
+-
+-             imr.imr_interface.s_addr = INADDR_ANY;
+-             imr.imr_multiaddr.s_addr = sock.sin_addr.s_addr;
+-             if( psz_if_addr != NULL && *psz_if_addr
+-                && inet_addr(psz_if_addr) != INADDR_NONE )
++        }
++        /* If there is no source address, we use IP_ADD_MEMBERSHIP */
++        else
++igmpv2:
++        {
++            struct ip_mreq imr;
++
++            imr.imr_interface.s_addr = INADDR_ANY;
++            imr.imr_multiaddr.s_addr = loc.sin_addr.s_addr;
++            if( psz_if_addr != NULL && *psz_if_addr
++             && inet_addr(psz_if_addr) != INADDR_NONE )
+             {
+                 imr.imr_interface.s_addr = inet_addr(psz_if_addr);
+             }
+@@ -351,7 +333,7 @@ static int OpenUDP( vlc_object_t * p_thi
+                 }
+ 
+                 if( hiphlpapi && OurGetBestInterface && OurGetIpAddrTable &&
+-                    OurGetBestInterface( sock.sin_addr.s_addr,
++                    OurGetBestInterface( loc.sin_addr.s_addr,
+                                          &i_index ) == NO_ERROR )
+                 {
+                     PMIB_IPADDRTABLE p_table;
+@@ -400,21 +382,18 @@ static int OpenUDP( vlc_object_t * p_thi
+             }
+          }
+     }
++
++#if !defined (__linux__) && !defined (WIN32)
+     else
+ #endif
+-    if( *psz_server_addr )
+-    {
+-        /* Build socket for remote connection */
+-        if ( BuildAddr( p_this, &sock, psz_server_addr, i_server_port ) == -1 )
+-        {
+-            msg_Warn( p_this, "cannot build remote address" );
+-            close( i_handle );
+-            return 0;
+-        }
+ 
++#endif /* !defined SYS_BEOS */
++
++    if( rem.sin_addr.s_addr != INADDR_ANY )
++    {
+         /* Connect the socket */
+-        if( connect( i_handle, (struct sockaddr *) &sock,
+-                     sizeof( sock ) ) == (-1) )
++        if( do_connect
++         && connect( i_handle, (struct sockaddr *) &rem, sizeof( rem ) ) )
+         {
+             msg_Warn( p_this, "cannot connect socket (%s)", strerror(errno) );
+             close( i_handle );
+@@ -422,7 +401,7 @@ static int OpenUDP( vlc_object_t * p_thi
+         }
+ 
+ #if !defined( SYS_BEOS )
+-        if( IN_MULTICAST( ntohl(inet_addr(psz_server_addr) ) ) )
++        if( IN_MULTICAST( ntohl(rem.sin_addr.s_addr) ) )
+         {
+             /* set the time-to-live */
+             int i_ttl = p_socket->i_ttl;
+diff -puriN vlc-0.8.6/modules/misc/network/ipv6.c vlc-0.8.6a/modules/misc/network/ipv6.c
+--- vlc-0.8.6/modules/misc/network/ipv6.c	2006-09-18 12:28:25.000000000 +0200
++++ vlc-0.8.6a/modules/misc/network/ipv6.c	2007-01-07 23:07:22.000000000 +0100
+@@ -54,13 +54,9 @@ static const struct in6_addr in6addr_any
+ # define close closesocket
+ #endif
+ 
+-#ifndef MCAST_JOIN_SOURCE_GROUP
+-# ifdef WIN32
+-/* Most (all?) Mingw32 versions in use are yet to pick up Vista stuff */
++#if defined (WIN32) && !defined (MCAST_JOIN_SOURCE_GROUP)
++/* Interim Vista definitions */
+ #  define MCAST_JOIN_SOURCE_GROUP 45 /* from <ws2ipdef.h> */
+-# else
+-#  define MCAST_JOIN_SOURCE_GROUP 46
+-# endif
+ struct group_source_req
+ {
+        uint32_t           gsr_interface;  /* interface index */
+@@ -148,8 +144,9 @@ static int OpenUDP( vlc_object_t * p_thi
+     const char *psz_server_addr = p_socket->psz_server_addr;
+     int i_server_port = p_socket->i_server_port;
+     int i_handle, i_opt;
+-    struct sockaddr_in6 sock;
++    struct sockaddr_in6 loc, rem;
+     vlc_value_t val;
++    vlc_bool_t do_connect = VLC_TRUE;
+ #if defined(WIN32) || defined(UNDER_CE)
+     char strerror_buf[WINSOCK_STRERROR_SIZE];
+ # define strerror( x ) winsock_strerror( strerror_buf )
+@@ -158,7 +155,9 @@ static int OpenUDP( vlc_object_t * p_thi
+     p_socket->i_handle = -1;
+ 
+     /* Build the local socket */
+-    if ( BuildAddr( p_this, &sock, psz_bind_addr, i_bind_port ) == -1 )        
++    if ( BuildAddr( p_this, &loc, psz_bind_addr, i_bind_port )
++    /* Build socket for remote connection */
++      || BuildAddr( p_this, &rem, psz_server_addr, i_server_port ) )
+         return 0;
+ 
+     /* Open a SOCK_DGRAM (UDP) socket, in the AF_INET6 domain, automatic (0)
+@@ -187,7 +186,7 @@ static int OpenUDP( vlc_object_t * p_thi
+ #   define IPV6_PROTECTION_LEVEL 23
+ #  endif
+     {
+-        int i_val = 30 /*PROTECTION_LEVEL_UNRESTRICTED*/;
++        int i_val = 10 /*PROTECTION_LEVEL_UNRESTRICTED*/;
+         setsockopt( i_handle, IPPROTO_IPV6, IPV6_PROTECTION_LEVEL, &i_val,
+                     sizeof( i_val ) );
+     }
+@@ -216,14 +215,14 @@ static int OpenUDP( vlc_object_t * p_thi
+ 
+ #if defined(WIN32)
+     /* Under Win32 and for multicasting, we bind to IN6ADDR_ANY */
+-    if( IN6_IS_ADDR_MULTICAST(&sock.sin6_addr) )
++    if( IN6_IS_ADDR_MULTICAST(&loc.sin6_addr) )
+     {
+-        struct sockaddr_in6 sockany = sock;
++        struct sockaddr_in6 sockany = loc;
+         sockany.sin6_addr = in6addr_any;
+         sockany.sin6_scope_id = 0;
+ 
+         /* Bind it */
+-        if( bind( i_handle, (struct sockaddr *)&sockany, sizeof( sock ) ) < 0 )
++        if( bind( i_handle, (struct sockaddr *)&sockany, sizeof( sockany ) ) < 0 )
+         {
+             msg_Warn( p_this, "cannot bind socket (%s)", strerror(errno) );
+             close( i_handle );
+@@ -233,7 +232,7 @@ static int OpenUDP( vlc_object_t * p_thi
+     else
+ #endif
+     /* Bind it */
+-    if( bind( i_handle, (struct sockaddr *)&sock, sizeof( sock ) ) < 0 )
++    if( bind( i_handle, (struct sockaddr *)&loc, sizeof( loc ) ) < 0 )
+     {
+         msg_Warn( p_this, "cannot bind socket (%s)", strerror(errno) );
+         close( i_handle );
+@@ -241,76 +240,76 @@ static int OpenUDP( vlc_object_t * p_thi
+     }
+ 
+     /* Join the multicast group if the socket is a multicast address */
+-    if( IN6_IS_ADDR_MULTICAST(&sock.sin6_addr) )
++    if( IN6_IS_ADDR_MULTICAST(&loc.sin6_addr) )
+     {
+-        if(*psz_server_addr)
++        if (memcmp (&rem.sin6_addr, &in6addr_any, 16)
++         /*&& ((U32_AT (&sock.sin6_addr) & 0xff30ffff) == 0xff300000)*/)
+         {
++#ifndef MCAST_JOIN_SOURCE_GROUP
++            errno = ENOSYS;
++#else
+             struct group_source_req imr;
+             struct sockaddr_in6 *p_sin6;
+ 
+-            imr.gsr_interface = 0;
++            memset (&imr, 0, sizeof (imr));
+             imr.gsr_group.ss_family = AF_INET6;
+             imr.gsr_source.ss_family = AF_INET6;
+             p_sin6 = (struct sockaddr_in6 *)&imr.gsr_group;
+-            p_sin6->sin6_addr = sock.sin6_addr;
+-
+-            /* Build socket for remote connection */
+-            msg_Dbg( p_this, "psz_server_addr : %s", psz_server_addr);
+-
+-            if ( BuildAddr( p_this, &sock, psz_server_addr, i_server_port ) )
+-            {
+-                msg_Warn( p_this, "cannot build remote address" );
+-                close( i_handle );
+-                return 0;
+-            }
++            p_sin6->sin6_addr = loc.sin6_addr;
+             p_sin6 = (struct sockaddr_in6 *)&imr.gsr_source;
+-            p_sin6->sin6_addr = sock.sin6_addr;
++            p_sin6->sin6_addr = rem.sin6_addr;
+ 
+-            msg_Dbg( p_this, "IPV6_ADD_SOURCE_MEMBERSHIP multicast request" );
++            msg_Dbg( p_this, "MCAST_JOIN_SOURCE_GROUP multicast request" );
+             if( setsockopt( i_handle, IPPROTO_IPV6, MCAST_JOIN_SOURCE_GROUP,
+-                          (char *)&imr, sizeof(struct group_source_req) ) == -1 )
++                           (void *)&imr, sizeof(struct group_source_req) ) == 0 )
++                do_connect = VLC_FALSE;
++            else
++#endif
+             {
+ 
+-                msg_Err( p_this, "failed to join IP multicast group (%s)",
+-                                                          strerror(errno) );
++                msg_Err( p_this, "Source specific multicast failed (%s) -"
++                          " check if your OS really supports MLDv2",
++                          strerror(errno) );
++                goto mldv1;
+             }
+         }
+         else
++mldv1:
+         {
+             struct ipv6_mreq     imr;
+-            int                  res;
+ 
+-            imr.ipv6mr_interface = sock.sin6_scope_id;
+-            imr.ipv6mr_multiaddr = sock.sin6_addr;
+-            res = setsockopt(i_handle, IPPROTO_IPV6, IPV6_JOIN_GROUP, (void*) &imr,
++            memset (&imr, 0, sizeof (imr));
++            imr.ipv6mr_interface = loc.sin6_scope_id;
++            imr.ipv6mr_multiaddr = loc.sin6_addr;
++            msg_Dbg( p_this, "IPV6_JOIN_GROUP multicast request" );
++            if (setsockopt(i_handle, IPPROTO_IPV6, IPV6_JOIN_GROUP, (void*) &imr,
+ #if defined(WIN32)
+-                         sizeof(imr) + 4); /* Doesn't work without this */
++                         sizeof(imr) + 4
++            /* Doesn't work without this
++             * - Really? because it's really a buffer overflow... */
+ #else
+-                         sizeof(imr));
++                         sizeof(imr)
+ #endif
+-
+-            if( res == -1 )
++                          ))
+             {
+                 msg_Err( p_this, "cannot join multicast group" );
+-            } 
++                close( i_handle );
++                return 0;
++            }
+         }
+     }
++
++#if !defined (__linux__) && !defined (WIN32)
+     else
+-    if( *psz_server_addr )
++#endif
++
++    if( memcmp (&rem.sin6_addr, &in6addr_any, 16) )
+     {
+         int ttl;
+ 
+-        /* Build socket for remote connection */
+-        if ( BuildAddr( p_this, &sock, psz_server_addr, i_server_port ) == -1 )
+-        {
+-            msg_Warn( p_this, "cannot build remote address" );
+-            close( i_handle );
+-            return 0;
+-        }
+-
+         /* Connect the socket */
+-        if( connect( i_handle, (struct sockaddr *) &sock,
+-                     sizeof( sock ) ) == (-1) )
++        if( do_connect
++         && connect( i_handle, (struct sockaddr *) &rem, sizeof( rem ) ) )
+         {
+             msg_Warn( p_this, "cannot connect socket (%s)", strerror(errno) );
+             close( i_handle );
+@@ -324,7 +323,7 @@ static int OpenUDP( vlc_object_t * p_thi
+ 
+         if( ttl > 0 )
+         {
+-            if( IN6_IS_ADDR_MULTICAST(&sock.sin6_addr) )
++            if( IN6_IS_ADDR_MULTICAST(&rem.sin6_addr) )
+             {
+                 if( setsockopt( i_handle, IPPROTO_IPV6, IPV6_MULTICAST_HOPS,
+                                 (void *)&ttl, sizeof( ttl ) ) < 0 )
+@@ -345,7 +344,7 @@ static int OpenUDP( vlc_object_t * p_thi
+         }
+ 
+         /* Set multicast output interface */
+-        if( IN6_IS_ADDR_MULTICAST(&sock.sin6_addr) )
++        if( IN6_IS_ADDR_MULTICAST(&rem.sin6_addr) )
+         {
+             char *psz_mif = config_GetPsz( p_this, "miface" );
+             if( psz_mif != NULL )
+diff -puriN vlc-0.8.6/modules/services_discovery/sap.c vlc-0.8.6a/modules/services_discovery/sap.c
+--- vlc-0.8.6/modules/services_discovery/sap.c	2006-09-18 12:28:28.000000000 +0200
++++ vlc-0.8.6a/modules/services_discovery/sap.c	2007-01-07 23:07:29.000000000 +0100
+@@ -258,13 +258,10 @@ struct demux_sys_t
+     static sap_announce_t *CreateAnnounce( services_discovery_t *, uint16_t, sdp_t * );
+     static int RemoveAnnounce( services_discovery_t *p_sd, sap_announce_t *p_announce );
+ 
+-/* Cache */
+-    static void CacheLoad( services_discovery_t *p_sd );
+-    static void CacheSave( services_discovery_t *p_sd );
+ /* Helper functions */
+     static char *GetAttribute( sdp_t *p_sdp, const char *psz_search );
+     static vlc_bool_t IsSameSession( sdp_t *p_sdp1, sdp_t *p_sdp2 );
+-    static int InitSocket( services_discovery_t *p_sd, char *psz_address, int i_port );
++    static int InitSocket( services_discovery_t *p_sd, const char *psz_address, int i_port );
+ #ifdef HAVE_ZLIB_H
+     static int Decompress( unsigned char *psz_src, unsigned char **_dst, int i_len );
+ #endif
+@@ -630,7 +627,7 @@ static int Control( demux_t *p_demux, in
+ static int ParseSAP( services_discovery_t *p_sd, uint8_t *p_buffer, int i_read )
+ {
+     int                 i_version, i_address_type, i_hash, i;
+-    char                *psz_sdp, *psz_foo, *psz_initial_sdp;
++    char                *psz_sdp, *psz_foo, *psz_initial_sdp, *psz_end;
+     uint8_t             *p_decompressed_buffer = NULL;
+     sdp_t               *p_sdp;
+     vlc_bool_t          b_compressed;
+@@ -645,12 +642,6 @@ static int ParseSAP( services_discovery_
+ 
+     i_address_type = p_buffer[0] & 0x10;
+ 
+-    if( (p_buffer[0] & 0x08) != 0 )
+-    {
+-        msg_Dbg( p_sd, "reserved bit incorrectly set" );
+-        return VLC_EGENERIC;
+-    }
+-
+     if( (p_buffer[0] & 0x04) != 0 )
+     {
+         msg_Dbg( p_sd, "session deletion packet" );
+@@ -702,15 +693,18 @@ static int ParseSAP( services_discovery_
+ 
+         i_decompressed_size = Decompress( (uint8_t *)psz_sdp,
+                    &p_decompressed_buffer, i_read - ( psz_sdp - (char *)p_buffer ) );
+-        if( i_decompressed_size > 0 )
++        if( i_decompressed_size > 0 && 
++                i_decompressed_size < ( MAX_SAP_BUFFER - 20 ) )
+         {
+-            psz_sdp = (char *)p_decompressed_buffer;
+-            realloc( p_decompressed_buffer, i_decompressed_size++ );
++            memcpy( psz_sdp, p_decompressed_buffer, i_decompressed_size );
+             psz_sdp[i_decompressed_size] = '\0';
++            psz_end = psz_sdp + i_decompressed_size;
++            FREE( p_decompressed_buffer );
+         }
+         else
+         {
+-            msg_Warn( p_sd, "decompression of sap packet failed" );
++            msg_Warn( p_sd, "error in decompression of sap packet" );
++            FREE( p_decompressed_buffer );
+             return VLC_EGENERIC;
+         }
+ #else
+@@ -718,11 +712,13 @@ static int ParseSAP( services_discovery_
+         return VLC_EGENERIC;
+ #endif
+     }
++    else
++        psz_end = ((const char *)p_buffer) + i_read;
+ 
+     /* Add the size of authentification info */
+     if( i_read < p_buffer[1] + (psz_sdp - psz_initial_sdp ) )
+     {
+-        msg_Warn( p_sd, "too short SAP packet\n");
++        msg_Warn( p_sd, "too short SAP packet");
+         return VLC_EGENERIC;
+     }
+     psz_sdp += p_buffer[1];
+@@ -747,7 +743,7 @@ static int ParseSAP( services_discovery_
+     {
+         msg_Dbg( p_sd, "unhandled content type: %s", psz_foo );
+     }
+-    if( ( psz_sdp - (char *)p_buffer ) >= i_read )
++    if( psz_sdp >= psz_end )
+     {
+         msg_Warn( p_sd, "package without content" );
+         return VLC_EGENERIC;
+@@ -806,7 +802,6 @@ static int ParseSAP( services_discovery_
+ 
+     CreateAnnounce( p_sd, i_hash, p_sdp );
+ 
+-    FREE( p_decompressed_buffer );
+     return VLC_SUCCESS;
+ }
+ 
+@@ -916,7 +911,7 @@ static int ParseConnection( vlc_object_t
+     char *psz_parse = NULL;
+     char *psz_uri = NULL;
+     char *psz_proto = NULL;
+-    char psz_source[256];
++    char psz_source[258] = "";
+     int i_port = 0;
+ 
+     /* Parse c= field */
+@@ -1070,9 +1065,18 @@ static int ParseConnection( vlc_object_t
+ 
+     /* handle SSM case */
+     psz_parse = GetAttribute( p_sdp, "source-filter" );
+-    psz_source[0] = '\0';
++    if (psz_parse != NULL)
++    {
++        char psz_source_ip[256];
+ 
+-    if( psz_parse ) sscanf( psz_parse, " incl IN IP%*s %*s %255s ", psz_source);
++        if (sscanf (psz_parse, " incl IN IP%*c %*s %255s ", psz_source_ip) == 1)
++        {
++            if (strchr (psz_source_ip, ':') != NULL)
++                sprintf (psz_source, "[%s]", psz_source_ip);
++            else
++                strcpy (psz_source, psz_source_ip);
++        }
++    }
+ 
+     asprintf( &p_sdp->psz_uri, "%s://%s@%s:%i", psz_proto, psz_source,
+               psz_uri, i_port );
+@@ -1107,6 +1111,9 @@ static sdp_t *  ParseSDP( vlc_object_t *
+     if( p_sdp == NULL )
+         return NULL;
+ 
++    /* init to 0 */
++    memset( p_sdp, 0, sizeof( sdp_t ) );
++
+     p_sdp->psz_sdp = strdup( psz_sdp );
+     if( p_sdp->psz_sdp == NULL )
+     {
+@@ -1114,23 +1121,12 @@ static sdp_t *  ParseSDP( vlc_object_t *
+         return NULL;
+     }
+ 
+-    p_sdp->psz_sessionname = NULL;
+-    p_sdp->psz_media       = NULL;
+-    p_sdp->psz_connection  = NULL;
+-    p_sdp->psz_uri         = NULL;
+-    p_sdp->psz_address     = NULL;
+-    p_sdp->psz_address_type= NULL;
+-
+-    p_sdp->i_media         = 0;
+-    p_sdp->i_attributes    = 0;
+-    p_sdp->pp_attributes   = NULL;
+-
+     while( *psz_sdp != '\0' && b_end == VLC_FALSE  )
+     {
+-        char *psz_eol;
+-        char *psz_eof;
+-        char *psz_parse;
+-        char *psz_sess_id;
++        char *psz_eol = NULL;
++        char *psz_eof = NULL;
++        char *psz_parse = NULL;
++        char *psz_sess_id = NULL;
+ 
+         while( *psz_sdp == '\r' || *psz_sdp == '\n' ||
+                *psz_sdp == ' ' || *psz_sdp == '\t' )
+@@ -1257,7 +1253,7 @@ static sdp_t *  ParseSDP( vlc_object_t *
+ 
+             case( 'c' ):
+             {
+-                if( p_sdp->i_media > 1 )
++                if( p_sdp->psz_connection != NULL ) // FIXME
+                     break;
+ 
+                 p_sdp->psz_connection = strdup( &psz_sdp[2] );
+@@ -1280,7 +1276,7 @@ static sdp_t *  ParseSDP( vlc_object_t *
+     return p_sdp;
+ }
+ 
+-static int InitSocket( services_discovery_t *p_sd, char *psz_address,
++static int InitSocket( services_discovery_t *p_sd, const char *psz_address,
+                        int i_port )
+ {
+     int i_fd = net_OpenUDP( p_sd, psz_address, i_port, NULL, 0 );
+@@ -1309,10 +1305,7 @@ static int Decompress( unsigned char *ps
+ 
+     i_result = inflateInit(&d_stream);
+     if( i_result != Z_OK )
+-    {
+-        printf( "inflateInit() failed. Result: %d\n", i_result );
+         return( -1 );
+-    }
+ #if 0
+     p_playlist->pp_items[p_playlist->i_index]->b_autodeletion = VLC_TRUE;
+     i_position = p_playlist->i_index;
+@@ -1338,7 +1331,7 @@ static int Decompress( unsigned char *ps
+         i_result = inflate(&d_stream, Z_NO_FLUSH);
+         if( ( i_result != Z_OK ) && ( i_result != Z_STREAM_END ) )
+         {
+-            printf( "Zlib decompression failed. Result: %d\n", i_result );
++            inflateEnd( &d_stream );
+             return( -1 );
+         }
+     }
+@@ -1438,14 +1431,3 @@ static vlc_bool_t IsSameSession( sdp_t *
+         return VLC_FALSE;
+     }
+ }
+-
+-
+-static void CacheLoad( services_discovery_t *p_sd )
+-{
+-    msg_Warn( p_sd, "cache not implemented") ;
+-}
+-
+-static void CacheSave( services_discovery_t *p_sd )
+-{
+-    msg_Warn( p_sd, "cache not implemented") ;
+-}
+diff -puriN vlc-0.8.6/src/network/io.c vlc-0.8.6a/src/network/io.c
+--- vlc-0.8.6/src/network/io.c	2006-09-18 12:27:55.000000000 +0200
++++ vlc-0.8.6a/src/network/io.c	2007-01-07 23:06:39.000000000 +0100
+@@ -113,7 +113,7 @@ int net_Socket( vlc_object_t *p_this, in
+ # endif
+     if( i_family == AF_INET6 )
+     {
+-        i_val = 30 /*PROTECTION_LEVEL_UNRESTRICTED*/;
++        i_val = 10 /*PROTECTION_LEVEL_UNRESTRICTED*/;
+         setsockopt( fd, IPPROTO_IPV6, IPV6_PROTECTION_LEVEL,
+                    (const char*)&i_val, sizeof( i_val ) );
+     }

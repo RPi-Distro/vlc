@@ -1,0 +1,702 @@
+Index: vlc-0.8.6-svn20061012.debian/src/misc/variables.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/src/misc/variables.c	2006-09-18 12:27:56.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/src/misc/variables.c	2007-01-08 02:28:48.000000000 +0100
+@@ -275,7 +275,7 @@
+         vlc_value_t val;
+ 
+         if( InheritValue( p_this, psz_name, &val, p_var->i_type )
+-            == VLC_SUCCESS );
++            == VLC_SUCCESS )
+         {
+             /* Free data if needed */
+             p_var->pf_free( &p_var->val );
+@@ -619,7 +619,7 @@
+                 vlc_value_t val;
+ 
+                 if( InheritValue( p_this, psz_name, &val, p_var->i_type )
+-                    == VLC_SUCCESS );
++                    == VLC_SUCCESS )
+                 {
+                     /* Duplicate already done */
+ 
+Index: vlc-0.8.6-svn20061012.debian/modules/codec/faad.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/modules/codec/faad.c	2006-10-08 18:40:57.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/modules/codec/faad.c	2007-01-08 02:28:48.000000000 +0100
+@@ -404,6 +404,7 @@
+     decoder_sys_t *p_sys = p_dec->p_sys;
+ 
+     faacDecClose( p_sys->hfaad );
++    if( p_sys->p_buffer ) free( p_sys->p_buffer );
+     free( p_sys );
+ }
+ 
+Index: vlc-0.8.6-svn20061012.debian/modules/demux/asf/libasf.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/modules/demux/asf/libasf.c	2006-09-18 12:28:16.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/modules/demux/asf/libasf.c	2007-01-08 02:28:48.000000000 +0100
+@@ -1156,6 +1156,8 @@
+         FREE( p_ec->ppsz_name[i] );
+         FREE( p_ec->ppsz_value[i] );
+     }
++    FREE( p_ec->ppsz_name );
++    FREE( p_ec->ppsz_value );
+ }
+ 
+ 
+Index: vlc-0.8.6-svn20061012.debian/modules/demux/avi/libavi.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/modules/demux/avi/libavi.c	2006-09-18 12:28:16.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/modules/demux/avi/libavi.c	2007-01-08 02:28:48.000000000 +0100
+@@ -429,12 +429,15 @@
+ {
+     AVI_READCHUNK_ENTER;
+     p_chk->strd.p_data = malloc( p_chk->common.i_chunk_size );
+-    memcpy( p_chk->strd.p_data,
+-            p_buff + 8,
+-            p_chk->common.i_chunk_size );
++    memcpy( p_chk->strd.p_data, p_buff + 8, p_chk->common.i_chunk_size );
+     AVI_READCHUNK_EXIT( VLC_SUCCESS );
+ }
+ 
++static void AVI_ChunkFree_strd( avi_chunk_t *p_chk )
++{
++    if( p_chk->strd.p_data ) free( p_chk->strd.p_data );
++}
++
+ static int AVI_ChunkRead_idx1( stream_t *s, avi_chunk_t *p_chk )
+ {
+     unsigned int i_count, i_index;
+@@ -654,7 +657,7 @@
+     { AVIFOURCC_avih, AVI_ChunkRead_avih, AVI_ChunkFree_nothing },
+     { AVIFOURCC_strh, AVI_ChunkRead_strh, AVI_ChunkFree_nothing },
+     { AVIFOURCC_strf, AVI_ChunkRead_strf, AVI_ChunkFree_strf },
+-    { AVIFOURCC_strd, AVI_ChunkRead_strd, AVI_ChunkFree_nothing },
++    { AVIFOURCC_strd, AVI_ChunkRead_strd, AVI_ChunkFree_strd },
+     { AVIFOURCC_idx1, AVI_ChunkRead_idx1, AVI_ChunkFree_idx1 },
+     { AVIFOURCC_indx, AVI_ChunkRead_indx, AVI_ChunkFree_indx },
+     { AVIFOURCC_JUNK, AVI_ChunkRead_nothing, AVI_ChunkFree_nothing },
+Index: vlc-0.8.6-svn20061012.debian/modules/misc/notify.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/modules/misc/notify.c	2007-01-08 02:28:11.000000000 +0100
++++ vlc-0.8.6-svn20061012.debian/modules/misc/notify.c	2007-01-08 02:28:48.000000000 +0100
+@@ -45,6 +45,11 @@
+ static int Notify( vlc_object_t *, const char * );
+ #define MAX_LENGTH 256
+ 
++struct intf_sys_t
++{
++    vlc_mutex_t     lock;
++};
++
+ /*****************************************************************************
+  * Module descriptor
+  ****************************************************************************/
+@@ -73,9 +78,17 @@
+  *****************************************************************************/
+ static int Open( vlc_object_t *p_this )
+ {
+-    intf_thread_t *p_intf = (intf_thread_t *)p_this;
++    intf_thread_t   *p_intf = (intf_thread_t *)p_this;
++    playlist_t      *p_playlist;
++    intf_sys_t      *p_sys  = malloc( sizeof( intf_sys_t ) );
++    
++    if( !p_sys )
++    {
++        msg_Err( p_intf, "Out of memory" );
++        return VLC_ENOMEM;
++    }
+ 
+-    playlist_t *p_playlist = (playlist_t *)vlc_object_find(
++    p_playlist = (playlist_t *)vlc_object_find(
+         p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+ 
+     if( !p_playlist )
+@@ -94,6 +107,9 @@
+         msg_Err( p_intf, "can't find notification daemon" );
+         return VLC_EGENERIC;
+     }
++    p_intf->p_sys = p_sys;
++    vlc_mutex_init( p_this, &p_sys->lock );
++
+     p_intf->pf_run = Run;
+     msg_Dbg( p_intf,"notify plugin started");
+     return VLC_SUCCESS;
+@@ -104,7 +120,10 @@
+  *****************************************************************************/
+ static void Close( vlc_object_t *p_this )
+ {
+-    playlist_t *p_playlist = (playlist_t *)vlc_object_find(
++    intf_thread_t   *p_intf     = ( intf_thread_t* ) p_this;
++    intf_sys_t      *p_sys      = p_intf->p_sys;
++
++    playlist_t      *p_playlist = (playlist_t *)vlc_object_find(
+         p_this, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+ 
+     if( p_playlist )
+@@ -113,6 +132,8 @@
+         vlc_object_release( p_playlist );
+     }
+ 
++    vlc_mutex_destroy( &p_sys->lock );
++    free( p_sys );
+     notify_uninit();
+ }
+ 
+@@ -130,12 +151,15 @@
+ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
+                        vlc_value_t oldval, vlc_value_t newval, void *param )
+ {
++
+     char psz_tmp[MAX_LENGTH];
+     playlist_t *p_playlist;
+     char *psz_title = NULL;
+     char *psz_artist = NULL;
+     char *psz_album = NULL;
+     input_thread_t *p_input=NULL;
++    intf_thread_t *p_intf = ( intf_thread_t* ) param;
++    intf_sys_t *p_sys = p_intf->p_sys;
+     p_playlist = (playlist_t *)vlc_object_find( p_this, VLC_OBJECT_PLAYLIST,
+                                                 FIND_ANYWHERE );
+     if( !p_playlist ) return VLC_EGENERIC;
+@@ -159,6 +183,7 @@
+                                          _("Meta-information"),
+                                          _("Album/movie/show title" ) );
+     psz_title = strdup( p_input->input.p_item->psz_name );
++    vlc_object_release( p_input );
+     if( psz_title == NULL ) psz_title = strdup( N_("(no title)") );
+     if( psz_artist == NULL ) psz_artist = strdup( N_("(no artist)") );
+     if( psz_album == NULL ) psz_album = strdup( N_("(no album)") );
+@@ -168,9 +193,10 @@
+     free( psz_artist );
+     free( psz_album );
+ 
++    vlc_mutex_lock( &p_sys->lock );
+     Notify( p_this, psz_tmp );
++    vlc_mutex_unlock( &p_sys->lock );
+ 
+-    vlc_object_release( p_input );
+     return VLC_SUCCESS;
+ }
+ 
+Index: vlc-0.8.6-svn20061012.debian/modules/misc/xml/xtag.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/modules/misc/xml/xtag.c	2006-09-18 12:28:25.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/modules/misc/xml/xtag.c	2007-01-08 02:28:48.000000000 +0100
+@@ -203,6 +203,7 @@
+         return 0;
+     }
+ 
++    free( p_buffer );
+     p_reader = malloc( sizeof(xml_reader_t) );
+     p_reader->p_sys = malloc( sizeof(xml_reader_sys_t) );
+     p_reader->p_sys->p_root = p_root;
+Index: vlc-0.8.6-svn20061012.debian/modules/packetizer/h264.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/modules/packetizer/h264.c	2006-09-22 17:14:31.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/modules/packetizer/h264.c	2007-01-08 02:28:48.000000000 +0100
+@@ -69,6 +69,7 @@
+ 
+     vlc_bool_t   b_sps;
+     vlc_bool_t   b_pps;
++    vlc_bool_t   b_header;
+ 
+     /* avcC data */
+     int i_avcC_length_size;
+@@ -160,6 +161,7 @@
+     p_sys->b_pps   = VLC_FALSE;
+     p_sys->p_sps   = 0;
+     p_sys->p_pps   = 0;
++    p_sys->b_header= VLC_FALSE;
+ 
+     p_sys->i_nal_type = -1;
+     p_sys->i_nal_ref_idc = -1;
+@@ -220,6 +222,7 @@
+         p_dec->fmt_out.p_extra = (uint8_t*)malloc( p_dec->fmt_out.i_extra );
+         memcpy( p_dec->fmt_out.p_extra, p_sys->p_sps->p_buffer, p_sys->p_sps->i_buffer);
+         memcpy( p_dec->fmt_out.p_extra+p_sys->p_sps->i_buffer, p_sys->p_pps->p_buffer, p_sys->p_pps->i_buffer);
++        p_sys->b_header = VLC_TRUE;
+ 
+         /* Set callback */
+         p_dec->pf_packetize = PacketizeAVC1;
+@@ -478,6 +481,9 @@
+ 
+ #define OUTPUT \
+     do {                                                      \
++        if( !p_sys->b_header && p_sys->i_frame_type != BLOCK_FLAG_TYPE_I) \
++            break;                                            \
++                                                              \
+         p_pic = block_ChainGather( p_sys->p_frame );          \
+         p_pic->i_length = 0;    /* FIXME */                   \
+         p_pic->i_flags |= p_sys->i_frame_type;                \
+@@ -495,7 +501,8 @@
+             p_sps->i_pts = p_pps->i_pts = p_pic->i_pts;       \
+             block_ChainAppend( &p_sps, p_pps );               \
+             block_ChainAppend( &p_sps, p_pic );               \
+-            p_pic = block_ChainGather( p_sps );               \
++            p_pic = p_sps;                                    \
++            p_sys->b_header = VLC_TRUE;                       \
+         }                                                     \
+     } while(0)
+ 
+Index: vlc-0.8.6-svn20061012.debian/modules/video_output/x11/xcommon.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/modules/video_output/x11/xcommon.c	2006-10-08 18:40:55.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/modules/video_output/x11/xcommon.c	2007-01-08 02:28:48.000000000 +0100
+@@ -887,8 +887,38 @@
+ 
+         /* Update the object variable and trigger callback */
+         val.b_bool = !p_vout->b_fullscreen;
++
++        /*
++         * FIXME FIXME FIXME FIXME: EXPLICIT HACK.
++         * On the one hand, we cannot hold the lock while triggering a
++         * callback, as it causes a deadlock with video-on-top handling.
++         * On the other hand, we have to lock while triggering the
++         * callback to:
++         *  1/ make sure video-on-top remains in sync with fullscreen
++         *    (i.e. unlocking creates a race condition if fullscreen is
++         *     switched on and off VERY FAST).
++         *  2/ avoid possible corruption bugs if another thread gets the
++         *     mutex and modifies our data in-between.
++         *
++         * This is obviously contradictory. Correct solutions may include:
++         *  - putting the fullscreen NAND video-on-top logic out of libvlc,
++         *    back into the video output plugins (ugly code duplication...),
++         *  - serializing fullscreen and video-on-top handling properly
++         *    instead of doing it via the fullscreen callback. That's got to
++         *    be the correct one.
++         */
++#ifdef MODULE_NAME_IS_xvmc
++        xvmc_context_reader_unlock( &p_vout->p_sys->xvmc_lock );
++#endif
++        vlc_mutex_unlock( &p_vout->p_sys->lock );
++
+         var_Set( p_vout, "fullscreen", val );
+ 
++        vlc_mutex_lock( &p_vout->p_sys->lock );
++#ifdef MODULE_NAME_IS_xvmc
++        xvmc_context_reader_lock( &p_vout->p_sys->xvmc_lock );
++#endif
++
+         ToggleFullScreen( p_vout );
+         p_vout->i_changes &= ~VOUT_FULLSCREEN_CHANGE;
+     }
+@@ -1094,6 +1124,7 @@
+                     XStoreName( p_vout->p_sys->p_display,
+                                p_win->base_window, val.psz_string );
+                 }
++                if( val.psz_string ) free( val.psz_string );
+             }
+         }
+     }
+@@ -1583,13 +1614,15 @@
+         else
+ #endif
+         {
+-            /* The window wasn't necessarily created at the requested size */
+-            p_vout->p_sys->p_win->i_x = p_vout->p_sys->p_win->i_y = 0;
+-
+ #ifdef HAVE_XF86VIDMODE
+             XF86VidModeModeLine mode;
+             int i_dummy;
++#endif
++            /* The window wasn't necessarily created at the requested size */
++            p_vout->p_sys->p_win->i_x = p_vout->p_sys->p_win->i_y = 0;
++
+ 
++#ifdef HAVE_XF86VIDMODE
+             if( XF86VidModeGetModeLine( p_vout->p_sys->p_display,
+                                         p_vout->p_sys->i_screen, &i_dummy,
+                                         &mode ) )
+@@ -1995,7 +2028,7 @@
+     XPixmapFormatValues *       p_formats;                 /* pixmap formats */
+     XVisualInfo *               p_xvisual;            /* visuals information */
+     XVisualInfo                 xvisual_template;         /* visual template */
+-    int                         i_count;                       /* array size */
++    int                         i_count, i;                    /* array size */
+ #endif
+ 
+ #ifdef HAVE_SYS_SHM_H
+@@ -2101,21 +2134,23 @@
+         p_formats = XListPixmapFormats( p_vout->p_sys->p_display, &i_count );
+         p_vout->p_sys->i_bytes_per_pixel = 0;
+ 
+-        for( ; i_count-- ; p_formats++ )
++        for( i = 0; i < i_count; i++ )
+         {
+             /* Under XFree4.0, the list contains pixmap formats available
+              * through all video depths ; so we have to check against current
+              * depth. */
+-            if( p_formats->depth == (int)p_vout->p_sys->i_screen_depth )
++            if( p_formats[i].depth == (int)p_vout->p_sys->i_screen_depth )
+             {
+-                if( p_formats->bits_per_pixel / 8
++                if( p_formats[i].bits_per_pixel / 8
+                         > (int)p_vout->p_sys->i_bytes_per_pixel )
+                 {
+                     p_vout->p_sys->i_bytes_per_pixel =
+-                                               p_formats->bits_per_pixel / 8;
++                        p_formats[i].bits_per_pixel / 8;
+                 }
+             }
+         }
++        if( p_formats ) XFree( p_formats );
++
+         break;
+     }
+     p_vout->p_sys->p_visual = p_xvisual->visual;
+Index: vlc-0.8.6-svn20061012.debian/src/input/es_out.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/src/input/es_out.c	2006-09-18 12:27:56.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/src/input/es_out.c	2007-01-08 02:28:48.000000000 +0100
+@@ -602,8 +602,11 @@
+         }
+     }
+ 
+-    if( p_pgrm == NULL )
+-        p_pgrm = EsOutProgramAdd( out, i_group );
++    if( p_pgrm == NULL ) {
++	free( psz_cat );
++	msg_Dbg( p_input, "Trying to add meta for non-existing program" );
++	return;
++    }
+ 
+     /* Update the description text of the program */
+     if( psz_name && *psz_name )
+Index: vlc-0.8.6-svn20061012.debian/include/vlc_input.h
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/include/vlc_input.h	2006-10-04 15:47:08.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/include/vlc_input.h	2007-01-08 02:28:48.000000000 +0100
+@@ -289,7 +289,8 @@
+     BUFFERING_S,
+     PLAYING_S,
+     PAUSE_S,
+-    END_S
++    END_S,
++    ERROR_S
+ };
+ 
+ /* "rate" default, min/max
+Index: vlc-0.8.6-svn20061012.debian/src/control/input.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/src/control/input.c	2006-10-12 19:47:00.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/src/control/input.c	2007-01-08 02:28:48.000000000 +0100
+@@ -206,11 +206,11 @@
+     vlc_value_t val;
+ 
+     p_input_thread = libvlc_get_input_thread ( p_input, p_e);
+-    if ( libvlc_exception_raised( p_e ) )  return 0;
++    if ( libvlc_exception_raised( p_e ) )
++        return 6; /* on error return ERROR_S state (see include/vlc_input.h) */
+ 
+     var_Get( p_input_thread, "state", &val );
+     vlc_object_release( p_input_thread );
+ 
+     return val.i_int;
+ }
+-
+Index: vlc-0.8.6-svn20061012.debian/src/input/input.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/src/input/input.c	2006-10-08 18:40:52.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/src/input/input.c	2007-01-08 02:28:48.000000000 +0100
+@@ -255,6 +255,9 @@
+     input_thread_t *p_input = NULL;      /* thread descriptor */
+ 
+     p_input = Create( p_parent, p_item, psz_header, VLC_FALSE );
++    if( !p_input )
++        return NULL;
++
+     /* Now we can attach our new input */
+     vlc_object_attach( p_input, p_parent );
+ 
+@@ -262,6 +265,7 @@
+     if( vlc_thread_create( p_input, "input", Run,
+                             VLC_THREAD_PRIORITY_INPUT, VLC_TRUE ) )
+     {
++        input_ChangeState( p_input, ERROR_S );
+         msg_Err( p_input, "cannot create input thread" );
+         vlc_object_detach( p_input );
+         vlc_object_destroy( p_input );
+@@ -271,7 +275,6 @@
+     return p_input;
+ }
+ 
+-
+ /**
+  * Initialize an input thread and run it. This thread will clean after himself,
+  * you can forget about it. It can work either in blocking or non-blocking mode
+@@ -287,6 +290,9 @@
+     input_thread_t *p_input = NULL;         /* thread descriptor */
+ 
+     p_input = Create( p_parent, p_item, NULL, VLC_FALSE );
++    if( !p_input )
++        return VLC_EGENERIC;
++
+     /* Now we can attach our new input */
+     vlc_object_attach( p_input, p_parent );
+ 
+@@ -300,6 +306,7 @@
+         if( vlc_thread_create( p_input, "input", RunAndClean,
+                                VLC_THREAD_PRIORITY_INPUT, VLC_TRUE ) )
+         {
++            input_ChangeState( p_input, ERROR_S );
+             msg_Err( p_input, "cannot create input thread" );
+             vlc_object_detach( p_input );
+             vlc_object_destroy( p_input );
+@@ -323,6 +330,9 @@
+ 
+     /* Allocate descriptor */
+     p_input = Create( p_parent, p_item, NULL, VLC_TRUE );
++    if( !p_input )
++        return VLC_EGENERIC;
++
+     p_input->i_flags |= OBJECT_FLAGS_QUIET;
+     p_input->i_flags |= OBJECT_FLAGS_NOINTERACT;
+ 
+@@ -397,14 +407,17 @@
+  */
+ void input_DestroyThread( input_thread_t *p_input )
+ {
+-    /* Join the thread */
+-    vlc_thread_join( p_input );
++    if( p_input )
++    {
++        /* Join the thread */
++        vlc_thread_join( p_input );
+ 
+-    /* Delete input lock (only after thread joined) */
+-    vlc_mutex_destroy( &p_input->lock_control );
++        /* Delete input lock (only after thread joined) */
++        vlc_mutex_destroy( &p_input->lock_control );
+ 
+-    /* TODO: maybe input_DestroyThread should also delete p_input instead
+-     * of the playlist but I'm not sure if it's possible */
++        /* TODO: maybe input_DestroyThread should also delete p_input instead
++         * of the playlist but I'm not sure if it's possible */
++    }
+ }
+ 
+ /*****************************************************************************
+@@ -555,6 +568,7 @@
+                 {
+                     /* End of file - we do not set b_die because only the
+                      * playlist is allowed to do so. */
++                    input_ChangeState( p_input, END_S );
+                     msg_Dbg( p_input, "EOF reached" );
+                     p_input->input.b_eof = VLC_TRUE;
+                 }
+@@ -715,6 +729,7 @@
+             p_input->p_sout = sout_NewInstance( p_input, psz );
+             if( p_input->p_sout == NULL )
+             {
++                input_ChangeState( p_input, ERROR_S );
+                 msg_Err( p_input, "cannot start stream output instance, " \
+                                   "aborting" );
+                 free( psz );
+@@ -888,6 +903,7 @@
+                     {
+                         TAB_APPEND( p_input->i_slave, p_input->slave, sub );
+                     }
++                    else free( sub );
+                 }
+                 free( subs[i] );
+             }
+@@ -923,6 +939,7 @@
+                 {
+                     TAB_APPEND( p_input->i_slave, p_input->slave, slave );
+                 }
++                else free( slave );
+                 psz = psz_delim;
+             }
+         }
+@@ -1085,11 +1102,13 @@
+     }
+ 
+     /* initialization is complete */
+-    input_ChangeState(p_input, PLAYING_S);
++    input_ChangeState( p_input, PLAYING_S );
+ 
+     return VLC_SUCCESS;
+ 
+ error:
++    input_ChangeState( p_input, ERROR_S );
++
+     if( p_input->p_es_out )
+         input_EsOutDelete( p_input->p_es_out );
+ 
+@@ -1116,6 +1135,7 @@
+     while( !p_input->b_die )
+     {
+         /* Sleep a while */
++        input_ChangeState( p_input, ERROR_S );
+         msleep( INPUT_IDLE_SLEEP );
+     }
+ }
+@@ -1130,7 +1150,7 @@
+     msg_Dbg( p_input, "closing input" );
+ 
+     /* We are at the end */
+-    input_ChangeState(p_input, END_S);
++    input_ChangeState( p_input, END_S );
+ 
+     /* Clean control variables */
+     input_ControlVarClean( p_input );
+@@ -1213,6 +1233,10 @@
+ static void ControlReduce( input_thread_t *p_input )
+ {
+     int i;
++
++    if( !p_input )
++        return;
++
+     for( i = 1; i < p_input->i_control; i++ )
+     {
+         const int i_lt = p_input->control[i-1].i_type;
+@@ -1710,6 +1734,7 @@
+                 }
+                 else
+                 {
++                    free( slave );
+                     msg_Warn( p_input, "failed to add %s as slave",
+                               val.psz_string );
+                 }
+@@ -1987,6 +2012,7 @@
+     vlc_value_t val;
+ 
+     if( !in ) return VLC_EGENERIC;
++    if( !p_input ) return VLC_EGENERIC;
+ 
+     /* Split uri */
+     if( !b_quick )
+@@ -2076,7 +2102,7 @@
+     {
+         int64_t i_pts_delay;
+ 
+-        input_ChangeState( p_input, OPENING_S);
++        input_ChangeState( p_input, OPENING_S );
+ 
+         /* Now try a real access */
+         in->p_access = access2_New( p_input, psz_access, psz_demux, psz_path,
+@@ -2172,7 +2198,7 @@
+             var_Set( p_input, "seekable", val );
+         }
+ 
+-        input_ChangeState( p_input, BUFFERING_S);
++        input_ChangeState( p_input, BUFFERING_S );
+ 
+         /* Create the stream_t */
+         in->p_stream = stream_AccessNew( in->p_access, b_quick );
+@@ -2222,6 +2248,8 @@
+     return VLC_SUCCESS;
+ 
+ error:
++    input_ChangeState( p_input, ERROR_S );
++
+     if( in->p_demux )
+         demux2_Delete( in->p_demux );
+ 
+@@ -2264,7 +2292,9 @@
+ {
+     int64_t i_time;
+     int i;
+- 
++
++    if( !p_input ) return;
++
+     if( demux2_Control( p_input->input.p_demux, DEMUX_GET_TIME, &i_time ) )
+     {
+         msg_Err( p_input, "demux doesn't like DEMUX_GET_TIME" );
+@@ -2317,6 +2347,8 @@
+     int64_t i_time;
+     int i;
+ 
++    if( !p_input ) return;
++
+     if( demux2_Control( p_input->input.p_demux, DEMUX_GET_TIME, &i_time ) )
+     {
+         msg_Err( p_input, "demux doesn't like DEMUX_GET_TIME" );
+@@ -2334,6 +2366,7 @@
+         }
+     }
+ }
++
+ /*****************************************************************************
+  * InputMetaUser:
+  *****************************************************************************/
+@@ -2342,6 +2375,9 @@
+     vlc_meta_t *p_meta;
+     vlc_value_t val;
+ 
++    if( !p_input )
++        return NULL;
++
+     if( ( p_meta = vlc_meta_New() ) == NULL )
+         return NULL;
+ 
+@@ -2529,7 +2565,6 @@
+              *pi_title_end, *pi_chapter_end );
+ }
+ 
+-
+ /***********************************************************************
+  * Info management functions
+  ***********************************************************************/
+@@ -2700,6 +2735,7 @@
+             var_Change( p_input, "spu-es", VLC_VAR_FREELIST, &list, NULL );
+         }
+     }
++    else free( sub );
+ 
+     return VLC_TRUE;
+ }
+Index: vlc-0.8.6-svn20061012.debian/src/video_output/video_output.c
+===================================================================
+--- vlc-0.8.6-svn20061012.debian.orig/src/video_output/video_output.c	2006-09-22 17:14:26.000000000 +0200
++++ vlc-0.8.6-svn20061012.debian/src/video_output/video_output.c	2007-01-08 02:28:48.000000000 +0100
+@@ -470,9 +470,14 @@
+     /* Free structure */
+     vlc_object_destroy( p_vout );
+ 
++    /* This is a dirty hack for mostly Linux, where there is no way to get the GUI
++       back if you closed it while playing video. This is solved in Mac OS X,
++       where we have this novelty called menubar, that will always allow you access
++       to the applications main functionality. They should try that on linux sometime */
+     /* If it was the last vout, tell the interface to show up */
+     if( p_playlist != NULL )
+     {
++#ifndef __APPLE__
+         vout_thread_t *p_another_vout = vlc_object_find( p_playlist,
+                                             VLC_OBJECT_VOUT, FIND_ANYWHERE );
+         if( p_another_vout == NULL )
+@@ -485,6 +490,7 @@
+         {
+             vlc_object_release( p_another_vout );
+         }
++#endif
+         vlc_object_release( p_playlist );
+     }
+ }
+@@ -736,6 +742,12 @@
+         display_date = 0;
+         current_date = mdate();
+ 
++        if( p_input && p_input->b_die )
++        {
++            vlc_object_release( p_input );
++            p_input = NULL;
++        }
++
+ #if 0
+         p_vout->c_loops++;
+         if( !(p_vout->c_loops % VOUT_STATS_NB_LOOPS) )
+@@ -901,7 +913,7 @@
+                 p_input = vlc_object_find( p_vout, VLC_OBJECT_INPUT,
+                                            FIND_PARENT );
+             p_subpic = spu_SortSubpictures( p_vout->p_spu, display_date,
+-            p_input ? var_GetBool( p_input, "state" ) == PAUSE_S : VLC_FALSE );
++                p_input ? var_GetBool( p_input, "state" ) == PAUSE_S : VLC_FALSE );
+         }
+ 
+         /*
