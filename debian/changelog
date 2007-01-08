@@ -1,40 +1,26 @@
-vlc (0.8.6-svn20061012.debian-2) unstable; urgency=high
-
-  * Maintainer upload.
-  * Acknowledge previous NMUs by Andreas Barth. Thanks.
-    (Closes: #405425, #400720, #403022).
-
-  * debian/control:
-    + Put back mozilla-plugin-vlc package.
-
-  * debian/rules:
-    + Build with mediacontrol bindings, needed for the Mozilla plugin.
-
-  * 020_kfreebsd.diff:
-    + New patch courtesy of Petr Salinger. Fix a GNU/kFreeBSD FTBFS
-      (Closes: #399713).
-
-  * patch-configure.ac-syntax-0.8.6debian-0.8.6a.diff:
-    + Fix "CFAGS" to "CFLAGS" in configure.ac.
-
-  * patch-documentation-0.8.6debian-0.8.6a.diff:
-    + Documentation, translation and error messages updates.
-
-  * patch-network-protocols-fixes-0.8.6debian-0.8.6a.diff:
-    + Various fixes for the IPv4, IPv6, SAP and HTTP protocols.
-
-  * patch-po-0.8.6debian-0.8.6a.diff:
-    + Translation updates.
+vlc (0.8.6-svn20061012.debian-3) testing-proposed-updates; urgency=high
 
   * patch-version-information-0.8.6debian-0.8.6a.diff:
     + Set version information to 0.8.6a, even if it's not really our real
       version, to make it clear that the security issues were fixed.
 
+  * MOAB-02-01-2007-CVE-2007-0017.patch:
+    + Fix CVE-2007-0017, “format string vulnerability” (Closes: #405425).
+
+  * 020_kfreebsd.diff:
+    + New patch courtesy of Petr Salinger. Fix a GNU/kFreeBSD FTBFS
+      (Closes: #399713).
+
+  * patch-documentation-0.8.6debian-0.8.6a.diff:
+    + Documentation, translation and error messages updates.
+
+  * patch-po-0.8.6debian-0.8.6a.diff:
+    + Translation updates.
+
   * patch-mozilla-plugin-0.8.6debian-0.8.6a.diff:
     + Proper fix for the Mozilla plugin (Closes: #400720, #403022).
-
-  * 000_bootstrap.diff:
-    + Rebootstrap tarball because of changes to configure.ac.
+  * debian/rules:
+    + Build with mediacontrol bindings, needed for the Mozilla plugin.
 
   * patch-badly-initialised-data-0.8.6debian-0.8.6a.diff:
     + Fix various badly initialised variables in the code.
@@ -54,17 +40,8 @@ vlc (0.8.6-svn20061012.debian-2) unstable; urgency=high
   * patch-missing-locks-0.8.6debian-0.8.6a.diff:
     + Add missing mutex locks.
 
-  * patch-mjpeg-separator-0.8.6debian-0.8.6a.diff:
-    + Fix MJPEG format support.
-
   * patch-playlist-crash-0.8.6debian-0.8.6a.diff:
     + Fix a crash in the playlist code.
-
-  * patch-private-libcaca-0.8.6debian-0.8.6a.diff:
-    + Do not use private libcaca symbols.
-
-  * patch-remove-debug-messages-0.8.6debian-0.8.6a.diff:
-    + Disable debug messages and spurious messages to stderr.
 
   * patch-sanitise-javascript-0.8.6debian-0.8.6a.diff:
     + Fix the javascript string sanitising.
@@ -72,34 +49,7 @@ vlc (0.8.6-svn20061012.debian-2) unstable; urgency=high
   * patch-sanity-checks-0.8.6debian-0.8.6a.diff:
     + Various sanity checks for untrusted data.
 
-  * patch-sdl-image-priority-0.8.6debian-0.8.6a.diff:
-    + Downgraded the sdl-image plugin priority.
-
-  * patch-utf8-0.8.6debian-0.8.6a.diff:
-    + Fix Unicode support in GUIs and file access.
-
  -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Mon,  8 Jan 2007 09:43:07 +0100
-
-vlc (0.8.6-svn20061012.debian-1.2) unstable; urgency=high
-
-  * Non-maintainer upload.
-  * Fix format string vulnerability with patch
-    MOAB-02-01-2007-CVE-2007-0017.patch, CVE-2007-0017. Closes: #405425
-
- -- Andreas Barth <aba@not.so.argh.org>  Sat,  6 Jan 2007 23:07:51 +0000
-
-vlc (0.8.6-svn20061012.debian-1.1) unstable; urgency=high
-
-  * Non-maintainer upload.
-  * remove broken package mozilla-plugin-vlc. Closes: #400720, #403022
-
- -- Andreas Barth <aba@not.so.argh.org>  Sat, 23 Dec 2006 19:17:40 +0000
-
-vlc (0.8.6-svn20061101.debian-1) UNRELEASED; urgency=high
-
-  * New upstream SVN snapshot.
-
- -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed,  1 Nov 2006 10:50:17 +0100
 
 vlc (0.8.6-svn20061012.debian-1) unstable; urgency=low
 

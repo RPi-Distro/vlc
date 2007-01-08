@@ -1,6 +1,6 @@
-patch-configure.ac-syntax-0.8.6debian-0.8.6a.diff
+#patch-configure.ac-syntax-0.8.6debian-0.8.6a.diff
 patch-documentation-0.8.6debian-0.8.6a.diff
-patch-network-protocols-fixes-0.8.6debian-0.8.6a.diff
+#patch-network-protocols-fixes-0.8.6debian-0.8.6a.diff
 patch-po-0.8.6debian-0.8.6a.diff
 patch-version-information-0.8.6debian-0.8.6a.diff
 patch-mozilla-plugin-0.8.6debian-0.8.6a.diff
@@ -19,11 +19,12 @@ patch-integer-signedness-0.8.6debian-0.8.6a.diff
 patch-logo-filter-crash-0.8.6debian-0.8.6a.diff
 patch-memory-leaks-0.8.6debian-0.8.6a.diff
 patch-missing-locks-0.8.6debian-0.8.6a.diff
-patch-mjpeg-separator-0.8.6debian-0.8.6a.diff
+#patch-mjpeg-separator-0.8.6debian-0.8.6a.diff
 patch-playlist-crash-0.8.6debian-0.8.6a.diff
-patch-private-libcaca-0.8.6debian-0.8.6a.diff
-patch-remove-debug-messages-0.8.6debian-0.8.6a.diff
+#patch-private-libcaca-0.8.6debian-0.8.6a.diff
+#patch-remove-debug-messages-0.8.6debian-0.8.6a.diff
 patch-sanitise-javascript-0.8.6debian-0.8.6a.diff
 patch-sanity-checks-0.8.6debian-0.8.6a.diff
-patch-sdl-image-priority-0.8.6debian-0.8.6a.diff
+#patch-sdl-image-priority-0.8.6debian-0.8.6a.diff
+#patch-utf8-0.8.6debian-0.8.6a.diff
 MOAB-02-01-2007-CVE-2007-0017.patch
