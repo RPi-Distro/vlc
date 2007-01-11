@@ -1,12 +1,12 @@
-Index: vlc-0.8.6-svn20061012.debian/modules/misc/notify.c
+Index: vlc-0.8.6a.debian/modules/misc/notify.c
 ===================================================================
---- vlc-0.8.6-svn20061012.debian.orig/modules/misc/notify.c	2006-10-12 19:47:04.000000000 +0200
-+++ vlc-0.8.6-svn20061012.debian/modules/misc/notify.c	2007-01-08 02:28:11.000000000 +0100
-@@ -179,7 +179,7 @@
+--- vlc-0.8.6a.debian.orig/modules/misc/notify.c	2007-01-03 19:27:57.000000000 +0100
++++ vlc-0.8.6a.debian/modules/misc/notify.c	2007-01-11 18:30:48.000000000 +0100
+@@ -205,7 +205,7 @@
      NotifyNotification * notification;
      notification = notify_notification_new( _("Now Playing"),
                               psz_temp,
--                             DATA_PATH "/vlc128x128.png",NULL);
+-                             DATA_PATH "/vlc48x48.png",NULL);
 +                             "/usr/share/pixmaps/vlc.png",NULL);
      notify_notification_set_timeout( notification,
                                       config_GetInt(p_this, "notify-timeout") );
