@@ -2,7 +2,7 @@
  * controls.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: controls.h 15491 2006-04-30 21:09:16Z bigben $
+ * $Id: controls.h 17491 2006-11-05 19:57:51Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -23,6 +23,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#import "fspanel.h"
+
 /*****************************************************************************
  * VLCControls interface 
  *****************************************************************************/
@@ -32,6 +34,10 @@
 
     IBOutlet id o_btn_fullscreen;
     IBOutlet id o_volumeslider;
+    
+    IBOutlet id o_btn_shuffle;
+    IBOutlet id o_btn_addNode;
+    IBOutlet id o_btn_repeat;
 
     IBOutlet id o_specificTime_cancel_btn;
     IBOutlet id o_specificTime_enter_fld;
@@ -41,6 +47,8 @@
     IBOutlet id o_specificTime_sec_lbl;
     IBOutlet id o_specificTime_stepper;
     IBOutlet id o_specificTime_mi;
+    
+    VLCFSPanel *o_fs_panel;
 }
 
 - (IBAction)play:(id)sender;
@@ -53,6 +61,13 @@
 - (IBAction)random:(id)sender;
 - (IBAction)repeat:(id)sender;
 - (IBAction)loop:(id)sender;
+- (IBAction)repeatButtonAction:(id)sender;
+
+/* the three ugly helpers again */
+- (void)repeatOne;
+- (void)repeatAll;
+- (void)repeatOff;
+- (void)shuffle;
 
 - (IBAction)forward:(id)sender;
 - (IBAction)backward:(id)sender;
@@ -79,6 +94,7 @@
 
 - (IBAction)goToSpecificTime:(id)sender;
 
+- (id)getFSPanel;
 @end
 
 /*****************************************************************************

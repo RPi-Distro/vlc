@@ -316,6 +316,24 @@ MC_COPY( 16 )
 MC_COPY( 8 )
 MC_COPY( 4 )
 
+static void plane_copy( uint8_t *dst, int i_dst,
+                        uint8_t *src, int i_src, int w, int h)
+{
+    while( h-- )
+    {
+        memcpy( dst, src, w );
+        dst += i_dst;
+        src += i_src;
+    }
+}
+
+void prefetch_fenc_null( uint8_t *pix_y, int stride_y,
+                         uint8_t *pix_uv, int stride_uv, int mb_x )
+{}
+
+void prefetch_ref_null( uint8_t *pix, int stride, int parity )
+{}
+
 void x264_mc_init( int cpu, x264_mc_functions_t *pf )
 {
     pf->mc_luma   = mc_luma;
@@ -348,6 +366,11 @@ void x264_mc_init( int cpu, x264_mc_functions_t *pf )
     pf->copy[PIXEL_8x8]   = mc_copy_w8;
     pf->copy[PIXEL_4x4]   = mc_copy_w4;
 
+    pf->plane_copy = plane_copy;
+
+    pf->prefetch_fenc = prefetch_fenc_null;
+    pf->prefetch_ref  = prefetch_ref_null;
+
 #ifdef HAVE_MMXEXT
     if( cpu&X264_CPU_MMXEXT ) {
         x264_mc_mmxext_init( pf );
@@ -364,18 +387,14 @@ void x264_mc_init( int cpu, x264_mc_functions_t *pf )
 #endif
 }
 
-extern void x264_horizontal_filter_mmxext( uint8_t *dst, int i_dst_stride,
-                                           uint8_t *src, int i_src_stride,
-                                           int i_width, int i_height );
-extern void x264_center_filter_mmxext( uint8_t *dst1, int i_dst1_stride,
-                                       uint8_t *dst2, int i_dst2_stride,
-                                       uint8_t *src, int i_src_stride,
-                                       int i_width, int i_height );
+extern void x264_hpel_filter_mmxext( uint8_t *dsth, uint8_t *dstv, uint8_t *dstc, uint8_t *src,
+                                     int i_stride, int i_width, int i_height );
 
-void x264_frame_filter( int cpu, x264_frame_t *frame )
+void x264_frame_filter( int cpu, x264_frame_t *frame, int b_interlaced )
 {
     const int x_inc = 16, y_inc = 16;
-    const int stride = frame->i_stride[0];
+    const int stride = frame->i_stride[0] << b_interlaced;
+    const int height = frame->i_lines[0] >> b_interlaced;
     int x, y;
 
     pf_mc_t int_h = mc_hh;
@@ -385,18 +404,18 @@ void x264_frame_filter( int cpu, x264_frame_t *frame )
 #ifdef HAVE_MMXEXT
     if ( cpu & X264_CPU_MMXEXT )
     {
-        x264_horizontal_filter_mmxext(frame->filtered[1] - 8 * stride - 8, stride,
-            frame->plane[0] - 8 * stride - 8, stride,
-            stride - 48, frame->i_lines[0] + 16);
-        x264_center_filter_mmxext(frame->filtered[2] - 8 * stride - 8, stride,
-            frame->filtered[3] - 8 * stride - 8, stride,
-            frame->plane[0] - 8 * stride - 8, stride,
-            stride - 48, frame->i_lines[0] + 16);
+        int offs = -8*stride - 8;
+        x264_hpel_filter_mmxext(
+            frame->filtered[1] + offs,
+            frame->filtered[2] + offs,
+            frame->filtered[3] + offs,
+            frame->plane[0] + offs,
+            stride, stride - 48, height + 16);
     }
     else
 #endif
     {
-        for( y = -8; y < frame->i_lines[0]+8; y += y_inc )
+        for( y = -8; y < height + 8; y += y_inc )
         {
             uint8_t *p_in = frame->plane[0] + y * stride - 8;
             uint8_t *p_h  = frame->filtered[1] + y * stride - 8;
@@ -417,26 +436,30 @@ void x264_frame_filter( int cpu, x264_frame_t *frame )
     }
 
     /* generate integral image:
-     * each entry in frame->integral is the sum of all luma samples above and
-     * to the left of its location (inclusive).
-     * this allows us to calculate the DC of any rectangle by looking only
-     * at the corner entries.
-     * individual entries will overflow 16 bits, but that's ok:
-     * we only need the differences between entries, and those will be correct
-     * as long as we don't try to evaluate a rectangle bigger than 16x16.
-     * likewise, we don't really have to init the edges to 0, leaving garbage
-     * there wouldn't affect the results.*/
+     * frame->integral contains 2 planes. in the upper plane, each element is
+     * the sum of an 8x8 pixel region with top-left corner on that point.
+     * in the lower plane, 4x4 sums (needed only with --analyse p4x4). */
 
     if( frame->integral )
     {
         memset( frame->integral - 32 * stride - 32, 0, stride * sizeof(uint16_t) );
-        for( y = -31; y < frame->i_lines[0] + 32; y++ )
+        for( y = -32; y < frame->i_lines[0] + 31; y++ )
         {
             uint8_t  *ref  = frame->plane[0] + y * stride - 32;
-            uint16_t *line = frame->integral + y * stride - 32;
+            uint16_t *line = frame->integral + (y+1) * stride - 31;
             uint16_t v = line[0] = 0;
-            for( x = 1; x < stride; x++ )
+            for( x = 0; x < stride-1; x++ )
                 line[x] = v += ref[x] + line[x-stride] - line[x-stride-1];
+        }
+        for( y = -31; y < frame->i_lines[0] + 24; y++ )
+        {
+            uint16_t *line = frame->integral + y * stride - 31;
+            uint16_t *sum4 = line + frame->i_stride[0] * (frame->i_lines[0] + 64);
+            for( x = -31; x < stride - 40; x++, line++, sum4++ )
+            {
+                sum4[0] =  line[4+4*stride] - line[4] - line[4*stride] + line[0];
+                line[0] += line[8+8*stride] - line[8] - line[8*stride];
+            }
         }
     }
 }

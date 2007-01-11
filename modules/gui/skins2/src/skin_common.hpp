@@ -2,7 +2,7 @@
  * skin_common.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: skin_common.hpp 16647 2006-09-14 14:58:57Z hartman $
+ * $Id: skin_common.hpp 17508 2006-11-06 11:26:08Z md $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -76,6 +76,14 @@ static inline string sFromLocale( const string &rLocale )
     return res;
 }
 
+/// Wrapper around FromWide, to avoid the need to call free()
+static inline string sFromWide( const wstring &rWide )
+{
+    char *s = FromWide( rWide.c_str() );
+    string res = s;
+    free( s );
+    return res;
+}
 
 /// Wrapper around ToLocale, to avoid the need to call LocaleFree()
 static inline string sToLocale( const string &rUTF8 )

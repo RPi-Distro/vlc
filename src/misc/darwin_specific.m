@@ -2,7 +2,7 @@
  * darwin_specific.m: Darwin specific features
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: darwin_specific.m 17036 2006-10-12 17:29:50Z funman $
+ * $Id: darwin_specific.m 18224 2006-12-03 15:52:27Z xtophe $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -58,13 +58,16 @@ static int FindLanguage( const char * psz_lang )
         "Korean", "ko",
         "Georgian", "ka",
         "Malay", "ms",
-        "Dutch", "nl",
+	"Nepali", "ne",
+	"Dutch", "nl",
         "Occitan", "oc",
         "Brazilian Portuguese", "pt_BR",
         "Romanian", "ro",
         "Russian", "ru",
-	"Slovak", "sk",
+        "Slovak", "sk",
+        "Slovenian", "sl",
         "Swedish", "sv",
+	"Thai", "th",
         "Turkish", "tr",
         "Simplified Chinese", "zh_CN",
         "Chinese Traditional", "zh_TW",

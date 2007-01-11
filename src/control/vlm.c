@@ -239,7 +239,6 @@ void libvlc_vlm_change_media( libvlc_instance_t *p_instance, char *psz_name,
 
 void libvlc_vlm_play_media( libvlc_instance_t *p_instance, char *psz_name,
                             libvlc_exception_t *p_exception )
-    
 {
     char *psz_message;
     vlm_message_t *answer;
@@ -258,7 +257,6 @@ void libvlc_vlm_play_media( libvlc_instance_t *p_instance, char *psz_name,
 
 void libvlc_vlm_stop_media( libvlc_instance_t *p_instance, char *psz_name,
                             libvlc_exception_t *p_exception )
-    
 {
     char *psz_message;
     vlm_message_t *answer;
@@ -277,7 +275,6 @@ void libvlc_vlm_stop_media( libvlc_instance_t *p_instance, char *psz_name,
 
 void libvlc_vlm_pause_media( libvlc_instance_t *p_instance, char *psz_name,
                             libvlc_exception_t *p_exception )
-    
 {
     char *psz_message;
     vlm_message_t *answer;

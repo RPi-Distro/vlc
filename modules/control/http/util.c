@@ -2,7 +2,7 @@
  * util.c : Utility functions for HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: util.c 16467 2006-09-01 14:34:56Z hartman $
+ * $Id: util.c 18329 2006-12-08 18:07:54Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -253,7 +253,7 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
             if( !f->name )
             {
                 msg_Err( p_intf , "unable to parse directory" );
-                closedir( p_dir );
+                vlc_closedir_wrapper( p_dir );
                 free( f );
                 return( VLC_ENOMEM );
             }
@@ -336,7 +336,7 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
     }
 
     ACL_Destroy( p_acl );
-    closedir( p_dir );
+    vlc_closedir_wrapper( p_dir );
 
     return VLC_SUCCESS;
 }

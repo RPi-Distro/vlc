@@ -2,7 +2,7 @@
  * dv.c: Digital video/Firewire input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: dv.c 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: dv.c 17554 2006-11-08 20:16:53Z hartman $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -303,14 +303,14 @@ static int Control( access_t *p_access, int i_query, va_list args )
     switch( i_query )
     {
         /* */
-        case ACCESS_CAN_SEEK:
-        case ACCESS_CAN_FASTSEEK:
         case ACCESS_CAN_PAUSE:
             pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
             *pb_bool = VLC_TRUE;
             break;
 
-        case ACCESS_CAN_CONTROL_PACE:
+       case ACCESS_CAN_SEEK:
+       case ACCESS_CAN_FASTSEEK:
+       case ACCESS_CAN_CONTROL_PACE:
             pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
             *pb_bool = VLC_FALSE;
             break;

@@ -2,7 +2,7 @@
  * modules_inner.h : Macros used from within a module.
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: modules_inner.h 15056 2006-04-02 13:34:21Z courmisch $
+ * $Id: modules_inner.h 18150 2006-11-29 13:32:25Z courmisch $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

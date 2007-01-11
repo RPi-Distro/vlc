@@ -137,6 +137,9 @@
    */
 #undef HAVE_CYBERGARAGE_UPNP_MEDIASERVER_H
 
+/* Define to 1 if you have the <d3d9.h> header file. */
+#undef HAVE_D3D9_H
+
 /* Define to 1 if you have the `daemon' function. */
 #undef HAVE_DAEMON
 
@@ -370,6 +373,9 @@
 
 /* Define if you have libcdio 0.72 or greater installed */
 #undef HAVE_LIBCDIO
+
+/* Define to 1 if you have the <libdc1394/dc1394_control.h> header file. */
+#undef HAVE_LIBDC1394_DC1394_CONTROL_H
 
 /* Define to 1 if you have the <libmodplug/modplug.h> header file. */
 #undef HAVE_LIBMODPLUG_MODPLUG_H

@@ -2,7 +2,7 @@
  * preset.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: preset.c 14798 2006-03-18 12:38:38Z zorglub $
+ * $Id: preset.c 18330 2006-12-08 18:25:54Z hartman $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -520,7 +520,7 @@ int load_preset_file(char * pathname, preset_t * preset) {
 	  return FAILURE;
   
   /* Open the file corresponding to pathname */
-  if ((fs = fopen(pathname, "r")) == 0) {
+  if ((fs = utf8_fopen(pathname, "r")) == 0) {
     if (PRESET_DEBUG) printf("load_preset_file: loading of file %s failed!\n", pathname);
     return ERROR;	
   }
@@ -792,7 +792,7 @@ void savePreset(char * filename) {
     return;
   
   /* Open the file corresponding to pathname */
-  if ((fs = fopen(filename, "w+")) == 0) {
+  if ((fs = utf8_fopen(filename, "w+")) == 0) {
     if (PRESET_DEBUG) printf("savePreset: failed to create filename \"%s\"!\n", filename);
     return;	
   }

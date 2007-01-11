@@ -2,7 +2,7 @@
  * libc.c: Extra libc function for some systems.
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: libc.c 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: libc.c 17810 2006-11-16 13:36:28Z md $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Samuel Hocevar <sam@zoy.org>
@@ -347,7 +347,8 @@ int64_t vlc_atoll( const char *nptr )
 /*****************************************************************************
  * lldiv: returns quotient and remainder
  *****************************************************************************/
-#if defined(SYS_BEOS)
+#if defined(SYS_BEOS) \
+ || (defined (__FreeBSD__) && (__FreeBSD__ < 5))
 lldiv_t vlc_lldiv( long long numer, long long denom )
 {
     lldiv_t d;

@@ -2,7 +2,7 @@
  * wxwidgets.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: wxwidgets.cpp 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: wxwidgets.cpp 18107 2006-11-27 13:44:11Z md $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -593,7 +593,7 @@ WindowSettings::~WindowSettings( )
                                      size[i].x, size[i].y );
     }
 
-    config_PutPsz( p_intf, "wx-config-last", sCfg.mb_str() );
+    config_PutPsz( p_intf, "wx-config-last", sCfg.mb_str(wxConvUTF8) );
 }
 
 void WindowSettings::SetScreen( int i_screen_w, int i_screen_h )

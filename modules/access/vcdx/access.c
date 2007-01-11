@@ -3,7 +3,7 @@
  *         vlc-specific things tend to go here.
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: access.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: access.c 18488 2007-01-03 17:49:32Z jb $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *   Some code is based on the non-libcdio VCD plugin (as there really
@@ -92,17 +92,17 @@ cdio_log_handler (cdio_log_level_t level, const char message[])
   case CDIO_LOG_DEBUG:
   case CDIO_LOG_INFO:
     if (p_vcdplayer->i_debug & INPUT_DBG_CDIO)
-      msg_Dbg( p_vcd_access, message);
+      msg_Dbg( p_vcd_access, "%s", message);
     break;
   case CDIO_LOG_WARN:
-    msg_Warn( p_vcd_access, message);
+    msg_Warn( p_vcd_access, "%s", message);
     break;
   case CDIO_LOG_ERROR:
   case CDIO_LOG_ASSERT:
-    msg_Err( p_vcd_access, message);
+    msg_Err( p_vcd_access, "%s", message);
     break;
   default:
-    msg_Warn( p_vcd_access, message,
+    msg_Warn( p_vcd_access, "%s\n%s %d", message,
             _("The above message had unknown log level"),
             level);
   }
@@ -118,14 +118,14 @@ vcd_log_handler (vcd_log_level_t level, const char message[])
   case VCD_LOG_DEBUG:
   case VCD_LOG_INFO:
     if (p_vcdplayer->i_debug & INPUT_DBG_VCDINFO)
-      msg_Dbg( p_vcd_access, message);
+      msg_Dbg( p_vcd_access, "%s", message);
     break;
   case VCD_LOG_WARN:
-    msg_Warn( p_vcd_access, message);
+    msg_Warn( p_vcd_access, "%s", message);
     break;
   case VCD_LOG_ERROR:
   case VCD_LOG_ASSERT:
-    msg_Err( p_vcd_access, message);
+    msg_Err( p_vcd_access, "%s", message);
     break;
   default:
     msg_Warn( p_vcd_access, "%s\n%s %d", message,
@@ -316,6 +316,7 @@ VCDSeek( access_t * p_access, int64_t i_pos )
 	}
 
     }
+    p_access->info.b_eof = VLC_FALSE;
     return VLC_SUCCESS;
     
 }

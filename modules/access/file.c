@@ -2,7 +2,7 @@
  * file.c: file input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: file.c 16767 2006-09-21 14:32:45Z hartman $
+ * $Id: file.c 17408 2006-11-01 20:54:53Z md $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -611,6 +611,25 @@ static int _OpenFile( access_t * p_access, const char * psz_name )
     p_access->info.i_update |= INPUT_UPDATE_SIZE;
     fseek( p_sys->fd, 0, SEEK_SET );
 #else
+#if defined (WIN32)
+
+    if( GetVersion() < 0x80000000 )
+    {
+        /* for Windows NT and above */
+        wchar_t wpath[MAX_PATH + 1];
+
+        if( !MultiByteToWideChar( CP_UTF8, 0, psz_name, -1, wpath, MAX_PATH ) )
+        {
+            msg_Err( p_access, "incorrect file name %s", psz_name );
+            return VLC_EGENERIC;
+        }
+        wpath[MAX_PATH] = L'\0';
+
+        p_sys->fd = _wopen( wpath, O_NONBLOCK );
+        goto opencont;
+    }
+
+#endif
     const char *psz_localname = ToLocale( psz_name );
     if( psz_localname == NULL )
     {
@@ -618,10 +637,10 @@ static int _OpenFile( access_t * p_access, const char * psz_name )
         return VLC_EGENERIC;
     }
 
-    // FIXME: support non-ANSI filenames on Win32
     p_sys->fd = open( psz_localname, O_NONBLOCK /*| O_LARGEFILE*/ );
     LocaleFree( psz_localname );
 
+opencont:
     if ( p_sys->fd == -1 )
     {
         msg_Err( p_access, "cannot open file %s (%s)", psz_name,

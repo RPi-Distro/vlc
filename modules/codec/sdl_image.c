@@ -2,7 +2,7 @@
  * sdl_image.c: sdl decoder module making use of libsdl_image.
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: sdl_image.c 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: sdl_image.c 17236 2006-10-21 19:11:38Z hartman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -52,7 +52,7 @@ vlc_module_begin();
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_VCODEC );
     set_description( _("SDL_image video decoder") );
-    set_capability( "decoder", 900 );
+    set_capability( "decoder", 60 );
     set_callbacks( OpenDecoder, CloseDecoder );
     add_shortcut( "sdl_image" );
 vlc_module_end();

@@ -2,7 +2,7 @@
  * vlm_panel.cpp: VLM Panel
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: vlm_panel.cpp 15370 2006-04-26 23:20:48Z xtophe $
+ * $Id: vlm_panel.cpp 17953 2006-11-22 14:24:13Z md $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -217,7 +217,7 @@ void VLMPanel::OnLoad( wxCommandEvent &event )
     p_file_dialog->SetTitle( wxU(_("Load Configuration") ) );
     if( p_file_dialog->ShowModal() == wxID_OK )
     {
-        vlm_Load( p_vlm->GetVLM(), p_file_dialog->GetPath().mb_str() );
+        vlm_Load( p_vlm->GetVLM(), p_file_dialog->GetPath().mb_str(wxConvUTF8));
     }
     Update();
 }
@@ -231,7 +231,7 @@ void VLMPanel::OnSave( wxCommandEvent &event )
     p_file_dialog->SetTitle( wxU(_("Save Configuration") ) );
     if( p_file_dialog->ShowModal() == wxID_OK )
     {
-        vlm_Save( p_vlm->GetVLM(), p_file_dialog->GetPath().mb_str() );
+        vlm_Save( p_vlm->GetVLM(), p_file_dialog->GetPath().mb_str(wxConvUTF8));
     }
 }
 
@@ -441,9 +441,9 @@ void VLMAddStreamPanel::Load( VLMStream *p_stream )
 
 void VLMAddStreamPanel::OnCreate( wxCommandEvent &event )
 {
-    char *psz_name = FromLocale( name_text->GetValue().mb_str() );
-    char *psz_input = FromLocale(  input_text->GetValue().mb_str() );
-    char *psz_output = FromLocale( output_text->GetValue().mb_str() );
+    char *psz_name = wxFromLocale( name_text->GetValue() );
+    char *psz_input = wxFromLocale(  input_text->GetValue() );
+    char *psz_output = wxFromLocale( output_text->GetValue() );
     if( b_broadcast && ! b_edit )
     {
         p_vlm->AddBroadcast( psz_name, psz_input, psz_output,
@@ -468,8 +468,8 @@ void VLMAddStreamPanel::OnCreate( wxCommandEvent &event )
                         enabled_checkbox->IsChecked() ? VLC_TRUE: VLC_FALSE,
                         loop_checkbox->IsChecked() ? VLC_TRUE : VLC_FALSE );
     }
-    LocaleFree( psz_name) ; LocaleFree( psz_input ) ;
-    LocaleFree( psz_output);
+    wxLocaleFree( psz_name) ; wxLocaleFree( psz_input ) ;
+    wxLocaleFree( psz_output);
     if( !b_edit )
         OnClear( event );
     if( b_edit )

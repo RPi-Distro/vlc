@@ -2,7 +2,7 @@
  * libasf.c : asf stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: libasf.c 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: libasf.c 17050 2006-10-13 00:07:54Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1156,6 +1156,8 @@ static void ASF_FreeObject_extended_content_description( asf_object_t *p_obj)
         FREE( p_ec->ppsz_name[i] );
         FREE( p_ec->ppsz_value[i] );
     }
+    FREE( p_ec->ppsz_name );
+    FREE( p_ec->ppsz_value );
 }
 
 

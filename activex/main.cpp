@@ -29,6 +29,8 @@
 #include <windows.h>
 #include <shlwapi.h>
 
+#include <guiddef.h>
+
 using namespace std;
 
 #define COMPANY_STR "VideoLAN"
@@ -43,10 +45,11 @@ using namespace std;
 #define GUID_STRLEN 39
 
 /*
-** MingW headers do not declare those
+** MingW headers & libs do not declare those
 */
-extern const CATID CATID_SafeForInitializing;
-extern const CATID CATID_SafeForScripting;
+static DEFINE_GUID(_CATID_InternetAware,       0x0DE86A58, 0x2BAA, 0x11CF, 0xA2, 0x29, 0x00,0xAA,0x00,0x3D,0x73,0x52);
+static DEFINE_GUID(_CATID_SafeForInitializing, 0x7DD95802, 0x9882, 0x11CF, 0x9F, 0xA9, 0x00,0xAA,0x00,0x6C,0x42,0xC4);
+static DEFINE_GUID(_CATID_SafeForScripting,    0x7DD95801, 0x9882, 0x11CF, 0x9F, 0xA9, 0x00,0xAA,0x00,0x6C,0x42,0xC4);
 
 static LONG i_class_ref= 0;
 static HINSTANCE h_instance= 0;
@@ -150,8 +153,9 @@ STDAPI DllUnregisterServer(VOID)
         CATID implCategories[] = {
             CATID_Control,
             CATID_PersistsToPropertyBag,
-            CATID_SafeForInitializing,
-            CATID_SafeForScripting,
+            _CATID_InternetAware,
+            _CATID_SafeForInitializing,
+            _CATID_SafeForScripting,
         };
 
         pcr->UnRegisterClassImplCategories(CLSID_VLCPlugin,
@@ -193,9 +197,9 @@ static HRESULT RegisterClassID(HKEY hParent, REFCLSID rclsid, unsigned int versi
             keyClose(keySetDef(keyCreate(hProgKey, "CLSID"),
                 psz_CLSID,
                 GUID_STRLEN));
-     
+
             //hSubKey = keyClose(keyCreate(hBaseKey, "Insertable"));
-     
+ 
             RegCloseKey(hProgKey);
         }
         if( isDefault )
@@ -209,7 +213,7 @@ static HRESULT RegisterClassID(HKEY hParent, REFCLSID rclsid, unsigned int versi
                 keyClose(keySetDef(keyCreate(hProgKey, "CLSID"),
                     psz_CLSID,
                     GUID_STRLEN));
-         
+
                 keyClose(keySetDef(keyCreate(hProgKey, "CurVer"),
                     progId));
             }
@@ -298,14 +302,14 @@ STDAPI DllRegisterServer(VOID)
 
     char DllPath[MAX_PATH];
     DWORD DllPathLen=GetModuleFileNameA(h_instance, DllPath, sizeof(DllPath)) ;
-	if( 0 == DllPathLen )
+    if( 0 == DllPathLen )
         return E_UNEXPECTED;
 
     HKEY hBaseKey;
 
     if( ERROR_SUCCESS != RegOpenKeyExA(HKEY_CLASSES_ROOT, "CLSID", 0, KEY_CREATE_SUB_KEY, &hBaseKey) )
         return SELFREG_E_CLASS;
-    
+
     RegisterClassID(hBaseKey, CLSID_VLCPlugin, 1, FALSE, DllPath, DllPathLen);
     RegisterClassID(hBaseKey, CLSID_VLCPlugin2, 2, TRUE, DllPath, DllPathLen);
 
@@ -318,8 +322,9 @@ STDAPI DllRegisterServer(VOID)
         CATID implCategories[] = {
             CATID_Control,
             CATID_PersistsToPropertyBag,
-            CATID_SafeForInitializing,
-            CATID_SafeForScripting,
+            _CATID_InternetAware,
+            _CATID_SafeForInitializing,
+            _CATID_SafeForScripting,
         };
 
         pcr->RegisterClassImplCategories(CLSID_VLCPlugin,
@@ -336,7 +341,7 @@ STDAPI DllRegisterServer(VOID)
     // replace .exe by .tlb
     strcpy(DllPath+DllPathLen-4, ".tlb");
 #endif
-    
+
 #ifndef OLE2ANSI
     size_t typeLibPathLen = MultiByteToWideChar(CP_ACP, 0, DllPath, -1, NULL, 0);
     if( typeLibPathLen > 0 )

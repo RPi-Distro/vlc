@@ -3,7 +3,7 @@
 # DO NOT EDIT - edit Modules.am or $(top_srcdir)/bootstrap instead
 
 basedir = access_filter
-mods = access_filter_timeshift access_filter_record
+mods = access_filter_timeshift access_filter_record access_filter_dump
 
 NULL =
 libvlc_LTLIBRARIES =
@@ -16,8 +16,8 @@ SUFFIXES = _plugin$(LIBEXT) _plugin.a
 
 libvlcdir = $(libdir)/vlc/$(basedir)
 
-EXTRA_LIBRARIES =  libaccess_filter_timeshift_plugin.a libaccess_filter_timeshift.a libaccess_filter_record_plugin.a libaccess_filter_record.a
-EXTRA_LTLIBRARIES =  libaccess_filter_timeshift_plugin.la libaccess_filter_timeshift_builtin.la libaccess_filter_record_plugin.la libaccess_filter_record_builtin.la
+EXTRA_LIBRARIES =  libaccess_filter_timeshift_plugin.a libaccess_filter_timeshift.a libaccess_filter_record_plugin.a libaccess_filter_record.a libaccess_filter_dump_plugin.a libaccess_filter_dump.a
+EXTRA_LTLIBRARIES =  libaccess_filter_timeshift_plugin.la libaccess_filter_timeshift_builtin.la libaccess_filter_record_plugin.la libaccess_filter_record_builtin.la libaccess_filter_dump_plugin.la libaccess_filter_dump_builtin.la
 
 include Modules.am
 
@@ -133,4 +133,27 @@ libaccess_filter_record_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic acc
 libaccess_filter_record_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin access_filter_record`
 libaccess_filter_record_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin access_filter_record`
 libaccess_filter_record_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin access_filter_record`
+
+# The access_filter_dump plugin
+
+libaccess_filter_dump_plugin_a_SOURCES = $(SOURCES_access_filter_dump)
+libaccess_filter_dump_plugin_la_SOURCES = $(SOURCES_access_filter_dump)
+libaccess_filter_dump_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin access_filter_dump`
+libaccess_filter_dump_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin access_filter_dump`
+libaccess_filter_dump_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin access_filter_dump`
+libaccess_filter_dump_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin access_filter_dump`
+libaccess_filter_dump_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin access_filter_dump`
+libaccess_filter_dump_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin access_filter_dump`
+libaccess_filter_dump_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin access_filter_dump` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+libaccess_filter_dump_plugin_la_LIBADD = $(LTLIBVLC)
+
+libaccess_filter_dump_a_SOURCES = $(SOURCES_access_filter_dump)
+libaccess_filter_dump_builtin_la_SOURCES = $(SOURCES_access_filter_dump)
+libaccess_filter_dump_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic access_filter_dump`
+libaccess_filter_dump_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic access_filter_dump`
+libaccess_filter_dump_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic access_filter_dump`
+libaccess_filter_dump_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin access_filter_dump`
+libaccess_filter_dump_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin access_filter_dump`
+libaccess_filter_dump_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin access_filter_dump`
 

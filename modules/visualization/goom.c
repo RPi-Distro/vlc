@@ -2,7 +2,7 @@
  * goom.c: based on libgoom (see http://ios.free.fr/?page=projet&quoi=1)
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: goom.c 14903 2006-03-24 11:05:28Z zorglub $
+ * $Id: goom.c 17100 2006-10-15 13:35:53Z funman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -413,19 +413,24 @@ static char *TitleGet( vlc_object_t *p_this )
 
     if( p_input )
     {
-        char *psz = strrchr( p_input->input.p_item->psz_uri, '/' );
+        psz_title = vlc_input_item_GetInfo( p_input->input.p_item,
+                        _("Meta-information"), _(VLC_META_TITLE) );
+        if( !*psz_title )
+        {
+            char *psz = strrchr( p_input->input.p_item->psz_uri, '/' );
 
-        if( psz )
-        {
-            psz++;
-        }
-        else
-        {
-            psz = p_input->input.p_item->psz_uri;
-        }
-        if( psz && *psz )
-        {
-            psz_title = strdup( psz );
+            if( psz )
+            {
+                psz++;
+            }
+            else
+            {
+                psz = p_input->input.p_item->psz_uri;
+            }
+            if( psz && *psz )
+            {
+                psz_title = strdup( psz );
+            }
         }
         vlc_object_release( p_input );
     }

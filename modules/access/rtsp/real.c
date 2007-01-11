@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: real.c 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: real.c 18336 2006-12-09 01:01:02Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -673,7 +673,7 @@ rmff_header_t  *real_setup_and_get_header(rtsp_client_t *rtsp_session, int bandw
   if( rtsp_read_data(rtsp_session, description, size) <= 0)
     goto error;
   description[size]=0;
-  fprintf(stderr, "%s", description);
+  //fprintf(stderr, "%s", description);
 
   /* parse sdp (sdpplin) and create a header and a subscribe string */
   subscribe = (char *) malloc(sizeof(char)*256);

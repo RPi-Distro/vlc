@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "common/common.h"
 #include "common/cpu.h"
@@ -38,7 +39,7 @@ static int check_pixel( int cpu_ref, int cpu_new )
     x264_predict8x8_t predict_8x8[9+3];
     DECLARE_ALIGNED( uint8_t, edge[33], 8 );
     int ret = 0, ok, used_asm;
-    int i;
+    int i, j;
 
     x264_pixel_init( 0, &pixel_c );
     x264_pixel_init( cpu_ref, &pixel_ref );
@@ -56,8 +57,8 @@ static int check_pixel( int cpu_ref, int cpu_new )
         if( pixel_asm.name[i] != pixel_ref.name[i] ) \
         { \
             used_asm = 1; \
-            res_c   = pixel_c.name[i]( buf1, 32, buf2, 24 ); \
-            res_asm = pixel_asm.name[i]( buf1, 32, buf2, 24 ); \
+            res_c   = pixel_c.name[i]( buf1, 32, buf2, 16 ); \
+            res_asm = pixel_asm.name[i]( buf1, 32, buf2, 16 ); \
             if( res_c != res_asm ) \
             { \
                 ok = 0; \
@@ -79,16 +80,16 @@ static int check_pixel( int cpu_ref, int cpu_new )
         if( pixel_asm.sad_x##N[i] && pixel_asm.sad_x##N[i] != pixel_ref.sad_x##N[i] ) \
         { \
             used_asm = 1; \
-            res_c[0] = pixel_c.sad[i]( buf1, 16, buf2, 24 ); \
-            res_c[1] = pixel_c.sad[i]( buf1, 16, buf2+30, 24 ); \
-            res_c[2] = pixel_c.sad[i]( buf1, 16, buf2+1, 24 ); \
+            res_c[0] = pixel_c.sad[i]( buf1, 16, buf2, 32 ); \
+            res_c[1] = pixel_c.sad[i]( buf1, 16, buf2+30, 32 ); \
+            res_c[2] = pixel_c.sad[i]( buf1, 16, buf2+1, 32 ); \
             if(N==4) \
             { \
-                res_c[3] = pixel_c.sad[i]( buf1, 16, buf2+99, 24 ); \
-                pixel_asm.sad_x4[i]( buf1, buf2, buf2+30, buf2+1, buf2+99, 24, res_asm ); \
+                res_c[3] = pixel_c.sad[i]( buf1, 16, buf2+99, 32 ); \
+                pixel_asm.sad_x4[i]( buf1, buf2, buf2+30, buf2+1, buf2+99, 32, res_asm ); \
             } \
             else \
-                pixel_asm.sad_x3[i]( buf1, buf2, buf2+30, buf2+1, 24, res_asm ); \
+                pixel_asm.sad_x3[i]( buf1, buf2, buf2+30, buf2+1, 32, res_asm ); \
             if( memcmp(res_c, res_asm, sizeof(res_c)) ) \
             { \
                 ok = 0; \
@@ -139,13 +140,32 @@ static int check_pixel( int cpu_ref, int cpu_new )
         x264_cpu_restore( cpu_new );
         res_c = x264_pixel_ssim_wxh( &pixel_c,   buf1+2, 32, buf2+2, 32, 32, 28 );
         res_a = x264_pixel_ssim_wxh( &pixel_asm, buf1+2, 32, buf2+2, 32, 32, 28 );
-        if( res_c != res_a )
+        if( fabs(res_c - res_a) > 1e-8 )
         {
             ok = 0;
             fprintf( stderr, "ssim: %.7f != %.7f [FAILED]\n", res_c, res_a );
         }
         report( "ssim :" );
     }
+
+    ok = 1; used_asm = 0;
+    for( i=0; i<4; i++ )
+        if( pixel_asm.ads[i] != pixel_ref.ads[i] )
+        {
+            uint16_t res_a[32], res_c[32];
+            uint16_t sums[72];
+            int dc[4];
+            for( j=0; j<72; j++ )
+                sums[j] = rand() & 0x3fff;
+            for( j=0; j<4; j++ )
+                dc[j] = rand() & 0x3fff;
+            used_asm = 1;
+            pixel_c.ads[i]( dc, sums, 32, res_c, 32 );
+            pixel_asm.ads[i]( dc, sums, 32, res_a, 32 );
+            if( memcmp(res_a, res_c, sizeof(res_c)) )
+                ok = 0;
+        }
+    report( "esa ads:" );
 
     return ret;
 }
@@ -156,8 +176,8 @@ static int check_dct( int cpu_ref, int cpu_new )
     x264_dct_function_t dct_ref;
     x264_dct_function_t dct_asm;
     int ret = 0, ok, used_asm;
-    int16_t dct1[16][4][4] __attribute((aligned(16)));
-    int16_t dct2[16][4][4] __attribute((aligned(16)));
+    int16_t dct1[16][4][4] __attribute__((aligned(16)));
+    int16_t dct2[16][4][4] __attribute__((aligned(16)));
 
     x264_dct_init( 0, &dct_c );
     x264_dct_init( cpu_ref, &dct_ref);
@@ -368,8 +388,8 @@ static int check_mc( int cpu_ref, int cpu_new )
         if( mc_a.name[i] != mc_ref.name[i] ) \
         { \
             used_asm = 1; \
-            mc_c.name[i]( buf3, 32, buf2, 24, ##__VA_ARGS__ ); \
-            mc_a.name[i]( buf4, 32, buf2, 24, ##__VA_ARGS__ ); \
+            mc_c.name[i]( buf3, 32, buf2, 16, ##__VA_ARGS__ ); \
+            mc_a.name[i]( buf4, 32, buf2, 16, ##__VA_ARGS__ ); \
             if( memcmp( buf3, buf4, 1024 ) )               \
             { \
                 ok = 0; \
@@ -453,8 +473,9 @@ static int check_quant( int cpu_ref, int cpu_new )
     x264_quant_function_t qf_c;
     x264_quant_function_t qf_ref;
     x264_quant_function_t qf_a;
-    int16_t dct1[64], dct2[64];
-    uint8_t cqm_buf[64];
+    int16_t dct1[64]    __attribute__((__aligned__(16)));
+    int16_t dct2[64]    __attribute__((__aligned__(16)));
+    uint8_t cqm_buf[64] __attribute__((__aligned__(16)));
     int ret = 0, ok, used_asm;
     int oks[2] = {1,1}, used_asms[2] = {0,0};
     int i, i_cqm;

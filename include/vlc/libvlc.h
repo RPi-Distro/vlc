@@ -236,7 +236,7 @@ int libvlc_playlist_add_extended( libvlc_instance_t *, const char *,
  */
 int libvlc_playlist_delete_item( libvlc_instance_t *, int,
                                  libvlc_exception_t * );
-    
+
 typedef struct libvlc_input_t libvlc_input_t;
 
 /* Get the input that is currently being played by the playlist
@@ -273,7 +273,7 @@ vlc_bool_t  libvlc_input_will_play      ( libvlc_input_t *, libvlc_exception_t *
 float       libvlc_input_get_rate       ( libvlc_input_t *, libvlc_exception_t *);
 void        libvlc_input_set_rate       ( libvlc_input_t *, float, libvlc_exception_t *);
 int         libvlc_input_get_state      ( libvlc_input_t *, libvlc_exception_t *);
-        
+
 /** @} */
 
 /** defgroup libvlc_video Video
@@ -312,7 +312,7 @@ void libvlc_set_fullscreen( libvlc_input_t *, int, libvlc_exception_t * );
  * \return the fullscreen status (boolean)
  */
 int libvlc_get_fullscreen( libvlc_input_t *, libvlc_exception_t * );
-    
+
 /**
  * Get current video height
  * \param p_input the input
@@ -330,13 +330,29 @@ int libvlc_video_get_height( libvlc_input_t *, libvlc_exception_t * );
 int libvlc_video_get_width( libvlc_input_t *, libvlc_exception_t * );
 
 /**
+ * Get current video aspect ratio
+ * \param p_input the input
+ * \param p_exception an initialized exception
+ * \return the video aspect ratio
+ */
+char *libvlc_video_get_aspect_ratio( libvlc_input_t *, libvlc_exception_t * );
+
+/**
+ * Set new video aspect ratio
+ * \param p_input the input
+ * \param psz_aspect new video aspect-ratio
+ * \param p_exception an initialized exception
+ */
+void libvlc_video_set_aspect_ratio( libvlc_input_t *, char *, libvlc_exception_t * );
+
+/**
  * Take a snapshot of the current video window
  * \param p_input the input
  * \param psz_filepath the path where to save the screenshot to
  * \param p_exception an initialized exception
  */
 void libvlc_video_take_snapshot( libvlc_input_t *, char *, libvlc_exception_t * );
-    
+
 int libvlc_video_destroy( libvlc_input_t *, libvlc_exception_t *);
 
 /**
@@ -348,7 +364,7 @@ int libvlc_video_destroy( libvlc_input_t *, libvlc_exception_t *);
  * \return the mute status (boolean)
  */
 void libvlc_video_resize( libvlc_input_t *, int, int, libvlc_exception_t *);
-    
+
 /**
 * Downcast to this general type as placeholder for a platform specific one, such as:
 *  Drawable on X11,
@@ -443,7 +459,6 @@ vlc_bool_t libvlc_audio_get_mute( libvlc_instance_t *, libvlc_exception_t * );
  */
 void libvlc_audio_set_mute( libvlc_instance_t *, vlc_bool_t , libvlc_exception_t * );
 
-
 /**
  * Get current audio level
  * \param p_instance libvlc instance
@@ -451,7 +466,6 @@ void libvlc_audio_set_mute( libvlc_instance_t *, vlc_bool_t , libvlc_exception_t
  * \return the audio level (int)
  */
 int libvlc_audio_get_volume( libvlc_instance_t *, libvlc_exception_t * );
-
 
 /**
  * Set current audio level
@@ -529,9 +543,6 @@ void libvlc_vlm_set_input( libvlc_instance_t *, char *, char*,
 void libvlc_vlm_set_loop( libvlc_instance_t *, char *, int,
                           libvlc_exception_t *);
 
-
-
-
 /**
  * Edit the parameters of a media. This will delete all existing inputs and
  * add the specified one.
@@ -553,7 +564,7 @@ void libvlc_vlm_change_media( libvlc_instance_t *, char *, char *, char* ,
  * \param p_instance the instance
  * \param psz_name the name of the broadcast
  * \param p_exception an initialized exception
- */ 
+ */
 void libvlc_vlm_play_media ( libvlc_instance_t *, char *, libvlc_exception_t * );
 
 /**
@@ -561,21 +572,120 @@ void libvlc_vlm_play_media ( libvlc_instance_t *, char *, libvlc_exception_t * )
  * \param p_instance the instance
  * \param psz_name the name of the broadcast
  * \param p_exception an initialized exception
- */ 
+ */
 void libvlc_vlm_stop_media ( libvlc_instance_t *, char *, libvlc_exception_t * );
 
-    
 /**
  * Pauses the named broadcast.
  * \param p_instance the instance
  * \param psz_name the name of the broadcast
  * \param p_exception an initialized exception
- */ 
+ */
 void libvlc_vlm_pause_media( libvlc_instance_t *, char *, libvlc_exception_t * );
-    
-    
 
 /** @} */
+/** @} */
+
+/*****************************************************************************
+ * Message log handling
+ *****************************************************************************/
+
+/** defgroup libvlc_log Log
+ * \ingroup libvlc
+ * LibVLC Message Logging
+ * @{
+ */
+
+/** This structure is opaque. It represents a libvlc log instance */
+typedef struct libvlc_log_t libvlc_log_t;
+
+/** This structure is opaque. It represents a libvlc log iterator */
+typedef struct libvlc_log_iterator_t libvlc_log_iterator_t;
+
+typedef struct libvlc_log_message_t
+{
+    unsigned    sizeof_msg;   /* sizeof() of message structure, must be filled in by user */
+    int         i_severity;   /* 0=INFO, 1=ERR, 2=WARN, 3=DBG */
+    const char *psz_type;     /* module type */
+    const char *psz_name;     /* module name */
+    const char *psz_header;   /* optional header */
+    const char *psz_message;  /* message */
+} libvlc_log_message_t;
+
+/**
+ * Returns the VLC messaging verbosity level
+ * \param p_instance libvlc instance
+ * \param exception an initialized exception pointer
+ */
+unsigned libvlc_get_log_verbosity( const libvlc_instance_t *p_instance, libvlc_exception_t *p_e );
+
+/**
+ * Set the VLC messaging verbosity level
+ * \param p_log libvlc log instance
+ * \param exception an initialized exception pointer
+ */
+void libvlc_set_log_verbosity( libvlc_instance_t *p_instance, unsigned level, libvlc_exception_t *p_e );
+
+/**
+ * Open an instance to VLC message log 
+ * \param p_instance libvlc instance
+ * \param exception an initialized exception pointer
+ */
+libvlc_log_t *libvlc_log_open( const libvlc_instance_t *, libvlc_exception_t *);
+
+/**
+ * Close an instance of VLC message log 
+ * \param p_log libvlc log instance
+ * \param exception an initialized exception pointer
+ */
+void libvlc_log_close( libvlc_log_t *, libvlc_exception_t *);
+
+/**
+ * Returns the number of messages in log
+ * \param p_log libvlc log instance
+ * \param exception an initialized exception pointer
+ */
+unsigned libvlc_log_count( const libvlc_log_t *, libvlc_exception_t *);
+
+/**
+ * Clear all messages in log
+ *  the log should be cleared on a regular basis to avoid clogging
+ * \param p_log libvlc log instance
+ * \param exception an initialized exception pointer
+ */
+void libvlc_log_clear( libvlc_log_t *, libvlc_exception_t *);
+
+/**
+ * Allocate and returns a new iterator to messages in log
+ * \param p_log libvlc log instance
+ * \param exception an initialized exception pointer
+ */
+libvlc_log_iterator_t *libvlc_log_get_iterator( const libvlc_log_t *, libvlc_exception_t *);
+
+/**
+ * Releases a previoulsy allocated iterator
+ * \param p_log libvlc log iterator 
+ * \param exception an initialized exception pointer
+ */
+void libvlc_log_iterator_free( libvlc_log_iterator_t *p_iter, libvlc_exception_t *p_e );
+
+/**
+ * Returns whether log iterator has more messages 
+ * \param p_log libvlc log iterator
+ * \param exception an initialized exception pointer
+ */
+int libvlc_log_iterator_has_next( const libvlc_log_iterator_t *p_iter, libvlc_exception_t *p_e );
+
+/**
+ * Returns next log message
+ *   the content of message must not be freed
+ * \param p_log libvlc log iterator
+ * \param exception an initialized exception pointer
+ */
+libvlc_log_message_t *libvlc_log_iterator_next( libvlc_log_iterator_t *p_iter,
+                                                struct libvlc_log_message_t *buffer,
+                                                libvlc_exception_t *p_e );
+
 /** @} */
 
 # ifdef __cplusplus

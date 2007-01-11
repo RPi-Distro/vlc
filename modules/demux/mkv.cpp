@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: mkv.cpp 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: mkv.cpp 18346 2006-12-09 23:14:57Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -38,6 +38,7 @@
 #include <codecs.h>                        /* BITMAPINFOHEADER, WAVEFORMATEX */
 #include "iso_lang.h"
 #include "vlc_meta.h"
+#include "charset.h"
 
 #include <iostream>
 #include <cassert>
@@ -1491,16 +1492,16 @@ static int Open( vlc_object_t * p_this )
                 }
             }
 
-            struct dirent *p_file_item;
-            DIR *p_src_dir = opendir(s_path.c_str());
+            DIR *p_src_dir = (DIR *)utf8_opendir(s_path.c_str());
 
             if (p_src_dir != NULL)
             {
-                while ((p_file_item = (dirent *) readdir(p_src_dir)))
+                const char *psz_file;
+                while ((psz_file = utf8_readdir(p_src_dir)) != NULL)
                 {
-                    if (strlen(p_file_item->d_name) > 4)
+                    if (strlen(psz_file) > 4)
                     {
-                        s_filename = s_path + DIRECTORY_SEPARATOR + p_file_item->d_name;
+                        s_filename = s_path + DIRECTORY_SEPARATOR + psz_file;
 
 #ifdef WIN32
                         if (!strcasecmp(s_filename.c_str(), p_demux->psz_path))
@@ -1545,8 +1546,9 @@ static int Open( vlc_object_t * p_this )
                             }
                         }
                     }
+                    LocaleFree (psz_file);
                 }
-                closedir( p_src_dir );
+                vlc_closedir_wrapper( p_src_dir );
             }
         }
 
@@ -2383,6 +2385,20 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
             tracks[i_track]->fmt.p_extra = malloc( tracks[i_track]->i_extra_data );
             memcpy( tracks[i_track]->fmt.p_extra, tracks[i_track]->p_extra_data, tracks[i_track]->i_extra_data );
         }
+        else if( !strcmp( tracks[i_track]->psz_codec, "A_WAVPACK4" ) )
+        {
+            tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'W', 'V', 'P', 'K' );
+            tracks[i_track]->fmt.i_extra = tracks[i_track]->i_extra_data;
+            tracks[i_track]->fmt.p_extra = malloc( tracks[i_track]->i_extra_data );
+            memcpy( tracks[i_track]->fmt.p_extra, tracks[i_track]->p_extra_data, tracks[i_track]->i_extra_data );
+        }
+        else if( !strcmp( tracks[i_track]->psz_codec, "A_TTA1" ) )
+        {
+            tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'T', 'T', 'A', '1' );
+            tracks[i_track]->fmt.i_extra = tracks[i_track]->i_extra_data;
+            tracks[i_track]->fmt.p_extra = malloc( tracks[i_track]->i_extra_data );
+            memcpy( tracks[i_track]->fmt.p_extra, tracks[i_track]->p_extra_data, tracks[i_track]->i_extra_data );
+        }
         else if( !strcmp( tracks[i_track]->psz_codec, "A_PCM/INT/BIG" ) ||
                  !strcmp( tracks[i_track]->psz_codec, "A_PCM/INT/LIT" ) ||
                  !strcmp( tracks[i_track]->psz_codec, "A_PCM/FLOAT/IEEE" ) )
@@ -2396,18 +2412,6 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
                 tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'a', 'r', 'a', 'w' );
             }
             tracks[i_track]->fmt.audio.i_blockalign = ( tracks[i_track]->fmt.audio.i_bitspersample + 7 ) / 8 * tracks[i_track]->fmt.audio.i_channels;
-        }
-        else if( !strcmp( tracks[i_track]->psz_codec, "A_TTA1" ) )
-        {
-            /* FIXME: support this codec */
-            msg_Err( &sys.demuxer, "TTA not supported yet[%d, n=%d]", (int)i_track, tracks[i_track]->i_number );
-            tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'u', 'n', 'd', 'f' );
-        }
-        else if( !strcmp( tracks[i_track]->psz_codec, "A_WAVPACK4" ) )
-        {
-            /* FIXME: support this codec */
-            msg_Err( &sys.demuxer, "Wavpack not supported yet[%d, n=%d]", (int)i_track, tracks[i_track]->i_number );
-            tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'u', 'n', 'd', 'f' );
         }
         else if( !strcmp( tracks[i_track]->psz_codec, "S_TEXT/UTF8" ) )
         {

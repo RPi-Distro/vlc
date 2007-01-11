@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2000-2004 the VideoLAN team
  *
- * $Id: xtag.c 14873 2006-03-22 12:14:30Z zorglub $
+ * $Id: xtag.c 17050 2006-10-13 00:07:54Z hartman $
  *
  * Authors: Conrad Parker <Conrad.Parker@csiro.au>
  *          Andre Pang <Andre.Pang@csiro.au>
@@ -203,6 +203,7 @@ static xml_reader_t *ReaderCreate( xml_t *p_xml, stream_t *s )
         return 0;
     }
 
+    free( p_buffer );
     p_reader = malloc( sizeof(xml_reader_t) );
     p_reader->p_sys = malloc( sizeof(xml_reader_sys_t) );
     p_reader->p_sys->p_root = p_root;

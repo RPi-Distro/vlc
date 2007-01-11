@@ -2,7 +2,7 @@
 # src/Makefile : Dearchive and compile all files necessary
 # ***************************************************************************
 # Copyright (C) 2003 - 2006 the VideoLAN team
-# $Id: Makefile 16961 2006-10-07 15:29:34Z hartman $
+# $Id: Makefile 18350 2006-12-10 12:28:28Z hartman $
 #
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>
@@ -36,6 +36,7 @@ include ./packages.mak
 
 export PATH := $(PREFIX)/bin:$(EXTRA_PATH):$(PATH)
 export PKG_CONFIG_PATH
+export PKG_CONFIG_LIBDIR = $(PREFIX)/lib/pkgconfig
 export DYLD_LIBRARY_PATH = $(PREFIX)/lib
 # following is required for configure scripts that check dyld libraries
 # by building and running a test app 
@@ -176,9 +177,9 @@ else
 	.FLAC .speex .faad .faac .lame .ebml  .matroska .ffmpeg .dvdcss \
 	.live .goom2k4 .caca .mod .x264  .xml .twolame \
 	.png .gpg-error .gcrypt .gnutls .mpcdec \
-	.dvdnav .dvbpsi .wxwidgets .qt4 .dirac \
+	.dvdnav .dvbpsi .wxwidgets .dirac .SDL_image \
 	.dx_headers .dshow_headers .aclocal .gecko-win32 .unicows .libdca
-#	.SDL_image  .daap .cddb .cdio .vcdimager .portaudio 
+#	.daap .cddb .cdio .vcdimager .portaudio 
   else
 
    ifdef HAVE_WINCE
@@ -190,10 +191,10 @@ else
    all: .iconv .intl .freetype .fribidi .zlib \
 	.a52 .mpeg2 .id3tag .mad .ogg .vorbis .vorbisenc .theora \
 	.FLAC .speex .faad .faac .lame .ebml .matroska .ffmpeg .dvdcss \
-	.live .goom2k4 .caca .mod .x264  .xml .twolame\
-	.png .gpg-error .gcrypt .gnutls .mpcdec\
+	.live .goom2k4 .caca .mod .x264  .xml .twolame \
+	.png .gpg-error .gcrypt .gnutls .mpcdec \
 	.dvdnav .dvbpsi .wxwidgets .dirac \
-	.aclocal .libdca
+	.aclocal .libdca .libraw1394 .libdc1394
 #	.png .gpg-error .gcrypt .gnutls .mpcdec\
 #	.SDL_image  .daap .cddb .cdio .vcdimager 
    endif
@@ -309,11 +310,11 @@ endif
 # autoconf
 # ***************************************************************************
 
-autoconf-$(AUTOCONF_VERSION).tar.gz:
+autoconf-$(AUTOCONF_VERSION).tar.bz2:
 	$(WGET) $(AUTOCONF_URL)
 
-autoconf: autoconf-$(AUTOCONF_VERSION).tar.gz
-	$(EXTRACT_GZ)
+autoconf: autoconf-$(AUTOCONF_VERSION).tar.bz2
+	$(EXTRACT_BZ2)
 
 .autoconf: autoconf
 	(cd $<; ./configure --prefix=$(PREFIX) && make && make install)
@@ -321,7 +322,7 @@ autoconf: autoconf-$(AUTOCONF_VERSION).tar.gz
 
 CLEAN_FILE += .autoconf
 CLEAN_PKG += autoconf
-DISTCLEAN_PKG += autoconf-$(AUTOCONF_VERSION).tar.gz
+DISTCLEAN_PKG += autoconf-$(AUTOCONF_VERSION).tar.bz2
 
 # ***************************************************************************
 # libtool
@@ -533,17 +534,16 @@ DISTCLEAN_PKG += a52dec-$(A52DEC_VERSION).tar.gz
 #	cvs -d $(MPEG2DEC_CVSROOT) co mpeg2dec
 #	(cd $@; ./bootstrap)
 
-#mpeg2dec-$(MPEG2DEC_VERSION).tar.gz:
-#	$(WGET) $(MPEG2DEC_URL)
+mpeg2dec-$(MPEG2DEC_VERSION).tar.gz:
+	$(WGET) $(MPEG2DEC_URL)
 
 # It is easier to use bootstrapped versions...
-mpeg2dec-$(MPEG2DEC_VERSION).tar.gz:
-	$(WGET) $(MPEG2DEC_SNAPSHOT)
-	mv mpeg2dec-$(MPEG2DEC_DATE).tar.gz $@
+#mpeg2dec-$(MPEG2DEC_VERSION).tar.gz:
+#	$(WGET) $(MPEG2DEC_SNAPSHOT)
+#	mv mpeg2dec-$(MPEG2DEC_DATE).tar.gz $@
 
 mpeg2dec: mpeg2dec-$(MPEG2DEC_VERSION).tar.gz
 	$(EXTRACT_GZ)
-	patch -p 0 < Patches/mpeg2dec.patch
 
 .mpeg2: mpeg2dec
 	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --without-x --disable-sdl && cd libmpeg2 && make && make install && cd ../include && make && make install)
@@ -928,6 +928,12 @@ endif
 ifdef HAVE_WINCE
 	patch -p 1 < Patches/ffmpeg-svn-wince.patch
 endif
+ifdef HAVE_WIN32
+	(cd $@; patch -p 0 < ../Patches/ffmpeg-alignment.patch)
+endif
+ifdef HAVE_BEOS
+	(cd $@; patch -p0 < ../Patches/ffmpeg-alignment.patch)
+endif
 
 ffmpeg-$(FFMPEG_VERSION).tar.gz:
 	$(WGET) $(FFMPEG_URL)
@@ -1121,14 +1127,12 @@ goom: goom$(GOOM2k4_VERSION).tar.gz
 	$(EXTRACT_GZ)
 ifdef HAVE_DARWIN_OS
 	patch -p 0 < Patches/goom.patch
-	patch -p 0 < Patches/goom2k4-0-mmx.patch
 endif
 ifdef HAVE_WIN32
 	(cd $@; dos2unix configure.in)
-	patch -p 0 <Patches/goom2k4-0-win32.patch
-endif
-ifndef HAVE_DARWIN_OS
-	(cd goom; patch -p 0 <../Patches/goom2k4-0-nommx.patch; cd -)
+	patch -p 0 < Patches/goom2k4-0-win32.patch
+else
+	patch -p 0 < Patches/goom2k4-0-mmx.patch
 endif
 
 .goom2k4: goom
@@ -1186,7 +1190,7 @@ CLEAN_PKG += libdca
 
 ifdef SVN
 x264: 
-	$(SVN) co svn://svn.videolan.org/x264/trunk/ -r 501 x264
+	$(SVN) co svn://svn.videolan.org/x264/trunk/ -r 604 x264
 ifdef HAVE_WIN32
 	(cd x264; patch -p 0 < ../Patches/x264-svn-win32.patch )
 endif
@@ -1204,12 +1208,8 @@ else
 endif
 endif
 
-ifeq ($(HOST),i686-apple-darwin8)
-.x264: x264 .nasm
-else
 .x264: x264
-endif
-	(cd $<; ./configure $(X264CONF) --prefix="$(PREFIX)" && make && make install)
+	(cd $<; ./configure $(X264CONF) --prefix="$(PREFIX)" --enable-pic && make && make install)
 	touch $@
 
 CLEAN_FILE += .x264
@@ -1287,7 +1287,7 @@ libcdio: libcdio-$(CDIO_VERSION).tar.gz
 	$(EXTRACT_GZ)
 
 .cdio: libcdio
-	(cd $<; ./configure --prefix=$(PREFIX) --without-vcdinfo --disable-shared && make && make install)
+	(cd $<; sed -e 's%@ENABLE_CPP_TRUE@SUBDIRS = C++%@ENABLE_CPP_TRUE@SUBDIRS = %' -i.orig example/Makefile.in && ./configure --prefix=$(PREFIX) --without-vcdinfo --disable-shared && make && make install)
 	touch $@
 
 CLEAN_FILE += .cdio
@@ -1332,25 +1332,6 @@ wxwidgets: wxWidgets-$(WXWIDGETS_VERSION).tar.gz
 CLEAN_FILE += .wxwidgets
 CLEAN_PKG += wxwidgets
 DISTCLEAN_PKG += wxWidgets-$(WXWIDGETS_VERSION).tar.gz
-
-# ***************************************************************************
-# qt4 (win32 binary)
-# ***************************************************************************
-
-qt4-$(QT4_VERSION)-win32-bin.tar.gz:
-	$(WGET) $(QT4_URL)
-
-qt4: qt4-$(QT4_VERSION)-win32-bin.tar.gz
-	$(EXTRACT_GZ)
-
-
-.qt4: qt4
-	(cd qt4;mkdir -p $(PREFIX)/bin; mkdir -p $(PREFIX)/include;mkdir -p $(PREFIX)/lib/pkgconfig;rm -f $(PREFIX)/lib/pkgconfig/Qt*; sed 's,@@PREFIX@@,$(PREFIX),' lib/pkgconfig/QtCore.pc.in > $(PREFIX)/lib/pkgconfig/QtCore.pc;sed 's,@@PREFIX@@,$(PREFIX),' lib/pkgconfig/QtGui.pc.in > $(PREFIX)/lib/pkgconfig/QtGui.pc;cp -r include/* $(PREFIX)/include;cp lib/*a $(PREFIX)/lib;cp bin/rcc bin/uic bin/moc $(PREFIX)/bin)
-	touch $@
-
-CLEAN_FILE += .qt4
-CLEAN_PKG += qt4
-DISTCLEAN_PKG += qt4-$(QT4_VERSION).tar.gz
 
 # ***************************************************************************
 # zlib
@@ -1520,6 +1501,68 @@ endif
 	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-nls --disable-shared && make && make install)
 #	$(INSTALL_NAME)
 	touch $@
+# libraw1394
+# ***************************************************************************
+
+#ifdef SVN
+#libraw1394:
+#	$(SVN) co -r 325 $(LIBDC1394_SVN)/libraw1394/trunk/libraw1394  libraw1394
+#        (cd $<; libtoolize --copy --force; \
+#                autopoint -f; \
+#                aclocal -I extras/contrib/share/aclocal; \
+#                autoconf; \
+#                autoheader; \
+#                automake --add-missing --copy -Wall)
+#
+#else
+libraw1394-$(LIBRAW1394_VERSION).tar.gz:
+	$(WGET) $(LIBRAW1394_URL)
+
+libraw1394: libraw1394-$(LIBRAW1394_VERSION).tar.gz
+	$(EXTRACT_GZ)
+#endif
+
+.libraw1394: libraw1394
+	(cd $<; ./configure --prefix=$(PREFIX) && make && make DESTDIR=$(PRFIX) install)
+	touch $@
+	
+CLEAN_file += .libraw1394
+CLEAN_PKG += libraw1394
+DISTCLEAN_PKG += libraw1394-$(LIBRAW1394_VERSION)
+
+# ***************************************************************************
+# libdc1394
+# ***************************************************************************
+
+#ifdef SVN
+#libdc1394:
+#	$(SVN) co -r 325 $(LIBDC1394_SVN)/libdc1394/trunk/libdc1394  libdc1394
+#        (cd $<; libtoolize --copy --force; \
+#                autopoint -f; \
+#                aclocal -I extras/contrib/share/aclocal; \
+#                autoconf; \
+#                autoheader; \
+#                automake --add-missing --copy -Wall)
+#
+#else
+libdc1394-$(LIBDC1394_VERSION).tar.gz:
+	$(WGET) $(LIBDC1394_URL)
+
+libdc1394: libdc1394-$(LIBDC1394_VERSION).tar.gz
+	$(EXTRACT_GZ)
+#endif
+
+.libdc1394: libdc1394
+	(cd $<; ./configure --prefix=$(PREFIX) && \
+	 patch -p1 < ../Patches/libdc1394-noexamples.patch && \
+	 make && make DESTDIR=$(PRFIX) install)
+	touch $@
+	
+CLEAN_file += .libdc1394
+CLEAN_PKG += libdc1394
+DISTCLEAN_PKG += libdc1394-$(LIBDC1394_VERSION)
+
+# ***************************************************************************
 
 CLEAN_FILE += .gpg-error
 CLEAN_PKG += libgpg-error
@@ -1720,21 +1763,17 @@ DISTCLEAN_PKG += jpeg-$(JPEG_VERSION).tar.gz
 
 tiff-$(TIFF_VERSION).tar.gz:
 	$(WGET) $(TIFF_URL)
-	mv tiff-$(TIFF_VERSION)-tar.gz $@
 
 tiff: tiff-$(TIFF_VERSION).tar.gz 
 	$(EXTRACT_GZ)
-	patch -p 0 < Patches/tiff.patch
-ifneq ($(HOST),$(BUILD))
-	patch -p 0 < Patches/tiff-cross.patch
-endif
 
 .tiff: tiff
 ifdef HAVE_WIN32
-	(cd $<;  ./configure  --noninteractive --target=$(HOST) --with-CC=$(HOST)-gcc --with-DIR_BIN=$(PREFIX)/bin --with-DIR_LIB=$(PREFIX)/lib --with-DIR_INC=$(PREFIX)/include --with-CFLAGS="$(CFLAGS)" --with-JPEG=no --with-ZIP=no  && make -C libtiff && make -C libtiff install)
+	(cd $<;  ./configure --host=$(HOST) --with-CFLAGS="$(CFLAGS)" --with-JPEG=no --with-ZIP=no --prefix=$(PREFIX) && make -C port && make -C libtiff && make -C libtiff install)
 else
-	(cd $<; ./configure --noninteractive --with-DIR_BIN=$(PREFIX)/bin --with-DIR_LIB=$(PREFIX)/lib --with-DIR_INC=$(PREFIX)/include --with-CFLAGS="$(CFLAGS)" --with-JPEG=no --with-ZIP=no && make -C libtiff && make -C libtiff install)
+	(cd $<; ./configure --with-CFLAGS="$(CFLAGS)" --with-JPEG=no --with-ZIP=no --prefix=$(PREFIX) && make -C port && make -C libtiff && make -C libtiff install)
 endif
+	$(INSTALL_NAME)
 	touch $@
 
 CLEAN_FILE += .tiff
@@ -1750,10 +1789,9 @@ SDL-$(SDL_VERSION).tar.gz:
 
 SDL: SDL-$(SDL_VERSION).tar.gz 
 	$(EXTRACT_GZ)
-	patch -p 0 < Patches/SDL.patch
 
 .SDL: SDL
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-audio --disable-video-x11 --disable-video-aalib --disable-video-dga --disable-video-fbcon --disable-video-directfb --disable-video-ggi --disable-video-svga --disable-directx --disable-joystick --disable-cdrom --disable-threads --disable-sdl-dlopen CFLAGS="$(CFLAGS)" && make && make install)
+	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-audio --disable-video-x11 --disable-video-aalib --disable-video-dga --disable-video-fbcon --disable-video-directfb --disable-video-ggi --disable-video-svga --disable-directx --enable-joystick --disable-cdrom --disable-threads --disable-sdl-dlopen CFLAGS="$(CFLAGS)" && make && make install)
 	$(INSTALL_NAME)
 	touch $@
 
@@ -1773,7 +1811,7 @@ SDL_image: SDL_image-$(SDL_IMAGE_VERSION).tar.gz
 	patch -p 0 < Patches/SDL_image.patch
 
 .SDL_image: SDL_image .SDL .png .jpeg .tiff
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --enable-tif CFLAGS="$(CFLAGS)" && make && make install)
+	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --enable-tif --disable-sdltest CFLAGS="$(CFLAGS)" && make && make install)
 	$(INSTALL_NAME)
 	touch $@
 

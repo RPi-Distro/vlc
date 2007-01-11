@@ -1,4 +1,4 @@
-$Id: THANKS 17033 2006-10-12 12:01:35Z funman $
+$Id: THANKS 18225 2006-12-03 15:53:10Z xtophe $
 
 VLC makes extensive use of the following persons' code:
 
@@ -16,11 +16,13 @@ André de Barros Martins Ribeiro <andrerib at ajato.com.br> - Brazilian portugue
 Andre Pang <adre.pang at csiro dot au> - Annodex support
 Andres Krapf <dae at via.ecp.fr> - FreeBSD port and tests, KDE interface
 Andrey Brilevskiy <director at macwest.ru> - Russian translation
+Andrea Guzzo <xant at xant dot net> - Digital cameras support (dc1394)
 Andy Lindsay <andy_vl at ananam.com> - fixes in the TS demux
 Arkadiusz Lipiec <A.Lipiec at elka.pw.edu.pl> - Polish translation
 Arkadiusz Miskiewicz <misiek at pld.ORG.PL> - autoconf and Makefile patches
 Arnaud Gomes-do-Vale <arnaud at carrosse.frmug.org> - autoconf patches
 Arwed v. Merkatz <v.merkatz at gmx dot net> - Gamma correction for adjust filter
+Aurelien - Patch for modules/stream_output/rtp.c proper test for NULL
 Basil Achermann <vlc at acherma dot com> - Patch to handle esc and space key events from VLCControl (OSX)
 Barak Ori <barakori at gmail dot com> - Bidi fixes
 Benjamin Mironer <bmironer at noos.fr> - Mac OS X fixes
@@ -60,6 +62,7 @@ Eurodata Computer Club <retron.info> - VLC icon design (v0.8.4)
 François Seingier <francois.seingier at club-internet.fr> - TTL setting in the wx stream output dialog
 Frank Chao <frank0624 at gmail.com> - Chinese Traditional translation
 Fumio Nakayama <endymion at ca2.so-net.ne.jp> - Japanese translation
+Gabor Kelemen <kelemeng at gnome.hu> - Hungarian translation
 Georgi Chorbadzhiyski <gf at unixsol dot org> - HTTP access error handling fix
 Greg Farrell <greg at gregfarell dot org> - rc interface "enqueue" command
 Gregory Hazel <ghazel at gmail dot com> - wxWidgets fixes and improvements
@@ -84,6 +87,7 @@ Johen Michael Zorko <zorko at att.net> - fix for delay issues in udp sout
 John Paul Lorenti <jpl31 at columbia.edu> - ALSA device selection patch
 Jonas Larsen <jonas at vrt.dk> - Danish translation
 Julien Blache <jb at technologeek.org> - disc ejection code
+Kang Jeong-Hee <keizie 4t gmail d0t com> - Korean l10n
 kty0ne - WinAmp 5 skin for VLC
 Kevin H. Patterson <kevpatt at khptech dot com> - Theora framesize calculation patch by Kevin H. Patterson (kevpatt at khptech dot com
 Laurent Jonqueres <laurent_jonqueres at yahoo.fr> - Occitan localization
@@ -92,10 +96,11 @@ Lorena Gomes - Catalan translation
 Mahrazi Mohd Kamal <mahrazi at gmail.com> - Malay Translation
 Marc Nolette <nolette at videotron.ca> - PVR support in DirectShow input
 Marco Munderloh <Marco.Munderloh at web.de> - HTTP fix for Win32 to URL filenames
-Mari�n Hikan�k- <podnety _at_ mojepreklady _dot_ net> - Slovak localisation
+Marián Hikaník <podnety _at_ mojepreklady _dot_ net> - Slovak localisation
 Mark Gritter <mgritter at kealia.com> - fix for netlist packet leak in demuxPSI
 Markus Kern <markus-kern at gmx dot net> - video output window fixes (win32)
 Markus Kuespert <ltlBeBoy at beosmail.com> - BeOS CSS support
+Matej Urbančič <matej.urban at gmail.com> - Slovenian translation
 Mathias C. Berens | welcome-soft <berens at welcome-soft.de> - German translation
 Mathias Kretschmer <mathias at research.att.com> - IP Multicast support
 Mats Rojestal <mats.rojestal at bredband dot net> - compilation fixes for Solaris 9
@@ -119,6 +124,7 @@ Pavlov Konstantin “thresh” - several Linux build system fixes
 Petr Vacek - FTP cleartext authentication
 Philippe Van Hecke <philippe at belnet dot be> - SAP header hash patch
 Pierre Marc Dumuid <pierre.dumuid at adelaide dot edu dot au> - Playlist patches
+Pittayakom Sa-ingtong <develop5 at datawiz dot co dot th> - Thaï localisation
 Régis Duchesne <regis at via.ecp.fr> - original VLC code
 Remco Poortinga <poortinga at telin.nl> - IPv6 multicast patch
 Rene Gollent <rgollent at u.arizona.edu> - BeOS interface fix
@@ -127,6 +133,7 @@ Rudolf Cornelissen <rag.cornelissen at inter.nl.net> - BeOS fixes
 Scott Caudle <dorkmanzcot at gmail dot com> - Visualization, WX 
 improvements
 Sebastien Chaumat <Sebastien.Chaumat at ens-lyon.fr> - YOPY port tests
+Simon Damkjær Andersen <simondamkjaer at gmail.com> - playmode icons and the entire Fullscreen Panel design for the OSX GUI (v0.8.6)
 Steve Lhomme <steve dot lhomme at free dot fr> - MSVC fixes and Matroska enhancements
 Steve Brown <sbrown at cortland.com> - fix for optional PES size bug
 Steven M. Schultz <sms at TO.GD-ES.COM> - BSD/OS port
@@ -140,6 +147,7 @@ Udo Richter <udo underscore richter at gmx dot de> - Trancode padding / cropping
 Valek Filippov <frob at df.ru> - Russian translation
 Vicente Jimenez Aguilar <vice at v1ce.net> - Spanish translation
 Vincent van den Heuvel <heuvel@mac.com> - OSX about window artwork (v0.8.4)
+Vincenzo Reale <smart2128 at baslug dot org> - Italian localisation
 Vitalijus Slavinskas <Vitalijus.Slavinskas at stud.ktu dot lt> - nsv patches
 Vitaly V. Bursov <vitalyvb at ukr dot net>
 Vladimir Chernyshov - MMX motion optimizations

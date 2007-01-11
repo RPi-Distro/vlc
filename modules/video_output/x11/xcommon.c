@@ -2,7 +2,7 @@
  * xcommon.c: Functions common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: xcommon.c 16977 2006-10-08 09:41:25Z jpsaman $
+ * $Id: xcommon.c 18293 2006-12-06 16:49:45Z courmisch $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -887,7 +887,37 @@ static int ManageVideo( vout_thread_t *p_vout )
 
         /* Update the object variable and trigger callback */
         val.b_bool = !p_vout->b_fullscreen;
+
+        /*
+         * FIXME FIXME FIXME FIXME: EXPLICIT HACK.
+         * On the one hand, we cannot hold the lock while triggering a
+         * callback, as it causes a deadlock with video-on-top handling.
+         * On the other hand, we have to lock while triggering the
+         * callback to:
+         *  1/ make sure video-on-top remains in sync with fullscreen
+         *    (i.e. unlocking creates a race condition if fullscreen is
+         *     switched on and off VERY FAST).
+         *  2/ avoid possible corruption bugs if another thread gets the
+         *     mutex and modifies our data in-between.
+         *
+         * This is obviously contradictory. Correct solutions may include:
+         *  - putting the fullscreen NAND video-on-top logic out of libvlc,
+         *    back into the video output plugins (ugly code duplication...),
+         *  - serializing fullscreen and video-on-top handling properly
+         *    instead of doing it via the fullscreen callback. That's got to
+         *    be the correct one.
+         */
+#ifdef MODULE_NAME_IS_xvmc
+        xvmc_context_reader_unlock( &p_vout->p_sys->xvmc_lock );
+#endif
+        vlc_mutex_unlock( &p_vout->p_sys->lock );
+
         var_Set( p_vout, "fullscreen", val );
+
+        vlc_mutex_lock( &p_vout->p_sys->lock );
+#ifdef MODULE_NAME_IS_xvmc
+        xvmc_context_reader_lock( &p_vout->p_sys->xvmc_lock );
+#endif
 
         ToggleFullScreen( p_vout );
         p_vout->i_changes &= ~VOUT_FULLSCREEN_CHANGE;
@@ -1094,6 +1124,7 @@ static int CreateWindow( vout_thread_t *p_vout, x11_window_t *p_win )
                     XStoreName( p_vout->p_sys->p_display,
                                p_win->base_window, val.psz_string );
                 }
+                if( val.psz_string ) free( val.psz_string );
             }
         }
     }
@@ -1583,13 +1614,15 @@ static void ToggleFullScreen ( vout_thread_t *p_vout )
         else
 #endif
         {
-            /* The window wasn't necessarily created at the requested size */
-            p_vout->p_sys->p_win->i_x = p_vout->p_sys->p_win->i_y = 0;
-
 #ifdef HAVE_XF86VIDMODE
             XF86VidModeModeLine mode;
             int i_dummy;
+#endif
+            /* The window wasn't necessarily created at the requested size */
+            p_vout->p_sys->p_win->i_x = p_vout->p_sys->p_win->i_y = 0;
 
+
+#ifdef HAVE_XF86VIDMODE
             if( XF86VidModeGetModeLine( p_vout->p_sys->p_display,
                                         p_vout->p_sys->i_screen, &i_dummy,
                                         &mode ) )
@@ -1995,7 +2028,7 @@ static int InitDisplay( vout_thread_t *p_vout )
     XPixmapFormatValues *       p_formats;                 /* pixmap formats */
     XVisualInfo *               p_xvisual;            /* visuals information */
     XVisualInfo                 xvisual_template;         /* visual template */
-    int                         i_count;                       /* array size */
+    int                         i_count, i;                    /* array size */
 #endif
 
 #ifdef HAVE_SYS_SHM_H
@@ -2101,21 +2134,23 @@ static int InitDisplay( vout_thread_t *p_vout )
         p_formats = XListPixmapFormats( p_vout->p_sys->p_display, &i_count );
         p_vout->p_sys->i_bytes_per_pixel = 0;
 
-        for( ; i_count-- ; p_formats++ )
+        for( i = 0; i < i_count; i++ )
         {
             /* Under XFree4.0, the list contains pixmap formats available
              * through all video depths ; so we have to check against current
              * depth. */
-            if( p_formats->depth == (int)p_vout->p_sys->i_screen_depth )
+            if( p_formats[i].depth == (int)p_vout->p_sys->i_screen_depth )
             {
-                if( p_formats->bits_per_pixel / 8
+                if( p_formats[i].bits_per_pixel / 8
                         > (int)p_vout->p_sys->i_bytes_per_pixel )
                 {
                     p_vout->p_sys->i_bytes_per_pixel =
-                                               p_formats->bits_per_pixel / 8;
+                        p_formats[i].bits_per_pixel / 8;
                 }
             }
         }
+        if( p_formats ) XFree( p_formats );
+
         break;
     }
     p_vout->p_sys->p_visual = p_xvisual->visual;

@@ -2,7 +2,7 @@
  * generic_layout.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: generic_layout.cpp 16647 2006-09-14 14:58:57Z hartman $
+ * $Id: generic_layout.cpp 18282 2006-12-06 07:57:11Z ipkiss $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -27,6 +27,7 @@
 #include "os_factory.hpp"
 #include "os_graphics.hpp"
 #include "var_manager.hpp"
+#include "anchor.hpp"
 #include "../controls/ctrl_generic.hpp"
 #include "../controls/ctrl_video.hpp"
 #include "../utils/var_bool.hpp"
@@ -56,6 +57,11 @@ GenericLayout::~GenericLayout()
     if( m_pImage )
     {
         delete m_pImage;
+    }
+    list<Anchor*>::const_iterator it;
+    for( it = m_anchorList.begin(); it != m_anchorList.end(); it++ )
+    {
+        delete *it;
     }
 }
 

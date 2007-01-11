@@ -2,7 +2,7 @@
  * vcd.c : VCD input module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: vcd.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: vcd.c 17183 2006-10-20 21:33:16Z hartman $
  *
  * Author: Johan Bilien <jobi@via.ecp.fr>
  *
@@ -433,6 +433,9 @@ static int Seek( access_t *p_access, int64_t i_pos )
         p_access->info.i_update |= INPUT_UPDATE_SEEKPOINT;
         p_access->info.i_seekpoint = i_seekpoint;
     }
+
+    /* Reset eof */
+    p_access->info.b_eof = VLC_FALSE;
 
     return VLC_SUCCESS;
 }

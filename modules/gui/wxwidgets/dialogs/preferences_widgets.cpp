@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: preferences_widgets.cpp 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: preferences_widgets.cpp 18107 2006-11-27 13:44:11Z md $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -634,15 +634,15 @@ void StringListConfigControl::OnAction( wxCommandEvent& event )
 {
     int i_action = event.GetId() - wxID_HIGHEST;
 
-    module_config_t *p_item = config_FindConfig( p_this, GetName().mb_str() );
+    module_config_t *p_item = config_FindConfig( p_this, GetName().mb_str(wxConvUTF8) );
     if( !p_item ) return;
 
     if( i_action < 0 || i_action >= p_item->i_action ) return;
 
     vlc_value_t val;
     wxString value = GetPszValue();
-    *((const char **)&val.psz_string) = value.mb_str();
-    p_item->ppf_action[i_action]( p_this, GetName().mb_str(), val, val, 0 );
+    *((const char **)&val.psz_string) = value.mb_str(wxConvUTF8);
+    p_item->ppf_action[i_action]( p_this, GetName().mb_str(wxConvUTF8), val, val, 0 );
 
     if( p_item->b_dirty )
     {
@@ -851,14 +851,14 @@ void IntegerListConfigControl::OnAction( wxCommandEvent& event )
     int i_action = event.GetId() - wxID_HIGHEST;
 
     module_config_t *p_item;
-    p_item = config_FindConfig( p_this, GetName().mb_str() );
+    p_item = config_FindConfig( p_this, GetName().mb_str(wxConvUTF8) );
     if( !p_item ) return;
 
     if( i_action < 0 || i_action >= p_item->i_action ) return;
 
     vlc_value_t val;
     val.i_int = GetIntValue();
-    p_item->ppf_action[i_action]( p_this, GetName().mb_str(), val, val, 0 );
+    p_item->ppf_action[i_action]( p_this, GetName().mb_str(wxConvUTF8), val, val, 0 );
 
     if( p_item->b_dirty )
     {

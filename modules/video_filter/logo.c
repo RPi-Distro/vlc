@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: logo.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: logo.c 18201 2006-12-02 14:59:52Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>
@@ -265,11 +265,11 @@ void FreeLogoList( logo_list_t *p_logo_list )
     for( i = 0; i < p_logo_list->i_count; i++ )
     {
         logo_t *p_logo = &p_logo_list->p_logo[i];
-        if( p_logo[i].psz_file ) FREE( p_logo[i].psz_file );
-        if( p_logo[i].p_pic )
+        if( p_logo->psz_file ) FREE( p_logo->psz_file );
+        if( p_logo->p_pic )
         {
-            p_logo[i].p_pic->pf_release( p_logo[i].p_pic );
-            p_logo[i].p_pic = NULL;
+            p_logo->p_pic->pf_release( p_logo->p_pic );
+            p_logo->p_pic = NULL;
         }
     }
 }

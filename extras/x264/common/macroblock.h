@@ -182,17 +182,26 @@ static const int x264_mb_partition_pixel_table[17] =
 };
 
 /* zigzags are transposed with respect to the tables in the standard */
-static const int x264_zigzag_scan4[16] =
-{
+static const int x264_zigzag_scan4[2][16] =
+{{ // frame
     0,  4,  1,  2,  5,  8, 12,  9,  6,  3,  7, 10, 13, 14, 11, 15
-};
-static const int x264_zigzag_scan8[64] =
-{
+},
+{  // field
+    0,  1,  4,  2,  3,  5,  6,  7,  8,  9, 10, 11, 12, 13, 14, 15
+}};
+static const int x264_zigzag_scan8[2][64] =
+{{
     0,  8,  1,  2,  9, 16, 24, 17, 10,  3,  4, 11, 18, 25, 32, 40,
    33, 26, 19, 12,  5,  6, 13, 20, 27, 34, 41, 48, 56, 49, 42, 35,
    28, 21, 14,  7, 15, 22, 29, 36, 43, 50, 57, 58, 51, 44, 37, 30,
    23, 31, 38, 45, 52, 59, 60, 53, 46, 39, 47, 54, 61, 62, 55, 63
-};
+},
+{
+    0,  1,  2,  8,  9,  3,  4, 10, 16, 11,  5,  6,  7, 12, 17, 24,
+   18, 13, 14, 15, 19, 25, 32, 26, 20, 21, 22, 23, 27, 33, 40, 34,
+   28, 29, 30, 31, 35, 41, 48, 42, 36, 37, 38, 39, 43, 49, 50, 44,
+   45, 46, 47, 51, 56, 57, 52, 53, 54, 55, 58, 59, 60, 61, 62, 63
+}};
 
 static const uint8_t block_idx_x[16] =
 {
@@ -239,6 +248,8 @@ void x264_macroblock_cache_end( x264_t *h );
 
 void x264_macroblock_bipred_init( x264_t *h );
 
+void x264_prefetch_fenc( x264_t *h, x264_frame_t *fenc, int i_mb_x, int i_mb_y );
+
 /* x264_mb_predict_mv_16x16:
  *      set mvp with predicted mv for D_16x16 block
  *      h->mb. need only valid values from other blocks */
@@ -278,9 +289,6 @@ int  x264_mb_predict_non_zero_code( x264_t *h, int idx );
  *      might be, according to just partition type.)
  *      doesn't check for intra or cbp */
 int  x264_mb_transform_8x8_allowed( x264_t *h );
-
-void x264_mb_encode_i4x4( x264_t *h, int idx, int i_qscale );
-void x264_mb_encode_i8x8( x264_t *h, int idx, int i_qscale );
 
 void x264_mb_mc( x264_t *h );
 void x264_mb_mc_8x8( x264_t *h, int i8 );

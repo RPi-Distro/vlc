@@ -2,7 +2,7 @@
  * wxwidgets.hpp: Common headers for the wxwidges interface
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: wxwidgets.hpp 15044 2006-04-02 07:58:36Z zorglub $
+ * $Id: wxwidgets.hpp 17436 2006-11-03 12:06:21Z md $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -95,10 +95,8 @@ DECLARE_LOCAL_EVENT_TYPE( wxEVT_INTF, 1 );
  * But heh, that's wxWidgets; you can't really expect it to actually
  * work, let alone work like its documentation says.
  *
- * Did it work, we would be able to catch non-ANSI characters on Windows
- * through wxString::wc_str(); while they are lost when using mb_str().
- * This would be particularly useful to open files whose names contain
- * non-ACP characters.
+ * Unicode needs to be enabled to catch non-ANSI characters on Windows
+ * through wxString::wc_str(); they are lost when using mb_str().
  */
 #if wxUSE_UNICODE
 #   define wxFromLocale(wxstring) FromWide(wxstring.wc_str())
@@ -107,18 +105,12 @@ DECLARE_LOCAL_EVENT_TYPE( wxEVT_INTF, 1 );
 #   define wxFromLocale(wxstring) FromLocale(wxstring.mb_str())
 #   define wxLocaleFree(string) LocaleFree(string)
 #endif
-	
+
 /* From Locale functions to use for File Drop targets ... go figure */
-#ifdef wxUSE_UNICODE
+#if defined( wxUSE_UNICODE ) && !defined( WIN32 )
 static inline char *wxDnDFromLocale( const wxChar *stupid )
 {
     /*
-     * FIXME: this is yet another awful and ugly bug-to-bug work-around
-     * for the painfully broken and brain-dead wxWidgets character
-     * encoding internals. Maybe, one day the wxWidgets team will find out
-     * and we will have to remove (phew) this kludge or autodetect whether
-     * to trigger it (damn).
-     *
      * In Unicode mode, wxWidgets will encode file names in the locale
      * encoding with each **bytes** (rather than characters) represented
      * by a 32 bits unsigned integer. If you are lucky enough to be using
@@ -128,14 +120,17 @@ static inline char *wxDnDFromLocale( const wxChar *stupid )
      * UTF-8 but also Windows-1252(!) and ISO-8859-15(!) or any
      * non-western encoding, it obviously fails.
      */
-    const wxChar *braindead;
-    for (braindead = stupid; *braindead; braindead++);
+    size_t n = 0;
+    while (stupid[n])
+        n++;
 
-    size_t i = (braindead - stupid);
-    char psz_local[i + 1];
-    do
-        psz_local[i] = (char)stupid[i];
-    while (i--);
+    char psz_local[n + 1];
+    for (size_t i = 0; i <= n; i++)
+        psz_local[i] = stupid[i];
+
+    // Kludge for (broken?) apps that adds a LF at the end of DnD
+    if ((n >= 1) && (strchr ("\n\r", stupid[n - 1]) != NULL))
+        psz_local[n - 1] = '\0';
 
     return FromLocaleDup( psz_local );
 }

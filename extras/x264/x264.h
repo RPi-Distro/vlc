@@ -35,10 +35,10 @@
 
 #include <stdarg.h>
 
-#define X264_BUILD 50
+#define X264_BUILD 54
 
 /* x264_t:
- *      opaque handler for decoder and encoder */
+ *      opaque handler for encoder */
 typedef struct x264_t x264_t;
 
 /****************************************************************************
@@ -98,6 +98,7 @@ static const char * const x264_colmatrix_names[] = { "GBR", "bt709", "undef", ""
 #define X264_CSP_RGB            0x0006  /* rgb 24bits       */
 #define X264_CSP_BGR            0x0007  /* bgr 24bits       */
 #define X264_CSP_BGRA           0x0008  /* bgr 32bits       */
+#define X264_CSP_MAX            0x0009  /* end of list */
 #define X264_CSP_VFLIP          0x1000  /* */
 
 /* Slice type
@@ -177,6 +178,8 @@ typedef struct
     int         b_cabac;
     int         i_cabac_init_idc;
 
+    int         b_interlaced;
+
     int         i_cqm_preset;
     char        *psz_cqm_file;      /* JM format */
     uint8_t     cqm_4iy[16];        /* used only if i_cqm_preset == X264_CQM_CUSTOM */
@@ -201,11 +204,12 @@ typedef struct
         int          b_transform_8x8;
         int          b_weighted_bipred; /* implicit weighting for B-frames */
         int          i_direct_mv_pred; /* spatial vs temporal mv prediction */
+        int          i_direct_8x8_inference; /* forbid 4x4 direct partitions. -1 = auto, based on level */
         int          i_chroma_qp_offset;
 
         int          i_me_method; /* motion estimation algorithm to use (X264_ME_*) */
         int          i_me_range; /* integer pixel motion estimation search range (from predicted mv) */
-        int          i_mv_range; /* maximum length of a mv (in pixels) */
+        int          i_mv_range; /* maximum length of a mv (in pixels). -1 = auto, based on level */
         int          i_subpel_refine; /* subpixel motion estimation quality */
         int          b_bidir_me; /* jointly optimize both MVs in B-frames */
         int          b_chroma_me; /* chroma ME for subpel and mode decision in P-frames */
@@ -215,6 +219,9 @@ typedef struct
         int          b_fast_pskip; /* early SKIP detection on P-frames */
         int          b_dct_decimate; /* transform coefficient thresholding on P-frames */
         int          i_noise_reduction; /* adaptive pseudo-deadzone */
+
+        /* the deadzone size that will be used in luma quantization */
+        int          i_luma_deadzone[2]; // {inter, intra}
 
         int          b_psnr;    /* compute and print PSNR stats */
         int          b_ssim;    /* compute and print SSIM stats */
@@ -231,7 +238,7 @@ typedef struct
         int         i_qp_step;      /* max QP step between frames */
 
         int         i_bitrate;
-        int         i_rf_constant;  /* 1pass VBR, nominal QP */
+        float       f_rf_constant;  /* 1pass VBR, nominal QP */
         float       f_rate_tolerance;
         int         i_vbv_max_bitrate;
         int         i_vbv_buffer_size;
@@ -251,7 +258,7 @@ typedef struct
         float       f_qblur;        /* temporally blur quants */
         float       f_complexity_blur; /* temporally blur complexity */
         x264_zone_t *zones;         /* ratecontrol overrides */
-        int         i_zones;        /* sumber of zone_t's */
+        int         i_zones;        /* number of zone_t's */
         char        *psz_zones;     /* alternate method of specifying zones */
     } rc;
 
@@ -284,10 +291,12 @@ extern const x264_level_t x264_levels[];
 void    x264_param_default( x264_param_t * );
 
 /* x264_param_parse:
- *      set one parameter by name.
- *      returns 0 on success, or returns one of the following errors.
- *      note: bad value occurs only if it can't even parse the value,
- *      numerical range is not checked until x264_encoder_open() or x264_encoder_reconfig(). */
+ *  set one parameter by name.
+ *  returns 0 on success, or returns one of the following errors.
+ *  note: BAD_VALUE occurs only if it can't even parse the value,
+ *  numerical range is not checked until x264_encoder_open() or
+ *  x264_encoder_reconfig().
+ *  value=NULL means "true" for boolean options, but is a BAD_VALUE for non-booleans. */
 #define X264_PARAM_BAD_NAME  (-1)
 #define X264_PARAM_BAD_VALUE (-2)
 int x264_param_parse( x264_param_t *, const char *name, const char *value );
@@ -393,8 +402,6 @@ int     x264_encoder_encode ( x264_t *, x264_nal_t **, int *, x264_picture_t *, 
 /* x264_encoder_close:
  *      close an encoder handler */
 void    x264_encoder_close  ( x264_t * );
-
-/* XXX: decoder isn't working so no need to export it */
 
 /****************************************************************************
  * Private stuff for internal usage:

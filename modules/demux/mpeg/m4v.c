@@ -2,7 +2,7 @@
  * m4v.c : MPEG-4 Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: m4v.c 16965 2006-10-07 16:02:30Z hartman $
+ * $Id: m4v.c 17050 2006-10-13 00:07:54Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -69,7 +69,6 @@ static int Open( vlc_object_t * p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
-
     uint8_t     *p_peek;
 
     if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 ) return VLC_EGENERIC;

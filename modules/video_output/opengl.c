@@ -2,7 +2,7 @@
  * opengl.c: OpenGL video output
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: opengl.c 16400 2006-08-28 21:54:39Z fkuehne $
+ * $Id: opengl.c 17850 2006-11-18 18:46:57Z damienf $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -224,7 +224,10 @@ struct vout_sys_t
     int         i_effect;
 
     float       f_speed;
+#ifdef OPENGL_MORE_EFFECT
+    // cylinder radius
     float       f_radius;
+#endif
 };
 
 /*****************************************************************************
@@ -290,7 +293,9 @@ static int CreateVout( vlc_object_t *p_this )
     }
 
     p_sys->f_speed = var_CreateGetFloat( p_vout, "opengl-cube-speed" );
+#ifdef OPENGL_MORE_EFFECT
     p_sys->f_radius = var_CreateGetFloat( p_vout, "opengl-cylinder-radius" );
+#endif
 
     p_vout->pf_init = Init;
     p_vout->pf_end = End;

@@ -1,13 +1,14 @@
 /*****************************************************************************
  * controls.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: controls.m 16774 2006-09-21 19:29:10Z hartman $
+ * Copyright (C) 2002-2006 the VideoLAN team
+ * $Id: controls.m 17501 2006-11-05 23:05:38Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
  *          Benjamin Pracht <bigben at videolan doit org>
+ *          Felix KŸhne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,10 +32,11 @@
 #include <sys/param.h>                                    /* for MAXPATHLEN */
 #include <string.h>
 
-#include "intf.h"
-#include "vout.h"
-#include "open.h"
-#include "controls.h"
+#import "intf.h"
+#import "vout.h"
+#import "open.h"
+#import "controls.h"
+#import "playlist.h"
 #include <vlc_osd.h>
 
 
@@ -42,6 +44,13 @@
  * VLCControls implementation 
  *****************************************************************************/
 @implementation VLCControls
+
+- (id)init
+{
+    [super init];
+    o_fs_panel = [[VLCFSPanel alloc] init];
+    return self;
+}
 
 - (void)awakeFromNib
 {
@@ -171,6 +180,108 @@
 
     p_intf->p_sys->b_playmode_update = VLC_TRUE;
     p_intf->p_sys->b_intf_update = VLC_TRUE;
+    vlc_object_release( p_playlist );
+}
+
+/* three little ugly helpers */
+- (void)repeatOne
+{
+    [o_btn_repeat setImage: [NSImage imageNamed:@"repeat_single_embedded_blue"]];
+    [o_btn_repeat setAlternateImage: [NSImage imageNamed:@"repeat_embedded_blue"]];
+}
+- (void)repeatAll
+{
+    [o_btn_repeat setImage: [NSImage imageNamed:@"repeat_embedded_blue"]];
+    [o_btn_repeat setAlternateImage: [NSImage imageNamed:@"repeat_embedded"]];
+}
+- (void)repeatOff
+{
+    [o_btn_repeat setImage: [NSImage imageNamed:@"repeat_embedded"]];
+    [o_btn_repeat setAlternateImage: [NSImage imageNamed:@"repeat_single_embedded_blue"]];
+}
+- (void)shuffle
+{
+    vlc_value_t val;
+    intf_thread_t * p_intf = VLCIntf;
+    playlist_t * p_playlist = vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
+                                               FIND_ANYWHERE );
+    if( p_playlist == NULL )
+    {
+        return;
+    }
+    var_Get( p_playlist, "random", &val );
+    [o_btn_shuffle setState: val.b_bool];
+    vlc_object_release( p_playlist );
+}
+
+- (IBAction)repeatButtonAction:(id)sender
+{
+    vlc_value_t looping,repeating;
+    intf_thread_t * p_intf = VLCIntf;
+    playlist_t * p_playlist = vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+    if( p_playlist == NULL )
+    {
+        return;
+    }
+    
+    var_Get( p_playlist, "repeat", &repeating );
+    var_Get( p_playlist, "loop", &looping );
+    
+    if( !repeating.b_bool && !looping.b_bool )
+    {
+        /* was: no repeating at all, switching to Repeat One */
+        
+        /* set our button's look */
+        [self repeatOne];
+        
+        /* prepare core communication */
+        repeating.b_bool = VLC_TRUE;
+        looping.b_bool = VLC_FALSE;
+        config_PutInt( p_playlist, "repeat", 1 );
+        config_PutInt( p_playlist, "loop", 0 ); 
+        
+        /* show the change */
+        vout_OSDMessage( p_intf, DEFAULT_CHAN, _( "Repeat One" ) );
+    }
+    else if( repeating.b_bool && !looping.b_bool )
+    {
+        /* was: Repeat One, switching to Repeat All */
+        
+        /* set our button's look */
+        [self repeatAll];
+        
+        /* prepare core communication */
+        repeating.b_bool = VLC_FALSE;
+        looping.b_bool = VLC_TRUE;
+        config_PutInt( p_playlist, "repeat", 0 ); 
+        config_PutInt( p_playlist, "loop", 1 ); 
+        
+        /* show the change */
+        vout_OSDMessage( p_intf, DEFAULT_CHAN, _( "Repeat All" ) );
+    }
+    else
+    {
+        /* was: Repeat All or bug in VLC, switching to Repeat Off */
+        
+        /* set our button's look */
+        [self repeatOff];
+        
+        /* prepare core communication */
+        repeating.b_bool = VLC_FALSE;
+        looping.b_bool = VLC_FALSE;
+        config_PutInt( p_playlist, "repeat", 0 ); 
+        config_PutInt( p_playlist, "loop", 0 ); 
+        
+        /* show the change */
+        vout_OSDMessage( p_intf, DEFAULT_CHAN, _( "Repeat Off" ) );
+    }
+    
+    /* communicate with core and the main intf loop */
+    var_Set( p_playlist, "repeat", repeating );
+    var_Set( p_playlist, "loop", looping );    
+    p_intf->p_sys->b_playmode_update = VLC_TRUE;
+    p_intf->p_sys->b_intf_update = VLC_TRUE;
+    
     vlc_object_release( p_playlist );
 }
 
@@ -670,6 +781,16 @@
     }
 }
 
+- (id)getFSPanel
+{
+    if( o_fs_panel )
+        return o_fs_panel;
+    else
+    {
+        msg_Err( VLCIntf, "FSPanel is nil" );
+        return NULL;
+    }
+}
 @end
 
 @implementation VLCControls (NSMenuValidation)

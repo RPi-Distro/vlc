@@ -2,7 +2,7 @@
  * interaction.cpp: wxWidgets handling of interaction dialogs
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: interaction.cpp 16439 2006-08-30 19:33:55Z hartman $
+ * $Id: interaction.cpp 18107 2006-11-27 13:44:11Z md $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -270,7 +270,7 @@ void InteractionDialog::Finish( int i_ret )
     while ( it < input_widgets.end() )
     {
         if( (*it).i_type == WIDGET_INPUT_TEXT )
-            (*it).val->psz_string = strdup( (*it).control->GetValue().mb_str());
+            (*it).val->psz_string = strdup( (*it).control->GetValue().mb_str(wxConvUTF8));
         it++;
     }
     Hide();

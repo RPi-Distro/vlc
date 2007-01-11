@@ -2,7 +2,7 @@
  * events.c: Windows DirectX video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: events.c 16931 2006-10-03 09:04:50Z damienf $
+ * $Id: events.c 17833 2006-11-17 16:18:34Z damienf $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -46,6 +46,9 @@
 
 #ifdef MODULE_NAME_IS_vout_directx
 #include <ddraw.h>
+#endif
+#ifdef MODULE_NAME_IS_direct3d
+#include <d3d9.h>
 #endif
 #ifdef MODULE_NAME_IS_glwin32
 #include <GL/gl.h>
@@ -266,7 +269,7 @@ void E_(DirectXEventThread)( event_thread_t *p_event )
                     val.i_int |= KEY_MODIFIER_ALT;
                 }
 
-                var_Set( p_event->p_libvlc, "key-pressed", val );
+                var_Set( p_event->p_vlc, "key-pressed", val );
             }
             break;
 
@@ -294,7 +297,7 @@ void E_(DirectXEventThread)( event_thread_t *p_event )
                     val.i_int |= KEY_MODIFIER_ALT;
                 }
 
-                var_Set( p_event->p_libvlc, "key-pressed", val );
+                var_Set( p_event->p_vlc, "key-pressed", val );
             }
             break;
 
@@ -306,6 +309,9 @@ void E_(DirectXEventThread)( event_thread_t *p_event )
 
 #ifdef MODULE_NAME_IS_glwin32
                 val.psz_string = strdup( VOUT_TITLE " (OpenGL output)" );
+#endif
+#ifdef MODULE_NAME_IS_direct3d
+                val.psz_string = strdup( VOUT_TITLE " (Direct3D output)" );
 #endif
 #ifdef MODULE_NAME_IS_vout_directx
                 if( p_event->p_vout->p_sys->b_using_overlay ) val.psz_string = 

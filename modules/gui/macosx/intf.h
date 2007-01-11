@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: intf.h 16647 2006-09-14 14:58:57Z hartman $
+ * $Id: intf.h 17496 2006-11-05 21:53:18Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -289,6 +289,7 @@ struct intf_sys_t
     int     i_lastShownVolume;
 
     AppleRemote * o_remote;
+    BOOL b_left_right_remote_button_hold; /* true as long as the user holds the left or right button on the remote control */
 }
 
 + (VLCMain *)sharedInstance;

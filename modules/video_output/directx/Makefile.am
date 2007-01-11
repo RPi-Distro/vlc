@@ -3,7 +3,7 @@
 # DO NOT EDIT - edit Modules.am or $(top_srcdir)/bootstrap instead
 
 basedir = video_output
-mods = vout_directx glwin32
+mods = vout_directx direct3d glwin32
 
 NULL =
 libvlc_LTLIBRARIES =
@@ -16,8 +16,8 @@ SUFFIXES = _plugin$(LIBEXT) _plugin.a
 
 libvlcdir = $(libdir)/vlc/$(basedir)
 
-EXTRA_LIBRARIES =  libvout_directx_plugin.a libvout_directx.a libglwin32_plugin.a libglwin32.a
-EXTRA_LTLIBRARIES =  libvout_directx_plugin.la libvout_directx_builtin.la libglwin32_plugin.la libglwin32_builtin.la
+EXTRA_LIBRARIES =  libvout_directx_plugin.a libvout_directx.a libdirect3d_plugin.a libdirect3d.a libglwin32_plugin.a libglwin32.a
+EXTRA_LTLIBRARIES =  libvout_directx_plugin.la libvout_directx_builtin.la libdirect3d_plugin.la libdirect3d_builtin.la libglwin32_plugin.la libglwin32_builtin.la
 
 include Modules.am
 
@@ -110,6 +110,29 @@ libvout_directx_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic vout_direct
 libvout_directx_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin vout_directx`
 libvout_directx_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin vout_directx`
 libvout_directx_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin vout_directx`
+
+# The direct3d plugin
+
+libdirect3d_plugin_a_SOURCES = $(SOURCES_direct3d)
+libdirect3d_plugin_la_SOURCES = $(SOURCES_direct3d)
+libdirect3d_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin direct3d`
+libdirect3d_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin direct3d`
+libdirect3d_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin direct3d`
+libdirect3d_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin direct3d`
+libdirect3d_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin direct3d`
+libdirect3d_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin direct3d`
+libdirect3d_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin direct3d` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+libdirect3d_plugin_la_LIBADD = $(LTLIBVLC)
+
+libdirect3d_a_SOURCES = $(SOURCES_direct3d)
+libdirect3d_builtin_la_SOURCES = $(SOURCES_direct3d)
+libdirect3d_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic direct3d`
+libdirect3d_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic direct3d`
+libdirect3d_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic direct3d`
+libdirect3d_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin direct3d`
+libdirect3d_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin direct3d`
+libdirect3d_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin direct3d`
 
 # The glwin32 plugin
 

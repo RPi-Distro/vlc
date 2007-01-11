@@ -2,7 +2,7 @@
  * playlist.c : Playlist management functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: playlist.c 15025 2006-04-01 11:27:40Z fkuehne $
+ * $Id: playlist.c 17367 2006-10-30 08:50:03Z jpsaman $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -657,6 +657,8 @@ static void RunThread ( playlist_t *p_playlist )
                 /* Destroy input */
                 input_DestroyThread( p_input );
 
+                vlc_mutex_lock( &p_playlist->object_lock );
+
                 /* Unlink current input
                  * (_after_ input_DestroyThread for vout garbage collector) */
                 vlc_object_detach( p_input );
@@ -674,6 +676,7 @@ static void RunThread ( playlist_t *p_playlist )
                      p_playlist->status.p_item = NULL;
                 }
 
+                vlc_mutex_unlock( &p_playlist->object_lock );
                 continue;
             }
             /* This input is dying, let it do */
@@ -796,12 +799,16 @@ static void RunThread ( playlist_t *p_playlist )
 
             /* Destroy input */
             input_DestroyThread( p_input );
+
+            vlc_mutex_lock( &p_playlist->object_lock );
+
             /* Unlink current input (_after_ input_DestroyThread for vout
              * garbage collector)*/
             vlc_object_detach( p_input );
 
             /* Destroy object */
             vlc_object_destroy( p_input );
+            vlc_mutex_unlock( &p_playlist->object_lock );
             continue;
         }
         else if( p_playlist->p_input->b_die )

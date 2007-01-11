@@ -2,7 +2,7 @@
  * infopanels.cpp : Information panels (general info, stats, ...)
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: infopanels.cpp 16439 2006-08-30 19:33:55Z hartman $
+ * $Id: infopanels.cpp 18107 2006-11-27 13:44:11Z md $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -146,12 +146,12 @@ void MetaDataPanel::Update( input_item_t *p_item )
 
 char* MetaDataPanel::GetURI( )
 {
-    return  strdup( uri_text->GetLineText(0).mb_str() );
+    return  strdup( uri_text->GetLineText(0).mb_str(wxConvUTF8) );
 }
 
 char* MetaDataPanel::GetName( )
 {
-    return  strdup( name_text->GetLineText(0).mb_str() );
+    return  strdup( name_text->GetLineText(0).mb_str(wxConvUTF8) );
 }
 
 void MetaDataPanel::Clear()

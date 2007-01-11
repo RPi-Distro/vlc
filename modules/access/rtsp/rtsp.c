@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: rtsp.c 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: rtsp.c 18336 2006-12-09 01:01:02Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -142,7 +142,7 @@ static int rtsp_get_status_code( rtsp_client_t *rtsp, const char *psz_string )
 
     if( i_code != 200 )
     {
-        fprintf( stderr, "librtsp: server responds: '%s'\n", psz_string );
+        //fprintf( stderr, "librtsp: server responds: '%s'\n", psz_string );
     }
 
     return i_code;
@@ -249,15 +249,15 @@ static int rtsp_get_answers( rtsp_client_t *rtsp )
           {
               if( strcmp( buf, rtsp->p_private->session ) )
               {
-                  fprintf( stderr, 
-                           "rtsp: warning: setting NEW session: %s\n", buf );
+                  //fprintf( stderr, 
+                  //         "rtsp: warning: setting NEW session: %s\n", buf );
                   free( rtsp->p_private->session );
                   rtsp->p_private->session = strdup( buf );
               }
           }
           else
           {
-              fprintf( stderr, "setting session id to: %s\n", buf );
+              //fprintf( stderr, "setting session id to: %s\n", buf );
               rtsp->p_private->session = strdup( buf );
           }
           free( buf );
@@ -422,7 +422,7 @@ int rtsp_read_data( rtsp_client_t *rtsp, char *buffer, unsigned int size )
 
             if( seq < 0 )
             {
-                fprintf(stderr, "warning: cseq not recognized!\n");
+                //fprintf(stderr, "warning: cseq not recognized!\n");
                 seq = 1;
             }
 
@@ -515,13 +515,13 @@ int rtsp_connect( rtsp_client_t *rtsp, const char *psz_mrl,
     }
 
     free( mrl_ptr );
-    fprintf( stderr, "got mrl: %s %i %s\n", s->host, s->port, s->path );
+    //fprintf( stderr, "got mrl: %s %i %s\n", s->host, s->port, s->path );
 
     s->s = rtsp->pf_connect( rtsp->p_userdata, s->host, s->port );
 
     if( s->s < 0 )
     {
-        fprintf(stderr, "rtsp: failed to connect to '%s'\n", s->host);
+        //fprintf(stderr, "rtsp: failed to connect to '%s'\n", s->host);
         rtsp_close( rtsp );
         return -1;
     }

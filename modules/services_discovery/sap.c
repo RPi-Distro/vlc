@@ -2,7 +2,7 @@
  * sap.c :  SAP interface module
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: sap.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: sap.c 18126 2006-11-28 11:12:49Z md $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -258,13 +258,10 @@ struct demux_sys_t
     static sap_announce_t *CreateAnnounce( services_discovery_t *, uint16_t, sdp_t * );
     static int RemoveAnnounce( services_discovery_t *p_sd, sap_announce_t *p_announce );
 
-/* Cache */
-    static void CacheLoad( services_discovery_t *p_sd );
-    static void CacheSave( services_discovery_t *p_sd );
 /* Helper functions */
     static char *GetAttribute( sdp_t *p_sdp, const char *psz_search );
     static vlc_bool_t IsSameSession( sdp_t *p_sdp1, sdp_t *p_sdp2 );
-    static int InitSocket( services_discovery_t *p_sd, char *psz_address, int i_port );
+    static int InitSocket( services_discovery_t *p_sd, const char *psz_address, int i_port );
 #ifdef HAVE_ZLIB_H
     static int Decompress( unsigned char *psz_src, unsigned char **_dst, int i_len );
 #endif
@@ -630,7 +627,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 static int ParseSAP( services_discovery_t *p_sd, uint8_t *p_buffer, int i_read )
 {
     int                 i_version, i_address_type, i_hash, i;
-    char                *psz_sdp, *psz_foo, *psz_initial_sdp;
+    char                *psz_sdp, *psz_foo, *psz_initial_sdp, *psz_end;
     uint8_t             *p_decompressed_buffer = NULL;
     sdp_t               *p_sdp;
     vlc_bool_t          b_compressed;
@@ -644,12 +641,6 @@ static int ParseSAP( services_discovery_t *p_sd, uint8_t *p_buffer, int i_read )
     }
 
     i_address_type = p_buffer[0] & 0x10;
-
-    if( (p_buffer[0] & 0x08) != 0 )
-    {
-        msg_Dbg( p_sd, "reserved bit incorrectly set" );
-        return VLC_EGENERIC;
-    }
 
     if( (p_buffer[0] & 0x04) != 0 )
     {
@@ -702,15 +693,18 @@ static int ParseSAP( services_discovery_t *p_sd, uint8_t *p_buffer, int i_read )
 
         i_decompressed_size = Decompress( (uint8_t *)psz_sdp,
                    &p_decompressed_buffer, i_read - ( psz_sdp - (char *)p_buffer ) );
-        if( i_decompressed_size > 0 )
+        if( i_decompressed_size > 0 && 
+                i_decompressed_size < ( MAX_SAP_BUFFER - 20 ) )
         {
-            psz_sdp = (char *)p_decompressed_buffer;
-            realloc( p_decompressed_buffer, i_decompressed_size++ );
+            memcpy( psz_sdp, p_decompressed_buffer, i_decompressed_size );
             psz_sdp[i_decompressed_size] = '\0';
+            psz_end = psz_sdp + i_decompressed_size;
+            FREE( p_decompressed_buffer );
         }
         else
         {
-            msg_Warn( p_sd, "decompression of sap packet failed" );
+            msg_Warn( p_sd, "error in decompression of sap packet" );
+            FREE( p_decompressed_buffer );
             return VLC_EGENERIC;
         }
 #else
@@ -718,11 +712,13 @@ static int ParseSAP( services_discovery_t *p_sd, uint8_t *p_buffer, int i_read )
         return VLC_EGENERIC;
 #endif
     }
+    else
+        psz_end = ((const char *)p_buffer) + i_read;
 
     /* Add the size of authentification info */
     if( i_read < p_buffer[1] + (psz_sdp - psz_initial_sdp ) )
     {
-        msg_Warn( p_sd, "too short SAP packet\n");
+        msg_Warn( p_sd, "too short SAP packet");
         return VLC_EGENERIC;
     }
     psz_sdp += p_buffer[1];
@@ -747,7 +743,7 @@ static int ParseSAP( services_discovery_t *p_sd, uint8_t *p_buffer, int i_read )
     {
         msg_Dbg( p_sd, "unhandled content type: %s", psz_foo );
     }
-    if( ( psz_sdp - (char *)p_buffer ) >= i_read )
+    if( psz_sdp >= psz_end )
     {
         msg_Warn( p_sd, "package without content" );
         return VLC_EGENERIC;
@@ -806,7 +802,6 @@ static int ParseSAP( services_discovery_t *p_sd, uint8_t *p_buffer, int i_read )
 
     CreateAnnounce( p_sd, i_hash, p_sdp );
 
-    FREE( p_decompressed_buffer );
     return VLC_SUCCESS;
 }
 
@@ -916,7 +911,7 @@ static int ParseConnection( vlc_object_t *p_obj, sdp_t *p_sdp )
     char *psz_parse = NULL;
     char *psz_uri = NULL;
     char *psz_proto = NULL;
-    char psz_source[256];
+    char psz_source[258] = "";
     int i_port = 0;
 
     /* Parse c= field */
@@ -1070,9 +1065,18 @@ static int ParseConnection( vlc_object_t *p_obj, sdp_t *p_sdp )
 
     /* handle SSM case */
     psz_parse = GetAttribute( p_sdp, "source-filter" );
-    psz_source[0] = '\0';
+    if (psz_parse != NULL)
+    {
+        char psz_source_ip[256];
 
-    if( psz_parse ) sscanf( psz_parse, " incl IN IP%*s %*s %255s ", psz_source);
+        if (sscanf (psz_parse, " incl IN IP%*c %*s %255s ", psz_source_ip) == 1)
+        {
+            if (strchr (psz_source_ip, ':') != NULL)
+                sprintf (psz_source, "[%s]", psz_source_ip);
+            else
+                strcpy (psz_source, psz_source_ip);
+        }
+    }
 
     asprintf( &p_sdp->psz_uri, "%s://%s@%s:%i", psz_proto, psz_source,
               psz_uri, i_port );
@@ -1107,6 +1111,9 @@ static sdp_t *  ParseSDP( vlc_object_t *p_obj, char* psz_sdp )
     if( p_sdp == NULL )
         return NULL;
 
+    /* init to 0 */
+    memset( p_sdp, 0, sizeof( sdp_t ) );
+
     p_sdp->psz_sdp = strdup( psz_sdp );
     if( p_sdp->psz_sdp == NULL )
     {
@@ -1114,23 +1121,12 @@ static sdp_t *  ParseSDP( vlc_object_t *p_obj, char* psz_sdp )
         return NULL;
     }
 
-    p_sdp->psz_sessionname = NULL;
-    p_sdp->psz_media       = NULL;
-    p_sdp->psz_connection  = NULL;
-    p_sdp->psz_uri         = NULL;
-    p_sdp->psz_address     = NULL;
-    p_sdp->psz_address_type= NULL;
-
-    p_sdp->i_media         = 0;
-    p_sdp->i_attributes    = 0;
-    p_sdp->pp_attributes   = NULL;
-
     while( *psz_sdp != '\0' && b_end == VLC_FALSE  )
     {
-        char *psz_eol;
-        char *psz_eof;
-        char *psz_parse;
-        char *psz_sess_id;
+        char *psz_eol = NULL;
+        char *psz_eof = NULL;
+        char *psz_parse = NULL;
+        char *psz_sess_id = NULL;
 
         while( *psz_sdp == '\r' || *psz_sdp == '\n' ||
                *psz_sdp == ' ' || *psz_sdp == '\t' )
@@ -1257,7 +1253,7 @@ static sdp_t *  ParseSDP( vlc_object_t *p_obj, char* psz_sdp )
 
             case( 'c' ):
             {
-                if( p_sdp->i_media > 1 )
+                if( p_sdp->psz_connection != NULL ) // FIXME
                     break;
 
                 p_sdp->psz_connection = strdup( &psz_sdp[2] );
@@ -1280,7 +1276,7 @@ static sdp_t *  ParseSDP( vlc_object_t *p_obj, char* psz_sdp )
     return p_sdp;
 }
 
-static int InitSocket( services_discovery_t *p_sd, char *psz_address,
+static int InitSocket( services_discovery_t *p_sd, const char *psz_address,
                        int i_port )
 {
     int i_fd = net_OpenUDP( p_sd, psz_address, i_port, NULL, 0 );
@@ -1309,10 +1305,7 @@ static int Decompress( unsigned char *psz_src, unsigned char **_dst, int i_len )
 
     i_result = inflateInit(&d_stream);
     if( i_result != Z_OK )
-    {
-        printf( "inflateInit() failed. Result: %d\n", i_result );
         return( -1 );
-    }
 #if 0
     p_playlist->pp_items[p_playlist->i_index]->b_autodeletion = VLC_TRUE;
     i_position = p_playlist->i_index;
@@ -1338,7 +1331,7 @@ static int Decompress( unsigned char *psz_src, unsigned char **_dst, int i_len )
         i_result = inflate(&d_stream, Z_NO_FLUSH);
         if( ( i_result != Z_OK ) && ( i_result != Z_STREAM_END ) )
         {
-            printf( "Zlib decompression failed. Result: %d\n", i_result );
+            inflateEnd( &d_stream );
             return( -1 );
         }
     }
@@ -1437,15 +1430,4 @@ static vlc_bool_t IsSameSession( sdp_t *p_sdp1, sdp_t *p_sdp2 )
     {
         return VLC_FALSE;
     }
-}
-
-
-static void CacheLoad( services_discovery_t *p_sd )
-{
-    msg_Warn( p_sd, "cache not implemented") ;
-}
-
-static void CacheSave( services_discovery_t *p_sd )
-{
-    msg_Warn( p_sd, "cache not implemented") ;
 }

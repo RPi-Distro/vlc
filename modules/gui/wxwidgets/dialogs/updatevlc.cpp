@@ -2,7 +2,7 @@
  * updatevlc.cpp : VLC Update checker
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: updatevlc.cpp 15400 2006-04-28 17:01:12Z dionoea $
+ * $Id: updatevlc.cpp 18107 2006-11-27 13:44:11Z md $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *
@@ -200,7 +200,7 @@ void UpdateVLC::OnChooseItem( wxListEvent& event )
                         wxSAVE | wxOVERWRITE_PROMPT );
         if( filedialog->ShowModal() == wxID_OK )
         {
-            update_download( p_uit, filedialog->GetPath().mb_str() );
+            update_download( p_uit, filedialog->GetPath().mb_str(wxConvUTF8) );
         }
         update_iterator_Delete( p_uit );
         delete filedialog;

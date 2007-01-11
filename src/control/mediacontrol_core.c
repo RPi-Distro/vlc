@@ -2,7 +2,7 @@
  * core.c: Core functions : init, playlist, stream management
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: mediacontrol_core.c 15025 2006-04-01 11:27:40Z fkuehne $
+ * $Id: mediacontrol_core.c 18175 2006-11-30 14:55:42Z oaubert $
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *
@@ -200,7 +200,6 @@ mediacontrol_start( mediacontrol_Instance *self,
         if( psz_from )
         {
             i_from = mediacontrol_position2microsecond( p_playlist->p_input, a_position ) / 1000000;
-
             i_index = p_playlist->i_index;
             if( i_index < 0 )
             {

@@ -3,7 +3,7 @@
 # DO NOT EDIT - edit Modules.am or $(top_srcdir)/bootstrap instead
 
 basedir = access
-mods = access_file access_directory access_dv access_udp access_tcp access_http access_ftp access_smb access_gnomevfs dvdnav dvdread access_fake cdda
+mods = access_file access_directory access_dv access_udp access_tcp access_http access_ftp access_smb access_gnomevfs dvdnav dvdread dc1394 access_fake cdda
 
 NULL =
 libvlc_LTLIBRARIES =
@@ -16,8 +16,8 @@ SUFFIXES = _plugin$(LIBEXT) _plugin.a
 
 libvlcdir = $(libdir)/vlc/$(basedir)
 
-EXTRA_LIBRARIES =  libaccess_file_plugin.a libaccess_file.a libaccess_directory_plugin.a libaccess_directory.a libaccess_dv_plugin.a libaccess_dv.a libaccess_udp_plugin.a libaccess_udp.a libaccess_tcp_plugin.a libaccess_tcp.a libaccess_http_plugin.a libaccess_http.a libaccess_ftp_plugin.a libaccess_ftp.a libaccess_smb_plugin.a libaccess_smb.a libaccess_gnomevfs_plugin.a libaccess_gnomevfs.a libdvdnav_plugin.a libdvdnav.a libdvdread_plugin.a libdvdread.a libaccess_fake_plugin.a libaccess_fake.a libcdda_plugin.a libcdda.a
-EXTRA_LTLIBRARIES =  libaccess_file_plugin.la libaccess_file_builtin.la libaccess_directory_plugin.la libaccess_directory_builtin.la libaccess_dv_plugin.la libaccess_dv_builtin.la libaccess_udp_plugin.la libaccess_udp_builtin.la libaccess_tcp_plugin.la libaccess_tcp_builtin.la libaccess_http_plugin.la libaccess_http_builtin.la libaccess_ftp_plugin.la libaccess_ftp_builtin.la libaccess_smb_plugin.la libaccess_smb_builtin.la libaccess_gnomevfs_plugin.la libaccess_gnomevfs_builtin.la libdvdnav_plugin.la libdvdnav_builtin.la libdvdread_plugin.la libdvdread_builtin.la libaccess_fake_plugin.la libaccess_fake_builtin.la libcdda_plugin.la libcdda_builtin.la
+EXTRA_LIBRARIES =  libaccess_file_plugin.a libaccess_file.a libaccess_directory_plugin.a libaccess_directory.a libaccess_dv_plugin.a libaccess_dv.a libaccess_udp_plugin.a libaccess_udp.a libaccess_tcp_plugin.a libaccess_tcp.a libaccess_http_plugin.a libaccess_http.a libaccess_ftp_plugin.a libaccess_ftp.a libaccess_smb_plugin.a libaccess_smb.a libaccess_gnomevfs_plugin.a libaccess_gnomevfs.a libdvdnav_plugin.a libdvdnav.a libdvdread_plugin.a libdvdread.a libdc1394_plugin.a libdc1394.a libaccess_fake_plugin.a libaccess_fake.a libcdda_plugin.a libcdda.a
+EXTRA_LTLIBRARIES =  libaccess_file_plugin.la libaccess_file_builtin.la libaccess_directory_plugin.la libaccess_directory_builtin.la libaccess_dv_plugin.la libaccess_dv_builtin.la libaccess_udp_plugin.la libaccess_udp_builtin.la libaccess_tcp_plugin.la libaccess_tcp_builtin.la libaccess_http_plugin.la libaccess_http_builtin.la libaccess_ftp_plugin.la libaccess_ftp_builtin.la libaccess_smb_plugin.la libaccess_smb_builtin.la libaccess_gnomevfs_plugin.la libaccess_gnomevfs_builtin.la libdvdnav_plugin.la libdvdnav_builtin.la libdvdread_plugin.la libdvdread_builtin.la libdc1394_plugin.la libdc1394_builtin.la libaccess_fake_plugin.la libaccess_fake_builtin.la libcdda_plugin.la libcdda_builtin.la
 
 include Modules.am
 
@@ -340,6 +340,29 @@ libdvdread_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic dvdread`
 libdvdread_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin dvdread`
 libdvdread_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin dvdread`
 libdvdread_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin dvdread`
+
+# The dc1394 plugin
+
+libdc1394_plugin_a_SOURCES = $(SOURCES_dc1394)
+libdc1394_plugin_la_SOURCES = $(SOURCES_dc1394)
+libdc1394_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin dc1394`
+libdc1394_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin dc1394`
+libdc1394_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin dc1394`
+libdc1394_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin dc1394`
+libdc1394_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin dc1394`
+libdc1394_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin dc1394`
+libdc1394_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin dc1394` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+libdc1394_plugin_la_LIBADD = $(LTLIBVLC)
+
+libdc1394_a_SOURCES = $(SOURCES_dc1394)
+libdc1394_builtin_la_SOURCES = $(SOURCES_dc1394)
+libdc1394_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic dc1394`
+libdc1394_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic dc1394`
+libdc1394_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic dc1394`
+libdc1394_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin dc1394`
+libdc1394_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin dc1394`
+libdc1394_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin dc1394`
 
 # The access_fake plugin
 

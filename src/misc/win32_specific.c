@@ -2,7 +2,7 @@
  * win32_specific.c: Win32 specific features
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: win32_specific.c 16460 2006-08-31 22:01:13Z hartman $
+ * $Id: win32_specific.c 17755 2006-11-14 07:17:34Z md $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -27,6 +27,7 @@
 #include <vlc/vlc.h>
 #include <vlc/input.h>
 #include "vlc_playlist.h"
+#include "charset.h"
 
 #ifdef WIN32                       /* optind, getopt(), included in unistd.h */
 #   include "../extras/getopt.h"
@@ -38,6 +39,9 @@
 #endif
 
 #include <winsock.h>
+
+extern void __wgetmainargs(int *argc, wchar_t ***wargv, wchar_t ***wenviron,
+                           int expand_wildcards, int *startupinfo);
 
 /*****************************************************************************
  * system_Init: initialize winsock and misc other things.
@@ -82,6 +86,18 @@ void system_Init( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
 
     /* Call mdate() once to make sure it is initialized properly */
     mdate();
+
+    /* Replace argv[1..n] with unicode for Windows NT and above */
+    if( GetVersion() < 0x80000000 )
+    {
+        wchar_t **wargv, **wenvp;
+        int i,i_wargc;
+        int si = { 0 };
+        __wgetmainargs(&i_wargc, &wargv, &wenvp, 0, &si);
+
+        for( i = 1; i < i_wargc; i++ )
+            ppsz_argv[i] = FromWide( wargv[i] );
+    }
 
     /* WinSock Library Init. */
     if( !WSAStartup( MAKEWORD( 2, 2 ), &Data ) )
@@ -205,12 +221,12 @@ void system_Configure( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
                 char *p_data;
 
                 i_data = sizeof(int);
+
                 for( i_opt = optind; i_opt < *pi_argc; i_opt++ )
                 {
                     i_data += sizeof(int);
                     i_data += strlen( ppsz_argv[ i_opt ] ) + 1;
                 }
-
                 p_data = (char *)malloc( i_data );
                 *((int *)&p_data[0]) = *pi_argc - optind;
                 i_data = sizeof(int);

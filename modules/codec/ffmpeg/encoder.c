@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: encoder.c 16775 2006-09-21 20:35:23Z hartman $
+ * $Id: encoder.c 18028 2006-11-24 20:14:15Z xtophe $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -383,6 +383,9 @@ int E_(OpenEncoder)( vlc_object_t *p_this )
 
         p_context->width = p_enc->fmt_in.video.i_width;
         p_context->height = p_enc->fmt_in.video.i_height;
+        if( p_enc->fmt_out.i_codec == VLC_FOURCC('m', 'p', '2', 'v')
+             && (p_context->width > 720 || p_context->height > 576) )
+            p_context->level = 4; /* High level */
 
 #if LIBAVCODEC_BUILD >= 4754
         p_context->time_base.num = p_enc->fmt_in.video.i_frame_rate_base;
@@ -414,6 +417,10 @@ int E_(OpenEncoder)( vlc_object_t *p_this )
         p_context->max_b_frames =
             __MAX( __MIN( p_sys->i_b_frames, FF_MAX_B_FRAMES ), 0 );
         p_context->b_frame_strategy = 0;
+        if( !p_context->max_b_frames  && 
+            (  p_enc->fmt_out.i_codec == VLC_FOURCC('m', 'p', '2', 'v') ||
+               p_enc->fmt_out.i_codec == VLC_FOURCC('m', 'p', '1', 'v') ) )
+            p_context->flags |= CODEC_FLAG_LOW_DELAY;
 
 #if LIBAVCODEC_BUILD >= 4687
         av_reduce( &i_aspect_num, &i_aspect_den,

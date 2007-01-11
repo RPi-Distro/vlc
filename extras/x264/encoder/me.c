@@ -104,10 +104,10 @@ static void refine_subpel( x264_t *h, x264_me_t *m, int hpel_iters, int qpel_ite
         p_fref + (m2x) + (m2y)*m->i_stride[0],\
         p_fref + (m3x) + (m3y)*m->i_stride[0],\
         m->i_stride[0], costs );\
-    costs[0] += BITS_MVD( m0x, m0y );\
-    costs[1] += BITS_MVD( m1x, m1y );\
-    costs[2] += BITS_MVD( m2x, m2y );\
-    costs[3] += BITS_MVD( m3x, m3y );\
+    costs[0] += p_cost_mvx[m0x<<2]; /* no cost_mvy */\
+    costs[1] += p_cost_mvx[m1x<<2];\
+    costs[2] += p_cost_mvx[m2x<<2];\
+    costs[3] += p_cost_mvx[m3x<<2];\
     COPY3_IF_LT( bcost, costs[0], bmx, m0x, bmy, m0y );\
     COPY3_IF_LT( bcost, costs[1], bmx, m1x, bmy, m1y );\
     COPY3_IF_LT( bcost, costs[2], bmx, m2x, bmy, m2y );\
@@ -462,22 +462,32 @@ me_hex2:
             /* successive elimination by comparing DC before a full SAD,
              * because sum(abs(diff)) >= abs(diff(sum)). */
             const int stride = m->i_stride[0];
-            const int dw = x264_pixel_size[i_pixel].w;
-            const int dh = x264_pixel_size[i_pixel].h * stride;
             static uint8_t zero[16*16] = {0,};
-            const int enc_dc = h->pixf.sad[i_pixel]( m->p_fenc[0], FENC_STRIDE, zero, 16 );
-            const uint16_t *integral_base = &m->integral[ -1 - 1*stride ];
+            uint16_t *sums_base = m->integral;
+            int enc_dc[4];
+            int sad_size = i_pixel <= PIXEL_8x8 ? PIXEL_8x8 : PIXEL_4x4;
+            int delta = x264_pixel_size[sad_size].w;
+            uint16_t *ads = x264_alloca((max_x-min_x+8) * sizeof(uint16_t));
+
+            h->pixf.sad_x4[sad_size]( zero, m->p_fenc[0], m->p_fenc[0]+delta,
+                m->p_fenc[0]+delta*FENC_STRIDE, m->p_fenc[0]+delta+delta*FENC_STRIDE,
+                FENC_STRIDE, enc_dc );
+            if( delta == 4 )
+                sums_base += stride * (h->fenc->i_lines[0] + 64);
+            if( i_pixel == PIXEL_16x16 || i_pixel == PIXEL_8x16 || i_pixel == PIXEL_4x8 )
+                delta *= stride;
+            if( i_pixel == PIXEL_8x16 || i_pixel == PIXEL_4x8 )
+                enc_dc[1] = enc_dc[2];
 
             for( my = min_y; my <= max_y; my++ )
             {
                 int mvs[3], i_mvs=0;
+                bcost -= p_cost_mvy[my<<2];
+                h->pixf.ads[i_pixel]( enc_dc, sums_base + min_x + my * stride, delta,
+                                      ads, max_x-min_x+1 );
                 for( mx = min_x; mx <= max_x; mx++ )
                 {
-                    const uint16_t *integral = &integral_base[ mx + my * stride ];
-                    const uint16_t ref_dc = integral[  0 ] + integral[ dh + dw ]
-                                          - integral[ dw ] - integral[ dh ];
-                    const int bsad = bcost - BITS_MVD(mx,my);
-                    if( abs( ref_dc - enc_dc ) < bsad )
+                    if( ads[mx-min_x] < bcost - p_cost_mvx[mx<<2] )
                     {
                         if( i_mvs == 3 )
                         {
@@ -488,6 +498,7 @@ me_hex2:
                             mvs[i_mvs++] = mx;
                     }
                 }
+                bcost += p_cost_mvy[my<<2];
                 for( i=0; i<i_mvs; i++ )
                     COST_MV( mvs[i], my );
             }

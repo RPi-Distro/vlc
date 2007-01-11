@@ -2,7 +2,7 @@
  * libvlc.c: main libvlc source
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: libvlc.c 17005 2006-10-08 22:21:22Z jpsaman $
+ * $Id: libvlc.c 17755 2006-11-14 07:17:34Z md $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -2044,12 +2044,25 @@ static int GetFilenames( vlc_t *p_vlc, int i_argc, char *ppsz_argv[] )
         /* TODO: write an internal function of this one, to avoid
          *       unnecessary lookups. */
         /* FIXME: should we convert options to UTF-8 as well ?? */
-        psz_target = FromLocale( ppsz_argv[ i_opt ] );
-        VLC_AddTarget( p_vlc->i_object_id, psz_target,
+
+#ifdef WIN32
+        if( GetVersion() < 0x80000000 )
+        {
+            VLC_AddTarget( p_vlc->i_object_id, ppsz_argv[i_opt],
                        (char const **)( i_options ? &ppsz_argv[i_opt + 1] :
                                         NULL ), i_options,
                        PLAYLIST_INSERT, 0 );
-        LocaleFree( psz_target );
+        }
+        else
+#endif
+        {
+            psz_target = FromLocale( ppsz_argv[ i_opt ] );
+            VLC_AddTarget( p_vlc->i_object_id, psz_target,
+                       (char const **)( i_options ? &ppsz_argv[i_opt + 1] :
+                                        NULL ), i_options,
+                       PLAYLIST_INSERT, 0 );
+            LocaleFree( psz_target );
+        }
     }
 
     return VLC_SUCCESS;

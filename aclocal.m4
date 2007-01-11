@@ -1094,6 +1094,7 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     access_gnomevfs) list="\${list} access/libaccess_gnomevfs" ;;
     dvdnav) list="\${list} access/libdvdnav" ;;
     dvdread) list="\${list} access/libdvdread" ;;
+    dc1394) list="\${list} access/libdc1394" ;;
     access_fake) list="\${list} access/libaccess_fake" ;;
     cdda) list="\${list} access/libcdda" ;;
     dshow) list="\${list} access/dshow/libdshow" ;;
@@ -1108,6 +1109,7 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     screen) list="\${list} access/screen/libscreen" ;;
     access_filter_timeshift) list="\${list} access_filter/libaccess_filter_timeshift" ;;
     access_filter_record) list="\${list} access_filter/libaccess_filter_record" ;;
+    access_filter_dump) list="\${list} access_filter/libaccess_filter_dump" ;;
     access_output_dummy) list="\${list} access_output/libaccess_output_dummy" ;;
     access_output_file) list="\${list} access_output/libaccess_output_file" ;;
     access_output_udp) list="\${list} access_output/libaccess_output_udp" ;;
@@ -1229,6 +1231,7 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     nuv) list="\${list} demux/libnuv" ;;
     nsc) list="\${list} demux/libnsc" ;;
     mpc) list="\${list} demux/libmpc" ;;
+    tta) list="\${list} demux/libtta" ;;
     asf) list="\${list} demux/asf/libasf" ;;
     avi) list="\${list} demux/avi/libavi" ;;
     mp4) list="\${list} demux/mp4/libmp4" ;;
@@ -1360,6 +1363,7 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     image) list="\${list} video_output/libimage" ;;
     directfb) list="\${list} video_output/libdirectfb" ;;
     vout_directx) list="\${list} video_output/directx/libvout_directx" ;;
+    direct3d) list="\${list} video_output/directx/libdirect3d" ;;
     glwin32) list="\${list} video_output/directx/libglwin32" ;;
     qte) list="\${list} video_output/qte/libqte" ;;
     x11) list="\${list} video_output/x11/libx11" ;;

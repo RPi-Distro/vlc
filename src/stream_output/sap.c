@@ -2,7 +2,7 @@
  * sap.c : SAP announce handler
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: sap.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: sap.c 17812 2006-11-16 13:46:22Z md $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -76,7 +76,7 @@ static void RunThread( vlc_object_t *p_this);
 static int CalculateRate( sap_handler_t *p_sap, sap_address_t *p_address );
 static char *SDPGenerate( sap_handler_t *p_sap,
                           const session_descriptor_t *p_session,
-                          const sap_address_t *p_addr );
+                          const sap_address_t *p_addr, vlc_bool_t b_ssm );
 
 static int announce_SendSAPAnnounce( sap_handler_t *p_sap,
                                      sap_session_t *p_session );
@@ -235,7 +235,7 @@ static int announce_SAPAnnounceAdd( sap_handler_t *p_sap,
 {
     int i_header_size, i;
     char *psz_head, psz_addr[NI_MAXNUMERICHOST];
-    vlc_bool_t b_ipv6 = VLC_FALSE;
+    vlc_bool_t b_ipv6 = VLC_FALSE, b_ssm = VLC_FALSE;
     sap_session_t *p_sap_session;
     mtime_t i_hash;
     struct addrinfo hints, *res;
@@ -288,8 +288,13 @@ static int announce_SAPAnnounceAdd( sap_handler_t *p_sap,
             memcpy( a6->s6_addr + 2, "\x00\x00\x00\x00\x00\x00"
                    "\x00\x00\x00\x00\x00\x02\x7f\xfe", 14 );
             if( IN6_IS_ADDR_MULTICAST( a6 ) )
-                 /* force flags to zero, preserve scope */
+            {
+                /* SSM <=> ff3x::/32 */
+                b_ssm = (U32_AT (a6->s6_addr) & 0xfff0ffff) == 0xff300000;
+
+                /* force flags to zero, preserve scope */
                 a6->s6_addr[1] &= 0xf;
+            }
             else
                 /* Unicast IPv6 - assume global scope */
                 memcpy( a6->s6_addr, "\xff\x0e", 2 );
@@ -321,7 +326,11 @@ static int announce_SAPAnnounceAdd( sap_handler_t *p_sap,
                 ipv4 = 0;
             else
             /* other addresses => 224.2.127.254 */
+            {
+                /* SSM: 232.0.0.0/8 */
+                b_ssm = (ipv4 >> 24) == 232;
                 ipv4 = 0xe0027ffe;
+            }
 
             if( ipv4 == 0 )
             {
@@ -468,7 +477,7 @@ static int announce_SAPAnnounceAdd( sap_handler_t *p_sap,
     if( p_session->psz_sdp == NULL )
     {
         p_session->psz_sdp = SDPGenerate( p_sap, p_session,
-                                          p_sap_session->p_address );
+                                          p_sap_session->p_address, b_ssm );
         if( p_session->psz_sdp == NULL )
         {
             vlc_mutex_unlock( &p_sap->object_lock );
@@ -584,13 +593,15 @@ static int announce_SendSAPAnnounce( sap_handler_t *p_sap,
 
 static char *SDPGenerate( sap_handler_t *p_sap,
                           const session_descriptor_t *p_session,
-                          const sap_address_t *p_addr )
+                          const sap_address_t *p_addr, vlc_bool_t b_ssm )
 {
     int64_t i_sdp_id = mdate();
     int     i_sdp_version = 1 + p_sap->i_sessions + (rand()&0xfff);
     char *psz_group, *psz_name, psz_uribuf[NI_MAXNUMERICHOST], *psz_uri,
          *psz_sdp;
     char ipv;
+    char *sfilter = NULL;
+    int res;
 
     psz_group = p_session->psz_group;
     psz_name = p_session->psz_name;
@@ -614,30 +625,41 @@ static char *SDPGenerate( sap_handler_t *p_sap,
     else
         psz_uri = p_session->psz_uri;
 
+    if (b_ssm)
+    {
+        if (asprintf (&sfilter, "a=source-filter: incl IN IP%c * %s\r\n",
+                      ipv, p_addr->psz_machine) == -1)
+            return NULL;
+    }
+
     /* see the lists in modules/stream_out/rtp.c for compliance stuff */
-    if( asprintf( &psz_sdp,
-                            "v=0\r\n"
-                            "o=- "I64Fd" %d IN IP%c %s\r\n"
-                            "s=%s\r\n"
-                            "c=IN IP%c %s/%d\r\n"
-                            "t=0 0\r\n"
-                            "a=tool:"PACKAGE_STRING"\r\n"
-                            "a=recvonly\r\n"
-                            "a=type:broadcast\n"
-                            "a=source-filter: incl IN IP%c * %s\r\n"
-                            "m=video %d %s %d\r\n"
-                            "%s%s%s",
-                            i_sdp_id, i_sdp_version,
-                            ipv, p_addr->psz_machine,
-                            psz_name, ipv, psz_uri,
-                            /* FIXME: 1 is IPv4 default TTL, not that of IPv6 */
-                            p_session->i_ttl ?: (config_GetInt( p_sap, "ttl" ) ?: 1),
-                            ipv, psz_uri,
-                            p_session->i_port, 
-                            p_session->b_rtp ? "RTP/AVP" : "udp",
-                            p_session->i_payload,
-                            psz_group ? "a=x-plgroup:" : "",
-                            psz_group ? psz_group : "", psz_group ? "\r\n" : "" ) == -1 )
+    res = asprintf (&psz_sdp,
+                        "v=0\r\n"
+                        "o=- "I64Fd" %d IN IP%c %s\r\n"
+                        "s=%s\r\n"
+                        "c=IN IP%c %s/%d\r\n"
+                        "t=0 0\r\n"
+                        "a=tool:"PACKAGE_STRING"\r\n"
+                        "a=recvonly\r\n"
+                        "a=type:broadcast\n"
+                        "%s"
+                        "m=video %d %s %d\r\n"
+                        "%s%s%s",
+                        i_sdp_id, i_sdp_version,
+                        ipv, p_addr->psz_machine,
+                        psz_name, ipv, psz_uri,
+                        /* FIXME: 1 is IPv4 default TTL, not that of IPv6 */
+                        p_session->i_ttl ?: (config_GetInt( p_sap, "ttl" ) ?: 1),
+                        (sfilter != NULL) ? sfilter : "",
+                        p_session->i_port,
+                        p_session->b_rtp ? "RTP/AVP" : "udp",
+                        p_session->i_payload,
+                        psz_group ? "a=x-plgroup:" : "",
+                        psz_group ? psz_group : "", psz_group ? "\r\n" : "");
+    if (sfilter != NULL)
+        free (sfilter);
+
+    if (res == -1)
         return NULL;
 
     msg_Dbg( p_sap, "Generated SDP (%i bytes):\n%s", strlen(psz_sdp),

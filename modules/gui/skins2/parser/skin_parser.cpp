@@ -2,7 +2,7 @@
  * skin_parser.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: skin_parser.cpp 16844 2006-09-25 11:47:35Z sam $
+ * $Id: skin_parser.cpp 17550 2006-11-08 19:21:58Z ipkiss $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -311,6 +311,7 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         RequireDefault( "id" );
         RequireDefault( "font" );
         CheckDefault( "visible", "true" );
+        CheckDefault( "flat", "true" ); // only difference here
         CheckDefault( "x", "0" );
         CheckDefault( "y", "0" );
         CheckDefault( "width", "0" );
@@ -320,6 +321,9 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
         CheckDefault( "xkeepratio", "false" );
         CheckDefault( "ykeepratio", "false" );
         CheckDefault( "bgimage", "none" );
+        CheckDefault( "itemimage", "none" );
+        CheckDefault( "openimage", "none" );
+        CheckDefault( "closedimage", "none" );
         CheckDefault( "fgcolor", "#000000" );
         CheckDefault( "playcolor", "#FF0000" );
         CheckDefault( "bgcolor1", "#FFFFFF" );
@@ -543,6 +547,10 @@ void SkinParser::handleBeginElement( const string &rName, AttrList_t &attr )
 
     else if( rName == "ThemeInfo" )
     {
+        CheckDefault( "name", "" );
+        CheckDefault( "author", "" );
+        CheckDefault( "email", "" );
+        CheckDefault( "website", "" );
         msg_Info( getIntf(), "skin: %s  author: %s", attr["name"],
                   attr["author"] );
     }

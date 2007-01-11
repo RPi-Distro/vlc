@@ -2,7 +2,7 @@
  * wizard.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: wizard.cpp 15044 2006-04-02 07:58:36Z zorglub $
+ * $Id: wizard.cpp 18107 2006-11-27 13:44:11Z md $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -718,7 +718,7 @@ void wizInputPage::OnWizardPageChanging(wxWizardEvent& event)
         }
         else
         {
-            p_parent->SetMrl( (const char *)mrl_text->GetValue().mb_str() );
+            p_parent->SetMrl( (const char *)mrl_text->GetValue().mb_str(wxConvUTF8) );
         }
     }
     else
@@ -747,8 +747,8 @@ void wizInputPage::OnWizardPageChanging(wxWizardEvent& event)
     }
     if( enable_checkbox->IsChecked() )
     {
-        int i_from = atoi( from_text->GetValue().mb_str() );
-        int i_to = atoi( to_text->GetValue().mb_str() );
+        int i_from = atoi( from_text->GetValue().mb_str(wxConvUTF8) );
+        int i_to = atoi( to_text->GetValue().mb_str(wxConvUTF8) );
         p_parent->SetPartial( i_from, i_to );
     }
     return;
@@ -992,12 +992,12 @@ void wizTranscodeCodecPage::OnWizardPageChanging(wxWizardEvent& event)
                                        audio_combo->GetSelection() : i_audio_codec ));
     acodec = strdup(c->psz_codec);
 
-    int vb = atoi(vb_combo->GetValue().mb_str() );
+    int vb = atoi(vb_combo->GetValue().mb_str(wxConvUTF8) );
     if( vb == 0 )
     {
          vb = 1024;
     }
-    int ab = atoi(ab_combo->GetValue().mb_str() );
+    int ab = atoi(ab_combo->GetValue().mb_str(wxConvUTF8) );
     if( ab == 0)
     {
         ab = 192;
@@ -1091,7 +1091,7 @@ void wizStreamingMethodPage::OnWizardPageChanging(wxWizardEvent& event)
     /* Check valid address */
     if( i_method == 1
      && !net_AddressIsMulticast( (vlc_object_t *)p_intf,
-                                 address_txtctrl->GetValue().mb_str()) )
+                                 address_txtctrl->GetValue().mb_str(wxConvUTF8)) )
     {
         wxMessageBox( wxU( INVALID_MCAST_ADDRESS ) , wxU( ERROR_MSG ),
                       wxICON_WARNING | wxOK, this->p_parent );
@@ -1116,7 +1116,7 @@ void wizStreamingMethodPage::OnWizardPageChanging(wxWizardEvent& event)
         }
     }
     p_parent->SetStream( methods_array[i_method].psz_access ,
-                         address_txtctrl->GetValue().mb_str() );
+                         address_txtctrl->GetValue().mb_str(wxConvUTF8) );
 
     /* Set the action for the muxer page */
     ((wizEncapPage*)GetNext())->SetAction( p_parent->GetAction() );
@@ -1291,7 +1291,7 @@ void wizTranscodeExtraPage::OnSelectFile( wxCommandEvent &event)
 
     if( file_dialog && file_dialog->ShowModal() == wxID_OK )
     {
-        if( file_dialog->GetFilename().mb_str() )
+        if( file_dialog->GetFilename().mb_str(wxConvUTF8) )
         {
             file_text->SetValue( file_dialog->GetPath() );
         }
@@ -1308,7 +1308,7 @@ void wizTranscodeExtraPage::OnWizardPageChanging( wxWizardEvent& event )
     }
     if( event.GetDirection() )
     {
-       p_parent->SetTranscodeOut( file_text->GetValue().mb_str());
+       p_parent->SetTranscodeOut( file_text->GetValue() );
     }
 }
 
@@ -1375,7 +1375,7 @@ void wizStreamingExtraPage::OnWizardPageChanging(wxWizardEvent& event)
         else
         {
             p_parent->SetSAP( true,
-                             (const char *)sap_text->GetValue().mb_str() );
+                  (const char *)sap_text->GetValue().mb_str(wxConvUTF8) );
         }
     }
     else
@@ -1521,11 +1521,11 @@ void WizardDialog::SetStream( char const *method, char const *address )
     this->address = strdup( address );
 }
 
-void WizardDialog::SetTranscodeOut( char const *address )
+void WizardDialog::SetTranscodeOut( wxString address )
 {
-    char *psz_utf8 = FromLocale( address );
+    char *psz_utf8 = wxFromLocale( address );
     this->address = strdup( psz_utf8 );
-    LocaleFree( psz_utf8 );
+    wxLocaleFree( psz_utf8 );
 }
 
 void WizardDialog::SetMux( char const *mux )

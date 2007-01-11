@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: vlc_common.h 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: vlc_common.h 17810 2006-11-16 13:36:28Z md $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -880,7 +880,8 @@ static inline void _SetQWBE( uint8_t *p, uint64_t i_qw )
 #   define vlc_strtoll NULL
 #endif
 
-#if defined(SYS_BEOS)
+#if defined(SYS_BEOS) \
+ || (defined (__FreeBSD__) && (__FreeBSD__ < 5))
     typedef struct {
         long long quot; /* Quotient. */
         long long rem;  /* Remainder. */

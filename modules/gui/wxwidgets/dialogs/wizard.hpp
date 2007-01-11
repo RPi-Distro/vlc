@@ -2,7 +2,7 @@
  * wizard.hpp: Stream wizard headers
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: wizard.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: wizard.hpp 17452 2006-11-04 14:42:23Z md $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -42,7 +42,7 @@ namespace wxvlc
         void SetTTL( int i_ttl );
         void SetPartial( int, int );
         void SetStream( char const *method, char const *address );
-        void SetTranscodeOut( char const *address );
+        void SetTranscodeOut( wxString address );
         void SetAction( int i_action );
         int  GetAction();
         void SetSAP( bool b_enabled, const char *psz_name );

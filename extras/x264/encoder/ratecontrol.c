@@ -80,6 +80,7 @@ struct x264_ratecontrol_t
     int b_abr;
     int b_2pass;
     int b_vbv;
+    int b_vbv_min_rate;
     double fps;
     double bitrate;
     double rate_tolerance;
@@ -228,7 +229,8 @@ int x264_ratecontrol_new( x264_t *h )
     else if( h->param.rc.i_vbv_max_bitrate > 0 &&
              h->param.rc.i_vbv_buffer_size > 0 )
     {
-        if( h->param.rc.i_vbv_buffer_size < 3 * h->param.rc.i_vbv_max_bitrate / rc->fps ) {
+        if( h->param.rc.i_vbv_buffer_size < 3 * h->param.rc.i_vbv_max_bitrate / rc->fps )
+        {
             h->param.rc.i_vbv_buffer_size = 3 * h->param.rc.i_vbv_max_bitrate / rc->fps;
             x264_log( h, X264_LOG_WARNING, "VBV buffer size too small, using %d kbit\n",
                       h->param.rc.i_vbv_buffer_size );
@@ -239,9 +241,15 @@ int x264_ratecontrol_new( x264_t *h )
         rc->cbr_decay = 1.0 - rc->buffer_rate / rc->buffer_size
                       * 0.5 * X264_MAX(0, 1.5 - rc->buffer_rate * rc->fps / rc->bitrate);
         rc->b_vbv = 1;
+        rc->b_vbv_min_rate = !rc->b_2pass
+                          && h->param.rc.i_rc_method == X264_RC_ABR
+                          && h->param.rc.i_vbv_max_bitrate <= h->param.rc.i_bitrate;
     }
     else if( h->param.rc.i_vbv_max_bitrate )
+    {
         x264_log(h, X264_LOG_WARNING, "VBV maxrate specified, but no bufsize.\n");
+        h->param.rc.i_vbv_max_bitrate = 0;
+    }
     if(rc->rate_tolerance < 0.01) {
         x264_log(h, X264_LOG_WARNING, "bitrate tolerance too small, using .01\n");
         rc->rate_tolerance = 0.01;
@@ -252,7 +260,7 @@ int x264_ratecontrol_new( x264_t *h )
     if( rc->b_abr )
     {
         /* FIXME ABR_INIT_QP is actually used only in CRF */
-#define ABR_INIT_QP ( h->param.rc.i_rc_method == X264_RC_CRF ? h->param.rc.i_rf_constant : 24 )
+#define ABR_INIT_QP ( h->param.rc.i_rc_method == X264_RC_CRF ? h->param.rc.f_rf_constant : 24 )
         rc->accum_p_norm = .01;
         rc->accum_p_qp = ABR_INIT_QP * rc->accum_p_norm;
         /* estimated ratio that produces a reasonable QP for the first I-frame */
@@ -266,7 +274,7 @@ int x264_ratecontrol_new( x264_t *h )
         /* arbitrary rescaling to make CRF somewhat similar to QP */
         double base_cplx = h->mb.i_mb_count * (h->param.i_bframe ? 120 : 80);
         rc->rate_factor_constant = pow( base_cplx, 1 - h->param.rc.f_qcompress )
-                                 / qp2qscale( h->param.rc.i_rf_constant );
+                                 / qp2qscale( h->param.rc.f_rf_constant );
     }
 
     rc->ip_offset = 6.0 * log(h->param.rc.f_ip_factor) / log(2.0);
@@ -516,10 +524,22 @@ static int parse_zones( x264_t *h )
     return 0;
 }
 
+x264_zone_t *get_zone( x264_t *h, int frame_num )
+{
+    int i;
+    for( i = h->rc->i_zones-1; i >= 0; i-- )
+    {
+        x264_zone_t *z = &h->rc->zones[i];
+        if( frame_num >= z->i_start && frame_num <= z->i_end )
+            return z;
+    }
+    return NULL;
+}
+
 void x264_ratecontrol_summary( x264_t *h )
 {
     x264_ratecontrol_t *rc = h->rc;
-    if( rc->b_abr && h->param.rc.i_rc_method == X264_RC_ABR && !h->param.rc.i_vbv_max_bitrate )
+    if( rc->b_abr && h->param.rc.i_rc_method == X264_RC_ABR && rc->cbr_decay > .9999 )
     {
         double base_cplx = h->mb.i_mb_count * (h->param.i_bframe ? 120 : 80);
         x264_log( h, X264_LOG_INFO, "final ratefactor: %.2f\n", 
@@ -605,12 +625,22 @@ void x264_ratecontrol_start( x264_t *h, int i_slice_type, int i_force_qp )
     }
     else /* CQP */
     {
-        int q;
+        x264_zone_t *zone = get_zone( h, h->fenc->i_frame );
+        float q;
         if( i_slice_type == SLICE_TYPE_B && h->fdec->b_kept_as_ref )
             q = ( rc->qp_constant[ SLICE_TYPE_B ] + rc->qp_constant[ SLICE_TYPE_P ] ) / 2;
         else
             q = rc->qp_constant[ i_slice_type ];
-        rc->qpm = rc->qp = q;
+
+        if( zone )
+        {
+            if( zone->b_force_qp )
+                q += zone->i_qp - rc->qp_constant[SLICE_TYPE_P];
+            else
+                q -= 6*log(zone->f_bitrate_factor)/log(2);
+        }
+
+        rc->qpm = rc->qp = (int)(q + 0.5);
     }
 }
 
@@ -683,6 +713,9 @@ void x264_ratecontrol_mb( x264_t *h, int bits )
             int i_qp_max = X264_MIN( prev_row_qp + h->param.rc.i_qp_step, h->param.rc.i_qp_max );
             int i_qp_min = X264_MAX( prev_row_qp - h->param.rc.i_qp_step, h->param.rc.i_qp_min );
             float buffer_left_planned = rc->buffer_fill - rc->frame_size_planned;
+
+            if( !rc->b_vbv_min_rate )
+                i_qp_min = X264_MAX( i_qp_min, h->sh.i_qp );
 
             while( rc->qpm < i_qp_max
                    && (b1 > rc->frame_size_planned * 1.15
@@ -877,7 +910,7 @@ static double get_qscale(x264_t *h, ratecontrol_entry_t *rce, double rate_factor
     x264_ratecontrol_t *rcc= h->rc;
     const int pict_type = rce->pict_type;
     double q;
-    int i;
+    x264_zone_t *zone = get_zone( h, frame_num );
 
     double const_values[]={
         rce->i_tex_bits * rce->qscale,
@@ -941,17 +974,12 @@ static double get_qscale(x264_t *h, ratecontrol_entry_t *rce, double rate_factor
         rcc->last_qscale = q;
     }
 
-    for( i = rcc->i_zones-1; i >= 0; i-- )
+    if( zone )
     {
-        x264_zone_t *z = &rcc->zones[i];
-        if( frame_num >= z->i_start && frame_num <= z->i_end )
-        {
-            if( z->b_force_qp )
-                q = qp2qscale(z->i_qp);
-            else
-                q /= z->f_bitrate_factor;
-            break;
-        }
+        if( zone->b_force_qp )
+            q = qp2qscale(zone->i_qp);
+        else
+            q /= zone->f_bitrate_factor;
     }
 
     return q;
@@ -1110,6 +1138,9 @@ static double clip_qscale( x264_t *h, int pict_type, double q )
             }
             q = X264_MAX( q0-5, q );
         }
+
+        if( !rcc->b_vbv_min_rate )
+            q = X264_MAX( q0, q );
     }
 
     if(lmin==lmax)

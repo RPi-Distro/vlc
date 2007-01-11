@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-12 19:53+0200\n"
+"POT-Creation-Date: 2007-01-03 19:37+0100\n"
 "PO-Revision-Date: 2005-11-09 16:45+0000\n"
 "Last-Translator: Yaniv Abir <yanivabir@gmail.com>\n"
 "Language-Team: Hebrew <he@li.org>\n"
@@ -17,16 +17,29 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Rosetta-Version: 0.1\n"
 
+#: include/vlc/vlc.h:578
+msgid ""
+"This program comes with NO WARRANTY, to the extent permitted by law.\n"
+"You may redistribute it under the terms of the GNU General Public License;\n"
+"see the file named COPYING for details.\n"
+"Written by the VideoLAN team; see the AUTHORS file.\n"
+msgstr ""
+"התוכנה הזו ניתנת ללא אחריות, בהיקף המותר על פי חוק.\n"
+"הינך רשאי לחלקה ולשתפה בהתאם לתנאי הרשיון הכללי: GNU General Public "
+"License;\n"
+"עיין בקובץ COPYING לפרטים נוספים.\n"
+"נכתב ע\"י צוות VideoLAN; עיין בקובץ ה-AUTHORS.\n"
+
 #: include/vlc_config_cat.h:32
 msgid "VLC preferences"
 msgstr "העדפות VLC"
 
 #: include/vlc_config_cat.h:34
 msgid "Select \"Advanced Options\" to see all options."
-msgstr ""
+msgstr "בחרו \"אפשרויות מתקדמות\" כדי לראות את כל האפשרויות."
 
 #: include/vlc_config_cat.h:36 include/vlc_config_cat.h:127
-#: src/input/input.c:1883 src/input/input.c:1943 src/playlist/item.c:369
+#: src/input/input.c:1902 src/input/input.c:1962 src/playlist/item.c:369
 #: src/playlist/playlist.c:163 modules/gui/macosx/playlistinfo.m:62
 #: modules/gui/wince/playlist.cpp:674
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:82
@@ -40,7 +53,7 @@ msgstr "ממשק"
 
 #: include/vlc_config_cat.h:40
 msgid "Settings for VLC's interfaces"
-msgstr ""
+msgstr "הגדרות לממשק של VLC"
 
 #: include/vlc_config_cat.h:42
 #, fuzzy
@@ -49,11 +62,11 @@ msgstr "הגדרות ממשק כלליות"
 
 #: include/vlc_config_cat.h:44
 msgid "Main interfaces"
-msgstr ""
+msgstr "ממשקים ראשיים"
 
 #: include/vlc_config_cat.h:45
 msgid "Settings for the main interface"
-msgstr ""
+msgstr "הגדרות לממשק הראשי"
 
 #: include/vlc_config_cat.h:47 src/libvlc.h:79
 msgid "Control interfaces"
@@ -61,15 +74,15 @@ msgstr "ממשקי שליטה"
 
 #: include/vlc_config_cat.h:48
 msgid "Settings for VLC's control interfaces"
-msgstr ""
+msgstr "הגדרות לממשקי השליטה של VLC"
 
 #: include/vlc_config_cat.h:50 include/vlc_config_cat.h:51
 msgid "Hotkeys settings"
 msgstr "הגדרות קיצורי מקלדת"
 
-#: include/vlc_config_cat.h:54 src/input/es_out.c:1592 src/libvlc.h:1178
+#: include/vlc_config_cat.h:54 src/input/es_out.c:1595 src/libvlc.h:1180
 #: modules/gui/beos/InterfaceWindow.cpp:280 modules/gui/macosx/extended.m:81
-#: modules/gui/macosx/intf.m:553 modules/gui/macosx/output.m:170
+#: modules/gui/macosx/intf.m:557 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:96 modules/gui/macosx/wizard.m:421
 #: modules/gui/wxwidgets/dialogs/infopanels.cpp:335
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:862
@@ -88,20 +101,20 @@ msgstr "הגדרות שמע כלליות"
 #: include/vlc_config_cat.h:60 include/vlc_config_cat.h:85
 #: src/video_output/video_output.c:403
 msgid "Filters"
-msgstr ""
+msgstr "מסננים"
 
 #: include/vlc_config_cat.h:62
 msgid "Audio filters are used to postprocess the audio stream."
-msgstr ""
+msgstr "מסנני שמע מופעלים לשם עיבוד מחדש של שטף נתוני השמע"
 
 #: include/vlc_config_cat.h:64 src/audio_output/input.c:78
-#: modules/gui/macosx/intf.m:563 modules/gui/macosx/intf.m:564
+#: modules/gui/macosx/intf.m:567 modules/gui/macosx/intf.m:568
 msgid "Visualizations"
-msgstr ""
+msgstr "אפקטים חזותיים"
 
 #: include/vlc_config_cat.h:66 src/audio_output/input.c:152
 msgid "Audio visualizations"
-msgstr ""
+msgstr "אפקטים חזותיים לשמע"
 
 #: include/vlc_config_cat.h:68 include/vlc_config_cat.h:81
 msgid "Output modules"
@@ -111,18 +124,18 @@ msgstr "מודולי פלט"
 msgid "These are general settings for audio output modules."
 msgstr "אלה הגדרות כלליות למודולי פלט שמע."
 
-#: include/vlc_config_cat.h:71 src/libvlc.h:1508
+#: include/vlc_config_cat.h:71 src/libvlc.h:1510
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:578
-#: modules/gui/wxwidgets/menus.cpp:280 modules/stream_out/transcode.c:279
+#: modules/gui/wxwidgets/menus.cpp:282 modules/stream_out/transcode.c:279
 msgid "Miscellaneous"
 msgstr "שונות"
 
 #: include/vlc_config_cat.h:72
 msgid "Miscellaneous audio settings and modules."
-msgstr ""
+msgstr "הגדרות ומודולי שמע שונים"
 
-#: include/vlc_config_cat.h:75 src/input/es_out.c:1620 src/libvlc.h:1213
-#: modules/gui/macosx/extended.m:80 modules/gui/macosx/intf.m:566
+#: include/vlc_config_cat.h:75 src/input/es_out.c:1623 src/libvlc.h:1215
+#: modules/gui/macosx/extended.m:80 modules/gui/macosx/intf.m:570
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:86
 #: modules/gui/macosx/wizard.m:422
 #: modules/gui/wxwidgets/dialogs/infopanels.cpp:289
@@ -146,41 +159,45 @@ msgstr "בחר את שיטת הפלט המועדפת עליך לוידאו, וה
 
 #: include/vlc_config_cat.h:87
 msgid "Video filters are used to postprocess the video stream."
-msgstr ""
+msgstr "מסנני וידאו מופעלים לשם עיבוד מחדש של שטף נתוני הוידאו"
 
 #: include/vlc_config_cat.h:89
 msgid "Subtitles/OSD"
-msgstr ""
+msgstr "כתוביות/OSD"
 
 #: include/vlc_config_cat.h:90
 msgid ""
 "Miscellaneous settings related to On-Screen-Display, subtitles and \"overlay "
 "subpictures\"."
-msgstr ""
+msgstr "הגדרות שונות הקשורות ל-OSD, כתוביות ו\"תמונה בתוך תמונה\""
 
 #: include/vlc_config_cat.h:99
 msgid "Input / Codecs"
-msgstr ""
+msgstr "קלט / מפענחים"
 
 #: include/vlc_config_cat.h:100
 msgid ""
 "These are the settings for the input, demultiplexing and decoding parts of "
 "VLC. Encoder settings can also be found here."
 msgstr ""
+"אלה הן הגדרות הקלט, ביטול הרבוב (demultiplexing) והפענוח של VLC. הגדרות "
+"קידוד גם ניתנות לשינוי מכאן."
 
 #: include/vlc_config_cat.h:103
 msgid "Access modules"
-msgstr ""
+msgstr "מודולי גישה"
 
 #: include/vlc_config_cat.h:105
 msgid ""
 "Settings related to the various access methods used by VLC. Common settings "
 "you may want to alter are HTTP proxy or caching settings."
 msgstr ""
+"הגדות הקשורות למספר שיטות גישה המשומשות ע\"י VLC. שינויים שכיחים בהגדרות "
+"שאולי תרצה לבצע: בשרת ה-HTTP המתווך (HTTP proxy) או בהגדרות המטמון."
 
 #: include/vlc_config_cat.h:109
 msgid "Access filters"
-msgstr ""
+msgstr "מסנני גישה"
 
 #: include/vlc_config_cat.h:111
 msgid ""
@@ -188,47 +205,49 @@ msgid ""
 "input side of VLC. You should not touch anything here unless you know what "
 "you are doing."
 msgstr ""
+"מסנני גישה הם מודולים מיוחדים המעניקים גישה לפעולות מתקדמות בחלק הקלט של "
+"VLC. מומלץ לא לשנות כאן שום דבר, אלא אם אתה יודע מה אתה עושה."
 
 #: include/vlc_config_cat.h:115
 msgid "Demuxers"
-msgstr ""
+msgstr "מפרידי שטפי נתונים (Demuxers)"
 
 #: include/vlc_config_cat.h:116
 msgid "Demuxers are used to separate audio and video streams."
-msgstr ""
+msgstr "השתמש במפרידי שטפי הנתונים לצורך הפרדת שטף נתוני השמע והוידאו."
 
 #: include/vlc_config_cat.h:118
 msgid "Video codecs"
-msgstr ""
+msgstr "מקודדי ומפענחי וידאו"
 
 #: include/vlc_config_cat.h:119
 msgid "Settings for the video-only decoders and encoders."
-msgstr ""
+msgstr "הגדרות למקודדי ומפענחי וידאו-בלבד."
 
 #: include/vlc_config_cat.h:121
 msgid "Audio codecs"
-msgstr ""
+msgstr "מקודדי ומפענחי אודיו"
 
 #: include/vlc_config_cat.h:122
 msgid "Settings for the audio-only decoders and encoders."
-msgstr ""
+msgstr "הגדרות למקודדי ומפענחי שמע בלבד."
 
 #: include/vlc_config_cat.h:124
 msgid "Other codecs"
-msgstr ""
+msgstr "מקודדים ומפענחים אחרים"
 
 #: include/vlc_config_cat.h:125
 msgid "Settings for audio+video and miscellaneous decoders and encoders."
-msgstr ""
+msgstr "הגדרות של מפענחים ומקודדים שונים ושל וידאו+שמע."
 
 #: include/vlc_config_cat.h:128
 msgid "General input settings. Use with care."
-msgstr ""
+msgstr "הגדרות קלט כלליות. השתמשו בזהירות."
 
-#: include/vlc_config_cat.h:131 src/libvlc.h:1445
+#: include/vlc_config_cat.h:131 src/libvlc.h:1447
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:152
 msgid "Stream output"
-msgstr ""
+msgstr "פלט כשדר זורם"
 
 #: include/vlc_config_cat.h:133
 msgid ""
@@ -240,14 +259,20 @@ msgid ""
 "Sout streams modules allow advanced stream processing (transcoding, "
 "duplicating...)."
 msgstr ""
+"פלט כשדר זורם הוא מה שמאפשר ל-VLC לתפקד כשרת מזרים שדרים או לשמור שדרים "
+"זורמים.\n"
+"השדרים בתחילה מעורבלים ואז נשלחים דרך מודול \"גישת פלט\" שיכול לשמור את השדר "
+"לקובץ, או להזרים אותו (UDP, HTTP, RTP/RTSP).\n"
+"מודולים של שדרים מסוג Sout מאפשרים עיבוד מתקדם של השדר (transcoding, "
+"שכפול...)"
 
 #: include/vlc_config_cat.h:141
 msgid "General stream output settings"
-msgstr ""
+msgstr "הגדרות כלליות של שדרים זורמים"
 
 #: include/vlc_config_cat.h:143
 msgid "Muxers"
-msgstr ""
+msgstr "מערבלים"
 
 #: include/vlc_config_cat.h:145
 msgid ""
@@ -256,10 +281,14 @@ msgid ""
 "always force a specific muxer. You should probably not do that.\n"
 "You can also set default parameters for each muxer."
 msgstr ""
+"מערבלים יוצרים תבניות כִּמּוּס (encapsulation) המשומשות למטרת איחוד כל שטפי "
+"הנתונים הבסיסיים. הגדרות אלה מאפשרות לך לקבע תמיד מערבל מסויים. ברוב המקרים "
+"עדיף שלא תעשה זאת.\n"
+"ביכולתך גם לקבוע ערכי ברירת מחדל עבור כל מערבל."
 
 #: include/vlc_config_cat.h:151
 msgid "Access output"
-msgstr ""
+msgstr "גישה לפלט"
 
 #: include/vlc_config_cat.h:153
 msgid ""
@@ -268,10 +297,14 @@ msgid ""
 "should probably not do that.\n"
 "You can also set default parameters for each access output."
 msgstr ""
+"מודולי גישה לפלט שולטים בצורה בה נשלחים שטפי נתונים מעורבלים. הגדרות אלה "
+"מאפשרות לך לקבע תמיד צורה מסויימת של גישה לפלט. ברוב המקרים עדיף שלא תעשה "
+"זאת.\n"
+"ביכולתך גם לקבוע ערכי ברירת מחדל עבור כל גישה לפלט."
 
 #: include/vlc_config_cat.h:158
 msgid "Packetizers"
-msgstr ""
+msgstr "מעבדים למנות של נתונים"
 
 #: include/vlc_config_cat.h:160
 msgid ""
@@ -280,10 +313,14 @@ msgid ""
 "not do that.\n"
 "You can also set default parameters for each packetizer."
 msgstr ""
+"מעבדים למנות של נתונים משומשים לעיבוד מוקדם של שטפי הנתונים הבסיסיים לפני "
+"הערבול. הגדרות אלה מאפשרות לך לקבע תמיד מעבד מסויים. ברוב המקרים עדיף שלא "
+"תעשה זאת.\n"
+"ביכולתך גם לקבוע ערכי ברירת מחדל עבור כל מעבד."
 
 #: include/vlc_config_cat.h:166
 msgid "Sout stream"
-msgstr ""
+msgstr "שדר מסוג Sout"
 
 #: include/vlc_config_cat.h:167
 msgid ""
@@ -291,6 +328,9 @@ msgid ""
 "the Streaming Howto for more information. You can configure default options "
 "for each sout stream module here."
 msgstr ""
+"מודולים של שדרים מסוג Sout מאפשרים בנייה של שרשרת עיבוד של נתונים (מסוג "
+"Sout). אנא התייחס למסמך Streaming Howto אם ברצונך במידע נוסף. ביכולתך להגדיר "
+"כאן אפשרויות ברירת מחדל עבור כל מודול (של שדרים מסוג Sout)."
 
 #: include/vlc_config_cat.h:172 modules/services_discovery/sap.c:123
 msgid "SAP"
@@ -301,6 +341,7 @@ msgid ""
 "SAP is a way to publically announce streams that are being sent using "
 "multicast UDP or RTP."
 msgstr ""
+"SAP מהווה דרך להכרזה פומבית של שדרים הנשלחים בעזרת multicast UDP או RTP."
 
 #: include/vlc_config_cat.h:177
 #: modules/gui/wxwidgets/dialogs/vlm/vlm_panel.cpp:67
@@ -309,13 +350,13 @@ msgstr "VOD"
 
 #: include/vlc_config_cat.h:178
 msgid "VLC's implementation of Video On Demand"
-msgstr ""
+msgstr "יישום של VLC ל-\"וידאו בדרישה\" (Video On Demand)"
 
-#: include/vlc_config_cat.h:182 src/libvlc.h:1554
+#: include/vlc_config_cat.h:182 src/libvlc.h:1556
 #: modules/demux/playlist/playlist.c:53 modules/demux/playlist/playlist.c:54
 #: modules/gui/beos/InterfaceWindow.cpp:230
-#: modules/gui/beos/InterfaceWindow.cpp:323 modules/gui/macosx/intf.m:498
-#: modules/gui/macosx/intf.m:596 modules/gui/pda/pda_interface.c:1264
+#: modules/gui/beos/InterfaceWindow.cpp:323 modules/gui/macosx/intf.m:502
+#: modules/gui/macosx/intf.m:600 modules/gui/pda/pda_interface.c:1264
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:202
 #: modules/gui/wxwidgets/interface.cpp:679
 #: modules/gui/wxwidgets/interface.cpp:690
@@ -327,22 +368,26 @@ msgid ""
 "Settings related to playlist behaviour (e.g. playback mode) and to modules "
 "that automatically add items to the playlist (\"service discovery\" modules)."
 msgstr ""
+"הגדרות הקשורות להתנהגות רשימת ההשמעה (לדוגמה, אופן ההשמעה) ולמודולים "
+"שמוסיפים פריטים, באופן אוטומטי, לרשימת ההשמעה (מודולי \"גילוי שירותים\")."
 
 #: include/vlc_config_cat.h:187
 msgid "General playlist behaviour"
 msgstr "התנהגות כללית של רשימת ההשמעה"
 
-#: include/vlc_config_cat.h:188 modules/gui/macosx/playlist.m:486
+#: include/vlc_config_cat.h:188 modules/gui/macosx/playlist.m:492
 msgid "Services discovery"
-msgstr ""
+msgstr "גילוי שירותים"
 
 #: include/vlc_config_cat.h:189
 msgid ""
 "Services discovery modules are facilities that automatically add items to "
 "playlist."
 msgstr ""
+"מודולי גילוי שירותים הם אמצעי הפעלה שמוסיפים פריטים, באופן אוטומטי, לרשימת "
+"ההשמעה."
 
-#: include/vlc_config_cat.h:193 src/libvlc.h:1406
+#: include/vlc_config_cat.h:193 src/libvlc.h:1408
 #: modules/gui/macosx/prefs.m:124
 msgid "Advanced"
 msgstr "מתקדם"
@@ -360,10 +405,12 @@ msgid ""
 "You can choose to disable some CPU accelerations here. You should probably "
 "not change these settings."
 msgstr ""
+"כאן ביכולתך לבחור לא לאפשר חלק מהאצות ה-CPU. ברוב המקרים עדיף שלא תשנה "
+"הגדרות אלו."
 
 #: include/vlc_config_cat.h:200
 msgid "Advanced settings"
-msgstr ""
+msgstr "הגדרות מתקדמות"
 
 #: include/vlc_config_cat.h:201
 msgid "Other advanced settings"
@@ -371,21 +418,21 @@ msgstr "הגדרות מתקדמות אחרות"
 
 #: include/vlc_config_cat.h:203 modules/gui/macosx/open.m:162
 #: modules/gui/macosx/open.m:379 modules/gui/pda/pda_interface.c:548
-#: modules/gui/wxwidgets/dialogs/open.cpp:506
+#: modules/gui/wxwidgets/dialogs/open.cpp:503
 msgid "Network"
 msgstr "רשת"
 
 #: include/vlc_config_cat.h:204
 msgid "These modules provide network functions to all other parts of VLC."
-msgstr ""
+msgstr "המודולים האלו מספקים פונקציות רשת לכל חלקיו של VLC."
 
 #: include/vlc_config_cat.h:209
 msgid "Chroma modules settings"
-msgstr ""
+msgstr "הגדרות המודול כרומה"
 
 #: include/vlc_config_cat.h:210
 msgid "These settings affect chroma transformation modules."
-msgstr ""
+msgstr "הגדרות אלו משפיעות על מודולי הטרנספורמציה של כרומה."
 
 #: include/vlc_config_cat.h:212
 msgid "Packetizer modules settings"
@@ -419,7 +466,7 @@ msgstr ""
 
 #: include/vlc_config_cat.h:230
 msgid "Video filters settings"
-msgstr ""
+msgstr "הגדרות מסנני וידאו"
 
 #: include/vlc_config_cat.h:237
 msgid "No help available"
@@ -427,7 +474,7 @@ msgstr "אין עזרה זמינה"
 
 #: include/vlc_config_cat.h:238
 msgid "There is no help available for these modules."
-msgstr ""
+msgstr "אין עזרה זמינה עבור המודולים הנ\"ל"
 
 #: include/vlc_interface.h:137
 msgid ""
@@ -435,33 +482,38 @@ msgid ""
 "Warning: if you can't access the GUI anymore, open a command-line window, go "
 "to the directory where you installed VLC and run \"vlc -I wx\"\n"
 msgstr ""
+"\n"
+"אזהרה: אם אינך יכול עוד לגשת לממשק הגרפי, פתח חלון טרמינל, היכנס לתיקייה בה "
+"התקנת את VLC והרץ\n"
+"את הפקודה:\n"
+"vlc -l wx\n"
 
-#: include/vlc_meta.h:28 modules/gui/macosx/playlistinfo.m:205
-#: modules/gui/macosx/playlistinfo.m:310 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1293 modules/misc/growl.c:166
-#: modules/misc/growl.c:169 modules/misc/notify.c:156
-#: modules/misc/notify.c:159
+#: include/vlc_meta.h:28 modules/gui/macosx/playlist.m:320
+#: modules/gui/macosx/playlist.m:1247 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlistinfo.m:310 modules/misc/growl.c:166
+#: modules/misc/growl.c:169 modules/misc/notify.c:180
+#: modules/misc/notify.c:183 modules/visualization/goom.c:417
 msgid "Meta-information"
 msgstr ""
 
 #: include/vlc_meta.h:29 src/input/var.c:136 modules/demux/mpc.c:55
-#: modules/gui/beos/MediaControlView.cpp:1233 modules/gui/macosx/intf.m:548
-#: modules/gui/macosx/intf.m:549 modules/gui/macosx/open.m:168
+#: modules/gui/beos/MediaControlView.cpp:1233 modules/gui/macosx/intf.m:552
+#: modules/gui/macosx/intf.m:553 modules/gui/macosx/open.m:168
 #: modules/gui/macosx/playlistinfo.m:57 modules/gui/macosx/wizard.m:391
-#: modules/gui/wxwidgets/dialogs/open.cpp:760
-#: modules/gui/wxwidgets/dialogs/open.cpp:1663 modules/mux/asf.c:48
+#: modules/gui/wxwidgets/dialogs/open.cpp:757
+#: modules/gui/wxwidgets/dialogs/open.cpp:1660 modules/mux/asf.c:48
 msgid "Title"
-msgstr ""
+msgstr "כותרת"
 
-#: include/vlc_meta.h:30 modules/gui/macosx/playlistinfo.m:58
-#: modules/gui/macosx/playlist.m:134 modules/gui/macosx/wizard.m:393
+#: include/vlc_meta.h:30 modules/gui/macosx/playlist.m:132
+#: modules/gui/macosx/playlistinfo.m:58 modules/gui/macosx/wizard.m:393
 #: modules/gui/wince/playlist.cpp:674 modules/mux/asf.c:50
 msgid "Author"
-msgstr ""
+msgstr "מחבר"
 
-#: include/vlc_meta.h:31 modules/gui/macosx/playlistinfo.m:205
-#: modules/gui/macosx/playlistinfo.m:310 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1293
+#: include/vlc_meta.h:31 modules/gui/macosx/playlist.m:320
+#: modules/gui/macosx/playlist.m:1247 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlistinfo.m:310
 msgid "Artist"
 msgstr "אמן"
 
@@ -473,13 +525,13 @@ msgstr "זיאנר"
 msgid "Copyright"
 msgstr "זכויות יוצרים"
 
-#: include/vlc_meta.h:34 modules/misc/growl.c:170 modules/misc/notify.c:160
+#: include/vlc_meta.h:34 modules/misc/growl.c:170 modules/misc/notify.c:184
 msgid "Album/movie/show title"
-msgstr ""
+msgstr "אלבום/סרט/שם המופע"
 
 #: include/vlc_meta.h:35
 msgid "Track number/position in set"
-msgstr ""
+msgstr "מספר רצועת שמע/מיקום ברצף"
 
 #: include/vlc_meta.h:36 modules/gui/macosx/bookmarks.m:99
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:195
@@ -496,25 +548,25 @@ msgstr "תאריך"
 
 #: include/vlc_meta.h:39
 msgid "Setting"
-msgstr ""
+msgstr "הגדרות"
 
 #: include/vlc_meta.h:40 modules/gui/macosx/open.m:181
-#: modules/gui/wxwidgets/dialogs/open.cpp:874
+#: modules/gui/wxwidgets/dialogs/open.cpp:871
 msgid "URL"
 msgstr "URL"
 
-#: include/vlc_meta.h:41 src/input/es_out.c:1584 src/libvlc.h:96
+#: include/vlc_meta.h:41 src/input/es_out.c:1587 src/libvlc.h:96
 #: modules/gui/beos/InterfaceWindow.cpp:276
 msgid "Language"
 msgstr "שפה"
 
-#: include/vlc_meta.h:42 modules/misc/notify.c:180
+#: include/vlc_meta.h:42 modules/misc/notify.c:206
 msgid "Now Playing"
-msgstr ""
+msgstr "משמיע כעת"
 
 #: include/vlc_meta.h:43 modules/access/vcdx/info.c:98
 msgid "Publisher"
-msgstr ""
+msgstr "מוציא לאור"
 
 #: include/vlc_meta.h:45
 msgid "CDDB Artist"
@@ -526,7 +578,7 @@ msgstr "קטגוריה CDDB"
 
 #: include/vlc_meta.h:47
 msgid "CDDB Disc ID"
-msgstr ""
+msgstr "מזהה דיסק CDDB"
 
 #: include/vlc_meta.h:48
 msgid "CDDB Extended Data"
@@ -542,7 +594,7 @@ msgstr "שנה CDDB"
 
 #: include/vlc_meta.h:51
 msgid "CDDB Title"
-msgstr ""
+msgstr "כותר CDDB"
 
 #: include/vlc_meta.h:53
 msgid "CD-Text Arranger"
@@ -554,7 +606,7 @@ msgstr "מלחין CD-Text"
 
 #: include/vlc_meta.h:55
 msgid "CD-Text Disc ID"
-msgstr ""
+msgstr "CD-Text: מזהה דיסק"
 
 #: include/vlc_meta.h:56
 msgid "CD-Text Genre"
@@ -562,7 +614,7 @@ msgstr "ז'אנר CD-Text"
 
 #: include/vlc_meta.h:57
 msgid "CD-Text Message"
-msgstr ""
+msgstr "CD-Text: מסר"
 
 #: include/vlc_meta.h:58
 msgid "CD-Text Songwriter"
@@ -574,27 +626,27 @@ msgstr "מבצע CD-Text"
 
 #: include/vlc_meta.h:60
 msgid "CD-Text Title"
-msgstr ""
+msgstr "CD-Text: כותר"
 
 #: include/vlc_meta.h:62
 msgid "ISO-9660 Application ID"
-msgstr ""
+msgstr "ISO-9660: מזהה אפליקציה"
 
 #: include/vlc_meta.h:63
 msgid "ISO-9660 Preparer"
-msgstr ""
+msgstr "ISO-9660: הכין"
 
 #: include/vlc_meta.h:64
 msgid "ISO-9660 Publisher"
-msgstr ""
+msgstr "ISO-9660: מוציא לאור"
 
 #: include/vlc_meta.h:65
 msgid "ISO-9660 Volume"
-msgstr ""
+msgstr "ISO-9660: כונן"
 
 #: include/vlc_meta.h:66
 msgid "ISO-9660 Volume Set"
-msgstr ""
+msgstr "ISO-9660: סדרת הכונן"
 
 #: include/vlc_meta.h:68
 msgid "Codec Name"
@@ -602,21 +654,13 @@ msgstr "שם מקודד"
 
 #: include/vlc_meta.h:69
 msgid "Codec Description"
-msgstr ""
-
-#: include/vlc/vlc.h:578
-msgid ""
-"This program comes with NO WARRANTY, to the extent permitted by law.\n"
-"You may redistribute it under the terms of the GNU General Public License;\n"
-"see the file named COPYING for details.\n"
-"Written by the VideoLAN team; see the AUTHORS file.\n"
-msgstr ""
+msgstr "תיאור המקודד/מפענח"
 
 #: src/audio_output/input.c:80 src/audio_output/input.c:126
 #: src/input/es_out.c:361 src/libvlc.h:408 src/video_output/video_output.c:379
 #: modules/codec/ffmpeg/postprocess.c:94
 msgid "Disable"
-msgstr ""
+msgstr "אל תאפשר"
 
 #: src/audio_output/input.c:82 modules/visualization/visual/visual.c:129
 msgid "Spectrometer"
@@ -624,26 +668,26 @@ msgstr ""
 
 #: src/audio_output/input.c:84
 msgid "Scope"
-msgstr ""
+msgstr "תחום"
 
 #: src/audio_output/input.c:86
 msgid "Spectrum"
-msgstr ""
+msgstr "ספקטרום"
 
 #: src/audio_output/input.c:123 modules/audio_filter/equalizer.c:71
 #: modules/gui/macosx/equalizer.m:140 modules/gui/macosx/equalizer.m:155
-#: modules/gui/macosx/intf.m:593 modules/gui/wxwidgets/extrapanel.cpp:177
+#: modules/gui/macosx/intf.m:597 modules/gui/wxwidgets/extrapanel.cpp:177
 msgid "Equalizer"
 msgstr "אקווילייזר"
 
 #: src/audio_output/input.c:145 src/libvlc.h:204
 #: modules/gui/macosx/extended.m:82 modules/gui/wxwidgets/extrapanel.cpp:390
 msgid "Audio filters"
-msgstr ""
+msgstr "מסנני שמע"
 
 #: src/audio_output/output.c:102 src/audio_output/output.c:129
-#: modules/access/vcdx/info.c:118 modules/gui/macosx/intf.m:559
-#: modules/gui/macosx/intf.m:560
+#: modules/access/vcdx/info.c:118 modules/gui/macosx/intf.m:563
+#: modules/gui/macosx/intf.m:564
 msgid "Audio Channels"
 msgstr "ערוצי שמע"
 
@@ -659,7 +703,7 @@ msgstr "סטריאו"
 #: src/audio_output/output.c:107 src/audio_output/output.c:143
 #: src/libvlc.h:267 modules/codec/dvbsub.c:64 modules/codec/subsdec.c:129
 #: modules/control/gestures.c:86 modules/video_filter/logo.c:95
-#: modules/video_filter/marq.c:107 modules/video_filter/mosaic.c:172
+#: modules/video_filter/marq.c:107 modules/video_filter/mosaic.c:170
 #: modules/video_filter/osdmenu.c:78 modules/video_filter/rss.c:160
 #: modules/video_filter/time.c:99
 msgid "Left"
@@ -668,7 +712,7 @@ msgstr "שמאל"
 #: src/audio_output/output.c:109 src/audio_output/output.c:145
 #: src/libvlc.h:267 modules/codec/dvbsub.c:64 modules/codec/subsdec.c:129
 #: modules/control/gestures.c:86 modules/video_filter/logo.c:95
-#: modules/video_filter/marq.c:107 modules/video_filter/mosaic.c:172
+#: modules/video_filter/marq.c:107 modules/video_filter/mosaic.c:170
 #: modules/video_filter/osdmenu.c:78 modules/video_filter/rss.c:160
 #: modules/video_filter/time.c:99
 msgid "Right"
@@ -676,11 +720,11 @@ msgstr "ימין"
 
 #: src/audio_output/output.c:135
 msgid "Dolby Surround"
-msgstr ""
+msgstr "דולבי סורראונד"
 
 #: src/audio_output/output.c:147
 msgid "Reverse stereo"
-msgstr ""
+msgstr "סהפוך ערוצי סטריאו"
 
 #: src/extras/getopt.c:636
 #, c-format
@@ -690,7 +734,7 @@ msgstr "%s: אפשרות '%s' היא דו משמעית\n"
 #: src/extras/getopt.c:661
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr ""
+msgstr "%s: אפשרות '--%s' לא מאפשרת ארגומנט\n"
 
 #: src/extras/getopt.c:666
 #, c-format
@@ -720,22 +764,22 @@ msgstr "%s: אפשרות --%c לא חוקית\n"
 #: src/extras/getopt.c:746
 #, c-format
 msgid "%s: invalid option -- %c\n"
-msgstr ""
+msgstr "%s: אפשרות --%c לא תקינה\n"
 
 #: src/extras/getopt.c:776 src/extras/getopt.c:906
 #, c-format
 msgid "%s: option requires an argument -- %c\n"
-msgstr ""
+msgstr "%s: אפשרות --%c דורשת ארגומנט\n"
 
 #: src/extras/getopt.c:823
 #, c-format
 msgid "%s: option `-W %s' is ambiguous\n"
-msgstr ""
+msgstr "%s: אפשרות `-W %s' דו משמעית\n"
 
 #: src/extras/getopt.c:841
 #, c-format
 msgid "%s: option `-W %s' doesn't allow an argument\n"
-msgstr ""
+msgstr "%s: אפשרות`-W %s' אינה מאפשרת ארגומנט\n"
 
 #: src/input/control.c:283
 #, c-format
@@ -751,86 +795,86 @@ msgstr "רצועה %i"
 
 #: src/input/es_out.c:465 src/input/es_out.c:467 src/input/es_out.c:567
 #: src/input/es_out.c:574 src/input/var.c:125 src/libvlc.h:434
-#: modules/gui/macosx/intf.m:546 modules/gui/macosx/intf.m:547
+#: modules/gui/macosx/intf.m:550 modules/gui/macosx/intf.m:551
 msgid "Program"
 msgstr "תכנית"
 
-#: src/input/es_out.c:1579 modules/codec/faad.c:329
+#: src/input/es_out.c:1582 modules/codec/faad.c:329
 #, c-format
 msgid "Stream %d"
-msgstr ""
+msgstr "שטף נתונים %d"
 
-#: src/input/es_out.c:1581 modules/gui/macosx/wizard.m:426
+#: src/input/es_out.c:1584 modules/gui/macosx/wizard.m:426
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:832
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:872
 msgid "Codec"
-msgstr ""
+msgstr "מקודד/מפענח"
 
-#: src/input/es_out.c:1592 src/input/es_out.c:1620 src/input/es_out.c:1647
+#: src/input/es_out.c:1595 src/input/es_out.c:1623 src/input/es_out.c:1650
 #: modules/gui/macosx/output.m:153
 msgid "Type"
 msgstr "סוג"
 
-#: src/input/es_out.c:1595 modules/codec/faad.c:333
+#: src/input/es_out.c:1598 modules/codec/faad.c:333
 #: modules/gui/macosx/output.m:176
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:857
 msgid "Channels"
 msgstr "ערוצים"
 
-#: src/input/es_out.c:1600 modules/codec/faad.c:335
+#: src/input/es_out.c:1603 modules/codec/faad.c:335
 msgid "Sample rate"
 msgstr "קצב דגימה"
 
-#: src/input/es_out.c:1601 modules/codec/faad.c:335
+#: src/input/es_out.c:1604 modules/codec/faad.c:335
 #, c-format
 msgid "%d Hz"
 msgstr "%d  Hz"
 
-#: src/input/es_out.c:1607
+#: src/input/es_out.c:1610
 msgid "Bits per sample"
 msgstr "ביטים לדגימה"
 
-#: src/input/es_out.c:1612 modules/access/pvr/pvr.c:84
+#: src/input/es_out.c:1615 modules/access/pvr/pvr.c:84
 #: modules/demux/playlist/b4s.c:349 modules/demux/playlist/shoutcast.c:472
 msgid "Bitrate"
-msgstr ""
+msgstr "קצב סיביות"
 
-#: src/input/es_out.c:1613
+#: src/input/es_out.c:1616
 #, c-format
 msgid "%d kb/s"
 msgstr "%d kb/s"
 
-#: src/input/es_out.c:1624
+#: src/input/es_out.c:1627
 msgid "Resolution"
 msgstr "רזולוציה"
 
-#: src/input/es_out.c:1630
+#: src/input/es_out.c:1633
 msgid "Display resolution"
 msgstr "רצולוציית תצוגה"
 
-#: src/input/es_out.c:1640 modules/access/screen/screen.c:41
+#: src/input/es_out.c:1643 modules/access/screen/screen.c:41
 msgid "Frame rate"
 msgstr "קצב פריימים"
 
-#: src/input/es_out.c:1647
+#: src/input/es_out.c:1650
 msgid "Subtitle"
 msgstr "כתובית"
 
-#: src/input/input.c:1897 src/input/input.c:1901
+#: src/input/input.c:1916 src/input/input.c:1920
 #: modules/gui/macosx/output.m:143 modules/gui/macosx/output.m:251
 #: modules/gui/macosx/output.m:391
 msgid "Stream"
 msgstr ""
 
-#: src/input/input.c:1943 src/playlist/item.c:369
+#: src/input/input.c:1962 src/playlist/item.c:369
 #: modules/access/cdda/info.c:326 modules/access/cdda/info.c:394
-#: modules/gui/macosx/playlist.m:135
+#: modules/gui/macosx/playlist.m:133
 msgid "Duration"
 msgstr "אורך"
 
-#: src/input/input.c:2124 src/input/input.c:2196
+#: src/input/input.c:2144 src/input/input.c:2216
 msgid "Errors"
-msgstr ""
+msgstr "שגיאות"
 
 #: src/input/var.c:115
 msgid "Bookmark"
@@ -841,43 +885,43 @@ msgid "Programs"
 msgstr "תכניות"
 
 #: src/input/var.c:142 modules/gui/beos/MediaControlView.cpp:1234
-#: modules/gui/macosx/intf.m:550 modules/gui/macosx/intf.m:551
-#: modules/gui/macosx/open.m:169 modules/gui/wxwidgets/dialogs/open.cpp:765
+#: modules/gui/macosx/intf.m:554 modules/gui/macosx/intf.m:555
+#: modules/gui/macosx/open.m:169 modules/gui/wxwidgets/dialogs/open.cpp:762
 msgid "Chapter"
 msgstr "פרק"
 
 #: src/input/var.c:148 modules/access/vcdx/info.c:302
 #: modules/access/vcdx/info.c:303 modules/gui/beos/InterfaceWindow.cpp:291
 msgid "Navigation"
-msgstr ""
+msgstr "ניווט"
 
-#: src/input/var.c:163 modules/gui/macosx/intf.m:574
-#: modules/gui/macosx/intf.m:575
+#: src/input/var.c:163 modules/gui/macosx/intf.m:578
+#: modules/gui/macosx/intf.m:579
 msgid "Video Track"
 msgstr "רצועת וידאו"
 
-#: src/input/var.c:169 modules/gui/macosx/intf.m:557
-#: modules/gui/macosx/intf.m:558
+#: src/input/var.c:169 modules/gui/macosx/intf.m:561
+#: modules/gui/macosx/intf.m:562
 msgid "Audio Track"
 msgstr "רצועת שמע"
 
-#: src/input/var.c:175 modules/gui/macosx/intf.m:582
-#: modules/gui/macosx/intf.m:583
+#: src/input/var.c:175 modules/gui/macosx/intf.m:586
+#: modules/gui/macosx/intf.m:587
 msgid "Subtitles Track"
 msgstr "רצועת כתוביות"
 
 #: src/input/var.c:256
 msgid "Next title"
-msgstr ""
+msgstr "כותר הבא"
 
 #: src/input/var.c:261
 msgid "Previous title"
-msgstr ""
+msgstr "כותר קודם"
 
 #: src/input/var.c:284
 #, c-format
 msgid "Title %i"
-msgstr ""
+msgstr "כותר %i"
 
 #: src/input/var.c:307 src/input/var.c:367
 #, c-format
@@ -896,7 +940,7 @@ msgstr "הפרק הקודם"
 
 #: src/interface/interaction.c:427
 msgid "Login"
-msgstr ""
+msgstr "היכנס"
 
 #: src/interface/interaction.c:435 modules/access_output/http.c:63
 #: modules/control/telnet.c:81
@@ -907,10 +951,15 @@ msgstr "סיסמה"
 msgid "Switch interface"
 msgstr "החלפת ממשק"
 
-#: src/interface/interface.c:375 modules/gui/macosx/intf.m:509
-#: modules/gui/macosx/intf.m:510
+#: src/interface/interface.c:375 modules/gui/macosx/intf.m:513
+#: modules/gui/macosx/intf.m:514
 msgid "Add Interface"
 msgstr "הוספת ממשק"
+
+#: src/interface/interface.c:378
+#, fuzzy
+msgid "Console"
+msgstr "סגור"
 
 #: src/interface/interface.c:380
 #, fuzzy
@@ -940,61 +989,66 @@ msgstr ""
 msgid "Help options"
 msgstr "אפשרויות עזרה"
 
-#: src/libvlc.c:2208 src/misc/configuration.c:1248
+#: src/libvlc.c:2221 src/misc/configuration.c:1269
 msgid "string"
-msgstr ""
+msgstr "מחרוזת"
 
-#: src/libvlc.c:2225 src/misc/configuration.c:1212
+#: src/libvlc.c:2238 src/misc/configuration.c:1233
 msgid "integer"
-msgstr ""
+msgstr "מספר שלם"
 
-#: src/libvlc.c:2243 src/misc/configuration.c:1237
+#: src/libvlc.c:2256 src/misc/configuration.c:1258
 msgid "float"
-msgstr ""
+msgstr "מספר בנקודה צפה"
 
-#: src/libvlc.c:2249
+#: src/libvlc.c:2262
 msgid " (default enabled)"
-msgstr ""
+msgstr " (ברירת מחדל: מאופשר)"
 
-#: src/libvlc.c:2250
+#: src/libvlc.c:2263
 msgid " (default disabled)"
-msgstr ""
+msgstr " (ברירת מחדל: לא מאופשר)"
 
-#: src/libvlc.c:2432
+#: src/libvlc.c:2445
 #, c-format
 msgid "VLC version %s\n"
 msgstr "גירסת VLC %s\n"
 
-#: src/libvlc.c:2433
+#: src/libvlc.c:2446
 #, c-format
 msgid "Compiled by %s@%s.%s\n"
 msgstr "הודר (קומפל) ע\"י %s@%s.%s\n"
 
-#: src/libvlc.c:2435
+#: src/libvlc.c:2448
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "מהדר:%s\n"
 
-#: src/libvlc.c:2438
+#: src/libvlc.c:2451
 #, c-format
 msgid "Based upon svn changeset [%s]\n"
-msgstr ""
+msgstr "מבוסס על svn סט-שינויים [%s]\n"
 
-#: src/libvlc.c:2470
+#: src/libvlc.c:2483
 msgid ""
 "\n"
 "Dumped content to vlc-help.txt file.\n"
 msgstr ""
+"\n"
+"↵\n"
+"המידע נשמר לתוך הקובץ vlc-help.txt↵\n"
 
-#: src/libvlc.c:2491
+#: src/libvlc.c:2504
 msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
 msgstr ""
+"\n"
+"לחץ על מקש ה-RETURN להמשך...\n"
 
 #: src/libvlc.h:37 src/libvlc.h:201
 msgid "Auto"
-msgstr ""
+msgstr "אוטומטי"
 
 #: src/libvlc.h:37
 msgid "American English"
@@ -1053,19 +1107,23 @@ msgstr "יפנית"
 msgid "Georgian"
 msgstr "גרוזינית"
 
-#: src/libvlc.h:40 src/misc/iso-639_def.h:125
-msgid "Malay"
-msgstr "מלאית"
-
 #: src/libvlc.h:40 src/misc/iso-639_def.h:111
 msgid "Korean"
 msgstr "קוראנית"
 
-#: src/libvlc.h:40 src/misc/iso-639_def.h:69
+#: src/libvlc.h:40 src/misc/iso-639_def.h:125
+msgid "Malay"
+msgstr "מלאית"
+
+#: src/libvlc.h:40 src/misc/iso-639_def.h:135
+msgid "Nepali"
+msgstr "נפאלית"
+
+#: src/libvlc.h:41 src/misc/iso-639_def.h:69
 msgid "Dutch"
 msgstr "הולנדית"
 
-#: src/libvlc.h:40
+#: src/libvlc.h:41
 msgid "Occitan"
 msgstr ""
 
@@ -1077,25 +1135,33 @@ msgstr "פורטוגלית ברזיל"
 msgid "Romanian"
 msgstr "רומנית"
 
-#: src/libvlc.h:41 src/misc/iso-639_def.h:155
+#: src/libvlc.h:42 src/misc/iso-639_def.h:155
 msgid "Russian"
 msgstr "רוסית"
-
-#: src/libvlc.h:41 src/misc/iso-639_def.h:174
-msgid "Swedish"
-msgstr "שוודית"
 
 #: src/libvlc.h:42 src/misc/iso-639_def.h:161
 msgid "Slovak"
 msgstr "סלובקית"
 
-#: src/libvlc.h:42 src/misc/iso-639_def.h:187
+#: src/libvlc.h:42 src/misc/iso-639_def.h:162
+msgid "Slovenian"
+msgstr "סלובנית"
+
+#: src/libvlc.h:42 src/misc/iso-639_def.h:174
+msgid "Swedish"
+msgstr "שוודית"
+
+#: src/libvlc.h:42 src/misc/iso-639_def.h:181
+msgid "Thai"
+msgstr "תאילנדית"
+
+#: src/libvlc.h:43 src/misc/iso-639_def.h:187
 msgid "Turkish"
 msgstr "טורקית"
 
-#: src/libvlc.h:42
+#: src/libvlc.h:43
 msgid "Simplified Chinese"
-msgstr ""
+msgstr "סינית מפושטת"
 
 #: src/libvlc.h:43
 msgid "Chinese Traditional"
@@ -1107,6 +1173,8 @@ msgid ""
 "select the main interface, additional interface modules, and define various "
 "related options."
 msgstr ""
+"האפשרויות הללו מאפשרות לך להגדיר את ממשקי המשתמש המשומשים ע\"י VLC. ניתן "
+"לבחור את הממשק הראשי, מודלים של ממשקים נוספים, ולהגדיר מבחר אפשרויות שונות."
 
 #: src/libvlc.h:66
 msgid "Interface module"
@@ -1117,6 +1185,8 @@ msgid ""
 "This is the main interface used by VLC. The default behavior is to "
 "automatically select the best module available."
 msgstr ""
+"זהו ממשק המשתמש הראשי המשומש ע\"י VLC. ההתנהגות הטבעית היא לבחור באופן "
+"אוטומטי את המודול הטוב ביותר שבנמצא."
 
 #: src/libvlc.h:72 modules/control/ntservice.c:53
 msgid "Extra interface modules"
@@ -1129,46 +1199,54 @@ msgid ""
 "list of interface modules. (common values are \"rc\" (remote control), \"http"
 "\", \"gestures\" ...)"
 msgstr ""
+"הינך יכול לבחור \"ממשקים נוספים\" ל VLC. אלה ירוצו ברקע בנוסף לממשק ברירת "
+"המחדל.\r\n"
+"השתמש ברשימה מופרדת ע\"י פסיק של ממשקים. (לדוגמא: \"rc\" , \"http\", "
+"\"gestures\" ועוד)"
 
 #: src/libvlc.h:81
 msgid "You can select control interfaces for VLC."
-msgstr ""
+msgstr "ניתן לבחור ממשקי שליטה ל-VLC"
 
 #: src/libvlc.h:83
 msgid "Verbosity (0,1,2)"
-msgstr ""
+msgstr "פלט של הודעות מערכת (0,1,2)"
 
 #: src/libvlc.h:85
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
 "1=warnings, 2=debug)."
 msgstr ""
+"זוהי רמת הפלט של הודעות מערכת (0=שגיאות והודעות רגילות בלבד, 1=אזהרות, "
+"2=הודעות ניפוי: debug)"
 
 #: src/libvlc.h:88
 msgid "Be quiet"
-msgstr ""
+msgstr "שקט"
 
 #: src/libvlc.h:90
 msgid "Turn off all warning and information messages."
-msgstr ""
+msgstr "אל תציג אזהרות והודעות אינפורמציה."
 
 #: src/libvlc.h:92
 msgid "Default stream"
-msgstr ""
+msgstr "שדר זורם ברירת מחדל"
 
 #: src/libvlc.h:94
 msgid "This stream will always be opened at VLC startup."
-msgstr ""
+msgstr "זהו השדר הזורם אשר יפתח תמיד עם עליית VLC."
 
 #: src/libvlc.h:97
 msgid ""
 "You can manually select a language for the interface. The system language is "
 "auto-detected if \"auto\" is specified here."
 msgstr ""
+"ניתן לבחור את שפת הממשק באופן ידני. שפת המערכת תזוהה באופן אוטומטי אם תבחר ב-"
+"\"אוטומטי\""
 
 #: src/libvlc.h:101
 msgid "Color messages"
-msgstr ""
+msgstr "הודעות צבעוניות"
 
 #: src/libvlc.h:103
 msgid ""
@@ -1188,7 +1266,7 @@ msgstr ""
 
 #: src/libvlc.h:112 modules/control/showintf.c:68
 msgid "Show interface with mouse"
-msgstr ""
+msgstr "הצג ממשק עם עכבר"
 
 #: src/libvlc.h:114
 msgid ""
@@ -1227,7 +1305,7 @@ msgstr ""
 
 #: src/libvlc.h:141 modules/stream_out/display.c:37
 msgid "Enable audio"
-msgstr ""
+msgstr "אפשר שמע"
 
 #: src/libvlc.h:143
 msgid ""
@@ -1237,50 +1315,55 @@ msgstr ""
 
 #: src/libvlc.h:146
 msgid "Force mono audio"
-msgstr ""
+msgstr "קבע שמע חד ערוצי (mono)"
 
 #: src/libvlc.h:147
 msgid "This will force a mono audio output."
-msgstr ""
+msgstr "קובע שפלט השמע יהיה חד ערוצי (mono)"
 
 #: src/libvlc.h:149
 msgid "Default audio volume"
-msgstr ""
+msgstr "עוצמת שמע ברירת מחדל"
 
 #: src/libvlc.h:151
 msgid ""
 "You can set the default audio output volume here, in a range from 0 to 1024."
-msgstr ""
+msgstr "באפשרותך לקבוע כאן את עוצמת השמע כברירת מחדל, בטווח שבין 0 ל- 1024."
 
 #: src/libvlc.h:154
 msgid "Audio output saved volume"
-msgstr ""
+msgstr "שמירת עוצמת השמע"
 
 #: src/libvlc.h:156
 msgid ""
 "This saves the audio output volume when you use the mute function. You "
 "should not change this option manually."
 msgstr ""
+"בחירה באפשרות הזו תשמור את עוצמת השמע כאשר תשתמש בפונקציית השתקת השמע. עליך "
+"לא לשנות אפשרות זו באופן ידני."
 
 #: src/libvlc.h:159
 msgid "Audio output volume step"
-msgstr ""
+msgstr "גודל הצעד בין רמת עוצמת שמע אחת לאחרת"
 
 #: src/libvlc.h:161
 msgid ""
 "The step size of the volume is adjustable using this option, in a range from "
 "0 to 1024."
 msgstr ""
+"גודל הצעד בין רמת עוצמת שמע אחת לאחרת ניתן לשינוי כאן, בטווח שבין 0 ל 1024."
 
 #: src/libvlc.h:164
 msgid "Audio output frequency (Hz)"
-msgstr ""
+msgstr "תדר פלט השמע"
 
 #: src/libvlc.h:166
 msgid ""
 "You can force the audio output frequency here. Common values are -1 "
 "(default), 48000, 44100, 32000, 22050, 16000, 11025, 8000."
 msgstr ""
+"באפשרותך לקבוע את תדר הפלט. ערכים שכיחים: 1- (ברירת מחדל), 48000, 44100, "
+"32000, 22050, 16000, 11025, 8000."
 
 #: src/libvlc.h:170
 msgid "High quality audio resampling"
@@ -1452,48 +1535,48 @@ msgstr ""
 
 #: src/libvlc.h:267 modules/codec/dvbsub.c:64 modules/codec/subsdec.c:129
 #: modules/video_filter/logo.c:95 modules/video_filter/marq.c:107
-#: modules/video_filter/mosaic.c:172 modules/video_filter/osdmenu.c:78
+#: modules/video_filter/mosaic.c:170 modules/video_filter/osdmenu.c:78
 #: modules/video_filter/rss.c:160 modules/video_filter/time.c:99
 msgid "Center"
 msgstr "מרכז"
 
 #: src/libvlc.h:267 modules/codec/dvbsub.c:64 modules/video_filter/logo.c:95
-#: modules/video_filter/marq.c:107 modules/video_filter/mosaic.c:172
+#: modules/video_filter/marq.c:107 modules/video_filter/mosaic.c:170
 #: modules/video_filter/osdmenu.c:78 modules/video_filter/rss.c:160
 #: modules/video_filter/time.c:99
 msgid "Top"
 msgstr "למעלה"
 
 #: src/libvlc.h:267 modules/codec/dvbsub.c:64 modules/video_filter/logo.c:95
-#: modules/video_filter/marq.c:107 modules/video_filter/mosaic.c:172
+#: modules/video_filter/marq.c:107 modules/video_filter/mosaic.c:170
 #: modules/video_filter/osdmenu.c:78 modules/video_filter/rss.c:160
 #: modules/video_filter/time.c:99
 msgid "Bottom"
 msgstr "למטה"
 
 #: src/libvlc.h:268 modules/codec/dvbsub.c:65 modules/video_filter/logo.c:96
-#: modules/video_filter/marq.c:108 modules/video_filter/mosaic.c:173
+#: modules/video_filter/marq.c:108 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:79 modules/video_filter/rss.c:161
 #: modules/video_filter/time.c:100
 msgid "Top-Left"
 msgstr "שמאל למעלה"
 
 #: src/libvlc.h:268 modules/codec/dvbsub.c:65 modules/video_filter/logo.c:96
-#: modules/video_filter/marq.c:108 modules/video_filter/mosaic.c:173
+#: modules/video_filter/marq.c:108 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:79 modules/video_filter/rss.c:161
 #: modules/video_filter/time.c:100
 msgid "Top-Right"
 msgstr "ימין למעלה"
 
 #: src/libvlc.h:268 modules/codec/dvbsub.c:65 modules/video_filter/logo.c:96
-#: modules/video_filter/marq.c:108 modules/video_filter/mosaic.c:173
+#: modules/video_filter/marq.c:108 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:79 modules/video_filter/rss.c:161
 #: modules/video_filter/time.c:100
 msgid "Bottom-Left"
 msgstr "שמאל למטה"
 
 #: src/libvlc.h:268 modules/codec/dvbsub.c:65 modules/video_filter/logo.c:96
-#: modules/video_filter/marq.c:108 modules/video_filter/mosaic.c:173
+#: modules/video_filter/marq.c:108 modules/video_filter/mosaic.c:171
 #: modules/video_filter/osdmenu.c:79 modules/video_filter/rss.c:161
 #: modules/video_filter/time.c:100
 msgid "Bottom-Right"
@@ -1535,7 +1618,7 @@ msgid ""
 "to render video directly). VLC will try to use it by default."
 msgstr ""
 
-#: src/libvlc.h:288 src/video_output/vout_intf.c:399
+#: src/libvlc.h:288 src/video_output/vout_intf.c:400
 msgid "Always on top"
 msgstr ""
 
@@ -1740,11 +1823,11 @@ msgid ""
 "detailed settings are available in Advanced / Network Sync."
 msgstr ""
 
-#: src/libvlc.h:408 src/video_output/vout_intf.c:261
-#: src/video_output/vout_intf.c:348 modules/access/dshow/dshow.cpp:73
+#: src/libvlc.h:408 src/video_output/vout_intf.c:262
+#: src/video_output/vout_intf.c:349 modules/access/dshow/dshow.cpp:73
 #: modules/access/dshow/dshow.cpp:75 modules/access/dshow/dshow.cpp:78
 #: modules/audio_output/alsa.c:101 modules/gui/macosx/prefs_widgets.m:1292
-#: modules/gui/macosx/vout.m:199
+#: modules/gui/macosx/vout.m:197
 #: modules/gui/wxwidgets/dialogs/preferences_widgets.cpp:275
 #: modules/gui/wxwidgets/dialogs/preferences_widgets.cpp:325
 #: modules/video_filter/marq.c:52 modules/video_filter/rss.c:63
@@ -1820,7 +1903,7 @@ msgid ""
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc.h:448 modules/gui/wxwidgets/dialogs/open.cpp:779
+#: src/libvlc.h:448 modules/gui/wxwidgets/dialogs/open.cpp:776
 msgid "Audio track"
 msgstr "רצועת שמע"
 
@@ -1828,7 +1911,7 @@ msgstr "רצועת שמע"
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr ""
 
-#: src/libvlc.h:453 modules/gui/wxwidgets/dialogs/open.cpp:771
+#: src/libvlc.h:453 modules/gui/wxwidgets/dialogs/open.cpp:768
 msgid "Subtitles track"
 msgstr "רצועת כתוביות"
 
@@ -1954,7 +2037,7 @@ msgstr ""
 msgid "You can completely disable the sub-picture processing."
 msgstr ""
 
-#: src/libvlc.h:523 src/libvlc.h:1288 src/misc/iso-639_def.h:143
+#: src/libvlc.h:523 src/libvlc.h:1290 src/misc/iso-639_def.h:143
 #: modules/stream_out/transcode.c:275
 msgid "On Screen Display"
 msgstr ""
@@ -2079,7 +2162,7 @@ msgstr ""
 msgid "This is the default Audio CD device to use."
 msgstr "זהו התקן התקליטורים שייעשה בו שימוש כברירת מחדל."
 
-#: src/libvlc.h:593 modules/gui/wxwidgets/dialogs/open.cpp:841
+#: src/libvlc.h:593 modules/gui/wxwidgets/dialogs/open.cpp:838
 msgid "Force IPv6"
 msgstr ""
 
@@ -2694,12 +2777,12 @@ msgstr ""
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 
-#: src/libvlc.h:948 src/video_output/vout_intf.c:408
+#: src/libvlc.h:948 src/video_output/vout_intf.c:409
 #: modules/gui/beos/VideoOutput.cpp:1057 modules/gui/macosx/applescript.m:121
-#: modules/gui/macosx/controls.m:344 modules/gui/macosx/controls.m:760
-#: modules/gui/macosx/controls.m:790 modules/gui/macosx/embeddedwindow.m:44
-#: modules/gui/macosx/intf.m:495 modules/gui/macosx/intf.m:571
-#: modules/gui/macosx/intf.m:626
+#: modules/gui/macosx/controls.m:455 modules/gui/macosx/controls.m:881
+#: modules/gui/macosx/controls.m:911 modules/gui/macosx/embeddedwindow.m:44
+#: modules/gui/macosx/intf.m:499 modules/gui/macosx/intf.m:575
+#: modules/gui/macosx/intf.m:630
 msgid "Fullscreen"
 msgstr "מסך מלא"
 
@@ -2733,7 +2816,7 @@ msgid "Select the hotkey to use to play."
 msgstr "בחרו את קיצור המקלדת לנגינה."
 
 #: src/libvlc.h:956 modules/control/hotkeys.c:684
-#: modules/gui/macosx/controls.m:693 modules/gui/macosx/intf.m:536
+#: modules/gui/macosx/controls.m:814 modules/gui/macosx/intf.m:540
 #: modules/gui/wxwidgets/interface.cpp:695
 msgid "Faster"
 msgstr "נגינה מהירה"
@@ -2743,7 +2826,7 @@ msgid "Select the hotkey to use for fast forward playback."
 msgstr "בחרו את קיצור המקלדת לנגינה מהירה."
 
 #: src/libvlc.h:958 modules/control/hotkeys.c:692
-#: modules/gui/macosx/controls.m:694 modules/gui/macosx/intf.m:537
+#: modules/gui/macosx/controls.m:815 modules/gui/macosx/intf.m:541
 #: modules/gui/wxwidgets/interface.cpp:694
 msgid "Slower"
 msgstr "נגינה איטית"
@@ -2753,13 +2836,13 @@ msgid "Select the hotkey to use for slow motion playback."
 msgstr "בחרו את קיצור המקלדת לנגינה איטית במיוחד."
 
 #: src/libvlc.h:960 modules/control/hotkeys.c:651
-#: modules/gui/macosx/controls.m:714 modules/gui/macosx/intf.m:494
-#: modules/gui/macosx/intf.m:539 modules/gui/macosx/intf.m:614
-#: modules/gui/macosx/intf.m:622 modules/gui/macosx/wizard.m:313
+#: modules/gui/macosx/controls.m:835 modules/gui/macosx/intf.m:498
+#: modules/gui/macosx/intf.m:543 modules/gui/macosx/intf.m:618
+#: modules/gui/macosx/intf.m:626 modules/gui/macosx/wizard.m:313
 #: modules/gui/macosx/wizard.m:364 modules/gui/macosx/wizard.m:1604
 #: modules/gui/wxwidgets/interface.cpp:693
 #: modules/gui/wxwidgets/interface.cpp:1515
-#: modules/gui/wxwidgets/menus.cpp:259
+#: modules/gui/wxwidgets/menus.cpp:261
 msgid "Next"
 msgstr "הבא"
 
@@ -2768,11 +2851,11 @@ msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr "בחרו את קיצור המקלדת למעבר לפריט הבא ברשימת ההשמעה."
 
 #: src/libvlc.h:962 modules/control/hotkeys.c:663
-#: modules/gui/macosx/controls.m:713 modules/gui/macosx/intf.m:489
-#: modules/gui/macosx/intf.m:538 modules/gui/macosx/intf.m:615
-#: modules/gui/macosx/intf.m:621 modules/gui/wxwidgets/interface.cpp:692
+#: modules/gui/macosx/controls.m:834 modules/gui/macosx/intf.m:493
+#: modules/gui/macosx/intf.m:542 modules/gui/macosx/intf.m:619
+#: modules/gui/macosx/intf.m:625 modules/gui/wxwidgets/interface.cpp:692
 #: modules/gui/wxwidgets/interface.cpp:1514
-#: modules/gui/wxwidgets/menus.cpp:258
+#: modules/gui/wxwidgets/menus.cpp:260
 msgid "Previous"
 msgstr "הקודם"
 
@@ -2780,15 +2863,15 @@ msgstr "הקודם"
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr "בחרו את קיצור המקלדת למעבר לפריט הקודם ברשימה."
 
-#: src/libvlc.h:964 modules/gui/macosx/controls.m:705
-#: modules/gui/macosx/intf.m:492 modules/gui/macosx/intf.m:535
-#: modules/gui/macosx/intf.m:613 modules/gui/macosx/intf.m:620
+#: src/libvlc.h:964 modules/gui/macosx/controls.m:826
+#: modules/gui/macosx/intf.m:496 modules/gui/macosx/intf.m:539
+#: modules/gui/macosx/intf.m:617 modules/gui/macosx/intf.m:624
 #: modules/gui/pda/pda_interface.c:274 modules/gui/pda/pda_interface.c:275
 #: modules/gui/wxwidgets/dialogs/vlm/vlm_streampanel.cpp:87
 #: modules/gui/wxwidgets/interface.cpp:676
 #: modules/gui/wxwidgets/interface.cpp:687
 #: modules/gui/wxwidgets/interface.cpp:1516
-#: modules/gui/wxwidgets/menus.cpp:257 modules/visualization/xosd.c:238
+#: modules/gui/wxwidgets/menus.cpp:259 modules/visualization/xosd.c:238
 msgid "Stop"
 msgstr "עצור"
 
@@ -2798,7 +2881,7 @@ msgstr ""
 
 #: src/libvlc.h:966 modules/gui/macosx/bookmarks.m:101
 #: modules/gui/macosx/bookmarks.m:110 modules/gui/macosx/embeddedwindow.m:46
-#: modules/gui/macosx/intf.m:497 modules/video_filter/marq.c:122
+#: modules/gui/macosx/intf.m:501 modules/video_filter/marq.c:122
 #: modules/video_filter/rss.c:174
 msgid "Position"
 msgstr ""
@@ -3008,9 +3091,9 @@ msgstr "הנמך עוצמה"
 msgid "Select the key to decrease audio volume."
 msgstr "בחרו את קיצור המקלדת להנמכת עוצמת הקול."
 
-#: src/libvlc.h:1030 modules/gui/macosx/controls.m:750
-#: modules/gui/macosx/intf.m:556 modules/gui/macosx/intf.m:616
-#: modules/gui/macosx/intf.m:625
+#: src/libvlc.h:1030 modules/gui/macosx/controls.m:871
+#: modules/gui/macosx/intf.m:560 modules/gui/macosx/intf.m:620
+#: modules/gui/macosx/intf.m:629
 msgid "Mute"
 msgstr "השתק"
 
@@ -3275,45 +3358,54 @@ msgstr ""
 msgid "Record access filter start/stop."
 msgstr ""
 
-#: src/libvlc.h:1101 src/libvlc.h:1102
+#: src/libvlc.h:1100 modules/access_filter/dump.c:51
+#: modules/access_filter/dump.c:52
+msgid "Dump"
+msgstr ""
+
+#: src/libvlc.h:1101
+msgid "Media dump access filter trigger."
+msgstr ""
+
+#: src/libvlc.h:1103 src/libvlc.h:1104
 #, fuzzy
 msgid "Un-Zoom"
 msgstr "זום"
 
-#: src/libvlc.h:1104 src/libvlc.h:1105
+#: src/libvlc.h:1106 src/libvlc.h:1107
 msgid "Crop one pixel from the top of the video"
 msgstr ""
 
-#: src/libvlc.h:1106 src/libvlc.h:1107
+#: src/libvlc.h:1108 src/libvlc.h:1109
 msgid "Uncrop one pixel from the top of the video"
 msgstr ""
 
-#: src/libvlc.h:1109 src/libvlc.h:1110
+#: src/libvlc.h:1111 src/libvlc.h:1112
 msgid "Crop one pixel from the left of the video"
 msgstr ""
 
-#: src/libvlc.h:1111 src/libvlc.h:1112
+#: src/libvlc.h:1113 src/libvlc.h:1114
 msgid "Uncrop one pixel from the left of the video"
 msgstr ""
 
-#: src/libvlc.h:1114 src/libvlc.h:1115
+#: src/libvlc.h:1116 src/libvlc.h:1117
 msgid "Crop one pixel from the bottom of the video"
 msgstr ""
 
-#: src/libvlc.h:1116 src/libvlc.h:1117
+#: src/libvlc.h:1118 src/libvlc.h:1119
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr ""
 
-#: src/libvlc.h:1119 src/libvlc.h:1120
+#: src/libvlc.h:1121 src/libvlc.h:1122
 #, fuzzy
 msgid "Crop one pixel from the right of the video"
 msgstr "קבע את בהירות קלט הוידאו"
 
-#: src/libvlc.h:1121 src/libvlc.h:1122
+#: src/libvlc.h:1123 src/libvlc.h:1124
 msgid "Uncrop one pixel from the right of the video"
 msgstr ""
 
-#: src/libvlc.h:1126
+#: src/libvlc.h:1128
 #, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -3350,147 +3442,147 @@ msgid ""
 "  vlc:quit                       Special item to quit VLC\n"
 msgstr ""
 
-#: src/libvlc.h:1236 src/video_output/vout_intf.c:420
-#: modules/gui/macosx/controls.m:328 modules/gui/macosx/controls.m:759
-#: modules/gui/macosx/intf.m:573 modules/gui/macosx/intf.m:627
+#: src/libvlc.h:1238 src/video_output/vout_intf.c:421
+#: modules/gui/macosx/controls.m:439 modules/gui/macosx/controls.m:880
+#: modules/gui/macosx/intf.m:577 modules/gui/macosx/intf.m:631
 #: modules/video_output/snapshot.c:76
 msgid "Snapshot"
 msgstr ""
 
-#: src/libvlc.h:1249
+#: src/libvlc.h:1251
 msgid "Window properties"
 msgstr "מאפייני חלון"
 
-#: src/libvlc.h:1289
+#: src/libvlc.h:1291
 msgid "Subpictures"
 msgstr ""
 
-#: src/libvlc.h:1296 modules/codec/subsdec.c:144 modules/demux/subtitle.c:63
+#: src/libvlc.h:1298 modules/codec/subsdec.c:144 modules/demux/subtitle.c:63
 #: modules/gui/beos/InterfaceWindow.cpp:277
 msgid "Subtitles"
 msgstr "כתוביות"
 
-#: src/libvlc.h:1313 modules/stream_out/transcode.c:148
+#: src/libvlc.h:1315 modules/stream_out/transcode.c:148
 msgid "Overlays"
 msgstr ""
 
-#: src/libvlc.h:1321
+#: src/libvlc.h:1323
 msgid "Track settings"
 msgstr "הגדרות רצועה"
 
-#: src/libvlc.h:1343
+#: src/libvlc.h:1345
 msgid "Playback control"
 msgstr ""
 
-#: src/libvlc.h:1358
+#: src/libvlc.h:1360
 msgid "Default devices"
 msgstr ""
 
-#: src/libvlc.h:1367
+#: src/libvlc.h:1369
 msgid "Network settings"
 msgstr "הגדרות רשת"
 
-#: src/libvlc.h:1379
+#: src/libvlc.h:1381
 msgid "Socks proxy"
 msgstr ""
 
-#: src/libvlc.h:1388
+#: src/libvlc.h:1390
 msgid "Metadata"
 msgstr ""
 
-#: src/libvlc.h:1418
+#: src/libvlc.h:1420
 msgid "Decoders"
 msgstr "מפענחים"
 
-#: src/libvlc.h:1425 modules/gui/macosx/playlistinfo.m:80
+#: src/libvlc.h:1427 modules/gui/macosx/playlistinfo.m:80
 #: modules/gui/wxwidgets/dialogs/infopanels.cpp:264
 #: modules/gui/wxwidgets/dialogs/vlm/vlm_panel.cpp:378
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:106
 msgid "Input"
 msgstr "קלט"
 
-#: src/libvlc.h:1461 modules/gui/wxwidgets/dialogs/vlm/vlm_panel.cpp:522
+#: src/libvlc.h:1463 modules/gui/wxwidgets/dialogs/vlm/vlm_panel.cpp:522
 msgid "VLM"
 msgstr ""
 
-#: src/libvlc.h:1492
+#: src/libvlc.h:1494
 msgid "CPU"
 msgstr "מעבד"
 
-#: src/libvlc.h:1507
+#: src/libvlc.h:1509
 msgid "Special modules"
 msgstr "מודולים מיוחדים"
 
-#: src/libvlc.h:1513
+#: src/libvlc.h:1515
 msgid "Plugins"
 msgstr "תוספים"
 
-#: src/libvlc.h:1519
+#: src/libvlc.h:1521
 msgid "Performance options"
 msgstr "אפשרויות ביצועים"
 
-#: src/libvlc.h:1625
+#: src/libvlc.h:1627
 msgid "Hot keys"
 msgstr "קיצורי מקלדת"
 
-#: src/libvlc.h:1928
+#: src/libvlc.h:1934
 msgid "Jump sizes"
 msgstr ""
 
-#: src/libvlc.h:2007
+#: src/libvlc.h:2013
 msgid "main program"
 msgstr ""
 
-#: src/libvlc.h:2014
+#: src/libvlc.h:2020
 msgid "print help for VLC (can be combined with --advanced)"
 msgstr ""
 
-#: src/libvlc.h:2016
+#: src/libvlc.h:2022
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced)"
 msgstr ""
 
-#: src/libvlc.h:2018
+#: src/libvlc.h:2024
 msgid "print help for the advanced options"
 msgstr ""
 
-#: src/libvlc.h:2020
+#: src/libvlc.h:2026
 msgid "ask for extra verbosity when displaying help"
 msgstr ""
 
-#: src/libvlc.h:2022
+#: src/libvlc.h:2028
 msgid "print a list of available modules"
 msgstr ""
 
-#: src/libvlc.h:2024
+#: src/libvlc.h:2030
 msgid "print help on a specific module (can be combined with --advanced)"
 msgstr ""
 
-#: src/libvlc.h:2026
+#: src/libvlc.h:2032
 msgid "save the current command line options in the config"
 msgstr ""
 
-#: src/libvlc.h:2028
+#: src/libvlc.h:2034
 msgid "reset the current config to the default values"
 msgstr ""
 
-#: src/libvlc.h:2030
+#: src/libvlc.h:2036
 msgid "use alternate config file"
 msgstr ""
 
-#: src/libvlc.h:2032
+#: src/libvlc.h:2038
 msgid "resets the current plugins cache"
 msgstr ""
 
-#: src/libvlc.h:2034
+#: src/libvlc.h:2040
 msgid "print version information"
 msgstr ""
 
-#: src/misc/configuration.c:1212
+#: src/misc/configuration.c:1233
 msgid "boolean"
 msgstr ""
 
-#: src/misc/configuration.c:1223
+#: src/misc/configuration.c:1244
 msgid "key"
 msgstr ""
 
@@ -3830,10 +3922,6 @@ msgstr ""
 msgid "Ndonga"
 msgstr ""
 
-#: src/misc/iso-639_def.h:135
-msgid "Nepali"
-msgstr "נפאלית"
-
 #: src/misc/iso-639_def.h:136
 msgid "Norwegian"
 msgstr "נורווגית"
@@ -3922,10 +4010,6 @@ msgstr "קרואטית"
 msgid "Sinhalese"
 msgstr ""
 
-#: src/misc/iso-639_def.h:162
-msgid "Slovenian"
-msgstr "סלובנית"
-
 #: src/misc/iso-639_def.h:163
 msgid "Northern Sami"
 msgstr ""
@@ -3989,10 +4073,6 @@ msgstr "טג'יקית"
 #: src/misc/iso-639_def.h:180
 msgid "Tagalog"
 msgstr ""
-
-#: src/misc/iso-639_def.h:181
-msgid "Thai"
-msgstr "תאילנדית"
 
 #: src/misc/iso-639_def.h:182
 msgid "Tibetan"
@@ -4078,7 +4158,7 @@ msgstr "זולו"
 msgid "Unknown"
 msgstr "לא ידוע"
 
-#: src/misc/vlm.c:1140 src/misc/vlm.c:1247
+#: src/misc/vlm.c:1139 src/misc/vlm.c:1246
 #, c-format
 msgid "Media: %s"
 msgstr ""
@@ -4099,8 +4179,8 @@ msgstr "כל הפריטים, ללא סדר"
 msgid "Undefined"
 msgstr "לא מוגדר"
 
-#: src/video_output/video_output.c:377 modules/gui/macosx/intf.m:584
-#: modules/gui/macosx/intf.m:585 modules/video_filter/deinterlace.c:122
+#: src/video_output/video_output.c:377 modules/gui/macosx/intf.m:588
+#: modules/gui/macosx/intf.m:589 modules/video_filter/deinterlace.c:122
 msgid "Deinterlace"
 msgstr ""
 
@@ -4124,38 +4204,38 @@ msgstr ""
 msgid "Linear"
 msgstr ""
 
-#: src/video_output/vout_intf.c:211
+#: src/video_output/vout_intf.c:212
 msgid "Zoom"
 msgstr "זום"
 
-#: src/video_output/vout_intf.c:223
+#: src/video_output/vout_intf.c:224
 msgid "1:4 Quarter"
 msgstr "1:4 רבע"
 
-#: src/video_output/vout_intf.c:225
+#: src/video_output/vout_intf.c:226
 msgid "1:2 Half"
 msgstr "1:2 חצי"
 
-#: src/video_output/vout_intf.c:227
+#: src/video_output/vout_intf.c:228
 msgid "1:1 Original"
 msgstr "1:1 מקורי"
 
-#: src/video_output/vout_intf.c:229
+#: src/video_output/vout_intf.c:230
 msgid "2:1 Double"
 msgstr "2:1 כפול"
 
-#: src/video_output/vout_intf.c:256 modules/gui/macosx/intf.m:578
-#: modules/gui/macosx/intf.m:579 modules/video_filter/crop.c:62
+#: src/video_output/vout_intf.c:257 modules/gui/macosx/intf.m:582
+#: modules/gui/macosx/intf.m:583 modules/video_filter/crop.c:62
 msgid "Crop"
 msgstr ""
 
-#: src/video_output/vout_intf.c:343 modules/gui/macosx/intf.m:576
-#: modules/gui/macosx/intf.m:577
+#: src/video_output/vout_intf.c:344 modules/gui/macosx/intf.m:580
+#: modules/gui/macosx/intf.m:581
 msgid "Aspect-ratio"
 msgstr ""
 
 #: modules/access/cdda.c:52 modules/access/dshow/dshow.cpp:80
-#: modules/access/dvb/access.c:72 modules/access/dv.c:68
+#: modules/access/dv.c:68 modules/access/dvb/access.c:72
 #: modules/access/dvdnav.c:63 modules/access/dvdread.c:61
 #: modules/access/fake.c:40 modules/access/file.c:79 modules/access/ftp.c:42
 #: modules/access/gnomevfs.c:44 modules/access/http.c:53
@@ -4174,7 +4254,7 @@ msgstr ""
 
 #: modules/access/cdda.c:58 modules/gui/macosx/open.m:176
 #: modules/gui/macosx/open.m:496 modules/gui/macosx/open.m:587
-#: modules/gui/wxwidgets/dialogs/open.cpp:699
+#: modules/gui/wxwidgets/dialogs/open.cpp:696
 msgid "Audio CD"
 msgstr "תקליטור שמע"
 
@@ -4212,7 +4292,7 @@ msgid "Audio CD - Track %i"
 msgstr "תקליטור שמע - רצועה %i"
 
 #: modules/access/cdda/cdda.c:42 modules/access/directory.c:78
-#: modules/codec/x264.c:321 modules/codec/x264.c:328 modules/codec/x264.c:333
+#: modules/codec/x264.c:321 modules/codec/x264.c:327 modules/codec/x264.c:332
 msgid "none"
 msgstr "שום דבר"
 
@@ -4429,7 +4509,7 @@ msgstr ""
 #: modules/access/cdda/info.c:326 modules/access/cdda/info.c:331
 #: modules/access/cdda/info.c:335 modules/access/dvdread.c:84
 #: modules/access/vcdx/info.c:88 modules/gui/macosx/open.m:161
-#: modules/gui/macosx/open.m:375 modules/gui/wxwidgets/dialogs/open.cpp:504
+#: modules/gui/macosx/open.m:375 modules/gui/wxwidgets/dialogs/open.cpp:501
 msgid "Disc"
 msgstr "תקליטור"
 
@@ -4442,10 +4522,10 @@ msgid "Tracks"
 msgstr "רצועות"
 
 #: modules/access/cdda/info.c:391 modules/access/cdda/info.c:813
-#: modules/access/cdda/info.c:860 modules/access/vcdx/access.c:472
+#: modules/access/cdda/info.c:860 modules/access/vcdx/access.c:473
 #: modules/access/vcdx/info.c:286 modules/access/vcdx/info.c:287
-#: modules/gui/wxwidgets/dialogs/open.cpp:1710
-#: modules/gui/wxwidgets/dialogs/open.cpp:1728
+#: modules/gui/wxwidgets/dialogs/open.cpp:1707
+#: modules/gui/wxwidgets/dialogs/open.cpp:1725
 msgid "Track"
 msgstr "רצועה"
 
@@ -4456,6 +4536,11 @@ msgstr ""
 #: modules/access/cdda/info.c:860
 msgid "Track Number"
 msgstr "מספר רצועה"
+
+#: modules/access/dc1394.c:64
+#, fuzzy
+msgid "dc1394 input"
+msgstr "אין קלט"
 
 #: modules/access/directory.c:70
 msgid "Subdirectory behavior"
@@ -4663,6 +4748,18 @@ msgstr "רענן רשימה"
 #: modules/access/dshow/dshow.cpp:162 modules/access/dshow/dshow.cpp:167
 msgid "Configure"
 msgstr "הגדר"
+
+#: modules/access/dv.c:70
+msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
+msgstr ""
+
+#: modules/access/dv.c:74
+msgid "Digital Video (Firewire/ieee1394)  input"
+msgstr ""
+
+#: modules/access/dv.c:75
+msgid "dv"
+msgstr ""
 
 #: modules/access/dvb/access.c:74
 msgid ""
@@ -4895,18 +4992,6 @@ msgstr ""
 msgid "HTTP server"
 msgstr ""
 
-#: modules/access/dv.c:70
-msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
-msgstr ""
-
-#: modules/access/dv.c:74
-msgid "Digital Video (Firewire/ieee1394)  input"
-msgstr ""
-
-#: modules/access/dv.c:75
-msgid "dv"
-msgstr ""
-
 #: modules/access/dvdnav.c:59 modules/access/dvdread.c:57
 msgid "DVD angle"
 msgstr "זווית DVD"
@@ -5041,50 +5126,10 @@ msgstr ""
 #: modules/gui/macosx/open.m:371 modules/gui/macosx/output.m:142
 #: modules/gui/macosx/output.m:230 modules/gui/macosx/output.m:369
 #: modules/gui/pda/pda_interface.c:366
-#: modules/gui/wxwidgets/dialogs/open.cpp:502
+#: modules/gui/wxwidgets/dialogs/open.cpp:499
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:471
 msgid "File"
 msgstr "קובץ"
-
-#: modules/access_filter/record.c:43
-msgid "Record directory"
-msgstr "תיקיית הקלטות"
-
-#: modules/access_filter/record.c:45
-msgid "Directory where the record will be stored."
-msgstr ""
-
-#: modules/access_filter/timeshift.c:44
-msgid "Timeshift granularity"
-msgstr ""
-
-#: modules/access_filter/timeshift.c:46
-msgid ""
-"This is the size of the temporary files tha will be used to store the "
-"timeshifted streams."
-msgstr ""
-
-#: modules/access_filter/timeshift.c:48
-msgid "Timeshift directory"
-msgstr ""
-
-#: modules/access_filter/timeshift.c:49
-msgid "Directory used to store the timeshift temporary files."
-msgstr ""
-
-#: modules/access_filter/timeshift.c:51
-msgid "Force use of the timeshift module"
-msgstr ""
-
-#: modules/access_filter/timeshift.c:52
-msgid ""
-"Force use of the timeshift module even if the access declares that it can "
-"control pace or pause."
-msgstr ""
-
-#: modules/access_filter/timeshift.c:56 modules/access_filter/timeshift.c:57
-msgid "Timeshift"
-msgstr ""
 
 #: modules/access/ftp.c:44
 msgid ""
@@ -5207,158 +5252,6 @@ msgstr ""
 msgid "Microsoft Media Server (MMS) input"
 msgstr ""
 
-#: modules/access_output/dummy.c:40 modules/stream_out/dummy.c:47
-msgid "Dummy stream output"
-msgstr ""
-
-#: modules/access_output/dummy.c:41 modules/misc/dummy/dummy.c:58
-msgid "Dummy"
-msgstr ""
-
-#: modules/access_output/file.c:61
-msgid "Append to file"
-msgstr ""
-
-#: modules/access_output/file.c:62
-msgid "Append to file if it exists instead of replacing it."
-msgstr ""
-
-#: modules/access_output/file.c:66
-msgid "File stream output"
-msgstr ""
-
-#: modules/access_output/http.c:60
-msgid "Username"
-msgstr "שם משתמש"
-
-#: modules/access_output/http.c:61
-msgid "User name that will be requested to access the stream."
-msgstr ""
-
-#: modules/access_output/http.c:64
-msgid "Password that will be requested to access the stream."
-msgstr ""
-
-#: modules/access_output/http.c:68
-msgid "Mime"
-msgstr ""
-
-#: modules/access_output/http.c:69
-msgid "MIME returned by the server (autodetected if not specified."
-msgstr ""
-
-#: modules/access_output/http.c:73
-msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
-msgstr ""
-
-#: modules/access_output/http.c:76
-msgid ""
-"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
-"empty if you don't have one."
-msgstr ""
-
-#: modules/access_output/http.c:80
-msgid ""
-"Path to the x509 PEM trusted root CA certificates (certificate authority) "
-"file that will be used for HTTPS. Leave empty if you don't have one."
-msgstr ""
-
-#: modules/access_output/http.c:85
-msgid ""
-"Path to the x509 PEM Certificates Revocation List file that will be used for "
-"SSL. Leave empty if you don't have one."
-msgstr ""
-
-#: modules/access_output/http.c:88
-msgid "Advertise with Bonjour"
-msgstr ""
-
-#: modules/access_output/http.c:89
-msgid "Advertise the stream with the Bonjour protocol."
-msgstr ""
-
-#: modules/access_output/http.c:93
-msgid "HTTP stream output"
-msgstr ""
-
-#: modules/access_output/shout.c:58
-msgid "Stream name"
-msgstr ""
-
-#: modules/access_output/shout.c:59
-msgid "Name to give to this stream/channel on the icecast server."
-msgstr ""
-
-#: modules/access_output/shout.c:62
-msgid "Stream description"
-msgstr ""
-
-#: modules/access_output/shout.c:63
-msgid "Description of the stream content or information about your channel."
-msgstr ""
-
-#: modules/access_output/shout.c:66
-msgid "Stream MP3"
-msgstr ""
-
-#: modules/access_output/shout.c:67
-msgid ""
-"You normally have to feed the shoutcast module with Ogg streams. It is also "
-"possible to stream MP3 instead, so you can forward MP3 streams to the "
-"icecast server."
-msgstr ""
-
-#: modules/access_output/shout.c:73
-msgid "IceCAST output"
-msgstr ""
-
-#: modules/access_output/udp.c:75 modules/access/rtsp/access.c:40
-#: modules/demux/live555.cpp:62
-msgid "Caching value (ms)"
-msgstr ""
-
-#: modules/access_output/udp.c:77
-msgid ""
-"Default caching value for outbound UDP streams. This value should be set in "
-"milliseconds."
-msgstr ""
-
-#: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
-#: modules/gui/macosx/wizard.m:1846
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:610
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:91
-msgid "Time-To-Live (TTL)"
-msgstr ""
-
-#: modules/access_output/udp.c:81
-msgid "Time-To-Live of the outgoing stream."
-msgstr ""
-
-#: modules/access_output/udp.c:84
-msgid "Group packets"
-msgstr ""
-
-#: modules/access_output/udp.c:85
-msgid ""
-"Packets can be sent one by one at the right time or by groups. You can "
-"choose the number of packets that will be sent at a time. It helps reducing "
-"the scheduling load on heavily-loaded systems."
-msgstr ""
-
-#: modules/access_output/udp.c:90
-msgid "Raw write"
-msgstr ""
-
-#: modules/access_output/udp.c:91
-msgid ""
-"Packets will be sent directly, without trying to fill the MTU (ie, without "
-"trying to make the biggest possible packets in order to improve streaming)."
-msgstr ""
-
-#: modules/access_output/udp.c:97
-msgid "UDP stream output"
-msgstr ""
-
 #: modules/access/pvr/pvr.c:49
 msgid ""
 "Default caching value for PVR streams. This value should be set in "
@@ -5466,7 +5359,7 @@ msgid "Bitmask that will get used by the audio part of the card."
 msgstr ""
 
 #: modules/access/pvr/pvr.c:98 modules/access/vcdx/info.c:97
-#: modules/gui/macosx/intf.m:496 modules/gui/wxwidgets/interface.cpp:1380
+#: modules/gui/macosx/intf.m:500 modules/gui/wxwidgets/interface.cpp:1380
 msgid "Volume"
 msgstr "עוצמה"
 
@@ -5515,6 +5408,11 @@ msgstr "PVR"
 msgid "IVTV MPEG Encoding cards input"
 msgstr ""
 
+#: modules/access/rtsp/access.c:40 modules/access_output/udp.c:75
+#: modules/demux/live555.cpp:62
+msgid "Caching value (ms)"
+msgstr ""
+
 #: modules/access/rtsp/access.c:42
 msgid ""
 "Caching value for RTSP streams. This value should be set in milliseconds."
@@ -5547,7 +5445,7 @@ msgstr ""
 msgid "Screen Input"
 msgstr "קלט מסך"
 
-#: modules/access/screen/screen.c:63 modules/gui/macosx/vout.m:210
+#: modules/access/screen/screen.c:63 modules/gui/macosx/vout.m:209
 msgid "Screen"
 msgstr "מסך"
 
@@ -5616,7 +5514,7 @@ msgstr ""
 
 #: modules/access/udp.c:61 modules/gui/macosx/open.m:183
 #: modules/gui/macosx/open.m:654 modules/gui/macosx/open.m:692
-#: modules/gui/wxwidgets/dialogs/open.cpp:804
+#: modules/gui/wxwidgets/dialogs/open.cpp:801
 msgid "UDP/RTP"
 msgstr "UDP/RTP"
 
@@ -5764,7 +5662,7 @@ msgstr ""
 
 #: modules/access/vcd/vcd.c:46 modules/gui/macosx/open.m:175
 #: modules/gui/macosx/open.m:489 modules/gui/macosx/open.m:579
-#: modules/gui/wxwidgets/dialogs/open.cpp:698
+#: modules/gui/wxwidgets/dialogs/open.cpp:695
 msgid "VCD"
 msgstr "VCD"
 
@@ -5784,23 +5682,23 @@ msgstr ""
 msgid "The above message had unknown vcdimager log level"
 msgstr ""
 
-#: modules/access/vcdx/access.c:282 modules/access/vcdx/access.c:364
-#: modules/access/vcdx/access.c:690 modules/access/vcdx/info.c:290
+#: modules/access/vcdx/access.c:282 modules/access/vcdx/access.c:365
+#: modules/access/vcdx/access.c:691 modules/access/vcdx/info.c:290
 #: modules/access/vcdx/info.c:291
 msgid "Entry"
 msgstr ""
 
-#: modules/access/vcdx/access.c:409 modules/access/vcdx/info.c:102
+#: modules/access/vcdx/access.c:410 modules/access/vcdx/info.c:102
 msgid "Segments"
 msgstr ""
 
-#: modules/access/vcdx/access.c:428 modules/access/vcdx/access.c:709
+#: modules/access/vcdx/access.c:429 modules/access/vcdx/access.c:710
 #: modules/access/vcdx/info.c:294 modules/access/vcdx/info.c:295
-#: modules/demux/mkv.cpp:5212
+#: modules/demux/mkv.cpp:5216
 msgid "Segment"
 msgstr ""
 
-#: modules/access/vcdx/access.c:533
+#: modules/access/vcdx/access.c:534
 msgid "LID"
 msgstr ""
 
@@ -5938,6 +5836,211 @@ msgstr ""
 
 #: modules/access/vcdx/vcd.c:143
 msgid "Format to use in the playlist's \"title\" field."
+msgstr ""
+
+#: modules/access_filter/dump.c:39
+msgid "Force use of dump module"
+msgstr ""
+
+#: modules/access_filter/dump.c:40
+msgid "Activate the dump module even for media with fast seeking."
+msgstr ""
+
+#: modules/access_filter/dump.c:43
+msgid "Maximum size of temporary file (Mb)"
+msgstr ""
+
+#: modules/access_filter/dump.c:44
+msgid ""
+"The dump module will abort dumping of the media if more than this much "
+"megabyte were performed."
+msgstr ""
+
+#: modules/access_filter/record.c:43
+msgid "Record directory"
+msgstr "תיקיית הקלטות"
+
+#: modules/access_filter/record.c:45
+msgid "Directory where the record will be stored."
+msgstr ""
+
+#: modules/access_filter/timeshift.c:44
+msgid "Timeshift granularity"
+msgstr ""
+
+#: modules/access_filter/timeshift.c:46
+msgid ""
+"This is the size of the temporary files tha will be used to store the "
+"timeshifted streams."
+msgstr ""
+
+#: modules/access_filter/timeshift.c:48
+msgid "Timeshift directory"
+msgstr ""
+
+#: modules/access_filter/timeshift.c:49
+msgid "Directory used to store the timeshift temporary files."
+msgstr ""
+
+#: modules/access_filter/timeshift.c:51
+msgid "Force use of the timeshift module"
+msgstr ""
+
+#: modules/access_filter/timeshift.c:52
+msgid ""
+"Force use of the timeshift module even if the access declares that it can "
+"control pace or pause."
+msgstr ""
+
+#: modules/access_filter/timeshift.c:56 modules/access_filter/timeshift.c:57
+msgid "Timeshift"
+msgstr ""
+
+#: modules/access_output/dummy.c:40 modules/stream_out/dummy.c:47
+msgid "Dummy stream output"
+msgstr ""
+
+#: modules/access_output/dummy.c:41 modules/misc/dummy/dummy.c:58
+msgid "Dummy"
+msgstr ""
+
+#: modules/access_output/file.c:61
+msgid "Append to file"
+msgstr ""
+
+#: modules/access_output/file.c:62
+msgid "Append to file if it exists instead of replacing it."
+msgstr ""
+
+#: modules/access_output/file.c:66
+msgid "File stream output"
+msgstr ""
+
+#: modules/access_output/http.c:60
+msgid "Username"
+msgstr "שם משתמש"
+
+#: modules/access_output/http.c:61
+msgid "User name that will be requested to access the stream."
+msgstr ""
+
+#: modules/access_output/http.c:64
+msgid "Password that will be requested to access the stream."
+msgstr ""
+
+#: modules/access_output/http.c:68
+msgid "Mime"
+msgstr ""
+
+#: modules/access_output/http.c:69
+msgid "MIME returned by the server (autodetected if not specified."
+msgstr ""
+
+#: modules/access_output/http.c:73
+msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
+msgstr ""
+
+#: modules/access_output/http.c:76
+msgid ""
+"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
+"empty if you don't have one."
+msgstr ""
+
+#: modules/access_output/http.c:80
+msgid ""
+"Path to the x509 PEM trusted root CA certificates (certificate authority) "
+"file that will be used for HTTPS. Leave empty if you don't have one."
+msgstr ""
+
+#: modules/access_output/http.c:85
+msgid ""
+"Path to the x509 PEM Certificates Revocation List file that will be used for "
+"SSL. Leave empty if you don't have one."
+msgstr ""
+
+#: modules/access_output/http.c:88
+msgid "Advertise with Bonjour"
+msgstr ""
+
+#: modules/access_output/http.c:89
+msgid "Advertise the stream with the Bonjour protocol."
+msgstr ""
+
+#: modules/access_output/http.c:93
+msgid "HTTP stream output"
+msgstr ""
+
+#: modules/access_output/shout.c:58
+msgid "Stream name"
+msgstr ""
+
+#: modules/access_output/shout.c:59
+msgid "Name to give to this stream/channel on the icecast server."
+msgstr ""
+
+#: modules/access_output/shout.c:62
+msgid "Stream description"
+msgstr ""
+
+#: modules/access_output/shout.c:63
+msgid "Description of the stream content or information about your channel."
+msgstr ""
+
+#: modules/access_output/shout.c:66
+msgid "Stream MP3"
+msgstr ""
+
+#: modules/access_output/shout.c:67
+msgid ""
+"You normally have to feed the shoutcast module with Ogg streams. It is also "
+"possible to stream MP3 instead, so you can forward MP3 streams to the "
+"icecast server."
+msgstr ""
+
+#: modules/access_output/shout.c:73
+msgid "IceCAST output"
+msgstr ""
+
+#: modules/access_output/udp.c:77
+msgid ""
+"Default caching value for outbound UDP streams. This value should be set in "
+"milliseconds."
+msgstr ""
+
+#: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
+#: modules/gui/macosx/wizard.m:1846
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:610
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:91
+msgid "Time-To-Live (TTL)"
+msgstr ""
+
+#: modules/access_output/udp.c:81
+msgid "Time-To-Live of the outgoing stream."
+msgstr ""
+
+#: modules/access_output/udp.c:84
+msgid "Group packets"
+msgstr ""
+
+#: modules/access_output/udp.c:85
+msgid ""
+"Packets can be sent one by one at the right time or by groups. You can "
+"choose the number of packets that will be sent at a time. It helps reducing "
+"the scheduling load on heavily-loaded systems."
+msgstr ""
+
+#: modules/access_output/udp.c:90
+msgid "Raw write"
+msgstr ""
+
+#: modules/access_output/udp.c:91
+msgid ""
+"Packets will be sent directly, without trying to fill the MTU (ie, without "
+"trying to make the biggest possible packets in order to improve streaming)."
+msgstr ""
+
+#: modules/access_output/udp.c:97
+msgid "UDP stream output"
 msgstr ""
 
 #: modules/audio_filter/channel_mixer/dolby.c:47
@@ -6331,8 +6434,7 @@ msgstr ""
 msgid "Trivial audio mixer"
 msgstr ""
 
-#: modules/audio_output/alsa.c:84 modules/codec/x264.c:315
-#: modules/codec/x264.c:321 modules/codec/x264.c:328 modules/codec/x264.c:333
+#: modules/audio_output/alsa.c:84
 msgid "default"
 msgstr "ברירת מחדל"
 
@@ -6348,8 +6450,8 @@ msgstr "שם התקן ALSA"
 #: modules/audio_output/auhal.c:966 modules/audio_output/directx.c:401
 #: modules/audio_output/oss.c:132 modules/audio_output/portaudio.c:394
 #: modules/audio_output/sdl.c:177 modules/audio_output/sdl.c:195
-#: modules/audio_output/waveout.c:371 modules/gui/macosx/intf.m:561
-#: modules/gui/macosx/intf.m:562
+#: modules/audio_output/waveout.c:371 modules/gui/macosx/intf.m:565
+#: modules/gui/macosx/intf.m:566
 msgid "Audio Device"
 msgstr "התקן שמע"
 
@@ -6666,7 +6768,7 @@ msgstr ""
 msgid "Output video height."
 msgstr ""
 
-#: modules/codec/fake.c:54 modules/video_filter/mosaic.c:129
+#: modules/codec/fake.c:54 modules/video_filter/mosaic.c:127
 msgid "Keep aspect ratio"
 msgstr ""
 
@@ -7146,8 +7248,8 @@ msgid ""
 "0.0). The H264 specification recommends 7."
 msgstr ""
 
-#: modules/codec/ffmpeg/postprocess.c:88 modules/gui/macosx/intf.m:586
-#: modules/gui/macosx/intf.m:587
+#: modules/codec/ffmpeg/postprocess.c:88 modules/gui/macosx/intf.m:590
+#: modules/gui/macosx/intf.m:591
 msgid "Post processing"
 msgstr ""
 
@@ -7159,19 +7261,19 @@ msgstr "1 (הנמוך ביותר)"
 msgid "6 (Highest)"
 msgstr "6 (הגבוה ביותר)"
 
-#: modules/codec/flac.c:171
+#: modules/codec/flac.c:173
 msgid "Flac audio decoder"
 msgstr "מפענח שמע Flac"
 
-#: modules/codec/flac.c:176
+#: modules/codec/flac.c:178
 msgid "Flac audio encoder"
 msgstr "מקודד שמע Flac"
 
-#: modules/codec/flac.c:182
+#: modules/codec/flac.c:184
 msgid "Flac audio packetizer"
 msgstr ""
 
-#: modules/codec/libmpeg2.c:96
+#: modules/codec/libmpeg2.c:97
 msgid "MPEG I/II video decoder (using libmpeg2)"
 msgstr "מפענח וידאו MPEG I/II (בעזרת libmpeg2)"
 
@@ -7231,11 +7333,11 @@ msgstr ""
 msgid "Speex audio encoder"
 msgstr "מקודד שמע Speex"
 
-#: modules/codec/speex.c:552 modules/codec/speex.c:569
+#: modules/codec/speex.c:559 modules/codec/speex.c:576
 msgid "Speex comment"
 msgstr ""
 
-#: modules/codec/speex.c:552
+#: modules/codec/speex.c:559
 msgid "Mode"
 msgstr "מצב"
 
@@ -7286,7 +7388,7 @@ msgstr ""
 msgid "Text subtitles decoder"
 msgstr "מפענח כתוביות טקסט"
 
-#: modules/codec/subsdec.c:364
+#: modules/codec/subsdec.c:366
 msgid ""
 "failed to convert subtitle encoding.\n"
 "Try manually setting a character-encoding before you open the file."
@@ -7421,7 +7523,7 @@ msgstr ""
 msgid "Vorbis audio encoder"
 msgstr "מקודד שמע Vorbis"
 
-#: modules/codec/vorbis.c:616
+#: modules/codec/vorbis.c:625
 msgid "Vorbis comment"
 msgstr ""
 
@@ -7485,7 +7587,7 @@ msgid ""
 msgstr ""
 
 #: modules/codec/x264.c:78
-msgid "B-frames usage"
+msgid "Influence (bias) B-frames usage"
 msgstr ""
 
 #: modules/codec/x264.c:79
@@ -7800,8 +7902,9 @@ msgid ""
 msgstr ""
 
 #: modules/codec/x264.c:243
-msgid "Ignore chroma in motion estimation"
-msgstr ""
+#, fuzzy
+msgid "Chroma in motion estimation"
+msgstr "הגדרות המודול כרומה"
 
 #: modules/codec/x264.c:244
 msgid "Chroma ME for subpel and mode decision in P-frames."
@@ -7965,28 +8068,28 @@ msgstr "מהיר"
 msgid "normal"
 msgstr "נורמלי"
 
-#: modules/codec/x264.c:322
+#: modules/codec/x264.c:321
 msgid "slow"
 msgstr ""
 
-#: modules/codec/x264.c:322
+#: modules/codec/x264.c:321
 msgid "all"
 msgstr "הכל"
 
-#: modules/codec/x264.c:328 modules/codec/x264.c:333
+#: modules/codec/x264.c:327 modules/codec/x264.c:332
 msgid "spatial"
 msgstr ""
 
-#: modules/codec/x264.c:328 modules/codec/x264.c:333
+#: modules/codec/x264.c:327 modules/codec/x264.c:332
 msgid "temporal"
 msgstr ""
 
-#: modules/codec/x264.c:328 modules/gui/pda/pda_interface.c:743
-#: modules/video_filter/mosaic.c:168
+#: modules/codec/x264.c:327 modules/gui/pda/pda_interface.c:743
+#: modules/video_filter/mosaic.c:166
 msgid "auto"
 msgstr ""
 
-#: modules/codec/x264.c:337
+#: modules/codec/x264.c:336
 msgid "H.264/MPEG4 AVC encoder (using x264 library)"
 msgstr ""
 
@@ -8637,8 +8740,8 @@ msgstr ""
 
 #: modules/control/telnet.c:77 modules/gui/macosx/open.m:178
 #: modules/gui/macosx/open.m:180 modules/gui/macosx/output.m:147
-#: modules/gui/wxwidgets/dialogs/open.cpp:830
-#: modules/gui/wxwidgets/dialogs/open.cpp:857
+#: modules/gui/wxwidgets/dialogs/open.cpp:827
+#: modules/gui/wxwidgets/dialogs/open.cpp:854
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:531 modules/stream_out/rtp.c:81
 msgid "Port"
 msgstr ""
@@ -8843,77 +8946,77 @@ msgstr ""
 msgid "M-JPEG camera demuxer"
 msgstr ""
 
-#: modules/demux/mkv.cpp:394
+#: modules/demux/mkv.cpp:395
 msgid "Matroska stream demuxer"
 msgstr ""
 
-#: modules/demux/mkv.cpp:401
+#: modules/demux/mkv.cpp:402
 msgid "Ordered chapters"
 msgstr ""
 
-#: modules/demux/mkv.cpp:402
+#: modules/demux/mkv.cpp:403
 msgid "Play ordered chapters as specified in the segment."
 msgstr ""
 
-#: modules/demux/mkv.cpp:405
+#: modules/demux/mkv.cpp:406
 msgid "Chapter codecs"
 msgstr ""
 
-#: modules/demux/mkv.cpp:406
+#: modules/demux/mkv.cpp:407
 msgid "Use chapter codecs found in the segment."
 msgstr ""
 
-#: modules/demux/mkv.cpp:409
+#: modules/demux/mkv.cpp:410
 msgid "Preload Directory"
 msgstr ""
 
-#: modules/demux/mkv.cpp:410
+#: modules/demux/mkv.cpp:411
 msgid ""
 "Preload matroska files from the same family in the same directory (not good "
 "for broken files)."
 msgstr ""
 
-#: modules/demux/mkv.cpp:413
+#: modules/demux/mkv.cpp:414
 msgid "Seek based on percent not time"
 msgstr ""
 
-#: modules/demux/mkv.cpp:414
+#: modules/demux/mkv.cpp:415
 msgid "Seek based on percent not time."
 msgstr ""
 
-#: modules/demux/mkv.cpp:417
+#: modules/demux/mkv.cpp:418
 msgid "Dummy Elements"
 msgstr ""
 
-#: modules/demux/mkv.cpp:418
+#: modules/demux/mkv.cpp:419
 msgid "Read and discard unknown EBML elements (not good for broken files)."
 msgstr ""
 
-#: modules/demux/mkv.cpp:3159
+#: modules/demux/mkv.cpp:3163
 msgid "---  DVD Menu"
 msgstr "--- תפריט DVD"
 
-#: modules/demux/mkv.cpp:3165
+#: modules/demux/mkv.cpp:3169
 msgid "First Played"
 msgstr ""
 
-#: modules/demux/mkv.cpp:3167
+#: modules/demux/mkv.cpp:3171
 msgid "Video Manager"
 msgstr ""
 
-#: modules/demux/mkv.cpp:3173
+#: modules/demux/mkv.cpp:3177
 msgid "----- Title"
 msgstr ""
 
-#: modules/demux/mkv.cpp:4939
+#: modules/demux/mkv.cpp:4943
 msgid "Segment filename"
 msgstr ""
 
-#: modules/demux/mkv.cpp:4943
+#: modules/demux/mkv.cpp:4947
 msgid "Muxing application"
 msgstr ""
 
-#: modules/demux/mkv.cpp:4947
+#: modules/demux/mkv.cpp:4951
 msgid "Writing application"
 msgstr ""
 
@@ -9347,17 +9450,21 @@ msgstr ""
 msgid "MPEG Transport Stream demuxer"
 msgstr ""
 
-#: modules/demux/ts.c:3139 modules/demux/ts.c:3173
+#: modules/demux/ts.c:3141 modules/demux/ts.c:3175
 #, fuzzy
 msgid "clean effects"
 msgstr "אפקט אוזניות"
 
-#: modules/demux/ts.c:3143 modules/demux/ts.c:3177
+#: modules/demux/ts.c:3145 modules/demux/ts.c:3179
 msgid "hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3147 modules/demux/ts.c:3181
+#: modules/demux/ts.c:3149 modules/demux/ts.c:3183
 msgid "visual impaired commentary"
+msgstr ""
+
+#: modules/demux/tta.c:40
+msgid "TTA demuxer"
 msgstr ""
 
 #: modules/demux/ty.c:70
@@ -9689,7 +9796,7 @@ msgid "Open files from all sub-folders as well?"
 msgstr "האם לפתוח גם את הקבצים מכל תתי התיקיות?"
 
 #: modules/gui/beos/InterfaceWindow.cpp:159 modules/gui/macosx/bookmarks.m:107
-#: modules/gui/macosx/controls.m:49 modules/gui/macosx/interaction.m:121
+#: modules/gui/macosx/controls.m:58 modules/gui/macosx/interaction.m:121
 #: modules/gui/macosx/interaction.m:179 modules/gui/macosx/open.m:158
 #: modules/gui/macosx/playlistinfo.m:60 modules/gui/macosx/prefs.m:122
 #: modules/gui/macosx/prefs.m:142 modules/gui/macosx/wizard.m:363
@@ -9699,8 +9806,8 @@ msgstr "ביטול"
 #: modules/gui/beos/InterfaceWindow.cpp:159 modules/gui/macosx/open.m:440
 #: modules/gui/macosx/open.m:634 modules/gui/macosx/open.m:738
 #: modules/gui/macosx/open.m:784 modules/gui/wxwidgets/interface.cpp:675
-#: modules/gui/wxwidgets/interface.cpp:686 modules/gui/wxwidgets/menus.cpp:349
-#: modules/gui/wxwidgets/menus.cpp:405
+#: modules/gui/wxwidgets/interface.cpp:686 modules/gui/wxwidgets/menus.cpp:351
+#: modules/gui/wxwidgets/menus.cpp:407
 msgid "Open"
 msgstr "פתיחה"
 
@@ -9711,8 +9818,8 @@ msgid "Preferences"
 msgstr "העדפות"
 
 #: modules/gui/beos/InterfaceWindow.cpp:235
-#: modules/gui/beos/InterfaceWindow.cpp:326 modules/gui/macosx/intf.m:501
-#: modules/gui/macosx/intf.m:598 modules/gui/wxwidgets/dialogs/messages.cpp:47
+#: modules/gui/beos/InterfaceWindow.cpp:326 modules/gui/macosx/intf.m:505
+#: modules/gui/macosx/intf.m:602 modules/gui/wxwidgets/dialogs/messages.cpp:47
 msgid "Messages"
 msgstr "הודעות"
 
@@ -9720,7 +9827,7 @@ msgstr "הודעות"
 #: modules/gui/beos/PlayListWindow.cpp:87 modules/gui/macosx/open.m:439
 #: modules/gui/macosx/open.m:737 modules/gui/macosx/open.m:783
 #: modules/gui/wxwidgets/dialogs.cpp:430
-#: modules/gui/wxwidgets/dialogs/open.cpp:1264
+#: modules/gui/wxwidgets/dialogs/open.cpp:1261
 msgid "Open File"
 msgstr "פתח קובץ"
 
@@ -9759,14 +9866,14 @@ msgstr "לך לפרק"
 msgid "Speed"
 msgstr "מהירות"
 
-#: modules/gui/beos/InterfaceWindow.cpp:321 modules/gui/macosx/intf.m:589
+#: modules/gui/beos/InterfaceWindow.cpp:321 modules/gui/macosx/intf.m:593
 msgid "Window"
 msgstr "חלון"
 
 #: modules/gui/beos/InterfaceWindow.cpp:400 modules/gui/macosx/bookmarks.m:106
 #: modules/gui/macosx/bookmarks.m:233 modules/gui/macosx/bookmarks.m:241
 #: modules/gui/macosx/bookmarks.m:292 modules/gui/macosx/bookmarks.m:302
-#: modules/gui/macosx/controls.m:50 modules/gui/macosx/extended.m:602
+#: modules/gui/macosx/controls.m:59 modules/gui/macosx/extended.m:602
 #: modules/gui/macosx/open.m:157 modules/gui/macosx/open.m:254
 #: modules/gui/macosx/output.m:138 modules/gui/macosx/playlistinfo.m:59
 #: modules/gui/macosx/update.m:86 modules/gui/macosx/wizard.m:631
@@ -9801,14 +9908,14 @@ msgid "Close"
 msgstr "סגור"
 
 #: modules/gui/beos/PlayListWindow.cpp:101 modules/gui/macosx/bookmarks.m:95
-#: modules/gui/macosx/intf.m:526
+#: modules/gui/macosx/intf.m:530
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:165
 #: modules/gui/wxwidgets/dialogs/vlm/vlm_streampanel.cpp:100
 msgid "Edit"
 msgstr "עריכה"
 
-#: modules/gui/beos/PlayListWindow.cpp:103 modules/gui/macosx/intf.m:531
-#: modules/gui/macosx/playlist.m:481
+#: modules/gui/beos/PlayListWindow.cpp:103 modules/gui/macosx/intf.m:535
+#: modules/gui/macosx/playlist.m:487
 msgid "Select All"
 msgstr "בחר הכל"
 
@@ -9849,7 +9956,7 @@ msgid "Path"
 msgstr ""
 
 #: modules/gui/beos/PlayListWindow.cpp:147 modules/gui/macosx/bookmarks.m:108
-#: modules/gui/macosx/playlist.m:133
+#: modules/gui/macosx/playlist.m:131
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:97
 #: modules/gui/wxwidgets/dialogs/infopanels.cpp:72
 #: modules/gui/wxwidgets/dialogs/vlm/vlm_panel.cpp:372
@@ -9862,7 +9969,7 @@ msgid "Apply"
 msgstr "החל"
 
 #: modules/gui/beos/PreferencesWindow.cpp:254 modules/gui/macosx/output.m:526
-#: modules/gui/macosx/playlist.m:777 modules/gui/macosx/prefs.m:121
+#: modules/gui/macosx/playlist.m:778 modules/gui/macosx/prefs.m:121
 msgid "Save"
 msgstr "שמירה"
 
@@ -9902,7 +10009,7 @@ msgstr "תמיד למעלה"
 msgid "Take Screen Shot"
 msgstr "בצע צילום מסך"
 
-#: modules/gui/macosx/about.m:73 modules/gui/macosx/intf.m:505
+#: modules/gui/macosx/about.m:73 modules/gui/macosx/intf.m:509
 msgid "About VLC media player"
 msgstr "אודות נגן המדיה VLC"
 
@@ -9916,7 +10023,7 @@ msgstr ""
 msgid "Compiled by %s"
 msgstr "הודר ע\"י "
 
-#: modules/gui/macosx/bookmarks.m:92 modules/gui/macosx/intf.m:595
+#: modules/gui/macosx/bookmarks.m:92 modules/gui/macosx/intf.m:599
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:139
 msgid "Bookmarks"
 msgstr "סימניות"
@@ -9926,7 +10033,7 @@ msgstr "סימניות"
 msgid "Add"
 msgstr "הוספה"
 
-#: modules/gui/macosx/bookmarks.m:94 modules/gui/macosx/intf.m:530
+#: modules/gui/macosx/bookmarks.m:94 modules/gui/macosx/intf.m:534
 #: modules/gui/wxwidgets/dialogs/messages.cpp:77
 msgid "Clear"
 msgstr "נקה"
@@ -9942,7 +10049,7 @@ msgstr ""
 msgid "Time"
 msgstr ""
 
-#: modules/gui/macosx/bookmarks.m:136 modules/gui/macosx/playlist.m:773
+#: modules/gui/macosx/bookmarks.m:136 modules/gui/macosx/playlist.m:774
 msgid "Untitled"
 msgstr "ללא שם"
 
@@ -9984,115 +10091,112 @@ msgstr "לא נמצא קלט"
 msgid "The stream must be playing or paused for bookmarks to work."
 msgstr ""
 
-#: modules/gui/macosx/controls.m:48 modules/gui/macosx/controls.m:741
+#: modules/gui/macosx/controls.m:57 modules/gui/macosx/controls.m:862
 msgid "Jump To Time"
 msgstr ""
 
-#: modules/gui/macosx/controls.m:51
+#: modules/gui/macosx/controls.m:60
 msgid "sec."
 msgstr ""
 
-#: modules/gui/macosx/controls.m:52
+#: modules/gui/macosx/controls.m:61
 msgid "Jump to time"
 msgstr ""
 
-#: modules/gui/macosx/controls.m:163
+#: modules/gui/macosx/controls.m:172
 msgid "Random On"
 msgstr "אקראי"
 
-#: modules/gui/macosx/controls.m:168
+#: modules/gui/macosx/controls.m:177
 msgid "Random Off"
 msgstr "לא אקראי"
 
-#: modules/gui/macosx/controls.m:197 modules/gui/macosx/controls.m:725
-#: modules/gui/macosx/intf.m:541 modules/gui/macosx/playlist.m:496
-#: modules/gui/macosx/playlist.m:1240
+#: modules/gui/macosx/controls.m:244 modules/gui/macosx/controls.m:308
+#: modules/gui/macosx/controls.m:846 modules/gui/macosx/intf.m:545
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:54
 msgid "Repeat One"
 msgstr "חזור על אחד"
 
-#: modules/gui/macosx/controls.m:202 modules/gui/macosx/controls.m:236
-#: modules/gui/macosx/playlist.m:1259
-msgid "Repeat Off"
-msgstr "בלי חזרה"
-
-#: modules/gui/macosx/controls.m:231 modules/gui/macosx/controls.m:732
-#: modules/gui/macosx/intf.m:542 modules/gui/macosx/playlist.m:497
-#: modules/gui/macosx/playlist.m:1248
+#: modules/gui/macosx/controls.m:260 modules/gui/macosx/controls.m:342
+#: modules/gui/macosx/controls.m:853 modules/gui/macosx/intf.m:546
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:53
 msgid "Repeat All"
 msgstr "חזור על הכל"
 
-#: modules/gui/macosx/controls.m:314 modules/gui/macosx/controls.m:755
-#: modules/gui/macosx/intf.m:567
+#: modules/gui/macosx/controls.m:276 modules/gui/macosx/controls.m:313
+#: modules/gui/macosx/controls.m:347
+msgid "Repeat Off"
+msgstr "בלי חזרה"
+
+#: modules/gui/macosx/controls.m:425 modules/gui/macosx/controls.m:876
+#: modules/gui/macosx/intf.m:571
 msgid "Half Size"
 msgstr "חצי גודל"
 
-#: modules/gui/macosx/controls.m:316 modules/gui/macosx/controls.m:756
-#: modules/gui/macosx/intf.m:568
+#: modules/gui/macosx/controls.m:427 modules/gui/macosx/controls.m:877
+#: modules/gui/macosx/intf.m:572
 msgid "Normal Size"
 msgstr "גודל רגיל"
 
-#: modules/gui/macosx/controls.m:318 modules/gui/macosx/controls.m:757
-#: modules/gui/macosx/intf.m:569
+#: modules/gui/macosx/controls.m:429 modules/gui/macosx/controls.m:878
+#: modules/gui/macosx/intf.m:573
 msgid "Double Size"
 msgstr "גודל כפול"
 
-#: modules/gui/macosx/controls.m:320 modules/gui/macosx/controls.m:761
-#: modules/gui/macosx/controls.m:772 modules/gui/macosx/intf.m:572
+#: modules/gui/macosx/controls.m:431 modules/gui/macosx/controls.m:882
+#: modules/gui/macosx/controls.m:893 modules/gui/macosx/intf.m:576
 msgid "Float on Top"
 msgstr ""
 
-#: modules/gui/macosx/controls.m:322 modules/gui/macosx/controls.m:758
-#: modules/gui/macosx/intf.m:570
+#: modules/gui/macosx/controls.m:433 modules/gui/macosx/controls.m:879
+#: modules/gui/macosx/intf.m:574
 msgid "Fit to Screen"
 msgstr "התאם למסך"
 
-#: modules/gui/macosx/controls.m:718 modules/gui/macosx/intf.m:540
-#: modules/gui/macosx/playlist.m:490
+#: modules/gui/macosx/controls.m:839 modules/gui/macosx/intf.m:544
 msgid "Random"
 msgstr "אקראי"
 
-#: modules/gui/macosx/controls.m:739 modules/gui/macosx/intf.m:543
+#: modules/gui/macosx/controls.m:860 modules/gui/macosx/intf.m:547
 msgid "Step Forward"
 msgstr ""
 
-#: modules/gui/macosx/controls.m:740 modules/gui/macosx/intf.m:544
+#: modules/gui/macosx/controls.m:861 modules/gui/macosx/intf.m:548
 msgid "Step Backward"
 msgstr ""
 
-#: modules/gui/macosx/embeddedwindow.m:42 modules/gui/macosx/intf.m:490
+#: modules/gui/macosx/embeddedwindow.m:42 modules/gui/macosx/intf.m:494
 #: modules/gui/pda/pda_interface.c:238 modules/gui/pda/pda_interface.c:239
 msgid "Rewind"
 msgstr "אחורה"
 
-#: modules/gui/macosx/embeddedwindow.m:43 modules/gui/macosx/intf.m:493
+#: modules/gui/macosx/embeddedwindow.m:43 modules/gui/macosx/intf.m:497
 msgid "Fast Forward"
 msgstr "קדימה"
 
 #: modules/gui/macosx/embeddedwindow.m:45
-#: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:491
-#: modules/gui/macosx/intf.m:534 modules/gui/macosx/intf.m:612
-#: modules/gui/macosx/intf.m:619 modules/gui/macosx/intf.m:1412
-#: modules/gui/macosx/intf.m:1413 modules/gui/macosx/intf.m:1414
-#: modules/gui/macosx/intf.m:1415 modules/gui/macosx/playlist.m:478
+#: modules/gui/macosx/embeddedwindow.m:72 modules/gui/macosx/intf.m:495
+#: modules/gui/macosx/intf.m:538 modules/gui/macosx/intf.m:616
+#: modules/gui/macosx/intf.m:623 modules/gui/macosx/intf.m:1459
+#: modules/gui/macosx/intf.m:1460 modules/gui/macosx/intf.m:1461
+#: modules/gui/macosx/intf.m:1462 modules/gui/macosx/playlist.m:484
 #: modules/gui/pda/pda_interface.c:262 modules/gui/pda/pda_interface.c:263
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:274
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:283
 #: modules/gui/wxwidgets/interface.cpp:677
 #: modules/gui/wxwidgets/interface.cpp:688
 #: modules/gui/wxwidgets/interface.cpp:1216
-#: modules/gui/wxwidgets/menus.cpp:264 modules/gui/wxwidgets/menus.cpp:275
+#: modules/gui/wxwidgets/menus.cpp:266 modules/gui/wxwidgets/menus.cpp:277
 msgid "Play"
 msgstr "נגן"
 
-#: modules/gui/macosx/embeddedwindow.m:66 modules/gui/macosx/intf.m:1403
-#: modules/gui/macosx/intf.m:1404 modules/gui/macosx/intf.m:1405
-#: modules/gui/macosx/intf.m:1406 modules/gui/pda/pda_interface.c:250
+#: modules/gui/macosx/embeddedwindow.m:66 modules/gui/macosx/intf.m:1449
+#: modules/gui/macosx/intf.m:1450 modules/gui/macosx/intf.m:1451
+#: modules/gui/macosx/intf.m:1452 modules/gui/pda/pda_interface.c:250
 #: modules/gui/pda/pda_interface.c:251 modules/gui/wxwidgets/interface.cpp:678
 #: modules/gui/wxwidgets/interface.cpp:689
 #: modules/gui/wxwidgets/interface.cpp:1210
-#: modules/gui/wxwidgets/menus.cpp:266 modules/visualization/xosd.c:243
+#: modules/gui/wxwidgets/menus.cpp:268 modules/visualization/xosd.c:243
 msgid "Pause"
 msgstr "השהה"
 
@@ -10234,7 +10338,12 @@ msgid ""
 "can be set in the Preferences, Video / Filters section."
 msgstr ""
 
-#: modules/gui/macosx/interaction.m:125 modules/gui/macosx/intf.m:630
+#: modules/gui/macosx/fspanel.m:383
+#, fuzzy
+msgid "(no item is being played)"
+msgstr "אין פריטים ברשימת ההשמעה"
+
+#: modules/gui/macosx/interaction.m:125 modules/gui/macosx/intf.m:634
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:81
 msgid "Error"
 msgstr "שגיאה"
@@ -10249,199 +10358,199 @@ msgstr "כן"
 msgid "No"
 msgstr "שום דבר"
 
-#: modules/gui/macosx/intf.m:485
+#: modules/gui/macosx/intf.m:489
 msgid "VLC - Controller"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:486 modules/gui/macosx/intf.m:990
-#: modules/gui/macosx/intf.m:1312 modules/gui/pda/pda_interface.c:212
+#: modules/gui/macosx/intf.m:490 modules/gui/macosx/intf.m:1030
+#: modules/gui/macosx/intf.m:1357 modules/gui/pda/pda_interface.c:212
 #: modules/gui/pda/pda_interface.c:1355
 msgid "VLC media player"
 msgstr "נגן המדיה VLC"
 
-#: modules/gui/macosx/intf.m:502
+#: modules/gui/macosx/intf.m:506
 msgid "Open CrashLog"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:507
+#: modules/gui/macosx/intf.m:511
 msgid "Check for Update..."
 msgstr "חפש עדכונים..."
 
-#: modules/gui/macosx/intf.m:508
+#: modules/gui/macosx/intf.m:512
 msgid "Preferences..."
 msgstr "העדפות..."
 
-#: modules/gui/macosx/intf.m:511
+#: modules/gui/macosx/intf.m:515
 msgid "Services"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:512
+#: modules/gui/macosx/intf.m:516
 msgid "Hide VLC"
 msgstr "החבא את VLC"
 
-#: modules/gui/macosx/intf.m:513
+#: modules/gui/macosx/intf.m:517
 msgid "Hide Others"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:514
+#: modules/gui/macosx/intf.m:518
 msgid "Show All"
 msgstr "הצג הכל"
 
-#: modules/gui/macosx/intf.m:515 modules/gui/wxwidgets/interface.cpp:1508
+#: modules/gui/macosx/intf.m:519 modules/gui/wxwidgets/interface.cpp:1508
 msgid "Quit VLC"
 msgstr "יציאה מ-VLC"
 
-#: modules/gui/macosx/intf.m:517
+#: modules/gui/macosx/intf.m:521
 msgid "1:File"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:518
+#: modules/gui/macosx/intf.m:522
 msgid "Open File..."
 msgstr "פתח קובץ..."
 
-#: modules/gui/macosx/intf.m:519
+#: modules/gui/macosx/intf.m:523
 msgid "Quick Open File..."
 msgstr "פתיחה מהירה..."
 
-#: modules/gui/macosx/intf.m:520
+#: modules/gui/macosx/intf.m:524
 msgid "Open Disc..."
 msgstr "פתח תקליטור..."
 
-#: modules/gui/macosx/intf.m:521
+#: modules/gui/macosx/intf.m:525
 msgid "Open Network..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:522
+#: modules/gui/macosx/intf.m:526
 msgid "Open Recent"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:523 modules/gui/macosx/intf.m:1953
+#: modules/gui/macosx/intf.m:527 modules/gui/macosx/intf.m:2001
 msgid "Clear Menu"
 msgstr "נקה תפריט"
 
-#: modules/gui/macosx/intf.m:524
+#: modules/gui/macosx/intf.m:528
 msgid "Streaming/Exporting Wizard..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:527
+#: modules/gui/macosx/intf.m:531
 msgid "Cut"
 msgstr "חתוך"
 
-#: modules/gui/macosx/intf.m:528
+#: modules/gui/macosx/intf.m:532
 msgid "Copy"
 msgstr "העתק"
 
-#: modules/gui/macosx/intf.m:529
+#: modules/gui/macosx/intf.m:533
 msgid "Paste"
 msgstr "הדבק"
 
-#: modules/gui/macosx/intf.m:533
+#: modules/gui/macosx/intf.m:537
 msgid "Playback"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:554 modules/gui/macosx/intf.m:623
+#: modules/gui/macosx/intf.m:558 modules/gui/macosx/intf.m:627
 msgid "Volume Up"
 msgstr "הגבר עוצמה"
 
-#: modules/gui/macosx/intf.m:555 modules/gui/macosx/intf.m:624
+#: modules/gui/macosx/intf.m:559 modules/gui/macosx/intf.m:628
 msgid "Volume Down"
 msgstr "הנמך עוצמה"
 
-#: modules/gui/macosx/intf.m:580 modules/gui/macosx/intf.m:581
-#: modules/gui/macosx/vout.m:193
+#: modules/gui/macosx/intf.m:584 modules/gui/macosx/intf.m:585
+#: modules/gui/macosx/vout.m:191
 msgid "Video Device"
 msgstr "התקן וידאו"
 
-#: modules/gui/macosx/intf.m:590
+#: modules/gui/macosx/intf.m:594
 msgid "Minimize Window"
 msgstr "מזער חלון"
 
-#: modules/gui/macosx/intf.m:591
+#: modules/gui/macosx/intf.m:595
 msgid "Close Window"
 msgstr "סגור חלון"
 
-#: modules/gui/macosx/intf.m:592
+#: modules/gui/macosx/intf.m:596
 msgid "Controller"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:594
+#: modules/gui/macosx/intf.m:598
 msgid "Extended Controls"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:597 modules/gui/macosx/intf.m:639
-#: modules/gui/macosx/playlistinfo.m:55 modules/gui/macosx/playlistinfo.m:371
-#: modules/gui/macosx/playlist.m:482
+#: modules/gui/macosx/intf.m:601 modules/gui/macosx/intf.m:643
+#: modules/gui/macosx/playlist.m:488 modules/gui/macosx/playlistinfo.m:55
+#: modules/gui/macosx/playlistinfo.m:371
 msgid "Information"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:600
+#: modules/gui/macosx/intf.m:604
 msgid "Bring All to Front"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:602
+#: modules/gui/macosx/intf.m:606
 msgid "Help"
 msgstr "עזרה"
 
-#: modules/gui/macosx/intf.m:603
+#: modules/gui/macosx/intf.m:607
 msgid "ReadMe..."
 msgstr "קרא אותי..."
 
-#: modules/gui/macosx/intf.m:604
+#: modules/gui/macosx/intf.m:608
 msgid "Online Documentation"
 msgstr "תיעוד מקוון"
 
-#: modules/gui/macosx/intf.m:605
+#: modules/gui/macosx/intf.m:609
 msgid "Report a Bug"
 msgstr "דווח על באג"
 
-#: modules/gui/macosx/intf.m:606
+#: modules/gui/macosx/intf.m:610
 msgid "VideoLAN Website"
 msgstr "אתר האינרנט של VideoLAN"
 
-#: modules/gui/macosx/intf.m:607
+#: modules/gui/macosx/intf.m:611
 msgid "License"
 msgstr "רשיון"
 
-#: modules/gui/macosx/intf.m:608
+#: modules/gui/macosx/intf.m:612
 msgid "Make a donation"
 msgstr "תרומה"
 
-#: modules/gui/macosx/intf.m:609
+#: modules/gui/macosx/intf.m:613
 msgid "Online Forum"
 msgstr "פורום מקוון"
 
-#: modules/gui/macosx/intf.m:631
+#: modules/gui/macosx/intf.m:635
 msgid ""
 "An error has occurred which probably prevented the proper execution of the "
 "program:"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:633
+#: modules/gui/macosx/intf.m:637
 msgid "If you believe that it is a bug, please follow the instructions at:"
 msgstr "אם זהו באג לדעתכם, אנא עקבו אחר ההוראות ב-"
 
-#: modules/gui/macosx/intf.m:635
+#: modules/gui/macosx/intf.m:639
 msgid "Open Messages Window"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:636
+#: modules/gui/macosx/intf.m:640
 msgid "Dismiss"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:637
+#: modules/gui/macosx/intf.m:641
 msgid "Do not display further errors"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1167
+#: modules/gui/macosx/intf.m:1211
 #, c-format
 msgid "Volume: %d%%"
 msgstr "עוצמה: %d%%"
 
-#: modules/gui/macosx/intf.m:1820
+#: modules/gui/macosx/intf.m:1868
 msgid "No CrashLog found"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1820
+#: modules/gui/macosx/intf.m:1868
 msgid "Couldn't find any trace of a previous crash."
 msgstr ""
 
@@ -10511,18 +10620,26 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:82
-msgid "Remember wizard options"
+msgid "Show Fullscreen controller"
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:83
-msgid "Remember the options in the wizard during one session of VLC."
+msgid "Shows a lucent controller when moving the mouse in fullscreen mode."
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:86
+msgid "Remember wizard options"
 msgstr ""
 
 #: modules/gui/macosx/macosx.m:87
+msgid "Remember the options in the wizard during one session of VLC."
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:91
 msgid "Mac OS X interface"
 msgstr "ממשק Mac OS X"
 
-#: modules/gui/macosx/macosx.m:98
+#: modules/gui/macosx/macosx.m:104
 msgid "Quartz video"
 msgstr ""
 
@@ -10538,8 +10655,8 @@ msgstr ""
 #: modules/gui/macosx/open.m:242 modules/gui/macosx/output.m:145
 #: modules/gui/macosx/prefs_widgets.m:1183
 #: modules/gui/wince/preferences_widgets.cpp:512
-#: modules/gui/wxwidgets/dialogs/open.cpp:631
-#: modules/gui/wxwidgets/dialogs/open.cpp:665
+#: modules/gui/wxwidgets/dialogs/open.cpp:628
+#: modules/gui/wxwidgets/dialogs/open.cpp:662
 #: modules/gui/wxwidgets/dialogs/preferences_widgets.cpp:683
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:501
 #: modules/gui/wxwidgets/dialogs/subtitles.cpp:82
@@ -10550,7 +10667,7 @@ msgstr "סייר..."
 msgid "Treat as a pipe rather than as a file"
 msgstr ""
 
-#: modules/gui/macosx/open.m:167 modules/gui/wxwidgets/dialogs/open.cpp:723
+#: modules/gui/macosx/open.m:167 modules/gui/wxwidgets/dialogs/open.cpp:720
 msgid "Device name"
 msgstr "שם התקן"
 
@@ -10563,18 +10680,18 @@ msgid "VIDEO_TS directory"
 msgstr ""
 
 #: modules/gui/macosx/open.m:174 modules/gui/macosx/open.m:595
-#: modules/gui/wxwidgets/dialogs/open.cpp:697
+#: modules/gui/wxwidgets/dialogs/open.cpp:694
 msgid "DVD"
 msgstr "DVD"
 
 #: modules/gui/macosx/open.m:179 modules/gui/macosx/output.m:146
-#: modules/gui/wxwidgets/dialogs/open.cpp:849
+#: modules/gui/wxwidgets/dialogs/open.cpp:846
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:520
 msgid "Address"
 msgstr "כתובת"
 
 #: modules/gui/macosx/open.m:184 modules/gui/macosx/open.m:655
-#: modules/gui/macosx/open.m:704 modules/gui/wxwidgets/dialogs/open.cpp:805
+#: modules/gui/macosx/open.m:704 modules/gui/wxwidgets/dialogs/open.cpp:802
 msgid "UDP/RTP Multicast"
 msgstr ""
 
@@ -10583,7 +10700,7 @@ msgstr ""
 msgid "HTTP/FTP/MMS/RTSP"
 msgstr "HTTP/FTP/MMS/RTSP"
 
-#: modules/gui/macosx/open.m:186 modules/gui/wxwidgets/dialogs/open.cpp:823
+#: modules/gui/macosx/open.m:186 modules/gui/wxwidgets/dialogs/open.cpp:820
 #: modules/services_discovery/sap.c:112
 msgid "Allow timeshifting"
 msgstr ""
@@ -10593,7 +10710,7 @@ msgid "Load subtitles file:"
 msgstr "טען קובץ כתוביות:"
 
 #: modules/gui/macosx/open.m:241 modules/gui/macosx/output.m:137
-#: modules/gui/wxwidgets/dialogs/open.cpp:436
+#: modules/gui/wxwidgets/dialogs/open.cpp:433
 msgid "Settings..."
 msgstr "הגדרות..."
 
@@ -10602,9 +10719,9 @@ msgid "Override parametters"
 msgstr ""
 
 #: modules/gui/macosx/open.m:244
-#: modules/gui/wxwidgets/dialogs/subtitles.cpp:218
+#: modules/gui/wxwidgets/dialogs/subtitles.cpp:215
 #: modules/stream_out/bridge.c:41 modules/stream_out/display.c:41
-#: modules/video_filter/mosaic.c:140
+#: modules/video_filter/mosaic.c:138
 msgid "Delay"
 msgstr ""
 
@@ -10716,6 +10833,82 @@ msgstr ""
 msgid "Save File"
 msgstr "שמור קובץ"
 
+#: modules/gui/macosx/playlist.m:483
+msgid "Save Playlist..."
+msgstr "שמור רשימת השמעה..."
+
+#: modules/gui/macosx/playlist.m:485 modules/gui/pda/pda_interface.c:1254
+#: modules/gui/wxwidgets/dialogs/playlist.cpp:278
+#: modules/gui/wxwidgets/dialogs/playlist.cpp:285
+#: modules/gui/wxwidgets/dialogs/vlm/vlm_streampanel.cpp:105
+msgid "Delete"
+msgstr "מחק"
+
+#: modules/gui/macosx/playlist.m:486
+msgid "Expand Node"
+msgstr ""
+
+#: modules/gui/macosx/playlist.m:489
+msgid "Get Stream Information"
+msgstr ""
+
+#: modules/gui/macosx/playlist.m:490
+msgid "Sort Node by Name"
+msgstr ""
+
+#: modules/gui/macosx/playlist.m:491
+msgid "Sort Node by Author"
+msgstr ""
+
+#: modules/gui/macosx/playlist.m:494 modules/gui/macosx/playlist.m:540
+#: modules/gui/macosx/playlist.m:1541
+msgid "No items in the playlist"
+msgstr "אין פריטים ברשימת ההשמעה"
+
+#: modules/gui/macosx/playlist.m:497
+#: modules/gui/wxwidgets/dialogs/playlist.cpp:323
+msgid "Search"
+msgstr "חיפוש"
+
+#: modules/gui/macosx/playlist.m:499
+msgid "Search in Playlist"
+msgstr "חיפוש ברשימת ההשמעה"
+
+#: modules/gui/macosx/playlist.m:500
+msgid "Add Folder to Playlist"
+msgstr "הוסף תיקייה לרשימת ההשמעה"
+
+#: modules/gui/macosx/playlist.m:502
+#, fuzzy
+msgid "File Format:"
+msgstr "פורמט VCD"
+
+#: modules/gui/macosx/playlist.m:503
+#, fuzzy
+msgid "Extended M3U"
+msgstr "מידע מורחב CDDB"
+
+#: modules/gui/macosx/playlist.m:504
+msgid "XML Shareable Playlist Format (XSPF)"
+msgstr ""
+
+#: modules/gui/macosx/playlist.m:534 modules/gui/macosx/playlist.m:1535
+#, c-format
+msgid "%i items in the playlist"
+msgstr "%i פריטים ברשימת ההשמעה"
+
+#: modules/gui/macosx/playlist.m:544 modules/gui/macosx/playlist.m:1545
+msgid "1 item in the playlist"
+msgstr "פריט אחד ברשימת ההשמעה"
+
+#: modules/gui/macosx/playlist.m:777
+msgid "Save Playlist"
+msgstr "שמור רשימת השמעה"
+
+#: modules/gui/macosx/playlist.m:1510
+msgid "Empty Folder"
+msgstr ""
+
 #: modules/gui/macosx/playlistinfo.m:56
 #: modules/gui/wxwidgets/dialogs/infopanels.cpp:63
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:591
@@ -10779,86 +10972,6 @@ msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:99
 msgid "Lost buffers"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:477
-msgid "Save Playlist..."
-msgstr "שמור רשימת השמעה..."
-
-#: modules/gui/macosx/playlist.m:479 modules/gui/pda/pda_interface.c:1254
-#: modules/gui/wxwidgets/dialogs/playlist.cpp:278
-#: modules/gui/wxwidgets/dialogs/playlist.cpp:285
-#: modules/gui/wxwidgets/dialogs/vlm/vlm_streampanel.cpp:105
-msgid "Delete"
-msgstr "מחק"
-
-#: modules/gui/macosx/playlist.m:480
-msgid "Expand Node"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:483
-msgid "Get Stream Information"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:484
-msgid "Sort Node by Name"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:485
-msgid "Sort Node by Author"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:488 modules/gui/macosx/playlist.m:538
-#: modules/gui/macosx/playlist.m:1587
-msgid "No items in the playlist"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:492
-#: modules/gui/wxwidgets/dialogs/playlist.cpp:323
-msgid "Search"
-msgstr "חיפוש"
-
-#: modules/gui/macosx/playlist.m:494
-msgid "Search in Playlist"
-msgstr "חיפוש ברשימת ההשמעה"
-
-#: modules/gui/macosx/playlist.m:495
-msgid "Standard Play"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:498
-msgid "Add Folder to Playlist"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:500
-#, fuzzy
-msgid "File Format:"
-msgstr "פורמט VCD"
-
-#: modules/gui/macosx/playlist.m:501
-#, fuzzy
-msgid "Extended M3U"
-msgstr "מידע מורחב CDDB"
-
-#: modules/gui/macosx/playlist.m:502
-msgid "XML Shareable Playlist Format (XSPF)"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:532 modules/gui/macosx/playlist.m:1581
-#, c-format
-msgid "%i items in the playlist"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:542 modules/gui/macosx/playlist.m:1591
-msgid "1 item in the playlist"
-msgstr ""
-
-#: modules/gui/macosx/playlist.m:776
-msgid "Save Playlist"
-msgstr "שמור רשימת השמעה"
-
-#: modules/gui/macosx/playlist.m:1556
-msgid "Empty Folder"
 msgstr ""
 
 #: modules/gui/macosx/prefs.m:123
@@ -11981,15 +12094,26 @@ msgid ""
 "when moving windows does not behave correctly."
 msgstr ""
 
-#: modules/gui/skins2/src/skin_main.cpp:461
+#: modules/gui/skins2/src/skin_main.cpp:440
+#, fuzzy
+msgid "Enable skinned playlist"
+msgstr "אוי לא! לא ניתן למצוא רשימת השמעה!"
+
+#: modules/gui/skins2/src/skin_main.cpp:441
+msgid ""
+"You can choose whether the playlist window is rendered using the skin or the "
+"default GUI."
+msgstr ""
+
+#: modules/gui/skins2/src/skin_main.cpp:464
 msgid "Skins"
 msgstr ""
 
-#: modules/gui/skins2/src/skin_main.cpp:462
+#: modules/gui/skins2/src/skin_main.cpp:465
 msgid "Skinnable Interface"
 msgstr ""
 
-#: modules/gui/skins2/src/skin_main.cpp:469
+#: modules/gui/skins2/src/skin_main.cpp:472
 msgid "Skins loader demux"
 msgstr ""
 
@@ -12035,7 +12159,7 @@ msgid ""
 "http://www.videolan.org/"
 msgstr ""
 
-#: modules/gui/wince/open.cpp:134 modules/gui/wxwidgets/dialogs/open.cpp:626
+#: modules/gui/wince/open.cpp:134 modules/gui/wxwidgets/dialogs/open.cpp:623
 msgid "Open:"
 msgstr "פתח:"
 
@@ -12073,6 +12197,11 @@ msgstr "מודול ממשק WinCE"
 msgid "WinCE dialogs provider"
 msgstr ""
 
+#: modules/gui/wxwidgets/dialogs.cpp:433
+#: modules/gui/wxwidgets/dialogs/open.cpp:1264
+msgid "All Files (*.*)|*|Sound Files (*.mp3, *.ogg, etc.)|"
+msgstr ""
+
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:75
 msgid "Edit bookmark"
 msgstr "ערוך סימנייה"
@@ -12085,10 +12214,10 @@ msgstr ""
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:105
 #: modules/gui/wxwidgets/dialogs/interaction.cpp:172
 #: modules/gui/wxwidgets/dialogs/iteminfo.cpp:78
-#: modules/gui/wxwidgets/dialogs/open.cpp:320
-#: modules/gui/wxwidgets/dialogs/open.cpp:490
+#: modules/gui/wxwidgets/dialogs/open.cpp:317
+#: modules/gui/wxwidgets/dialogs/open.cpp:487
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:195
-#: modules/gui/wxwidgets/dialogs/subtitles.cpp:242
+#: modules/gui/wxwidgets/dialogs/subtitles.cpp:239
 #, fuzzy
 msgid "&OK"
 msgstr "אישור"
@@ -12097,11 +12226,11 @@ msgstr "אישור"
 #: modules/gui/wxwidgets/dialogs/interaction.cpp:174
 #: modules/gui/wxwidgets/dialogs/interaction.cpp:185
 #: modules/gui/wxwidgets/dialogs/iteminfo.cpp:81
-#: modules/gui/wxwidgets/dialogs/open.cpp:323
-#: modules/gui/wxwidgets/dialogs/open.cpp:493
+#: modules/gui/wxwidgets/dialogs/open.cpp:320
+#: modules/gui/wxwidgets/dialogs/open.cpp:490
 #: modules/gui/wxwidgets/dialogs/preferences.cpp:211
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:198
-#: modules/gui/wxwidgets/dialogs/subtitles.cpp:245
+#: modules/gui/wxwidgets/dialogs/subtitles.cpp:242
 #, fuzzy
 msgid "&Cancel"
 msgstr "ביטול"
@@ -12165,11 +12294,6 @@ msgstr ""
 msgid "Input has changed "
 msgstr "הקלט השתנה "
 
-#: modules/gui/wxwidgets/dialogs.cpp:433
-#: modules/gui/wxwidgets/dialogs/open.cpp:1267
-msgid "All Files (*.*)|*|Sound Files (*.mp3, *.ogg, etc.)|"
-msgstr ""
-
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:54
 msgid "Stream and Media Info"
 msgstr ""
@@ -12217,82 +12341,82 @@ msgstr "שמירה בשם..."
 msgid "Save Messages As..."
 msgstr "שמירת הודעות בשם..."
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:259
+#: modules/gui/wxwidgets/dialogs/open.cpp:256
 msgid "Advanced options..."
 msgstr "אפשרויות מתקדמות..."
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:264
-#: modules/gui/wxwidgets/dialogs/open.cpp:275
-#: modules/gui/wxwidgets/dialogs/open.cpp:420
+#: modules/gui/wxwidgets/dialogs/open.cpp:261
+#: modules/gui/wxwidgets/dialogs/open.cpp:272
+#: modules/gui/wxwidgets/dialogs/open.cpp:417
 #: modules/gui/wxwidgets/dialogs/preferences.cpp:217
 msgid "Advanced options"
 msgstr "אפשרויות מתקדמות"
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:279
+#: modules/gui/wxwidgets/dialogs/open.cpp:276
 msgid "Options:"
 msgstr "אפשרויות:"
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:388
-#: modules/gui/wxwidgets/dialogs/open.cpp:396
+#: modules/gui/wxwidgets/dialogs/open.cpp:385
+#: modules/gui/wxwidgets/dialogs/open.cpp:393
 msgid "Open..."
 msgstr "פתח..."
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:430
+#: modules/gui/wxwidgets/dialogs/open.cpp:427
 msgid "Stream/Save"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:431
+#: modules/gui/wxwidgets/dialogs/open.cpp:428
 msgid "Use VLC as a stream server"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:457
+#: modules/gui/wxwidgets/dialogs/open.cpp:454
 msgid "Caching"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:458
+#: modules/gui/wxwidgets/dialogs/open.cpp:455
 msgid "Change the default caching value (in milliseconds)"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:471
+#: modules/gui/wxwidgets/dialogs/open.cpp:468
 msgid "Customize:"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:475
+#: modules/gui/wxwidgets/dialogs/open.cpp:472
 msgid ""
 "You can use this field directly by typing the full MRL you want to open.\n"
 "Alternatively, the field will be filled automatically when you use the "
 "controls above."
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:638
+#: modules/gui/wxwidgets/dialogs/open.cpp:635
 msgid "Use a subtitles file"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:639
+#: modules/gui/wxwidgets/dialogs/open.cpp:636
 msgid "Use an external subtitles file."
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:643
+#: modules/gui/wxwidgets/dialogs/open.cpp:640
 msgid "Advanced Settings..."
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:659
+#: modules/gui/wxwidgets/dialogs/open.cpp:656
 msgid "File:"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:696
+#: modules/gui/wxwidgets/dialogs/open.cpp:693
 msgid "DVD (menus)"
 msgstr "DVD (תפריטים)"
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:702
+#: modules/gui/wxwidgets/dialogs/open.cpp:699
 msgid "Disc type"
 msgstr "סוג תקליטור"
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:709
+#: modules/gui/wxwidgets/dialogs/open.cpp:706
 msgid "Probe Disc(s)"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:710
+#: modules/gui/wxwidgets/dialogs/open.cpp:707
 msgid ""
 "Probe for a DVD, VCD or audio CD. First try the Device name entered for the "
 "selected Disc type (DVD, DVD Menu, VCD, audio CD). If that doesn't find "
@@ -12301,19 +12425,19 @@ msgid ""
 "parameter ranges are set based on media we find."
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:806
+#: modules/gui/wxwidgets/dialogs/open.cpp:803
 msgid "HTTP/HTTPS/FTP/MMS"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:807
+#: modules/gui/wxwidgets/dialogs/open.cpp:804
 msgid "RTSP"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:927
+#: modules/gui/wxwidgets/dialogs/open.cpp:924
 msgid "DVD device to use"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:957
+#: modules/gui/wxwidgets/dialogs/open.cpp:954
 msgid ""
 "Name of CD-ROM device to read Video CD from. If this field is left empty, we "
 "will scan for a CD-ROM with a VCD in it."
@@ -12321,12 +12445,12 @@ msgstr ""
 "שם התקן ה-CD-ROM ממנו ייקרא תקליטור הוידאו. אם לא ייצוין התקן, VLC יחפש כונן "
 "תקליטורים בו תקליטור VCD."
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:966
-#: modules/gui/wxwidgets/dialogs/open.cpp:989
+#: modules/gui/wxwidgets/dialogs/open.cpp:963
+#: modules/gui/wxwidgets/dialogs/open.cpp:986
 msgid "CD-ROM device to use"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:984
+#: modules/gui/wxwidgets/dialogs/open.cpp:981
 msgid ""
 "Name of CD-ROM device to read audio CD from. If this field is left empty, we "
 "will scan for a CD-ROM with an audio CD in it."
@@ -12334,39 +12458,39 @@ msgstr ""
 "שם התקן התקליטורים בו נמצא תקליטור השמע. אם לא ייצוין התקן, VLC יחפש כונן "
 "תקליטורים בו תקליטור שמע."
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1297
+#: modules/gui/wxwidgets/dialogs/open.cpp:1294
 msgid "Open subtitles file"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1674
+#: modules/gui/wxwidgets/dialogs/open.cpp:1671
 msgid "Title number."
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1676
+#: modules/gui/wxwidgets/dialogs/open.cpp:1673
 msgid ""
 "DVD's can have up to 32 subtitles numbered 0..31. Note this is not the same "
 "thing as a subtitle name (e.g. 'en'). If a value -1 is used, no subtitle "
 "will be shown."
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1679
+#: modules/gui/wxwidgets/dialogs/open.cpp:1676
 msgid "Audio track number. DVD's can have up to 8 audio tracks numbered 0..7."
 msgstr ""
 "מספר רצועת השמע. ב-DVD יכולות להיות עד שמונה רצועות שמע, ממסופרות מ-0 ועד 7."
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1700
+#: modules/gui/wxwidgets/dialogs/open.cpp:1697
 msgid "Playback control (PBC) usually starts with number 1."
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1706
+#: modules/gui/wxwidgets/dialogs/open.cpp:1703
 msgid "The first entry (the beginning of the first MPEG track) is 0."
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1711
+#: modules/gui/wxwidgets/dialogs/open.cpp:1708
 msgid "Track number."
 msgstr "מספר הרצועה."
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1717
+#: modules/gui/wxwidgets/dialogs/open.cpp:1714
 msgid ""
 "SVCD's can have up to 4 subtitles numbered 0..3. If a value -1 is used, no "
 "subtitle will be shown."
@@ -12374,14 +12498,14 @@ msgstr ""
 "בתקליטורי SVCD יכולים להיות עד 4 סטים של כתוביות, ממוספרים מ-0 ועד 3. אם "
 "ייצוין המספר -1, לא יופיעו כתוביות כלל."
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1719
+#: modules/gui/wxwidgets/dialogs/open.cpp:1716
 msgid ""
 "Audio track number. VCD's can have up to 2 audio tracks numbered 0 or 1. "
 msgstr ""
 "מספר רצועת השמע. בתקליטור VCD יכולות להיות עד שתי רצועות שמע, ממסופרות 0 או "
 "1. "
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1731
+#: modules/gui/wxwidgets/dialogs/open.cpp:1728
 msgid ""
 "Audio CDs can have up to 100 tracks, the first track is usually 1. If 0 is "
 "given, then all tracks are played."
@@ -12389,7 +12513,7 @@ msgstr ""
 "בתקליטורי שמע יכולות להיות עד 100 רצועות, כאשר הרצועה הראשונה לרוב ממוספרת כ-"
 "1. אם ייצוין המספר 0, כל הרצועות ינוגנו."
 
-#: modules/gui/wxwidgets/dialogs/open.cpp:1735
+#: modules/gui/wxwidgets/dialogs/open.cpp:1732
 msgid "Audio CDs can have up to 100 tracks, the first track is usually 1."
 msgstr "לתקליטורי שמע עד 100 רצועות, הראשונה לרוב ממוספרת 1."
 
@@ -12509,29 +12633,29 @@ msgstr "רשימת ההשמעה ריקה"
 msgid "Can't save"
 msgstr "לא ניתן לשמור"
 
-#: modules/gui/wxwidgets/dialogs/playlist.cpp:1415
+#: modules/gui/wxwidgets/dialogs/playlist.cpp:1422
 #: modules/gui/wxwidgets/wxwidgets.cpp:114 modules/misc/freetype.c:105
 #: modules/misc/win32text.c:77
 msgid "Normal"
 msgstr "רגיל"
 
-#: modules/gui/wxwidgets/dialogs/playlist.cpp:1417
+#: modules/gui/wxwidgets/dialogs/playlist.cpp:1424
 msgid "Sorted by Artist"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/playlist.cpp:1419
+#: modules/gui/wxwidgets/dialogs/playlist.cpp:1426
 msgid "Sorted by Album"
 msgstr "ממוין לפי אלבום"
 
-#: modules/gui/wxwidgets/dialogs/playlist.cpp:1630
+#: modules/gui/wxwidgets/dialogs/playlist.cpp:1637
 msgid "Please enter node name"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/playlist.cpp:1631
+#: modules/gui/wxwidgets/dialogs/playlist.cpp:1638
 msgid "Add node"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/playlist.cpp:1631
+#: modules/gui/wxwidgets/dialogs/playlist.cpp:1638
 msgid "New node"
 msgstr ""
 
@@ -12650,17 +12774,17 @@ msgstr "קובץ כתוביות"
 msgid "Options"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/subtitles.cpp:211
+#: modules/gui/wxwidgets/dialogs/subtitles.cpp:208
 msgid ""
 "Override frames per second. It will only work with MicroDVD and SubRIP "
 "subtitles."
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/subtitles.cpp:227
+#: modules/gui/wxwidgets/dialogs/subtitles.cpp:224
 msgid "Set subtitle delay (in 1/10s)"
 msgstr ""
 
-#: modules/gui/wxwidgets/dialogs/subtitles.cpp:286
+#: modules/gui/wxwidgets/dialogs/subtitles.cpp:283
 msgid "Open file"
 msgstr "פתח קובץ"
 
@@ -13076,43 +13200,43 @@ msgstr "אודות %s"
 msgid "Show/Hide Interface"
 msgstr ""
 
-#: modules/gui/wxwidgets/menus.cpp:124
+#: modules/gui/wxwidgets/menus.cpp:126
 msgid "Quick &Open File..."
 msgstr ""
 
-#: modules/gui/wxwidgets/menus.cpp:125
+#: modules/gui/wxwidgets/menus.cpp:127
 msgid "Open &File..."
 msgstr ""
 
-#: modules/gui/wxwidgets/menus.cpp:126
+#: modules/gui/wxwidgets/menus.cpp:128
 msgid "Open D&irectory..."
 msgstr ""
 
-#: modules/gui/wxwidgets/menus.cpp:127
+#: modules/gui/wxwidgets/menus.cpp:129
 msgid "Open &Disc..."
 msgstr ""
 
-#: modules/gui/wxwidgets/menus.cpp:128
+#: modules/gui/wxwidgets/menus.cpp:130
 msgid "Open &Network Stream..."
 msgstr ""
 
-#: modules/gui/wxwidgets/menus.cpp:129
+#: modules/gui/wxwidgets/menus.cpp:131
 msgid "Open &Capture Device..."
 msgstr ""
 
-#: modules/gui/wxwidgets/menus.cpp:136
+#: modules/gui/wxwidgets/menus.cpp:138
 msgid "Media &Info..."
 msgstr "מידע &מדיה"
 
-#: modules/gui/wxwidgets/menus.cpp:137
+#: modules/gui/wxwidgets/menus.cpp:139
 msgid "&Messages..."
 msgstr "&הודעות..."
 
-#: modules/gui/wxwidgets/menus.cpp:138
+#: modules/gui/wxwidgets/menus.cpp:140
 msgid "&Preferences..."
 msgstr "&העדפות..."
 
-#: modules/gui/wxwidgets/menus.cpp:573 modules/gui/wxwidgets/menus.cpp:600
+#: modules/gui/wxwidgets/menus.cpp:575 modules/gui/wxwidgets/menus.cpp:602
 msgid "Empty"
 msgstr ""
 
@@ -13628,15 +13752,15 @@ msgstr ""
 msgid "Growl Notification Plugin"
 msgstr ""
 
-#: modules/misc/growl.c:172 modules/misc/msn.c:202 modules/misc/notify.c:162
+#: modules/misc/growl.c:172 modules/misc/msn.c:202 modules/misc/notify.c:187
 msgid "(no title)"
 msgstr ""
 
-#: modules/misc/growl.c:173 modules/misc/msn.c:203 modules/misc/notify.c:163
+#: modules/misc/growl.c:173 modules/misc/msn.c:203 modules/misc/notify.c:188
 msgid "(no artist)"
 msgstr ""
 
-#: modules/misc/growl.c:174 modules/misc/msn.c:204 modules/misc/notify.c:164
+#: modules/misc/growl.c:174 modules/misc/msn.c:204 modules/misc/notify.c:189
 msgid "(no album)"
 msgstr ""
 
@@ -13688,10 +13812,6 @@ msgstr ""
 msgid "Output data for RRDTool in this file."
 msgstr ""
 
-#: modules/misc/memcpy/memcpyaltivec.c:56
-msgid "AltiVec memcpy"
-msgstr ""
-
 #: modules/misc/memcpy/memcpy.c:83
 msgid "libc memcpy"
 msgstr ""
@@ -13706,6 +13826,10 @@ msgstr ""
 
 #: modules/misc/memcpy/memcpy.c:99
 msgid "MMX EXT memcpy"
+msgstr ""
+
+#: modules/misc/memcpy/memcpyaltivec.c:56
+msgid "AltiVec memcpy"
 msgstr ""
 
 #: modules/misc/msn.c:64
@@ -13726,23 +13850,23 @@ msgstr ""
 msgid "UDP/IPv4 network abstraction layer"
 msgstr ""
 
-#: modules/misc/network/ipv6.c:81
+#: modules/misc/network/ipv6.c:77
 msgid "UDP/IPv6 network abstraction layer"
 msgstr ""
 
-#: modules/misc/notify.c:55
+#: modules/misc/notify.c:60
 msgid "Timeout (ms)"
 msgstr ""
 
-#: modules/misc/notify.c:56
+#: modules/misc/notify.c:61
 msgid "How long the notification will be displayed "
 msgstr ""
 
-#: modules/misc/notify.c:61
+#: modules/misc/notify.c:66
 msgid "Notify"
 msgstr ""
 
-#: modules/misc/notify.c:62
+#: modules/misc/notify.c:67
 msgid "LibNotify Notification Plugin"
 msgstr ""
 
@@ -14154,7 +14278,7 @@ msgstr ""
 msgid "Copy packetizer"
 msgstr ""
 
-#: modules/packetizer/h264.c:47
+#: modules/packetizer/h264.c:48
 msgid "H.264 video packetizer"
 msgstr ""
 
@@ -14307,19 +14431,19 @@ msgstr ""
 msgid "SDP file parser for UDP"
 msgstr ""
 
-#: modules/services_discovery/sap.c:322
+#: modules/services_discovery/sap.c:319
 msgid "Session Announcements (SAP)"
 msgstr ""
 
-#: modules/services_discovery/sap.c:847 modules/services_discovery/sap.c:852
+#: modules/services_discovery/sap.c:842 modules/services_discovery/sap.c:847
 msgid "Session"
 msgstr ""
 
-#: modules/services_discovery/sap.c:848
+#: modules/services_discovery/sap.c:843
 msgid "Tool"
 msgstr "כלי"
 
-#: modules/services_discovery/sap.c:853
+#: modules/services_discovery/sap.c:848
 msgid "User"
 msgstr "משתמש"
 
@@ -15385,7 +15509,7 @@ msgstr ""
 
 #: modules/video_filter/marq.c:137 modules/video_filter/rss.c:189
 msgid "Misc"
-msgstr ""
+msgstr "שונות"
 
 #: modules/video_filter/marq.c:141
 msgid "Marquee display"
@@ -15393,7 +15517,7 @@ msgstr ""
 
 #: modules/video_filter/mosaic.c:90
 msgid "Transparency"
-msgstr ""
+msgstr "שקיפות"
 
 #: modules/video_filter/mosaic.c:91
 msgid ""
@@ -15411,7 +15535,7 @@ msgstr ""
 
 #: modules/video_filter/mosaic.c:99
 msgid "Top left corner X coordinate"
-msgstr ""
+msgstr "ערך ה-X של הפינה השמאלית העליונה"
 
 #: modules/video_filter/mosaic.c:100
 msgid "X Coordinate of the top-left corner of the mosaic."
@@ -15426,101 +15550,100 @@ msgid "Y Coordinate of the top-left corner of the mosaic."
 msgstr ""
 
 #: modules/video_filter/mosaic.c:103
-msgid "Vertical border width"
-msgstr ""
+#, fuzzy
+msgid "Border width"
+msgstr "רוחב וידאו"
 
 #: modules/video_filter/mosaic.c:104
-msgid ""
-"Width in pixels of the border than can be drawn vertically around the mosaic."
+msgid "Width in pixels of the border between miniatures."
 msgstr ""
+
+#: modules/video_filter/mosaic.c:105
+#, fuzzy
+msgid "Border height"
+msgstr "גובה וידאו"
 
 #: modules/video_filter/mosaic.c:106
-msgid "Horizontal border width"
+msgid "Height in pixels of the border between miniatures."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:107
-msgid ""
-"Width in pixels of the border than can be drawn horizontally around the "
-"mosaic."
-msgstr ""
-
-#: modules/video_filter/mosaic.c:110
+#: modules/video_filter/mosaic.c:108
 msgid "Mosaic alignment"
 msgstr ""
 
-#: modules/video_filter/mosaic.c:112
+#: modules/video_filter/mosaic.c:110
 msgid ""
 "You can enforce the mosaic alignment on the video (0=center, 1=left, "
 "2=right, 4=top, 8=bottom, you can also use combinations of these values, eg "
 "6 = top-right)."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:116
+#: modules/video_filter/mosaic.c:114
 msgid "Positioning method"
-msgstr ""
+msgstr "שיטת המיקום"
 
-#: modules/video_filter/mosaic.c:117
+#: modules/video_filter/mosaic.c:115
 msgid ""
 "Positioning method for the mosaic. auto: automatically choose the best "
 "number of rows and columns. fixed: use the user-defined number of rows and "
 "columns."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:122 modules/video_filter/wall.c:57
+#: modules/video_filter/mosaic.c:120 modules/video_filter/wall.c:57
 msgid "Number of rows"
 msgstr "מספר שורות"
 
-#: modules/video_filter/mosaic.c:123
+#: modules/video_filter/mosaic.c:121
 msgid ""
 "Number of image rows in the mosaic (only used if positionning method is set "
 "to \"fixed\"."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:125 modules/video_filter/wall.c:53
+#: modules/video_filter/mosaic.c:123 modules/video_filter/wall.c:53
 msgid "Number of columns"
 msgstr "מספר טורים"
 
-#: modules/video_filter/mosaic.c:126
+#: modules/video_filter/mosaic.c:124
 msgid ""
 "Number of image columns in the mosaic (only used if positionning method is "
 "set to \"fixed\"."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:130
+#: modules/video_filter/mosaic.c:128
 msgid "Keep the original aspect ratio when resizing mosaic elements."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:132
+#: modules/video_filter/mosaic.c:130
 msgid "Keep original size"
 msgstr "שמור על הגודל המקורי"
 
-#: modules/video_filter/mosaic.c:133
+#: modules/video_filter/mosaic.c:131
 msgid "Keep the original size of mosaic elements."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:135
+#: modules/video_filter/mosaic.c:133
 msgid "Elements order"
 msgstr ""
 
-#: modules/video_filter/mosaic.c:136
+#: modules/video_filter/mosaic.c:134
 msgid ""
 "You can enforce the order of the elements on the mosaic. You must give a "
 "comma-separated list of picture ID(s).These IDs are assigned in the \"mosaic-"
 "bridge\" module."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:141
+#: modules/video_filter/mosaic.c:139
 msgid ""
 "Pictures coming from the mosaic elements will be delayed according to this "
 "value (in milliseconds). For high values you will need to raise caching at "
 "input."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:145
+#: modules/video_filter/mosaic.c:143
 msgid "Bluescreen"
-msgstr ""
+msgstr "מסך כחול"
 
-#: modules/video_filter/mosaic.c:146
+#: modules/video_filter/mosaic.c:144
 msgid ""
 "This effect, also known as \"greenscreen\" or \"chroma key\" blends the "
 "\"blue parts\" of the foreground images of the mosaic on the background "
@@ -15528,55 +15651,55 @@ msgid ""
 "blending (blue by default)."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:151
+#: modules/video_filter/mosaic.c:149
 msgid "Bluescreen U value"
-msgstr ""
+msgstr "ערך ה-U של המסך הכחול"
 
-#: modules/video_filter/mosaic.c:152
+#: modules/video_filter/mosaic.c:150
 msgid ""
 "\"U\" value for the bluescreen key color (in YUV values). From 0 to 255. "
 "Defaults to 120 for blue."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:154
+#: modules/video_filter/mosaic.c:152
 msgid "Bluescreen V value"
-msgstr ""
+msgstr "ערך ה-V של המסך הכחול"
 
-#: modules/video_filter/mosaic.c:155
+#: modules/video_filter/mosaic.c:153
 msgid ""
 "\"V\" value for the bluescreen key color (in YUV values). From 0 to 255. "
 "Defaults to 90 for blue."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:157
+#: modules/video_filter/mosaic.c:155
 msgid "Bluescreen U tolerance"
 msgstr ""
 
-#: modules/video_filter/mosaic.c:158
+#: modules/video_filter/mosaic.c:156
 msgid ""
 "Tolerance of the bluescreen blender on color variations for the U plane. A "
 "value between 10 and 20 seems sensible."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:161
+#: modules/video_filter/mosaic.c:159
 msgid "Bluescreen V tolerance"
 msgstr ""
 
-#: modules/video_filter/mosaic.c:162
+#: modules/video_filter/mosaic.c:160
 msgid ""
 "Tolerance of the bluescreen blender on color variations for the V plane. A "
 "value between 10 and 20 seems sensible."
 msgstr ""
 
-#: modules/video_filter/mosaic.c:168
+#: modules/video_filter/mosaic.c:166
 msgid "fixed"
 msgstr ""
 
-#: modules/video_filter/mosaic.c:177
+#: modules/video_filter/mosaic.c:175
 msgid "Mosaic video sub filter"
 msgstr ""
 
-#: modules/video_filter/mosaic.c:178
+#: modules/video_filter/mosaic.c:176
 msgid "Mosaic"
 msgstr ""
 
@@ -15602,7 +15725,7 @@ msgstr "קובץ תיאור"
 
 #: modules/video_filter/motiondetect.c:56
 msgid "A file containing a simple playlist"
-msgstr ""
+msgstr "קובץ המכיל רשימת השמעה פשוטה"
 
 #: modules/video_filter/motiondetect.c:57
 msgid "History parameter"
@@ -15614,15 +15737,15 @@ msgstr ""
 
 #: modules/video_filter/motiondetect.c:62
 msgid "Motion detect video filter"
-msgstr ""
+msgstr "מסנן ווידאו - גלאי תנועה"
 
 #: modules/video_filter/motiondetect.c:63
 msgid "Motion detect"
-msgstr ""
+msgstr "גלאי תנועה"
 
 #: modules/video_filter/osdmenu.c:42
 msgid "Configuration file"
-msgstr ""
+msgstr "קובץ העדפות"
 
 #: modules/video_filter/osdmenu.c:45
 msgid "Configuration file for the OSD Menu"
@@ -15915,6 +16038,11 @@ msgstr ""
 #: modules/video_output/directfb.c:69
 msgid "DirectFB video output http://www.directfb.org/"
 msgstr ""
+
+#: modules/video_output/directx/direct3d.c:101
+#, fuzzy
+msgid "DirectX 3D video output"
+msgstr "פלט שמע DirectX"
 
 #: modules/video_output/directx/directx.c:127
 msgid "Use hardware YUV->RGB conversions"
@@ -16934,9 +17062,6 @@ msgstr ""
 #~ msgid "Output Options"
 #~ msgstr "אפשרויות פלט"
 
-#~ msgid "no items in playlist"
-#~ msgstr "אין פריטים ברשימת ההשמעה"
-
 #~ msgid "1 item in playlist"
 #~ msgstr "פריט אחד ברשימת ההשמעה"
 
@@ -16991,9 +17116,6 @@ msgstr ""
 #~ msgid "Save file ..."
 #~ msgstr "שמירת קובץ..."
 
-#~ msgid "Uh Oh! Unable to find playlist !"
-#~ msgstr "אוי לא! לא ניתן למצוא רשימת השמעה!"
-
 #~ msgid "You need to enter an address"
 #~ msgstr "עליך להקליד כתובת"
 
@@ -17047,3 +17169,48 @@ msgstr ""
 
 #~ msgid "List of video output modules"
 #~ msgstr "רשימת מודולי פלט וידאו"
+
+#~ msgid "Horizontal border width"
+#~ msgstr "רוחב הגבול האופקי"
+
+#~ msgid "&Network..."
+#~ msgstr "רשת..."
+
+#~ msgid "Delete &all"
+#~ msgstr "מחק הכל"
+
+#~ msgid "Play the selected stream"
+#~ msgstr "נגן את השדר הזורם הנבחר"
+
+#~ msgid "Add subtitles"
+#~ msgstr "הוסף כתוביות"
+
+#~ msgid "Open skin"
+#~ msgstr "פתח מעטפת"
+
+#~ msgid "Skin files"
+#~ msgstr "קבצי מעטפת"
+
+#~ msgid "All files"
+#~ msgstr "כל הקבצים"
+
+#~ msgid "Add file"
+#~ msgstr "הוסף קובץ"
+
+#~ msgid "Stream Output MRL"
+#~ msgstr "שדר זורם MRL"
+
+#~ msgid "A_udio"
+#~ msgstr "שמע"
+
+#~ msgid "Open a File"
+#~ msgstr "פתח קובץ"
+
+#~ msgid "Open file..."
+#~ msgstr "פתח קובץ..."
+
+#~ msgid "Open disc..."
+#~ msgstr "פתח דיסק..."
+
+#~ msgid "Network stream..."
+#~ msgstr "שדר מהרשת..."

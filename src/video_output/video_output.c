@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: video_output.c 16775 2006-09-21 20:35:23Z hartman $
+ * $Id: video_output.c 17428 2006-11-02 20:43:55Z hartman $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -470,9 +470,14 @@ void vout_Destroy( vout_thread_t *p_vout )
     /* Free structure */
     vlc_object_destroy( p_vout );
 
+    /* This is a dirty hack for mostly Linux, where there is no way to get the GUI
+       back if you closed it while playing video. This is solved in Mac OS X,
+       where we have this novelty called menubar, that will always allow you access
+       to the applications main functionality. They should try that on linux sometime */
     /* If it was the last vout, tell the interface to show up */
     if( p_playlist != NULL )
     {
+#ifndef __APPLE__
         vout_thread_t *p_another_vout = vlc_object_find( p_playlist,
                                             VLC_OBJECT_VOUT, FIND_ANYWHERE );
         if( p_another_vout == NULL )
@@ -485,6 +490,7 @@ void vout_Destroy( vout_thread_t *p_vout )
         {
             vlc_object_release( p_another_vout );
         }
+#endif
         vlc_object_release( p_playlist );
     }
 }
@@ -736,6 +742,12 @@ static void RunThread( vout_thread_t *p_vout)
         display_date = 0;
         current_date = mdate();
 
+        if( p_input && p_input->b_die )
+        {
+            vlc_object_release( p_input );
+            p_input = NULL;
+        }
+
 #if 0
         p_vout->c_loops++;
         if( !(p_vout->c_loops % VOUT_STATS_NB_LOOPS) )
@@ -901,7 +913,7 @@ static void RunThread( vout_thread_t *p_vout)
                 p_input = vlc_object_find( p_vout, VLC_OBJECT_INPUT,
                                            FIND_PARENT );
             p_subpic = spu_SortSubpictures( p_vout->p_spu, display_date,
-            p_input ? var_GetBool( p_input, "state" ) == PAUSE_S : VLC_FALSE );
+                p_input ? var_GetBool( p_input, "state" ) == PAUSE_S : VLC_FALSE );
         }
 
         /*

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * sap.c :  SAP interface module
+ * hal.c :  HAL interface module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: hal.c 14910 2006-03-25 10:00:14Z zorglub $
+ * $Id: hal.c 17886 2006-11-20 04:01:08Z funman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -291,11 +291,15 @@ static void ParseDevice( services_discovery_t *p_sd, char *psz_device )
                                                         psz_device,
                                                         "volume.disc.type" );
 #endif
-        if( !strcmp( psz_disc_type, "dvd_rom" ) )
+        if( !strncmp( psz_disc_type, "dvd_r", 5 ) )
         {
-            AddDvd( p_sd, psz_device );
+#ifdef HAVE_HAL_1
+            if (libhal_device_get_property_bool( p_sys->p_ctx, psz_device,
+                        "volume.disc.is_videodvd", NULL ) )
+#endif
+                AddDvd( p_sd, psz_device );
         }
-        else if( !strcmp( psz_disc_type, "cd_rom" ) )
+        else if( !strncmp( psz_disc_type, "cd_r", 4 ) )
         {
 #ifdef HAVE_HAL_1
             if( libhal_device_get_property_bool( p_sys->p_ctx, psz_device,
