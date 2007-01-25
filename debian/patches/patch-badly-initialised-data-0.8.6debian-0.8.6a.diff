@@ -63,8 +63,9 @@ diff -puriN vlc-0.8.6/modules/codec/dvbsub.c vlc-0.8.6a/modules/codec/dvbsub.c
  
          p_sys->default_clut.c_2b[i].Y = RGB_TO_Y(R,G,B);
 -        p_sys->default_clut.c_2b[i].Cr = RGB_TO_U(R,G,B);
-         p_sys->default_clut.c_2b[i].Cb = RGB_TO_V(R,G,B);
-+        p_sys->default_clut.c_2b[i].Cr = RGB_TO_U(R,G,B);
+-        p_sys->default_clut.c_2b[i].Cb = RGB_TO_V(R,G,B);
++        p_sys->default_clut.c_2b[i].Cb = RGB_TO_U(R,G,B);
++        p_sys->default_clut.c_2b[i].Cr = RGB_TO_V(R,G,B);
          p_sys->default_clut.c_2b[i].T = T;
      }
  
@@ -74,8 +75,8 @@ diff -puriN vlc-0.8.6/modules/codec/dvbsub.c vlc-0.8.6a/modules/codec/dvbsub.c
          p_sys->default_clut.c_4b[i].Y = RGB_TO_Y(R,G,B);
 -        p_sys->default_clut.c_4b[i].Cr = RGB_TO_U(R,G,B);
 -        p_sys->default_clut.c_4b[i].Cb = RGB_TO_V(R,G,B);
-+        p_sys->default_clut.c_4b[i].Cr = RGB_TO_V(R,G,B);
 +        p_sys->default_clut.c_4b[i].Cb = RGB_TO_U(R,G,B);
++        p_sys->default_clut.c_4b[i].Cr = RGB_TO_V(R,G,B);
          p_sys->default_clut.c_4b[i].T = T;
      }
  

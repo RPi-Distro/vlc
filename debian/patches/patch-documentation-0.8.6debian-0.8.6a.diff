@@ -15,21 +15,6 @@ Index: vlc-0.8.6-svn20061012.debian/modules/access/rtsp/access.c
 ===================================================================
 --- vlc-0.8.6-svn20061012.debian.orig/modules/access/rtsp/access.c	2006-09-18 12:28:25.000000000 +0200
 +++ vlc-0.8.6-svn20061012.debian/modules/access/rtsp/access.c	2007-01-08 02:19:00.000000000 +0100
-@@ -150,7 +150,13 @@
-     char *psz_server = 0;
-     int i_result;
- 
--    if( !p_access->b_force ) return VLC_EGENERIC;
-+    if( !p_access->psz_access || (
-+        strncmp( p_access->psz_access, "rtsp", 4 ) && 
-+        strncmp( p_access->psz_access, "pnm", 3 )  &&
-+        strncmp( p_access->psz_access, "realrtsp", 8 ) ))
-+    {
-+            return VLC_EGENERIC;
-+    }
- 
-     p_access->pf_read = NULL;
-     p_access->pf_block = BlockRead;
 @@ -225,7 +231,7 @@
      }
      else

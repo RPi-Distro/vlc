@@ -7,7 +7,7 @@ Index: vlc-0.8.6-svn20061012.debian/modules/misc/notify.c
      notification = notify_notification_new( _("Now Playing"),
                               psz_temp,
 -                             DATA_PATH "/vlc128x128.png",NULL);
-+                             DATA_PATH "/usr/share/pixmaps/vlc.png",NULL);
++                             "/usr/share/pixmaps/vlc.png",NULL);
      notify_notification_set_timeout( notification,
                                       config_GetInt(p_this, "notify-timeout") );
      notify_notification_set_urgency( notification, NOTIFY_URGENCY_LOW );
