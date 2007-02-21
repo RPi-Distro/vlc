@@ -1,3 +1,12 @@
+vlc (0.8.6.a.debian-2) unstable; urgency=high
+
+  * debian/patches/021_x264_powerpc.diff:
+    + Patch from upstream to fix FTBFS on PowerPC (Closes: #411438).
+  * debian/rules:
+    + Fix a kFreeBSD FTBFS, courtesy of Petr Salinger (Closes: #399713).
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed, 21 Feb 2007 12:12:02 +0100
+
 vlc (0.8.6.a.debian-1) unstable; urgency=high
 
   * New upstream bugfix release.

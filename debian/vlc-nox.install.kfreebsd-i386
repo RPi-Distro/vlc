@@ -3,7 +3,6 @@ usr/share/doc
 usr/share/locale
 usr/share/vlc/http
 usr/share/vlc/osdmenu
-usr/lib/vlc/access/libdvb_plugin.so
 usr/lib/vlc/access/libvcd_plugin.so
 usr/lib/vlc/access/libvcdx_plugin.so
 usr/lib/vlc/access/libaccess_*.so

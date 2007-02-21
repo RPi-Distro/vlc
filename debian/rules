@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # debian/rules for the VLC media player - uses debhelper.
-# $Id: rules 127 2007-01-08 08:40:15Z sam $
+# $Id: rules 127M 2007-02-21 11:13:58Z (local) $
 # based on Joey Hess's one.
 
 # Uncomment this to turn on verbose mode.
@@ -163,7 +163,7 @@ endif
 clean:
 	dh_testdir
 	dh_testroot
-	sed -e '/lib\(alsa\|dv\|v4l\|pvr\)_/d' debian/vlc-nox.install \
+	sed -e '/lib\(alsa\|dvb\|v4l\|pvr\)_/d' debian/vlc-nox.install \
 	  > debian/vlc-nox.install.kfreebsd-i386
 	cp debian/vlc-nox.install.kfreebsd-i386 \
 	  debian/vlc-nox.install.kfreebsd-amd64
