@@ -6,3 +6,4 @@
 020_certificates_paths.diff
 020_kfreebsd.diff
 021_x264_powerpc.diff
+030_audio_format_crash.diff

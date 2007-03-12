@@ -1,3 +1,17 @@
+vlc (0.8.6.a.debian-3) unstable; urgency=low
+
+  * debian/control:
+    + Add XS-Vcs-Browser field.
+    + Build-depend on libx264-dev.
+    + Build-depend on libfaad-dev.
+  * debian/rules:
+    + Now that they're in unstable, no longer build our custom x264 and faad2.
+
+  * debian/patches/030_audio_format_crash.diff:
+    + Patch from upstream to fix multiple crashes with audio conversions.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Mon, 12 Mar 2007 16:41:06 +0100
+
 vlc (0.8.6.a.debian-2) unstable; urgency=high
 
   * debian/patches/021_x264_powerpc.diff:
