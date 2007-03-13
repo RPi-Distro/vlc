@@ -1,3 +1,9 @@
+vlc (0.8.6.a.debian-4) unstable; urgency=low
+
+  * *sigh*, libfaad-dev build-depend was in fact missing.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 13 Mar 2007 10:39:04 +0100
+
 vlc (0.8.6.a.debian-3) unstable; urgency=low
 
   * debian/control:
