@@ -1,3 +1,27 @@
+vlc (0.8.6.a.debian-5) unstable; urgency=low
+
+  * Refreshed and renamed all patches.
+
+  * debian/control:
+    + Set pkg-multimedia-maintainers as main maintainer.
+    + Fixed Vcs fields.
+  * debian/compat:
+    + Set compat to 5.
+  * debian/rules:
+    + Big cleanup.
+    + Distribute libvlc.a again.
+    + Switch to AM_MAINTAINER_MODE instead of touching all files.
+
+  * debian/patches/106_xshm_check.diff:
+    + New patch. Don't crash if XShmAttach fails, instead fall back to
+      normal X images (Closes: #404361).
+
+  * debian/patches/300_manpage_syntax.diff:
+    + New patch. Fix dvd:// syntax in manpage (Closes: #412372) and add
+      mention of the videolan-doc package.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sat, 17 Mar 2007 19:46:52 +0100
+
 vlc (0.8.6.a.debian-4) unstable; urgency=low
 
   * *sigh*, libfaad-dev build-depend was in fact missing.

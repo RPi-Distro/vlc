@@ -1,0 +1,14 @@
+Index: vlc-0.8.6.a.debian/configure.ac
+===================================================================
+--- vlc-0.8.6.a.debian.orig/configure.ac	2007-03-17 00:09:31.000000000 +0100
++++ vlc-0.8.6.a.debian/configure.ac	2007-03-17 00:09:45.000000000 +0100
+@@ -23,9 +23,6 @@
+ dnl automake behavior, you've likely never heard of maintainer mode, so we
+ dnl can't expect you to enable it manually.
+ 
+-AS_IF([test "x${enable_maintainer_mode}" != "xno"],
+-	[enable_maintainer_mode="yes"])
+-
+ dnl HA! HA!
+ AM_MAINTAINER_MODE
+ 

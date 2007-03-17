@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # debian/rules for the VLC media player - uses debhelper.
-# $Id: rules 189 2007-03-13 07:54:46Z sam $
+# $Id: rules 227 2007-03-17 13:37:38Z sho $
 # based on Joey Hess's one.
 
 # Uncomment this to turn on verbose mode.
@@ -17,8 +17,8 @@ confflags = --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
 #
 # Compilation options
 #
-vlc_confflags = --enable-release --prefix=/usr
-vlc_confflags += \
+confflags += --enable-release --prefix=/usr
+confflags += \
 	--enable-libtool \
 	--disable-gnome \
 	--disable-gtk \
@@ -80,58 +80,33 @@ vlc_confflags += \
 
 # These ones are only for Linux
 ifeq ($(DEB_HOST_ARCH_OS),linux)
-vlc_confflags += --enable-alsa --enable-dv --enable-v4l --enable-pvr
+confflags += --enable-alsa --enable-dv --enable-v4l --enable-pvr
 endif
 
 # Glide and svgalib are only for x86 on Linux
 ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),i386)
-vlc_confflags += --enable-glide
-vlc_confflags += --enable-svgalib
+confflags += --enable-glide
+confflags += --enable-svgalib
 endif
 
 # Remove --without-dvdcss in non-totalitarian countries
-vlc_confflags += --enable-dvd --without-dvdcss
+confflags += --enable-dvd --without-dvdcss
 
 # A few shortcuts
 VIDDIR = usr/share/vlc
 PIXDIR = usr/share/pixmaps
-APPDIR = usr/share/applications
-
-
-#
-# Build rules
-#
-
-configure: configure-stamp
-configure-stamp:
-	dh_testdir
-	# Patch package
-	QUILT_PATCHES=debian/patches quilt push -a || test $$? = 2
-	# Touch stuff
-	touch configure.ac
-	touch aclocal.m4
-	touch configure
-	touch config.h.in
-	touch `find . -name Makefile.in`
-	# Configure VLC
-	./configure --mandir=$${prefix}/share/man \
-	  --infodir=$${prefix}/share/info $(confflags) $(vlc_confflags)
-	touch configure-stamp
 
 build: build-stamp
-build-stamp: configure-stamp
+build-stamp:
 	dh_testdir
-	#### Build only VLC, with the non-PIC libs
-	###$(MAKE) include/vlc_symbols.h
-	###cd modules && AM_MAKEFLAGS='plugin=no pic=no' $(MAKE)
-	###$(MAKE) vlc
-	#### Build all the rest, with the PIC libs
-	###AM_MAKEFLAGS='builtin=no' $(MAKE)
+	QUILT_PATCHES=debian/patches quilt push -a || test $$? = 2
+	./configure --enable-static --mandir=$${prefix}/share/man $(confflags)
+	$(MAKE) src/libvlc.la
+	cp src/.libs/libvlc.a src/libvlc.a
+	./configure --mandir=$${prefix}/share/man $(confflags)
 	$(MAKE)
-
-	# Minor test, to see which plugins were built and whether they load
-	# properly.
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
+	# Check which plugins were built and whether they load properly.
 	./vlc --reset-plugins-cache -l -I rc vlc:quit
 endif
 	touch build-stamp
@@ -143,9 +118,10 @@ clean:
 	  > debian/vlc-nox.install.kfreebsd-i386
 	cp debian/vlc-nox.install.kfreebsd-i386 \
 	  debian/vlc-nox.install.kfreebsd-amd64
-	rm -f configure-stamp build-stamp
+	rm -f build-stamp
 	# Clean VLC
 	-$(MAKE) distclean
+	rm -f src/libvlc.a
 	# Clean zsh completion stuff
 	rm -f extras/zsh
 	# Removed ugly cruft
@@ -162,29 +138,26 @@ install: build
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
-
 	$(MAKE) install DESTDIR=`pwd`/debian/tmp/
-
+	cp src/libvlc.a debian/tmp/usr/lib
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -exec rm '{}' ';'
-
 	# Remove useless stuff
 	rm -Rf debian/tmp/$(VIDDIR)/skins
 	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
 	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
-
 	# Move stuff around
 	mkdir -p debian/tmp/$(PIXDIR)
 	-mv debian/tmp/$(VIDDIR)/vlc48x48.png debian/tmp/$(PIXDIR)/vlc.png
 	-mv debian/tmp/$(VIDDIR)/vlc32x32.xpm debian/tmp/$(VIDDIR)/vlc.xpm
-
 	# Install stuff
 	dh_install -si --fail-missing --sourcedir=debian/tmp
-
-	# Check that we did not install a plugin linked with libX11 in vlc-nox
+	# Clean up
+	rm -f debian/vlc/$(VIDDIR)/*.png
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
+	# Check that we did not install a plugin linked with libX11 in vlc-nox
 	BORKED=no; \
 	for file in $$(find debian/vlc-nox/usr/lib/vlc -name '*.so'); do \
 	  if ldd $$file | grep -q libX11; then \
@@ -194,34 +167,6 @@ ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	done; \
 	if test "$$BORKED" = yes; then exit 1; fi
 endif
-
-	# manpage symlinks
-	ln -s vlc.1.gz debian/vlc/usr/share/man/man1/svlc.1.gz
-	ln -s vlc.1.gz debian/vlc/usr/share/man/man1/wxvlc.1.gz
-
-	# /usr/share/doc symlinks
-	ln -s vlc debian/vlc-nox/usr/share/doc/vlc-nox
-	ln -s libvlc0 debian/libvlc0-dev/usr/share/doc/libvlc0-dev
-	ln -s vlc debian/vlc-plugin-esd/usr/share/doc/vlc-plugin-esd
-	ln -s vlc debian/vlc-plugin-sdl/usr/share/doc/vlc-plugin-sdl
-	ln -s vlc debian/vlc-plugin-ggi/usr/share/doc/vlc-plugin-ggi
-	ln -s vlc debian/vlc-plugin-arts/usr/share/doc/vlc-plugin-arts
-	ln -s vlc debian/mozilla-plugin-vlc/usr/share/doc/mozilla-plugin-vlc
-ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),i386)
-	ln -s vlc debian/vlc-plugin-glide/usr/share/doc/vlc-plugin-glide
-	ln -s vlc debian/vlc-plugin-svgalib/usr/share/doc/vlc-plugin-svgalib
-endif
-
-	# links for firefox
-	mkdir -p debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/plugins/
-	ln -s ../../mozilla/plugins/libvlcplugin.so debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/plugins/
-	mkdir -p debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/components/
-	ln -s ../../mozilla/components/vlcintf.xpt debian/mozilla-plugin-vlc/usr/lib/mozilla-firefox/components/
-
-	cp debian/vlc/$(VIDDIR)/vlc.xpm debian/vlc/$(VIDDIR)/wxvlc.xpm
-
-	# Clean up
-	rm -f debian/vlc/$(VIDDIR)/*.png
 
 # Build architecture-independent files here.
 binary-indep: build install
@@ -239,18 +184,16 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-#	dh_installdebconf	
+	dh_link -s
 	dh_installdocs -p vlc-nox
 	dh_installdocs -p libvlc0
 	dh_buildinfo -p vlc-nox
-#	dh_installexamples
 	dh_installmenu -s
 	dh_installmime -s
 	dh_installman doc/vlc.1 -p vlc-nox
 	dh_installman doc/vlc-config.1 -p libvlc0-dev
 	dh_installchangelogs ChangeLog -p vlc-nox
 	dh_installchangelogs ChangeLog -p libvlc0
-	dh_link -s
 	dh_strip -s
 	dh_compress -s
 	dh_fixperms -s

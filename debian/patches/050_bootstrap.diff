@@ -1,0 +1,15 @@
+Index: vlc-0.8.6.a.debian/configure
+===================================================================
+--- vlc-0.8.6.a.debian.orig/configure	2007-03-17 00:16:23.000000000 +0100
++++ vlc-0.8.6.a.debian/configure	2007-03-17 00:17:21.000000000 +0100
+@@ -2952,10 +2952,6 @@
+ 
+ 
+ 
+-if test "x${enable_maintainer_mode}" != "xno"; then
+-  enable_maintainer_mode="yes"
+-fi
+-
+ 
+ { echo "$as_me:$LINENO: checking whether to enable maintainer-specific portions of Makefiles" >&5
+ echo $ECHO_N "checking whether to enable maintainer-specific portions of Makefiles... $ECHO_C" >&6; }
