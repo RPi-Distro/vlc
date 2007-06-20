@@ -1,0 +1,12 @@
+diff -puriN vlc-0.8.6b/src/audio_output/input.c vlc-0.8.6c/src/audio_output/input.c
+--- vlc-0.8.6b/src/audio_output/input.c	2007-04-17 23:44:53 +0200
++++ vlc-0.8.6c/src/audio_output/input.c	2007-06-16 16:25:04 +0200
+@@ -56,7 +56,7 @@ int aout_InputNew( aout_instance_t * p_a
+ 
+     aout_FormatPrint( p_aout, "input", &p_input->input );
+ 
+-    p_input->i_nb_filters = 0;
++    p_input->i_nb_resamplers = p_input->i_nb_filters = 0;
+ 
+     /* Prepare FIFO. */
+     aout_FifoInit( p_aout, &p_input->fifo, p_aout->mixer.mixer.i_rate );

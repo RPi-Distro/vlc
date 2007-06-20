@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # debian/rules for the VLC media player - uses debhelper.
-# $Id: rules 131 2007-01-11 15:01:55Z sam $
+# $Id: rules 127 2007-01-08 08:40:15Z sho $
 # based on Joey Hess's one.
 
 # Uncomment this to turn on verbose mode.

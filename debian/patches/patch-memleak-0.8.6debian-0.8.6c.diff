@@ -1,0 +1,22 @@
+diff -puriN vlc-0.8.6b/modules/misc/svg.c vlc-0.8.6c/modules/misc/svg.c
+--- vlc-0.8.6b/modules/misc/svg.c	2007-04-17 23:45:04 +0200
++++ vlc-0.8.6c/modules/misc/svg.c	2007-06-16 16:25:11 +0200
+@@ -137,6 +137,7 @@ static int Create( vlc_object_t *p_this 
+     if( !p_sys->psz_template )
+     {
+         msg_Err( p_filter, "out of memory" );
++        free( p_sys );
+         return VLC_ENOMEM;
+     }
+ 
+diff -puriN vlc-0.8.6b/src/control/core.c vlc-0.8.6c/src/control/core.c
+--- vlc-0.8.6b/src/control/core.c	2007-04-17 23:44:52 +0200
++++ vlc-0.8.6c/src/control/core.c	2007-06-16 16:25:04 +0200
+@@ -118,6 +118,7 @@ void libvlc_destroy( libvlc_instance_t *
+     vlc_object_release( p_instance->p_vlc );
+     VLC_CleanUp( p_instance->i_vlc_id );
+     VLC_Destroy( p_instance->i_vlc_id );
++    free( p_instance );
+ }
+ 
+ int libvlc_get_vlc_id( libvlc_instance_t *p_instance )

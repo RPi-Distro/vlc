@@ -1,0 +1,65 @@
+diff -puriN vlc-0.8.6b/include/vlc_es.h vlc-0.8.6c/include/vlc_es.h
+--- vlc-0.8.6b/include/vlc_es.h	2007-04-17 23:45:30 +0200
++++ vlc-0.8.6c/include/vlc_es.h	2007-06-16 16:25:18 +0200
+@@ -69,9 +69,9 @@ struct audio_format_t
+      */
+ 
+     /* FIXME ? (used by the codecs) */
+-    int i_channels;
+-    int i_blockalign;
+-    int i_bitspersample;
++    unsigned i_channels;
++    unsigned i_blockalign;
++    unsigned i_bitspersample;
+ };
+ 
+ #ifdef WORDS_BIGENDIAN
+diff -puriN vlc-0.8.6b/modules/codec/ffmpeg/video.c vlc-0.8.6c/modules/codec/ffmpeg/video.c
+--- vlc-0.8.6b/modules/codec/ffmpeg/video.c	2007-04-17 23:45:10 +0200
++++ vlc-0.8.6c/modules/codec/ffmpeg/video.c	2007-06-16 16:25:12 +0200
+@@ -193,7 +193,7 @@ static inline picture_t *ffmpeg_NewPictB
+         p_dec->fmt_out.video.i_frame_rate =
+             p_dec->fmt_in.video.i_frame_rate;
+         p_dec->fmt_out.video.i_frame_rate_base =
+-            p_dec->fmt_out.video.i_frame_rate_base;
++            p_dec->fmt_in.video.i_frame_rate_base;
+     }
+     else
+ #if LIBAVCODEC_BUILD >= 4754
+diff -puriN vlc-0.8.6b/modules/demux/aiff.c vlc-0.8.6c/modules/demux/aiff.c
+--- vlc-0.8.6b/modules/demux/aiff.c	2007-04-17 23:45:02 +0200
++++ vlc-0.8.6c/modules/demux/aiff.c	2007-06-16 16:25:08 +0200
+@@ -173,6 +173,8 @@ static int Open( vlc_object_t *p_this )
+ 
+         /* Skip this chunk */
+         i_size += 8;
++        if( (i_size % 2) != 0 )
++            i_size++;
+         if( stream_Read( p_demux->s, NULL, i_size ) != (int)i_size )
+         {
+             msg_Warn( p_demux, "incomplete file" );
+diff -puriN vlc-0.8.6b/modules/demux/avi/libavi.c vlc-0.8.6c/modules/demux/avi/libavi.c
+--- vlc-0.8.6b/modules/demux/avi/libavi.c	2007-04-17 23:44:59 +0200
++++ vlc-0.8.6c/modules/demux/avi/libavi.c	2007-06-16 16:25:07 +0200
+@@ -176,7 +176,7 @@ static int AVI_ChunkRead_list( stream_t 
+             break;
+         }
+         if( p_chk->common.p_father->common.i_chunk_size > 0 &&
+-           ( stream_Tell( s ) >=
++           ( stream_Tell( s ) >
+               (off_t)p_chk->common.p_father->common.i_chunk_pos +
+                (off_t)__EVEN( p_chk->common.p_father->common.i_chunk_size ) ) )
+         {
+diff -puriN vlc-0.8.6b/modules/video_filter/rss.c vlc-0.8.6c/modules/video_filter/rss.c
+--- vlc-0.8.6b/modules/video_filter/rss.c	2007-04-17 23:45:09 +0200
++++ vlc-0.8.6c/modules/video_filter/rss.c	2007-06-16 16:25:12 +0200
+@@ -229,7 +229,8 @@ static int CreateFilter( vlc_object_t *p
+     p_sys->i_length = var_CreateGetInteger( p_filter, "rss-length" );
+     p_sys->i_ttl = __MAX( 0, var_CreateGetInteger( p_filter, "rss-ttl" ) );
+     p_sys->b_images = var_CreateGetBool( p_filter, "rss-images" );
+-    p_sys->psz_marquee = (char *)malloc( p_sys->i_length );
++    p_sys->psz_marquee = (char *)malloc( p_sys->i_length + 1 );
++    p_sys->psz_marquee[p_sys->i_length] = '\0';
+ 
+     p_sys->p_style = malloc( sizeof( text_style_t ));
+     memcpy( p_sys->p_style, &default_text_style, sizeof( text_style_t ));

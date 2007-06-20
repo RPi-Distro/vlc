@@ -1,3 +1,27 @@
+vlc (0.8.6-svn20061012.debian-5etch1) stable-security; urgency=high
+
+  * patch-formatstring-0.8.6debian-0.8.6c.diff:
+    + Fix format string vulnerabilities (VideoLAN-SA-0702) (Closes: #429726).
+  * patch-overflows-0.8.6debian-0.8.6c.diff:
+    + Fix integer and buffer overflows.
+  * patch-memleak-0.8.6debian-0.8.6c.diff:
+  * patch-missingchecks-0.8.6debian-0.8.6c.diff:
+  * patch-uninitialised-0.8.6debian-0.8.6c.diff:
+    + Fix memory leaks, missing checks and uninitialised variables that can
+      lead to denials of service.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Wed, 20 Jun 2007 20:53:40 +0200
+
+vlc (0.8.6-svn20061012.debian-5) testing-proposed-updates; urgency=high
+
+  * debian/control:
+    + Add XS-Vcs-Browser field.
+
+  * debian/patches/030_audio_format_crash.diff:
+    + Patch from upstream to fix multiple crashes with audio conversions.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sun, 11 Mar 2007 18:51:46 +0100
+
 vlc (0.8.6-svn20061012.debian-4) testing-proposed-updates; urgency=high
 
   * Removed disabled patches from the diff.gz.

@@ -10,6 +10,7 @@ patch-mozilla-plugin-0.8.6debian-0.8.6a.diff
 020_notify.diff
 020_certificates_paths.diff
 020_kfreebsd.diff
+030_audio_format_crash.diff
 patch-badly-initialised-data-0.8.6debian-0.8.6a.diff
 patch-i422-yuy2-crash-0.8.6debian-0.8.6a.diff
 patch-integer-signedness-0.8.6debian-0.8.6a.diff
@@ -19,3 +20,8 @@ patch-missing-locks-0.8.6debian-0.8.6a.diff
 patch-playlist-crash-0.8.6debian-0.8.6a.diff
 patch-sanity-checks-0.8.6debian-0.8.6a.diff
 MOAB-02-01-2007-CVE-2007-0017.patch
+patch-formatstring-0.8.6debian-0.8.6c.diff
+patch-memleak-0.8.6debian-0.8.6c.diff
+patch-missingchecks-0.8.6debian-0.8.6c.diff
+patch-overflows-0.8.6debian-0.8.6c.diff
+patch-uninitialised-0.8.6debian-0.8.6c.diff
