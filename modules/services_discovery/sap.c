@@ -2,7 +2,7 @@
  * sap.c :  SAP interface module
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: sap.c 18126 2006-11-28 11:12:49Z md $
+ * $Id: sap.c 20455 2007-06-07 17:34:50Z courmisch $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -840,12 +840,12 @@ sap_announce_t *CreateAnnounce( services_discovery_t *p_sd, uint16_t i_hash,
     if( psz_value != NULL )
     {
         vlc_input_item_AddInfo( &p_item->input, _("Session"),
-                                _("Tool"), psz_value );
+                                _("Tool"), "%s", psz_value );
     }
     if( strcmp( p_sdp->psz_username, "-" ) )
     {
         vlc_input_item_AddInfo( &p_item->input, _("Session"),
-                                _("User"), p_sdp->psz_username );
+                                _("User"), "%s", p_sdp->psz_username );
     }
 
     psz_value = GetAttribute( p_sap->p_sdp, "x-plgroup" );
@@ -962,14 +962,24 @@ static int ParseConnection( vlc_object_t *p_obj, sdp_t *p_sdp )
         if( psz_eof )
         {
             *psz_eof = '\0';
-        }
-        else
+            if (p_sdp->i_in == 4)
+            {
+                /* Skip IPv4-specific TTL indication */
+                psz_eof = strchr (psz_parse, '/');
+            }
+
+            if ((psz_eof != NULL) && (atoi (psz_eof + 1) != 1))
+            {
+                msg_Warn (p_obj, "unsupported layered stream (%s layers)",
+                          psz_eof + 1);
+                return VLC_EGENERIC;
+            }
+	}
+
+        if( strchr( psz_parse, ':' ) != NULL )
         {
-            msg_Dbg( p_obj, "incorrect c field, %s", p_sdp->psz_connection );
-        }
-        if( p_sdp->i_in == 6 && ( isxdigit( *psz_parse ) || *psz_parse == ':' ) )
-        {
-            asprintf( &psz_uri, "[%s]", psz_parse );
+            if( asprintf( &psz_uri, "[%s]", psz_parse ) == -1 )
+                psz_uri = NULL;
         }
         else psz_uri = strdup( psz_parse );
 

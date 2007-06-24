@@ -2,7 +2,7 @@
  * slider_manager.cpp : Manage an input slider
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: input_manager.cpp 14556 2006-03-01 19:56:34Z fkuehne $
+ * $Id: input_manager.cpp 20506 2007-06-11 11:37:38Z damienf $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -58,6 +58,59 @@ END_EVENT_TABLE()
 #define STATUS_PLAYING 1
 #define STATUS_PAUSE 2
 
+#ifdef WIN32
+
+#include <commctrl.h>
+
+/*
+** On win32, clicking on the slider channel causes the thumb to jump up or down a page size
+** like a scrollbar.  This is not particularily useful for a movie track, where we'd rather
+** see the thumb to jump where the mouse is.
+** Therefore, we replace the slider (TRACKBAR control) window proc with our, which intercept
+** the mouse down event, and move the thumb accordingly
+*/
+static LRESULT CALLBACK MovieSliderWindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
+{
+    switch( uMsg )
+    {
+        case WM_LBUTTONDOWN:
+        {
+            POINT click = { GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam) };
+            RECT tRect = {0, 0, 0, 0};
+            SendMessage(hWnd, TBM_GETTHUMBRECT, 0, (LPARAM)&tRect);
+
+            /* check whether click is not in thumb */
+            if( ! PtInRect(&tRect, click) )
+            {
+                LONG min = SendMessage(hWnd, TBM_GETRANGEMIN, 0, 0);
+                LONG max = SendMessage(hWnd, TBM_GETRANGEMAX, 0, 0);
+                LONG thumb = tRect.right-tRect.left;
+                LONG newpos;
+
+                SendMessage(hWnd, TBM_GETCHANNELRECT, 0, (LPARAM)&tRect);
+
+                /* calculate thumb postion from click in trackbar */
+                /* following is only valid for a horizontal trackbar */
+                newpos = ((click.x-tRect.left-(thumb/2))*(max-min)+((tRect.right-tRect.left-thumb)/2))
+                       /(tRect.right-tRect.left-thumb);
+
+                /* set new postion */
+                SendMessage(hWnd, TBM_SETPOS, TRUE, min+newpos);
+                /* notify parent of change */
+                SendMessage(GetParent(hWnd), WM_HSCROLL, TB_ENDTRACK, (LPARAM)hWnd);
+
+                return 0;
+            }
+        }
+
+        default:
+            return CallWindowProc((WNDPROC)GetWindowLongPtr(hWnd, GWLP_USERDATA),
+                        hWnd, uMsg, wParam, lParam);
+    }
+}
+
+#endif
+
 /*****************************************************************************
  * Constructor.
  *****************************************************************************/
@@ -75,6 +128,20 @@ InputManager::InputManager( intf_thread_t *_p_intf, Interface *_p_main_intf,
 
     /* Create slider */
     slider = new wxSlider( this, SliderScroll_Event, 0, 0, SLIDER_MAX_POS );
+
+#ifdef WIN32
+    /* modify behaviour of WIN32 underlying control
+      in order to implement proper movie slider */
+    {
+        HWND sliderHwnd = (HWND)slider->GetHWND();
+        /* put original WNDPROC into USERDATA, this may be incompatible with future version of
+           wxwidgets. */
+        SetWindowLongPtr(sliderHwnd, GWLP_USERDATA,
+            (LONG_PTR)GetWindowLongPtr(sliderHwnd, GWLP_WNDPROC));
+        /* put our own WNDPROC */
+        SetWindowLongPtr(sliderHwnd, GWLP_WNDPROC, (LONG_PTR)MovieSliderWindowProc);
+    }
+#endif
 
     /* Create disc buttons */
     disc_frame = new wxPanel( this );

@@ -2,7 +2,7 @@
  * wizard.m: MacOS X Streaming Wizard
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: wizard.m 15191 2006-04-12 16:40:47Z fkuehne $
+ * $Id: wizard.m 18978 2007-02-23 20:07:18Z fkuehne $
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net>
  *
@@ -445,6 +445,7 @@ static VLCWizard *_o_sharedInstance = nil;
     [o_t6_btn_mrInfo_sap setTitle: _NS("More Info")];
     [o_t6_ckb_local setTitle: _NS("Local playback")];
     [o_t6_btn_mrInfo_local setTitle: _NS("More Info")];
+    [o_t6_ckb_soverlay setTitle: _NS("Add subtitles to transcoded video")];
 
     /* page seven ("Transcode 2") */
     [o_t7_title setStringValue: _NS("Additional transcode options")];
@@ -453,6 +454,11 @@ static VLCWizard *_o_sharedInstance = nil;
     [o_t7_txt_saveFileTo setStringValue: _NS("Select the file to save to")];
     [o_t7_btn_chooseFile setTitle: _NS("Choose...")];
     [o_t7_ckb_local setTitle: _NS("Local playback")];
+    [o_t7_ckb_soverlay setTitle: _NS("Add subtitles to transcoded video")];
+    [o_t7_ckb_soverlay setToolTip: _NS("Adds available subtitles directly to " \
+                                       "the video. These cannot be disabled " \
+                                       "by the receiving user as they become " \
+                                       "part of the image.")];
     [o_t7_btn_mrInfo_local setTitle: _NS("More Info")];
 
     /* page eight ("Summary") */
@@ -476,6 +482,8 @@ static VLCWizard *_o_sharedInstance = nil;
     [o_t8_txt_trnscdAudio setStringValue: [_NS("Transcode audio") \
         stringByAppendingString: @":"]];
     [o_t8_txt_trnscdVideo setStringValue: [_NS("Transcode video") \
+        stringByAppendingString: @":"]];
+    [o_t8_txt_soverlay setStringValue: [_NS("Include subtitles") \
         stringByAppendingString: @":"]];
     [o_t8_txt_local setStringValue: [_NS("Local playback") \
         stringByAppendingString: @":"]];
@@ -1144,6 +1152,11 @@ static VLCWizard *_o_sharedInstance = nil;
             [o_userSelections setObject:@"NO" forKey:@"localPb"];
         }
         
+        /* include subtitles? */
+        [o_userSelections setObject: 
+            [[NSNumber numberWithInt:[o_t6_ckb_soverlay state]] stringValue]
+                             forKey: @"soverlay"];
+        
         /* go to "Summary" */
         [self showSummary];
     }
@@ -1268,6 +1281,11 @@ static VLCWizard *_o_sharedInstance = nil;
                     [o_t7_fld_filePath stringValue]] forKey: @"trnscdFilePath"];
             }
 
+            /* include subtitles ? */
+            [o_userSelections setObject: 
+                [[NSNumber numberWithInt:[o_t7_ckb_soverlay state]] stringValue]
+                                 forKey: @"soverlay"];
+            
             /* go to "Summary" */
             [self showSummary];
         }
@@ -1408,6 +1426,12 @@ static VLCWizard *_o_sharedInstance = nil;
     {
         [o_t8_fld_trnscdVideo setStringValue: _NS("no")];
     }
+    
+    if ([[o_userSelections objectForKey:@"soverlay"] isEqualToString:@"1"])
+        [o_t8_fld_soverlay setStringValue: _NS("yes")];
+    else
+        [o_t8_fld_soverlay setStringValue: _NS("no")];
+    
     if ([[o_userSelections objectForKey:@"trnscdAudio"] isEqualToString:@"YES"])
     {
         [o_t8_fld_trnscdAudio setStringValue: [NSString stringWithFormat:
@@ -1420,7 +1444,6 @@ static VLCWizard *_o_sharedInstance = nil;
     {
         [o_t8_fld_trnscdAudio setStringValue: _NS("no")];
     }
-
 
     if ([[o_userSelections objectForKey:@"trnscdOrStrmg"] isEqualToString:@"strmg"])
     {
@@ -1496,7 +1519,7 @@ static VLCWizard *_o_sharedInstance = nil;
                 [o_trnscdCmd appendString: @"}:"];
             }
         }
-    
+            
         /* check whether the user requested local playback. if yes, prepare the
          * string, if not, let it empty */
         if ([[o_userSelections objectForKey:@"localPb"] isEqualToString:@"YES"])
@@ -1575,6 +1598,10 @@ static VLCWizard *_o_sharedInstance = nil;
         {
             [o_opts_string appendString: @"\"}"];
         }
+        
+        /* add subtitles to the video if desired */
+        [o_opts_string appendFormat: @":sout-transcode-soverlay=%@", 
+                [o_userSelections objectForKey:@"soverlay"]];
 
         [tempArray addObject: o_opts_string];
 

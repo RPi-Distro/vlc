@@ -2,7 +2,7 @@
  * opengl.c: OpenGL video output
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: opengl.c 17850 2006-11-18 18:46:57Z damienf $
+ * $Id: opengl.c 19582 2007-03-31 23:56:53Z hartman $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -673,7 +673,13 @@ static int Manage( vout_thread_t *p_vout )
         p_sys->p_vout->pf_unlock( p_sys->p_vout );
     }
 #endif
-
+// to align in real time in OPENGL
+	if (p_sys->p_vout->i_alignment != p_vout->i_alignment)
+	{
+		p_vout->i_changes = VOUT_CROP_CHANGE;		//to force change
+    	p_sys->p_vout->i_alignment = p_vout->i_alignment;	
+	}
+	
     return i_ret;
 }
 

@@ -2,7 +2,7 @@
  * i420_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: i420_yuy2.c 16647 2006-09-14 14:58:57Z hartman $
+ * $Id: i420_yuy2.c 20505 2007-06-11 11:21:05Z damienf $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -287,6 +287,10 @@ static void I420_YUY2( vout_thread_t *p_vout, picture_t *p_source,
         p_line1 += i_dest_margin;
         p_line2 += i_dest_margin;
     }
+#if defined (MODULE_NAME_IS_i420_yuy2_mmx)
+    /* re-enable FPU registers */
+    __asm__ __volatile__ ("emms");
+#endif
 
 #if defined (MODULE_NAME_IS_i420_yuy2_altivec)
     }
@@ -341,6 +345,10 @@ static void I420_YVYU( vout_thread_t *p_vout, picture_t *p_source,
         p_line1 += i_dest_margin;
         p_line2 += i_dest_margin;
     }
+#if defined (MODULE_NAME_IS_i420_yuy2_mmx)
+    /* re-enable FPU registers */
+    __asm__ __volatile__ ("emms");
+#endif
 }
 
 /*****************************************************************************
@@ -394,9 +402,9 @@ static void I420_UYVY( vout_thread_t *p_vout, picture_t *p_source,
         p_line1 += i_dest_margin;
         p_line2 += i_dest_margin;
     }
-
 #if defined (MODULE_NAME_IS_i420_yuy2_mmx)
-    __asm__ __volatile__("emms" :: );
+    /* re-enable FPU registers */
+    __asm__ __volatile__ ("emms");
 #endif
 }
 
@@ -461,6 +469,10 @@ static void I420_cyuv( vout_thread_t *p_vout, picture_t *p_source,
         p_line1 += i_dest_margin;
         p_line2 += i_dest_margin;
     }
+#if defined (MODULE_NAME_IS_i420_yuy2_mmx)
+    /* re-enable FPU registers */
+    __asm__ __volatile__ ("emms");
+#endif
 }
 #endif // !defined (MODULE_NAME_IS_i420_yuy2_altivec)
 

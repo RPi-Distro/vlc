@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: es_out.c 17054 2006-10-13 15:47:39Z hartman $
+ * $Id: es_out.c 19719 2007-04-06 18:03:48Z massiot $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -148,6 +148,7 @@ es_out_t *input_EsOutNew( input_thread_t *p_input )
     out->pf_del     = EsOutDel;
     out->pf_control = EsOutControl;
     out->p_sys      = p_sys;
+    out->b_sout     = (p_input->p_sout != NULL ? VLC_TRUE : VLC_FALSE);
 
     p_sys->p_input = p_input;
 

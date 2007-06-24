@@ -3,7 +3,7 @@
 # DO NOT EDIT - edit Modules.am or $(top_srcdir)/bootstrap instead
 
 basedir = codec
-mods = a52 cinepak dts flacdec lpcm araw vorbis tarkin theora tremor speex adpcm mpeg_audio libmpeg2 rawvideo quicktime subsdec faad dvbsub mash x264 twolame dirac png svcdsub cvdsub fake realaudio sdl_image
+mods = a52 cinepak dts flacdec lpcm araw vorbis tarkin theora tremor speex adpcm mpeg_audio libmpeg2 rawvideo quicktime subsdec faad dvbsub telx mash x264 twolame dirac png svcdsub cvdsub fake realaudio sdl_image
 
 NULL =
 libvlc_LTLIBRARIES =
@@ -16,8 +16,8 @@ SUFFIXES = _plugin$(LIBEXT) _plugin.a
 
 libvlcdir = $(libdir)/vlc/$(basedir)
 
-EXTRA_LIBRARIES =  liba52_plugin.a liba52.a libcinepak_plugin.a libcinepak.a libdts_plugin.a libdts.a libflacdec_plugin.a libflacdec.a liblpcm_plugin.a liblpcm.a libaraw_plugin.a libaraw.a libvorbis_plugin.a libvorbis.a libtarkin_plugin.a libtarkin.a libtheora_plugin.a libtheora.a libtremor_plugin.a libtremor.a libspeex_plugin.a libspeex.a libadpcm_plugin.a libadpcm.a libmpeg_audio_plugin.a libmpeg_audio.a liblibmpeg2_plugin.a liblibmpeg2.a librawvideo_plugin.a librawvideo.a libquicktime_plugin.a libquicktime.a libsubsdec_plugin.a libsubsdec.a libfaad_plugin.a libfaad.a libdvbsub_plugin.a libdvbsub.a libmash_plugin.a libmash.a libx264_plugin.a libx264.a libtwolame_plugin.a libtwolame.a libdirac_plugin.a libdirac.a libpng_plugin.a libpng.a libsvcdsub_plugin.a libsvcdsub.a libcvdsub_plugin.a libcvdsub.a libfake_plugin.a libfake.a librealaudio_plugin.a librealaudio.a libsdl_image_plugin.a libsdl_image.a
-EXTRA_LTLIBRARIES =  liba52_plugin.la liba52_builtin.la libcinepak_plugin.la libcinepak_builtin.la libdts_plugin.la libdts_builtin.la libflacdec_plugin.la libflacdec_builtin.la liblpcm_plugin.la liblpcm_builtin.la libaraw_plugin.la libaraw_builtin.la libvorbis_plugin.la libvorbis_builtin.la libtarkin_plugin.la libtarkin_builtin.la libtheora_plugin.la libtheora_builtin.la libtremor_plugin.la libtremor_builtin.la libspeex_plugin.la libspeex_builtin.la libadpcm_plugin.la libadpcm_builtin.la libmpeg_audio_plugin.la libmpeg_audio_builtin.la liblibmpeg2_plugin.la liblibmpeg2_builtin.la librawvideo_plugin.la librawvideo_builtin.la libquicktime_plugin.la libquicktime_builtin.la libsubsdec_plugin.la libsubsdec_builtin.la libfaad_plugin.la libfaad_builtin.la libdvbsub_plugin.la libdvbsub_builtin.la libmash_plugin.la libmash_builtin.la libx264_plugin.la libx264_builtin.la libtwolame_plugin.la libtwolame_builtin.la libdirac_plugin.la libdirac_builtin.la libpng_plugin.la libpng_builtin.la libsvcdsub_plugin.la libsvcdsub_builtin.la libcvdsub_plugin.la libcvdsub_builtin.la libfake_plugin.la libfake_builtin.la librealaudio_plugin.la librealaudio_builtin.la libsdl_image_plugin.la libsdl_image_builtin.la
+EXTRA_LIBRARIES =  liba52_plugin.a liba52.a libcinepak_plugin.a libcinepak.a libdts_plugin.a libdts.a libflacdec_plugin.a libflacdec.a liblpcm_plugin.a liblpcm.a libaraw_plugin.a libaraw.a libvorbis_plugin.a libvorbis.a libtarkin_plugin.a libtarkin.a libtheora_plugin.a libtheora.a libtremor_plugin.a libtremor.a libspeex_plugin.a libspeex.a libadpcm_plugin.a libadpcm.a libmpeg_audio_plugin.a libmpeg_audio.a liblibmpeg2_plugin.a liblibmpeg2.a librawvideo_plugin.a librawvideo.a libquicktime_plugin.a libquicktime.a libsubsdec_plugin.a libsubsdec.a libfaad_plugin.a libfaad.a libdvbsub_plugin.a libdvbsub.a libtelx_plugin.a libtelx.a libmash_plugin.a libmash.a libx264_plugin.a libx264.a libtwolame_plugin.a libtwolame.a libdirac_plugin.a libdirac.a libpng_plugin.a libpng.a libsvcdsub_plugin.a libsvcdsub.a libcvdsub_plugin.a libcvdsub.a libfake_plugin.a libfake.a librealaudio_plugin.a librealaudio.a libsdl_image_plugin.a libsdl_image.a
+EXTRA_LTLIBRARIES =  liba52_plugin.la liba52_builtin.la libcinepak_plugin.la libcinepak_builtin.la libdts_plugin.la libdts_builtin.la libflacdec_plugin.la libflacdec_builtin.la liblpcm_plugin.la liblpcm_builtin.la libaraw_plugin.la libaraw_builtin.la libvorbis_plugin.la libvorbis_builtin.la libtarkin_plugin.la libtarkin_builtin.la libtheora_plugin.la libtheora_builtin.la libtremor_plugin.la libtremor_builtin.la libspeex_plugin.la libspeex_builtin.la libadpcm_plugin.la libadpcm_builtin.la libmpeg_audio_plugin.la libmpeg_audio_builtin.la liblibmpeg2_plugin.la liblibmpeg2_builtin.la librawvideo_plugin.la librawvideo_builtin.la libquicktime_plugin.la libquicktime_builtin.la libsubsdec_plugin.la libsubsdec_builtin.la libfaad_plugin.la libfaad_builtin.la libdvbsub_plugin.la libdvbsub_builtin.la libtelx_plugin.la libtelx_builtin.la libmash_plugin.la libmash_builtin.la libx264_plugin.la libx264_builtin.la libtwolame_plugin.la libtwolame_builtin.la libdirac_plugin.la libdirac_builtin.la libpng_plugin.la libpng_builtin.la libsvcdsub_plugin.la libsvcdsub_builtin.la libcvdsub_plugin.la libcvdsub_builtin.la libfake_plugin.la libfake_builtin.la librealaudio_plugin.la librealaudio_builtin.la libsdl_image_plugin.la libsdl_image_builtin.la
 
 include Modules.am
 
@@ -524,6 +524,29 @@ libdvbsub_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic dvbsub`
 libdvbsub_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin dvbsub`
 libdvbsub_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin dvbsub`
 libdvbsub_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin dvbsub`
+
+# The telx plugin
+
+libtelx_plugin_a_SOURCES = $(SOURCES_telx)
+libtelx_plugin_la_SOURCES = $(SOURCES_telx)
+libtelx_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin telx`
+libtelx_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin telx`
+libtelx_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin telx`
+libtelx_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin telx`
+libtelx_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin telx`
+libtelx_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin telx`
+libtelx_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin telx` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+libtelx_plugin_la_LIBADD = $(LTLIBVLC)
+
+libtelx_a_SOURCES = $(SOURCES_telx)
+libtelx_builtin_la_SOURCES = $(SOURCES_telx)
+libtelx_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic telx`
+libtelx_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic telx`
+libtelx_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic telx`
+libtelx_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin telx`
+libtelx_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin telx`
+libtelx_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin telx`
 
 # The mash plugin
 

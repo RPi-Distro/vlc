@@ -2,7 +2,7 @@
  * item-ext.c : Playlist item management functions (act on the playlist)
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: item-ext.c 17364 2006-10-30 08:22:46Z jpsaman $
+ * $Id: item-ext.c 19645 2007-04-02 22:01:01Z dionoea $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -734,7 +734,7 @@ int playlist_Clear( playlist_t * p_playlist )
     int i;
     for( i = p_playlist->i_size; i > 0 ; i-- )
     {
-        playlist_LockDelete( p_playlist, p_playlist->pp_items[0]->input.i_id );
+        playlist_Delete( p_playlist, p_playlist->pp_items[0]->input.i_id );
     }
     for( i = 0 ; i< p_playlist->i_views; i++ )
     {

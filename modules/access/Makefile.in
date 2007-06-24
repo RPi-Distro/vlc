@@ -116,6 +116,10 @@ FFMPEG_CFLAGS = @FFMPEG_CFLAGS@
 FFMPEG_CONFIG = @FFMPEG_CONFIG@
 FFMPEG_LIBS = @FFMPEG_LIBS@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
+FIREFOX_CFLAGS = @FIREFOX_CFLAGS@
+FIREFOX_LIBS = @FIREFOX_LIBS@
+FIREFOX_XPCOM_CFLAGS = @FIREFOX_XPCOM_CFLAGS@
+FIREFOX_XPCOM_LIBS = @FIREFOX_XPCOM_LIBS@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 FRIBIDI_CONFIG = @FRIBIDI_CONFIG@
 GENCAT = @GENCAT@
@@ -187,11 +191,15 @@ MIDL = @MIDL@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MOC = @MOC@
 MOZILLA_CONFIG = @MOZILLA_CONFIG@
+MOZILLA_NSPR_CFLAGS = @MOZILLA_NSPR_CFLAGS@
+MOZILLA_NSPR_LIBS = @MOZILLA_NSPR_LIBS@
 MOZILLA_SDK_PATH = @MOZILLA_SDK_PATH@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
 NOTIFY_LIBS = @NOTIFY_LIBS@
+NSPR_CFLAGS = @NSPR_CFLAGS@
+NSPR_LIBS = @NSPR_LIBS@
 OBJC = @OBJC@
 OBJCDEPMODE = @OBJCDEPMODE@
 OBJCFLAGS = @OBJCFLAGS@
@@ -302,7 +310,7 @@ target_vendor = @target_vendor@
 uudecode = @uudecode@
 
 basedir = access
-mods = access_file access_directory access_dv access_udp access_tcp access_http access_ftp access_smb access_gnomevfs dvdnav dvdread dc1394 access_fake cdda
+mods = access_file pvr access_directory access_dv access_udp access_tcp access_http access_ftp access_smb access_gnomevfs dvdnav dvdread dc1394 access_fake cdda
 
 NULL = 
 libvlc_LTLIBRARIES = 
@@ -310,14 +318,15 @@ noinst_LTLIBRARIES =
 EXTRA_DIST = Modules.am
 BUILT_SOURCES = 
 clean_modules = 
-SUBDIRS = dshow dvb mms pvr v4l cdda rtsp vcd vcdx screen
+SUBDIRS = dshow dvb mms v4l cdda rtsp vcd vcdx screen
 SUFFIXES = _plugin$(LIBEXT) _plugin.a
 
 libvlcdir = $(libdir)/vlc/$(basedir)
 
-EXTRA_LIBRARIES = libaccess_file_plugin.a libaccess_file.a libaccess_directory_plugin.a libaccess_directory.a libaccess_dv_plugin.a libaccess_dv.a libaccess_udp_plugin.a libaccess_udp.a libaccess_tcp_plugin.a libaccess_tcp.a libaccess_http_plugin.a libaccess_http.a libaccess_ftp_plugin.a libaccess_ftp.a libaccess_smb_plugin.a libaccess_smb.a libaccess_gnomevfs_plugin.a libaccess_gnomevfs.a libdvdnav_plugin.a libdvdnav.a libdvdread_plugin.a libdvdread.a libdc1394_plugin.a libdc1394.a libaccess_fake_plugin.a libaccess_fake.a libcdda_plugin.a libcdda.a
-EXTRA_LTLIBRARIES = libaccess_file_plugin.la libaccess_file_builtin.la libaccess_directory_plugin.la libaccess_directory_builtin.la libaccess_dv_plugin.la libaccess_dv_builtin.la libaccess_udp_plugin.la libaccess_udp_builtin.la libaccess_tcp_plugin.la libaccess_tcp_builtin.la libaccess_http_plugin.la libaccess_http_builtin.la libaccess_ftp_plugin.la libaccess_ftp_builtin.la libaccess_smb_plugin.la libaccess_smb_builtin.la libaccess_gnomevfs_plugin.la libaccess_gnomevfs_builtin.la libdvdnav_plugin.la libdvdnav_builtin.la libdvdread_plugin.la libdvdread_builtin.la libdc1394_plugin.la libdc1394_builtin.la libaccess_fake_plugin.la libaccess_fake_builtin.la libcdda_plugin.la libcdda_builtin.la
+EXTRA_LIBRARIES = libaccess_file_plugin.a libaccess_file.a libpvr_plugin.a libpvr.a libaccess_directory_plugin.a libaccess_directory.a libaccess_dv_plugin.a libaccess_dv.a libaccess_udp_plugin.a libaccess_udp.a libaccess_tcp_plugin.a libaccess_tcp.a libaccess_http_plugin.a libaccess_http.a libaccess_ftp_plugin.a libaccess_ftp.a libaccess_smb_plugin.a libaccess_smb.a libaccess_gnomevfs_plugin.a libaccess_gnomevfs.a libdvdnav_plugin.a libdvdnav.a libdvdread_plugin.a libdvdread.a libdc1394_plugin.a libdc1394.a libaccess_fake_plugin.a libaccess_fake.a libcdda_plugin.a libcdda.a
+EXTRA_LTLIBRARIES = libaccess_file_plugin.la libaccess_file_builtin.la libpvr_plugin.la libpvr_builtin.la libaccess_directory_plugin.la libaccess_directory_builtin.la libaccess_dv_plugin.la libaccess_dv_builtin.la libaccess_udp_plugin.la libaccess_udp_builtin.la libaccess_tcp_plugin.la libaccess_tcp_builtin.la libaccess_http_plugin.la libaccess_http_builtin.la libaccess_ftp_plugin.la libaccess_ftp_builtin.la libaccess_smb_plugin.la libaccess_smb_builtin.la libaccess_gnomevfs_plugin.la libaccess_gnomevfs_builtin.la libdvdnav_plugin.la libdvdnav_builtin.la libdvdread_plugin.la libdvdread_builtin.la libdc1394_plugin.la libdc1394_builtin.la libaccess_fake_plugin.la libaccess_fake_builtin.la libcdda_plugin.la libcdda_builtin.la
 SOURCES_access_file = file.c
+SOURCES_pvr = pvr.c videodev2.h
 SOURCES_access_directory = directory.c
 SOURCES_access_dv = dv.c
 SOURCES_access_udp = udp.c
@@ -366,6 +375,30 @@ libaccess_file_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic access_file`
 libaccess_file_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin access_file`
 libaccess_file_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin access_file`
 libaccess_file_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin access_file`
+
+
+# The pvr plugin
+libpvr_plugin_a_SOURCES = $(SOURCES_pvr)
+libpvr_plugin_la_SOURCES = $(SOURCES_pvr)
+libpvr_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin pvr`
+libpvr_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin pvr`
+libpvr_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin pvr`
+libpvr_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin pvr`
+libpvr_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin pvr`
+libpvr_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin pvr`
+libpvr_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin pvr` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+
+libpvr_plugin_la_LIBADD = $(LTLIBVLC)
+
+libpvr_a_SOURCES = $(SOURCES_pvr)
+libpvr_builtin_la_SOURCES = $(SOURCES_pvr)
+libpvr_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic pvr`
+libpvr_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic pvr`
+libpvr_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic pvr`
+libpvr_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin pvr`
+libpvr_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pvr`
+libpvr_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pvr`
 
 
 # The access_directory plugin
@@ -828,152 +861,171 @@ libdvdread_plugin_a_LIBADD =
 am__objects_29 = libdvdread_plugin_a-dvdread.$(OBJEXT)
 am_libdvdread_plugin_a_OBJECTS = $(am__objects_29)
 libdvdread_plugin_a_OBJECTS = $(am_libdvdread_plugin_a_OBJECTS)
+libpvr_a_AR = $(AR) cru
+libpvr_a_LIBADD =
+am__objects_30 = libpvr_a-pvr.$(OBJEXT)
+am_libpvr_a_OBJECTS = $(am__objects_30)
+libpvr_a_OBJECTS = $(am_libpvr_a_OBJECTS)
+libpvr_plugin_a_AR = $(AR) cru
+libpvr_plugin_a_LIBADD =
+am__objects_31 = libpvr_plugin_a-pvr.$(OBJEXT)
+am_libpvr_plugin_a_OBJECTS = $(am__objects_31)
+libpvr_plugin_a_OBJECTS = $(am_libpvr_plugin_a_OBJECTS)
 LTLIBRARIES = $(libvlc_LTLIBRARIES) $(noinst_LTLIBRARIES)
 
 libaccess_directory_builtin_la_LDFLAGS =
 libaccess_directory_builtin_la_LIBADD =
-am__objects_30 = libaccess_directory_builtin_la-directory.lo
-am_libaccess_directory_builtin_la_OBJECTS = $(am__objects_30)
+am__objects_32 = libaccess_directory_builtin_la-directory.lo
+am_libaccess_directory_builtin_la_OBJECTS = $(am__objects_32)
 libaccess_directory_builtin_la_OBJECTS = \
 	$(am_libaccess_directory_builtin_la_OBJECTS)
 libaccess_directory_plugin_la_DEPENDENCIES = \
 	$(top_builddir)/src/libvlc.la
-am__objects_31 = libaccess_directory_plugin_la-directory.lo
-am_libaccess_directory_plugin_la_OBJECTS = $(am__objects_31)
+am__objects_33 = libaccess_directory_plugin_la-directory.lo
+am_libaccess_directory_plugin_la_OBJECTS = $(am__objects_33)
 libaccess_directory_plugin_la_OBJECTS = \
 	$(am_libaccess_directory_plugin_la_OBJECTS)
 libaccess_dv_builtin_la_LDFLAGS =
 libaccess_dv_builtin_la_LIBADD =
-am__objects_32 = libaccess_dv_builtin_la-dv.lo
-am_libaccess_dv_builtin_la_OBJECTS = $(am__objects_32)
+am__objects_34 = libaccess_dv_builtin_la-dv.lo
+am_libaccess_dv_builtin_la_OBJECTS = $(am__objects_34)
 libaccess_dv_builtin_la_OBJECTS = $(am_libaccess_dv_builtin_la_OBJECTS)
 libaccess_dv_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_33 = libaccess_dv_plugin_la-dv.lo
-am_libaccess_dv_plugin_la_OBJECTS = $(am__objects_33)
+am__objects_35 = libaccess_dv_plugin_la-dv.lo
+am_libaccess_dv_plugin_la_OBJECTS = $(am__objects_35)
 libaccess_dv_plugin_la_OBJECTS = $(am_libaccess_dv_plugin_la_OBJECTS)
 libaccess_fake_builtin_la_LDFLAGS =
 libaccess_fake_builtin_la_LIBADD =
-am__objects_34 = libaccess_fake_builtin_la-fake.lo
-am_libaccess_fake_builtin_la_OBJECTS = $(am__objects_34)
+am__objects_36 = libaccess_fake_builtin_la-fake.lo
+am_libaccess_fake_builtin_la_OBJECTS = $(am__objects_36)
 libaccess_fake_builtin_la_OBJECTS = \
 	$(am_libaccess_fake_builtin_la_OBJECTS)
 libaccess_fake_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_35 = libaccess_fake_plugin_la-fake.lo
-am_libaccess_fake_plugin_la_OBJECTS = $(am__objects_35)
+am__objects_37 = libaccess_fake_plugin_la-fake.lo
+am_libaccess_fake_plugin_la_OBJECTS = $(am__objects_37)
 libaccess_fake_plugin_la_OBJECTS = \
 	$(am_libaccess_fake_plugin_la_OBJECTS)
 libaccess_file_builtin_la_LDFLAGS =
 libaccess_file_builtin_la_LIBADD =
-am__objects_36 = libaccess_file_builtin_la-file.lo
-am_libaccess_file_builtin_la_OBJECTS = $(am__objects_36)
+am__objects_38 = libaccess_file_builtin_la-file.lo
+am_libaccess_file_builtin_la_OBJECTS = $(am__objects_38)
 libaccess_file_builtin_la_OBJECTS = \
 	$(am_libaccess_file_builtin_la_OBJECTS)
 libaccess_file_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_37 = libaccess_file_plugin_la-file.lo
-am_libaccess_file_plugin_la_OBJECTS = $(am__objects_37)
+am__objects_39 = libaccess_file_plugin_la-file.lo
+am_libaccess_file_plugin_la_OBJECTS = $(am__objects_39)
 libaccess_file_plugin_la_OBJECTS = \
 	$(am_libaccess_file_plugin_la_OBJECTS)
 libaccess_ftp_builtin_la_LDFLAGS =
 libaccess_ftp_builtin_la_LIBADD =
-am__objects_38 = libaccess_ftp_builtin_la-ftp.lo
-am_libaccess_ftp_builtin_la_OBJECTS = $(am__objects_38)
+am__objects_40 = libaccess_ftp_builtin_la-ftp.lo
+am_libaccess_ftp_builtin_la_OBJECTS = $(am__objects_40)
 libaccess_ftp_builtin_la_OBJECTS = \
 	$(am_libaccess_ftp_builtin_la_OBJECTS)
 libaccess_ftp_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_39 = libaccess_ftp_plugin_la-ftp.lo
-am_libaccess_ftp_plugin_la_OBJECTS = $(am__objects_39)
+am__objects_41 = libaccess_ftp_plugin_la-ftp.lo
+am_libaccess_ftp_plugin_la_OBJECTS = $(am__objects_41)
 libaccess_ftp_plugin_la_OBJECTS = $(am_libaccess_ftp_plugin_la_OBJECTS)
 libaccess_gnomevfs_builtin_la_LDFLAGS =
 libaccess_gnomevfs_builtin_la_LIBADD =
-am__objects_40 = libaccess_gnomevfs_builtin_la-gnomevfs.lo
-am_libaccess_gnomevfs_builtin_la_OBJECTS = $(am__objects_40)
+am__objects_42 = libaccess_gnomevfs_builtin_la-gnomevfs.lo
+am_libaccess_gnomevfs_builtin_la_OBJECTS = $(am__objects_42)
 libaccess_gnomevfs_builtin_la_OBJECTS = \
 	$(am_libaccess_gnomevfs_builtin_la_OBJECTS)
 libaccess_gnomevfs_plugin_la_DEPENDENCIES = \
 	$(top_builddir)/src/libvlc.la
-am__objects_41 = libaccess_gnomevfs_plugin_la-gnomevfs.lo
-am_libaccess_gnomevfs_plugin_la_OBJECTS = $(am__objects_41)
+am__objects_43 = libaccess_gnomevfs_plugin_la-gnomevfs.lo
+am_libaccess_gnomevfs_plugin_la_OBJECTS = $(am__objects_43)
 libaccess_gnomevfs_plugin_la_OBJECTS = \
 	$(am_libaccess_gnomevfs_plugin_la_OBJECTS)
 libaccess_http_builtin_la_LDFLAGS =
 libaccess_http_builtin_la_LIBADD =
-am__objects_42 = libaccess_http_builtin_la-http.lo
-am_libaccess_http_builtin_la_OBJECTS = $(am__objects_42)
+am__objects_44 = libaccess_http_builtin_la-http.lo
+am_libaccess_http_builtin_la_OBJECTS = $(am__objects_44)
 libaccess_http_builtin_la_OBJECTS = \
 	$(am_libaccess_http_builtin_la_OBJECTS)
 libaccess_http_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_43 = libaccess_http_plugin_la-http.lo
-am_libaccess_http_plugin_la_OBJECTS = $(am__objects_43)
+am__objects_45 = libaccess_http_plugin_la-http.lo
+am_libaccess_http_plugin_la_OBJECTS = $(am__objects_45)
 libaccess_http_plugin_la_OBJECTS = \
 	$(am_libaccess_http_plugin_la_OBJECTS)
 libaccess_smb_builtin_la_LDFLAGS =
 libaccess_smb_builtin_la_LIBADD =
-am__objects_44 = libaccess_smb_builtin_la-smb.lo
-am_libaccess_smb_builtin_la_OBJECTS = $(am__objects_44)
+am__objects_46 = libaccess_smb_builtin_la-smb.lo
+am_libaccess_smb_builtin_la_OBJECTS = $(am__objects_46)
 libaccess_smb_builtin_la_OBJECTS = \
 	$(am_libaccess_smb_builtin_la_OBJECTS)
 libaccess_smb_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_45 = libaccess_smb_plugin_la-smb.lo
-am_libaccess_smb_plugin_la_OBJECTS = $(am__objects_45)
+am__objects_47 = libaccess_smb_plugin_la-smb.lo
+am_libaccess_smb_plugin_la_OBJECTS = $(am__objects_47)
 libaccess_smb_plugin_la_OBJECTS = $(am_libaccess_smb_plugin_la_OBJECTS)
 libaccess_tcp_builtin_la_LDFLAGS =
 libaccess_tcp_builtin_la_LIBADD =
-am__objects_46 = libaccess_tcp_builtin_la-tcp.lo
-am_libaccess_tcp_builtin_la_OBJECTS = $(am__objects_46)
+am__objects_48 = libaccess_tcp_builtin_la-tcp.lo
+am_libaccess_tcp_builtin_la_OBJECTS = $(am__objects_48)
 libaccess_tcp_builtin_la_OBJECTS = \
 	$(am_libaccess_tcp_builtin_la_OBJECTS)
 libaccess_tcp_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_47 = libaccess_tcp_plugin_la-tcp.lo
-am_libaccess_tcp_plugin_la_OBJECTS = $(am__objects_47)
+am__objects_49 = libaccess_tcp_plugin_la-tcp.lo
+am_libaccess_tcp_plugin_la_OBJECTS = $(am__objects_49)
 libaccess_tcp_plugin_la_OBJECTS = $(am_libaccess_tcp_plugin_la_OBJECTS)
 libaccess_udp_builtin_la_LDFLAGS =
 libaccess_udp_builtin_la_LIBADD =
-am__objects_48 = libaccess_udp_builtin_la-udp.lo
-am_libaccess_udp_builtin_la_OBJECTS = $(am__objects_48)
+am__objects_50 = libaccess_udp_builtin_la-udp.lo
+am_libaccess_udp_builtin_la_OBJECTS = $(am__objects_50)
 libaccess_udp_builtin_la_OBJECTS = \
 	$(am_libaccess_udp_builtin_la_OBJECTS)
 libaccess_udp_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_49 = libaccess_udp_plugin_la-udp.lo
-am_libaccess_udp_plugin_la_OBJECTS = $(am__objects_49)
+am__objects_51 = libaccess_udp_plugin_la-udp.lo
+am_libaccess_udp_plugin_la_OBJECTS = $(am__objects_51)
 libaccess_udp_plugin_la_OBJECTS = $(am_libaccess_udp_plugin_la_OBJECTS)
 libcdda_builtin_la_LDFLAGS =
 libcdda_builtin_la_LIBADD =
-am__objects_50 = libcdda_builtin_la-cdda.lo libcdda_builtin_la-cdrom.lo \
+am__objects_52 = libcdda_builtin_la-cdda.lo libcdda_builtin_la-cdrom.lo \
 	$(am__objects_21)
-am_libcdda_builtin_la_OBJECTS = $(am__objects_50)
+am_libcdda_builtin_la_OBJECTS = $(am__objects_52)
 libcdda_builtin_la_OBJECTS = $(am_libcdda_builtin_la_OBJECTS)
 libcdda_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_51 = libcdda_plugin_la-cdda.lo libcdda_plugin_la-cdrom.lo \
+am__objects_53 = libcdda_plugin_la-cdda.lo libcdda_plugin_la-cdrom.lo \
 	$(am__objects_21)
-am_libcdda_plugin_la_OBJECTS = $(am__objects_51)
+am_libcdda_plugin_la_OBJECTS = $(am__objects_53)
 libcdda_plugin_la_OBJECTS = $(am_libcdda_plugin_la_OBJECTS)
 libdc1394_builtin_la_LDFLAGS =
 libdc1394_builtin_la_LIBADD =
-am__objects_52 = libdc1394_builtin_la-dc1394.lo
-am_libdc1394_builtin_la_OBJECTS = $(am__objects_52)
+am__objects_54 = libdc1394_builtin_la-dc1394.lo
+am_libdc1394_builtin_la_OBJECTS = $(am__objects_54)
 libdc1394_builtin_la_OBJECTS = $(am_libdc1394_builtin_la_OBJECTS)
 libdc1394_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_53 = libdc1394_plugin_la-dc1394.lo
-am_libdc1394_plugin_la_OBJECTS = $(am__objects_53)
+am__objects_55 = libdc1394_plugin_la-dc1394.lo
+am_libdc1394_plugin_la_OBJECTS = $(am__objects_55)
 libdc1394_plugin_la_OBJECTS = $(am_libdc1394_plugin_la_OBJECTS)
 libdvdnav_builtin_la_LDFLAGS =
 libdvdnav_builtin_la_LIBADD =
-am__objects_54 = libdvdnav_builtin_la-dvdnav.lo
-am_libdvdnav_builtin_la_OBJECTS = $(am__objects_54)
+am__objects_56 = libdvdnav_builtin_la-dvdnav.lo
+am_libdvdnav_builtin_la_OBJECTS = $(am__objects_56)
 libdvdnav_builtin_la_OBJECTS = $(am_libdvdnav_builtin_la_OBJECTS)
 libdvdnav_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_55 = libdvdnav_plugin_la-dvdnav.lo
-am_libdvdnav_plugin_la_OBJECTS = $(am__objects_55)
+am__objects_57 = libdvdnav_plugin_la-dvdnav.lo
+am_libdvdnav_plugin_la_OBJECTS = $(am__objects_57)
 libdvdnav_plugin_la_OBJECTS = $(am_libdvdnav_plugin_la_OBJECTS)
 libdvdread_builtin_la_LDFLAGS =
 libdvdread_builtin_la_LIBADD =
-am__objects_56 = libdvdread_builtin_la-dvdread.lo
-am_libdvdread_builtin_la_OBJECTS = $(am__objects_56)
+am__objects_58 = libdvdread_builtin_la-dvdread.lo
+am_libdvdread_builtin_la_OBJECTS = $(am__objects_58)
 libdvdread_builtin_la_OBJECTS = $(am_libdvdread_builtin_la_OBJECTS)
 libdvdread_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_57 = libdvdread_plugin_la-dvdread.lo
-am_libdvdread_plugin_la_OBJECTS = $(am__objects_57)
+am__objects_59 = libdvdread_plugin_la-dvdread.lo
+am_libdvdread_plugin_la_OBJECTS = $(am__objects_59)
 libdvdread_plugin_la_OBJECTS = $(am_libdvdread_plugin_la_OBJECTS)
+libpvr_builtin_la_LDFLAGS =
+libpvr_builtin_la_LIBADD =
+am__objects_60 = libpvr_builtin_la-pvr.lo
+am_libpvr_builtin_la_OBJECTS = $(am__objects_60)
+libpvr_builtin_la_OBJECTS = $(am_libpvr_builtin_la_OBJECTS)
+libpvr_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
+am__objects_61 = libpvr_plugin_la-pvr.lo
+am_libpvr_plugin_la_OBJECTS = $(am__objects_61)
+libpvr_plugin_la_OBJECTS = $(am_libpvr_plugin_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
@@ -1037,7 +1089,11 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libdvdread_a-dvdread.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libdvdread_builtin_la-dvdread.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libdvdread_plugin_a-dvdread.Po \
-@AMDEP_TRUE@	./$(DEPDIR)/libdvdread_plugin_la-dvdread.Plo
+@AMDEP_TRUE@	./$(DEPDIR)/libdvdread_plugin_la-dvdread.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libpvr_a-pvr.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libpvr_builtin_la-pvr.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libpvr_plugin_a-pvr.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libpvr_plugin_la-pvr.Plo
 COMPILE = $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) \
 	$(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS)
 LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
@@ -1061,6 +1117,7 @@ DIST_SOURCES = $(libaccess_directory_a_SOURCES) \
 	$(libdc1394_a_SOURCES) $(libdc1394_plugin_a_SOURCES) \
 	$(libdvdnav_a_SOURCES) $(libdvdnav_plugin_a_SOURCES) \
 	$(libdvdread_a_SOURCES) $(libdvdread_plugin_a_SOURCES) \
+	$(libpvr_a_SOURCES) $(libpvr_plugin_a_SOURCES) \
 	$(libaccess_directory_builtin_la_SOURCES) \
 	$(libaccess_directory_plugin_la_SOURCES) \
 	$(libaccess_dv_builtin_la_SOURCES) \
@@ -1085,7 +1142,8 @@ DIST_SOURCES = $(libaccess_directory_a_SOURCES) \
 	$(libdc1394_builtin_la_SOURCES) $(libdc1394_plugin_la_SOURCES) \
 	$(libdvdnav_builtin_la_SOURCES) $(libdvdnav_plugin_la_SOURCES) \
 	$(libdvdread_builtin_la_SOURCES) \
-	$(libdvdread_plugin_la_SOURCES)
+	$(libdvdread_plugin_la_SOURCES) $(libpvr_builtin_la_SOURCES) \
+	$(libpvr_plugin_la_SOURCES)
 
 RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	ps-recursive install-info-recursive uninstall-info-recursive \
@@ -1094,7 +1152,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Modules.am Makefile.am
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(libaccess_directory_a_SOURCES) $(libaccess_directory_plugin_a_SOURCES) $(libaccess_dv_a_SOURCES) $(libaccess_dv_plugin_a_SOURCES) $(libaccess_fake_a_SOURCES) $(libaccess_fake_plugin_a_SOURCES) $(libaccess_file_a_SOURCES) $(libaccess_file_plugin_a_SOURCES) $(libaccess_ftp_a_SOURCES) $(libaccess_ftp_plugin_a_SOURCES) $(libaccess_gnomevfs_a_SOURCES) $(libaccess_gnomevfs_plugin_a_SOURCES) $(libaccess_http_a_SOURCES) $(libaccess_http_plugin_a_SOURCES) $(libaccess_smb_a_SOURCES) $(libaccess_smb_plugin_a_SOURCES) $(libaccess_tcp_a_SOURCES) $(libaccess_tcp_plugin_a_SOURCES) $(libaccess_udp_a_SOURCES) $(libaccess_udp_plugin_a_SOURCES) $(libcdda_a_SOURCES) $(libcdda_plugin_a_SOURCES) $(libdc1394_a_SOURCES) $(libdc1394_plugin_a_SOURCES) $(libdvdnav_a_SOURCES) $(libdvdnav_plugin_a_SOURCES) $(libdvdread_a_SOURCES) $(libdvdread_plugin_a_SOURCES) $(libaccess_directory_builtin_la_SOURCES) $(libaccess_directory_plugin_la_SOURCES) $(libaccess_dv_builtin_la_SOURCES) $(libaccess_dv_plugin_la_SOURCES) $(libaccess_fake_builtin_la_SOURCES) $(libaccess_fake_plugin_la_SOURCES) $(libaccess_file_builtin_la_SOURCES) $(libaccess_file_plugin_la_SOURCES) $(libaccess_ftp_builtin_la_SOURCES) $(libaccess_ftp_plugin_la_SOURCES) $(libaccess_gnomevfs_builtin_la_SOURCES) $(libaccess_gnomevfs_plugin_la_SOURCES) $(libaccess_http_builtin_la_SOURCES) $(libaccess_http_plugin_la_SOURCES) $(libaccess_smb_builtin_la_SOURCES) $(libaccess_smb_plugin_la_SOURCES) $(libaccess_tcp_builtin_la_SOURCES) $(libaccess_tcp_plugin_la_SOURCES) $(libaccess_udp_builtin_la_SOURCES) $(libaccess_udp_plugin_la_SOURCES) $(libcdda_builtin_la_SOURCES) $(libcdda_plugin_la_SOURCES) $(libdc1394_builtin_la_SOURCES) $(libdc1394_plugin_la_SOURCES) $(libdvdnav_builtin_la_SOURCES) $(libdvdnav_plugin_la_SOURCES) $(libdvdread_builtin_la_SOURCES) $(libdvdread_plugin_la_SOURCES)
+SOURCES = $(libaccess_directory_a_SOURCES) $(libaccess_directory_plugin_a_SOURCES) $(libaccess_dv_a_SOURCES) $(libaccess_dv_plugin_a_SOURCES) $(libaccess_fake_a_SOURCES) $(libaccess_fake_plugin_a_SOURCES) $(libaccess_file_a_SOURCES) $(libaccess_file_plugin_a_SOURCES) $(libaccess_ftp_a_SOURCES) $(libaccess_ftp_plugin_a_SOURCES) $(libaccess_gnomevfs_a_SOURCES) $(libaccess_gnomevfs_plugin_a_SOURCES) $(libaccess_http_a_SOURCES) $(libaccess_http_plugin_a_SOURCES) $(libaccess_smb_a_SOURCES) $(libaccess_smb_plugin_a_SOURCES) $(libaccess_tcp_a_SOURCES) $(libaccess_tcp_plugin_a_SOURCES) $(libaccess_udp_a_SOURCES) $(libaccess_udp_plugin_a_SOURCES) $(libcdda_a_SOURCES) $(libcdda_plugin_a_SOURCES) $(libdc1394_a_SOURCES) $(libdc1394_plugin_a_SOURCES) $(libdvdnav_a_SOURCES) $(libdvdnav_plugin_a_SOURCES) $(libdvdread_a_SOURCES) $(libdvdread_plugin_a_SOURCES) $(libpvr_a_SOURCES) $(libpvr_plugin_a_SOURCES) $(libaccess_directory_builtin_la_SOURCES) $(libaccess_directory_plugin_la_SOURCES) $(libaccess_dv_builtin_la_SOURCES) $(libaccess_dv_plugin_la_SOURCES) $(libaccess_fake_builtin_la_SOURCES) $(libaccess_fake_plugin_la_SOURCES) $(libaccess_file_builtin_la_SOURCES) $(libaccess_file_plugin_la_SOURCES) $(libaccess_ftp_builtin_la_SOURCES) $(libaccess_ftp_plugin_la_SOURCES) $(libaccess_gnomevfs_builtin_la_SOURCES) $(libaccess_gnomevfs_plugin_la_SOURCES) $(libaccess_http_builtin_la_SOURCES) $(libaccess_http_plugin_la_SOURCES) $(libaccess_smb_builtin_la_SOURCES) $(libaccess_smb_plugin_la_SOURCES) $(libaccess_tcp_builtin_la_SOURCES) $(libaccess_tcp_plugin_la_SOURCES) $(libaccess_udp_builtin_la_SOURCES) $(libaccess_udp_plugin_la_SOURCES) $(libcdda_builtin_la_SOURCES) $(libcdda_plugin_la_SOURCES) $(libdc1394_builtin_la_SOURCES) $(libdc1394_plugin_la_SOURCES) $(libdvdnav_builtin_la_SOURCES) $(libdvdnav_plugin_la_SOURCES) $(libdvdread_builtin_la_SOURCES) $(libdvdread_plugin_la_SOURCES) $(libpvr_builtin_la_SOURCES) $(libpvr_plugin_la_SOURCES)
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -1218,6 +1276,14 @@ libdvdread_plugin.a: $(libdvdread_plugin_a_OBJECTS) $(libdvdread_plugin_a_DEPEND
 	-rm -f libdvdread_plugin.a
 	$(libdvdread_plugin_a_AR) libdvdread_plugin.a $(libdvdread_plugin_a_OBJECTS) $(libdvdread_plugin_a_LIBADD)
 	$(RANLIB) libdvdread_plugin.a
+libpvr.a: $(libpvr_a_OBJECTS) $(libpvr_a_DEPENDENCIES) 
+	-rm -f libpvr.a
+	$(libpvr_a_AR) libpvr.a $(libpvr_a_OBJECTS) $(libpvr_a_LIBADD)
+	$(RANLIB) libpvr.a
+libpvr_plugin.a: $(libpvr_plugin_a_OBJECTS) $(libpvr_plugin_a_DEPENDENCIES) 
+	-rm -f libpvr_plugin.a
+	$(libpvr_plugin_a_AR) libpvr_plugin.a $(libpvr_plugin_a_OBJECTS) $(libpvr_plugin_a_LIBADD)
+	$(RANLIB) libpvr_plugin.a
 libvlcLTLIBRARIES_INSTALL = $(INSTALL)
 install-libvlcLTLIBRARIES: $(libvlc_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -1311,6 +1377,10 @@ libdvdread_builtin.la: $(libdvdread_builtin_la_OBJECTS) $(libdvdread_builtin_la_
 	$(LINK)  $(libdvdread_builtin_la_LDFLAGS) $(libdvdread_builtin_la_OBJECTS) $(libdvdread_builtin_la_LIBADD) $(LIBS)
 libdvdread_plugin.la: $(libdvdread_plugin_la_OBJECTS) $(libdvdread_plugin_la_DEPENDENCIES) 
 	$(LINK)  $(libdvdread_plugin_la_LDFLAGS) $(libdvdread_plugin_la_OBJECTS) $(libdvdread_plugin_la_LIBADD) $(LIBS)
+libpvr_builtin.la: $(libpvr_builtin_la_OBJECTS) $(libpvr_builtin_la_DEPENDENCIES) 
+	$(LINK)  $(libpvr_builtin_la_LDFLAGS) $(libpvr_builtin_la_OBJECTS) $(libpvr_builtin_la_LIBADD) $(LIBS)
+libpvr_plugin.la: $(libpvr_plugin_la_OBJECTS) $(libpvr_plugin_la_DEPENDENCIES) 
+	$(LINK)  $(libpvr_plugin_la_LDFLAGS) $(libpvr_plugin_la_OBJECTS) $(libpvr_plugin_la_LIBADD) $(LIBS)
 
 mostlyclean-compile:
 	-rm -f *.$(OBJEXT) core *.core
@@ -1378,6 +1448,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdvdread_builtin_la-dvdread.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdvdread_plugin_a-dvdread.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdvdread_plugin_la-dvdread.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpvr_a-pvr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpvr_builtin_la-pvr.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpvr_plugin_a-pvr.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpvr_plugin_la-pvr.Plo@am__quote@
 
 .c.o:
 @am__fastdepCC_TRUE@	if $(COMPILE) -MT $@ -MD -MP -MF "$(DEPDIR)/$*.Tpo" \
@@ -2402,6 +2476,72 @@ libdvdread_plugin_a-dvdread.lo: dvdread.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdvdread_plugin_a_CFLAGS) $(CFLAGS) -c -o libdvdread_plugin_a-dvdread.lo `test -f 'dvdread.c' || echo '$(srcdir)/'`dvdread.c
 
+libpvr_a-pvr.o: pvr.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_a_CFLAGS) $(CFLAGS) -MT libpvr_a-pvr.o -MD -MP -MF "$(DEPDIR)/libpvr_a-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_a-pvr.o `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_a-pvr.Tpo" "$(DEPDIR)/libpvr_a-pvr.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_a-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_a-pvr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_a-pvr.Po' tmpdepfile='$(DEPDIR)/libpvr_a-pvr.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_a_CFLAGS) $(CFLAGS) -c -o libpvr_a-pvr.o `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c
+
+libpvr_a-pvr.obj: pvr.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_a_CFLAGS) $(CFLAGS) -MT libpvr_a-pvr.obj -MD -MP -MF "$(DEPDIR)/libpvr_a-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_a-pvr.obj `if test -f 'pvr.c'; then $(CYGPATH_W) 'pvr.c'; else $(CYGPATH_W) '$(srcdir)/pvr.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_a-pvr.Tpo" "$(DEPDIR)/libpvr_a-pvr.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_a-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_a-pvr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_a-pvr.Po' tmpdepfile='$(DEPDIR)/libpvr_a-pvr.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_a_CFLAGS) $(CFLAGS) -c -o libpvr_a-pvr.obj `if test -f 'pvr.c'; then $(CYGPATH_W) 'pvr.c'; else $(CYGPATH_W) '$(srcdir)/pvr.c'; fi`
+
+libpvr_a-pvr.lo: pvr.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_a_CFLAGS) $(CFLAGS) -MT libpvr_a-pvr.lo -MD -MP -MF "$(DEPDIR)/libpvr_a-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_a-pvr.lo `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_a-pvr.Tpo" "$(DEPDIR)/libpvr_a-pvr.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_a-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_a-pvr.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_a-pvr.Plo' tmpdepfile='$(DEPDIR)/libpvr_a-pvr.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_a_CFLAGS) $(CFLAGS) -c -o libpvr_a-pvr.lo `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c
+
+libpvr_plugin_a-pvr.o: pvr.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_a_CFLAGS) $(CFLAGS) -MT libpvr_plugin_a-pvr.o -MD -MP -MF "$(DEPDIR)/libpvr_plugin_a-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_plugin_a-pvr.o `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_plugin_a-pvr.Tpo" "$(DEPDIR)/libpvr_plugin_a-pvr.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_plugin_a-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_plugin_a-pvr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_plugin_a-pvr.Po' tmpdepfile='$(DEPDIR)/libpvr_plugin_a-pvr.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_a_CFLAGS) $(CFLAGS) -c -o libpvr_plugin_a-pvr.o `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c
+
+libpvr_plugin_a-pvr.obj: pvr.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_a_CFLAGS) $(CFLAGS) -MT libpvr_plugin_a-pvr.obj -MD -MP -MF "$(DEPDIR)/libpvr_plugin_a-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_plugin_a-pvr.obj `if test -f 'pvr.c'; then $(CYGPATH_W) 'pvr.c'; else $(CYGPATH_W) '$(srcdir)/pvr.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_plugin_a-pvr.Tpo" "$(DEPDIR)/libpvr_plugin_a-pvr.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_plugin_a-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_plugin_a-pvr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_plugin_a-pvr.Po' tmpdepfile='$(DEPDIR)/libpvr_plugin_a-pvr.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_a_CFLAGS) $(CFLAGS) -c -o libpvr_plugin_a-pvr.obj `if test -f 'pvr.c'; then $(CYGPATH_W) 'pvr.c'; else $(CYGPATH_W) '$(srcdir)/pvr.c'; fi`
+
+libpvr_plugin_a-pvr.lo: pvr.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_a_CFLAGS) $(CFLAGS) -MT libpvr_plugin_a-pvr.lo -MD -MP -MF "$(DEPDIR)/libpvr_plugin_a-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_plugin_a-pvr.lo `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_plugin_a-pvr.Tpo" "$(DEPDIR)/libpvr_plugin_a-pvr.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_plugin_a-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_plugin_a-pvr.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_plugin_a-pvr.Plo' tmpdepfile='$(DEPDIR)/libpvr_plugin_a-pvr.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_a_CFLAGS) $(CFLAGS) -c -o libpvr_plugin_a-pvr.lo `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c
+
 libaccess_directory_builtin_la-directory.o: directory.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libaccess_directory_builtin_la_CFLAGS) $(CFLAGS) -MT libaccess_directory_builtin_la-directory.o -MD -MP -MF "$(DEPDIR)/libaccess_directory_builtin_la-directory.Tpo" \
 @am__fastdepCC_TRUE@	  -c -o libaccess_directory_builtin_la-directory.o `test -f 'directory.c' || echo '$(srcdir)/'`directory.c; \
@@ -3391,6 +3531,72 @@ libdvdread_plugin_la-dvdread.lo: dvdread.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdvdread_plugin_la-dvdread.Plo' tmpdepfile='$(DEPDIR)/libdvdread_plugin_la-dvdread.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdvdread_plugin_la_CFLAGS) $(CFLAGS) -c -o libdvdread_plugin_la-dvdread.lo `test -f 'dvdread.c' || echo '$(srcdir)/'`dvdread.c
+
+libpvr_builtin_la-pvr.o: pvr.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_builtin_la_CFLAGS) $(CFLAGS) -MT libpvr_builtin_la-pvr.o -MD -MP -MF "$(DEPDIR)/libpvr_builtin_la-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_builtin_la-pvr.o `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_builtin_la-pvr.Tpo" "$(DEPDIR)/libpvr_builtin_la-pvr.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_builtin_la-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_builtin_la-pvr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_builtin_la-pvr.Po' tmpdepfile='$(DEPDIR)/libpvr_builtin_la-pvr.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_builtin_la_CFLAGS) $(CFLAGS) -c -o libpvr_builtin_la-pvr.o `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c
+
+libpvr_builtin_la-pvr.obj: pvr.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_builtin_la_CFLAGS) $(CFLAGS) -MT libpvr_builtin_la-pvr.obj -MD -MP -MF "$(DEPDIR)/libpvr_builtin_la-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_builtin_la-pvr.obj `if test -f 'pvr.c'; then $(CYGPATH_W) 'pvr.c'; else $(CYGPATH_W) '$(srcdir)/pvr.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_builtin_la-pvr.Tpo" "$(DEPDIR)/libpvr_builtin_la-pvr.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_builtin_la-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_builtin_la-pvr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_builtin_la-pvr.Po' tmpdepfile='$(DEPDIR)/libpvr_builtin_la-pvr.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_builtin_la_CFLAGS) $(CFLAGS) -c -o libpvr_builtin_la-pvr.obj `if test -f 'pvr.c'; then $(CYGPATH_W) 'pvr.c'; else $(CYGPATH_W) '$(srcdir)/pvr.c'; fi`
+
+libpvr_builtin_la-pvr.lo: pvr.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_builtin_la_CFLAGS) $(CFLAGS) -MT libpvr_builtin_la-pvr.lo -MD -MP -MF "$(DEPDIR)/libpvr_builtin_la-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_builtin_la-pvr.lo `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_builtin_la-pvr.Tpo" "$(DEPDIR)/libpvr_builtin_la-pvr.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_builtin_la-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_builtin_la-pvr.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_builtin_la-pvr.Plo' tmpdepfile='$(DEPDIR)/libpvr_builtin_la-pvr.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_builtin_la_CFLAGS) $(CFLAGS) -c -o libpvr_builtin_la-pvr.lo `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c
+
+libpvr_plugin_la-pvr.o: pvr.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_la_CFLAGS) $(CFLAGS) -MT libpvr_plugin_la-pvr.o -MD -MP -MF "$(DEPDIR)/libpvr_plugin_la-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_plugin_la-pvr.o `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_plugin_la-pvr.Tpo" "$(DEPDIR)/libpvr_plugin_la-pvr.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_plugin_la-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_plugin_la-pvr.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_plugin_la-pvr.Po' tmpdepfile='$(DEPDIR)/libpvr_plugin_la-pvr.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_la_CFLAGS) $(CFLAGS) -c -o libpvr_plugin_la-pvr.o `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c
+
+libpvr_plugin_la-pvr.obj: pvr.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_la_CFLAGS) $(CFLAGS) -MT libpvr_plugin_la-pvr.obj -MD -MP -MF "$(DEPDIR)/libpvr_plugin_la-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_plugin_la-pvr.obj `if test -f 'pvr.c'; then $(CYGPATH_W) 'pvr.c'; else $(CYGPATH_W) '$(srcdir)/pvr.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_plugin_la-pvr.Tpo" "$(DEPDIR)/libpvr_plugin_la-pvr.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_plugin_la-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_plugin_la-pvr.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_plugin_la-pvr.Po' tmpdepfile='$(DEPDIR)/libpvr_plugin_la-pvr.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_la_CFLAGS) $(CFLAGS) -c -o libpvr_plugin_la-pvr.obj `if test -f 'pvr.c'; then $(CYGPATH_W) 'pvr.c'; else $(CYGPATH_W) '$(srcdir)/pvr.c'; fi`
+
+libpvr_plugin_la-pvr.lo: pvr.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_la_CFLAGS) $(CFLAGS) -MT libpvr_plugin_la-pvr.lo -MD -MP -MF "$(DEPDIR)/libpvr_plugin_la-pvr.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libpvr_plugin_la-pvr.lo `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libpvr_plugin_la-pvr.Tpo" "$(DEPDIR)/libpvr_plugin_la-pvr.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libpvr_plugin_la-pvr.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='pvr.c' object='libpvr_plugin_la-pvr.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libpvr_plugin_la-pvr.Plo' tmpdepfile='$(DEPDIR)/libpvr_plugin_la-pvr.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libpvr_plugin_la_CFLAGS) $(CFLAGS) -c -o libpvr_plugin_la-pvr.lo `test -f 'pvr.c' || echo '$(srcdir)/'`pvr.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

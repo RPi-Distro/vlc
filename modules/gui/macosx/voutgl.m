@@ -166,18 +166,18 @@ int E_(OpenVideoGL)  ( vlc_object_t * p_this )
     }
     else
     {
+        NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
+
         p_vout->p_sys->b_embedded = VLC_FALSE;
+        p_vout->p_sys->b_saved_frame = NO;
 
-        p_vout->p_sys->o_pool = [[NSAutoreleasePool alloc] init];
+        [VLCGLView performSelectorOnMainThread:@selector(initVout:) withObject:[NSValue valueWithPointer:p_vout] waitUntilDone:YES];
 
-        /* Create the GL view */
-        p_vout->p_sys->o_glview = [[VLCGLView alloc] initWithVout: p_vout];
-        [p_vout->p_sys->o_glview autorelease];
+        [o_pool release];
 
-        /* Spawn the window */
+        /* Check to see if initVout: was successfull */
 
-        if( !(p_vout->p_sys->o_vout_view = [VLCVoutView getVoutView: p_vout
-                        subView: p_vout->p_sys->o_glview frame: nil]) )
+        if( !p_vout->p_sys->o_vout_view )
         {
             return VLC_EGENERIC;
         }
@@ -201,12 +201,12 @@ void E_(CloseVideoGL) ( vlc_object_t * p_this )
     {
         aglDestroyContext(p_vout->p_sys->agl_ctx);
     }
-    else
+    else if(!VLCIntf->b_die) 
     {
         NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
 
         /* Close the window */
-        [p_vout->p_sys->o_vout_view closeVout];
+        [p_vout->p_sys->o_vout_view performSelectorOnMainThread:@selector(closeVout) withObject:NULL waitUntilDone:YES];
 
         [o_pool release];
     }
@@ -252,29 +252,13 @@ static int Manage( vout_thread_t * p_vout )
                 [[p_vout->p_sys->o_vout_view getWindow ]frame].origin;
             p_vout->p_sys->b_saved_frame = VLC_TRUE;
         }
-        [p_vout->p_sys->o_vout_view closeVout];
+        [p_vout->p_sys->o_vout_view performSelectorOnMainThread:@selector(closeVout) withObject:NULL waitUntilDone:YES];
 
         p_vout->b_fullscreen = !p_vout->b_fullscreen;
 
-#define o_glview p_vout->p_sys->o_glview
-        o_glview = [[VLCGLView alloc] initWithVout: p_vout];
-        [o_glview autorelease];
+        [VLCGLView performSelectorOnMainThread:@selector(initVout:) withObject:[NSValue valueWithPointer:p_vout] waitUntilDone:YES];
 
-        if( p_vout->p_sys->b_saved_frame )
-        {
-            p_vout->p_sys->o_vout_view = [VLCVoutView getVoutView: p_vout
-                        subView: o_glview
-                        frame: &p_vout->p_sys->s_frame];
-        }
-        else
-        {
-            p_vout->p_sys->o_vout_view = [VLCVoutView getVoutView: p_vout
-                        subView: o_glview frame: nil];
-
-        }
-
-        [[o_glview openGLContext] makeCurrentContext];
-#undef o_glview
+        [[p_vout->p_sys->o_glview openGLContext] makeCurrentContext];
 
         [o_pool release];
 
@@ -316,18 +300,43 @@ static void Swap( vout_thread_t * p_vout )
 static int Lock( vout_thread_t * p_vout )
 {
     vlc_mutex_lock( &p_vout->p_sys->lock );
+
+#if __INTEL__
+    CGLLockContext( (CGLContextObj)p_vout->p_sys->agl_ctx ); 
+#endif
+
     return 0;
 }
 
 static void Unlock( vout_thread_t * p_vout )
 {
     vlc_mutex_unlock( &p_vout->p_sys->lock );
+
+#if __INTEL__
+    CGLUnlockContext( (CGLContextObj)p_vout->p_sys->agl_ctx ); 
+#endif
 }
 
 /*****************************************************************************
  * VLCGLView implementation
  *****************************************************************************/
 @implementation VLCGLView
++ (void)initVout:(NSValue *)arg
+{
+    vout_thread_t * p_vout = [arg pointerValue];
+    NSRect * frame;
+
+    /* Create the GL view */
+    p_vout->p_sys->o_glview = [[VLCGLView alloc] initWithVout: p_vout];
+    [p_vout->p_sys->o_glview autorelease];
+
+    /* Spawn the window */    
+    frame = p_vout->p_sys->b_saved_frame ? &p_vout->p_sys->s_frame : nil;
+
+    p_vout->p_sys->o_vout_view = [VLCVoutView getVoutView: p_vout
+                                  subView: p_vout->p_sys->o_glview
+                                  frame: frame];
+}
 
 - (id) initWithVout: (vout_thread_t *) vout
 {

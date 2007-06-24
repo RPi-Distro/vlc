@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: intf.h 17496 2006-11-05 21:53:18Z fkuehne $
+ * $Id: intf.h 20490 2007-06-09 15:36:51Z pdherbemont $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -305,7 +305,7 @@ struct intf_sys_t
 - (id)getEmbeddedList;
 - (id)getInteractionList;
 - (id)getVoutMenu;
-- (void)terminate;
+- (void)applicationWillTerminate:(NSNotification *)notification;
 - (NSString *)localizedString:(char *)psz;
 - (char *)delocalizeString:(NSString *)psz;
 - (NSString *)wrapString: (NSString *)o_in_string toWidth: (int)i_width;

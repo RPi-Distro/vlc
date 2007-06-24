@@ -32,7 +32,14 @@ class LibvlcRootNPObject: public RuntimeNPObject
 protected:
     friend class RuntimeNPClass<LibvlcRootNPObject>;
 
-    LibvlcRootNPObject(NPP instance, const NPClass *aClass);
+    LibvlcRootNPObject(NPP instance, const NPClass *aClass) :
+        RuntimeNPObject(instance, aClass),
+	audioObj(NULL),
+	inputObj(NULL),
+	logObj(NULL),
+	playlistObj(NULL),
+	videoObj(NULL) {};
+
     virtual ~LibvlcRootNPObject();
 
     static const int propertyCount;
@@ -45,6 +52,7 @@ protected:
 
     InvokeResult invoke(int index, const NPVariant *args, uint32_t argCount, NPVariant &result);
 
+private:
     NPObject *audioObj;
     NPObject *inputObj;
     NPObject *logObj;
@@ -80,7 +88,7 @@ protected:
 
     LibvlcInputNPObject(NPP instance, const NPClass *aClass) :
         RuntimeNPObject(instance, aClass) {};
-        
+
     virtual ~LibvlcInputNPObject() {};
 
     static const int propertyCount;
@@ -106,7 +114,7 @@ protected:
 
     LibvlcMessageNPObject(NPP instance, const NPClass *aClass) :
         RuntimeNPObject(instance, aClass) {};
-        
+
     virtual ~LibvlcMessageNPObject() {};
 
     static const int propertyCount;
@@ -152,7 +160,7 @@ protected:
 
     LibvlcMessagesNPObject(NPP instance, const NPClass *aClass) :
         RuntimeNPObject(instance, aClass) {};
-        
+
     virtual ~LibvlcMessagesNPObject() {};
 
     static const int propertyCount;
@@ -171,7 +179,10 @@ class LibvlcLogNPObject: public RuntimeNPObject
 protected:
     friend class RuntimeNPClass<LibvlcLogNPObject>;
 
-    LibvlcLogNPObject(NPP instance, const NPClass *aClass);
+    LibvlcLogNPObject(NPP instance, const NPClass *aClass) :
+	RuntimeNPObject(instance, aClass),
+	messagesObj(NULL) {};
+
     virtual ~LibvlcLogNPObject();
 
     static const int propertyCount;
@@ -184,7 +195,7 @@ protected:
     static const NPUTF8 * const methodNames[];
 
 private:
-    LibvlcMessagesNPObject* _p_vlcmessages;
+    NPObject* messagesObj;
 };
 
 class LibvlcPlaylistItemsNPObject: public RuntimeNPObject
@@ -212,7 +223,10 @@ class LibvlcPlaylistNPObject: public RuntimeNPObject
 protected:
     friend class RuntimeNPClass<LibvlcPlaylistNPObject>;
 
-    LibvlcPlaylistNPObject(NPP instance, const NPClass *aClass);
+    LibvlcPlaylistNPObject(NPP instance, const NPClass *aClass) :
+	RuntimeNPObject(instance, aClass),
+	playlistItemsObj(NULL) {};
+	
     virtual ~LibvlcPlaylistNPObject();
 
     static const int propertyCount;
@@ -229,7 +243,7 @@ protected:
     void parseOptions(NPObject *obj, int *i_options, char*** ppsz_options);
 
 private:
-    LibvlcPlaylistItemsNPObject* _p_vlcplaylistitems;
+    NPObject*  playlistItemsObj;
 };
 
 class LibvlcVideoNPObject: public RuntimeNPObject

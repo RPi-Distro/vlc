@@ -1,7 +1,59 @@
-$Id: NEWS 18491 2007-01-03 18:23:24Z fkuehne $
+$Id: NEWS 20582 2007-06-16 13:10:18Z Trax $
+
+Changes between 0.8.6b and 0.8.6c:
+----------------------------------
+
+Various bugfixes, notably:
+ * Windows Vista compatibility
+ * Cropping in Direct3D
+ * Fullscreen change crash on Mac OS X
+ * RSS filter string overflow
+ * Few memory leaks
+ * MKV demuxer crash (related to seeking)
+
+CDDA / Vorbis / Theora / SAP plugins:
+ * Security updates (VideoLAN-SA-0702)
+
+Demuxers:
+ * Fixed a problem with detecting embedded subtitles (GAB2 format) in AVI
+
+Decoders:
+ * Updated FLAC API compatibility
+
+Input:
+ * Support for new v4l2 encoder API
+
+Localisation:
+ * New localisation: Arabic, Persian
+
+
+Changes between 0.8.6a and 0.8.6b:
+----------------------------------
+
+Various bugfixes, notably:
+ * Out-of-bound read in demuxers
+ * Demuxers crashes (incl. CVE-2007-0256)
+ * Mac OS X Interface crashes
+ * VP31 decoding on Windows platforms
+ * Direct3D Video Output modifications for Vista compatibility
+ * Correct behaviour for feeding streams to Icecast or Shoutcast servers
+
+Decoders:
+ * Enhanced Flash Video support incl. VP61 and VP60
+ * Teletext subtitles (telx) support
+
+Webbrowser plugins:
+ * Rectified behaviour and improved usability
+
+Mac OS X Interface & Port:
+ * Diverse usability improvements
+ * New wizard option to embed subtitles
+ * Screensaver/automatic sleep mode is enabled when a video is paused
+ * Improved Delete-Preferences-Script
+
 
 Changes between 0.8.6 and 0.8.6a:
---------------------------------
+---------------------------------
 
 CDDA / VCDX plugins:
  * Security updates (VideoLAN-SA-0701)
@@ -79,7 +131,7 @@ Developers:
 
 
 Changes between 0.8.4a and 0.8.5:
-----------------------------------
+---------------------------------
 
 Core support:
  * Statistics collection (bitrates, packets, connections, ...)
@@ -161,6 +213,7 @@ Developers:
  * Java bindings
  * A bit more automatic testing
 
+
 Changes between 0.8.4 and 0.8.4a:
 ---------------------------------
 
@@ -184,6 +237,7 @@ Services Discovery:
 Interfaces:
  * Mac OS X
     - fixed encoding of H.264/H.263 content when using the wizard 
+
 
 Changes between 0.8.2 and 0.8.4:
 --------------------------------
@@ -266,6 +320,7 @@ Translations:
  * Simplified Chinese
  The following languages were re-added:
  * Swedish
+
 
 Changes between 0.8.1 and 0.8.2:
 --------------------------------
@@ -401,7 +456,7 @@ Translations:
 
 
 Changes between 0.8.0 and 0.8.1:
------------------------------------------------------
+--------------------------------
 
 Core support:
  * Include TLS/SSL API (on plattforms where libgnutls is available)
@@ -432,8 +487,9 @@ Stream Output:
  * Stream output:
    * Support of playlist group announcement
 
+
 Changes between 0.7.2 and 0.8.0:
------------------------------------------------------
+--------------------------------
 
 Core support:
  * Major work on libvlc. Changed/renamed/added functions
@@ -556,6 +612,7 @@ Misc:
  * Cisco IP/TV streams supported
  * VLM enhancements
 
+
 Changes between 0.7.1 and 0.7.2:
 --------------------------------
 
@@ -646,6 +703,7 @@ Misc:
  * Improvements to the Goom visualisation plugin.
  * Roku HD1000 audio output.
 
+
 Changes between 0.7.1 and 0.7.1a:
 ---------------------------------
 
@@ -655,7 +713,7 @@ Mac OS X:
 
 
 Changes between 0.7.0 and 0.7.1:
----------------------------------
+--------------------------------
 
 Core support:
  * Fixed a nasty bug that causes preferences not to be saved some times.
@@ -698,8 +756,9 @@ Win32 port:
  * A few improvements to the DirectShow input plugin.
  * Fixed ipv6 name resolution.
 
+
 Changes between 0.6.2 and 0.7.0:
----------------------------------
+--------------------------------
 
 Core support:
  * Brand new decoder/packetizer api.
@@ -810,8 +869,9 @@ Miscellaneous:
  * Spanish, Portuguese Brazilian and Hungarian translations.
  * libcaca video output (colored ascii)
 
+
 Changes between 0.6.1 and 0.6.2:
----------------------------------
+--------------------------------
 
 Core support:
  * Fixed a nasty regression in 0.6.1 which made some streams unplayable.
@@ -842,8 +902,9 @@ Miscellaneous:
  * Ffmpeg decoder now generates proper pts and can be used to play
    mpeg1/2 videos.
 
+
 Changes between 0.6.0 and 0.6.1:
----------------------------------
+--------------------------------
 
 Core support:
  * There should be less bogus resampling, particularly on DVDs.
@@ -869,8 +930,9 @@ Miscellaneous:
  * Ffmpeg decoder now generates proper pts and can be used to play
    mpeg1/2 videos.
 
+
 Changes between 0.6.0 and 0.6.1:
----------------------------------
+--------------------------------
 
 Core support:
  * There should be less bogus resampling, particularly on DVDs.
@@ -918,7 +980,7 @@ Miscellaneous:
 
 
 Changes between 0.5.3 and 0.6.0:
----------------------------------
+--------------------------------
 
 Core Support:
  * Channel Server support was removed (was deprecated)
@@ -995,8 +1057,9 @@ BeOS port:
  * A few new keyboard shortcuts
  * New full-featured Preferences window
 
+
 Changes between 0.5.2 and 0.5.3:
----------------------------------
+--------------------------------
 
 Core Support:
  * fixed DTS S/PDIF output on little-endian machines

@@ -2,7 +2,7 @@
  * ts.c: MPEG-II TS Muxer
  *****************************************************************************
  * Copyright (C) 2001-2005 VideoLAN (Centrale Réseaux) and its contributors
- * $Id: ts.c 17555 2006-11-08 20:23:52Z hartman $
+ * $Id: ts.c 19719 2007-04-06 18:03:48Z massiot $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -1481,6 +1481,12 @@ static int Mux( sout_mux_t *p_mux )
                                 i_header_size = 0x24;
                                 b_data_alignment = 1;
                             }
+                            else if( p_input->p_fmt->i_codec ==
+                                       VLC_FOURCC('d','v','b','s') )
+                            {
+                                /* EN 300 743 */
+                                b_data_alignment = 1;
+                            }
                         }
                         else if( p_data->i_length < 0 ||
                                  p_data->i_length > 2000000 )
@@ -2496,33 +2502,48 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
         }
         else if( p_stream->i_codec == VLC_FOURCC('t','e','l','x') )
         {
-            dvbpsi_PMTESAddDescriptor( p_es, 0x56,
-                                       p_stream->i_decoder_specific_info,
-                                       p_stream->p_decoder_specific_info );
+            if( p_stream->i_decoder_specific_info )
+            {
+                dvbpsi_PMTESAddDescriptor( p_es, 0x56,
+                                           p_stream->i_decoder_specific_info,
+                                           p_stream->p_decoder_specific_info );
+            }
+            continue;
         }
-#ifdef _DVBPSI_DR_59_H_
         else if( p_stream->i_codec == VLC_FOURCC('d','v','b','s') )
         {
             /* DVB subtitles */
-            dvbpsi_subtitling_dr_t descr;
-            dvbpsi_subtitle_t sub;
-            dvbpsi_descriptor_t *p_descr;
+            if( p_stream->i_decoder_specific_info )
+            {
+                /* pass-through from the TS demux */
+                dvbpsi_PMTESAddDescriptor( p_es, 0x59,
+                                           p_stream->i_decoder_specific_info,
+                                           p_stream->p_decoder_specific_info );
+            }
+#ifdef _DVBPSI_DR_59_H_
+            else
+            {
+                /* from the dvbsub transcoder */
+                dvbpsi_subtitling_dr_t descr;
+                dvbpsi_subtitle_t sub;
+                dvbpsi_descriptor_t *p_descr;
 
-            memcpy( sub.i_iso6392_language_code, p_stream->lang, 3 );
-            sub.i_subtitling_type = 0x10; /* no aspect-ratio criticality */
-            sub.i_composition_page_id = p_stream->i_es_id & 0xFF;
-            sub.i_ancillary_page_id = p_stream->i_es_id >> 16;
+                memcpy( sub.i_iso6392_language_code, p_stream->lang, 3 );
+                sub.i_subtitling_type = 0x10; /* no aspect-ratio criticality */
+                sub.i_composition_page_id = p_stream->i_es_id & 0xFF;
+                sub.i_ancillary_page_id = p_stream->i_es_id >> 16;
 
-            descr.i_subtitles_number = 1;
-            descr.p_subtitle[0] = sub;
+                descr.i_subtitles_number = 1;
+                descr.p_subtitle[0] = sub;
 
-            p_descr = dvbpsi_GenSubtitlingDr( &descr, 0 );
-            /* Work around bug in old libdvbpsi */ p_descr->i_length = 8;
-            dvbpsi_PMTESAddDescriptor( p_es, p_descr->i_tag,
-                                       p_descr->i_length, p_descr->p_data );
+                p_descr = dvbpsi_GenSubtitlingDr( &descr, 0 );
+                /* Work around bug in old libdvbpsi */ p_descr->i_length = 8;
+                dvbpsi_PMTESAddDescriptor( p_es, p_descr->i_tag,
+                                           p_descr->i_length, p_descr->p_data );
+            }
+#endif /* _DVBPSI_DR_59_H_ */
             continue;
         }
-#endif /* _DVBPSI_DR_59_H_ */
 
         if( p_stream->lang[0] != 0 )
         {

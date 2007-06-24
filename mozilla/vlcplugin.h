@@ -2,7 +2,7 @@
  * vlcplugin.h: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: vlcplugin.h 18173 2006-11-30 14:46:20Z damienf $
+ * $Id: vlcplugin.h 19481 2007-03-25 22:38:56Z damienf $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
             Damien Fouilleul <damienf@videolan.org>
@@ -71,7 +71,8 @@ public:
     void                setWindow(const NPWindow *window)
                             { npwindow = *window; };
 
-    NPObject*           getScriptObject();
+    NPClass*            getScriptClass()
+                            { return p_scriptClass; };
 
     void                setLog(libvlc_log_t *log)
                             { libvlc_log = log; };
@@ -100,7 +101,6 @@ private:
     libvlc_instance_t   *libvlc_instance;
     libvlc_log_t        *libvlc_log;
     NPClass             *p_scriptClass;
-    NPObject            *p_scriptObject;
 
     /* browser reference */
     NPP     p_browser;
@@ -121,7 +121,7 @@ private:
  ******************************************************************************/
 #define PLUGIN_NAME         "VLC Multimedia Plugin"
 #define PLUGIN_DESCRIPTION \
-    "Version %s, copyright 1996-2006 The VideoLAN Team" \
+    "Version %s, copyright 1996-2007 The VideoLAN Team" \
     "<br><a href=\"http://www.videolan.org/\">http://www.videolan.org/</a>"
 
 #define PLUGIN_MIMETYPES \

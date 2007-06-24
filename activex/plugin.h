@@ -51,8 +51,8 @@ public:
 
     REFCLSID getClassID(void) { return (REFCLSID)_classid; };
 
-    LPCSTR getInPlaceWndClassName(void) const { return TEXT("VLC Plugin In-Place"); };
-    LPCSTR getVideoWndClassName(void) const { return TEXT("VLC Plugin Video"); };
+    LPCTSTR getInPlaceWndClassName(void) const { return TEXT("VLC Plugin In-Place"); };
+    LPCTSTR getVideoWndClassName(void) const { return TEXT("VLC Plugin Video"); };
     HINSTANCE getHInstance(void) const { return _hinstance; };
     LPPICTURE getInPlacePict(void) const
         { if( NULL != _inplace_picture) _inplace_picture->AddRef(); return _inplace_picture; };
@@ -126,6 +126,9 @@ public:
         setDirty(TRUE);
     };
     inline int getStartTime(void) { return _i_time; };
+
+    void setTime(int time);
+    int  getTime(void) { return _i_time; };
 
     void setBaseURL(BSTR url)
     {

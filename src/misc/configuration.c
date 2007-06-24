@@ -2,7 +2,7 @@
  * configuration.c management of the modules configuration
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: configuration.c 18163 2006-11-29 23:27:28Z xtophe $
+ * $Id: configuration.c 19493 2007-03-27 08:41:07Z jpsaman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -1535,7 +1535,7 @@ int __config_LoadCmdLine( vlc_object_t *p_this, int *pi_argc, char *ppsz_argv[],
      * Parse the command line options
      */
     opterr = 0;
-    optind = 1;
+    optind = 0; /* set to 0 to tell GNU getopt to reinitialize */
     while( ( i_cmd = getopt_long( *pi_argc, ppsz_argv, psz_shortopts,
                                   p_longopts, &i_index ) ) != EOF )
     {

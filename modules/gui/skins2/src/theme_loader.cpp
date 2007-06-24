@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: theme_loader.cpp 16647 2006-09-14 14:58:57Z hartman $
+ * $Id: theme_loader.cpp 19663 2007-04-04 14:21:33Z lool $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,6 +29,8 @@
 #include "../src/os_factory.hpp"
 #include "../src/vlcproc.hpp"
 #include "../src/window_manager.hpp"
+
+#include <cctype>
 
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>

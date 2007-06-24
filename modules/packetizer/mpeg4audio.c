@@ -2,7 +2,7 @@
  * mpeg4audio.c: parse and packetize an MPEG 4 audio stream
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: mpeg4audio.c 15004 2006-03-31 16:24:32Z zorglub $
+ * $Id: mpeg4audio.c 19599 2007-04-01 01:03:06Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -191,6 +191,8 @@ static int OpenPacketizer( vlc_object_t *p_this )
     else
     {
         msg_Dbg( p_dec, "no decoder specific info, must be an ADTS stream" );
+
+        aout_DateInit( &p_sys->end_date, p_dec->fmt_in.audio.i_rate );
 
         /* We will try to create a AAC Config from adts */
         p_dec->fmt_out.i_extra = 0;

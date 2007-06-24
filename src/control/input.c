@@ -2,7 +2,7 @@
  * input.c: Libvlc new API input management functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: input.c 17351 2006-10-29 12:09:12Z jpsaman $
+ * $Id: input.c 19384 2007-03-22 13:50:34Z jpsaman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -129,23 +129,23 @@ float libvlc_input_get_position( libvlc_input_t *p_input,
 float libvlc_input_get_fps( libvlc_input_t *p_input,
                             libvlc_exception_t *p_e) 
 {
-    double f_fps;
+    double f_fps = 0.0;
     input_thread_t *p_input_thread;
 
     p_input_thread = libvlc_get_input_thread ( p_input, p_e );
     if ( libvlc_exception_raised( p_e ) )  return 0.0;
 
-    if( demux2_Control( p_input_thread->input.p_demux, DEMUX_GET_FPS, &f_fps )
-        || f_fps < 0.1 ) 
+    if( p_input_thread->input.p_demux )
     {
-        vlc_object_release( p_input_thread );
-        return 0.0;
+        if( demux2_Control( p_input_thread->input.p_demux, DEMUX_GET_FPS, &f_fps )
+            || (f_fps < 0.1) ) 
+        {
+            vlc_object_release( p_input_thread );
+            return 0.0;
+        }
     }
-    else
-    {
-        vlc_object_release( p_input_thread );
-        return( f_fps );
-    }
+    vlc_object_release( p_input_thread );
+    return( f_fps );
 }
 
 vlc_bool_t libvlc_input_will_play( libvlc_input_t *p_input,
@@ -205,7 +205,7 @@ int libvlc_input_get_state( libvlc_input_t *p_input,
 
     p_input_thread = libvlc_get_input_thread ( p_input, p_e);
     if ( libvlc_exception_raised( p_e ) )
-        return 6; /* on error return ERROR_S state (see include/vlc_input.h) */
+        return 0;
 
     var_Get( p_input_thread, "state", &val );
     vlc_object_release( p_input_thread );

@@ -2,7 +2,7 @@
  * input.c : internal management of input streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: input.c 14953 2006-03-28 20:29:28Z zorglub $
+ * $Id: input.c 20445 2007-06-07 16:57:15Z courmisch $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -56,7 +56,7 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input )
 
     aout_FormatPrint( p_aout, "input", &p_input->input );
 
-    p_input->i_nb_filters = 0;
+    p_input->i_nb_resamplers = p_input->i_nb_filters = 0;
 
     /* Prepare FIFO. */
     aout_FifoInit( p_aout, &p_input->fifo, p_aout->mixer.mixer.i_rate );

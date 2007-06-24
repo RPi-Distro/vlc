@@ -2,9 +2,10 @@
  * libvlc_audio.c: New libvlc audio control API
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: audio.c 17025 2006-10-11 14:00:26Z damienf $
+ * $Id: audio.c 19495 2007-03-27 12:38:10Z jpsaman $
  *
  * Authors: Filippo Carone <filippo@carone.org>
+ *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,7 +26,6 @@
 #include <vlc/libvlc.h>
 
 #include <audio_output.h> /* for audio_volume_t, AOUT_VOLUME_MAX */
-#include <vlc/intf.h>
 
 /*****************************************************************************
  * libvlc_audio_get_mute : Get the volume state, true if muted
@@ -53,16 +53,7 @@ vlc_bool_t libvlc_audio_get_mute( libvlc_instance_t *p_instance,
 void libvlc_audio_set_mute( libvlc_instance_t *p_instance, vlc_bool_t status,
                             libvlc_exception_t *p_e )
 {
-    if ( status )
-    {
-        /* Check if the volume is already muted */
-        if (! libvlc_audio_get_volume( p_instance, p_e ) )
-        {
-            return;
-        }
-        aout_VolumeMute( p_instance->p_vlc, NULL );
-    }
-    else
+    if ( status ^ libvlc_audio_get_mute( p_instance, p_e ) )
     {
         /* the aout_VolumeMute is a toggle function, so this is enough. */
         aout_VolumeMute( p_instance->p_vlc, NULL );
@@ -99,4 +90,3 @@ void libvlc_audio_set_volume( libvlc_instance_t *p_instance, int i_volume,
         libvlc_exception_raise( p_e, "Volume out of range" );
     }
 }
-

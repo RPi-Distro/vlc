@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2003 ANEVIA
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: dvbsub.c 17420 2006-11-02 16:59:36Z hartman $
+ * $Id: dvbsub.c 19610 2007-04-01 01:37:01Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien LUCAS <damien.lucas@anevia.com>
@@ -1944,8 +1944,8 @@ static void encode_page_composition( encoder_t *p_enc, bs_t *s,
         }
         else
         {
-            bs_write( s, 16, p_region->i_x );
-            bs_write( s, 16, p_region->i_y );
+            bs_write( s, 16, p_subpic->i_x + p_region->i_x );
+            bs_write( s, 16, p_subpic->i_y + p_region->i_y );
         }
     }
 }

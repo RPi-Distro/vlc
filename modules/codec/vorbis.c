@@ -2,7 +2,7 @@
  * vorbis.c: vorbis decoder/encoder/packetizer module making use of libvorbis.
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: vorbis.c 17236 2006-10-21 19:11:38Z hartman $
+ * $Id: vorbis.c 20449 2007-06-07 17:31:10Z courmisch $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -623,7 +623,7 @@ static void ParseVorbisComments( decoder_t *p_dec )
             *psz_value = '\0';
             psz_value++;
             input_Control( p_input, INPUT_ADD_INFO, _("Vorbis comment"),
-                           psz_name, psz_value );
+                           psz_name, "%s", psz_value );
             if( strcasestr( psz_name, "artist" ) )
             {
                 vlc_input_item_AddInfo( p_input->input.p_item,

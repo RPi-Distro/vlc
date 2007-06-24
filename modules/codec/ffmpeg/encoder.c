@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: encoder.c 18028 2006-11-24 20:14:15Z xtophe $
+ * $Id: encoder.c 18591 2007-01-14 20:45:12Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -791,9 +791,9 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
     if( 1 )
 #endif
     {
-        frame.pts = p_pict->date ? p_pict->date : (signed int) AV_NOPTS_VALUE;
+        frame.pts = p_pict->date ? p_pict->date : (int64_t)AV_NOPTS_VALUE;
 
-        if ( p_sys->b_hurry_up && frame.pts != (signed int) AV_NOPTS_VALUE )
+        if ( p_sys->b_hurry_up && frame.pts != (int64_t)AV_NOPTS_VALUE )
         {
             mtime_t current_date = mdate();
 
@@ -836,10 +836,10 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
     }
     else
     {
-        frame.pts = AV_NOPTS_VALUE;
+        frame.pts = (int64_t)AV_NOPTS_VALUE;
     }
 
-    if ( frame.pts != (signed int) AV_NOPTS_VALUE && frame.pts != 0 )
+    if ( frame.pts != (int64_t)AV_NOPTS_VALUE && frame.pts != 0 )
     {
         if ( p_sys->i_last_pts == frame.pts )
         {
@@ -891,7 +891,7 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
             /* No delay -> output pts == input pts */
             p_block->i_pts = p_block->i_dts = p_pict->date;
         }
-        else if( p_sys->p_context->coded_frame->pts != (signed int) AV_NOPTS_VALUE &&
+        else if( p_sys->p_context->coded_frame->pts != (int64_t)AV_NOPTS_VALUE &&
             p_sys->p_context->coded_frame->pts != 0 &&
             p_sys->i_buggy_pts_detect != p_sys->p_context->coded_frame->pts )
         {
@@ -901,11 +901,11 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
             /* Ugly work-around for stupid libavcodec behaviour */
 #if LIBAVCODEC_BUILD >= 4722
             {
-            int64_t i_framenum = p_block->i_pts *
-                p_enc->fmt_in.video.i_frame_rate /
-                p_enc->fmt_in.video.i_frame_rate_base / AV_TIME_BASE;
+                int64_t i_framenum = p_block->i_pts *
+                    p_enc->fmt_in.video.i_frame_rate /
+                    p_enc->fmt_in.video.i_frame_rate_base / AV_TIME_BASE;
 
-            p_block->i_pts = p_sys->pi_delay_pts[i_framenum % MAX_FRAME_DELAY];
+                p_block->i_pts = p_sys->pi_delay_pts[i_framenum % MAX_FRAME_DELAY];
             }
 #endif
             /* End work-around */

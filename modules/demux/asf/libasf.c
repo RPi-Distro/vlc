@@ -2,7 +2,7 @@
  * libasf.c : asf stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: libasf.c 17050 2006-10-13 00:07:54Z hartman $
+ * $Id: libasf.c 18588 2007-01-14 20:33:16Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -492,13 +492,14 @@ static int ASF_ReadObject_stream_properties( stream_t *s, asf_object_t *p_obj )
 {
     asf_object_stream_properties_t *p_sp =
                     (asf_object_stream_properties_t*)p_obj;
-    int     i_peek;
+    size_t   i_peek;
     uint8_t *p_peek;
 
-    if( ( i_peek = stream_Peek( s, &p_peek,  p_sp->i_object_size ) ) < 74 )
+    if( ( i_peek = stream_Peek( s, &p_peek,  p_sp->i_object_size ) ) < 78 )
     {
        return VLC_EGENERIC;
     }
+
     ASF_GetGUID( &p_sp->i_stream_type, p_peek + 24 );
     ASF_GetGUID( &p_sp->i_error_correction_type, p_peek + 40 );
     p_sp->i_time_offset = GetQWLE( p_peek + 56 );
@@ -507,21 +508,42 @@ static int ASF_ReadObject_stream_properties( stream_t *s, asf_object_t *p_obj )
     p_sp->i_flags = GetWLE( p_peek + 72 );
         p_sp->i_stream_number = p_sp->i_flags&0x07f;
     p_sp->i_reserved = GetDWLE( p_peek + 74 );
+    i_peek -= 78;
+
     if( p_sp->i_type_specific_data_length )
     {
+        if( i_peek < p_sp->i_type_specific_data_length )
+            return VLC_EGENERIC;
+
         p_sp->p_type_specific_data =
             malloc( p_sp->i_type_specific_data_length );
+        if( p_sp->p_type_specific_data == NULL )
+            return VLC_ENOMEM;
+
         memcpy( p_sp->p_type_specific_data, p_peek + 78,
                 p_sp->i_type_specific_data_length );
+        i_peek -= p_sp->i_type_specific_data_length;
     }
     else
     {
         p_sp->p_type_specific_data = NULL;
     }
+
     if( p_sp->i_error_correction_data_length )
     {
+        if( i_peek < p_sp->i_error_correction_data_length )
+        {
+            free( p_sp->p_type_specific_data );
+            return VLC_EGENERIC;
+        }
+
         p_sp->p_error_correction_data =
             malloc( p_sp->i_error_correction_data_length );
+        if( p_sp->p_error_correction_data == NULL )
+        {
+            free( p_sp->p_type_specific_data );
+            return VLC_ENOMEM;
+        }
         memcpy( p_sp->p_error_correction_data,
                 p_peek + 78 + p_sp->i_type_specific_data_length,
                 p_sp->i_error_correction_data_length );
@@ -1293,7 +1315,7 @@ static int ASF_ReadObject( stream_t *s, asf_object_t *p_obj,
     }
 
     /* link this object with father */
-    if( p_father )
+    if( p_father && ! i_result )
     {
         if( p_father->common.p_first )
         {

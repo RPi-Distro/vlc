@@ -2,7 +2,7 @@
  * i422_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: i422_yuy2.c 17677 2006-11-11 21:49:26Z damienf $
+ * $Id: i422_yuy2.c 20505 2007-06-11 11:21:05Z damienf $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -169,6 +169,10 @@ static void I422_YUY2( vout_thread_t *p_vout, picture_t *p_source,
         }
 	p_pixels += i_pitch;
     }
+#if defined (MODULE_NAME_IS_i422_yuy2_mmx)
+    /* re-enable FPU registers */
+    __asm__ __volatile__ ("emms");
+#endif
 }
 
 /*****************************************************************************
@@ -204,6 +208,10 @@ static void I422_YVYU( vout_thread_t *p_vout, picture_t *p_source,
         }
 	p_pixels += i_pitch;
     }
+#if defined (MODULE_NAME_IS_i422_yuy2_mmx)
+    /* re-enable FPU registers */
+    __asm__ __volatile__ ("emms");
+#endif
 }
 
 /*****************************************************************************
@@ -239,6 +247,10 @@ static void I422_UYVY( vout_thread_t *p_vout, picture_t *p_source,
         }
 	p_pixels += i_pitch;
     }
+#if defined (MODULE_NAME_IS_i422_yuy2_mmx)
+    /* re-enable FPU registers */
+    __asm__ __volatile__ ("emms");
+#endif
 }
 
 /*****************************************************************************
@@ -283,6 +295,10 @@ static void I422_cyuv( vout_thread_t *p_vout, picture_t *p_source,
 #endif
         }
     }
+#if defined (MODULE_NAME_IS_i422_yuy2_mmx)
+    /* re-enable FPU registers */
+    __asm__ __volatile__ ("emms");
+#endif
 }
 
 /*****************************************************************************

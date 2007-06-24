@@ -2,7 +2,7 @@
  * i420_rgb16.c : YUV to bitmap RGB conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000 the VideoLAN team
- * $Id: i420_rgb16.c 14019 2006-01-26 19:51:06Z sam $
+ * $Id: i420_rgb16.c 20505 2007-06-11 11:21:05Z damienf $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -412,6 +412,14 @@ void E_(I420_RGB16)( vout_thread_t *p_vout, picture_t *p_src,
             p_v += i_source_margin_c;
         }
     }
+#if defined (MODULE_NAME_IS_i420_rgb_mmx)
+    /* re-enable FPU registers */
+#   if defined (HAVE_MMX_INTRINSICS)
+    _mm_empty();
+#   else
+    __asm__ __volatile__ ("emms");
+#   endif
+#endif
 }
 
 /*****************************************************************************
@@ -575,6 +583,14 @@ void E_(I420_RGB32)( vout_thread_t *p_vout, picture_t *p_src,
             p_v += i_source_margin_c;
         }
     }
+#if defined (MODULE_NAME_IS_i420_rgb_mmx)
+    /* re-enable FPU registers */
+#   if defined (HAVE_MMX_INTRINSICS)
+    _mm_empty();
+#   else
+    __asm__ __volatile__ ("emms");
+#   endif
+#endif
 }
 
 /* Following functions are local */

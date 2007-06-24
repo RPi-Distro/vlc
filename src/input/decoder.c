@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: decoder.c 16771 2006-09-21 15:52:00Z sam $
+ * $Id: decoder.c 19600 2007-04-01 01:06:18Z hartman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -611,11 +611,8 @@ static int DecoderDecode( decoder_t *p_dec, block_t *p_block )
             {
                 if( p_packetizer->fmt_out.i_extra && !p_dec->fmt_in.i_extra )
                 {
-                    p_dec->fmt_in.i_extra = p_packetizer->fmt_out.i_extra;
-                    p_dec->fmt_in.p_extra = malloc( p_dec->fmt_in.i_extra );
-                    memcpy( p_dec->fmt_in.p_extra,
-                            p_packetizer->fmt_out.p_extra,
-                            p_dec->fmt_in.i_extra );
+                    es_format_Clean( &p_dec->fmt_in );
+                    es_format_Copy( &p_dec->fmt_in, &p_packetizer->fmt_out );
                 }
 
                 while( p_packetized_block )
@@ -682,11 +679,8 @@ static int DecoderDecode( decoder_t *p_dec, block_t *p_block )
             {
                 if( p_packetizer->fmt_out.i_extra && !p_dec->fmt_in.i_extra )
                 {
-                    p_dec->fmt_in.i_extra = p_packetizer->fmt_out.i_extra;
-                    p_dec->fmt_in.p_extra = malloc( p_dec->fmt_in.i_extra );
-                    memcpy( p_dec->fmt_in.p_extra,
-                            p_packetizer->fmt_out.p_extra,
-                            p_dec->fmt_in.i_extra );
+                    es_format_Clean( &p_dec->fmt_in );
+                    es_format_Copy( &p_dec->fmt_in, &p_packetizer->fmt_out );
                 }
 
                 while( p_packetized_block )

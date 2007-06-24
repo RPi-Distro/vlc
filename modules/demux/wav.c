@@ -2,7 +2,7 @@
  * wav.c : wav file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: wav.c 16439 2006-08-30 19:33:55Z hartman $
+ * $Id: wav.c 20435 2007-06-07 16:09:09Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -106,8 +106,8 @@ static int Open( vlc_object_t * p_this )
     unsigned int i_size, i_extended;
     char        *psz_name;
 
-    WAVEFORMATEXTENSIBLE *p_wf_ext;
-    WAVEFORMATEX         *p_wf;
+    WAVEFORMATEXTENSIBLE *p_wf_ext = NULL;
+    WAVEFORMATEX         *p_wf = NULL;
 
     /* Is it a wav file ? */
     if( stream_Peek( p_demux->s, &p_peek, 12 ) < 12 ) return VLC_EGENERIC;
@@ -120,6 +120,9 @@ static int Open( vlc_object_t * p_this )
     p_demux->pf_demux   = Demux;
     p_demux->pf_control = Control;
     p_demux->p_sys      = p_sys = malloc( sizeof( demux_sys_t ) );
+    if( p_sys == NULL )
+        return VLC_ENOMEM;
+
     p_sys->p_es         = NULL;
     p_sys->b_chan_reorder = 0;
     p_sys->i_channel_mask = 0;
@@ -142,6 +145,9 @@ static int Open( vlc_object_t * p_this )
 
     /* load waveformatex */
     p_wf_ext = malloc( __EVEN( i_size ) + 2 );
+    if( p_wf_ext == NULL )
+         goto error;
+
     p_wf = (WAVEFORMATEX *)p_wf_ext;
     p_wf->cbSize = 0;
     if( stream_Read( p_demux->s,
@@ -224,6 +230,7 @@ static int Open( vlc_object_t * p_this )
              p_sys->fmt.audio.i_bitspersample, p_sys->fmt.i_extra );
 
     free( p_wf );
+    p_wf = NULL;
 
     switch( p_sys->fmt.i_codec )
     {
@@ -284,6 +291,7 @@ static int Open( vlc_object_t * p_this )
     return VLC_SUCCESS;
 
 error:
+    free( p_wf );
 relay:
     free( p_sys );
     return VLC_EGENERIC;

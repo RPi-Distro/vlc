@@ -2,7 +2,7 @@
  * libmp4.c : LibMP4 library for mp4 module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: libmp4.c 16994 2006-10-08 14:40:02Z jpsaman $
+ * $Id: libmp4.c 19605 2007-04-01 01:23:18Z hartman $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1692,7 +1692,7 @@ static int MP4_ReadBox_elst( stream_t *p_stream, MP4_Box_t *p_box )
 {
     unsigned int i;
 
-    MP4_READBOX_ENTER( MP4_Box_data_padb_t );
+    MP4_READBOX_ENTER( MP4_Box_data_elst_t );
 
     MP4_GETVERSIONFLAGS( p_box->data.p_elst );
 
@@ -1732,9 +1732,7 @@ static int MP4_ReadBox_elst( stream_t *p_stream, MP4_Box_t *p_box )
     }
 
 #ifdef MP4_VERBOSE
-    msg_Dbg( p_stream, "read box: \"elst\" entry-count "I64Fd,
-                      i_read / 2 );
-
+    msg_Dbg( p_stream, "read box: \"elst\" entry-count "I64Fd, p_box->data.p_elst->i_entry_count );
 #endif
     MP4_READBOX_EXIT( 1 );
 }

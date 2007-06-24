@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: http.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: http.c 20537 2007-06-12 18:32:04Z fenrir $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1022,7 +1022,7 @@ static int Request( access_t *p_access, int64_t i_tell )
     {
         p_sys->b_seekable = VLC_FALSE;
     }
-    if( p_sys->i_code != 206 )
+    if( p_sys->i_code != 206 && p_sys->i_code != 401 )
     {
         p_sys->b_seekable = VLC_FALSE;
     }

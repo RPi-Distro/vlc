@@ -2,7 +2,7 @@
  * sap.c : SAP announce handler
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: sap.c 17812 2006-11-16 13:46:22Z md $
+ * $Id: sap.c 19051 2007-02-27 20:22:19Z courmisch $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -637,25 +637,24 @@ static char *SDPGenerate( sap_handler_t *p_sap,
                         "v=0\r\n"
                         "o=- "I64Fd" %d IN IP%c %s\r\n"
                         "s=%s\r\n"
-                        "c=IN IP%c %s/%d\r\n"
+                        "c=IN IP%c %s%s\r\n"
                         "t=0 0\r\n"
                         "a=tool:"PACKAGE_STRING"\r\n"
                         "a=recvonly\r\n"
-                        "a=type:broadcast\n"
+                        "a=type:broadcast\r\n"
                         "%s"
-                        "m=video %d %s %d\r\n"
-                        "%s%s%s",
+                        "%s%s%s"
+                        "m=video %d %s %d\r\n",
                         i_sdp_id, i_sdp_version,
                         ipv, p_addr->psz_machine,
                         psz_name, ipv, psz_uri,
-                        /* FIXME: 1 is IPv4 default TTL, not that of IPv6 */
-                        p_session->i_ttl ?: (config_GetInt( p_sap, "ttl" ) ?: 1),
+                        (ipv == 4) ? "/255" : "",
                         (sfilter != NULL) ? sfilter : "",
+                        psz_group ? "a=x-plgroup:" : "",
+                        psz_group ? psz_group : "", psz_group ? "\r\n" : "",
                         p_session->i_port,
                         p_session->b_rtp ? "RTP/AVP" : "udp",
-                        p_session->i_payload,
-                        psz_group ? "a=x-plgroup:" : "",
-                        psz_group ? psz_group : "", psz_group ? "\r\n" : "");
+                        p_session->i_payload);
     if (sfilter != NULL)
         free (sfilter);
 

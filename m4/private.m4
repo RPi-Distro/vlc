@@ -15,6 +15,7 @@ dnl  Helper macro for vlc-config generation
 AC_DEFUN([VLC_CONFIG_HELPER], [
   cat >> vlc-config.in << BLAH
     access_file) list="\${list} access/libaccess_file" ;;
+    pvr) list="\${list} access/libpvr" ;;
     access_directory) list="\${list} access/libaccess_directory" ;;
     access_dv) list="\${list} access/libaccess_dv" ;;
     access_udp) list="\${list} access/libaccess_udp" ;;
@@ -31,7 +32,6 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     dshow) list="\${list} access/dshow/libdshow" ;;
     dvb) list="\${list} access/dvb/libdvb" ;;
     access_mms) list="\${list} access/mms/libaccess_mms" ;;
-    pvr) list="\${list} access/pvr/libpvr" ;;
     v4l) list="\${list} access/v4l/libv4l" ;;
     cddax) list="\${list} access/cdda/libcddax" ;;
     access_realrtsp) list="\${list} access/rtsp/libaccess_realrtsp" ;;
@@ -109,6 +109,7 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     subsdec) list="\${list} codec/libsubsdec" ;;
     faad) list="\${list} codec/libfaad" ;;
     dvbsub) list="\${list} codec/libdvbsub" ;;
+    telx) list="\${list} codec/libtelx" ;;
     mash) list="\${list} codec/libmash" ;;
     x264) list="\${list} codec/libx264" ;;
     twolame) list="\${list} codec/libtwolame" ;;

@@ -2,7 +2,7 @@
  * controls.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: controls.m 17501 2006-11-05 23:05:38Z fkuehne $
+ * $Id: controls.m 18961 2007-02-23 13:22:13Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -423,11 +423,11 @@
         if( o_vout_view )
         {
             if( [o_title isEqualToString: _NS("Half Size") ] )
-                [o_vout_view scaleWindowWithFactor: 0.5];
+                [o_vout_view scaleWindowWithFactor: 0.5 animate: YES];
             else if( [o_title isEqualToString: _NS("Normal Size") ] )
-                [o_vout_view scaleWindowWithFactor: 1.0];
+                [o_vout_view scaleWindowWithFactor: 1.0 animate: YES];
             else if( [o_title isEqualToString: _NS("Double Size") ] )
-                [o_vout_view scaleWindowWithFactor: 2.0];
+                [o_vout_view scaleWindowWithFactor: 2.0 animate: YES];
             else if( [o_title isEqualToString: _NS("Float on Top") ] )
                 [o_vout_view toggleFloatOnTop];
             else if( [o_title isEqualToString: _NS("Fit to Screen") ] )

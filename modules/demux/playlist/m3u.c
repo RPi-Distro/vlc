@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: m3u.c 18261 2006-12-04 11:31:26Z md $
+ * $Id: m3u.c 20536 2007-06-12 18:28:40Z fenrir $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -183,7 +183,7 @@ static int Demux( demux_t *p_demux )
                 psz_parse += sizeof("EXTINF:") - 1;
                 parseEXTINF( psz_parse, &psz_artist, &psz_name, &i_parsed_duration );
                 if ( i_parsed_duration >= 0 )
-                    i_duration = i_parsed_duration * 1000000;
+                    i_duration = i_parsed_duration * I64C(1000000);
                 if ( psz_name )
                     psz_name = strdup( psz_name );
                 if ( psz_artist )

@@ -2,7 +2,7 @@
  * core.c: Core libvlc new API functions : initialization, exceptions handling
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: core.c 17322 2006-10-28 14:49:42Z jpsaman $
+ * $Id: core.c 20501 2007-06-10 20:10:40Z pdherbemont $
  *
  * Authors: Cl�ent Stenac <zorglub@videolan.org>
  *
@@ -45,7 +45,7 @@ void libvlc_exception_clear( libvlc_exception_t *p_exception )
 
 inline int libvlc_exception_raised( libvlc_exception_t *p_exception )
 {
-    return p_exception->b_raised;
+    return (NULL != p_exception) && p_exception->b_raised;
 }
 
 inline char* libvlc_exception_get_message( libvlc_exception_t *p_exception )
@@ -76,7 +76,6 @@ inline void libvlc_exception_raise( libvlc_exception_t *p_exception,
     vasprintf( &p_exception->psz_message, psz_format, args );
     va_end( args );
 
-    if( p_exception == NULL ) return;
     p_exception->b_raised = 1;
 }
 
@@ -119,6 +118,7 @@ void libvlc_destroy( libvlc_instance_t *p_instance )
     vlc_object_release( p_instance->p_vlc );
     VLC_CleanUp( p_instance->i_vlc_id );
     VLC_Destroy( p_instance->i_vlc_id );
+    free( p_instance );
 }
 
 int libvlc_get_vlc_id( libvlc_instance_t *p_instance )

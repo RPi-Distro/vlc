@@ -1,4 +1,4 @@
-$Id: INSTALL.win32 18337 2006-12-09 01:32:42Z hartman $
+$Id: INSTALL.win32 20581 2007-06-16 11:15:56Z jb $
 
 INSTALL file for the Windows9x/Me/NT4/2k/XP version of the VLC media player
 
@@ -89,14 +89,14 @@ external libraries.
 * We also provide a package with all the libraries already compiled so it is
   actually really easy to compile a full-featured version of vlc (these compiled
   libraries will only work with mingw or cygwin):
-  http://download.videolan.org/pub/testing/win32/contrib-20061202-win32-bin-gcc-3.4.5-only.tar.bz2
+  http://download.videolan.org//pub/testing/win32/contrib-20070412-win32-0.8.6b-bin-gcc-3.4.5-only.tar.bz2
   (Check out for more recent versions at the same location). 
 
   All you need to do is extract it in your root directory (the include files
   and libraries will be put in /usr/win32). You can do this with the following
   command: 
 
-    tar xjvf contrib-20061202-win32-bin-gcc-3.4.5-only.tar.bz2 -C /
+    tar xjvf contrib-20070412-win32-0.8.6b-bin-gcc-3.4.5-only.tar.bz2 -C /
 
   Please note the "-C /". 
 

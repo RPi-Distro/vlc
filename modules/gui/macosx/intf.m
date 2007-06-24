@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: intf.m 17495 2006-11-05 21:50:37Z fkuehne $
+ * $Id: intf.m 20490 2007-06-09 15:36:51Z pdherbemont $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -102,6 +102,8 @@ void E_(CloseIntf) ( vlc_object_t *p_this )
 /*****************************************************************************
  * Run: main loop
  *****************************************************************************/
+jmp_buf jmpbuffer;
+
 static void Run( intf_thread_t *p_intf )
 {
     /* Do it again - for some unknown reason, vlc_thread_create() often
@@ -110,8 +112,11 @@ static void Run( intf_thread_t *p_intf )
     vlc_thread_set_priority( p_intf, VLC_THREAD_PRIORITY_LOW );
     [[VLCMain sharedInstance] setIntf: p_intf];
     [NSBundle loadNibNamed: @"MainMenu" owner: NSApp];
-    [NSApp run];
-    [[VLCMain sharedInstance] terminate];
+
+    /* Install a jmpbuffer to where we can go back before the NSApp exit
+     * see applicationWillTerminate: */
+    if(setjmp(jmpbuffer) == 0)
+        [NSApp run];
 }
 
 int ExecuteOnMainThread( id target, SEL sel, void * p_arg )
@@ -1139,7 +1144,6 @@ static VLCMain *_o_sharedMainInstance = nil;
         if( p_intf->p_sys->b_current_title_update )
         {
             NSString *o_temp;
-            vout_thread_t *p_vout;
             playlist_t * p_playlist = vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
                                                        FIND_ANYWHERE );
 
@@ -1155,25 +1159,8 @@ static VLCMain *_o_sharedMainInstance = nil;
             [self setScrollField: o_temp stopAfter:-1];
             [[[self getControls] getFSPanel] setStreamTitle: o_temp];
 
-            p_vout = vlc_object_find( p_intf->p_sys->p_input, VLC_OBJECT_VOUT,
-                                                    FIND_PARENT );
-            if( p_vout != NULL )
-            {
-                id o_vout_wnd;
-                NSEnumerator * o_enum = [[NSApp orderedWindows] objectEnumerator];
-
-                while( ( o_vout_wnd = [o_enum nextObject] ) )
-                {
-                    if( [[o_vout_wnd className] isEqualToString: @"VLCWindow"]
-                        || [[[VLCMain sharedInstance] getEmbeddedList]
-                                            windowContainsEmbedded: o_vout_wnd] )
-                    {
-                        msg_Dbg( p_intf, "updateTitle call getVoutView" );
-                        [[o_vout_wnd getVoutView] updateTitle];
-                    }
-                }
-                vlc_object_release( (vlc_object_t *)p_vout );
-            }
+            [[o_controls getVoutView] updateTitle];
+            
             [o_playlist updateRowSelection];
             vlc_object_release( p_playlist );
             p_intf->p_sys->b_current_title_update = FALSE;
@@ -1535,8 +1522,9 @@ static VLCMain *_o_sharedMainInstance = nil;
 #undef p_input
 }
 
-- (void)terminate
+- (void)applicationWillTerminate:(NSNotification *)notification
 {
+    NSLog(@"applicationWillTerminate");
     playlist_t * p_playlist;
     vout_thread_t * p_vout;
 

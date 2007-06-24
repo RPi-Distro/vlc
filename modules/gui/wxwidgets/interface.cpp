@@ -2,7 +2,7 @@
  * interface.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: interface.cpp 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: interface.cpp 20542 2007-06-12 21:19:23Z Trax $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

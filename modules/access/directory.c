@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: directory.c 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: directory.c 18581 2007-01-14 20:05:24Z courmisch $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -276,6 +276,7 @@ static int Read( access_t *p_access, uint8_t *p_buffer, int i_len)
         if( !p_item )
         {
             msg_Dbg( p_playlist, "unable to find item in playlist");
+            vlc_object_release( p_playlist );
             return -1;
         }
         b_play = VLC_FALSE;

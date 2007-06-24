@@ -2,7 +2,7 @@
  * gnutls.c
  *****************************************************************************
  * Copyright (C) 2004-2006 Rémi Denis-Courmont
- * $Id: gnutls.c 18329 2006-12-08 18:07:54Z hartman $
+ * $Id: gnutls.c 19803 2007-04-15 06:46:21Z courmisch $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -419,7 +419,6 @@ gnutls_HandshakeAndValidate( tls_session_t *session )
     {
         msg_Err( session, "Certificate import error: %s",
                  gnutls_strerror( val ) );
-        gnutls_x509_crt_deinit( cert );
         goto crt_error;
     }
 

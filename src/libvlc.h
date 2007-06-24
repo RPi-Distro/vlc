@@ -2,7 +2,7 @@
  * libvlc.h: main libvlc header
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: libvlc.h 18224 2006-12-03 15:52:27Z xtophe $
+ * $Id: libvlc.h 20581 2007-06-16 11:15:56Z jb $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -29,18 +29,19 @@
 
 #if defined (WIN32) || defined (__APPLE__)
 static char *ppsz_language[] =
-{ "auto", "en", "en_GB", "ca", "cs", "da", "de", "es", "fr", "gl", "he", "hu",
-  "it", "ja", "ka", "ko", "ms", "ne", "nl", "oc", "pt_BR", "ro", "ru", "sk", 
-  "sl",  "sv", "th", "tr", "zh_CN", "zh_TW" };
+{ "auto", "en", "en_GB", "ar", "ca", "cs", "da", "de", "es", "fa", "fr", "gl",
+  "he", "hu", "it", "ja", "ka", "ko", "ms", "ne", "nl", "oc", "pt_BR", "ro",
+  "ru", "sk", "sl",  "sv", "th", "tr", "zh_CN", "zh_TW" };
 
 static char *ppsz_language_text[] =
 { N_("Auto"), N_("American English"), N_("British English"),
-N_("Catalan"), N_("Czech"), N_("Danish"), N_("German"), N_("Spanish"),
-N_("French"), N_("Galician"), N_("Hebrew"), N_("Hungarian"),N_("Italian"),
-N_("Japanese"),N_("Georgian"), N_("Korean"), N_("Malay"), N_("Nepali"), 
-N_("Dutch"), N_("Occitan"), N_("Brazilian Portuguese"), N_("Romanian"), 
-N_("Russian"), N_("Slovak"), N_("Slovenian"), N_("Swedish"), N_("Thai"),
-N_("Turkish"),N_("Simplified Chinese"), N_("Chinese Traditional") };
+N_("Arabic"), N_("Catalan"), N_("Czech"), N_("Danish"), N_("German"), 
+N_("Spanish"), N_("Persian"),N_("French"), N_("Galician"), N_("Hebrew"),
+N_("Hungarian"),N_("Italian"),N_("Japanese"),N_("Georgian"), N_("Korean"),
+N_("Malay"), N_("Nepali"), N_("Dutch"), N_("Occitan"), 
+N_("Brazilian Portuguese"), N_("Romanian"), N_("Russian"), N_("Slovak"), 
+N_("Slovenian"), N_("Swedish"), N_("Thai"), N_("Turkish"),
+N_("Simplified Chinese"), N_("Chinese Traditional") };
 #endif
 
 static char *ppsz_snap_formats[] =
@@ -1601,7 +1602,7 @@ vlc_module_begin();
     add_bool( "color", 0, NULL, COLOR_TEXT, COLOR_LONGTEXT, VLC_TRUE );
     add_bool( "advanced", 0, NULL, ADVANCED_TEXT, ADVANCED_LONGTEXT,
                     VLC_FALSE );
-    add_bool( "interact", VLC_FALSE, NULL, INTERACTION_TEXT,
+    add_bool( "interact", VLC_TRUE, NULL, INTERACTION_TEXT,
               INTERACTION_LONGTEXT, VLC_FALSE );
 
     add_bool( "show-intf", VLC_FALSE, NULL, SHOWINTF_TEXT, SHOWINTF_LONGTEXT,

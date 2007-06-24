@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: live555.cpp 16983 2006-10-08 12:14:05Z jpsaman $
+ * $Id: live555.cpp 20512 2007-06-11 12:53:18Z damienf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -848,8 +848,16 @@ static int SessionsSetup( demux_t *p_demux )
                 if( !( p_sys->rtsp->setupMediaSubsession( *sub, False,
                                                    b_rtsp_tcp ? True : False ) ) )
                 {
-                    msg_Err( p_demux, "SETUP of'%s/%s' failed %s", sub->mediumName(),
-                             sub->codecName(), p_sys->env->getResultMsg() );
+                    /* if we get an unsupported transport error, toggle TCP use and try again */
+                    if( !strstr(p_sys->env->getResultMsg(), "461 Unsupported Transport")
+                     || !( p_sys->rtsp->setupMediaSubsession( *sub, False,
+                                                   b_rtsp_tcp ? False : True ) ) )
+                    {
+                        msg_Err( p_demux, "SETUP of'%s/%s' failed %s", sub->mediumName(),
+                                 sub->codecName(), p_sys->env->getResultMsg() );
+                        continue;
+                    }
+                    else i_active_sessions++;
                 }
                 else i_active_sessions++;
             } else i_active_sessions++; /* we don't really know, let's just hope it's there */
@@ -1315,10 +1323,32 @@ static void StreamRead( void *p_private, unsigned int i_size,
         tk->fmt.video.i_width  = (sdAtom[28] << 8) | sdAtom[29];
         tk->fmt.video.i_height = (sdAtom[30] << 8) | sdAtom[31];
 
-        tk->fmt.i_extra        = qtState.sdAtomSize - 16;
-        tk->fmt.p_extra        = malloc( tk->fmt.i_extra );
-        memcpy( tk->fmt.p_extra, &sdAtom[12], tk->fmt.i_extra );
-
+        if( tk->fmt.i_codec == VLC_FOURCC('a', 'v', 'c', '1') )
+        {
+            uint8_t *pos = (uint8_t*)qtRTPSource->qtState.sdAtom + 86;
+            uint8_t *endpos = (uint8_t*)qtRTPSource->qtState.sdAtom
+                              + qtRTPSource->qtState.sdAtomSize;
+            while (pos+8 < endpos) {
+                unsigned atomLength = pos[0]<<24 | pos[1]<<16 | pos[2]<<8 | pos[3];
+                if( atomLength == 0 || atomLength > endpos-pos) break;
+                if( memcmp(pos+4, "avcC", 4) == 0 &&
+                    atomLength > 8 &&
+                    atomLength <= INT_MAX)
+                {
+                    tk->fmt.i_extra = atomLength-8;
+                    tk->fmt.p_extra = malloc( tk->fmt.i_extra );
+                    memcpy(tk->fmt.p_extra, pos+8, atomLength-8);
+                    break;
+                }
+                pos += atomLength;
+            }
+        }
+        else
+        {
+            tk->fmt.i_extra        = qtState.sdAtomSize - 16;
+            tk->fmt.p_extra        = malloc( tk->fmt.i_extra );
+            memcpy( tk->fmt.p_extra, &sdAtom[12], tk->fmt.i_extra );
+        }
         tk->p_es = es_out_Add( p_demux->out, &tk->fmt );
     }
 

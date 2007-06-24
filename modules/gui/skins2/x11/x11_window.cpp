@@ -2,7 +2,7 @@
  * x11_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: x11_window.cpp 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: x11_window.cpp 19664 2007-04-04 14:29:10Z courmisch $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -76,7 +76,7 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
         unsigned long flags;
         unsigned long functions;
         unsigned long decorations;
-        long input_mode;
+        signed   long input_mode;
         unsigned long status;
     } motifWmHints;
     Atom hints_atom = XInternAtom( XDISPLAY, "_MOTIF_WM_HINTS", False );
@@ -84,7 +84,7 @@ X11Window::X11Window( intf_thread_t *pIntf, GenericWindow &rWindow,
     motifWmHints.decorations = 0;
     XChangeProperty( XDISPLAY, m_wnd, hints_atom, hints_atom, 32,
                      PropModeReplace, (unsigned char *)&motifWmHints,
-                     sizeof( motifWmHints ) / sizeof( long ) );
+                     sizeof( motifWmHints ) / sizeof( uint32_t ) );
 
     // Drag & drop
     if( m_dragDrop )
