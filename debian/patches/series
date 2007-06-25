@@ -5,7 +5,5 @@
 102_dejavu_font.diff
 103_kfreebsd.diff
 104_notify.diff
-105_audio_format_crash.diff
-106_xshm_check.diff
 200_osdmenu_paths.diff
 300_manpage_syntax.diff

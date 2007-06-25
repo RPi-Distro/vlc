@@ -1,3 +1,41 @@
+vlc (0.8.6.c-1) unstable; urgency=high
+
+  [ Fathi Boudra, Christophe Mutricy ]
+
+  * New upstream release (Closes: #424915):
+    + multiple format string vulnerabilities (VideoLAN-SA-0207).
+      (Closes: #429726)
+    + media player unspecified Denial Of Service vulnerability (CVE-2007-0256).
+      (Closes: #407290)
+    + missing includes to fix FTBFS with GCC 4.3.0. (Closes: #417750)
+    + fullscreen opens a normal window instead of going fullscreen on amd64.
+      (Closes: #405035)
+    + fix building with libflac8. (Closes: #426673)
+    + The following patches are no longer necessary:
+      105_audio_format_crash.diff
+      106_xshm_check.diff
+      107_gcc-4.3.diff
+      108_flac-1.1.3.diff
+
+  * Install libtelx_plugin.so in vlc-nox package.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 26 Jun 2007 01:41:02 +0200
+
+vlc (0.8.6.a.debian-7) UNRELEASED; urgency=low
+
+  [ Loic Minier ]
+  * New patch, 107_gcc-4.3, fixes missing include causing a build failure with
+    GCC 4.3; thanks Martin Michlmayr; closes: #417750.
+
+  [ Christophe Mutricy ]
+  * No longer build the x264 module as libx264 has been removed from Sid
+    (Closes: #424649, #427283).
+  * New patch, 108_flac-1.1.3 taken from upstream to fix building with
+    libflac8 (Closes: #426673).
+  * Rebuild against new libavcodec and libavformat (Closes: #427573).
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Mon, 28 May 2007 21:59:45 +0100
+
 vlc (0.8.6.a.debian-6) unstable; urgency=low
 
   * Rebuilt package against packages that are in unstable (Closes: #415446).
