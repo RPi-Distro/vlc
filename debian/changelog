@@ -1,3 +1,11 @@
+vlc (0.8.6.c-3) unstable; urgency=high
+
+  * debian/control:
+    + Removed now useless linux-libc-dev build-dependency (Closes: #430710),
+      thanks to Steve Langasek.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Thu, 05 Jul 2007 10:13:42 +0200
+
 vlc (0.8.6.c-2) unstable; urgency=high
 
   [ Loic Minier ]
