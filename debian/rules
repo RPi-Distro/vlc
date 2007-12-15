@@ -1,6 +1,6 @@
 #!/usr/bin/make -f
 # debian/rules for the VLC media player - uses debhelper.
-# $Id: rules 803 2007-06-25 23:41:56Z sho $
+# $Id: rules 944 2007-12-15 13:14:51Z sho $
 # based on Joey Hess's one.
 
 # Uncomment this to turn on verbose mode.
@@ -30,6 +30,7 @@ confflags += \
 	--disable-qt \
 	--enable-mad \
 	--enable-arts \
+	--disable-jack \
 	--enable-lirc \
 	--enable-a52 \
 	--enable-aa \
@@ -120,7 +121,7 @@ clean:
 	  debian/vlc-nox.install.kfreebsd-amd64
 	rm -f build-stamp
 	# Clean VLC
-	-$(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) distclean
 	rm -f src/libvlc.a
 	# Clean zsh completion stuff
 	rm -f extras/zsh
@@ -194,12 +195,13 @@ binary-arch: build install
 	dh_installman doc/vlc-config.1 -p libvlc0-dev
 	dh_installchangelogs ChangeLog -p vlc-nox
 	dh_installchangelogs ChangeLog -p libvlc0
+	dh_desktop
 	dh_strip -s
 	dh_compress -s
 	dh_fixperms -s
 	dh_makeshlibs -plibvlc0 -V # -V is nasty, but I mean it
 	dh_installdeb -s
-	dh_shlibdeps -s -ldebian/libvlc0/usr/lib
+	dh_shlibdeps -s -ldebian/libvlc0/usr/lib -- --ignore-missing-info
 	dh_gencontrol -s
 	dh_md5sums -s
 	dh_builddeb -s

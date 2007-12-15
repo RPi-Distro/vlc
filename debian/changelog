@@ -1,3 +1,27 @@
+vlc (0.8.6.c-4) unstable; urgency=high
+
+  [ Loic Minier ]
+  * Wrap build-deps and deps.
+  * Only suggest videolan-doc; closes: #451914.
+
+  [ Christophe Mutricy ]
+  * Use Vcs- instead of Xs-Vcs-
+  * Add Homepage field to control
+  * Use --ignore-missing-info with dpkg-shlibdeps as glide doesn't provide a
+    versionned .shlibs
+
+  [ Sam Hocevar ]
+  * debian/control:
+    + Build-depend on a newer libcdio-dev to transition to the newer binary
+      packages (Closes: #456390, #456403, #453823).
+    + Depend on ttf-dejavu-core instead of ttf-dejavu (Closes: #445580).
+    + Set policy to 3.7.3.
+  * debian/rules:
+    + Don’t ignore make distclean errors.
+    + Call dh_desktop to register desktop files.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Sat, 15 Dec 2007 12:33:48 +0000
+
 vlc (0.8.6.c-3) unstable; urgency=high
 
   * debian/control:
@@ -9,7 +33,7 @@ vlc (0.8.6.c-3) unstable; urgency=high
 vlc (0.8.6.c-2) unstable; urgency=high
 
   [ Loic Minier ]
-  * Merge the nerver uploaded 0.8.6.a.debian-7 changelog entry into 0.8.6.c-1.
+  * Merge the never uploaded 0.8.6.a.debian-7 changelog entry into 0.8.6.c-1.
 
   [ Christophe Mutricy ]
   * Build-depends on linux-libc-dev  rather than linux-kernel-headers
