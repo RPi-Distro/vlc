@@ -1,22 +1,3 @@
-vlc (0.8.6.c-4.1~lenny2) testing-security; urgency=high
-
-  * Non-maintainer upload by security team.
-  * This update addresses the following security issues (Closes: #461544).
-    - CVE-2008-0295: Heap-based buffer overflow in real_sdpplin.c
-      which could lead to user-assisted arbitrary code execution
-      via crafted SDP data.
-    - CVE-2008-0296: Heap-based buffer overflow in libaccess_realrtsp plugin
-      which might lead to arbitrary code execution via a crafted RTSP server.
-
- -- Nico Golde <nion@debian.org>  Tue, 22 Jan 2008 07:38:58 +0100
-
-vlc (0.8.6.c-4.1~lenny1) testing-security; urgency=high
-
-  * Upload to testing-security
-  * Remove --ignore-missing-info to build with old dpkg-shlibdeps
-
- -- Stefan Fritsch <sf@debian.org>  Sat, 12 Jan 2008 15:29:05 +0100
-
 vlc (0.8.6.c-4.1) unstable; urgency=high
 
   * Non-maintainer upload by security team.
