@@ -6,8 +6,7 @@ Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
            Clément Stenac <zorglub@debian.org>,
            Loic Minier <lool@dooz.org>,
            Christophe Mutricy <xtophe@videolan.org>
-Build-Depends: dpkg-dev (>= 1.13.19),
-               debhelper (>= 5.0),
+Build-Depends: debhelper (>= 6),
                dh-buildinfo,
                quilt,
                nasm,
@@ -25,7 +24,7 @@ Build-Depends: dpkg-dev (>= 1.13.19),
                libavcodec-dev (>= 0.cvs20070307-3),
                libavformat-dev (>= 0.cvs20070307-3),
                libcaca-dev (>= 0.99.beta4-1),
-               libcdio-dev (>= 0.78.2-1),
+               libcdio-dev,
                libdvbpsi4-dev,
                libdvdnav-dev,
                libdvdread-dev (>= 0.9.5),
@@ -55,7 +54,7 @@ Build-Depends: dpkg-dev (>= 1.13.19),
                libpng12-dev,
                libsdl1.2-dev (>= 1.2.7+1.2.8cvs20041007-5.3),
                libsmbclient-dev,
-               libsvga1-dev [i386],
+               libsvga1-dev [amd64 i386],
                libsysfs-dev,
                libtar-dev,
                libtheora-dev,
@@ -82,7 +81,7 @@ Build-Depends: dpkg-dev (>= 1.13.19),
                libjack-dev
 Standards-Version: 3.7.3
 Homepage: http://www.videolan.org/vlc
-Vcs-Svn: svn://svn.debian.org/pkg-multimedia/unstable/vlc
+Vcs-Svn: svn://svn.debian.org/svn/pkg-multimedia/unstable/vlc
 Vcs-Browser: http://svn.debian.org/wsvn/pkg-multimedia/unstable/vlc/
 
 Package: vlc
@@ -92,7 +91,8 @@ Depends: vlc-nox (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends},
          ttf-dejavu-core
-Suggests: mozilla-plugin-vlc, videolan-doc
+Suggests: mozilla-plugin-vlc,
+          videolan-doc
 Replaces: vlc-plugin-dvb (<< 0.5.2-2),
           vlc-plugin-xosd (<< 0.5.2-2),
           vlc-plugin-dv (<< 0.5.2-2),
@@ -140,7 +140,8 @@ Description: multimedia player and streamer
 Package: vlc-nox
 Section: net
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
 Replaces: vlc-plugin-dvb (<< 0.5.2-2),
           vlc-plugin-xosd (<< 0.5.2-2),
           vlc-plugin-dv (<< 0.5.2-2),
@@ -193,7 +194,8 @@ Description: multimedia player and streamer (without X support)
 Package: libvlc0
 Section: libs
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}
+Depends: ${shlibs:Depends},
+         ${misc:Depends}
 Replaces: vlc (<< 0.8.6-svn20060911.0.8.5-1-svn.debian-3)
 Conflicts: vlc (<< 0.8.6-svn20060911.0.8.5-1-svn.debian-3)
 Description: multimedia player and streamer library
@@ -280,8 +282,7 @@ Description: GGI video output plugin for VLC
 Package: vlc-plugin-glide
 Architecture: i386
 Depends: vlc-nox,
-         ${shlibs:Depends},
-         libglide2
+         ${shlibs:Depends}
 Conflicts: vlc-glide (<< 0.5.0)
 Replaces: vlc-glide (<< 0.5.0)
 Description: Glide video output plugin for VLC
@@ -327,7 +328,7 @@ Description: multimedia plugin for web browsers based on VLC
  streams from various network sources.
 
 Package: vlc-plugin-svgalib
-Architecture: i386
+Architecture: amd64 i386
 Depends: vlc-nox (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
@@ -346,6 +347,20 @@ Architecture: all
 Depends: vlc
 Description: dummy transitional package
  This dummy package is now part of VLC.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
+Package: vlc-plugin-jack
+Architecture: any
+Depends: vlc-nox (= ${binary:Version}),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: Jack audio plugins for VLC
+ These plugins add support for JACK to the VLC media player. To
+ activate the audio output module, use the `--aout jack' flag or
+ select the `jack' audio output plugin from the preferences menu.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia

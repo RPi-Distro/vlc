@@ -1,3 +1,38 @@
+vlc (0.8.6.c-5) unstable; urgency=low
+
+  [ Christophe Mutricy ]
+  * New vlc-plugin-jack pkg with jack audio_output module
+      (closes: #402252, #444992)
+  * Make all the symlink for /usr/share/${pkg} point to /usr/share/doc/vlc-nox
+    as the plugins depends on vlc-nox and not vlc
+  * debian/control: dpkg-shlibdeps gives the correct depends for
+    vlc-plugin-glide. So drop the hardcoded depends on libglide2
+  * debian/rules: dpkg-shlibdeps now behaves better with libraries without
+    versionned symbol file.
+
+  [ Sam Hocevar ]
+  * debian/control:
+    + Dropped the libcdio-dev versioned build-dep to ease backports.
+
+  [ Loic Minier ]
+  * Ack NMU by Nico Golde; thanks!
+  * Wrap more deps.
+  * Also build vlc-plugin-svgalib package on amd64 as well; build-dep on
+    libsvga1-dev on amd64 too; --enable-svgalib on amd64.
+  * Drop debian/*.dirs.
+  * Only pass --host to configure if DEB_BUILD_GNU_TYPE and DEB_HOST_GNU_TYPE
+    differ.
+  * Pass --quiltrc /dev/null to quilt and use $(QUILT) to invoke quilt.
+  * Bump up Debhelper compatibility level to 6; drop dpkg-dev build-dep.
+  * Add /svn to Vcs-Svn.
+  * Don't run ./vlc as a test if nocheck is given.
+  * Cleanup rules.
+  * Drop vlc-plugin-alsa and wxvlc /u/s/d symlinks as these are dummy packages
+    anyway.
+  * Update menu file.
+
+ -- Loic Minier <lool@dooz.org>  Fri, 11 Jan 2008 17:32:36 +0100
+
 vlc (0.8.6.c-4.1) unstable; urgency=high
 
   * Non-maintainer upload by security team.

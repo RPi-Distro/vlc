@@ -1,22 +1,20 @@
 #!/usr/bin/make -f
-# debian/rules for the VLC media player - uses debhelper.
-# $Id: rules 944 2007-12-15 13:14:51Z sho $
-# based on Joey Hess's one.
 
-# Uncomment this to turn on verbose mode.
-#export DH_VERBOSE=1
-
-# These are used for cross-compiling and for saving the configure script
-# from having to guess our platform (since we know it already)
 DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 DEB_HOST_ARCH_OS    ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
 
-confflags = --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) 
+ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
+confflags := --build=$(DEB_BUILD_GNU_TYPE)
+else
+confflags := --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
+endif
 
-#
-# Compilation options
-#
+# how to call quilt
+QUILT := QUILT_PATCHES=debian/patches quilt --quiltrc /dev/null
+
+# configure flags
 confflags += --enable-release --prefix=/usr
 confflags += \
 	--enable-libtool \
@@ -30,7 +28,7 @@ confflags += \
 	--disable-qt \
 	--enable-mad \
 	--enable-arts \
-	--disable-jack \
+	--enable-jack \
 	--enable-lirc \
 	--enable-a52 \
 	--enable-aa \
@@ -79,14 +77,18 @@ confflags += \
 	--disable-x264 \
 	$(NULL)
 
-# These ones are only for Linux
+# Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 confflags += --enable-alsa --enable-dv --enable-v4l --enable-pvr
 endif
 
-# Glide and svgalib are only for x86 on Linux
-ifeq ($(shell dpkg-architecture -qDEB_BUILD_ARCH),i386)
+# Glide is only for x86 on Linux
+ifeq ($(DEB_BUILD_ARCH),i386)
 confflags += --enable-glide
+endif
+
+# svgalib is only for x86 and x86-64 on Linux
+ifneq ($(filter $(DEB_BUILD_ARCH), amd64 i386),)
 confflags += --enable-svgalib
 endif
 
@@ -94,29 +96,31 @@ endif
 confflags += --enable-dvd --without-dvdcss
 
 # A few shortcuts
-VIDDIR = usr/share/vlc
-PIXDIR = usr/share/pixmaps
+VIDDIR := usr/share/vlc
+PIXDIR := usr/share/pixmaps
 
 build: build-stamp
 build-stamp:
 	dh_testdir
-	QUILT_PATCHES=debian/patches quilt push -a || test $$? = 2
+	$(QUILT) push -a || test $$? = 2
 	./configure --enable-static --mandir=$${prefix}/share/man $(confflags)
 	$(MAKE) src/libvlc.la
 	cp src/.libs/libvlc.a src/libvlc.a
 	./configure --mandir=$${prefix}/share/man $(confflags)
 	$(MAKE)
+ifeq ($(filter nocheck,$(DEB_BUILD_OPTIONS)),)
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	# Check which plugins were built and whether they load properly.
 	./vlc --reset-plugins-cache -l -I rc vlc:quit
 endif
-	touch build-stamp
+endif
+	touch $@
 
 clean:
 	dh_testdir
 	dh_testroot
 	sed -e '/lib\(alsa\|dvb\|v4l\|pvr\)_/d' debian/vlc-nox.install \
-	  > debian/vlc-nox.install.kfreebsd-i386
+	  >debian/vlc-nox.install.kfreebsd-i386
 	cp debian/vlc-nox.install.kfreebsd-i386 \
 	  debian/vlc-nox.install.kfreebsd-amd64
 	rm -f build-stamp
@@ -131,7 +135,7 @@ clean:
 	# Remove spurious autotools stuff
 	rm -f config.log confdefs.h
 	# Unpatch package
-	QUILT_PATCHES=debian/patches quilt pop -a -R || test $$? = 2
+	$(QUILT) pop -a -R || test $$? = 2
 	dh_clean
 
 install: build
@@ -139,7 +143,7 @@ install: build
 	dh_testroot
 	dh_clean -k
 	dh_installdirs
-	$(MAKE) install DESTDIR=`pwd`/debian/tmp/
+	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/
 	cp src/libvlc.a debian/tmp/usr/lib
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -exec rm '{}' ';'
@@ -201,11 +205,10 @@ binary-arch: build install
 	dh_fixperms -s
 	dh_makeshlibs -plibvlc0 -V # -V is nasty, but I mean it
 	dh_installdeb -s
-	dh_shlibdeps -s -ldebian/libvlc0/usr/lib -- --ignore-missing-info
+	dh_shlibdeps -s -ldebian/libvlc0/usr/lib
 	dh_gencontrol -s
 	dh_md5sums -s
 	dh_builddeb -s
 
 binary: binary-indep binary-arch
-.PHONY: build clean binary-indep binary-arch binary install
-
+.PHONY: build clean install binary-indep binary-arch binary
