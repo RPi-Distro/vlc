@@ -201,7 +201,7 @@ binary-arch: build install
 	dh_fixperms -s
 	dh_makeshlibs -plibvlc0 -V # -V is nasty, but I mean it
 	dh_installdeb -s
-	dh_shlibdeps -s -ldebian/libvlc0/usr/lib -- --ignore-missing-info
+	dh_shlibdeps -s -ldebian/libvlc0/usr/lib
 	dh_gencontrol -s
 	dh_md5sums -s
 	dh_builddeb -s

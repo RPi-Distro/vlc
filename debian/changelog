@@ -1,3 +1,28 @@
+vlc (0.8.6.c-4.1~lenny1) testing-security; urgency=high
+
+  * Upload to testing-security
+  * Remove --ignore-missing-info to build with old dpkg-shlibdeps
+
+ -- Stefan Fritsch <sf@debian.org>  Sat, 12 Jan 2008 15:29:05 +0100
+
+vlc (0.8.6.c-4.1) unstable; urgency=high
+
+  * Non-maintainer upload by security team.
+  * This update addresses the following security issues
+    (CVE ids pending; Closes: #458318):
+    - Fix format string issue in internal webserver that could lead to
+      to arbitrary code execution (sec-httpd_formatstring.diff).
+    - Disable m3u EXTVLCOPT parsing if no command line option is specified
+      (--m3u-extvlcopt) to prevent browser plugins to control stream output
+      and thus overwriting arbitrary files of the user running vlc
+      (sec-vlcopt_support.diff).
+    - Fix stack-based buffer overflow in subtitle parsing
+      (sec-subtitle_buffer_overflow.diff).
+    - Fix NULL pointer dereference in the rtsp/rtp module by checking return
+      of the httpd_MsgGet function (sec-rtsp_remote_dos.diff).
+
+ -- Nico Golde <nion@debian.org>  Fri, 11 Jan 2008 15:05:10 +0100
+
 vlc (0.8.6.c-4) unstable; urgency=high
 
   [ Loic Minier ]

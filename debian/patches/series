@@ -7,3 +7,7 @@
 104_notify.diff
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
+sec-httpd_formatstring.diff
+sec-vlcopt_support.diff
+sec-rtsp_remote_dos.diff
+sec-subtitle_buffer_overflow.diff

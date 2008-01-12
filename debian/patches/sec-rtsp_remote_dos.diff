@@ -1,0 +1,32 @@
+diff -Nurad vlc-0.8.6.c.orig/modules/misc/rtsp.c vlc-0.8.6.c/modules/misc/rtsp.c
+--- vlc-0.8.6.c.orig/modules/misc/rtsp.c	2008-01-03 20:18:46.000000000 +0100
++++ vlc-0.8.6.c/modules/misc/rtsp.c	2008-01-03 20:34:21.000000000 +0100
+@@ -678,6 +678,12 @@
+         {
+             psz_playnow = httpd_MsgGet( query, "x-playNow" );
+             psz_transport = httpd_MsgGet( query, "Transport" );
++            if( psz_transport == NULL )
++            {
++                answer->i_status = 400;
++                answer->psz_status = strdup( "Bad request" );
++                break; 
++            }
+             msg_Dbg( p_vod, "HTTPD_MSG_SETUP: transport=%s", psz_transport );
+ 
+             if( strstr( psz_transport, "unicast" ) &&
+diff -Nurad vlc-0.8.6.c.orig/modules/stream_out/rtp.c vlc-0.8.6.c/modules/stream_out/rtp.c
+--- vlc-0.8.6.c.orig/modules/stream_out/rtp.c	2008-01-03 20:18:50.000000000 +0100
++++ vlc-0.8.6.c/modules/stream_out/rtp.c	2008-01-03 21:10:18.000000000 +0100
+@@ -1855,6 +1855,12 @@
+         case HTTPD_MSG_SETUP:
+         {
+             char *psz_transport = httpd_MsgGet( query, "Transport" );
++            if( psz_transport == NULL )
++            {
++                answer->i_status = 400;
++                answer->psz_status = strdup( "Bad request" );
++                break;
++            }
+ 
+             //fprintf( stderr, "HTTPD_MSG_SETUP: transport=%s\n", psz_transport );
+ 
