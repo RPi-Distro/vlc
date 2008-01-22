@@ -11,3 +11,4 @@ sec-httpd_formatstring.diff
 sec-vlcopt_support.diff
 sec-rtsp_remote_dos.diff
 sec-subtitle_buffer_overflow.diff
+sec-CVE-2008-0296_CVE-2008-0295.diff
