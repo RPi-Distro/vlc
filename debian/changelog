@@ -1,51 +1,22 @@
-vlc (0.8.6.c-6+lenny5) testing-security; urgency=high
+vlc (0.8.6.e-1) unstable; urgency=high
 
-  * Non-maintainer upload by the Security Team.
-  * Fix regression introduced by latest security upload which
-    did not properly define FREENULL (Closes: #478971,#481417,#477734).
-  * Fix untrusted search path vulnerability by not loading libraries
-    from plugins and modules directories in the current working
-    directory (CVE-2008-2147; Closes: #480724).
-  * Fix arbitrary file overwriting via a crafted playlist or an EXTLVLCOPT
-    statement in an mp3 file by partially disabling this functionality
-    for the browser plugin (CVE-2007-6683; Closes: #480370).
+  [ Christophe Mutricy ]
+  * New security upstream release
+    - CORE-2008-0130, VideoLAN-SA-0802, CVE-2008-0986: Arbitrary memory
+      overwrite in the MP4 demuxer (Closes: #467652)
+    - Others security fixes already included in the Debian package
+    - Xshm detection fix (Closes: #404361)
+    - Alsa 5.1 fixes
+    - DTS to S/PDIF fixes
+  * patches/
+    - delete the uneeded sec-* patches
+    - delete 100_no_wx_update.diff as the update "feature" has been removed
+      upstream
 
- -- Nico Golde <nion@debian.org>  Fri, 16 May 2008 17:45:15 +0200
+  [ Loic Minier ]
+  * Urgency high for security bugfix.
 
-vlc (0.8.6.c-6+lenny4) testing-security; urgency=high
-
-  * Non-maintainer upload by the Security Team.
-  * This update addresses the following security issues:
-    - CVE-2008-1769: out-of-bounds array access and memory corruption
-      via a crafted cinepak file (Closes: #478140).
-    - CVE-2008-1768: multiple integer overflow triggering buffer overflows
-      in the mp4 and real demuxer and the cinepak codec (Closes: #478140).
-    - CVE-2008-1881: stack-based buffer overflow in subtitle parsing leading
-      to arbitrary code execution via crafted subtitle file (Closes: #477805).
-
- -- Nico Golde <nion@debian.org>  Sun, 27 Apr 2008 16:32:34 +0200
-
-vlc (0.8.6.c-6+lenny3) testing-security; urgency=high
-
-  * Non-maintainer upload by the Security Team.
-  * This update addresses the following security issues:
-    - CVE-2008-1489: an integer overflow in the MP4_ReadBox_rdrf function that
-      can be triggered via crafted atom size values could possibly lead to
-      arbitrary code execution (Closes: #472635).
-    - CVE-2008-0073: possible code execution via a crafted rtsp stream with
-      a large streamid SDP parameter (Closes: #473057).
-
- -- Nico Golde <nion@debian.org>  Fri, 28 Mar 2008 13:51:48 +0100
-
-vlc (0.8.6.c-6+lenny1) testing-security; urgency=high
-
-  * Non-maintainer upload by security team.
-  * This update addresses the following security issue:
-    - CVE-2008-0986: A buffer overflow in the mpeg-4 demuxer
-      could lead to arbitrary code execution via a crafted
-      mp4 file (sec-CVE-2008-0984.diff; Closes: #467652).
-
- -- Nico Golde <nion@debian.org>  Wed, 27 Feb 2008 16:06:47 +0100
+ -- Christophe Mutricy <xtophe@videolan.org>  Mon, 25 Feb 2008 23:35:24 +0000
 
 vlc (0.8.6.c-6) unstable; urgency=high
 
