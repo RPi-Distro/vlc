@@ -1,3 +1,13 @@
+vlc (0.8.6.c-6+lenny1) testing-security; urgency=high
+
+  * Non-maintainer upload by security team.
+  * This update addresses the following security issue:
+    - CVE-2008-0986: A buffer overflow in the mpeg-4 demuxer
+      could lead to arbitrary code execution via a crafted
+      mp4 file (sec-CVE-2008-0984.diff; Closes: #467652).
+
+ -- Nico Golde <nion@debian.org>  Wed, 27 Feb 2008 16:06:47 +0100
+
 vlc (0.8.6.c-6) unstable; urgency=high
 
   [ Nico Golde ]
