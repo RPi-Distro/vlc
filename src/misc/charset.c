@@ -4,7 +4,7 @@
  * See also unicode.c for Unicode to locale conversion helpers.
  *
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: charset.c 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: charset.c 23230 2007-11-21 22:17:44Z funman $
  *
  * Authors: Derk-Jan Hartman <thedj at users.sf.net>
  *          Christophe Massiot
@@ -480,7 +480,7 @@ const char *FindFallbackEncoding( const char *locale )
         case 'iw':
         case 'yi':
             /* Compatible Microsoft superset */
-            return "CP1255";
+            return "ISO-8859-8"; // CP1255 is reportedly screwed up 
 
         /* Latin-5 Turkish (ISO-8859-9) */
         case 'tr':
@@ -592,7 +592,17 @@ const char *GetFallbackEncoding( void )
     static char buf[2 + 10 + 1] = "";
 
     if( buf[0] == 0 )
-        snprintf( buf, sizeof( buf ), "CP%u", GetACP() );
+    {
+        int cp = GetACP ();
+        switch (cp)
+        {
+            case 1255: // Hebrew, CP1255 screws up somewhat
+                strcpy (buf, "ISO-8859-8");
+                break;
+            default:
+                snprintf (buf, sizeof (buf), "CP%u", cp);
+        }
+    }
     return buf;
 #endif
 }

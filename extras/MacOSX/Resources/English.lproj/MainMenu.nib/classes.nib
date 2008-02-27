@@ -4,7 +4,6 @@
         {CLASS = ITSlider; LANGUAGE = ObjC; SUPERCLASS = NSSlider; }, 
         {CLASS = MPSlider; LANGUAGE = ObjC; SUPERCLASS = NSSlider; }, 
         {CLASS = VLBrushedMetalImageView; LANGUAGE = ObjC; SUPERCLASS = NSImageView; }, 
-        {CLASS = VLCApplication; LANGUAGE = ObjC; SUPERCLASS = NSApplication; }, 
         {CLASS = VLCControllerView; LANGUAGE = ObjC; SUPERCLASS = NSView; }, 
         {CLASS = VLCControllerWindow; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
         {
@@ -67,6 +66,7 @@
                 "o_btn_play" = id; 
                 "o_slider" = id; 
                 "o_time" = id; 
+                "o_view" = id; 
             }; 
             SUPERCLASS = NSWindow; 
         }, 
@@ -103,13 +103,6 @@
             SUPERCLASS = NSObject; 
         }, 
         {CLASS = VLCFSPanel; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
-        {
-            ACTIONS = {faster = id; next = id; play = id; prev = id; slower = id; }; 
-            CLASS = VLCFSPanelView; 
-            LANGUAGE = ObjC; 
-            SUPERCLASS = NSView; 
-        }, 
-        {CLASS = VLCFSTimeSlider; LANGUAGE = ObjC; SUPERCLASS = NSSlider; }, 
         {
             ACTIONS = {
                 createOutlineGroup = id; 
@@ -188,7 +181,6 @@
         }, 
         {
             ACTIONS = {
-                checkForUpdate = id; 
                 clearRecentItems = id; 
                 closeError = id; 
                 intfOpenDisc = id; 
@@ -248,7 +240,6 @@
                 "o_mi_bwd" = id; 
                 "o_mi_channels" = id; 
                 "o_mi_chapter" = id; 
-                "o_mi_checkForUpdate" = id; 
                 "o_mi_clear" = id; 
                 "o_mi_close_window" = id; 
                 "o_mi_controller" = id; 

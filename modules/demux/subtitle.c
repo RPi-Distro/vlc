@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: subtitle.c 18177 2006-11-30 20:42:25Z hartman $
+ * $Id: subtitle.c 23855 2007-12-24 16:42:08Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -723,8 +723,8 @@ next:
         i_stop  = 0;
 
         memset( buffer_text, '\0', MAX_LINE );
-        if( sscanf( s, "{%d}{}%[^\r\n]", &i_start, buffer_text ) == 2 ||
-            sscanf( s, "{%d}{%d}%[^\r\n]", &i_start, &i_stop, buffer_text ) == 3)
+        if( sscanf( s, "{%d}{}%8192[^\r\n]", &i_start, buffer_text ) == 2 ||
+            sscanf( s, "{%d}{%d}%8192[^\r\n]", &i_start, &i_stop, buffer_text ) == 3)
         {
             break;
         }
@@ -949,8 +949,8 @@ static int  ParseSSA( demux_t *p_demux, subtitle_t *p_subtitle )
     demux_sys_t *p_sys = p_demux->p_sys;
     text_t      *txt = &p_sys->txt;
 
-    char buffer_text[ 10 * MAX_LINE];
-    char buffer_text2[ 10 * MAX_LINE];
+    char buffer_text[ 10 * MAX_LINE + 1];
+    char buffer_text2[ 10 * MAX_LINE + 1];
     char *s;
     int64_t     i_start;
     int64_t     i_stop;
@@ -981,7 +981,7 @@ static int  ParseSSA( demux_t *p_demux, subtitle_t *p_subtitle )
          * Dialogue: Layer#,0:02:40.65,0:02:41.79,Wolf main,Cher,0000,0000,0000,,Et les enregistrements de ses ondes delta ?
          */
         if( sscanf( s,
-                    "Dialogue: %[^,],%d:%d:%d.%d,%d:%d:%d.%d,%[^\r\n]",
+                    "Dialogue: %[^,],%d:%d:%d.%d,%d:%d:%d.%d,%81920[^\r\n]",
                     buffer_text2,
                     &h1, &m1, &s1, &c1,
                     &h2, &m2, &s2, &c2,
@@ -1075,7 +1075,7 @@ static int  ParseVplayer( demux_t *p_demux, subtitle_t *p_subtitle )
         i_start = 0;
 
         memset( buffer_text, '\0', MAX_LINE );
-        if( sscanf( p, "%d:%d:%d%[ :]%[^\r\n]", &h, &m, &s, &c, buffer_text ) == 5 )
+        if( sscanf( p, "%d:%d:%d%[ :]%81920[^\r\n]", &h, &m, &s, &c, buffer_text ) == 5 )
         {
             i_start = ( (int64_t)h * 3600*1000 +
                         (int64_t)m * 60*1000 +

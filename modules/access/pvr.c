@@ -2,7 +2,7 @@
  * pvr.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: pvr.c 20508 2007-06-11 12:03:55Z sigmunau $
+ * $Id: pvr.c 22108 2007-09-16 19:19:06Z courmisch $
  *
  * Authors: Eric Petit <titer@videolan.org>
  *          Paul Corke <paulc@datatote.co.uk>
@@ -38,7 +38,11 @@
 #include <sys/ioctl.h>
 #include <sys/poll.h>
 #ifdef HAVE_NEW_LINUX_VIDEODEV2_H
-#include VIDEODEV2_H_FILE
+#   ifdef VIDEODEV2_H_FILE
+#   include VIDEODEV2_H_FILE
+#   else
+#   include <linux/videodev2.h>
+#   endif
 #else
 #include "videodev2.h"
 #endif

@@ -2,7 +2,7 @@
  * darwin_specific.m: Darwin specific features
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: darwin_specific.m 20581 2007-06-16 11:15:56Z jb $
+ * $Id: darwin_specific.m 20692 2007-06-25 22:48:02Z xtophe $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -63,7 +63,8 @@ static int FindLanguage( const char * psz_lang )
 	"Nepali", "ne",
 	"Dutch", "nl",
         "Occitan", "oc",
-        "Brazilian Portuguese", "pt_BR",
+	"Polish", "pl",
+	"Brazilian Portuguese", "pt_BR",
         "Romanian", "ro",
         "Russian", "ru",
         "Slovak", "sk",

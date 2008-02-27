@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 the VideoLAN team
- * $Id: mp4.c 16767 2006-09-21 14:32:45Z hartman $
+ * $Id: mp4.c 24243 2008-01-11 20:34:57Z Trax $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -195,7 +195,7 @@ static int Open( vlc_object_t *p_this )
     sout_mux_sys_t  *p_sys;
     bo_t            *box;
 
-    msg_Dbg( p_mux, "Mp4 muxer opend" );
+    msg_Dbg( p_mux, "Mp4 muxer opened" );
     sout_CfgParse( p_mux, SOUT_CFG_PREFIX, ppsz_sout_options, p_mux->p_cfg );
 
     p_mux->pf_control   = Control;
@@ -724,6 +724,7 @@ static void ConvertAVC1( sout_mux_t *p_mux, mp4_stream_t *tk, block_t *p_block )
 
             tk->avc.i_profile = tk->avc.sps[1];
             tk->avc.i_profile = tk->avc.sps[2];
+            tk->avc.i_profile_compat = tk->avc.sps[2];
             tk->avc.i_level   = tk->avc.sps[3];
         }
         else if( (last[4]&0x1f) == 8 && tk->avc.i_pps <= 0 )   /* PPS */

@@ -2,7 +2,7 @@
  * controls.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: controls.m 18961 2007-02-23 13:22:13Z fkuehne $
+ * $Id: controls.m 23115 2007-11-18 00:22:06Z pdherbemont $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -103,7 +103,7 @@
             o_vout_view = [o_embedded_vout_list getViewForWindow: o_window];
         }
         /* We have a detached vout */
-        else if( [[o_window className] isEqualToString: @"VLCWindow"] )
+        else if( [[o_window className] isEqualToString: @"VLCVoutWindow"] )
         {
             msg_Dbg( VLCIntf, "detached vout controls.m call getVoutView" );
             o_vout_view = [o_window getVoutView];
@@ -459,6 +459,7 @@
             var_Get( p_playlist, "fullscreen", &val );
             var_Set( p_playlist, "fullscreen", (vlc_value_t)!val.b_bool );
         }
+
         if( p_playlist ) vlc_object_release( (vlc_object_t *)p_playlist );
     }
 
@@ -898,7 +899,7 @@
 
             while( (o_window = [o_enumerator nextObject]))
             {
-                if( [[o_window className] isEqualToString: @"VLCWindow"] ||
+                if( [[o_window className] isEqualToString: @"VLCVoutWindow"] ||
                             [[[VLCMain sharedInstance] getEmbeddedList]
                             windowContainsEmbedded: o_window])
                 {

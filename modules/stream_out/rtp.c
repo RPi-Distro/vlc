@@ -2,7 +2,7 @@
  * rtp.c: rtp stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: rtp.c 19750 2007-04-09 15:15:59Z courmisch $
+ * $Id: rtp.c 22023 2007-09-15 09:51:34Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1855,6 +1855,12 @@ static int RtspCallbackId( httpd_callback_sys_t *p_args,
         case HTTPD_MSG_SETUP:
         {
             char *psz_transport = httpd_MsgGet( query, "Transport" );
+            if( psz_transport == NULL )
+            {
+                answer->i_status = 400;
+                answer->psz_status = strdup( "Bad request" );
+                break;
+            }
 
             //fprintf( stderr, "HTTPD_MSG_SETUP: transport=%s\n", psz_transport );
 

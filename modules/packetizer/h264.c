@@ -1,8 +1,8 @@
 /*****************************************************************************
  * h264.c: h264/avc video packetizer
  *****************************************************************************
- * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: h264.c 19603 2007-04-01 01:19:51Z hartman $
+ * Copyright (C) 2001-2008 the VideoLAN team
+ * $Id: h264.c 24384 2008-01-18 10:13:07Z jpsaman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -245,13 +245,17 @@ static int Open( vlc_object_t *p_this )
         /* FIXME: FFMPEG isn't happy at all if you leave this */
         if( p_dec->fmt_out.i_extra ) free( p_dec->fmt_out.p_extra );
         p_dec->fmt_out.i_extra = 0; p_dec->fmt_out.p_extra = NULL;
-        
+
         /* Set the new extradata */
         p_dec->fmt_out.i_extra = p_sys->p_pps->i_buffer + p_sys->p_sps->i_buffer;
         p_dec->fmt_out.p_extra = (uint8_t*)malloc( p_dec->fmt_out.i_extra );
-        memcpy( (uint8_t*)p_dec->fmt_out.p_extra, p_sys->p_sps->p_buffer, p_sys->p_sps->i_buffer);
-        memcpy( (uint8_t*)p_dec->fmt_out.p_extra+p_sys->p_sps->i_buffer, p_sys->p_pps->p_buffer, p_sys->p_pps->i_buffer);
-        p_sys->b_header = VLC_TRUE;
+        if( p_dec->fmt_out.p_extra )
+        {
+            memcpy( (uint8_t*)p_dec->fmt_out.p_extra, p_sys->p_sps->p_buffer, p_sys->p_sps->i_buffer);
+            memcpy( (uint8_t*)p_dec->fmt_out.p_extra+p_sys->p_sps->i_buffer, p_sys->p_pps->p_buffer, p_sys->p_pps->i_buffer);
+            p_sys->b_header = VLC_TRUE;
+        }
+        else p_dec->fmt_out.i_extra = 0;
 
         /* Set callback */
         p_dec->pf_packetize = PacketizeAVC1;
@@ -261,7 +265,7 @@ static int Open( vlc_object_t *p_this )
         /* This type of stream contains data with 3 of 4 byte startcodes 
          * The fmt_in.p_extra MAY contain SPS/PPS with 4 byte startcodes
          * The fmt_out.p_extra should be the same */
-         
+
         /* Set callback */
         p_dec->pf_packetize = Packetize;
 
@@ -310,7 +314,25 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t       *p_pic;
 
-    if( !pp_block || !*pp_block ) return NULL;
+    if( !pp_block || !*pp_block )
+        return NULL;
+
+    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    {
+        if( (*pp_block)->i_flags&BLOCK_FLAG_CORRUPTED )
+        {
+            p_sys->i_state = STATE_NOSYNC;
+            block_BytestreamFlush( &p_sys->bytestream );
+
+            if( p_sys->p_frame )
+                block_ChainRelease( p_sys->p_frame );
+            p_sys->p_frame = NULL;
+            p_sys->slice.i_frame_type = 0;
+            p_sys->b_slice = VLC_FALSE;
+        }
+        block_Release( *pp_block );
+        return NULL;
+    }
 
     block_BytestreamPush( &p_sys->bytestream, *pp_block );
 
@@ -399,7 +421,13 @@ static block_t *PacketizeAVC1( decoder_t *p_dec, block_t **pp_block )
     block_t       *p_ret = NULL;
     uint8_t       *p;
 
-    if( !pp_block || !*pp_block ) return NULL;
+    if( !pp_block || !*pp_block )
+        return NULL;
+    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    {
+        block_Release( *pp_block );
+        return NULL;
+    }
 
     p_block = *pp_block;
     *pp_block = NULL;
@@ -461,21 +489,24 @@ static void nal_get_decoded( uint8_t **pp_ret, int *pi_ret,
 
     *pp_ret = dst;
 
-    while( src < end )
+    if( dst )
     {
-        if( src < end - 3 && src[0] == 0x00 && src[1] == 0x00 &&
-            src[2] == 0x03 )
+        while( src < end )
         {
-            *dst++ = 0x00;
-            *dst++ = 0x00;
+            if( src < end - 3 && src[0] == 0x00 && src[1] == 0x00 &&
+                src[2] == 0x03 )
+            {
+                *dst++ = 0x00;
+                *dst++ = 0x00;
 
-            src += 3;
-            continue;
+                src += 3;
+                continue;
+            }
+            *dst++ = *src++;
         }
-        *dst++ = *src++;
-    }
 
-    *pi_ret = dst - *pp_ret;
+        *pi_ret = dst - *pp_ret;
+    }
 }
 
 static inline int bs_read_ue( bs_t *s )
@@ -496,7 +527,6 @@ static inline int bs_read_se( bs_t *s )
     return val&0x01 ? (val+1)/2 : -(val/2);
 }
 
-
 /*****************************************************************************
  * ParseNALBlock: parses annexB type NALs
  * All p_frag blocks are required to start with 0 0 0 1 4-byte startcode 
@@ -514,7 +544,7 @@ static block_t *ParseNALBlock( decoder_t *p_dec, block_t *p_frag )
         if( !p_sys->b_header && p_sys->slice.i_frame_type != BLOCK_FLAG_TYPE_I) \
             break;                                            \
                                                               \
-        if( p_sys->slice.i_frame_type == BLOCK_FLAG_TYPE_I && p_sys->p_sps && p_sys->p_pps && !p_sys->b_header ) \
+        if( p_sys->slice.i_frame_type == BLOCK_FLAG_TYPE_I && p_sys->p_sps && p_sys->p_pps ) \
         { \
             block_t *p_sps = block_Duplicate( p_sys->p_sps ); \
             block_t *p_pps = block_Duplicate( p_sys->p_pps ); \
@@ -554,8 +584,8 @@ static block_t *ParseNALBlock( decoder_t *p_dec, block_t *p_frag )
     }
     else if( i_nal_type >= NAL_SLICE && i_nal_type <= NAL_SLICE_IDR )
     {
-        uint8_t *dec;
-        int i_dec, i_first_mb, i_slice_type;
+        uint8_t *dec = NULL;
+        int i_dec = 0, i_first_mb, i_slice_type;
         slice_t slice;
         vlc_bool_t b_pic;
         bs_t s;
@@ -637,7 +667,9 @@ static block_t *ParseNALBlock( decoder_t *p_dec, block_t *p_frag )
             slice.i_field_pic_flag != p_sys->slice.i_field_pic_flag ||
             slice.i_nal_ref_idc != p_sys->slice.i_nal_ref_idc )
             b_pic = VLC_TRUE;
-        if( slice.i_bottom_field_flag != -1 && p_sys->slice.i_bottom_field_flag != -1 && slice.i_bottom_field_flag != p_sys->slice.i_bottom_field_flag )
+        if( slice.i_bottom_field_flag != -1 &&
+            p_sys->slice.i_bottom_field_flag != -1 &&
+            slice.i_bottom_field_flag != p_sys->slice.i_bottom_field_flag )
             b_pic = VLC_TRUE;
         if( p_sys->i_pic_order_cnt_type == 0 &&
             ( slice.i_pic_order_cnt_lsb != p_sys->slice.i_pic_order_cnt_lsb ||
@@ -663,8 +695,8 @@ static block_t *ParseNALBlock( decoder_t *p_dec, block_t *p_frag )
     }
     else if( i_nal_type == NAL_SPS )
     {
-        uint8_t *dec;
-        int     i_dec;
+        uint8_t *dec = NULL;
+        int     i_dec = 0;
         bs_t s;
         int i_tmp;
 

@@ -2,7 +2,7 @@
  * interaction.h: Mac OS X interaction dialogs
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: interaction.m 16902 2006-10-01 11:02:00Z fkuehne $
+ * $Id: interaction.m 23115 2007-11-18 00:22:06Z pdherbemont $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Kühne <fkuehne at videolan dot org>
@@ -132,7 +132,7 @@
 
         while( ( o_window = [o_enum nextObject] ) )
         {
-            if( [[o_window className] isEqualToString: @"VLCWindow"] )
+            if( [[o_window className] isEqualToString: @"VLCVoutWindow"] )
             {
                 vlc_object_release( (vlc_object_t *)p_vout );
                 break;

@@ -2,7 +2,7 @@
  * rtsp.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: rtsp.c 16987 2006-10-08 12:54:12Z jpsaman $
+ * $Id: rtsp.c 22023 2007-09-15 09:51:34Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -678,6 +678,12 @@ static int RtspCallback( httpd_callback_sys_t *p_args, httpd_client_t *cl,
         {
             psz_playnow = httpd_MsgGet( query, "x-playNow" );
             psz_transport = httpd_MsgGet( query, "Transport" );
+            if( psz_transport == NULL )
+            {
+                answer->i_status = 400;
+                answer->psz_status = strdup( "Bad request" );
+                break;
+            }
             msg_Dbg( p_vod, "HTTPD_MSG_SETUP: transport=%s", psz_transport );
 
             if( strstr( psz_transport, "unicast" ) &&

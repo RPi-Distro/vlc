@@ -261,6 +261,7 @@ modules/access/vcdx/vcd.c
 modules/access/vcdx/vcd.h
 modules/access/vcdx/vcdplayer.c
 modules/access/vcdx/vcdplayer.h
+modules/access/videodev2.h
 modules/audio_filter/channel_mixer/dolby.c
 modules/audio_filter/channel_mixer/headphone.c
 modules/audio_filter/channel_mixer/simple.c
@@ -367,7 +368,6 @@ modules/codec/theora.c
 modules/codec/twolame.c
 modules/codec/vorbis.c
 modules/codec/x264.c
-modules/control/corba/corba.c
 modules/control/gestures.c
 modules/control/hotkeys.c
 modules/control/http/http.c
@@ -503,8 +503,6 @@ modules/gui/macosx/prefs.h
 modules/gui/macosx/prefs.m
 modules/gui/macosx/prefs_widgets.h
 modules/gui/macosx/prefs_widgets.m
-modules/gui/macosx/update.h
-modules/gui/macosx/update.m
 modules/gui/macosx/voutgl.m
 modules/gui/macosx/vout.h
 modules/gui/macosx/vout.m

@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: m3u.c 20536 2007-06-12 18:28:40Z fenrir $
+ * $Id: m3u.c 23505 2007-12-09 00:59:20Z Trax $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -137,6 +137,7 @@ static int Demux( demux_t *p_demux )
     mtime_t    i_duration = -1;
     char       **ppsz_options = NULL;
     int        i_options = 0, i;
+    vlc_bool_t b_enable_extvlcopt = config_GetInt( p_demux, "m3u-extvlcopt" );
 
     playlist_item_t *p_item, *p_current;
 
@@ -192,15 +193,22 @@ static int Demux( demux_t *p_demux )
             else if( !strncasecmp( psz_parse, "EXTVLCOPT:",
                                    sizeof("EXTVLCOPT:") -1 ) )
             {
-                /* VLC Option */
-                char *psz_option;
-                psz_parse += sizeof("EXTVLCOPT:") -1;
-                if( !*psz_parse ) goto error;
+                if( b_enable_extvlcopt )
+                {
+                    /* VLC Option */
+                    char *psz_option;
+                    psz_parse += sizeof("EXTVLCOPT:") -1;
+                    if( !*psz_parse ) goto error;
 
-                psz_option = MaybeFromLocaleDup( psz_parse );
-                if( psz_option )
-                    INSERT_ELEM( ppsz_options, i_options, i_options,
-                                 psz_option );
+                    psz_option = MaybeFromLocaleDup( psz_parse );
+                    if( psz_option )
+                        INSERT_ELEM( ppsz_options, i_options, i_options,
+                                     psz_option );
+                }
+                else
+                {
+                    msg_Err( p_demux, "m3u EXTVLCOPT parsing is disabled for security reasons. If you need it and trust the m3u playlist you are trying to open, please append --m3u-extvlcopt to your command line." );
+                }
             }
         }
         else if( *psz_parse )

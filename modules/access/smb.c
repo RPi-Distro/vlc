@@ -2,7 +2,7 @@
  * smb.c: SMB input module
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: smb.c 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: smb.c 23238 2007-11-21 23:43:22Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -226,7 +226,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    if( !(p_file = p_smb->open( p_smb, psz_uri, O_RDONLY, 0 )) )
+    if( !(p_file = (p_smb->open)( p_smb, psz_uri, O_RDONLY, 0 )) )
     {
         msg_Err( p_access, "open failed for '%s' (%s)",
                  p_access->psz_path, strerror(errno) );
@@ -250,6 +250,14 @@ static int Open( vlc_object_t *p_this )
     }
 #endif
 
+/*
+** some version of glibc defines open as a macro, causing havoc
+** with other macros using 'open' under the hood, such as the
+** following one:
+*/
+#if defined(smbc_open) && defined(open)
+# undef open
+#endif
     if( (i_smb = smbc_open( psz_uri, O_RDONLY, 0 )) < 0 )
     {
         msg_Err( p_access, "open failed for '%s' (%s)",

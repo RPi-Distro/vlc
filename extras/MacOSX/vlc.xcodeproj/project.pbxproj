@@ -73,7 +73,6 @@
 		C2F2A708095AE51700018C74 /* skip_forward_embedded_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = C2F2A704095AE51600018C74 /* skip_forward_embedded_blue.png */; };
 		C2F2A709095AE51700018C74 /* skip_previous_embedded_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = C2F2A705095AE51600018C74 /* skip_previous_embedded_blue.png */; };
 		CC1B4B4D09A8CF9E0078AD2E /* Interaction.nib in Resources */ = {isa = PBXBuildFile; fileRef = CC1B4B4B09A8CF9E0078AD2E /* Interaction.nib */; };
-		CC26BF2C09A7A05000E94D62 /* Update.nib in Resources */ = {isa = PBXBuildFile; fileRef = CC26BF2A09A7A05000E94D62 /* Update.nib */; };
 		CCD10D750AFE67EF0026254A /* fs_background.png in Resources */ = {isa = PBXBuildFile; fileRef = CCD10D5A0AFE67EF0026254A /* fs_background.png */; };
 		CCD10D760AFE67EF0026254A /* fs_exit_fullscreen_highlight.png in Resources */ = {isa = PBXBuildFile; fileRef = CCD10D5B0AFE67EF0026254A /* fs_exit_fullscreen_highlight.png */; };
 		CCD10D770AFE67EF0026254A /* fs_exit_fullscreen.png in Resources */ = {isa = PBXBuildFile; fileRef = CCD10D5C0AFE67EF0026254A /* fs_exit_fullscreen.png */; };
@@ -191,6 +190,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>Generic.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/xspf+xml</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>XSPF Playlist</string>
 			<key>CFBundleTypeRole</key>
@@ -204,6 +207,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>generic.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>audio/x-pn-realaudio</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>RealPlayer Media Files</string>
 			<key>CFBundleTypeRole</key>
@@ -217,7 +224,7 @@
 			<key>CFBundleTypeIconFile</key>
 			<string>generic.icns</string>
 			<key>CFBundleTypeName</key>
-			<string>IMG Disk Image</string>
+			<string>Disk Image</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 		</dict>
@@ -255,6 +262,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>generic.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>audio/x-aiff</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>AIFF file</string>
 			<key>CFBundleTypeRole</key>
@@ -283,7 +294,11 @@
 				<string>spx</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>generic.icns</string>
+			<string>ogg.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>audio/ogg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>Speex Audio File</string>
 			<key>CFBundleTypeRole</key>
@@ -306,6 +321,10 @@
 			<array>
 				<string>wav</string>
 			</array>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>audio/x-wav</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>WAVE Audio File</string>
 			<key>CFBundleTypeRole</key>
@@ -318,6 +337,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>asx.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/x-ms-asf</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>ASX file</string>
 			<key>CFBundleTypeRole</key>
@@ -355,6 +378,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>m3u.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>audio/x-mpegurl</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>Playlist file</string>
 			<key>CFBundleTypeRole</key>
@@ -437,24 +464,50 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>ogg</string>
+				<string>ogx</string>
 				<string>ogm</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
-			<string>ogm.icns</string>
+			<string>ogg.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>audio/ogg</string>
+			</array>
 			<key>CFBundleTypeName</key>
-			<string>Ogg Vorbis Media container</string>
+			<string>Ogg Vorbis File</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 		</dict>
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
-				<string>ogg</string>
+				<string>anx</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Annodex Multimedia File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>axa</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Annodex Audio File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>axv</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>ogg.icns</string>
 			<key>CFBundleTypeName</key>
-			<string>OGG Vorbis file</string>
+			<string>Annodex Video File</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 		</dict>
@@ -465,8 +518,60 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>avi.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/x-msvideo</string>
+			</array>
 			<key>CFBundleTypeName</key>
-			<string>AVI container</string>
+			<string>AVI Container</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>oga</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>ogg.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>audio/ogg</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Ogg Audio File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ogv</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>ogg.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/ogg</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Ogg Video File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>ogx</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>ogg.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>application/ogg</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>Ogg Application File</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 		</dict>
@@ -479,8 +584,12 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>generic.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/quicktime</string>
+			</array>
 			<key>CFBundleTypeName</key>
-			<string>Apple QuickTime container</string>
+			<string>Apple QuickTime Container</string>
 			<key>CFBundleTypeRole</key>
 			<string>Viewer</string>
 		</dict>
@@ -515,6 +624,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>asf.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/x-ms-asf</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>Advanced Streaming Format</string>
 			<key>CFBundleTypeRole</key>
@@ -552,6 +665,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mpeg.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/mpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>multiplexed MPEG-1/2</string>
 			<key>CFBundleTypeRole</key>
@@ -564,6 +681,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mpeg1.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/mpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MPEG-1 Video File</string>
 			<key>CFBundleTypeRole</key>
@@ -576,6 +697,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mpeg.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/mpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MPEG-1/2 Audio File</string>
 			<key>CFBundleTypeRole</key>
@@ -588,6 +713,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mpeg.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/mpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MPEG Audio Layer 1</string>
 			<key>CFBundleTypeRole</key>
@@ -600,6 +729,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mpeg2.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/mpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MPEG Audio Layer 2</string>
 			<key>CFBundleTypeRole</key>
@@ -612,6 +745,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mp3.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>audio/mpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MPEG Audio Layer 3</string>
 			<key>CFBundleTypeRole</key>
@@ -625,6 +762,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mpeg2.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/mpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MPEG-2 Program Stream</string>
 			<key>CFBundleTypeRole</key>
@@ -637,6 +778,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mpeg2.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/mpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MPEG-2 Transport Stream</string>
 			<key>CFBundleTypeRole</key>
@@ -650,6 +795,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mpeg2.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/mpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MPEG-2 Video File</string>
 			<key>CFBundleTypeRole</key>
@@ -662,6 +811,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mpeg.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/mpeg</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MPEG-2 Audio File</string>
 			<key>CFBundleTypeRole</key>
@@ -675,6 +828,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>mpeg4.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>video/mp4</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>MPEG-4 File</string>
 			<key>CFBundleTypeRole</key>
@@ -759,6 +916,10 @@
 			</array>
 			<key>CFBundleTypeIconFile</key>
 			<string>generic.icns</string>
+			<key>CFBundleTypeMIMETypes</key>
+			<array>
+				<string>audio/flac</string>
+			</array>
 			<key>CFBundleTypeName</key>
 			<string>FLAC Audio File</string>
 			<key>CFBundleTypeRole</key>
@@ -768,7 +929,7 @@
 	<key>CFBundleExecutable</key>
 	<string>VLC</string>
 	<key>CFBundleGetInfoString</key>
-	<string>VLC media player 0.8.6c, Copyright (c) 1996-2007 the VideoLAN team.</string>
+	<string>VLC media player 0.8.6e, Copyright (c) 1996-2008 the VideoLAN team.</string>
 	<key>CFBundleIconFile</key>
 	<string>vlc.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -780,7 +941,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.8.6c</string>
+	<string>0.8.6e</string>
 	<key>CFBundleSignature</key>
 	<string>VLC#</string>
 	<key>CFBundleURLTypes</key>
@@ -793,6 +954,16 @@
 			<key>CFBundleURLSchemes</key>
 			<array>
 				<string>http</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLIconFile</key>
+			<string>generic</string>
+			<key>CFBundleURLName</key>
+			<string>Secure HTTP</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>https</string>
 			</array>
 		</dict>
 		<dict>
@@ -837,7 +1008,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>0.8.6c</string>
+	<string>0.8.6e</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSMainNibFile</key>
@@ -952,9 +1123,6 @@
 		CC1B4B4C09A8CF9E0078AD2E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/Interaction.nib; sourceTree = "<group>"; };
 		CC1B4C1409A8EC690078AD2E /* interaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interaction.h; path = ../../modules/gui/macosx/interaction.h; sourceTree = "<group>"; };
 		CC1B4C1509A8EC690078AD2E /* interaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = interaction.m; path = ../../modules/gui/macosx/interaction.m; sourceTree = "<group>"; };
-		CC26BF2B09A7A05000E94D62 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/Update.nib; sourceTree = "<group>"; };
-		CC26BF3109A7A08C00E94D62 /* update.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = update.h; path = ../../modules/gui/macosx/update.h; sourceTree = SOURCE_ROOT; };
-		CC26BF3209A7A08C00E94D62 /* update.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = update.m; path = ../../modules/gui/macosx/update.m; sourceTree = SOURCE_ROOT; };
 		CC9AF0CE0B8F502C00728992 /* embeddedwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = embeddedwindow.h; path = ../../modules/gui/macosx/embeddedwindow.h; sourceTree = SOURCE_ROOT; };
 		CC9AF0CF0B8F502C00728992 /* embeddedwindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = embeddedwindow.m; path = ../../modules/gui/macosx/embeddedwindow.m; sourceTree = SOURCE_ROOT; };
 		CCD10D5A0AFE67EF0026254A /* fs_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fs_background.png; path = Resources/fs_background.png; sourceTree = "<group>"; };
@@ -1111,8 +1279,6 @@
 				DC7F46F108A187F60027DB24 /* extended.m */,
 				DCE7BD0708A5724D007B10AE /* bookmarks.h */,
 				DCE7BD0608A5724D007B10AE /* bookmarks.m */,
-				CC26BF3109A7A08C00E94D62 /* update.h */,
-				CC26BF3209A7A08C00E94D62 /* update.m */,
 				CCD10DA10AFE69B60026254A /* fspanel.h */,
 				CCD10DA20AFE69B60026254A /* fspanel.m */,
 			);
@@ -1274,7 +1440,6 @@
 				DCFCCDB7085CE18F001E36AF /* Wizard.nib */,
 				DC7F46EB08A183FC0027DB24 /* Extended.nib */,
 				DCE7BD0308A56C8B007B10AE /* Bookmarks.nib */,
-				CC26BF2A09A7A05000E94D62 /* Update.nib */,
 				CC1B4B4B09A8CF9E0078AD2E /* Interaction.nib */,
 			);
 			name = nibs;
@@ -1381,7 +1546,6 @@
 				C2F2A707095AE51700018C74 /* play_embedded_blue.png in Resources */,
 				C2F2A708095AE51700018C74 /* skip_forward_embedded_blue.png in Resources */,
 				C2F2A709095AE51700018C74 /* skip_previous_embedded_blue.png in Resources */,
-				CC26BF2C09A7A05000E94D62 /* Update.nib in Resources */,
 				CC1B4B4D09A8CF9E0078AD2E /* Interaction.nib in Resources */,
 				CCD10D750AFE67EF0026254A /* fs_background.png in Resources */,
 				CCD10D760AFE67EF0026254A /* fs_exit_fullscreen_highlight.png in Resources */,
@@ -1439,14 +1603,6 @@
 				CC1B4B4C09A8CF9E0078AD2E /* English */,
 			);
 			name = Interaction.nib;
-			sourceTree = "<group>";
-		};
-		CC26BF2A09A7A05000E94D62 /* Update.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CC26BF2B09A7A05000E94D62 /* English */,
-			);
-			name = Update.nib;
 			sourceTree = "<group>";
 		};
 		DC7F46EB08A183FC0027DB24 /* Extended.nib */ = {

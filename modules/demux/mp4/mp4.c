@@ -2,7 +2,7 @@
  * mp4.c : MP4 file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: mp4.c 18118 2006-11-27 21:27:38Z hartman $
+ * $Id: mp4.c 25158 2008-02-15 17:16:03Z courmisch $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -468,12 +468,14 @@ static int Open( vlc_object_t * p_this )
         msg_Err( p_demux, "cannot find any /moov/trak" );
         goto error;
     }
-    msg_Dbg( p_demux, "find %d track%c",
+    msg_Dbg( p_demux, "found %d track%c",
                         p_sys->i_tracks,
                         p_sys->i_tracks ? 's':' ' );
 
     /* allocate memory */
     p_sys->track = calloc( p_sys->i_tracks, sizeof( mp4_track_t ) );
+    if( p_sys->track == NULL )
+        goto error;
     memset( p_sys->track, 0, p_sys->i_tracks * sizeof( mp4_track_t ) );
 
     /* now process each track and extract all usefull information */
@@ -922,6 +924,10 @@ static int TrackCreateChunksIndex( demux_t *p_demux,
     }
     p_demux_track->chunk = calloc( p_demux_track->i_chunk_count,
                                    sizeof( mp4_chunk_t ) );
+    if( p_demux_track->chunk == NULL )
+    {
+        return VLC_ENOMEM;
+    }
 
     /* first we read chunk offset */
     for( i_chunk = 0; i_chunk < p_demux_track->i_chunk_count; i_chunk++ )
@@ -953,6 +959,12 @@ static int TrackCreateChunksIndex( demux_t *p_demux,
         for( i_chunk = p_stsc->data.p_stsc->i_first_chunk[i_index] - 1;
              i_chunk < i_last; i_chunk++ )
         {
+            if( i_chunk >= p_demux_track->i_chunk_count )
+            {
+                msg_Warn( p_demux, "corrupted chunk table" );
+                return VLC_EGENERIC;
+            }
+
             p_demux_track->chunk[i_chunk].i_sample_description_index =
                     p_stsc->data.p_stsc->i_sample_description_index[i_index];
             p_demux_track->chunk[i_chunk].i_sample_count =
@@ -1028,6 +1040,8 @@ static int TrackCreateSamplesIndex( demux_t *p_demux,
         p_demux_track->i_sample_size = 0;
         p_demux_track->p_sample_size =
             calloc( p_demux_track->i_sample_count, sizeof( uint32_t ) );
+        if( p_demux_track->p_sample_size == NULL )
+            return VLC_ENOMEM;
 
         for( i_sample = 0; i_sample < p_demux_track->i_sample_count; i_sample++ )
         {

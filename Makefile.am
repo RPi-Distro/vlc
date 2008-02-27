@@ -73,9 +73,6 @@ EXTRA_DIST += \
 	extras/MacOSX/Resources/English.lproj/Extended.nib/classes.nib \
 	extras/MacOSX/Resources/English.lproj/Extended.nib/info.nib \
 	extras/MacOSX/Resources/English.lproj/Extended.nib/keyedobjects.nib \
-	extras/MacOSX/Resources/English.lproj/Update.nib/classes.nib \
-	extras/MacOSX/Resources/English.lproj/Update.nib/info.nib \
-	extras/MacOSX/Resources/English.lproj/Update.nib/keyedobjects.nib \
 	extras/MacOSX/Resources/English.lproj/Interaction.nib/classes.nib \
 	extras/MacOSX/Resources/English.lproj/Interaction.nib/info.nib \
 	extras/MacOSX/Resources/English.lproj/Interaction.nib/keyedobjects.nib \
@@ -184,7 +181,7 @@ EXTRA_DIST += \
 	extras/MacOSX/Resources/fs_exit_fullscreen.png \
 	extras/MacOSX/Resources/fs_background.png \
 	extras/MacOSX/fullscreen_panel.svg \
-	extras/MacOSX/vlc.pbproj/project.pbxproj \
+	extras/MacOSX/vlc.xcodeproj/project.pbxproj \
 	extras/MacOSX/Delete_Preferences.app/Contents/Info.plist \
 	extras/MacOSX/Delete_Preferences.app/Contents/PkgInfo \
 	extras/MacOSX/Delete_Preferences.app/Contents/MacOS/applet \
@@ -261,6 +258,9 @@ bin_PROGRAMS = vlc
 vlc_SOURCES = src/vlc.c
 # Ugly kludge so that automake defines $(CXXLINK)
 EXTRA_vlc_SOURCES = extras/zsh.cpp
+#if HAVE_DARWIN
+EXTRA_vlc_SOURCES +=  src/misc/darwin_specific.m
+#endif
 
 # Work around a bug in the arm-wince-pe linker
 if HAVE_WINCE
@@ -414,8 +414,6 @@ VLC-release.app: vlc
 	    extended.m \
 	    bookmarks.h \
 	    bookmarks.m \
-	    update.h \
-	    update.m \
 	    interaction.h \
 	    interaction.m \
 	    embeddedwindow.h \
@@ -496,10 +494,10 @@ VLC-release.app: vlc
 	      $(top_builddir)/VLC-release.app/Contents/Resources/$${i}.lproj ; \
 	  ln -sf ../English.lproj/MainMenu.nib \
 	      $(top_builddir)/VLC-release.app/Contents/Resources/$${i}.lproj ; \
-	  ln -sf ../English.lproj/vlc.scriptTerminology \
-	      $(top_builddir)/VLC-release.app/Contents/Resources/$${i}.lproj ; \
 	done
 	printf "APPLVLC#" >| $(top_builddir)/VLC-release.app/Contents/PkgInfo
+	find $(top_builddir)/VLC-release.app -type d -exec chmod ugo+rx '{}' \;
+	find $(top_builddir)/VLC-release.app -type f -exec chmod ugo+r '{}' \;
 
 VLC.app: vlc
 	@if test -e "$(top_builddir)/tmp"; then \
@@ -552,8 +550,6 @@ VLC.app: vlc
 	    extended.m \
 	    bookmarks.h \
 	    bookmarks.m \
-	    update.h \
-	    update.m \
 	    interaction.h \
 	    interaction.m \
 	    embeddedwindow.h \

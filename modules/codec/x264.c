@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: x264.c 17327 2006-10-28 18:06:45Z Trax $
+ * $Id: x264.c 25153 2008-02-14 23:21:20Z Trax $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -469,7 +469,7 @@ vlc_module_begin();
         change_string_list( direct_pred_list, direct_pred_list_text, 0 );
 
 #if X264_BUILD >= 52 /* r573 */
-    add_integer( SOUT_CFG_PREFIX "direct-8x8", 0, NULL, DIRECT_PRED_SIZE_TEXT,
+    add_integer( SOUT_CFG_PREFIX "direct-8x8", -1, NULL, DIRECT_PRED_SIZE_TEXT,
                  DIRECT_PRED_SIZE_LONGTEXT, VLC_FALSE );
         change_integer_range( -1, 1 );
 #endif
@@ -630,6 +630,9 @@ static int  Open ( vlc_object_t *p_this )
     {
         return VLC_EGENERIC;
     }
+
+    /* X264_POINTVER or X264_VERSION are not available */
+    msg_Dbg ( p_enc, "version x264 0.%d.X", X264_BUILD );
 
 #if X264_BUILD < 37
     if( p_enc->fmt_in.video.i_width % 16 != 0 ||
@@ -1054,12 +1057,13 @@ static int  Open ( vlc_object_t *p_this )
         p_sys->param.cpu &= ~X264_CPU_SSE2;
     }
 
+    /* BUILD 29 adds support for multi-threaded encoding while BUILD 49 (r543)
+       also adds support for threads = 0 for automatically selecting an optimal
+       value (cores * 1.5) based on detected CPUs. Default behavior for x264 is
+       threads = 1, however VLC usage differs and uses threads = 0 (auto) by
+       default unless ofcourse transcode threads is explicitly specified.. */
 #if X264_BUILD >= 29
-    /* As of r543 x264 will autodetect the number of cpus and will set
-       the number of threads accordingly unless ofcourse the number of
-       threads is explicitly specified... */
-    if( p_enc->i_threads >= 1 )
-        p_sys->param.i_threads = p_enc->i_threads;
+    p_sys->param.i_threads = p_enc->i_threads;
 #endif
 
     /* Open the encoder */

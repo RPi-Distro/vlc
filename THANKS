@@ -1,4 +1,4 @@
-$Id: THANKS 20581 2007-06-16 11:15:56Z jb $
+$Id: THANKS 25223 2008-02-21 08:51:03Z Trax $
 
 VLC makes extensive use of the following persons' code:
 
@@ -42,6 +42,7 @@ Christian Henz - libupnp service discovery plugin, CyberLink UPnP fixes
 Christof Baumgaertner - dbox web intf
 Christophe Mutricy <xtophe at nxtelevision dot com> - many fixes (preferences, M3U, ...)
 Christopher Johnson <cjohnson at mint.net> - Qt fix in vlc.spec
+Christopher Key <cjk32 at cam.ac.uk> - mp4 mux patch for h264 streaming to iPhone
 Colin Simmonds <colin_simmonds at Mac.lover.org> - compile fix for Mac OS X
 Damian Ivereigh <damian at cisco.com> - ac3dec uninitialized data structure fix
 Damien Fouilleul <damien.fouilleul at laposte.net> - DirectShow input improvements
@@ -70,6 +71,7 @@ Frank Chao <frank0624 at gmail.com> - Chinese Traditional translation
 Fumio Nakayama <endymion at ca2.so-net.ne.jp> - Japanese translation
 Gabor Kelemen <kelemeng at gnome.hu> - Hungarian translation
 Georgi Chorbadzhiyski <gf at unixsol dot org> - HTTP access error handling fix
+Glen Gray <slaine at slaine dot org> - RTSP Keepalive fixes
 Greg Farrell <greg at gregfarell dot org> - rc interface "enqueue" command
 Gregory Hazel <ghazel at gmail dot com> - wxWidgets fixes and improvements
 Goetz Waschk <waschk at informatik.uni-rostock dot de> - Mandrake packages
@@ -94,6 +96,7 @@ Johen Michael Zorko <zorko at att.net> - fix for delay issues in udp sout
 John Paul Lorenti <jpl31 at columbia.edu> - ALSA device selection patch
 Jonas Larsen <jonas at vrt.dk> - Danish translation
 Julien Blache <jb at technologeek.org> - disc ejection code
+Julien Robert <jul at mac.com> - DTS to SPDIF fixes.
 Kang Jeong-Hee <keizie 4t gmail d0t com> - Korean l10n
 kty0ne - WinAmp 5 skin for VLC
 Kevin H. Patterson <kevpatt at khptech dot com> - Theora framesize calculation patch by Kevin H. Patterson (kevpatt at khptech dot com
@@ -111,9 +114,11 @@ Matej Urbančič <matej.urban at gmail.com> - Slovenian translation
 Mathias C. Berens | welcome-soft <berens at welcome-soft.de> - German translation
 Mathias Kretschmer <mathias at research.att.com> - IP Multicast support
 Mats Rojestal <mats.rojestal at bredband dot net> - compilation fixes for Solaris 9
+Matthias P. Nowak <mpnowak at broadpark dot no> - ALSA 5.1 fix
 Matthieu Lochegnies <lochegm1 at cti.ecp.fr> - MPEG audio emphasis fix
 Max Rudberg <max_08 at mac.com> - Mac OS X controller art (v0.7.0)
 Michael Mondragon <mammon at lokmail.net> - ncurses compilation fix
+Michał Trzebiatowski <hippie_1968 at hotmail dot com> - Polish translation
 Mickael Hoerdt <hoerdt at clarinet.u-strasbg.fr> - IPv6 SSM multicast patch
 Mike Schrag <mschrag at pobox dot com> - directx device selection
 Michel Lanners <mlan at cpu.lu> - fixed typos and AltiVec detection
@@ -140,8 +145,7 @@ Remco Poortinga <poortinga at telin.nl> - IPv6 multicast patch
 Rene Gollent <rgollent at u.arizona.edu> - BeOS interface fix
 Roine Gustafsson <roine at popstar.com> - spudec bug fixes
 Rudolf Cornelissen <rag.cornelissen at inter.nl.net> - BeOS fixes
-Scott Caudle <dorkmanzcot at gmail dot com> - Visualization, WX 
-improvements
+Scott Caudle <dorkmanzcot at gmail dot com> - Visualization, WX improvements
 Sebastien Chaumat <Sebastien.Chaumat at ens-lyon.fr> - YOPY port tests
 Simon Damkjær Andersen <simondamkjaer at gmail.com> - playmode icons and the entire Fullscreen Panel design for the OS GUI (v0.8.6)
 Steve Lhomme <steve dot lhomme at free dot fr> - MSVC fixes and Matroska enhancements

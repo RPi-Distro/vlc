@@ -2,7 +2,7 @@
  * opengl.c: OpenGL video output
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: opengl.c 19582 2007-03-31 23:56:53Z hartman $
+ * $Id: opengl.c 24165 2008-01-07 14:48:17Z fkuehne $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -37,6 +37,7 @@
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #include <OpenGL/glext.h>
+#include <Carbon/Carbon.h>
 
 /* On OS X, use GL_TEXTURE_RECTANGLE_EXT instead of GL_TEXTURE_2D.
    This allows sizes which are not powers of 2 */
@@ -238,6 +239,31 @@ static int CreateVout( vlc_object_t *p_this )
     vout_thread_t *p_vout = (vout_thread_t *)p_this;
     vout_sys_t *p_sys;
 
+    /* we may not use the OpenGL module on Mac OS X releases earlier to 10.4
+     * because otherwise we won't get correct fullscreen output.
+     * Since 10.3.9 is PowerPC-only, we are doing some strange stuff here. 
+     * Note that the following code requires the Carbon framework */
+#ifdef __APPLE__
+#ifndef __i386__
+#ifndef __x86_64__
+    long minorMacVersion;
+    if( Gestalt( gestaltSystemVersionMinor, &minorMacVersion ) == noErr )
+    {
+        if( minorMacVersion < 4 )
+        {
+            msg_Warn( p_vout, "current osx version is 10.%ld, non-suitable for OpenGL-based video output", minorMacVersion );
+            return VLC_ENOOBJ;
+        }
+    }
+    else
+    {
+        msg_Warn( p_vout, "couldn't get OS version" );
+        return VLC_EGENERIC;
+    }
+#endif
+#endif
+#endif
+    
     /* Allocate structure */
     p_vout->p_sys = p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_sys == NULL )

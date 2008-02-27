@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: input.c 17365 2006-10-30 08:28:18Z jpsaman $
+ * $Id: input.c 20619 2007-06-18 19:56:45Z dionoea $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -201,7 +201,7 @@ static input_thread_t *Create( vlc_object_t *p_parent, input_item_t *p_item,
                      *psz_end = 0;
                      if( !strncmp( psz_start, "name=", 5 ) )
                      {
-                         p_seekpoint->psz_name = psz_start + 5;
+                         p_seekpoint->psz_name = strdup(psz_start + 5);
                      }
                      else if( !strncmp( psz_start, "bytes=", 6 ) )
                      {

@@ -2,7 +2,7 @@
  * vout.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: vout.m 19667 2007-04-04 20:24:46Z fkuehne $
+ * $Id: vout.m 24195 2008-01-08 13:22:38Z fkuehne $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -43,6 +43,7 @@
 #include "fspanel.h"
 #include "vout.h"
 #import "controls.h"
+#include "embeddedwindow.h"
 
 /*****************************************************************************
  * DeviceCallback: Callback triggered when the video-device variable is changed
@@ -70,8 +71,14 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 - (id)init
 {
     [super init];
-    o_embedded_array = [NSMutableArray array];
+    o_embedded_array = [[NSMutableArray alloc] init];
     return self;
+}
+
+- (void)dealloc
+{
+    [o_embedded_array release];
+    [super dealloc];
 }
 
 - (id)getEmbeddedVout
@@ -112,9 +119,9 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 
 - (BOOL)windowContainsEmbedded: (id)o_window
 {
-/*    if( ![[o_window className] isEqualToString: @"VLCWindow"] )
+/*    if( ![[o_window className] isEqualToString: @"VLCVoutWindow"] )
     {
-        NSLog( @"We were not given a VLCWindow" );
+        NSLog( @"We were not given a VLCVoutWindow" );
     }*/
     return ([self getViewForWindow: o_window] == nil ? NO : YES );
 }
@@ -159,6 +166,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     int i_device;
     NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
     NSArray *o_screens = [NSScreen screens];
+    NSScreen *o_fullscreen_screen = nil;
 
     p_vout  = vout;
     o_view  = view;
@@ -178,6 +186,10 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     {
         i_device = var_GetInteger( p_real_vout->p_vlc, "video-device" );
     }
+
+    o_fullscreen_screen = [NSScreen screenWithDisplayID: (CGDirectDisplayID)i_device];
+    if( !o_fullscreen_screen )
+        o_fullscreen_screen = [[self window] screen];
 
     /* Setup the menuitem for the multiple displays. */
     if( var_Type( p_real_vout, "video-device" ) == 0 )
@@ -210,10 +222,10 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
                       (int)s_rect.size.width, (int)s_rect.size.height );
 
             text.psz_string = psz_temp;
-            val2.i_int = i;
+            val2.i_int = (int)[o_screen displayID];
             var_Change( p_real_vout, "video-device",
                         VLC_VAR_ADDCHOICE, &val2, &text );
-            if( i == i_device )
+            if( [o_screen isScreen:o_fullscreen_screen] )
             {
                 var_Set( p_real_vout, "video-device", val2 );
             }
@@ -238,8 +250,21 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     [o_view setFrameSize: [self frame].size];
 }
 
+- (void)drawRect:(NSRect)rect
+{
+    /* When there is no subview we draw a black background */
+    [self lockFocus];
+    [[NSColor blackColor] set];
+    NSRectFill(rect);
+    [self unlockFocus];
+}
+
 - (void)closeVout
 {
+    /* Make sure we don't see a white flash */
+    if( MACOS_VERSION > 10.3f )
+        [[self window] disableScreenUpdatesUntilFlush];
+
     [o_view removeFromSuperview];
     o_view = nil;
     p_vout = NULL;
@@ -314,6 +339,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 
     if ( !p_vout->b_fullscreen )
     {
+        NSView *mainView;
         NSRect new_frame;
         topleftbase.x = 0;
         topleftbase.y = [o_window frame].size.height;
@@ -335,11 +361,18 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
             newsize.height = (int) ( i_corrected_height * factor );
         }
 
+        /* In fullscreen mode we need to use a view that is different from
+         * ourselves, with the VLCEmbeddedWindow */
+        if([o_window isKindOfClass:[VLCEmbeddedWindow class]])
+            mainView = [o_window mainView];
+        else
+            mainView = self;
+
         /* Calculate the window's new size */
         new_frame.size.width = [o_window frame].size.width -
-                                    [self frame].size.width + newsize.width;
+                                    [mainView frame].size.width + newsize.width;
         new_frame.size.height = [o_window frame].size.height -
-                                    [self frame].size.height + newsize.height;
+                                    [mainView frame].size.height + newsize.height;
 
         new_frame.origin.x = topleftscreen.x;
         new_frame.origin.y = topleftscreen.y - new_frame.size.height;
@@ -373,10 +406,6 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     var_Get( p_real_vout, "fullscreen", &val );
     val.b_bool = !val.b_bool;
     var_Set( p_real_vout, "fullscreen", val );
-    if( [self isFullscreen] )
-        [[[[VLCMain sharedInstance] getControls] getFSPanel] setActive: nil];
-    else
-        [[[[VLCMain sharedInstance] getControls] getFSPanel] setNonActive: nil];    
 }
 
 - (BOOL)isFullscreen
@@ -395,8 +424,9 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 - (void)manage
 {
     /* Disable Screensaver, when we're playing something, but allow it on pause */
-    if( VLCIntf->p_sys->i_play_status == PLAYING_S )
-        UpdateSystemActivity( UsrActivity );
+    if( VLCIntf->p_sys && !VLCIntf->b_die )
+        if( VLCIntf->p_sys->i_play_status == PLAYING_S )
+            UpdateSystemActivity( UsrActivity );
 }
 
 - (id)getWindow
@@ -712,6 +742,18 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     return o_return;
 }
 
+- (void)enterFullscreen
+{
+    [[o_view class] performSelectorOnMainThread:@selector(resetVout:) withObject:[NSValue valueWithPointer:p_vout] waitUntilDone:YES];
+    [[[[VLCMain sharedInstance] getControls] getFSPanel] setActive: nil];
+}
+
+- (void)leaveFullscreen
+{
+    [[o_view class] performSelectorOnMainThread:@selector(resetVout:) withObject:[NSValue valueWithPointer:p_vout] waitUntilDone:YES];
+    [[[[VLCMain sharedInstance] getControls] getFSPanel] setNonActive: nil];
+}
+
 @end
 
 /*****************************************************************************
@@ -731,7 +773,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 {
     BOOL b_return = [super setVout: p_arg_vout subView: view frame:s_arg_frame];
     i_time_mouse_last_moved = mdate();
-    o_window = [[VLCWindow alloc] initWithVout: p_arg_vout view: self
+    o_window = [[VLCVoutWindow alloc] initWithVout: p_arg_vout view: self
                                                     frame: s_arg_frame];
     [self updateTitle];
     [view setFrame: [self frame]];
@@ -748,6 +790,11 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 
 - (void)closeVout
 {
+    [[[[VLCMain sharedInstance] getControls] getFSPanel] fadeOut];
+
+    if( MACOS_VERSION > 10.3f )
+        [[self window] disableScreenUpdatesUntilFlush];
+
     [o_window closeWindow];
     [o_window setAcceptsMouseMovedEvents: NO];
     i_time_mouse_last_moved = 0;
@@ -813,15 +860,15 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 }
 
 - (BOOL)setVout: (vout_thread_t *) p_arg_vout subView: (NSView *) view
-                     frame: (NSRect *) s_arg_frame
-
+                     frame: (NSRect *) s_arg_frame showWindow: (BOOL)b_show_window
 {
     BOOL b_return;
     b_return = [super setVout: p_arg_vout subView: view frame: s_arg_frame];
     if( b_return )
     {
         o_window = [self window];
-        [o_window makeKeyAndOrderFront: self];
+        if (b_show_window)
+            [o_window makeKeyAndOrderFront: self];
         [o_window setAcceptsMouseMovedEvents: TRUE];
 
         if( var_GetBool( p_real_vout, "video-on-top" ) )
@@ -832,6 +879,13 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
         [view setFrameSize: [self frame].size];
     }
     return b_return;
+}
+
+- (BOOL)setVout: (vout_thread_t *) p_arg_vout subView: (NSView *) view
+                     frame: (NSRect *) s_arg_frame
+
+{
+    return [self setVout: p_arg_vout subView: view frame:s_arg_frame showWindow: YES];
 }
 
 - (void)setUsed: (BOOL)b_new_used
@@ -855,34 +909,74 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 @end
 
 @implementation VLCDetachedEmbeddedVoutView
+- (void)awakeFromNib
+{
+    o_embeddedwindow = [self window];
+}
 
 - (BOOL)setVout: (vout_thread_t *) p_arg_vout subView: (NSView *) view
                      frame: (NSRect *) s_arg_frame
 {
-    BOOL b_return = [super setVout: p_arg_vout subView: view frame: s_arg_frame];
+    BOOL b_return = [super setVout: p_arg_vout subView: view frame: s_arg_frame showWindow: NO];
+
+    /* o_window needs to point to our o_embeddedwindow, super might have set it
+     * to the fullscreen window that o_embeddedwindow setups during fullscreen */
+    o_window = o_embeddedwindow;
 
     if( b_return )
     {
+        [o_window lockFullscreenAnimation];
         [o_window setAlphaValue: var_GetFloat( p_vout, "macosx-opaqueness" )];
         [self updateTitle];
-        [self scaleWindowWithFactor: 1.0 animate: NO];
-        [o_window makeKeyAndOrderFront: self];
+
+        /* Make the window the front and key window before animating */
+        if ([o_window isVisible] && (![o_window isFullscreen]))
+            [o_window makeKeyAndOrderFront: self];
+
+        [self scaleWindowWithFactor: 1.0 animate: [o_window isVisible] && (![o_window isFullscreen])];
+
+        /* Make sure our window is visible, if we are not in fullscreen */
+        if (![o_window isFullscreen])
+            [o_window makeKeyAndOrderFront: self];
+
+        [o_window unlockFullscreenAnimation];
+
     }
     return b_return;
 }
 
 - (void)closeVout
 {
-    [o_window orderOut: self];
+    playlist_t * p_playlist = vlc_object_find( VLCIntf, VLC_OBJECT_PLAYLIST,
+                                               FIND_ANYWHERE );
+    if( p_playlist )
+    {
+        if(!playlist_IsPlaying( p_playlist ))
+            [o_window performSelectorOnMainThread: @selector(orderOut:) withObject: self waitUntilDone: YES];
+
+        vlc_object_release( p_playlist );
+    }
+
     [super closeVout];
 }
 
+- (void)enterFullscreen
+{
+    /* We are in a VLCEmbeddedWindow */
+    [o_embeddedwindow performSelectorOnMainThread: @selector(enterFullscreen) withObject: NULL waitUntilDone: YES];
+}
+
+- (void)leaveFullscreen
+{
+    /* We are in a VLCEmbeddedWindow */
+    [o_embeddedwindow performSelectorOnMainThread: @selector(leaveFullscreen) withObject: NULL waitUntilDone: YES];
+}
 @end
 
 /*****************************************************************************
- * VLCWindow implementation
+ * VLCVoutWindow implementation
  *****************************************************************************/
-@implementation VLCWindow
+@implementation VLCVoutWindow
 
 - (id) initWithVout: (vout_thread_t *) vout view: (VLCVoutView *) view
                      frame: (NSRect *) frame
@@ -918,20 +1012,11 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     b_embedded = var_GetBool( p_vout, "macosx-embedded" );
 
     /* Find out on which screen to open the window */
-    if( i_device <= 0 || i_device > (int)[o_screens count] )
-    {
-         /* No preference specified. Use the main screen */
-        o_screen = [NSScreen mainScreen];
-        i_device = [o_screens indexOfObject: o_screen];
-        if( o_screen == [o_screens objectAtIndex: 0] )
-            b_menubar_screen = VLC_TRUE;
-    }
-    else
-    {
-        i_device--;
-        o_screen = [o_screens objectAtIndex: i_device];
-        b_menubar_screen = ( i_device == 0 );
-    }
+    o_screen = [NSScreen screenWithDisplayID: (CGDirectDisplayID)i_device];
+    if( !o_screen )
+        o_screen = [self screen];
+    if( [o_screen isMainScreen] )
+        b_menubar_screen = VLC_TRUE;
 
     if( p_vout->b_fullscreen )
     {
@@ -945,7 +1030,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
             [[[[VLCMain sharedInstance] getControls] getFSPanel] setActive: nil];
 
         /* tell the fspanel to move itself to front next time it's triggered */
-        [[[[VLCMain sharedInstance] getControls] getFSPanel] setVoutWasUpdated: i_device];
+        [[[[VLCMain sharedInstance] getControls] getFSPanel] setVoutWasUpdated: o_screen];
 
         /* Creates a window with size: screen_rect on o_screen */
         [self initWithContentRect: screen_rect
@@ -971,7 +1056,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
                 CGDisplayCount dspyCnt;
                 CGPoint gPoint;
 
-                if( i == (unsigned int)i_device ) continue;
+                if( [[o_screens objectAtIndex:i] isScreen: o_screen] ) continue;
 
                 screen_rect = [[o_screens objectAtIndex: i] frame];
 
@@ -1069,7 +1154,6 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 {
     /* XXX waitUntilDone = NO to avoid a possible deadlock when hitting
        Command-Q */
-    [self setContentView: NULL];
     [self performSelectorOnMainThread: @selector(closeReal:)
         withObject: NULL waitUntilDone: NO];
 }
@@ -1080,10 +1164,17 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     {
         CGDisplayFadeReservationToken token;
         CGAcquireDisplayFadeReservation(kCGMaxDisplayReservationInterval, &token);
-        CGDisplayFade( token, 2, kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0, 0, 0, false );
+        CGDisplayFade( token, 0.3 , kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0, 0, 0, YES );
+        
+        [self disableScreenUpdatesUntilFlush];
+        [self orderOut: self];
+        
+        CGDisplayFade( token, 0.6 , kCGDisplayBlendSolidColor, kCGDisplayBlendNormal, 0, 0, 0, YES );
         CGReleaseDisplayFadeReservation( token);
         CGDisplayRestoreColorSyncSettings();
     }
+    [NSScreen unblackoutScreens];
+    
     SetSystemUIMode( kUIModeNormal, 0);
     [super close];
 
