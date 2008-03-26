@@ -6,3 +6,4 @@
 104_notify.diff
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
+400-CVE-2008-1489.diff
