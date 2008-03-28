@@ -1,3 +1,15 @@
+vlc (0.8.6.c-6+lenny3) testing-security; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * This update addresses the following security issues:
+    - CVE-2008-1489: an integer overflow in the MP4_ReadBox_rdrf function that
+      can be triggered via crafted atom size values could possibly lead to
+      arbitrary code execution (Closes: #472635).
+    - CVE-2008-0073: possible code execution via a crafted rtsp stream with
+      a large streamid SDP parameter (Closes: #473057).
+
+ -- Nico Golde <nion@debian.org>  Fri, 28 Mar 2008 13:51:48 +0100
+
 vlc (0.8.6.c-6+lenny1) testing-security; urgency=high
 
   * Non-maintainer upload by security team.
