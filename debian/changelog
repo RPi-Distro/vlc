@@ -1,9 +1,22 @@
+vlc (0.8.6.e-2) unstable; urgency=high
+
+  [ Christophe Mutricy ]
+  * Acknowledge NMU by Nico Golde. Thanks
+  * New patch taken from upstream to fix an arbitrary code execution.
+    CVE-2008-0073 (Closes: #473057)
+  * New patch to fix FTBS in MKV module
+
+  [ Loic Minier ]
+  * Mention CVE id in 0.8.6.e-1.1.
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 29 Mar 2008 15:04:28 +0000
+
 vlc (0.8.6.e-1.1) unstable; urgency=high
 
   * Non-maintainer upload by the Security Team.
   * Fix Integer overflow in MP4_ReadBox_rdrf function
     that triggers a heap-based buffer overflow via a
-    large atom length value (Closes: #472635).
+    large atom length value (Closes: #472635); CVE-2008-1489.
 
  -- Nico Golde <nion@debian.org>  Wed, 26 Mar 2008 13:21:44 +0100
 

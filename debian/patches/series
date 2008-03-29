@@ -4,6 +4,8 @@
 102_dejavu_font.diff
 103_kfreebsd.diff
 104_notify.diff
+105_min_mkv.patch
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
 400-CVE-2008-1489.diff
+401-CVE-2008-0073.diff
