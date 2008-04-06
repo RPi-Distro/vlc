@@ -25,3 +25,10 @@ patch-memleak-0.8.6debian-0.8.6c.diff
 patch-missingchecks-0.8.6debian-0.8.6c.diff
 patch-overflows-0.8.6debian-0.8.6c.diff
 patch-uninitialised-0.8.6debian-0.8.6c.diff
+sec-subtitle_buffer_overflow.diff
+sec-httpd_formatstring.diff
+sec-backported-CVE-2007-6683.patch
+sec-backported-CVE-2008-0296_CVE-2008-0295.diff
+sec-backported-CVE-2008-0073.patch
+sec-lenny-CVE-2008-0984.diff
+sec-lenny-CVE-2008-1489.diff

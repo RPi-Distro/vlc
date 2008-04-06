@@ -1,3 +1,25 @@
+vlc (0.8.6-svn20061012.debian-5.1+etch2) stable-security; urgency=high
+
+  * Non-maintainer upload by the security team
+  * sec-subtitle_buffer_overflow.diff:
+    + CVE-2007-6681: Stack buffer overflow in subtitle demuxer
+  * sec-httpd_formatstring.diff:
+    + CVE-2007-6682: Format string vulnerability in HTTP streaming
+  * sec-backported-CVE-2007-6683.patch:
+    + CVE-2007-6683: Arbitrary file overwrite vulnerability in browser plugin
+  * sec-CVE-2008-0296_CVE-2008-0295.diff:
+    + CVE-2008-0295: Heap buffer overflow in RTSP session description
+      protocol (SDP) handlers
+    + CVE-2008-0296: Heap buffer overflow in RTSP stream handling
+  * sec-backported-CVE-2008-0073.patch:
+    + CVE-2008-0073: Array index error in RTSP session description protocol
+      metadata handling
+  * sec-CVE-2008-0984.diff:
+    + CVE-2008-0984: Inadequate integer bounds checking enables memory
+      scribble and arbitrary code execution
+
+ -- Devin Carraway <devin@debian.org>  Sun,  6 Apr 2008 02:59:31 +0000
+
 vlc (0.8.6-svn20061012.debian-5etch1) stable-security; urgency=high
 
   * patch-formatstring-0.8.6debian-0.8.6c.diff:
