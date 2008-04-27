@@ -1,3 +1,16 @@
+vlc (0.8.6.e-2.1) unstable; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * This update addresses the following security issues:
+    - CVE-2008-1769: out-of-bounds array access and memory corruption
+      via a crafted cinepak file (Closes: #478140).
+    - CVE-2008-1768: multiple integer overflow triggering buffer overflows
+      in the mp4 and real demuxer and the cinepak codec (Closes: #478140).
+    - CVE-2008-1881: stack-based buffer overflow in subtitle parsing leading
+      to arbitrary code execution via crafted subtitle file (Closes: #477805).
+
+ -- Nico Golde <nion@debian.org>  Sun, 27 Apr 2008 16:17:49 +0200
+
 vlc (0.8.6.e-2) unstable; urgency=high
 
   [ Christophe Mutricy ]
