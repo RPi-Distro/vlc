@@ -1,3 +1,17 @@
+vlc (0.8.6.c-6+lenny5) testing-security; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * Fix regression introduced by latest security upload which
+    did not properly define FREENULL (Closes: #478971,#481417,#477734).
+  * Fix untrusted search path vulnerability by not loading libraries
+    from plugins and modules directories in the current working
+    directory (CVE-2008-2147; Closes: #480724).
+  * Fix arbitrary file overwriting via a crafted playlist or an EXTLVLCOPT
+    statement in an mp3 file by partially disabling this functionality
+    for the browser plugin (CVE-2007-6683; Closes: #480370).
+
+ -- Nico Golde <nion@debian.org>  Fri, 16 May 2008 17:45:15 +0200
+
 vlc (0.8.6.c-6+lenny4) testing-security; urgency=high
 
   * Non-maintainer upload by the Security Team.
