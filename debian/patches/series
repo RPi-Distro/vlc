@@ -1,4 +1,5 @@
 001_am_maintainer_mode.diff
+010_iceape.diff
 050_bootstrap.diff
 101_certificates_paths.diff
 102_dejavu_font.diff

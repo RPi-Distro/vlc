@@ -1,0 +1,43 @@
+Index: vlc-0.8.6.e/configure.ac
+===================================================================
+--- vlc-0.8.6.e.orig/configure.ac	2008-05-15 07:47:29.880615291 +0200
++++ vlc-0.8.6.e/configure.ac	2008-05-15 07:47:41.796609662 +0200
+@@ -5119,9 +5119,9 @@
+   if test "${with_mozilla_sdk_path}" = "" -o "${with_mozilla_sdk_path}" = "no"
+   then
+     dnl New firefox-1.5 SDK api
+-    PKG_CHECK_MODULES([FIREFOX], [firefox-plugin],
++    PKG_CHECK_MODULES([ICEAPE], [iceape-plugin],
+       [
+-        PKG_CHECK_MODULES([FIREFOX_XPCOM], [firefox-xpcom],
++        PKG_CHECK_MODULES([ICEAPE_XPCOM], [iceape-xpcom],
+           [],
+           [
+             PKG_CHECK_MODULES([MOZILLA_NSPR], [mozilla-nspr],
+@@ -5136,7 +5136,7 @@
+               ]
+             )
+           ])
+-        CPPFLAGS="${CPPFLAGS_save} ${FIREFOX_CFLAGS} ${FIREFOX_XPCOM_CFLAGS} ${MOZILLA_NSPR_CFLAGS} ${NSPR_CFLAGS} ${MOZILLA_CPPFLAGS}"
++        CPPFLAGS="${CPPFLAGS_save} ${ICEAPE_CFLAGS} ${ICEAPE_XPCOM_CFLAGS} ${MOZILLA_NSPR_CFLAGS} ${NSPR_CFLAGS} ${MOZILLA_CPPFLAGS}"
+         MOZILLA_REQUIRED_HEADERS=1
+         AC_CHECK_HEADERS(mozilla-config.h,,MOZILLA_REQUIRED_HEADERS=0)
+         AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
+@@ -5150,7 +5150,7 @@
+         fi
+         MOZILLA_REQUIRED_HEADERS=
+         mozilla=:
+-        firefox_include=`pkg-config --variable=includedir firefox-plugin`
++        firefox_include=`pkg-config --variable=includedir iceape-plugin`
+         if test -f "${firefox_include}/mozilla-config.h" -a -f "${firefox_include}/mozilla-config32.h"; then
+             MOZILLA_CONFIG_H="${firefox_include}/mozilla-config32.h"
+         elif test -f "${firefox_include}/mozilla-config.h" -a -f "${firefox_include}/mozilla-config64.h"; then
+@@ -5162,7 +5162,7 @@
+             VLC_ADD_LDFLAGS([mozilla], [${X_LIBS} ${X_PRE_LIBS} -lX11 -lXt])
+         fi
+         VLC_ADD_CPPFLAGS([mozilla],[${CPPFLAGS}])
+-        VLC_ADD_LDFLAGS([mozilla],[${FIREFOX_LIBS} ${MOZILLA_NSPR_LIBS} ${NSPR_LIBS} ${MOZILLA_LDFLAGS}])
++        VLC_ADD_LDFLAGS([mozilla],[${ICEAPE_LIBS} ${MOZILLA_NSPR_LIBS} ${NSPR_LIBS} ${MOZILLA_LDFLAGS}])
+         VLC_ADD_PLUGINS([mozilla])
+         MOZILLA_CONFIG=
+         CPPFLAGS="${CPPFLAGS_save}"
