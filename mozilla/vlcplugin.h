@@ -2,7 +2,7 @@
  * vlcplugin.h: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: vlcplugin.h 19481 2007-03-25 22:38:56Z damienf $
+ * $Id: 4ff0af525471274c89dac19f8debfdbe15fed04c $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
             Damien Fouilleul <damienf@videolan.org>

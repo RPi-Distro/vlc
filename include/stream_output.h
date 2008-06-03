@@ -2,7 +2,7 @@
  * stream_output.h : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: stream_output.h 14151 2006-02-04 00:08:50Z zorglub $
+ * $Id: 641ec997a789302052555c7c199178259d8b0189 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>

@@ -1,5 +1,5 @@
 /*
- * $Id: vfl.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: cc3b866e22f58aa298a8645e29ddc5c3f7ead1cf $
  *
  * Copyright 1998 Marcus Meissner
  *

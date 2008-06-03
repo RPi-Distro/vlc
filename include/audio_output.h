@@ -2,7 +2,7 @@
  * audio_output.h : audio output interface
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: audio_output.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 4eef77635f46e97613819cbd18bf0fedcf39691c $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

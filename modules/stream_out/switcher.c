@@ -2,7 +2,7 @@
  * switcher.c: MPEG2 video switcher module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: switcher.c 19591 2007-04-01 00:28:24Z hartman $
+ * $Id: 7250426191120abe4df08ece7219654d6a80b428 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -36,7 +36,9 @@
 #include <network.h>
 
 #define HAVE_MMX
-#ifdef HAVE_FFMPEG_AVCODEC_H
+#ifdef HAVE_LIBAVCODEC_AVCODEC_H
+#   include <libavcodec/avcodec.h>
+#elif defined( HAVE_FFMPEG_AVCODEC_H )
 #   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>

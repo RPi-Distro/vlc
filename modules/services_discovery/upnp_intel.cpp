@@ -2,7 +2,7 @@
  * Upnp_intell.cpp :  UPnP discovery module (Intel SDK)
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: upnp_intel.cpp 16767 2006-09-21 14:32:45Z hartman $
+ * $Id: f04fae6902d830abdcb8b18d5b8fe4aa8a010181 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>

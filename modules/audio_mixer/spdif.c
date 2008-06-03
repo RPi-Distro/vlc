@@ -2,7 +2,7 @@
  * spdif.c : dummy mixer for S/PDIF output (1 input only)
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: spdif.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: e54c7bccc8db554e61da672b74b5dbb3834ca827 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

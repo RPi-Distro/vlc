@@ -2,7 +2,7 @@
  * msn.c : msn title plugin
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: msn.c 17020 2006-10-10 18:33:26Z fkuehne $
+ * $Id: 714abe744f1892bcc8900b1857e0288a4522ded5 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

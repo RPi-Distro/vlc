@@ -2,7 +2,7 @@
  * playlist.c : Playlist testsuite
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: playlist.c 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: 6aaf7a355155261b7607ae9e34bad6b9cab856f3 $
  *
  * Authors : Clément Stenac <zorglub@videolan.org>
  *

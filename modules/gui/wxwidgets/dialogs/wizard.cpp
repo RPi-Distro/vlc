@@ -2,7 +2,7 @@
  * wizard.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: wizard.cpp 18107 2006-11-27 13:44:11Z md $
+ * $Id: f8e543ba266c894aad84a218614ee3eeaaabf95c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

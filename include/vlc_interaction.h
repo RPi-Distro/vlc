@@ -2,7 +2,7 @@
  * vlc_interaction.h: structures and function for user interaction
  *****************************************************************************
  * Copyright (C) 2005-2006 VideoLAN
- * $Id: vlc_interaction.h 14186 2006-02-07 16:24:30Z courmisch $
+ * $Id: 1085cfdc64870e97e3d2426c72d23a6b9a5a2e73 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

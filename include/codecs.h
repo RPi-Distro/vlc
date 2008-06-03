@@ -2,7 +2,7 @@
  * codecs.h: codec related structures needed by the demuxers and decoders
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: codecs.h 20913 2007-07-30 07:51:32Z thresh $
+ * $Id: 80ca4e0d62fd15a2c765e930f3bec0c69eaba1d4 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *

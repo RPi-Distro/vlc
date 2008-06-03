@@ -2,7 +2,7 @@
  * speex.c: speex decoder/packetizer/encoder module making use of libspeex.
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: speex.c 17236 2006-10-21 19:11:38Z hartman $
+ * $Id: 0ca290ff3ba180f33a90b42bb35298f2350ed919 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -332,7 +332,7 @@ static int ProcessInitialHeader( decoder_t *p_dec, ogg_packet *p_oggpacket )
         msg_Err( p_dec, "cannot read Speex header" );
         return VLC_EGENERIC;
     }
-    if( p_header->mode >= SPEEX_NB_MODES )
+    if( p_header->mode >= SPEEX_NB_MODES || p_header->mode < 0 )
     {
         msg_Err( p_dec, "mode number %d does not (yet/any longer) exist in "
                  "this version of libspeex.", p_header->mode );

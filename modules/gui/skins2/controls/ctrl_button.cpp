@@ -2,7 +2,7 @@
  * ctrl_button.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ctrl_button.cpp 16457 2006-08-31 20:51:12Z hartman $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -4,7 +4,7 @@ vim:syntax=html
 <  browse: VLC media player web interface - remote file browse dialog
 < - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
 <  Copyright (C) 2005-2006 the VideoLAN team
-<  $Id: browse 14784 2006-03-17 23:13:47Z dionoea $
+<  $Id$
 < 
 <  Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
 < 

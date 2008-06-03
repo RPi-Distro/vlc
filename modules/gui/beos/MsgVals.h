@@ -2,7 +2,7 @@
  * MsgVals.h
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: MsgVals.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id$
  *
  * Authors: Tony Castley <tcastley@mail.powerup.com.au>
  *          Stephan Aßmus <stippi@yellowbites.com>

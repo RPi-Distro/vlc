@@ -2,7 +2,7 @@
  * extrapanel.hpp: Headers for the extra panel window
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: extrapanel.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 355dfa2e08a2b8d6bcf542f373b56f544d1b154e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

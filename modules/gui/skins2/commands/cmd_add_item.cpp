@@ -2,7 +2,7 @@
  * cmd_add_item.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cmd_add_item.cpp 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: 9bf80b6744e40cee7bc4c98588fb351cb8d48ff3 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * beos_init.cpp: Initialization for BeOS specific features
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: beos_specific.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 7e0e74c29d598aeb4f3f78dd29cc6f04b94cd2e2 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *

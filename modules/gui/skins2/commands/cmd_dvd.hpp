@@ -2,7 +2,7 @@
  * cmd_dvd.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cmd_dvd.hpp 14273 2006-02-12 21:05:53Z ipkiss $
+ * $Id$
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *

@@ -1,5 +1,5 @@
 /*
- * $Id: afl.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: 421414874a1e77a222465e7a86bfd7af55360aa7 $
  *
  * Copyright (C) 1998 Patrick Stridvall
  * Copyright (C) 1999 Eric Pouech

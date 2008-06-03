@@ -2,7 +2,7 @@
  * stream.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: stream.c 18114 2006-11-27 20:09:24Z hartman $
+ * $Id: 8351c86225df3f2cddd855d7951908adc99ab52f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * vlc_error.h: error handling routine
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: vlc_error.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 4e855738cd23546664818fed3b48a1f3259aadff $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

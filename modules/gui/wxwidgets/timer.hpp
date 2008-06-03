@@ -2,7 +2,7 @@
  * timer.hpp: Timer headers
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: timer.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 7f29e08439b45dd300540931dadb4eb6fefd6d3c $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

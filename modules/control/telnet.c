@@ -2,7 +2,7 @@
  * telnet.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: telnet.c 19602 2007-04-01 01:10:23Z hartman $
+ * $Id: 2c01c2c9b10169fac082556175b43e795096e59f $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -452,6 +452,8 @@ static void Run( intf_thread_t *p_intf )
             }
         }
     }
+
+    free( psz_password );
 }
 
 static void Write_message( telnet_client_t *client, vlm_message_t *message,

@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: dvdnav.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: 387b32762ebf3d3066bd73f1c7412f0885697370 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

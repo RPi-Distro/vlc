@@ -2,7 +2,7 @@
  * infopanels.hpp: Information panels (statistics, general info, ...)
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: infopanels.hpp 16439 2006-08-30 19:33:55Z hartman $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

@@ -1,10 +1,10 @@
 dnl Autoconf settings for vlc
 
-AC_INIT(vlc,0.8.6e)
+AC_INIT(vlc,0.8.6h)
 VERSION_MAJOR="0"
 VERSION_MINOR="8"
 VERSION_REVISION="6"
-VERSION_EXTRA="e"
+VERSION_EXTRA="h"
 
 CONFIGURE_LINE="$0 $*"
 CODENAME="Janus"
@@ -300,7 +300,7 @@ fi
 dnl
 dnl Gettext stuff
 dnl
-ALL_LINGUAS="af ar ca co cs da de en_GB es eu fa fr fur gl he hi hu it ja lt lv  ka ko ms nb ne nl nn oc pa pl pt_BR ro ru sk sl sq sv th tr zh_CN zh_TW"
+ALL_LINGUAS="af ar ca co cs da de en_GB es eu fa fr fur gl he hi hu it ja lt lv  ka ko ms nb ne nl nn oc pa pl pt_BR ro ru sk sl sq sr sv th tr zh_CN zh_TW"
 AM_GNU_GETTEXT_VERSION(0.11.5)
 AM_GNU_GETTEXT
 if test "${nls_cv_force_use_gnu_gettext}" = "yes"; then
@@ -561,7 +561,7 @@ AM_CONDITIONAL(BUILD_GETOPT, ${need_getopt})
 if test "${SYS}" != "mingw32" -a "${SYS}" != "mingwce"; then
 AC_TYPE_SIGNAL
 AC_CHECK_LIB(m,cos,[
-  VLC_ADD_LDFLAGS([adjust distort a52tofloat32 dtstofloat32 x264 goom visual],[-lm])
+  VLC_ADD_LDFLAGS([adjust distort a52tofloat32 dtstofloat32 x264 goom visual opengl],[-lm])
 ])
 AC_CHECK_LIB(m,pow,[
   VLC_ADD_LDFLAGS([ffmpeg ffmpegaltivec stream_out_transrate i420_rgb faad twolame equalizer param_eq vlc freetype mpc dmo quicktime realaudio galaktos],[-lm])
@@ -2552,6 +2552,15 @@ dnl Those options have to be here because the .pc can be bogus for ffmpeg previo
              LDFLAGS="${LDFLAGS_save}"
      fi])
 
+ AC_ARG_WITH(ffmpeg-dca,
+   [    --with-ffmpeg-dca     specify if ffmpeg has been compiled with dca support],
+   [
+     if test "$with_ffmpeg_dca" = "yes"; then
+             LDFLAGS="${LDFLAGS_save} ${LDFLAGS_ffmpeg} ${LIBS_ffmpeg}"
+             AC_CHECK_LIB(dca, dca_free, [ VLC_ADD_LDFLAGS([ffmpeg],[-ldca]) ])
+             LDFLAGS="${LDFLAGS_save}"
+     fi])
+
  AC_ARG_WITH(ffmpeg-vorbis,
    [    --with-ffmpeg-vorbis    specify if ffmpeg has been compiled with vorbis support],
    [
@@ -2680,10 +2689,10 @@ dnl Look for a ffmpeg-config (we are on debian )
   AC_PATH_PROG(FFMPEG_CONFIG, ffmpeg-config, no, ${FFMPEG_PATH})
   if test "${FFMPEG_CONFIG}" != "no"
   then
-    AC_CHECK_HEADERS(ffmpeg/avcodec.h, [], [AC_MSG_ERROR([Missing header file ffmpeg/avcodec.h.])] )
-    AC_CHECK_HEADERS(ffmpeg/avformat.h)
-    AC_CHECK_HEADERS(ffmpeg/avutil.h)
-    AC_CHECK_HEADERS(postproc/postprocess.h, [], [AC_MSG_ERROR([Missing header file postproc/postprocess.h.])] )
+    AC_CHECK_HEADERS(ffmpeg/avcodec.h libavcodec/avcodec.h)
+    AC_CHECK_HEADERS(ffmpeg/avformat.h libavformat/avformat.h)
+    AC_CHECK_HEADERS(ffmpeg/avutil.h libavutil/avutil.h)
+    AC_CHECK_HEADERS(postproc/postprocess.h libpostproc/postprocess.h.)
     VLC_ADD_PLUGINS([ffmpeg])
     if test "${enable_sout}" != "no"; then
         VLC_ADD_PLUGINS([stream_out_switcher])
@@ -2696,10 +2705,13 @@ dnl Look for a ffmpeg-config (we are on debian )
 dnl Trying with pkg-config
    PKG_CHECK_MODULES(FFMPEG,[libavcodec, libavformat],
     [
-     AC_CHECK_HEADERS(ffmpeg/avcodec.h, [], [AC_MSG_ERROR([Missing header file ffmpeg/avcodec.h.])] )
-     AC_CHECK_HEADERS(ffmpeg/avformat.h)
-     AC_CHECK_HEADERS(ffmpeg/avutil.h)
-     AC_CHECK_HEADERS(postproc/postprocess.h, [], [AC_MSG_ERROR([Missing header file postproc/postprocess.h.])] )
+     VLC_SAVE_FLAGS
+     CPPFLAGS="${CPPFLAGS} ${FFMPEG_CFLAGS}"
+     CFLAGS="${CFLAGS} ${FFMPEG_CFLAGS}"
+     AC_CHECK_HEADERS(ffmpeg/avcodec.h libavcodec/avcodec.h)
+     AC_CHECK_HEADERS(ffmpeg/avformat.h libavformat/avformat.h)
+     AC_CHECK_HEADERS(ffmpeg/avutil.h libavutil/avutil.h)
+     AC_CHECK_HEADERS(postproc/postprocess.h libpostproc/postprocess.h)
      if test "${SYS}" = "darwin"; then
         VLC_ADD_BUILTINS([ffmpeg])
      else
@@ -2718,6 +2730,7 @@ dnl Trying with pkg-config
      PKG_CHECK_MODULES(POSTPROC, libpostproc,[
        VLC_ADD_LDFLAGS([ffmpeg],[${POSTPROC_LIBS}]) 
        ],[ true ])
+     VLC_RESTORE_FLAGS
     ],[
      
     dnl
@@ -2725,10 +2738,10 @@ dnl Trying with pkg-config
     dnl
       CPPFLAGS="${CPPFLAGS_save} ${CPPFLAGS_ffmpeg}"
       LDFLAGS="${LDFLAGS_save} ${LDFLAGS_ffmpeg}"
-      AC_CHECK_HEADERS(ffmpeg/avcodec.h, [], [AC_MSG_ERROR([Missing header file ffmpeg/avcodec.h.])] )
-      AC_CHECK_HEADERS(ffmpeg/avformat.h)
-      AC_CHECK_HEADERS(ffmpeg/avutil.h)
-      AC_CHECK_HEADERS(postproc/postprocess.h, [], [AC_MSG_ERROR([Missing header file postproc/postprocess.h.])] )
+      AC_CHECK_HEADERS(ffmpeg/avcodec.h libavcodec/avcodec.h)
+      AC_CHECK_HEADERS(ffmpeg/avformat.h libavformat/avformat.h)
+      AC_CHECK_HEADERS(ffmpeg/avutil.h libavutil/avutil.h)
+      AC_CHECK_HEADERS(postproc/postprocess.h libpostproc/postprocess.h)
 
       AC_CHECK_LIB(avutil, av_crc_init, [
         VLC_ADD_LDFLAGS([ffmpeg],[-lavutil])
@@ -2755,6 +2768,17 @@ dnl Trying with pkg-config
     ])
   fi
  fi 
+fi
+
+dnl Check if we have (required) img_resample() in libavcodec
+if test "${enable_ffmpeg}" != "no"
+then
+     VLC_SAVE_FLAGS
+     CFLAGS="${CFLAGS} ${CFLAGS_ffmpeg}"
+     LDFLAGS="${LDFLAGS} ${LDFLAGS_ffmpeg}"
+     AC_CHECK_LIB(avcodec, img_resample, ,
+       [AC_MSG_ERROR([Your FFmpeg library doesn't have the needed img_resample() function. You should rebuild it with software scaler disabled])], -lavutil)
+     VLC_RESTORE_FLAGS
 fi
 
 dnl
@@ -4098,6 +4122,13 @@ then
     VLC_ADD_PLUGINS([caca])
     VLC_ADD_CFLAGS([caca],[`${CACA_CONFIG} --cflags`])
     VLC_ADD_LDFLAGS([caca],[`${CACA_CONFIG} --plugin-libs`])
+    AC_COMPILE_IFELSE( [AC_LANG_PROGRAM([[#include <caca.h>
+                                        caca_event_t ev;]],
+                                        [[ev.type = 0;]]
+                       )],
+                       [],
+      [AC_DEFINE(CACA_EVENT_OPAQUE, [1], ["Define if struct caca_event is opaque and must not be accessed directly"])]
+    )
   fi
 fi
 

@@ -2,7 +2,7 @@
  * preferences.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: preferences.cpp 14117 2006-02-01 18:02:40Z courmisch $
+ * $Id: 31c478aea6352890a6e89bfbc9f72e5ec3c4904c $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>

@@ -2,7 +2,7 @@
  * vout_beos.cpp: beos video output display method
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: VideoOutput.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: e70773c24d5478e22d8251a5b81c9c750f9ff00c $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

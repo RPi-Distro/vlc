@@ -87,6 +87,7 @@ void libvlc_vlm_del_media( libvlc_instance_t *p_instance, char *psz_name,
         libvlc_exception_raise( p_exception, "Unable to delete %s",
                                 psz_name );
     }
+    vlm_MessageDelete( answer );
     free( psz_message);
 #endif
 }
@@ -251,6 +252,7 @@ void libvlc_vlm_play_media( libvlc_instance_t *p_instance, char *psz_name,
         libvlc_exception_raise( p_exception, "Unable to play %s",
                                 psz_name );
     }
+    vlm_MessageDelete( answer );
     free( psz_message);
 #endif
 }
@@ -269,6 +271,7 @@ void libvlc_vlm_stop_media( libvlc_instance_t *p_instance, char *psz_name,
         libvlc_exception_raise( p_exception, "Unable to stop %s",
                                 psz_name );
     }
+    vlm_MessageDelete( answer );
     free( psz_message);
 #endif
 }
@@ -287,6 +290,7 @@ void libvlc_vlm_pause_media( libvlc_instance_t *p_instance, char *psz_name,
         libvlc_exception_raise( p_exception, "Unable to pause %s",
                                 psz_name );
     }
+    vlm_MessageDelete( answer );
     free( psz_message);
 #endif
 }

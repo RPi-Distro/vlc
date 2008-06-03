@@ -2,7 +2,7 @@
  * x11.c : X11 plugin for vlc
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: x11.c 14977 2006-03-30 08:40:51Z zorglub $
+ * $Id: e40d920cb710a8e2c68067c08d7d533dedd2e5c0 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

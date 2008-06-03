@@ -2,7 +2,7 @@
  * common.h: a few defines and wrappers for swscale
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: common.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: c73121a58af53402356df84279175d5f974e2b72 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -36,7 +36,10 @@ extern void *( *swscale_fast_memcpy )( void *, const void *, int );
 #define MANGLE(a) #a
 #endif
 
-#ifdef ARCH_X86
+#if defined(__FreeBSD__) && __FreeBSD__ >= 5
+#   include <sys/endian.h>
+#   define bswap_16(x) be16toh(x)
+#elif defined(ARCH_X86)
 static inline unsigned short ByteSwap16(unsigned short x)
 {
   __asm("xchgb %b0,%h0" :
@@ -44,10 +47,9 @@ static inline unsigned short ByteSwap16(unsigned short x)
         "0" (x));
     return x;
 }
-#define bswap_16(x) ByteSwap16(x)
+#   define bswap_16(x) ByteSwap16(x)
 #else
-
-#define bswap_16(x) (((x) & 0x00ff) << 8 | ((x) & 0xff00) >> 8)
+#   define bswap_16(x) (((x) & 0x00ff) << 8 | ((x) & 0xff00) >> 8)
 #endif  /* !ARCH_X86 */
 
 /* SWSCALE image formats */

@@ -2,7 +2,7 @@
  * es.c: Elementary stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: es.c 15529 2006-05-02 20:08:41Z bigben $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -381,8 +381,6 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
 
     if( id->p_input == NULL )
     {
-        free( id );
-
         sout_MuxDelete( p_mux );
         sout_AccessOutDelete( p_access );
         free( id );

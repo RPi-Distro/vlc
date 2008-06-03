@@ -2,7 +2,7 @@
  * interaction.c: User interaction functions
  *****************************************************************************
  * Copyright (C) 2005-2006 VideoLAN
- * $Id: interaction.c 17051 2006-10-13 13:23:18Z thresh $
+ * $Id: c9cd57924969078dc16a9650d6ccbb7aa1cf0d91 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

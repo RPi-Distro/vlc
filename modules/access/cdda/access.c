@@ -2,7 +2,7 @@
  * access.c : CD digital audio input module for vlc using libcdio
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: access.c 18488 2007-01-03 17:49:32Z jb $
+ * $Id: 15b4b33503545c4f38268861cc1eebef244b19bc $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -737,14 +737,14 @@ CDDAOpen( vlc_object_t *p_this )
    
       char *psz_paranoia = config_GetPsz( p_access, 
 					  MODULE_STRING "-paranoia" );
-      p_cdda->e_paranoia = paranoia_none;
+      p_cdda->e_paranoia = PARANOIA_MODE_DISABLE;
       if( psz_paranoia && *psz_paranoia )
       {
 
 	if( !strncmp( psz_paranoia, "full", strlen("full") )  )
-	  p_cdda->e_paranoia = paranoia_full;
+	  p_cdda->e_paranoia = PARANOIA_MODE_FULL;
 	else if( !strncmp( psz_paranoia, "overlap", strlen("overlap") )  )
-	  p_cdda->e_paranoia = paranoia_overlap;
+	  p_cdda->e_paranoia = PARANOIA_MODE_OVERLAP;
 	
 	/* Use CD Paranoia? */
 	if ( p_cdda->e_paranoia ) {
@@ -755,7 +755,7 @@ CDDAOpen( vlc_object_t *p_this )
 	  if ( 0 != cdio_cddap_open(p_cdda->paranoia_cd) ) {
 	    msg_Warn( p_cdda_input, "unable to get paranoia support - "
 		      "continuing without it." );
-	    p_cdda->e_paranoia = paranoia_none;
+	    p_cdda->e_paranoia = PARANOIA_MODE_DISABLE;
 	  } else {
 	    p_cdda->paranoia = cdio_paranoia_init(p_cdda->paranoia_cd);
 	    cdio_paranoia_seek(p_cdda->paranoia, p_cdda->i_lsn, SEEK_SET);
@@ -763,7 +763,7 @@ CDDAOpen( vlc_object_t *p_this )
 	    /* Set reading mode for full or overlap paranoia, 
 	       but allow skipping sectors. */
 	    cdio_paranoia_modeset(p_cdda->paranoia,
-				  paranoia_full == p_cdda->e_paranoia ?
+				  PARANOIA_MODE_FULL == p_cdda->e_paranoia ?
 				  PARANOIA_MODE_FULL^PARANOIA_MODE_NEVERSKIP :
 				  PARANOIA_MODE_OVERLAP^PARANOIA_MODE_NEVERSKIP
 				  );

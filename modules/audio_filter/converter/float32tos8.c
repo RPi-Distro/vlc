@@ -2,7 +2,7 @@
  * float32tos8.c : converter from float32 to signed 8 bits integer
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: float32tos8.c 14997 2006-03-31 15:15:07Z fkuehne $
+ * $Id: 4314650474287ec75628bdb1a5d3992a677dfffe $
  *
  * Authors: Xavier Maillard <zedek@fxgsproject.org>
  *

@@ -2,7 +2,7 @@
  * nuv.c:
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: nuv.c 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 6de4bb52cd123e21fc0cd9300a3a153d904cdf26 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

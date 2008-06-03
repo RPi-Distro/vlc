@@ -2,7 +2,7 @@
  * about.h: MacOS X About Panel
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: about.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 7b29b2df60ff528ce6ea5de95a10bfc67fa74431 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  * 

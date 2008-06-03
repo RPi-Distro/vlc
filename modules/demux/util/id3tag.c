@@ -2,7 +2,7 @@
  * id3tag.c: id3 tag parser/skipper based on libid3tag
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: id3tag.c 14719 2006-03-11 17:35:55Z zorglub $
+ * $Id: a7169392b138e00ccfdc40933dd217d34c4233f2 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

@@ -2,7 +2,7 @@
  * intf.c: Video CD interface to handle user interaction and still time
  *****************************************************************************
  * Copyright (C) 2002,2003 the VideoLAN team
- * $Id: intf.c 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: 762e4c2f0f4e613e7028fbe767fc0842f6ace4e2 $
  *
  * Author: Rocky Bernstein <rocky@panix.com>
  *   from DVD code by Stéphane Borel <stef@via.ecp.fr>

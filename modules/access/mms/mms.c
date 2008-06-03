@@ -2,7 +2,7 @@
  * mms.c: MMS over tcp, udp and http access plug-in
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: mms.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: d336b57e7c9250cea85f3be6a6b8a20ae03d5db1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -57,6 +57,9 @@ static void Close( vlc_object_t * );
 #define BITRATE_LONGTEXT N_( \
     "Select the stream with the maximum bitrate under that limit."  )
 
+#define TIMEOUT_TEXT N_("TCP/UDP timeout (ms)")
+#define TIMEOUT_LONGTEXT N_("Amount of time (in ms) to wait before aborting network reception of data. Note that there will be 10 retries before completely giving up.")
+
 vlc_module_begin();
     set_shortname( "MMS" );
     set_description( _("Microsoft Media Server (MMS) input") );
@@ -66,6 +69,9 @@ vlc_module_begin();
 
     add_integer( "mms-caching", 19 * DEFAULT_PTS_DELAY / 1000, NULL,
                  CACHING_TEXT, CACHING_LONGTEXT, VLC_TRUE );
+
+    add_integer( "mms-timeout", 5000, NULL, TIMEOUT_TEXT, TIMEOUT_LONGTEXT,
+                 VLC_TRUE );
 
     add_bool( "mms-all", 0, NULL, ALL_TEXT, ALL_LONGTEXT, VLC_TRUE );
     add_integer( "mms-maxbitrate", 0, NULL, BITRATE_TEXT, BITRATE_LONGTEXT ,

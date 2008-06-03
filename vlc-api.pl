@@ -3,7 +3,7 @@
 #* vlc-api.pl: VLC API maintenance script
 #*****************************************************************************
 #* Copyright (C) 2005 the VideoLAN team
-#* $Id: vlc-api.pl 14378 2006-02-18 20:49:46Z courmisch $
+#* $Id$
 #*
 #* Authors: Rémi Denis-Courmont <rem # videolan.org>
 #*

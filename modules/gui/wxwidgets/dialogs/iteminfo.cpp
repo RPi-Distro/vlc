@@ -2,7 +2,7 @@
  * iteminfo.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: iteminfo.cpp 16439 2006-08-30 19:33:55Z hartman $
+ * $Id: 7a92df04500e111bbeafe70d2ef0910abd11484c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

@@ -2,7 +2,7 @@
  * cpu.h: CPU type detection
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: vlc_cpu.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: e606828fcc959064593b663a5f4f3f329096b0e9 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

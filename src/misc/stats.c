@@ -2,7 +2,7 @@
  * stats.c: Statistics handling
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: stats.c 16460 2006-08-31 22:01:13Z hartman $
+ * $Id: 2f37949b46ba389d5745a13b579acc1a033d4100 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

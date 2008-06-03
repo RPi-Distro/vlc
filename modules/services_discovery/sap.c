@@ -2,7 +2,7 @@
  * sap.c :  SAP interface module
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: sap.c 20455 2007-06-07 17:34:50Z courmisch $
+ * $Id: 797099ef1b4316d247401fb5e40a2edebe0e9f48 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -910,7 +910,7 @@ static int ParseConnection( vlc_object_t *p_obj, sdp_t *p_sdp )
     char *psz_eof = NULL;
     char *psz_parse = NULL;
     char *psz_uri = NULL;
-    char *psz_proto = NULL;
+    const char *psz_proto = NULL;
     char psz_source[258] = "";
     int i_port = 0;
 
@@ -1041,29 +1041,32 @@ static int ParseConnection( vlc_object_t *p_obj, sdp_t *p_sdp )
         if( psz_eof )
         {
             *psz_eof = '\0';
-            psz_proto = strdup( psz_parse );
 
-            psz_parse = psz_eof + 1;
-            p_sdp->i_media_type = atoi( psz_parse );
-
+            if( !strcmp( psz_parse, "RTP/AVP" ) )
+            {
+                psz_proto = "rtp";
+                psz_parse = psz_eof + 1;
+                p_sdp->i_media_type = atoi( psz_parse );
+            }
+            else
+            if( !strcasecmp( psz_parse, "udp" ) )
+            {
+                psz_proto = "udp";
+                p_sdp->i_media_type = 33;
+            }
+            else
+            {
+                msg_Warn( p_obj, "unknown transport protocol %s", psz_parse );
+                FREE( psz_uri );
+                return VLC_EGENERIC;
+            }
         }
         else
         {
-            msg_Dbg( p_obj, "incorrect m field, %s", p_sdp->psz_media );
-            p_sdp->i_media_type = 33;
-            psz_proto = strdup( psz_parse );
+            msg_Warn( p_obj, "unknown top parse m field (3)" );
+            FREE( psz_uri );
+            return VLC_EGENERIC;
         }
-    }
-
-    if( psz_proto && !strncmp( psz_proto, "RTP/AVP", 7 ) )
-    {
-        free( psz_proto );
-        psz_proto = strdup( "rtp" );
-    }
-    if( psz_proto && !strncasecmp( psz_proto, "UDP", 3 ) )
-    {
-        free( psz_proto );
-        psz_proto = strdup( "udp" );
     }
 
     /* FIXME: HTTP support */
@@ -1092,7 +1095,6 @@ static int ParseConnection( vlc_object_t *p_obj, sdp_t *p_sdp )
               psz_uri, i_port );
 
     FREE( psz_uri );
-    FREE( psz_proto );
     return VLC_SUCCESS;
 }
 

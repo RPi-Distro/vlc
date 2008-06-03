@@ -2,7 +2,7 @@
  * cmd_vars.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: cmd_vars.cpp 14255 2006-02-12 11:18:43Z zorglub $
+ * $Id: ce08f358131fc6bb7befe0f9981c6b421ff5bfa8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

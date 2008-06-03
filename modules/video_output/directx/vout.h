@@ -2,7 +2,7 @@
  * vout.h: Windows DirectX video output header file
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: vout.h 19761 2007-04-11 21:27:39Z damienf $
+ * $Id: b8fb9dfde1d53726e36e794a953db2c8d589dfac $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

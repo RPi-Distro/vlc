@@ -2,7 +2,7 @@
  * file_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: file_bitmap.cpp 15249 2006-04-17 15:18:05Z asmax $
+ * $Id: b41a79650fc8e90754fc31ad4e1e8f931a11c684 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -73,7 +73,8 @@ FileBitmap::FileBitmap( intf_thread_t *pIntf, image_handler_t *pImageHandler,
         pSrc += pPic->p->i_pitch - m_width * 4;
     }
 
-    pPic->pf_release( pPic );
+    if( pPic->pf_release )
+        pPic->pf_release( pPic );
     return;
 }
 

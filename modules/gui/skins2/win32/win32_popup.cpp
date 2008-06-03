@@ -2,7 +2,7 @@
  * win32_popup.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: win32_popup.cpp 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id$
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *

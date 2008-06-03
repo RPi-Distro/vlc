@@ -2,7 +2,7 @@
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: mosaic.c 17050 2006-10-13 00:07:54Z hartman $
+ * $Id: 257797ae49700529a0f45e44f8c68ed04800f396 $
  *
  * Authors: Antoine Cellerier <dionoea@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -225,7 +225,7 @@ static int CreateFilter( vlc_object_t *p_this )
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys;
     libvlc_t *p_libvlc = p_filter->p_libvlc;
-    char *psz_order;
+    char *psz_order, *_psz_order;
     int i_index;
     vlc_value_t val;
 
@@ -294,7 +294,7 @@ static int CreateFilter( vlc_object_t *p_this )
 
     p_sys->i_order_length = 0;
     p_sys->ppsz_order = NULL;
-    psz_order = var_CreateGetString( p_filter, "mosaic-order" );
+    psz_order = _psz_order = var_CreateGetString( p_filter, "mosaic-order" );
 
     if( psz_order[0] != 0 )
     {
@@ -312,6 +312,8 @@ static int CreateFilter( vlc_object_t *p_this )
         } while( NULL !=  psz_end );
         p_sys->i_order_length = i_index;
     }
+
+    free( _psz_order );
 
     /* Bluescreen specific stuff */
     GET_VAR( bsu, 0x00, 0xff );
@@ -379,7 +381,7 @@ static void DestroyFilter( vlc_object_t *p_this )
     var_Destroy( p_libvlc, "mosaic-bsvt" );
     var_Destroy( p_libvlc, "mosaic-bs" );
 
-    if( p_sys->p_pic ) p_sys->p_pic->pf_release( p_sys->p_pic );
+    if( p_sys->p_pic && p_sys->p_pic->pf_release ) p_sys->p_pic->pf_release( p_sys->p_pic );
     vlc_mutex_unlock( &p_sys->lock );
     vlc_mutex_destroy( &p_sys->lock );
     free( p_sys );
@@ -392,7 +394,8 @@ static void MosaicReleasePicture( picture_t *p_picture )
 {
     picture_t *p_original_pic = (picture_t *)p_picture->p_sys;
 
-    p_original_pic->pf_release( p_original_pic );
+    if( p_original_pic->pf_release )
+        p_original_pic->pf_release( p_original_pic );
 }
 
 /*****************************************************************************
@@ -494,14 +497,16 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             if ( p_es->p_picture->p_next != NULL )
             {
                 picture_t *p_next = p_es->p_picture->p_next;
-                p_es->p_picture->pf_release( p_es->p_picture );
+                if( p_es->p_picture->pf_release )
+                    p_es->p_picture->pf_release( p_es->p_picture );
                 p_es->p_picture = p_next;
             }
             else if ( p_es->p_picture->date + p_sys->i_delay + BLANK_DELAY <
                         date )
             {
                 /* Display blank */
-                p_es->p_picture->pf_release( p_es->p_picture );
+                if( p_es->p_picture->pf_release )
+                    p_es->p_picture->pf_release( p_es->p_picture );
                 p_es->p_picture = NULL;
                 p_es->pp_last = &p_es->p_picture;
                 break;

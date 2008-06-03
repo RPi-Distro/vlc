@@ -2,7 +2,7 @@
  * udp.c: raw UDP & RTP input module
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: udp.c 19810 2007-04-15 09:52:35Z md $
+ * $Id: 61c67a8c5bfd236a8b9fda4c0315c63c52f2c515 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Tristan Leteurtre <tooney@via.ecp.fr>

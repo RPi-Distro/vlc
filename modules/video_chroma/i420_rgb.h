@@ -2,7 +2,7 @@
  * i420_rgb.h : YUV to bitmap RGB conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2004 the VideoLAN team
- * $Id: i420_rgb.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 9ff6243f8e77c826644ba3cb87015f68c685f377 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

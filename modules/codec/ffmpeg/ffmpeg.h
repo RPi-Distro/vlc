@@ -2,7 +2,7 @@
  * ffmpeg.h: decoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: ffmpeg.h 16798 2006-09-22 23:56:12Z xtophe $
+ * $Id: f2ea5ef3a73821145591172cfb79c3d8813f66ad $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

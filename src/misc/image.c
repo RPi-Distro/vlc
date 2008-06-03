@@ -2,7 +2,7 @@
  * image.c : wrapper for image reading/writing facilities
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: image.c 16767 2006-09-21 14:32:45Z hartman $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -130,7 +130,7 @@ static picture_t *ImageRead( image_handler_t *p_image, block_t *p_block,
     while( (p_tmp = p_image->p_dec->pf_decode_video( p_image->p_dec, &p_block ))
              != NULL )
     {
-        if ( p_pic != NULL )
+        if ( p_pic && p_pic->pf_release )
             p_pic->pf_release( p_pic );
         p_pic = p_tmp;
     }
@@ -179,7 +179,8 @@ static picture_t *ImageRead( image_handler_t *p_image, block_t *p_block,
 
             if( !p_image->p_filter )
             {
-                p_pic->pf_release( p_pic );
+                if( p_pic->pf_release )
+                    p_pic->pf_release( p_pic );
                 return NULL;
             }
         }
@@ -241,14 +242,11 @@ static picture_t *ImageReadUrl( image_handler_t *p_image, const char *psz_url,
  *
  */
 
-void PicRelease( picture_t *p_pic ){};
-
 static block_t *ImageWrite( image_handler_t *p_image, picture_t *p_pic,
                             video_format_t *p_fmt_in,
                             video_format_t *p_fmt_out )
 {
     block_t *p_block;
-    void (*pf_release)( picture_t * );
 
     /* Check if we can reuse the current encoder */
     if( p_image->p_enc &&
@@ -310,11 +308,9 @@ static block_t *ImageWrite( image_handler_t *p_image, picture_t *p_pic,
             p_image->p_filter->fmt_out.video = p_image->p_enc->fmt_in.video;
         }
 
-        pf_release = p_pic->pf_release;
-        p_pic->pf_release = PicRelease; /* Small hack */
+        p_pic->i_refcount++;
         p_tmp_pic =
             p_image->p_filter->pf_video_filter( p_image->p_filter, p_pic );
-        p_pic->pf_release = pf_release;
 
         p_block = p_image->p_enc->pf_encode_video( p_image->p_enc, p_tmp_pic );
 
@@ -377,7 +373,6 @@ static picture_t *ImageConvert( image_handler_t *p_image, picture_t *p_pic,
                                 video_format_t *p_fmt_in,
                                 video_format_t *p_fmt_out )
 {
-    void (*pf_release)( picture_t * );
     picture_t *p_pif;
 
     if( !p_fmt_out->i_width && !p_fmt_out->i_height &&
@@ -434,10 +429,8 @@ static picture_t *ImageConvert( image_handler_t *p_image, picture_t *p_pic,
         p_image->p_filter->fmt_out.video = *p_fmt_out;
     }
 
-    pf_release = p_pic->pf_release;
-    p_pic->pf_release = PicRelease; /* Small hack */
+    p_pic->i_refcount++; //pf_video_filter() will decrease the refcount
     p_pif = p_image->p_filter->pf_video_filter( p_image->p_filter, p_pic );
-    p_pic->pf_release = pf_release;
 
     if( p_fmt_in->i_chroma == p_fmt_out->i_chroma &&
         p_fmt_in->i_width == p_fmt_out->i_width &&
@@ -459,9 +452,6 @@ static picture_t *ImageConvert( image_handler_t *p_image, picture_t *p_pic,
 static picture_t *ImageFilter( image_handler_t *p_image, picture_t *p_pic,
                                video_format_t *p_fmt, const char *psz_module )
 {
-    void (*pf_release)( picture_t * );
-    picture_t *p_pif;
-
     /* Start a filter */
     if( !p_image->p_filter )
     {
@@ -484,12 +474,8 @@ static picture_t *ImageFilter( image_handler_t *p_image, picture_t *p_pic,
         p_image->p_filter->fmt_out.video = *p_fmt;
     }
 
-    pf_release = p_pic->pf_release;
-    p_pic->pf_release = PicRelease; /* Small hack */
-    p_pif = p_image->p_filter->pf_video_filter( p_image->p_filter, p_pic );
-    p_pic->pf_release = pf_release;
-
-    return p_pif;
+    p_pic->i_refcount++;
+    return p_image->p_filter->pf_video_filter( p_image->p_filter, p_pic );
 }
 
 /**
@@ -562,9 +548,12 @@ static const char *Fourcc2Ext( vlc_fourcc_t i_codec )
 
 static void video_release_buffer( picture_t *p_pic )
 {
-    if( p_pic && p_pic->p_data_orig ) free( p_pic->p_data_orig );
-    if( p_pic && p_pic->p_sys ) free( p_pic->p_sys );
-    if( p_pic ) free( p_pic );
+    if( --p_pic->i_refcount > 0 )
+        return;
+
+    free( p_pic->p_data_orig );
+    free( p_pic->p_sys );
+    free( p_pic );
 }
 
 static picture_t *video_new_buffer( decoder_t *p_dec )
@@ -587,23 +576,26 @@ static picture_t *video_new_buffer( decoder_t *p_dec )
     p_pic->pf_release = video_release_buffer;
     p_pic->i_status = RESERVED_PICTURE;
     p_pic->p_sys = NULL;
+    p_pic->i_refcount = 1;
 
     return p_pic;
 }
 
 static void video_del_buffer( decoder_t *p_dec, picture_t *p_pic )
 {
-    if( p_pic && p_pic->p_data_orig ) free( p_pic->p_data_orig );
-    if( p_pic && p_pic->p_sys ) free( p_pic->p_sys );
-    if( p_pic ) free( p_pic );
+    free( p_pic->p_data_orig );
+    free( p_pic->p_sys );
+    free( p_pic );
 }
 
 static void video_link_picture( decoder_t *p_dec, picture_t *p_pic )
 {
+    p_pic->i_refcount++;
 }
 
 static void video_unlink_picture( decoder_t *p_dec, picture_t *p_pic )
 {
+    video_release_buffer( p_pic );
 }
 
 static decoder_t *CreateDecoder( vlc_object_t *p_this, video_format_t *fmt )

@@ -2,7 +2,7 @@
  * playlist_manager.hpp: Header for the playlist manager
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: playlist_manager.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 39e4d8a141444e37f4ff37586f2b17a4ec130ecf $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>

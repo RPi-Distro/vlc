@@ -2,7 +2,7 @@
  * top_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: top_window.cpp 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: a0c55aa0cd8ecd3c86591dca4c2b333c2982156e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

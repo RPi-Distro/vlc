@@ -2,7 +2,7 @@
  * darwin_specific.h: Darwin specific features
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: darwin_specific.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 08b65dfa6217a3455305955b99e55a383a3470bd $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

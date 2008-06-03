@@ -2,7 +2,7 @@
  * vlc_help.h: Help strings
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: vlc_config_cat.h 16798 2006-09-22 23:56:12Z xtophe $
+ * $Id: 880b449837b2f2e5fc7491a415f81d4e476f0054 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Anil Daoud <anil@videolan.org>

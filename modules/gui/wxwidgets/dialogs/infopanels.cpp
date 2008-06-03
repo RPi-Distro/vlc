@@ -2,7 +2,7 @@
  * infopanels.cpp : Information panels (general info, stats, ...)
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: infopanels.cpp 18107 2006-11-27 13:44:11Z md $
+ * $Id: 1016e53eb40773766b9e478456ccf49bd4e26a8c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

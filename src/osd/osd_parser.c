@@ -2,7 +2,7 @@
  * osd_parser.c - The OSD Menu  parser core code.
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: osd_parser.c 20533 2007-06-12 18:19:09Z Trax $
+ * $Id: b9dce88c715e66ff5dff749e8a5a559cf4f11092 $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -506,8 +506,14 @@ int osd_ConfigLoader( vlc_object_t *p_this, const char *psz_file,
                         else /* absolute paths are used. */
                             p_range_current = osd_StateNew( p_this, &file[0], "pressed" );
 
-                        if( !p_range_current || !p_range_current->p_pic )
+                        if( !p_range_current )
                             goto error;
+
+                        if( !p_range_current->p_pic )
+                        {
+                            osd_StatesFree( p_menu, p_range_current );
+                            goto error;
+                        }
 
                         /* increment the number of ranges for this button */
                         p_up->i_ranges++;
@@ -601,8 +607,14 @@ int osd_ConfigLoader( vlc_object_t *p_this, const char *psz_file,
                     else /* absolute paths are used. */
                         p_range_current = osd_StateNew( p_this, &file[0], "pressed" );
 
-                    if( !p_range_current || !p_range_current->p_pic )
+                    if( !p_range_current )
                         goto error;
+
+                    if( !p_range_current->p_pic )
+                    {
+                        osd_StatesFree( p_menu, p_range_current );
+                        goto error;
+                    }
 
                     /* increment the number of ranges for this button */
                     p_current->i_ranges++;
@@ -667,8 +679,14 @@ int osd_ConfigLoader( vlc_object_t *p_this, const char *psz_file,
             else /* absolute paths are used. */
                 p_state_current = osd_StateNew( p_this, &file[0], &state[0] );
 
-            if( !p_state_current || !p_state_current->p_pic )
+            if( !p_state_current )
                 goto error;
+
+            if( !p_state_current->p_pic )
+            {
+                osd_StatesFree( p_menu, p_state_current );
+                goto error;
+            }
 
             if( p_state_prev )
                 p_state_prev->p_next = p_state_current;

@@ -2,7 +2,7 @@
  * ipv4.c: IPv4 network abstraction layer
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: ipv4.c 18124 2006-11-28 10:37:07Z md $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Mathias Kretschmer <mathias@research.att.com>
@@ -279,9 +279,6 @@ static int OpenUDP( vlc_object_t * p_this )
             else
                 imr.imr_interface.s_addr = INADDR_ANY;
 
-            if( psz_if_addr != NULL )
-                free( psz_if_addr );
-
             msg_Dbg( p_this, "IP_ADD_SOURCE_MEMBERSHIP multicast request" );
 
             /* Join Multicast group with source filter */
@@ -368,8 +365,6 @@ igmpv2:
                 if( hiphlpapi ) FreeLibrary( hiphlpapi );
             }
 #endif
-            if( psz_if_addr != NULL ) free( psz_if_addr );
-
             msg_Dbg( p_this, "IP_ADD_MEMBERSHIP multicast request" );
             /* Join Multicast group without source filter */
             if( setsockopt( i_handle, IPPROTO_IP, IP_ADD_MEMBERSHIP,
@@ -378,9 +373,11 @@ igmpv2:
                 msg_Err( p_this, "failed to join IP multicast group (%s)",
                                   strerror(errno) );
                 close( i_handle );
+                free( psz_if_addr );
                 return 0;
             }
-         }
+        }
+        free( psz_if_addr );
     }
 
 #if !defined (__linux__) && !defined (WIN32)

@@ -2,7 +2,7 @@
  * chroma.c: chroma conversion using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: chroma.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 67176722e9e6427a26e688099e86eed10982bffa $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -28,7 +28,9 @@
 #include <vlc/vout.h>
 
 /* ffmpeg header */
-#ifdef HAVE_FFMPEG_AVCODEC_H
+#ifdef HAVE_LIBAVCODEC_AVCODEC_H
+#   include <libavcodec/avcodec.h>
+#elif defined(HAVE_FFMPEG_AVCODEC_H)
 #   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>

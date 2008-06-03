@@ -2,7 +2,7 @@
  * playlist.hpp: Header for the playlist
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: playlist.hpp 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: 97950067881cbc2d242fbd17c6a7abf819f0138a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

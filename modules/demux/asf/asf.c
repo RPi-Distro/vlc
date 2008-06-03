@@ -2,7 +2,7 @@
  * asf.c : ASF demux module
  *****************************************************************************
  * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: asf.c 18588 2007-01-14 20:33:16Z courmisch $
+ * $Id: 1fdfb44cf237d9af359af8c425a2303befd89e12 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

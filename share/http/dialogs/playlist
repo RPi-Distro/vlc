@@ -4,7 +4,7 @@ vim:syntax=html
 <  playlist: VLC media player web interface - playlist dialog
 < - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
 <  Copyright (C) 2005-2006 the VideoLAN team
-<  $Id: playlist 14869 2006-03-22 00:19:29Z dionoea $
+<  $Id$
 < 
 <  Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
 < 

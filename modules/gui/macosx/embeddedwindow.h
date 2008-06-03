@@ -2,7 +2,7 @@
  * embeddedwindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: embeddedwindow.h 23151 2007-11-18 23:31:13Z fkuehne $
+ * $Id: f1b5d2d8d6396dcb0d9b93fbb0e90315edb50a3d $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org> 
  *
@@ -48,7 +48,6 @@
     NSView          * o_temp_view;
     /* set to yes if we are fullscreen and all animations are over */
     BOOL              b_fullscreen;
-    BOOL              b_animation_lock_alreadylocked;
     NSRecursiveLock * o_animation_lock;
 }
 

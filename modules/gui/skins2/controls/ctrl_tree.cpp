@@ -2,7 +2,7 @@
  * ctrl_tree.cpp
  *****************************************************************************
  * Copyright (C) 2003 VideoLAN
- * $Id: ctrl_tree.cpp 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: 66ea7a60fd8da486a78bb12a14f7a5bc457f1836 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *

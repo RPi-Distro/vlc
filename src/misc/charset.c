@@ -4,7 +4,7 @@
  * See also unicode.c for Unicode to locale conversion helpers.
  *
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: charset.c 23230 2007-11-21 22:17:44Z funman $
+ * $Id: 0b6a323177710edc4e6333c20f18278c2b23e729 $
  *
  * Authors: Derk-Jan Hartman <thedj at users.sf.net>
  *          Christophe Massiot
@@ -14,6 +14,11 @@
  *
  *  Copyright (C) 2001-2003 The Mape Project
  *  Written by Karel Zak  <zakkr@zf.jcu.cz>.
+ *
+ * which itself is an adaptation of locale_charset():
+ *
+ *  Copyright (C) 2000-2002 Free Software Foundation, Inc.
+ *  Written by Bruno Haible <bruno@clisp.org>.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

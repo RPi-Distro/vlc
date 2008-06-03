@@ -2,7 +2,7 @@
  * timer.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: timer.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 4ba69a621b8df9d2e745cb8db91e1266c2f394c2 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

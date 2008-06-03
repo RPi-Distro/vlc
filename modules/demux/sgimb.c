@@ -2,7 +2,7 @@
  * sgimb.c: a meta demux to parse sgimb referrer files
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: sgimb.c 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: 04d0eb7449c611044b6b7e5bad6d68b7779c2805 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *

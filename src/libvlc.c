@@ -2,7 +2,7 @@
  * libvlc.c: main libvlc source
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: libvlc.c 17755 2006-11-14 07:17:34Z md $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -945,7 +945,7 @@ int VLC_CleanUp( int i_object )
         stats_HandlerDestroy( p_stats );
         vlc_object_detach( (vlc_object_t*) p_stats );
         vlc_object_release( (vlc_object_t *)p_stats );
-        // TODO: Delete it
+        vlc_object_destroy( p_stats );
     }
 
     /*
@@ -1054,6 +1054,7 @@ int VLC_Destroy( int i_object )
 int VLC_VariableSet( int i_object, char const *psz_var, vlc_value_t value )
 {
     vlc_t *p_vlc = vlc_current_object( i_object );
+    module_config_t *p_item;
     int i_ret;
 
     if( !p_vlc )
@@ -1064,38 +1065,15 @@ int VLC_VariableSet( int i_object, char const *psz_var, vlc_value_t value )
     /* FIXME: Temporary hack for Mozilla, if variable starts with conf:: then
      * we handle it as a configuration variable. Don't tell Gildas :) -- sam */
     if( !strncmp( psz_var, "conf::", 6 ) )
-    {
-        module_config_t *p_item;
-        char const *psz_newvar = psz_var + 6;
+        psz_var += 6;
 
-        p_item = config_FindConfig( VLC_OBJECT(p_vlc), psz_newvar );
+    p_item = config_FindConfig( VLC_OBJECT(p_vlc), psz_var );
+    if( !p_item )
+        return VLC_ENOVAR;
 
-        if( p_item )
-        {
-            switch( p_item->i_type )
-            {
-                case CONFIG_ITEM_BOOL:
-                    config_PutInt( p_vlc, psz_newvar, value.b_bool );
-                    break;
-                case CONFIG_ITEM_INTEGER:
-                    config_PutInt( p_vlc, psz_newvar, value.i_int );
-                    break;
-                case CONFIG_ITEM_FLOAT:
-                    config_PutFloat( p_vlc, psz_newvar, value.f_float );
-                    break;
-                default:
-                    config_PutPsz( p_vlc, psz_newvar, value.psz_string );
-                    break;
-            }
-            if( i_object ) vlc_object_release( p_vlc );
-            return VLC_SUCCESS;
-        }
-    }
-
-    i_ret = var_Set( p_vlc, psz_var, value );
-
-    if( i_object ) vlc_object_release( p_vlc );
-    return i_ret;
+    /* None of the variables are safe in this LibVLC version (we don't have
+     * the infrastructure in the 0.8.* branch. */
+    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -2578,12 +2556,13 @@ static void InitDeviceValues( vlc_t *p_vlc )
     DBusError       error;
 
 #ifdef HAVE_HAL_1
-    ctx =  libhal_ctx_new();
+    ctx = libhal_ctx_new();
     if( !ctx ) return;
     dbus_error_init( &error );
     p_connection = dbus_bus_get ( DBUS_BUS_SYSTEM, &error );
     if( dbus_error_is_set( &error ) )
     {
+        libhal_ctx_free( ctx );
         dbus_error_free( &error );
         return;
     }
@@ -2644,6 +2623,7 @@ static void InitDeviceValues( vlc_t *p_vlc )
 
 #ifdef HAVE_HAL_1
         libhal_ctx_shutdown( ctx, NULL );
+        libhal_ctx_free( ctx );
 #else
         hal_shutdown( ctx );
 #endif

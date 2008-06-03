@@ -3,7 +3,7 @@
  *               -> gives the feeling of a real room with a simple headphone
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: headphone.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: 2c174571220ecf1b4c1166ffa3b6a0d26c73b19e $
  *
  * Authors: Boris Dorès <babal@via.ecp.fr>
  *

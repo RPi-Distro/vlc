@@ -2,7 +2,7 @@
  * u8tofixed32.c : converter from unsigned 8 bits integer to fixed32.
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: u8tofixed32.c 14997 2006-03-31 15:15:07Z fkuehne $
+ * $Id: efe7bbfa54574164a71f70d0e8177ec0354aa258 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

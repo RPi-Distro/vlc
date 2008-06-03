@@ -2,7 +2,7 @@
  * scaled_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: scaled_bitmap.cpp 16767 2006-09-21 14:32:45Z hartman $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

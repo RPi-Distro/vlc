@@ -3,6 +3,10 @@
 /* Maximum supported data alignment */
 #undef ATTRIBUTE_ALIGNED_MAX
 
+/* "Define if struct caca_event is opaque and must not be accessed directly"
+   */
+#undef CACA_EVENT_OPAQUE
+
 /* Define if \$CC groks 3D Now! inline assembly. */
 #undef CAN_COMPILE_3DNOW
 
@@ -368,8 +372,20 @@
 /* Define to 1 if you have the <libavc1394/avc1394.h> header file. */
 #undef HAVE_LIBAVC1394_AVC1394_H
 
+/* Define to 1 if you have the `avcodec' library (-lavcodec). */
+#undef HAVE_LIBAVCODEC
+
+/* Define to 1 if you have the <libavcodec/avcodec.h> header file. */
+#undef HAVE_LIBAVCODEC_AVCODEC_H
+
+/* Define to 1 if you have the <libavformat/avformat.h> header file. */
+#undef HAVE_LIBAVFORMAT_AVFORMAT_H
+
 /* Define if you have ffmpeg's libavformat. */
 #undef HAVE_LIBAVFORMAT_TREE
+
+/* Define to 1 if you have the <libavutil/avutil.h> header file. */
+#undef HAVE_LIBAVUTIL_AVUTIL_H
 
 /* Define this if you have libcddb installed */
 #undef HAVE_LIBCDDB
@@ -385,6 +401,12 @@
 
 /* Define if you have the PNG library: libpng */
 #undef HAVE_LIBPNG
+
+/* Define to 1 if you have the <libpostproc/postprocess.h> header file. */
+#undef HAVE_LIBPOSTPROC_POSTPROCESS_H
+
+/* Define to 1 if you have the <libpostproc/postprocess.h.> header file. */
+#undef HAVE_LIBPOSTPROC_POSTPROCESS_H_
 
 /* Define to 1 if you have the `pth' library (-lpth). */
 #undef HAVE_LIBPTH

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: real.h 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: e72125dc22afe5ca0680e2666e89eec1c8bc3e98 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.

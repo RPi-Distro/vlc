@@ -2,7 +2,7 @@
  * mosaic.js: VLC media player web interface - Mosaic specific functions
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: mosaic.js 14973 2006-03-29 23:59:40Z dionoea $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

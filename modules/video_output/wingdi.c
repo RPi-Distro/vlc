@@ -2,7 +2,7 @@
  * wingdi.c : Win32 / WinCE GDI video output plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: wingdi.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: ac8d7ee60a08f8be3f791b8f6a990a045150d2f7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>

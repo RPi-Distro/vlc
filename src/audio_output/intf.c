@@ -2,7 +2,7 @@
  * intf.c : audio output API towards the interface modules
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: intf.c 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: a80df9f4811d8712e928f227aca3d5f650e3ca20 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

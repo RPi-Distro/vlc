@@ -9,7 +9,7 @@
  * Functions prototyped are implemented in interface/mtime.c.
  *****************************************************************************
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 the VideoLAN team
- * $Id: mtime.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 458cf35d35ada05935dd81441f937af8fd91adbc $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *

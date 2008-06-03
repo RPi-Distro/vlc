@@ -1,5 +1,5 @@
 /*
- * $Id: ldt_keeper.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: 2cfae68b0faf686b9e6d1a36cbd1c1b591961663 $
  *
  * Copyright 1993 Robert J. Amstadt
  * Copyright 1995 Alexandre Julliard

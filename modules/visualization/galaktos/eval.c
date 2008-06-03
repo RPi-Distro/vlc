@@ -2,7 +2,7 @@
  * eval.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: eval.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: edbf9f5ed407fbc41fb8118cc3c6af215e114556 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

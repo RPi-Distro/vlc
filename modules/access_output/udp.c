@@ -2,7 +2,7 @@
  * udp.c
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: udp.c 19592 2007-04-01 00:31:04Z hartman $
+ * $Id: 551082837d81ba47eed1958cc6211b7129cdf5ee $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

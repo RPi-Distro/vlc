@@ -2,7 +2,7 @@
  * access.h : access headers for CD digital audio input module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: access.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 8b1c1ad3cac395d3340597b3061ea1ef9c9ce36b $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *

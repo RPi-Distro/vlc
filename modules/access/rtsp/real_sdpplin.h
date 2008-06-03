@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: real_sdpplin.h 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id$
  *
  * sdp/sdpplin parser.
  *
@@ -31,7 +31,7 @@ typedef struct {
   char *id;
   char *bandwidth;
 
-  int stream_id;
+  uint16_t stream_id;
   char *range;
   char *length;
   char *rtpmap;
@@ -75,7 +75,7 @@ typedef struct {
 
   int flags;
   int is_real_data_type;
-  int stream_count;
+  uint16_t stream_count;
   char *title;
   char *author;
   char *copyright;

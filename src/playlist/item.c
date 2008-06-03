@@ -2,7 +2,7 @@
  * item.c : Playlist item functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: item.c 15025 2006-04-01 11:27:40Z fkuehne $
+ * $Id: e9ce3db0308bcb10d4c5fd2894e5e86139523cc1 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -189,47 +189,6 @@ playlist_item_t *__playlist_ItemCopy( vlc_object_t *p_obj,
  */
 int playlist_ItemDelete( playlist_item_t *p_item )
 {
-    vlc_mutex_lock( &p_item->input.lock );
-
-    if( p_item->input.psz_name ) free( p_item->input.psz_name );
-    if( p_item->input.psz_uri ) free( p_item->input.psz_uri );
-
-    /* Free the info categories */
-    if( p_item->input.i_categories > 0 )
-    {
-        int i, j;
-
-        for( i = 0; i < p_item->input.i_categories; i++ )
-        {
-            info_category_t *p_category = p_item->input.pp_categories[i];
-
-            for( j = 0; j < p_category->i_infos; j++)
-            {
-                if( p_category->pp_infos[j]->psz_name )
-                {
-                    free( p_category->pp_infos[j]->psz_name);
-                }
-                if( p_category->pp_infos[j]->psz_value )
-                {
-                    free( p_category->pp_infos[j]->psz_value );
-                }
-                free( p_category->pp_infos[j] );
-            }
-
-            if( p_category->i_infos ) free( p_category->pp_infos );
-            if( p_category->psz_name ) free( p_category->psz_name );
-            free( p_category );
-        }
-
-        free( p_item->input.pp_categories );
-    }
-
-    for( ; p_item->input.i_options > 0; p_item->input.i_options-- )
-    {
-        free( p_item->input.ppsz_options[p_item->input.i_options - 1] );
-        if( p_item->input.i_options == 1 ) free( p_item->input.ppsz_options );
-    }
-
     for( ; p_item->i_parents > 0 ; )
     {
         struct item_parent_t *p_parent =  p_item->pp_parents[0];
@@ -237,9 +196,14 @@ int playlist_ItemDelete( playlist_item_t *p_item )
         free( p_parent );
     }
 
-    vlc_mutex_unlock( &p_item->input.lock );
-    vlc_mutex_destroy( &p_item->input.lock );
+    for( ; p_item->i_children > 0 ; )
+    {
+        playlist_item_t *p_child = p_item->pp_children[0];
+        REMOVE_ELEM( p_item->pp_children, p_item->i_children, 0 );
+        playlist_ItemDelete( p_child );
+    }
 
+    vlc_input_item_Clean( &p_item->input );
     free( p_item );
 
     return VLC_SUCCESS;

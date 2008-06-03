@@ -2,7 +2,7 @@
  * ft2_font.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ft2_font.cpp 15014 2006-03-31 22:33:45Z ipkiss $
+ * $Id: 42a6a927d52da275331a6f648d5cc9ddd1e6af3e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * output.c : internal management of output streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: output.c 20535 2007-06-12 18:27:18Z fenrir $
+ * $Id: 9d277619a948928f2275a294a83e53ceb626b0fa $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

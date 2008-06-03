@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: directory.c 18581 2007-01-14 20:05:24Z courmisch $
+ * $Id: 3146ba67cd32dac1c3c136f939b322d319500262 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *

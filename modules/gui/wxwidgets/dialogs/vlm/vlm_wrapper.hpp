@@ -2,7 +2,7 @@
  * vlm_wrapper.hpp: Wrapper for VLM
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: vlm_wrapper.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 828f2cb911a9cb041b4e08b3127d9ce4b74109cd $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

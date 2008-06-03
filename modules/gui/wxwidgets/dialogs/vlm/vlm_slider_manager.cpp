@@ -2,7 +2,7 @@
  * vlm_slider_manager.cpp : Manage an input slider for a VLM stream
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: vlm_slider_manager.cpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 542d6f6c429c49d6c7305cc1719a534945b40ea5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

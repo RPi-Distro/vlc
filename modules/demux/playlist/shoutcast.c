@@ -2,7 +2,7 @@
  * shoutcast.c: Winamp >=5.2 shoutcast demuxer
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: shoutcast.c 15409 2006-04-28 21:19:51Z zorglub $
+ * $Id: 7b3ce767386e62da4e54623f791627047dbe48ac $
  *
  * Authors: Antoine Cellerier <dionoea -@t- videolan -Dot- org>
  *          based on b4s.c by Sigmund Augdal Helberg <dnumgis@videolan.org>

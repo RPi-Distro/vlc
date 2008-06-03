@@ -2,7 +2,7 @@
  * httpd.c
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: httpd.c 23854 2007-12-24 16:35:53Z courmisch $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -365,7 +365,6 @@ struct httpd_file_t
 static int httpd_FileCallBack( httpd_callback_sys_t *p_sys, httpd_client_t *cl, httpd_message_t *answer, httpd_message_t *query )
 {
     httpd_file_t *file = (httpd_file_t*)p_sys;
-    uint8_t *psz_args = query->psz_args;
     uint8_t **pp_body, *p_body;
     char *psz_connection = NULL;
     int *pi_body, i_body;
@@ -403,6 +402,7 @@ static int httpd_FileCallBack( httpd_callback_sys_t *p_sys, httpd_client_t *cl, 
         /* msg_Warn not supported */
     }
 
+    uint8_t *psz_args = query->psz_args;
     file->pf_fill( file->p_sys, file, psz_args, pp_body, pi_body );
 
     if( query->i_type == HTTPD_MSG_HEAD && p_body != NULL )
@@ -486,7 +486,6 @@ struct httpd_handler_t
 static int httpd_HandlerCallBack( httpd_callback_sys_t *p_sys, httpd_client_t *cl, httpd_message_t *answer, httpd_message_t *query )
 {
     httpd_handler_t *handler = (httpd_handler_t*)p_sys;
-    uint8_t *psz_args = query->psz_args;
     char psz_remote_addr[NI_MAXNUMERICHOST];
 
     if( answer == NULL || query == NULL )
@@ -503,6 +502,7 @@ static int httpd_HandlerCallBack( httpd_callback_sys_t *p_sys, httpd_client_t *c
     if( httpd_ClientIP( cl, psz_remote_addr ) == NULL )
         *psz_remote_addr = '\0';
 
+    uint8_t *psz_args = query->psz_args;
     handler->pf_fill( handler->p_sys, handler, query->psz_url, psz_args,
                       query->i_type, query->p_body, query->i_body,
                       psz_remote_addr, NULL,

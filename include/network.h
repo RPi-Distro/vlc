@@ -2,7 +2,7 @@
  * network.h: interface to communicate with network plug-ins
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: network.h 14947 2006-03-28 13:57:36Z zorglub $
+ * $Id: aac4857bf8beda814db7458649aa6a4c53bd2f5f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>

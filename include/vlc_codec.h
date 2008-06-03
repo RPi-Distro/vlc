@@ -2,7 +2,7 @@
  * vlc_codec.h: codec related structures
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: vlc_codec.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 74f82cd6e4146d6bb77e5c0c3ed7a04092c85e63 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

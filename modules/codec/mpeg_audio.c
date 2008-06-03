@@ -2,7 +2,7 @@
  * mpeg_audio.c: parse MPEG audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: mpeg_audio.c 16962 2006-10-07 15:30:51Z hartman $
+ * $Id: fc4edf060720ba137df72ca94002c4fc284ca363 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

@@ -2,7 +2,7 @@
  * applescript.m: MacOS X AppleScript support
  *****************************************************************************
  * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: applescript.m 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: a6d059e25beb98dc388a2e982cabd328f868a260 $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *

@@ -2,7 +2,7 @@
  * input_manager.hpp: Header for input_manager
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: input_manager.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 3ccda08c0fdd204c6d7ef044a75f609a7f3182c2 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>

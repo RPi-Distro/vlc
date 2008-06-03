@@ -3,7 +3,7 @@
  *          (http://www.bbc.co.uk/rd/projects/dirac/index.shtml)
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: dirac.c 14989 2006-03-30 22:58:23Z xtophe $
+ * $Id: 2028775388d37fad7a9d01f0000f7b9235f4d94c $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

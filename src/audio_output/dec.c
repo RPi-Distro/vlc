@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: dec.c 20447 2007-06-07 16:58:32Z courmisch $
+ * $Id: e311877d93d04f48697ed5cc5771b9153bd02496 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

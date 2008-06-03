@@ -2,7 +2,7 @@
  * intf.h: send info to intf.
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: intf.h 14124 2006-02-01 19:40:01Z courmisch $
+ * $Id: d8196f7529624dc8cd11fa3aded907d592467024 $
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *

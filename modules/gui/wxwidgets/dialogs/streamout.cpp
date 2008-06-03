@@ -2,7 +2,7 @@
  * streamout.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: streamout.cpp 16439 2006-08-30 19:33:55Z hartman $
+ * $Id: 97bf1ac266272adba3b8d125b0a5b7a85f61a8b2 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

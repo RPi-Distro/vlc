@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2003 ANEVIA
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: dvbsub.c 19610 2007-04-01 01:37:01Z hartman $
+ * $Id: 5ad7773edc7a88fc20dca0577e999d5dc6f991d7 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien LUCAS <damien.lucas@anevia.com>

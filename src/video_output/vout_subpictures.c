@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: vout_subpictures.c 20569 2007-06-14 18:11:16Z Trax $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -141,6 +141,7 @@ int spu_Init( spu_t *p_spu )
         if( p_spu->i_filter >= 10 )
         {
             msg_Dbg( p_spu, "can't add anymore filters" );
+            break;
         }
 
         psz_filter = psz_parser;

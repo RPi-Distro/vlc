@@ -4,7 +4,7 @@
  *   (http://liba52.sf.net/).
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: a52tofloat32.c 14954 2006-03-28 21:00:15Z zorglub $
+ * $Id: 400bbd98ec5a3bba1cf0c7124692bec2b2a01527 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>

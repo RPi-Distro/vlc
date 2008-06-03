@@ -2,7 +2,7 @@
  * vout_aa.c: Aa video output display method for testing purposes
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: aa.c 15002 2006-03-31 16:12:31Z fkuehne $
+ * $Id: 4120a0bdf232aed14a83ed5d66aa87e73a324de4 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

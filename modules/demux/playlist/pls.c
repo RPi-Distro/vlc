@@ -2,7 +2,7 @@
  * pls.c : PLS playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: pls.c 14790 2006-03-18 02:06:16Z xtophe $
+ * $Id: 3341890cc1baef440d74ed28a6e13dcfd69b15b8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>

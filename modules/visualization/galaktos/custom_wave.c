@@ -2,7 +2,7 @@
  * custom_wave.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: custom_wave.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: a294cf5b1043d36e349a13471c9b93ee82c39b68 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

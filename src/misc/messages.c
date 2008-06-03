@@ -4,7 +4,7 @@
  * modules, especially intf modules. See config.h for output configuration.
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: messages.c 17413 2006-11-01 23:09:50Z damienf $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -210,6 +210,8 @@ void __msg_Unsubscribe( vlc_object_t *p_this, msg_subscription_t *p_sub )
     msg_bank_t *p_bank = &p_this->p_libvlc->msg_bank;
     int i,j;
 
+    free( p_sub ); /* we won't dereference the pointer */
+
     vlc_mutex_lock( &p_bank->lock );
 
     for( i = 0 ; i< p_bank->i_queues ; i++ )
@@ -222,7 +224,6 @@ void __msg_Unsubscribe( vlc_object_t *p_this, msg_subscription_t *p_sub )
                 REMOVE_ELEM( p_bank->pp_queues[i]->pp_sub,
                              p_bank->pp_queues[i]->i_sub,
                              j );
-                if( p_sub ) free( p_sub );
             }
         }
         vlc_mutex_unlock( & p_bank->pp_queues[i]->lock );

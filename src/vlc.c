@@ -2,7 +2,7 @@
  * vlc.c: the vlc player
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: vlc.c 19248 2007-03-08 14:41:12Z md $
+ * $Id: 040bfa92a3930c40ddd8f2b21fc04d34fc373a20 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

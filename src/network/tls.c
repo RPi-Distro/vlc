@@ -2,7 +2,7 @@
  * tls.c
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: tls.c 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: eb145d148f7d8a14a4971f7f71ce6b97d760441f $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

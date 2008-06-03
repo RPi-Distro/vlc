@@ -2,7 +2,7 @@
  * acl.c:
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: acl.c 16439 2006-08-30 19:33:55Z hartman $
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -187,9 +187,6 @@ int ACL_AddNet( vlc_acl_t *p_acl, const char *psz_ip, int i_len,
 
         if( i_len > 128 )
             i_len = 128;
-        else
-        if( i_len < 0 )
-            i_len = 0;
     }
     else
         i_len = 128; /* ACL_AddHost */

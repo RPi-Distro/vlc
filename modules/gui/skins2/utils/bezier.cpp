@@ -2,7 +2,7 @@
  * bezier.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bezier.cpp 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: 12c870448b113639d7b0d96ded696ef9bbdbd7c6 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

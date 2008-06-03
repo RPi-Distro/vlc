@@ -2,7 +2,7 @@
  * vlc_spu.h : subpicture unit
  *****************************************************************************
  * Copyright (C) 1999, 2000 the VideoLAN team
- * $Id: vlc_spu.h 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: 4b6e9cbe5dd14ff0dc5cf5de061e2ff84051f5ef $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

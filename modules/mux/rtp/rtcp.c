@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 M2X
  *
- * $Id: rtcp.c 14601 2006-03-03 21:43:48Z jpsaman $
+ * $Id: 126c6d9561189a1657ec8eb35ddde9841bb61980 $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# videolan dot org>
  *

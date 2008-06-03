@@ -2,7 +2,7 @@
  * vlc.h: global header for libvlc (old-style)
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: vlc.h 13960 2006-01-21 16:44:36Z zorglub $
+ * $Id: a6afd1d4b91120ba2424a4f71f8133abc764e602 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

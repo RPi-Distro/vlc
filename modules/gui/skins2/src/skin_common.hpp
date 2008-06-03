@@ -2,7 +2,7 @@
  * skin_common.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: skin_common.hpp 17508 2006-11-06 11:26:08Z md $
+ * $Id: 41b3b458102611bf900a4038ff27675209e02901 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

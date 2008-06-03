@@ -2,7 +2,7 @@
  * aout_dummy.c : dummy audio output plugin
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: aout.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: ed0d25c5c37fef42757e57b1dacfd6fc28a02af6 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

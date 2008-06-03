@@ -2,7 +2,7 @@
  * vlm.js: VLC media player web interface
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: vlm.js 18265 2006-12-04 14:30:29Z md $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

@@ -2,7 +2,7 @@
  * flac.c : FLAC demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: flac.c 14790 2006-03-18 02:06:16Z xtophe $
+ * $Id: c007694168563785b69ef5a48334b98af1548823 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

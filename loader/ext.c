@@ -9,7 +9,7 @@
 /*
  * Modified for use with MPlayer, detailed CVS changelog at
  * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
- * $Id: ext.c 11593 2005-06-28 18:02:01Z courmisch $
+ * $Id: 2a41830861d03ef289a4d6432fc7e2419bdda489 $
  */
 
 #include "config.h"

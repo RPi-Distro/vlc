@@ -2,7 +2,7 @@
  * vlm_stream.hpp: Representation of a VLM Stream
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: vlm_stream.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: e1553ad2556b3907e4228e1c788d4f6bb38e4326 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

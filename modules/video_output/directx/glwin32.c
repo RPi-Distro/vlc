@@ -2,7 +2,7 @@
  * glwin32.c: Windows OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: glwin32.c 16931 2006-10-03 09:04:50Z damienf $
+ * $Id: 413950d2dad41d48d5b411aa8cdfb7b35f88033b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

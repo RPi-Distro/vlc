@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: transcode.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: f9dc400b8ad7bfcfce8fb34629b588353d176a3b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1424,6 +1424,7 @@ static void transcode_audio_close( sout_stream_t *p_stream,
             module_Unneed( id->pp_filter[i], id->pp_filter[i]->p_module );
         vlc_object_destroy( id->pp_filter[i] );
     }
+    id->i_filter = 0;
 }
 
 static int transcode_audio_process( sout_stream_t *p_stream,
@@ -1995,6 +1996,8 @@ static void transcode_video_close( sout_stream_t *p_stream,
 
         vlc_object_destroy( id->pp_filter[i] );
     }
+    id->i_filter = 0;
+
     for( i = 0; i < id->i_vfilter; i++ )
     {
         vlc_object_detach( id->pp_vfilter[i] );
@@ -2012,6 +2015,7 @@ static void transcode_video_close( sout_stream_t *p_stream,
 
         vlc_object_destroy( id->pp_vfilter[i] );
     }
+    id->i_vfilter = 0;
 }
 
 static int transcode_video_process( sout_stream_t *p_stream,
@@ -2036,7 +2040,8 @@ static int transcode_video_process( sout_stream_t *p_stream,
             {
                 msg_Dbg( p_stream, "late picture skipped ("I64Fd")",
                          current_date + 50000 - p_pic->date );
-                p_pic->pf_release( p_pic );
+                if( p_pic->pf_release )
+                    p_pic->pf_release( p_pic );
                 continue;
             }
         }
@@ -2067,7 +2072,8 @@ static int transcode_video_process( sout_stream_t *p_stream,
                 msg_Dbg( p_stream, "dropping frame (%i)",
                          (int)(i_video_drift - i_master_drift) );
 #endif
-                p_pic->pf_release( p_pic );
+                if( p_pic->pf_release )
+                    p_pic->pf_release( p_pic );
                 continue;
             }
             else if( i_video_drift > i_master_drift + 50000 )
@@ -2084,7 +2090,8 @@ static int transcode_video_process( sout_stream_t *p_stream,
         {
             if( transcode_video_encoder_open( p_stream, id ) != VLC_SUCCESS )
             {
-                p_pic->pf_release( p_pic );
+                if( p_pic->pf_release )
+                    p_pic->pf_release( p_pic );
                 transcode_video_close( p_stream, id );
                 id->b_transcode = VLC_FALSE;
                 return VLC_EGENERIC;
@@ -2181,7 +2188,8 @@ static int transcode_video_process( sout_stream_t *p_stream,
                     vlc_object_detach( id->pp_filter[id->i_filter] );
                     vlc_object_destroy( id->pp_filter[id->i_filter] );
 
-                    p_pic->pf_release( p_pic );
+                    if( p_pic->pf_release )
+                        p_pic->pf_release( p_pic );
                     transcode_video_close( p_stream, id );
                     id->b_transcode = VLC_FALSE;
                     return VLC_EGENERIC;
@@ -2260,7 +2268,8 @@ static int transcode_video_process( sout_stream_t *p_stream,
                 if( p_tmp )
                 {
                     vout_CopyPicture( p_stream, p_tmp, p_pic );
-                    p_pic->pf_release( p_pic );
+                    if( p_pic->pf_release )
+                        p_pic->pf_release( p_pic );
                     p_pic = p_tmp;
                 }
             }
@@ -2338,7 +2347,8 @@ static int transcode_video_process( sout_stream_t *p_stream,
 
         if( p_sys->i_threads == 0 )
         {
-            p_pic->pf_release( p_pic );
+            if( p_pic->pf_release )
+                p_pic->pf_release( p_pic );
         }
         else
         {
@@ -2391,7 +2401,8 @@ static int EncoderThread( sout_stream_sys_t *p_sys )
 
         vlc_mutex_unlock( &p_sys->lock_out );
 
-        p_pic->pf_release( p_pic );
+        if( p_pic->pf_release )
+            p_pic->pf_release( p_pic );
     }
 
     while( p_sys->i_last_pic != p_sys->i_first_pic )
@@ -2399,7 +2410,8 @@ static int EncoderThread( sout_stream_sys_t *p_sys )
         p_pic = p_sys->pp_pics[p_sys->i_first_pic++];
         p_sys->i_first_pic %= PICTURE_RING_SIZE;
 
-        p_pic->pf_release( p_pic );
+        if( p_pic->pf_release )
+            p_pic->pf_release( p_pic );
     }
 
     block_ChainRelease( p_sys->p_buffers );
@@ -2475,7 +2487,8 @@ static picture_t *video_new_buffer( vlc_object_t *p_this, picture_t **pp_ring,
 
         for( i = 0; i < PICTURE_RING_SIZE; i++ )
         {
-            pp_ring[i]->pf_release( pp_ring[i] );
+            if( pp_ring[i]->pf_release )
+                pp_ring[i]->pf_release( pp_ring[i] );
         }
 
         i = 0;
@@ -2767,15 +2780,15 @@ static int transcode_osd_new( sout_stream_t *p_stream, sout_stream_id_t *id )
 
  error:
     msg_Err( p_stream, "starting osd encoding thread failed" );
-    if( id->p_encoder->p_module )
-            module_Unneed( id->p_encoder, id->p_encoder->p_module );
     if( id->p_encoder )
     {
+        if( id->p_encoder->p_module )
+            module_Unneed( id->p_encoder, id->p_encoder->p_module );
         vlc_object_detach( id->p_encoder );
         vlc_object_destroy( id->p_encoder );
     }
-    if( fmt.psz_language ) free( fmt.psz_language );
-    if( id ) free( id );
+    free( fmt.psz_language );
+    free( id );
     p_sys->id_osd = NULL;
     p_sys->b_es_osd = VLC_FALSE;
     return VLC_EGENERIC;
@@ -2786,7 +2799,7 @@ static void transcode_osd_close( sout_stream_t *p_stream, sout_stream_id_t *id)
     sout_stream_sys_t *p_sys = p_stream->p_sys;
 
     /* Close encoder */
-    if( p_sys->b_es_osd && id )
+    if( id )
     {
         if( id->p_encoder->p_module )
             module_Unneed( id->p_encoder, id->p_encoder->p_module );
@@ -2800,7 +2813,7 @@ static void transcode_osd_close( sout_stream_t *p_stream, sout_stream_id_t *id)
         }
     }
     p_sys->b_es_osd = VLC_FALSE;
-    if( id ) free( id );
+    free( id );
 }
 
 static int transcode_osd_process( sout_stream_t *p_stream,

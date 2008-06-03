@@ -2,7 +2,7 @@
  * svgalib.c : SVGAlib plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: svgalib.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 0f9d405f5fbef645525c194a32bc27daa773695f $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

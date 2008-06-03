@@ -2,7 +2,7 @@
  * cmd_input.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cmd_input.cpp 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: fb0be613c47c35bd58c13d7d4ae8ce153efde916 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

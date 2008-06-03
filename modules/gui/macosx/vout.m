@@ -2,7 +2,7 @@
  * vout.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: vout.m 24195 2008-01-08 13:22:38Z fkuehne $
+ * $Id: 64418ec10f98f42f8f3fe48e0989d2b2c0395b1a $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -744,12 +744,18 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 
 - (void)enterFullscreen
 {
+    if( var_GetBool( p_real_vout, "video-on-top" ) )
+        [o_window setLevel: NSNormalWindowLevel];
+
     [[o_view class] performSelectorOnMainThread:@selector(resetVout:) withObject:[NSValue valueWithPointer:p_vout] waitUntilDone:YES];
     [[[[VLCMain sharedInstance] getControls] getFSPanel] setActive: nil];
 }
 
 - (void)leaveFullscreen
 {
+    if( var_GetBool( p_real_vout, "video-on-top" ) )
+        [o_window setLevel: NSStatusWindowLevel];
+
     [[o_view class] performSelectorOnMainThread:@selector(resetVout:) withObject:[NSValue valueWithPointer:p_vout] waitUntilDone:YES];
     [[[[VLCMain sharedInstance] getControls] getFSPanel] setNonActive: nil];
 }

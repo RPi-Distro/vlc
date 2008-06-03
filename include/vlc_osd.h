@@ -2,7 +2,7 @@
  * vlc_osd.h - OSD menu definitions and function prototypes
  *****************************************************************************
  * Copyright (C) 2004-2005 M2X
- * $Id: vlc_osd.h 15123 2006-04-06 22:41:06Z dionoea $
+ * $Id: 9fda7077bad64580ce8cc21d9feeca362fade62f $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *

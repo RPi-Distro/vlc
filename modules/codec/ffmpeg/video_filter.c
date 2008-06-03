@@ -3,7 +3,7 @@
  *               using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: video_filter.c 25091 2008-02-10 22:36:49Z jpsaman $
+ * $Id: a6d66457c73a31abbe49d51c6f0ef10b6a57234b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -30,7 +30,9 @@
 #include "vlc_filter.h"
 
 /* ffmpeg header */
-#ifdef HAVE_FFMPEG_AVCODEC_H
+#ifdef HAVE_LIBAVCODEC_AVCODEC_H
+#   include <libavcodec/avcodec.h>
+#elif defined(HAVE_FFMPEG_AVCODEC_H)
 #   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>
@@ -422,7 +424,8 @@ static picture_t *Process( filter_t *p_filter, picture_t *p_pic )
     if( !p_pic_dst )
     {
         msg_Warn( p_filter, "can't get output picture" );
-        p_pic->pf_release( p_pic );
+        if( p_pic->pf_release )
+            p_pic->pf_release( p_pic );
         return NULL;
     }
 
@@ -598,7 +601,8 @@ static picture_t *Process( filter_t *p_filter, picture_t *p_pic )
     p_pic_dst->b_progressive = p_pic->b_progressive;
     p_pic_dst->b_top_field_first = p_pic->b_top_field_first;
 
-    p_pic->pf_release( p_pic );
+    if( p_pic->pf_release )
+        p_pic->pf_release( p_pic );
     return p_pic_dst;
 }
 
@@ -688,6 +692,7 @@ static picture_t *Deinterlace( filter_t *p_filter, picture_t *p_pic )
     p_pic_dst->b_progressive = VLC_TRUE;
     p_pic_dst->b_top_field_first = p_pic->b_top_field_first;
 
-    p_pic->pf_release( p_pic );
+    if( p_pic->pf_release )
+        p_pic->pf_release( p_pic );
     return p_pic_dst;
 }

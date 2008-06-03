@@ -3,7 +3,7 @@
  * Declaration and extern access to global program object.
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
- * $Id: main.h 14256 2006-02-12 11:39:00Z courmisch $
+ * $Id: 8505478d054c3120ec83cb6e69499daa672e57fe $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *

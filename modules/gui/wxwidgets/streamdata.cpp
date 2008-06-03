@@ -2,7 +2,7 @@
  * streamdata.cpp: streaming/transcoding data
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: streamdata.cpp 15044 2006-04-02 07:58:36Z zorglub $
+ * $Id: f523f3fb45b70851a634a2c5737df11521d81711 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

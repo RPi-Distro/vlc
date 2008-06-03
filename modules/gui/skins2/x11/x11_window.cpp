@@ -2,7 +2,7 @@
  * x11_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: x11_window.cpp 19664 2007-04-04 14:29:10Z courmisch $
+ * $Id: b97649776fe5f67748950e2178181f44830aa649 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

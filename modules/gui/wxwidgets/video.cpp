@@ -2,7 +2,7 @@
  * video.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004, 2003 the VideoLAN team
- * $Id: video.cpp 16876 2006-09-28 15:46:15Z thresh $
+ * $Id: e6fe8d2b745d04cd9126b5352972e9d4f159abd3 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

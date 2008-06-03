@@ -2,7 +2,7 @@
  * volume.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: volume.cpp 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: e1f83d6b2d0f2dd02aec068eb7b4d9241bd36110 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

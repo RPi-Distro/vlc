@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003 the VideoLAN team
- * $Id: cdda.c 24238 2008-01-11 16:45:19Z fkuehne $
+ * $Id: 310743f8ffc265a28cff3128cada5df35fbab2f7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>

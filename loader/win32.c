@@ -1,5 +1,5 @@
 /*
- * $Id: win32.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: d99fa85bf5f85cbfcb922c2c8631d8bbc120e8bf $
  *
  * Originally distributed under LPGL 2.1 (or later) by the Wine project.
  *

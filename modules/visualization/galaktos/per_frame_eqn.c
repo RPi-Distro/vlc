@@ -2,7 +2,7 @@
  * per_frame_eqn.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: per_frame_eqn.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 5fffd6313eed67903e98e9a413db6d928f92f291 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

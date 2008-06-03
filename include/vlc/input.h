@@ -2,7 +2,7 @@
  * input.h: input modules header for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: input.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: a060e99650719d02c8500a2011c3fe26fa5ec561 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

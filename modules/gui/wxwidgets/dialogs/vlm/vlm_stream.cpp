@@ -2,7 +2,7 @@
  * vlm_stream.cpp : Implementation of the VLMStream class hierarchy
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: vlm_stream.cpp 18264 2006-12-04 14:29:50Z md $
+ * $Id: 12202060749212827ba89603aa2b12a3ee94fc38 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

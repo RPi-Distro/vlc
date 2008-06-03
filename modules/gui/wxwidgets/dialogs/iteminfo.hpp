@@ -2,7 +2,7 @@
  * iteminfo.hpp: private wxWindows interface description
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: iteminfo.hpp 14408 2006-02-19 16:16:56Z zorglub $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

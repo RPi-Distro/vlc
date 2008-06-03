@@ -2,7 +2,7 @@
  * rtsp.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: rtsp.c 22023 2007-09-15 09:51:34Z courmisch $
+ * $Id: 9d5fc9476511d7002098ac27688f5792a3b11e1a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

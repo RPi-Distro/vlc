@@ -2,7 +2,7 @@
  * xcommon.h: Defines common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: xcommon.h 25069 2008-02-10 12:14:17Z courmisch $
+ * $Id: daa67ac8181f2e6c540247aa894b1aefed59ebad $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

@@ -2,7 +2,7 @@
  * TransportButton.h
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: TransportButton.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: b8b488fb9eaef2ec781b47c6310709cb12e408e5 $
  *
  * Authors: Tony Castley <tcastley@mail.powerup.com.au>
  *

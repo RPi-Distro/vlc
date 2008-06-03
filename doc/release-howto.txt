@@ -5,15 +5,15 @@
 
  * Tests : compilation, regression tests ...
 
- * Changes on the svn repository
+ * Changes on the git repository
    - update the version number everywhere it's needed
      · configure.ac
      · extras/MacOSX/vlc.pbprj/project.pbxproj
      · extras/MacOSX/Resources/English.lproj/InfoPlist.string
    - update the ChangeLog and NEWS files, as well as the Trac database
-     · LANG=C svn log -v -r '{YYYY-12-31}:{YYYY-01-01}' >! ChangeLog
-     · read all the commits and add important things to the NEWS file
-     · update the milestones info on https://trac.videolan.org/vlc
+     Â· LANG=C git log --since="01-01" --until="12-31" >! ChangeLog
+     Â· read all the commits and add important things to the NEWS file
+     Â· update the milestones info on https://trac.videolan.org/vlc
    - Add a note about the matching contrib package in INSTALL.win32
 
  * Commit
@@ -26,7 +26,7 @@
   - generate md5 hashes of these files
 
  * Contribs
-  - Put a copy of the libraries or svn snapshot in vlc-X.X.X/contrib
+  - Put a copy of the libraries or git snapshot in vlc-X.X.X/contrib
   - Put the relevant win32 contrib package
   - Update developers.v.o/vlc and www.v.o/vlc/download-sources.html
 
@@ -48,9 +48,14 @@
  * Commit changes ... it never works the first time
 
  * "Tag" the release
-    svn cp svn://svn.videolan.org/vlc/trunk svn://svn.videolan.org/vlc/tag/X.X.X
-    or
-    svn mv svn://svn.videolan.org/vlc/branches/X.X.X svn://svn.videolan.org/vlc/tag/X.X.X
+
+    First make sure you git-commit-ed the ChangeLog all the version release related changes, then:
+
+    git tag -a -m "VLC Release VERSION" <VERSION>
+    (Create an annotated tag, you can skip -a if you used -m)
+    git push origin <VERSION>
+
+    (You are advised to play with it on the sandrox.git if you feel unconfortable)
 
  * Move /opt/ftp/pub/videolan/testing/vlc-X.X.X to /opt/ftp/pub/videolan/vlc/X.X.X
   - Update the "latest" symlink
@@ -80,5 +85,8 @@
  * Announce email
   - write something along the lines of previous releases
   - post in videolan-announce (moderated), vlc et vlc-devel
+    You are advised to add the author list for this version 'git shortlog -s PREVIOUS_VERSION..VERSION'
+    And to add git diff --stat PREVIOUS_VERSION..VERSION if it's relevant.
+    You can play a bit with git to show the piece of information that may be interesting.
   - add a sticky thread in the "General VLC media player discussion" forum
 

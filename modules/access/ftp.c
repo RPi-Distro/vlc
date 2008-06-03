@@ -2,7 +2,7 @@
  * ftp.c: FTP input module
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: ftp.c 24145 2008-01-06 17:10:37Z Trax $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -497,7 +497,6 @@ static int ftp_ReadCommand( access_t *p_access,
     int          i_answer;
 
     psz_line = net_Gets( p_access, p_sys->fd_cmd, NULL );
-    msg_Dbg( p_access, "answer=%s", psz_line );
     if( psz_line == NULL || strlen( psz_line ) < 3 )
     {
         msg_Err( p_access, "cannot get answer" );
@@ -506,6 +505,7 @@ static int ftp_ReadCommand( access_t *p_access,
         if( ppsz_answer ) *ppsz_answer  = NULL;
         return -1;
     }
+    msg_Dbg( p_access, "answer=%s", psz_line );
 
     if( psz_line[3] == '-' )    /* Multiple response */
     {
@@ -570,7 +570,7 @@ static int ftp_StartStream( access_t *p_access, off_t i_start )
         return VLC_EGENERIC;
     }
 
-    if( psz_ip != NULL )
+    if( *psz_ip )
     {
         char psz_fmt[7] = "(|||%u";
         psz_fmt[1] = psz_fmt[2] = psz_fmt[3] = psz_parser[1];
@@ -584,7 +584,7 @@ static int ftp_StartStream( access_t *p_access, off_t i_start )
     }
     else
     {
-        unsigned  a1, a2, a3, a4, p1, p2;
+        unsigned a1, a2, a3, a4, p1, p2;
 
         if( ( sscanf( psz_parser, "(%u,%u,%u,%u,%u,%u", &a1, &a2, &a3, &a4,
                       &p1, &p2 ) < 6 ) || ( a1 > 255 ) || ( a2 > 255 )
@@ -637,6 +637,7 @@ static int ftp_StartStream( access_t *p_access, off_t i_start )
         msg_Err( p_access, "cannot retreive file" );
         return VLC_EGENERIC;
     }
+
     return VLC_SUCCESS;
 }
 

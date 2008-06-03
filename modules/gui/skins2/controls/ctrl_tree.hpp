@@ -2,7 +2,7 @@
  * ctrl_tree.hpp
  *****************************************************************************
  * Copyright (C) 2003 VideoLAN
- * $Id: ctrl_tree.hpp 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: da3ccd785ba5ecdddc2cc2325e5cf31aa5b8b7be $
  *
  * Authors: Antoine Cellerier
  *

@@ -2,7 +2,7 @@
  * rootwrap.c
  *****************************************************************************
  * Copyright © 2005 Rémi Denis-Courmont
- * $Id: rootwrap.c 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: 604ba0a241dc6517ea9dd083576d8683e35ca63d $
  *
  * Author: Rémi Denis-Courmont <rem # videolan.org>
  *

@@ -2,7 +2,7 @@
  * tls.c: TLS wrapper
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: vlc_tls.h 14980 2006-03-30 13:57:58Z courmisch $
+ * $Id: 5a46dea68b0569bf28faab3f277ba28fb257c9f5 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

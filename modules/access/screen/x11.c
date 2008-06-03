@@ -2,7 +2,7 @@
  * x11.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: x11.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 6febe21d1176902df247bcf4dced3abc7aa97dc2 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

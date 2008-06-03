@@ -1,6 +1,6 @@
 /*
  * PE (Portable Execute) File Resources
- * $Id: pe_resource.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: 5e54e5e711d7f287e860ad24e494238679ca244e $
  *
  * Copyright 1995 Thomas Sandford
  * Copyright 1996 Martin von Loewis

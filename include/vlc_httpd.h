@@ -2,7 +2,7 @@
  * vlc_httpd.h: builtin HTTP/RTSP server.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: vlc_httpd.h 14811 2006-03-18 17:52:31Z zorglub $
+ * $Id: 02b1b44781eed0cb5555d1fc4f3d515aef203044 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

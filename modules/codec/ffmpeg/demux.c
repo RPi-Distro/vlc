@@ -2,7 +2,7 @@
  * demux.c: demuxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: demux.c 20496 2007-06-10 15:32:56Z dionoea $
+ * $Id: 95d2460bf93b85608fa27565f1475aadd8a57360 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -32,7 +32,9 @@
 #include "vlc_meta.h"
 
 /* ffmpeg header */
-#ifdef HAVE_FFMPEG_AVFORMAT_H
+#ifdef HAVE_LIBAVFORMAT_AVFORMAT_H
+#   include <libavformat/avformat.h>
+#elif defined(HAVE_FFMPEG_AVFORMAT_H)
 #   include <ffmpeg/avformat.h>
 #else
 #   include <avformat.h>
@@ -489,8 +491,16 @@ static offset_t IOSeek( void *opaque, offset_t offset, int whence )
     }
     if( i_absolute < 0 )
         i_absolute = 0;
-    if( i_size && i_absolute > i_size )
-        i_absolute = i_size;
+    if( i_size )
+    {
+        if( i_absolute > i_size )
+            i_absolute = i_size;
+        if( stream_Tell( p_demux->s ) >= i_size )
+        {
+            msg_Err( p_demux, "Seeking too far : EOF?" );
+            return -1;
+        }
+    }
 
     if( stream_Seek( p_demux->s, i_absolute ) )
     {

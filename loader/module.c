@@ -1,7 +1,7 @@
 /*
  * Modules
  *
- * $Id: module.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: 2e42dff415a6fee572080542f852faf3547a2e26 $
  *
  * Copyright 1995 Alexandre Julliard
  *

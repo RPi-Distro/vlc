@@ -1,5 +1,5 @@
 List of vlc plugins (271)
-$Id: LIST 14963 2006-03-29 14:02:00Z zorglub $
+$Id$
  * a52: A/52 basic parser/packetizer
  * a52sys: A/52 decapsulation demuxer.
  * a52tofloat32: A/52 audio converter & decoder plugin, using liba52

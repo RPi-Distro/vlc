@@ -1,10 +1,11 @@
 /*****************************************************************************
  * misc.m: code not specific to vlc
  *****************************************************************************
- * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: misc.m 23148 2007-11-18 23:12:26Z fkuehne $
+ * Copyright (C) 2003-2008 the VideoLAN team
+ * $Id: 68d5c2e4bb6e3b6aed4dadf8dd76c76dcfee4794 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
+ *          Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,12 +22,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <Cocoa/Cocoa.h>
+#import <Cocoa/Cocoa.h>
+#import <QuickTime/QuickTime.h>
 
-#include "intf.h"                                          /* VLCApplication */
-#include "misc.h"
-#include "playlist.h"
-#include "controls.h"
+#import "intf.h"                                          /* VLCApplication */
+#import "misc.h"
+#import "playlist.h"
+#import "controls.h"
 
 /*****************************************************************************
  * NSScreen (VLCAdditions)
@@ -77,10 +79,9 @@ static NSMutableArray *blackoutWindows = NULL;
     unsigned int i;
 
     /* Free our previous blackout window (follow blackoutWindow alloc strategy) */
-    [blackoutWindows makeObjectsPerformSelector:@selector(close)];
+    [blackoutWindows makeObjectsPerformSelector:@selector(orderOut:)];
     [blackoutWindows removeAllObjects];
 
- 
     for(i = 0; i < [[NSScreen screens] count]; i++)
     {
         NSScreen *screen = [[NSScreen screens] objectAtIndex: i];
@@ -91,7 +92,7 @@ static NSMutableArray *blackoutWindows = NULL;
             continue;
 
         screen_rect = [screen frame];
-        screen_rect.origin.x = screen_rect.origin.y = 0.0f;
+        screen_rect.origin.x = screen_rect.origin.y = 0;
 
         /* blackoutWindow alloc strategy
             - The NSMutableArray blackoutWindows has the blackoutWindow references
@@ -102,10 +103,14 @@ static NSMutableArray *blackoutWindows = NULL;
         [blackoutWindow setBackgroundColor:[NSColor blackColor]];
         [blackoutWindow setLevel: NSFloatingWindowLevel]; /* Disappear when Expose is triggered */
  
+        [blackoutWindow displayIfNeeded];
         [blackoutWindow orderFront: self];
 
         [blackoutWindows addObject: blackoutWindow];
         [blackoutWindow release];
+        
+        if( [screen isMainScreen ] )
+           SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     }
 }
 
@@ -116,8 +121,10 @@ static NSMutableArray *blackoutWindows = NULL;
     for(i = 0; i < [blackoutWindows count]; i++)
     {
         VLCWindow *blackoutWindow = [blackoutWindows objectAtIndex: i];
-        [blackoutWindow close];
+        [blackoutWindow orderOut: self];
     }
+    
+   SetSystemUIMode( kUIModeNormal, 0);
 }
 
 @end

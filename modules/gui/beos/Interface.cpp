@@ -2,7 +2,7 @@
  * intf_beos.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: Interface.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 2b817ea882b7eafd491ef9ca08911d5eda3ecd2c $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

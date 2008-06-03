@@ -2,7 +2,7 @@
  * mpeg4video.c: mpeg 4 video packetizer
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: mpeg4video.c 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: fdffce8b2ca28ce831e6eb5ce46adb41d04ee441 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>

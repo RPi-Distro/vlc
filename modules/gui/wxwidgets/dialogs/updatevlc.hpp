@@ -2,7 +2,7 @@
  * updatevlc.hpp: VLC Update checker
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: updatevlc.hpp 14733 2006-03-12 09:11:49Z zorglub $
+ * $Id: cc069acd4e2c6842207532454e5f8170a1ea927a $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *

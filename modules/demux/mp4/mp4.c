@@ -2,7 +2,7 @@
  * mp4.c : MP4 file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: mp4.c 25158 2008-02-15 17:16:03Z courmisch $
+ * $Id$
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -460,6 +460,11 @@ static int Open( vlc_object_t * p_this )
     else
     {
         p_sys->i_timescale = p_mvhd->data.p_mvhd->i_timescale;
+        if( p_sys->i_timescale == 0 )
+        {
+            msg_Err( p_this, "bad timescale" );
+            goto error;
+        }
         p_sys->i_duration = p_mvhd->data.p_mvhd->i_duration;
     }
 
@@ -1387,6 +1392,21 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
         switch( p_sample->i_type )
         {
             /* qt decoder, send the complete chunk */
+            case VLC_FOURCC ('h', 'd', 'v', '1'): // HDV 720p30
+            case VLC_FOURCC ('h', 'd', 'v', '2'): // HDV 1080i60
+            case VLC_FOURCC ('h', 'd', 'v', '3'): // HDV 1080i50
+            case VLC_FOURCC ('h', 'd', 'v', '5'): // HDV 720p25
+            case VLC_FOURCC ('m', 'x', '5', 'n'): // MPEG2 IMX NTSC 525/60 50mb/s produced by FCP
+            case VLC_FOURCC ('m', 'x', '5', 'p'): // MPEG2 IMX PAL 625/60 50mb/s produced by FCP
+            case VLC_FOURCC ('m', 'x', '4', 'n'): // MPEG2 IMX NTSC 525/60 40mb/s produced by FCP
+            case VLC_FOURCC ('m', 'x', '4', 'p'): // MPEG2 IMX PAL 625/60 40mb/s produced by FCP
+            case VLC_FOURCC ('m', 'x', '3', 'n'): // MPEG2 IMX NTSC 525/60 30mb/s produced by FCP
+            case VLC_FOURCC ('m', 'x', '3', 'p'): // MPEG2 IMX PAL 625/50 30mb/s produced by FCP
+            case VLC_FOURCC ('x', 'd', 'v', '2'): // XDCAM HD 1080i60
+            case VLC_FOURCC ('A', 'V', 'm', 'p'): // AVID IMX PAL
+                p_track->fmt.i_codec = VLC_FOURCC( 'm','p','g','v' );
+                break;
+            /* qt decoder, send the complete chunk */
             case VLC_FOURCC( 'S', 'V', 'Q', '3' ):
             case VLC_FOURCC( 'S', 'V', 'Q', '1' ):
             case VLC_FOURCC( 'V', 'P', '3', '1' ):
@@ -1780,6 +1800,8 @@ static void MP4_TrackCreate( demux_t *p_demux, mp4_track_t *p_track,
     }
 
     p_track->i_timescale = p_mdhd->data.p_mdhd->i_timescale;
+    if( !p_track->i_timescale )
+        return;
 
     for( i = 0; i < 3; i++ )
     {

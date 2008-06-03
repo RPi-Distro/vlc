@@ -544,4 +544,4 @@ http://www.vcdhelp.com/
 http://www.vcdimager.org/
 http://www.vcdimager.org/guides/#guides
 
-$Id: intf-vcd.txt 13303 2005-11-21 03:15:46Z zcot $
+$Id$

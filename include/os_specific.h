@@ -2,7 +2,7 @@
  * os_specific.h: OS specific features
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: os_specific.h 14104 2006-02-01 13:01:06Z sam $
+ * $Id: b58b0cf585e199f4cb841bb4d91a115a6fd5fdf5 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@netcourrier.com>

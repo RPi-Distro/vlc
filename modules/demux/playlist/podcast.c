@@ -2,7 +2,7 @@
  * podcast.c : podcast playlist imports
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: podcast.c 15462 2006-04-30 16:02:56Z dionoea $
+ * $Id: 8122d967ded59f210d6e1766e9d06ccedd3270bd $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

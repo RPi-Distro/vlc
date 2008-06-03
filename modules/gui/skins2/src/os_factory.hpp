@@ -2,7 +2,7 @@
  * os_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: os_factory.hpp 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: cced448cb9b1a737d7feb1c2677c1bf5cf38b4b1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

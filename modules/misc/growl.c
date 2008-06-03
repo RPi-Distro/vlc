@@ -2,7 +2,7 @@
  * growl.c : growl notification plugin
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: growl.c 17020 2006-10-10 18:33:26Z fkuehne $
+ * $Id: 75a395a0df6fce60b7ab1e1579502797d12cf0ee $
  *
  * Authors: Jérôme Decoodt <djc -at- videolan -dot- org>
  *

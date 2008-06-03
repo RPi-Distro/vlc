@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: encoder.c 18591 2007-01-14 20:45:12Z courmisch $
+ * $Id: 6c047e3306d4689e4df2d70843fdd85978b3e0b7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -36,7 +36,9 @@
 
 /* ffmpeg header */
 #define HAVE_MMX 1
-#ifdef HAVE_FFMPEG_AVCODEC_H
+#ifdef HAVE_LIBAVCODEC_AVCODEC_H
+#   include <libavcodec/avcodec.h>
+#elif defined(HAVE_FFMPEG_AVCODEC_H)
 #   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>
@@ -539,8 +541,15 @@ int E_(OpenEncoder)( vlc_object_t *p_this )
             p_enc->fmt_in.audio.i_channels = 2;
 
         p_enc->fmt_in.i_codec  = AOUT_FMT_S16_NE;
-        p_context->sample_rate = p_enc->fmt_in.audio.i_rate;
-        p_context->channels    = p_enc->fmt_in.audio.i_channels;
+        p_context->sample_rate = p_enc->fmt_out.audio.i_rate;
+        p_context->channels    = p_enc->fmt_out.audio.i_channels;
+
+        if ( p_enc->fmt_out.i_codec == VLC_FOURCC('m','p','4','a') )
+        {
+            /* XXX: FAAC does resample only when setting the INPUT samplerate
+             * to the desired value (-R option of the faac frontend) */
+            p_enc->fmt_in.audio.i_rate = p_context->sample_rate;
+        }
     }
 
     /* Misc parameters */

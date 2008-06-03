@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: input.c 20619 2007-06-18 19:56:45Z dionoea $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -738,6 +738,9 @@ static int Init( input_thread_t * p_input, vlc_bool_t b_quick )
 
     /* Create es out */
     p_input->p_es_out = input_EsOutNew( p_input );
+    if( !p_input->p_es_out )
+        goto error;
+
     es_out_Control( p_input->p_es_out, ES_OUT_SET_ACTIVE, VLC_FALSE );
     es_out_Control( p_input->p_es_out, ES_OUT_SET_MODE, ES_OUT_MODE_NONE );
 
@@ -2036,7 +2039,7 @@ static int InputSourceInit( input_thread_t *p_input,
              * (and do nothing with a list) */
             char *psz_var_demux = var_GetString( p_input, "demux" );
 
-            if( *psz_var_demux != '\0' &&
+            if( psz_var_demux && *psz_var_demux &&
                 !strchr(psz_var_demux, ',' ) &&
                 !strchr(psz_var_demux, ':' ) )
             {
@@ -2044,10 +2047,7 @@ static int InputSourceInit( input_thread_t *p_input,
 
                 msg_Dbg( p_input, "enforced demux ` %s'", psz_demux );
             }
-            else if( psz_var_demux )
-            {
-                free( psz_var_demux );
-            }
+            free( psz_var_demux );
         }
 
         /* Try access_demux if no demux given */

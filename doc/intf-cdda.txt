@@ -447,4 +447,4 @@ analyze the contents of a CD.
 The tool cd-read from libcdio can be used to show the sectors of 
 the CD or CD image or extract sectors. 
 
-$Id: intf-cdda.txt 13303 2005-11-21 03:15:46Z zcot $
+$Id$

@@ -2,7 +2,7 @@
  * daap.c :  Apple DAAP discovery module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: daap.c 14898 2006-03-23 21:41:12Z xtophe $
+ * $Id: 9790fb85d742994b7f5d3d8c26f610d37250fa32 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

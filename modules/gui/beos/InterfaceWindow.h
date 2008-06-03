@@ -2,7 +2,7 @@
  * InterfaceWindow.h: BeOS interface window class prototype
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: InterfaceWindow.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: ccb0855de57c49a9682f3e492b6087f39064d718 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Tony Castley <tcastley@mail.powerup.com.au>

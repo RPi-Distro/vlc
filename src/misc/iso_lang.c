@@ -2,7 +2,7 @@
  * iso_lang.c: function to decode language code (in dvd or a52 for instance).
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: iso_lang.c 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: 30c011b464050254722c3e5c3e8bec25a894fd2f $
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *         Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>

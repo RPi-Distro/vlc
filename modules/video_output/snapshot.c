@@ -2,7 +2,7 @@
  * snapshot.c : snapshot plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: snapshot.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: 10fc991542475208441375b80807ca6f19d6e783 $
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *

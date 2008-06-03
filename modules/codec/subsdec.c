@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: subsdec.c 17770 2006-11-14 20:22:25Z hartman $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -210,7 +210,9 @@ static int OpenDecoder( vlc_object_t *p_this )
         var_Create( p_dec, "subsdec-encoding",
                     VLC_VAR_STRING | VLC_VAR_DOINHERIT );
         var_Get( p_dec, "subsdec-encoding", &val );
-        if( !strcmp( val.psz_string, DEFAULT_NAME ) )
+        if( !val.psz_string || !*val.psz_string )
+           (void)0;
+        else if( !strcmp( val.psz_string, DEFAULT_NAME ) )
         {
             const char *psz_charset = GetFallbackEncoding();
 
@@ -218,22 +220,24 @@ static int OpenDecoder( vlc_object_t *p_this )
                     "subsdec-autodetect-utf8" );
 
             p_sys->iconv_handle = vlc_iconv_open( "UTF-8", psz_charset );
-            msg_Dbg( p_dec, "using fallback character encoding: %s", psz_charset );
+            msg_Dbg( p_dec, "using fallback character encoding: %s",
+                     psz_charset );
         }
         else if( !strcmp( val.psz_string, "UTF-8" ) )
         {
             msg_Dbg( p_dec, "using enforced character encoding: UTF-8" );
         }
-        else if( val.psz_string )
+        else
         {
-            msg_Dbg( p_dec, "using enforced character encoding: %s", val.psz_string );
+            msg_Dbg( p_dec, "using enforced character encoding: %s",
+                     val.psz_string );
             p_sys->iconv_handle = vlc_iconv_open( "UTF-8", val.psz_string );
             if( p_sys->iconv_handle == (vlc_iconv_t)-1 )
             {
                 msg_Warn( p_dec, "unable to do requested conversion" );
             }
         }
-        if( val.psz_string ) free( val.psz_string );
+        free( val.psz_string );
     }
 
     var_Create( p_dec, "subsdec-align", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );

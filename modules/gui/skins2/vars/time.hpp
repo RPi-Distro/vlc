@@ -2,7 +2,7 @@
  * time.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: time.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teuli�e <ipkiss@via.ecp.fr>

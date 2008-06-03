@@ -2,7 +2,7 @@
  * PlayListWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: PlayListWindow.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 35d9bf3f0238c5b1e958cb52975838d5944f4a33 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

@@ -2,7 +2,7 @@
  * libvlc.h: main libvlc header
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: libvlc.h 20692 2007-06-25 22:48:02Z xtophe $
+ * $Id: 7bb2570acb1f995bc302c837a631a2e8afd3f9b8 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -31,7 +31,7 @@
 static char *ppsz_language[] =
 { "auto", "en", "en_GB", "ar", "ca", "cs", "da", "de", "es", "fa", "fr", "gl",
   "he", "hu", "it", "ja", "ka", "ko", "ms", "ne", "nl", "oc", "pl", "pt_BR", "ro",
-  "ru", "sk", "sl",  "sv", "th", "tr", "zh_CN", "zh_TW" };
+  "ru", "sk", "sl", "sr", "sv", "th", "tr", "zh_CN", "zh_TW" };
 
 static char *ppsz_language_text[] =
 { N_("Auto"), N_("American English"), N_("British English"),
@@ -40,7 +40,7 @@ N_("Spanish"), N_("Persian"),N_("French"), N_("Galician"), N_("Hebrew"),
 N_("Hungarian"),N_("Italian"),N_("Japanese"),N_("Georgian"), N_("Korean"),
 N_("Malay"), N_("Nepali"), N_("Dutch"), N_("Occitan"), N_("Polish"), 
 N_("Brazilian Portuguese"), N_("Romanian"), N_("Russian"), N_("Slovak"), 
-N_("Slovenian"), N_("Swedish"), N_("Thai"), N_("Turkish"),
+N_("Slovenian"), N_("Serbian"), N_("Swedish"), N_("Thai"), N_("Turkish"),
 N_("Simplified Chinese"), N_("Chinese Traditional") };
 #endif
 

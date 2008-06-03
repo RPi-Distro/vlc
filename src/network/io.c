@@ -2,7 +2,7 @@
  * io.c: network I/O functions
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: io.c 17659 2006-11-11 16:50:15Z md $
+ * $Id: 9fa03912f5f2781dec14cfb71f68725092c08813 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
