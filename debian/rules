@@ -159,6 +159,9 @@ install: build
 	-mv debian/tmp/$(VIDDIR)/vlc32x32.xpm debian/tmp/$(VIDDIR)/vlc.xpm
 	# Install stuff
 	dh_install -si --fail-missing --sourcedir=debian/tmp
+	# install BTS stuff
+	mkdir -p  debian/vlc-nox/usr/share/bug/vlc-nox
+	cp debian/bug/* debian/vlc-nox/usr/share/bug/vlc-nox
 	# Clean up
 	rm -f debian/vlc/$(VIDDIR)/*.png
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))

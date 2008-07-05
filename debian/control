@@ -13,16 +13,16 @@ Build-Depends: debhelper (>= 6),
                yasm [amd64 kfreebsd-amd64],
                gettext,
                iceape-dev (>= 1.1.9-4),
-               xlibmesa-gl-dev,
+               libgl1-mesa-dev,
                liba52-0.7.4-dev,
                libaa1-dev,
-               libarts1-dev (>= 1.4.2-1),
+               libarts1-dev (>= 1.4.2),
                libasound2-dev (>= 0.9.0beta10a) [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libaudiofile-dev,
                libavahi-client-dev,
                libavcodec-dev (>= 0.cvs20070307-3),
                libavformat-dev (>= 0.cvs20070307-3),
-               libcaca-dev (>= 0.99.beta4-1),
+               libcaca-dev (>= 0.99.beta4),
                libcdio-dev,
                libdvbpsi4-dev,
                libdvdnav-dev,
@@ -70,7 +70,7 @@ Build-Depends: debhelper (>= 6),
                libraw1394-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libdc1394-13-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libxosd-dev,
-               libtwolame-dev (>= 0.3.8-1),
+               libtwolame-dev (>= 0.3.8),
                libspeex-dev,
                libsdl-image1.2-dev,
                libnotify-dev,
@@ -235,16 +235,6 @@ Description: Esound audio output plugin for VLC
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
  streams from various network sources.
 
-Package: vlc-plugin-alsa
-Architecture: all
-Depends: vlc
-Description: dummy transitional package
- This dummy package is now part of VLC.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
 Package: vlc-plugin-sdl
 Architecture: any
 Depends: vlc-nox,
@@ -336,16 +326,6 @@ Description: SVGAlib video output plugin for VLC
  activate it, use the `--vout svgalib' flag or select the `svgalib' video
  output plugin from the preferences menu. Note that you will need root
  permissions to use SVGAlib.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
-Package: wxvlc
-Architecture: all
-Depends: vlc
-Description: dummy transitional package
- This dummy package is now part of VLC.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia

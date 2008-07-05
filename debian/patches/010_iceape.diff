@@ -1,8 +1,6 @@
-Index: vlc-0.8.6.e/configure.ac
-===================================================================
---- vlc-0.8.6.e.orig/configure.ac	2008-05-15 07:47:29.880615291 +0200
-+++ vlc-0.8.6.e/configure.ac	2008-05-15 07:47:41.796609662 +0200
-@@ -5119,9 +5119,9 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -5150,9 +5150,9 @@ then
    if test "${with_mozilla_sdk_path}" = "" -o "${with_mozilla_sdk_path}" = "no"
    then
      dnl New firefox-1.5 SDK api
@@ -14,7 +12,7 @@ Index: vlc-0.8.6.e/configure.ac
            [],
            [
              PKG_CHECK_MODULES([MOZILLA_NSPR], [mozilla-nspr],
-@@ -5136,7 +5136,7 @@
+@@ -5167,7 +5167,7 @@ then
                ]
              )
            ])
@@ -23,7 +21,7 @@ Index: vlc-0.8.6.e/configure.ac
          MOZILLA_REQUIRED_HEADERS=1
          AC_CHECK_HEADERS(mozilla-config.h,,MOZILLA_REQUIRED_HEADERS=0)
          AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
-@@ -5150,7 +5150,7 @@
+@@ -5181,7 +5181,7 @@ then
          fi
          MOZILLA_REQUIRED_HEADERS=
          mozilla=:
@@ -32,7 +30,7 @@ Index: vlc-0.8.6.e/configure.ac
          if test -f "${firefox_include}/mozilla-config.h" -a -f "${firefox_include}/mozilla-config32.h"; then
              MOZILLA_CONFIG_H="${firefox_include}/mozilla-config32.h"
          elif test -f "${firefox_include}/mozilla-config.h" -a -f "${firefox_include}/mozilla-config64.h"; then
-@@ -5162,7 +5162,7 @@
+@@ -5193,7 +5193,7 @@ then
              VLC_ADD_LDFLAGS([mozilla], [${X_LIBS} ${X_PRE_LIBS} -lX11 -lXt])
          fi
          VLC_ADD_CPPFLAGS([mozilla],[${CPPFLAGS}])

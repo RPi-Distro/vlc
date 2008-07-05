@@ -1,8 +1,6 @@
-Index: vlc-0.8.6.e/configure
-===================================================================
---- vlc-0.8.6.e.orig/configure	2008-02-24 20:07:09.000000000 +0100
-+++ vlc-0.8.6.e/configure	2008-05-15 07:52:39.532607714 +0200
-@@ -988,13 +988,13 @@
+--- a/configure
++++ b/configure
+@@ -988,13 +988,13 @@ HAS_WIDL_COMPILER_TRUE
  HAS_WIDL_COMPILER_FALSE
  BUILD_ACTIVEX_TRUE
  BUILD_ACTIVEX_FALSE
@@ -20,7 +18,7 @@ Index: vlc-0.8.6.e/configure
  MOZILLA_NSPR_CFLAGS
  MOZILLA_NSPR_LIBS
  NSPR_CFLAGS
-@@ -1091,10 +1091,10 @@
+@@ -1091,10 +1091,10 @@ GNUTLS_CFLAGS
  GNUTLS_LIBS
  MIDL
  WIDL
@@ -35,7 +33,7 @@ Index: vlc-0.8.6.e/configure
  MOZILLA_NSPR_CFLAGS
  MOZILLA_NSPR_LIBS
  NSPR_CFLAGS
-@@ -1972,14 +1972,13 @@
+@@ -1973,14 +1973,13 @@ Some influential environment variables:
    GNUTLS_LIBS linker flags for GNUTLS, overriding pkg-config
    MIDL        Microsoft IDL compiler (Win32 platform only)
    WIDL        Wine IDL compiler (requires Wine SDK)
@@ -57,7 +55,7 @@ Index: vlc-0.8.6.e/configure
    MOZILLA_NSPR_CFLAGS
                C compiler flags for MOZILLA_NSPR, overriding pkg-config
    MOZILLA_NSPR_LIBS
-@@ -3022,11 +3021,6 @@
+@@ -3023,11 +3022,6 @@ ac_config_headers="$ac_config_headers co
  
  
  
@@ -69,174 +67,174 @@ Index: vlc-0.8.6.e/configure
  { echo "$as_me:$LINENO: checking whether to enable maintainer-specific portions of Makefiles" >&5
  echo $ECHO_N "checking whether to enable maintainer-specific portions of Makefiles... $ECHO_C" >&6; }
      # Check whether --enable-maintainer-mode was given.
-@@ -6576,7 +6570,7 @@
+@@ -6577,7 +6571,7 @@ ia64-*-hpux*)
    ;;
  *-*-irix6*)
    # Find out which ABI we are using.
--  echo '#line 6579 "configure"' > conftest.$ac_ext
-+  echo '#line 6573 "configure"' > conftest.$ac_ext
+-  echo '#line 6580 "configure"' > conftest.$ac_ext
++  echo '#line 6574 "configure"' > conftest.$ac_ext
    if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
    (eval $ac_compile) 2>&5
    ac_status=$?
-@@ -9215,11 +9209,11 @@
+@@ -9216,11 +9210,11 @@ else
     -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
     -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
     -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:9218: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:9212: $lt_compile\"" >&5)
+-   (eval echo "\"\$as_me:9219: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:9213: $lt_compile\"" >&5)
     (eval "$lt_compile" 2>conftest.err)
     ac_status=$?
     cat conftest.err >&5
--   echo "$as_me:9222: \$? = $ac_status" >&5
-+   echo "$as_me:9216: \$? = $ac_status" >&5
+-   echo "$as_me:9223: \$? = $ac_status" >&5
++   echo "$as_me:9217: \$? = $ac_status" >&5
     if (exit $ac_status) && test -s "$ac_outfile"; then
       # The compiler can only warn and ignore the option if not recognized
       # So say no if there are warnings other than the usual output.
-@@ -9505,11 +9499,11 @@
+@@ -9506,11 +9500,11 @@ else
     -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
     -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
     -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:9508: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:9502: $lt_compile\"" >&5)
+-   (eval echo "\"\$as_me:9509: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:9503: $lt_compile\"" >&5)
     (eval "$lt_compile" 2>conftest.err)
     ac_status=$?
     cat conftest.err >&5
--   echo "$as_me:9512: \$? = $ac_status" >&5
-+   echo "$as_me:9506: \$? = $ac_status" >&5
+-   echo "$as_me:9513: \$? = $ac_status" >&5
++   echo "$as_me:9507: \$? = $ac_status" >&5
     if (exit $ac_status) && test -s "$ac_outfile"; then
       # The compiler can only warn and ignore the option if not recognized
       # So say no if there are warnings other than the usual output.
-@@ -9609,11 +9603,11 @@
+@@ -9610,11 +9604,11 @@ else
     -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
     -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
     -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:9612: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:9606: $lt_compile\"" >&5)
+-   (eval echo "\"\$as_me:9613: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:9607: $lt_compile\"" >&5)
     (eval "$lt_compile" 2>out/conftest.err)
     ac_status=$?
     cat out/conftest.err >&5
--   echo "$as_me:9616: \$? = $ac_status" >&5
-+   echo "$as_me:9610: \$? = $ac_status" >&5
+-   echo "$as_me:9617: \$? = $ac_status" >&5
++   echo "$as_me:9611: \$? = $ac_status" >&5
     if (exit $ac_status) && test -s out/conftest2.$ac_objext
     then
       # The compiler can only warn and ignore the option if not recognized
-@@ -11986,7 +11980,7 @@
+@@ -11987,7 +11981,7 @@ else
    lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
    lt_status=$lt_dlunknown
    cat > conftest.$ac_ext <<EOF
--#line 11989 "configure"
-+#line 11983 "configure"
+-#line 11990 "configure"
++#line 11984 "configure"
  #include "confdefs.h"
  
  #if HAVE_DLFCN_H
-@@ -12086,7 +12080,7 @@
+@@ -12087,7 +12081,7 @@ else
    lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
    lt_status=$lt_dlunknown
    cat > conftest.$ac_ext <<EOF
--#line 12089 "configure"
-+#line 12083 "configure"
+-#line 12090 "configure"
++#line 12084 "configure"
  #include "confdefs.h"
  
  #if HAVE_DLFCN_H
-@@ -14487,11 +14481,11 @@
+@@ -14488,11 +14482,11 @@ else
     -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
     -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
     -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:14490: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:14484: $lt_compile\"" >&5)
+-   (eval echo "\"\$as_me:14491: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:14485: $lt_compile\"" >&5)
     (eval "$lt_compile" 2>conftest.err)
     ac_status=$?
     cat conftest.err >&5
--   echo "$as_me:14494: \$? = $ac_status" >&5
-+   echo "$as_me:14488: \$? = $ac_status" >&5
+-   echo "$as_me:14495: \$? = $ac_status" >&5
++   echo "$as_me:14489: \$? = $ac_status" >&5
     if (exit $ac_status) && test -s "$ac_outfile"; then
       # The compiler can only warn and ignore the option if not recognized
       # So say no if there are warnings other than the usual output.
-@@ -14591,11 +14585,11 @@
+@@ -14592,11 +14586,11 @@ else
     -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
     -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
     -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:14594: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:14588: $lt_compile\"" >&5)
+-   (eval echo "\"\$as_me:14595: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:14589: $lt_compile\"" >&5)
     (eval "$lt_compile" 2>out/conftest.err)
     ac_status=$?
     cat out/conftest.err >&5
--   echo "$as_me:14598: \$? = $ac_status" >&5
-+   echo "$as_me:14592: \$? = $ac_status" >&5
+-   echo "$as_me:14599: \$? = $ac_status" >&5
++   echo "$as_me:14593: \$? = $ac_status" >&5
     if (exit $ac_status) && test -s out/conftest2.$ac_objext
     then
       # The compiler can only warn and ignore the option if not recognized
-@@ -16189,11 +16183,11 @@
+@@ -16190,11 +16184,11 @@ else
     -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
     -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
     -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:16192: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:16186: $lt_compile\"" >&5)
+-   (eval echo "\"\$as_me:16193: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:16187: $lt_compile\"" >&5)
     (eval "$lt_compile" 2>conftest.err)
     ac_status=$?
     cat conftest.err >&5
--   echo "$as_me:16196: \$? = $ac_status" >&5
-+   echo "$as_me:16190: \$? = $ac_status" >&5
+-   echo "$as_me:16197: \$? = $ac_status" >&5
++   echo "$as_me:16191: \$? = $ac_status" >&5
     if (exit $ac_status) && test -s "$ac_outfile"; then
       # The compiler can only warn and ignore the option if not recognized
       # So say no if there are warnings other than the usual output.
-@@ -16293,11 +16287,11 @@
+@@ -16294,11 +16288,11 @@ else
     -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
     -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
     -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:16296: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:16290: $lt_compile\"" >&5)
+-   (eval echo "\"\$as_me:16297: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:16291: $lt_compile\"" >&5)
     (eval "$lt_compile" 2>out/conftest.err)
     ac_status=$?
     cat out/conftest.err >&5
--   echo "$as_me:16300: \$? = $ac_status" >&5
-+   echo "$as_me:16294: \$? = $ac_status" >&5
+-   echo "$as_me:16301: \$? = $ac_status" >&5
++   echo "$as_me:16295: \$? = $ac_status" >&5
     if (exit $ac_status) && test -s out/conftest2.$ac_objext
     then
       # The compiler can only warn and ignore the option if not recognized
-@@ -18513,11 +18507,11 @@
+@@ -18514,11 +18508,11 @@ else
     -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
     -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
     -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:18516: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:18510: $lt_compile\"" >&5)
+-   (eval echo "\"\$as_me:18517: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:18511: $lt_compile\"" >&5)
     (eval "$lt_compile" 2>conftest.err)
     ac_status=$?
     cat conftest.err >&5
--   echo "$as_me:18520: \$? = $ac_status" >&5
-+   echo "$as_me:18514: \$? = $ac_status" >&5
+-   echo "$as_me:18521: \$? = $ac_status" >&5
++   echo "$as_me:18515: \$? = $ac_status" >&5
     if (exit $ac_status) && test -s "$ac_outfile"; then
       # The compiler can only warn and ignore the option if not recognized
       # So say no if there are warnings other than the usual output.
-@@ -18803,11 +18797,11 @@
+@@ -18804,11 +18798,11 @@ else
     -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
     -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
     -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:18806: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:18800: $lt_compile\"" >&5)
+-   (eval echo "\"\$as_me:18807: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:18801: $lt_compile\"" >&5)
     (eval "$lt_compile" 2>conftest.err)
     ac_status=$?
     cat conftest.err >&5
--   echo "$as_me:18810: \$? = $ac_status" >&5
-+   echo "$as_me:18804: \$? = $ac_status" >&5
+-   echo "$as_me:18811: \$? = $ac_status" >&5
++   echo "$as_me:18805: \$? = $ac_status" >&5
     if (exit $ac_status) && test -s "$ac_outfile"; then
       # The compiler can only warn and ignore the option if not recognized
       # So say no if there are warnings other than the usual output.
-@@ -18907,11 +18901,11 @@
+@@ -18908,11 +18902,11 @@ else
     -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
     -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
     -e 's:$: $lt_compiler_flag:'`
--   (eval echo "\"\$as_me:18910: $lt_compile\"" >&5)
-+   (eval echo "\"\$as_me:18904: $lt_compile\"" >&5)
+-   (eval echo "\"\$as_me:18911: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:18905: $lt_compile\"" >&5)
     (eval "$lt_compile" 2>out/conftest.err)
     ac_status=$?
     cat out/conftest.err >&5
--   echo "$as_me:18914: \$? = $ac_status" >&5
-+   echo "$as_me:18908: \$? = $ac_status" >&5
+-   echo "$as_me:18915: \$? = $ac_status" >&5
++   echo "$as_me:18909: \$? = $ac_status" >&5
     if (exit $ac_status) && test -s out/conftest2.$ac_objext
     then
       # The compiler can only warn and ignore the option if not recognized
-@@ -62202,20 +62196,20 @@
+@@ -62427,20 +62421,20 @@ then
    then
  
  pkg_failed=no
@@ -264,7 +262,7 @@ Index: vlc-0.8.6.e/configure
  else
    pkg_failed=yes
  fi
-@@ -62224,16 +62218,16 @@
+@@ -62449,16 +62443,16 @@ else
  	pkg_failed=untried
  fi
  if test -n "$PKG_CONFIG"; then
@@ -286,7 +284,7 @@ Index: vlc-0.8.6.e/configure
  else
    pkg_failed=yes
  fi
-@@ -62252,12 +62246,12 @@
+@@ -62477,12 +62471,12 @@ else
          _pkg_short_errors_supported=no
  fi
          if test $_pkg_short_errors_supported = yes; then
@@ -302,7 +300,7 @@ Index: vlc-0.8.6.e/configure
  
  	{ echo "$as_me:$LINENO: result: no" >&5
  echo "${ECHO_T}no" >&6; }
-@@ -62549,27 +62543,27 @@
+@@ -62774,27 +62768,27 @@ echo "$as_me: error: Please install the 
  
  
  else
@@ -339,7 +337,7 @@ Index: vlc-0.8.6.e/configure
  else
    pkg_failed=yes
  fi
-@@ -62578,16 +62572,16 @@
+@@ -62803,16 +62797,16 @@ else
  	pkg_failed=untried
  fi
  if test -n "$PKG_CONFIG"; then
@@ -361,7 +359,7 @@ Index: vlc-0.8.6.e/configure
  else
    pkg_failed=yes
  fi
-@@ -62606,12 +62600,12 @@
+@@ -62831,12 +62825,12 @@ else
          _pkg_short_errors_supported=no
  fi
          if test $_pkg_short_errors_supported = yes; then
@@ -377,7 +375,7 @@ Index: vlc-0.8.6.e/configure
  
  	{ echo "$as_me:$LINENO: result: no" >&5
  echo "${ECHO_T}no" >&6; }
-@@ -63095,13 +63089,13 @@
+@@ -63320,13 +63314,13 @@ echo "${ECHO_T}yes" >&6; }
  fi
  
  else
@@ -394,7 +392,7 @@ Index: vlc-0.8.6.e/configure
          MOZILLA_REQUIRED_HEADERS=1
  
  for ac_header in mozilla-config.h
-@@ -63457,7 +63451,7 @@
+@@ -63682,7 +63676,7 @@ echo "$as_me: error: Please install the 
          fi
          MOZILLA_REQUIRED_HEADERS=
          mozilla=:
@@ -403,7 +401,7 @@ Index: vlc-0.8.6.e/configure
          if test -f "${firefox_include}/mozilla-config.h" -a -f "${firefox_include}/mozilla-config32.h"; then
              MOZILLA_CONFIG_H="${firefox_include}/mozilla-config32.h"
          elif test -f "${firefox_include}/mozilla-config.h" -a -f "${firefox_include}/mozilla-config64.h"; then
-@@ -63481,7 +63475,7 @@
+@@ -63706,7 +63700,7 @@ echo "$as_me: error: Please install the 
  
  
    for element in mozilla; do
@@ -412,43 +410,43 @@ Index: vlc-0.8.6.e/configure
      am_modules_with_ldflags="${am_modules_with_ldflags} ${element}"
    done
  
-@@ -64604,7 +64598,7 @@
+@@ -64829,7 +64823,7 @@ else
  JAVA_TEST=Test.java
  CLASS_TEST=Test.class
  cat << \EOF > $JAVA_TEST
--/* #line 64607 "configure" */
-+/* #line 64601 "configure" */
+-/* #line 64832 "configure" */
++/* #line 64826 "configure" */
  public class Test {
  }
  EOF
-@@ -64780,7 +64774,7 @@
+@@ -65005,7 +64999,7 @@ EOF
  if uudecode$EXEEXT Test.uue; then
          ac_cv_prog_uudecode_base64=yes
  else
--        echo "configure: 64783: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
-+        echo "configure: 64777: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
+-        echo "configure: 65008: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
++        echo "configure: 65002: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
          echo "configure: failed file was:" >&5
          cat Test.uue >&5
          ac_cv_prog_uudecode_base64=no
-@@ -64902,7 +64896,7 @@
+@@ -65127,7 +65121,7 @@ else
  JAVA_TEST=Test.java
  CLASS_TEST=Test.class
  cat << \EOF > $JAVA_TEST
--/* #line 64905 "configure" */
-+/* #line 64899 "configure" */
+-/* #line 65130 "configure" */
++/* #line 65124 "configure" */
  public class Test {
  }
  EOF
-@@ -64939,7 +64933,7 @@
+@@ -65164,7 +65158,7 @@ JAVA_TEST=Test.java
  CLASS_TEST=Test.class
  TEST=Test
  cat << \EOF > $JAVA_TEST
--/* [#]line 64942 "configure" */
-+/* [#]line 64936 "configure" */
+-/* [#]line 65167 "configure" */
++/* [#]line 65161 "configure" */
  public class Test {
  public static void main (String args[]) {
          System.exit (0);
-@@ -66978,13 +66972,13 @@
+@@ -67203,13 +67197,13 @@ HAS_WIDL_COMPILER_TRUE!$HAS_WIDL_COMPILE
  HAS_WIDL_COMPILER_FALSE!$HAS_WIDL_COMPILER_FALSE$ac_delim
  BUILD_ACTIVEX_TRUE!$BUILD_ACTIVEX_TRUE$ac_delim
  BUILD_ACTIVEX_FALSE!$BUILD_ACTIVEX_FALSE$ac_delim

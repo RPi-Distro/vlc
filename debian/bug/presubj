@@ -1,0 +1,3 @@
+Make sure you have reset your plugins cache before reporting a bug.
+Use "rm ~/.cache/vlc/plugins-*.dat" to remove your plugins cache.
+

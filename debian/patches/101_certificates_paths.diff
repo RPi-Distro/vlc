@@ -1,8 +1,6 @@
-Index: vlc-0.8.6-svn20061012.debian/modules/misc/gnutls.c
-===================================================================
---- vlc-0.8.6-svn20061012.debian.orig/modules/misc/gnutls.c	2006-09-22 17:14:31.000000000 +0200
-+++ vlc-0.8.6-svn20061012.debian/modules/misc/gnutls.c	2007-01-08 02:28:18.000000000 +0100
-@@ -681,6 +681,10 @@
+--- a/modules/misc/gnutls.c
++++ b/modules/misc/gnutls.c
+@@ -714,6 +714,10 @@ gnutls_ClientCreate( tls_t *p_tls )
                                  p_sys->x509_cred, psz_path, VLC_FALSE );
              free( psz_path );
          }

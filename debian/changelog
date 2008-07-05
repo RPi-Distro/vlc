@@ -1,3 +1,31 @@
+vlc (0.8.6.h-1) unstable; urgency=high
+
+  [ Christophe Mutricy ]
+  * Acknowledge NMU by Nico Golde. Thanks.
+  * Acknowledge NMU by Mike Hommey. Thanks.
+  * New security upstrem release
+    - Fix buffer overflow (CVE-2008-1881)
+    - Fix out of bound array access (CVE-2008-1769)
+    - Fix various integer overflow in MP4 demuxer, Cinepak, RTSP
+      (CVE-2008-1489, CVE-2008-1768)
+    - Remove 105_min_mkv.patch, 400-CVE-2008-1489.diff and
+      401-CVE-2008-0073.diff, 402-CVE-2008-1881, 403-CVE-2008-1768.diff
+      and 404-CVE-2008-1881 integrated upstream
+  * Remove old transitional packages: vlc-plugin-alsa and wxvlc
+    (Closes: #477543, #477545)
+  * Add some magic for reportbug to ask people to remove their plugin cache
+    and get the info for vlc-nox and libvlc0 also.
+
+  [ Reinhard Tartler ]
+  * added a watch file
+  * new upstream release, refreshing patches
+
+  [ Christophe Mutricy ]
+  * Fix buffer overflow in Wav demux.(CVE-2008-2430)(Closes: #489004)
+    (Patch taken from upstream: 401-CVE-2008-2430.diff) 
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 05 Jul 2008 23:45:15 +0100
+
 vlc (0.8.6.e-2.3) unstable; urgency=low
 
   * Non-maintainer upload.
@@ -9,20 +37,6 @@ vlc (0.8.6.e-2.3) unstable; urgency=low
   * debian/patches/series: Added 010_iceape.diff.
 
  -- Mike Hommey <glandium@debian.org>  Fri, 23 May 2008 21:11:07 +0200
-
-vlc (0.8.6.e-2.2) unstable; urgency=high
-
-  * Non-maintainer upload by the Security Team.
-  * Fix regression introduced by latest security upload which
-    did not properly define FREENULL (Closes: #478971,#481417,#477734).
-  * Fix untrusted search path vulnerability by not loading libraries
-    from plugins and modules directories in the current working
-    directory (CVE-2008-2147; Closes: #480724).
-  * Fix arbitrary file overwriting via a crafted playlist or an EXTLVLCOPT
-    statement in an mp3 file by partially disabling this functionality
-    for the browser plugin (CVE-2007-6683; Closes: #480370).
-
- -- Nico Golde <nion@debian.org>  Fri, 16 May 2008 16:18:04 +0200
 
 vlc (0.8.6.e-2.1) unstable; urgency=high
 
