@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-06-03 17:16+0200\n"
+"POT-Creation-Date: 2008-07-08 23:21+0200\n"
 "PO-Revision-Date: 2007-06-10 21:23+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -38,7 +38,7 @@ msgid "Select \"Advanced Options\" to see all options."
 msgstr "Välj \"Avancerade alternativ\" för att se alla alternativ."
 
 #: include/vlc_config_cat.h:36 include/vlc_config_cat.h:127
-#: src/input/input.c:1905 src/input/input.c:1965 src/playlist/item.c:333
+#: src/input/input.c:1905 src/input/input.c:1966 src/playlist/item.c:333
 #: src/playlist/playlist.c:163 modules/gui/macosx/playlistinfo.m:62
 #: modules/gui/wince/playlist.cpp:674
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:82
@@ -78,7 +78,7 @@ msgstr "Inställningar för VLC:s kontrollgränssnitt"
 msgid "Hotkeys settings"
 msgstr "Inställningar för snabbtangenter"
 
-#: include/vlc_config_cat.h:54 src/input/es_out.c:1609 src/libvlc.h:1181
+#: include/vlc_config_cat.h:54 src/input/es_out.c:1611 src/libvlc.h:1181
 #: modules/gui/beos/InterfaceWindow.cpp:280 modules/gui/macosx/extended.m:81
 #: modules/gui/macosx/intf.m:566 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:96 modules/gui/macosx/wizard.m:421
@@ -132,7 +132,7 @@ msgstr "Diverse"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Diverse ljudinställningar och moduler."
 
-#: include/vlc_config_cat.h:75 src/input/es_out.c:1637 src/libvlc.h:1216
+#: include/vlc_config_cat.h:75 src/input/es_out.c:1639 src/libvlc.h:1216
 #: modules/gui/macosx/extended.m:80 modules/gui/macosx/intf.m:579
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:86
 #: modules/gui/macosx/wizard.m:422
@@ -562,7 +562,7 @@ msgstr "Inställning"
 msgid "URL"
 msgstr "URL"
 
-#: include/vlc_meta.h:41 src/input/es_out.c:1601 src/libvlc.h:97
+#: include/vlc_meta.h:41 src/input/es_out.c:1603 src/libvlc.h:97
 #: modules/gui/beos/InterfaceWindow.cpp:276
 msgid "Language"
 msgstr "Språk"
@@ -810,80 +810,79 @@ msgstr "Spår %i"
 msgid "Program"
 msgstr "Program"
 
-#: src/input/es_out.c:1596 modules/codec/faad.c:374
+#: src/input/es_out.c:1598 modules/codec/faad.c:374
 #, c-format
 msgid "Stream %d"
 msgstr "Ström %d"
 
-#: src/input/es_out.c:1598 modules/gui/macosx/wizard.m:426
+#: src/input/es_out.c:1600 modules/gui/macosx/wizard.m:426
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:832
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:872
 msgid "Codec"
 msgstr "Kodek"
 
-#: src/input/es_out.c:1609 src/input/es_out.c:1637 src/input/es_out.c:1664
+#: src/input/es_out.c:1611 src/input/es_out.c:1639 src/input/es_out.c:1666
 #: modules/gui/macosx/output.m:153
 msgid "Type"
 msgstr "Typ"
 
-#: src/input/es_out.c:1612 modules/codec/faad.c:379
+#: src/input/es_out.c:1614 modules/codec/faad.c:379
 #: modules/gui/macosx/output.m:176
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:857
 msgid "Channels"
 msgstr "Kanaler"
 
-#: src/input/es_out.c:1617 modules/codec/faad.c:381
+#: src/input/es_out.c:1619 modules/codec/faad.c:381
 msgid "Sample rate"
 msgstr "Samplingsfrekvens"
 
-#: src/input/es_out.c:1618 modules/codec/faad.c:381
+#: src/input/es_out.c:1620 modules/codec/faad.c:381
 #, c-format
 msgid "%d Hz"
 msgstr "%d Hz"
 
-#: src/input/es_out.c:1624
+#: src/input/es_out.c:1626
 msgid "Bits per sample"
 msgstr "Bitar per sampling"
 
-#: src/input/es_out.c:1629 modules/access/pvr.c:93
+#: src/input/es_out.c:1631 modules/access/pvr.c:93
 #: modules/demux/playlist/b4s.c:349 modules/demux/playlist/shoutcast.c:472
 msgid "Bitrate"
 msgstr "Bitfrekvens"
 
-#: src/input/es_out.c:1630
+#: src/input/es_out.c:1632
 #, fuzzy, c-format
 msgid "%d kb/s"
 msgstr "%d kb/s"
 
-#: src/input/es_out.c:1641
+#: src/input/es_out.c:1643
 msgid "Resolution"
 msgstr "Upplösning"
 
-#: src/input/es_out.c:1647
+#: src/input/es_out.c:1649
 msgid "Display resolution"
 msgstr "Skärmupplösning"
 
-#: src/input/es_out.c:1657 modules/access/screen/screen.c:41
+#: src/input/es_out.c:1659 modules/access/screen/screen.c:41
 msgid "Frame rate"
 msgstr "Bildfrekvens"
 
-#: src/input/es_out.c:1664
+#: src/input/es_out.c:1666
 msgid "Subtitle"
 msgstr "Undertext"
 
-#: src/input/input.c:1919 src/input/input.c:1923
-#: modules/gui/macosx/output.m:143 modules/gui/macosx/output.m:251
-#: modules/gui/macosx/output.m:391
+#: src/input/input.c:1921 modules/gui/macosx/output.m:143
+#: modules/gui/macosx/output.m:251 modules/gui/macosx/output.m:391
 msgid "Stream"
 msgstr "Ström"
 
-#: src/input/input.c:1965 src/playlist/item.c:333
+#: src/input/input.c:1966 src/playlist/item.c:333
 #: modules/access/cdda/info.c:326 modules/access/cdda/info.c:394
 #: modules/gui/macosx/playlist.m:133
 msgid "Duration"
 msgstr "Speltid"
 
-#: src/input/input.c:2144 src/input/input.c:2216
+#: src/input/input.c:2145 src/input/input.c:2217
 msgid "Errors"
 msgstr "Fel"
 
@@ -4383,7 +4382,7 @@ msgstr "Manuellt tillagd"
 msgid "All items, unsorted"
 msgstr "Alla objekt, osorterade"
 
-#: src/playlist/sort.c:344 src/playlist/view.c:79 src/playlist/view.c:280
+#: src/playlist/sort.c:348 src/playlist/view.c:79 src/playlist/view.c:280
 msgid "Undefined"
 msgstr "Odefinierad"
 
@@ -10359,7 +10358,7 @@ msgstr "Tolkare för Vobsub-undertexter"
 msgid "VOC demuxer"
 msgstr "Demuxer för VOC"
 
-#: modules/demux/wav.c:42
+#: modules/demux/wav.c:43
 msgid "WAV demuxer"
 msgstr "Demuxer för WAV"
 
@@ -15122,15 +15121,15 @@ msgstr ""
 msgid "Session Announcements (SAP)"
 msgstr "Sessionsannonseringar (SAP)"
 
-#: modules/services_discovery/sap.c:842 modules/services_discovery/sap.c:847
+#: modules/services_discovery/sap.c:847 modules/services_discovery/sap.c:852
 msgid "Session"
 msgstr "Session"
 
-#: modules/services_discovery/sap.c:843
+#: modules/services_discovery/sap.c:848
 msgid "Tool"
 msgstr "Verktyg"
 
-#: modules/services_discovery/sap.c:848
+#: modules/services_discovery/sap.c:853
 msgid "User"
 msgstr "Användare"
 
@@ -17168,12 +17167,22 @@ msgid ""
 "DISPLAY environment variable."
 msgstr ""
 
-#: modules/video_output/x11/glx.c:106 modules/video_output/x11/x11.c:61
+#: modules/video_output/x11/glx.c:106 modules/video_output/x11/x11.c:57
+#: modules/video_output/x11/xvideo.c:68
+msgid "Use shared memory"
+msgstr "Använd delat minne"
+
+#: modules/video_output/x11/glx.c:108 modules/video_output/x11/x11.c:59
+#: modules/video_output/x11/xvideo.c:70
+msgid "Use shared memory to communicate between VLC and the X server."
+msgstr "Använd delat minne för att kommunicera mellan VLC och X-servern."
+
+#: modules/video_output/x11/glx.c:110 modules/video_output/x11/x11.c:61
 #: modules/video_output/x11/xvideo.c:72
 msgid "Screen for fullscreen mode."
 msgstr "Skärm för helskärmsläge."
 
-#: modules/video_output/x11/glx.c:108 modules/video_output/x11/x11.c:63
+#: modules/video_output/x11/glx.c:112 modules/video_output/x11/x11.c:63
 #: modules/video_output/x11/xvideo.c:74
 msgid ""
 "Screen to use in fullscreen mode. For instance set it to 0 for first screen, "
@@ -17182,17 +17191,9 @@ msgstr ""
 "Skärm att använda i helskärmsläge. Ställ till exempel in den till 0 för "
 "första skärmen, 1 för den andra. "
 
-#: modules/video_output/x11/glx.c:115
+#: modules/video_output/x11/glx.c:119
 msgid "OpenGL(GLX) provider"
 msgstr ""
-
-#: modules/video_output/x11/x11.c:57 modules/video_output/x11/xvideo.c:68
-msgid "Use shared memory"
-msgstr "Använd delat minne"
-
-#: modules/video_output/x11/x11.c:59 modules/video_output/x11/xvideo.c:70
-msgid "Use shared memory to communicate between VLC and the X server."
-msgstr "Använd delat minne för att kommunicera mellan VLC och X-servern."
 
 #: modules/video_output/x11/x11.c:78
 msgid "X11 video output"

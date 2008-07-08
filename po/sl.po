@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 0.9.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-06-03 17:16+0200\n"
+"POT-Creation-Date: 2008-07-08 23:21+0200\n"
 "PO-Revision-Date: 2007-06-05 07:45+0100\n"
 "Last-Translator: Matej Urbančič <matej.urban@gmail.com>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
@@ -45,7 +45,7 @@ msgid "Select \"Advanced Options\" to see all options."
 msgstr "Izberite \"Podrobni pogled\" za spreminjanje vseh nastavitev."
 
 #: include/vlc_config_cat.h:36 include/vlc_config_cat.h:127
-#: src/input/input.c:1905 src/input/input.c:1965 src/playlist/item.c:333
+#: src/input/input.c:1905 src/input/input.c:1966 src/playlist/item.c:333
 #: src/playlist/playlist.c:163 modules/gui/macosx/playlistinfo.m:62
 #: modules/gui/wince/playlist.cpp:674
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:82
@@ -85,7 +85,7 @@ msgstr "Nastavitve nadzornih vmesnikov predvajalnika VLC"
 msgid "Hotkeys settings"
 msgstr "Nastavitve hitrih tipk"
 
-#: include/vlc_config_cat.h:54 src/input/es_out.c:1609 src/libvlc.h:1181
+#: include/vlc_config_cat.h:54 src/input/es_out.c:1611 src/libvlc.h:1181
 #: modules/gui/beos/InterfaceWindow.cpp:280 modules/gui/macosx/extended.m:81
 #: modules/gui/macosx/intf.m:566 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:96 modules/gui/macosx/wizard.m:421
@@ -139,7 +139,7 @@ msgstr "Ostalo"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Različne nastavitve zvoka in enot"
 
-#: include/vlc_config_cat.h:75 src/input/es_out.c:1637 src/libvlc.h:1216
+#: include/vlc_config_cat.h:75 src/input/es_out.c:1639 src/libvlc.h:1216
 #: modules/gui/macosx/extended.m:80 modules/gui/macosx/intf.m:579
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:86
 #: modules/gui/macosx/wizard.m:422
@@ -571,7 +571,7 @@ msgstr "Nastavitev"
 msgid "URL"
 msgstr "URL"
 
-#: include/vlc_meta.h:41 src/input/es_out.c:1601 src/libvlc.h:97
+#: include/vlc_meta.h:41 src/input/es_out.c:1603 src/libvlc.h:97
 #: modules/gui/beos/InterfaceWindow.cpp:276
 msgid "Language"
 msgstr "Jezik"
@@ -831,80 +831,79 @@ msgstr "Sled %i"
 msgid "Program"
 msgstr "Program"
 
-#: src/input/es_out.c:1596 modules/codec/faad.c:374
+#: src/input/es_out.c:1598 modules/codec/faad.c:374
 #, c-format
 msgid "Stream %d"
 msgstr "Predvajanje %d"
 
-#: src/input/es_out.c:1598 modules/gui/macosx/wizard.m:426
+#: src/input/es_out.c:1600 modules/gui/macosx/wizard.m:426
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:832
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:872
 msgid "Codec"
 msgstr "Kodek"
 
-#: src/input/es_out.c:1609 src/input/es_out.c:1637 src/input/es_out.c:1664
+#: src/input/es_out.c:1611 src/input/es_out.c:1639 src/input/es_out.c:1666
 #: modules/gui/macosx/output.m:153
 msgid "Type"
 msgstr "Tip"
 
-#: src/input/es_out.c:1612 modules/codec/faad.c:379
+#: src/input/es_out.c:1614 modules/codec/faad.c:379
 #: modules/gui/macosx/output.m:176
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:857
 msgid "Channels"
 msgstr "Kanali"
 
-#: src/input/es_out.c:1617 modules/codec/faad.c:381
+#: src/input/es_out.c:1619 modules/codec/faad.c:381
 msgid "Sample rate"
 msgstr "Vzorčna stopnja"
 
-#: src/input/es_out.c:1618 modules/codec/faad.c:381
+#: src/input/es_out.c:1620 modules/codec/faad.c:381
 #, c-format
 msgid "%d Hz"
 msgstr "%d Hz"
 
-#: src/input/es_out.c:1624
+#: src/input/es_out.c:1626
 msgid "Bits per sample"
 msgstr "Titi na vzorec"
 
-#: src/input/es_out.c:1629 modules/access/pvr.c:93
+#: src/input/es_out.c:1631 modules/access/pvr.c:93
 #: modules/demux/playlist/b4s.c:349 modules/demux/playlist/shoutcast.c:472
 msgid "Bitrate"
 msgstr "Bitna hitrost"
 
-#: src/input/es_out.c:1630
+#: src/input/es_out.c:1632
 #, fuzzy, c-format
 msgid "%d kb/s"
 msgstr "%d kb/s"
 
-#: src/input/es_out.c:1641
+#: src/input/es_out.c:1643
 msgid "Resolution"
 msgstr "Ločljivost"
 
-#: src/input/es_out.c:1647
+#: src/input/es_out.c:1649
 msgid "Display resolution"
 msgstr "Ločljivost zaslona"
 
-#: src/input/es_out.c:1657 modules/access/screen/screen.c:41
+#: src/input/es_out.c:1659 modules/access/screen/screen.c:41
 msgid "Frame rate"
 msgstr "Blokovno razmerje"
 
-#: src/input/es_out.c:1664
+#: src/input/es_out.c:1666
 msgid "Subtitle"
 msgstr "Podnapis"
 
-#: src/input/input.c:1919 src/input/input.c:1923
-#: modules/gui/macosx/output.m:143 modules/gui/macosx/output.m:251
-#: modules/gui/macosx/output.m:391
+#: src/input/input.c:1921 modules/gui/macosx/output.m:143
+#: modules/gui/macosx/output.m:251 modules/gui/macosx/output.m:391
 msgid "Stream"
 msgstr "Pretok"
 
-#: src/input/input.c:1965 src/playlist/item.c:333
+#: src/input/input.c:1966 src/playlist/item.c:333
 #: modules/access/cdda/info.c:326 modules/access/cdda/info.c:394
 #: modules/gui/macosx/playlist.m:133
 msgid "Duration"
 msgstr "Trajanje"
 
-#: src/input/input.c:2144 src/input/input.c:2216
+#: src/input/input.c:2145 src/input/input.c:2217
 msgid "Errors"
 msgstr "Napake"
 
@@ -4460,7 +4459,7 @@ msgstr "Ročno razmerje"
 msgid "All items, unsorted"
 msgstr ""
 
-#: src/playlist/sort.c:344 src/playlist/view.c:79 src/playlist/view.c:280
+#: src/playlist/sort.c:348 src/playlist/view.c:79 src/playlist/view.c:280
 msgid "Undefined"
 msgstr "Nedoločeno"
 
@@ -10792,7 +10791,7 @@ msgstr "Vobsub razčlenjevalec podnapisov"
 msgid "VOC demuxer"
 msgstr "VOC razvijalec"
 
-#: modules/demux/wav.c:42
+#: modules/demux/wav.c:43
 msgid "WAV demuxer"
 msgstr "WAV razvijalec"
 
@@ -15737,15 +15736,15 @@ msgstr ""
 msgid "Session Announcements (SAP)"
 msgstr "Objave SAP"
 
-#: modules/services_discovery/sap.c:842 modules/services_discovery/sap.c:847
+#: modules/services_discovery/sap.c:847 modules/services_discovery/sap.c:852
 msgid "Session"
 msgstr "Seja"
 
-#: modules/services_discovery/sap.c:843
+#: modules/services_discovery/sap.c:848
 msgid "Tool"
 msgstr "Orodje"
 
-#: modules/services_discovery/sap.c:848
+#: modules/services_discovery/sap.c:853
 msgid "User"
 msgstr "Uporabnik"
 
@@ -17888,12 +17887,23 @@ msgstr ""
 "Nastavitev X11 zaslona. Privzeto predvajalnik uporablja privzeto sistemsko "
 "vrednost DISPLAY."
 
-#: modules/video_output/x11/glx.c:106 modules/video_output/x11/x11.c:61
+#: modules/video_output/x11/glx.c:106 modules/video_output/x11/x11.c:57
+#: modules/video_output/x11/xvideo.c:68
+msgid "Use shared memory"
+msgstr "Uporabi deljen spomin"
+
+#: modules/video_output/x11/glx.c:108 modules/video_output/x11/x11.c:59
+#: modules/video_output/x11/xvideo.c:70
+msgid "Use shared memory to communicate between VLC and the X server."
+msgstr ""
+"Uporabi deljen spomin za povezovanje med predvajalnikom VLC in X strežnikom."
+
+#: modules/video_output/x11/glx.c:110 modules/video_output/x11/x11.c:61
 #: modules/video_output/x11/xvideo.c:72
 msgid "Screen for fullscreen mode."
 msgstr "Zaslon za celozaslonski način."
 
-#: modules/video_output/x11/glx.c:108 modules/video_output/x11/x11.c:63
+#: modules/video_output/x11/glx.c:112 modules/video_output/x11/x11.c:63
 #: modules/video_output/x11/xvideo.c:74
 msgid ""
 "Screen to use in fullscreen mode. For instance set it to 0 for first screen, "
@@ -17902,18 +17912,9 @@ msgstr ""
 "Kateri zaslon uporabljate pri celozaslonskem predvajanju. Vrednost 0 določa "
 "prvi zaslon, vrednost 1 drugega ..."
 
-#: modules/video_output/x11/glx.c:115
+#: modules/video_output/x11/glx.c:119
 msgid "OpenGL(GLX) provider"
 msgstr "Ponudnik OpenGL(GLX)"
-
-#: modules/video_output/x11/x11.c:57 modules/video_output/x11/xvideo.c:68
-msgid "Use shared memory"
-msgstr "Uporabi deljen spomin"
-
-#: modules/video_output/x11/x11.c:59 modules/video_output/x11/xvideo.c:70
-msgid "Use shared memory to communicate between VLC and the X server."
-msgstr ""
-"Uporabi deljen spomin za povezovanje med predvajalnikom VLC in X strežnikom."
 
 #: modules/video_output/x11/x11.c:78
 msgid "X11 video output"

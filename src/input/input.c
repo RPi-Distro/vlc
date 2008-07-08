@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id$
+ * $Id: 28ad31e9fb3eb16af216b3b8f3738c29d51166d8 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1916,18 +1916,19 @@ static int  UpdateMeta( input_thread_t *p_input, vlc_bool_t b_quick )
 
         if( tk->i_meta > 0 )
         {
-            char *psz_cat = malloc( strlen(_("Stream")) + 10 );
-
             msg_Dbg( p_input, "  - track[%d]:", i );
-
-            sprintf( psz_cat, "%s %d", _("Stream"), i );
-            for( j = 0; j < tk->i_meta; j++ )
+            char *psz_cat;
+            if( asprintf( &psz_cat, "%s %d", _("Stream"), i ) != -1 )
             {
-                msg_Dbg( p_input, "     - '%s' = '%s'", _(tk->name[j]),
-                         tk->value[j] );
+                for( j = 0; j < tk->i_meta; j++ )
+                {
+                    msg_Dbg( p_input, "     - '%s' = '%s'", _(tk->name[j]),
+                             tk->value[j] );
 
-                input_Control( p_input, INPUT_ADD_INFO, psz_cat,
-                               _(tk->name[j]), "%s", tk->value[j] );
+                    input_Control( p_input, INPUT_ADD_INFO, psz_cat,
+                                   _(tk->name[j]), "%s", tk->value[j] );
+                }
+                free( psz_cat );
             }
         }
     }
@@ -2033,7 +2034,7 @@ static int InputSourceInit( input_thread_t *p_input,
         {
             psz_demux = psz_forced_demux;
         }
-        else if( !psz_demux || *psz_demux == '\0' )
+        else if( *psz_demux == '\0' )
         {
             /* special hack for forcing a demuxer with --demux=module
              * (and do nothing with a list) */

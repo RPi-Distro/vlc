@@ -2,7 +2,7 @@
  * vlc_update.h: VLC update and plugins download
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: $
+ * $Id: be5839b9f69e9c4bf51643bb006cc917057d2e62 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

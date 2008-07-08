@@ -2,7 +2,7 @@
  * decoder.c: AAC decoder using libfaad2
  *****************************************************************************
  * Copyright (C) 2001, 2003 the VideoLAN team
- * $Id: 6211152101577786a1f92852dfe51b98bed24fd2 $
+ * $Id: 28dd5a147cfa8fa6f70fa46517f818fe3093600c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

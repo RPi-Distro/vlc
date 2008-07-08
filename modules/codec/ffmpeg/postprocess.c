@@ -2,7 +2,7 @@
  * postprocess.c: video postprocessing using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 2c9471842b31cdcdd4bfad33cff706829f7d72e9 $
+ * $Id: 59e3cb1d577777e7b682f7a083f9b37bd6d79ed4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>

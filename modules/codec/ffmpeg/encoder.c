@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 6c047e3306d4689e4df2d70843fdd85978b3e0b7 $
+ * $Id: a9a48f1d43b9748d14a77b8eb1094d282e6e524e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

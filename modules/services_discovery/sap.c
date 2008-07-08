@@ -2,7 +2,7 @@
  * sap.c :  SAP interface module
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 797099ef1b4316d247401fb5e40a2edebe0e9f48 $
+ * $Id: f7723d675ade50e3aab01f1721a54362423457e9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -771,10 +771,15 @@ static int ParseSAP( services_discovery_t *p_sd, uint8_t *p_buffer, int i_read )
         p_sd->p_sys->b_parse == VLC_FALSE )
     {
         if( p_sdp->psz_uri ) free( p_sdp->psz_uri );
-        asprintf( &p_sdp->psz_uri, "sdp://%s", p_sdp->psz_sdp );
+        if( asprintf( &p_sdp->psz_uri, "sdp://%s", p_sdp->psz_sdp ) == -1 )
+            p_sdp->psz_uri = NULL;
     }
 
-    if( p_sdp->psz_uri == NULL ) return VLC_EGENERIC;
+    if( p_sdp->psz_uri == NULL )
+    {
+        FreeSDP( p_sdp );
+        return VLC_EGENERIC;
+    }
 
     for( i = 0 ; i< p_sd->p_sys->i_announces ; i++ )
     {

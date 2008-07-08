@@ -2,7 +2,7 @@
  * item-ext.c : Playlist item management functions (act on the playlist)
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 6b6830a7e8e64ee6ae6f26e5f845069728bca81d $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>

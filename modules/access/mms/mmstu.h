@@ -2,7 +2,7 @@
  * mms.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: bf842072474e9e733d468a0a17d2cf4b626ddf77 $
+ * $Id: b265127f702246f2bed2e7d3d864976b5b8060bd $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

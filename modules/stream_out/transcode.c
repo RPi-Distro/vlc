@@ -2801,7 +2801,7 @@ static void transcode_osd_close( sout_stream_t *p_stream, sout_stream_id_t *id)
     /* Close encoder */
     if( id )
     {
-        if( id->p_encoder->p_module )
+        if( id->p_encoder && id->p_encoder->p_module )
             module_Unneed( id->p_encoder, id->p_encoder->p_module );
 
         if( id->id ) p_sys->p_out->pf_del( p_sys->p_out, id->id );

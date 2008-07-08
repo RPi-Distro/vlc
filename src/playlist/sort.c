@@ -225,6 +225,8 @@ int playlist_ItemArraySort( playlist_t *p_playlist, int i_items,
                 {
                     i_test = strcmp( psz_b, psz_a );
                 }
+                free( psz_a );
+                free( psz_b );
             }
             else if( i_mode == SORT_ALBUM )
 	    {
@@ -268,6 +270,8 @@ int playlist_ItemArraySort( playlist_t *p_playlist, int i_items,
                 {
                     i_test = strcmp( psz_b, psz_a );
                 }
+                free( psz_a );
+                free( psz_b );
 	    }
             else if( i_mode == SORT_TITLE_NODES_FIRST )
             {

@@ -2,7 +2,7 @@
  * mms.c: MMS over tcp, udp and http access plug-in
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: d336b57e7c9250cea85f3be6a6b8a20ae03d5db1 $
+ * $Id: 4405b173277578d787ea4b22dee0d419215c7220 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

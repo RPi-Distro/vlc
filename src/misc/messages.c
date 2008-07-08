@@ -4,7 +4,7 @@
  * modules, especially intf modules. See config.h for output configuration.
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id$
+ * $Id: 02edea820b684242846d5da7b08d16b12d7a2d14 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -162,7 +162,7 @@ void __msg_Destroy( vlc_object_t *p_this )
 msg_subscription_t *__msg_Subscribe( vlc_object_t *p_this, int i_queue )
 {
     msg_bank_t *p_bank = &p_this->p_libvlc->msg_bank;
-    msg_subscription_t *p_sub = malloc( sizeof( msg_subscription_t ) );
+    msg_subscription_t *p_sub;
     msg_queue_t *p_queue = NULL;
     int i;
 
@@ -183,6 +183,8 @@ msg_subscription_t *__msg_Subscribe( vlc_object_t *p_this, int i_queue )
     }
 
     vlc_mutex_lock( &p_queue->lock );
+
+    p_sub = malloc( sizeof( msg_subscription_t ) );
 
     /* Add subscription to the list */
     INSERT_ELEM( p_bank->pp_queues[i_queue]->pp_sub,

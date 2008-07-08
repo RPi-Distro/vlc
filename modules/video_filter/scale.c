@@ -3,7 +3,7 @@
  *  Uses the low quality "nearest neighbour" algorithm.
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: fde9f41689fe615649e0431f705af1fc53ecffbd $
+ * $Id: f017063ece796780cd21b796fded856457a7e643 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *

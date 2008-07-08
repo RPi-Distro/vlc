@@ -2,7 +2,7 @@
  * record.c
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id$
+ * $Id: 460a7cc962af0a9e9ce61fefca62739149464a1c $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *

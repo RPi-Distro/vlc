@@ -2,7 +2,7 @@
  * rss.c : rss/atom feed display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: 8e480533844961d3eab9f92c9773b0df1418b1e9 $
+ * $Id: ea067381f884eb52fc6a19911da41a6b0ef56a29 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

@@ -2,7 +2,7 @@
  * demux.c: demuxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 95d2460bf93b85608fa27565f1475aadd8a57360 $
+ * $Id: e00cbf866c8bf3d3086e58e82bc79f9ee3775ded $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

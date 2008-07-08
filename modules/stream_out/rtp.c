@@ -2,7 +2,7 @@
  * rtp.c: rtp stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id$
+ * $Id: 645dbe50fb3b83a886b00a140ed7e50aa79d74ed $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

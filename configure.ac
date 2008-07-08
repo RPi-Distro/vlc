@@ -1,10 +1,10 @@
 dnl Autoconf settings for vlc
 
-AC_INIT(vlc,0.8.6h)
+AC_INIT(vlc,0.8.6i)
 VERSION_MAJOR="0"
 VERSION_MINOR="8"
 VERSION_REVISION="6"
-VERSION_EXTRA="h"
+VERSION_EXTRA="i"
 
 CONFIGURE_LINE="$0 $*"
 CODENAME="Janus"
@@ -2705,7 +2705,6 @@ dnl Look for a ffmpeg-config (we are on debian )
 dnl Trying with pkg-config
    PKG_CHECK_MODULES(FFMPEG,[libavcodec, libavformat],
     [
-     VLC_SAVE_FLAGS
      CPPFLAGS="${CPPFLAGS} ${FFMPEG_CFLAGS}"
      CFLAGS="${CFLAGS} ${FFMPEG_CFLAGS}"
      AC_CHECK_HEADERS(ffmpeg/avcodec.h libavcodec/avcodec.h)
@@ -2773,13 +2772,15 @@ fi
 dnl Check if we have (required) img_resample() in libavcodec
 if test "${enable_ffmpeg}" != "no"
 then
-     VLC_SAVE_FLAGS
      CFLAGS="${CFLAGS} ${CFLAGS_ffmpeg}"
      LDFLAGS="${LDFLAGS} ${LDFLAGS_ffmpeg}"
      AC_CHECK_LIB(avcodec, img_resample, ,
        [AC_MSG_ERROR([Your FFmpeg library doesn't have the needed img_resample() function. You should rebuild it with software scaler disabled])], -lavutil)
      VLC_RESTORE_FLAGS
 fi
+
+dnl Clean out environment
+LIBS="${LIBS_save}"
 
 dnl
 dnl  ffmpegaltivec plugin
@@ -4014,18 +4015,8 @@ AC_ARG_ENABLE(directfb,
   [  --enable-directfb       DirectFB support (default disabled)])
 if test "${enable_directfb}" = "yes"
 then
-  if test "${with_directfb}" = "no"
+  if test "${with_directfb}" = "yes"
   then
-    AC_CHECK_HEADER(directfb.h, have_directfb="true", have_directfb="false")
-    if test "${have_directfb}"= "true"
-    then
-        VLC_ADD_PLUGINS([directfb])
-        VLC_ADD_LDFLAGS([directfb],[-ldirectfb -lfusion -ldirect -lpthread -ljpeg -lz -ldl])
-        VLC_ADD_CPPFLAGS([directfb],[-I/usr/include/directfb -D_REENTRANT])
-    else
-        AC_MSG_ERROR([cannot find /usr/include/directfb headers, make sure directfb is installed on your system or use --disable-directfb])
-    fi
-  else
     CPPFLAGS_save="${CPPFLAGS}"
     CPPFLAGS="${CPPFLAGS} -I${with_directfb}/include"
     AC_CHECK_HEADER(directfb.h, have_directfb="true", have_directfb="false")
@@ -4039,6 +4030,20 @@ then
             VLC_ADD_LDFLAGS([directfb],[-L${with_directfb}/lib -ldirectfb -lfusion -ldirect -lpthread -ljpeg -lz -ldl])
         fi ],
         [ AC_MSG_ERROR([cannot find directfb headers in ${with_directfb}/include]) ])
+  else
+    PKG_CHECK_MODULES(DIRECTFB, directfb, [have_directfb="true"], [have_directfb="false"])
+    if test "${have_directfb}" = "false"
+    then
+        AC_CHECK_HEADER(directfb.h, have_directfb="true", have_directfb="false")
+    fi
+    if test "${have_directfb}" = "true"
+    then
+        VLC_ADD_PLUGINS([directfb])
+        VLC_ADD_LDFLAGS([directfb],[${DIRECTFB_LIBS}])
+        VLC_ADD_CPPFLAGS([directfb],[${DIRECTFB_CFLAGS}])
+    else
+        AC_MSG_ERROR([cannot find /usr/include/directfb headers, make sure directfb is installed on your system or use --disable-directfb])
+    fi
   fi
 fi
 
