@@ -1,13 +1,10 @@
-vlc (0.8.6.h-1+lenny1) testing-security; urgency=high
+vlc (0.8.6.h-2) unstable; urgency=high
 
-  * Non-maintainer upload by the security team
-  * Fix integer overflow in the mms module (Closes: #496265)
-    Fixes: CVE-2008-3794
-  * Fix integer overflow in the TTA module
-    Fixes: CVE-2008-3732
-  * Change build-depends to libdc1394-22-dev to let it build on lenny
+  * Fix integer overflow in TTA (CVE-2008-3732) (405-CVE-2008-3732.diff)
+  * Fix crashes in Live555 (406-live555-crash.diff)
+  * Switch to libdc1394-22-dev (Closes: #484695) 
 
- -- Steffen Joeris <white@debian.org>  Sun, 14 Sep 2008 11:18:40 +0000
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 21 Aug 2008 20:19:39 +0100
 
 vlc (0.8.6.h-1) unstable; urgency=high
 
