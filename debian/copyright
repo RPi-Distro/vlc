@@ -202,7 +202,7 @@ modules/demux/playlist/xspf.[ch]:
   Licensed under the GNU General Public License, version 2 or later.
 
 modules/demux/ty.c:
-  Copyright (C) 2005 Neal Symms <tivo@freakinzoo.com>  
+  Copyright (C) 2005 Neal Symms <tivo@freakinzoo.com>
                 2005 Christopher Wingert for tivo-mplayer
   Licensed under the GNU General Public License, version 2 or later.
 

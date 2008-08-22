@@ -1,8 +1,18 @@
+vlc (0.8.6.h-3) unstable; urgency=low
+
+  * Minor cleanups.
+  * Use DEB_HOST_ARCH instead of DEB_BUILD_ARCH in rules.
+  * Use objdump -x instead of ldd to check for links on libX11 as ldd might
+    resolve libvlc to the system's version if the system has libvlc installed;
+    closes: #495730.
+
+ -- Loic Minier <lool@dooz.org>  Fri, 22 Aug 2008 19:46:35 +0200
+
 vlc (0.8.6.h-2) unstable; urgency=high
 
   * Fix integer overflow in TTA (CVE-2008-3732) (405-CVE-2008-3732.diff)
   * Fix crashes in Live555 (406-live555-crash.diff)
-  * Switch to libdc1394-22-dev (Closes: #484695) 
+  * Switch to libdc1394-22-dev (Closes: #484695)
 
  -- Christophe Mutricy <xtophe@videolan.org>  Thu, 21 Aug 2008 20:19:39 +0100
 
@@ -30,7 +40,7 @@ vlc (0.8.6.h-1) unstable; urgency=high
 
   [ Christophe Mutricy ]
   * Fix buffer overflow in Wav demux.(CVE-2008-2430)(Closes: #489004)
-    (Patch taken from upstream: 401-CVE-2008-2430.diff) 
+    (Patch taken from upstream: 401-CVE-2008-2430.diff)
 
  -- Christophe Mutricy <xtophe@videolan.org>  Sat, 05 Jul 2008 23:45:15 +0100
 
