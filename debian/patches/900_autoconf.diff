@@ -1,0 +1,316 @@
+diff --git a/configure b/configure
+index a4e55ae..5f152f9 100755
+--- a/configure
++++ b/configure
+@@ -3031,11 +3031,6 @@ ac_config_headers="$ac_config_headers config.h"
+ 
+ 
+ 
+-if test "x${enable_maintainer_mode}" != "xno"; then
+-  enable_maintainer_mode="yes"
+-fi
+-
+-
+ { echo "$as_me:$LINENO: checking whether to enable maintainer-specific portions of Makefiles" >&5
+ echo $ECHO_N "checking whether to enable maintainer-specific portions of Makefiles... $ECHO_C" >&6; }
+     # Check whether --enable-maintainer-mode was given.
+@@ -6585,7 +6580,7 @@ ia64-*-hpux*)
+   ;;
+ *-*-irix6*)
+   # Find out which ABI we are using.
+-  echo '#line 6588 "configure"' > conftest.$ac_ext
++  echo '#line 6583 "configure"' > conftest.$ac_ext
+   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+   (eval $ac_compile) 2>&5
+   ac_status=$?
+@@ -9224,11 +9219,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:9227: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:9222: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>conftest.err)
+    ac_status=$?
+    cat conftest.err >&5
+-   echo "$as_me:9231: \$? = $ac_status" >&5
++   echo "$as_me:9226: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s "$ac_outfile"; then
+      # The compiler can only warn and ignore the option if not recognized
+      # So say no if there are warnings other than the usual output.
+@@ -9514,11 +9509,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:9517: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:9512: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>conftest.err)
+    ac_status=$?
+    cat conftest.err >&5
+-   echo "$as_me:9521: \$? = $ac_status" >&5
++   echo "$as_me:9516: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s "$ac_outfile"; then
+      # The compiler can only warn and ignore the option if not recognized
+      # So say no if there are warnings other than the usual output.
+@@ -9618,11 +9613,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:9621: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:9616: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>out/conftest.err)
+    ac_status=$?
+    cat out/conftest.err >&5
+-   echo "$as_me:9625: \$? = $ac_status" >&5
++   echo "$as_me:9620: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s out/conftest2.$ac_objext
+    then
+      # The compiler can only warn and ignore the option if not recognized
+@@ -11995,7 +11990,7 @@ else
+   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
+   lt_status=$lt_dlunknown
+   cat > conftest.$ac_ext <<EOF
+-#line 11998 "configure"
++#line 11993 "configure"
+ #include "confdefs.h"
+ 
+ #if HAVE_DLFCN_H
+@@ -12095,7 +12090,7 @@ else
+   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
+   lt_status=$lt_dlunknown
+   cat > conftest.$ac_ext <<EOF
+-#line 12098 "configure"
++#line 12093 "configure"
+ #include "confdefs.h"
+ 
+ #if HAVE_DLFCN_H
+@@ -14496,11 +14491,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:14499: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:14494: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>conftest.err)
+    ac_status=$?
+    cat conftest.err >&5
+-   echo "$as_me:14503: \$? = $ac_status" >&5
++   echo "$as_me:14498: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s "$ac_outfile"; then
+      # The compiler can only warn and ignore the option if not recognized
+      # So say no if there are warnings other than the usual output.
+@@ -14600,11 +14595,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:14603: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:14598: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>out/conftest.err)
+    ac_status=$?
+    cat out/conftest.err >&5
+-   echo "$as_me:14607: \$? = $ac_status" >&5
++   echo "$as_me:14602: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s out/conftest2.$ac_objext
+    then
+      # The compiler can only warn and ignore the option if not recognized
+@@ -16198,11 +16193,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:16201: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:16196: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>conftest.err)
+    ac_status=$?
+    cat conftest.err >&5
+-   echo "$as_me:16205: \$? = $ac_status" >&5
++   echo "$as_me:16200: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s "$ac_outfile"; then
+      # The compiler can only warn and ignore the option if not recognized
+      # So say no if there are warnings other than the usual output.
+@@ -16302,11 +16297,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:16305: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:16300: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>out/conftest.err)
+    ac_status=$?
+    cat out/conftest.err >&5
+-   echo "$as_me:16309: \$? = $ac_status" >&5
++   echo "$as_me:16304: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s out/conftest2.$ac_objext
+    then
+      # The compiler can only warn and ignore the option if not recognized
+@@ -18522,11 +18517,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:18525: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:18520: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>conftest.err)
+    ac_status=$?
+    cat conftest.err >&5
+-   echo "$as_me:18529: \$? = $ac_status" >&5
++   echo "$as_me:18524: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s "$ac_outfile"; then
+      # The compiler can only warn and ignore the option if not recognized
+      # So say no if there are warnings other than the usual output.
+@@ -18812,11 +18807,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:18815: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:18810: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>conftest.err)
+    ac_status=$?
+    cat conftest.err >&5
+-   echo "$as_me:18819: \$? = $ac_status" >&5
++   echo "$as_me:18814: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s "$ac_outfile"; then
+      # The compiler can only warn and ignore the option if not recognized
+      # So say no if there are warnings other than the usual output.
+@@ -18916,11 +18911,11 @@ else
+    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
+    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
+    -e 's:$: $lt_compiler_flag:'`
+-   (eval echo "\"\$as_me:18919: $lt_compile\"" >&5)
++   (eval echo "\"\$as_me:18914: $lt_compile\"" >&5)
+    (eval "$lt_compile" 2>out/conftest.err)
+    ac_status=$?
+    cat out/conftest.err >&5
+-   echo "$as_me:18923: \$? = $ac_status" >&5
++   echo "$as_me:18918: \$? = $ac_status" >&5
+    if (exit $ac_status) && test -s out/conftest2.$ac_objext
+    then
+      # The compiler can only warn and ignore the option if not recognized
+@@ -62505,12 +62500,12 @@ if test -n "$PKG_CONFIG"; then
+         pkg_cv_FIREFOX_CFLAGS="$FIREFOX_CFLAGS"
+     else
+         if test -n "$PKG_CONFIG" && \
+-    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"firefox-plugin\"") >&5
+-  ($PKG_CONFIG --exists --print-errors "firefox-plugin") 2>&5
++    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"iceape-plugin\"") >&5
++  ($PKG_CONFIG --exists --print-errors "iceape-plugin") 2>&5
+   ac_status=$?
+   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+   (exit $ac_status); }; then
+-  pkg_cv_FIREFOX_CFLAGS=`$PKG_CONFIG --cflags "firefox-plugin" 2>/dev/null`
++  pkg_cv_FIREFOX_CFLAGS=`$PKG_CONFIG --cflags "iceape-plugin" 2>/dev/null`
+ else
+   pkg_failed=yes
+ fi
+@@ -62523,12 +62518,12 @@ if test -n "$PKG_CONFIG"; then
+         pkg_cv_FIREFOX_LIBS="$FIREFOX_LIBS"
+     else
+         if test -n "$PKG_CONFIG" && \
+-    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"firefox-plugin\"") >&5
+-  ($PKG_CONFIG --exists --print-errors "firefox-plugin") 2>&5
++    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"iceape-plugin\"") >&5
++  ($PKG_CONFIG --exists --print-errors "iceape-plugin") 2>&5
+   ac_status=$?
+   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+   (exit $ac_status); }; then
+-  pkg_cv_FIREFOX_LIBS=`$PKG_CONFIG --libs "firefox-plugin" 2>/dev/null`
++  pkg_cv_FIREFOX_LIBS=`$PKG_CONFIG --libs "iceape-plugin" 2>/dev/null`
+ else
+   pkg_failed=yes
+ fi
+@@ -62547,9 +62542,9 @@ else
+         _pkg_short_errors_supported=no
+ fi
+         if test $_pkg_short_errors_supported = yes; then
+-	        FIREFOX_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "firefox-plugin"`
++	        FIREFOX_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "iceape-plugin"`
+         else
+-	        FIREFOX_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "firefox-plugin"`
++	        FIREFOX_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "iceape-plugin"`
+         fi
+ 	# Put the nasty error message in config.log where it belongs
+ 	echo "$FIREFOX_PKG_ERRORS" >&5
+@@ -62859,12 +62854,12 @@ if test -n "$PKG_CONFIG"; then
+         pkg_cv_FIREFOX_XPCOM_CFLAGS="$FIREFOX_XPCOM_CFLAGS"
+     else
+         if test -n "$PKG_CONFIG" && \
+-    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"firefox-xpcom\"") >&5
+-  ($PKG_CONFIG --exists --print-errors "firefox-xpcom") 2>&5
++    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"iceape-xpcom\"") >&5
++  ($PKG_CONFIG --exists --print-errors "iceape-xpcom") 2>&5
+   ac_status=$?
+   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+   (exit $ac_status); }; then
+-  pkg_cv_FIREFOX_XPCOM_CFLAGS=`$PKG_CONFIG --cflags "firefox-xpcom" 2>/dev/null`
++  pkg_cv_FIREFOX_XPCOM_CFLAGS=`$PKG_CONFIG --cflags "iceape-xpcom" 2>/dev/null`
+ else
+   pkg_failed=yes
+ fi
+@@ -62877,12 +62872,12 @@ if test -n "$PKG_CONFIG"; then
+         pkg_cv_FIREFOX_XPCOM_LIBS="$FIREFOX_XPCOM_LIBS"
+     else
+         if test -n "$PKG_CONFIG" && \
+-    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"firefox-xpcom\"") >&5
+-  ($PKG_CONFIG --exists --print-errors "firefox-xpcom") 2>&5
++    { (echo "$as_me:$LINENO: \$PKG_CONFIG --exists --print-errors \"iceape-xpcom\"") >&5
++  ($PKG_CONFIG --exists --print-errors "iceape-xpcom") 2>&5
+   ac_status=$?
+   echo "$as_me:$LINENO: \$? = $ac_status" >&5
+   (exit $ac_status); }; then
+-  pkg_cv_FIREFOX_XPCOM_LIBS=`$PKG_CONFIG --libs "firefox-xpcom" 2>/dev/null`
++  pkg_cv_FIREFOX_XPCOM_LIBS=`$PKG_CONFIG --libs "iceape-xpcom" 2>/dev/null`
+ else
+   pkg_failed=yes
+ fi
+@@ -62901,9 +62896,9 @@ else
+         _pkg_short_errors_supported=no
+ fi
+         if test $_pkg_short_errors_supported = yes; then
+-	        FIREFOX_XPCOM_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "firefox-xpcom"`
++	        FIREFOX_XPCOM_PKG_ERRORS=`$PKG_CONFIG --short-errors --errors-to-stdout --print-errors "iceape-xpcom"`
+         else
+-	        FIREFOX_XPCOM_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "firefox-xpcom"`
++	        FIREFOX_XPCOM_PKG_ERRORS=`$PKG_CONFIG --errors-to-stdout --print-errors "iceape-xpcom"`
+         fi
+ 	# Put the nasty error message in config.log where it belongs
+ 	echo "$FIREFOX_XPCOM_PKG_ERRORS" >&5
+@@ -63752,7 +63747,7 @@ echo "$as_me: error: Please install the Firefox development tools; mozilla-confi
+         fi
+         MOZILLA_REQUIRED_HEADERS=
+         mozilla=:
+-        firefox_include=`pkg-config --variable=includedir firefox-plugin`
++        firefox_include=`pkg-config --variable=includedir iceape-plugin`
+         if test -f "${firefox_include}/mozilla-config.h" -a -f "${firefox_include}/mozilla-config32.h"; then
+             MOZILLA_CONFIG_H="${firefox_include}/mozilla-config32.h"
+         elif test -f "${firefox_include}/mozilla-config.h" -a -f "${firefox_include}/mozilla-config64.h"; then
+@@ -64899,7 +64894,7 @@ else
+ JAVA_TEST=Test.java
+ CLASS_TEST=Test.class
+ cat << \EOF > $JAVA_TEST
+-/* #line 64902 "configure" */
++/* #line 64897 "configure" */
+ public class Test {
+ }
+ EOF
+@@ -65075,7 +65070,7 @@ EOF
+ if uudecode$EXEEXT Test.uue; then
+         ac_cv_prog_uudecode_base64=yes
+ else
+-        echo "configure: 65078: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
++        echo "configure: 65073: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
+         echo "configure: failed file was:" >&5
+         cat Test.uue >&5
+         ac_cv_prog_uudecode_base64=no
+@@ -65197,7 +65192,7 @@ else
+ JAVA_TEST=Test.java
+ CLASS_TEST=Test.class
+ cat << \EOF > $JAVA_TEST
+-/* #line 65200 "configure" */
++/* #line 65195 "configure" */
+ public class Test {
+ }
+ EOF
+@@ -65234,7 +65229,7 @@ JAVA_TEST=Test.java
+ CLASS_TEST=Test.class
+ TEST=Test
+ cat << \EOF > $JAVA_TEST
+-/* [#]line 65237 "configure" */
++/* [#]line 65232 "configure" */
+ public class Test {
+ public static void main (String args[]) {
+         System.exit (0);

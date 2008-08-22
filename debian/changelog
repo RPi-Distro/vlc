@@ -1,33 +1,27 @@
-vlc (0.8.6.h-4.1) unstable; urgency=high
+vlc (0.8.6.i-1) experimental; urgency=low
 
-  * Non-maintainer upload by the Security Team.
-  * Fix integer overflows that could possibly lead to arbitrary
-    code execution (CVE-2008-4686.diff; Closes: #503118).
+  * New upstream release.
+    - Refresh patch 010_iceape and change it to only patch the name of the .pc
+      files, keep using FIREFOX_CFLAGS and _LIBS etc. as to allow us to only
+      run autoconf, not automake.
+    - Drop patch 401-CVE-2008-2430, merged upstream.
+    - Update and rename patch 050_bootstrap to 900_autoconf.
 
- -- Nico Golde <nion@debian.org>  Mon, 03 Nov 2008 14:41:58 +0100
+ -- Loic Minier <lool@dooz.org>  Fri, 22 Aug 2008 19:13:30 +0200
 
-vlc (0.8.6.h-4) unstable; urgency=high
+vlc (0.8.6.h-2) unstable; urgency=high
 
-  * Security: Fix integer overflow in mms module
-    (Closes: #496265)(407-mms-overflow.diff taken from upstream)
+  [ Christophe Mutricy ]
+  * Fix integer overflow in TTA (CVE-2008-3732) (405-CVE-2008-3732.diff)
+  * Fix crashes in Live555 (406-live555-crash.diff)
+  * Switch to libdc1394-22-dev (Closes: #484695)
 
- -- Christophe Mutricy <xtophe@videolan.org>  Mon, 25 Aug 2008 01:07:27 +0100
-
-vlc (0.8.6.h-3) unstable; urgency=low
-
+  [ Loic Minier ]
   * Minor cleanups.
   * Use DEB_HOST_ARCH instead of DEB_BUILD_ARCH in rules.
   * Use objdump -x instead of ldd to check for links on libX11 as ldd might
     resolve libvlc to the system's version if the system has libvlc installed;
     closes: #495730.
-
- -- Loic Minier <lool@dooz.org>  Fri, 22 Aug 2008 19:46:35 +0200
-
-vlc (0.8.6.h-2) unstable; urgency=high
-
-  * Fix integer overflow in TTA (CVE-2008-3732) (405-CVE-2008-3732.diff)
-  * Fix crashes in Live555 (406-live555-crash.diff)
-  * Switch to libdc1394-22-dev (Closes: #484695)
 
  -- Christophe Mutricy <xtophe@videolan.org>  Thu, 21 Aug 2008 20:19:39 +0100
 
