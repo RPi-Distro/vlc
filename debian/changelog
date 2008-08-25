@@ -1,3 +1,10 @@
+vlc (0.8.6.h-4) unstable; urgency=high
+
+  * Security: Fix integer overflow in mms module
+    (Closes: #496265)(407-mms-overflow.diff taken from upstream)
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Mon, 25 Aug 2008 01:07:27 +0100
+
 vlc (0.8.6.h-3) unstable; urgency=low
 
   * Minor cleanups.
