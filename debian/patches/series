@@ -8,3 +8,5 @@
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
 401-CVE-2008-2430.diff
+405-CVE-2008-3732.diff
+407-mms-overflow.diff
