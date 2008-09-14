@@ -2,7 +2,7 @@
  * pda.h: private Gtk+ interface description
  *****************************************************************************
  * Copyright (C) 1999, 2000 the VideoLAN team
- * $Id: ccb4bb1e99740923ffc45ff36bb64ebf60c9fd1c $
+ * $Id$
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *
@@ -45,12 +45,12 @@ struct intf_sys_t
     float               f_adj_oldvalue;  /* previous value -with FPU hardware*/
 
     /* special actions */
-    vlc_bool_t          b_playing;
-    vlc_bool_t          b_window_changed;        /* window display toggled ? */
-    vlc_bool_t          b_slider_free;                      /* slider status */
+    bool          b_playing;
+    bool          b_window_changed;        /* window display toggled ? */
+    bool          b_slider_free;                      /* slider status */
 
     /* Preference settings */
-    vlc_bool_t          b_autoplayfile;
+    bool          b_autoplayfile;
 
     /* The input thread */
     input_thread_t *    p_input;
@@ -62,6 +62,6 @@ struct intf_sys_t
 #define GTK_GET( type, nom ) GTK_##type( gtk_object_get_data( \
         GTK_OBJECT( p_intf->p_sys->p_window ), nom ) )
 
-            
-#define  GtkGetIntf( widget ) E_(__GtkGetIntf)( GTK_WIDGET( widget ) )
-void * E_(__GtkGetIntf)( GtkWidget * );
+ 
+#define  GtkGetIntf( widget ) __GtkGetIntf( GTK_WIDGET( widget ) )
+void * __GtkGetIntf( GtkWidget * );

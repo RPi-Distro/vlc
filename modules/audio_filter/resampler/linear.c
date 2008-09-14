@@ -2,7 +2,7 @@
  * linear.c : linear interpolation resampler
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 72cebf385e30a02f5e5b7803ad0aa2a4f12c424d $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -25,14 +25,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include "audio_output.h"
-#include "aout_internal.h"
-#include "vlc_filter.h"
-#include "vlc_block.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
+#include <vlc_filter.h>
+#include <vlc_block.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -62,14 +64,14 @@ struct filter_sys_t
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("Audio filter for linear interpolation resampling") );
+    set_description( N_("Audio filter for linear interpolation resampling") );
     set_category( CAT_AUDIO );
     set_subcategory( SUBCAT_AUDIO_MISC );
     set_capability( "audio filter", 5 );
     set_callbacks( Create, Close );
 
     add_submodule();
-    set_description( _("Audio filter for linear interpolation resampling") );
+    set_description( N_("Audio filter for linear interpolation resampling") );
     set_capability( "audio filter2", 5 );
     set_callbacks( OpenFilter, CloseFilter );
 vlc_module_end();
@@ -81,7 +83,7 @@ static int Create( vlc_object_t *p_this )
 {
     aout_filter_t * p_filter = (aout_filter_t *)p_this;
     struct filter_sys_t * p_sys;
-    
+ 
     if ( p_filter->input.i_rate == p_filter->output.i_rate
           || p_filter->input.i_format != p_filter->output.i_format
           || p_filter->input.i_physical_channels
@@ -97,23 +99,21 @@ static int Create( vlc_object_t *p_this )
     p_sys = malloc( sizeof(filter_sys_t) );
     p_filter->p_sys = (struct aout_filter_sys_t *)p_sys;
     if( p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
         return VLC_ENOMEM;
-    }
     p_sys->p_prev_sample = malloc(
         p_filter->input.i_channels * sizeof(int32_t) );
     if( p_sys->p_prev_sample == NULL )
     {
-        msg_Err( p_filter, "out of memory" );
+        free( p_sys );
         return VLC_ENOMEM;
     }
+    aout_DateInit( &p_sys->end_date, p_filter->output.i_rate );
 
     p_filter->pf_do_work = DoWork;
 
     /* We don't want a new buffer to be created because we're not sure we'll
      * actually need to resample anything. */
-    p_filter->b_in_place = VLC_TRUE;
+    p_filter->b_in_place = true;
 
     return VLC_SUCCESS;
 }
@@ -125,7 +125,7 @@ static void Close( vlc_object_t * p_this )
 {
     aout_filter_t * p_filter = (aout_filter_t *)p_this;
     filter_sys_t *p_sys = (filter_sys_t *)p_filter->p_sys;
-    
+ 
     free( p_sys->p_prev_sample );
     free( p_sys );
 }
@@ -160,7 +160,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
             memcpy( p_in_buf->p_buffer, p_prev_sample,
                     i_nb_channels * sizeof(float) );
         }
-        p_filter->b_continuity = VLC_FALSE;
+        p_filter->b_continuity = false;
         return;
     }
 
@@ -174,12 +174,12 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
         return;
     }
 
-    p_aout->p_vlc->pf_memcpy( p_in, p_in_buf->p_buffer, p_in_buf->i_nb_bytes );
+    vlc_memcpy( p_in, p_in_buf->p_buffer, p_in_buf->i_nb_bytes );
 
     /* Take care of the previous input sample (if any) */
     if( !p_filter->b_continuity )
     {
-        p_filter->b_continuity = VLC_TRUE;
+        p_filter->b_continuity = true;
         p_sys->i_remainder = 0;
         aout_DateInit( &p_sys->end_date, p_filter->output.i_rate );
     }
@@ -268,23 +268,20 @@ static int OpenFilter( vlc_object_t *p_this )
     {
         return VLC_EGENERIC;
     }
-    
+ 
     /* Allocate the memory needed to store the module's structure */
     p_filter->p_sys = p_sys = malloc( sizeof(struct filter_sys_t) );
     if( p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
         return VLC_ENOMEM;
-    }
 
     p_sys->p_prev_sample = malloc(
         p_filter->fmt_in.audio.i_channels * sizeof(int32_t) );
     if( p_sys->p_prev_sample == NULL )
     {
-        msg_Err( p_filter, "out of memory" );
         free( p_sys );
         return VLC_ENOMEM;
     }
+    aout_DateInit( &p_sys->end_date, p_filter->fmt_in.audio.i_rate );
 
     p_filter->pf_audio_filter = Resample;
 
@@ -325,21 +322,22 @@ static block_t *Resample( filter_t *p_filter, block_t *p_block )
 
     if( !p_block || !p_block->i_samples )
     {
-        if( p_block ) p_block->pf_release( p_block );
+        if( p_block )
+            block_Release( p_block );
         return NULL;
     }
-    
+ 
     i_bytes_per_frame = p_filter->fmt_out.audio.i_channels *
                   p_filter->fmt_out.audio.i_bitspersample / 8;
-    
-    i_out_size = i_bytes_per_frame * ( 1 + (p_block->i_samples * 
+ 
+    i_out_size = i_bytes_per_frame * ( 1 + (p_block->i_samples *
         p_filter->fmt_out.audio.i_rate / p_filter->fmt_in.audio.i_rate));
 
     p_out = p_filter->pf_audio_buffer_new( p_filter, i_out_size );
     if( !p_out )
     {
         msg_Warn( p_filter, "can't get output buffer" );
-        p_block->pf_release( p_block );
+        block_Release( p_block );
         return NULL;
     }
 
@@ -351,7 +349,7 @@ static block_t *Resample( filter_t *p_filter, block_t *p_block )
     aout_filter.p_sys = (struct aout_filter_sys_t *)p_filter->p_sys;
     aout_filter.input = p_filter->fmt_in.audio;
     aout_filter.output = p_filter->fmt_out.audio;
-    aout_filter.b_continuity = VLC_FALSE;
+    aout_filter.b_continuity = false;
 
     in_buf.p_buffer = p_block->p_buffer;
     in_buf.i_nb_bytes = p_block->i_buffer;
@@ -362,8 +360,8 @@ static block_t *Resample( filter_t *p_filter, block_t *p_block )
 
     DoWork( (aout_instance_t *)p_filter, &aout_filter, &in_buf, &out_buf );
 
-    p_block->pf_release( p_block );
-    
+    block_Release( p_block );
+ 
     p_out->i_buffer = out_buf.i_nb_bytes;
     p_out->i_samples = out_buf.i_nb_samples;
 

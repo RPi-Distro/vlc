@@ -2,7 +2,7 @@
  * cmd_dialogs.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d8ad6521d41de22f00987ba3bbdf8ad789b38cd2 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -29,7 +29,7 @@
 #include "../src/dialogs.hpp"
 #include "cmd_change_skin.hpp"
 
-#include <vlc_interaction.h>
+#include <vlc_interface.h>
 
 template<int TYPE = 0> class CmdDialogs;
 
@@ -169,20 +169,13 @@ class CmdInteraction: public CmdGeneric
         /// This method does the real job of the command
         virtual void execute()
         {
-            if( m_pDialog->i_type == INTERACT_PROGRESS )
+            /// Get the dialogs provider
+            Dialogs *pDialogs = Dialogs::instance( getIntf() );
+            if( pDialogs == NULL )
             {
-                 /// \todo Handle progress in the interface
+                return;
             }
-            else
-            {
-                /// Get the dialogs provider
-                Dialogs *pDialogs = Dialogs::instance( getIntf() );
-                if( pDialogs == NULL )
-                {
-                    return;
-                }
-                pDialogs->showInteraction( m_pDialog );
-            }
+            pDialogs->showInteraction( m_pDialog );
         }
 
         virtual string getType() const { return "interaction"; }

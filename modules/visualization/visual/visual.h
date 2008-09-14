@@ -2,7 +2,7 @@
  * visual.h : Header for the visualisation system
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: dbd4a9de83d293bcc721671ff9e0736139d4bfae $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -54,6 +54,8 @@ typedef struct aout_filter_sys_t
 
 /* Prototypes */
 int scope_Run
+        (visual_effect_t * , aout_instance_t *, aout_buffer_t *, picture_t *);
+int vuMeter_Run
         (visual_effect_t * , aout_instance_t *, aout_buffer_t *, picture_t *);
 int dummy_Run
         (visual_effect_t * , aout_instance_t *, aout_buffer_t *, picture_t *);

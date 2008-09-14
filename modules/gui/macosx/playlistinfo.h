@@ -1,17 +1,17 @@
 /*****************************************************************************
  * playlistinfo.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: 715169f03ba54d5a3a09b94c23d4110a9db2fc75 $
+ * Copyright (C) 2002-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
- *          Felix Kühne <fkuehne at videolan dot org>
+ *          Felix Paul KÃ¼hne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -23,9 +23,10 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * VLCPlaylistInfo interface 
+ * VLCPlaylistInfo interface
  *****************************************************************************/
 
+@class VLCInfoTreeItem;
 
 @interface VLCInfo : NSObject
 {
@@ -36,12 +37,8 @@
     IBOutlet id o_uri_txt;
     IBOutlet id o_title_txt;
     IBOutlet id o_author_txt;
-    IBOutlet id o_btn_ok;
-    IBOutlet id o_btn_cancel;
-    IBOutlet id o_btn_delete_group;
-    IBOutlet id o_btn_add_group;
     IBOutlet id o_outline_view;
-    
+
     IBOutlet id o_tab_view;
 
     IBOutlet id o_collection_lbl;
@@ -60,10 +57,10 @@
     IBOutlet id o_nowPlaying_txt;
     IBOutlet id o_publisher_lbl;
     IBOutlet id o_publisher_txt;
-    IBOutlet id o_rating_lbl;
-    IBOutlet id o_rating_txt;
     IBOutlet id o_seqNum_lbl;
     IBOutlet id o_seqNum_txt;
+    IBOutlet id o_image_well;
+    IBOutlet id o_saveMetaData_btn;
 
     IBOutlet id o_audio_box;
     IBOutlet id o_audio_decoded_lbl;
@@ -95,22 +92,27 @@
     IBOutlet id o_video_box;
     IBOutlet id o_video_decoded_lbl;
     IBOutlet id o_video_decoded_txt;
+	IBOutlet id o_fps_lbl;
+	IBOutlet id o_fps_txt;
 
-    playlist_item_t * p_item;
+    VLCInfoTreeItem * rootItem;
+
+    input_item_t * p_item;
     NSTimer * o_statUpdateTimer;
 }
 
-- (IBAction)togglePlaylistInfoPanel:(id)sender;
-- (IBAction)toggleInfoPanel:(id)sender;
-- (void)initPanel:(id)sender;
-- (void)updatePanel;
-- (IBAction)infoCancel:(id)sender;
-- (IBAction)infoOk:(id)sender;
-- (playlist_item_t *)getItem;
-- (BOOL)isItemInPlaylist:(playlist_item_t *)p_item;
+- (void)initPanel;
+- (void)stopTimers;
 
+- (IBAction)metaFieldChanged:(id)sender;
+- (IBAction)saveMetaData:(id)sender;
+- (void)initMediaPanelStats;
+- (void)updatePanelWithItem:(input_item_t *)_p_item;
+- (input_item_t *)item;
 - (void)setMeta: (char *)meta forLabel: (id)theItem;
 - (void)updateStatistics: (NSTimer*)theTimer;
+
++ (VLCInfo *)sharedInstance;
 @end
 
 @interface VLCInfoTreeItem : NSObject
@@ -118,16 +120,15 @@
     NSString *o_name;
     NSString *o_value;
     int i_object_id;
-    playlist_item_t * p_item;
+    input_item_t * p_item;
     VLCInfoTreeItem *o_parent;
     NSMutableArray *o_children;
 }
 
-+ (VLCInfoTreeItem *)rootItem;
 - (int)numberOfChildren;
 - (VLCInfoTreeItem *)childAtIndex:(int)i_index;
-- (NSString *)getName;
-- (NSString *)getValue;
+- (NSString *)name;
+- (NSString *)value;
 - (void)refresh;
 
 @end

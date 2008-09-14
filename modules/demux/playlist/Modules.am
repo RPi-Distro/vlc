@@ -1,7 +1,6 @@
 SOURCES_playlist = \
 	playlist.c \
 	playlist.h \
-	old.c \
 	m3u.c \
 	b4s.c \
 	pls.c \
@@ -10,6 +9,11 @@ SOURCES_playlist = \
 	xspf.c \
 	xspf.h \
 	shoutcast.c \
+	asx.c \
+	sgimb.c \
+	qtl.c \
+	gvp.c \
+	ifo.c \
+	itml.c \
+	itml.h \
 	$(NULL)
-
-

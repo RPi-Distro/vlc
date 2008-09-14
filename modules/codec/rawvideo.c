@@ -2,7 +2,7 @@
  * rawvideo.c: Pseudo video decoder/packetizer for raw video data
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 9f9183b518a177b4846cacb1a7cb9e39380bbf99 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,9 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_vout.h>
 
 /*****************************************************************************
  * decoder_sys_t : raw video decoder descriptor
@@ -34,13 +39,13 @@
 struct decoder_sys_t
 {
     /* Module mode */
-    vlc_bool_t b_packetizer;
+    bool b_packetizer;
 
     /*
      * Input properties
      */
-    int i_raw_size;
-    vlc_bool_t b_invert;
+    size_t i_raw_size;
+    bool b_invert;
 
     /*
      * Common properties
@@ -65,14 +70,14 @@ static block_t   *SendFrame  ( decoder_t *, block_t * );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("Pseudo raw video decoder") );
+    set_description( N_("Pseudo raw video decoder") );
     set_capability( "decoder", 50 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_VCODEC );
     set_callbacks( OpenDecoder, CloseDecoder );
 
     add_submodule();
-    set_description( _("Pseudo raw video packetizer") );
+    set_description( N_("Pseudo raw video packetizer") );
     set_capability( "packetizer", 100 );
     set_callbacks( OpenPacketizer, CloseDecoder );
 vlc_module_end();
@@ -96,10 +101,14 @@ static int OpenDecoder( vlc_object_t *p_this )
         case VLC_FOURCC('I','4','1','1'):
         case VLC_FOURCC('I','4','1','0'):
         case VLC_FOURCC('Y','V','U','9'):
+        case VLC_FOURCC('Y','4','2','B'):
+        case VLC_FOURCC('Y','4','1','B'):
 
         /* Packed YUV */
         case VLC_FOURCC('Y','U','Y','2'):
+        case VLC_FOURCC('Y','8','0','0'):
         case VLC_FOURCC('U','Y','V','Y'):
+        case VLC_FOURCC('H','D','Y','C'):
 
         /* RGB */
         case VLC_FOURCC('R','V','3','2'):
@@ -107,7 +116,11 @@ static int OpenDecoder( vlc_object_t *p_this )
         case VLC_FOURCC('R','V','1','6'):
         case VLC_FOURCC('R','V','1','5'):
             break;
-
+        case VLC_FOURCC('2','V','u','y'):
+        case VLC_FOURCC('2','v','u','y'):
+        case VLC_FOURCC('A','V','U','I'):
+            p_dec->fmt_in.i_codec = VLC_FOURCC('U','Y','V','Y');
+            break;
         case VLC_FOURCC('y','v','1','2'):
             p_dec->fmt_in.i_codec = VLC_FOURCC('Y','V','1','2');
             break;
@@ -119,12 +132,9 @@ static int OpenDecoder( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
     /* Misc init */
-    p_dec->p_sys->b_packetizer = VLC_FALSE;
+    p_dec->p_sys->b_packetizer = false;
     p_sys->i_pts = 0;
     p_sys->b_invert = 0;
 
@@ -133,7 +143,7 @@ static int OpenDecoder( vlc_object_t *p_this )
         /* Frames are coded from bottom to top */
         p_dec->fmt_in.video.i_height =
             (unsigned int)(-(int)p_dec->fmt_in.video.i_height);
-        p_sys->b_invert = VLC_TRUE;
+        p_sys->b_invert = true;
     }
 
     if( p_dec->fmt_in.video.i_width <= 0 || p_dec->fmt_in.video.i_height <= 0 )
@@ -183,7 +193,7 @@ static int OpenPacketizer( vlc_object_t *p_this )
 
     int i_ret = OpenDecoder( p_this );
 
-    if( i_ret == VLC_SUCCESS ) p_dec->p_sys->b_packetizer = VLC_TRUE;
+    if( i_ret == VLC_SUCCESS ) p_dec->p_sys->b_packetizer = true;
 
     return i_ret;
 }
@@ -219,7 +229,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
     if( p_block->i_buffer < p_sys->i_raw_size )
     {
-        msg_Warn( p_dec, "invalid frame size (%d < %d)",
+        msg_Warn( p_dec, "invalid frame size (%zu < %zu)",
                   p_block->i_buffer, p_sys->i_raw_size );
 
         block_Release( p_block );
@@ -236,7 +246,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     }
 
     /* Date management: 1 frame per packet */
-    p_sys->i_pts += ( I64C(1000000) * 1.0 / 25 /*FIXME*/ );
+    p_sys->i_pts += ( INT64_C(1000000) * 1.0 / 25 /*FIXME*/ );
     *pp_block = NULL;
 
     return p_buf;
@@ -247,30 +257,26 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
  *****************************************************************************/
 static void FillPicture( decoder_t *p_dec, block_t *p_block, picture_t *p_pic )
 {
-    uint8_t *p_src, *p_dst;
-    int i_src, i_plane, i_line, i_width;
+    int i_plane;
     decoder_sys_t *p_sys = p_dec->p_sys;
-
-    p_src = p_block->p_buffer;
-    i_src = p_block->i_buffer;
+    uint8_t *p_src = p_block->p_buffer;
 
     for( i_plane = 0; i_plane < p_pic->i_planes; i_plane++ )
     {
-        p_dst = p_pic->p[i_plane].p_pixels;
-        i_width = p_pic->p[i_plane].i_pitch;
+        int i_pitch = p_pic->p[i_plane].i_pitch;
+        int i_visible_pitch = p_pic->p[i_plane].i_visible_pitch;
+        int i_visible_lines = p_pic->p[i_plane].i_visible_lines;
+        uint8_t *p_dst = p_pic->p[i_plane].p_pixels;
+        uint8_t *p_dst_end = p_dst+i_pitch*i_visible_lines;
 
         if( p_sys->b_invert )
-            p_src += (i_width * (p_pic->p[i_plane].i_visible_lines - 1));
-
-        for( i_line = 0; i_line < p_pic->p[i_plane].i_visible_lines; i_line++ )
-        {
-            p_dec->p_vlc->pf_memcpy( p_dst, p_src, i_width );
-            p_src += p_sys->b_invert ? -i_width : i_width;
-            p_dst += i_width;
-        }
-
-        if( p_sys->b_invert )
-            p_src += (i_width * (p_pic->p[i_plane].i_visible_lines + 1));
+            for( p_dst_end -= i_pitch; p_dst <= p_dst_end;
+                 p_dst_end -= i_pitch, p_src += i_visible_pitch )
+                vlc_memcpy( p_dst_end, p_src, i_visible_pitch );
+        else
+            for( ; p_dst < p_dst_end;
+                 p_dst += i_pitch, p_src += i_visible_pitch )
+                vlc_memcpy( p_dst, p_src, i_visible_pitch );
     }
 }
 
@@ -325,6 +331,8 @@ static block_t *SendFrame( decoder_t *p_dec, block_t *p_block )
         }
 
         p_tmp = malloc( pic.p[0].i_pitch );
+        if( !p_tmp )
+            return p_block;
         p_pixels = p_block->p_buffer;
         for( i = 0; i < pic.i_planes; i++ )
         {
@@ -335,12 +343,9 @@ static block_t *SendFrame( decoder_t *p_dec, block_t *p_block )
 
             for( j = 0; j < pic.p[i].i_visible_lines / 2; j++ )
             {
-                p_dec->p_vlc->pf_memcpy( p_tmp, p_bottom,
-                                         pic.p[i].i_visible_pitch  );
-                p_dec->p_vlc->pf_memcpy( p_bottom, p_top,
-                                         pic.p[i].i_visible_pitch  );
-                p_dec->p_vlc->pf_memcpy( p_top, p_tmp,
-                                         pic.p[i].i_visible_pitch  );
+                vlc_memcpy( p_tmp, p_bottom, pic.p[i].i_visible_pitch  );
+                vlc_memcpy( p_bottom, p_top, pic.p[i].i_visible_pitch  );
+                vlc_memcpy( p_top, p_tmp, pic.p[i].i_visible_pitch  );
                 p_top += i_pitch;
                 p_bottom -= i_pitch;
             }

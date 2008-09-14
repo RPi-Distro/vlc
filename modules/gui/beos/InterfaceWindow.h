@@ -2,7 +2,7 @@
  * InterfaceWindow.h: BeOS interface window class prototype
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: ccb0855de57c49a9682f3e492b6087f39064d718 $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Tony Castley <tcastley@mail.powerup.com.au>
@@ -32,7 +32,9 @@
 
 class BMenuBar;
 class MediaControlView;
+#if 0
 class PlayListWindow;
+#endif
 class BFilePanel;
 class PreferencesWindow;
 class MessagesWindow;
@@ -105,11 +107,11 @@ class InterfaceWindow : public BWindow
             void            UpdatePlaylist();
 
             bool            IsStopped() const;
-        
+ 
     MediaControlView*        p_mediaControl;
     MessagesWindow*         fMessagesWindow;
 
- private:    
+ private:
             void            _SetMenusEnabled( bool hasFile,
                                               bool hasChapters = false,
                                               bool hasTitles = false );
@@ -126,7 +128,9 @@ class InterfaceWindow : public BWindow
     bool                    b_playlist_update;
 
     BFilePanel*             fFilePanel;
+#if 0
     PlayListWindow*         fPlaylistWindow;
+#endif
     PreferencesWindow*      fPreferencesWindow;
     BMenuBar*               fMenuBar;
     BMenuItem*              fGotoMenuMI;

@@ -26,17 +26,18 @@
  * Preamble
  *****************************************************************************/
 #include <errno.h>                                                 /* ENOMEM */
-#include <string.h>                                            /* strerror() */
-#include <stdlib.h>                            /* calloc(), malloc(), free() */
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #ifdef HAVE_ALLOCA_H
 #   include <alloca.h>
 #endif
 
-#include <vlc/aout.h>
-#include "aout_internal.h"
+#include <vlc_aout.h>
 
 #include <sys/asoundlib.h>
 
@@ -46,7 +47,7 @@ struct aout_sys_t
     int          i_card;
     int          i_device;
 
-    byte_t *     p_silent_buffer;
+    uint8_t *    p_silent_buffer;
 };
 
 #define DEFAULT_FRAME_SIZE 2048
@@ -54,18 +55,18 @@ struct aout_sys_t
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-int            E_(OpenAudio)    ( vlc_object_t *p_this );
-void           E_(CloseAudio)   ( vlc_object_t *p_this );
+int            OpenAudio    ( vlc_object_t *p_this );
+void           CloseAudio   ( vlc_object_t *p_this );
 static int     GetBufInfo       ( aout_instance_t * );
 static void    Play             ( aout_instance_t * );
-static int     QNXaoutThread    ( aout_instance_t * );
+static void*   QNXaoutThread    ( vlc_object_t * );
 
 /*****************************************************************************
  * Open : creates a handle and opens an alsa device
  *****************************************************************************
  * This function opens an alsa device, through the alsa API
  *****************************************************************************/
-int E_(OpenAudio)( vlc_object_t *p_this )
+int OpenAudio( vlc_object_t *p_this )
 {
     aout_instance_t *p_aout = (aout_instance_t *)p_this;
     int i_ret;
@@ -100,7 +101,7 @@ int E_(OpenAudio)( vlc_object_t *p_this )
                                               PLUGIN_DISABLE_MMAP ) ) < 0 )
     {
         msg_Err( p_aout, "unable to disable mmap (%s)", snd_strerror(i_ret) );
-        E_(CloseAudio)( p_this );
+        CloseAudio( p_this );
         free( p_aout->output.p_sys );
         return -1;
     }
@@ -118,7 +119,7 @@ int E_(OpenAudio)( vlc_object_t *p_this )
     {
         msg_Err( p_aout, "unable to get plugin info (%s)",
                          snd_strerror( i_ret ) );
-        E_(CloseAudio)( p_this );
+        CloseAudio( p_this );
         free( p_aout->output.p_sys );
         return -1;
     }
@@ -157,7 +158,7 @@ int E_(OpenAudio)( vlc_object_t *p_this )
                                          &pp ) ) < 0 )
     {
         msg_Err( p_aout, "unable to set parameters (%s)", snd_strerror(i_ret) );
-        E_(CloseAudio)( p_this );
+        CloseAudio( p_this );
         free( p_aout->output.p_sys );
         return -1;
     }
@@ -168,17 +169,17 @@ int E_(OpenAudio)( vlc_object_t *p_this )
     {
         msg_Err( p_aout, "unable to prepare channel (%s)",
                          snd_strerror( i_ret ) );
-        E_(CloseAudio)( p_this );
+        CloseAudio( p_this );
         free( p_aout->output.p_sys );
         return -1;
     }
 
     /* Create audio thread and wait for its readiness. */
     if( vlc_thread_create( p_aout, "aout", QNXaoutThread,
-                           VLC_THREAD_PRIORITY_OUTPUT, VLC_FALSE ) )
+                           VLC_THREAD_PRIORITY_OUTPUT, false ) )
     {
-        msg_Err( p_aout, "cannot create QNX audio thread (%s)", strerror(errno) );
-        E_(CloseAudio)( p_this );
+        msg_Err( p_aout, "cannot create QNX audio thread (%m)" );
+        CloseAudio( p_this );
         free( p_aout->output.p_sys );
         return -1;
     }
@@ -238,12 +239,12 @@ static void Play( aout_instance_t *p_aout )
 /*****************************************************************************
  * CloseAudio: close the audio device
  *****************************************************************************/
-void E_(CloseAudio) ( vlc_object_t *p_this )
+void CloseAudio ( vlc_object_t *p_this )
 {
     aout_instance_t *p_aout = (aout_instance_t *)p_this;
     int i_ret;
 
-    p_aout->b_die = 1;
+    vlc_object_kill( p_aout );
     vlc_thread_join( p_aout );
 
     if( ( i_ret = snd_pcm_close( p_aout->output.p_sys->p_pcm_handle ) ) < 0 )
@@ -260,15 +261,16 @@ void E_(CloseAudio) ( vlc_object_t *p_this )
 /*****************************************************************************
  * QNXaoutThread: asynchronous thread used to DMA the data to the device
  *****************************************************************************/
-static int QNXaoutThread( aout_instance_t * p_aout )
+static void* QNXaoutThread( vlc_object_t *p_this )
 {
+    aout_instance_t * p_aout = (aout_instance_t*)p_this;
     struct aout_sys_t * p_sys = p_aout->output.p_sys;
 
-    while ( !p_aout->b_die )
+    while ( vlc_object_alive (p_aout) )
     {
         aout_buffer_t * p_buffer;
         int i_tmp, i_size;
-        byte_t * p_bytes;
+        uint8_t * p_bytes;
 
         if ( p_aout->output.output.i_format != VLC_FOURCC('s','p','d','i') )
         {
@@ -284,11 +286,11 @@ static int QNXaoutThread( aout_instance_t * p_aout )
                       * p_aout->output.output.i_frame_length;
             next_date += mdate();
 
-            p_buffer = aout_OutputNextBuffer( p_aout, next_date, VLC_FALSE );
+            p_buffer = aout_OutputNextBuffer( p_aout, next_date, false );
         }
         else
         {
-            p_buffer = aout_OutputNextBuffer( p_aout, 0, VLC_TRUE );
+            p_buffer = aout_OutputNextBuffer( p_aout, 0, true );
         }
 
         if ( p_buffer != NULL )
@@ -310,7 +312,7 @@ static int QNXaoutThread( aout_instance_t * p_aout )
 
         if( i_tmp < 0 )
         {
-            msg_Err( p_aout, "write failed (%s)", strerror(errno) );
+            msg_Err( p_aout, "write failed (%m)" );
         }
 
         if ( p_buffer != NULL )
@@ -319,6 +321,6 @@ static int QNXaoutThread( aout_instance_t * p_aout )
         }
     }
 
-    return 0;
+    return NULL;
 }
 

@@ -2,7 +2,7 @@
  * vout_aa.c: Aa video output display method for testing purposes
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 4120a0bdf232aed14a83ed5d66aa87e73a324de4 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -25,14 +25,17 @@
  * Preamble
  *****************************************************************************/
 #include <errno.h>                                                 /* ENOMEM */
-#include <stdlib.h>                                                /* free() */
-#include <string.h>                                            /* strerror() */
 
 #include <aalib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
+#include <vlc_interface.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -52,10 +55,10 @@ static void SetPalette     ( vout_thread_t *, uint16_t *, uint16_t *, uint16_t *
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_shortname( _("ASCII Art"));
+    set_shortname( N_("ASCII Art"));
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_description( _("ASCII-art video output") );
+    set_description( N_("ASCII-art video output") );
     set_capability( "video output", 10 );
     add_shortcut( "aalib" );
     set_callbacks( Create, Destroy );
@@ -87,10 +90,7 @@ static int Create( vlc_object_t *p_this )
     /* Allocate structure */
     p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
         return( 1 );
-    }
 
     /* Don't parse any options, but take $AAOPTS into account */
     aa_parseoptions( NULL, NULL, NULL, NULL );

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * vout.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: 04a54ba55257340da737239162c891cdaf1357bf $
+ * Copyright (C) 2001-2007 the VideoLAN team
+ * $Id$
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -14,7 +14,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -25,6 +25,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#import "misc.h"
 /*****************************************************************************
  * VLCEmbeddedList interface
  *****************************************************************************/
@@ -54,6 +55,7 @@
     NSRect        * s_frame;
 
     NSView <VLCVoutViewResetting> * o_view;
+
     vout_thread_t * p_real_vout;
     id              o_window;
 }
@@ -71,7 +73,7 @@
 - (id)getWindow;
 
 + (id)getVoutView: (vout_thread_t *)p_vout subView: (NSView *) view
-                            frame: (NSRect *) s_frame;
+            frame: (NSRect *) s_frame;
 + (vout_thread_t *)getRealVout: (vout_thread_t *)p_vout;
 
 - (void)enterFullscreen;
@@ -98,6 +100,7 @@
 @interface VLCEmbeddedVoutView : VLCVoutView
 {
     BOOL b_used;
+    id o_embeddedwindow;
 }
 
 - (void)setUsed: (BOOL)b_new_used;
@@ -106,39 +109,23 @@
 @end
 
 /*****************************************************************************
- * VLCDetachedEmbeddedView interface
- *****************************************************************************/
-
-@interface VLCDetachedEmbeddedVoutView : VLCEmbeddedVoutView
-{
-    id o_embeddedwindow;
-}
-
-@end
-
-/*****************************************************************************
  * VLCVoutWindow interface
  *****************************************************************************/
-@interface VLCVoutWindow : NSWindow
+@interface VLCVoutWindow : VLCWindow
 {
     vout_thread_t * p_vout;
     VLCVoutView   * o_view;
     NSRect        * s_frame;
 
-    vout_thread_t * p_real_vout;
-    vlc_bool_t      b_init_ok;
-    vlc_bool_t      b_black;
-    vlc_bool_t      b_embedded;
+    bool      b_init_ok;
+    BOOL      fullscreen;
+    NSRect    initialFrame;
 }
 
 - (id) initWithVout: (vout_thread_t *) p_vout view: (VLCVoutView *) view
                      frame: (NSRect *) s_frame;
-- (id)initReal: (id) sender;
-- (void)close;
-- (void)closeWindow;
-- (id)closeReal: (id) sender;
+- (id)initMainThread: (id) sender;
+- (void)leaveFullscreen;
+- (void)enterFullscreen;
 - (id)getVoutView;
-
-- (BOOL)windowShouldClose:(id)sender;
-
 @end

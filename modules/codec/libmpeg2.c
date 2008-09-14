@@ -2,7 +2,7 @@
  * libmpeg2.c: mpeg2 video decoder module making use of libmpeg2.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: df6eba1b96c31b5e56503faf7ace09a30898ade3 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -25,19 +25,18 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <mpeg2dec/mpeg2.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
+#include <vlc_codec.h>
 
-#include "vout_synchro.h"
+#include <mpeg2.h>
 
-/* Aspect ratio (ISO/IEC 13818-2 section 6.3.3, table 6-3) */
-#define AR_SQUARE_PICTURE       1                           /* square pixels */
-#define AR_4_3_PICTURE          2                        /* 4:3 picture (TV) */
-#define AR_16_9_PICTURE         3              /* 16:9 picture (wide screen) */
-#define AR_221_1_PICTURE        4                  /* 2.21:1 picture (movie) */
+#include <vlc_codec_synchro.h>
 
 /*****************************************************************************
  * decoder_sys_t : libmpeg2 decoder descriptor
@@ -49,7 +48,7 @@ struct decoder_sys_t
      */
     mpeg2dec_t          *p_mpeg2dec;
     const mpeg2_info_t  *p_info;
-    vlc_bool_t          b_skip;
+    bool                b_skip;
 
     /*
      * Input properties
@@ -60,18 +59,18 @@ struct decoder_sys_t
     mtime_t          i_current_dts;
     int              i_current_rate;
     picture_t *      p_picture_to_destroy;
-    vlc_bool_t       b_garbage_pic;
-    vlc_bool_t       b_after_sequence_header; /* is it the next frame after
+    bool             b_garbage_pic;
+    bool             b_after_sequence_header; /* is it the next frame after
                                                * the sequence header ?    */
-    vlc_bool_t       b_slice_i;             /* intra-slice refresh stream */
-    vlc_bool_t       b_second_field;
+    bool             b_slice_i;             /* intra-slice refresh stream */
+    bool             b_second_field;
 
-    vlc_bool_t       b_preroll;
+    bool             b_preroll;
 
     /*
      * Output properties
      */
-    vout_synchro_t *p_synchro;
+    decoder_synchro_t *p_synchro;
     int            i_aspect;
     int            i_sar_num;
     int            i_sar_den;
@@ -94,7 +93,7 @@ static void GetAR( decoder_t *p_dec );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("MPEG I/II video decoder (using libmpeg2)") );
+    set_description( N_("MPEG I/II video decoder (using libmpeg2)") );
     set_capability( "decoder", 150 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_VCODEC );
@@ -115,8 +114,6 @@ static int OpenDecoder( vlc_object_t *p_this )
         p_dec->fmt_in.i_codec != VLC_FOURCC('m','p','g','1') &&
         /* Pinnacle hardware-mpeg1 */
         p_dec->fmt_in.i_codec != VLC_FOURCC('P','I','M','1') &&
-        /* ATI Video */
-        p_dec->fmt_in.i_codec != VLC_FOURCC('V','C','R','2') &&
         p_dec->fmt_in.i_codec != VLC_FOURCC('m','p','2','v') &&
         p_dec->fmt_in.i_codec != VLC_FOURCC('m','p','g','2') &&
         p_dec->fmt_in.i_codec != VLC_FOURCC('h','d','v','2') )
@@ -127,10 +124,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     /* Initialize the thread properties */
     memset( p_sys, 0, sizeof(decoder_sys_t) );
@@ -146,26 +140,26 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->b_slice_i  = 0;
     p_sys->b_second_field = 0;
     p_sys->b_skip     = 0;
-    p_sys->b_preroll = VLC_FALSE;
+    p_sys->b_preroll = false;
 
 #if defined( __i386__ ) || defined( __x86_64__ )
-    if( p_dec->p_libvlc->i_cpu & CPU_CAPABILITY_MMX )
+    if( vlc_CPU() & CPU_CAPABILITY_MMX )
     {
         i_accel |= MPEG2_ACCEL_X86_MMX;
     }
 
-    if( p_dec->p_libvlc->i_cpu & CPU_CAPABILITY_3DNOW )
+    if( vlc_CPU() & CPU_CAPABILITY_3DNOW )
     {
         i_accel |= MPEG2_ACCEL_X86_3DNOW;
     }
 
-    if( p_dec->p_libvlc->i_cpu & CPU_CAPABILITY_MMXEXT )
+    if( vlc_CPU() & CPU_CAPABILITY_MMXEXT )
     {
         i_accel |= MPEG2_ACCEL_X86_MMXEXT;
     }
 
 #elif defined( __powerpc__ ) || defined( __ppc__ ) || defined( __ppc64__ )
-    if( p_dec->p_libvlc->i_cpu & CPU_CAPABILITY_ALTIVEC )
+    if( vlc_CPU() & CPU_CAPABILITY_ALTIVEC )
     {
         i_accel |= MPEG2_ACCEL_PPC_ALTIVEC;
     }
@@ -229,7 +223,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 p_sys->p_info->sequence &&
                 p_sys->p_info->sequence->width != (unsigned)-1 )
             {
-                vout_SynchroReset( p_sys->p_synchro );
+                decoder_SynchroReset( p_sys->p_synchro );
                 if( p_sys->p_info->current_fbuf != NULL
                     && p_sys->p_info->current_fbuf->id != NULL )
                 {
@@ -241,7 +235,10 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                     uint8_t *buf[3];
                     buf[0] = buf[1] = buf[2] = NULL;
                     if( (p_pic = GetNewPicture( p_dec, buf )) == NULL )
+                    {
+                        p_block->i_buffer = 0;
                         break;
+                    }
                     mpeg2_set_buf( p_sys->p_mpeg2dec, buf, p_pic );
                     mpeg2_stride( p_sys->p_mpeg2dec, p_pic->p[Y_PLANE].i_pitch );
                 }
@@ -249,23 +246,23 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
                 if ( p_sys->b_slice_i )
                 {
-                    vout_SynchroNewPicture( p_sys->p_synchro,
+                    decoder_SynchroNewPicture( p_sys->p_synchro,
                         I_CODING_TYPE, 2, 0, 0, p_sys->i_current_rate,
                         p_sys->p_info->sequence->flags & SEQ_FLAG_LOW_DELAY );
-                    vout_SynchroDecode( p_sys->p_synchro );
-                    vout_SynchroEnd( p_sys->p_synchro, I_CODING_TYPE, 0 );
+                    decoder_SynchroDecode( p_sys->p_synchro );
+                    decoder_SynchroEnd( p_sys->p_synchro, I_CODING_TYPE, 0 );
                 }
             }
 
             if( p_block->i_flags & BLOCK_FLAG_PREROLL )
             {
-                p_sys->b_preroll = VLC_TRUE;
+                p_sys->b_preroll = true;
             }
             else if( p_sys->b_preroll )
             {
-                p_sys->b_preroll = VLC_FALSE;
+                p_sys->b_preroll = false;
                 /* Reset synchro */
-                vout_SynchroReset( p_sys->p_synchro );
+                decoder_SynchroReset( p_sys->p_synchro );
             }
 
 #ifdef PIC_FLAG_PTS
@@ -294,7 +291,8 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             p_block->i_buffer = 0;
             break;
 
-#ifdef STATE_SEQUENCE_MODIFIED
+#if MPEG2_RELEASE >= MPEG2_VERSION (0, 5, 0)
+
         case STATE_SEQUENCE_MODIFIED:
             GetAR( p_dec );
             break;
@@ -331,9 +329,9 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             if( p_sys->p_synchro )
             {
-                vout_SynchroRelease( p_sys->p_synchro );
+                decoder_SynchroRelease( p_sys->p_synchro );
             }
-            p_sys->p_synchro = vout_SynchroInit( p_dec,
+            p_sys->p_synchro = decoder_SynchroInit( p_dec,
                 (uint32_t)((uint64_t)1001000000 * 27 /
                 p_sys->p_info->sequence->frame_period) );
             p_sys->b_after_sequence_header = 1;
@@ -356,11 +354,11 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             {
                 /* Intra-slice refresh. Simulate a blank I picture. */
                 msg_Dbg( p_dec, "intra-slice refresh stream" );
-                vout_SynchroNewPicture( p_sys->p_synchro,
+                decoder_SynchroNewPicture( p_sys->p_synchro,
                     I_CODING_TYPE, 2, 0, 0, p_sys->i_current_rate,
                     p_sys->p_info->sequence->flags & SEQ_FLAG_LOW_DELAY );
-                vout_SynchroDecode( p_sys->p_synchro );
-                vout_SynchroEnd( p_sys->p_synchro, I_CODING_TYPE, 0 );
+                decoder_SynchroDecode( p_sys->p_synchro );
+                decoder_SynchroEnd( p_sys->p_synchro, I_CODING_TYPE, 0 );
                 p_sys->b_slice_i = 1;
             }
             p_sys->b_after_sequence_header = 0;
@@ -399,11 +397,11 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             /* If nb_fields == 1, it is a field picture, and it will be
              * followed by another field picture for which we won't call
-             * vout_SynchroNewPicture() because this would have other 
+             * decoder_SynchroNewPicture() because this would have other
              * problems, so we take it into account here.
              * This kind of sucks, but I didn't think better. --Meuuh
              */
-            vout_SynchroNewPicture( p_sys->p_synchro,
+            decoder_SynchroNewPicture( p_sys->p_synchro,
                 p_sys->p_info->current_picture->flags & PIC_MASK_CODING_TYPE,
                 p_sys->p_info->current_picture->nb_fields == 1 ? 2 :
                 p_sys->p_info->current_picture->nb_fields, i_pts, i_dts,
@@ -414,7 +412,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 !(p_sys->b_slice_i
                    && ((p_sys->p_info->current_picture->flags
                          & PIC_MASK_CODING_TYPE) == P_CODING_TYPE))
-                   && !vout_SynchroChoose( p_sys->p_synchro,
+                   && !decoder_SynchroChoose( p_sys->p_synchro,
                               p_sys->p_info->current_picture->flags
                                 & PIC_MASK_CODING_TYPE,
                               /*p_sys->p_vout->render_time*/ 0 /*FIXME*/,
@@ -422,14 +420,14 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             {
                 mpeg2_skip( p_sys->p_mpeg2dec, 1 );
                 p_sys->b_skip = 1;
-                vout_SynchroTrash( p_sys->p_synchro );
+                decoder_SynchroTrash( p_sys->p_synchro );
                 mpeg2_set_buf( p_sys->p_mpeg2dec, buf, NULL );
             }
             else
             {
                 mpeg2_skip( p_sys->p_mpeg2dec, 0 );
                 p_sys->b_skip = 0;
-                vout_SynchroDecode( p_sys->p_synchro );
+                decoder_SynchroDecode( p_sys->p_synchro );
 
                 if( (p_pic = GetNewPicture( p_dec, buf )) == NULL )
                 {
@@ -438,7 +436,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 }
 
                 mpeg2_set_buf( p_sys->p_mpeg2dec, buf, p_pic );
-                mpeg2_stride( p_sys->p_mpeg2dec, p_pic->p[Y_PLANE].i_pitch );
+        mpeg2_stride( p_sys->p_mpeg2dec, p_pic->p[Y_PLANE].i_pitch );
             }
         }
         break;
@@ -451,7 +449,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             {
                 p_pic = (picture_t *)p_sys->p_info->display_fbuf->id;
 
-                vout_SynchroEnd( p_sys->p_synchro,
+                decoder_SynchroEnd( p_sys->p_synchro,
                             p_sys->p_info->display_picture->flags
                              & PIC_MASK_CODING_TYPE,
                             p_sys->b_garbage_pic );
@@ -459,7 +457,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
                 if ( p_sys->p_picture_to_destroy != p_pic )
                 {
-                    p_pic->date = vout_SynchroDate( p_sys->p_synchro );
+                    p_pic->date = decoder_SynchroDate( p_sys->p_synchro );
                 }
                 else
                 {
@@ -476,7 +474,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             }
 
             /* For still frames */
-            if( state == STATE_END && p_pic ) p_pic->b_force = VLC_TRUE;
+            if( state == STATE_END && p_pic ) p_pic->b_force = true;
 
             if( p_pic )
             {
@@ -500,7 +498,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                ( ( p_sys->p_info->current_picture->flags &
                    PIC_MASK_CODING_TYPE) != B_CODING_TYPE ) )
             {
-                if( p_sys->p_synchro ) vout_SynchroReset( p_sys->p_synchro );
+                if( p_sys->p_synchro ) decoder_SynchroReset( p_sys->p_synchro );
             }
             mpeg2_skip( p_sys->p_mpeg2dec, 1 );
             p_sys->b_skip = 1;
@@ -536,11 +534,11 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             if( p_sys->b_slice_i )
             {
-                vout_SynchroNewPicture( p_sys->p_synchro,
+                decoder_SynchroNewPicture( p_sys->p_synchro,
                         I_CODING_TYPE, 2, 0, 0, p_sys->i_current_rate,
                         p_sys->p_info->sequence->flags & SEQ_FLAG_LOW_DELAY );
-                vout_SynchroDecode( p_sys->p_synchro );
-                vout_SynchroEnd( p_sys->p_synchro, I_CODING_TYPE, 0 );
+                decoder_SynchroDecode( p_sys->p_synchro );
+                decoder_SynchroEnd( p_sys->p_synchro, I_CODING_TYPE, 0 );
             }
             break;
         }
@@ -562,7 +560,7 @@ static void CloseDecoder( vlc_object_t *p_this )
     decoder_t *p_dec = (decoder_t *)p_this;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    if( p_sys->p_synchro ) vout_SynchroRelease( p_sys->p_synchro );
+    if( p_sys->p_synchro ) decoder_SynchroRelease( p_sys->p_synchro );
 
     if( p_sys->p_mpeg2dec ) mpeg2_close( p_sys->p_mpeg2dec );
 
@@ -632,31 +630,6 @@ static void GetAR( decoder_t *p_dec )
     if( p_dec->fmt_in.video.i_aspect )
     {
         p_sys->i_aspect = p_dec->fmt_in.video.i_aspect;
-        if( p_sys->i_aspect <= AR_221_1_PICTURE )
-        switch( p_sys->i_aspect )
-        {
-        case AR_4_3_PICTURE:
-            p_sys->i_aspect = VOUT_ASPECT_FACTOR * 4 / 3;
-            p_sys->i_sar_num = p_sys->p_info->sequence->picture_height * 4;
-            p_sys->i_sar_den = p_sys->p_info->sequence->picture_width * 3;
-            break;
-        case AR_16_9_PICTURE:
-            p_sys->i_aspect = VOUT_ASPECT_FACTOR * 16 / 9;
-            p_sys->i_sar_num = p_sys->p_info->sequence->picture_height * 16;
-            p_sys->i_sar_den = p_sys->p_info->sequence->picture_width * 9;
-            break;
-        case AR_221_1_PICTURE:
-            p_sys->i_aspect = VOUT_ASPECT_FACTOR * 221 / 100;
-            p_sys->i_sar_num = p_sys->p_info->sequence->picture_height * 221;
-            p_sys->i_sar_den = p_sys->p_info->sequence->picture_width * 100;
-            break;
-        case AR_SQUARE_PICTURE:
-            p_sys->i_aspect = VOUT_ASPECT_FACTOR *
-                           p_sys->p_info->sequence->picture_width /
-                           p_sys->p_info->sequence->picture_height;
-            p_sys->i_sar_num = p_sys->i_sar_den = 1;
-            break;
-        }
     }
     else
     {

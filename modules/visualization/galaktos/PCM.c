@@ -2,7 +2,7 @@
  * PCM.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: d00a9aa37e153051fd538c8a32bcd44143db0d14 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -33,6 +33,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <inttypes.h>
+
+#include "fftsg.h"
 
 double **PCMd;    //data structure to store PCM data  PCM[channels][maxsamples]
 int maxsamples;   //size of PCM buffer

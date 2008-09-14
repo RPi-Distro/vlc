@@ -2,7 +2,7 @@
  * qte.cpp : QT Embedded plugin for vlc
  *****************************************************************************
  * Copyright (C) 1998-2003 the VideoLAN team
- * $Id: e5149efeb92600ff7a058c2e3906ba9f8a161992 $
+ * $Id: 2968e073d9ccc7330e6c369e93c87397de8aa87f $
  *
  * Authors: Gerald Hansink <gerald.hansink@ordina.nl>
  *          Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
@@ -37,12 +37,15 @@
 extern "C"
 {
 #include <errno.h>                                                 /* ENOMEM */
-#include <stdlib.h>                                                /* free() */
-#include <string.h>                                                /* strerror() */
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_interface.h>
+#include <vlc_vout.h>
 
 #ifdef HAVE_MACHINE_PARAM_H
     /* BSD */
@@ -100,7 +103,7 @@ static void FreePicture    ( vout_thread_t *, picture_t * );
 
 static void ToggleFullScreen      ( vout_thread_t * );
 
-static void RunQtThread( event_thread_t *p_event );
+static void* RunQtThread( vlc_object_t *p_this );
 } /* extern "C" */
 
 /*****************************************************************************
@@ -114,7 +117,7 @@ vlc_module_begin();
     set_subcategory( SUBCAT_VIDEO_VOUT );
 //    add_category_hint( N_("QT Embedded"), NULL );
 //    add_string( "qte-display", "landscape", NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT);
-    set_description( _("QT Embedded video output") );
+    set_description( N_("QT Embedded video output") );
     set_capability( "video output", 70 );
     add_shortcut( "qte" );
     set_callbacks( Open, Close);
@@ -140,10 +143,7 @@ static int Open( vlc_object_t *p_this )
     p_vout->p_sys = (struct vout_sys_t*) malloc( sizeof( struct vout_sys_t ) );
 
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
         return( 1 );
-    }
 
     p_vout->pf_init    = Init;
     p_vout->pf_end     = End;
@@ -153,7 +153,7 @@ static int Open( vlc_object_t *p_this )
 
 #ifdef NEED_QTE_MAIN
     p_vout->p_sys->p_qte_main =
-        module_Need( p_this, "gui-helper", "qte", VLC_TRUE );
+        module_Need( p_this, "gui-helper", "qte", true );
     if( p_vout->p_sys->p_qte_main == NULL )
     {
         free( p_vout->p_sys );
@@ -185,11 +185,11 @@ static void Close ( vlc_object_t *p_this )
         vlc_object_detach( p_vout->p_sys->p_event );
 
         /* Kill RunQtThread */
-        p_vout->p_sys->p_event->b_die = VLC_TRUE;
+        vlc_object_kill( p_vout->p_sys->p_event );
         CloseDisplay(p_vout);
 
         vlc_thread_join( p_vout->p_sys->p_event );
-        vlc_object_destroy( p_vout->p_sys->p_event );
+        vlc_object_release( p_vout->p_sys->p_event );
     }
 
 #ifdef NEED_QTE_MAIN
@@ -388,14 +388,15 @@ static int Manage( vout_thread_t *p_vout )
 
     /* Pointer change */
 //    if( ! p_vout->p_sys->b_cursor_autohidden &&
-//        ( mdate() - p_vout->p_sys->i_lastmoved > 2000000 ) )
+//        ( mdate() - p_vout->p_sys->i_lastmoved >
+//            p_vout->p_sys->i_mouse_hide_timeout ) )
 //    {
 //        /* Hide the mouse automatically */
 //        p_vout->p_sys->b_cursor_autohidden = 1;
 //        SDL_ShowCursor( 0 );
 //    }
 //
-//    if( p_vout->p_vlc->b_die )
+//    if( !vlc_object_alive (p_vout->p_libvlc) )
 //        p_vout->p_sys->bRunning = FALSE;
 
     return 0;
@@ -514,7 +515,7 @@ static int OpenDisplay( vout_thread_t *p_vout )
 
     /* Initializations */
 #if 1 /* FIXME: I need an event queue to handle video output size changes. */
-    p_vout->b_fullscreen = VLC_TRUE;
+    p_vout->b_fullscreen = true;
 #endif
 
     /* Set main window's size */
@@ -536,10 +537,10 @@ static int OpenDisplay( vout_thread_t *p_vout )
     /* create thread to exec the qpe application */
     if ( vlc_thread_create( p_vout->p_sys->p_event, "QT Embedded Thread",
                             RunQtThread,
-                            VLC_THREAD_PRIORITY_OUTPUT, VLC_TRUE) )
+                            VLC_THREAD_PRIORITY_OUTPUT, true) )
     {
         msg_Err( p_vout, "cannot create QT Embedded Thread" );
-        vlc_object_destroy( p_vout->p_sys->p_event );
+        vlc_object_release( p_vout->p_sys->p_event );
         p_vout->p_sys->p_event = NULL;
         return -1;
     }
@@ -587,8 +588,9 @@ static void CloseDisplay( vout_thread_t *p_vout )
 /*****************************************************************************
  * main loop of qtapplication
  *****************************************************************************/
-static void RunQtThread(event_thread_t *p_event)
+static void* RunQtThread( vlc_object_t *p_this )
 {
+    event_thread_t *p_event = (event_thread_t *)p_this;
     msg_Dbg( p_event->p_vout, "RunQtThread starting" );
 
 #ifdef NEED_QTE_MAIN
@@ -640,10 +642,10 @@ static void RunQtThread(event_thread_t *p_event)
         p_event->p_vout->p_sys->bRunning = TRUE;
 
 #ifdef NEED_QTE_MAIN
-        while(!p_event->b_die && p_event->p_vout->p_sys->bRunning)
+        while(vlc_object_alive (p_event) && p_event->p_vout->p_sys->bRunning)
               {
                /* Check if we are asked to exit */
-           if( p_event->b_die )
+           if( !vlc_object_alive (p_event) )
                break;
 
                msleep(100);
@@ -667,5 +669,6 @@ static void RunQtThread(event_thread_t *p_event)
 #endif
 
     msg_Dbg( p_event->p_vout, "RunQtThread terminating" );
+    return NULL;
 }
 

@@ -2,7 +2,7 @@
  * vlc_es.h: Elementary stream formats descriptions
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 9130f27943f6c304a2e779a8a86246fc70ea6178 $
+ * $Id: ad45797bfa591d6a4f77f7d33900f7dabdde1bc1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,8 +21,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_ES_H
-#define _VLC_ES_H 1
+#ifndef VLC_ES_H
+#define VLC_ES_H 1
+
+/* FIXME: i'm not too sure about this include but it fixes compilation of
+ * video chromas -- dionoea */
+#include "vlc_common.h"
 
 /**
  * \file
@@ -39,6 +43,25 @@ struct video_palette_t
     int i_entries;      /**< to keep the compatibility with ffmpeg's palette */
     uint8_t palette[256][4];                   /**< 4-byte RGBA/YUVA palette */
 };
+
+/**
+ * audio replay gain description
+ */
+#define AUDIO_REPLAY_GAIN_MAX (2)
+#define AUDIO_REPLAY_GAIN_TRACK (0)
+#define AUDIO_REPLAY_GAIN_ALBUM (1)
+typedef struct
+{
+    /* true if we have the peak value */
+    bool pb_peak[AUDIO_REPLAY_GAIN_MAX];
+    /* peak value where 1.0 means full sample value */
+    float      pf_peak[AUDIO_REPLAY_GAIN_MAX];
+
+    /* true if we have the gain value */
+    bool pb_gain[AUDIO_REPLAY_GAIN_MAX];
+    /* gain value in dB */
+    float      pf_gain[AUDIO_REPLAY_GAIN_MAX];
+} audio_replay_gain_t;
 
 /**
  * audio format description
@@ -69,9 +92,10 @@ struct audio_format_t
      */
 
     /* FIXME ? (used by the codecs) */
-    unsigned i_channels;
-    unsigned i_blockalign;
-    unsigned i_bitspersample;
+    unsigned     i_bitspersample;
+    unsigned     i_blockalign;
+    uint8_t      i_channels; /* must be <=32 */
+    uint8_t      i_flavor;
 };
 
 #ifdef WORDS_BIGENDIAN
@@ -106,6 +130,9 @@ struct video_format_t
     unsigned int i_frame_rate_base;              /**< frame rate denominator */
 
     int i_rmask, i_gmask, i_bmask;          /**< color masks for RGB chroma */
+    int i_rrshift, i_lrshift;
+    int i_rgshift, i_lgshift;
+    int i_rbshift, i_lbshift;
     video_palette_t *p_palette;              /**< video palette from demuxer */
 };
 
@@ -169,13 +196,14 @@ struct es_format_t
     int             i_extra_languages;
     extra_languages_t *p_extra_languages;
 
-    audio_format_t audio;
+    audio_format_t  audio;
+    audio_replay_gain_t audio_replay_gain;
     video_format_t video;
     subs_format_t  subs;
 
     unsigned int   i_bitrate;
 
-    vlc_bool_t     b_packetized; /* wether the data is packetized
+    bool     b_packetized; /* wether the data is packetized
                                     (ie. not truncated) */
     int     i_extra;
     void    *p_extra;
@@ -183,114 +211,36 @@ struct es_format_t
 };
 
 /* ES Categories */
-#define UNKNOWN_ES      0x00
-#define VIDEO_ES        0x01
-#define AUDIO_ES        0x02
-#define SPU_ES          0x03
-#define NAV_ES          0x04
-
-static inline void es_format_Init( es_format_t *fmt,
-                                   int i_cat, vlc_fourcc_t i_codec )
+enum es_format_category_e
 {
-    fmt->i_cat                  = i_cat;
-    fmt->i_codec                = i_codec;
-    fmt->i_id                   = -1;
-    fmt->i_group                = 0;
-    fmt->i_priority             = 0;
-    fmt->psz_language           = NULL;
-    fmt->psz_description        = NULL;
+    UNKNOWN_ES = 0x00,
+    VIDEO_ES   = 0x01,
+    AUDIO_ES   = 0x02,
+    SPU_ES     = 0x03,
+    NAV_ES     = 0x04,
+};
 
-    fmt->i_extra_languages      = 0;
-    fmt->p_extra_languages      = NULL;
+/**
+ * This function will fill all RGB shift from RGB masks.
+ */
+VLC_EXPORT( void, video_format_FixRgb, ( video_format_t * ) );
 
-    memset( &fmt->audio, 0, sizeof(audio_format_t) );
-    memset( &fmt->video, 0, sizeof(video_format_t) );
-    memset( &fmt->subs, 0, sizeof(subs_format_t) );
+/**
+ * This funtion will initialize a es_format_t structure.
+ */
+VLC_EXPORT( void, es_format_Init, ( es_format_t *, int i_cat, vlc_fourcc_t i_codec ) );
 
-    fmt->b_packetized           = VLC_TRUE;
-    fmt->i_bitrate              = 0;
-    fmt->i_extra                = 0;
-    fmt->p_extra                = NULL;
-}
+/**
+ * This functions will copy a es_format_t.
+ */
+VLC_EXPORT( int, es_format_Copy, ( es_format_t *p_dst, const es_format_t *p_src ) );
 
-static inline void es_format_Copy( es_format_t *dst, es_format_t *src )
-{
-    int i;
-    memcpy( dst, src, sizeof( es_format_t ) );
-    if( src->psz_language )
-         dst->psz_language = strdup( src->psz_language );
-    if( src->psz_description )
-        dst->psz_description = strdup( src->psz_description );
-    if( src->i_extra > 0 )
-    {
-        dst->i_extra = src->i_extra;
-        dst->p_extra = malloc( src->i_extra );
-        memcpy( dst->p_extra, src->p_extra, src->i_extra );
-    }
-    else
-    {
-        dst->i_extra = 0;
-        dst->p_extra = NULL;
-    }
-
-    if( src->subs.psz_encoding )
-        dst->subs.psz_encoding = strdup( src->subs.psz_encoding );
-
-    if( src->video.p_palette )
-    {
-        dst->video.p_palette =
-            (video_palette_t*)malloc( sizeof( video_palette_t ) );
-        memcpy( dst->video.p_palette, src->video.p_palette,
-                sizeof( video_palette_t ) );
-    }
-
-    dst->i_extra_languages = src->i_extra_languages;
-    if( dst->i_extra_languages )
-        dst->p_extra_languages = (extra_languages_t*)
-            malloc(dst->i_extra_languages * sizeof(*dst->p_extra_languages ));
-    for( i = 0; i < dst->i_extra_languages; i++ ) {
-        if( src->p_extra_languages[i].psz_language )
-            dst->p_extra_languages[i].psz_language = strdup(src->p_extra_languages[i].psz_language);
-        else
-            dst->p_extra_languages[i].psz_language = NULL;
-        if( src->p_extra_languages[i].psz_description )
-            dst->p_extra_languages[i].psz_description = strdup(src->p_extra_languages[i].psz_description);
-        else
-            dst->p_extra_languages[i].psz_description = NULL;
-    }
-}
-
-static inline void es_format_Clean( es_format_t *fmt )
-{
-    if( fmt->psz_language ) free( fmt->psz_language );
-    fmt->psz_language = NULL;
-
-    if( fmt->psz_description ) free( fmt->psz_description );
-    fmt->psz_description = NULL;
-
-    if( fmt->i_extra > 0 ) free( fmt->p_extra );
-    fmt->i_extra = 0; fmt->p_extra = NULL;
-
-    if( fmt->video.p_palette )
-        free( fmt->video.p_palette );
-    fmt->video.p_palette = NULL;
-
-    if( fmt->subs.psz_encoding ) free( fmt->subs.psz_encoding );
-    fmt->subs.psz_encoding = NULL;
-
-    if( fmt->i_extra_languages && fmt->p_extra_languages ) {
-        int i = 0;
-        while( i < fmt->i_extra_languages ) {
-            if( fmt->p_extra_languages[i].psz_language )
-                free( fmt->p_extra_languages[i].psz_language );
-            if( fmt->p_extra_languages[i].psz_description )
-                free( fmt->p_extra_languages[i].psz_description );
-            i++;
-        }
-        free(fmt->p_extra_languages);
-    }
-    fmt->i_extra_languages = 0;
-    fmt->p_extra_languages = NULL;
-}
+/**
+ * This function will clean up a es_format_t and relasing all associated
+ * resources.
+ * You can call it multiple times on the same structure.
+ */
+VLC_EXPORT( void, es_format_Clean, ( es_format_t *fmt ) );
 
 #endif
+

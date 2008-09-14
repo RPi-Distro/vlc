@@ -2,7 +2,7 @@
  * wall.c : Wall video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 the VideoLAN team
- * $Id: 384f5f399ee17ecefd374ad297c36595e1a34307 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -24,11 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
 
 #include "filter_common.h"
 
@@ -66,22 +69,28 @@ static int  SendEvents( vlc_object_t *, char const *,
 #define ASPECT_LONGTEXT N_("Aspect ratio of the individual displays " \
    "building the wall.")
 
+#define CFG_PREFIX "wall-"
+
 vlc_module_begin();
-    set_description( _("Wall video filter") );
-    set_shortname( _("Image wall" ));
+    set_description( N_("Wall video filter") );
+    set_shortname( N_("Image wall" ));
     set_capability( "video filter", 0 );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VFILTER );
 
-    add_integer( "wall-cols", 3, NULL, COLS_TEXT, COLS_LONGTEXT, VLC_FALSE );
-    add_integer( "wall-rows", 3, NULL, ROWS_TEXT, ROWS_LONGTEXT, VLC_FALSE );
-    add_string( "wall-active", NULL, NULL, ACTIVE_TEXT, ACTIVE_LONGTEXT,
-                 VLC_TRUE );
-    add_string( "wall-element-aspect", "4:3", NULL, ASPECT_TEXT, ASPECT_LONGTEXT, VLC_FALSE );
+    add_integer( CFG_PREFIX "cols", 3, NULL, COLS_TEXT, COLS_LONGTEXT, false );
+    add_integer( CFG_PREFIX "rows", 3, NULL, ROWS_TEXT, ROWS_LONGTEXT, false );
+    add_string( CFG_PREFIX "active", NULL, NULL, ACTIVE_TEXT, ACTIVE_LONGTEXT,
+                 true );
+    add_string( CFG_PREFIX "element-aspect", "4:3", NULL, ASPECT_TEXT, ASPECT_LONGTEXT, false );
 
     add_shortcut( "wall" );
     set_callbacks( Create, Destroy );
 vlc_module_end();
+
+static const char *const ppsz_filter_options[] = {
+    "cols", "rows", "active", "element-aspect", NULL
+};
 
 /*****************************************************************************
  * vout_sys_t: Wall video output method descriptor
@@ -96,7 +105,7 @@ struct vout_sys_t
     int    i_vout;
     struct vout_list_t
     {
-        vlc_bool_t b_active;
+        bool b_active;
         int i_width;
         int i_height;
         int i_left;
@@ -138,10 +147,7 @@ static int Create( vlc_object_t *p_this )
     /* Allocate structure */
     p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
         return VLC_ENOMEM;
-    }
 
     p_vout->pf_init = Init;
     p_vout->pf_end = End;
@@ -150,9 +156,12 @@ static int Create( vlc_object_t *p_this )
     p_vout->pf_display = NULL;
     p_vout->pf_control = Control;
 
+    config_ChainParse( p_vout, CFG_PREFIX, ppsz_filter_options,
+                       p_vout->p_cfg );
+
     /* Look what method was requested */
-    p_vout->p_sys->i_col = config_GetInt( p_vout, "wall-cols" );
-    p_vout->p_sys->i_row = config_GetInt( p_vout, "wall-rows" );
+    p_vout->p_sys->i_col = var_CreateGetInteger( p_vout, CFG_PREFIX "cols" );
+    p_vout->p_sys->i_row = var_CreateGetInteger( p_vout, CFG_PREFIX "rows" );
 
     p_vout->p_sys->i_col = __MAX( 1, __MIN( 15, p_vout->p_sys->i_col ) );
     p_vout->p_sys->i_row = __MAX( 1, __MIN( 15, p_vout->p_sys->i_row ) );
@@ -165,12 +174,12 @@ static int Create( vlc_object_t *p_this )
                                      sizeof(struct vout_list_t) );
     if( p_vout->p_sys->pp_vout == NULL )
     {
-        msg_Err( p_vout, "out of memory" );
         free( p_vout->p_sys );
         return VLC_ENOMEM;
     }
 
-    psz_method_tmp = psz_method = config_GetPsz( p_vout, "wall-active" );
+    psz_method_tmp =
+    psz_method = var_CreateGetNonEmptyString( p_vout, CFG_PREFIX "active" );
 
     /* If no trailing vout are specified, take them all */
     if( psz_method == NULL )
@@ -231,7 +240,7 @@ static int Init( vout_thread_t *p_vout )
     int i_index, i_row, i_col, i_width, i_height, i_left, i_top;
     unsigned int i_target_width,i_target_height;
     picture_t *p_pic;
-    video_format_t fmt = {0};
+    video_format_t fmt;
     int i_aspect = 4*VOUT_ASPECT_FACTOR/3;
     int i_align = 0;
     unsigned int i_hstart, i_hend, i_vstart, i_vend;
@@ -240,7 +249,10 @@ static int Init( vout_thread_t *p_vout )
     int i_vstart_rounded = 0, i_hstart_rounded = 0;
     char *psz_aspect;
 
-    psz_aspect = config_GetPsz( p_vout, "wall-element-aspect" );
+    memset( &fmt, 0, sizeof(video_format_t) );
+
+    psz_aspect = var_CreateGetNonEmptyString( p_vout,
+                                              CFG_PREFIX "element-aspect" );
     if( psz_aspect && *psz_aspect )
     {
         char *psz_parser = strchr( psz_aspect, ':' );
@@ -254,9 +266,8 @@ static int Init( vout_thread_t *p_vout )
         {
             msg_Warn( p_vout, "invalid aspect ratio specification" );
         }
-        free( psz_aspect );
     }
-    
+    free( psz_aspect );
 
     i_xpos = var_CreateGetInteger( p_vout, "video-x" );
     i_ypos = var_CreateGetInteger( p_vout, "video-y" );
@@ -284,16 +295,16 @@ static int Init( vout_thread_t *p_vout )
     w1 &= ~1;
     h1 = w1 * VOUT_ASPECT_FACTOR / i_aspect&~1;
     h1 &= ~1;
-    
+
     h2 = p_vout->output.i_height / p_vout->p_sys->i_row&~1;
     h2 &= ~1;
     w2 = h2 * i_aspect / VOUT_ASPECT_FACTOR&~1;
     w2 &= ~1;
-    
+
     if ( h1 * p_vout->p_sys->i_row < p_vout->output.i_height )
     {
         unsigned int i_tmp;
-        i_target_width = w2;        
+        i_target_width = w2;
         i_target_height = h2;
         i_vstart = 0;
         i_vend = p_vout->output.i_height;
@@ -325,7 +336,7 @@ static int Init( vout_thread_t *p_vout )
 
     p_vout->p_sys->i_vout = 0;
     msg_Dbg( p_vout, "target window (%d,%d)-(%d,%d)", i_hstart,i_vstart,i_hend,i_vend );
-    
+
 
     i_top = 0;
     i_height = 0;
@@ -345,7 +356,7 @@ static int Init( vout_thread_t *p_vout )
             else if( ( i_col + 1 ) * i_target_width < i_hstart ||
                      ( i_col * i_target_width ) > i_hend )
             {
-                i_width = 0;                
+                i_width = 0;
             }
             else
             {
@@ -360,7 +371,7 @@ static int Init( vout_thread_t *p_vout )
                     i_align |= VOUT_ALIGN_RIGHT;
                 }
             }
-            
+
             if( i_row * i_target_height >= i_vstart &&
                 ( i_row + 1 ) * i_target_height <= i_vend )
             {
@@ -387,7 +398,7 @@ static int Init( vout_thread_t *p_vout )
             }
             if( i_height == 0 || i_width == 0 )
             {
-                p_vout->p_sys->pp_vout[ p_vout->p_sys->i_vout ].b_active = VLC_FALSE;
+                p_vout->p_sys->pp_vout[ p_vout->p_sys->i_vout ].b_active = false;
             }
 
             p_vout->p_sys->pp_vout[ p_vout->p_sys->i_vout ].i_width = i_width;
@@ -440,12 +451,16 @@ static void End( vout_thread_t *p_vout )
 {
     int i_index;
 
+    DEL_PARENT_CALLBACKS( SendEventsToChild );
+
     /* Free the fake output buffers we allocated */
     for( i_index = I_OUTPUTPICTURES ; i_index ; )
     {
         i_index--;
         free( PP_OUTPUTPICTURE[ i_index ]->p_data_orig );
     }
+
+    RemoveAllVout( p_vout );
 }
 
 /*****************************************************************************
@@ -457,9 +472,6 @@ static void Destroy( vlc_object_t *p_this )
 {
     vout_thread_t *p_vout = (vout_thread_t *)p_this;
 
-    RemoveAllVout( p_vout );
-
-    DEL_PARENT_CALLBACKS( SendEventsToChild );
 
     free( p_vout->p_sys->pp_vout );
     free( p_vout->p_sys );
@@ -501,7 +513,7 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
                                     0, 0, 0 )
                    ) == NULL )
             {
-                if( p_vout->b_die || p_vout->b_error )
+                if( !vlc_object_alive (p_vout) || p_vout->b_error )
                 {
                     vout_DestroyPicture(
                         p_vout->p_sys->pp_vout[ i_vout ].p_vout, p_outpic );
@@ -533,7 +545,7 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
 
                 while( p_in < p_in_end )
                 {
-                    p_vout->p_vlc->pf_memcpy( p_out, p_in, i_copy_pitch );
+                    vlc_memcpy( p_out, p_in, i_copy_pitch );
                     p_in += i_in_pitch;
                     p_out += i_out_pitch;
                 }
@@ -572,10 +584,7 @@ static void RemoveAllVout( vout_thread_t *p_vout )
              DEL_CALLBACKS(
                  p_vout->p_sys->pp_vout[ p_vout->p_sys->i_vout ].p_vout,
                  SendEvents );
-             vlc_object_detach(
-                 p_vout->p_sys->pp_vout[ p_vout->p_sys->i_vout ].p_vout );
-             vout_Destroy(
-                 p_vout->p_sys->pp_vout[ p_vout->p_sys->i_vout ].p_vout );
+             vout_CloseAndRelease( p_vout->p_sys->pp_vout[ p_vout->p_sys->i_vout ].p_vout );
          }
     }
 }
@@ -586,6 +595,7 @@ static void RemoveAllVout( vout_thread_t *p_vout )
 static int SendEvents( vlc_object_t *p_this, char const *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *_p_vout )
 {
+    VLC_UNUSED(oldval);
     vout_thread_t *p_vout = (vout_thread_t *)_p_vout;
     int i_vout;
     vlc_value_t sentval = newval;
@@ -629,6 +639,7 @@ static int SendEvents( vlc_object_t *p_this, char const *psz_var,
 static int SendEventsToChild( vlc_object_t *p_this, char const *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
+    VLC_UNUSED(p_data); VLC_UNUSED(oldval);
     vout_thread_t *p_vout = (vout_thread_t *)p_this;
     int i_row, i_col, i_vout = 0;
 

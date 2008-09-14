@@ -2,7 +2,7 @@
  * PlayListWindow.h: BeOS interface window class prototype
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: eb800d5e776f1298fe880708c328f688381afbeb $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Tony Castley <tcastley@mail.powerup.com.au>
@@ -23,7 +23,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
+#if 0
 #ifndef BEOS_PLAY_LIST_WINDOW_H
 #define BEOS_PLAY_LIST_WINDOW_H
 
@@ -36,46 +36,47 @@ class PlaylistView;
 class PlayListWindow : public BWindow
 {
  public:
-								PlayListWindow(BRect frame,
-											   const char* name,
-											   InterfaceWindow* mainWindow,
-											   intf_thread_t *p_interface );
-	virtual						~PlayListWindow();
+                                PlayListWindow(BRect frame,
+                                               const char* name,
+                                               InterfaceWindow* mainWindow,
+                                               intf_thread_t *p_interface );
+    virtual                        ~PlayListWindow();
 
-								// BWindow
-	virtual	bool				QuitRequested();
-	virtual	void				MessageReceived(BMessage *message);
-	virtual	void				FrameResized(float width, float height);
+                                // BWindow
+    virtual    bool                QuitRequested();
+    virtual    void                MessageReceived(BMessage *message);
+    virtual    void                FrameResized(float width, float height);
 
-								// PlayListWindow
-			void				ReallyQuit();
-			void				UpdatePlaylist( bool rebuild = false );
+                                // PlayListWindow
+            void                ReallyQuit();
+            void                UpdatePlaylist( bool rebuild = false );
 
-			void				SetDisplayMode( uint32 mode );
-			uint32				DisplayMode() const;
+            void                SetDisplayMode( uint32 mode );
+            uint32                DisplayMode() const;
 
- private:	
-			void				_CheckItemsEnableState() const;
-			void				_SetMenuItemEnabled( BMenuItem* item,
-													 bool enabled ) const;
+ private:    
+            void                _CheckItemsEnableState() const;
+            void                _SetMenuItemEnabled( BMenuItem* item,
+                                                     bool enabled ) const;
 
-			PlaylistView *      fListView;
-			BView *             fBackgroundView;
-			BMenuBar *          fMenuBar;
-			InterfaceWindow *   fMainWindow;
+            PlaylistView *      fListView;
+            BView *             fBackgroundView;
+            BMenuBar *          fMenuBar;
+            InterfaceWindow *   fMainWindow;
 
-			BMenuItem*			fSelectAllMI;
-			BMenuItem*			fSelectNoneMI;
-			BMenuItem*			fSortReverseMI;
-			BMenuItem*			fSortNameMI;
-			BMenuItem*			fSortPathMI;
-			BMenuItem*			fRandomizeMI;
-			BMenuItem*			fRemoveMI;
-			BMenuItem*			fRemoveAllMI;
-			BMenu*				fViewMenu;
-			
-			intf_thread_t *     p_intf;
+            BMenuItem*            fSelectAllMI;
+            BMenuItem*            fSelectNoneMI;
+            BMenuItem*            fSortReverseMI;
+            BMenuItem*            fSortNameMI;
+            BMenuItem*            fSortPathMI;
+            BMenuItem*            fRandomizeMI;
+            BMenuItem*            fRemoveMI;
+            BMenuItem*            fRemoveAllMI;
+            BMenu*                fViewMenu;
+            
+            intf_thread_t *     p_intf;
 };
 
-#endif	// BEOS_PLAY_LIST_WINDOW_H
+#endif    // BEOS_PLAY_LIST_WINDOW_H
+#endif
 

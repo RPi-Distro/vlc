@@ -3,9 +3,9 @@
  *         using libcdio, libvcd and libvcdinfo
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: 8f7d033faf56c3d978764e15a406e82b0384809c $
+ * $Id$
  *
- * Authors: Rocky Bernstein <rocky@panix.com> 
+ * Authors: Rocky Bernstein <rocky@panix.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,11 +42,11 @@ typedef struct
 #endif
 
     int                     i_still_time;
-    vlc_bool_t              b_end_of_cell;
+    bool              b_end_of_cell;
 
 #if FINISHED
     vcdplay_event_t         event;
-    vcdplay_ctrl_t          control;   
+    vcdplay_ctrl_t          control;
     vcdplay_highlight_t     hli;
 #endif
 

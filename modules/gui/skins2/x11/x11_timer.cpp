@@ -2,7 +2,7 @@
  * x11_timer.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: fb83bd403fad144a9769f9802b16563d41af7157 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -26,6 +26,7 @@
 
 #include <unistd.h>
 #include <fcntl.h>
+#include <poll.h>
 
 #include "x11_timer.hpp"
 #include "x11_factory.hpp"
@@ -146,20 +147,13 @@ void X11TimerLoop::waitNextTimer()
 
 bool X11TimerLoop::sleep( int delay )
 {
-    // Timeout delay
-    struct timeval tv;
-    tv.tv_sec = delay / 1000;
-    tv.tv_usec = 1000 * (delay % 1000);
-
-    // FD set for select()
-    fd_set rfds;
-    FD_ZERO( &rfds );
-    FD_SET( m_connectionNumber, &rfds );
+    struct pollfd ufd;
+    memset( &ufd, 0, sizeof (ufd) );
+    ufd.fd = m_connectionNumber;
+    ufd.events = POLLIN;
 
     // Wait for an X11 event, or timeout
-    int num = select( m_connectionNumber + 1, &rfds, NULL, NULL, &tv );
-
-    return ( num > 0 );
+    return poll( &ufd, 1, delay ) > 0;
 }
 
 

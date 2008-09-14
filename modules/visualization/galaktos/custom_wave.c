@@ -2,7 +2,7 @@
  * custom_wave.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: a294cf5b1043d36e349a13471c9b93ee82c39b68 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -22,11 +22,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-
-
 #include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "common.h"
 #include "fatal.h"
@@ -63,14 +61,14 @@ extern int mesh_i;
 custom_wave_t * interface_wave = NULL;
 int interface_id = 0;
 extern preset_t * active_preset;
-inline void eval_custom_wave_init_conds(custom_wave_t * custom_wave);
+static inline void eval_custom_wave_init_conds(custom_wave_t * custom_wave);
 void load_unspec_init_cond(param_t * param);
 void destroy_per_point_eqn_tree(splaytree_t * tree);
 void destroy_param_db_tree(splaytree_t * tree);
 void destroy_per_frame_eqn_tree(splaytree_t * tree);
 void destroy_per_frame_init_eqn_tree(splaytree_t * tree);
 void destroy_init_cond_tree(splaytree_t * tree);
-inline void evalPerPointEqn(per_point_eqn_t * per_point_eqn);
+static inline void evalPerPointEqn(per_point_eqn_t * per_point_eqn);
 
 custom_wave_t * new_custom_wave(int id) {
 
@@ -606,18 +604,9 @@ custom_wave_t * find_custom_wave(int id, preset_t * preset, int create_flag) {
   return custom_wave;
 }
 
-inline void evalCustomWaveInitConditions() {
-  splay_traverse(eval_custom_wave_init_conds, active_preset->custom_wave_tree);
-}
-
-inline void eval_custom_wave_init_conds(custom_wave_t * custom_wave) {
-  splay_traverse(eval_init_cond, custom_wave->init_cond_tree);
-  splay_traverse(eval_init_cond, custom_wave->per_frame_init_eqn_tree);
-}
-
 /* Interface function. Makes another custom wave the current
    concern for per frame / point equations */
-inline custom_wave_t * nextCustomWave() {
+custom_wave_t * nextCustomWave() {
 
   if ((interface_wave = splay_find(&interface_id, active_preset->custom_wave_tree)) == NULL) {
     interface_id = 0;
@@ -632,7 +621,7 @@ inline custom_wave_t * nextCustomWave() {
 }
 
 
-inline void evalPerPointEqns() { 
+void evalPerPointEqns() { 
 
   int x;
 
@@ -658,7 +647,7 @@ inline void evalPerPointEqns() {
 }
 
 /* Evaluates a per point equation for the current custom wave given by interface_wave ptr */
-inline void evalPerPointEqn(per_point_eqn_t * per_point_eqn) {
+static inline void evalPerPointEqn(per_point_eqn_t * per_point_eqn) {
   
   
   int samples, size;
@@ -741,4 +730,8 @@ void load_unspec_init_cond(param_t * param) {
     
   }
  
+}
+
+void evalCustomWaveInitConditions() {
+  splay_traverse(eval_custom_wave_init_conds, active_preset->custom_wave_tree);
 }

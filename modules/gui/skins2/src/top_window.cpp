@@ -2,7 +2,7 @@
  * top_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a0c55aa0cd8ecd3c86591dca4c2b333c2982156e $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -58,6 +58,10 @@ TopWindow::TopWindow( intf_thread_t *pIntf, int left, int top,
 {
     // Register as a moving window
     m_rWindowManager.registerWindow( *this );
+
+    // Create the "maximized" variable and register it in the manager
+    m_pVarMaximized = new VarBoolImpl( pIntf );
+    VarManager::instance( pIntf )->registerVar( VariablePtr( m_pVarMaximized ) );
 }
 
 
@@ -253,7 +257,7 @@ void TopWindow::processEvent( EvtKey &rEvtKey )
             val.i_int |= KEY_MODIFIER_SHIFT;
         }
 
-        var_Set( getIntf()->p_vlc, "key-pressed", val );
+        var_Set( getIntf()->p_libvlc, "key-pressed", val );
     }
 
     // Always store the modifier, which can be needed for scroll events
@@ -298,7 +302,7 @@ void TopWindow::processEvent( EvtScroll &rEvtScroll )
         // Add the modifiers
         val.i_int |= m_currModifier;
 
-        var_Set( getIntf()->p_vlc, "key-pressed", val );
+        var_Set( getIntf()->p_libvlc, "key-pressed", val );
     }
 }
 

@@ -2,7 +2,7 @@
  * cmd_snapshot.cpp
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 8bf7d613319adc4396eda007f34e6c16fed841d0 $
+ * $Id$
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -22,8 +22,8 @@
  *****************************************************************************/
 
 #include "cmd_snapshot.hpp"
-#include <vlc/vout.h>
-
+#include <vlc_input.h>
+#include <vlc_vout.h>
 
 void CmdSnapshot::execute()
 {

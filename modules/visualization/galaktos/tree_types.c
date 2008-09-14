@@ -2,7 +2,7 @@
  * tree_types.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: f2d2497c438b7a511fd125d32cb6ce4ea5949286 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -22,8 +22,7 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-
-
+#define _GNU_SOURCE
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>

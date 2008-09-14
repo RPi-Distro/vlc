@@ -2,10 +2,10 @@
  * vlcproc.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9f0ecea61ee14e4739c5b6fc8618290d8cd6f395 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
- *          Olivier Teuli�e <ipkiss@via.ecp.fr>
+ *          Olivier Teulière <ipkiss@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,6 @@
 #include <set>
 
 #include "../vars/equalizer.hpp"
-#include "../vars/playlist.hpp"
 #include "../vars/playtree.hpp"
 #include "../vars/time.hpp"
 #include "../vars/volume.hpp"
@@ -39,6 +38,7 @@
 class OSTimer;
 class VarBool;
 struct aout_instance_t;
+struct vout_window_t;
 
 
 /// Singleton object handling VLC internal state and playlist
@@ -51,9 +51,6 @@ class VlcProc: public SkinObject
 
         /// Delete the instance of VlcProc
         static void destroy( intf_thread_t *pIntf );
-
-        /// Getter for the playlist variable
-        Playlist &getPlaylistVar() { return *((Playlist*)m_cPlaylist.get()); }
 
         /// Getter for the playtree variable
         Playtree &getPlaytreeVar() { return *((Playtree*)m_cPlaytree.get()); }
@@ -104,9 +101,7 @@ class VlcProc: public SkinObject
     private:
         /// Timer to call manage() regularly (via doManage())
         OSTimer *m_pTimer;
-        /// Playlist variable
-        VariablePtr m_cPlaylist;
-        /// Playtree variable FIXME
+        /// Playtree variable
         VariablePtr m_cPlaytree;
         VariablePtr m_cVarRandom;
         VariablePtr m_cVarLoop;
@@ -214,6 +209,7 @@ class VlcProc: public SkinObject
                                   vlc_value_t oldVal, vlc_value_t newVal,
                                   void *pParam );
 
+    public: /* FIXME: these used to be private for a reason */
         /// Callback to request a vout window
         static void *getWindow( intf_thread_t *pIntf, vout_thread_t *pVout,
                                 int *pXHint, int *pYHint,
@@ -224,8 +220,9 @@ class VlcProc: public SkinObject
         static void releaseWindow( intf_thread_t *pIntf, void *pWindow );
 
         /// Callback to change a vout window
-        static int controlWindow( intf_thread_t *pIntf, void *pWindow,
+        static int controlWindow( struct vout_window_t *pWnd,
                                   int query, va_list args );
+    private: /* end of FIXME */
 
         /// Callback for equalizer-bands variable
         static int onEqBandsChange( vlc_object_t *pObj, const char *pVariable,

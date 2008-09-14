@@ -2,7 +2,7 @@
  * i420_ymga.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 835fb389188861627897f6e99fd3d3d25059e53a $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,12 +24,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <errno.h>                                                 /* ENOMEM */
-#include <string.h>                                            /* strerror() */
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <errno.h>                                                 /* ENOMEM */
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_filter.h>
+#include <vlc_vout.h>
 
 #define SRC_FOURCC  "I420,IYUV,YV12"
 #define DEST_FOURCC "YMGA"
@@ -38,18 +43,19 @@
  * Local and extern prototypes.
  *****************************************************************************/
 static int  Activate   ( vlc_object_t * );
-static void I420_YMGA  ( vout_thread_t *, picture_t *, picture_t * );
+static void I420_YMGA  ( filter_t *, picture_t *, picture_t * );
+static picture_t *I420_YMGA_Filter( filter_t *, picture_t * );
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
 #if defined (MODULE_NAME_IS_i420_ymga)
-    set_description( _("Conversions from " SRC_FOURCC " to " DEST_FOURCC) );
-    set_capability( "chroma", 80 );
+    set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) );
+    set_capability( "video filter2", 80 );
 #elif defined (MODULE_NAME_IS_i420_ymga_mmx)
-    set_description( _("MMX conversions from " SRC_FOURCC " to " DEST_FOURCC) );
-    set_capability( "chroma", 100 );
+    set_description( N_("MMX conversions from " SRC_FOURCC " to " DEST_FOURCC) );
+    set_capability( "video filter2", 100 );
     add_requirement( MMX );
 #endif
     set_callbacks( Activate, NULL );
@@ -62,22 +68,27 @@ vlc_module_end();
  *****************************************************************************/
 static int Activate( vlc_object_t *p_this )
 {
-    vout_thread_t *p_vout = (vout_thread_t *)p_this;
+    filter_t *p_filter = (filter_t *)p_this;
 
-    if( p_vout->render.i_width & 1 || p_vout->render.i_height & 1 )
+    if( p_filter->fmt_in.video.i_width & 1
+     || p_filter->fmt_in.video.i_height & 1 )
     {
         return -1;
     }
 
-    switch( p_vout->render.i_chroma )
+    if( p_filter->fmt_in.video.i_width != p_filter->fmt_out.video.i_width
+     || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height )
+        return -1;
+
+    switch( p_filter->fmt_in.video.i_chroma )
     {
         case VLC_FOURCC('Y','V','1','2'):
         case VLC_FOURCC('I','4','2','0'):
         case VLC_FOURCC('I','Y','U','V'):
-            switch( p_vout->output.i_chroma )
+            switch( p_filter->fmt_out.video.i_chroma )
             {
                 case VLC_FOURCC('Y','M','G','A'):
-                    p_vout->chroma.pf_convert = I420_YMGA;
+                    p_filter->pf_video_filter = I420_YMGA_Filter;
                     break;
 
                 default:
@@ -94,11 +105,13 @@ static int Activate( vlc_object_t *p_this )
 
 /* Following functions are local */
 
+VIDEO_FILTER_WRAPPER( I420_YMGA )
+
 /*****************************************************************************
  * I420_YMGA: planar YUV 4:2:0 to Matrox's planar/packed YUV 4:2:0
  *****************************************************************************/
-static void I420_YMGA( vout_thread_t *p_vout, picture_t *p_source,
-                                              picture_t *p_dest )
+static void I420_YMGA( filter_t *p_filter, picture_t *p_source,
+                                           picture_t *p_dest )
 {
     uint8_t *p_uv = p_dest->U_PIXELS;
     uint8_t *p_u = p_source->U_PIXELS;
@@ -107,8 +120,8 @@ static void I420_YMGA( vout_thread_t *p_vout, picture_t *p_source,
     int i_x;
 
     /* Copy the Y part */
-    p_vout->p_vlc->pf_memcpy( p_dest->Y_PIXELS, p_source->Y_PIXELS,
-                 p_dest->p[Y_PLANE].i_pitch * p_dest->p[Y_PLANE].i_visible_lines );
+    vlc_memcpy( p_dest->Y_PIXELS, p_source->Y_PIXELS,
+                p_dest->p[Y_PLANE].i_pitch * p_dest->p[Y_PLANE].i_visible_lines );
 
     /* Copy the U:V part */
     for( i_x = p_dest->p[U_PLANE].i_pitch * p_dest->p[U_PLANE].i_visible_lines / 64;

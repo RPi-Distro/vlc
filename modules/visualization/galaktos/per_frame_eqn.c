@@ -2,7 +2,7 @@
  * per_frame_eqn.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 5fffd6313eed67903e98e9a413db6d928f92f291 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -22,14 +22,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
 #include "fatal.h"
 #include "common.h"
+#include "param.h"
 #include "per_frame_eqn_types.h"
 #include "per_frame_eqn.h"
 

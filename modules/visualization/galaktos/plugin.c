@@ -2,7 +2,7 @@
  * plugin.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: d945adf596b22e22b8a6f8f6e1629729d8f45b16 $
+ * $Id: 729390c7a046f012ce6b1f06c1c8040c7db44551 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Implementation of the winamp plugin MilkDrop
@@ -34,9 +34,9 @@
 #include "video_init.h"
 #include <GL/glu.h>
 
-#include <vlc/input.h>
-#include <vlc/vout.h>
-#include "aout_internal.h"
+#include <vlc_input.h>
+#include <vlc_playlist.h>
+#include <vlc_plugin.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -45,7 +45,7 @@ static int  Open         ( vlc_object_t * );
 static void Close        ( vlc_object_t * );
 
 vlc_module_begin();
-    set_description( _("GaLaktos visualization plugin") );
+    set_description( N_("GaLaktos visualization plugin") );
     set_capability( "visualization", 0 );
     set_callbacks( Open, Close );
     add_shortcut( "galaktos" );
@@ -63,7 +63,7 @@ typedef struct aout_filter_sys_t
 static void DoWork   ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
                        aout_buffer_t * );
 
-static void Thread   ( vlc_object_t * );
+static void* Thread   ( vlc_object_t * );
 
 static char *TitleGet( vlc_object_t * );
 
@@ -121,12 +121,12 @@ static int Open( vlc_object_t *p_this )
     p_thread->psz_title = TitleGet( VLC_OBJECT( p_filter ) );
 
     if( vlc_thread_create( p_thread, "galaktos update thread", Thread,
-                           VLC_THREAD_PRIORITY_LOW, VLC_FALSE ) )
+                           VLC_THREAD_PRIORITY_LOW, false ) )
     {
         msg_Err( p_filter, "cannot lauch galaktos thread" );
-        if( p_thread->psz_title ) free( p_thread->psz_title );
+        free( p_thread->psz_title );
         vlc_object_detach( p_thread );
-        vlc_object_destroy( p_thread );
+        vlc_object_release( p_thread );
         free( p_sys );
         return VLC_EGENERIC;
     }
@@ -188,7 +188,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
 /*****************************************************************************
  * Thread:
  *****************************************************************************/
-static void Thread( vlc_object_t *p_this )
+static void* Thread( vlc_object_t *p_this )
 {
     galaktos_thread_t *p_thread = (galaktos_thread_t*)p_this;
 
@@ -202,10 +202,7 @@ static void Thread( vlc_object_t *p_this )
     p_thread->p_opengl =
         (vout_thread_t *)vlc_object_create( p_this, VLC_OBJECT_OPENGL );
     if( p_thread->p_opengl == NULL )
-    {
-        msg_Err( p_thread, "out of memory" );
-        return;
-    }
+        return NULL;
     vlc_object_attach( p_thread->p_opengl, p_this );
 
     /* Initialize vout parameters */
@@ -217,8 +214,8 @@ static void Thread( vlc_object_t *p_this )
     p_thread->p_opengl->render.i_width = p_thread->i_width;
     p_thread->p_opengl->render.i_height = p_thread->i_width;
     p_thread->p_opengl->render.i_aspect = VOUT_ASPECT_FACTOR;
-    p_thread->p_opengl->b_scale = VLC_TRUE;
-    p_thread->p_opengl->b_fullscreen = VLC_FALSE;
+    p_thread->p_opengl->b_scale = true;
+    p_thread->p_opengl->b_fullscreen = false;
     p_thread->p_opengl->i_alignment = 0;
     p_thread->p_opengl->fmt_in.i_sar_num = 1;
     p_thread->p_opengl->fmt_in.i_sar_den = 1;
@@ -230,8 +227,8 @@ static void Thread( vlc_object_t *p_this )
     {
         msg_Err( p_thread, "unable to initialize OpenGL" );
         vlc_object_detach( p_thread->p_opengl );
-        vlc_object_destroy( p_thread->p_opengl );
-        return;
+        vlc_object_release( p_thread->p_opengl );
+        return NULL;
     }
 
     p_thread->p_opengl->pf_init( p_thread->p_opengl );
@@ -241,27 +238,25 @@ static void Thread( vlc_object_t *p_this )
 
     timestart=mdate()/1000;
 
-    while( !p_thread->b_die )
+    while( vlc_object_alive (p_thread) )
     {
         mspf = 1000 / 60;
         if( galaktos_update( p_thread ) == 1 )
         {
-            p_thread->b_die = 1;
+            vlc_object_kill( p_thread );
         }
-        if( p_thread->psz_title )
-        {
-            free( p_thread->psz_title );
-            p_thread->psz_title = NULL;
-        }
+        free( p_thread->psz_title );
+        p_thread->psz_title = NULL;
 
+        mtime_t now = mdate();
         if (++count%100==0)
         {
-            realfps=100/((mdate()/1000-fpsstart)/1000);
+            realfps=100/((now/1000-fpsstart)/1000);
  //           printf("%f\n",realfps);
-            fpsstart=mdate()/1000;
+            fpsstart=now/1000;
         }
         //framerate limiter
-        timed=mspf-(mdate()/1000-timestart);
+        timed=mspf-(now/1000-timestart);
       //   printf("%d,%d\n",time,mspf);
         if (timed>0) msleep(1000*timed);
     //     printf("Limiter %d\n",(mdate()/1000-timestart));
@@ -271,7 +266,8 @@ static void Thread( vlc_object_t *p_this )
     /* Free the openGL provider */
     module_Unneed( p_thread->p_opengl, p_thread->p_module );
     vlc_object_detach( p_thread->p_opengl );
-    vlc_object_destroy( p_thread->p_opengl );
+    vlc_object_release( p_thread->p_opengl );
+    return NULL;
 }
 
 /*****************************************************************************
@@ -283,7 +279,7 @@ static void Close( vlc_object_t *p_this )
     aout_filter_sys_t *p_sys = p_filter->p_sys;
 
     /* Stop galaktos Thread */
-    p_sys->p_thread->b_die = VLC_TRUE;
+    vlc_object_kill( p_sys->p_thread );
 
     galaktos_done( p_sys->p_thread );
 
@@ -291,7 +287,7 @@ static void Close( vlc_object_t *p_this )
 
     /* Free data */
     vlc_object_detach( p_sys->p_thread );
-    vlc_object_destroy( p_sys->p_thread );
+    vlc_object_release( p_sys->p_thread );
 
     free( p_sys );
 }
@@ -304,7 +300,8 @@ static char *TitleGet( vlc_object_t *p_this )
 
     if( p_input )
     {
-        char *psz = strrchr( p_input->input.p_item->psz_uri, '/' );
+        char *psz_orig = input_item_GetURI( input_GetItem( p_input ) );
+        char *psz = strrchr( psz_orig, '/' );
 
         if( psz )
         {
@@ -312,12 +309,13 @@ static char *TitleGet( vlc_object_t *p_this )
         }
         else
         {
-            psz = p_input->input.p_item->psz_uri;
+            psz = psz_orig;
         }
         if( psz && *psz )
         {
             psz_title = strdup( psz );
         }
+        free( psz_orig );
         vlc_object_release( p_input );
     }
 

@@ -2,7 +2,7 @@
  * parse.c: SPU parser
  *****************************************************************************
  * Copyright (C) 2000-2001, 2005, 2006 the VideoLAN team
- * $Id: 38289c0cc516a7b67e5713db2c6706a893b8de21 $
+ * $Id: de175a3e74831ec8f9d95e366daf6bebdfeb1eb1 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -26,9 +26,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_vout.h>
+#include <vlc_codec.h>
+#include <vlc_input.h>
 
 #include "spudec.h"
 
@@ -61,7 +66,7 @@ static inline unsigned int AddNibble( unsigned int i_code,
  * This function parses the SPU packet and, if valid, sends it to the
  * video output.
  *****************************************************************************/
-subpicture_t * E_(ParsePacket)( decoder_t *p_dec )
+subpicture_t * ParsePacket( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     subpicture_data_t *p_spu_data;
@@ -71,7 +76,7 @@ subpicture_t * E_(ParsePacket)( decoder_t *p_dec )
     p_spu = p_dec->pf_spu_buffer_new( p_dec );
     if( !p_spu ) return NULL;
 
-    p_spu->b_pausable = VLC_TRUE;
+    p_spu->b_pausable = true;
 
     /* Rationale for the "p_spudec->i_rle_size * 4": we are going to
      * expand the RLE stuff so that we won't need to read nibbles later
@@ -79,8 +84,8 @@ subpicture_t * E_(ParsePacket)( decoder_t *p_dec )
      * this stupid interlacing stuff once. */
     p_spu_data = malloc( sizeof(subpicture_data_t) + 4 * p_sys->i_rle_size );
     p_spu_data->p_data = (uint8_t *)p_spu_data + sizeof(subpicture_data_t);
-    p_spu_data->b_palette = VLC_FALSE;
-    p_spu_data->b_auto_crop = VLC_FALSE;
+    p_spu_data->b_palette = false;
+    p_spu_data->b_auto_crop = false;
     p_spu_data->i_y_top_offset = 0;
     p_spu_data->i_y_bottom_offset = 0;
 
@@ -147,9 +152,12 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
     uint8_t i_command = SPU_CMD_END;
     mtime_t date = 0;
 
+    if( !p_spu || !p_spu_data )
+        return VLC_EGENERIC;
+
     /* Initialize the structure */
     p_spu->i_start = p_spu->i_stop = 0;
-    p_spu->b_ephemer = VLC_FALSE;
+    p_spu->b_ephemer = false;
 
     for( i_index = 4 + p_sys->i_rle_size; i_index < p_sys->i_spu_size ; )
     {
@@ -165,9 +173,8 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
 
             /* Get the control sequence date */
             date = (mtime_t)GetWBE( &p_sys->buffer[i_index] ) * 11000;
-            /* FIXME How to access i_rate
-                    * p_spudec->bit_stream.p_pes->i_rate / DEFAULT_RATE;
-            */
+            if( p_sys->i_rate )
+                date = date * p_sys->i_rate / INPUT_RATE_DEFAULT;
 
             /* Next offset */
             i_cur_seq = i_index;
@@ -189,7 +196,7 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
         {
         case SPU_CMD_FORCE_DISPLAY: /* 00 (force displaying) */
             p_spu->i_start = p_spu_data->i_pts + date;
-            p_spu->b_ephemer = VLC_TRUE;
+            p_spu->b_ephemer = true;
             i_index += 1;
             break;
 
@@ -205,7 +212,6 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
             break;
 
         case SPU_CMD_SET_PALETTE:
-
             /* 03xxxx (palette) */
             if( i_index + 3 > p_sys->i_spu_size )
             {
@@ -218,7 +224,7 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
                 unsigned int idx[4];
                 int i;
 
-                p_spu_data->b_palette = VLC_TRUE;
+                p_spu_data->b_palette = true;
 
                 idx[0] = (p_sys->buffer[i_index+1]>>4)&0x0f;
                 idx[1] = (p_sys->buffer[i_index+1])&0x0f;
@@ -273,7 +279,7 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
 
             /* Auto crop fullscreen subtitles */
             if( p_spu->i_height > 250 )
-                p_spu_data->b_auto_crop = VLC_TRUE;
+                p_spu_data->b_auto_crop = true;
 
             i_index += 7;
             break;
@@ -321,7 +327,7 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
         }
 
         /* We need to check for quit commands here */
-        if( p_dec->b_die )
+        if( !vlc_object_alive (p_dec) )
         {
             return VLC_EGENERIC;
         }
@@ -350,13 +356,14 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
     if( !p_spu->i_start )
     {
         msg_Err( p_dec, "no `start display' command" );
+        return VLC_EGENERIC;
     }
 
     if( p_spu->i_stop <= p_spu->i_start && !p_spu->b_ephemer )
     {
         /* This subtitle will live for 5 seconds or until the next subtitle */
         p_spu->i_stop = p_spu->i_start + (mtime_t)500 * 11000;
-        p_spu->b_ephemer = VLC_TRUE;
+        p_spu->b_ephemer = true;
     }
 
     /* Get rid of padding bytes */
@@ -400,7 +407,7 @@ static int ParseRLE( decoder_t *p_dec, subpicture_t * p_spu,
     unsigned int *pi_offset;
 
     /* Cropping */
-    vlc_bool_t b_empty_top = VLC_TRUE;
+    bool b_empty_top = true;
     unsigned int i_skipped_top = 0, i_skipped_bottom = 0;
     unsigned int i_transparent_code = 0;
  
@@ -480,7 +487,7 @@ static int ParseRLE( decoder_t *p_dec, subpicture_t * p_spu,
                     }
                     else
                     {
-                        p_spu_data->b_auto_crop = VLC_FALSE;
+                        p_spu_data->b_auto_crop = false;
                     }
                 }
 
@@ -505,7 +512,7 @@ static int ParseRLE( decoder_t *p_dec, subpicture_t * p_spu,
                     *p_dest++ = i_code;
 
                     /* Valid code means no blank line */
-                    b_empty_top = VLC_FALSE;
+                    b_empty_top = false;
                     i_skipped_bottom = 0;
                 }
             }

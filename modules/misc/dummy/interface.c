@@ -2,7 +2,7 @@
  * intf_dummy.c: dummy interface plugin
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 3b33c4f52f6529b52c8998a36cdf6e64cc515e1c $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,26 +24,25 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-/*****************************************************************************
- * Local prototypes.
- *****************************************************************************/
-static void Run   ( intf_thread_t * );
+#include <vlc_common.h>
+#include <vlc_interface.h>
+
+#include "dummy.h"
 
 /*****************************************************************************
  * Open: initialize dummy interface
  *****************************************************************************/
-int  E_(OpenIntf) ( vlc_object_t *p_this )
+int  OpenIntf ( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t*) p_this;
 
 #ifdef WIN32
-    vlc_bool_t b_quiet;
+    bool b_quiet;
     b_quiet = config_GetInt( p_intf, "dummy-quiet" );
     if( !b_quiet )
         CONSOLE_INTRO_MSG;
@@ -51,20 +50,7 @@ int  E_(OpenIntf) ( vlc_object_t *p_this )
 
     msg_Info( p_intf, "using the dummy interface module..." );
 
-    p_intf->pf_run = Run;
+    p_intf->pf_run = NULL;
 
     return VLC_SUCCESS;
 }
-
-/*****************************************************************************
- * Run: main loop
- *****************************************************************************/
-static void Run( intf_thread_t *p_intf )
-{
-    while( !p_intf->b_die )
-    {
-        /* Wait a bit */
-        msleep( INTF_IDLE_SLEEP );
-    }
-}
-

@@ -2,7 +2,7 @@
  * filter_common.h: Common filter functions
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003 the VideoLAN team
- * $Id: 07ffd4a8f01623c6260348f70aa7e04584b7bee7 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -68,6 +68,7 @@
 static int SetParentVal( vlc_object_t *p_this, char const *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
+    VLC_UNUSED(p_this); VLC_UNUSED(oldval);
     var_Change( (vlc_object_t *)p_data, psz_var, VLC_VAR_SETVALUE,
                  &newval, NULL );
     return VLC_SUCCESS;

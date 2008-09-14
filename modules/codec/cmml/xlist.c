@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2000-2004 the VideoLAN team
  *
- * $Id: 944e2e0c092ed34b67cec3ed7f1a83f253b5e171 $
+ * $Id$
  *
  * Authors: Conrad Parker <Conrad.Parker@csiro.au>
  *          Andre Pang <Andre.Pang@csiro.au>
@@ -24,6 +24,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <stdlib.h>
 
@@ -114,7 +117,7 @@ xlist_append (XList * list, void * data)
 
   last = xlist_tail (list);
   if (last) last->next = l;
-  l->prev = last; 
+  l->prev = last;
   return list;
 }
 
@@ -134,7 +137,7 @@ xlist_add_before (XList * list, void * data, XList * node)
   l->next = node;
   if (p) p->next = l;
   node->prev = l;
-  
+ 
   return list;
 }
 

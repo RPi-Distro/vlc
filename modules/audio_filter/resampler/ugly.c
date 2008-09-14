@@ -2,7 +2,7 @@
  * ugly.c : ugly resampler (changes pitch)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 43ffc3be755aeef92f080f26edf2d86a998d4844 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,12 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include "audio_output.h"
-#include "aout_internal.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -43,7 +45,7 @@ static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("Audio filter for ugly resampling") );
+    set_description( N_("Audio filter for ugly resampling") );
     set_capability( "audio filter", 2 );
     set_category( CAT_AUDIO );
     set_subcategory( SUBCAT_AUDIO_MISC );
@@ -73,7 +75,7 @@ static int Create( vlc_object_t *p_this )
 
     /* We don't want a new buffer to be created because we're not sure we'll
      * actually need to resample anything. */
-    p_filter->b_in_place = VLC_TRUE;
+    p_filter->b_in_place = true;
 
     return VLC_SUCCESS;
 }
@@ -112,7 +114,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
         return;
     }
 
-    p_aout->p_vlc->pf_memcpy( p_in, p_in_buf->p_buffer, p_in_buf->i_nb_bytes );
+    vlc_memcpy( p_in, p_in_buf->p_buffer, p_in_buf->i_nb_bytes );
 
     for( i_out = i_out_nb ; i_out-- ; )
     {

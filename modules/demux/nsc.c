@@ -2,7 +2,7 @@
  * nsc.c: NSC file demux and encoding decoder
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 77ff04d6a89e3b7ee4f6219bcd5afb1b89173e66 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -25,12 +25,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <ctype.h>
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc_playlist.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_demux.h>
+
+#include <ctype.h>
 #define MAX_LINE 16024
 
 /*****************************************************************************
@@ -40,10 +43,10 @@ static int  DemuxOpen  ( vlc_object_t * );
 static void DemuxClose ( vlc_object_t * );
 
 vlc_module_begin();
-    set_description( _("Windows Media NSC metademux") );
+    set_description( N_("Windows Media NSC metademux") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_capability( "demux2", 2 );
+    set_capability( "demux", 3 );
     set_callbacks( DemuxOpen, DemuxClose );
 vlc_module_end();
 
@@ -136,7 +139,7 @@ static int load_byte( unsigned char encoding_type,
     return 0;
 }
 
-char *nscdec( vlc_object_t *p_demux, char* p_encoded )
+static char *nscdec( vlc_object_t *p_demux, char* p_encoded )
 {
     unsigned int i;
     unsigned char tmp;
@@ -147,7 +150,7 @@ char *nscdec( vlc_object_t *p_demux, char* p_encoded )
     vlc_iconv_t conv;
     size_t buf16_size;
     unsigned char *buf16;
-    char *p_buf16;
+    const char *p_buf16;
     size_t buf8_size;
     char *buf8;
     char *p_buf8;
@@ -208,45 +211,41 @@ char *nscdec( vlc_object_t *p_demux, char* p_encoded )
     }
 
     buf16_size = length;
-    buf16 = (unsigned char *)malloc( buf16_size );
+    buf16 = malloc( buf16_size );
     if( buf16 == NULL )
-    {
-        msg_Err( p_demux, "out of memory" );
         return NULL;
-    }
 
     for( i = 0; i < length; i++ )
     {
         if( load_byte( encoding_type, &buf16[ i ], &p_input, &j, &k ) )
         {
             msg_Err( p_demux, "load_byte failed" );
-            free( (void *)buf16 );
+            free( buf16 );
             return NULL;
         }
     }
 
     buf8_size = length;
-    buf8 = (char *)malloc( buf8_size + 1 );
+    buf8 = malloc( buf8_size + 1 );
     if( buf8 == NULL )
     {
-        msg_Err( p_demux, "out of memory" );
-        free( (void *)buf16 );
+        free( buf16 );
         return NULL;
     }
 
     conv = vlc_iconv_open( "UTF-8", "UTF-16LE" );
-    if( conv == (vlc_iconv_t)-1 )
+    if( conv == (vlc_iconv_t)(-1) )
     {
         msg_Err( p_demux, "iconv_open failed" );
-        free( (void *)buf16 );
-        free( (void *)buf8 );
+        free( buf16 );
+        free( buf8 );
         return NULL;
     }
 
-    p_buf8 = &buf8[ 0 ];
-    p_buf16 = (char *)&buf16[ 0 ];
+    p_buf8 = buf8;
+    p_buf16 = (const char *)buf16;
 
-    if( vlc_iconv( conv, &p_buf16, &buf16_size, &p_buf8, &buf8_size ) < 0 )
+    if( vlc_iconv( conv, &p_buf16, &buf16_size, &p_buf8, &buf8_size ) == (size_t)(-1) )
     {
         msg_Err( p_demux, "iconv failed" );
         return NULL;
@@ -258,14 +257,14 @@ char *nscdec( vlc_object_t *p_demux, char* p_encoded )
 
     vlc_iconv_close( conv );
 
-    free( (void *)buf16 );
+    free( buf16 );
     return buf8;
 }
 
 static int DemuxOpen( vlc_object_t * p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
-    byte_t *p_peek;
+    const uint8_t *p_peek;
     int i_size;
 
     /* Lets check the content to see if this is a NSC file */
@@ -319,7 +318,7 @@ static int ParseLine ( demux_t *p_demux, char *psz_line )
     }
     *psz_value = '\0';
     psz_value++;
-    
+ 
     if( !strncasecmp( psz_value, "0x", 2 ) )
     {
         int i_value;
@@ -338,7 +337,7 @@ static int ParseLine ( demux_t *p_demux, char *psz_line )
         if( psz_out )
         {
             msg_Dbg( p_demux, "%s = %s", psz_bol, psz_out );
-            if( psz_out) free( psz_out );
+            free( psz_out );
         }
     }
     return VLC_SUCCESS;
@@ -356,7 +355,7 @@ static int Demux ( demux_t *p_demux )
     while( ( psz_line = stream_ReadLine( p_demux->s ) ) )
     {
         ParseLine( p_demux, psz_line );
-        if( psz_line ) free( psz_line );
+        free( psz_line );
     }
     return VLC_SUCCESS;
 }

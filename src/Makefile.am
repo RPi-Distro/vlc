@@ -3,235 +3,269 @@
 ###############################################################################
 
 AUTOMAKE_OPTIONS = subdir-objects
+SUBDIRS = . test
 
 NULL =
-SUBDIRS =
+EXTRA_DIST = extras/COPYING modules/builtin.h.in \
+	misc/beos_specific.cpp \
+	libvlc.pc.in \
+	vlc-plugin.pc.in \
+	libvlc.sym \
+	libvlccore.sym
 
-EXTRA_DIST = extras/COPYING misc/modules_builtin.h.in
+BUILT_SOURCES = modules/builtin.h misc/revision.c ../include/vlc_about.h
+CLEANFILES = $(BUILT_SOURCES)
 
-BUILT_SOURCES = $(DISTCLEANFILES) $(CLEANFILES)
-DISTCLEANFILES = stamp-api
-CLEANFILES = misc/modules_builtin.h
-MOSTLYCLEANFILES = $(DATA_noinst_libvlc) stamp-builtins
-
-TOOLBOX = srcdir=$(top_srcdir) builddir=$(top_builddir) $(top_srcdir)/toolbox
+SUFFIXES = .pc.in .pc
 
 ###############################################################################
 # Headers
 ###############################################################################
 
 pkgincludedir = $(includedir)/vlc
+pluginsincludedir = $(pkgincludedir)/plugins
 
-dist_pkginclude_HEADERS = \
+pkginclude_HEADERS = \
 	../include/vlc/vlc.h \
+	../include/vlc/deprecated.h \
 	../include/vlc/libvlc.h \
-	../include/vlc/aout.h \
-	../include/vlc/vout.h \
-	../include/vlc/sout.h \
-	../include/vlc/decoder.h \
-	../include/vlc/input.h \
-	../include/vlc/intf.h \
+	../include/vlc/libvlc_structures.h \
+	../include/vlc/libvlc_media_list.h \
+	../include/vlc/libvlc_events.h \
+	../include/vlc/libvlc_vlm.h \
 	../include/vlc/mediacontrol.h \
 	../include/vlc/mediacontrol_structures.h \
 	$(NULL)
 
-noinst_HEADERS = $(HEADERS_include)
-noinst_DATA = $(DATA_noinst_libvlc)
-
-HEADERS_include = \
-	../include/aout_internal.h \
-	../include/audio_output.h \
-	../include/beos_specific.h \
-	../include/charset.h \
-	../include/codecs.h \
-	../include/configuration.h \
-	../include/darwin_specific.h \
-	../include/intf_eject.h \
-	../include/iso_lang.h \
-	../include/main.h \
-	../include/mmx.h \
-	../include/modules.h \
-	../include/modules_inner.h \
-	../include/mtime.h \
-	../include/network.h \
-	../include/os_specific.h \
-	../include/snapshot.h \
-	../include/stream_output.h \
-	../include/variables.h \
-	../include/video_output.h \
+pluginsinclude_HEADERS = \
 	../include/vlc_access.h \
 	../include/vlc_acl.h \
+	../include/vlc_aout.h \
+	../include/vlc_arrays.h \
 	../include/vlc_bits.h \
 	../include/vlc_block.h \
 	../include/vlc_block_helper.h \
+	../include/vlc_charset.h \
 	../include/vlc_codec.h \
 	../include/vlc_common.h \
 	../include/vlc_config.h \
-	../include/vlc_cpu.h \
+	../include/vlc_config_cat.h \
+	../include/vlc_configuration.h \
 	../include/vlc_demux.h \
-	../include/vlc_error.h \
+	../include/vlc_epg.h \
 	../include/vlc_es.h \
 	../include/vlc_es_out.h \
+	../include/vlc_events.h \
 	../include/vlc_filter.h \
-	../include/vlc_config_cat.h \
+	../include/vlc_gcrypt.h \
 	../include/vlc_httpd.h \
-	../include/vlc_tls.h \
-	../include/vlc_md5.h \
 	../include/vlc_image.h \
 	../include/vlc_input.h \
-	../include/vlc_interaction.h \
-	../include/vlc_interface.h \
-	../include/vlc_keys.h \
+	../include/vlc_main.h \
+	../include/vlc_md5.h \
 	../include/vlc_messages.h \
 	../include/vlc_meta.h \
+	../include/vlc_modules.h \
+	../include/vlc_mtime.h \
 	../include/vlc_objects.h \
-	../include/vlc_osd.h \
 	../include/vlc_playlist.h \
-	../include/vlc_spu.h \
+	../include/vlc_plugin.h \
+	../include/vlc_rand.h \
+	../include/vlc_services_discovery.h \
+	../include/vlc_sout.h \
 	../include/vlc_stream.h \
 	../include/vlc_strings.h \
-	../include/vlc_symbols.h \
-	../include/vlc_threads_funcs.h \
 	../include/vlc_threads.h \
-	../include/vlc_update.h \
 	../include/vlc_url.h \
-	../include/vlc_video.h \
+	../include/vlc_variables.h \
 	../include/vlc_vlm.h \
-	../include/vlc_vod.h \
+	../include/vlc_vout.h \
+	../include/vlc_window.h \
 	../include/vlc_xml.h \
-	../include/vout_synchro.h \
-	../include/win32_specific.h \
-	../include/libvlc_internal.h \
-	../include/mediacontrol_internal.h
 	$(NULL)
 
-misc/modules_builtin.h: Makefile misc/modules_builtin.h.in ../vlc-config
-	$(TOOLBOX) --update-includes
-	touch $@
+noinst_HEADERS = \
+	../include/mmx.h \
+	../include/vlc_codec_synchro.h \
+	../include/vlc_codecs.h \
+	../include/vlc_devices.h \
+	../include/vlc_fixups.h \
+	../include/vlc_interface.h \
+	../include/vlc_intf_strings.h \
+	../include/vlc_iso_lang.h \
+	../include/vlc_keys.h \
+	../include/vlc_network.h \
+	../include/vlc_osd.h \
+	../include/vlc_pgpkey.h \
+	../include/vlc_tls.h \
+	../include/vlc_update.h \
+	../include/vlc_vod.h \
+	$(NULL)
 
-misc/modules.c: misc/modules_builtin.h
+modules/builtin.h: modules/builtin.h.in ../vlc-config Makefile.am
+	rm -f -- "$@.tmp"
+	cat "$(srcdir)/modules/builtin.h.in" > "$@.tmp"
+if !HAVE_PLUGINS
+	plugins="$$($(VLC_CONFIG) --list plugin)" ; \
+	test -n "$${plugins}" && \
+	for p in $${plugins}; do \
+		echo "int vlc_entry__$$p (module_t *);" ; \
+	done >> "$@.tmp"
+endif
+	echo "#define ALLOCATE_ALL_BUILTINS() \\" >> "$@.tmp"
+	echo "    do \\" >> "$@.tmp"
+	echo "    { \\" >> "$@.tmp"
+if !HAVE_PLUGINS
+	plugins="$$($(VLC_CONFIG) --list plugin)" ; \
+	test -n "$${plugins}" && \
+	for p in $${plugins}; do \
+		echo "        ALLOCATE_BUILTIN($$p); \\" ; \
+	done >> "$@.tmp"
+endif
+	echo '    } while( 0 );' >> "$@.tmp"
+	mv -f -- "$@.tmp" "$@"
+
+modules/modules.c: modules/builtin.h
+
+../include/vlc_about.h: Makefile.am $(top_srcdir)/COPYING $(top_srcdir)/THANKS $(top_srcdir)/AUTHORS
+	rm -f -- "$@.tmp"
+	mkdir -p -- ../include
+	echo "/* Automatically generated file - DO NOT EDIT */" > "$@.tmp"
+	echo "static const char psz_license[] =" >> "$@.tmp"
+	cat $(top_srcdir)/COPYING | sed s/'"'/'\\"'/g | $(AWK) '{ print "\""$$0"\\n\"" }' >> "$@.tmp"
+	echo ";" >> "$@.tmp"
+	echo "static const char psz_thanks[] =" >> "$@.tmp"
+	grep -v '$$Id:'  $(top_srcdir)/THANKS | sed s/'"'/'\\"'/g | $(AWK) '{ print "\""$$0"\\n\"" }'|sed s/"<.*.> "// >> "$@.tmp"
+	echo ";" >> "$@.tmp"
+	echo "static const char psz_authors[] =" >> "$@.tmp"
+	grep N: $(top_srcdir)/AUTHORS | cut -d" " -f 2- | sed s/'"'/'\\"'/g | $(AWK) '{ print "\""$$0"\\n\"" }' >> "$@.tmp"
+	echo ";" >> "$@.tmp"
+	mv -f -- "$@.tmp" "$@"
 
 ###############################################################################
-# Building builtin modules
+# pkg-config integration
 ###############################################################################
-#
-# As long as we use builtins with a shared libvlc, we must build them before
-# we build libvlc. Maybe one day, libvlc will handle multiple modules per
-# shared object, which will make builtins fairly redumdant. Until then, we
-# need this workaround.
 
-stamp-builtins: Makefile ../vlc-config ../config.status
-if USE_LIBTOOL
-	@for c in `$(VLC_CONFIG) --libs builtin`; do \
-		case $$c in \
-        		../modules/*.a) echo $$c ;; \
-		esac ; \
-	done | \
-	sed -e 's,^\(.*\)/\([^/]*\)\.a$$,cd \1 \&\& $(MAKE) \2_builtin.la,g' | \
-	while read cmd; do echo $$cmd; eval "($$cmd)" || exit $$? ; done
-endif
-if BUILD_SHARED
-	@for c in `$(VLC_CONFIG) --libs builtin`; do \
-		case $$c in \
-			../modules/*.a) echo $$c ;; \
-		esac ; \
-	done | \
-	sed -e 's,^\(.*\)/\([^/]*\)\.a$$,cd \1 \&\& $(MAKE) \2,g' | \
-	while read cmd; do echo $$cmd.a; eval "($$cmd.a)" || exit $$? ; done
-endif
-	touch $@
+pkgconfigdir = $(libdir)/pkgconfig
+pkgconfig_DATA = libvlc.pc vlc-plugin.pc
+CLEANFILES += $(pkgconfig_DATA)
+
+.pc.in.pc: $(top_builddir)/config.status
+	cd "$(top_builddir)" && \
+	$(SHELL) ./config.status --file="src/$@"
 
 ###############################################################################
 # Building libvlc
 ###############################################################################
 
-libvlc_a_SOURCES = $(SOURCES_libvlc)
-libvlc_a_CFLAGS = `$(VLC_CONFIG) --cflags vlc pic`
-libvlc_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags vlc pic`
-libvlc_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags vlc pic`
+nice:
+	$(top_builddir)/compile
 
-libvlc_la_SOURCES = $(SOURCES_libvlc)
-libvlc_la_LIBADD = $(INCLUDED_LIBINTL)
-libvlc_la_CFLAGS = `$(VLC_CONFIG) --cflags vlc`
-libvlc_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags vlc`
-libvlc_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags vlc`
-libvlc_la_LDFLAGS = \
-	`$(VLC_CONFIG) --libs vlc builtin|sed -e 's/\(modules\/[^ ]*\)\.a /\1_builtin.la /g'` \
-	-version-info 0:8:0 \
-	-no-undefined
-libvlc_la_DEPENDENCIES = stamp-builtins
+lib_LTLIBRARIES = libvlccore.la libvlc.la
 
-
-if HAVE_BEOS
-OPT_SOURCES_libvlc_beos = $(SOURCES_libvlc_beos)
-endif
-if HAVE_DARWIN
-OPT_SOURCES_libvlc_darwin = $(SOURCES_libvlc_darwin)
-endif
+AM_LDFLAGS = -no-undefined
 if HAVE_WIN32
-OPT_SOURCES_libvlc_win32 = $(SOURCES_libvlc_win32)
-endif
-if HAVE_WINCE
-OPT_SOURCES_libvlc_win32 = $(SOURCES_libvlc_win32)
-endif
-if BUILD_DIRENT
-OPT_SOURCES_libvlc_dirent = $(SOURCES_libvlc_dirent)
-endif
-if BUILD_GETOPT
-OPT_SOURCES_libvlc_getopt = $(SOURCES_libvlc_getopt)
+AM_LDFLAGS += -avoid-version
 endif
 
-# Build libvlc as a shared library
-if USE_LIBTOOL
-lib_LTLIBRARIES = libvlc.la
-else
-lib_LIBRARIES = libvlc.a
-endif
-
+libvlccore_la_SOURCES = $(SOURCES_libvlc)
+nodist_libvlccore_la_SOURCES = misc/revision.c
+libvlccore_la_CFLAGS = `$(VLC_CONFIG) --cflags libvlc` \
+	-DMODULE_STRING=\"main\" \
+	-DLOCALEDIR=\"$(localedir)\" \
+	-DSYSCONFDIR=\"$(sysconfdir)\" \
+	-DDATA_PATH=\"$(pkgdatadir)\" \
+	-DLIBDIR=\"$(libdir)\" \
+	-DPLUGIN_PATH=\"$(pkglibdir)\"
+libvlccore_la_LDFLAGS = `$(VLC_CONFIG) --ldflags libvlc` $(AM_LDFLAGS) \
+	-export-symbols $(srcdir)/libvlccore.sym \
+	-version-info 0:2:0
+libvlccore_la_LIBADD = `$(VLC_CONFIG) -libs libvlc` $(AM_LIBADD) $(LTLIBINTL)
+libvlccore_la_DEPENDENCIES = libvlccore.sym
 if HAVE_WIN32
-if BUILD_SHARED
-DATA_noinst_libvlc = libvlc$(LIBEXT)
+libvlccore_la_DEPENDENCIES += libvlc_win32_rc.$(OBJEXT)
+libvlccore_la_LDFLAGS += -Wl,libvlc_win32_rc.$(OBJEXT)
 endif
 
-libvlc.dll.a: libvlc$(LIBEXT)
+libvlc_win32_rc.$(OBJEXT): $(top_builddir)/share/libvlc_win32_rc.rc
+	$(WINDRES) --include-dir $(top_srcdir)/share -i $< -o $@
 
-libvlc$(LIBEXT): $(OBJECTS_libvlc_so) stamp-builtins
-	@ldfl="`$(VLC_CONFIG) --libs plugin vlc builtin pic` $(INCLUDED_LIBINTL)" ; \
-	case `$(VLC_CONFIG) --linkage vlc builtin` in \
-	  c++)  ld="$(CXXLINK)" ;; \
-	  objc) ld="$(OBJCLINK)" ;; \
-	  c|*)  ld="$(LINK)" ;; \
-	esac ; \
-	echo $$ld $(OBJECTS_libvlc_so) $(LDFLAGS_libvlc_so) $$ldfl; \
-	$$ld $(libvlc_a_OBJECTS) \
-		-Wl,--out-implib,$(top_builddir)/src/libvlc.dll.a $$ldfl
-# It sucks big time, but we have to do that to link vlc properly
-# on non-PIC OSes, otherwise ld will favor builtins-less libvlc.a over
-# libvlc$(LIBEXT)
-	rm -f libvlc.a
-# Cygwin work-around
-	@if test -f "$@.exe"; then mv -f "$@.exe" "$@"; fi
+libvlc_la_SOURCES = $(SOURCES_libvlc_control)
+libvlc_la_LIBADD = libvlccore.la
+libvlc_la_CFLAGS = `$(VLC_CONFIG) --cflags libvlc` \
+	-DMODULE_STRING=\"control\"
+libvlc_la_LDFLAGS = $(AM_LDFLAGS) \
+	-version-info 2:2:0 \
+	-export-symbols $(srcdir)/libvlc.sym
+libvlc_la_DEPENDENCIES = libvlc.sym libvlccore.la
+if HAVE_WIN32
+libvlc_la_DEPENDENCIES += $(DATA_win32_rc_lib)
+libvlc_la_LDFLAGS += -Wl,$(DATA_win32_rc_lib)
 endif
 
-EXTRA_DIST += \
+
+EXTRA_libvlccore_la_SOURCES = \
 	$(SOURCES_libvlc_beos) \
 	$(SOURCES_libvlc_darwin) \
+	$(SOURCES_libvlc_linux) \
 	$(SOURCES_libvlc_win32) \
+	$(SOURCES_libvlc_other) \
 	$(SOURCES_libvlc_dirent) \
 	$(SOURCES_libvlc_getopt) \
+	$(SOURCES_libvlc_sout) \
+	$(SOURCES_libvlc_vlm) \
 	$(NULL)
+if HAVE_BEOS
+libvlccore_la_SOURCES += $(SOURCES_libvlc_beos)
+else
+if HAVE_DARWIN
+libvlccore_la_SOURCES += $(SOURCES_libvlc_darwin)
+else
+if HAVE_LINUX
+libvlccore_la_SOURCES += $(SOURCES_libvlc_linux)
+else
+if HAVE_WIN32
+libvlccore_la_SOURCES += $(SOURCES_libvlc_win32)
+else
+if HAVE_WINCE
+libvlccore_la_SOURCES += $(SOURCES_libvlc_win32)
+else
+libvlccore_la_SOURCES += $(SOURCES_libvlc_other)
+endif
+endif
+endif
+endif
+endif
+if BUILD_DIRENT
+libvlccore_la_SOURCES += $(SOURCES_libvlc_dirent)
+endif
+if BUILD_GETOPT
+libvlccore_la_SOURCES += $(SOURCES_libvlc_getopt)
+endif
+if ENABLE_SOUT
+libvlccore_la_SOURCES += $(SOURCES_libvlc_sout)
+if ENABLE_VLM
+libvlccore_la_SOURCES += $(SOURCES_libvlc_vlm)
+endif
+endif
 
 SOURCES_libvlc_beos = \
-	misc/beos_specific.cpp \
 	$(NULL)
 
 SOURCES_libvlc_darwin = \
-	misc/darwin_specific.m \
+	misc/darwin_specific.c \
+	$(NULL)
+
+SOURCES_libvlc_linux = \
+	misc/linux_specific.c \
 	$(NULL)
 
 SOURCES_libvlc_win32 = \
 	misc/win32_specific.c \
+	network/winsock.c \
 	$(NULL)
+
+SOURCES_libvlc_other = misc/not_specific.c
 
 SOURCES_libvlc_dirent = \
 	extras/dirent.c \
@@ -246,24 +280,34 @@ SOURCES_libvlc_getopt = \
 SOURCES_libvlc_common = \
 	libvlc.c \
 	libvlc.h \
+	libvlc-module.c \
+	version.c \
+	interface/interface.h \
 	interface/interface.c \
 	interface/intf_eject.c \
 	interface/interaction.c \
-	playlist/playlist.c \
+	playlist/playlist_internal.h \
+	playlist/thread.c \
+	playlist/control.c \
+	playlist/engine.c \
 	playlist/sort.c \
 	playlist/loadsave.c \
-	playlist/view.c \
+	playlist/tree.c \
 	playlist/item.c \
-	playlist/item-ext.c \
+	playlist/search.c \
 	playlist/services_discovery.c \
+	input/item.c \
 	input/access.c \
 	input/clock.c \
 	input/control.c \
 	input/decoder.c \
+	input/decoder_synchro.c \
 	input/demux.c \
 	input/es_out.c \
 	input/input.c \
+	input/meta.c \
 	input/input_internal.h \
+	input/vlm_internal.h \
 	input/stream.c \
 	input/mem_stream.c \
 	input/subtitles.c \
@@ -274,8 +318,8 @@ SOURCES_libvlc_common = \
 	video_output/video_text.c \
 	video_output/video_widgets.c \
 	video_output/vout_subpictures.c \
-	video_output/vout_synchro.c \
 	video_output/vout_intf.c \
+	audio_output/aout_internal.h \
 	audio_output/common.c \
 	audio_output/dec.c \
 	audio_output/filters.c \
@@ -283,59 +327,72 @@ SOURCES_libvlc_common = \
 	audio_output/mixer.c \
 	audio_output/output.c \
 	audio_output/intf.c \
-	stream_output/stream_output.c \
-	stream_output/announce.c \
-	stream_output/sap.c \
 	osd/osd.c \
-	osd/osd_parser.c \
 	osd/osd_text.c \
 	osd/osd_widgets.c \
 	network/acl.c \
 	network/getaddrinfo.c \
 	network/io.c \
-	network/error.c \
 	network/tcp.c \
 	network/udp.c \
 	network/httpd.c \
-	network/rootwrap.c \
+	network/rootbind.c \
 	network/tls.c \
-	misc/charset.c \
+	network/poll.c \
+	text/charset.c \
+	text/strings.c \
+	text/unicode.c \
+	text/wincp.c \
+	text/iso_lang.c \
+	text/iso-639_def.h \
 	misc/md5.c \
+	misc/rand.c \
 	misc/mtime.c \
 	misc/block.c \
-	misc/modules.c \
+	misc/es_format.c \
+	modules/modules.h \
+	modules/modules.c \
+	modules/cache.c \
+	modules/entry.c \
+	modules/os.c \
 	misc/threads.c \
 	misc/stats.c \
-	misc/strings.c \
-	misc/unicode.c \
 	misc/cpu.c \
-	misc/configuration.c \
+	misc/action.c \
+	config/configuration.h \
+	config/core.c \
+	config/dirs.c \
+	config/chain.c \
+	config/file.c \
+	config/intf.c \
+	config/cmdline.c \
+	misc/events.c \
 	misc/image.c \
-	misc/iso_lang.c \
-	misc/iso-639_def.h \
 	misc/messages.c \
 	misc/objects.c \
+	misc/variables.h \
 	misc/variables.c \
 	misc/error.c \
+	misc/update.h \
 	misc/update.c \
-	misc/vlm.c \
 	misc/xml.c \
-	misc/hashtables.c \
+	misc/devices.c \
 	extras/libc.c \
-	control/core.c \
-	control/log.c \
-	control/playlist.c \
-	control/vlm.c \
-	control/input.c \
-	control/video.c \
-	control/audio.c \
-	control/mediacontrol_core.c \
-	control/mediacontrol_util.c \
-	control/mediacontrol_audio_video.c \
+	misc/filter_chain.c \
 	$(NULL)
 
-# These should be distributed, but not compiled
-EXTRA_DIST += control/mediacontrol_init.c control/mediacontrol_plugin.c
+SOURCES_libvlc_sout = \
+	stream_output/stream_output.c \
+	stream_output/stream_output.h \
+	stream_output/announce.c \
+	stream_output/sap.c \
+	stream_output/sdp.c \
+	$(NULL)
+
+SOURCES_libvlc_vlm = \
+	input/vlm.c \
+	input/vlmshell.c \
+	$(NULL)
 
 SOURCES_libvlc = \
 	$(SOURCES_libvlc_common) \
@@ -346,48 +403,66 @@ SOURCES_libvlc = \
 	$(OPT_SOURCES_libvlc_getopt) \
 	$(NULL)
 
-if !USE_LIBTOOL
-if !BUILD_SHARED
-SOURCES_libvlc += misc/version.c
-CLEANFILES += misc/version.c
-endif
-
-# Install shared libvlc
-install-exec-local:
-	test -z "$(DATA_noinst_libvlc)" || $(INSTALL_PROGRAM) "$(DATA_noinst_libvlc)" "$(DESTDIR)$(libdir)"
-
-# the opposite of install-{data,exec}-local
-uninstall-local:
-	test -z "$(DATA_noinst_libvlc)" || rm -f "$(DESTDIR)$(libdir)/$(DATA_noinst_libvlc)"
-endif
-
-misc/version.c: FORCE
-	$(TOOLBOX) --update-version
+SOURCES_libvlc_control = \
+	control/libvlc_internal.h \
+	control/core.c \
+	control/log.c \
+	control/playlist.c \
+	control/vlm.c \
+	control/video.c \
+	control/audio.c \
+	control/event.c \
+	control/flat_media_list_view.c \
+	control/hierarchical_media_list_view.c \
+	control/hierarchical_node_media_list_view.c \
+	control/media.c \
+	control/media_player.c \
+	control/media_list.c \
+	control/media_list_path.h \
+	control/media_list_player.c \
+	control/media_list_view.c \
+	control/media_library.c \
+	control/mediacontrol_internal.h \
+	control/mediacontrol_core.c \
+	control/mediacontrol_util.c \
+	control/mediacontrol_audio_video.c \
+	control/media_discoverer.c
 
 ###############################################################################
 # Stamp rules
 ###############################################################################
-stamp-api: Makefile.in $(HEADERS_include) ../vlc-api.pl
-	( cd $(srcdir) && cat $(HEADERS_include) ) | \
-	  top_srcdir="$(top_srcdir)" perl $(top_srcdir)/vlc-api.pl
-	touch stamp-api
+
+misc/revision.c:
+	rm -f $@ $@.tmp
+	echo "/* AUTOGENERATED FILE - DO NOT EDIT */" > $@.tmp
+	REVISION="$$(LANG=C git --git-dir=$(top_srcdir)/.git show-ref --head -s HEAD 2>/dev/null || echo exported)"; \
+	REVISION="$$(echo $$REVISION|cut -b -10)"; \
+	echo "const char psz_vlc_changeset[] = \"$$REVISION\";" >> $@.tmp
+	mv -f $@.tmp $@
+
 
 ###############################################################################
 # Unit/regression test
 ###############################################################################
-if USE_LIBTOOL
-check_PROGRAMS = test_i18n_atof test_url
-TESTS = $(check_PROGRAMS)
 
-CFLAGS_tests = `$(VLC_CONFIG) --cflags vlc`
+dist_check_SCRIPTS = check_symbols check_headers
+TESTS = check_symbols
 
-test_i18n_atof_SOURCES = test/i18n_atof.c
-test_i18n_atof_LDADD = libvlc.la
-test_i18n_atof_CFLAGS = $(CFLAGS_tests)
-
-test_url_SOURCES = test/url.c
-test_url_LDADD = libvlc.la
-test_url_CFLAGS = $(CFLAGS_tests)
-endif
+check-local:
+	for h in `echo $(pkginclude_HEADERS) | sed -e s,\.\./include/,,g`; \
+	do \
+		echo grep - "#include <$$h>" $(srcdir)/test/headers.c ; \
+		if ! grep -- "#include <$$h>" $(srcdir)/test/headers.c ; \
+		then \
+			echo "Header $$h not included in test/headers.c!"; \
+			exit 1; \
+		fi ; \
+	done
+	$(srcdir)/check_headers $(pkginclude_HEADERS)
+	$(srcdir)/check_headers $(pluginsinclude_HEADERS)
 
 FORCE:
+	@echo "Generated source cannot be phony. Go away." >&2
+	@exit 1
+
+.PHONY: FORCE

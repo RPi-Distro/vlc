@@ -1,8 +1,8 @@
 /*****************************************************************************
- * vlc_codec.h: codec related structures
+ * vlc_codec.h: Definition of the decoder and encoder structures
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: 74f82cd6e4146d6bb77e5c0c3ed7a04092c85e63 $
+ * $Id: b8347e34d2c870af54ab8244c14ac1574a3b9a77 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -20,8 +20,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#ifndef _VLC_CODEC_H
-#define _VLC_CODEC_H 1
+
+#ifndef VLC_CODEC_H
+#define VLC_CODEC_H 1
+
+#include <vlc_block.h>
+#include <vlc_es.h>
 
 /**
  * \file
@@ -58,15 +62,24 @@ struct decoder_t
     es_format_t         fmt_out;
 
     /* Some decoders only accept packetized data (ie. not truncated) */
-    vlc_bool_t          b_need_packetized;
+    bool          b_need_packetized;
 
     /* Tell the decoder if it is allowed to drop frames */
-    vlc_bool_t          b_pace_control;
+    bool          b_pace_control;
 
+    /* */
     picture_t *         ( * pf_decode_video )( decoder_t *, block_t ** );
     aout_buffer_t *     ( * pf_decode_audio )( decoder_t *, block_t ** );
     subpicture_t *      ( * pf_decode_sub)   ( decoder_t *, block_t ** );
     block_t *           ( * pf_packetize )   ( decoder_t *, block_t ** );
+
+    /* Closed Caption (CEA 608/708) extraction.
+     * If set, it *may* be called after pf_decode_video/pf_packetize
+     * returned data. It should return CC for the pictures returned by the
+     * last pf_packetize/pf_decode_video call only,
+     * pb_present will be used to known which cc channel are present (but
+     * globaly, not necessary for the current packet */
+    block_t *           ( * pf_get_cc )      ( decoder_t *, bool pb_present[4] );
 
     /*
      * Buffers allocation
@@ -127,11 +140,15 @@ struct encoder_t
     int i_tolerance;             /* Bitrate tolerance */
 
     /* Encoder config */
-    sout_cfg_t *p_cfg;
+    config_chain_t *p_cfg;
 };
 
 /**
  * @}
  */
+
+VLC_EXPORT( input_attachment_t *, decoder_GetInputAttachment, ( decoder_t *, const char *psz_name ) );
+VLC_EXPORT( int, decoder_GetInputAttachments, ( decoder_t *p_dec, input_attachment_t ***ppp_attachment, int *pi_attachment ) );
+VLC_EXPORT( mtime_t, decoder_GetDisplayDate, ( decoder_t *, mtime_t ) );
 
 #endif /* _VLC_CODEC_H */

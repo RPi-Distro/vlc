@@ -2,7 +2,7 @@
  * subtitles.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id: 9e318a87469f254c5abf751b761c5b6a4a31f710 $
+ * $Id: 2f1edb4206f5db8d9e9cb32480ef1423227a1fb4 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,11 +25,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                            /* strerror() */
-#include <stdio.h>
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 #include "wince.h"
 
@@ -54,12 +55,12 @@ SubsFileDialog::SubsFileDialog( intf_thread_t *p_intf, CBaseWindow *p_parent,
 
 /***********************************************************************
 
-FUNCTION: 
+FUNCTION:
   WndProc
 
-PURPOSE: 
+PURPOSE:
   Processes messages sent to the main window.
-  
+ 
 ***********************************************************************/
 LRESULT SubsFileDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
 {
@@ -115,7 +116,7 @@ LRESULT SubsFileDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
             10, 10 + 15 + 10 - 3, rcClient.right - 2*10, 5*15 + 6,
             hwnd, NULL, hInst, NULL );
 
-        if( psz_subsfile ) free( psz_subsfile );
+        free( psz_subsfile );
 
         browse_button = CreateWindow( _T("BUTTON"), _T("Browse..."),
                         WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON,
@@ -263,7 +264,7 @@ LRESULT SubsFileDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
             {
                 SHFullScreen( GetForegroundWindow(), SHFS_HIDESIPBUTTON );
                 OnFileBrowse();
-            } 
+            }
         }
         break;
 

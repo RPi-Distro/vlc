@@ -2,7 +2,7 @@
  * wav.c: wav muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2004, 2006 the VideoLAN team
- * $Id: 9b47da7feaaafec189674bfb0c91429ed4345703 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,13 +24,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
-#include <vlc/sout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "codecs.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
+#include <vlc_sout.h>
+#include <vlc_block.h>
+#include <vlc_codecs.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -39,7 +43,7 @@ static int  Open   ( vlc_object_t * );
 static void Close  ( vlc_object_t * );
 
 vlc_module_begin();
-    set_description( _("WAV muxer") );
+    set_description( N_("WAV muxer") );
     set_capability( "sout mux", 5 );
     set_category( CAT_SOUT );
     set_subcategory( SUBCAT_SOUT_MUX );
@@ -59,9 +63,9 @@ static int Mux      ( sout_mux_t * );
 
 struct sout_mux_sys_t
 {
-    vlc_bool_t b_used;
-    vlc_bool_t b_header;
-    vlc_bool_t b_ext;
+    bool b_used;
+    bool b_header;
+    bool b_ext;
 
     uint32_t i_data;
 
@@ -71,7 +75,7 @@ struct sout_mux_sys_t
     uint32_t waveheader2[2];
 
     uint32_t i_channel_mask;
-    vlc_bool_t b_chan_reorder;              /* do we need channel reordering */
+    bool b_chan_reorder;              /* do we need channel reordering */
     int pi_chan_table[AOUT_CHAN_MAX];
 };
 
@@ -79,17 +83,18 @@ struct sout_mux_sys_t
 static const uint32_t pi_channels_src[] =
     { AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
       AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT,
-      AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT,
+      AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, AOUT_CHAN_REARCENTER,
       AOUT_CHAN_CENTER, AOUT_CHAN_LFE, 0 };
 static const uint32_t pi_channels_in[] =
     { WAVE_SPEAKER_FRONT_LEFT, WAVE_SPEAKER_FRONT_RIGHT,
       WAVE_SPEAKER_SIDE_LEFT, WAVE_SPEAKER_SIDE_RIGHT,
-      WAVE_SPEAKER_BACK_LEFT, WAVE_SPEAKER_BACK_RIGHT,
+      WAVE_SPEAKER_BACK_LEFT, WAVE_SPEAKER_BACK_RIGHT, WAVE_SPEAKER_BACK_CENTER,
       WAVE_SPEAKER_FRONT_CENTER, WAVE_SPEAKER_LOW_FREQUENCY, 0 };
 static const uint32_t pi_channels_out[] =
     { WAVE_SPEAKER_FRONT_LEFT, WAVE_SPEAKER_FRONT_RIGHT,
       WAVE_SPEAKER_FRONT_CENTER, WAVE_SPEAKER_LOW_FREQUENCY,
       WAVE_SPEAKER_BACK_LEFT, WAVE_SPEAKER_BACK_RIGHT,
+      WAVE_SPEAKER_BACK_CENTER,
       WAVE_SPEAKER_SIDE_LEFT, WAVE_SPEAKER_SIDE_RIGHT, 0 };
 
 /*****************************************************************************
@@ -106,8 +111,10 @@ static int Open( vlc_object_t *p_this )
     p_mux->pf_mux       = Mux;
 
     p_mux->p_sys = p_sys = malloc( sizeof( sout_mux_sys_t ) );
-    p_sys->b_used   = VLC_FALSE;
-    p_sys->b_header = VLC_TRUE;
+    if( !p_sys )
+        return VLC_ENOMEM;
+    p_sys->b_used   = false;
+    p_sys->b_header = true;
     p_sys->i_data   = 0;
 
     p_sys->b_chan_reorder = 0;
@@ -127,29 +134,30 @@ static void Close( vlc_object_t * p_this )
 
 static int Control( sout_mux_t *p_mux, int i_query, va_list args )
 {
-    vlc_bool_t *pb_bool;
+    VLC_UNUSED(p_mux);
+    bool *pb_bool;
     char **ppsz;
 
-   switch( i_query )
-   {
-       case MUX_CAN_ADD_STREAM_WHILE_MUXING:
-           pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
-           *pb_bool = VLC_FALSE;
-           return VLC_SUCCESS;
+    switch( i_query )
+    {
+        case MUX_CAN_ADD_STREAM_WHILE_MUXING:
+            pb_bool = (bool*)va_arg( args, bool * );
+            *pb_bool = false;
+            return VLC_SUCCESS;
 
-       case MUX_GET_ADD_STREAM_WAIT:
-           pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
-           *pb_bool = VLC_TRUE;
-           return VLC_SUCCESS;
+        case MUX_GET_ADD_STREAM_WAIT:
+            pb_bool = (bool*)va_arg( args, bool * );
+            *pb_bool = true;
+            return VLC_SUCCESS;
 
-       case MUX_GET_MIME:
-           ppsz = (char**)va_arg( args, char ** );
-           *ppsz = strdup( "audio/wav" );
-           return VLC_SUCCESS;
+        case MUX_GET_MIME:
+            ppsz = (char**)va_arg( args, char ** );
+            *ppsz = strdup( "audio/wav" );
+            return VLC_SUCCESS;
 
         default:
             return VLC_EGENERIC;
-   }
+    }
 }
 static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
@@ -157,7 +165,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     sout_mux_sys_t *p_sys = p_mux->p_sys;
     WAVEFORMATEX *p_waveformat = &p_sys->waveformat.Format;
     int i_bytes_per_sample, i_format;
-    vlc_bool_t b_ext;
+    bool b_ext;
 
     if( p_input->p_fmt->i_cat != AUDIO_ES )
     {
@@ -179,7 +187,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     if( p_input->p_fmt->audio.i_physical_channels )
     {
         unsigned int i;
-        
+ 
         for( i = 0; i < sizeof(pi_channels_in)/sizeof(uint32_t); i++ )
         {
             if( p_input->p_fmt->audio.i_physical_channels & pi_channels_src[i])
@@ -233,7 +241,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     p_sys->waveformat.SubFormat.Data1 = i_format;
 
 
-    p_sys->b_used = VLC_TRUE;
+    p_sys->b_used = true;
 
     return VLC_SUCCESS;
 }
@@ -260,10 +268,11 @@ static block_t *GetHeader( sout_mux_t *p_mux )
 
 static int DelStream( sout_mux_t *p_mux, sout_input_t *p_input )
 {
+    VLC_UNUSED(p_input);
     msg_Dbg( p_mux, "removing input" );
 
     msg_Dbg( p_mux, "writing header data" );
-    if( !sout_AccessOutSeek( p_mux->p_access, 0 ) )
+    if( sout_AccessOutSeek( p_mux->p_access, 0 ) == VLC_SUCCESS )
     {
         sout_AccessOutWrite( p_mux->p_access, GetHeader( p_mux ) );
     }
@@ -283,10 +292,10 @@ static int Mux( sout_mux_t *p_mux )
         msg_Dbg( p_mux, "writing header data" );
         sout_AccessOutWrite( p_mux->p_access, GetHeader( p_mux ) );
     }
-    p_sys->b_header = VLC_FALSE;
+    p_sys->b_header = false;
 
     p_input = p_mux->pp_inputs[0];
-    while( p_input->p_fifo->i_depth > 0 )
+    while( block_FifoCount( p_input->p_fifo ) > 0 )
     {
         block_t *p_block = block_FifoGet( p_input->p_fifo );
         p_sys->i_data += p_block->i_buffer;

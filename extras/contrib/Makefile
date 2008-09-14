@@ -25,52 +25,27 @@
 
 include ./config.mak
 
-BUILDDIRS = bin doc etc include info lib man sbin share vlc-lib tmp
+BUILDDIRS = bin doc etc include info lib man sbin share vlc-lib tmp gecko-sdk
 
-all: FORCE
-#	@echo "Do you mean to make src or make bin ?"
-	@echo "    'make bin' isn't functional at the moment,"
-	@echo "    running 'make src' instead..."
-	$(MAKE) src
+all:
+	$(MAKE) -C src
 
-src: FORCE
-	$(MAKE) -C src all
-
-contrib-macosx.tar.bz2: FORCE
+contrib-macosx.tar.bz2:
 	$(WGET) $(CONTRIB_URL)
 
-bin: FORCE
-	@echo "make bin isn't in a functional state at this moment. Please use make src"
-
-#The disabled make bin
-#bin: contrib-macosx.tar.bz2
-#	@if test -d tmp; then \
-#		echo "Move away ./tmp, it's in the way" ; \
-#		exit 1 ; \
-#	fi
-#	mkdir tmp
-#	bunzip2 -c $< | (cd tmp; tar xf -)
-#	./change_prefix.sh tmp @@CONTRIB_PREFIX@@ $(PREFIX)
-#	(cd tmp; tar cf - .) | tar xf -
-#	rm -rf tmp
-#	ranlib lib/*\.a
-
-clean-src: FORCE
+clean-src:
 	rm -rf $(BUILDDIRS)
 	$(MAKE) -C src clean-src
 
-clean-bin: FORCE
+clean-bin:
 	rm -rf $(BUILDDIRS)
 	$(MAKE) -C src clean-dots
 
-clean: FORCE
-#	@echo "    Do you mean to clean-src or clean-bin ?"
-	@echo "    'make bin' isn't available at the moment"
-	@echo "    you probably wanna run 'make clean-src' then"
-	@echo "    you can still run 'make clean-bin' manually if needed"
+clean:
 	$(MAKE) clean-src
+	rm -rf config.mak distro.mak
 
-package-macosx: FORCE
+package-macosx:
 	@if test -d tmp; then \
 		echo "Move away ./tmp, it's in the way" ; \
 		exit 1 ; \
@@ -85,27 +60,33 @@ package-macosx: FORCE
 
 DISTDIR = usr/win32
 
-package-win32: FORCE
+package-win32:
 	@if test -d tmp; then \
 		echo "Move away ./tmp, it's in the way" ; \
 		exit 1 ; \
 	fi
 	mkdir -p tmp/$(DISTDIR)
 	tar cf - --dereference bin sbin include lib share/aclocal*\
-		share/autoconf* \
+		share/autoconf* share/qt4* \
 		share/automake* share/gettext* gecko-sdk\
 		| (cd tmp/$(DISTDIR); tar xpf -)
 #kludge for live.com
-	mkdir -p tmp/usr/win32/live.com
+	mkdir -p tmp/$(DISTDIR)/live.com
 	for i in groupsock liveMedia UsageEnvironment BasicUsageEnvironment; do \
 		mkdir -p  tmp/$(DISTDIR)/live.com/$$i/include; \
 		cp -r src/live/$$i/include tmp/$(DISTDIR)/live.com/$$i; \
 		cp src/live/$$i/lib$${i}.a  tmp/$(DISTDIR)/live.com/$$i; \
 	done;
-	./change_prefix.sh tmp $(PREFIX) /$(DISTDIR)
-#	Klugy kludge	
-	(cd tmp/$(DISTDIR)/bin; rm -f *.exe; chmod a+x *)
-	(cd tmp; tar cf - $(DISTDIR)) | bzip2 -c > contrib-`date +%Y%m%d`-win32-bin-gcc-`$(CC) --version|head -n 1|cut -f 3 -d ' '`-only.tar.bz2
+# Change Prefix.
+	./change_prefix.sh tmp $(PREFIX) $(DISTDIR)
+# Hack for qt4
+	(cd tmp/$(DISTDIR)/bin; mv uic.exe uic.ex; mv rcc.exe rcc.ex; mv moc.exe moc.ex)
+#	Remove unused and potentially harmful files	
+	(cd tmp/$(DISTDIR)/bin; rm -rfv *.exe; chmod a+x *)
+# Hack for qt4
+	(cd tmp/$(DISTDIR)/bin; mv uic.ex uic.exe; mv rcc.ex rcc.exe; mv moc.ex moc.exe)
+# Tar it.
+	(cd tmp; tar cf - $(DISTDIR)) | bzip2 -c > contrib-`date +%Y%m%d`-win32-bin-gcc-`$(CC) --version|head -n 1|cut -f 3 -d ' '`-runtime-`/bin/echo -e "#include <_mingw.h>\n__MINGW32_VERSION"|$(CC) -E -|grep -v ^#|grep -v ' '`-only.tar.bz2
 	rm -rf tmp
-FORCE:
 
+.PHONY: all clean-src clean-bin clean package-macosx package-win32

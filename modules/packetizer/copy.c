@@ -2,7 +2,7 @@
  * copy.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: d4128fe43398d297c8f5c89b874f21b00e77ba87 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -25,11 +25,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_block.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -40,7 +44,7 @@ static void Close( vlc_object_t * );
 vlc_module_begin();
     set_category( CAT_SOUT );
     set_subcategory( SUBCAT_SOUT_PACKETIZER );
-    set_description( _("Copy packetizer") );
+    set_description( N_("Copy packetizer") );
     set_capability( "packetizer", 1 );
     set_callbacks( Open, Close );
 vlc_module_end();
@@ -243,6 +247,7 @@ static void Close( vlc_object_t *p_this )
         block_ChainRelease( p_dec->p_sys->p_block );
     }
 
+    es_format_Clean( &p_dec->fmt_out );
     free( p_dec->p_sys );
 }
 
@@ -255,9 +260,13 @@ static block_t *Packetize ( decoder_t *p_dec, block_t **pp_block )
     block_t *p_ret = p_dec->p_sys->p_block;
 
     if( pp_block == NULL || *pp_block == NULL )
+        return NULL;
+    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
     {
+        block_Release( *pp_block );
         return NULL;
     }
+
     p_block = *pp_block;
     *pp_block = NULL;
 
@@ -290,9 +299,13 @@ static block_t *PacketizeSub( decoder_t *p_dec, block_t **pp_block )
     block_t *p_block;
 
     if( pp_block == NULL || *pp_block == NULL )
+        return NULL;
+    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
     {
+        block_Release( *pp_block );
         return NULL;
     }
+
     p_block = *pp_block;
     *pp_block = NULL;
 

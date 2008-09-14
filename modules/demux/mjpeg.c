@@ -2,7 +2,7 @@
  * mjpeg.c : demuxes mjpeg webcam http streams
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: d5d126872b960f8897ab0914c87ed6e5d25caf86 $
+ * $Id: 7f76650255d283bd67a3d5ee43a63473f651012a $
  *
  * Authors: Henry Jen (slowhog) <henryjen@ztune.net>
  *          Derk-Jan Hartman (thedj)
@@ -27,12 +27,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <codecs.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_demux.h>
+
+#include <vlc_codecs.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -47,12 +51,12 @@ static void Close( vlc_object_t * );
 
 vlc_module_begin();
     set_shortname( "MJPEG");
-    set_description( _("M-JPEG camera demuxer") );
-    set_capability( "demux2", 5 );
+    set_description( N_("M-JPEG camera demuxer") );
+    set_capability( "demux", 5 );
     set_callbacks( Open, Close );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_DEMUX );
-    add_float( "mjpeg-fps", 0.0, NULL, FPS_TEXT, FPS_LONGTEXT, VLC_FALSE );
+    add_float( "mjpeg-fps", 0.0, NULL, FPS_TEXT, FPS_LONGTEXT, false );
 vlc_module_end();
 
 /*****************************************************************************
@@ -67,7 +71,7 @@ struct demux_sys_t
     es_format_t     fmt;
     es_out_id_t     *p_es;
 
-    vlc_bool_t      b_still;
+    bool      b_still;
     mtime_t         i_still_end;
     mtime_t         i_still_length;
 
@@ -75,15 +79,16 @@ struct demux_sys_t
     mtime_t         i_frame_length;
     char            *psz_separator;
     int             i_frame_size_estimate;
-    uint8_t         *p_peek;
+    const uint8_t   *p_peek;
     int             i_data_peeked;
+    int             i_level;
 };
 
 /*****************************************************************************
  * Peek: Helper function to peek data with incremental size.
- * \return VLC_FALSE if peek no more data, VLC_TRUE otherwise.
+ * \return false if peek no more data, true otherwise.
  *****************************************************************************/
-static vlc_bool_t Peek( demux_t *p_demux, vlc_bool_t b_first )
+static bool Peek( demux_t *p_demux, bool b_first )
 {
     int i_data;
     demux_sys_t *p_sys = p_demux->p_sys;
@@ -101,15 +106,15 @@ static vlc_bool_t Peek( demux_t *p_demux, vlc_bool_t b_first )
     if( i_data == p_sys->i_data_peeked )
     {
         msg_Warn( p_demux, "no more data" );
-        return VLC_FALSE;
+        return false;
     }
     p_sys->i_data_peeked = i_data;
     if( i_data <= 0 )
     {
         msg_Warn( p_demux, "cannot peek data" );
-        return VLC_FALSE;
+        return false;
     }
-    return VLC_TRUE;
+    return true;
 }
 
 /*****************************************************************************
@@ -118,14 +123,14 @@ static vlc_bool_t Peek( demux_t *p_demux, vlc_bool_t b_first )
 static char* GetLine( demux_t *p_demux, int *p_pos )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    uint8_t     *p_buf;
+    const uint8_t *p_buf;
     int         i_size;
     int         i;
     char        *p_line;
 
     while( *p_pos > p_sys->i_data_peeked )
     {
-        if( ! Peek( p_demux, VLC_FALSE ) )
+        if( ! Peek( p_demux, false ) )
         {
             return NULL;
         }
@@ -138,7 +143,7 @@ static char* GetLine( demux_t *p_demux, int *p_pos )
         i++;
         if( i == i_size )
         {
-            if( ! Peek( p_demux, VLC_FALSE ) )
+            if( ! Peek( p_demux, false ) )
             {
                 return NULL;
             }
@@ -152,12 +157,9 @@ static char* GetLine( demux_t *p_demux, int *p_pos )
         i--;
     }
     p_line = malloc( i + 1 );
-    if( NULL == p_line )
-    {
-        msg_Err( p_demux, "out of memory" );
+    if( p_line == NULL )
         return NULL;
-    }
-    strncpy ( p_line, (char *)p_buf, i );
+    strncpy ( p_line, (char*)p_buf, i );
     p_line[i] = '\0';
 //    msg_Dbg( p_demux, "i = %d, pos = %d, %s", i, *p_pos, p_line );
     return p_line;
@@ -167,32 +169,32 @@ static char* GetLine( demux_t *p_demux, int *p_pos )
  * CheckMimeHeader: Internal function used to verify and skip mime header
  * \param p_header_size Return size of MIME header, 0 if no MIME header
  * detected, minus value if error
- * \return VLC_TRUE if content type is image/jpeg, VLC_FALSE otherwise
+ * \return true if content type is image/jpeg, false otherwise
  *****************************************************************************/
-static vlc_bool_t CheckMimeHeader( demux_t *p_demux, int *p_header_size )
+static bool CheckMimeHeader( demux_t *p_demux, int *p_header_size )
 {
-    vlc_bool_t  b_jpeg = VLC_FALSE;
+    bool  b_jpeg = false;
     int         i_pos;
     char        *psz_line;
     char        *p_ch;
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    if( !Peek( p_demux, VLC_TRUE ) )
+    if( !Peek( p_demux, true ) )
     {
         msg_Err( p_demux, "cannot peek" );
         *p_header_size = -1;
-        return VLC_FALSE;
+        return false;
     }
     if( p_sys->i_data_peeked < 3)
     {
         msg_Err( p_demux, "data shortage" );
         *p_header_size = -2;
-        return VLC_FALSE;
+        return false;
     }
     if( strncmp( (char *)p_sys->p_peek, "--", 2 ) )
     {
         *p_header_size = 0;
-        return VLC_FALSE;
+        return false;
     }
     i_pos = 2;
     psz_line = GetLine( p_demux, &i_pos );
@@ -200,7 +202,7 @@ static vlc_bool_t CheckMimeHeader( demux_t *p_demux, int *p_header_size )
     {
         msg_Err( p_demux, "no EOL" );
         *p_header_size = -3;
-        return VLC_FALSE;
+        return false;
     }
 
     /* Read the separator and remember it if not yet stored */
@@ -230,11 +232,11 @@ static vlc_bool_t CheckMimeHeader( demux_t *p_demux, int *p_header_size )
             if( strncasecmp( p_ch, "image/jpeg", 10 ) )
             {
                 msg_Warn( p_demux, "%s, image/jpeg is expected", psz_line );
-                b_jpeg = VLC_FALSE;
+                b_jpeg = false;
             }
             else
             {
-                b_jpeg = VLC_TRUE;
+                b_jpeg = true;
             }
         }
         else
@@ -249,7 +251,7 @@ static vlc_bool_t CheckMimeHeader( demux_t *p_demux, int *p_header_size )
     {
         msg_Err( p_demux, "no EOL" );
         *p_header_size = -3;
-        return VLC_FALSE;
+        return false;
     }
 
     free( psz_line );
@@ -299,14 +301,14 @@ static int Open( vlc_object_t * p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
     int         i_size;
-    int         b_matched = VLC_FALSE;
+    int         b_matched = false;
     vlc_value_t val;
-    char *psz_ext;
 
     p_demux->pf_control = Control;
     p_demux->p_sys      = p_sys = malloc( sizeof( demux_sys_t ) );
     p_sys->p_es         = NULL;
     p_sys->i_time       = 0;
+    p_sys->i_level      = 0;
 
     p_sys->psz_separator = NULL;
     p_sys->i_frame_size_estimate = 15 * 1024;
@@ -324,6 +326,7 @@ static int Open( vlc_object_t * p_this )
         {
             msg_Dbg( p_demux, "JPEG SOI marker detected" );
             p_demux->pf_demux = MjpgDemux;
+            p_sys->i_level++;
         }
         else
         {
@@ -341,16 +344,15 @@ static int Open( vlc_object_t * p_this )
     p_sys->i_frame_length = 0;
 
     /* Check for jpeg file extension */
-    p_sys->b_still = VLC_FALSE;
+    p_sys->b_still = false;
     p_sys->i_still_end = 0;
-    psz_ext = strrchr( p_demux->psz_path, '.' );
-    if( psz_ext && ( !strcasecmp( psz_ext, ".jpeg" ) ||
-                     !strcasecmp( psz_ext, ".jpg" ) ) )
+    if( demux_IsPathExtension( p_demux, ".jpeg" ) ||
+        demux_IsPathExtension( p_demux, ".jpg" ) )
     {
-        p_sys->b_still = VLC_TRUE;
+        p_sys->b_still = true;
         if( val.f_float)
         {
-            p_sys->i_still_length =1000000.0 / val.f_float;
+            p_sys->i_still_length = 1000000.0 / val.f_float;
         }
         else
         {
@@ -395,7 +397,7 @@ static int MjpgDemux( demux_t *p_demux )
         return 1;
     }
 
-    if( !Peek( p_demux, VLC_TRUE ) )
+    if( !Peek( p_demux, true ) )
     {
         msg_Warn( p_demux, "cannot peek data" );
         return 0;
@@ -406,14 +408,20 @@ static int MjpgDemux( demux_t *p_demux )
         return 0;
     }
     i = 3;
+FIND_NEXT_EOI:
     while( !( 0xFF == p_sys->p_peek[i-1] && 0xD9 == p_sys->p_peek[i] ) )
     {
+        if( 0xFF == p_sys->p_peek[i-1] && 0xD8 == p_sys->p_peek[i] )
+        {
+            p_sys->i_level++;
+            msg_Dbg( p_demux, "we found another JPEG SOI at %d", i );
+        }
         i++;
         if( i >= p_sys->i_data_peeked )
         {
             msg_Dbg( p_demux, "did not find JPEG EOI in %d bytes",
                      p_sys->i_data_peeked );
-            if( !Peek( p_demux, VLC_FALSE ) )
+            if( !Peek( p_demux, false ) )
             {
                 msg_Warn( p_demux, "no more data is available at the moment" );
                 return 0;
@@ -423,6 +431,10 @@ static int MjpgDemux( demux_t *p_demux )
     i++;
 
     msg_Dbg( p_demux, "JPEG EOI detected at %d", i );
+    p_sys->i_level--;
+
+    if( p_sys->i_level > 0 )
+        goto FIND_NEXT_EOI;
     return SendBlock( p_demux, i );
 }
 
@@ -430,10 +442,9 @@ static int MimeDemux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     int         i_size, i;
-    vlc_bool_t  b_match;
-    vlc_bool_t  b_done;
 
-    b_match = CheckMimeHeader( p_demux, &i_size );
+    bool  b_match = CheckMimeHeader( p_demux, &i_size );
+
     if( i_size > 0 )
     {
         stream_Read( p_demux->s, NULL, i_size );
@@ -445,14 +456,15 @@ static int MimeDemux( demux_t *p_demux )
     else
     {
         // No MIME header, assume OK
-        b_match = VLC_TRUE;
+        b_match = true;
     }
 
-    if( !Peek( p_demux, VLC_TRUE ) )
+    if( !Peek( p_demux, true ) )
     {
         msg_Warn( p_demux, "cannot peek data" );
         return 0;
     }
+
     i = 0;
     i_size = strlen( p_sys->psz_separator ) + 2;
     if( p_sys->i_data_peeked < i_size )
@@ -460,8 +472,8 @@ static int MimeDemux( demux_t *p_demux )
         msg_Warn( p_demux, "data shortage" );
         return 0;
     }
-    b_done = VLC_FALSE;
-    while( !b_done )
+
+    for( ;; )
     {
         while( !( p_sys->p_peek[i] == '-' && p_sys->p_peek[i+1] == '-' ) )
         {
@@ -472,7 +484,7 @@ static int MimeDemux( demux_t *p_demux )
                 msg_Dbg( p_demux, "MIME boundary not found in %d bytes of "
                          "data", p_sys->i_data_peeked );
 
-                if( !Peek( p_demux, VLC_FALSE ) )
+                if( !Peek( p_demux, false ) )
                 {
                     msg_Warn( p_demux, "no more data is available at the "
                               "moment" );
@@ -480,16 +492,15 @@ static int MimeDemux( demux_t *p_demux )
                 }
             }
         }
+
         if( !strncmp( p_sys->psz_separator, (char *)(p_sys->p_peek + i + 2),
                       strlen( p_sys->psz_separator ) ) )
         {
-            b_done = VLC_TRUE;
+            break;
         }
-        else
-        {
-            i++;
-            i_size++;
-        }
+
+        i++;
+        i_size++;
     }
 
     if( !b_match )
@@ -510,10 +521,7 @@ static void Close ( vlc_object_t * p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys  = p_demux->p_sys;
 
-    if( p_sys->psz_separator )
-    {
-        free( p_sys->psz_separator );
-    }
+    free( p_sys->psz_separator );
     free( p_sys );
 }
 
@@ -522,5 +530,5 @@ static void Close ( vlc_object_t * p_this )
  *****************************************************************************/
 static int Control( demux_t *p_demux, int i_query, va_list args )
 {
-    return demux2_vaControlHelper( p_demux->s, 0, 0, 0, 0, i_query, args );
+    return demux_vaControlHelper( p_demux->s, 0, 0, 0, 0, i_query, args );
 }

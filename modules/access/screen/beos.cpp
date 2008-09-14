@@ -2,7 +2,7 @@
  * beos.cpp: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 1f87bee1884e86eb10011b5fba92a1145f836cbd $
+ * $Id$
  *
  * Authors: Eric Petit <titer@m0k.org>
  *
@@ -21,10 +21,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #include <Screen.h>
 #include <Bitmap.h>

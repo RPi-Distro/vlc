@@ -2,7 +2,7 @@
  * preferences_widgets.h : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2003 the VideoLAN team
- * $Id: b615fa18c31782a33fb2c1818d92c9587382d5c4 $
+ * $Id$
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -36,7 +36,7 @@ public:
 
     char *GetName();
     int GetType();
-    vlc_bool_t IsAdvanced();
+    bool IsAdvanced();
 
     void SetUpdateCallback( void (*)( void * ), void * );
 
@@ -55,7 +55,7 @@ private:
 
     char *name;
     int i_type;
-    vlc_bool_t b_advanced;
+    bool b_advanced;
 };
 
 ConfigControl *CreateConfigControl( vlc_object_t *,

@@ -2,7 +2,7 @@
  * image.c : image video output
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: 0eb3767c89fb0f903af2c8d09e553c56e8ede6b4 $
+ * $Id: 3bcecbcbe8272bda2b86b1af99548373b5f878e5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -24,13 +24,18 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
+#include <vlc_interface.h>
 
 #include "vlc_image.h"
+#include "vlc_strings.h"
 
 /*****************************************************************************
  * Local prototypes
@@ -72,31 +77,39 @@ static void Display   ( vout_thread_t *, picture_t * );
                             "creating one file per image. In this case, " \
                              "the number is not appended to the filename." )
 
-static char *psz_format_list[] = { "png", "jpeg" };
-static char *psz_format_list_text[] = { "PNG", "JPEG" };
+static const char *const psz_format_list[] = { "png", "jpeg" };
+static const char *const psz_format_list_text[] = { "PNG", "JPEG" };
+
+#define CFG_PREFIX "image-out-"
 
 vlc_module_begin( );
-    set_shortname( _( "Image file" ) );
-    set_description( _( "Image video output" ) );
+    set_shortname( N_( "Image file" ) );
+    set_description( N_( "Image video output" ) );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VOUT );
     set_capability( "video output", 0 );
 
-    add_string( "image-out-format", "png", NULL,  FORMAT_TEXT, FORMAT_LONGTEXT,
-                                                  VLC_FALSE );
+    add_string(  CFG_PREFIX "format", "png", NULL,
+                 FORMAT_TEXT, FORMAT_LONGTEXT, false );
     change_string_list( psz_format_list, psz_format_list_text, 0 );
-    add_integer( "image-width", -1, NULL,  WIDTH_TEXT, WIDTH_LONGTEXT,
-                                                  VLC_TRUE );
-    add_integer( "image-height", -1, NULL,  HEIGHT_TEXT, HEIGHT_LONGTEXT,
-                                                  VLC_TRUE );
-    add_integer( "image-out-ratio", 3, NULL, RATIO_TEXT, RATIO_LONGTEXT,
-                                                  VLC_FALSE );
-    add_string( "image-out-prefix", "img", NULL, PREFIX_TEXT, PREFIX_LONGTEXT,
-                                                  VLC_FALSE );
-    add_bool( "image-out-replace", 0, NULL, REPLACE_TEXT, REPLACE_LONGTEXT,
-                                                  VLC_FALSE );
+    add_integer( CFG_PREFIX "width", 0, NULL,
+                 WIDTH_TEXT, WIDTH_LONGTEXT, true );
+        add_deprecated_alias( "image-width" ); /* since 0.9.0 */
+    add_integer( CFG_PREFIX "height", 0, NULL,
+                 HEIGHT_TEXT, HEIGHT_LONGTEXT, true );
+        add_deprecated_alias( "image-height" ); /* since 0.9.0 */
+    add_integer( CFG_PREFIX "ratio", 3, NULL,
+                 RATIO_TEXT, RATIO_LONGTEXT, false );
+    add_string(  CFG_PREFIX "prefix", "img", NULL,
+                 PREFIX_TEXT, PREFIX_LONGTEXT, false );
+    add_bool(    CFG_PREFIX "replace", 0, NULL,
+                 REPLACE_TEXT, REPLACE_LONGTEXT, false );
     set_callbacks( Create, Destroy );
 vlc_module_end();
+
+static const char *const ppsz_vout_options[] = {
+    "format", "width", "height", "ratio", "prefix", "replace", NULL
+};
 
 /*****************************************************************************
  * vout_sys_t: video output descriptor
@@ -107,18 +120,19 @@ struct vout_sys_t
     char        *psz_format;          /* Format */
     int         i_ratio;         /* Image ratio */
 
-    int         i_width;         /* Image width */
-    int         i_height;       /* Image height */
+    unsigned int i_width;        /* Image width */
+    unsigned int i_height;      /* Image height */
 
     int         i_current;     /* Current image */
     int         i_frames;   /* Number of frames */
 
-    vlc_bool_t  b_replace;
+    bool  b_replace;
+
+    bool b_time;
+    bool b_meta;
 
     image_handler_t *p_image;
 };
-
-#define FREE( p ) if( p ) { free( p ); p = NULL; }
 
 /*****************************************************************************
  * Create: allocates video thread
@@ -134,26 +148,34 @@ static int Create( vlc_object_t *p_this )
     if( ! p_vout->p_sys )
         return VLC_ENOMEM;
 
+    config_ChainParse( p_vout, CFG_PREFIX, ppsz_vout_options,
+                       p_vout->p_cfg );
+
     p_vout->p_sys->psz_prefix =
-            var_CreateGetString( p_this, "image-out-prefix" );
+            var_CreateGetString( p_this, CFG_PREFIX "prefix" );
+    p_vout->p_sys->b_time = strchr( p_vout->p_sys->psz_prefix, '%' )
+                            ? true : false;
+    p_vout->p_sys->b_meta = strchr( p_vout->p_sys->psz_prefix, '$' )
+                            ? true : false;
     p_vout->p_sys->psz_format =
-            var_CreateGetString( p_this, "image-out-format" );
+            var_CreateGetString( p_this, CFG_PREFIX "format" );
     p_vout->p_sys->i_width =
-            var_CreateGetInteger( p_this, "image-width" );
+            var_CreateGetInteger( p_this, CFG_PREFIX "width" );
     p_vout->p_sys->i_height =
-            var_CreateGetInteger( p_this, "image-height" );
+            var_CreateGetInteger( p_this, CFG_PREFIX "height" );
     p_vout->p_sys->i_ratio =
-            var_CreateGetInteger( p_this, "image-out-ratio" );
+            var_CreateGetInteger( p_this, CFG_PREFIX "ratio" );
     p_vout->p_sys->b_replace =
-            var_CreateGetBool( p_this, "image-out-replace" );
+            var_CreateGetBool( p_this, CFG_PREFIX "replace" );
     p_vout->p_sys->i_current = 0;
     p_vout->p_sys->p_image = image_HandlerCreate( p_vout );
 
     if( !p_vout->p_sys->p_image )
     {
         msg_Err( p_this, "unable to create image handler") ;
-        FREE( p_vout->p_sys->psz_prefix );
-        FREE( p_vout->p_sys );
+        FREENULL( p_vout->p_sys->psz_prefix );
+        FREENULL( p_vout->p_sys->psz_format );
+        FREENULL( p_vout->p_sys );
         return VLC_EGENERIC;
     }
 
@@ -239,9 +261,9 @@ static void Destroy( vlc_object_t *p_this )
 
     /* Destroy structure */
     image_HandlerDelete( p_vout->p_sys->p_image );
-    FREE( p_vout->p_sys->psz_prefix );
-    FREE( p_vout->p_sys->psz_format );
-    FREE( p_vout->p_sys );
+    FREENULL( p_vout->p_sys->psz_prefix );
+    FREENULL( p_vout->p_sys->psz_format );
+    FREENULL( p_vout->p_sys );
 }
 
 /*****************************************************************************
@@ -251,9 +273,14 @@ static void Destroy( vlc_object_t *p_this )
  *****************************************************************************/
 static void Display( vout_thread_t *p_vout, picture_t *p_pic )
 {
-    video_format_t fmt_in = {0}, fmt_out = {0};
+    video_format_t fmt_in, fmt_out;
 
     char *psz_filename;
+    char *psz_prefix;
+    char *psz_tmp;
+
+    memset( &fmt_in, 0, sizeof( fmt_in ) );
+    memset( &fmt_out, 0, sizeof( fmt_out ) );
 
     if( p_vout->p_sys->i_frames % p_vout->p_sys->i_ratio != 0 )
     {
@@ -261,29 +288,50 @@ static void Display( vout_thread_t *p_vout, picture_t *p_pic )
         return;
     }
     p_vout->p_sys->i_frames++;
-    psz_filename = (char *)malloc( 10 + strlen( p_vout->p_sys->psz_prefix )
-                                      + strlen( p_vout->p_sys->psz_format ) );
 
     fmt_in.i_chroma = p_vout->render.i_chroma;
     fmt_in.i_width = p_vout->render.i_width;
     fmt_in.i_height = p_vout->render.i_height;
 
-    fmt_out.i_width = p_vout->p_sys->i_width > 0 ? p_vout->p_sys->i_width :
+    fmt_out.i_width = (p_vout->p_sys->i_width > 0) ? p_vout->p_sys->i_width :
                                                    p_vout->render.i_width;
-    fmt_out.i_height = p_vout->p_sys->i_height > 0 ? p_vout->p_sys->i_height :
+    fmt_out.i_height = (p_vout->p_sys->i_height > 0) ? p_vout->p_sys->i_height :
                                                      p_vout->render.i_height;
+
+    if( p_vout->p_sys->b_time )
+    {
+        psz_tmp = str_format_time( p_vout->p_sys->psz_prefix );
+        path_sanitize( psz_tmp );
+    }
+    else
+        psz_tmp = p_vout->p_sys->psz_prefix;
+    if( p_vout->p_sys->b_meta )
+    {
+        psz_prefix = str_format_meta( p_vout, psz_tmp );
+        path_sanitize( psz_prefix );
+        if( p_vout->p_sys->b_time )
+            free( psz_tmp );
+    }
+    else
+        psz_prefix = psz_tmp;
+    psz_filename = (char *)malloc( 10 + strlen( psz_prefix )
+                                      + strlen( p_vout->p_sys->psz_format ) );
+    if( !psz_filename )
+        return;
 
     if( p_vout->p_sys->b_replace )
     {
-        sprintf( psz_filename, "%s.%s", p_vout->p_sys->psz_prefix,
-                                            p_vout->p_sys->psz_format );
+        sprintf( psz_filename, "%s.%s", psz_prefix,
+                                        p_vout->p_sys->psz_format );
     }
     else
     {
-        sprintf( psz_filename, "%s%.6i.%s", p_vout->p_sys->psz_prefix,
+        sprintf( psz_filename, "%s%.6i.%s", psz_prefix,
                                             p_vout->p_sys->i_current,
                                             p_vout->p_sys->psz_format );
     }
+    if( p_vout->p_sys->b_time || p_vout->p_sys->b_meta )
+        free( psz_prefix );
     image_WriteUrl( p_vout->p_sys->p_image, p_pic,
                     &fmt_in, &fmt_out, psz_filename ) ;
     free( psz_filename );
@@ -296,4 +344,5 @@ static void Display( vout_thread_t *p_vout, picture_t *p_pic )
 
 static void End( vout_thread_t *p_vout )
 {
+    VLC_UNUSED(p_vout);
 }

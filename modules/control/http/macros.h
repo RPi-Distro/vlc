@@ -2,7 +2,7 @@
  * macros.h : Macros mapping for the HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: c629bf1f7c0f01e077c3c2bc8b8ec0949692fe0f $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -74,9 +74,9 @@ enum macroType
 };
 
 /* Static mapping of macros type to macro strings */
-static struct
+static const struct
 {
-    char *psz_name;
+    const char *psz_name;
     int  i_type;
 }
 StrToMacroTypeTab [] =

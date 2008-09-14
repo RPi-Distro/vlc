@@ -2,7 +2,7 @@
  * libcsa.c: CSA scrambler/descrambler
  *****************************************************************************
  * Copyright (C) 2004-2005 Laurent Aimar
- * $Id: 11fde62450bd9cc60a4dc9b169b70abe7e011c54 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -27,8 +27,11 @@
  * author and the license. If there is a problem with it please e-mail me.
  */
 
-#include <stdlib.h>
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #include "csa.h"
 
@@ -47,6 +50,8 @@ struct csa_t
     int     X, Y, Z;
     int     D, E, F;
     int     p, q, r;
+
+    bool    use_odd;
 };
 
 static void csa_ComputeKey( uint8_t kk[57], uint8_t ck[8] );
@@ -59,7 +64,7 @@ static void csa_BlockCypher( uint8_t kk[57], uint8_t bd[8], uint8_t ib[8] );
 /*****************************************************************************
  * csa_New:
  *****************************************************************************/
-csa_t *csa_New()
+csa_t *csa_New( void )
 {
     csa_t *c = malloc( sizeof( csa_t ) );
     memset( c, 0, sizeof( csa_t ) );
@@ -78,13 +83,68 @@ void   csa_Delete( csa_t *c )
 /*****************************************************************************
  * csa_SetCW:
  *****************************************************************************/
-void csa_SetCW( csa_t *c, uint8_t o_ck[8], uint8_t e_ck[8] )
+int csa_SetCW( vlc_object_t *p_caller, csa_t *c, char *psz_ck, bool set_odd )
 {
-    memcpy( c->o_ck, o_ck, 8 );
-    csa_ComputeKey( c->o_kk, o_ck );
+    if ( !c )
+    {
+        msg_Dbg( p_caller, "no CSA found" );
+        return VLC_ENOOBJ;
+    }
+    /* skip 0x */
+    if( psz_ck[0] == '0' && ( psz_ck[1] == 'x' || psz_ck[1] == 'X' ) )
+    {
+        psz_ck += 2;
+    }
+    if( strlen( psz_ck ) != 16 )
+    {
+        msg_Warn( p_caller, "invalid csa ck (it must be 16 chars long)" );
+        return VLC_EBADVAR;
+    }
+    else
+    {
+#ifndef UNDER_CE
+        uint64_t i_ck = strtoull( psz_ck, NULL, 16 );
+#else
+        uint64_t i_ck = strtoll( psz_ck, NULL, 16 );
+#endif
+        uint8_t  ck[8];
+        int      i;
 
-    memcpy( c->e_ck, e_ck, 8 );
-    csa_ComputeKey( c->e_kk, e_ck );
+        for( i = 0; i < 8; i++ )
+        {
+            ck[i] = ( i_ck >> ( 56 - 8*i) )&0xff;
+        }
+#ifndef TS_NO_CSA_CK_MSG
+        msg_Dbg( p_caller, "using CSA (de)scrambling with %s "
+                 "key=%x:%x:%x:%x:%x:%x:%x:%x", set_odd ? "odd" : "even",
+                 ck[0], ck[1], ck[2], ck[3], ck[4], ck[5], ck[6], ck[7] );
+#endif
+        if( set_odd )
+        {
+            memcpy( c->o_ck, ck, 8 );
+            csa_ComputeKey( c->o_kk, ck );
+        }
+        else
+        {
+            memcpy( c->e_ck , ck, 8 );
+            csa_ComputeKey( c->e_kk , ck );
+        }
+        return VLC_SUCCESS;
+    }
+}
+
+/*****************************************************************************
+ * csa_UseKey:
+ *****************************************************************************/
+int csa_UseKey( vlc_object_t *p_caller, csa_t *c, bool use_odd )
+{
+    if ( !c ) return VLC_ENOOBJ;
+    c->use_odd = use_odd;
+#ifndef TS_NO_CSA_CK_MSG
+        msg_Dbg( p_caller, "using the %s key for scrambling",
+                 use_odd ? "odd" : "even" );
+#endif
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -137,8 +197,8 @@ void csa_Decrypt( csa_t *c, uint8_t *pkt, int i_pkt_size )
     n = (i_pkt_size - i_hdr) / 8;
     if( n < 0 )
         return;
-        
-    i_residue = (i_pkt_size - i_hdr) % 8;    
+ 
+    i_residue = (i_pkt_size - i_hdr) % 8;
     for( i = 1; i < n + 1; i++ )
     {
         csa_BlockDecypher( kk, ib, block );
@@ -179,7 +239,7 @@ void csa_Decrypt( csa_t *c, uint8_t *pkt, int i_pkt_size )
 /*****************************************************************************
  * csa_Encrypt:
  *****************************************************************************/
-void csa_Encrypt( csa_t *c, uint8_t *pkt, int i_pkt_size, int b_odd )
+void csa_Encrypt( csa_t *c, uint8_t *pkt, int i_pkt_size )
 {
     uint8_t *ck;
     uint8_t *kk;
@@ -191,13 +251,10 @@ void csa_Encrypt( csa_t *c, uint8_t *pkt, int i_pkt_size, int b_odd )
 
     /* set transport scrambling control */
     pkt[3] |= 0x80;
-    if( b_odd )
+
+    if( c->use_odd )
     {
         pkt[3] |= 0x40;
-    }
-
-    if( b_odd )
-    {
         ck = c->o_ck;
         kk = c->o_kk;
     }
@@ -278,7 +335,7 @@ static void csa_ComputeKey( uint8_t kk[57], uint8_t ck[8] )
     int i,j,k;
     int bit[64];
     int newbit[64];
-    int kb[9][8];
+    int kb[8][9];
 
     /* from a cw create 56 key bytes, here kk[1..56] */
 

@@ -2,7 +2,7 @@
  * vlc_vod.h: interface for VoD server modules
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: e91c28231b7deaa0b8ed3383113692518acb76d4 $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -21,8 +21,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_VOD_H
-#define _VLC_VOD_H 1
+#ifndef VLC_VOD_H
+#define VLC_VOD_H 1
+
+/**
+ * \file
+ * This file defines an interface for VOD server modules in vlc
+ */
+
+/**
+ * \defgroup server Video On Demand (VOD)
+ * Video On Demand (VOD) functionality is provided from VLM.
+ * @{
+ */
 
 struct vod_t
 {
@@ -43,7 +54,7 @@ struct vod_t
 };
 
 static inline int vod_MediaControl( vod_t *p_vod, vod_media_t *p_media,
-                                    char *psz_id, int i_query, ... )
+                                    const char *psz_id, int i_query, ... )
 {
     va_list args;
     int i_result;
@@ -59,10 +70,14 @@ static inline int vod_MediaControl( vod_t *p_vod, vod_media_t *p_media,
 
 enum vod_query_e
 {
-    VOD_MEDIA_PLAY,         /* arg1= double *       res=    */
-    VOD_MEDIA_PAUSE,        /* arg1= double *       res=    */
-    VOD_MEDIA_STOP,         /* arg1= double         res=can fail    */
-    VOD_MEDIA_SEEK,         /* arg1= double *       res=    */
+    VOD_MEDIA_PLAY,         /* arg1= char *         res=    */
+    VOD_MEDIA_PAUSE,        /* arg1=                res=    */
+    VOD_MEDIA_STOP,         /* arg1=                res=can fail    */
+    VOD_MEDIA_SEEK,         /* arg1= double         res=    */
+    VOD_MEDIA_REWIND,       /* arg1= double         res=    */
+    VOD_MEDIA_FORWARD,      /* arg1= double         res=    */
 };
+
+/**}*/
 
 #endif

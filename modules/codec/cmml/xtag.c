@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2000-2004 the VideoLAN team
  *
- * $Id: e70dfe7899251c9d6fba8153e9386f059dd83e38 $
+ * $Id$
  *
  * Authors: Conrad Parker <Conrad.Parker@csiro.au>
  *          Andre Pang <Andre.Pang@csiro.au>
@@ -24,16 +24,19 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
-#include "config.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <ctype.h>
-#include <string.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <xlist.h>
+
+#include <assert.h>
 
 #undef XTAG_DEBUG
 
@@ -79,6 +82,15 @@ struct _XTagParser {
   char * start;
   char * end;
 };
+
+XTag * xtag_free (XTag * xtag);
+XTag * xtag_new_parse (const char * s, int n);
+char * xtag_get_name (XTag * xtag);
+char * xtag_get_pcdata (XTag * xtag);
+char * xtag_get_attribute (XTag * xtag, char * attribute);
+XTag * xtag_first_child (XTag * xtag, char * name);
+XTag * xtag_next_child (XTag * xtag, char * name);
+int    xtag_snprint (char * buf, int n, XTag * xtag);
 
 /* Character classes */
 #define X_NONE           0
@@ -176,7 +188,7 @@ xtag_skip_to (XTagParser * parser, int char_class)
     }
   }
 
-  return;  
+  return;
 }
 #endif
 
@@ -411,14 +423,14 @@ xtag_free (XTag * xtag)
 
   if (xtag == NULL) return NULL;
 
-  if (xtag->name) free (xtag->name);
-  if (xtag->pcdata) free (xtag->pcdata);
+  free( xtag->name );
+  free( xtag->pcdata );
 
   for (l = xtag->attributes; l; l = l->next) {
     if ((attr = (XAttribute *)l->data) != NULL) {
-      if (attr->name) free (attr->name);
-      if (attr->value) free (attr->value);
-      free (attr);
+      free( attr->name );
+      free( attr->value );
+      free( attr );
     }
   }
   xlist_free (xtag->attributes);
@@ -609,7 +621,7 @@ xtag_snprints (char * buf, int n, ...)
   int len, to_copy, total = 0;
 
   va_start (ap, n);
-  
+ 
   for (s = va_arg (ap, char *); s; s = va_arg (ap, char *)) {
     len = strlen (s);
 
@@ -658,19 +670,19 @@ xtag_snprint (char * buf, int n, XTag * xtag)
 
     for (l = xtag->attributes; l; l = l->next) {
       attr = (XAttribute *)l->data;
-      
+ 
       nn = xtag_snprints (buf, n, " ", attr->name, "=\"", attr->value, "\"",
                           NULL);
       FORWARD(nn);
     }
-    
+ 
     if (xtag->children == NULL) {
       nn = xtag_snprints (buf, n, "/>", NULL);
       FORWARD(nn);
 
       return written;
     }
-    
+ 
     nn = xtag_snprints (buf, n, ">", NULL);
     FORWARD(nn);
   }

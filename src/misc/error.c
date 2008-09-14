@@ -24,13 +24,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 /*****************************************************************************
  * vlc_error: strerror() equivalent
  *****************************************************************************
  * This function returns a string describing the error code passed in the
- * argument. A list of all errors can be found in include/vlc/vlc.h.
+ * argument. A list of all errors can be found in include/vlc_common.h.
  *****************************************************************************/
 char const * vlc_error ( int i_err )
 {
@@ -51,8 +55,6 @@ char const * vlc_error ( int i_err )
 
         case VLC_ENOOBJ:
             return "object not found";
-        case VLC_EBADOBJ:
-            return "bad object type";
 
         case VLC_ENOVAR:
             return "variable not found";

@@ -2,7 +2,7 @@
  * win32_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e4885b31e2af1b6698891d161b10ff705c48c80c $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -225,15 +225,16 @@ bool Win32Factory::init()
     }
 
     // Initialize the resource path
-    m_resourcePath.push_back( (string)getIntf()->p_vlc->psz_homedir +
-                               "\\" + CONFIG_DIR + "\\skins" );
-    m_resourcePath.push_back( (string)getIntf()->p_libvlc->psz_vlcpath +
+    char *datadir = config_GetUserDataDir();
+    m_resourcePath.push_back( (string)datadir + "\\skins" );
+    free( datadir );
+    m_resourcePath.push_back( (string)config_GetDataDir() +
                               "\\skins" );
-    m_resourcePath.push_back( (string)getIntf()->p_libvlc->psz_vlcpath +
+    m_resourcePath.push_back( (string)config_GetDataDir() +
                               "\\skins2" );
-    m_resourcePath.push_back( (string)getIntf()->p_libvlc->psz_vlcpath +
+    m_resourcePath.push_back( (string)config_GetDataDir() +
                               "\\share\\skins" );
-    m_resourcePath.push_back( (string)getIntf()->p_libvlc->psz_vlcpath +
+    m_resourcePath.push_back( (string)config_GetDataDir() +
                               "\\share\\skins2" );
 
     // All went well
@@ -365,13 +366,12 @@ int Win32Factory::getScreenHeight() const
 }
 
 
-Rect Win32Factory::getWorkArea() const
+SkinsRect Win32Factory::getWorkArea() const
 {
     RECT r;
     SystemParametersInfo( SPI_GETWORKAREA, 0, &r, 0 );
     // Fill a Rect object
-    Rect rect( r.left, r.top, r.right, r.bottom );
-    return rect;
+    return  SkinsRect( r.left, r.top, r.right, r.bottom );
 }
 
 

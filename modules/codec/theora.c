@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: fa1ae83f502a797c38435a77ce8351e00fb51e90 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,11 +24,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include <vlc/input.h>
-#include <vlc/sout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_vout.h>
+#include <vlc_sout.h>
+#include <vlc_input.h>
 #include <ogg/ogg.h>
 
 #include <theora/theora.h>
@@ -39,7 +44,7 @@
 struct decoder_sys_t
 {
     /* Module mode */
-    vlc_bool_t b_packetizer;
+    bool b_packetizer;
 
     /*
      * Input properties
@@ -56,7 +61,7 @@ struct decoder_sys_t
     /*
      * Decoding properties
      */
-    vlc_bool_t b_decoded_first_keyframe;
+    bool b_decoded_first_keyframe;
 
     /*
      * Common properties
@@ -96,29 +101,27 @@ vlc_module_begin();
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_VCODEC );
     set_shortname( "Theora" );
-    set_description( _("Theora video decoder") );
+    set_description( N_("Theora video decoder") );
     set_capability( "decoder", 100 );
     set_callbacks( OpenDecoder, CloseDecoder );
     add_shortcut( "theora" );
 
     add_submodule();
-    set_description( _("Theora video packetizer") );
+    set_description( N_("Theora video packetizer") );
     set_capability( "packetizer", 100 );
     set_callbacks( OpenPacketizer, CloseDecoder );
-    add_shortcut( "theora" );
 
     add_submodule();
-    set_description( _("Theora video encoder") );
+    set_description( N_("Theora video encoder") );
     set_capability( "encoder", 150 );
     set_callbacks( OpenEncoder, CloseEncoder );
-    add_shortcut( "theora" );
 
 #   define ENC_CFG_PREFIX "sout-theora-"
     add_integer( ENC_CFG_PREFIX "quality", 2, NULL, ENC_QUALITY_TEXT,
-                 ENC_QUALITY_LONGTEXT, VLC_FALSE );
+                 ENC_QUALITY_LONGTEXT, false );
 vlc_module_end();
 
-static const char *ppsz_enc_options[] = {
+static const char *const ppsz_enc_options[] = {
     "quality", NULL
 };
 
@@ -138,14 +141,11 @@ static int OpenDecoder( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
-    p_dec->p_sys->b_packetizer = VLC_FALSE;
+        return VLC_ENOMEM;
+    p_dec->p_sys->b_packetizer = false;
 
     p_sys->i_pts = 0;
-    p_sys->b_decoded_first_keyframe = VLC_FALSE;
+    p_sys->b_decoded_first_keyframe = false;
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = VIDEO_ES;
@@ -174,7 +174,7 @@ static int OpenPacketizer( vlc_object_t *p_this )
 
     if( i_ret == VLC_SUCCESS )
     {
-        p_dec->p_sys->b_packetizer = VLC_TRUE;
+        p_dec->p_sys->b_packetizer = true;
         p_dec->fmt_out.i_codec = VLC_FOURCC( 't', 'h', 'e', 'o' );
     }
 
@@ -218,7 +218,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         p_dec->fmt_in.p_extra =
             realloc( p_dec->fmt_in.p_extra, p_dec->fmt_in.i_extra +
                      oggpacket.bytes + 2 );
-        p_extra = p_dec->fmt_in.p_extra + p_dec->fmt_in.i_extra;
+        p_extra = ((uint8_t *)p_dec->fmt_in.p_extra) + p_dec->fmt_in.i_extra;
         *(p_extra++) = oggpacket.bytes >> 8;
         *(p_extra++) = oggpacket.bytes & 0xFF;
 
@@ -283,12 +283,33 @@ static int ProcessHeaders( decoder_t *p_dec )
     }
 
     /* Set output properties */
+    switch( p_sys->ti.pixelformat )
+    {
+      case OC_PF_420:
+        p_dec->fmt_out.i_codec = VLC_FOURCC( 'I','4','2','0' );
+        break;
+      case OC_PF_422:
+        p_dec->fmt_out.i_codec = VLC_FOURCC( 'I','4','2','2' );
+        break;
+      case OC_PF_444:
+        p_dec->fmt_out.i_codec = VLC_FOURCC( 'I','4','4','4' );
+        break;
+      case OC_PF_RSVD:
+      default:
+        msg_Err( p_dec, "unknown chroma in theora sample" );
+        break;
+    }
     p_dec->fmt_out.video.i_width = p_sys->ti.width;
     p_dec->fmt_out.video.i_height = p_sys->ti.height;
     if( p_sys->ti.frame_width && p_sys->ti.frame_height )
     {
-        p_dec->fmt_out.video.i_width = p_sys->ti.frame_width;
-        p_dec->fmt_out.video.i_height = p_sys->ti.frame_height;
+        p_dec->fmt_out.video.i_visible_width = p_sys->ti.frame_width;
+        p_dec->fmt_out.video.i_visible_height = p_sys->ti.frame_height;
+        if( p_sys->ti.offset_x || p_sys->ti.offset_y )
+        {
+            p_dec->fmt_out.video.i_x_offset = p_sys->ti.offset_x;
+            p_dec->fmt_out.video.i_y_offset = p_sys->ti.offset_y;
+        }
     }
 
     if( p_sys->ti.aspect_denominator && p_sys->ti.aspect_numerator )
@@ -441,7 +462,7 @@ static void *ProcessPacket( decoder_t *p_dec, ogg_packet *p_oggpacket,
     }
 
     /* Date management */
-    p_sys->i_pts += ( I64C(1000000) * p_sys->ti.fps_denominator /
+    p_sys->i_pts += ( INT64_C(1000000) * p_sys->ti.fps_denominator /
                       p_sys->ti.fps_numerator ); /* 1 frame per packet */
 
     return p_buf;
@@ -461,7 +482,7 @@ static picture_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
     /* Check for keyframe */
     if( !(p_oggpacket->packet[0] & 0x80) /* data packet */ &&
         !(p_oggpacket->packet[0] & 0x40) /* intra frame */ )
-        p_sys->b_decoded_first_keyframe = VLC_TRUE;
+        p_sys->b_decoded_first_keyframe = true;
 
     /* If we haven't seen a single keyframe yet, don't let Theora decode
      * anything, otherwise we'll get display artifacts.  (This is impossible
@@ -538,31 +559,20 @@ static void CloseDecoder( vlc_object_t *p_this )
 static void theora_CopyPicture( decoder_t *p_dec, picture_t *p_pic,
                                 yuv_buffer *yuv )
 {
-    int i_plane, i_line, i_width, i_dst_stride, i_src_stride;
-    int i_src_xoffset, i_src_yoffset;
+    int i_plane, i_line, i_dst_stride, i_src_stride;
     uint8_t *p_dst, *p_src;
 
     for( i_plane = 0; i_plane < p_pic->i_planes; i_plane++ )
     {
         p_dst = p_pic->p[i_plane].p_pixels;
         p_src = i_plane ? (i_plane - 1 ? yuv->v : yuv->u ) : yuv->y;
-        i_width = p_pic->p[i_plane].i_visible_pitch;
         i_dst_stride  = p_pic->p[i_plane].i_pitch;
         i_src_stride  = i_plane ? yuv->uv_stride : yuv->y_stride;
-        i_src_xoffset = p_dec->p_sys->ti.offset_x;
-        i_src_yoffset = p_dec->p_sys->ti.offset_y;
-        if( i_plane )
-        {
-            i_src_xoffset /= 2;
-            i_src_yoffset /= 2;
-        }
 
-        p_src += (i_src_yoffset * i_src_stride + i_src_xoffset);
-
-        for( i_line = 0; i_line < p_pic->p[i_plane].i_visible_lines; i_line++ )
+        for( i_line = 0; i_line < p_pic->p[i_plane].i_lines; i_line++ )
         {
-            p_dec->p_vlc->pf_memcpy( p_dst, p_src + i_src_xoffset,
-                                     i_plane ? yuv->uv_width : yuv->y_width );
+            vlc_memcpy( p_dst, p_src,
+                        i_plane ? yuv->uv_width : yuv->y_width );
             p_src += i_src_stride;
             p_dst += i_dst_stride;
         }
@@ -577,7 +587,7 @@ struct encoder_sys_t
     /*
      * Input properties
      */
-    vlc_bool_t b_headers;
+    bool b_headers;
 
     /*
      * Theora properties
@@ -609,17 +619,14 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_sys = (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_enc, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
     p_enc->p_sys = p_sys;
 
     p_enc->pf_encode_video = Encode;
     p_enc->fmt_in.i_codec = VLC_FOURCC('I','4','2','0');
     p_enc->fmt_out.i_codec = VLC_FOURCC('t','h','e','o');
 
-    sout_CfgParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
+    config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
 
     var_Get( p_enc, ENC_CFG_PREFIX "quality", &val );
     i_quality = val.i_int;

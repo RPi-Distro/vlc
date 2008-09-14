@@ -3,7 +3,7 @@
 
   -- #videolan
 %
-<Stef> bon j'ai trouvé d'où venait les trashs d'images
+<Stef> bon j'ai trouvÃ© d'oÃ¹ venait les trashs d'images
 <sam> t'es un dieu
 <Stef> bin justement ct de ma faute :)
 <sam> t'es une merde
@@ -16,7 +16,7 @@
 
   -- #videolan
 %
-<Stef> xav - AZRTYUUUUOP"'(-È
+<Stef> xav - AZRTYUUUUOP"'(-Ãˆ
 <Stef> oups je devrais pas nettoyer mon clavier par ici :)
 
   -- #videolan
@@ -53,15 +53,15 @@
 
   -- #livid
 %
-<stef> héhé, mais j'ai acheté une voiture :)
+<stef> hÃ©hÃ©, mais j'ai achetÃ© une voiture :)
 <Meuuh> ouaaah oh, quoi ?
 <stef> une petite 206 toute noire
 <reno> ce qu'il dit pas c'est que c'est une s16 ;)
-<Meuuh> ah 16 bits signés ?
+<Meuuh> ah 16 bits signÃ©s ?
 
   -- #videolan
 %
-<Meuuh> je l'ai pas testé, hein, faut pas déconner non plus
+<Meuuh> je l'ai pas testÃ©, hein, faut pas dÃ©conner non plus
 <Meuuh> c le boulot des users de tester
 
   -- #videolan
@@ -135,7 +135,7 @@
 
   -- #videolan
 %
-<alexis> c'est bon, Jérôme m'a envoyé le truc sans virus cette fois
+<alexis> c'est bon, JÃ©rÃ´me m'a envoyÃ© le truc sans virus cette fois
 
   -- #videolan
 %
@@ -170,7 +170,7 @@
 
   -- #videolan
 %
-<Meuuh> BTW, there is "Jeanne et le garçon formidable" on M6
+<Meuuh> BTW, there is "Jeanne et le garÃ§on formidable" on M6
 <Meuuh> this movie is so great
 <Meuuh> jlj you debug the http plug-in ? :p
 <jlj> well, you're so busy with Virginie Ledoyen, so I had to do it :)
@@ -261,26 +261,26 @@ the Boston strangler is to the woman home alone.
   -- #videolan
 %
 <sam> bah oui tu peux faire de la doc sur n'importe quoi hein
-<Meuuh> je fais bien une doc développeur vlc
-<Meuuh> comme si y'avait des développeurs vlc à part sam et moi !
+<Meuuh> je fais bien une doc dÃ©veloppeur vlc
+<Meuuh> comme si y'avait des dÃ©veloppeurs vlc Ã  part sam et moi !
 
   -- #videolan
 %
-<deepmind> pis comme ca je me tiens au courant de où va vlc :)
+<deepmind> pis comme ca je me tiens au courant de oÃ¹ va vlc :)
 <Meuuh> dans le mur ?
 <Meuuh> y'a sam qui rajoute du charbon, moi je m'agrippe au frein
 
   -- #videolan
 %
 <tooney> $grut Dnumgis 
-<gally> Dnumgis: tiår ditt og nødhavn klikk ?
+<gally> Dnumgis: tiÃ¥r ditt og nÃ¸dhavn klikk ?
 <Dnumgis> gally: og hva skulle det bety?
 <Dnumgis> gally: what was that supposed to mean?
 
   -- #videolan
 %
 <sam> $grut
-<gally> vekt yrer gøten øke utgjøre kan 
+<gally> vekt yrer gÃ¸ten Ã¸ke utgjÃ¸re kan 
 <Dnumgis> sam: you're insane
 <Dnumgis> someone have too much spare time
 <sam> definitely
@@ -289,7 +289,7 @@ the Boston strangler is to the woman home alone.
 
   -- #videolan
 %
-<Meuuh> mais putain de bordel de chiottes de bite à cul de merde de sa race
+<Meuuh> mais putain de bordel de chiottes de bite Ã  cul de merde de sa race
 <Dnumgis> I think it may be a good thing that i don't understand that
           sentence fully
 
@@ -381,9 +381,9 @@ the Boston strangler is to the woman home alone.
 
   -- #videolan
 %
-<bbp> et de toute façon ca sert a rien de coder sur vlc, ils changent tout a
-      chaque fois entre le moment ou on commence a écrire sa première ligne
-      de code et celui où on écrit la deuxième
+<bbp> et de toute faÃ§on ca sert a rien de coder sur vlc, ils changent tout a
+      chaque fois entre le moment ou on commence a Ã©crire sa premiÃ¨re ligne
+      de code et celui oÃ¹ on Ã©crit la deuxiÃ¨me
 
   -- #c00lz
 %
@@ -407,13 +407,13 @@ the Boston strangler is to the woman home alone.
 
   -- #videolan
 %
-<sam> p_input->stream.pp_areas ça commence à 0 ou à 1 ?
+<sam> p_input->stream.pp_areas Ã§a commence Ã  0 ou Ã  1 ?
 <sam> aaaah /* We start from 1 here since the default area 0 is reserved for
       video_ts.vob */
-<Meuuh> si c pas du code de porc ça mon bon monsieur
-<sam> mais alors l'area 0 elle sert à rien ou quoi ? :)
-<jobi> ben pour le vcd à rien du tout, si je me souviens bien
-<fenrir_> à ben voila ma piste qui disparaissait pour les cda...
+<Meuuh> si c pas du code de porc Ã§a mon bon monsieur
+<sam> mais alors l'area 0 elle sert Ã  rien ou quoi ? :)
+<jobi> ben pour le vcd Ã  rien du tout, si je me souviens bien
+<fenrir_> Ã  ben voila ma piste qui disparaissait pour les cda...
 
   -- #videolan, du code de pro
 %
@@ -431,10 +431,10 @@ the Boston strangler is to the woman home alone.
 
   -- #videolan
 %
-<sam> kali: j'ai raté mon train ...
+<sam> kali: j'ai ratÃ© mon train ...
 <sam> ben je voulais partir en belgique ce matin
 <ka|i> sam : a cause de la greve ou tu te reveilles ?
-<sam> mais ç'aurait été une mauvaise idée ...
+<sam> mais Ã§'aurait Ã©tÃ© une mauvaise idÃ©e ...
 <sam> vu qu'en fait c'est la semaine prochaine le fosdem !
 
   -- #videolan
@@ -442,7 +442,7 @@ the Boston strangler is to the woman home alone.
 <bbpig> tiens au fait y a des mauvais signal handlers dans le vlc ;P
 <Ipkiss> je crois qu'il n'y a pas de bons ou de mauvais signal handlers
 <bbpig> Ipkiss: ah ?
-<Ipkiss> si je devais résumer le vlc aujourd'hui...
+<Ipkiss> si je devais rÃ©sumer le vlc aujourd'hui...
 <tooney> c'est un effort commun de gens qui aiment, qui dansent l'opensource
 <tooney> qui chantent l'opensource
 
@@ -469,7 +469,7 @@ the Boston strangler is to the woman home alone.
     how to access Italian pay TVs, so don't ask"
 *** [MaDog] (MaDog@host41-156.pool80180.interbusiness.it) has joined channel
     #videolan
-<[MaDog]> c'è qualcuno ?????????
+<[MaDog]> c'Ã¨ qualcuno ?????????
 <Meuuh> read the topic
 <[MaDog]> :)
 <[MaDog]> xcuse me
@@ -498,7 +498,7 @@ the Boston strangler is to the woman home alone.
 
   -- #videolan
 %
-<sam> pour votre punition, ça sera un bootstrap chacun :P
+<sam> pour votre punition, Ã§a sera un bootstrap chacun :P
 <titer> c'est reparti pour 20 min
 <gibalou> c'est reparti pour 3 x 20 min
 <sam> c'est reparti pour une modif de Makefile.am d'ici 20 min
@@ -519,7 +519,7 @@ the Boston strangler is to the woman home alone.
 <sam> 168K    ChangeLog-2001
 <sam> 304K    ChangeLog-2002
 <sam> 488K    ChangeLog-2003
-<zorglub> conclusion: les dévs pipotent de plus en plus dans les messages de
+<zorglub> conclusion: les dÃ©vs pipotent de plus en plus dans les messages de
           commit
 
   -- #videolan
@@ -586,16 +586,16 @@ the Boston strangler is to the woman home alone.
           demuxer de mplayer ?
 <gibalou> zorglub: la meilleure doc c'est le code de mplayer/xine
 <zorglub> c'est bien ce que je craignais :)
-<zorglub> j'ai pas regardé xine ceci dit
-<zorglub> c'est plus agréable à lire que mplayer
+<zorglub> j'ai pas regardÃ© xine ceci dit
+<zorglub> c'est plus agrÃ©able Ã  lire que mplayer
 <sam> mouahaha
 <sam> non rien.
-<zorglub> ah bah si quand même
-<bigben> tu veux dire que les variables ont un nom qui reflète ce qu'elles
+<zorglub> ah bah si quand mÃªme
+<bigben> tu veux dire que les variables ont un nom qui reflÃ¨te ce qu'elles
          font ?
-<sam> avoir des noms de variables qu'on peut prononcer nuit fortement à la
-      lisibilité car cela détourne l'attention du vrai code, constitué des
-      mots-clés du langage et des divers opérateurs
+<sam> avoir des noms de variables qu'on peut prononcer nuit fortement Ã  la
+      lisibilitÃ© car cela dÃ©tourne l'attention du vrai code, constituÃ© des
+      mots-clÃ©s du langage et des divers opÃ©rateurs
 <sam> j'appelle mes variables Illl, lIll, lIlI, IllI, IlII, etc.
   -- #videolan
 %
@@ -662,12 +662,23 @@ VLC is the greatest thing since sliced bread!
 < Meuuh> Dnumgis : and always will be
   -- #videolan
 %
+* kinema loves VideoLAN.
+< kinema> and it's developers
+< funman> what is your sex ? ( i may be interested )
+  -- #videolan
+%
+< thedj> mmm.
+< thedj> (*&$%$!**%!)%#@!*O*%#@!
+< thedj> this pisses me of
+< dionoea> is that perl ? :)
+  -- #videolan
+%
 <Dnumgis_> xtophe: look at it this way:
 <Dnumgis_> solve some bounties involving vlc and earn some extra money
 <Dnumgis_> use this money and your natural charm to get a girlfriend
 <Dnumgis_> make sure Meuuh sees it
 <Dnumgis_> Meuuh would become horribly jealous and try to repeat your trick
-           with great vigor and solv all remaining bugs with vlc
+           with great vigor and solve all remaining bugs with vlc
 <Dnumgis_> and the (vlc)world becomes a better place
 <j-b> Dnumgis_: do you have a girlfriend ?
 <Dnumgis_> j-b: not at the moment, no
@@ -675,4 +686,178 @@ VLC is the greatest thing since sliced bread!
 <Dnumgis_> j-b: I don't live close enough to Meuuh 
 <E-bola> thats some good norwegian reasoning
   -- #videolan
+%
+<Meuuh> of course when using sout-ts-es-id-pid you can't have any stream with
+        an id < 16
+<Meuuh> so use fake-id=68 or whatever
+<Dnumgis> it's illegal to use fake id
+  -- #videolan
+%
+< thedj> i need a girlfriend. that would make it so much easier not to do VLC :D
+< j-b> thedj: how old are you ?
+< j-b> thedj: you can buy cheap in Russia... :D Ask thresh 
+< thedj> lol
+< thedj> haha. i'm rereading my line and it gets funier :D
+< thedj> not to DO vlc :D
+< thedj> i'd DO my girlfriend instead ..
+< j-b> if you get one, could you get one for Meuuh
+< thedj> yes. i see about bulk discount for the vlc devs :D
+  -- #videolan, one night, late, 0.8.6-test2 is just out...
+%
+< j-b> my mother is desperate because she thinks I am gay, because I haven't presented my gfs...
+< thedj> j-b: i know the feeling
+< LordRPI> my mother gets upset if I tell her I'm at a bar without a girl
+< thedj> haha
+< thedj> LordRPI: she fears you will turn into a lonely drunk 
+< thedj> roaming the city at night looking for a place to stay :D
+< tumu> lonely drunk is good
+  -- #videolan, same night, 4:38 am
+ %
+Meuuh changed the topic of #videolan to: Welcome! | <funman> i don't remember last time i saw a woman
+< funman> :o(
+< Meuuh> to good to miss
+< funman> Meuuh: i was lying i live with my mother
+< Meuuh> a mother is not generally considered a woman
+  -- #videolan
+%
+<olsen_> hi, how can i adjust the brightness?
+<Dnumgis> olsen_: usually there is a nob on your monitor
+  -- #videolan
+%
+< Jastr> is there a way to see the rtp stream before it hits darwin?
+< Dnumgis> Jastr: the rtp stream is a ninja assasin, you never see it
+                 before it hits
+  -- #videolan
+%
+<zigovr3> what is atsc ?
+<xtophe> like dvb but in america
+<xtophe> with packet measured in inches instead of mm
+  -- #videolan
+%
+13:35 < kwolf_> hello
+13:35 < kwolf_> anyone here i can bug? :-)
+[ monologue ... noone helps ]
+14:01 < kwolf_> anyone?
+14:03 < kwolf_> please *whine*
+14:04 < kwolf_> i am a girl, i need help :-D
+14:06 < Dnumgis> kwolf_: I'm a lonely geek who know your answer, are you good looking?
+  -- #videolan
+%
+< wereHamster> for (i=0;i<10;++i) printf("I'm a girl\n")
+< wereHamster> am I a girl now?
+< Dnumgis> wereHamster: you definitly need to send me a picture before I belive you :)
+< Foxdie> live webcam ftw
+< Dnumgis> Foxdie: right, I'll definitly need a live webcam to belive wereHamster is a girl
+< Dnumgis> Foxdie: as a matter of fact all streaming related support requests here should be formulated as follows: "I'm a nice looking girl that have problems making my live webcam work"
+  -- #videolan
+%
+<DrkMatter> Working with video and audio coding/decoding is one of the most
+            tiresome, confusing experience I've ever had.
+<sam> try anal sex next time
+  -- #videolan
+%
+< Bond493> Can anyone refer me to some documents which describe the VLC player internal? I'd 
+           like to learn how to write a media player espcially on embedded platform.
+< Dnumgis> Bond493: we keep this information secret in order to keep ahead of the competition
+  -- #videolan
+%
+ < pdherbemont> :p j'aimerai bien Ãªtre un peu plus polard parfois *sigh*
+  -- #videolan
+%
+< DiDjCodt> dionoea: /leave xxx ?
+< dionoea> nah. Btw, i have a localised irssi. Using /qui j-b works the same was as /who j-b
+< dionoea> really awesome
+-!- thresh [n=popa3d@unaffiliated/thresh] has quit ["j-b"]
+  -- #videolan
+%
+< dionoea> w00t! police in the UK are using VLC for forsenic analisys
+< dionoea> I'll forward the email later
+< dionoea> Police Crime Bureau - Computer Crime Team UK
+< xtophe> ah i should remember to wear my vlc tshirt next time i commit a crime
+  -- #videolan
+%
+<spaceman_spiff> si, la 0.9 est utilisable
+<spaceman_spiff> Ã§a dÃ©pend pour quoi
+<spaceman_spiff> pour faire croire Ã  un naÃ¯f qu'un dvd est pÃ©tÃ© par
+                 exemple
+<spaceman_spiff> "regarde il fait planter mon vlc"
+%
+< funman> {1} Active Tickets (490 matches)
+< funman> i disconnect before 500 is reached
+-!- FoX_ [i=FoX@nat/ecp/x-1a0545f92a4d3c50] has quit [Remote closed the connection]
+-!- zorglub [i=zorglub@nat/ecp/x-61892e92340285ff] has quit [Remote closed the connection]
+-!- bigben [i=bigben@nat/ecp/x-1e86f79de0c1cdc9] has quit [Remote closed the connection]
+-!- ipkiss [i=ipkiss@nat/ecp/x-31e3605240c16dc6] has quit [Remote closed the connection]
+-!- Dimar [i=Dimar@nat/ecp/x-d24991bac9f169c9] has quit [Remote closed the connection]
+< whyz> were those your fakenicks funman?
+< funman> i hit the wrong button sorry
+< whyz> :O
+  -- #videolan
+%
+< Mr_Mirsal> ./bootstrap
+< StFS> trying that now
+< StFS> damn this takes long. :-/
+< thresh> good things always take long time
+  -- #videolan
+%
+< Mr_Mirsal> Oh, btw, I request a fortunes.txt update...
+< thresh> Mr_Mirsal: commit !
+< Mr_Mirsal> thresh: Eh ! I can't.
+< thresh> and i don't want to be a developer who only develops fortunes! :)
+  -- #videolan
+%
+<Quovodis> ivoire: ?
+<ivoire> Quovodis: sorry
+<ivoire> my parents push me out of the computer :(
+  -- #videolan
+%
+VLC development is NOT about being a sed god.
+  -- courmisch
+%
+<Meuuh> no one reads my documentation
+<Dnumgis> Meuuh: they see your name on it and naturally assume it must be out
+          dated
+  -- #videolan
+%
+<j-b> You don't have humour ?
+<kneer0w> what i do have is a pms'ing girlfriend sitting right next to me
+          expecting this movie to work
+  -- #videolan
+%
+< alesan> ok my wife is yelling I have to go to bed with her
+< alesan> uff
+< alesan> see you tomorrow
+< alesan> :(
+-!- alesan [n=alesan@***.telecomitalia.it] has quit
+< dionoea> poor guy ...
+  -- #videolan
+%
+< d_anny> do u guys know how to remove cygwin
+< j-b> d_anny: suicide
+< d_anny> j-b: suicide , a command in cygwin ?
+  -- #videolan
+%
+<jkernsjr> guys..thats what I get when I try to run vlc as root
+<thresh> vlc -I dummy
+<jkernsjr> thanks for calling me dummy
+<jkernsjr> makes me feel warm and fuzzy
+<thresh> n/p
+<Meuuh> sorry, this is already in the fortunes
+<jkernsjr> still won't start
+<jkernsjr> and now I see dummy is one of the options
+<thresh> :)
+<jkernsjr> I really thought you were calling me dummy..sorry
+<Meuuh> ha, NOW you can go into the fortunes
+  -- #videolan
+%
+< dionoea> tu veux transcoder une fille?
+< funman> j aimerais bien la streamer direct chez moi
+< dionoea> kewl :)
+< dionoea> avec la texture et tout ?
+< funman> ouais surtout les 2 macro blocks pectoraux
+  -- #vd
+%
+<kdubois> vlc seems to need more than control-c to kill it lately, do other people experience this too?
+<thresh> yeah, it needs up to four black men to kill vlc for me
+ -- #videolan
 %

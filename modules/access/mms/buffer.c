@@ -2,7 +2,7 @@
  * buffer.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 0a90278a67ccfaae760f07a5c0d3f533b323324d $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,9 +24,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #include "asf.h"
 #include "buffer.h"
@@ -51,10 +54,7 @@ int var_buffer_reinitwrite( var_buffer_t *p_buf, int i_default_size )
     if( p_buf->i_size < i_default_size )
     {
         p_buf->i_size = i_default_size;
-        if( p_buf->p_data )
-        {
-            free( p_buf->p_data );
-        }
+        free( p_buf->p_data );
         p_buf->p_data = malloc( p_buf->i_size );
     }
     if( !p_buf->p_data )
@@ -99,7 +99,6 @@ void var_buffer_add64( var_buffer_t *p_buf, uint64_t i_long )
     var_buffer_add32( p_buf, ( i_long >> 32 )&0xffffffff );
 }
 
-
 void var_buffer_addmemory( var_buffer_t *p_buf, void *p_mem, int i_mem )
 {
     /* check if there is enough data */
@@ -115,7 +114,7 @@ void var_buffer_addmemory( var_buffer_t *p_buf, void *p_mem, int i_mem )
     p_buf->i_data += i_mem;
 }
 
-void var_buffer_addUTF16( var_buffer_t *p_buf, char *p_str )
+void var_buffer_addUTF16( var_buffer_t *p_buf, const char *p_str )
 {
     unsigned int i;
     if( !p_str )
@@ -124,19 +123,32 @@ void var_buffer_addUTF16( var_buffer_t *p_buf, char *p_str )
     }
     else
     {
-        for( i = 0; i < strlen( p_str ) + 1; i++ ) // and 0
+        vlc_iconv_t iconv_handle;
+        size_t i_in = strlen( p_str );
+        size_t i_out = i_in * 4;
+        char *psz_out, *psz_tmp;
+
+        psz_out = psz_tmp = malloc( i_out + 1 );
+        iconv_handle = vlc_iconv_open( "UTF-16LE", "UTF-8" );
+        vlc_iconv( iconv_handle, &p_str, &i_in, &psz_tmp, &i_out );
+        vlc_iconv_close( iconv_handle );
+        psz_tmp[0] = '\0';
+        psz_tmp[1] = '\0';
+
+        for( i = 0; ; i += 2 )
         {
-            var_buffer_add16( p_buf, p_str[i] );
+            uint16_t v = GetWLE( &psz_out[i] );
+            var_buffer_add16( p_buf, v );
+            if( !v )
+                break;
         }
+        free( psz_out );
     }
 }
 
 void var_buffer_free( var_buffer_t *p_buf )
 {
-    if( p_buf->p_data )
-    {
-        free( p_buf->p_data );
-    }
+    free( p_buf->p_data );
     p_buf->i_data = 0;
     p_buf->i_size = 0;
 }
@@ -159,7 +171,6 @@ uint8_t var_buffer_get8 ( var_buffer_t *p_buf )
     p_buf->i_data++;
     return( i_byte );
 }
-
 
 uint16_t var_buffer_get16( var_buffer_t *p_buf )
 {
@@ -203,7 +214,6 @@ int var_buffer_getmemory ( var_buffer_t *p_buf, void *p_mem, int64_t i_mem )
     }
     if( i_copy < 0 )
     {
-//        fprintf( stderr, "\n**************arrrrrrggggg\n" );
         i_copy = 0;
     }
     p_buf->i_data += i_copy;
@@ -228,4 +238,3 @@ void var_buffer_getguid( var_buffer_t *p_buf, guid_t *p_guid )
         p_guid->v4[i] = var_buffer_get8( p_buf );
     }
 }
-

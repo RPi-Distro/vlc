@@ -10,8 +10,9 @@ AC_DEFUN([VLC_ADD_BUILTINS], [
   BUILTINS="${BUILTINS} $1"
 ])
 
-AC_DEFUN([VLC_ADD_PLUGINS], [
+AC_DEFUN([VLC_ADD_PLUGIN], [
   PLUGINS="${PLUGINS} $1"
+  AC_SUBST([LTLIB$1], ["lib$1_plugin.la"])
 ])
 
 dnl  Special cases: vlc, pics, plugins, save
@@ -50,6 +51,13 @@ AC_DEFUN([VLC_ADD_LDFLAGS], [
   done
 ])
 
+AC_DEFUN([VLC_ADD_LIBS], [
+  for element in [$1]; do
+    eval "LIBS_${element}="'"'"$2 "'$'"{LIBS_${element}} "'"'
+    am_modules_with_libs="${am_modules_with_libs} ${element}"
+  done
+])
+
 dnl ===========================================================================
 dnl  Macros to save and restore default flags
 
@@ -59,6 +67,7 @@ AC_DEFUN([VLC_SAVE_FLAGS], [
   CXXFLAGS_save="${CXXFLAGS}"
   OBJCFLAGS_save="${OBJCFLAGS}"
   LDFLAGS_save="${LDFLAGS}"
+  LIBS_save="${LIBS}"
 ])
 
 AC_DEFUN([VLC_RESTORE_FLAGS], [
@@ -67,6 +76,7 @@ AC_DEFUN([VLC_RESTORE_FLAGS], [
   CXXFLAGS="${CXXFLAGS_save}"
   OBJCFLAGS="${OBJCFLAGS_save}"
   LDFLAGS="${LDFLAGS_save}"
+  LIBS="${LIBS_save}"
 ])
 
 dnl ===========================================================================
@@ -76,7 +86,7 @@ AC_DEFUN([VLC_OUTPUT_VLC_CONFIG_IN], [
 
   AC_MSG_RESULT(configure: creating ./vlc-config.in)
 
-  am_all_modules="`for x in ${am_modules_with_cppflags} ${am_modules_with_cflags} ${am_modules_with_cxxflags} ${am_modules_with_objcflags} ${am_modules_with_ldflags}; do echo $x; done | sort | uniq`"
+  am_all_modules="`for x in ${am_modules_with_cppflags} ${am_modules_with_cflags} ${am_modules_with_cxxflags} ${am_modules_with_objcflags} ${am_modules_with_ldflags} ${am_modules_with_libs}; do echo $x; done | sort | uniq`"
 
   rm -f vlc-config.in
   sed -ne '/#@1@#/q;p' < "${srcdir}/vlc-config.in.in" \
@@ -88,7 +98,8 @@ AC_DEFUN([VLC_OUTPUT_VLC_CONFIG_IN], [
           -e "s/@PLUGINS@/${PLUGINS}/" \
           -e "s/@BUILTINS@/${BUILTINS}/" \
           -e "s/@CFLAGS_TUNING@/${CFLAGS_TUNING}/" \
-          -e "s/@CFLAGS_OPTIM@/${CFLAGS_OPTIM}/" \
+          -e "s/@CFLAGS_OPTIM_SIZE@/${CFLAGS_OPTIM_SIZE}/" \
+          -e "s/@CFLAGS_OPTIM_SPEED@/${CFLAGS_OPTIM_SPEED}/" \
           -e "s/@CFLAGS_OPTIM_NODEBUG@/${CFLAGS_OPTIM_NODEBUG}/" \
           -e "s/@CFLAGS_NOOPTIM@/${CFLAGS_NOOPTIM}/" \
     > vlc-config.in
@@ -96,39 +107,36 @@ AC_DEFUN([VLC_OUTPUT_VLC_CONFIG_IN], [
   dnl  Switch/case loop
   for x in `echo ${am_all_modules}`
   do [
-    echo "    ${x})" >> vlc-config.in
+    echo "    ${x})"
     if test "`eval echo @'$'CPPFLAGS_${x}@`" != "@@"; then
-      echo "      cppflags=\"\${cppflags} `eval echo '$'CPPFLAGS_${x}`\"" >> vlc-config.in
+      echo "      cppflags=\"\${cppflags} `eval echo '$'CPPFLAGS_${x}`\""
     fi
     if test "`eval echo @'$'CFLAGS_${x}@`" != "@@"; then
-      echo "      cflags=\"\${cflags} `eval echo '$'CFLAGS_${x}`\"" >> vlc-config.in
+      echo "      cflags=\"\${cflags} `eval echo '$'CFLAGS_${x}`\""
     fi
     if test "`eval echo @'$'CXXFLAGS_${x}@`" != "@@"; then
-      echo "      cxxflags=\"\${cxxflags} `eval echo '$'CXXFLAGS_${x}`\"" >> vlc-config.in
+      echo "      cxxflags=\"\${cxxflags} `eval echo '$'CXXFLAGS_${x}`\""
       if test "${x}" != "plugin" -a "${x}" != "builtin"; then
-        echo "      linkage=\"c++\"" >> vlc-config.in
+        echo "      linkage=\"c++\""
       fi
     fi
     if test "`eval echo @'$'OBJCFLAGS_${x}@`" != "@@"; then
-      echo "      objcflags=\"\${objcflags} `eval echo '$'OBJCFLAGS_${x}`\"" >> vlc-config.in
+      echo "      objcflags=\"\${objcflags} `eval echo '$'OBJCFLAGS_${x}`\""
       if test "${x}" != "plugin" -a "${x}" != "builtin"; then
-        echo "      if test \"\${linkage}\" = \"c\"; then linkage=\"objc\"; fi" >> vlc-config.in
+        echo "      if test \"\${linkage}\" = \"c\"; then linkage=\"objc\"; fi"
       fi
     fi
     if test "`eval echo @'$'LDFLAGS_${x}@`" != "@@"; then
-      echo "      ldflags=\"\${ldflags} `eval echo '$'LDFLAGS_${x}`\"" >> vlc-config.in
+      echo "      ldflags=\"\${ldflags} `eval echo '$'LDFLAGS_${x}`\""
     fi
-    echo "    ;;" >> vlc-config.in
-  ] done
+    if test "`eval echo @'$'LIBS_${x}@`" != "@@"; then
+      echo "      libs=\"\${libs} `eval echo '$'LIBS_${x}`\""
+    fi
+    echo "    ;;"
+  ] done >> vlc-config.in
 
-  dnl  '/#@1@#/,/#@2@#/{/#@.@#/d;p}' won't work on OS X
-  sed -ne '/#@1@#/,/#@2@#/p' < "${srcdir}/vlc-config.in.in" \
-   | sed -e '/#@.@#/d' >> vlc-config.in
-
-  VLC_CONFIG_HELPER
-
-  dnl  '/#@2@#/,${/#@.@#/d;p}' won't work on OS X
-  sed -ne '/#@2@#/,$p' < "${srcdir}/vlc-config.in.in" \
+  dnl  '/#@1@#/,${/#@.@#/d;p}' won't work on OS X
+  sed -ne '/#@1@#/,$p' < "${srcdir}/vlc-config.in.in" \
    | sed -e '/#@.@#/d' >> vlc-config.in
 ])
 
@@ -137,7 +145,7 @@ dnl  Macros for shared object handling (TODO)
 
 AC_DEFUN([VLC_LIBRARY_SUFFIX], [
   AC_MSG_CHECKING(for shared objects suffix)
-  case "${target_os}" in
+  case "${host_os}" in
     darwin*)
       LIBEXT=".dylib"
       ;;
@@ -153,16 +161,5 @@ AC_DEFUN([VLC_LIBRARY_SUFFIX], [
   esac
   AC_MSG_RESULT(${LIBEXT})
   AC_DEFINE_UNQUOTED(LIBEXT, "${LIBEXT}", [Dynamic object extension])
-])
-
-AC_DEFUN([VLC_SYMBOL_PREFIX], [
-  AC_MSG_CHECKING(for prefix to exported symbols)
-  SYMPREF=""
-  case "${target_os}" in
-    darwin* | *mingw32* | *cygwin* | *wince* | *mingwce* | *pe*)
-      SYMPREF="_"
-      ;;
-  esac
-  AC_MSG_RESULT(${SYMPREF})
 ])
 

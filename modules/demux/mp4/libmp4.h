@@ -2,7 +2,7 @@
  * libmp4.h : LibMP4 library for mp4 module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: a0d4186ecc9858a9d7b61c09909b663d1843a83d $
+ * $Id$
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -151,10 +151,14 @@
 
 #define FOURCC_dvc  VLC_FOURCC( 'd', 'v', 'c', ' ' )
 #define FOURCC_dvp  VLC_FOURCC( 'd', 'v', 'p', ' ' )
+#define FOURCC_dv5n VLC_FOURCC( 'd', 'v', '5', 'n' )
+#define FOURCC_dv5p VLC_FOURCC( 'd', 'v', '5', 'p' )
 #define FOURCC_raw  VLC_FOURCC( 'r', 'a', 'w', ' ' )
 
 #define FOURCC_jpeg VLC_FOURCC( 'j', 'p', 'e', 'g' )
 
+#define FOURCC_yv12 VLC_FOURCC( 'y', 'v', '1', '2' )
+#define FOURCC_yuv2 VLC_FOURCC( 'y', 'u', 'v', '2' )
 
 #define FOURCC_rmra VLC_FOURCC( 'r', 'm', 'r', 'a' )
 #define FOURCC_rmda VLC_FOURCC( 'r', 'm', 'd', 'a' )
@@ -207,7 +211,13 @@
 #define FOURCC_0xa9wrt VLC_FOURCC( 0xa9, 'w', 'r', 't' )
 #define FOURCC_0xa9com VLC_FOURCC( 0xa9, 'c', 'o', 'm' )
 #define FOURCC_0xa9gen VLC_FOURCC( 0xa9, 'g', 'e', 'n' )
+#define FOURCC_chpl VLC_FOURCC( 'c', 'h', 'p', 'l' )
 #define FOURCC_WLOC VLC_FOURCC( 'W', 'L', 'O', 'C' )
+
+#define FOURCC_meta VLC_FOURCC( 'm', 'e', 't', 'a' )
+#define FOURCC_ilst VLC_FOURCC( 'i', 'l', 's', 't' )
+
+#define FOURCC_chap VLC_FOURCC( 'c', 'h', 'a', 'p' )
 
 /* Do you want some debug information on all read boxes ? */
 #define MP4_VERBOSE  1
@@ -291,6 +301,7 @@ typedef struct MP4_Box_data_mdhd_s
     uint64_t i_duration;
 
     /* one bit for pad */
+    uint16_t      i_language_code;
     /* unsigned int(5)[3] language difference with 0x60*/
     unsigned char i_language[3];
     uint16_t i_predefined;
@@ -349,7 +360,7 @@ typedef struct MP4_Box_data_url_s
     uint8_t  i_version;
     uint32_t i_flags;
 
-    unsigned char *psz_location;
+    char *psz_location;
 
 } MP4_Box_data_url_t;
 
@@ -358,8 +369,8 @@ typedef struct MP4_Box_data_urn_s
     uint8_t  i_version;
     uint32_t i_flags;
 
-    unsigned char *psz_name;
-    unsigned char *psz_location;
+    char *psz_name;
+    char *psz_location;
 
 } MP4_Box_data_urn_t;
 
@@ -651,7 +662,7 @@ typedef struct MP4_Box_data_cprt_s
     /* 1 pad bit */
     unsigned char i_language[3];
 
-    unsigned char *psz_notice;
+    char *psz_notice;
 } MP4_Box_data_cprt_t;
 
 
@@ -787,6 +798,26 @@ typedef struct
 
 typedef struct
 {
+    uint32_t i_entry_count;
+    uint32_t *i_track_ID;
+
+} MP4_Box_data_tref_generic_t;
+
+typedef struct
+{
+    uint8_t  i_version;
+    uint32_t i_flags;
+
+    uint8_t i_chapter;
+    struct
+    {
+        char    *psz_name;
+        int64_t  i_start;
+    } chapter[256];
+} MP4_Box_data_chpl_t;
+
+typedef struct
+{
     uint8_t i_version;
     uint8_t i_profile;
     uint8_t i_profile_compatibility;
@@ -867,6 +898,8 @@ typedef union MP4_Box_data_s
     MP4_Box_data_rmvc_t *p_rmvc;
 
     MP4_Box_data_0xa9xxx_t *p_0xa9xxx;
+    MP4_Box_data_chpl_t *p_chpl;
+    MP4_Box_data_tref_generic_t *p_tref_generic;
 
     void                *p_data; /* for unknow type */
 } MP4_Box_data_t;
@@ -932,7 +965,7 @@ void MP4_BoxDumpStructure( stream_t *p_input, MP4_Box_t *p_box );
  * ex: /moov/trak[12]
  *     ../mdia
  *****************************************************************************/
-MP4_Box_t *MP4_BoxGet( MP4_Box_t *p_box, char *psz_fmt, ... );
+MP4_Box_t *MP4_BoxGet( MP4_Box_t *p_box, const char *psz_fmt, ... );
 
 /*****************************************************************************
  * MP4_BoxCount: find number of box given a path relative to p_box
@@ -943,7 +976,7 @@ MP4_Box_t *MP4_BoxGet( MP4_Box_t *p_box, char *psz_fmt, ... );
  * ex: /moov/trak
  *     ../mdia
  *****************************************************************************/
-int MP4_BoxCount( MP4_Box_t *p_box, char *psz_fmt, ... );
+int MP4_BoxCount( MP4_Box_t *p_box, const char *psz_fmt, ... );
 
 int MP4_ReadBoxCommon( stream_t *p_stream, MP4_Box_t *p_box );
 int MP4_ReadBox_sample_vide( stream_t *p_stream, MP4_Box_t *p_box );

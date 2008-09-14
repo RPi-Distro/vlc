@@ -2,7 +2,7 @@
  * cmd_input.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: fb0be613c47c35bd58c13d7d4ae8ce153efde916 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,10 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc/aout.h>
 #include "cmd_input.hpp"
 #include "cmd_dialogs.hpp"
-
+#include <vlc_aout.h>
+#include <vlc_input.h>
+#include <vlc_playlist.h>
 
 void CmdPlay::execute()
 {
@@ -35,10 +36,8 @@ void CmdPlay::execute()
         return;
     }
 
-    if( pPlaylist->i_size )
-    {
+    if( !playlist_IsEmpty( pPlaylist ) )
         playlist_Play( pPlaylist );
-    }
     else
     {
         // If the playlist is empty, open a file requester instead
@@ -80,7 +79,7 @@ void CmdSlower::execute()
     if( pInput )
     {
         vlc_value_t val;
-        val.b_bool = VLC_TRUE;
+        val.b_bool = true;
 
         var_Set( pInput, "rate-slower", val );
         vlc_object_release( pInput );
@@ -96,7 +95,7 @@ void CmdFaster::execute()
     if( pInput )
     {
         vlc_value_t val;
-        val.b_bool = VLC_TRUE;
+        val.b_bool = true;
 
         var_Set( pInput, "rate-faster", val );
         vlc_object_release( pInput );

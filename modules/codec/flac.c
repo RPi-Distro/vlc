@@ -2,7 +2,7 @@
  * flac.c: flac decoder/packetizer/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: d7beb50a2893843c94ecb46fa40116c53915b8cf $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -26,8 +26,14 @@
  * Preamble
  *****************************************************************************/
 
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_aout.h>
 
 #ifdef HAVE_FLAC_STREAM_DECODER_H
 #   include <FLAC/stream_decoder.h>
@@ -35,8 +41,8 @@
 #   define USE_LIBFLAC
 #endif
 
-#include "vlc_block_helper.h"
-#include "vlc_bits.h"
+#include <vlc_block_helper.h>
+#include <vlc_bits.h>
 
 #define MAX_FLAC_HEADER_SIZE 16
 
@@ -79,7 +85,7 @@ struct decoder_sys_t
 
     } stream_info;
 #endif
-    vlc_bool_t b_stream_info;
+    bool b_stream_info;
 
     /*
      * Common properties
@@ -101,7 +107,7 @@ enum {
     STATE_SEND_DATA
 };
 
-static int pi_channels_maps[7] =
+static const int pi_channels_maps[7] =
 {
     0,
     AOUT_CHAN_CENTER,
@@ -155,6 +161,8 @@ static void DecoderErrorCallback( const FLAC__StreamDecoder *decoder,
 
 static void Interleave32( int32_t *p_out, const int32_t * const *pp_in,
                           int i_nb_channels, int i_samples );
+static void Interleave24( int8_t *p_out, const int32_t * const *pp_in,
+                          int i_nb_channels, int i_samples );
 static void Interleave16( int16_t *p_out, const int32_t * const *pp_in,
                           int i_nb_channels, int i_samples );
 
@@ -172,24 +180,24 @@ vlc_module_begin();
 
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACODEC );
+    add_shortcut( "flac" );
 
 #ifdef USE_LIBFLAC
-    set_description( _("Flac audio decoder") );
+    set_description( N_("Flac audio decoder") );
     set_capability( "decoder", 100 );
     set_callbacks( OpenDecoder, CloseDecoder );
 
     add_submodule();
-    set_description( _("Flac audio encoder") );
+    set_description( N_("Flac audio encoder") );
     set_capability( "encoder", 100 );
     set_callbacks( OpenEncoder, CloseEncoder );
 
     add_submodule();
 #endif
-    set_description( _("Flac audio packetizer") );
+    set_description( N_("Flac audio packetizer") );
     set_capability( "packetizer", 100 );
     set_callbacks( OpenPacketizer, CloseDecoder );
 
-    add_shortcut( "flac" );
 vlc_module_end();
 
 /*****************************************************************************
@@ -208,17 +216,14 @@ static int OpenDecoder( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     /* Misc init */
     aout_DateSet( &p_sys->end_date, 0 );
     p_sys->i_state = STATE_NOSYNC;
-    p_sys->b_stream_info = VLC_FALSE;
+    p_sys->b_stream_info = false;
     p_sys->p_block=NULL;
-    p_sys->bytestream = block_BytestreamInit( p_dec );
+    p_sys->bytestream = block_BytestreamInit();
 
 #ifdef USE_LIBFLAC
     /* Take care of flac init */
@@ -270,7 +275,6 @@ static int OpenDecoder( vlc_object_t *p_this )
 #ifdef USE_LIBFLAC
     p_dec->pf_decode_audio = DecodeBlock;
 #endif
-    p_dec->pf_packetize    = PacketizeBlock;
 
     return VLC_SUCCESS;
 }
@@ -285,6 +289,8 @@ static int OpenPacketizer( vlc_object_t *p_this )
     es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
 
     i_ret = OpenDecoder( p_this );
+    p_dec->pf_decode_audio = NULL;
+    p_dec->pf_packetize    = PacketizeBlock;
 
     /* Set output properties */
     p_dec->fmt_out.i_codec = VLC_FOURCC('f','l','a','c');
@@ -310,7 +316,7 @@ static void CloseDecoder( vlc_object_t *p_this )
     FLAC__stream_decoder_delete( p_sys->p_flac );
 #endif
 
-    if( p_sys->p_block ) free( p_sys->p_block );
+    free( p_sys->p_block );
     free( p_sys );
 }
 
@@ -375,6 +381,18 @@ static block_t *PacketizeBlock( decoder_t *p_dec, block_t **pp_block )
 
     if( !pp_block || !*pp_block ) return NULL;
 
+    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    {
+        if( (*pp_block)->i_flags&BLOCK_FLAG_CORRUPTED )
+        {
+            p_sys->i_state = STATE_NOSYNC;
+            block_BytestreamFlush( &p_sys->bytestream );
+        }
+//        aout_DateSet( &p_sys->end_date, 0 );
+        block_Release( *pp_block );
+        return NULL;
+    }
+
     if( !p_sys->b_stream_info ) ProcessHeader( p_dec );
 
     if( p_sys->stream_info.channels > 6 )
@@ -392,12 +410,9 @@ static block_t *PacketizeBlock( decoder_t *p_dec, block_t **pp_block )
     else if( !aout_DateGet( &p_sys->end_date ) )
     {
         /* The first PTS is as good as anything else. */
+        p_sys->i_rate = p_dec->fmt_out.audio.i_rate;
+        aout_DateInit( &p_sys->end_date, p_sys->i_rate );
         aout_DateSet( &p_sys->end_date, (*pp_block)->i_pts );
-    }
-
-    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
-    {
-        p_sys->i_state = STATE_NOSYNC;
     }
 
     block_BytestreamPush( &p_sys->bytestream, *pp_block );
@@ -573,6 +588,7 @@ static FLAC__StreamDecoderReadStatus
 DecoderReadCallback( const FLAC__StreamDecoder *decoder, FLAC__byte buffer[],
                      unsigned *bytes, void *client_data )
 {
+    VLC_UNUSED(decoder);
     decoder_t *p_dec = (decoder_t *)client_data;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
@@ -600,6 +616,7 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
                       const FLAC__Frame *frame,
                       const FLAC__int32 *const buffer[], void *client_data )
 {
+    VLC_UNUSED(decoder);
     decoder_t *p_dec = (decoder_t *)client_data;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
@@ -613,6 +630,10 @@ DecoderWriteCallback( const FLAC__StreamDecoder *decoder,
     {
     case 16:
         Interleave16( (int16_t *)p_sys->p_aout_buffer->p_buffer, buffer,
+                      frame->header.channels, frame->header.blocksize );
+        break;
+    case 24:
+        Interleave24( (int8_t *)p_sys->p_aout_buffer->p_buffer, buffer,
                       frame->header.channels, frame->header.blocksize );
         break;
     default:
@@ -635,22 +656,29 @@ static void DecoderMetadataCallback( const FLAC__StreamDecoder *decoder,
                                      const FLAC__StreamMetadata *metadata,
                                      void *client_data )
 {
+    VLC_UNUSED(decoder);
     decoder_t *p_dec = (decoder_t *)client_data;
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    switch( metadata->data.stream_info.bits_per_sample )
+    if( p_dec->pf_decode_audio )
     {
-    case 8:
-        p_dec->fmt_out.i_codec = VLC_FOURCC('s','8',' ',' ');
-        break;
-    case 16:
-        p_dec->fmt_out.i_codec = AOUT_FMT_S16_NE;
-        break;
-    default:
-        msg_Dbg( p_dec, "strange bit/sample value: %d",
-                 metadata->data.stream_info.bits_per_sample );
-        p_dec->fmt_out.i_codec = VLC_FOURCC('f','i','3','2');
-        break;
+        switch( metadata->data.stream_info.bits_per_sample )
+        {
+        case 8:
+            p_dec->fmt_out.i_codec = VLC_FOURCC('s','8',' ',' ');
+            break;
+        case 16:
+            p_dec->fmt_out.i_codec = AOUT_FMT_S16_NE;
+            break;
+        case 24:
+            p_dec->fmt_out.i_codec = AOUT_FMT_S24_NE;
+            break;
+        default:
+            msg_Dbg( p_dec, "strange bit/sample value: %d",
+                     metadata->data.stream_info.bits_per_sample );
+            p_dec->fmt_out.i_codec = VLC_FOURCC('f','i','3','2');
+            break;
+        }
     }
 
     /* Setup the format */
@@ -668,7 +696,7 @@ static void DecoderMetadataCallback( const FLAC__StreamDecoder *decoder,
              p_dec->fmt_out.audio.i_channels, p_dec->fmt_out.audio.i_rate,
              p_dec->fmt_out.audio.i_bitspersample );
 
-    p_sys->b_stream_info = VLC_TRUE;
+    p_sys->b_stream_info = true;
     p_sys->stream_info = metadata->data.stream_info;
 
     return;
@@ -681,13 +709,14 @@ static void DecoderErrorCallback( const FLAC__StreamDecoder *decoder,
                                   FLAC__StreamDecoderErrorStatus status,
                                   void *client_data )
 {
+    VLC_UNUSED(decoder);
     decoder_t *p_dec = (decoder_t *)client_data;
 
     switch( status )
     {
     case FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC:
         msg_Warn( p_dec, "an error in the stream caused the decoder to "
-                 "loose synchronization." );
+                 "lose synchronization." );
         break;
     case FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER:
         msg_Err( p_dec, "the decoder encountered a corrupted frame header." );
@@ -719,6 +748,28 @@ static void Interleave32( int32_t *p_out, const int32_t * const *pp_in,
         }
     }
 }
+
+static void Interleave24( int8_t *p_out, const int32_t * const *pp_in,
+                          int i_nb_channels, int i_samples )
+{
+    int i, j;
+    for ( j = 0; j < i_samples; j++ )
+    {
+        for ( i = 0; i < i_nb_channels; i++ )
+        {
+#ifdef WORDS_BIGENDIAN
+            p_out[3*(j * i_nb_channels + i)+0] = (pp_in[i][j] >> 16) & 0xff;
+            p_out[3*(j * i_nb_channels + i)+1] = (pp_in[i][j] >> 8 ) & 0xff;
+            p_out[3*(j * i_nb_channels + i)+2] = (pp_in[i][j] >> 0 ) & 0xff;
+#else
+            p_out[3*(j * i_nb_channels + i)+2] = (pp_in[i][j] >> 16) & 0xff;
+            p_out[3*(j * i_nb_channels + i)+1] = (pp_in[i][j] >> 8 ) & 0xff;
+            p_out[3*(j * i_nb_channels + i)+0] = (pp_in[i][j] >> 0 ) & 0xff;
+#endif
+        }
+    }
+}
+
 static void Interleave16( int16_t *p_out, const int32_t * const *pp_in,
                           int i_nb_channels, int i_samples )
 {
@@ -812,9 +863,9 @@ static int SyncInfo( decoder_t *p_dec, uint8_t *p_buf,
     int i_blocksize = 0, i_blocksize_hint = 0, i_sample_rate_hint = 0;
     uint64_t i_sample_number = 0;
 
-    vlc_bool_t b_variable_blocksize = ( p_sys->b_stream_info &&
+    bool b_variable_blocksize = ( p_sys->b_stream_info &&
         p_sys->stream_info.min_blocksize != p_sys->stream_info.max_blocksize );
-    vlc_bool_t b_fixed_blocksize = ( p_sys->b_stream_info &&
+    bool b_fixed_blocksize = ( p_sys->b_stream_info &&
         p_sys->stream_info.min_blocksize == p_sys->stream_info.max_blocksize );
 
     /* Check syncword */
@@ -995,12 +1046,12 @@ static int SyncInfo( decoder_t *p_dec, uint8_t *p_buf,
     if( i_blocksize_hint && b_variable_blocksize )
     {
         i_sample_number = read_utf8( &p_buf[i_header++], &i_read );
-        if( i_sample_number == I64C(0xffffffffffffffff) ) return 0;
+        if( i_sample_number == INT64_C(0xffffffffffffffff) ) return 0;
     }
     else
     {
         i_sample_number = read_utf8( &p_buf[i_header++], &i_read );
-        if( i_sample_number == I64C(0xffffffffffffffff) ) return 0;
+        if( i_sample_number == INT64_C(0xffffffffffffffff) ) return 0;
 
         if( p_sys->b_stream_info )
             i_sample_number *= p_sys->stream_info.min_blocksize;
@@ -1040,6 +1091,13 @@ static int SyncInfo( decoder_t *p_dec, uint8_t *p_buf,
         return 0;
     }
 
+    /* Sanity check using stream info header when possible */
+    if( p_sys->b_stream_info )
+    {
+        if( i_blocksize < p_sys->stream_info.min_blocksize ||
+            i_blocksize > p_sys->stream_info.max_blocksize )
+            return 0;
+    }
     return i_blocksize;
 }
 
@@ -1085,14 +1143,14 @@ static uint64_t read_utf8( const uint8_t *p_buf, int *pi_read )
         i = 6;
     }
     else {
-        return I64C(0xffffffffffffffff);
+        return INT64_C(0xffffffffffffffff);
     }
 
     for( j = 1; j <= i; j++ )
     {
         if( !(p_buf[j] & 0x80) || (p_buf[j] & 0x40) ) /* 10xxxxxx */
         {
-            return I64C(0xffffffffffffffff);
+            return INT64_C(0xffffffffffffffff);
         }
         i_result <<= 6;
         i_result |= (p_buf[j] & 0x3F);
@@ -1103,7 +1161,7 @@ static uint64_t read_utf8( const uint8_t *p_buf, int *pi_read )
 }
 
 /* CRC-8, poly = x^8 + x^2 + x^1 + x^0, init = 0 */
-static uint8_t const flac_crc8_table[256] = {
+static const uint8_t flac_crc8_table[256] = {
         0x00, 0x07, 0x0E, 0x09, 0x1C, 0x1B, 0x12, 0x15,
         0x38, 0x3F, 0x36, 0x31, 0x24, 0x23, 0x2A, 0x2D,
         0x70, 0x77, 0x7E, 0x79, 0x6C, 0x6B, 0x62, 0x65,
@@ -1209,10 +1267,7 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_sys = (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_enc, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
     p_enc->p_sys = p_sys;
     p_enc->pf_encode_audio = Encode;
     p_enc->fmt_out.i_codec = VLC_FOURCC('f','l','a','c');
@@ -1286,14 +1341,14 @@ static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
     p_sys->i_samples_delay += p_aout_buf->i_nb_samples;
 
     /* Convert samples to FLAC__int32 */
-    if( p_sys->i_buffer < (p_aout_buf->i_nb_bytes * 2) )
+    if( p_sys->i_buffer < p_aout_buf->i_nb_bytes * 2 )
     {
         p_sys->p_buffer =
             realloc( p_sys->p_buffer, p_aout_buf->i_nb_bytes * 2 );
         p_sys->i_buffer = p_aout_buf->i_nb_bytes * 2;
     }
 
-    for( i = 0 ; i < (p_aout_buf->i_nb_bytes / 2) ; i++ )
+    for( i = 0 ; i < p_aout_buf->i_nb_bytes / 2 ; i++ )
     {
         p_sys->p_buffer[i]= ((int16_t *)p_aout_buf->p_buffer)[i];
     }
@@ -1317,7 +1372,7 @@ static void CloseEncoder( vlc_object_t *p_this )
 
     FLAC__stream_encoder_delete( p_sys->p_flac );
 
-    if( p_sys->p_buffer ) free( p_sys->p_buffer );
+    free( p_sys->p_buffer );
     free( p_sys );
 }
 
@@ -1328,6 +1383,7 @@ static void EncoderMetadataCallback( const FLAC__StreamEncoder *encoder,
                                      const FLAC__StreamMetadata *metadata,
                                      void *client_data )
 {
+    VLC_UNUSED(encoder);
     encoder_t *p_enc = (encoder_t *)client_data;
 
     msg_Err( p_enc, "MetadataCallback: %i", metadata->type );
@@ -1343,6 +1399,7 @@ EncoderWriteCallback( const FLAC__StreamEncoder *encoder,
                       unsigned bytes, unsigned samples,
                       unsigned current_frame, void *client_data )
 {
+    VLC_UNUSED(encoder); VLC_UNUSED(current_frame);
     encoder_t *p_enc = (encoder_t *)client_data;
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_block;

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * xa.c : xa file input module for vlc
+ * xa.c : xa file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: 260caed9b8c1f6ced4f24725bb3bce890f3a2b67 $
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -24,13 +24,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/aout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <codecs.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_demux.h>
+
+#include <vlc_codecs.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -39,10 +42,10 @@ static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
 vlc_module_begin();
-    set_description( _("XA demuxer") );
+    set_description( N_("XA demuxer") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_capability( "demux2", 10 );
+    set_capability( "demux", 10 );
     set_callbacks( Open, Close );
 vlc_module_end();
 
@@ -85,7 +88,7 @@ static int Open( vlc_object_t * p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
     xa_header_t p_xa;
-    uint8_t     *p_buf;
+    const uint8_t *p_buf;
 
     /* XA file heuristic */
     if( stream_Peek( p_demux->s, &p_buf, sizeof( p_xa ) )
@@ -195,7 +198,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 {
     demux_sys_t *p_sys  = p_demux->p_sys;
 
-    return demux2_vaControlHelper( p_demux->s, p_sys->i_data_offset,
+    return demux_vaControlHelper( p_demux->s, p_sys->i_data_offset,
                                    p_sys->i_data_size ? p_sys->i_data_offset
                                    + p_sys->i_data_size : -1,
                                    p_sys->fmt.i_bitrate,

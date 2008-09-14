@@ -1,10 +1,11 @@
 /*****************************************************************************
  * playtree.hpp
  *****************************************************************************
- * Copyright (C) 2005 VideoLAN
- * $Id: 3fcf12d8e3731a048c43771c4ccf3f887b614ba3 $
+ * Copyright (C) 2005 the VideoLAN team
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
+ *          Clément Stenac <zorglub@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -57,8 +58,6 @@ class Playtree: public VarTree
     private:
         /// VLC playlist object
         playlist_t *m_pPlaylist;
-        /// Iconv handle
-        vlc_iconv_t iconvHandle;
 
         /// Build the list from the VLC playlist
         void buildTree();

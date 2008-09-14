@@ -2,7 +2,7 @@
  * tarkin.c: tarkin decoder module making use of libtarkin.
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: ee309ac76dd5146a70962c25cf2680f29b58cae2 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -24,9 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_vout.h>
 #include <ogg/ogg.h>
 
 /* FIXME */
@@ -72,7 +77,7 @@ static void tarkin_CopyPicture( decoder_t *, picture_t *, uint8_t *, int );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("Tarkin decoder module") );
+    set_description( N_("Tarkin decoder module") );
     set_capability( "decoder", 100 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_VCODEC );
@@ -96,10 +101,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = VIDEO_ES;
@@ -310,7 +312,7 @@ static void tarkin_CopyPicture( decoder_t *p_dec, picture_t *p_pic,
 
         for( i_line = 0; i_line < p_pic->p[i_plane].i_visible_lines; i_line++ )
         {
-            p_dec->p_vlc->pf_memcpy( p_dst, p_src, i_src_stride );
+            vlc_memcpy( p_dst, p_src, i_src_stride );
 
             p_src += i_src_stride;
             p_dst += i_dst_stride;

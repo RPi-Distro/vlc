@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="<vlc id="value" param1="charset"/>" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <vlc id="if" param1="0"/>
 <!--  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
 <  vlm.xml: VLC media player web interface
@@ -31,7 +31,7 @@
       <output><vlc id="value" param1="el.output" /></output>
       <inputs>
         <vlc id="foreach" param1="in" param2="el.inputs" />
-          <input><vlc id="value" param1="in" /></input>
+          <input><vlc id="value" param1="in value htmlspecialchars" /></input>
         <vlc id="end" />
       </inputs>
       <options>
@@ -51,7 +51,7 @@
         <output><vlc id="value" param1="el.output" /></output>
         <inputs>
           <vlc id="foreach" param1="in" param2="el.inputs" />
-            <input><vlc id="value" param1="in" /></input>
+            <input><vlc id="value" param1="in value htmlspecialchars" /></input>
           <vlc id="end" />
         </inputs>
         <options>

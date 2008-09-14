@@ -2,7 +2,7 @@
  * lpcm.c: lpcm decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: 5d933c4982e52bee0096df93adea714f2a10f7be $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Henri Fallon <henri@videolan.org>
@@ -27,8 +27,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_aout.h>
 
 /*****************************************************************************
  * decoder_sys_t : lpcm decoder descriptor
@@ -36,7 +42,7 @@
 struct decoder_sys_t
 {
     /* Module mode */
-    vlc_bool_t b_packetizer;
+    bool b_packetizer;
 
     /*
      * Output properties
@@ -79,12 +85,12 @@ vlc_module_begin();
 
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACODEC );
-    set_description( _("Linear PCM audio decoder") );
+    set_description( N_("Linear PCM audio decoder") );
     set_capability( "decoder", 100 );
     set_callbacks( OpenDecoder, CloseDecoder );
 
     add_submodule();
-    set_description( _("Linear PCM audio packetizer") );
+    set_description( N_("Linear PCM audio packetizer") );
     set_capability( "packetizer", 100 );
     set_callbacks( OpenPacketizer, CloseDecoder );
 
@@ -100,20 +106,17 @@ static int OpenDecoder( vlc_object_t *p_this )
 
     if( p_dec->fmt_in.i_codec != VLC_FOURCC('l','p','c','m')
          && p_dec->fmt_in.i_codec != VLC_FOURCC('l','p','c','b') )
-    {   
+    {
         return VLC_EGENERIC;
     }
 
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     /* Misc init */
-    p_sys->b_packetizer = VLC_FALSE;
+    p_sys->b_packetizer = false;
     aout_DateSet( &p_sys->end_date, 0 );
 
     /* Set output properties */
@@ -146,7 +149,7 @@ static int OpenPacketizer( vlc_object_t *p_this )
 
     if( i_ret != VLC_SUCCESS ) return i_ret;
 
-    p_dec->p_sys->b_packetizer = VLC_TRUE;
+    p_dec->p_sys->b_packetizer = true;
 
     p_dec->fmt_out.i_codec = VLC_FOURCC('l','p','c','m');
 

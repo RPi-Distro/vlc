@@ -2,7 +2,7 @@
  * bridge.c: bridge stream output module
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: e1174d36f204a2f8db0fb3e82d48c4789d748828 $
+ * $Id: 1e0a7ada2dbcf3df5df1146e719b785e4a68d6f1 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -24,11 +24,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/sout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_sout.h>
+#include <vlc_block.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -56,8 +60,8 @@ static void CloseIn ( vlc_object_t * );
 #define SOUT_CFG_PREFIX_IN "sout-bridge-in-"
 
 vlc_module_begin();
-    set_shortname( _("Bridge"));
-    set_description( _("Bridge stream output"));
+    set_shortname( N_("Bridge"));
+    set_description( N_("Bridge stream output"));
     add_submodule();
     set_section( N_("Bridge out"), NULL );
     set_capability( "sout stream", 50 );
@@ -66,7 +70,7 @@ vlc_module_begin();
     set_category( CAT_SOUT );
     set_subcategory( SUBCAT_SOUT_STREAM );*/
     add_integer( SOUT_CFG_PREFIX_OUT "id", 0, NULL, ID_TEXT, ID_LONGTEXT,
-                 VLC_FALSE );
+                 false );
     set_callbacks( OpenOut, CloseOut );
 
     add_submodule();
@@ -76,23 +80,22 @@ vlc_module_begin();
     /*set_category( CAT_SOUT );
     set_subcategory( SUBCAT_SOUT_STREAM );*/
     add_integer( SOUT_CFG_PREFIX_IN "delay", 0, NULL, DELAY_TEXT,
-                 DELAY_LONGTEXT, VLC_FALSE );
+                 DELAY_LONGTEXT, false );
     add_integer( SOUT_CFG_PREFIX_IN "id-offset", 8192, NULL, ID_OFFSET_TEXT,
-                 ID_OFFSET_LONGTEXT, VLC_FALSE );
+                 ID_OFFSET_LONGTEXT, false );
     set_callbacks( OpenIn, CloseIn );
 
-    var_Create( p_module->p_libvlc, "bridge-lock", VLC_VAR_MUTEX );
 vlc_module_end();
 
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static const char *ppsz_sout_options_out[] = {
+static const char *const ppsz_sout_options_out[] = {
     "id", NULL
 };
 
-static const char *ppsz_sout_options_in[] = {
+static const char *const ppsz_sout_options_in[] = {
     "delay", "id-offset", NULL
 };
 
@@ -109,12 +112,12 @@ typedef struct bridged_es_t
     es_format_t fmt;
     block_t *p_block;
     block_t **pp_last;
-    vlc_bool_t b_empty;
+    bool b_empty;
 
     /* bridge in part */
     sout_stream_id_t *id;
     mtime_t i_last;
-    vlc_bool_t b_changed;
+    bool b_changed;
 } bridged_es_t;
 
 typedef struct bridge_t
@@ -126,11 +129,10 @@ typedef struct bridge_t
 #define GetBridge(a) __GetBridge( VLC_OBJECT(a) )
 static bridge_t *__GetBridge( vlc_object_t *p_object )
 {
-    libvlc_t *p_libvlc = p_object->p_libvlc;
     bridge_t *p_bridge;
     vlc_value_t val;
 
-    if( var_Get( p_libvlc, "bridge-struct", &val ) != VLC_SUCCESS )
+    if( var_Get( p_object->p_libvlc, "bridge-struct", &val ) )
     {
         p_bridge = NULL;
     }
@@ -152,7 +154,7 @@ typedef struct out_sout_stream_sys_t
     vlc_mutex_t *p_lock;
     bridged_es_t *p_es;
     int i_id;
-    vlc_bool_t b_inited;
+    bool b_inited;
 } out_sout_stream_sys_t;
 
 /*****************************************************************************
@@ -164,12 +166,13 @@ static int OpenOut( vlc_object_t *p_this )
     out_sout_stream_sys_t *p_sys;
     vlc_value_t val;
 
-    sout_CfgParse( p_stream, SOUT_CFG_PREFIX_OUT, ppsz_sout_options_out,
+    config_ChainParse( p_stream, SOUT_CFG_PREFIX_OUT, ppsz_sout_options_out,
                    p_stream->p_cfg );
 
     p_sys          = malloc( sizeof( out_sout_stream_sys_t ) );
-    p_sys->b_inited = VLC_FALSE;
+    p_sys->b_inited = false;
 
+    var_Create( p_this->p_libvlc, "bridge-lock", VLC_VAR_MUTEX );
     var_Get( p_this->p_libvlc, "bridge-lock", &val );
     p_sys->p_lock = val.p_address;
 
@@ -211,14 +214,14 @@ static sout_stream_id_t * AddOut( sout_stream_t *p_stream, es_format_t *p_fmt )
     {
         return NULL;
     }
-    p_sys->b_inited = VLC_TRUE;
+    p_sys->b_inited = true;
 
     vlc_mutex_lock( p_sys->p_lock );
 
     p_bridge = GetBridge( p_stream );
     if ( p_bridge == NULL )
     {
-        libvlc_t *p_libvlc = p_stream->p_libvlc;
+        vlc_object_t *p_libvlc = VLC_OBJECT( p_stream->p_libvlc );
         vlc_value_t val;
 
         p_bridge = malloc( sizeof( bridge_t ) );
@@ -252,11 +255,11 @@ static sout_stream_id_t * AddOut( sout_stream_t *p_stream, es_format_t *p_fmt )
     p_es->fmt.i_id = p_sys->i_id;
     p_es->p_block = NULL;
     p_es->pp_last = &p_es->p_block;
-    p_es->b_empty = VLC_FALSE;
+    p_es->b_empty = false;
 
     p_es->id = NULL;
     p_es->i_last = 0;
-    p_es->b_changed = VLC_TRUE;
+    p_es->b_changed = true;
 
     msg_Dbg( p_stream, "bridging out input codec=%4.4s id=%d pos=%d",
              (char*)&p_es->fmt.i_codec, p_es->fmt.i_id, i );
@@ -268,6 +271,7 @@ static sout_stream_id_t * AddOut( sout_stream_t *p_stream, es_format_t *p_fmt )
 
 static int DelOut( sout_stream_t *p_stream, sout_stream_id_t *id )
 {
+    VLC_UNUSED(id);
     out_sout_stream_sys_t *p_sys = (out_sout_stream_sys_t *)p_stream->p_sys;
     bridged_es_t *p_es;
 
@@ -280,14 +284,14 @@ static int DelOut( sout_stream_t *p_stream, sout_stream_id_t *id )
 
     p_es = p_sys->p_es;
 
-    p_es->b_empty = VLC_TRUE;
+    p_es->b_empty = true;
     block_ChainRelease( p_es->p_block );
-    p_es->p_block = VLC_FALSE;
+    p_es->p_block = false;
 
-    p_es->b_changed = VLC_TRUE;
+    p_es->b_changed = true;
     vlc_mutex_unlock( p_sys->p_lock );
 
-    p_sys->b_inited = VLC_FALSE;
+    p_sys->b_inited = false;
 
     return VLC_SUCCESS;
 }
@@ -351,9 +355,10 @@ static int OpenIn( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    sout_CfgParse( p_stream, SOUT_CFG_PREFIX_IN, ppsz_sout_options_in,
+    config_ChainParse( p_stream, SOUT_CFG_PREFIX_IN, ppsz_sout_options_in,
                    p_stream->p_cfg );
 
+    var_Create( p_this->p_libvlc, "bridge-lock", VLC_VAR_MUTEX );
     var_Get( p_this->p_libvlc, "bridge-lock", &val );
     p_sys->p_lock = val.p_address;
 
@@ -408,7 +413,7 @@ static int SendIn( sout_stream_t *p_stream, sout_stream_id_t *id,
 {
     in_sout_stream_sys_t *p_sys = (in_sout_stream_sys_t *)p_stream->p_sys;
     bridge_t *p_bridge;
-    vlc_bool_t b_no_es = VLC_TRUE;
+    bool b_no_es = true;
     int i;
 
     /* First forward the packet for our own ES */
@@ -427,7 +432,7 @@ static int SendIn( sout_stream_t *p_stream, sout_stream_id_t *id,
     for ( i = 0; i < p_bridge->i_es_num; i++ )
     {
         if ( !p_bridge->pp_es[i]->b_empty )
-            b_no_es = VLC_FALSE;
+            b_no_es = false;
 
         while ( p_bridge->pp_es[i]->p_block != NULL
                  && (p_bridge->pp_es[i]->p_block->i_dts + p_sys->i_delay
@@ -436,7 +441,7 @@ static int SendIn( sout_stream_t *p_stream, sout_stream_id_t *id,
                           < p_bridge->pp_es[i]->i_last) )
         {
             block_t *p_block = p_bridge->pp_es[i]->p_block;
-            msg_Dbg( p_stream, "dropping a packet (" I64Fd ")",
+            msg_Dbg( p_stream, "dropping a packet (%"PRId64 ")",
                      mdate() - p_block->i_dts - p_sys->i_delay );
             p_bridge->pp_es[i]->p_block
                 = p_bridge->pp_es[i]->p_block->p_next;
@@ -476,7 +481,7 @@ static int SendIn( sout_stream_t *p_stream, sout_stream_id_t *id,
                          p_bridge->pp_es[i]->fmt.i_id, i );
             }
         }
-        p_bridge->pp_es[i]->b_changed = VLC_FALSE;
+        p_bridge->pp_es[i]->b_changed = false;
 
         if ( p_bridge->pp_es[i]->b_empty )
             continue;
@@ -488,7 +493,7 @@ static int SendIn( sout_stream_t *p_stream, sout_stream_id_t *id,
             {
                 p_sys->p_out->pf_del( p_sys->p_out, p_bridge->pp_es[i]->id );
                 p_bridge->pp_es[i]->fmt.i_id -= p_sys->i_id_offset;
-                p_bridge->pp_es[i]->b_changed = VLC_TRUE;
+                p_bridge->pp_es[i]->b_changed = true;
                 p_bridge->pp_es[i]->id = NULL;
             }
             continue;
@@ -518,7 +523,7 @@ static int SendIn( sout_stream_t *p_stream, sout_stream_id_t *id,
 
     if( b_no_es )
     {
-        libvlc_t *p_libvlc = p_stream->p_libvlc;
+        vlc_object_t *p_libvlc = VLC_OBJECT( p_stream->p_libvlc );
         for ( i = 0; i < p_bridge->i_es_num; i++ )
             free( p_bridge->pp_es[i] );
         free( p_bridge->pp_es );

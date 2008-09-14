@@ -2,7 +2,7 @@
  * a52.c: parse A/52 audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2002 the VideoLAN team
- * $Id: e6c9503292ad76c87941ea0fd602efb6da7490e7 $
+ * $Id$
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -26,10 +26,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "vlc_block_helper.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_aout.h>
+#include <vlc_input.h>
+#include <vlc_block_helper.h>
 
 #define A52_HEADER_SIZE 7
 
@@ -39,7 +45,7 @@
 struct decoder_sys_t
 {
     /* Module mode */
-    vlc_bool_t b_packetizer;
+    bool b_packetizer;
 
     /*
      * Input properties
@@ -57,6 +63,7 @@ struct decoder_sys_t
     int i_frame_size, i_bit_rate;
     unsigned int i_rate, i_channels, i_channels_conf;
 
+    int i_input_rate;
 };
 
 enum {
@@ -77,7 +84,7 @@ static int  OpenPacketizer( vlc_object_t * );
 static void CloseDecoder  ( vlc_object_t * );
 static void *DecodeBlock  ( decoder_t *, block_t ** );
 
-static int  SyncInfo      ( const byte_t *, unsigned int *, unsigned int *,
+static int  SyncInfo      ( const uint8_t *, unsigned int *, unsigned int *,
                             unsigned int *, int * );
 
 static uint8_t       *GetOutBuffer ( decoder_t *, void ** );
@@ -88,14 +95,14 @@ static block_t       *GetSoutBuffer( decoder_t * );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("A/52 parser") );
+    set_description( N_("A/52 parser") );
     set_capability( "decoder", 100 );
     set_callbacks( OpenDecoder, CloseDecoder );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACODEC );
 
     add_submodule();
-    set_description( _("A/52 audio packetizer") );
+    set_description( N_("A/52 audio packetizer") );
     set_capability( "packetizer", 10 );
     set_callbacks( OpenPacketizer, CloseDecoder );
 vlc_module_end();
@@ -117,17 +124,15 @@ static int OpenDecoder( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     /* Misc init */
-    p_sys->b_packetizer = VLC_FALSE;
+    p_sys->b_packetizer = false;
     p_sys->i_state = STATE_NOSYNC;
     aout_DateSet( &p_sys->end_date, 0 );
 
-    p_sys->bytestream = block_BytestreamInit( p_dec );
+    p_sys->bytestream = block_BytestreamInit();
+    p_sys->i_input_rate = INPUT_RATE_DEFAULT;
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
@@ -149,7 +154,7 @@ static int OpenPacketizer( vlc_object_t *p_this )
 
     int i_ret = OpenDecoder( p_this );
 
-    if( i_ret == VLC_SUCCESS ) p_dec->p_sys->b_packetizer = VLC_TRUE;
+    if( i_ret == VLC_SUCCESS ) p_dec->p_sys->b_packetizer = true;
 
     return i_ret;
 }
@@ -168,6 +173,18 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
     if( !pp_block || !*pp_block ) return NULL;
 
+    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    {
+        if( (*pp_block)->i_flags&BLOCK_FLAG_CORRUPTED )
+        {
+            p_sys->i_state = STATE_NOSYNC;
+            block_BytestreamFlush( &p_sys->bytestream );
+        }
+//        aout_DateSet( &p_sys->end_date, 0 );
+        block_Release( *pp_block );
+        return NULL;
+    }
+
     if( !aout_DateGet( &p_sys->end_date ) && !(*pp_block)->i_pts )
     {
         /* We've just started the stream, wait for the first PTS. */
@@ -175,10 +192,8 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         return NULL;
     }
 
-    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
-    {
-        p_sys->i_state = STATE_NOSYNC;
-    }
+    if( (*pp_block)->i_rate > 0 )
+        p_sys->i_input_rate = (*pp_block)->i_rate;
 
     block_BytestreamPush( &p_sys->bytestream, *pp_block );
 
@@ -285,7 +300,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         case STATE_SEND_DATA:
             if( !(p_buf = GetOutBuffer( p_dec, &p_out_buffer )) )
             {
-                //p_dec->b_error = VLC_TRUE;
+                //p_dec->b_error = true;
                 return NULL;
             }
 
@@ -378,7 +393,8 @@ static aout_buffer_t *GetAoutBuffer( decoder_t *p_dec )
     if( p_buf == NULL ) return NULL;
 
     p_buf->start_date = aout_DateGet( &p_sys->end_date );
-    p_buf->end_date = aout_DateIncrement( &p_sys->end_date, A52_FRAME_NB );
+    p_buf->end_date = aout_DateIncrement( &p_sys->end_date,
+                                          A52_FRAME_NB * p_sys->i_input_rate / INPUT_RATE_DEFAULT );
 
     return p_buf;
 }
@@ -396,8 +412,10 @@ static block_t *GetSoutBuffer( decoder_t *p_dec )
 
     p_block->i_pts = p_block->i_dts = aout_DateGet( &p_sys->end_date );
 
-    p_block->i_length = aout_DateIncrement( &p_sys->end_date, A52_FRAME_NB ) -
-        p_block->i_pts;
+    p_block->i_length =
+        aout_DateIncrement( &p_sys->end_date,
+                            A52_FRAME_NB * p_sys->i_input_rate / INPUT_RATE_DEFAULT ) -
+            p_block->i_pts;
 
     return p_block;
 }
@@ -409,7 +427,7 @@ static block_t *GetSoutBuffer( decoder_t *p_dec )
  * since we don't want to oblige S/PDIF people to use liba52 just to get
  * their SyncInfo...
  *****************************************************************************/
-static int SyncInfo( const byte_t * p_buf,
+static int SyncInfo( const uint8_t * p_buf,
                      unsigned int * pi_channels,
                      unsigned int * pi_channels_conf,
                      unsigned int * pi_sample_rate, int * pi_bit_rate )

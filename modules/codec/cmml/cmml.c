@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2004 the VideoLAN team
  *
- * $Id: 2b6e6ca17cf286e7b0b5ce7a7f52a2351f6a279c $
+ * $Id$
  *
  * Author: Andre Pang <Andre.Pang@csiro.au>
  *
@@ -27,14 +27,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_input.h>
+#include <vlc_codec.h>
 #include <vlc_osd.h>
-
-#include "charset.h"
-
+#include <vlc_charset.h>
+#include <vlc_interface.h>
 #include "xtag.h"
 
 #undef  CMML_DEBUG
@@ -60,21 +63,21 @@ static void          ParseText     ( decoder_t *, block_t * );
 /*****************************************************************************
  * Exported prototypes
  *****************************************************************************/
-int  E_(OpenIntf)  ( vlc_object_t * );
-void E_(CloseIntf) ( vlc_object_t * );
+int  OpenIntf  ( vlc_object_t * );
+void CloseIntf ( vlc_object_t * );
 
 /*****************************************************************************
  * Module descriptor.
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("CMML annotations decoder") );
+    set_description( N_("CMML annotations decoder") );
     set_capability( "decoder", 50 );
     set_callbacks( OpenDecoder, CloseDecoder );
     add_shortcut( "cmml" );
 
     add_submodule();
         set_capability( "interface", 0 );
-        set_callbacks( E_(OpenIntf), E_(CloseIntf) );
+        set_callbacks( OpenIntf, CloseIntf );
 vlc_module_end();
 
 /*****************************************************************************
@@ -105,7 +108,6 @@ static int OpenDecoder( vlc_object_t *p_this )
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
     {
-        msg_Err( p_dec, "out of memory" );
         return VLC_EGENERIC;
     }
 
@@ -128,8 +130,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     vlc_object_release( p_input );
 
     /* initialise the CMML responder interface */
-    p_sys->p_intf = intf_Create( p_dec, "cmml", 0, NULL );
-    p_sys->p_intf->b_block = VLC_FALSE;
+    p_sys->p_intf = intf_Create( p_dec, "cmml" );
     intf_RunThread( p_sys->p_intf );
 
     return VLC_SUCCESS;
@@ -187,7 +188,7 @@ static void CloseDecoder( vlc_object_t *p_this )
         intf_StopThread( p_intf );
         vlc_object_detach( p_intf );
         vlc_object_release( p_intf );
-        intf_Destroy( p_intf );
+        vlc_object_release( p_intf );
     }
 
     p_sys->p_intf = NULL;
@@ -229,7 +230,7 @@ static void ParseText( decoder_t *p_dec, block_t *p_block )
 #ifdef CMML_DEBUG
     msg_Dbg( p_dec, "psz_cmml is \"%s\"", psz_cmml );
 #endif
-    
+ 
     /* Parse the <clip> part of the CMML */
     p_clip_parser = xtag_new_parse( psz_cmml, p_block->i_buffer );
     if( !p_clip_parser )
@@ -262,7 +263,7 @@ static void ParseText( decoder_t *p_dec, block_t *p_block )
     if( psz_url )
     {
         char *psz_tmp = strdup( psz_url );
-        
+ 
         val.p_address = psz_tmp;
         if( var_Set( p_dec, "psz-current-anchor-url", val ) != VLC_SUCCESS )
         {
@@ -290,10 +291,10 @@ static void ParseText( decoder_t *p_dec, block_t *p_block )
 
     }
 
-    if( psz_subtitle ) free( psz_subtitle );
-    if( psz_cmml ) free( psz_cmml );
-    if( p_anchor ) free( p_anchor );
-    if( p_clip_parser ) free( p_clip_parser );
-    if( psz_url ) free( psz_url );
+    free( psz_subtitle );
+    free( psz_cmml );
+    free( p_anchor );
+    free( p_clip_parser );
+    free( psz_url );
 }
 

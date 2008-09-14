@@ -2,7 +2,7 @@
  * equalizer.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 24961436a52234fdaeb436593b79ce1eac0f4339 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -21,15 +21,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "vlc/aout.h"
-#include "aout_internal.h"
+#include <vlc_common.h>
+#include <vlc_aout.h>
 #include "equalizer.hpp"
 #include "../utils/var_percent.hpp"
 #include <ios>
 #include <iomanip>
 #include <sstream>
-
 
 EqualizerBands::EqualizerBands( intf_thread_t *pIntf ): SkinObject( pIntf ),
     m_isUpdating( false )

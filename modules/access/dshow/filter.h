@@ -2,7 +2,7 @@
  * filter.h : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 73bea53f6f9883ac0487bdde561375677efbcbb8 $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -41,7 +41,9 @@ using namespace std;
 #   define AM_NOVTABLE
 #   define _OBJBASE_H_
 #   undef _X86_
-#   define _I64_MAX LONG_LONG_MAX
+#   ifndef _I64_MAX
+#     define _I64_MAX LONG_LONG_MAX
+#   endif
 #   define LONGLONG long long
 #endif
 

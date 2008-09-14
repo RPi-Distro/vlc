@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.m
  * AppleRemote
- * $Id: 780e8223d4e4efb34030517849f5b2565511201d $
+ * $Id$
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -116,15 +116,6 @@ const NSTimeInterval HOLD_RECOGNITION_TIME_INTERVAL=0.4;
     [cookieToButtonMapping release];
     [super dealloc];
 }
-
-/* this was added by the VideoLAN team to ensure Leopard-compatibility and is VLC-only */
-#if GC_ENABLED
-- (void)finalize
-{
-    [self stopListening: self];
-    [super finalize];
-}
-#endif
 
 - (int) remoteId {
     return remoteId;

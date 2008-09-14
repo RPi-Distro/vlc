@@ -1,10 +1,10 @@
 /*****************************************************************************
  * extended.h: MacOS X Extended interface panel
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: 5b3c7f560a049c5fcb62888ac5c2e0e471f2f3b3 $
+ * Copyright (C) 2005-2007 the VideoLAN team
+ * $Id$
  *
- * Authors: Felix Kühne <fkuehne@users.sf.net>
+ * Authors: Felix Paul Kühne <fkuehne@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,11 +22,12 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * VLCExtended 
+ * VLCExtended
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
-#import <vlc/vlc.h>
+#import "intf.h"
+#import <vlc_common.h>
 
 @interface VLCExtended : NSObject
 {
@@ -35,37 +36,32 @@
     IBOutlet id o_audioFlts_view;
     IBOutlet id o_videoFilters_view;
     IBOutlet id o_extended_window;
-    
+
     /* window content */
-    IBOutlet id o_expBtn_adjustImage;
-    IBOutlet id o_expBtn_audioFlts;
-    IBOutlet id o_expBtn_videoFlts;
-    IBOutlet id o_lbl_audioFlts;
-    IBOutlet id o_lbl_videoFlts;
-    IBOutlet id o_lbl_adjustImage;
-    IBOutlet id o_lbl_video;
-    IBOutlet id o_lbl_audio;
-    IBOutlet id o_extWin_adjImg_sepe;
-    IBOutlet id o_extWin_vidFlts_sepe;
-    IBOutlet id o_box_vidFlts;
-    IBOutlet id o_box_audFlts;
-    IBOutlet id o_box_adjImg;
-    
+    IBOutlet id o_selector_pop;
+    IBOutlet id o_top_controls_box;
+
     /* video filters */
     IBOutlet id o_btn_vidFlts_mrInfo;
     IBOutlet id o_ckb_blur;
-    IBOutlet id o_ckb_distortion;
     IBOutlet id o_ckb_imgClone;
     IBOutlet id o_ckb_imgCrop;
     IBOutlet id o_ckb_imgInvers;
     IBOutlet id o_ckb_trnsform;
-    
+    IBOutlet id o_ckb_intZoom;
+    IBOutlet id o_ckb_wave;
+    IBOutlet id o_ckb_ripple;
+    IBOutlet id o_ckb_psycho;
+    IBOutlet id o_ckb_gradient;
+    IBOutlet id o_lbl_general;
+    IBOutlet id o_lbl_distort;
+
     /* audio filters */
     IBOutlet id o_ckb_vlme_norm;
     IBOutlet id o_ckb_hdphnVirt;
     IBOutlet id o_lbl_maxLevel;
     IBOutlet id o_sld_maxLevel;
-    
+
     /* adjust image */
     IBOutlet id o_btn_rstrDefaults;
     IBOutlet id o_ckb_enblAdjustImg;
@@ -81,35 +77,30 @@
     IBOutlet id o_sld_hue;
     IBOutlet id o_sld_saturation;
     IBOutlet id o_sld_opaque;
-    
+
     /* global variables */
-    BOOL o_adjImg_expanded;
-    BOOL o_audFlts_expanded;
-    BOOL o_vidFlts_expanded;
-    
+    NSView * o_currentlyshown_view;
     BOOL o_config_changed;
 }
 
-- (IBAction)adjImg_Enbl:(id)sender;
-- (IBAction)adjImg_rstrDefaults:(id)sender;
-- (IBAction)adjImg_sliders:(id)sender;
-- (IBAction)adjImg_opaque:(id)sender;
-- (IBAction)audFtls_hdphnVirt:(id)sender;
-- (IBAction)audFtls_maxLevelSld:(id)sender;
-- (IBAction)audFtls_vlmeNorm:(id)sender;
-- (IBAction)extWin_exp_adjImg:(id)sender;
-- (IBAction)extWin_exp_audFlts:(id)sender;
-- (IBAction)extWin_exp_vidFlts:(id)sender;
-- (IBAction)vidFlts:(id)sender;
-- (IBAction)vidFlts_mrInfo:(id)sender;
+- (IBAction)viewSelectorAction:(id)sender;
+- (IBAction)enableAdjustImage:(id)sender;
+- (IBAction)restoreDefaultsForAdjustImage:(id)sender;
+- (IBAction)sliderActionAdjustImage:(id)sender;
+- (IBAction)opaqueSliderAction:(id)sender;
+- (IBAction)enableHeadphoneVirtualizer:(id)sender;
+- (IBAction)sliderActionMaximumAudioLevel:(id)sender;
+- (IBAction)enableVolumeNormalization:(id)sender;
+- (IBAction)videoFilterAction:(id)sender;
+- (IBAction)moreInfoVideoFilters:(id)sender;
 
 + (VLCExtended *)sharedInstance;
 - (BOOL)getConfigChanged;
-- (void)collapsAll;
 
 - (void)showPanel;
 - (void)initStrings;
-- (void)changeVFiltersString: (char *)psz_name onOrOff: (vlc_bool_t )b_add;
-- (void)changeAFiltersString: (char *)psz_name onOrOff: (vlc_bool_t )b_add;
+- (void)changeVoutFiltersString: (char *)psz_name onOrOff: (bool )b_add;
+- (void)changeVideoFiltersString: (char *)psz_name onOrOff: (bool )b_add;
+- (void)changeAFiltersString: (char *)psz_name onOrOff: (bool )b_add;
 - (void)savePrefs;
 @end

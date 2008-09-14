@@ -2,7 +2,7 @@
  * mga.c : Matrox Graphic Array plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 5ccb866ef40c6bdcb8bdc11949acf6277e7b455f $
+ * $Id$
  *
  * Authors: Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
  *          Samuel Hocevar <sam@zoy.org>
@@ -27,14 +27,17 @@
  *****************************************************************************/
 #include <errno.h>                                                 /* ENOMEM */
 #include <unistd.h>                                               /* close() */
-#include <stdlib.h>                                                /* free() */
-#include <string.h>                                            /* strerror() */
 #include <fcntl.h>                                                 /* open() */
 #include <sys/ioctl.h>                                            /* ioctl() */
 #include <sys/mman.h>                                          /* PROT_WRITE */
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
 
 #ifdef SYS_BSD
 #include <sys/types.h>                                     /* typedef ushort */
@@ -56,7 +59,7 @@ static int  NewPicture     ( vout_thread_t *, picture_t * );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("Matrox Graphic Array video output") );
+    set_description( N_("Matrox Graphic Array video output") );
     set_capability( "video output", 10 );
     set_callbacks( Create, Destroy );
 vlc_module_end();
@@ -112,7 +115,7 @@ struct vout_sys_t
 {
     mga_vid_config_t    mga;
     int                 i_fd;
-    byte_t *            p_video;
+    uint8_t *           p_video;
 };
 
 struct picture_sys_t
@@ -134,10 +137,7 @@ static int Create( vlc_object_t *p_this )
     /* Allocate structure */
     p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
         return( 1 );
-    }
 
     p_vout->p_sys->i_fd = open( "/dev/mga_vid", O_RDWR );
     if( p_vout->p_sys->i_fd == -1 )

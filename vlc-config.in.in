@@ -19,9 +19,11 @@ cflags=""
 cxxflags=""
 objcflags=""
 ldflags=""
+libs=""
 
 cflags_tuning="@CFLAGS_TUNING@"
-cflags_optim="@CFLAGS_OPTIM@"
+cflags_optim_size="@CFLAGS_OPTIM_SIZE@"
+cflags_optim_speed="@CFLAGS_OPTIM_SPEED@"
 cflags_optim_nodebug="@CFLAGS_OPTIM_NODEBUG@"
 cflags_nooptim="@CFLAGS_NOOPTIM@"
 
@@ -37,7 +39,6 @@ Options:
         [--exec-prefix[=DIR]]     set exec prefix
         [--version]               print version and exit
         [--linkage]               print linkage mode (c, c++, objc)
-        [--target]                print targets and exit
         [--list]                  print modules names and exit
         [--libs]                  output linking flags
         [--cflags]                output C compilation flags
@@ -57,15 +58,6 @@ register_flags()
 {
   case "$1" in
     #@1@#
-    *)
-      ;;
-  esac
-}
-
-register_targets()
-{
-  case "$1" in
-    #@2@#
     *)
       ;;
   esac
@@ -95,14 +87,7 @@ linkage="c"
 #
 #  On Linux and Solaris, activate 64-bit off_t (by default under BSD)
 #
-cppflags="${cppflags} -D_FILE_OFFSET_BITS=64 -D__USE_UNIX98 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE -D_GNU_SOURCE"
-
-#
-#  Gettext, data and plugin location
-#
-cppflags="${cppflags} -DLOCALEDIR=\"@datadir@/locale\""
-cppflags="${cppflags} -DDATA_PATH=\"@datadir@/vlc\""
-cppflags="${cppflags} -DPLUGIN_PATH=\"@libdir@/vlc\""
+cppflags="${cppflags} -D_FILE_OFFSET_BITS=64 -D__USE_UNIX98 -D_LARGEFILE64_SOURCE -D_REENTRANT -D_THREAD_SAFE"
 
 #
 #  Various additional defines
@@ -130,13 +115,28 @@ fi
 if [ "${release}" = yes ]; then
   cppflags="${cppflags} -DHAVE_RELEASE"
 fi
-if [ "${optim}" = yes ]; then
-  cppflags="${cppflags} ${cflags_optim} ${cflags_tuning}"
+if [ "${optim}" = size ]; then
+  cflags="${cflags} ${cflags_optim_size} ${cflags_tuning}"
+  cxxflags="${cxxflags} ${cflags_optim_size} ${cflags_tuning}"
+  objcflags="${objcflags} ${cflags_optim_size} ${cflags_tuning}"
   if [ "${debug}" != yes -a "${gprof}" != yes -a "${cprof}" != yes ]; then
-    cppflags="${cppflags} ${cflags_optim_nodebug}"
+    cflags="${cflags} ${cflags_optim_nodebug}"
+    cxxflags="${cxxflags} ${cflags_optim_nodebug}"
+    objcflags="${objcflags} ${cflags_optim_nodebug}"
+  fi
+elif [ "${optim}" = speed ]; then
+  cflags="${cflags} ${cflags_optim_speed} ${cflags_tuning}"
+  cxxflags="${cxxflags} ${cflags_optim_speed} ${cflags_tuning}"
+  objcflags="${objcflags} ${cflags_optim_speed} ${cflags_tuning}"
+  if [ "${debug}" != yes -a "${gprof}" != yes -a "${cprof}" != yes ]; then
+    cflags="${cflags} ${cflags_optim_nodebug}"
+    cxxflags="${cxxflags} ${cflags_optim_nodebug}"
+    objcflags="${objcflags} ${cflags_optim_nodebug}"
   fi
 else
-  cppflags="${cppflags} ${cflags_nooptim}"
+  cflags="${cflags} ${cflags_nooptim}"
+  cxxflags="${cxxflags} ${cflags_nooptim}"
+  objcflags="${objcflags} ${cflags_nooptim}"
 fi
 
 #
@@ -148,7 +148,24 @@ while test $# -gt 0; do
   *) optarg= ;;
   esac
 
-  case "$1" in
+  # Mangle plugin name, if applicable
+  # This is just a convenience hack for modules/common.am
+  tgt="$1"
+  tgt="${tgt##*/}"
+  case "$tgt" in
+    lib*_plugin_la-*.lo)
+      tgt="${tgt#*lib}"
+      tgt="${tgt%_plugin_la-*.lo}"
+      ;;
+    lib*_plugin.la)
+      tgt="${tgt#lib}"
+      tgt="${tgt%_plugin.la}"
+      ;;
+    *)
+      ;;
+  esac
+
+  case "$tgt" in
     --prefix=*)
       prefix="${optarg}"
       if test "${exec_prefix_set}" = no ; then
@@ -172,14 +189,14 @@ while test $# -gt 0; do
     --linkage)
       echo_linkage=yes
       ;;
-    --target)
-      echo_target=yes
-      ;;
     --list)
       echo_list=yes
       ;;
     --cflags)
       echo_cflags=yes
+      ;;
+    --cppflags)
+      echo_cppflags=yes
       ;;
     --cxxflags)
       echo_cxxflags=yes
@@ -187,89 +204,53 @@ while test $# -gt 0; do
     --objcflags)
       echo_objcflags=yes
       ;;
-    --libs)
+    --ldflags)
+      echo_ldflags=yes
+      ;;
+    --libs|-libs)
       echo_libs=yes
       ;;
     -*)
       usage 1 1>&1
       ;;
-    vlc)
-      cppflags="${cppflags} -D__VLC__ -I${top_builddir}src/misc"
+    libvlc)
+      cppflags="${cppflags} -D__LIBVLC__ -I${top_builddir}src/misc"
       ;;
     plugin)
       echo_plugin=yes
-      cppflags="${cppflags} -D__VLC__ -D__PLUGIN__"
+      cppflags="${cppflags} -D__LIBVLC__ -D__PLUGIN__"
       ;;
     builtin)
       echo_builtin=yes
-      cppflags="${cppflags} -D__VLC__ -D__BUILTIN__"
-      ;;
-    mozilla)
-      ;;
-    activex)
+      cppflags="${cppflags} -D__LIBVLC__ -D__BUILTIN__"
       ;;
     pic)
       ;;
-    external)
-      echo_external=yes
-      ldflags="${ldflags} -lvlc"
-      ;;      
+    mozilla)
+      ;;
     *)
-      module="$1"
+      module="$tgt"
       ;;
   esac
 
   # Register per-module *FLAGS
-  register_flags "$1"
-
-  # Register module targets
-  register_targets "$1"
+  register_flags "$tgt"
 
   shift
 done
-
-libs="-L@libdir@"
 
 #
 #  If a module was requested, use its name
 #
 if test -n "${module}"; then
-  cppflags="${cppflags} -DMODULE_NAME=${module} -DMODULE_NAME_IS_${module}"
+  cppflags="${cppflags} -DMODULE_NAME=${module} -DMODULE_NAME_IS_${module} -DMODULE_STRING=\"${module}\""
 fi
 
 #
 #  Output what we were asked
 #
 if test "${echo_linkage}" = yes; then
-  if test "${echo_plugin}" = yes; then
-    for module in `echo "${plugins}"`; do
-      register_flags "${module}"
-    done
-  fi
-  if test "${echo_builtin}" = yes; then
-    for module in `echo "${builtins}"`; do
-      register_flags "${module}"
-    done
-  fi
   echo "${linkage}"
-  exit 0
-fi
-
-if test "${echo_target}" = yes; then
-  if test "${echo_plugin}" = yes; then
-    for module in `echo "${plugins}"`; do
-      register_targets "${module}"
-    done
-    for target in `echo "${list}"`; do printf "${top_builddir}modules/${target}_plugin "; done
-    printf '\n'
-  fi
-  if test "${echo_builtin}" = yes; then
-    for module in `echo "${builtins}"`; do
-      register_targets "${module}"
-    done
-    for target in `echo "${list}"`; do printf "${top_builddir}modules/${target}.a "; done
-    printf '\n'
-  fi
   exit 0
 fi
 
@@ -303,33 +284,17 @@ fi
 if test "${echo_objcflags}" = yes; then
   echo "${cppflags} ${objcflags}"
 fi
+if test "${echo_ldflags}" = yes; then
+  echo "${ldflags}"
+fi
 
 # Libs
 # There are 4 possibilities
 #  - We are a plugin or a builtin
-#  - We are building from the outside (external):
-#	- Give full libvlc linkflags + -lvlc (in libdir)
-# 	- Link with builtins in libdir
 #  - We are building something from the inside (builtin)
 #       - Link with builtins in place
 #  If you want something shared from the inside (binding),
 #  you need "builtin vlc"
 if test "${echo_libs}" = yes; then
-  if test "${echo_builtin}" = yes; then
-    for module in `echo "${builtins}"`; do
-      register_targets "${module}"
-      register_flags "${module}"
-    done
-    for target in `echo "${list}"`; do printf "${top_builddir}modules/${target}.a "; done
-  fi
-  if test "${echo_external}" = yes; then
-    for module in `echo "${builtins}"`; do
-      ldflags="${ldflags} @libdir@/vlc/lib${module}.a"
-    done
-    for module in `echo "${builtins}"`; do
-      register_flags "${module}"
-    done
-    register_flags "vlc"
-  fi
-  echo "${libs} ${ldflags}"
+  echo "${libs}"
 fi

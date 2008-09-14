@@ -2,7 +2,7 @@
  * smb.c: SMB input module
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 1a39e0645f8fa3dfd82a714fff31586268cbcd40 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,10 +24,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_access.h>
 
 #ifdef WIN32
 #ifdef HAVE_FCNTL_H
@@ -72,18 +77,18 @@ static void Close( vlc_object_t * );
 
 vlc_module_begin();
     set_shortname( "SMB" );
-    set_description( _("SMB input") );
-    set_capability( "access2", 0 );
+    set_description( N_("SMB input") );
+    set_capability( "access", 0 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACCESS );
     add_integer( "smb-caching", 2 * DEFAULT_PTS_DELAY / 1000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, VLC_TRUE );
+                 CACHING_TEXT, CACHING_LONGTEXT, true );
     add_string( "smb-user", NULL, NULL, USER_TEXT, USER_LONGTEXT,
-                VLC_FALSE );
+                false );
     add_string( "smb-pwd", NULL, NULL, PASS_TEXT,
-                PASS_LONGTEXT, VLC_FALSE );
+                PASS_LONGTEXT, false );
     add_string( "smb-domain", NULL, NULL, DOMAIN_TEXT,
-                DOMAIN_LONGTEXT, VLC_FALSE );
+                DOMAIN_LONGTEXT, false );
     add_shortcut( "smb" );
     set_callbacks( Open, Close );
 vlc_module_end();
@@ -91,7 +96,7 @@ vlc_module_end();
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int Read( access_t *, uint8_t *, int );
+static ssize_t Read( access_t *, uint8_t *, size_t );
 static int Seek( access_t *, int64_t );
 static int Control( access_t *, int, va_list );
 
@@ -107,13 +112,13 @@ struct access_sys_t
 
 #ifdef WIN32
 static void Win32AddConnection( access_t *, char *, char *, char *, char * );
-#endif
-
-void smb_auth( const char *srv, const char *shr, char *wg, int wglen,
-               char *un, int unlen, char *pw, int pwlen )
+#else
+static void smb_auth( const char *srv, const char *shr, char *wg, int wglen,
+                      char *un, int unlen, char *pw, int pwlen )
 {
     //wglen = unlen = pwlen = 0;
 }
+#endif
 
 /****************************************************************************
  * Open: connect to smb server and ask for file
@@ -187,31 +192,33 @@ static int Open( vlc_object_t *p_this )
     if( psz_user && !*psz_user ) { free( psz_user ); psz_user = 0; }
     if( !psz_pwd ) psz_pwd = var_CreateGetString( p_access, "smb-pwd" );
     if( psz_pwd && !*psz_pwd ) { free( psz_pwd ); psz_pwd = 0; }
-    if(!psz_domain) psz_domain = var_CreateGetString( p_access, "smb-domain" );
+    if( !psz_domain ) psz_domain = var_CreateGetString( p_access, "smb-domain" );
     if( psz_domain && !*psz_domain ) { free( psz_domain ); psz_domain = 0; }
 
 #ifdef WIN32
     if( psz_user )
         Win32AddConnection( p_access, psz_path, psz_user, psz_pwd, psz_domain);
-    asprintf( &psz_uri, "//%s", psz_path );
+    i_ret = asprintf( &psz_uri, "//%s", psz_path );
 #else
     if( psz_user )
-        asprintf( &psz_uri, "smb://%s%s%s%s%s@%s",
-                  psz_domain ? psz_domain : "", psz_domain ? ";" : "",
-                  psz_user, psz_pwd ? ":" : "",
-                  psz_pwd ? psz_pwd : "", psz_path );
+        i_ret = asprintf( &psz_uri, "smb://%s%s%s%s%s@%s",
+                          psz_domain ? psz_domain : "", psz_domain ? ";" : "",
+                          psz_user, psz_pwd ? ":" : "",
+                          psz_pwd ? psz_pwd : "", psz_path );
     else
-        asprintf( &psz_uri, "smb://%s", psz_path );
+        i_ret = asprintf( &psz_uri, "smb://%s", psz_path );
 #endif
 
-    if( psz_user ) free( psz_user );
-    if( psz_pwd ) free( psz_pwd );
-    if( psz_domain ) free( psz_domain );
+    free( psz_user );
+    free( psz_pwd );
+    free( psz_domain );
+
+    if( i_ret == -1 )
+        return VLC_ENOMEM;
 
 #ifdef USE_CTX
     if( !(p_smb = smbc_new_context()) )
     {
-        msg_Err( p_access, "out of memory" );
         free( psz_uri );
         return VLC_ENOMEM;
     }
@@ -220,7 +227,7 @@ static int Open( vlc_object_t *p_this )
 
     if( !smbc_init_context( p_smb ) )
     {
-        msg_Err( p_access, "cannot initialize context (%s)", strerror(errno) );
+        msg_Err( p_access, "cannot initialize context (%m)" );
         smbc_free_context( p_smb, 1 );
         free( psz_uri );
         return VLC_EGENERIC;
@@ -228,18 +235,19 @@ static int Open( vlc_object_t *p_this )
 
     if( !(p_file = (p_smb->open)( p_smb, psz_uri, O_RDONLY, 0 )) )
     {
-        msg_Err( p_access, "open failed for '%s' (%s)",
-                 p_access->psz_path, strerror(errno) );
+        msg_Err( p_access, "open failed for '%s' (%m)",
+                 p_access->psz_path );
         smbc_free_context( p_smb, 1 );
         free( psz_uri );
         return VLC_EGENERIC;
     }
 
-    p_access->info.i_size = 0;
-    i_ret = p_smb->fstat( p_smb, p_file, &filestat );
-    if( i_ret ) msg_Err( p_access, "stat failed (%s)", strerror(errno) );
-    else p_access->info.i_size = filestat.st_size;
+    /* Init p_access */
+    STANDARD_READ_ACCESS_INIT;
 
+    i_ret = p_smb->fstat( p_smb, p_file, &filestat );
+    if( i_ret ) msg_Err( p_access, "stat failed (%m)" );
+    else p_access->info.i_size = filestat.st_size;
 #else
 
 #ifndef WIN32
@@ -260,32 +268,25 @@ static int Open( vlc_object_t *p_this )
 #endif
     if( (i_smb = smbc_open( psz_uri, O_RDONLY, 0 )) < 0 )
     {
-        msg_Err( p_access, "open failed for '%s' (%s)",
-                 p_access->psz_path, strerror(errno) );
+        msg_Err( p_access, "open failed for '%s' (%m)",
+                 p_access->psz_path );
         free( psz_uri );
         return VLC_EGENERIC;
     }
 
-    p_access->info.i_size = 0;
+    /* Init p_access */
+    STANDARD_READ_ACCESS_INIT;
+
     i_ret = smbc_fstat( i_smb, &filestat );
-    if( i_ret ) msg_Err( p_access, "stat failed (%s)", strerror(i_ret) );
+    if( i_ret )
+    {
+        errno = i_ret;
+        msg_Err( p_access, "stat failed (%m)" );
+    }
     else p_access->info.i_size = filestat.st_size;
 #endif
 
     free( psz_uri );
-
-    /* Init p_access */
-    p_access->pf_read = Read;
-    p_access->pf_block = NULL;
-    p_access->pf_seek = Seek;
-    p_access->pf_control = Control;
-    p_access->info.i_update = 0;
-    p_access->info.i_pos = 0;
-    p_access->info.b_eof = VLC_FALSE;
-    p_access->info.i_title = 0;
-    p_access->info.i_seekpoint = 0;
-    p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
-    memset( p_sys, 0, sizeof( access_sys_t ) );
 
 #ifdef USE_CTX
     p_sys->p_smb = p_smb;
@@ -332,7 +333,7 @@ static int Seek( access_t *p_access, int64_t i_pos )
 
     if( i_pos < 0 ) return VLC_EGENERIC;
 
-    msg_Dbg( p_access, "seeking to "I64Fd, i_pos );
+    msg_Dbg( p_access, "seeking to %"PRId64, i_pos );
 
 #ifdef USE_CTX
     i_ret = p_sys->p_smb->lseek(p_sys->p_smb, p_sys->p_file, i_pos, SEEK_SET);
@@ -341,11 +342,11 @@ static int Seek( access_t *p_access, int64_t i_pos )
 #endif
     if( i_ret == -1 )
     {
-        msg_Err( p_access, "seek failed (%s)", strerror(errno) );
+        msg_Err( p_access, "seek failed (%m)" );
         return VLC_EGENERIC;
     }
 
-    p_access->info.b_eof = VLC_FALSE;
+    p_access->info.b_eof = false;
     p_access->info.i_pos = i_ret;
 
     return VLC_SUCCESS;
@@ -354,7 +355,7 @@ static int Seek( access_t *p_access, int64_t i_pos )
 /*****************************************************************************
  * Read:
  *****************************************************************************/
-static int Read( access_t *p_access, uint8_t *p_buffer, int i_len )
+static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
 {
     access_sys_t *p_sys = p_access->p_sys;
     int i_read;
@@ -368,11 +369,11 @@ static int Read( access_t *p_access, uint8_t *p_buffer, int i_len )
 #endif
     if( i_read < 0 )
     {
-        msg_Err( p_access, "read failed (%s)", strerror(errno) );
+        msg_Err( p_access, "read failed (%m)" );
         return -1;
     }
 
-    if( i_read == 0 ) p_access->info.b_eof = VLC_TRUE;
+    if( i_read == 0 ) p_access->info.b_eof = true;
     else if( i_read > 0 ) p_access->info.i_pos += i_read;
 
     return i_read;
@@ -383,27 +384,27 @@ static int Read( access_t *p_access, uint8_t *p_buffer, int i_len )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    vlc_bool_t   *pb_bool;
+    bool   *pb_bool;
     int          *pi_int;
     int64_t      *pi_64;
 
     switch( i_query )
     {
     case ACCESS_CAN_SEEK:
-        pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-        *pb_bool = VLC_TRUE;
+        pb_bool = (bool*)va_arg( args, bool* );
+        *pb_bool = true;
         break;
     case ACCESS_CAN_FASTSEEK:
-        pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-        *pb_bool = VLC_TRUE;
+        pb_bool = (bool*)va_arg( args, bool* );
+        *pb_bool = true;
         break;
     case ACCESS_CAN_PAUSE:
-        pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-        *pb_bool = VLC_TRUE;
+        pb_bool = (bool*)va_arg( args, bool* );
+        *pb_bool = true;
         break;
     case ACCESS_CAN_CONTROL_PACE:
-        pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-        *pb_bool = VLC_TRUE;
+        pb_bool = (bool*)va_arg( args, bool* );
+        *pb_bool = true;
         break;
 
     case ACCESS_GET_MTU:
@@ -424,6 +425,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
     case ACCESS_SET_TITLE:
     case ACCESS_SET_SEEKPOINT:
     case ACCESS_SET_PRIVATE_ID_STATE:
+    case ACCESS_GET_CONTENT_TYPE:
         return VLC_EGENERIC;
 
     default:
@@ -445,6 +447,7 @@ static void Win32AddConnection( access_t *p_access, char *psz_path,
     NETRESOURCE net_resource;
     DWORD i_result;
     char *psz_parser;
+    VLC_UNUSED( psz_domain );
 
     HINSTANCE hdll = LoadLibrary(_T("MPR.DLL"));
     if( !hdll )
@@ -484,7 +487,7 @@ static void Win32AddConnection( access_t *p_access, char *psz_path,
     {
         msg_Dbg( p_access, "connected to %s", psz_remote );
     }
-    else if( i_result != ERROR_ALREADY_ASSIGNED && 
+    else if( i_result != ERROR_ALREADY_ASSIGNED &&
              i_result != ERROR_DEVICE_ALREADY_REMEMBERED )
     {
         msg_Dbg( p_access, "already connected to %s", psz_remote );

@@ -2,7 +2,7 @@
  * fftsg.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: cc4e594a6f0c14c9c6f91a63df5503f5a75971b6 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -778,8 +778,8 @@ void makect(int nc, int *ip, double *c)
 #define CDFT_4THREADS_BEGIN_N 65536
 #endif
 #include <pthread.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #define cdft_thread_t pthread_t
 #define cdft_thread_create(thp,func,argp) { \
     if (pthread_create(thp, NULL, func, (void *) argp) != 0) { \
@@ -805,8 +805,8 @@ void makect(int nc, int *ip, double *c)
 #define CDFT_4THREADS_BEGIN_N 524288
 #endif
 #include <windows.h>
-#include <stdio.h>
 #include <stdlib.h>
+#include <stdio.h>
 #define cdft_thread_t HANDLE
 #define cdft_thread_create(thp,func,argp) { \
     DWORD thid; \

@@ -2,7 +2,7 @@
  * main.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 9c94cda179ade079b59b81d6bb22c512c78020cc $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Adapted from projectM (http://xmms-projectm.sourceforge.net/)
@@ -27,9 +27,8 @@
 #include <GL/glu.h>
 #include <unistd.h>
 #include <math.h>
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include "common.h"
 #include "preset_types.h"
 #include "preset.h"
@@ -44,6 +43,7 @@
 #include "custom_wave.h"
 #include "custom_shape_types.h"
 #include "custom_shape.h"
+#include "splaytree.h"
 //#include <dmalloc.h>
 
 // Forward declarations
@@ -117,6 +117,12 @@ double **origy;
 
 char *buffer; //XXX
 
+
+static inline int isPerPixelEqn(int op) {
+    
+  return active_preset->per_pixel_flag[op];
+
+}
 int galaktos_init( galaktos_thread_t *p_thread )
 {
     init_per_pixel_matrices();
@@ -1576,5 +1582,4 @@ void render_texture_to_studio()
 
     glPopMatrix();
 }
-
 

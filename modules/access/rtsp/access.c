@@ -2,7 +2,7 @@
  * access.c: Real rtsp input
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: b44170f7cc0159020ccfb6478fb66db982b0866d $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,10 +24,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "network.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_access.h>
+#include <vlc_interface.h>
+
+#include <vlc_network.h>
 #include "rtsp.h"
 #include "real.h"
 
@@ -43,13 +49,13 @@ static void Close( vlc_object_t * );
     "value should be set in milliseconds." )
 
 vlc_module_begin();
-    set_description( _("Real RTSP") );
-    set_shortname( _("Real RTSP") );
+    set_description( N_("Real RTSP") );
+    set_shortname( N_("Real RTSP") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACCESS );
     add_integer( "realrtsp-caching", 3000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, VLC_TRUE );
-    set_capability( "access2", 10 );
+                 CACHING_TEXT, CACHING_LONGTEXT, true );
+    set_capability( "access", 10 );
     set_callbacks( Open, Close );
     add_shortcut( "realrtsp" );
     add_shortcut( "rtsp" );
@@ -66,8 +72,8 @@ static int     Control( access_t *, int, va_list );
 
 struct access_sys_t
 {
-    vlc_bool_t b_seekable;
-    vlc_bool_t b_pace_control;
+    bool b_seekable;
+    bool b_pace_control;
 
     rtsp_client_t *p_rtsp;
 
@@ -89,6 +95,8 @@ static int RtspConnect( void *p_userdata, char *psz_server, int i_port )
     if( p_sys->fd < 0 )
     {
         msg_Err( p_access, "cannot connect to %s:%d", psz_server, i_port );
+        intf_UserFatal( p_access, false, _("Connection failed"),
+                        _("VLC could not connect to \"%s:%d\"."), psz_server, i_port );
         return VLC_EGENERIC;
     }
 
@@ -109,7 +117,7 @@ static int RtspRead( void *p_userdata, uint8_t *p_buffer, int i_buffer )
     access_t *p_access = (access_t *)p_userdata;
     access_sys_t *p_sys = p_access->p_sys;
 
-    return net_Read( p_access, p_sys->fd, 0, p_buffer, i_buffer, VLC_TRUE );
+    return net_Read( p_access, p_sys->fd, 0, p_buffer, i_buffer, true );
 }
 
 static int RtspReadLine( void *p_userdata, uint8_t *p_buffer, int i_buffer )
@@ -124,7 +132,7 @@ static int RtspReadLine( void *p_userdata, uint8_t *p_buffer, int i_buffer )
     if( psz ) strncpy( (char *)p_buffer, psz, i_buffer );
     else *p_buffer = 0;
 
-    if( psz ) free( psz );
+    free( psz );
     return 0;
 }
 
@@ -151,7 +159,7 @@ static int Open( vlc_object_t *p_this )
     int i_result;
 
     if( !p_access->psz_access || (
-        strncmp( p_access->psz_access, "rtsp", 4 ) && 
+        strncmp( p_access->psz_access, "rtsp", 4 ) &&
         strncmp( p_access->psz_access, "pnm", 3 )  &&
         strncmp( p_access->psz_access, "realrtsp", 8 ) ))
     {
@@ -165,7 +173,7 @@ static int Open( vlc_object_t *p_this )
     p_access->info.i_update = 0;
     p_access->info.i_size = 0;
     p_access->info.i_pos = 0;
-    p_access->info.b_eof = VLC_FALSE;
+    p_access->info.b_eof = false;
     p_access->info.i_title = 0;
     p_access->info.i_seekpoint = 0;
     p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
@@ -221,12 +229,14 @@ static int Open( vlc_object_t *p_this )
 
 
             msg_Err( p_access, "rtsp session can not be established" );
+            intf_UserFatal( p_access, false, _("Session failed"),
+                    _("The requested RTSP session could not be established.") );
             goto error;
         }
 
         p_sys->p_header = block_New( p_access, 4096 );
         p_sys->p_header->i_buffer =
-            rmff_dump_header( h, p_sys->p_header->p_buffer, 1024 );
+            rmff_dump_header( h, (char *)p_sys->p_header->p_buffer, 1024 );
         rmff_free_header( h );
     }
     else
@@ -239,11 +249,11 @@ static int Open( vlc_object_t *p_this )
     var_Create( p_access, "realrtsp-caching",
                 VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
 
-    if( psz_server ) free( psz_server );
+    free( psz_server );
     return VLC_SUCCESS;
 
  error:
-    if( psz_server ) free( psz_server );
+    free( psz_server );
     Close( p_this );
     return VLC_EGENERIC;
 }
@@ -257,7 +267,7 @@ static void Close( vlc_object_t * p_this )
     access_sys_t *p_sys = p_access->p_sys;
 
     if( p_sys->p_rtsp ) rtsp_close( p_sys->p_rtsp );
-    if( p_sys->p_rtsp ) free( p_sys->p_rtsp );
+    free( p_sys->p_rtsp );
     free( p_sys );
 }
 
@@ -301,7 +311,7 @@ static int Seek( access_t *p_access, int64_t i_pos )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    vlc_bool_t   *pb_bool;
+    bool   *pb_bool;
     int          *pi_int;
     int64_t      *pi_64;
 
@@ -310,18 +320,18 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_FALSE;//p_sys->b_seekable;
+            pb_bool = (bool*)va_arg( args, bool* );
+            *pb_bool = false;//p_sys->b_seekable;
             break;
 
         case ACCESS_CAN_PAUSE:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_FALSE;
+            pb_bool = (bool*)va_arg( args, bool* );
+            *pb_bool = false;
             break;
 
         case ACCESS_CAN_CONTROL_PACE:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_TRUE;//p_sys->b_pace_control;
+            pb_bool = (bool*)va_arg( args, bool* );
+            *pb_bool = true;//p_sys->b_pace_control;
             break;
 
         /* */
@@ -345,6 +355,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         case ACCESS_SET_SEEKPOINT:
         case ACCESS_SET_PRIVATE_ID_STATE:
         case ACCESS_GET_META:
+        case ACCESS_GET_CONTENT_TYPE:
             return VLC_EGENERIC;
 
         default:

@@ -2,7 +2,7 @@
  * mash.c: Video decoder using openmash codec implementations
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 3a82ec833f47b701e73e212dce71056aade1dab5 $
+ * $Id$
  *
  * Authors: Sigmund Augdal <sigmunau@idi.ntnu.no>
  *
@@ -24,9 +24,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_vout.h>
+#include <vlc_block.h>
 
 #include <p64/p64.h>
 
@@ -40,7 +46,7 @@ struct decoder_sys_t
      */
     mtime_t i_pts;
     IntraP64Decoder *p_decoder;
-    vlc_bool_t b_inited;
+    bool b_inited;
     int i_counter;
 
 };
@@ -62,7 +68,7 @@ static block_t   *SendFrame  ( decoder_t *, block_t * );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("Video decoder using openmash") );
+    set_description( N_("Video decoder using openmash") );
     set_capability( "decoder", 50 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_VCODEC );
@@ -91,13 +97,10 @@ static int OpenDecoder( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
     /* Misc init */
     p_sys->i_pts = 0;
-    p_sys->b_inited = VLC_FALSE;
+    p_sys->b_inited = false;
     p_sys->i_counter = 0;
 
     /* Set output properties */
@@ -172,7 +175,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     mvdv = i_video_header & 0x1f; /* vertical motion vector data */
     cc = p_block->i_buffer - 4;
     msg_Dbg( p_dec, "packet size %d", cc );
-    
+ 
     /* Find out p_vdec->i_raw_size */
     p_sys->p_decoder->decode( p_block->p_buffer + 4 /*bp?*/,
                               cc /*cc?*/,
@@ -192,7 +195,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         vout_InitFormat( &p_dec->fmt_out.video, VLC_FOURCC('I','4','2','0'),
                          i_width, i_height,
                          VOUT_ASPECT_FACTOR * i_width / i_height );
-        p_sys->b_inited = VLC_TRUE;
+        p_sys->b_inited = true;
     }
     p_pic = NULL;
     p_sys->i_counter++;
@@ -208,11 +211,11 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         p_sys->p_decoder->sync();
         p_sys->i_counter = 0;
         p_frame = p_sys->p_decoder->frame();
-        p_dec->p_vlc->pf_memcpy( p_pic->p[0].p_pixels, p_frame, i_width*i_height );
+        vlc_memcpy( p_dec, p_pic->p[0].p_pixels, p_frame, i_width*i_height );
         p_frame += i_width * i_height;
-        p_dec->p_vlc->pf_memcpy( p_pic->p[1].p_pixels, p_frame, i_width*i_height/4 );
+        vlc_memcpy( p_dec, p_pic->p[1].p_pixels, p_frame, i_width*i_height/4 );
         p_frame += i_width * i_height/4;
-        p_dec->p_vlc->pf_memcpy( p_pic->p[2].p_pixels, p_frame, i_width*i_height/4 );
+        vlc_memcpy( p_dec, p_pic->p[2].p_pixels, p_frame, i_width*i_height/4 );
         p_pic->date = p_sys->i_pts;
     }
     block_Release( p_block);

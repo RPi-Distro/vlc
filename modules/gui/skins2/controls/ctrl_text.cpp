@@ -2,7 +2,7 @@
  * ctrl_text.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: df0e86508a33499257183feb3326c59fca6a2497 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -288,6 +288,11 @@ void CtrlText::onPositionChange()
         if( m_pImg->getWidth() < getPosition()->getWidth() )
         {
             m_pCurrImg = m_pImg;
+
+            // When the control becomes wide enough for the text to display,
+            // make sure to stop any scrolling effect
+            m_pTimer->stop();
+            m_xPos = 0;
         }
         else
         {

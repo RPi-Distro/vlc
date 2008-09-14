@@ -2,7 +2,7 @@
  * PreferencesWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: 71a326cf25633237afecc550bcc4fb9a407221ba $
+ * $Id$
  *
  * Authors: Eric Petit <titer@m0k.org>
  *
@@ -21,12 +21,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdlib.h> /* atoi(), strtod() */
 
 #include <String.h>
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 #include <vlc_keys.h>
 #include <vlc_config_cat.h>
 
@@ -422,7 +425,7 @@ ConfigItem::ConfigItem( intf_thread_t * _p_intf, char * name,
     module_t * p_module = NULL;
     if( fType == TYPE_MODULE )
     {
-        p_module = (module_t *) vlc_object_get( p_intf, fObjectId );
+        p_module = (module_t *) vlc_object_get( fObjectId );
     }
     else
     {
@@ -442,11 +445,9 @@ ConfigItem::ConfigItem( intf_thread_t * _p_intf, char * name,
         }
     }
 
-    if( !p_module || p_module->i_object_type != VLC_OBJECT_MODULE )
-    {
+    if( !p_module )
         /* Shouldn't happen */
         return;
-    }
 
     module_config_t * p_item;
     p_item = fSubModule ? ((module_t *)p_module->p_parent)->p_config :
@@ -615,12 +616,6 @@ ConfigWidget::ConfigWidget( intf_thread_t * _p_intf, BRect rect,
 
     BRect r;
     BMenuItem * menuItem;
-    /* Skip deprecated options */
-    if( p_item->psz_current )
-    {
-        fInitOK = false;
-        return;
-    }
 
     fInitOK = true;
 
@@ -766,7 +761,7 @@ void ConfigWidget::Apply( bool doIt )
                     {
                         val.i_int |= KEY_MODIFIER_SHIFT;
                     }
-                    var_Set( p_intf->p_vlc, fName, val );
+                    var_Set( p_intf->p_libvlc, fName, val );
                 }
             }
             else
@@ -775,7 +770,7 @@ void ConfigWidget::Apply( bool doIt )
                 fAltCheck->SetValue( val.i_int & KEY_MODIFIER_ALT );
                 fCtrlCheck->SetValue( val.i_int & KEY_MODIFIER_CTRL );
                 fShiftCheck->SetValue( val.i_int & KEY_MODIFIER_SHIFT );
-        
+ 
                 for( unsigned i = 0;
                      i < sizeof( vlc_keys ) / sizeof( key_descriptor_t ); i++ )
                 {

@@ -2,7 +2,7 @@
  * mpegvideo.c: parse and packetize an MPEG1/2 video stream
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: 18402807e86eae208fdc7d49858eea9141a3c9d6 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -41,13 +41,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "vlc_block_helper.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_block.h>
+#include <vlc_codec.h>
+#include <vlc_block_helper.h>
+#include "../codec/cc.h"
 
 #define SYNC_INTRAFRAME_TEXT N_("Sync on Intra Frame")
 #define SYNC_INTRAFRAME_LONGTEXT N_("Normally the packetizer would " \
@@ -63,12 +67,12 @@ static void Close( vlc_object_t * );
 vlc_module_begin();
     set_category( CAT_SOUT );
     set_subcategory( SUBCAT_SOUT_PACKETIZER );
-    set_description( _("MPEG-I/II video packetizer") );
+    set_description( N_("MPEG-I/II video packetizer") );
     set_capability( "packetizer", 50 );
     set_callbacks( Open, Close );
 
     add_bool( "packetizer-mpegvideo-sync-iframe", 0, NULL, SYNC_INTRAFRAME_TEXT,
-              SYNC_INTRAFRAME_LONGTEXT, VLC_TRUE );
+              SYNC_INTRAFRAME_LONGTEXT, true );
 vlc_module_end();
 
 /*****************************************************************************
@@ -76,6 +80,7 @@ vlc_module_end();
  *****************************************************************************/
 static block_t *Packetize( decoder_t *, block_t ** );
 static block_t *ParseMPEGBlock( decoder_t *, block_t * );
+static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] );
 
 struct decoder_sys_t
 {
@@ -84,7 +89,7 @@ struct decoder_sys_t
      */
     block_bytestream_t bytestream;
     int i_state;
-    int i_offset;
+    size_t i_offset;
     uint8_t p_startcode[3];
 
     /* Sequence header and extension */
@@ -95,17 +100,17 @@ struct decoder_sys_t
     block_t    *p_frame;
     block_t    **pp_last;
 
-    vlc_bool_t b_frame_slice;
+    bool b_frame_slice;
     mtime_t i_pts;
     mtime_t i_dts;
 
     /* Sequence properties */
     int         i_frame_rate;
     int         i_frame_rate_base;
-    vlc_bool_t  b_seq_progressive;
-    vlc_bool_t  b_low_delay;
+    bool  b_seq_progressive;
+    bool  b_low_delay;
     int         i_aspect_ratio_info;
-    vlc_bool_t  b_inited;
+    bool  b_inited;
 
     /* Picture properties */
     int i_temporal_ref;
@@ -116,16 +121,22 @@ struct decoder_sys_t
     int i_progressive_frame;
 
     mtime_t i_interpolated_dts;
-    mtime_t i_old_duration;
     mtime_t i_last_ref_pts;
-    vlc_bool_t b_second_field;
+    bool b_second_field;
 
     /* Number of pictures since last sequence header */
     int i_seq_old;
 
     /* Sync behaviour */
-    vlc_bool_t  b_sync_on_intra_frame;
-    vlc_bool_t  b_discontinuity;
+    bool  b_sync_on_intra_frame;
+    bool  b_discontinuity;
+
+    /* */
+    bool b_cc_reset;
+    uint32_t i_cc_flags;
+    mtime_t i_cc_pts;
+    mtime_t i_cc_dts;
+    cc_data_t cc;
 };
 
 enum {
@@ -150,12 +161,16 @@ static int Open( vlc_object_t *p_this )
 
     es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_FOURCC('m','p','g','v') );
     p_dec->pf_packetize = Packetize;
+    p_dec->pf_get_cc = GetCc;
 
     p_dec->p_sys = p_sys = malloc( sizeof( decoder_sys_t ) );
+    if( !p_dec->p_sys )
+        return VLC_ENOMEM;
+    memset( p_dec->p_sys, 0, sizeof( decoder_sys_t ) );
 
     /* Misc init */
     p_sys->i_state = STATE_NOSYNC;
-    p_sys->bytestream = block_BytestreamInit( p_dec );
+    p_sys->bytestream = block_BytestreamInit();
     p_sys->p_startcode[0] = 0;
     p_sys->p_startcode[1] = 0;
     p_sys->p_startcode[2] = 1;
@@ -165,14 +180,14 @@ static int Open( vlc_object_t *p_this )
     p_sys->p_ext = NULL;
     p_sys->p_frame = NULL;
     p_sys->pp_last = &p_sys->p_frame;
-    p_sys->b_frame_slice = VLC_FALSE;
+    p_sys->b_frame_slice = false;
 
     p_sys->i_dts = p_sys->i_pts = 0;
 
     p_sys->i_frame_rate = 1;
     p_sys->i_frame_rate_base = 1;
-    p_sys->b_seq_progressive = VLC_TRUE;
-    p_sys->b_low_delay = VLC_TRUE;
+    p_sys->b_seq_progressive = true;
+    p_sys->b_low_delay = true;
     p_sys->i_seq_old = 0;
 
     p_sys->i_temporal_ref = 0;
@@ -184,14 +199,19 @@ static int Open( vlc_object_t *p_this )
     p_sys->b_inited = 0;
 
     p_sys->i_interpolated_dts = 0;
-    p_sys->i_old_duration = 0;
     p_sys->i_last_ref_pts = 0;
     p_sys->b_second_field = 0;
 
-    p_sys->b_discontinuity = VLC_FALSE;
+    p_sys->b_discontinuity = false;
     p_sys->b_sync_on_intra_frame = var_CreateGetBool( p_dec, "packetizer-mpegvideo-sync-iframe" );
     if( p_sys->b_sync_on_intra_frame )
         msg_Dbg( p_dec, "syncing on intra frame now" );
+
+    p_sys->b_cc_reset = false;
+    p_sys->i_cc_pts = 0;
+    p_sys->i_cc_dts = 0;
+    p_sys->i_cc_flags = 0;
+    cc_Init( &p_sys->cc );
 
     return VLC_SUCCESS;
 }
@@ -237,18 +257,27 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
         return NULL;
     }
 
-    if( (*pp_block)->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    if( (*pp_block)->i_flags&(BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
     {
-        p_sys->i_state = STATE_NOSYNC;
-        p_sys->b_discontinuity = VLC_TRUE;
-        if( p_sys->p_frame )
-            block_ChainRelease( p_sys->p_frame );
-        p_sys->p_frame = NULL;
-        p_sys->pp_last = &p_sys->p_frame;
-        p_sys->b_frame_slice = VLC_FALSE;
+        if( (*pp_block)->i_flags&BLOCK_FLAG_CORRUPTED )
+        {
+            p_sys->i_state = STATE_NOSYNC;
+            block_BytestreamFlush( &p_sys->bytestream );
+
+            p_sys->b_discontinuity = true;
+            if( p_sys->p_frame )
+                block_ChainRelease( p_sys->p_frame );
+            p_sys->p_frame = NULL;
+            p_sys->pp_last = &p_sys->p_frame;
+            p_sys->b_frame_slice = false;
+        }
+//        p_sys->i_interpolated_dts =
+//        p_sys->i_last_ref_pts = 0;
+
         block_Release( *pp_block );
         return NULL;
     }
+
 
     block_BytestreamPush( &p_sys->bytestream, *pp_block );
 
@@ -325,7 +354,7 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
                 if( p_pic->i_flags & BLOCK_FLAG_TYPE_I )
                 {
                     msg_Dbg( p_dec, "synced on intra frame" );
-                    p_sys->b_discontinuity = VLC_FALSE;
+                    p_sys->b_discontinuity = false;
                     p_pic->i_flags |= BLOCK_FLAG_DISCONTINUITY;
                 }
                 else
@@ -363,6 +392,33 @@ static block_t *Packetize( decoder_t *p_dec, block_t **pp_block )
 }
 
 /*****************************************************************************
+ * GetCc:
+ *****************************************************************************/
+static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    block_t *p_cc;
+    int i;
+
+    for( i = 0; i < 4; i++ )
+        pb_present[i] = p_sys->cc.pb_present[i];
+
+    if( p_sys->cc.i_data <= 0 )
+        return NULL;
+
+    p_cc = block_New( p_dec, p_sys->cc.i_data);
+    if( p_cc )
+    {
+        memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
+        p_cc->i_dts = 
+        p_cc->i_pts = p_sys->cc.b_reorder ? p_sys->i_cc_pts : p_sys->i_cc_dts;
+        p_cc->i_flags = ( p_sys->cc.b_reorder  ? p_sys->i_cc_flags : BLOCK_FLAG_TYPE_P ) & ( BLOCK_FLAG_TYPE_I|BLOCK_FLAG_TYPE_P|BLOCK_FLAG_TYPE_B);
+    }
+    cc_Flush( &p_sys->cc );
+    return p_cc;
+}
+
+/*****************************************************************************
  * ParseMPEGBlock: Re-assemble fragments into a block containing a picture
  *****************************************************************************/
 static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
@@ -383,15 +439,26 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         if( p_sys->p_frame ) block_ChainRelease( p_sys->p_frame );
         p_sys->p_frame = NULL;
         p_sys->pp_last = &p_sys->p_frame;
-        p_sys->b_frame_slice = VLC_FALSE;
+        p_sys->b_frame_slice = false;
 
     }
     else if( p_sys->b_frame_slice &&
              (p_frag->p_buffer[3] == 0x00 || p_frag->p_buffer[3] > 0xaf) )
     {
+        const bool b_eos = p_frag->p_buffer[3] == 0xb7;
+
         mtime_t i_duration;
 
+        if( b_eos )
+        {
+            block_ChainLastAppend( &p_sys->pp_last, p_frag );
+            p_frag = NULL;
+        }
+
         p_pic = block_ChainGather( p_sys->p_frame );
+
+        if( b_eos )
+            p_pic->i_flags |= BLOCK_FLAG_END_OF_SEQUENCE;
 
         i_duration = (mtime_t)( 1000000 * p_sys->i_frame_rate_base /
                                 p_sys->i_frame_rate );
@@ -476,14 +543,14 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         p_pic->i_length = p_sys->i_interpolated_dts - p_pic->i_dts;
 
 #if 0
-        msg_Dbg( p_dec, "pic: type=%d dts="I64Fd" pts-dts="I64Fd,
+        msg_Dbg( p_dec, "pic: type=%d dts=%"PRId64" pts-dts=%"PRId64,
         p_sys->i_picture_type, p_pic->i_dts, p_pic->i_pts - p_pic->i_dts);
 #endif
 
         /* Reset context */
         p_sys->p_frame = NULL;
         p_sys->pp_last = &p_sys->p_frame;
-        p_sys->b_frame_slice = VLC_FALSE;
+        p_sys->b_frame_slice = false;
 
         if( p_sys->i_picture_structure != 0x03 )
         {
@@ -493,8 +560,22 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         {
             p_sys->b_second_field = 0;
         }
+
+        /* CC */
+        p_sys->b_cc_reset = true;
+        p_sys->i_cc_pts = p_pic->i_pts;
+        p_sys->i_cc_dts = p_pic->i_dts;
+        p_sys->i_cc_flags = p_pic->i_flags;
     }
 
+    if( !p_pic && p_sys->b_cc_reset )
+    {
+        p_sys->b_cc_reset = false;
+        cc_Flush( &p_sys->cc );
+    }
+
+    if( !p_frag )
+        return p_pic;
     /*
      * Check info of current fragment
      */
@@ -551,8 +632,8 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
         p_dec->fmt_out.video.i_frame_rate = p_sys->i_frame_rate;
         p_dec->fmt_out.video.i_frame_rate_base = p_sys->i_frame_rate_base;
 
-        p_sys->b_seq_progressive = VLC_TRUE;
-        p_sys->b_low_delay = VLC_TRUE;
+        p_sys->b_seq_progressive = true;
+        p_sys->b_low_delay = true;
 
         if ( !p_sys->b_inited )
         {
@@ -585,9 +666,9 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
             if( p_frag->i_buffer >= 10 )
             {
                 p_sys->b_seq_progressive =
-                    p_frag->p_buffer[5]&0x08 ? VLC_TRUE : VLC_FALSE;
+                    p_frag->p_buffer[5]&0x08 ? true : false;
                 p_sys->b_low_delay =
-                    p_frag->p_buffer[9]&0x80 ? VLC_TRUE : VLC_FALSE;
+                    p_frag->p_buffer[9]&0x80 ? true : false;
             }
 
             /* Do not set aspect ratio : in case we're transcoding,
@@ -613,6 +694,10 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
             p_sys->i_progressive_frame = p_frag->p_buffer[8] >> 7;
         }
     }
+    else if( p_frag->p_buffer[3] == 0xb2 && p_frag->i_buffer > 4 )
+    {
+        cc_Extract( &p_sys->cc, &p_frag->p_buffer[4], p_frag->i_buffer - 4 );
+    }
     else if( p_frag->p_buffer[3] == 0x00 )
     {
         /* Picture start code */
@@ -631,7 +716,7 @@ static block_t *ParseMPEGBlock( decoder_t *p_dec, block_t *p_frag )
     else if( p_frag->p_buffer[3] >= 0x01 && p_frag->p_buffer[3] <= 0xaf )
     {
         /* Slice start code */
-        p_sys->b_frame_slice = VLC_TRUE;
+        p_sys->b_frame_slice = true;
     }
 
     /* Append the block */

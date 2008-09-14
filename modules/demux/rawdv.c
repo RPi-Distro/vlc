@@ -1,8 +1,8 @@
 /*****************************************************************************
  * rawdv.c : raw DV input module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 6e9fe57e34dd82ba82e0fdaebac12589e567ca17 $
+ * Copyright (C) 2001-2007 the VideoLAN team
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Paul Corke <paul dot corke at datatote dot co dot uk>
@@ -25,10 +25,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_demux.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -42,11 +46,11 @@ static void Close( vlc_object_t * );
 
 vlc_module_begin();
     set_shortname( "DV" );
-    set_description( _("DV (Digital Video) demuxer") );
-    set_capability( "demux2", 2 );
+    set_description( N_("DV (Digital Video) demuxer") );
+    set_capability( "demux", 3 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_DEMUX );
-    add_bool( "rawdv-hurry-up", 0, NULL, HURRYUP_TEXT, HURRYUP_LONGTEXT, VLC_FALSE );
+    add_bool( "rawdv-hurry-up", 0, NULL, HURRYUP_TEXT, HURRYUP_LONGTEXT, false );
     set_callbacks( Open, Close );
     add_shortcut( "rawdv" );
 vlc_module_end();
@@ -110,7 +114,7 @@ struct demux_sys_t
 
     /* program clock reference (in units of 90kHz) */
     mtime_t i_pcr;
-    vlc_bool_t b_hurry_up;
+    bool b_hurry_up;
 };
 
 /*****************************************************************************
@@ -130,12 +134,11 @@ static int Open( vlc_object_t * p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
 
-    byte_t      *p_peek, *p_peek_backup;
+    const uint8_t *p_peek, *p_peek_backup;
 
     uint32_t    i_dword;
     dv_header_t dv_header;
     dv_id_t     dv_id;
-    char        *psz_ext;
 
     /* It isn't easy to recognize a raw DV stream. The chances that we'll
      * mistake a stream from another type for a raw DV stream are too high, so
@@ -143,12 +146,8 @@ static int Open( vlc_object_t * p_this )
      * it is possible to force this demux. */
 
     /* Check for DV file extension */
-    psz_ext = strrchr( p_demux->psz_path, '.' );
-    if( ( !psz_ext || strcasecmp( psz_ext, ".dv") ) &&
-        strcmp(p_demux->psz_demux, "rawdv") )
-    {
+    if( !demux_IsPathExtension( p_demux, ".dv" ) && !p_demux->b_force )
         return VLC_EGENERIC;
-    }
 
     if( stream_Peek( p_demux->s, &p_peek, DV_PAL_FRAME_SIZE ) <
         DV_NTSC_FRAME_SIZE )
@@ -288,7 +287,7 @@ static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys  = p_demux->p_sys;
     block_t     *p_block;
-    vlc_bool_t  b_audio = VLC_FALSE;
+    bool  b_audio = false;
 
     if( p_sys->b_hurry_up )
     {
@@ -329,7 +328,7 @@ static int Demux( demux_t *p_demux )
 
     if( !p_sys->b_hurry_up )
     {
-        p_sys->i_pcr += ( I64C(1000000) / p_sys->f_rate );
+        p_sys->i_pcr += ( INT64_C(1000000) / p_sys->f_rate );
     }
 
     return 1;
@@ -343,7 +342,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     demux_sys_t *p_sys  = p_demux->p_sys;
 
     /* XXX: DEMUX_SET_TIME is precise here */
-    return demux2_vaControlHelper( p_demux->s,
+    return demux_vaControlHelper( p_demux->s,
                                    0, -1,
                                    p_sys->frame_size * p_sys->f_rate * 8,
                                    p_sys->frame_size, i_query, args );

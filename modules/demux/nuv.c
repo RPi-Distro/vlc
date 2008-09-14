@@ -2,7 +2,7 @@
  * nuv.c:
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 6de4bb52cd123e21fc0cd9300a3a153d904cdf26 $
+ * $Id: 97d8d44f8233b2736880c3e3fe162ddd4ec14219 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,8 +24,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_demux.h>
 
 /* TODO:
  *  - complete support (add support for rtjpeg and raw)
@@ -43,8 +48,8 @@ static void Close ( vlc_object_t * );
 vlc_module_begin();
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_description( _("Nuv demuxer") );
-    set_capability( "demux2", 145 );
+    set_description( N_("Nuv demuxer") );
+    set_capability( "demux", 145 );
     set_callbacks( Open, Close );
     add_shortcut( "nuv" );
 vlc_module_end();
@@ -192,9 +197,9 @@ static int Open( vlc_object_t * p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
-    uint8_t     *p_peek;
+    const uint8_t *p_peek;
     frame_header_t fh;
-    vlc_bool_t  b_extended;
+    bool  b_extended;
 
     /* Check id */
     if( stream_Peek( p_demux->s, &p_peek, 12 ) != 12 ||
@@ -241,7 +246,7 @@ static int Open( vlc_object_t * p_this )
         goto error;
     if( p_peek[0] == 'X' )
     {
-        b_extended = VLC_TRUE;
+        b_extended = true;
 
         if( FrameHeaderLoad( p_demux, &fh ) )
             goto error;
@@ -254,7 +259,7 @@ static int Open( vlc_object_t * p_this )
     }
     else
     {
-        b_extended = VLC_FALSE;
+        b_extended = false;
 
         /* XXX: for now only file with extended chunk are supported
          * why: because else we need to have support for rtjpeg+stupid nuv shit */
@@ -312,8 +317,7 @@ static void Close( vlc_object_t * p_this )
     demux_t        *p_demux = (demux_t*)p_this;
     demux_sys_t    *p_sys = p_demux->p_sys;
 
-    if( p_sys->p_extra_f )
-        free( p_sys->p_extra_f );
+    free( p_sys->p_extra_f );
     demux_IndexClean( &p_sys->idx );
     free( p_sys );
 }
@@ -331,7 +335,7 @@ static int Demux( demux_t *p_demux )
 
     for( ;; )
     {
-        if( p_demux->b_die )
+        if( !vlc_object_alive (p_demux) )
             return -1;
 
         if( FrameHeaderLoad( p_demux, &fh ) )
@@ -438,7 +442,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                     return VLC_EGENERIC;
             }
 
-            while( !p_demux->b_die )
+            while( vlc_object_alive (p_demux) )
             {
                 frame_header_t fh;
                 int64_t i_tell;
@@ -478,7 +482,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
             p_sys->i_pcr = -1;
 
-            while( !p_demux->b_die )
+            while( vlc_object_alive (p_demux) )
             {
                 frame_header_t fh;
 
@@ -640,11 +644,8 @@ static void demux_IndexInit( demux_index_t *p_idx )
 }
 static void demux_IndexClean( demux_index_t *p_idx )
 {
-    if( p_idx->idx )
-    {
-        free( p_idx->idx );
-        p_idx->idx = NULL;
-    }
+    free( p_idx->idx );
+    p_idx->idx = NULL;
 }
 static void demux_IndexAppend( demux_index_t *p_idx,
                                int64_t i_time, int64_t i_offset )

@@ -1,10 +1,18 @@
---- mpcdec/include/Makefile.am	2005-06-18 23:23:33.000000000 +0100
-+++ mpcdec/include/Makefile.am	2005-11-02 19:51:19.000000000 +0000
-@@ -4,6 +4,7 @@
+--- mpcdec/configure.ac	2007-04-17 21:05:32.000000000 +0200
++++ mpcdec/configure.ac	2007-09-06 23:52:09.000000000 +0200
+@@ -58,10 +58,15 @@
+ 	ac_cv_c_int64_t=int64_t
+ fi
  
- nobase_include_HEADERS = \
- 	mpcdec/config_types.h \
-+	mpcdec/config_win32.h \
- 	mpcdec/decoder.h \
- 	mpcdec/huffman.h \
- 	mpcdec/math.h \
++if test "x$cross_compiling" = "xyes" ; then
++AC_CHECK_FUNCS([memcmp], [],
++        AC_MSG_ERROR([memcmp is missing.]))
++else
+ AC_FUNC_MEMCMP
+ if test "x$ac_cv_func_memcmp_working" = "xno" ; then
+ 	AC_MSG_ERROR([working memcmp is not available.])
+ fi
++fi
+ 
+ AC_CHECK_FUNCS([memmove memset], [],
+         AC_MSG_ERROR([memset or memmove is missing.]))

@@ -5,7 +5,7 @@
  * Copyright (C) 2003 Antoine Missout
  * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
- * $Id: c2a93b8c8d5fa78cca6aaf83dc6d9eadf5828d8a $
+ * $Id: 67e6332caab2e32f3ca95d3244d56611bda2afbe $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -31,15 +31,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>
 #define NDEBUG 1
 #include <assert.h>
 #include <math.h>
 
-#include <vlc/vlc.h>
-#include <vlc/sout.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_sout.h>
+#include <vlc_codec.h>
 
 #include "transrate.h"
 
@@ -70,10 +72,10 @@ static int64_t get_score( const RunLevel *blk, RunLevel *new_blk, int i_qscale, 
     {
         int new_level = new_blk->level;
         int level = blk->level;
-	if ( i1 > 64 || i2 > 64 || !blk->run || !new_blk->run ) return score;
+    if ( i1 > 64 || i2 > 64 || !blk->run || !new_blk->run ) return score;
         if ( i1 + blk->run == i2 + new_blk->run )
         {
-            int64_t tmp = saturate(level * i_qscale) 
+            int64_t tmp = saturate(level * i_qscale)
                             - saturate(new_level * i_qscale_new);
             i1 += blk->run;
             i2 += new_blk->run;
@@ -528,7 +530,7 @@ void get_intra_block_B14( transrate_t *tr, RunLevel *blk )
             if (i < 64 ) goto normal_code;
         }
         fprintf(stderr, "Err in B14\n");
-	tr->b_error = 1;
+    tr->b_error = 1;
         break;  /* illegal, check needed to avoid buffer overflow */
     }
     bs_flush( bs, 2 );    /* dump end of block code */
@@ -612,7 +614,7 @@ void get_intra_block_B15( transrate_t *tr, RunLevel *blk )
             if (i < 64) goto normal_code;
         }
         fprintf(stderr, "Err in B15\n");
-	tr->b_error = 1;
+    tr->b_error = 1;
         break;  /* illegal, check needed to avoid buffer overflow */
     }
     bs_flush( bs, 4 );    /* dump end of block code */
@@ -718,7 +720,7 @@ int get_non_intra_block( transrate_t *tr, RunLevel *blk )
             if (i < 64) goto normal_code;
         }
         fprintf(stderr, "Err in non-intra\n");
-	tr->b_error = 1;
+    tr->b_error = 1;
         break;  /* illegal, check needed to avoid buffer overflow */
     }
     bs_flush( bs, 2 );    /* dump end of block code */

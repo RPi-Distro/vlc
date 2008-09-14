@@ -2,7 +2,7 @@
  * vlc_demux.h: Demuxer descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: 52bfccacc2974a5d6cf9ea532b4517e8476afd9a $
+ * $Id: 5b5c5829c2d2ca261961a0315d6e58994157e41f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,8 +21,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_DEMUX_H
-#define _VLC_DEMUX_H 1
+#ifndef VLC_DEMUX_H
+#define VLC_DEMUX_H 1
+
+/**
+ * \file
+ * This files defines functions and structures used by demux objects in vlc
+ */
+
+#include <vlc_es.h>
+#include <vlc_stream.h>
+#include <vlc_es_out.h>
 
 /**
  * \defgroup demux Demux
@@ -64,6 +73,16 @@ struct demux_t
     demux_sys_t *p_sys;
 };
 
+
+/* demux_meta_t is returned by "meta reader" module to the demuxer */
+struct demux_meta_t
+{
+    vlc_meta_t *p_meta;                 /**< meta data */
+
+    int i_attachments;                  /**< number of attachments */
+    input_attachment_t **attachments;    /**< array of attachments */
+};
+
 enum demux_query_e
 {
     /* I. Common queries to access_demux and demux */
@@ -77,8 +96,8 @@ enum demux_query_e
     DEMUX_SET_TIME,             /* arg1= int64_t        res=can fail    */
 
     /* TITLE_INFO only if more than 1 title or 1 chapter */
-    DEMUX_GET_TITLE_INFO,       /* arg1=input_title_t*** arg2=int* can fail */
-
+    DEMUX_GET_TITLE_INFO,       /* arg1=input_title_t*** arg2=int*
+                                   arg3=int*pi_title_offset(0), arg4=int*pi_seekpoint_offset(0) can fail */
     /* TITLE/SEEKPOINT, only when TITLE_INFO succeed */
     DEMUX_SET_TITLE,            /* arg1= int            can fail */
     DEMUX_SET_SEEKPOINT,        /* arg1= int            can fail */
@@ -90,48 +109,140 @@ enum demux_query_e
     DEMUX_SET_GROUP,            /* arg1= int            can fail */
 
     /* Ask the demux to demux until the given date at the next pf_demux call
-     * but not more (and not less, at the precision avaiable of course).
+     * but not more (and not less, at the precision available of course).
      * XXX: not mandatory (except for subtitle demux) but I will help a lot
      * for multi-input
      */
     DEMUX_SET_NEXT_DEMUX_TIME,  /* arg1= int64_t *      can fail */
     /* FPS for correct subtitles handling */
-    DEMUX_GET_FPS,              /* arg1= float *        res=can fail    */
+    DEMUX_GET_FPS,              /* arg1= double *       res=can fail    */
+
     /* Meta data */
     DEMUX_GET_META,             /* arg1= vlc_meta_t **  res=can fail    */
+    DEMUX_HAS_UNSUPPORTED_META, /* arg1= bool *   res can fail    */
 
+    /* Attachments */
+    DEMUX_GET_ATTACHMENTS,      /* arg1=input_attachment_t***, int* res=can fail */
 
     /* II. Specific access_demux queries */
-    DEMUX_CAN_PAUSE,            /* arg1= vlc_bool_t*    cannot fail */
-    DEMUX_CAN_CONTROL_PACE,     /* arg1= vlc_bool_t*    cannot fail */
+    DEMUX_CAN_PAUSE,            /* arg1= bool*    can fail (assume false)*/
+    DEMUX_SET_PAUSE_STATE,      /* arg1= bool     can fail */
+
     DEMUX_GET_PTS_DELAY,        /* arg1= int64_t*       cannot fail */
-    DEMUX_SET_PAUSE_STATE       /* arg1= vlc_bool_t     can fail */
+
+    /* DEMUX_CAN_CONTROL_PACE returns true (*pb_pace) if we can read the
+     * data at our pace */
+    DEMUX_CAN_CONTROL_PACE,     /* arg1= bool*pb_pace    can fail (assume false) */
+
+    /* DEMUX_CAN_CONTROL_RATE is called only if DEMUX_CAN_CONTROL_PACE has returned false.
+     * *pb_rate should be true when the rate can be changed (using DEMUX_SET_RATE)
+     * *pb_ts_rescale should be true when the timestamps (pts/dts/pcr) have to be rescaled */
+    DEMUX_CAN_CONTROL_RATE,     /* arg1= bool*pb_rate arg2= bool*pb_ts_rescale  can fail(assume false) */
+    /* DEMUX_SET_RATE is called only if DEMUX_CAN_CONTROL_RATE has returned true.
+     * It should return the value really used in *pi_rate */
+    DEMUX_SET_RATE,             /* arg1= int*pi_rate                                        can fail */
+
+    DEMUX_CAN_SEEK,            /* arg1= bool*    can fail (assume false)*/
 };
 
-/* stream_t *s could be null and then it mean a access+demux in one */
-#define demux2_New( a, b, c, d, e, f,g ) __demux2_New(VLC_OBJECT(a),b,c,d,e,f,g)
-VLC_EXPORT( demux_t *, __demux2_New,  ( vlc_object_t *p_obj, char *psz_access, char *psz_demux, char *psz_path, stream_t *s, es_out_t *out, vlc_bool_t ) );
-VLC_EXPORT( void,      demux2_Delete, ( demux_t * ) );
-VLC_EXPORT( int,       demux2_vaControlHelper, ( stream_t *, int64_t i_start, int64_t i_end, int i_bitrate, int i_align, int i_query, va_list args ) );
+VLC_EXPORT( int,       demux_vaControlHelper, ( stream_t *, int64_t i_start, int64_t i_end, int i_bitrate, int i_align, int i_query, va_list args ) );
 
-static inline int demux2_Demux( demux_t *p_demux )
-{
-    return p_demux->pf_demux( p_demux );
-}
-static inline int demux2_vaControl( demux_t *p_demux, int i_query, va_list args )
-{
-    return p_demux->pf_control( p_demux, i_query, args );
-}
-static inline int demux2_Control( demux_t *p_demux, int i_query, ... )
-{
-    va_list args;
-    int     i_result;
+/*************************************************************************
+ * Miscellaneous helpers for demuxers
+ *************************************************************************/
 
-    va_start( args, i_query );
-    i_result = demux2_vaControl( p_demux, i_query, args );
-    va_end( args );
-    return i_result;
+static inline bool demux_IsPathExtension( demux_t *p_demux, const char *psz_extension )
+{
+    const char *psz_ext = strrchr ( p_demux->psz_path, '.' );
+    if( !psz_ext || strcasecmp( psz_ext, psz_extension ) )
+        return false;
+    return true;
 }
+
+static inline bool demux_IsForced( demux_t *p_demux, const char *psz_name )
+{
+   if( !p_demux->psz_demux || strcmp( p_demux->psz_demux, psz_name ) )
+        return false;
+    return true;
+}
+
+#define DEMUX_INIT_COMMON() do {            \
+    p_demux->pf_control = Control;          \
+    p_demux->pf_demux = Demux;              \
+    MALLOC_ERR( p_demux->p_sys, demux_sys_t ); \
+    memset( p_demux->p_sys, 0, sizeof( demux_sys_t ) ); } while(0)
+
+#define STANDARD_DEMUX_INIT_MSG( msg ) do { \
+    DEMUX_INIT_COMMON();                    \
+    msg_Dbg( p_demux, "%s", msg ); } while(0)
+
+#define DEMUX_BY_EXTENSION( ext ) \
+    demux_t *p_demux = (demux_t *)p_this; \
+    if( !demux_IsPathExtension( p_demux, ext ) ) \
+        return VLC_EGENERIC; \
+    DEMUX_INIT_COMMON();
+
+#define DEMUX_BY_EXTENSION_MSG( ext, msg ) \
+    demux_t *p_demux = (demux_t *)p_this; \
+    if( !demux_IsPathExtension( p_demux, ext ) ) \
+        return VLC_EGENERIC; \
+    STANDARD_DEMUX_INIT_MSG( msg );
+
+#define DEMUX_BY_EXTENSION_OR_FORCED( ext, module ) \
+    demux_t *p_demux = (demux_t *)p_this; \
+    if( !demux_IsPathExtension( p_demux, ext ) && !demux_IsForced( p_demux, module ) ) \
+        return VLC_EGENERIC; \
+    DEMUX_INIT_COMMON();
+
+#define DEMUX_BY_EXTENSION_OR_FORCED_MSG( ext, module, msg ) \
+    demux_t *p_demux = (demux_t *)p_this; \
+    if( !demux_IsPathExtension( p_demux, ext ) && !demux_IsForced( p_demux, module ) ) \
+        return VLC_EGENERIC; \
+    STANDARD_DEMUX_INIT_MSG( msg );
+
+#define CHECK_PEEK( zepeek, size ) \
+    if( stream_Peek( p_demux->s , &zepeek, size ) < size ){ \
+        msg_Dbg( p_demux, "not enough data" ); return VLC_EGENERIC; }
+
+#define CHECK_PEEK_GOTO( zepeek, size ) \
+    if( stream_Peek( p_demux->s , &zepeek, size ) < size ) { \
+        msg_Dbg( p_demux, "not enough data" ); goto error; }
+
+#define POKE( peek, stuff, size ) (strncasecmp( (const char *)peek, stuff, size )==0)
+
+#define COMMON_INIT_PACKETIZER( location ) \
+    location = vlc_object_create( p_demux, VLC_OBJECT_PACKETIZER ); \
+    location->pf_decode_audio = 0; \
+    location->pf_decode_video = 0; \
+    location->pf_decode_sub = 0; \
+    location->pf_packetize = 0; \
+
+#define INIT_APACKETIZER( location, a,b,c,d ) \
+    COMMON_INIT_PACKETIZER(location ); \
+    es_format_Init( &location->fmt_in, AUDIO_ES, \
+                    VLC_FOURCC( a, b, c, d ) );
+
+#define INIT_VPACKETIZER( location, a,b,c,d ) \
+    COMMON_INIT_PACKETIZER(location ); \
+    es_format_Init( &location->fmt_in, VIDEO_ES, \
+                    VLC_FOURCC( a, b, c, d ) );
+
+/* BEWARE ! This can lead to memory leaks ! */
+#define LOAD_PACKETIZER_OR_FAIL( location, msg ) \
+    location->p_module = \
+        module_Need( location, "packetizer", NULL, 0 ); \
+    if( location->p_module == NULL ) \
+    { \
+        vlc_object_release( location ); \
+        msg_Err( p_demux, "cannot find packetizer for " # msg ); \
+        free( p_sys ); \
+        return VLC_EGENERIC; \
+    }
+
+#define DESTROY_PACKETIZER( location ) \
+    if( location->p_module ) module_Unneed( location, location->p_module ); \
+    vlc_object_release( location );
+
 /**
  * @}
  */
