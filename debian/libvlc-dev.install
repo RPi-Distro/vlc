@@ -1,0 +1,13 @@
+usr/lib/libvlc.so
+usr/lib/libvlc.a
+usr/lib/pkgconfig/libvlc.pc
+usr/include/vlc/*.h
+#usr/include/vlc/common.h
+#usr/include/vlc/deprecated.h
+#usr/include/vlc/libvlc_events.h
+#usr/include/vlc/libvlc.h
+#usr/include/vlc/libvlc_media_list.h
+#usr/include/vlc/libvlc_structures.h
+#usr/include/vlc/libvlc_vlm.h
+#usr/include/vlc/mediacontrol.h
+#usr/include/vlc/mediacontrol_structures.h

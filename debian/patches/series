@@ -1,11 +1,6 @@
-001_am_maintainer_mode.diff
-010_iceape.diff
+052_as-needed.diff
 101_certificates_paths.diff
 102_dejavu_font.diff
-103_kfreebsd.diff
 104_notify.diff
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
-405-CVE-2008-3732.diff
-406-live555-crash.diff
-900_autoconf.diff

@@ -1,8 +1,7 @@
 This package was debianized by Sam Hocevar <sam@zoy.org> on
 Mon, 13 Mar 2000 02:21:45 +0100.
 
-It was taken from http://download.videolan.org/pub/vlc/, and the source
-tarball also contains the x264 tree.
+It was taken from http://download.videolan.org/pub/vlc/
 
 1. Copyright holders list
 =========================
@@ -10,7 +9,7 @@ tarball also contains the x264 tree.
 With the exception of other files mentioned in this document, all code and
 artwork belongs to members of the VideoLAN team <videolan@videolan.org>. See
 each file for precise details about its respective authors.
-  Copyright (c) 1996-2006 Laurent Aimar <fenrir@via.ecp.fr>
+  Copyright (c) 1996-2008 Laurent Aimar <fenrir@via.ecp.fr>
                           Marc Ariberti <marcari@via.ecp.fr>
                           Stephan Assmus <stippi@yellowbites.com>
                           Olivier Aubert <oaubert at lisi dot univ-lyon1 dot fr>
@@ -22,6 +21,7 @@ each file for precise details about its respective authors.
                           Stéphane Borel <stef@via.ecp.fr>
                           Arnaud de Bossoreille de Ribou <bozo@via.ecp.fr>
                           Filippo Carone <filippo[dontspam]@carone.org>
+			  Rafaël "Hanz, David" Carr é<funman@videolanorg>
                           Tony Castley <tony@castley.net>
                           Antoine Cellerier <dionoea@videolan.org>
                           Renaud Dartus <reno@via.ecp.fr>
@@ -42,11 +42,14 @@ each file for precise details about its respective authors.
                           Eugenio Jarosiewicz <ej0@cise.ufl.edu>
                           Jon Lech Johansen <jon-vl@nanocrew.net>
                           Michel Kaempf <maxx@via.ecp.fr>
+                          Jean-Baptiste Kempf <jb@videolan.org>
+                          Pavlov Konstantin <thresh@videolan.oeg>
                           Felix Kühne <fkuehne@users.sourceforge.net>
                           Simon Latapie <garf@via.ecp.fr>
                           Pascal Levesque <pascal.levesque@mindready.com>
                           Christophe Massiot <massiot@via.ecp.fr>
-                          Loïc Minier <lool@via.ecp.fr>
+                          Loïc Minier <lool@via.ecp.fr
+                          Christophe Mutricy <xtophe@videolan.org>
                           Florian G. Pflug <fgp@phlo.org>
                           Heiko Panther <heiko.panther@web.de>
                           Eric Petit <titer@videolan.org>
@@ -59,35 +62,9 @@ each file for precise details about its respective authors.
                           Richard Shepherd <richard@rshepherd.demon.co.uk>
                           Clément Stenac <zorglub@videolan.org>
                           Peter Surda <shurdeek@panorama.sth.ac.at>
-                          Olivier Teulière <ipkiss@via.ecp.fr>
-  Licensed under the GNU General Public License, version 2 or later.
-
-extras/x264/extras/getopt.c:
-  Copyright (c) 2000 The NetBSD Foundation, Inc.
-  This code is derived from software contributed to The NetBSD Foundation
-  by Dieter Baron and Thomas Klausner.
-  Licensed under the NetBSD license (see below).
-
-Other files in extras/x264:
-  Copyright (c) 2003-2006 Laurent Aimar <fenrir@via.ecp.fr>
-                          Alex Izvorski (aizvorski(at)gmail.com)
-                          Alex Wright (alexw0885(at)hotmail.com)
-                          Andrew Dunstan
-                          bobololo
-                          Christian Heine (sennindemokrit(at)gmx.net)
-                          Eric Petit <titer@videolan.org>
-                          Francesco Corriga
-                          Justin Clay (justin_clay(at)hotmail.com)
-                          Loren Merritt (lorenm(at)u.washington.edu)
-                          Måns Rullgård (mru(at)mru.ath.cx)
-                          Michael Niedermayer (michaelni(at)gmx.at)
-                          Mike Matsnev (mike(at)po.cs.msu.su)
-                          Min Chen <chenm001@163.com>
-                          Phil Jensen (philj(at)csufresno.edu)
-                          Radek Czyz (radoslaw(at)syskin.cjb.net)
-                          Riccardo Stievano (walkunafraid(at)tin.it)
-                          Tuukka Toivonen (tuukkat(at)ee.oulu.fi)
-                          Vincent Torri (Vincent.Torri(at)iecn.u-nancy.fr)
+                          Olivier Teulière <ipkiss@via.ecp.fr
+                          Yuehua Zhao <zhao908@hotmail.com>
+                          Bo Wang <silencewang@msn.com>
   Licensed under the GNU General Public License, version 2 or later.
 
 mozilla/support/npunix.c:
@@ -133,10 +110,6 @@ Files in loader/:
                 2000 Eugene Kuznetsov (divx@euro.ru)
                 2005 Rémi Denis-Courmont <rem#videolan.org>
   Originally distributed under LPGL 2.1 (or later) by the Wine project.
-  Licensed under the GNU General Public License, version 2 or later.
-
-Files in intl/:
-  Copyright (C) 1984, 1989, 1990, 1995-2002 Free Software Foundation, Inc.
   Licensed under the GNU General Public License, version 2 or later.
 
 include/mmx.h:

@@ -1,3 +1,70 @@
+vlc (0.9.2-1) experimental; urgency=low
+
+  [ Christophe Mutricy ]
+  * New upstream release
+    + Soname changed
+    + Bugs fixed upstream: Closes: #487646,  #298150, #325069, #392292, 
+      #458004, #470903, #458004, #423121
+    + new upstream fixes various crasher bugs reported in ubuntu:
+      LP: #189575, #113927, #103741, #111615, #107899, #112076, #198916, 221428,
+          #91679, #96978, #123589, #133528, #231621, #259025
+    + plays files with '+' in its name, LP: #239431, #217305
+    + New packages: libvlccore0, libvlccore-dev, vlc-plugin-pulse
+     (Closes: #471069)
+    + Build-depends on libswsale-dev, libshout3-dev, libxpm-dev,
+      zlib1g-dev, liblua5.1-0-dev, libschroedinger-dev, libtag1-dev,
+      libqt4-dev, libqt4-dev-tools and pkg-config. (Closes: #461324)
+    + time display no longer incomplete, LP: #193445
+    + fixed volume bar behavior, LP: #250041
+    + shout support closes LP: #127594, #84098, 
+    + Install new modules:
+      - vlc-nox: alphamask, blendbench, bluescreen, canvas, cc, cdg, chain,
+        colorthres, croppadd, dynamicoverlay, erase, faad, gaussianblur, grain,
+        inhibit, lua, memcpy*, mmap, osd_parser, puzzle, remoteosd, rtmp, 
+        schroedinger, sharpen, stats, subusf, t140, telepathy, v4l2, vmem
+      - vlc: qt4
+      - vlc-plugin-jack: access_jack
+    + Distribute the .pc for libvlc and vlc-plugin (Closes: #289507)
+    + Remove wx interface and glide plugin as they've been dropped by upstream
+      LP: #205325, #88487, #90603, 
+    + The Python and java bindings are no longer part of the upstream tarballs 
+      (Closes: #469011)
+    + Temporarly disable libdca module until a pkg with the new 
+      API get in unstable
+    + Delete or refresh patches
+    + New patches:
+        - 052_as-needed taken from bug #347650 to teach libtool about 
+          -Wl,--as-needed
+  * Install the skins DTD and the default skins it's only 113kB
+  * Improve watch file
+  * Add a vlc-data package for /usr/share  (13 MB)
+  * Add a vlc-dbg package (Closes: #491564)
+  * Sort vlc.install and vlc-nox.install
+
+  [ Mohammed Adnène Trojette ]
+  * Add myself to Uploaders.
+  * debian/control:
+    + Add proper conflicts/replaces to vlc-data with mozilla-plugin-vlc.
+    + Add proper conflicts/replaces to vlc with vlc-nox.
+
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 17 Sep 2008 00:49:48 +0200
+
+vlc (0.8.6.i-2) experimental; urgency=high
+
+  [ Loic Minier ]
+  * Fix changelog entries for 0.8.6.h-2 and 0.8.6.h-3.
+  * Bump up Standards-Version to 3.8.0.
+
+  [ Christophe Mutricy ]
+  * Security: Fix integer overflow in mms module (CVE-2008-3794)
+    (Closes: #496265)(407-mms-overflow.diff taken from upstream)
+
+  [ Sam Hocevar ]
+  * debian/patches/300_manpage_syntax.diff: fix vlc-config.1 syntax.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 26 Aug 2008 23:25:13 +0000
+
 vlc (0.8.6.i-1) experimental; urgency=low
 
   * New upstream release.
@@ -9,19 +76,21 @@ vlc (0.8.6.i-1) experimental; urgency=low
 
  -- Loic Minier <lool@dooz.org>  Fri, 22 Aug 2008 19:13:30 +0200
 
-vlc (0.8.6.h-2) unstable; urgency=high
+vlc (0.8.6.h-3) unstable; urgency=low
 
-  [ Christophe Mutricy ]
-  * Fix integer overflow in TTA (CVE-2008-3732) (405-CVE-2008-3732.diff)
-  * Fix crashes in Live555 (406-live555-crash.diff)
-  * Switch to libdc1394-22-dev (Closes: #484695)
-
-  [ Loic Minier ]
   * Minor cleanups.
   * Use DEB_HOST_ARCH instead of DEB_BUILD_ARCH in rules.
   * Use objdump -x instead of ldd to check for links on libX11 as ldd might
     resolve libvlc to the system's version if the system has libvlc installed;
     closes: #495730.
+
+ -- Loic Minier <lool@dooz.org>  Fri, 22 Aug 2008 19:46:35 +0200
+
+vlc (0.8.6.h-2) unstable; urgency=high
+
+  * Fix integer overflow in TTA (CVE-2008-3732) (405-CVE-2008-3732.diff)
+  * Fix crashes in Live555 (406-live555-crash.diff)
+  * Switch to libdc1394-22-dev (Closes: #484695)
 
  -- Christophe Mutricy <xtophe@videolan.org>  Thu, 21 Aug 2008 20:19:39 +0100
 

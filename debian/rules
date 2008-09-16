@@ -1,23 +1,27 @@
 #!/usr/bin/make -f
 
-DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
-DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
-DEB_HOST_ARCH       ?= $(shell dpkg-architecture -qDEB_HOST_ARCH)
-DEB_HOST_ARCH_OS    ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
+#DH_VERBOSE=1
 
+DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_BUILD_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
+DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+DEB_HOST_ARCH_OS    ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
 ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
 confflags := --build=$(DEB_BUILD_GNU_TYPE)
 else
 confflags := --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
 endif
 
-# how to call quilt
-QUILT := QUILT_PATCHES=debian/patches quilt --quiltrc /dev/null
+include /usr/share/quilt/quilt.make
+
+LDFLAGS = -Wl,--as-needed
 
 # configure flags
-confflags += --enable-release --prefix=/usr
+confflags += --enable-maintaner-mode --enable-release --prefix=/usr
 confflags += \
 	--enable-libtool \
+	--enable-fast-install \
+	--disable-update-check \
 	--disable-gnome \
 	--disable-gtk \
 	--disable-familiar \
@@ -25,23 +29,25 @@ confflags += \
 	--enable-ggi \
 	--enable-sdl \
 	--enable-esd \
-	--disable-qt \
 	--enable-mad \
 	--enable-arts \
+	--enable-alsa \
 	--enable-jack \
-	--enable-lirc \
+        --enable-pulse \
+        --enable-lirc \
 	--enable-a52 \
 	--enable-aa \
 	--enable-dvbpsi \
 	--enable-mozilla \
+	--with-mozilla-pkg=iceape-plugin \
 	--disable-kde \
 	--enable-mp4 \
 	--enable-dvb \
 	--disable-satellite \
 	--enable-ogg \
 	--enable-vorbis \
-	--enable-wxwidgets \
-	--with-wx-config=wx-config \
+	--enable-shout \
+	--enable-qt4 \
 	--disable-slp \
 	--enable-flac \
 	--disable-skins \
@@ -53,7 +59,6 @@ confflags += \
 	--enable-caca \
 	--enable-live555 \
 	--enable-libmpeg2 \
-	--enable-dts \
 	--enable-fribidi \
 	--enable-cdio \
 	--enable-mod \
@@ -69,26 +74,27 @@ confflags += \
 	--enable-mpc \
 	--enable-vcd \
 	--enable-vcdx \
-	--enable-xosd \
-	--enable-twolame \
 	--enable-notify \
+	--enable-twolame \
+	--enable-x264 \
 	--enable-faad \
+	--disable-zvbi \
+	--enable-telx \
 	--enable-mediacontrol-bindings \
 	--disable-x264 \
+	--disable-atmo \
+	--enable-taglib \
 	$(NULL)
+
+#	--enable-dts \
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
-confflags += --enable-alsa --enable-dv --enable-v4l --enable-pvr
-endif
-
-# Glide is only for x86 on Linux
-ifeq ($(DEB_HOST_ARCH),i386)
-confflags += --enable-glide
+confflags += --enable-alsa --enable-dv --enable-v4l --enable-v4l2 --enable-pvr
 endif
 
 # svgalib is only for x86 and x86-64 on Linux
-ifneq ($(filter $(DEB_HOST_ARCH), amd64 i386),)
+ifneq ($(filter $(DEB_BUILD_ARCH), amd64 i386),)
 confflags += --enable-svgalib
 endif
 
@@ -100,33 +106,32 @@ VIDDIR := usr/share/vlc
 PIXDIR := usr/share/pixmaps
 
 build: build-stamp
-build-stamp:
+build-stamp: $(QUILT_STAMPFN)
 	dh_testdir
-	$(QUILT) push -a || test $$? = 2
-	./configure --enable-static --mandir=$${prefix}/share/man $(confflags)
-	$(MAKE) src/libvlc.la
-	cp src/.libs/libvlc.a src/libvlc.a
-	./configure --mandir=$${prefix}/share/man $(confflags)
+	find . -name Makefile.in -exec touch '{}' ';'
+	./configure --enable-static $(confflags)
+	$(MAKE) -C src libvlccore.la libvlc.la
+	mkdir -p tmp
+	cp src/.libs/libvlccore.a tmp/libvlccore.a
+	cp src/.libs/libvlc.a tmp/libvlc.a
+	./configure $(confflags)
 	$(MAKE)
 ifeq ($(filter nocheck,$(DEB_BUILD_OPTIONS)),)
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	# Check which plugins were built and whether they load properly.
-	./vlc --reset-plugins-cache -l -I rc vlc:quit
+	./vlc -vvv --reset-plugins-cache --list --no-color  
 endif
 endif
 	touch $@
 
-clean:
+clean: clean-real unpatch
+clean-real:
 	dh_testdir
 	dh_testroot
-	sed -e '/lib\(alsa\|dvb\|v4l\|pvr\)_/d' debian/vlc-nox.install \
-	  >debian/vlc-nox.install.kfreebsd-i386
-	cp debian/vlc-nox.install.kfreebsd-i386 \
-	  debian/vlc-nox.install.kfreebsd-amd64
 	rm -f build-stamp
 	# Clean VLC
 	[ ! -f Makefile ] || $(MAKE) distclean
-	rm -f src/libvlc.a
+	rm -rf tmp/
 	# Clean zsh completion stuff
 	rm -f extras/zsh
 	# Removed ugly cruft
@@ -135,31 +140,34 @@ clean:
 	# Remove spurious autotools stuff
 	rm -f config.log confdefs.h
 	# Unpatch package
-	$(QUILT) pop -a -R || test $$? = 2
 	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
-	dh_clean -k
+	dh_prep
+	sed -e '/lib\(alsa\|dvb\|v4l\|pvr\)_/d' debian/vlc-nox.install \
+	 >debian/vlc-nox.install.kfreebsd-i386
+	cp debian/vlc-nox.install.kfreebsd-i386 \
+	 debian/vlc-nox.install.kfreebsd-amd64
 	dh_installdirs
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/
-	cp src/libvlc.a debian/tmp/usr/lib
+	cp tmp/libvlc.a debian/tmp/usr/lib
+	cp tmp/libvlccore.a debian/tmp/usr/lib
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -exec rm '{}' ';'
 	# Remove useless stuff
-	rm -Rf debian/tmp/$(VIDDIR)/skins
 	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
 	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 	# Move stuff around
 	mkdir -p debian/tmp/$(PIXDIR)
-	-mv debian/tmp/$(VIDDIR)/vlc48x48.png debian/tmp/$(PIXDIR)/vlc.png
-	-mv debian/tmp/$(VIDDIR)/vlc32x32.xpm debian/tmp/$(VIDDIR)/vlc.xpm
+	mv debian/tmp/$(VIDDIR)/vlc48x48.png debian/tmp/$(PIXDIR)/vlc.png
+	mv debian/tmp/$(VIDDIR)/vlc32x32.xpm debian/tmp/$(VIDDIR)/vlc.xpm
 	# Install stuff
 	dh_install -si --fail-missing --sourcedir=debian/tmp
-	# install BTS stuff
+	#install BTS stuff
 	mkdir -p  debian/vlc-nox/usr/share/bug/vlc-nox
 	cp debian/bug/* debian/vlc-nox/usr/share/bug/vlc-nox
 	# Clean up
@@ -181,6 +189,8 @@ binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_link -i
+	dh_installdocs -p vlc-data 
+	dh_installchangelogs ChangeLog -p vlc-data
 	dh_compress -i
 	dh_fixperms -i
 	dh_installdeb -i
@@ -192,23 +202,24 @@ binary-indep: build install
 binary-arch: build install
 	dh_testdir
 	dh_testroot
-	dh_link -s
+	dh_installdocs -p vlc
 	dh_installdocs -p vlc-nox
-	dh_installdocs -p libvlc0
+	dh_link -s
 	dh_buildinfo -p vlc-nox
 	dh_installmenu -s
 	dh_installmime -s
 	dh_installman doc/vlc.1 -p vlc-nox
-	dh_installman doc/vlc-config.1 -p libvlc0-dev
+	dh_installman debian/vlc-wrapper.1 -p vlc-nox
+	dh_installchangelogs ChangeLog -p vlc
 	dh_installchangelogs ChangeLog -p vlc-nox
-	dh_installchangelogs ChangeLog -p libvlc0
 	dh_desktop
-	dh_strip -s
+	dh_strip -s --dbg-package=vlc-dbg
 	dh_compress -s
 	dh_fixperms -s
-	dh_makeshlibs -plibvlc0 -V # -V is nasty, but I mean it
+	dh_makeshlibs -plibvlc2 -V # -V is nasty, but I mean it
+	dh_makeshlibs -plibvlccore0 -V # -V is nasty, but I mean it
 	dh_installdeb -s
-	dh_shlibdeps -s -ldebian/libvlc0/usr/lib
+	dh_shlibdeps -s -ldebian/libvlc2/usr/lib:debian/libvlccore0/usr/lib 
 	dh_gencontrol -s
 	dh_md5sums -s
 	dh_builddeb -s

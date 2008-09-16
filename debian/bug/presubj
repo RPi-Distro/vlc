@@ -1,3 +1,19 @@
-Make sure you have reset your plugins cache before reporting a bug.
-Use "rm ~/.cache/vlc/plugins-*.dat" to remove your plugins cache.
+Debugging and bug reporting advices:
+
+VLC media player is highly modular. So in case a feature is not working
+at all, you need to check that the module handling it is present.
+
+
+ * Use "rm ~/.cache/vlc/plugins-*.dat" to remove your plugins cache.
+
+ * Check that modules are correctly loaded: "vlc -vvv --color --list"
+   If you have yellow warning lines at the top, that could well be the
+   problem
+
+ * If you have installed libraries from other reposotories (e.g. to use
+   patent-encumbred encoders), revert to the official Debian libraries
+   before reporting a bug.
+
+The debug log of vlc ("vlc -vvv --options") is very usefull for the
+developers, do include it in your report.
 

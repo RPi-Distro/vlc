@@ -1,0 +1,4 @@
+usr/lib/libvlccore.so
+usr/lib/libvlccore.a
+usr/lib/pkgconfig/vlc-plugin.pc
+usr/include/vlc/plugins/*.h

@@ -1,13 +1,19 @@
-Index: vlc-0.8.6a.debian/modules/misc/notify.c
+Index: vlc-0.9.1/modules/misc/notify/notify.c
 ===================================================================
---- vlc-0.8.6a.debian.orig/modules/misc/notify.c	2007-01-03 19:27:57.000000000 +0100
-+++ vlc-0.8.6a.debian/modules/misc/notify.c	2007-01-11 18:30:48.000000000 +0100
-@@ -205,7 +205,7 @@
-     NotifyNotification * notification;
-     notification = notify_notification_new( _("Now Playing"),
-                              psz_temp,
--                             DATA_PATH "/vlc48x48.png",NULL);
-+                             "/usr/share/pixmaps/vlc.png",NULL);
-     notify_notification_set_timeout( notification,
-                                      config_GetInt(p_this, "notify-timeout") );
-     notify_notification_set_urgency( notification, NOTIFY_URGENCY_LOW );
+--- vlc-0.9.1.orig/modules/misc/notify/notify.c	2008-08-25 23:40:43.000000000 +0200
++++ vlc-0.9.1/modules/misc/notify/notify.c	2008-09-04 00:46:24.000000000 +0200
+@@ -216,13 +216,7 @@
+         free( psz_arturl );
+     }
+     else /* else we show state-of-the art logo */
+-    {
+-        const char *data_path = config_GetDataDir ();
+-        char buf[strlen (data_path) + sizeof ("/vlc48x48.png")];
+-
+-        snprintf (buf, sizeof (buf), "%s/vlc48x48.png", data_path);
+-        pix = gdk_pixbuf_new_from_file( buf, &p_error );
+-    }
++        pix = gdk_pixbuf_new_from_file( "/usr/share/pixmaps/vlc.png", &p_error );
+ 
+     /* we need to replace '&' with '&amp;' because '&' is a keyword of
+      * notification-daemon parser */

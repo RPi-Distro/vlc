@@ -1,4 +1,0 @@
-usr/bin/vlc-config
-usr/lib/*.so
-usr/lib/*.a
-usr/include/vlc/*.h
