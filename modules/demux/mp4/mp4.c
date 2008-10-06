@@ -2,7 +2,7 @@
  * mp4.c : MP4 file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id$
+ * $Id: 5ad73492e5b0dc312bfb66ac40373fbf965b553c $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1688,9 +1688,12 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
                 if( p_avcC )
                 {
                     p_track->fmt.i_extra = p_avcC->data.p_avcC->i_avcC;
-                    p_track->fmt.p_extra = malloc( p_avcC->data.p_avcC->i_avcC );
-                    memcpy( p_track->fmt.p_extra, p_avcC->data.p_avcC->p_avcC,
-                            p_track->fmt.i_extra );
+                    if( p_track->fmt.i_extra > 0 )
+                    {
+                        p_track->fmt.p_extra = malloc( p_avcC->data.p_avcC->i_avcC );
+                        memcpy( p_track->fmt.p_extra, p_avcC->data.p_avcC->p_avcC,
+                                p_track->fmt.i_extra );
+                    }
                 }
                 else
                 {

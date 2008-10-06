@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 87076b72dc13c58e5ef3343b3940d4641df5a3b7 $
+ * $Id: d196990ea3053b2025487ac35cceb0085db89f7e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -193,8 +193,10 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             CONFIG_GENERIC( "directx-wallpaper" , Bool , NULL, wallpaperMode );
             CONFIG_GENERIC( "directx-device", StringList, NULL,
                             dXdisplayDevice );
+            CONFIG_GENERIC( "directx-hw-yuv", Bool, NULL, hwYUVBox );
 #else
             ui.directXBox->setVisible( false );
+            ui.hwYUVBox->setVisible( false );
 #endif
 
             CONFIG_GENERIC_FILE( "snapshot-path", Directory, NULL,
@@ -402,13 +404,13 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             /* Caching */
             /* Add the things to the ComboBox */
             #define addToCachingBox( str, cachingNumber ) \
-                ui.cachingCombo->addItem( str, QVariant( cachingNumber ) );
-            addToCachingBox( "Custom", CachingCustom );
-            addToCachingBox( "Lowest latency", CachingLowest );
-            addToCachingBox( "Low latency", CachingLow );
-            addToCachingBox( "Normal", CachingNormal );
-            addToCachingBox( "High latency", CachingHigh );
-            addToCachingBox( "Higher latency", CachingHigher );
+                ui.cachingCombo->addItem( qtr(str), QVariant( cachingNumber ) );
+            addToCachingBox( N_("Custom"), CachingCustom );
+            addToCachingBox( N_("Lowest latency"), CachingLowest );
+            addToCachingBox( N_("Low latency"), CachingLow );
+            addToCachingBox( N_("Normal"), CachingNormal );
+            addToCachingBox( N_("High latency"), CachingHigh );
+            addToCachingBox( N_("Higher latency"), CachingHigher );
 
 #define TestCaC( name ) \
     b_cache_equal =  b_cache_equal && \
@@ -485,6 +487,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                             displayModeBox );
             CONFIG_GENERIC( "embedded-video", Bool, NULL, embedVideo );
             CONFIG_GENERIC( "qt-fs-controller", Bool, NULL, fsController );
+            CONFIG_GENERIC( "qt-system-tray", Bool, NULL, systrayBox );
             CONFIG_GENERIC_FILE( "skins2-last", File, NULL, ui.fileSkin,
                     ui.skinBrowse );
 
@@ -523,6 +526,7 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             CONFIG_GENERIC( "freetype-rel-fontsize", IntegerList, NULL,
                             fontSize );
             CONFIG_GENERIC( "freetype-effect", IntegerList, NULL, effect );
+            CONFIG_GENERIC_NO_BOOL( "sub-margin", Integer, NULL, subsPosition );
 
         END_SPREFS_CAT;
 

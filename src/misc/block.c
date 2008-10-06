@@ -2,7 +2,7 @@
  * block.c: Data blocks management functions
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 3909d33bb232b2737a7369c47c4779f6ac6b4663 $
+ * $Id: f666de0c18e0d51cd45290c461e32244022d6007 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -40,7 +40,7 @@ struct block_sys_t
 {
     block_t     self;
     size_t      i_allocated_buffer;
-    uint8_t     p_allocated_buffer[0];
+    uint8_t     p_allocated_buffer[];
 };
 
 #ifndef NDEBUG
@@ -124,6 +124,7 @@ block_t *block_Realloc( block_t *p_block, ssize_t i_prebody, size_t i_body )
             return NULL;
 
         p_block = p_dup;
+        p_sys = (block_sys_t *)p_block;
     }
 
     /* Adjust reserved header if there is enough room */

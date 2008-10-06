@@ -2,7 +2,7 @@
  * input.c : internal management of input streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 24de3d31c9a9eafaedbe74e4a50fde50ea6dfa04 $
+ * $Id: 2e2a4d39d68accddd5c693d65acf0ec0831c414d $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -218,7 +218,7 @@ int aout_InputNew( aout_instance_t * p_aout, aout_input_t * p_input )
     psz_visual = val.psz_string;
 
     /* parse user filter lists */
-    for( i_visual = 0; i_visual < 2; i_visual++ )
+    for( i_visual = 0; i_visual < 2 && !AOUT_FMT_NON_LINEAR(&chain_output_format); i_visual++ )
     {
         char *psz_next = NULL;
         char *psz_parser = i_visual ? psz_visual : psz_filters;

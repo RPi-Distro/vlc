@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003 the VideoLAN team
- * $Id$
+ * $Id: accc7a4f93c8af59c30e1639fbd8b42be3fde7c4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -383,6 +383,8 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         case ACCESS_SET_PAUSE_STATE:
+            break;
+
         case ACCESS_GET_TITLE_INFO:
         case ACCESS_SET_TITLE:
         case ACCESS_GET_META:

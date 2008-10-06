@@ -2,7 +2,7 @@
  * dynamicoverlay_commands.c : dynamic overlay plugin commands
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id$
+ * $Id: 03e28b2fe602603f05a2d6cb8c9ea6f930a596c3 $
  *
  * Author: Soren Bog <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
@@ -242,8 +242,9 @@ static int parser_SetTextAlpha( char *psz_command, char *psz_end,
 static int parser_SetTextColor( char *psz_command, char *psz_end,
                                 commandparams_t *p_params )
 {
-    int r, g, b;
+    int r = 0, g = 0, b = 0;
     VLC_UNUSED(psz_end);
+
     skip_space( &psz_command );
     if( isdigit( *psz_command ) )
     {

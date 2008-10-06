@@ -2,7 +2,7 @@
  * vout.c: Windows DirectX video output display method
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id$
+ * $Id: a38a8d1612e62d546b07af376bc1c10e4c9f9bdc $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -488,7 +488,13 @@ static void CloseVideo( vlc_object_t *p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *)p_this;
 
-    msg_Dbg( p_vout, "CloseVideo" );
+    if( p_vout->b_fullscreen )
+    {
+        msg_Dbg( p_vout, "Quitting fullscreen" );
+        Win32ToggleFullscreen( p_vout );
+        /* Force fullscreen in the core for the next video */
+        var_SetBool( p_vout, "fullscreen", true );
+    }
 
     if( p_vout->p_sys->p_event )
     {

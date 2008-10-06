@@ -2,7 +2,7 @@
  * mux.c: muxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: 5853db72c939a2f7cddd4fdcc90f9a3d86ca568d $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -78,7 +78,7 @@ static int DelStream( sout_mux_t *, sout_input_t * );
 static int Mux      ( sout_mux_t * );
 
 static int IOWrite( void *opaque, uint8_t *buf, int buf_size );
-static offset_t IOSeek( void *opaque, offset_t offset, int whence );
+static int64_t IOSeek( void *opaque, int64_t offset, int whence );
 
 /*****************************************************************************
  * Open
@@ -135,7 +135,7 @@ int OpenMux( vlc_object_t *p_this )
     p_sys->url.prot->url_write =
                     (int (*) (URLContext *, unsigned char *, int))IOWrite;
     p_sys->url.prot->url_seek =
-                    (offset_t (*) (URLContext *, offset_t, int))IOSeek;
+                    (int64_t (*) (URLContext *, int64_t, int))IOSeek;
     p_sys->url.prot->url_close = 0;
     p_sys->url.prot->next = 0;
     init_put_byte( &p_sys->io, p_sys->io_buffer, p_sys->io_buffer_size,
@@ -475,7 +475,7 @@ static int IOWrite( void *opaque, uint8_t *buf, int buf_size )
     return i_ret ? i_ret : -1;
 }
 
-static offset_t IOSeek( void *opaque, offset_t offset, int whence )
+static int64_t IOSeek( void *opaque, int64_t offset, int whence )
 {
     URLContext *p_url = opaque;
     sout_mux_t *p_mux = p_url->priv_data;

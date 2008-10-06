@@ -2,7 +2,7 @@
  * subsass.c : ASS/SSA subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id$
+ * $Id: ebb5b6f61b6648dffdd901f23bc5d170ddd97848 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -93,16 +93,15 @@ void ParseSSAString( decoder_t *p_dec,
             i_text++;
             psz_buffer_sub += 2;
         }
-        else if( psz_buffer_sub[0] == '{' &&
-                 psz_buffer_sub[1] == '\\' )
+        else if( psz_buffer_sub[0] == '{' )
         {
-            /* SSA control code */
+            /* { } Control code in SSA. Cannot be escaped */
             while( psz_buffer_sub[0] != '\0' &&
                    psz_buffer_sub[0] != '}' )
             {
                 psz_buffer_sub++;
             }
-            psz_buffer_sub++;
+            if( psz_buffer_sub[0] == '}' ) psz_buffer_sub++;
         }
         else
         {

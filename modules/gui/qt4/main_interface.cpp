@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 77823a7204617ec9f5102cbc9ac1605731906d9f $
+ * $Id: f1525421635ec573cc13f090a1dbdb0ca094d93d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -146,8 +146,6 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     /* Connect the input manager to the GUI elements it manages */
 
     /* It is also connected to the control->slider, see the ControlsWidget */
-    CONNECT( THEMIM->getIM(), positionUpdated( float, int, int ),
-             this, setDisplayPosition( float, int, int ) );
     /* Change the SpeedRate in the Status */
     CONNECT( THEMIM->getIM(), rateChanged( int ), this, setRate( int ) );
 
@@ -215,8 +213,8 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     CONNECT( this, askUpdate(), this, doComponentsUpdate() );
 
     /* Size and placement of interface */
+    settings->beginGroup( "MainWindow" );
     QVLCTools::restoreWidgetPosition( settings, this, QSize(380, 60) );
-
 
     bool b_visible = settings->value( "playlist-visible", 0 ).toInt();
     settings->endGroup();
@@ -249,6 +247,8 @@ MainInterface::~MainInterface()
 {
     msg_Dbg( p_intf, "Destroying the main interface" );
 
+    if( videoIsActive ) videoWidget->hide();
+
     /* Saving volume */
     if( config_GetInt( p_intf, "qt-autosave-volume" ) )
     {
@@ -262,6 +262,8 @@ MainInterface::~MainInterface()
     {
         if( !isDocked() )
             QVLCTools::saveWidgetPosition( p_intf, "Playlist", playlistWidget );
+
+        delete playlistWidget;
     }
 
     settings->beginGroup( "MainWindow" );
@@ -271,18 +273,10 @@ MainInterface::~MainInterface()
     settings->setValue( "adv-controls",
                         getControlsVisibilityStatus() & CONTROLS_ADVANCED );
 
-    if( !videoIsActive )
-    {
-        QVLCTools::saveWidgetPosition(settings, this);
-    }
-    else
-    {
-        msg_Dbg( p_intf, "Not saving because video is in use." );
-    }
-
     if( bgWidget )
         settings->setValue( "backgroundSize", bgWidget->size() );
 
+    QVLCTools::saveWidgetPosition(settings, this);
     settings->endGroup();
 
     var_DelCallback( p_intf->p_libvlc, "intf-show", IntfShowCB, p_intf );
@@ -306,11 +300,7 @@ inline void MainInterface::createStatusBar()
      *  Status Bar  *
      ****************/
     /* Widgets Creation*/
-    b_remainingTime = false;
-    timeLabel = new TimeLabel;
-    timeLabel->setText( " --:--/--:-- " );
-    timeLabel->setAlignment( Qt::AlignRight | Qt::AlignVCenter );
-    timeLabel->setToolTip( qtr( "Toggle between elapsed and remaining time" ) );
+    timeLabel = new TimeLabel( p_intf );
     nameLabel = new QLabel;
     nameLabel->setTextInteractionFlags( Qt::TextSelectableByMouse
                                       | Qt::TextSelectableByKeyboard );
@@ -333,9 +323,7 @@ inline void MainInterface::createStatusBar()
        - double clicking opens the goto time dialog
        - right-clicking and clicking just toggle between remaining and
          elapsed time.*/
-    CONNECT( timeLabel, timeLabelClicked(), this, toggleTimeDisplay() );
     CONNECT( timeLabel, timeLabelDoubleClicked(), THEDP, gotoTimeDialog() );
-    CONNECT( timeLabel, timeLabelDoubleClicked(), this, toggleTimeDisplay() );
 
     /* Speed Label behaviour:
        - right click gives the vertical speed slider */
@@ -401,19 +389,6 @@ void MainInterface::handleMainUi( QSettings *settings )
     CONNECT( controls, advancedControlsToggled( bool ),
              this, doComponentsUpdate() );
 
-#ifdef WIN32
-    if ( depth() > 8 )
-#endif
-    /* Create the FULLSCREEN CONTROLS Widget */
-    if( config_GetInt( p_intf, "qt-fs-controller" ) )
-    {
-        fullscreenControls = new FullscreenControllerWidget( p_intf, this,
-                settings->value( "adv-controls", false ).toBool(),
-                b_shiny );
-        CONNECT( fullscreenControls, advancedControlsToggled( bool ),
-                this, doComponentsUpdate() );
-    }
-
     /* Add the controls Widget to the main Widget */
     mainLayout->insertWidget( 0, controls, 0, Qt::AlignBottom );
 
@@ -456,6 +431,20 @@ void MainInterface::handleMainUi( QSettings *settings )
 
     /* Finish the sizing */
     main->updateGeometry();
+
+    getSettings()->endGroup();
+#ifdef WIN32
+    if ( depth() > 8 )
+#endif
+    /* Create the FULLSCREEN CONTROLS Widget */
+    if( config_GetInt( p_intf, "qt-fs-controller" ) )
+    {
+        fullscreenControls = new FullscreenControllerWidget( p_intf, this,
+                settings->value( "adv-controls", false ).toBool(),
+                b_shiny );
+        CONNECT( fullscreenControls, advancedControlsToggled( bool ),
+                this, doComponentsUpdate() );
+    }
 }
 
 inline void MainInterface::askForPrivacy()
@@ -747,7 +736,7 @@ void MainInterface::togglePlaylist()
     If no playlist exist, then create one and attach it to the DockPL*/
     if( !playlistWidget )
     {
-        playlistWidget = new PlaylistWidget( p_intf, this );
+        playlistWidget = new PlaylistWidget( p_intf );
 
         i_pl_dock = PL_UNDOCKED;
 /*        i_pl_dock = (pl_dock_e)getSettings()
@@ -757,6 +746,8 @@ void MainInterface::togglePlaylist()
         {
             playlistWidget->setWindowFlags( Qt::Window );
 
+            /* This will restore the geometry but will not work for position,
+               because of parenting */
             QVLCTools::restoreWidgetPosition( p_intf, "Playlist",
                     playlistWidget, QSize( 600, 300 ) );
         }
@@ -869,27 +860,6 @@ void MainInterface::visual()
 /************************************************************************
  * Other stuff
  ************************************************************************/
-void MainInterface::setDisplayPosition( float pos, int time, int length )
-{
-    char psz_length[MSTRTIME_MAX_SIZE], psz_time[MSTRTIME_MAX_SIZE];
-    secstotimestr( psz_length, length );
-    secstotimestr( psz_time, ( b_remainingTime && length ) ? length - time
-                                                           : time );
-
-    QString timestr;
-    timestr.sprintf( "%s/%s", psz_time,
-                            ( !length && time ) ? "--:--" : psz_length );
-
-    /* Add a minus to remaining time*/
-    if( b_remainingTime && length ) timeLabel->setText( " -"+timestr+" " );
-    else timeLabel->setText( " "+timestr+" " );
-}
-
-void MainInterface::toggleTimeDisplay()
-{
-    b_remainingTime = !b_remainingTime;
-}
-
 void MainInterface::setName( QString name )
 {
     input_name = name; /* store it for the QSystray use */
@@ -1083,6 +1053,11 @@ void MainInterface::updateSystrayTooltipStatus( int i_status )
  ************************************************************************/
 void MainInterface::dropEvent(QDropEvent *event)
 {
+    dropEventPlay( event, true );
+}
+
+void MainInterface::dropEventPlay( QDropEvent *event, bool b_play )
+{
      const QMimeData *mimeData = event->mimeData();
 
      /* D&D of a subtitles file, add it on the fly */
@@ -1100,14 +1075,14 @@ void MainInterface::dropEvent(QDropEvent *event)
             }
         }
      }
-     bool first = true;
+     bool first = b_play;
      foreach( QUrl url, mimeData->urls() )
      {
         QString s = toNativeSeparators( url.toLocalFile() );
 
         if( s.length() > 0 ) {
             playlist_Add( THEPL, qtu(s), NULL,
-                          PLAYLIST_APPEND | (first ? PLAYLIST_GO:0),
+                          PLAYLIST_APPEND | (first ? PLAYLIST_GO: 0),
                           PLAYLIST_END, true, false );
             first = false;
         }

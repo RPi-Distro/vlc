@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: e856b911e9463ad535b01125ecf70583935834e7 $
+ * $Id: 9c4677044631e76949f3215e11403e37eedee506 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -859,12 +859,18 @@ static char *DemuxGetLanguageCode( demux_t *p_demux, const char *psz_var )
     char *p;
 
     psz_lang = var_CreateGetString( p_demux, psz_var );
+    if( !psz_lang )
+        return strdup(LANGUAGE_DEFAULT);
+
     /* XXX: we will use only the first value
      * (and ignore other ones in case of a list) */
-    if( ( p = strchr( psz_lang, ',' ) ) ) *p = '\0';
+    if( ( p = strchr( psz_lang, ',' ) ) )
+        *p = '\0';
 
     for( pl = p_languages; pl->psz_iso639_1 != NULL; pl++ )
     {
+        if( *psz_lang == '\0' )
+            continue;
         if( !strcasecmp( pl->psz_eng_name, psz_lang ) ||
             !strcasecmp( pl->psz_native_name, psz_lang ) ||
             !strcasecmp( pl->psz_iso639_1, psz_lang ) ||
@@ -1428,7 +1434,7 @@ static int ProbeDVD( demux_t *p_demux, char *psz_name )
         return VLC_SUCCESS;
     }
 
-    if( stat( psz_name, &stat_info ) || !S_ISREG( stat_info.st_mode ) )
+    if( utf8_stat( psz_name, &stat_info ) || !S_ISREG( stat_info.st_mode ) )
     {
         /* Let dvdnav_open() do the probing */
         return VLC_SUCCESS;

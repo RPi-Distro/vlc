@@ -2,7 +2,7 @@
  * libxml.c: XML parser using libxml2
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 1b25a828c54b221ff0db7c0bc3b800b77a576426 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -143,14 +143,14 @@ static xml_reader_t *ReaderCreate( xml_t *p_xml, stream_t *p_stream )
     p_reader = malloc( sizeof(xml_reader_t) );
     if( !p_reader )
     {
-        xmlFreeTextReader( p_reader->p_sys->p_reader );
+        xmlFreeTextReader( p_libxml_reader );
         return NULL;
     }
     p_reader->p_sys = p_sys = malloc( sizeof(xml_reader_sys_t) );
     if( !p_sys )
     {
+        xmlFreeTextReader( p_libxml_reader );
         free( p_reader );
-        xmlFreeTextReader( p_reader->p_sys->p_reader );
         return NULL;
     }
     p_reader->p_sys->p_reader = p_libxml_reader;

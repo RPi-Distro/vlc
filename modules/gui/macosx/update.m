@@ -2,7 +2,7 @@
  * update.m: MacOS X Check-For-Update window
  *****************************************************************************
  * Copyright © 2005-2008 the VideoLAN team
- * $Id: 88ed6bd755596489bb4b6e9fc87f0e59d2bb239d $
+ * $Id: cb5248432b78649329bd1433811d6b2da1eb2990 $
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net>
  *          Rafaël Carré <funman@videolanorg>
@@ -129,14 +129,16 @@ static VLCUpdate *_o_sharedInstance = nil;
 {
     /* provide a save dialogue */
     SEL sel = @selector(getLocationForSaving:returnCode:contextInfo:);
-    NSSavePanel * saveFilePanel = [[NSSavePanel alloc] init];
+    NSOpenPanel * saveFilePanel = [[NSOpenPanel alloc] init];
 
-    [saveFilePanel setRequiredFileType: @"dmg"];
-    [saveFilePanel setCanSelectHiddenExtension: YES];
+    [saveFilePanel setCanChooseFiles: NO];
+    [saveFilePanel setCanChooseDirectories: YES];
     [saveFilePanel setCanCreateDirectories: YES];
+    [saveFilePanel setPrompt: _NS("Save" )];
+    [saveFilePanel setNameFieldLabel: _NS("Save As:" )];
     update_release_t *p_release = update_GetRelease( p_u );
     assert( p_release );
-    [saveFilePanel beginSheetForDirectory:nil file:
+    [saveFilePanel beginSheetForDirectory:@"~/Downloads" file:
         [[[NSString stringWithUTF8String: p_release->psz_url] componentsSeparatedByString:@"/"] lastObject]
                            modalForWindow: o_update_window 
                             modalDelegate:self
@@ -144,14 +146,14 @@ static VLCUpdate *_o_sharedInstance = nil;
                               contextInfo:nil];
 }
 
-- (void)getLocationForSaving: (NSSavePanel *)sheet 
+- (void)getLocationForSaving: (NSOpenPanel *)sheet
                   returnCode: (int)returnCode 
                  contextInfo: (void *)contextInfo
 {
     if( returnCode == NSOKButton )
     {
         /* perform download and pass the selected path */
-        [NSThread detachNewThreadSelector:@selector(performDownload:) toTarget:self withObject:[sheet filename]];
+        [NSThread detachNewThreadSelector:@selector(performDownload:) toTarget:self withObject:[sheet directory]];
     }
     [sheet release];
 }
@@ -216,7 +218,8 @@ static void updateCallback( void * p_data, bool b_success )
 - (void)performDownload:(NSString *)path
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    update_Download( p_u, [path UTF8String] );
+    NSString *local = [NSString stringWithFormat: @"%@/", path];
+    update_Download( p_u, [local UTF8String] );
     [o_btn_DownloadNow setEnabled: NO];
     [o_update_window orderOut: self];
     update_WaitDownload( p_u );

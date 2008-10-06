@@ -2,7 +2,7 @@
  * Messages.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id$
+ * $Id: 59e8fbad0c530a0528120325fa7fa81af175b0be $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *

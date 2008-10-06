@@ -2,7 +2,7 @@
  * SSA/ASS subtitle decoder using libass.
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 02d58a37e2e2b921b56c213484302bde2f458284 $
+ * $Id: a16609abe6737bc74473f34c1de337f7e871119e $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -345,8 +345,6 @@ static void UpdateRegions( video_format_t *p_fmt, spu_t *p_spu,
     fmt.i_height = fmt.i_visible_height;
     fmt.i_bits_per_pixel = 0;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    fmt.i_sar_num = 1;
-    fmt.i_sar_den = 1;
 
     b_fmt_changed = memcmp( &fmt, &p_ass->fmt, sizeof(fmt) ) != 0;
     if( b_fmt_changed )

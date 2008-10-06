@@ -2,7 +2,7 @@
  * qt4.hpp : QT4 interface
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id$
+ * $Id: 2a0e00420523594bcb04a4d6ece8af79e46f20a9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -131,6 +131,15 @@ static inline QString toNativeSeparators( QString s )
 #endif
     return s;
 }
+
+static inline QString removeTrailingSlash( QString s )
+{
+    if( ( s.length() > 1 ) && ( s[s.length()-1] == QLatin1Char( '/' ) ) )
+        s.remove( s.length() - 1, 1 );
+    return s;
+}
+
+#define toNativeSepNoSlash( a ) toNativeSeparators( removeTrailingSlash( a ) )
 
 static const int DialogEvent_Type = QEvent::User + DialogEventType + 1;
 //static const int PLUndockEvent_Type = QEvent::User + DialogEventType + 2;

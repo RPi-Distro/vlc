@@ -2,7 +2,7 @@
  * ps.c: Program Stream demux module for VLC.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 837a8ce31c3efa8ed7b8b006e180968b5df07969 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -249,8 +249,9 @@ static void FindLength( demux_t *p_demux )
         i_size = stream_Size( p_demux->s );
         i_end = __MAX( 0, __MIN( 200000, i_size ) );
         stream_Seek( p_demux->s, i_size - i_end );
+        i = 0;
 
-        while( vlc_object_alive (p_demux) && Demux2( p_demux, true ) > 0 );
+        while( vlc_object_alive (p_demux) && i < 40 && Demux2( p_demux, true ) > 0 );
         if( i_current_pos >= 0 ) stream_Seek( p_demux->s, i_current_pos );
     }
 
@@ -559,10 +560,15 @@ static block_t *ps_pkt_read( stream_t *s, uint32_t i_code )
 {
     const uint8_t *p_peek;
     int      i_peek = stream_Peek( s, &p_peek, 14 );
-    int      i_size = ps_pkt_size( p_peek, i_peek );
+    int      i_size;
     VLC_UNUSED(i_code);
 
-    if( i_size <= 6 && p_peek[3] > 0xba )
+    /* Smallest valid packet */
+    if( i_peek < 6 ) return NULL;
+
+    i_size = ps_pkt_size( p_peek, i_peek );
+
+    if( i_size < 0 || ( i_size <= 6 && p_peek[3] > 0xba ) )
     {
         /* Special case, search the next start code */
         i_size = 6;

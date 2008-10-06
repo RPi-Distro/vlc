@@ -2,7 +2,7 @@
  * util.c : Utility functions for HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: 54ba5c44b8e2dc4058a7bb5a0ca83ed0e8066818 $
+ * $Id: 5f068f840387e48d0a94b3a36addec2b175cf632 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -186,7 +186,7 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
         ACL_Destroy( p_acl );
 
         struct stat st;
-        if( stat( dir, &st ) == 0 )
+        if( utf8_stat( dir, &st ) == 0 )
         {
             closedir( p_dir );
             return VLC_EGENERIC;

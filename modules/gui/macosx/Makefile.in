@@ -82,9 +82,8 @@ am__objects_2 = libmacosx_plugin_la-AppleRemote.lo \
 	libmacosx_plugin_la-prefs_widgets.lo \
 	libmacosx_plugin_la-simple_prefs.lo \
 	libmacosx_plugin_la-output.lo libmacosx_plugin_la-update.lo \
-	libmacosx_plugin_la-vout.lo libmacosx_plugin_la-voutqt.lo \
-	libmacosx_plugin_la-voutgl.lo libmacosx_plugin_la-wizard.lo \
-	libmacosx_plugin_la-extended.lo \
+	libmacosx_plugin_la-vout.lo libmacosx_plugin_la-voutgl.lo \
+	libmacosx_plugin_la-wizard.lo libmacosx_plugin_la-extended.lo \
 	libmacosx_plugin_la-bookmarks.lo \
 	libmacosx_plugin_la-embeddedwindow.lo \
 	libmacosx_plugin_la-fspanel.lo libmacosx_plugin_la-eyetv.lo \
@@ -737,7 +736,6 @@ SOURCES_macosx = \
 	update.m \
 	update.h \
 	vout.m \
-	voutqt.m \
 	voutgl.m \
 	vout.h \
 	wizard.h \
@@ -859,7 +857,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-update.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-vout.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-voutgl.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-voutqt.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-wizard.Plo@am__quote@
 
 .m.o:
@@ -1008,13 +1005,6 @@ libmacosx_plugin_la-vout.lo: vout.m
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='vout.m' object='libmacosx_plugin_la-vout.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-vout.lo `test -f 'vout.m' || echo '$(srcdir)/'`vout.m
-
-libmacosx_plugin_la-voutqt.lo: voutqt.m
-@am__fastdepOBJC_TRUE@	$(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_la-voutqt.lo -MD -MP -MF $(DEPDIR)/libmacosx_plugin_la-voutqt.Tpo -c -o libmacosx_plugin_la-voutqt.lo `test -f 'voutqt.m' || echo '$(srcdir)/'`voutqt.m
-@am__fastdepOBJC_TRUE@	mv -f $(DEPDIR)/libmacosx_plugin_la-voutqt.Tpo $(DEPDIR)/libmacosx_plugin_la-voutqt.Plo
-@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='voutqt.m' object='libmacosx_plugin_la-voutqt.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepOBJC_FALSE@	$(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-voutqt.lo `test -f 'voutqt.m' || echo '$(srcdir)/'`voutqt.m
 
 libmacosx_plugin_la-voutgl.lo: voutgl.m
 @am__fastdepOBJC_TRUE@	$(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_la-voutgl.lo -MD -MP -MF $(DEPDIR)/libmacosx_plugin_la-voutgl.Tpo -c -o libmacosx_plugin_la-voutgl.lo `test -f 'voutgl.m' || echo '$(srcdir)/'`voutgl.m

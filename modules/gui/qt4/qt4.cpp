@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: 4edd3c98675b91d73818b92e3f618efdecd08f25 $
+ * $Id: ec788f6ab6682ce84fc90651c07b5b6db8c51b4e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -213,9 +213,11 @@ vlc_module_begin();
 
         set_callbacks( OpenDialogs, Close );
 
+#ifdef WIN32
     add_submodule();
         set_capability( "vout window", 50 );
         set_callbacks( WindowOpen, WindowClose );
+#endif
 vlc_module_end();
 
 /*****************************************************************************
@@ -424,8 +426,8 @@ static void *Init( vlc_object_t *obj )
 
     /* Retrieve last known path used in file browsing */
     char *psz_path = config_GetPsz( p_intf, "qt-filedialog-path" );
-    p_intf->p_sys->psz_filepath = EMPTY_STR( psz_path ) ? psz_path
-                                                        : config_GetHomeDir();
+    p_intf->p_sys->psz_filepath = EMPTY_STR( psz_path ) ? config_GetHomeDir()
+                                                        : psz_path;
 
     /* Launch */
     app->exec();

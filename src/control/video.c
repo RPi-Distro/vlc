@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
  *
- * $Id$
+ * $Id: ec9b74073c1f754e78acb668e0a1eb84dca2e978 $
  *
  * Authors: Cl�ent Stenac <zorglub@videolan.org>
  *          Filippo Carone <littlejohn@videolan.org>
@@ -252,9 +252,9 @@ libvlc_drawable_t libvlc_video_get_parent( libvlc_instance_t *p_instance, libvlc
     VLC_UNUSED(p_e);
 
     libvlc_drawable_t result;
- 
+
     result = var_GetInteger( p_instance->p_libvlc_int, "drawable" );
- 
+
     return result;
 }
 
@@ -388,30 +388,25 @@ void libvlc_video_set_spu( libvlc_media_player_t *p_mi, int i_spu,
 {
     input_thread_t *p_input_thread = libvlc_get_input_thread( p_mi, p_e );
     vlc_value_t val_list;
+    vlc_value_t newval;
     int i_ret = -1;
-    int i;
 
     if( !p_input_thread ) return;
 
     var_Change( p_input_thread, "spu-es", VLC_VAR_GETCHOICES, &val_list, NULL );
-    for( i = 0; i < val_list.p_list->i_count; i++ )
+    if( (i_spu < 0) && (i_spu > val_list.p_list->i_count) )
     {
-        vlc_value_t val = val_list.p_list->p_values[i];
-        if( i_spu == val.i_int )
-        {
-            vlc_value_t new_val;
-
-            new_val.i_int = val.i_int;
-            i_ret = var_Set( p_input_thread, "spu-es", new_val );
-            if( i_ret < 0 )
-            {
-                libvlc_exception_raise( p_e, "Setting subtitle value failed" );
-            }
-            vlc_object_release( p_input_thread );
-            return;
-        }
+        libvlc_exception_raise( p_e, "Subtitle value out of range" );
+        vlc_object_release( p_input_thread );
+        return;
     }
-    libvlc_exception_raise( p_e, "Subtitle value out of range" );
+
+    newval = val_list.p_list->p_values[i_spu];
+    i_ret = var_Set( p_input_thread, "spu-es", newval );
+    if( i_ret < 0 )
+    {
+        libvlc_exception_raise( p_e, "Setting subtitle value failed" );
+    }
     vlc_object_release( p_input_thread );
 }
 
@@ -496,30 +491,72 @@ void libvlc_video_set_teletext( libvlc_media_player_t *p_mi, int i_page,
     {
         i_ret = var_SetInteger( p_vbi, "vbi-page", i_page );
         vlc_object_release( p_vbi );
+        if( i_ret )
+            libvlc_exception_raise( p_e,
+                            "Unexpected error while setting teletext page" );
     }
-    if( i_ret )
-        libvlc_exception_raise( p_e,
-                        "Unexpected error while setting teletext page" );
     vlc_object_release( p_vout );
 }
 
 void libvlc_toggle_teletext( libvlc_media_player_t *p_mi,
                              libvlc_exception_t *p_e )
 {
-    /* We only work on the first vout */
-    vout_thread_t *p_vout = GetVout( p_mi, p_e );
-    bool opaque; int i_ret;
+    input_thread_t *p_input_thread;
+    vlc_object_t *p_vbi;
+    int i_ret;
 
-    /* GetVout will raise the exception for us */
-    if( !p_vout ) return;
+    p_input_thread = libvlc_get_input_thread(p_mi, p_e);
+    if( !p_input_thread ) return;
 
-    opaque = var_GetBool( p_vout, "vbi-opaque" );
-    i_ret = var_SetBool( p_vout, "vbi-opaque", !opaque );
-    if( i_ret )
-        libvlc_exception_raise( p_e,
-                        "Unexpected error while setting teletext value" );
+    p_vbi = (vlc_object_t *) vlc_object_find_name( p_input_thread, "zvbi",
+                                                   FIND_ANYWHERE );
+    if( p_vbi )
+    {
+        const int i_teletext_es = var_GetInteger( p_input_thread, "teletext-es" );
+        const int i_spu_es = var_GetInteger( p_input_thread, "spu-es" );
 
-    vlc_object_release( p_vout );
+        if( (i_teletext_es >= 0) && (i_teletext_es == i_spu_es) )
+        {
+            int i_page = 100;
+
+            i_page = var_GetInteger( p_vbi, "vbi-page" );
+            i_page = (i_teletext_es >= 0) ? i_page : 0;
+
+            i_ret = var_SetInteger( p_vbi, "vbi-page", i_page );
+            if( i_ret )
+                libvlc_exception_raise( p_e,
+                                "Unexpected error while setting teletext page" );
+        }
+        else if( i_teletext_es >= 0 )
+        {
+            bool opaque = true;
+
+            opaque = var_GetBool( p_vbi, "vbi-opaque" );
+            i_ret = var_SetBool( p_vbi, "vbi-opaque", !opaque );
+            if( i_ret )
+                libvlc_exception_raise( p_e,
+                                "Unexpected error while setting teletext transparency" );
+        }
+        vlc_object_release( p_vbi );
+    }
+    else
+    {
+        /* Teletext is not enabled yet, so enable it.
+         * Only after it is enable it is possible to view teletext pages
+         */
+        const int i_teletext_es = var_GetInteger( p_input_thread, "teletext-es" );
+
+        if( i_teletext_es >= 0 )
+        {
+            const int i_spu_es = var_GetInteger( p_input_thread, "spu-es" );
+
+            if( i_teletext_es == i_spu_es )
+                var_SetInteger( p_input_thread, "spu-es", -1 );
+            else
+                var_SetInteger( p_input_thread, "spu-es", i_teletext_es );
+        }
+    }
+    vlc_object_release( p_input_thread );
 }
 
 int libvlc_video_destroy( libvlc_media_player_t *p_mi,

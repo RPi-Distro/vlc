@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id$
+ * $Id: dc84bb01b51d5b5ce57dc6374a05492220d1bdd7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1038,7 +1038,11 @@ static int  Open ( vlc_object_t *p_this )
 
 #if X264_BUILD >= 0x0013
     var_Get( p_enc, SOUT_CFG_PREFIX "b-adapt", &val );
+#if X264_BUILD >= 63
+    p_sys->param.i_bframe_adaptive = val.b_bool ? X264_B_ADAPT_FAST : X264_B_ADAPT_NONE;
+#else
     p_sys->param.b_bframe_adaptive = val.b_bool;
+#endif
 
     var_Get( p_enc, SOUT_CFG_PREFIX "b-bias", &val );
     if( val.i_int >= -100 && val.i_int <= 100 )

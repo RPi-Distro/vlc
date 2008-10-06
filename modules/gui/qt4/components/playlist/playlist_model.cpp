@@ -2,7 +2,7 @@
  * playlist_model.cpp : Manage playlist model
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: f09a4a7abe53e0983c9722b97bd6fe5b4b523edc $
+ * $Id: 72c4a37b5e133c97380be87f11313838afe2382d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -744,27 +744,18 @@ void PLModel::sort( int column, Qt::SortOrder order )
         return;
     }
 
-#define CHECK_COLUMN( meta )                        \
-{                                                   \
-    if( ( shownFlags() & meta ) )                   \
-        i_index++;                                  \
-    if( column == i_index )                         \
-    {                                               \
-        i_flag = meta;                              \
-        goto next;                                  \
-    }                                               \
-}
+    int i_column = 1;
+    for( i_column = 1; i_column != COLUMN_END; i_column<<=1 )
+    {
+        if( ( shownFlags() & i_column ) )
+            i_index++;
+        if( column == i_index )
+        {
+            i_flag = i_column;
+            goto next;
+        }
+    }
 
-    CHECK_COLUMN( COLUMN_NUMBER );
-    CHECK_COLUMN( COLUMN_TITLE );
-    CHECK_COLUMN( COLUMN_DURATION );
-    CHECK_COLUMN( COLUMN_ARTIST );
-    CHECK_COLUMN( COLUMN_GENRE );
-    CHECK_COLUMN( COLUMN_ALBUM );
-    CHECK_COLUMN( COLUMN_TRACK_NUMBER );
-    CHECK_COLUMN( COLUMN_DESCRIPTION );
-
-#undef CHECK_COLUMN
 
 next:
     PL_LOCK;
@@ -859,6 +850,7 @@ void PLModel::viewchanged( int meta )
         {
             beginRemoveColumns( parent, index, index+1 );
             rootItem->i_showflags &= ~( meta );
+            getSettings()->setValue( "qt-pl-showflags", rootItem->i_showflags );
             rootItem->updateColumnHeaders();
             endRemoveColumns();
         }
@@ -867,6 +859,7 @@ void PLModel::viewchanged( int meta )
             /* Adding columns */
             beginInsertColumns( parent, index, index+1 );
             rootItem->i_showflags |= meta;
+            getSettings()->setValue( "qt-pl-showflags", rootItem->i_showflags );
             rootItem->updateColumnHeaders();
             endInsertColumns();
         }

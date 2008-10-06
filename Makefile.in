@@ -56,8 +56,7 @@ DIST_COMMON = README $(am__configure_deps) $(dist_noinst_SCRIPTS) \
 	AUTHORS COPYING ChangeLog INSTALL NEWS THANKS \
 	autotools/compile autotools/config.guess \
 	autotools/config.rpath autotools/config.sub autotools/depcomp \
-	autotools/install-sh autotools/ltmain.sh autotools/missing \
-	compile
+	autotools/install-sh autotools/ltmain.sh autotools/missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
@@ -1565,7 +1564,6 @@ VLC-release.app: vlc
 	    simple_prefs.h \
 	    simple_prefs.m \
 	    vout.h \
-	    voutqt.m \
 	    voutgl.m \
 	    wizard.h \
 	    wizard.m \
@@ -1733,7 +1731,6 @@ VLC.app: vlc $(top_builddir)/src/.libs/libvlccore.dylib $(top_builddir)/src/.lib
 	    simple_prefs.h \
 	    simple_prefs.m \
 	    vout.h \
-	    voutqt.m \
 	    voutgl.m \
 	    wizard.h \
 	    wizard.m \

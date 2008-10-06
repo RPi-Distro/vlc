@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: ec84aa964e2cbc2b4197e3fdc7ac45ef9ee9379d $
+ * $Id: f7228b4f02bd54c02ea7c03a0a5d8435e341ef0a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -212,7 +212,7 @@ struct  sdp_t
 struct attribute_t
 {
     const char *value;
-    char name[0];
+    char name[];
 };
 
 struct sap_announce_t
@@ -1236,9 +1236,9 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                 }
                 assert (p_sdp->psz_sessionname == NULL); // no memleak here
                 p_sdp->psz_sessionname = strdup (data);
-                EnsureUTF8 (p_sdp->psz_sessionname);
                 if (p_sdp->psz_sessionname == NULL)
                     goto error;
+                EnsureUTF8 (p_sdp->psz_sessionname);
                 break;
             }
 

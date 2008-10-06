@@ -2,7 +2,7 @@
  * timeshift.c: access filter implementing timeshifting capabilities
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 6567e22c57cde4579c3030dd69f4dc7999c3a22d $
+ * $Id: b943e90a0bbcbdce2121dbe8541fe28ad46d2733 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -298,7 +298,8 @@ static void* Thread( vlc_object_t* p_this )
               block_Release( p_block );
               p_block = NULL;
             }
-            p_block->i_buffer = i_read;
+            else
+                p_block->i_buffer = i_read;
         }
 
         if( p_block == NULL )

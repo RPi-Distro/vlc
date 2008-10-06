@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id$
+ * $Id: e3ed5a61827aed9a8c252f4f0235a014b784230f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -75,11 +75,13 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
     view->setDropIndicatorShown( true );
     view->setAutoScroll( true );
 
+
+    getSettings()->beginGroup("Playlist");
 #if HAS_QT43
     if( getSettings()->contains( "headerState" ) )
     {
-        view->header()->restoreState( getSettings()->value( "headerState" ).toByteArray() );
-        msg_Dbg( p_intf, "exists" );
+        view->header()->restoreState(
+                getSettings()->value( "headerState" ).toByteArray() );
     }
     else
 #endif
@@ -91,6 +93,7 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
         view->header()->setClickable( true );
         view->header()->setContextMenuPolicy( Qt::CustomContextMenu );
     }
+    getSettings()->endGroup();
 
     /* Connections for the TreeView */
     CONNECT( view, activated( const QModelIndex& ) ,
@@ -274,26 +277,18 @@ void StandardPLPanel::popupSelectColumn( QPoint pos )
 
     QMenu selectColMenu;
 
-#define ADD_META_ACTION( meta ) {                                              \
-    QAction* option = selectColMenu.addAction( qfu( psz_column_title( meta ) ) );     \
-    option->setCheckable( true );                                              \
-    option->setChecked( model->shownFlags() & meta );                          \
-    ContextUpdateMapper->setMapping( option, meta );                           \
-    CONNECT( option, triggered(), ContextUpdateMapper, map() );                \
-}
-
     CONNECT( ContextUpdateMapper, mapped( int ),  model, viewchanged( int ) );
 
-    ADD_META_ACTION( COLUMN_NUMBER );
-    ADD_META_ACTION( COLUMN_TITLE );
-    ADD_META_ACTION( COLUMN_DURATION );
-    ADD_META_ACTION( COLUMN_ARTIST );
-    ADD_META_ACTION( COLUMN_GENRE );
-    ADD_META_ACTION( COLUMN_ALBUM );
-    ADD_META_ACTION( COLUMN_TRACK_NUMBER );
-    ADD_META_ACTION( COLUMN_DESCRIPTION );
-
-#undef ADD_META_ACTION
+    int i_column = 1;
+    for( i_column = 1; i_column != COLUMN_END; i_column<<=1 )
+    {
+        QAction* option = selectColMenu.addAction(
+            qfu( psz_column_title( i_column ) ) );
+        option->setCheckable( true );
+        option->setChecked( model->shownFlags() & i_column );
+        ContextUpdateMapper->setMapping( option, i_column );
+        CONNECT( option, triggered(), ContextUpdateMapper, map() );
+    }
 
     selectColMenu.exec( QCursor::pos() );
 }
@@ -361,7 +356,7 @@ void StandardPLPanel::deleteSelection()
 StandardPLPanel::~StandardPLPanel()
 {
 #if HAS_QT43
-    getSettings()->beginGroup("playlistdialog");
+    getSettings()->beginGroup("Playlist");
     getSettings()->setValue( "headerState", view->header()->saveState() );
     getSettings()->endGroup();
 #endif

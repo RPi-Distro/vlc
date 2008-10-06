@@ -2,7 +2,7 @@
  * gnutls.c
  *****************************************************************************
  * Copyright (C) 2004-2006 Rémi Denis-Courmont
- * $Id$
+ * $Id: b49c7a6d2c189a4786c8c29c08af95131b67cef5 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -721,10 +721,11 @@ static int OpenClient (vlc_object_t *obj)
     char *servername = var_GetNonEmptyString (p_session, "tls-server-name");
     if (servername == NULL )
         msg_Err (p_session, "server name missing for TLS session");
+    else
+        gnutls_server_name_set (p_sys->session.session, GNUTLS_NAME_DNS,
+                                servername, strlen (servername));
 
     p_sys->session.psz_hostname = servername;
-    gnutls_server_name_set (p_sys->session.session, GNUTLS_NAME_DNS,
-                            servername, strlen (servername));
 
     return VLC_SUCCESS;
 
@@ -966,7 +967,8 @@ gnutls_ServerSessionPrepare( tls_server_t *p_server )
 
     /* Session resumption support */
     i_val = config_GetInt (p_server, "gnutls-cache-timeout");
-    gnutls_db_set_cache_expiration (session, i_val);
+    if (i_val >= 0)
+        gnutls_db_set_cache_expiration (session, i_val);
     gnutls_db_set_retrieve_function( session, cb_fetch );
     gnutls_db_set_remove_function( session, cb_delete );
     gnutls_db_set_store_function( session, cb_store );
@@ -1066,6 +1068,8 @@ static int OpenServer (vlc_object_t *obj)
         return VLC_ENOMEM;
 
     p_sys->i_cache_size = config_GetInt (obj, "gnutls-cache-size");
+    if (p_sys->i_cache_size == -1) /* Duh, config subsystem exploded?! */
+        p_sys->i_cache_size = 0;
     p_sys->p_cache = calloc (p_sys->i_cache_size,
                              sizeof (struct saved_session_t));
     if (p_sys->p_cache == NULL)

@@ -2,7 +2,7 @@
  * os.c : Low-level dynamic library handling
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 5cf3a827672f8dfef6748029303e9a480fb2d096 $
+ * $Id: a449ad7b2c51fc4a69ae011ac2059fa7a578364d $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -180,15 +180,20 @@ int module_Load( vlc_object_t *p_this, const char *psz_file,
     }
 
 #elif defined(HAVE_DL_WINDOWS)
+    wchar_t psz_wfile[MAX_PATH];
+    MultiByteToWideChar( CP_ACP, 0, psz_file, -1, psz_wfile, MAX_PATH );
+
+    /* FIXME: this is not thread-safe -- Courmisch */
+    UINT mode = SetErrorMode (SEM_FAILCRITICALERRORS);
+    SetErrorMode (mode|SEM_FAILCRITICALERRORS);
+
 #ifdef UNDER_CE
-    {
-        wchar_t psz_wfile[MAX_PATH];
-        MultiByteToWideChar( CP_ACP, 0, psz_file, -1, psz_wfile, MAX_PATH );
-        handle = LoadLibrary( psz_wfile );
-    }
+    handle = LoadLibrary( psz_wfile );
 #else
-    handle = LoadLibrary( psz_file );
+    handle = LoadLibraryW( psz_wfile );
 #endif
+    SetErrorMode (mode);
+
     if( handle == NULL )
     {
         char *psz_err = GetWindowsError();

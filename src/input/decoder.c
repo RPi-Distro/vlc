@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 0ed169b1b241c22f80f1720df42dc6a880502be6 $
+ * $Id: 0e309484701e2163aa4ecc257e4acff2b5fd0272 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -327,6 +327,8 @@ void input_DecoderDiscontinuity( decoder_t * p_dec, bool b_flush )
     /* Send a special block */
     p_null = block_New( p_dec, 128 );
     p_null->i_flags |= BLOCK_FLAG_DISCONTINUITY;
+    if( b_flush && p_dec->fmt_in.i_cat == SPU_ES )
+        p_null->i_flags |= BLOCK_FLAG_CORE_FLUSH;
     /* FIXME check for p_packetizer or b_packitized from es_format_t of input ? */
     if( p_dec->p_owner->p_packetizer && b_flush )
         p_null->i_flags |= BLOCK_FLAG_CORRUPTED;
@@ -1047,9 +1049,26 @@ static int DecoderDecode( decoder_t *p_dec, block_t *p_block )
         input_thread_t *p_input = p_dec->p_owner->p_input;
         vout_thread_t *p_vout;
         subpicture_t *p_spu;
+        bool b_flushing = p_dec->p_owner->i_preroll_end == INT64_MAX;
+        bool b_flush = false;
 
         if( p_block )
+        {
             DecoderUpdatePreroll( &p_dec->p_owner->i_preroll_end, p_block );
+            b_flush = (p_block->i_flags & BLOCK_FLAG_CORE_FLUSH) != 0;
+        }
+
+        if( !b_flushing && b_flush && p_sys->p_spu_vout )
+        {
+            p_vout = vlc_object_find( p_dec, VLC_OBJECT_VOUT, FIND_ANYWHERE );
+
+            if( p_vout && p_sys->p_spu_vout == p_vout )
+                spu_Control( p_vout->p_spu, SPU_CHANNEL_CLEAR,
+                             p_dec->p_owner->i_spu_channel );
+
+            if( p_vout )
+                vlc_object_release( p_vout );
+        }
 
         while( (p_spu = p_dec->pf_decode_sub( p_dec, p_block ? &p_block : NULL ) ) )
         {
@@ -1063,7 +1082,9 @@ static int DecoderDecode( decoder_t *p_dec, block_t *p_block )
                 /* Prerool does not work very well with subtitle */
                 if( p_spu->i_start < p_dec->p_owner->i_preroll_end &&
                     ( p_spu->i_stop <= 0 || p_spu->i_stop < p_dec->p_owner->i_preroll_end ) )
+                {
                     spu_DestroySubpicture( p_vout->p_spu, p_spu );
+                }
                 else
                     spu_DisplaySubpicture( p_vout->p_spu, p_spu );
             }

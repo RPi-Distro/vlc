@@ -4,7 +4,7 @@
  *   (http://developers.videolan.org/libdca.html).
  *****************************************************************************
  * Copyright (C) 2001, 2002libdca the VideoLAN team
- * $Id$
+ * $Id: 4041cb7cff8dfee93dbebf2417e0487b1a2a022a $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -56,11 +56,11 @@ static void CloseFilter( vlc_object_t * );
 static block_t *Convert( filter_t *, block_t * );
 
 /* libdca channel order
- * FIXME middle values should be checked */
+ * libdca currently only decodes 5.1, even if you have a DTS-ES source. */
 static const uint32_t pi_channels_in[] =
-{ AOUT_CHAN_LFE, AOUT_CHAN_LEFT, AOUT_CHAN_CENTER, AOUT_CHAN_RIGHT,
-  AOUT_CHAN_REARLEFT, AOUT_CHAN_REARCENTER, AOUT_CHAN_REARRIGHT,
-  AOUT_CHAN_MIDDLELEFT, AOUT_CHAN_MIDDLERIGHT,
+{ AOUT_CHAN_CENTER, AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT,
+  AOUT_CHAN_REARCENTER, AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT,
+  AOUT_CHAN_LFE,
   0 };
 
 /*****************************************************************************

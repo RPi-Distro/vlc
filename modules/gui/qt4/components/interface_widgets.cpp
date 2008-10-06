@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 777da1627ca9135518d195acbe0424a4822facb2 $
+ * $Id: 6fca0caa224c4c3fddb350e4379286d106e0f5e9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -317,7 +317,9 @@ void VisualSelector::next()
 #define setupSmallButton( aButton ){  \
     aButton->setMaximumSize( QSize( 26, 26 ) ); \
     aButton->setMinimumSize( QSize( 26, 26 ) ); \
-    aButton->setIconSize( QSize( 20, 20 ) ); }
+    aButton->setIconSize( QSize( 20, 20 ) ); \
+    aButton->setFocusPolicy( Qt::NoFocus ); \
+}
 
 /* init static variables in advanced controls */
 mtime_t AdvControlsWidget::timeA = 0;
@@ -527,14 +529,16 @@ ControlsWidget::ControlsWidget( intf_thread_t *_p_i,
     slowerButton = new QToolButton;
     slowerButton->setAutoRaise( true );
     slowerButton->setMaximumSize( QSize( 26, 20 ) );
+    slowerButton->setFocusPolicy( Qt::NoFocus );
 
-    BUTTON_SET_ACT( slowerButton, "-", qtr( "Slower" ), slower() );
+    BUTTON_SET_ACT_I( slowerButton, "", slower, qtr( "Slower" ), slower() );
 
     fasterButton = new QToolButton;
     fasterButton->setAutoRaise( true );
     fasterButton->setMaximumSize( QSize( 26, 20 ) );
+    fasterButton->setFocusPolicy( Qt::NoFocus );
 
-    BUTTON_SET_ACT( fasterButton, "+", qtr( "Faster" ), faster() );
+    BUTTON_SET_ACT_I( fasterButton, "", faster, qtr( "Faster" ), faster() );
 
     /* advanced Controls handling */
     b_advancedVisible = b_advControls;
@@ -640,10 +644,10 @@ ControlsWidget::ControlsWidget( intf_thread_t *_p_i,
     /* Play */
     playButton = new QPushButton;
     playButton->setSizePolicy( sizePolicy );
-    playButton->setMaximumSize( QSize( 36, 36 ) );
-    playButton->setMinimumSize( QSize( 36, 36 ) );
-    playButton->setIconSize( QSize( 30, 30 ) );
-
+    playButton->setMaximumSize( QSize( 32, 32 ) );
+    playButton->setMinimumSize( QSize( 32, 32 ) );
+    playButton->setIconSize( QSize( 26, 26 ) );
+    playButton->setFocusPolicy( Qt::NoFocus );
 
     /** Prev + Stop + Next Block **/
     controlButLayout = new QHBoxLayout;
@@ -825,7 +829,7 @@ void ControlsWidget::toggleTeletextTransparency()
     }
     else
     {
-        telexTransparent->setIcon( QIcon( ":/tvtelx-transparent" ) );
+        telexTransparent->setIcon( QIcon( ":/tvtelx-trans" ) );
         telexTransparent->setToolTip( qtr( "Transparent" ) );
         b_telexTransparent = true;
     }
@@ -841,7 +845,11 @@ void ControlsWidget::play()
     if( THEPL->current.i_size == 0 )
     {
         /* The playlist is empty, open a file requester */
+#ifndef WIN32
         THEDP->openFileDialog();
+#else
+        THEDP->simpleOpenDialog();
+#endif
         setStatus( 0 );
         return;
     }
@@ -1017,7 +1025,11 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i,
           b_slow_hide_begin(false), i_slow_hide_timeout(1),
           b_fullscreen( false ), i_hide_timeout( 1 ), p_vout(NULL)
 {
+    i_mouse_last_move_x = -1;
+    i_mouse_last_move_y = -1;
+
     setWindowFlags( Qt::ToolTip );
+    setMinimumWidth( 600 );
 
     setFrameShape( QFrame::StyledPanel );
     setFrameStyle( QFrame::Sunken );
@@ -1028,11 +1040,11 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i,
 
     /* First line */
     slider->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum);
-    slider->setMinimumWidth( 220 );
     fsLayout->addWidget( slowerButton, 0, 0 );
-    fsLayout->addWidget( slider, 0, 1, 1, 9 );
-    fsLayout->addWidget( fasterButton, 0, 10 );
+    fsLayout->addWidget( slider, 0, 1, 1, 11 );
+    fsLayout->addWidget( fasterButton, 0, 12 );
 
+    /* Second line */
     fsLayout->addWidget( playButton, 1, 0, 1, 2 );
     fsLayout->addLayout( controlButLayout, 1, 2 );
 
@@ -1042,8 +1054,12 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i,
     fsLayout->addWidget( advControls, 1, 6, Qt::AlignVCenter );
 
     fsLayout->setColumnStretch( 7, 10 );
-    fsLayout->addWidget( volMuteLabel, 1, 8 );
-    fsLayout->addWidget( volumeSlider, 1, 9, 1, 2 );
+
+    TimeLabel *timeLabel = new TimeLabel( p_intf );
+
+    fsLayout->addWidget( timeLabel, 1, 8 );
+    fsLayout->addWidget( volMuteLabel, 1, 9 );
+    fsLayout->addWidget( volumeSlider, 1, 10, 1, 2 );
 
     /* hiding timer */
     p_hideTimer = new QTimer( this );
@@ -1059,10 +1075,15 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i,
     adjustSize ();  /* need to get real width and height for moving */
 
     /* center down */
-    QDesktopWidget * p_desktop = QApplication::desktop();
+    QWidget * p_desktop = QApplication::desktop()->screen(
+                QApplication::desktop()->screenNumber( _p_mi ) );
 
-    move( p_desktop->width() / 2 - width() / 2,
+    QPoint pos = QPoint( p_desktop->width() / 2 - width() / 2,
           p_desktop->height() - height() );
+
+    getSettings()->beginGroup( "FullScreen" );
+    move( getSettings()->value( "pos", pos ).toPoint() );
+    getSettings()->endGroup();
 
 #ifdef WIN32TRICK
     setWindowOpacity( 0.0 );
@@ -1078,6 +1099,9 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i,
 
 FullscreenControllerWidget::~FullscreenControllerWidget()
 {
+    getSettings()->beginGroup( "FullScreen" );
+    getSettings()->setValue( "pos", pos() );
+    getSettings()->endGroup();
     detachVout();
     vlc_mutex_destroy( &lock );
 }
@@ -1208,7 +1232,11 @@ void FullscreenControllerWidget::customEvent( QEvent *event )
             b_fs = b_fullscreen;
             vlc_mutex_unlock( &lock );
 
-            if( b_fs )  // FIXME I am not sure about that one
+#ifdef WIN32TRICK
+            if( b_fs && b_fscHidden )  // FIXME I am not sure about that one
+#else
+            if( b_fs && !isVisible() )  // FIXME I am not sure about that one
+#endif
                 showFSC();
             break;
         case FullscreenControlHide_Type:
@@ -1290,14 +1318,16 @@ void FullscreenControllerWidget::keyPressEvent( QKeyEvent *event )
 }
 
 /* */
-static int FullscreenControllerWidgetFullscreenChanged( vlc_object_t *vlc_object, const char *variable,
-                                                        vlc_value_t old_val, vlc_value_t new_val,
-                                                        void *data )
+static int FullscreenControllerWidgetFullscreenChanged( vlc_object_t *vlc_object,
+                const char *variable, vlc_value_t old_val,
+                vlc_value_t new_val,  void *data )
 {
     vout_thread_t *p_vout = (vout_thread_t *) vlc_object;
+    msg_Dbg( p_vout, "Qt4: Fullscreen state changed" );
     FullscreenControllerWidget *p_fs = (FullscreenControllerWidget *)data;
 
-    p_fs->fullscreenChanged( p_vout, new_val.b_bool, var_GetInteger( p_vout, "mouse-hide-timeout" ) );
+    p_fs->fullscreenChanged( p_vout, new_val.b_bool,
+            var_GetInteger( p_vout, "mouse-hide-timeout" ) );
 
     return VLC_SUCCESS;
 }
@@ -1308,13 +1338,43 @@ static int FullscreenControllerWidgetMouseMoved( vlc_object_t *vlc_object, const
 {
     FullscreenControllerWidget *p_fs = (FullscreenControllerWidget *)data;
 
-    /* Show event */
-    IMEvent *eShow = new IMEvent( FullscreenControlShow_Type, 0 );
-    QApplication::postEvent( p_fs, static_cast<QEvent *>(eShow) );
+    int i_mousex, i_mousey;
+    bool b_toShow = false;
 
-    /* Plan hide event */
-    IMEvent *eHide = new IMEvent( FullscreenControlPlanHide_Type, 0 );
-    QApplication::postEvent( p_fs, static_cast<QEvent *>(eHide) );
+    /* Get the value from the Vout - Trust the vout more than Qt */
+    i_mousex = var_GetInteger( p_fs->p_vout, "mouse-x" );
+    i_mousey = var_GetInteger( p_fs->p_vout, "mouse-y" );
+
+    /* First time */
+    if( p_fs->i_mouse_last_move_x == -1 || p_fs->i_mouse_last_move_y == -1 )
+    {
+        p_fs->i_mouse_last_move_x = i_mousex;
+        p_fs->i_mouse_last_move_y = i_mousey;
+        b_toShow = true;
+    }
+    /* All other times */
+    else
+    {
+        /* Trigger only if move > 3 px dans une direction */
+        if( abs( p_fs->i_mouse_last_move_x - i_mousex ) > 2 ||
+            abs( p_fs->i_mouse_last_move_y - i_mousey ) > 2 )
+        {
+            b_toShow = true;
+            p_fs->i_mouse_last_move_x = i_mousex;
+            p_fs->i_mouse_last_move_y = i_mousey;
+        }
+    }
+
+    if( b_toShow )
+    {
+        /* Show event */
+        IMEvent *eShow = new IMEvent( FullscreenControlShow_Type, 0 );
+        QApplication::postEvent( p_fs, static_cast<QEvent *>(eShow) );
+
+        /* Plan hide event */
+        IMEvent *eHide = new IMEvent( FullscreenControlPlanHide_Type, 0 );
+        QApplication::postEvent( p_fs, static_cast<QEvent *>(eHide) );
+    }
 
     return VLC_SUCCESS;
 }
@@ -1329,9 +1389,14 @@ void FullscreenControllerWidget::attachVout( vout_thread_t *p_nvout )
 
     p_vout = p_nvout;
 
+    msg_Dbg( p_vout, "Qt FS: Attaching Vout" );
     vlc_mutex_lock( &lock );
-    var_AddCallback( p_vout, "fullscreen", FullscreenControllerWidgetFullscreenChanged, this ); /* I miss a add and fire */
-    fullscreenChanged( p_vout, var_GetBool( p_vout, "fullscreen" ), var_GetInteger( p_vout, "mouse-hide-timeout" ) );
+
+    var_AddCallback( p_vout, "fullscreen",
+            FullscreenControllerWidgetFullscreenChanged, this );
+            /* I miss a add and fire */
+    fullscreenChanged( p_vout, var_GetBool( p_vout, "fullscreen" ),
+                       var_GetInteger( p_vout, "mouse-hide-timeout" ) );
     vlc_mutex_unlock( &lock );
 }
 /**
@@ -1341,7 +1406,9 @@ void FullscreenControllerWidget::detachVout()
 {
     if( p_vout )
     {
-        var_DelCallback( p_vout, "fullscreen", FullscreenControllerWidgetFullscreenChanged, this );
+        msg_Dbg( p_vout, "Qt FS: Detaching Vout" );
+        var_DelCallback( p_vout, "fullscreen",
+                FullscreenControllerWidgetFullscreenChanged, this );
         vlc_mutex_lock( &lock );
         fullscreenChanged( p_vout, false, 0 );
         vlc_mutex_unlock( &lock );
@@ -1352,20 +1419,27 @@ void FullscreenControllerWidget::detachVout()
 /**
  * Register and unregister callback for mouse moving
  */
-void FullscreenControllerWidget::fullscreenChanged( vout_thread_t *p_vout, bool b_fs, int i_timeout )
+void FullscreenControllerWidget::fullscreenChanged( vout_thread_t *p_vout,
+        bool b_fs, int i_timeout )
 {
+    msg_Dbg( p_vout, "Qt: Changing Fullscreen Mode" );
+
     vlc_mutex_lock( &lock );
+    /* Entering fullscreen, register callback */
     if( b_fs && !b_fullscreen )
     {
         b_fullscreen = true;
         i_hide_timeout = i_timeout;
-        var_AddCallback( p_vout, "mouse-moved", FullscreenControllerWidgetMouseMoved, this );
+        var_AddCallback( p_vout, "mouse-moved",
+                FullscreenControllerWidgetMouseMoved, this );
     }
+    /* Quitting fullscreen, unregistering callback */
     else if( !b_fs && b_fullscreen )
     {
         b_fullscreen = false;
         i_hide_timeout = i_timeout;
-        var_DelCallback( p_vout, "mouse-moved", FullscreenControllerWidgetMouseMoved, this );
+        var_DelCallback( p_vout, "mouse-moved",
+                FullscreenControllerWidgetMouseMoved, this );
 
         /* Force fs hidding */
         IMEvent *eHide = new IMEvent( FullscreenControlHide_Type, 0 );
@@ -1561,4 +1635,38 @@ void CoverArtLabel::doUpdate()
         free( psz_meta );
     }
 }
+
+TimeLabel::TimeLabel( intf_thread_t *_p_intf  ) :QLabel(), p_intf( _p_intf )
+{
+   b_remainingTime = false;
+   setText( " --:--/--:-- " );
+   setAlignment( Qt::AlignRight | Qt::AlignVCenter );
+   setToolTip( qtr( "Toggle between elapsed and remaining time" ) );
+
+
+   CONNECT( THEMIM->getIM(), positionUpdated( float, int, int ),
+             this, setDisplayPosition( float, int, int ) );
+}
+
+void TimeLabel::setDisplayPosition( float pos, int time, int length )
+{
+    char psz_length[MSTRTIME_MAX_SIZE], psz_time[MSTRTIME_MAX_SIZE];
+    secstotimestr( psz_length, length );
+    secstotimestr( psz_time, ( b_remainingTime && length ) ? length - time
+                                                           : time );
+
+    QString timestr;
+    timestr.sprintf( "%s/%s", psz_time,
+                            ( !length && time ) ? "--:--" : psz_length );
+
+    /* Add a minus to remaining time*/
+    if( b_remainingTime && length ) setText( " -"+timestr+" " );
+    else setText( " "+timestr+" " );
+}
+
+void TimeLabel::toggleTimeDisplay()
+{
+    b_remainingTime = !b_remainingTime;
+}
+
 

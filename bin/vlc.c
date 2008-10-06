@@ -2,7 +2,7 @@
  * vlc.c: the VLC player
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 2ede9433e4b67ff029654d1266ec13cec7cb9369 $
+ * $Id: 7bc6cb33259bfcee1f40a7d76af3aadec7538b7c $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -51,6 +51,7 @@ int main( int i_argc, const char *ppsz_argv[] )
 {
     int i_ret;
 
+#ifndef ALLOW_RUN_AS_ROOT
     if (geteuid () == 0)
     {
         fprintf (stderr, "VLC is not supposed to be run as root. Sorry.\n"
@@ -59,6 +60,7 @@ int main( int i_argc, const char *ppsz_argv[] )
         "cannot be run by non-trusted users first).\n", ppsz_argv[0]);
         return 1;
     }
+#endif
 
     setlocale (LC_ALL, "");
 

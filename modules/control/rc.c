@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 5e45c61a6272ef15f651812a5e85d39c30ae68a5 $
+ * $Id: d2e41f699b2c64d97fdcb3cb0876bafe09be881d $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -146,6 +146,7 @@ struct intf_sys_t
 
 #define msg_rc( ... ) __msg_rc( p_intf, __VA_ARGS__ )
 
+LIBVLC_FORMAT(2, 3)
 static void __msg_rc( intf_thread_t *p_intf, const char *psz_fmt, ... )
 {
     va_list args;
@@ -729,7 +730,7 @@ static void Run( intf_thread_t *p_intf )
             {
                 vlc_value_t time;
                 var_Get( p_input, "time", &time );
-                msg_rc( "%i", time.i_time / 1000000);
+                msg_rc( "%"PRIu64, time.i_time / 1000000);
             }
         }
         else if( !strcmp( psz_cmd, "get_length" ) )
@@ -742,14 +743,14 @@ static void Run( intf_thread_t *p_intf )
             {
                 vlc_value_t time;
                 var_Get( p_input, "length", &time );
-                msg_rc( "%i", time.i_time / 1000000);
+                msg_rc( "%"PRIu64, time.i_time / 1000000);
             }
         }
         else if( !strcmp( psz_cmd, "get_title" ) )
         {
             if( ! p_input )
             {
-                msg_rc("");
+                msg_rc("%s", "");
             }
             else
             {

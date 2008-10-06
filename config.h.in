@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define to 1 to allow runing VLC as root (uid 0). */
+#undef ALLOW_RUN_AS_ROOT
+
 /* Maximum supported data alignment */
 #undef ATTRIBUTE_ALIGNED_MAX
 

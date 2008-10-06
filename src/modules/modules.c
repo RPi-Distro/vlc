@@ -2,7 +2,7 @@
  * modules.c : Builtin and plugin modules management functions
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 9ff601b3a6aa5916a564b14758292fdc99d412df $
+ * $Id: f2d2fa363d5352365913ea6574f4befbb1ba9084 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -770,7 +770,8 @@ char ** __module_GetModulesNamesForCapability( vlc_object_t *p_this,
     if( !psz_ret || ( pppsz_longname && *pppsz_longname == NULL ) )
     {
         free( psz_ret );
-        free( *pppsz_longname );
+        if( pppsz_longname )
+            free( *pppsz_longname );
         *pppsz_longname = NULL;
         vlc_list_release( p_list );
         return NULL;

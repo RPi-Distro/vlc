@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id$
+ * $Id: 50f5fe2fef67afb1f6eb5cde100d9453813beea3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -127,6 +127,7 @@ int qtEventToVLCKey( QKeyEvent *e )
         HANDLE( Key_Down, KEY_DOWN );
         HANDLE( Key_Space, KEY_SPACE );
         HANDLE( Key_Escape, KEY_ESC );
+        HANDLE( Key_Return, KEY_ENTER );
         HANDLE( Key_Enter, KEY_ENTER );
         HANDLE( Key_F1, KEY_F1 );
         HANDLE( Key_F2, KEY_F2 );

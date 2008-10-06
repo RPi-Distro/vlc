@@ -2,7 +2,7 @@
  * wizard.m: MacOS X Streaming Wizard
  *****************************************************************************
  * Copyright (C) 2005-2007 the VideoLAN team
- * $Id: ec94012776d9100d01f8023e4b712a0407f16f9a $
+ * $Id: cf31817686f18913a40a7bfe77ed86d0f3bd9d99 $
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net>
  *
@@ -344,9 +344,9 @@ static VLCWizard *_o_sharedInstance = nil;
     [[o_t2_matrix_inputSourceType cellAtRow:1 column:0] setTitle:
         _NS("Existing playlist item")];
     [o_t2_btn_chooseFile setTitle: _NS("Choose...")];
-    [[[o_t2_tbl_plst tableColumnWithIdentifier:@"1"] headerCell]
+    [[[o_t2_tbl_plst tableColumnWithIdentifier:@"name"] headerCell]
         setStringValue: _NS("Title")];
-    [[[o_t2_tbl_plst tableColumnWithIdentifier:@"2"] headerCell]
+    [[[o_t2_tbl_plst tableColumnWithIdentifier:@"artist"] headerCell]
         setStringValue: _NS("Author")];
     [o_t2_box_prtExtrct setTitle: _NS("Partial Extract")];
     [o_t2_ckb_enblPartExtrct setTitle: _NS("Enable")];

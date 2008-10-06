@@ -2,7 +2,7 @@
  * variables.c: routines for object variables handling
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: 8771c440f0a144675a5503b822026b77cffed1ac $
+ * $Id: e510e93cc00fb87009cb0197e099af48462253ec $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -1097,10 +1097,11 @@ void var_OptionParse( vlc_object_t *p_obj, const char *psz_option,
     if( !trusted )
     {
         module_config_t *p_config = config_FindConfig( p_obj, psz_name );
-        if( !p_config->b_safe )
+        if( !p_config || !p_config->b_safe )
         {
             msg_Err( p_obj, "unsafe option \"%s\" has been ignored for "
                             "security reasons", psz_name );
+            free( psz_name );
             return;
         }
     }
@@ -1166,6 +1167,10 @@ void var_OptionParse( vlc_object_t *p_obj, const char *psz_option,
     }
 
     var_Set( p_obj, psz_name, val );
+
+    // If that's a list, remove all elements allocated
+    if( i_type == VLC_VAR_LIST )
+        FreeList( &val );
 
 cleanup:
     free( psz_name );

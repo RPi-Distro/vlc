@@ -2,7 +2,7 @@
  * v4l2.c : Video4Linux2 input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id$
+ * $Id: 2e92127c86491829e08033160a42fce636e3f335 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -1472,7 +1472,8 @@ static block_t* GrabVideo( demux_t *p_demux )
         /* Unlock */
         if( ioctl( p_sys->i_fd_video, VIDIOC_QBUF, &buf ) < 0 )
         {
-            msg_Err (p_demux, "Failed to unlock (VIDIOC_QBUF)");
+            msg_Err( p_demux, "Failed to unlock (VIDIOC_QBUF)" );
+            block_Release( p_block );
             return 0;
         }
 
@@ -1519,7 +1520,8 @@ static block_t* GrabVideo( demux_t *p_demux )
         /* Unlock */
         if( ioctl( p_sys->i_fd_video, VIDIOC_QBUF, &buf ) < 0 )
         {
-            msg_Err (p_demux, "Failed to unlock (VIDIOC_QBUF)");
+            msg_Err( p_demux, "Failed to unlock (VIDIOC_QBUF)" );
+            block_Release( p_block );
             return 0;
         }
 

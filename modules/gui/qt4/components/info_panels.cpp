@@ -2,7 +2,7 @@
  * infopanels.cpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: da90cab870faa3637a07c5e831df996450c0f014 $
+ * $Id: 191c993ec7294ddade15b26b641aadd597dfd554 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -126,7 +126,7 @@ MetaPanel::MetaPanel( QWidget *parent,
     nowplaying_text->setReadOnly( true );
     ADD_META_2( VLC_META_PUBLISHER, publisher_text );
     ADD_META_2( VLC_META_COPYRIGHT, copyright_text );
-    ADD_META_2( "Comments", description_text );
+    ADD_META_2( N_("Comments"), description_text );
 
 /* useless metadata */
 
@@ -523,7 +523,7 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
                            "0", video, "" );
     CREATE_AND_ADD_TO_CAT( vlost_frames_stat, qtr("Lost frames"),
                            "0", video, "" );
-    CREATE_AND_ADD_TO_CAT( vfps_stat, qtr("FPS"), "0", video, "" );
+//    CREATE_AND_ADD_TO_CAT( vfps_stat, qtr("FPS"), "0", video, "" );
 
     CREATE_AND_ADD_TO_CAT( send_stat, qtr("Sent packets"), "0", streaming, "" );
     CREATE_AND_ADD_TO_CAT( send_bytes_stat, qtr("Sent bytes"),
@@ -543,7 +543,7 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
     audio->setExpanded( true );
 
     StatsTree->resizeColumnToContents( 0 );
-    StatsTree->setColumnWidth( 1 , 100 );
+    StatsTree->setColumnWidth( 1 , 200 );
 
     layout->addWidget(StatsTree, 1, 0 );
 }

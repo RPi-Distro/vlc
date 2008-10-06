@@ -3,7 +3,7 @@
  * This header provides portable declarations for mutexes & conditions
  *****************************************************************************
  * Copyright (C) 1999, 2002 the VideoLAN team
- * $Id: 2eac7f91dfa4d6781a91173175db5d2ab49ff155 $
+ * $Id: e2810e945155daff03c39a134bbb4e6e90e60d68 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -562,13 +562,14 @@ static inline int vlc_spin_init (vlc_spinlock_t *spin)
 #endif
 static inline void barrier (void)
 {
-#if defined (__GNUC__) && (__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1)
+#if defined (__GNUC__) && \
+            ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
     __sync_synchronize ();
 #elif defined(__APPLE__)
     OSMemoryBarrier ();
 #elif defined(__powerpc__)
     asm volatile ("sync":::"memory");
-#elif defined(__i386__)
+#elif 0 // defined(__i386__) /*  Requires SSE2 support */
     asm volatile ("mfence":::"memory");
 #else
     vlc_spinlock_t spin;

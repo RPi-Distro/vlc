@@ -2,7 +2,7 @@
  * objects.c: Generic lua<->vlc object wrapper
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id$
+ * $Id: 72638f9a9d123fe0706b9df35bc738f3a4d6442e $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *

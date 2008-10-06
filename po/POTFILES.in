@@ -626,7 +626,6 @@ modules/gui/macosx/update.m
 modules/gui/macosx/voutgl.m
 modules/gui/macosx/vout.h
 modules/gui/macosx/vout.m
-modules/gui/macosx/voutqt.m
 modules/gui/macosx/wizard.h
 modules/gui/macosx/wizard.m
 modules/gui/minimal_macosx/intf.h

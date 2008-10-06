@@ -774,7 +774,8 @@ EXTRA_DIST = Modules.am vlc.qrc ui/equalizer.ui ui/v4l2.ui \
 	pixmaps/menus/settings_16px.png pixmaps/menus/stream_16px.png \
 	pixmaps/menus/playlist_16px.png pixmaps/go-next.png \
 	pixmaps/next_16px.png pixmaps/next.png pixmaps/noart.png \
-	pixmaps/pause_16px.png pixmaps/pause.png pixmaps/play_16px.png \
+	pixmaps/pause_16px.png pixmaps/pause.png pixmaps/faster.png \
+	pixmaps/slower.png pixmaps/play_16px.png \
 	pixmaps/playlist/add.png pixmaps/playlist/playlist.png \
 	pixmaps/playlist/repeat_all.png \
 	pixmaps/playlist/repeat_off.png \

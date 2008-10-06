@@ -2,7 +2,7 @@
  * wingdi.c : Win32 / WinCE GDI video output plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 310d3ea4657e282eb40700355a5ed199b6755f3a $
+ * $Id: b8b519441c8bb3ebefeeb7d4421a329084e4a047 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -38,9 +38,7 @@
 
 #include <commctrl.h>
 
-#include "vout.h"
-
-#ifdef MODULE_NAME_IS_wingapi
+/*#ifdef MODULE_NAME_IS_wingapi
     typedef struct GXDisplayProperties {
         DWORD cxWidth;
         DWORD cyHeight;
@@ -73,6 +71,8 @@
 #   endif
 #endif /* MODULE_NAME_IS_wingapi */
 
+#include "vout.h"
+
 #define MAX_DIRECTBUFFERS 10
 
 #ifdef UNDER_CE
@@ -85,9 +85,9 @@
 #ifndef WS_EX_APPWINDOW
 #define WS_EX_APPWINDOW 0x40000
 #endif
-#define SetWindowLongPtr SetWindowLong
-#define GetWindowLongPtr GetWindowLong
-#define GWLP_USERDATA GWL_USERDATA
+//#define SetWindowLongPtr SetWindowLong
+//#define GetWindowLongPtr GetWindowLong
+//#define GWLP_USERDATA GWL_USERDATA
 #define AdjustWindowRect(a,b,c)
 #endif //UNDER_CE
 
@@ -312,6 +312,14 @@ error:
 static void CloseVideo ( vlc_object_t *p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *)p_this;
+
+    if( p_vout->b_fullscreen )
+    {
+        msg_Dbg( p_vout, "Quitting fullscreen" );
+        Win32ToggleFullscreen( p_vout );
+        /* Force fullscreen in the core for the next video */
+        var_SetBool( p_vout, "fullscreen", true );
+    }
 
     if( p_vout->p_sys->p_event )
     {

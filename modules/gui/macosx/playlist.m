@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: a03cbd1c60f0ce4fb24aaf72252bb5212443f84d $
+ * $Id: 831b64d6b699d81254db624f1cd74d549a3e6fa0 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -116,6 +116,7 @@
     [o_outline_view setDelegate: self];
     [o_outline_view setDataSource: self];
     [o_outline_view setAllowsEmptySelection: NO];
+    [o_outline_view expandItem: [o_outline_view itemAtRow:0]];
 
     vlc_object_release( p_playlist );
     [self initStrings];
@@ -171,6 +172,7 @@
     NSValue *o_value;
     playlist_t * p_playlist = pl_Yield( VLCIntf );
 
+    PL_LOCK;
     if( item == nil )
     {
         /* root object */
@@ -182,7 +184,8 @@
     }
     if( p_item && index < p_item->i_children && index >= 0 )
         p_return = p_item->pp_children[index];
- 
+    PL_UNLOCK;
+
     vlc_object_release( p_playlist );
 
     o_value = [o_outline_dict objectForKey:[NSString stringWithFormat: @"%p", p_return]];
@@ -440,7 +443,8 @@
     [o_mi_delete setTitle: _NS("Delete")];
     [o_mi_recursive_expand setTitle: _NS("Expand Node")];
     [o_mi_selectall setTitle: _NS("Select All")];
-    [o_mi_info setTitle: _NS("Information...")];
+    [o_mi_info setTitle: _NS("Media Information...")];
+    [o_mi_dl_cover_art setTitle: _NS("Download Cover Art")];
     [o_mi_preparse setTitle: _NS("Fetch Meta Data")];
     [o_mi_sort_name setTitle: _NS("Sort Node by Name")];
     [o_mi_sort_author setTitle: _NS("Sort Node by Author")];
@@ -796,6 +800,37 @@
             {
                 msg_Dbg( p_intf, "preparsing nodes not implemented" );
             }
+        }
+    }
+    vlc_object_release( p_playlist );
+    [self playlistUpdated];
+}
+
+- (IBAction)downloadCoverArt:(id)sender
+{
+    int i_count;
+    NSMutableArray *o_to_preparse;
+    intf_thread_t * p_intf = VLCIntf;
+    playlist_t * p_playlist = pl_Yield( p_intf );
+
+    o_to_preparse = [NSMutableArray arrayWithArray:[[o_outline_view selectedRowEnumerator] allObjects]];
+    i_count = [o_to_preparse count];
+
+    int i, i_row;
+    NSNumber *o_number;
+    playlist_item_t *p_item = NULL;
+
+    for( i = 0; i < i_count; i++ )
+    {
+        o_number = [o_to_preparse lastObject];
+        i_row = [o_number intValue];
+        p_item = [[o_outline_view itemAtRow:i_row] pointerValue];
+        [o_to_preparse removeObject: o_number];
+        [o_outline_view deselectRow: i_row];
+
+        if( p_item && p_item->i_children == -1 )
+        {
+            playlist_AskForArtEnqueue( p_playlist, p_item->p_input );
         }
     }
     vlc_object_release( p_playlist );

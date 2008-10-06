@@ -2,7 +2,7 @@
  * a52.c: parse A/52 audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2002 the VideoLAN team
- * $Id$
+ * $Id: fec3f80ae1d0c838fa3b3cbefd8d0b4adc6d5ab7 $
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>

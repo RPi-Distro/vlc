@@ -2,7 +2,7 @@
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id$
+ * $Id: 9d4404dcb00fbf846e33096d47151f3a7248d834 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
@@ -42,9 +42,6 @@
  *****************************************************************************/
 int  OpenIntf     ( vlc_object_t * );
 void CloseIntf    ( vlc_object_t * );
-
-int  OpenVideoQT  ( vlc_object_t * );
-void CloseVideoQT ( vlc_object_t * );
 
 int  OpenVideoGL  ( vlc_object_t * );
 void CloseVideoGL ( vlc_object_t * );
@@ -106,11 +103,11 @@ vlc_module_begin();
               false );
 
     add_submodule();
-        set_description( N_("Quartz video") );
-        set_capability( "video output", 100 );
+        set_description( "Mac OS X OpenGL" );
+        set_capability( "opengl provider", 100 );
         set_category( CAT_VIDEO);
         set_subcategory( SUBCAT_VIDEO_VOUT );
-        set_callbacks( OpenVideoQT, CloseVideoQT );
+        set_callbacks( OpenVideoGL, CloseVideoGL );
 
         add_integer( "macosx-vdev", 0, NULL, VDEV_TEXT, VDEV_LONGTEXT,
                      false );
@@ -122,11 +119,5 @@ vlc_module_begin();
                   false );
         add_bool( "macosx-background", 0, NULL, BACKGROUND_TEXT, BACKGROUND_LONGTEXT,
                   false );
-    add_submodule();
-        set_description( "Mac OS X OpenGL" );
-        set_capability( "opengl provider", 100 );
-        set_category( CAT_VIDEO);
-        set_subcategory( SUBCAT_VIDEO_VOUT );
-        set_callbacks( OpenVideoGL, CloseVideoGL );
 vlc_module_end();
 

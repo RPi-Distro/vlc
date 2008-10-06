@@ -143,16 +143,10 @@ ifdef HAVE_DARWIN_OS_ON_INTEL
 FFMPEGCONF += --enable-memalign-hack --cpu=pentium-m
 endif
 
-ifdef NO_TEXT_RELOCATION
-FFMPEGCONF += --disable-mmx
-endif
-
 ifdef HAVE_DARWIN_OS
 X264CONF += --enable-pic
 ifdef HAVE_DARWIN_OS_ON_INTEL
 FFMPEG_CFLAGS += -DHAVE_LRINTF
-else
-FFMPEGCONF += --disable-altivec
 endif
 endif
 
@@ -477,7 +471,7 @@ ifdef HAVE_WIN32
   endif
 else
   ifdef HAVE_DARWIN_OS
-	(cd $<; autoreconf && $(HOSTCC) LIBXML2_CFLAGS=`xml2-config --cflags` LIBXML2_LIBS=`xml2-config --libs` ./configure $(HOSTCONF) --with-cache-dir=/var/cache/fontconfig --with-default-fonts=/System/Library/Fonts --with-add-fonts=/Library/Fonts,~/Library/Fonts --prefix=$(PREFIX) --with-freetype-config=$(PREFIX)/bin/freetype-config --enable-libxml2 --disable-docs && make && make install-exec && (cd fontconfig ; make install-data) && cp fontconfig.pc $(PKG_CONFIG_LIBDIR))
+	(cd $<; autoreconf && $(HOSTCC) LIBXML2_CFLAGS=`xml2-config --cflags` LIBXML2_LIBS=`xml2-config --libs` ./configure $(HOSTCONF) --with-cache-dir=/usr/X11/var/cache/fontconfig --with-confdir=/usr/X11/lib/X11/fonts --with-default-fonts=/System/Library/Fonts --with-add-fonts=/Library/Fonts,~/Library/Fonts --prefix=$(PREFIX) --with-freetype-config=$(PREFIX)/bin/freetype-config --enable-libxml2 --disable-docs && make && make install-exec && (cd fontconfig ; make install-data) && cp fontconfig.pc $(PKG_CONFIG_LIBDIR))
   else
 	(cd $<; autoreconf && $(HOSTCC) LIBXML2_CFLAGS=`$(PREFIX)/bin/xml2-config --cflags` ./configure $(HOSTCONF) --prefix=$(PREFIX) --with-freetype-config=$(PREFIX)/bin/freetype-config --enable-libxml2 --disable-docs && make && make install)
   endif
@@ -792,11 +786,7 @@ libtheora: libtheora-$(THEORA_VERSION).tar.bz2
 ifdef HAVE_BEOS
 	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-sdltest --disable-oggtest --disable-vorbistest --disable-asm --disable-examples && make && make install)
 else
-  ifdef NO_TEXT_RELOCATION
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-asm --disable-sdltest --disable-oggtest --disable-vorbistest --disable-asm --disable-examples && make && make install)
-  else
 	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-sdltest --disable-oggtest --disable-vorbistest --disable-examples && make && make install)
-  endif
 endif
 	$(INSTALL_NAME)
 	touch $@
@@ -958,7 +948,6 @@ libebml-$(LIBEBML_VERSION).tar.bz2:
 libebml: libebml-$(LIBEBML_VERSION).tar.bz2
 	$(EXTRACT_BZ2)
 #endif
-
 ifdef HAVE_WIN32
 	(cd $@; patch -p0 < ../Patches/libebml-svn-win32.patch)
 endif
@@ -997,7 +986,7 @@ libmatroska-$(LIBMATROSKA_VERSION).tar.bz2:
 libmatroska: libmatroska-$(LIBMATROSKA_VERSION).tar.bz2
 	$(EXTRACT_BZ2)
 #endif 
-
+	patch -p0 < ./Patches/libmatroska-kaxblock.patch
 ifdef HAVE_WIN32
 	(cd $@; patch -p0 < ../Patches/libmatroska-win32.patch)
 endif
@@ -1081,16 +1070,16 @@ ifdef HAVE_DARWIN_OS_ON_INTEL
 	(cd $@; patch -p0 < ../Patches/ffmpeg-macosx-intel-mmx.patch)
 endif
 ifdef HAVE_DARWIN_OS
-	(cd $@/libswscale; patch -p0 < ../../Patches/ffmpeg-fix-noaltivec.patch)
-	(cd $@/libswscale; patch -p0 < ../../Patches/ffmpeg-libswscale-head.patch)
-endif
-ifdef NO_TEXT_RELOCATION
-	(cd $@; patch -p0 < ../Patches/ffmpeg-svn-mmx_removal-darwin9.patch)
+	(cd $@; patch -p1 < ../Patches/ffmpeg-altivec-fix.patch)
 endif
 ifdef HAVE_UCLIBC
 	patch -p0 < Patches/ffmpeg-svn-uclibc.patch
 	patch -p0 < Patches/ffmpeg-svn-internal-define.patch
 	patch -p0 < Patches/ffmpeg-svn-libavformat.patch
+endif
+ifdef NO_TEXT_RELOCATION
+	echo "Broken LD. Fix your tools."
+	exit -1
 endif
 else
 ffmpeg-$(FFMPEG_VERSION).tar.gz:
@@ -1918,11 +1907,11 @@ ifdef HAVE_WIN32
 	(cd $@; cd lgl; ln -sf alloca_.h alloca.h;)
 endif
 
-.gnutls: gnutls .opencdk .gcrypt .gpg-error 
+.gnutls: gnutls .gcrypt .gpg-error 
 ifdef HAVE_WIN32
 	(cd $<; autoconf && $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" --target=i586-mingw32msvc --disable-cxx -disable-shared --enable-static --disable-nls  && cd lgl && make && cd ../gl && make &&  cd ../lib &&make && make install && cd ../includes && make install)
 else
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" --disable-cxx --with-libopencdk-prefix=$(PREFIX) --disable-guile && make && make install)
+	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" --disable-cxx --with-included-opencdk --disable-guile && make && make install)
 endif
 	$(INSTALL_NAME)
 	touch $@
