@@ -6,6 +6,9 @@ DEB_HOST_GNU_TYPE   ?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
 DEB_BUILD_ARCH      ?= $(shell dpkg-architecture -qDEB_BUILD_ARCH)
 DEB_BUILD_GNU_TYPE  ?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
 DEB_HOST_ARCH_OS    ?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
+VERSION = $(shell  dpkg-parsechangelog|sed -n 's/^Version: //p')
+DEBIAN_VERSION = $(shell echo $(VERSION)|sed -nr 's/[^:]+://; s/.*-([^-]+$$)/\1/p')
+
 ifeq ($(DEB_BUILD_GNU_TYPE),$(DEB_HOST_GNU_TYPE))
 confflags := --build=$(DEB_BUILD_GNU_TYPE)
 else
@@ -21,6 +24,7 @@ confflags += --enable-maintaner-mode --enable-release --prefix=/usr
 confflags += \
 	--enable-libtool \
 	--enable-fast-install \
+	--with-binary-version=$(DEBIAN_VERSION) \
 	--disable-update-check \
 	--disable-gnome \
 	--disable-gtk \

@@ -73,10 +73,7 @@ usr/lib/vlc/misc/libgnutls_plugin.so
 usr/lib/vlc/misc/libinhibit_plugin.so
 usr/lib/vlc/misc/liblogger_plugin.so
 usr/lib/vlc/misc/liblua_plugin.so
-usr/lib/vlc/misc/libmemcpy3dn_plugin.so
-usr/lib/vlc/misc/libmemcpy_plugin.so
-usr/lib/vlc/misc/libmemcpymmx_plugin.so
-usr/lib/vlc/misc/libmemcpymmxext_plugin.so
+usr/lib/vlc/misc/libmemcpy*_plugin.so
 usr/lib/vlc/misc/libosd_parser_plugin.so
 usr/lib/vlc/misc/libprobe_hal_plugin.so
 usr/lib/vlc/misc/libstats_plugin.so

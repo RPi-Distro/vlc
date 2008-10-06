@@ -1,3 +1,27 @@
+vlc (0.9.4-1) experimental; urgency=low
+
+  * New upstream bugfix version
+  * rules: Pass the debian version in configure.ac so that the cache 
+    is invalidated between binary version
+  * control: Don't forget commas in builddep list
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Tue, 07 Oct 2008 00:17:30 +0200
+
+vlc (0.9.3-1) experimental; urgency=low
+
+  [ Christophe Mutricy ]
+  * New upstream release
+  * Build-depends on libdca-dev
+  * vlc-nox.install
+    + Be more general for the memcopy modules.
+      Fix a FTBFS on non-intel arch (Closes: #499860). 
+  * Sort builddep list 
+
+  [ Reinhard Tartler ]
+  * remove spurious conflicts on libvlc2. LP: #274614
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Fri, 26 Sep 2008 23:49:48 +0200
+
 vlc (0.9.2-1) experimental; urgency=low
 
   [ Christophe Mutricy ]
