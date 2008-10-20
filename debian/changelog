@@ -1,3 +1,15 @@
+vlc (0.9.4-2) experimental; urgency=low
+
+  * Fix buffer overflow in Tivo demuxer
+    + Closes: #502726, VideoLAN SA-0809
+    + 402_tivo_overflow.diff taken from upstream
+  * Better xinerama fullscreen behaviour
+    + 401_detect_xinerama_fullscreen.diff taken from upstream
+  * Builddepends on libcursesw5-dev rather than libcurses5-dev 
+    for proper wide char handling 
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Mon, 20 Oct 2008 23:23:46 +0200
+
 vlc (0.9.4-1) experimental; urgency=low
 
   * New upstream bugfix version
