@@ -2,7 +2,7 @@
  * qt4.hpp : QT4 interface
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 2a0e00420523594bcb04a4d6ece8af79e46f20a9 $
+ * $Id: f9a46636caed4c609cb662f9136fd7e29cc7f85c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -47,6 +47,19 @@ class MainInterface;
 class DialogsProvider;
 class VideoWidget;
 class QSettings;
+
+#if defined(Q_WS_WIN)
+#include <QApplication>
+
+class WinQtApp : public QApplication
+{
+public:
+    WinQtApp ( int & argc, char ** argv, bool GUIenabled ) : QApplication( argc, argv, GUIenabled ) {}
+    ~WinQtApp() {}
+protected:
+    bool winEventFilter(MSG *msg, long *result);
+};
+#endif /* Q_WS_WIN */
 
 struct intf_sys_t
 {

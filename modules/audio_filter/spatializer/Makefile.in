@@ -50,9 +50,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vlc.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -161,14 +163,15 @@ DIRECTFB_CONFIG = @DIRECTFB_CONFIG@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
+DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
-ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 ESD_CONFIG = @ESD_CONFIG@
 EXEEXT = @EXEEXT@
+FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
@@ -223,6 +226,8 @@ LIBMPEG2_LIBS = @LIBMPEG2_LIBS@
 LIBOBJS = @LIBOBJS@
 LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
+LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
+LIBV4L2_LIBS = @LIBV4L2_LIBS@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
@@ -531,6 +536,7 @@ MOZILLA_SDK_PATH = @MOZILLA_SDK_PATH@
 MSGFMT = @MSGFMT@
 MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
+NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
 NOTIFY_LIBS = @NOTIFY_LIBS@
@@ -615,6 +621,7 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 ac_ct_OBJC = @ac_ct_OBJC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -646,6 +653,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@

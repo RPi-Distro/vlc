@@ -16,6 +16,7 @@ Alex Antropoff <alant at transtelecom dot md> - RFC3016 (LATM) RTP packetizer ex
 Alex Izvorski <aizvorski at gmail dot com> - some more x264 options
 Alexander Didebulidze <alexander.didebulidze at stusta dot mhn dot de> - Georgian localization
 Alexander Gall <gall at switch dot ch> - Solaris fixes and CDDB fixes
+Alexey Lugin <alex at ukrlocal dot info> - Ukrainian translation
 Alexey Salmin <alexey dot salmin at gmail dot com> - Russian localisation
 Alexis Ballier <aballlier at gentoo dot org> - Additional options in configure
 Amanpreet Singh Alam <aalam at users dot sf dot net> - Punjabi translation
@@ -246,6 +247,7 @@ Thomas L. Wood <twood at lucent.com> - fixed a bug in QuantMatrixExtension
 Thomas Mühlgrabner <muehltom &t cable d0t vol dot at> - AAC fixes.
 Thomas Parmelan <tom+vlc at ankh.fr.EU.org> - mosaic user-defined offsets for substreams
 Tom Bigelajzen <tombigel at yahoo d0t com> - Interface icons and help with web design
+Tomáš Chvátal <tomas d0t chvatal 4t gmail d0t com> - Czech Localisation
 Tong Ka Man <kmtong at cwbase dot com> - playlist_Clear addition
 Torsten Spindler <spindler at tspindler dot de> - Script to set vlc as default player on GNOME desktops.
 Udo Richter <udo underscore richter at gmx dot de> - Trancode padding / cropping

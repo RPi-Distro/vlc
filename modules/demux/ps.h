@@ -2,7 +2,7 @@
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: a15daad3cc010dfd970734c5fa79fb746191598d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -344,10 +344,10 @@ static inline int ps_pkt_parse_system( block_t *p_pkt, ps_psm_t *p_psm,
 /* Parse a PES (and skip i_skip_extra in the payload) */
 static inline int ps_pkt_parse_pes( block_t *p_pes, int i_skip_extra )
 {
-    uint8_t header[30];
+    uint8_t header[34];
     unsigned int i_skip  = 0;
 
-    memcpy( header, p_pes->p_buffer, __MIN( p_pes->i_buffer, 30 ) );
+    memcpy( header, p_pes->p_buffer, __MIN( p_pes->i_buffer, 34 ) );
 
     switch( header[3] )
     {

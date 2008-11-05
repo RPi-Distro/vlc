@@ -2,7 +2,7 @@
  * libvlc.c: libvlc instances creation and deletion, interfaces handling
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: c111ea9521a2721702a2c8e940001a202e767b80 $
+ * $Id: ead45da90b964b384dd20bfad15b7233e7243c66 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -858,7 +858,8 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
     }
 #endif
 
-    if( config_GetInt( p_libvlc, "file-logging" ) > 0 )
+    if( (config_GetInt( p_libvlc, "file-logging" ) > 0) &&
+        !config_GetInt( p_libvlc, "syslog" ) )
     {
         libvlc_InternalAddIntf( p_libvlc, "logger,none" );
     }

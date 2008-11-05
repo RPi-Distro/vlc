@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: b2b2b23308068fefe33f9058c26946a455606bfd $
+ * $Id: 3192481e2e6de9053ab1670fd1db748183251ff0 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -381,11 +381,17 @@ static int open_file (access_t *p_access, const char *path)
         return -1;
     }
 
-# if defined(HAVE_FCNTL_H) && defined(F_FDAHEAD) && defined(F_NOCACHE)
+# if defined(HAVE_FCNTL)
+    fcntl (fd, F_SETFD, fcntl (fd, F_GETFD) | FD_CLOEXEC);
+
     /* We'd rather use any available memory for reading ahead
      * than for caching what we've already seen/heard */
+#  if defined(F_RDAHEAD)
     fcntl (fd, F_RDAHEAD, 1);
+#  endif
+#  if defined(F_NOCACHE)
     fcntl (fd, F_NOCACHE, 1);
+#  endif
 # endif
 #endif
 

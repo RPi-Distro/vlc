@@ -2,7 +2,7 @@
  * simple.c - The OSD Menu simple parser code.
  *****************************************************************************
  * Copyright (C) 2005-2008 M2X
- * $Id$
+ * $Id: d618da1d5c572b8431180032b93ee9c1f5ca6c9e $
  *
  * Authors: Jean-Paul Saman
  *
@@ -93,8 +93,11 @@ int osd_parser_simpleOpen( vlc_object_t *p_this )
         /* NULL terminate before asking the length of path[] */
         path[PATH_MAX-1] = '\0';
         i_len = strlen(&path[0]);
-        if( i_len == PATH_MAX )
-            i_len--; /* truncate to prevent buffer overflow */
+        /* Protect against buffer overflow:
+         * max index is PATH_MAX-1 and we increment by 1 after
+         * so PATH_MAX-2 is the bigest we can have */
+        if( i_len > PATH_MAX - 2 )
+            i_len = PATH_MAX - 2;
 #if defined(WIN32) || defined(UNDER_CE)
         if( (i_len > 0) && path[i_len] != '\\' )
             path[i_len] = '\\';
@@ -115,7 +118,7 @@ int osd_parser_simpleOpen( vlc_object_t *p_this )
         /* Peek for 'style' argument */
         pos = ftell( fd );
         if( pos < 0 )
-                goto error;
+            goto error;
 
         result = fscanf(fd, "%24s %24s", &cmd[0], &action[0] );
         if( result == 0 || result == EOF )
@@ -507,7 +510,8 @@ int osd_parser_simpleOpen( vlc_object_t *p_this )
 
 error:
     msg_Err( p_menu, "parsing file failed (returned %d)", result );
-    osd_MenuFree( p_menu );
+    if( p_menu )
+        osd_MenuFree( p_menu );
     fclose( fd );
     return VLC_EGENERIC;
 }

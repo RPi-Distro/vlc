@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: ae7bf4b4c1a98563269528a3d41de6c56b60c5d5 $
+ * $Id: 213095f2ff4de83c31bb3e597ded8ea5fb523c8b $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont
@@ -149,7 +149,7 @@ static int Open( vlc_object_t *p_this )
 {
     access_t *p_access = (access_t*)p_this;
 
-    if( !p_access->psz_path )
+    if( !p_access->psz_path || !strcmp( p_access->psz_path, "-" ) )
         return VLC_EGENERIC;
 
     DIR *handle = OpenDir (p_this, p_access->psz_path);

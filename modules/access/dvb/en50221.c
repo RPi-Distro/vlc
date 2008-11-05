@@ -280,6 +280,8 @@ static int TPDURecv( access_t * p_access, uint8_t i_slot, uint8_t *pi_tag,
     if ( i_size < 5 )
     {
         msg_Err( p_access, "cannot read from CAM device (%d:%m)", i_size );
+        if( pi_size == NULL )
+            free( p_data );
         return VLC_EGENERIC;
     }
 
@@ -287,6 +289,8 @@ static int TPDURecv( access_t * p_access, uint8_t i_slot, uint8_t *pi_tag,
     {
         msg_Err( p_access, "invalid read from CAM device (%d instead of %d)",
                  p_data[1], i_tcid );
+        if( pi_size == NULL )
+            free( p_data );
         return VLC_EGENERIC;
     }
 
@@ -418,7 +422,7 @@ static void SessionOpen( access_t * p_access, uint8_t i_slot,
         if ( !p_sys->p_sessions[i_session_id - 1].i_resource_id )
             break;
     }
-    if ( i_session_id == MAX_SESSIONS )
+    if ( i_session_id > MAX_SESSIONS )
     {
         msg_Err( p_access, "too many sessions !" );
         return;
@@ -1828,7 +1832,7 @@ static int InitSlot( access_t * p_access, int i_slot )
             break;
         }
 
-        if ( TPDUSend( p_access, i_slot, T_CREATE_TC, NULL, 0 )
+        if ( TPDUSend( p_access, i_slot, T_CREATE_TC, NULL, NULL )
                 != VLC_SUCCESS )
         {
             msg_Err( p_access,
@@ -2024,7 +2028,7 @@ int en50221_Poll( access_t * p_access )
 
         if ( !p_sys->pb_tc_has_data[i_slot] )
         {
-            if ( TPDUSend( p_access, i_slot, T_DATA_LAST, NULL, 0 ) !=
+            if ( TPDUSend( p_access, i_slot, T_DATA_LAST, NULL, NULL ) !=
                     VLC_SUCCESS )
             {
                 msg_Err( p_access,

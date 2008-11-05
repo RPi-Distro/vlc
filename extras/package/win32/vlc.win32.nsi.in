@@ -637,6 +637,7 @@ Function .onInit
   StrCmp $LANGUAGE ${LANG_POLISH} Polish 0
   StrCmp $LANGUAGE ${LANG_DUTCH} Dutch 0
   StrCmp $LANGUAGE ${LANG_SIMPCHINESE} SChinese 0
+  StrCmp $LANGUAGE ${LANG_GERMAN} German 0
   StrCmp $LANGUAGE ${LANG_FINNISH} Finnish EndLanguageCmp
   French:
   !include "languages\french.nsh"
@@ -667,6 +668,9 @@ Function .onInit
   Goto EndLanguageCmp
   Schinese:
   !include "languages\schinese.nsh"
+  Goto EndLanguageCmp
+  German:
+  !include "languages\german.nsh"
   Goto EndLanguageCmp
   Finnish:
   !include "languages\finnish.nsh"
@@ -879,6 +883,7 @@ Function un.onInit
   StrCmp $LANGUAGE ${LANG_POLISH} Polish 0
   StrCmp $LANGUAGE ${LANG_DUTCH} Dutch 0
   StrCmp $LANGUAGE ${LANG_SIMPCHINESE} SChinese 0
+  StrCmp $LANGUAGE ${LANG_GERMAN} German 0
   StrCmp $LANGUAGE ${LANG_FINNISH} Finnish EndLanguageCmp
   French:
   !include "languages\french.nsh"
@@ -909,6 +914,9 @@ Function un.onInit
   Goto EndLanguageCmp
   Schinese:
   !include "languages\schinese.nsh"
+  Goto EndLanguageCmp
+  German:
+  !include "languages\german.nsh"
   Goto EndLanguageCmp
   Finnish:
   !include "languages\finnish.nsh"
