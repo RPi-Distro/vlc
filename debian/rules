@@ -15,6 +15,16 @@ else
 confflags := --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
 endif
 
+ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
+confflags += --disable-optimizations
+endif
+ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
+MAKEFLAGS += -j$(NUMJOBS)
+endif
+
+
+
 include /usr/share/quilt/quilt.make
 
 LDFLAGS = -Wl,--as-needed
@@ -88,6 +98,8 @@ confflags += \
 	--disable-x264 \
 	--disable-atmo \
 	--enable-taglib \
+	--enable-libass \
+	--enable-libdca \
 	$(NULL)
 
 #	--enable-dts \
@@ -112,7 +124,6 @@ PIXDIR := usr/share/pixmaps
 build: build-stamp
 build-stamp: $(QUILT_STAMPFN)
 	dh_testdir
-	find . -name Makefile.in -exec touch '{}' ';'
 	./configure --enable-static $(confflags)
 	$(MAKE) -C src libvlccore.la libvlc.la
 	mkdir -p tmp

@@ -45,6 +45,7 @@ usr/lib/vlc/codec/libdvbsub_plugin.so
 usr/lib/vlc/codec/libfaad_plugin.so
 usr/lib/vlc/codec/libfake_plugin.so
 usr/lib/vlc/codec/libflac_plugin.so
+usr/lib/vlc/codec/liblibass_plugin.so
 usr/lib/vlc/codec/liblibmpeg2_plugin.so
 usr/lib/vlc/codec/liblpcm_plugin.so
 usr/lib/vlc/codec/libmpeg_audio_plugin.so

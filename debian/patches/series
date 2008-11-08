@@ -1,3 +1,4 @@
+001_rebootstrap.diff
 052_as-needed.diff
 101_certificates_paths.diff
 102_dejavu_font.diff
@@ -5,4 +6,3 @@
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
 401_detect_xinerama_fullscreen.diff
-402_tivo_overflow.diff

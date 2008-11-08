@@ -1,3 +1,20 @@
+vlc (0.9.6-1) experimental; urgency=low
+
+  [ Reinhard Tartler ]
+  * Build against libass. Closes: #499063, LP: #210354, #199870
+  * Explicitly build against libdca in debian/rules
+  * Tighten build depends on a libass-dev version that ships without .la file
+
+  [ Christophe Mutricy ]
+  * New bugfix upstream releases
+    + Remove 402_tivo_overflow.diff
+    + Fix buffer overflow in CUE demuxer (Closes: #504639)
+    + Fix buffer overflow in Realtext decoder
+  * Honor DEB_BUILD_OPTIONS 
+  * Rebootstrap in order to avoid problem with .la
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 08 Nov 2008 03:14:29 +0100
+
 vlc (0.9.4-2) experimental; urgency=low
 
   * Fix buffer overflow in Tivo demuxer
