@@ -82,7 +82,8 @@ CONFIG_CLEAN_FILES = extras/package/win32/vlc.win32.nsi \
 	extras/package/macosx/plugin/English.lproj/InfoPlist.strings
 am__installdirs = "$(DESTDIR)$(bindir)"
 binSCRIPT_INSTALL = $(INSTALL_SCRIPT)
-SCRIPTS = $(bin_SCRIPTS) $(dist_noinst_SCRIPTS) $(noinst_SCRIPTS)
+SCRIPTS = $(bin_SCRIPTS) $(dist_noinst_SCRIPTS) \
+	$(nodist_noinst_SCRIPTS) $(noinst_SCRIPTS)
 SOURCES =
 DIST_SOURCES =
 RECURSIVE_TARGETS = all-recursive check-recursive dvi-recursive \
@@ -689,7 +690,8 @@ SUBDIRS = po src $(am__append_1) $(am__append_2) $(am__append_3) \
 # Various utilities ( editor syntax files, D-Bus controller ... )
 ##############################################################################
 EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
-	extras/package/win32/vlc.exe.manifest MAINTAINERS \
+	extras/package/win32/vlc.exe.manifest \
+	extras/package/win32/libvlc.dll.manifest MAINTAINERS \
 	extras/package/macosx/README.MacOSX.rtf vlc-config.in.in \
 	extras/package/rpm/vlc.fedora.spec \
 	extras/package/rpm/vlc.mandriva.spec \
@@ -892,7 +894,8 @@ EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
 	extras/buildsystem/make.pl extras/misc/mpris.py \
 	extras/misc/mpris.glade
 dist_noinst_SCRIPTS = bootstrap toolbox make-alias
-BUILT_SOURCES_distclean = vlc-config compile extras/package/win32/vlc.win32.nsi
+nodist_noinst_SCRIPTS = compile
+BUILT_SOURCES_distclean = vlc-config extras/package/win32/vlc.win32.nsi
 @HAVE_DARWIN_FALSE@BUILT_SOURCES_clean = 
 @HAVE_DARWIN_TRUE@BUILT_SOURCES_clean = macosx-sdk
 BUILT_SOURCES = $(BUILT_SOURCES_distclean) $(BUILT_SOURCES_clean)
@@ -1798,6 +1801,7 @@ package-win-common:
 # Copy executables and libs
 	cp "$(top_builddir)/bin/.libs/vlc$(EXEEXT)" "$(win32_destdir)/"
 	cp "$(top_srcdir)/extras/package/win32/vlc.exe.manifest" "$(win32_destdir)/"
+		cp "$(top_srcdir)/extras/package/win32/libvlc.dll.manifest" "$(win32_destdir)/"
 	cp "$(top_builddir)/src/.libs/libvlccore$(LIBEXT)" "$(win32_destdir)/"
 	cp "$(top_builddir)/src/.libs/libvlc$(LIBEXT)" "$(win32_destdir)/"
 
@@ -1825,6 +1829,7 @@ package-win-common:
 #  Mozilla plugin
 @BUILD_MOZILLA_TRUE@	mkdir -p "$(win32_destdir)/mozilla"
 @BUILD_MOZILLA_TRUE@	cp $(top_builddir)/projects/mozilla/.libs/npvlc$(LIBEXT) $(win32_destdir)/mozilla/
+@BUILD_MOZILLA_TRUE@	cp $(top_srcdir)/projects/mozilla/npvlc.dll.manifest $(win32_destdir)/mozilla/
 
 # ActiveX plugin
 @BUILD_ACTIVEX_TRUE@	mkdir -p "$(win32_destdir)/activex"
@@ -1833,6 +1838,7 @@ package-win-common:
 @BUILD_ACTIVEX_TRUE@	unix2dos $(win32_destdir)/activex/*
 
 @BUILD_ACTIVEX_TRUE@	cp $(top_builddir)/projects/activex/.libs/axvlc$(LIBEXT) $(win32_destdir)/activex/
+@BUILD_ACTIVEX_TRUE@	cp $(top_srcdir)/projects/activex/axvlc.dll.manifest $(win32_destdir)/activex/
 
 # Rebase all those DLLs to speed up loading (need cygwin rebase)
 	if rebase -b 0x42 /dev/null >/dev/null 2>&1; then \
@@ -2177,7 +2183,14 @@ package-macosx-plugin:
 @BUILD_MOZILLA_TRUE@	mkdir -p "$(top_builddir)/macosx-plugin-instdata"
 @BUILD_MOZILLA_TRUE@	cp -R "$(top_builddir)/projects/mozilla/VLC Plugin.plugin" "$(top_builddir)/macosx-plugin-instdata"
 @BUILD_MOZILLA_TRUE@	rm -rf "$(top_builddir)/VLC Internet Plug-In.pkg"
-@BUILD_MOZILLA_TRUE@	PATH=/Developer/usr/bin:/Developer/Tools:$$PATH packagemaker -build -ds -p "$(top_builddir)/VLC Internet Plug-In.pkg" \
+@BUILD_MOZILLA_TRUE@	export PACKAGEMAKER=
+@BUILD_MOZILLA_TRUE@	if test -x /Developer/Tools/packagemaker; then \
+@BUILD_MOZILLA_TRUE@	   export PACKAGEMAKER=/Developer/Tools/packagemaker; \
+@BUILD_MOZILLA_TRUE@	fi; \
+@BUILD_MOZILLA_TRUE@	if test -x /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker; then \
+@BUILD_MOZILLA_TRUE@	   export PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker; \
+@BUILD_MOZILLA_TRUE@	fi; \
+@BUILD_MOZILLA_TRUE@	$${PACKAGEMAKER} -build -ds -p "$(top_builddir)/VLC Internet Plug-In.pkg" \
 @BUILD_MOZILLA_TRUE@	-f "$(top_builddir)/macosx-plugin-instdata" \
 @BUILD_MOZILLA_TRUE@	-i "$(srcdir)/extras/package/macosx/plugin/InstallerInfo.plist" \
 @BUILD_MOZILLA_TRUE@	-d "$(srcdir)/extras/package/macosx/plugin/InstallerDescription.plist"; true

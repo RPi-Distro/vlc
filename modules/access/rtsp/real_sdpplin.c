@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id$
+ * $Id: be950c2f07d9ea409ccd829abeef31e7ddf326df $
  *
  * sdp/sdpplin parser.
  *
@@ -231,16 +231,18 @@ sdpplin_t *sdpplin_parse(char *data) {
 
   sdpplin_t        *desc = malloc(sizeof(sdpplin_t));
   sdpplin_stream_t *stream;
-  char             *buf=malloc(BUFLEN);
-  char             *decoded=malloc(BUFLEN);
+  char             *buf=NULL;
+  char             *decoded=NULL;
   int              handled;
   int              len;
 
   if( !desc ) return NULL;
+  buf = malloc(BUFLEN);
   if( !buf ) {
     free( desc );
     return NULL;
   }
+  decoded = malloc(BUFLEN);
   if( !decoded ) {
     free( buf );
     free( desc );

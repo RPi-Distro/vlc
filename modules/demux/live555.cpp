@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: f5dfafe1ca91c167f660d253403a51db9f8fef3d $
+ * $Id: f986baf876997c6031e7af1d59ce281e8193de03 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -774,6 +774,7 @@ static int SessionsSetup( demux_t *p_demux )
             tk->p_buffer    = (uint8_t *)malloc( 65536 );
             if( !tk->p_buffer )
             {
+                free( tk );
                 delete iter;
                 return VLC_ENOMEM;
             }

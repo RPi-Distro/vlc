@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 0909832c4a6a0ca568636a71a997e13732b22870 $
+ * $Id: c05753e88f52f358224224108ed4e7f760b5d630 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -2020,7 +2020,10 @@ static int ParseSubViewer1( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx 
 
             s = TextGetLine( txt );
             if( !s )
+            {
+                free( psz_text );
                 return VLC_EGENERIC;
+            }
 
             if( sscanf( s, "[%d:%d:%d]", &h2, &m2, &s2 ) == 3 )
                 p_subtitle->i_stop  = ( (int64_t)h2 * 3600*1000 +

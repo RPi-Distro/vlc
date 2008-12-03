@@ -2,7 +2,7 @@
  * input_manager.hpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id$
+ * $Id: 0d0798d4c9075ba0e138278a20ade3e0942e8081 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

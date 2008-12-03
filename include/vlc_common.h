@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: 8b1c32b7f79937c1651186801113ded9333aa8a4 $
+ * $Id: a16cf0103f5118fea8d71eb496acb17ff22acc28 $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -50,6 +50,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <inttypes.h>
+#include <stddef.h>
 
 #ifndef __cplusplus
 # include <stdbool.h>

@@ -2,7 +2,7 @@
  * media_player.c: Libvlc API Media Instance management functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 0928900ec7d7e3f0ac68dda0d3a6c562f331cd16 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

@@ -2,7 +2,7 @@
  * sdl.c: SDL video output display method
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id$
+ * $Id: da5e1d52f6154b687754659741906e56d21c59b8 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Pierre Baillet <oct@zoy.org>
@@ -464,7 +464,7 @@ static int Manage( vout_thread_t *p_vout )
 
                     var_Get( p_vout, "mouse-button-down", &val );
                     val.i_int &= ~4;
-                    var_Set( p_vout, "mous-button-down", val );
+                    var_Set( p_vout, "mouse-button-down", val );
                     p_intf = vlc_object_find( p_vout, VLC_OBJECT_INTF,
                                                       FIND_ANYWHERE );
                     if( p_intf )

@@ -2,7 +2,7 @@
  * media_list_player.c: libvlc new API media_list player functions
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: c5f04511cdfbdca0ec95ff72be555a8502945a50 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: c9c6cc85ac0fdfdfc5464685f324e1058e47c929 $
+ * $Id: b729ccb5c524b3a26be25447e0ef9898d50ddcfa $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -1745,12 +1745,16 @@ static void httpd_ClientRecv( httpd_client_t *cl )
                         {
                             *p2++ = '\0';
                         }
-                        if( !strncasecmp( p, "rtsp:", 5 ) )
-                        {
-                            /* for rtsp url, you have rtsp://localhost:port/path */
-                            p += 5;
-                            while( *p == '/' ) p++;
-                            while( *p && *p != '/' ) p++;
+                        if( !strncasecmp( p, ( cl->query.i_proto
+                                   == HTTPD_PROTO_HTTP ) ? "http" : "rtsp", 4 )
+                         && p[4 + !!strchr( "sS", p[4] )] == ':' )
+                        {   /* Skip hier-part of URL (if present) */
+                            p = strchr( p, ':' ) + 1; /* skip URI scheme */
+                            if( !strncmp( p, "//", 2 ) ) /* skip authority */
+                            {   /* see RFC3986 §3.2 */
+                                p += 2;
+                                while( *p && !strchr( "/?#", *p ) ) p++;
+                            }
                         }
                         cl->query.psz_url = strdup( p );
                         if( ( p3 = strchr( cl->query.psz_url, '?' ) )  )
@@ -2465,15 +2469,17 @@ retry:
         /* Handle client sockets */
         vlc_mutex_lock( &host->lock );
         now = mdate();
+        nfd = host->nfd;
         for( int i_client = 0; i_client < host->i_client; i_client++ )
         {
             httpd_client_t *cl = host->client[i_client];
-            const struct pollfd *pufd = &ufd[host->nfd + i_client];
+            const struct pollfd *pufd = &ufd[nfd];
 
             assert( pufd < &ufd[sizeof(ufd) / sizeof(ufd[0])] );
 
             if( cl->fd != pufd->fd )
                 continue; // we were not waiting for this client
+            ++nfd;
             if( pufd->revents == 0 )
                 continue; // no event received
 

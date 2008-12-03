@@ -271,10 +271,10 @@ FunctionEnd
 ; Generic function for adding the context menu for one ext.
 !macro AddContextMenuExt EXT
   WriteRegStr HKCR ${EXT}\shell\PlayWithVLC "" $ContextMenuEntry_PlayWith
-  WriteRegStr HKCR ${EXT}\shell\PlayWithVLC\command "" '$INSTDIR\vlc.exe --started-from-file --no-playlist-enqueue "%1"'
+  WriteRegStr HKCR ${EXT}\shell\PlayWithVLC\command "" '"$INSTDIR\vlc.exe" --started-from-file --no-playlist-enqueue "%1"'
 
   WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLC "" $ContextMenuEntry_AddToPlaylist
-  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLC\command "" '$INSTDIR\vlc.exe --started-from-file --playlist-enqueue "%1"'
+  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLC\command "" '"$INSTDIR\vlc.exe" --started-from-file --playlist-enqueue "%1"'
 !macroend
 
 !macro AddContextMenu EXT
@@ -433,7 +433,7 @@ Section $Name_Section01 SEC01
   WriteRegStr HKCR Applications\vlc.exe "FriendlyAppName" "VLC media player"
   WriteRegStr HKCR Applications\vlc.exe\shell\Play "" $ContextMenuEntry_PlayWith
   WriteRegStr HKCR Applications\vlc.exe\shell\Play\command "" \
-    '$INSTDIR\vlc.exe --started-from-file "%1"'
+    '"$INSTDIR\vlc.exe" --started-from-file "%1"'
   !insertmacro MacroAllExtensions WriteRegStrSupportedTypes
 
 ; Vista Registration
@@ -502,6 +502,7 @@ Section /o $Name_Section03 SEC03
   SetOutPath "$INSTDIR"
   !insertmacro OpenUninstallLog
   !insertmacro InstallFile mozilla\npvlc.dll
+  !insertmacro InstallFile mozilla\npvlc.dll.manifest
   !insertmacro CloseUninstallLog
 
   !define Moz "SOFTWARE\MozillaPlugins\@videolan.org/vlc,version=${VERSION}"
@@ -547,6 +548,7 @@ Section /o $Name_Section04 SEC04
   SetOutPath "$INSTDIR"
   !insertmacro OpenUninstallLog
   !insertmacro InstallFile activex\axvlc.dll
+  !insertmacro InstallFile activex\axvlc.dll.manifest
   !insertmacro CloseUninstallLog
   RegDLL "$INSTDIR\axvlc.dll"
 SectionEnd
@@ -568,10 +570,10 @@ Section $Name_Section05 SEC06
   SectionIn 1 2 3
   WriteRegStr HKCR "AudioCD\shell\PlayWithVLC" "" $ContextMenuEntry_PlayWith
   WriteRegStr HKCR "AudioCD\shell\PlayWithVLC\command" "" \
-    "$INSTDIR\vlc.exe --started-from-file cdda://%1"
+    '"$INSTDIR\vlc.exe" --started-from-file cdda://%1'
   WriteRegStr HKCR "DVD\shell\PlayWithVLC" "" $ContextMenuEntry_PlayWith
   WriteRegStr HKCR "DVD\shell\PlayWithVLC\command" "" \
-    "$INSTDIR\vlc.exe --started-from-file dvd://%1"
+    '"$INSTDIR\vlc.exe" --started-from-file dvd://%1'
 
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDMovieOnArrival" "VLCPlayDVDMovieOnArrival" ""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayDVDMovieOnArrival" "Action" $Action_OnArrivalDVD
@@ -589,12 +591,12 @@ Section $Name_Section05 SEC06
   WriteRegStr HKCR "VLC.DVDMovie" "" "VLC DVD Movie"
   WriteRegStr HKCR "VLC.DVDMovie\shell" "" "Play"
   WriteRegStr HKCR "VLC.DVDMovie\shell\Play\command" "" \
-    '$INSTDIR\vlc.exe --started-from-file dvd://%1'
+    '"$INSTDIR\vlc.exe" --started-from-file dvd://%1'
   WriteRegStr HKCR "VLC.DVDMovie\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
   WriteRegStr HKCR "VLC.CDAudio" "" "VLC CD Audio"
   WriteRegStr HKCR "VLC.CDAudio\shell" "" "Play"
   WriteRegStr HKCR "VLC.CDAudio\shell\Play\command" "" \
-    '$INSTDIR\vlc.exe --started-from-file cdda://%1'
+    '"$INSTDIR\vlc.exe" --started-from-file cdda://%1'
   WriteRegStr HKCR "VLC.CDAudio\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
 
 SectionEnd

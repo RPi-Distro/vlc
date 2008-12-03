@@ -20,7 +20,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2008-11-05 22:00+0200\n"
+"POT-Creation-Date: 2008-12-03 17:20+0200\n"
 "PO-Revision-Date: 2002-04-22 09:56+0200\n"
 "Last-Translator: Sam Hocevar <sam@zoy.org>\n"
 "Language-Team: \n"
@@ -28,7 +28,7 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: include/vlc_common.h:893
+#: include/vlc_common.h:894
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -11993,8 +11993,8 @@ msgstr ""
 "Press the RETURN key to continue…\n"
 
 #: modules/control/rc.c:1316 modules/control/rc.c:1576
-#: modules/control/rc.c:1647 modules/control/rc.c:1827
-#: modules/control/rc.c:1925
+#: modules/control/rc.c:1647 modules/control/rc.c:1828
+#: modules/control/rc.c:1926
 #, fuzzy
 msgid "Type 'menu select' or 'pause' to continue."
 msgstr ""
@@ -12010,95 +12010,95 @@ msgstr ""
 msgid "Playlist has only %d elements"
 msgstr ""
 
-#: modules/control/rc.c:1912 modules/control/rc.c:1952
+#: modules/control/rc.c:1913 modules/control/rc.c:1953
 msgid "Please provide one of the following parameters:"
 msgstr ""
 
-#: modules/control/rc.c:1984
+#: modules/control/rc.c:1985
 msgid "Unknown command!"
 msgstr ""
 
-#: modules/control/rc.c:2000 modules/gui/ncurses.c:2039
+#: modules/control/rc.c:2001 modules/gui/ncurses.c:2039
 #, fuzzy
 msgid "+-[Incoming]"
 msgstr "Audio encoders settings"
 
-#: modules/control/rc.c:2001 modules/gui/ncurses.c:2042
+#: modules/control/rc.c:2002 modules/gui/ncurses.c:2042
 #, c-format
 msgid "| input bytes read : %8.0f kB"
 msgstr ""
 
-#: modules/control/rc.c:2003 modules/gui/ncurses.c:2045
+#: modules/control/rc.c:2004 modules/gui/ncurses.c:2045
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr ""
 
-#: modules/control/rc.c:2005 modules/gui/ncurses.c:2047
+#: modules/control/rc.c:2006 modules/gui/ncurses.c:2047
 #, c-format
 msgid "| demux bytes read : %8.0f kB"
 msgstr ""
 
-#: modules/control/rc.c:2007 modules/gui/ncurses.c:2050
+#: modules/control/rc.c:2008 modules/gui/ncurses.c:2050
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr ""
 
-#: modules/control/rc.c:2011 modules/gui/ncurses.c:2058
+#: modules/control/rc.c:2012 modules/gui/ncurses.c:2058
 #, fuzzy
 msgid "+-[Video Decoding]"
 msgstr "Video crop left"
 
-#: modules/control/rc.c:2012 modules/gui/ncurses.c:2061
+#: modules/control/rc.c:2013 modules/gui/ncurses.c:2061
 #, c-format
 msgid "| video decoded    :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:2014 modules/gui/ncurses.c:2064
+#: modules/control/rc.c:2015 modules/gui/ncurses.c:2064
 #, c-format
 msgid "| frames displayed :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:2016 modules/gui/ncurses.c:2067
+#: modules/control/rc.c:2017 modules/gui/ncurses.c:2067
 #, c-format
 msgid "| frames lost      :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:2020 modules/gui/ncurses.c:2075
+#: modules/control/rc.c:2021 modules/gui/ncurses.c:2075
 #, fuzzy
 msgid "+-[Audio Decoding]"
 msgstr "Audio encoder"
 
-#: modules/control/rc.c:2021 modules/gui/ncurses.c:2078
+#: modules/control/rc.c:2022 modules/gui/ncurses.c:2078
 #, c-format
 msgid "| audio decoded    :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:2023 modules/gui/ncurses.c:2081
+#: modules/control/rc.c:2024 modules/gui/ncurses.c:2081
 #, c-format
 msgid "| buffers played   :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:2025 modules/gui/ncurses.c:2084
+#: modules/control/rc.c:2026 modules/gui/ncurses.c:2084
 #, c-format
 msgid "| buffers lost     :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:2029 modules/gui/ncurses.c:2090
+#: modules/control/rc.c:2030 modules/gui/ncurses.c:2090
 #, fuzzy
 msgid "+-[Streaming]"
 msgstr "Codec setting"
 
-#: modules/control/rc.c:2030 modules/gui/ncurses.c:2093
+#: modules/control/rc.c:2031 modules/gui/ncurses.c:2093
 #, c-format
 msgid "| packets sent     :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:2031 modules/gui/ncurses.c:2095
+#: modules/control/rc.c:2032 modules/gui/ncurses.c:2095
 #, c-format
 msgid "| bytes sent       : %8.0f kB"
 msgstr ""
 
-#: modules/control/rc.c:2033
+#: modules/control/rc.c:2034
 #, c-format
 msgid "| sending bitrate  :   %6.0f kb/s"
 msgstr ""
@@ -12965,193 +12965,193 @@ msgid ""
 "autodetection, this should always work)."
 msgstr ""
 
-#: modules/demux/ts.c:110
+#: modules/demux/ts.c:112
 msgid "Extra PMT"
 msgstr ""
 
-#: modules/demux/ts.c:112
+#: modules/demux/ts.c:114
 #, fuzzy
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,…])"
 
-#: modules/demux/ts.c:114
+#: modules/demux/ts.c:116
 msgid "Set id of ES to PID"
 msgstr ""
 
-#: modules/demux/ts.c:115
+#: modules/demux/ts.c:117
 msgid ""
 "Set the internal ID of each elementary stream handled by VLC to the same "
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
 "'#duplicate{..., select=\"es=<pid>\"}'."
 msgstr ""
 
-#: modules/demux/ts.c:120
+#: modules/demux/ts.c:122
 msgid "Fast udp streaming"
 msgstr ""
 
-#: modules/demux/ts.c:122
+#: modules/demux/ts.c:124
 msgid "Sends TS to specific ip:port by udp (you must know what you are doing)."
 msgstr ""
 
-#: modules/demux/ts.c:124
+#: modules/demux/ts.c:126
 msgid "MTU for out mode"
 msgstr ""
 
-#: modules/demux/ts.c:125
+#: modules/demux/ts.c:127
 msgid "MTU for out mode."
 msgstr ""
 
-#: modules/demux/ts.c:127
+#: modules/demux/ts.c:129
 msgid "CSA ck"
 msgstr ""
 
-#: modules/demux/ts.c:128
+#: modules/demux/ts.c:130
 msgid "Control word for the CSA encryption algorithm"
 msgstr ""
 
-#: modules/demux/ts.c:130 modules/mux/mpeg/ts.c:170
+#: modules/demux/ts.c:132 modules/mux/mpeg/ts.c:170
 msgid "Second CSA Key"
 msgstr ""
 
-#: modules/demux/ts.c:131 modules/mux/mpeg/ts.c:171
+#: modules/demux/ts.c:133 modules/mux/mpeg/ts.c:171
 msgid ""
 "The even CSA encryption key. This must be a 16 char string (8 hexadecimal "
 "bytes)."
 msgstr ""
 
-#: modules/demux/ts.c:134
+#: modules/demux/ts.c:136
 #, fuzzy
 msgid "Silent mode"
 msgstr "Stereo"
 
-#: modules/demux/ts.c:135
+#: modules/demux/ts.c:137
 msgid "Do not complain on encrypted PES."
 msgstr ""
 
-#: modules/demux/ts.c:137
+#: modules/demux/ts.c:139
 #, fuzzy
 msgid "CAPMT System ID"
 msgstr "Stream %d"
 
-#: modules/demux/ts.c:138
+#: modules/demux/ts.c:140
 msgid "Only forward descriptors from this SysID to the CAM."
 msgstr ""
 
-#: modules/demux/ts.c:140
+#: modules/demux/ts.c:142
 msgid "Packet size in bytes to decrypt"
 msgstr ""
 
-#: modules/demux/ts.c:141
+#: modules/demux/ts.c:143
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
 "subtract the TS-header from the value before decrypting. "
 msgstr ""
 
-#: modules/demux/ts.c:145
+#: modules/demux/ts.c:147
 #, fuzzy
 msgid "Filename of dump"
 msgstr "ffmpeg demuxer"
 
-#: modules/demux/ts.c:146
+#: modules/demux/ts.c:148
 msgid "Specify a filename where to dump the TS in."
 msgstr ""
 
-#: modules/demux/ts.c:148
+#: modules/demux/ts.c:150
 #, fuzzy
 msgid "Append"
 msgstr "Append to file"
 
-#: modules/demux/ts.c:150
+#: modules/demux/ts.c:152
 msgid ""
 "If the file exists and this option is selected, the existing file will not "
 "be overwritten."
 msgstr ""
 
-#: modules/demux/ts.c:153
+#: modules/demux/ts.c:155
 #, fuzzy
 msgid "Dump buffer size"
 msgstr "Rate control buffer size"
 
-#: modules/demux/ts.c:155
+#: modules/demux/ts.c:157
 msgid ""
 "Tweak the buffer size for reading and writing an integer number of packets."
 "Specify the size of the buffer here and not the number of packets."
 msgstr ""
 
-#: modules/demux/ts.c:159
+#: modules/demux/ts.c:161
 #, fuzzy
 msgid "MPEG Transport Stream demuxer"
 msgstr "ISO 13818-1 MPEG Transport Stream demuxstream"
 
-#: modules/demux/ts.c:3419
+#: modules/demux/ts.c:3421
 #: modules/gui/qt4/components/interface_widgets.cpp:631
 #: modules/gui/qt4/components/interface_widgets.cpp:827
 #, fuzzy
 msgid "Teletext"
 msgstr "DVB subtitles decoder"
 
-#: modules/demux/ts.c:3429
+#: modules/demux/ts.c:3431
 #, fuzzy
 msgid "Teletext subtitles"
 msgstr "DVB subtitles decoder"
 
-#: modules/demux/ts.c:3439
+#: modules/demux/ts.c:3441
 #, fuzzy
 msgid "Teletext additional information"
 msgstr "Visualisations"
 
-#: modules/demux/ts.c:3449
+#: modules/demux/ts.c:3451
 #, fuzzy
 msgid "Teletext programme schedule"
 msgstr "DVB subtitles decoder"
 
-#: modules/demux/ts.c:3459
+#: modules/demux/ts.c:3461
 #, fuzzy
 msgid "Teletext hearing impaired subtitles"
 msgstr "DVB subtitles decoder"
 
-#: modules/demux/ts.c:3554
+#: modules/demux/ts.c:3556
 #, fuzzy
 msgid "subtitles"
 msgstr "Subtitles Track"
 
-#: modules/demux/ts.c:3558
+#: modules/demux/ts.c:3560
 #, fuzzy
 msgid "4:3 subtitles"
 msgstr "SVCD Subtitle %i"
 
-#: modules/demux/ts.c:3562
+#: modules/demux/ts.c:3564
 #, fuzzy
 msgid "16:9 subtitles"
 msgstr "SVCD Subtitle %i"
 
-#: modules/demux/ts.c:3566
+#: modules/demux/ts.c:3568
 #, fuzzy
 msgid "2.21:1 subtitles"
 msgstr "SVCD Subtitle %i"
 
-#: modules/demux/ts.c:3570 modules/demux/ts.c:3751 modules/demux/ts.c:3792
+#: modules/demux/ts.c:3572 modules/demux/ts.c:3753 modules/demux/ts.c:3794
 msgid "hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3574
+#: modules/demux/ts.c:3576
 msgid "4:3 hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3578
+#: modules/demux/ts.c:3580
 msgid "16:9 hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3582
+#: modules/demux/ts.c:3584
 msgid "2.21:1 hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3747 modules/demux/ts.c:3788
+#: modules/demux/ts.c:3749 modules/demux/ts.c:3790
 #, fuzzy
 msgid "clean effects"
 msgstr "Random Off"
 
-#: modules/demux/ts.c:3755 modules/demux/ts.c:3796
+#: modules/demux/ts.c:3757 modules/demux/ts.c:3798
 msgid "visual impaired commentary"
 msgstr ""
 
