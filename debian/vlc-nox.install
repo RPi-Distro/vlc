@@ -11,6 +11,7 @@ usr/lib/vlc/access/libaccess_ftp_plugin.so
 usr/lib/vlc/access/libaccess_http_plugin.so
 usr/lib/vlc/access/libaccess_mmap_plugin.so
 usr/lib/vlc/access/libaccess_mms_plugin.so
+usr/lib/vlc/access/libaccess_realrtsp_plugin.so
 usr/lib/vlc/access/libaccess_rtmp_plugin.so
 usr/lib/vlc/access/libaccess_smb_plugin.so
 usr/lib/vlc/access/libaccess_tcp_plugin.so

@@ -1,3 +1,13 @@
+vlc (0.9.8a-1) experimental; urgency=low
+
+  * New upstream release
+    + Fix integer overflow in Real demux (VideoLAN SA-2008-11, CVE-2008-5276)
+  * Enable RealRTSP access module
+  * Depends on libv4l-dev to add support of some webcam 
+  * Don't rebootstrap. The packages causing troubles previously have been fixed
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 03 Dec 2008 20:20:52 +0100
+
 vlc (0.9.6-1) experimental; urgency=low
 
   [ Reinhard Tartler ]

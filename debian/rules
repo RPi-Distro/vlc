@@ -90,7 +90,6 @@ confflags += \
 	--enable-vcdx \
 	--enable-notify \
 	--enable-twolame \
-	--enable-x264 \
 	--enable-faad \
 	--disable-zvbi \
 	--enable-telx \
@@ -100,6 +99,7 @@ confflags += \
 	--enable-taglib \
 	--enable-libass \
 	--enable-libdca \
+	--enable-realrtsp \
 	$(NULL)
 
 #	--enable-dts \
