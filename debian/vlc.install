@@ -2,6 +2,7 @@ usr/bin/qvlc
 usr/bin/svlc
 usr/lib/vlc/access/libscreen_plugin.so
 usr/lib/vlc/codec/libsdl_image_plugin.so
+usr/lib/vlc/codec/libx264_plugin.so
 usr/lib/vlc/gui/libqt4_plugin.so
 usr/lib/vlc/gui/libskins2_plugin.so
 usr/lib/vlc/misc/libnotify_plugin.so

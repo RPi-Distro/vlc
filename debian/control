@@ -1,7 +1,8 @@
 Source: vlc
 Section: graphics
 Priority: optional
-Maintainer: Debian multimedia packages maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
+Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>
+XSBC-Original-Maintainer: Debian multimedia packages maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
 Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
            Clément Stenac <zorglub@debian.org>,
            Loic Minier <lool@dooz.org>,
@@ -13,7 +14,8 @@ Build-Depends: debhelper (>= 6),
                quilt,
                nasm,
                yasm [amd64 kfreebsd-amd64],
-               iceape-dev (>=  1.1.9-4),
+               libass-dev,
+               libxul-dev,
                liba52-0.7.4-dev,
                libaa1-dev,
                libarts1-dev (>= 1.4.2),
@@ -78,6 +80,7 @@ Build-Depends: debhelper (>= 6),
                libvcdinfo-dev,
                libvorbis-dev,
                libx11-dev,
+               libx264-dev,
                libxext-dev,
                libxml2-dev,
                libxpm-dev,
@@ -88,8 +91,8 @@ Build-Depends: debhelper (>= 6),
                zlib1g-dev
 Standards-Version: 3.8.0
 Homepage: http://www.videolan.org/vlc
-Vcs-Svn: svn://svn.debian.org/svn/pkg-multimedia/experimental/vlc/
-Vcs-Browser: http://svn.debian.org/wsvn/pkg-multimedia/experimental/vlc/
+Vcs-Bzr: https://code.launchpad.net/~motumedia/vlc/ubuntu
+Vcs-Browser: http://bazaar.launchpad.net/~motumedia/vlc/ubuntu/files
 
 Package: vlc
 Section: graphics
@@ -277,6 +280,11 @@ Description: aRts audio output plugin for VLC
 Package: mozilla-plugin-vlc
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}), vlc, ${shlibs:Depends}, ${misc:Depends}
+Xb-Npp-Applications: ec8030f7-c20a-464f-9b0e-13a3a9e97384, 92650c4d-4b8e-4d2a-b7eb-24ecf4f6b63a
+Xb-Npp-Name: VLC Multimedia Plugin
+Xb-Npp-Description: play video and audio in firefox using the VLC Multimedai Player
+Xb-Npp-File: libvlcplugin.so
+Xb-Npp-MimeType: audio/mpeg, audio/x-mpeg, video/mpeg, video/x-mpeg, video/mpeg-system, video/x-mpeg-system, video/mpeg4, audio/mpeg4, application/mpeg4-iod, application/mpeg4-muxcodetable, video/x-msvideo, video/quicktime, application/x-ogg, application/ogg, application/x-vlc-plugin, video/x-ms-asf-plugin, video/x-ms-asf, application/x-mplayer2, video/x-ms-wmv, application/x-google-vlc-plugin, audio/wav, audio/x-wav, audio/3gpp, video/3gpp, audio/3gpp2, video/3gpp2
 Description: multimedia plugin for web browsers based on VLC
  This plugin adds support for MPEG, MPEG2, DVD, DivX, Ogg/Vorbis and many
  more formats to your Gecko-based web browser (Firefox, Galeon, etc.). The

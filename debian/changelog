@@ -1,3 +1,18 @@
+vlc (0.9.8a-1ubuntu1) jaunty; urgency=low
+
+  * merge from debian. LP: #300328, #305100, #289263
+  * Fixes CVE-2008-5276
+  * remaining changes
+    - build against libxul-dev instead of iceape-dev
+    - build against libdca-dev, libass-dev and libx264-dev
+    - build against and install libx264 plugin
+    - adjust Vcs-Bzr Headers in debian/control
+    - add Xb-Npp header to vlc package
+    - debian/patches/301_DVD_media.diff: Change %U to %f
+       in VLC .desktop file, cf LP #275043
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sun, 07 Dec 2008 23:12:27 +0100
+
 vlc (0.9.8a-1) experimental; urgency=low
 
   * New upstream release
@@ -7,6 +22,20 @@ vlc (0.9.8a-1) experimental; urgency=low
   * Don't rebootstrap. The packages causing troubles previously have been fixed
 
  -- Christophe Mutricy <xtophe@videolan.org>  Wed, 03 Dec 2008 20:20:52 +0100
+
+vlc (0.9.6-1ubuntu1) jaunty; urgency=low
+
+  * merge from debian/experimental, fixes LP: #289263
+    remaining changes:
+    - build against libxul-dev instead of iceape-dev
+    - build against libdca-dev, libass-dev and libx264-dev
+    - build against and install libx264 plugin
+    - adjust Vcs-Bzr Headers in debian/control
+    - add Xb-Npp header to vlc package
+    - debian/patches/301_DVD_media.diff: Change %U to %f
+       in VLC .desktop file, cf LP #275043
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 15 Nov 2008 15:45:06 +0100
 
 vlc (0.9.6-1) experimental; urgency=low
 
@@ -37,6 +66,38 @@ vlc (0.9.4-2) experimental; urgency=low
 
  -- Christophe Mutricy <xtophe@videolan.org>  Mon, 20 Oct 2008 23:23:46 +0200
 
+vlc (0.9.4-1ubuntu3) intrepid; urgency=low
+
+  * link vlc to unicode enabled curses library. Thanks to Rafaël Carré for
+    reporting.(LP: #282644)
+  * enable emedded video (LP: #282582)
+  * Autodetect screen while using Xinerama to toggle fullscreen (LP: #115419)
+
+ -- Reinhard Tartler <siretart@tauware.de>  Mon, 13 Oct 2008 21:47:13 +0200
+
+vlc (0.9.4-1ubuntu2) intrepid; urgency=low
+
+  * add new plugin database meta fields Xb-Npp-Description and Xb-Npp-File
+    - update debian/control
+  * link plugin binary to /usr/lib/xulrunner-addons/plugins/
+    - update debian/mozilla-plugin-vlc.links
+
+ -- Alexander Sack <asac@ubuntu.com>  Mon, 13 Oct 2008 17:45:51 +0200
+
+vlc (0.9.4-1ubuntu1) intrepid; urgency=low
+
+  * merge from debian/experimental
+  * New upstream release fixes LP: #280081, #280378
+  * remaining changes:
+    - build against libxul-dev instead of iceape-dev
+    - build against libdca-dev, libass-dev and libx264-dev
+    - adjust Vcs-Bzr Headers in debian/control
+    - add Xb-Npp header to vlc package
+    - debian/patches/301_DVD_media.diff: Change %U to %f
+       in VLC .desktop file, cf LP #275043
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sun, 12 Oct 2008 11:37:03 +0200
+
 vlc (0.9.4-1) experimental; urgency=low
 
   * New upstream bugfix version
@@ -60,6 +121,70 @@ vlc (0.9.3-1) experimental; urgency=low
   * remove spurious conflicts on libvlc2. LP: #274614
 
  -- Christophe Mutricy <xtophe@videolan.org>  Fri, 26 Sep 2008 23:49:48 +0200
+
+vlc (0.9.3-0ubuntu1) intrepid; urgency=low
+
+  [ Reinhard Tartler ]
+  * new upstream bugfix only Releases LP: #274721
+
+  Relevant fixes from NEWS file:
+  
+    Various bugfixes:
+   * Fixed DTS channel order on 5.1 systems
+   * Fixed pausing behavior for subtitles and for Audio-CD
+   * Multiple subtitles and podcast fixes
+   * Various crashes fixed in PS, SSA, mkv, xspf, freetype
+   * Fixed update system bugs
+   * Other bug fixes (dvd language selection, subtitle colours, HTTP keep-alive...)
+  
+  Qt4 interface:
+   * Added Faster/Slower icons to the controller panel
+   * Fixed lost playlist columns when switching the playlist view
+   * Added needed options to Simple preferences (to avoid NVIDIA drivers issues)
+   * Fullscreen controller: added time label, remembering of last position
+   * Fixed drag'n drop behaviour on the playlist
+   * Multiple other fixes (Enter hotkey in preferences, Skins selection...)
+
+  [ Saïvann Carignan ]
+  * debian/patches/301_DVD_media.diff: Change %U to %f
+    in VLC .desktop file . (LP: #275043) 
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 27 Sep 2008 09:30:04 +0200
+
+vlc (0.9.2-1ubuntu2) intrepid; urgency=low
+
+  * remove spurious conflicts on libvlc2. LP: #274614
+  * fix FTBFS on all archs other than i386/lpia and amd64. Patch from
+    pkg-multimedia svn, Closes: #499860
+
+ -- Reinhard Tartler <siretart@tauware.de>  Fri, 26 Sep 2008 08:35:29 +0200
+
+vlc (0.9.2-1ubuntu1) intrepid; urgency=low
+
+  * New Upstream Release, exception granted by
+      - dktrkranz, norsetto, Hobbsee (via irc). LP: #270404
+  
+  Changes done in ubuntu:
+  
+  * add libxul-dev to build-depends
+  * make sure that vlc is build against libxul in configure. This doesn't
+    change anything in the package, but makes it more robust if building
+    in an 'unclean' chroot or when modifying the package.
+  * debian/control: make Vcs-* fields point to the motumedia branch
+  * add libx264-dev and libass-dev to build-depends
+    LP: #210354, #199870
+  * actually enable libass support by passing --enable-libass to configure
+  * enable libdca: add libdca-dev to build depends and --enable-libdca
+  * install the x264 plugin.
+
+  Changes already in the pkg-multimedia branch in debian:
+  
+  * don't install usr/share/vlc/mozilla in debian/mozilla-plugin-vlc.install  
+  * new upstream .desktop file now registers flash video mimetype LP: #261567
+  * add Xb-Npp-Applications to mozilla-plugin-vlc
+  * remove duplicate entries in debian/vlc-nox.install
+
+ -- Reinhard Tartler <siretart@tauware.de>  Wed, 17 Sep 2008 21:56:14 +0200
 
 vlc (0.9.2-1) experimental; urgency=low
 
@@ -89,7 +214,7 @@ vlc (0.9.2-1) experimental; urgency=low
       - vlc-plugin-jack: access_jack
     + Distribute the .pc for libvlc and vlc-plugin (Closes: #289507)
     + Remove wx interface and glide plugin as they've been dropped by upstream
-      LP: #205325, #88487, #90603, 
+      LP: #205325, #88487, #90603, #150380
     + The Python and java bindings are no longer part of the upstream tarballs 
       (Closes: #469011)
     + Temporarly disable libdca module until a pkg with the new 
