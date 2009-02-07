@@ -604,15 +604,15 @@ LINK32=link.exe
 # End Target
 # End Project
 # Begin Source File
-SOURCE="..\modules\access\pvr.c"
+SOURCE="..\modules\access\pvr\pvr.c"
 # ADD CPP /D "__VLC__" /D "__PLUGIN__"  /D "MODULE_NAME=pvr" /D "MODULE_NAME_IS_pvr" 
 !IF "$(CFG)" == "plugin_pvr - Win32 Release"
-# PROP Output_Dir "Release\modules\access"
-# PROP Intermediate_Dir "Release\modules\access"
+# PROP Output_Dir "Release\modules\access\pvr"
+# PROP Intermediate_Dir "Release\modules\access\pvr"
 !ELSEIF "$(CFG)" == "plugin_pvr - Win32 Debug"
-# PROP Output_Dir "Debug\modules\access"
-# PROP Intermediate_Dir "Debug\modules\access"
+# PROP Output_Dir "Debug\modules\access\pvr"
+# PROP Intermediate_Dir "Debug\modules\access\pvr"
 # End Source File
 # Begin Source File
-SOURCE="..\modules\access\videodev2.h"
+SOURCE="..\modules\access\pvr\videodev2.h"
 # End Source File

@@ -2,7 +2,7 @@
  * dvb.c : DVB channel list import (szap/tzap/czap compatible channel lists)
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: dvb.c 16204 2006-08-03 16:58:10Z zorglub $
+ * $Id: dvb.c 14377 2006-02-18 20:34:32Z courmisch $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,6 +24,8 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>                                      /* malloc(), free() */
+
 #include <vlc/vlc.h>
 #include <vlc/input.h>
 #include <vlc/intf.h>
@@ -52,10 +54,13 @@ int E_(Import_DVB)( vlc_object_t *p_this )
     demux_t *p_demux = (demux_t *)p_this;
     uint8_t *p_peek;
     int     i_peek;
+    char    *psz_ext;
     vlc_bool_t b_valid = VLC_FALSE;
 
-    if( !isExtension( p_demux, ".conf" ) && !p_demux->b_force )
-        return VLC_EGENERIC;
+    psz_ext = strrchr ( p_demux->psz_path, '.' );
+
+    if( !( psz_ext && !strncasecmp( psz_ext, ".conf", 5 ) ) &&
+        !p_demux->b_force ) return VLC_EGENERIC;
 
     /* Check if this really is a channels file */
     if( (i_peek = stream_Peek( p_demux->s, &p_peek, 1024 )) > 0 )
@@ -76,6 +81,7 @@ int E_(Import_DVB)( vlc_object_t *p_this )
     if( !b_valid ) return VLC_EGENERIC;
 
     msg_Dbg( p_demux, "found valid DVB conf playlist file");
+
     p_demux->pf_control = Control;
     p_demux->pf_demux = Demux;
 
@@ -94,11 +100,27 @@ void E_(Close_DVB)( vlc_object_t *p_this )
  *****************************************************************************/
 static int Demux( demux_t *p_demux )
 {
+    playlist_t *p_playlist;
     char       *psz_line;
-    INIT_PLAYLIST_STUFF;
+    playlist_item_t *p_current;
+    vlc_bool_t b_play;
+
+    p_playlist = (playlist_t *) vlc_object_find( p_demux, VLC_OBJECT_PLAYLIST,
+                                                 FIND_ANYWHERE );
+    if( !p_playlist )
+    {
+        msg_Err( p_demux, "can't find playlist" );
+        return -1;
+    }
+
+    b_play = E_(FindItem)( p_demux, p_playlist, &p_current );
+
+    playlist_ItemToNode( p_playlist, p_current );
+    p_current->input.i_type = ITEM_TYPE_PLAYLIST;
 
     while( (psz_line = stream_ReadLine( p_demux->s )) )
     {
+        playlist_item_t *p_item;
         char **ppsz_options = NULL;
         int  i, i_options = 0;
         char *psz_name = NULL;
@@ -111,16 +133,20 @@ static int Demux( demux_t *p_demux )
 
         EnsureUTF8( psz_name );
 
-        p_input = input_ItemNewExt( p_playlist, "dvb:", psz_name, 0, NULL, -1 );
+        p_item = playlist_ItemNew( p_playlist, "dvb:", psz_name );
         for( i = 0; i< i_options; i++ )
         {
             EnsureUTF8( ppsz_options[i] );
-            vlc_input_item_AddOption( p_input, ppsz_options[i] );
+            playlist_ItemAddOption( p_item, ppsz_options[i] );
         }
-        playlist_AddWhereverNeeded( p_playlist, p_input, p_current, 
-                                    p_item_in_category,
-                                    (i_parent_id > 0 ) ? VLC_TRUE: VLC_FALSE,
-                                    PLAYLIST_APPEND );
+        playlist_NodeAddItem( p_playlist, p_item,
+                              p_current->pp_parents[0]->i_view,
+                              p_current, PLAYLIST_APPEND, PLAYLIST_END );
+
+        /* We need to declare the parents of the node as the
+         *                  * same of the parent's ones */
+        playlist_CopyParents( p_current, p_item );
+        vlc_input_item_CopyOptions( &p_current->input, &p_item->input );
 
         while( i_options-- ) free( ppsz_options[i_options] );
         if( ppsz_options ) free( ppsz_options );
@@ -128,7 +154,17 @@ static int Demux( demux_t *p_demux )
         free( psz_line );
     }
 
-    HANDLE_PLAY_AND_RELEASE;
+    /* Go back and play the playlist */
+    if( b_play && p_playlist->status.p_item &&
+        p_playlist->status.p_item->i_children > 0 )
+    {
+        playlist_Control( p_playlist, PLAYLIST_VIEWPLAY,
+                          p_playlist->status.i_view,
+                          p_playlist->status.p_item,
+                          p_playlist->status.p_item->pp_children[0] );
+    }
+
+    vlc_object_release( p_playlist );
     return VLC_SUCCESS;
 }
 

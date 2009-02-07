@@ -2,7 +2,7 @@
  * rpn.c : RPN evaluator for the HTTP Interface
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: rpn.c 16204 2006-08-03 16:58:10Z zorglub $
+ * $Id: rpn.c 16587 2006-09-10 17:02:54Z sam $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -26,6 +26,7 @@
 #include "http.h"
 #include "vlc_url.h"
 #include "vlc_meta.h"
+#include "vlc_strings.h"
 
 static vlc_object_t *GetVLCObject( intf_thread_t *p_intf,
                                    const char *psz_object,
@@ -490,8 +491,7 @@ void E_(EvaluateRPN)( intf_thread_t *p_intf, mvar_t  *vars,
             int i_id = E_(SSPopN)( st, vars );
             int i_ret;
 
-            i_ret = playlist_Control( p_sys->p_playlist, PLAYLIST_VIEWPLAY,
-                                      NULL,
+            i_ret = playlist_Control( p_sys->p_playlist, PLAYLIST_ITEMPLAY,
                                       playlist_ItemGetById( p_sys->p_playlist,
                                       i_id ) );
             msg_Dbg( p_intf, "requested playlist item: %i", i_id );
@@ -698,7 +698,7 @@ void E_(EvaluateRPN)( intf_thread_t *p_intf, mvar_t  *vars,
                 {
                     char psz_value[20];
                     lldiv_t value = lldiv( val.f_float * 1000000, 1000000 );
-                    snprintf( psz_value, sizeof(psz_value), "%lld.%06u",
+                    snprintf( psz_value, sizeof(psz_value), I64Fd".%06u",
                                     value.quot, (unsigned int)value.rem );
                     E_(SSPush)( st, psz_value );
                     break;
@@ -795,7 +795,7 @@ void E_(EvaluateRPN)( intf_thread_t *p_intf, mvar_t  *vars,
                 char psz_string[20];
                 lldiv_t value = lldiv( config_GetFloat( p_intf, psz_variable )
                                        * 1000000, 1000000 );
-                snprintf( psz_string, sizeof(psz_string), "%lld.%06u",
+                snprintf( psz_string, sizeof(psz_string), I64Fd".%06u",
                           value.quot, (unsigned int)value.rem );
                 E_(SSPush)( st, psz_string );
                 break;
@@ -832,7 +832,7 @@ void E_(EvaluateRPN)( intf_thread_t *p_intf, mvar_t  *vars,
             char *psz_name = E_(SSPop)( st );
             char *mrl = E_(SSPop)( st );
             char *tmp;
-            input_item_t *p_input;
+            playlist_item_t *p_item;
             int i_id;
 
             tmp = E_(ToUTF8)( p_intf, psz_name );
@@ -844,21 +844,22 @@ void E_(EvaluateRPN)( intf_thread_t *p_intf, mvar_t  *vars,
 
             if( !*psz_name )
             {
-                p_input = E_(MRLParse)( p_intf, mrl, mrl );
+                p_item = E_(MRLParse)( p_intf, mrl, mrl );
             }
             else
             {
-                p_input = E_(MRLParse)( p_intf, mrl, psz_name );
+                p_item = E_(MRLParse)( p_intf, mrl, psz_name );
             }
 
-            if( !p_input || !p_input->psz_uri || !*p_input->psz_uri )
+            if( p_item == NULL || p_item->input.psz_uri == NULL ||
+                 !*p_item->input.psz_uri )
             {
                 i_id = VLC_EGENERIC;
                 msg_Dbg( p_intf, "invalid requested mrl: %s", mrl );
             }
             else
             {
-                i_id = playlist_PlaylistAddInput( p_sys->p_playlist, p_input,
+                i_id = playlist_AddItem( p_sys->p_playlist, p_item,
                                          PLAYLIST_APPEND, PLAYLIST_END );
                 msg_Dbg( p_intf, "requested mrl add: %s", mrl );
             }
@@ -880,10 +881,8 @@ void E_(EvaluateRPN)( intf_thread_t *p_intf, mvar_t  *vars,
         }
         else if( !strcmp( s, "playlist_move" ) )
         {
-            /*int i_newpos =*/ E_(SSPopN)( st, vars );
-            /*int i_pos =*/ E_(SSPopN)( st, vars );
-            /* FIXME FIXME TODO TODO XXX XXX
-            do not release before fixing this
+            int i_newpos = E_(SSPopN)( st, vars );
+            int i_pos = E_(SSPopN)( st, vars );
             if ( i_pos < i_newpos )
             {
                 playlist_Move( p_sys->p_playlist, i_pos, i_newpos + 1 );
@@ -894,8 +893,6 @@ void E_(EvaluateRPN)( intf_thread_t *p_intf, mvar_t  *vars,
             }
             msg_Dbg( p_intf, "requested to move playlist item %d to %d",
                      i_pos, i_newpos);
-               FIXME FIXME TODO TODO XXX XXX */
-            msg_Err( p_intf, "moving using indexes is obsolete. We need to update this function" );
         }
         else if( !strcmp( s, "playlist_sort" ) )
         {
@@ -903,15 +900,11 @@ void E_(EvaluateRPN)( intf_thread_t *p_intf, mvar_t  *vars,
             int i_sort = E_(SSPopN)( st, vars );
             i_order = i_order % 2;
             i_sort = i_sort % 9;
-            /* FIXME FIXME TODO TODO XXX XXX
-            do not release before fixing this
             playlist_RecursiveNodeSort(  p_sys->p_playlist,
                                          p_sys->p_playlist->p_general,
                                          i_sort, i_order );
             msg_Dbg( p_intf, "requested sort playlist by : %d in order : %d",
                      i_sort, i_order );
-               FIXME FIXME TODO TODO XXX XXX */
-            msg_Err( p_intf, "this needs to be fixed to use the new playlist framework" );
         }
         else if( !strcmp( s, "services_discovery_add" ) )
         {
@@ -988,7 +981,7 @@ void E_(EvaluateRPN)( intf_thread_t *p_intf, mvar_t  *vars,
                     psz_val = vlc_input_item_GetInfo( p_item,
                                 _(VLC_META_INFO_CAT), _(VLC_META_TITLE) );
                     if( psz_val == NULL )
-                        psz_val = strdup( p_item->psz_name );
+                        psz_val == strdup( p_item->psz_name );
                 }
                 else if( !strcmp( psz_meta, "ALBUM" ) )
                 {

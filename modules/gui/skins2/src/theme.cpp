@@ -2,7 +2,7 @@
  * theme.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: theme.cpp 16291 2006-08-18 18:58:16Z ipkiss $
+ * $Id: theme.cpp 15008 2006-03-31 19:24:33Z zorglub $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -23,8 +23,6 @@
  *****************************************************************************/
 
 #include "theme.hpp"
-#include "top_window.hpp"
-#include <sstream>
 
 
 Theme::~Theme()
@@ -52,77 +50,39 @@ void Theme::loadConfig()
     // Is there an existing config?
     if( !strcmp( save, "" ) )
     {
-        // Show the windows as indicated by the XML file
+        // Show the windows
         m_windowManager.showAll( true );
         return;
     }
 
-    istringstream inStream(save);
-    free( save );
+    // Initialization
+    map<string, TopWindowPtr>::const_iterator it;
+    int i = 0;
+    int x, y, visible, scan;
 
-    char sep;
-    string winId, layId;
-    int x, y, width, height, visible;
-    bool somethingVisible = false;
-    while( !inStream.eof() )
+    // Get config for each window
+    for( it = m_windows.begin(); it != m_windows.end(); it++ )
     {
-        inStream >> sep;
-        if( sep != '[' ) goto invalid;
-        inStream >> winId >> layId >> x >> y >> width >> height >> visible >> sep >> ws;
-        if( sep != ']' ) goto invalid;
+        TopWindow *pWin = (*it).second.get();
+        // Get config
+        scan = sscanf( &save[i * 13], "(%4d,%4d,%1d)", &x, &y, &visible );
 
-        // Try to find the window and the layout
-        map<string, TopWindowPtr>::const_iterator itWin;
-        map<string, GenericLayoutPtr>::const_iterator itLay;
-        itWin = m_windows.find( winId );
-        itLay = m_layouts.find( layId );
-        if( itWin == m_windows.end() || itLay == m_layouts.end() )
+        // If config has the correct number of arguments
+        if( scan > 2 )
         {
-            goto invalid;
-        }
-        TopWindow *pWin = itWin->second.get();
-        GenericLayout *pLayout = itLay->second.get();
-
-        // Restore the layout
-        m_windowManager.setActiveLayout( *pWin, *pLayout );
-        if( pLayout->getWidth() != width ||
-            pLayout->getHeight() != height )
-        {
-            // XXX FIXME XXX: big kludge
-            // As resizing a hidden window causes some trouble (at least on
-            // Windows), first show the window off screen, resize it, and
-            // hide it again.
-            // This has to be investigated more deeply!
             m_windowManager.startMove( *pWin );
-            m_windowManager.move( *pWin, -width - pLayout->getWidth(), 0);
+            m_windowManager.move( *pWin, x, y );
             m_windowManager.stopMove();
-            m_windowManager.show( *pWin );
-            m_windowManager.startResize( *pLayout, WindowManager::kResizeSE );
-            m_windowManager.resize( *pLayout, width, height );
-            m_windowManager.stopResize();
-            m_windowManager.hide( *pWin );
+            if( visible )
+            {
+                m_windowManager.show( *pWin );
+            }
         }
-        // Move the window (which incidentally takes care of the anchoring)
-        m_windowManager.startMove( *pWin );
-        m_windowManager.move( *pWin, x, y );
-        m_windowManager.stopMove();
-        if( visible )
-        {
-            somethingVisible = true;
-            m_windowManager.show( *pWin );
-        }
-    }
 
-    if( !somethingVisible )
-    {
-        goto invalid;
+        // Next window
+        i++;
     }
-    return;
-
-invalid:
-    msg_Warn( getIntf(), "invalid config: %s", inStream.str().c_str() );
-    // Restore the visibility defined in the theme
-    m_windowManager.showAll( true );
+    free( save );
 }
 
 
@@ -130,32 +90,29 @@ void Theme::saveConfig()
 {
     msg_Dbg( getIntf(), "saving theme configuration");
 
-    map<string, TopWindowPtr>::const_iterator itWin;
-    map<string, GenericLayoutPtr>::const_iterator itLay;
-    ostringstream outStream;
-    for( itWin = m_windows.begin(); itWin != m_windows.end(); itWin++ )
+    // Initialize char where config is stored
+    char *save  = new char[400];
+    map<string, TopWindowPtr>::const_iterator it;
+    int i = 0;
+    int x, y;
+
+    // Save config of every window
+    for( it = m_windows.begin(); it != m_windows.end(); it++ )
     {
-        TopWindow *pWin = itWin->second.get();
-
-        // Find the layout id for this window
-        string layoutId;
-        const GenericLayout *pLayout = &pWin->getActiveLayout();
-        for( itLay = m_layouts.begin(); itLay != m_layouts.end(); itLay++ )
-        {
-            if( itLay->second.get() == pLayout )
-            {
-                layoutId = itLay->first;
-            }
-        }
-
-        outStream << '[' << itWin->first << ' ' << layoutId << ' '
-            << pWin->getLeft() << ' ' << pWin->getTop() << ' '
-            << pLayout->getWidth() << ' ' << pLayout->getHeight() << ' '
-            << (pWin->getVisibleVar().get() ? 1 : 0) << ']';
+        TopWindow *pWin = (*it).second.get();
+        // Print config
+        x = pWin->getLeft();
+        y = pWin->getTop();
+        sprintf( &save[i * 13], "(%4d,%4d,%1d)", x, y,
+            pWin->getVisibleVar().get() );
+        i++;
     }
 
     // Save config to file
-    config_PutPsz( getIntf(), "skins2-config", outStream.str().c_str() );
+    config_PutPsz( getIntf(), "skins2-config", save );
+
+    // Free memory
+    delete[] save;
 }
 
 

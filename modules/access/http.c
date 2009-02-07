@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: http.c 16083 2006-07-19 09:33:41Z zorglub $
+ * $Id: http.c 16460 2006-08-31 22:01:13Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -161,7 +161,18 @@ static int Open( vlc_object_t *p_this )
     char         *psz, *p;
 
     /* Set up p_access */
-    STANDARD_READ_ACCESS_INIT;
+    p_access->pf_read = Read;
+    p_access->pf_block = NULL;
+    p_access->pf_control = Control;
+    p_access->pf_seek = Seek;
+    p_access->info.i_update = 0;
+    p_access->info.i_size = 0;
+    p_access->info.i_pos = 0;
+    p_access->info.b_eof = VLC_FALSE;
+    p_access->info.i_title = 0;
+    p_access->info.i_seekpoint = 0;
+    p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
+    memset( p_sys, 0, sizeof( access_sys_t ) );
     p_sys->fd = -1;
     p_sys->b_proxy = VLC_FALSE;
     p_sys->i_version = 1;
@@ -281,9 +292,8 @@ connect:
         char *psz_login = NULL; char *psz_password = NULL;
         int i_ret;
         msg_Dbg( p_access, "authentication failed" );
-        i_ret = intf_UserLoginPassword( p_access, _("HTTP authentication"),
-                        _("Please enter a valid login name and a password."), 
-                                                &psz_login, &psz_password );
+        i_ret = intf_UserLoginPassword( p_access, "HTTP authentication",
+                         "Please enter a valid login and password.", &psz_login, &psz_password );
         if( i_ret == DIALOG_OK_YES )
         {
             msg_Dbg( p_access, "retrying with user=%s, pwd=%s",
@@ -328,9 +338,9 @@ connect:
             goto error;
         }
 
-        /* Change the URI */
+        /* Change the uri */
         vlc_mutex_lock( &p_playlist->object_lock );
-        p_input_item = p_playlist->status.p_item->p_input;
+        p_input_item = &p_playlist->status.p_item->input;
         vlc_mutex_lock( &p_input_item->lock );
         free( p_input_item->psz_uri );
         free( p_access->psz_path );
@@ -688,7 +698,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
     vlc_bool_t   *pb_bool;
     int          *pi_int;
     int64_t      *pi_64;
-    vlc_meta_t   *p_meta;
+    vlc_meta_t **pp_meta;
 
     switch( i_query )
     {
@@ -728,14 +738,18 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         case ACCESS_GET_META:
-            p_meta = (vlc_meta_t*)va_arg( args, vlc_meta_t* );
+            pp_meta = (vlc_meta_t**)va_arg( args, vlc_meta_t** );
+            *pp_meta = vlc_meta_New();
 
             if( p_sys->psz_icy_name )
-                vlc_meta_SetTitle( p_meta, p_sys->psz_icy_name );
+                vlc_meta_Add( *pp_meta, VLC_META_TITLE,
+                              p_sys->psz_icy_name );
             if( p_sys->psz_icy_genre )
-                vlc_meta_SetGenre( p_meta, p_sys->psz_icy_genre );
+                vlc_meta_Add( *pp_meta, VLC_META_GENRE,
+                              p_sys->psz_icy_genre );
             if( p_sys->psz_icy_title )
-                vlc_meta_SetNowPlaying( p_meta, p_sys->psz_icy_title );
+                vlc_meta_Add( *pp_meta, VLC_META_NOW_PLAYING,
+                              p_sys->psz_icy_title );
             break;
 
         case ACCESS_GET_TITLE_INFO:

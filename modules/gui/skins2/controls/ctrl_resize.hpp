@@ -2,7 +2,7 @@
  * ctrl_resize.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ctrl_resize.hpp 16270 2006-08-15 18:59:40Z ipkiss $
+ * $Id: ctrl_resize.hpp 16454 2006-08-31 19:54:36Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -58,9 +58,6 @@ class CtrlResize: public CtrlFlat
 
         /// Get the position of the decorated control in the layout, if any
         virtual const Position *getPosition() const;
-
-        /// Method called when the control is resized
-        virtual void onResize();
 
         /// Get the type of control (custom RTTI)
         virtual string getType() const { return m_rCtrl.getType(); }

@@ -2,7 +2,7 @@
  * input.c : internal management of input streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: input.c 15915 2006-06-15 21:22:35Z zorglub $
+ * $Id: input.c 14953 2006-03-28 20:29:28Z zorglub $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -449,9 +449,8 @@ int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
         start_date = 0;
         if( p_input->p_input_thread )
         {
-            vlc_mutex_lock( &p_input->p_input_thread->counters.counters_lock);
-            stats_UpdateInteger( p_aout, p_input->p_input_thread->counters.p_lost_abuffers, 1, NULL );
-            vlc_mutex_unlock( &p_input->p_input_thread->counters.counters_lock);
+            stats_UpdateInteger( p_input->p_input_thread, STATS_LOST_ABUFFERS, 1,
+                                 NULL );
         }
     }
 
@@ -463,9 +462,8 @@ int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
                   mdate() - p_buffer->start_date );
         if( p_input->p_input_thread )
         {
-            vlc_mutex_lock( &p_input->p_input_thread->counters.counters_lock);
-            stats_UpdateInteger( p_aout, p_input->p_input_thread->counters.p_lost_abuffers, 1, NULL );
-            vlc_mutex_unlock( &p_input->p_input_thread->counters.counters_lock);
+            stats_UpdateInteger( p_input->p_input_thread, STATS_LOST_ABUFFERS,
+                                 1, NULL );
         }
         aout_BufferFree( p_buffer );
         p_input->i_resampling_type = AOUT_RESAMPLING_NONE;
@@ -506,9 +504,8 @@ int aout_InputPlay( aout_instance_t * p_aout, aout_input_t * p_input,
         aout_BufferFree( p_buffer );
         if( p_input->p_input_thread )
         {
-            vlc_mutex_lock( &p_input->p_input_thread->counters.counters_lock);
-            stats_UpdateInteger( p_aout, p_input->p_input_thread->counters.p_lost_abuffers, 1, NULL );
-            vlc_mutex_unlock( &p_input->p_input_thread->counters.counters_lock);
+            stats_UpdateInteger( p_input->p_input_thread, STATS_LOST_ABUFFERS,
+                                 1, NULL );
         }
         return 0;
     }

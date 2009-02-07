@@ -4,7 +4,7 @@
  * See also unicode.c for Unicode to locale conversion helpers.
  *
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: charset.c 15615 2006-05-14 13:04:48Z courmisch $
+ * $Id: charset.c 16441 2006-08-30 21:36:35Z hartman $
  *
  * Authors: Derk-Jan Hartman <thedj at users.sf.net>
  *          Christophe Massiot

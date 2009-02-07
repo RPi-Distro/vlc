@@ -2,7 +2,7 @@
  * mmsh.c:
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: mmsh.c 15629 2006-05-14 18:29:00Z zorglub $
+ * $Id: mmsh.c 15016 2006-03-31 23:07:01Z xtophe $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -118,9 +118,10 @@ int E_(MMSHOpen)( access_t *p_access )
             free( psz_location );
             return VLC_EGENERIC;
         }
-        /** \bug we do not autodelete here */
-        playlist_PlaylistAdd( p_playlist, psz_location, psz_location,
-                              PLAYLIST_INSERT | PLAYLIST_GO, PLAYLIST_END );
+        p_playlist->pp_items[p_playlist->i_index]->b_autodeletion = VLC_TRUE;
+        playlist_Add( p_playlist, psz_location, psz_location,
+                      PLAYLIST_INSERT | PLAYLIST_GO,
+                      p_playlist->i_index + 1 );
         vlc_object_release( p_playlist );
 
         free( psz_location );

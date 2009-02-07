@@ -2,7 +2,7 @@
  * ctrl_resize.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ctrl_resize.cpp 16270 2006-08-15 18:59:40Z ipkiss $
+ * $Id: ctrl_resize.cpp 16454 2006-08-31 19:54:36Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -92,12 +92,6 @@ void CtrlResize::setLayout( GenericLayout *pLayout, const Position &rPosition )
 const Position *CtrlResize::getPosition() const
 {
     return m_rCtrl.getPosition();
-}
-
-
-void CtrlResize::onResize()
-{
-    m_rCtrl.onResize();
 }
 
 

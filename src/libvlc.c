@@ -2,7 +2,7 @@
  * libvlc.c: main libvlc source
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: libvlc.c 16051 2006-07-16 16:06:29Z sam $
+ * $Id: libvlc.c 16441 2006-08-30 21:36:35Z hartman $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -419,33 +419,6 @@ int VLC_Init( int i_object, int i_argc, char *ppsz_argv[] )
 
         p_vlc->p_libvlc->b_daemon = VLC_TRUE;
 
-        /* lets check if we need to write the pidfile */
-        char * psz_pidfile = config_GetPsz( p_vlc, "pidfile" );
-        
-        msg_Dbg( p_vlc, "psz_pidfile is %s", psz_pidfile );
-        
-        if( psz_pidfile != NULL )
-        {
-            FILE *pidfile;
-            pid_t i_pid = getpid ();
-            
-            msg_Dbg( p_vlc, "our PID is %d, writing it to %s", i_pid, psz_pidfile );
-            
-            pidfile = utf8_fopen( psz_pidfile,"w" );
-            if( pidfile != NULL )
-            {
-                utf8_fprintf( pidfile, "%d", (int)i_pid );
-                fclose( pidfile );
-            }
-            else
-            {
-                msg_Err( p_vlc, "Cannot open pid file for writing: %s, error: %s", 
-                        psz_pidfile, strerror(errno) );
-            }
-        }
-
-        free( psz_pidfile );
-
 #else
         pid_t i_pid;
 
@@ -713,9 +686,7 @@ int VLC_Init( int i_object, int i_argc, char *ppsz_argv[] )
     }
 
     libvlc.b_stats = config_GetInt( p_vlc, "stats" );
-    libvlc.i_timers = 0;
-    libvlc.pp_timers = NULL;
-    vlc_mutex_init( p_vlc, &libvlc.timer_lock );
+    libvlc.p_stats = NULL;
 
     /*
      * Initialize hotkey handling
@@ -728,7 +699,7 @@ int VLC_Init( int i_object, int i_argc, char *ppsz_argv[] )
     /*
      * Initialize playlist and get commandline files
      */
-    p_playlist = playlist_ThreadCreate( p_vlc );
+    p_playlist = playlist_Create( p_vlc );
     if( !p_playlist )
     {
         msg_Err( p_vlc, "playlist initialization failed" );
@@ -916,6 +887,7 @@ int VLC_CleanUp( int i_object )
     vout_thread_t      * p_vout;
     aout_instance_t    * p_aout;
     announce_handler_t * p_announce;
+    stats_handler_t    * p_stats;
     vlc_t *p_vlc = vlc_current_object( i_object );
 
     /* Check that the handle is valid */
@@ -945,7 +917,7 @@ int VLC_CleanUp( int i_object )
     {
         vlc_object_detach( p_playlist );
         vlc_object_release( p_playlist );
-        playlist_ThreadDestroy( p_playlist );
+        playlist_Destroy( p_playlist );
     }
 
     /*
@@ -970,8 +942,14 @@ int VLC_CleanUp( int i_object )
         aout_Delete( p_aout );
     }
 
-    stats_TimersDumpAll( p_vlc );
-    stats_TimersClean( p_vlc );
+    while( ( p_stats = vlc_object_find( p_vlc, VLC_OBJECT_STATS, FIND_CHILD) ))
+    {
+        stats_TimersDumpAll( p_vlc );
+        stats_HandlerDestroy( p_stats );
+        vlc_object_detach( (vlc_object_t*) p_stats );
+        vlc_object_release( (vlc_object_t *)p_stats );
+        // TODO: Delete it
+    }
 
     /*
      * Free announce handler(s?)
@@ -1222,7 +1200,7 @@ int VLC_AddTarget( int i_object, char const *psz_target,
     if( p_playlist == NULL )
     {
         msg_Dbg( p_vlc, "no playlist present, creating one" );
-        p_playlist = playlist_ThreadCreate( p_vlc );
+        p_playlist = playlist_Create( p_vlc );
 
         if( p_playlist == NULL )
         {
@@ -1233,7 +1211,7 @@ int VLC_AddTarget( int i_object, char const *psz_target,
         vlc_object_yield( p_playlist );
     }
 
-    i_err = playlist_PlaylistAddExt( p_playlist, psz_target, psz_target,
+    i_err = playlist_AddExt( p_playlist, psz_target, psz_target,
                              i_mode, i_pos, -1, ppsz_options, i_options);
 
     vlc_object_release( p_playlist );
@@ -1301,7 +1279,7 @@ int VLC_Pause( int i_object )
 }
 
 /*****************************************************************************
- * VLC_Stop: stop playback
+ * VLC_Pause: toggle pause
  *****************************************************************************/
 int VLC_Stop( int i_object )
 {
@@ -1655,8 +1633,29 @@ float VLC_SpeedSlower( int i_object )
  */
 int VLC_PlaylistIndex( int i_object )
 {
-    printf( "This function is deprecated and should not be used anymore" );
-    return -1;
+    int i_index;
+    playlist_t * p_playlist;
+    vlc_t *p_vlc = vlc_current_object( i_object );
+
+    /* Check that the handle is valid */
+    if( !p_vlc )
+    {
+        return VLC_ENOOBJ;
+    }
+
+    p_playlist = vlc_object_find( p_vlc, VLC_OBJECT_PLAYLIST, FIND_CHILD );
+
+    if( !p_playlist )
+    {
+        if( i_object ) vlc_object_release( p_vlc );
+        return VLC_ENOOBJ;
+    }
+
+    i_index = p_playlist->i_index;
+    vlc_object_release( p_playlist );
+
+    if( i_object ) vlc_object_release( p_vlc );
+    return i_index;
 }
 
 /**
@@ -1766,6 +1765,7 @@ int VLC_PlaylistPrev( int i_object )
  *****************************************************************************/
 int VLC_PlaylistClear( int i_object )
 {
+    int i_err;
     playlist_t * p_playlist;
     vlc_t *p_vlc = vlc_current_object( i_object );
 
@@ -1783,12 +1783,12 @@ int VLC_PlaylistClear( int i_object )
         return VLC_ENOOBJ;
     }
 
-    playlist_Clear( p_playlist );
+    i_err = playlist_Clear( p_playlist );
 
     vlc_object_release( p_playlist );
 
     if( i_object ) vlc_object_release( p_vlc );
-    return VLC_SUCCESS;
+    return i_err;
 }
 
 /**
@@ -1995,6 +1995,10 @@ static void SetLanguage ( char const *psz_lang )
 #endif
 
         setlocale( LC_ALL, psz_lang );
+        /* many code paths assume that float numbers are formatted according
+         * to the US standard (ie. with dot as decimal point), so we keep
+         * C for LC_NUMERIC. */
+        setlocale( LC_NUMERIC, "C" );
     }
 
     /* Specify where to find the locales for current domain */

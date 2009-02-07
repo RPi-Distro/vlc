@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright (C) 2005-2006 Rémi Denis-Courmont
- * $Id: tcp.c 16025 2006-07-13 14:19:35Z courmisch $
+ * $Id: tcp.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>

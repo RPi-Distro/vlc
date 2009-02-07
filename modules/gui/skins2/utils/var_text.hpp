@@ -2,7 +2,7 @@
  * var_text.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: var_text.hpp 15804 2006-06-04 14:03:54Z ipkiss $
+ * $Id: var_text.hpp 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

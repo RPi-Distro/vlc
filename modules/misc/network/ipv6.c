@@ -2,7 +2,7 @@
  * ipv6.c: IPv6 network abstraction layer
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: ipv6.c 15939 2006-06-25 17:05:52Z courmisch $
+ * $Id: ipv6.c 16460 2006-08-31 22:01:13Z hartman $
  *
  * Authors: Alexis Guillard <alexis.guillard@bt.com>
  *          Christophe Massiot <massiot@via.ecp.fr>

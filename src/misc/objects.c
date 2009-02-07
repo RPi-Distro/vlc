@@ -2,7 +2,7 @@
  * objects.c: vlc_object_t handling
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: objects.c 15915 2006-06-15 21:22:35Z zorglub $
+ * $Id: objects.c 15025 2006-04-01 11:27:40Z fkuehne $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -215,6 +215,10 @@ void * __vlc_object_create( vlc_object_t *p_this, int i_type )
         case VLC_OBJECT_OSDMENU:
             i_size = sizeof( osd_menu_t );
             psz_type = "osd menu";
+            break;
+        case VLC_OBJECT_STATS:
+            i_size = sizeof( stats_handler_t );
+            psz_type = "statistics";
             break;
         default:
             i_size = i_type > (int)sizeof(vlc_object_t)

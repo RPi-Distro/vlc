@@ -2,7 +2,7 @@
 # src/packages.mak : Archive locations
 # ***************************************************************************
 # Copyright (C) 2003 - 2006 the VideoLAN team
-# $Id: packages.mak 16200 2006-08-03 07:48:55Z jb $
+# $Id: packages.mak 16404 2006-08-29 00:42:17Z hartman $
 #
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>

@@ -2,7 +2,7 @@
  * interface.hpp: Main interface headers
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: interface.hpp 15879 2006-06-11 11:56:39Z gbazin $
+ * $Id: interface.hpp 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

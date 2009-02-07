@@ -2,7 +2,7 @@
  * gnomevfs.c: GnomeVFS input
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: gnomevfs.c 16083 2006-07-19 09:33:41Z zorglub $
+ * $Id: gnomevfs.c 15016 2006-03-31 23:07:01Z xtophe $
  *
  * Authors: Benjamin Pracht <bigben -AT- videolan -DOT- org>
  *
@@ -104,7 +104,20 @@ static int Open( vlc_object_t *p_this )
        open a file with a valid protocol, try to open at least file:// */
     gnome_vfs_open( &p_handle, "file://", 5 );
 
-    STANDARD_READ_ACCESS_INIT;
+    p_access->pf_read = Read;
+    p_access->pf_block = NULL;
+    p_access->pf_seek = Seek;
+    p_access->pf_control = Control;
+    p_access->info.i_update = 0;
+    p_access->info.i_size = 0;
+    p_access->info.i_pos = 0;
+    p_access->info.b_eof = VLC_FALSE;
+    p_access->info.i_title = 0;
+    p_access->info.i_seekpoint = 0;
+
+    p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
+    if( !p_sys )
+        return VLC_ENOMEM;
 
     p_sys->p_handle = p_handle;
     p_sys->i_nb_reads = 0;

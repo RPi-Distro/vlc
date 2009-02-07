@@ -2,7 +2,7 @@
  * ctrl_slider.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ctrl_slider.cpp 16297 2006-08-19 17:51:41Z ipkiss $
+ * $Id: ctrl_slider.cpp 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -27,7 +27,6 @@
 #include "../events/evt_mouse.hpp"
 #include "../events/evt_scroll.hpp"
 #include "../src/generic_bitmap.hpp"
-#include "../src/scaled_bitmap.hpp"
 #include "../src/top_window.hpp"
 #include "../src/os_factory.hpp"
 #include "../src/os_graphics.hpp"
@@ -316,18 +315,18 @@ CtrlSliderBg::CtrlSliderBg( intf_thread_t *pIntf,
     CtrlGeneric( pIntf, rHelp, pVisible ), m_pCursor( NULL ),
     m_rVariable( rVariable ), m_thickness( thickness ), m_rCurve( rCurve ),
     m_width( rCurve.getWidth() ), m_height( rCurve.getHeight() ),
-    m_pImgSeq( pBackground ), m_nbHoriz( nbHoriz ), m_nbVert( nbVert ),
+    m_pImgSeq( NULL ), m_nbHoriz( nbHoriz ), m_nbVert( nbVert ),
     m_padHoriz( padHoriz ), m_padVert( padVert ), m_bgWidth( 0 ),
     m_bgHeight( 0 ), m_position( 0 )
 {
     if( pBackground )
     {
         // Build the background image sequence
-        // Note: we suppose that the last padding is not included in the
-        // given image
-        // TODO: we should probably change this assumption, as it would make
-        // the code a bit simpler and it would be more natural for the skins
-        // designers
+        OSFactory *pOsFactory = OSFactory::instance( getIntf() );
+        m_pImgSeq = pOsFactory->createOSGraphics( pBackground->getWidth(),
+                                                  pBackground->getHeight() );
+        m_pImgSeq->drawBitmap( *pBackground, 0, 0 );
+
         m_bgWidth = (pBackground->getWidth() + m_padHoriz) / nbHoriz;
         m_bgHeight = (pBackground->getHeight() + m_padVert) / nbVert;
 
@@ -343,6 +342,7 @@ CtrlSliderBg::CtrlSliderBg( intf_thread_t *pIntf,
 CtrlSliderBg::~CtrlSliderBg()
 {
     m_rVariable.delObserver( this );
+    delete m_pImgSeq;
 }
 
 
@@ -361,25 +361,12 @@ void CtrlSliderBg::draw( OSGraphics &rImage, int xDest, int yDest )
 {
     if( m_pImgSeq )
     {
-        if( m_bgWidth > 0 && m_bgHeight > 0 )
-        {
-            // Compute the resize factors
-            float factorX, factorY;
-            getResizeFactors( factorX, factorY );
-
-            // Rescale the image with the actual size of the control
-            ScaledBitmap bmp( getIntf(), *m_pImgSeq,
-                 m_bgWidth * m_nbHoriz - (int)(m_padHoriz * factorX),
-                 m_bgHeight * m_nbVert - (int)(m_padVert * factorY) );
-
-            // Locate the right image in the background bitmap
-            int x = m_bgWidth * ( m_position % m_nbHoriz );
-            int y = m_bgHeight * ( m_position / m_nbHoriz );
-            // Draw the background image
-            rImage.drawBitmap( bmp, x, y, xDest, yDest,
-                               m_bgWidth - (int)(m_padHoriz * factorX),
-                               m_bgHeight - (int)(m_padVert * factorY) );
-        }
+        // Locate the right image in the background bitmap
+        int x = m_bgWidth * ( m_position % m_nbHoriz );
+        int y = m_bgHeight * ( m_position / m_nbHoriz );
+        // Draw the background image
+        rImage.drawGraphics( *m_pImgSeq, x, y, xDest, yDest,
+                             m_bgWidth - m_padHoriz, m_bgHeight - m_padVert );
     }
 }
 
@@ -429,24 +416,6 @@ void CtrlSliderBg::handleEvent( EvtGeneric &rEvent )
         }
 
         m_rVariable.set( percentage );
-    }
-}
-
-
-void CtrlSliderBg::onResize()
-{
-    if( m_pImgSeq )
-    {
-        // Compute only the new size of an elementary image.
-        // The actual resizing is done in the draw() method for now...
-
-        // Compute the resize factors
-        float factorX, factorY;
-        getResizeFactors( factorX, factorY );
-
-        // Size of one elementary background image (padding included)
-        m_bgWidth = (int)((m_pImgSeq->getWidth() + m_padHoriz) * factorX / m_nbHoriz);
-        m_bgHeight = (int)((m_pImgSeq->getHeight() + m_padVert) * factorY / m_nbVert);
     }
 }
 

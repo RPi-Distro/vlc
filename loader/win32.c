@@ -1,5 +1,5 @@
 /*
- * $Id: win32.c 15988 2006-07-08 09:31:56Z courmisch $
+ * $Id: win32.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Originally distributed under LPGL 2.1 (or later) by the Wine project.
  *

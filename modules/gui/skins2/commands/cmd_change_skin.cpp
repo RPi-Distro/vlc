@@ -2,7 +2,7 @@
  * cmd_change_skin.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cmd_change_skin.cpp 16164 2006-07-30 12:07:45Z ipkiss $
+ * $Id: cmd_change_skin.cpp 15008 2006-03-31 19:24:33Z zorglub $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -38,7 +38,6 @@ void CmdChangeSkin::execute()
 
     if( pOldTheme )
     {
-        pOldTheme->getWindowManager().saveVisibility();
         pOldTheme->getWindowManager().hideAll();
     }
 
@@ -58,7 +57,7 @@ void CmdChangeSkin::execute()
         msg_Warn( getIntf(), "a problem occurred when loading the new theme,"
                   " restoring the previous one" );
         getIntf()->p_sys->p_theme = pOldTheme;
-        pOldTheme->getWindowManager().restoreVisibility();
+        pOldTheme->getWindowManager().showAll();
     }
     else
     {

@@ -2,7 +2,7 @@
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: prefs.m 15729 2006-05-25 14:24:17Z zorglub $
+ * $Id: prefs.m 15170 2006-04-11 12:37:47Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -639,10 +639,6 @@ static VLCTreeItem *o_root_item = nil;
                 default:
                 {
                     VLCConfigControl *o_control = nil;
-		    if( p_item->b_internal == VLC_TRUE )
-		    {
-			break;
-		    }
                     o_control = [VLCConfigControl newControl:p_item
                                                   withView:o_view];
                     if( o_control != nil )

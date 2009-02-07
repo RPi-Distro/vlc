@@ -1,4 +1,4 @@
-$Id: THANKS 16245 2006-08-10 19:21:25Z dionoea $
+$Id: THANKS 16544 2006-09-07 23:05:11Z hartman $
 
 VLC makes extensive use of the following persons' code:
 
@@ -32,7 +32,6 @@ Brieuc Jeunhomme <bbp at via.ecp.fr> - bug fixes
 Bruno Vella <allevb at tin.it> - Italian localization
 Carlo Calabrò <murray at via.ecp.fr> - Italian localization
 Carsten Gottbehüt <gottbehuet at active-elements dot de> - v4l hotplug fix
-Cédric Cocquebert - Misc opengl effects for the OpenGL Video Output
 Chris Clepper - OpenGL fix
 Christian Henz - libupnp service discovery plugin, CyberLink UPnP fixes
 Christof Baumgaertner - dbox web intf
@@ -61,7 +60,6 @@ Eurodata Computer Club <retron.info> - VLC icon design (v0.8.4)
 François Seingier <francois.seingier at club-internet.fr> - TTL setting in the wx stream output dialog
 Frank Chao <frank0624 at gmail.com> - Chinese Traditional translation
 Fumio Nakayama <endymion at ca2.so-net.ne.jp> - Japanese translation
-Greg Farrell <greg at gregfarell dot org> - rc interface "enqueue" command
 Gregory Hazel <ghazel at gmail dot com> - wxWidgets fixes and improvements
 Goetz Waschk <waschk at informatik.uni-rostock dot de> - Mandrake packages
 Haakon Meland Eriksen - Norwegian translation
@@ -72,8 +70,7 @@ Jan Gerber <j at v2v dot org> - patch theora decoding aspect ratio
 Jan Van Boghout <vlc at macrabbit.com> - iTunes like slider for OSX intf
 Javier Varela <tonxabar at hotmail.com> - Spanish translation
 Jean-Alexis Montignies <ja at sente.ch> - coreaudio multiple streams fix
-Jean-Baptiste Kempf <jb at via dot ecp.fr> - Contrib system upgrade
-Jean-Baptiste Le Stang <jp.lestand at lestang.org> - Equalizer-GUI-fixes (OSX)
+Jean-Baptiste le Stang <jp.lestand at lestang.org> - Equalizer-GUI-fixes (OSX)
 Jean-Philippe Grimaldi <jeanphi at via.ecp.fr> - bug fixes
 Jean-Pierre Kuypers <Kuypers at sri.ucl.ac.be> - French translation
 Jeffrey Baker <jwbaker at acm.org> - port of the ALSA plugin to the ALSA 1.0 API
@@ -87,7 +84,6 @@ Jonas Larsen <jonas at vrt.dk> - Danish translation
 Julien Blache <jb at technologeek.org> - disc ejection code
 kty0ne - WinAmp 5 skin for VLC
 Kevin H. Patterson <kevpatt at khptech dot com> - Theora framesize calculation patch by Kevin H. Patterson (kevpatt at khptech dot com
-K. Staring <qdk at quickdekay dot net> - RTSP rewind and fast-forward support
 Laurent Jonqueres <laurent_jonqueres at yahoo.fr> - Occitan localization
 Laurent Mutricy <laurent.mutricy at ecl2005 dot ec-lyon dot fr> - HTTP interface fixes
 Lorena Gomes - Catalan translation
@@ -96,7 +92,6 @@ Marco Munderloh <Marco.Munderloh at web.de> - HTTP fix for Win32 to URL filename
 Mark Gritter <mgritter at kealia.com> - fix for netlist packet leak in demuxPSI
 Markus Kern <markus-kern at gmx dot net> - video output window fixes (win32)
 Markus Kuespert <ltlBeBoy at beosmail.com> - BeOS CSS support
-Mateus Krepsky Ludwich <mateus @t csp dot com d.t br> - rc interface mosaic-order callback
 Mathias C. Berens | welcome-soft <berens at welcome-soft.de> - German translation
 Mathias Kretschmer <mathias at research.att.com> - IP Multicast support
 Mats Rojestal <mats.rojestal at bredband dot net> - compilation fixes for Solaris 9
@@ -123,7 +118,6 @@ Pierre Marc Dumuid <pierre.dumuid at adelaide dot edu dot au> - Playlist patches
 Régis Duchesne <regis at via.ecp.fr> - original VLC code
 Remco Poortinga <poortinga at telin.nl> - IPv6 multicast patch
 Rene Gollent <rgollent at u.arizona.edu> - BeOS interface fix
-Rob Casey (rob dot casey AT swishgroup dot com dot au) - Amino RTSP fix
 Roine Gustafsson <roine at popstar.com> - spudec bug fixes
 Rudolf Cornelissen <rag.cornelissen at inter.nl.net> - BeOS fixes
 Scott Caudle <dorkmanzcot at gmail dot com> - Visualization, WX 

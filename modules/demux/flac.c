@@ -2,7 +2,7 @@
  * flac.c : FLAC demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: flac.c 16072 2006-07-18 17:19:10Z zorglub $
+ * $Id: flac.c 14790 2006-03-18 02:06:16Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -91,7 +91,7 @@ static int Open( vlc_object_t * p_this )
     p_demux->p_sys      = p_sys = malloc( sizeof( demux_sys_t ) );
     es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 'f', 'l', 'a', 'c' ) );
     p_sys->b_start = VLC_TRUE;
-    p_sys->p_meta = NULL;
+    p_sys->p_meta = 0;
 
     /* We need to read and store the STREAMINFO metadata */
     i_peek = stream_Peek( p_demux->s, &p_peek, 8 );
@@ -107,8 +107,18 @@ static int Open( vlc_object_t * p_this )
         return VLC_EGENERIC;
     }
 
-    /* Load the FLAC packetizer */
-    INIT_APACKETIZER( p_sys->p_packetizer, 'f', 'l', 'a', 'c' );
+    /*
+     * Load the FLAC packetizer
+     */
+    p_sys->p_packetizer = vlc_object_create( p_demux, VLC_OBJECT_DECODER );
+    p_sys->p_packetizer->pf_decode_audio = 0;
+    p_sys->p_packetizer->pf_decode_video = 0;
+    p_sys->p_packetizer->pf_decode_sub = 0;
+    p_sys->p_packetizer->pf_packetize = 0;
+
+    /* Initialization of decoder structure */
+    es_format_Init( &p_sys->p_packetizer->fmt_in, AUDIO_ES,
+                    VLC_FOURCC( 'f', 'l', 'a', 'c' ) );
 
     /* Store STREAMINFO for the decoder and packetizer */
     p_sys->p_packetizer->fmt_in.i_extra = fmt.i_extra = STREAMINFO_SIZE + 4;
@@ -221,9 +231,10 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     if( i_query == DEMUX_SET_TIME ) return VLC_EGENERIC;
     else if( i_query == DEMUX_GET_META )
     {
-        vlc_meta_t *p_meta = (vlc_meta_t *)va_arg( args, vlc_meta_t* );
+        vlc_meta_t **pp_meta = (vlc_meta_t **)va_arg( args, vlc_meta_t** );
         if( p_demux->p_sys->p_meta )
-            vlc_meta_Merge( p_meta, p_demux->p_sys->p_meta );
+            *pp_meta = vlc_meta_Duplicate( p_demux->p_sys->p_meta );
+        else *pp_meta = NULL;
         return VLC_SUCCESS;
     }
     else return demux2_vaControlHelper( p_demux->s, 0, -1,

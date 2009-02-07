@@ -4,7 +4,7 @@
  *   (http://liba52.sf.net/).
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: a52tofloat32.c 16307 2006-08-20 20:47:57Z jpsaman $
+ * $Id: a52tofloat32.c 14954 2006-03-28 21:00:15Z zorglub $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -56,7 +56,7 @@
  *****************************************************************************/
 static int  Create    ( vlc_object_t * );
 static void Destroy   ( vlc_object_t * );
-static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
+static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,  
                         aout_buffer_t * );
 static int  Open      ( vlc_object_t *, filter_sys_t *,
                         audio_format_t, audio_format_t );
@@ -161,7 +161,7 @@ static int Create( vlc_object_t *p_this )
 }
 
 /*****************************************************************************
- * Open:
+ * Open: 
  *****************************************************************************/
 static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
                  audio_format_t input, audio_format_t output )
@@ -435,6 +435,14 @@ static int OpenFilter( vlc_object_t *p_this )
 #else
         p_filter->fmt_out.i_codec = VLC_FOURCC('f','l','3','2');
 #endif
+
+    /* Allocate the memory needed to store the module's structure */
+    p_sys = p_filter->p_sys = malloc( sizeof(filter_sys_t) );
+    if( p_sys == NULL )
+    {
+        msg_Err( p_filter, "out of memory" );
+        return VLC_EGENERIC;
+    }
 
     /* Allocate the memory needed to store the module's structure */
     p_filter->p_sys = p_sys = malloc( sizeof(filter_sys_t) );

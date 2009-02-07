@@ -30,22 +30,21 @@
 #define COMPLEX_CONTENT 2
 
 #define SIMPLE_INTERFACE  (playlist_item_t *p_item,\
-                           input_item_t    *p_input,\
                            const char      *psz_name,\
                            char            *psz_value)
 #define COMPLEX_INTERFACE (demux_t         *p_demux,\
                            playlist_t      *p_playlist,\
                            playlist_item_t *p_item,\
-                           input_item_t    *p_input, \
                            xml_reader_t    *p_xml_reader,\
                            const char      *psz_element)
 
 /* prototypes */
+int xspf_import_Demux( demux_t *);
+int xspf_import_Control( demux_t *, int, va_list );
+
 static vlc_bool_t parse_playlist_node COMPLEX_INTERFACE;
 static vlc_bool_t parse_tracklist_node COMPLEX_INTERFACE;
 static vlc_bool_t parse_track_node COMPLEX_INTERFACE;
-static vlc_bool_t parse_extension_node COMPLEX_INTERFACE;
-static vlc_bool_t parse_extitem_node COMPLEX_INTERFACE;
 static vlc_bool_t set_item_info SIMPLE_INTERFACE;
 static vlc_bool_t skip_element COMPLEX_INTERFACE;
 static vlc_bool_t insert_new_item( playlist_t *, playlist_item_t *, playlist_item_t **, char *);

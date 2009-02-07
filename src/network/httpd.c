@@ -2,7 +2,7 @@
  * httpd.c
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: httpd.c 15915 2006-06-15 21:22:35Z zorglub $
+ * $Id: httpd.c 16439 2006-08-30 19:33:55Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -1506,7 +1506,7 @@ static void httpd_ClientRecv( httpd_client_t *cl )
                 cl->query.i_proto = HTTPD_PROTO_RTSP;
                 cl->query.i_type  = HTTPD_MSG_ANSWER;
             }
-            else if( !memcmp( cl->p_buffer, "GET ", 4 ) ||
+            else if( !memcmp( cl->p_buffer, "GET", 3 ) ||
                      !memcmp( cl->p_buffer, "HEAD", 4 ) ||
                      !memcmp( cl->p_buffer, "POST", 4 ) )
             {
@@ -1583,19 +1583,18 @@ static void httpd_ClientRecv( httpd_client_t *cl )
                     }
                     msg_type[] =
                     {
-                        { "OPTIONS",        HTTPD_MSG_OPTIONS,      HTTPD_PROTO_RTSP },
-                        { "DESCRIBE",       HTTPD_MSG_DESCRIBE,     HTTPD_PROTO_RTSP },
-                        { "SETUP",          HTTPD_MSG_SETUP,        HTTPD_PROTO_RTSP },
-                        { "PLAY",           HTTPD_MSG_PLAY,         HTTPD_PROTO_RTSP },
-                        { "PAUSE",          HTTPD_MSG_PAUSE,        HTTPD_PROTO_RTSP },
-                        { "GET_PARAMETER",  HTTPD_MSG_GETPARAMETER, HTTPD_PROTO_RTSP },
-                        { "TEARDOWN",       HTTPD_MSG_TEARDOWN,     HTTPD_PROTO_RTSP },
+                        { "GET",        HTTPD_MSG_GET,  HTTPD_PROTO_HTTP },
+                        { "HEAD",       HTTPD_MSG_HEAD, HTTPD_PROTO_HTTP },
+                        { "POST",       HTTPD_MSG_POST, HTTPD_PROTO_HTTP },
 
-                        { "GET",            HTTPD_MSG_GET,          HTTPD_PROTO_HTTP },
-                        { "HEAD",           HTTPD_MSG_HEAD,         HTTPD_PROTO_HTTP },
-                        { "POST",           HTTPD_MSG_POST,         HTTPD_PROTO_HTTP },
+                        { "OPTIONS",    HTTPD_MSG_OPTIONS,  HTTPD_PROTO_RTSP },
+                        { "DESCRIBE",   HTTPD_MSG_DESCRIBE, HTTPD_PROTO_RTSP },
+                        { "SETUP",      HTTPD_MSG_SETUP,    HTTPD_PROTO_RTSP },
+                        { "PLAY",       HTTPD_MSG_PLAY,     HTTPD_PROTO_RTSP },
+                        { "PAUSE",      HTTPD_MSG_PAUSE,    HTTPD_PROTO_RTSP },
+                        { "TEARDOWN",   HTTPD_MSG_TEARDOWN, HTTPD_PROTO_RTSP },
 
-                        { NULL,             HTTPD_MSG_NONE,         HTTPD_PROTO_NONE }
+                        { NULL,         HTTPD_MSG_NONE,     HTTPD_PROTO_NONE }
                     };
                     int  i;
 
@@ -1942,10 +1941,10 @@ static void httpd_HostThread( httpd_host_t *host )
 {
     tls_session_t *p_tls = NULL;
 
-    host->p_total_counter = stats_CounterCreate( host,
-                                          VLC_VAR_INTEGER, STATS_COUNTER );
-    host->p_active_counter = stats_CounterCreate( host,
-                                          VLC_VAR_INTEGER, STATS_COUNTER );
+    stats_Create( host, "client_connections", STATS_CLIENT_CONNECTIONS,
+                  VLC_VAR_INTEGER, STATS_COUNTER );
+    stats_Create( host, "active_connections", STATS_ACTIVE_CONNECTIONS,
+                  VLC_VAR_INTEGER, STATS_COUNTER );
 
     while( !host->b_die )
     {
@@ -1995,7 +1994,7 @@ static void httpd_HostThread( httpd_host_t *host )
                     cl->i_activity_date+cl->i_activity_timeout < mdate()) ) ) )
             {
                 httpd_ClientClean( cl );
-                stats_UpdateInteger( host, host->p_active_counter, -1, NULL );
+                stats_UpdateInteger( host, STATS_ACTIVE_CONNECTIONS, -1, NULL );
                 TAB_REMOVE( host->i_client, host->client, cl );
                 free( cl );
                 i_client--;
@@ -2490,10 +2489,10 @@ static void httpd_HostThread( httpd_host_t *host )
                     {
                         httpd_client_t *cl;
                         char ip[NI_MAXNUMERICHOST];
-                        stats_UpdateInteger( host, host->p_total_counter,
+                        stats_UpdateInteger( host, STATS_CLIENT_CONNECTIONS,
                                              1, NULL );
-                        stats_UpdateInteger( host, host->p_active_counter,
-                                             1, NULL );
+                        stats_UpdateInteger( host, STATS_ACTIVE_CONNECTIONS, 1,
+                                             NULL );
                         cl = httpd_ClientNew( fd, &sock, i_sock_size, p_tls );
                         httpd_ClientIP( cl, ip );
                         msg_Dbg( host, "Connection from %s", ip );

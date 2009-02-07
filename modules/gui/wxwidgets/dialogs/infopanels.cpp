@@ -2,7 +2,7 @@
  * infopanels.cpp : Information panels (general info, stats, ...)
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: infopanels.cpp 15629 2006-05-14 18:29:00Z zorglub $
+ * $Id: infopanels.cpp 16439 2006-08-30 19:33:55Z hartman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -98,7 +98,6 @@ MetaDataPanel::MetaDataPanel( intf_thread_t *_p_intf,
     ADD_META( VLC_META_LANGUAGE, language_text );
     ADD_META( VLC_META_NOW_PLAYING, nowplaying_text );
     ADD_META( VLC_META_PUBLISHER, publisher_text );
-    ADD_META( VLC_META_SETTING, setting_text );
 
     meta_sizer->Layout();
 
@@ -121,7 +120,8 @@ void MetaDataPanel::Update( input_item_t *p_item )
     name_text->SetValue( wxU( p_item->psz_name ) );
 
 #define UPDATE_META( meta, widget ) {                                       \
-    char *psz_meta = p_item->p_meta->psz_##meta;                            \
+    char *psz_meta = vlc_input_item_GetInfo( p_item, _(VLC_META_INFO_CAT),  \
+                                            _(meta) );                      \
     if( psz_meta != NULL && *psz_meta)                                      \
     {                                                                       \
         widget->SetLabel( wxU( psz_meta ) );                                \
@@ -129,18 +129,17 @@ void MetaDataPanel::Update( input_item_t *p_item )
     else { widget->SetLabel( wxU( "-" ) ); }                                \
     }
 
-    UPDATE_META( artist, artist_text );
-    UPDATE_META( genre, genre_text );
-    UPDATE_META( copyright, copyright_text );
-    UPDATE_META( album, collection_text );
-    UPDATE_META( tracknum, seqnum_text );
-    UPDATE_META( description, description_text );
-    UPDATE_META( rating, rating_text );
-    UPDATE_META( date, date_text );
-    UPDATE_META( language, language_text );
-    UPDATE_META( nowplaying, nowplaying_text );
-    UPDATE_META( publisher, publisher_text );
-    UPDATE_META( setting, setting_text );
+    UPDATE_META( VLC_META_ARTIST, artist_text );
+    UPDATE_META( VLC_META_GENRE, genre_text );
+    UPDATE_META( VLC_META_COPYRIGHT, copyright_text );
+    UPDATE_META( VLC_META_COLLECTION, collection_text );
+    UPDATE_META( VLC_META_SEQ_NUM, seqnum_text );
+    UPDATE_META( VLC_META_DESCRIPTION, description_text );
+    UPDATE_META( VLC_META_RATING, rating_text );
+    UPDATE_META( VLC_META_DATE, date_text );
+    UPDATE_META( VLC_META_LANGUAGE, language_text );
+    UPDATE_META( VLC_META_NOW_PLAYING, nowplaying_text );
+    UPDATE_META( VLC_META_PUBLISHER, publisher_text );
 
 #undef UPDATE_META
 }

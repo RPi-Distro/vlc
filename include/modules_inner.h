@@ -2,7 +2,7 @@
  * modules_inner.h : Macros used from within a module.
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: modules_inner.h 16087 2006-07-19 11:53:51Z zorglub $
+ * $Id: modules_inner.h 15056 2006-04-02 13:34:21Z courmisch $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -102,8 +102,8 @@
         static module_config_t config_end = {                                 \
             CONFIG_HINT_END, NULL, NULL, 0, NULL, NULL, NULL, 0, 0., 0, 0,    \
             0., 0., NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, 0, NULL,     \
-            VLC_FALSE, NULL, VLC_FALSE, VLC_FALSE, VLC_FALSE, VLC_FALSE,      \
-            NULL, 0, 0., NULL, 0, 0., VLC_FALSE                               \
+            VLC_FALSE, NULL, VLC_FALSE, VLC_FALSE, NULL, 0, 0., NULL, 0, 0.,  \
+            VLC_FALSE                                                         \
         };                                                                    \
         STORE_SYMBOLS;                                                        \
         p_module->b_submodule = VLC_FALSE;                                    \
@@ -112,7 +112,6 @@
         p_module->psz_object_name = MODULE_STRING;                            \
         p_module->psz_shortname = NULL;                                       \
         p_module->psz_longname = MODULE_STRING;                               \
-        p_module->psz_help = NULL;                                            \
         p_module->pp_shortcuts[ 0 ] = MODULE_STRING;                          \
         p_module->i_cpu = 0;                                                  \
         p_module->psz_program = NULL;                                         \
@@ -185,9 +184,6 @@
 
 #define set_description( desc )                                               \
     p_submodule->psz_longname = desc
-
-#define set_help( help )                                                      \
-    p_submodule->psz_help = help
 
 #define set_capability( cap, score )                                          \
     p_submodule->psz_capability = cap;                                        \

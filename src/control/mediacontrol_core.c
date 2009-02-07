@@ -2,7 +2,7 @@
  * core.c: Core functions : init, playlist, stream management
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: mediacontrol_core.c 16249 2006-08-11 23:30:02Z xtophe $
+ * $Id: mediacontrol_core.c 15025 2006-04-01 11:27:40Z fkuehne $
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *
@@ -192,17 +192,25 @@ mediacontrol_start( mediacontrol_Instance *self,
     vlc_mutex_lock( &p_playlist->object_lock );
     if( p_playlist->i_size )
     {
+        int i_index;
         int i_from;
         char *psz_from = NULL;
 
         psz_from = ( char * )malloc( 20 * sizeof( char ) );
-        if( psz_from && p_playlist->status.p_item )
+        if( psz_from )
         {
             i_from = mediacontrol_position2microsecond( p_playlist->p_input, a_position ) / 1000000;
 
+            i_index = p_playlist->i_index;
+            if( i_index < 0 )
+            {
+                /* We know that there is at least 1 element, since i_size != 0 */
+                i_index = 0;
+            }
+
             /* Set start time */
             snprintf( psz_from, 20, "start-time=%i", i_from );
-            vlc_input_item_AddOption( p_playlist->status.p_item->p_input, psz_from );
+            playlist_ItemAddOption( p_playlist->pp_items[i_index], psz_from );
             free( psz_from );
         }
 
@@ -284,7 +292,7 @@ mediacontrol_playlist_add_item( mediacontrol_Instance *self,
         RAISE( mediacontrol_InternalException, "No playlist" );
     }
     else
-        playlist_PlaylistAdd( self->p_playlist, psz_file, psz_file , PLAYLIST_INSERT,
+        playlist_Add( self->p_playlist, psz_file, psz_file , PLAYLIST_INSERT,
                       PLAYLIST_END );
 }
 
@@ -337,7 +345,7 @@ mediacontrol_playlist_get_list( mediacontrol_Instance *self,
 
     for( i_index = 0 ; i_index < i_playlist_size ; i_index++ )
     {
-        retval->data[i_index] = strdup( p_playlist->pp_items[i_index]->p_input->psz_uri );
+        retval->data[i_index] = strdup( p_playlist->pp_items[i_index]->input.psz_uri );
     }
     vlc_mutex_unlock( &p_playlist->object_lock );
 

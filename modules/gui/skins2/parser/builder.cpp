@@ -2,7 +2,7 @@
  * builder.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: builder.cpp 16231 2006-08-06 15:49:56Z ipkiss $
+ * $Id: builder.cpp 16454 2006-08-31 19:54:36Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -430,8 +430,7 @@ void Builder::addButton( const BuilderData::Button &rData )
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        pBmpUp->getWidth(),
-                                       pBmpUp->getHeight(), *pLayout,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+                                       pBmpUp->getHeight(), *pLayout );
 
     pLayout->addControl( pButton, pos, rData.m_layer );
 
@@ -506,8 +505,7 @@ void Builder::addCheckbox( const BuilderData::Checkbox &rData )
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        pBmpUp1->getWidth(),
-                                       pBmpUp1->getHeight(), *pLayout,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+                                       pBmpUp1->getHeight(), *pLayout );
 
     pLayout->addControl( pCheckbox, pos, rData.m_layer );
 
@@ -553,10 +551,9 @@ void Builder::addImage( const BuilderData::Image &rData )
 
     // Compute the position of the control
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
-                                       rData.m_xPos, rData.m_yPos,
-                                       pBmp->getWidth(), pBmp->getHeight(),
-                                       *pLayout, rData.m_xKeepRatio,
-                                       rData.m_yKeepRatio );
+                                       rData.m_xPos,
+                                       rData.m_yPos, pBmp->getWidth(),
+                                       pBmp->getHeight(), *pLayout );
 
     // XXX: test to be changed! XXX
     if( rData.m_actionId == "move" )
@@ -663,8 +660,8 @@ void Builder::addText( const BuilderData::Text &rData )
     // Compute the position of the control
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
-                                       rData.m_width, height, *pLayout,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+                                       rData.m_width, height,
+                                       *pLayout );
 
     pLayout->addControl( pText, pos, rData.m_layer );
 
@@ -711,12 +708,10 @@ void Builder::addRadialSlider( const BuilderData::RadialSlider &rData )
 
     // XXX: resizing is not supported
     // Compute the position of the control
-    const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
-                                       rData.m_xPos, rData.m_yPos,
-                                       pSeq->getWidth(),
-                                       pSeq->getHeight() / rData.m_nbImages,
-                                       *pLayout,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+    const Position pos =
+        makePosition( rData.m_leftTop, rData.m_rightBottom, rData.m_xPos,
+                      rData.m_yPos, pSeq->getWidth(),
+                      pSeq->getHeight() / rData.m_nbImages, *pLayout );
 
     pLayout->addControl( pRadial, pos, rData.m_layer );
 
@@ -777,8 +772,7 @@ void Builder::addSlider( const BuilderData::Slider &rData )
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        pCurve->getWidth(), pCurve->getHeight(),
-                                       *pLayout,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+                                       *pLayout );
 
     pLayout->addControl( pBackground, pos, rData.m_layer );
 
@@ -858,8 +852,7 @@ void Builder::addList( const BuilderData::List &rData )
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        rData.m_width, rData.m_height,
-                                       *pLayout,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+                                       *pLayout );
 
     pLayout->addControl( pList, pos, rData.m_layer );
 
@@ -923,8 +916,7 @@ void Builder::addTree( const BuilderData::Tree &rData )
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        rData.m_width, rData.m_height,
-                                       *pLayout,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+                                       *pLayout );
 
     pLayout->addControl( pTree, pos, rData.m_layer );
 
@@ -953,8 +945,7 @@ void Builder::addVideo( const BuilderData::Video &rData )
     const Position pos = makePosition( rData.m_leftTop, rData.m_rightBottom,
                                        rData.m_xPos, rData.m_yPos,
                                        rData.m_width, rData.m_height,
-                                       *pLayout,
-                                       rData.m_xKeepRatio, rData.m_yKeepRatio );
+                                       *pLayout );
 
     pLayout->addControl( pVideo, pos, rData.m_layer );
 
@@ -965,8 +956,7 @@ void Builder::addVideo( const BuilderData::Video &rData )
 const Position Builder::makePosition( const string &rLeftTop,
                                       const string &rRightBottom,
                                       int xPos, int yPos, int width,
-                                      int height, const Box &rBox,
-                                      bool xKeepRatio, bool yKeepRatio ) const
+                                      int height, const Box &rBox ) const
 {
     int left = 0, top = 0, right = 0, bottom = 0;
     Position::Ref_t refLeftTop = Position::kLeftTop;
@@ -1027,23 +1017,8 @@ const Position Builder::makePosition( const string &rLeftTop,
         refRightBottom = Position::kRightBottom;
     }
 
-    // In "keep ratio" mode, overwrite the previously computed values with the
-    // actual ones
-    // XXX: this coupling between makePosition and the Position class should
-    // be reduced...
-    if( xKeepRatio )
-    {
-        left = xPos;
-        right = xPos + width;
-    }
-    if( yKeepRatio )
-    {
-        top = yPos;
-        bottom = yPos + height;
-    }
-
     return Position( left, top, right, bottom, rBox, refLeftTop,
-                     refRightBottom, xKeepRatio, yKeepRatio );
+                     refRightBottom );
 }
 
 
@@ -1086,7 +1061,7 @@ GenericFont *Builder::getFont( const string &fontId )
 string Builder::getFilePath( const string &rFileName ) const
 {
     OSFactory *pFactory = OSFactory::instance( getIntf() );
-    return m_path + pFactory->getDirSeparator() + sFromLocale( rFileName );
+    return m_path + pFactory->getDirSeparator() + rFileName;
 }
 
 

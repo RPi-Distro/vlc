@@ -2,7 +2,7 @@
  * crop.c : Crop video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: crop.c 16319 2006-08-22 23:22:14Z fkuehne $
+ * $Id: crop.c 14977 2006-03-30 08:40:51Z zorglub $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -29,7 +29,6 @@
 
 #include <vlc/vlc.h>
 #include <vlc/vout.h>
-#include <vlc_interaction.h>
 
 #include "filter_common.h"
 
@@ -264,8 +263,6 @@ static int Init( vout_thread_t *p_vout )
     if( p_vout->p_sys->p_vout == NULL )
     {
         msg_Err( p_vout, "failed to create vout" );
-        intf_UserFatal( p_vout, VLC_FALSE, _("Cropping failed"), 
-                        _("VLC could not open the video output module.") );
         return VLC_EGENERIC;
     }
 
@@ -343,8 +340,6 @@ static int Manage( vout_thread_t *p_vout )
     if( p_vout->p_sys->p_vout == NULL )
     {
         msg_Err( p_vout, "failed to create vout" );
-        intf_UserFatal( p_vout, VLC_FALSE, _("Cropping failed"), 
-                        _("VLC could not open the video output module.") );
         return VLC_EGENERIC;
     }
 

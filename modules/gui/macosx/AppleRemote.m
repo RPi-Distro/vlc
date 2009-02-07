@@ -1,55 +1,10 @@
-/*****************************************************************************
- * AppleRemote.m
- * AppleRemote
- * $Id: AppleRemote.m 16236 2006-08-07 16:36:57Z fkuehne $
- *
- * Created by Martin Kahr on 11.03.06 under a MIT-style license. 
- * Copyright (c) 2006 martinkahr.com. All rights reserved.
- *
- * Permission is hereby granted, free of charge, to any person obtaining a 
- * copy of this software and associated documentation files (the "Software"),
- * to deal in the Software without restriction, including without limitation
- * the rights to use, copy, modify, merge, publish, distribute, sublicense,
- * and/or sell copies of the Software, and to permit persons to whom the
- * Software is furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included
- * in all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL 
- * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- *****************************************************************************
- *
- * Note that changes made by any members or contributors of the VideoLAN team
- * (i.e. changes that were checked in to one of VideoLAN's source code
- * repositories are licensed under the GNU General Public License version 2,
- * or (at your option) any later version. 
- * Thus, the following statements apply to our changes:
- *
- * Copyright (C) 2006 the VideoLAN team
- * Authors: Eric Petit <titer@m0k.org>
- *          Felix Kühne <fkuehne at videolan dot org>
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
- *****************************************************************************/
+//
+//  AppleRemote.m
+//  AppleRemote
+//
+//  Created by Martin Kahr on 11.03.06.
+//  Copyright 2006 martinkahr.com. All rights reserved.
+//
 
 #import "AppleRemote.h"
 
@@ -58,11 +13,10 @@ const int REMOTE_SWITCH_COOKIE=19;
 
 @implementation AppleRemote
 
-- (id) init
-{	
-    self = [super init];
+#pragma public interface
 
-    if ( self == [super init] ) {
+- (id) init {	
+	if ( self = [super init] ) {
 		openInExclusiveMode = YES;
 		queue = NULL;
 		hidDeviceInterface = NULL;
@@ -377,7 +331,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 		memset(cookies, 0, sizeof(IOHIDElementCookie) * NUMBER_OF_APPLE_REMOTE_ACTIONS);
 		*/
 		allCookies = [[NSMutableArray alloc] init];
-		unsigned int i;
+		int i;
 		for (i=0; i< [elements count]; i++) {
 			element = [elements objectAtIndex:i];
 						
@@ -418,7 +372,7 @@ static void QueueCallbackFunction(void* target,  IOReturn result, void* refcon, 
 		if (queue) {
 			result = (*queue)->create(queue, 0, 12);	//depth: maximum number of elements in queue before oldest elements in queue begin to be lost.
 
-			unsigned int i=0;
+			int i=0;
 			for(i=0; i<[allCookies count]; i++) {
 				IOHIDElementCookie cookie = (IOHIDElementCookie)[[allCookies objectAtIndex:i] intValue];
 				(*queue)->addElement(queue, cookie, 0);

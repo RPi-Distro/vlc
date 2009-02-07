@@ -2,7 +2,7 @@
  * vlc_httpd.h: builtin HTTP/RTSP server.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: vlc_httpd.h 15915 2006-06-15 21:22:35Z zorglub $
+ * $Id: vlc_httpd.h 14811 2006-03-18 17:52:31Z zorglub $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -55,7 +55,6 @@ enum
     HTTPD_MSG_SETUP,
     HTTPD_MSG_PLAY,
     HTTPD_MSG_PAUSE,
-    HTTPD_MSG_GETPARAMETER,
     HTTPD_MSG_TEARDOWN,
 
     /* just to track the count of MSG */
@@ -76,10 +75,6 @@ struct httpd_host_t
     char        *psz_hostname;
     int         i_port;
     int         *fd;
-
-    /* Statistics */
-    counter_t *p_active_counter;
-    counter_t *p_total_counter;
 
     vlc_mutex_t lock;
 

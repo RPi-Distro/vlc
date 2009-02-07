@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: x264.c 16298 2006-08-19 21:32:19Z Trax $
+ * $Id: x264.c 16595 2006-09-10 18:51:22Z sam $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

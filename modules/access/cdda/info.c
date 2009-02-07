@@ -2,7 +2,7 @@
  * info.c : CD digital audio input information routines
  *****************************************************************************
  * Copyright (C) 2004, 2005 the VideoLAN team
- * $Id: info.c 15768 2006-05-31 20:40:54Z zorglub $
+ * $Id: info.c 14550 2006-03-01 13:13:03Z hartman $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -158,7 +158,7 @@ cddb_end: ;
 
 #define add_meta_val(VLC_META, VAL)					\
   if ( p_cdda->p_meta && VAL) {                                         \
-    /*vlc_meta_Add( p_cdda->p_meta, VLC_META, VAL );*/                      \
+    vlc_meta_Add( p_cdda->p_meta, VLC_META, VAL );                      \
     dbg_print( INPUT_DBG_META, "field %s: %s\n", VLC_META, VAL );       \
   }                                                                     \
 
@@ -235,9 +235,7 @@ CDDAMetaInfoInit( access_t *p_access )
 	       p_cdda->i_tracks );
 
     p_cdda->psz_mcn = cdio_get_mcn(p_cdda->p_cdio);
-#if 0
     p_cdda->p_meta = vlc_meta_New();
-#endif
 
 #ifdef HAVE_LIBCDDB
     if ( p_cdda->b_cddb_enabled )
@@ -821,10 +819,11 @@ CDDACreatePlaylistItem( const access_t *p_access, cdda_data_t *p_cdda,
                         playlist_t *p_playlist, playlist_item_t *p_item, 
                         track_t i_track )
 {
-    unsigned int i_track_frames = 
-        cdio_get_track_lsn(p_cdda->p_cdio, i_track+1) - 
-        cdio_get_track_lsn(p_cdda->p_cdio, i_track);
-    mtime_t i_mduration = i_track_frames * (CLOCK_FREQ / CDIO_CD_FRAMES_PER_SEC) ;
+  unsigned int i_track_frames = 
+    cdio_get_track_lsn(p_cdda->p_cdio, i_track+1) - 
+    cdio_get_track_lsn(p_cdda->p_cdio, i_track);
+    mtime_t i_mduration = 
+      i_track_frames * (CLOCK_FREQ / CDIO_CD_FRAMES_PER_SEC) ;
     char *psz_title = NULL;
     char *psz_mrl   = NULL;
 
@@ -839,17 +838,17 @@ CDDACreatePlaylistItem( const access_t *p_access, cdda_data_t *p_cdda,
                psz_mrl, psz_title, (long int) i_mduration / 1000000 );
 
     p_child = playlist_ItemNew( p_playlist, psz_mrl, psz_title );
-    p_child->p_input->i_duration = (mtime_t) i_mduration;
+    p_child->input.i_duration   = i_mduration;
     free(psz_mrl);
     free(psz_title);
 
     if( !p_child ) return NULL;
-#if 0
+
     playlist_NodeAddItem( p_playlist, p_child,
-                          p_item->p_parent->i_view,
+                          p_item->pp_parents[0]->i_view,
                           p_item, PLAYLIST_APPEND, PLAYLIST_END );
     playlist_CopyParents( p_item, p_child );
-#endif
+
     return p_child;
 }
 
@@ -857,7 +856,6 @@ int CDDAAddMetaToItem( access_t *p_access, cdda_data_t *p_cdda,
                        playlist_item_t *p_item, int i_track,
                        vlc_bool_t b_single )
 {
-#if 0
     add_playlist_track_info_str("Source",  p_cdda->psz_source);
     vlc_input_item_AddInfo( &p_item->input, _("Track"), _("Track Number"),
                            "%d", i_track );
@@ -901,7 +899,7 @@ int CDDAAddMetaToItem( access_t *p_access, cdda_data_t *p_cdda,
         }
     }
 #endif /*HAVE_LIBCDDB*/
-#endif
+
     return VLC_SUCCESS;
 }
 
@@ -982,12 +980,13 @@ CDDAFixupPlaylist( access_t *p_access, cdda_data_t *p_cdda,
 
         t->i_length = I64C(1000000) * t->i_size / CDDA_FREQUENCY_SAMPLE / 4;
 
-	if( p_item ) 
+
+	if (p_item) 
 	{
 	    CDDAAddMetaToItem( p_access, p_cdda, p_item, i_track, VLC_FALSE );
-	    p_item->p_input->i_duration = (mtime_t) i_track_frames 
+	    p_item->input.i_duration = i_track_frames 
 	      * (CLOCK_FREQ / CDIO_CD_FRAMES_PER_SEC);
-	    p_item->p_input->psz_uri = CDDAFormatMRL( p_access, i_track );
+	    p_item->input.psz_uri    = CDDAFormatMRL(p_access, i_track);
 	}
 	
         p_cdda->i_titles = 1;
@@ -1026,11 +1025,11 @@ CDDAFixupPlaylist( access_t *p_access, cdda_data_t *p_cdda,
 
         p_cdda->i_titles = p_cdda->i_tracks;
 	p_access->info.i_update |= INPUT_UPDATE_TITLE|INPUT_UPDATE_SIZE;
-	if( p_item )
-        {
-	    p_item->p_input->i_duration = (mtime_t)
+	if (p_item) {
+	    p_item->input.i_duration = 
 	      p_access->info.i_size * (CLOCK_FREQ / CDIO_CD_FRAMES_PER_SEC) ;
-	    p_item->p_input->psz_uri    = CDDAFormatMRL( p_access, p_cdda->i_track );
+	    p_item->input.psz_uri    = CDDAFormatMRL(p_access, 
+						     p_cdda->i_track);
 	}
     }
     
@@ -1038,6 +1037,7 @@ CDDAFixupPlaylist( access_t *p_access, cdda_data_t *p_cdda,
     if( b_play )
     {
         playlist_Control( p_playlist, PLAYLIST_VIEWPLAY,
+                          p_playlist->status.i_view,
                           p_playlist->status.p_item, NULL );
     }
 

@@ -2,7 +2,7 @@
  * skin_main.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: skin_main.cpp 16264 2006-08-15 11:04:13Z ipkiss $
+ * $Id: skin_main.cpp 16441 2006-08-30 21:36:35Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -308,8 +308,8 @@ static int DemuxOpen( vlc_object_t *p_this )
             if( p_playlist != NULL )
             {
                 // Make sure the item is deleted afterwards
-                /// \bug does not always work
-                p_playlist->status.p_item->i_flags |= PLAYLIST_REMOVE_FLAG;
+                p_playlist->pp_items[p_playlist->i_index]->b_autodeletion =
+                    VLC_TRUE;
                 vlc_object_release( p_playlist );
             }
 
@@ -365,20 +365,16 @@ static int onSystrayChange( vlc_object_t *pObj, const char *pVariable,
         return VLC_EGENERIC;
     }
 
-    // Check that we found the correct interface (same check as for the demux)
-    if( var_Type( pIntf, "skin-to-load" ) == VLC_VAR_STRING )
+    AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
+    if( newVal.b_bool )
     {
-        AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
-        if( newVal.b_bool )
-        {
-            CmdAddInTray *pCmd = new CmdAddInTray( pIntf );
-            pQueue->push( CmdGenericPtr( pCmd ) );
-        }
-        else
-        {
-            CmdRemoveFromTray *pCmd = new CmdRemoveFromTray( pIntf );
-            pQueue->push( CmdGenericPtr( pCmd ) );
-        }
+        CmdAddInTray *pCmd = new CmdAddInTray( pIntf );
+        pQueue->push( CmdGenericPtr( pCmd ) );
+    }
+    else
+    {
+        CmdRemoveFromTray *pCmd = new CmdRemoveFromTray( pIntf );
+        pQueue->push( CmdGenericPtr( pCmd ) );
     }
 
     vlc_object_release( pIntf );
@@ -399,20 +395,16 @@ static int onTaskBarChange( vlc_object_t *pObj, const char *pVariable,
         return VLC_EGENERIC;
     }
 
-    // Check that we found the correct interface (same check as for the demux)
-    if( var_Type( pIntf, "skin-to-load" ) == VLC_VAR_STRING )
+    AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
+    if( newVal.b_bool )
     {
-        AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
-        if( newVal.b_bool )
-        {
-            CmdAddInTaskBar *pCmd = new CmdAddInTaskBar( pIntf );
-            pQueue->push( CmdGenericPtr( pCmd ) );
-        }
-        else
-        {
-            CmdRemoveFromTaskBar *pCmd = new CmdRemoveFromTaskBar( pIntf );
-            pQueue->push( CmdGenericPtr( pCmd ) );
-        }
+        CmdAddInTaskBar *pCmd = new CmdAddInTaskBar( pIntf );
+        pQueue->push( CmdGenericPtr( pCmd ) );
+    }
+    else
+    {
+        CmdRemoveFromTaskBar *pCmd = new CmdRemoveFromTaskBar( pIntf );
+        pQueue->push( CmdGenericPtr( pCmd ) );
     }
 
     vlc_object_release( pIntf );
@@ -446,7 +438,6 @@ vlc_module_begin();
     add_string( "skins2-config", "", NULL, SKINS2_CONFIG, SKINS2_CONFIG_LONG,
                 VLC_TRUE );
         change_autosave();
-        change_internal();
 #ifdef WIN32
     add_bool( "skins2-systray", VLC_FALSE, onSystrayChange, SKINS2_SYSTRAY,
               SKINS2_SYSTRAY_LONG, VLC_FALSE );

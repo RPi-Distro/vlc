@@ -2,7 +2,7 @@
  * slider_manager.cpp : Manage an input slider
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: input_manager.cpp 15933 2006-06-21 00:09:19Z yoann $
+ * $Id: input_manager.cpp 14556 2006-03-01 19:56:34Z fkuehne $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -75,10 +75,6 @@ InputManager::InputManager( intf_thread_t *_p_intf, Interface *_p_main_intf,
 
     /* Create slider */
     slider = new wxSlider( this, SliderScroll_Event, 0, 0, SLIDER_MAX_POS );
-    /* Add mouse click on slider */
-    slider->Connect( wxEVT_LEFT_DOWN,
-                     wxMouseEventHandler( InputManager::OnSliderClick ),
-                     NULL, this );
 
     /* Create disc buttons */
     disc_frame = new wxPanel( this );
@@ -148,9 +144,8 @@ void InputManager::UpdateInput()
 
 void InputManager::UpdateNowPlaying()
 {
-    char *psz_now_playing = p_input->input.p_item->p_meta->psz_nowplaying ?
-                    strdup( p_input->input.p_item->p_meta->psz_nowplaying ):
-                    strdup( "" );
+    char *psz_now_playing = vlc_input_item_GetInfo( p_input->input.p_item,
+                _(VLC_META_INFO_CAT), _(VLC_META_NOW_PLAYING) );
     if( psz_now_playing && *psz_now_playing )
     {
         p_main_intf->statusbar->SetStatusText(
@@ -429,33 +424,6 @@ void InputManager::OnSliderUpdate( wxScrollEvent& event )
 
 #undef WIN32
     vlc_mutex_unlock( &p_intf->change_lock );
-}
-
-void InputManager::OnSliderClick( wxMouseEvent& event )
-{
-    wxSlider* slider = wxStaticCast( event.GetEventObject(), wxSlider );
-    int i_min = slider->GetMin();
-    int i_max = slider->GetMax();
-    int i_pos = event.GetPosition().x;
-    int i_dim = slider->GetClientSize().x;
-    int i_val = i_min + ( i_pos * ( i_max - i_min + 1 ) ) / i_dim;
-
-    if( i_pos < 0 || i_pos >= i_dim ) return;
-
-    vlc_mutex_lock( &p_intf->change_lock );
-
-    slider->SetValue( i_val );
-
-    if( i_slider_pos != i_val && p_intf->p_sys->p_input )
-    {
-        vlc_value_t pos;
-        pos.f_float = (float)i_val / (float)SLIDER_MAX_POS;
-        var_Set( p_intf->p_sys->p_input, "position", pos );
-    }
-
-    vlc_mutex_unlock( &p_intf->change_lock );
-
-    event.Skip();
 }
 
 void InputManager::ShowSlider( bool show )

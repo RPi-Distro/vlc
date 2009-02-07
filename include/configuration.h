@@ -4,7 +4,7 @@
  * It includes functions allowing to declare, get or set configuration options.
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
- * $Id: configuration.h 16001 2006-07-09 15:01:13Z dionoea $
+ * $Id: configuration.h 15074 2006-04-02 19:12:58Z courmisch $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -79,7 +79,6 @@
    #define SUBCAT_VIDEO_VFILTER 303
    #define SUBCAT_VIDEO_TEXT 304
    #define SUBCAT_VIDEO_SUBPIC 305
-   #define SUBCAT_VIDEO_VFILTER2 306
 
 #define CAT_INPUT 4
    #define SUBCAT_INPUT_GENERAL 401
@@ -155,9 +154,6 @@ struct module_config_t
     vlc_mutex_t *p_lock;            /* Lock to use when modifying the config */
     vlc_bool_t   b_dirty;          /* Dirty flag to indicate a config change */
     vlc_bool_t   b_advanced;          /* Flag to indicate an advanced option */
-    vlc_bool_t   b_internal;   /* Flag to indicate option is not to be shown */
-    vlc_bool_t   b_restart;    /* Flag to indicate the option need a restart */
-                               /* to take effect */
 
     /* Original option values */
     char        *psz_value_orig;
@@ -398,12 +394,6 @@ int config_AutoSaveConfigFile( vlc_object_t * );
     p_config[i_config].ppsz_action_text[p_config[i_config].i_action] = \
       action_text; \
     p_config[i_config].i_action++;
-
-#define change_internal() \
-    p_config[i_config].b_internal = VLC_TRUE;
-
-#define change_need_restart() \
-    p_config[i_config].b_restart = VLC_TRUE;
 
 #define change_autosave() \
     p_config[i_config].b_autosave = VLC_TRUE;

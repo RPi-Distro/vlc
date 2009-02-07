@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: rtsp.c 15690 2006-05-20 11:43:35Z jpsaman $
+ * $Id: rtsp.c 16441 2006-08-30 21:36:35Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.

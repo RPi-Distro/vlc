@@ -26,12 +26,12 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     dvdnav) list="\${list} access/libdvdnav" ;;
     dvdread) list="\${list} access/libdvdread" ;;
     access_fake) list="\${list} access/libaccess_fake" ;;
-    pvr) list="\${list} access/libpvr" ;;
-    v4l) list="\${list} access/libv4l" ;;
     cdda) list="\${list} access/libcdda" ;;
     dshow) list="\${list} access/dshow/libdshow" ;;
     dvb) list="\${list} access/dvb/libdvb" ;;
     access_mms) list="\${list} access/mms/libaccess_mms" ;;
+    pvr) list="\${list} access/pvr/libpvr" ;;
+    v4l) list="\${list} access/v4l/libv4l" ;;
     cddax) list="\${list} access/cdda/libcddax" ;;
     access_realrtsp) list="\${list} access/rtsp/libaccess_realrtsp" ;;
     vcd) list="\${list} access/vcd/libvcd" ;;
@@ -69,7 +69,6 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     u8tofixed32) list="\${list} audio_filter/converter/libu8tofixed32" ;;
     u8tofloat32) list="\${list} audio_filter/converter/libu8tofloat32" ;;
     mpgatofixed32) list="\${list} audio_filter/converter/libmpgatofixed32" ;;
-    mono) list="\${list} audio_filter/converter/libmono" ;;
     trivial_resampler) list="\${list} audio_filter/resampler/libtrivial_resampler" ;;
     ugly_resampler) list="\${list} audio_filter/resampler/libugly_resampler" ;;
     linear_resampler) list="\${list} audio_filter/resampler/liblinear_resampler" ;;
@@ -131,13 +130,13 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     hotkeys) list="\${list} control/libhotkeys" ;;
     lirc) list="\${list} control/liblirc" ;;
     rc) list="\${list} control/librc" ;;
-    motion) list="\${list} control/libmotion" ;;
     http) list="\${list} control/http/libhttp" ;;
     corba) list="\${list} control/corba/libcorba" ;;
     a52sys) list="\${list} demux/liba52sys" ;;
     dtssys) list="\${list} demux/libdtssys" ;;
     flac) list="\${list} demux/libflac" ;;
     ogg) list="\${list} demux/libogg" ;;
+    m3u) list="\${list} demux/libm3u" ;;
     demuxdump) list="\${list} demux/libdemuxdump" ;;
     rawdv) list="\${list} demux/librawdv" ;;
     au) list="\${list} demux/libau" ;;
@@ -151,6 +150,7 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     mod) list="\${list} demux/libmod" ;;
     pva) list="\${list} demux/libpva" ;;
     aiff) list="\${list} demux/libaiff" ;;
+    sgimb) list="\${list} demux/libsgimb" ;;
     mjpeg) list="\${list} demux/libmjpeg" ;;
     subtitle) list="\${list} demux/libsubtitle" ;;
     ty) list="\${list} demux/libty" ;;
@@ -160,7 +160,6 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     nuv) list="\${list} demux/libnuv" ;;
     nsc) list="\${list} demux/libnsc" ;;
     mpc) list="\${list} demux/libmpc" ;;
-    gme) list="\${list} demux/libgme" ;;
     asf) list="\${list} demux/asf/libasf" ;;
     avi) list="\${list} demux/avi/libavi" ;;
     mp4) list="\${list} demux/mp4/libmp4" ;;
@@ -176,7 +175,6 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     pda) list="\${list} gui/pda/libpda" ;;
     macosx) list="\${list} gui/macosx/libmacosx" ;;
     qnx) list="\${list} gui/qnx/libqnx" ;;
-    qt4) list="\${list} gui/qt4/libqt4" ;;
     skins2) list="\${list} gui/skins2/libskins2" ;;
     wxwidgets) list="\${list} gui/wxwidgets/libwxwidgets" ;;
     wince) list="\${list} gui/wince/libwince" ;;
@@ -211,7 +209,6 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     export) list="\${list} misc/playlist/libexport" ;;
     xtag) list="\${list} misc/xml/libxtag" ;;
     xml) list="\${list} misc/xml/libxml" ;;
-    probe_hal) list="\${list} misc/probe/libprobe_hal" ;;
     mux_dummy) list="\${list} mux/libmux_dummy" ;;
     mux_avi) list="\${list} mux/libmux_avi" ;;
     mux_ogg) list="\${list} mux/libmux_ogg" ;;
@@ -261,6 +258,7 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     transform) list="\${list} video_filter/libtransform" ;;
     invert) list="\${list} video_filter/libinvert" ;;
     adjust) list="\${list} video_filter/libadjust" ;;
+    distort) list="\${list} video_filter/libdistort" ;;
     wall) list="\${list} video_filter/libwall" ;;
     clone) list="\${list} video_filter/libclone" ;;
     crop) list="\${list} video_filter/libcrop" ;;
@@ -276,10 +274,6 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     rv32) list="\${list} video_filter/librv32" ;;
     osdmenu) list="\${list} video_filter/libosdmenu" ;;
     magnify) list="\${list} video_filter/libmagnify" ;;
-    wave) list="\${list} video_filter/libwave" ;;
-    ripple) list="\${list} video_filter/libripple" ;;
-    psychedelic) list="\${list} video_filter/libpsychedelic" ;;
-    gradient) list="\${list} video_filter/libgradient" ;;
     swscale) list="\${list} video_filter/swscale/libswscale" ;;
     aa) list="\${list} video_output/libaa" ;;
     caca) list="\${list} video_output/libcaca" ;;
@@ -297,7 +291,6 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     image) list="\${list} video_output/libimage" ;;
     directfb) list="\${list} video_output/libdirectfb" ;;
     vout_directx) list="\${list} video_output/directx/libvout_directx" ;;
-    direct3d) list="\${list} video_output/directx/libdirect3d" ;;
     glwin32) list="\${list} video_output/directx/libglwin32" ;;
     qte) list="\${list} video_output/qte/libqte" ;;
     x11) list="\${list} video_output/x11/libx11" ;;

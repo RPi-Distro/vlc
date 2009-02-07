@@ -2,7 +2,7 @@
  * xosd.c : X On Screen Display interface
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: xosd.c 15644 2006-05-15 12:28:44Z zorglub $
+ * $Id: xosd.c 14903 2006-03-24 11:05:28Z zorglub $
  *
  * Authors: Loïc Minier <lool@videolan.org>
  *
@@ -204,9 +204,10 @@ static void Close( vlc_object_t *p_this )
  *****************************************************************************/
 static void Run( intf_thread_t *p_intf )
 {
+    int i_size,i_index;
     playlist_t *p_playlist;
     playlist_item_t *p_item = NULL;
-    input_item_t *p_input;
+    input_item_t item;
     char psz_duration[MSTRTIME_MAX_SIZE+2];
     char *psz_display = NULL;
 
@@ -222,7 +223,7 @@ static void Run( intf_thread_t *p_intf )
                 continue;
             }
 
-            if( p_playlist->i_size < 0  )
+            if( p_playlist->i_size < 0 || p_playlist->i_index < 0 )
             {
                 vlc_object_release( p_playlist );
                 continue;
@@ -244,20 +245,25 @@ static void Run( intf_thread_t *p_intf )
             }
             else
             {
-                p_item = p_playlist->status.p_item;
-                p_input = p_item->p_input;
+    //           vlc_mutex_lock(&p_playlist->object_lock );
+                 p_item = p_playlist->status.p_item;
+                item = p_item->input;
                 if( !p_item )
                 {
                     vlc_object_release( p_playlist );
+     //            vlc_mutex_unlock(&p_playlist->object_lock );
                     continue;
                 }
+                i_size = p_playlist->i_size;
+                i_index = p_playlist->i_index+1;
+    //            vlc_mutex_unlock(&p_playlist->object_lock );
 
                 vlc_object_release( p_playlist );
 
-                if( p_input->i_duration != -1 )
+                if( item.i_duration != -1 )
                 {
                     char psz_durationstr[MSTRTIME_MAX_SIZE];
-                    secstotimestr( psz_durationstr, p_input->i_duration/1000000 );
+                    secstotimestr( psz_durationstr, item.i_duration/1000000 );
                     sprintf( psz_duration, "(%s)", psz_durationstr );
                 }
                 else
@@ -266,10 +272,10 @@ static void Run( intf_thread_t *p_intf )
                 }
 
                 psz_display = (char *)malloc( sizeof(char )*
-                                          (strlen( p_input->psz_name ) +
+                                          (strlen( item.psz_name ) +
                                           MSTRTIME_MAX_SIZE + 2+6 + 10 +10 ));
-                sprintf( psz_display,"%s %s",
-                         p_input->psz_name, psz_duration);
+                sprintf( psz_display," %i/%i - %s %s",
+                         i_index,i_size, item.psz_name, psz_duration);
             }
 
             /* Display */

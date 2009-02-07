@@ -178,6 +178,7 @@
             ACTIONS = {
                 checkForUpdate = id; 
                 clearRecentItems = id; 
+                closeError = id; 
                 intfOpenDisc = id; 
                 intfOpenFile = id; 
                 intfOpenFileGeneric = id; 
@@ -193,13 +194,10 @@
                 reportABug = id; 
                 showBookmarks = id; 
                 showExtended = id; 
-                showMessagesPanel = id; 
-                showSFilters = id; 
                 showWizard = id; 
                 timesliderUpdate = id; 
                 togglePlaylist = id; 
                 viewAbout = id; 
-                viewErrorsAndWarnings = id; 
                 viewPreferences = id; 
             }; 
             CLASS = VLCMain; 
@@ -219,8 +217,14 @@
                 "o_dmi_previous" = id; 
                 "o_dmi_stop" = id; 
                 "o_embedded_window" = id; 
+                "o_err_btn_dismiss" = id; 
+                "o_err_btn_msgs" = id; 
+                "o_err_bug_lbl" = id; 
+                "o_err_ckbk_surpress" = id; 
+                "o_err_lbl" = id; 
+                "o_err_msg" = id; 
+                "o_error" = id; 
                 "o_info" = id; 
-                "o_main_pgbar" = id; 
                 "o_messages" = id; 
                 "o_mi_about" = id; 
                 "o_mi_add_intf" = id; 
@@ -244,7 +248,6 @@
                 "o_mi_donation" = id; 
                 "o_mi_double_window" = id; 
                 "o_mi_equalizer" = id; 
-                "o_mi_errorsAndWarnings" = id; 
                 "o_mi_extended" = id; 
                 "o_mi_faster" = id; 
                 "o_mi_ffmpeg_pp" = id; 
@@ -324,17 +327,7 @@
                 "o_scrollfield" = id; 
                 "o_timefield" = id; 
                 "o_timeslider" = id; 
-                "o_vmi_fullscreen" = id; 
-                "o_vmi_mute" = id; 
-                "o_vmi_next" = id; 
-                "o_vmi_play" = id; 
-                "o_vmi_prev" = id; 
-                "o_vmi_snapshot" = id; 
-                "o_vmi_stop" = id; 
-                "o_vmi_voldown" = id; 
-                "o_vmi_volup" = id; 
                 "o_volumeslider" = id; 
-                "o_vout_menu" = id; 
                 "o_window" = id; 
             }; 
             SUPERCLASS = NSObject; 

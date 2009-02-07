@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: dvdnav.c 16319 2006-08-22 23:22:14Z fkuehne $
+ * $Id: dvdnav.c 15016 2006-03-31 23:07:01Z xtophe $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -28,7 +28,6 @@
 
 #include <vlc/vlc.h>
 #include <vlc/input.h>
-#include <vlc_interaction.h>
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
@@ -207,7 +206,10 @@ static int Open( vlc_object_t *p_this )
     free( psz_name );
 
     /* Fill p_demux field */
-    STANDARD_DEMUX_INIT; p_sys = p_demux->p_sys;
+    p_demux->pf_demux = Demux;
+    p_demux->pf_control = Control;
+    p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
+    memset( p_sys, 0, sizeof( demux_sys_t ) );
     p_sys->dvdnav = p_dvdnav;
 
     ps_track_init( p_sys->tk );
@@ -293,9 +295,6 @@ static int Open( vlc_object_t *p_this )
         if( dvdnav_title_play( p_sys->dvdnav, 1 ) != DVDNAV_STATUS_OK )
         {
             msg_Err( p_demux, "cannot set title (can't decrypt DVD?)" );
-            intf_UserFatal( p_demux, VLC_FALSE, _("Playback failure"), 
-                            _("VLC cannot set the DVD's title. It possibly "
-                              "cannot decrypt the entire disk.") );
             dvdnav_close( p_sys->dvdnav );
             free( p_sys );
             return VLC_EGENERIC;
@@ -544,8 +543,10 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             dvdnav_get_title_string(p_sys->dvdnav, &title_name);
             if( (NULL != title_name) && ('\0' != title_name[0]) )
             {
-                vlc_meta_t *p_meta = (vlc_meta_t*)va_arg( args, vlc_meta_t* );
-                vlc_meta_SetTitle( p_meta, title_name );
+                vlc_meta_t **pp_meta = (vlc_meta_t**)va_arg( args, vlc_meta_t** );
+                vlc_meta_t *meta;
+                *pp_meta = meta = vlc_meta_New();
+                vlc_meta_Add( meta, VLC_META_TITLE, title_name );
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;

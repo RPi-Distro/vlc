@@ -1,6 +1,6 @@
 /*
  * Win32 binary loader interface
- * $Id: loader.h 16026 2006-07-13 14:29:00Z courmisch $
+ * $Id: loader.h 16544 2006-09-07 23:05:11Z hartman $
  *
  * Copyright 2000 Eugene Kuznetsov (divx@euro.ru)
  * Copyright (C) the Wine project

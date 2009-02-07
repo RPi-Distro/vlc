@@ -2,7 +2,7 @@
  * ctrl_generic.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ctrl_generic.hpp 16167 2006-07-30 14:34:21Z ipkiss $
+ * $Id: ctrl_generic.hpp 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -66,10 +66,8 @@ class CtrlGeneric: public SkinObject, public Observer<VarBool>
         virtual UString getTooltipText() const
             { return UString( getIntf(), "" ); }
 
-        /**
-         * Overload this method if you want to do something special when
-         * the layout is resized
-         */
+        /// Overload this method if you want to do something special when
+        /// the layout is resized
         virtual void onResize() {}
 
         /// Get the help text
@@ -89,18 +87,14 @@ class CtrlGeneric: public SkinObject, public Observer<VarBool>
         CtrlGeneric( intf_thread_t *pIntf, const UString &rHelp,
                      VarBool *pVisible = NULL );
 
-        /**
-         * Tell the layout when the image has changed, with the size of the
-         * rectangle to repaint and its offset.
-         * Use the default values to repaint the whole window
-         */
+        /// Tell the layout when the image has changed, with the size of the
+        /// rectangle to repaint and its offset.
+        /// Use the default values to repaint the whole window
         virtual void notifyLayout( int witdh = -1, int height = -1,
                                    int xOffSet = 0, int yOffSet = 0 ) const;
 
-        /**
-         * Same as notifyLayout(), but takes optional images as parameters.
-         * The maximum size(s) of the images will be used for repainting.
-         */
+        /// Same as notifyLayout(), but takes optional images as parameters.
+        /// The maximum size(s) of the images will be used for repainting.
         void notifyLayoutMaxSize( const Box *pImg1 = NULL,
                                   const Box *pImg2 = NULL );
 
@@ -116,10 +110,8 @@ class CtrlGeneric: public SkinObject, public Observer<VarBool>
         /// Get the associated window, if any
         virtual TopWindow *getWindow() const;
 
-        /**
-         * Overload this method if you want to do something special when
-         * the Position object is set
-         */
+        /// Overload this method if you want to do something special when
+        /// the Position object is set
         virtual void onPositionChange() {}
 
         /// Overload this method to get notified of bool variable changes

@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: decoder.c 16319 2006-08-22 23:22:14Z fkuehne $
+ * $Id: decoder.c 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -32,7 +32,6 @@
 #include <vlc/decoder.h>
 #include <vlc/vout.h>
 #include <vlc/input.h>
-#include <vlc_interaction.h>
 
 #include "stream_output.h"
 #include "input_internal.h"
@@ -110,8 +109,6 @@ decoder_t *input_DecoderNew( input_thread_t *p_input,
         if( p_dec == NULL )
         {
             msg_Err( p_input, "could not create packetizer" );
-            intf_UserFatal( p_input, VLC_FALSE, _("Streaming / Transcoding failed"), 
-                            _("VLC could not open the packetizer module.") );
             return NULL;
         }
     }
@@ -122,8 +119,6 @@ decoder_t *input_DecoderNew( input_thread_t *p_input,
         if( p_dec == NULL )
         {
             msg_Err( p_input, "could not create decoder" );
-            intf_UserFatal( p_input, VLC_FALSE, _("Streaming / Transcoding failed"), 
-                            _("VLC could not open the decoder module.") );
             return NULL;
         }
     }
@@ -133,10 +128,6 @@ decoder_t *input_DecoderNew( input_thread_t *p_input,
         msg_Err( p_dec, "no suitable decoder module for fourcc `%4.4s'.\n"
                  "VLC probably does not support this sound or video format.",
                  (char*)&p_dec->fmt_in.i_codec );
-        intf_UserFatal( p_dec, VLC_FALSE, _("No suitable decoder module "
-            "for FOURCC \"4.4s\" found"), _("VLC probably does not support this "
-            "audio or video format. Regrettably, there is no way for you to "
-            "fix this.") );
 
         DeleteDecoder( p_dec );
         vlc_object_destroy( p_dec );
@@ -438,6 +429,12 @@ static decoder_t * CreateDecoder( input_thread_t *p_input,
 
     vlc_object_attach( p_dec, p_input );
 
+    stats_Create( p_dec->p_parent, "decoded_audio", STATS_DECODED_AUDIO,
+                  VLC_VAR_INTEGER, STATS_COUNTER );
+    stats_Create( p_dec->p_parent, "decoded_video", STATS_DECODED_VIDEO,
+                  VLC_VAR_INTEGER, STATS_COUNTER );
+    stats_Create( p_dec->p_parent, "decoded_sub", STATS_DECODED_SUB,
+                  VLC_VAR_INTEGER, STATS_COUNTER );
     /* Find a suitable decoder/packetizer module */
     if( i_object_type == VLC_OBJECT_DECODER )
         p_dec->p_module = module_Need( p_dec, "decoder", "$codec", 0 );
@@ -630,14 +627,9 @@ static int DecoderDecode( decoder_t *p_dec, block_t *p_block )
                     while( (p_aout_buf = p_dec->pf_decode_audio( p_dec,
                                                        &p_packetized_block )) )
                     {
-                        input_thread_t *p_i =(input_thread_t*)(p_dec->p_parent);
-                        vlc_mutex_lock( &p_i->counters.counters_lock );
-                        stats_UpdateInteger( p_dec,
-                               p_i->counters.p_decoded_audio, 1, NULL );
-                        vlc_mutex_unlock( &p_i->counters.counters_lock );
-
-                        /* FIXME the best would be to handle the case
-                         * start_date < preroll < end_date
+                        stats_UpdateInteger( p_dec->p_parent,
+                                             STATS_DECODED_AUDIO, 1, NULL );
+                        /* FIXME the best would be to handle the case start_date < preroll < end_date
                          * but that's not easy with non raw audio stream */
                         if( p_dec->p_owner->i_preroll_end > 0 &&
                             p_aout_buf->start_date < p_dec->p_owner->i_preroll_end )
@@ -660,12 +652,7 @@ static int DecoderDecode( decoder_t *p_dec, block_t *p_block )
         }
         else while( (p_aout_buf = p_dec->pf_decode_audio( p_dec, &p_block )) )
         {
-            input_thread_t *p_i = (input_thread_t*)(p_dec->p_parent);
-            vlc_mutex_lock( &p_i->counters.counters_lock );
-            stats_UpdateInteger( p_dec,
-                               p_i->counters.p_decoded_audio, 1, NULL );
-            vlc_mutex_unlock( &p_i->counters.counters_lock );
-
+            stats_UpdateInteger( p_dec->p_parent, STATS_DECODED_AUDIO, 1, NULL );
             if( p_dec->p_owner->i_preroll_end > 0 &&
                 p_aout_buf->start_date < p_dec->p_owner->i_preroll_end )
             {
@@ -711,12 +698,8 @@ static int DecoderDecode( decoder_t *p_dec, block_t *p_block )
                     while( (p_pic = p_dec->pf_decode_video( p_dec,
                                                        &p_packetized_block )) )
                     {
-                        input_thread_t *p_i =(input_thread_t*)(p_dec->p_parent);
-                        vlc_mutex_lock( &p_i->counters.counters_lock );
-                        stats_UpdateInteger( p_dec,
-                               p_i->counters.p_decoded_video, 1, NULL );
-                        vlc_mutex_unlock( &p_i->counters.counters_lock );
-
+                        stats_UpdateInteger( p_dec->p_parent, STATS_DECODED_VIDEO,
+                                                             1, NULL );
                         if( p_dec->p_owner->i_preroll_end > 0 &&
                             p_pic->date < p_dec->p_owner->i_preroll_end )
                         {
@@ -737,12 +720,7 @@ static int DecoderDecode( decoder_t *p_dec, block_t *p_block )
         }
         else while( (p_pic = p_dec->pf_decode_video( p_dec, &p_block )) )
         {
-            input_thread_t *p_i = (input_thread_t*)(p_dec->p_parent);
-            vlc_mutex_lock( &p_i->counters.counters_lock );
-            stats_UpdateInteger( p_dec,
-                               p_i->counters.p_decoded_video, 1, NULL );
-            vlc_mutex_unlock( &p_i->counters.counters_lock );
-
+            stats_UpdateInteger( p_dec->p_parent, STATS_DECODED_VIDEO, 1 , NULL);
             if( p_dec->p_owner->i_preroll_end > 0 &&
                 p_pic->date < p_dec->p_owner->i_preroll_end )
             {
@@ -762,12 +740,7 @@ static int DecoderDecode( decoder_t *p_dec, block_t *p_block )
         subpicture_t *p_spu;
         while( (p_spu = p_dec->pf_decode_sub( p_dec, &p_block ) ) )
         {
-            input_thread_t *p_i = (input_thread_t*)(p_dec->p_parent);
-            vlc_mutex_lock( &p_i->counters.counters_lock );
-            stats_UpdateInteger( p_dec,
-                               p_i->counters.p_decoded_sub, 1, NULL );
-            vlc_mutex_unlock( &p_i->counters.counters_lock );
-
+            stats_UpdateInteger( p_dec->p_parent, STATS_DECODED_SUB, 1 , NULL);
             if( p_dec->p_owner->i_preroll_end > 0 &&
                 p_spu->i_start < p_dec->p_owner->i_preroll_end &&
                 ( p_spu->i_stop <= 0 || p_spu->i_stop <= p_dec->p_owner->i_preroll_end ) )
@@ -960,21 +933,10 @@ static picture_t *vout_new_buffer( decoder_t *p_dec )
         if( !p_dec->fmt_out.video.i_visible_width ||
             !p_dec->fmt_out.video.i_visible_height )
         {
-            if( p_dec->fmt_in.video.i_visible_width &&
-                p_dec->fmt_in.video.i_visible_height )
-            {
-                p_dec->fmt_out.video.i_visible_width =
-                    p_dec->fmt_in.video.i_visible_width;
-                p_dec->fmt_out.video.i_visible_height =
-                    p_dec->fmt_in.video.i_visible_height;
-            }
-            else
-            {
-                p_dec->fmt_out.video.i_visible_width =
-                    p_dec->fmt_out.video.i_width;
-                p_dec->fmt_out.video.i_visible_height =
-                    p_dec->fmt_out.video.i_height;
-            }
+            p_dec->fmt_out.video.i_visible_width =
+                p_dec->fmt_out.video.i_width;
+            p_dec->fmt_out.video.i_visible_height =
+                p_dec->fmt_out.video.i_height;
         }
 
         if( p_dec->fmt_out.video.i_visible_height == 1088 &&

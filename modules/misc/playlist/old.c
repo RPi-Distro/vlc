@@ -2,7 +2,7 @@
  * old.c : Old playlist format import/export
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: old.c 15629 2006-05-14 18:29:00Z zorglub $
+ * $Id: old.c 14932 2006-03-25 23:10:43Z xtophe $
  *
  * Authors: Cl�ent Stenac <zorglub@videolan.org>
  *
@@ -53,12 +53,11 @@ int Export_Old( vlc_object_t *p_this )
     /* Write header */
     fprintf( p_export->p_file , PLAYLIST_FILE_HEADER "\n" );
 
-    for ( i = 0 ; i < p_export->p_root->i_children ; i++ )
+    for ( i = 0 ; i < p_playlist->i_size ; i++ )
     {
         char *psz_uri;
 
-        psz_uri =
-             ToLocale( p_export->p_root->pp_children[i]->p_input->psz_name );
+        psz_uri = ToLocale( p_playlist->pp_items[i]->input.psz_uri );
         fprintf( p_export->p_file , "%s\n" , psz_uri );
         LocaleFree( psz_uri );
     }

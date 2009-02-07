@@ -2,7 +2,7 @@
  * podcast.c:  Podcast services discovery module
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: podcast.c 16224 2006-08-06 13:24:29Z jpsaman $
+ * $Id: podcast.c 15485 2006-04-30 19:07:43Z dionoea $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -80,8 +80,7 @@ vlc_module_end();
 struct services_discovery_sys_t
 {
     /* playlist node */
-    playlist_item_t *p_node_cat;
-    playlist_item_t *p_node_one;
+    playlist_item_t *p_node;
     input_thread_t **pp_input;
 
     char **ppsz_urls;
@@ -106,6 +105,7 @@ static int Open( vlc_object_t *p_this )
 
     vlc_value_t         val;
     playlist_t          *p_playlist;
+    playlist_view_t     *p_view;
     playlist_item_t     *p_item;
 
     int i, j;
@@ -150,32 +150,29 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    p_sys->p_node_cat = playlist_NodeCreate( p_playlist, _("Podcast"),
-                                         p_playlist->p_root_category );
-    p_sys->p_node_one = playlist_NodeCreate( p_playlist, _("Podcast"),
-                                         p_playlist->p_root_onelevel );
-    p_sys->p_node_one->p_input->i_id = p_sys->p_node_cat->p_input->i_id;
-
-    p_sys->p_node_one->i_flags |= PLAYLIST_RO_FLAG;
-    p_sys->p_node_cat->i_flags |= PLAYLIST_RO_FLAG;
-    p_sys->p_node_one->i_flags |= PLAYLIST_SKIP_FLAG;
-    p_sys->p_node_cat->i_flags |= PLAYLIST_SKIP_FLAG;
+    p_view = playlist_ViewFind( p_playlist, VIEW_CATEGORY );
+    p_sys->p_node = playlist_NodeCreate( p_playlist, VIEW_CATEGORY,
+                                         _("Podcast"), p_view->p_root );
     p_sys->pp_input = malloc( p_sys->i_urls * sizeof( input_thread_t * ) );
     for( i = 0; i < p_sys->i_urls; i++ )
     {
-        input_item_t *p_input;
         asprintf( &psz_buf, "%s", p_sys->ppsz_urls[i] );
-        p_input = input_ItemNewExt( p_playlist, psz_buf,
-                                    p_sys->ppsz_urls[i], 0, NULL, -1 );
-        vlc_input_item_AddOption( p_input, "demux=podcast" );
-        p_item = playlist_NodeAddInput( p_playlist, p_input, p_sys->p_node_cat,
-                                        PLAYLIST_APPEND, PLAYLIST_END );
-        p_item = playlist_NodeAddInput( p_playlist, p_input, p_sys->p_node_one,
-                                        PLAYLIST_APPEND, PLAYLIST_END );
+        p_item = playlist_ItemNew( p_playlist, psz_buf,
+                                         p_sys->ppsz_urls[i] );
         free( psz_buf );
-        p_sys->pp_input[i] = input_CreateThread( p_playlist, p_input );
+        playlist_ItemAddOption( p_item, "demux=podcast" );
+        playlist_NodeAddItem( p_playlist, p_item,
+                              p_sys->p_node->pp_parents[0]->i_view,
+                              p_sys->p_node, PLAYLIST_APPEND,
+                              PLAYLIST_END );
+
+        /* We need to declare the parents of the node as the same of the
+         * parent's ones */
+        playlist_CopyParents( p_sys->p_node, p_item );
+        p_sys->pp_input[i] = input_CreateThread( p_playlist, &p_item->input );
     }
 
+    p_sys->p_node->i_flags |= PLAYLIST_RO_FLAG;
     val.b_bool = VLC_TRUE;
     var_Set( p_playlist, "intf-change", val );
 
@@ -208,8 +205,7 @@ static void Close( vlc_object_t *p_this )
     free( p_sd->p_sys->pp_input );
     if( p_playlist )
     {
-        playlist_NodeDelete( p_playlist, p_sys->p_node_cat, VLC_TRUE, VLC_TRUE );
-        playlist_NodeDelete( p_playlist, p_sys->p_node_one, VLC_TRUE, VLC_TRUE );
+        playlist_NodeDelete( p_playlist, p_sys->p_node, VLC_TRUE, VLC_TRUE );
         vlc_object_release( p_playlist );
     }
     for( i = 0; i < p_sys->i_urls; i++ ) free( p_sys->ppsz_urls[i] );

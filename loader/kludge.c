@@ -2,7 +2,7 @@
  * kludge.c
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: kludge.c 15988 2006-07-08 09:31:56Z courmisch $
+ * $Id: kludge.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

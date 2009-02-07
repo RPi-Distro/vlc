@@ -2,7 +2,7 @@
  * old.c : Old playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: old.c 16071 2006-07-18 17:08:18Z zorglub $
+ * $Id: old.c 14377 2006-02-18 20:34:32Z courmisch $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -24,10 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#include <stdlib.h>                                      /* malloc(), free() */
+
 #include <vlc/vlc.h>
 #include <vlc/input.h>
 #include <vlc/intf.h>
 #include "charset.h"
+
+#include <errno.h>                                                 /* ENOMEM */
 
 #define PLAYLIST_FILE_HEADER "# vlc playlist file version 0.5"
 
@@ -50,6 +54,7 @@ int E_(Import_Old)( vlc_object_t *p_this )
     if( strncmp( (char *)p_peek, PLAYLIST_FILE_HEADER , 31 ) ) return VLC_EGENERIC;
 
     msg_Dbg( p_demux, "found valid old playlist file");
+
     p_demux->pf_control = Control;
     p_demux->pf_demux = Demux;
 
@@ -70,6 +75,7 @@ static int Demux( demux_t *p_demux)
         return VLC_EGENERIC;
     }
 
+    p_playlist->pp_items[p_playlist->i_index]->b_autodeletion = VLC_TRUE;
     while( ( psz_line = stream_ReadLine( p_demux->s) ) != NULL )
     {
         char *psz_unicode;
@@ -89,8 +95,8 @@ static int Demux( demux_t *p_demux)
         }
 
         psz_unicode = FromLocale( psz_line );
-//        playlist_Add( p_playlist, psz_unicode, psz_unicode, PLAYLIST_APPEND,
-//                      PLAYLIST_END );
+        playlist_Add( p_playlist, psz_unicode, psz_unicode, PLAYLIST_APPEND,
+                      PLAYLIST_END );
 
         free( psz_line );
         LocaleFree( psz_line );

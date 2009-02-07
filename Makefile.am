@@ -73,18 +73,12 @@ EXTRA_DIST += \
 	extras/MacOSX/Resources/English.lproj/Extended.nib/classes.nib \
 	extras/MacOSX/Resources/English.lproj/Extended.nib/info.nib \
 	extras/MacOSX/Resources/English.lproj/Extended.nib/keyedobjects.nib \
-	extras/MacOSX/Resources/English.lproj/SFilters.nib/classes.nib \
-	extras/MacOSX/Resources/English.lproj/SFilters.nib/info.nib \
-	extras/MacOSX/Resources/English.lproj/SFilters.nib/keyedobjects.nib \
 	extras/MacOSX/Resources/English.lproj/Update.nib/classes.nib \
 	extras/MacOSX/Resources/English.lproj/Update.nib/info.nib \
 	extras/MacOSX/Resources/English.lproj/Update.nib/keyedobjects.nib \
 	extras/MacOSX/Resources/English.lproj/Interaction.nib/classes.nib \
 	extras/MacOSX/Resources/English.lproj/Interaction.nib/info.nib \
 	extras/MacOSX/Resources/English.lproj/Interaction.nib/keyedobjects.nib \
-	extras/MacOSX/Resources/English.lproj/InteractionErrorPanel.nib/classes.nib \
-	extras/MacOSX/Resources/English.lproj/InteractionErrorPanel.nib/info.nib \
-	extras/MacOSX/Resources/English.lproj/InteractionErrorPanel.nib/keyedobjects.nib \
 	extras/MacOSX/Resources/English.lproj/InfoPlist.strings \
 	extras/MacOSX/Resources/a52.icns \
 	extras/MacOSX/Resources/aac.icns \
@@ -163,11 +157,11 @@ EXTRA_DIST += \
 	extras/MacOSX/Delete_Preferences.app/Contents/Resources/applet.icns \
 	extras/MacOSX/Delete_Preferences.app/Contents/Resources/applet.rsrc \
 	extras/MacOSX/Delete_Preferences.app/Contents/Resources/Scripts/main.scpt \
-	extras/MacOSX/plugin/Info.plist \
-	extras/MacOSX/plugin/InstallerInfo.plist \
-	extras/MacOSX/plugin/InstallerDescription.plist \
-	extras/MacOSX/plugin/pbdevelopment.plist \
 	extras/MacOSX/plugin/English.lproj/InfoPlist.strings \
+	extras/MacOSX/plugin/InstallerInfo.plist \
+	extras/MacOSX/plugin/Info.plist \
+	extras/MacOSX/plugin/pbdevelopment.plist \
+	extras/MacOSX/plugin/InstallerDescription.plist \
 	$(NULL)
 
 ###############################################################################
@@ -385,8 +379,6 @@ VLC-release.app: vlc
 	    extended.m \
 	    bookmarks.h \
 	    bookmarks.m \
-	    sfilters.h \
-	    sfilters.m \
 	    update.h \
 	    update.m \
 	    interaction.h \
@@ -525,8 +517,6 @@ VLC.app: vlc
 	    extended.m \
 	    bookmarks.h \
 	    bookmarks.m \
-	    sfilters.h \
-	    sfilters.m \
 	    update.h \
 	    update.m \
 	    interaction.h \
@@ -934,9 +924,8 @@ update-po:
 	    | sort ; \
 	  echo "" ; \
 	  echo "# modules" ; \
-	  find modules -name '*.[chm]' -o -name '*.[ch]pp' -o -name 'qt4/ui/*.ui'\
+	  find modules -name '*.[chm]' -o -name '*.[ch]pp' \
 	    | grep -v '\(\.moc\.\|gui/gtk2/\)' \
-	    | grep -vE 'qt4/ui/.*.h' |grep -v qt4/resources.cpp \
 	    | sort ; \
 	} > $(top_srcdir)/po/POTFILES.in
 	rm -f $(top_srcdir)/po/vlc.pot

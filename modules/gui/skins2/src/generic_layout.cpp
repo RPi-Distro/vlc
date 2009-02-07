@@ -2,7 +2,7 @@
  * generic_layout.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: generic_layout.cpp 16166 2006-07-30 13:04:27Z ipkiss $
+ * $Id: generic_layout.cpp 16454 2006-08-31 19:54:36Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -230,8 +230,8 @@ void GenericLayout::refreshRect( int x, int y, int width, int height )
         if( y + height > m_height )
             height = m_height - y;
 
-        // Refresh the window... but do not paint on a visible video control!
-        if( !m_pVideoControl || !m_pVideoControl->isVisible() )
+        // Refresh the window... but do not paint on a video control!
+        if( !m_pVideoControl )
         {
             // No video control, we can safely repaint the rectangle
             pWindow->refresh( x, y, width, height );

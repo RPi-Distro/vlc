@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: subtitle.c 15749 2006-05-27 11:12:22Z Trax $
+ * $Id: subtitle.c 14790 2006-03-18 02:06:16Z xtophe $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -320,7 +320,7 @@ static int Open ( vlc_object_t *p_this )
         if( s ) free( s );
 
         /* It will nearly always work even for non seekable stream thanks the
-         * caching system, and if it fails we lose just a few sub */
+         * caching system, and if it fails we loose just a few sub */
         if( stream_Seek( p_demux->s, 0 ) )
         {
             msg_Warn( p_demux, "failed to rewind" );

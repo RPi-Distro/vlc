@@ -2,7 +2,7 @@
  * video_output.h : video output thread
  *****************************************************************************
  * Copyright (C) 1999, 2000 the VideoLAN team
- * $Id: video_output.h 16061 2006-07-16 20:57:09Z dionoea $
+ * $Id: video_output.h 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -54,9 +54,6 @@ typedef struct vout_chroma_t
     module_t * p_module;
 
 } vout_chroma_t;
-
-/** Maximum numbers of video filters2 that can be attached to a vout */
-#define MAX_VFILTERS 10
 
 /**
  * Video output thread descriptor
@@ -152,18 +149,6 @@ struct vout_thread_t
     /* Filter chain */
     char *psz_filter_chain;
     vlc_bool_t b_filter_change;
-
-    /* Video filter2 chain
-     * these are handled like in transcode.c
-     * XXX: we might need to merge the two chains (v1 and v2 filters) */
-    char       *psz_vfilters[MAX_VFILTERS];
-    sout_cfg_t *p_vfilters_cfg[MAX_VFILTERS];
-    int         i_vfilters_cfg;
-
-    filter_t   *pp_vfilters[MAX_VFILTERS];
-    int         i_vfilters;
-
-    vlc_bool_t b_vfilter_change;
 
     /* Misc */
     vlc_bool_t       b_snapshot;     /**< take one snapshot on the next loop */

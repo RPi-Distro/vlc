@@ -1,5 +1,5 @@
 /*
- * $Id: registry.c 15988 2006-07-08 09:31:56Z courmisch $
+ * $Id: registry.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Copyright (C) 1999 Alexandre Julliard
  *

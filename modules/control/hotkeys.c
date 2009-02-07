@@ -2,7 +2,7 @@
  * hotkeys.c: Hotkey handling for vlc
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: hotkeys.c 16019 2006-07-13 10:32:06Z sam $
+ * $Id: hotkeys.c 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -597,35 +597,6 @@ static void Run( intf_thread_t *p_intf )
                 }
                 free( val.psz_string );
             }
-            else if( ( i_action == ACTIONID_ZOOM || i_action == ACTIONID_UNZOOM ) && p_vout )
-            {
-                vlc_value_t val={0}, val_list, text_list;
-                var_Get( p_vout, "zoom", &val );
-                if( var_Change( p_vout, "zoom", VLC_VAR_GETLIST,
-                                &val_list, &text_list ) >= 0 )
-                {
-                    int i;
-                    for( i = 0; i < val_list.p_list->i_count; i++ )
-                    {
-                        if( val_list.p_list->p_values[i].f_float
-                           == val.f_float )
-                        {
-                            if( i_action == ACTIONID_ZOOM )
-                                i++;
-                            else /* ACTIONID_UNZOOM */
-                                i--;
-                            break;
-                        }
-                    }
-                    if( i == val_list.p_list->i_count ) i = 0;
-                    if( i == -1 ) i = val_list.p_list->i_count-1;
-                    var_SetFloat( p_vout, "zoom",
-                                  val_list.p_list->p_values[i].f_float );
-                    vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
-                                     _("Zoom mode: %s"),
-                                text_list.p_list->p_values[i].var.psz_name );
-                }
-            }
             else if( i_action == ACTIONID_CROP_TOP && p_vout )
             {
                 int i_val = var_GetInteger( p_vout, "crop-top" );
@@ -908,7 +879,7 @@ static int ActionKeyCB( vlc_object_t *p_this, char const *psz_var,
 static void PlayBookmark( intf_thread_t *p_intf, int i_num )
 {
     vlc_value_t val;
-    int i;
+    int i_position;
     char psz_bookmark_name[11];
     playlist_t *p_playlist =
         vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
@@ -920,13 +891,12 @@ static void PlayBookmark( intf_thread_t *p_intf, int i_num )
     if( p_playlist )
     {
         char *psz_bookmark = strdup( val.psz_string );
-        for( i = 0; i < p_playlist->i_size; i++)
+        for( i_position = 0; i_position < p_playlist->i_size; i_position++)
         {
             if( !strcmp( psz_bookmark,
-                         p_playlist->pp_items[i]->p_input->psz_uri ) )
+                         p_playlist->pp_items[i_position]->input.psz_uri ) )
             {
-                playlist_LockControl( p_playlist, PLAYLIST_VIEWPLAY, NULL,
-                                      p_playlist->pp_items[i] );
+                playlist_Goto( p_playlist, i_position );
                 break;
             }
         }
@@ -947,9 +917,9 @@ static void SetBookmark( intf_thread_t *p_intf, int i_num )
         if( p_playlist->status.p_item )
         {
             config_PutPsz( p_intf, psz_bookmark_name,
-                           p_playlist->status.p_item->p_input->psz_uri);
+                           p_playlist->status.p_item->input.psz_uri);
             msg_Info( p_intf, "setting playlist bookmark %i to %s", i_num,
-                           p_playlist->status.p_item->p_input->psz_uri);
+                           p_playlist->status.p_item->input.psz_uri);
             config_SaveConfigFile( p_intf, "hotkeys" );
         }
         vlc_object_release( p_playlist );

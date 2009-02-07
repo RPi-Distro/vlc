@@ -2,7 +2,7 @@
  * xcommon.c: Functions common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: xcommon.c 16272 2006-08-15 22:10:37Z gbazin $
+ * $Id: xcommon.c 15526 2006-05-02 19:21:23Z bigben $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -2346,8 +2346,7 @@ static int Control( vout_thread_t *p_vout, int i_query, va_list args )
     vlc_bool_t b_arg;
     unsigned int i_width, i_height;
     unsigned int *pi_width, *pi_height;
-    Drawable d = 0;
-    
+
     switch( i_query )
     {
         case VOUT_GET_SIZE:
@@ -2393,16 +2392,10 @@ static int Control( vout_thread_t *p_vout, int i_query, va_list args )
 
        case VOUT_REPARENT:
             vlc_mutex_lock( &p_vout->p_sys->lock );
-            if( i_query == VOUT_REPARENT ) d = (Drawable)va_arg( args, int );
-            if( !d )
             XReparentWindow( p_vout->p_sys->p_display,
                              p_vout->p_sys->original_window.base_window,
                              DefaultRootWindow( p_vout->p_sys->p_display ),
                              0, 0 );
-            else
-            XReparentWindow( p_vout->p_sys->p_display,
-                             p_vout->p_sys->original_window.base_window,
-                             d, 0, 0);
             XSync( p_vout->p_sys->p_display, False );
             p_vout->p_sys->original_window.owner_window = 0;
             vlc_mutex_unlock( &p_vout->p_sys->lock );

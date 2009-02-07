@@ -1,5 +1,5 @@
 /*
- * $Id: driver.c 15988 2006-07-08 09:31:56Z courmisch $
+ * $Id: driver.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Copyright 1993, 1994 Martin Ayotte
  * Copyright 1998 Marcus Meissner

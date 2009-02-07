@@ -2,7 +2,7 @@
  * libmp4.h : LibMP4 library for mp4 module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: libmp4.h 16204 2006-08-03 16:58:10Z zorglub $
+ * $Id: libmp4.h 13905 2006-01-12 23:10:04Z dionoea $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -349,7 +349,7 @@ typedef struct MP4_Box_data_url_s
     uint8_t  i_version;
     uint32_t i_flags;
 
-    char *psz_location;
+    unsigned char *psz_location;
 
 } MP4_Box_data_url_t;
 
@@ -358,8 +358,8 @@ typedef struct MP4_Box_data_urn_s
     uint8_t  i_version;
     uint32_t i_flags;
 
-    char *psz_name;
-    char *psz_location;
+    unsigned char *psz_name;
+    unsigned char *psz_location;
 
 } MP4_Box_data_urn_t;
 
@@ -651,7 +651,7 @@ typedef struct MP4_Box_data_cprt_s
     /* 1 pad bit */
     unsigned char i_language[3];
 
-    char *psz_notice;
+    unsigned char *psz_notice;
 } MP4_Box_data_cprt_t;
 
 

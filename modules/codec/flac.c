@@ -2,7 +2,7 @@
  * flac.c: flac decoder/packetizer/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: flac.c 15749 2006-05-27 11:12:22Z Trax $
+ * $Id: flac.c 15181 2006-04-11 22:09:20Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -651,7 +651,7 @@ static void DecoderErrorCallback( const FLAC__StreamDecoder *decoder,
     {
     case FLAC__STREAM_DECODER_ERROR_STATUS_LOST_SYNC:
         msg_Warn( p_dec, "an error in the stream caused the decoder to "
-                 "lose synchronization." );
+                 "loose synchronization." );
         break;
     case FLAC__STREAM_DECODER_ERROR_STATUS_BAD_HEADER:
         msg_Err( p_dec, "the decoder encountered a corrupted frame header." );

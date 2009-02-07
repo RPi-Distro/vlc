@@ -2,7 +2,7 @@
  * win32_dragdrop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: win32_dragdrop.cpp 16302 2006-08-20 08:48:53Z ipkiss $
+ * $Id: win32_dragdrop.cpp 14118 2006-02-01 18:06:48Z courmisch $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -158,7 +158,7 @@ void Win32DragDrop::HandleDrop( HDROP HDrop )
         DragQueryFile( HDrop, i, psz_fileName, nameLength );
 
         // Add the file
-        CmdAddItem cmd( getIntf(), sFromLocale( psz_fileName ), m_playOnDrop );
+        CmdAddItem cmd( getIntf(), psz_fileName, m_playOnDrop );
         cmd.execute();
 
         delete[] psz_fileName;

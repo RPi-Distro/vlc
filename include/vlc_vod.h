@@ -2,7 +2,7 @@
  * vlc_vod.h: interface for VoD server modules
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: vlc_vod.h 16017 2006-07-12 18:48:21Z jpsaman $
+ * $Id: vlc_vod.h 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -63,8 +63,6 @@ enum vod_query_e
     VOD_MEDIA_PAUSE,        /* arg1= double *       res=    */
     VOD_MEDIA_STOP,         /* arg1= double         res=can fail    */
     VOD_MEDIA_SEEK,         /* arg1= double *       res=    */
-    VOD_MEDIA_REWIND,       /* arg1= double *       res=    */
-    VOD_MEDIA_FORWARD,      /* arg1= double *       res=    */
 };
 
 #endif

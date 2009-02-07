@@ -2,7 +2,7 @@
  * vlc_help.h: Help strings
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: vlc_config_cat.h 16001 2006-07-09 15:01:13Z dionoea $
+ * $Id: vlc_config_cat.h 15124 2006-04-06 23:00:24Z adn $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Anil Daoud <anil@videolan.org>
@@ -84,10 +84,6 @@
 
 #define VFILTER_TITLE N_("Filters" )
 #define VFILTER_HELP N_( \
-    "Video filters are used to postprocess the video stream." )
-
-#define VFILTER2_TITLE N_("Filters (v2)" )
-#define VFILTER2_HELP N_( \
     "Video filters are used to postprocess the video stream." )
 
 #define SUBPIC_TITLE N_( "Subtitles/OSD")
@@ -317,7 +313,6 @@ static struct config_category_t categories_array[] =
     { SUBCAT_VIDEO_GENERAL, VIDEO_GENERAL_TITLE, VIDEO_GENERAL_HELP },
     { SUBCAT_VIDEO_VOUT, _VOUT_TITLE, VOUT_HELP },
     { SUBCAT_VIDEO_VFILTER, VFILTER_TITLE, VFILTER_HELP },
-    { SUBCAT_VIDEO_VFILTER2, VFILTER2_TITLE, VFILTER2_HELP },
     { SUBCAT_VIDEO_SUBPIC, SUBPIC_TITLE, SUBPIC_HELP },
 
     { CAT_INPUT, INPUT_TITLE, INPUT_HELP },

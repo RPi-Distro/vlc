@@ -2,7 +2,7 @@
  * vlm_streampanel:cpp
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: vlm_streampanel.cpp 15361 2006-04-26 08:21:52Z zorglub $
+ * $Id: vlm_streampanel.cpp 15362 2006-04-26 08:22:51Z zorglub $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

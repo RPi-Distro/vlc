@@ -2,7 +2,7 @@
  * ctrl_move.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ctrl_move.cpp 16270 2006-08-15 18:59:40Z ipkiss $
+ * $Id: ctrl_move.cpp 14118 2006-02-01 18:06:48Z courmisch $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -83,12 +83,6 @@ void CtrlMove::setLayout( GenericLayout *pLayout, const Position &rPosition )
 const Position *CtrlMove::getPosition() const
 {
     return m_rCtrl.getPosition();
-}
-
-
-void CtrlMove::onResize()
-{
-    m_rCtrl.onResize();
 }
 
 

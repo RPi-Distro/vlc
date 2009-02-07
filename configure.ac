@@ -1,10 +1,10 @@
 dnl Autoconf settings for vlc
 
-AC_INIT(vlc,0.8.6-svn)
+AC_INIT(vlc,0.8.5-1-svn)
 VERSION_MAJOR="0"
 VERSION_MINOR="8"
-VERSION_REVISION="6"
-VERSION_EXTRA="svn"
+VERSION_REVISION="5"
+VERSION_EXTRA="1"
 
 CONFIGURE_LINE="$0 $*"
 CODENAME="Janus"
@@ -91,22 +91,13 @@ dnl
 AC_ARG_WITH(contrib,
     [  --without-contrib       do not use the libraries in extras/contrib],[],[])
   if test "${with_contrib}" != "no"; then 
-    AC_MSG_CHECKING([for libs in extras/contrib])
+
     topdir="`dirname $0`"
     if test "`echo \"$topdir\" | cut -c 1`" != "/"; then
        topdir="`pwd`/$topdir"
     fi
-   if test "`grep HOST ${topdir}/extras/contrib/config.mak 2>/dev/null|awk '{print $3}'`" != "`$CC -dumpmachine`"; then
-      if test "${with_contrib}" = "yes"; then
-        AC_MSG_RESULT([no])
-	AC_MSG_ERROR([ not using the libs in extras/contrib as it is not the same host])
-      else
-        AC_MSG_RESULT([no])
-	AC_MSG_WARN([ not using the libs in extras/contrib as it is not the same host])
-      fi
-     else
+
   if test -d ${topdir}/extras/contrib/lib; then
-    AC_MSG_RESULT([yes])
     export PATH=${topdir}/extras/contrib/bin:$PATH
     CPPFLAGS="${CPPFLAGS} -I${topdir}/extras/contrib/include"
     CPPFLAGS_save="${CPPFLAGS_save} -I${topdir}/extras/contrib/include"
@@ -116,7 +107,7 @@ AC_ARG_WITH(contrib,
     CXXFLAGS_save="${CXXFLAGS_save} -I${topdir}/extras/contrib/include"
     OBJCFLAGS="${OBJCFLAGS} -I${topdir}/extras/contrib/include"
     OBJCFLAGS_save="${OBJCFLAGS_save} -I${topdir}/extras/contrib/include"
-    if test $build = $host -o "$PKG_CONFIG_LIBDIR"; then
+    if test $build = $host -o $PKG_CONFIG_LIBDIR; then
     	export PKG_CONFIG_PATH=${topdir}/extras/contrib/lib/pkgconfig:$PKG_CONFIG_PATH
     else
     	export PKG_CONFIG_LIBDIR=${topdir}/extras/contrib/lib/pkgconfig
@@ -148,9 +139,6 @@ dnl kludge because only the debian package provides a ffmpeg-config
       export LIBRARY_PATH=${topdir}/extras/contrib/lib:$LIBRARY_PATH
       export BELIBRARIES=${topdir}/extras/contrib/lib:$BELIBRARIES
     fi
-  else
-     AC_MSG_RESULT([no])
-  fi
   fi
 fi
 dnl
@@ -262,9 +250,7 @@ case "${target_os}" in
     VLC_ADD_CXXFLAGS([beos],[])
     VLC_ADD_LDFLAGS([vlc logger],[-lbe])
     VLC_ADD_LDFLAGS([beos],[-lbe -lmedia -ltranslation -ltracker -lgame])
-    VLC_ADD_LDFLAGS([dvdnav dvdread],[-ldl])
-    VLC_ADD_LDFLAGS([access_file],[-lpoll])
-    LDFLAGS_save="${LDFLAGS_save} -lintl"; LDFLAGS="${CFLAGS_save}"
+
     dnl Check for BONE
     if test -f /boot/beos/system/lib/libbind.so; then
         VLC_ADD_LDFLAGS([access_file access_ftp access_mms access_output_udp telnet netsync sap ipv4 vlc growl],[-lbind -lsocket])
@@ -564,7 +550,7 @@ AM_CONDITIONAL(BUILD_GETOPT, ${need_getopt})
 if test "${SYS}" != "mingw32" -a "${SYS}" != "mingwce"; then
 AC_TYPE_SIGNAL
 AC_CHECK_LIB(m,cos,[
-  VLC_ADD_LDFLAGS([adjust wave ripple psychedelic gradient a52tofloat32 dtstofloat32 x264 goom visual],[-lm])
+  VLC_ADD_LDFLAGS([adjust distort a52tofloat32 dtstofloat32 x264 goom visual],[-lm])
 ])
 AC_CHECK_LIB(m,pow,[
   VLC_ADD_LDFLAGS([ffmpeg ffmpegaltivec stream_out_transrate i420_rgb faad twolame equalizer param_eq vlc freetype mpc dmo quicktime realaudio galaktos],[-lm])
@@ -718,13 +704,8 @@ VLC_ADD_LDFLAGS([vlc plugin],[${THREAD_LIB}])
 
 dnl Don't link with rt when using GNU-pth
 if test "${THREAD_LIB}" != "-lpth" && test "${THREAD_LIB}" != "-lst"; then
-  AC_CHECK_LIB(rt, clock_nanosleep, [
-    VLC_ADD_LDFLAGS([vlc],[-lrt])
-    AC_DEFINE(HAVE_CLOCK_NANOSLEEP, 1, [Define to 1 if you have clock_nanosleep.])
-  ], [
-    dnl HP/UX port
-    AC_CHECK_LIB(rt,sem_init, [VLC_ADD_LDFLAGS([vlc],[-lrt])])
-  ])
+  dnl HP/UX port
+  AC_CHECK_LIB(rt,sem_init, [VLC_ADD_LDFLAGS([vlc],[-lrt])])
 
   have_nanosleep=false
   AC_CHECK_FUNCS(nanosleep,have_nanosleep=:,[
@@ -823,9 +804,9 @@ then
   PKG_CHECK_MODULES(HAL, hal >= 0.5.0,
     [ AC_DEFINE( HAVE_HAL_1, [] , [Define if you have the new HAL library API])
       AC_DEFINE( HAVE_HAL, [], [Define if you have the HAL library] )
-      VLC_ADD_PLUGINS([hal probe_hal]) 
-      VLC_ADD_LDFLAGS([vlc hal probe_hal],[$HAL_LIBS])
-      VLC_ADD_CFLAGS([vlc hal probe_hal],[$HAL_CFLAGS])],   
+      VLC_ADD_PLUGINS([hal]) 
+      VLC_ADD_LDFLAGS([vlc hal],[$HAL_LIBS])
+      VLC_ADD_CFLAGS([vlc hal],[$HAL_CFLAGS])],   
     dnl No hal 0.5 Test for 0.2
     [ PKG_CHECK_MODULES( HAL, hal >= 0.2.97, 
        [AC_DEFINE(HAVE_HAL, [], [Define if you have the HAL library])
@@ -833,27 +814,6 @@ then
         VLC_ADD_LDFLAGS([vlc hal],[$HAL_LIBS])
         VLC_ADD_CFLAGS([vlc hal],[$HAL_CFLAGS])],
        [AC_MSG_WARN(HAL library not found)])
-    ]
-  )
-fi
-
-dnl Check for dbus
-AC_ARG_ENABLE(dbus,
-  [  --enable-dbus           Linux D-BUS message bus system (default enabled)])
- 
-if test "${enable_dbus}" != "no"
-then
-  PKG_CHECK_MODULES(DBUS, dbus-1 >= 0.30,
-    [ AC_DEFINE( HAVE_DBUS_1, 1, [Define if you have the new D-BUS library API])
-      AC_DEFINE( HAVE_DBUS, 1, [Define if you have the D-BUS library] )
-      VLC_ADD_LDFLAGS([screensaver],[$DBUS_LIBS])
-      VLC_ADD_CFLAGS([screensaver],[$DBUS_CFLAGS])],   
-    dnl older dbus
-    [ PKG_CHECK_MODULES( DBUS, dbus-1, 
-       [AC_DEFINE(HAVE_DBUS, 1, [Define if you have the D-BUS library])
-        VLC_ADD_LDFLAGS([screensaver],[$DBUS_LIBS])
-        VLC_ADD_CFLAGS([screensaver],[$DBUS_CFLAGS])],
-       [AC_MSG_WARN(DBUS library not found)])
     ]
   )
 fi
@@ -1122,11 +1082,11 @@ dnl
 VLC_ADD_PLUGINS([dummy logger memcpy])
 VLC_ADD_PLUGINS([mpgv mpga m4v m4a h264 ps pva avi asf mp4 rawdv nsv real aiff mjpeg demuxdump flac])
 VLC_ADD_PLUGINS([cvdsub svcdsub spudec subsdec dvbsub mpeg_audio lpcm a52 dts cinepak flacdec])
-VLC_ADD_PLUGINS([deinterlace invert adjust transform wave ripple psychedelic gradient motionblur rv32])
-VLC_ADD_PLUGINS([fixed32tos16 s16tofixed32 u8tofixed32 mono])
+VLC_ADD_PLUGINS([deinterlace invert adjust transform distort motionblur rv32])
+VLC_ADD_PLUGINS([fixed32tos16 s16tofixed32 u8tofixed32])
 VLC_ADD_PLUGINS([trivial_resampler ugly_resampler])
 VLC_ADD_PLUGINS([trivial_channel_mixer trivial_mixer])
-VLC_ADD_PLUGINS([playlist export sgimb nsc xtag])
+VLC_ADD_PLUGINS([playlist export sgimb m3u nsc xtag])
 VLC_ADD_PLUGINS([i420_rgb rawvideo blend scale image logo magnify])
 VLC_ADD_PLUGINS([wav araw subtitle vobsub adpcm a52sys dtssys au ty voc xa nuv])
 VLC_ADD_PLUGINS([access_directory access_file access_udp access_tcp])
@@ -1137,7 +1097,7 @@ VLC_ADD_PLUGINS([packetizer_mpeg4video packetizer_mpeg4audio])
 if test "${SYS}" != "mingwce"; then
 dnl  VLC_ADD_PLUGINS([externrun])
   VLC_ADD_PLUGINS([access_fake access_filter_timeshift access_filter_record])
-  VLC_ADD_PLUGINS([gestures rc telnet hotkeys netsync showintf time marq podcast shout sap fake motion])
+  VLC_ADD_PLUGINS([gestures rc telnet hotkeys netsync showintf time marq podcast shout sap fake])
   VLC_ADD_PLUGINS([rss mosaic wall motiondetect clone crop])
   VLC_ADD_PLUGINS([i420_yuy2 i422_yuy2 i420_ymga])
   VLC_ADD_PLUGINS([aout_file linear_resampler bandlimited_resampler])
@@ -1353,7 +1313,7 @@ dnl  Special arch tuning
 dnl
 AC_ARG_WITH(tuning,
 [  --with-tuning=ARCH      enable special tuning for an architecture
-                          (default Pentium 2 on IA-32 and G4 on PPC)])
+                          (default Pentium 2 on IA-32 and 750 on PPC)])
 if test -n "${with_tuning}"; then
     if test "${with_tuning}" != "no"; then
         CFLAGS_TUNING="-mtune=${with_tuning}"
@@ -1364,7 +1324,7 @@ else
     elif test "${target_cpu}" = "x86_64"; then
         CFLAGS_TUNING="-mtune=athlon64"
     elif test "${target_cpu}" = "powerpc"; then
-        CFLAGS_TUNING="-mtune=G4";
+        CFLAGS_TUNING="-mtune=750";
     fi
 fi
 
@@ -1470,8 +1430,8 @@ if test "${enable_shout}" = "yes"; then
   PKG_CHECK_MODULES(SHOUT, shout >= 2.1,
     [AC_DEFINE(HAVE_SHOUT, [], [Define if you have the libshout library])
      VLC_ADD_PLUGINS([access_output_shout])
-     VLC_ADD_LDFLAGS([access_output_shout],[$SHOUT_LIBS])
-     VLC_ADD_CFLAGS([access_output_shout],[$SHOUT_CFLAGS])],
+     VLC_ADD_LDFLAGS([vlc access_output_shout],[$SHOUT_LIBS])
+     VLC_ADD_CFLAGS([vlc access_output_shout],[$SHOUT_CFLAGS])],
     [AC_MSG_WARN(libshout library not found)])
 fi
 
@@ -1511,7 +1471,7 @@ dnl Libnotify notification plugin
 dnl
 
 AC_ARG_ENABLE(notify,
-  [  --enable-notify         libnotify notification plugin (default enabled)])
+  [  --enable-notify          libnotify notification plugin (default enabled)])
 AS_IF([test "${enable_notify}" != "no"], [
     PKG_CHECK_MODULES(NOTIFY, libnotify,
       [
@@ -1545,7 +1505,7 @@ then
   enable_live555="yes"
 fi
 AC_ARG_ENABLE(live555,
-[  --enable-live555        live555 RTSP input plugin (default disabled)])
+[  --enable-live555     live555 RTSP input plugin (default disabled)])
 if test "${enable_live555}" = "yes"; then
   AC_ARG_WITH(live555-tree,
     [    --with-live555-tree=PATH live.com tree for static linking])
@@ -2010,7 +1970,7 @@ dnl  gnomeVFS access module
 dnl
 AC_ARG_ENABLE(gnomevfs,
   [  --enable-gnomevfs       GnomeVFS access module (default enabled)])
-if test "${enable_gnomevfs}" != "no" 
+if test "${enable_gnomevfs}" != "no"
 then
   PKG_CHECK_MODULES(GNOMEVFS, gnome-vfs-2.0,
     VLC_ADD_LDFLAGS([access_gnomevfs],[$GNOMEVFS_LIBS])
@@ -2411,43 +2371,6 @@ then
     VLC_ADD_LDFLAGS([mpc],[-lmpcdec])])
 fi
 
-dnl
-dnl  game music emu demux plugin
-dnl
-AC_ARG_ENABLE(gme,
-  [  --enable-gme            Game Music Emu demux support (default enabled)])
-if test "${enable_gme}" != "no" -a "${CXX}" != "";
-then
-  AC_LANG_PUSH(C++)
-  AC_ARG_WITH(gme-tree,
-  [    --with-gme-tree=PATH gme tree for static linking])
-  if test -n "${with_gme_tree}"
-  then
-    AC_MSG_CHECKING(for libgme.a in ${with_mod_tree})
-    real_gme_tree="`cd ${with_gme_tree} 2>/dev/null && pwd`"
-    if test -z "${real_gme_tree}"
-    then
-      dnl  The given directory can't be found
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR([cannot cd to ${with_gme_tree}])
-    fi
-    if test -f "${real_gme_tree}/gme/libgme.a"
-    then
-      dnl  Use a custom gme
-      AC_MSG_RESULT(${real_gme_tree}/gme/libgme.a)
-      VLC_ADD_PLUGINS([gme])
-      VLC_ADD_LDFLAGS([gme],[${real_gme_tree}/gme/libgme.a])
-      VLC_ADD_CXXFLAGS([gme],[-I${real_gme_tree}/gme])
-    else
-      dnl  The given gme wasn't built
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR([cannot find ${real_mod_tree}/gme/libgme.a, make sure you compiled gme in ${with_gme_tree}])
-    fi
-  else
-      AC_MSG_WARN([only static linking is available, you must provide a gme-tree])
-  fi
-  AC_LANG_POP(C++)
-fi
 
 dnl
 dnl  Codec plugins
@@ -2929,7 +2852,7 @@ dnl
 dnl MP4 module
 dnl
 AC_CHECK_HEADERS(zlib.h, [
-  VLC_ADD_LDFLAGS([mp4 skins2 sap mkv gme],[-lz])
+  VLC_ADD_LDFLAGS([mp4 skins2 sap mkv],[-lz])
 ] )
 
 AC_CHECK_HEADERS(sysfs/libsysfs.h, [
@@ -3592,12 +3515,12 @@ AC_ARG_ENABLE(opengl,
 if test "${enable_opengl}" != "no" &&
    test "${SYS}" != "beos" -a "${SYS}" != "mingwce"; then
   if test "${SYS}" != "darwin"; then
-    AC_CHECK_HEADERS(GL/gl.h GL/glu.h, [
+    AC_CHECK_HEADERS(GL/gl.h, [
       VLC_ADD_PLUGINS([opengl])
       if test "${SYS}" != "mingw32"; then
         VLC_ADD_LDFLAGS([opengl],[${X_LIBS} -lGL -lGLU])
       else
-        VLC_ADD_LDFLAGS([opengl],[-lopengl32 -lglu32])
+        VLC_ADD_LDFLAGS([opengl],[-lopengl32])
       fi
     ])
   else
@@ -3799,7 +3722,7 @@ AC_ARG_ENABLE(svg,
 if test "${enable_svg}" = "yes"
 then
   PKG_CHECK_MODULES(SVG, 
-	librsvg-2.0 >= 2.9.0,
+	librsvg-2.0 >= 2.5.0,
 	[
  	  VLC_ADD_LDFLAGS([svg],[$SVG_LIBS])
       	  VLC_ADD_CFLAGS([svg],[$SVG_CFLAGS])
@@ -3908,15 +3831,11 @@ then
       AC_CHECK_HEADERS(ddraw.h,
       [ VLC_ADD_PLUGINS([vout_directx aout_directx])
         VLC_ADD_LDFLAGS([vout_directx],[-lgdi32])
-      ])
-      AC_CHECK_HEADERS(GL/gl.h,
-      [ VLC_ADD_PLUGINS([glwin32])
-        VLC_ADD_LDFLAGS([glwin32],[-lopengl32 -lgdi32])
-      ])
-      AC_CHECK_HEADERS(d3d9.h,
-      [ VLC_ADD_PLUGINS([direct3d])
-        VLC_ADD_LDFLAGS([direct3d],[-ld3d9 -lgdi32])
-      ])
+        dnl to be moved when dependance is removed
+        AC_CHECK_HEADERS(GL/gl.h, [
+            VLC_ADD_PLUGINS([glwin32])
+            VLC_ADD_LDFLAGS([glwin32],[-lopengl32 -lgdi32])
+        ]) ])
     else
       AC_MSG_CHECKING(for directX headers in ${with_directx})
       if test -f ${with_directx}/ddraw.h
@@ -4628,26 +4547,6 @@ then
 fi
 
 dnl
-dnl QT 4
-dnl
-enableqt4=false
-AC_ARG_ENABLE(qt4,
-  [  --enable-qt4            QT 4 support (default disabled) ],
-  [if test "${enable_qt4}" = "yes"; then
-      PKG_CHECK_MODULES(QT4, QtCore QtGui,
-  	[ VLC_ADD_PLUGINS([qt4])
-          ALIASES="${ALIASES} qvlc"
-	  enableqt4=true
-	  VLC_ADD_LDFLAGS([qt4],[$QT4_LIBS])
-	  VLC_ADD_CXXFLAGS([qt4],[$QT4_CFLAGS])
-	  MOC=`$PKG_CONFIG --variable=exec_prefix QtCore`/bin/moc
-	  RCC=`$PKG_CONFIG --variable=exec_prefix QtCore`/bin/rcc
-	  UIC=`$PKG_CONFIG --variable=exec_prefix QtCore`/bin/uic],
-       [AC_MSG_WARN(QT4 library not found)])
-   fi])
-AM_CONDITIONAL(ENABLE_QT4, test "$enableqt4" = "true")
-
-dnl
 dnl  WinCE GUI module
 dnl
 if test "${SYS}" = "mingwce"; then
@@ -4779,12 +4678,10 @@ AC_ARG_ENABLE(macosx,
    then
      VLC_ADD_BUILTINS([macosx])
      VLC_ADD_LDFLAGS([macosx],[-framework IOKit -framework Cocoa -framework Carbon -framework QuickTime -lobjc -ObjC -framework OpenGL -framework AGL])
-     VLC_ADD_OBJCFLAGS( [macosx],[-fobjc-exceptions] )
    fi],
   [AC_CHECK_HEADERS(Cocoa/Cocoa.h,
      VLC_ADD_BUILTINS([macosx])
      VLC_ADD_LDFLAGS([macosx],[-framework IOKit -framework Cocoa -framework Carbon -framework QuickTime -lobjc -ObjC -framework OpenGL -framework AGL])
-     VLC_ADD_OBJCFLAGS( [macosx],[-fobjc-exceptions] )
    )])
 CFLAGS=$ORIGCFLAGS
 
@@ -5002,10 +4899,6 @@ AS_IF([test "${enable_gnutls}" != "no"], [
   ])
 
   gnutls_LIBS="-lgcrypt -lz ${gcrypt_LIBS}"
-  AS_IF([test "${SYS}" = "darwin"], [
-    gnutls_LIBS="-lintl ${gnutls_LIBS}"
-    VLC_ADD_LDFLAGS([gnutls],[-lintl])
-  ])
 
   AC_CHECK_HEADER(gcrypt.h, [
     AC_CHECK_LIB(gcrypt, gcry_control, [
@@ -5169,13 +5062,13 @@ then
        [
          VLC_ADD_CPPFLAGS([mozilla],[${X_CFLAGS}])
          VLC_ADD_LDFLAGS([mozilla],[${X_LIBS} ${X_PRE_LIBS} -lXt -lX11 -lSM -lICE])
-],
+       ],
        [],
        [[${X_LIBS} ${X_PRE_LIBS} -lX11 -lSM -lICE]
       ])
       LDFLAGS="${LDFLAGS_save}"
     fi
-    
+
       mozilla=:
       dnl Workaround for http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=150490
       VLC_ADD_CPPFLAGS([mozilla],[[`${MOZILLA_CONFIG} --cflags plugin xpcom java | sed 's,-I\([^ ]*\)/mozilla/\([^ ]*\),-I\1/\2 -I\1/mozilla/\2,g' | xargs`]])
@@ -5258,10 +5151,9 @@ dnl  Java bindings
 dnl
 AC_ARG_ENABLE(java-bindings,
   [  --enable-java-bindings  Enable Java bindings (default disabled)])
-if test "${enable_java_bindings}" = "yes"
+if test "${enable-java-bindings}" = "yes"
 then
-  AS_IF([test "x${JAVA_HOME}" == "x"],
-	[AC_MSG_ERROR([Please set the JAVA_HOME variable to your JDK environment])])
+  AC_PROG_JAVA_CC(javac)
   AC_PROG_JAVAC
   AC_PROG_JAVA
 fi
@@ -5398,19 +5290,6 @@ AS_IF([test "${enable_shared_libvlc}" != "no" || test "${enable_libtool}" != "no
   AC_DEFINE(HAVE_SHARED_LIBVLC, 1, [Define to 1 if libvlc is built as a shared library.])
   FILE_LIBVLC_DLL="!define LIBVLC_DLL libvlc.dll"],
   FILE_LIBVLC_DLL="" )
-dnl
-dnl we need pic on amd64 fo the mozilla plugin
-
-case "${target_cpu}" in
-     x86_64)
-	pic=pic
-	;;
-     *)
-	pic=""
-	;;
-esac
-AC_SUBST(pic)
-
 
 dnl Import conditional variables generated by bootstrap
 VLC_CONDITIONALS
@@ -5438,8 +5317,8 @@ dnl VLC_SYMBOL="`echo ${VERSION} | sed -e 'y/.-+/___/'`"
 dnl AC_DEFINE_UNQUOTED(MODULE_SUFFIX, "__${VLC_SYMBOL}", [String suffix for module functions])
 dnl AC_DEFINE_UNQUOTED(MODULE_SYMBOL, ${VLC_SYMBOL}, [Symbol suffix for module functions])
 
-dnl New definitions with value matching 0.8.6 release
-module_symbol="0_8_6a"
+dnl New definitions with value matching 0.8.5 release
+module_symbol="0_8_5"
 AC_DEFINE_UNQUOTED(MODULE_SUFFIX, "__${module_symbol}", [String suffix for module functions])
 AC_DEFINE_UNQUOTED(MODULE_SYMBOL, $module_symbol, [Symbol suffix for module functions])
 VLC_ENTRY="vlc_entry__${module_symbol}"
@@ -5471,8 +5350,6 @@ AC_SUBST(ARCH)
 AC_SUBST(ALIASES)
 AC_SUBST(ASM)
 AC_SUBST(MOC)
-AC_SUBST(RCC)
-AC_SUBST(UIC)
 AC_SUBST(WINDRES)
 AC_SUBST(MOZILLA_SDK_PATH)
 AC_SUBST(XPIDL)
@@ -5496,7 +5373,6 @@ AC_CONFIG_FILES([
   activex/axvlc.inf
   bindings/Makefile
   bindings/java/Makefile
-  bindings/java/src/Makefile
   bindings/mediacontrol-python/Makefile
   doc/Makefile
   intl/Makefile
@@ -5515,6 +5391,8 @@ AC_CONFIG_FILES([
   modules/access/dshow/Makefile
   modules/access/dvb/Makefile
   modules/access/mms/Makefile
+  modules/access/pvr/Makefile
+  modules/access/v4l/Makefile
   modules/access/cdda/Makefile
   modules/access/rtsp/Makefile
   modules/access/vcd/Makefile
@@ -5548,7 +5426,6 @@ AC_CONFIG_FILES([
   modules/gui/pda/Makefile
   modules/gui/macosx/Makefile
   modules/gui/qnx/Makefile
-  modules/gui/qt4/Makefile
   modules/gui/skins2/Makefile
   modules/gui/wxwidgets/Makefile
   modules/gui/wince/Makefile
@@ -5559,7 +5436,6 @@ AC_CONFIG_FILES([
   modules/misc/testsuite/Makefile
   modules/misc/playlist/Makefile
   modules/misc/xml/Makefile
-  modules/misc/probe/Makefile
   modules/mux/Makefile
   modules/mux/mpeg/Makefile
   modules/mux/rtp/Makefile

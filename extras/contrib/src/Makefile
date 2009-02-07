@@ -2,7 +2,7 @@
 # src/Makefile : Dearchive and compile all files necessary
 # ***************************************************************************
 # Copyright (C) 2003 - 2006 the VideoLAN team
-# $Id: Makefile 16252 2006-08-12 20:08:08Z hartman $
+# $Id: Makefile 16404 2006-08-29 00:42:17Z hartman $
 #
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>
@@ -124,9 +124,6 @@ endif
 
 ifeq ($(HOST),i686-apple-darwin8)
 FFMPEGCONF += --enable-memalign-hack
-endif
-
-ifdef HAVE_DARWIN_OS
 X264CONF += --enable-pic
 ifneq ($(HOST),i686-apple-darwin8)
 FFMPEG_CFLAGS += -DHAVE_LRINTF
@@ -1186,7 +1183,7 @@ CLEAN_PKG += libdca
 
 ifdef SVN
 x264: 
-	$(SVN) co svn://svn.videolan.org/x264/trunk/ x264
+	$(SVN) co svn://svn.videolan.org/x264/trunk/ -r 501 x264
 ifdef HAVE_WIN32
 	(cd x264; patch -p 0 < ../Patches/x264-svn-win32.patch )
 endif
@@ -1411,7 +1408,7 @@ ifdef HAVE_WIN32
 endif
 
 .xml: xml
-	(cd xml; CFLAGS="-DLIBXML_STATIC" $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --with-minimal --with-catalog --with-reader --with-tree --with-push --with-xptr --with-valid --with-xpath --with-xinclude --with-sax1 --without-zlib --without-iconv --without-http --without-ftp && make && make install)
+	(cd xml; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --with-minimal --with-catalog --with-reader --with-tree --with-push --with-xptr --with-valid --with-writer --with-output --with-xpath --with-xinclude --with-sax1 --without-zlib --without-iconv --without-http --without-ftp && make && make install)
 ifndef HAVE_DARWIN_OS
 	$(INSTALL_NAME)
 endif

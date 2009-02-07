@@ -2,7 +2,7 @@
  * file.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: file.c 15680 2006-05-20 11:38:50Z jpsaman $
+ * $Id: file.c 16441 2006-08-30 21:36:35Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

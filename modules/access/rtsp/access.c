@@ -2,7 +2,7 @@
  * access.c: Real rtsp input
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: access.c 16319 2006-08-22 23:22:14Z fkuehne $
+ * $Id: access.c 15016 2006-03-31 23:07:01Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -26,7 +26,6 @@
  *****************************************************************************/
 #include <vlc/vlc.h>
 #include <vlc/input.h>
-#include <vlc_interaction.h>
 
 #include "network.h"
 #include "rtsp.h"
@@ -90,8 +89,6 @@ static int RtspConnect( void *p_userdata, char *psz_server, int i_port )
     if( p_sys->fd < 0 )
     {
         msg_Err( p_access, "cannot connect to %s:%d", psz_server, i_port );
-        intf_UserFatal( p_access, VLC_FALSE, _("Connection failed"), 
-                        _("VLC could not connect to \"%s:%d\"."), psz_server, i_port );
         return VLC_EGENERIC;
     }
 
@@ -218,8 +215,6 @@ static int Open( vlc_object_t *p_this )
 
 
             msg_Err( p_access, "rtsp session can not be established" );
-            intf_UserFatal( p_access, VLC_FALSE, _("Session failed"), 
-                    _("The requested RTSP session could not be established.") );
             goto error;
         }
 

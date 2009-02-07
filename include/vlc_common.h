@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: vlc_common.h 16295 2006-08-19 16:19:31Z zorglub $
+ * $Id: vlc_common.h 16434 2006-08-30 15:18:13Z hartman $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -23,7 +23,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
 
 /**
  * \file
@@ -203,9 +202,7 @@ typedef struct libvlc_t libvlc_t;
 typedef struct vlc_t vlc_t;
 typedef struct variable_t variable_t;
 typedef struct date_t date_t;
-typedef struct dict_entry_t dict_entry_t;
-typedef struct dict_t dict_t;
-typedef struct gc_object_t gc_object_t ;
+typedef struct hashtable_entry_t hashtable_entry_t;
 
 /* Messages */
 typedef struct msg_bank_t msg_bank_t;
@@ -221,11 +218,14 @@ typedef struct msg_subscription_t msg_subscription_t;
 typedef enum {
     PLAYLIST_PLAY,      /**< No arg.                            res=can fail*/
     PLAYLIST_AUTOPLAY,  /**< No arg.                            res=cant fail*/
-    PLAYLIST_VIEWPLAY,  /**< arg1= playlist_item_t*,*/
-                        /**  arg2 = playlist_item_t*          , res=can fail */
+    PLAYLIST_VIEWPLAY,  /**< arg1= int, arg2= playlist_item_t*,*/
+                        /**  arg3 = playlist_item_t*          , res=can fail */
+    PLAYLIST_ITEMPLAY,  /** <arg1 = playlist_item_t *         , res=can fail */
     PLAYLIST_PAUSE,     /**< No arg                             res=can fail*/
     PLAYLIST_STOP,      /**< No arg                             res=can fail*/
     PLAYLIST_SKIP,      /**< arg1=int,                          res=can fail*/
+    PLAYLIST_GOTO,      /**< arg1=int                           res=can fail */
+    PLAYLIST_VIEWGOTO   /**< arg1=int                           res=can fail */
 } playlist_command_t;
 
 
@@ -335,15 +335,6 @@ typedef struct announce_method_t announce_method_t;
 typedef struct announce_handler_t announce_handler_t;
 typedef struct sap_handler_t sap_handler_t;
 
-typedef struct sout_std_t sout_std_t;
-typedef struct sout_display_t sout_display_t;
-typedef struct sout_duplicate_t sout_duplicate_t;
-typedef struct sout_transcode_t sout_transcode_t;
-typedef struct sout_chain_t sout_chain_t;
-typedef struct streaming_profile_t streaming_profile_t;
-typedef struct sout_module_t sout_module_t;
-typedef struct sout_gui_descr_t sout_gui_descr_t;
-
 /* Decoders */
 typedef struct decoder_t      decoder_t;
 typedef struct decoder_sys_t  decoder_sys_t;
@@ -365,11 +356,6 @@ typedef struct vlc_acl_t vlc_acl_t;
 
 /* Misc */
 typedef struct iso639_lang_t iso639_lang_t;
-typedef struct device_t device_t;
-typedef struct device_probe_t device_probe_t;
-typedef struct probe_sys_t probe_sys_t;
-typedef struct localized_string_t localized_string_t;
-typedef struct i18n_string_t i18n_string_t;
 
 /* block */
 typedef struct block_t      block_t;
@@ -539,44 +525,6 @@ typedef int ( * vlc_callback_t ) ( vlc_object_t *,      /* variable's object */
 #define VLC_OBJECT( x ) \
     ((vlc_object_t *)(x))+0*(x)->be_sure_to_add_VLC_COMMON_MEMBERS_to_struct
 
-#define VLC_GC_MEMBERS                                                       \
-/** \name VLC_GC_MEMBERS                                                     \
- * these members are common to all objects that wish to be garbage-collected \
- */                                                                          \
-/**@{*/                                                                      \
-    int i_gc_refcount;                                                       \
-    void (*pf_destructor) ( gc_object_t * );                                 \
-    void *p_destructor_arg;                                                  \
-/**@}*/
-
-struct gc_object_t
-{
-            VLC_GC_MEMBERS
-};
-
-static inline void __vlc_gc_incref( gc_object_t * p_gc )
-{
-    p_gc->i_gc_refcount ++;
-};
-
-static inline void __vlc_gc_decref( gc_object_t *p_gc )
-{
-    p_gc->i_gc_refcount -- ;
-
-    if( p_gc->i_gc_refcount == 0 )
-    {
-        p_gc->pf_destructor( p_gc );
-        /* Do not use the p_gc pointer from now on ! */
-     }
-}
-
-#define vlc_gc_incref( a ) __vlc_gc_incref( (gc_object_t *)a )
-#define vlc_gc_decref( a ) __vlc_gc_decref( (gc_object_t *)a )
-#define vlc_gc_init( a,b,c ) {  ((gc_object_t *)a)->i_gc_refcount = 0; \
-                              ((gc_object_t *)a)->pf_destructor = b; \
-                              ((gc_object_t *)a)->p_destructor_arg = c; }
-
-
 /*****************************************************************************
  * Macros and inline functions
  *****************************************************************************/
@@ -607,25 +555,6 @@ static int64_t GCD( int64_t a, int64_t b )
     if( b ) return GCD( b, a % b );
     else return a;
 }
-
-/* Malloc with automatic error */
-#define MALLOC_VOID( var, type ) { var = (type*)malloc( sizeof( type) ); \
-                                   if( !var ) return; }
-#define MALLOC_NULL( var, type ) { var = (type*)malloc( sizeof( type) ); \
-                                   if( !var ) return NULL; }
-#define MALLOC_ERR( var, type ) { var = (type*)malloc( sizeof( type) ); \
-                                   if( !var ) return VLC_ENOMEM; }
-#define MALLOC_GOTOERR( var, type ) { var = (type*)malloc( sizeof( type) ); \
-                                      if( !var ) goto error; }
-#define DECMALLOC_VOID( var, type ) type* var = (type*)malloc( sizeof(type) );\
-                                    if( !var ) return;
-#define DECMALLOC_ERR( var, type ) type* var = (type*)malloc( sizeof(type) );\
-                                    if( !var ) return VLC_ENOMEM;
-#define DECMALLOC_NULL( var, type ) type* var = (type*)malloc( sizeof(type) );\
-                                    if( !var ) return NULL;
-
-#define FREENULL(a) if( a ) { free( a ); a = NULL; }
-#define FREE(a) if( a ) { free( a ); }
 
 /* Dynamic array handling: realloc array, move data, increment position */
 #if defined( _MSC_VER ) && _MSC_VER < 1300 && !defined( UNDER_CE )
@@ -718,44 +647,19 @@ static int64_t GCD( int64_t a, int64_t b )
         }                                       \
     }
 
-/* Binary search in an array */
-#define BSEARCH( entries, count, elem, zetype, key, answer ) {  \
-    int low = 0, high = count - 1;   \
-    answer = -1; \
-    while( low <= high ) {\
-        int mid = (low + high ) / 2; /* Just don't care about 2^30 tables */ \
-        zetype mid_val = entries[mid] elem;\
-        if( mid_val < key ) \
-            low = mid + 1; \
-        else if ( mid_val > key ) \
-            high = mid -1;  \
-        else    \
-        {   \
-            answer = mid;  break;   \
-        }\
-    } \
-}
-
-/* Dictionnary handling */
-struct dict_entry_t
+/* Hash tables handling */
+struct hashtable_entry_t
 {
-    int       i_int;
-    char     *psz_string;
+    int       i_id;
+    char     *psz_name;
     uint64_t  i_hash;
     void     *p_data;
 };
 
-struct dict_t
-{
-    dict_entry_t *p_entries;
-    int i_entries;
-};
+VLC_EXPORT( void, vlc_HashInsert, (hashtable_entry_t **, int *, int, const char *, void *));
+VLC_EXPORT( void*, vlc_HashRetrieve, (hashtable_entry_t*, int, int, const char *) );
+VLC_EXPORT( int, vlc_HashLookup, (hashtable_entry_t *, int, int, const char *) );
 
-VLC_EXPORT( dict_t *, vlc_DictNew, (void) );
-VLC_EXPORT( void, vlc_DictClear, (dict_t * ) );
-VLC_EXPORT( void, vlc_DictInsert, (dict_t *, int, const char *, void * ) );
-VLC_EXPORT( void*, vlc_DictGet, (dict_t *, int, const char * ) );
-VLC_EXPORT( int, vlc_DictLookup, (dict_t *, int, const char * ) );
 
 /* MSB (big endian)/LSB (little endian) conversions - network order is always
  * MSB, and should be used for both network communications and files. Note that

@@ -2,7 +2,7 @@
  * bridge.c: bridge stream output module
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: bridge.c 16177 2006-07-31 07:09:53Z littlejohn $
+ * $Id: bridge.c 15000 2006-03-31 15:30:32Z zorglub $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -40,7 +40,7 @@
 
 #define DELAY_TEXT N_("Delay")
 #define DELAY_LONGTEXT N_("Pictures coming from the picture video outputs " \
-        "will be delayed according to this value (in milliseconds, should be "\
+        "will be delayed accord to thi value (in milliseconds, should be "\
         ">= 100 ms). For high values, you will need to raise caching values." )
 
 #define ID_OFFSET_TEXT N_("ID Offset")

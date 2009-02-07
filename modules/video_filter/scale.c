@@ -3,7 +3,7 @@
  *  Uses the low quality "nearest neighbour" algorithm.
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: scale.c 16063 2006-07-16 21:22:31Z dionoea $
+ * $Id: scale.c 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -52,8 +52,8 @@ static picture_t *Filter( filter_t *, picture_t * );
 vlc_module_begin();
     set_description( _("Video scaling filter") );
     set_capability( "video filter2", 10000 );
-//    set_category( CAT_VIDEO );
-//    set_subcategory( SUBCAT_VIDEO_VFILTER2 );
+    set_category( CAT_VIDEO );
+    set_subcategory( SUBCAT_VIDEO_VFILTER );
     set_callbacks( OpenFilter, CloseFilter );
 vlc_module_end();
 

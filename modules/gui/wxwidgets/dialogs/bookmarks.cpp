@@ -2,7 +2,7 @@
  * bookmarks.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: bookmarks.cpp 15588 2006-05-11 18:56:20Z xtophe $
+ * $Id: bookmarks.cpp 15370 2006-04-26 23:20:48Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

@@ -2,7 +2,7 @@
  * i420_yuy2.h : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: i420_yuy2.h 16137 2006-07-26 22:48:34Z titer $
+ * $Id: i420_yuy2.h 14173 2006-02-05 12:43:38Z hartman $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -119,6 +119,12 @@ movq      %%mm1, (%1)   # Store YUYV                                      \n\
     *(p_line1)++ = *(p_y1)++; *(p_line2)++ = *(p_y2)++;                     \
     *(p_line1)++ =            *(p_line2)++ = *(p_u)++;                      \
 
+#define C_YUV420_UYVY( )                                                    \
+    *(p_line1)++ =            *(p_line2)++ = *(p_u)++;                      \
+    *(p_line1)++ = *(p_y1)++; *(p_line2)++ = *(p_y2)++;                     \
+    *(p_line1)++ =            *(p_line2)++ = *(p_v)++;                      \
+    *(p_line1)++ = *(p_y1)++; *(p_line2)++ = *(p_y2)++;                     \
+
 #define C_YUV420_Y211( )                                                    \
     *(p_line1)++ = *(p_y1); p_y1 += 2;                                      \
     *(p_line2)++ = *(p_y2); p_y2 += 2;                                      \
@@ -135,10 +141,4 @@ movq      %%mm1, (%1)   # Store YUYV                                      \n\
     *(p_line1)++ =            *(p_line2)++ = *(p_u)++;                      \
     *(p_line1)++ = *(p_y1)++; *(p_line2)++ = *(p_y2)++;                     \
     *(p_line1)++ =            *(p_line2)++ = *(p_v)++;                      \
-
-#define C_YUV420_UYVY( )                                                    \
-    *(p_line1)++ =            *(p_line2)++ = *(p_u)++;                      \
-    *(p_line1)++ = *(p_y1)++; *(p_line2)++ = *(p_y2)++;                     \
-    *(p_line1)++ =            *(p_line2)++ = *(p_v)++;                      \
-    *(p_line1)++ = *(p_y1)++; *(p_line2)++ = *(p_y2)++;                     \
 

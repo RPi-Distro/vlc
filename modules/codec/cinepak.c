@@ -2,7 +2,7 @@
  * cinepak.c: cinepak video decoder
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: cinepak.c 16203 2006-08-03 15:34:08Z zorglub $
+ * $Id: cinepak.c 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -224,6 +224,9 @@ static void CloseDecoder( vlc_object_t *p_this )
 
 #define GET4BYTES( p ) \
     GetDWBE( p ); p+= 4;
+
+#define FREE( p ) \
+    if( p ) free( p )
 
 static void cinepak_LoadCodebook( cinepak_codebook_t *p_codebook,
                                   uint8_t *p_data, int b_grayscale )

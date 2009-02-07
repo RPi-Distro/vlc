@@ -2,7 +2,7 @@
  * image.c : image video output
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: image.c 16203 2006-08-03 15:34:08Z zorglub $
+ * $Id: image.c 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -118,6 +118,8 @@ struct vout_sys_t
     image_handler_t *p_image;
 };
 
+#define FREE( p ) if( p ) { free( p ); p = NULL; }
+
 /*****************************************************************************
  * Create: allocates video thread
  *****************************************************************************
@@ -150,8 +152,8 @@ static int Create( vlc_object_t *p_this )
     if( !p_vout->p_sys->p_image )
     {
         msg_Err( p_this, "unable to create image handler") ;
-        FREENULL( p_vout->p_sys->psz_prefix );
-        FREENULL( p_vout->p_sys );
+        FREE( p_vout->p_sys->psz_prefix );
+        FREE( p_vout->p_sys );
         return VLC_EGENERIC;
     }
 
@@ -237,9 +239,9 @@ static void Destroy( vlc_object_t *p_this )
 
     /* Destroy structure */
     image_HandlerDelete( p_vout->p_sys->p_image );
-    FREENULL( p_vout->p_sys->psz_prefix );
-    FREENULL( p_vout->p_sys->psz_format );
-    FREENULL( p_vout->p_sys );
+    FREE( p_vout->p_sys->psz_prefix );
+    FREE( p_vout->p_sys->psz_format );
+    FREE( p_vout->p_sys );
 }
 
 /*****************************************************************************

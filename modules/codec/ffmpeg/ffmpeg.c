@@ -2,7 +2,7 @@
  * ffmpeg.c: video decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: ffmpeg.c 16315 2006-08-21 07:26:31Z gbazin $
+ * $Id: ffmpeg.c 16603 2006-09-10 20:40:21Z sam $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -733,7 +733,7 @@ static struct
       VIDEO_ES, "Windows Media Video 1" },
     { VLC_FOURCC('W','M','V','2'), CODEC_ID_WMV2,
       VIDEO_ES, "Windows Media Video 2" },
-#if LIBAVCODEC_BUILD >= ((51<<16)+(10<<8)+1) 
+#if LIBAVCODEC_BUILD >= ((51<<16)+(10<<8)+1)
     { VLC_FOURCC('W','M','V','3'), CODEC_ID_WMV3,
       VIDEO_ES, "Windows Media Video 3" },
     { VLC_FOURCC('W','V','C','1'), CODEC_ID_VC1,
@@ -792,10 +792,27 @@ static struct
       VIDEO_ES, "Creative YUV Video" },
 
     /* On2 VP3 Video Codecs */
+    { VLC_FOURCC('V','P','3',' '), CODEC_ID_VP3,
+      VIDEO_ES, "On2's VP3 Video" },
+    { VLC_FOURCC('V','P','3','0'), CODEC_ID_VP3,
+      VIDEO_ES, "On2's VP3 Video" },
     { VLC_FOURCC('V','P','3','1'), CODEC_ID_VP3,
       VIDEO_ES, "On2's VP3 Video" },
     { VLC_FOURCC('v','p','3','1'), CODEC_ID_VP3,
       VIDEO_ES, "On2's VP3 Video" },
+
+#if LIBAVCODEC_BUILD >= ((51<<16)+(14<<8)+0)
+    { VLC_FOURCC('V','P','5',' '), CODEC_ID_VP5,
+      VIDEO_ES, "On2's VP5 Video" },
+    { VLC_FOURCC('V','P','5','0'), CODEC_ID_VP5,
+      VIDEO_ES, "On2's VP5 Video" },
+    { VLC_FOURCC('V','P','6','2'), CODEC_ID_VP6,
+      VIDEO_ES, "On2's VP6.2 Video" },
+    { VLC_FOURCC('v','p','6','2'), CODEC_ID_VP6,
+      VIDEO_ES, "On2's VP6.2 Video" },
+    { VLC_FOURCC('V','P','6','F'), CODEC_ID_VP6F,
+      VIDEO_ES, "On2's VP6.2 Video (Flash)" },
+#endif
 
 #if LIBAVCODEC_BUILD >= 4685
     /* Xiph.org theora */
@@ -915,6 +932,12 @@ static struct
     { VLC_FOURCC('R','T','2','1'), CODEC_ID_INDEO2,
       VIDEO_ES, "Indeo Video v2" },
 #endif
+
+#if LIBAVCODEC_BUILD >= ((51<<16)+(13<<8)+0)
+    { VLC_FOURCC('V','M','n','c'), CODEC_ID_VMNC,
+      VIDEO_ES, "VMware Video" },
+#endif
+
 
     /*
      *  Image codecs

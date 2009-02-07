@@ -2,7 +2,7 @@
  * subtitles.c
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: subtitles.c 15922 2006-06-17 18:42:29Z yoann $
+ * $Id: subtitles.c 16460 2006-08-31 22:01:13Z hartman $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  * This is adapted code from the GPL'ed MPlayer (http://mplayerhq.hu)

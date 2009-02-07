@@ -4,7 +4,7 @@
  * includes all common video types and constants.
  *****************************************************************************
  * Copyright (C) 1999 - 2005 the VideoLAN team
- * $Id: vlc_video.h 15322 2006-04-23 13:15:12Z sam $
+ * $Id: vlc_video.h 15328 2006-04-23 13:56:24Z bigben $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *

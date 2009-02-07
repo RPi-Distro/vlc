@@ -2,7 +2,7 @@
  * logger.c : file logging plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: logger.c 16204 2006-08-03 16:58:10Z zorglub $
+ * $Id: logger.c 15045 2006-04-02 09:44:19Z courmisch $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -449,7 +449,7 @@ static void DoRRD( intf_thread_t *p_intf )
         lldiv_t dout = lldiv( p_playlist->p_stats->f_output_bitrate * 1000000,
                              1000 );
         fprintf( p_intf->p_sys->p_rrd,
-                   I64Fi":%lld.%03u:%lld.%03u:%lld.%03u\n",
+                   I64Fi":"I64Fd".%03u:"I64Fd".%03u:"I64Fd".%03u\n",
                    p_intf->p_sys->last_update/1000000,
                    din.quot, (unsigned int)din.rem,
                    ddm.quot, (unsigned int)ddm.rem,

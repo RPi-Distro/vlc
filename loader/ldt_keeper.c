@@ -1,5 +1,5 @@
 /*
- * $Id: ldt_keeper.c 15988 2006-07-08 09:31:56Z courmisch $
+ * $Id: ldt_keeper.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Copyright 1993 Robert J. Amstadt
  * Copyright 1995 Alexandre Julliard

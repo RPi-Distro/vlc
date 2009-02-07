@@ -2,7 +2,7 @@
  * interpreter.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: interpreter.cpp 16302 2006-08-20 08:48:53Z ipkiss $
+ * $Id: interpreter.cpp 16460 2006-08-31 22:01:13Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -76,8 +76,12 @@ Interpreter::Interpreter( intf_thread_t *pIntf ): SkinObject( pIntf )
     REGISTER_CMD( "playlist.load()", CmdDlgPlaylistLoad )
     REGISTER_CMD( "playlist.save()", CmdDlgPlaylistSave )
     REGISTER_CMD( "playlist.add()", CmdDlgAdd )
+    VarList &rVar = VlcProc::instance( getIntf() )->getPlaylistVar();
+    m_commandMap["playlist.del()"] =
+        CmdGenericPtr( new CmdPlaylistDel( getIntf(), rVar ) );
     REGISTER_CMD( "playlist.next()", CmdPlaylistNext )
     REGISTER_CMD( "playlist.previous()", CmdPlaylistPrevious )
+    REGISTER_CMD( "playlist.sort()", CmdPlaylistSort )
     m_commandMap["playlist.setRandom(true)"] =
         CmdGenericPtr( new CmdPlaylistRandom( getIntf(), true ) );
     m_commandMap["playlist.setRandom(false)"] =
@@ -91,11 +95,8 @@ Interpreter::Interpreter( intf_thread_t *pIntf ): SkinObject( pIntf )
     m_commandMap["playlist.setRepeat(false)"] =
         CmdGenericPtr( new CmdPlaylistRepeat( getIntf(), false ) );
     VarTree &rVarTree = VlcProc::instance( getIntf() )->getPlaytreeVar();
-    m_commandMap["playlist.del()"] =
-        CmdGenericPtr( new CmdPlaytreeDel( getIntf(), rVarTree ) );
     m_commandMap["playtree.del()"] =
         CmdGenericPtr( new CmdPlaytreeDel( getIntf(), rVarTree ) );
-    REGISTER_CMD( "playlist.sort()", CmdPlaytreeSort )
     REGISTER_CMD( "playtree.sort()", CmdPlaytreeSort )
     REGISTER_CMD( "vlc.fullscreen()", CmdFullscreen )
     REGISTER_CMD( "vlc.play()", CmdPlay )

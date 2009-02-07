@@ -31,10 +31,6 @@ extern "C" {
 
 #include <vlc/vlc.h>
 
-#ifndef WIN32
-#include <X11/Xlib.h>
-#endif
-    
 struct libvlc_instance_t
 {
     vlc_t *p_vlc;
@@ -50,9 +46,6 @@ struct libvlc_input_t
     struct libvlc_instance_t *p_instance; ///< Parent instance
 };
 
-#define RAISENULL( psz ) { libvlc_exception_raise( p_e, psz ); return NULL; }
-#define RAISEVOID( psz ) { libvlc_exception_raise( p_e, psz ); return; }
-#define RAISEZERO( psz ) { libvlc_exception_raise( p_e, psz ); return 0; }
 
 # ifdef __cplusplus
 }

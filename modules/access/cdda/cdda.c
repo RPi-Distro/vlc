@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc using libcdio
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: cdda.c 15629 2006-05-14 18:29:00Z zorglub $
+ * $Id: cdda.c 15016 2006-03-31 23:07:01Z xtophe $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -40,7 +40,7 @@
 #if LIBCDIO_VERSION_NUM >= 72
 static char *psz_paranoia_list[] = { "none", "overlap", "full" };
 static char *psz_paranoia_list_text[] = { N_("none"), N_("overlap"),
-                                          N_("full") };
+					  N_("full") };
 #endif
 
 #define DEBUG_LONGTEXT N_( \

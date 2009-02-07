@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: mkv.cpp 16278 2006-08-16 20:48:06Z gbazin $
+ * $Id: mkv.cpp 16588 2006-09-10 17:09:03Z sam $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1592,13 +1592,13 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     int         i_skp;
     size_t      i_idx;
 
-    vlc_meta_t *p_meta;
+    vlc_meta_t **pp_meta;
 
     switch( i_query )
     {
         case DEMUX_GET_META:
-            p_meta = (vlc_meta_t*)va_arg( args, vlc_meta_t* );
-            vlc_meta_Merge( p_meta, p_sys->meta );
+            pp_meta = (vlc_meta_t**)va_arg( args, vlc_meta_t** );
+            *pp_meta = vlc_meta_Duplicate( p_sys->meta );
             return VLC_SUCCESS;
 
         case DEMUX_GET_LENGTH:
@@ -1997,7 +1997,7 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, mtime_t i_pts,
                 if ( f_mandatory )
                     p_block->i_dts = p_block->i_pts;
                 else
-                    p_block->i_dts = min( i_pts, tk->i_last_dts + (mtime_t)(tk->i_default_duration >> 10));
+                    p_block->i_dts = min( i_pts, tk->i_last_dts + (tk->i_default_duration >> 10));
                 p_sys->i_pts = p_block->i_dts;
             }
         }
@@ -4309,6 +4309,8 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
         {
             EbmlMaster *tkv = static_cast<EbmlMaster*>(l);
             unsigned int j;
+            unsigned int i_crop_right = 0, i_crop_left = 0, i_crop_top = 0, i_crop_bottom = 0;
+            unsigned int i_display_unit = 0, i_display_width = 0, i_display_height = 0;
 
             msg_Dbg( &sys.demuxer, "|   |   |   + Track Video" );
             tk->f_fps = 0.0;
@@ -4350,44 +4352,42 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
                 {
                     KaxVideoDisplayWidth &vwidth = *(KaxVideoDisplayWidth*)l;
 
-                    tk->fmt.video.i_visible_width = uint16( vwidth );
+                    i_display_width = uint16( vwidth );
                     msg_Dbg( &sys.demuxer, "|   |   |   |   + display width=%d", uint16( vwidth ) );
                 }
                 else if( MKV_IS_ID( l, KaxVideoDisplayHeight ) )
                 {
                     KaxVideoDisplayWidth &vheight = *(KaxVideoDisplayWidth*)l;
 
-                    tk->fmt.video.i_visible_height = uint16( vheight );
+                    i_display_height = uint16( vheight );
                     msg_Dbg( &sys.demuxer, "|   |   |   |   + display height=%d", uint16( vheight ) );
                 }
                 else if( MKV_IS_ID( l, KaxVideoPixelCropBottom ) )
                 {
                     KaxVideoPixelCropBottom &cropval = *(KaxVideoPixelCropBottom*)l;
 
-                    tk->fmt.video.i_height -= uint16( cropval );
+                    i_crop_bottom = uint16( cropval );
                     msg_Dbg( &sys.demuxer, "|   |   |   |   + crop pixel bottom=%d", uint16( cropval ) );
                 }
                 else if( MKV_IS_ID( l, KaxVideoPixelCropTop ) )
                 {
                     KaxVideoPixelCropTop &cropval = *(KaxVideoPixelCropTop*)l;
 
-                    tk->fmt.video.i_height -= uint16( cropval );
-                    tk->fmt.video.i_y_offset += uint16( cropval );
+                    i_crop_top = uint16( cropval );
                     msg_Dbg( &sys.demuxer, "|   |   |   |   + crop pixel top=%d", uint16( cropval ) );
                 }
                 else if( MKV_IS_ID( l, KaxVideoPixelCropRight ) )
                 {
                     KaxVideoPixelCropRight &cropval = *(KaxVideoPixelCropRight*)l;
 
-                    tk->fmt.video.i_width -= uint16( cropval );
+                    i_crop_right = uint16( cropval );
                     msg_Dbg( &sys.demuxer, "|   |   |   |   + crop pixel right=%d", uint16( cropval ) );
                 }
                 else if( MKV_IS_ID( l, KaxVideoPixelCropLeft ) )
                 {
                     KaxVideoPixelCropLeft &cropval = *(KaxVideoPixelCropLeft*)l;
 
-                    tk->fmt.video.i_width -= uint16( cropval );
-                    tk->fmt.video.i_x_offset += uint16( cropval );
+                    i_crop_left = uint16( cropval );
                     msg_Dbg( &sys.demuxer, "|   |   |   |   + crop pixel left=%d", uint16( cropval ) );
                 }
                 else if( MKV_IS_ID( l, KaxVideoFrameRate ) )
@@ -4397,13 +4397,14 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
                     tk->f_fps = float( vfps );
                     msg_Dbg( &sys.demuxer, "   |   |   |   + fps=%f", float( vfps ) );
                 }
-//                else if( EbmlId( *l ) == KaxVideoDisplayUnit::ClassInfos.GlobalId )
-//                {
-//                     KaxVideoDisplayUnit &vdmode = *(KaxVideoDisplayUnit*)l;
+                else if( EbmlId( *l ) == KaxVideoDisplayUnit::ClassInfos.GlobalId )
+                {
+                    KaxVideoDisplayUnit &vdmode = *(KaxVideoDisplayUnit*)l;
 
-//                    msg_Dbg( &sys.demuxer, "|   |   |   |   + Track Video Display Unit=%s",
-//                             uint8( vdmode ) == 0 ? "pixels" : ( uint8( vdmode ) == 1 ? "centimeters": "inches" ) );
-//                }
+                    i_display_unit = uint8( vdmode );
+                    msg_Dbg( &sys.demuxer, "|   |   |   |   + Track Video Display Unit=%s",
+                             uint8( vdmode ) == 0 ? "pixels" : ( uint8( vdmode ) == 1 ? "centimeters": "inches" ) );
+                }
 //                else if( EbmlId( *l ) == KaxVideoAspectRatio::ClassInfos.GlobalId )
 //                {
 //                    KaxVideoAspectRatio &ratio = *(KaxVideoAspectRatio*)l;
@@ -4414,15 +4415,26 @@ void matroska_segment_c::ParseTrackEntry( KaxTrackEntry *m )
 //                {
 //                    KaxVideoGamma &gamma = *(KaxVideoGamma*)l;
 
-//                    msg_Dbg( &sys.demuxer, "   |   |   |   + fps=%f", float( gamma ) );
+//                    msg_Dbg( &sys.demuxer, "   |   |   |   + gamma=%f", float( gamma ) );
 //                }
                 else
                 {
                     msg_Dbg( &sys.demuxer, "|   |   |   |   + Unknown (%s)", typeid(*l).name() );
                 }
             }
-            if ( tk->fmt.video.i_visible_height && tk->fmt.video.i_visible_width )
-                tk->fmt.video.i_aspect = VOUT_ASPECT_FACTOR * tk->fmt.video.i_visible_width / tk->fmt.video.i_visible_height;
+            if( i_display_height && i_display_width )
+                tk->fmt.video.i_aspect = VOUT_ASPECT_FACTOR * i_display_width / i_display_height;
+            if( i_crop_left || i_crop_right || i_crop_top || i_crop_bottom )
+            {
+                tk->fmt.video.i_visible_width = tk->fmt.video.i_width;
+                tk->fmt.video.i_visible_height = tk->fmt.video.i_height;
+                tk->fmt.video.i_x_offset = i_crop_left;
+                tk->fmt.video.i_y_offset = i_crop_top;
+                tk->fmt.video.i_visible_width -= i_crop_left + i_crop_right;
+                tk->fmt.video.i_visible_height -= i_crop_top + i_crop_bottom;
+            }
+            /* FIXME: i_display_* allows you to not only set DAR, but also a zoom factor.
+               we do not support this atm */
         }
         else  if( MKV_IS_ID( l, KaxTrackAudio ) )
         {
@@ -4911,37 +4923,61 @@ void matroska_segment_c::ParseCluster( )
  *****************************************************************************/
 void matroska_segment_c::InformationCreate( )
 {
+    size_t      i_track;
+
     sys.meta = vlc_meta_New();
 
     if( psz_title )
     {
-        vlc_meta_SetTitle( sys.meta, psz_title );
+        vlc_meta_Add( sys.meta, VLC_META_TITLE, psz_title );
     }
     if( psz_date_utc )
     {
-        vlc_meta_SetDate( sys.meta, psz_date_utc );
+        vlc_meta_Add( sys.meta, VLC_META_DATE, psz_date_utc );
     }
-#if 0
     if( psz_segment_filename )
     {
-        fprintf( stderr, "***** WARNING: Unhandled meta - Use custom\n" );
+        vlc_meta_Add( sys.meta, _("Segment filename"), psz_segment_filename );
     }
     if( psz_muxing_application )
     {
-        fprintf( stderr, "***** WARNING: Unhandled meta - Use custom\n" );
+        vlc_meta_Add( sys.meta, _("Muxing application"), psz_muxing_application );
     }
     if( psz_writing_application )
     {
-        fprintf( stderr, "***** WARNING: Unhandled meta - Use custom\n" );
+        vlc_meta_Add( sys.meta, _("Writing application"), psz_writing_application );
     }
 
-    for( size_t i_track = 0; i_track < tracks.size(); i_track++ )
+    for( i_track = 0; i_track < tracks.size(); i_track++ )
     {
-//        mkv_track_t *tk = tracks[i_track];
-//        vlc_meta_t *mtk = vlc_meta_New();
-        fprintf( stderr, "***** WARNING: Unhandled child meta\n");
+        mkv_track_t *tk = tracks[i_track];
+        vlc_meta_t *mtk = vlc_meta_New();
+
+        sys.meta->track = (vlc_meta_t**)realloc( sys.meta->track,
+                                                    sizeof( vlc_meta_t * ) * ( sys.meta->i_track + 1 ) );
+        sys.meta->track[sys.meta->i_track++] = mtk;
+
+        if( tk->fmt.psz_description )
+        {
+            vlc_meta_Add( sys.meta, VLC_META_DESCRIPTION, tk->fmt.psz_description );
+        }
+        if( tk->psz_codec_name )
+        {
+            vlc_meta_Add( sys.meta, VLC_META_CODEC_NAME, tk->psz_codec_name );
+        }
+        if( tk->psz_codec_settings )
+        {
+            vlc_meta_Add( sys.meta, VLC_META_SETTING, tk->psz_codec_settings );
+        }
+        if( tk->psz_codec_info_url )
+        {
+            vlc_meta_Add( sys.meta, VLC_META_CODEC_DESCRIPTION, tk->psz_codec_info_url );
+        }
+        if( tk->psz_codec_download_url )
+        {
+            vlc_meta_Add( sys.meta, VLC_META_URL, tk->psz_codec_download_url );
+        }
     }
-#endif
 
     if( i_tags_position >= 0 )
     {
@@ -5264,23 +5300,18 @@ void demux_sys_t::JumpTo( virtual_segment_c & vsegment, chapter_item_c * p_chapt
 
 bool matroska_segment_c::CompareSegmentUIDs( const matroska_segment_c * p_item_a, const matroska_segment_c * p_item_b )
 {
-    EbmlBinary *p_tmp;
-
     if ( p_item_a == NULL || p_item_b == NULL )
         return false;
 
-    p_tmp = (EbmlBinary *)p_item_a->p_segment_uid;
-    if ( p_item_b->p_prev_segment_uid != NULL
-          && *p_tmp == *p_item_b->p_prev_segment_uid )
+    EbmlBinary * p_itema = (EbmlBinary *)(p_item_a->p_segment_uid);
+    if ( p_item_b->p_prev_segment_uid != NULL && *p_itema == *p_item_b->p_prev_segment_uid )
         return true;
 
-    p_tmp = (EbmlBinary *)p_item_a->p_next_segment_uid;
-    if ( p_item_b->p_segment_uid != NULL
-          && *p_tmp == *p_item_b->p_segment_uid )
+    p_itema = (EbmlBinary *)(&p_item_a->p_next_segment_uid);
+    if ( p_item_b->p_segment_uid != NULL && *p_itema == *p_item_b->p_segment_uid )
         return true;
 
-    if ( p_item_b->p_prev_segment_uid != NULL
-          && *p_tmp == *p_item_b->p_prev_segment_uid )
+    if ( p_item_b->p_prev_segment_uid != NULL && *p_itema == *p_item_b->p_prev_segment_uid )
         return true;
 
     return false;

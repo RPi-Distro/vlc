@@ -2,7 +2,7 @@
  * vlc_access.h: Access descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: vlc_access.h 16192 2006-08-01 15:00:50Z courmisch $
+ * $Id: vlc_access.h 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -129,33 +129,5 @@ static inline int access2_Control( access_t *p_access, int i_query, ... )
     va_end( args );
     return i_result;
 }
-
-static inline void access_InitFields( access_t *p_a )
-{
-    p_a->info.i_update = 0;
-    p_a->info.i_size = 0;
-    p_a->info.i_pos = 0;
-    p_a->info.b_eof = VLC_FALSE;
-    p_a->info.i_title = 0;
-    p_a->info.i_seekpoint = 0;
-}
-
-#define ACCESS_SET_CALLBACKS( read, block, control, seek ) \
-    p_access->pf_read = read;  \
-    p_access->pf_block = block; \
-    p_access->pf_control = control; \
-    p_access->pf_seek = seek; \
-
-#define STANDARD_READ_ACCESS_INIT \
-    access_InitFields( p_access ); \
-    ACCESS_SET_CALLBACKS( Read, NULL, Control, Seek ); \
-    MALLOC_ERR( p_access->p_sys, access_sys_t ); \
-    p_sys = p_access->p_sys; memset( p_sys, 0, sizeof( access_sys_t ) );
-
-#define STANDARD_BLOCK_ACCESS_INIT \
-    access_InitFields( p_access ); \
-    ACCESS_SET_CALLBACKS( NULL, Block, Control, Seek ); \
-    MALLOC_ERR( p_access->p_sys, access_sys_t ); \
-    p_sys = p_access->p_sys; memset( p_sys, 0, sizeof( access_sys_t ) );
 
 #endif

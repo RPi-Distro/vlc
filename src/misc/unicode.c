@@ -2,7 +2,7 @@
  * unicode.c: Unicode <-> locale functions
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: unicode.c 15978 2006-07-05 11:12:06Z xtophe $
+ * $Id: unicode.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

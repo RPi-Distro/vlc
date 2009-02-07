@@ -2,7 +2,7 @@
  * anim_bitmap.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: anim_bitmap.hpp 15803 2006-06-04 13:55:41Z ipkiss $
+ * $Id: anim_bitmap.hpp 16457 2006-08-31 20:51:12Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

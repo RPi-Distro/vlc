@@ -2,7 +2,7 @@
  * dialogs.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: dialogs.cpp 15755 2006-05-28 12:04:19Z zorglub $
+ * $Id: dialogs.cpp 16442 2006-08-30 22:15:52Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -446,12 +446,12 @@ void DialogsProvider::OnOpenFileSimple( wxCommandEvent& event )
         {
             char *psz_utf8 = wxFromLocale( paths[i] );
             if( event.GetInt() )
-                playlist_PlaylistAdd( p_playlist, psz_utf8, psz_utf8,
+                playlist_Add( p_playlist, psz_utf8, psz_utf8,
                               PLAYLIST_APPEND | (i ? 0 : PLAYLIST_GO) |
                               (i ? PLAYLIST_PREPARSE : 0 ),
                               PLAYLIST_END );
             else
-                playlist_PlaylistAdd( p_playlist, psz_utf8, psz_utf8,
+                playlist_Add( p_playlist, psz_utf8, psz_utf8,
                               PLAYLIST_APPEND | PLAYLIST_PREPARSE , PLAYLIST_END );
             wxLocaleFree( psz_utf8 );
         }
@@ -477,7 +477,7 @@ void DialogsProvider::OnOpenDirectory( wxCommandEvent& event )
     {
         wxString path = p_dir_dialog->GetPath();
         char *psz_utf8 = wxFromLocale( path );
-        playlist_PlaylistAdd( p_playlist, psz_utf8, psz_utf8,
+        playlist_Add( p_playlist, psz_utf8, psz_utf8,
                       PLAYLIST_APPEND | (event.GetInt() ? PLAYLIST_GO : 0),
                       PLAYLIST_END );
         wxLocaleFree( psz_utf8 );
@@ -575,8 +575,6 @@ void DialogsProvider::OnInteraction( wxCommandEvent& event )
     intf_dialog_args_t *p_arg = (intf_dialog_args_t *)event.GetClientData();
     interaction_dialog_t *p_dialog;
     InteractionDialog *p_wxdialog;
-
-    return;
 
     if( p_arg == NULL )
     {

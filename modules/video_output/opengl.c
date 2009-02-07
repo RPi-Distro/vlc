@@ -1,8 +1,8 @@
 /*****************************************************************************
  * opengl.c: OpenGL video output
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: opengl.c 16300 2006-08-19 22:46:47Z fkuehne $
+ * Copyright (C) 2004-2006 the VideoLAN team
+ * $Id: opengl.c 16400 2006-08-28 21:54:39Z fkuehne $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>

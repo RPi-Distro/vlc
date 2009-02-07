@@ -2,7 +2,7 @@
  * PlayListWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: PlayListWindow.cpp 15735 2006-05-25 18:27:39Z zorglub $
+ * $Id: PlayListWindow.cpp 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -24,7 +24,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#if 0
+
 /* System headers */
 #include <InterfaceKit.h>
 #include <StorageKit.h>
@@ -366,4 +366,3 @@ PlayListWindow::_SetMenuItemEnabled( BMenuItem* item, bool enabled ) const
     if ( item->IsEnabled() != enabled )
         item->SetEnabled( enabled );
 }
-#endif

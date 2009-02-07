@@ -2,7 +2,7 @@
  * subtitles.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id: subtitles.cpp 15588 2006-05-11 18:56:20Z xtophe $
+ * $Id: subtitles.cpp 16439 2006-08-30 19:33:55Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

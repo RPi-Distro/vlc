@@ -3,7 +3,7 @@
 # DO NOT EDIT - edit Modules.am or $(top_srcdir)/bootstrap instead
 
 basedir = video_filter
-mods = mosaic transform invert adjust wall clone crop motionblur logo deinterlace blend scale time marq rss motiondetect rv32 osdmenu magnify wave ripple psychedelic gradient
+mods = mosaic transform invert adjust distort wall clone crop motionblur logo deinterlace blend scale time marq rss motiondetect rv32 osdmenu magnify
 
 NULL =
 libvlc_LTLIBRARIES =
@@ -16,22 +16,19 @@ SUFFIXES = _plugin$(LIBEXT) _plugin.a
 
 libvlcdir = $(libdir)/vlc/$(basedir)
 
-EXTRA_LIBRARIES =  libmosaic_plugin.a libmosaic.a libtransform_plugin.a libtransform.a libinvert_plugin.a libinvert.a libadjust_plugin.a libadjust.a libwall_plugin.a libwall.a libclone_plugin.a libclone.a libcrop_plugin.a libcrop.a libmotionblur_plugin.a libmotionblur.a liblogo_plugin.a liblogo.a libdeinterlace_plugin.a libdeinterlace.a libblend_plugin.a libblend.a libscale_plugin.a libscale.a libtime_plugin.a libtime.a libmarq_plugin.a libmarq.a librss_plugin.a librss.a libmotiondetect_plugin.a libmotiondetect.a librv32_plugin.a librv32.a libosdmenu_plugin.a libosdmenu.a libmagnify_plugin.a libmagnify.a libwave_plugin.a libwave.a libripple_plugin.a libripple.a libpsychedelic_plugin.a libpsychedelic.a libgradient_plugin.a libgradient.a
-EXTRA_LTLIBRARIES =  libmosaic_plugin.la libmosaic_builtin.la libtransform_plugin.la libtransform_builtin.la libinvert_plugin.la libinvert_builtin.la libadjust_plugin.la libadjust_builtin.la libwall_plugin.la libwall_builtin.la libclone_plugin.la libclone_builtin.la libcrop_plugin.la libcrop_builtin.la libmotionblur_plugin.la libmotionblur_builtin.la liblogo_plugin.la liblogo_builtin.la libdeinterlace_plugin.la libdeinterlace_builtin.la libblend_plugin.la libblend_builtin.la libscale_plugin.la libscale_builtin.la libtime_plugin.la libtime_builtin.la libmarq_plugin.la libmarq_builtin.la librss_plugin.la librss_builtin.la libmotiondetect_plugin.la libmotiondetect_builtin.la librv32_plugin.la librv32_builtin.la libosdmenu_plugin.la libosdmenu_builtin.la libmagnify_plugin.la libmagnify_builtin.la libwave_plugin.la libwave_builtin.la libripple_plugin.la libripple_builtin.la libpsychedelic_plugin.la libpsychedelic_builtin.la libgradient_plugin.la libgradient_builtin.la
+EXTRA_LIBRARIES =  libmosaic_plugin.a libmosaic.a libtransform_plugin.a libtransform.a libinvert_plugin.a libinvert.a libadjust_plugin.a libadjust.a libdistort_plugin.a libdistort.a libwall_plugin.a libwall.a libclone_plugin.a libclone.a libcrop_plugin.a libcrop.a libmotionblur_plugin.a libmotionblur.a liblogo_plugin.a liblogo.a libdeinterlace_plugin.a libdeinterlace.a libblend_plugin.a libblend.a libscale_plugin.a libscale.a libtime_plugin.a libtime.a libmarq_plugin.a libmarq.a librss_plugin.a librss.a libmotiondetect_plugin.a libmotiondetect.a librv32_plugin.a librv32.a libosdmenu_plugin.a libosdmenu.a libmagnify_plugin.a libmagnify.a
+EXTRA_LTLIBRARIES =  libmosaic_plugin.la libmosaic_builtin.la libtransform_plugin.la libtransform_builtin.la libinvert_plugin.la libinvert_builtin.la libadjust_plugin.la libadjust_builtin.la libdistort_plugin.la libdistort_builtin.la libwall_plugin.la libwall_builtin.la libclone_plugin.la libclone_builtin.la libcrop_plugin.la libcrop_builtin.la libmotionblur_plugin.la libmotionblur_builtin.la liblogo_plugin.la liblogo_builtin.la libdeinterlace_plugin.la libdeinterlace_builtin.la libblend_plugin.la libblend_builtin.la libscale_plugin.la libscale_builtin.la libtime_plugin.la libtime_builtin.la libmarq_plugin.la libmarq_builtin.la librss_plugin.la librss_builtin.la libmotiondetect_plugin.la libmotiondetect_builtin.la librv32_plugin.la librv32_builtin.la libosdmenu_plugin.la libosdmenu_builtin.la libmagnify_plugin.la libmagnify_builtin.la
 
 include Modules.am
 
 LTLIBVLC = $(top_builddir)/src/libvlc.la
 
 if BUILD_SHARED
-LIBVLC = -L$(top_builddir)/src -lvlc
+LIBVLC = $(top_builddir)/src/libvlc$(LIBEXT)
 LIBADD = $(LIBVLC)
 endif
 
 all: all-modules
-
-nice:
-	$(top_builddir)/compile
 
 # Find out which modules were enabled and tell make to build them
 all-modules:
@@ -182,6 +179,29 @@ libadjust_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) adjust`
 libadjust_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin adjust`
 libadjust_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin adjust`
 libadjust_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin adjust`
+
+# The distort plugin
+
+libdistort_plugin_a_SOURCES = $(SOURCES_distort)
+libdistort_plugin_la_SOURCES = $(SOURCES_distort)
+libdistort_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin distort`
+libdistort_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin distort`
+libdistort_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin distort`
+libdistort_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin distort`
+libdistort_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin distort`
+libdistort_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin distort`
+libdistort_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin distort` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+libdistort_plugin_la_LIBADD = $(LTLIBVLC)
+
+libdistort_a_SOURCES = $(SOURCES_distort)
+libdistort_builtin_la_SOURCES = $(SOURCES_distort)
+libdistort_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) distort`
+libdistort_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) distort`
+libdistort_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) distort`
+libdistort_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin distort`
+libdistort_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin distort`
+libdistort_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin distort`
 
 # The wall plugin
 
@@ -527,96 +547,4 @@ libmagnify_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) magnify`
 libmagnify_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin magnify`
 libmagnify_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin magnify`
 libmagnify_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin magnify`
-
-# The wave plugin
-
-libwave_plugin_a_SOURCES = $(SOURCES_wave)
-libwave_plugin_la_SOURCES = $(SOURCES_wave)
-libwave_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin wave`
-libwave_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin wave`
-libwave_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin wave`
-libwave_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin wave`
-libwave_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin wave`
-libwave_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin wave`
-libwave_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin wave` \
-	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
-libwave_plugin_la_LIBADD = $(LTLIBVLC)
-
-libwave_a_SOURCES = $(SOURCES_wave)
-libwave_builtin_la_SOURCES = $(SOURCES_wave)
-libwave_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) wave`
-libwave_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) wave`
-libwave_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) wave`
-libwave_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin wave`
-libwave_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin wave`
-libwave_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin wave`
-
-# The ripple plugin
-
-libripple_plugin_a_SOURCES = $(SOURCES_ripple)
-libripple_plugin_la_SOURCES = $(SOURCES_ripple)
-libripple_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin ripple`
-libripple_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin ripple`
-libripple_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin ripple`
-libripple_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin ripple`
-libripple_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin ripple`
-libripple_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin ripple`
-libripple_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin ripple` \
-	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
-libripple_plugin_la_LIBADD = $(LTLIBVLC)
-
-libripple_a_SOURCES = $(SOURCES_ripple)
-libripple_builtin_la_SOURCES = $(SOURCES_ripple)
-libripple_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) ripple`
-libripple_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) ripple`
-libripple_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) ripple`
-libripple_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin ripple`
-libripple_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin ripple`
-libripple_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin ripple`
-
-# The psychedelic plugin
-
-libpsychedelic_plugin_a_SOURCES = $(SOURCES_psychedelic)
-libpsychedelic_plugin_la_SOURCES = $(SOURCES_psychedelic)
-libpsychedelic_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin psychedelic`
-libpsychedelic_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin psychedelic`
-libpsychedelic_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin psychedelic`
-libpsychedelic_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin psychedelic`
-libpsychedelic_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin psychedelic`
-libpsychedelic_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin psychedelic`
-libpsychedelic_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin psychedelic` \
-	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
-libpsychedelic_plugin_la_LIBADD = $(LTLIBVLC)
-
-libpsychedelic_a_SOURCES = $(SOURCES_psychedelic)
-libpsychedelic_builtin_la_SOURCES = $(SOURCES_psychedelic)
-libpsychedelic_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) psychedelic`
-libpsychedelic_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) psychedelic`
-libpsychedelic_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) psychedelic`
-libpsychedelic_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin psychedelic`
-libpsychedelic_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin psychedelic`
-libpsychedelic_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin psychedelic`
-
-# The gradient plugin
-
-libgradient_plugin_a_SOURCES = $(SOURCES_gradient)
-libgradient_plugin_la_SOURCES = $(SOURCES_gradient)
-libgradient_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin gradient`
-libgradient_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin gradient`
-libgradient_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin gradient`
-libgradient_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin gradient`
-libgradient_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin gradient`
-libgradient_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin gradient`
-libgradient_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin gradient` \
-	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
-libgradient_plugin_la_LIBADD = $(LTLIBVLC)
-
-libgradient_a_SOURCES = $(SOURCES_gradient)
-libgradient_builtin_la_SOURCES = $(SOURCES_gradient)
-libgradient_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) gradient`
-libgradient_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) gradient`
-libgradient_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) gradient`
-libgradient_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin gradient`
-libgradient_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin gradient`
-libgradient_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin gradient`
 

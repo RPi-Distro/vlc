@@ -2,7 +2,7 @@
  * cmd_snapshot.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cmd_snapshot.hpp 15365 2006-04-26 17:59:29Z ipkiss $
+ * $Id: cmd_snapshot.hpp 15366 2006-04-26 18:03:19Z ipkiss $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *

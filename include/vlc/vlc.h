@@ -2,7 +2,7 @@
  * vlc.h: global header for libvlc (old-style)
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: vlc.h 15629 2006-05-14 18:29:00Z zorglub $
+ * $Id: vlc.h 13960 2006-01-21 16:44:36Z zorglub $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -138,9 +138,11 @@ struct vlc_list_t
 
 /* Used by VLC_AddTarget() */
 #define PLAYLIST_INSERT          0x0001
-#define PLAYLIST_APPEND          0x0002
-#define PLAYLIST_GO              0x0004
-#define PLAYLIST_PREPARSE        0x0008
+#define PLAYLIST_REPLACE         0x0002
+#define PLAYLIST_APPEND          0x0004
+#define PLAYLIST_GO              0x0008
+#define PLAYLIST_CHECK_INSERT    0x0010
+#define PLAYLIST_PREPARSE        0x0020
 
 #define PLAYLIST_END           -666
 

@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: vlm.c 16203 2006-08-03 15:34:08Z zorglub $
+ * $Id: vlm.c 15025 2006-04-01 11:27:40Z fkuehne $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -44,6 +44,9 @@
 #include <vlc_vlm.h>
 #include <vlc_vod.h>
 #include <charset.h>
+
+#define FREE( p ) \
+        if( p ) { free( p ); (p) = NULL; }
 
 /*****************************************************************************
  * Local prototypes.
@@ -155,11 +158,11 @@ void vlm_Delete( vlm_t *p_vlm )
     vlc_mutex_destroy( &p_vlm->lock );
 
     while( p_vlm->i_media ) vlm_MediaDelete( p_vlm, p_vlm->media[0], NULL );
-    FREENULL( p_vlm->media );
+    FREE( p_vlm->media );
 
     while( p_vlm->i_schedule ) vlm_ScheduleDelete( p_vlm,
                                                    p_vlm->schedule[0], NULL );
-    FREENULL( p_vlm->schedule );
+    FREE( p_vlm->schedule );
 
     vlc_object_detach( p_vlm );
     vlc_object_destroy( p_vlm );
@@ -830,8 +833,8 @@ static int ExecuteCommand( vlm_t *p_vlm, const char *psz_command,
     }
 
 success:
-    for( i = 0 ; i < i_command ; i++ ) FREENULL( ppsz_command[i] );
-    FREENULL( ppsz_command );
+    for( i = 0 ; i < i_command ; i++ ) FREE( ppsz_command[i] );
+    FREE( ppsz_command );
     *pp_message = p_message;
 
     return VLC_SUCCESS;
@@ -840,8 +843,8 @@ syntax_error:
     p_message = vlm_MessageNew( ppsz_command[0], "Wrong command syntax" );
 
 error:
-    for( i = 0 ; i < i_command ; i++ ) FREENULL( ppsz_command[i] );
-    FREENULL( ppsz_command );
+    for( i = 0 ; i < i_command ; i++ ) FREE( ppsz_command[i] );
+    FREE( ppsz_command );
     *pp_message = p_message;
 
     return VLC_EGENERIC;
@@ -1271,40 +1274,6 @@ int vlm_MediaControl( vlm_t *vlm, vlm_media_t *media, const char *psz_id,
                 var_Set( p_instance->p_input, "position", val );
                 return VLC_SUCCESS;
             }
-        }
-    }
-    else if( !strcmp( psz_command, "rewind" ) )
-    {
-        float f_pos;
-        float f_scale;
-        vlc_value_t val;
-
-        if( psz_args )
-        {
-            f_scale = i18n_atof( psz_args );
-            f_pos = var_GetFloat( p_instance->p_input, "position" );
-            val.f_float = f_pos - (f_scale / 1000.0);
-            if( val.f_float < 0.0 )
-                val.f_float = 0.0;
-            var_Set( p_instance->p_input, "position", val );
-            return VLC_SUCCESS;
-        }
-    }
-    else if( !strcmp( psz_command, "forward" ) )
-    {
-        float f_pos;
-        float f_scale;
-        vlc_value_t val;
-
-        if( psz_args )
-        {
-            f_scale = i18n_atof( psz_args );
-            f_pos = var_GetFloat( p_instance->p_input, "position" );
-            val.f_float = f_pos + (f_scale / 1000.0);
-            if( val.f_float > 1.0 )
-                val.f_float = 1.0;
-            var_Set( p_instance->p_input, "position", val );
-            return VLC_SUCCESS;
         }
     }
     else if( !strcmp( psz_command, "stop" ) )
@@ -2384,26 +2353,6 @@ int vlm_MediaVodControl( void *p_private, vod_media_t *p_vod_media,
         break;
     }
 
-    case VOD_MEDIA_REWIND:
-    {
-        double f_scale = (double)va_arg( args, double );
-        char psz_scale[50];
-        lldiv_t div = lldiv( f_scale * 10000000, 10000000 );
-        sprintf( psz_scale, I64Fd".%07u", div.quot, (unsigned int) div.rem );
-        i_ret = vlm_MediaControl( vlm, vlm->media[i], psz_id, "rewind", psz_scale );
-        break;
-    }
-
-    case VOD_MEDIA_FORWARD:
-    {
-        double f_scale = (double)va_arg( args, double );
-        char psz_scale[50];
-        lldiv_t div = lldiv( f_scale * 10000000, 10000000 );
-        sprintf( psz_scale, I64Fd".%07u", div.quot, (unsigned int) div.rem );
-        i_ret = vlm_MediaControl( vlm, vlm->media[i], psz_id, "forward", psz_scale );
-        break;
-    }
-
     default:
         break;
     }
@@ -2412,7 +2361,6 @@ int vlm_MediaVodControl( void *p_private, vod_media_t *p_vod_media,
 
     return i_ret;
 }
-
 
 /*****************************************************************************
  * Manage:

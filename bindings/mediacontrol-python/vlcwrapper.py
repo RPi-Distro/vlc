@@ -29,11 +29,11 @@ class VLCObject(object):
     def tree(self, prefix=" "):
         """Displays all children as a tree of VLCObject
 	"""
-        res=prefix + str(self) + "\n"
+        print prefix, self
         for i in self._o.children():
             t=VLCObject(i)
-            res += t.tree(prefix=prefix + " ")
-        return res
+            t.tree(prefix=prefix + " ")
+        return
 
     def __getattribute__(self, attr):
 	"""Converts attribute access to access to variables.

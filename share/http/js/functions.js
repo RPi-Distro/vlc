@@ -2,7 +2,7 @@
  * functions.js: VLC media player web interface
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: functions.js 15911 2006-06-14 18:31:45Z yoann $
+ * $Id: functions.js 16460 2006-08-31 22:01:13Z hartman $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

@@ -2,7 +2,7 @@
  * ps.c: Program Stream demux module for VLC.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: ps.c 16181 2006-07-31 18:09:49Z gbazin $
+ * $Id: ps.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -124,7 +124,6 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_scr      = -1;
     p_sys->i_length   = -1;
     p_sys->i_current_pts = (mtime_t) 0;
-    p_sys->i_time_track = -1;
     
     p_sys->b_lost_sync = VLC_FALSE;
     p_sys->b_have_pack = VLC_FALSE;
@@ -442,7 +441,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_GET_TIME:
             pi64 = (int64_t*)va_arg( args, int64_t * );
-            if( p_sys->i_time_track >= 0 && p_sys->i_current_pts > 0 )
+            if( p_sys->i_current_pts > 0 )
             {
                 *pi64 = p_sys->i_current_pts - p_sys->tk[p_sys->i_time_track].i_first_pts;
                 return VLC_SUCCESS;

@@ -3,11 +3,11 @@
  * using MAD (MPEG Audio Decoder)
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: mpgatofixed32.c 16308 2006-08-20 20:48:35Z jpsaman $
+ * $Id: mpgatofixed32.c 14688 2006-03-09 09:47:30Z jpsaman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
- *
+ *      
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -139,7 +139,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
         {
             int i;
             int i_size = p_out_buf->i_nb_bytes / sizeof(float);
-
+            
             float * a = (float *)p_out_buf->p_buffer;
             for ( i = 0 ; i < i_size ; i++ )
                 *a++ = 0.0;

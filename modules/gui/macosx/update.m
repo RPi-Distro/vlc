@@ -2,7 +2,7 @@
  * update.m: MacOS X Check-For-Update window
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: update.m 15593 2006-05-12 16:27:35Z fkuehne $
+ * $Id: update.m 16439 2006-08-30 19:33:55Z hartman $
  *
  * Authors: Felix KŸhne <fkuehne@users.sf.net>
  *

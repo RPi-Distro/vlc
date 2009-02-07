@@ -1,5 +1,5 @@
 /*
- * $Id: afl.c 15988 2006-07-08 09:31:56Z courmisch $
+ * $Id: afl.c 16544 2006-09-07 23:05:11Z hartman $
  *
  * Copyright (C) 1998 Patrick Stridvall
  * Copyright (C) 1999 Eric Pouech

@@ -2,7 +2,7 @@
  * vlc_es.h: Elementary stream formats descriptions
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: vlc_es.h 16221 2006-08-06 13:21:54Z jpsaman $
+ * $Id: vlc_es.h 13905 2006-01-12 23:10:04Z dionoea $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -142,13 +142,6 @@ struct subs_format_t
 /**
  * ES definition
  */
-typedef struct extra_languages_t
-{
-        char *psz_language;
-        char *psz_description;
-} extra_languages_t;
-
-
 struct es_format_t
 {
     int             i_cat;
@@ -163,11 +156,8 @@ struct es_format_t
                                     -1 : mean not selected by default even
                                         when no other stream
                                     >=0: priority */
-
     char            *psz_language;
     char            *psz_description;
-    int             i_extra_languages;
-    extra_languages_t *p_extra_languages;
 
     audio_format_t audio;
     video_format_t video;
@@ -200,9 +190,6 @@ static inline void es_format_Init( es_format_t *fmt,
     fmt->psz_language           = NULL;
     fmt->psz_description        = NULL;
 
-    fmt->i_extra_languages      = 0;
-    fmt->p_extra_languages      = NULL;    
-
     memset( &fmt->audio, 0, sizeof(audio_format_t) );
     memset( &fmt->video, 0, sizeof(video_format_t) );
     memset( &fmt->subs, 0, sizeof(subs_format_t) );
@@ -215,7 +202,6 @@ static inline void es_format_Init( es_format_t *fmt,
 
 static inline void es_format_Copy( es_format_t *dst, es_format_t *src )
 {
-    int i;
     memcpy( dst, src, sizeof( es_format_t ) );
     if( src->psz_language )
          dst->psz_language = strdup( src->psz_language );
@@ -243,19 +229,6 @@ static inline void es_format_Copy( es_format_t *dst, es_format_t *src )
         memcpy( dst->video.p_palette, src->video.p_palette,
                 sizeof( video_palette_t ) );
     }
-
-    dst->i_extra_languages = src->i_extra_languages;
-    dst->p_extra_languages = (extra_languages_t*) malloc( dst->i_extra_languages * sizeof(*dst->p_extra_languages ) );
-    for( i = 0; i < dst->i_extra_languages; i++ ) {
-        if( src->p_extra_languages[i].psz_language )
-            dst->p_extra_languages[i].psz_language = strdup(src->p_extra_languages[i].psz_language);
-        else
-            dst->p_extra_languages[i].psz_language = NULL;
-        if( src->p_extra_languages[i].psz_description )
-            dst->p_extra_languages[i].psz_description = strdup(src->p_extra_languages[i].psz_description);
-        else
-            dst->p_extra_languages[i].psz_description = NULL;
-    }
 }
 
 static inline void es_format_Clean( es_format_t *fmt )
@@ -267,25 +240,13 @@ static inline void es_format_Clean( es_format_t *fmt )
     fmt->psz_description = NULL;
 
     if( fmt->i_extra > 0 ) free( fmt->p_extra );
-    fmt->i_extra = 0;
-    fmt->p_extra = NULL;
+    fmt->i_extra = 0; fmt->p_extra = NULL;
 
     if( fmt->video.p_palette ) free( fmt->video.p_palette );
     fmt->video.p_palette = NULL;
 
     if( fmt->subs.psz_encoding ) free( fmt->subs.psz_encoding );
     fmt->subs.psz_encoding = NULL;
-
-    if( fmt->i_extra_languages && fmt->p_extra_languages ) {
-        int i = 0;
-        while( i < fmt->i_extra_languages ) {
-            if( fmt->p_extra_languages[i].psz_language )
-                free( fmt->p_extra_languages[i].psz_language );
-            if( fmt->p_extra_languages[i].psz_description )
-                free( fmt->p_extra_languages[i].psz_description );
-            i++;
-        }
-        free(fmt->p_extra_languages);
-    }
 }
+
 #endif
