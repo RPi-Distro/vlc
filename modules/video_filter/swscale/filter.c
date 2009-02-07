@@ -2,7 +2,7 @@
  * filter.c: video scaling module using the swscale library
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e3c50ecacc4fc2d77bc3f91dd67d06ff6aa9d06b $
+ * $Id: f6743f27472d49b5ff981bb2b08bde517194aef3 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *

@@ -3,7 +3,7 @@
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: control_structures.h 13752 2005-12-15 10:14:42Z oaubert $
+ * $Id: e66c5d612d76f37bd103edc8108a00eaeecc6bb9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

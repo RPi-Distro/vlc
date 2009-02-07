@@ -2,7 +2,7 @@
  * mosaic_bridge.c:
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: e56e23a6e114456a1b6df57edea8c2d1ce08017a $
+ * $Id: a994d7b0e29b041ff4426dda0fae82250a994f3f $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>

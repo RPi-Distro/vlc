@@ -2,7 +2,7 @@
  * chroma.c: chroma conversion using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 67176722e9e6427a26e688099e86eed10982bffa $
+ * $Id: 82ed1a94f12a104ddb67fc2dc8e8b9a3900b95b8 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

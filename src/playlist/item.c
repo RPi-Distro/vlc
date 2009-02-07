@@ -2,7 +2,7 @@
  * item.c : Playlist item functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: e9ce3db0308bcb10d4c5fd2894e5e86139523cc1 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

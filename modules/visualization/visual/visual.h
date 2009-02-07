@@ -2,7 +2,7 @@
  * visual.h : Header for the visualisation system
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id$
+ * $Id: dbd4a9de83d293bcc721671ff9e0736139d4bfae $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *

@@ -1,3 +1,216 @@
+commit d6f10d96ec7fc2d9eb28ad4a86c45f2bab297919
+Author: Felix Paul Kühne <fpk@Loki-tiger.local>
+Date:   Tue Jul 8 23:47:47 2008 +0200
+
+    Compilation fix *grml*
+
+commit 3e53a66fb3b367f01a1f2eca1372399e716a716c
+Author: Felix Paul Kühne <fpk@Loki-tiger.local>
+Date:   Tue Jul 8 23:32:30 2008 +0200
+
+    Updated for release
+
+commit c76f4da9eb90051b0437b25947c10fb2a5a376df
+Author: Felix Paul Kühne <fpk@Loki-tiger.local>
+Date:   Tue Jul 8 23:24:32 2008 +0200
+
+    Updated the po files
+
+commit 6e08519a9157f65626c873e85837b6e275bcf67e
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Jul 8 23:04:50 2008 +0200
+
+    Updated version strings
+
+commit b328006bac6598a4469bf805d9e69f047566938d
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Jul 8 22:51:44 2008 +0200
+
+    Prepare for release
+
+commit 2aedc1d194ec6addfd61c2b53960135d8594deaf
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sun Jul 6 16:33:57 2008 +0300
+
+    Fix option glx-shm does not exist error
+
+commit 0710c61cffc157456e7557d3be3b0e1b974e9f61
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Jul 1 23:35:38 2008 +0300
+
+    Fix NULL dereference before NULL check (CID #119)
+    
+    And guess what? it was tagged a FALSE positive.
+
+commit be30b646722da84ae6837a05bb9dd7cdb117aa53
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Jul 1 23:27:42 2008 +0300
+
+    Memory leak (CID #104)
+    
+    Again, I wonder why the heck this was a tagged as a FALSE positive.
+
+commit a50146e4e11d27950f591d158218355d4e151568
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Jul 1 23:18:20 2008 +0300
+
+    Remove dead code (CID #3)
+    
+    If (a < 0 || b < 0) is false, then (a >= 0 && b >= 0) is true,
+    which implies (a >= || b >= 0) is true as well.
+    And this was tagged as a FALSE positive!?!
+
+commit d50a464866c4c35d3965a768c1f0c90ea424a73e
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Jul 1 23:12:03 2008 +0300
+
+    Remove dead code (CID #2)
+    (cherry picked from commit fe5605fa2171af4bbeaa3f63b0218698da07e2e3)
+
+commit 1ce5bf08d3750b75e2d7e8f45ce034255244836b
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Jul 1 23:05:37 2008 +0300
+
+    Don't check for impossible NULLity (CID #31)
+
+commit 8f937a9b7bb90e20b966fb3077c4bd81ecb13929
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Jul 1 22:39:33 2008 +0300
+
+    SAP: remotely trigerrable memory leak (CID #70)
+
+commit cd6310b95b79add5a57e1cbe909367cec3bcf7e6
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Jul 1 22:33:32 2008 +0300
+
+    Memory leak (CID #66)
+    
+    (N/A for master)
+
+commit 740f9a6b24859a2c99a0ccdcf518bf8950ce5ef9
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Jul 1 22:27:41 2008 +0300
+
+    Typo, uninit (CID #127)
+
+commit 5b888d367972788a3503d32208a20577cbacaad3
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Jul 1 22:22:27 2008 +0300
+
+    Memory leak (CID #89)
+    
+    Already fixed in master.
+
+commit c14d04343dafc0e638ce726306b8328eabbcaf85
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Jun 28 22:12:00 2008 +0000
+
+    Fixed segfault when parsing wav file to check for dts/a52.
+    (cherry picked from commit e81f6fca6f99e83338959f956b1f4d1e14602078)
+    
+    Signed-off-by: Rémi Denis-Courmont <rdenis@simphalempin.com>
+
+commit 19c07a54ade859d82f1b99ce30746faf961c98f7
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sat Jun 28 22:09:27 2008 +0000
+
+    Fixed segfault on corrupted wav file.
+    (cherry picked from commit a11cc33695f3b4bc9f939e457bd3e5f16397968f)
+    
+    Signed-off-by: Rémi Denis-Courmont <rdenis@simphalempin.com>
+
+commit cbc6c0b8848c52977712468d67a9a45e1e19f9db
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sun Jun 29 00:53:38 2008 +0300
+
+    Hmm, I need to look at what uncommitted stuff I have
+
+commit 13264639a2540302a44f7dc9f5a7b3212288ab24
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sun Jun 29 00:52:08 2008 +0300
+
+    0.8.6i
+
+commit 105335dd73917555335c03460aaa67fcdb9d4a55
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sat Jun 28 14:10:15 2008 +0300
+
+    wav: fix integer underflow
+
+commit 95e2f0ff579a5b987cbde9454aa1fc86080528e2
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sat Jun 28 14:00:57 2008 +0300
+
+    wav: fix integer overflow (CVE-2008-2430)
+    
+    When i_size is sufficiently large, we would overflow malloc(), and then
+    overwrite the heap with stream_Read().
+    
+    Bug reported by: Alin Rad Pop, Secunia Research.
+
+commit e173feddaaaf9d4138184547f899723f209895e2
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sat Jun 28 13:32:07 2008 +0300
+
+    ChunkFind: fix skipping very large chunks
+    
+    (cherry picked from commit c8ef76214a724af64c07fc20d88fcd4dc0459694)
+
+commit 877a82dd3b88f2c2fec11c87cea3ff128c0eabbc
+Author: Rafaël Carré <rcarre@m2x.nl>
+Date:   Tue Jun 17 10:52:41 2008 +0200
+
+    Ignore libxml.m4
+
+commit 133dfd250251b59cc67dc0496c01d478cd991b92
+Author: Rémi Denis-Courmont <rem@videolan.org>
+Date:   Wed Nov 22 19:50:58 2006 +0000
+
+    int16_t needs <inttypes.h>. Should fix FreeBSD unhapiness with addPCM().
+    
+    (cherry picked from commit 218990780ed565d4f2ccf5a424e3abce11a84db0)
+
+commit 68c5eae39ac5dd5b92508e21a935a9a0aa418706
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Mon Jun 9 22:50:52 2008 +0100
+
+    Polish l10n update by Michał Trzebiatowski
+
+commit ba01d80af3427931ca7d8c32eb18481b1a56a7a6
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Mon Jun 9 15:22:07 2008 +0200
+
+    Fix configuration
+    
+    VLC_SAVE_FLAGS is intended to be used only once : before any modification of the flags
+    Do not use $LIBS after it has been overwritten by FFmpeg checks
+    (cherry picked from commit 18c6e88e0aff698dc8647c244b509bf786d14c59)
+
+commit 86132d3da715af4a29e2723d2c2e92c26915e8a5
+Author: Rafaël Carré <funman@videolan.org>
+Date:   Mon Jun 9 09:28:27 2008 +0200
+
+    Fix memory leak (CID 96)
+
+commit 3cd0536a9b8944e570a1a382fd52c407da919261
+Author: Nicolas Chauvet <kwizart@gmail.com>
+Date:   Mon May 26 14:26:12 2008 +0200
+
+    Add pkg-config support for directfb detection in 0.8.6-bugfix
+    
+    This patch is aimed to have pkg-config support for directfb
+    It also keep the legacy header detection as a falback
+    
+    Nicolas Chauvet (kwizart)
+    
+    Signed-off-by: Jean-Paul Saman <jpsaman@videolan.org>
+
+commit 1de1d36a8f153114033135ec782d268f0d2d7d6b
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Jun 3 18:00:08 2008 +0200
+
+    Final for 0.8.6h
+
 commit 14bdc79bd2d910d1bb9f87cfba49b4d1f3a116c7
 Author: Felix Paul Kühne <fkuehne@videolan.org>
 Date:   Tue Jun 3 17:58:58 2008 +0200

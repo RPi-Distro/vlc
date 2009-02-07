@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: ac17d2bfd574048ba5465a43e64cf7afb3746c71 $
+ * $Id: 9bd842cb8b8b09fe04245b6f1f54a5cd17b2228d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>

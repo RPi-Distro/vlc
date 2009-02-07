@@ -2,7 +2,7 @@
  * i18n_atof.c: Test for i18n_atof
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: b7307eeca5bf61b1148a3140bd5c6d208f155d9f $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

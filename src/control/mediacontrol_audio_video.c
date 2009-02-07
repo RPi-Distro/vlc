@@ -2,7 +2,7 @@
  * audio_video.c: Audio/Video management : volume, snapshot, OSD
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: cc0de594278a43dd546c439ef0b71bdc09ccf15f $
+ * $Id$
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *

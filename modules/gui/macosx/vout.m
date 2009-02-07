@@ -2,7 +2,7 @@
  * vout.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 64418ec10f98f42f8f3fe48e0989d2b2c0395b1a $
+ * $Id: e8c42ce30f3477ee180bab3d58f8f1aca3e5ee93 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>

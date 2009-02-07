@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 VideoLAN (Centrale Réseaux) and its contributors
- * $Id$
+ * $Id: 09902a92ec3bb668b08d3d4250b687c0cffa4041 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>

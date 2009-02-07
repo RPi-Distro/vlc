@@ -2,7 +2,7 @@
  * glx.c: GLX OpenGL provider
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 1061b5e0f84f08a366af376f1156c9ff183b11de $
+ * $Id: ddaa6ebacad72a72a6fd1fe742343fb59b8f7004 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -103,6 +103,10 @@ static void SwitchContext( vout_thread_t * );
     "X11 hardware display to use. By default VLC will " \
     "use the value of the DISPLAY environment variable.")
 
+#define SHM_TEXT N_("Use shared memory")
+#define SHM_LONGTEXT N_( \
+    "Use shared memory to communicate between VLC and the X server.")
+
 #define SCREEN_TEXT N_("Screen for fullscreen mode.")
 #define SCREEN_LONGTEXT N_( \
     "Screen to use in fullscreen mode. For instance " \
@@ -119,6 +123,9 @@ vlc_module_begin();
     add_string( "glx-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, VLC_TRUE );
     add_integer( "glx-adaptor", -1, NULL, ADAPTOR_TEXT, ADAPTOR_LONGTEXT, VLC_TRUE );
     add_bool( "glx-altfullscreen", 0, NULL, ALT_FS_TEXT, ALT_FS_LONGTEXT, VLC_TRUE );
+#ifdef HAVE_SYS_SHM_H
+    add_bool( "glx-shm", 1, NULL, SHM_TEXT, SHM_LONGTEXT, VLC_TRUE );
+#endif
 #ifdef HAVE_XINERAMA
     add_integer ( "glx-xineramascreen", 0, NULL, SCREEN_TEXT, SCREEN_LONGTEXT, VLC_TRUE );
 #endif

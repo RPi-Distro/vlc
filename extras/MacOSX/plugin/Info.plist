@@ -17,11 +17,11 @@
 	<key>CFBundlePackageType</key>
 	<string>BRPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.8.6h</string>
+	<string>0.8.6i</string>
 	<key>CFBundleSignature</key>
 	<string>MOSS</string>
 	<key>CFBundleVersion</key>
-	<string>0.8.6h</string>
+	<string>0.8.6i</string>
 	<key>CSResourcesFileMapped</key>
 	<true/>
 </dict>

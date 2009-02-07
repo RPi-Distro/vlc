@@ -2,7 +2,7 @@
  * error.c: Network error handling
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: cbed27a37610f62ed7632572f43ee3d147ef12a0 $
+ * $Id$
  *
  * Author : Rémi Denis-Courmont <rem # videolan.org>
  *

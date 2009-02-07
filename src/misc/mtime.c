@@ -3,7 +3,7 @@
  * Functions are prototyped in mtime.h.
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: 6cc457320bbe624ca8a2921b22c75bdf64c574e3 $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *

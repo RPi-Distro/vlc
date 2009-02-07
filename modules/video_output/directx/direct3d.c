@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- *$Id: direct3d.c 17676 2006-11-11 21:44:34Z damienf $
+ *$Id: ea70a97b7afe300951bdf516f05807eccc7d4e69 $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *

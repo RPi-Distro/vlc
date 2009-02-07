@@ -2,7 +2,7 @@
  * objects.c: vlc_object_t handling
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 24786124c515b8fb1b3fa83d5a439b133fcd8a44 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: 3a2d3a04890dcc67a32113dabb5ecc97f123577d $
+ * $Id: 3ed9df1a8c134f4fb03c65ce981b606fcdfd5740 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>

@@ -2,7 +2,7 @@
  * plugin.c: Core functions : init, playlist, stream management
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 9b90e6aa9c57bf16b88ea4e2b3fa4fd6c5796da8 $
+ * $Id$
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *

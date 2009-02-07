@@ -2,7 +2,7 @@
  * wav.c : wav file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: ae7063745cc396eb0b2476489851f3cac13a68b9 $
+ * $Id: c8ee74becee1faac8000a9cb35120cdb86832bf6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -31,6 +31,7 @@
 #include <vlc/aout.h>
 
 #include <codecs.h>
+#include <inttypes.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -103,7 +104,8 @@ static int Open( vlc_object_t * p_this )
     demux_sys_t *p_sys;
 
     uint8_t     *p_peek;
-    unsigned int i_size, i_extended;
+    uint32_t     i_size;
+    unsigned int i_extended;
     char        *psz_name;
 
     WAVEFORMATEXTENSIBLE *p_wf_ext = NULL;
@@ -136,7 +138,8 @@ static int Open( vlc_object_t * p_this )
         msg_Err( p_demux, "cannot find 'fmt ' chunk" );
         goto error;
     }
-    if( i_size < sizeof( WAVEFORMATEX ) - 2 )   /* XXX -2 isn't a typo */
+    i_size += 2;
+    if( i_size < sizeof( WAVEFORMATEX ) )
     {
         msg_Err( p_demux, "invalid 'fmt ' chunk" );
         goto error;
@@ -144,14 +147,15 @@ static int Open( vlc_object_t * p_this )
     stream_Read( p_demux->s, NULL, 8 );   /* Cannot fail */
 
     /* load waveformatex */
-    p_wf_ext = malloc( __EVEN( i_size ) + 2 );
+    p_wf_ext = malloc( i_size );
     if( p_wf_ext == NULL )
          goto error;
 
     p_wf = (WAVEFORMATEX *)p_wf_ext;
     p_wf->cbSize = 0;
-    if( stream_Read( p_demux->s,
-                     p_wf, __EVEN( i_size ) ) < (int)__EVEN( i_size ) )
+    i_size -= 2;
+    if( stream_Read( p_demux->s, p_wf, i_size ) != (int)i_size
+     || ( ( i_size & 1 ) && stream_Read( p_demux->s, NULL, 1 ) != 1 ) )
     {
         msg_Err( p_demux, "cannot load 'fmt ' chunk" );
         goto error;
@@ -165,14 +169,17 @@ static int Open( vlc_object_t * p_this )
     p_sys->fmt.audio.i_blockalign = GetWLE( &p_wf->nBlockAlign );
     p_sys->fmt.i_bitrate = GetDWLE( &p_wf->nAvgBytesPerSec ) * 8;
     p_sys->fmt.audio.i_bitspersample = GetWLE( &p_wf->wBitsPerSample );
-    p_sys->fmt.i_extra = GetWLE( &p_wf->cbSize );
+    if( i_size >= sizeof(WAVEFORMATEX) )
+        p_sys->fmt.i_extra = __MIN( GetWLE( &p_wf->cbSize ), i_size - sizeof(WAVEFORMATEX) );
     i_extended = 0;
 
     /* Handle new WAVE_FORMAT_EXTENSIBLE wav files */
     /* see the following link for more information:
      * http://www.microsoft.com/whdc/device/audio/multichaud.mspx#EFAA */
     if( GetWLE( &p_wf->wFormatTag ) == WAVE_FORMAT_EXTENSIBLE &&
-        i_size >= sizeof( WAVEFORMATEXTENSIBLE ) )
+        i_size >= sizeof( WAVEFORMATEXTENSIBLE ) &&
+        ( p_sys->fmt.i_extra + sizeof( WAVEFORMATEX )
+            >= sizeof( WAVEFORMATEXTENSIBLE ) ) )
     {
         unsigned i, i_channel_mask;
         GUID guid_subformat;
@@ -380,17 +387,17 @@ static int ChunkFind( demux_t *p_demux, char *fcc, unsigned int *pi_size )
 
     for( ;; )
     {
-        int i_size;
+        uint32_t i_size;
 
         if( stream_Peek( p_demux->s, &p_peek, 8 ) < 8 )
         {
-            msg_Err( p_demux, "cannot peek()" );
+            msg_Err( p_demux, "cannot peek" );
             return VLC_EGENERIC;
         }
 
         i_size = GetDWLE( p_peek + 4 );
 
-        msg_Dbg( p_demux, "chunk: fcc=`%4.4s` size=%d", p_peek, i_size );
+        msg_Dbg( p_demux, "chunk: fcc=`%4.4s` size=%"PRIu32, p_peek, i_size );
 
         if( !memcmp( p_peek, fcc, 4 ) )
         {
@@ -401,11 +408,11 @@ static int ChunkFind( demux_t *p_demux, char *fcc, unsigned int *pi_size )
             return VLC_SUCCESS;
         }
 
-        i_size = __EVEN( i_size ) + 8;
-        if( stream_Read( p_demux->s, NULL, i_size ) != i_size )
-        {
+        /* Skip chunk */
+        if( stream_Read( p_demux->s, NULL, 8 ) != 8
+         || stream_Read( p_demux->s, NULL, i_size ) != i_size
+         || ((i_size & 1) && stream_Read( p_demux->s, NULL, 1 ) != 1 ))
             return VLC_EGENERIC;
-        }
     }
 }
 

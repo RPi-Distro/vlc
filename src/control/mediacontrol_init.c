@@ -2,7 +2,7 @@
  * init.c: Core functions : init, playlist, stream management
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 6fdf33768a28ba4958ebe8a79885ef325005bd1f $
+ * $Id$
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *

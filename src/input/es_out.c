@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id$
+ * $Id: b3ad712a7299edc31a6a94bb6e44e877d17c246e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -1555,6 +1555,8 @@ static char **LanguageSplit( const char *psz_langs )
         {
             TAB_APPEND( i_psz, ppsz, psz_code );
         }
+        else
+            free( psz_code );
 
         psz_parser = psz;
     }

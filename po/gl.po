@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: VLC-0.8.4-test2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-06-03 17:16+0200\n"
+"POT-Creation-Date: 2008-07-08 23:21+0200\n"
 "PO-Revision-Date: 2006-04-17 18:37+0100\n"
 "Last-Translator: Iván Seoane Pardo <talivan.ivan@gmail.com>\n"
 "Language-Team: Galician\n"
@@ -36,7 +36,7 @@ msgid "Select \"Advanced Options\" to see all options."
 msgstr "Selecciona \"Opcións avanzadas\" pra ver tódalas opcións."
 
 #: include/vlc_config_cat.h:36 include/vlc_config_cat.h:127
-#: src/input/input.c:1905 src/input/input.c:1965 src/playlist/item.c:333
+#: src/input/input.c:1905 src/input/input.c:1966 src/playlist/item.c:333
 #: src/playlist/playlist.c:163 modules/gui/macosx/playlistinfo.m:62
 #: modules/gui/wince/playlist.cpp:674
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:82
@@ -76,7 +76,7 @@ msgstr "Axustes prás interfaces de control do VLC"
 msgid "Hotkeys settings"
 msgstr "Axustes de teclas rápidas"
 
-#: include/vlc_config_cat.h:54 src/input/es_out.c:1609 src/libvlc.h:1181
+#: include/vlc_config_cat.h:54 src/input/es_out.c:1611 src/libvlc.h:1181
 #: modules/gui/beos/InterfaceWindow.cpp:280 modules/gui/macosx/extended.m:81
 #: modules/gui/macosx/intf.m:566 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:96 modules/gui/macosx/wizard.m:421
@@ -130,7 +130,7 @@ msgstr "Outras"
 msgid "Miscellaneous audio settings and modules."
 msgstr "Outros axustes de audio e módulos."
 
-#: include/vlc_config_cat.h:75 src/input/es_out.c:1637 src/libvlc.h:1216
+#: include/vlc_config_cat.h:75 src/input/es_out.c:1639 src/libvlc.h:1216
 #: modules/gui/macosx/extended.m:80 modules/gui/macosx/intf.m:579
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:86
 #: modules/gui/macosx/wizard.m:422
@@ -561,7 +561,7 @@ msgstr "Axuste"
 msgid "URL"
 msgstr "Enderezo"
 
-#: include/vlc_meta.h:41 src/input/es_out.c:1601 src/libvlc.h:97
+#: include/vlc_meta.h:41 src/input/es_out.c:1603 src/libvlc.h:97
 #: modules/gui/beos/InterfaceWindow.cpp:276
 msgid "Language"
 msgstr "Lingua"
@@ -805,80 +805,79 @@ msgstr "Pista %i"
 msgid "Program"
 msgstr "Programa"
 
-#: src/input/es_out.c:1596 modules/codec/faad.c:374
+#: src/input/es_out.c:1598 modules/codec/faad.c:374
 #, c-format
 msgid "Stream %d"
 msgstr "Fluxo %d"
 
-#: src/input/es_out.c:1598 modules/gui/macosx/wizard.m:426
+#: src/input/es_out.c:1600 modules/gui/macosx/wizard.m:426
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:832
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:872
 msgid "Codec"
 msgstr "Códec"
 
-#: src/input/es_out.c:1609 src/input/es_out.c:1637 src/input/es_out.c:1664
+#: src/input/es_out.c:1611 src/input/es_out.c:1639 src/input/es_out.c:1666
 #: modules/gui/macosx/output.m:153
 msgid "Type"
 msgstr "Tipo"
 
-#: src/input/es_out.c:1612 modules/codec/faad.c:379
+#: src/input/es_out.c:1614 modules/codec/faad.c:379
 #: modules/gui/macosx/output.m:176
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:857
 msgid "Channels"
 msgstr "Canles"
 
-#: src/input/es_out.c:1617 modules/codec/faad.c:381
+#: src/input/es_out.c:1619 modules/codec/faad.c:381
 msgid "Sample rate"
 msgstr "Frecuencia de mostraxe"
 
-#: src/input/es_out.c:1618 modules/codec/faad.c:381
+#: src/input/es_out.c:1620 modules/codec/faad.c:381
 #, c-format
 msgid "%d Hz"
 msgstr "%d Hz"
 
-#: src/input/es_out.c:1624
+#: src/input/es_out.c:1626
 msgid "Bits per sample"
 msgstr "Bits por mostra"
 
-#: src/input/es_out.c:1629 modules/access/pvr.c:93
+#: src/input/es_out.c:1631 modules/access/pvr.c:93
 #: modules/demux/playlist/b4s.c:349 modules/demux/playlist/shoutcast.c:472
 msgid "Bitrate"
 msgstr "Taxa de bits"
 
-#: src/input/es_out.c:1630
+#: src/input/es_out.c:1632
 #, fuzzy, c-format
 msgid "%d kb/s"
 msgstr "%d kb/s"
 
-#: src/input/es_out.c:1641
+#: src/input/es_out.c:1643
 msgid "Resolution"
 msgstr "Resolución"
 
-#: src/input/es_out.c:1647
+#: src/input/es_out.c:1649
 msgid "Display resolution"
 msgstr "Resolución de pantalla"
 
-#: src/input/es_out.c:1657 modules/access/screen/screen.c:41
+#: src/input/es_out.c:1659 modules/access/screen/screen.c:41
 msgid "Frame rate"
 msgstr "Taxa de fotogramas"
 
-#: src/input/es_out.c:1664
+#: src/input/es_out.c:1666
 msgid "Subtitle"
 msgstr "Subtítulos"
 
-#: src/input/input.c:1919 src/input/input.c:1923
-#: modules/gui/macosx/output.m:143 modules/gui/macosx/output.m:251
-#: modules/gui/macosx/output.m:391
+#: src/input/input.c:1921 modules/gui/macosx/output.m:143
+#: modules/gui/macosx/output.m:251 modules/gui/macosx/output.m:391
 msgid "Stream"
 msgstr "Fluxo"
 
-#: src/input/input.c:1965 src/playlist/item.c:333
+#: src/input/input.c:1966 src/playlist/item.c:333
 #: modules/access/cdda/info.c:326 modules/access/cdda/info.c:394
 #: modules/gui/macosx/playlist.m:133
 msgid "Duration"
 msgstr "Duración"
 
-#: src/input/input.c:2144 src/input/input.c:2216
+#: src/input/input.c:2145 src/input/input.c:2217
 msgid "Errors"
 msgstr "Erros"
 
@@ -4517,7 +4516,7 @@ msgstr "Angadido manualmente"
 msgid "All items, unsorted"
 msgstr "Tódolos elementos, sen orde"
 
-#: src/playlist/sort.c:344 src/playlist/view.c:79 src/playlist/view.c:280
+#: src/playlist/sort.c:348 src/playlist/view.c:79 src/playlist/view.c:280
 msgid "Undefined"
 msgstr "Indefinido"
 
@@ -10764,7 +10763,7 @@ msgstr "Analisador de subtítulos Vobsub"
 msgid "VOC demuxer"
 msgstr "Desmultiplexador VOC"
 
-#: modules/demux/wav.c:42
+#: modules/demux/wav.c:43
 msgid "WAV demuxer"
 msgstr "Desmultiplexador WAV"
 
@@ -15715,15 +15714,15 @@ msgstr "Analisador de arquivo SDP pra UDP"
 msgid "Session Announcements (SAP)"
 msgstr "Anunciós de sesión (SAP)"
 
-#: modules/services_discovery/sap.c:842 modules/services_discovery/sap.c:847
+#: modules/services_discovery/sap.c:847 modules/services_discovery/sap.c:852
 msgid "Session"
 msgstr "Sesión"
 
-#: modules/services_discovery/sap.c:843
+#: modules/services_discovery/sap.c:848
 msgid "Tool"
 msgstr "Ferramenta"
 
-#: modules/services_discovery/sap.c:848
+#: modules/services_discovery/sap.c:853
 msgid "User"
 msgstr "Usuario"
 
@@ -17881,12 +17880,22 @@ msgstr ""
 "Pantalla de soporte físico X11 a usar. Por defecto o VLC usará o valor da "
 "variable de contorno DISPLAY."
 
-#: modules/video_output/x11/glx.c:106 modules/video_output/x11/x11.c:61
+#: modules/video_output/x11/glx.c:106 modules/video_output/x11/x11.c:57
+#: modules/video_output/x11/xvideo.c:68
+msgid "Use shared memory"
+msgstr "Usar memoria compartida"
+
+#: modules/video_output/x11/glx.c:108 modules/video_output/x11/x11.c:59
+#: modules/video_output/x11/xvideo.c:70
+msgid "Use shared memory to communicate between VLC and the X server."
+msgstr "Usar memoria compartida pra se comunicar entre o VLC e o servidor X."
+
+#: modules/video_output/x11/glx.c:110 modules/video_output/x11/x11.c:61
 #: modules/video_output/x11/xvideo.c:72
 msgid "Screen for fullscreen mode."
 msgstr "Pantalla pró modo pantalla completa."
 
-#: modules/video_output/x11/glx.c:108 modules/video_output/x11/x11.c:63
+#: modules/video_output/x11/glx.c:112 modules/video_output/x11/x11.c:63
 #: modules/video_output/x11/xvideo.c:74
 msgid ""
 "Screen to use in fullscreen mode. For instance set it to 0 for first screen, "
@@ -17895,17 +17904,9 @@ msgstr ""
 "Pantalla a usar no modo pantalla completa. Por exemplo 0 prá primeira "
 "pantalla, 1 prá segunda, etc."
 
-#: modules/video_output/x11/glx.c:115
+#: modules/video_output/x11/glx.c:119
 msgid "OpenGL(GLX) provider"
 msgstr "Fornecedor OpenGL(GLX)"
-
-#: modules/video_output/x11/x11.c:57 modules/video_output/x11/xvideo.c:68
-msgid "Use shared memory"
-msgstr "Usar memoria compartida"
-
-#: modules/video_output/x11/x11.c:59 modules/video_output/x11/xvideo.c:70
-msgid "Use shared memory to communicate between VLC and the X server."
-msgstr "Usar memoria compartida pra se comunicar entre o VLC e o servidor X."
 
 #: modules/video_output/x11/x11.c:78
 msgid "X11 video output"

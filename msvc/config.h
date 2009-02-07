@@ -4,7 +4,7 @@
 #define CONFIGURE_LINE "Visual C++"
 
 /* Copyright string */
-#define COPYRIGHT_MESSAGE "VLC media player - version 0.8.6h Janus - (c) 1996-2004 VideoLAN"
+#define COPYRIGHT_MESSAGE "VLC media player - version 0.8.6i Janus - (c) 1996-2004 VideoLAN"
 
 /* Maximum supported data alignment */
 #define ATTRIBUTE_ALIGNED_MAX 16
@@ -115,10 +115,10 @@
 #define LIBEXT ".dll"
 
 /* String suffix for module functions */
-#define MODULE_SUFFIX "__0_8_6h"
+#define MODULE_SUFFIX "__0_8_6i"
 
 /* Symbol suffix for module functions */
-#define MODULE_SYMBOL 0_8_6h
+#define MODULE_SYMBOL 0_8_6i
 
 /* Name of package */
 #define PACKAGE "vlc"
@@ -130,13 +130,13 @@
 #define PACKAGE_NAME "vlc"
 
 /* Define to the full name and version of this package. */
-#define PACKAGE_STRING "vlc 0.8.6h"
+#define PACKAGE_STRING "vlc 0.8.6i"
 
 /* Define to the one symbol short name of this package. */
 #define PACKAGE_TARNAME "vlc"
 
 /* Define to the version of this package. */
-#define PACKAGE_VERSION "0.8.6h"
+#define PACKAGE_VERSION "0.8.6i"
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1
@@ -145,10 +145,10 @@
 #define TIME_WITH_SYS_TIME 1
 
 /* Version number of package */
-#define VERSION "0.8.6h"
+#define VERSION "0.8.6i"
 
 /* Simple version string */
-#define VERSION_MESSAGE "0.8.6h Janus"
+#define VERSION_MESSAGE "0.8.6i Janus"
 
 /* compiler */
 #define VLC_COMPILER "Microsoft Visual C++"

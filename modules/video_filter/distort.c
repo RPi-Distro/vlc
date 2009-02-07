@@ -2,7 +2,7 @@
  * distort.c : Misc video effects plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 5a347bc784e6f61e1cfa17e975c87c039e3f76ea $
+ * $Id: 89fa2342a04b6e50e218461a4cd14168b649183b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>

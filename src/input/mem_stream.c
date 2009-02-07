@@ -2,7 +2,7 @@
  * mem_stream.c: stream_t wrapper around memory buffer
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 07dcc4beaf8ea7e381275f279781e29d521e5ed6 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

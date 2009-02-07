@@ -2,7 +2,7 @@
  * input.c: Libvlc new API input management functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 670558d2d4736d6b333c34f12a23e214870ae3dd $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

@@ -2,7 +2,7 @@
  * ffmpeg.c: video decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 7bacb2eec7f29bf73a418bf3391171df854b78cb $
+ * $Id: 1514543f20e77bf61e380ea9a2345e4199f5ce84 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

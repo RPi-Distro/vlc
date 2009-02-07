@@ -2,7 +2,7 @@
  * file_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b41a79650fc8e90754fc31ad4e1e8f931a11c684 $
+ * $Id: cc0174ed01940e6310ad2c7883dbf3cf869c2578 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * embeddedwindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: f1b5d2d8d6396dcb0d9b93fbb0e90315edb50a3d $
+ * $Id: 6a2b2af0a6e8ca2a678f00fffa034b64b3b9658f $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org> 
  *

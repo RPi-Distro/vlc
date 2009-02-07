@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: 0ad0cdfd1ec7b7ea72678d593277745a5b6ce99b $
+ * $Id: ee928999a13485de72883a8a4d3c33b2c7f8408d $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -843,17 +843,9 @@ static int OpenVCDImage( vlc_object_t * p_this, const char *psz_dev,
     {
         /* psz_dev must be the cue file. Let's assume there's a .bin
          * file with the same filename */
-        if( p_pos )
-        {
-            psz_vcdfile = malloc( p_pos - psz_dev + 5 /* ".bin" */ );
-            strncpy( psz_vcdfile, psz_dev, p_pos - psz_dev );
-            strcpy( psz_vcdfile + (p_pos - psz_dev), ".bin");
-        }
-        else
-        {
-            psz_vcdfile = malloc( strlen(psz_dev) + 5 /* ".bin" */ );
-            sprintf( psz_vcdfile, "%s.bin", psz_dev );
-        }
+        psz_vcdfile = malloc( p_pos - psz_dev + 5 /* ".bin" */ );
+        strncpy( psz_vcdfile, psz_dev, p_pos - psz_dev );
+        strcpy( psz_vcdfile + (p_pos - psz_dev), ".bin");
         psz_cuefile = strdup( psz_dev );
     }
     else

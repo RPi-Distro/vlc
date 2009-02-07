@@ -2,7 +2,7 @@
  * osdmenu.c: osd filter module
  *****************************************************************************
  * Copyright (C) 2004-2005 M2X
- * $Id: d837e0a881fa43e0a2719c8b20823755239b19a6 $
+ * $Id: 36d34e987a149d3f270b9ec8deb24bc7e718b00b $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -207,16 +207,10 @@ static int CreateFilter ( vlc_object_t *p_this )
         p_filter->p_sys->p_menu->i_x = 0;
         p_filter->p_sys->p_menu->i_y = 0;
     }
-    else if( i_posx >= 0 || i_posy >= 0 )
+    else
     {
         p_filter->p_sys->p_menu->i_x = i_posx;
         p_filter->p_sys->p_menu->i_y = i_posy;
-    }
-    else if( p_filter->p_sys->p_menu->i_x < 0 || p_filter->p_sys->p_menu->i_y < 0 )
-    {
-        p_filter->p_sys->b_absolute = VLC_FALSE;
-        p_filter->p_sys->p_menu->i_x = 0;
-        p_filter->p_sys->p_menu->i_y = 0;
     }
 
     /* Set up p_filter */
