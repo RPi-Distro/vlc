@@ -2,7 +2,7 @@
  * open.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 44b36baab77402f559b0cdc527a694c3da36d0fc $
+ * $Id: 6a2d3e12239d2c383ac191bd50b36e25ad77cba0 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,11 +25,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                            /* strerror() */
-#include <stdio.h>
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 #include "wince.h"
 
@@ -100,17 +101,17 @@ OpenDialog::OpenDialog( intf_thread_t *p_intf, CBaseWindow *p_parent,
 
 /***********************************************************************
 
-FUNCTION: 
+FUNCTION:
   WndProc
 
-PURPOSE: 
+PURPOSE:
   Processes messages sent to the main window.
-  
+ 
 ***********************************************************************/
 LRESULT OpenDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
 {
     SHINITDLGINFO shidi;
-    INITCOMMONCONTROLSEX  iccex;  // INITCOMMONCONTROLSEX structure    
+    INITCOMMONCONTROLSEX  iccex;  // INITCOMMONCONTROLSEX structure
     RECT rcClient;
     TC_ITEM tcItem;
 
@@ -189,7 +190,7 @@ LRESULT OpenDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
 
     case WM_SETFOCUS:
         SHFullScreen( hwnd, SHFS_SHOWSIPBUTTON );
-        SHSipPreference( hwnd, SIP_DOWN ); 
+        SHSipPreference( hwnd, SIP_DOWN );
         break;
 
     case WM_COMMAND:
@@ -222,7 +223,7 @@ LRESULT OpenDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
             } else if( (HWND)lp == browse_button )
             {
                 OnFileBrowse();
-            } 
+            }
             break;
         }
         if( HIWORD(wp) == EN_CHANGE )
@@ -309,7 +310,7 @@ void OpenDialog::FilePanel( HWND hwnd )
         sz_subsfile += psz_subsfile;
         subsfile_mrl.push_back( sz_subsfile );
     }
-    if( psz_subsfile ) free( psz_subsfile );
+    free( psz_subsfile );
 }
 
 void OpenDialog::NetPanel( HWND hwnd )
@@ -417,7 +418,7 @@ void OpenDialog::NetPanel( HWND hwnd )
         WS_CHILD | WS_VISIBLE | BS_AUTORADIOBUTTON,
         rc.left + 5 + 15 + 5 + net_type_array[0].length + 5,
         rc.top + 10, 15, 15, hwnd, NULL, hInst, NULL );
-        
+ 
     net_label[2] = CreateWindow( _T("STATIC"), net_type_array[2].psz_text,
         WS_CHILD | WS_VISIBLE | SS_LEFT,
         rc.left + 5 + 15 + 5 + net_type_array[0].length + 5 + 15 + 5,
@@ -603,21 +604,19 @@ void OpenDialog::OnOk()
     char **pp_args = vlc_parse_cmdline( _TOMB(psz_text), &i_args );
 
     ComboBox_AddString( mrl_combo, psz_text );
-    if( ComboBox_GetCount( mrl_combo ) > 10 ) 
+    if( ComboBox_GetCount( mrl_combo ) > 10 )
         ComboBox_DeleteString( mrl_combo, 0 );
     ComboBox_SetCurSel( mrl_combo, ComboBox_GetCount( mrl_combo ) - 1 );
 
     /* Update the playlist */
-    playlist_t *p_playlist =
-        (playlist_t *)vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                       FIND_ANYWHERE );
+    playlist_t *p_playlist = pl_Yield( p_intf );
     if( p_playlist == NULL ) return;
 
     for( int i = 0; i < i_args; i++ )
     {
-        vlc_bool_t b_start = !i && i_open_arg;
+        bool b_start = !i && i_open_arg;
         playlist_item_t *p_item =
-            playlist_ItemNew( p_intf, pp_args[i], pp_args[i] );
+            playlist_ItemNew( p_playlist, pp_args[i], pp_args[i] );
 
         /* Insert options */
         while( i + 1 < i_args && pp_args[i + 1][0] == ':' )
@@ -636,12 +635,16 @@ void OpenDialog::OnOk()
             }
         }
 
-        playlist_AddItem( p_playlist, p_item,
-                          PLAYLIST_APPEND, PLAYLIST_END );
 
         if( b_start )
         {
-            playlist_Control( p_playlist, PLAYLIST_ITEMPLAY , p_item );
+            playlist_AddItem( p_playlist, p_item,
+                              PLAYLIST_APPEND|PLAYLIST_GO, PLAYLIST_END );
+        }
+        else
+        {
+            playlist_AddItem( p_playlist, p_item,
+                              PLAYLIST_APPEND, PLAYLIST_END );
         }
     }
 
@@ -652,7 +655,7 @@ void OpenDialog::OnOk()
         free( pp_args[i_args] );
         if( !i_args ) free( pp_args );
     }
-    vlc_object_release( p_playlist );
+    pl_Release( p_intf );
 }
 
 /*****************************************************************************
@@ -680,7 +683,7 @@ static void OnOpenCB( intf_dialog_args_t *p_arg )
 
         SetWindowText( p_this->file_combo, _FROMMB(psz_tmp) );
         ComboBox_AddString( p_this->file_combo, _FROMMB(psz_tmp) );
-        if( ComboBox_GetCount( p_this->file_combo ) > 10 ) 
+        if( ComboBox_GetCount( p_this->file_combo ) > 10 )
             ComboBox_DeleteString( p_this->file_combo, 0 );
 
         p_this->UpdateMRL( FILE_ACCESS );
@@ -733,7 +736,7 @@ void OpenDialog::OnNetTypeChange( int event )
                       SWP_NOMOVE | SWP_NOSIZE );
         SetWindowPos( hUpdown[0], HWND_TOP, 0, 0, 0, 0,
                       SWP_NOMOVE | SWP_NOSIZE );
-    } 
+    }
     else if( event == NetRadio2_Event )
     {
         SetWindowPos( net_addrs_label[1], HWND_TOP, 0, 0, 0, 0,
@@ -746,14 +749,14 @@ void OpenDialog::OnNetTypeChange( int event )
                       SWP_NOMOVE | SWP_NOSIZE );
         SetWindowPos( hUpdown[1], HWND_TOP, 0, 0, 0, 0,
                       SWP_NOMOVE | SWP_NOSIZE );
-    } 
+    }
     else if( event == NetRadio3_Event )
     {
         SetWindowPos( net_addrs_label[2], HWND_TOP, 0, 0, 0, 0,
                       SWP_NOMOVE | SWP_NOSIZE );
         SetWindowPos( net_addrs[2], HWND_TOP, 0, 0, 0, 0,
                       SWP_NOMOVE | SWP_NOSIZE );
-    } 
+    }
     else if( event == NetRadio4_Event )
     {
         SetWindowPos( net_addrs_label[3], HWND_TOP, 0, 0, 0, 0,
@@ -761,7 +764,7 @@ void OpenDialog::OnNetTypeChange( int event )
         SetWindowPos( net_addrs[3], HWND_TOP, 0, 0, 0, 0,
                       SWP_NOMOVE | SWP_NOSIZE );
     }
-        
+ 
     UpdateMRL( NET_ACCESS );
 }
 

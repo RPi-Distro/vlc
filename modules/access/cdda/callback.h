@@ -2,7 +2,7 @@
  * callback.h : Callbacks for CD digital audio input module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: da96dbc844e23676db561bb08e0749419fddb92f $
+ * $Id$
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -21,9 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+#   include "config.h"
+#endif
 
-/* 
+#include <vlc_common.h>
+
+/*
    Minimum, maximum and default number of blocks we allow on read.
 */
 #define MIN_BLOCKS_PER_READ 1
@@ -40,19 +44,19 @@ int  CDDBEnabledCB( vlc_object_t *p_this, const char *psz_name,
 
 
 int  CDTextEnabledCB( vlc_object_t *p_this, const char *psz_name,
-			  vlc_value_t oldval, vlc_value_t val,
-			  void *p_data );
+              vlc_value_t oldval, vlc_value_t val,
+              void *p_data );
 
 int  CDTextPreferCB( vlc_object_t *p_this, const char *psz_name,
-			 vlc_value_t oldval, vlc_value_t val,
-			 void *p_data );
+             vlc_value_t oldval, vlc_value_t val,
+             void *p_data );
 
 int  CDDANavModeCB( vlc_object_t *p_this, const char *psz_name,
-		    vlc_value_t oldval, vlc_value_t val,
-		    void *p_data );
+            vlc_value_t oldval, vlc_value_t val,
+            void *p_data );
 
 
 int CDDABlocksPerReadCB ( vlc_object_t *p_this, const char *psz_name,
-			      vlc_value_t oldval, vlc_value_t val, 
-			      void *p_data );
+                  vlc_value_t oldval, vlc_value_t val,
+                  void *p_data );
 

@@ -2,7 +2,7 @@
  * oss.c : OSS /dev/dsp module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2002 the VideoLAN team
- * $Id: 4d0df4a487b841dfca78df9bfd1ae5462654343c $
+ * $Id: 0f1377ea7b4c6a28428a74ba9024a0a633d98e8f $
  *
  * Authors: Michel Kaempf <maxx@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -26,22 +26,24 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <errno.h>                                                 /* ENOMEM */
 #include <fcntl.h>                                       /* open(), O_WRONLY */
 #include <sys/ioctl.h>                                            /* ioctl() */
-#include <string.h>                                            /* strerror() */
 #include <unistd.h>                                      /* write(), close() */
-#include <stdlib.h>                            /* calloc(), malloc(), free() */
 
-#include <vlc/vlc.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 
 #ifdef HAVE_ALLOCA_H
 #   include <alloca.h>
 #endif
 
-#include <vlc/aout.h>
-
-#include "aout_internal.h"
+#include <vlc_aout.h>
 
 /* SNDCTL_DSP_RESET, SNDCTL_DSP_SETFMT, SNDCTL_DSP_STEREO, SNDCTL_DSP_SPEED,
  * SNDCTL_DSP_GETOSPACE */
@@ -82,7 +84,7 @@ struct aout_sys_t
 
 /* This must be a power of 2. */
 #define FRAME_SIZE 1024
-#define FRAME_COUNT 4
+#define FRAME_COUNT 32
 
 /*****************************************************************************
  * Local prototypes
@@ -91,7 +93,7 @@ static int  Open         ( vlc_object_t * );
 static void Close        ( vlc_object_t * );
 
 static void Play         ( aout_instance_t * );
-static int  OSSThread    ( aout_instance_t * );
+static void* OSSThread   ( vlc_object_t * );
 
 static mtime_t BufferDuration( aout_instance_t * p_aout );
 
@@ -106,13 +108,13 @@ static mtime_t BufferDuration( aout_instance_t * p_aout );
 
 vlc_module_begin();
     set_shortname( "OSS" );
-    set_description( _("Linux OSS audio output") );
+    set_description( N_("UNIX OSS audio output") );
 
     set_category( CAT_AUDIO );
     set_subcategory( SUBCAT_AUDIO_AOUT );
     add_file( "dspdev", "/dev/dsp", aout_FindAndRestart,
-              N_("OSS DSP device"), NULL, VLC_FALSE );
-    add_bool( "oss-buggy", 0, NULL, BUGGY_TEXT, BUGGY_LONGTEXT, VLC_TRUE );
+              N_("OSS DSP device"), NULL, false );
+    add_bool( "oss-buggy", 0, NULL, BUGGY_TEXT, BUGGY_LONGTEXT, true );
 
     set_capability( "audio output", 100 );
     add_shortcut( "oss" );
@@ -278,10 +280,7 @@ static int Open( vlc_object_t *p_this )
     /* Allocate structure */
     p_aout->output.p_sys = p_sys = malloc( sizeof( aout_sys_t ) );
     if( p_sys == NULL )
-    {
-        msg_Err( p_aout, "out of memory" );
         return VLC_ENOMEM;
-    }
 
     /* Get device name */
     if( (psz_device = config_GetPsz( p_aout, "dspdev" )) == NULL )
@@ -300,6 +299,7 @@ static int Open( vlc_object_t *p_this )
     if( p_sys->i_fd < 0 )
     {
         msg_Err( p_aout, "cannot open audio device (%s)", psz_device );
+        free( psz_device );
         free( p_sys );
         return VLC_EGENERIC;
     }
@@ -362,7 +362,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    val.b_bool = VLC_TRUE;
+    val.b_bool = true;
     var_Set( p_aout, "intf-change", val );
 
     /* Reset the DSP device */
@@ -474,9 +474,9 @@ static int Open( vlc_object_t *p_this )
 
         /* i_fragment = xxxxyyyy where: xxxx        is fragtotal
          *                              1 << yyyy   is fragsize */
-        i_fragments = 0;
-        i_frame_size = FRAME_SIZE * p_aout->output.output.i_bytes_per_frame;
-        while( i_frame_size >>= 1 )
+        i_frame_size = ((uint64_t)p_aout->output.output.i_bytes_per_frame * p_aout->output.output.i_rate * 65536) / (48000 * 2 * 2) / FRAME_COUNT;
+        i_fragments = 4;
+        while( i_fragments < 12 && (1U << i_fragments) < i_frame_size )
         {
             ++i_fragments;
         }
@@ -517,9 +517,9 @@ static int Open( vlc_object_t *p_this )
 
     /* Create OSS thread and wait for its readiness. */
     if( vlc_thread_create( p_aout, "aout", OSSThread,
-                           VLC_THREAD_PRIORITY_OUTPUT, VLC_FALSE ) )
+                           VLC_THREAD_PRIORITY_OUTPUT, false ) )
     {
-        msg_Err( p_aout, "cannot create OSS thread (%s)", strerror(errno) );
+        msg_Err( p_aout, "cannot create OSS thread (%m)" );
         close( p_sys->i_fd );
         free( p_sys );
         return VLC_ETHREAD;
@@ -533,6 +533,7 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Play( aout_instance_t *p_aout )
 {
+    VLC_UNUSED(p_aout);
 }
 
 /*****************************************************************************
@@ -543,9 +544,9 @@ static void Close( vlc_object_t * p_this )
     aout_instance_t *p_aout = (aout_instance_t *)p_this;
     struct aout_sys_t * p_sys = p_aout->output.p_sys;
 
-    p_aout->b_die = VLC_TRUE;
+    vlc_object_kill( p_aout );
     vlc_thread_join( p_aout );
-    p_aout->b_die = VLC_FALSE;
+    p_aout->b_die = false;
 
     ioctl( p_sys->i_fd, SNDCTL_DSP_RESET, NULL );
     close( p_sys->i_fd );
@@ -584,16 +585,17 @@ static mtime_t BufferDuration( aout_instance_t * p_aout )
 /*****************************************************************************
  * OSSThread: asynchronous thread used to DMA the data to the device
  *****************************************************************************/
-static int OSSThread( aout_instance_t * p_aout )
+static void* OSSThread( vlc_object_t *p_this )
 {
+    aout_instance_t * p_aout = (aout_instance_t*)p_this;
     struct aout_sys_t * p_sys = p_aout->output.p_sys;
     mtime_t next_date = 0;
 
-    while ( !p_aout->b_die )
+    while ( vlc_object_alive (p_aout) )
     {
         aout_buffer_t * p_buffer = NULL;
         int i_tmp, i_size;
-        byte_t * p_bytes;
+        uint8_t * p_bytes;
 
         if ( p_aout->output.output.i_format != VLC_FOURCC('s','p','d','i') )
         {
@@ -615,7 +617,7 @@ static int OSSThread( aout_instance_t * p_aout )
 
             /* Next buffer will be played at mdate() + buffered */
             p_buffer = aout_OutputNextBuffer( p_aout, mdate() + buffered,
-                                              VLC_FALSE );
+                                              false );
 
             if( p_buffer == NULL &&
                 buffered > ( p_aout->output.p_sys->max_buffer_duration
@@ -646,8 +648,8 @@ static int OSSThread( aout_instance_t * p_aout )
                 }
             }
 
-            while( !p_aout->b_die && ! ( p_buffer =
-                aout_OutputNextBuffer( p_aout, next_date, VLC_TRUE ) ) )
+            while( vlc_object_alive (p_aout) && ! ( p_buffer =
+                aout_OutputNextBuffer( p_aout, next_date, true ) ) )
             {
                 msleep( 1000 );
                 next_date = mdate();
@@ -675,7 +677,7 @@ static int OSSThread( aout_instance_t * p_aout )
 
         if( i_tmp < 0 )
         {
-            msg_Err( p_aout, "write failed (%s)", strerror(errno) );
+            msg_Err( p_aout, "write failed (%m)" );
         }
 
         if ( p_buffer != NULL )
@@ -688,5 +690,5 @@ static int OSSThread( aout_instance_t * p_aout )
         }
     }
 
-    return VLC_SUCCESS;
+    return NULL;
 }

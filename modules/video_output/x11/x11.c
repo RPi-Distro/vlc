@@ -2,7 +2,7 @@
  * x11.c : X11 plugin for vlc
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: e40d920cb710a8e2c68067c08d7d533dedd2e5c0 $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -26,16 +26,19 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                            /* strerror() */
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 
 /*****************************************************************************
  * Exported prototypes
  *****************************************************************************/
-extern int  E_(Activate)   ( vlc_object_t * );
-extern void E_(Deactivate) ( vlc_object_t * );
+extern int  Activate   ( vlc_object_t * );
+extern void Deactivate ( vlc_object_t * );
 
 /*****************************************************************************
  * Module descriptor
@@ -67,16 +70,16 @@ vlc_module_begin();
     set_shortname( "X11" );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VOUT );
-    add_string( "x11-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, VLC_TRUE );
-    add_bool( "x11-altfullscreen", 0, NULL, ALT_FS_TEXT, ALT_FS_LONGTEXT, VLC_TRUE );
+    add_string( "x11-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, true );
+    add_bool( "x11-altfullscreen", 0, NULL, ALT_FS_TEXT, ALT_FS_LONGTEXT, true );
 #ifdef HAVE_SYS_SHM_H
-    add_bool( "x11-shm", 1, NULL, SHM_TEXT, SHM_LONGTEXT, VLC_TRUE );
+    add_bool( "x11-shm", 1, NULL, SHM_TEXT, SHM_LONGTEXT, true );
 #endif
 #ifdef HAVE_XINERAMA
-    add_integer ( "x11-xineramascreen", 0, NULL, SCREEN_TEXT, SCREEN_LONGTEXT, VLC_TRUE );
+    add_integer ( "x11-xineramascreen", 0, NULL, SCREEN_TEXT, SCREEN_LONGTEXT, true );
 #endif
-    set_description( _("X11 video output") );
+    set_description( N_("X11 video output") );
     set_capability( "video output", 70 );
-    set_callbacks( E_(Activate), E_(Deactivate) );
+    set_callbacks( Activate, Deactivate );
 vlc_module_end();
 

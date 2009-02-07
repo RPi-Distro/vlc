@@ -2,7 +2,7 @@
  * macro.c : Custom <vlc> macro handling
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: 60c5454248d60e518859e406abe7653cc9bf0daf $
+ * $Id: 7dde365b198104b2f8af2ccb12716aaa7de90db6 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -22,11 +22,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include "http.h"
 #include "macros.h"
+#include "vlc_url.h"
 
-int E_(MacroParse)( macro_t *m, char *psz_src )
+static int MacroParse( macro_t *m, char *psz_src )
 {
     char *dup = strdup( (char *)psz_src );
     char *src = dup;
@@ -106,14 +110,14 @@ int E_(MacroParse)( macro_t *m, char *psz_src )
 #undef EXTRACT
 }
 
-void E_(MacroClean)( macro_t *m )
+static void MacroClean( macro_t *m )
 {
     free( m->id );
     free( m->param1 );
     free( m->param2 );
 }
 
-int E_(StrToMacroType)( char *name )
+static int StrToMacroType( const char *name )
 {
     int i;
 
@@ -131,7 +135,7 @@ int E_(StrToMacroType)( char *name )
     return MVLC_UNKNOWN;
 }
 
-void E_(MacroDo)( httpd_file_sys_t *p_args,
+static void MacroDo( httpd_file_sys_t *p_args,
                      macro_t *m,
                      char *p_request, int i_request,
                      char **pp_data,  int *pi_data,
@@ -166,27 +170,27 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
         } \
     }
 
-    switch( E_(StrToMacroType)( m->id ) )
+    switch( StrToMacroType( m->id ) )
     {
         case MVLC_CONTROL:
             if( i_request <= 0 )
             {
                 break;
             }
-            E_(ExtractURIValue)( p_request, "control", control, 512 );
+            ExtractURIValue( p_request, "control", control, 512 );
             if( *m->param1 && !strstr( m->param1, control ) )
             {
                 msg_Warn( p_intf, "unauthorized control=%s", control );
                 break;
             }
-            switch( E_(StrToMacroType)( control ) )
+            switch( StrToMacroType( control ) )
             {
                 case MVLC_PLAY:
                 {
                     int i_item;
                     char item[512];
 
-                    E_(ExtractURIValue)( p_request, "item", item, 512 );
+                    ExtractURIValue( p_request, "item", item, 512 );
                     i_item = atoi( item );
                     /* id = 0 : simply ask playlist to play */
                     if( i_item == 0 )
@@ -195,26 +199,31 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                         msg_Dbg( p_intf, "requested playlist play" );
                         break;
                     }
-                    playlist_Control( p_sys->p_playlist, PLAYLIST_ITEMPLAY,
+                    playlist_Control( p_sys->p_playlist, PLAYLIST_VIEWPLAY,
+                                      true, NULL,
                                       playlist_ItemGetById( p_sys->p_playlist,
-                                      i_item ) );
+                                      i_item, true ) );
                     msg_Dbg( p_intf, "requested playlist item: %i", i_item );
                     break;
                 }
                 case MVLC_STOP:
-                    playlist_Control( p_sys->p_playlist, PLAYLIST_STOP );
+                    playlist_Control( p_sys->p_playlist, PLAYLIST_STOP,
+                                      true );
                     msg_Dbg( p_intf, "requested playlist stop" );
                     break;
                 case MVLC_PAUSE:
-                    playlist_Control( p_sys->p_playlist, PLAYLIST_PAUSE );
+                    playlist_Control( p_sys->p_playlist, PLAYLIST_PAUSE,
+                                      true );
                     msg_Dbg( p_intf, "requested playlist pause" );
                     break;
                 case MVLC_NEXT:
-                    playlist_Control( p_sys->p_playlist, PLAYLIST_SKIP, 1 );
+                    playlist_Control( p_sys->p_playlist, PLAYLIST_SKIP,
+                                      true, 1 );
                     msg_Dbg( p_intf, "requested playlist next" );
                     break;
                 case MVLC_PREVIOUS:
-                    playlist_Control( p_sys->p_playlist, PLAYLIST_SKIP, -1 );
+                    playlist_Control( p_sys->p_playlist, PLAYLIST_SKIP,
+                                      true, -1 );
                     msg_Dbg( p_intf, "requested playlist previous" );
                     break;
                 case MVLC_FULLSCREEN:
@@ -235,9 +244,9 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                 case MVLC_SEEK:
                 {
                     char value[30];
-                    E_(ExtractURIValue)( p_request, "seek_value", value, 30 );
+                    ExtractURIValue( p_request, "seek_value", value, 30 );
                     decode_URI( value );
-                    E_(HandleSeek)( p_intf, value );
+                    HandleSeek( p_intf, value );
                     break;
                 }
                 case MVLC_VOLUME:
@@ -246,7 +255,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                     audio_volume_t i_volume;
                     int i_value;
 
-                    E_(ExtractURIValue)( p_request, "value", vol, 8 );
+                    ExtractURIValue( p_request, "value", vol, 8 );
                     aout_VolumeGet( p_intf, &i_volume );
                     decode_URI( vol );
 
@@ -303,11 +312,11 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                 {
                     char mrl[1024], psz_name[1024], tmp[1024];
                     char *p, *str;
-                    playlist_item_t *p_item;
+                    input_item_t *p_input;
 
-                    E_(ExtractURIValue)( p_request, "mrl", tmp, 1024 );
+                    ExtractURIValue( p_request, "mrl", tmp, 1024 );
                     decode_URI( tmp );
-                    E_(ExtractURIValue)( p_request, "name", psz_name, 1024 );
+                    ExtractURIValue( p_request, "name", psz_name, 1024 );
                     decode_URI( psz_name );
                     if( !*psz_name )
                     {
@@ -327,19 +336,26 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                     }
                     *p = '\0';
 
-                    p_item = E_(MRLParse)( p_intf, mrl, psz_name );
+                    p_input = MRLParse( p_intf, mrl, psz_name );
 
-                    if( !p_item || !p_item->input.psz_uri ||
-                        !*p_item->input.psz_uri )
+                    char *psz_uri = input_item_GetURI( p_input );
+                    if( !p_input || !psz_uri || !*psz_uri )
                     {
                         msg_Dbg( p_intf, "invalid requested mrl: %s", mrl );
                     }
                     else
                     {
-                        playlist_AddItem( p_sys->p_playlist, p_item,
-                                          PLAYLIST_APPEND, PLAYLIST_END );
-                        msg_Dbg( p_intf, "requested mrl add: %s", mrl );
+                        int i_ret = playlist_AddInput( p_sys->p_playlist,
+                                     p_input,
+                                     PLAYLIST_APPEND, PLAYLIST_END, true,
+                                     false);
+                        vlc_gc_decref( p_input );
+                        if( i_ret == VLC_SUCCESS )
+                            msg_Dbg( p_intf, "requested mrl add: %s", mrl );
+                        else
+                            msg_Warn( p_intf, "adding mrl %s failed", mrl );
                     }
+                    free( psz_uri );
 
                     break;
                 }
@@ -350,7 +366,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
 
                     /* Get the list of items to delete */
                     while( (p_parser =
-                            E_(ExtractURIValue)( p_parser, "item", item, 512 )) )
+                            ExtractURIValue( p_parser, "item", item, 512 )) )
                     {
                         if( !*item ) continue;
 
@@ -366,14 +382,15 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                         int i;
                         for( i = 0; i < i_nb_items; i++ )
                         {
-                            playlist_LockDelete( p_sys->p_playlist, p_items[i] );
+                            playlist_DeleteFromInput( p_sys->p_playlist,
+                                                      p_items[i], false );
                             msg_Dbg( p_intf, "requested playlist delete: %d",
                                      p_items[i] );
                             p_items[i] = -1;
                         }
                     }
 
-                    if( p_items ) free( p_items );
+                    free( p_items );
                     break;
                 }
                 case MVLC_KEEP:
@@ -384,7 +401,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
 
                     /* Get the list of items to keep */
                     while( (p_parser =
-                       E_(ExtractURIValue)( p_parser, "item", item, 512 )) )
+                       ExtractURIValue( p_parser, "item", item, 512 )) )
                     {
                         if( !*item ) continue;
 
@@ -395,28 +412,32 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                         i_nb_items++;
                     }
 
-                    for( i = p_sys->p_playlist->i_size - 1 ; i >= 0; i-- )
+                    for( i = p_sys->p_playlist->items.i_size - 1 ; i >= 0; i-- )
                     {
                         /* Check if the item is in the keep list */
                         for( j = 0 ; j < i_nb_items ; j++ )
                         {
                             if( p_items[j] ==
-                                p_sys->p_playlist->pp_items[i]->input.i_id ) break;
+                                 ARRAY_VAL(p_sys->p_playlist->items,i)
+                                                ->i_id)
+                                break;
                         }
                         if( j == i_nb_items )
                         {
-                            playlist_LockDelete( p_sys->p_playlist, p_sys->p_playlist->pp_items[i]->input.i_id );
+                            playlist_DeleteFromInput( p_sys->p_playlist,
+                                     p_sys->p_playlist->items.p_elems[i]->i_id,
+                                                      false );
                             msg_Dbg( p_intf, "requested playlist delete: %d",
                                      i );
                         }
                     }
 
-                    if( p_items ) free( p_items );
+                    free( p_items );
                     break;
                 }
                 case MVLC_EMPTY:
                 {
-                    playlist_LockClear( p_sys->p_playlist );
+                    playlist_Clear( p_sys->p_playlist, false );
                     msg_Dbg( p_intf, "requested playlist empty" );
                     break;
                 }
@@ -428,9 +449,9 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                     int i_order;
                     int i_item;
 
-                    E_(ExtractURIValue)( p_request, "type", type, 12 );
-                    E_(ExtractURIValue)( p_request, "order", order, 2 );
-                    E_(ExtractURIValue)( p_request, "item", item, 512 );
+                    ExtractURIValue( p_request, "type", type, 12 );
+                    ExtractURIValue( p_request, "order", order, 2 );
+                    ExtractURIValue( p_request, "item", item, 512 );
                     i_item = atoi( item );
 
                     if( order[0] == '0' ) i_order = ORDER_NORMAL;
@@ -438,8 +459,9 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
 
                     if( !strcmp( type , "title" ) )
                     {
-                        playlist_RecursiveNodeSort( p_sys->p_playlist, /*playlist_ItemGetById( p_sys->p_playlist, i_item ),*/
-                                                    p_sys->p_playlist->pp_views[0]->p_root,
+                        playlist_RecursiveNodeSort( p_sys->p_playlist,
+                                                    /* Ugly hack,but not worse than before ... */
+                                                    p_sys->p_playlist->p_root_onelevel,
                                                     SORT_TITLE_NODES_FIRST,
                                                     ( i_order == 0 ) ? ORDER_NORMAL : ORDER_REVERSE );
                         msg_Dbg( p_intf, "requested playlist sort by title (%d)" , i_order );
@@ -447,15 +469,15 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                     else if( !strcmp( type , "author" ) )
                     {
                         playlist_RecursiveNodeSort( p_sys->p_playlist, /*playlist_ItemGetById( p_sys->p_playlist, i_item ),*/
-                                                    p_sys->p_playlist->pp_views[0]->p_root,
-                                                    SORT_AUTHOR,
+                                                    p_sys->p_playlist->p_root_onelevel,
+                                                    SORT_ARTIST,
                                                     ( i_order == 0 ) ? ORDER_NORMAL : ORDER_REVERSE );
                         msg_Dbg( p_intf, "requested playlist sort by author (%d)" , i_order );
                     }
                     else if( !strcmp( type , "shuffle" ) )
                     {
                         playlist_RecursiveNodeSort( p_sys->p_playlist, /*playlist_ItemGetById( p_sys->p_playlist, i_item ),*/
-                                                    p_sys->p_playlist->pp_views[0]->p_root,
+                                                    p_sys->p_playlist->p_root_onelevel,
                                                     SORT_RANDOM,
                                                     ( i_order == 0 ) ? ORDER_NORMAL : ORDER_REVERSE );
                         msg_Dbg( p_intf, "requested playlist shuffle");
@@ -469,10 +491,12 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                     char psz_newpos[6];
                     int i_pos;
                     int i_newpos;
-                    E_(ExtractURIValue)( p_request, "psz_pos", psz_pos, 6 );
-                    E_(ExtractURIValue)( p_request, "psz_newpos", psz_newpos, 6 );
+                    ExtractURIValue( p_request, "psz_pos", psz_pos, 6 );
+                    ExtractURIValue( p_request, "psz_newpos", psz_newpos, 6 );
                     i_pos = atoi( psz_pos );
                     i_newpos = atoi( psz_newpos );
+                    /* FIXME FIXME TODO TODO XXX XXX
+                    ( duplicate from rpn.c )
                     if ( i_pos < i_newpos )
                     {
                         playlist_Move( p_sys->p_playlist, i_pos, i_newpos + 1 );
@@ -482,6 +506,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                         playlist_Move( p_sys->p_playlist, i_pos, i_newpos );
                     }
                     msg_Dbg( p_intf, "requested move playlist item %d to %d", i_pos, i_newpos);
+                    FIXME FIXME TODO TODO XXX XXX */
                     break;
                 }
 
@@ -489,7 +514,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                 case MVLC_CLOSE:
                 {
                     char id[512];
-                    E_(ExtractURIValue)( p_request, "id", id, 512 );
+                    ExtractURIValue( p_request, "id", id, 512 );
                     msg_Dbg( p_intf, "requested close id=%s", id );
 #if 0
                     if( p_sys->p_httpd->pf_control( p_sys->p_httpd, HTTPD_SET_CLOSE, id, NULL ) )
@@ -502,19 +527,21 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                 case MVLC_SHUTDOWN:
                 {
                     msg_Dbg( p_intf, "requested shutdown" );
-                    p_intf->p_vlc->b_die = VLC_TRUE;
+                    vlc_object_kill( p_intf->p_libvlc );
                     break;
                 }
+#ifdef ENABLE_VLM
                 /* vlm */
                 case MVLC_VLM_NEW:
                 case MVLC_VLM_SETUP:
                 {
-                    static const char *vlm_properties[11] =
+                    static const char vlm_properties[][9] =
                     {
                         /* no args */
                         "enabled", "disabled", "loop", "unloop",
                         /* args required */
-                        "input", "output", "option", "date", "period", "repeat", "append",
+                        "input", "output", "option", "date", "period",
+                        "repeat", "append", "",
                     };
                     vlm_message_t *vlm_answer;
                     char name[512];
@@ -528,11 +555,11 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
 
                     if( p_intf->p_sys->p_vlm == NULL ) break;
 
-                    E_(ExtractURIValue)( p_request, "name", name, 512 );
-                    if( E_(StrToMacroType)( control ) == MVLC_VLM_NEW )
+                    ExtractURIValue( p_request, "name", name, 512 );
+                    if( StrToMacroType( control ) == MVLC_VLM_NEW )
                     {
                         char type[20];
-                        E_(ExtractURIValue)( p_request, "type", type, 20 );
+                        ExtractURIValue( p_request, "type", type, 20 );
                         p += sprintf( psz, "new %s %s", name, type );
                     }
                     else
@@ -540,17 +567,17 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                         p += sprintf( psz, "setup %s", name );
                     }
                     /* Parse the request */
-                    for( i = 0; i < 11; i++ )
+                    for( i = 0; vlm_properties[i][0]; i++ )
                     {
                         char val[512];
-                        E_(ExtractURIValue)( p_request,
+                        ExtractURIValue( p_request,
                                                vlm_properties[i], val, 512 );
                         decode_URI( val );
                         if( strlen( val ) > 0 && i >= 4 )
                         {
                             p += sprintf( p, " %s %s", vlm_properties[i], val );
                         }
-                        else if( E_(TestURIParam)( p_request, vlm_properties[i] ) && i < 4 )
+                        else if( TestURIParam( p_request, vlm_properties[i] ) && i < 4 )
                         {
                             p += sprintf( p, " %s", vlm_properties[i] );
                         }
@@ -569,7 +596,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                                                          vlm_answer->psz_value );
                     }
 
-                    E_(mvar_AppendNewVar)( p_args->vars, "vlm_error", vlm_error );
+                    mvar_AppendNewVar( p_args->vars, "vlm_error", vlm_error );
 
                     vlm_MessageDelete( vlm_answer );
                     free( vlm_error );
@@ -587,7 +614,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
 
                     if( p_intf->p_sys->p_vlm == NULL ) break;
 
-                    E_(ExtractURIValue)( p_request, "name", name, 512 );
+                    ExtractURIValue( p_request, "name", name, 512 );
                     sprintf( psz, "del %s", name );
 
                     vlm_ExecuteCommand( p_intf->p_sys->p_vlm, psz, &vlm_answer );
@@ -609,17 +636,17 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
 
                     if( p_intf->p_sys->p_vlm == NULL ) break;
 
-                    E_(ExtractURIValue)( p_request, "name", name, 512 );
-                    if( E_(StrToMacroType)( control ) == MVLC_VLM_PLAY )
+                    ExtractURIValue( p_request, "name", name, 512 );
+                    if( StrToMacroType( control ) == MVLC_VLM_PLAY )
                         sprintf( psz, "control %s play", name );
-                    else if( E_(StrToMacroType)( control ) == MVLC_VLM_PAUSE )
+                    else if( StrToMacroType( control ) == MVLC_VLM_PAUSE )
                         sprintf( psz, "control %s pause", name );
-                    else if( E_(StrToMacroType)( control ) == MVLC_VLM_STOP )
+                    else if( StrToMacroType( control ) == MVLC_VLM_STOP )
                         sprintf( psz, "control %s stop", name );
-                    else if( E_(StrToMacroType)( control ) == MVLC_VLM_SEEK )
+                    else if( StrToMacroType( control ) == MVLC_VLM_SEEK )
                     {
                         char percent[20];
-                        E_(ExtractURIValue)( p_request, "percent", percent, 512 );
+                        ExtractURIValue( p_request, "percent", percent, 512 );
                         sprintf( psz, "control %s seek %s", name, percent );
                     }
 
@@ -640,10 +667,10 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
 
                     if( p_intf->p_sys->p_vlm == NULL ) break;
 
-                    E_(ExtractURIValue)( p_request, "file", file, 512 );
+                    ExtractURIValue( p_request, "file", file, 512 );
                     decode_URI( file );
 
-                    if( E_(StrToMacroType)( control ) == MVLC_VLM_LOAD )
+                    if( StrToMacroType( control ) == MVLC_VLM_LOAD )
                         sprintf( psz, "load %s", file );
                     else
                         sprintf( psz, "save %s", file );
@@ -653,7 +680,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                     vlm_MessageDelete( vlm_answer );
                     break;
                 }
-
+#endif /* ENABLE_VLM */
                 default:
                     if( *control )
                     {
@@ -675,10 +702,10 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
             {
                 break;
             }
-            E_(ExtractURIValue)( p_request, m->param1,  value, 512 );
+            ExtractURIValue( p_request, m->param1,  value, 512 );
             decode_URI( value );
 
-            switch( E_(StrToMacroType)( m->param2 ) )
+            switch( StrToMacroType( m->param2 ) )
             {
                 case MVLC_INT:
                     i = atoi( value );
@@ -709,7 +736,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                 break;
             }
 
-            switch( E_(StrToMacroType)( m->param2 ) )
+            switch( StrToMacroType( m->param2 ) )
             {
                 case MVLC_INT:
                     i = config_GetInt( p_intf, m->param1 );
@@ -718,7 +745,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
                 case MVLC_FLOAT:
                     f = config_GetFloat( p_intf, m->param1 );
                     div = lldiv( f * 1000000 , 1000000 );
-                    sprintf( value, I64Fd".%06u", div.quot,
+                    sprintf( value, "%lld.%06u", div.quot,
                             (unsigned int)div.rem );
                     break;
                 case MVLC_STRING:
@@ -746,13 +773,13 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
 
             if( m->param1 )
             {
-                E_(EvaluateRPN)( p_intf, p_args->vars, &p_args->stack, m->param1 );
-                s = E_(SSPop)( &p_args->stack );
-                v = E_(mvar_GetValue)( p_args->vars, s );
+                EvaluateRPN( p_intf, p_args->vars, &p_args->stack, m->param1 );
+                s = SSPop( &p_args->stack );
+                v = mvar_GetValue( p_args->vars, s );
             }
             else
             {
-                v = s = E_(SSPop)( &p_args->stack );
+                v = s = SSPop( &p_args->stack );
             }
 
             PRINTS( "%s", v );
@@ -760,7 +787,7 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
             break;
         }
         case MVLC_RPN:
-            E_(EvaluateRPN)( p_intf, p_args->vars, &p_args->stack, m->param1 );
+            EvaluateRPN( p_intf, p_args->vars, &p_args->stack, m->param1 );
             break;
 
         /* Useful to learn stack management */
@@ -784,7 +811,8 @@ void E_(MacroDo)( httpd_file_sys_t *p_args,
 #undef ALLOC
 }
 
-char *E_(MacroSearch)( char *src, char *end, int i_mvlc, vlc_bool_t b_after )
+static
+char *MacroSearch( char *src, char *end, int i_mvlc, bool b_after )
 {
     int     i_id;
     int     i_level = 0;
@@ -796,9 +824,9 @@ char *E_(MacroSearch)( char *src, char *end, int i_mvlc, vlc_bool_t b_after )
             int i_skip;
             macro_t m;
 
-            i_skip = E_(MacroParse)( &m, src );
+            i_skip = MacroParse( &m, src );
 
-            i_id = E_(StrToMacroType)( m.id );
+            i_id = StrToMacroType( m.id );
 
             switch( i_id )
             {
@@ -813,7 +841,7 @@ char *E_(MacroSearch)( char *src, char *end, int i_mvlc, vlc_bool_t b_after )
                     break;
             }
 
-            E_(MacroClean)( &m );
+            MacroClean( &m );
 
             if( ( i_mvlc == MVLC_END && i_level == -1 ) ||
                 ( i_mvlc != MVLC_END && i_level == 0 && i_mvlc == i_id ) )
@@ -836,7 +864,7 @@ char *E_(MacroSearch)( char *src, char *end, int i_mvlc, vlc_bool_t b_after )
     return NULL;
 }
 
-void E_(Execute)( httpd_file_sys_t *p_args,
+void Execute( httpd_file_sys_t *p_args,
                      char *p_request, int i_request,
                      char **pp_data, int *pi_data,
                      char **pp_dst,
@@ -864,11 +892,11 @@ void E_(Execute)( httpd_file_sys_t *p_args,
         {
             macro_t m;
 
-            src += E_(MacroParse)( &m, src );
+            src += MacroParse( &m, src );
 
             //msg_Dbg( p_intf, "macro_id=%s", m.id );
 
-            switch( E_(StrToMacroType)( m.id ) )
+            switch( StrToMacroType( m.id ) )
             {
                 case MVLC_INCLUDE:
                 {
@@ -904,16 +932,16 @@ void E_(Execute)( httpd_file_sys_t *p_args,
                     if( ( f = fopen( psz_file, "r" ) ) == NULL )
                     {
                         msg_Warn( p_args->p_intf,
-                                  "unable to include file %s (%s)",
-                                  psz_file, strerror(errno) );
+                                  "unable to include file %s (%m)",
+                                  psz_file );
                         break;
                     }
 
                     /* first we load in a temporary buffer */
-                    E_(FileLoad)( f, &p_buffer, &i_buffer );
+                    FileLoad( f, &p_buffer, &i_buffer );
 
                     /* we parse executing all  <vlc /> macros */
-                    E_(Execute)( p_args, p_request, i_request, pp_data, pi_data,
+                    Execute( p_args, p_request, i_request, pp_data, pi_data,
                              &dst, &p_buffer[0], &p_buffer[i_buffer] );
                     free( p_buffer );
                     fclose(f);
@@ -921,11 +949,11 @@ void E_(Execute)( httpd_file_sys_t *p_args,
                 }
                 case MVLC_IF:
                 {
-                    vlc_bool_t i_test;
+                    bool i_test;
                     char    *endif;
 
-                    E_(EvaluateRPN)( p_intf, p_args->vars, &p_args->stack, m.param1 );
-                    if( E_(SSPopN)( &p_args->stack, p_args->vars ) )
+                    EvaluateRPN( p_intf, p_args->vars, &p_args->stack, m.param1 );
+                    if( SSPopN( &p_args->stack, p_args->vars ) )
                     {
                         i_test = 1;
                     }
@@ -933,18 +961,18 @@ void E_(Execute)( httpd_file_sys_t *p_args,
                     {
                         i_test = 0;
                     }
-                    endif = E_(MacroSearch)( src, end, MVLC_END, VLC_TRUE );
+                    endif = MacroSearch( src, end, MVLC_END, true );
 
                     if( i_test == 0 )
                     {
-                        char *start = E_(MacroSearch)( src, endif, MVLC_ELSE, VLC_TRUE );
+                        char *start = MacroSearch( src, endif, MVLC_ELSE, true );
 
                         if( start )
                         {
-                            char *stop  = E_(MacroSearch)( start, endif, MVLC_END, VLC_FALSE );
+                            char *stop  = MacroSearch( start, endif, MVLC_END, false );
                             if( stop )
                             {
-                                E_(Execute)( p_args, p_request, i_request,
+                                Execute( p_args, p_request, i_request,
                                          pp_data, pi_data, &dst, start, stop );
                             }
                         }
@@ -952,13 +980,13 @@ void E_(Execute)( httpd_file_sys_t *p_args,
                     else if( i_test == 1 )
                     {
                         char *stop;
-                        if( ( stop = E_(MacroSearch)( src, endif, MVLC_ELSE, VLC_FALSE ) ) == NULL )
+                        if( ( stop = MacroSearch( src, endif, MVLC_ELSE, false ) ) == NULL )
                         {
-                            stop = E_(MacroSearch)( src, endif, MVLC_END, VLC_FALSE );
+                            stop = MacroSearch( src, endif, MVLC_END, false );
                         }
                         if( stop )
                         {
-                            E_(Execute)( p_args, p_request, i_request,
+                            Execute( p_args, p_request, i_request,
                                      pp_data, pi_data, &dst, src, stop );
                         }
                     }
@@ -968,9 +996,9 @@ void E_(Execute)( httpd_file_sys_t *p_args,
                 }
                 case MVLC_FOREACH:
                 {
-                    char *endfor = E_(MacroSearch)( src, end, MVLC_END, VLC_TRUE );
+                    char *endfor = MacroSearch( src, end, MVLC_END, true );
                     char *start = src;
-                    char *stop = E_(MacroSearch)( src, end, MVLC_END, VLC_FALSE );
+                    char *stop = MacroSearch( src, end, MVLC_END, false );
 
                     if( stop )
                     {
@@ -979,30 +1007,30 @@ void E_(Execute)( httpd_file_sys_t *p_args,
                         mvar_t *v;
                         if( !strcmp( m.param2, "integer" ) )
                         {
-                            char *arg = E_(SSPop)( &p_args->stack );
-                            index = E_(mvar_IntegerSetNew)( m.param1, arg );
+                            char *arg = SSPop( &p_args->stack );
+                            index = mvar_IntegerSetNew( m.param1, arg );
                             free( arg );
                         }
                         else if( !strcmp( m.param2, "directory" ) )
                         {
-                            char *arg = E_(SSPop)( &p_args->stack );
-                            index = E_(mvar_FileSetNew)( p_intf, m.param1, arg );
+                            char *arg = SSPop( &p_args->stack );
+                            index = mvar_FileSetNew( p_intf, m.param1, arg );
                             free( arg );
                         }
                         else if( !strcmp( m.param2, "object" ) )
                         {
-                            char *arg = E_(SSPop)( &p_args->stack );
-                            index = E_(mvar_ObjectSetNew)( p_intf, m.param1, arg );
+                            char *arg = SSPop( &p_args->stack );
+                            index = mvar_ObjectSetNew( p_intf, m.param1, arg );
                             free( arg );
                         }
                         else if( !strcmp( m.param2, "playlist" ) )
                         {
-                            index = E_(mvar_PlaylistSetNew)( p_intf, m.param1,
+                            index = mvar_PlaylistSetNew( p_intf, m.param1,
                                                     p_intf->p_sys->p_playlist );
                         }
                         else if( !strcmp( m.param2, "information" ) )
                         {
-                            index = E_(mvar_InfoSetNew)( p_intf, m.param1,
+                            index = mvar_InfoSetNew( m.param1,
                                                      p_intf->p_sys->p_input );
                         }
                         else if( !strcmp( m.param2, "program" )
@@ -1012,33 +1040,35 @@ void E_(Execute)( httpd_file_sys_t *p_args,
                                   || !strcmp( m.param2, "video-es" )
                                   || !strcmp( m.param2, "spu-es" ) )
                         {
-                            index = E_(mvar_InputVarSetNew)( p_intf, m.param1,
+                            index = mvar_InputVarSetNew( p_intf, m.param1,
                                                          p_intf->p_sys->p_input,
                                                          m.param2 );
                         }
+#ifdef ENABLE_VLM
                         else if( !strcmp( m.param2, "vlm" ) )
                         {
                             if( p_intf->p_sys->p_vlm == NULL )
                                 p_intf->p_sys->p_vlm = vlm_New( p_intf );
-                            index = E_(mvar_VlmSetNew)( m.param1, p_intf->p_sys->p_vlm );
+                            index = mvar_VlmSetNew( m.param1, p_intf->p_sys->p_vlm );
                         }
+#endif
 #if 0
                         else if( !strcmp( m.param2, "hosts" ) )
                         {
-                            index = E_(mvar_HttpdInfoSetNew)( m.param1, p_intf->p_sys->p_httpd, HTTPD_GET_HOSTS );
+                            index = mvar_HttpdInfoSetNew( m.param1, p_intf->p_sys->p_httpd, HTTPD_GET_HOSTS );
                         }
                         else if( !strcmp( m.param2, "urls" ) )
                         {
-                            index = E_(mvar_HttpdInfoSetNew)( m.param1, p_intf->p_sys->p_httpd, HTTPD_GET_URLS );
+                            index = mvar_HttpdInfoSetNew( m.param1, p_intf->p_sys->p_httpd, HTTPD_GET_URLS );
                         }
                         else if( !strcmp( m.param2, "connections" ) )
                         {
-                            index = E_(mvar_HttpdInfoSetNew)(m.param1, p_intf->p_sys->p_httpd, HTTPD_GET_CONNECTIONS);
+                            index = mvar_HttpdInfoSetNew(m.param1, p_intf->p_sys->p_httpd, HTTPD_GET_CONNECTIONS);
                         }
 #endif
-                        else if( ( v = E_(mvar_GetVar)( p_args->vars, m.param2 ) ) )
+                        else if( ( v = mvar_GetVar( p_args->vars, m.param2 ) ) )
                         {
-                            index = E_(mvar_Duplicate)( v );
+                            index = mvar_Duplicate( v );
                         }
                         else
                         {
@@ -1049,7 +1079,7 @@ void E_(Execute)( httpd_file_sys_t *p_args,
 
                         for( i_idx = 0; i_idx < index->i_field; i_idx++ )
                         {
-                            mvar_t *f = E_(mvar_Duplicate)( index->field[i_idx] );
+                            mvar_t *f = mvar_Duplicate( index->field[i_idx] );
 
                             //msg_Dbg( p_intf, "foreach field[%d] name=%s value=%s", i_idx, f->name, f->value );
 
@@ -1057,26 +1087,26 @@ void E_(Execute)( httpd_file_sys_t *p_args,
                             f->name = strdup( m.param1 );
 
 
-                            E_(mvar_PushVar)( p_args->vars, f );
-                            E_(Execute)( p_args, p_request, i_request,
+                            mvar_PushVar( p_args->vars, f );
+                            Execute( p_args, p_request, i_request,
                                      pp_data, pi_data, &dst, start, stop );
-                            E_(mvar_RemoveVar)( p_args->vars, f );
+                            mvar_RemoveVar( p_args->vars, f );
 
-                            E_(mvar_Delete)( f );
+                            mvar_Delete( f );
                         }
-                        E_(mvar_Delete)( index );
+                        mvar_Delete( index );
 
                         src = endfor;
                     }
                     break;
                 }
                 default:
-                    E_(MacroDo)( p_args, &m, p_request, i_request,
-                                 pp_data, pi_data, &dst );
+                    MacroDo( p_args, &m, p_request, i_request,
+                             pp_data, pi_data, &dst );
                     break;
             }
 
-            E_(MacroClean)( &m );
+            MacroClean( &m );
             continue;
         }
 

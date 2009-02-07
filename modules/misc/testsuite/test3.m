@@ -2,7 +2,7 @@
  * test3.m : Empty Objective C module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id: a4dfb8f355e92a9cf1fd750d094b3410b3b98ee7 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -24,7 +24,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 
 #include <objc/Object.h>
 
@@ -48,7 +53,7 @@
  * Module descriptor.
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _([Desc ription]) );
+    set_description( N_([Desc ription]) );
 vlc_module_end();
 
 

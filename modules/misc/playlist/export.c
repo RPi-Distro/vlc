@@ -2,7 +2,7 @@
  * export.c :  Playlist export module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: af49869575f622687e1f3efb070850058168cb57 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -24,14 +24,19 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 
 /***************************************************************************
  * Prototypes
  ***************************************************************************/
 int Export_M3U    ( vlc_object_t *p_intf );
 int Export_Old    ( vlc_object_t *p_intf );
-int E_(xspf_export_playlist)( vlc_object_t *p_intf );
+int xspf_export_playlist( vlc_object_t *p_intf );
 
 /*****************************************************************************
  * Module descriptor
@@ -41,21 +46,21 @@ vlc_module_begin();
     set_category( CAT_PLAYLIST );
     set_subcategory( SUBCAT_PLAYLIST_EXPORT );
     add_submodule();
-        set_description( _("M3U playlist exporter") );
+        set_description( N_("M3U playlist exporter") );
         add_shortcut( "export-m3u" );
         set_capability( "playlist export" , 0);
         set_callbacks( Export_M3U , NULL );
 
     add_submodule();
-        set_description( _("Old playlist exporter") );
+        set_description( N_("Old playlist exporter") );
         add_shortcut( "export-old" );
         set_capability( "playlist export" , 0);
         set_callbacks( Export_Old , NULL );
 
     add_submodule();
-        set_description( _("XSPF playlist export") );
+        set_description( N_("XSPF playlist export") );
         add_shortcut( "export-xspf" );
         set_capability( "playlist export" , 0);
-        set_callbacks( E_(xspf_export_playlist) , NULL );
+        set_callbacks( xspf_export_playlist , NULL );
 
 vlc_module_end();

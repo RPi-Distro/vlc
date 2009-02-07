@@ -2,7 +2,7 @@
  * playlist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: 085b088353187d81fe4b8a49033477e1cb5ca424 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -11,7 +11,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -42,7 +42,6 @@
     IBOutlet id o_outline_view;
 
     NSMutableDictionary *o_outline_dict;
-    int i_current_view;
 }
 
 - (void)initStrings;
@@ -108,7 +107,7 @@
     BOOL b_selected_item_met;
     BOOL b_isSortDescending;
     id o_tc_sortColumn;
-    
+
     /* "add node" button and menu entry */
     IBOutlet id o_mi_addNode;
     IBOutlet id o_btn_addNode;
@@ -124,6 +123,8 @@
 - (void)sortNode:(int)i_mode;
 - (void)updateRowSelection;
 
+- (BOOL)isSelectionEmpty;
+
 - (IBAction)servicesChange:(id)sender;
 - (IBAction)playItem:(id)sender;
 - (IBAction)preparseItem:(id)sender;
@@ -135,10 +136,9 @@
 - (IBAction)recursiveExpandNode:(id)sender;
 
 - (IBAction)addNode:(id)sender;
+- (void)addNodeThreadedly;
 
 - (void)appendArray:(NSArray*)o_array atPos:(int)i_position enqueue:(BOOL)b_enqueue;
-- (void)appendNodeArray:(NSArray*)o_array inNode:(playlist_item_t *)p_node atPos:(int)i_position inView:(int)i_view enqueue:(BOOL)b_enqueue;
-
+- (void)appendNodeArray:(NSArray*)o_array inNode:(playlist_item_t *)p_node atPos:(int)i_position enqueue:(BOOL)b_enqueue;
 
 @end
-

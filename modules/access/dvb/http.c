@@ -24,8 +24,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_access.h>
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
@@ -75,12 +79,8 @@ static int HttpCallback( httpd_file_sys_t *p_args,
 /*****************************************************************************
  * HTTPOpen: Start the internal HTTP server
  *****************************************************************************/
-int E_(HTTPOpen)( access_t *p_access )
+int HTTPOpen( access_t *p_access )
 {
-#define FREE( x )                                                           \
-    if ( (x) != NULL )                                                      \
-        free( x );
-
     access_sys_t *p_sys = p_access->p_sys;
     char          *psz_address, *psz_cert = NULL, *psz_key = NULL,
                   *psz_ca = NULL, *psz_crl = NULL, *psz_user = NULL,
@@ -90,13 +90,13 @@ int E_(HTTPOpen)( access_t *p_access )
     vlc_acl_t     *p_acl = NULL;
     httpd_file_sys_t *f;
 
-    vlc_mutex_init( p_access, &p_sys->httpd_mutex );
+    vlc_mutex_init( &p_sys->httpd_mutex );
     vlc_cond_init( p_access, &p_sys->httpd_cond );
-    p_sys->b_request_frontend_info = p_sys->b_request_mmi_info = VLC_FALSE;
+    p_sys->b_request_frontend_info = p_sys->b_request_mmi_info = false;
     p_sys->i_httpd_timeout = 0;
 
-    psz_address = var_GetString( p_access, "dvb-http-host" );
-    if( psz_address != NULL && *psz_address )
+    psz_address = var_GetNonEmptyString( p_access, "dvb-http-host" );
+    if( psz_address != NULL )
     {
         char *psz_parser = strchr( psz_address, ':' );
         if( psz_parser )
@@ -106,14 +106,11 @@ int E_(HTTPOpen)( access_t *p_access )
         }
     }
     else
-    {
-        if ( psz_address != NULL ) free( psz_address );
         return VLC_SUCCESS;
-    }
 
     /* determine SSL configuration */
-    psz_cert = var_GetString( p_access, "dvb-http-intf-cert" );
-    if ( psz_cert != NULL && *psz_cert )
+    psz_cert = var_GetNonEmptyString( p_access, "dvb-http-intf-cert" );
+    if ( psz_cert != NULL )
     {
         msg_Dbg( p_access, "enabling TLS for HTTP interface (cert file: %s)",
                  psz_cert );
@@ -126,11 +123,6 @@ int E_(HTTPOpen)( access_t *p_access )
     }
     else
     {
-        if ( !*psz_cert )
-        {
-            free( psz_cert );
-            psz_cert = NULL;
-        }
         if ( i_port <= 0 )
             i_port= 8082;
     }
@@ -144,10 +136,10 @@ int E_(HTTPOpen)( access_t *p_access )
     p_sys->p_httpd_host = httpd_TLSHostNew( VLC_OBJECT(p_access), psz_address,
                                             i_port, psz_cert, psz_key, psz_ca,
                                             psz_crl );
-    FREE( psz_cert );
-    FREE( psz_key );
-    FREE( psz_ca );
-    FREE( psz_crl );
+    free( psz_cert );
+    free( psz_key );
+    free( psz_ca );
+    free( psz_crl );
 
     if ( p_sys->p_httpd_host == NULL )
     {
@@ -157,13 +149,13 @@ int E_(HTTPOpen)( access_t *p_access )
     }
     free( psz_address );
 
-    psz_user = var_GetString( p_access, "dvb-http-user" );
-    psz_password = var_GetString( p_access, "dvb-http-password" );
-    psz_acl = var_GetString( p_access, "dvb-http-acl" );
+    psz_user = var_GetNonEmptyString( p_access, "dvb-http-user" );
+    psz_password = var_GetNonEmptyString( p_access, "dvb-http-password" );
+    psz_acl = var_GetNonEmptyString( p_access, "dvb-http-acl" );
 
     if ( psz_acl != NULL )
     {
-        p_acl = ACL_Create( p_access, VLC_FALSE );
+        p_acl = ACL_Create( p_access, false );
         if( ACL_LoadFile( p_acl, psz_acl ) )
         {
             ACL_Destroy( p_acl );
@@ -179,9 +171,9 @@ int E_(HTTPOpen)( access_t *p_access )
                                psz_user, psz_password, p_acl,
                                HttpCallback, f );
 
-    FREE( psz_user );
-    FREE( psz_password );
-    FREE( psz_acl );
+    free( psz_user );
+    free( psz_password );
+    free( psz_acl );
     if ( p_acl != NULL )
         ACL_Destroy( p_acl );
 
@@ -196,15 +188,13 @@ int E_(HTTPOpen)( access_t *p_access )
     p_sys->p_httpd_redir = httpd_RedirectNew( p_sys->p_httpd_host,
                                               "/index.html", "/" );
 
-#undef FREE
-
     return VLC_SUCCESS;
 }
 
 /*****************************************************************************
  * HTTPClose: Stop the internal HTTP server
  *****************************************************************************/
-void E_(HTTPClose)( access_t *p_access )
+void HTTPClose( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
@@ -214,14 +204,14 @@ void E_(HTTPClose)( access_t *p_access )
         {
             /* Unlock the thread if it is stuck in HttpCallback */
             vlc_mutex_lock( &p_sys->httpd_mutex );
-            if ( p_sys->b_request_frontend_info == VLC_TRUE )
+            if ( p_sys->b_request_frontend_info == true )
             {
-                p_sys->b_request_frontend_info = VLC_FALSE;
+                p_sys->b_request_frontend_info = false;
                 p_sys->psz_frontend_info = strdup("");
             }
-            if ( p_sys->b_request_mmi_info == VLC_TRUE )
+            if ( p_sys->b_request_mmi_info == true )
             {
-                p_sys->b_request_mmi_info = VLC_FALSE;
+                p_sys->b_request_mmi_info = false;
                 p_sys->psz_mmi_info = strdup("");
             }
             vlc_cond_signal( &p_sys->httpd_cond );
@@ -265,12 +255,12 @@ static int HttpCallback( httpd_file_sys_t *p_args,
 
     vlc_mutex_lock( &p_sys->httpd_mutex );
 
-    p_sys->i_httpd_timeout = mdate() + I64C(3000000); /* 3 s */
+    p_sys->i_httpd_timeout = mdate() + INT64_C(3000000); /* 3 s */
     p_sys->psz_request = psz_request;
-    p_sys->b_request_frontend_info = VLC_TRUE;
+    p_sys->b_request_frontend_info = true;
     if ( p_sys->i_ca_handle )
     {
-        p_sys->b_request_mmi_info = VLC_TRUE;
+        p_sys->b_request_mmi_info = true;
     }
     else
     {
@@ -305,7 +295,7 @@ static int HttpCallback( httpd_file_sys_t *p_args,
 /****************************************************************************
  * HTTPExtractValue: Extract a GET variable from psz_request
  ****************************************************************************/
-char *E_(HTTPExtractValue)( char *psz_uri, const char *psz_name,
+char *HTTPExtractValue( char *psz_uri, const char *psz_name,
                             char *psz_value, int i_value_max )
 {
     char *p = psz_uri;

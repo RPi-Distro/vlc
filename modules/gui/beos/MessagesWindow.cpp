@@ -2,7 +2,7 @@
  * MessagesWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: 9d965de444f792a96d0e62997aa9f5c95233e0e2 $
+ * $Id$
  *
  * Authors: Eric Petit <titer@videolan.org>
  *
@@ -26,8 +26,12 @@
 #include <SupportKit.h>
 
 /* VLC headers */
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 /* BeOS module headers */
 #include "InterfaceWindow.h"
@@ -50,7 +54,7 @@ void MessagesView::Pulse()
     }
 
     int i_start, oldLength;
-    char * psz_module_type = NULL;
+    const char * psz_module_type = NULL;
     rgb_color red = { 200, 0, 0 };
     rgb_color gray = { 150, 150, 150 };
     rgb_color green = { 0, 150, 0 };
@@ -76,20 +80,7 @@ void MessagesView::Pulse()
                 case VLC_MSG_DBG: color = gray; break;
             }
 
-            switch( p_sub->p_msg[i_start].i_object_type )
-            {
-                case VLC_OBJECT_ROOT: psz_module_type = "root"; break;
-                case VLC_OBJECT_VLC: psz_module_type = "vlc"; break;
-                case VLC_OBJECT_MODULE: psz_module_type = "module"; break;
-                case VLC_OBJECT_INTF: psz_module_type = "interface"; break;
-                case VLC_OBJECT_PLAYLIST: psz_module_type = "playlist"; break;
-                case VLC_OBJECT_ITEM: psz_module_type = "item"; break;
-                case VLC_OBJECT_INPUT: psz_module_type = "input"; break;
-                case VLC_OBJECT_DECODER: psz_module_type = "decoder"; break;
-                case VLC_OBJECT_VOUT: psz_module_type = "video output"; break;
-                case VLC_OBJECT_AOUT: psz_module_type = "audio output"; break;
-                case VLC_OBJECT_SOUT: psz_module_type = "stream output"; break;
-            }
+            psz_module_type = p_sub->p_msg[i_start].psz_object_type;
 
             if( LockLooper() )
             {
@@ -135,8 +126,8 @@ MessagesWindow::MessagesWindow( intf_thread_t * _p_intf,
 {
     SetSizeLimits( 400, 2000, 200, 2000 );
 
-    p_sub = msg_Subscribe( p_intf, MSG_QUEUE_NORMAL );
-    
+    p_sub = msg_Subscribe( p_intf );
+ 
     BRect rect, textRect;
 
     rect = Bounds();
@@ -152,7 +143,7 @@ MessagesWindow::MessagesWindow( intf_thread_t * _p_intf,
                                    B_FOLLOW_ALL, false, true );
     fMessagesView->fScrollBar = fScrollView->ScrollBar( B_VERTICAL );
     AddChild( fScrollView );
-    
+ 
     /* start window thread in hidden state */
     Hide();
     Show();

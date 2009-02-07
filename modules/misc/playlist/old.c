@@ -2,9 +2,9 @@
  * old.c : Old playlist format import/export
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 5fd3793901b879343f160fc39bc4e5072e70c797 $
+ * $Id$
  *
- * Authors: Cl�ent Stenac <zorglub@videolan.org>
+ * Authors: Clément Stenac <zorglub@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +24,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <charset.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
+#include <vlc_playlist.h>
+#include <vlc_input.h>
+#include <vlc_charset.h>
 
 #include <errno.h>                                                 /* ENOMEM */
 
@@ -53,13 +58,9 @@ int Export_Old( vlc_object_t *p_this )
     /* Write header */
     fprintf( p_export->p_file , PLAYLIST_FILE_HEADER "\n" );
 
-    for ( i = 0 ; i < p_playlist->i_size ; i++ )
-    {
-        char *psz_uri;
+    for ( i = 0 ; i < p_export->p_root->i_children ; i++ )
+        utf8_fprintf( p_export->p_file , "%s\n" ,
+                      p_export->p_root->pp_children[i]->p_input->psz_name );
 
-        psz_uri = ToLocale( p_playlist->pp_items[i]->input.psz_uri );
-        fprintf( p_export->p_file , "%s\n" , psz_uri );
-        LocaleFree( psz_uri );
-    }
     return VLC_SUCCESS;
 }

@@ -2,11 +2,11 @@
  * upnp_cc.cpp :  UPnP discovery module
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 9e5ebe304c42630f832a13453844ddb5911a6fe7 $
+ * $Id: 7dfe82d0ebbcb130e433fc027f4134c7f17c5064 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
- * 
- * Based on original wxWindows patch for VLC, and dependant on CyberLink
+ *
+ * Based on original wxWindows patch for VLC, and dependent on CyberLink
  * UPnP library from :
  *          Satoshi Konno <skonno@cybergarage.org>
  *
@@ -28,13 +28,17 @@
 /*****************************************************************************
  * Includes
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
 #include <cybergarage/upnp/media/player/MediaPlayer.h>
 
 #undef PACKAGE_NAME
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_playlist.h>
 
 /* FIXME: thread-safety ?? */
 /* FIXME: playlist locking */
@@ -55,7 +59,7 @@ using namespace CyberLink;
 
 vlc_module_begin();
     set_shortname( "UPnP");
-    set_description( _("Universal Plug'n'Play discovery") );
+    set_description( N_("Universal Plug'n'Play discovery") );
     set_category( CAT_PLAYLIST );
     set_subcategory( SUBCAT_PLAYLIST_SD );
 
@@ -63,18 +67,6 @@ vlc_module_begin();
     set_callbacks( Open, Close );
 
 vlc_module_end();
-
-
-/*****************************************************************************
- * Local structures
- *****************************************************************************/
-
-struct services_discovery_sys_t
-{
-    /* playlist node */
-    playlist_item_t *p_node;
-    playlist_t *p_playlist;
-};
 
 /*****************************************************************************
  * Local prototypes
@@ -89,32 +81,10 @@ struct services_discovery_sys_t
 static int Open( vlc_object_t *p_this )
 {
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
-    services_discovery_sys_t *p_sys  = (services_discovery_sys_t *)
-                                malloc( sizeof( services_discovery_sys_t ) );
-
-    playlist_view_t     *p_view;
-    vlc_value_t         val;
 
     p_sd->pf_run = Run;
-    p_sd->p_sys  = p_sys;
 
-    /* Create our playlist node */
-    p_sys->p_playlist = (playlist_t *)vlc_object_find( p_sd,
-                                                       VLC_OBJECT_PLAYLIST,
-                                                       FIND_ANYWHERE );
-    if( !p_sys->p_playlist )
-    {
-        msg_Warn( p_sd, "unable to find playlist, cancelling UPnP listening");
-        return VLC_EGENERIC;
-    }
-
-    p_view = playlist_ViewFind( p_sys->p_playlist, VIEW_CATEGORY );
-    p_sys->p_node = playlist_NodeCreate( p_sys->p_playlist, VIEW_CATEGORY,
-                                         "UPnP", p_view->p_root );
-    p_sys->p_node->i_flags |= PLAYLIST_RO_FLAG;
-    p_sys->p_node->i_flags &= ~PLAYLIST_SKIP_FLAG;
-    val.b_bool = VLC_TRUE;
-    var_Set( p_sys->p_playlist, "intf-change", val );
+    services_discovery_SetLocalizedName( p_sd, _("Devices") );
 
     return VLC_SUCCESS;
 }
@@ -125,17 +95,6 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    services_discovery_t *p_sd = ( services_discovery_t* )p_this;
-    services_discovery_sys_t    *p_sys  = p_sd->p_sys;
-
-    if( p_sys->p_playlist )
-    {
-        playlist_NodeDelete( p_sys->p_playlist, p_sys->p_node, VLC_TRUE,
-                             VLC_TRUE );
-        vlc_object_release( p_sys->p_playlist );
-    }
-
-    free( p_sys );
 }
 
 /*****************************************************************************
@@ -148,7 +107,6 @@ class UPnPHandler : public MediaPlayer, public DeviceChangeListener,
 {
     private:
         services_discovery_t *p_sd;
-        services_discovery_sys_t *p_sys;
 
         Device *GetDeviceFromUSN( const string& usn )
         {
@@ -157,7 +115,7 @@ class UPnPHandler : public MediaPlayer, public DeviceChangeListener,
 
         playlist_item_t *FindDeviceNode( Device *dev )
         {
-            return playlist_ChildSearchName( p_sys->p_node, dev->getFriendlyName() );
+            return playlist_ChildSearchName( p_sd->p_cat, dev->getFriendlyName() );
         }
 
         playlist_item_t *FindDeviceNode( const string &usn )
@@ -181,7 +139,7 @@ class UPnPHandler : public MediaPlayer, public DeviceChangeListener,
 
     public:
         UPnPHandler( services_discovery_t *p_this )
-            : p_sd( p_this ), p_sys( p_this->p_sys )
+            : p_sd( p_this )
         {
             addDeviceChangeListener( this );
             addSearchResponseListener( this );
@@ -198,7 +156,7 @@ static void Run( services_discovery_t *p_sd )
 
     msg_Dbg( p_sd, "UPnP discovery started" );
     /* read SAP packets */
-    while( !p_sd->b_die )
+    while( vlc_object_alive (p_sd) )
     {
         msleep( 500 );
     }
@@ -227,8 +185,7 @@ playlist_item_t *UPnPHandler::AddDevice( Device *dev )
      */
     char *str = strdup( dev->getFriendlyName( ) );
 
-    p_item = playlist_NodeCreate( p_sys->p_playlist, VIEW_CATEGORY,
-                                  str, p_sys->p_node );
+    p_item = playlist_NodeCreate( p_playlist, str, p_sd->p_cat, 0, NULL );
     p_item->i_flags &= ~PLAYLIST_SKIP_FLAG;
     msg_Dbg( p_sd, "device %s added", str );
     free( str );
@@ -257,29 +214,28 @@ void UPnPHandler::AddContent( playlist_item_t *p_parent, ContentNode *node )
 
     msg_Dbg( p_sd, "title = %s", title );
 
-    if ( node->isItemNode() ) 
+    if ( node->isItemNode() )
     {
         ItemNode *iNode = (ItemNode *)node;
-
-	playlist_item_t *p_item;
-	p_item = playlist_ItemNew( p_sd, iNode->getResource(), title );
-    
-	playlist_NodeAddItem( p_sys->p_playlist, p_item, VIEW_CATEGORY,
-			      p_parent, PLAYLIST_APPEND, PLAYLIST_END );
-
-    } else if ( node->isContainerNode() ) 
+        input_item_t *p_input = input_item_New( p_sd, iNode->getResource(), title );
+        /* FIXME: playlist_AddInput() can fail */
+        playlist_BothAddInput( p_playlist, p_input, p_parent,
+                               PLAYLIST_APPEND, PLAYLIST_END, NULL, NULL,
+                               false );
+        vlc_gc_decref( p_input );
+    } else if ( node->isContainerNode() )
     {
         ContainerNode *conNode = (ContainerNode *)node;
 
-	char* p_name = strdup(title); /* See other comment on strdup */
-	playlist_item_t* p_node = playlist_NodeCreate( p_sys->p_playlist, VIEW_CATEGORY, 
-						       p_name, p_parent );
-	free(p_name);
+        char* p_name = strdup(title); /* See other comment on strdup */
+        playlist_item_t* p_node = playlist_NodeCreate( p_playlist, p_name,
+                                                       p_parent, 0, NULL );
+        free(p_name);
 
-	unsigned nContentNodes = conNode->getNContentNodes();
+        unsigned nContentNodes = conNode->getNContentNodes();
 
-	for( unsigned n = 0; n < nContentNodes; n++ )
-	    AddContent( p_node, conNode->getContentNode( n ) );
+        for( unsigned n = 0; n < nContentNodes; n++ )
+           AddContent( p_node, conNode->getContentNode( n ) );
     }
 }
 
@@ -289,7 +245,7 @@ void UPnPHandler::RemoveDevice( Device *dev )
     playlist_item_t *p_item = FindDeviceNode( dev );
 
     if( p_item != NULL )
-        playlist_NodeDelete( p_sys->p_playlist, p_item, VLC_TRUE, VLC_TRUE );
+        playlist_NodeDelete( p_playlist, p_item, true, true );
 }
 
 

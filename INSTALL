@@ -1,5 +1,3 @@
-$Id$
-
 INSTALL file for the VLC media player
 
 More extensive information for *nix, Windows, Mac OS X and BeOS users can be found here: 
@@ -16,22 +14,24 @@ Configuring VLC
 
 A typical way to configure VLC is:
 
-   ./configure --prefix=/usr --enable-wxwindows
+   ./configure --prefix=/usr
 
 See `./configure --help' for more information.
 
 If you intend to debug stuff, you may want to compile with debugging
 symbols:
 
-   make distclean ; ./configure --prefix=/usr --enable-wxwindows --enable-debug
+   make distclean ; ./configure --prefix=/usr --enable-debug
+
+We recommend using GCC to build VLC, though some people reported success
+with the Intel C compiler (version 8) as well. GCC version 3.3 or higher is
+required. On older systems (e.g. FreeBSD 4.x, BeOS), please select a more
+recent version manually by setting the CC and CXX environment variables
+appropriately while running the ./configure shell script.
 
 
 Building VLC
 ============
-
-Have a look at the generated Makefile.opts file, you may want to choose
-which modules will be compiled as plugins, and which ones will remain in
-the core application. The configure script tries to guess for you.
 
 Once configured, run `make' to build VLC.
 
@@ -53,7 +53,7 @@ Building packages
 =================
 
 To build a Debian package, you need to get the packaging info
-   svn co svn://svn.videolan.org/pkg-multimedia/unstable/vlc/debian debian 
+   svn co svn://svn.debian.org/pkg-multimedia/videolan/vlc/debian debian 
 and then
    dpkg-buildpackage -rfakeroot -us -uc
 

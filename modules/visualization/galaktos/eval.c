@@ -2,7 +2,7 @@
  * eval.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: edbf9f5ed407fbc41fb8118cc3c6af215e114556 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -22,12 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-
+#include <stdlib.h>
 
 /* Evaluation Code */
 
 #include <stdio.h>
-#include <stdlib.h>
 #include "common.h"
 #include "fatal.h"
 
@@ -49,7 +48,7 @@ static inline double eval_prefun_expr(prefun_expr_t * prefun_expr);
 static inline double eval_val_expr(val_expr_t * val_expr);
 
 
-inline double eval_gen_expr(gen_expr_t * gen_expr) {
+double eval_gen_expr(gen_expr_t * gen_expr) {
   double l;
 
   if (gen_expr == NULL) 

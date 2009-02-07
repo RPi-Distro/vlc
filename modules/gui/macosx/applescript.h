@@ -1,8 +1,8 @@
 /*****************************************************************************
  * applescript.h: MacOS X AppleScript support
  *****************************************************************************
- * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: 929f8af78bbf1015531e65d2bbc333ee3e9391fa $
+ * Copyright (C) 2002-2003, 2005, 2007 the VideoLAN team
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -22,13 +22,22 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * VLGetURLScriptCommand interface 
+ * VLGetURLScriptCommand interface
  *****************************************************************************/
 @interface VLGetURLScriptCommand : NSScriptCommand
 @end
 
 /*****************************************************************************
- * VLControlScriptCommand interface 
+ * VLControlScriptCommand interface
  *****************************************************************************/
 @interface VLControlScriptCommand : NSScriptCommand
+@end
+
+/*****************************************************************************
+* Category that adds AppleScript support to NSApplication
+*****************************************************************************/
+@interface NSApplication(ScriptSupport)
+
+- (BOOL)scriptFullscreenMode;
+- (void)setScriptFullscreenMode: (BOOL)mode;
 @end

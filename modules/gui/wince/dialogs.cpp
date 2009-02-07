@@ -2,7 +2,7 @@
  * dialogs.cpp : WinCE plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: 7c2269c182e295e6b3eaba2ec922942f93ed1ec8 $
+ * $Id: 2dbc9c8d4795057b1dc9f838648a8e8284f63fec $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,11 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_aout.h>
+#include <vlc_interface.h>
 
 #include "wince.h"
 
@@ -115,11 +118,11 @@ DialogsProvider::DialogsProvider( intf_thread_t *p_intf,
 DialogsProvider::~DialogsProvider()
 {
     /* Clean up */
-    if( p_open_dialog )     delete p_open_dialog;
-    if( p_playlist_dialog ) delete p_playlist_dialog;
-    if( p_messages_dialog ) delete p_messages_dialog;
-    if( p_fileinfo_dialog ) delete p_fileinfo_dialog;
-    if( p_prefs_dialog )    delete p_prefs_dialog;
+    delete p_open_dialog;
+    delete p_playlist_dialog;
+    delete p_messages_dialog;
+    delete p_fileinfo_dialog;
+    delete p_prefs_dialog;
 
     if( h_gsgetfile_dll ) FreeLibrary( h_gsgetfile_dll );
 }
@@ -271,13 +274,13 @@ void DialogsProvider::OnOpenFileGeneric( intf_dialog_args_t *p_arg )
     ofn.lpstrCustomFilter = NULL;
     ofn.nMaxCustFilter = 0;
     ofn.nFilterIndex = 1;
-    ofn.lpstrFile = (LPTSTR)szFile; 
+    ofn.lpstrFile = (LPTSTR)szFile;
     ofn.nMaxFile = MAX_PATH;
-    ofn.lpstrFileTitle = NULL; 
+    ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 40;
     ofn.lpstrInitialDir = NULL;
     ofn.lpstrTitle = _FROMMB(p_arg->psz_title);
-    ofn.Flags = 0; 
+    ofn.Flags = 0;
     ofn.nFileOffset = 0;
     ofn.nFileExtension = 0;
     ofn.lpstrDefExt = NULL;
@@ -317,8 +320,8 @@ void DialogsProvider::OnOpenFileGeneric( intf_dialog_args_t *p_arg )
         }
         free( p_arg->psz_results );
     }
-    if( p_arg->psz_title ) free( p_arg->psz_title );
-    if( p_arg->psz_extensions ) free( p_arg->psz_extensions );
+    free( p_arg->psz_title );
+    free( p_arg->psz_extensions );
 
     free( p_arg );
 }
@@ -329,8 +332,7 @@ void DialogsProvider::OnOpenFileSimple( int i_arg )
     TCHAR szFile[MAX_PATH] = _T("\0");
     static TCHAR szFilter[] = _T("All (*.*)\0*.*\0");
 
-    playlist_t *p_playlist = (playlist_t *)
-        vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+    playlist_t *p_playlist = pl_Yield( p_intf );
     if( p_playlist == NULL ) return;
 
     memset( &ofn, 0, sizeof(OPENFILENAME) );
@@ -340,14 +342,14 @@ void DialogsProvider::OnOpenFileSimple( int i_arg )
     ofn.lpstrFilter = szFilter;
     ofn.lpstrCustomFilter = NULL;
     ofn.nMaxCustFilter = 0;
-    ofn.nFilterIndex = 1;     
-    ofn.lpstrFile = (LPTSTR)szFile; 
+    ofn.nFilterIndex = 1;
+    ofn.lpstrFile = (LPTSTR)szFile;
     ofn.nMaxFile = MAX_PATH;
-    ofn.lpstrFileTitle = NULL; 
+    ofn.lpstrFileTitle = NULL;
     ofn.nMaxFileTitle = 40;
     ofn.lpstrInitialDir = NULL;
     ofn.lpstrTitle = _T("Quick Open File");
-    ofn.Flags = 0; 
+    ofn.Flags = 0;
     ofn.nFileOffset = 0;
     ofn.nFileExtension = 0;
     ofn.lpstrDefExt = NULL;
@@ -364,7 +366,7 @@ void DialogsProvider::OnOpenFileSimple( int i_arg )
                       PLAYLIST_APPEND | (i_arg?PLAYLIST_GO:0), PLAYLIST_END );
     }
 
-    vlc_object_release( p_playlist );
+    pl_Release( p_intf );
 }
 
 void DialogsProvider::OnOpenDirectory( int i_arg )
@@ -403,8 +405,7 @@ void DialogsProvider::OnOpenDirectory( int i_arg )
 
     if( !SUCCEEDED( SHGetMalloc(&p_malloc) ) ) goto error;
 
-    p_playlist = (playlist_t *)
-        vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+    p_playlist = pl_Yield( p_intf );
     if( !p_playlist ) goto error;
 
     memset( &bi, 0, sizeof(BROWSEINFO) );
@@ -430,7 +431,7 @@ void DialogsProvider::OnOpenDirectory( int i_arg )
  error:
 
     if( p_malloc) p_malloc->Release();
-    if( p_playlist ) vlc_object_release( p_playlist );
+    if( p_playlist ) pl_Release( p_intf );
 
 #ifdef UNDER_CE
     FreeLibrary( ceshell_dll );

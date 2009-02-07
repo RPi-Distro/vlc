@@ -2,7 +2,7 @@
  * cmd_playlist.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 617dc564b4a173a86f51e9adec17128eb8de271c $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -23,27 +23,14 @@
  *****************************************************************************/
 
 #include "cmd_playlist.hpp"
+#include <vlc_playlist.h>
 #include "../src/vlcproc.hpp"
 #include "../utils/var_bool.hpp"
-
 
 void CmdPlaylistDel::execute()
 {
     m_rList.delSelected();
 }
-
-
-void CmdPlaylistSort::execute()
-{
-    // XXX add the mode and type
-    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
-    if( pPlaylist != NULL )
-    {
-        playlist_Sort( pPlaylist, SORT_TITLE, ORDER_NORMAL );
-    }
-
-}
-
 
 void CmdPlaylistNext::execute()
 {
@@ -105,9 +92,7 @@ void CmdPlaylistLoad::execute()
 {
     playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
     if( pPlaylist != NULL )
-    {
         playlist_Import( pPlaylist, m_file.c_str() );
-    }
 }
 
 
@@ -116,9 +101,17 @@ void CmdPlaylistSave::execute()
     playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
     if( pPlaylist != NULL )
     {
-        // FIXME: when the PLS export will be working, we'll need to remove
-        // this hardcoding...
-        playlist_Export( pPlaylist, m_file.c_str(), "export-m3u" );
+        static const char psz_xspf[] = "export-xspf",
+                          psz_m3u[] = "export-m3u";
+        const char *psz_module;
+        if( m_file.find( ".xsp", 0 ) != string::npos )
+            psz_module = psz_xspf;
+        else
+        {
+            psz_module = psz_m3u;
+            if( m_file.find( ".m3u", 0 ) == string::npos )
+                m_file.append( ".m3u" );
+        }
+        playlist_Export( pPlaylist, m_file.c_str(), pPlaylist->p_local_category, psz_module );
     }
 }
-

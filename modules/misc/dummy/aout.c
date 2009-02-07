@@ -2,7 +2,7 @@
  * aout_dummy.c : dummy audio output plugin
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: ed0d25c5c37fef42757e57b1dacfd6fc28a02af6 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,13 +24,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <string.h>
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "aout_internal.h"
+#include <vlc_common.h>
+#include <vlc_aout.h>
+
+#include "dummy.h"
 
 #define FRAME_SIZE 2048
 #define A52_FRAME_NB 1536
@@ -43,7 +45,7 @@ static void    Play        ( aout_instance_t * );
 /*****************************************************************************
  * OpenAudio: open a dummy audio device
  *****************************************************************************/
-int E_(OpenAudio) ( vlc_object_t * p_this )
+int OpenAudio ( vlc_object_t * p_this )
 {
     aout_instance_t * p_aout = (aout_instance_t *)p_this;
 

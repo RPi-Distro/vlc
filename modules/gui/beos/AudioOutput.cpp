@@ -2,7 +2,7 @@
  * AudioOutput.cpp: BeOS audio output
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: 9088a0afbcb45d1a9a44f8a78b81cd14f49778b6 $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -26,17 +26,18 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>                                      /* malloc(), free() */
 #include <malloc.h>
-#include <string.h>
 
 #include <SoundPlayer.h>
 #include <media/MediaDefs.h>
 
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_aout.h>
 extern "C"
 {
     #include <aout_internal.h>
@@ -63,7 +64,7 @@ static void DoNothing    ( aout_instance_t * p_aout );
 /*****************************************************************************
  * OpenAudio
  *****************************************************************************/
-int E_(OpenAudio) ( vlc_object_t * p_this )
+int OpenAudio ( vlc_object_t * p_this )
 {
     aout_instance_t * p_aout = (aout_instance_t*) p_this;
     p_aout->output.p_sys = (aout_sys_t*) malloc( sizeof( aout_sys_t ) );
@@ -123,7 +124,7 @@ int E_(OpenAudio) ( vlc_object_t * p_this )
 /*****************************************************************************
  * CloseAudio
  *****************************************************************************/
-void E_(CloseAudio) ( vlc_object_t * p_this )
+void CloseAudio ( vlc_object_t * p_this )
 {
     aout_instance_t * p_aout = (aout_instance_t *) p_this;
     aout_sys_t * p_sys = (aout_sys_t *) p_aout->output.p_sys;
@@ -147,22 +148,22 @@ static void Play( void * _p_aout, void * _p_buffer, size_t i_size,
 
     p_aout_buffer = aout_OutputNextBuffer( p_aout,
                                            mdate() + p_sys->latency,
-                                           VLC_FALSE );
+                                           false );
 
     if( p_aout_buffer != NULL )
     {
-        p_aout->p_vlc->pf_memcpy( p_buffer, p_aout_buffer->p_buffer,
-                                  MIN( i_size, p_aout_buffer->i_nb_bytes ) );
+        vlc_memcpy( p_buffer, p_aout_buffer->p_buffer,
+                    MIN( i_size, p_aout_buffer->i_nb_bytes ) );
         if( p_aout_buffer->i_nb_bytes < i_size )
         {
-            p_aout->p_vlc->pf_memset( p_buffer + p_aout_buffer->i_nb_bytes,
-                                      0, i_size - p_aout_buffer->i_nb_bytes );
+            vlc_memset(  p_buffer + p_aout_buffer->i_nb_bytes,
+                         0, i_size - p_aout_buffer->i_nb_bytes );
         }
         aout_BufferFree( p_aout_buffer );
     }
     else
     {
-        p_aout->p_vlc->pf_memset( p_buffer, 0, i_size );
+        vlc_memset( p_buffer, 0, i_size );
     }
 }
 

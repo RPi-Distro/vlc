@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
  *
- * $Id: core.c 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id$
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -22,12 +22,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <libvlc_internal.h>
+#include "libvlc_internal.h"
+#include "../libvlc.h"
 #include <vlc/libvlc.h>
 
 struct libvlc_log_t
 {
-    const libvlc_instance_t  *p_instance;
+    libvlc_instance_t  *p_instance;
     msg_subscription_t *p_messages;
 };
 
@@ -43,7 +44,8 @@ unsigned libvlc_get_log_verbosity( const libvlc_instance_t *p_instance, libvlc_e
 {
     if( p_instance )
     {
-        return p_instance->p_vlc->p_libvlc->i_verbose;
+        libvlc_priv_t *p_priv = libvlc_priv( p_instance->p_libvlc_int );
+        return p_priv->i_verbose;
     }
     RAISEZERO("Invalid VLC instance!");
 }
@@ -52,25 +54,30 @@ void libvlc_set_log_verbosity( libvlc_instance_t *p_instance, unsigned level, li
 {
     if( p_instance )
     {
-        p_instance->p_vlc->p_libvlc->i_verbose = level;
+        libvlc_priv_t *p_priv = libvlc_priv( p_instance->p_libvlc_int );
+        p_priv->i_verbose = level;
     }
     else
         RAISEVOID("Invalid VLC instance!");
 }
 
-libvlc_log_t *libvlc_log_open( const libvlc_instance_t *p_instance, libvlc_exception_t *p_e )
+libvlc_log_t *libvlc_log_open( libvlc_instance_t *p_instance, libvlc_exception_t *p_e )
 {
-    
     struct libvlc_log_t *p_log =
         (struct libvlc_log_t *)malloc(sizeof(struct libvlc_log_t));
 
     if( !p_log ) RAISENULL( "Out of memory" );
 
     p_log->p_instance = p_instance;
-    p_log->p_messages = msg_Subscribe(p_instance->p_vlc, MSG_QUEUE_NORMAL);
+    p_log->p_messages = msg_Subscribe(p_instance->p_libvlc_int);
 
-    if( !p_log->p_messages ) RAISENULL( "Out of memory" );
+    if( !p_log->p_messages )
+    {
+        free( p_log );
+        RAISENULL( "Out of memory" );
+    }
 
+    libvlc_retain( p_instance );
     return p_log;
 }
 
@@ -78,7 +85,8 @@ void libvlc_log_close( libvlc_log_t *p_log, libvlc_exception_t *p_e )
 {
     if( p_log && p_log->p_messages )
     {
-        msg_Unsubscribe(p_log->p_instance->p_vlc, p_log->p_messages);
+        msg_Unsubscribe(p_log->p_instance->p_libvlc_int, p_log->p_messages);
+        libvlc_release( p_log->p_instance );
         free(p_log);
     }
     else
@@ -153,33 +161,32 @@ int libvlc_log_iterator_has_next( const libvlc_log_iterator_t *p_iter, libvlc_ex
 }
 
 libvlc_log_message_t *libvlc_log_iterator_next( libvlc_log_iterator_t *p_iter,
-                                                struct libvlc_log_message_t *buffer,
+                                                libvlc_log_message_t *buffer,
                                                 libvlc_exception_t *p_e )
 {
-    if( p_iter )
-    {
-        if( buffer && (sizeof(struct libvlc_log_message_t) == buffer->sizeof_msg) )
-        {
-            int i_pos = p_iter->i_pos;
-            if( i_pos != p_iter->i_end )
-            {
-                msg_item_t *msg;
-                vlc_mutex_lock(p_iter->p_messages->p_lock);
-                msg = p_iter->p_messages->p_msg+i_pos;
-                buffer->i_severity  = msg->i_type;
-                buffer->psz_type    = msg_GetObjectTypeName(msg->i_object_type);
-                buffer->psz_name    = msg->psz_module;
-                buffer->psz_header  = msg->psz_header;
-                buffer->psz_message = msg->psz_msg;
-                p_iter->i_pos = ++i_pos % VLC_MSG_QSIZE;
-                vlc_mutex_unlock(p_iter->p_messages->p_lock);
+    int i_pos;
 
-                return buffer;
-            }
-            RAISENULL("No more messages");
-        }
+    if( !p_iter )
+        RAISENULL("Invalid log iterator!");
+    if( !buffer )
         RAISENULL("Invalid message buffer!");
+
+    i_pos = p_iter->i_pos;
+    if( i_pos != p_iter->i_end )
+    {
+        msg_item_t *msg;
+        vlc_mutex_lock(p_iter->p_messages->p_lock);
+        msg = p_iter->p_messages->p_msg+i_pos;
+        buffer->i_severity  = msg->i_type;
+        buffer->psz_type    = msg->psz_object_type;
+        buffer->psz_name    = msg->psz_module;
+        buffer->psz_header  = msg->psz_header;
+        buffer->psz_message = msg->psz_msg;
+        p_iter->i_pos = ++i_pos % VLC_MSG_QSIZE;
+        vlc_mutex_unlock(p_iter->p_messages->p_lock);
+
+        return buffer;
     }
-    RAISENULL("Invalid log iterator!");
+    RAISENULL("No more messages");
 }
 

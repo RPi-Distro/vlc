@@ -2,7 +2,7 @@
  * wince.h: private WinCE interface descriptor
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 51d9874464075973f98df3bc7160f7a65d4de3e0 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Marodon Cedric <cedric_marodon@yahoo.fr>
@@ -44,7 +44,7 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
-using namespace std; 
+using namespace std;
 
 class CBaseWindow;
 class MenuItemExt;
@@ -59,7 +59,7 @@ struct intf_sys_t
     CBaseWindow         *p_window;
 
     /* special actions */
-    vlc_bool_t          b_playing;
+    bool          b_playing;
 
     /* The input thread */
     input_thread_t *    p_input;
@@ -67,7 +67,7 @@ struct intf_sys_t
     /* The slider */
     int                 i_slider_pos;                     /* slider position */
     int                 i_slider_oldpos;                /* previous position */
-    vlc_bool_t          b_slider_free;                      /* slider status */
+    bool          b_slider_free;                      /* slider status */
 
     /* The messages window */
     msg_subscription_t* p_sub;                  /* message bank subscription */
@@ -187,7 +187,7 @@ private:
     HMENU menu_audio;
     HMENU menu_navigation;
 
-    vlc_bool_t b_volume_hold;
+    bool b_volume_hold;
 };
 
 /* File Info */
@@ -203,7 +203,7 @@ public:
 protected:
 
     HWND hwnd_fileinfo;                 // handle to fileinfo window
-    HWND hwndTV;                                // handle to tree-view control 
+    HWND hwndTV;                                // handle to tree-view control
 
     TCHAR szFileInfoClassName[100];     // Main window class name
     TCHAR szFileInfoTitle[100];         // Main window name
@@ -227,7 +227,7 @@ protected:
     virtual LRESULT WndProc( HWND, UINT, WPARAM, LPARAM );
 
     HWND hListView;
-    vlc_bool_t b_verbose;
+    bool b_verbose;
 };
 
 /* ItemInfo Dialog */
@@ -432,7 +432,7 @@ public:
     /* Constructor */
     Timer( intf_thread_t *p_intf, HWND hwnd, Interface *_p_main_interface );
     virtual ~Timer();
-    void Notify( void ); 
+    void Notify( void );
 
 private:
     intf_thread_t *p_intf;
@@ -452,7 +452,7 @@ void RefreshMenu( intf_thread_t *, vector<MenuItemExt*> *, HMENU, int,
 int wce_GetMenuItemCount( HMENU );
 void CreateMenuItem( intf_thread_t *, vector<MenuItemExt*> *, HMENU, char *,
                      vlc_object_t *, int * );
-HMENU CreateChoicesMenu( intf_thread_t *, vector<MenuItemExt*> *, char *, 
+HMENU CreateChoicesMenu( intf_thread_t *, vector<MenuItemExt*> *, char *,
                          vlc_object_t *, int * );
 void OnMenuEvent( intf_thread_t *, int );
 

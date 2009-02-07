@@ -2,7 +2,7 @@
  * timer.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2003 the VideoLAN team
- * $Id: a9a5c3a26980c7752d74fc64c981449e47719f2b $
+ * $Id: 5135609e0e31cc3f10f78f8537cd60b50e7be796 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,12 +25,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                            /* strerror() */
-#include <stdio.h>
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_aout.h>
+#include <vlc_interface.h>
 
 #include "wince.h"
 
@@ -51,13 +52,11 @@ Timer::Timer( intf_thread_t *_p_intf, HWND hwnd, Interface *_p_main_interface)
     i_old_rate = INPUT_RATE_DEFAULT;
 
     /* Register callback for the intf-popupmenu variable */
-    playlist_t *p_playlist =
-        (playlist_t *)vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                       FIND_ANYWHERE );
+    playlist_t *p_playlist = pl_Yield( p_intf );
     if( p_playlist != NULL )
     {
         var_AddCallback( p_playlist, "intf-popupmenu", PopupMenuCB, p_intf );
-        vlc_object_release( p_playlist );
+        pl_Release( p_intf );
     }
 
     SetTimer( hwnd, 1, 200 /*milliseconds*/, NULL );
@@ -66,13 +65,11 @@ Timer::Timer( intf_thread_t *_p_intf, HWND hwnd, Interface *_p_main_interface)
 Timer::~Timer()
 {
     /* Unregister callback */
-    playlist_t *p_playlist =
-        (playlist_t *)vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                       FIND_ANYWHERE );
+    playlist_t *p_playlist = pl_Yield( p_intf );
     if( p_playlist != NULL )
     {
         var_DelCallback( p_playlist, "intf-popupmenu", PopupMenuCB, p_intf );
-        vlc_object_release( p_playlist );
+        pl_Release( p_intf );
     }
 }
 
@@ -112,8 +109,8 @@ void Timer::Notify( void )
             if (! shortname)
                 shortname = p_intf->p_sys->p_input->input.p_item->psz_name;
             else shortname++;
-                        
-            SendMessage( p_main_interface->hwndSB, SB_SETTEXT, 
+ 
+            SendMessage( p_main_interface->hwndSB, SB_SETTEXT,
                          (WPARAM) 0, (LPARAM)_FROMMB(shortname) );
 
             p_main_interface->TogglePlayButton( PLAYING_S );
@@ -130,7 +127,7 @@ void Timer::Notify( void )
         p_main_interface->TogglePlayButton( PAUSE_S );
         i_old_playing_status = PAUSE_S;
 
-        SendMessage( p_main_interface->hwndSB, SB_SETTEXT, 
+        SendMessage( p_main_interface->hwndSB, SB_SETTEXT,
                      (WPARAM) 0, (LPARAM)(LPCTSTR) TEXT(""));
 
         vlc_object_release( p_intf->p_sys->p_input );
@@ -141,7 +138,7 @@ void Timer::Notify( void )
     {
         input_thread_t *p_input = p_intf->p_sys->p_input;
 
-        if( !p_input->b_die )
+        if( vlc_object_alive (p_input) )
         {
             /* New input or stream map change */
             p_intf->p_sys->b_playing = 1;
@@ -164,14 +161,14 @@ void Timer::Notify( void )
                         p_intf->p_sys->i_slider_pos =
                             (int)(SLIDER_MAX_POS * pos.f_float);
 
-                        SendMessage( p_main_interface->hwndSlider, TBM_SETPOS, 
+                        SendMessage( p_main_interface->hwndSlider, TBM_SETPOS,
                                      1, p_intf->p_sys->i_slider_pos );
 
                         var_Get( p_intf->p_sys->p_input, "time", &time );
                         i_seconds = time.i_time / 1000000;
                         secstotimestr ( psz_time, i_seconds );
 
-                        SendMessage( p_main_interface->hwndLabel, WM_SETTEXT, 
+                        SendMessage( p_main_interface->hwndLabel, WM_SETTEXT,
                                      (WPARAM)1, (LPARAM)_FROMMB(psz_time) );
                     }
                 }
@@ -203,21 +200,21 @@ void Timer::Notify( void )
                 _stprintf( psz_text + 2, _T("x%.2f"), 1000.0 / val.i_int );
                 psz_text[0] = psz_text[1] = _T('\t');
 
-                SendMessage( p_main_interface->hwndSB, SB_SETTEXT, 
+                SendMessage( p_main_interface->hwndSB, SB_SETTEXT,
                              (WPARAM) 1, (LPARAM)(LPCTSTR) psz_text );
 
                 i_old_rate = val.i_int;
             }
         }
     }
-    else if( p_intf->p_sys->b_playing && !p_intf->b_die )
+    else if( p_intf->p_sys->b_playing && !intf_ShouldDie( p_intf ) )
     {
         p_intf->p_sys->b_playing = 0;
         p_main_interface->TogglePlayButton( PAUSE_S );
         i_old_playing_status = PAUSE_S;
     }
 
-    if( p_intf->b_die )
+    if( intf_ShouldDie( p_intf ) )
     {
         vlc_mutex_unlock( &p_intf->change_lock );
 

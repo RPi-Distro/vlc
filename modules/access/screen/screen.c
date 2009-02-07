@@ -2,7 +2,7 @@
  * screen.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: e062bb1788309de4e4777887caba8ae820c992a9 $
+ * $Id: 6f92341657e05a0b5ac8a1a72a593b7201b2c198 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,11 +24,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 #include "screen.h"
 
 /*****************************************************************************
@@ -49,6 +51,28 @@
     "of predefined height (16 might be a good value, and 0 means disabled)." )
 #endif
 
+#ifdef SCREEN_SUBSCREEN
+#define TOP_TEXT N_( "Subscreen top left corner" )
+#define TOP_LONGTEXT N_( \
+    "Top coordinate of the subscreen top left corner." )
+
+#define LEFT_TEXT N_( "Subscreen top left corner" )
+#define LEFT_LONGTEXT N_( \
+    "Left coordinate of the subscreen top left corner." )
+
+#define WIDTH_TEXT N_( "Subscreen width" )
+#define WIDTH_LONGTEXT N_( \
+    "Subscreen width" )
+
+#define HEIGHT_TEXT N_( "Subscreen height" )
+#define HEIGHT_LONGTEXT N_( \
+    "Subscreen height"  )
+
+#define FOLLOW_MOUSE_TEXT N_( "Follow the mouse" )
+#define FOLLOW_MOUSE_LONGTEXT N_( \
+    "Follow the mouse when capturing a subscreen." )
+#endif
+
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
@@ -59,18 +83,27 @@ static void Close( vlc_object_t * );
 #endif
 
 vlc_module_begin();
-    set_description( _("Screen Input") );
-    set_shortname( _("Screen" ));
+    set_description( N_("Screen Input") );
+    set_shortname( N_("Screen" ));
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACCESS );
 
     add_integer( "screen-caching", DEFAULT_PTS_DELAY / 1000, NULL,
-        CACHING_TEXT, CACHING_LONGTEXT, VLC_TRUE );
-    add_float( "screen-fps", SCREEN_FPS, 0, FPS_TEXT, FPS_LONGTEXT, VLC_TRUE );
+        CACHING_TEXT, CACHING_LONGTEXT, true );
+    add_float( "screen-fps", SCREEN_FPS, 0, FPS_TEXT, FPS_LONGTEXT, true );
+
+#ifdef SCREEN_SUBSCREEN
+    add_integer( "screen-top", 0, NULL, TOP_TEXT, TOP_LONGTEXT, true );
+    add_integer( "screen-left", 0, NULL, LEFT_TEXT, LEFT_LONGTEXT, true );
+    add_integer( "screen-width", 0, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, true );
+    add_integer( "screen-height", 0, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT, true );
+    add_bool( "screen-follow-mouse", false, NULL, FOLLOW_MOUSE_TEXT,
+              FOLLOW_MOUSE_LONGTEXT, true );
+#endif
 
 #ifdef WIN32
     add_integer( "screen-fragment-size", 0, NULL, FRAGS_TEXT,
-        FRAGS_LONGTEXT, VLC_TRUE );
+        FRAGS_LONGTEXT, true );
 #endif
 
     set_capability( "access_demux", 0 );
@@ -108,6 +141,20 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_incr = 1000000 / val.f_float;
     p_sys->i_next_date = 0;
 
+#ifdef SCREEN_SUBSCREEN
+    p_sys->i_top = var_CreateGetInteger( p_demux, "screen-top" );
+    p_sys->i_left = var_CreateGetInteger( p_demux, "screen-left" );
+    p_sys->i_width = var_CreateGetInteger( p_demux, "screen-width" );
+    p_sys->i_height = var_CreateGetInteger( p_demux, "screen-height" );
+    if( p_sys->i_width > 0 && p_sys->i_height > 0 )
+        msg_Dbg( p_demux, "capturing subscreen top: %d, left: %d, "
+                          "width: %d, height: %d",
+                          p_sys->i_top,
+                          p_sys->i_left,
+                          p_sys->i_width,
+                          p_sys->i_height );
+#endif
+
     if( screen_InitCapture( p_demux ) != VLC_SUCCESS )
     {
         free( p_sys );
@@ -117,6 +164,30 @@ static int Open( vlc_object_t *p_this )
     msg_Dbg( p_demux, "screen width: %i, height: %i, depth: %i",
              p_sys->fmt.video.i_width, p_sys->fmt.video.i_height,
              p_sys->fmt.video.i_bits_per_pixel );
+
+#ifdef SCREEN_SUBSCREEN
+    if( p_sys->i_width > 0 && p_sys->i_height > 0 )
+    {
+        if( p_sys->i_left + p_sys->i_width > p_sys->fmt.video.i_width ||
+            p_sys->i_top + p_sys->i_height > p_sys->fmt.video.i_height )
+        {
+            msg_Err( p_demux, "subscreen region overflows the screen" );
+            free( p_sys );
+            return VLC_EGENERIC;
+        }
+        else
+        {
+            p_sys->i_screen_width = p_sys->fmt.video.i_width;
+            p_sys->i_screen_height = p_sys->fmt.video.i_height;
+            p_sys->fmt.video.i_width = p_sys->i_width;
+            p_sys->fmt.video.i_height = p_sys->i_height;
+            p_sys->b_follow_mouse = var_CreateGetInteger( p_demux,
+                                                "screen-follow-mouse" );
+            if( p_sys->b_follow_mouse )
+                msg_Dbg( p_demux, "mouse following enabled" );
+        }
+    }
+#endif
 
     p_sys->es = es_out_Add( p_demux->out, &p_sys->fmt );
 
@@ -172,17 +243,18 @@ static int Demux( demux_t *p_demux )
  *****************************************************************************/
 static int Control( demux_t *p_demux, int i_query, va_list args )
 {
-    vlc_bool_t *pb;
+    bool *pb;
     int64_t *pi64;
 
     switch( i_query )
     {
         /* Special for access_demux */
         case DEMUX_CAN_PAUSE:
+        case DEMUX_CAN_SEEK:
         case DEMUX_CAN_CONTROL_PACE:
             /* TODO */
-            pb = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
-            *pb = VLC_FALSE;
+            pb = (bool*)va_arg( args, bool * );
+            *pb = false;
             return VLC_SUCCESS;
 
         case DEMUX_GET_PTS_DELAY:

@@ -2,7 +2,7 @@
  * dialogs.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9d00f26688a1939ddf3551049c1a1fb7e620ca7c $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -28,7 +28,7 @@
 #include "../commands/cmd_quit.hpp"
 #include "../commands/cmd_playlist.hpp"
 #include "../commands/cmd_playtree.hpp"
-
+#include <vlc_playlist.h>
 
 /// Callback called when a new skin is chosen
 void Dialogs::showChangeSkinCB( intf_dialog_args_t *pArg )
@@ -116,7 +116,7 @@ Dialogs::~Dialogs()
         vlc_object_detach( m_pProvider );
 
         module_Unneed( m_pProvider, m_pModule );
-        vlc_object_destroy( m_pProvider );
+        vlc_object_release( m_pProvider );
     }
 
     /* Unregister callbacks */
@@ -159,7 +159,7 @@ bool Dialogs::init()
 {
     // Allocate descriptor
     m_pProvider = (intf_thread_t *)vlc_object_create( getIntf(),
-                                                      VLC_OBJECT_DIALOGS );
+                                                    sizeof( intf_thread_t ) );
     if( m_pProvider == NULL )
     {
         msg_Err( getIntf(), "out of memory" );
@@ -169,8 +169,8 @@ bool Dialogs::init()
     m_pModule = module_Need( m_pProvider, "dialogs provider", NULL, 0 );
     if( m_pModule == NULL )
     {
-        msg_Err( getIntf(), "no suitable dialogs provider found (hint: compile the wxWidgets plugin, and make sure it is loaded properly)" );
-        vlc_object_destroy( m_pProvider );
+        msg_Err( getIntf(), "no suitable dialogs provider found (hint: compile the qt4 plugin, and make sure it is loaded properly)" );
+        vlc_object_release( m_pProvider );
         m_pProvider = NULL;
         return false;
     }
@@ -237,7 +237,7 @@ void Dialogs::showPlaylistLoad()
 
 void Dialogs::showPlaylistSave()
 {
-    showFileGeneric( _("Save playlist"), _("M3U file|*.m3u|XSPF playlist|*.xspf"),
+    showFileGeneric( _("Save playlist"), _("XSPF playlist|*.xspf|M3U file|*.m3u"),
                      showPlaylistSaveCB, kSAVE );
 }
 

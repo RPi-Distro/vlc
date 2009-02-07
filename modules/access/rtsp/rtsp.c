@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: 586aa682905ce44fa3fa723d0a73af732f84602b $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -23,10 +23,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #include "rtsp.h"
 
@@ -89,7 +91,7 @@ static char *rtsp_get( rtsp_client_t *rtsp )
   char *psz_buffer = malloc( BUF_SIZE );
   char *psz_string = NULL;
 
-  if( rtsp->pf_read_line( rtsp->p_userdata, psz_buffer, (unsigned int)BUF_SIZE ) >= 0 )
+  if( rtsp->pf_read_line( rtsp->p_userdata, (uint8_t*)psz_buffer, (unsigned int)BUF_SIZE ) >= 0 )
   {
     //printf( "<< '%s'\n", psz_buffer );
       psz_string = strdup( psz_buffer );
@@ -114,7 +116,7 @@ static int rtsp_put( rtsp_client_t *rtsp, const char *psz_string )
     psz_buffer[i_buffer] = '\r'; psz_buffer[i_buffer+1] = '\n';
     psz_buffer[i_buffer+2] = 0;
 
-    i_ret = rtsp->pf_write( rtsp->p_userdata, psz_buffer, i_buffer + 2 );
+    i_ret = rtsp->pf_write( rtsp->p_userdata, (uint8_t*)psz_buffer, i_buffer + 2 );
 
     free( psz_buffer );
     return i_ret;
@@ -238,7 +240,7 @@ static int rtsp_get_answers( rtsp_client_t *rtsp )
       {
           char *buf = malloc( strlen(answer) );
           sscanf( answer, "%*s %s", buf );
-          if( rtsp->p_private->server ) free( rtsp->p_private->server );
+          free( rtsp->p_private->server );
           rtsp->p_private->server = buf;
       }
       if( !strncasecmp( answer, "Session:", 8 ) )
@@ -249,7 +251,7 @@ static int rtsp_get_answers( rtsp_client_t *rtsp )
           {
               if( strcmp( buf, rtsp->p_private->session ) )
               {
-                  //fprintf( stderr, 
+                  //fprintf( stderr,
                   //         "rtsp: warning: setting NEW session: %s\n", buf );
                   free( rtsp->p_private->session );
                   rtsp->p_private->session = strdup( buf );
@@ -393,13 +395,13 @@ int rtsp_request_tearoff( rtsp_client_t *rtsp, const char *what )
  * read opaque data from stream
  */
 
-int rtsp_read_data( rtsp_client_t *rtsp, char *buffer, unsigned int size )
+int rtsp_read_data( rtsp_client_t *rtsp, uint8_t *buffer, unsigned int size )
 {
     int i, seq;
 
     if( size >= 4 )
     {
-        i = rtsp->pf_read( rtsp->p_userdata, buffer, (unsigned int) 4 );
+        i = rtsp->pf_read( rtsp->p_userdata, (uint8_t*)buffer, (unsigned int) 4 );
         if( i < 4 ) return i;
 
         if( buffer[0]=='S' && buffer[1]=='E' && buffer[2]=='T' &&
@@ -493,7 +495,7 @@ int rtsp_connect( rtsp_client_t *rtsp, const char *psz_mrl,
     colon = strchr( mrl_ptr, ':' );
 
     if( !slash ) slash = mrl_ptr + strlen(mrl_ptr) + 1;
-    if( !colon ) colon = slash; 
+    if( !colon ) colon = slash;
     if( colon > slash ) colon = slash;
 
     pathbegin = slash - mrl_ptr;
@@ -546,7 +548,7 @@ int rtsp_connect( rtsp_client_t *rtsp, const char *psz_mrl,
 }
 
 /*
- * closes an rtsp connection 
+ * closes an rtsp connection
  */
 
 void rtsp_close( rtsp_client_t *rtsp )
@@ -557,12 +559,12 @@ void rtsp_close( rtsp_client_t *rtsp )
         rtsp->pf_disconnect( rtsp->p_userdata );
     }
 
-    if( rtsp->p_private->path ) free( rtsp->p_private->path );
-    if( rtsp->p_private->host ) free( rtsp->p_private->host );
-    if( rtsp->p_private->mrl ) free( rtsp->p_private->mrl );
-    if( rtsp->p_private->session ) free( rtsp->p_private->session );
-    if( rtsp->p_private->user_agent ) free( rtsp->p_private->user_agent );
-    if( rtsp->p_private->server ) free( rtsp->p_private->server );
+    free( rtsp->p_private->path );
+    free( rtsp->p_private->host );
+    free( rtsp->p_private->mrl );
+    free( rtsp->p_private->session );
+    free( rtsp->p_private->user_agent );
+    free( rtsp->p_private->server );
     rtsp_free_answers( rtsp );
     rtsp_unschedule_all( rtsp );
     free( rtsp->p_private );
@@ -602,7 +604,7 @@ char *rtsp_search_answers( rtsp_client_t *rtsp, const char *tag )
 
 void rtsp_set_session( rtsp_client_t *rtsp, const char *id )
 {
-    if( rtsp->p_private->session ) free( rtsp->p_private->session );
+    free( rtsp->p_private->session );
     rtsp->p_private->session = strdup(id);
 }
 
@@ -632,7 +634,7 @@ void rtsp_schedule_field( rtsp_client_t *rtsp, const char *string )
 }
 
 /*
- * removes the first scheduled field which prefix matches string. 
+ * removes the first scheduled field which prefix matches string.
  */
 
 void rtsp_unschedule_field( rtsp_client_t *rtsp, const char *string )
@@ -645,7 +647,7 @@ void rtsp_unschedule_field( rtsp_client_t *rtsp, const char *string )
     {
       if( !strncmp(*ptr, string, strlen(string)) ) break;
     }
-    if( *ptr ) free( *ptr );
+    free( *ptr );
     ptr++;
     do
     {

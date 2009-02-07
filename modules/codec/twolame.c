@@ -3,7 +3,7 @@
  *            (using libtwolame from http://users.tpg.com.au/adslblvi/)
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 35dbcced69ffb7a7e1ee768096715d99046bdb11 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -25,10 +25,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include <vlc/sout.h>
-#include <vlc/aout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_sout.h>
+#include <vlc_aout.h>
 
 #include <twolame.h>
 
@@ -61,31 +66,31 @@ static block_t *Encode   ( encoder_t *, aout_buffer_t * );
 #define ENC_PSY_LONGTEXT N_( \
   "Integer from -1 (no model) to 4." )
 
-static int pi_stereo_values[] = { 0, 1, 2 };
-static char *ppsz_stereo_descriptions[] =
+static const int pi_stereo_values[] = { 0, 1, 2 };
+static const char *const ppsz_stereo_descriptions[] =
 { N_("Stereo"), N_("Dual mono"), N_("Joint stereo") };
 
 
 vlc_module_begin();
     set_shortname( "Twolame");
-    set_description( _("Libtwolame audio encoder") );
+    set_description( N_("Libtwolame audio encoder") );
     set_capability( "encoder", 50 );
     set_callbacks( OpenEncoder, CloseEncoder );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACODEC );
 
     add_float( ENC_CFG_PREFIX "quality", 0.0, NULL, ENC_QUALITY_TEXT,
-               ENC_QUALITY_LONGTEXT, VLC_FALSE );
+               ENC_QUALITY_LONGTEXT, false );
     add_integer( ENC_CFG_PREFIX "mode", 0, NULL, ENC_MODE_TEXT,
-                 ENC_MODE_LONGTEXT, VLC_FALSE );
-        change_integer_list( pi_stereo_values, ppsz_stereo_descriptions, 0 );
+                 ENC_MODE_LONGTEXT, false );
+        change_integer_list( pi_stereo_values, ppsz_stereo_descriptions, NULL );
     add_bool( ENC_CFG_PREFIX "vbr", 0, NULL, ENC_VBR_TEXT,
-              ENC_VBR_LONGTEXT, VLC_FALSE );
+              ENC_VBR_LONGTEXT, false );
     add_integer( ENC_CFG_PREFIX "psy", 3, NULL, ENC_PSY_TEXT,
-                 ENC_PSY_LONGTEXT, VLC_FALSE );
+                 ENC_PSY_LONGTEXT, false );
 vlc_module_end();
 
-static const char *ppsz_enc_options[] = {
+static const char *const ppsz_enc_options[] = {
     "quality", "mode", "vbr", "psy", NULL
 };
 
@@ -155,17 +160,14 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_sys = (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_enc, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
     p_enc->p_sys = p_sys;
 
     p_enc->pf_encode_audio = Encode;
     p_enc->fmt_in.i_codec = AOUT_FMT_S16_NE;
     p_enc->fmt_out.i_codec = VLC_FOURCC('m','p','g','a');
 
-    sout_CfgParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
+    config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
 
     p_sys->p_twolame = twolame_init();
 
@@ -285,8 +287,7 @@ static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
                                p_sys->p_out_buffer, MAX_CODED_FRAME_SIZE );
         p_sys->i_nb_samples = 0;
         p_block = block_New( p_enc, i_used );
-        p_enc->p_vlc->pf_memcpy( p_block->p_buffer, p_sys->p_out_buffer,
-                                 i_used );
+        vlc_memcpy( p_block->p_buffer, p_sys->p_out_buffer, i_used );
         p_block->i_length = (mtime_t)1000000 *
                 (mtime_t)MPEG_FRAME_SIZE / (mtime_t)p_enc->fmt_out.audio.i_rate;
         p_block->i_dts = p_block->i_pts = p_sys->i_pts;

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * vlc_access.h: Access descriptor, queries and methods
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 7c9bb2196e9dece23c75c39010ab1604cc81b6b9 $
+ * Copyright (C) 1999-2006 the VideoLAN team
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,8 +21,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_ACCESS_H
-#define _VLC_ACCESS_H 1
+#ifndef VLC_ACCESS_H
+#define VLC_ACCESS_H 1
+
+/**
+ * \file
+ * This file defines functions and definitions for access object
+ */
+
+#include <vlc_block.h>
 
 /**
  * \defgroup access Access
@@ -32,10 +39,10 @@
 enum access_query_e
 {
     /* capabilities */
-    ACCESS_CAN_SEEK,        /* arg1= vlc_bool_t*    cannot fail */
-    ACCESS_CAN_FASTSEEK,    /* arg1= vlc_bool_t*    cannot fail */
-    ACCESS_CAN_PAUSE,       /* arg1= vlc_bool_t*    cannot fail */
-    ACCESS_CAN_CONTROL_PACE,/* arg1= vlc_bool_t*    cannot fail */
+    ACCESS_CAN_SEEK,        /* arg1= bool*    cannot fail */
+    ACCESS_CAN_FASTSEEK,    /* arg1= bool*    cannot fail */
+    ACCESS_CAN_PAUSE,       /* arg1= bool*    cannot fail */
+    ACCESS_CAN_CONTROL_PACE,/* arg1= bool*    cannot fail */
 
     /* */
     ACCESS_GET_MTU,         /* arg1= int*           cannot fail(0 if no sense)*/
@@ -46,7 +53,7 @@ enum access_query_e
     ACCESS_GET_META,        /* arg1= vlc_meta_t **  res=can fail    */
 
     /* */
-    ACCESS_SET_PAUSE_STATE, /* arg1= vlc_bool_t     can fail */
+    ACCESS_SET_PAUSE_STATE, /* arg1= bool     can fail */
 
     /* */
     ACCESS_SET_TITLE,       /* arg1= int            can fail */
@@ -54,9 +61,11 @@ enum access_query_e
 
     /* Special mode for access/demux communication
      * XXX: avoid to use it unless you can't */
-    ACCESS_SET_PRIVATE_ID_STATE,    /* arg1= int i_private_data, vlc_bool_t b_selected can fail */
+    ACCESS_SET_PRIVATE_ID_STATE,    /* arg1= int i_private_data, bool b_selected can fail */
     ACCESS_SET_PRIVATE_ID_CA,    /* arg1= int i_program_number, uint16_t i_vpid, uint16_t i_apid1, uint16_t i_apid2, uint16_t i_apid3, uint8_t i_length, uint8_t *p_data */
-    ACCESS_GET_PRIVATE_ID_STATE     /* arg1=int i_private_data arg2=vlc_bool_t *  res=can fail */
+    ACCESS_GET_PRIVATE_ID_STATE,    /* arg1=int i_private_data arg2=bool *  res=can fail */
+
+    ACCESS_GET_CONTENT_TYPE, /* arg1=char **ppsz_content_type */
 };
 
 struct access_t
@@ -74,13 +83,13 @@ struct access_t
     access_t    *p_source;
 
     /* Access can fill this entry to force a demuxer
-     * XXX: fill it once you know for sure you will succed
+     * XXX: fill it once you know for sure you will succeed
      * (if you fail, this value won't be reseted */
     char        *psz_demux;
 
     /* pf_read/pf_block is used to read data.
      * XXX A access should set one and only one of them */
-    int         (*pf_read) ( access_t *, uint8_t *, int );  /* Return -1 if no data yet, 0 if no more data, else real data read */
+    ssize_t     (*pf_read) ( access_t *, uint8_t *, size_t );  /* Return -1 if no data yet, 0 if no more data, else real data read */
     block_t    *(*pf_block)( access_t * );                  /* return a block of data in his 'natural' size, NULL if not yet data or eof */
 
     /* Called for each seek.
@@ -99,35 +108,67 @@ struct access_t
 
         int64_t      i_size;    /* Write only for access, read only for input */
         int64_t      i_pos;     /* idem */
-        vlc_bool_t   b_eof;     /* idem */
+        bool   b_eof;     /* idem */
 
         int          i_title;    /* idem, start from 0 (could be menu) */
         int          i_seekpoint;/* idem, start from 0 */
 
-        vlc_bool_t   b_prebuffered; /* Read only for input */
+        bool   b_prebuffered; /* Read only for input */
     } info;
     access_sys_t *p_sys;
 };
 
-#define access2_New( a, b, c, d, e ) __access2_New(VLC_OBJECT(a), b, c, d, e )
-VLC_EXPORT( access_t *, __access2_New,  ( vlc_object_t *p_obj, char *psz_access, char *psz_demux, char *psz_path, vlc_bool_t b_quick ) );
-VLC_EXPORT( access_t *, access2_FilterNew, ( access_t *p_source, char *psz_access_filter ) );
-VLC_EXPORT( void,      access2_Delete, ( access_t * ) );
-
-static inline int access2_vaControl( access_t *p_access, int i_query, va_list args )
+static inline int access_vaControl( access_t *p_access, int i_query, va_list args )
 {
     if( !p_access ) return VLC_EGENERIC;
     return p_access->pf_control( p_access, i_query, args );
 }
-static inline int access2_Control( access_t *p_access, int i_query, ... )
+
+static inline int access_Control( access_t *p_access, int i_query, ... )
 {
     va_list args;
     int     i_result;
 
     va_start( args, i_query );
-    i_result = access2_vaControl( p_access, i_query, args );
+    i_result = access_vaControl( p_access, i_query, args );
     va_end( args );
     return i_result;
 }
+
+static inline char *access_GetContentType( access_t *p_access )
+{
+    char *res;
+    if( access_Control( p_access, ACCESS_GET_CONTENT_TYPE, &res ) )
+        return NULL;
+    return res;
+}
+
+static inline void access_InitFields( access_t *p_a )
+{
+    p_a->info.i_update = 0;
+    p_a->info.i_size = 0;
+    p_a->info.i_pos = 0;
+    p_a->info.b_eof = false;
+    p_a->info.i_title = 0;
+    p_a->info.i_seekpoint = 0;
+}
+
+#define ACCESS_SET_CALLBACKS( read, block, control, seek ) \
+    p_access->pf_read = read;  \
+    p_access->pf_block = block; \
+    p_access->pf_control = control; \
+    p_access->pf_seek = seek; \
+
+#define STANDARD_READ_ACCESS_INIT \
+    access_InitFields( p_access ); \
+    ACCESS_SET_CALLBACKS( Read, NULL, Control, Seek ); \
+    MALLOC_ERR( p_access->p_sys, access_sys_t ); \
+    p_sys = p_access->p_sys; memset( p_sys, 0, sizeof( access_sys_t ) );
+
+#define STANDARD_BLOCK_ACCESS_INIT \
+    access_InitFields( p_access ); \
+    ACCESS_SET_CALLBACKS( NULL, Block, Control, Seek ); \
+    MALLOC_ERR( p_access->p_sys, access_sys_t ); \
+    p_sys = p_access->p_sys; memset( p_sys, 0, sizeof( access_sys_t ) );
 
 #endif

@@ -25,17 +25,19 @@
  * Preamble
  *****************************************************************************/
 #include <errno.h>                                                 /* ENOMEM */
-#include <stdlib.h>                                                /* free() */
-#include <string.h>                                            /* strerror() */
 
 #include <photon/PtWidget.h>
 #include <photon/PtWindow.h>
 #include <photon/PtLabel.h>
 #include <photon/PdDirect.h>
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
+#include <vlc_vout.h>
 
 /*****************************************************************************
  * vout_sys_t: video output QNX method descriptor
@@ -128,7 +130,7 @@ static void SetPalette     ( vout_thread_t *, uint16_t *, uint16_t *, uint16_t *
  * vout properties to choose the window size, and change them according to the
  * actual properties of the display.
  *****************************************************************************/
-int E_(OpenVideo) ( vlc_object_t *p_this )
+int OpenVideo ( vlc_object_t *p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *)p_this;
 
@@ -276,7 +278,7 @@ static void QNXEnd( vout_thread_t *p_vout )
  *****************************************************************************
  * Terminate an output method created by QNXCreate
  *****************************************************************************/
-void E_(CloseVideo) ( vlc_object_t *p_this )
+void CloseVideo ( vlc_object_t *p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *)p_this;
 
@@ -297,9 +299,9 @@ static int QNXManage( vout_thread_t *p_vout )
 {
     int i_ev,  i_buflen;
     PhEvent_t *p_event;
-    vlc_bool_t b_repos = 0;
+    bool b_repos = 0;
 
-    if (p_vout->b_die == 1)
+    if (!vlc_object_alive (p_vout))
     {
         return ( 0 );
     }
@@ -338,7 +340,7 @@ static int QNXManage( vout_thread_t *p_vout )
                 switch( p_ev->event_f )
                 {
                 case Ph_WM_CLOSE:
-                    p_vout->p_vlc->b_die = 1;
+                    p_vout->p_libvlc->b_die = true;
                     break;
 
                 case Ph_WM_MOVE:
@@ -368,7 +370,7 @@ static int QNXManage( vout_thread_t *p_vout )
                     {
                     case Pk_q:
                     case Pk_Q:
-                        p_vout->p_vlc->b_die = 1;
+                        p_vout->p_libvlc->b_die = true;
                         break;
 
                     case Pk_f:

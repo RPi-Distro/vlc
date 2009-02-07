@@ -2,7 +2,7 @@
  * test4.c : Miscellaneous stress tests module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 1e8de5ac490d7c161e11532f4e5e6db572a01a30 $
+ * $Id: 170992ee72ce20537844ba0301ee5762156a7c54 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,9 +24,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <stdlib.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+
 #include <signal.h>
 
 /*****************************************************************************
@@ -60,7 +64,7 @@ static int    Signal    ( vlc_object_t *, char const *,
  * Module descriptor.
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("Miscellaneous stress tests") );
+    set_description( N_("Miscellaneous stress tests") );
     var_Create( p_module->p_libvlc, "foo-test",
                 VLC_VAR_VOID | VLC_VAR_ISCOMMAND );
     var_AddCallback( p_module->p_libvlc, "foo-test", Foo, NULL );
@@ -95,16 +99,19 @@ static int Foo( vlc_object_t *p_this, char const *psz_cmd,
     var_Change( p_this, "honk", VLC_VAR_SETDEFAULT, &val, NULL );
 
     var_Get( p_this, "honk", &val ); printf( "value: %s\n", val.psz_string );
+    free( val.psz_string );
 
     val.psz_string = "foo";
     var_Set( p_this, "honk", val );
 
     var_Get( p_this, "honk", &val ); printf( "value: %s\n", val.psz_string );
+    free( val.psz_string );
 
     val.psz_string = "blork";
     var_Set( p_this, "honk", val );
 
     var_Get( p_this, "honk", &val ); printf( "value: %s\n", val.psz_string );
+    free( val.psz_string );
 
     val.psz_string = "baz";
     var_Change( p_this, "honk", VLC_VAR_DELCHOICE, &val, NULL );
@@ -164,9 +171,9 @@ static int Callback( vlc_object_t *p_this, char const *psz_cmd,
 
     for( i = 0; i < 10; i++ )
     {
-        pp_objects[i] = vlc_object_create( p_this, VLC_OBJECT_GENERIC );
+        pp_objects[i] = vlc_object_create( p_this, sizeof( vlc_object_t ) );
         vlc_object_attach( pp_objects[i], p_this );
-        vlc_thread_create( pp_objects[i], "foo", MyThread, 0, VLC_TRUE );
+        vlc_thread_create( pp_objects[i], "foo", MyThread, 0, true );
     }
 
     msleep( 3000000 );
@@ -175,10 +182,10 @@ static int Callback( vlc_object_t *p_this, char const *psz_cmd,
 
     for( i = 0; i < 10; i++ )
     {
-        pp_objects[i]->b_die = VLC_TRUE;
+        vlc_object_kill( pp_objects[i] );
         vlc_thread_join( pp_objects[i] );
         vlc_object_detach( pp_objects[i] );
-        vlc_object_destroy( pp_objects[i] );
+        vlc_object_release( pp_objects[i] );
     }
 
     /* Clean our mess */
@@ -216,7 +223,7 @@ static int MyCallback( vlc_object_t *p_this, char const *psz_var,
     sprintf( psz_newvar, "blork-%i", i_var );
     var_Set( p_this, psz_newvar, newval );
 
-    return VLC_SUCCESS;   
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -232,7 +239,7 @@ static void * MyThread( vlc_object_t *p_this )
 
     val.i_int = 42;
 
-    while( !p_this->b_die )
+    while( vlc_object_alive (p_this) )
     {
         int i = (int) (100.0 * rand() / (RAND_MAX));
 
@@ -296,21 +303,21 @@ static int Stress( vlc_object_t *p_this, char const *psz_cmd,
     start = mdate();
     for( i = 0; i < MAXOBJ * i_level; i++ )
     {
-        pp_objects[i] = vlc_object_create( p_this, VLC_OBJECT_GENERIC );
+        pp_objects[i] = vlc_object_create( p_this, sizeof( vlc_object_t ) );
     }
 
     printf( " - randomly looking up %i objects\n", MAXLOOK * i_level );
     for( i = MAXLOOK * i_level; i--; )
     {
         int id = (int) (MAXOBJ * i_level * 1.0 * rand() / (RAND_MAX));
-        vlc_object_get( p_this, pp_objects[id]->i_object_id );
+        vlc_object_get( pp_objects[id]->i_object_id );
         vlc_object_release( p_this );
     }
 
     printf( " - destroying the objects (LIFO)\n" );
     for( i = MAXOBJ * i_level; i--; )
     {
-        vlc_object_destroy( pp_objects[i] );
+        vlc_object_release( pp_objects[i] );
     }
 
     printf( "done (%fs).\n", (mdate() - start) / 1000000.0 );
@@ -381,16 +388,16 @@ static int Stress( vlc_object_t *p_this, char const *psz_cmd,
             MAXTH * i_level, MAXOBJ/MAXTH );
     for( i = 0; i < MAXTH * i_level; i++ )
     {
-        pp_objects[i] = vlc_object_create( p_this, VLC_OBJECT_GENERIC );
-        vlc_thread_create( pp_objects[i], "foo", Dummy, 0, VLC_TRUE );
+        pp_objects[i] = vlc_object_create( p_this, sizeof( vlc_object_t ) );
+        vlc_thread_create( pp_objects[i], "foo", Dummy, 0, true );
     }
 
     printf( " - killing the threads (LIFO)\n" );
     for( i = MAXTH * i_level; i--; )
     {
-        pp_objects[i]->b_die = VLC_TRUE;
+        pp_objects[i]->b_die = true;
         vlc_thread_join( pp_objects[i] );
-        vlc_object_destroy( pp_objects[i] );
+        vlc_object_release( pp_objects[i] );
     }
 
     printf( "done (%fs).\n", (mdate() - start) / 1000000.0 );
@@ -413,19 +420,19 @@ static void * Dummy( vlc_object_t *p_this )
 
     for( i = 0; i < MAXOBJ/MAXTH; i++ )
     {
-        pp_objects[i] = vlc_object_create( p_this, VLC_OBJECT_GENERIC );
+        pp_objects[i] = vlc_object_create( p_this, sizeof( vlc_object_t ) );
     }
 
     vlc_thread_ready( p_this );
 
-    while( !p_this->b_die )
+    while( vlc_object_alive (p_this) )
     {
         msleep( 10000 );
     }
 
     for( i = MAXOBJ/MAXTH; i--; )
     {
-        vlc_object_destroy( pp_objects[i] );
+        vlc_object_release( pp_objects[i] );
     }
 
     return NULL;

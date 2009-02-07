@@ -2,7 +2,7 @@
  * video.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004, 2003 the VideoLAN team
- * $Id: 7bd35499a13d61b0bc529d6524a2497d06b48f3c $
+ * $Id: 6e307bae3ce777830b37fb58989f9ef7a15f0007 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,9 +25,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_vout.h>
+#include <vlc_interface.h>
 
 #include "wince.h"
 
@@ -59,7 +63,7 @@ public:
                      unsigned int * );
     void ReleaseWindow( void * );
     int  ControlWindow( void *, int, va_list );
-        
+ 
     HWND p_child_window; // public because of menu
 
 private:
@@ -92,7 +96,7 @@ VideoWindow::VideoWindow( intf_thread_t *_p_intf, HWND _p_parent )
     p_parent = _p_parent;
     p_child_window = NULL;
 
-    vlc_mutex_init( p_intf, &lock );
+    vlc_mutex_init( &lock );
 
     p_vout = NULL;
 
@@ -188,7 +192,7 @@ void VideoWindow::ReleaseWindow( void *p_window )
 FUNCTION:
   WndProc
 
-PURPOSE: 
+PURPOSE:
   Processes messages sent to the main window.
 
 ***********************************************************************/
@@ -198,12 +202,12 @@ LRESULT VideoWindow::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
     {
     case WM_KILLFOCUS:
         if( p_vout )
-            vout_Control( p_vout, VOUT_SET_FOCUS, (vlc_bool_t)VLC_FALSE );
+            vout_Control( p_vout, VOUT_SET_FOCUS, (bool)false );
         return TRUE;
 
     case WM_SETFOCUS:
         if( p_vout )
-            vout_Control( p_vout, VOUT_SET_FOCUS, (vlc_bool_t)VLC_TRUE );
+            vout_Control( p_vout, VOUT_SET_FOCUS, (bool)true );
         return TRUE;
 
     default:

@@ -2,7 +2,7 @@
  * vlc_image.h : wrapper for image reading/writing facilities
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 6b27b730b266b5ef860f7dfd42cc1337b8d28c48 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -21,10 +21,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_IMAGE_H
-#define _VLC_IMAGE_H 1
+#ifndef VLC_IMAGE_H
+#define VLC_IMAGE_H 1
 
-#include "vlc_video.h"
+/**
+ * \file
+ * This file defines functions and structures for image conversions in vlc
+ */
+
+#include <vlc_vout.h>
 
 # ifdef __cplusplus
 extern "C" {

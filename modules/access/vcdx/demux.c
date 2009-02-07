@@ -2,7 +2,7 @@
  * demux.c: demux functions for dvdplay.
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: 9b3b295ffb821855773267ae31624c228cfdf959 $
+ * $Id$
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *
@@ -24,13 +24,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <stddef.h>
+#include <vlc_common.h>
+#include <vlc_input.h>
+#include <vlc_access.h>
+#include <vlc_interface.h>
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
@@ -39,7 +42,6 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <string.h>
 #include <errno.h>
 
 #ifdef STRNCASECMP_IN_STRINGS_H
@@ -72,14 +74,14 @@ struct demux_sys_t
 /*****************************************************************************
  * VCDInit: initializes structures
  *****************************************************************************/
-int E_(VCDInit) ( vlc_object_t *p_this )
+int VCDInit ( vlc_object_t *p_this )
 {
     input_thread_t *p_input = (input_thread_t *)p_this;
     vcd_data_t *    p_vcd = (vcd_data_t *)p_input->p_sys;
     demux_sys_t *   p_demux;
 
     printf("++++ VCDInit CALLED\n");
-    
+ 
 
     if( p_input->stream.i_method != INPUT_METHOD_VCD )
     {
@@ -115,7 +117,7 @@ int E_(VCDInit) ( vlc_object_t *p_this )
 /*****************************************************************************
  * VCDEnd: frees unused data
  *****************************************************************************/
-void E_(VCDEnd) ( vlc_object_t *p_this )
+void VCDEnd ( vlc_object_t *p_this )
 {
     input_thread_t *p_input = (input_thread_t *)p_this;
     vcd_data_t *    p_vcd = p_input->p_demux_data->p_vcd;
@@ -127,7 +129,7 @@ void E_(VCDEnd) ( vlc_object_t *p_this )
         intf_StopThread( p_intf );
         vlc_object_detach( p_intf );
         vlc_object_release( p_intf );
-        intf_Destroy( p_intf );
+        vlc_object_release( p_intf );
     }
 
     p_vcd->p_intf = NULL;

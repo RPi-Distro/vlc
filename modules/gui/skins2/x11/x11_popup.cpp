@@ -2,9 +2,9 @@
  * x11_popup.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 56ec0f03fd23d3bae49cdf4498360a3bb7bdc60d $
+ * $Id$
  *
- * Authors: Olivier Teuli�e <ipkiss@via.ecp.fr>
+ * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

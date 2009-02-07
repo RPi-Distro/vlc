@@ -1,3 +1,13 @@
+BASE_SUBDIRS = dummy memcpy notify testsuite playlist stats osd xml probe
+EXTRA_SUBDIRS = lua
+
+SUBDIRS = $(BASE_SUBDIRS)
+DIST_SUBDIRS = $(BASE_SUBDIRS) $(EXTRA_SUBDIRS)
+
+if BUILD_LUA
+SUBDIRS += lua
+endif
+
 SOURCES_gtk_main = gtk_main.c
 SOURCES_gnome_main = gtk_main.c
 SOURCES_gtk2_main = gtk_main.c
@@ -6,10 +16,16 @@ SOURCES_screensaver = screensaver.c
 SOURCES_qte_main = qte_main.cpp
 SOURCES_freetype = freetype.c
 SOURCES_win32text = win32text.c
+SOURCES_quartztext = quartztext.c
 SOURCES_logger = logger.c
 SOURCES_vod_rtsp = rtsp.c
-SOURCES_gnutls = gnutls.c
+SOURCES_gnutls = gnutls.c dhparams.h
 SOURCES_svg = svg.c
-SOURCES_msn = msn.c
-SOURCES_growl = growl.c
-SOURCES_notify = notify.c
+SOURCES_audioscrobbler = audioscrobbler.c
+SOURCES_inhibit = inhibit.c
+
+if ENABLE_SOUT
+libvlc_LTLIBRARIES += \
+	libvod_rtsp_plugin.la \
+	$(NULL)
+endif

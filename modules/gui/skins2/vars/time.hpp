@@ -2,10 +2,10 @@
  * time.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 90007f1fac43fad19d8cda85842ef722db93a275 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
- *          Olivier Teuli�e <ipkiss@via.ecp.fr>
+ *          Olivier Teulière <ipkiss@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

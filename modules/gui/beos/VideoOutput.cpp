@@ -2,7 +2,7 @@
  * vout_beos.cpp: beos video output display method
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: e70773c24d5478e22d8251a5b81c9c750f9ff00c $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -29,9 +29,6 @@
  * Preamble
  *****************************************************************************/
 #include <errno.h>                                                 /* ENOMEM */
-#include <stdlib.h>                                                /* free() */
-#include <stdio.h>
-#include <string.h>                                            /* strerror() */
 
 #include <Application.h>
 #include <BitmapStream.h>
@@ -46,9 +43,13 @@
 #include <WindowScreen.h>
 
 /* VLC headers */
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
+#include <vlc_vout.h>
 #include <vlc_keys.h>
 
 #include "InterfaceWindow.h"    // for load/save_settings()
@@ -76,7 +77,6 @@ struct vout_sys_t
 
 };
 
-#define MOUSE_IDLE_TIMEOUT 2000000    // two seconds
 #define MIN_AUTO_VSYNC_REFRESH 61    // Hz
 
 /*****************************************************************************
@@ -464,7 +464,7 @@ VideoWindow::MessageReceived( BMessage *p_message )
             {
                 val.i_int |= KEY_MODIFIER_CTRL;
             }
-            var_Set( p_vout->p_vlc, "key-pressed", val );
+            var_Set( p_vout->p_libvlc, "key-pressed", val );
 
             free( keys );
             free( chars );
@@ -776,20 +776,20 @@ VideoWindow::_AllocateBuffers(int width, int height, int* mode)
                 {
                     msg_Dbg( p_vout, "using single-buffered overlay" );
                     bitmap_count = 2;
-                    if( bitmap[2] ) { delete bitmap[2]; bitmap[2] = NULL; }
+                    delete bitmap[2]; bitmap[2] = NULL;
                 }
             }
             else
             {
                 msg_Dbg( p_vout, "using simple overlay" );
                 bitmap_count = 1;
-                if( bitmap[1] ) { delete bitmap[1]; bitmap[1] = NULL; }
+                delete bitmap[1]; bitmap[1] = NULL;
             }
             break;
         }
         else
         {
-            if( bitmap[0] ) { delete bitmap[0]; bitmap[0] = NULL; }
+            delete bitmap[0]; bitmap[0] = NULL;
         }
     }
 
@@ -828,9 +828,9 @@ VideoWindow::_AllocateBuffers(int width, int height, int* mode)
 void
 VideoWindow::_FreeBuffers()
 {
-    if( bitmap[0] ) { delete bitmap[0]; bitmap[0] = NULL; }
-    if( bitmap[1] ) { delete bitmap[1]; bitmap[1] = NULL; }
-    if( bitmap[2] ) { delete bitmap[2]; bitmap[2] = NULL; }
+    delete bitmap[0]; bitmap[0] = NULL;
+    delete bitmap[1]; bitmap[1] = NULL;
+    delete bitmap[2]; bitmap[2] = NULL;
     fInitStatus = B_ERROR;
 }
 
@@ -983,6 +983,7 @@ VLCView::VLCView(BRect bounds, vout_thread_t *p_vout_instance )
       fIgnoreDoubleClick(false)
 {
     p_vout = p_vout_instance;
+    fMouseHideTimeout = var_GetInteger(p_vout, "mouse-hide-timeout") * 1000;
     SetViewColor(B_TRANSPARENT_32_BIT);
 }
 
@@ -1057,9 +1058,9 @@ VLCView::MouseDown(BPoint where)
                 BMenuItem *zoomItem = new BMenuItem(_("Fullscreen"), new BMessage(TOGGLE_FULL_SCREEN));
                 zoomItem->SetMarked(videoWindow->IsFullScreen());
                 menu->AddItem(zoomItem);
-    
+ 
                 menu->AddSeparatorItem();
-    
+ 
                 // Toggle vSync
                 BMenuItem *vsyncItem = new BMenuItem(_("Vertical Sync"), new BMessage(VERT_SYNC));
                 vsyncItem->SetMarked(videoWindow->IsSyncedToRetrace());
@@ -1068,22 +1069,22 @@ VLCView::MouseDown(BPoint where)
                 BMenuItem *aspectItem = new BMenuItem(_("Correct Aspect Ratio"), new BMessage(ASPECT_CORRECT));
                 aspectItem->SetMarked(videoWindow->CorrectAspectRatio());
                 menu->AddItem(aspectItem);
-    
+ 
                 menu->AddSeparatorItem();
-    
+ 
                 // Window Feel Items
 /*                BMessage *winNormFeel = new BMessage(WINDOW_FEEL);
                 winNormFeel->AddInt32("WinFeel", (int32_t)B_NORMAL_WINDOW_FEEL);
                 BMenuItem *normWindItem = new BMenuItem("Normal Window", winNormFeel);
                 normWindItem->SetMarked(videoWindow->Feel() == B_NORMAL_WINDOW_FEEL);
                 menu->AddItem(normWindItem);
-                
+ 
                 BMessage *winFloatFeel = new BMessage(WINDOW_FEEL);
                 winFloatFeel->AddInt32("WinFeel", (int32_t)B_FLOATING_APP_WINDOW_FEEL);
                 BMenuItem *onTopWindItem = new BMenuItem("App Top", winFloatFeel);
                 onTopWindItem->SetMarked(videoWindow->Feel() == B_FLOATING_APP_WINDOW_FEEL);
                 menu->AddItem(onTopWindItem);
-                
+ 
                 BMessage *winAllFeel = new BMessage(WINDOW_FEEL);
                 winAllFeel->AddInt32("WinFeel", (int32_t)B_FLOATING_ALL_WINDOW_FEEL);
                 BMenuItem *allSpacesWindItem = new BMenuItem("On Top All Workspaces", winAllFeel);
@@ -1123,7 +1124,7 @@ void
 VLCView::MouseUp( BPoint where )
 {
     vlc_value_t val;
-    val.b_bool = VLC_TRUE;
+    val.b_bool = true;
     var_Set( p_vout, "mouse-clicked", val );
 }
 
@@ -1151,7 +1152,7 @@ VLCView::MouseMoved(BPoint point, uint32 transit, const BMessage* dragMessage)
     var_Set( p_vout, "mouse-x", val );
     val.i_int = ( (int)point.y - i_y ) * p_vout->render.i_height / i_height;
     var_Set( p_vout, "mouse-y", val );
-    val.b_bool = VLC_TRUE;
+    val.b_bool = true;
     var_Set( p_vout, "mouse-moved", val );
 }
 
@@ -1168,11 +1169,11 @@ VLCView::Pulse()
     if (!fCursorHidden)
     {
         if (fCursorInside
-            && mdate() - fLastMouseMovedTime > MOUSE_IDLE_TIMEOUT)
+            && mdate() - fLastMouseMovedTime > fMouseHideTimeout)
         {
             be_app->ObscureCursor();
             fCursorHidden = true;
-            
+ 
             // hide the interface window as well if full screen
             if (videoWindow && videoWindow->IsFullScreen())
                 videoWindow->SetInterfaceShowing(false);
@@ -1180,7 +1181,7 @@ VLCView::Pulse()
     }
 
     // Workaround to disable the screensaver in full screen:
-    // we simulate an activity every 29 seconds    
+    // we simulate an activity every 29 seconds
     if( videoWindow && videoWindow->IsFullScreen() &&
         mdate() - fLastMouseMovedTime > 29000000 )
     {
@@ -1220,7 +1221,7 @@ static void BeosCloseDisplay( vout_thread_t *p_vout );
  *****************************************************************************
  * This function allocates and initializes a BeOS vout method.
  *****************************************************************************/
-int E_(OpenVideo) ( vlc_object_t *p_this )
+int OpenVideo ( vlc_object_t *p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *)p_this;
 
@@ -1343,7 +1344,7 @@ static int Manage( vout_thread_t * p_vout )
  *****************************************************************************
  * Terminate an output method created by DummyCreateOutputMethod
  *****************************************************************************/
-void E_(CloseVideo) ( vlc_object_t *p_this )
+void CloseVideo ( vlc_object_t *p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *)p_this;
 

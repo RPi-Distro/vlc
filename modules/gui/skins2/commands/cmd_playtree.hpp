@@ -1,10 +1,11 @@
 /*****************************************************************************
  * cmd_playtree.hpp
  *****************************************************************************
- * Copyright (C) 2005 VideoLAN
- * $Id: 2afb795cedc468d71ef3274b0a6658399f9cacdf $
+ * Copyright (C) 2005 the VideoLAN team
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
+ *          Clément Stenac <zorglub@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

@@ -2,7 +2,7 @@
  * intf_beos.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: 2b817ea882b7eafd491ef9ca08911d5eda3ecd2c $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -29,16 +29,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>                                      /* malloc(), free() */
 #include <InterfaceKit.h>
 #include <Application.h>
 #include <Message.h>
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/aout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
+#include <vlc_aout.h>
 #include <aout_internal.h>
 
 #include "InterfaceWindow.h"
@@ -60,7 +61,7 @@ static void Run       ( intf_thread_t *p_intf );
 /*****************************************************************************
  * intf_Open: initialize interface
  *****************************************************************************/
-int E_(OpenIntf) ( vlc_object_t *p_this )
+int OpenIntf ( vlc_object_t *p_this )
 {
     intf_thread_t * p_intf = (intf_thread_t*) p_this;
 
@@ -71,7 +72,7 @@ int E_(OpenIntf) ( vlc_object_t *p_this )
         msg_Err( p_intf, "out of memory" );
         return VLC_EGENERIC;
     }
-    
+ 
     p_intf->pf_run = Run;
 
     /* Create the interface window */
@@ -101,7 +102,7 @@ int E_(OpenIntf) ( vlc_object_t *p_this )
 /*****************************************************************************
  * intf_Close: destroy dummy interface
  *****************************************************************************/
-void E_(CloseIntf) ( vlc_object_t *p_this )
+void CloseIntf ( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t*) p_this;
 
@@ -119,7 +120,7 @@ void E_(CloseIntf) ( vlc_object_t *p_this )
  *****************************************************************************/
 static void Run( intf_thread_t *p_intf )
 {
-    while( !p_intf->b_die )
+    while( !intf_ShouldDie( p_intf ) )
     {
         p_intf->p_sys->p_window->UpdateInterface();
         msleep( INTF_IDLE_SLEEP );

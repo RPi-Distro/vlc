@@ -2,7 +2,7 @@
  * vlc_keys.h: keycode defines
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 151930ab161b05633fb087c0bb6d128d4187b5cd $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -20,6 +20,15 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifndef VLC_KEYS_H
+#define VLC_KEYS_H 1
+
+/**
+ * \file
+ * This file defines keys, functions and structures for hotkey handling in vlc
+ *
+ */
 
 #define KEY_MODIFIER         0xFF000000
 #define KEY_MODIFIER_ALT     0x01000000
@@ -59,6 +68,8 @@
 #define KEY_BACKSPACE        0x001C0000
 #define KEY_MOUSEWHEELUP     0x001D0000
 #define KEY_MOUSEWHEELDOWN   0x001E0000
+#define KEY_MOUSEWHEELLEFT   0x001F0000
+#define KEY_MOUSEWHEELRIGHT  0x00200000
 
 /* TODO:
  * The media keys are only used in win32. Support for other OSes needs to
@@ -83,7 +94,7 @@
 
 typedef struct key_descriptor_s
 {
-    char *psz_key_string;
+    const char *psz_key_string;
     int i_key_code;
 } key_descriptor_t;
 
@@ -131,6 +142,16 @@ static const struct key_descriptor_s vlc_keys[] =
     { "Backspace", KEY_BACKSPACE },
     { "Mouse Wheel Up", KEY_MOUSEWHEELUP },
     { "Mouse Wheel Down", KEY_MOUSEWHEELDOWN },
+    { "0", '0' },
+    { "1", '1' },
+    { "2", '2' },
+    { "3", '3' },
+    { "4", '4' },
+    { "5", '5' },
+    { "6", '6' },
+    { "7", '7' },
+    { "8", '8' },
+    { "9", '9' },
     { "a", 'a' },
     { "b", 'b' },
     { "c", 'c' },
@@ -188,7 +209,7 @@ static const struct key_descriptor_s vlc_keys[] =
     { "Media Play Pause", KEY_MEDIA_PLAY_PAUSE }
 };
 
-static inline char *KeyToString( int i_key )
+static inline const char *KeyToString( int i_key )
 {
     unsigned int i = 0;
     for ( i = 0; i < sizeof(vlc_keys) / sizeof(key_descriptor_t); i++ )
@@ -214,88 +235,108 @@ static inline int StringToKey( char *psz_key )
     return 0;
 }
 
-
-#define ACTIONID_QUIT                  1
-#define ACTIONID_PLAY_PAUSE            2
-#define ACTIONID_PLAY                  3
-#define ACTIONID_PAUSE                 4
-#define ACTIONID_STOP                  5
-#define ACTIONID_PREV                  6
-#define ACTIONID_NEXT                  7
-#define ACTIONID_SLOWER                8
-#define ACTIONID_FASTER                9
-#define ACTIONID_FULLSCREEN            10
-#define ACTIONID_VOL_UP                11
-#define ACTIONID_VOL_DOWN              12
-#define ACTIONID_NAV_ACTIVATE          13
-#define ACTIONID_NAV_UP                14
-#define ACTIONID_NAV_DOWN              15
-#define ACTIONID_NAV_LEFT              16
-#define ACTIONID_NAV_RIGHT             17
-#define ACTIONID_JUMP_BACKWARD_EXTRASHORT 18
-#define ACTIONID_JUMP_FORWARD_EXTRASHORT  19
-#define ACTIONID_JUMP_BACKWARD_SHORT   20
-#define ACTIONID_JUMP_FORWARD_SHORT    21
-#define ACTIONID_JUMP_BACKWARD_MEDIUM  22
-#define ACTIONID_JUMP_FORWARD_MEDIUM   23
-#define ACTIONID_JUMP_BACKWARD_LONG    24
-#define ACTIONID_JUMP_FORWARD_LONG     25
-#define ACTIONID_POSITION              26
-#define ACTIONID_VOL_MUTE              27
+typedef enum vlc_key {
+    ACTIONID_QUIT = 1,
+    ACTIONID_PLAY_PAUSE,
+    ACTIONID_PLAY,
+    ACTIONID_PAUSE,
+    ACTIONID_STOP,
+    ACTIONID_PREV,
+    ACTIONID_NEXT,
+    ACTIONID_SLOWER,
+    ACTIONID_FASTER,
+    ACTIONID_TOGGLE_FULLSCREEN,
+    ACTIONID_VOL_UP,
+    ACTIONID_VOL_DOWN,
+    ACTIONID_NAV_ACTIVATE,
+    ACTIONID_NAV_UP,
+    ACTIONID_NAV_DOWN,
+    ACTIONID_NAV_LEFT,
+    ACTIONID_NAV_RIGHT,
+    ACTIONID_JUMP_BACKWARD_EXTRASHORT,
+    ACTIONID_JUMP_FORWARD_EXTRASHORT,
+    ACTIONID_JUMP_BACKWARD_SHORT,
+    ACTIONID_JUMP_FORWARD_SHORT,
+    ACTIONID_JUMP_BACKWARD_MEDIUM,
+    ACTIONID_JUMP_FORWARD_MEDIUM,
+    ACTIONID_JUMP_BACKWARD_LONG,
+    ACTIONID_JUMP_FORWARD_LONG,
+    ACTIONID_POSITION,
+    ACTIONID_VOL_MUTE,
 /* let ACTIONID_SET_BOOMARK* and ACTIONID_PLAY_BOOKMARK* be contiguous */
-#define ACTIONID_SET_BOOKMARK1         28
-#define ACTIONID_SET_BOOKMARK2         29
-#define ACTIONID_SET_BOOKMARK3         39
-#define ACTIONID_SET_BOOKMARK4         31
-#define ACTIONID_SET_BOOKMARK5         32
-#define ACTIONID_SET_BOOKMARK6         33
-#define ACTIONID_SET_BOOKMARK7         34
-#define ACTIONID_SET_BOOKMARK8         35
-#define ACTIONID_SET_BOOKMARK9         36
-#define ACTIONID_SET_BOOKMARK10        37
-#define ACTIONID_PLAY_BOOKMARK1        38
-#define ACTIONID_PLAY_BOOKMARK2        39
-#define ACTIONID_PLAY_BOOKMARK3        40
-#define ACTIONID_PLAY_BOOKMARK4        41
-#define ACTIONID_PLAY_BOOKMARK5        42
-#define ACTIONID_PLAY_BOOKMARK6        43
-#define ACTIONID_PLAY_BOOKMARK7        44
-#define ACTIONID_PLAY_BOOKMARK8        45
-#define ACTIONID_PLAY_BOOKMARK9        46
-#define ACTIONID_PLAY_BOOKMARK10       47
-/* end of contiguous zone */
-#define ACTIONID_SUBDELAY_UP           48
-#define ACTIONID_SUBDELAY_DOWN         49
-#define ACTIONID_HISTORY_BACK          50
-#define ACTIONID_HISTORY_FORWARD       51
-#define ACTIONID_AUDIO_TRACK           52
-#define ACTIONID_SUBTITLE_TRACK        53
-#define ACTIONID_CUBESPEED_UP          54
-#define ACTIONID_CUBESPEED_DOWN        55
-#define ACTIONID_INTF_SHOW             56
-#define ACTIONID_INTF_HIDE             57
-/* chapter and title navigation */
-#define ACTIONID_TITLE_PREV            58
-#define ACTIONID_TITLE_NEXT            59
-#define ACTIONID_CHAPTER_PREV          60
-#define ACTIONID_CHAPTER_NEXT          61
-/* end of chapter and title navigation */
-#define ACTIONID_AUDIODELAY_UP         62
-#define ACTIONID_AUDIODELAY_DOWN       63
-#define ACTIONID_SNAPSHOT              64
-#define ACTIONID_RECORD                65
-#define ACTIONID_DISC_MENU             66
-#define ACTIONID_ASPECT_RATIO          67
-#define ACTIONID_CROP                  68
-#define ACTIONID_DEINTERLACE           69
-#define ACTIONID_ZOOM                  70
-#define ACTIONID_UNZOOM                71
-#define ACTIONID_CROP_TOP              72
-#define ACTIONID_UNCROP_TOP            73
-#define ACTIONID_CROP_LEFT             74
-#define ACTIONID_UNCROP_LEFT           75
-#define ACTIONID_CROP_BOTTOM           76
-#define ACTIONID_UNCROP_BOTTOM         77
-#define ACTIONID_CROP_RIGHT            78
-#define ACTIONID_UNCROP_RIGHT          79
-#define ACTIONID_DUMP                  80
+    ACTIONID_SET_BOOKMARK1,
+    ACTIONID_SET_BOOKMARK2,
+    ACTIONID_SET_BOOKMARK3,
+    ACTIONID_SET_BOOKMARK4,
+    ACTIONID_SET_BOOKMARK5,
+    ACTIONID_SET_BOOKMARK6,
+    ACTIONID_SET_BOOKMARK7,
+    ACTIONID_SET_BOOKMARK8,
+    ACTIONID_SET_BOOKMARK9,
+    ACTIONID_SET_BOOKMARK10,
+    ACTIONID_PLAY_BOOKMARK1,
+    ACTIONID_PLAY_BOOKMARK2,
+    ACTIONID_PLAY_BOOKMARK3,
+    ACTIONID_PLAY_BOOKMARK4,
+    ACTIONID_PLAY_BOOKMARK5,
+    ACTIONID_PLAY_BOOKMARK6,
+    ACTIONID_PLAY_BOOKMARK7,
+    ACTIONID_PLAY_BOOKMARK8,
+    ACTIONID_PLAY_BOOKMARK9,
+    ACTIONID_PLAY_BOOKMARK10,
+    /* end of contiguous zone */
+    ACTIONID_SUBDELAY_UP,
+    ACTIONID_SUBDELAY_DOWN,
+    ACTIONID_HISTORY_BACK,
+    ACTIONID_HISTORY_FORWARD,
+    ACTIONID_AUDIO_TRACK,
+    ACTIONID_SUBTITLE_TRACK,
+    ACTIONID_CUBESPEED_UP,
+    ACTIONID_CUBESPEED_DOWN,
+    ACTIONID_INTF_SHOW,
+    ACTIONID_INTF_HIDE,
+    /* chapter and title navigation */
+    ACTIONID_TITLE_PREV,
+    ACTIONID_TITLE_NEXT,
+    ACTIONID_CHAPTER_PREV,
+    ACTIONID_CHAPTER_NEXT,
+    /* end of chapter and title navigation */
+    ACTIONID_AUDIODELAY_UP,
+    ACTIONID_AUDIODELAY_DOWN,
+    ACTIONID_SNAPSHOT,
+    ACTIONID_RECORD,
+    ACTIONID_DISC_MENU,
+    ACTIONID_ASPECT_RATIO,
+    ACTIONID_CROP,
+    ACTIONID_DEINTERLACE,
+    ACTIONID_ZOOM,
+    ACTIONID_UNZOOM,
+    ACTIONID_CROP_TOP,
+    ACTIONID_UNCROP_TOP,
+    ACTIONID_CROP_LEFT,
+    ACTIONID_UNCROP_LEFT,
+    ACTIONID_CROP_BOTTOM,
+    ACTIONID_UNCROP_BOTTOM,
+    ACTIONID_CROP_RIGHT,
+    ACTIONID_UNCROP_RIGHT,
+    ACTIONID_DUMP,
+    ACTIONID_RANDOM,
+    ACTIONID_LOOP,
+    ACTIONID_WALLPAPER,
+    ACTIONID_LEAVE_FULLSCREEN,
+    ACTIONID_MENU_ON,
+    ACTIONID_MENU_OFF,
+    ACTIONID_MENU_RIGHT,
+    ACTIONID_MENU_LEFT,
+    ACTIONID_MENU_UP,
+    ACTIONID_MENU_DOWN,
+    ACTIONID_MENU_SELECT,
+    /* Zoom */
+    ACTIONID_ZOOM_QUARTER,
+    ACTIONID_ZOOM_HALF,
+    ACTIONID_ZOOM_ORIGINAL,
+    ACTIONID_ZOOM_DOUBLE,
+    /* Cycle Through Audio Devices */
+    ACTIONID_AUDIODEVICE_CYCLE
+} vlc_key_t;
+#endif

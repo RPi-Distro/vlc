@@ -2,7 +2,7 @@
  * macosx_timer.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: bc78e840ebbd1d10da88968710bf21b572fcb039 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -24,10 +24,11 @@
 #ifdef MACOSX_SKINS
 
 #include "macosx_timer.hpp"
+#include "../commands/cmd_generic.hpp"
 
 
-MacOSXTimer::MacOSXTimer( intf_thread_t *pIntf, const Callback &rCallback ):
-    OSTimer( pIntf ), m_callback( rCallback )
+MacOSXTimer::MacOSXTimer( intf_thread_t *pIntf,  CmdGeneric &rCmd ):
+    OSTimer( pIntf ), m_rCommand( rCmd )
 {
     // TODO
 }

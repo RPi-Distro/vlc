@@ -2,7 +2,7 @@
  * preset.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 64a4ce98cf6f9fb5c5eca6509254d5f6951db2d8 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -22,12 +22,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
+#include <vlc_common.h>
+#include <vlc_charset.h>
 
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <dirent.h>
 #include <time.h>
 #include "common.h"
@@ -382,7 +385,6 @@ int loadPresetByFile(char * filename) {
 int init_idle_preset() {
 
   preset_t * preset;
-  int i;
 
     /* Initialize idle preset struct */
   if ((preset = (preset_t*)malloc(sizeof(preset_t))) == NULL)
@@ -738,7 +740,6 @@ void reloadPerFrame(char * s, preset_t * preset) {
 preset_t * load_preset(char * pathname) {
 
   preset_t * preset;
-  int i;
 
   /* Initialize preset struct */
   if ((preset = (preset_t*)malloc(sizeof(preset_t))) == NULL)
@@ -889,7 +890,7 @@ void write_init(init_cond_t * init_cond) {
   else if (init_cond->param->type == P_TYPE_DOUBLE)
   {
     lldiv_t div = lldiv( init_cond->init_val.double_val * 1000000,1000000 );
-    sprintf(s, "%s="I64Fd".%06u\n", init_cond->param->name, div.quot,
+    sprintf(s, "%s=%"PRId64".%06u\n", init_cond->param->name, div.quot,
                     (unsigned int) div.rem );
   }
 

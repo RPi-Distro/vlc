@@ -2,7 +2,7 @@
  * MacOSX_loop.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 49eed8f356233cc9b945481bf825f791a30d5655 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -25,6 +25,7 @@
 #define MACOSX_LOOP_HPP
 
 #include "../src/os_loop.hpp"
+#include <Carbon/Carbon.h>
 
 class MacOSXDisplay;
 class GenericWindow;
@@ -45,15 +46,15 @@ class MacOSXLoop: public OSLoop
         /// Exit the main loop
         virtual void exit();
 
+        // Handle a window event
+        void registerWindow( GenericWindow &rGenWin, WindowRef win );
+
     private:
         // Private because it's a singleton
         MacOSXLoop( intf_thread_t *pIntf );
         virtual ~MacOSXLoop();
         // Flag set to exit the loop
         bool m_exit;
-
-        // Handle a window event
-        void handleWindowEvent( EventRef pEvent );
 };
 
 #endif

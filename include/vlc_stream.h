@@ -2,7 +2,7 @@
  * vlc_stream.h: Stream (between access and demux) descriptor and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 3b4ff21827f5f698758cc6f1cad658cabc724ec0 $
+ * $Id: eba91cf7e9197ecd180bc4f9e0da775d1b7c3091 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,8 +21,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_STREAM_H
-#define _VLC_STREAM_H 1
+#ifndef VLC_STREAM_H
+#define VLC_STREAM_H 1
+
+#include <vlc_block.h>
+
+/**
+ * \file
+ * This file defines structures and functions for stream (between access and demux) descriptor in vlc
+ */
 
 # ifdef __cplusplus
 extern "C" {
@@ -41,8 +48,8 @@ extern "C" {
 enum stream_query_e
 {
     /* capabilities */
-    STREAM_CAN_SEEK,            /**< arg1= vlc_bool_t *   res=cannot fail*/
-    STREAM_CAN_FASTSEEK,        /**< arg1= vlc_bool_t *   res=cannot fail*/
+    STREAM_CAN_SEEK,            /**< arg1= bool *   res=cannot fail*/
+    STREAM_CAN_FASTSEEK,        /**< arg1= bool *   res=cannot fail*/
 
     /* */
     STREAM_SET_POSITION,        /**< arg1= int64_t        res=can fail  */
@@ -54,88 +61,19 @@ enum stream_query_e
 
     /* Special for direct access control from demuxer.
      * XXX: avoid using it by all means */
-    STREAM_CONTROL_ACCESS   /* arg1= int i_access_query, args   res: can fail
+    STREAM_CONTROL_ACCESS,  /* arg1= int i_access_query, args   res: can fail
                              if access unreachable or access control answer */
+
+    STREAM_GET_CONTENT_TYPE,   /**< arg1= char **         res=can file */
 };
 
-/**
- * stream_t definition
- */
-struct stream_t
-{
-    VLC_COMMON_MEMBERS
-
-    block_t *(*pf_block)  ( stream_t *, int i_size );
-    int      (*pf_read)   ( stream_t *, void *p_read, int i_read );
-    int      (*pf_peek)   ( stream_t *, uint8_t **pp_peek, int i_peek );
-    int      (*pf_control)( stream_t *, int i_query, va_list );
-    void     (*pf_destroy)( stream_t *);
-
-    stream_sys_t *p_sys;
-
-    /* UTF-16 and UTF-32 file reading */
-    vlc_iconv_t     conv;
-    int             i_char_width;
-    vlc_bool_t      b_little_endian;
-};
-
-/**
- * Try to read "i_read" bytes into a buffer pointed by "p_read".  If
- * "p_read" is NULL then data are skipped instead of read.  The return
- * value is the real numbers of bytes read/skip. If this value is less
- * than i_read that means that it's the end of the stream.
- */
-static inline int stream_Read( stream_t *s, void *p_read, int i_read )
-{
-    return s->pf_read( s, p_read, i_read );
-}
-
-/**
- * Store in pp_peek a pointer to the next "i_peek" bytes in the stream
- * \return The real numbers of valid bytes, if it's less
- * or equal to 0, *pp_peek is invalid.
- * \note pp_peek is a pointer to internal buffer and it will be invalid as
- * soons as other stream_* functions are called.
- * \note Due to input limitation, it could be less than i_peek without meaning
- * the end of the stream (but only when you have i_peek >=
- * p_input->i_bufsize)
- */
-static inline int stream_Peek( stream_t *s, uint8_t **pp_peek, int i_peek )
-{
-    return s->pf_peek( s, pp_peek, i_peek );
-}
-
-/**
- * Use to control the "stream_t *". Look at #stream_query_e for
- * possible "i_query" value and format arguments.  Return VLC_SUCCESS
- * if ... succeed ;) and VLC_EGENERIC if failed or unimplemented
- */
-static inline int stream_vaControl( stream_t *s, int i_query, va_list args )
-{
-    return s->pf_control( s, i_query, args );
-}
-
-/**
- * Destroy a stream
- */
-static inline void stream_Delete( stream_t *s )
-{
-    s->pf_destroy( s );
-}
-
-static inline int stream_Control( stream_t *s, int i_query, ... )
-{
-    va_list args;
-    int     i_result;
-
-    if ( s == NULL )
-        return VLC_EGENERIC;
-
-    va_start( args, i_query );
-    i_result = s->pf_control( s, i_query, args );
-    va_end( args );
-    return i_result;
-}
+VLC_EXPORT( int, stream_Read, ( stream_t *s, void *p_read, int i_read ) );
+VLC_EXPORT( int, stream_Peek, ( stream_t *s, const uint8_t **pp_peek, int i_peek ) );
+VLC_EXPORT( int, stream_vaControl, ( stream_t *s, int i_query, va_list args ) );
+VLC_EXPORT( void, stream_Delete, ( stream_t *s ) );
+VLC_EXPORT( int, stream_Control, ( stream_t *s, int i_query, ... ) );
+VLC_EXPORT( block_t *, stream_Block, ( stream_t *s, int i_size ) );
+VLC_EXPORT( char *, stream_ReadLine, ( stream_t * ) );
 
 /**
  * Get the current position in a stream
@@ -156,60 +94,41 @@ static inline int64_t stream_Size( stream_t *s )
     stream_Control( s, STREAM_GET_SIZE, &i_pos );
     return i_pos;
 }
+
 static inline int stream_MTU( stream_t *s )
 {
     int i_mtu;
     stream_Control( s, STREAM_GET_MTU, &i_mtu );
     return i_mtu;
 }
+
 static inline int stream_Seek( stream_t *s, int64_t i_pos )
 {
     return stream_Control( s, STREAM_SET_POSITION, i_pos );
 }
 
 /**
- * Read "i_size" bytes and store them in a block_t. If less than "i_size"
- * bytes are available then return what is left and if nothing is availble,
- * return NULL.
+ * Get the Content-Type of a stream, or NULL if unknown.
+ * Result must be free()'d.
  */
-static inline block_t *stream_Block( stream_t *s, int i_size )
+static inline char *stream_ContentType( stream_t *s )
 {
-    if( i_size <= 0 ) return NULL;
-
-    if( s->pf_block )
-    {
-        return s->pf_block( s, i_size );
-    }
-    else
-    {
-        /* emulate block read */
-        block_t *p_bk = block_New( s, i_size );
-        if( p_bk )
-        {
-            p_bk->i_buffer = stream_Read( s, p_bk->p_buffer, i_size );
-            if( p_bk->i_buffer > 0 )
-            {
-                return p_bk;
-            }
-        }
-        if( p_bk ) block_Release( p_bk );
+    char *res;
+    if( stream_Control( s, STREAM_GET_CONTENT_TYPE, &res ) )
         return NULL;
-    }
+    return res;
 }
-
-VLC_EXPORT( char *, stream_ReadLine, ( stream_t * ) );
 
 /**
  * Create a special stream and a demuxer, this allows chaining demuxers
  */
 #define stream_DemuxNew( a, b, c ) __stream_DemuxNew( VLC_OBJECT(a), b, c)
-VLC_EXPORT( stream_t *,__stream_DemuxNew, ( vlc_object_t *p_obj, char *psz_demux, es_out_t *out ) );
+VLC_EXPORT( stream_t *,__stream_DemuxNew, ( vlc_object_t *p_obj, const char *psz_demux, es_out_t *out ) );
 VLC_EXPORT( void,      stream_DemuxSend,  ( stream_t *s, block_t *p_block ) );
 VLC_EXPORT( void,      stream_DemuxDelete,( stream_t *s ) );
 
-
 #define stream_MemoryNew( a, b, c, d ) __stream_MemoryNew( VLC_OBJECT(a), b, c, d )
-VLC_EXPORT( stream_t *,__stream_MemoryNew, (vlc_object_t *p_obj, uint8_t *p_buffer, int64_t i_size, vlc_bool_t i_preserve_memory ) );
+VLC_EXPORT( stream_t *,__stream_MemoryNew, (vlc_object_t *p_obj, uint8_t *p_buffer, int64_t i_size, bool i_preserve_memory ) );
 #define stream_UrlNew( a, b ) __stream_UrlNew( VLC_OBJECT(a), b )
 VLC_EXPORT( stream_t *,__stream_UrlNew, (vlc_object_t *p_this, const char *psz_url ) );
 
@@ -219,6 +138,15 @@ VLC_EXPORT( stream_t *,__stream_UrlNew, (vlc_object_t *p_this, const char *psz_u
 
 # ifdef __cplusplus
 }
+# endif
+
+# if defined (__PLUGIN__) || defined (__BUILTIN__)
+   /* FIXME UGLY HACK to keep VLC_OBJECT working */
+   /* Maybe we should make VLC_OBJECT a simple cast noawadays... */
+struct stream_t
+{
+    VLC_COMMON_MEMBERS
+};
 # endif
 
 #endif

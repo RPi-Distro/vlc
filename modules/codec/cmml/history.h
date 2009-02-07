@@ -5,7 +5,7 @@
  *                    Organisation (CSIRO) Australia
  * Copyright (C) 2004 the VideoLAN team
  *
- * $Id: a1319b921eae77a3cdbc75b4518136fa58f01645 $
+ * $Id$
  *
  * Authors: Andre Pang <Andre.Pang@csiro.au>
  *
@@ -49,13 +49,13 @@ typedef struct history_t history_t;
 /*****************************************************************************
  * Exported prototypes
  *****************************************************************************/
-history_t       * history_New                        ();
-vlc_bool_t        history_GoBackSavingCurrentItem    ( history_t *,
+history_t       * history_New                        ( void );
+bool        history_GoBackSavingCurrentItem    ( history_t *,
                                                        history_item_t * );
-vlc_bool_t        history_GoForwardSavingCurrentItem ( history_t *,
+bool        history_GoForwardSavingCurrentItem ( history_t *,
                                                        history_item_t * );
-vlc_bool_t        history_CanGoBack                  ( history_t * );
-vlc_bool_t        history_CanGoForward               ( history_t * );
+bool        history_CanGoBack                  ( history_t * );
+bool        history_CanGoForward               ( history_t * );
 history_item_t  * history_Item                       ( history_t * );
 void              history_Prune                      ( history_t * );
 void              history_PruneAndInsert             ( history_t *,

@@ -2,9 +2,11 @@
  * hal.c :  HAL interface module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 41537cd2f299d24c065aba9cb0cdf53f7e9e1ce1 $
+ * Copyright © 2006-2007 Rafaël Carré
+ * $Id: b45b5fdee0485db9e789c5b4fa601b05a91dddae $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
+ *          Rafaël Carré <funman at videolanorg>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -21,17 +23,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-/*****************************************************************************
- * Includes
- *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_playlist.h>
 
-#include <vlc/input.h>
-
-#include "network.h"
+#include <vlc_network.h>
 
 #include <errno.h>                                                 /* ENOMEM */
 
@@ -44,23 +44,43 @@
 
 #include <hal/libhal.h>
 
-/************************************************************************
- * Macros and definitions
- ************************************************************************/
-
 #define MAX_LINE_LENGTH 256
 
+/*****************************************************************************
+ * Local prototypes
+ *****************************************************************************/
+
+/* store relation between item id and udi for ejection */
+struct udi_input_id_t
+{
+    char            *psz_udi;
+    input_item_t    *p_item;
+};
+
+struct services_discovery_sys_t
+{
+    LibHalContext           *p_ctx;
+    DBusConnection          *p_connection;
+    int                     i_devices_number;
+    struct udi_input_id_t   **pp_devices;
+};
+static void Run    ( services_discovery_t *p_intf );
+
+static int  Open ( vlc_object_t * );
+static void Close( vlc_object_t * );
+
+/* HAL callbacks */
+void DeviceAdded( LibHalContext *p_ctx, const char *psz_udi );
+void DeviceRemoved( LibHalContext *p_ctx, const char *psz_udi );
+
+/* to retrieve p_sd in HAL callbacks */
+services_discovery_t        *p_sd_global;
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-
-/* Callbacks */
-    static int  Open ( vlc_object_t * );
-    static void Close( vlc_object_t * );
-
 vlc_module_begin();
-    set_description( _("HAL devices detection") );
+    set_description( N_("HAL devices detection") );
     set_category( CAT_PLAYLIST );
     set_subcategory( SUBCAT_PLAYLIST_SD );
 
@@ -71,26 +91,6 @@ vlc_module_end();
 
 
 /*****************************************************************************
- * Local structures
- *****************************************************************************/
-
-struct services_discovery_sys_t
-{
-    LibHalContext *p_ctx;
-
-    /* playlist node */
-    playlist_item_t *p_node;
-
-};
-
-/*****************************************************************************
- * Local prototypes
- *****************************************************************************/
-
-/* Main functions */
-    static void Run    ( services_discovery_t *p_intf );
-
-/*****************************************************************************
  * Open: initialize and create stuff
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
@@ -98,20 +98,21 @@ static int Open( vlc_object_t *p_this )
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
     services_discovery_sys_t *p_sys  = malloc(
                                     sizeof( services_discovery_sys_t ) );
-
-    vlc_value_t         val;
-    playlist_t          *p_playlist;
-    playlist_view_t     *p_view;
+    if( !p_sys )
+        return VLC_ENOMEM;
 
     DBusError           dbus_error;
     DBusConnection      *p_connection;
+
+    p_sd_global = p_sd;
+    p_sys->i_devices_number = 0;
+    p_sys->pp_devices = NULL;
 
     p_sd->pf_run = Run;
     p_sd->p_sys  = p_sys;
 
     dbus_error_init( &dbus_error );
 
-#ifdef HAVE_HAL_1
     p_sys->p_ctx = libhal_ctx_new();
     if( !p_sys->p_ctx )
     {
@@ -128,10 +129,8 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
     libhal_ctx_set_dbus_connection( p_sys->p_ctx, p_connection );
+    p_sys->p_connection = p_connection;
     if( !libhal_ctx_init( p_sys->p_ctx, &dbus_error ) )
-#else
-    if( !(p_sys->p_ctx = hal_initialize( NULL, FALSE ) ) )
-#endif
     {
         msg_Err( p_sd, "hal not available : %s", dbus_error.message );
         dbus_error_free( &dbus_error );
@@ -139,24 +138,16 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    /* Create our playlist node */
-    p_playlist = (playlist_t *)vlc_object_find( p_sd, VLC_OBJECT_PLAYLIST,
-                                                FIND_ANYWHERE );
-    if( !p_playlist )
+    if( !libhal_ctx_set_device_added( p_sys->p_ctx, DeviceAdded ) ||
+            !libhal_ctx_set_device_removed( p_sys->p_ctx, DeviceRemoved ) )
     {
-        msg_Warn( p_sd, "unable to find playlist, cancelling HAL listening");
+        msg_Err( p_sd, "unable to add callback" );
+        dbus_error_free( &dbus_error );
+        free( p_sys );
         return VLC_EGENERIC;
     }
 
-    p_view = playlist_ViewFind( p_playlist, VIEW_CATEGORY );
-    p_sys->p_node = playlist_NodeCreate( p_playlist, VIEW_CATEGORY,
-                                         _("Devices"), p_view->p_root );
-
-    p_sys->p_node->i_flags |= PLAYLIST_RO_FLAG;
-    val.b_bool = VLC_TRUE;
-    var_Set( p_playlist, "intf-change", val );
-
-    vlc_object_release( p_playlist );
+    services_discovery_SetLocalizedName( p_sd, _("Devices") );
 
     return VLC_SUCCESS;
 }
@@ -168,155 +159,136 @@ static void Close( vlc_object_t *p_this )
 {
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
     services_discovery_sys_t *p_sys  = p_sd->p_sys;
-    playlist_t *p_playlist =  (playlist_t *) vlc_object_find( p_sd,
-                                 VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
-    if( p_playlist )
+
+    dbus_connection_unref( p_sys->p_connection );
+    struct udi_input_id_t *p_udi_entry;
+
+    while( p_sys->i_devices_number > 0 )
     {
-        playlist_NodeDelete( p_playlist, p_sys->p_node, VLC_TRUE, VLC_TRUE );
-        vlc_object_release( p_playlist );
+        p_udi_entry = p_sys->pp_devices[0];
+        free( p_udi_entry->psz_udi );
+        TAB_REMOVE( p_sys->i_devices_number, p_sys->pp_devices,
+                p_sys->pp_devices[0] );
+        free( p_udi_entry );
     }
+    p_sys->pp_devices = NULL;
+
     free( p_sys );
 }
 
-static void AddDvd( services_discovery_t *p_sd, char *psz_device )
+static void AddItem( services_discovery_t *p_sd, input_item_t * p_input,
+                    const char* psz_device )
+{
+    services_discovery_sys_t *p_sys  = p_sd->p_sys;
+    services_discovery_AddItem( p_sd, p_input, NULL /* no category */ );
+
+    struct udi_input_id_t *p_udi_entry;
+    p_udi_entry = malloc( sizeof( struct udi_input_id_t ) );
+    if( !p_udi_entry )
+        return;
+    p_udi_entry->psz_udi = strdup( psz_device );
+    if( !p_udi_entry->psz_udi )
+    {
+        free( p_udi_entry );
+        return;
+    }
+
+    vlc_gc_incref( p_input );
+    p_udi_entry->p_item = p_input;
+    TAB_APPEND( p_sys->i_devices_number, p_sys->pp_devices, p_udi_entry );
+}
+
+static void AddDvd( services_discovery_t *p_sd, const char *psz_device )
 {
     char *psz_name;
     char *psz_uri;
     char *psz_blockdevice;
-    services_discovery_sys_t    *p_sys  = p_sd->p_sys;
-    playlist_t          *p_playlist;
-    playlist_item_t     *p_item;
-#ifdef HAVE_HAL_1
+    input_item_t        *p_input;
+
     psz_name = libhal_device_get_property_string( p_sd->p_sys->p_ctx,
                                         psz_device, "volume.label", NULL );
     psz_blockdevice = libhal_device_get_property_string( p_sd->p_sys->p_ctx,
                                         psz_device, "block.device", NULL );
-#else
-    psz_name = hal_device_get_property_string( p_sd->p_sys->p_ctx,
-                                               psz_device, "volume.label" );
-    psz_blockdevice = hal_device_get_property_string( p_sd->p_sys->p_ctx,
-                                                 psz_device, "block.device" );
-#endif
-    asprintf( &psz_uri, "dvd://%s", psz_blockdevice );
+
+    if( asprintf( &psz_uri, "dvd://%s", psz_blockdevice ) == -1 )
+        return;
     /* Create the playlist item here */
-    p_item = playlist_ItemNew( p_sd, psz_uri,
-                               psz_name );
+    p_input = input_item_New( p_sd, psz_uri, psz_name );
     free( psz_uri );
-#ifdef HAVE_HAL_1
-    libhal_free_string( psz_device );
-#else
-    hal_free_string( psz_device );
-#endif
-    if( !p_item )
+    if( !p_input )
     {
         return;
     }
-    p_item->i_flags &= ~PLAYLIST_SKIP_FLAG;
-    p_playlist = (playlist_t *)vlc_object_find( p_sd, VLC_OBJECT_PLAYLIST,
-                                                FIND_ANYWHERE );
-    if( !p_playlist )
-    {
-        msg_Err( p_sd, "playlist not found" );
-        return;
-    }
 
-    playlist_NodeAddItem( p_playlist, p_item, VIEW_CATEGORY, p_sys->p_node,
-                          PLAYLIST_APPEND, PLAYLIST_END );
+    AddItem( p_sd, p_input, psz_device );
 
-    vlc_object_release( p_playlist );
+    vlc_gc_decref( p_input );
 }
 
-static void AddCdda( services_discovery_t *p_sd, char *psz_device )
+static void DelItem( services_discovery_t *p_sd, const char* psz_udi )
 {
-    char *psz_name = "Audio CD";
+    services_discovery_sys_t    *p_sys  = p_sd->p_sys;
+
+    int i;
+    for( i = 0; i < p_sys->i_devices_number; i++ )
+    { /*  looks for a matching udi */
+        if( strcmp( psz_udi, p_sys->pp_devices[i]->psz_udi ) == 0 )
+        { /* delete the corresponding item */    
+            services_discovery_RemoveItem( p_sd, p_sys->pp_devices[i]->p_item );
+            vlc_gc_decref( p_sys->pp_devices[i]->p_item );
+            free( p_sys->pp_devices[i]->psz_udi );
+            TAB_REMOVE( p_sys->i_devices_number, p_sys->pp_devices,
+                    p_sys->pp_devices[i] );
+        }
+    }
+}
+
+static void AddCdda( services_discovery_t *p_sd, const char *psz_device )
+{
     char *psz_uri;
     char *psz_blockdevice;
-    services_discovery_sys_t    *p_sys  = p_sd->p_sys;
-    playlist_t          *p_playlist;
-    playlist_item_t     *p_item;
-#ifdef HAVE_HAL_1
+    input_item_t     *p_input;
+
     psz_blockdevice = libhal_device_get_property_string( p_sd->p_sys->p_ctx,
                                             psz_device, "block.device", NULL );
-#else
-    psz_blockdevice = hal_device_get_property_string( p_sd->p_sys->p_ctx,
-                                                 psz_device, "block.device" );
-#endif
-    asprintf( &psz_uri, "cdda://%s", psz_blockdevice );
-    /* Create the playlist item here */
-    p_item = playlist_ItemNew( p_sd, psz_uri,
-                               psz_name );
+
+    if( asprintf( &psz_uri, "cdda://%s", psz_blockdevice ) == -1 )
+        return;
+    /* Create the item here */
+    p_input = input_item_New( p_sd, psz_uri, "Audio CD" );
     free( psz_uri );
-#ifdef HAVE_HAL_1
-    libhal_free_string( psz_device );
-#else
-    hal_free_string( psz_device );
-#endif
-    if( !p_item )
-    {
+    if( !p_input )
         return;
-    }
-    p_item->i_flags &= ~PLAYLIST_SKIP_FLAG;
-    p_playlist = (playlist_t *)vlc_object_find( p_sd, VLC_OBJECT_PLAYLIST,
-                                                FIND_ANYWHERE );
-    if( !p_playlist )
-    {
-        msg_Err( p_sd, "playlist not found" );
-        return;
-    }
 
-    playlist_NodeAddItem( p_playlist, p_item, VIEW_CATEGORY, p_sys->p_node,
-                          PLAYLIST_APPEND, PLAYLIST_END );
+    AddItem( p_sd, p_input, psz_device );
 
-    vlc_object_release( p_playlist );
-
+    vlc_gc_decref( p_input );
 }
 
-static void ParseDevice( services_discovery_t *p_sd, char *psz_device )
+static void ParseDevice( services_discovery_t *p_sd, const char *psz_device )
 {
     char *psz_disc_type;
     services_discovery_sys_t    *p_sys  = p_sd->p_sys;
-#ifdef HAVE_HAL_1
-    if( libhal_device_property_exists( p_sys->p_ctx, psz_device,
+
+    if( !libhal_device_property_exists( p_sys->p_ctx, psz_device,
                                        "volume.disc.type", NULL ) )
+        return;
+
+    psz_disc_type = libhal_device_get_property_string( p_sys->p_ctx,
+                                                    psz_device,
+                                                    "volume.disc.type",
+                                                    NULL );
+    if( !strncmp( psz_disc_type, "dvd_r", 5 ) )
     {
-        psz_disc_type = libhal_device_get_property_string( p_sys->p_ctx,
-                                                        psz_device,
-                                                        "volume.disc.type",
-                                                        NULL );
-#else
-    if( hal_device_property_exists( p_sys->p_ctx, psz_device,
-                                    "volume.disc.type" ) )
+        if (libhal_device_get_property_bool( p_sys->p_ctx, psz_device,
+                                     "volume.disc.is_videodvd", NULL ) )
+        AddDvd( p_sd, psz_device );
+    }
+    else if( !strncmp( psz_disc_type, "cd_r", 4 ) )
     {
-        psz_disc_type = hal_device_get_property_string( p_sys->p_ctx,
-                                                        psz_device,
-                                                        "volume.disc.type" );
-#endif
-        if( !strncmp( psz_disc_type, "dvd_r", 5 ) )
-        {
-#ifdef HAVE_HAL_1
-            if (libhal_device_get_property_bool( p_sys->p_ctx, psz_device,
-                        "volume.disc.is_videodvd", NULL ) )
-#endif
-                AddDvd( p_sd, psz_device );
-        }
-        else if( !strncmp( psz_disc_type, "cd_r", 4 ) )
-        {
-#ifdef HAVE_HAL_1
-            if( libhal_device_get_property_bool( p_sys->p_ctx, psz_device,
-                                         "volume.disc.has_audio" , NULL ) )
-#else
-            if( hal_device_get_property_bool( p_sys->p_ctx, psz_device,
-                                         "volume.disc.has_audio" ) )
-#endif
-            {
-                AddCdda( p_sd, psz_device );
-            }
-        }
-#ifdef HAVE_HAL_1
-        libhal_free_string( psz_disc_type );
-#else
-        hal_free_string( psz_disc_type );
-#endif
+        if( libhal_device_get_property_bool( p_sys->p_ctx, psz_device,
+                                     "volume.disc.has_audio" , NULL ) )
+            AddCdda( p_sd, psz_device );
     }
 }
 
@@ -330,20 +302,30 @@ static void Run( services_discovery_t *p_sd )
     services_discovery_sys_t    *p_sys  = p_sd->p_sys;
 
     /* parse existing devices first */
-#ifdef HAVE_HAL_1
     if( ( devices = libhal_get_all_devices( p_sys->p_ctx, &i_devices, NULL ) ) )
-#else
-    if( ( devices = hal_get_all_devices( p_sys->p_ctx, &i_devices ) ) )
-#endif
     {
         for( i = 0; i < i_devices; i++ )
         {
             ParseDevice( p_sd, devices[ i ] );
+            libhal_free_string( devices[ i ] );
         }
     }
-
-    while( !p_sd->b_die )
+    while( vlc_object_alive (p_sd) )
     {
-        msleep( 100000 );
+        /* look for events on the bus, blocking 1 second */
+        dbus_connection_read_write_dispatch( p_sys->p_connection, 1000 );
+        /* HAL 0.5.8.1 can use libhal_ctx_get_dbus_connection(p_sys->p_ctx) */
     }
+}
+
+void DeviceAdded( LibHalContext *p_ctx, const char *psz_udi )
+{
+    VLC_UNUSED(p_ctx);
+    ParseDevice( p_sd_global, psz_udi );
+}
+
+void DeviceRemoved( LibHalContext *p_ctx, const char *psz_udi )
+{
+    VLC_UNUSED(p_ctx);
+    DelItem( p_sd_global, psz_udi );
 }

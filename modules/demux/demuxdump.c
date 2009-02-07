@@ -2,7 +2,7 @@
  * demuxdump.c : Pseudo demux module for vlc (dump raw stream)
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 31bcd757fdd4768a6408ec7afe905d0fbd46f582 $
+ * $Id: 5f2a5f01b14711d9a0a965453a04a32e53529527 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,13 +24,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                              /* strdup() */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <errno.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include "charset.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_demux.h>
+#include <vlc_charset.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -49,12 +53,13 @@ vlc_module_begin();
     set_shortname("Dump");
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_description( _("File dumpper") );
-    set_capability( "demux2", 0 );
+    set_description( N_("File dumper") );
+    set_capability( "demux", 0 );
     add_file( "demuxdump-file", "stream-demux.dump", NULL, FILE_TEXT,
-              FILE_LONGTEXT, VLC_FALSE );
+              FILE_LONGTEXT, false );
+        change_unsafe();
     add_bool( "demuxdump-append", 0, NULL, APPEND_TEXT, APPEND_LONGTEXT,
-              VLC_FALSE );
+              false );
     set_callbacks( Open, Close );
     add_shortcut( "dump" );
 vlc_module_end();
@@ -88,12 +93,12 @@ static int Open( vlc_object_t * p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
-    char        *psz_mode;
+    const char  *psz_mode;
     vlc_value_t val;
-    vlc_bool_t  b_append;
+    bool  b_append;
 
     /* Accept only if forced */
-    if( strcasecmp( p_demux->psz_demux, "dump" ) )
+    if( !p_demux->b_force )
         return VLC_EGENERIC;
 
     var_Create( p_demux, "demuxdump-append", VLC_VAR_BOOL|VLC_VAR_DOINHERIT );
@@ -143,7 +148,7 @@ static void Close( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    msg_Info( p_demux ,"closing %s ("I64Fd" Kbytes dumped)", p_sys->psz_file,
+    msg_Info( p_demux ,"closing %s (%"PRId64" Kbytes dumped)", p_sys->psz_file,
               p_sys->i_write / 1024 );
 
     if( p_sys->p_file != stdout )
@@ -192,6 +197,6 @@ static int Demux( demux_t *p_demux )
  *****************************************************************************/
 static int Control( demux_t *p_demux, int i_query, va_list args )
 {
-    return demux2_vaControlHelper( p_demux->s, 0, -1, 0, 1, i_query, args );
+    return demux_vaControlHelper( p_demux->s, 0, -1, 0, 1, i_query, args );
 }
 

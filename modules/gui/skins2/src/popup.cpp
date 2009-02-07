@@ -2,7 +2,7 @@
  * popup.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 92c097c634d6378f9d5ea03133073eafa3fd7a21 $
+ * $Id$
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -73,7 +73,7 @@ void Popup::addSeparator( int pos )
 void Popup::handleEvent( const EvtMenu &rEvent )
 {
     unsigned int n = m_pOsPopup->getPosFromId( rEvent.getItemId() );
-    if( n >= 0 && n < m_actions.size() && m_actions[n] )
+    if( (n < m_actions.size()) && m_actions[n] )
     {
         m_actions[n]->execute();
     }

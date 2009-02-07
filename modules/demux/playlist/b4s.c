@@ -2,7 +2,7 @@
  * b4s.c : B4S playlist format import
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: da134dafa0f200bf51dc34beecb1dada2b81b3a7 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -24,24 +24,23 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <ctype.h>                                              /* isspace() */
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <errno.h>                                                 /* ENOMEM */
+#include <vlc_common.h>
+#include <vlc_demux.h>
+#include <vlc_interface.h>
+
 #include "playlist.h"
 #include "vlc_xml.h"
 
 struct demux_sys_t
 {
     char *psz_prefix;
-    playlist_t *p_playlist;
     xml_t *p_xml;
     xml_reader_t *p_xml_reader;
-    int b_shout;
 };
 
 /*****************************************************************************
@@ -49,64 +48,31 @@ struct demux_sys_t
  *****************************************************************************/
 static int Demux( demux_t *p_demux);
 static int Control( demux_t *p_demux, int i_query, va_list args );
-static char *GetNextToken(char *psz_cur_string);
+//static char *GetNextToken(char *psz_cur_string);
 static int IsWhitespace( char *psz_string );
-static void ShoutcastAdd( playlist_t *p_playlist, playlist_item_t* p_genre,
-                          playlist_item_t *p_bitrate, playlist_item_t *p_item,
-                          char *psz_genre, char *psz_bitrate );
 
 /*****************************************************************************
  * Import_B4S: main import function
  *****************************************************************************/
-int E_(Import_B4S)( vlc_object_t *p_this )
+int Import_B4S( vlc_object_t *p_this )
 {
-    demux_t *p_demux = (demux_t *)p_this;
-    demux_sys_t *p_sys;
-
-    char    *psz_ext;
-
-    psz_ext = strrchr ( p_demux->psz_path, '.' );
-
-    if( ( psz_ext && !strcasecmp( psz_ext, ".b4s") ) ||
-        ( p_demux->psz_demux && !strcmp(p_demux->psz_demux, "b4s-open") ) ||
-        ( p_demux->psz_demux && !strcmp(p_demux->psz_demux, "shout-b4s") ) )
-    {
-        ;
-    }
-    else
-    {
-        return VLC_EGENERIC;
-    }
-    msg_Dbg( p_demux, "using b4s playlist import");
-
-    p_demux->pf_control = Control;
-    p_demux->pf_demux = Demux;
-    p_demux->p_sys = p_sys = malloc( sizeof(demux_sys_t) );
-    if( p_sys == NULL )
-    {
-        msg_Err( p_demux, "out of memory" );
-        return VLC_ENOMEM;
-    }
-    p_sys->b_shout = p_demux->psz_demux &&
-        !strcmp(p_demux->psz_demux, "shout-b4s");
-    p_sys->psz_prefix = E_(FindPrefix)( p_demux );
-    p_sys->p_playlist = NULL;
-    p_sys->p_xml = NULL;
-    p_sys->p_xml_reader = NULL;
-
+    DEMUX_BY_EXTENSION_OR_FORCED_MSG( ".b4s", "b4s-open",
+                                      "using B4S playlist reader" );
+    p_demux->p_sys->psz_prefix = FindPrefix( p_demux );
+    p_demux->p_sys->p_xml = NULL;
+    p_demux->p_sys->p_xml_reader = NULL;
     return VLC_SUCCESS;
 }
 
 /*****************************************************************************
  * Deactivate: frees unused data
  *****************************************************************************/
-void E_(Close_B4S)( vlc_object_t *p_this )
+void Close_B4S( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    if( p_sys->psz_prefix ) free( p_sys->psz_prefix );
-    if( p_sys->p_playlist ) vlc_object_release( p_sys->p_playlist );
+    free( p_sys->psz_prefix );
     if( p_sys->p_xml_reader ) xml_ReaderDelete( p_sys->p_xml, p_sys->p_xml_reader );
     if( p_sys->p_xml ) xml_Delete( p_sys->p_xml );
     free( p_sys );
@@ -115,50 +81,23 @@ void E_(Close_B4S)( vlc_object_t *p_this )
 static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    playlist_t *p_playlist;
-    playlist_item_t *p_item, *p_current;
-    playlist_item_t *p_bitrate = NULL, *p_genre = NULL;
-
-    vlc_bool_t b_play;
     int i_ret;
 
     xml_t *p_xml;
     xml_reader_t *p_xml_reader;
     char *psz_elname = NULL;
-    int i_type, b_shoutcast;
+    int i_type;
+    input_item_t *p_input;
     char *psz_mrl = NULL, *psz_name = NULL, *psz_genre = NULL;
     char *psz_now = NULL, *psz_listeners = NULL, *psz_bitrate = NULL;
 
-
-    b_shoutcast = p_sys->b_shout;
-
-    p_playlist = (playlist_t *) vlc_object_find( p_demux, VLC_OBJECT_PLAYLIST,
-                                                 FIND_ANYWHERE );
-    if( !p_playlist )
-    {
-        msg_Err( p_demux, "can't find playlist" );
-        return -1;
-    }
-    p_sys->p_playlist = p_playlist;
-
-    b_play = E_(FindItem)( p_demux, p_playlist, &p_current );
-
-    playlist_ItemToNode( p_playlist, p_current );
-    p_current->input.i_type = ITEM_TYPE_PLAYLIST;
-    if( b_shoutcast )
-    {
-        p_genre = playlist_NodeCreate( p_playlist, p_current->pp_parents[0]->i_view, "Genre", p_current );
-        playlist_CopyParents( p_current, p_genre );
-
-        p_bitrate = playlist_NodeCreate( p_playlist, p_current->pp_parents[0]->i_view, "Bitrate", p_current );
-        playlist_CopyParents( p_current, p_bitrate );
-    }
+    INIT_PLAYLIST_STUFF;
 
     p_xml = p_sys->p_xml = xml_Create( p_demux );
     if( !p_xml ) return -1;
 
     psz_elname = stream_ReadLine( p_demux->s );
-    if( psz_elname ) free( psz_elname );
+    free( psz_elname );
     psz_elname = 0;
 
     p_xml_reader = xml_ReaderCreate( p_xml, p_demux->s );
@@ -179,7 +118,7 @@ static int Demux( demux_t *p_demux )
     {
         msg_Err( p_demux, "invalid root node %i, %s",
                  xml_ReaderNodeType( p_xml_reader ), psz_elname );
-        if( psz_elname ) free( psz_elname );
+        free( psz_elname );
         return -1;
     }
     free( psz_elname );
@@ -200,7 +139,7 @@ static int Demux( demux_t *p_demux )
         strcmp( psz_elname, "playlist" ) )
     {
         msg_Err( p_demux, "invalid child node %s", psz_elname );
-        if( psz_elname ) free( psz_elname );
+        free( psz_elname );
         return -1;
     }
     free( psz_elname ); psz_elname = 0;
@@ -210,14 +149,19 @@ static int Demux( demux_t *p_demux )
     {
         char *psz_name = xml_ReaderName( p_xml_reader );
         char *psz_value = xml_ReaderValue( p_xml_reader );
-        if( !psz_name || !psz_value ) return -1;
+        if( !psz_name || !psz_value )
+        {
+            free( psz_name );
+            free( psz_value );
+            return -1;
+        }
         if( !strcmp( psz_name, "num_entries" ) )
         {
             msg_Dbg( p_demux, "playlist has %d entries", atoi(psz_value) );
         }
         else if( !strcmp( psz_name, "label" ) )
         {
-            playlist_ItemSetName( p_current, psz_value );
+            input_item_SetName( p_current_input, psz_value );
         }
         else
         {
@@ -242,7 +186,7 @@ static int Demux( demux_t *p_demux )
             case XML_READER_STARTELEM:
             {
                 // Read the element name
-                if( psz_elname ) free( psz_elname );
+                free( psz_elname );
                 psz_elname = xml_ReaderName( p_xml_reader );
                 if( !psz_elname ) return -1;
 
@@ -317,91 +261,25 @@ static int Demux( demux_t *p_demux )
                 if( !psz_elname ) return -1;
                 if( !strcmp( psz_elname, "entry" ) )
                 {
-                    p_item = playlist_ItemNew( p_playlist, psz_mrl, psz_name );
+                    p_input = input_item_NewExt( p_demux, psz_mrl, psz_name,
+                                                0, NULL, -1 );
                     if( psz_now )
-                    {
-                        vlc_input_item_AddInfo( &(p_item->input),
-                                                _(VLC_META_INFO_CAT),
-                                                _( VLC_META_NOW_PLAYING ),
-                                                "%s",
-                                                psz_now );
-                    }
+                        input_item_SetNowPlaying( p_input, psz_now );
                     if( psz_genre )
-                    {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _(VLC_META_INFO_CAT),
-                                                _( VLC_META_GENRE ),
-                                                "%s",
-                                                psz_genre );
-                    }
+                        input_item_SetGenre( p_input, psz_genre );
                     if( psz_listeners )
-                    {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _(VLC_META_INFO_CAT),
-                                                _( "Listeners" ),
-                                                "%s",
-                                                psz_listeners );
-                    }
+                        msg_Err( p_demux, "Unsupported meta listeners" );
                     if( psz_bitrate )
-                    {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _(VLC_META_INFO_CAT),
-                                                _( "Bitrate" ),
-                                                "%s",
-                                                psz_bitrate );
-                    }
-                    playlist_NodeAddItem( p_playlist, p_item,
-                                          p_current->pp_parents[0]->i_view,
-                                          p_current, PLAYLIST_APPEND,
-                                          PLAYLIST_END );
+                        msg_Err( p_demux, "Unsupported meta bitrate" );
 
-                    /* We need to declare the parents of the node as the
-                     *                  * same of the parent's ones */
-                    playlist_CopyParents( p_current, p_item );
-
-                    vlc_input_item_CopyOptions( &p_current->input,
-                                                &p_item->input );
-                    if( b_shoutcast )
-                    {
-                        char *psz_genreToken;
-                        char *psz_otherToken;
-                        int i = 0;
-
-                        psz_genreToken = psz_genre;
-
-                        /* split up the combined genre string form
-                        shoutcast and add the individual genres */
-                        while ( psz_genreToken &&
-                          ( psz_otherToken = GetNextToken(psz_genreToken )))
-                        {
-                            if( strlen(psz_genreToken)>2 )
-                            /* We dont want genres below 2 letters,
-                            this gets rid of alot of junk*/
-                            {
-                                /* lowercase everything */
-                                for( i=0; psz_genreToken[i]!=0; i++ )
-                                    psz_genreToken[i] =
-                                        tolower(psz_genreToken[i]);
-                /* Make first letter uppercase, purely cosmetical */
-                                psz_genreToken[0] =
-                                    toupper( psz_genreToken[0] );
-                                ShoutcastAdd( p_playlist, p_genre,
-                                              p_bitrate, p_item,
-                                              psz_genreToken, psz_bitrate );
-
-                                psz_genreToken = psz_otherToken;
-                            }
-                        }
-                    }
-
-#define FREE(a) if( a ) free( a ); a = NULL;
-                    FREE( psz_name );
-                    FREE( psz_mrl );
-                    FREE( psz_genre );
-                    FREE( psz_bitrate );
-                    FREE( psz_listeners );
-                    FREE( psz_now );
-#undef FREE
+                    input_item_AddSubItem( p_current_input, p_input );
+                    vlc_gc_decref( p_input );
+                    FREENULL( psz_name );
+                    FREENULL( psz_mrl );
+                    FREENULL( psz_genre );
+                    FREENULL( psz_bitrate );
+                    FREENULL( psz_listeners );
+                    FREENULL( psz_now );
                 }
                 free( psz_elname );
                 psz_elname = strdup("");
@@ -415,33 +293,18 @@ static int Demux( demux_t *p_demux )
     {
         msg_Warn( p_demux, "error while parsing data" );
     }
-    if( b_shoutcast )
-    {
-        vlc_mutex_lock( &p_playlist->object_lock );
-        playlist_NodeSort( p_playlist, p_bitrate, SORT_TITLE_NUMERIC, ORDER_NORMAL );
-        vlc_mutex_unlock( &p_playlist->object_lock );
-    }
 
-    /* Go back and play the playlist */
-    if( b_play && p_playlist->status.p_item &&
-        p_playlist->status.p_item->i_children > 0 )
-    {
-        playlist_Control( p_playlist, PLAYLIST_VIEWPLAY,
-                          p_playlist->status.i_view,
-                          p_playlist->status.p_item,
-                          p_playlist->status.p_item->pp_children[0] );
-    }
-    
-    vlc_object_release( p_playlist );
-    p_sys->p_playlist = NULL;
-    return VLC_SUCCESS;
+    HANDLE_PLAY_AND_RELEASE;
+    return 0; /* Needed for correct operation of go back */
 }
 
 static int Control( demux_t *p_demux, int i_query, va_list args )
 {
+    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
     return VLC_EGENERIC;
 }
 
+#if 0
 /**
  * Get a in-string pointer to the start of the next token from a
  * string terminating the pointer returned by a previous call.
@@ -462,6 +325,7 @@ static char *GetNextToken(char *psz_cur_string) {
         psz_cur_string++;
     return psz_cur_string;
 }
+#endif
 
 static int IsWhitespace( char *psz_string )
 {
@@ -470,44 +334,9 @@ static int IsWhitespace( char *psz_string )
         if( *psz_string != ' ' && *psz_string != '\t' && *psz_string != '\r' &&
             *psz_string != '\n' )
         {
-            return VLC_FALSE;
+            return false;
         }
         psz_string++;
     }
-    return VLC_TRUE;
-}
-
-static void ShoutcastAdd( playlist_t *p_playlist, playlist_item_t* p_genre,
-                          playlist_item_t *p_bitrate, playlist_item_t *p_item,
-                          char *psz_genre, char *psz_bitrate )
-{
-    playlist_item_t *p_parent;
-    if( psz_bitrate )
-    {
-        playlist_item_t *p_copy = playlist_ItemCopy(p_playlist,p_item);
-        p_parent = playlist_ChildSearchName( p_bitrate, psz_bitrate );
-        if( !p_parent )
-        {
-            p_parent = playlist_NodeCreate( p_playlist, p_genre->pp_parents[0]->i_view, psz_bitrate,
-                                            p_bitrate );
-            playlist_CopyParents( p_bitrate, p_parent );
-        }
-        playlist_NodeAddItem( p_playlist, p_copy, p_parent->pp_parents[0]->i_view, p_parent, PLAYLIST_APPEND, PLAYLIST_END  );
-        playlist_CopyParents( p_parent, p_copy );
-
-    }
-
-    if( psz_genre )
-    {
-        playlist_item_t *p_copy = playlist_ItemCopy(p_playlist,p_item);
-        p_parent = playlist_ChildSearchName( p_genre, psz_genre );
-        if( !p_parent )
-        {
-            p_parent = playlist_NodeCreate( p_playlist, p_genre->pp_parents[0]->i_view, psz_genre,
-                                            p_genre );
-            playlist_CopyParents( p_genre, p_parent );
-        }
-        playlist_NodeAddItem( p_playlist, p_copy, p_parent->pp_parents[0]->i_view, p_parent, PLAYLIST_APPEND, PLAYLIST_END );
-        playlist_CopyParents( p_parent, p_copy );
-    }
+    return true;
 }

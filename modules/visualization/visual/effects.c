@@ -2,9 +2,10 @@
  * effects.c : Effects for the visualization system
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 86b8c59d3333eb3019672e5de36fa21b14d1eb74 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
+ *          Adrien Maglo <magsoft@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -24,11 +25,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include "audio_output.h"
-#include "aout_internal.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_vout.h>
+#include <vlc_aout.h>
 
 #include "visual.h"
 #include <math.h>
@@ -37,12 +40,18 @@
 
 #define PEAK_SPEED 1
 
+#define GRAD_ANGLE_MIN 0.2
+#define GRAD_ANGLE_MAX 0.5
+#define GRAD_INCR 0.01
+
 /*****************************************************************************
  * dummy_Run
  *****************************************************************************/
 int dummy_Run( visual_effect_t * p_effect, aout_instance_t *p_aout,
                aout_buffer_t * p_buffer , picture_t * p_picture)
 {
+    VLC_UNUSED(p_effect); VLC_UNUSED(p_aout); VLC_UNUSED(p_buffer);
+    VLC_UNUSED(p_picture);
     return 0;
 }
 
@@ -60,7 +69,6 @@ int spectrum_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
     int i_separ;                      /* Should we let blanks ? */
     int i_amp;                        /* Vertical amplification */
     int i_peak;                       /* Should we draw peaks ? */
-    char *psz_parse = NULL;           /* Args line */
 
     /* Horizontal scale for 20-band equalizer */
     const int xscale1[]={0,1,2,3,4,5,6,7,8,11,15,20,27,
@@ -169,7 +177,7 @@ int spectrum_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
     }
     fft_perform( p_buffer1, p_output, p_state);
     for(i= 0; i< FFT_BUFFER_SIZE ; i++ )
-        p_dest[i] = ( (int) sqrt( p_output [ i + 1 ] ) ) >> 8;
+        p_dest[i] = ( (int) sqrt( p_output [ i ] ) ) >> 8;
 
     for ( i = 0 ; i< i_nb_bands ;i++)
     {
@@ -306,15 +314,8 @@ int spectrum_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
 
     fft_close( p_state );
 
-    if( p_s16_buff != NULL )
-    {
-        free( p_s16_buff );
-        p_s16_buff = NULL;
-    }
-
-    if(height) free(height);
-
-    if(psz_parse) free(psz_parse);
+    free( p_s16_buff );
+    free( height );
 
     return 0;
 }
@@ -355,8 +356,6 @@ int spectrometer_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
     char color1;             /* V slide on a YUV color cube */
     //char color2;             /* U slide.. ?  color2 fade color ? */
 
-    char *psz_parse = NULL;           /* Args line */
-
     /* Horizontal scale for 20-band equalizer */
     const int xscale1[]={0,1,2,3,4,5,6,7,8,11,15,20,27,
                         36,47,62,82,107,141,184,255};
@@ -390,10 +389,7 @@ int spectrometer_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
               p_buffer->i_nb_samples * p_effect->i_nb_chans * sizeof(int16_t));
 
     if( !p_s16_buff )
-    {
-        msg_Err(p_aout,"out of memory");
         return -1;
-    }
 
     p_buffs = p_s16_buff;
     i_original     = config_GetInt ( p_aout, "spect-show-original" );
@@ -422,14 +418,14 @@ int spectrometer_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
 
     if( !p_effect->p_data )
     {
-        p_effect->p_data=(void *)malloc(i_nb_bands * sizeof(int) );
-        if( !p_effect->p_data)
+        p_effect->p_data=(void *)malloc( i_nb_bands * sizeof(int) );
+        if( !p_effect->p_data )
         {
-            msg_Err(p_aout,"out of memory");
+            free( p_s16_buff );
             return -1;
         }
         peaks = (int *)p_effect->p_data;
-        for( i = 0 ; i < i_nb_bands ; i++)
+        for( i = 0 ; i < i_nb_bands ; i++ )
         {
            peaks[i] = 0;
         }
@@ -442,7 +438,8 @@ int spectrometer_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
     height = (int *)malloc( i_nb_bands * sizeof(int) );
     if( !height)
     {
-        msg_Err(p_aout,"out of memory");
+        free( p_effect->p_data );
+        free( p_s16_buff );
         return -1;
     }
 
@@ -462,6 +459,9 @@ int spectrometer_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
     if( !p_state)
     {
         msg_Err(p_aout,"unable to initialize FFT transform");
+        free( height );
+        free( p_effect->p_data );
+        free( p_s16_buff );
         return -1;
     }
     p_buffs = p_s16_buff;
@@ -473,7 +473,7 @@ int spectrometer_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
     }
     fft_perform( p_buffer1, p_output, p_state);
     for(i= 0; i< FFT_BUFFER_SIZE ; i++ )
-        p_dest[i] = ( (int) sqrt( p_output [ i + 1 ] ) ) >> 8;
+        p_dest[i] = ( (int) sqrt( p_output [ i ] ) ) >> 8;
 
     i_nb_bands *= i_sections;
 
@@ -530,7 +530,7 @@ int spectrometer_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
             {
                for( k = 0 ; k< 3 ; k ++)
                {
-                   //* Draw the peak 
+                   //* Draw the peak
                      *(p_picture->p[0].p_pixels +
                     (p_picture->p[0].i_lines - i_line -1 -k ) *
                      p_picture->p[0].i_pitch + (i_band_width*i +j) )
@@ -764,15 +764,8 @@ int spectrometer_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
 
     fft_close( p_state );
 
-    if( p_s16_buff != NULL )
-    {
-        free( p_s16_buff );
-        p_s16_buff = NULL;
-    }
-
-    if(height) free(height);
-
-    if(psz_parse) free(psz_parse);
+    free( p_s16_buff );
+    free( height );
 
     return 0;
 }
@@ -784,6 +777,7 @@ int spectrometer_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
 int scope_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
               aout_buffer_t * p_buffer , picture_t * p_picture)
 {
+    VLC_UNUSED(p_aout);
     int i_index;
     float *p_sample ;
     uint8_t *ppp_area[2][3];
@@ -829,5 +823,141 @@ int scope_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
               + p_picture->p[2].i_lines * i_value / 512
                 * p_picture->p[2].i_pitch) = 0xdd;
         }
+        return 0;
+}
+
+
+/*****************************************************************************
+ * vuMeter_Run: vu meter effect
+ *****************************************************************************/
+int vuMeter_Run(visual_effect_t * p_effect, aout_instance_t *p_aout,
+              aout_buffer_t * p_buffer , picture_t * p_picture)
+{
+        VLC_UNUSED(p_aout);
+        int i, j;
+        float *p_sample = (float *)p_buffer->p_buffer;
+        float i_value_l = 0;
+        float i_value_r = 0;
+        float ch;
+
+        /* Compute the peack values */
+        for ( i = 0 ; i < 1024; i++ )
+        {
+                ch = (*p_sample++) * 256;
+                if (ch > i_value_l)
+                        i_value_l = ch;
+
+                ch = (*p_sample++) * 256;
+                if (ch > i_value_r)
+                        i_value_r = ch;
+        }
+
+        i_value_l = abs(i_value_l);
+        i_value_r = abs(i_value_r);
+
+        /* Stay under maximum value admited */
+        if ( i_value_l > 200 * M_PI_2 )
+                i_value_l = 200 * M_PI_2;
+        if ( i_value_r > 200 * M_PI_2 )
+                i_value_r = 200 * M_PI_2;
+
+        float *i_value;
+
+        if( !p_effect->p_data )
+        {
+                /* Allocate memory to save hand positions */
+                p_effect->p_data = (void *)malloc( 2 * sizeof(float) );
+                i_value = p_effect->p_data;
+                i_value[0] = i_value_l;
+                i_value[1] = i_value_r;
+        }
+        else
+        {
+                /* Make the hands go down slowly if the current values are slower
+                than the previous */
+                i_value = p_effect->p_data;
+
+                if ( i_value_l > i_value[0] - 6 )
+                        i_value[0] = i_value_l;
+                else
+                        i_value[0] = i_value[0] - 6;
+
+                if ( i_value_r > i_value[1] - 6 )
+                        i_value[1] = i_value_r;
+                else
+                        i_value[1] = i_value[1] - 6;
+        }
+
+        int x, y, k;
+        float teta;
+        float teta_grad;
+
+        for ( j = 0; j < 2; j++ )
+        {
+                /* Draw the two scales */
+                k = 0;
+                teta_grad = GRAD_ANGLE_MIN;
+                for ( teta = -M_PI_4; teta <= M_PI_4; teta = teta + 0.003 )
+                {
+                        for ( i = 140; i <= 150; i++ )
+                        {
+                                y = i * cos(teta) + 20;
+                                x = i * sin(teta) + 150 + 240 * j;
+                                /* Compute the last color for the gradation */
+                                if (teta >= teta_grad + GRAD_INCR && teta_grad <= GRAD_ANGLE_MAX)
+                                {
+                                        teta_grad = teta_grad + GRAD_INCR;
+                                        k = k + 5;
+                                }
+                                *(p_picture->p[0].p_pixels +
+                                 (p_picture->p[0].i_lines - y - 1 ) * p_picture->p[0].i_pitch
+                                 + x ) = 0x45;
+                                *(p_picture->p[1].p_pixels +
+                                 (p_picture->p[1].i_lines - y / 2 - 1 ) * p_picture->p[1].i_pitch
+                                 + x / 2 ) = 0x0;
+                                *(p_picture->p[2].p_pixels +
+                                 (p_picture->p[2].i_lines - y / 2 - 1 ) * p_picture->p[2].i_pitch
+                                 + x / 2 ) = 0x4D + k;
+                        }
+                }
+
+                /* Draw the two hands */
+                teta = (float)i_value[j] / 200 - M_PI_4;
+                for ( i = 0; i <= 150; i++ )
+                {
+                        y = i * cos(teta) + 20;
+                        x = i * sin(teta) + 150 + 240 * j;
+                        *(p_picture->p[0].p_pixels +
+                         (p_picture->p[0].i_lines - y - 1 ) * p_picture->p[0].i_pitch
+                         + x ) = 0xAD;
+                        *(p_picture->p[1].p_pixels +
+                         (p_picture->p[1].i_lines - y / 2 - 1 ) * p_picture->p[1].i_pitch
+                         + x / 2 ) = 0xFC;
+                        *(p_picture->p[2].p_pixels +
+                         (p_picture->p[2].i_lines - y / 2 - 1 ) * p_picture->p[2].i_pitch
+                         + x / 2 ) = 0xAC;
+                }
+
+                /* Draw the hand bases */
+                for ( teta = -M_PI_2; teta <= M_PI_2 + 0.01; teta = teta + 0.003 )
+                {
+                        for ( i = 0; i < 10; i++ )
+                        {
+                                y = i * cos(teta) + 20;
+                                x = i * sin(teta) + 150 + 240 * j;
+                                *(p_picture->p[0].p_pixels +
+                                 (p_picture->p[0].i_lines - y - 1 ) * p_picture->p[0].i_pitch
+                                 + x ) = 0xFF;
+                                *(p_picture->p[1].p_pixels +
+                                 (p_picture->p[1].i_lines - y / 2 - 1 ) * p_picture->p[1].i_pitch
+                                 + x / 2 ) = 0x80;
+                                *(p_picture->p[2].p_pixels +
+                                 (p_picture->p[2].i_lines - y / 2 - 1 ) * p_picture->p[2].i_pitch
+                                 + x / 2 ) = 0x80;
+                        }
+                }
+
+        }
+
         return 0;
 }

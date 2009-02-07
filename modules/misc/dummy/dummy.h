@@ -2,7 +2,7 @@
  * dummy.h : dummy plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002 the VideoLAN team
- * $Id: 744500e4049d101da1667ce4071ae5a01707b3b7 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,21 +24,21 @@
 /*****************************************************************************
  * External prototypes
  *****************************************************************************/
-int  E_(OpenIntf)     ( vlc_object_t * );
+int  OpenIntf     ( vlc_object_t * );
 
-int  E_(OpenAccess)   ( vlc_object_t * );
+int  OpenAccess   ( vlc_object_t * );
 
-int  E_(OpenDemux)    ( vlc_object_t * );
-void E_(CloseDemux)   ( vlc_object_t * );
+int  OpenDemux    ( vlc_object_t * );
+void CloseDemux   ( vlc_object_t * );
 
-int  E_(OpenDecoder)  ( vlc_object_t * );
-void E_(CloseDecoder) ( vlc_object_t * );
+int  OpenDecoder  ( vlc_object_t * );
+void CloseDecoder ( vlc_object_t * );
 
-int  E_(OpenEncoder)  ( vlc_object_t * );
-void E_(CloseEncoder) ( vlc_object_t * );
+int  OpenEncoder  ( vlc_object_t * );
+void CloseEncoder ( vlc_object_t * );
 
-int  E_(OpenAudio)    ( vlc_object_t * );
+int  OpenAudio    ( vlc_object_t * );
 
-int  E_(OpenVideo)    ( vlc_object_t * );
+int  OpenVideo    ( vlc_object_t * );
 
-int  E_(OpenRenderer) ( vlc_object_t * );
+int  OpenRenderer ( vlc_object_t * );

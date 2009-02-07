@@ -2,7 +2,7 @@
  * buffer.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: d29022db96dc630e24bbeb6d353c5fcf055309ef $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,13 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_codec.h>
+#include <vlc_vout.h>
 
 #ifndef WIN32
 #    define LOADER
@@ -43,7 +44,7 @@
 #   include <wine/windef.h>
 #endif
 
-#include "codecs.h"
+#include <vlc_codecs.h>
 #include "dmo.h"
 
 static long STDCALL QueryInterface( IUnknown *This,
@@ -107,13 +108,13 @@ static long STDCALL GetBufferAndLength( IMediaBuffer *This,
     CMediaBuffer *p_mb = (CMediaBuffer *)This;
 
     if( !ppBuffer && !pcbLength ) return E_POINTER;
-    if( ppBuffer ) *ppBuffer = p_mb->p_block->p_buffer;
+    if( ppBuffer ) *ppBuffer = (char*)p_mb->p_block->p_buffer;
     if( pcbLength ) *pcbLength = p_mb->p_block->i_buffer;
     return S_OK;
 }
 
 CMediaBuffer *CMediaBufferCreate( block_t *p_block, int i_max_size,
-                                  vlc_bool_t b_own )
+                                  bool b_own )
 {
     CMediaBuffer *p_mb = (CMediaBuffer *)malloc( sizeof(CMediaBuffer) );
     if( !p_mb ) return NULL;

@@ -2,7 +2,7 @@
  * interpreter.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a1760a49b6a518653a397af2573923849e559aab $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -76,12 +76,8 @@ Interpreter::Interpreter( intf_thread_t *pIntf ): SkinObject( pIntf )
     REGISTER_CMD( "playlist.load()", CmdDlgPlaylistLoad )
     REGISTER_CMD( "playlist.save()", CmdDlgPlaylistSave )
     REGISTER_CMD( "playlist.add()", CmdDlgAdd )
-    VarList &rVar = VlcProc::instance( getIntf() )->getPlaylistVar();
-    m_commandMap["playlist.del()"] =
-        CmdGenericPtr( new CmdPlaylistDel( getIntf(), rVar ) );
     REGISTER_CMD( "playlist.next()", CmdPlaylistNext )
     REGISTER_CMD( "playlist.previous()", CmdPlaylistPrevious )
-    REGISTER_CMD( "playlist.sort()", CmdPlaylistSort )
     m_commandMap["playlist.setRandom(true)"] =
         CmdGenericPtr( new CmdPlaylistRandom( getIntf(), true ) );
     m_commandMap["playlist.setRandom(false)"] =
@@ -227,6 +223,40 @@ CmdGeneric *Interpreter::parseAction( const string &rAction, Theme *pTheme )
         else
         {
             pCommand = new CmdLayout( getIntf(), *pWin, *pLayout );
+        }
+    }
+    else if( rAction.find( ".maximize()" ) != string::npos )
+    {
+        int leftPos = rAction.find( ".maximize()" );
+        string windowId = rAction.substr( 0, leftPos );
+
+        TopWindow *pWin = pTheme->getWindowById( windowId );
+        if( !pWin )
+        {
+            msg_Err( getIntf(), "unknown window (%s)", windowId.c_str() );
+        }
+        else
+        {
+            pCommand = new CmdMaximize( getIntf(),
+                                        pTheme->getWindowManager(),
+                                        *pWin );
+        }
+    }
+    else if( rAction.find( ".unmaximize()" ) != string::npos )
+    {
+        int leftPos = rAction.find( ".unmaximize()" );
+        string windowId = rAction.substr( 0, leftPos );
+
+        TopWindow *pWin = pTheme->getWindowById( windowId );
+        if( !pWin )
+        {
+            msg_Err( getIntf(), "unknown window (%s)", windowId.c_str() );
+        }
+        else
+        {
+            pCommand = new CmdUnmaximize( getIntf(),
+                                          pTheme->getWindowManager(),
+                                          *pWin );
         }
     }
     else if( rAction.find( ".show()" ) != string::npos )
@@ -424,7 +454,25 @@ VarBool *Interpreter::getVarBool( const string &rName, Theme *pTheme )
                 }
                 else
                 {
-                    msg_Err( getIntf(), "unknown window (%s)", windowId.c_str() );
+                    msg_Err( getIntf(), "unknown window (%s)",
+                             windowId.c_str() );
+                    return NULL;
+                }
+            }
+            else if( token.find( ".isMaximized" ) != string::npos )
+            {
+                int leftPos = token.find( ".isMaximized" );
+                string windowId = token.substr( 0, leftPos );
+                TopWindow *pWin = pTheme->getWindowById( windowId );
+                if( pWin )
+                {
+                    // Push the "maximized" variable onto the stack
+                    varStack.push_back( &pWin->getMaximizedVar() );
+                }
+                else
+                {
+                    msg_Err( getIntf(), "unknown window (%s)",
+                             windowId.c_str() );
                     return NULL;
                 }
             }
@@ -440,7 +488,8 @@ VarBool *Interpreter::getVarBool( const string &rName, Theme *pTheme )
                 }
                 else
                 {
-                    msg_Err( getIntf(), "unknown layout (%s)", layoutId.c_str() );
+                    msg_Err( getIntf(), "unknown layout (%s)",
+                             layoutId.c_str() );
                     return NULL;
                 }
             }

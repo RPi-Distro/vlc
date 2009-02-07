@@ -2,7 +2,7 @@
  * ListViews.h: BeOS interface list view class implementation
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: b91352f5fee89b63f841c80ae44bf161a01a8035 $
+ * $Id$
  *
  * Authors: Stephan Aßmus <stippi@yellowbites.com>
  *
@@ -21,7 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdio.h>
+#if 0
+
 #include <malloc.h>
 
 #include <Bitmap.h>
@@ -29,8 +30,12 @@
 #include <String.h>
 
 /* VLC headers */
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 #include "InterfaceWindow.h"
 #include "ListViews.h"
@@ -248,12 +253,12 @@ DragSortableListView::InitiateDrag( BPoint point, int32 index, bool )
                 v->SetHighColor( 0, 0, 0, 255 );
                 v->StrokeRect( v->Bounds() );
                 v->Sync();
-    
+ 
                 uint8 *bits = (uint8 *)dragBitmap->Bits();
                 int32 height = (int32)dragBitmap->Bounds().Height() + 1;
                 int32 width = (int32)dragBitmap->Bounds().Width() + 1;
                 int32 bpr = dragBitmap->BytesPerRow();
-    
+ 
                 if (fade) {
                     for ( int32 y = 0; y < height - ALPHA / 2; y++, bits += bpr ) {
                         uint8 *line = bits + 3;
@@ -368,7 +373,7 @@ DragSortableListView::MouseMoved(BPoint where, uint32 transit, const BMessage *m
                     // offset where by half of item height
                     BRect r( ItemFrame( 0 ) );
                     where.y += r.Height() / 2.0;
-    
+ 
                     int32 index = IndexOf( where );
                     if ( index < 0 )
                         index = CountItems();
@@ -685,13 +690,11 @@ PlaylistView::MouseDown( BPoint where )
                 // only do something if user clicked the same item twice
                 if ( fLastClickedItem == item )
                 {
-                    playlist_t * p_playlist;
-                    p_playlist = (playlist_t *) vlc_object_find( p_intf,
-                        VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+                    playlist_t * p_playlist = pl_Yield( p_intf );
                     if( p_playlist )
                     {
                         playlist_Goto( p_playlist, i );
-                        vlc_object_release( p_playlist );
+                        pl_Release( p_intf );
                     }
                     handled = true;
                 }
@@ -726,7 +729,7 @@ PlaylistView::KeyDown( const char* bytes, int32 numBytes )
 {
     if ( numBytes < 1 )
         return;
-        
+ 
     if ( ( bytes[0] == B_BACKSPACE ) || ( bytes[0] == B_DELETE ) )
     {
         RemoveSelected();
@@ -843,7 +846,7 @@ PlaylistView::CopyItems( BList& items, int32 toIndex )
             void* cloned = fVlcWrapper->PlaylistCloneItem( item );
             if ( cloned && !clonedItems.AddItem( cloned ) )
                 free( cloned );
-            
+ 
         }
         // add cloned items at index
         int32 index = toIndex;
@@ -986,26 +989,20 @@ PlaylistView::SetPlaying( bool playing )
 void
 PlaylistView::RebuildList()
 {
-    playlist_t * p_playlist;
-    p_playlist = (playlist_t *) vlc_object_find( p_intf,
-        VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
-
-    if( !p_playlist )
-    {
-        return;
-    }
+    playlist_t * p_playlist = pl_Yield( p_intf );
 
     // remove all items
     BListItem * item;
     int32 count = CountItems();
     while( ( item = RemoveItem( --count ) ) )
         delete item;
-    
+
     // rebuild listview from VLC's playlist
-    vlc_mutex_lock( &p_playlist->object_lock );
-    for( int i = 0; i < p_playlist->i_size; i++ )
-        AddItem( new PlaylistItem( p_playlist->pp_items[i]->input.psz_name ) );
-    vlc_mutex_unlock( &p_playlist->object_lock );
+    PL_LOCK;
+    FOREACH_ARRAY( playlist_item_t *p_item, p_playlist->items )
+        AddItem( new PlaylistItem( p_item->p_input->psz_name ) );
+    FOREACH_END();
+    PL_UNLOCK;
 
     vlc_object_release( p_playlist );
 }
@@ -1050,7 +1047,7 @@ PlaylistView::SortReverse()
 void
 PlaylistView::SortByPath()
 {
-    
+ 
 }
 
 /*****************************************************************************
@@ -1080,9 +1077,7 @@ PlaylistView::SetDisplayMode( uint32 mode )
 BListItem*
 PlaylistView::_PlayingItem() const
 {
-    playlist_t * p_playlist;
-    p_playlist = (playlist_t *) vlc_object_find( p_intf,
-        VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+    playlist_t * p_playlist = pl_Yield( p_intf );
 
     if( !p_playlist )
     {
@@ -1090,7 +1085,7 @@ PlaylistView::_PlayingItem() const
     }
 
     BListItem * item = ItemAt( p_playlist->i_index );
-    vlc_object_release( p_playlist );
+    pl_Release( p_intf );
     return item;
 }
 
@@ -1104,10 +1099,8 @@ PlaylistView::_SetPlayingIndex( BListItem* playingItem )
     {
         if ( item == playingItem )
         {
-            playlist_t * p_playlist;
-            p_playlist = (playlist_t *) vlc_object_find( p_intf,
-                VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
-        
+            playlist_t * p_playlist = pl_Yield( p_intf );
+ 
             if( !p_playlist )
             {
                 return;
@@ -1116,8 +1109,10 @@ PlaylistView::_SetPlayingIndex( BListItem* playingItem )
             playlist_Goto( p_playlist, i );
             SetCurrent( i );
 
-            vlc_object_release( p_playlist );
+            pl_Release( p_intf );
             break;
         }
     }
 }
+
+#endif

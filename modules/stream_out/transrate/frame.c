@@ -5,7 +5,7 @@
  * Copyright (C) 2003 Antoine Missout <antoine.missout@metakine.com>
  * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
- * $Id: 737884cca6fbaee48081ada5a586a75feadf9964 $
+ * $Id: 5d7a02e3ffdc8380cea90fcacbabe818a213c823 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -31,15 +31,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>
 #define NDEBUG 1
 #include <assert.h>
 #include <math.h>
 
-#include <vlc/vlc.h>
-#include <vlc/sout.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_sout.h>
+#include <vlc_codec.h>
 
 #include "transrate.h"
 
@@ -718,7 +720,7 @@ static void mpeg2_slice( transrate_t *tr, const int code )
                 bs_write( bs, *(dc + i), *(dc_len + i) );
                 putintrablk( bs, new_block[i], tr->intra_vlc_format );
             }
-    
+ 
         }
         else
         {

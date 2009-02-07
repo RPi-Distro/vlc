@@ -1,66 +1,93 @@
-$Id$
+The VideoLAN team would like to thank the following donators:
 
-VLC makes extensive use of the following persons' code:
-
-Aaron Holtzman <aholtzma at ess.engr.uvic.ca> - AC3 decoder, MPEG video decoder
-Michel Lespinasse <walken at zoy.org> - AC3 decoder, MPEG audio and video decoders
+Julian Cain, who made a $1000 donation
+The French website MacBidouille gave €500 to help us buy a PowerMac G5
+The French magazine à vos MAC gave €500 to help us buy a PowerMac G5
+Laurent Dupuy, who made a €540 donation
+The French company Cybervia (Actech) gave €2000 to pay for webserver hosting
 
 
 The VideoLAN team would like to thank the following contributors:
 
 Adam Sampson <ats @t offog d0t org> - libFLAC >= 1.1.3 API support
-Alex Antropoff <alant at transtelecom dot md> - RFC3016 (LATM) RTP packetizer extension
+Adem Gunes aka Yuksel Yildirim <xleopar at yahoo d0t com> - Turkish localisation 
+Alan Wright <the dot smoothness at gmail d0t com> - Forum help and support
+Alex Antropoff <alant at transtelecom dot md> - RFC3016 (LATM) RTP packetizer extension, MMS fixes
+Alex Izvorski <aizvorski at gmail dot com> - some more x264 options
 Alexander Didebulidze <alexander.didebulidze at stusta dot mhn dot de> - Georgian localization
 Alexander Gall <gall at switch dot ch> - Solaris fixes and CDDB fixes
+Alexey Salmin <alexey dot salmin at gmail dot com> - Russian localisation
 Alexis Ballier <aballlier at gentoo dot org> - Additional options in configure
-Alex Izvorski <aizvorski at gmail dot com> - some more x264 options
+Amanpreet Singh Alam <aalam at users dot sf dot net> - Punjabi translation
 Andrea Guzzo <xant at xant dot net> - dc1394 firewire support
 André de Barros Martins Ribeiro <andrerib at ajato.com.br> - Brazilian portuguese localization
 Andre Pang <adre.pang at csiro dot au> - Annodex support
+André Weber <WeberAndre at gmx d0t de> - Qt4, AAC ordering, Win32 threads patches, video filter module for thehomebrewAmbiLight (AtmoLight)
 Andres Krapf <dae at via.ecp.fr> - FreeBSD port and tests, KDE interface
+Andrew Zaikin <andrew dot zaikin at gmail dot com> - Config saving fixes
 Andrey Brilevskiy <director at macwest.ru> - Russian translation
-Andrea Guzzo <xant at xant dot net> - Digital cameras support (dc1394)
 Andy Lindsay <andy_vl at ananam.com> - fixes in the TS demux
+Anthony Loiseau <anthony.loiseau at gmail dot com> - Fixes in mozilla toolbar
+arai/Fujisawa Tooru <arai_a at mac dot com> - OpenGL-based Screen Input Module for Mac OS X
 Arkadiusz Lipiec <A.Lipiec at elka.pw.edu.pl> - Polish translation
 Arkadiusz Miskiewicz <misiek at pld.ORG.PL> - autoconf and Makefile patches
+Ari Constâncio <ari.constancio at gmail d0t com> - Portuguese localisation
 Arnaud Gomes-do-Vale <arnaud at carrosse.frmug.org> - autoconf patches
 Arwed v. Merkatz <v.merkatz at gmx dot net> - Gamma correction for adjust filter
+Audrey Prevost <fee . clochette007 at wanadoo dot fr> - Help on french translation
 Aurelien - Patch for modules/stream_output/rtp.c proper test for NULL
 Basil Achermann <vlc at acherma dot com> - Patch to handle esc and space key events from VLCControl (OSX)
 Barak Ori <barakori at gmail dot com> - Bidi fixes
 Benjamin Mironer <bmironer at noos.fr> - Mac OS X fixes
 Benoit Steiner <benny at via.ecp.fr> - MPEG system input, network input
+Bernie Purcell <b dot purcell at adbglobal dot com> - MKV USF subtitles support,HTML tags for subtitles and subtitles renderer enhancements
+Bill <wenwuangel at hotmail .com> - memleak fixes
 Bill Eldridge <bill at rfa.org> - documentation
 Bob Maguire <maguirer at rjmaguire dot com> - addition of some controls to the OSX interface
+Brian C. Wiles - vlm schedule date fix
 Brian Robb <vascy at hotmail dot com> - win32 CD/DVD drive detection in wx, bug fixes
+Brian Raymond <braymond at echostorm dot net> - Quicktime 404 error on RTSP SETUP fix
 Brieuc Jeunhomme <bbp at via.ecp.fr> - bug fixes
+Bruno Queirós <brunoqueiros at portugalmail dot com> - Portuguese localisation
 Bruno Vella <allevb at tin.it> - Italian localization
 Carlo Calabrò <murray at via.ecp.fr> - Italian localization
 Carsten Gottbehüt <gottbehuet at active-elements dot de> - v4l hotplug fix
+Cédric Cocquebert - Misc opengl effects for the OpenGL Video Output. "Panoramix" video filter for image walls with automatic attenuation. Fix on sharpen filter.
 Chris Clepper - OpenGL fix
 Christian Henz - libupnp service discovery plugin, CyberLink UPnP fixes
+Cristian Secară <cristi at secarica dot ro> - Romanian l10n
 Christof Baumgaertner - dbox web intf
-Christophe Mutricy <xtophe at nxtelevision dot com> - many fixes (preferences, M3U, ...)
+Christophe Burgalat <c.burgalat _at_ broadcastavenue _dot_ com> - XVMC (cle266) patch for VIA boards
 Christopher Johnson <cjohnson at mint.net> - Qt fix in vlc.spec
-Christopher Key <cjk32 at cam.ac.uk> - mp4 mux patch for h264 streaming to iPhone
+Cian Duffy <cian at rapturetv.com> - BeOS builds and maintener
 Colin Simmonds <colin_simmonds at Mac.lover.org> - compile fix for Mac OS X
 Damian Ivereigh <damian at cisco.com> - ac3dec uninitialized data structure fix
 Damien Fouilleul <damien.fouilleul at laposte.net> - DirectShow input improvements
+Daniel Dreibrodt, aka aLtgLasS <daniel d.t dreibrodt -@t- gmx d0t de> - VLC 0.8.5 default skin, skins, design and help on the forum and the wiki
 Daniel Fischer <dan at subsignal dot org> - Shoutcast output support
 Daniel Stränger <vlc at schmaller d0t de> - M3U, xtag and playlist improvements. Meta information core fixes. XSPF playlist support
+Danko Dolch <info at dolchonline d0t net> - Icons and Design for Qt4 Interface
+David Flynn - Dirac video codec
 David Kennedy <dkennedy at tinytoad.com> - X11 fullscreen patch
-Daniel Dreibrodt, aka aLtgLasS <daniel d.t dreibrodt -@t- gmx d0t de> - VLC 0.8.5 default skin
-Daniel Nylander <info@danielnylander at se> - Swedish translation
+Daniel Nylander <info @t danielnylander at se> - Swedish translation
+David J LaBarre "DJ" - Forum help, moderation and support
 David Thiel - security audit and report
 David Weber <david_weber at gmx.de> - Mac OS X interface design & graphics (v0.5.0)
 Davor Orel <syntheticamac at yahoo.it> - Mac OS X icons
 Dennis van Amerongen <Dennis dot vanAmerongen at nob dot nl> - x264 options unification
-Dennis Lou <dlou99 at yahoo dot com> - ATSC support in the DVB module
-Diego Petteno <flameeyes at gentoo dot org> - remove usage of internal ffmpeg symbols
+Dennis Lou <dlou99 at yahoo dot com> - ATSC support in the DVB module, MPEG2 support in the v4l2 module
+Dermot McGahon <dermot at dspsrv dot com> - Bug fixes, RC interface loop and repeat
+Diego Petteno <flameeyes at gentoo dot org> - remove usage of internal ffmpeg symbols, configure fixes
 DirektX <direktx at freemail.hu> - Hungarian translation
+Dominique Leuenberger <dominique-vlc dot suse at leuenberger dot net> - SuSE packaging
 Dugal Harris - DirectShow fixes and MJPEG patches
+Dylan Aïssi <aissi dot dylan at free dot fr> - French translation
+Dylan Yudaken <dyudaken -- gmail # com> - hotkeys patch
 Emmanuel Blindauer <manu at agat.net> - aRts audio output
 Enrico Gueli <e_gueli at yahoo.it> - Brightness threshold in adjust video filter
+Enrique Osuna <enrique.osuna at gmail.com> - Various bug fixes in libvlc. Major Mac OS X Framework improvements.
+Eren Türkay <turkay dot eren \a/ gmail point com> - Speex boundary checks and security fix
+Eric Adler <eric dot adler -- videoproductionsupport dot com> - Forum help and support, strings review
 Espen Skoglund <esk at ira.uka.de> - FreeBSD autoconf and Makefile patches
 Ethan C. Baldridge <BaldridgeE at cadmus.com> - directory browsing code
 Eurodata Computer Club <retron.info> - VLC icon design (v0.8.4)
@@ -68,42 +95,70 @@ Farzaneh Sarafraz <farzaneh at farsiweb dot info> - Persian localisation
 Fouzia Bourai <fbourai at cerist dot dz> - Arabic localisation
 François Seingier <francois.seingier at club-internet.fr> - TTL setting in the wx stream output dialog
 Frank Chao <frank0624 at gmail.com> - Chinese Traditional translation
+Frans van Veen <f.m.j.c.vanveen at student.hhs.nl> - Mozilla plugin toolbar
 Fumio Nakayama <endymion at ca2.so-net.ne.jp> - Japanese translation
-Gabor Kelemen <kelemeng at gnome.hu> - Hungarian translation
-Georgi Chorbadzhiyski <gf at unixsol dot org> - HTTP access error handling fix
-Glen Gray <slaine at slaine dot org> - RTSP Keepalive fixes
+Gabor Kelemen <kelemeng at gnome dot hu> - Hungarian translation
+Geoffrey Roussel <meka321 at hotmail dot com> - Christmas easter egg Artwork
+Geoffroy Couprie <geo dot couprie -- gmail # com> - Podcast fix
+Georgi Chorbadzhiyski <gf at unixsol dot org> - HTTP access error handling fix, ASF output patches.
+Gisle Vanem <giva at bgnet dot no>  - gettimeoffay under win32
+Glen Gray <slaine at slaine do rog> - RTSP keepalive
+Goetz Waschk <waschk at informatik.uni-rostock dot de> - Mandrake packages
 Gorana Milicevic <gorana.milicevic at gmail dot com> - Serbian localisation
 Greg Farrell <greg at gregfarell dot org> - rc interface "enqueue" command
 Gregory Hazel <ghazel at gmail dot com> - wxWidgets fixes and improvements
-Goetz Waschk <waschk at informatik.uni-rostock dot de> - Mandrake packages
 Haakon Meland Eriksen - Norwegian translation
 Han HoJoong <0demon0 at paran dot com> - Korean translation
+Hans Lambermont <hans dot lambermont at newtec dot eu> - Syslog improvements
 Hans-Peter Jansen <hpj at urpla.net> - patch for module options handling
-Harry Sintonen <sintonen at iki dot fi> - fix for MKV demuxer
-Ilkka Ollakka - SDP bitrate patch
+Hannes Domani <ssbssa at yahoo dot de> - Qt4 interfaces patches
+Harry Sintonen <sintonen at iki.fi> - fix for MKV demuxer
+Igor Helman - VLM msecseek command
+Ilkka Ollakka - SDP bitrate patch, various VLM fixes, transcode afilter/vfilter fix, qt4 interface patches
+Ivo Ivanov <bestran at mail dot bg> - Bulgarian translation
+Jan David Mol <jjdmol at gmail.com> - Suggested some flags for ffmpeg building
 Jan Gerber <j at v2v dot org> - patch theora decoding aspect ratio
 Jan Van Boghout <vlc at macrabbit.com> - iTunes like slider for OSX intf
+Jasper Alias <j.alias at student.hhs.nl>- Mozilla plugin toolbar
 Javier Varela <tonxabar at hotmail.com> - Spanish translation
 Jean-Alexis Montignies <ja at sente.ch> - coreaudio multiple streams fix
-Jean-Baptiste le Stang <jp.lestand at lestang.org> - Equalizer-GUI-fixes (OSX)
+Jean-Baptiste Le Stang <jp.lestand at lestang.org> - Equalizer-GUI-fixes (OSX), Universal Binary Script
+Jean-Philippe André <jpeg at via.ecp.fr> - Qt bugs and improvements, various bugfixes
 Jean-Philippe Grimaldi <jeanphi at via.ecp.fr> - bug fixes
+Dugal Harris <dugalh at protoclea dot. co dot za > - ActiveX bug fixes
 Jean-Pierre Kuypers <Kuypers at sri.ucl.ac.be> - French translation
 Jeffrey Baker <jwbaker at acm.org> - port of the ALSA plugin to the ALSA 1.0 API
 Jeroen Massar <jeroen at unfix dot org> - IPv6 hostname resolution fix
+Jean-François Massol <jf.massol -<@t> gmail.com> - Qt4 Sout work
 Jérôme Guilbaud - Update of the WinAmp 5 VLC skin
 Joel Arvidsson <dogai at privat.utfors.se> - Swedish translation
 Joeri van Dooren <joeri at van.dooren.be> - OS X icon (v0.4.0)
+Jörg<vlc-ml at aab.noctis dot de> - VLM seek/show media functions
+Johannes Buchner <buchner.johannes at gmx dot at> - Hotkeys for zoom
 Johen Michael Zorko <zorko at att.net> - fix for delay issues in udp sout
+John Dalgliesh <johnd at defyne.org> - macosx interface playlist fix
 John Paul Lorenti <jpl31 at columbia.edu> - ALSA device selection patch
+Johnathan Rosser - Dirac video codec
 Jonas Larsen <jonas at vrt.dk> - Danish translation
+Jouni Kähkönen - Finnish translation
 Julien Blache <jb at technologeek.org> - disc ejection code
+Julien Bouquillon <julien -- bouquillon ## com> - Forum support and a VLC JS library
+Julien Plissonneau Duquène - JACK audio input module 
 Julien Robert <jul at mac.com> - DTS to SPDIF fixes.
-Kang Jeong-Hee <keizie 4t gmail d0t com> - Korean l10n
+Kang Jeong-Hee <keizie at gmail dot com> - Korean translation
+Kenneth Ostby <kenneo -at- idi -dot- ntnu -dot- no> - Audioscrobbler plugin
+Kenneth Self <kens at campoz DoT. fslife _dOt co dOT- uk> - BDA capture plugin
+Kevin H. Patterson <kevpatt at khptech dot com> - Theora framesize calculation 
 kty0ne - WinAmp 5 skin for VLC
-Kevin H. Patterson <kevpatt at khptech dot com> - Theora framesize calculation patch by Kevin H. Patterson (kevpatt at khptech dot com
+K. Staring <qdk at quickdekay dot net> - RTSP rewind and fast-forward support
+Koehler, Vitally <vkoehler AT telekom de> -  solves the problem of audio packet losses by the playback of MPEG2 transport stream.
+Lahiru Lakmal Priyadarshana <llahiru at gmail # com> - Qt4 patch
 Laurent Jonqueres <laurent_jonqueres at yahoo.fr> - Occitan localization
 Laurent Mutricy <laurent.mutricy at ecl2005 dot ec-lyon dot fr> - HTTP interface fixes
+Leo Spalteholz <leo dot spalteholz at gmail dot com> - Qt interface design
+Loox Thefuture <loox.thefuture at gmail dot com> - Media key in X11 vout
 Lorena Gomes - Catalan translation
+Lukas Durfina <lukas.durfina at gmail.com> - Qt4: full screen controller. Teletext button fix. Various fixes.
 Mahrazi Mohd Kamal <mahrazi at gmail.com> - Malay Translation
 Marc Nolette <nolette at videotron.ca> - PVR support in DirectShow input
 Marco Munderloh <Marco.Munderloh at web.de> - HTTP fix for Win32 to URL filenames
@@ -112,67 +167,118 @@ Mark Gritter <mgritter at kealia.com> - fix for netlist packet leak in demuxPSI
 Marko Uskokovic <uskokovic at etf dot bg.ac.yu> - Serbian localisation
 Markus Kern <markus-kern at gmx dot net> - video output window fixes (win32)
 Markus Kuespert <ltlBeBoy at beosmail.com> - BeOS CSS support
+Martin Hamrle <hamrle 47 post d0t cz> - PulseAudio output module
+Martin Kahr <martin --at-- martinkahr dot com> - Apple Remote support
 Matej Urbančič <matej.urban at gmail.com> - Slovenian translation
+Mateus Krepsky Ludwich <mateus @t csp dot com d.t br> - rc interface mosaic-order callback
 Mathias C. Berens | welcome-soft <berens at welcome-soft.de> - German translation
 Mathias Kretschmer <mathias at research.att.com> - IP Multicast support
 Mats Rojestal <mats.rojestal at bredband dot net> - compilation fixes for Solaris 9
 Matthias P. Nowak <mpnowak at broadpark dot no> - ALSA 5.1 fix
-Matthieu Lochegnies <lochegm1 at cti.ecp.fr> - MPEG audio emphasis fix
+Matthieu Lochegnies <prof at tocard dot org> - MPEG audio emphasis fix
 Max Rudberg <max_08 at mac.com> - Mac OS X controller art (v0.7.0)
+Meelad Zakaria <meelad at farsiweb dot info> - Persian localisation
 Michael Mondragon <mammon at lokmail.net> - ncurses compilation fix
+Michael Ploujnikov <ploujj at gmail dot com> - Spelling fix
 Michał Trzebiatowski <hippie_1968 at hotmail dot com> - Polish translation
 Mickael Hoerdt <hoerdt at clarinet.u-strasbg.fr> - IPv6 SSM multicast patch
+Miguel Angel Cabrera <macabrera at solaiemes.com> - RTMP access patch
 Mike Schrag <mschrag at pobox dot com> - directx device selection
+Mikko Hirvonen <masse at astro dot helsinki dot fi> - Firefox-1.5.x development configure patch
 Michel Lanners <mlan at cpu.lu> - fixed typos and AltiVec detection
 Miroslav Oujeský <oujesky at mail dot muni dot cz> - Czech translation
+Mirsal Ennaime <mirsal.ennaime at gmail dot com> - D-Bus ameliorations
 Moritz Bunkus <moritz at bunkus dot org> - Matroska patches
 Morten Brix Pedersen <morten at wtf.dk> - Danish translation
+Myckel Habets <myckel at sdf.lonestar.org> - Dutch translation
+Namhyung Kim <namhyung at gmail d0t com> - Korean translation
 Nilmoni Deb <ndeb at ece.cmu.edu> - autoconf and Makefile fixes
 Olivier Aubert <oaubert at bat710.univ-lyon1.fr> - clone list patch
-Olivier Houchard <doginou @t dong d0t ci0 d0t org> - UDP & HTTP access output fix
+Olivier Houchard <doginou @t dong d0t ci0 d0t org> - UDP & HTTP access output fix, ffmpeg mux fix
 Olivier Pomel <pomel at via.ecp.fr> - original VLC code
 Ondrej Kuda aka Albert <kuda at natur dot cuni dot cz> - HTTP interface tips and fixes
+Otto Kekäläinen <otto 4t sange d0t fi> - Finnish translation 
 Øyvind Kolbu <oyvindk at world-online.no> - FreeBSD patches
 Patrick Horn <patrickd0thorn at mindspring d0t com> - DirectShow patch
+Patrick McLean <chutzpah at gentoo d0t org> - Libcdio update patch
 Paul Corke <paul.corke at datatote dot co do uk> - pvr patch for newer ivtv drivers
-Paul Corke <paul.corke at datatote dot co do uk> - dv patch to keep up with the hardware 
+Paul Corke <paul.corke at datatote dot co do uk> - dv patch to keep up with the hardware
 Paul Mackerras <paulus at linuxcare.com.au> - AltiVec IDCT and motion
-Pavlov Konstantin “thresh” - several Linux build system fixes
+Pauline Castets <pcastets at actech-innovation dot com> - NSIS fixes and i18n
 Petr Vacek - FTP cleartext authentication
 Philippe Van Hecke <philippe at belnet dot be> - SAP header hash patch
+Pierre d'Herbemont <pdherbemont at free dot fr> - Compile fix
+Pierre-Luc Beaudoin - Vorbis 9 channels patch, Jack input fixes.
 Pierre Marc Dumuid <pierre.dumuid at adelaide dot edu dot au> - Playlist patches
-Pittayakom Sa-ingtong <develop5 at datawiz dot co dot th> - Thaï localisation
+Pittayakom Saingtong <develop5 qt datawiz dot co dot th> - Thai localisation
+Przemyslaw Fiala <bl4 a playker dot info> - MMS/TCP fix
 Régis Duchesne <regis at via.ecp.fr> - original VLC code
+Rémi Duraffort <ivoire at via.ecp.fr> - various QT4 patches
 Remco Poortinga <poortinga at telin.nl> - IPv6 multicast patch
 Rene Gollent <rgollent at u.arizona.edu> - BeOS interface fix
+Richard Hosking <richard at hovis.net> - v4l2 support
+Richard Øiestad <richard at neonational.com> - VLC cone graphics (v0.7.x)
+Rob Casey <rob dot casey AT swishgroup dot com dot au> - Amino RTSP fix
+Robson Braga Araujo - UPnP discovery XML fix
 Roine Gustafsson <roine at popstar.com> - spudec bug fixes
+Roman Bednarek <roman at mikronika.com.pl> - MPL2 subtitles support
 Rudolf Cornelissen <rag.cornelissen at inter.nl.net> - BeOS fixes
+Sašo Kiselkov <skiselkov _at_ gmail dot com> - RTSP session timeout fix for some STBs, multipass x264 patch
 Scott Caudle <dorkmanzcot at gmail dot com> - Visualization, WX improvements
+Sebastian Jenny <jenny - sebastian &t gmail - com > - AAC decoding channel ordering fix.
 Sebastien Chaumat <Sebastien.Chaumat at ens-lyon.fr> - YOPY port tests
-Simon Damkjær Andersen <simondamkjaer at gmail.com> - playmode icons and the entire Fullscreen Panel design for the OS GUI (v0.8.6)
+Sidney Doria <ssdoria qt gmail.com> - Brazilian Portuguese localisation
+Simon Damkjær Andersen <simondamkjaer at gmail.com> - playmode icons and the entire Fullscreen Panel design for the OSX GUI (v0.8.6)
+Soren Bog <avacore at videolan dot org> - dynamicoverlays
+Stefán Freyr Stefánsson <stefan.freyr -at- gmail.com> - Qt4 speed slider
 Steve Lhomme <steve dot lhomme at free dot fr> - MSVC fixes and Matroska enhancements
 Steve Brown <sbrown at cortland.com> - fix for optional PES size bug
 Steven M. Schultz <sms at TO.GD-ES.COM> - BSD/OS port
 Steven Sheehy - wxWidgets interface fix
 Tadashi Jokagi <elf2000 at users.sourceforge dot net> - Japanese translation
+Tanguy Krotoff <tkrotoff at gmail.com> - LibVLC cleanup and fix.
+Tapio Hiltunen <Tapio dot Hiltunen at vtt dot fi> - Maemo X11 enhancements
 Tim 'O Callaghan <tim.ocallaghan at limestudios dot com> - pvr input cleaning patch
+Tim Schuerewegen <ma054331 at skynet dot be> - contrib fixes
+Thomas De Rocker <thomasderocker at yahoo d0t com> - Dutch translation
 Thomas Graf <tgraf at europe.com> - gettext support, German translation
 Thomas L. Wood <twood at lucent.com> - fixed a bug in QuantMatrixExtension
+Thomas Mühlgrabner <muehltom &t cable d0t vol dot at> - AAC fixes.
+Thomas Parmelan <tom+vlc at ankh.fr.EU.org> - mosaic user-defined offsets for substreams
+Tom Bigelajzen <tombigel at yahoo d0t com> - Interface icons and help with web design
 Tong Ka Man <kmtong at cwbase dot com> - playlist_Clear addition
+Torsten Spindler <spindler at tspindler dot de> - Script to set vlc as default player on GNOME desktops.
 Udo Richter <udo underscore richter at gmx dot de> - Trancode padding / cropping
 Valek Filippov <frob at df.ru> - Russian translation
 Vicente Jimenez Aguilar <vice at v1ce.net> - Spanish translation
-Vincent van den Heuvel <heuvel@mac.com> - OSX about window artwork (v0.8.4)
-Vincenzo Reale <smart2128 at baslug dot org> - Italian localisation
+Vincent Dimar - WxWidgets online help patch
+Vincent Penquerc'h < ogg dot k dot ogg dot k at googlemail dot com> - Kate subtitle decoder module
+Vincent van den Heuvel <heuvel @t mac.com> - OSX about window artwork (v0.8.4)
+Vincenzo Reale <smart2128 @t baslug.org> - Italian translation
 Vitalijus Slavinskas <Vitalijus.Slavinskas at stud.ktu dot lt> - nsv patches
 Vitaly V. Bursov <vitalyvb at ukr dot net>
 Vladimir Chernyshov - MMX motion optimizations
+Vladimir Yermolayev <init at siptelecom dot ru> -- Russian translation
 Wade Majors <guru at startrek.com> - BeOS icon integration, debugging and fixes
 Wallace Wadge <wwadge at gmail.com> - multiple programs TS mux
+Wang Bo <silencewang at msn d0t com> - Real support improvements.
 Watanabe Go <go at dsl.gr.jp> - fix for non-ASCII filenames
 Wei Mingzhi <whistler_wmz at users.sourceforge.net> - Simplied Chinese translation
+William Hawkins - Speex RTP payload format
 Xavier Maillard <zedek at fxgsproject.org> - audio converters
 Xavier Marchesini <xav at alarue.net> - Win32 fixes
 Xènia Albà Cantero <xenia_alba at hotmail.com> - Catalan translation
+Yuehua Zhao <zhao908@hotmail.com> - real video codec
 Yves Duret <yves at zarb.org> - RPM packages
 Ye zhang <yzhang90003 _at_ gmail dot com> - Fix for VLM RTSP concurent LEAVE make VLC crash
+
+
+Some VLC plugins use external libraries and makes extensive use of the following persons' or companies' code:
+
+FFmpeg - Copyright (c) 2000-2007 Fabrice Bellard, et al.
+liba52 - Aaron Holtzman & Michel Lespinasse, et al.
+FAAD2 - "Code from FAAD2 is copyright (c) Nero AG, www.nero.com"
+FAAC - Menno Bakker, Krzysztof Nikiel & The individual contributors
+libmpeg2 - Aaron Holtzman & Michel Lespinasse, et al.
+ogg, theora, vorbis - Monty & the Xiph.org Foundation
+flac - Josh Coalson et al.

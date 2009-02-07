@@ -2,7 +2,7 @@
  * intf.c: Video CD interface to handle user interaction and still time
  *****************************************************************************
  * Copyright (C) 2002,2003 the VideoLAN team
- * $Id: 762e4c2f0f4e613e7028fbe767fc0842f6ace4e2 $
+ * $Id: 24527e0891755680d54d2d76030fce0fd6c355df $
  *
  * Author: Rocky Bernstein <rocky@panix.com>
  *   from DVD code by Stéphane Borel <stef@via.ecp.fr>
@@ -25,9 +25,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
+#include <vlc_access.h>
 
 #include "vlc_keys.h"
 
@@ -63,7 +67,7 @@ int VCDOpenIntf ( vlc_object_t *p_this )
 
     p_intf->pf_run = RunIntf;
 
-    var_AddCallback( p_intf->p_vlc, "key-pressed", KeyEvent, p_intf );
+    var_AddCallback( p_intf->p_libvlc, "key-pressed", KeyEvent, p_intf );
     p_intf->p_sys->m_still_time = 0;
     p_intf->p_sys->b_infinite_still = 0;
     p_intf->p_sys->b_still = 0;
@@ -77,7 +81,7 @@ int VCDOpenIntf ( vlc_object_t *p_this )
 void VCDCloseIntf ( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
-    var_DelCallback( p_intf->p_vlc, "key-pressed", KeyEvent, p_intf );
+    var_DelCallback( p_intf->p_libvlc, "key-pressed", KeyEvent, p_intf );
 
     /* Destroy structure */
     free( p_intf->p_sys );
@@ -87,7 +91,7 @@ void VCDCloseIntf ( vlc_object_t *p_this )
 /*****************************************************************************
  * RunIntf: main loop
  *****************************************************************************/
-static void 
+static void
 RunIntf( intf_thread_t *p_intf )
 {
     vlc_object_t      * p_vout = NULL;
@@ -113,14 +117,14 @@ RunIntf( intf_thread_t *p_intf )
     {
         msleep( INTF_IDLE_SLEEP );
     }
-    
+ 
     p_vcdplayer = p_intf->p_sys->p_vcdplayer;
     p_access    = p_vcdplayer->p_access;
 
     dbg_print( INPUT_DBG_CALL, "intf initialized" );
 
     /* Main loop */
-    while( !p_intf->b_die )
+    while( vlc_object_alive (p_intf) )
     {
       vlc_mutex_lock( &p_intf->change_lock );
 
@@ -159,12 +163,12 @@ RunIntf( intf_thread_t *p_intf )
         {
           vlc_value_t val;
           int i, i_action = -1;
-          struct hotkey *p_hotkeys = p_intf->p_vlc->p_hotkeys;
+          struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
 
-          p_intf->p_sys->b_key_pressed = VLC_FALSE;
+          p_intf->p_sys->b_key_pressed = false;
 
           /* Find action triggered by hotkey (if any) */
-          var_Get( p_intf->p_vlc, "key-pressed", &val );
+          var_Get( p_intf->p_libvlc, "key-pressed", &val );
 
           dbg_print( INPUT_DBG_EVENT, "Key pressed %d", val.i_int );
 
@@ -214,8 +218,8 @@ RunIntf( intf_thread_t *p_intf )
 
                 dbg_print( INPUT_DBG_EVENT, "ACTIONID_NAV_ACTIVATE" );
 
-                if ( vcdplayer_pbc_is_on( p_vcdplayer ) 
-		     && number_addend != 0 ) {
+                if ( vcdplayer_pbc_is_on( p_vcdplayer )
+             && number_addend != 0 ) {
                   lid_t next_num=vcdinfo_selection_get_lid(p_vcdplayer->vcd,
                                                            p_vcdplayer->i_lid,
                                                            number_addend);
@@ -313,7 +317,7 @@ RunIntf( intf_thread_t *p_intf )
 static int InitThread( intf_thread_t * p_intf )
 {
     /* We might need some locking here */
-    if( !p_intf->b_die )
+    if( vlc_object_alive (p_intf) )
     {
         input_thread_t * p_input;
 
@@ -330,9 +334,9 @@ static int InitThread( intf_thread_t * p_intf )
         p_intf->p_sys->p_input     = p_input;
         p_intf->p_sys->p_vcdplayer = NULL;
 
-        p_intf->p_sys->b_move  = VLC_FALSE;
-        p_intf->p_sys->b_click = VLC_FALSE;
-        p_intf->p_sys->b_key_pressed = VLC_FALSE;
+        p_intf->p_sys->b_move  = false;
+        p_intf->p_sys->b_click = false;
+        p_intf->p_sys->b_key_pressed = false;
 
         vlc_mutex_unlock( &p_intf->change_lock );
 
@@ -353,7 +357,7 @@ static int KeyEvent( vlc_object_t *p_this, char const *psz_var,
     intf_thread_t *p_intf = (intf_thread_t *)p_data;
     vlc_mutex_lock( &p_intf->change_lock );
 
-    p_intf->p_sys->b_key_pressed = VLC_TRUE;
+    p_intf->p_sys->b_key_pressed = true;
 
     vlc_mutex_unlock( &p_intf->change_lock );
 
@@ -371,9 +375,9 @@ int vcdIntfStillTime( intf_thread_t *p_intf, uint8_t i_sec )
     p_intf->p_sys->b_still = 1;
     if( 255 == i_sec )
     {
-        p_intf->p_sys->b_infinite_still = VLC_TRUE;
+        p_intf->p_sys->b_infinite_still = true;
     }
-    else 
+    else
     {
         p_intf->p_sys->m_still_time = MILLISECONDS_PER_SEC * i_sec;
     }

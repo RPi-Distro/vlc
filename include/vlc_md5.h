@@ -2,7 +2,7 @@
  * vlc_md5.h: MD5 hash
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 5cd1f9f4cf6660b11302f6b31aaab144f527f8fc $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Sam Hocevar <sam@zoy.org>
@@ -22,8 +22,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_MD5_H
-# define _VLC_MD5_H
+#ifndef VLC_MD5_H
+# define VLC_MD5_H
+
+/**
+ * \file
+ * This file defines functions and structures for handling md5 checksums
+ */
 
 /*****************************************************************************
  * md5_s: MD5 message structure
@@ -39,8 +44,31 @@ struct md5_s
 };
 
 VLC_EXPORT(void, InitMD5, ( struct md5_s * ) );
-VLC_EXPORT(void, AddMD5, ( struct md5_s *, const uint8_t *, uint32_t ) );
+VLC_EXPORT(void, AddMD5, ( struct md5_s *, const void *, size_t ) );
 VLC_EXPORT(void, EndMD5, ( struct md5_s * ) );
-VLC_EXPORT(void, DigestMD5, ( struct md5_s *, uint32_t * ) );
+
+/**
+ * Returns a char representation of the md5 hash, as shown by UNIX md5 or
+ * md5sum tools.
+ */
+static inline char * psz_md5_hash( struct md5_s *md5_s )
+{
+    char *psz = malloc( 33 ); /* md5 string is 32 bytes + NULL character */
+    if( !psz ) return NULL;
+
+    int i;
+    for ( i = 0; i < 4; i++ )
+    {
+        sprintf( &psz[8*i], "%02x%02x%02x%02x",
+            md5_s->p_digest[i] & 0xff,
+            ( md5_s->p_digest[i] >> 8 ) & 0xff,
+            ( md5_s->p_digest[i] >> 16 ) & 0xff,
+            md5_s->p_digest[i] >> 24
+        );
+    }
+    psz[32] = '\0';
+
+    return psz;
+}
 
 #endif

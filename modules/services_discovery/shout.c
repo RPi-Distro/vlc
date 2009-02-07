@@ -1,11 +1,12 @@
 /*****************************************************************************
  * shout.c:  Shoutcast services discovery module
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: 49a923b4fbff022cb3f4e8e347d40f973beb1d3f $
+ * Copyright (C) 2005-2007 the VideoLAN team
+ * $Id: bab1f0204b8370572e9e95697daa8f13f792cf25 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Antoine Cellerier <dionoea -@T- videolan -d.t- org>
+ *          Pierre d'Herbemont <pdherbemont # videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,147 +26,218 @@
 /*****************************************************************************
  * Includes
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc_interaction.h>
-
-#include <vlc/input.h>
-
-#include "network.h"
-
-#include <errno.h>                                                 /* ENOMEM */
-
-#ifdef HAVE_UNISTD_H
-#    include <unistd.h>
-#endif
-#ifdef HAVE_SYS_TIME_H
-#    include <sys/time.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
 
-/************************************************************************
- * Macros and definitions
- ************************************************************************/
-
-#define MAX_LINE_LENGTH 256
-#define SHOUTCAST_BASE_URL "http/shout-winamp://www.shoutcast.com/sbin/newxml.phtml"
-#define SHOUTCAST_TV_BASE_URL "http/shout-winamp://www.shoutcast.com/sbin/newtvlister.phtml?alltv=1"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_services_discovery.h>
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
 
-/* Callbacks */
-    static int  Open ( vlc_object_t *, int );
-    static int  OpenRadio ( vlc_object_t * );
-    static int  OpenTV ( vlc_object_t * );
-    static void Close( vlc_object_t * );
+enum type_e { ShoutRadio = 0, ShoutTV = 1, Freebox = 2, FrenchTV = 3 };
+
+static int  Open( vlc_object_t *, enum type_e );
+static void Close( vlc_object_t * );
+
+struct shout_item_t
+{
+    const char *psz_url;
+    const char *psz_name;
+    const char *ppsz_options[2];
+    const struct shout_item_t * p_children;
+};
+
+#define endItem( ) { NULL, NULL, { NULL }, NULL }
+#define item( title, url ) { url, title, { NULL }, NULL }
+#define itemWithOption( title, url, option ) { url, title, { option, NULL }, NULL }
+#define itemWithChildren( title, children ) { "vlc://nop", title, { NULL }, children }
+
+/* WARN: We support only two levels */
+
+static const struct shout_item_t p_frenchtv_canalplus[] = {
+    itemWithOption( N_("Les Guignols"), "http://www.canalplus.fr/index.php?pid=1784", "http-forward-cookies" ),
+    endItem()
+};
+    
+static const struct shout_item_t p_frenchtv[] = {
+    itemWithChildren( N_("Canal +"),  p_frenchtv_canalplus ),
+    endItem()
+};
+
+static const struct shout_item_t p_items[] = {
+    item(            N_("Shoutcast Radio"), "http/shout-winamp://www.shoutcast.com/sbin/newxml.phtml" ),
+    item(            N_("Shoutcast TV"),    "http/shout-winamp://www.shoutcast.com/sbin/newtvlister.phtml?alltv=1" ),
+    item(            N_("Freebox TV"),      "http://mafreebox.freebox.fr/freeboxtv/playlist.m3u" ),
+    itemWithChildren(N_("French TV"),        p_frenchtv ),
+    endItem()
+};
+
+#undef endItem
+#undef item
+#undef itemWithOptions
+#undef itemWithChildren
+
+struct shout_category_t {
+    services_discovery_t * p_sd;
+    const char * psz_category;
+};
+
+/* Main functions */
+#define OPEN( type )                                \
+static int Open ## type ( vlc_object_t *p_this )    \
+{                                                   \
+    msg_Dbg( p_this, "Starting " #type );           \
+    return Open( p_this, type );                    \
+}
+
+OPEN( ShoutRadio )
+OPEN( ShoutTV )
+OPEN( Freebox )
+OPEN( FrenchTV )
 
 vlc_module_begin();
-    set_shortname( "Shoutcast");
-    set_description( _("Shoutcast radio listings") );
-    add_shortcut( "shoutcast" );
     set_category( CAT_PLAYLIST );
     set_subcategory( SUBCAT_PLAYLIST_SD );
 
-    add_suppressed_integer( "shoutcast-limit" );
+    add_obsolete_integer( "shoutcast-limit" );
 
-    set_capability( "services_discovery", 0 );
-    set_callbacks( OpenRadio, Close );
+        set_shortname( "Shoutcast");
+        set_description( N_("Shoutcast radio listings") );
+        set_capability( "services_discovery", 0 );
+        set_callbacks( OpenShoutRadio, Close );
+        add_shortcut( "shoutcast" );
 
     add_submodule();
         set_shortname( "ShoutcastTV" );
-        set_description( _("Shoutcast TV listings") );
+        set_description( N_("Shoutcast TV listings") );
         set_capability( "services_discovery", 0 );
-        set_callbacks( OpenTV, Close );
+        set_callbacks( OpenShoutTV, Close );
         add_shortcut( "shoutcasttv" );
+
+    add_submodule();
+        set_shortname( "frenchtv");
+        set_description( N_("French TV") );
+        set_capability( "services_discovery", 0 );
+        set_callbacks( OpenFrenchTV, Close );
+        add_shortcut( "frenchtv" );
+
+    add_submodule();
+        set_shortname( "Freebox");
+        set_description( N_("Freebox TV listing (French ISP free.fr services)") );
+        set_capability( "services_discovery", 0 );
+        set_callbacks( OpenFreebox, Close );
+        add_shortcut( "freebox" );
 
 vlc_module_end();
 
 
 /*****************************************************************************
- * Local structures
- *****************************************************************************/
-
-struct services_discovery_sys_t
-{
-    playlist_item_t *p_item;
-    vlc_bool_t b_dialog;
-};
-
-#define RADIO 0
-#define TV 1
-
-/*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 
-/* Main functions */
-    static void Run    ( services_discovery_t *p_intf );
+static void Run( services_discovery_t *p_sd );
 
-static int OpenRadio( vlc_object_t *p_this )
-{
-    return Open( p_this, RADIO );
-}
-
-static int OpenTV( vlc_object_t *p_this )
-{
-    return Open( p_this, TV );
-}
 
 /*****************************************************************************
  * Open: initialize and create stuff
  *****************************************************************************/
-static int Open( vlc_object_t *p_this, int i_type )
+static int Open( vlc_object_t *p_this, enum type_e i_type )
 {
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
-    services_discovery_sys_t *p_sys  = malloc(
-                                    sizeof( services_discovery_sys_t ) );
-
-    vlc_value_t         val;
-    playlist_t          *p_playlist;
-    playlist_view_t     *p_view;
-    playlist_item_t     *p_item;
-
+    services_discovery_SetLocalizedName( p_sd, _(p_items[i_type].psz_name) );
     p_sd->pf_run = Run;
-    p_sd->p_sys  = p_sys;
-
-    /* Create our playlist node */
-    p_playlist = (playlist_t *)vlc_object_find( p_sd, VLC_OBJECT_PLAYLIST,
-                                                FIND_ANYWHERE );
-    if( !p_playlist )
-    {
-        msg_Warn( p_sd, "unable to find playlist, cancelling");
-        return VLC_EGENERIC;
-    }
-
-    p_view = playlist_ViewFind( p_playlist, VIEW_CATEGORY );
-
-    switch( i_type )
-    {
-        case TV:
-            p_sys->p_item = p_item = playlist_ItemNew( p_playlist,
-                                SHOUTCAST_TV_BASE_URL, _("Shoutcast TV") );
-            break;
-        case RADIO:
-        default:
-            p_sys->p_item = p_item = playlist_ItemNew( p_playlist,
-                                SHOUTCAST_BASE_URL, _("Shoutcast") );
-            break;
-    }
-    playlist_NodeAddItem( p_playlist, p_item, p_view->i_id,
-                          p_view->p_root, PLAYLIST_APPEND,
-                          PLAYLIST_END );
-
-    p_sys->p_item->i_flags |= PLAYLIST_RO_FLAG;
-
-    val.b_bool = VLC_TRUE;
-    var_Set( p_playlist, "intf-change", val );
-
-    vlc_object_release( p_playlist );
-
+    p_sd->p_sys = (void *)i_type;
     return VLC_SUCCESS;
+}
+
+/*****************************************************************************
+ * ItemAdded:
+ *****************************************************************************/
+static void ItemAdded( const vlc_event_t * p_event, void * user_data )
+{
+    struct shout_category_t * params = user_data;
+    services_discovery_AddItem( params->p_sd,
+            p_event->u.input_item_subitem_added.p_new_child,
+            params->psz_category );
+}
+
+/*****************************************************************************
+ * CreateInputItemFromShoutItem:
+ *****************************************************************************/
+static input_item_t * CreateInputItemFromShoutItem( services_discovery_t *p_sd,
+                                         const struct shout_item_t * p_item )
+{
+    int i;
+    /* Create the item */
+    input_item_t *p_input = input_item_NewExt( p_sd,
+                    p_item->psz_url, _(p_item->psz_name),
+                    0, NULL, -1 );
+
+    /* Copy options */
+    for( i = 0; p_item->ppsz_options[i] != NULL; i++ )
+        input_item_AddOption( p_input, p_item->ppsz_options[i] );
+    input_item_AddOption( p_input, "no-playlist-autostart" );
+
+    return p_input;
+}
+
+/*****************************************************************************
+ * AddSubitemsOfShoutItemURL:
+ *****************************************************************************/
+static void AddSubitemsOfShoutItemURL( services_discovery_t *p_sd,
+                                       const struct shout_item_t * p_item,
+                                       const char * psz_category )
+{
+    struct shout_category_t category = { p_sd, psz_category };
+
+    /* Create the item */
+    input_item_t *p_input = CreateInputItemFromShoutItem( p_sd, p_item );
+
+    /* Read every subitems, and add them in ItemAdded */
+    vlc_event_attach( &p_input->event_manager, vlc_InputItemSubItemAdded,
+                      ItemAdded, &category );
+    input_Read( p_sd, p_input, true );
+    vlc_event_detach( &p_input->event_manager, vlc_InputItemSubItemAdded,
+                      ItemAdded, &category );
+
+    vlc_gc_decref( p_input );
+}
+
+/*****************************************************************************
+ * Run:
+ *****************************************************************************/
+static void Run( services_discovery_t *p_sd )
+{
+    enum type_e i_type = (enum type_e)p_sd->p_sys;
+    int i, j;
+    
+    if( !p_items[i_type].p_children )
+    {
+        AddSubitemsOfShoutItemURL( p_sd, &p_items[i_type], NULL );
+        return;
+    }
+    for( i = 0; p_items[i_type].p_children[i].psz_name; i++ )
+    {
+        const struct shout_item_t * p_subitem = &p_items[i_type].p_children[i];
+        if( !p_subitem->p_children )
+        {
+            AddSubitemsOfShoutItemURL( p_sd, p_subitem, p_subitem->psz_name );
+            continue;
+        }
+        for( j = 0; p_subitem->p_children[j].psz_name; j++ )
+        {
+            input_item_t *p_input = CreateInputItemFromShoutItem( p_sd, &p_subitem->p_children[j] );
+            services_discovery_AddItem( p_sd,
+                p_input,
+                p_subitem->psz_name );
+            vlc_gc_decref( p_input );
+        }
+    }
 }
 
 /*****************************************************************************
@@ -173,55 +245,5 @@ static int Open( vlc_object_t *p_this, int i_type )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    services_discovery_t *p_sd = ( services_discovery_t* )p_this;
-    services_discovery_sys_t *p_sys  = p_sd->p_sys;
-    playlist_t *p_playlist =  (playlist_t *) vlc_object_find( p_sd,
-                                 VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
-    if( p_playlist )
-    {
-        playlist_NodeDelete( p_playlist, p_sys->p_item, VLC_TRUE, VLC_TRUE );
-        vlc_object_release( p_playlist );
-    }
-    free( p_sys );
-}
-
-/*****************************************************************************
- * Run: main thread
- *****************************************************************************/
-static void Run( services_discovery_t *p_sd )
-{
-    services_discovery_sys_t *p_sys  = p_sd->p_sys;
-    int i_id = input_Read( p_sd, &p_sys->p_item->input, VLC_FALSE );
-    int i_dialog_id;
-
-    i_dialog_id = intf_UserProgress( p_sd, "Shoutcast" , "Connecting...", 0.0 );
-
-    p_sys->b_dialog = VLC_TRUE;
-    while( !p_sd->b_die )
-    {
-        input_thread_t *p_input = (input_thread_t *)vlc_object_get( p_sd,
-                                                                    i_id );
-
-        /* The Shoutcast server does not return a content-length so we
-         * can't know where we are. Use the number of inserted items
-         * as a hint */
-        if( p_input != NULL )
-        {
-            int i_state = var_GetInteger( p_input, "state" );
-            if( i_state == PLAYING_S )
-            {
-                float f_pos = (float)(p_sys->p_item->i_children)* 2 *100.0 /
-                              260 /* gruiiik FIXME */;
-                intf_UserProgressUpdate( p_sd, i_dialog_id, "Downloading",
-                                         f_pos );
-            }
-            vlc_object_release( p_input );
-        }
-        else if( p_sys->b_dialog )
-        {
-            p_sys->b_dialog  = VLC_FALSE;
-            intf_UserHide( p_sd, i_dialog_id );
-        }
-        msleep( 10000 );
-    }
+    VLC_UNUSED(p_this);
 }

@@ -2,7 +2,7 @@
  * netsync.c: synchronisation between several network clients.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 5280814a4f535825f865264dcba2b0ad3cc0294c $
+ * $Id: 8be09774b1e4104c626d0226ab742345829795a1 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,10 +24,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_interface.h>
+#include <vlc_input.h>
+#include <vlc_es_out.h>
 
 #ifdef HAVE_UNISTD_H
 #    include <unistd.h>
@@ -38,8 +43,11 @@
 #ifdef HAVE_SYS_TYPES_H
 #   include <sys/types.h>
 #endif
+#ifdef HAVE_POLL
+#   include <poll.h>
+#endif
 
-#include "network.h"
+#include <vlc_network.h>
 
 #define NETSYNC_PORT 9875
 
@@ -47,6 +55,9 @@
 #ifndef INADDR_NONE
 #define INADDR_NONE 0xffffffff
 #endif
+
+/* FIXME: UGLY UGLY !! Netsync should be totally reworked */
+#include "../../src/input/input_internal.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -67,15 +78,15 @@ static mtime_t GetClockRef( intf_thread_t *, mtime_t );
   "the master client used for the network synchronisation." )
 
 vlc_module_begin();
-    set_shortname( _("Network Sync"));
-    set_description( _("Network synchronisation") );
+    set_shortname( N_("Network Sync"));
+    set_description( N_("Network synchronisation") );
     set_category( CAT_ADVANCED );
     set_subcategory( SUBCAT_ADVANCED_MISC );
 
     add_bool( "netsync-master", 0, NULL,
-              NETSYNC_TEXT, NETSYNC_LONGTEXT, VLC_TRUE );
+              NETSYNC_TEXT, NETSYNC_LONGTEXT, true );
     add_string( "netsync-master-ip", NULL, NULL, MIP_TEXT, MIP_LONGTEXT,
-                VLC_TRUE );
+                true );
 
     set_capability( "interface", 0 );
     set_callbacks( Activate, Close );
@@ -128,7 +139,7 @@ static void Run( intf_thread_t *p_intf )
 {
 #define MAX_MSG_LENGTH (2 * sizeof(int64_t))
 
-    vlc_bool_t b_master = config_GetInt( p_intf, "netsync-master" );
+    bool b_master = config_GetInt( p_intf, "netsync-master" );
     char *psz_master = NULL;
     char p_data[MAX_MSG_LENGTH];
     int i_socket;
@@ -144,11 +155,11 @@ static void Run( intf_thread_t *p_intf )
     }
 
     if( b_master )
-        i_socket = net_OpenUDP( p_intf, NULL, NETSYNC_PORT, NULL, 0 );
+        i_socket = net_ListenUDP1( VLC_OBJECT(p_intf), NULL, NETSYNC_PORT );
     else
-        i_socket = net_ConnectUDP( p_intf, psz_master, NETSYNC_PORT, 0 );
+        i_socket = net_ConnectUDP( VLC_OBJECT(p_intf), psz_master, NETSYNC_PORT, 0 );
 
-    if( psz_master ) free( psz_master );
+    free( psz_master );
 
     if( i_socket < 0 )
     {
@@ -159,11 +170,8 @@ static void Run( intf_thread_t *p_intf )
     /* High priority thread */
     vlc_thread_set_priority( p_intf, VLC_THREAD_PRIORITY_INPUT );
 
-    while( !p_intf->b_die )
+    while( !intf_ShouldDie( p_intf ) )
     {
-        struct timeval timeout;
-        fd_set fds_r;
-
         /* Update the input */
         if( p_intf->p_sys->p_input == NULL )
         {
@@ -189,10 +197,8 @@ static void Run( intf_thread_t *p_intf )
          */
 
         /* Initialize file descriptor set and timeout (0.5s) */
-        FD_ZERO( &fds_r );
-        FD_SET( i_socket, &fds_r );
-        timeout.tv_sec = 0;
-        timeout.tv_usec = 500000;
+        /* FIXME: arbitrary tick */
+        struct pollfd ufd = { .fd = i_socket, .events = POLLIN, };
 
         if( b_master )
         {
@@ -201,7 +207,7 @@ static void Run( intf_thread_t *p_intf )
             int i_struct_size, i_read, i_ret;
 
             /* Don't block */
-            i_ret = select( i_socket + 1, &fds_r, 0, 0, &timeout );
+            i_ret = poll( &ufd, 1, 500 );
             if( i_ret == 0 ) continue;
             if( i_ret < 0 )
             {
@@ -229,8 +235,8 @@ static void Run( intf_thread_t *p_intf )
                     (struct sockaddr *)&from, i_struct_size );
 
 #if 0
-            msg_Dbg( p_intf, "Master clockref: "I64Fd" -> "I64Fd", from %s "
-                     "(date: "I64Fd")", i_clockref, i_master_clockref,
+            msg_Dbg( p_intf, "Master clockref: %"PRId64" -> %"PRId64", from %s "
+                     "(date: %"PRId64")", i_clockref, i_master_clockref,
                      from.ss_family == AF_INET
                      ? inet_ntoa(((struct sockaddr_in *)&from)->sin_addr)
                      : "non-IPv4", i_date );
@@ -256,7 +262,7 @@ static void Run( intf_thread_t *p_intf )
             }
 
             /* Don't block */
-            i_ret = select(i_socket + 1, &fds_r, 0, 0, &timeout);
+            i_ret = poll( &ufd, 1, 500 );
             if( i_ret == 0 ) continue;
             if( i_ret < 0 )
             {
@@ -293,8 +299,8 @@ static void Run( intf_thread_t *p_intf )
             }
 
 #if 0
-            msg_Dbg( p_intf, "Slave clockref: "I64Fd" -> "I64Fd" -> "I64Fd", "
-                     "clock diff: "I64Fd" drift: "I64Fd,
+            msg_Dbg( p_intf, "Slave clockref: %"PRId64" -> %"PRId64" -> %"PRId64", "
+                     "clock diff: %"PRId64" drift: %"PRId64,
                      i_clockref, i_master_clockref,
                      i_client_clockref, i_diff_date, i_drift );
 #endif
@@ -313,9 +319,9 @@ static mtime_t GetClockRef( intf_thread_t *p_intf, mtime_t i_pts )
     input_thread_t *p_input = p_intf->p_sys->p_input;
     mtime_t i_ts;
 
-    if( !p_input || !p_input->p_es_out ) return 0;
+    if( !p_input || !p_input->p->p_es_out ) return 0;
 
-    if( es_out_Control( p_input->p_es_out, ES_OUT_GET_TS, i_pts, &i_ts ) ==
+    if( es_out_Control( p_input->p->p_es_out, ES_OUT_GET_TS, i_pts, &i_ts ) ==
         VLC_SUCCESS )
     {
         return i_ts;

@@ -2,7 +2,7 @@
  * os_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cced448cb9b1a737d7feb1c2677c1bf5cf38b4b1 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -121,7 +121,7 @@ class OSFactory: public SkinObject
         virtual int getScreenHeight() const = 0;
 
         /// Get the work area (screen area without taskbars)
-        virtual Rect getWorkArea() const = 0;
+        virtual SkinsRect getWorkArea() const = 0;
 
         /// Get the position of the mouse
         virtual void getMousePos( int &rXPos, int &rYPos ) const = 0;

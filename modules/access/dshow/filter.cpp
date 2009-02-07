@@ -2,7 +2,7 @@
  * filter.c : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: a167ea164ca6ea69c2492129e001dafcc9afebc9 $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,13 +24,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_vout.h>
 
 #ifndef _MSC_VER
     /* Work-around a bug in w32api-2.5 */
@@ -281,7 +281,7 @@ int GetFourCCFromMediaType( const AM_MEDIA_TYPE &media_type )
             else if( media_type.subtype == MEDIASUBTYPE_MPEG2_VIDEO )
                i_fourcc = VLC_FOURCC( 'm', 'p', '2', 'v' );
 
-	    /* DivX video */
+        /* DivX video */
             else if( media_type.subtype == MEDIASUBTYPE_DIVX )
                i_fourcc = VLC_FOURCC( 'D', 'I', 'V', 'X' );
 
@@ -446,7 +446,7 @@ STDMETHODIMP CapturePin::Connect( IPin * pReceivePin,
     }
 
     if( !pmt ) return S_OK;
-                
+ 
     if( GUID_NULL != pmt->majortype &&
         media_types[0].majortype != pmt->majortype )
     {
@@ -604,7 +604,7 @@ STDMETHODIMP CapturePin::QueryAccept( const AM_MEDIA_TYPE *pmt )
 
     int i_fourcc = GetFourCCFromMediaType(*pmt);
     if( !i_fourcc )
-    {   
+    {
         msg_Dbg( p_input, "CapturePin::QueryAccept "
                  "[media type not supported]" );
         return S_FALSE;
@@ -625,7 +625,7 @@ STDMETHODIMP CapturePin::QueryAccept( const AM_MEDIA_TYPE *pmt )
                  ((VIDEOINFOHEADER *)pmt->pbFormat)->bmiHeader.biWidth,
                  ((VIDEOINFOHEADER *)pmt->pbFormat)->bmiHeader.biHeight,
                  (char *)&i_fourcc,
-		 10000000.0f/((float)((VIDEOINFOHEADER *)pmt->pbFormat)->AvgTimePerFrame) );
+         10000000.0f/((float)((VIDEOINFOHEADER *)pmt->pbFormat)->AvgTimePerFrame) );
     }
     else if( pmt->majortype == MEDIATYPE_Audio )
     {
@@ -635,7 +635,7 @@ STDMETHODIMP CapturePin::QueryAccept( const AM_MEDIA_TYPE *pmt )
                  ((WAVEFORMATEX *)pmt->pbFormat)->nSamplesPerSec,
                  ((WAVEFORMATEX *)pmt->pbFormat)->wBitsPerSample,
                  (char *)&i_fourcc );
-    }   
+    }
     else
     {
         msg_Dbg( p_input, "CapturePin::QueryAccept [OK] (stream format=%4.4s)",
@@ -796,7 +796,7 @@ CaptureFilter::CaptureFilter( vlc_object_t *_p_input, access_sys_t *p_sys,
                               AM_MEDIA_TYPE *mt, size_t mt_count )
   : p_input( _p_input ),
     p_pin( new CapturePin( _p_input, p_sys, this, mt, mt_count ) ),
-    state( State_Stopped ), i_ref( 1 ) 
+    state( State_Stopped ), i_ref( 1 )
 {
 }
 
@@ -1138,12 +1138,12 @@ CaptureEnumMediaTypes::CaptureEnumMediaTypes( vlc_object_t *_p_input,
     /* Are we creating a new enumerator */
     if( pEnumMediaTypes == NULL )
     {
-        CopyMediaType(&cx_media_type, &p_pin->cx_media_type); 
+        CopyMediaType(&cx_media_type, &p_pin->cx_media_type);
         i_position = 0;
     }
     else
     {
-        CopyMediaType(&cx_media_type, &pEnumMediaTypes->cx_media_type); 
+        CopyMediaType(&cx_media_type, &pEnumMediaTypes->cx_media_type);
         i_position = pEnumMediaTypes->i_position;
     }
 }
@@ -1208,7 +1208,7 @@ STDMETHODIMP CaptureEnumMediaTypes::Next( ULONG cMediaTypes,
     ULONG offset = 0;
     ULONG max = p_pin->media_type_count;
 
-    if( ! ppMediaTypes ) 
+    if( ! ppMediaTypes )
         return E_POINTER;
 
     if( (! pcFetched)  && (cMediaTypes > 1) )
@@ -1227,7 +1227,7 @@ STDMETHODIMP CaptureEnumMediaTypes::Next( ULONG cMediaTypes,
                 (AM_MEDIA_TYPE *)CoTaskMemAlloc(sizeof(AM_MEDIA_TYPE));
             if( CopyMediaType(ppMediaTypes[copied], &cx_media_type) != S_OK )
                 return E_OUTOFMEMORY;
-            ++i_position; 
+            ++i_position;
             ++copied;
         }
     }
@@ -1241,7 +1241,7 @@ STDMETHODIMP CaptureEnumMediaTypes::Next( ULONG cMediaTypes,
             return E_OUTOFMEMORY;
 
         ++copied;
-        ++i_position; 
+        ++i_position;
     }
 
     if( pcFetched )  *pcFetched = copied;
@@ -1269,7 +1269,7 @@ STDMETHODIMP CaptureEnumMediaTypes::Reset()
 #endif
 
     FreeMediaType(cx_media_type);
-    CopyMediaType(&cx_media_type, &p_pin->cx_media_type); 
+    CopyMediaType(&cx_media_type, &p_pin->cx_media_type);
     i_position = 0;
     return S_OK;
 };

@@ -2,7 +2,7 @@
  * memcpy.c : classic memcpy module
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 4bd7a56d0936f23ade854e51a88d7ddabada8a36 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -24,10 +24,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
-#include <string.h>
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 
 #undef HAVE_MMX
 #undef HAVE_MMX2
@@ -53,7 +56,7 @@
  * Extern prototype
  *****************************************************************************/
 #ifndef MODULE_NAME_IS_memcpy
-#   define fast_memcpy E_(fast_memcpy)
+#   define fast_memcpy fast_memcpy
 #   include "fastmemcpy.h"
 #endif
 
@@ -62,12 +65,8 @@
  *****************************************************************************/
 static int Activate ( vlc_object_t *p_this )
 {
-#ifdef MODULE_NAME_IS_memcpy
-    p_this->p_vlc->pf_memcpy = memcpy;
-    p_this->p_vlc->pf_memset = memset;
-#else
-    p_this->p_vlc->pf_memcpy = fast_memcpy;
-    p_this->p_vlc->pf_memset = NULL;
+#ifndef MODULE_NAME_IS_memcpy
+    vlc_fastmem_register( fast_memcpy, NULL );
 #endif
 
     return VLC_SUCCESS;
@@ -80,23 +79,23 @@ vlc_module_begin();
     set_category( CAT_ADVANCED );
     set_subcategory( SUBCAT_ADVANCED_MISC );
 #ifdef MODULE_NAME_IS_memcpy
-    set_description( _("libc memcpy") );
+    set_description( N_("libc memcpy") );
     add_shortcut( "c" );
     add_shortcut( "libc" );
 #elif defined( MODULE_NAME_IS_memcpy3dn )
-    set_description( _("3D Now! memcpy") );
+    set_description( N_("3D Now! memcpy") );
     add_requirement( 3DNOW );
     add_shortcut( "3dn" );
     add_shortcut( "3dnow" );
     add_shortcut( "memcpy3dn" );
     add_shortcut( "memcpy3dnow" );
 #elif defined( MODULE_NAME_IS_memcpymmx )
-    set_description( _("MMX memcpy") );
+    set_description( N_("MMX memcpy") );
     add_requirement( MMX );
     add_shortcut( "mmx" );
     add_shortcut( "memcpymmx" );
 #elif defined( MODULE_NAME_IS_memcpymmxext )
-    set_description( _("MMX EXT memcpy") );
+    set_description( N_("MMX EXT memcpy") );
     add_requirement( MMXEXT );
     add_shortcut( "mmxext" );
     add_shortcut( "memcpymmxext" );

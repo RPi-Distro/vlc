@@ -1,0 +1,233 @@
+<ui version="4.0" >
+ <author>Jean-Baptiste Kempf</author>
+ <class>SPrefsVideo</class>
+ <widget class="QWidget" name="SPrefsVideo" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>408</width>
+    <height>513</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <property name="spacing" >
+    <number>10</number>
+   </property>
+   <property name="margin" >
+    <number>9</number>
+   </property>
+   <item>
+    <widget class="QCheckBox" name="enableVideo" >
+     <property name="text" >
+      <string>_("Enable video")</string>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="displayBox" >
+     <property name="title" >
+      <string>_("Display")</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="2" >
+       <widget class="QCheckBox" name="windowDecorations" >
+        <property name="text" >
+         <string>_("Window decorations")</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2" >
+       <widget class="QCheckBox" name="fullscreen" >
+        <property name="text" >
+         <string>_("Fullscreen")</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QCheckBox" name="alwaysOnTop" >
+        <property name="text" >
+         <string>_("Always on top")</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1" colspan="2" >
+       <widget class="QComboBox" name="outputModule" />
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="label_4" >
+        <property name="text" >
+         <string>_("Output")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>outputModule</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" >
+       <widget class="QCheckBox" name="overlay" >
+        <property name="text" >
+         <string>_("Accelerated video output")</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" colspan="2" >
+       <widget class="QCheckBox" name="skipFrames" >
+        <property name="text" >
+         <string>_("Skip frames")</string>
+        </property>
+        <property name="checked" >
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="directXBox" >
+     <property name="title" >
+      <string>_("DirectX")</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="1" column="1" colspan="2" >
+       <widget class="QComboBox" name="dXdisplayDevice" />
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="text" >
+         <string>_("Display device")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>dXdisplayDevice</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2" >
+       <widget class="QCheckBox" name="wallpaperMode" >
+        <property name="text" >
+         <string>_("Enable wallpaper mode")</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>_("Video snapshots")</string>
+     </property>
+     <layout class="QGridLayout" >
+      <property name="margin" >
+       <number>9</number>
+      </property>
+      <property name="spacing" >
+       <number>6</number>
+      </property>
+      <item row="0" column="1" colspan="2" >
+       <widget class="QLineEdit" name="snapshotsDirectory" />
+      </item>
+      <item row="0" column="3" >
+       <widget class="QPushButton" name="snapshotsDirectoryBrowse" >
+        <property name="text" >
+         <string>_("Browse...")</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>_("Directory")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>snapshotsDirectory</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>_("Prefix")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>snapshotsPrefix</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QLineEdit" name="snapshotsPrefix" >
+        <property name="text" >
+         <string>vlc-snap</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="text" >
+         <string>_("Format")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>snapshotsFormat</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="3" >
+       <widget class="QComboBox" name="snapshotsFormat" />
+      </item>
+      <item row="1" column="2" colspan="2" >
+       <widget class="QCheckBox" name="snapshotsSequentialNumbering" >
+        <property name="text" >
+         <string>_("Sequential numbering")</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>enableVideo</tabstop>
+  <tabstop>fullscreen</tabstop>
+  <tabstop>overlay</tabstop>
+  <tabstop>alwaysOnTop</tabstop>
+  <tabstop>windowDecorations</tabstop>
+  <tabstop>skipFrames</tabstop>
+  <tabstop>outputModule</tabstop>
+  <tabstop>wallpaperMode</tabstop>
+  <tabstop>dXdisplayDevice</tabstop>
+  <tabstop>snapshotsDirectory</tabstop>
+  <tabstop>snapshotsDirectoryBrowse</tabstop>
+  <tabstop>snapshotsPrefix</tabstop>
+  <tabstop>snapshotsSequentialNumbering</tabstop>
+  <tabstop>snapshotsFormat</tabstop>
+  <tabstop>overlay</tabstop>
+ </tabstops>
+ <resources/>
+ <connections/>
+</ui>

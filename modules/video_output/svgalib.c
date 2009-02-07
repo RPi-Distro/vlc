@@ -2,7 +2,7 @@
  * svgalib.c : SVGAlib plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 0f9d405f5fbef645525c194a32bc27daa773695f $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -24,10 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
 
 #include <vga.h>
 #include <vgagl.h>
@@ -53,7 +57,7 @@ vlc_module_begin();
     set_shortname( "SVGAlib" );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_description( _("SVGAlib video output") );
+    set_description( N_("SVGAlib video output") );
     set_capability( "video output", 0 );
     set_callbacks( Create, Destroy );
     linked_with_a_crap_library_which_uses_atexit();
@@ -231,7 +235,7 @@ static int Manage( vout_thread_t *p_vout )
     if( keyboard_keypressed(SCANCODE_ESCAPE)
          || keyboard_keypressed(SCANCODE_Q ) )
     {
-        p_vout->p_vlc->b_die = VLC_TRUE;
+        vlc_object_kill( p_vout->p_libvlc );
     }
 
     return VLC_SUCCESS;

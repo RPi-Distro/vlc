@@ -2,7 +2,7 @@
  * drms.c: DRMS
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: a71097d0f5af9fe6bb545719693c6820929fa27b $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Sam Hocevar <sam@zoy.org>
@@ -22,21 +22,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdlib.h>                                      /* malloc(), free() */
+#ifdef __LIBVLC__
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#   include <vlc_common.h>
+#   include <vlc_md5.h>
+#   include "libmp4.h"
+#   include <vlc_charset.h>
+#else
+#   include "drmsvl.h"
+#endif
 
 #ifdef WIN32
 #   include <io.h>
 #else
 #   include <stdio.h>
-#endif
-
-#ifdef __VLC__
-#   include <vlc/vlc.h>
-#   include <vlc_md5.h>
-#   include "libmp4.h"
-#   include "charset.h"
-#else
-#   include "drmsvl.h"
 #endif
 
 #ifdef HAVE_ERRNO_H
@@ -60,9 +62,7 @@
 #endif
 
 /* In Solaris (and perhaps others) PATH_MAX is in limits.h. */
-#ifdef HAVE_LIMITS_H
-#   include <limits.h>
-#endif
+#include <limits.h>
 
 #ifdef __APPLE__
 #   include <mach/mach.h>
@@ -90,7 +90,7 @@ struct aes_s
     uint32_t pp_dec_keys[ AES_KEY_COUNT + 1 ][ 4 ];
 };
 
-#ifdef __VLC__
+#ifdef __LIBVLC__
 # define Digest DigestMD5
 #else
 /*****************************************************************************
@@ -146,7 +146,7 @@ struct drms_s
 static void InitAES       ( struct aes_s *, uint32_t * );
 static void DecryptAES    ( struct aes_s *, uint32_t *, const uint32_t * );
 
-#ifndef __VLC__
+#ifndef __LIBVLC__
 static void InitMD5       ( struct md5_s * );
 static void AddMD5        ( struct md5_s *, const uint8_t *, uint32_t );
 static void EndMD5        ( struct md5_s * );
@@ -170,7 +170,7 @@ static void TinyShuffle7  ( uint32_t * );
 static void TinyShuffle8  ( uint32_t * );
 static void DoExtShuffle  ( uint32_t * );
 
-static int GetSystemKey   ( uint32_t *, vlc_bool_t );
+static int GetSystemKey   ( uint32_t *, bool );
 static int WriteUserKey   ( void *, uint32_t * );
 static int ReadUserKey    ( void *, uint32_t * );
 static int GetUserKey     ( void *, uint32_t * );
@@ -213,7 +213,7 @@ static inline void BlockXOR( uint32_t *p_dest, uint32_t *p_s1, uint32_t *p_s2 )
 /*****************************************************************************
  * drms_alloc: allocate a DRMS structure
  *****************************************************************************/
-void *drms_alloc( char *psz_homedir )
+void *drms_alloc( const char *psz_homedir )
 {
     struct drms_s *p_drms;
 
@@ -360,7 +360,7 @@ int drms_init( void *_p_drms, uint32_t i_type,
 
             if( p_drms->i_user == 0 && p_drms->i_key == 0 )
             {
-                static char const p_secret[] = "tr1-th3n.y00_by3";
+                static const char p_secret[] = "tr1-th3n.y00_by3";
                 memcpy( p_drms->p_key, p_secret, 16 );
                 REVERSE( p_drms->p_key, 4 );
             }
@@ -504,7 +504,7 @@ static void DecryptAES( struct aes_s *p_aes,
     }
 }
 
-#ifndef __VLC__
+#ifndef __LIBVLC__
 /*****************************************************************************
  * InitMD5: initialise an MD5 message
  *****************************************************************************
@@ -703,7 +703,7 @@ static void InitShuffle( struct shuffle_s *p_shuffle, uint32_t *p_sys_key,
                          uint32_t i_version )
 {
     char p_secret1[] = "Tv!*";
-    static char const p_secret2[] = "____v8rhvsaAvOKM____FfUH%798=[;."
+    static const char p_secret2[] = "____v8rhvsaAvOKM____FfUH%798=[;."
                                     "____f8677680a634____ba87fnOIf)(*";
     unsigned int i;
 
@@ -751,9 +751,7 @@ static void DoShuffle( struct shuffle_s *p_shuffle,
     uint32_t *p_bordel = p_shuffle->p_bordel;
     unsigned int i;
 
-    static uint32_t i_secret = 0;
-
-    static uint32_t p_secret3[] =
+    static const uint32_t p_secret3[] =
     {
         0xAAAAAAAA, 0x01757700, 0x00554580, 0x01724500, 0x00424580,
         0x01427700, 0x00000080, 0xC1D59D01, 0x80144981, 0x815C8901,
@@ -763,21 +761,11 @@ static void DoShuffle( struct shuffle_s *p_shuffle,
         0xD5DDB938, 0x5455A092, 0x5D95A013, 0x4415A192, 0xC5DD393A,
         0x00000080, 0x55555555
     };
+    static const uint32_t i_secret3 = sizeof(p_secret3)/sizeof(p_secret3[0]);
 
-    static char p_secret4[] =
+    static const char p_secret4[] =
         "pbclevtug (p) Nccyr Pbzchgre, Vap.  Nyy Evtugf Erfreirq.";
-
-    if( i_secret == 0 )
-    {
-        REVERSE( p_secret3, sizeof(p_secret3)/sizeof(p_secret3[ 0 ]) );
-        for( ; p_secret4[ i_secret ] != '\0'; i_secret++ )
-        {
-#define ROT13(c) (((c)>='A'&&(c)<='Z')?(((c)-'A'+13)%26)+'A':\
-                  ((c)>='a'&&(c)<='z')?(((c)-'a'+13)%26)+'a':c)
-            p_secret4[ i_secret ] = ROT13(p_secret4[ i_secret ]);
-        }
-        i_secret++; /* include zero terminator */
-    }
+    static const uint32_t i_secret4 = sizeof(p_secret4)/sizeof(p_secret4[0]); /* It include the terminal '\0' */
 
     /* Using the MD5 hash of a memory block is probably not one-way enough
      * for the iTunes people. This function randomises p_bordel depending on
@@ -827,8 +815,20 @@ static void DoShuffle( struct shuffle_s *p_shuffle,
     AddMD5( &md5, (const uint8_t *)p_big_bordel, 64 );
     if( p_shuffle->i_version == 0x01000300 )
     {
-        AddMD5( &md5, (const uint8_t *)p_secret3, sizeof(p_secret3) );
-        AddMD5( &md5, (const uint8_t *)p_secret4, i_secret );
+        uint32_t p_tmp3[i_secret3];
+        char     p_tmp4[i_secret4];
+
+        memcpy( p_tmp3, p_secret3, sizeof(p_secret3) );
+        REVERSE( p_tmp3, i_secret3 );
+
+#define ROT13(c) (((c)>='A'&&(c)<='Z')?(((c)-'A'+13)%26)+'A':\
+                      ((c)>='a'&&(c)<='z')?(((c)-'a'+13)%26)+'a':c)
+        for( uint32_t i = 0; i < i_secret4; i++ )
+            p_tmp4[i] = ROT13( p_secret4[i] );
+#undef ROT13
+
+        AddMD5( &md5, (const uint8_t *)p_tmp3, sizeof(p_secret3) );
+        AddMD5( &md5, (const uint8_t *)p_tmp4, i_secret4 );
     }
     EndMD5( &md5 );
 
@@ -1504,10 +1504,10 @@ static void TinyShuffle8( uint32_t * p_bordel )
  *****************************************************************************
  * Compute the system key from various system information, see HashSystemInfo.
  *****************************************************************************/
-static int GetSystemKey( uint32_t *p_sys_key, vlc_bool_t b_ipod )
+static int GetSystemKey( uint32_t *p_sys_key, bool b_ipod )
 {
-    static char const p_secret5[ 8 ] = "YuaFlafu";
-    static char const p_secret6[ 8 ] = "zPif98ga";
+    static const char p_secret5[ 8 ] = "YuaFlafu";
+    static const char p_secret6[ 8 ] = "zPif98ga";
     struct md5_s md5;
     int64_t i_ipod_id;
     uint32_t p_system_hash[ 4 ];
@@ -1529,7 +1529,7 @@ static int GetSystemKey( uint32_t *p_sys_key, vlc_bool_t b_ipod )
         AddMD5( &md5, (const uint8_t *)p_system_hash, 6 );
         AddMD5( &md5, (const uint8_t *)p_system_hash, 6 );
         AddMD5( &md5, (const uint8_t *)p_system_hash, 6 );
-        AddMD5( &md5, (const uint8_t*)p_secret6, 8 );
+        AddMD5( &md5, (const uint8_t *)p_secret6, 8 );
     }
     else
     {
@@ -1629,7 +1629,7 @@ static int ReadUserKey( void *_p_drms, uint32_t *p_user_key )
  *****************************************************************************/
 static int GetUserKey( void *_p_drms, uint32_t *p_user_key )
 {
-    static char const p_secret7[] = "mUfnpognadfgf873";
+    static const char p_secret7[] = "mUfnpognadfgf873";
     struct drms_s *p_drms = (struct drms_s *)_p_drms;
     struct aes_s aes;
     struct shuffle_s shuffle;
@@ -1651,7 +1651,7 @@ static int GetUserKey( void *_p_drms, uint32_t *p_user_key )
 
     psz_ipod = getenv( "IPOD" );
 
-    if( GetSystemKey( p_sys_key, psz_ipod ? VLC_TRUE : VLC_FALSE ) )
+    if( GetSystemKey( p_sys_key, psz_ipod ? true : false ) )
     {
         return -3;
     }
@@ -1779,30 +1779,35 @@ static int GetSCIData( char *psz_ipod, uint32_t **pp_sci,
     if( psz_ipod == NULL )
     {
 #ifdef WIN32
-        char *p_filename = "\\Apple Computer\\iTunes\\SC Info\\SC Info.sidb";
+        const wchar_t *wfile =
+                L"\\Apple Computer\\iTunes\\SC Info\\SC Info.sidb";
         typedef HRESULT (WINAPI *SHGETFOLDERPATH)( HWND, int, HANDLE, DWORD,
-                                                   LPSTR );
+                                                   LPWSTR );
         HINSTANCE shfolder_dll = NULL;
         SHGETFOLDERPATH dSHGetFolderPath = NULL;
+        wchar_t wpath[PATH_MAX];
 
         if( ( shfolder_dll = LoadLibrary( _T("SHFolder.dll") ) ) != NULL )
         {
             dSHGetFolderPath =
                 (SHGETFOLDERPATH)GetProcAddress( shfolder_dll,
-                                                 _T("SHGetFolderPathA") );
+                                                 _T("SHGetFolderPathW") );
         }
 
         if( dSHGetFolderPath != NULL &&
             SUCCEEDED( dSHGetFolderPath( NULL, CSIDL_COMMON_APPDATA,
-                                         NULL, 0, p_tmp ) ) )
+                                         NULL, 0, wpath ) ) )
         {
-            strncat( p_tmp, p_filename, min( strlen( p_filename ),
-                     (sizeof(p_tmp) - 1) - strlen( p_tmp ) ) );
+            if (wcslen( wpath ) + wcslen( wfile ) >= PATH_MAX )
+            {
+                return -1;
+            }
+            wcscat( wpath, wfile );
 
-            psz_path = FromLocale( p_tmp );
+            psz_path = FromWide( wpath );
             strncpy( p_tmp, psz_path, sizeof( p_tmp ) - 1 );
             p_tmp[sizeof( p_tmp ) - 1] = '\0';
-            LocaleFree( psz_path );
+            free( psz_path );
             psz_path = p_tmp;
         }
 
@@ -1880,7 +1885,7 @@ static int HashSystemInfo( uint32_t *p_system_hash )
     DWORD i_serial;
     LPBYTE p_reg_buf;
 
-    static LPCTSTR p_reg_keys[ 3 ][ 2 ] =
+    static const LPCTSTR p_reg_keys[ 3 ][ 2 ] =
     {
         {
             _T("HARDWARE\\DESCRIPTION\\System"),
@@ -2032,7 +2037,7 @@ static int GetiPodID( int64_t *p_ipod_id )
         mach_port_deallocate( mach_task_self(), port );
     }
 
-#elif HAVE_SYSFS_LIBSYSFS_H
+#elif defined (HAVE_SYSFS_LIBSYSFS_H)
     struct sysfs_bus *bus = NULL;
     struct dlist *devlist = NULL;
     struct dlist *attributes = NULL;

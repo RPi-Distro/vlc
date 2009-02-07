@@ -2,7 +2,7 @@
  * win32.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 3a204fbac9c43b512f4413d701b4e0895da75ad6 $
+ * $Id: f267b08b49ab8e04af429f9827bfc5b2c56913bb $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,10 +24,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #include "screen.h"
 
@@ -93,15 +95,38 @@ int screen_InitCapture( demux_t *p_demux )
         return VLC_EGENERIC;
     }
 
-#if 1 /* For now we force RV24 because of chroma inversion in the other cases*/
-    i_chroma = VLC_FOURCC('R','V','2','4');
-    i_bits_per_pixel = 24;
-#endif
-
     es_format_Init( &p_sys->fmt, VIDEO_ES, i_chroma );
     p_sys->fmt.video.i_width  = GetDeviceCaps( p_data->hdc_src, HORZRES );
     p_sys->fmt.video.i_height = GetDeviceCaps( p_data->hdc_src, VERTRES );
     p_sys->fmt.video.i_bits_per_pixel = i_bits_per_pixel;
+
+    switch( i_chroma )
+    {
+    case VLC_FOURCC('R','V','1','5'):
+        p_sys->fmt.video.i_rmask = 0x7c00;
+        p_sys->fmt.video.i_gmask = 0x03e0;
+        p_sys->fmt.video.i_bmask = 0x001f;
+        break;
+    case VLC_FOURCC('R','V','1','6'):
+        p_sys->fmt.video.i_rmask = 0xf800;
+        p_sys->fmt.video.i_gmask = 0x07e0;
+        p_sys->fmt.video.i_bmask = 0x001f;
+        break;
+    case VLC_FOURCC('R','V','2','4'):
+        p_sys->fmt.video.i_rmask = 0x00ff0000;
+        p_sys->fmt.video.i_gmask = 0x0000ff00;
+        p_sys->fmt.video.i_bmask = 0x000000ff;
+        break;
+    case VLC_FOURCC('R','V','3','2'):
+        p_sys->fmt.video.i_rmask = 0x00ff0000;
+        p_sys->fmt.video.i_gmask = 0x0000ff00;
+        p_sys->fmt.video.i_bmask = 0x000000ff;
+        break;
+    default:
+        msg_Warn( p_demux, "Unknown RGB masks" );
+        break;
+    }
+
 
     /* Create the bitmap info header */
     p_data->bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
@@ -115,14 +140,6 @@ int screen_InitCapture( demux_t *p_demux )
         p_data->bmi.bmiHeader.biYPelsPerMeter = 0;
     p_data->bmi.bmiHeader.biClrUsed = 0;
     p_data->bmi.bmiHeader.biClrImportant = 0;
-
-    if( i_chroma == VLC_FOURCC('R','V','2','4') )
-    {
-        /* This is in BGR format */
-        p_sys->fmt.video.i_bmask = 0x00ff0000;
-        p_sys->fmt.video.i_gmask = 0x0000ff00;
-        p_sys->fmt.video.i_rmask = 0x000000ff;
-    }
 
     var_Create( p_demux, "screen-fragment-size",
                 VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
@@ -159,12 +176,13 @@ int screen_CloseCapture( demux_t *p_demux )
 
 struct block_sys_t
 {
+    block_t self;
     HBITMAP hbmp;
 };
 
 static void CaptureBlockRelease( block_t *p_block )
 {
-    DeleteObject( p_block->p_sys->hbmp );
+    DeleteObject( ((block_sys_t *)p_block)->hbmp );
     free( p_block );
 }
 
@@ -172,7 +190,7 @@ static block_t *CaptureBlockNew( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     screen_data_t *p_data = p_sys->p_data;
-    block_t *p_block;
+    block_sys_t *p_block;
     void *p_buffer;
     int i_buffer;
     HBITMAP hbmp;
@@ -206,20 +224,14 @@ static block_t *CaptureBlockNew( demux_t *p_demux )
         DeleteObject( hbmp );
         return NULL;
     }
-    memset( p_block, 0, sizeof( block_t ) );
-    p_block->p_sys = (block_sys_t *)( (uint8_t *)p_block + sizeof( block_t ) );
-
     /* Fill all fields */
     i_buffer = (p_sys->fmt.video.i_bits_per_pixel + 7) / 8 *
         p_sys->fmt.video.i_width * p_sys->fmt.video.i_height;
-    p_block->p_next         = NULL;
-    p_block->i_buffer       = i_buffer;
-    p_block->p_buffer       = p_buffer;
-    p_block->pf_release     = CaptureBlockRelease;
-    p_block->p_manager      = VLC_OBJECT( p_demux->p_vlc );
-    p_block->p_sys->hbmp    = hbmp;
+    block_Init( &p_block->self, p_buffer, i_buffer );
+    p_block->self.pf_release = CaptureBlockRelease;
+    p_block->hbmp            = hbmp;
 
-    return p_block;
+    return &p_block->self;
 }
 
 block_t *screen_Capture( demux_t *p_demux )

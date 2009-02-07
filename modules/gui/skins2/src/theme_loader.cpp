@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a611f8713c8c4a39d9ff8c8ac6e0ccb53721b0b7 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -52,7 +52,7 @@
 #if defined( HAVE_ZLIB_H )
 #   include <zlib.h>
 #   include <errno.h>
-int gzopen_frontend ( char *pathname, int oflags, int mode );
+int gzopen_frontend ( const char *pathname, int oflags, int mode );
 int gzclose_frontend( int );
 int gzread_frontend ( int, void *, size_t );
 int gzwrite_frontend( int, const void *, size_t );
@@ -75,9 +75,16 @@ int makedir( const char *newdir );
 
 bool ThemeLoader::load( const string &fileName )
 {
+    string path = getFilePath( fileName );
+
+    //Before all, let's see if the file is present
+    struct stat p_stat;
+    if( utf8_stat( path.c_str(), &p_stat ) )
+        return false;
+
     // First, we try to un-targz the file, and if it fails we hope it's a XML
     // file...
-    string path = getFilePath( fileName );
+
 #if defined( HAVE_ZLIB_H )
     if( ! extract( sToLocale( fileName ) ) && ! parse( path, fileName ) )
         return false;
@@ -107,7 +114,7 @@ bool ThemeLoader::load( const string &fileName )
         // Show the windows
         pNewTheme->getWindowManager().showAll( true );
     }
-    if( skin_last ) free( skin_last );
+    free( skin_last );
 
     // The new theme cannot embed a video output yet
     VlcProc::instance( getIntf() )->dropVout();
@@ -280,7 +287,7 @@ bool ThemeLoader::extract( const string &fileName )
 {
     bool result = true;
     char *tmpdir = tempnam( NULL, "vlt" );
-    string tempPath = tmpdir;
+    string tempPath = sFromLocale( tmpdir );
     free( tmpdir );
 
     // Extract the file in a temporary directory
@@ -313,7 +320,7 @@ bool ThemeLoader::extract( const string &fileName )
             list<string>::const_iterator it;
             for( it = resPath.begin(); it != resPath.end(); it++ )
             {
-                if( findFile( sToLocale( *it ), WINAMP2_XML_FILE, xmlFile ) )
+                if( findFile( *it, WINAMP2_XML_FILE, xmlFile ) )
                     break;
             }
         }
@@ -412,10 +419,10 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
     const string &sep = OSFactory::instance( getIntf() )->getDirSeparator();
 
     DIR *pCurrDir;
-    struct dirent *pDirContent;
+    char *pszDirContent;
 
     // Open the dir
-    pCurrDir = opendir( rootDir.c_str() );
+    pCurrDir = utf8_opendir( rootDir.c_str() );
 
     if( pCurrDir == NULL )
     {
@@ -424,22 +431,20 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
         return false;
     }
 
-    // Get the first directory entry
-    pDirContent = (dirent*)readdir( pCurrDir );
-
     // While we still have entries in the directory
-    while( pDirContent != NULL )
+    while( ( pszDirContent = utf8_readdir( pCurrDir ) ) != NULL )
     {
-        string newURI = rootDir + sep + pDirContent->d_name;
+        string newURI = rootDir + sep + pszDirContent;
 
         // Skip . and ..
-        if( string( pDirContent->d_name ) != "." &&
-            string( pDirContent->d_name ) != ".." )
+        if( string( pszDirContent ) != "." &&
+            string( pszDirContent ) != ".." )
         {
 #if defined( S_ISDIR )
             struct stat stat_data;
-            stat( newURI.c_str(), &stat_data );
-            if( S_ISDIR(stat_data.st_mode) )
+
+            if( ( utf8_stat( newURI.c_str(), &stat_data ) == 0 )
+             && S_ISDIR(stat_data.st_mode) )
 #elif defined( DT_DIR )
             if( pDirContent->d_type & DT_DIR )
 #else
@@ -449,6 +454,7 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
                 // Can we find the file in this subdirectory?
                 if( findFile( newURI, rFileName, themeFilePath ) )
                 {
+                    free( pszDirContent );
                     closedir( pCurrDir );
                     return true;
                 }
@@ -456,16 +462,17 @@ bool ThemeLoader::findFile( const string &rootDir, const string &rFileName,
             else
             {
                 // Found the theme file?
-                if( rFileName == string( pDirContent->d_name ) )
+                if( rFileName == string( pszDirContent ) )
                 {
-                    themeFilePath = sFromLocale( newURI );
+                    themeFilePath = newURI;
+                    free( pszDirContent );
                     closedir( pCurrDir );
                     return true;
                 }
             }
         }
 
-        pDirContent = (dirent*)readdir( pCurrDir );
+        free( pszDirContent );
     }
 
     closedir( pCurrDir );
@@ -625,6 +632,7 @@ int tar_extract_all( TAR *t, char *prefix )
                 {
                     fprintf( stderr, "error writing %s skipping...\n", fname );
                     fclose( outfile );
+                    outfile = NULL;
                     unlink( fname );
                 }
             }
@@ -731,9 +739,9 @@ int makedir( const char *newdir )
 static int currentGzFd = -1;
 static void * currentGzVp = NULL;
 
-int gzopen_frontend( char *pathname, int oflags, int mode )
+int gzopen_frontend( const char *pathname, int oflags, int mode )
 {
-    char *gzflags;
+    const char *gzflags;
     gzFile gzf;
 
     switch( oflags )

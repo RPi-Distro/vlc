@@ -4,12 +4,13 @@
  *****************************************************************************
  * Copyright (C) 2003 ANEVIA
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: 5ad7773edc7a88fc20dca0577e999d5dc6f991d7 $
+ * $Id: 57dadf361e09d817de178b06971637bf72854507 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien LUCAS <damien.lucas@anevia.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
+ *          Derk-Jan Hartman <hartman #at# videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,13 +31,23 @@
  *
  * FIXME:
  * DVB subtitles coded as strings of characters are not handled correctly.
- * The character codes in the string should actually be indexes refering to a
+ * The character codes in the string should actually be indexes referring to a
  * character table identified in the subtitle descriptor.
+ *
+ * The spec is quite vague in this area, but what is meant is perhaps that it
+ * refers to the character index in the codepage belonging to the language specified
+ * in the subtitle descriptor. Potentially it's designed for widechar
+ * (but not for UTF-*) codepages.
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include <vlc/decoder.h>
-#include <vlc/sout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
+#include <vlc_codec.h>
+#include <vlc_sout.h>
 
 #include "vlc_bits.h"
 
@@ -46,7 +57,7 @@
 #define POSX_LONGTEXT N_("X coordinate of the rendered subtitle")
 
 #define POSY_TEXT N_("Decoding Y coordinate")
-#define POSY_LONGTEXT N_("Y coordinate of the rendered subtitle") 
+#define POSY_LONGTEXT N_("Y coordinate of the rendered subtitle")
 
 #define POS_TEXT N_("Subpicture position")
 #define POS_LONGTEXT N_( \
@@ -59,8 +70,8 @@
 #define ENC_POSY_TEXT N_("Encoding Y coordinate")
 #define ENC_POSY_LONGTEXT N_("Y coordinate of the encoded subtitle" )
 
-static int pi_pos_values[] = { 0, 1, 2, 4, 8, 5, 6, 9, 10 };
-static char *ppsz_pos_descriptions[] =
+static const int pi_pos_values[] = { 0, 1, 2, 4, 8, 5, 6, 9, 10 };
+static const char *const ppsz_pos_descriptions[] =
 { N_("Center"), N_("Left"), N_("Right"), N_("Top"), N_("Bottom"),
   N_("Top-Left"), N_("Top-Right"), N_("Bottom-Left"), N_("Bottom-Right") };
 
@@ -77,29 +88,29 @@ static block_t *Encode  ( encoder_t *, subpicture_t * );
 
 vlc_module_begin();
 #   define DVBSUB_CFG_PREFIX "dvbsub-"
-    set_description( _("DVB subtitles decoder") );
+    set_description( N_("DVB subtitles decoder") );
     set_capability( "decoder", 50 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_SCODEC );
     set_callbacks( Open, Close );
 
-    add_integer( DVBSUB_CFG_PREFIX "position", 8, NULL, POS_TEXT, POS_LONGTEXT, VLC_TRUE );
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, 0 );
-    add_integer( DVBSUB_CFG_PREFIX "x", -1, NULL, POSX_TEXT, POSX_LONGTEXT, VLC_FALSE );
-    add_integer( DVBSUB_CFG_PREFIX "y", -1, NULL, POSY_TEXT, POSY_LONGTEXT, VLC_FALSE );
+    add_integer( DVBSUB_CFG_PREFIX "position", 8, NULL, POS_TEXT, POS_LONGTEXT, true );
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
+    add_integer( DVBSUB_CFG_PREFIX "x", -1, NULL, POSX_TEXT, POSX_LONGTEXT, false );
+    add_integer( DVBSUB_CFG_PREFIX "y", -1, NULL, POSY_TEXT, POSY_LONGTEXT, false );
 
 #   define ENC_CFG_PREFIX "sout-dvbsub-"
     add_submodule();
-    set_description( _("DVB subtitles encoder") );
+    set_description( N_("DVB subtitles encoder") );
     set_capability( "encoder", 100 );
     set_callbacks( OpenEncoder, CloseEncoder );
 
-    add_integer( ENC_CFG_PREFIX "x", -1, NULL, ENC_POSX_TEXT, ENC_POSX_LONGTEXT, VLC_FALSE );
-    add_integer( ENC_CFG_PREFIX "y", -1, NULL, ENC_POSY_TEXT, ENC_POSY_LONGTEXT, VLC_FALSE );
-    add_suppressed_integer( ENC_CFG_PREFIX "timeout" ); /* Suppressed since 0.8.5 */
+    add_integer( ENC_CFG_PREFIX "x", -1, NULL, ENC_POSX_TEXT, ENC_POSX_LONGTEXT, false );
+    add_integer( ENC_CFG_PREFIX "y", -1, NULL, ENC_POSY_TEXT, ENC_POSY_LONGTEXT, false );
+    add_obsolete_integer( ENC_CFG_PREFIX "timeout" ); /* Suppressed since 0.8.5 */
 vlc_module_end();
 
-static const char *ppsz_enc_options[] = { "x", "y", NULL };
+static const char *const ppsz_enc_options[] = { "x", "y", NULL };
 
 /****************************************************************************
  * Local structures
@@ -107,7 +118,7 @@ static const char *ppsz_enc_options[] = { "x", "y", NULL };
  * Those structures refer closely to the ETSI 300 743 Object model
  ****************************************************************************/
 
-/* The object definition gives the position of the object in a region */
+/* The object definition gives the position of the object in a region [7.2.5] */
 typedef struct dvbsub_objectdef_s
 {
     int i_id;
@@ -130,7 +141,24 @@ typedef struct
 
 } dvbsub_color_t;
 
-/* */
+/* The displays dimensions [7.2.1] */
+typedef struct dvbsub_display_s
+{
+    uint8_t                 i_id;
+    uint8_t                 i_version;
+
+    int                     i_width;
+    int                     i_height;
+
+    bool              b_windowed;
+    int                     i_x;
+    int                     i_y;
+    int                     i_max_x;
+    int                     i_max_y;
+
+} dvbsub_display_t;
+
+/* [7.2.4] */
 typedef struct dvbsub_clut_s
 {
     uint8_t                 i_id;
@@ -143,7 +171,7 @@ typedef struct dvbsub_clut_s
 
 } dvbsub_clut_t;
 
-/* The Region is an aera on the image
+/* The Region is an aera on the image [7.2.3]
  * with a list of the object definitions associated and a CLUT */
 typedef struct dvbsub_region_s
 {
@@ -175,7 +203,7 @@ typedef struct dvbsub_regiondef_s
 
 } dvbsub_regiondef_t;
 
-/* The page defines the list of regions */
+/* The page defines the list of regions [7.2.2] */
 typedef struct
 {
     int i_id;
@@ -197,16 +225,17 @@ struct decoder_sys_t
     int             i_ancillary_id;
     mtime_t         i_pts;
 
-    vlc_bool_t      b_absolute;
+    bool      b_absolute;
     int             i_spu_position;
     int             i_spu_x;
     int             i_spu_y;
 
-    vlc_bool_t      b_page;
+    bool      b_page;
     dvbsub_page_t   *p_page;
     dvbsub_region_t *p_regions;
     dvbsub_clut_t   *p_cluts;
-    dvbsub_clut_t   default_clut;
+    dvbsub_display_t *p_display;
+    dvbsub_clut_t    default_clut;
 };
 
 
@@ -216,6 +245,7 @@ struct decoder_sys_t
 #define DVBSUB_ST_REGION_COMPOSITION    0x11
 #define DVBSUB_ST_CLUT_DEFINITION       0x12
 #define DVBSUB_ST_OBJECT_DATA           0x13
+#define DVBSUB_ST_DISPLAY_DEFINITION    0x14
 #define DVBSUB_ST_ENDOFDISPLAY          0x80
 #define DVBSUB_ST_STUFFING              0xff
 /* List of different OBJECT TYPES */
@@ -224,7 +254,7 @@ struct decoder_sys_t
 #define DVBSUB_OT_BASIC_CHAR            0x01
 #define DVBSUB_OT_COMPOSITE_STRING      0x02
 /* Pixel DATA TYPES */
-/* According to EN 300-743, table 9 */ 
+/* According to EN 300-743, table 9 */
 #define DVBSUB_DT_2BP_CODE_STRING       0x10
 #define DVBSUB_DT_4BP_CODE_STRING       0x11
 #define DVBSUB_DT_8BP_CODE_STRING       0x12
@@ -244,6 +274,7 @@ static void decode_segment( decoder_t *, bs_t * );
 static void decode_page_composition( decoder_t *, bs_t * );
 static void decode_region_composition( decoder_t *, bs_t * );
 static void decode_object( decoder_t *, bs_t * );
+static void decode_display_definition( decoder_t *, bs_t * );
 static void decode_clut( decoder_t *, bs_t * );
 static void free_all( decoder_t * );
 
@@ -271,15 +302,18 @@ static int Open( vlc_object_t *p_this )
 
     p_dec->pf_decode_sub = Decode;
     p_sys = p_dec->p_sys = malloc( sizeof(decoder_sys_t) );
+    if( !p_sys )
+        return VLC_ENOMEM;
     memset( p_sys, 0, sizeof(decoder_sys_t) );
 
-    p_sys->i_pts          = (mtime_t) 0;    
+    p_sys->i_pts          = (mtime_t) 0;
     p_sys->i_id           = p_dec->fmt_in.subs.dvb.i_id & 0xFFFF;
     p_sys->i_ancillary_id = p_dec->fmt_in.subs.dvb.i_id >> 16;
 
     p_sys->p_regions      = NULL;
     p_sys->p_cluts        = NULL;
     p_sys->p_page         = NULL;
+    p_sys->p_display      = NULL;
 
     var_Create( p_this, DVBSUB_CFG_PREFIX "position",
                 VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
@@ -295,12 +329,12 @@ static int Open( vlc_object_t *p_this )
     i_posy = val.i_int;
 
     /* Check if subpicture position was overridden */
-    p_sys->b_absolute = VLC_TRUE;
+    p_sys->b_absolute = true;
     p_sys->i_spu_x = p_sys->i_spu_y = 0;
 
-    if( i_posx >= 0 && i_posy >= 0 )
+    if( ( i_posx >= 0 ) && ( i_posy >= 0 ) )
     {
-        p_sys->b_absolute = VLC_FALSE;
+        p_sys->b_absolute = true;
         p_sys->i_spu_x = i_posx;
         p_sys->i_spu_y = i_posy;
     }
@@ -322,7 +356,7 @@ static void Close( vlc_object_t *p_this )
 
     var_Destroy( p_this, DVBSUB_CFG_PREFIX "x" );
     var_Destroy( p_this, DVBSUB_CFG_PREFIX "y" );
-    var_Destroy( p_this, DVBSUB_CFG_PREFIX "position" );    
+    var_Destroy( p_this, DVBSUB_CFG_PREFIX "position" );
 
     free_all( p_dec );
     free( p_sys );
@@ -337,7 +371,7 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     block_t       *p_block;
     subpicture_t  *p_spu = NULL;
 
-    if( pp_block == NULL || *pp_block == NULL ) return NULL;
+    if( ( pp_block == NULL ) || ( *pp_block == NULL ) ) return NULL;
     p_block = *pp_block;
     *pp_block = NULL;
 
@@ -370,10 +404,10 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     }
 
 #ifdef DEBUG_DVBSUB
-    msg_Dbg( p_dec, "subtitle packet received: "I64Fd, p_sys->i_pts );
+    msg_Dbg( p_dec, "subtitle packet received: %"PRId64, p_sys->i_pts );
 #endif
 
-    p_sys->b_page = VLC_FALSE;
+    p_sys->b_page = false;
     while( bs_show( &p_sys->bs, 8 ) == 0x0f ) /* Sync byte */
     {
         decode_segment( p_dec, &p_sys->bs );
@@ -387,7 +421,8 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     }
 
     /* Check if the page is to be displayed */
-    if( p_sys->p_page && p_sys->b_page ) p_spu = render( p_dec );
+    if( p_sys->p_page && p_sys->b_page )
+        p_spu = render( p_dec );
 
     block_Release( p_block );
 
@@ -478,7 +513,8 @@ static void decode_segment( decoder_t *p_dec, bs_t *s )
     /* segment size */
     i_size = bs_show( s, 16 );
 
-    if( i_page_id != p_sys->i_id && i_page_id != p_sys->i_ancillary_id )
+    if( ( i_page_id != p_sys->i_id ) &&
+        ( i_page_id != p_sys->i_ancillary_id ) )
     {
 #ifdef DEBUG_DVBSUB
         msg_Dbg( p_dec, "subtitle skipped (page id: %i, %i)",
@@ -488,9 +524,9 @@ static void decode_segment( decoder_t *p_dec, bs_t *s )
         return;
     }
 
-    if( p_sys->i_ancillary_id != p_sys->i_id &&
-        i_type == DVBSUB_ST_PAGE_COMPOSITION &&
-        i_page_id == p_sys->i_ancillary_id )
+    if( ( p_sys->i_ancillary_id != p_sys->i_id ) &&
+        ( i_type == DVBSUB_ST_PAGE_COMPOSITION ) &&
+        ( i_page_id == p_sys->i_ancillary_id ) )
     {
 #ifdef DEBUG_DVBSUB
         msg_Dbg( p_dec, "skipped invalid ancillary subtitle packet" );
@@ -536,6 +572,13 @@ static void decode_segment( decoder_t *p_dec, bs_t *s )
         decode_object( p_dec, s );
         break;
 
+    case DVBSUB_ST_DISPLAY_DEFINITION:
+#ifdef DEBUG_DVBSUB
+        msg_Dbg( p_dec, "decode_display_definition" );
+#endif
+        decode_display_definition( p_dec, s );
+        break;
+
     case DVBSUB_ST_ENDOFDISPLAY:
 #ifdef DEBUG_DVBSUB
         msg_Dbg( p_dec, "end of display" );
@@ -576,7 +619,7 @@ static void decode_clut( decoder_t *p_dec, bs_t *s )
     }
 
     /* Check version number */
-    if( p_clut && p_clut->i_version == i_version )
+    if( p_clut && ( p_clut->i_version == i_version ) )
     {
         /* Nothing to do */
         bs_skip( s, 8 * i_segment_length - 12 );
@@ -588,7 +631,9 @@ static void decode_clut( decoder_t *p_dec, bs_t *s )
 #ifdef DEBUG_DVBSUB
         msg_Dbg( p_dec, "new clut: %i", i_id );
 #endif
-        p_clut = malloc( sizeof(dvbsub_clut_t) );
+        p_clut = malloc( sizeof( dvbsub_clut_t ) );
+        if( !p_clut )
+            return;
         p_clut->p_next = p_sys->p_cluts;
         p_sys->p_cluts = p_clut;
     }
@@ -643,14 +688,14 @@ static void decode_clut( decoder_t *p_dec, bs_t *s )
         /* According to EN 300-743 section 7.2.3 note 1, type should
          * not have more than 1 bit set to one, but some streams don't
          * respect this note. */
-        if( i_type & 0x04 && i_id < 4 )
+        if( ( i_type & 0x04 ) && ( i_id < 4 ) )
         {
             p_clut->c_2b[i_id].Y = y;
             p_clut->c_2b[i_id].Cr = cr;
             p_clut->c_2b[i_id].Cb = cb;
             p_clut->c_2b[i_id].T = t;
         }
-        if( i_type & 0x02 && i_id < 16 )
+        if( ( i_type & 0x02 ) && ( i_id < 16 ) )
         {
             p_clut->c_4b[i_id].Y = y;
             p_clut->c_4b[i_id].Cr = cr;
@@ -687,8 +732,8 @@ static void decode_page_composition( decoder_t *p_dec, bs_t *s )
 #endif
         free_all( p_dec );
     }
-    else if( !p_sys->p_page && i_state != DVBSUB_PCS_STATE_ACQUISITION &&
-             i_state != DVBSUB_PCS_STATE_CHANGE )
+    else if( !p_sys->p_page && ( i_state != DVBSUB_PCS_STATE_ACQUISITION ) &&
+             ( i_state != DVBSUB_PCS_STATE_CHANGE ) )
     {
         /* Not a full PCS, we need to wait for one */
         msg_Dbg( p_dec, "didn't receive an acquisition page yet" );
@@ -706,7 +751,7 @@ static void decode_page_composition( decoder_t *p_dec, bs_t *s )
 #endif
 
     /* Check version number */
-    if( p_sys->p_page && p_sys->p_page->i_version == i_version )
+    if( p_sys->p_page && ( p_sys->p_page->i_version == i_version ) )
     {
         bs_skip( s,  8 * (i_segment_length - 2) );
         return;
@@ -715,6 +760,7 @@ static void decode_page_composition( decoder_t *p_dec, bs_t *s )
     {
         if( p_sys->p_page->i_region_defs )
             free( p_sys->p_page->p_region_defs );
+        p_sys->p_page->p_region_defs = NULL;
         p_sys->p_page->i_region_defs = 0;
     }
 
@@ -725,11 +771,13 @@ static void decode_page_composition( decoder_t *p_dec, bs_t *s )
 #endif
         /* Allocate a new page */
         p_sys->p_page = malloc( sizeof(dvbsub_page_t) );
+        if( !p_sys->p_page )
+            return;
     }
 
     p_sys->p_page->i_version = i_version;
     p_sys->p_page->i_timeout = i_timeout;
-    p_sys->b_page = VLC_TRUE;
+    p_sys->b_page = true;
 
     /* Number of regions */
     p_sys->p_page->i_region_defs = (i_segment_length - 2) / 6;
@@ -738,18 +786,21 @@ static void decode_page_composition( decoder_t *p_dec, bs_t *s )
 
     p_sys->p_page->p_region_defs =
         malloc( p_sys->p_page->i_region_defs * sizeof(dvbsub_region_t) );
-    for( i = 0; i < p_sys->p_page->i_region_defs; i++ )
+    if( p_sys->p_page->p_region_defs )
     {
-        p_sys->p_page->p_region_defs[i].i_id = bs_read( s, 8 );
-        bs_skip( s, 8 ); /* Reserved */
-        p_sys->p_page->p_region_defs[i].i_x = bs_read( s, 16 );
-        p_sys->p_page->p_region_defs[i].i_y = bs_read( s, 16 );
+        for( i = 0; i < p_sys->p_page->i_region_defs; i++ )
+        {
+            p_sys->p_page->p_region_defs[i].i_id = bs_read( s, 8 );
+            bs_skip( s, 8 ); /* Reserved */
+            p_sys->p_page->p_region_defs[i].i_x = bs_read( s, 16 );
+            p_sys->p_page->p_region_defs[i].i_y = bs_read( s, 16 );
 
 #ifdef DEBUG_DVBSUB
-        msg_Dbg( p_dec, "page_composition, region %i (%i,%i)",
-                 i, p_sys->p_page->p_region_defs[i].i_x,
-                 p_sys->p_page->p_region_defs[i].i_y );
+            msg_Dbg( p_dec, "page_composition, region %i (%i,%i)",
+                    i, p_sys->p_page->p_region_defs[i].i_x,
+                    p_sys->p_page->p_region_defs[i].i_y );
 #endif
+        }
     }
 }
 
@@ -760,7 +811,7 @@ static void decode_region_composition( decoder_t *p_dec, bs_t *s )
     int i_segment_length, i_processed_length, i_id, i_version;
     int i_width, i_height, i_level_comp, i_depth, i_clut;
     int i_8_bg, i_4_bg, i_2_bg;
-    vlc_bool_t b_fill;
+    bool b_fill;
 
     i_segment_length = bs_read( s, 16 );
     i_id = bs_read( s, 8 );
@@ -775,7 +826,7 @@ static void decode_region_composition( decoder_t *p_dec, bs_t *s )
     }
 
     /* Check version number */
-    if( p_region && p_region->i_version == i_version )
+    if( p_region && ( p_region->i_version == i_version ) )
     {
         bs_skip( s, 8 * (i_segment_length - 1) - 4 );
         return;
@@ -787,10 +838,13 @@ static void decode_region_composition( decoder_t *p_dec, bs_t *s )
         msg_Dbg( p_dec, "new region: %i", i_id );
 #endif
         p_region = *pp_region = malloc( sizeof(dvbsub_region_t) );
-        memset( p_region, 0, sizeof(dvbsub_region_t) );
-        p_region->p_object_defs = NULL;
-        p_region->p_pixbuf = NULL;
-        p_region->p_next = NULL;
+        if( p_region )
+        {
+            memset( p_region, 0, sizeof(dvbsub_region_t) );
+            p_region->p_object_defs = NULL;
+            p_region->p_pixbuf = NULL;
+            p_region->p_next = NULL;
+        }
     }
 
     /* Region attributes */
@@ -816,18 +870,14 @@ static void decode_region_composition( decoder_t *p_dec, bs_t *s )
 
     /* Free old object defs */
     while( p_region->i_object_defs )
-    {
-        int i = p_region->i_object_defs - 1;
-        if( p_region->p_object_defs[i].psz_text )
-            free( p_region->p_object_defs[i].psz_text );
-        if( !i ) free( p_region->p_object_defs );
+        free( p_region->p_object_defs[--p_region->i_object_defs].psz_text );
 
-        p_region->i_object_defs--;
-    }
+    free( p_region->p_object_defs );
     p_region->p_object_defs = NULL;
 
     /* Extra sanity checks */
-    if( p_region->i_width != i_width || p_region->i_height != i_height )
+    if( ( p_region->i_width != i_width ) ||
+        ( p_region->i_height != i_height ) )
     {
         if( p_region->p_pixbuf )
         {
@@ -838,10 +888,12 @@ static void decode_region_composition( decoder_t *p_dec, bs_t *s )
 
         p_region->p_pixbuf = malloc( i_height * i_width );
         p_region->i_depth = 0;
-        b_fill = VLC_TRUE;
+        b_fill = true;
     }
-    if( p_region->i_depth && (p_region->i_depth != i_depth ||
-        p_region->i_level_comp != i_level_comp || p_region->i_clut != i_clut) )
+    if( p_region->i_depth &&
+        ( ( p_region->i_depth != i_depth ) ||
+          ( p_region->i_level_comp != i_level_comp ) ||
+          ( p_region->i_clut != i_clut) ) )
     {
         msg_Dbg( p_dec, "region parameters changed (not allowed)" );
     }
@@ -849,8 +901,8 @@ static void decode_region_composition( decoder_t *p_dec, bs_t *s )
     /* Erase background of region */
     if( b_fill )
     {
-        int i_background = (p_region->i_depth == 1) ? i_2_bg :
-            (p_region->i_depth == 2) ? i_4_bg : i_8_bg;
+        int i_background = ( p_region->i_depth == 1 ) ? i_2_bg :
+            ( ( p_region->i_depth == 2 ) ? i_4_bg : i_8_bg );
         memset( p_region->p_pixbuf, i_background, i_width * i_height );
     }
 
@@ -884,14 +936,80 @@ static void decode_region_composition( decoder_t *p_dec, bs_t *s )
 
         i_processed_length += 6;
 
-        if( p_obj->i_type == DVBSUB_OT_BASIC_CHAR ||
-            p_obj->i_type == DVBSUB_OT_COMPOSITE_STRING )
+        if( ( p_obj->i_type == DVBSUB_OT_BASIC_CHAR ) ||
+            ( p_obj->i_type == DVBSUB_OT_COMPOSITE_STRING ) )
         {
             p_obj->i_fg_pc =  bs_read( s, 8 );
             p_obj->i_bg_pc =  bs_read( s, 8 );
             i_processed_length += 2;
         }
     }
+}
+
+/* ETSI 300 743 [7.2.1] */
+static void decode_display_definition( decoder_t *p_dec, bs_t *s )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    uint16_t      i_segment_length;
+    uint16_t      i_processed_length = 40;
+    dvbsub_display_t *p_display;
+    dvbsub_display_t *p_old = p_sys->p_display;
+    int           i_version;
+
+    i_segment_length = bs_read( s, 16 );
+    i_version        = bs_read( s, 4 );
+
+    /* Check version number */
+    if( p_old && ( p_old->i_version == i_version ) )
+    {
+        /* The definition did not change */
+        bs_skip( s, 8*i_segment_length - 4 );
+        return;
+    }
+
+#ifdef DEBUG_DVBSUB
+    msg_Dbg( p_dec, "new display definition: %i", i_version );
+#endif
+    p_display = malloc( sizeof(dvbsub_display_t) );
+    if( p_display )
+    {
+        /* We don't have this version of the display definition: Parse it */
+        p_display->i_version = i_version;
+        p_display->b_windowed = bs_read( s, 1 );
+        bs_skip( s, 3 ); /* Reserved bits */
+        p_display->i_width = bs_read( s, 16 )+1;
+        p_display->i_height = bs_read( s, 16 )+1;
+
+        if( p_display->b_windowed )
+        {
+#ifdef DEBUG_DVBSUB
+            msg_Dbg( p_dec, "display definition with offsets (windowed)" );
+#endif
+            /* Coordinates are measured from the top left corner */
+            p_display->i_x     = bs_read( s, 16 );
+            p_display->i_max_x = bs_read( s, 16 );
+            p_display->i_y     = bs_read( s, 16 );
+            p_display->i_max_y = bs_read( s, 16 );
+            i_processed_length += 64;
+        }
+    }
+
+    p_sys->p_display = p_display;
+    free( p_old );
+
+    if( i_processed_length != i_segment_length*8 )
+    {
+        msg_Err( p_dec, "processed length %d != segment length %d",
+                 i_processed_length, i_segment_length );
+    }
+
+#ifdef DEBUG_DVBSUB
+    msg_Dbg( p_dec, "version: %d, width: %d, height: %d",
+             p_display->i_version, p_display->i_width, p_display->i_height );
+    if( p_display->b_windowed )
+        msg_Dbg( p_dec, "xmin: %d, xmax: %d, ymin: %d, ymax: %d",
+                 p_display->i_x, p_display->i_max_x, p_display->i_y, p_display->i_max_y );
+#endif
 }
 
 static void dvbsub_render_pdata( decoder_t *, dvbsub_region_t *, int, int,
@@ -905,7 +1023,7 @@ static void decode_object( decoder_t *p_dec, bs_t *s )
     decoder_sys_t *p_sys = p_dec->p_sys;
     dvbsub_region_t *p_region;
     int i_segment_length, i_coding_method, i_version, i_id, i;
-    vlc_bool_t b_non_modify_color;
+    bool b_non_modify_color;
 
     /* ETSI 300-743 paragraph 7.2.4
      * sync_byte, segment_type and page_id have already been processed.
@@ -958,8 +1076,8 @@ static void decode_object( decoder_t *p_dec, bs_t *s )
         bs_skip( s, 8 * (i_segment_length - 7) );
 
         /* Sanity check */
-        if( i_segment_length < i_topfield + i_bottomfield + 7 ||
-            p_topfield + i_topfield + i_bottomfield > s->p_end )
+        if( ( i_segment_length < ( i_topfield + i_bottomfield + 7 ) ) ||
+            ( ( p_topfield + i_topfield + i_bottomfield ) > s->p_end ) )
         {
             msg_Dbg( p_dec, "corrupted object data" );
             return;
@@ -1002,8 +1120,8 @@ static void decode_object( decoder_t *p_dec, bs_t *s )
         uint8_t* p_start = s->p_start + bs_pos( s ) / 8;
 
         /* Sanity check */
-        if( i_segment_length <  i_number_of_codes*2 + 4 ||
-            p_start + i_number_of_codes*2 > s->p_end )
+        if( ( i_segment_length < ( i_number_of_codes*2 + 4 ) ) ||
+            ( ( p_start + i_number_of_codes*2 ) > s->p_end ) )
         {
             msg_Dbg( p_dec, "corrupted object data" );
             return;
@@ -1022,10 +1140,12 @@ static void decode_object( decoder_t *p_dec, bs_t *s )
                     realloc( p_region->p_object_defs[i].psz_text,
                              i_number_of_codes + 1 );
 
+                /* FIXME 16bits -> char ??? See Preamble */
                 for( j = 0; j < i_number_of_codes; j++ )
                 {
-                    p_region->p_object_defs[i].psz_text[j] = bs_read( s, 16 );
+                    p_region->p_object_defs[i].psz_text[j] = (char)(bs_read( s, 16 ) & 0xFF);
                 }
+                /* Null terminate the string */
                 p_region->p_object_defs[i].psz_text[j] = 0;
             }
         }
@@ -1098,13 +1218,14 @@ static void dvbsub_render_pdata( decoder_t *p_dec, dvbsub_region_t *p_region,
 
 static void dvbsub_pdata2bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
 {
-    vlc_bool_t b_stop = 0;
+    bool b_stop = false;
 
     while( !b_stop && !bs_eof( s ) )
     {
         int i_count = 0, i_color = 0;
 
-        if( (i_color = bs_read( s, 2 )) != 0x00 )
+        i_color = bs_read( s, 2 );
+        if( i_color != 0x00 )
         {
             i_count = 1;
         }
@@ -1122,7 +1243,7 @@ static void dvbsub_pdata2bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
                     switch( bs_read( s, 2 ) )     //Switch3
                     {
                     case 0x00:
-                        b_stop = 1;
+                        b_stop = true;
                         break;
                     case 0x01:
                         i_count = 2;
@@ -1150,10 +1271,10 @@ static void dvbsub_pdata2bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
         if( !i_count ) continue;
 
         /* Sanity check */
-        if( i_count + *pi_off > i_width ) break;
+        if( ( i_count + *pi_off ) > i_width ) break;
 
         if( i_count == 1 ) p[*pi_off] = i_color;
-        else memset( p + *pi_off, i_color, i_count );
+        else memset( ( p + *pi_off ), i_color, i_count );
 
         (*pi_off) += i_count;
     }
@@ -1163,13 +1284,14 @@ static void dvbsub_pdata2bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
 
 static void dvbsub_pdata4bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
 {
-    vlc_bool_t b_stop = 0;
+    bool b_stop = false;
 
     while( !b_stop && !bs_eof( s ) )
     {
         int i_count = 0, i_color = 0;
 
-        if( (i_color = bs_read( s, 4 )) != 0x00 )
+        i_color = bs_read( s, 4 );
+        if( i_color != 0x00 )
         {
             /* Add 1 pixel */
             i_count = 1;
@@ -1185,7 +1307,7 @@ static void dvbsub_pdata4bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
                 else
                 {
                     bs_skip( s, 3 );
-                    b_stop = 1;
+                    b_stop = true;
                 }
             }
             else
@@ -1221,10 +1343,10 @@ static void dvbsub_pdata4bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
         if( !i_count ) continue;
 
         /* Sanity check */
-        if( i_count + *pi_off > i_width ) break;
+        if( ( i_count + *pi_off ) > i_width ) break;
 
         if( i_count == 1 ) p[*pi_off] = i_color;
-        else memset( p + *pi_off, i_color, i_count );
+        else memset( ( p + *pi_off ), i_color, i_count );
 
         (*pi_off) += i_count;
     }
@@ -1234,13 +1356,14 @@ static void dvbsub_pdata4bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
 
 static void dvbsub_pdata8bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
 {
-    vlc_bool_t b_stop = 0;
+    bool b_stop = false;
 
     while( !b_stop && !bs_eof( s ) )
     {
         int i_count = 0, i_color = 0;
 
-        if( (i_color = bs_read( s, 8 )) != 0x00 )
+        i_color = bs_read( s, 8 );
+        if( i_color != 0x00 )
         {
             /* Add 1 pixel */
             i_count = 1;
@@ -1256,7 +1379,7 @@ static void dvbsub_pdata8bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
                 else
                 {
                     bs_skip( s, 7 );
-                    b_stop = 1;
+                    b_stop = true;
                 }
             }
             else
@@ -1269,10 +1392,10 @@ static void dvbsub_pdata8bpp( bs_t *s, uint8_t *p, int i_width, int *pi_off )
         if( !i_count ) continue;
 
         /* Sanity check */
-        if( i_count + *pi_off > i_width ) break;
+        if( ( i_count + *pi_off ) > i_width ) break;
 
         if( i_count == 1 ) p[*pi_off] = i_color;
-        else memset( p + *pi_off, i_color, i_count );
+        else memset( ( p + *pi_off ), i_color, i_count );
 
         (*pi_off) += i_count;
     }
@@ -1285,6 +1408,8 @@ static void free_all( decoder_t *p_dec )
     decoder_sys_t *p_sys = p_dec->p_sys;
     dvbsub_region_t *p_reg, *p_reg_next;
     dvbsub_clut_t *p_clut, *p_clut_next;
+
+    free( p_sys->p_display );
 
     for( p_clut = p_sys->p_cluts; p_clut != NULL; p_clut = p_clut_next )
     {
@@ -1299,10 +1424,9 @@ static void free_all( decoder_t *p_dec )
 
         p_reg_next = p_reg->p_next;
         for( i = 0; i < p_reg->i_object_defs; i++ )
-            if( p_reg->p_object_defs[i].psz_text )
-                free( p_reg->p_object_defs[i].psz_text );
+            free( p_reg->p_object_defs[i].psz_text );
         if( p_reg->i_object_defs ) free( p_reg->p_object_defs );
-        if( p_reg->p_pixbuf ) free( p_reg->p_pixbuf );
+        free( p_reg->p_pixbuf );
         free( p_reg );
     }
     p_sys->p_regions = NULL;
@@ -1335,7 +1459,7 @@ static subpicture_t *render( decoder_t *p_dec )
         msg_Dbg( p_dec, "rendering %i regions", p_sys->p_page->i_region_defs );
 #endif
 
-    for( i = 0; p_sys->p_page && i < p_sys->p_page->i_region_defs; i++ )
+    for( i = 0; p_sys->p_page && ( i < p_sys->p_page->i_region_defs ); i++ )
     {
         dvbsub_region_t     *p_region;
         dvbsub_regiondef_t  *p_regiondef;
@@ -1379,6 +1503,9 @@ static subpicture_t *render( decoder_t *p_dec )
             continue;
         }
 
+        /* FIXME: don't create a subpicture region with VLC_FOURCC YUVP 
+         * when it actually is a TEXT region */
+
         /* Create new SPU region */
         memset( &fmt, 0, sizeof(video_format_t) );
         fmt.i_chroma = VLC_FOURCC('Y','U','V','P');
@@ -1394,14 +1521,15 @@ static subpicture_t *render( decoder_t *p_dec )
         }
         p_spu_region->i_x = p_regiondef->i_x;
         p_spu_region->i_y = p_regiondef->i_y;
+        p_spu_region->i_align = p_sys->i_spu_position;
         *pp_spu_region = p_spu_region;
         pp_spu_region = &p_spu_region->p_next;
 
         /* Build palette */
-        fmt.p_palette->i_entries = p_region->i_depth == 1 ? 4 :
-            p_region->i_depth == 2 ? 16 : 256;
-        p_color = (p_region->i_depth == 1) ? p_clut->c_2b :
-            (p_region->i_depth == 2) ? p_clut->c_4b : p_clut->c_8b;
+        fmt.p_palette->i_entries = ( p_region->i_depth == 1 ) ? 4 :
+            ( ( p_region->i_depth == 2 ) ? 16 : 256 );
+        p_color = ( p_region->i_depth == 1 ) ? p_clut->c_2b :
+            ( ( p_region->i_depth == 2 ) ? p_clut->c_4b : p_clut->c_8b );
         for( j = 0; j < fmt.p_palette->i_entries; j++ )
         {
             fmt.p_palette->palette[j][0] = p_color[j].Y;
@@ -1428,7 +1556,7 @@ static subpicture_t *render( decoder_t *p_dec )
         {
             dvbsub_objectdef_t *p_object_def = &p_region->p_object_defs[j];
 
-            if( p_object_def->i_type != 1 || !p_object_def->psz_text )
+            if( ( p_object_def->i_type != 1 ) || !p_object_def->psz_text )
                 continue;
 
             /* Create new SPU region */
@@ -1448,24 +1576,41 @@ static subpicture_t *render( decoder_t *p_dec )
             p_spu_region->psz_text = strdup( p_object_def->psz_text );
             p_spu_region->i_x = p_regiondef->i_x + p_object_def->i_x;
             p_spu_region->i_y = p_regiondef->i_y + p_object_def->i_y;
+            p_spu_region->i_align = p_sys->i_spu_position;
             *pp_spu_region = p_spu_region;
             pp_spu_region = &p_spu_region->p_next;
         }
     }
 
     /* Set the pf_render callback */
-    p_spu->i_start = p_sys->i_pts;
-    p_spu->i_stop = p_spu->i_start + (mtime_t) (i_timeout * 1000000);
-    p_spu->b_ephemer = VLC_TRUE;
-    p_spu->b_fade = VLC_TRUE;
+    p_spu->i_start = (mtime_t) p_sys->i_pts;
+    //p_spu->i_stop = (mtime_t) 0;
+    p_spu->b_ephemer = true;
+    p_spu->b_pausable = true;
+    //p_spu->b_fade = true;
+    //p_spu->i_stop = p_spu->i_start + (mtime_t) (i_timeout * 1000000);
 
     /* Correct positioning of SPU */
     p_spu->b_absolute = p_sys->b_absolute;
-    p_spu->i_flags = p_sys->i_spu_position;
     p_spu->i_x = p_sys->i_spu_x;
     p_spu->i_y = p_sys->i_spu_y;
     p_spu->i_original_picture_width = 720;
     p_spu->i_original_picture_height = 576;
+
+    if( p_sys->p_display )
+    {
+        p_spu->i_original_picture_width = p_sys->p_display->i_width;
+        p_spu->i_original_picture_height = p_sys->p_display->i_height;
+
+        if( p_sys->p_display->b_windowed )
+        {
+            /* TODO: check that this actually works */
+            p_spu->i_original_picture_width = p_sys->p_display->i_max_x - p_sys->p_display->i_x;
+            p_spu->i_original_picture_height = p_sys->p_display->i_max_y - p_sys->p_display->i_y;
+            p_spu->i_x += p_sys->p_display->i_x;
+            p_spu->i_y += p_sys->p_display->i_y;
+        }
+    }
 
     return p_spu;
 }
@@ -1510,7 +1655,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     encoder_sys_t *p_sys;
     vlc_value_t val;
 
-    if( p_enc->fmt_out.i_codec != VLC_FOURCC('d','v','b','s') &&
+    if( ( p_enc->fmt_out.i_codec != VLC_FOURCC('d','v','b','s') ) &&
         !p_enc->b_force )
     {
         return VLC_EGENERIC;
@@ -1518,17 +1663,14 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_sys = (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_enc, "out of memory" );
         return VLC_ENOMEM;
-    }
     p_enc->p_sys = p_sys;
 
     p_enc->pf_encode_sub = Encode;
     p_enc->fmt_out.i_codec = VLC_FOURCC('d','v','b','s');
     p_enc->fmt_out.subs.dvb.i_id  = 1 << 16 | 1;
 
-    sout_CfgParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
+    config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
 
     p_sys->i_page_ver = 0;
     p_sys->i_region_ver = 0;
@@ -1546,10 +1688,10 @@ static int OpenEncoder( vlc_object_t *p_this )
     return VLC_SUCCESS;
 }
 
-/* FIXME: this routine is a hack to convert VLC_FOURCC('Y','U','V','A') 
+/* FIXME: this routine is a hack to convert VLC_FOURCC('Y','U','V','A')
  *        into VLC_FOURCC('Y','U','V','P')
  */
-static subpicture_t *YuvaYuvp( encoder_t *p_enc, subpicture_t *p_subpic )
+static subpicture_t *YuvaYuvp( subpicture_t *p_subpic )
 {
     subpicture_region_t *p_region = NULL;
 
@@ -1573,7 +1715,7 @@ static subpicture_t *YuvaYuvp( encoder_t *p_enc, subpicture_t *p_subpic )
                         + p_region->picture.p[0].i_pitch * 1 / 3;
         int i_tolerance = 0;
 
-#if DEBUG_DVBSUB
+#ifdef DEBUG_DVBSUB
         msg_Dbg( p_enc, "YuvaYuvp: i_pixels=%d, i_iterator=%d", i_pixels, i_iterator );
 #endif
         p_fmt->i_chroma = VLC_FOURCC('Y','U','V','P');
@@ -1604,7 +1746,7 @@ static subpicture_t *YuvaYuvp( encoder_t *p_enc, subpicture_t *p_subpic )
         /* Count colors, build best palette */
         for( i_tolerance = 0; i_tolerance < 128; i_tolerance++ )
         {
-            vlc_bool_t b_success = VLC_TRUE;
+            bool b_success = true;
             p_fmt->p_palette->i_entries = 0;
 
             for( i = 0; i < i_pixels ; )
@@ -1634,7 +1776,7 @@ static subpicture_t *YuvaYuvp( encoder_t *p_enc, subpicture_t *p_subpic )
                 }
                 if( p_fmt->p_palette->i_entries >= i_max_entries )
                 {
-                    b_success = VLC_FALSE;
+                    b_success = false;
                     break;
                 }
                 i += i_iterator;
@@ -1650,7 +1792,7 @@ static subpicture_t *YuvaYuvp( encoder_t *p_enc, subpicture_t *p_subpic )
             }
         }
 
-#if DEBUG_DVBSUB
+#ifdef DEBUG_DVBSUB
         msg_Dbg( p_enc, "best palette has %d colors", p_fmt->p_palette->i_entries );
 #endif
 
@@ -1744,7 +1886,7 @@ static subpicture_t *YuvaYuvp( encoder_t *p_enc, subpicture_t *p_subpic )
             p_fmt->p_palette->palette[i][3] = 0;
         }
         p_fmt->p_palette->i_entries = i_max_entries;
-#if DEBUG_DVBSUB
+#ifdef DEBUG_DVBSUB
         msg_Dbg( p_enc, "best palette has %d colors", p_fmt->p_palette->i_entries );
 #endif
     }
@@ -1769,7 +1911,7 @@ static block_t *Encode( encoder_t *p_enc, subpicture_t *p_subpic )
     p_region = p_subpic->p_region;
     if( p_region->fmt.i_chroma == VLC_FOURCC('Y','U','V','A') )
     {
-        p_temp = YuvaYuvp( p_enc, p_subpic );
+        p_temp = YuvaYuvp( p_subpic );
         if( !p_temp )
         {
             msg_Err( p_enc, "no picture in subpicture" );
@@ -1781,8 +1923,15 @@ static block_t *Encode( encoder_t *p_enc, subpicture_t *p_subpic )
     /* Sanity check */
     if( !p_region ) return NULL;
 
-    if( p_region->fmt.i_chroma != VLC_FOURCC('T','E','X','T') &&
-        p_region->fmt.i_chroma != VLC_FOURCC('Y','U','V','P') ) return NULL;
+    if( ( p_region->fmt.i_chroma != VLC_FOURCC('T','E','X','T') ) &&
+        ( p_region->fmt.i_chroma != VLC_FOURCC('Y','U','V','P') ) )
+    {
+        char psz_fourcc[5];
+        memset( &psz_fourcc, 0, sizeof( psz_fourcc ) );
+        vlc_fourcc_to_char( p_region->fmt.i_chroma, &psz_fourcc );
+        msg_Err( p_enc, "chroma %4s not supported", psz_fourcc );
+        return NULL;
+    }
 
     if( p_region->fmt.p_palette )
     {
@@ -1801,7 +1950,7 @@ static block_t *Encode( encoder_t *p_enc, subpicture_t *p_subpic )
     }
     /* End of hack */
 
-#if DEBUG_DVBSUB
+#ifdef DEBUG_DVBSUB
     msg_Dbg( p_enc, "encoding subpicture" );
 #endif
     p_block = block_New( p_enc, 64000 );
@@ -1824,7 +1973,7 @@ static block_t *Encode( encoder_t *p_enc, subpicture_t *p_subpic )
     bs_write( s, 8, 0xff );/* End marker */
     p_block->i_buffer = bs_pos( s ) / 8;
     p_block->i_pts = p_block->i_dts = p_subpic->i_start;
-    if( !p_subpic->b_ephemer && p_subpic->i_stop > p_subpic->i_start )
+    if( !p_subpic->b_ephemer && ( p_subpic->i_stop > p_subpic->i_start ) )
     {
         block_t *p_block_stop;
 
@@ -1873,7 +2022,7 @@ static void encode_page_composition( encoder_t *p_enc, bs_t *s,
 {
     encoder_sys_t *p_sys = p_enc->p_sys;
     subpicture_region_t *p_region;
-    vlc_bool_t b_mode_change = VLC_FALSE;
+    bool b_mode_change = false;
     int i_regions, i_timeout;
 
     bs_write( s, 8, 0x0f ); /* Sync byte */
@@ -1894,11 +2043,11 @@ static void encode_page_composition( encoder_t *p_enc, bs_t *s,
         }
 
         if( ( p_sys->p_regions[i_regions].i_width <
-              (int)p_region->fmt.i_visible_width ) || 
+              (int)p_region->fmt.i_visible_width ) ||
             ( p_sys->p_regions[i_regions].i_width >
               (int)p_region->fmt.i_visible_width ) )
         {
-            b_mode_change = VLC_TRUE;
+            b_mode_change = true;
             msg_Dbg( p_enc, "region %i width change: %i -> %i",
                      i_regions, p_sys->p_regions[i_regions].i_width,
                      p_region->fmt.i_visible_width );
@@ -1908,7 +2057,7 @@ static void encode_page_composition( encoder_t *p_enc, bs_t *s,
         if( p_sys->p_regions[i_regions].i_height <
              (int)p_region->fmt.i_visible_height )
         {
-            b_mode_change = VLC_TRUE;
+            b_mode_change = true;
             msg_Dbg( p_enc, "region %i height change: %i -> %i",
                      i_regions, p_sys->p_regions[i_regions].i_height,
                      p_region->fmt.i_visible_height );
@@ -1921,7 +2070,7 @@ static void encode_page_composition( encoder_t *p_enc, bs_t *s,
 
     i_timeout = 0;
     if( p_subpic && !p_subpic->b_ephemer &&
-        p_subpic->i_stop > p_subpic->i_start )
+        ( p_subpic->i_stop > p_subpic->i_start ) )
     {
         i_timeout = (p_subpic->i_stop - p_subpic->i_start) / 1000000;
     }
@@ -2013,8 +2162,8 @@ static void encode_region_composition( encoder_t *p_enc, bs_t *s,
          p_region = p_region->p_next, i_region++ )
     {
         int i_entries = 4, i_depth = 0x1, i_bg = 0;
-        vlc_bool_t b_text =
-            p_region->fmt.i_chroma == VLC_FOURCC('T','E','X','T');
+        bool b_text =
+            ( p_region->fmt.i_chroma == VLC_FOURCC('T','E','X','T') );
 
         if( !b_text )
         {
@@ -2075,7 +2224,7 @@ static void encode_region_composition( encoder_t *p_enc, bs_t *s,
 
 static void encode_pixel_data( encoder_t *p_enc, bs_t *s,
                                subpicture_region_t *p_region,
-                               vlc_bool_t b_top );
+                               bool b_top );
 
 static void encode_object( encoder_t *p_enc, bs_t *s, subpicture_t *p_subpic )
 {
@@ -2141,13 +2290,13 @@ static void encode_object( encoder_t *p_enc, bs_t *s, subpicture_t *p_subpic )
 
         /* Top field */
         i_pixel_data_pos = bs_pos( s );
-        encode_pixel_data( p_enc, s, p_region, VLC_TRUE );
+        encode_pixel_data( p_enc, s, p_region, true );
         i_pixel_data_pos = ( bs_pos( s ) - i_pixel_data_pos ) / 8;
         SetWBE( &s->p_start[i_update_pos/8], i_pixel_data_pos );
 
         /* Bottom field */
         i_pixel_data_pos = bs_pos( s );
-        encode_pixel_data( p_enc, s, p_region, VLC_FALSE );
+        encode_pixel_data( p_enc, s, p_region, false );
         i_pixel_data_pos = ( bs_pos( s ) - i_pixel_data_pos ) / 8;
         SetWBE( &s->p_start[i_update_pos/8+2], i_pixel_data_pos );
 
@@ -2160,18 +2309,15 @@ static void encode_object( encoder_t *p_enc, bs_t *s, subpicture_t *p_subpic )
     }
 }
 
-static void encode_pixel_line_2bp( encoder_t *p_enc, bs_t *s,
-                                   subpicture_region_t *p_region,
+static void encode_pixel_line_2bp( bs_t *s, subpicture_region_t *p_region,
                                    int i_line );
-static void encode_pixel_line_4bp( encoder_t *p_enc, bs_t *s,
-                                   subpicture_region_t *p_region,
+static void encode_pixel_line_4bp( bs_t *s, subpicture_region_t *p_region,
                                    int i_line );
-static void encode_pixel_line_8bp( encoder_t *p_enc, bs_t *s,
-                                   subpicture_region_t *p_region,
+static void encode_pixel_line_8bp( bs_t *s, subpicture_region_t *p_region,
                                    int i_line );
 static void encode_pixel_data( encoder_t *p_enc, bs_t *s,
                                subpicture_region_t *p_region,
-                               vlc_bool_t b_top )
+                               bool b_top )
 {
     unsigned int i_line;
 
@@ -2189,17 +2335,17 @@ static void encode_pixel_data( encoder_t *p_enc, bs_t *s,
 
         case 4:
             bs_write( s, 8, 0x10 ); /* 2 bit/pixel code string */
-            encode_pixel_line_2bp( p_enc, s, p_region, i_line );
+            encode_pixel_line_2bp( s, p_region, i_line );
             break;
 
         case 16:
             bs_write( s, 8, 0x11 ); /* 4 bit/pixel code string */
-            encode_pixel_line_4bp( p_enc, s, p_region, i_line );
+            encode_pixel_line_4bp( s, p_region, i_line );
             break;
 
         case 256:
             bs_write( s, 8, 0x12 ); /* 8 bit/pixel code string */
-            encode_pixel_line_8bp( p_enc, s, p_region, i_line );
+            encode_pixel_line_8bp( s, p_region, i_line );
             break;
 
         default:
@@ -2212,8 +2358,7 @@ static void encode_pixel_data( encoder_t *p_enc, bs_t *s,
     }
 }
 
-static void encode_pixel_line_2bp( encoder_t *p_enc, bs_t *s,
-                                   subpicture_region_t *p_region,
+static void encode_pixel_line_2bp( bs_t *s, subpicture_region_t *p_region,
                                    int i_line )
 {
     unsigned int i, i_length = 0;
@@ -2223,17 +2368,18 @@ static void encode_pixel_line_2bp( encoder_t *p_enc, bs_t *s,
 
     for( i = 0; i <= p_region->fmt.i_visible_width; i++ )
     {
-        if( i != p_region->fmt.i_visible_width &&
-            p_data[i] == i_last_pixel && i_length != 284 )
+        if( ( i != p_region->fmt.i_visible_width ) &&
+            ( p_data[i] == i_last_pixel ) && ( i_length != 284 ) )
         {
             i_length++;
             continue;
         }
 
-        if( i_length == 1 || i_length == 11 || i_length == 28 )
+        if( ( i_length == 1 ) || ( i_length == 11 ) || ( i_length == 28 ) )
         {
             /* 2bit/pixel code */
-            if( i_last_pixel ) bs_write( s, 2, i_last_pixel );
+            if( i_last_pixel )
+                bs_write( s, 2, i_last_pixel );
             else
             {
                 bs_write( s, 2, 0 );
@@ -2303,8 +2449,7 @@ static void encode_pixel_line_2bp( encoder_t *p_enc, bs_t *s,
     bs_align_0( s );
 }
 
-static void encode_pixel_line_4bp( encoder_t *p_enc, bs_t *s,
-                                   subpicture_region_t *p_region,
+static void encode_pixel_line_4bp( bs_t *s, subpicture_region_t *p_region,
                                    int i_line )
 {
     unsigned int i, i_length = 0;
@@ -2321,10 +2466,13 @@ static void encode_pixel_line_4bp( encoder_t *p_enc, bs_t *s,
             continue;
         }
 
-        if( i_length == 1 || (i_length == 3 && i_last_pixel) || i_length == 8 )
+        if( ( i_length == 1 ) ||
+            ( ( i_length == 3 ) && i_last_pixel ) ||
+            ( i_length == 8 ) )
         {
             /* 4bit/pixel code */
-            if( i_last_pixel ) bs_write( s, 4, i_last_pixel );
+            if( i_last_pixel )
+                bs_write( s, 4, i_last_pixel );
             else
             {
                 bs_write( s, 4, 0 );
@@ -2350,7 +2498,7 @@ static void encode_pixel_line_4bp( encoder_t *p_enc, bs_t *s,
                 bs_write( s, 2, 1 ); /* 2 * pseudo color 0 */
             }
         }
-        else if( !i_last_pixel && i_length >= 3 && i_length <= 9 )
+        else if( !i_last_pixel && ( i_length >= 3 ) && ( i_length <= 9 ) )
         {
             bs_write( s, 4, 0 );
             bs_write( s, 1, 0 );
@@ -2399,8 +2547,7 @@ static void encode_pixel_line_4bp( encoder_t *p_enc, bs_t *s,
     bs_align_0( s );
 }
 
-static void encode_pixel_line_8bp( encoder_t *p_enc, bs_t *s,
-                                   subpicture_region_t *p_region,
+static void encode_pixel_line_8bp( bs_t *s, subpicture_region_t *p_region,
                                    int i_line )
 {
     unsigned int i, i_length = 0;
@@ -2410,19 +2557,19 @@ static void encode_pixel_line_8bp( encoder_t *p_enc, bs_t *s,
 
     for( i = 0; i <= p_region->fmt.i_visible_width; i++ )
     {
-        if( i != p_region->fmt.i_visible_width &&
-            p_data[i] == i_last_pixel && i_length != 127 )
+        if( ( i != p_region->fmt.i_visible_width ) &&
+            ( p_data[i] == i_last_pixel ) && ( i_length != 127 ) )
         {
             i_length++;
             continue;
         }
 
-        if( i_length == 1 && i_last_pixel )
+        if( ( i_length == 1 ) && i_last_pixel )
         {
             /* 8bit/pixel code */
             bs_write( s, 8, i_last_pixel );
         }
-        else if( i_length == 2 && i_last_pixel )
+        else if( ( i_length == 2 ) && i_last_pixel )
         {
             /* 8bit/pixel code */
             bs_write( s, 8, i_last_pixel );

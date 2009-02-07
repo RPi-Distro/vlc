@@ -2,7 +2,7 @@
  * dvb.c : DVB channel list import (szap/tzap/czap compatible channel lists)
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 8ad82ec1603242b1468d09699ce782241e7bacd5 $
+ * $Id: 904be67cd4f431eeadf962b3ea2038a044162a13 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,12 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/intf.h>
-#include "charset.h"
+#include <vlc_common.h>
+#include <vlc_demux.h>
+#include <vlc_interface.h>
+#include <vlc_charset.h>
 
 #include "playlist.h"
 
@@ -49,18 +51,15 @@ static int ParseLine( char *, char **, char ***, int *);
 /*****************************************************************************
  * Import_DVB: main import function
  *****************************************************************************/
-int E_(Import_DVB)( vlc_object_t *p_this )
+int Import_DVB( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
-    uint8_t *p_peek;
+    const uint8_t *p_peek;
     int     i_peek;
-    char    *psz_ext;
-    vlc_bool_t b_valid = VLC_FALSE;
+    bool b_valid = false;
 
-    psz_ext = strrchr ( p_demux->psz_path, '.' );
-
-    if( !( psz_ext && !strncasecmp( psz_ext, ".conf", 5 ) ) &&
-        !p_demux->b_force ) return VLC_EGENERIC;
+    if( !demux_IsPathExtension( p_demux, ".conf" ) && !p_demux->b_force )
+        return VLC_EGENERIC;
 
     /* Check if this really is a channels file */
     if( (i_peek = stream_Peek( p_demux->s, &p_peek, 1024 )) > 0 )
@@ -75,13 +74,12 @@ int E_(Import_DVB)( vlc_object_t *p_this )
         }
         psz_line[i] = 0;
 
-        if( ParseLine( psz_line, 0, 0, 0 ) ) b_valid = VLC_TRUE;
+        if( ParseLine( psz_line, 0, 0, 0 ) ) b_valid = true;
     }
 
     if( !b_valid ) return VLC_EGENERIC;
 
     msg_Dbg( p_demux, "found valid DVB conf playlist file");
-
     p_demux->pf_control = Control;
     p_demux->pf_demux = Demux;
 
@@ -91,8 +89,9 @@ int E_(Import_DVB)( vlc_object_t *p_this )
 /*****************************************************************************
  * Deactivate: frees unused data
  *****************************************************************************/
-void E_(Close_DVB)( vlc_object_t *p_this )
+void Close_DVB( vlc_object_t *p_this )
 {
+    VLC_UNUSED(p_this);
 }
 
 /*****************************************************************************
@@ -100,27 +99,12 @@ void E_(Close_DVB)( vlc_object_t *p_this )
  *****************************************************************************/
 static int Demux( demux_t *p_demux )
 {
-    playlist_t *p_playlist;
     char       *psz_line;
-    playlist_item_t *p_current;
-    vlc_bool_t b_play;
-
-    p_playlist = (playlist_t *) vlc_object_find( p_demux, VLC_OBJECT_PLAYLIST,
-                                                 FIND_ANYWHERE );
-    if( !p_playlist )
-    {
-        msg_Err( p_demux, "can't find playlist" );
-        return -1;
-    }
-
-    b_play = E_(FindItem)( p_demux, p_playlist, &p_current );
-
-    playlist_ItemToNode( p_playlist, p_current );
-    p_current->input.i_type = ITEM_TYPE_PLAYLIST;
+    input_item_t *p_input;
+    INIT_PLAYLIST_STUFF;
 
     while( (psz_line = stream_ReadLine( p_demux->s )) )
     {
-        playlist_item_t *p_item;
         char **ppsz_options = NULL;
         int  i, i_options = 0;
         char *psz_name = NULL;
@@ -133,45 +117,28 @@ static int Demux( demux_t *p_demux )
 
         EnsureUTF8( psz_name );
 
-        p_item = playlist_ItemNew( p_playlist, "dvb:", psz_name );
+        p_input = input_item_NewExt( p_demux, "dvb://", psz_name, 0, NULL, -1 );
         for( i = 0; i< i_options; i++ )
         {
             EnsureUTF8( ppsz_options[i] );
-            playlist_ItemAddOption( p_item, ppsz_options[i] );
+            input_item_AddOption( p_input, ppsz_options[i] );
         }
-        playlist_NodeAddItem( p_playlist, p_item,
-                              p_current->pp_parents[0]->i_view,
-                              p_current, PLAYLIST_APPEND, PLAYLIST_END );
-
-        /* We need to declare the parents of the node as the
-         *                  * same of the parent's ones */
-        playlist_CopyParents( p_current, p_item );
-        vlc_input_item_CopyOptions( &p_current->input, &p_item->input );
-
+        input_item_AddSubItem( p_current_input, p_input );
+        vlc_gc_decref( p_input );
         while( i_options-- ) free( ppsz_options[i_options] );
-        if( ppsz_options ) free( ppsz_options );
+        free( ppsz_options );
 
         free( psz_line );
     }
 
-    /* Go back and play the playlist */
-    if( b_play && p_playlist->status.p_item &&
-        p_playlist->status.p_item->i_children > 0 )
-    {
-        playlist_Control( p_playlist, PLAYLIST_VIEWPLAY,
-                          p_playlist->status.i_view,
-                          p_playlist->status.p_item,
-                          p_playlist->status.p_item->pp_children[0] );
-    }
-
-    vlc_object_release( p_playlist );
-    return VLC_SUCCESS;
+    HANDLE_PLAY_AND_RELEASE;
+    return 0; /* Needed for correct operation of go back */
 }
 
-static struct
+static const struct
 {
-    char *psz_name;
-    char *psz_option;
+    const char *psz_name;
+    const char *psz_option;
 
 } dvb_options[] =
 {
@@ -213,6 +180,8 @@ static struct
     { "QAM_64", "dvb-modulation=64" },
     { "QAM_128", "dvb-modulation=128" },
     { "QAM_256", "dvb-modulation=256" },
+    { "8VSB", "dvb-modulation=8"  },
+    { "16VSB", "dvb-modulation=16"  },
 
     { "TRANSMISSION_MODE_AUTO", "dvb-transmission=0" },
     { "TRANSMISSION_MODE_2K", "dvb-transmission=2" },
@@ -226,7 +195,7 @@ static int ParseLine( char *psz_line, char **ppsz_name,
 {
     char *psz_name = 0, *psz_parse = psz_line;
     int i_count = 0, i_program = 0, i_frequency = 0;
-    vlc_bool_t b_valid = VLC_FALSE;
+    bool b_valid = false;
 
     if( pppsz_options ) *pppsz_options = 0;
     if( pi_options ) *pi_options = 0;
@@ -237,11 +206,11 @@ static int ParseLine( char *psz_line, char **ppsz_name,
            *psz_parse == '\n' || *psz_parse == '\r' ) psz_parse++;
 
     /* Ignore comments */
-    if( *psz_parse == '#' ) return VLC_FALSE;
+    if( *psz_parse == '#' ) return false;
 
     while( psz_parse )
     {
-        char *psz_option = 0;
+        const char *psz_option = 0;
         char *psz_end = strchr( psz_parse, ':' );
         if( psz_end ) { *psz_end = 0; psz_end++; }
 
@@ -275,7 +244,7 @@ static int ParseLine( char *psz_line, char **ppsz_name,
 
                     /* If we recognize one of the strings, then we are sure
                      * the data is really valid (ie. a channels file). */
-                    b_valid = VLC_TRUE;
+                    b_valid = true;
                     break;
                 }
             }
@@ -297,9 +266,10 @@ static int ParseLine( char *psz_line, char **ppsz_name,
 
         if( psz_option && pppsz_options && pi_options )
         {
-            psz_option = strdup( psz_option );
-            INSERT_ELEM( *pppsz_options, (*pi_options), (*pi_options),
-                         psz_option );
+            char *psz_dup = strdup( psz_option );
+            if (psz_dup != NULL)
+                INSERT_ELEM( *pppsz_options, (*pi_options), (*pi_options),
+                             psz_dup );
         }
 
         psz_parse = psz_end;
@@ -310,7 +280,7 @@ static int ParseLine( char *psz_line, char **ppsz_name,
     {
         /* This isn't a valid channels file, cleanup everything */
         while( (*pi_options)-- ) free( (*pppsz_options)[*pi_options] );
-        if( *pppsz_options ) free( *pppsz_options );
+        free( *pppsz_options );
         *pppsz_options = 0; *pi_options = 0;
     }
 
@@ -337,5 +307,6 @@ static int ParseLine( char *psz_line, char **ppsz_name,
 
 static int Control( demux_t *p_demux, int i_query, va_list args )
 {
+    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
     return VLC_EGENERIC;
 }

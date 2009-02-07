@@ -2,7 +2,7 @@
  * bonjour.c: Bonjour services discovery module
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: ba997fb077f87e1e8acd97aaf7f4428bc203d9a8 $
+ * $Id: fa9d408191169045b51623a5feb3b3330e71230b $
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *
@@ -24,10 +24,15 @@
 /*****************************************************************************
  * Includes
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_playlist.h>
+#include <vlc_arrays.h>
 
 #include <avahi-client/client.h>
 #ifdef HAVE_AVAHI_06
@@ -48,7 +53,7 @@
 
 vlc_module_begin();
     set_shortname( "Bonjour" );
-    set_description( _("Bonjour services") );
+    set_description( N_("Bonjour services") );
     set_category( CAT_PLAYLIST );
     set_subcategory( SUBCAT_PLAYLIST_SD );
     set_capability( "services_discovery", 0 );
@@ -61,13 +66,10 @@ vlc_module_end();
 
 struct services_discovery_sys_t
 {
-    /* playlist node */
-    playlist_item_t     *p_node;
-    playlist_t          *p_playlist;
-
     AvahiSimplePoll     *simple_poll;
     AvahiClient         *client;
     AvahiServiceBrowser *sb;
+    vlc_dictionary_t    services_name_to_input_item;
 };
 
 /*****************************************************************************
@@ -120,6 +122,11 @@ static void resolve_callback(
 {
     services_discovery_t *p_sd = ( services_discovery_t* )userdata;
     services_discovery_sys_t *p_sys = p_sd->p_sys;
+    
+    VLC_UNUSED(interface); VLC_UNUSED(host_name);
+#ifdef HAVE_AVAHI_06
+    VLC_UNUSED(flags);
+#endif
 
 #ifdef HAVE_AVAHI_06
     if( event == AVAHI_RESOLVER_FAILURE )
@@ -137,14 +144,15 @@ static void resolve_callback(
         char *psz_uri = NULL;
         char *psz_addr = NULL;
         AvahiStringList *asl = NULL;
-        playlist_item_t *p_item = NULL;
+        input_item_t *p_input = NULL;
 
         msg_Dbg( p_sd, "service '%s' of type '%s' in domain '%s'",
                  name, type, domain );
 
         avahi_address_snprint(a, (sizeof(a)/sizeof(a[0]))-1, address);
         if( protocol == AVAHI_PROTO_INET6 )
-            asprintf( &psz_addr, "[%s]", a );
+            if( asprintf( &psz_addr, "[%s]", a ) == -1 )
+                return;
 
         if( txt != NULL )
             asl = avahi_string_list_find( txt, "path" );
@@ -156,8 +164,12 @@ static void resolve_callback(
             if( avahi_string_list_get_pair( asl, &key, &value, &size ) == 0 &&
                 value != NULL )
             {
-                asprintf( &psz_uri, "http://%s:%d%s",
-                          psz_addr != NULL ? psz_addr : a, port, value );
+                if( asprintf( &psz_uri, "http://%s:%d%s",
+                          psz_addr != NULL ? psz_addr : a, port, value ) == -1 )
+                {
+                    free( psz_addr );
+                    return;
+                }
             }
             if( key != NULL )
                 avahi_free( (void *)key );
@@ -166,8 +178,12 @@ static void resolve_callback(
         }
         else
         {
-            asprintf( &psz_uri, "http://%s:%d",
-                      psz_addr != NULL ? psz_addr : a, port );
+            if( asprintf( &psz_uri, "http://%s:%d",
+                      psz_addr != NULL ? psz_addr : a, port ) == -1 )
+            {
+                free( psz_addr );
+                return;
+            }
         }
 
         if( psz_addr != NULL )
@@ -175,17 +191,16 @@ static void resolve_callback(
 
         if( psz_uri != NULL )
         {
-            p_item = playlist_ItemNew( p_sd, psz_uri, name );
+            p_input = input_item_NewExt( p_sd, psz_uri, name, 0, NULL, -1 );
             free( (void *)psz_uri );
         }
-        if( p_item != NULL )
+        if( p_input != NULL )
         {
-            p_item->i_flags &= ~PLAYLIST_SKIP_FLAG;
-
-            playlist_NodeAddItem( p_sys->p_playlist, p_item,
-                                  VIEW_CATEGORY, p_sys->p_node,
-                                  PLAYLIST_APPEND, PLAYLIST_END );
-        }
+            vlc_dictionary_insert( &p_sys->services_name_to_input_item,
+                name, p_input );
+            services_discovery_AddItem( p_sd, p_input, NULL /* no category */ );
+            vlc_gc_decref( p_input );
+       }
     }
 
     avahi_service_resolver_free( r );
@@ -207,9 +222,12 @@ static void browse_callback(
 #endif
     void* userdata )
 {
+    VLC_UNUSED(b);
+#ifdef HAVE_AVAHI_06
+    VLC_UNUSED(flags);
+#endif
     services_discovery_t *p_sd = ( services_discovery_t* )userdata;
     services_discovery_sys_t *p_sys = p_sd->p_sys;
-
     if( event == AVAHI_BROWSER_NEW )
     {
         if( avahi_service_resolver_new( p_sys->client, interface, protocol,
@@ -223,18 +241,21 @@ static void browse_callback(
                      avahi_strerror( avahi_client_errno( p_sys->client ) ) );
         }
     }
-    else
+    else if( name )
     {
-        playlist_item_t *p_item;
-
-        p_item = playlist_ChildSearchName( p_sys->p_node, name );
-        if( p_item == NULL )
-        {
+        /** \todo Store the input id and search it, rather than searching the items */
+        input_item_t *p_item;
+        p_item = vlc_dictionary_value_for_key(
+                        &p_sys->services_name_to_input_item,
+                        name );
+        if( !p_item )
             msg_Err( p_sd, "failed to find service '%s' in playlist", name );
-        }
         else
         {
-            playlist_Delete( p_sys->p_playlist, p_item->input.i_id );
+            services_discovery_RemoveItem( p_sd, p_item );
+            vlc_dictionary_remove_value_for_key(
+                        &p_sys->services_name_to_input_item,
+                        name );
         }
     }
 }
@@ -246,19 +267,17 @@ static int Open( vlc_object_t *p_this )
 {
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
     services_discovery_sys_t *p_sys;
-    playlist_view_t *p_view;
-    vlc_value_t val;
     int err;
 
     p_sd->p_sys = p_sys = (services_discovery_sys_t *)malloc(
         sizeof( services_discovery_sys_t ) );
-    if( p_sd->p_sys == NULL )
-    {
-        msg_Err( p_sd, "out of memory" );
-        return VLC_EGENERIC;
-    }
+
+    if( !p_sys )
+        return VLC_ENOMEM;
 
     memset( p_sys, 0, sizeof(*p_sys) );
+
+    vlc_dictionary_init( &p_sys->services_name_to_input_item, 1 );
 
     p_sys->simple_poll = avahi_simple_poll_new();
     if( p_sys->simple_poll == NULL )
@@ -292,31 +311,13 @@ static int Open( vlc_object_t *p_this )
         goto error;
     }
 
-    /* Create our playlist node */
-    p_sys->p_playlist = (playlist_t *)vlc_object_find( p_sd,
-                                                       VLC_OBJECT_PLAYLIST,
-                                                       FIND_ANYWHERE );
-    if( !p_sys->p_playlist )
-    {
-        msg_Warn( p_sd, "unable to find playlist, cancelling");
-        goto error;
-    }
-
-    p_view = playlist_ViewFind( p_sys->p_playlist, VIEW_CATEGORY );
-    p_sys->p_node = playlist_NodeCreate( p_sys->p_playlist, VIEW_CATEGORY,
-                                         _("Bonjour"), p_view->p_root );
-
-    p_sys->p_node->i_flags |= PLAYLIST_RO_FLAG;
-    val.b_bool = VLC_TRUE;
-    var_Set( p_sys->p_playlist, "intf-change", val );
+    services_discovery_SetLocalizedName( p_sd, _("Bonjour") );
 
     p_sd->pf_run = Run;
 
     return VLC_SUCCESS;
 
 error:
-    if( p_sys->p_playlist != NULL )
-        vlc_object_release( p_sys->p_playlist );
     if( p_sys->sb != NULL )
         avahi_service_browser_free( p_sys->sb );
     if( p_sys->client != NULL )
@@ -324,7 +325,8 @@ error:
     if( p_sys->simple_poll != NULL )
         avahi_simple_poll_free( p_sys->simple_poll );
 
-    free( (void *)p_sys );
+    vlc_dictionary_clear( &p_sys->services_name_to_input_item );
+    free( p_sys );
 
     return VLC_EGENERIC;
 }
@@ -341,9 +343,7 @@ static void Close( vlc_object_t *p_this )
     avahi_client_free( p_sys->client );
     avahi_simple_poll_free( p_sys->simple_poll );
 
-    playlist_NodeDelete( p_sys->p_playlist, p_sys->p_node, VLC_TRUE, VLC_TRUE );
-    vlc_object_release( p_sys->p_playlist );
-
+    vlc_dictionary_clear( &p_sys->services_name_to_input_item );
     free( p_sys );
 }
 
@@ -354,7 +354,7 @@ static void Run( services_discovery_t *p_sd )
 {
     services_discovery_sys_t *p_sys = p_sd->p_sys;
 
-    while( !p_sd->b_die )
+    while( vlc_object_alive (p_sd) )
     {
         if( avahi_simple_poll_iterate( p_sys->simple_poll, 100 ) != 0 )
         {

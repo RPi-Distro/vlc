@@ -2,7 +2,7 @@
  * macosx_timer.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ef71b537c5e21d567360de5d3d9467e1b2baf02d $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -28,13 +28,14 @@
 
 // Forward declaration
 class MacOSXTimerLoop;
+class CmdGeneric;
 
 
 // MacOSX specific timer
 class MacOSXTimer: public OSTimer
 {
     public:
-        MacOSXTimer( intf_thread_t *pIntf, const Callback &rCallback );
+        MacOSXTimer( intf_thread_t *pIntf, CmdGeneric &rCmd );
         virtual ~MacOSXTimer();
 
         /// (Re)start the timer with the given delay (in ms). If oneShot is
@@ -45,8 +46,8 @@ class MacOSXTimer: public OSTimer
         virtual void stop();
 
     private:
-        /// Callback to execute
-        Callback m_callback;
+        /// Command to execute
+        CmdGeneric &m_rCommand;
 };
 
 

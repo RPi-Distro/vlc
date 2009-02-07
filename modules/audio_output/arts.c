@@ -2,7 +2,7 @@
  * arts.c : aRts module
  *****************************************************************************
  * Copyright (C) 2001-2002 the VideoLAN team
- * $Id: 02ac12f37092485195e3fcf7e5bc2f993ab59e38 $
+ * $Id$
  *
  * Authors: Emmanuel Blindauer <manu@agat.net>
  *          Samuel Hocevar <sam@zoy.org>
@@ -25,14 +25,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <string.h>                                            /* strerror() */
 #include <unistd.h>                                      /* write(), close() */
-#include <stdlib.h>                            /* calloc(), malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "aout_internal.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
 
 #include <artsc.h>
 
@@ -62,7 +63,7 @@ static void Play         ( aout_instance_t * );
  *****************************************************************************/
 vlc_module_begin();
    set_shortname( "aRts" );
-   set_description( _("aRts audio output") );
+   set_description( N_("aRts audio output") );
    set_capability( "audio output", 50 );
     set_category( CAT_AUDIO );
     set_subcategory( SUBCAT_AUDIO_AOUT );
@@ -82,10 +83,7 @@ static int Open( vlc_object_t *p_this )
     /* Allocate structure */
     p_sys = malloc( sizeof( aout_sys_t ) );
     if( p_sys == NULL )
-    {
-        msg_Err( p_aout, "out of memory" );
         return VLC_ENOMEM;
-    }
     p_aout->output.p_sys = p_sys;
 
     i_err = arts_init();

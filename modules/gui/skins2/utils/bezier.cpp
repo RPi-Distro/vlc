@@ -2,7 +2,7 @@
  * bezier.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 12c870448b113639d7b0d96ded696ef9bbdbd7c6 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,7 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 #include "bezier.hpp"
 #include <math.h>
 
@@ -31,12 +35,12 @@
 #   ifdef HAVE_LRINT
 #       define lrintf( x ) (int)rint( x )
 #   elif defined WIN32
-	    __inline long int lrintf( float x )
-	    {
+        __inline long int lrintf( float x )
+        {
             int i;
             _asm fld x __asm fistp i
-		    return i;
-    	}
+            return i;
+        }
 #   endif
 #endif
 
