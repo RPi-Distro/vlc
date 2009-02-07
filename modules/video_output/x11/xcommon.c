@@ -2,7 +2,7 @@
  * xcommon.c: Functions common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: xcommon.c 18293 2006-12-06 16:49:45Z courmisch $
+ * $Id: xcommon.c 19347 2007-03-17 21:21:26Z sam $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -2323,20 +2323,21 @@ static IMAGE_TYPE * CreateImage( vout_thread_t *p_vout,
  *****************************************************************************/
 static int X11ErrorHandler( Display * display, XErrorEvent * event )
 {
-    /* Ingnore errors on XSetInputFocus()
-     * (they happen when a window is not yet mapped) */
-    if( event->request_code == X_SetInputFocus )
+    switch( event->request_code )
     {
-        fprintf(stderr, "XSetInputFocus failed\n");
+    case X_SetInputFocus:
+        /* Ingnore errors on XSetInputFocus()
+         * (they happen when a window is not yet mapped) */
         return 0;
-    }
 
-    if( event->request_code == 150 /* MIT-SHM */ &&
-        event->minor_code == X_ShmAttach )
-    {
-        fprintf(stderr, "XShmAttach failed\n");
-        b_shm = VLC_FALSE;
-        return 0;
+    case 150: /* MIT-SHM */
+    case 146: /* MIT-SHM too, what gives? */
+        if( event->minor_code == X_ShmAttach )
+        {
+            b_shm = VLC_FALSE;
+            return 0;
+        }
+        break;
     }
 
     XSetErrorHandler(NULL);

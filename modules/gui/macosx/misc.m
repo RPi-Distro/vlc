@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: misc.m 15491 2006-04-30 21:09:16Z bigben $
+ * $Id: misc.m 18962 2007-02-23 13:28:06Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -47,6 +47,11 @@
 
 - (BOOL)performKeyEquivalent:(NSEvent *)o_event
 {
+    /* We indeed want to prioritize Cocoa key equivalent against libvlc,
+       so we perform the menu equivalent now. */
+    if([[NSApp mainMenu] performKeyEquivalent:o_event])
+        return TRUE;
+
     return [[VLCMain sharedInstance] hasDefinedShortcutKey:o_event] ||
            [(VLCControls *)[[VLCMain sharedInstance] getControls] keyEvent:o_event];
 }

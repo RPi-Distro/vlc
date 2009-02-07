@@ -206,7 +206,6 @@
     {
         b_keptVisible = NO;
         b_fadeQueued = NO;
-        [[self fadeTimer] release];
         [self setFadeTimer: NULL];
         [self fadeIn];
         return;

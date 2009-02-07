@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: theora.c 16460 2006-08-31 22:01:13Z hartman $
+ * $Id: theora.c 20453 2007-06-07 17:32:36Z courmisch $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -510,7 +510,7 @@ static void ParseTheoraComments( decoder_t *p_dec )
             *psz_value = '\0';
             psz_value++;
             input_Control( p_input, INPUT_ADD_INFO, _("Theora comment"),
-                           psz_name, psz_value );
+                           psz_name, "%s", psz_value );
         }
         free( psz_comment );
         i++;

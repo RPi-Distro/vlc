@@ -2,7 +2,7 @@
  * vlcshell.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: vlcshell.cpp 17899 2006-11-20 23:14:43Z damienf $
+ * $Id: vlcshell.cpp 20528 2007-06-12 16:10:37Z damienf $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -99,7 +99,7 @@ NPError NPP_GetValue( NPP instance, NPPVariable variable, void *value )
 
         default:
             /* move on to instance variables ... */
-            break;
+            ;
     }
 
     if( instance == NULL )
@@ -119,18 +119,32 @@ NPError NPP_GetValue( NPP instance, NPPVariable variable, void *value )
     switch( variable )
     {
         case NPPVpluginScriptableNPObject:
-            /* create an instance and return it */
-            *(NPObject**)value = p_plugin->getScriptObject();
-            if( NULL == *(NPObject**)value )
+        {
+            /* retrieve plugin root class */
+            NPClass *scriptClass = p_plugin->getScriptClass();
+            if( scriptClass )
             {
-                return NPERR_OUT_OF_MEMORY_ERROR;
+                /* create an instance and return it */
+                *(NPObject**)value = NPN_CreateObject(instance, scriptClass);
+                return NPERR_NO_ERROR;
             }
             break;
+        }
 
         default:
-            return NPERR_GENERIC_ERROR;
+            ;
     }
-    return NPERR_NO_ERROR;
+    return NPERR_GENERIC_ERROR;
+}
+
+/*
+ * there is some confusion in gecko headers regarding definition of this API
+ * NPPVariable is wrongly defined as NPNVariable, which sounds incorrect.
+ */
+
+NPError NPP_SetValue( NPP instance, NPNVariable variable, void *value )
+{
+    return NPERR_GENERIC_ERROR;
 }
 
 /******************************************************************************
@@ -147,6 +161,12 @@ int16 NPP_HandleEvent( NPP instance, void * event )
     }
 
     VlcPlugin *p_plugin = (VlcPlugin*)instance->pdata;
+
+    if( p_plugin == NULL )
+    {
+        return false;
+    }
+
     EventRecord *myEvent = (EventRecord*)event;
 
     switch( myEvent->what )
@@ -281,10 +301,14 @@ NPError NPP_New( NPMIMEType pluginType, NPP instance, uint16 mode, int16 argc,
     }
 
     status = p_plugin->init(argc, argn, argv);
-    if( NPERR_NO_ERROR == status ) {
+    if( NPERR_NO_ERROR == status )
+    {
         instance->pdata = reinterpret_cast<void*>(p_plugin);
+        //NPN_SetValue(instance, NPPVpluginWindowBool, (void *)false);
+        NPN_SetValue(instance, NPPVpluginTransparentBool, (void *)false);
     }
-    else {
+    else
+    {
         delete p_plugin;
     }
     return status;
@@ -311,8 +335,7 @@ NPError NPP_Destroy( NPP instance, NPSavedData** save )
     }
 #endif
 
-    if( p_plugin )
-        delete p_plugin;
+    delete p_plugin;
 
     return NPERR_NO_ERROR;
 }
@@ -479,6 +502,10 @@ NPError NPP_NewStream( NPP instance, NPMIMEType type, NPStream *stream,
     }
 
     VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(instance->pdata);
+    if( NULL == p_plugin )
+    {
+        return NPERR_INVALID_INSTANCE_ERROR;
+    }
 
    /*
    ** Firefox/Mozilla may decide to open a stream from the URL specified
@@ -529,6 +556,10 @@ void NPP_StreamAsFile( NPP instance, NPStream *stream, const char* fname )
     }
 
     VlcPlugin *p_plugin = reinterpret_cast<VlcPlugin *>(instance->pdata);
+    if( NULL == p_plugin )
+    {
+        return;
+    }
 
     if( libvlc_playlist_add( p_plugin->getVLC(), fname, stream->url, NULL ) != -1 )
     {
@@ -651,7 +682,7 @@ static LRESULT CALLBACK Manage( HWND p_hwnd, UINT i_msg, WPARAM wpar, LPARAM lpa
         }
         default:
             /* delegate to default handler */
-            return p_plugin->getWindowProc()( p_hwnd, i_msg, wpar, lpar );
+            return CallWindowProc( p_plugin->getWindowProc(), p_hwnd, i_msg, wpar, lpar );
     }
 }
 #endif /* XP_WIN */

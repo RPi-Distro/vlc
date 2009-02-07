@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004 - 2005 the VideoLAN team
- * $Id: rc.c 16984 2006-10-08 12:14:56Z jpsaman $
+ * $Id: rc.c 19808 2007-04-15 08:52:35Z courmisch $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -185,15 +185,16 @@ vlc_module_begin();
     set_subcategory( SUBCAT_INTERFACE_MAIN );
     set_description( _("Remote control interface") );
     add_bool( "rc-show-pos", 0, NULL, POS_TEXT, POS_LONGTEXT, VLC_TRUE );
-#ifdef HAVE_ISATTY
-    add_bool( "rc-fake-tty", 0, NULL, TTY_TEXT, TTY_LONGTEXT, VLC_TRUE );
-#endif
-    add_string( "rc-unix", 0, NULL, UNIX_TEXT, UNIX_LONGTEXT, VLC_TRUE );
-    add_string( "rc-host", 0, NULL, HOST_TEXT, HOST_LONGTEXT, VLC_TRUE );
 
 #ifdef WIN32
     add_bool( "rc-quiet", 0, NULL, QUIET_TEXT, QUIET_LONGTEXT, VLC_FALSE );
+#else
+#if defined (HAVE_ISATTY)
+    add_bool( "rc-fake-tty", 0, NULL, TTY_TEXT, TTY_LONGTEXT, VLC_TRUE );
 #endif
+    add_string( "rc-unix", 0, NULL, UNIX_TEXT, UNIX_LONGTEXT, VLC_TRUE );
+#endif
+    add_string( "rc-host", 0, NULL, HOST_TEXT, HOST_LONGTEXT, VLC_TRUE );
 
     set_capability( "interface", 20 );
     set_callbacks( Activate, Deactivate );
@@ -209,7 +210,8 @@ static int Activate( vlc_object_t *p_this )
     char *psz_host, *psz_unix_path;
     int  *pi_socket = NULL;
 
-#if defined(HAVE_ISATTY) && !defined(WIN32)
+#ifndef WIN32
+#if defined(HAVE_ISATTY)
     /* Check that stdin is a TTY */
     if( !config_GetInt( p_intf, "rc-fake-tty" ) && !isatty( 0 ) )
     {
@@ -223,7 +225,7 @@ static int Activate( vlc_object_t *p_this )
     {
         int i_socket;
 
-#if !defined(AF_LOCAL) || defined(WIN32)
+#ifndef AF_LOCAL
         msg_Warn( p_intf, "your OS doesn't support filesystem sockets" );
         free( psz_unix_path );
         return VLC_EGENERIC;
@@ -274,8 +276,9 @@ static int Activate( vlc_object_t *p_this )
         }
         pi_socket[0] = i_socket;
         pi_socket[1] = -1;
-#endif
+#endif /* AF_LOCAL */
     }
+#endif /* !WIN32 */
 
     if( ( pi_socket == NULL ) &&
         ( psz_host = config_GetPsz( p_intf, "rc-host" ) ) != NULL )

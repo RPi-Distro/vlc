@@ -2,7 +2,7 @@
  * udp.c
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: udp.c 17020 2006-10-10 18:33:26Z fkuehne $
+ * $Id: udp.c 19592 2007-04-01 00:31:04Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -337,6 +337,7 @@ static void Close( vlc_object_t * p_this )
 static int Write( sout_access_out_t *p_access, block_t *p_buffer )
 {
     sout_access_out_sys_t *p_sys = p_access->p_sys;
+    int i_len = 0;
 
     while( p_buffer )
     {
@@ -364,6 +365,7 @@ static int Write( sout_access_out_t *p_access, block_t *p_buffer )
             p_sys->p_buffer = NULL;
         }
 
+        i_len += p_buffer->i_buffer;
         while( p_buffer->i_buffer )
         {
             int i_write = __MIN( p_buffer->i_buffer, p_sys->i_mtu );
@@ -409,7 +411,7 @@ static int Write( sout_access_out_t *p_access, block_t *p_buffer )
         p_buffer = p_next;
     }
 
-    return( p_sys->p_thread->b_error ? -1 : 0 );
+    return( p_sys->p_thread->b_error ? -1 : i_len );
 }
 
 /*****************************************************************************
@@ -419,6 +421,7 @@ static int WriteRaw( sout_access_out_t *p_access, block_t *p_buffer )
 {
     sout_access_out_sys_t   *p_sys = p_access->p_sys;
     block_t *p_buf;
+    int i_len;
 
     while ( p_sys->p_thread->p_empty_blocks->i_depth >= MAX_EMPTY_BLOCKS )
     {
@@ -426,9 +429,10 @@ static int WriteRaw( sout_access_out_t *p_access, block_t *p_buffer )
         block_Release( p_buf );
     }
 
+    i_len = p_buffer->i_buffer;
     block_FifoPut( p_sys->p_thread->p_fifo, p_buffer );
 
-    return( p_sys->p_thread->b_error ? -1 : 0 );
+    return( p_sys->p_thread->b_error ? -1 : i_len );
 }
 
 /*****************************************************************************

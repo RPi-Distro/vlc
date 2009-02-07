@@ -2,7 +2,7 @@
  * strings.c: String related functions
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: strings.c 15178 2006-04-11 16:18:39Z courmisch $
+ * $Id: strings.c 20495 2007-06-10 15:27:51Z courmisch $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>
@@ -54,6 +54,8 @@ char *unescape_URI_duplicate( const char *psz )
 void unescape_URI( char *psz )
 {
     unsigned char *in = (unsigned char *)psz, *out = in, c;
+    if( psz == NULL )
+        return;
 
     while( ( c = *in++ ) != '\0' )
     {
@@ -135,6 +137,8 @@ char *decode_URI_duplicate( const char *psz )
 void decode_URI( char *psz )
 {
     unsigned char *in = (unsigned char *)psz, *out = in, c;
+    if( psz == NULL )
+        return;
 
     while( ( c = *in++ ) != '\0' )
     {

@@ -1,10 +1,10 @@
 dnl Autoconf settings for vlc
 
-AC_INIT(vlc,0.8.6a)
+AC_INIT(vlc,0.8.6c)
 VERSION_MAJOR="0"
 VERSION_MINOR="8"
 VERSION_REVISION="6"
-VERSION_EXTRA="a"
+VERSION_EXTRA="c"
 
 CONFIGURE_LINE="$0 $*"
 CODENAME="Janus"
@@ -307,7 +307,7 @@ fi
 dnl
 dnl Gettext stuff
 dnl
-ALL_LINGUAS="af ar ca co cs da de en_GB es eu fr fur gl he hi hu it ja lt lv  ka ko ms nb ne nl nn oc pa pt_BR ro ru sk sl sq sv th tr zh_CN zh_TW"
+ALL_LINGUAS="af ar ca co cs da de en_GB es eu fa fr fur gl he hi hu it ja lt lv  ka ko ms nb ne nl nn oc pa pt_BR ro ru sk sl sq sv th tr zh_CN zh_TW"
 AM_GNU_GETTEXT_VERSION(0.11.5)
 AM_GNU_GETTEXT
 if test "${nls_cv_force_use_gnu_gettext}" = "yes"; then
@@ -1099,7 +1099,7 @@ dnl  default modules
 dnl
 VLC_ADD_PLUGINS([dummy logger memcpy])
 VLC_ADD_PLUGINS([mpgv mpga m4v m4a h264 ps pva avi asf mp4 rawdv nsv real aiff mjpeg demuxdump flac tta])
-VLC_ADD_PLUGINS([cvdsub svcdsub spudec subsdec dvbsub mpeg_audio lpcm a52 dts cinepak flacdec])
+VLC_ADD_PLUGINS([cvdsub svcdsub spudec telx subsdec dvbsub mpeg_audio lpcm a52 dts cinepak flacdec])
 VLC_ADD_PLUGINS([deinterlace invert adjust transform distort motionblur rv32])
 VLC_ADD_PLUGINS([fixed32tos16 s16tofixed32 u8tofixed32])
 VLC_ADD_PLUGINS([trivial_resampler ugly_resampler])
@@ -2016,6 +2016,26 @@ AC_ARG_ENABLE(pvr,
 if test "${enable_pvr}" = "yes"
 then
   VLC_ADD_PLUGINS([pvr])
+  AC_ARG_WITH(videodev2,
+    [  --with-videodev2=FILE   Location of videodev2.h file (default /usr/include/linux/videodev2.h)],[],[])
+  if test "${with_videodev2}" != "no" -a -n "${with_videodev2}"
+  then
+    AC_DEFINE_UNQUOTED(VIDEODEV2_H_FILE, "${with_videodev2}", [Location of videodev2.h])
+  else
+    AC_DEFINE(VIDEODEV2_H_FILE, <linux/videodev2.h>, [Location of videodev2.h])
+  fi
+    
+
+  AC_CACHE_CHECK([for new linux/videodev2.h],
+      [new_linux_videodev2_h],
+      [AC_TRY_COMPILE([#include <sys/types.h>
+          #include VIDEODEV2_H_FILE],
+          [struct v4l2_ext_controls ctrls; ctrls.ctrl_class = V4L2_CTRL_CLASS_MPEG; ],
+          new_linux_videodev2_h=yes,
+          new_linux_videodev2_h=no)])
+  if test "${new_linux_videodev2_h}" != "no"; then
+    AC_DEFINE(HAVE_NEW_LINUX_VIDEODEV2_H, 1, [Define if new linux/videodev2.h present])
+  fi
 fi
 
 dnl
@@ -2853,19 +2873,20 @@ then
       AC_MSG_RESULT(${real_twolame_tree}/src/libtwolame/.libs/libtwolame.a)
       VLC_ADD_BUILTINS([twolame])
       VLC_ADD_LDFLAGS([twolame],[${real_twolame_tree}/src/libtwolame/.libs/libtwolame.a])
-      VLC_ADD_CPPFLAGS([twolame],[-I${real_twolame_tree}/src/libtwolame])
+      VLC_ADD_CPPFLAGS([twolame],[-I${real_twolame_tree}/src/libtwolame -DLIBTWOLAME_STATIC])
     else
       dnl  The given libtwolame wasn't built
       AC_MSG_RESULT(no)
       AC_MSG_ERROR([cannot find ${real_twolame_tree}/src/libtwolame/.libs/libtwolame.a, make sure you compiled libtwolame in ${with_twolame_tree}])
     fi
   else
-    CPPFLAGS="${CPPFLAGS_save} ${CPPFLAGS_twolame}"
+    CPPFLAGS="${CPPFLAGS_save} ${CPPFLAGS_twolame} -DLIBTWOLAME_STATIC"
     LDFLAGS="${LDFLAGS_save} ${LDFLAGS_twolame}"
     AC_CHECK_HEADERS(twolame.h, ,
       [ AC_MSG_ERROR([Cannot find development header for libtwolame...]) ])
     AC_CHECK_LIB(twolame, twolame_init, [
       VLC_ADD_PLUGINS([twolame])
+      VLC_ADD_CPPFLAGS([twolame],[-DLIBTWOLAME_STATIC])
       VLC_ADD_LDFLAGS([twolame],[-ltwolame]) ],
         [ AC_MSG_ERROR([Cannot find libtwolame library...]) ])
     LDFLAGS="${LDFLAGS_save}"  
@@ -2923,10 +2944,14 @@ AC_CHECK_HEADERS(sysfs/libsysfs.h, [
 dnl
 dnl skins2 module
 dnl
-AC_CHECK_HEADERS(libtar.h, [
-  VLC_ADD_LDFLAGS([skins2],[-ltar])
-] )
+AC_ARG_ENABLE(libtar,
+  [  --enable libtar support for skins2 (default enabled)])
 
+AS_IF([test "${enable_libtar}" != "no"],[
+  AC_CHECK_HEADERS(libtar.h, [
+    VLC_ADD_LDFLAGS([skins2],[-ltar])
+  ] )
+])
 
 
 dnl
@@ -3601,6 +3626,8 @@ dnl  SDL module
 dnl
 AC_ARG_ENABLE(sdl,
   [  --enable-sdl            SDL support (default enabled)])
+AC_ARG_ENABLE(sdl-image,
+  [  --enable-sdl-image            SDL image support (default enabled)])
 if test "${enable_sdl}" != "no"
 then
   SDL_PATH="${PATH}"
@@ -3654,21 +3681,23 @@ then
 Please install it and try again. Alternatively you can also configure with
 --disable-sdl.])
       ])])
-    AC_CHECK_HEADERS(${SDL_IMAGE}, [AC_DEFINE_UNQUOTED(SDL_IMAGE_INCLUDE_FILE,
-      <${SDL_IMAGE}>, Indicate the path of SDL_image.h)
-      VLC_ADD_PLUGINS([sdl_image])
-      AC_CHECK_LIB(png, png_set_rows,
-        [VLC_ADD_LDFLAGS([sdl_image],[-lpng -lz])],[],[-lz])
-      AC_CHECK_LIB(jpeg, jpeg_start_decompress,
-        [VLC_ADD_LDFLAGS([sdl_image],[-ljpeg])])
-      AC_CHECK_LIB(tiff, TIFFClientOpen,
-        [VLC_ADD_LDFLAGS([sdl_image],[-ltiff])])
-      VLC_ADD_LDFLAGS([sdl_image], [-lSDL_image])],
-      [ AC_CHECK_HEADERS(SDL_image.h, AC_DEFINE(SDL_IMAGE_INCLUDE_FILE, <SDL_image.h>,
-          As a last resort we also test for SDL_image.h presence),
-      [ AC_MSG_WARN([The development package for SDL_image is not installed.
-You should install it alongside your SDL package.])
-      ])])
+    AS_IF([ test "${enable_sdl_image}" != "no"],[
+      AC_CHECK_HEADERS(${SDL_IMAGE}, [AC_DEFINE_UNQUOTED(SDL_IMAGE_INCLUDE_FILE,
+        <${SDL_IMAGE}>, Indicate the path of SDL_image.h)
+        VLC_ADD_PLUGINS([sdl_image])
+        AC_CHECK_LIB(png, png_set_rows,
+          [VLC_ADD_LDFLAGS([sdl_image],[-lpng -lz])],[],[-lz])
+        AC_CHECK_LIB(jpeg, jpeg_start_decompress,
+          [VLC_ADD_LDFLAGS([sdl_image],[-ljpeg])])
+        AC_CHECK_LIB(tiff, TIFFClientOpen,
+          [VLC_ADD_LDFLAGS([sdl_image],[-ltiff])])
+        VLC_ADD_LDFLAGS([sdl_image], [-lSDL_image])],
+        [ AC_CHECK_HEADERS(SDL_image.h, AC_DEFINE(SDL_IMAGE_INCLUDE_FILE, <SDL_image.h>,
+            As a last resort we also test for SDL_image.h presence),
+        [ AC_MSG_WARN([The development package for SDL_image is not installed.
+  You should install it alongside your SDL package.])
+        ])])
+    ])
     CPPFLAGS="${CPPFLAGS_save}"
     if expr 1.1.5 \> `${SDL_CONFIG} --version` >/dev/null
     then
@@ -5079,7 +5108,7 @@ then
     fi
     AC_LANG_PUSH(C++)
     AC_CHECK_HEADERS(ole2.h olectl.h,
-      [ VLC_ADD_CPPFLAGS([activex],[-D_MIDL_USE_GUIDDEF_])
+      [ VLC_ADD_CPPFLAGS([activex],[-DUNICODE -D_UNICODE -D_MIDL_USE_GUIDDEF_])
         VLC_ADD_CXXFLAGS([activex],[-fno-exceptions])
         VLC_ADD_LDFLAGS([activex],[-lole32 -loleaut32 -luuid -lshlwapi]) 
         AC_CHECK_HEADERS(objsafe.h,
@@ -5106,49 +5135,104 @@ dnl  Mozilla plugin
 dnl
 mozilla=false
 AC_ARG_ENABLE(mozilla,
-  [  --enable-mozilla        build a vlc-based Mozilla plugin (default disabled)])
+  [  --enable-mozilla        build a vlc-based Firefox/Mozilla plugin (default disabled)])
 AC_ARG_WITH(mozilla-sdk-path,
   [    --with-mozilla-sdk-path=PATH path to mozilla sdk])
-
+AC_LANG_PUSH(C++)
 if test "${enable_mozilla}" = "yes" 
 then
   dnl currently vlc plugin only needs headers, no xpcom support apis are actually used
   need_xpcom_libs=false
+
   if test "${with_mozilla_sdk_path}" = "" -o "${with_mozilla_sdk_path}" = "no"
   then
-    AC_PATH_PROG(MOZILLA_CONFIG, mozilla-config, no)
-    if test "${MOZILLA_CONFIG}" = "no"
-    then
-      AC_PATH_PROG(SEAMONKEY_CONFIG, seamonkey-config, no)
-      if test "${SEAMONKEY_CONFIG}" = "no"
-      then
-        AC_PATH_PROG(XULRUNNER_CONFIG, xulrunner-config, no)
-        if test "${XULRUNNER_CONFIG}" = "no"
-        then
-          AC_MSG_ERROR([Please install the Mozilla development tools, mozilla-config was not found.])
-        else
-          have_xul=true
-          MOZILLA_CONFIG="${XULRUNNER_CONFIG}"
+    dnl New firefox-1.5 SDK api
+    PKG_CHECK_MODULES([FIREFOX], [firefox-plugin],
+      [
+        PKG_CHECK_MODULES([FIREFOX_XPCOM], [firefox-xpcom],
+          [],
+          [
+            PKG_CHECK_MODULES([MOZILLA_NSPR], [mozilla-nspr],
+              [],
+              [
+                PKG_CHECK_MODULES([NSPR], [nspr],
+                  [],
+                  [
+                    AC_MSG_ERROR([Please install the nspr development tools.])
+                  ]
+                )
+              ]
+            )
+          ])
+        CPPFLAGS="${CPPFLAGS_save} ${FIREFOX_CFLAGS} ${FIREFOX_XPCOM_CFLAGS} ${MOZILLA_NSPR_CFLAGS} ${NSPR_CFLAGS} ${MOZILLA_CPPFLAGS}"
+        MOZILLA_REQUIRED_HEADERS=1
+        AC_CHECK_HEADERS(mozilla-config.h,,MOZILLA_REQUIRED_HEADERS=0)
+        AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
+        AC_CHECK_HEADERS(npruntime.h,,MOZILLA_REQUIRED_HEADERS=0,
+          [#if HAVE_NPAPI_H
+           # include <npapi.h>
+           #endif
+          ])
+        if test "${MOZILLA_REQUIRED_HEADERS}" = "0"; then
+            AC_MSG_ERROR([Please install the Firefox development tools; mozilla-config.h, plugin/npapi.h and plugin/npruntime.h were not found.])
         fi
-      else
-        MOZILLA_CONFIG="${SEAMONKEY_CONFIG}"
+        MOZILLA_REQUIRED_HEADERS=
+        mozilla=:
+        firefox_include=`pkg-config --variable=includedir firefox-plugin`
+        if test -f "${firefox_include}/mozilla-config.h" -a -f "${firefox_include}/mozilla-config32.h"; then
+            MOZILLA_CONFIG_H="${firefox_include}/mozilla-config32.h"
+        elif test -f "${firefox_include}/mozilla-config.h" -a -f "${firefox_include}/mozilla-config64.h"; then
+            MOZILLA_CONFIG_H="${firefox_include}/mozilla-config64.h"
+        else
+            MOZILLA_CONFIG_H="${firefox_include}/mozilla-config.h"
+        fi
+        if grep '^#define MOZ_X11 1' ${MOZILLA_CONFIG_H} 2>&1 > /dev/null ; then
+            VLC_ADD_LDFLAGS([mozilla], [${X_LIBS} ${X_PRE_LIBS} -lX11 -lXt])
+        fi
+        VLC_ADD_CPPFLAGS([mozilla],[${CPPFLAGS}])
+        VLC_ADD_LDFLAGS([mozilla],[${FIREFOX_LIBS} ${MOZILLA_NSPR_LIBS} ${NSPR_LIBS} ${MOZILLA_LDFLAGS}])
+        VLC_ADD_PLUGINS([mozilla])
+        MOZILLA_CONFIG=
+        CPPFLAGS="${CPPFLAGS_save}"
+      ],
+      [
+        AC_PATH_PROG(MOZILLA_CONFIG, mozilla-config, no)
+        if test "${MOZILLA_CONFIG}" = "no"
+        then
+          AC_PATH_PROG(SEAMONKEY_CONFIG, seamonkey-config, no)
+          if test "${SEAMONKEY_CONFIG}" = "no"
+          then
+            AC_PATH_PROG(XULRUNNER_CONFIG, xulrunner-config, no)
+            if test "${XULRUNNER_CONFIG}" = "no"
+            then
+              AC_MSG_ERROR([Please install the Mozilla development tools, mozilla-config was not found.])
+            else
+              have_xul=true
+              MOZILLA_CONFIG="${XULRUNNER_CONFIG}"
+            fi
+          else
+            MOZILLA_CONFIG="${SEAMONKEY_CONFIG}"
+          fi
+        fi
+      ]
+    )
+    if test ! -z "${MOZILLA_CONFIG}"
+    then
+      if ${MOZILLA_CONFIG} --defines | grep -q 'MOZ_X11=1'; then
+        LDFLAGS="${LDFLAGS_save} ${X_LIBS} ${X_PRE_LIBS}"
+        AC_CHECK_LIB(Xt,XtStrings,
+         [
+           VLC_ADD_CPPFLAGS([mozilla],[${X_CFLAGS}])
+           VLC_ADD_LDFLAGS([mozilla],[${X_LIBS} ${X_PRE_LIBS} -lXt -lX11 -lSM -lICE])
+         ],
+         [],
+         [[${X_LIBS} ${X_PRE_LIBS} -lX11 -lSM -lICE]
+        ])
+        LDFLAGS="${LDFLAGS_save}"
       fi
-    fi
-
-    if ${MOZILLA_CONFIG} --defines | grep -q 'MOZ_X11=1'; then
-      LDFLAGS="${LDFLAGS_save} ${X_LIBS} ${X_PRE_LIBS}"
-      AC_CHECK_LIB(Xt,XtStrings,
-       [
-         VLC_ADD_CPPFLAGS([mozilla],[${X_CFLAGS}])
-         VLC_ADD_LDFLAGS([mozilla],[${X_LIBS} ${X_PRE_LIBS} -lXt -lX11 -lSM -lICE])
-       ],
-       [],
-       [[${X_LIBS} ${X_PRE_LIBS} -lX11 -lSM -lICE]
-      ])
-      LDFLAGS="${LDFLAGS_save}"
-    fi
 
       mozilla=:
+      PLUGINS_BINDINGS="${PLUGINS_BINDINGS} mozilla"
       dnl Workaround for http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=150490
       VLC_ADD_CPPFLAGS([mozilla],[[`${MOZILLA_CONFIG} --cflags plugin xpcom java | sed 's,-I\([^ ]*\)/mozilla/\([^ ]*\),-I\1/\2 -I\1/mozilla/\2,g' | xargs`]])
       if ${need_xpcom_libs}; then
@@ -5157,17 +5241,22 @@ then
          VLC_ADD_LDFLAGS([mozilla],[`${MOZILLA_CONFIG} --libs plugin`])
       fi
       CPPFLAGS="${CPPFLAGS_save} ${CPPFLAGS_mozilla}"
-      AC_CHECK_HEADERS(mozilla-config.h)
+      MOZILLA_REQUIRED_HEADERS=1
+      AC_CHECK_HEADERS(mozilla-config.h,,MOZILLA_REQUIRED_HEADERS=0)
+      AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
+      AC_CHECK_HEADERS(npruntime.h,,MOZILLA_REQUIRED_HEADERS=0,
+        [#if HAVE_NPAPI_H
+         # include <npapi.h>
+         #endif
+        ])
+      if test "${MOZILLA_REQUIRED_HEADERS}" = "0"
+      then
+        AC_MSG_ERROR([Please install the Mozilla development tools, required headers were not found.])
+      fi
+      MOZILLA_REQUIRED_HEADERS=
       CPPFLAGS="${CPPFLAGS_save}"
       MOZILLA_SDK_PATH="`${MOZILLA_CONFIG} --prefix`"
-      XPIDL_INCL="`${MOZILLA_CONFIG} --cflags plugin xpcom java` \
-      `${MOZILLA_CONFIG} --idlflags plugin xpcom java` "
-      if ${have_xul}
-      then
-        xpidl_path="`${MOZILLA_CONFIG} --prefix`/lib/xulrunner"
-      else
-        xpidl_path="`${MOZILLA_CONFIG} --prefix`/bin"
-      fi	
+    fi
     dnl End of moz_sdk = ""
   else
     dnl special case for mingw32
@@ -5182,39 +5271,41 @@ then
 
     real_mozilla_sdk="`cd ${with_mozilla_sdk_path} 2>/dev/null && pwd`"
     CPPFLAGS="${CPPFLAGS_save} -I${real_mozilla_sdk} -I${real_mozilla_sdk}/include"
-    AC_CHECK_HEADERS(mozilla-config.h, [
-      mozilla=:
-      VLC_ADD_CPPFLAGS([mozilla],[-DXPCOM_GLUE -DHAVE_CPP_MODERN_SPECIALIZE_TEMPLATE_SYNTAX -I${real_mozilla_sdk} -I${real_mozilla_sdk}/include -I${real_mozilla_sdk}/embedstring/include -I${real_mozilla_sdk}/xpcom/include -I${real_mozilla_sdk}/nspr/include -I${real_mozilla_sdk}/string/include -I${real_mozilla_sdk}/plugin/include -I${real_mozilla_sdk}/java/include])
-      if ${need_xpcom_libs}; then
-         VLC_ADD_LDFLAGS([mozilla],[-L${real_mozilla_sdk}/embedstring/bin -L${real_mozilla_sdk}/xpcom/bin -L${real_mozilla_sdk}/nspr/bin -L${real_mozilla_sdk}/string/bin -L${real_mozilla_sdk}/lib -lnspr4 -lplds4 -lplc4 -lxpcomglue])
-        if test "${SYS}" = "mingw32"; then
-          dnl latest gecko sdk does not have embedstring
-          if test -d "${real_mozilla_sdk}/embedstring/bin"
-          then
-            VLC_ADD_LDFLAGS([mozilla],[-lembedstring -Wl,--kill-at])
-          fi
+    MOZILLA_REQUIRED_HEADERS=1
+    AC_CHECK_HEADERS(mozilla-config.h,,MOZILLA_REQUIRED_HEADERS=0)
+    AC_CHECK_HEADERS(npapi.h,,MOZILLA_REQUIRED_HEADERS=0)
+    AC_CHECK_HEADERS(npruntime.h,,MOZILLA_REQUIRED_HEADERS=0,
+        [#if HAVE_NPAPI_H
+          #include <npapi.h>
+          #endif
+        ])
+    if test "${MOZILLA_REQUIRED_HEADERS}" = "0"
+    then
+        AC_MSG_ERROR([Please install the Mozilla development tools, required headers were not found.])
+    fi
+    MOZILLA_REQUIRED_HEADERS=
+    mozilla=:
+    PLUGINS_BINDINGS="${PLUGINS_BINDINGS} mozilla"
+    VLC_ADD_CPPFLAGS([mozilla],[-DXPCOM_GLUE -DHAVE_CPP_MODERN_SPECIALIZE_TEMPLATE_SYNTAX -I${real_mozilla_sdk} -I${real_mozilla_sdk}/include -I${real_mozilla_sdk}/embedstring/include -I${real_mozilla_sdk}/xpcom/include -I${real_mozilla_sdk}/nspr/include -I${real_mozilla_sdk}/string/include -I${real_mozilla_sdk}/plugin/include -I${real_mozilla_sdk}/java/include])
+    if ${need_xpcom_libs}; then
+       VLC_ADD_LDFLAGS([mozilla],[-L${real_mozilla_sdk}/embedstring/bin -L${real_mozilla_sdk}/xpcom/bin -L${real_mozilla_sdk}/nspr/bin -L${real_mozilla_sdk}/string/bin -L${real_mozilla_sdk}/lib -lnspr4 -lplds4 -lplc4 -lxpcomglue])
+      if test "${SYS}" = "mingw32"; then
+        dnl latest gecko sdk does not have embedstring
+        if test -d "${real_mozilla_sdk}/embedstring/bin"
+        then
+          VLC_ADD_LDFLAGS([mozilla],[-lembedstring -Wl,--kill-at])
         fi
       fi
+    fi
+    MOZILLA_SDK_PATH="${real_mozilla_sdk}"
 
-      MOZILLA_SDK_PATH="${real_mozilla_sdk}"
-      XPIDL_INCL="-I${real_mozilla_sdk}${mozilla_sdk_xpcom}/idl"
-      xpidl_path="${real_mozilla_sdk}${mozilla_sdk_xpcom}/bin"
-
-      if test -n "${CYGPATH}"; then
-        real_mozilla_sdk="`${CYGPATH} -w ${real_mozilla_sdk}`"
-        XPIDL_INCL="${XPIDL_INCL} -I\"${real_mozilla_sdk}${mozilla_sdk_xpcom}/idl\""
-      fi ])
+    if test -n "${CYGPATH}"; then
+      real_mozilla_sdk="`${CYGPATH} -w ${real_mozilla_sdk}`"
+    fi
     CPPFLAGS="${CPPFLAGS_save}"
   fi
-
-  if test "${enable_mozilla}" != "false"
-  then
-    AC_PATH_PROG(XPIDL, xpidl, no, ${xpidl_path}:/usr/lib/mozilla:/usr/lib64/mozilla:/usr/lib/xulrunner:/usr/lib64/xulrunner)
-    if test "${XPIDL}" = "no"; then
-      AC_MSG_ERROR([Please install the Mozilla development tools, xpidl was not found.])
-    fi
-  fi 
 fi
+AC_LANG_POP(C++)
 AM_CONDITIONAL(BUILD_MOZILLA,${mozilla})
 
 dnl
@@ -5486,7 +5577,6 @@ AC_CONFIG_FILES([
   modules/access/dshow/Makefile
   modules/access/dvb/Makefile
   modules/access/mms/Makefile
-  modules/access/pvr/Makefile
   modules/access/v4l/Makefile
   modules/access/cdda/Makefile
   modules/access/rtsp/Makefile

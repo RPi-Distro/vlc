@@ -2,7 +2,7 @@
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: macosx.m 18493 2007-01-03 18:36:31Z fkuehne $
+ * $Id: macosx.m 18494 2007-01-03 22:06:34Z fkuehne $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
@@ -95,14 +95,14 @@ vlc_module_begin();
     set_subcategory( SUBCAT_INTERFACE_MAIN );
     add_bool( "macosx-embedded", 1, NULL, EMBEDDED_TEXT, EMBEDDED_LONGTEXT,
                      VLC_FALSE );
+    add_bool( "macosx-fspanel", 1, NULL, FSPANEL_TEXT, FSPANEL_LONGTEXT,
+                     VLC_FALSE );
     add_bool( "macosx-wizard-keep", 1, NULL, WIZARD_OPTIONS_SAVING_TEXT,
                 WIZARD_OPTIONS_SAVING_LONGTEXT, VLC_TRUE );
-    add_bool( "macosx-fspanel", 1, NULL, FSPANEL_TEXT, FSPANEL_LONGTEXT,
-        set_capability( "video output", 100 );
 
     add_submodule();
         set_description( _("Quartz video") );
-                     VLC_FALSE );
+        set_capability( "video output", 100 );
         set_category( CAT_VIDEO);
         set_subcategory( SUBCAT_VIDEO_VOUT );
         set_callbacks( E_(OpenVideoQT), E_(CloseVideoQT) );

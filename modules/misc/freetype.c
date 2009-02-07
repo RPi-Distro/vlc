@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2005 the VideoLAN team
- * $Id: freetype.c 16987 2006-10-08 12:54:12Z jpsaman $
+ * $Id: freetype.c 20581 2007-06-16 11:15:56Z jb $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -252,6 +252,11 @@ static int Create( vlc_object_t *p_this )
     {
         if( psz_fontfile ) free( psz_fontfile );
         psz_fontfile = (char *)malloc( PATH_MAX + 1 );
+        if( !psz_fontfile )
+        {
+            msg_Err( p_filter, "out of memory" );
+            goto error;
+        }
 #ifdef WIN32
         GetWindowsDirectory( psz_fontfile, PATH_MAX + 1 );
         strcat( psz_fontfile, "\\fonts\\arial.ttf" );
@@ -693,9 +698,9 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
                        subpicture_region_t *p_region_in )
 {
     filter_sys_t *p_sys = p_filter->p_sys;
-    line_desc_t  *p_lines = 0, *p_line = 0, *p_next = 0, *p_prev = 0;
+    line_desc_t  *p_lines = NULL, *p_line = NULL, *p_next = NULL, *p_prev = NULL;
     int i, i_pen_y, i_pen_x, i_error, i_glyph_index, i_previous;
-    uint32_t *psz_unicode, *psz_unicode_orig = 0, i_char, *psz_line_start;
+    uint32_t *psz_unicode, *psz_unicode_orig = NULL, i_char, *psz_line_start;
     int i_string_length;
     char *psz_string;
     vlc_iconv_t iconv_handle = (vlc_iconv_t)(-1);
@@ -782,6 +787,11 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
         int start_pos, pos = 0;
 
         p_fribidi_string = malloc( (i_string_length + 1) * sizeof(uint32_t) );
+        if( !p_fribidi_string )
+        {
+            msg_Err( p_filter, "out of memory" );
+            goto error;
+        }
 
         /* Do bidi conversion line-by-line */
         while(pos < i_string_length)
@@ -1073,3 +1083,4 @@ static int SetFontSize( filter_t *p_filter, int i_size )
 
     return VLC_SUCCESS;
 }
+

@@ -2,7 +2,7 @@
  * udp.c: raw UDP & RTP input module
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: udp.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: udp.c 19810 2007-04-15 09:52:35Z md $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Tristan Leteurtre <tooney@via.ecp.fr>
@@ -203,6 +203,7 @@ static int Open( vlc_object_t *p_this )
     p_access->info.i_seekpoint = 0;
 
     p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
+    memset (p_sys, 0, sizeof (*p_sys));
     p_sys->fd = net_OpenUDP( p_access, psz_bind_addr, i_bind_port,
                                       psz_server_addr, i_server_port );
     if( p_sys->fd < 0 )

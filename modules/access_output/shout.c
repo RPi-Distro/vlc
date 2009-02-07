@@ -2,7 +2,7 @@
  * shout.c: This module forwards vorbis streams to an icecast server
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: shout.c 14974 2006-03-30 05:37:29Z zorglub $
+ * $Id: shout.c 19777 2007-04-12 19:15:48Z Trax $
  *
  * Authors: Daniel Fischer <dan at subsignal dot org>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -180,8 +180,7 @@ static int Open( vlc_object_t *p_this )
     p_shout = p_sys->p_shout = shout_new();
     if( !p_shout
          || shout_set_host( p_shout, psz_host ) != SHOUTERR_SUCCESS
-         || shout_set_protocol( p_shout, SHOUT_PROTOCOL_HTTP )
-             != SHOUTERR_SUCCESS
+         || shout_set_protocol( p_shout, SHOUT_PROTOCOL_ICY ) != SHOUTERR_SUCCESS
          || shout_set_port( p_shout, i_port ) != SHOUTERR_SUCCESS
          || shout_set_password( p_shout, psz_pass ) != SHOUTERR_SUCCESS
          || shout_set_mount( p_shout, psz_mount ) != SHOUTERR_SUCCESS
@@ -189,7 +188,7 @@ static int Open( vlc_object_t *p_this )
          || shout_set_agent( p_shout, "VLC media player " VERSION ) != SHOUTERR_SUCCESS
          || shout_set_name( p_shout, psz_name ) != SHOUTERR_SUCCESS
          || shout_set_description( p_shout, psz_description ) != SHOUTERR_SUCCESS 
-//       || shout_set_nonblocking( p_shout, 1 ) != SHOUTERR_SUCCESS
+         /* || shout_set_nonblocking( p_shout, 1 ) != SHOUTERR_SUCCESS */
       )
     {
         msg_Err( p_access, "failed to initialize shout streaming to %s:%i/%s",
@@ -216,10 +215,42 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
+    /* Shoutcast using ICY protocol */
     i_ret = shout_open( p_shout );
     if( i_ret == SHOUTERR_SUCCESS )
     {
         i_ret = SHOUTERR_CONNECTED;
+        msg_Dbg( p_access, "connected using 'icy' (shoutcast) protocol" );
+    }
+    else
+    {
+        msg_Warn( p_access, "failed to connect using 'icy' (shoutcast) protocol" );
+
+        /* Shout parameters cannot be changed on an open connection */
+        i_ret = shout_close( p_shout );
+        if( i_ret == SHOUTERR_SUCCESS )
+        {
+            i_ret = SHOUTERR_UNCONNECTED;
+        }
+
+        /* IceCAST using HTTP protocol */
+        i_ret = shout_set_protocol( p_shout, SHOUT_PROTOCOL_HTTP );
+        if( i_ret != SHOUTERR_SUCCESS )
+        {
+            msg_Err( p_access, "failed to set the protocol to 'http'" );
+            free( p_access->p_sys );
+            free( psz_accessname );
+            return VLC_EGENERIC;
+        }
+
+        i_ret = shout_open( p_shout );
+        if( i_ret == SHOUTERR_SUCCESS )
+        {
+            i_ret = SHOUTERR_CONNECTED;
+            msg_Dbg( p_access, "connected using 'http' (icecast 2.x) protocol" );
+        }
+        else
+            msg_Warn( p_access, "failed to connect using 'http' (icecast 2.x) protocol " );
     }
 
 /*

@@ -2,7 +2,7 @@
  * vout.h: Windows DirectX video output header file
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: vout.h 18149 2006-11-29 12:09:07Z damienf $
+ * $Id: vout.h 19761 2007-04-11 21:27:39Z damienf $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -123,10 +123,14 @@ struct vout_sys_t
 #endif
 
 #ifdef MODULE_NAME_IS_direct3d
+    // core objects
+    HINSTANCE               hd3d9_dll;       /* handle of the opened d3d9 dll */
     LPDIRECT3D9             p_d3dobj;
     LPDIRECT3DDEVICE9       p_d3ddev;
-    D3DPRESENT_PARAMETERS   d3dpp;
-    HINSTANCE               hd3d9_dll;       /* handle of the opened d3d9 dll */
+    D3DFORMAT               bbFormat;
+    // scene objects
+    LPDIRECT3DTEXTURE9      p_d3dtex;
+    LPDIRECT3DVERTEXBUFFER9 p_d3dvtc;
 #endif
 
     event_thread_t *p_event;

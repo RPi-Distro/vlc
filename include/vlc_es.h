@@ -2,7 +2,7 @@
  * vlc_es.h: Elementary stream formats descriptions
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: vlc_es.h 17050 2006-10-13 00:07:54Z hartman $
+ * $Id: vlc_es.h 20443 2007-06-07 16:55:08Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -69,9 +69,9 @@ struct audio_format_t
      */
 
     /* FIXME ? (used by the codecs) */
-    int i_channels;
-    int i_blockalign;
-    int i_bitspersample;
+    unsigned i_channels;
+    unsigned i_blockalign;
+    unsigned i_bitspersample;
 };
 
 #ifdef WORDS_BIGENDIAN
@@ -289,6 +289,8 @@ static inline void es_format_Clean( es_format_t *fmt )
         }
         free(fmt->p_extra_languages);
     }
+    fmt->i_extra_languages = 0;
+    fmt->p_extra_languages = NULL;
 }
 
 #endif

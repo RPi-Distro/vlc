@@ -2,7 +2,7 @@
  * vout.c: Windows DirectX video output display method
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: directx.c 16931 2006-10-03 09:04:50Z damienf $
+ * $Id: directx.c 19729 2007-04-06 23:09:20Z damienf $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -828,7 +828,14 @@ static void Display( vout_thread_t *p_vout, picture_t *p_pic )
             msg_Warn( p_vout, "could not blit surface (error %li)", dxresult );
             return;
         }
-
+        else
+        {
+            /* if set, remove the black brush to avoid flickering in repaint operations */
+            if( 0UL != GetClassLong( p_vout->p_sys->hvideownd, GCL_HBRBACKGROUND) )
+            {
+                SetClassLong(p_vout->p_sys->hvideownd, GCL_HBRBACKGROUND, (ULONG)0UL);
+            }
+        }
     }
     else /* using overlay */
     {

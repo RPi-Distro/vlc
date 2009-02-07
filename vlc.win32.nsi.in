@@ -443,7 +443,7 @@ Section /o "Mozilla plugin" SEC03
   !insertmacro InstallFile mozilla\npvlc.dll
   !insertmacro CloseUninstallLog
 
-  !define Moz "SOFTWARE\MozillaPlugins\@videolan.org/vlc,version=${VERSION}"
+  !define Moz "SOFTWARE\MozillaPlugins\@videolan.org/vlc;version=${VERSION}"
   WriteRegStr HKLM ${Moz} "Description" "VLC Multimedia Plugin"
   WriteRegStr HKLM ${Moz} "Path" "$INSTDIR\npvlc.dll"
   WriteRegStr HKLM ${Moz} "Product" "VLC media player"
@@ -696,7 +696,7 @@ Section "Uninstall" SEC91
   DeleteRegKey HKCR "VLC.MediaFile"
 
   DeleteRegKey HKLM \
-    "SOFTWARE\MozillaPlugins\@videolan.org/vlc,version=${VERSION}"
+    "SOFTWARE\MozillaPlugins\@videolan.org/vlc;version=${VERSION}"
 
   DeleteRegKey HKLM \
     "Software\Microsoft\Windows\CurrentVersion\Uninstall\${PRODUCT_NAME}"

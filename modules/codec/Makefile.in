@@ -116,6 +116,10 @@ FFMPEG_CFLAGS = @FFMPEG_CFLAGS@
 FFMPEG_CONFIG = @FFMPEG_CONFIG@
 FFMPEG_LIBS = @FFMPEG_LIBS@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
+FIREFOX_CFLAGS = @FIREFOX_CFLAGS@
+FIREFOX_LIBS = @FIREFOX_LIBS@
+FIREFOX_XPCOM_CFLAGS = @FIREFOX_XPCOM_CFLAGS@
+FIREFOX_XPCOM_LIBS = @FIREFOX_XPCOM_LIBS@
 FREETYPE_CONFIG = @FREETYPE_CONFIG@
 FRIBIDI_CONFIG = @FRIBIDI_CONFIG@
 GENCAT = @GENCAT@
@@ -187,11 +191,15 @@ MIDL = @MIDL@
 MKINSTALLDIRS = @MKINSTALLDIRS@
 MOC = @MOC@
 MOZILLA_CONFIG = @MOZILLA_CONFIG@
+MOZILLA_NSPR_CFLAGS = @MOZILLA_NSPR_CFLAGS@
+MOZILLA_NSPR_LIBS = @MOZILLA_NSPR_LIBS@
 MOZILLA_SDK_PATH = @MOZILLA_SDK_PATH@
 MSGFMT = @MSGFMT@
 MSGMERGE = @MSGMERGE@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
 NOTIFY_LIBS = @NOTIFY_LIBS@
+NSPR_CFLAGS = @NSPR_CFLAGS@
+NSPR_LIBS = @NSPR_LIBS@
 OBJC = @OBJC@
 OBJCDEPMODE = @OBJCDEPMODE@
 OBJCFLAGS = @OBJCFLAGS@
@@ -302,7 +310,7 @@ target_vendor = @target_vendor@
 uudecode = @uudecode@
 
 basedir = codec
-mods = a52 cinepak dts flacdec lpcm araw vorbis tarkin theora tremor speex adpcm mpeg_audio libmpeg2 rawvideo quicktime subsdec faad dvbsub mash x264 twolame dirac png svcdsub cvdsub fake realaudio sdl_image
+mods = a52 cinepak dts flacdec lpcm araw vorbis tarkin theora tremor speex adpcm mpeg_audio libmpeg2 rawvideo quicktime subsdec faad dvbsub telx mash x264 twolame dirac png svcdsub cvdsub fake realaudio sdl_image
 
 NULL = 
 libvlc_LTLIBRARIES = 
@@ -315,8 +323,8 @@ SUFFIXES = _plugin$(LIBEXT) _plugin.a
 
 libvlcdir = $(libdir)/vlc/$(basedir)
 
-EXTRA_LIBRARIES = liba52_plugin.a liba52.a libcinepak_plugin.a libcinepak.a libdts_plugin.a libdts.a libflacdec_plugin.a libflacdec.a liblpcm_plugin.a liblpcm.a libaraw_plugin.a libaraw.a libvorbis_plugin.a libvorbis.a libtarkin_plugin.a libtarkin.a libtheora_plugin.a libtheora.a libtremor_plugin.a libtremor.a libspeex_plugin.a libspeex.a libadpcm_plugin.a libadpcm.a libmpeg_audio_plugin.a libmpeg_audio.a liblibmpeg2_plugin.a liblibmpeg2.a librawvideo_plugin.a librawvideo.a libquicktime_plugin.a libquicktime.a libsubsdec_plugin.a libsubsdec.a libfaad_plugin.a libfaad.a libdvbsub_plugin.a libdvbsub.a libmash_plugin.a libmash.a libx264_plugin.a libx264.a libtwolame_plugin.a libtwolame.a libdirac_plugin.a libdirac.a libpng_plugin.a libpng.a libsvcdsub_plugin.a libsvcdsub.a libcvdsub_plugin.a libcvdsub.a libfake_plugin.a libfake.a librealaudio_plugin.a librealaudio.a libsdl_image_plugin.a libsdl_image.a
-EXTRA_LTLIBRARIES = liba52_plugin.la liba52_builtin.la libcinepak_plugin.la libcinepak_builtin.la libdts_plugin.la libdts_builtin.la libflacdec_plugin.la libflacdec_builtin.la liblpcm_plugin.la liblpcm_builtin.la libaraw_plugin.la libaraw_builtin.la libvorbis_plugin.la libvorbis_builtin.la libtarkin_plugin.la libtarkin_builtin.la libtheora_plugin.la libtheora_builtin.la libtremor_plugin.la libtremor_builtin.la libspeex_plugin.la libspeex_builtin.la libadpcm_plugin.la libadpcm_builtin.la libmpeg_audio_plugin.la libmpeg_audio_builtin.la liblibmpeg2_plugin.la liblibmpeg2_builtin.la librawvideo_plugin.la librawvideo_builtin.la libquicktime_plugin.la libquicktime_builtin.la libsubsdec_plugin.la libsubsdec_builtin.la libfaad_plugin.la libfaad_builtin.la libdvbsub_plugin.la libdvbsub_builtin.la libmash_plugin.la libmash_builtin.la libx264_plugin.la libx264_builtin.la libtwolame_plugin.la libtwolame_builtin.la libdirac_plugin.la libdirac_builtin.la libpng_plugin.la libpng_builtin.la libsvcdsub_plugin.la libsvcdsub_builtin.la libcvdsub_plugin.la libcvdsub_builtin.la libfake_plugin.la libfake_builtin.la librealaudio_plugin.la librealaudio_builtin.la libsdl_image_plugin.la libsdl_image_builtin.la
+EXTRA_LIBRARIES = liba52_plugin.a liba52.a libcinepak_plugin.a libcinepak.a libdts_plugin.a libdts.a libflacdec_plugin.a libflacdec.a liblpcm_plugin.a liblpcm.a libaraw_plugin.a libaraw.a libvorbis_plugin.a libvorbis.a libtarkin_plugin.a libtarkin.a libtheora_plugin.a libtheora.a libtremor_plugin.a libtremor.a libspeex_plugin.a libspeex.a libadpcm_plugin.a libadpcm.a libmpeg_audio_plugin.a libmpeg_audio.a liblibmpeg2_plugin.a liblibmpeg2.a librawvideo_plugin.a librawvideo.a libquicktime_plugin.a libquicktime.a libsubsdec_plugin.a libsubsdec.a libfaad_plugin.a libfaad.a libdvbsub_plugin.a libdvbsub.a libtelx_plugin.a libtelx.a libmash_plugin.a libmash.a libx264_plugin.a libx264.a libtwolame_plugin.a libtwolame.a libdirac_plugin.a libdirac.a libpng_plugin.a libpng.a libsvcdsub_plugin.a libsvcdsub.a libcvdsub_plugin.a libcvdsub.a libfake_plugin.a libfake.a librealaudio_plugin.a librealaudio.a libsdl_image_plugin.a libsdl_image.a
+EXTRA_LTLIBRARIES = liba52_plugin.la liba52_builtin.la libcinepak_plugin.la libcinepak_builtin.la libdts_plugin.la libdts_builtin.la libflacdec_plugin.la libflacdec_builtin.la liblpcm_plugin.la liblpcm_builtin.la libaraw_plugin.la libaraw_builtin.la libvorbis_plugin.la libvorbis_builtin.la libtarkin_plugin.la libtarkin_builtin.la libtheora_plugin.la libtheora_builtin.la libtremor_plugin.la libtremor_builtin.la libspeex_plugin.la libspeex_builtin.la libadpcm_plugin.la libadpcm_builtin.la libmpeg_audio_plugin.la libmpeg_audio_builtin.la liblibmpeg2_plugin.la liblibmpeg2_builtin.la librawvideo_plugin.la librawvideo_builtin.la libquicktime_plugin.la libquicktime_builtin.la libsubsdec_plugin.la libsubsdec_builtin.la libfaad_plugin.la libfaad_builtin.la libdvbsub_plugin.la libdvbsub_builtin.la libtelx_plugin.la libtelx_builtin.la libmash_plugin.la libmash_builtin.la libx264_plugin.la libx264_builtin.la libtwolame_plugin.la libtwolame_builtin.la libdirac_plugin.la libdirac_builtin.la libpng_plugin.la libpng_builtin.la libsvcdsub_plugin.la libsvcdsub_builtin.la libcvdsub_plugin.la libcvdsub_builtin.la libfake_plugin.la libfake_builtin.la librealaudio_plugin.la librealaudio_builtin.la libsdl_image_plugin.la libsdl_image_builtin.la
 
 # Disabled modules
 SOURCES_a52 = a52.c
@@ -338,6 +346,7 @@ SOURCES_quicktime = quicktime.c
 SOURCES_subsdec = subsdec.c
 SOURCES_faad = faad.c
 SOURCES_dvbsub = dvbsub.c
+SOURCES_telx = telx.c
 SOURCES_mash = mash.cpp
 SOURCES_x264 = x264.c
 SOURCES_twolame = twolame.c
@@ -809,6 +818,30 @@ libdvbsub_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic dvbsub`
 libdvbsub_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin dvbsub`
 libdvbsub_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin dvbsub`
 libdvbsub_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin dvbsub`
+
+
+# The telx plugin
+libtelx_plugin_a_SOURCES = $(SOURCES_telx)
+libtelx_plugin_la_SOURCES = $(SOURCES_telx)
+libtelx_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin telx`
+libtelx_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin telx`
+libtelx_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin telx`
+libtelx_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin telx`
+libtelx_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin telx`
+libtelx_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin telx`
+libtelx_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin telx` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+
+libtelx_plugin_la_LIBADD = $(LTLIBVLC)
+
+libtelx_a_SOURCES = $(SOURCES_telx)
+libtelx_builtin_la_SOURCES = $(SOURCES_telx)
+libtelx_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic telx`
+libtelx_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic telx`
+libtelx_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic telx`
+libtelx_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin telx`
+libtelx_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin telx`
+libtelx_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin telx`
 
 
 # The mash plugin
@@ -1294,319 +1327,338 @@ libtarkin_plugin_a_LIBADD =
 am__objects_48 = libtarkin_plugin_a-tarkin.$(OBJEXT)
 am_libtarkin_plugin_a_OBJECTS = $(am__objects_48)
 libtarkin_plugin_a_OBJECTS = $(am_libtarkin_plugin_a_OBJECTS)
+libtelx_a_AR = $(AR) cru
+libtelx_a_LIBADD =
+am__objects_49 = libtelx_a-telx.$(OBJEXT)
+am_libtelx_a_OBJECTS = $(am__objects_49)
+libtelx_a_OBJECTS = $(am_libtelx_a_OBJECTS)
+libtelx_plugin_a_AR = $(AR) cru
+libtelx_plugin_a_LIBADD =
+am__objects_50 = libtelx_plugin_a-telx.$(OBJEXT)
+am_libtelx_plugin_a_OBJECTS = $(am__objects_50)
+libtelx_plugin_a_OBJECTS = $(am_libtelx_plugin_a_OBJECTS)
 libtheora_a_AR = $(AR) cru
 libtheora_a_LIBADD =
-am__objects_49 = libtheora_a-theora.$(OBJEXT)
-am_libtheora_a_OBJECTS = $(am__objects_49)
+am__objects_51 = libtheora_a-theora.$(OBJEXT)
+am_libtheora_a_OBJECTS = $(am__objects_51)
 libtheora_a_OBJECTS = $(am_libtheora_a_OBJECTS)
 libtheora_plugin_a_AR = $(AR) cru
 libtheora_plugin_a_LIBADD =
-am__objects_50 = libtheora_plugin_a-theora.$(OBJEXT)
-am_libtheora_plugin_a_OBJECTS = $(am__objects_50)
+am__objects_52 = libtheora_plugin_a-theora.$(OBJEXT)
+am_libtheora_plugin_a_OBJECTS = $(am__objects_52)
 libtheora_plugin_a_OBJECTS = $(am_libtheora_plugin_a_OBJECTS)
 libtremor_a_AR = $(AR) cru
 libtremor_a_LIBADD =
-am__objects_51 = libtremor_a-vorbis.$(OBJEXT)
-am_libtremor_a_OBJECTS = $(am__objects_51)
+am__objects_53 = libtremor_a-vorbis.$(OBJEXT)
+am_libtremor_a_OBJECTS = $(am__objects_53)
 libtremor_a_OBJECTS = $(am_libtremor_a_OBJECTS)
 libtremor_plugin_a_AR = $(AR) cru
 libtremor_plugin_a_LIBADD =
-am__objects_52 = libtremor_plugin_a-vorbis.$(OBJEXT)
-am_libtremor_plugin_a_OBJECTS = $(am__objects_52)
+am__objects_54 = libtremor_plugin_a-vorbis.$(OBJEXT)
+am_libtremor_plugin_a_OBJECTS = $(am__objects_54)
 libtremor_plugin_a_OBJECTS = $(am_libtremor_plugin_a_OBJECTS)
 libtwolame_a_AR = $(AR) cru
 libtwolame_a_LIBADD =
-am__objects_53 = libtwolame_a-twolame.$(OBJEXT)
-am_libtwolame_a_OBJECTS = $(am__objects_53)
+am__objects_55 = libtwolame_a-twolame.$(OBJEXT)
+am_libtwolame_a_OBJECTS = $(am__objects_55)
 libtwolame_a_OBJECTS = $(am_libtwolame_a_OBJECTS)
 libtwolame_plugin_a_AR = $(AR) cru
 libtwolame_plugin_a_LIBADD =
-am__objects_54 = libtwolame_plugin_a-twolame.$(OBJEXT)
-am_libtwolame_plugin_a_OBJECTS = $(am__objects_54)
+am__objects_56 = libtwolame_plugin_a-twolame.$(OBJEXT)
+am_libtwolame_plugin_a_OBJECTS = $(am__objects_56)
 libtwolame_plugin_a_OBJECTS = $(am_libtwolame_plugin_a_OBJECTS)
 libvorbis_a_AR = $(AR) cru
 libvorbis_a_LIBADD =
-am__objects_55 = libvorbis_a-vorbis.$(OBJEXT)
-am_libvorbis_a_OBJECTS = $(am__objects_55)
+am__objects_57 = libvorbis_a-vorbis.$(OBJEXT)
+am_libvorbis_a_OBJECTS = $(am__objects_57)
 libvorbis_a_OBJECTS = $(am_libvorbis_a_OBJECTS)
 libvorbis_plugin_a_AR = $(AR) cru
 libvorbis_plugin_a_LIBADD =
-am__objects_56 = libvorbis_plugin_a-vorbis.$(OBJEXT)
-am_libvorbis_plugin_a_OBJECTS = $(am__objects_56)
+am__objects_58 = libvorbis_plugin_a-vorbis.$(OBJEXT)
+am_libvorbis_plugin_a_OBJECTS = $(am__objects_58)
 libvorbis_plugin_a_OBJECTS = $(am_libvorbis_plugin_a_OBJECTS)
 libx264_a_AR = $(AR) cru
 libx264_a_LIBADD =
-am__objects_57 = libx264_a-x264.$(OBJEXT)
-am_libx264_a_OBJECTS = $(am__objects_57)
+am__objects_59 = libx264_a-x264.$(OBJEXT)
+am_libx264_a_OBJECTS = $(am__objects_59)
 libx264_a_OBJECTS = $(am_libx264_a_OBJECTS)
 libx264_plugin_a_AR = $(AR) cru
 libx264_plugin_a_LIBADD =
-am__objects_58 = libx264_plugin_a-x264.$(OBJEXT)
-am_libx264_plugin_a_OBJECTS = $(am__objects_58)
+am__objects_60 = libx264_plugin_a-x264.$(OBJEXT)
+am_libx264_plugin_a_OBJECTS = $(am__objects_60)
 libx264_plugin_a_OBJECTS = $(am_libx264_plugin_a_OBJECTS)
 LTLIBRARIES = $(libvlc_LTLIBRARIES) $(noinst_LTLIBRARIES)
 
 liba52_builtin_la_LDFLAGS =
 liba52_builtin_la_LIBADD =
-am__objects_59 = liba52_builtin_la-a52.lo
-am_liba52_builtin_la_OBJECTS = $(am__objects_59)
+am__objects_61 = liba52_builtin_la-a52.lo
+am_liba52_builtin_la_OBJECTS = $(am__objects_61)
 liba52_builtin_la_OBJECTS = $(am_liba52_builtin_la_OBJECTS)
 liba52_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_60 = liba52_plugin_la-a52.lo
-am_liba52_plugin_la_OBJECTS = $(am__objects_60)
+am__objects_62 = liba52_plugin_la-a52.lo
+am_liba52_plugin_la_OBJECTS = $(am__objects_62)
 liba52_plugin_la_OBJECTS = $(am_liba52_plugin_la_OBJECTS)
 libadpcm_builtin_la_LDFLAGS =
 libadpcm_builtin_la_LIBADD =
-am__objects_61 = libadpcm_builtin_la-adpcm.lo
-am_libadpcm_builtin_la_OBJECTS = $(am__objects_61)
+am__objects_63 = libadpcm_builtin_la-adpcm.lo
+am_libadpcm_builtin_la_OBJECTS = $(am__objects_63)
 libadpcm_builtin_la_OBJECTS = $(am_libadpcm_builtin_la_OBJECTS)
 libadpcm_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_62 = libadpcm_plugin_la-adpcm.lo
-am_libadpcm_plugin_la_OBJECTS = $(am__objects_62)
+am__objects_64 = libadpcm_plugin_la-adpcm.lo
+am_libadpcm_plugin_la_OBJECTS = $(am__objects_64)
 libadpcm_plugin_la_OBJECTS = $(am_libadpcm_plugin_la_OBJECTS)
 libaraw_builtin_la_LDFLAGS =
 libaraw_builtin_la_LIBADD =
-am__objects_63 = libaraw_builtin_la-araw.lo
-am_libaraw_builtin_la_OBJECTS = $(am__objects_63)
+am__objects_65 = libaraw_builtin_la-araw.lo
+am_libaraw_builtin_la_OBJECTS = $(am__objects_65)
 libaraw_builtin_la_OBJECTS = $(am_libaraw_builtin_la_OBJECTS)
 libaraw_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_64 = libaraw_plugin_la-araw.lo
-am_libaraw_plugin_la_OBJECTS = $(am__objects_64)
+am__objects_66 = libaraw_plugin_la-araw.lo
+am_libaraw_plugin_la_OBJECTS = $(am__objects_66)
 libaraw_plugin_la_OBJECTS = $(am_libaraw_plugin_la_OBJECTS)
 libcinepak_builtin_la_LDFLAGS =
 libcinepak_builtin_la_LIBADD =
-am__objects_65 = libcinepak_builtin_la-cinepak.lo
-am_libcinepak_builtin_la_OBJECTS = $(am__objects_65)
+am__objects_67 = libcinepak_builtin_la-cinepak.lo
+am_libcinepak_builtin_la_OBJECTS = $(am__objects_67)
 libcinepak_builtin_la_OBJECTS = $(am_libcinepak_builtin_la_OBJECTS)
 libcinepak_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_66 = libcinepak_plugin_la-cinepak.lo
-am_libcinepak_plugin_la_OBJECTS = $(am__objects_66)
+am__objects_68 = libcinepak_plugin_la-cinepak.lo
+am_libcinepak_plugin_la_OBJECTS = $(am__objects_68)
 libcinepak_plugin_la_OBJECTS = $(am_libcinepak_plugin_la_OBJECTS)
 libcvdsub_builtin_la_LDFLAGS =
 libcvdsub_builtin_la_LIBADD =
-am__objects_67 = libcvdsub_builtin_la-cvdsub.lo
-am_libcvdsub_builtin_la_OBJECTS = $(am__objects_67)
+am__objects_69 = libcvdsub_builtin_la-cvdsub.lo
+am_libcvdsub_builtin_la_OBJECTS = $(am__objects_69)
 libcvdsub_builtin_la_OBJECTS = $(am_libcvdsub_builtin_la_OBJECTS)
 libcvdsub_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_68 = libcvdsub_plugin_la-cvdsub.lo
-am_libcvdsub_plugin_la_OBJECTS = $(am__objects_68)
+am__objects_70 = libcvdsub_plugin_la-cvdsub.lo
+am_libcvdsub_plugin_la_OBJECTS = $(am__objects_70)
 libcvdsub_plugin_la_OBJECTS = $(am_libcvdsub_plugin_la_OBJECTS)
 libdirac_builtin_la_LDFLAGS =
 libdirac_builtin_la_LIBADD =
-am__objects_69 = libdirac_builtin_la-dirac.lo
-am_libdirac_builtin_la_OBJECTS = $(am__objects_69)
+am__objects_71 = libdirac_builtin_la-dirac.lo
+am_libdirac_builtin_la_OBJECTS = $(am__objects_71)
 libdirac_builtin_la_OBJECTS = $(am_libdirac_builtin_la_OBJECTS)
 libdirac_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_70 = libdirac_plugin_la-dirac.lo
-am_libdirac_plugin_la_OBJECTS = $(am__objects_70)
+am__objects_72 = libdirac_plugin_la-dirac.lo
+am_libdirac_plugin_la_OBJECTS = $(am__objects_72)
 libdirac_plugin_la_OBJECTS = $(am_libdirac_plugin_la_OBJECTS)
 libdts_builtin_la_LDFLAGS =
 libdts_builtin_la_LIBADD =
-am__objects_71 = libdts_builtin_la-dts.lo
-am_libdts_builtin_la_OBJECTS = $(am__objects_71)
+am__objects_73 = libdts_builtin_la-dts.lo
+am_libdts_builtin_la_OBJECTS = $(am__objects_73)
 libdts_builtin_la_OBJECTS = $(am_libdts_builtin_la_OBJECTS)
 libdts_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_72 = libdts_plugin_la-dts.lo
-am_libdts_plugin_la_OBJECTS = $(am__objects_72)
+am__objects_74 = libdts_plugin_la-dts.lo
+am_libdts_plugin_la_OBJECTS = $(am__objects_74)
 libdts_plugin_la_OBJECTS = $(am_libdts_plugin_la_OBJECTS)
 libdvbsub_builtin_la_LDFLAGS =
 libdvbsub_builtin_la_LIBADD =
-am__objects_73 = libdvbsub_builtin_la-dvbsub.lo
-am_libdvbsub_builtin_la_OBJECTS = $(am__objects_73)
+am__objects_75 = libdvbsub_builtin_la-dvbsub.lo
+am_libdvbsub_builtin_la_OBJECTS = $(am__objects_75)
 libdvbsub_builtin_la_OBJECTS = $(am_libdvbsub_builtin_la_OBJECTS)
 libdvbsub_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_74 = libdvbsub_plugin_la-dvbsub.lo
-am_libdvbsub_plugin_la_OBJECTS = $(am__objects_74)
+am__objects_76 = libdvbsub_plugin_la-dvbsub.lo
+am_libdvbsub_plugin_la_OBJECTS = $(am__objects_76)
 libdvbsub_plugin_la_OBJECTS = $(am_libdvbsub_plugin_la_OBJECTS)
 libfaad_builtin_la_LDFLAGS =
 libfaad_builtin_la_LIBADD =
-am__objects_75 = libfaad_builtin_la-faad.lo
-am_libfaad_builtin_la_OBJECTS = $(am__objects_75)
+am__objects_77 = libfaad_builtin_la-faad.lo
+am_libfaad_builtin_la_OBJECTS = $(am__objects_77)
 libfaad_builtin_la_OBJECTS = $(am_libfaad_builtin_la_OBJECTS)
 libfaad_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_76 = libfaad_plugin_la-faad.lo
-am_libfaad_plugin_la_OBJECTS = $(am__objects_76)
+am__objects_78 = libfaad_plugin_la-faad.lo
+am_libfaad_plugin_la_OBJECTS = $(am__objects_78)
 libfaad_plugin_la_OBJECTS = $(am_libfaad_plugin_la_OBJECTS)
 libfake_builtin_la_LDFLAGS =
 libfake_builtin_la_LIBADD =
-am__objects_77 = libfake_builtin_la-fake.lo
-am_libfake_builtin_la_OBJECTS = $(am__objects_77)
+am__objects_79 = libfake_builtin_la-fake.lo
+am_libfake_builtin_la_OBJECTS = $(am__objects_79)
 libfake_builtin_la_OBJECTS = $(am_libfake_builtin_la_OBJECTS)
 libfake_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_78 = libfake_plugin_la-fake.lo
-am_libfake_plugin_la_OBJECTS = $(am__objects_78)
+am__objects_80 = libfake_plugin_la-fake.lo
+am_libfake_plugin_la_OBJECTS = $(am__objects_80)
 libfake_plugin_la_OBJECTS = $(am_libfake_plugin_la_OBJECTS)
 libflacdec_builtin_la_LDFLAGS =
 libflacdec_builtin_la_LIBADD =
-am__objects_79 = libflacdec_builtin_la-flac.lo
-am_libflacdec_builtin_la_OBJECTS = $(am__objects_79)
+am__objects_81 = libflacdec_builtin_la-flac.lo
+am_libflacdec_builtin_la_OBJECTS = $(am__objects_81)
 libflacdec_builtin_la_OBJECTS = $(am_libflacdec_builtin_la_OBJECTS)
 libflacdec_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_80 = libflacdec_plugin_la-flac.lo
-am_libflacdec_plugin_la_OBJECTS = $(am__objects_80)
+am__objects_82 = libflacdec_plugin_la-flac.lo
+am_libflacdec_plugin_la_OBJECTS = $(am__objects_82)
 libflacdec_plugin_la_OBJECTS = $(am_libflacdec_plugin_la_OBJECTS)
 liblibmpeg2_builtin_la_LDFLAGS =
 liblibmpeg2_builtin_la_LIBADD =
-am__objects_81 = liblibmpeg2_builtin_la-libmpeg2.lo
-am_liblibmpeg2_builtin_la_OBJECTS = $(am__objects_81)
+am__objects_83 = liblibmpeg2_builtin_la-libmpeg2.lo
+am_liblibmpeg2_builtin_la_OBJECTS = $(am__objects_83)
 liblibmpeg2_builtin_la_OBJECTS = $(am_liblibmpeg2_builtin_la_OBJECTS)
 liblibmpeg2_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_82 = liblibmpeg2_plugin_la-libmpeg2.lo
-am_liblibmpeg2_plugin_la_OBJECTS = $(am__objects_82)
+am__objects_84 = liblibmpeg2_plugin_la-libmpeg2.lo
+am_liblibmpeg2_plugin_la_OBJECTS = $(am__objects_84)
 liblibmpeg2_plugin_la_OBJECTS = $(am_liblibmpeg2_plugin_la_OBJECTS)
 liblpcm_builtin_la_LDFLAGS =
 liblpcm_builtin_la_LIBADD =
-am__objects_83 = liblpcm_builtin_la-lpcm.lo
-am_liblpcm_builtin_la_OBJECTS = $(am__objects_83)
+am__objects_85 = liblpcm_builtin_la-lpcm.lo
+am_liblpcm_builtin_la_OBJECTS = $(am__objects_85)
 liblpcm_builtin_la_OBJECTS = $(am_liblpcm_builtin_la_OBJECTS)
 liblpcm_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_84 = liblpcm_plugin_la-lpcm.lo
-am_liblpcm_plugin_la_OBJECTS = $(am__objects_84)
+am__objects_86 = liblpcm_plugin_la-lpcm.lo
+am_liblpcm_plugin_la_OBJECTS = $(am__objects_86)
 liblpcm_plugin_la_OBJECTS = $(am_liblpcm_plugin_la_OBJECTS)
 libmash_builtin_la_LDFLAGS =
 libmash_builtin_la_LIBADD =
-am__objects_85 = libmash_builtin_la-mash.lo
-am_libmash_builtin_la_OBJECTS = $(am__objects_85)
+am__objects_87 = libmash_builtin_la-mash.lo
+am_libmash_builtin_la_OBJECTS = $(am__objects_87)
 libmash_builtin_la_OBJECTS = $(am_libmash_builtin_la_OBJECTS)
 libmash_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_86 = libmash_plugin_la-mash.lo
-am_libmash_plugin_la_OBJECTS = $(am__objects_86)
+am__objects_88 = libmash_plugin_la-mash.lo
+am_libmash_plugin_la_OBJECTS = $(am__objects_88)
 libmash_plugin_la_OBJECTS = $(am_libmash_plugin_la_OBJECTS)
 libmpeg_audio_builtin_la_LDFLAGS =
 libmpeg_audio_builtin_la_LIBADD =
-am__objects_87 = libmpeg_audio_builtin_la-mpeg_audio.lo
-am_libmpeg_audio_builtin_la_OBJECTS = $(am__objects_87)
+am__objects_89 = libmpeg_audio_builtin_la-mpeg_audio.lo
+am_libmpeg_audio_builtin_la_OBJECTS = $(am__objects_89)
 libmpeg_audio_builtin_la_OBJECTS = \
 	$(am_libmpeg_audio_builtin_la_OBJECTS)
 libmpeg_audio_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_88 = libmpeg_audio_plugin_la-mpeg_audio.lo
-am_libmpeg_audio_plugin_la_OBJECTS = $(am__objects_88)
+am__objects_90 = libmpeg_audio_plugin_la-mpeg_audio.lo
+am_libmpeg_audio_plugin_la_OBJECTS = $(am__objects_90)
 libmpeg_audio_plugin_la_OBJECTS = $(am_libmpeg_audio_plugin_la_OBJECTS)
 libpng_builtin_la_LDFLAGS =
 libpng_builtin_la_LIBADD =
-am__objects_89 = libpng_builtin_la-png.lo
-am_libpng_builtin_la_OBJECTS = $(am__objects_89)
+am__objects_91 = libpng_builtin_la-png.lo
+am_libpng_builtin_la_OBJECTS = $(am__objects_91)
 libpng_builtin_la_OBJECTS = $(am_libpng_builtin_la_OBJECTS)
 libpng_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_90 = libpng_plugin_la-png.lo
-am_libpng_plugin_la_OBJECTS = $(am__objects_90)
+am__objects_92 = libpng_plugin_la-png.lo
+am_libpng_plugin_la_OBJECTS = $(am__objects_92)
 libpng_plugin_la_OBJECTS = $(am_libpng_plugin_la_OBJECTS)
 libquicktime_builtin_la_LDFLAGS =
 libquicktime_builtin_la_LIBADD =
-am__objects_91 = libquicktime_builtin_la-quicktime.lo
-am_libquicktime_builtin_la_OBJECTS = $(am__objects_91)
+am__objects_93 = libquicktime_builtin_la-quicktime.lo
+am_libquicktime_builtin_la_OBJECTS = $(am__objects_93)
 libquicktime_builtin_la_OBJECTS = $(am_libquicktime_builtin_la_OBJECTS)
 libquicktime_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_92 = libquicktime_plugin_la-quicktime.lo
-am_libquicktime_plugin_la_OBJECTS = $(am__objects_92)
+am__objects_94 = libquicktime_plugin_la-quicktime.lo
+am_libquicktime_plugin_la_OBJECTS = $(am__objects_94)
 libquicktime_plugin_la_OBJECTS = $(am_libquicktime_plugin_la_OBJECTS)
 librawvideo_builtin_la_LDFLAGS =
 librawvideo_builtin_la_LIBADD =
-am__objects_93 = librawvideo_builtin_la-rawvideo.lo
-am_librawvideo_builtin_la_OBJECTS = $(am__objects_93)
+am__objects_95 = librawvideo_builtin_la-rawvideo.lo
+am_librawvideo_builtin_la_OBJECTS = $(am__objects_95)
 librawvideo_builtin_la_OBJECTS = $(am_librawvideo_builtin_la_OBJECTS)
 librawvideo_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_94 = librawvideo_plugin_la-rawvideo.lo
-am_librawvideo_plugin_la_OBJECTS = $(am__objects_94)
+am__objects_96 = librawvideo_plugin_la-rawvideo.lo
+am_librawvideo_plugin_la_OBJECTS = $(am__objects_96)
 librawvideo_plugin_la_OBJECTS = $(am_librawvideo_plugin_la_OBJECTS)
 librealaudio_builtin_la_LDFLAGS =
 librealaudio_builtin_la_LIBADD =
-am__objects_95 = librealaudio_builtin_la-realaudio.lo
-am_librealaudio_builtin_la_OBJECTS = $(am__objects_95)
+am__objects_97 = librealaudio_builtin_la-realaudio.lo
+am_librealaudio_builtin_la_OBJECTS = $(am__objects_97)
 librealaudio_builtin_la_OBJECTS = $(am_librealaudio_builtin_la_OBJECTS)
 librealaudio_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_96 = librealaudio_plugin_la-realaudio.lo
-am_librealaudio_plugin_la_OBJECTS = $(am__objects_96)
+am__objects_98 = librealaudio_plugin_la-realaudio.lo
+am_librealaudio_plugin_la_OBJECTS = $(am__objects_98)
 librealaudio_plugin_la_OBJECTS = $(am_librealaudio_plugin_la_OBJECTS)
 libsdl_image_builtin_la_LDFLAGS =
 libsdl_image_builtin_la_LIBADD =
-am__objects_97 = libsdl_image_builtin_la-sdl_image.lo
-am_libsdl_image_builtin_la_OBJECTS = $(am__objects_97)
+am__objects_99 = libsdl_image_builtin_la-sdl_image.lo
+am_libsdl_image_builtin_la_OBJECTS = $(am__objects_99)
 libsdl_image_builtin_la_OBJECTS = $(am_libsdl_image_builtin_la_OBJECTS)
 libsdl_image_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_98 = libsdl_image_plugin_la-sdl_image.lo
-am_libsdl_image_plugin_la_OBJECTS = $(am__objects_98)
+am__objects_100 = libsdl_image_plugin_la-sdl_image.lo
+am_libsdl_image_plugin_la_OBJECTS = $(am__objects_100)
 libsdl_image_plugin_la_OBJECTS = $(am_libsdl_image_plugin_la_OBJECTS)
 libspeex_builtin_la_LDFLAGS =
 libspeex_builtin_la_LIBADD =
-am__objects_99 = libspeex_builtin_la-speex.lo
-am_libspeex_builtin_la_OBJECTS = $(am__objects_99)
+am__objects_101 = libspeex_builtin_la-speex.lo
+am_libspeex_builtin_la_OBJECTS = $(am__objects_101)
 libspeex_builtin_la_OBJECTS = $(am_libspeex_builtin_la_OBJECTS)
 libspeex_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_100 = libspeex_plugin_la-speex.lo
-am_libspeex_plugin_la_OBJECTS = $(am__objects_100)
+am__objects_102 = libspeex_plugin_la-speex.lo
+am_libspeex_plugin_la_OBJECTS = $(am__objects_102)
 libspeex_plugin_la_OBJECTS = $(am_libspeex_plugin_la_OBJECTS)
 libsubsdec_builtin_la_LDFLAGS =
 libsubsdec_builtin_la_LIBADD =
-am__objects_101 = libsubsdec_builtin_la-subsdec.lo
-am_libsubsdec_builtin_la_OBJECTS = $(am__objects_101)
+am__objects_103 = libsubsdec_builtin_la-subsdec.lo
+am_libsubsdec_builtin_la_OBJECTS = $(am__objects_103)
 libsubsdec_builtin_la_OBJECTS = $(am_libsubsdec_builtin_la_OBJECTS)
 libsubsdec_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_102 = libsubsdec_plugin_la-subsdec.lo
-am_libsubsdec_plugin_la_OBJECTS = $(am__objects_102)
+am__objects_104 = libsubsdec_plugin_la-subsdec.lo
+am_libsubsdec_plugin_la_OBJECTS = $(am__objects_104)
 libsubsdec_plugin_la_OBJECTS = $(am_libsubsdec_plugin_la_OBJECTS)
 libsvcdsub_builtin_la_LDFLAGS =
 libsvcdsub_builtin_la_LIBADD =
-am__objects_103 = libsvcdsub_builtin_la-svcdsub.lo
-am_libsvcdsub_builtin_la_OBJECTS = $(am__objects_103)
+am__objects_105 = libsvcdsub_builtin_la-svcdsub.lo
+am_libsvcdsub_builtin_la_OBJECTS = $(am__objects_105)
 libsvcdsub_builtin_la_OBJECTS = $(am_libsvcdsub_builtin_la_OBJECTS)
 libsvcdsub_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_104 = libsvcdsub_plugin_la-svcdsub.lo
-am_libsvcdsub_plugin_la_OBJECTS = $(am__objects_104)
+am__objects_106 = libsvcdsub_plugin_la-svcdsub.lo
+am_libsvcdsub_plugin_la_OBJECTS = $(am__objects_106)
 libsvcdsub_plugin_la_OBJECTS = $(am_libsvcdsub_plugin_la_OBJECTS)
 libtarkin_builtin_la_LDFLAGS =
 libtarkin_builtin_la_LIBADD =
-am__objects_105 = libtarkin_builtin_la-tarkin.lo
-am_libtarkin_builtin_la_OBJECTS = $(am__objects_105)
+am__objects_107 = libtarkin_builtin_la-tarkin.lo
+am_libtarkin_builtin_la_OBJECTS = $(am__objects_107)
 libtarkin_builtin_la_OBJECTS = $(am_libtarkin_builtin_la_OBJECTS)
 libtarkin_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_106 = libtarkin_plugin_la-tarkin.lo
-am_libtarkin_plugin_la_OBJECTS = $(am__objects_106)
+am__objects_108 = libtarkin_plugin_la-tarkin.lo
+am_libtarkin_plugin_la_OBJECTS = $(am__objects_108)
 libtarkin_plugin_la_OBJECTS = $(am_libtarkin_plugin_la_OBJECTS)
+libtelx_builtin_la_LDFLAGS =
+libtelx_builtin_la_LIBADD =
+am__objects_109 = libtelx_builtin_la-telx.lo
+am_libtelx_builtin_la_OBJECTS = $(am__objects_109)
+libtelx_builtin_la_OBJECTS = $(am_libtelx_builtin_la_OBJECTS)
+libtelx_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
+am__objects_110 = libtelx_plugin_la-telx.lo
+am_libtelx_plugin_la_OBJECTS = $(am__objects_110)
+libtelx_plugin_la_OBJECTS = $(am_libtelx_plugin_la_OBJECTS)
 libtheora_builtin_la_LDFLAGS =
 libtheora_builtin_la_LIBADD =
-am__objects_107 = libtheora_builtin_la-theora.lo
-am_libtheora_builtin_la_OBJECTS = $(am__objects_107)
+am__objects_111 = libtheora_builtin_la-theora.lo
+am_libtheora_builtin_la_OBJECTS = $(am__objects_111)
 libtheora_builtin_la_OBJECTS = $(am_libtheora_builtin_la_OBJECTS)
 libtheora_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_108 = libtheora_plugin_la-theora.lo
-am_libtheora_plugin_la_OBJECTS = $(am__objects_108)
+am__objects_112 = libtheora_plugin_la-theora.lo
+am_libtheora_plugin_la_OBJECTS = $(am__objects_112)
 libtheora_plugin_la_OBJECTS = $(am_libtheora_plugin_la_OBJECTS)
 libtremor_builtin_la_LDFLAGS =
 libtremor_builtin_la_LIBADD =
-am__objects_109 = libtremor_builtin_la-vorbis.lo
-am_libtremor_builtin_la_OBJECTS = $(am__objects_109)
+am__objects_113 = libtremor_builtin_la-vorbis.lo
+am_libtremor_builtin_la_OBJECTS = $(am__objects_113)
 libtremor_builtin_la_OBJECTS = $(am_libtremor_builtin_la_OBJECTS)
 libtremor_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_110 = libtremor_plugin_la-vorbis.lo
-am_libtremor_plugin_la_OBJECTS = $(am__objects_110)
+am__objects_114 = libtremor_plugin_la-vorbis.lo
+am_libtremor_plugin_la_OBJECTS = $(am__objects_114)
 libtremor_plugin_la_OBJECTS = $(am_libtremor_plugin_la_OBJECTS)
 libtwolame_builtin_la_LDFLAGS =
 libtwolame_builtin_la_LIBADD =
-am__objects_111 = libtwolame_builtin_la-twolame.lo
-am_libtwolame_builtin_la_OBJECTS = $(am__objects_111)
+am__objects_115 = libtwolame_builtin_la-twolame.lo
+am_libtwolame_builtin_la_OBJECTS = $(am__objects_115)
 libtwolame_builtin_la_OBJECTS = $(am_libtwolame_builtin_la_OBJECTS)
 libtwolame_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_112 = libtwolame_plugin_la-twolame.lo
-am_libtwolame_plugin_la_OBJECTS = $(am__objects_112)
+am__objects_116 = libtwolame_plugin_la-twolame.lo
+am_libtwolame_plugin_la_OBJECTS = $(am__objects_116)
 libtwolame_plugin_la_OBJECTS = $(am_libtwolame_plugin_la_OBJECTS)
 libvorbis_builtin_la_LDFLAGS =
 libvorbis_builtin_la_LIBADD =
-am__objects_113 = libvorbis_builtin_la-vorbis.lo
-am_libvorbis_builtin_la_OBJECTS = $(am__objects_113)
+am__objects_117 = libvorbis_builtin_la-vorbis.lo
+am_libvorbis_builtin_la_OBJECTS = $(am__objects_117)
 libvorbis_builtin_la_OBJECTS = $(am_libvorbis_builtin_la_OBJECTS)
 libvorbis_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_114 = libvorbis_plugin_la-vorbis.lo
-am_libvorbis_plugin_la_OBJECTS = $(am__objects_114)
+am__objects_118 = libvorbis_plugin_la-vorbis.lo
+am_libvorbis_plugin_la_OBJECTS = $(am__objects_118)
 libvorbis_plugin_la_OBJECTS = $(am_libvorbis_plugin_la_OBJECTS)
 libx264_builtin_la_LDFLAGS =
 libx264_builtin_la_LIBADD =
-am__objects_115 = libx264_builtin_la-x264.lo
-am_libx264_builtin_la_OBJECTS = $(am__objects_115)
+am__objects_119 = libx264_builtin_la-x264.lo
+am_libx264_builtin_la_OBJECTS = $(am__objects_119)
 libx264_builtin_la_OBJECTS = $(am_libx264_builtin_la_OBJECTS)
 libx264_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_116 = libx264_plugin_la-x264.lo
-am_libx264_plugin_la_OBJECTS = $(am__objects_116)
+am__objects_120 = libx264_plugin_la-x264.lo
+am_libx264_plugin_la_OBJECTS = $(am__objects_120)
 libx264_plugin_la_OBJECTS = $(am_libx264_plugin_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -1708,6 +1760,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libtarkin_builtin_la-tarkin.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libtarkin_plugin_a-tarkin.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libtarkin_plugin_la-tarkin.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libtelx_a-telx.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libtelx_builtin_la-telx.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libtelx_plugin_a-telx.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libtelx_plugin_la-telx.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libtheora_a-theora.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libtheora_builtin_la-theora.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libtheora_plugin_a-theora.Po \
@@ -1767,6 +1823,7 @@ DIST_SOURCES = $(liba52_a_SOURCES) $(liba52_plugin_a_SOURCES) \
 	$(libsubsdec_a_SOURCES) $(libsubsdec_plugin_a_SOURCES) \
 	$(libsvcdsub_a_SOURCES) $(libsvcdsub_plugin_a_SOURCES) \
 	$(libtarkin_a_SOURCES) $(libtarkin_plugin_a_SOURCES) \
+	$(libtelx_a_SOURCES) $(libtelx_plugin_a_SOURCES) \
 	$(libtheora_a_SOURCES) $(libtheora_plugin_a_SOURCES) \
 	$(libtremor_a_SOURCES) $(libtremor_plugin_a_SOURCES) \
 	$(libtwolame_a_SOURCES) $(libtwolame_plugin_a_SOURCES) \
@@ -1803,7 +1860,8 @@ DIST_SOURCES = $(liba52_a_SOURCES) $(liba52_plugin_a_SOURCES) \
 	$(libsubsdec_plugin_la_SOURCES) \
 	$(libsvcdsub_builtin_la_SOURCES) \
 	$(libsvcdsub_plugin_la_SOURCES) $(libtarkin_builtin_la_SOURCES) \
-	$(libtarkin_plugin_la_SOURCES) $(libtheora_builtin_la_SOURCES) \
+	$(libtarkin_plugin_la_SOURCES) $(libtelx_builtin_la_SOURCES) \
+	$(libtelx_plugin_la_SOURCES) $(libtheora_builtin_la_SOURCES) \
 	$(libtheora_plugin_la_SOURCES) $(libtremor_builtin_la_SOURCES) \
 	$(libtremor_plugin_la_SOURCES) $(libtwolame_builtin_la_SOURCES) \
 	$(libtwolame_plugin_la_SOURCES) $(libvorbis_builtin_la_SOURCES) \
@@ -1817,7 +1875,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Modules.am Makefile.am
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(liba52_a_SOURCES) $(liba52_plugin_a_SOURCES) $(libadpcm_a_SOURCES) $(libadpcm_plugin_a_SOURCES) $(libaraw_a_SOURCES) $(libaraw_plugin_a_SOURCES) $(libcinepak_a_SOURCES) $(libcinepak_plugin_a_SOURCES) $(libcvdsub_a_SOURCES) $(libcvdsub_plugin_a_SOURCES) $(libdirac_a_SOURCES) $(libdirac_plugin_a_SOURCES) $(libdts_a_SOURCES) $(libdts_plugin_a_SOURCES) $(libdvbsub_a_SOURCES) $(libdvbsub_plugin_a_SOURCES) $(libfaad_a_SOURCES) $(libfaad_plugin_a_SOURCES) $(libfake_a_SOURCES) $(libfake_plugin_a_SOURCES) $(libflacdec_a_SOURCES) $(libflacdec_plugin_a_SOURCES) $(liblibmpeg2_a_SOURCES) $(liblibmpeg2_plugin_a_SOURCES) $(liblpcm_a_SOURCES) $(liblpcm_plugin_a_SOURCES) $(libmash_a_SOURCES) $(libmash_plugin_a_SOURCES) $(libmpeg_audio_a_SOURCES) $(libmpeg_audio_plugin_a_SOURCES) $(libpng_a_SOURCES) $(libpng_plugin_a_SOURCES) $(libquicktime_a_SOURCES) $(libquicktime_plugin_a_SOURCES) $(librawvideo_a_SOURCES) $(librawvideo_plugin_a_SOURCES) $(librealaudio_a_SOURCES) $(librealaudio_plugin_a_SOURCES) $(libsdl_image_a_SOURCES) $(libsdl_image_plugin_a_SOURCES) $(libspeex_a_SOURCES) $(libspeex_plugin_a_SOURCES) $(libsubsdec_a_SOURCES) $(libsubsdec_plugin_a_SOURCES) $(libsvcdsub_a_SOURCES) $(libsvcdsub_plugin_a_SOURCES) $(libtarkin_a_SOURCES) $(libtarkin_plugin_a_SOURCES) $(libtheora_a_SOURCES) $(libtheora_plugin_a_SOURCES) $(libtremor_a_SOURCES) $(libtremor_plugin_a_SOURCES) $(libtwolame_a_SOURCES) $(libtwolame_plugin_a_SOURCES) $(libvorbis_a_SOURCES) $(libvorbis_plugin_a_SOURCES) $(libx264_a_SOURCES) $(libx264_plugin_a_SOURCES) $(liba52_builtin_la_SOURCES) $(liba52_plugin_la_SOURCES) $(libadpcm_builtin_la_SOURCES) $(libadpcm_plugin_la_SOURCES) $(libaraw_builtin_la_SOURCES) $(libaraw_plugin_la_SOURCES) $(libcinepak_builtin_la_SOURCES) $(libcinepak_plugin_la_SOURCES) $(libcvdsub_builtin_la_SOURCES) $(libcvdsub_plugin_la_SOURCES) $(libdirac_builtin_la_SOURCES) $(libdirac_plugin_la_SOURCES) $(libdts_builtin_la_SOURCES) $(libdts_plugin_la_SOURCES) $(libdvbsub_builtin_la_SOURCES) $(libdvbsub_plugin_la_SOURCES) $(libfaad_builtin_la_SOURCES) $(libfaad_plugin_la_SOURCES) $(libfake_builtin_la_SOURCES) $(libfake_plugin_la_SOURCES) $(libflacdec_builtin_la_SOURCES) $(libflacdec_plugin_la_SOURCES) $(liblibmpeg2_builtin_la_SOURCES) $(liblibmpeg2_plugin_la_SOURCES) $(liblpcm_builtin_la_SOURCES) $(liblpcm_plugin_la_SOURCES) $(libmash_builtin_la_SOURCES) $(libmash_plugin_la_SOURCES) $(libmpeg_audio_builtin_la_SOURCES) $(libmpeg_audio_plugin_la_SOURCES) $(libpng_builtin_la_SOURCES) $(libpng_plugin_la_SOURCES) $(libquicktime_builtin_la_SOURCES) $(libquicktime_plugin_la_SOURCES) $(librawvideo_builtin_la_SOURCES) $(librawvideo_plugin_la_SOURCES) $(librealaudio_builtin_la_SOURCES) $(librealaudio_plugin_la_SOURCES) $(libsdl_image_builtin_la_SOURCES) $(libsdl_image_plugin_la_SOURCES) $(libspeex_builtin_la_SOURCES) $(libspeex_plugin_la_SOURCES) $(libsubsdec_builtin_la_SOURCES) $(libsubsdec_plugin_la_SOURCES) $(libsvcdsub_builtin_la_SOURCES) $(libsvcdsub_plugin_la_SOURCES) $(libtarkin_builtin_la_SOURCES) $(libtarkin_plugin_la_SOURCES) $(libtheora_builtin_la_SOURCES) $(libtheora_plugin_la_SOURCES) $(libtremor_builtin_la_SOURCES) $(libtremor_plugin_la_SOURCES) $(libtwolame_builtin_la_SOURCES) $(libtwolame_plugin_la_SOURCES) $(libvorbis_builtin_la_SOURCES) $(libvorbis_plugin_la_SOURCES) $(libx264_builtin_la_SOURCES) $(libx264_plugin_la_SOURCES)
+SOURCES = $(liba52_a_SOURCES) $(liba52_plugin_a_SOURCES) $(libadpcm_a_SOURCES) $(libadpcm_plugin_a_SOURCES) $(libaraw_a_SOURCES) $(libaraw_plugin_a_SOURCES) $(libcinepak_a_SOURCES) $(libcinepak_plugin_a_SOURCES) $(libcvdsub_a_SOURCES) $(libcvdsub_plugin_a_SOURCES) $(libdirac_a_SOURCES) $(libdirac_plugin_a_SOURCES) $(libdts_a_SOURCES) $(libdts_plugin_a_SOURCES) $(libdvbsub_a_SOURCES) $(libdvbsub_plugin_a_SOURCES) $(libfaad_a_SOURCES) $(libfaad_plugin_a_SOURCES) $(libfake_a_SOURCES) $(libfake_plugin_a_SOURCES) $(libflacdec_a_SOURCES) $(libflacdec_plugin_a_SOURCES) $(liblibmpeg2_a_SOURCES) $(liblibmpeg2_plugin_a_SOURCES) $(liblpcm_a_SOURCES) $(liblpcm_plugin_a_SOURCES) $(libmash_a_SOURCES) $(libmash_plugin_a_SOURCES) $(libmpeg_audio_a_SOURCES) $(libmpeg_audio_plugin_a_SOURCES) $(libpng_a_SOURCES) $(libpng_plugin_a_SOURCES) $(libquicktime_a_SOURCES) $(libquicktime_plugin_a_SOURCES) $(librawvideo_a_SOURCES) $(librawvideo_plugin_a_SOURCES) $(librealaudio_a_SOURCES) $(librealaudio_plugin_a_SOURCES) $(libsdl_image_a_SOURCES) $(libsdl_image_plugin_a_SOURCES) $(libspeex_a_SOURCES) $(libspeex_plugin_a_SOURCES) $(libsubsdec_a_SOURCES) $(libsubsdec_plugin_a_SOURCES) $(libsvcdsub_a_SOURCES) $(libsvcdsub_plugin_a_SOURCES) $(libtarkin_a_SOURCES) $(libtarkin_plugin_a_SOURCES) $(libtelx_a_SOURCES) $(libtelx_plugin_a_SOURCES) $(libtheora_a_SOURCES) $(libtheora_plugin_a_SOURCES) $(libtremor_a_SOURCES) $(libtremor_plugin_a_SOURCES) $(libtwolame_a_SOURCES) $(libtwolame_plugin_a_SOURCES) $(libvorbis_a_SOURCES) $(libvorbis_plugin_a_SOURCES) $(libx264_a_SOURCES) $(libx264_plugin_a_SOURCES) $(liba52_builtin_la_SOURCES) $(liba52_plugin_la_SOURCES) $(libadpcm_builtin_la_SOURCES) $(libadpcm_plugin_la_SOURCES) $(libaraw_builtin_la_SOURCES) $(libaraw_plugin_la_SOURCES) $(libcinepak_builtin_la_SOURCES) $(libcinepak_plugin_la_SOURCES) $(libcvdsub_builtin_la_SOURCES) $(libcvdsub_plugin_la_SOURCES) $(libdirac_builtin_la_SOURCES) $(libdirac_plugin_la_SOURCES) $(libdts_builtin_la_SOURCES) $(libdts_plugin_la_SOURCES) $(libdvbsub_builtin_la_SOURCES) $(libdvbsub_plugin_la_SOURCES) $(libfaad_builtin_la_SOURCES) $(libfaad_plugin_la_SOURCES) $(libfake_builtin_la_SOURCES) $(libfake_plugin_la_SOURCES) $(libflacdec_builtin_la_SOURCES) $(libflacdec_plugin_la_SOURCES) $(liblibmpeg2_builtin_la_SOURCES) $(liblibmpeg2_plugin_la_SOURCES) $(liblpcm_builtin_la_SOURCES) $(liblpcm_plugin_la_SOURCES) $(libmash_builtin_la_SOURCES) $(libmash_plugin_la_SOURCES) $(libmpeg_audio_builtin_la_SOURCES) $(libmpeg_audio_plugin_la_SOURCES) $(libpng_builtin_la_SOURCES) $(libpng_plugin_la_SOURCES) $(libquicktime_builtin_la_SOURCES) $(libquicktime_plugin_la_SOURCES) $(librawvideo_builtin_la_SOURCES) $(librawvideo_plugin_la_SOURCES) $(librealaudio_builtin_la_SOURCES) $(librealaudio_plugin_la_SOURCES) $(libsdl_image_builtin_la_SOURCES) $(libsdl_image_plugin_la_SOURCES) $(libspeex_builtin_la_SOURCES) $(libspeex_plugin_la_SOURCES) $(libsubsdec_builtin_la_SOURCES) $(libsubsdec_plugin_la_SOURCES) $(libsvcdsub_builtin_la_SOURCES) $(libsvcdsub_plugin_la_SOURCES) $(libtarkin_builtin_la_SOURCES) $(libtarkin_plugin_la_SOURCES) $(libtelx_builtin_la_SOURCES) $(libtelx_plugin_la_SOURCES) $(libtheora_builtin_la_SOURCES) $(libtheora_plugin_la_SOURCES) $(libtremor_builtin_la_SOURCES) $(libtremor_plugin_la_SOURCES) $(libtwolame_builtin_la_SOURCES) $(libtwolame_plugin_la_SOURCES) $(libvorbis_builtin_la_SOURCES) $(libvorbis_plugin_la_SOURCES) $(libx264_builtin_la_SOURCES) $(libx264_plugin_la_SOURCES)
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -2021,6 +2079,14 @@ libtarkin_plugin.a: $(libtarkin_plugin_a_OBJECTS) $(libtarkin_plugin_a_DEPENDENC
 	-rm -f libtarkin_plugin.a
 	$(libtarkin_plugin_a_AR) libtarkin_plugin.a $(libtarkin_plugin_a_OBJECTS) $(libtarkin_plugin_a_LIBADD)
 	$(RANLIB) libtarkin_plugin.a
+libtelx.a: $(libtelx_a_OBJECTS) $(libtelx_a_DEPENDENCIES) 
+	-rm -f libtelx.a
+	$(libtelx_a_AR) libtelx.a $(libtelx_a_OBJECTS) $(libtelx_a_LIBADD)
+	$(RANLIB) libtelx.a
+libtelx_plugin.a: $(libtelx_plugin_a_OBJECTS) $(libtelx_plugin_a_DEPENDENCIES) 
+	-rm -f libtelx_plugin.a
+	$(libtelx_plugin_a_AR) libtelx_plugin.a $(libtelx_plugin_a_OBJECTS) $(libtelx_plugin_a_LIBADD)
+	$(RANLIB) libtelx_plugin.a
 libtheora.a: $(libtheora_a_OBJECTS) $(libtheora_a_DEPENDENCIES) 
 	-rm -f libtheora.a
 	$(libtheora_a_AR) libtheora.a $(libtheora_a_OBJECTS) $(libtheora_a_LIBADD)
@@ -2194,6 +2260,10 @@ libtarkin_builtin.la: $(libtarkin_builtin_la_OBJECTS) $(libtarkin_builtin_la_DEP
 	$(LINK)  $(libtarkin_builtin_la_LDFLAGS) $(libtarkin_builtin_la_OBJECTS) $(libtarkin_builtin_la_LIBADD) $(LIBS)
 libtarkin_plugin.la: $(libtarkin_plugin_la_OBJECTS) $(libtarkin_plugin_la_DEPENDENCIES) 
 	$(LINK)  $(libtarkin_plugin_la_LDFLAGS) $(libtarkin_plugin_la_OBJECTS) $(libtarkin_plugin_la_LIBADD) $(LIBS)
+libtelx_builtin.la: $(libtelx_builtin_la_OBJECTS) $(libtelx_builtin_la_DEPENDENCIES) 
+	$(LINK)  $(libtelx_builtin_la_LDFLAGS) $(libtelx_builtin_la_OBJECTS) $(libtelx_builtin_la_LIBADD) $(LIBS)
+libtelx_plugin.la: $(libtelx_plugin_la_OBJECTS) $(libtelx_plugin_la_DEPENDENCIES) 
+	$(LINK)  $(libtelx_plugin_la_LDFLAGS) $(libtelx_plugin_la_OBJECTS) $(libtelx_plugin_la_LIBADD) $(LIBS)
 libtheora_builtin.la: $(libtheora_builtin_la_OBJECTS) $(libtheora_builtin_la_DEPENDENCIES) 
 	$(LINK)  $(libtheora_builtin_la_LDFLAGS) $(libtheora_builtin_la_OBJECTS) $(libtheora_builtin_la_LIBADD) $(LIBS)
 libtheora_plugin.la: $(libtheora_plugin_la_OBJECTS) $(libtheora_plugin_la_DEPENDENCIES) 
@@ -2317,6 +2387,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtarkin_builtin_la-tarkin.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtarkin_plugin_a-tarkin.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtarkin_plugin_la-tarkin.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtelx_a-telx.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtelx_builtin_la-telx.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtelx_plugin_a-telx.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtelx_plugin_la-telx.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtheora_a-theora.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtheora_builtin_la-theora.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtheora_plugin_a-theora.Po@am__quote@
@@ -3888,6 +3962,72 @@ libtarkin_plugin_a-tarkin.lo: tarkin.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtarkin_plugin_a-tarkin.Plo' tmpdepfile='$(DEPDIR)/libtarkin_plugin_a-tarkin.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtarkin_plugin_a_CFLAGS) $(CFLAGS) -c -o libtarkin_plugin_a-tarkin.lo `test -f 'tarkin.c' || echo '$(srcdir)/'`tarkin.c
+
+libtelx_a-telx.o: telx.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_a_CFLAGS) $(CFLAGS) -MT libtelx_a-telx.o -MD -MP -MF "$(DEPDIR)/libtelx_a-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_a-telx.o `test -f 'telx.c' || echo '$(srcdir)/'`telx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_a-telx.Tpo" "$(DEPDIR)/libtelx_a-telx.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_a-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_a-telx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_a-telx.Po' tmpdepfile='$(DEPDIR)/libtelx_a-telx.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_a_CFLAGS) $(CFLAGS) -c -o libtelx_a-telx.o `test -f 'telx.c' || echo '$(srcdir)/'`telx.c
+
+libtelx_a-telx.obj: telx.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_a_CFLAGS) $(CFLAGS) -MT libtelx_a-telx.obj -MD -MP -MF "$(DEPDIR)/libtelx_a-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_a-telx.obj `if test -f 'telx.c'; then $(CYGPATH_W) 'telx.c'; else $(CYGPATH_W) '$(srcdir)/telx.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_a-telx.Tpo" "$(DEPDIR)/libtelx_a-telx.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_a-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_a-telx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_a-telx.Po' tmpdepfile='$(DEPDIR)/libtelx_a-telx.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_a_CFLAGS) $(CFLAGS) -c -o libtelx_a-telx.obj `if test -f 'telx.c'; then $(CYGPATH_W) 'telx.c'; else $(CYGPATH_W) '$(srcdir)/telx.c'; fi`
+
+libtelx_a-telx.lo: telx.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_a_CFLAGS) $(CFLAGS) -MT libtelx_a-telx.lo -MD -MP -MF "$(DEPDIR)/libtelx_a-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_a-telx.lo `test -f 'telx.c' || echo '$(srcdir)/'`telx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_a-telx.Tpo" "$(DEPDIR)/libtelx_a-telx.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_a-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_a-telx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_a-telx.Plo' tmpdepfile='$(DEPDIR)/libtelx_a-telx.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_a_CFLAGS) $(CFLAGS) -c -o libtelx_a-telx.lo `test -f 'telx.c' || echo '$(srcdir)/'`telx.c
+
+libtelx_plugin_a-telx.o: telx.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_a_CFLAGS) $(CFLAGS) -MT libtelx_plugin_a-telx.o -MD -MP -MF "$(DEPDIR)/libtelx_plugin_a-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_plugin_a-telx.o `test -f 'telx.c' || echo '$(srcdir)/'`telx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_plugin_a-telx.Tpo" "$(DEPDIR)/libtelx_plugin_a-telx.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_plugin_a-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_plugin_a-telx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_plugin_a-telx.Po' tmpdepfile='$(DEPDIR)/libtelx_plugin_a-telx.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_a_CFLAGS) $(CFLAGS) -c -o libtelx_plugin_a-telx.o `test -f 'telx.c' || echo '$(srcdir)/'`telx.c
+
+libtelx_plugin_a-telx.obj: telx.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_a_CFLAGS) $(CFLAGS) -MT libtelx_plugin_a-telx.obj -MD -MP -MF "$(DEPDIR)/libtelx_plugin_a-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_plugin_a-telx.obj `if test -f 'telx.c'; then $(CYGPATH_W) 'telx.c'; else $(CYGPATH_W) '$(srcdir)/telx.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_plugin_a-telx.Tpo" "$(DEPDIR)/libtelx_plugin_a-telx.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_plugin_a-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_plugin_a-telx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_plugin_a-telx.Po' tmpdepfile='$(DEPDIR)/libtelx_plugin_a-telx.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_a_CFLAGS) $(CFLAGS) -c -o libtelx_plugin_a-telx.obj `if test -f 'telx.c'; then $(CYGPATH_W) 'telx.c'; else $(CYGPATH_W) '$(srcdir)/telx.c'; fi`
+
+libtelx_plugin_a-telx.lo: telx.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_a_CFLAGS) $(CFLAGS) -MT libtelx_plugin_a-telx.lo -MD -MP -MF "$(DEPDIR)/libtelx_plugin_a-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_plugin_a-telx.lo `test -f 'telx.c' || echo '$(srcdir)/'`telx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_plugin_a-telx.Tpo" "$(DEPDIR)/libtelx_plugin_a-telx.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_plugin_a-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_plugin_a-telx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_plugin_a-telx.Plo' tmpdepfile='$(DEPDIR)/libtelx_plugin_a-telx.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_a_CFLAGS) $(CFLAGS) -c -o libtelx_plugin_a-telx.lo `test -f 'telx.c' || echo '$(srcdir)/'`telx.c
 
 libtheora_a-theora.o: theora.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtheora_a_CFLAGS) $(CFLAGS) -MT libtheora_a-theora.o -MD -MP -MF "$(DEPDIR)/libtheora_a-theora.Tpo" \
@@ -5736,6 +5876,72 @@ libtarkin_plugin_la-tarkin.lo: tarkin.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtarkin_plugin_la-tarkin.Plo' tmpdepfile='$(DEPDIR)/libtarkin_plugin_la-tarkin.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtarkin_plugin_la_CFLAGS) $(CFLAGS) -c -o libtarkin_plugin_la-tarkin.lo `test -f 'tarkin.c' || echo '$(srcdir)/'`tarkin.c
+
+libtelx_builtin_la-telx.o: telx.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_builtin_la_CFLAGS) $(CFLAGS) -MT libtelx_builtin_la-telx.o -MD -MP -MF "$(DEPDIR)/libtelx_builtin_la-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_builtin_la-telx.o `test -f 'telx.c' || echo '$(srcdir)/'`telx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_builtin_la-telx.Tpo" "$(DEPDIR)/libtelx_builtin_la-telx.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_builtin_la-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_builtin_la-telx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_builtin_la-telx.Po' tmpdepfile='$(DEPDIR)/libtelx_builtin_la-telx.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_builtin_la_CFLAGS) $(CFLAGS) -c -o libtelx_builtin_la-telx.o `test -f 'telx.c' || echo '$(srcdir)/'`telx.c
+
+libtelx_builtin_la-telx.obj: telx.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_builtin_la_CFLAGS) $(CFLAGS) -MT libtelx_builtin_la-telx.obj -MD -MP -MF "$(DEPDIR)/libtelx_builtin_la-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_builtin_la-telx.obj `if test -f 'telx.c'; then $(CYGPATH_W) 'telx.c'; else $(CYGPATH_W) '$(srcdir)/telx.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_builtin_la-telx.Tpo" "$(DEPDIR)/libtelx_builtin_la-telx.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_builtin_la-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_builtin_la-telx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_builtin_la-telx.Po' tmpdepfile='$(DEPDIR)/libtelx_builtin_la-telx.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_builtin_la_CFLAGS) $(CFLAGS) -c -o libtelx_builtin_la-telx.obj `if test -f 'telx.c'; then $(CYGPATH_W) 'telx.c'; else $(CYGPATH_W) '$(srcdir)/telx.c'; fi`
+
+libtelx_builtin_la-telx.lo: telx.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_builtin_la_CFLAGS) $(CFLAGS) -MT libtelx_builtin_la-telx.lo -MD -MP -MF "$(DEPDIR)/libtelx_builtin_la-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_builtin_la-telx.lo `test -f 'telx.c' || echo '$(srcdir)/'`telx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_builtin_la-telx.Tpo" "$(DEPDIR)/libtelx_builtin_la-telx.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_builtin_la-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_builtin_la-telx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_builtin_la-telx.Plo' tmpdepfile='$(DEPDIR)/libtelx_builtin_la-telx.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_builtin_la_CFLAGS) $(CFLAGS) -c -o libtelx_builtin_la-telx.lo `test -f 'telx.c' || echo '$(srcdir)/'`telx.c
+
+libtelx_plugin_la-telx.o: telx.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_la_CFLAGS) $(CFLAGS) -MT libtelx_plugin_la-telx.o -MD -MP -MF "$(DEPDIR)/libtelx_plugin_la-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_plugin_la-telx.o `test -f 'telx.c' || echo '$(srcdir)/'`telx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_plugin_la-telx.Tpo" "$(DEPDIR)/libtelx_plugin_la-telx.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_plugin_la-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_plugin_la-telx.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_plugin_la-telx.Po' tmpdepfile='$(DEPDIR)/libtelx_plugin_la-telx.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_la_CFLAGS) $(CFLAGS) -c -o libtelx_plugin_la-telx.o `test -f 'telx.c' || echo '$(srcdir)/'`telx.c
+
+libtelx_plugin_la-telx.obj: telx.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_la_CFLAGS) $(CFLAGS) -MT libtelx_plugin_la-telx.obj -MD -MP -MF "$(DEPDIR)/libtelx_plugin_la-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_plugin_la-telx.obj `if test -f 'telx.c'; then $(CYGPATH_W) 'telx.c'; else $(CYGPATH_W) '$(srcdir)/telx.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_plugin_la-telx.Tpo" "$(DEPDIR)/libtelx_plugin_la-telx.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_plugin_la-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_plugin_la-telx.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_plugin_la-telx.Po' tmpdepfile='$(DEPDIR)/libtelx_plugin_la-telx.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_la_CFLAGS) $(CFLAGS) -c -o libtelx_plugin_la-telx.obj `if test -f 'telx.c'; then $(CYGPATH_W) 'telx.c'; else $(CYGPATH_W) '$(srcdir)/telx.c'; fi`
+
+libtelx_plugin_la-telx.lo: telx.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_la_CFLAGS) $(CFLAGS) -MT libtelx_plugin_la-telx.lo -MD -MP -MF "$(DEPDIR)/libtelx_plugin_la-telx.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtelx_plugin_la-telx.lo `test -f 'telx.c' || echo '$(srcdir)/'`telx.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtelx_plugin_la-telx.Tpo" "$(DEPDIR)/libtelx_plugin_la-telx.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtelx_plugin_la-telx.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='telx.c' object='libtelx_plugin_la-telx.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtelx_plugin_la-telx.Plo' tmpdepfile='$(DEPDIR)/libtelx_plugin_la-telx.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtelx_plugin_la_CFLAGS) $(CFLAGS) -c -o libtelx_plugin_la-telx.lo `test -f 'telx.c' || echo '$(srcdir)/'`telx.c
 
 libtheora_builtin_la-theora.o: theora.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtheora_builtin_la_CFLAGS) $(CFLAGS) -MT libtheora_builtin_la-theora.o -MD -MP -MF "$(DEPDIR)/libtheora_builtin_la-theora.Tpo" \

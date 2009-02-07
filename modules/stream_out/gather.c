@@ -2,7 +2,7 @@
  * gather.c: gathering stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: gather.c 14912 2006-03-25 10:57:34Z zorglub $
+ * $Id: gather.c 18775 2007-02-10 20:34:15Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -150,7 +150,6 @@ static sout_stream_id_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
         {
             TAB_REMOVE( p_sys->i_id, p_sys->id, id );
             p_sys->p_out->pf_del( p_sys->p_out, id );
-            free( id );
 
             i = 0;
             continue;

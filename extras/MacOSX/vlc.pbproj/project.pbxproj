@@ -163,6 +163,30 @@
 		<dict>
 			<key>CFBundleTypeExtensions</key>
 			<array>
+				<string>gvp</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>generic.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Google Video Playlist</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
+				<string>flv</string>
+			</array>
+			<key>CFBundleTypeIconFile</key>
+			<string>generic.icns</string>
+			<key>CFBundleTypeName</key>
+			<string>Flash Video File</string>
+			<key>CFBundleTypeRole</key>
+			<string>Viewer</string>
+		</dict>
+		<dict>
+			<key>CFBundleTypeExtensions</key>
+			<array>
 				<string>xspf</string>
 			</array>
 			<key>CFBundleTypeIconFile</key>
@@ -744,7 +768,7 @@
 	<key>CFBundleExecutable</key>
 	<string>VLC</string>
 	<key>CFBundleGetInfoString</key>
-	<string>VLC media player 0.8.6a, Copyright (c) 1996-2007 the VideoLAN team.</string>
+	<string>VLC media player 0.8.6c, Copyright (c) 1996-2007 the VideoLAN team.</string>
 	<key>CFBundleIconFile</key>
 	<string>vlc.icns</string>
 	<key>CFBundleIdentifier</key>
@@ -756,7 +780,7 @@
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.8.6a</string>
+	<string>0.8.6c</string>
 	<key>CFBundleSignature</key>
 	<string>VLC#</string>
 	<key>CFBundleURLTypes</key>
@@ -813,7 +837,7 @@
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
-	<string>0.8.6a</string>
+	<string>0.8.6c</string>
 	<key>NSAppleScriptEnabled</key>
 	<string>YES</string>
 	<key>NSMainNibFile</key>
@@ -931,6 +955,8 @@
 		CC26BF2B09A7A05000E94D62 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/Update.nib; sourceTree = "<group>"; };
 		CC26BF3109A7A08C00E94D62 /* update.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = update.h; path = ../../modules/gui/macosx/update.h; sourceTree = SOURCE_ROOT; };
 		CC26BF3209A7A08C00E94D62 /* update.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = update.m; path = ../../modules/gui/macosx/update.m; sourceTree = SOURCE_ROOT; };
+		CC9AF0CE0B8F502C00728992 /* embeddedwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = embeddedwindow.h; path = ../../modules/gui/macosx/embeddedwindow.h; sourceTree = SOURCE_ROOT; };
+		CC9AF0CF0B8F502C00728992 /* embeddedwindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = embeddedwindow.m; path = ../../modules/gui/macosx/embeddedwindow.m; sourceTree = SOURCE_ROOT; };
 		CCD10D5A0AFE67EF0026254A /* fs_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fs_background.png; path = Resources/fs_background.png; sourceTree = "<group>"; };
 		CCD10D5B0AFE67EF0026254A /* fs_exit_fullscreen_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fs_exit_fullscreen_highlight.png; path = Resources/fs_exit_fullscreen_highlight.png; sourceTree = "<group>"; };
 		CCD10D5C0AFE67EF0026254A /* fs_exit_fullscreen.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fs_exit_fullscreen.png; path = Resources/fs_exit_fullscreen.png; sourceTree = "<group>"; };
@@ -1077,6 +1103,8 @@
 				8ED6C28803E2EB1C0059A3A7 /* vout.m */,
 				8E9CA1A506D7DEE800B7186C /* voutgl.m */,
 				8E9CA1A606D7DEE800B7186C /* voutqt.m */,
+				CC9AF0CE0B8F502C00728992 /* embeddedwindow.h */,
+				CC9AF0CF0B8F502C00728992 /* embeddedwindow.m */,
 				DC769AB8085DF0DB001A838D /* wizard.h */,
 				DC769AB7085DF0DB001A838D /* wizard.m */,
 				DC7F46F008A187F60027DB24 /* extended.h */,

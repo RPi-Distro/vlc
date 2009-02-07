@@ -2,7 +2,7 @@
  * rss.c : rss/atom feed display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: rss.c 18287 2006-12-06 10:41:07Z md $
+ * $Id: rss.c 20493 2007-06-10 13:10:29Z dionoea $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -229,7 +229,8 @@ static int CreateFilter( vlc_object_t *p_this )
     p_sys->i_length = var_CreateGetInteger( p_filter, "rss-length" );
     p_sys->i_ttl = __MAX( 0, var_CreateGetInteger( p_filter, "rss-ttl" ) );
     p_sys->b_images = var_CreateGetBool( p_filter, "rss-images" );
-    p_sys->psz_marquee = (char *)malloc( p_sys->i_length );
+    p_sys->psz_marquee = (char *)malloc( p_sys->i_length + 1 );
+    p_sys->psz_marquee[p_sys->i_length] = '\0';
 
     p_sys->p_style = malloc( sizeof( text_style_t ));
     memcpy( p_sys->p_style, &default_text_style, sizeof( text_style_t ));

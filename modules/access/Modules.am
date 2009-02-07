@@ -1,4 +1,5 @@
 SOURCES_access_file = file.c
+SOURCES_pvr = pvr.c videodev2.h
 SOURCES_access_directory = directory.c
 SOURCES_access_dv = dv.c
 SOURCES_access_udp = udp.c

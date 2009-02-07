@@ -2,7 +2,7 @@
  * playlist.c: libvlc new API playlist handling functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: playlist.c 16767 2006-09-21 14:32:45Z hartman $
+ * $Id: playlist.c 19386 2007-03-22 14:44:14Z jpsaman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -155,7 +155,7 @@ int libvlc_playlist_items_count( libvlc_instance_t *p_instance,
 libvlc_input_t * libvlc_playlist_get_input( libvlc_instance_t *p_instance,
                                             libvlc_exception_t *p_e )
 {
-    libvlc_input_t *p_input;
+    libvlc_input_t *p_input = NULL;
     assert( p_instance->p_playlist );
 
     vlc_mutex_lock( &p_instance->p_playlist->object_lock );
@@ -166,7 +166,12 @@ libvlc_input_t * libvlc_playlist_get_input( libvlc_instance_t *p_instance,
         return NULL;
     }
     p_input = (libvlc_input_t *)malloc( sizeof( libvlc_input_t ) );
-
+    if( !p_input )
+    {
+        libvlc_exception_raise( p_e, "No memory left" );
+        vlc_mutex_unlock( &p_instance->p_playlist->object_lock );
+        return NULL;
+    }
     p_input->i_input_id = p_instance->p_playlist->p_input->i_object_id;
     p_input->p_instance = p_instance;
     vlc_mutex_unlock( &p_instance->p_playlist->object_lock );

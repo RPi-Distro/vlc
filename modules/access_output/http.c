@@ -2,7 +2,7 @@
  * http.c
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: http.c 17020 2006-10-10 18:33:26Z fkuehne $
+ * $Id: http.c 19592 2007-04-01 00:31:04Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jon Lech Johansen <jon@nanocrew.net>
@@ -386,6 +386,7 @@ static int Write( sout_access_out_t *p_access, block_t *p_buffer )
 {
     sout_access_out_sys_t *p_sys = p_access->p_sys;
     int i_err = 0;
+    int i_len = 0;
 
     while( p_buffer )
     {
@@ -421,6 +422,7 @@ static int Write( sout_access_out_t *p_access, block_t *p_buffer )
                                 p_sys->i_header_size );
         }
 
+        i_len += p_buffer->i_buffer;
         /* send data */
         i_err = httpd_StreamSend( p_sys->p_httpd_stream, p_buffer->p_buffer,
                                   p_buffer->i_buffer );
@@ -440,7 +442,7 @@ static int Write( sout_access_out_t *p_access, block_t *p_buffer )
         block_ChainRelease( p_buffer );
     }
 
-    return( i_err < 0 ? VLC_EGENERIC : VLC_SUCCESS );
+    return( i_err < 0 ? VLC_EGENERIC : i_len );
 }
 
 /*****************************************************************************

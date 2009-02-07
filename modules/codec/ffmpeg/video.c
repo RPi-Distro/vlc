@@ -2,7 +2,7 @@
  * video.c: video decoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: video.c 16603 2006-09-10 20:40:21Z sam $
+ * $Id: video.c 20510 2007-06-11 12:45:39Z damienf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -193,7 +193,7 @@ static inline picture_t *ffmpeg_NewPictBuf( decoder_t *p_dec,
         p_dec->fmt_out.video.i_frame_rate =
             p_dec->fmt_in.video.i_frame_rate;
         p_dec->fmt_out.video.i_frame_rate_base =
-            p_dec->fmt_out.video.i_frame_rate_base;
+            p_dec->fmt_in.video.i_frame_rate_base;
     }
     else
 #if LIBAVCODEC_BUILD >= 4754

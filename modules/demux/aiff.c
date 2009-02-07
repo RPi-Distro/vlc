@@ -2,7 +2,7 @@
  * aiff.c: Audio Interchange File Format demuxer
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: aiff.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: aiff.c 20581 2007-06-16 11:15:56Z jb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -173,6 +173,8 @@ static int Open( vlc_object_t *p_this )
 
         /* Skip this chunk */
         i_size += 8;
+        if( (i_size % 2) != 0 )
+            i_size++;
         if( stream_Read( p_demux->s, NULL, i_size ) != (int)i_size )
         {
             msg_Warn( p_demux, "incomplete file" );
@@ -184,7 +186,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_ssnd_end   = p_sys->i_ssnd_start + p_sys->i_ssnd_size;
 
     p_sys->i_ssnd_fsize = p_sys->fmt.audio.i_channels *
-                          ( p_sys->fmt.audio.i_bitspersample + 7 ) / 8;
+                          ((p_sys->fmt.audio.i_bitspersample + 7) / 8);
 
     if( p_sys->i_ssnd_fsize <= 0 )
     {

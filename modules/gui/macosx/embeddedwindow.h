@@ -2,7 +2,7 @@
  * embeddedwindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: embeddedwindow.h 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: embeddedwindow.h 18961 2007-02-23 13:22:13Z fkuehne $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org> 
  *
@@ -26,7 +26,7 @@
  *****************************************************************************/
 
 
-@interface VLCEmbeddedWindow : NSObject
+@interface VLCEmbeddedWindow : NSWindow
 {
     IBOutlet id o_btn_backward;
     IBOutlet id o_btn_forward;
@@ -34,12 +34,13 @@
     IBOutlet id o_btn_play;
     IBOutlet id o_slider;
     IBOutlet id o_time;
-    IBOutlet id o_window;
 
     NSImage * o_img_play;
     NSImage * o_img_play_pressed;
     NSImage * o_img_pause;
     NSImage * o_img_pause_pressed;
+    
+    NSRect o_saved_frame;
 }
 
 - (void)setTime:(NSString *)o_arg_ime position:(float)f_position;

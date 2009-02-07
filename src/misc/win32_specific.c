@@ -2,7 +2,7 @@
  * win32_specific.c: Win32 specific features
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: win32_specific.c 17755 2006-11-14 07:17:34Z md $
+ * $Id: win32_specific.c 19224 2007-03-06 20:17:40Z courmisch $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -39,9 +39,6 @@
 #endif
 
 #include <winsock.h>
-
-extern void __wgetmainargs(int *argc, wchar_t ***wargv, wchar_t ***wenviron,
-                           int expand_wildcards, int *startupinfo);
 
 /*****************************************************************************
  * system_Init: initialize winsock and misc other things.
@@ -86,18 +83,6 @@ void system_Init( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
 
     /* Call mdate() once to make sure it is initialized properly */
     mdate();
-
-    /* Replace argv[1..n] with unicode for Windows NT and above */
-    if( GetVersion() < 0x80000000 )
-    {
-        wchar_t **wargv, **wenvp;
-        int i,i_wargc;
-        int si = { 0 };
-        __wgetmainargs(&i_wargc, &wargv, &wenvp, 0, &si);
-
-        for( i = 1; i < i_wargc; i++ )
-            ppsz_argv[i] = FromWide( wargv[i] );
-    }
 
     /* WinSock Library Init. */
     if( !WSAStartup( MAKEWORD( 2, 2 ), &Data ) )

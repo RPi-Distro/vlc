@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: vout_subpictures.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: vout_subpictures.c 20581 2007-06-16 11:15:56Z jb $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -251,6 +251,8 @@ subpicture_region_t *__spu_CreateRegion( vlc_object_t *p_this,
                                          video_format_t *p_fmt )
 {
     subpicture_region_t *p_region = malloc( sizeof(subpicture_region_t) );
+    if( !p_region ) return NULL;
+
     memset( p_region, 0, sizeof(subpicture_region_t) );
     p_region->p_next = 0;
     p_region->p_cache = 0;
@@ -273,7 +275,7 @@ subpicture_region_t *__spu_CreateRegion( vlc_object_t *p_this,
     if( !p_region->picture.i_planes )
     {
         free( p_region );
-        free( p_fmt->p_palette );
+        if( p_fmt->p_palette ) free( p_fmt->p_palette );
         return NULL;
     }
 
@@ -325,6 +327,10 @@ void __spu_DestroyRegion( vlc_object_t *p_this, subpicture_region_t *p_region )
         p_region->picture.pf_release( &p_region->picture );
     if( p_region->fmt.p_palette ) free( p_region->fmt.p_palette );
     if( p_region->p_cache ) __spu_DestroyRegion( p_this, p_region->p_cache );
+
+    if( p_region->psz_text )
+        free( p_region->psz_text );
+    //free( p_region->p_style ); FIXME --fenrir plugin does not allocate the memory for it. I think it might lead to segfault, video renderer can live longer than the decoder
     free( p_region );
 }
 
@@ -631,8 +637,8 @@ void spu_RenderSubpictures( spu_t *p_spu, video_format_t *p_fmt,
             }
 
             /* Force palette if requested */
-            if( p_spu->b_force_palette && VLC_FOURCC('Y','U','V','P') ==
-                p_region->fmt.i_chroma )
+            if( p_spu->b_force_palette &&
+                (VLC_FOURCC('Y','U','V','P') == p_region->fmt.i_chroma) )
             {
                 memcpy( p_region->fmt.p_palette->palette,
                         p_spu->palette, 16 );
@@ -727,6 +733,9 @@ void spu_RenderSubpictures( spu_t *p_spu, video_format_t *p_fmt,
                     p_subpic->i_y * i_scale_height / 1000;
 
             }
+            
+            i_x_offset = __MAX( i_x_offset, 0 );
+            i_y_offset = __MAX( i_y_offset, 0 );
 
             if( p_spu->i_margin != 0 && p_spu->b_force_crop == VLC_FALSE )
             {
@@ -799,6 +808,9 @@ void spu_RenderSubpictures( spu_t *p_spu, video_format_t *p_fmt,
                                    ( p_subpic->i_stop - i_fade_start );
                 }
             }
+
+            i_x_offset = __MAX( i_x_offset, 0 );
+            i_y_offset = __MAX( i_y_offset, 0 );
 
             p_spu->p_blend->pf_video_blend( p_spu->p_blend, p_pic_dst,
                 p_pic_src, &p_region->picture, i_x_offset, i_y_offset,

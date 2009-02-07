@@ -2,7 +2,7 @@
  * output.c : internal management of output streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: output.c 14953 2006-03-28 20:29:28Z zorglub $
+ * $Id: output.c 20535 2007-06-12 18:27:18Z fenrir $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -296,7 +296,7 @@ aout_buffer_t * aout_OutputNextBuffer( aout_instance_t * p_aout,
         p_aout->output.fifo.pp_last = &p_aout->output.fifo.p_first;
 
 #if 0 /* This is bad because the audio output might just be trying to fill
-       * in it's internal buffers. And anyway, it's up to the audio output
+       * in its internal buffers. And anyway, it's up to the audio output
        * to deal with this kind of starvation. */
 
         /* Set date to 0, to allow the mixer to send a new buffer ASAP */
@@ -323,10 +323,12 @@ aout_buffer_t * aout_OutputNextBuffer( aout_instance_t * p_aout,
      * --Gibalou
      */
     {
+        const mtime_t i_delta = p_buffer->start_date - start_date;
         vlc_mutex_unlock( &p_aout->output_fifo_lock );
+
         if ( !p_aout->output.b_starving )
             msg_Dbg( p_aout, "audio output is starving ("I64Fd"), "
-                     "playing silence", p_buffer->start_date - start_date );
+                     "playing silence", i_delta );
         p_aout->output.b_starving = 1;
         return NULL;
     }

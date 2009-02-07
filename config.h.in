@@ -491,11 +491,20 @@
 /* Define to 1 if you have the <net/if.h> header file. */
 #undef HAVE_NET_IF_H
 
+/* Define if new linux/videodev2.h present */
+#undef HAVE_NEW_LINUX_VIDEODEV2_H
+
 /* Define to 1 if you have the `nl_langinfo' function. */
 #undef HAVE_NL_LANGINFO
 
 /* Define to 1 if you have the <nl_types.h> header file. */
 #undef HAVE_NL_TYPES_H
+
+/* Define to 1 if you have the <npapi.h> header file. */
+#undef HAVE_NPAPI_H
+
+/* Define to 1 if you have the <npruntime.h> header file. */
+#undef HAVE_NPRUNTIME_H
 
 /* Define to 1 if you have the `NSLinkModule' function. */
 #undef HAVE_NSLINKMODULE
@@ -907,6 +916,9 @@
 
 /* Simple version string */
 #undef VERSION_MESSAGE
+
+/* Location of videodev2.h */
+#undef VIDEODEV2_H_FILE
 
 /* compiler */
 #undef VLC_COMPILER

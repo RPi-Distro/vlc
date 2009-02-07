@@ -565,38 +565,52 @@ HRESULT VLCPlugin::getVLC(libvlc_instance_t** pp_libvlc)
         char *ppsz_argv[32] = { "vlc" };
         int   ppsz_argc = 1;
 
+        char p_progpath[MAX_PATH];
+        {
+            TCHAR w_progpath[MAX_PATH];
+            DWORD len = GetModuleFileName(DllGetModule(), w_progpath, MAX_PATH);
+            if( len > 0 )
+            {
+                len = WideCharToMultiByte(CP_UTF8, 0, w_progpath, len, p_progpath,
+                           sizeof(p_progpath)-1, NULL, NULL);
+                if( len > 0 )
+                {
+                    p_progpath[len] = '\0';
+                    ppsz_argv[0] = p_progpath;
+                }
+            }
+        }
+
+        ppsz_argv[ppsz_argc++] = "-vv";
+
         HKEY h_key;
-        DWORD i_type, i_data = MAX_PATH + 1;
-        char p_data[MAX_PATH + 1];
-        if( RegOpenKeyEx( HKEY_LOCAL_MACHINE, "Software\\VideoLAN\\VLC",
+        char p_pluginpath[MAX_PATH];
+        if( RegOpenKeyEx( HKEY_LOCAL_MACHINE, TEXT("Software\\VideoLAN\\VLC"),
                           0, KEY_READ, &h_key ) == ERROR_SUCCESS )
         {
-            if( RegQueryValueEx( h_key, "InstallDir", 0, &i_type,
-                                 (LPBYTE)p_data, &i_data ) == ERROR_SUCCESS )
+            DWORD i_type, i_data = MAX_PATH;
+            TCHAR w_pluginpath[MAX_PATH];
+            if( RegQueryValueEx( h_key, TEXT("InstallDir"), 0, &i_type,
+                                 (LPBYTE)w_pluginpath, &i_data ) == ERROR_SUCCESS )
             {
                 if( i_type == REG_SZ )
                 {
-                    strcat( p_data, "\\plugins" );
-                    ppsz_argv[ppsz_argc++] = "--plugin-path";
-                    ppsz_argv[ppsz_argc++] = p_data;
+                    if( WideCharToMultiByte(CP_UTF8, 0, w_pluginpath, -1, p_pluginpath,
+                             sizeof(p_pluginpath)-sizeof("\\plugins")+1, NULL, NULL) )
+                    {
+                        strcat( p_pluginpath, "\\plugins" );
+                        ppsz_argv[ppsz_argc++] = "--plugin-path";
+                        ppsz_argv[ppsz_argc++] = p_pluginpath;
+                    }
                 }
             }
             RegCloseKey( h_key );
-        }
-
-        char p_path[MAX_PATH+1];
-        DWORD len = GetModuleFileNameA(DllGetModule(), p_path, sizeof(p_path));
-        if( len > 0 )
-        {
-            p_path[len] = '\0';
-            ppsz_argv[0] = p_path;
         }
 
         // make sure plugin isn't affected with VLC single instance mode
         ppsz_argv[ppsz_argc++] = "--no-one-instance";
 
         /* common settings */
-        ppsz_argv[ppsz_argc++] = "-vv";
         ppsz_argv[ppsz_argc++] = "--no-stats";
         ppsz_argv[ppsz_argc++] = "--intf";
         ppsz_argv[ppsz_argc++] = "dummy";
@@ -822,7 +836,7 @@ HRESULT VLCPlugin::onActivateInPlace(LPMSG lpMesg, HWND hwndParent, LPCRECT lprc
     ** properly clipped.
     */
     _inplacewnd = CreateWindow(_p_class->getInPlaceWndClassName(),
-            "VLC Plugin In-Place Window",
+            TEXT("VLC Plugin In-Place Window"),
             WS_CHILD|WS_CLIPCHILDREN|WS_CLIPSIBLINGS,
             clipRect.left,
             clipRect.top,
@@ -846,7 +860,7 @@ HRESULT VLCPlugin::onActivateInPlace(LPMSG lpMesg, HWND hwndParent, LPCRECT lprc
     ** is always correct relative to the viewport bounds
     */
     _videownd = CreateWindow(_p_class->getVideoWndClassName(),
-            "VLC Plugin Video Window",
+            TEXT("VLC Plugin Video Window"),
             WS_CHILD|WS_CLIPCHILDREN|WS_VISIBLE,
             posRect.left,
             posRect.top,
@@ -944,6 +958,26 @@ void VLCPlugin::setVolume(int volume)
             libvlc_audio_set_volume(_p_libvlc, _i_volume, NULL);
         }
         setDirty(TRUE);
+    }
+};
+
+void VLCPlugin::setTime(int seconds)
+{
+    if( seconds < 0 )
+        seconds = 0;
+
+    if( seconds != _i_time )
+    {
+        setStartTime(_i_time);
+        if( isRunning() )
+        {
+            libvlc_input_t *p_input = libvlc_playlist_get_input(_p_libvlc, NULL);
+            if( NULL != p_input )
+            {
+                libvlc_input_set_time(p_input, _i_time, NULL);
+                libvlc_input_free(p_input);
+            }
+        }
     }
 };
 

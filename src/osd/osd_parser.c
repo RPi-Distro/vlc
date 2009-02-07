@@ -2,7 +2,7 @@
  * osd_parser.c - The OSD Menu  parser core code.
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: osd_parser.c 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: osd_parser.c 20533 2007-06-12 18:19:09Z Trax $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -73,9 +73,6 @@ static picture_t *osd_LoadImage( vlc_object_t *p_this, const char *psz_filename 
     {
         p_pic = image_ReadUrl( p_image, psz_filename, &fmt_in, &fmt_out );
         image_HandlerDelete( p_image );
-#if 0
-        p_pic = osd_YuvaYuvp( p_this, p_pic );
-#endif
     }
     else msg_Err( p_this, "unable to handle this chroma" );
 
@@ -91,8 +88,12 @@ static osd_menu_t *osd_MenuNew( osd_menu_t *p_menu, const char *psz_path, int i_
 
     p_menu->p_state = (osd_menu_state_t *) malloc( sizeof( osd_menu_state_t ) );
     if( !p_menu->p_state )
+    {
         msg_Err( p_menu, "Memory allocation for OSD Menu state failed" );
+        return NULL;
+    }
 
+    memset(p_menu->p_state, 0, sizeof(osd_menu_state_t));
     if( psz_path != NULL )
         p_menu->psz_path = strdup( psz_path );
     else

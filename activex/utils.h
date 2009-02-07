@@ -32,8 +32,6 @@ extern char *CStrFromWSTR(UINT codePage, LPCWSTR wstr, UINT len);
 extern char *CStrFromBSTR(UINT codePage, BSTR bstr);
 extern BSTR BSTRFromCStr(UINT codePage, LPCSTR s);
 
-extern char *CStrFromGUID(REFGUID clsid);
-
 // properties
 extern HRESULT GetObjectProperty(LPUNKNOWN object, DISPID dispID, VARIANT& v);
 
@@ -48,7 +46,7 @@ extern LPWSTR CombineURL(LPCWSTR baseUrl, LPCWSTR url);
 /**************************************************************************************************/
 
 /* this function object is used to dereference the iterator into a value */
-template <class T, class Iterator>
+template <typename T, class Iterator>
 struct VLCDereference
 {
     T operator()(const Iterator& i) const
@@ -57,7 +55,7 @@ struct VLCDereference
     };
 };
 
-template<REFIID EnumeratorIID, class Enumerator, class T, class Iterator, typename Dereference = VLCDereference<T, Iterator> >
+template<REFIID EnumeratorIID, class Enumerator, typename T, class Iterator, typename Dereference = VLCDereference<T, Iterator> >
 class VLCEnumIterator : public Enumerator
 {
 

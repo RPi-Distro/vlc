@@ -2,7 +2,7 @@
  * vout.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: vout.m 18487 2007-01-03 17:37:12Z fkuehne $
+ * $Id: vout.m 19667 2007-04-04 20:24:46Z fkuehne $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -305,7 +305,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     }
 }
 
-- (void)scaleWindowWithFactor: (float)factor
+- (void)scaleWindowWithFactor: (float)factor animate: (BOOL)animate
 {
     NSSize newsize;
     int i_corrected_height, i_corrected_width;
@@ -344,7 +344,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
         new_frame.origin.x = topleftscreen.x;
         new_frame.origin.y = topleftscreen.y - new_frame.size.height;
 
-        [o_window setFrame: new_frame display: NO];
+        [o_window setFrame: new_frame display: animate animate: animate];
 
         p_vout->i_changes |= VOUT_SIZE_CHANGE;
     }
@@ -382,6 +382,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 - (BOOL)isFullscreen
 {
     vlc_value_t val;
+    if( !p_real_vout ) return NO;
     var_Get( p_real_vout, "fullscreen", &val );
     return( val.b_bool );
 }
@@ -393,8 +394,9 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
 
 - (void)manage
 {
-    /* Disable Screensaver */
-    UpdateSystemActivity( UsrActivity );
+    /* Disable Screensaver, when we're playing something, but allow it on pause */
+    if( VLCIntf->p_sys->i_play_status == PLAYING_S )
+        UpdateSystemActivity( UsrActivity );
 }
 
 - (id)getWindow
@@ -863,7 +865,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     {
         [o_window setAlphaValue: var_GetFloat( p_vout, "macosx-opaqueness" )];
         [self updateTitle];
-        [self scaleWindowWithFactor: 1.0];
+        [self scaleWindowWithFactor: 1.0 animate: NO];
         [o_window makeKeyAndOrderFront: self];
     }
     return b_return;
@@ -940,8 +942,8 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
         /* move the FSPanel to front in case that it is currently shown
          * this won't and is not supposed to work when it's fading right now */
         if( [[[[VLCMain sharedInstance] getControls] getFSPanel] isDisplayed] )
-            [[[[VLCMain sharedInstance] getControls] getFSPanel] orderFront: self];
-        
+            [[[[VLCMain sharedInstance] getControls] getFSPanel] setActive: nil];
+
         /* tell the fspanel to move itself to front next time it's triggered */
         [[[[VLCMain sharedInstance] getControls] getFSPanel] setVoutWasUpdated: i_device];
 

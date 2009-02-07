@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: dec.c 14157 2006-02-04 16:26:23Z zorglub $
+ * $Id: dec.c 20447 2007-06-07 16:58:32Z courmisch $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -51,6 +51,21 @@ static aout_input_t * DecNew( vlc_object_t * p_this, aout_instance_t * p_aout,
     input_thread_t * p_input_thread;
     vlc_value_t val;
 
+    /* Sanitize audio format */
+    if( p_format->i_channels > 32 )
+    {
+        msg_Err( p_aout, "too many audio channels (%u)",
+                 p_format->i_channels );
+        goto error;
+    }
+
+    if( p_format->i_rate > 192000 )
+    {
+        msg_Err( p_aout, "excessive audio sample frequency (%u)",
+                 p_format->i_rate );
+        goto error;
+    }
+
     /* We can only be called by the decoder, so no need to lock
      * p_input->lock. */
     vlc_mutex_lock( &p_aout->mixer_lock );
@@ -58,14 +73,14 @@ static aout_input_t * DecNew( vlc_object_t * p_this, aout_instance_t * p_aout,
     if ( p_aout->i_nb_inputs >= AOUT_MAX_INPUTS )
     {
         msg_Err( p_aout, "too many inputs already (%d)", p_aout->i_nb_inputs );
-        return NULL;
+        goto error;
     }
 
     p_input = malloc(sizeof(aout_input_t));
     if ( p_input == NULL )
     {
         msg_Err( p_aout, "out of memory" );
-        return NULL;
+        goto error;
     }
 
     vlc_mutex_init( p_aout, &p_input->lock );
@@ -116,14 +131,12 @@ static aout_input_t * DecNew( vlc_object_t * p_this, aout_instance_t * p_aout,
     if ( aout_MixerNew( p_aout ) == -1 )
     {
         aout_OutputDelete( p_aout );
-        vlc_mutex_unlock( &p_aout->mixer_lock );
-        return NULL;
+        goto error;
     }
 
     aout_InputNew( p_aout, p_input );
 
     vlc_mutex_unlock( &p_aout->mixer_lock );
-
     var_Create( p_this, "audio-desync", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
     var_Get( p_this, "audio-desync", &val );
     p_input->i_desync = val.i_int * 1000;
@@ -145,6 +158,10 @@ static aout_input_t * DecNew( vlc_object_t * p_this, aout_instance_t * p_aout,
     }
 
     return p_input;
+
+error:
+    vlc_mutex_unlock( &p_aout->mixer_lock );
+    return NULL;
 }
 
 aout_input_t * __aout_DecNew( vlc_object_t * p_this,

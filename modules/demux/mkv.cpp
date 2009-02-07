@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: mkv.cpp 18346 2006-12-09 23:14:57Z hartman $
+ * $Id: mkv.cpp 20529 2007-06-12 16:31:11Z Trax $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -1886,12 +1886,12 @@ static void BlockDecode( demux_t *p_demux, KaxBlock *block, mtime_t i_pts,
 
     if( i_track >= p_segment->tracks.size() )
     {
-        msg_Err( p_demux, "invalid track number=%d", block->TrackNum() );
+        msg_Err( p_demux, "invalid track number" );
         return;
     }
     if( tk->fmt.i_cat != NAV_ES && tk->p_es == NULL )
     {
-        msg_Err( p_demux, "unknown track number=%d", block->TrackNum() );
+        msg_Err( p_demux, "unknown track number" );
         return;
     }
     if( i_pts + i_duration < p_sys->i_start_pts && tk->fmt.i_cat == AUDIO_ES )
@@ -5599,13 +5599,23 @@ void matroska_segment_c::Seek( mtime_t i_date, mtime_t i_time_offset )
 
         for( i_track = 0; i_track < tracks.size(); i_track++ )
         {
+#if LIBMATROSKA_VERSION >= 0x000800
+            if( (simpleblock && tracks[i_track]->i_number == simpleblock->TrackNum()) ||
+                (block && tracks[i_track]->i_number == block->TrackNum()) )
+#else
             if( tracks[i_track]->i_number == block->TrackNum() )
+#endif
             {
                 break;
             }
         }
 
-        sys.i_pts = (sys.i_chapter_time + block->GlobalTimecode()) / (mtime_t) 1000;
+#if LIBMATROSKA_VERSION >= 0x000800
+        if( simpleblock )
+            sys.i_pts = (sys.i_chapter_time + simpleblock->GlobalTimecode()) / (mtime_t) 1000;
+        else
+#endif
+            sys.i_pts = (sys.i_chapter_time + block->GlobalTimecode()) / (mtime_t) 1000;
 
         if( i_track < tracks.size() )
         {

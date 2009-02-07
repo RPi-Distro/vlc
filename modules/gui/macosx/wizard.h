@@ -2,7 +2,7 @@
  * wizard.h: MacOS X Streaming Wizard
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: wizard.h 14779 2006-03-17 20:07:25Z fkuehne $
+ * $Id: wizard.h 18977 2007-02-23 19:50:01Z fkuehne $
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net> 
  *
@@ -102,6 +102,7 @@
     IBOutlet id o_t6_btn_mrInfo_ttl;
     IBOutlet id o_t6_btn_mrInfo_sap;
     IBOutlet id o_t6_btn_mrInfo_local;
+    IBOutlet id o_t6_ckb_soverlay;
     IBOutlet id o_t6_ckb_local;
     
     /* page seven ("Transcode 2") */
@@ -111,6 +112,7 @@
     IBOutlet id o_t7_title;
     IBOutlet id o_t7_txt_saveFileTo;
     IBOutlet id o_t7_btn_mrInfo_local;
+    IBOutlet id o_t7_ckb_soverlay;
     IBOutlet id o_t7_ckb_local;
     
     /* page eight ("Summary") */
@@ -123,6 +125,7 @@
     IBOutlet id o_t8_fld_strmgMthd;
     IBOutlet id o_t8_fld_trnscdAudio;
     IBOutlet id o_t8_fld_trnscdVideo;
+    IBOutlet id o_t8_fld_soverlay;
     IBOutlet id o_t8_fld_ttl;
     IBOutlet id o_t8_fld_mrl;
     IBOutlet id o_t8_fld_local;
@@ -137,6 +140,7 @@
     IBOutlet id o_t8_txt_title;
     IBOutlet id o_t8_txt_trnscdAudio;
     IBOutlet id o_t8_txt_trnscdVideo;
+    IBOutlet id o_t8_txt_soverlay;
     IBOutlet id o_t8_txt_ttl;
     IBOutlet id o_t8_txt_mrl;
     IBOutlet id o_t8_txt_local;

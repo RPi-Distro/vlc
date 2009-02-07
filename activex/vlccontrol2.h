@@ -4,6 +4,7 @@
  * Copyright (C) 2006 the VideoLAN team
  *
  * Authors: Damien Fouilleul <Damien.Fouilleul@laposte.net>
+ *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -66,7 +67,7 @@ public:
     STDMETHODIMP get_volume(long*);
     STDMETHODIMP put_volume(long);
     STDMETHODIMP toggleMute();
- 
+
 protected:
     HRESULT loadTypeInfo();
 
@@ -75,7 +76,7 @@ private:
     ITypeInfo*      _p_typeinfo;
 
 };
- 
+
 class VLCInput : public IVLCInput
 {
 public:
@@ -130,7 +131,7 @@ private:
     ITypeInfo*      _p_typeinfo;
 
 };
- 
+
 class VLCMessage: public IVLCMessage
 {
 public:
@@ -184,7 +185,7 @@ public:
     STDMETHODIMP get_name(BSTR *);
     STDMETHODIMP get_header(BSTR *);
     STDMETHODIMP get_message(BSTR *);
-    
+
 protected:
     HRESULT loadTypeInfo();
 
@@ -195,7 +196,7 @@ private:
 
     struct libvlc_log_message_t _msg;
 };
- 
+
 class VLCLog;
 
 class VLCMessageIterator : public IVLCMessageIterator
@@ -243,7 +244,7 @@ public:
     // IVLCMessageIterator methods
     STDMETHODIMP get_hasNext(VARIANT_BOOL*);
     STDMETHODIMP next(IVLCMessage**);
-    
+
 protected:
     HRESULT loadTypeInfo();
 
@@ -255,7 +256,7 @@ private:
     VLCLog*                 _p_vlclog;
     libvlc_log_iterator_t*  _p_iter;
 };
- 
+
 class VLCMessages : public IVLCMessages
 {
 public:
@@ -297,7 +298,7 @@ public:
     STDMETHODIMP clear();
     STDMETHODIMP get_count(long*);
     STDMETHODIMP iterator(IVLCMessageIterator**);
-    
+
 protected:
     HRESULT loadTypeInfo();
 
@@ -355,7 +356,7 @@ public:
     STDMETHODIMP get_messages(IVLCMessages**);
     STDMETHODIMP get_verbosity(long *);
     STDMETHODIMP put_verbosity(long);
-    
+
 protected:
     HRESULT loadTypeInfo();
 
@@ -367,7 +368,7 @@ private:
 
     VLCMessages*    _p_vlcmessages;
 };
- 
+
 class VLCPlaylistItems : public IVLCPlaylistItems
 {
 public:
@@ -405,7 +406,7 @@ public:
     STDMETHODIMP get_count(long*);
     STDMETHODIMP clear();
     STDMETHODIMP remove(long);
- 
+
 protected:
     HRESULT loadTypeInfo();
 
@@ -414,7 +415,7 @@ private:
     ITypeInfo*  _p_typeinfo;
 
 };
- 
+
 class VLCPlaylist : public IVLCPlaylist
 {
 public:
@@ -466,7 +467,7 @@ public:
     STDMETHODIMP clear();
     STDMETHODIMP removeItem(long);
     STDMETHODIMP get_items(IVLCPlaylistItems**);
- 
+
 protected:
     HRESULT loadTypeInfo();
 
@@ -476,7 +477,7 @@ private:
 
     VLCPlaylistItems*    _p_vlcplaylistitems;
 };
- 
+
 class VLCVideo : public IVLCVideo
 {
 public:
@@ -518,7 +519,7 @@ public:
     STDMETHODIMP get_aspectRatio(BSTR*);
     STDMETHODIMP put_aspectRatio(BSTR);
     STDMETHODIMP toggleFullscreen();
- 
+
 protected:
     HRESULT loadTypeInfo();
 
@@ -527,10 +528,9 @@ private:
     ITypeInfo*      _p_typeinfo;
 
 };
- 
+
 class VLCControl2 : public IVLCControl2
 {
-    
 public:
 
     VLCControl2(VLCPlugin *p_instance);
@@ -597,6 +597,5 @@ private:
     VLCPlaylist*    _p_vlcplaylist;
     VLCVideo*       _p_vlcvideo;
 };
- 
-#endif
 
+#endif

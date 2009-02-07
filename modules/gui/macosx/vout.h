@@ -2,7 +2,7 @@
  * vout.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: vout.h 17499 2006-11-05 22:55:03Z fkuehne $
+ * $Id: vout.h 18961 2007-02-23 13:22:13Z fkuehne $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -58,7 +58,7 @@
 - (void)closeVout;
 - (void)updateTitle;
 - (void)manage;
-- (void)scaleWindowWithFactor: (float)factor;
+- (void)scaleWindowWithFactor: (float)factor animate: (BOOL)animate;
 - (void)setOnTop:(BOOL)b_on_top;
 - (void)toggleFloatOnTop;
 - (void)toggleFullscreen;

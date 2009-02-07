@@ -2,7 +2,7 @@
  * flac.c: flac decoder/packetizer/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: flac.c 17236 2006-10-21 19:11:38Z hartman $
+ * $Id: flac.c 20581 2007-06-16 11:15:56Z jb $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -39,6 +39,10 @@
 #include "vlc_bits.h"
 
 #define MAX_FLAC_HEADER_SIZE 16
+
+#if defined(FLAC_API_VERSION_CURRENT) && FLAC_API_VERSION_CURRENT >= 8
+#   define USE_NEW_FLAC_API
+#endif
 
 /*****************************************************************************
  * decoder_sys_t : FLAC decoder descriptor
@@ -225,6 +229,25 @@ static int OpenDecoder( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
+#ifdef USE_NEW_FLAC_API
+    if( FLAC__stream_decoder_init_stream( p_sys->p_flac,
+                                          DecoderReadCallback,
+                                          NULL,
+                                          NULL,
+                                          NULL,
+                                          NULL,
+                                          DecoderWriteCallback,
+                                          DecoderMetadataCallback,
+                                          DecoderErrorCallback,
+                                          p_dec )
+        != FLAC__STREAM_DECODER_INIT_STATUS_OK )
+    {
+        msg_Err( p_dec, "FLAC__stream_decoder_init_stream() failed" );
+        FLAC__stream_decoder_delete( p_sys->p_flac );
+        free( p_sys );
+        return VLC_EGENERIC;
+    }
+#else
     FLAC__stream_decoder_set_read_callback( p_sys->p_flac,
                                             DecoderReadCallback );
     FLAC__stream_decoder_set_write_callback( p_sys->p_flac,
@@ -236,6 +259,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     FLAC__stream_decoder_set_client_data( p_sys->p_flac, p_dec );
 
     FLAC__stream_decoder_init( p_sys->p_flac );
+#endif
 #endif
 
     /* Set output properties */
@@ -254,9 +278,10 @@ static int OpenDecoder( vlc_object_t *p_this )
 static int OpenPacketizer( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
+    es_format_t es_save = p_dec->fmt_out;
     int i_ret;
 
-    /* Hmmm, mem leak ?*/
+    /* */
     es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
 
     i_ret = OpenDecoder( p_this );
@@ -264,8 +289,11 @@ static int OpenPacketizer( vlc_object_t *p_this )
     /* Set output properties */
     p_dec->fmt_out.i_codec = VLC_FOURCC('f','l','a','c');
 
-    if( i_ret != VLC_SUCCESS ) return i_ret;
-
+    if( i_ret != VLC_SUCCESS )
+    {
+        es_format_Clean( &p_dec->fmt_out );
+        p_dec->fmt_out = es_save;
+    }
     return i_ret;
 }
 
@@ -730,16 +758,27 @@ static void decoder_state_error( decoder_t *p_dec,
     case FLAC__STREAM_DECODER_END_OF_STREAM:
         msg_Dbg( p_dec, "the decoder has reached the end of the stream." );
         break;
+#ifdef USE_NEW_FLAC_API
+    case FLAC__STREAM_DECODER_OGG_ERROR:
+        msg_Err( p_dec, "error occurred in the Ogg layer." );
+        break;
+    case FLAC__STREAM_DECODER_SEEK_ERROR:
+        msg_Err( p_dec, "error occurred while seeking." );
+        break;
+#endif
     case FLAC__STREAM_DECODER_ABORTED:
         msg_Warn( p_dec, "the decoder was aborted by the read callback." );
         break;
+#ifndef USE_NEW_FLAC_API
     case FLAC__STREAM_DECODER_UNPARSEABLE_STREAM:
         msg_Warn( p_dec, "the decoder encountered reserved fields in use "
                  "in the stream." );
         break;
+#endif
     case FLAC__STREAM_DECODER_MEMORY_ALLOCATION_ERROR:
         msg_Err( p_dec, "error when allocating memory." );
         break;
+#ifndef USE_NEW_FLAC_API
     case FLAC__STREAM_DECODER_ALREADY_INITIALIZED:
         msg_Err( p_dec, "FLAC__stream_decoder_init() was called when the "
                  "decoder was already initialized, usually because "
@@ -749,6 +788,7 @@ static void decoder_state_error( decoder_t *p_dec,
         msg_Err( p_dec, "FLAC__stream_decoder_init() was called without "
                  "all callbacks being set." );
         break;
+#endif
     case FLAC__STREAM_DECODER_UNINITIALIZED:
         msg_Err( p_dec, "decoder in uninitialized state." );
         break;
@@ -1183,7 +1223,12 @@ static int OpenEncoder( vlc_object_t *p_this )
     p_sys->i_samples_delay = 0;
 
     /* Create flac encoder */
-    p_sys->p_flac = FLAC__stream_encoder_new();
+    if( !(p_sys->p_flac = FLAC__stream_encoder_new()) )
+    {
+        msg_Err( p_enc, "FLAC__stream_encoder_new() failed" );
+        free( p_sys );
+        return VLC_EGENERIC;
+    }
 
     FLAC__stream_encoder_set_streamable_subset( p_sys->p_flac, 1 );
     FLAC__stream_encoder_set_channels( p_sys->p_flac,
@@ -1193,15 +1238,32 @@ static int OpenEncoder( vlc_object_t *p_this )
     FLAC__stream_encoder_set_bits_per_sample( p_sys->p_flac, 16 );
     p_enc->fmt_in.i_codec = AOUT_FMT_S16_NE;
 
+    /* Get and store the STREAMINFO metadata block as a p_extra */
+    p_sys->p_chain = 0;
+
+#ifdef USE_NEW_FLAC_API
+    if( FLAC__stream_encoder_init_stream( p_sys->p_flac,
+                                          EncoderWriteCallback,
+                                          NULL,
+                                          NULL,
+                                          EncoderMetadataCallback,
+                                          p_enc )
+        != FLAC__STREAM_ENCODER_INIT_STATUS_OK )
+    {
+        msg_Err( p_enc, "FLAC__stream_encoder_init_stream() failed" );
+        FLAC__stream_encoder_delete( p_sys->p_flac );
+        free( p_sys );
+        return VLC_EGENERIC;
+    }
+#else
     FLAC__stream_encoder_set_write_callback( p_sys->p_flac,
         EncoderWriteCallback );
     FLAC__stream_encoder_set_metadata_callback( p_sys->p_flac,
         EncoderMetadataCallback );
     FLAC__stream_encoder_set_client_data( p_sys->p_flac, p_enc );
 
-    /* Get and store the STREAMINFO metadata block as a p_extra */
-    p_sys->p_chain = 0;
     FLAC__stream_encoder_init( p_sys->p_flac );
+#endif
 
     return VLC_SUCCESS;
 }

@@ -2,7 +2,7 @@
  * vlc_block.h: Data blocks management functions
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: vlc_block.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: vlc_block.h 18617 2007-01-19 19:51:20Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -129,6 +129,8 @@ VLC_EXPORT( block_t *, block_Realloc,       ( block_t *, int i_pre, int i_body )
 static inline block_t *block_Duplicate( block_t *p_block )
 {
     block_t *p_dup = block_New( p_block->p_manager, p_block->i_buffer );
+    if( p_dup == NULL )
+        return NULL;
 
     p_dup->i_dts     = p_block->i_dts;
     p_dup->i_pts     = p_block->i_pts;
@@ -136,9 +138,7 @@ static inline block_t *block_Duplicate( block_t *p_block )
     p_dup->i_length  = p_block->i_length;
     p_dup->i_rate    = p_block->i_rate;
     p_dup->i_samples = p_block->i_samples;
-
-    if( p_dup && p_block->i_buffer > 0 )
-        memcpy( p_dup->p_buffer, p_block->p_buffer, p_block->i_buffer );
+    memcpy( p_dup->p_buffer, p_block->p_buffer, p_block->i_buffer );
 
     return p_dup;
 }

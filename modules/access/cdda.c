@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003 the VideoLAN team
- * $Id: cdda.c 18150 2006-11-29 13:32:25Z courmisch $
+ * $Id: cdda.c 20455 2007-06-07 17:34:50Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -630,18 +630,17 @@ static int GetTracks( access_t *p_access, vlc_bool_t b_separate,
                     {
                         vlc_input_item_AddInfo( &p_item->input,
                                             _(VLC_META_INFO_CAT),
-                                            _(VLC_META_TITLE),
+                                            _(VLC_META_TITLE), "%s", 
                                             cddb_track_get_title( t ) );
                         if( p_item->input.psz_name )
                             free( p_item->input.psz_name );
-                        asprintf( &p_item->input.psz_name, "%s",
-                                  cddb_track_get_title( t ) );
+                        p_item->input.psz_name = strdup( cddb_track_get_title( t ) );
                     }
                     psz_result = cddb_track_get_artist( t );
                     if( psz_result )
                     {
                         vlc_input_item_AddInfo( &p_item->input,
-                                            _(VLC_META_INFO_CAT),
+                                            _(VLC_META_INFO_CAT), "%s",
                                             _(VLC_META_ARTIST), psz_result );
                     }
                 }

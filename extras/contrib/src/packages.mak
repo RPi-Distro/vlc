@@ -1,8 +1,8 @@
 # ***************************************************************************
 # src/packages.mak : Archive locations
 # ***************************************************************************
-# Copyright (C) 2003 - 2006 the VideoLAN team
-# $Id: packages.mak 18198 2006-12-02 00:52:04Z xtophe $
+# Copyright (C) 2003 - 2007 the VideoLAN team
+# $Id: packages.mak 20491 2007-06-09 16:50:22Z fkuehne $
 #
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>
@@ -24,7 +24,7 @@
 # ***************************************************************************
 
 GNU=http://ftp.belnet.be/mirror/ftp.gnu.org/gnu
-SF=http://switch.dl.sourceforge.net/sourceforge
+SF=http://heanet.dl.sourceforge.net/sourceforge
 VIDEOLAN=http://download.videolan.org/pub/videolan
 PERL_VERSION=5.8.8
 PERL_URL=http://ftp.funet.fi/pub/CPAN/src/perl-$(PERL_VERSION).tar.gz
@@ -123,35 +123,35 @@ PNG_URL=$(SF)/libpng/libpng-$(PNG_VERSION).tar.bz2
 GPGERROR_VERSION=1.3
 GPGERROR_URL=http://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-$(GPGERROR_VERSION).tar.gz
 #GPGERROR_URL=$(VIDEOLAN)/testing/contrib/libgpg-error-$(GPGERROR_VERSION).tar.gz
-GCRYPT_VERSION=1.2.2
+GCRYPT_VERSION=1.2.3
 GCRYPT_URL=http://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-$(GCRYPT_VERSION).tar.bz2
 #GCRYPT_URL=$(VIDEOLAN)/testing/contrib/libgcrypt-$(GCRYPT_VERSION).tar.bz2
-GNUTLS_VERSION=1.4.0
+GNUTLS_VERSION=1.6.1
 GNUTLS_URL=http://ftp.gnupg.org/gcrypt/gnutls/gnutls-$(GNUTLS_VERSION).tar.bz2
 DAAP_VERSION=0.4.0
 DAAP_URL=http://craz.net/programs/itunes/files/libopendaap-$(DAAP_VERSION).tar.bz2
 GLIB_VERSION=1.2.10
 GLIB_URL=ftp://ftp.gtk.org/pub/gtk/v1.2/glib-1.2.10.tar.gz
 LIBIDL_VERSION=0.6.8
-LIBIDL_URL=http://andrewtv.org/libIDL/libIDL-$(LIBIDL_VERSION).tar.gz
+LIBIDL_URL=$(VIDEOLAN)/testing/contrib/libIDL-$(LIBIDL_VERSION).tar.gz
 GECKO_SDK_MAC_URL=$(VIDEOLAN)/testing/contrib/gecko-sdk-ppc-macosx10.2-1.7.5.tar.gz
 GECKO_SDK_WIN32_URL=ftp://ftp.mozilla.org/pub/mozilla.org/mozilla/releases/mozilla1.8b1/gecko-sdk-i586-pc-msvc-1.8b1.zip
 LIBIDL_WIN32_BIN_URL=ftp://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/historic/vc6/libIDL-0.6.3-win32-bin.zip
 GLIB_WIN32_BIN_URL=ftp://ftp.mozilla.org/pub/mozilla.org/mozilla/libraries/win32/historic/vc6/glib-19990228.zip
 MOZILLA_VERSION=1.7.5
 MOZILLA_URL=http://ftp.mozilla.org/pub/mozilla.org/mozilla/releases/mozilla$(MOZILLA_VERSION)/source/mozilla-source-$(MOZILLA_VERSION).tar.bz2
-TWOLAME_VERSION=0.3.8
+TWOLAME_VERSION=0.3.9
 TWOLAME_URL=$(SF)/twolame/twolame-$(TWOLAME_VERSION).tar.gz
 X264_VERSION=20050609
 X264_URL=$(VIDEOLAN)/testing/contrib/x264-$(X264_VERSION).tar.gz
 JPEG_VERSION=6b
 JPEG_URL=$(VIDEOLAN)/contrib/jpeg-$(JPEG_VERSION).tar.gz
 TIFF_VERSION=3.8.2
-TIFF_URL=ftp://ftp.remotesensing.org/pub/libtiff/tiff-$(TIFF_VERSION).tar.gz
+TIFF_URL=ftp://ftp.remotesensing.org/libtiff/tiff-$(TIFF_VERSION).tar.gz
 SDL_VERSION=1.2.11
-SDL_URL=http://www.libsdl.org/release/SDL-$(SDL_VERSION).tar.gz
+SDL_URL=$(SF)/libsdl/SDL-$(SDL_VERSION).tar.gz
 SDL_IMAGE_VERSION=1.2.5
-SDL_IMAGE_URL=http://www.libsdl.org/projects/SDL_image/release/SDL_image-$(SDL_IMAGE_VERSION).tar.gz
+SDL_IMAGE_URL=$(SF)/libsdl/SDL_image-$(SDL_IMAGE_VERSION).tar.gz
 MUSE_VERSION=1.2.2
 #MUSE_URL=http://files.musepack.net/source/libmpcdec-$(MUSE_VERSION).tar.bz2
 MUSE_URL=http://files2.musepack.net/source/libmpcdec-$(MUSE_VERSION).tar.bz2

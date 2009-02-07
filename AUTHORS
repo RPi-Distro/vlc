@@ -1,4 +1,4 @@
-# $Id: AUTHORS 16773 2006-09-21 18:46:25Z hartman $
+# $Id: AUTHORS 19719 2007-04-06 18:03:48Z massiot $
 # 
 # The format of this file was inspired by the Linux kernel CREDITS file.
 # Authors are listed alphabetically.
@@ -305,6 +305,11 @@ N: Heiko Panther
 E: heiko.panther@web.de
 D: Mac OS X audio device selection framework
 S: Germany
+
+N: Vincent Penne
+E: ziggy at sashipa dot com
+D: teletext decoder
+S: France
 
 N: Eric Petit
 E: titer@videolan.org

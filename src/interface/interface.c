@@ -4,7 +4,7 @@
  * interface, such as command line.
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: interface.c 17040 2006-10-12 19:33:41Z xtophe $
+ * $Id: interface.c 20490 2007-06-09 15:36:51Z pdherbemont $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -492,6 +492,7 @@ static int AddIntfCallback( vlc_object_t *p_this, char const *psz_cmd,
 - (void)terminate: (id)sender
 {
     o_vlc->b_die = VLC_TRUE;
+    [super terminate: sender];
 }
 
 @end

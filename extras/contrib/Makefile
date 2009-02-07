@@ -2,7 +2,7 @@
 # Makefile : Build vlc-contrib files
 # ***************************************************************************
 # Copyright (C) 2003-2006 the VideoLAN team
-# $Id: Makefile 14760 2006-03-14 21:52:53Z xtophe $
+# $Id: Makefile 19337 2007-03-14 21:54:16Z xtophe $
 # 
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>
@@ -83,27 +83,29 @@ package-macosx: FORCE
 	(cd tmp; tar cf - .) | bzip2 -c > contrib-macosx.tar.bz2
 	rm -rf tmp
 
+DISTDIR = usr/win32
+
 package-win32: FORCE
 	@if test -d tmp; then \
 		echo "Move away ./tmp, it's in the way" ; \
 		exit 1 ; \
 	fi
-	mkdir -p tmp/usr/win32
+	mkdir -p tmp/$(DISTDIR)
 	tar cf - --dereference bin sbin include lib share/aclocal*\
 		share/autoconf* \
 		share/automake* share/gettext* gecko-sdk\
-		| (cd tmp/usr/win32; tar xpf -)
+		| (cd tmp/$(DISTDIR); tar xpf -)
 #kludge for live.com
 	mkdir -p tmp/usr/win32/live.com
 	for i in groupsock liveMedia UsageEnvironment BasicUsageEnvironment; do \
-		mkdir -p  tmp/usr/win32/live.com/$$i/include; \
-		cp -r src/live/$$i/include tmp/usr/win32/live.com/$$i; \
-		cp src/live/$$i/lib$${i}.a  tmp/usr/win32/live.com/$$i; \
+		mkdir -p  tmp/$(DISTDIR)/live.com/$$i/include; \
+		cp -r src/live/$$i/include tmp/$(DISTDIR)/live.com/$$i; \
+		cp src/live/$$i/lib$${i}.a  tmp/$(DISTDIR)/live.com/$$i; \
 	done;
-	./change_prefix.sh tmp $(PREFIX) /usr/win32
+	./change_prefix.sh tmp $(PREFIX) /$(DISTDIR)
 #	Klugy kludge	
-	(cd tmp/usr/win32/bin; rm -f *.exe; chmod a+x *)
-	(cd tmp; tar cf - usr/win32/) | bzip2 -c > contrib-`date +%Y%m%d`-win32-bin-gcc-`$(CC) --version|head -n 1|cut -f 3 -d ' '`-only.tar.bz2
+	(cd tmp/$(DISTDIR)/bin; rm -f *.exe; chmod a+x *)
+	(cd tmp; tar cf - $(DISTDIR)) | bzip2 -c > contrib-`date +%Y%m%d`-win32-bin-gcc-`$(CC) --version|head -n 1|cut -f 3 -d ' '`-only.tar.bz2
 	rm -rf tmp
 FORCE:
 
