@@ -2,7 +2,7 @@
  * avi.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: avi.c 17427 2006-11-02 20:27:24Z hartman $
+ * $Id: 4c6f282c2b7e320b8700142bfacd7a8f988ef485 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

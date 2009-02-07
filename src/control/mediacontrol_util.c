@@ -2,7 +2,7 @@
  * util.c: Utility functions and exceptions management
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: mediacontrol_util.c 14953 2006-03-28 20:29:28Z zorglub $
+ * $Id$
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *
@@ -247,9 +247,9 @@ mediacontrol_PlaylistSeq__free( mediacontrol_PlaylistSeq* ps )
         int i;
         for( i = 0 ; i < ps->size ; i++ )
             free( ps->data[i] );
+        free( ps->data );
+        free( ps );
     }
-    free( ps->data );
-    free( ps );
 }
 
 mediacontrol_Exception*

@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: live555.cpp 25258 2008-02-22 11:02:10Z thresh $
+ * $Id: 3c75243cc80454fce534bfe74fecb6daf49d31fa $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

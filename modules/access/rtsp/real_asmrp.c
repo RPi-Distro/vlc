@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: real_asmrp.c 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: fbd2d8826aaeae4cc04ebf03d3952befa1ecd86c $
  *
  * a parser for real's asm rules
  *

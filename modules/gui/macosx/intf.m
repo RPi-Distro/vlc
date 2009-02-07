@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: intf.m 24166 2008-01-07 14:55:36Z fkuehne $
+ * $Id: bce5cc202e55e3a6aabc62b8d1c542f1a497d02d $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>

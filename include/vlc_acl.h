@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
  * Copyright (C) 2005 the VideoLAN team
- * $Id: vlc_acl.h 14186 2006-02-07 16:24:30Z courmisch $
+ * $Id: 3c706a569c269e7e97f75afb58bbd33d0e0ac447 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

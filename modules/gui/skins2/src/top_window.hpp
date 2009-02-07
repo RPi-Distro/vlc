@@ -2,7 +2,7 @@
  * top_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: top_window.hpp 15481 2006-04-30 18:07:40Z asmax $
+ * $Id: a31bfee6901adaf6778408bfbf913eb29644c290 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

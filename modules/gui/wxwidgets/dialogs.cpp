@@ -2,7 +2,7 @@
  * dialogs.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: dialogs.cpp 22024 2007-09-15 09:58:59Z courmisch $
+ * $Id: 9cd3673682165da2cc2196dfad942c1256c08213 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -376,7 +376,7 @@ void DialogsProvider::OnOpenFileGeneric( wxCommandEvent& event )
     {
         p_file_generic_dialog->SetMessage( wxU(p_arg->psz_title) );
         p_file_generic_dialog->SetWildcard( wxU(p_arg->psz_extensions) );
-        p_file_generic_dialog->SetStyle( (p_arg->b_save ? wxSAVE : wxOPEN) |
+        p_file_generic_dialog->SetWindowStyle( (p_arg->b_save ? wxSAVE : wxOPEN) |
                                          (p_arg->b_multiple ? wxMULTIPLE:0) );
     }
 

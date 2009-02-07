@@ -2,7 +2,7 @@
  * shout.c: This module forwards vorbis streams to an icecast server
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: shout.c 23356 2007-11-26 18:44:59Z Trax $
+ * $Id: d4081ef35a0d2aadd348bdc5fde61d0090399e1e $
  *
  * Authors: Daniel Fischer <dan at subsignal dot org>
  *          Derk-Jan Hartman <hartman at videolan dot org>

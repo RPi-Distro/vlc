@@ -2,7 +2,7 @@
  * i420_ymga.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: i420_ymga.c 14019 2006-01-26 19:51:06Z sam $
+ * $Id: 835fb389188861627897f6e99fd3d3d25059e53a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

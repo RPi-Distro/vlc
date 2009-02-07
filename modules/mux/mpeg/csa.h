@@ -2,7 +2,7 @@
  * csa.h
  *****************************************************************************
  * Copyright (C) 2004 Laurent Aimar
- * $Id: csa.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 11c1ccb3383f80b40c5cc742a325e04ffcad63c7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

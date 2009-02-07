@@ -2,7 +2,7 @@
  * plugin.h:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: plugin.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: f6c3056cb414fd4b675a3b54e8b4ff43be914bdb $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *

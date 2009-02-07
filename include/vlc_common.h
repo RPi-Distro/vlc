@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: vlc_common.h 24380 2008-01-18 07:48:17Z jpsaman $
+ * $Id: 5160c2dcfb987a8ec8a75eae997c146175c33169 $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -550,10 +550,15 @@ typedef int ( * vlc_callback_t ) ( vlc_object_t *,      /* variable's object */
 #   define __MIN(a, b)   ( ((a) < (b)) ? (a) : (b) )
 #endif
 
-static int64_t GCD( int64_t a, int64_t b )
+static inline int64_t GCD( int64_t a, int64_t b )
 {
-    if( b ) return GCD( b, a % b );
-    else return a;
+    while( b )
+    {
+        int64_t c = a % b;
+        a = b;
+        b = c;
+    }
+    return a;
 }
 
 /* Dynamic array handling: realloc array, move data, increment position */

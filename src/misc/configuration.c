@@ -2,7 +2,7 @@
  * configuration.c management of the modules configuration
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: configuration.c 19493 2007-03-27 08:41:07Z jpsaman $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -975,7 +975,7 @@ int __config_LoadConfigFile( vlc_object_t *p_this, const char *psz_module_name )
  *****************************************************************************/
 int config_CreateDir( vlc_object_t *p_this, const char *psz_dirname )
 {
-    if( !psz_dirname && !*psz_dirname ) return -1;
+    if( !psz_dirname || !*psz_dirname ) return -1;
 
     if( utf8_mkdir( psz_dirname ) && ( errno != EEXIST ) )
     {
@@ -1157,6 +1157,7 @@ static int SaveConfigFile( vlc_object_t *p_this, const char *psz_module_name,
         msg_Warn( p_this, "could not open config file %s for writing",
                           psz_filename );
         free( psz_filename );
+        free( p_bigbuffer );
         vlc_list_release( p_list );
         vlc_mutex_unlock( &p_this->p_vlc->config_lock );
         return -1;

@@ -2,7 +2,7 @@
  * vlm_streampanel.hpp: Panel for a VLM stream
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: vlm_streampanel.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 9ef9a661614d2c09924a57e2ae8dc25f3c315772 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

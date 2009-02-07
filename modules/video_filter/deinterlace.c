@@ -2,7 +2,7 @@
  * deinterlace.c : deinterlacer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 the VideoLAN team
- * $Id: deinterlace.c 22978 2007-11-06 22:47:49Z Trax $
+ * $Id: 68aade2f54e0416a26cbb98302d73d644bb8ca20 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *
@@ -2137,7 +2137,8 @@ static picture_t *Deinterlace( filter_t *p_filter, picture_t *p_pic )
             RenderDiscard( p_vout, p_pic_dst, p_pic, 0 );
 #endif
             msg_Err( p_vout, "discarding lines is not supported yet" );
-            p_pic_dst->pf_release( p_pic_dst );
+            if( p_pic_dst->pf_release )
+                p_pic_dst->pf_release( p_pic_dst );
             return p_pic;
             break;
 
@@ -2154,7 +2155,8 @@ static picture_t *Deinterlace( filter_t *p_filter, picture_t *p_pic )
             RenderLinear( p_vout, pp_outpic[1], p_pic, 1 );
 #endif
             msg_Err( p_vout, "doubling the frame rate is not supported yet" );
-            p_pic_dst->pf_release( p_pic_dst );
+            if( p_pic_dst->pf_release )
+                p_pic_dst->pf_release( p_pic_dst );
             return p_pic;
             break;
 
@@ -2176,8 +2178,8 @@ static picture_t *Deinterlace( filter_t *p_filter, picture_t *p_pic )
     p_pic_dst->i_nb_fields = p_pic->i_nb_fields;
     p_pic_dst->b_progressive = VLC_TRUE;
     p_pic_dst->b_top_field_first = p_pic->b_top_field_first;
-
-    p_pic->pf_release( p_pic );
+    if( p_pic->pf_release )
+        p_pic->pf_release( p_pic );
     return p_pic_dst;
 }
 

@@ -5,7 +5,7 @@
  * case by optimized functions.
  *****************************************************************************
  * Copyright (C) 1999, 2000 the VideoLAN team
- * $Id: i420_rgb_c.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *

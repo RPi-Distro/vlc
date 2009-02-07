@@ -2,7 +2,7 @@
  * streamdata.h: streaming/transcoding data
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: streamdata.h 14671 2006-03-08 09:47:45Z zorglub $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

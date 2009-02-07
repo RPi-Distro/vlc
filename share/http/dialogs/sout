@@ -4,7 +4,7 @@ vim:syntax=html
 <  sout: VLC media player web interface - stream output dialog
 < - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
 <  Copyright (C) 2005-2006 the VideoLAN team
-<  $Id: sout 14835 2006-03-20 01:32:11Z dionoea $
+<  $Id$
 < 
 <  Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
 < 

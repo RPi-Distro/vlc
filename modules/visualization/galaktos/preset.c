@@ -2,7 +2,7 @@
  * preset.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: preset.c 18330 2006-12-08 18:25:54Z hartman $
+ * $Id: 64a4ce98cf6f9fb5c5eca6509254d5f6951db2d8 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

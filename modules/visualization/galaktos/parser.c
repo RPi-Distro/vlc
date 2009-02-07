@@ -2,7 +2,7 @@
  * parser.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: parser.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 573c63ac5a874a3dcaee20bb2b419dc6f3e161f5 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

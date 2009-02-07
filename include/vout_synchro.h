@@ -3,7 +3,7 @@
  * Only used in libmpeg2 decoder at the moment
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: vout_synchro.h 14121 2006-02-01 19:20:17Z courmisch $
+ * $Id: c86599d27da9aed07bce848e522e6d04f3c8e7f6 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Jean-Marc Dressler <polux@via.ecp.fr>

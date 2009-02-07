@@ -2,7 +2,7 @@
  * MediaControlView.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: MediaControlView.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 9989b088d347bb68af11050067f487c630c79547 $
  *
  * Authors: Tony Castley <tony@castley.net>
  *          Stephan Aßmus <stippi@yellowbites.com>

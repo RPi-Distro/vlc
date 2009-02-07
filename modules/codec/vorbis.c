@@ -2,7 +2,7 @@
  * vorbis.c: vorbis decoder/encoder/packetizer module making use of libvorbis.
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: vorbis.c 20449 2007-06-07 17:31:10Z courmisch $
+ * $Id: e5df13f70decfb0a4b8d15e86c63089929d8faf1 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

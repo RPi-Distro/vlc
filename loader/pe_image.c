@@ -1,5 +1,5 @@
 /*
- * $Id: pe_image.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: 13465a77cc168906e0e96136f34cdce06fa82d2d $
  *
  *  Copyright	1994	Eric Youndale & Erik Bos
  *  Copyright	1995	Martin von Löwis

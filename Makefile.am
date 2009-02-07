@@ -47,6 +47,10 @@ endif
 # Tell aclocal to use -I m4. Wonder if it really works.
 ACLOCAL_AMFLAGS = -I m4
 
+ChangeLog: Makefile.am
+	rm -f -- "$@"
+	ln -sf doc/ChangeLog-2008 "$@"
+
 ###############################################################################
 # MacOS X project
 ###############################################################################
@@ -247,7 +251,7 @@ vlc-config.in: vlc-config.in.in
 	touch $@
 
 CLEANFILES = $(BUILT_SOURCES_clean) stamp-builtin
-DISTCLEANFILES = $(BUILT_SOURCES_distclean) vlc-config.in compile
+DISTCLEANFILES = $(BUILT_SOURCES_distclean) vlc-config.in compile ChangeLog
 
 ###############################################################################
 # Building vlc

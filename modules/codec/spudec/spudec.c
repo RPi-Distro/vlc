@@ -2,7 +2,7 @@
  * spudec.c : SPU decoder thread
  *****************************************************************************
  * Copyright (C) 2000-2001, 2006 the VideoLAN team
- * $Id: spudec.c 15130 2006-04-07 16:33:51Z massiot $
+ * $Id: 26c053c3e266f8dc762a049a7da51f3e9fc640f4 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>

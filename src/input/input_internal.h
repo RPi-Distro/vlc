@@ -2,7 +2,7 @@
  * input_internal.h:
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: input_internal.h 16931 2006-10-03 09:04:50Z damienf $
+ * $Id: 8b16f1a1e090071b0fc03f40af448d5a5467ff87 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

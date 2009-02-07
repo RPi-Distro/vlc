@@ -2,7 +2,7 @@
  * theme_repository.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: theme_repository.cpp 15008 2006-03-31 19:24:33Z zorglub $
+ * $Id: 7cd5fbc9de99768859acef15ddfe3dce4a3978ce $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

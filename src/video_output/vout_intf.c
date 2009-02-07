@@ -2,7 +2,7 @@
  * vout_intf.c : video output interface
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: vout_intf.c 19594 2007-04-01 00:48:20Z hartman $
+ * $Id: 2eb4dace95571141c0ae9db43c43baa88fbf44ef $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -704,7 +704,8 @@ int vout_Snapshot( vout_thread_t *p_vout, picture_t *p_pic )
         p_subpic = spu_CreateSubpicture( p_vout->p_spu );
         if( p_subpic == NULL )
         {
-             p_pif->pf_release( p_pif );
+             if( p_pif->pf_release )
+                 p_pif->pf_release( p_pif );
              return VLC_EGENERIC;
         }
 
@@ -719,7 +720,8 @@ int vout_Snapshot( vout_thread_t *p_vout, picture_t *p_pic )
         p_subpic->p_region = spu_CreateRegion( p_vout->p_spu, &fmt_out );
         vout_CopyPicture( p_image->p_parent, &p_subpic->p_region->picture,
                           p_pif );
-        p_pif->pf_release( p_pif );
+        if( p_pif->pf_release )
+            p_pif->pf_release( p_pif );
 
         spu_DisplaySubpicture( p_vout->p_spu, p_subpic );
     }

@@ -2,7 +2,7 @@
  * video.hpp: Embedded video management
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: video.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: a38c49a3ec3cb8b5db92126cfe4779e9bdb9944a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

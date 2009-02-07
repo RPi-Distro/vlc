@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright (C) 2003, 2004 Rocky Bernstein (for the VideoLAN team)
- * $Id: vcdplayer.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: ac488f7d5140e604bc3456d5722132ce28135fe9 $
  *
  * Authors: Rocky Bernstein <rocky@panix.com> 
  *

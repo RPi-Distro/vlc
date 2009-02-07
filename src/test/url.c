@@ -2,7 +2,7 @@
  * url.c: Test for url encoding/decoding stuff
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: url.c 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: df8961704d8159a6f9e2857a4b2349fd22556b80 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

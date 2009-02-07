@@ -2,7 +2,7 @@
  * util.c : Utility functions for HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: util.c 18329 2006-12-08 18:07:54Z hartman $
+ * $Id: b20a5ae26470e372ec1993c3ec2281dc95d2de73 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>

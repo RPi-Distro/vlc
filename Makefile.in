@@ -616,7 +616,7 @@ ACLOCAL_AMFLAGS = -I m4
 ###############################################################################
 bin_SCRIPTS = vlc-config
 CLEANFILES = $(BUILT_SOURCES_clean) stamp-builtin
-DISTCLEANFILES = $(BUILT_SOURCES_distclean) vlc-config.in compile
+DISTCLEANFILES = $(BUILT_SOURCES_distclean) vlc-config.in compile ChangeLog
 vlc_SOURCES = src/vlc.c
 # Ugly kludge so that automake defines $(CXXLINK)
 #if HAVE_DARWIN
@@ -1322,6 +1322,10 @@ uninstall-info: uninstall-info-recursive
 	uninstall-local uninstall-noinst_share_vlc_win32_rcDATA \
 	uninstall-vlc_appDATA
 
+
+ChangeLog: Makefile.am
+	rm -f -- "$@"
+	ln -sf doc/ChangeLog-2008 "$@"
 
 dist-hook:
 	cd $(distdir) && srcdir=. $(SHELL) ./toolbox --update-vc

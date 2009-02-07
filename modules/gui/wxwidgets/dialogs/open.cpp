@@ -2,7 +2,7 @@
  * open.cpp : Open dialog box
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: open.cpp 18323 2006-12-07 22:40:39Z xtophe $
+ * $Id: d8956b79ab40c2fd8e136ab6159297fe91c6c854 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

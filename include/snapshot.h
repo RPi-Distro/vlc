@@ -1,6 +1,6 @@
 /*
  * Copyright (C) 2004the VideoLAN team
- *  $Id: snapshot.h 14956 2006-03-28 22:34:41Z xtophe $
+ *  $Id: 6f9d9cc09dcb6c25a8effd9bac6395c2cd4b39c1 $
  *
  * Authors: Olivier Aubert <oaubert 47 videolan d07 org>
  *

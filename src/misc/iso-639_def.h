@@ -2,7 +2,7 @@
  * iso_lang.h: languages codes and abbreviations
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: iso-639_def.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 30246625fb4662d3c1e10e62fde50828bc51be80 $
  *
  * This is used in iso_lang.cpp and is taken from the GNU glibc 2.2.5
  * tarball. It has been partially completed with native language names.

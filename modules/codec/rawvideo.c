@@ -2,7 +2,7 @@
  * rawvideo.c: Pseudo video decoder/packetizer for raw video data
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: rawvideo.c 19607 2007-04-01 01:28:22Z hartman $
+ * $Id: 9f9183b518a177b4846cacb1a7cb9e39380bbf99 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

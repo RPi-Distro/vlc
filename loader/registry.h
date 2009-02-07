@@ -11,7 +11,7 @@
 /*
  * Modified for use with MPlayer, detailed CVS changelog at
  * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
- * $Id: registry.h 11593 2005-06-28 18:02:01Z courmisch $
+ * $Id: fd275763cbac8737566d2b1bb733a6d71870068c $
  */
 
 #ifdef __cplusplus

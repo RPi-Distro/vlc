@@ -2,7 +2,7 @@
  * xosd.c : X On Screen Display interface
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: xosd.c 14903 2006-03-24 11:05:28Z zorglub $
+ * $Id: 0d805e54330b1a273f6d34ce8cafe982f5cdf95f $
  *
  * Authors: Loïc Minier <lool@videolan.org>
  *

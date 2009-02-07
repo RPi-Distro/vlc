@@ -2,7 +2,7 @@
  * vlc_md5.h: MD5 hash
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: vlc_md5.h 14186 2006-02-07 16:24:30Z courmisch $
+ * $Id: 5cd1f9f4cf6660b11302f6b31aaab144f527f8fc $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Sam Hocevar <sam@zoy.org>

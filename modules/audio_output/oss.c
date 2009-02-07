@@ -2,7 +2,7 @@
  * oss.c : OSS /dev/dsp module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2002 the VideoLAN team
- * $Id: oss.c 14997 2006-03-31 15:15:07Z fkuehne $
+ * $Id: 4d0df4a487b841dfca78df9bfd1ae5462654343c $
  *
  * Authors: Michel Kaempf <maxx@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>

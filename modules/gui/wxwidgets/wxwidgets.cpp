@@ -2,7 +2,7 @@
  * wxwidgets.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: wxwidgets.cpp 18107 2006-11-27 13:44:11Z md $
+ * $Id: 353291da139bce0d38d82db3f1d1dd83ce9589cc $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

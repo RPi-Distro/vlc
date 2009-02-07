@@ -2,7 +2,7 @@
  * b4s.c : B4S playlist format import
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: b4s.c 14790 2006-03-18 02:06:16Z xtophe $
+ * $Id: da134dafa0f200bf51dc34beecb1dada2b81b3a7 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

@@ -2,7 +2,7 @@
  * slider_manager.cpp : Manage an input slider
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: input_manager.cpp 20506 2007-06-11 11:37:38Z damienf $
+ * $Id: f48657a51255e44bddefba1ad0d3eec72944c3d5 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>

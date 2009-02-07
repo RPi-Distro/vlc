@@ -2,7 +2,7 @@
  * wince.cpp: WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: wince.cpp 13859 2006-01-04 22:29:53Z zorglub $
+ * $Id: 494c767c1d8ef8f02c44596a021f29f11bbea5d7 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *

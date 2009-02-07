@@ -2,7 +2,7 @@
  * svg.c : Put SVG on the video
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: svg.c 20516 2007-06-11 15:45:34Z Trax $
+ * $Id: 7283a305121fc0a7ea0c6491f4b29cb6077903e9 $
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *

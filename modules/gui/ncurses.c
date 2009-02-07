@@ -2,7 +2,7 @@
  * ncurses.c : NCurses plugin for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: ncurses.c 23953 2007-12-30 20:55:54Z funman $
+ * $Id: 714196a521fd9916bf22b717bfb0cce48b9f6cbc $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>

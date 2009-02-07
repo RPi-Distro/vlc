@@ -2,7 +2,7 @@
  * float32tou8.c : converter from float32 to unsigned 8 bits integer
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: float32tou8.c 14997 2006-03-31 15:15:07Z fkuehne $
+ * $Id: f2269f41197b45f9ddf1a7d5bad9e86c40ea1da8 $
  *
  * Authors: Xavier Maillard <zedek@fxgsproject.org>
  *

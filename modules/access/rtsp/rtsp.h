@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: rtsp.h 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 0b00d9567dae4f090904f464ea11ff4ccc3e337e $
  *
  * a minimalistic implementation of rtsp protocol,
  * *not* RFC 2326 compilant yet.

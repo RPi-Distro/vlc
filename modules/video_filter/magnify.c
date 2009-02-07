@@ -2,7 +2,7 @@
  * magnify.c : Magnify/Zoom interactive effect
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: magnify.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: 63401230ab8e2838b9fbacd3819114e139371a1e $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -288,7 +288,8 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
         copyimage( U_PLANE );
         copyimage( V_PLANE );
     #undef copyimage
-        p_converted->pf_release( p_converted );
+        if( p_converted->pf_release )
+            p_converted->pf_release( p_converted );
 
         /* white rectangle on visualization */
         v_w = p_oyp->i_pitch*ZOOM_FACTOR/(VIS_ZOOM*o_zoom);

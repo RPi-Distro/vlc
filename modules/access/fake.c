@@ -2,7 +2,7 @@
  * fake.c : Fake video input for VLC
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: fake.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: d24bdb2161448420b719bc6b39c74a6c5e45a200 $
  *
  * Author: Christophe Massiot <massiot@via.ecp.fr>
  *

@@ -3,7 +3,7 @@
  *                      with endianness change
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: s16tofloat32swab.c 14997 2006-03-31 15:15:07Z fkuehne $
+ * $Id: 608d6d2240394498c187a2769865baa5795949b5 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Henri Fallon <henri@videolan.org>

@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 VideoLAN (Centrale Réseaux) and its contributors
- * $Id: ts.c 24387 2008-01-18 13:26:53Z Trax $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -3244,7 +3244,8 @@ static void PMTCallBack( demux_t *p_demux, dvbpsi_pmt_t *p_pmt )
                     pid->es->fmt.i_cat = SPU_ES;
                     pid->es->fmt.i_codec = VLC_FOURCC( 't', 'e', 'l', 'x' );
                     pid->es->fmt.i_extra = p_dr->i_length;
-                    pid->es->fmt.p_extra = malloc( p_dr->i_length );
+                    pid->es->fmt.p_extra = p_dr->i_length ?
+                        malloc( p_dr->i_length ) : NULL;
                     if( pid->es->fmt.p_extra )
                         memcpy( pid->es->fmt.p_extra, p_dr->p_data,
                                 p_dr->i_length );

@@ -2,7 +2,7 @@
  * cmd_dialogs.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cmd_dialogs.hpp 16431 2006-08-30 14:30:06Z hartman $
+ * $Id: d8ad6521d41de22f00987ba3bbdf8ad789b38cd2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

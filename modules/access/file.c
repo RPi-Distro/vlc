@@ -2,7 +2,7 @@
  * file.c: file input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: file.c 17408 2006-11-01 20:54:53Z md $
+ * $Id: 5d7225fc8f4e85bc4e57849be0223bce47b7a31b $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>

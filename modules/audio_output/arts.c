@@ -2,7 +2,7 @@
  * arts.c : aRts module
  *****************************************************************************
  * Copyright (C) 2001-2002 the VideoLAN team
- * $Id: arts.c 14568 2006-03-02 13:35:43Z courmisch $
+ * $Id: 02ac12f37092485195e3fcf7e5bc2f993ab59e38 $
  *
  * Authors: Emmanuel Blindauer <manu@agat.net>
  *          Samuel Hocevar <sam@zoy.org>

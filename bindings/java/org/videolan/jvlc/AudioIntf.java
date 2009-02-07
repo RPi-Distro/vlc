@@ -8,7 +8,7 @@
  *
  * Created on 28-feb-2006
  * 
- * $Id: AudioIntf.java 17446 2006-11-04 09:43:22Z littlejohn $
+ * $Id$
  * 
  *
  * This program is free software; you can redistribute it

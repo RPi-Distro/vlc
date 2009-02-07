@@ -2,7 +2,7 @@
  * ipv6.c: IPv6 network abstraction layer
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: ipv6.c 18124 2006-11-28 10:37:07Z md $
+ * $Id$
  *
  * Authors: Alexis Guillard <alexis.guillard@bt.com>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -350,7 +350,6 @@ mldv1:
             if( psz_mif != NULL )
             {
                 int intf = if_nametoindex( psz_mif );
-                free( psz_mif  );
 
                 if( intf != 0 )
                 {
@@ -359,8 +358,9 @@ mldv1:
                     {
                         msg_Err( p_this, "%s as multicast interface: %s",
                                  psz_mif, strerror(errno) );
+                        free( psz_mif  );
                         close( i_handle );
-                        return 0;
+                        i_handle = -1;
                     }
                 }
                 else
@@ -368,8 +368,11 @@ mldv1:
                     msg_Err( p_this, "%s: bad IPv6 interface specification",
                              psz_mif );
                     close( i_handle );
-                    return 0;
+                    i_handle = -1;
                 }
+                free( psz_mif );
+                if( i_handle == -1 )
+                    return 0;
             }
         }
     }

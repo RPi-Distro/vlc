@@ -2,7 +2,7 @@
  * dump.c
  *****************************************************************************
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: dump.c 18330 2006-12-08 18:25:54Z hartman $
+ * $Id: b27d2300056c5e875f56959b9a6f2b1e4a361cc4 $
  *
  * Author: Rémi Denis-Courmont <rem # videolan,org>
  *

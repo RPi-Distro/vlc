@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: video_output.c 17428 2006-11-02 20:43:55Z hartman $
+ * $Id: 2fdac88dadc8803bbbb99a4c9b4036e067259aae $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

@@ -2,7 +2,7 @@
  * input_dummy.c: dummy input plugin, to manage "vlc:***" special options
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: input.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: e2aae6e6ab7ce75da06b7e87d0eeb1d19737ff78 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -100,6 +100,7 @@ int E_(OpenAccess)( vlc_object_t *p_this )
     p_access->p_sys = NULL;
 
     /* Force dummy demux plug-in */
+    free( p_access->psz_demux );
     p_access->psz_demux = strdup( "vlc" );
 
     return VLC_SUCCESS;

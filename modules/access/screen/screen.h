@@ -2,7 +2,7 @@
  * screen.h: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: screen.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 3ad778b0de31558bc51c217abf61e55d88f3ac04 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

@@ -2,7 +2,7 @@
  * macosx_dragdrop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: macosx_dragdrop.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

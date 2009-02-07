@@ -2,7 +2,7 @@
  * cmd_minimize.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cmd_minimize.cpp 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: 815e6f6c15b1ff2e7aa17308f49eee2335caf849 $
  *
  * Authors: Mohammed Adnène Trojette     <adn@via.ecp.fr>
  *

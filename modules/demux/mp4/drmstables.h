@@ -2,7 +2,7 @@
  * drmstables.h : AES/Rijndael block cipher and miscellaneous tables
  *****************************************************************************
  * Copyright (C) 2004, 2006 the VideoLAN team
- * $Id: drmstables.h 14097 2006-02-01 09:57:37Z sam $
+ * $Id$
  *
  * Author: Jon Lech Johansen <jon-vl@nanocrew.net>
  *

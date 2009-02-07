@@ -2,7 +2,7 @@
  * position.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: position.cpp 16778 2006-09-21 23:56:47Z hartman $
+ * $Id: 5529fc7b5cb224edab9f8ad61b1ebed699034115 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

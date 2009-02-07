@@ -2,7 +2,7 @@
  * vlm_panel.cpp: VLM Panel
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: vlm_panel.cpp 17953 2006-11-22 14:24:13Z md $
+ * $Id: 8305505fb3bd31e082cba0bf9165418b74c80422 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

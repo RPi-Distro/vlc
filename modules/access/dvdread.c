@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: dvdread.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: cb60704efd3ea02bb7c8d4d0542b3f67bcd5f8b0 $
  *
  * Authors: St�hane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

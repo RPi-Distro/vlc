@@ -2,7 +2,7 @@
  * playlist.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: playlist.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: e2174cd8cb17ef0ded23e1348fd4cd7c86b9f012 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>

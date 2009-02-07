@@ -2,7 +2,7 @@
  * old.c : Old playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: old.c 16994 2006-10-08 14:40:02Z jpsaman $
+ * $Id: 9b9754e379d0619131fb309ee958042866a8be2f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -105,7 +105,7 @@ static int Demux( demux_t *p_demux)
                       PLAYLIST_END );
 
         free( psz_line );
-        LocaleFree( psz_line );
+        LocaleFree( psz_unicode );
     }
 
     p_demux->b_die = VLC_TRUE;

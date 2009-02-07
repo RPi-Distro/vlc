@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004 - 2005 the VideoLAN team
- * $Id: rc.c 22024 2007-09-15 09:58:59Z courmisch $
+ * $Id$
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -141,8 +141,11 @@ void __msg_rc( intf_thread_t *p_intf, const char *psz_fmt, ... )
 
     if( p_intf->p_sys->i_socket == -1 )
     {
-        utf8_vfprintf( stdout, psz_fmt, args );
-        printf( "\r\n" );
+        if( !p_intf->p_sys->pi_socket_listen )
+        {
+            utf8_vfprintf( stdout, psz_fmt, args );
+            printf( "\r\n" );
+        }
     }
     else
     {
@@ -2162,14 +2165,14 @@ static int Menu( vlc_object_t *p_this, char const *psz_cmd,
 {
     intf_thread_t *p_intf = (intf_thread_t*)p_this;
     playlist_t    *p_playlist = NULL;
+    int i_error = VLC_SUCCESS;
     vlc_value_t val;
-    int i_error = VLC_EGENERIC;
 
     if ( !*newval.psz_string )
     {
         msg_rc( _("Please provide one of the following parameters:") );
         msg_rc( "[on|off|up|down|left|right|select]" );
-        return i_error;
+        return VLC_EGENERIC;
     }
 
     p_playlist = vlc_object_find( p_this, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
@@ -2190,9 +2193,12 @@ static int Menu( vlc_object_t *p_this, char const *psz_cmd,
     vlc_object_release( p_playlist );
 
     val.psz_string = strdup( newval.psz_string );
+    if( !val.psz_string )
+        return VLC_ENOMEM;
     if( !strcmp( val.psz_string, "on" ) || !strcmp( val.psz_string, "show" ))
         osd_MenuShow( p_this );
-    else if( !strcmp( val.psz_string, "off" ) || !strcmp( val.psz_string, "hide" ) )
+    else if( !strcmp( val.psz_string, "off" )
+          || !strcmp( val.psz_string, "hide" ) )
         osd_MenuHide( p_this );
     else if( !strcmp( val.psz_string, "up" ) )
         osd_MenuUp( p_this );
@@ -2208,12 +2214,10 @@ static int Menu( vlc_object_t *p_this, char const *psz_cmd,
     {
         msg_rc( _("Please provide one of the following parameters:") );
         msg_rc( "[on|off|up|down|left|right|select]" );
-        if( val.psz_string ) free( val.psz_string );
-            return i_error;
+        i_error = VLC_EGENERIC;
     }
 
-    i_error = VLC_SUCCESS;
-    if( val.psz_string ) free( val.psz_string );
+    free( val.psz_string );
     return i_error;
 }
 
@@ -2296,6 +2300,13 @@ vlc_bool_t ReadCommand( intf_thread_t *p_intf, char *p_buffer, int *pi_size )
         return VLC_FALSE;
     }
 #endif
+
+    if( p_intf->p_sys->i_socket == -1 && p_intf->p_sys->pi_socket_listen )
+    {
+        /* Do not try to read stdin if we are listening on a socket */
+        msleep( INTF_IDLE_SLEEP );
+        return VLC_FALSE;
+    }
 
     while( !p_intf->b_die && *pi_size < MAX_LINE_LENGTH &&
            (i_read = net_ReadNonBlock( p_intf, p_intf->p_sys->i_socket == -1 ?

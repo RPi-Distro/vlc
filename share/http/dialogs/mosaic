@@ -4,7 +4,7 @@ vim:syntax=html
 <  mosaic: VLC media player web interface - mosaic wizard
 < - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
 <  Copyright (C) 2005-2006 the VideoLAN team
-<  $Id: mosaic 14837 2006-03-20 01:51:45Z dionoea $
+<  $Id$
 < 
 <  Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
 < 

@@ -2,7 +2,7 @@
  * view.c : Playlist views functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: view.c 17363 2006-10-30 07:57:26Z jpsaman $
+ * $Id: e6eb7c756d8f027f9ae5dc601ed90b7b47800014 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

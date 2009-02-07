@@ -2,7 +2,7 @@
  * win32_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: win32_factory.cpp 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: e4885b31e2af1b6698891d161b10ff705c48c80c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

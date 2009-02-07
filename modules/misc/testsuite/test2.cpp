@@ -2,7 +2,7 @@
  * test2.cpp : Empty C++ module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id: test2.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 96930e475cd59c1b1f89e44a2f939e49651dd15f $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

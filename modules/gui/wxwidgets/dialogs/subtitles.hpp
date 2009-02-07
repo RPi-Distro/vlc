@@ -2,7 +2,7 @@
  * subtitles.hpp: private wxWindows interface description
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: subtitles.hpp 18323 2006-12-07 22:40:39Z xtophe $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

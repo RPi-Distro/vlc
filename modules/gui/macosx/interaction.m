@@ -2,7 +2,7 @@
  * interaction.h: Mac OS X interaction dialogs
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: interaction.m 23115 2007-11-18 00:22:06Z pdherbemont $
+ * $Id: 9a05f8a6d83e9bea257d656253c1954d479bfb48 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Kühne <fkuehne at videolan dot org>

@@ -2,7 +2,7 @@
  * skin_main.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: skin_main.cpp 18266 2006-12-04 15:15:52Z damienf $
+ * $Id: f1093f6e7bc7cc2183a56297539abe9fc3d3e6de $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

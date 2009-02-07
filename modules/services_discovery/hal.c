@@ -2,7 +2,7 @@
  * hal.c :  HAL interface module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: hal.c 17886 2006-11-20 04:01:08Z funman $
+ * $Id: 41537cd2f299d24c065aba9cb0cdf53f7e9e1ce1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

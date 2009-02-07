@@ -2,7 +2,7 @@
  * http.c
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: http.c 19592 2007-04-01 00:31:04Z hartman $
+ * $Id: ecd1ea3677d7a101ac6004b6356502223a7b1ffd $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jon Lech Johansen <jon@nanocrew.net>

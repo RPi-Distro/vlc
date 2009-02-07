@@ -2,7 +2,7 @@
  * playlist_manager.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: playlist_manager.cpp 14345 2006-02-17 11:07:57Z courmisch $
+ * $Id: c7b1ea0264edf10d334e591bd0321f04941d4cdb $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *          Clément Stenac <zorglub@videolan.org>

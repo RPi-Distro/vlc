@@ -2,7 +2,7 @@
  * adjust.c : Contrast/Hue/Saturation/Brightness video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 the VideoLAN team
- * $Id: adjust.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: fd425473331c86e301e44971995b2c9e264b5e90 $
  *
  * Authors: Simon Latapie <garf@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * hotkeys.c: Hotkey handling for vlc
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: hotkeys.c 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: e1c76e7f745db9b07ce20a903319b41c400674ca $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>

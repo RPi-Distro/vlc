@@ -2,7 +2,7 @@
  * filter.c: video scaling module using the swscale library
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: filter.c 14977 2006-03-30 08:40:51Z zorglub $
+ * $Id: e3c50ecacc4fc2d77bc3f91dd67d06ff6aa9d06b $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -304,7 +304,8 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     p_pic_dst->b_progressive = p_pic->b_progressive;
     p_pic_dst->b_top_field_first = p_pic->b_top_field_first;
 
-    p_pic->pf_release( p_pic );
+    if( p_pic->pf_release )
+        p_pic->pf_release( p_pic );
     return p_pic_dst;
 }
 

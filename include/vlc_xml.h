@@ -2,7 +2,7 @@
  * xml.h: XML abstraction layer
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: vlc_xml.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 4b6d4d12a83f35e7f45035909ee2d4c18fe74fe6 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *

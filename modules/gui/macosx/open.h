@@ -2,7 +2,7 @@
  * open.h: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: open.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 09794603f1ae9ae898b2e034fea0581de44d9854 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>

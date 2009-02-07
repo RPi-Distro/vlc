@@ -2,7 +2,7 @@
  * rtp.c: rtp stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: rtp.c 22023 2007-09-15 09:51:34Z courmisch $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -525,7 +525,7 @@ static int Open( vlc_object_t *p_this )
 	   a= source-filter: we need our source address
            a= x-plgroup: (missing)
            RTP packets need to get the correct src IP address  */
-        if( (ipv == 4)
+        if( (ipv == '4')
          && net_AddressIsMulticast( (vlc_object_t *)p_stream, p_sys->psz_destination ) )
         {
             snprintf( psz_ttl, sizeof( psz_ttl ), "/%d", p_sys->i_ttl );
@@ -843,7 +843,7 @@ static char *SDPGenerate( const sout_stream_t *p_stream,
 
     p += sprintf( p, "c=IN IP%c %s", ipv, psz_destination );
 
-    if( ( ipv == 4 )
+    if( ( ipv == '4' )
      && net_AddressIsMulticast( (vlc_object_t *)p_stream, psz_destination ) )
     {
         /* Add the deprecated TTL field if it is an IPv4 multicast address */

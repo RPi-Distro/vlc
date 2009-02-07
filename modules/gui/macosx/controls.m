@@ -2,7 +2,7 @@
  * controls.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: controls.m 23115 2007-11-18 00:22:06Z pdherbemont $
+ * $Id: e97890c1aadebcef305e8d4836ce21dffd77f3f2 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>

@@ -2,7 +2,7 @@
  * s16tofloat32.c : converter from signed 16 bits integer to float32
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: s16tofloat32.c 14997 2006-03-31 15:15:07Z fkuehne $
+ * $Id: 2fd45a94a13204b970e5ada8fde5199a62f96767 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

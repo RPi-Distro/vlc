@@ -2,7 +2,7 @@
  * h264.c: h264/avc video packetizer
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: h264.c 24384 2008-01-18 10:13:07Z jpsaman $
+ * $Id: d83248eaa7f6b7d3b1dcb1862a6a36e5a45863cd $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -219,25 +219,37 @@ static int Open( vlc_object_t *p_this )
         i_sps = (*p++)&0x1f;
         for( i = 0; i < i_sps; i++ )
         {
-            int i_length = GetWBE( p );
-            block_t *p_sps = nal_get_annexeb( p_dec, p + 2, i_length );
-
+            uint16_t i_length = GetWBE( p ); p += 2;
+            if( i_length >
+                (uint8_t*)p_dec->fmt_in.p_extra + p_dec->fmt_in.i_extra - p )
+            {
+                return VLC_EGENERIC;
+            }
+            block_t *p_sps = nal_get_annexeb( p_dec, p, i_length );
+            if( !p_sps )
+                return VLC_EGENERIC;
             p_sys->p_sps = block_Duplicate( p_sps );
             p_sps->i_pts = p_sps->i_dts = mdate();
             ParseNALBlock( p_dec, p_sps );
-            p += 2 + i_length;
+            p += i_length;
         }
         /* Read PPS */
         i_pps = *p++;
         for( i = 0; i < i_pps; i++ )
         {
-            int i_length = GetWBE( p );
-            block_t *p_pps = nal_get_annexeb( p_dec, p + 2, i_length );
-
+            uint16_t i_length = GetWBE( p ); p += 2;
+            if( i_length >
+                (uint8_t*)p_dec->fmt_in.p_extra + p_dec->fmt_in.i_extra - p )
+            {
+                return VLC_EGENERIC;
+            }
+            block_t *p_pps = nal_get_annexeb( p_dec, p, i_length );
+            if( !p_pps )
+                return VLC_EGENERIC;
             p_sys->p_pps = block_Duplicate( p_pps );
             p_pps->i_pts = p_pps->i_dts = mdate();
             ParseNALBlock( p_dec, p_pps );
-            p += 2 + i_length;
+            p += i_length;
         }
         msg_Dbg( p_dec, "avcC length size=%d, sps=%d, pps=%d",
                  p_sys->i_avcC_length_size, i_sps, i_pps );
@@ -443,18 +455,23 @@ static block_t *PacketizeAVC1( decoder_t *p_dec, block_t **pp_block )
             i_size = (i_size << 8) | (*p++);
         }
 
-        if( i_size > 0 )
+        if( i_size <= 0 ||
+            i_size > ( p_block->p_buffer + p_block->i_buffer - p ) )
         {
-            block_t *p_part = nal_get_annexeb( p_dec, p, i_size );
+            msg_Err( p_dec, "Broken frame : size %d is too big", i_size );
+            break;
+        }
 
-            p_part->i_dts = p_block->i_dts;
-            p_part->i_pts = p_block->i_pts;
+        block_t *p_part = nal_get_annexeb( p_dec, p, i_size );
+        if( !p_part )
+            break;
+        p_part->i_dts = p_block->i_dts;
+        p_part->i_pts = p_block->i_pts;
 
-            /* Parse the NAL */
-            if( ( p_pic = ParseNALBlock( p_dec, p_part ) ) )
-            {
-                block_ChainAppend( &p_ret, p_pic );
-            }
+        /* Parse the NAL */
+        if( ( p_pic = ParseNALBlock( p_dec, p_part ) ) )
+        {
+            block_ChainAppend( &p_ret, p_pic );
         }
         p += i_size;
     }
@@ -468,6 +485,7 @@ static block_t *nal_get_annexeb( decoder_t *p_dec, uint8_t *p, int i_size )
     block_t *p_nal;
 
     p_nal = block_New( p_dec, 4 + i_size );
+    if( !p_nal ) return NULL;
 
     /* Add start code */
     p_nal->p_buffer[0] = 0x00;

@@ -2,7 +2,7 @@
  * glide.c : 3dfx Glide plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: glide.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 380e1bf0b645093da30ffd2178d9bbea4ef6092e $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

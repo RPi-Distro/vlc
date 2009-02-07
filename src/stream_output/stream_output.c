@@ -2,7 +2,7 @@
  * stream_output.c : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: stream_output.c 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: e0072f910c8d913573adc7836a2b893d66ae9c27 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -209,6 +209,7 @@ sout_packetizer_input_t *sout_InputNew( sout_instance_t *p_sout,
 
     /* *** create a packetizer input *** */
     p_input         = malloc( sizeof( sout_packetizer_input_t ) );
+    if( !p_input )  return NULL;
     p_input->p_sout = p_sout;
     p_input->p_fmt  = p_fmt;
 

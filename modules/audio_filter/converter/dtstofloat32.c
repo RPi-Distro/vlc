@@ -4,7 +4,7 @@
  *   (http://developers.videolan.org/libdca.html).
  *****************************************************************************
  * Copyright (C) 2001, 2002libdca the VideoLAN team
- * $Id: dtstofloat32.c 15172 2006-04-11 13:17:20Z zorglub $
+ * $Id: 1d7c79a1fffe22d84b6d17467c7e8eb5f5ee6864 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *

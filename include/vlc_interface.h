@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000 the VideoLAN team
- * $Id: vlc_interface.h 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: 4a8937c814b0b42eefe1e58c12b656bf2d1ac687 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *

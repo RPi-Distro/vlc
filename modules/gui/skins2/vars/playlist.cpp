@@ -2,7 +2,7 @@
  * playlist.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: playlist.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 80d77d78096018f4df4bce5d65583eeebffc03dc $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

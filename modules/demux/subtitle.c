@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: subtitle.c 23855 2007-12-24 16:42:08Z courmisch $
+ * $Id: 6990562ea05f756333a9a79d2d41a4dcc407331c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -685,7 +685,8 @@ static void TextPreviousLine( text_t *txt )
 /*****************************************************************************
  * Specific Subtitle function
  *****************************************************************************/
-#define MAX_LINE 8192
+#define MAX_LINE 8192 /* must store the null terminator */
+#define MAX_LINE_STR "8191" /* used in *scanf() regexps */
 static int ParseMicroDvd( demux_t *p_demux, subtitle_t *p_subtitle )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
@@ -722,9 +723,9 @@ next:
         i_start = 0;
         i_stop  = 0;
 
-        memset( buffer_text, '\0', MAX_LINE );
-        if( sscanf( s, "{%d}{}%8192[^\r\n]", &i_start, buffer_text ) == 2 ||
-            sscanf( s, "{%d}{%d}%8192[^\r\n]", &i_start, &i_stop, buffer_text ) == 3)
+        memset( buffer_text, '\0', MAX_LINE + 1 );
+        if( sscanf( s, "{%d}{}%"MAX_LINE_STR"[^\r\n]", &i_start, buffer_text ) == 2 ||
+            sscanf( s, "{%d}{%d}%"MAX_LINE_STR"[^\r\n]", &i_start, &i_stop, buffer_text ) == 3)
         {
             break;
         }
@@ -981,7 +982,7 @@ static int  ParseSSA( demux_t *p_demux, subtitle_t *p_subtitle )
          * Dialogue: Layer#,0:02:40.65,0:02:41.79,Wolf main,Cher,0000,0000,0000,,Et les enregistrements de ses ondes delta ?
          */
         if( sscanf( s,
-                    "Dialogue: %[^,],%d:%d:%d.%d,%d:%d:%d.%d,%81920[^\r\n]",
+                    "Dialogue: %"MAX_LINE_STR"0[^,],%d:%d:%d.%d,%d:%d:%d.%d,%"MAX_LINE_STR"0[^\r\n]",
                     buffer_text2,
                     &h1, &m1, &s1, &c1,
                     &h2, &m2, &s2, &c2,
@@ -1074,8 +1075,8 @@ static int  ParseVplayer( demux_t *p_demux, subtitle_t *p_subtitle )
 
         i_start = 0;
 
-        memset( buffer_text, '\0', MAX_LINE );
-        if( sscanf( p, "%d:%d:%d%[ :]%81920[^\r\n]", &h, &m, &s, &c, buffer_text ) == 5 )
+        memset( buffer_text, '\0', MAX_LINE + 1 );
+        if( sscanf( p, "%d:%d:%d%[ :]%"MAX_LINE_STR"0[^\r\n]", &h, &m, &s, &c, buffer_text ) == 5 )
         {
             i_start = ( (int64_t)h * 3600*1000 +
                         (int64_t)m * 60*1000 +

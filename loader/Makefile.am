@@ -3,7 +3,7 @@
 # from VLC trunk
 #
 # by Rémi Denis-Courmont <rem # videolan.org>
-# $Id: Makefile.am 14921 2006-03-25 14:43:43Z courmisch $
+# $Id$
 #
 # All other files in this directory (and subdirectories) are copyrighted
 # by their respective owner(s).

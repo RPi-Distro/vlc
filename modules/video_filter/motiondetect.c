@@ -2,7 +2,7 @@
  * motiondetect.c : Motion detect video effect plugin for vlc
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: motiondetect.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: 907f13b703890d19e457d708f5db36b6948a694e $
  *
  * Authors: Jérôme Decoodt <djc@videolan.org>
  *

@@ -2,7 +2,7 @@
  * preferences.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: preferences.cpp 18150 2006-11-29 13:32:25Z courmisch $
+ * $Id: e1877d641b65d55b2b412045166ffbbf62ea61a7 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

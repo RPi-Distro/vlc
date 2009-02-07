@@ -2,7 +2,7 @@
 # Makefile : Build vlc-contrib files
 # ***************************************************************************
 # Copyright (C) 2003-2006 the VideoLAN team
-# $Id: Makefile 19337 2007-03-14 21:54:16Z xtophe $
+# $Id$
 # 
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>

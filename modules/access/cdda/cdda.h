@@ -2,7 +2,7 @@
  * cdda.h : CD-DA input module header for vlc using libcdio.
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cdda.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: d6a5b7843dcf80b738f8c445a33fce2e83365a67 $
  *
  * Author: Rocky Bernstein <rocky@panix.com>
  *
@@ -71,13 +71,6 @@
 #define CdIo_t CdIo
 #endif    
 
-typedef enum {
-  paranoia_none    = 0, /* Note: We make use of 0 as being the same as false */
-  paranoia_overlap = 1, 
-  paranoia_full    = 2
-} paranoia_mode_t;
-
-  
 /*****************************************************************************
  * cdda_data_t: CD audio information
  *****************************************************************************/

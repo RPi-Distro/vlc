@@ -2,7 +2,7 @@
  * distort.c : Misc video effects plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: distort.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: 5a347bc784e6f61e1cfa17e975c87c039e3f76ea $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -1037,8 +1037,8 @@ static void DistortPsychedelic( vout_thread_t *p_vout, picture_t *p_inpic,
     copyimage( U_PLANE, 1 );
     copyimage( V_PLANE, 1 );
 #undef copyimage
-
-    p_converted->pf_release( p_converted );
+    if( p_converted->pf_release )
+        p_converted->pf_release( p_converted );
 
     p_vout->p_sys->x += p_vout->p_sys->xinc;
     p_vout->p_sys->y += p_vout->p_sys->yinc;

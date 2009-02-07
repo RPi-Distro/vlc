@@ -2,7 +2,7 @@
  * variables.h: variables handling
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: variables.h 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: 50861490d36fd832474854e05d543143a82d46fa $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@netcourrier.com>

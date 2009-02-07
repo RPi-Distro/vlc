@@ -2,7 +2,7 @@
  * vlc_image.h : wrapper for image reading/writing facilities
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: vlc_image.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 6b27b730b266b5ef860f7dfd42cc1337b8d28c48 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

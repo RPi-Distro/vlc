@@ -2,7 +2,7 @@
  * demux.c: demux functions for dvdplay.
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: demux.c 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: 9b3b295ffb821855773267ae31624c228cfdf959 $
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *

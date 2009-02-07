@@ -2,7 +2,7 @@
  * intf_eject.h: CD/DVD-ROM ejection handling functions
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: intf_eject.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: d644e609fcd79fc61de0b75fb67105da94accfff $
  *
  * Author: Julien Blache <jb@technologeek.org>
  *

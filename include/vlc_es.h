@@ -2,7 +2,7 @@
  * vlc_es.h: Elementary stream formats descriptions
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: vlc_es.h 20443 2007-06-07 16:55:08Z courmisch $
+ * $Id: 9130f27943f6c304a2e779a8a86246fc70ea6178 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

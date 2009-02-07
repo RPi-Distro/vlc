@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: mkv.cpp 25227 2008-02-21 09:16:00Z Trax $
+ * $Id: 90b8432b8fe10cde6c5bf933abf80c0beb39f682 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -5845,7 +5845,7 @@ bool dvd_chapter_codec_c::Enter()
             binary *p_data = (*index)->GetBuffer();
             size_t i_size = *p_data++;
             // avoid reading too much from the buffer
-            i_size = min( i_size, ((*index)->GetSize() - 1) >> 3 );
+            i_size = __MIN( i_size, ((*index)->GetSize() - 1) >> 3 );
             for ( ; i_size > 0; i_size--, p_data += 8 )
             {
                 msg_Dbg( &sys.demuxer, "Matroska DVD enter command" );
@@ -5868,7 +5868,7 @@ bool dvd_chapter_codec_c::Leave()
             binary *p_data = (*index)->GetBuffer();
             size_t i_size = *p_data++;
             // avoid reading too much from the buffer
-            i_size = min( i_size, ((*index)->GetSize() - 1) >> 3 );
+            i_size = __MIN( i_size, ((*index)->GetSize() - 1) >> 3 );
             for ( ; i_size > 0; i_size--, p_data += 8 )
             {
                 msg_Dbg( &sys.demuxer, "Matroska DVD leave command" );

@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 the VideoLAN team
- * $Id: mp4.c 24243 2008-01-11 20:34:57Z Trax $
+ * $Id: 31e8f2e50cbdee424ca4f830c8a4a187ef3b508a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>

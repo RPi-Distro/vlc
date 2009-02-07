@@ -3,7 +3,7 @@
  *  Uses the low quality "nearest neighbour" algorithm.
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: scale.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: fde9f41689fe615649e0431f705af1fc53ecffbd $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -154,6 +154,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     p_pic_dst->b_progressive = p_pic->b_progressive;
     p_pic_dst->b_top_field_first = p_pic->b_top_field_first;
 
-    p_pic->pf_release( p_pic );
+    if( p_pic->pf_release )
+        p_pic->pf_release( p_pic );
     return p_pic_dst;
 }

@@ -2,7 +2,7 @@
  * bits.h
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: bits.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 2db836bd49b79a7a82d44860161bde3c836e6c9d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

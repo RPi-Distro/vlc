@@ -2,7 +2,7 @@
  * cdrom_internals.h: cdrom tools private header
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: cdrom_internals.h 14422 2006-02-20 12:21:15Z hartman $
+ * $Id: a066e8cde34a1c71e5a70c294be41aa574714c32 $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>

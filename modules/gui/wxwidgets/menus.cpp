@@ -2,7 +2,7 @@
  * menus.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: menus.cpp 17050 2006-10-13 00:07:54Z hartman $
+ * $Id: 18d1328d2b3ceaeefc33d87c83907a05ecfd06a1 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

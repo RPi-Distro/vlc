@@ -2,7 +2,7 @@
  * output.m: MacOS X Output Dialog
  *****************************************************************************
  * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: output.m 14827 2006-03-19 13:13:09Z bigben $
+ * $Id: f28df5442ffec6d996da86c7f09a0fe3ef1368fb $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>

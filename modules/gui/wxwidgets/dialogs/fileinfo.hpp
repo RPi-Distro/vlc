@@ -2,7 +2,7 @@
  * fileinfo.hpp: private wxWindows interface description
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: fileinfo.hpp 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: f3e20c75c9ecfa45c7b38548a0de384868d93060 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

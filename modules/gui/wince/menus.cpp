@@ -2,7 +2,7 @@
  * menus.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: menus.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 0c9f50f61449a29f6503810ed7aa0f8d63f6db3a $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>

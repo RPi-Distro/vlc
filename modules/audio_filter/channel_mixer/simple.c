@@ -2,7 +2,7 @@
  * simple.c : simple channel mixer plug-in (only 7/7.1/5/5.1 -> Stereo for now)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: simple.c 25233 2008-02-21 10:19:49Z Trax $
+ * $Id: 8cbd3d2e714c448c8dadf821de31d5d8cb8d2517 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

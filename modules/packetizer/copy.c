@@ -2,7 +2,7 @@
  * copy.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: copy.c 14918 2006-03-25 12:54:27Z fkuehne $
+ * $Id: d4128fe43398d297c8f5c89b874f21b00e77ba87 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

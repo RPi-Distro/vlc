@@ -2,7 +2,7 @@
  * dts.c : raw DTS stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: dts.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 01206f5b251d5561d4480d8d27ebcb897b46987f $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

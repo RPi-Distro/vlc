@@ -2,7 +2,7 @@
  * VideoWindow.h: BeOS video window class prototype
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: VideoWindow.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: da7b9c9fea4fe6d974e439dd86277c7811af4783 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Tony Castley <tcastley@mail.powerup.com.au>

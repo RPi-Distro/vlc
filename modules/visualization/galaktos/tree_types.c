@@ -2,7 +2,7 @@
  * tree_types.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: tree_types.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: f2d2497c438b7a511fd125d32cb6ce4ea5949286 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

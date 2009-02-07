@@ -2,7 +2,7 @@
  * vout_synchro.c : frame dropping routines
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: vout_synchro.c 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: 8f7e87a0017b1d7ce99baa9258e1aa2c161ec9db $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>

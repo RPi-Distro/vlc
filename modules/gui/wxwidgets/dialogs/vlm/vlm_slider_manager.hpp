@@ -2,7 +2,7 @@
  * vlm_slider_manager.hpp: Header for slider_manager
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: vlm_slider_manager.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: ce1622483f98a516ce77b958f40be1a0bb699117 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

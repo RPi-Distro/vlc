@@ -2,7 +2,7 @@
  * vout.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: vout.h 23115 2007-11-18 00:22:06Z pdherbemont $
+ * $Id: 04a54ba55257340da737239162c891cdaf1357bf $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>

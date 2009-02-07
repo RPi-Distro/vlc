@@ -2,7 +2,7 @@
  * open.hpp: Headers for the Open dialog
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: open.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

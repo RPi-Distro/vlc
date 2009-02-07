@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.m
  * AppleRemote
- * $Id: AppleRemote.m 22893 2007-10-29 16:11:15Z fkuehne $
+ * $Id: 780e8223d4e4efb34030517849f5b2565511201d $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.

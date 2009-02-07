@@ -4,7 +4,7 @@ vim:syntax=html
 <  vlm: VLC media player web interface - VLM controler
 < - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
 <  Copyright (C) 2005-2006 the VideoLAN team
-<  $Id: vlm 14904 2006-03-24 13:11:17Z dionoea $
+<  $Id$
 < 
 <  Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
 < 

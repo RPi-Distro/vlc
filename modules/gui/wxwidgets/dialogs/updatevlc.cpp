@@ -2,7 +2,7 @@
  * updatevlc.cpp : VLC Update checker
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: updatevlc.cpp 18107 2006-11-27 13:44:11Z md $
+ * $Id: aca62991270d47b1314c2635278ab96384437987 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *

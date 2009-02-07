@@ -2,7 +2,7 @@
  * rss.c : rss/atom feed display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: rss.c 20493 2007-06-10 13:10:29Z dionoea $
+ * $Id: 8e480533844961d3eab9f92c9773b0df1418b1e9 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -522,7 +522,8 @@ picture_t *LoadImage( filter_t *p_filter, const char *psz_url )
         fmt_out.i_height = p_sys->p_style->i_font_size;
 
         p_pic = image_Convert( p_handler, p_orig, &fmt_in, &fmt_out );
-        p_orig->pf_release( p_orig );
+        if( p_orig->pf_release )
+            p_orig->pf_release( p_orig );
         if( !p_pic )
         {
             msg_Warn( p_filter, "Error while converting %s", psz_url );
@@ -895,7 +896,7 @@ static void FreeRSS( filter_t *p_filter)
         free( p_feed->psz_link );
         free( p_feed->psz_description );
         free( p_feed->psz_image );
-        if( p_feed->p_pic != NULL )
+        if( p_feed->p_pic && p_feed->p_pic->pf_release )
             p_feed->p_pic->pf_release( p_feed->p_pic );
     }
     free( p_sys->p_feeds );

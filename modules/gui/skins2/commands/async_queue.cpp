@@ -2,7 +2,7 @@
  * async_queue.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: async_queue.cpp 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: beee424786c6d4c2179f954020d46b4226d2dcc2 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

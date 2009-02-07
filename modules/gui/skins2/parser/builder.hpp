@@ -2,7 +2,7 @@
  * builder.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: builder.hpp 16778 2006-09-21 23:56:47Z hartman $
+ * $Id: 49f4b365fd86d3b6378f67e95b34f1064cf7f936 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

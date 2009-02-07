@@ -1,7 +1,7 @@
 /*
  * Modified for use with MPlayer, detailed CVS changelog at
  * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
- * $Id: driver.h 11593 2005-06-28 18:02:01Z courmisch $
+ * $Id: f7e369d5348fc7c5173c4cf3382ade9eb13cd8ae $
  */
 
 #ifndef loader_driver_h

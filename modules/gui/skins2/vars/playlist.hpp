@@ -2,7 +2,7 @@
  * playlist.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: playlist.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 693f1c9ee93ff8696a81d26668e81273dd4418f9 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

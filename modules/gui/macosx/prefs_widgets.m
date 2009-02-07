@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: prefs_widgets.m 14124 2006-02-01 19:40:01Z courmisch $
+ * $Id: 7eb5831bb995b9b57284241f6604bed1778ffb88 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>

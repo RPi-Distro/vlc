@@ -2,7 +2,7 @@
  * duplicate.c: duplicate stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: duplicate.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: a6c39e3bfc92a1f3ee04c36bbaf09e1734dbead2 $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * wxwidgets.hpp: Common headers for the wxwidges interface
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: wxwidgets.hpp 17436 2006-11-03 12:06:21Z md $
+ * $Id: 4f28f622e402f409ff6a0d0744ee4d810a238241 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

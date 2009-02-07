@@ -2,7 +2,7 @@
  * misc.h: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: misc.h 23115 2007-11-18 00:22:06Z pdherbemont $
+ * $Id: 38fb496b4d7daf183e1d2caf06eecb9c0703d309 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *

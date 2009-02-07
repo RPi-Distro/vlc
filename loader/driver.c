@@ -1,5 +1,5 @@
 /*
- * $Id: driver.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: 24c871511a24f7dc2b32dafe068b869a10dc57de $
  *
  * Copyright 1993, 1994 Martin Ayotte
  * Copyright 1998 Marcus Meissner

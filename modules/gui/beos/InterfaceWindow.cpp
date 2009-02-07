@@ -2,7 +2,7 @@
  * InterfaceWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: InterfaceWindow.cpp 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: ee3e17ebaf97f96b62d937853e8ca22c0b7709db $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

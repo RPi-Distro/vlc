@@ -2,7 +2,7 @@
  * i420_yuy2.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: i420_yuy2.c 20505 2007-06-11 11:21:05Z damienf $
+ * $Id: e6c89c0e1dbe12cea68cdc6c4cd4d453648ea039 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

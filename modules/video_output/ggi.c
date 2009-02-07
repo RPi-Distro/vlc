@@ -2,7 +2,7 @@
  * ggi.c : GGI plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: ggi.c 15002 2006-03-31 16:12:31Z fkuehne $
+ * $Id: 01e9e86e784be3060a68fadc0544eab9b75d567b $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

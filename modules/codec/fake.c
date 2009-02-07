@@ -2,7 +2,7 @@
  * fake.c: decoder reading from a fake stream, outputting a fixed image
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: fake.c 18285 2006-12-06 10:04:48Z md $
+ * $Id: 5d0edc4ffad92bac6f75a7f25148cce0de1ef48d $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -222,7 +222,8 @@ static int OpenDecoder( vlc_object_t *p_this )
             }
             else
             {
-                p_old->pf_release( p_old );
+                if( p_old->pf_release )
+                    p_old->pf_release( p_old );
             }
         }
     }
@@ -259,7 +260,8 @@ static int OpenDecoder( vlc_object_t *p_this )
         }
         else
         {
-            p_old->pf_release( p_old );
+            if( p_old->pf_release )
+                p_old->pf_release( p_old );
         }
     }
 
@@ -309,6 +311,6 @@ static void CloseDecoder( vlc_object_t *p_this )
     decoder_t *p_dec = (decoder_t *)p_this;
     picture_t *p_image = (picture_t *)p_dec->p_sys;
 
-    if( p_image != NULL )
+    if( p_image && p_image->pf_release )
         p_image->pf_release( p_image );
 }

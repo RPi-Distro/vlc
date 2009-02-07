@@ -2,7 +2,7 @@
  * messages.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: messages.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 6e6795067b738dfbfdedf4e5f3c40961da7081e1 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>

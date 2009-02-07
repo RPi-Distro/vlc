@@ -2,7 +2,7 @@
  * real.c: Real demuxer.
  *****************************************************************************
  * Copyright (C) 2004, 2006 the VideoLAN team
- * $Id: real.c 16987 2006-10-08 12:54:12Z jpsaman $
+ * $Id: 4f2085ed50665f4efce0e38c422d4e6a766e7677 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1082,17 +1082,15 @@ static int ReadCodecSpecificData( demux_t *p_demux, int i_len, int i_num )
                 tk->i_subpackets =
                     i_subpacket_h * i_frame_size / tk->i_subpacket_size;
                 tk->p_subpackets =
-                    malloc( tk->i_subpackets * sizeof(block_t *) );
+                    calloc( tk->i_subpackets, sizeof(block_t *) );
             }
             else if( fmt.i_codec == VLC_FOURCC('2','8','_','8') )
             {
                 tk->i_subpackets =
                     i_subpacket_h * i_frame_size / tk->i_coded_frame_size;
                 tk->p_subpackets =
-                    malloc( tk->i_subpackets * sizeof(block_t *) );
+                    calloc( tk->i_subpackets, sizeof(block_t *) );
             }
-
-            for( i = 0; i < tk->i_subpackets; i++ ) tk->p_subpackets[i] = NULL;
 
             tk->p_es = es_out_Add( p_demux->out, &fmt );
 

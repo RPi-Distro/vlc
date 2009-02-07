@@ -1,5 +1,5 @@
 dnl  Macros needed for VLC
-dnl  $Id: vlc.m4 23201 2007-11-20 19:34:19Z courmisch $
+dnl  $Id$
 
 dnl ===========================================================================
 dnl  Macros to add plugins or builtins and handle their flags

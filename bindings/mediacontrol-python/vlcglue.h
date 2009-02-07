@@ -2,7 +2,7 @@
  * vlcglue.h: Main header for the Python binding
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: vlcglue.h 14323 2006-02-15 14:11:16Z oaubert $
+ * $Id: 41623eb38eb1b59a379b3755763f43d93612e566 $
  *
  * Authors: Olivier Aubert <oaubert at bat710.univ-lyon1.fr>
  *          Clément Stenac <zorglub@videolan.org>

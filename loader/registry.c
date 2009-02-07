@@ -1,5 +1,5 @@
 /*
- * $Id: registry.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: e4bc55e5c91599f84b36db2c358b6e2af62b80d7 $
  *
  * Copyright (C) 1999 Alexandre Julliard
  *

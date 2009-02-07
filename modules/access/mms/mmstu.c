@@ -2,7 +2,7 @@
  * mms.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: mmstu.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: 457ab56a8dc457127802daa10a4b0fcc77f1f801 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -125,7 +125,10 @@ int  E_(MMSTUOpen)( access_t *p_access )
     p_access->info.i_title = 0;
     p_access->info.i_seekpoint = 0;
     p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
+    if( !p_sys ) return VLC_ENOMEM;
     memset( p_sys, 0, sizeof( access_sys_t ) );
+
+    p_sys->i_timeout = var_CreateGetInteger( p_access, "mms-timeout" );
 
     /* *** Parse URL and get server addr/port and path *** */
     vlc_UrlParse( &p_sys->url, p_access->psz_path, 0 );
@@ -357,7 +360,12 @@ static int Seek( access_t * p_access, int64_t i_pos )
 
     while( !p_access->b_die )
     {
-        mms_HeaderMediaRead( p_access, MMS_PACKET_CMD );
+        if( mms_HeaderMediaRead( p_access, MMS_PACKET_CMD ) < 0 )
+        {
+            p_access->info.b_eof = VLC_TRUE;
+            return VLC_EGENERIC;
+        }
+
         if( p_sys->i_command == 0x1e )
         {
             msg_Dbg( p_access, "received 0x1e (seek)" );
@@ -367,7 +375,11 @@ static int Seek( access_t * p_access, int64_t i_pos )
 
     while( !p_access->b_die )
     {
-        mms_HeaderMediaRead( p_access, MMS_PACKET_CMD );
+        if( mms_HeaderMediaRead( p_access, MMS_PACKET_CMD ) < 0 )
+        {
+            p_access->info.b_eof = VLC_TRUE;
+            return VLC_EGENERIC;
+        }
         if( p_sys->i_command == 0x05 )
         {
             msg_Dbg( p_access, "received 0x05 (seek)" );
@@ -376,7 +388,12 @@ static int Seek( access_t * p_access, int64_t i_pos )
     }
 
     /* get a packet */
-    mms_HeaderMediaRead( p_access, MMS_PACKET_MEDIA );
+    if( mms_HeaderMediaRead( p_access, MMS_PACKET_MEDIA ) < 0 )
+    {
+        p_access->info.b_eof = VLC_TRUE;
+        return VLC_EGENERIC;
+    }
+
     msg_Dbg( p_access, "Streaming restarted" );
 
     p_sys->i_media_used += i_offset;
@@ -398,7 +415,7 @@ static int Read( access_t *p_access, uint8_t *p_buffer, int i_len )
     i_data = 0;
 
     /* *** now send data if needed *** */
-    while( i_data < (size_t)i_len )
+    while( i_data < i_len )
     {
         if( p_access->info.i_pos < p_sys->i_header )
         {
@@ -515,7 +532,7 @@ static int MMSOpen( access_t  *p_access, vlc_url_t *p_url, int  i_proto )
     p_sys->i_buffer_udp = 0;
     p_sys->p_cmd = NULL;
     p_sys->i_cmd = 0;
-    p_access->info.b_eof = 0;
+    p_access->info.b_eof = VLC_FALSE;
 
     /* *** send command 1 : connection request *** */
     var_buffer_initwrite( &buffer, 0 );
@@ -862,14 +879,15 @@ static int MMSStart( access_t  *p_access, uint32_t i_packet )
         msg_Err( p_access,
                  "unknown answer (0x%x instead of 0x05)",
                  p_sys->i_command );
-        return( -1 );
+        return -1;
     }
     else
     {
         /* get a packet */
-        mms_HeaderMediaRead( p_access, MMS_PACKET_MEDIA );
+        if( mms_HeaderMediaRead( p_access, MMS_PACKET_MEDIA ) < 0 )
+            return -1;
         msg_Dbg( p_access, "streaming started" );
-        return( 0 );
+        return 0;
     }
 }
 
@@ -1045,6 +1063,12 @@ static int NetFillBuffer( access_t *p_access )
         /* We'll wait 0.5 second if nothing happens */
         timeout.tv_sec = 0;
         timeout.tv_usec = 500000;
+
+        if( i_try * 500 > p_sys->i_timeout )
+        {
+            msg_Err(p_access, "no data received");
+            return -1;
+        }
 
         if( i_try > 3 && (p_sys->i_buffer_tcp > 0 || p_sys->i_buffer_udp > 0) )
         {
@@ -1462,17 +1486,18 @@ static int mms_CommandRead( access_t *p_access, int i_command1,
             {
                 case 0x03:
                     msg_Warn( p_access, "socket closed by server" );
-                    p_access->info.b_eof = 1;
+                    p_access->info.b_eof = VLC_TRUE;
                     return VLC_EGENERIC;
                 case 0x1e:
                     msg_Warn( p_access, "end of media stream" );
-                    p_access->info.b_eof = 1;
+                    p_access->info.b_eof = VLC_TRUE;
                     return VLC_EGENERIC;
                 default:
                     break;
             }
         }
     }
+    p_access->info.b_eof = VLC_TRUE;
     msg_Warn( p_access, "failed to receive command (aborting)" );
 
     return VLC_EGENERIC;
@@ -1509,11 +1534,11 @@ static int mms_HeaderMediaRead( access_t *p_access, int i_type )
             {
                 case 0x03:
                     msg_Warn( p_access, "socket closed by server" );
-                    p_access->info.b_eof = 1;
+                    p_access->info.b_eof = VLC_TRUE;
                     return -1;
                 case 0x1e:
                     msg_Warn( p_access, "end of media stream" );
-                    p_access->info.b_eof = 1;
+                    p_access->info.b_eof = VLC_TRUE;
                     return -1;
                 case 0x20:
                     /* XXX not too dificult to be done EXCEPT that we
@@ -1531,6 +1556,7 @@ static int mms_HeaderMediaRead( access_t *p_access, int i_type )
 
     msg_Err( p_access, "cannot receive %s (aborting)",
              ( i_type == MMS_PACKET_HEADER ) ? "header" : "media data" );
+    p_access->info.b_eof = VLC_TRUE;
     return -1;
 }
 

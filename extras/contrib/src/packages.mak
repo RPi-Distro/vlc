@@ -1,8 +1,8 @@
 # ***************************************************************************
 # src/packages.mak : Archive locations
 # ***************************************************************************
-# Copyright (C) 2003 - 2007 the VideoLAN team
-# $Id: packages.mak 24880 2008-02-05 04:14:56Z jb $
+# Copyright (C) 2003 - 2008 the VideoLAN team
+# $Id$
 #
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>
@@ -23,8 +23,8 @@
 # Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
 # ***************************************************************************
 
-GNU=http://ftp.heanet.ie/mirrors/ftp.gnu.org/gnu
-SF=http://heanet.dl.sourceforge.net/sourceforge
+GNU=ftp://ftp.esat.net/pub/gnu
+SF=http://internap.dl.sourceforge.net/sourceforge
 VIDEOLAN=http://download.videolan.org/pub/videolan
 PERL_VERSION=5.8.8
 PERL_URL=http://ftp.funet.fi/pub/CPAN/src/perl-$(PERL_VERSION).tar.gz
@@ -40,7 +40,7 @@ PKGCFG_VERSION=0.15.0
 PKGCFG_URL=http://pkgconfig.freedesktop.org/releases/pkgconfig-$(PKGCFG_VERSION).tar.gz
 LIBICONV_VERSION=1.9.2
 LIBICONV_URL=$(GNU)/libiconv/libiconv-$(LIBICONV_VERSION).tar.gz
-GETTEXT_VERSION=0.14.6
+GETTEXT_VERSION=0.17
 GETTEXT_URL=$(GNU)/gettext/gettext-$(GETTEXT_VERSION).tar.gz
 FREETYPE2_VERSION=2.1.9
 FREETYPE2_URL=$(SF)/freetype/freetype-$(FREETYPE2_VERSION).tar.gz
@@ -71,15 +71,16 @@ SPEEX_URL=http://downloads.us.xiph.org/releases/speex/speex-$(SPEEX_VERSION).tar
 SHOUT_VERSION=2.2.2
 SHOUT_URL=http://downloads.us.xiph.org/releases/libshout/libshout-$(SHOUT_VERSION).tar.gz
 FAAD2_VERSION=20040923
-FAAD2_URL=$(VIDEOLAN)/testing/contrib/faad2-$(FAAD2_VERSION).tar.bz2
-FAAD2_CVSROOT=:pserver:anonymous@cvs.audiocoding.com:/cvsroot/faac
+FAAD2_VERSION=2.6.1
+FAAD2_URL=$(SF)/faac/faad2-$(FAAD2_VERSION).tar.gz
+#FAAD2_URL=$(VIDEOLAN)/testing/contrib/faad2-$(FAAD2_VERSION).tar.bz2
 FAAC_VERSION=1.24
 FAAC_URL=$(VIDEOLAN)/testing/contrib/faac-$(FAAC_VERSION).tar.bz2
-LAME_VERSION=3.97b2
+LAME_VERSION=3.97
 LAME_URL=$(SF)/lame/lame-$(LAME_VERSION).tar.gz
-LIBEBML_VERSION=0.7.7
+LIBEBML_VERSION=0.7.8
 LIBEBML_URL=http://dl.matroska.org/downloads/libebml/libebml-$(LIBEBML_VERSION).tar.bz2
-LIBMATROSKA_VERSION=0.8.0
+LIBMATROSKA_VERSION=0.8.1
 LIBMATROSKA_URL=http://dl.matroska.org/downloads/libmatroska/libmatroska-$(LIBMATROSKA_VERSION).tar.bz2
 FFMPEG_VERSION=0.4.8
 FFMPEG_URL=$(SF)/ffmpeg/ffmpeg-$(FFMPEG_VERSION).tar.gz
@@ -98,7 +99,8 @@ LIVEDOTCOM_URL=http://live555.com/liveMedia/public/live555-$(LIVEDOTCOM_VERSION)
 GOOM2k4_VERSION=2k4-0
 GOOM2k4_URL=$(SF)/goom/goom-$(GOOM2k4_VERSION)-src.tar.gz
 LIBCACA_VERSION=0.9
-LIBCACA_URL=http://libcaca.zoy.org/files/libcaca-$(LIBCACA_VERSION).tar.gz
+LIBCACA_URL=$(VIDEOLAN)/testing/contrib/libcaca-$(LIBCACA_VERSION).tar.gz
+#LIBCACA_URL=http://libcaca.zoy.org/files/libcaca-$(LIBCACA_VERSION).tar.gz
 LIBDTS_VERSION=0.0.2
 LIBDC1394_VERSION=1.2.1
 LIBDC1394_URL=$(SF)/libdc1394/libdc1394-$(LIBDC1394_VERSION).tar.gz
@@ -118,17 +120,18 @@ VCDIMAGER_VERSION=0.7.23
 VCDIMAGER_URL=$(GNU)/vcdimager/vcdimager-$(VCDIMAGER_VERSION).tar.gz
 CDIO_VERSION=0.77
 CDIO_URL=$(GNU)/libcdio/libcdio-$(CDIO_VERSION).tar.gz
-PNG_VERSION=1.2.12
+PNG_VERSION=1.2.29
 PNG_URL=$(SF)/libpng/libpng-$(PNG_VERSION).tar.bz2
-GPGERROR_VERSION=1.3
-#GPGERROR_URL=http://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-$(GPGERROR_VERSION).tar.gz
-GPGERROR_URL=$(VIDEOLAN)/testing/contrib/libgpg-error-$(GPGERROR_VERSION).tar.gz
-GCRYPT_VERSION=1.2.3
-#GCRYPT_URL=http://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-$(GCRYPT_VERSION).tar.bz2
-GCRYPT_URL=$(VIDEOLAN)/testing/contrib/libgcrypt-$(GCRYPT_VERSION).tar.bz2
-GNUTLS_VERSION=1.6.1
-#GNUTLS_URL=http://ftp.gnupg.org/gcrypt/gnutls/gnutls-$(GNUTLS_VERSION).tar.bz2
-GNUTLS_URL=$(VIDEOLAN)/testing/contrib/gnutls-$(GNUTLS_VERSION).tar.bz2
+GPGERROR_VERSION=1.6
+GPGERROR_URL=$(VIDEOLAN)/testing/contrib/libgpg-error-$(GPGERROR_VERSION).tar.bz2
+#GPGERROR_URL=ftp://ftp.gnupg.org/gcrypt/libgpg-error/libgpg-error-$(GPGERROR_VERSION).tar.bz2
+GCRYPT_VERSION=1.4.1
+#GCRYPT_URL=$(VIDEOLAN)/testing/contrib/libgcrypt-$(GCRYPT_VERSION).tar.bz2
+GCRYPT_URL=ftp://ftp.gnupg.org/gcrypt/libgcrypt/libgcrypt-$(GCRYPT_VERSION).tar.bz2
+GNUTLS_VERSION=2.2.5
+GNUTLS_URL=http://www.gnu.org/software/gnutls/releases/gnutls-$(GNUTLS_VERSION).tar.bz2
+OPENCDK_VERSION=0.6.6
+OPENCDK_URL=http://www.gnu.org/software/gnutls/releases/opencdk/opencdk-$(OPENCDK_VERSION).tar.bz2
 DAAP_VERSION=0.4.0
 DAAP_URL=http://craz.net/programs/itunes/files/libopendaap-$(DAAP_VERSION).tar.bz2
 GLIB_VERSION=1.2.10
@@ -154,14 +157,15 @@ SDL_URL=$(SF)/libsdl/SDL-$(SDL_VERSION).tar.gz
 SDL_IMAGE_VERSION=1.2.5
 SDL_IMAGE_URL=$(SF)/libsdl/SDL_image-$(SDL_IMAGE_VERSION).tar.gz
 MUSE_VERSION=1.2.2
-#MUSE_URL=http://files.musepack.net/source/libmpcdec-$(MUSE_VERSION).tar.bz2
-MUSE_URL=http://files2.musepack.net/source/libmpcdec-$(MUSE_VERSION).tar.bz2
+MUSE_URL=http://files.musepack.net/source/libmpcdec-$(MUSE_VERSION).tar.bz2
+#MUSE_URL=http://files2.musepack.net/source/libmpcdec-$(MUSE_VERSION).tar.bz2
 WXWIDGETS_VERSION=2.6.4
 WXWIDGETS_URL=$(SF)/wxwindows/wxWidgets-$(WXWIDGETS_VERSION).tar.gz
 ZLIB_VERSION=1.2.3
 ZLIB_URL=$(SF)/libpng/zlib-$(ZLIB_VERSION).tar.gz
-XML_VERSION=2.6.31
-XML_URL=ftp://xmlsoft.org/libxml2/libxml2-$(XML_VERSION).tar.gz
+XML_VERSION=2.6.32
+XML_URL=$(VIDEOLAN)/testing/contrib/libxml2-$(XML_VERSION).tar.gz
+#XML_URL=ftp://xmlsoft.org/libxml2/libxml2-$(XML_VERSION).tar.gz
 DIRAC_VERSION=0.5.4
 DIRAC_URL=$(SF)/dirac/dirac-$(DIRAC_VERSION).tar.gz
 DX_HEADERS_URL=$(VIDEOLAN)/testing/contrib/win32-dx7headers.tgz
@@ -175,8 +179,8 @@ UPNP_URL=$(SF)/upnp/libupnp-$(UPNP_VERSION).tar.gz
 EXPAT_VERSION=1.95.8
 EXPAT_URL=$(SF)/expat/expat-$(EXPAT_VERSION).tar.gz
 NASM_CVSROOT=:pserver:anonymous@cvs.sourceforge.net:/cvsroot/nasm
-NASM_VERSION=0.98.40-20060130
-NASM_URL=$(VIDEOLAN)/testing/contrib/nasm-0.98.40-20060130.tar.bz2
+NASM_VERSION=2.02
+NASM_URL=$(SF)/nasm/nasm-$(NASM_VERSION).tar.bz2
 PTHREADS_VERSION=2-7-0
 PTHREADS_URL=ftp://sources.redhat.com/pub/pthreads-win32/pthreads-w32-$(PTHREADS_VERSION)-release.tar.gz
 UNICOWS_VERSION=1.1.1

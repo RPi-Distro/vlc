@@ -2,7 +2,7 @@
  * display.c: display stream output module
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: display.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: da65780ecd2ffa178a3edc487bd902d6c9b5248b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

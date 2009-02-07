@@ -2,7 +2,7 @@
  * mpjpeg.c: mime multipart jpeg  muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: mpjpeg.c 14918 2006-03-25 12:54:27Z fkuehne $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -92,12 +92,21 @@ static int Open( vlc_object_t *p_this )
     psz_separator = var_GetString( p_mux, SOUT_CFG_PREFIX "separator" );
     i_size = strlen( psz_separator ) + 2 + 2 + 2 + strlen( CONTENT_TYPE );
     psz_separator_block = (char*)malloc( i_size );
+
+    if( !psz_separator_block )
+    {
+        free( p_sys );
+        free( psz_separator );
+        return VLC_ENOMEM;
+    }
+
     sprintf( psz_separator_block, "\r\n%s\r\n%s\r\n", psz_separator,
                                   CONTENT_TYPE );
     p_sys->p_separator = block_New( p_mux, i_size );
     memcpy( p_sys->p_separator->p_buffer, psz_separator_block , i_size );
 
-    if( psz_separator_block ) free( psz_separator_block );
+    free( psz_separator_block );
+    free( psz_separator );
 
     p_mux->pf_control   = Control;
     p_mux->pf_addstream = AddStream;
@@ -193,6 +202,12 @@ static int Mux( sout_mux_t *p_mux )
         char *psz_separator_block = (char *)malloc( strlen( psz_separator ) +
                                               2 + strlen( CONTENT_TYPE ) );
 
+        if( !psz_separator_block )
+        {
+            free( psz_separator );
+            return VLC_EGENERIC;
+        }
+
         sprintf( psz_separator_block, "%s\r\n%s\r\n", psz_separator,
                                       CONTENT_TYPE );
 
@@ -202,7 +217,9 @@ static int Mux( sout_mux_t *p_mux )
         p_header->i_flags |= BLOCK_FLAG_HEADER;
         sout_AccessOutWrite( p_mux->p_access, p_header );
         p_sys->b_send_headers = VLC_FALSE;
-        if( psz_separator_block ) free( psz_separator_block );
+
+        free( psz_separator );
+        free( psz_separator_block );
     }
 
     if( !p_mux->i_nb_inputs ) return VLC_SUCCESS;

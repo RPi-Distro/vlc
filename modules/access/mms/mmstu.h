@@ -2,7 +2,7 @@
  * mms.h: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: mmstu.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: bf842072474e9e733d468a0a17d2cf4b626ddf77 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -42,6 +42,8 @@ struct access_sys_t
     vlc_url_t           url;
 
     asf_header_t        asfh;
+
+    unsigned    i_timeout;
 
     /* */
     uint8_t             buffer_tcp[MMS_BUFFER_SIZE];

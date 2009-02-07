@@ -2,7 +2,7 @@
  * bookmarks.m: MacOS X Bookmarks window
  *****************************************************************************
  * Copyright (C) 2005, 2006 the VideoLAN team
- * $Id: bookmarks.m 15136 2006-04-07 18:38:30Z fkuehne $
+ * $Id: 86d13adfa007ed8689d2bb4f1760d764121a3527 $
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net>
  *

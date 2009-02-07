@@ -2,7 +2,7 @@
  * modules.c : Builtin and plugin modules management functions
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: modules.c 17957 2006-11-22 16:12:56Z courmisch $
+ * $Id: a33a425357dc704752b71c47b12020ee596e063c $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -752,8 +752,10 @@ static void AllocateAllPlugins( vlc_object_t *p_this )
     /* Yes, there are two NULLs because we replace one with "plugin-path". */
 #if defined( WIN32 ) || defined( UNDER_CE )
     char *path[] = { "modules", "", "plugins", 0, 0 };
-#else
+#elif defined( SYS_BEOS ) || defined( __APPLE__ )
     char *path[] = { "modules", PLUGIN_PATH, "plugins", 0, 0 };
+#else
+    char *path[] = { PLUGIN_PATH, NULL, NULL };
 #endif
 
     char **ppsz_path = path;

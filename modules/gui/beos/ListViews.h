@@ -2,7 +2,7 @@
  * ListViews.h: BeOS interface list view class prototype
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: ListViews.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 9dcdd0e9691624b8ef9af8ff225c982d5f4e35b2 $
  *
  * Authors: Stephan Aßmus <stippi@yellowbites.com>
  *

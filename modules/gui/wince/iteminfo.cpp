@@ -2,7 +2,7 @@
  * iteminfo.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: iteminfo.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 5beaf2d05d68b76bf55d25c62beb396b9fdd939a $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>

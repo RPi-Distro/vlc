@@ -2,7 +2,7 @@
  * esd.c : EsounD module
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: esd.c 14568 2006-03-02 13:35:43Z courmisch $
+ * $Id: 701fb9ce64a13124fdb9de7437a5c1d63c372c11 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

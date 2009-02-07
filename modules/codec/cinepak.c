@@ -2,7 +2,7 @@
  * cinepak.c: cinepak video decoder
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: cinepak.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 25d359b37b367bc4c734940a2278951179236232 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -59,8 +59,8 @@ typedef struct
 {
     int b_grayscale; /* force to grayscale */
 
-    int i_width;
-    int i_height;
+    unsigned int i_width;
+    unsigned int i_height;
 
     int i_stride_x;
     int i_stride_y;
@@ -89,7 +89,7 @@ struct decoder_sys_t
 
 static picture_t *DecodeBlock ( decoder_t *, block_t ** );
 
-static int cinepak_decode_frame( cinepak_context_t *, int, uint8_t * );
+static int cinepak_decode_frame( cinepak_context_t *, size_t, uint8_t * );
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -282,6 +282,16 @@ static void cinepak_Getv4( cinepak_context_t *p_context,
     uint8_t i_index[4];
     int i,j;
 
+    size_t y_max = p_context->i_stride[0] * ( i_y + 5 ) + i_x + 5;
+    size_t u_max = p_context->i_stride[1] * ( ( i_y/2 ) + 2 ) + 2 + ( i_x / 2 );
+    size_t v_max = p_context->i_stride[2] * ( ( i_y/2 ) + 2 ) + 2 + ( i_x / 2 );
+    size_t y_siz = p_context->i_stride[0] * p_context->i_lines[0];
+    size_t u_siz = p_context->i_stride[1] * p_context->i_lines[1];
+    size_t v_siz = p_context->i_stride[2] * p_context->i_lines[2];
+    /* boundary check */
+    if( y_max >= y_siz || u_max >= u_siz || v_max >= v_siz )
+        return;
+
     uint8_t *p_dst_y, *p_dst_u, *p_dst_v;
 #define PIX_SET_Y( x, y, v ) \
     p_dst_y[(x) + (y)* p_context->i_stride[0]] = (v);
@@ -329,6 +339,16 @@ static void cinepak_Getv1( cinepak_context_t *p_context,
     uint8_t i_index;
     int i,j;
 
+    size_t y_max = p_context->i_stride[0] * ( i_y + 5 ) + i_x + 5;
+    size_t u_max = p_context->i_stride[1] * ( ( i_y/2 ) + 2 ) + 2 + ( i_x / 2 );
+    size_t v_max = p_context->i_stride[2] * ( ( i_y/2 ) + 2 ) + 2 + ( i_x / 2 );
+    size_t y_siz = p_context->i_stride[0] * p_context->i_lines[0];
+    size_t u_siz = p_context->i_stride[1] * p_context->i_lines[1];
+    size_t v_siz = p_context->i_stride[2] * p_context->i_lines[2];
+    /* boundary check */
+    if( y_max >= y_siz || u_max >= u_siz || v_max >= v_siz )
+        return;
+
     uint8_t *p_dst_y, *p_dst_u, *p_dst_v;
 #define PIX_SET_Y( x, y, v ) \
     p_dst_y[(x) + (y)* p_context->i_stride[0]] = (v);
@@ -371,14 +391,14 @@ static void cinepak_Getv1( cinepak_context_t *p_context,
  * The function that decode one frame
  *****************************************************************************/
 static int cinepak_decode_frame( cinepak_context_t *p_context,
-                                 int i_length, uint8_t *p_data )
+                                 size_t i_length, uint8_t *p_data )
 {
     int i_strip;
 
-    int i_frame_flags;
-    int i_frame_size;
-    int i_width, i_height;
-    int i_frame_strips;
+    int8_t i_frame_flags;
+    uint32_t i_frame_size;
+    uint16_t i_width, i_height;
+    uint16_t i_frame_strips;
     int i_index;
     int i_strip_x1 =0, i_strip_y1=0;
     int i_strip_x2 =0, i_strip_y2=0;
@@ -396,7 +416,8 @@ static int cinepak_decode_frame( cinepak_context_t *p_context,
     i_height = GET2BYTES( p_data );
     i_frame_strips = GET2BYTES( p_data );
 
-    if( !i_frame_size || !i_width || !i_height )
+    if( !i_frame_size || !i_width || !i_height ||
+        i_width > 0xffff-3 || i_height > 0xffff-3)
     {
         /* Broken header */
         return( -1 );
@@ -447,15 +468,15 @@ static int cinepak_decode_frame( cinepak_context_t *p_context,
     /* Now decode each strip */
     for( i_strip = 0; i_strip < i_frame_strips; i_strip++ )
     {
-        int i_strip_id;
-        int i_strip_size;
+        uint16_t i_strip_size;
 
         if( i_length <= 12 )
         {
             break;
         }
 
-        i_strip_id   = GET2BYTES( p_data );
+        p_data += 2; /* int16_t i_strip_id   = GET2BYTES( p_data ); */
+
         i_strip_size = GET2BYTES( p_data );
         i_strip_size = __MIN( i_strip_size, i_length );
         /* FIXME I don't really understand how it's work; */

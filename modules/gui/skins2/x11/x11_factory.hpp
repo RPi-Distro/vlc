@@ -2,7 +2,7 @@
  * x11_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: x11_factory.hpp 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: bf99bbb3b3426c1b769389ac9d63820604d2113a $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

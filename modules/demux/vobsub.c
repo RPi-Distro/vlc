@@ -2,7 +2,7 @@
  * subtitle.c: Demux vobsub files.
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: vobsub.c 14790 2006-03-18 02:06:16Z xtophe $
+ * $Id: 0393b21302d4d4ca11d5683c9617b155c4624718 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>

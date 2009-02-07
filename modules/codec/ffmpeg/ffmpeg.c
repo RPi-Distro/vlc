@@ -2,7 +2,7 @@
  * ffmpeg.c: video decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: ffmpeg.c 19657 2007-04-03 21:23:26Z jb $
+ * $Id: 7bacb2eec7f29bf73a418bf3391171df854b78cb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -30,7 +30,9 @@
 
 /* ffmpeg header */
 #define HAVE_MMX 1
-#ifdef HAVE_FFMPEG_AVCODEC_H
+#ifdef HAVE_LIBAVCODEC_AVCODEC_H
+#   include <libavcodec/avcodec.h>
+#elif defined(HAVE_FFMPEG_AVCODEC_H)
 #   include <ffmpeg/avcodec.h>
 #else
 #   include <avcodec.h>
@@ -460,13 +462,26 @@ static struct
 #endif
 
     /* Packed RGB formats */
+#if defined(WORDS_BIGENDIAN)
+    { VLC_FOURCC('R','G','B','8'), PIX_FMT_BGR8 },
+    { VLC_FOURCC('R','V','1','5'), PIX_FMT_BGR555 },
+    { VLC_FOURCC('R','V','1','6'), PIX_FMT_BGR565 },
+    { VLC_FOURCC('R','V','2','4'), PIX_FMT_BGR24 },
+#else
+#if defined(PIX_FMT_RGB8)
+    { VLC_FOURCC('R','G','B','8'), PIX_FMT_RGB8 },
+#endif
     { VLC_FOURCC('R','V','1','5'), PIX_FMT_RGB555 },
     { VLC_FOURCC('R','V','1','6'), PIX_FMT_RGB565 },
     { VLC_FOURCC('R','V','2','4'), PIX_FMT_RGB24 },
+#endif
     { VLC_FOURCC('R','V','3','2'), PIX_FMT_RGBA32 },
+#if defined(PIX_FMT_RGBA)
+    { VLC_FOURCC('R','G','B','A'), PIX_FMT_RGBA },
+#endif
     { VLC_FOURCC('G','R','E','Y'), PIX_FMT_GRAY8 },
 
-    {0}
+    { 0, 0 }
 };
 
 int E_(GetFfmpegChroma)( vlc_fourcc_t i_chroma )
@@ -508,12 +523,53 @@ static struct
     /* MPEG-1 Video */
     { VLC_FOURCC('m','p','1','v'), CODEC_ID_MPEG1VIDEO,
       VIDEO_ES, "MPEG-1 Video" },
+    { VLC_FOURCC('m','p','e','g'), CODEC_ID_MPEG1VIDEO,
+      VIDEO_ES, "MPEG-1 Video" },
+    { VLC_FOURCC('m','p','g','1'), CODEC_ID_MPEG1VIDEO,
+      VIDEO_ES, "MPEG-1 Video" },
+    { VLC_FOURCC('P','I','M','1'), CODEC_ID_MPEG1VIDEO,
+      VIDEO_ES, "Pinnacle DC1000 (MPEG-1 Video)" },
 
     /* MPEG-2 Video */
     { VLC_FOURCC('m','p','2','v'), CODEC_ID_MPEG2VIDEO,
       VIDEO_ES, "MPEG-2 Video" },
+    { VLC_FOURCC('M','P','E','G'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "MPEG-2 Video" },
     { VLC_FOURCC('m','p','g','v'), CODEC_ID_MPEG2VIDEO,
       VIDEO_ES, "MPEG-2 Video" },
+    { VLC_FOURCC('m','p','g','2'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "MPEG-2 Video" },
+    { VLC_FOURCC('h','d','v','1'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "HDV 720p30 (MPEG-2 Video)" },
+    { VLC_FOURCC('h','d','v','2'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "Sony HDV (MPEG-2 Video)" },
+    { VLC_FOURCC('h','d','v','3'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "FCP HDV (MPEG-2 Video)" },
+    { VLC_FOURCC('h','d','v','5'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "HDV 720p25 (MPEG-2 Video)" },
+    { VLC_FOURCC('m','x','5','n'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "MPEG2 IMX NTSC 525/60 50mb/s (FCP)" },
+    { VLC_FOURCC('m','x','5','p'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "MPEG2 IMX PAL 625/60 50mb/s (FCP)" },
+    { VLC_FOURCC('m','x','4','n'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "MPEG2 IMX NTSC 525/60 40mb/s (FCP)" },
+    { VLC_FOURCC('m','x','4','p'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "MPEG2 IMX PAL 625/50 40mb/s (FCP)" },
+     { VLC_FOURCC('m','x','3','n'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "MPEG2 IMX NTSC 525/60 30mb/s (FCP)" },
+    { VLC_FOURCC('m','x','3','p'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "MPEG2 IMX NTSC 625/50 30mb/s (FCP)" },
+    { VLC_FOURCC('x','d','v','2'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "XDCAM HD 1080i60" },
+    { VLC_FOURCC('A','V','m','p'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "AVID IMX PAL" },
+    /* ATI VCR2 */
+    { VLC_FOURCC('V','C','R','2'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "ATI VCR2 Video" },
+    { VLC_FOURCC('M','M','E','S'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "Matrox MPEG-2" },
+    { VLC_FOURCC('m','m','e','s'), CODEC_ID_MPEG2VIDEO,
+      VIDEO_ES, "Matrox MPEG-2" },
 
     /* MPEG-4 Video */
     { VLC_FOURCC('D','I','V','X'), CODEC_ID_MPEG4,
@@ -542,6 +598,10 @@ static struct
       VIDEO_ES, "MPEG-4 Video" },
     { VLC_FOURCC('d','x','5','0'), CODEC_ID_MPEG4,
       VIDEO_ES, "MPEG-4 Video" },
+    { VLC_FOURCC('B','L','Z','0'), CODEC_ID_MPEG4,
+      VIDEO_ES, "Blizzard MPEG-4 Video" },
+    { VLC_FOURCC('D','X','G','M'), CODEC_ID_MPEG4,
+      VIDEO_ES, "Electronic Arts Game MPEG-4 Video" },
     { VLC_FOURCC('m','p','4','v'), CODEC_ID_MPEG4,
       VIDEO_ES, "MPEG-4 Video" },
     { VLC_FOURCC('M','P','4','V'), CODEC_ID_MPEG4,
@@ -554,6 +614,8 @@ static struct
       VIDEO_ES, "MPEG-4 Video" },
     { VLC_FOURCC('F','M','P','4'), CODEC_ID_MPEG4,
       VIDEO_ES, "MPEG-4 Video" },
+    { VLC_FOURCC('f','m','p','4'), CODEC_ID_MPEG4,
+      VIDEO_ES, "MPEG-4 Video" },
     /* 3ivx delta 3.5 Unsupported
      * putting it here gives extreme distorted images
     { VLC_FOURCC('3','I','V','1'), CODEC_ID_MPEG4,
@@ -565,6 +627,24 @@ static struct
       VIDEO_ES, "MPEG-4 Video" },
     { VLC_FOURCC('3','i','v','2'), CODEC_ID_MPEG4,
       VIDEO_ES, "MPEG-4 Video" },
+    { VLC_FOURCC('U','M','P','4'), CODEC_ID_MPEG4,
+      VIDEO_ES, "UB MPEG-4 Video" },
+    { VLC_FOURCC('W','V','1','F'), CODEC_ID_MPEG4,
+      VIDEO_ES, "MPEG-4 Video" },
+    { VLC_FOURCC('S','E','D','G'), CODEC_ID_MPEG4,
+      VIDEO_ES, "Samsung MPEG-4 Video" },
+    { VLC_FOURCC('R','M','P','4'), CODEC_ID_MPEG4,
+      VIDEO_ES, "REALmagic MPEG-4 Video" },
+    { VLC_FOURCC('H','D','X','4'), CODEC_ID_MPEG4,
+      VIDEO_ES, "Jomigo HDX4 (MPEG-4 Video)" },
+    { VLC_FOURCC('h','d','x','4'), CODEC_ID_MPEG4,
+      VIDEO_ES, "Jomigo HDX4 (MPEG-4 Video)" },
+    { VLC_FOURCC('S','M','P','4'), CODEC_ID_MPEG4,
+      VIDEO_ES, "Samsung SMP4 (MPEG-4 Video)" },
+    { VLC_FOURCC('f','v','f','w'), CODEC_ID_MPEG4,
+      VIDEO_ES, "FFmpeg MPEG-4" },
+    { VLC_FOURCC('F','V','F','W'), CODEC_ID_MPEG4,
+      VIDEO_ES, "FFmpeg MPEG-4" },
 
     /* MSMPEG4 v1 */
     { VLC_FOURCC('D','I','V','1'), CODEC_ID_MSMPEG4V1,
@@ -612,6 +692,15 @@ static struct
       VIDEO_ES, "MS MPEG-4 Video v3" },
     { VLC_FOURCC('d','i','v','6'), CODEC_ID_MSMPEG4V3,
       VIDEO_ES, "MS MPEG-4 Video v3" },
+    /* Cool Codec */
+    { VLC_FOURCC('C','O','L','1'), CODEC_ID_MSMPEG4V3,
+      VIDEO_ES, "MS MPEG-4 Video v3" },
+    { VLC_FOURCC('c','o','l','1'), CODEC_ID_MSMPEG4V3,
+      VIDEO_ES, "MS MPEG-4 Video v3" },
+    { VLC_FOURCC('C','O','L','0'), CODEC_ID_MSMPEG4V3,
+      VIDEO_ES, "MS MPEG-4 Video v3" },
+    { VLC_FOURCC('c','o','l','0'), CODEC_ID_MSMPEG4V3,
+      VIDEO_ES, "MS MPEG-4 Video v3" },
     /* AngelPotion stuff */
     { VLC_FOURCC('A','P','4','1'), CODEC_ID_MSMPEG4V3,
       VIDEO_ES, "MS MPEG-4 Video v3" },
@@ -629,6 +718,10 @@ static struct
     /* Sorenson v1 */
     { VLC_FOURCC('S','V','Q','1'), CODEC_ID_SVQ1,
       VIDEO_ES, "SVQ-1 (Sorenson Video v1)" },
+    { VLC_FOURCC('s','v','q','1'), CODEC_ID_SVQ1,
+      VIDEO_ES, "SVQ-1 (Sorenson Video v1)" },
+    { VLC_FOURCC('s','v','q','i'), CODEC_ID_SVQ1,
+      VIDEO_ES, "SVQ-1 (Sorenson Video v1)" },
 
     /* Sorenson v3 */
     { VLC_FOURCC('S','V','Q','3'), CODEC_ID_SVQ3,
@@ -636,35 +729,53 @@ static struct
 
     /* h264 */
     { VLC_FOURCC('h','2','6','4'), CODEC_ID_H264,
-      VIDEO_ES, "h264" },
+      VIDEO_ES, "H264 - MPEG-4 AVC (part 10)" },
     { VLC_FOURCC('H','2','6','4'), CODEC_ID_H264,
-      VIDEO_ES, "h264" },
+      VIDEO_ES, "H264 - MPEG-4 AVC (part 10)" },
     { VLC_FOURCC('x','2','6','4'), CODEC_ID_H264,
-      VIDEO_ES, "h264" },
+      VIDEO_ES, "H264 - MPEG-4 AVC (part 10)" },
     { VLC_FOURCC('X','2','6','4'), CODEC_ID_H264,
-      VIDEO_ES, "h264" },
+      VIDEO_ES, "H264 - MPEG-4 AVC (part 10)" },
     /* avc1: special case h264 */
     { VLC_FOURCC('a','v','c','1'), CODEC_ID_H264,
-      VIDEO_ES, "h264" },
+      VIDEO_ES, "H264 - MPEG-4 AVC (part 10)" },
+    { VLC_FOURCC('A','V','C','1'), CODEC_ID_H264,
+      VIDEO_ES, "H264 - MPEG-4 AVC (part 10)" },
     { VLC_FOURCC('V','S','S','H'), CODEC_ID_H264,
-      VIDEO_ES, "h264" },
+      VIDEO_ES, "Vanguard VSS H264" },
+    { VLC_FOURCC('V','S','S','W'), CODEC_ID_H264,
+      VIDEO_ES, "Vanguard VSS H264" },
     { VLC_FOURCC('v','s','s','h'), CODEC_ID_H264,
-      VIDEO_ES, "h264" },
+      VIDEO_ES, "Vanguard VSS H264" },
+    { VLC_FOURCC('D','A','V','C'), CODEC_ID_H264,
+      VIDEO_ES, "Dicas MPEGable H.264/MPEG-4 AVC" },
+    { VLC_FOURCC('d','a','v','c'), CODEC_ID_H264,
+      VIDEO_ES, "Dicas MPEGable H.264/MPEG-4 AVC" },
 
 /* H263 and H263i */
 /* H263(+) is also known as Real Video 1.0 */
 
-/* FIXME FOURCC_H263P exist but what fourcc ? */
-
     /* H263 */
+    { VLC_FOURCC('D','2','6','3'), CODEC_ID_H263,
+      VIDEO_ES, "DEC H263" },
     { VLC_FOURCC('H','2','6','3'), CODEC_ID_H263,
       VIDEO_ES, "H263" },
     { VLC_FOURCC('h','2','6','3'), CODEC_ID_H263,
       VIDEO_ES, "H263" },
-    { VLC_FOURCC('U','2','6','3'), CODEC_ID_H263,
+    { VLC_FOURCC('L','2','6','3'), CODEC_ID_H263,
+      VIDEO_ES, "LEAD H263" },
+    { VLC_FOURCC('s','2','6','3'), CODEC_ID_H263,
+      VIDEO_ES, "H263" },
+    { VLC_FOURCC('S','2','6','3'), CODEC_ID_H263,
       VIDEO_ES, "H263" },
     { VLC_FOURCC('M','2','6','3'), CODEC_ID_H263,
-      VIDEO_ES, "H263" },
+      VIDEO_ES, "Microsoft H263" },
+    { VLC_FOURCC('X','2','6','3'), CODEC_ID_H263,
+      VIDEO_ES, "Xirlink H263" },
+
+    /* Zygo (partial) */
+    { VLC_FOURCC('Z','y','G','o'), CODEC_ID_H263,
+      VIDEO_ES, "ITU H263+" },
 
     /* H263i */
     { VLC_FOURCC('I','2','6','3'), CODEC_ID_H263I,
@@ -672,12 +783,26 @@ static struct
     { VLC_FOURCC('i','2','6','3'), CODEC_ID_H263I,
       VIDEO_ES, "I263.I" },
 
+    /* H263P */
+    { VLC_FOURCC('v','i','v','1'), CODEC_ID_H263P,
+      VIDEO_ES, "H263+" },
+    { VLC_FOURCC('v','i','v','O'), CODEC_ID_H263P,
+      VIDEO_ES, "H263+" },
+    { VLC_FOURCC('v','i','v','2'), CODEC_ID_H263P,
+      VIDEO_ES, "H263+" },
+    { VLC_FOURCC('U','2','6','3'), CODEC_ID_H263P,
+      VIDEO_ES, "UB H263+" },
+    { VLC_FOURCC('I','L','V','R'), CODEC_ID_H263P,
+      VIDEO_ES, "ITU H263+" },
+
     /* Flash (H263) variant */
     { VLC_FOURCC('F','L','V','1'), CODEC_ID_FLV1,
       VIDEO_ES, "Flash Video" },
 
 #if LIBAVCODEC_BUILD > 4716
     { VLC_FOURCC('H','2','6','1'), CODEC_ID_H261,
+      VIDEO_ES, "H.261" },
+    { VLC_FOURCC('h','2','6','1'), CODEC_ID_H261,
       VIDEO_ES, "H.261" },
 #endif
 
@@ -704,9 +829,33 @@ static struct
 
     { VLC_FOURCC( 'm', 'j', 'p', 'b' ), CODEC_ID_MJPEGB, /* for mov file */
       VIDEO_ES, "Motion JPEG B Video" },
+      
+    { VLC_FOURCC( 'L','J','P','G' ), CODEC_ID_LJPEG,
+      VIDEO_ES, "Lead Motion JPEG Video" },
+    { VLC_FOURCC( 'L','J','P','G' ), CODEC_ID_MJPEG,
+      VIDEO_ES, "Lead Motion JPEG Video" },
+    /* AVID MJPEG */
+    { VLC_FOURCC( 'A','V','R','n' ), CODEC_ID_MJPEG,
+      VIDEO_ES, "Avid Motion JPEG" },
+    { VLC_FOURCC( 'A','D','J','V' ), CODEC_ID_MJPEG,
+      VIDEO_ES, "Avid Motion JPEG" },
+    { VLC_FOURCC( 'd','m','b','1' ), CODEC_ID_MJPEG,
+      VIDEO_ES, "Motion JPEG OpenDML Video" },
 
 #if LIBAVCODEC_BUILD > 4680
     { VLC_FOURCC( 'S', 'P', '5', 'X' ), CODEC_ID_SP5X,
+      VIDEO_ES, "Sunplus Motion JPEG Video" },
+    { VLC_FOURCC( 'S','P','5','3' ), CODEC_ID_SP5X,
+      VIDEO_ES, "Sunplus Motion JPEG Video" },
+    { VLC_FOURCC( 'S','P','5','4' ), CODEC_ID_SP5X,
+      VIDEO_ES, "Sunplus Motion JPEG Video" },
+    { VLC_FOURCC( 'S','P','5','5' ), CODEC_ID_SP5X,
+      VIDEO_ES, "Sunplus Motion JPEG Video" },
+    { VLC_FOURCC( 'S','P','5','6' ), CODEC_ID_SP5X,
+      VIDEO_ES, "Sunplus Motion JPEG Video" },
+    { VLC_FOURCC( 'S','P','5','7' ), CODEC_ID_SP5X,
+      VIDEO_ES, "Sunplus Motion JPEG Video" },
+    { VLC_FOURCC( 'S','P','5','8' ), CODEC_ID_SP5X,
       VIDEO_ES, "Sunplus Motion JPEG Video" },
 #endif
 
@@ -729,16 +878,32 @@ static struct
       VIDEO_ES, "DV Video Pro PAL" },
     { VLC_FOURCC('C','D','V','C'), CODEC_ID_DVVIDEO,
       VIDEO_ES, "DV Video" },
+    { VLC_FOURCC('c','d','v','c'), CODEC_ID_DVVIDEO,
+      VIDEO_ES, "DV Video" },
+    { VLC_FOURCC('d','v','5','p'), CODEC_ID_DVVIDEO,
+      VIDEO_ES, "DV Video C Pro 50 PAL" },
+    { VLC_FOURCC('d','v','5','n'), CODEC_ID_DVVIDEO,
+      VIDEO_ES, "DV Video C Pro 50 NTSC" },
+    { VLC_FOURCC('A','V','d','v'), CODEC_ID_DVVIDEO,
+      VIDEO_ES, "AVID DV" },
 
     /* Windows Media Video */
     { VLC_FOURCC('W','M','V','1'), CODEC_ID_WMV1,
       VIDEO_ES, "Windows Media Video 1" },
+    { VLC_FOURCC('w','m','v','1'), CODEC_ID_WMV1,
+      VIDEO_ES, "Windows Media Video 1" },
     { VLC_FOURCC('W','M','V','2'), CODEC_ID_WMV2,
+      VIDEO_ES, "Windows Media Video 2" },
+    { VLC_FOURCC('w','m','v','2'), CODEC_ID_WMV2,
       VIDEO_ES, "Windows Media Video 2" },
 #if LIBAVCODEC_BUILD >= ((51<<16)+(10<<8)+1)
     { VLC_FOURCC('W','M','V','3'), CODEC_ID_WMV3,
       VIDEO_ES, "Windows Media Video 3" },
+    { VLC_FOURCC('w','m','v','3'), CODEC_ID_WMV3,
+      VIDEO_ES, "Windows Media Video 3" },
     { VLC_FOURCC('W','V','C','1'), CODEC_ID_VC1,
+      VIDEO_ES, "Windows Media Video VC1" },
+    { VLC_FOURCC('w','v','c','1'), CODEC_ID_VC1,
       VIDEO_ES, "Windows Media Video VC1" },
 #endif
 #if 0
@@ -766,7 +931,11 @@ static struct
     /* Microsoft RLE */
     { VLC_FOURCC('m','r','l','e'), CODEC_ID_MSRLE,
       VIDEO_ES, "Microsoft RLE Video" },
+    { VLC_FOURCC('W','R','L','E'), CODEC_ID_MSRLE,
+      VIDEO_ES, "Microsoft RLE Video" },
     { VLC_FOURCC(0x1,0x0,0x0,0x0), CODEC_ID_MSRLE,
+      VIDEO_ES, "Microsoft RLE Video" },
+    { VLC_FOURCC(0x2,0x0,0x0,0x0), CODEC_ID_MSRLE,
       VIDEO_ES, "Microsoft RLE Video" },
 #endif
 
@@ -788,9 +957,13 @@ static struct
     /* Huff YUV */
     { VLC_FOURCC('H','F','Y','U'), CODEC_ID_HUFFYUV,
       VIDEO_ES, "Huff YUV Video" },
+    { VLC_FOURCC('F','F','V','H'), CODEC_ID_FFVHUFF,
+      VIDEO_ES, "Huff YUV Video" },
 
     /* Creative YUV */
     { VLC_FOURCC('C','Y','U','V'), CODEC_ID_CYUV,
+      VIDEO_ES, "Creative YUV Video" },
+    { VLC_FOURCC('c','y','u','v'), CODEC_ID_CYUV,
       VIDEO_ES, "Creative YUV Video" },
 
     /* On2 VP3 Video Codecs */
@@ -823,9 +996,16 @@ static struct
       VIDEO_ES, "On2's VP6.1 Video" },
 #endif
 
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(47<<8)+0)
+    { VLC_FOURCC('V','P','6','A'), CODEC_ID_VP6A,
+      VIDEO_ES, "On2's VP6 A Video" },
+#endif
+
 #if LIBAVCODEC_BUILD >= 4685
     /* Xiph.org theora */
     { VLC_FOURCC('t','h','e','o'), CODEC_ID_THEORA,
+      VIDEO_ES, "Xiph.org's Theora Video" },
+    { VLC_FOURCC('T','h','r','a'), CODEC_ID_THEORA,
       VIDEO_ES, "Xiph.org's Theora Video" },
 #endif
 
@@ -852,10 +1032,16 @@ static struct
     /* Real Video */
     { VLC_FOURCC('R','V','1','0'), CODEC_ID_RV10,
       VIDEO_ES, "Real Video 10" },
+    { VLC_FOURCC('r','v','1','0'), CODEC_ID_RV10,
+      VIDEO_ES, "Real Video 10" },
     { VLC_FOURCC('R','V','1','3'), CODEC_ID_RV10,
+      VIDEO_ES, "Real Video 13" },
+    { VLC_FOURCC('r','v','1','3'), CODEC_ID_RV10,
       VIDEO_ES, "Real Video 13" },
 #if LIBAVCODEC_BUILD >= ((51<<16)+(15<<8)+1)
     { VLC_FOURCC('R','V','2','0'), CODEC_ID_RV20,
+      VIDEO_ES, "Real Video 20" },
+    { VLC_FOURCC('r','v','2','0'), CODEC_ID_RV20,
       VIDEO_ES, "Real Video 20" },
 #endif
 
@@ -863,27 +1049,56 @@ static struct
     /* Apple Video */
     { VLC_FOURCC('r','p','z','a'), CODEC_ID_RPZA,
       VIDEO_ES, "Apple Video" },
+    { VLC_FOURCC('a','z','p','r'), CODEC_ID_RPZA,
+      VIDEO_ES, "Apple Video" },
 
     { VLC_FOURCC('s','m','c',' '), CODEC_ID_SMC,
       VIDEO_ES, "Apple graphics" },
 
     /* Cinepak */
+    { VLC_FOURCC('C','V','I','D'), CODEC_ID_CINEPAK,
+      VIDEO_ES, "Cinepak Video" },
     { VLC_FOURCC('c','v','i','d'), CODEC_ID_CINEPAK,
       VIDEO_ES, "Cinepak Video" },
 
     /* Id Quake II CIN */
     { VLC_FOURCC('I','D','C','I'), CODEC_ID_IDCIN,
       VIDEO_ES, "Id Quake II CIN Video" },
-#endif
 
+    /* Screen Capture Video Codecs */
+    { VLC_FOURCC('t','s','c','c'), CODEC_ID_TSCC,
+      VIDEO_ES, "TechSmith Camtasia Screen Capture Video" },
+    { VLC_FOURCC('T','S','C','C'), CODEC_ID_TSCC,
+      VIDEO_ES, "TechSmith Camtasia Screen Capture Video" },
+
+    { VLC_FOURCC('C','S','C','D'), CODEC_ID_CSCD,
+      VIDEO_ES, "CamStudio Screen Codec" },
+    { VLC_FOURCC('c','s','c','d'), CODEC_ID_CSCD,
+      VIDEO_ES, "CamStudio Screen Codec" },
+
+    { VLC_FOURCC('Z','M','B','V'), CODEC_ID_ZMBV,
+      VIDEO_ES, "DosBox Capture Codec" },
+
+    { VLC_FOURCC('F','P','S','1'), CODEC_ID_FRAPS,
+      VIDEO_ES, "FRAPS: Realtime Video Capture" },
+    { VLC_FOURCC('f','p','s','1'), CODEC_ID_FRAPS,
+      VIDEO_ES, "FRAPS: Realtime Video Capture" },
     /* 4X Technologies */
     { VLC_FOURCC('4','x','m','v'), CODEC_ID_4XM,
       VIDEO_ES, "4X Technologies Video" },
+
+#endif
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(13<<8)+0)
+    { VLC_FOURCC('V','M','n','c'), CODEC_ID_VMNC,
+      VIDEO_ES, "VMware Video" },
+#endif
 
 #if LIBAVCODEC_BUILD >= 4694
     /* Duck TrueMotion */
     { VLC_FOURCC('D','U','C','K'), CODEC_ID_TRUEMOTION1,
       VIDEO_ES, "Duck TrueMotion v1 Video" },
+    { VLC_FOURCC('T','M','2','0'), CODEC_ID_TRUEMOTION2,
+      VIDEO_ES, "Duck TrueMotion v2.0 Video" },
 #endif
 
     /* Interplay MVE */
@@ -908,6 +1123,8 @@ static struct
     /* FFMPEG's SNOW wavelet codec */
     { VLC_FOURCC('S','N','O','W'), CODEC_ID_SNOW,
       VIDEO_ES, "FFMpeg SNOW wavelet Video" },
+    { VLC_FOURCC('s','n','o','w'), CODEC_ID_SNOW,
+      VIDEO_ES, "FFMpeg SNOW wavelet Video" },
 #endif
 
 #if LIBAVCODEC_BUILD >= 4752
@@ -929,6 +1146,8 @@ static struct
 
     { VLC_FOURCC('V','I','X','L'), CODEC_ID_VIXL,
       VIDEO_ES, "Miro/Pinnacle VideoXL Video" },
+    { VLC_FOURCC('P','I','X','L'), CODEC_ID_VIXL,
+      VIDEO_ES, "Pinnacle VideoXL Video" },
 
     { VLC_FOURCC('L','O','C','O'), CODEC_ID_LOCO,
       VIDEO_ES, "LOCO Video" },
@@ -946,11 +1165,84 @@ static struct
       VIDEO_ES, "Indeo Video v2" },
 #endif
 
+        /* Flash Screen Video */
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(11<<8)+0)
+    { VLC_FOURCC('F','S','V','1'), CODEC_ID_FLASHSV,
+              VIDEO_ES, "Flash Screen Video" },
+#endif
+   { VLC_FOURCC('K','M','V','C'), CODEC_ID_KMVC,
+      VIDEO_ES, "Karl Morton's Video Codec (Worms)" },
+
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(13<<8)+0)
+    { VLC_FOURCC('N','U','V','1'), CODEC_ID_NUV,
+      VIDEO_ES, "Nuppel Video" },
+    { VLC_FOURCC('R','J','P','G'), CODEC_ID_NUV,
+      VIDEO_ES, "Nuppel Video" },
+#endif
+
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(8<<8)+0)
+    /* CODEC_ID_SMACKVIDEO */
+    { VLC_FOURCC('S','M','K','2'), CODEC_ID_SMACKVIDEO,
+      VIDEO_ES, "Smacker Video" },
+    { VLC_FOURCC('S','M','K','4'), CODEC_ID_SMACKVIDEO,
+      VIDEO_ES, "Smacker Video" },
+#endif
+
 #if LIBAVCODEC_BUILD >= ((51<<16)+(13<<8)+0)
     { VLC_FOURCC('V','M','n','c'), CODEC_ID_VMNC,
       VIDEO_ES, "VMware Video" },
 #endif
 
+    /* Chinese AVS - Untested */
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(8<<8)+0)
+    { VLC_FOURCC('C','A','V','S'), CODEC_ID_CAVS,
+      VIDEO_ES, "Chinese AVS" },
+#endif
+
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(40<<8)+0)
+    /* Untested yet */
+    { VLC_FOURCC('A','V','d','n'), CODEC_ID_DNXHD,
+      VIDEO_ES, "DNxHD" },
+#endif
+    { VLC_FOURCC('8','B','P','S'), CODEC_ID_8BPS,
+      VIDEO_ES, "8BPS" },
+
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(52<<8)+0)
+    { VLC_FOURCC('M','L','2','O'), CODEC_ID_MIMIC,
+      VIDEO_ES, "Mimic" },
+#endif
+
+    /* Videogames Codecs */
+
+    /* Interplay MVE */
+    { VLC_FOURCC('i','m','v','e'), CODEC_ID_INTERPLAY_VIDEO,
+      VIDEO_ES, "Interplay MVE Video" },
+    { VLC_FOURCC('I','N','P','V'), CODEC_ID_INTERPLAY_VIDEO,
+      VIDEO_ES, "Interplay MVE Video" },
+
+    /* Id Quake II CIN */
+    { VLC_FOURCC('I','D','C','I'), CODEC_ID_IDCIN,
+      VIDEO_ES, "Id Quake II CIN Video" },
+
+    /* 4X Technologies */
+    { VLC_FOURCC('4','x','m','v'), CODEC_ID_4XM,
+      VIDEO_ES, "4X Technologies Video" },
+    { VLC_FOURCC('4','X','M','V'), CODEC_ID_4XM,
+      VIDEO_ES, "4X Technologies Video" },
+
+    /* Id RoQ */
+    { VLC_FOURCC('R','o','Q','v'), CODEC_ID_ROQ,
+      VIDEO_ES, "Id RoQ Video" },
+
+    /* Sony Playstation MDEC */
+    { VLC_FOURCC('M','D','E','C'), CODEC_ID_MDEC,
+      VIDEO_ES, "PSX MDEC Video" },
+
+    /* Sierra VMD */
+    { VLC_FOURCC('v','m','d','v'), CODEC_ID_VMDVIDEO,
+      VIDEO_ES, "Sierra VMD Video" },
+    { VLC_FOURCC('V','M','D','V'), CODEC_ID_VMDVIDEO,
+      VIDEO_ES, "Sierra VMD Video" },
 
     /*
      *  Image codecs
@@ -967,11 +1259,30 @@ static struct
       VIDEO_ES, "PGM YUV Image" },
     { VLC_FOURCC('p','a','m',' '), CODEC_ID_PAM,
       VIDEO_ES, "PAM Image" },
+    { VLC_FOURCC('M','J','L','S'), CODEC_ID_JPEGLS,
+      VIDEO_ES, "PAM Image" },
 #endif
 
 #if LIBAVCODEC_BUILD >= ((51<<16)+(0<<8)+0)
     { VLC_FOURCC('b','m','p',' '), CODEC_ID_BMP,
       VIDEO_ES, "BMP Image" },
+#endif
+
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(40<<8)+1)
+    { VLC_FOURCC('t','i','f','f'), CODEC_ID_TIFF,
+      VIDEO_ES, "TIFF Image" },
+    { VLC_FOURCC('g','i','f',' '), CODEC_ID_GIF,
+      VIDEO_ES, "GIF Image" },
+    { VLC_FOURCC('t','g','a',' '), CODEC_ID_TARGA,
+      VIDEO_ES, "Truevision Targa Image" },
+    { VLC_FOURCC('m','t','g','a'), CODEC_ID_TARGA,
+      VIDEO_ES, "Truevision Targa Image" },
+    { VLC_FOURCC('M','T','G','A'), CODEC_ID_TARGA,
+      VIDEO_ES, "Truevision Targa Image" },
+#endif
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(40<<8)+3)
+    { VLC_FOURCC('s','g','i',' '), CODEC_ID_SGI,
+      VIDEO_ES, "SGI Image" },
 #endif
 
     /*
@@ -1002,8 +1313,23 @@ static struct
     { VLC_FOURCC('M','A','C','6'), CODEC_ID_MACE6,
       AUDIO_ES, "MACE-6 Audio" },
 
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(41<<8)+1)
+    /* MUSEPACK7 Audio */
+    { VLC_FOURCC('M','P','C',' '), CODEC_ID_MUSEPACK7,
+      AUDIO_ES, "MUSEPACK7 Audio" },
+#endif
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(48<<8)+0)
+    /* MUSEPACK8 Audio */
+    { VLC_FOURCC('M','P','C','K'), CODEC_ID_MUSEPACK8,
+      AUDIO_ES, "MUSEPACK8 Audio" },
+    { VLC_FOURCC('M','P','C','8'), CODEC_ID_MUSEPACK8,
+      AUDIO_ES, "MUSEPACK8 Audio" },
+#endif
+
     /* RealAudio 1.0 */
     { VLC_FOURCC('1','4','_','4'), CODEC_ID_RA_144,
+      AUDIO_ES, "RealAudio 1.0" },
+    { VLC_FOURCC('l','p','c','J'), CODEC_ID_RA_144,
       AUDIO_ES, "RealAudio 1.0" },
 
     /* RealAudio 2.0 */
@@ -1014,6 +1340,12 @@ static struct
     { VLC_FOURCC('m','p','g','a'), CODEC_ID_MP2,
       AUDIO_ES, "MPEG Audio layer 1/2" },
     { VLC_FOURCC('m','p','3',' '), CODEC_ID_MP3,
+      AUDIO_ES, "MPEG Audio layer 1/2/3" },
+    { VLC_FOURCC('.','m','p','3'), CODEC_ID_MP3,
+      AUDIO_ES, "MPEG Audio layer 1/2/3" },
+    { VLC_FOURCC('M','P','3',' '), CODEC_ID_MP3,
+      AUDIO_ES, "MPEG Audio layer 1/2/3" },
+    { VLC_FOURCC('L','A','M','E'), CODEC_ID_MP3,
       AUDIO_ES, "MPEG Audio layer 1/2/3" },
 
     /* A52 Audio (aka AC3) */
@@ -1032,9 +1364,17 @@ static struct
     { VLC_FOURCC('m','p','4','a'), CODEC_ID_AAC,
       AUDIO_ES, "MPEG AAC Audio" },
 
+    /* AC-3 Audio (Dolby Digital) */
+    { VLC_FOURCC('a','c','-','3'), CODEC_ID_AC3,
+      AUDIO_ES, "AC-3 Audio (Dolby Digital)" },
+
     /* 4X Technologies */
     { VLC_FOURCC('4','x','m','a'), CODEC_ID_ADPCM_4XM,
       AUDIO_ES, "4X Technologies Audio" },
+
+    /* EA ADPCM */
+    { VLC_FOURCC('A','D','E','A'), CODEC_ID_ADPCM_EA,
+      AUDIO_ES, "EA ADPCM Audio" },
 
     /* Interplay DPCM */
     { VLC_FOURCC('i','d','p','c'), CODEC_ID_INTERPLAY_DPCM,
@@ -1043,6 +1383,12 @@ static struct
     /* Id RoQ */
     { VLC_FOURCC('R','o','Q','a'), CODEC_ID_ROQ_DPCM,
       AUDIO_ES, "Id RoQ DPCM Audio" },
+
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(27<<8)+0)
+    /* DCIN Audio */
+    { VLC_FOURCC('D','C','I','A'), CODEC_ID_DSICINAUDIO,
+      AUDIO_ES, "Delphine CIN Audio" },
+#endif
 
 #if LIBAVCODEC_BUILD >= 4685
     /* Sony Playstation XA ADPCM */
@@ -1053,6 +1399,10 @@ static struct
     { VLC_FOURCC('a','d','x',' '), CODEC_ID_ADPCM_ADX,
       AUDIO_ES, "ADX ADPCM Audio" },
 #endif
+
+    /* Westwood ADPCM */
+    { VLC_FOURCC('A','I','W','S'), CODEC_ID_ADPCM_IMA_WS,
+      AUDIO_ES, "Westwood IMA ADPCM audio" },
 
 #if LIBAVCODEC_BUILD >= 4699
     /* Sierra VMD */
@@ -1112,8 +1462,42 @@ static struct
 
 #if LIBAVCODEC_BUILD >= ((51<<16)+(16<<8)+0)
     /* WavPack */
+    { VLC_FOURCC('w','v','p','k'), CODEC_ID_WAVPACK,
+      AUDIO_ES, "WavPack" },
     { VLC_FOURCC('W','V','P','K'), CODEC_ID_WAVPACK,
-      AUDIO_ES, "WavPack Lossless Audio" },
+      AUDIO_ES, "WavPack" },
+#endif
+
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(34<<8)+0)
+    { VLC_FOURCC('g','s','m',' '), CODEC_ID_GSM,
+      AUDIO_ES, "GSM Audio" },
+    { VLC_FOURCC('g','s','m','s'), CODEC_ID_GSM_MS,
+      AUDIO_ES, "Microsoft GSM Audio" },
+#endif
+
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(40<<8)+4)
+    { VLC_FOURCC('a','t','r','c'), CODEC_ID_ATRAC3,
+      AUDIO_ES, "atrac 3" },
+    { VLC_FOURCC(0x70,0x2,0x0,0x0), CODEC_ID_ATRAC3,
+      AUDIO_ES, "atrac 3" },
+#endif
+
+    { VLC_FOURCC('S','O','N','C'), CODEC_ID_SONIC,
+      AUDIO_ES, "Sonic" },
+
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(34<<8)+0)
+    { VLC_FOURCC(0x1,0x4,0x0,0x0), CODEC_ID_IMC,
+      AUDIO_ES, "IMC" },
+#endif
+    { VLC_FOURCC(0x22,0x0,0x0,0x0), CODEC_ID_TRUESPEECH,
+      AUDIO_ES, "TrueSpeech" },
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(46<<8)+0)
+    { VLC_FOURCC('N','E','L','L'), CODEC_ID_NELLYMOSER,
+      AUDIO_ES, "NellyMoser ASAO" },
+#endif
+#if LIBAVCODEC_VERSION_INT >= ((51<<16)+(44<<8)+0)
+    { VLC_FOURCC('A','P','E',' '), CODEC_ID_APE,
+      AUDIO_ES, "Monkey's Audio" },
 #endif
 
     /* PCM */
@@ -1148,6 +1532,8 @@ static struct
     { VLC_FOURCC('a','l','a','w'), CODEC_ID_PCM_ALAW,
       AUDIO_ES, "PCM ALAW" },
     { VLC_FOURCC('u','l','a','w'), CODEC_ID_PCM_MULAW,
+      AUDIO_ES, "PCM ULAW" },
+    { VLC_FOURCC('d','a','u','d'), CODEC_ID_PCM_S24DAUD,
       AUDIO_ES, "PCM ULAW" },
 
     {0}

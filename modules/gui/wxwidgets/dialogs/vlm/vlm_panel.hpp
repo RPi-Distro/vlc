@@ -2,7 +2,7 @@
  * vlm_panel.hpp: Header for the VLM panel
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: vlm_panel.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 41a2845acdd173219a04ec9c3f42217fc55bfcdc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

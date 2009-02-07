@@ -2,7 +2,7 @@
  * blend.c: alpha blend 2 pictures together
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: blend.c 14221 2006-02-11 03:04:42Z hartman $
+ * $Id: 16477b6ff92349827bbdb56e73aa7179ebdd31f3 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *

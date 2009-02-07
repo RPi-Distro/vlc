@@ -3,7 +3,7 @@
  * This header provides portable declarations for mutexes & conditions
  *****************************************************************************
  * Copyright (C) 1999, 2002 the VideoLAN team
- * $Id: vlc_threads.h 14104 2006-02-01 13:01:06Z sam $
+ * $Id: 913c89ad9bcfdac2d0786aae6bdbc5440302d9f8 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>

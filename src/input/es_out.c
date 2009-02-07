@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: es_out.c 19719 2007-04-06 18:03:48Z massiot $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -142,6 +142,13 @@ es_out_t *input_EsOutNew( input_thread_t *p_input )
     es_out_sys_t *p_sys = malloc( sizeof( es_out_sys_t ) );
     vlc_value_t  val;
     int i;
+
+    if( !out ) return NULL;
+    if( !p_sys )
+    {
+        free( out );
+        return NULL;
+    }
 
     out->pf_add     = EsOutAdd;
     out->pf_send    = EsOutSend;
@@ -485,6 +492,7 @@ static es_out_pgrm_t *EsOutProgramAdd( es_out_t *out, int i_group )
     vlc_value_t       val;
 
     es_out_pgrm_t *p_pgrm = malloc( sizeof( es_out_pgrm_t ) );
+    if( !p_pgrm ) return NULL;
 
     /* Init */
     p_pgrm->i_id = i_group;
@@ -570,6 +578,8 @@ static void EsOutProgramMeta( es_out_t *out, int i_group, vlc_meta_t *p_meta )
     char              *psz_now_playing = NULL;
     char              *psz_provider = NULL;
     int i;
+
+    if( !psz_cat ) return;
 
     msg_Dbg( p_input, "EsOutProgramMeta: number=%d", i_group );
     sprintf( psz_cat, "%s %d", _("Program"), i_group );
@@ -657,9 +667,12 @@ static es_out_id_t *EsOutAdd( es_out_t *out, es_format_t *fmt )
     es_out_pgrm_t     *p_pgrm = NULL;
     int i;
 
+    if( !es ) return NULL;
+
     if( fmt->i_group < 0 )
     {
         msg_Err( p_input, "invalid group number" );
+        free( es );
         return NULL;
     }
 

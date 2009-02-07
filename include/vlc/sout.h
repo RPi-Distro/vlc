@@ -2,7 +2,7 @@
  * sout.h: video output header for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: sout.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: de3665c4a3dfb5a9ba663fdad13b2bc6a6068754 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

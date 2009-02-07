@@ -2,7 +2,7 @@
  * macros.h : Macros mapping for the HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: macros.h 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: c629bf1f7c0f01e077c3c2bc8b8ec0949692fe0f $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>

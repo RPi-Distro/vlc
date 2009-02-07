@@ -2,7 +2,7 @@
  * mosaic.h:
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: mosaic.h 14356 2006-02-17 22:10:56Z dionoea $
+ * $Id: 81af77c9154eae60a197f955bb427783169f4b20 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>

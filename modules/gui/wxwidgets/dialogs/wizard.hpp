@@ -2,7 +2,7 @@
  * wizard.hpp: Stream wizard headers
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: wizard.hpp 17452 2006-11-04 14:42:23Z md $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: playlist.m 17568 2006-11-09 13:31:33Z fkuehne $
+ * $Id: 93929e4ed85fbbdcc30e1ec55dd238db446e9fdc $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>

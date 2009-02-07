@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc-ka-0.8.6-2\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2008-02-25 22:19+0000\n"
+"POT-Creation-Date: 2008-06-03 17:16+0200\n"
 "PO-Revision-Date: 2006-11-29 20:16+0100\n"
 "Last-Translator: Alexander Didebulidze <didebuli@in.tum.de>\n"
 "Language-Team: Georgian <geognome@googlegroups.com>\n"
@@ -17,6 +17,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: KBabel 1.11.4\n"
+
+#: include/vlc/vlc.h:578
+msgid ""
+"This program comes with NO WARRANTY, to the extent permitted by law.\n"
+"You may redistribute it under the terms of the GNU General Public License;\n"
+"see the file named COPYING for details.\n"
+"Written by the VideoLAN team; see the AUTHORS file.\n"
+msgstr ""
 
 #: include/vlc_config_cat.h:32
 msgid "VLC preferences"
@@ -27,7 +35,7 @@ msgid "Select \"Advanced Options\" to see all options."
 msgstr ""
 
 #: include/vlc_config_cat.h:36 include/vlc_config_cat.h:127
-#: src/input/input.c:1902 src/input/input.c:1962 src/playlist/item.c:369
+#: src/input/input.c:1905 src/input/input.c:1965 src/playlist/item.c:333
 #: src/playlist/playlist.c:163 modules/gui/macosx/playlistinfo.m:62
 #: modules/gui/wince/playlist.cpp:674
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:82
@@ -67,7 +75,7 @@ msgstr "VLC-ს მართვის ინტერფეისის პა�
 msgid "Hotkeys settings"
 msgstr "ცხელი ღილაკების პარამეტრები"
 
-#: include/vlc_config_cat.h:54 src/input/es_out.c:1596 src/libvlc.h:1181
+#: include/vlc_config_cat.h:54 src/input/es_out.c:1609 src/libvlc.h:1181
 #: modules/gui/beos/InterfaceWindow.cpp:280 modules/gui/macosx/extended.m:81
 #: modules/gui/macosx/intf.m:566 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:96 modules/gui/macosx/wizard.m:421
@@ -121,7 +129,7 @@ msgstr "სხვადასხვა"
 msgid "Miscellaneous audio settings and modules."
 msgstr "სხვადასხვა აუდიო პარამეტრები და მოდულები."
 
-#: include/vlc_config_cat.h:75 src/input/es_out.c:1624 src/libvlc.h:1216
+#: include/vlc_config_cat.h:75 src/input/es_out.c:1637 src/libvlc.h:1216
 #: modules/gui/macosx/extended.m:80 modules/gui/macosx/intf.m:579
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:86
 #: modules/gui/macosx/wizard.m:422
@@ -436,9 +444,9 @@ msgid ""
 "to the directory where you installed VLC and run \"vlc -I wx\"\n"
 msgstr ""
 
-#: include/vlc_meta.h:28 modules/gui/macosx/playlistinfo.m:205
-#: modules/gui/macosx/playlistinfo.m:310 modules/gui/macosx/playlist.m:320
-#: modules/gui/macosx/playlist.m:1247 modules/misc/growl.c:166
+#: include/vlc_meta.h:28 modules/gui/macosx/playlist.m:320
+#: modules/gui/macosx/playlist.m:1247 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlistinfo.m:310 modules/misc/growl.c:166
 #: modules/misc/growl.c:169 modules/misc/notify.c:180
 #: modules/misc/notify.c:183 modules/visualization/goom.c:417
 msgid "Meta-information"
@@ -453,15 +461,15 @@ msgstr "Meta-ინფორმაცია"
 msgid "Title"
 msgstr "სათაური"
 
-#: include/vlc_meta.h:30 modules/gui/macosx/playlistinfo.m:58
-#: modules/gui/macosx/playlist.m:132 modules/gui/macosx/wizard.m:393
+#: include/vlc_meta.h:30 modules/gui/macosx/playlist.m:132
+#: modules/gui/macosx/playlistinfo.m:58 modules/gui/macosx/wizard.m:393
 #: modules/gui/wince/playlist.cpp:674 modules/mux/asf.c:50
 msgid "Author"
 msgstr "ავტორი"
 
-#: include/vlc_meta.h:31 modules/gui/macosx/playlistinfo.m:205
-#: modules/gui/macosx/playlistinfo.m:310 modules/gui/macosx/playlist.m:320
-#: modules/gui/macosx/playlist.m:1247
+#: include/vlc_meta.h:31 modules/gui/macosx/playlist.m:320
+#: modules/gui/macosx/playlist.m:1247 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlistinfo.m:310
 msgid "Artist"
 msgstr "შემსრულებელი"
 
@@ -503,7 +511,7 @@ msgstr "პარამეტრი"
 msgid "URL"
 msgstr "URL"
 
-#: include/vlc_meta.h:41 src/input/es_out.c:1588 src/libvlc.h:97
+#: include/vlc_meta.h:41 src/input/es_out.c:1601 src/libvlc.h:97
 #: modules/gui/beos/InterfaceWindow.cpp:276
 msgid "Language"
 msgstr "ენა"
@@ -609,17 +617,9 @@ msgstr "კოდეკის სახელი"
 msgid "Codec Description"
 msgstr "კოდეკის აღწერილობა"
 
-#: include/vlc/vlc.h:578
-msgid ""
-"This program comes with NO WARRANTY, to the extent permitted by law.\n"
-"You may redistribute it under the terms of the GNU General Public License;\n"
-"see the file named COPYING for details.\n"
-"Written by the VideoLAN team; see the AUTHORS file.\n"
-msgstr ""
-
 #: src/audio_output/input.c:80 src/audio_output/input.c:126
-#: src/input/es_out.c:362 src/libvlc.h:409 src/video_output/video_output.c:379
-#: modules/codec/ffmpeg/postprocess.c:94
+#: src/input/es_out.c:369 src/libvlc.h:409 src/video_output/video_output.c:379
+#: modules/codec/ffmpeg/postprocess.c:96
 msgid "Disable"
 msgstr "გამორთე"
 
@@ -747,87 +747,87 @@ msgstr ""
 msgid "Bookmark %i"
 msgstr "სანიშნე %i"
 
-#: src/input/es_out.c:384 src/input/es_out.c:386 src/input/es_out.c:392
-#: src/input/es_out.c:393 modules/access/cdda.c:593
+#: src/input/es_out.c:391 src/input/es_out.c:393 src/input/es_out.c:399
+#: src/input/es_out.c:400 modules/access/cdda.c:593
 #: modules/access/cdda/info.c:978 modules/access/cdda/info.c:1011
 #, c-format
 msgid "Track %i"
 msgstr "კვალი %i"
 
-#: src/input/es_out.c:466 src/input/es_out.c:468 src/input/es_out.c:568
-#: src/input/es_out.c:575 src/input/var.c:125 src/libvlc.h:435
+#: src/input/es_out.c:473 src/input/es_out.c:475 src/input/es_out.c:576
+#: src/input/es_out.c:585 src/input/var.c:125 src/libvlc.h:435
 #: modules/gui/macosx/intf.m:559 modules/gui/macosx/intf.m:560
 msgid "Program"
 msgstr "პროგრამა"
 
-#: src/input/es_out.c:1583 modules/codec/faad.c:329
+#: src/input/es_out.c:1596 modules/codec/faad.c:374
 #, c-format
 msgid "Stream %d"
 msgstr "ნაკადი %d"
 
-#: src/input/es_out.c:1585 modules/gui/macosx/wizard.m:426
+#: src/input/es_out.c:1598 modules/gui/macosx/wizard.m:426
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:832
 #: modules/gui/wxwidgets/dialogs/wizard.cpp:872
 msgid "Codec"
 msgstr "კოდეკი"
 
-#: src/input/es_out.c:1596 src/input/es_out.c:1624 src/input/es_out.c:1651
+#: src/input/es_out.c:1609 src/input/es_out.c:1637 src/input/es_out.c:1664
 #: modules/gui/macosx/output.m:153
 msgid "Type"
 msgstr "ტიპი"
 
-#: src/input/es_out.c:1599 modules/codec/faad.c:333
+#: src/input/es_out.c:1612 modules/codec/faad.c:379
 #: modules/gui/macosx/output.m:176
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:857
 msgid "Channels"
 msgstr "არხი"
 
-#: src/input/es_out.c:1604 modules/codec/faad.c:335
+#: src/input/es_out.c:1617 modules/codec/faad.c:381
 msgid "Sample rate"
 msgstr ""
 
-#: src/input/es_out.c:1605 modules/codec/faad.c:335
+#: src/input/es_out.c:1618 modules/codec/faad.c:381
 #, c-format
 msgid "%d Hz"
 msgstr "%d Hz"
 
-#: src/input/es_out.c:1611
+#: src/input/es_out.c:1624
 msgid "Bits per sample"
 msgstr ""
 
-#: src/input/es_out.c:1616 modules/access/pvr.c:93
+#: src/input/es_out.c:1629 modules/access/pvr.c:93
 #: modules/demux/playlist/b4s.c:349 modules/demux/playlist/shoutcast.c:472
 msgid "Bitrate"
 msgstr ""
 
-#: src/input/es_out.c:1617
+#: src/input/es_out.c:1630
 #, fuzzy, c-format
 msgid "%d kb/s"
 msgstr "%d kb/s"
 
-#: src/input/es_out.c:1628
+#: src/input/es_out.c:1641
 msgid "Resolution"
 msgstr "გარჩევადობა"
 
-#: src/input/es_out.c:1634
+#: src/input/es_out.c:1647
 msgid "Display resolution"
 msgstr "ეკრანის გარჩევადობა"
 
-#: src/input/es_out.c:1644 modules/access/screen/screen.c:41
+#: src/input/es_out.c:1657 modules/access/screen/screen.c:41
 msgid "Frame rate"
 msgstr "კადრი წამში"
 
-#: src/input/es_out.c:1651
+#: src/input/es_out.c:1664
 msgid "Subtitle"
 msgstr "ტიტრები"
 
-#: src/input/input.c:1916 src/input/input.c:1920
+#: src/input/input.c:1919 src/input/input.c:1923
 #: modules/gui/macosx/output.m:143 modules/gui/macosx/output.m:251
 #: modules/gui/macosx/output.m:391
 msgid "Stream"
 msgstr "ნაკადი"
 
-#: src/input/input.c:1962 src/playlist/item.c:369
+#: src/input/input.c:1965 src/playlist/item.c:333
 #: modules/access/cdda/info.c:326 modules/access/cdda/info.c:394
 #: modules/gui/macosx/playlist.m:133
 msgid "Duration"
@@ -938,8 +938,8 @@ msgstr ""
 msgid "Mouse Gestures"
 msgstr "თაგვის ჟესტიკულირება"
 
-#: src/libvlc.c:331 src/libvlc.c:479 src/misc/modules.c:1684
-#: src/misc/modules.c:1988
+#: src/libvlc.c:331 src/libvlc.c:479 src/misc/modules.c:1686
+#: src/misc/modules.c:1990
 msgid "C"
 msgstr "ka"
 
@@ -947,53 +947,53 @@ msgstr "ka"
 msgid "Help options"
 msgstr "დახმარების პარამეტრები"
 
-#: src/libvlc.c:2221 src/misc/configuration.c:1269
+#: src/libvlc.c:2199 src/misc/configuration.c:1270
 msgid "string"
 msgstr "string"
 
-#: src/libvlc.c:2238 src/misc/configuration.c:1233
+#: src/libvlc.c:2216 src/misc/configuration.c:1234
 msgid "integer"
 msgstr "integer"
 
-#: src/libvlc.c:2256 src/misc/configuration.c:1258
+#: src/libvlc.c:2234 src/misc/configuration.c:1259
 msgid "float"
 msgstr "float"
 
-#: src/libvlc.c:2262
+#: src/libvlc.c:2240
 msgid " (default enabled)"
 msgstr " (სტანდარტულად ჩართული)"
 
-#: src/libvlc.c:2263
+#: src/libvlc.c:2241
 msgid " (default disabled)"
 msgstr " (სტანდარტულად გამორთული)"
 
-#: src/libvlc.c:2445
+#: src/libvlc.c:2423
 #, c-format
 msgid "VLC version %s\n"
 msgstr "VLC ვერსია %s\n"
 
-#: src/libvlc.c:2446
+#: src/libvlc.c:2424
 #, c-format
 msgid "Compiled by %s@%s.%s\n"
 msgstr ""
 
-#: src/libvlc.c:2448
+#: src/libvlc.c:2426
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "კომპაილერი: %s\n"
 
-#: src/libvlc.c:2451
+#: src/libvlc.c:2429
 #, c-format
 msgid "Based upon svn changeset [%s]\n"
 msgstr ""
 
-#: src/libvlc.c:2483
+#: src/libvlc.c:2461
 msgid ""
 "\n"
 "Dumped content to vlc-help.txt file.\n"
 msgstr ""
 
-#: src/libvlc.c:2504
+#: src/libvlc.c:2482
 msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
@@ -1110,6 +1110,10 @@ msgstr "სლოვაკური"
 #: src/libvlc.h:43 src/misc/iso-639_def.h:162
 msgid "Slovenian"
 msgstr "სლოვენური"
+
+#: src/libvlc.h:43 src/misc/iso-639_def.h:158
+msgid "Serbian"
+msgstr "სერბული"
 
 #: src/libvlc.h:43 src/misc/iso-639_def.h:174
 msgid "Swedish"
@@ -3531,12 +3535,12 @@ msgstr ""
 msgid "print version information"
 msgstr "აჩვენე ინფორმაცია ვერსიაზე"
 
-#: src/misc/configuration.c:1233
+#: src/misc/configuration.c:1234
 #, fuzzy
 msgid "boolean"
 msgstr "ლოგიკური ოპერატორი boolean"
 
-#: src/misc/configuration.c:1244
+#: src/misc/configuration.c:1245
 msgid "key"
 msgstr "გასაღები"
 
@@ -3965,10 +3969,6 @@ msgstr "სანგო"
 msgid "Sanskrit"
 msgstr "სანსკრიტი"
 
-#: src/misc/iso-639_def.h:158
-msgid "Serbian"
-msgstr "სერბული"
-
 #: src/misc/iso-639_def.h:159
 msgid "Croatian"
 msgstr "ხორვატიული"
@@ -4218,7 +4218,7 @@ msgid "Aspect-ratio"
 msgstr "გვერდების შეფარდება"
 
 #: modules/access/cdda.c:52 modules/access/dshow/dshow.cpp:80
-#: modules/access/dvb/access.c:72 modules/access/dv.c:68
+#: modules/access/dv.c:68 modules/access/dvb/access.c:72
 #: modules/access/dvdnav.c:63 modules/access/dvdread.c:61
 #: modules/access/fake.c:40 modules/access/file.c:79 modules/access/ftp.c:42
 #: modules/access/gnomevfs.c:44 modules/access/http.c:53
@@ -4567,7 +4567,7 @@ msgid "Standard filesystem directory input"
 msgstr ""
 
 #: modules/access/dshow/dshow.cpp:73 modules/access/dshow/dshow.cpp:75
-#: modules/codec/ffmpeg/ffmpeg.c:75 modules/demux/mpc.c:55
+#: modules/codec/ffmpeg/ffmpeg.c:77 modules/demux/mpc.c:55
 #: modules/video_output/opengl.c:123 modules/video_output/opengl.c:174
 #, fuzzy
 msgid "None"
@@ -4735,6 +4735,18 @@ msgstr "სიის განახლება"
 #: modules/access/dshow/dshow.cpp:162 modules/access/dshow/dshow.cpp:167
 msgid "Configure"
 msgstr "კონფიგურირება"
+
+#: modules/access/dv.c:70
+msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
+msgstr ""
+
+#: modules/access/dv.c:74
+msgid "Digital Video (Firewire/ieee1394)  input"
+msgstr ""
+
+#: modules/access/dv.c:75
+msgid "dv"
+msgstr "dv"
 
 #: modules/access/dvb/access.c:74
 #, fuzzy
@@ -4970,18 +4982,6 @@ msgstr ""
 msgid "HTTP server"
 msgstr "HTTP სერვერი"
 
-#: modules/access/dv.c:70
-msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
-msgstr ""
-
-#: modules/access/dv.c:74
-msgid "Digital Video (Firewire/ieee1394)  input"
-msgstr ""
-
-#: modules/access/dv.c:75
-msgid "dv"
-msgstr "dv"
-
 #: modules/access/dvdnav.c:59 modules/access/dvdread.c:57
 msgid "DVD angle"
 msgstr "DVD კუთხე"
@@ -5129,65 +5129,6 @@ msgstr "ფაილ-შესავალი"
 msgid "File"
 msgstr "ფაილი"
 
-#: modules/access_filter/dump.c:39
-msgid "Force use of dump module"
-msgstr ""
-
-#: modules/access_filter/dump.c:40
-msgid "Activate the dump module even for media with fast seeking."
-msgstr ""
-
-#: modules/access_filter/dump.c:43
-msgid "Maximum size of temporary file (Mb)"
-msgstr ""
-
-#: modules/access_filter/dump.c:44
-msgid ""
-"The dump module will abort dumping of the media if more than this much "
-"megabyte were performed."
-msgstr ""
-
-#: modules/access_filter/record.c:43
-msgid "Record directory"
-msgstr "ჩანაწერების დირექტორია"
-
-#: modules/access_filter/record.c:45
-msgid "Directory where the record will be stored."
-msgstr ""
-
-#: modules/access_filter/timeshift.c:44
-msgid "Timeshift granularity"
-msgstr ""
-
-#: modules/access_filter/timeshift.c:46
-#, fuzzy
-msgid ""
-"This is the size of the temporary files tha will be used to store the "
-"timeshifted streams."
-msgstr "სიდიდე ის -სკენ."
-
-#: modules/access_filter/timeshift.c:48
-msgid "Timeshift directory"
-msgstr ""
-
-#: modules/access_filter/timeshift.c:49
-msgid "Directory used to store the timeshift temporary files."
-msgstr ""
-
-#: modules/access_filter/timeshift.c:51
-msgid "Force use of the timeshift module"
-msgstr ""
-
-#: modules/access_filter/timeshift.c:52
-msgid ""
-"Force use of the timeshift module even if the access declares that it can "
-"control pace or pause."
-msgstr ""
-
-#: modules/access_filter/timeshift.c:56 modules/access_filter/timeshift.c:57
-msgid "Timeshift"
-msgstr ""
-
 #: modules/access/ftp.c:44
 msgid ""
 "Caching value for FTP streams. This value should be set in milliseconds."
@@ -5305,162 +5246,20 @@ msgstr ""
 msgid "Select the stream with the maximum bitrate under that limit."
 msgstr ""
 
-#: modules/access/mms/mms.c:62
+#: modules/access/mms/mms.c:60
+#, fuzzy
+msgid "TCP/UDP timeout (ms)"
+msgstr "დაყოვნების დრო"
+
+#: modules/access/mms/mms.c:61
+msgid ""
+"Amount of time (in ms) to wait before aborting network reception of data. "
+"Note that there will be 10 retries before completely giving up."
+msgstr ""
+
+#: modules/access/mms/mms.c:65
 msgid "Microsoft Media Server (MMS) input"
 msgstr ""
-
-#: modules/access_output/dummy.c:40 modules/stream_out/dummy.c:47
-msgid "Dummy stream output"
-msgstr "ფიქტიური ნაკადის გასავალი"
-
-#: modules/access_output/dummy.c:41 modules/misc/dummy/dummy.c:58
-msgid "Dummy"
-msgstr "ფიქტიური"
-
-#: modules/access_output/file.c:61
-msgid "Append to file"
-msgstr ""
-
-#: modules/access_output/file.c:62
-msgid "Append to file if it exists instead of replacing it."
-msgstr ""
-
-#: modules/access_output/file.c:66
-msgid "File stream output"
-msgstr "ნაკადის ფაილში შენახვა"
-
-#: modules/access_output/http.c:60
-msgid "Username"
-msgstr "მომხმარებლის სახელი"
-
-#: modules/access_output/http.c:61
-msgid "User name that will be requested to access the stream."
-msgstr ""
-
-#: modules/access_output/http.c:64
-msgid "Password that will be requested to access the stream."
-msgstr ""
-
-#: modules/access_output/http.c:68
-msgid "Mime"
-msgstr "Mime"
-
-#: modules/access_output/http.c:69
-msgid "MIME returned by the server (autodetected if not specified."
-msgstr ""
-
-#: modules/access_output/http.c:73
-msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
-msgstr ""
-
-#: modules/access_output/http.c:76
-msgid ""
-"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
-"empty if you don't have one."
-msgstr ""
-
-#: modules/access_output/http.c:80
-msgid ""
-"Path to the x509 PEM trusted root CA certificates (certificate authority) "
-"file that will be used for HTTPS. Leave empty if you don't have one."
-msgstr ""
-
-#: modules/access_output/http.c:85
-msgid ""
-"Path to the x509 PEM Certificates Revocation List file that will be used for "
-"SSL. Leave empty if you don't have one."
-msgstr ""
-
-#: modules/access_output/http.c:88
-msgid "Advertise with Bonjour"
-msgstr ""
-
-#: modules/access_output/http.c:89
-msgid "Advertise the stream with the Bonjour protocol."
-msgstr ""
-
-#: modules/access_output/http.c:93
-msgid "HTTP stream output"
-msgstr "HTTP ნაკადის გასავალი"
-
-#: modules/access_output/shout.c:58
-msgid "Stream name"
-msgstr "ნაკადის სახელი"
-
-#: modules/access_output/shout.c:59
-#, fuzzy
-msgid "Name to give to this stream/channel on the icecast server."
-msgstr "სახელი -სკენ -სკენ."
-
-#: modules/access_output/shout.c:62
-msgid "Stream description"
-msgstr "ნაკადის აღწერა"
-
-#: modules/access_output/shout.c:63
-msgid "Description of the stream content or information about your channel."
-msgstr ""
-
-#: modules/access_output/shout.c:66
-msgid "Stream MP3"
-msgstr ""
-
-#: modules/access_output/shout.c:67
-msgid ""
-"You normally have to feed the shoutcast module with Ogg streams. It is also "
-"possible to stream MP3 instead, so you can forward MP3 streams to the "
-"icecast server."
-msgstr ""
-
-#: modules/access_output/shout.c:73
-msgid "IceCAST output"
-msgstr ""
-
-#: modules/access_output/udp.c:75 modules/access/rtsp/access.c:40
-#: modules/demux/live555.cpp:65
-msgid "Caching value (ms)"
-msgstr ""
-
-#: modules/access_output/udp.c:77
-msgid ""
-"Default caching value for outbound UDP streams. This value should be set in "
-"milliseconds."
-msgstr ""
-
-#: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
-#: modules/gui/macosx/wizard.m:1873
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:610
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:91
-msgid "Time-To-Live (TTL)"
-msgstr ""
-
-#: modules/access_output/udp.c:81
-msgid "Time-To-Live of the outgoing stream."
-msgstr ""
-
-#: modules/access_output/udp.c:84
-msgid "Group packets"
-msgstr ""
-
-#: modules/access_output/udp.c:85
-msgid ""
-"Packets can be sent one by one at the right time or by groups. You can "
-"choose the number of packets that will be sent at a time. It helps reducing "
-"the scheduling load on heavily-loaded systems."
-msgstr ""
-
-#: modules/access_output/udp.c:90
-msgid "Raw write"
-msgstr ""
-
-#: modules/access_output/udp.c:91
-msgid ""
-"Packets will be sent directly, without trying to fill the MTU (ie, without "
-"trying to make the biggest possible packets in order to improve streaming)."
-msgstr ""
-
-#: modules/access_output/udp.c:97
-msgid "UDP stream output"
-msgstr "UDP ნაკადის გასავალი"
 
 #: modules/access/pvr.c:58
 msgid ""
@@ -5619,6 +5418,11 @@ msgstr "PVR"
 
 #: modules/access/pvr.c:126
 msgid "IVTV MPEG Encoding cards input"
+msgstr ""
+
+#: modules/access/rtsp/access.c:40 modules/access_output/udp.c:75
+#: modules/demux/live555.cpp:65
+msgid "Caching value (ms)"
 msgstr ""
 
 #: modules/access/rtsp/access.c:42
@@ -6054,6 +5858,213 @@ msgstr ""
 #: modules/access/vcdx/vcd.c:143
 msgid "Format to use in the playlist's \"title\" field."
 msgstr ""
+
+#: modules/access_filter/dump.c:39
+msgid "Force use of dump module"
+msgstr ""
+
+#: modules/access_filter/dump.c:40
+msgid "Activate the dump module even for media with fast seeking."
+msgstr ""
+
+#: modules/access_filter/dump.c:43
+msgid "Maximum size of temporary file (Mb)"
+msgstr ""
+
+#: modules/access_filter/dump.c:44
+msgid ""
+"The dump module will abort dumping of the media if more than this much "
+"megabyte were performed."
+msgstr ""
+
+#: modules/access_filter/record.c:43
+msgid "Record directory"
+msgstr "ჩანაწერების დირექტორია"
+
+#: modules/access_filter/record.c:45
+msgid "Directory where the record will be stored."
+msgstr ""
+
+#: modules/access_filter/timeshift.c:44
+msgid "Timeshift granularity"
+msgstr ""
+
+#: modules/access_filter/timeshift.c:46
+#, fuzzy
+msgid ""
+"This is the size of the temporary files tha will be used to store the "
+"timeshifted streams."
+msgstr "სიდიდე ის -სკენ."
+
+#: modules/access_filter/timeshift.c:48
+msgid "Timeshift directory"
+msgstr ""
+
+#: modules/access_filter/timeshift.c:49
+msgid "Directory used to store the timeshift temporary files."
+msgstr ""
+
+#: modules/access_filter/timeshift.c:51
+msgid "Force use of the timeshift module"
+msgstr ""
+
+#: modules/access_filter/timeshift.c:52
+msgid ""
+"Force use of the timeshift module even if the access declares that it can "
+"control pace or pause."
+msgstr ""
+
+#: modules/access_filter/timeshift.c:56 modules/access_filter/timeshift.c:57
+msgid "Timeshift"
+msgstr ""
+
+#: modules/access_output/dummy.c:40 modules/stream_out/dummy.c:47
+msgid "Dummy stream output"
+msgstr "ფიქტიური ნაკადის გასავალი"
+
+#: modules/access_output/dummy.c:41 modules/misc/dummy/dummy.c:58
+msgid "Dummy"
+msgstr "ფიქტიური"
+
+#: modules/access_output/file.c:61
+msgid "Append to file"
+msgstr ""
+
+#: modules/access_output/file.c:62
+msgid "Append to file if it exists instead of replacing it."
+msgstr ""
+
+#: modules/access_output/file.c:66
+msgid "File stream output"
+msgstr "ნაკადის ფაილში შენახვა"
+
+#: modules/access_output/http.c:60
+msgid "Username"
+msgstr "მომხმარებლის სახელი"
+
+#: modules/access_output/http.c:61
+msgid "User name that will be requested to access the stream."
+msgstr ""
+
+#: modules/access_output/http.c:64
+msgid "Password that will be requested to access the stream."
+msgstr ""
+
+#: modules/access_output/http.c:68
+msgid "Mime"
+msgstr "Mime"
+
+#: modules/access_output/http.c:69
+msgid "MIME returned by the server (autodetected if not specified."
+msgstr ""
+
+#: modules/access_output/http.c:73
+msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
+msgstr ""
+
+#: modules/access_output/http.c:76
+msgid ""
+"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
+"empty if you don't have one."
+msgstr ""
+
+#: modules/access_output/http.c:80
+msgid ""
+"Path to the x509 PEM trusted root CA certificates (certificate authority) "
+"file that will be used for HTTPS. Leave empty if you don't have one."
+msgstr ""
+
+#: modules/access_output/http.c:85
+msgid ""
+"Path to the x509 PEM Certificates Revocation List file that will be used for "
+"SSL. Leave empty if you don't have one."
+msgstr ""
+
+#: modules/access_output/http.c:88
+msgid "Advertise with Bonjour"
+msgstr ""
+
+#: modules/access_output/http.c:89
+msgid "Advertise the stream with the Bonjour protocol."
+msgstr ""
+
+#: modules/access_output/http.c:93
+msgid "HTTP stream output"
+msgstr "HTTP ნაკადის გასავალი"
+
+#: modules/access_output/shout.c:58
+msgid "Stream name"
+msgstr "ნაკადის სახელი"
+
+#: modules/access_output/shout.c:59
+#, fuzzy
+msgid "Name to give to this stream/channel on the icecast server."
+msgstr "სახელი -სკენ -სკენ."
+
+#: modules/access_output/shout.c:62
+msgid "Stream description"
+msgstr "ნაკადის აღწერა"
+
+#: modules/access_output/shout.c:63
+msgid "Description of the stream content or information about your channel."
+msgstr ""
+
+#: modules/access_output/shout.c:66
+msgid "Stream MP3"
+msgstr ""
+
+#: modules/access_output/shout.c:67
+msgid ""
+"You normally have to feed the shoutcast module with Ogg streams. It is also "
+"possible to stream MP3 instead, so you can forward MP3 streams to the "
+"icecast server."
+msgstr ""
+
+#: modules/access_output/shout.c:73
+msgid "IceCAST output"
+msgstr ""
+
+#: modules/access_output/udp.c:77
+msgid ""
+"Default caching value for outbound UDP streams. This value should be set in "
+"milliseconds."
+msgstr ""
+
+#: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
+#: modules/gui/macosx/wizard.m:1873
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:610
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:91
+msgid "Time-To-Live (TTL)"
+msgstr ""
+
+#: modules/access_output/udp.c:81
+msgid "Time-To-Live of the outgoing stream."
+msgstr ""
+
+#: modules/access_output/udp.c:84
+msgid "Group packets"
+msgstr ""
+
+#: modules/access_output/udp.c:85
+msgid ""
+"Packets can be sent one by one at the right time or by groups. You can "
+"choose the number of packets that will be sent at a time. It helps reducing "
+"the scheduling load on heavily-loaded systems."
+msgstr ""
+
+#: modules/access_output/udp.c:90
+msgid "Raw write"
+msgstr ""
+
+#: modules/access_output/udp.c:91
+msgid ""
+"Packets will be sent directly, without trying to fill the MTU (ie, without "
+"trying to make the biggest possible packets in order to improve streaming)."
+msgstr ""
+
+#: modules/access_output/udp.c:97
+msgid "UDP stream output"
+msgstr "UDP ნაკადის გასავალი"
 
 #: modules/audio_filter/channel_mixer/dolby.c:47
 #, fuzzy
@@ -6791,7 +6802,7 @@ msgstr ""
 msgid "AAC audio decoder (using libfaad2)"
 msgstr ""
 
-#: modules/codec/faad.c:331
+#: modules/codec/faad.c:377
 msgid "AAC extension"
 msgstr ""
 
@@ -6854,79 +6865,79 @@ msgstr "გამოსაყენებელი დეინტერლა�
 msgid "Fake video decoder"
 msgstr "ვიდეო"
 
-#: modules/codec/ffmpeg/ffmpeg.c:75
+#: modules/codec/ffmpeg/ffmpeg.c:77
 msgid "Non-ref"
 msgstr ""
 
-#: modules/codec/ffmpeg/ffmpeg.c:75
+#: modules/codec/ffmpeg/ffmpeg.c:77
 msgid "Bidir"
 msgstr ""
 
-#: modules/codec/ffmpeg/ffmpeg.c:75
+#: modules/codec/ffmpeg/ffmpeg.c:77
 #, fuzzy
 msgid "Non-key"
 msgstr "გასაღები"
 
-#: modules/codec/ffmpeg/ffmpeg.c:75
+#: modules/codec/ffmpeg/ffmpeg.c:77
 msgid "All"
 msgstr "ყველა"
 
-#: modules/codec/ffmpeg/ffmpeg.c:78
+#: modules/codec/ffmpeg/ffmpeg.c:80
 msgid "rd"
 msgstr ""
 
-#: modules/codec/ffmpeg/ffmpeg.c:78
+#: modules/codec/ffmpeg/ffmpeg.c:80
 msgid "bits"
 msgstr ""
 
-#: modules/codec/ffmpeg/ffmpeg.c:78
+#: modules/codec/ffmpeg/ffmpeg.c:80
 msgid "simple"
 msgstr ""
 
-#: modules/codec/ffmpeg/ffmpeg.c:89
+#: modules/codec/ffmpeg/ffmpeg.c:91
 msgid ""
 "AltiVec FFmpeg audio/video decoder/encoder ((MS)MPEG4,SVQ1,H263,WMV,WMA)"
 msgstr ""
 
-#: modules/codec/ffmpeg/ffmpeg.c:93
+#: modules/codec/ffmpeg/ffmpeg.c:95
 #, fuzzy
 msgid "FFmpeg audio/video decoder/encoder ((MS)MPEG4,SVQ1,H263,WMV,WMA)"
 msgstr "FFmpeg აუდიო/ვიდეო ენკოდერი"
 
-#: modules/codec/ffmpeg/ffmpeg.c:96
+#: modules/codec/ffmpeg/ffmpeg.c:98
 msgid "Decoding"
 msgstr "დეკოდირება"
 
-#: modules/codec/ffmpeg/ffmpeg.c:127
+#: modules/codec/ffmpeg/ffmpeg.c:129
 msgid "FFmpeg chroma conversion"
 msgstr ""
 
-#: modules/codec/ffmpeg/ffmpeg.c:131
+#: modules/codec/ffmpeg/ffmpeg.c:133
 #: modules/gui/wxwidgets/dialogs/subtitles.cpp:97
 msgid "Encoding"
 msgstr "კოდირება"
 
-#: modules/codec/ffmpeg/ffmpeg.c:132
+#: modules/codec/ffmpeg/ffmpeg.c:134
 msgid "FFmpeg audio/video encoder"
 msgstr "FFmpeg აუდიო/ვიდეო ენკოდერი"
 
-#: modules/codec/ffmpeg/ffmpeg.c:190
+#: modules/codec/ffmpeg/ffmpeg.c:192
 msgid "FFmpeg demuxer"
 msgstr "FFmpeg დემუქსერი"
 
-#: modules/codec/ffmpeg/ffmpeg.c:196
+#: modules/codec/ffmpeg/ffmpeg.c:198
 msgid "FFmpeg muxer"
 msgstr "FFmpeg მუქსერი"
 
-#: modules/codec/ffmpeg/ffmpeg.c:204
+#: modules/codec/ffmpeg/ffmpeg.c:206
 msgid "FFmpeg video filter"
 msgstr "FFmpeg ვიდეო ფილტრი"
 
-#: modules/codec/ffmpeg/ffmpeg.c:210
+#: modules/codec/ffmpeg/ffmpeg.c:212
 msgid "FFmpeg crop padd filter"
 msgstr ""
 
-#: modules/codec/ffmpeg/ffmpeg.c:216
+#: modules/codec/ffmpeg/ffmpeg.c:218
 msgid "FFmpeg deinterlace video filter"
 msgstr ""
 
@@ -7311,16 +7322,16 @@ msgid ""
 "0.0). The H264 specification recommends 7."
 msgstr ""
 
-#: modules/codec/ffmpeg/postprocess.c:88 modules/gui/macosx/intf.m:599
+#: modules/codec/ffmpeg/postprocess.c:90 modules/gui/macosx/intf.m:599
 #: modules/gui/macosx/intf.m:600
 msgid "Post processing"
 msgstr ""
 
-#: modules/codec/ffmpeg/postprocess.c:96
+#: modules/codec/ffmpeg/postprocess.c:98
 msgid "1 (Lowest)"
 msgstr ""
 
-#: modules/codec/ffmpeg/postprocess.c:106
+#: modules/codec/ffmpeg/postprocess.c:108
 msgid "6 (Highest)"
 msgstr ""
 
@@ -7454,7 +7465,7 @@ msgstr ""
 msgid "Text subtitles decoder"
 msgstr "ტიტრების ტექსტის დეკოდერი"
 
-#: modules/codec/subsdec.c:366
+#: modules/codec/subsdec.c:370
 msgid ""
 "failed to convert subtitle encoding.\n"
 "Try manually setting a character-encoding before you open the file."
@@ -8416,465 +8427,465 @@ msgstr "NT სერვისი"
 msgid "Windows Service interface"
 msgstr "ფანჯრები სერვისი"
 
-#: modules/control/rc.c:158
+#: modules/control/rc.c:161
 msgid "Show stream position"
 msgstr "აჩვენე ნაკადის პოზიცია"
 
-#: modules/control/rc.c:159
+#: modules/control/rc.c:162
 msgid ""
 "Show the current position in seconds within the stream from time to time."
 msgstr ""
 
-#: modules/control/rc.c:162
+#: modules/control/rc.c:165
 msgid "Fake TTY"
 msgstr ""
 
-#: modules/control/rc.c:163
+#: modules/control/rc.c:166
 msgid "Force the rc module to use stdin as if it was a TTY."
 msgstr ""
 
-#: modules/control/rc.c:165
+#: modules/control/rc.c:168
 msgid "UNIX socket command input"
 msgstr ""
 
-#: modules/control/rc.c:166
+#: modules/control/rc.c:169
 msgid "Accept commands over a Unix socket rather than stdin."
 msgstr ""
 
-#: modules/control/rc.c:169
+#: modules/control/rc.c:172
 msgid "TCP command input"
 msgstr ""
 
-#: modules/control/rc.c:170
+#: modules/control/rc.c:173
 msgid ""
 "Accept commands over a socket rather than stdin. You can set the address and "
 "port the interface will bind to."
 msgstr ""
 
-#: modules/control/rc.c:174 modules/misc/dummy/dummy.c:49
+#: modules/control/rc.c:177 modules/misc/dummy/dummy.c:49
 #, fuzzy
 msgid "Do not open a DOS command box interface"
 msgstr "არა გახსნა a DOS"
 
-#: modules/control/rc.c:176
+#: modules/control/rc.c:179
 msgid ""
 "By default the rc interface plugin will start a DOS command box. Enabling "
 "the quiet mode will not bring this command box but can also be pretty "
 "annoying when you want to stop VLC and no video window is open."
 msgstr ""
 
-#: modules/control/rc.c:183
+#: modules/control/rc.c:186
 msgid "RC"
 msgstr ""
 
-#: modules/control/rc.c:186
+#: modules/control/rc.c:189
 msgid "Remote control interface"
 msgstr "დაშორებული კონტროლის ინტერფეისი"
 
-#: modules/control/rc.c:342
+#: modules/control/rc.c:345
 msgid "Remote control interface initialized. Type `help' for help."
 msgstr ""
 
-#: modules/control/rc.c:871
+#: modules/control/rc.c:874
 #, c-format
 msgid "Unknown command `%s'. Type `help' for help."
 msgstr ""
 
-#: modules/control/rc.c:904
-msgid "+----[ Remote control commands ]"
-msgstr ""
-
-#: modules/control/rc.c:906
-#, fuzzy
-msgid "| add XYZ  . . . . . . . . . . add XYZ to playlist"
-msgstr "დახმარება დახმარება"
-
 #: modules/control/rc.c:907
-#, fuzzy
-msgid "| enqueue XYZ  . . . . . . . queue XYZ to playlist"
-msgstr "დახმარება დახმარება"
-
-#: modules/control/rc.c:908
-msgid "| playlist . . .  show items currently in playlist"
+msgid "+----[ Remote control commands ]"
 msgstr ""
 
 #: modules/control/rc.c:909
 #, fuzzy
-msgid "| play . . . . . . . . . . . . . . . . play stream"
+msgid "| add XYZ  . . . . . . . . . . add XYZ to playlist"
 msgstr "დახმარება დახმარება"
 
 #: modules/control/rc.c:910
 #, fuzzy
-msgid "| stop . . . . . . . . . . . . . . . . stop stream"
+msgid "| enqueue XYZ  . . . . . . . queue XYZ to playlist"
 msgstr "დახმარება დახმარება"
 
 #: modules/control/rc.c:911
-#, fuzzy
-msgid "| next . . . . . . . . . . . .  next playlist item"
-msgstr "დახმარება დახმარება"
+msgid "| playlist . . .  show items currently in playlist"
+msgstr ""
 
 #: modules/control/rc.c:912
 #, fuzzy
-msgid "| prev . . . . . . . . . .  previous playlist item"
+msgid "| play . . . . . . . . . . . . . . . . play stream"
 msgstr "დახმარება დახმარება"
 
 #: modules/control/rc.c:913
 #, fuzzy
-msgid "| goto . . . . . . . . . . . .  goto item at index"
+msgid "| stop . . . . . . . . . . . . . . . . stop stream"
 msgstr "დახმარება დახმარება"
 
 #: modules/control/rc.c:914
 #, fuzzy
-msgid "| clear . . . . . . . . . . .   clear the playlist"
+msgid "| next . . . . . . . . . . . .  next playlist item"
 msgstr "დახმარება დახმარება"
 
 #: modules/control/rc.c:915
 #, fuzzy
+msgid "| prev . . . . . . . . . .  previous playlist item"
+msgstr "დახმარება დახმარება"
+
+#: modules/control/rc.c:916
+#, fuzzy
+msgid "| goto . . . . . . . . . . . .  goto item at index"
+msgstr "დახმარება დახმარება"
+
+#: modules/control/rc.c:917
+#, fuzzy
+msgid "| clear . . . . . . . . . . .   clear the playlist"
+msgstr "დახმარება დახმარება"
+
+#: modules/control/rc.c:918
+#, fuzzy
 msgid "| status . . . . . . . . . current playlist status"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:916
+#: modules/control/rc.c:919
 msgid "| title [X]  . . . . set/get title in current item"
 msgstr ""
 
-#: modules/control/rc.c:917
+#: modules/control/rc.c:920
 #, fuzzy
 msgid "| title_n  . . . . . .  next title in current item"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:918
+#: modules/control/rc.c:921
 msgid "| title_p  . . . .  previous title in current item"
 msgstr ""
 
-#: modules/control/rc.c:919
+#: modules/control/rc.c:922
 msgid "| chapter [X]  . . set/get chapter in current item"
 msgstr ""
 
-#: modules/control/rc.c:920
+#: modules/control/rc.c:923
 msgid "| chapter_n  . . . .  next chapter in current item"
 msgstr ""
 
-#: modules/control/rc.c:921
+#: modules/control/rc.c:924
 msgid "| chapter_p  . .  previous chapter in current item"
 msgstr ""
 
-#: modules/control/rc.c:923
+#: modules/control/rc.c:926
 msgid "| seek X . seek in seconds, for instance `seek 12'"
 msgstr ""
 
-#: modules/control/rc.c:924
+#: modules/control/rc.c:927
 #, fuzzy
 msgid "| pause  . . . . . . . . . . . . . .  toggle pause"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:925
+#: modules/control/rc.c:928
 #, fuzzy
 msgid "| fastforward  . . . . . .  .  set to maximum rate"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:926
+#: modules/control/rc.c:929
 #, fuzzy
 msgid "| rewind  . . . . . . . . . .  set to minimum rate"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:927
+#: modules/control/rc.c:930
 #, fuzzy
 msgid "| faster . . . . . . . .  faster playing of stream"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:928
+#: modules/control/rc.c:931
 #, fuzzy
 msgid "| slower . . . . . . . .  slower playing of stream"
 msgstr "a დახმარება"
 
-#: modules/control/rc.c:929
+#: modules/control/rc.c:932
 #, fuzzy
 msgid "| normal . . . . . . . .  normal playing of stream"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:930
+#: modules/control/rc.c:933
 #, fuzzy
 msgid "| f [on|off] . . . . . . . . . . toggle fullscreen"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:931
+#: modules/control/rc.c:934
 #, fuzzy
 msgid "| info . . .  information about the current stream"
 msgstr "ის ვიდეო."
 
-#: modules/control/rc.c:932
+#: modules/control/rc.c:935
 msgid "| get_time . . seconds elapsed since stream's beginning"
 msgstr ""
 
-#: modules/control/rc.c:933
+#: modules/control/rc.c:936
 msgid "| is_playing . .  1 if a stream plays, 0 otherwise"
 msgstr ""
 
-#: modules/control/rc.c:934
+#: modules/control/rc.c:937
 msgid "| get_title . . .  the title of the current stream"
 msgstr ""
 
-#: modules/control/rc.c:935
+#: modules/control/rc.c:938
 msgid "| get_length . .  the length of the current stream"
 msgstr ""
 
-#: modules/control/rc.c:937
+#: modules/control/rc.c:940
 #, fuzzy
 msgid "| volume [X] . . . . . . . .  set/get audio volume"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:938
+#: modules/control/rc.c:941
 #, fuzzy
 msgid "| volup [X]  . . . . .  raise audio volume X steps"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:939
+#: modules/control/rc.c:942
 #, fuzzy
 msgid "| voldown [X]  . . . .  lower audio volume X steps"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:940
+#: modules/control/rc.c:943
 #, fuzzy
 msgid "| adev [X] . . . . . . . . .  set/get audio device"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:941
+#: modules/control/rc.c:944
 #, fuzzy
 msgid "| achan [X]. . . . . . . .  set/get audio channels"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:942
+#: modules/control/rc.c:945
 #, fuzzy
 msgid "| atrack [X] . . . . . . . . . set/get audio track"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:943
+#: modules/control/rc.c:946
 #, fuzzy
 msgid "| vtrack [X] . . . . . . . . . set/get video track"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:944
+#: modules/control/rc.c:947
 #, fuzzy
 msgid "| vratio [X]  . . . . . set/get video aspect ratio"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:945
+#: modules/control/rc.c:948
 #, fuzzy
 msgid "| vcrop [X]  . . . . . . . . .  set/get video crop"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:946
+#: modules/control/rc.c:949
 #, fuzzy
 msgid "| vzoom [X]  . . . . . . . . .  set/get video zoom"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:947
+#: modules/control/rc.c:950
 #, fuzzy
 msgid "| strack [X] . . . . . . . set/get subtitles track"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:948
+#: modules/control/rc.c:951
 msgid "| menu [on|off|up|down|left|right|select] use menu"
 msgstr ""
 
-#: modules/control/rc.c:953
-msgid "| marq-marquee STRING  . . overlay STRING in video"
-msgstr ""
-
-#: modules/control/rc.c:954
-#, fuzzy
-msgid "| marq-x X . . . . . . . . . . . .offset from left"
-msgstr "ხაზი რიცხვი ის ხაზი"
-
-#: modules/control/rc.c:955
-#, fuzzy
-msgid "| marq-y Y . . . . . . . . . . . . offset from top"
-msgstr "ხაზი რიცხვი ის ხაზი"
-
 #: modules/control/rc.c:956
-msgid "| marq-position #. . .  .relative position control"
+msgid "| marq-marquee STRING  . . overlay STRING in video"
 msgstr ""
 
 #: modules/control/rc.c:957
 #, fuzzy
+msgid "| marq-x X . . . . . . . . . . . .offset from left"
+msgstr "ხაზი რიცხვი ის ხაზი"
+
+#: modules/control/rc.c:958
+#, fuzzy
+msgid "| marq-y Y . . . . . . . . . . . . offset from top"
+msgstr "ხაზი რიცხვი ის ხაზი"
+
+#: modules/control/rc.c:959
+msgid "| marq-position #. . .  .relative position control"
+msgstr ""
+
+#: modules/control/rc.c:960
+#, fuzzy
 msgid "| marq-color # . . . . . . . . . . font color, RGB"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:958
+#: modules/control/rc.c:961
 #, fuzzy
 msgid "| marq-opacity # . . . . . . . . . . . . . opacity"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:959
+#: modules/control/rc.c:962
 #, fuzzy
 msgid "| marq-timeout T. . . . . . . . . . timeout, in ms"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:960
+#: modules/control/rc.c:963
 #, fuzzy
 msgid "| marq-size # . . . . . . . . font size, in pixels"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:962
+#: modules/control/rc.c:965
 msgid "| time-format STRING . . . overlay STRING in video"
 msgstr ""
 
-#: modules/control/rc.c:963
+#: modules/control/rc.c:966
 #, fuzzy
 msgid "| time-x X . . . . . . . . . . . .offset from left"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:964
+#: modules/control/rc.c:967
 #, fuzzy
 msgid "| time-y Y . . . . . . . . . . . . offset from top"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:965
+#: modules/control/rc.c:968
 #, fuzzy
 msgid "| time-position #. . . . . . . . relative position"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:966
+#: modules/control/rc.c:969
 #, fuzzy
 msgid "| time-color # . . . . . . . . . . font color, RGB"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:967
+#: modules/control/rc.c:970
 #, fuzzy
 msgid "| time-opacity # . . . . . . . . . . . . . opacity"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:968
+#: modules/control/rc.c:971
 #, fuzzy
 msgid "| time-size # . . . . . . . . font size, in pixels"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:970
+#: modules/control/rc.c:973
 msgid "| logo-file STRING . . .the overlay file path/name"
 msgstr ""
 
-#: modules/control/rc.c:971
+#: modules/control/rc.c:974
 #, fuzzy
 msgid "| logo-x X . . . . . . . . . . . .offset from left"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:972
+#: modules/control/rc.c:975
 #, fuzzy
 msgid "| logo-y Y . . . . . . . . . . . . offset from top"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:973
+#: modules/control/rc.c:976
 #, fuzzy
 msgid "| logo-position #. . . . . . . . relative position"
 msgstr "დუიმი"
 
-#: modules/control/rc.c:974
+#: modules/control/rc.c:977
 msgid "| logo-transparency #. . . . . . . . .transparency"
 msgstr ""
 
-#: modules/control/rc.c:976
+#: modules/control/rc.c:979
 #, fuzzy
 msgid "| mosaic-alpha # . . . . . . . . . . . . . . alpha"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:977
+#: modules/control/rc.c:980
 #, fuzzy
 msgid "| mosaic-height #. . . . . . . . . . . . . .height"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:978
+#: modules/control/rc.c:981
 #, fuzzy
 msgid "| mosaic-width # . . . . . . . . . . . . . . width"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
-#: modules/control/rc.c:979
+#: modules/control/rc.c:982
 #, fuzzy
 msgid "| mosaic-xoffset # . . . .top left corner position"
 msgstr "ზემოთ მარცხენა"
 
-#: modules/control/rc.c:980
+#: modules/control/rc.c:983
 #, fuzzy
 msgid "| mosaic-yoffset # . . . .top left corner position"
 msgstr "ზემოთ მარცხენა"
 
-#: modules/control/rc.c:981
-msgid "| mosaic-align 0..2,4..6,8..10. . .mosaic alignment"
-msgstr ""
-
-#: modules/control/rc.c:982
-#, fuzzy
-msgid "| mosaic-vborder # . . . . . . . . vertical border"
-msgstr "ხაზი რიცხვი ის ხაზი"
-
-#: modules/control/rc.c:983
-#, fuzzy
-msgid "| mosaic-hborder # . . . . . . . horizontal border"
-msgstr "ხაზი რიცხვი ის ხაზი"
-
 #: modules/control/rc.c:984
-msgid "| mosaic-position {0=auto,1=fixed} . . . .position"
+msgid "| mosaic-align 0..2,4..6,8..10. . .mosaic alignment"
 msgstr ""
 
 #: modules/control/rc.c:985
 #, fuzzy
-msgid "| mosaic-rows #. . . . . . . . . . .number of rows"
+msgid "| mosaic-vborder # . . . . . . . . vertical border"
 msgstr "ხაზი რიცხვი ის ხაზი"
 
 #: modules/control/rc.c:986
 #, fuzzy
+msgid "| mosaic-hborder # . . . . . . . horizontal border"
+msgstr "ხაზი რიცხვი ის ხაზი"
+
+#: modules/control/rc.c:987
+msgid "| mosaic-position {0=auto,1=fixed} . . . .position"
+msgstr ""
+
+#: modules/control/rc.c:988
+#, fuzzy
+msgid "| mosaic-rows #. . . . . . . . . . .number of rows"
+msgstr "ხაზი რიცხვი ის ხაზი"
+
+#: modules/control/rc.c:989
+#, fuzzy
 msgid "| mosaic-cols #. . . . . . . . . . .number of cols"
 msgstr "რიცხვი ის"
 
-#: modules/control/rc.c:987
+#: modules/control/rc.c:990
 msgid "| mosaic-keep-aspect-ratio {0,1} . . .aspect ratio"
 msgstr ""
 
-#: modules/control/rc.c:989
+#: modules/control/rc.c:992
 #, fuzzy
 msgid ""
 "| check-updates [newer] [equal] [older]\n"
 "|               [undef] [info] [source] [binary] [plugin]"
 msgstr "n წყარო"
 
-#: modules/control/rc.c:993
+#: modules/control/rc.c:996
 #, fuzzy
 msgid "| help . . . . . . . . . . . . . this help message"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:994
+#: modules/control/rc.c:997
 #, fuzzy
 msgid "| longhelp . . . . . . . . . a longer help message"
 msgstr "a დახმარება"
 
-#: modules/control/rc.c:995
+#: modules/control/rc.c:998
 #, fuzzy
 msgid "| logout . . . . .  exit (if in socket connection)"
 msgstr "დუიმი"
 
-#: modules/control/rc.c:996
+#: modules/control/rc.c:999
 #, fuzzy
 msgid "| quit . . . . . . . . . . . . . . . . .  quit vlc"
 msgstr "დახმარება დახმარება"
 
-#: modules/control/rc.c:998
+#: modules/control/rc.c:1001
 msgid "+----[ end of help ]"
 msgstr ""
 
-#: modules/control/rc.c:1105
+#: modules/control/rc.c:1108
 msgid "Press menu select or pause to continue."
 msgstr ""
 
-#: modules/control/rc.c:1348 modules/control/rc.c:1847
-#: modules/control/rc.c:1917 modules/control/rc.c:2086
-#: modules/control/rc.c:2185
+#: modules/control/rc.c:1351 modules/control/rc.c:1850
+#: modules/control/rc.c:1920 modules/control/rc.c:2089
+#: modules/control/rc.c:2188
 msgid "Type 'menu select' or 'pause' to continue."
 msgstr ""
 
-#: modules/control/rc.c:1507
+#: modules/control/rc.c:1510
 msgid "Type 'pause' to continue."
 msgstr ""
 
-#: modules/control/rc.c:2170 modules/control/rc.c:2209
+#: modules/control/rc.c:2173 modules/control/rc.c:2215
 #, fuzzy
 msgid "Please provide one of the following parameters:"
 msgstr "ის:"
@@ -9360,6 +9371,21 @@ msgstr "OGG დემუქსერი"
 msgid "Listeners"
 msgstr "ლინეარული(Linear)"
 
+#: modules/demux/playlist/m3u.c:211
+#, fuzzy
+msgid "Options disabled"
+msgstr "ოფციები"
+
+#: modules/demux/playlist/m3u.c:212
+msgid ""
+"m3u EXTVLCOPT parsing is disabled for security reasons.\n"
+"If you need it and trust the m3u playlist you are trying to open, please "
+"enable it from:\n"
+"Preferences > Input/Codecs > Demuxers > Playlist > Enable parsinf of "
+"EXTVLCOPT: options.\n"
+"Don't forget to disable it before opening an untrusted playlist"
+msgstr ""
+
 #: modules/demux/playlist/playlist.c:36
 msgid "Auto start"
 msgstr "ავტო ჩართვა"
@@ -9674,57 +9700,57 @@ msgstr ""
 msgid "MPEG Transport Stream demuxer"
 msgstr "ტრანსპორტი ნაკადი"
 
-#: modules/demux/ts.c:3312
+#: modules/demux/ts.c:3313
 #, fuzzy
 msgid "Teletext subtitles"
 msgstr "ტიტრების ტექსტის დეკოდერი"
 
-#: modules/demux/ts.c:3322
+#: modules/demux/ts.c:3323
 msgid "Teletext hearing impaired subtitles"
 msgstr ""
 
-#: modules/demux/ts.c:3417
+#: modules/demux/ts.c:3418
 #, fuzzy
 msgid "subtitles"
 msgstr "ტიტრები"
 
-#: modules/demux/ts.c:3421
+#: modules/demux/ts.c:3422
 #, fuzzy
 msgid "4:3 subtitles"
 msgstr "ტიტრები"
 
-#: modules/demux/ts.c:3425
+#: modules/demux/ts.c:3426
 #, fuzzy
 msgid "16:9 subtitles"
 msgstr "ტიტრები"
 
-#: modules/demux/ts.c:3429
+#: modules/demux/ts.c:3430
 #, fuzzy
 msgid "2.21:1 subtitles"
 msgstr "ტიტრები"
 
-#: modules/demux/ts.c:3433 modules/demux/ts.c:3585 modules/demux/ts.c:3626
+#: modules/demux/ts.c:3434 modules/demux/ts.c:3586 modules/demux/ts.c:3627
 msgid "hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3437
+#: modules/demux/ts.c:3438
 msgid "4:3 hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3441
+#: modules/demux/ts.c:3442
 msgid "16:9 hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3445
+#: modules/demux/ts.c:3446
 msgid "2.21:1 hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3581 modules/demux/ts.c:3622
+#: modules/demux/ts.c:3582 modules/demux/ts.c:3623
 #, fuzzy
 msgid "clean effects"
 msgstr "ეფექტი"
 
-#: modules/demux/ts.c:3589 modules/demux/ts.c:3630
+#: modules/demux/ts.c:3590 modules/demux/ts.c:3631
 msgid "visual impaired commentary"
 msgstr ""
 
@@ -10464,7 +10490,7 @@ msgid "Fast Forward"
 msgstr "სწრაფად გადაგზავნა"
 
 #: modules/gui/macosx/embeddedwindow.m:50
-#: modules/gui/macosx/embeddedwindow.m:94 modules/gui/macosx/intf.m:504
+#: modules/gui/macosx/embeddedwindow.m:93 modules/gui/macosx/intf.m:504
 #: modules/gui/macosx/intf.m:547 modules/gui/macosx/intf.m:625
 #: modules/gui/macosx/intf.m:632 modules/gui/macosx/intf.m:1461
 #: modules/gui/macosx/intf.m:1462 modules/gui/macosx/intf.m:1463
@@ -10479,7 +10505,7 @@ msgstr "სწრაფად გადაგზავნა"
 msgid "Play"
 msgstr "დაკვრა"
 
-#: modules/gui/macosx/embeddedwindow.m:88 modules/gui/macosx/intf.m:1451
+#: modules/gui/macosx/embeddedwindow.m:87 modules/gui/macosx/intf.m:1451
 #: modules/gui/macosx/intf.m:1452 modules/gui/macosx/intf.m:1453
 #: modules/gui/macosx/intf.m:1454 modules/gui/pda/pda_interface.c:250
 #: modules/gui/pda/pda_interface.c:251 modules/gui/wxwidgets/interface.cpp:679
@@ -10783,8 +10809,8 @@ msgid "Extended Controls"
 msgstr "გაფართოებული"
 
 #: modules/gui/macosx/intf.m:610 modules/gui/macosx/intf.m:652
-#: modules/gui/macosx/playlistinfo.m:55 modules/gui/macosx/playlistinfo.m:371
-#: modules/gui/macosx/playlist.m:488
+#: modules/gui/macosx/playlist.m:488 modules/gui/macosx/playlistinfo.m:55
+#: modules/gui/macosx/playlistinfo.m:371
 msgid "Information"
 msgstr "ინფორმაცია"
 
@@ -11166,82 +11192,6 @@ msgstr "SDP URL"
 msgid "Save File"
 msgstr "ფაილის შენახვა"
 
-#: modules/gui/macosx/playlistinfo.m:56
-#: modules/gui/wxwidgets/dialogs/infopanels.cpp:63
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:591
-msgid "URI"
-msgstr "URI"
-
-#: modules/gui/macosx/playlistinfo.m:63
-#, fuzzy
-msgid "Advanced Information"
-msgstr "დამატებითი ინფორმაცია"
-
-#: modules/gui/macosx/playlistinfo.m:81
-#, fuzzy
-msgid "Read at media"
-msgstr "წაკითხული"
-
-#: modules/gui/macosx/playlistinfo.m:82
-#, fuzzy
-msgid "Input bitrate"
-msgstr "შესავალი"
-
-#: modules/gui/macosx/playlistinfo.m:83
-msgid "Demuxed"
-msgstr ""
-
-#: modules/gui/macosx/playlistinfo.m:84
-#, fuzzy
-msgid "Stream bitrate"
-msgstr "გაგზავნა"
-
-#: modules/gui/macosx/playlistinfo.m:87 modules/gui/macosx/playlistinfo.m:97
-#, fuzzy
-msgid "Decoded blocks"
-msgstr "დეკოდერები"
-
-#: modules/gui/macosx/playlistinfo.m:88
-#, fuzzy
-msgid "Displayed frames"
-msgstr "გამოტოვე კადრები"
-
-#: modules/gui/macosx/playlistinfo.m:89
-msgid "Lost frames"
-msgstr "დაკარგული კადრები"
-
-#: modules/gui/macosx/playlistinfo.m:91 modules/gui/macosx/wizard.m:404
-#: modules/gui/wxwidgets/dialogs/infopanels.cpp:313
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:139
-#: modules/video_filter/deinterlace.c:137
-#, fuzzy
-msgid "Streaming"
-msgstr "ნაკადი"
-
-#: modules/gui/macosx/playlistinfo.m:92
-msgid "Sent packets"
-msgstr "გაგზავნილი პაკეტი"
-
-#: modules/gui/macosx/playlistinfo.m:93
-#, fuzzy
-msgid "Sent bytes"
-msgstr "bytes"
-
-#: modules/gui/macosx/playlistinfo.m:94
-#, fuzzy
-msgid "Send rate"
-msgstr "გაგზავნა"
-
-#: modules/gui/macosx/playlistinfo.m:98
-#, fuzzy
-msgid "Played buffers"
-msgstr "დაკვრა"
-
-#: modules/gui/macosx/playlistinfo.m:99
-#, fuzzy
-msgid "Lost buffers"
-msgstr "დაკარგული ბუფერი"
-
 #: modules/gui/macosx/playlist.m:483
 msgid "Save Playlist..."
 msgstr "დაკვრის სიის შენახვა..."
@@ -11324,6 +11274,82 @@ msgstr "დასაკრავი სიის შენახვა"
 #, fuzzy
 msgid "Empty Folder"
 msgstr "ცარიელი საქაღალდე"
+
+#: modules/gui/macosx/playlistinfo.m:56
+#: modules/gui/wxwidgets/dialogs/infopanels.cpp:63
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:591
+msgid "URI"
+msgstr "URI"
+
+#: modules/gui/macosx/playlistinfo.m:63
+#, fuzzy
+msgid "Advanced Information"
+msgstr "დამატებითი ინფორმაცია"
+
+#: modules/gui/macosx/playlistinfo.m:81
+#, fuzzy
+msgid "Read at media"
+msgstr "წაკითხული"
+
+#: modules/gui/macosx/playlistinfo.m:82
+#, fuzzy
+msgid "Input bitrate"
+msgstr "შესავალი"
+
+#: modules/gui/macosx/playlistinfo.m:83
+msgid "Demuxed"
+msgstr ""
+
+#: modules/gui/macosx/playlistinfo.m:84
+#, fuzzy
+msgid "Stream bitrate"
+msgstr "გაგზავნა"
+
+#: modules/gui/macosx/playlistinfo.m:87 modules/gui/macosx/playlistinfo.m:97
+#, fuzzy
+msgid "Decoded blocks"
+msgstr "დეკოდერები"
+
+#: modules/gui/macosx/playlistinfo.m:88
+#, fuzzy
+msgid "Displayed frames"
+msgstr "გამოტოვე კადრები"
+
+#: modules/gui/macosx/playlistinfo.m:89
+msgid "Lost frames"
+msgstr "დაკარგული კადრები"
+
+#: modules/gui/macosx/playlistinfo.m:91 modules/gui/macosx/wizard.m:404
+#: modules/gui/wxwidgets/dialogs/infopanels.cpp:313
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:139
+#: modules/video_filter/deinterlace.c:137
+#, fuzzy
+msgid "Streaming"
+msgstr "ნაკადი"
+
+#: modules/gui/macosx/playlistinfo.m:92
+msgid "Sent packets"
+msgstr "გაგზავნილი პაკეტი"
+
+#: modules/gui/macosx/playlistinfo.m:93
+#, fuzzy
+msgid "Sent bytes"
+msgstr "bytes"
+
+#: modules/gui/macosx/playlistinfo.m:94
+#, fuzzy
+msgid "Send rate"
+msgstr "გაგზავნა"
+
+#: modules/gui/macosx/playlistinfo.m:98
+#, fuzzy
+msgid "Played buffers"
+msgstr "დაკვრა"
+
+#: modules/gui/macosx/playlistinfo.m:99
+#, fuzzy
+msgid "Lost buffers"
+msgstr "დაკარგული ბუფერი"
 
 #: modules/gui/macosx/prefs.m:120
 #: modules/gui/wxwidgets/dialogs/preferences.cpp:213
@@ -12582,6 +12608,11 @@ msgstr ""
 msgid "WinCE dialogs provider"
 msgstr ""
 
+#: modules/gui/wxwidgets/dialogs.cpp:433
+#: modules/gui/wxwidgets/dialogs/open.cpp:1264
+msgid "All Files (*.*)|*|Sound Files (*.mp3, *.ogg, etc.)|"
+msgstr ""
+
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:75
 msgid "Edit bookmark"
 msgstr "სანიშნეს რედაქტირება"
@@ -12667,11 +12698,6 @@ msgstr ""
 
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:452
 msgid "Input has changed "
-msgstr ""
-
-#: modules/gui/wxwidgets/dialogs.cpp:433
-#: modules/gui/wxwidgets/dialogs/open.cpp:1264
-msgid "All Files (*.*)|*|Sound Files (*.mp3, *.ogg, etc.)|"
 msgstr ""
 
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:54
@@ -14240,10 +14266,6 @@ msgstr ""
 msgid "Output data for RRDTool in this file."
 msgstr ""
 
-#: modules/misc/memcpy/memcpyaltivec.c:56
-msgid "AltiVec memcpy"
-msgstr ""
-
 #: modules/misc/memcpy/memcpy.c:83
 msgid "libc memcpy"
 msgstr ""
@@ -14258,6 +14280,10 @@ msgstr ""
 
 #: modules/misc/memcpy/memcpy.c:99
 msgid "MMX EXT memcpy"
+msgstr ""
+
+#: modules/misc/memcpy/memcpyaltivec.c:56
+msgid "AltiVec memcpy"
 msgstr ""
 
 #: modules/misc/msn.c:64
@@ -14754,7 +14780,7 @@ msgstr ""
 msgid "H.264 video packetizer"
 msgstr ""
 
-#: modules/packetizer/mpeg4audio.c:118
+#: modules/packetizer/mpeg4audio.c:181
 msgid "MPEG4 audio packetizer"
 msgstr ""
 
@@ -15289,75 +15315,75 @@ msgstr "სტანდარტული"
 msgid "Standard stream output"
 msgstr "სტანდარტული"
 
-#: modules/stream_out/switcher.c:81
+#: modules/stream_out/switcher.c:83
 msgid "Files"
 msgstr "ფაილები"
 
-#: modules/stream_out/switcher.c:83
+#: modules/stream_out/switcher.c:85
 msgid "Full paths of the files separated by colons."
 msgstr ""
 
-#: modules/stream_out/switcher.c:84
+#: modules/stream_out/switcher.c:86
 msgid "Sizes"
 msgstr "ზომები"
 
-#: modules/stream_out/switcher.c:86
+#: modules/stream_out/switcher.c:88
 msgid "List of sizes separated by colons (720x576:480x576)."
 msgstr ""
 
-#: modules/stream_out/switcher.c:87
+#: modules/stream_out/switcher.c:89
 msgid "Aspect ratio"
 msgstr ""
 
-#: modules/stream_out/switcher.c:89
+#: modules/stream_out/switcher.c:91
 msgid "Aspect ratio (4:3, 16:9)."
 msgstr ""
 
-#: modules/stream_out/switcher.c:90
+#: modules/stream_out/switcher.c:92
 #, fuzzy
 msgid "Command UDP port"
 msgstr "ბრძანება UDP"
 
-#: modules/stream_out/switcher.c:92
+#: modules/stream_out/switcher.c:94
 msgid "UDP port to listen to for commands."
 msgstr ""
 
-#: modules/stream_out/switcher.c:93
+#: modules/stream_out/switcher.c:95
 msgid "Command"
 msgstr "ბრძანება"
 
-#: modules/stream_out/switcher.c:95
+#: modules/stream_out/switcher.c:97
 #, fuzzy
 msgid "Initial command to execute."
 msgstr "-სკენ შესრულება."
 
-#: modules/stream_out/switcher.c:96
+#: modules/stream_out/switcher.c:98
 msgid "GOP size"
 msgstr "GOP ზომა"
 
-#: modules/stream_out/switcher.c:98
+#: modules/stream_out/switcher.c:100
 #, fuzzy
 msgid "Number of P frames between two I frames."
 msgstr "ის კადრები I კადრები."
 
-#: modules/stream_out/switcher.c:99
+#: modules/stream_out/switcher.c:101
 msgid "Quantizer scale"
 msgstr ""
 
-#: modules/stream_out/switcher.c:101
+#: modules/stream_out/switcher.c:103
 msgid "Fixed quantizer scale to use."
 msgstr ""
 
-#: modules/stream_out/switcher.c:102
+#: modules/stream_out/switcher.c:104
 msgid "Mute audio"
 msgstr "გააჩუმე აუდიო"
 
-#: modules/stream_out/switcher.c:104
+#: modules/stream_out/switcher.c:106
 #, fuzzy
 msgid "Mute audio when command is not 0."
 msgstr "გააჩუმე აუდიო არა."
 
-#: modules/stream_out/switcher.c:107
+#: modules/stream_out/switcher.c:109
 msgid "MPEG2 video switcher stream output"
 msgstr ""
 

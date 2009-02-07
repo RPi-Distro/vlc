@@ -2,7 +2,7 @@
  * fileinfo.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: fileinfo.cpp 16798 2006-09-22 23:56:12Z xtophe $
+ * $Id: f831391b82152265854738503afeb1f348052155 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

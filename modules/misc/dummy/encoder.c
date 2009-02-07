@@ -2,7 +2,7 @@
  * encoder.c: dummy encoder plugin for vlc.
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: encoder.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: ec7bf70fe577dbac3b661e8a702fa3ced1db098f $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

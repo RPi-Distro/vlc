@@ -2,7 +2,7 @@
  * vlc_demux.h: Demuxer descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: vlc_demux.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 52bfccacc2974a5d6cf9ea532b4517e8476afd9a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

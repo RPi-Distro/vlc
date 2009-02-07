@@ -2,7 +2,7 @@
  * record.c
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: record.c 15138 2006-04-07 21:45:01Z xtophe $
+ * $Id$
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -148,6 +148,7 @@ static int Open( vlc_object_t *p_this )
     if( *psz == '\0' )
     {
         free( psz );
+        psz = NULL;
         if( p_access->p_vlc->psz_homedir )
             psz = strdup( p_access->p_vlc->psz_homedir );
     }

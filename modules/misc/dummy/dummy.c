@@ -2,7 +2,7 @@
  * dummy.c : dummy plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: dummy.c 14930 2006-03-25 19:24:05Z zorglub $
+ * $Id: 83591830b8d0a21d3558624bb40d49d7fc80a5e8 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

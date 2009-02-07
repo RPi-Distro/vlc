@@ -2,7 +2,7 @@
  * cmd_playtree.cpp
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: cmd_playtree.cpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: e40da6351988c0fe87f09bbc9da4b2a731de9d41 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *

@@ -2,7 +2,7 @@
  * MessagesWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: MessagesWindow.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 9d965de444f792a96d0e62997aa9f5c95233e0e2 $
  *
  * Authors: Eric Petit <titer@videolan.org>
  *

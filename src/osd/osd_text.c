@@ -2,7 +2,7 @@
  * osd_text.c : text manipulation functions
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: osd_text.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: 39cf6d1d5bb59ca4960c0f8663d4b36fb9f946e5 $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

@@ -1,4 +1,63 @@
-$Id: NEWS 25364 2008-02-27 00:14:14Z thresh $
+Changes between 0.8.6g and 0.8.6h:
+----------------------------------
+
+Security updates:
+ * Updated GnuTLS and libgcrypt on Windows and Mac OS X (CVE-2008-1948, 
+   CVE-2008-1949, CVE-2008-1950)
+ * Updated libxml2 on Windows and Mac OS X (CVE-2007-6284)
+
+Goodies:
+ * Updated libebml and libmatroska on Mac OS X. Reliability improvements.
+ * Miscellaneous bugfixes in multiple modules and in libvlc
+   (ftp access, record access filter, video filters, RC interface, 
+    playlist demuxer, IP networking, MPJPEG muxer, stream outputs)
+ * Improved support for MPEG2 content created by Final Cut Pro
+ * More reliable audio reception for MPEG TS streams
+ * Fixed a regression in 0.8.6g where usage of the snapshot feature could lead
+   to an unexpected application termination
+ * New Serbian translation
+ * Updated Romanian translation
+
+
+Changes between 0.8.6f and 0.8.6g:
+----------------------------------
+
+Security updates:
+ * Removed VLC variable settings from Mozilla and ActiveX 
+   (CVE-2007-6683, VideoLAN-SA-0804)
+ * Removed loading plugins from the current directory 
+   (CVE-2008-2147, VideoLAN-SA-0805)
+ * Updated libpng on Windows and Mac OS X (CVE-2008-1382)
+ * Fixed libid3tag denial of service (CVE-2008-2109)
+ * Fixed libvorbis vulnerabilities (CVE-2008-1419, CVE-2008-1420, CVE-2008-1423)
+ * Fixed speex insufficient boundary check (CVE-2008-1686, oCERT-2008-004)
+
+Various bugfixes:
+ * Fixed various memory leaks, improving stability when running as a server
+ * Fixed compilation with recent versions of FFmpeg
+ * Correctly parses SAP announcements from MPEG-TS
+ * Fixed AAC resampling
+ * The Fullscreen Controller appears correctly on Mac OS X, 
+   if the 'Always-on-top' video option was selected.
+
+
+Changes between 0.8.6e and 0.8.6f:
+----------------------------------
+
+Security updates:
+ * Really fixed subtitle buffer overflow (CVE-2007-6681, CVE-2008-1881)
+ * Fixed Real RTSP code execution problem (CVE-2008-0073)
+ * Fixed MP4 integer overflows (CVE-2008-1489, CVE-2008-1768)
+ * Fixed cinepak vulnerabilities (CVE-2008-1769)
+ - More information can be found in VideoLAN-SA-0801 and VideoLAN-SA-0803.
+
+Various bugfixes:
+ * The Mozilla plugin registers a usable range of MIME-types on Mac OS X
+ * Improved VLC's video output behavior on multi-screen setups running Mac OS X
+ * Fixed crashes in H264 packetizer
+ * Close MMS access on network timeout
+ * Fix some problems with AAC decoder & packetizer
+
 
 Changes between 0.8.6d and 0.8.6e:
 ----------------------------------

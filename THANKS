@@ -1,4 +1,4 @@
-$Id: THANKS 25223 2008-02-21 08:51:03Z Trax $
+$Id$
 
 VLC makes extensive use of the following persons' code:
 
@@ -72,6 +72,7 @@ Fumio Nakayama <endymion at ca2.so-net.ne.jp> - Japanese translation
 Gabor Kelemen <kelemeng at gnome.hu> - Hungarian translation
 Georgi Chorbadzhiyski <gf at unixsol dot org> - HTTP access error handling fix
 Glen Gray <slaine at slaine dot org> - RTSP Keepalive fixes
+Gorana Milicevic <gorana.milicevic at gmail dot com> - Serbian localisation
 Greg Farrell <greg at gregfarell dot org> - rc interface "enqueue" command
 Gregory Hazel <ghazel at gmail dot com> - wxWidgets fixes and improvements
 Goetz Waschk <waschk at informatik.uni-rostock dot de> - Mandrake packages
@@ -108,6 +109,7 @@ Marc Nolette <nolette at videotron.ca> - PVR support in DirectShow input
 Marco Munderloh <Marco.Munderloh at web.de> - HTTP fix for Win32 to URL filenames
 Marián Hikaník <podnety _at_ mojepreklady _dot_ net> - Slovak localisation
 Mark Gritter <mgritter at kealia.com> - fix for netlist packet leak in demuxPSI
+Marko Uskokovic <uskokovic at etf dot bg.ac.yu> - Serbian localisation
 Markus Kern <markus-kern at gmx dot net> - video output window fixes (win32)
 Markus Kuespert <ltlBeBoy at beosmail.com> - BeOS CSS support
 Matej Urbančič <matej.urban at gmail.com> - Slovenian translation

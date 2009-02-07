@@ -2,7 +2,7 @@
  * x11_graphics.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: x11_graphics.hpp 14204 2006-02-10 16:25:57Z courmisch $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * pda_callbacks.c : Callbacks for the pda Linux Gtk+ plugin.
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: pda_callbacks.c 15092 2006-04-04 20:11:39Z jpsaman $
+ * $Id: f3bdf14ed58713285504e4f7da48c4f0e0738d46 $
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *

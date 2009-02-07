@@ -2,7 +2,7 @@
  * plugin.c: Core functions : init, playlist, stream management
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: mediacontrol_plugin.c 17322 2006-10-28 14:49:42Z jpsaman $
+ * $Id: 9b90e6aa9c57bf16b88ea4e2b3fa4fd6c5796da8 $
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *

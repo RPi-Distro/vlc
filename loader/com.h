@@ -1,7 +1,7 @@
 /*
  * Modified for use with MPlayer, detailed CVS changelog at
  * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
- * $Id: com.h 11593 2005-06-28 18:02:01Z courmisch $
+ * $Id: a6472355d3dd6b6b269ed2b96051cda4d4fa2e9c $
  */
 
 #ifndef AVIFILE_COM_H

@@ -2,7 +2,7 @@
  * popup.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: popup.cpp 15008 2006-03-31 19:24:33Z zorglub $
+ * $Id: 92c097c634d6378f9d5ea03133073eafa3fd7a21 $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *

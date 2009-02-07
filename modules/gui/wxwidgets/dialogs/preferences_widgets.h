@@ -2,7 +2,7 @@
  * preferences_widgets.h : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2003 the VideoLAN team
- * $Id: preferences_widgets.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: ef93a8b30357363c96d4d5e146bb42e7f7d300df $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

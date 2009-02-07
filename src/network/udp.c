@@ -2,7 +2,7 @@
  * udp.c:
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: udp.c 15025 2006-04-01 11:27:40Z fkuehne $
+ * $Id: 92a2c0d23411e1bc6539758de8a0bacbd6a867f1 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>

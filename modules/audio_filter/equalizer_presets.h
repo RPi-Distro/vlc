@@ -2,7 +2,7 @@
  * equalizer_presets.h:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: equalizer_presets.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: b3d3eada3b7b866a6a85970e3cf237fdd65a0743 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

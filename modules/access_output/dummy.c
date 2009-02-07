@@ -2,7 +2,7 @@
  * dummy.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: dummy.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: dfc193e01e11050279239014713f2cfc779834e7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

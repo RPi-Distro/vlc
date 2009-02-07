@@ -2,7 +2,7 @@
  * sort.c : Playlist sorting functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: sort.c 14333 2006-02-16 17:31:31Z dionoea $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -309,7 +309,6 @@ int playlist_NodeGroup( playlist_t * p_playlist , int i_view,
                         playlist_item_t **pp_items,int i_item,
                         int i_mode, int i_type )
 {
-    char *psz_search = NULL;
     int i_nodes = 0;
     playlist_item_t **pp_nodes = NULL;
     playlist_item_t *p_node;
@@ -317,7 +316,8 @@ int playlist_NodeGroup( playlist_t * p_playlist , int i_view,
     int i,j;
     for( i = 0; i< i_item ; i++ )
     {
-        if( psz_search ) free( psz_search );
+        char *psz_search = NULL;
+
         if( i_mode == SORT_TITLE )
         {
             psz_search = strdup( pp_items[i]->input.psz_name );
@@ -338,7 +338,7 @@ int playlist_NodeGroup( playlist_t * p_playlist , int i_view,
                             _(VLC_META_INFO_CAT), _(VLC_META_GENRE) );
         }
 
-        if( psz_search && !strcmp( psz_search, "" ) )
+        if( !psz_search || !strcmp( psz_search, "" ) )
         {
             free( psz_search );
             psz_search = strdup( _("Undefined") );
@@ -363,6 +363,8 @@ int playlist_NodeGroup( playlist_t * p_playlist , int i_view,
             playlist_NodeAppend( p_playlist, i_view,
                                  pp_items[i],p_node );
         }
+
+        free( psz_search );
     }
 
     /* Now, sort the nodes by name */

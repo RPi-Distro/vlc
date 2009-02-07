@@ -2,7 +2,7 @@
  * qte_main.c : QT Embedded wrapper for gte_main
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: qte_main.cpp 14688 2006-03-09 09:47:30Z jpsaman $
+ * $Id: d0411ab9fded014b1f4146a0793808d3a0fbb54e $
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *

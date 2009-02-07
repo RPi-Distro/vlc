@@ -2,7 +2,7 @@
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: ps.h 17183 2006-10-20 21:33:16Z hartman $
+ * $Id: 856b365d3b7c96a767f70d9c1eeb45d154e85756 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

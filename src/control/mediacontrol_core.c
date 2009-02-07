@@ -2,7 +2,7 @@
  * core.c: Core functions : init, playlist, stream management
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: mediacontrol_core.c 18175 2006-11-30 14:55:42Z oaubert $
+ * $Id$
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *
@@ -89,6 +89,7 @@ mediacontrol_Instance* mediacontrol_new_from_object( int vlc_object_id,
     if( ! retval->p_playlist || ! retval->p_intf )
     {
         RAISE( mediacontrol_InternalException, "no interface available" );
+        free( retval );
         return NULL;
     }
     return retval;
@@ -117,7 +118,7 @@ mediacontrol_get_media_position( mediacontrol_Instance *self,
     if( ! p_input )
     {
         RAISE( mediacontrol_InternalException, "No input thread." );
-        return NULL;
+        goto error;
     }
 
     if(  an_origin != mediacontrol_AbsolutePosition )
@@ -125,7 +126,7 @@ mediacontrol_get_media_position( mediacontrol_Instance *self,
         /* Relative or ModuloPosition make no sense */
         RAISE( mediacontrol_PositionOriginNotSupported,
                                         "Only absolute position is valid." );
-        return NULL;
+        goto error;
     }
 
     /* We are asked for an AbsolutePosition. */
@@ -138,6 +139,9 @@ mediacontrol_get_media_position( mediacontrol_Instance *self,
                                                a_key,
                                                val.i_time / 1000 );
     return retval;
+error:
+    free( retval );
+    return NULL;
 }
 
 /* Sets the media position */

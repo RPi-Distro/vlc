@@ -2,7 +2,7 @@
  * cmd_audio.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cmd_audio.cpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: 44ec89648631911952da0c2cee78232daf54cd62 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
