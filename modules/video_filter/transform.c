@@ -2,7 +2,7 @@
  * transform.c : transform image module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: transform.c 16544 2006-09-07 23:05:11Z hartman $
+ * $Id: transform.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -64,7 +64,7 @@ static char *type_list_text[] = { N_("Rotate by 90 degrees"),
 
 vlc_module_begin();
     set_description( _("Video transformation filter") );
-    set_shortname( N_("Transformation"));
+    set_shortname( _("Transformation"));
     set_capability( "video filter", 0 );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VFILTER );

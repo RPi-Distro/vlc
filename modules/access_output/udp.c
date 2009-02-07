@@ -2,7 +2,7 @@
  * udp.c
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: udp.c 14974 2006-03-30 05:37:29Z zorglub $
+ * $Id: udp.c 17020 2006-10-10 18:33:26Z fkuehne $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -95,7 +95,7 @@ static void Close( vlc_object_t * );
 
 vlc_module_begin();
     set_description( _("UDP stream output") );
-    set_shortname( N_( "UDP" ) );
+    set_shortname( "UDP" );
     set_category( CAT_SOUT );
     set_subcategory( SUBCAT_SOUT_ACO );
     add_integer( SOUT_CFG_PREFIX "caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT, CACHING_LONGTEXT, VLC_TRUE );

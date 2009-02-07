@@ -2,7 +2,7 @@
  * hd1000a.cpp : Roku HD1000 audio output
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: hd1000a.cpp 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: hd1000a.cpp 17017 2006-10-10 08:52:27Z xtophe $
  *
  * Author: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -73,7 +73,7 @@ static void    InterleaveS16( int16_t *, int16_t * );
  *****************************************************************************/
 vlc_module_begin();
     set_shortname( "Roku HD1000" );
-    set_description( N_("Roku HD1000 audio output") );
+    set_description( _("Roku HD1000 audio output") );
     set_capability( "audio output", 100 );
     set_category( CAT_AUDIO );
     set_subcategory( SUBCAT_AUDIO_AOUT );

@@ -36,6 +36,7 @@
 #include "vlccontrol2.h"
 #include "viewobject.h"
 #include "dataobject.h"
+#include "supporterrorinfo.h"
 
 #include "utils.h"
 
@@ -267,6 +268,7 @@ VLCPlugin::VLCPlugin(VLCPluginClass *p_class, LPUNKNOWN pUnkOuter) :
     vlcViewObject = new VLCViewObject(this);
     vlcDataObject = new VLCDataObject(this);
     vlcOleObject = new VLCOleObject(this);
+    vlcSupportErrorInfo = new VLCSupportErrorInfo(this);
 
     // configure controlling IUnknown interface for implemented interfaces
     this->pUnkOuter = (NULL != pUnkOuter) ? pUnkOuter : dynamic_cast<LPUNKNOWN>(this);
@@ -280,6 +282,7 @@ VLCPlugin::VLCPlugin(VLCPluginClass *p_class, LPUNKNOWN pUnkOuter) :
 
 VLCPlugin::~VLCPlugin()
 {
+    delete vlcSupportErrorInfo;
     delete vlcOleObject;
     delete vlcDataObject;
     delete vlcViewObject;
@@ -350,6 +353,8 @@ STDMETHODIMP VLCPlugin::QueryInterface(REFIID riid, void **ppv)
         *ppv = reinterpret_cast<LPVOID>(vlcViewObject);
     else if( IID_IDataObject == riid )
         *ppv = reinterpret_cast<LPVOID>(vlcDataObject);
+    else if( IID_ISupportErrorInfo == riid )
+        *ppv = reinterpret_cast<LPVOID>(vlcSupportErrorInfo);
     else
     {
         *ppv = NULL;
@@ -599,19 +604,6 @@ HRESULT VLCPlugin::getVLC(libvlc_instance_t** pp_libvlc)
         if( _b_autoloop )
             ppsz_argv[ppsz_argc++] = "--loop";
 
-        // initial volume setting
-        char volBuffer[16];
-        ppsz_argv[ppsz_argc++] = "--volume";
-        if( _b_mute )
-        {
-           ppsz_argv[ppsz_argc++] = "0";
-        }
-        else
-        {
-            snprintf(volBuffer, sizeof(volBuffer), "%d", _i_volume);
-            ppsz_argv[ppsz_argc++] = volBuffer;
-        }
-            
         if( IsDebuggerPresent() )
         {
             /*
@@ -633,6 +625,14 @@ HRESULT VLCPlugin::getVLC(libvlc_instance_t** pp_libvlc)
             return E_FAIL;
         }
 
+        // initial volume setting
+        libvlc_audio_set_volume(_p_libvlc, _i_volume, NULL);
+        if( _b_mute )
+        {
+            libvlc_audio_set_mute(_p_libvlc, TRUE, NULL);
+        }
+            
+        // initial playlist item
         if( SysStringLen(_bstr_mrl) > 0 )
         {
             char *psz_mrl = NULL;
@@ -684,6 +684,13 @@ HRESULT VLCPlugin::getVLC(libvlc_instance_t** pp_libvlc)
     }
     *pp_libvlc = _p_libvlc;
     return S_OK;
+};
+
+void VLCPlugin::setErrorInfo(REFIID riid, const char *description)
+{
+    vlcSupportErrorInfo->setErrorInfo( getClassID() == CLSID_VLCPlugin2 ?
+        OLESTR("VideoLAN.VLCPlugin.2") : OLESTR("VideoLAN.VLCPlugin.1"),
+        riid, description );
 };
 
 HRESULT VLCPlugin::onAmbientChanged(LPUNKNOWN pContainer, DISPID dispID)

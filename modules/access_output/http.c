@@ -2,7 +2,7 @@
  * http.c
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: http.c 16445 2006-08-31 01:49:34Z hartman $
+ * $Id: http.c 17020 2006-10-10 18:33:26Z fkuehne $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jon Lech Johansen <jon@nanocrew.net>
@@ -92,7 +92,7 @@ static void Close( vlc_object_t * );
 vlc_module_begin();
     set_description( _("HTTP stream output") );
     set_capability( "sout access", 0 );
-    set_shortname( N_("HTTP" ) );
+    set_shortname( "HTTP" );
     add_shortcut( "http" );
     add_shortcut( "https" );
     add_shortcut( "mmsh" );

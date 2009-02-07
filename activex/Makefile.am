@@ -36,6 +36,8 @@ SOURCES_activex = \
     dataobject.h \
     viewobject.cpp \
     viewobject.h \
+    supporterrorinfo.cpp \
+    supporterrorinfo.h \
     vlccontrol.cpp \
     vlccontrol.h \
     vlccontrol2.cpp \
@@ -44,6 +46,7 @@ SOURCES_activex = \
     plugin.h \
     axvlc_idl.c \
     axvlc_idl.h \
+    guiddef.h \
     $(NULL)
 
 DIST_rsrc = \

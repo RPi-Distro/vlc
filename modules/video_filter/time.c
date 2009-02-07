@@ -2,7 +2,7 @@
  * time.c : time display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: time.c 16767 2006-09-21 14:32:45Z hartman $
+ * $Id: time.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -104,7 +104,7 @@ static char *ppsz_pos_descriptions[] =
  *****************************************************************************/
 vlc_module_begin();
     set_capability( "sub filter", 0 );
-    set_shortname( N_("Time overlay"));
+    set_shortname( _("Time overlay"));
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_SUBPIC );
     set_callbacks( CreateFilter, DestroyFilter );

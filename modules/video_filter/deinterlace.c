@@ -2,7 +2,7 @@
  * deinterlace.c : deinterlacer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 the VideoLAN team
- * $Id: deinterlace.c 15030 2006-04-01 20:33:59Z sam $
+ * $Id: deinterlace.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *
@@ -119,7 +119,7 @@ static char *mode_list_text[] = { N_("Discard"), N_("Blend"), N_("Mean"),
 
 vlc_module_begin();
     set_description( _("Deinterlacing video filter") );
-    set_shortname( N_("Deinterlace" ));
+    set_shortname( _("Deinterlace" ));
     set_capability( "video filter", 0 );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VFILTER );

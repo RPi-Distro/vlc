@@ -2,7 +2,7 @@
  * wxwidgets.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: wxwidgets.cpp 15044 2006-04-02 07:58:36Z zorglub $
+ * $Id: wxwidgets.cpp 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -162,7 +162,7 @@ vlc_module_begin();
 #endif
     add_bool( "wx-labels", 0, NULL, LABEL_TEXT, LABEL_LONGTEXT, VLC_TRUE);
     add_string( "wx-config-last", NULL, NULL,
-                "last config", "last config", VLC_TRUE );
+                N_("last config"), N_("last config"), VLC_TRUE );
         change_autosave();
     add_deprecated( "wxwin-config-last", VLC_FALSE); /*Deprecated since 0.8.4*/
 

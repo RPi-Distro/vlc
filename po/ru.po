@@ -1,7 +1,7 @@
 # Russian localisation for VLC
 # Copyright (C) 2001 Free Software Foundation, Inc.
 # Copyright (C) 2005 the VideoLAN team
-# $Id: ru.po 16862 2006-09-26 13:56:46Z xtophe $
+# $Id: ru.po 17013 2006-10-09 22:26:35Z xtophe $
 #
 # Valek Filippov <frob@df.ru>, 2001.
 # Andrey Brilevskiy <andrey-brilevskiy@yandex.ru>, 2005.
@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 18:45+0200\n"
+"POT-Creation-Date: 2006-10-12 19:53+0200\n"
 "PO-Revision-Date: 2006-08-29 20:10+0700\n"
 "Last-Translator: Vladimir Yermolayev <init@siptelecom.ru>\n"
 "Language-Team: Russian\n"
@@ -18,20 +18,6 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Poedit-Language: Russian\n"
-
-#: include/vlc/vlc.h:578
-msgid ""
-"This program comes with NO WARRANTY, to the extent permitted by law.\n"
-"You may redistribute it under the terms of the GNU General Public License;\n"
-"see the file named COPYING for details.\n"
-"Written by the VideoLAN team; see the AUTHORS file.\n"
-msgstr ""
-"Эта программа поставляется БЕЗ ГАРАНТИИ, в степени, разрешенной "
-"законодательством.\n"
-"Вы можете пользоваться и передавать ее на условиях Основной Публичной "
-"Лицензии GNU;\n"
-"подробнее смотрите в файле COPYING. \n"
-"Написано командой VideoLAN; подробнее смотрите в файле AUTHORS.\n"
 
 #: include/vlc_config_cat.h:32
 msgid "VLC preferences"
@@ -493,9 +479,9 @@ msgstr ""
 "строку, перейдите в каталог, где установлен VLC и запустите \"vlc -I "
 "wxwidgets\"\n"
 
-#: include/vlc_meta.h:28 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1293 modules/gui/macosx/playlistinfo.m:205
-#: modules/gui/macosx/playlistinfo.m:310 modules/misc/growl.c:166
+#: include/vlc_meta.h:28 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlistinfo.m:310 modules/gui/macosx/playlist.m:318
+#: modules/gui/macosx/playlist.m:1293 modules/misc/growl.c:166
 #: modules/misc/growl.c:169 modules/misc/notify.c:156
 #: modules/misc/notify.c:159
 msgid "Meta-information"
@@ -510,15 +496,15 @@ msgstr "Мета-данные"
 msgid "Title"
 msgstr "Глава"
 
-#: include/vlc_meta.h:30 modules/gui/macosx/playlist.m:134
-#: modules/gui/macosx/playlistinfo.m:58 modules/gui/macosx/wizard.m:393
+#: include/vlc_meta.h:30 modules/gui/macosx/playlistinfo.m:58
+#: modules/gui/macosx/playlist.m:134 modules/gui/macosx/wizard.m:393
 #: modules/gui/wince/playlist.cpp:674 modules/mux/asf.c:50
 msgid "Author"
 msgstr "Автор"
 
-#: include/vlc_meta.h:31 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1293 modules/gui/macosx/playlistinfo.m:205
-#: modules/gui/macosx/playlistinfo.m:310
+#: include/vlc_meta.h:31 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlistinfo.m:310 modules/gui/macosx/playlist.m:318
+#: modules/gui/macosx/playlist.m:1293
 msgid "Artist"
 msgstr "Исполнитель"
 
@@ -660,6 +646,20 @@ msgstr "Название кодека"
 #: include/vlc_meta.h:69
 msgid "Codec Description"
 msgstr "Описание кодека"
+
+#: include/vlc/vlc.h:578
+msgid ""
+"This program comes with NO WARRANTY, to the extent permitted by law.\n"
+"You may redistribute it under the terms of the GNU General Public License;\n"
+"see the file named COPYING for details.\n"
+"Written by the VideoLAN team; see the AUTHORS file.\n"
+msgstr ""
+"Эта программа поставляется БЕЗ ГАРАНТИИ, в степени, разрешенной "
+"законодательством.\n"
+"Вы можете пользоваться и передавать ее на условиях Основной Публичной "
+"Лицензии GNU;\n"
+"подробнее смотрите в файле COPYING. \n"
+"Написано командой VideoLAN; подробнее смотрите в файле AUTHORS.\n"
 
 #: src/audio_output/input.c:80 src/audio_output/input.c:126
 #: src/input/es_out.c:361 src/libvlc.h:408 src/video_output/video_output.c:379
@@ -961,6 +961,26 @@ msgstr "Переключить интерфейс"
 msgid "Add Interface"
 msgstr "Добавить интерфейс"
 
+#: src/interface/interface.c:380
+#, fuzzy
+msgid "Telnet Interface"
+msgstr "Открыть окно списка для воспроизведения"
+
+#: src/interface/interface.c:382
+#, fuzzy
+msgid "Web Interface"
+msgstr "Интерфейс"
+
+#: src/interface/interface.c:384
+#, fuzzy
+msgid "Debug logging"
+msgstr "Журналирование в файл"
+
+#: src/interface/interface.c:386
+#, fuzzy
+msgid "Mouse Gestures"
+msgstr "Жесты"
+
 #: src/libvlc.c:331 src/libvlc.c:479 src/misc/modules.c:1684
 #: src/misc/modules.c:1988
 msgid "C"
@@ -1085,6 +1105,10 @@ msgstr "Японский"
 #: src/libvlc.h:40 src/misc/iso-639_def.h:79
 msgid "Georgian"
 msgstr "Грузинский"
+
+#: src/libvlc.h:40 src/misc/iso-639_def.h:125
+msgid "Malay"
+msgstr "Малайский"
 
 #: src/libvlc.h:40 src/misc/iso-639_def.h:111
 msgid "Korean"
@@ -4117,10 +4141,6 @@ msgstr "Маори"
 msgid "Marathi"
 msgstr "Маратхи"
 
-#: src/misc/iso-639_def.h:125
-msgid "Malay"
-msgstr "Малайский"
-
 #: src/misc/iso-639_def.h:126
 msgid "Malagasy"
 msgstr "Малагасийский"
@@ -4482,7 +4502,7 @@ msgid "Aspect-ratio"
 msgstr "Соотношение сторон"
 
 #: modules/access/cdda.c:52 modules/access/dshow/dshow.cpp:80
-#: modules/access/dv.c:68 modules/access/dvb/access.c:72
+#: modules/access/dvb/access.c:72 modules/access/dv.c:68
 #: modules/access/dvdnav.c:63 modules/access/dvdread.c:61
 #: modules/access/fake.c:40 modules/access/file.c:79 modules/access/ftp.c:42
 #: modules/access/gnomevfs.c:44 modules/access/http.c:53
@@ -4539,7 +4559,7 @@ msgid "Audio CD - Track %i"
 msgstr "Аудио CD - Дорожка %i"
 
 #: modules/access/cdda/cdda.c:42 modules/access/directory.c:78
-#: modules/codec/x264.c:306 modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/codec/x264.c:321 modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "none"
 msgstr "нет"
 
@@ -5066,18 +5086,6 @@ msgstr "Обновить список"
 msgid "Configure"
 msgstr "Настройка"
 
-#: modules/access/dv.c:70
-msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
-msgstr "Размер кэша для потока DV. Значение указывается в миллисекудах."
-
-#: modules/access/dv.c:74
-msgid "Digital Video (Firewire/ieee1394)  input"
-msgstr "Источник Digital Video (Firewire/IEEE 1394)"
-
-#: modules/access/dv.c:75
-msgid "dv"
-msgstr "dv"
-
 #: modules/access/dvb/access.c:74
 msgid ""
 "Caching value for DVB streams. This value should be set in milliseconds."
@@ -5322,6 +5330,18 @@ msgstr "DVB ввод с поддержкой v4l2"
 msgid "HTTP server"
 msgstr "Сервер HTTP"
 
+#: modules/access/dv.c:70
+msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
+msgstr "Размер кэша для потока DV. Значение указывается в миллисекудах."
+
+#: modules/access/dv.c:74
+msgid "Digital Video (Firewire/ieee1394)  input"
+msgstr "Источник Digital Video (Firewire/IEEE 1394)"
+
+#: modules/access/dv.c:75
+msgid "dv"
+msgstr "dv"
+
 #: modules/access/dvdnav.c:59 modules/access/dvdread.c:57
 msgid "DVD angle"
 msgstr "Угол DVD"
@@ -5482,6 +5502,49 @@ msgstr "Ввод из файла"
 msgid "File"
 msgstr "Файл"
 
+#: modules/access_filter/record.c:43
+msgid "Record directory"
+msgstr "Каталог для записи"
+
+#: modules/access_filter/record.c:45
+msgid "Directory where the record will be stored."
+msgstr "Каталог, где будут сохраняться все записи."
+
+#: modules/access_filter/timeshift.c:44
+msgid "Timeshift granularity"
+msgstr "Размер сдвига по времени"
+
+#: modules/access_filter/timeshift.c:46
+msgid ""
+"This is the size of the temporary files tha will be used to store the "
+"timeshifted streams."
+msgstr ""
+"Размер временных файлов, которые будут содержать сдвинутые по времени потоки."
+
+#: modules/access_filter/timeshift.c:48
+msgid "Timeshift directory"
+msgstr "Каталог сдвига по времени"
+
+#: modules/access_filter/timeshift.c:49
+msgid "Directory used to store the timeshift temporary files."
+msgstr ""
+"Каталог, где будут сохраняться временные файлы модуля сдвига по времени."
+
+#: modules/access_filter/timeshift.c:51
+#, fuzzy
+msgid "Force use of the timeshift module"
+msgstr "Использовать модуль сдвига по времени"
+
+#: modules/access_filter/timeshift.c:52
+msgid ""
+"Force use of the timeshift module even if the access declares that it can "
+"control pace or pause."
+msgstr ""
+
+#: modules/access_filter/timeshift.c:56 modules/access_filter/timeshift.c:57
+msgid "Timeshift"
+msgstr "Сдвиг по времени"
+
 #: modules/access/ftp.c:44
 msgid ""
 "Caching value for FTP streams. This value should be set in milliseconds."
@@ -5611,6 +5674,175 @@ msgstr "Максимальный разрешенный битрейт пото�
 #: modules/access/mms/mms.c:62
 msgid "Microsoft Media Server (MMS) input"
 msgstr "Ввод с Microsoft Media Server (MMS)"
+
+#: modules/access_output/dummy.c:40 modules/stream_out/dummy.c:47
+msgid "Dummy stream output"
+msgstr "Ложный вывод потока"
+
+#: modules/access_output/dummy.c:41 modules/misc/dummy/dummy.c:58
+msgid "Dummy"
+msgstr "Ложный"
+
+#: modules/access_output/file.c:61
+msgid "Append to file"
+msgstr "Добавлять к файлу"
+
+#: modules/access_output/file.c:62
+msgid "Append to file if it exists instead of replacing it."
+msgstr "Добавлять поток к файлу вместо того, чтобы заменять его."
+
+#: modules/access_output/file.c:66
+msgid "File stream output"
+msgstr "Вывод потока в файл"
+
+#: modules/access_output/http.c:60
+msgid "Username"
+msgstr "Имя пользователя"
+
+#: modules/access_output/http.c:61
+msgid "User name that will be requested to access the stream."
+msgstr "Имя пользователя, которое будет запрошено для доступа к потоку."
+
+#: modules/access_output/http.c:64
+msgid "Password that will be requested to access the stream."
+msgstr "Пароль, который будет запрошен для доступа к потоку."
+
+#: modules/access_output/http.c:68
+msgid "Mime"
+msgstr "MIME"
+
+#: modules/access_output/http.c:69
+msgid "MIME returned by the server (autodetected if not specified."
+msgstr ""
+"Типы MIME, возвращаемые сервером (автоопределение, если ничего не указано)."
+
+#: modules/access_output/http.c:73
+msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
+msgstr ""
+"Путь к файлу сертификатов x509 PEM, который будет использован для HTTPS."
+
+#: modules/access_output/http.c:76
+msgid ""
+"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
+"empty if you don't have one."
+msgstr ""
+"Путь к файлу приватного ключа x509 PEM, который будет использован для HTTPS. "
+"Оставьте пустым, если у вас его нет."
+
+#: modules/access_output/http.c:80
+msgid ""
+"Path to the x509 PEM trusted root CA certificates (certificate authority) "
+"file that will be used for HTTPS. Leave empty if you don't have one."
+msgstr ""
+"Путь к файлу доверенного корневого сертификата (Root CA) x509 PEM, который "
+"будет использован для HTTPS. Оставьте пустым, если у вас его нет."
+
+#: modules/access_output/http.c:85
+msgid ""
+"Path to the x509 PEM Certificates Revocation List file that will be used for "
+"SSL. Leave empty if you don't have one."
+msgstr ""
+"Путь к файлу со списком отозванных сертификатов x509 PEM (CRL), который "
+"будет использован для HTTPS. Оставьте пустым, если у вас его нет."
+
+#: modules/access_output/http.c:88
+msgid "Advertise with Bonjour"
+msgstr "Оповещение Bonjur"
+
+#: modules/access_output/http.c:89
+msgid "Advertise the stream with the Bonjour protocol."
+msgstr "Оповещать о потоке с помощью протокола Bonjour."
+
+#: modules/access_output/http.c:93
+msgid "HTTP stream output"
+msgstr "Вывод потока HTTP"
+
+#: modules/access_output/shout.c:58
+msgid "Stream name"
+msgstr "Имя потока"
+
+#: modules/access_output/shout.c:59
+msgid "Name to give to this stream/channel on the icecast server."
+msgstr "Имя потока или канала на сервере icecast."
+
+#: modules/access_output/shout.c:62
+msgid "Stream description"
+msgstr "Описание потока"
+
+#: modules/access_output/shout.c:63
+msgid "Description of the stream content or information about your channel."
+msgstr "Описание потока или информация о вашем канале."
+
+#: modules/access_output/shout.c:66
+msgid "Stream MP3"
+msgstr "Вещать в MP3"
+
+#: modules/access_output/shout.c:67
+msgid ""
+"You normally have to feed the shoutcast module with Ogg streams. It is also "
+"possible to stream MP3 instead, so you can forward MP3 streams to the "
+"icecast server."
+msgstr ""
+"Обычно вы должны передавать модулю shoutcast потоки Ogg. Но также возможно "
+"вместо этого вещать MP3, так что вы можете передавать потоки MP3 на сервер "
+"icecast."
+
+#: modules/access_output/shout.c:73
+msgid "IceCAST output"
+msgstr "Вывод в IceCAST"
+
+#: modules/access_output/udp.c:75 modules/access/rtsp/access.c:40
+#: modules/demux/live555.cpp:62
+msgid "Caching value (ms)"
+msgstr "Размер кэша (мс)"
+
+#: modules/access_output/udp.c:77
+msgid ""
+"Default caching value for outbound UDP streams. This value should be set in "
+"milliseconds."
+msgstr ""
+"Размер кэша для исходящих потоков UDP. Значение указывается в миллисекундах."
+
+#: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
+#: modules/gui/macosx/wizard.m:1846
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:610
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:91
+msgid "Time-To-Live (TTL)"
+msgstr "\"Время жизни\" (TTL)"
+
+#: modules/access_output/udp.c:81
+msgid "Time-To-Live of the outgoing stream."
+msgstr "\"Время жизни\" (TTL) исходящего потока."
+
+#: modules/access_output/udp.c:84
+msgid "Group packets"
+msgstr "Пакеты в группах"
+
+#: modules/access_output/udp.c:85
+msgid ""
+"Packets can be sent one by one at the right time or by groups. You can "
+"choose the number of packets that will be sent at a time. It helps reducing "
+"the scheduling load on heavily-loaded systems."
+msgstr ""
+"Пакеты могут посылаться один за одном или в группах. Вы можете выбирать "
+"количество пакетов, посылаемых за один раз. Это помогает уменьшать нагрузку "
+"на загруженных системах."
+
+#: modules/access_output/udp.c:90
+msgid "Raw write"
+msgstr "Сырая передача"
+
+#: modules/access_output/udp.c:91
+msgid ""
+"Packets will be sent directly, without trying to fill the MTU (ie, without "
+"trying to make the biggest possible packets in order to improve streaming)."
+msgstr ""
+"Пакеты будут посылать напрямую, без попытки заполнить MTU (то есть без "
+"попытки собирать наибольшие возможные пакеты для оптимизации вещания)."
+
+#: modules/access_output/udp.c:97
+msgid "UDP stream output"
+msgstr "Вывод потока UDP"
 
 #: modules/access/pvr/pvr.c:49
 msgid ""
@@ -5770,11 +6002,6 @@ msgstr "PVR"
 #: modules/access/pvr/pvr.c:117
 msgid "IVTV MPEG Encoding cards input"
 msgstr "Ввод с карты IVTV MPEG Encoding"
-
-#: modules/access/rtsp/access.c:40 modules/access_output/udp.c:75
-#: modules/demux/live555.cpp:62
-msgid "Caching value (ms)"
-msgstr "Размер кэша (мс)"
 
 #: modules/access/rtsp/access.c:42
 msgid ""
@@ -6220,223 +6447,6 @@ msgstr "Формат поля \"исполнитель\" элементов пл
 msgid "Format to use in the playlist's \"title\" field."
 msgstr "Формат поля \"название\" элементов плейлиста."
 
-#: modules/access_filter/record.c:43
-msgid "Record directory"
-msgstr "Каталог для записи"
-
-#: modules/access_filter/record.c:45
-msgid "Directory where the record will be stored."
-msgstr "Каталог, где будут сохраняться все записи."
-
-#: modules/access_filter/timeshift.c:44
-msgid "Timeshift granularity"
-msgstr "Размер сдвига по времени"
-
-#: modules/access_filter/timeshift.c:46
-msgid ""
-"This is the size of the temporary files tha will be used to store the "
-"timeshifted streams."
-msgstr ""
-"Размер временных файлов, которые будут содержать сдвинутые по времени потоки."
-
-#: modules/access_filter/timeshift.c:48
-msgid "Timeshift directory"
-msgstr "Каталог сдвига по времени"
-
-#: modules/access_filter/timeshift.c:49
-msgid "Directory used to store the timeshift temporary files."
-msgstr ""
-"Каталог, где будут сохраняться временные файлы модуля сдвига по времени."
-
-#: modules/access_filter/timeshift.c:51
-#, fuzzy
-msgid "Force use of the timeshift module"
-msgstr "Использовать модуль сдвига по времени"
-
-#: modules/access_filter/timeshift.c:52
-msgid ""
-"Force use of the timeshift module even if the access declares that it can "
-"control pace or pause."
-msgstr ""
-
-#: modules/access_filter/timeshift.c:56 modules/access_filter/timeshift.c:57
-msgid "Timeshift"
-msgstr "Сдвиг по времени"
-
-#: modules/access_output/dummy.c:40 modules/stream_out/dummy.c:47
-msgid "Dummy stream output"
-msgstr "Ложный вывод потока"
-
-#: modules/access_output/dummy.c:41 modules/misc/dummy/dummy.c:58
-msgid "Dummy"
-msgstr "Ложный"
-
-#: modules/access_output/file.c:61
-msgid "Append to file"
-msgstr "Добавлять к файлу"
-
-#: modules/access_output/file.c:62
-msgid "Append to file if it exists instead of replacing it."
-msgstr "Добавлять поток к файлу вместо того, чтобы заменять его."
-
-#: modules/access_output/file.c:66
-msgid "File stream output"
-msgstr "Вывод потока в файл"
-
-#: modules/access_output/http.c:60
-msgid "Username"
-msgstr "Имя пользователя"
-
-#: modules/access_output/http.c:61
-msgid "User name that will be requested to access the stream."
-msgstr "Имя пользователя, которое будет запрошено для доступа к потоку."
-
-#: modules/access_output/http.c:64
-msgid "Password that will be requested to access the stream."
-msgstr "Пароль, который будет запрошен для доступа к потоку."
-
-#: modules/access_output/http.c:68
-msgid "Mime"
-msgstr "MIME"
-
-#: modules/access_output/http.c:69
-msgid "MIME returned by the server (autodetected if not specified."
-msgstr ""
-"Типы MIME, возвращаемые сервером (автоопределение, если ничего не указано)."
-
-#: modules/access_output/http.c:73
-msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
-msgstr ""
-"Путь к файлу сертификатов x509 PEM, который будет использован для HTTPS."
-
-#: modules/access_output/http.c:76
-msgid ""
-"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
-"empty if you don't have one."
-msgstr ""
-"Путь к файлу приватного ключа x509 PEM, который будет использован для HTTPS. "
-"Оставьте пустым, если у вас его нет."
-
-#: modules/access_output/http.c:80
-msgid ""
-"Path to the x509 PEM trusted root CA certificates (certificate authority) "
-"file that will be used for HTTPS. Leave empty if you don't have one."
-msgstr ""
-"Путь к файлу доверенного корневого сертификата (Root CA) x509 PEM, который "
-"будет использован для HTTPS. Оставьте пустым, если у вас его нет."
-
-#: modules/access_output/http.c:85
-msgid ""
-"Path to the x509 PEM Certificates Revocation List file that will be used for "
-"SSL. Leave empty if you don't have one."
-msgstr ""
-"Путь к файлу со списком отозванных сертификатов x509 PEM (CRL), который "
-"будет использован для HTTPS. Оставьте пустым, если у вас его нет."
-
-#: modules/access_output/http.c:88
-msgid "Advertise with Bonjour"
-msgstr "Оповещение Bonjur"
-
-#: modules/access_output/http.c:89
-msgid "Advertise the stream with the Bonjour protocol."
-msgstr "Оповещать о потоке с помощью протокола Bonjour."
-
-#: modules/access_output/http.c:93
-msgid "HTTP stream output"
-msgstr "Вывод потока HTTP"
-
-#: modules/access_output/http.c:95 modules/control/http/http.c:61
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:472
-msgid "HTTP"
-msgstr "HTTP"
-
-#: modules/access_output/shout.c:58
-msgid "Stream name"
-msgstr "Имя потока"
-
-#: modules/access_output/shout.c:59
-msgid "Name to give to this stream/channel on the icecast server."
-msgstr "Имя потока или канала на сервере icecast."
-
-#: modules/access_output/shout.c:62
-msgid "Stream description"
-msgstr "Описание потока"
-
-#: modules/access_output/shout.c:63
-msgid "Description of the stream content or information about your channel."
-msgstr "Описание потока или информация о вашем канале."
-
-#: modules/access_output/shout.c:66
-msgid "Stream MP3"
-msgstr "Вещать в MP3"
-
-#: modules/access_output/shout.c:67
-msgid ""
-"You normally have to feed the shoutcast module with Ogg streams. It is also "
-"possible to stream MP3 instead, so you can forward MP3 streams to the "
-"icecast server."
-msgstr ""
-"Обычно вы должны передавать модулю shoutcast потоки Ogg. Но также возможно "
-"вместо этого вещать MP3, так что вы можете передавать потоки MP3 на сервер "
-"icecast."
-
-#: modules/access_output/shout.c:73
-msgid "IceCAST output"
-msgstr "Вывод в IceCAST"
-
-#: modules/access_output/udp.c:77
-msgid ""
-"Default caching value for outbound UDP streams. This value should be set in "
-"milliseconds."
-msgstr ""
-"Размер кэша для исходящих потоков UDP. Значение указывается в миллисекундах."
-
-#: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
-#: modules/gui/macosx/wizard.m:1846
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:610
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:91
-msgid "Time-To-Live (TTL)"
-msgstr "\"Время жизни\" (TTL)"
-
-#: modules/access_output/udp.c:81
-msgid "Time-To-Live of the outgoing stream."
-msgstr "\"Время жизни\" (TTL) исходящего потока."
-
-#: modules/access_output/udp.c:84
-msgid "Group packets"
-msgstr "Пакеты в группах"
-
-#: modules/access_output/udp.c:85
-msgid ""
-"Packets can be sent one by one at the right time or by groups. You can "
-"choose the number of packets that will be sent at a time. It helps reducing "
-"the scheduling load on heavily-loaded systems."
-msgstr ""
-"Пакеты могут посылаться один за одном или в группах. Вы можете выбирать "
-"количество пакетов, посылаемых за один раз. Это помогает уменьшать нагрузку "
-"на загруженных системах."
-
-#: modules/access_output/udp.c:90
-msgid "Raw write"
-msgstr "Сырая передача"
-
-#: modules/access_output/udp.c:91
-msgid ""
-"Packets will be sent directly, without trying to fill the MTU (ie, without "
-"trying to make the biggest possible packets in order to improve streaming)."
-msgstr ""
-"Пакеты будут посылать напрямую, без попытки заполнить MTU (то есть без "
-"попытки собирать наибольшие возможные пакеты для оптимизации вещания)."
-
-#: modules/access_output/udp.c:97
-msgid "UDP stream output"
-msgstr "Вывод потока UDP"
-
-#: modules/access_output/udp.c:98
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:475
-msgid "UDP"
-msgstr "UDP"
-
 #: modules/audio_filter/channel_mixer/dolby.c:47
 msgid "Simple decoder for Dolby Surround encoded streams"
 msgstr "Декодер для потоков, кодированных Dolby Surround"
@@ -6852,8 +6862,8 @@ msgstr "Фиктивный аудио микшер S/PDIF"
 msgid "Trivial audio mixer"
 msgstr "Обычный аудио микшер"
 
-#: modules/audio_output/alsa.c:84 modules/codec/x264.c:300
-#: modules/codec/x264.c:306 modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/audio_output/alsa.c:84 modules/codec/x264.c:315
+#: modules/codec/x264.c:321 modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "default"
 msgstr "по-умолчанию"
 
@@ -7585,7 +7595,7 @@ msgstr ""
 "Фактор квантования I-кадров, в сравнении с P-кадрами (например при 1.0 "
 "масштаб квантования I и P-кадров будет одинаковым)"
 
-#: modules/codec/ffmpeg/ffmpeg.h:232 modules/codec/x264.c:263
+#: modules/codec/ffmpeg/ffmpeg.h:232 modules/codec/x264.c:269
 #: modules/demux/mod.c:73
 msgid "Noise reduction"
 msgstr "Уменьшение шума"
@@ -7902,22 +7912,27 @@ msgstr ""
 "Невозможно преобразовать кодировку субтитров.\n"
 "Попробуйте вручную указать кодировку перед открытием файла."
 
-#: modules/codec/svcdsub.c:46
+#: modules/codec/svcdsub.c:42
+#, fuzzy
+msgid "Enable debug"
+msgstr "Включить видео"
+
+#: modules/codec/svcdsub.c:45
 msgid ""
 "This integer when viewed in binary is a debugging mask\n"
 "calls                 1\n"
 "packet assembly info  2\n"
 msgstr ""
 
-#: modules/codec/svcdsub.c:51
+#: modules/codec/svcdsub.c:50
 msgid "Philips OGT (SVCD subtitle) decoder"
 msgstr "Декодер Philips OGT (субтитры SVCD)"
 
-#: modules/codec/svcdsub.c:52
+#: modules/codec/svcdsub.c:51
 msgid "SVCD subtitles"
 msgstr "Субтитры SVCD"
 
-#: modules/codec/svcdsub.c:62
+#: modules/codec/svcdsub.c:61
 msgid "Philips OGT (SVCD subtitle) packetizer"
 msgstr "Упаковщик Philips OGT (субтитры SVCD)"
 
@@ -8193,21 +8208,33 @@ msgid ""
 "beta parameters. -6 means light filter, 6 means strong."
 msgstr ""
 
-#: modules/codec/x264.c:110
+#: modules/codec/x264.c:106
+#, fuzzy
+msgid "H.264 level"
+msgstr "Максимальный уровень"
+
+#: modules/codec/x264.c:107
+msgid ""
+"Specify H.264 level (as defined by Annex A of the standard). Levels are not "
+"enforced; it's up to the user to select a level compatible with the rest of "
+"the encoding options. Range 1 to 5.1 (10 to 51 is also allowed)."
+msgstr ""
+
+#: modules/codec/x264.c:116
 #, fuzzy
 msgid "Interlaced mode"
 msgstr "Модуль интерфейса"
 
-#: modules/codec/x264.c:111
+#: modules/codec/x264.c:117
 #, fuzzy
 msgid "Pure-interlaced mode."
 msgstr "Режим деинтерлейса"
 
-#: modules/codec/x264.c:116
+#: modules/codec/x264.c:122
 msgid "Set QP"
 msgstr "Коэффициент квантования"
 
-#: modules/codec/x264.c:117
+#: modules/codec/x264.c:123
 msgid ""
 "This selects the quantizer to use. Lower values result in better fidelity, "
 "but higher bitrates. 26 is a good default value. Range 0 (lossless) to 51."
@@ -8216,114 +8243,114 @@ msgstr ""
 "но больший битрейт. От 0 до 51 (26 - по-умолчанию, 0 означает сжатие без "
 "потерь)."
 
-#: modules/codec/x264.c:121
+#: modules/codec/x264.c:127
 msgid "Quality-based VBR"
 msgstr "Режим VBR с фиксированным качеством"
 
-#: modules/codec/x264.c:122
+#: modules/codec/x264.c:128
 msgid "1-pass Quality-based VBR. Range 0 to 51."
 msgstr "1-проходный режим VBR с фиксированным качеством. Значение от 0 до 51"
 
-#: modules/codec/x264.c:124
+#: modules/codec/x264.c:130
 msgid "Min QP"
 msgstr "Минимальный коэффициент квантования (QP)"
 
-#: modules/codec/x264.c:125
+#: modules/codec/x264.c:131
 msgid "Minimum quantizer parameter. 15 to 35 seems to be a useful range."
 msgstr "Минимальный коэффициент квантования, обычно в интервале от 15 до 35."
 
-#: modules/codec/x264.c:128
+#: modules/codec/x264.c:134
 msgid "Max QP"
 msgstr "Максимальный коэффициент квантования (QP)"
 
-#: modules/codec/x264.c:129
+#: modules/codec/x264.c:135
 msgid "Maximum quantizer parameter."
 msgstr "Максимальный коэффициент квантования."
 
-#: modules/codec/x264.c:131
+#: modules/codec/x264.c:137
 msgid "Max QP step"
 msgstr "Максимальный шаг изменения QP"
 
-#: modules/codec/x264.c:132
+#: modules/codec/x264.c:138
 msgid "Max QP step between frames."
 msgstr "Максимальный шаг изменения коэффициента квантования между кадрами."
 
-#: modules/codec/x264.c:134
+#: modules/codec/x264.c:140
 msgid "Average bitrate tolerance"
 msgstr "Среднее допустимое отклонение битрейта"
 
-#: modules/codec/x264.c:135
+#: modules/codec/x264.c:141
 msgid "Allowed variance in average bitrate (in kbits/s)."
 msgstr "Среднее допустимое отклонение битрейта (в кбит/сек)."
 
-#: modules/codec/x264.c:138
+#: modules/codec/x264.c:144
 msgid "Max local bitrate"
 msgstr "Максимальный локальный битрейт"
 
-#: modules/codec/x264.c:139
+#: modules/codec/x264.c:145
 msgid "Sets a maximum local bitrate (in kbits/s)."
 msgstr "Максимальный локальный битрейт в кбит/сек"
 
-#: modules/codec/x264.c:141
+#: modules/codec/x264.c:147
 msgid "VBV buffer"
 msgstr "Буфер VBV"
 
-#: modules/codec/x264.c:142
+#: modules/codec/x264.c:148
 #, fuzzy
 msgid "Averaging period for the maximum local bitrate (in kbits)."
 msgstr "Усредненная длительность для максимального локального битрейта в кбит."
 
-#: modules/codec/x264.c:145
+#: modules/codec/x264.c:151
 msgid "Initial VBV buffer occupancy"
 msgstr "Начальная заполненность буфера VBV"
 
-#: modules/codec/x264.c:146
+#: modules/codec/x264.c:152
 msgid ""
 "Sets the initial buffer occupancy as a fraction of the buffer size. Range "
 "0.0 to 1.0."
 msgstr "Начальная заполненность буфера VBV, в диапазоне от 0.0 до 1.0."
 
-#: modules/codec/x264.c:150
+#: modules/codec/x264.c:156
 msgid "QP factor between I and P"
 msgstr "Множитель QP между I и P"
 
-#: modules/codec/x264.c:151
+#: modules/codec/x264.c:157
 msgid "QP factor between I and P. Range 1.0 to 2.0."
 msgstr ""
 "Множитель коэффициента квантования между I и P-кадрами, в диапазоне от 1.0 "
 "до 2.0."
 
-#: modules/codec/x264.c:154
+#: modules/codec/x264.c:160
 msgid "QP factor between P and B"
 msgstr "Множитель QP между P и B"
 
-#: modules/codec/x264.c:155
+#: modules/codec/x264.c:161
 msgid "QP factor between P and B. Range 1.0 to 2.0."
 msgstr ""
 "Множитель коэффициента квантования между P и B-кадрами, в диапазоне от 1.0 "
 "до 2.0."
 
-#: modules/codec/x264.c:157
+#: modules/codec/x264.c:163
 msgid "QP difference between chroma and luma"
 msgstr "Разница QP между цветностью и яркостью"
 
-#: modules/codec/x264.c:158
+#: modules/codec/x264.c:164
 msgid "QP difference between chroma and luma."
 msgstr "Разница коэффициента квантования между цветностью и яркостью."
 
-#: modules/codec/x264.c:160
+#: modules/codec/x264.c:166
 msgid "QP curve compression"
 msgstr "Сжатие кривой QP"
 
-#: modules/codec/x264.c:161
+#: modules/codec/x264.c:167
 msgid "QP curve compression. Range 0.0 (CBR) to 1.0 (QCP)."
 msgstr "Коэффициент сжатия кривой квантования (от 0.0=CBR до 1.0=QCP)"
 
-#: modules/codec/x264.c:163 modules/codec/x264.c:167
+#: modules/codec/x264.c:169 modules/codec/x264.c:173
 msgid "Reduce fluctuations in QP"
 msgstr "Уменьшать колебания в QP"
 
-#: modules/codec/x264.c:164
+#: modules/codec/x264.c:170
 msgid ""
 "This reduces the fluctuations in QP before curve compression. Temporally "
 "blurs complexity."
@@ -8331,7 +8358,7 @@ msgstr ""
 "Уменьшать колебания в коэффициентах квантования перед сжатием кривой. "
 "Временно уменьшает сложность."
 
-#: modules/codec/x264.c:168
+#: modules/codec/x264.c:174
 msgid ""
 "This reduces the fluctations in QP after curve compression. Temporally blurs "
 "quants."
@@ -8339,11 +8366,11 @@ msgstr ""
 "Уменьшать колебания в коэффициентах квантования после сжатия кривой. "
 "Временно уменьшает сложность."
 
-#: modules/codec/x264.c:173
+#: modules/codec/x264.c:179
 msgid "Partitions to consider"
 msgstr "Размеры макроблоков"
 
-#: modules/codec/x264.c:174
+#: modules/codec/x264.c:180
 msgid ""
 "Partitions to consider in analyse mode: \n"
 " - none  : \n"
@@ -8361,40 +8388,40 @@ msgstr ""
 " - все       : i4x4,p8x8,(i8x8),b8x8,p4x4\n"
 "(p4x4 требует p8x8. i8x8 требует 8x8dct)."
 
-#: modules/codec/x264.c:182
+#: modules/codec/x264.c:188
 msgid "Direct MV prediction mode"
 msgstr "Режим прямого движения"
 
-#: modules/codec/x264.c:183
+#: modules/codec/x264.c:189
 #, fuzzy
 msgid "Direct MV prediction mode."
 msgstr "Режим прямого движения прогнозирования кадров."
 
-#: modules/codec/x264.c:186
+#: modules/codec/x264.c:192
 #, fuzzy
 msgid "Direct prediction size"
 msgstr "Режим прямого движения"
 
-#: modules/codec/x264.c:187
+#: modules/codec/x264.c:193
 msgid ""
 "Direct prediction size:  -  0: 4x4\n"
 " -  1: 8x8\n"
 " - -1: smallest possible according to level\n"
 msgstr ""
 
-#: modules/codec/x264.c:193
+#: modules/codec/x264.c:199
 msgid "Weighted prediction for B-frames"
 msgstr "Тяжелые B-кадры"
 
-#: modules/codec/x264.c:194
+#: modules/codec/x264.c:200
 msgid "Weighted prediction for B-frames."
 msgstr "Использовать тяжелые B-кадры при прогнозировании."
 
-#: modules/codec/x264.c:196
+#: modules/codec/x264.c:202
 msgid "Integer pixel motion estimation method"
 msgstr "Целочисленный пиксельный метод оценки движения"
 
-#: modules/codec/x264.c:197
+#: modules/codec/x264.c:203
 msgid ""
 "Selects the motion estimation algorithm:  - dia: diamond search, radius 1 "
 "(fast)\n"
@@ -8408,11 +8435,11 @@ msgstr ""
 " - umh: нечетный мульти-угольный поиск (лучше, но медленнее)\n"
 " - esa: исчерпывающий поиск (очень медленно, в основном для тестирования)\n"
 
-#: modules/codec/x264.c:203
+#: modules/codec/x264.c:209
 msgid "Maximum motion vector search range"
 msgstr "Максимальный диапазон поиска векторов движения"
 
-#: modules/codec/x264.c:204
+#: modules/codec/x264.c:210
 #, fuzzy
 msgid ""
 "Maximum distance to search for motion estimation, measured from predicted "
@@ -8424,11 +8451,11 @@ msgstr ""
 "ситуаций. Последовательности с быстрым движением могут выиграть от установки "
 "этого параметра в 24-32. От 0 до 64."
 
-#: modules/codec/x264.c:209
+#: modules/codec/x264.c:215
 msgid "Subpixel motion estimation and partition decision quality"
 msgstr "Субпиксельная оценка движения и качество макроблоков"
 
-#: modules/codec/x264.c:213
+#: modules/codec/x264.c:219
 #, fuzzy
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
@@ -8438,7 +8465,7 @@ msgstr ""
 "Этот параметр регулирует компромисс между качеством и скоростью в процессе "
 "оценки движения (меньше - быстрее и больше - лучше качество). От 1 до 6."
 
-#: modules/codec/x264.c:218
+#: modules/codec/x264.c:224
 #, fuzzy
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
@@ -8448,7 +8475,7 @@ msgstr ""
 "Этот параметр регулирует компромисс между качеством и скоростью в процессе "
 "оценки движения (меньше - быстрее и больше - лучше качество). От 1 до 6."
 
-#: modules/codec/x264.c:223
+#: modules/codec/x264.c:229
 #, fuzzy
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
@@ -8458,19 +8485,19 @@ msgstr ""
 "Этот параметр регулирует компромисс между качеством и скоростью в процессе "
 "оценки движения (меньше - быстрее и больше - лучше качество). От 1 до 6."
 
-#: modules/codec/x264.c:228
+#: modules/codec/x264.c:234
 msgid "RD based mode decision for B-frames"
 msgstr "Режим rate distortion (RD) для B-кадров"
 
-#: modules/codec/x264.c:229
+#: modules/codec/x264.c:235
 msgid "RD based mode decision for B-frames. This requires subme 6 (or higher)."
 msgstr "Режим rate distortion (RD) для B-кадров. Требует subme 6 или выше."
 
-#: modules/codec/x264.c:232
+#: modules/codec/x264.c:238
 msgid "Decide references on a per partition basis"
 msgstr "Выбор референсных кадров на основе макроблоков"
 
-#: modules/codec/x264.c:233
+#: modules/codec/x264.c:239
 msgid ""
 "Allows each 8x8 or 16x8 partition to independently select a reference frame, "
 "as opposed to only one ref per macroblock."
@@ -8478,35 +8505,35 @@ msgstr ""
 "Позволяет каждому из 8x8 или 16x8 макроблоку независимо выбирать референсный "
 "кадр вместо одного референсного кадра на каждый макроблок."
 
-#: modules/codec/x264.c:237
+#: modules/codec/x264.c:243
 msgid "Ignore chroma in motion estimation"
 msgstr "Игнорировать цветность в оценке движения"
 
-#: modules/codec/x264.c:238
+#: modules/codec/x264.c:244
 msgid "Chroma ME for subpel and mode decision in P-frames."
 msgstr "Игнорировать цветность в оценке движения для субпикселей в P-кадрах"
 
-#: modules/codec/x264.c:241
+#: modules/codec/x264.c:247
 msgid "Jointly optimize both MVs in B-frames"
 msgstr "Оптимизация обоих видов векторов движения в B-кадрах"
 
-#: modules/codec/x264.c:242
+#: modules/codec/x264.c:248
 msgid "Joint bidirectional motion refinement."
 msgstr "Общая двунаправленная обработка движения."
 
-#: modules/codec/x264.c:244
+#: modules/codec/x264.c:250
 msgid "Adaptive spatial transform size"
 msgstr "Адаптивная пространственная трансформация"
 
-#: modules/codec/x264.c:246
+#: modules/codec/x264.c:252
 msgid "SATD-based decision for 8x8 transform in inter-MBs."
 msgstr "Метод SATD для трансформации 8x8 во внутренних MB."
 
-#: modules/codec/x264.c:248
+#: modules/codec/x264.c:254
 msgid "Trellis RD quantization"
 msgstr "Квантование trellis RD"
 
-#: modules/codec/x264.c:249
+#: modules/codec/x264.c:255
 msgid ""
 "Trellis RD quantization: \n"
 " - 0: disabled\n"
@@ -8520,25 +8547,25 @@ msgstr ""
 " - 2: включено на всех стадиях\n"
 "Требуется CABAC."
 
-#: modules/codec/x264.c:255
+#: modules/codec/x264.c:261
 msgid "Early SKIP detection on P-frames"
 msgstr "Раннее определене пропушенных P-кадров"
 
-#: modules/codec/x264.c:256
+#: modules/codec/x264.c:262
 msgid "Early SKIP detection on P-frames."
 msgstr "Раннее определене пропушенных P-кадров."
 
-#: modules/codec/x264.c:258
+#: modules/codec/x264.c:264
 msgid "Coefficient thresholding on P-frames"
 msgstr ""
 
-#: modules/codec/x264.c:259
+#: modules/codec/x264.c:265
 msgid ""
 "Coefficient thresholding on P-frames.Eliminate dct blocks containing only a "
 "small single coefficient."
 msgstr ""
 
-#: modules/codec/x264.c:264
+#: modules/codec/x264.c:270
 msgid ""
 "Dct-domain noise reduction. Adaptive pseudo-deadzone. 10 to 1000 seems to be "
 "a useful range."
@@ -8546,115 +8573,134 @@ msgstr ""
 "Шумоподавление в домене DCT. Адаптивная псевдомертвая зона. Диапазон от 10 "
 "до 1000."
 
-#: modules/codec/x264.c:268
+#: modules/codec/x264.c:274
 #, fuzzy
 msgid "Inter luma quantization deadzone"
 msgstr "Фактор квантования I-кадров"
 
-#: modules/codec/x264.c:269
+#: modules/codec/x264.c:275
 msgid "Set the size of the inter luma quantization deadzone. Range 0 to 32."
 msgstr ""
 
-#: modules/codec/x264.c:272
+#: modules/codec/x264.c:278
 #, fuzzy
 msgid "Intra luma quantization deadzone"
 msgstr "Фактор квантования I-кадров"
 
-#: modules/codec/x264.c:273
+#: modules/codec/x264.c:279
 msgid "Set the size of the intra luma quantization deadzone. Range 0 to 32."
 msgstr ""
 
-#: modules/codec/x264.c:279
+#: modules/codec/x264.c:285
 msgid "CPU optimizations"
 msgstr "Оптимизация CPU"
 
-#: modules/codec/x264.c:280
+#: modules/codec/x264.c:286
 msgid "Use assembler CPU optimizations."
 msgstr "Использовать ассемблерную оптимизацию CPU"
 
-#: modules/codec/x264.c:282
+#: modules/codec/x264.c:288
 msgid "PSNR computation"
 msgstr "Вычисление PSNR"
 
-#: modules/codec/x264.c:283
+#: modules/codec/x264.c:289
 msgid ""
 "Compute and print PSNR stats. This has no effect on the actual encoding "
 "quality."
 msgstr ""
 
-#: modules/codec/x264.c:286
+#: modules/codec/x264.c:292
 msgid "SSIM computation"
 msgstr "Вычисление SSIM"
 
-#: modules/codec/x264.c:287
+#: modules/codec/x264.c:293
 msgid ""
 "Compute and print SSIM stats. This has no effect on the actual encoding "
 "quality."
 msgstr ""
 
-#: modules/codec/x264.c:290
+#: modules/codec/x264.c:296
 msgid "Quiet mode"
 msgstr "Тихий режим"
 
-#: modules/codec/x264.c:291
+#: modules/codec/x264.c:297
 msgid "Quiet mode."
 msgstr "Тихий режим"
 
-#: modules/codec/x264.c:293 modules/gui/macosx/playlistinfo.m:64
+#: modules/codec/x264.c:299 modules/gui/macosx/playlistinfo.m:64
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:85
 msgid "Statistics"
 msgstr "Статистика"
 
-#: modules/codec/x264.c:294
+#: modules/codec/x264.c:300
 msgid "Print stats for each frame."
 msgstr "Показывать статистику каждого кадра."
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:303
+msgid "SPS and PPS id numbers"
+msgstr ""
+
+#: modules/codec/x264.c:304
+msgid ""
+"Set SPS and PPS id numbers to allow concatenating streams with different "
+"settings."
+msgstr ""
+
+#: modules/codec/x264.c:308
+#, fuzzy
+msgid "Access unit delimiters"
+msgstr "Фильтры ввода"
+
+#: modules/codec/x264.c:309
+msgid "Generate access unit delimiter NAL units."
+msgstr ""
+
+#: modules/codec/x264.c:315
 msgid "dia"
 msgstr "dia"
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:315
 msgid "hex"
 msgstr "hex"
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:315
 msgid "umh"
 msgstr "umh"
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:315
 msgid "esa"
 msgstr "esa"
 
-#: modules/codec/x264.c:306
+#: modules/codec/x264.c:321
 msgid "fast"
 msgstr "быстрый"
 
-#: modules/codec/x264.c:306
+#: modules/codec/x264.c:321
 msgid "normal"
 msgstr "обычный"
 
-#: modules/codec/x264.c:307
+#: modules/codec/x264.c:322
 msgid "slow"
 msgstr "медленный"
 
-#: modules/codec/x264.c:307
+#: modules/codec/x264.c:322
 msgid "all"
 msgstr "все"
 
-#: modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "spatial"
 msgstr "spatial"
 
-#: modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "temporal"
 msgstr "temporal"
 
-#: modules/codec/x264.c:313 modules/gui/pda/pda_interface.c:743
+#: modules/codec/x264.c:328 modules/gui/pda/pda_interface.c:743
 #: modules/video_filter/mosaic.c:168
 msgid "auto"
 msgstr "автоматический"
 
-#: modules/codec/x264.c:322
+#: modules/codec/x264.c:337
 msgid "H.264/MPEG4 AVC encoder (using x264 library)"
 msgstr "Кодировщик AVC H.264/MPEG4 (используя x264)"
 
@@ -8800,6 +8846,11 @@ msgstr "Файл корневого сертификата x509 PEM (Root CA)."
 #: modules/control/http/http.c:58
 msgid "HTTP interace Certificates Revocation List file."
 msgstr "Список отозванных сертификатов (CRL)."
+
+#: modules/control/http/http.c:61
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:472
+msgid "HTTP"
+msgstr "HTTP"
 
 #: modules/control/http/http.c:62
 msgid "HTTP remote control interface"
@@ -9927,6 +9978,26 @@ msgstr "Демультиплексор Real"
 #: modules/demux/sgimb.c:113
 msgid "Kasenna MediaBase parser"
 msgstr "Парсер Kasenna MediaBase"
+
+#: modules/demux/subtitle.c:47
+msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
+msgstr ""
+
+#: modules/demux/subtitle.c:49
+#, fuzzy
+msgid ""
+"Override the normal frames per second settings. This will only work with "
+"MicroDVD and SubRIP (SRT) subtitles."
+msgstr ""
+"Изменяет количество кадров в секунду. Это работает только с субтитрами "
+"MicroDVD и SubRIP."
+
+#: modules/demux/subtitle.c:52
+msgid ""
+"Force the subtiles format. Valid values are : \"microdvd\", \"subrip\",  "
+"\"ssa1\", \"ssa2-4\", \"ass\", \"vplayer\" \"sami\", \"dvdsubtitle\" and "
+"\"auto\" (meaning autodetection, this should always work)."
+msgstr ""
 
 #: modules/demux/subtitle.c:64
 msgid "Text subtitles parser"
@@ -11089,8 +11160,8 @@ msgid "Extended Controls"
 msgstr "Расширенный интерфейс\tCtrl-G"
 
 #: modules/gui/macosx/intf.m:597 modules/gui/macosx/intf.m:639
-#: modules/gui/macosx/playlist.m:482 modules/gui/macosx/playlistinfo.m:55
-#: modules/gui/macosx/playlistinfo.m:371
+#: modules/gui/macosx/playlistinfo.m:55 modules/gui/macosx/playlistinfo.m:371
+#: modules/gui/macosx/playlist.m:482
 msgid "Information"
 msgstr "Информация"
 
@@ -11439,6 +11510,71 @@ msgstr "SDP URL"
 msgid "Save File"
 msgstr "Сохранить файл"
 
+#: modules/gui/macosx/playlistinfo.m:56
+#: modules/gui/wxwidgets/dialogs/infopanels.cpp:63
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:591
+msgid "URI"
+msgstr "URI"
+
+#: modules/gui/macosx/playlistinfo.m:63
+msgid "Advanced Information"
+msgstr "Расширенная информация"
+
+#: modules/gui/macosx/playlistinfo.m:81
+msgid "Read at media"
+msgstr "Прочитано"
+
+#: modules/gui/macosx/playlistinfo.m:82
+msgid "Input bitrate"
+msgstr "Битрейт входящего потока"
+
+#: modules/gui/macosx/playlistinfo.m:83
+msgid "Demuxed"
+msgstr "Демультиплексировано"
+
+#: modules/gui/macosx/playlistinfo.m:84
+msgid "Stream bitrate"
+msgstr "Битрейт потока"
+
+#: modules/gui/macosx/playlistinfo.m:87 modules/gui/macosx/playlistinfo.m:97
+msgid "Decoded blocks"
+msgstr "Блоков декодировано"
+
+#: modules/gui/macosx/playlistinfo.m:88
+msgid "Displayed frames"
+msgstr "Показано кадров"
+
+#: modules/gui/macosx/playlistinfo.m:89
+msgid "Lost frames"
+msgstr "Потеряно кадров"
+
+#: modules/gui/macosx/playlistinfo.m:91 modules/gui/macosx/wizard.m:404
+#: modules/gui/wxwidgets/dialogs/infopanels.cpp:313
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:139
+#: modules/video_filter/deinterlace.c:137
+msgid "Streaming"
+msgstr "Вещание"
+
+#: modules/gui/macosx/playlistinfo.m:92
+msgid "Sent packets"
+msgstr "Отослано пакетов"
+
+#: modules/gui/macosx/playlistinfo.m:93
+msgid "Sent bytes"
+msgstr "Отослано байт"
+
+#: modules/gui/macosx/playlistinfo.m:94
+msgid "Send rate"
+msgstr "Битрейт исходящего потока"
+
+#: modules/gui/macosx/playlistinfo.m:98
+msgid "Played buffers"
+msgstr "Воспроизведено буферов"
+
+#: modules/gui/macosx/playlistinfo.m:99
+msgid "Lost buffers"
+msgstr "Потеряно буферов"
+
 #: modules/gui/macosx/playlist.m:477
 msgid "Save Playlist..."
 msgstr "Сохранить плейлист..."
@@ -11518,71 +11654,6 @@ msgstr "Сохранить плейлист"
 msgid "Empty Folder"
 msgstr "Пустой каталог"
 
-#: modules/gui/macosx/playlistinfo.m:56
-#: modules/gui/wxwidgets/dialogs/infopanels.cpp:63
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:591
-msgid "URI"
-msgstr "URI"
-
-#: modules/gui/macosx/playlistinfo.m:63
-msgid "Advanced Information"
-msgstr "Расширенная информация"
-
-#: modules/gui/macosx/playlistinfo.m:81
-msgid "Read at media"
-msgstr "Прочитано"
-
-#: modules/gui/macosx/playlistinfo.m:82
-msgid "Input bitrate"
-msgstr "Битрейт входящего потока"
-
-#: modules/gui/macosx/playlistinfo.m:83
-msgid "Demuxed"
-msgstr "Демультиплексировано"
-
-#: modules/gui/macosx/playlistinfo.m:84
-msgid "Stream bitrate"
-msgstr "Битрейт потока"
-
-#: modules/gui/macosx/playlistinfo.m:87 modules/gui/macosx/playlistinfo.m:97
-msgid "Decoded blocks"
-msgstr "Блоков декодировано"
-
-#: modules/gui/macosx/playlistinfo.m:88
-msgid "Displayed frames"
-msgstr "Показано кадров"
-
-#: modules/gui/macosx/playlistinfo.m:89
-msgid "Lost frames"
-msgstr "Потеряно кадров"
-
-#: modules/gui/macosx/playlistinfo.m:91 modules/gui/macosx/wizard.m:404
-#: modules/gui/wxwidgets/dialogs/infopanels.cpp:313
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:139
-#: modules/video_filter/deinterlace.c:137
-msgid "Streaming"
-msgstr "Вещание"
-
-#: modules/gui/macosx/playlistinfo.m:92
-msgid "Sent packets"
-msgstr "Отослано пакетов"
-
-#: modules/gui/macosx/playlistinfo.m:93
-msgid "Sent bytes"
-msgstr "Отослано байт"
-
-#: modules/gui/macosx/playlistinfo.m:94
-msgid "Send rate"
-msgstr "Битрейт исходящего потока"
-
-#: modules/gui/macosx/playlistinfo.m:98
-msgid "Played buffers"
-msgstr "Воспроизведено буферов"
-
-#: modules/gui/macosx/playlistinfo.m:99
-msgid "Lost buffers"
-msgstr "Потеряно буферов"
-
 #: modules/gui/macosx/prefs.m:123
 #: modules/gui/wxwidgets/dialogs/preferences.cpp:213
 msgid "Reset All"
@@ -11612,6 +11683,7 @@ msgstr ""
 "\", чтобы видеть их."
 
 #: modules/gui/macosx/prefs_widgets.m:1222
+#: modules/gui/wxwidgets/dialogs.cpp:474
 msgid "Select a directory"
 msgstr "Выберите каталог"
 
@@ -12896,11 +12968,6 @@ msgstr "Модуль интерфейса WinCE"
 msgid "WinCE dialogs provider"
 msgstr "WinCE dialogs provider"
 
-#: modules/gui/wxwidgets/dialogs.cpp:433
-#: modules/gui/wxwidgets/dialogs/open.cpp:1267
-msgid "All Files (*.*)|*|Sound Files (*.mp3, *.ogg, etc.)|"
-msgstr ""
-
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:75
 msgid "Edit bookmark"
 msgstr "Редактировать закладку"
@@ -12993,6 +13060,11 @@ msgstr ""
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:452
 msgid "Input has changed "
 msgstr "Входной поток был изменен "
+
+#: modules/gui/wxwidgets/dialogs.cpp:433
+#: modules/gui/wxwidgets/dialogs/open.cpp:1267
+msgid "All Files (*.*)|*|Sound Files (*.mp3, *.ogg, etc.)|"
+msgstr ""
 
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:54
 msgid "Stream and Media Info"
@@ -13443,6 +13515,10 @@ msgstr "MMSH"
 msgid "RTP"
 msgstr "RTP"
 
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:475
+msgid "UDP"
+msgstr "UDP"
+
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:592
 msgid "Group name"
 msgstr "Имя группы"
@@ -13761,6 +13837,17 @@ msgstr ""
 #: modules/gui/wxwidgets/extrapanel.cpp:473
 msgid "Apply the equalizer twice. The resulting effect will be sharper."
 msgstr "Применяет эквалайзер дважды. В результате эффект будет более острым."
+
+#: modules/gui/wxwidgets/extrapanel.cpp:485
+msgid "Smooth :"
+msgstr ""
+
+#: modules/gui/wxwidgets/extrapanel.cpp:516
+#, fuzzy
+msgid ""
+"Preamp\n"
+"12.0dB"
+msgstr "Предусилитель"
 
 #: modules/gui/wxwidgets/extrapanel.cpp:999
 msgid ""
@@ -14149,6 +14236,10 @@ msgstr "Оба"
 #: modules/gui/wxwidgets/wxwidgets.cpp:124
 msgid "wxWidgets interface module"
 msgstr "Интерфейс wxWidgets"
+
+#: modules/gui/wxwidgets/wxwidgets.cpp:165
+msgid "last config"
+msgstr ""
 
 #: modules/gui/wxwidgets/wxwidgets.cpp:170
 msgid "wxWidgets dialogs provider"
@@ -14544,10 +14635,6 @@ msgstr "Порт UDP"
 msgid "Growl UDP port on the server."
 msgstr "Порт UDP на сервере Growl."
 
-#: modules/misc/growl.c:73
-msgid "Growl"
-msgstr "Growl"
-
 #: modules/misc/growl.c:74
 msgid "Growl Notification Plugin"
 msgstr "Оповещения Growl"
@@ -14617,6 +14704,10 @@ msgstr "Файл вывода RRD"
 msgid "Output data for RRDTool in this file."
 msgstr "Выводить данны для RRDTool в этот файл."
 
+#: modules/misc/memcpy/memcpyaltivec.c:56
+msgid "AltiVec memcpy"
+msgstr "AltiVec memcpy"
+
 #: modules/misc/memcpy/memcpy.c:83
 msgid "libc memcpy"
 msgstr "libc memcpy"
@@ -14633,10 +14724,6 @@ msgstr "MMX memcpy"
 msgid "MMX EXT memcpy"
 msgstr "MMX EXT memcpy"
 
-#: modules/misc/memcpy/memcpyaltivec.c:56
-msgid "AltiVec memcpy"
-msgstr "AltiVec memcpy"
-
 #: modules/misc/msn.c:64
 msgid "MSN Title format string"
 msgstr "Формат заголовка MSN"
@@ -14648,10 +14735,6 @@ msgid ""
 msgstr ""
 "Формат строки, посылаемой в MSN. Допустимые значения: {0} Исполнитель, {1} "
 "Название, {2} Альбом. По-умолчанию \"Исполнитель - Название\""
-
-#: modules/misc/msn.c:71
-msgid "MSN"
-msgstr "MSN"
 
 #: modules/misc/msn.c:72
 msgid "MSN Now-Playing"
@@ -17701,6 +17784,12 @@ msgstr "Цвет, используемый для показа текста XOSD
 msgid "XOSD interface"
 msgstr "Интерфейс XOSD"
 
+#~ msgid "Growl"
+#~ msgstr "Growl"
+
+#~ msgid "MSN"
+#~ msgstr "MSN"
+
 #~ msgid "Create"
 #~ msgstr "Создать"
 
@@ -18805,10 +18894,6 @@ msgstr "Интерфейс XOSD"
 
 #, fuzzy
 #~ msgid "Allows you to specify the rate control buffer aggressiveness."
-#~ msgstr "Открыть окно списка для воспроизведения"
-
-#, fuzzy
-#~ msgid "Telnet Interface host"
 #~ msgstr "Открыть окно списка для воспроизведения"
 
 #, fuzzy

@@ -6,25 +6,13 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slovak translation for VLC Media Player\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-10-08 18:45+0200\n"
+"POT-Creation-Date: 2006-10-12 19:53+0200\n"
 "PO-Revision-Date: 2006-10-07 20:13+0100\n"
 "Last-Translator: Marián Hikaník <podnety@mojepreklady.net>\n"
 "Language-Team: Marián Hikaník, translation controlled by: Pavel Kříž\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
-#: include/vlc/vlc.h:578
-msgid ""
-"This program comes with NO WARRANTY, to the extent permitted by law.\n"
-"You may redistribute it under the terms of the GNU General Public License;\n"
-"see the file named COPYING for details.\n"
-"Written by the VideoLAN team; see the AUTHORS file.\n"
-msgstr ""
-"Tento program je poskytovaný BEZ akejkoľvek záruky.\n"
-"Môžete ho redistribuovať za dodržania podmienok GNU General Public "
-"Licencie;\n"
-"pre detailnejšie informácie si prečítajte text v súbore COPYING.\n"
 
 #: include/vlc_config_cat.h:32
 msgid "VLC preferences"
@@ -497,9 +485,9 @@ msgstr ""
 "pouzite prosim prikazovy riadok, prejdite do priecinka kde je nainstalovany "
 "program VLC a zadajte prikaz  \"vlc -I wx\"\n"
 
-#: include/vlc_meta.h:28 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1293 modules/gui/macosx/playlistinfo.m:205
-#: modules/gui/macosx/playlistinfo.m:310 modules/misc/growl.c:166
+#: include/vlc_meta.h:28 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlistinfo.m:310 modules/gui/macosx/playlist.m:318
+#: modules/gui/macosx/playlist.m:1293 modules/misc/growl.c:166
 #: modules/misc/growl.c:169 modules/misc/notify.c:156
 #: modules/misc/notify.c:159
 msgid "Meta-information"
@@ -514,15 +502,15 @@ msgstr "Meta-Informácia"
 msgid "Title"
 msgstr "Titul"
 
-#: include/vlc_meta.h:30 modules/gui/macosx/playlist.m:134
-#: modules/gui/macosx/playlistinfo.m:58 modules/gui/macosx/wizard.m:393
+#: include/vlc_meta.h:30 modules/gui/macosx/playlistinfo.m:58
+#: modules/gui/macosx/playlist.m:134 modules/gui/macosx/wizard.m:393
 #: modules/gui/wince/playlist.cpp:674 modules/mux/asf.c:50
 msgid "Author"
 msgstr "Autor"
 
-#: include/vlc_meta.h:31 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1293 modules/gui/macosx/playlistinfo.m:205
-#: modules/gui/macosx/playlistinfo.m:310
+#: include/vlc_meta.h:31 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlistinfo.m:310 modules/gui/macosx/playlist.m:318
+#: modules/gui/macosx/playlist.m:1293
 msgid "Artist"
 msgstr "Herec"
 
@@ -664,6 +652,18 @@ msgstr "Názov kodeku"
 #: include/vlc_meta.h:69
 msgid "Codec Description"
 msgstr "Popis kodeku"
+
+#: include/vlc/vlc.h:578
+msgid ""
+"This program comes with NO WARRANTY, to the extent permitted by law.\n"
+"You may redistribute it under the terms of the GNU General Public License;\n"
+"see the file named COPYING for details.\n"
+"Written by the VideoLAN team; see the AUTHORS file.\n"
+msgstr ""
+"Tento program je poskytovaný BEZ akejkoľvek záruky.\n"
+"Môžete ho redistribuovať za dodržania podmienok GNU General Public "
+"Licencie;\n"
+"pre detailnejšie informácie si prečítajte text v súbore COPYING.\n"
 
 #: src/audio_output/input.c:80 src/audio_output/input.c:126
 #: src/input/es_out.c:361 src/libvlc.h:408 src/video_output/video_output.c:379
@@ -965,6 +965,26 @@ msgstr "Prepnúť rozhranie"
 msgid "Add Interface"
 msgstr "Pridať rozhranie"
 
+#: src/interface/interface.c:380
+#, fuzzy
+msgid "Telnet Interface"
+msgstr "Rozhranie"
+
+#: src/interface/interface.c:382
+#, fuzzy
+msgid "Web Interface"
+msgstr "Rozhranie"
+
+#: src/interface/interface.c:384
+#, fuzzy
+msgid "Debug logging"
+msgstr "Zaznamenávanie do súboru"
+
+#: src/interface/interface.c:386
+#, fuzzy
+msgid "Mouse Gestures"
+msgstr "Gestá"
+
 #: src/libvlc.c:331 src/libvlc.c:479 src/misc/modules.c:1684
 #: src/misc/modules.c:1988
 msgid "C"
@@ -1089,6 +1109,10 @@ msgstr "Japonsky"
 #: src/libvlc.h:40 src/misc/iso-639_def.h:79
 msgid "Georgian"
 msgstr "Gruzínsky"
+
+#: src/libvlc.h:40 src/misc/iso-639_def.h:125
+msgid "Malay"
+msgstr "Malajsky"
 
 #: src/libvlc.h:40 src/misc/iso-639_def.h:111
 msgid "Korean"
@@ -4208,10 +4232,6 @@ msgstr "Maori"
 msgid "Marathi"
 msgstr " Marathi"
 
-#: src/misc/iso-639_def.h:125
-msgid "Malay"
-msgstr "Malajsky"
-
 #: src/misc/iso-639_def.h:126
 msgid "Malagasy"
 msgstr " Malagasy"
@@ -4573,7 +4593,7 @@ msgid "Aspect-ratio"
 msgstr "Stranový pomer"
 
 #: modules/access/cdda.c:52 modules/access/dshow/dshow.cpp:80
-#: modules/access/dv.c:68 modules/access/dvb/access.c:72
+#: modules/access/dvb/access.c:72 modules/access/dv.c:68
 #: modules/access/dvdnav.c:63 modules/access/dvdread.c:61
 #: modules/access/fake.c:40 modules/access/file.c:79 modules/access/ftp.c:42
 #: modules/access/gnomevfs.c:44 modules/access/http.c:53
@@ -4631,7 +4651,7 @@ msgid "Audio CD - Track %i"
 msgstr "Audio CD - Stopa %i"
 
 #: modules/access/cdda/cdda.c:42 modules/access/directory.c:78
-#: modules/codec/x264.c:306 modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/codec/x264.c:321 modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "none"
 msgstr "žiaden"
 
@@ -5201,20 +5221,6 @@ msgstr "Obnoviť zoznam"
 msgid "Configure"
 msgstr "Konfigurovať"
 
-#: modules/access/dv.c:70
-msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
-msgstr ""
-"Táto hodnota určuje, aká dĺžka DV streamov sa ukladá do vyrovnávacej pamäte. "
-"Táto hodnota sa udáva v milisekundách."
-
-#: modules/access/dv.c:74
-msgid "Digital Video (Firewire/ieee1394)  input"
-msgstr "Vstup pre digitálne video (Firewire/ieee1394)"
-
-#: modules/access/dv.c:75
-msgid "dv"
-msgstr "dv"
-
 #: modules/access/dvb/access.c:74
 msgid ""
 "Caching value for DVB streams. This value should be set in milliseconds."
@@ -5464,6 +5470,20 @@ msgstr "DVB vstup s podporou protokolu v412"
 msgid "HTTP server"
 msgstr "HTTP server"
 
+#: modules/access/dv.c:70
+msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
+msgstr ""
+"Táto hodnota určuje, aká dĺžka DV streamov sa ukladá do vyrovnávacej pamäte. "
+"Táto hodnota sa udáva v milisekundách."
+
+#: modules/access/dv.c:74
+msgid "Digital Video (Firewire/ieee1394)  input"
+msgstr "Vstup pre digitálne video (Firewire/ieee1394)"
+
+#: modules/access/dv.c:75
+msgid "dv"
+msgstr "dv"
+
 #: modules/access/dvdnav.c:59 modules/access/dvdread.c:57
 msgid "DVD angle"
 msgstr "Uhol snímok na DVD"
@@ -5631,6 +5651,52 @@ msgstr "Vstup súboru"
 msgid "File"
 msgstr "Súbor"
 
+#: modules/access_filter/record.c:43
+msgid "Record directory"
+msgstr "Priečinok pre nahrávanie"
+
+#: modules/access_filter/record.c:45
+msgid "Directory where the record will be stored."
+msgstr "Priečiok, kam sa uloží nahrávka."
+
+#: modules/access_filter/timeshift.c:44
+msgid "Timeshift granularity"
+msgstr "Granularita (zrnitosť) pri časovom posune"
+
+#: modules/access_filter/timeshift.c:46
+msgid ""
+"This is the size of the temporary files tha will be used to store the "
+"timeshifted streams."
+msgstr ""
+"Toto je veľkosť dočasných súborov, do ktorých sa budú ukladať časovo "
+"posunuté streamy."
+
+#: modules/access_filter/timeshift.c:48
+msgid "Timeshift directory"
+msgstr "Priečinok pre ukladanie časovo-posunutých súborov"
+
+#: modules/access_filter/timeshift.c:49
+msgid "Directory used to store the timeshift temporary files."
+msgstr ""
+"Priečinok, do ktorého sa budú ukladať súbory, na ktoré sa uplatil časový "
+"posun."
+
+#: modules/access_filter/timeshift.c:51
+msgid "Force use of the timeshift module"
+msgstr "Vynútiť si použitie modulu pre časový posun"
+
+#: modules/access_filter/timeshift.c:52
+msgid ""
+"Force use of the timeshift module even if the access declares that it can "
+"control pace or pause."
+msgstr ""
+"Vynútiť si použitie modulov pre časový posun aj vtedy, ak prístup deklaruje, "
+"že dokáže kontrolovať rýchlosť, alebo pozastaviť prehrávanie."
+
+#: modules/access_filter/timeshift.c:56 modules/access_filter/timeshift.c:57
+msgid "Timeshift"
+msgstr "Časový posun"
+
 #: modules/access/ftp.c:44
 msgid ""
 "Caching value for FTP streams. This value should be set in milliseconds."
@@ -5769,6 +5835,179 @@ msgstr "Vybrať stream s najväčším dátovým tokom pod touto hranicou."
 #: modules/access/mms/mms.c:62
 msgid "Microsoft Media Server (MMS) input"
 msgstr "Vstup Microsoft Media Server (MMS)"
+
+#: modules/access_output/dummy.c:40 modules/stream_out/dummy.c:47
+msgid "Dummy stream output"
+msgstr "Fingovaný výstup streamu"
+
+#: modules/access_output/dummy.c:41 modules/misc/dummy/dummy.c:58
+msgid "Dummy"
+msgstr "Fingovaný"
+
+#: modules/access_output/file.c:61
+msgid "Append to file"
+msgstr "Pripojiť k súboru"
+
+#: modules/access_output/file.c:62
+msgid "Append to file if it exists instead of replacing it."
+msgstr "Pripojenie k súboru (ak už nejaký existuje), nie jeho nahradenie."
+
+#: modules/access_output/file.c:66
+msgid "File stream output"
+msgstr "Výstup streamovania súboru"
+
+#: modules/access_output/http.c:60
+msgid "Username"
+msgstr "Meno užívateľa"
+
+#: modules/access_output/http.c:61
+msgid "User name that will be requested to access the stream."
+msgstr "Používateľské meno, ktoré je potrebné pre prístup k streamu."
+
+#: modules/access_output/http.c:64
+msgid "Password that will be requested to access the stream."
+msgstr "Používateľské heslo, ktoré je potrebné pre prístup k streamu."
+
+#: modules/access_output/http.c:68
+msgid "Mime"
+msgstr "MIME typ"
+
+#: modules/access_output/http.c:69
+msgid "MIME returned by the server (autodetected if not specified."
+msgstr ""
+"Hodnota MIME vrátená serverom (ak nie je špecifikovaná tak je súbor "
+"detekovaný automaticky)."
+
+#: modules/access_output/http.c:73
+msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
+msgstr ""
+"Cesta k certifikačnému súboru x509 PEM, ktorý sa používa pri prenose pomocou "
+"protokolu HTTPS."
+
+#: modules/access_output/http.c:76
+msgid ""
+"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
+"empty if you don't have one."
+msgstr ""
+"Cesta k súboru s privátnym kľúčom x509 PEM, ktorý sa používa pri prenose "
+"pomocou protokolu HTTPS. Ak súbor s privátnym kľúčom nemáte, ponechajte "
+"políčko prázdne. "
+
+#: modules/access_output/http.c:80
+msgid ""
+"Path to the x509 PEM trusted root CA certificates (certificate authority) "
+"file that will be used for HTTPS. Leave empty if you don't have one."
+msgstr ""
+"Cesta k certifikátom dôveryhodných serverov, ktoré sa používajú pri prenose "
+"pomocou protokolu HTTPS. Ak certifikáty nemáte, ponechajte políčko prázdne."
+
+#: modules/access_output/http.c:85
+msgid ""
+"Path to the x509 PEM Certificates Revocation List file that will be used for "
+"SSL. Leave empty if you don't have one."
+msgstr ""
+"Cesta k zoznamu s odvolanými certifikátmi X509. Tento zoznam sa používa pri "
+"SSL-spojení. Ak takýto súbor nemáte, ponechajte políčko prázdne."
+
+#: modules/access_output/http.c:88
+msgid "Advertise with Bonjour"
+msgstr "Oznamovať stream pomocou Bonjour"
+
+#: modules/access_output/http.c:89
+msgid "Advertise the stream with the Bonjour protocol."
+msgstr "Oznamovať tento stream pomocou protokolu Bonjour."
+
+#: modules/access_output/http.c:93
+msgid "HTTP stream output"
+msgstr "Výstup HTTP streamu"
+
+#: modules/access_output/shout.c:58
+msgid "Stream name"
+msgstr "Názov streamu"
+
+#: modules/access_output/shout.c:59
+msgid "Name to give to this stream/channel on the icecast server."
+msgstr "Názov streamu/kanála, ktorý chcete zadať na server icecast."
+
+#: modules/access_output/shout.c:62
+msgid "Stream description"
+msgstr "Popis streamu"
+
+#: modules/access_output/shout.c:63
+msgid "Description of the stream content or information about your channel."
+msgstr "Popis obsahu streamu alebo informácia o Vašom kanáli."
+
+#: modules/access_output/shout.c:66
+msgid "Stream MP3"
+msgstr "Streamovať MP 3 súbory"
+
+#: modules/access_output/shout.c:67
+msgid ""
+"You normally have to feed the shoutcast module with Ogg streams. It is also "
+"possible to stream MP3 instead, so you can forward MP3 streams to the "
+"icecast server."
+msgstr ""
+"Za normálnych okolností sa pri streamovaní vysielajú väčšinou Ogg-streamy. V "
+"prípade potreba sa však dajú tieto streamy previesť do formátu MP3 a vo "
+"formáte MP3 ich potom môžete odosielať na server icecast."
+
+#: modules/access_output/shout.c:73
+msgid "IceCAST output"
+msgstr "Výstup IceCAST"
+
+#: modules/access_output/udp.c:75 modules/access/rtsp/access.c:40
+#: modules/demux/live555.cpp:62
+msgid "Caching value (ms)"
+msgstr "Hodnota ukladania do vyrovnávacej pamäte (ms)"
+
+#: modules/access_output/udp.c:77
+msgid ""
+"Default caching value for outbound UDP streams. This value should be set in "
+"milliseconds."
+msgstr ""
+"Hodnota ukladania do vyrovnávacej pamäte. Táto hodnota sa udáva v "
+"milisekundách."
+
+#: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
+#: modules/gui/macosx/wizard.m:1846
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:610
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:91
+msgid "Time-To-Live (TTL)"
+msgstr "Max. počet preskočení (TTL)"
+
+#: modules/access_output/udp.c:81
+msgid "Time-To-Live of the outgoing stream."
+msgstr "Maximálny počet preskočení výstupných streamov."
+
+#: modules/access_output/udp.c:84
+msgid "Group packets"
+msgstr "Skupinové pakety"
+
+#: modules/access_output/udp.c:85
+msgid ""
+"Packets can be sent one by one at the right time or by groups. You can "
+"choose the number of packets that will be sent at a time. It helps reducing "
+"the scheduling load on heavily-loaded systems."
+msgstr ""
+"Pakety je možné odosielať jednotlivo, alebo v skupinách. Tu môžete určiť, "
+"koľko paketov sa odošle naraz. Odosielaním paketov v skupinách sa šetrí čas "
+"pri načítavaní jednotlivých paketov a zmenšuje sa zaťaženie systémov."
+
+#: modules/access_output/udp.c:90
+msgid "Raw write"
+msgstr "Zápis vo formáte raw"
+
+#: modules/access_output/udp.c:91
+msgid ""
+"Packets will be sent directly, without trying to fill the MTU (ie, without "
+"trying to make the biggest possible packets in order to improve streaming)."
+msgstr ""
+"Pakety sa budú odosielať priamo a ihneď, bez toho, aby si program zoraďoval "
+"pakety podľa veľkosti."
+
+#: modules/access_output/udp.c:97
+msgid "UDP stream output"
+msgstr "Výstup streamu UDP"
 
 #: modules/access/pvr/pvr.c:49
 msgid ""
@@ -5931,11 +6170,6 @@ msgstr "PVR"
 #: modules/access/pvr/pvr.c:117
 msgid "IVTV MPEG Encoding cards input"
 msgstr "Vstupy kódovacích kariet pre IVTV MPEG"
-
-#: modules/access/rtsp/access.c:40 modules/access_output/udp.c:75
-#: modules/demux/live555.cpp:62
-msgid "Caching value (ms)"
-msgstr "Hodnota ukladania do vyrovnávacej pamäte (ms)"
 
 #: modules/access/rtsp/access.c:42
 msgid ""
@@ -6401,230 +6635,6 @@ msgstr "Formát, ktorý sa bude používať v playliste, v políčku \"author\""
 msgid "Format to use in the playlist's \"title\" field."
 msgstr "Formát, ktorý sa bude používať v playliste, v políčku \"title\""
 
-#: modules/access_filter/record.c:43
-msgid "Record directory"
-msgstr "Priečinok pre nahrávanie"
-
-#: modules/access_filter/record.c:45
-msgid "Directory where the record will be stored."
-msgstr "Priečiok, kam sa uloží nahrávka."
-
-#: modules/access_filter/timeshift.c:44
-msgid "Timeshift granularity"
-msgstr "Granularita (zrnitosť) pri časovom posune"
-
-#: modules/access_filter/timeshift.c:46
-msgid ""
-"This is the size of the temporary files tha will be used to store the "
-"timeshifted streams."
-msgstr ""
-"Toto je veľkosť dočasných súborov, do ktorých sa budú ukladať časovo "
-"posunuté streamy."
-
-#: modules/access_filter/timeshift.c:48
-msgid "Timeshift directory"
-msgstr "Priečinok pre ukladanie časovo-posunutých súborov"
-
-#: modules/access_filter/timeshift.c:49
-msgid "Directory used to store the timeshift temporary files."
-msgstr ""
-"Priečinok, do ktorého sa budú ukladať súbory, na ktoré sa uplatil časový "
-"posun."
-
-#: modules/access_filter/timeshift.c:51
-msgid "Force use of the timeshift module"
-msgstr "Vynútiť si použitie modulu pre časový posun"
-
-#: modules/access_filter/timeshift.c:52
-msgid ""
-"Force use of the timeshift module even if the access declares that it can "
-"control pace or pause."
-msgstr ""
-"Vynútiť si použitie modulov pre časový posun aj vtedy, ak prístup deklaruje, "
-"že dokáže kontrolovať rýchlosť, alebo pozastaviť prehrávanie."
-
-#: modules/access_filter/timeshift.c:56 modules/access_filter/timeshift.c:57
-msgid "Timeshift"
-msgstr "Časový posun"
-
-#: modules/access_output/dummy.c:40 modules/stream_out/dummy.c:47
-msgid "Dummy stream output"
-msgstr "Fingovaný výstup streamu"
-
-#: modules/access_output/dummy.c:41 modules/misc/dummy/dummy.c:58
-msgid "Dummy"
-msgstr "Fingovaný"
-
-#: modules/access_output/file.c:61
-msgid "Append to file"
-msgstr "Pripojiť k súboru"
-
-#: modules/access_output/file.c:62
-msgid "Append to file if it exists instead of replacing it."
-msgstr "Pripojenie k súboru (ak už nejaký existuje), nie jeho nahradenie."
-
-#: modules/access_output/file.c:66
-msgid "File stream output"
-msgstr "Výstup streamovania súboru"
-
-#: modules/access_output/http.c:60
-msgid "Username"
-msgstr "Meno užívateľa"
-
-#: modules/access_output/http.c:61
-msgid "User name that will be requested to access the stream."
-msgstr "Používateľské meno, ktoré je potrebné pre prístup k streamu."
-
-#: modules/access_output/http.c:64
-msgid "Password that will be requested to access the stream."
-msgstr "Používateľské heslo, ktoré je potrebné pre prístup k streamu."
-
-#: modules/access_output/http.c:68
-msgid "Mime"
-msgstr "MIME typ"
-
-#: modules/access_output/http.c:69
-msgid "MIME returned by the server (autodetected if not specified."
-msgstr ""
-"Hodnota MIME vrátená serverom (ak nie je špecifikovaná tak je súbor "
-"detekovaný automaticky)."
-
-#: modules/access_output/http.c:73
-msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
-msgstr ""
-"Cesta k certifikačnému súboru x509 PEM, ktorý sa používa pri prenose pomocou "
-"protokolu HTTPS."
-
-#: modules/access_output/http.c:76
-msgid ""
-"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
-"empty if you don't have one."
-msgstr ""
-"Cesta k súboru s privátnym kľúčom x509 PEM, ktorý sa používa pri prenose "
-"pomocou protokolu HTTPS. Ak súbor s privátnym kľúčom nemáte, ponechajte "
-"políčko prázdne. "
-
-#: modules/access_output/http.c:80
-msgid ""
-"Path to the x509 PEM trusted root CA certificates (certificate authority) "
-"file that will be used for HTTPS. Leave empty if you don't have one."
-msgstr ""
-"Cesta k certifikátom dôveryhodných serverov, ktoré sa používajú pri prenose "
-"pomocou protokolu HTTPS. Ak certifikáty nemáte, ponechajte políčko prázdne."
-
-#: modules/access_output/http.c:85
-msgid ""
-"Path to the x509 PEM Certificates Revocation List file that will be used for "
-"SSL. Leave empty if you don't have one."
-msgstr ""
-"Cesta k zoznamu s odvolanými certifikátmi X509. Tento zoznam sa používa pri "
-"SSL-spojení. Ak takýto súbor nemáte, ponechajte políčko prázdne."
-
-#: modules/access_output/http.c:88
-msgid "Advertise with Bonjour"
-msgstr "Oznamovať stream pomocou Bonjour"
-
-#: modules/access_output/http.c:89
-msgid "Advertise the stream with the Bonjour protocol."
-msgstr "Oznamovať tento stream pomocou protokolu Bonjour."
-
-#: modules/access_output/http.c:93
-msgid "HTTP stream output"
-msgstr "Výstup HTTP streamu"
-
-#: modules/access_output/http.c:95 modules/control/http/http.c:61
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:472
-msgid "HTTP"
-msgstr "HTTP"
-
-#: modules/access_output/shout.c:58
-msgid "Stream name"
-msgstr "Názov streamu"
-
-#: modules/access_output/shout.c:59
-msgid "Name to give to this stream/channel on the icecast server."
-msgstr "Názov streamu/kanála, ktorý chcete zadať na server icecast."
-
-#: modules/access_output/shout.c:62
-msgid "Stream description"
-msgstr "Popis streamu"
-
-#: modules/access_output/shout.c:63
-msgid "Description of the stream content or information about your channel."
-msgstr "Popis obsahu streamu alebo informácia o Vašom kanáli."
-
-#: modules/access_output/shout.c:66
-msgid "Stream MP3"
-msgstr "Streamovať MP 3 súbory"
-
-#: modules/access_output/shout.c:67
-msgid ""
-"You normally have to feed the shoutcast module with Ogg streams. It is also "
-"possible to stream MP3 instead, so you can forward MP3 streams to the "
-"icecast server."
-msgstr ""
-"Za normálnych okolností sa pri streamovaní vysielajú väčšinou Ogg-streamy. V "
-"prípade potreba sa však dajú tieto streamy previesť do formátu MP3 a vo "
-"formáte MP3 ich potom môžete odosielať na server icecast."
-
-#: modules/access_output/shout.c:73
-msgid "IceCAST output"
-msgstr "Výstup IceCAST"
-
-#: modules/access_output/udp.c:77
-msgid ""
-"Default caching value for outbound UDP streams. This value should be set in "
-"milliseconds."
-msgstr ""
-"Hodnota ukladania do vyrovnávacej pamäte. Táto hodnota sa udáva v "
-"milisekundách."
-
-#: modules/access_output/udp.c:80 modules/gui/macosx/wizard.m:442
-#: modules/gui/macosx/wizard.m:1846
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:610
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:1338 modules/stream_out/rtp.c:91
-msgid "Time-To-Live (TTL)"
-msgstr "Max. počet preskočení (TTL)"
-
-#: modules/access_output/udp.c:81
-msgid "Time-To-Live of the outgoing stream."
-msgstr "Maximálny počet preskočení výstupných streamov."
-
-#: modules/access_output/udp.c:84
-msgid "Group packets"
-msgstr "Skupinové pakety"
-
-#: modules/access_output/udp.c:85
-msgid ""
-"Packets can be sent one by one at the right time or by groups. You can "
-"choose the number of packets that will be sent at a time. It helps reducing "
-"the scheduling load on heavily-loaded systems."
-msgstr ""
-"Pakety je možné odosielať jednotlivo, alebo v skupinách. Tu môžete určiť, "
-"koľko paketov sa odošle naraz. Odosielaním paketov v skupinách sa šetrí čas "
-"pri načítavaní jednotlivých paketov a zmenšuje sa zaťaženie systémov."
-
-#: modules/access_output/udp.c:90
-msgid "Raw write"
-msgstr "Zápis vo formáte raw"
-
-#: modules/access_output/udp.c:91
-msgid ""
-"Packets will be sent directly, without trying to fill the MTU (ie, without "
-"trying to make the biggest possible packets in order to improve streaming)."
-msgstr ""
-"Pakety sa budú odosielať priamo a ihneď, bez toho, aby si program zoraďoval "
-"pakety podľa veľkosti."
-
-#: modules/access_output/udp.c:97
-msgid "UDP stream output"
-msgstr "Výstup streamu UDP"
-
-#: modules/access_output/udp.c:98
-#: modules/gui/wxwidgets/dialogs/streamout.cpp:475
-msgid "UDP"
-msgstr "UDP"
-
 #: modules/audio_filter/channel_mixer/dolby.c:47
 msgid "Simple decoder for Dolby Surround encoded streams"
 msgstr "Jednoduchý dekodér pre streamy zakódované v režime Dolby Surround"
@@ -7039,8 +7049,8 @@ msgstr "Fingovaná funkcia zvukového mixéra S/PDIF"
 msgid "Trivial audio mixer"
 msgstr "Triválny mixér zvuku"
 
-#: modules/audio_output/alsa.c:84 modules/codec/x264.c:300
-#: modules/codec/x264.c:306 modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/audio_output/alsa.c:84 modules/codec/x264.c:315
+#: modules/codec/x264.c:321 modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "default"
 msgstr "predvolené"
 
@@ -7824,7 +7834,7 @@ msgstr ""
 "Kvantizačný faktor I snímok, v porovnaní s P snímkami (hodnota 1.0 napríklad "
 "znamená, že I aj P snímky budú mať rovnakú škálu q)."
 
-#: modules/codec/ffmpeg/ffmpeg.h:232 modules/codec/x264.c:263
+#: modules/codec/ffmpeg/ffmpeg.h:232 modules/codec/x264.c:269
 #: modules/demux/mod.c:73
 msgid "Noise reduction"
 msgstr "Redukcia šumu"
@@ -8145,7 +8155,12 @@ msgstr ""
 "Kódovanie titulkov sa nepodarilo dokončiť. \n"
 "Pred otvorením súboru skúste manuálne nastaviť vhodnú znakovú sadu."
 
-#: modules/codec/svcdsub.c:46
+#: modules/codec/svcdsub.c:42
+#, fuzzy
+msgid "Enable debug"
+msgstr "Zapnúť video"
+
+#: modules/codec/svcdsub.c:45
 msgid ""
 "This integer when viewed in binary is a debugging mask\n"
 "calls                 1\n"
@@ -8155,15 +8170,15 @@ msgstr ""
 "volanie                 1\n"
 "kompletné informácie o pakete  2\n"
 
-#: modules/codec/svcdsub.c:51
+#: modules/codec/svcdsub.c:50
 msgid "Philips OGT (SVCD subtitle) decoder"
 msgstr "Dekodér titulkov na SVCD - Philips OGT"
 
-#: modules/codec/svcdsub.c:52
+#: modules/codec/svcdsub.c:51
 msgid "SVCD subtitles"
 msgstr "Titulky na SVCD"
 
-#: modules/codec/svcdsub.c:62
+#: modules/codec/svcdsub.c:61
 msgid "Philips OGT (SVCD subtitle) packetizer"
 msgstr "Paketizér titulkov vo formáte Philips OGT (SVCD)"
 
@@ -8435,21 +8450,33 @@ msgstr ""
 "Parametre AlphaC0 a Beta pre filter slučiek. Parametre by mali byť z rozsahu "
 "-6 až 6. Hodnota -6 = jemné filtrovanie, 6 = dôkladné filtrovanie."
 
-#: modules/codec/x264.c:110
+#: modules/codec/x264.c:106
+#, fuzzy
+msgid "H.264 level"
+msgstr "Max. úroveň"
+
+#: modules/codec/x264.c:107
+msgid ""
+"Specify H.264 level (as defined by Annex A of the standard). Levels are not "
+"enforced; it's up to the user to select a level compatible with the rest of "
+"the encoding options. Range 1 to 5.1 (10 to 51 is also allowed)."
+msgstr ""
+
+#: modules/codec/x264.c:116
 #, fuzzy
 msgid "Interlaced mode"
 msgstr "Modul rozhrania"
 
-#: modules/codec/x264.c:111
+#: modules/codec/x264.c:117
 #, fuzzy
 msgid "Pure-interlaced mode."
 msgstr "Mód rozkladania"
 
-#: modules/codec/x264.c:116
+#: modules/codec/x264.c:122
 msgid "Set QP"
 msgstr "Nastaviť QP"
 
-#: modules/codec/x264.c:117
+#: modules/codec/x264.c:123
 msgid ""
 "This selects the quantizer to use. Lower values result in better fidelity, "
 "but higher bitrates. 26 is a good default value. Range 0 (lossless) to 51."
@@ -8460,69 +8487,69 @@ msgstr ""
 "Môžete však zadať aj inú hodnotu, tá však musí byť v rozsahu 0 (bezstratové) "
 "- 51."
 
-#: modules/codec/x264.c:121
+#: modules/codec/x264.c:127
 msgid "Quality-based VBR"
 msgstr "Variabilný tok dát s dôrazom na kvalitu"
 
-#: modules/codec/x264.c:122
+#: modules/codec/x264.c:128
 msgid "1-pass Quality-based VBR. Range 0 to 51."
 msgstr "Jednoprechodový VBR mód s dôrazom na kvalitu. Od 0 do 51."
 
-#: modules/codec/x264.c:124
+#: modules/codec/x264.c:130
 msgid "Min QP"
 msgstr "Minimálna hodnota kvantizácie"
 
-#: modules/codec/x264.c:125
+#: modules/codec/x264.c:131
 msgid "Minimum quantizer parameter. 15 to 35 seems to be a useful range."
 msgstr "Minimálna hodnota kvantizácie. Zadávajte hodnotu v rozsahu 15-35."
 
-#: modules/codec/x264.c:128
+#: modules/codec/x264.c:134
 msgid "Max QP"
 msgstr "Maximálna hodnota kvantizácie"
 
-#: modules/codec/x264.c:129
+#: modules/codec/x264.c:135
 msgid "Maximum quantizer parameter."
 msgstr "Maximálna hodnota kvantizácie."
 
-#: modules/codec/x264.c:131
+#: modules/codec/x264.c:137
 msgid "Max QP step"
 msgstr "Max. krok pre nastavenie parametrov kvantizéra"
 
-#: modules/codec/x264.c:132
+#: modules/codec/x264.c:138
 msgid "Max QP step between frames."
 msgstr "Maximálny krok QP medzi jednotlivými snímkami."
 
-#: modules/codec/x264.c:134
+#: modules/codec/x264.c:140
 msgid "Average bitrate tolerance"
 msgstr "Tolerovať odchýlku v dátovom toku"
 
-#: modules/codec/x264.c:135
+#: modules/codec/x264.c:141
 msgid "Allowed variance in average bitrate (in kbits/s)."
 msgstr "Povolená odchýlka v priemernom dátovom toku (v kb/s)."
 
-#: modules/codec/x264.c:138
+#: modules/codec/x264.c:144
 msgid "Max local bitrate"
 msgstr "Max. lokálny dátový tok"
 
-#: modules/codec/x264.c:139
+#: modules/codec/x264.c:145
 msgid "Sets a maximum local bitrate (in kbits/s)."
 msgstr "Tu môžete nastaviť maximálny lokálny dátový tok v kb/s."
 
-#: modules/codec/x264.c:141
+#: modules/codec/x264.c:147
 msgid "VBV buffer"
 msgstr "Vyrovnávacia pamäť VBV"
 
-#: modules/codec/x264.c:142
+#: modules/codec/x264.c:148
 msgid "Averaging period for the maximum local bitrate (in kbits)."
 msgstr ""
 "Priemerná perióda, počas ktorej sa používa maximálny dátový tok (v "
 "kilobitoch)."
 
-#: modules/codec/x264.c:145
+#: modules/codec/x264.c:151
 msgid "Initial VBV buffer occupancy"
 msgstr "Počiatočné obsadenie vyrovnávacej pamäte pre VBV"
 
-#: modules/codec/x264.c:146
+#: modules/codec/x264.c:152
 msgid ""
 "Sets the initial buffer occupancy as a fraction of the buffer size. Range "
 "0.0 to 1.0."
@@ -8530,63 +8557,63 @@ msgstr ""
 "Nastaví počiatočné obsadenie vyrovnávacej pamäte. Môžete zadávať hodnoty v "
 "rozsahu od 0.0 do 1.0."
 
-#: modules/codec/x264.c:150
+#: modules/codec/x264.c:156
 msgid "QP factor between I and P"
 msgstr "QP faktor medzi snímkami I a P"
 
-#: modules/codec/x264.c:151
+#: modules/codec/x264.c:157
 msgid "QP factor between I and P. Range 1.0 to 2.0."
 msgstr ""
 "QP faktor medzi snímkami I a P. Môžete zadávať hodnoty v rozsahu 1.0 - 2.0."
 
-#: modules/codec/x264.c:154
+#: modules/codec/x264.c:160
 msgid "QP factor between P and B"
 msgstr "QP faktor medzi snímkami P a B"
 
-#: modules/codec/x264.c:155
+#: modules/codec/x264.c:161
 msgid "QP factor between P and B. Range 1.0 to 2.0."
 msgstr ""
 "QP faktor medzi snímkami P a B. Môžete zadávať hodnoty v rozsahu 1.0 - 2.0."
 
-#: modules/codec/x264.c:157
+#: modules/codec/x264.c:163
 msgid "QP difference between chroma and luma"
 msgstr "Rozdiel QP medzi režimami chroma a luma"
 
-#: modules/codec/x264.c:158
+#: modules/codec/x264.c:164
 msgid "QP difference between chroma and luma."
 msgstr "Rozdiel QP medzi režimami chroma a luma."
 
-#: modules/codec/x264.c:160
+#: modules/codec/x264.c:166
 msgid "QP curve compression"
 msgstr "Kompresia krivky QP"
 
-#: modules/codec/x264.c:161
+#: modules/codec/x264.c:167
 msgid "QP curve compression. Range 0.0 (CBR) to 1.0 (QCP)."
 msgstr ""
 "Kompresia krivky QP. Môžete zadávať hodnoty v rozsahu 0.0 (CBR) -  1.0 (QCP)."
 
-#: modules/codec/x264.c:163 modules/codec/x264.c:167
+#: modules/codec/x264.c:169 modules/codec/x264.c:173
 msgid "Reduce fluctuations in QP"
 msgstr "Redukovať výkyvy v QP"
 
-#: modules/codec/x264.c:164
+#: modules/codec/x264.c:170
 msgid ""
 "This reduces the fluctuations in QP before curve compression. Temporally "
 "blurs complexity."
 msgstr ""
 "Týmto môžete zredukovať výkyvy v QP ešte predtým, že sa skomprimuje krivka. "
 
-#: modules/codec/x264.c:168
+#: modules/codec/x264.c:174
 msgid ""
 "This reduces the fluctations in QP after curve compression. Temporally blurs "
 "quants."
 msgstr "Týmto môžete zredukovať výkyvy v QP po kompresií krivky."
 
-#: modules/codec/x264.c:173
+#: modules/codec/x264.c:179
 msgid "Partitions to consider"
 msgstr "Partície, brané do úvahy"
 
-#: modules/codec/x264.c:174
+#: modules/codec/x264.c:180
 msgid ""
 "Partitions to consider in analyse mode: \n"
 " - none  : \n"
@@ -8604,39 +8631,39 @@ msgstr ""
 "- všetky : i4x4,p8x8,(i8x8),b8x8,p4x4\n"
 "(p4x4 vyžaduje p8x8. i8x8 vyžaduje 8x8dct)."
 
-#: modules/codec/x264.c:182
+#: modules/codec/x264.c:188
 msgid "Direct MV prediction mode"
 msgstr "Predpovedný mód Direct MV"
 
-#: modules/codec/x264.c:183
+#: modules/codec/x264.c:189
 msgid "Direct MV prediction mode."
 msgstr "Predpovedný mód Direct MV."
 
-#: modules/codec/x264.c:186
+#: modules/codec/x264.c:192
 #, fuzzy
 msgid "Direct prediction size"
 msgstr "Predpovedný mód Direct MV"
 
-#: modules/codec/x264.c:187
+#: modules/codec/x264.c:193
 msgid ""
 "Direct prediction size:  -  0: 4x4\n"
 " -  1: 8x8\n"
 " - -1: smallest possible according to level\n"
 msgstr ""
 
-#: modules/codec/x264.c:193
+#: modules/codec/x264.c:199
 msgid "Weighted prediction for B-frames"
 msgstr "Posudzovanie a predpoveď výskytu B-snímok"
 
-#: modules/codec/x264.c:194
+#: modules/codec/x264.c:200
 msgid "Weighted prediction for B-frames."
 msgstr "Posudzovanie a predpoveď výskytu B-snímok."
 
-#: modules/codec/x264.c:196
+#: modules/codec/x264.c:202
 msgid "Integer pixel motion estimation method"
 msgstr "Metóda odhadovania pohybu podľa celých pixelov"
 
-#: modules/codec/x264.c:197
+#: modules/codec/x264.c:203
 msgid ""
 "Selects the motion estimation algorithm:  - dia: diamond search, radius 1 "
 "(fast)\n"
@@ -8651,11 +8678,11 @@ msgstr ""
 "- esa: kompletné vyhľadávanie (extrémne pomalé, určené hlavne na "
 "testovanie).\n"
 
-#: modules/codec/x264.c:203
+#: modules/codec/x264.c:209
 msgid "Maximum motion vector search range"
 msgstr "Maximálny rozsah pre hľadanie pohybových vektorov"
 
-#: modules/codec/x264.c:204
+#: modules/codec/x264.c:210
 msgid ""
 "Maximum distance to search for motion estimation, measured from predicted "
 "position(s). Default of 16 is good for most footage, high motion sequences "
@@ -8667,11 +8694,11 @@ msgstr ""
 "pohybu odporúčame nastaviť hodnotu z rozsahu od 24-32. Celkový možný rozsah "
 "je 0-64."
 
-#: modules/codec/x264.c:209
+#: modules/codec/x264.c:215
 msgid "Subpixel motion estimation and partition decision quality"
 msgstr "Odhadovanie pohybu subpixelov a rozhodovanie o kvalite partícií"
 
-#: modules/codec/x264.c:213
+#: modules/codec/x264.c:219
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
 "motion estimation decision process (lower = quicker and higher = better "
@@ -8681,7 +8708,7 @@ msgstr ""
 "výpadkov v kódovaní. Menšia hodnota = rýchlejšie kódovanie a vyššia hodnota "
 "= lepšia kvalita. Povolený rozsah je od 1 do 7. "
 
-#: modules/codec/x264.c:218
+#: modules/codec/x264.c:224
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
 "motion estimation decision process (lower = quicker and higher = better "
@@ -8691,7 +8718,7 @@ msgstr ""
 "výpadkov v kódovaní. Menšia hodnota = rýchlejšie kódovanie a vyššia hodnota "
 "= lepšia kvalita. Povolený rozsah je od 1 do . "
 
-#: modules/codec/x264.c:223
+#: modules/codec/x264.c:229
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
 "motion estimation decision process (lower = quicker and higher = better "
@@ -8701,21 +8728,21 @@ msgstr ""
 "výpadkov v kódovaní. Menšia hodnota = rýchlejšie kódovanie a vyššia hodnota "
 "= lepšia kvalita. Povolený rozsah je od 1 do 6. "
 
-#: modules/codec/x264.c:228
+#: modules/codec/x264.c:234
 msgid "RD based mode decision for B-frames"
 msgstr "RD-mód pri rozhodovaní o B-snímkach."
 
-#: modules/codec/x264.c:229
+#: modules/codec/x264.c:235
 msgid "RD based mode decision for B-frames. This requires subme 6 (or higher)."
 msgstr ""
 "RD-mód pri rozhodovaní o B-snímkach. Táto funkcia vyžaduje komponent subme6 "
 "(alebo novší)."
 
-#: modules/codec/x264.c:232
+#: modules/codec/x264.c:238
 msgid "Decide references on a per partition basis"
 msgstr "O ref. snímkach rozhodovať na základe partície"
 
-#: modules/codec/x264.c:233
+#: modules/codec/x264.c:239
 msgid ""
 "Allows each 8x8 or 16x8 partition to independently select a reference frame, "
 "as opposed to only one ref per macroblock."
@@ -8723,37 +8750,37 @@ msgstr ""
 "Umožňuje nastaviť referenčnú snímku v každej partícií s veľkosťou 8x8 alebo "
 "16x8. "
 
-#: modules/codec/x264.c:237
+#: modules/codec/x264.c:243
 msgid "Ignore chroma in motion estimation"
 msgstr "Ignorovať efekt chroma pri odhadovaní pohybu"
 
-#: modules/codec/x264.c:238
+#: modules/codec/x264.c:244
 msgid "Chroma ME for subpel and mode decision in P-frames."
 msgstr ""
 "Používať formát Chroma ME pri subpixeloch a pri rozhodovaní o P-snímkach."
 
-#: modules/codec/x264.c:241
+#: modules/codec/x264.c:247
 msgid "Jointly optimize both MVs in B-frames"
 msgstr "Spoločne optimalizovať MV v B-snímkach"
 
-#: modules/codec/x264.c:242
+#: modules/codec/x264.c:248
 msgid "Joint bidirectional motion refinement."
 msgstr "Spojiť obojsmerné čistenie pohybu. "
 
-#: modules/codec/x264.c:244
+#: modules/codec/x264.c:250
 msgid "Adaptive spatial transform size"
 msgstr "Adaptívna veľkosť transformácie"
 
-#: modules/codec/x264.c:246
+#: modules/codec/x264.c:252
 msgid "SATD-based decision for 8x8 transform in inter-MBs."
 msgstr ""
 "Rozhodovanie založené na SATD (používa sa pri transformácií blokov 8x8)."
 
-#: modules/codec/x264.c:248
+#: modules/codec/x264.c:254
 msgid "Trellis RD quantization"
 msgstr "Kvantizácia Trellis RD"
 
-#: modules/codec/x264.c:249
+#: modules/codec/x264.c:255
 msgid ""
 "Trellis RD quantization: \n"
 " - 0: disabled\n"
@@ -8767,19 +8794,19 @@ msgstr ""
 " - 2: aktívna pri všetkých módoch\n"
 "Toto nastavenie vyžaduje CABAC."
 
-#: modules/codec/x264.c:255
+#: modules/codec/x264.c:261
 msgid "Early SKIP detection on P-frames"
 msgstr "Včasná detekcia preskočenia pri P-snímkach"
 
-#: modules/codec/x264.c:256
+#: modules/codec/x264.c:262
 msgid "Early SKIP detection on P-frames."
 msgstr "Včasná detekcia preskočenia pri P-snímkach."
 
-#: modules/codec/x264.c:258
+#: modules/codec/x264.c:264
 msgid "Coefficient thresholding on P-frames"
 msgstr "Hraničný koeficient pri P-snímkach"
 
-#: modules/codec/x264.c:259
+#: modules/codec/x264.c:265
 msgid ""
 "Coefficient thresholding on P-frames.Eliminate dct blocks containing only a "
 "small single coefficient."
@@ -8787,44 +8814,44 @@ msgstr ""
 "Hraničný koeficient pri P-snímkach. Eliminujú sa bloky dct, obsahujúce len "
 "malý koeficient."
 
-#: modules/codec/x264.c:264
+#: modules/codec/x264.c:270
 msgid ""
 "Dct-domain noise reduction. Adaptive pseudo-deadzone. 10 to 1000 seems to be "
 "a useful range."
 msgstr ""
 "Redukcia šumu na Dct-doméne. Sem môžete zadávať hodnoty v rozsahu 10 - 1000."
 
-#: modules/codec/x264.c:268
+#: modules/codec/x264.c:274
 #, fuzzy
 msgid "Inter luma quantization deadzone"
 msgstr "Kvantizačný faktor pre I-snímky"
 
-#: modules/codec/x264.c:269
+#: modules/codec/x264.c:275
 msgid "Set the size of the inter luma quantization deadzone. Range 0 to 32."
 msgstr ""
 
-#: modules/codec/x264.c:272
+#: modules/codec/x264.c:278
 #, fuzzy
 msgid "Intra luma quantization deadzone"
 msgstr "Kvantizačný faktor pre I-snímky"
 
-#: modules/codec/x264.c:273
+#: modules/codec/x264.c:279
 msgid "Set the size of the intra luma quantization deadzone. Range 0 to 32."
 msgstr ""
 
-#: modules/codec/x264.c:279
+#: modules/codec/x264.c:285
 msgid "CPU optimizations"
 msgstr "Optimalizácie procesora"
 
-#: modules/codec/x264.c:280
+#: modules/codec/x264.c:286
 msgid "Use assembler CPU optimizations."
 msgstr "Použiť assemblovacie optimalizácie pre procesor."
 
-#: modules/codec/x264.c:282
+#: modules/codec/x264.c:288
 msgid "PSNR computation"
 msgstr "Vykalkulovanie PSNR"
 
-#: modules/codec/x264.c:283
+#: modules/codec/x264.c:289
 msgid ""
 "Compute and print PSNR stats. This has no effect on the actual encoding "
 "quality."
@@ -8832,11 +8859,11 @@ msgstr ""
 "Vykalkukovať a zobraziť štatistiku pre PSNR. Táto voľba nemá žiaden vplyv na "
 "kvalitu kódovania."
 
-#: modules/codec/x264.c:286
+#: modules/codec/x264.c:292
 msgid "SSIM computation"
 msgstr "Vykalkulovanie SMB"
 
-#: modules/codec/x264.c:287
+#: modules/codec/x264.c:293
 msgid ""
 "Compute and print SSIM stats. This has no effect on the actual encoding "
 "quality."
@@ -8844,69 +8871,88 @@ msgstr ""
 "Vykalkulovať a zobraziť štatistiku pre SSIM. Táto voľba nemá žiaden vplyv na "
 "kvalitu kódovania"
 
-#: modules/codec/x264.c:290
+#: modules/codec/x264.c:296
 msgid "Quiet mode"
 msgstr "Tichý mód"
 
-#: modules/codec/x264.c:291
+#: modules/codec/x264.c:297
 msgid "Quiet mode."
 msgstr "Tichý mód. "
 
-#: modules/codec/x264.c:293 modules/gui/macosx/playlistinfo.m:64
+#: modules/codec/x264.c:299 modules/gui/macosx/playlistinfo.m:64
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:85
 msgid "Statistics"
 msgstr "Štatistiky"
 
-#: modules/codec/x264.c:294
+#: modules/codec/x264.c:300
 msgid "Print stats for each frame."
 msgstr "Zobrazovať štatistiky pre každú snímku."
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:303
+msgid "SPS and PPS id numbers"
+msgstr ""
+
+#: modules/codec/x264.c:304
+msgid ""
+"Set SPS and PPS id numbers to allow concatenating streams with different "
+"settings."
+msgstr ""
+
+#: modules/codec/x264.c:308
+#, fuzzy
+msgid "Access unit delimiters"
+msgstr "Prístupové filtre"
+
+#: modules/codec/x264.c:309
+msgid "Generate access unit delimiter NAL units."
+msgstr ""
+
+#: modules/codec/x264.c:315
 msgid "dia"
 msgstr "dia"
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:315
 msgid "hex"
 msgstr "hex"
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:315
 msgid "umh"
 msgstr "umh"
 
-#: modules/codec/x264.c:300
+#: modules/codec/x264.c:315
 msgid "esa"
 msgstr "esa"
 
-#: modules/codec/x264.c:306
+#: modules/codec/x264.c:321
 msgid "fast"
 msgstr "rýchlo"
 
-#: modules/codec/x264.c:306
+#: modules/codec/x264.c:321
 msgid "normal"
 msgstr "normálne"
 
-#: modules/codec/x264.c:307
+#: modules/codec/x264.c:322
 msgid "slow"
 msgstr "pomaly"
 
-#: modules/codec/x264.c:307
+#: modules/codec/x264.c:322
 msgid "all"
 msgstr "všetky"
 
-#: modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "spatial"
 msgstr "priestorový"
 
-#: modules/codec/x264.c:313 modules/codec/x264.c:318
+#: modules/codec/x264.c:328 modules/codec/x264.c:333
 msgid "temporal"
 msgstr "dočasný"
 
-#: modules/codec/x264.c:313 modules/gui/pda/pda_interface.c:743
+#: modules/codec/x264.c:328 modules/gui/pda/pda_interface.c:743
 #: modules/video_filter/mosaic.c:168
 msgid "auto"
 msgstr "autom."
 
-#: modules/codec/x264.c:322
+#: modules/codec/x264.c:337
 msgid "H.264/MPEG4 AVC encoder (using x264 library)"
 msgstr "Enkodér H.264/MPEG4 AVC (s použitím knižnice x264)"
 
@@ -9054,6 +9100,11 @@ msgstr "Súbor s certifikátmi dôveryhodných serverov x509 PEM v HTTP rozhran�
 #: modules/control/http/http.c:58
 msgid "HTTP interace Certificates Revocation List file."
 msgstr "Súbor s odvolanými certifikátmi v rozhraní HTTP"
+
+#: modules/control/http/http.c:61
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:472
+msgid "HTTP"
+msgstr "HTTP"
 
 #: modules/control/http/http.c:62
 msgid "HTTP remote control interface"
@@ -10200,6 +10251,26 @@ msgstr "Demuxér Real"
 #: modules/demux/sgimb.c:113
 msgid "Kasenna MediaBase parser"
 msgstr "Analyzátor Kasenna MediaBase"
+
+#: modules/demux/subtitle.c:47
+msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
+msgstr ""
+
+#: modules/demux/subtitle.c:49
+#, fuzzy
+msgid ""
+"Override the normal frames per second settings. This will only work with "
+"MicroDVD and SubRIP (SRT) subtitles."
+msgstr ""
+"Program nebude brať do úvahy globálne nastavenú rýchlosť snímkovania. Táto "
+"voľba funguje len pri Micro DVD diskoch a pri titulkoch typu SubRIP."
+
+#: modules/demux/subtitle.c:52
+msgid ""
+"Force the subtiles format. Valid values are : \"microdvd\", \"subrip\",  "
+"\"ssa1\", \"ssa2-4\", \"ass\", \"vplayer\" \"sami\", \"dvdsubtitle\" and "
+"\"auto\" (meaning autodetection, this should always work)."
+msgstr ""
 
 #: modules/demux/subtitle.c:64
 msgid "Text subtitles parser"
@@ -11366,8 +11437,8 @@ msgid "Extended Controls"
 msgstr "Rozšírené ovládanie"
 
 #: modules/gui/macosx/intf.m:597 modules/gui/macosx/intf.m:639
-#: modules/gui/macosx/playlist.m:482 modules/gui/macosx/playlistinfo.m:55
-#: modules/gui/macosx/playlistinfo.m:371
+#: modules/gui/macosx/playlistinfo.m:55 modules/gui/macosx/playlistinfo.m:371
+#: modules/gui/macosx/playlist.m:482
 msgid "Information"
 msgstr "Informácia"
 
@@ -11726,6 +11797,71 @@ msgstr "URL adresa pre SDP"
 msgid "Save File"
 msgstr "Uložiť súbor"
 
+#: modules/gui/macosx/playlistinfo.m:56
+#: modules/gui/wxwidgets/dialogs/infopanels.cpp:63
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:591
+msgid "URI"
+msgstr "URI"
+
+#: modules/gui/macosx/playlistinfo.m:63
+msgid "Advanced Information"
+msgstr "Rozšírená informácia"
+
+#: modules/gui/macosx/playlistinfo.m:81
+msgid "Read at media"
+msgstr "Načítané z média"
+
+#: modules/gui/macosx/playlistinfo.m:82
+msgid "Input bitrate"
+msgstr "Dátový tok na vstupe"
+
+#: modules/gui/macosx/playlistinfo.m:83
+msgid "Demuxed"
+msgstr "Demuxované"
+
+#: modules/gui/macosx/playlistinfo.m:84
+msgid "Stream bitrate"
+msgstr "Bitová rýchlosť streamu"
+
+#: modules/gui/macosx/playlistinfo.m:87 modules/gui/macosx/playlistinfo.m:97
+msgid "Decoded blocks"
+msgstr "Dekódované bloky"
+
+#: modules/gui/macosx/playlistinfo.m:88
+msgid "Displayed frames"
+msgstr "Zobrazené snímky"
+
+#: modules/gui/macosx/playlistinfo.m:89
+msgid "Lost frames"
+msgstr "Stratené snímky"
+
+#: modules/gui/macosx/playlistinfo.m:91 modules/gui/macosx/wizard.m:404
+#: modules/gui/wxwidgets/dialogs/infopanels.cpp:313
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:139
+#: modules/video_filter/deinterlace.c:137
+msgid "Streaming"
+msgstr "Streamovanie"
+
+#: modules/gui/macosx/playlistinfo.m:92
+msgid "Sent packets"
+msgstr "Poslané pakety"
+
+#: modules/gui/macosx/playlistinfo.m:93
+msgid "Sent bytes"
+msgstr "Poslané byty"
+
+#: modules/gui/macosx/playlistinfo.m:94
+msgid "Send rate"
+msgstr "Rýchlosť posielania"
+
+#: modules/gui/macosx/playlistinfo.m:98
+msgid "Played buffers"
+msgstr "Prehrané buffery"
+
+#: modules/gui/macosx/playlistinfo.m:99
+msgid "Lost buffers"
+msgstr "Stratené buffery"
+
 #: modules/gui/macosx/playlist.m:477
 msgid "Save Playlist..."
 msgstr "Uložiť playlist..."
@@ -11804,71 +11940,6 @@ msgstr "Uložiť playlist"
 msgid "Empty Folder"
 msgstr "Prázdny priečinok"
 
-#: modules/gui/macosx/playlistinfo.m:56
-#: modules/gui/wxwidgets/dialogs/infopanels.cpp:63
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:591
-msgid "URI"
-msgstr "URI"
-
-#: modules/gui/macosx/playlistinfo.m:63
-msgid "Advanced Information"
-msgstr "Rozšírená informácia"
-
-#: modules/gui/macosx/playlistinfo.m:81
-msgid "Read at media"
-msgstr "Načítané z média"
-
-#: modules/gui/macosx/playlistinfo.m:82
-msgid "Input bitrate"
-msgstr "Dátový tok na vstupe"
-
-#: modules/gui/macosx/playlistinfo.m:83
-msgid "Demuxed"
-msgstr "Demuxované"
-
-#: modules/gui/macosx/playlistinfo.m:84
-msgid "Stream bitrate"
-msgstr "Bitová rýchlosť streamu"
-
-#: modules/gui/macosx/playlistinfo.m:87 modules/gui/macosx/playlistinfo.m:97
-msgid "Decoded blocks"
-msgstr "Dekódované bloky"
-
-#: modules/gui/macosx/playlistinfo.m:88
-msgid "Displayed frames"
-msgstr "Zobrazené snímky"
-
-#: modules/gui/macosx/playlistinfo.m:89
-msgid "Lost frames"
-msgstr "Stratené snímky"
-
-#: modules/gui/macosx/playlistinfo.m:91 modules/gui/macosx/wizard.m:404
-#: modules/gui/wxwidgets/dialogs/infopanels.cpp:313
-#: modules/gui/wxwidgets/dialogs/wizard.cpp:139
-#: modules/video_filter/deinterlace.c:137
-msgid "Streaming"
-msgstr "Streamovanie"
-
-#: modules/gui/macosx/playlistinfo.m:92
-msgid "Sent packets"
-msgstr "Poslané pakety"
-
-#: modules/gui/macosx/playlistinfo.m:93
-msgid "Sent bytes"
-msgstr "Poslané byty"
-
-#: modules/gui/macosx/playlistinfo.m:94
-msgid "Send rate"
-msgstr "Rýchlosť posielania"
-
-#: modules/gui/macosx/playlistinfo.m:98
-msgid "Played buffers"
-msgstr "Prehrané buffery"
-
-#: modules/gui/macosx/playlistinfo.m:99
-msgid "Lost buffers"
-msgstr "Stratené buffery"
-
 #: modules/gui/macosx/prefs.m:123
 #: modules/gui/wxwidgets/dialogs/preferences.cpp:213
 msgid "Reset All"
@@ -11898,6 +11969,7 @@ msgstr ""
 "\"Pokročilé nastavenia\""
 
 #: modules/gui/macosx/prefs_widgets.m:1222
+#: modules/gui/wxwidgets/dialogs.cpp:474
 msgid "Select a directory"
 msgstr "Vyberte si priečinok"
 
@@ -13221,11 +13293,6 @@ msgstr "Modul vzhľadu WinCE"
 msgid "WinCE dialogs provider"
 msgstr "Poskytovateľ dialógov WinCE"
 
-#: modules/gui/wxwidgets/dialogs.cpp:433
-#: modules/gui/wxwidgets/dialogs/open.cpp:1267
-msgid "All Files (*.*)|*|Sound Files (*.mp3, *.ogg, etc.)|"
-msgstr "Všetky súbory (*.*)|*|Zvukové súbory (*.mp3, *.ogg, atď.)|"
-
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:75
 msgid "Edit bookmark"
 msgstr "Upraviť záložku"
@@ -13322,6 +13389,11 @@ msgstr ""
 #: modules/gui/wxwidgets/dialogs/bookmarks.cpp:452
 msgid "Input has changed "
 msgstr "Vstup sa zmenil"
+
+#: modules/gui/wxwidgets/dialogs.cpp:433
+#: modules/gui/wxwidgets/dialogs/open.cpp:1267
+msgid "All Files (*.*)|*|Sound Files (*.mp3, *.ogg, etc.)|"
+msgstr "Všetky súbory (*.*)|*|Zvukové súbory (*.mp3, *.ogg, atď.)|"
 
 #: modules/gui/wxwidgets/dialogs/fileinfo.cpp:54
 msgid "Stream and Media Info"
@@ -13779,6 +13851,10 @@ msgstr "MMSH"
 msgid "RTP"
 msgstr "RTP"
 
+#: modules/gui/wxwidgets/dialogs/streamout.cpp:475
+msgid "UDP"
+msgstr "UDP"
+
 #: modules/gui/wxwidgets/dialogs/streamout.cpp:592
 msgid "Group name"
 msgstr "Názov skupiny"
@@ -14109,6 +14185,17 @@ msgstr ""
 msgid "Apply the equalizer twice. The resulting effect will be sharper."
 msgstr ""
 "Aplikovať efekty ekvalizéra dvakrát. Výsledný efekt bude omnoho výraznejší."
+
+#: modules/gui/wxwidgets/extrapanel.cpp:485
+msgid "Smooth :"
+msgstr ""
+
+#: modules/gui/wxwidgets/extrapanel.cpp:516
+#, fuzzy
+msgid ""
+"Preamp\n"
+"12.0dB"
+msgstr "Predzosilnenie"
 
 #: modules/gui/wxwidgets/extrapanel.cpp:999
 msgid ""
@@ -14507,6 +14594,10 @@ msgstr "Obidve"
 #: modules/gui/wxwidgets/wxwidgets.cpp:124
 msgid "wxWidgets interface module"
 msgstr "Modul rozhrania wxWidgets"
+
+#: modules/gui/wxwidgets/wxwidgets.cpp:165
+msgid "last config"
+msgstr ""
 
 #: modules/gui/wxwidgets/wxwidgets.cpp:170
 msgid "wxWidgets dialogs provider"
@@ -14909,10 +15000,6 @@ msgstr "Growl UDP port"
 msgid "Growl UDP port on the server."
 msgstr "UDP port na Growl-serveri."
 
-#: modules/misc/growl.c:73
-msgid "Growl"
-msgstr "Growl"
-
 #: modules/misc/growl.c:74
 msgid "Growl Notification Plugin"
 msgstr "Notifikačný prídavný modul Growl"
@@ -14982,6 +15069,10 @@ msgstr "Výstupný súbor RRD"
 msgid "Output data for RRDTool in this file."
 msgstr "Výstupné dáta pre RRDTool obsahuje tento súbor."
 
+#: modules/misc/memcpy/memcpyaltivec.c:56
+msgid "AltiVec memcpy"
+msgstr "AltiVec memcpy"
+
 #: modules/misc/memcpy/memcpy.c:83
 msgid "libc memcpy"
 msgstr "libc memcpy"
@@ -14998,10 +15089,6 @@ msgstr "MMX memcpy"
 msgid "MMX EXT memcpy"
 msgstr "MMX EXT memcpy"
 
-#: modules/misc/memcpy/memcpyaltivec.c:56
-msgid "AltiVec memcpy"
-msgstr "AltiVec memcpy"
-
 #: modules/misc/msn.c:64
 msgid "MSN Title format string"
 msgstr "Formát príkazu MSN Title"
@@ -15013,10 +15100,6 @@ msgid ""
 msgstr ""
 "Formát príkazu, ktorý sa odosiela do siete MSN {0} Umelec, {1} Titul, {2} "
 "Album. Predvolené hodnoty sú \"Umelec - Titul\" ({0} - {1})."
-
-#: modules/misc/msn.c:71
-msgid "MSN"
-msgstr "MSN"
 
 #: modules/misc/msn.c:72
 msgid "MSN Now-Playing"
@@ -18155,6 +18238,12 @@ msgstr "Farba textu zobrazovaného vo výstupe XOSD."
 #: modules/visualization/xosd.c:84
 msgid "XOSD interface"
 msgstr "Rozhranie XOSD"
+
+#~ msgid "Growl"
+#~ msgstr "Growl"
+
+#~ msgid "MSN"
+#~ msgstr "MSN"
 
 #, fuzzy
 #~ msgid "Select one or more files to open"

@@ -2,7 +2,7 @@
  * snapshot.c : snapshot plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: snapshot.c 15002 2006-03-31 16:12:31Z fkuehne $
+ * $Id: snapshot.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *
@@ -73,7 +73,7 @@ static void Display   ( vout_thread_t *, picture_t * );
 
 vlc_module_begin( );
     set_description( _( "Snapshot module" ) );
-    set_shortname( N_("Snapshot") );
+    set_shortname( _("Snapshot") );
 
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VOUT );

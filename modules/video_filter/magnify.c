@@ -2,7 +2,7 @@
  * magnify.c : Magnify/Zoom interactive effect
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: magnify.c 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: magnify.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -57,7 +57,7 @@ static int  MouseEvent   ( vlc_object_t *, char const *,
  *****************************************************************************/
 vlc_module_begin();
     set_description( _("Magnify/Zoom interactive video filter") );
-    set_shortname( N_( "Magnify" ));
+    set_shortname( _( "Magnify" ));
     set_capability( "video filter", 0 );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VFILTER );

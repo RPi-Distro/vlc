@@ -2,7 +2,7 @@
  * file.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: file.c 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: file.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -64,7 +64,7 @@ static void Close( vlc_object_t * );
 
 vlc_module_begin();
     set_description( _("File stream output") );
-    set_shortname( N_("File" ));
+    set_shortname( _("File" ));
     set_capability( "sout access", 50 );
     set_category( CAT_SOUT );
     set_subcategory( SUBCAT_SOUT_ACO );

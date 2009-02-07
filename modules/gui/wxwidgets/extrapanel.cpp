@@ -2,7 +2,7 @@
  * extrapanel.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004, 2003 the VideoLAN team
- * $Id: extrapanel.cpp 15039 2006-04-01 21:46:33Z zorglub $
+ * $Id: extrapanel.cpp 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -482,7 +482,7 @@ wxPanel *ExtraPanel::EqzPanel( wxWindow *parent )
     top_sizer->Add( eq_restoredefaults_button, 0, wxALL, 2 );
     top_sizer->Add( 0, 0, 1, wxALL, 2 );
 
-    smooth_text = new wxStaticText( panel, -1, wxU( "Smooth :" ));
+    smooth_text = new wxStaticText( panel, -1, wxU( _("Smooth :") ));
     smooth_text->SetToolTip( wxU( SMOOTH_TIP ) );
     top_sizer->Add( smooth_text, 0, wxALL, 2 );
 
@@ -513,7 +513,7 @@ wxPanel *ExtraPanel::EqzPanel( wxWindow *parent )
         eq_gridsizer->Add( band_sliders[i], 1, wxEXPAND|wxALL, 2 );
     }
 
-    preamp_text = new wxStaticText( panel, -1, wxT( "Preamp\n12.0dB" ) );
+    preamp_text = new wxStaticText( panel, -1, wxU( _("Preamp\n12.0dB") ) );
     wxFont font= preamp_text->GetFont();
     font.SetPointSize(7);
     preamp_text->SetFont( font );

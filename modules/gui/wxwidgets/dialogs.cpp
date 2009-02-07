@@ -2,7 +2,7 @@
  * dialogs.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: dialogs.cpp 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: dialogs.cpp 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -471,7 +471,7 @@ void DialogsProvider::OnOpenDirectory( wxCommandEvent& event )
     }
 
     if( p_dir_dialog == NULL )
-        p_dir_dialog = new wxDirDialog( NULL );
+        p_dir_dialog = new wxDirDialog( NULL, wxU(_("Select a directory")) );
 
     if( p_dir_dialog && p_dir_dialog->ShowModal() == wxID_OK )
     {

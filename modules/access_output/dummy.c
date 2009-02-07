@@ -2,7 +2,7 @@
  * dummy.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: dummy.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: dummy.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -38,7 +38,7 @@ static void Close( vlc_object_t * );
 
 vlc_module_begin();
     set_description( _("Dummy stream output") );
-    set_shortname( N_( "Dummy" ));
+    set_shortname( _( "Dummy" ));
     set_capability( "sout access", 0 );
     set_category( CAT_SOUT );
     set_subcategory( SUBCAT_SOUT_ACO );

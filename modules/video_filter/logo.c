@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: logo.c 16767 2006-09-21 14:32:45Z hartman $
+ * $Id: logo.c 17012 2006-10-09 22:11:32Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>
@@ -98,7 +98,7 @@ static char *ppsz_pos_descriptions[] =
 vlc_module_begin();
     set_description( _("Logo video filter") );
     set_capability( "video filter", 0 );
-    set_shortname( N_("Logo overlay") );
+    set_shortname( _("Logo overlay") );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_SUBPIC );
     add_shortcut( "logo" );
