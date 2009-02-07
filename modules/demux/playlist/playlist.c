@@ -2,7 +2,7 @@
  * playlist.c :  Playlist import module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: playlist.c 15386 2006-04-28 12:09:04Z dionoea $
+ * $Id: playlist.c 16994 2006-10-08 14:40:02Z jpsaman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -54,7 +54,7 @@ vlc_module_begin();
     set_description( _("Playlist") );
     add_shortcut( "old-open" );
     set_capability( "demux2", 10 );
-    set_callbacks( E_(Import_Old), NULL );
+    set_callbacks( E_(Import_Old), E_(Close_Old) );
 #if 0
     add_submodule();
         set_description( _("Native playlist import") );
@@ -93,7 +93,7 @@ vlc_module_begin();
         set_description( _("XSPF playlist import") );
         add_shortcut( "xspf-open" );
         set_capability( "demux2", 10 );
-        set_callbacks( E_(xspf_import_Activate), NULL );
+        set_callbacks( E_(Import_xspf), E_(Close_xspf) );
     add_submodule();
         set_description( _("New winamp 5.2 shoutcast import") );
         add_shortcut( "shout-winamp" );

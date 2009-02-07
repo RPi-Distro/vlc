@@ -2,7 +2,7 @@
  * real.c: Real demuxer.
  *****************************************************************************
  * Copyright (C) 2004, 2006 the VideoLAN team
- * $Id: real.c 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: real.c 16987 2006-10-08 12:54:12Z jpsaman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -171,7 +171,7 @@ static void Close( vlc_object_t *p_this )
             if( tk->p_subpackets[ j ] )
                 block_Release( tk->p_subpackets[ j ] );
         }
-        if( !tk->i_subpackets ) free( tk->p_subpackets );
+        if( tk->i_subpackets ) free( tk->p_subpackets );
 
         free( tk );
     }
@@ -702,7 +702,7 @@ static int HeaderRead( demux_t *p_demux )
         msg_Dbg( p_demux, "object %4.4s size=%d version=%d",
                  (char*)&i_id, i_size, i_version );
 
-        if( i_size < 10 )
+        if( (i_size < 10) && (i_id != VLC_FOURCC('D','A','T','A')) )
         {
             msg_Dbg( p_demux, "invalid size for object %4.4s", (char*)&i_id );
             return VLC_EGENERIC;

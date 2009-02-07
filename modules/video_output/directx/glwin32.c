@@ -2,7 +2,7 @@
  * glwin32.c: Windows OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: glwin32.c 15002 2006-03-31 16:12:31Z fkuehne $
+ * $Id: glwin32.c 16931 2006-10-03 09:04:50Z damienf $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -104,10 +104,6 @@ static int OpenVideo( vlc_object_t *p_this )
     p_vout->pf_manage = Manage;
     p_vout->pf_swap = GLSwapBuffers;
 
-    p_vout->p_sys->p_ddobject = NULL;
-    p_vout->p_sys->p_display = NULL;
-    p_vout->p_sys->p_current_surface = NULL;
-    p_vout->p_sys->p_clipper = NULL;
     p_vout->p_sys->hwnd = p_vout->p_sys->hvideownd = NULL;
     p_vout->p_sys->hparent = p_vout->p_sys->hfswnd = NULL;
     p_vout->p_sys->i_changes = 0;
@@ -484,9 +480,4 @@ static int Manage( vout_thread_t *p_vout )
 static void GLSwapBuffers( vout_thread_t *p_vout )
 {
     SwapBuffers( p_vout->p_sys->hGLDC );
-}
-
-int E_(DirectXUpdateOverlay)( vout_thread_t *p_vout )
-{
-    return 1;
 }

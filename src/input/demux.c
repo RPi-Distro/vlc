@@ -2,7 +2,7 @@
  * demux.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: demux.c 15025 2006-04-01 11:27:40Z fkuehne $
+ * $Id: demux.c 16965 2006-10-07 16:02:30Z hartman $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -97,6 +97,8 @@ demux_t *__demux2_New( vlc_object_t *p_obj,
             { "ogg",  "ogg" }, { "ogm",  "ogg" },
             { "pva",  "pva" },
             { "rm",   "rm" },
+            { "m4v",  "m4v" },
+            { "h264",  "h264" },
             { NULL,  NULL },
         };
         /* Here, we don't mind if it does not work, it must be quick */

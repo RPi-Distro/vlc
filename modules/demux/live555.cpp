@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: live555.cpp 16768 2006-09-21 14:34:11Z hartman $
+ * $Id: live555.cpp 16983 2006-10-08 12:14:05Z jpsaman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -224,7 +224,7 @@ static int  Open ( vlc_object_t *p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys = NULL;
-    
+
     MediaSubsessionIterator *iter   = NULL;
     MediaSubsession         *sub    = NULL;
     int i_return;
@@ -299,7 +299,7 @@ static int  Open ( vlc_object_t *p_this )
         int     i_sdp       = 0;
         int     i_sdp_max   = 1000;
         uint8_t *p_sdp      = (uint8_t*) malloc( i_sdp_max );
-        
+
         for( ;; )
         {
             int i_read = stream_Read( p_demux->s, &p_sdp[i_sdp],
@@ -335,7 +335,7 @@ static int  Open ( vlc_object_t *p_this )
         msg_Err( p_demux, "Failed to connect with rtsp://%s", p_sys->psz_path );
         goto error;
     }
-    
+
     if( p_sys->p_sdp == NULL )
     {
         msg_Err( p_demux, "Failed to retrieve the RTSP Session Description" );
@@ -349,7 +349,7 @@ static int  Open ( vlc_object_t *p_this )
             p_sys->env->getResultMsg() );
         goto error;
     }
-    
+
     if( ( i_return = SessionsSetup( p_demux ) ) != VLC_SUCCESS )
     {
         msg_Err( p_demux, "Nothing to play for rtsp://%s", p_sys->psz_path );
@@ -726,23 +726,22 @@ createnew:
     psz_user = var_CreateGetString( p_demux, "rtsp-user" );
     psz_pwd  = var_CreateGetString( p_demux, "rtsp-pwd" );
 
-describe:
     authenticator.setUsernameAndPassword( (const char*)psz_user, (const char*)psz_pwd );
     p_sdp = p_sys->rtsp->describeURL( psz_url,
                 &authenticator, var_CreateGetBool( p_demux, "rtsp-kasenna" ) );
 
     if( psz_user ) free( psz_user );
-    if( psz_pwd ) free( psz_pwd );                
-    
+    if( psz_pwd ) free( psz_pwd );
+
     if( p_sdp == NULL )
     {
         /* failure occured */
         int i_code = 0;
         const char *psz_error = p_sys->env->getResultMsg();
-                
+
         msg_Dbg( p_demux, "DESCRIBE failed with %d: %s", i_code, psz_error );
         sscanf( psz_error, "%*sRTSP/%*s%3u", &i_code );
-        
+
         if( i_code == 401 )
         {
             msg_Err( p_demux, "RTSP authentication failed" );
@@ -819,7 +818,7 @@ static int SessionsSetup( demux_t *p_demux )
             bInit = sub->initiate( 4 ); /* Constant ? */
         else
             bInit = sub->initiate();
-        
+
         if( !bInit )
         {
             msg_Warn( p_demux, "RTP subsession '%s/%s' failed (%s)",
@@ -831,11 +830,11 @@ static int SessionsSetup( demux_t *p_demux )
             if( sub->rtpSource() != NULL )
             {
                 int fd = sub->rtpSource()->RTPgs()->socketNum();
-          
+
                 /* Increase the buffer size */
                 if( i_buffer > 0 )
                     increaseReceiveBufferTo( *p_sys->env, fd, i_buffer );
-                
+
                 /* Increase the RTP reorder timebuffer just a bit */
                 sub->rtpSource()->setPacketReorderingThresholdTime(thresh);
             }
@@ -873,7 +872,7 @@ static int SessionsSetup( demux_t *p_demux )
 static int Play( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    
+
     if( p_sys->rtsp )
     {
         /* The PLAY */
@@ -1101,7 +1100,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             float time;
 
             f = (double)va_arg( args, double );
-            
             if( p_sys->rtsp && p_sys->i_length > 0 )
             {
                 time = f * (double)p_sys->i_length / 1000000.0;   /* in second */
@@ -1196,7 +1194,7 @@ static int RollOverTcp( demux_t *p_demux )
     int i_return;
 
     var_SetBool( p_demux, "rtsp-tcp", VLC_TRUE );
-    
+
     /* We close the old RTSP session */
     p_sys->rtsp->teardownMediaSession( *p_sys->ms );
 
@@ -1212,7 +1210,7 @@ static int RollOverTcp( demux_t *p_demux )
         msg_Err( p_demux, "Failed to connect with rtsp://%s", p_sys->psz_path );
         goto error;
     }
-    
+
     if( p_sys->p_sdp == NULL )
     {
         msg_Err( p_demux, "Failed to retrieve the RTSP Session Description" );
@@ -1476,7 +1474,7 @@ static void TimeoutPrevention( timeout_thread_t *p_timeout )
     p_timeout->i_remain *= 1000000;
 
     vlc_thread_ready( p_timeout );
-    
+
     /* Avoid lock */
     while( !p_timeout->b_die )
     {

@@ -2,7 +2,7 @@
  * vlc_input.h: Core input structures
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: vlc_input.h 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: vlc_input.h 16931 2006-10-03 09:04:50Z damienf $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -285,6 +285,8 @@ static inline input_title_t *vlc_input_title_Duplicate( input_title_t *t )
 enum input_state_e
 {
     INIT_S,
+    OPENING_S,
+    BUFFERING_S,
     PLAYING_S,
     PAUSE_S,
     END_S

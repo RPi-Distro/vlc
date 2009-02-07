@@ -2,7 +2,7 @@
  * playlist.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: playlist.cpp 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: playlist.cpp 16994 2006-10-08 14:40:02Z jpsaman $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *          Clément Stenac <zorglub@videolan.org>
@@ -1307,7 +1307,7 @@ bool PlaylistFileDropTarget::OnDropFiles( wxCoord x, wxCoord y,
     /* Put the items in the playlist node */
     for( size_t i = 0; i < filenames.GetCount(); i++ )
     {
-        const char *psz_utf8 = wxDnDFromLocale( filenames[i] );
+        char *psz_utf8 = wxDnDFromLocale( filenames[i] );
         playlist_item_t *p_item =
             playlist_ItemNew( p->p_playlist, psz_utf8, psz_utf8 );
         playlist_NodeAddItem( p->p_playlist, p_item, p->i_current_view,

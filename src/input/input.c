@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: input.c 16771 2006-09-21 15:52:00Z sam $
+ * $Id: input.c 16994 2006-10-08 14:40:02Z jpsaman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1085,10 +1085,7 @@ static int Init( input_thread_t * p_input, vlc_bool_t b_quick )
     }
 
     /* initialization is complete */
-    p_input->i_state = PLAYING_S;
-
-    val.i_int = PLAYING_S;
-    var_Change( p_input, "state", VLC_VAR_SETVALUE, &val, NULL );
+    input_ChangeState(p_input, PLAYING_S);
 
     return VLC_SUCCESS;
 
@@ -1128,16 +1125,12 @@ static void Error( input_thread_t *p_input )
  *****************************************************************************/
 static void End( input_thread_t * p_input )
 {
-    vlc_value_t val;
     int i;
 
     msg_Dbg( p_input, "closing input" );
 
     /* We are at the end */
-    p_input->i_state = END_S;
-
-    val.i_int = END_S;
-    var_Change( p_input, "state", VLC_VAR_SETVALUE, &val, NULL );
+    input_ChangeState(p_input, END_S);
 
     /* Clean control variables */
     input_ControlVarClean( p_input );
@@ -2048,8 +2041,8 @@ static int InputSourceInit( input_thread_t *p_input,
     {
         psz_path = psz_mrl;
         msg_Dbg( p_input, "trying to pre-parse %s",  psz_path );
-        psz_demux = strdup( "" );
-        psz_access = strdup( "file" );
+        psz_demux = "";
+        psz_access = "file";
     }
 
     if( in->p_demux )
@@ -2082,6 +2075,8 @@ static int InputSourceInit( input_thread_t *p_input,
     else
     {
         int64_t i_pts_delay;
+
+        input_ChangeState( p_input, OPENING_S);
 
         /* Now try a real access */
         in->p_access = access2_New( p_input, psz_access, psz_demux, psz_path,
@@ -2176,6 +2171,8 @@ static int InputSourceInit( input_thread_t *p_input,
                              &val.b_bool );
             var_Set( p_input, "seekable", val );
         }
+
+        input_ChangeState( p_input, BUFFERING_S);
 
         /* Create the stream_t */
         in->p_stream = stream_AccessNew( in->p_access, b_quick );

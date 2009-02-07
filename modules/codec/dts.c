@@ -2,7 +2,7 @@
  * dts.c: parse DTS audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: dts.c 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: dts.c 16987 2006-10-08 12:54:12Z jpsaman $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -99,7 +99,7 @@ vlc_module_begin();
     add_submodule();
     set_description( _("DTS audio packetizer") );
     set_capability( "packetizer", 10 );
-    set_callbacks( OpenPacketizer, NULL );
+    set_callbacks( OpenPacketizer, CloseDecoder );
 vlc_module_end();
 
 /*****************************************************************************

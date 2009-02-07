@@ -2,7 +2,7 @@
  * flac.c: flac decoder/packetizer/encoder module making use of libflac
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: flac.c 15181 2006-04-11 22:09:20Z hartman $
+ * $Id: flac.c 16982 2006-10-08 11:56:06Z jpsaman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -1115,7 +1115,7 @@ struct encoder_sys_t
     int i_channels;
 
     FLAC__int32 *p_buffer;
-    int         i_buffer;
+    unsigned int i_buffer;
 
     block_t *p_chain;
 
@@ -1207,7 +1207,7 @@ static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
 {
     encoder_sys_t *p_sys = p_enc->p_sys;
     block_t *p_chain;
-    int i;
+    unsigned int i;
 
     p_sys->i_pts = p_aout_buf->start_date -
                 (mtime_t)1000000 * (mtime_t)p_sys->i_samples_delay /
@@ -1216,14 +1216,14 @@ static block_t *Encode( encoder_t *p_enc, aout_buffer_t *p_aout_buf )
     p_sys->i_samples_delay += p_aout_buf->i_nb_samples;
 
     /* Convert samples to FLAC__int32 */
-    if( p_sys->i_buffer < p_aout_buf->i_nb_bytes * 2 )
+    if( p_sys->i_buffer < (p_aout_buf->i_nb_bytes * 2) )
     {
         p_sys->p_buffer =
             realloc( p_sys->p_buffer, p_aout_buf->i_nb_bytes * 2 );
         p_sys->i_buffer = p_aout_buf->i_nb_bytes * 2;
     }
 
-    for( i = 0 ; i < p_aout_buf->i_nb_bytes / 2 ; i++ )
+    for( i = 0 ; i < (p_aout_buf->i_nb_bytes / 2) ; i++ )
     {
         p_sys->p_buffer[i]= ((int16_t *)p_aout_buf->p_buffer)[i];
     }

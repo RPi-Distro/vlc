@@ -2,7 +2,7 @@
  * xcommon.h: Defines common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: xcommon.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: xcommon.h 16977 2006-10-08 09:41:25Z jpsaman $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -117,10 +117,10 @@ struct vout_sys_t
 #endif
 
     /* Screen saver properties */
-    unsigned int        i_ss_timeout;                             /* timeout */
-    unsigned int        i_ss_interval;           /* interval between changes */
-    unsigned int        i_ss_blanking;                      /* blanking mode */
-    unsigned int        i_ss_exposure;                      /* exposure mode */
+    int                 i_ss_timeout;                             /* timeout */
+    int                 i_ss_interval;           /* interval between changes */
+    int                 i_ss_blanking;                      /* blanking mode */
+    int                 i_ss_exposure;                      /* exposure mode */
 #ifdef DPMSINFO_IN_DPMS_H
     BOOL                b_ss_dpms;                              /* DPMS mode */
 #endif

@@ -2,7 +2,7 @@
  * libvlc.h: main libvlc header
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: libvlc.h 16647 2006-09-14 14:58:57Z hartman $
+ * $Id: libvlc.h 16988 2006-10-08 13:07:41Z xtophe $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -30,7 +30,7 @@
 #if defined (WIN32) || defined (__APPLE__)
 static char *ppsz_language[] =
 { "auto", "en", "en_GB", "ca", "cs", "da", "de", "es", "fr", "gl", "he", "hu",
-  "it", "ja", "ka", "ko", "nl", "oc", "pt_BR", "ro", "ru", "sv", "tr",
+  "it", "ja", "ka", "ko", "nl", "oc", "pt_BR", "ro", "ru", "sk", "sv", "tr",
   "zh_CN", "zh_TW" };
 
 static char *ppsz_language_text[] =
@@ -39,7 +39,8 @@ N_("Catalan"), N_("Czech"), N_("Danish"), N_("German"), N_("Spanish"),
 N_("French"), N_("Galician"), N_("Hebrew"), N_("Hungarian"),N_("Italian"),
 N_("Japanese"),N_("Georgian"), N_("Korean"), N_("Dutch"), N_("Occitan"),
 N_("Brazilian Portuguese"), N_("Romanian"), N_("Russian"), N_("Swedish"),
-N_("Turkish"), N_("Simplified Chinese"), N_("Chinese Traditional") };
+N_("Slovak"), N_("Turkish"), N_("Simplified Chinese"),
+N_("Chinese Traditional") };
 #endif
 
 static char *ppsz_snap_formats[] =

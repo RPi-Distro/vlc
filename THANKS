@@ -1,4 +1,4 @@
-$Id: THANKS 16908 2006-10-01 14:17:25Z jpsaman $
+$Id: THANKS 16990 2006-10-08 13:35:21Z xtophe $
 
 VLC makes extensive use of the following persons' code:
 
@@ -91,6 +91,7 @@ Laurent Mutricy <laurent.mutricy at ecl2005 dot ec-lyon dot fr> - HTTP interface
 Lorena Gomes - Catalan translation
 Marc Nolette <nolette at videotron.ca> - PVR support in DirectShow input
 Marco Munderloh <Marco.Munderloh at web.de> - HTTP fix for Win32 to URL filenames
+Marián Hikaník- <podnety _at_ mojepreklady _dot_ net> - Slovak localisation
 Mark Gritter <mgritter at kealia.com> - fix for netlist packet leak in demuxPSI
 Markus Kern <markus-kern at gmx dot net> - video output window fixes (win32)
 Markus Kuespert <ltlBeBoy at beosmail.com> - BeOS CSS support

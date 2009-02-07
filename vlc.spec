@@ -261,7 +261,6 @@ mv %{_libdir}/mozilla-%{mozver}/plugins/mozplugger.so %{_libdir}/mozilla/plugins
 %{_bindir}/*vlc
 %{_libdir}/vlc
 %{_libdir}/libvlc_pic.a
-%{_libdir}/mozilla-%{mozver}/components/vlcintf.xpt
 %{_libdir}/mozilla-%{mozver}/plugins/libvlcplugin.so
 %{_datadir}/applications/gnome-%{name}.desktop
 %{_datadir}/vlc

@@ -2,7 +2,7 @@
  * glx.c: GLX OpenGL provider
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: glx.c 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: glx.c 16987 2006-10-08 12:54:12Z jpsaman $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -339,7 +339,7 @@ int InitGLX13( vout_thread_t *p_vout )
 static void SwapBuffers( vout_thread_t *p_vout )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
-    int i_width, i_height, i_x, i_y;
+    unsigned int i_width, i_height, i_x, i_y;
 
     vout_PlacePicture( p_vout, p_vout->p_sys->p_win->i_width,
                        p_vout->p_sys->p_win->i_height,

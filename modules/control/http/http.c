@@ -2,7 +2,7 @@
  * http.c : HTTP/HTTPS Remote control interface
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: http.c 16776 2006-09-21 21:56:22Z xtophe $
+ * $Id: http.c 16956 2006-10-05 16:41:21Z funman $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -124,7 +124,6 @@ static int Open( vlc_object_t *p_this )
                   *psz_crl = NULL;
     int           i_port       = 0;
     char          *psz_src;
-    char          psz_tmp[10];
 
     var_Create(p_intf->p_libvlc, "http-host", VLC_VAR_STRING );
     psz_address=var_GetString(p_intf->p_libvlc, "http-host");
@@ -263,10 +262,6 @@ static int Open( vlc_object_t *p_this )
             i_port= 8080;
     }
 
-    /* Ugly hack to allow to run several HTTP servers on different ports. */
-    sprintf( psz_tmp, "%s:%d", psz_address, i_port + 1 );
-    var_SetString( p_intf->p_libvlc, "http-host", psz_tmp );
-
     msg_Dbg( p_intf, "base %s:%d", psz_address, i_port );
 
     p_sys->p_httpd_host = httpd_TLSHostNew( VLC_OBJECT(p_intf), psz_address,
@@ -279,6 +274,14 @@ static int Open( vlc_object_t *p_this )
         free( p_sys->psz_address );
         free( p_sys );
         return VLC_EGENERIC;
+    }
+    else
+    {
+        char psz_tmp[NI_MAXHOST + 6];
+
+        /* Ugly hack to run several HTTP servers on different ports */
+        snprintf( psz_tmp, sizeof (psz_tmp), "%s:%d", psz_address, i_port + 1 );
+        var_SetString( p_intf->p_libvlc, "http-host", psz_tmp );
     }
 
     p_sys->i_files  = 0;

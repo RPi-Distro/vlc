@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: avi.c 16460 2006-08-31 22:01:13Z hartman $
+ * $Id: avi.c 16987 2006-10-08 12:54:12Z jpsaman $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -1837,7 +1837,7 @@ vlc_fourcc_t AVI_FourccGetCodec( unsigned int i_cat, vlc_fourcc_t i_codec )
  *
  ****************************************************************************/
 static void AVI_ParseStreamHeader( vlc_fourcc_t i_id,
-                                   int *pi_number, int *pi_type )
+                                   unsigned int *pi_number, unsigned int *pi_type )
 {
 #define SET_PTR( p, v ) if( p ) *(p) = (v);
     int c1, c2;

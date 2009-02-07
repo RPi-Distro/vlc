@@ -2,7 +2,7 @@
  * mosaic_bridge.c:
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: mosaic_bridge.c 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: mosaic_bridge.c 16987 2006-10-08 12:54:12Z jpsaman $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -48,7 +48,7 @@ struct sout_stream_sys_t
     decoder_t       *p_decoder;
     image_handler_t *p_image; /* filter for resizing */
     int i_height, i_width;
-    int i_sar_num, i_sar_den;
+    unsigned int i_sar_num, i_sar_den;
     char *psz_id;
     vlc_bool_t b_inited;
 };

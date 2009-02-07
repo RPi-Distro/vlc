@@ -38,6 +38,8 @@ SOURCES_activex = \
     viewobject.h \
     vlccontrol.cpp \
     vlccontrol.h \
+    vlccontrol2.cpp \
+    vlccontrol2.h \
     plugin.cpp \
     plugin.h \
     axvlc_idl.c \
@@ -60,7 +62,7 @@ DIST_misc = \
     $(NULL)
 
 if BUILD_SHARED
-LIBRARIES_libvlc = $(top_builddir)/src/libvlc.dll.a
+LIBRARIES_libvlc = $(top_builddir)/src/libvlc.dll
 else
 LIBRARIES_libvlc = $(top_builddir)/src/libvlc.a
 endif
@@ -76,10 +78,10 @@ LDFLAGS_activex = `$(VLC_CONFIG) --libs activex vlc builtin`
 libaxvlc_a_SOURCES = $(SOURCES_activex) $(SOURCE_dll)
 libaxvlc_a_CFLAGS = `$(VLC_CONFIG) --cflags activex`
 libaxvlc_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags activex`
-libaxvlc_a_DEPENDENCIES = axvlc.def $(DATA_axvlc_rc)
+libaxvlc_a_DEPENDENCIES = axvlc.def $(DATA_axvlc_rc) $(LIBRARIES_libvlc)
 
 axvlc$(LIBEXT): $(libaxvlc_a_OBJECTS) \
-	              $(libaxvlc_a_DEPENDENCIES) stamp-pic
+	              $(libaxvlc_a_DEPENDENCIES) stamp-builtin
 	$(CXXLINK) $(libaxvlc_a_OBJECTS) $(DATA_axvlc_rc) \
 	$(srcdir)/axvlc.def \
 	  $(LIBRARIES_libvlc) -shared $(LIBRARIES_libvlc) $(LDFLAGS_activex) \
@@ -101,9 +103,19 @@ clean-tlb:
 	rm -f axvlc.tlb axvlc_idl.c axvlc_idl.h
 
 else
+if HAS_WIDL_COMPILER
+
+axvlc.tlb axvlc_idl.c axvlc_idl.h: axvlc.idl
+	$(WIDL) -I$(WINE_SDK_PATH)/include -tuh -T axvlc.tlb -U axvlc_idl.c -H axvlc_idl.h axvlc.idl
+
+clean-tlb:
+	rm -f axvlc.tlb axvlc_idl.c axvlc_idl.h
+
+else
 
 clean-tlb:
 
+endif
 endif
 
 DATA_axvlc_rc = $(noinst_axvlc_rc_DATA)
@@ -123,16 +135,15 @@ endif
 ###############################################################################
 
 clean-stamp:
-	rm -f stamp-pic
+	rm -f stamp-builtin
 
-stamp-pic: FORCE
-	@for dep in "" `$(VLC_CONFIG) --target builtin`; do \
-	  if test "$${dep}" -nt "$(LIBRARIES_activex)"; then \
-	    rm -f $@; \
-	    break; \
-	  fi; \
-	done
-	@if test ! -f $@; then printf "" > $@; fi
+if BUILD_SHARED
+stamp-builtin:
+else
+stamp-builtin: $(shell ${VLC_CONFIG} --target builtin)
+endif
+	@touch $@
+
 
 ###############################################################################
 # Clean rules
@@ -142,7 +153,6 @@ clean-local: clean-stamp clean-tlb
 	rm -f axvlc$(LIBEXT)
 
 ###############################################################################
-# Force rule
+# Force rules
 ###############################################################################
-FORCE:
 

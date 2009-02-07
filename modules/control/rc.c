@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004 - 2005 the VideoLAN team
- * $Id: rc.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: rc.c 16984 2006-10-08 12:14:56Z jpsaman $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -1998,7 +1998,7 @@ static int VideoConfig( vlc_object_t *p_this, char const *psz_cmd,
         /* get */
         vlc_value_t val, text;
         int i;
-        float f_value;
+        float f_value = 0.0;
         char *psz_value = NULL;
 
         if ( var_Get( p_vout, psz_variable, &val ) < 0 )

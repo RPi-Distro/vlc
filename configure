@@ -964,8 +964,11 @@ GNUTLS_LIBS
 LOADER_TRUE
 LOADER_FALSE
 MIDL
+WIDL
 HAS_MIDL_COMPILER_TRUE
 HAS_MIDL_COMPILER_FALSE
+HAS_WIDL_COMPILER_TRUE
+HAS_WIDL_COMPILER_FALSE
 BUILD_ACTIVEX_TRUE
 BUILD_ACTIVEX_FALSE
 MOZILLA_CONFIG
@@ -1000,6 +1003,7 @@ ALIASES
 ASM
 MOC
 MOZILLA_SDK_PATH
+WINE_SDK_PATH
 XPIDL_INCL
 LIBEXT
 AM_CPPFLAGS
@@ -1059,7 +1063,8 @@ CORBA_CFLAGS
 CORBA_LIBS
 GNUTLS_CFLAGS
 GNUTLS_LIBS
-MIDL'
+MIDL
+WIDL'
 
 
 # Initialize some variables set by options.
@@ -1856,6 +1861,7 @@ Interface plugins:
     --with-goom-tree=PATH goom tree for static linking (required)
 Misc options:
     --with-words=endianness set endianness (big or little)
+    --with-wine-sdk-path=PATH path to wine sdk
     --with-mozilla-sdk-path=PATH path to mozilla sdk
 
 Some influential environment variables:
@@ -1928,6 +1934,7 @@ Some influential environment variables:
               C compiler flags for GNUTLS, overriding pkg-config
   GNUTLS_LIBS linker flags for GNUTLS, overriding pkg-config
   MIDL        Microsoft IDL compiler (Win32 platform only)
+  WIDL        Wine IDL compiler (requires Wine SDK)
 
 Use these variables to override the choices made by `configure' or to help
 it to find libraries and programs with nonstandard names/locations.
@@ -6657,7 +6664,7 @@ ia64-*-hpux*)
   ;;
 *-*-irix6*)
   # Find out which ABI we are using.
-  echo '#line 6660 "configure"' > conftest.$ac_ext
+  echo '#line 6667 "configure"' > conftest.$ac_ext
   if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   (eval $ac_compile) 2>&5
   ac_status=$?
@@ -9106,11 +9113,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9109: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9116: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9113: \$? = $ac_status" >&5
+   echo "$as_me:9120: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9374,11 +9381,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9377: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9384: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:9381: \$? = $ac_status" >&5
+   echo "$as_me:9388: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -9478,11 +9485,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:9481: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:9488: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:9485: \$? = $ac_status" >&5
+   echo "$as_me:9492: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -11919,7 +11926,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 11922 "configure"
+#line 11929 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -12019,7 +12026,7 @@ else
   lt_dlunknown=0; lt_dlno_uscore=1; lt_dlneed_uscore=2
   lt_status=$lt_dlunknown
   cat > conftest.$ac_ext <<EOF
-#line 12022 "configure"
+#line 12029 "configure"
 #include "confdefs.h"
 
 #if HAVE_DLFCN_H
@@ -14387,11 +14394,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14390: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14397: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:14394: \$? = $ac_status" >&5
+   echo "$as_me:14401: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -14491,11 +14498,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:14494: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:14501: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:14498: \$? = $ac_status" >&5
+   echo "$as_me:14505: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -16052,11 +16059,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16055: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16062: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:16059: \$? = $ac_status" >&5
+   echo "$as_me:16066: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -16156,11 +16163,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:16159: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:16166: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:16163: \$? = $ac_status" >&5
+   echo "$as_me:16170: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -18375,11 +18382,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18378: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18385: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18382: \$? = $ac_status" >&5
+   echo "$as_me:18389: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -18643,11 +18650,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18646: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18653: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>conftest.err)
    ac_status=$?
    cat conftest.err >&5
-   echo "$as_me:18650: \$? = $ac_status" >&5
+   echo "$as_me:18657: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s "$ac_outfile"; then
      # The compiler can only warn and ignore the option if not recognized
      # So say no if there are warnings other than the usual output.
@@ -18747,11 +18754,11 @@ else
    -e 's:.*FLAGS}\{0,1\} :&$lt_compiler_flag :; t' \
    -e 's: [^ ]*conftest\.: $lt_compiler_flag&:; t' \
    -e 's:$: $lt_compiler_flag:'`
-   (eval echo "\"\$as_me:18750: $lt_compile\"" >&5)
+   (eval echo "\"\$as_me:18757: $lt_compile\"" >&5)
    (eval "$lt_compile" 2>out/conftest.err)
    ac_status=$?
    cat out/conftest.err >&5
-   echo "$as_me:18754: \$? = $ac_status" >&5
+   echo "$as_me:18761: \$? = $ac_status" >&5
    if (exit $ac_status) && test -s out/conftest2.$ac_objext
    then
      # The compiler can only warn and ignore the option if not recognized
@@ -22129,7 +22136,7 @@ if test "${with_macosx_sdk}" != "no" ; then
   MACOSX_DEPLOYMENT_TARGET="10.3"
 fi
 
-ALL_LINGUAS="ca cs da de en_GB es fr gl he hi hu it ja ka ko nl oc pt_BR ro ru sv tr zh_CN zh_TW"
+ALL_LINGUAS="ca cs da de en_GB es fr gl he hi hu it ja ka ko nl oc pt_BR ro ru sk sv tr zh_CN zh_TW"
 
 
         MKINSTALLDIRS=
@@ -66641,11 +66648,17 @@ if test "${enable_activex+set}" = set; then
   enableval=$enable_activex;
 fi
 
+
+# Check whether --with-wine-sdk-path was given.
+if test "${with_wine_sdk_path+set}" = set; then
+  withval=$with_wine_sdk_path;
+fi
+
 if test "${enable_activex}" != "no"
 then
   if test "${SYS}" = "mingw32" -o "${SYS}" = "cygwin"
   then
-    for ac_prog in midl widl
+    for ac_prog in midl
 do
   # Extract the first word of "$ac_prog", so it can be a program name with args.
 set dummy $ac_prog; ac_word=$2
@@ -66688,6 +66701,54 @@ fi
 done
 test -n "$MIDL" || MIDL="no"
 
+    if test "${with_wine_sdk_path}" != ""
+    then
+       WINE_SDK_PATH=${with_wine_sdk_path}
+       # Extract the first word of "widl", so it can be a program name with args.
+set dummy widl; ac_word=$2
+{ echo "$as_me:$LINENO: checking for $ac_word" >&5
+echo $ECHO_N "checking for $ac_word... $ECHO_C" >&6; }
+if test "${ac_cv_path_WIDL+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  case $WIDL in
+  [\\/]* | ?:[\\/]*)
+  ac_cv_path_WIDL="$WIDL" # Let the user override the test with a path.
+  ;;
+  *)
+  as_save_IFS=$IFS; IFS=$PATH_SEPARATOR
+as_dummy="$WINE_SDK_PATH/bin:$WINE_SDK_PATH/tools/widl"
+for as_dir in $as_dummy
+do
+  IFS=$as_save_IFS
+  test -z "$as_dir" && as_dir=.
+  for ac_exec_ext in '' $ac_executable_extensions; do
+  if { test -f "$as_dir/$ac_word$ac_exec_ext" && $as_executable_p "$as_dir/$ac_word$ac_exec_ext"; }; then
+    ac_cv_path_WIDL="$as_dir/$ac_word$ac_exec_ext"
+    echo "$as_me:$LINENO: found $as_dir/$ac_word$ac_exec_ext" >&5
+    break 2
+  fi
+done
+done
+IFS=$as_save_IFS
+
+  test -z "$ac_cv_path_WIDL" && ac_cv_path_WIDL="no"
+  ;;
+esac
+fi
+WIDL=$ac_cv_path_WIDL
+if test -n "$WIDL"; then
+  { echo "$as_me:$LINENO: result: $WIDL" >&5
+echo "${ECHO_T}$WIDL" >&6; }
+else
+  { echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6; }
+fi
+
+
+    else
+       WIDL=no
+    fi
     ac_ext=cpp
 ac_cpp='$CXXCPP $CPPFLAGS'
 ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
@@ -66977,6 +67038,17 @@ if test "${MIDL}" != "no"; then
 else
   HAS_MIDL_COMPILER_TRUE='#'
   HAS_MIDL_COMPILER_FALSE=
+fi
+
+
+
+
+if test "${WIDL}" != "no"; then
+  HAS_WIDL_COMPILER_TRUE=
+  HAS_WIDL_COMPILER_FALSE='#'
+else
+  HAS_WIDL_COMPILER_TRUE='#'
+  HAS_WIDL_COMPILER_FALSE=
 fi
 
 
@@ -67947,7 +68019,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 67950 "configure" */
+/* #line 68022 "configure" */
 public class Test {
 }
 EOF
@@ -68123,7 +68195,7 @@ EOF
 if uudecode$EXEEXT Test.uue; then
         ac_cv_prog_uudecode_base64=yes
 else
-        echo "configure: 68126: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
+        echo "configure: 68198: uudecode had trouble decoding base 64 file 'Test.uue'" >&5
         echo "configure: failed file was:" >&5
         cat Test.uue >&5
         ac_cv_prog_uudecode_base64=no
@@ -68245,7 +68317,7 @@ else
 JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 cat << \EOF > $JAVA_TEST
-/* #line 68248 "configure" */
+/* #line 68320 "configure" */
 public class Test {
 }
 EOF
@@ -68282,7 +68354,7 @@ JAVA_TEST=Test.java
 CLASS_TEST=Test.class
 TEST=Test
 cat << \EOF > $JAVA_TEST
-/* [#]line 68285 "configure" */
+/* [#]line 68357 "configure" */
 public class Test {
 public static void main (String args[]) {
         System.exit (0);
@@ -68773,6 +68845,7 @@ CPPFLAGS_save="${CPPFLAGS_save} -I\$(top_srcdir)/include"
 
 LDFLAGS_libvlc="${LDFLAGS_vlc} ${LDFLAGS_builtin}"
 for i in `echo "${BUILTINS}" | sed -e 's@^ */@@g'` ; do LDFLAGS_libvlc="${LDFLAGS_libvlc} ${libdir}/vlc/${i}.a `eval echo '$'{LDFLAGS_${i}}`" ; done
+
 
 
 
@@ -69343,6 +69416,13 @@ if test -z "${HAS_MIDL_COMPILER_TRUE}" && test -z "${HAS_MIDL_COMPILER_FALSE}"; 
   { { echo "$as_me:$LINENO: error: conditional \"HAS_MIDL_COMPILER\" was never defined.
 Usually this means the macro was only invoked conditionally." >&5
 echo "$as_me: error: conditional \"HAS_MIDL_COMPILER\" was never defined.
+Usually this means the macro was only invoked conditionally." >&2;}
+   { (exit 1); exit 1; }; }
+fi
+if test -z "${HAS_WIDL_COMPILER_TRUE}" && test -z "${HAS_WIDL_COMPILER_FALSE}"; then
+  { { echo "$as_me:$LINENO: error: conditional \"HAS_WIDL_COMPILER\" was never defined.
+Usually this means the macro was only invoked conditionally." >&5
+echo "$as_me: error: conditional \"HAS_WIDL_COMPILER\" was never defined.
 Usually this means the macro was only invoked conditionally." >&2;}
    { (exit 1); exit 1; }; }
 fi
@@ -70297,8 +70377,11 @@ GNUTLS_LIBS!$GNUTLS_LIBS$ac_delim
 LOADER_TRUE!$LOADER_TRUE$ac_delim
 LOADER_FALSE!$LOADER_FALSE$ac_delim
 MIDL!$MIDL$ac_delim
+WIDL!$WIDL$ac_delim
 HAS_MIDL_COMPILER_TRUE!$HAS_MIDL_COMPILER_TRUE$ac_delim
 HAS_MIDL_COMPILER_FALSE!$HAS_MIDL_COMPILER_FALSE$ac_delim
+HAS_WIDL_COMPILER_TRUE!$HAS_WIDL_COMPILER_TRUE$ac_delim
+HAS_WIDL_COMPILER_FALSE!$HAS_WIDL_COMPILER_FALSE$ac_delim
 BUILD_ACTIVEX_TRUE!$BUILD_ACTIVEX_TRUE$ac_delim
 BUILD_ACTIVEX_FALSE!$BUILD_ACTIVEX_FALSE$ac_delim
 MOZILLA_CONFIG!$MOZILLA_CONFIG$ac_delim
@@ -70333,6 +70416,7 @@ ALIASES!$ALIASES$ac_delim
 ASM!$ASM$ac_delim
 MOC!$MOC$ac_delim
 MOZILLA_SDK_PATH!$MOZILLA_SDK_PATH$ac_delim
+WINE_SDK_PATH!$WINE_SDK_PATH$ac_delim
 XPIDL_INCL!$XPIDL_INCL$ac_delim
 LIBEXT!$LIBEXT$ac_delim
 AM_CPPFLAGS!$AM_CPPFLAGS$ac_delim
@@ -70343,7 +70427,7 @@ LIBOBJS!$LIBOBJS$ac_delim
 LTLIBOBJS!$LTLIBOBJS$ac_delim
 _ACEOF
 
-  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 62; then
+  if test `sed -n "s/.*$ac_delim\$/X/p" conf$$subs.sed | grep -c X` = 66; then
     break
   elif $ac_last_try; then
     { { echo "$as_me:$LINENO: error: could not make $CONFIG_STATUS" >&5

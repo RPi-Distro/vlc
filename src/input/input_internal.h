@@ -2,7 +2,7 @@
  * input_internal.h:
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: input_internal.h 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: input_internal.h 16931 2006-10-03 09:04:50Z damienf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -155,5 +155,12 @@ char **subtitles_Detect( input_thread_t *, char* path, char *fname );
 int subtitles_Filter( const char *);
 
 void MRLSplit( vlc_object_t *, char *, char **, char **, char ** );
+
+static inline void input_ChangeState( input_thread_t *p_input, int state )
+{
+    vlc_value_t val;
+    val.i_int = p_input->i_state = state;
+    var_Change( p_input, "state", VLC_VAR_SETVALUE, &val, NULL );
+}
 
 #endif

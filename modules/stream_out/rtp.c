@@ -2,7 +2,7 @@
  * rtp.c: rtp stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: rtp.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: rtp.c 16986 2006-10-08 12:37:14Z jpsaman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -25,15 +25,16 @@
  * Preamble
  *****************************************************************************/
 #include <stdlib.h>
+
+#include <vlc/vlc.h>
+#include <vlc/input.h>
+#include <vlc/sout.h>
+
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #endif
 
 #include <errno.h>
-
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/sout.h>
 
 #include "vlc_httpd.h"
 #include "vlc_url.h"
@@ -1154,10 +1155,10 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
             {
                 uint8_t *p_buffer = p_fmt->p_extra;
                 int     i_buffer = p_fmt->i_extra;
-                char    *p_64_sps;
-                char    *p_64_pps;
+                char    *p_64_sps = NULL;
+                char    *p_64_pps = NULL;
                 char    hexa[6];
-                
+
                 while( i_buffer > 4 && 
                     p_buffer[0] == 0 && p_buffer[1] == 0 &&
                     p_buffer[2] == 0 && p_buffer[3] == 1 )
@@ -1167,9 +1168,9 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
                     int i_size      = 0;
                     int i_startcode = 0;
                     int i_encoded   = 0;
-                    
+
                     msg_Dbg( p_stream, "we found a startcode for NAL with TYPE:%d", i_nal_type );
-                    
+
                     for( i_offset = 1; i_offset+3 < i_buffer ; i_offset++)
                     {
                         if( p_buffer[i_offset] == 0 && p_buffer[i_offset+1] == 0 && p_buffer[i_offset+2] == 0 && p_buffer[i_offset+3] == 1 )

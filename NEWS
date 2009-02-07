@@ -1,4 +1,4 @@
-$Id: NEWS 16713 2006-09-17 21:37:22Z zorglub $
+$Id: NEWS 16988 2006-10-08 13:07:41Z xtophe $
 
 Changes between 0.8.5 and 0.8.6:
 --------------------------------
@@ -29,6 +29,7 @@ Interfaces:
 
 Localization:
  * Add Czech
+ * Add Slovak
 
 Developers:
  * Updates to the libvlc API

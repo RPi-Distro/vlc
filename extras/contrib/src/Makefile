@@ -2,7 +2,7 @@
 # src/Makefile : Dearchive and compile all files necessary
 # ***************************************************************************
 # Copyright (C) 2003 - 2006 the VideoLAN team
-# $Id: Makefile 16404 2006-08-29 00:42:17Z hartman $
+# $Id: Makefile 16961 2006-10-07 15:29:34Z hartman $
 #
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>
@@ -141,12 +141,14 @@ ifdef HAVE_DARWIN_OS
 	.dvdcss .dvdnav .dvdread .dvbpsi .live .x264 .caca .mod \
 	.png .gpg-error .gcrypt .gnutls .opendaap .cddb .cdio .vcdimager .SDL_image \
 	.glib .libidl .gecko .mpcdec .dirac_encoder .dirac_decoder .aclocal \
-        .libdca
+        .libdca .goom2k4 .x264
 # .expat .clinkcc don't work with SDK yet
 # .glib .libidl .gecko are required to build the mozilla plugin
 # .mozilla will build an entire mozilla. it can be used if we need to create a new .gecko package
+# 
+# Things only enabled on PPC
 ifneq ($(HOST),i686-apple-darwin8)
-all: .goom2k4
+all:
 endif
 else
 
@@ -1119,6 +1121,7 @@ goom: goom$(GOOM2k4_VERSION).tar.gz
 	$(EXTRACT_GZ)
 ifdef HAVE_DARWIN_OS
 	patch -p 0 < Patches/goom.patch
+	patch -p 0 < Patches/goom2k4-0-mmx.patch
 endif
 ifdef HAVE_WIN32
 	(cd $@; dos2unix configure.in)
