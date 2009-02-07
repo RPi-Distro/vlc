@@ -1,3 +1,26 @@
+/*****************************************************************************
+ * init.c: Core functions : init, playlist, stream management
+ *****************************************************************************
+ * Copyright (C) 2005 the VideoLAN team
+ * $Id: mediacontrol_init.c 17322 2006-10-28 14:49:42Z jpsaman $
+ *
+ * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
+
 #define __VLC__
 #include <mediacontrol_internal.h>
 #include <vlc/mediacontrol.h>
@@ -40,16 +63,14 @@ mediacontrol_Instance* mediacontrol_new( char** args, mediacontrol_Exception *ex
     ppsz_argv[i_count + 1] = NULL;
 
     p_vlc_id = VLC_Create();
-
     if( p_vlc_id < 0 )
     {
         exception->code = mediacontrol_InternalException;
         exception->message = strdup( "unable to create VLC" );
-        return NULL;        
+        return NULL;
     }
 
     p_vlc = ( vlc_object_t* )vlc_current_object( p_vlc_id );
-  
     if( ! p_vlc )
     {
         exception->code = mediacontrol_InternalException;
@@ -86,18 +107,16 @@ mediacontrol_Instance* mediacontrol_new( char** args, mediacontrol_Exception *ex
         return NULL;
     }
 
-    
-    return retval;  
-};
+    return retval;
+}
 
 void
 mediacontrol_exit( mediacontrol_Instance *self )
 {
-  
     vlc_object_release( (vlc_object_t* )self->p_playlist );
     vlc_object_release( (vlc_object_t* )self->p_intf );
     vlc_object_release( (vlc_object_t*)self->p_vlc );
-  
+
     VLC_CleanUp( self->vlc_object_id );
     VLC_Destroy( self->vlc_object_id );
 }

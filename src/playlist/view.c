@@ -2,7 +2,7 @@
  * view.c : Playlist views functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: view.c 15025 2006-04-01 11:27:40Z fkuehne $
+ * $Id: view.c 17363 2006-10-30 07:57:26Z jpsaman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -569,17 +569,17 @@ int playlist_NodeChildrenCount( playlist_t *p_playlist, playlist_item_t*p_node)
 {
     int i;
     int i_nb = 0;
+
     if( p_node->i_children == -1 )
     {
         return 0;
     }
 
-    for( i=0 ; i< p_node->i_children;i++ )
+    i_nb += p_node->i_children;
+    for( i=0 ; i< p_node->i_children; i++ )
     {
         if( p_node->pp_children[i]->i_children == -1 )
-        {
-            i_nb++;
-        }
+            break;
         else
         {
             i_nb += playlist_NodeChildrenCount( p_playlist, 

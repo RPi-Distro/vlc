@@ -302,7 +302,7 @@ target_vendor = @target_vendor@
 uudecode = @uudecode@
 
 basedir = demux
-mods = a52sys dtssys flac ogg m3u demuxdump rawdv au wav mkv live555 nsv real ts ps mod pva aiff sgimb mjpeg subtitle ty vobsub voc xa nuv nsc mpc
+mods = a52sys dtssys flac ogg m3u demuxdump rawdv au wav mkv live555 nsv real ts ps mod pva aiff sgimb mjpeg subtitle ty vobsub voc xa nuv nsc mpc tta
 
 NULL = 
 libvlc_LTLIBRARIES = 
@@ -315,8 +315,8 @@ SUFFIXES = _plugin$(LIBEXT) _plugin.a
 
 libvlcdir = $(libdir)/vlc/$(basedir)
 
-EXTRA_LIBRARIES = liba52sys_plugin.a liba52sys.a libdtssys_plugin.a libdtssys.a libflac_plugin.a libflac.a libogg_plugin.a libogg.a libm3u_plugin.a libm3u.a libdemuxdump_plugin.a libdemuxdump.a librawdv_plugin.a librawdv.a libau_plugin.a libau.a libwav_plugin.a libwav.a libmkv_plugin.a libmkv.a liblive555_plugin.a liblive555.a libnsv_plugin.a libnsv.a libreal_plugin.a libreal.a libts_plugin.a libts.a libps_plugin.a libps.a libmod_plugin.a libmod.a libpva_plugin.a libpva.a libaiff_plugin.a libaiff.a libsgimb_plugin.a libsgimb.a libmjpeg_plugin.a libmjpeg.a libsubtitle_plugin.a libsubtitle.a libty_plugin.a libty.a libvobsub_plugin.a libvobsub.a libvoc_plugin.a libvoc.a libxa_plugin.a libxa.a libnuv_plugin.a libnuv.a libnsc_plugin.a libnsc.a libmpc_plugin.a libmpc.a
-EXTRA_LTLIBRARIES = liba52sys_plugin.la liba52sys_builtin.la libdtssys_plugin.la libdtssys_builtin.la libflac_plugin.la libflac_builtin.la libogg_plugin.la libogg_builtin.la libm3u_plugin.la libm3u_builtin.la libdemuxdump_plugin.la libdemuxdump_builtin.la librawdv_plugin.la librawdv_builtin.la libau_plugin.la libau_builtin.la libwav_plugin.la libwav_builtin.la libmkv_plugin.la libmkv_builtin.la liblive555_plugin.la liblive555_builtin.la libnsv_plugin.la libnsv_builtin.la libreal_plugin.la libreal_builtin.la libts_plugin.la libts_builtin.la libps_plugin.la libps_builtin.la libmod_plugin.la libmod_builtin.la libpva_plugin.la libpva_builtin.la libaiff_plugin.la libaiff_builtin.la libsgimb_plugin.la libsgimb_builtin.la libmjpeg_plugin.la libmjpeg_builtin.la libsubtitle_plugin.la libsubtitle_builtin.la libty_plugin.la libty_builtin.la libvobsub_plugin.la libvobsub_builtin.la libvoc_plugin.la libvoc_builtin.la libxa_plugin.la libxa_builtin.la libnuv_plugin.la libnuv_builtin.la libnsc_plugin.la libnsc_builtin.la libmpc_plugin.la libmpc_builtin.la
+EXTRA_LIBRARIES = liba52sys_plugin.a liba52sys.a libdtssys_plugin.a libdtssys.a libflac_plugin.a libflac.a libogg_plugin.a libogg.a libm3u_plugin.a libm3u.a libdemuxdump_plugin.a libdemuxdump.a librawdv_plugin.a librawdv.a libau_plugin.a libau.a libwav_plugin.a libwav.a libmkv_plugin.a libmkv.a liblive555_plugin.a liblive555.a libnsv_plugin.a libnsv.a libreal_plugin.a libreal.a libts_plugin.a libts.a libps_plugin.a libps.a libmod_plugin.a libmod.a libpva_plugin.a libpva.a libaiff_plugin.a libaiff.a libsgimb_plugin.a libsgimb.a libmjpeg_plugin.a libmjpeg.a libsubtitle_plugin.a libsubtitle.a libty_plugin.a libty.a libvobsub_plugin.a libvobsub.a libvoc_plugin.a libvoc.a libxa_plugin.a libxa.a libnuv_plugin.a libnuv.a libnsc_plugin.a libnsc.a libmpc_plugin.a libmpc.a libtta_plugin.a libtta.a
+EXTRA_LTLIBRARIES = liba52sys_plugin.la liba52sys_builtin.la libdtssys_plugin.la libdtssys_builtin.la libflac_plugin.la libflac_builtin.la libogg_plugin.la libogg_builtin.la libm3u_plugin.la libm3u_builtin.la libdemuxdump_plugin.la libdemuxdump_builtin.la librawdv_plugin.la librawdv_builtin.la libau_plugin.la libau_builtin.la libwav_plugin.la libwav_builtin.la libmkv_plugin.la libmkv_builtin.la liblive555_plugin.la liblive555_builtin.la libnsv_plugin.la libnsv_builtin.la libreal_plugin.la libreal_builtin.la libts_plugin.la libts_builtin.la libps_plugin.la libps_builtin.la libmod_plugin.la libmod_builtin.la libpva_plugin.la libpva_builtin.la libaiff_plugin.la libaiff_builtin.la libsgimb_plugin.la libsgimb_builtin.la libmjpeg_plugin.la libmjpeg_builtin.la libsubtitle_plugin.la libsubtitle_builtin.la libty_plugin.la libty_builtin.la libvobsub_plugin.la libvobsub_builtin.la libvoc_plugin.la libvoc_builtin.la libxa_plugin.la libxa_builtin.la libnuv_plugin.la libnuv_builtin.la libnsc_plugin.la libnsc_builtin.la libmpc_plugin.la libmpc_builtin.la libtta_plugin.la libtta_builtin.la
 SOURCES_a52sys = a52.c
 SOURCES_dtssys = dts.c
 SOURCES_flac = flac.c
@@ -345,6 +345,7 @@ SOURCES_xa = xa.c
 SOURCES_nuv = nuv.c
 SOURCES_nsc = nsc.c
 SOURCES_mpc = mpc.c
+SOURCES_tta = tta.c
 
 LTLIBVLC = $(top_builddir)/src/libvlc.la
 
@@ -1022,6 +1023,30 @@ libmpc_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic mpc`
 libmpc_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin mpc`
 libmpc_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin mpc`
 libmpc_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin mpc`
+
+
+# The tta plugin
+libtta_plugin_a_SOURCES = $(SOURCES_tta)
+libtta_plugin_la_SOURCES = $(SOURCES_tta)
+libtta_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin tta`
+libtta_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin tta`
+libtta_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin tta`
+libtta_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin tta`
+libtta_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin tta`
+libtta_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin tta`
+libtta_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin tta` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+
+libtta_plugin_la_LIBADD = $(LTLIBVLC)
+
+libtta_a_SOURCES = $(SOURCES_tta)
+libtta_builtin_la_SOURCES = $(SOURCES_tta)
+libtta_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic tta`
+libtta_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic tta`
+libtta_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic tta`
+libtta_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin tta`
+libtta_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin tta`
+libtta_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin tta`
 subdir = modules/demux
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/autotools/mkinstalldirs
@@ -1263,313 +1288,332 @@ am__objects_46 = libts_plugin_a-ts.$(OBJEXT) \
 	libts_plugin_a-csa.$(OBJEXT)
 am_libts_plugin_a_OBJECTS = $(am__objects_46)
 libts_plugin_a_OBJECTS = $(am_libts_plugin_a_OBJECTS)
+libtta_a_AR = $(AR) cru
+libtta_a_LIBADD =
+am__objects_47 = libtta_a-tta.$(OBJEXT)
+am_libtta_a_OBJECTS = $(am__objects_47)
+libtta_a_OBJECTS = $(am_libtta_a_OBJECTS)
+libtta_plugin_a_AR = $(AR) cru
+libtta_plugin_a_LIBADD =
+am__objects_48 = libtta_plugin_a-tta.$(OBJEXT)
+am_libtta_plugin_a_OBJECTS = $(am__objects_48)
+libtta_plugin_a_OBJECTS = $(am_libtta_plugin_a_OBJECTS)
 libty_a_AR = $(AR) cru
 libty_a_LIBADD =
-am__objects_47 = libty_a-ty.$(OBJEXT)
-am_libty_a_OBJECTS = $(am__objects_47)
+am__objects_49 = libty_a-ty.$(OBJEXT)
+am_libty_a_OBJECTS = $(am__objects_49)
 libty_a_OBJECTS = $(am_libty_a_OBJECTS)
 libty_plugin_a_AR = $(AR) cru
 libty_plugin_a_LIBADD =
-am__objects_48 = libty_plugin_a-ty.$(OBJEXT)
-am_libty_plugin_a_OBJECTS = $(am__objects_48)
+am__objects_50 = libty_plugin_a-ty.$(OBJEXT)
+am_libty_plugin_a_OBJECTS = $(am__objects_50)
 libty_plugin_a_OBJECTS = $(am_libty_plugin_a_OBJECTS)
 libvobsub_a_AR = $(AR) cru
 libvobsub_a_LIBADD =
-am__objects_49 = libvobsub_a-vobsub.$(OBJEXT)
-am_libvobsub_a_OBJECTS = $(am__objects_49)
+am__objects_51 = libvobsub_a-vobsub.$(OBJEXT)
+am_libvobsub_a_OBJECTS = $(am__objects_51)
 libvobsub_a_OBJECTS = $(am_libvobsub_a_OBJECTS)
 libvobsub_plugin_a_AR = $(AR) cru
 libvobsub_plugin_a_LIBADD =
-am__objects_50 = libvobsub_plugin_a-vobsub.$(OBJEXT)
-am_libvobsub_plugin_a_OBJECTS = $(am__objects_50)
+am__objects_52 = libvobsub_plugin_a-vobsub.$(OBJEXT)
+am_libvobsub_plugin_a_OBJECTS = $(am__objects_52)
 libvobsub_plugin_a_OBJECTS = $(am_libvobsub_plugin_a_OBJECTS)
 libvoc_a_AR = $(AR) cru
 libvoc_a_LIBADD =
-am__objects_51 = libvoc_a-voc.$(OBJEXT)
-am_libvoc_a_OBJECTS = $(am__objects_51)
+am__objects_53 = libvoc_a-voc.$(OBJEXT)
+am_libvoc_a_OBJECTS = $(am__objects_53)
 libvoc_a_OBJECTS = $(am_libvoc_a_OBJECTS)
 libvoc_plugin_a_AR = $(AR) cru
 libvoc_plugin_a_LIBADD =
-am__objects_52 = libvoc_plugin_a-voc.$(OBJEXT)
-am_libvoc_plugin_a_OBJECTS = $(am__objects_52)
+am__objects_54 = libvoc_plugin_a-voc.$(OBJEXT)
+am_libvoc_plugin_a_OBJECTS = $(am__objects_54)
 libvoc_plugin_a_OBJECTS = $(am_libvoc_plugin_a_OBJECTS)
 libwav_a_AR = $(AR) cru
 libwav_a_LIBADD =
-am__objects_53 = libwav_a-wav.$(OBJEXT)
-am_libwav_a_OBJECTS = $(am__objects_53)
+am__objects_55 = libwav_a-wav.$(OBJEXT)
+am_libwav_a_OBJECTS = $(am__objects_55)
 libwav_a_OBJECTS = $(am_libwav_a_OBJECTS)
 libwav_plugin_a_AR = $(AR) cru
 libwav_plugin_a_LIBADD =
-am__objects_54 = libwav_plugin_a-wav.$(OBJEXT)
-am_libwav_plugin_a_OBJECTS = $(am__objects_54)
+am__objects_56 = libwav_plugin_a-wav.$(OBJEXT)
+am_libwav_plugin_a_OBJECTS = $(am__objects_56)
 libwav_plugin_a_OBJECTS = $(am_libwav_plugin_a_OBJECTS)
 libxa_a_AR = $(AR) cru
 libxa_a_LIBADD =
-am__objects_55 = libxa_a-xa.$(OBJEXT)
-am_libxa_a_OBJECTS = $(am__objects_55)
+am__objects_57 = libxa_a-xa.$(OBJEXT)
+am_libxa_a_OBJECTS = $(am__objects_57)
 libxa_a_OBJECTS = $(am_libxa_a_OBJECTS)
 libxa_plugin_a_AR = $(AR) cru
 libxa_plugin_a_LIBADD =
-am__objects_56 = libxa_plugin_a-xa.$(OBJEXT)
-am_libxa_plugin_a_OBJECTS = $(am__objects_56)
+am__objects_58 = libxa_plugin_a-xa.$(OBJEXT)
+am_libxa_plugin_a_OBJECTS = $(am__objects_58)
 libxa_plugin_a_OBJECTS = $(am_libxa_plugin_a_OBJECTS)
 LTLIBRARIES = $(libvlc_LTLIBRARIES) $(noinst_LTLIBRARIES)
 
 liba52sys_builtin_la_LDFLAGS =
 liba52sys_builtin_la_LIBADD =
-am__objects_57 = liba52sys_builtin_la-a52.lo
-am_liba52sys_builtin_la_OBJECTS = $(am__objects_57)
+am__objects_59 = liba52sys_builtin_la-a52.lo
+am_liba52sys_builtin_la_OBJECTS = $(am__objects_59)
 liba52sys_builtin_la_OBJECTS = $(am_liba52sys_builtin_la_OBJECTS)
 liba52sys_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_58 = liba52sys_plugin_la-a52.lo
-am_liba52sys_plugin_la_OBJECTS = $(am__objects_58)
+am__objects_60 = liba52sys_plugin_la-a52.lo
+am_liba52sys_plugin_la_OBJECTS = $(am__objects_60)
 liba52sys_plugin_la_OBJECTS = $(am_liba52sys_plugin_la_OBJECTS)
 libaiff_builtin_la_LDFLAGS =
 libaiff_builtin_la_LIBADD =
-am__objects_59 = libaiff_builtin_la-aiff.lo
-am_libaiff_builtin_la_OBJECTS = $(am__objects_59)
+am__objects_61 = libaiff_builtin_la-aiff.lo
+am_libaiff_builtin_la_OBJECTS = $(am__objects_61)
 libaiff_builtin_la_OBJECTS = $(am_libaiff_builtin_la_OBJECTS)
 libaiff_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_60 = libaiff_plugin_la-aiff.lo
-am_libaiff_plugin_la_OBJECTS = $(am__objects_60)
+am__objects_62 = libaiff_plugin_la-aiff.lo
+am_libaiff_plugin_la_OBJECTS = $(am__objects_62)
 libaiff_plugin_la_OBJECTS = $(am_libaiff_plugin_la_OBJECTS)
 libau_builtin_la_LDFLAGS =
 libau_builtin_la_LIBADD =
-am__objects_61 = libau_builtin_la-au.lo
-am_libau_builtin_la_OBJECTS = $(am__objects_61)
+am__objects_63 = libau_builtin_la-au.lo
+am_libau_builtin_la_OBJECTS = $(am__objects_63)
 libau_builtin_la_OBJECTS = $(am_libau_builtin_la_OBJECTS)
 libau_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_62 = libau_plugin_la-au.lo
-am_libau_plugin_la_OBJECTS = $(am__objects_62)
+am__objects_64 = libau_plugin_la-au.lo
+am_libau_plugin_la_OBJECTS = $(am__objects_64)
 libau_plugin_la_OBJECTS = $(am_libau_plugin_la_OBJECTS)
 libdemuxdump_builtin_la_LDFLAGS =
 libdemuxdump_builtin_la_LIBADD =
-am__objects_63 = libdemuxdump_builtin_la-demuxdump.lo
-am_libdemuxdump_builtin_la_OBJECTS = $(am__objects_63)
+am__objects_65 = libdemuxdump_builtin_la-demuxdump.lo
+am_libdemuxdump_builtin_la_OBJECTS = $(am__objects_65)
 libdemuxdump_builtin_la_OBJECTS = $(am_libdemuxdump_builtin_la_OBJECTS)
 libdemuxdump_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_64 = libdemuxdump_plugin_la-demuxdump.lo
-am_libdemuxdump_plugin_la_OBJECTS = $(am__objects_64)
+am__objects_66 = libdemuxdump_plugin_la-demuxdump.lo
+am_libdemuxdump_plugin_la_OBJECTS = $(am__objects_66)
 libdemuxdump_plugin_la_OBJECTS = $(am_libdemuxdump_plugin_la_OBJECTS)
 libdtssys_builtin_la_LDFLAGS =
 libdtssys_builtin_la_LIBADD =
-am__objects_65 = libdtssys_builtin_la-dts.lo
-am_libdtssys_builtin_la_OBJECTS = $(am__objects_65)
+am__objects_67 = libdtssys_builtin_la-dts.lo
+am_libdtssys_builtin_la_OBJECTS = $(am__objects_67)
 libdtssys_builtin_la_OBJECTS = $(am_libdtssys_builtin_la_OBJECTS)
 libdtssys_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_66 = libdtssys_plugin_la-dts.lo
-am_libdtssys_plugin_la_OBJECTS = $(am__objects_66)
+am__objects_68 = libdtssys_plugin_la-dts.lo
+am_libdtssys_plugin_la_OBJECTS = $(am__objects_68)
 libdtssys_plugin_la_OBJECTS = $(am_libdtssys_plugin_la_OBJECTS)
 libflac_builtin_la_LDFLAGS =
 libflac_builtin_la_LIBADD =
-am__objects_67 = libflac_builtin_la-flac.lo
-am_libflac_builtin_la_OBJECTS = $(am__objects_67)
+am__objects_69 = libflac_builtin_la-flac.lo
+am_libflac_builtin_la_OBJECTS = $(am__objects_69)
 libflac_builtin_la_OBJECTS = $(am_libflac_builtin_la_OBJECTS)
 libflac_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_68 = libflac_plugin_la-flac.lo
-am_libflac_plugin_la_OBJECTS = $(am__objects_68)
+am__objects_70 = libflac_plugin_la-flac.lo
+am_libflac_plugin_la_OBJECTS = $(am__objects_70)
 libflac_plugin_la_OBJECTS = $(am_libflac_plugin_la_OBJECTS)
 liblive555_builtin_la_LDFLAGS =
 liblive555_builtin_la_LIBADD =
-am__objects_69 = liblive555_builtin_la-live555.lo \
+am__objects_71 = liblive555_builtin_la-live555.lo \
 	liblive555_builtin_la-asf.lo liblive555_builtin_la-buffer.lo
-am_liblive555_builtin_la_OBJECTS = $(am__objects_69)
+am_liblive555_builtin_la_OBJECTS = $(am__objects_71)
 liblive555_builtin_la_OBJECTS = $(am_liblive555_builtin_la_OBJECTS)
 liblive555_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_70 = liblive555_plugin_la-live555.lo \
+am__objects_72 = liblive555_plugin_la-live555.lo \
 	liblive555_plugin_la-asf.lo liblive555_plugin_la-buffer.lo
-am_liblive555_plugin_la_OBJECTS = $(am__objects_70)
+am_liblive555_plugin_la_OBJECTS = $(am__objects_72)
 liblive555_plugin_la_OBJECTS = $(am_liblive555_plugin_la_OBJECTS)
 libm3u_builtin_la_LDFLAGS =
 libm3u_builtin_la_LIBADD =
-am__objects_71 = libm3u_builtin_la-m3u.lo
-am_libm3u_builtin_la_OBJECTS = $(am__objects_71)
+am__objects_73 = libm3u_builtin_la-m3u.lo
+am_libm3u_builtin_la_OBJECTS = $(am__objects_73)
 libm3u_builtin_la_OBJECTS = $(am_libm3u_builtin_la_OBJECTS)
 libm3u_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_72 = libm3u_plugin_la-m3u.lo
-am_libm3u_plugin_la_OBJECTS = $(am__objects_72)
+am__objects_74 = libm3u_plugin_la-m3u.lo
+am_libm3u_plugin_la_OBJECTS = $(am__objects_74)
 libm3u_plugin_la_OBJECTS = $(am_libm3u_plugin_la_OBJECTS)
 libmjpeg_builtin_la_LDFLAGS =
 libmjpeg_builtin_la_LIBADD =
-am__objects_73 = libmjpeg_builtin_la-mjpeg.lo
-am_libmjpeg_builtin_la_OBJECTS = $(am__objects_73)
+am__objects_75 = libmjpeg_builtin_la-mjpeg.lo
+am_libmjpeg_builtin_la_OBJECTS = $(am__objects_75)
 libmjpeg_builtin_la_OBJECTS = $(am_libmjpeg_builtin_la_OBJECTS)
 libmjpeg_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_74 = libmjpeg_plugin_la-mjpeg.lo
-am_libmjpeg_plugin_la_OBJECTS = $(am__objects_74)
+am__objects_76 = libmjpeg_plugin_la-mjpeg.lo
+am_libmjpeg_plugin_la_OBJECTS = $(am__objects_76)
 libmjpeg_plugin_la_OBJECTS = $(am_libmjpeg_plugin_la_OBJECTS)
 libmkv_builtin_la_LDFLAGS =
 libmkv_builtin_la_LIBADD =
-am__objects_75 = libmkv_builtin_la-mkv.lo libmkv_builtin_la-libmp4.lo \
+am__objects_77 = libmkv_builtin_la-mkv.lo libmkv_builtin_la-libmp4.lo \
 	libmkv_builtin_la-drms.lo
-am_libmkv_builtin_la_OBJECTS = $(am__objects_75)
+am_libmkv_builtin_la_OBJECTS = $(am__objects_77)
 libmkv_builtin_la_OBJECTS = $(am_libmkv_builtin_la_OBJECTS)
 libmkv_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_76 = libmkv_plugin_la-mkv.lo libmkv_plugin_la-libmp4.lo \
+am__objects_78 = libmkv_plugin_la-mkv.lo libmkv_plugin_la-libmp4.lo \
 	libmkv_plugin_la-drms.lo
-am_libmkv_plugin_la_OBJECTS = $(am__objects_76)
+am_libmkv_plugin_la_OBJECTS = $(am__objects_78)
 libmkv_plugin_la_OBJECTS = $(am_libmkv_plugin_la_OBJECTS)
 libmod_builtin_la_LDFLAGS =
 libmod_builtin_la_LIBADD =
-am__objects_77 = libmod_builtin_la-mod.lo
-am_libmod_builtin_la_OBJECTS = $(am__objects_77)
+am__objects_79 = libmod_builtin_la-mod.lo
+am_libmod_builtin_la_OBJECTS = $(am__objects_79)
 libmod_builtin_la_OBJECTS = $(am_libmod_builtin_la_OBJECTS)
 libmod_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_78 = libmod_plugin_la-mod.lo
-am_libmod_plugin_la_OBJECTS = $(am__objects_78)
+am__objects_80 = libmod_plugin_la-mod.lo
+am_libmod_plugin_la_OBJECTS = $(am__objects_80)
 libmod_plugin_la_OBJECTS = $(am_libmod_plugin_la_OBJECTS)
 libmpc_builtin_la_LDFLAGS =
 libmpc_builtin_la_LIBADD =
-am__objects_79 = libmpc_builtin_la-mpc.lo
-am_libmpc_builtin_la_OBJECTS = $(am__objects_79)
+am__objects_81 = libmpc_builtin_la-mpc.lo
+am_libmpc_builtin_la_OBJECTS = $(am__objects_81)
 libmpc_builtin_la_OBJECTS = $(am_libmpc_builtin_la_OBJECTS)
 libmpc_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_80 = libmpc_plugin_la-mpc.lo
-am_libmpc_plugin_la_OBJECTS = $(am__objects_80)
+am__objects_82 = libmpc_plugin_la-mpc.lo
+am_libmpc_plugin_la_OBJECTS = $(am__objects_82)
 libmpc_plugin_la_OBJECTS = $(am_libmpc_plugin_la_OBJECTS)
 libnsc_builtin_la_LDFLAGS =
 libnsc_builtin_la_LIBADD =
-am__objects_81 = libnsc_builtin_la-nsc.lo
-am_libnsc_builtin_la_OBJECTS = $(am__objects_81)
+am__objects_83 = libnsc_builtin_la-nsc.lo
+am_libnsc_builtin_la_OBJECTS = $(am__objects_83)
 libnsc_builtin_la_OBJECTS = $(am_libnsc_builtin_la_OBJECTS)
 libnsc_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_82 = libnsc_plugin_la-nsc.lo
-am_libnsc_plugin_la_OBJECTS = $(am__objects_82)
+am__objects_84 = libnsc_plugin_la-nsc.lo
+am_libnsc_plugin_la_OBJECTS = $(am__objects_84)
 libnsc_plugin_la_OBJECTS = $(am_libnsc_plugin_la_OBJECTS)
 libnsv_builtin_la_LDFLAGS =
 libnsv_builtin_la_LIBADD =
-am__objects_83 = libnsv_builtin_la-nsv.lo
-am_libnsv_builtin_la_OBJECTS = $(am__objects_83)
+am__objects_85 = libnsv_builtin_la-nsv.lo
+am_libnsv_builtin_la_OBJECTS = $(am__objects_85)
 libnsv_builtin_la_OBJECTS = $(am_libnsv_builtin_la_OBJECTS)
 libnsv_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_84 = libnsv_plugin_la-nsv.lo
-am_libnsv_plugin_la_OBJECTS = $(am__objects_84)
+am__objects_86 = libnsv_plugin_la-nsv.lo
+am_libnsv_plugin_la_OBJECTS = $(am__objects_86)
 libnsv_plugin_la_OBJECTS = $(am_libnsv_plugin_la_OBJECTS)
 libnuv_builtin_la_LDFLAGS =
 libnuv_builtin_la_LIBADD =
-am__objects_85 = libnuv_builtin_la-nuv.lo
-am_libnuv_builtin_la_OBJECTS = $(am__objects_85)
+am__objects_87 = libnuv_builtin_la-nuv.lo
+am_libnuv_builtin_la_OBJECTS = $(am__objects_87)
 libnuv_builtin_la_OBJECTS = $(am_libnuv_builtin_la_OBJECTS)
 libnuv_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_86 = libnuv_plugin_la-nuv.lo
-am_libnuv_plugin_la_OBJECTS = $(am__objects_86)
+am__objects_88 = libnuv_plugin_la-nuv.lo
+am_libnuv_plugin_la_OBJECTS = $(am__objects_88)
 libnuv_plugin_la_OBJECTS = $(am_libnuv_plugin_la_OBJECTS)
 libogg_builtin_la_LDFLAGS =
 libogg_builtin_la_LIBADD =
-am__objects_87 = libogg_builtin_la-ogg.lo
-am_libogg_builtin_la_OBJECTS = $(am__objects_87)
+am__objects_89 = libogg_builtin_la-ogg.lo
+am_libogg_builtin_la_OBJECTS = $(am__objects_89)
 libogg_builtin_la_OBJECTS = $(am_libogg_builtin_la_OBJECTS)
 libogg_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_88 = libogg_plugin_la-ogg.lo
-am_libogg_plugin_la_OBJECTS = $(am__objects_88)
+am__objects_90 = libogg_plugin_la-ogg.lo
+am_libogg_plugin_la_OBJECTS = $(am__objects_90)
 libogg_plugin_la_OBJECTS = $(am_libogg_plugin_la_OBJECTS)
 libps_builtin_la_LDFLAGS =
 libps_builtin_la_LIBADD =
-am__objects_89 = libps_builtin_la-ps.lo
-am_libps_builtin_la_OBJECTS = $(am__objects_89)
+am__objects_91 = libps_builtin_la-ps.lo
+am_libps_builtin_la_OBJECTS = $(am__objects_91)
 libps_builtin_la_OBJECTS = $(am_libps_builtin_la_OBJECTS)
 libps_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_90 = libps_plugin_la-ps.lo
-am_libps_plugin_la_OBJECTS = $(am__objects_90)
+am__objects_92 = libps_plugin_la-ps.lo
+am_libps_plugin_la_OBJECTS = $(am__objects_92)
 libps_plugin_la_OBJECTS = $(am_libps_plugin_la_OBJECTS)
 libpva_builtin_la_LDFLAGS =
 libpva_builtin_la_LIBADD =
-am__objects_91 = libpva_builtin_la-pva.lo
-am_libpva_builtin_la_OBJECTS = $(am__objects_91)
+am__objects_93 = libpva_builtin_la-pva.lo
+am_libpva_builtin_la_OBJECTS = $(am__objects_93)
 libpva_builtin_la_OBJECTS = $(am_libpva_builtin_la_OBJECTS)
 libpva_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_92 = libpva_plugin_la-pva.lo
-am_libpva_plugin_la_OBJECTS = $(am__objects_92)
+am__objects_94 = libpva_plugin_la-pva.lo
+am_libpva_plugin_la_OBJECTS = $(am__objects_94)
 libpva_plugin_la_OBJECTS = $(am_libpva_plugin_la_OBJECTS)
 librawdv_builtin_la_LDFLAGS =
 librawdv_builtin_la_LIBADD =
-am__objects_93 = librawdv_builtin_la-rawdv.lo
-am_librawdv_builtin_la_OBJECTS = $(am__objects_93)
+am__objects_95 = librawdv_builtin_la-rawdv.lo
+am_librawdv_builtin_la_OBJECTS = $(am__objects_95)
 librawdv_builtin_la_OBJECTS = $(am_librawdv_builtin_la_OBJECTS)
 librawdv_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_94 = librawdv_plugin_la-rawdv.lo
-am_librawdv_plugin_la_OBJECTS = $(am__objects_94)
+am__objects_96 = librawdv_plugin_la-rawdv.lo
+am_librawdv_plugin_la_OBJECTS = $(am__objects_96)
 librawdv_plugin_la_OBJECTS = $(am_librawdv_plugin_la_OBJECTS)
 libreal_builtin_la_LDFLAGS =
 libreal_builtin_la_LIBADD =
-am__objects_95 = libreal_builtin_la-real.lo
-am_libreal_builtin_la_OBJECTS = $(am__objects_95)
+am__objects_97 = libreal_builtin_la-real.lo
+am_libreal_builtin_la_OBJECTS = $(am__objects_97)
 libreal_builtin_la_OBJECTS = $(am_libreal_builtin_la_OBJECTS)
 libreal_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_96 = libreal_plugin_la-real.lo
-am_libreal_plugin_la_OBJECTS = $(am__objects_96)
+am__objects_98 = libreal_plugin_la-real.lo
+am_libreal_plugin_la_OBJECTS = $(am__objects_98)
 libreal_plugin_la_OBJECTS = $(am_libreal_plugin_la_OBJECTS)
 libsgimb_builtin_la_LDFLAGS =
 libsgimb_builtin_la_LIBADD =
-am__objects_97 = libsgimb_builtin_la-sgimb.lo
-am_libsgimb_builtin_la_OBJECTS = $(am__objects_97)
+am__objects_99 = libsgimb_builtin_la-sgimb.lo
+am_libsgimb_builtin_la_OBJECTS = $(am__objects_99)
 libsgimb_builtin_la_OBJECTS = $(am_libsgimb_builtin_la_OBJECTS)
 libsgimb_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_98 = libsgimb_plugin_la-sgimb.lo
-am_libsgimb_plugin_la_OBJECTS = $(am__objects_98)
+am__objects_100 = libsgimb_plugin_la-sgimb.lo
+am_libsgimb_plugin_la_OBJECTS = $(am__objects_100)
 libsgimb_plugin_la_OBJECTS = $(am_libsgimb_plugin_la_OBJECTS)
 libsubtitle_builtin_la_LDFLAGS =
 libsubtitle_builtin_la_LIBADD =
-am__objects_99 = libsubtitle_builtin_la-subtitle.lo
-am_libsubtitle_builtin_la_OBJECTS = $(am__objects_99)
+am__objects_101 = libsubtitle_builtin_la-subtitle.lo
+am_libsubtitle_builtin_la_OBJECTS = $(am__objects_101)
 libsubtitle_builtin_la_OBJECTS = $(am_libsubtitle_builtin_la_OBJECTS)
 libsubtitle_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_100 = libsubtitle_plugin_la-subtitle.lo
-am_libsubtitle_plugin_la_OBJECTS = $(am__objects_100)
+am__objects_102 = libsubtitle_plugin_la-subtitle.lo
+am_libsubtitle_plugin_la_OBJECTS = $(am__objects_102)
 libsubtitle_plugin_la_OBJECTS = $(am_libsubtitle_plugin_la_OBJECTS)
 libts_builtin_la_LDFLAGS =
 libts_builtin_la_LIBADD =
-am__objects_101 = libts_builtin_la-ts.lo libts_builtin_la-csa.lo
-am_libts_builtin_la_OBJECTS = $(am__objects_101)
+am__objects_103 = libts_builtin_la-ts.lo libts_builtin_la-csa.lo
+am_libts_builtin_la_OBJECTS = $(am__objects_103)
 libts_builtin_la_OBJECTS = $(am_libts_builtin_la_OBJECTS)
 libts_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_102 = libts_plugin_la-ts.lo libts_plugin_la-csa.lo
-am_libts_plugin_la_OBJECTS = $(am__objects_102)
+am__objects_104 = libts_plugin_la-ts.lo libts_plugin_la-csa.lo
+am_libts_plugin_la_OBJECTS = $(am__objects_104)
 libts_plugin_la_OBJECTS = $(am_libts_plugin_la_OBJECTS)
+libtta_builtin_la_LDFLAGS =
+libtta_builtin_la_LIBADD =
+am__objects_105 = libtta_builtin_la-tta.lo
+am_libtta_builtin_la_OBJECTS = $(am__objects_105)
+libtta_builtin_la_OBJECTS = $(am_libtta_builtin_la_OBJECTS)
+libtta_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
+am__objects_106 = libtta_plugin_la-tta.lo
+am_libtta_plugin_la_OBJECTS = $(am__objects_106)
+libtta_plugin_la_OBJECTS = $(am_libtta_plugin_la_OBJECTS)
 libty_builtin_la_LDFLAGS =
 libty_builtin_la_LIBADD =
-am__objects_103 = libty_builtin_la-ty.lo
-am_libty_builtin_la_OBJECTS = $(am__objects_103)
+am__objects_107 = libty_builtin_la-ty.lo
+am_libty_builtin_la_OBJECTS = $(am__objects_107)
 libty_builtin_la_OBJECTS = $(am_libty_builtin_la_OBJECTS)
 libty_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_104 = libty_plugin_la-ty.lo
-am_libty_plugin_la_OBJECTS = $(am__objects_104)
+am__objects_108 = libty_plugin_la-ty.lo
+am_libty_plugin_la_OBJECTS = $(am__objects_108)
 libty_plugin_la_OBJECTS = $(am_libty_plugin_la_OBJECTS)
 libvobsub_builtin_la_LDFLAGS =
 libvobsub_builtin_la_LIBADD =
-am__objects_105 = libvobsub_builtin_la-vobsub.lo
-am_libvobsub_builtin_la_OBJECTS = $(am__objects_105)
+am__objects_109 = libvobsub_builtin_la-vobsub.lo
+am_libvobsub_builtin_la_OBJECTS = $(am__objects_109)
 libvobsub_builtin_la_OBJECTS = $(am_libvobsub_builtin_la_OBJECTS)
 libvobsub_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_106 = libvobsub_plugin_la-vobsub.lo
-am_libvobsub_plugin_la_OBJECTS = $(am__objects_106)
+am__objects_110 = libvobsub_plugin_la-vobsub.lo
+am_libvobsub_plugin_la_OBJECTS = $(am__objects_110)
 libvobsub_plugin_la_OBJECTS = $(am_libvobsub_plugin_la_OBJECTS)
 libvoc_builtin_la_LDFLAGS =
 libvoc_builtin_la_LIBADD =
-am__objects_107 = libvoc_builtin_la-voc.lo
-am_libvoc_builtin_la_OBJECTS = $(am__objects_107)
+am__objects_111 = libvoc_builtin_la-voc.lo
+am_libvoc_builtin_la_OBJECTS = $(am__objects_111)
 libvoc_builtin_la_OBJECTS = $(am_libvoc_builtin_la_OBJECTS)
 libvoc_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_108 = libvoc_plugin_la-voc.lo
-am_libvoc_plugin_la_OBJECTS = $(am__objects_108)
+am__objects_112 = libvoc_plugin_la-voc.lo
+am_libvoc_plugin_la_OBJECTS = $(am__objects_112)
 libvoc_plugin_la_OBJECTS = $(am_libvoc_plugin_la_OBJECTS)
 libwav_builtin_la_LDFLAGS =
 libwav_builtin_la_LIBADD =
-am__objects_109 = libwav_builtin_la-wav.lo
-am_libwav_builtin_la_OBJECTS = $(am__objects_109)
+am__objects_113 = libwav_builtin_la-wav.lo
+am_libwav_builtin_la_OBJECTS = $(am__objects_113)
 libwav_builtin_la_OBJECTS = $(am_libwav_builtin_la_OBJECTS)
 libwav_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_110 = libwav_plugin_la-wav.lo
-am_libwav_plugin_la_OBJECTS = $(am__objects_110)
+am__objects_114 = libwav_plugin_la-wav.lo
+am_libwav_plugin_la_OBJECTS = $(am__objects_114)
 libwav_plugin_la_OBJECTS = $(am_libwav_plugin_la_OBJECTS)
 libxa_builtin_la_LDFLAGS =
 libxa_builtin_la_LIBADD =
-am__objects_111 = libxa_builtin_la-xa.lo
-am_libxa_builtin_la_OBJECTS = $(am__objects_111)
+am__objects_115 = libxa_builtin_la-xa.lo
+am_libxa_builtin_la_OBJECTS = $(am__objects_115)
 libxa_builtin_la_OBJECTS = $(am_libxa_builtin_la_OBJECTS)
 libxa_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_112 = libxa_plugin_la-xa.lo
-am_libxa_plugin_la_OBJECTS = $(am__objects_112)
+am__objects_116 = libxa_plugin_la-xa.lo
+am_libxa_plugin_la_OBJECTS = $(am__objects_116)
 libxa_plugin_la_OBJECTS = $(am_libxa_plugin_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
@@ -1687,6 +1731,10 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libts_plugin_a-ts.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libts_plugin_la-csa.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libts_plugin_la-ts.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libtta_a-tta.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libtta_builtin_la-tta.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libtta_plugin_a-tta.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libtta_plugin_la-tta.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libty_a-ty.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libty_builtin_la-ty.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libty_plugin_a-ty.Po \
@@ -1744,15 +1792,17 @@ DIST_SOURCES = $(liba52sys_a_SOURCES) $(liba52sys_plugin_a_SOURCES) \
 	$(libreal_a_SOURCES) $(libreal_plugin_a_SOURCES) \
 	$(libsgimb_a_SOURCES) $(libsgimb_plugin_a_SOURCES) \
 	$(libsubtitle_a_SOURCES) $(libsubtitle_plugin_a_SOURCES) \
-	$(libts_a_SOURCES) $(libts_plugin_a_SOURCES) $(libty_a_SOURCES) \
-	$(libty_plugin_a_SOURCES) $(libvobsub_a_SOURCES) \
-	$(libvobsub_plugin_a_SOURCES) $(libvoc_a_SOURCES) \
-	$(libvoc_plugin_a_SOURCES) $(libwav_a_SOURCES) \
-	$(libwav_plugin_a_SOURCES) $(libxa_a_SOURCES) \
-	$(libxa_plugin_a_SOURCES) $(liba52sys_builtin_la_SOURCES) \
-	$(liba52sys_plugin_la_SOURCES) $(libaiff_builtin_la_SOURCES) \
-	$(libaiff_plugin_la_SOURCES) $(libau_builtin_la_SOURCES) \
-	$(libau_plugin_la_SOURCES) $(libdemuxdump_builtin_la_SOURCES) \
+	$(libts_a_SOURCES) $(libts_plugin_a_SOURCES) \
+	$(libtta_a_SOURCES) $(libtta_plugin_a_SOURCES) \
+	$(libty_a_SOURCES) $(libty_plugin_a_SOURCES) \
+	$(libvobsub_a_SOURCES) $(libvobsub_plugin_a_SOURCES) \
+	$(libvoc_a_SOURCES) $(libvoc_plugin_a_SOURCES) \
+	$(libwav_a_SOURCES) $(libwav_plugin_a_SOURCES) \
+	$(libxa_a_SOURCES) $(libxa_plugin_a_SOURCES) \
+	$(liba52sys_builtin_la_SOURCES) $(liba52sys_plugin_la_SOURCES) \
+	$(libaiff_builtin_la_SOURCES) $(libaiff_plugin_la_SOURCES) \
+	$(libau_builtin_la_SOURCES) $(libau_plugin_la_SOURCES) \
+	$(libdemuxdump_builtin_la_SOURCES) \
 	$(libdemuxdump_plugin_la_SOURCES) \
 	$(libdtssys_builtin_la_SOURCES) $(libdtssys_plugin_la_SOURCES) \
 	$(libflac_builtin_la_SOURCES) $(libflac_plugin_la_SOURCES) \
@@ -1773,7 +1823,8 @@ DIST_SOURCES = $(liba52sys_a_SOURCES) $(liba52sys_plugin_a_SOURCES) \
 	$(libreal_plugin_la_SOURCES) $(libsgimb_builtin_la_SOURCES) \
 	$(libsgimb_plugin_la_SOURCES) $(libsubtitle_builtin_la_SOURCES) \
 	$(libsubtitle_plugin_la_SOURCES) $(libts_builtin_la_SOURCES) \
-	$(libts_plugin_la_SOURCES) $(libty_builtin_la_SOURCES) \
+	$(libts_plugin_la_SOURCES) $(libtta_builtin_la_SOURCES) \
+	$(libtta_plugin_la_SOURCES) $(libty_builtin_la_SOURCES) \
 	$(libty_plugin_la_SOURCES) $(libvobsub_builtin_la_SOURCES) \
 	$(libvobsub_plugin_la_SOURCES) $(libvoc_builtin_la_SOURCES) \
 	$(libvoc_plugin_la_SOURCES) $(libwav_builtin_la_SOURCES) \
@@ -1787,7 +1838,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Modules.am Makefile.am
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(liba52sys_a_SOURCES) $(liba52sys_plugin_a_SOURCES) $(libaiff_a_SOURCES) $(libaiff_plugin_a_SOURCES) $(libau_a_SOURCES) $(libau_plugin_a_SOURCES) $(libdemuxdump_a_SOURCES) $(libdemuxdump_plugin_a_SOURCES) $(libdtssys_a_SOURCES) $(libdtssys_plugin_a_SOURCES) $(libflac_a_SOURCES) $(libflac_plugin_a_SOURCES) $(liblive555_a_SOURCES) $(liblive555_plugin_a_SOURCES) $(libm3u_a_SOURCES) $(libm3u_plugin_a_SOURCES) $(libmjpeg_a_SOURCES) $(libmjpeg_plugin_a_SOURCES) $(libmkv_a_SOURCES) $(libmkv_plugin_a_SOURCES) $(libmod_a_SOURCES) $(libmod_plugin_a_SOURCES) $(libmpc_a_SOURCES) $(libmpc_plugin_a_SOURCES) $(libnsc_a_SOURCES) $(libnsc_plugin_a_SOURCES) $(libnsv_a_SOURCES) $(libnsv_plugin_a_SOURCES) $(libnuv_a_SOURCES) $(libnuv_plugin_a_SOURCES) $(libogg_a_SOURCES) $(libogg_plugin_a_SOURCES) $(libps_a_SOURCES) $(libps_plugin_a_SOURCES) $(libpva_a_SOURCES) $(libpva_plugin_a_SOURCES) $(librawdv_a_SOURCES) $(librawdv_plugin_a_SOURCES) $(libreal_a_SOURCES) $(libreal_plugin_a_SOURCES) $(libsgimb_a_SOURCES) $(libsgimb_plugin_a_SOURCES) $(libsubtitle_a_SOURCES) $(libsubtitle_plugin_a_SOURCES) $(libts_a_SOURCES) $(libts_plugin_a_SOURCES) $(libty_a_SOURCES) $(libty_plugin_a_SOURCES) $(libvobsub_a_SOURCES) $(libvobsub_plugin_a_SOURCES) $(libvoc_a_SOURCES) $(libvoc_plugin_a_SOURCES) $(libwav_a_SOURCES) $(libwav_plugin_a_SOURCES) $(libxa_a_SOURCES) $(libxa_plugin_a_SOURCES) $(liba52sys_builtin_la_SOURCES) $(liba52sys_plugin_la_SOURCES) $(libaiff_builtin_la_SOURCES) $(libaiff_plugin_la_SOURCES) $(libau_builtin_la_SOURCES) $(libau_plugin_la_SOURCES) $(libdemuxdump_builtin_la_SOURCES) $(libdemuxdump_plugin_la_SOURCES) $(libdtssys_builtin_la_SOURCES) $(libdtssys_plugin_la_SOURCES) $(libflac_builtin_la_SOURCES) $(libflac_plugin_la_SOURCES) $(liblive555_builtin_la_SOURCES) $(liblive555_plugin_la_SOURCES) $(libm3u_builtin_la_SOURCES) $(libm3u_plugin_la_SOURCES) $(libmjpeg_builtin_la_SOURCES) $(libmjpeg_plugin_la_SOURCES) $(libmkv_builtin_la_SOURCES) $(libmkv_plugin_la_SOURCES) $(libmod_builtin_la_SOURCES) $(libmod_plugin_la_SOURCES) $(libmpc_builtin_la_SOURCES) $(libmpc_plugin_la_SOURCES) $(libnsc_builtin_la_SOURCES) $(libnsc_plugin_la_SOURCES) $(libnsv_builtin_la_SOURCES) $(libnsv_plugin_la_SOURCES) $(libnuv_builtin_la_SOURCES) $(libnuv_plugin_la_SOURCES) $(libogg_builtin_la_SOURCES) $(libogg_plugin_la_SOURCES) $(libps_builtin_la_SOURCES) $(libps_plugin_la_SOURCES) $(libpva_builtin_la_SOURCES) $(libpva_plugin_la_SOURCES) $(librawdv_builtin_la_SOURCES) $(librawdv_plugin_la_SOURCES) $(libreal_builtin_la_SOURCES) $(libreal_plugin_la_SOURCES) $(libsgimb_builtin_la_SOURCES) $(libsgimb_plugin_la_SOURCES) $(libsubtitle_builtin_la_SOURCES) $(libsubtitle_plugin_la_SOURCES) $(libts_builtin_la_SOURCES) $(libts_plugin_la_SOURCES) $(libty_builtin_la_SOURCES) $(libty_plugin_la_SOURCES) $(libvobsub_builtin_la_SOURCES) $(libvobsub_plugin_la_SOURCES) $(libvoc_builtin_la_SOURCES) $(libvoc_plugin_la_SOURCES) $(libwav_builtin_la_SOURCES) $(libwav_plugin_la_SOURCES) $(libxa_builtin_la_SOURCES) $(libxa_plugin_la_SOURCES)
+SOURCES = $(liba52sys_a_SOURCES) $(liba52sys_plugin_a_SOURCES) $(libaiff_a_SOURCES) $(libaiff_plugin_a_SOURCES) $(libau_a_SOURCES) $(libau_plugin_a_SOURCES) $(libdemuxdump_a_SOURCES) $(libdemuxdump_plugin_a_SOURCES) $(libdtssys_a_SOURCES) $(libdtssys_plugin_a_SOURCES) $(libflac_a_SOURCES) $(libflac_plugin_a_SOURCES) $(liblive555_a_SOURCES) $(liblive555_plugin_a_SOURCES) $(libm3u_a_SOURCES) $(libm3u_plugin_a_SOURCES) $(libmjpeg_a_SOURCES) $(libmjpeg_plugin_a_SOURCES) $(libmkv_a_SOURCES) $(libmkv_plugin_a_SOURCES) $(libmod_a_SOURCES) $(libmod_plugin_a_SOURCES) $(libmpc_a_SOURCES) $(libmpc_plugin_a_SOURCES) $(libnsc_a_SOURCES) $(libnsc_plugin_a_SOURCES) $(libnsv_a_SOURCES) $(libnsv_plugin_a_SOURCES) $(libnuv_a_SOURCES) $(libnuv_plugin_a_SOURCES) $(libogg_a_SOURCES) $(libogg_plugin_a_SOURCES) $(libps_a_SOURCES) $(libps_plugin_a_SOURCES) $(libpva_a_SOURCES) $(libpva_plugin_a_SOURCES) $(librawdv_a_SOURCES) $(librawdv_plugin_a_SOURCES) $(libreal_a_SOURCES) $(libreal_plugin_a_SOURCES) $(libsgimb_a_SOURCES) $(libsgimb_plugin_a_SOURCES) $(libsubtitle_a_SOURCES) $(libsubtitle_plugin_a_SOURCES) $(libts_a_SOURCES) $(libts_plugin_a_SOURCES) $(libtta_a_SOURCES) $(libtta_plugin_a_SOURCES) $(libty_a_SOURCES) $(libty_plugin_a_SOURCES) $(libvobsub_a_SOURCES) $(libvobsub_plugin_a_SOURCES) $(libvoc_a_SOURCES) $(libvoc_plugin_a_SOURCES) $(libwav_a_SOURCES) $(libwav_plugin_a_SOURCES) $(libxa_a_SOURCES) $(libxa_plugin_a_SOURCES) $(liba52sys_builtin_la_SOURCES) $(liba52sys_plugin_la_SOURCES) $(libaiff_builtin_la_SOURCES) $(libaiff_plugin_la_SOURCES) $(libau_builtin_la_SOURCES) $(libau_plugin_la_SOURCES) $(libdemuxdump_builtin_la_SOURCES) $(libdemuxdump_plugin_la_SOURCES) $(libdtssys_builtin_la_SOURCES) $(libdtssys_plugin_la_SOURCES) $(libflac_builtin_la_SOURCES) $(libflac_plugin_la_SOURCES) $(liblive555_builtin_la_SOURCES) $(liblive555_plugin_la_SOURCES) $(libm3u_builtin_la_SOURCES) $(libm3u_plugin_la_SOURCES) $(libmjpeg_builtin_la_SOURCES) $(libmjpeg_plugin_la_SOURCES) $(libmkv_builtin_la_SOURCES) $(libmkv_plugin_la_SOURCES) $(libmod_builtin_la_SOURCES) $(libmod_plugin_la_SOURCES) $(libmpc_builtin_la_SOURCES) $(libmpc_plugin_la_SOURCES) $(libnsc_builtin_la_SOURCES) $(libnsc_plugin_la_SOURCES) $(libnsv_builtin_la_SOURCES) $(libnsv_plugin_la_SOURCES) $(libnuv_builtin_la_SOURCES) $(libnuv_plugin_la_SOURCES) $(libogg_builtin_la_SOURCES) $(libogg_plugin_la_SOURCES) $(libps_builtin_la_SOURCES) $(libps_plugin_la_SOURCES) $(libpva_builtin_la_SOURCES) $(libpva_plugin_la_SOURCES) $(librawdv_builtin_la_SOURCES) $(librawdv_plugin_la_SOURCES) $(libreal_builtin_la_SOURCES) $(libreal_plugin_la_SOURCES) $(libsgimb_builtin_la_SOURCES) $(libsgimb_plugin_la_SOURCES) $(libsubtitle_builtin_la_SOURCES) $(libsubtitle_plugin_la_SOURCES) $(libts_builtin_la_SOURCES) $(libts_plugin_la_SOURCES) $(libtta_builtin_la_SOURCES) $(libtta_plugin_la_SOURCES) $(libty_builtin_la_SOURCES) $(libty_plugin_la_SOURCES) $(libvobsub_builtin_la_SOURCES) $(libvobsub_plugin_la_SOURCES) $(libvoc_builtin_la_SOURCES) $(libvoc_plugin_la_SOURCES) $(libwav_builtin_la_SOURCES) $(libwav_plugin_la_SOURCES) $(libxa_builtin_la_SOURCES) $(libxa_plugin_la_SOURCES)
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -1983,6 +2034,14 @@ libts_plugin.a: $(libts_plugin_a_OBJECTS) $(libts_plugin_a_DEPENDENCIES)
 	-rm -f libts_plugin.a
 	$(libts_plugin_a_AR) libts_plugin.a $(libts_plugin_a_OBJECTS) $(libts_plugin_a_LIBADD)
 	$(RANLIB) libts_plugin.a
+libtta.a: $(libtta_a_OBJECTS) $(libtta_a_DEPENDENCIES) 
+	-rm -f libtta.a
+	$(libtta_a_AR) libtta.a $(libtta_a_OBJECTS) $(libtta_a_LIBADD)
+	$(RANLIB) libtta.a
+libtta_plugin.a: $(libtta_plugin_a_OBJECTS) $(libtta_plugin_a_DEPENDENCIES) 
+	-rm -f libtta_plugin.a
+	$(libtta_plugin_a_AR) libtta_plugin.a $(libtta_plugin_a_OBJECTS) $(libtta_plugin_a_LIBADD)
+	$(RANLIB) libtta_plugin.a
 libty.a: $(libty_a_OBJECTS) $(libty_a_DEPENDENCIES) 
 	-rm -f libty.a
 	$(libty_a_AR) libty.a $(libty_a_OBJECTS) $(libty_a_LIBADD)
@@ -2152,6 +2211,10 @@ libts_builtin.la: $(libts_builtin_la_OBJECTS) $(libts_builtin_la_DEPENDENCIES)
 	$(LINK)  $(libts_builtin_la_LDFLAGS) $(libts_builtin_la_OBJECTS) $(libts_builtin_la_LIBADD) $(LIBS)
 libts_plugin.la: $(libts_plugin_la_OBJECTS) $(libts_plugin_la_DEPENDENCIES) 
 	$(LINK)  $(libts_plugin_la_LDFLAGS) $(libts_plugin_la_OBJECTS) $(libts_plugin_la_LIBADD) $(LIBS)
+libtta_builtin.la: $(libtta_builtin_la_OBJECTS) $(libtta_builtin_la_DEPENDENCIES) 
+	$(LINK)  $(libtta_builtin_la_LDFLAGS) $(libtta_builtin_la_OBJECTS) $(libtta_builtin_la_LIBADD) $(LIBS)
+libtta_plugin.la: $(libtta_plugin_la_OBJECTS) $(libtta_plugin_la_DEPENDENCIES) 
+	$(LINK)  $(libtta_plugin_la_LDFLAGS) $(libtta_plugin_la_OBJECTS) $(libtta_plugin_la_LIBADD) $(LIBS)
 libty_builtin.la: $(libty_builtin_la_OBJECTS) $(libty_builtin_la_DEPENDENCIES) 
 	$(LINK)  $(libty_builtin_la_LDFLAGS) $(libty_builtin_la_OBJECTS) $(libty_builtin_la_LIBADD) $(LIBS)
 libty_plugin.la: $(libty_plugin_la_OBJECTS) $(libty_plugin_la_DEPENDENCIES) 
@@ -2291,6 +2354,10 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libts_plugin_a-ts.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libts_plugin_la-csa.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libts_plugin_la-ts.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtta_a-tta.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtta_builtin_la-tta.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtta_plugin_a-tta.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libtta_plugin_la-tta.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libty_a-ty.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libty_builtin_la-ty.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libty_plugin_a-ty.Po@am__quote@
@@ -4060,6 +4127,72 @@ libts_plugin_a-csa.lo: ../mux/mpeg/csa.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libts_plugin_a-csa.Plo' tmpdepfile='$(DEPDIR)/libts_plugin_a-csa.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libts_plugin_a_CFLAGS) $(CFLAGS) -c -o libts_plugin_a-csa.lo `test -f '../mux/mpeg/csa.c' || echo '$(srcdir)/'`../mux/mpeg/csa.c
+
+libtta_a-tta.o: tta.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_a_CFLAGS) $(CFLAGS) -MT libtta_a-tta.o -MD -MP -MF "$(DEPDIR)/libtta_a-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_a-tta.o `test -f 'tta.c' || echo '$(srcdir)/'`tta.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_a-tta.Tpo" "$(DEPDIR)/libtta_a-tta.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_a-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_a-tta.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_a-tta.Po' tmpdepfile='$(DEPDIR)/libtta_a-tta.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_a_CFLAGS) $(CFLAGS) -c -o libtta_a-tta.o `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
+
+libtta_a-tta.obj: tta.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_a_CFLAGS) $(CFLAGS) -MT libtta_a-tta.obj -MD -MP -MF "$(DEPDIR)/libtta_a-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_a-tta.obj `if test -f 'tta.c'; then $(CYGPATH_W) 'tta.c'; else $(CYGPATH_W) '$(srcdir)/tta.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_a-tta.Tpo" "$(DEPDIR)/libtta_a-tta.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_a-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_a-tta.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_a-tta.Po' tmpdepfile='$(DEPDIR)/libtta_a-tta.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_a_CFLAGS) $(CFLAGS) -c -o libtta_a-tta.obj `if test -f 'tta.c'; then $(CYGPATH_W) 'tta.c'; else $(CYGPATH_W) '$(srcdir)/tta.c'; fi`
+
+libtta_a-tta.lo: tta.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_a_CFLAGS) $(CFLAGS) -MT libtta_a-tta.lo -MD -MP -MF "$(DEPDIR)/libtta_a-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_a-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_a-tta.Tpo" "$(DEPDIR)/libtta_a-tta.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_a-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_a-tta.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_a-tta.Plo' tmpdepfile='$(DEPDIR)/libtta_a-tta.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_a_CFLAGS) $(CFLAGS) -c -o libtta_a-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
+
+libtta_plugin_a-tta.o: tta.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_a_CFLAGS) $(CFLAGS) -MT libtta_plugin_a-tta.o -MD -MP -MF "$(DEPDIR)/libtta_plugin_a-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_plugin_a-tta.o `test -f 'tta.c' || echo '$(srcdir)/'`tta.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_plugin_a-tta.Tpo" "$(DEPDIR)/libtta_plugin_a-tta.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_plugin_a-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_plugin_a-tta.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_plugin_a-tta.Po' tmpdepfile='$(DEPDIR)/libtta_plugin_a-tta.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_a_CFLAGS) $(CFLAGS) -c -o libtta_plugin_a-tta.o `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
+
+libtta_plugin_a-tta.obj: tta.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_a_CFLAGS) $(CFLAGS) -MT libtta_plugin_a-tta.obj -MD -MP -MF "$(DEPDIR)/libtta_plugin_a-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_plugin_a-tta.obj `if test -f 'tta.c'; then $(CYGPATH_W) 'tta.c'; else $(CYGPATH_W) '$(srcdir)/tta.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_plugin_a-tta.Tpo" "$(DEPDIR)/libtta_plugin_a-tta.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_plugin_a-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_plugin_a-tta.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_plugin_a-tta.Po' tmpdepfile='$(DEPDIR)/libtta_plugin_a-tta.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_a_CFLAGS) $(CFLAGS) -c -o libtta_plugin_a-tta.obj `if test -f 'tta.c'; then $(CYGPATH_W) 'tta.c'; else $(CYGPATH_W) '$(srcdir)/tta.c'; fi`
+
+libtta_plugin_a-tta.lo: tta.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_a_CFLAGS) $(CFLAGS) -MT libtta_plugin_a-tta.lo -MD -MP -MF "$(DEPDIR)/libtta_plugin_a-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_plugin_a-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_plugin_a-tta.Tpo" "$(DEPDIR)/libtta_plugin_a-tta.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_plugin_a-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_plugin_a-tta.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_plugin_a-tta.Plo' tmpdepfile='$(DEPDIR)/libtta_plugin_a-tta.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_a_CFLAGS) $(CFLAGS) -c -o libtta_plugin_a-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
 
 libty_a-ty.o: ty.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libty_a_CFLAGS) $(CFLAGS) -MT libty_a-ty.o -MD -MP -MF "$(DEPDIR)/libty_a-ty.Tpo" \
@@ -6106,6 +6239,72 @@ libts_plugin_la-csa.lo: ../mux/mpeg/csa.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libts_plugin_la-csa.Plo' tmpdepfile='$(DEPDIR)/libts_plugin_la-csa.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libts_plugin_la_CFLAGS) $(CFLAGS) -c -o libts_plugin_la-csa.lo `test -f '../mux/mpeg/csa.c' || echo '$(srcdir)/'`../mux/mpeg/csa.c
+
+libtta_builtin_la-tta.o: tta.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_builtin_la_CFLAGS) $(CFLAGS) -MT libtta_builtin_la-tta.o -MD -MP -MF "$(DEPDIR)/libtta_builtin_la-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_builtin_la-tta.o `test -f 'tta.c' || echo '$(srcdir)/'`tta.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_builtin_la-tta.Tpo" "$(DEPDIR)/libtta_builtin_la-tta.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_builtin_la-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_builtin_la-tta.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_builtin_la-tta.Po' tmpdepfile='$(DEPDIR)/libtta_builtin_la-tta.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_builtin_la_CFLAGS) $(CFLAGS) -c -o libtta_builtin_la-tta.o `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
+
+libtta_builtin_la-tta.obj: tta.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_builtin_la_CFLAGS) $(CFLAGS) -MT libtta_builtin_la-tta.obj -MD -MP -MF "$(DEPDIR)/libtta_builtin_la-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_builtin_la-tta.obj `if test -f 'tta.c'; then $(CYGPATH_W) 'tta.c'; else $(CYGPATH_W) '$(srcdir)/tta.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_builtin_la-tta.Tpo" "$(DEPDIR)/libtta_builtin_la-tta.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_builtin_la-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_builtin_la-tta.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_builtin_la-tta.Po' tmpdepfile='$(DEPDIR)/libtta_builtin_la-tta.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_builtin_la_CFLAGS) $(CFLAGS) -c -o libtta_builtin_la-tta.obj `if test -f 'tta.c'; then $(CYGPATH_W) 'tta.c'; else $(CYGPATH_W) '$(srcdir)/tta.c'; fi`
+
+libtta_builtin_la-tta.lo: tta.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_builtin_la_CFLAGS) $(CFLAGS) -MT libtta_builtin_la-tta.lo -MD -MP -MF "$(DEPDIR)/libtta_builtin_la-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_builtin_la-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_builtin_la-tta.Tpo" "$(DEPDIR)/libtta_builtin_la-tta.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_builtin_la-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_builtin_la-tta.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_builtin_la-tta.Plo' tmpdepfile='$(DEPDIR)/libtta_builtin_la-tta.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_builtin_la_CFLAGS) $(CFLAGS) -c -o libtta_builtin_la-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
+
+libtta_plugin_la-tta.o: tta.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_la_CFLAGS) $(CFLAGS) -MT libtta_plugin_la-tta.o -MD -MP -MF "$(DEPDIR)/libtta_plugin_la-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_plugin_la-tta.o `test -f 'tta.c' || echo '$(srcdir)/'`tta.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_plugin_la-tta.Tpo" "$(DEPDIR)/libtta_plugin_la-tta.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_plugin_la-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_plugin_la-tta.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_plugin_la-tta.Po' tmpdepfile='$(DEPDIR)/libtta_plugin_la-tta.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_la_CFLAGS) $(CFLAGS) -c -o libtta_plugin_la-tta.o `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
+
+libtta_plugin_la-tta.obj: tta.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_la_CFLAGS) $(CFLAGS) -MT libtta_plugin_la-tta.obj -MD -MP -MF "$(DEPDIR)/libtta_plugin_la-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_plugin_la-tta.obj `if test -f 'tta.c'; then $(CYGPATH_W) 'tta.c'; else $(CYGPATH_W) '$(srcdir)/tta.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_plugin_la-tta.Tpo" "$(DEPDIR)/libtta_plugin_la-tta.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_plugin_la-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_plugin_la-tta.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_plugin_la-tta.Po' tmpdepfile='$(DEPDIR)/libtta_plugin_la-tta.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_la_CFLAGS) $(CFLAGS) -c -o libtta_plugin_la-tta.obj `if test -f 'tta.c'; then $(CYGPATH_W) 'tta.c'; else $(CYGPATH_W) '$(srcdir)/tta.c'; fi`
+
+libtta_plugin_la-tta.lo: tta.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_la_CFLAGS) $(CFLAGS) -MT libtta_plugin_la-tta.lo -MD -MP -MF "$(DEPDIR)/libtta_plugin_la-tta.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libtta_plugin_la-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libtta_plugin_la-tta.Tpo" "$(DEPDIR)/libtta_plugin_la-tta.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libtta_plugin_la-tta.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='tta.c' object='libtta_plugin_la-tta.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libtta_plugin_la-tta.Plo' tmpdepfile='$(DEPDIR)/libtta_plugin_la-tta.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libtta_plugin_la_CFLAGS) $(CFLAGS) -c -o libtta_plugin_la-tta.lo `test -f 'tta.c' || echo '$(srcdir)/'`tta.c
 
 libty_builtin_la-ty.o: ty.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libty_builtin_la_CFLAGS) $(CFLAGS) -MT libty_builtin_la-ty.o -MD -MP -MF "$(DEPDIR)/libty_builtin_la-ty.Tpo" \

@@ -319,6 +319,16 @@ SOURCE="..\modules\gui\macosx\update.m"
 # PROP Output_Dir "Debug\modules\gui\macosx"
 # PROP Intermediate_Dir "Debug\modules\gui\macosx"
 # End Source File
+# Begin Source File
+SOURCE="..\modules\gui\macosx\fspanel.m"
+# ADD CPP /D "__VLC__" /D "__PLUGIN__"  /D "MODULE_NAME=macosx" /D "MODULE_NAME_IS_macosx" 
+!IF "$(CFG)" == "plugin_macosx - Win32 Release"
+# PROP Output_Dir "Release\modules\gui\macosx"
+# PROP Intermediate_Dir "Release\modules\gui\macosx"
+!ELSEIF "$(CFG)" == "plugin_macosx - Win32 Debug"
+# PROP Output_Dir "Debug\modules\gui\macosx"
+# PROP Intermediate_Dir "Debug\modules\gui\macosx"
+# End Source File
 
 # End Group
 
@@ -385,6 +395,9 @@ SOURCE="..\modules\gui\macosx\embeddedwindow.h"
 # End Source File
 # Begin Source File
 SOURCE="..\modules\gui\macosx\update.h"
+# End Source File
+# Begin Source File
+SOURCE="..\modules\gui\macosx\fspanel.h"
 # End Source File
 
 # End Group

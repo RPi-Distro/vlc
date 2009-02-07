@@ -361,6 +361,8 @@ SOURCES_macosx = \
 	embeddedwindow.m \
 	update.h \
 	update.m \
+	fspanel.h \
+	fspanel.m \
 	$(NULL)
 
 
@@ -413,7 +415,8 @@ am__objects_2 = libmacosx_a-AppleRemote.$(OBJEXT) \
 	libmacosx_a-wizard.$(OBJEXT) libmacosx_a-extended.$(OBJEXT) \
 	libmacosx_a-bookmarks.$(OBJEXT) \
 	libmacosx_a-embeddedwindow.$(OBJEXT) \
-	libmacosx_a-update.$(OBJEXT) $(am__objects_1)
+	libmacosx_a-update.$(OBJEXT) libmacosx_a-fspanel.$(OBJEXT) \
+	$(am__objects_1)
 am_libmacosx_a_OBJECTS = $(am__objects_2)
 libmacosx_a_OBJECTS = $(am_libmacosx_a_OBJECTS)
 libmacosx_plugin_a_AR = $(AR) cru
@@ -440,7 +443,8 @@ am__objects_3 = libmacosx_plugin_a-AppleRemote.$(OBJEXT) \
 	libmacosx_plugin_a-extended.$(OBJEXT) \
 	libmacosx_plugin_a-bookmarks.$(OBJEXT) \
 	libmacosx_plugin_a-embeddedwindow.$(OBJEXT) \
-	libmacosx_plugin_a-update.$(OBJEXT) $(am__objects_1)
+	libmacosx_plugin_a-update.$(OBJEXT) \
+	libmacosx_plugin_a-fspanel.$(OBJEXT) $(am__objects_1)
 am_libmacosx_plugin_a_OBJECTS = $(am__objects_3)
 libmacosx_plugin_a_OBJECTS = $(am_libmacosx_plugin_a_OBJECTS)
 LTLIBRARIES = $(libvlc_LTLIBRARIES) $(noinst_LTLIBRARIES)
@@ -464,7 +468,8 @@ am__objects_4 = libmacosx_builtin_la-AppleRemote.lo \
 	libmacosx_builtin_la-wizard.lo libmacosx_builtin_la-extended.lo \
 	libmacosx_builtin_la-bookmarks.lo \
 	libmacosx_builtin_la-embeddedwindow.lo \
-	libmacosx_builtin_la-update.lo $(am__objects_1)
+	libmacosx_builtin_la-update.lo libmacosx_builtin_la-fspanel.lo \
+	$(am__objects_1)
 am_libmacosx_builtin_la_OBJECTS = $(am__objects_4)
 libmacosx_builtin_la_OBJECTS = $(am_libmacosx_builtin_la_OBJECTS)
 libmacosx_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
@@ -483,7 +488,8 @@ am__objects_5 = libmacosx_plugin_la-AppleRemote.lo \
 	libmacosx_plugin_la-wizard.lo libmacosx_plugin_la-extended.lo \
 	libmacosx_plugin_la-bookmarks.lo \
 	libmacosx_plugin_la-embeddedwindow.lo \
-	libmacosx_plugin_la-update.lo $(am__objects_1)
+	libmacosx_plugin_la-update.lo libmacosx_plugin_la-fspanel.lo \
+	$(am__objects_1)
 am_libmacosx_plugin_la_OBJECTS = $(am__objects_5)
 libmacosx_plugin_la_OBJECTS = $(am_libmacosx_plugin_la_OBJECTS)
 
@@ -498,6 +504,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_a-embeddedwindow.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_a-equalizer.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_a-extended.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libmacosx_a-fspanel.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_a-interaction.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_a-intf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_a-macosx.Po \
@@ -521,6 +528,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_builtin_la-embeddedwindow.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_builtin_la-equalizer.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_builtin_la-extended.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libmacosx_builtin_la-fspanel.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_builtin_la-interaction.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_builtin_la-intf.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_builtin_la-macosx.Plo \
@@ -544,6 +552,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_a-embeddedwindow.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_a-equalizer.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_a-extended.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_a-fspanel.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_a-interaction.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_a-intf.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_a-macosx.Po \
@@ -567,6 +576,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_la-embeddedwindow.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_la-equalizer.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_la-extended.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_la-fspanel.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_la-interaction.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_la-intf.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libmacosx_plugin_la-macosx.Plo \
@@ -683,6 +693,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_a-embeddedwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_a-equalizer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_a-extended.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_a-fspanel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_a-interaction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_a-intf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_a-macosx.Po@am__quote@
@@ -706,6 +717,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_builtin_la-embeddedwindow.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_builtin_la-equalizer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_builtin_la-extended.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_builtin_la-fspanel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_builtin_la-interaction.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_builtin_la-intf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_builtin_la-macosx.Plo@am__quote@
@@ -729,6 +741,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_a-embeddedwindow.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_a-equalizer.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_a-extended.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_a-fspanel.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_a-interaction.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_a-intf.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_a-macosx.Po@am__quote@
@@ -752,6 +765,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-embeddedwindow.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-equalizer.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-extended.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-fspanel.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-interaction.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-intf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-macosx.Plo@am__quote@
@@ -1560,6 +1574,39 @@ libmacosx_a-update.lo: update.m
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_a_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_a-update.lo `test -f 'update.m' || echo '$(srcdir)/'`update.m
 
+libmacosx_a-fspanel.o: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_a_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_a-fspanel.o -MD -MP -MF "$(DEPDIR)/libmacosx_a-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_a-fspanel.o `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_a-fspanel.Tpo" "$(DEPDIR)/libmacosx_a-fspanel.Po"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_a-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_a-fspanel.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_a-fspanel.Po' tmpdepfile='$(DEPDIR)/libmacosx_a-fspanel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_a_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_a-fspanel.o `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m
+
+libmacosx_a-fspanel.obj: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_a_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_a-fspanel.obj -MD -MP -MF "$(DEPDIR)/libmacosx_a-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_a-fspanel.obj `if test -f 'fspanel.m'; then $(CYGPATH_W) 'fspanel.m'; else $(CYGPATH_W) '$(srcdir)/fspanel.m'; fi`; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_a-fspanel.Tpo" "$(DEPDIR)/libmacosx_a-fspanel.Po"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_a-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_a-fspanel.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_a-fspanel.Po' tmpdepfile='$(DEPDIR)/libmacosx_a-fspanel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_a_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_a-fspanel.obj `if test -f 'fspanel.m'; then $(CYGPATH_W) 'fspanel.m'; else $(CYGPATH_W) '$(srcdir)/fspanel.m'; fi`
+
+libmacosx_a-fspanel.lo: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_a_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_a-fspanel.lo -MD -MP -MF "$(DEPDIR)/libmacosx_a-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_a-fspanel.lo `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_a-fspanel.Tpo" "$(DEPDIR)/libmacosx_a-fspanel.Plo"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_a-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_a-fspanel.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_a-fspanel.Plo' tmpdepfile='$(DEPDIR)/libmacosx_a-fspanel.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_a_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_a-fspanel.lo `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m
+
 libmacosx_plugin_a-AppleRemote.o: AppleRemote.m
 @am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_a_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_a-AppleRemote.o -MD -MP -MF "$(DEPDIR)/libmacosx_plugin_a-AppleRemote.Tpo" \
 @am__fastdepOBJC_TRUE@	  -c -o libmacosx_plugin_a-AppleRemote.o `test -f 'AppleRemote.m' || echo '$(srcdir)/'`AppleRemote.m; \
@@ -2318,6 +2365,39 @@ libmacosx_plugin_a-update.lo: update.m
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_plugin_a-update.Plo' tmpdepfile='$(DEPDIR)/libmacosx_plugin_a-update.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_a_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_a-update.lo `test -f 'update.m' || echo '$(srcdir)/'`update.m
+
+libmacosx_plugin_a-fspanel.o: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_a_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_a-fspanel.o -MD -MP -MF "$(DEPDIR)/libmacosx_plugin_a-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_plugin_a-fspanel.o `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_plugin_a-fspanel.Tpo" "$(DEPDIR)/libmacosx_plugin_a-fspanel.Po"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_plugin_a-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_plugin_a-fspanel.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_plugin_a-fspanel.Po' tmpdepfile='$(DEPDIR)/libmacosx_plugin_a-fspanel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_a_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_a-fspanel.o `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m
+
+libmacosx_plugin_a-fspanel.obj: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_a_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_a-fspanel.obj -MD -MP -MF "$(DEPDIR)/libmacosx_plugin_a-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_plugin_a-fspanel.obj `if test -f 'fspanel.m'; then $(CYGPATH_W) 'fspanel.m'; else $(CYGPATH_W) '$(srcdir)/fspanel.m'; fi`; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_plugin_a-fspanel.Tpo" "$(DEPDIR)/libmacosx_plugin_a-fspanel.Po"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_plugin_a-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_plugin_a-fspanel.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_plugin_a-fspanel.Po' tmpdepfile='$(DEPDIR)/libmacosx_plugin_a-fspanel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_a_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_a-fspanel.obj `if test -f 'fspanel.m'; then $(CYGPATH_W) 'fspanel.m'; else $(CYGPATH_W) '$(srcdir)/fspanel.m'; fi`
+
+libmacosx_plugin_a-fspanel.lo: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_a_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_a-fspanel.lo -MD -MP -MF "$(DEPDIR)/libmacosx_plugin_a-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_plugin_a-fspanel.lo `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_plugin_a-fspanel.Tpo" "$(DEPDIR)/libmacosx_plugin_a-fspanel.Plo"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_plugin_a-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_plugin_a-fspanel.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_plugin_a-fspanel.Plo' tmpdepfile='$(DEPDIR)/libmacosx_plugin_a-fspanel.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_a_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_a-fspanel.lo `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m
 
 libmacosx_builtin_la-AppleRemote.o: AppleRemote.m
 @am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_builtin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_builtin_la-AppleRemote.o -MD -MP -MF "$(DEPDIR)/libmacosx_builtin_la-AppleRemote.Tpo" \
@@ -3078,6 +3158,39 @@ libmacosx_builtin_la-update.lo: update.m
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_builtin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_builtin_la-update.lo `test -f 'update.m' || echo '$(srcdir)/'`update.m
 
+libmacosx_builtin_la-fspanel.o: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_builtin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_builtin_la-fspanel.o -MD -MP -MF "$(DEPDIR)/libmacosx_builtin_la-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_builtin_la-fspanel.o `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_builtin_la-fspanel.Tpo" "$(DEPDIR)/libmacosx_builtin_la-fspanel.Po"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_builtin_la-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_builtin_la-fspanel.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_builtin_la-fspanel.Po' tmpdepfile='$(DEPDIR)/libmacosx_builtin_la-fspanel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_builtin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_builtin_la-fspanel.o `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m
+
+libmacosx_builtin_la-fspanel.obj: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_builtin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_builtin_la-fspanel.obj -MD -MP -MF "$(DEPDIR)/libmacosx_builtin_la-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_builtin_la-fspanel.obj `if test -f 'fspanel.m'; then $(CYGPATH_W) 'fspanel.m'; else $(CYGPATH_W) '$(srcdir)/fspanel.m'; fi`; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_builtin_la-fspanel.Tpo" "$(DEPDIR)/libmacosx_builtin_la-fspanel.Po"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_builtin_la-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_builtin_la-fspanel.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_builtin_la-fspanel.Po' tmpdepfile='$(DEPDIR)/libmacosx_builtin_la-fspanel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_builtin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_builtin_la-fspanel.obj `if test -f 'fspanel.m'; then $(CYGPATH_W) 'fspanel.m'; else $(CYGPATH_W) '$(srcdir)/fspanel.m'; fi`
+
+libmacosx_builtin_la-fspanel.lo: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_builtin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_builtin_la-fspanel.lo -MD -MP -MF "$(DEPDIR)/libmacosx_builtin_la-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_builtin_la-fspanel.lo `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_builtin_la-fspanel.Tpo" "$(DEPDIR)/libmacosx_builtin_la-fspanel.Plo"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_builtin_la-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_builtin_la-fspanel.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_builtin_la-fspanel.Plo' tmpdepfile='$(DEPDIR)/libmacosx_builtin_la-fspanel.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_builtin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_builtin_la-fspanel.lo `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m
+
 libmacosx_plugin_la-AppleRemote.o: AppleRemote.m
 @am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_la-AppleRemote.o -MD -MP -MF "$(DEPDIR)/libmacosx_plugin_la-AppleRemote.Tpo" \
 @am__fastdepOBJC_TRUE@	  -c -o libmacosx_plugin_la-AppleRemote.o `test -f 'AppleRemote.m' || echo '$(srcdir)/'`AppleRemote.m; \
@@ -3836,6 +3949,39 @@ libmacosx_plugin_la-update.lo: update.m
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_plugin_la-update.Plo' tmpdepfile='$(DEPDIR)/libmacosx_plugin_la-update.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-update.lo `test -f 'update.m' || echo '$(srcdir)/'`update.m
+
+libmacosx_plugin_la-fspanel.o: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_la-fspanel.o -MD -MP -MF "$(DEPDIR)/libmacosx_plugin_la-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_plugin_la-fspanel.o `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_plugin_la-fspanel.Tpo" "$(DEPDIR)/libmacosx_plugin_la-fspanel.Po"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_plugin_la-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_plugin_la-fspanel.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_plugin_la-fspanel.Po' tmpdepfile='$(DEPDIR)/libmacosx_plugin_la-fspanel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-fspanel.o `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m
+
+libmacosx_plugin_la-fspanel.obj: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_la-fspanel.obj -MD -MP -MF "$(DEPDIR)/libmacosx_plugin_la-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_plugin_la-fspanel.obj `if test -f 'fspanel.m'; then $(CYGPATH_W) 'fspanel.m'; else $(CYGPATH_W) '$(srcdir)/fspanel.m'; fi`; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_plugin_la-fspanel.Tpo" "$(DEPDIR)/libmacosx_plugin_la-fspanel.Po"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_plugin_la-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_plugin_la-fspanel.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_plugin_la-fspanel.Po' tmpdepfile='$(DEPDIR)/libmacosx_plugin_la-fspanel.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-fspanel.obj `if test -f 'fspanel.m'; then $(CYGPATH_W) 'fspanel.m'; else $(CYGPATH_W) '$(srcdir)/fspanel.m'; fi`
+
+libmacosx_plugin_la-fspanel.lo: fspanel.m
+@am__fastdepOBJC_TRUE@	if $(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_la-fspanel.lo -MD -MP -MF "$(DEPDIR)/libmacosx_plugin_la-fspanel.Tpo" \
+@am__fastdepOBJC_TRUE@	  -c -o libmacosx_plugin_la-fspanel.lo `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m; \
+@am__fastdepOBJC_TRUE@	then mv -f "$(DEPDIR)/libmacosx_plugin_la-fspanel.Tpo" "$(DEPDIR)/libmacosx_plugin_la-fspanel.Plo"; \
+@am__fastdepOBJC_TRUE@	else rm -f "$(DEPDIR)/libmacosx_plugin_la-fspanel.Tpo"; exit 1; \
+@am__fastdepOBJC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='fspanel.m' object='libmacosx_plugin_la-fspanel.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	depfile='$(DEPDIR)/libmacosx_plugin_la-fspanel.Plo' tmpdepfile='$(DEPDIR)/libmacosx_plugin_la-fspanel.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	$(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepOBJC_FALSE@	$(LIBTOOL) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-fspanel.lo `test -f 'fspanel.m' || echo '$(srcdir)/'`fspanel.m
 
 mostlyclean-libtool:
 	-rm -f *.lo

@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: m3u.c 14377 2006-02-18 20:34:32Z courmisch $
+ * $Id: m3u.c 18261 2006-12-04 11:31:26Z md $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -105,6 +105,27 @@ void E_(Close_M3U)( vlc_object_t *p_this )
     free( p_demux->p_sys );
 }
 
+/* Kvik! */
+static inline char *MaybeFromLocaleDup (const char *str)
+{
+    if (str == NULL)
+        return NULL;
+
+    return IsUTF8 (str) ? strdup (str) : FromLocaleDup (str);
+}
+
+
+static inline void MaybeFromLocaleRep (char **str)
+{
+    char *const orig_str = *str;
+
+    if ((orig_str != NULL) && !IsUTF8 (orig_str))
+    {
+        *str = FromLocaleDup (orig_str);
+        free (orig_str);
+    }
+}
+
 static int Demux( demux_t *p_demux )
 {
     playlist_t *p_playlist;
@@ -176,7 +197,7 @@ static int Demux( demux_t *p_demux )
                 psz_parse += sizeof("EXTVLCOPT:") -1;
                 if( !*psz_parse ) goto error;
 
-                psz_option = strdup( psz_parse );
+                psz_option = MaybeFromLocaleDup( psz_parse );
                 if( psz_option )
                     INSERT_ELEM( ppsz_options, i_options, i_options,
                                  psz_option );
@@ -188,21 +209,18 @@ static int Demux( demux_t *p_demux )
             if( !psz_name || !*psz_name )
             {
                 /* Use filename as name for relative entries */
-                psz_name = strdup( psz_parse );
+                psz_name = MaybeFromLocaleDup( psz_parse );
             }
 
             psz_mrl = E_(ProcessMRL)( psz_parse, p_demux->p_sys->psz_prefix );
+            MaybeFromLocaleRep( &psz_mrl);
 
             b_cleanup = VLC_TRUE;
             if( !psz_mrl ) goto error;
 
-            EnsureUTF8( psz_name );
-            EnsureUTF8( psz_mrl );
-
             p_item = playlist_ItemNew( p_playlist, psz_mrl, psz_name );
             for( i = 0; i< i_options; i++ )
             {
-                EnsureUTF8( ppsz_options[i] );
                 playlist_ItemAddOption( p_item, ppsz_options[i] );
             }
             p_item->input.i_duration = i_duration;

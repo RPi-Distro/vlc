@@ -2,7 +2,7 @@
  * realaudio.c: a realaudio decoder that uses the realaudio library/dll
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: realaudio.c 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: realaudio.c 17236 2006-10-21 19:11:38Z hartman $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -182,6 +182,14 @@ static int Open( vlc_object_t *p_this )
         break;
 
     default:
+        return VLC_EGENERIC;
+    }
+
+    if( p_dec->fmt_in.audio.i_channels <= 0 ||
+        p_dec->fmt_in.audio.i_channels > 6 )
+    {
+        msg_Err( p_dec, "invalid number of channels (not between 1 and 6): %i",
+                 p_dec->fmt_in.audio.i_channels );
         return VLC_EGENERIC;
     }
 

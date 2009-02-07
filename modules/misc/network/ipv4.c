@@ -2,7 +2,7 @@
  * ipv4.c: IPv4 network abstraction layer
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: ipv4.c 14932 2006-03-25 23:10:43Z xtophe $
+ * $Id: ipv4.c 18124 2006-11-28 10:37:07Z md $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Mathias Kretschmer <mathias@research.att.com>
@@ -162,58 +162,42 @@ static int OpenUDP( vlc_object_t * p_this )
     int i_server_port = p_socket->i_server_port;
 
     int i_handle, i_opt;
-    struct sockaddr_in sock;
+    struct sockaddr_in loc, rem;
     vlc_value_t val;
+    vlc_bool_t do_connect = VLC_TRUE;
 #if defined(WIN32) || defined(UNDER_CE)
     char strerror_buf[WINSOCK_STRERROR_SIZE];
 # define strerror( x ) winsock_strerror( strerror_buf )
 #endif
 
-    /* If IP_ADD_SOURCE_MEMBERSHIP is not defined in the headers
-       (because it's not in glibc for example), we have to define the
-       headers required for IGMPv3 here */
-#ifndef IP_ADD_SOURCE_MEMBERSHIP
-    #define IP_ADD_SOURCE_MEMBERSHIP  39
-    struct ip_mreq_source {
-        struct in_addr  imr_multiaddr;
-        struct in_addr  imr_interface;
-        struct in_addr  imr_sourceaddr;
-     };
-#endif
-
     p_socket->i_handle = -1;
+
+    /* Build the local socket */
+    if( BuildAddr( p_this, &loc, psz_bind_addr, i_bind_port )
+     || BuildAddr( p_this, &rem, psz_server_addr, i_server_port ) )
+        return 0;
 
     /* Open a SOCK_DGRAM (UDP) socket, in the AF_INET domain, automatic (0)
      * protocol */
     if( (i_handle = socket( AF_INET, SOCK_DGRAM, 0 )) == -1 )
     {
-        msg_Warn( p_this, "cannot create socket (%s)", strerror(errno) );
+        msg_Err( p_this, "cannot create socket (%s)", strerror(errno) );
         return 0;
     }
 
     /* We may want to reuse an already used socket */
     i_opt = 1;
-    if( setsockopt( i_handle, SOL_SOCKET, SO_REUSEADDR,
-                    (void *) &i_opt, sizeof( i_opt ) ) == -1 )
-    {
-        msg_Warn( p_this, "cannot configure socket (SO_REUSEADDR: %s)",
-                          strerror(errno));
-        close( i_handle );
-        return 0;
-    }
-
+    setsockopt( i_handle, SOL_SOCKET, SO_REUSEADDR, (void *) &i_opt,
+                    sizeof( i_opt ) );
 #ifdef SO_REUSEPORT
     i_opt = 1;
-    if( setsockopt( i_handle, SOL_SOCKET, SO_REUSEPORT,
-                    (void *) &i_opt, sizeof( i_opt ) ) == -1 )
-    {
-        msg_Warn( p_this, "cannot configure socket (SO_REUSEPORT)" );
-    }
+    setsockopt( i_handle, SOL_SOCKET, SO_REUSEPORT, (void *) &i_opt,
+                    sizeof( i_opt ) );
 #endif
 
     /* Increase the receive buffer size to 1/2MB (8Mb/s during 1/2s) to avoid
      * packet loss caused by scheduling problems */
-#if !defined( SYS_BEOS )
+#ifdef SO_RCVBUF
     i_opt = 0x80000;
     if( setsockopt( i_handle, SOL_SOCKET, SO_RCVBUF, (void *) &i_opt,
                     sizeof( i_opt ) ) == -1 )
@@ -226,47 +210,39 @@ static int OpenUDP( vlc_object_t * p_this )
                           strerror(errno));
 #endif
 
-    /* Build the local socket */
-
 #if defined( WIN32 ) || defined( UNDER_CE )
-    /* Under Win32 and for multicasting, we bind to INADDR_ANY,
-     * so let's call BuildAddr with "" instead of psz_bind_addr */
-    if( BuildAddr( p_this, &sock,
-        IN_MULTICAST( ntohl( inet_addr(psz_bind_addr) ) ) ?
-                   "" : psz_bind_addr, i_bind_port ) == -1 )
-#else
-    if( BuildAddr( p_this, &sock, psz_bind_addr, i_bind_port ) == -1 )
-#endif
+    /*
+     * Under Win32 and for multicasting, we bind to INADDR_ANY.
+     * This is of course a severe bug, since the socket would logically
+     * receive unicast traffic, and multicast traffic of groups subscribed
+     * to via other sockets. How this actually works in Winsock, I don't
+     * know.
+     */
+    if( IN_MULTICAST( ntohl( loc.sin_addr.s_addr ) ) )
     {
-        msg_Dbg( p_this, "could not build local address" );
-        close( i_handle );
-        return 0;
-    }
+        struct sockaddr_in stupid = loc;
+        stupid.sin_addr.s_addr = INADDR_ANY;
 
+        if( bind( i_handle, (struct sockaddr *)&stupid, sizeof( stupid ) ) < 0 )
+        {
+            msg_Warn( p_this, "cannot bind socket (%d)", WSAGetLastError() );
+            close( i_handle );
+            return 0;
+        }
+    }
+    else
+#endif
     /* Bind it */
-    if( bind( i_handle, (struct sockaddr *)&sock, sizeof( sock ) ) < 0 )
+    if( bind( i_handle, (struct sockaddr *)&loc, sizeof( loc ) ) < 0 )
     {
         msg_Warn( p_this, "cannot bind socket (%s)", strerror(errno) );
         close( i_handle );
         return 0;
     }
 
-#if defined( WIN32 ) || defined( UNDER_CE )
-    /* Restore the sock struct so we can spare a few #ifdef WIN32 later on */
-    if( IN_MULTICAST( ntohl( inet_addr(psz_bind_addr) ) ) )
-    {
-        if ( BuildAddr( p_this, &sock, psz_bind_addr, i_bind_port ) == -1 )
-        {
-            msg_Dbg( p_this, "could not build local address" );
-            close( i_handle );
-            return 0;
-        }
-    }
-#endif
-
 #if !defined( SYS_BEOS )
     /* Allow broadcast reception if we bound on INADDR_ANY */
-    if( !*psz_bind_addr )
+    if( loc.sin_addr.s_addr == INADDR_ANY )
     {
         i_opt = 1;
         if( setsockopt( i_handle, SOL_SOCKET, SO_BROADCAST, (void*) &i_opt,
@@ -278,7 +254,7 @@ static int OpenUDP( vlc_object_t * p_this )
 
 #if !defined( SYS_BEOS )
     /* Join the multicast group if the socket is a multicast address */
-    if( IN_MULTICAST( ntohl(sock.sin_addr.s_addr) ) )
+    if( IN_MULTICAST( ntohl(loc.sin_addr.s_addr) ) )
     {
         /* Determine interface to be used for multicast */
         char * psz_if_addr = config_GetPsz( p_this, "miface-addr" );
@@ -286,46 +262,52 @@ static int OpenUDP( vlc_object_t * p_this )
         /* If we have a source address, we use IP_ADD_SOURCE_MEMBERSHIP
            so that IGMPv3 aware OSes running on IGMPv3 aware networks
            will do an IGMPv3 query on the network */
-        if( *psz_server_addr )
+        if (( rem.sin_addr.s_addr != INADDR_ANY )
+         /*&& ((ntohl (loc.sin_addr.s_addr) >> 24) == 232)*/)
         {
+#ifndef IP_ADD_SOURCE_MEMBERSHIP
+            errno = ENOSYS;
+#else
             struct ip_mreq_source imr;
 
-            imr.imr_multiaddr.s_addr = sock.sin_addr.s_addr;
-            imr.imr_sourceaddr.s_addr = inet_addr(psz_server_addr);
+            imr.imr_multiaddr.s_addr = loc.sin_addr.s_addr;
+            imr.imr_sourceaddr.s_addr = rem.sin_addr.s_addr;
 
             if( psz_if_addr != NULL && *psz_if_addr
                 && inet_addr(psz_if_addr) != INADDR_NONE )
-            {
                 imr.imr_interface.s_addr = inet_addr(psz_if_addr);
-            }
             else
-            {
                 imr.imr_interface.s_addr = INADDR_ANY;
-            }
-            if( psz_if_addr != NULL ) free( psz_if_addr );
+
+            if( psz_if_addr != NULL )
+                free( psz_if_addr );
 
             msg_Dbg( p_this, "IP_ADD_SOURCE_MEMBERSHIP multicast request" );
+
             /* Join Multicast group with source filter */
             if( setsockopt( i_handle, IPPROTO_IP, IP_ADD_SOURCE_MEMBERSHIP,
                          (char*)&imr,
-                         sizeof(struct ip_mreq_source) ) == -1 )
+                         sizeof(struct ip_mreq_source) ) == 0 )
+                do_connect = VLC_FALSE;
+            else
+#endif
             {
-                msg_Err( p_this, "failed to join IP multicast group (%s)",
-                                  strerror(errno) );
-                msg_Err( p_this, "are you sure your OS supports IGMPv3?" );
-                close( i_handle );
-                return 0;
+                msg_Warn( p_this, "Source specific multicast failed (%s) -"
+                          " check if your OS really supports IGMPv3",
+                          strerror(errno) );
+                goto igmpv2;
             }
-         }
-         /* If there is no source address, we use IP_ADD_MEMBERSHIP */
-         else
-         {
-             struct ip_mreq imr;
+        }
+        /* If there is no source address, we use IP_ADD_MEMBERSHIP */
+        else
+igmpv2:
+        {
+            struct ip_mreq imr;
 
-             imr.imr_interface.s_addr = INADDR_ANY;
-             imr.imr_multiaddr.s_addr = sock.sin_addr.s_addr;
-             if( psz_if_addr != NULL && *psz_if_addr
-                && inet_addr(psz_if_addr) != INADDR_NONE )
+            imr.imr_interface.s_addr = INADDR_ANY;
+            imr.imr_multiaddr.s_addr = loc.sin_addr.s_addr;
+            if( psz_if_addr != NULL && *psz_if_addr
+             && inet_addr(psz_if_addr) != INADDR_NONE )
             {
                 imr.imr_interface.s_addr = inet_addr(psz_if_addr);
             }
@@ -351,7 +333,7 @@ static int OpenUDP( vlc_object_t * p_this )
                 }
 
                 if( hiphlpapi && OurGetBestInterface && OurGetIpAddrTable &&
-                    OurGetBestInterface( sock.sin_addr.s_addr,
+                    OurGetBestInterface( loc.sin_addr.s_addr,
                                          &i_index ) == NO_ERROR )
                 {
                     PMIB_IPADDRTABLE p_table;
@@ -400,21 +382,18 @@ static int OpenUDP( vlc_object_t * p_this )
             }
          }
     }
+
+#if !defined (__linux__) && !defined (WIN32)
     else
 #endif
-    if( *psz_server_addr )
-    {
-        /* Build socket for remote connection */
-        if ( BuildAddr( p_this, &sock, psz_server_addr, i_server_port ) == -1 )
-        {
-            msg_Warn( p_this, "cannot build remote address" );
-            close( i_handle );
-            return 0;
-        }
 
+#endif /* !defined SYS_BEOS */
+
+    if( rem.sin_addr.s_addr != INADDR_ANY )
+    {
         /* Connect the socket */
-        if( connect( i_handle, (struct sockaddr *) &sock,
-                     sizeof( sock ) ) == (-1) )
+        if( do_connect
+         && connect( i_handle, (struct sockaddr *) &rem, sizeof( rem ) ) )
         {
             msg_Warn( p_this, "cannot connect socket (%s)", strerror(errno) );
             close( i_handle );
@@ -422,7 +401,7 @@ static int OpenUDP( vlc_object_t * p_this )
         }
 
 #if !defined( SYS_BEOS )
-        if( IN_MULTICAST( ntohl(inet_addr(psz_server_addr) ) ) )
+        if( IN_MULTICAST( ntohl(rem.sin_addr.s_addr) ) )
         {
             /* set the time-to-live */
             int i_ttl = p_socket->i_ttl;

@@ -2,7 +2,7 @@
  * variables.c: routines for object variables handling
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: variables.c 14673 2006-03-08 11:52:46Z courmisch $
+ * $Id: variables.c 17050 2006-10-13 00:07:54Z hartman $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -275,7 +275,7 @@ int __var_Create( vlc_object_t *p_this, const char *psz_name, int i_type )
         vlc_value_t val;
 
         if( InheritValue( p_this, psz_name, &val, p_var->i_type )
-            == VLC_SUCCESS );
+            == VLC_SUCCESS )
         {
             /* Free data if needed */
             p_var->pf_free( &p_var->val );
@@ -619,7 +619,7 @@ int __var_Change( vlc_object_t *p_this, const char *psz_name,
                 vlc_value_t val;
 
                 if( InheritValue( p_this, psz_name, &val, p_var->i_type )
-                    == VLC_SUCCESS );
+                    == VLC_SUCCESS )
                 {
                     /* Duplicate already done */
 

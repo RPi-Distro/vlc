@@ -34,7 +34,7 @@ static const int x264_cabac_context_init_I[460][2] =
     {  2,  54 }, {  3, 74 },  { -28,127 }, { -23, 104 },
     { -6,  53 }, { -1, 54 },  {  7,  51 },
 
-    /* 11 - 23 unsused for I */
+    /* 11 - 23 unused for I */
     { 0, 0 },    { 0, 0 },    { 0, 0 },      { 0, 0 },
     { 0, 0 },    { 0, 0 },    { 0, 0 },      { 0, 0 },
     { 0, 0 },    { 0, 0 },    { 0, 0 },      { 0, 0 },
@@ -829,7 +829,7 @@ void x264_cabac_context_init( x264_cabac_t *cb, int i_slice_type, int i_qp, int 
         cabac_context_init = &x264_cabac_context_init_PB[i_model];
     }
 
-    for( i = 0; i < 436; i++ )
+    for( i = 0; i < 460; i++ )
     {
         cb->state[i] = x264_clip3( (((*cabac_context_init)[i][0] * i_qp) >> 4) + (*cabac_context_init)[i][1], 1, 126 );
     }

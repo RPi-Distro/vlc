@@ -1,8 +1,8 @@
 /*****************************************************************************
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: macosx.m 15032 2006-04-01 21:38:18Z xtophe $
+ * Copyright (C) 2001-2007 the VideoLAN team
+ * $Id: macosx.m 18493 2007-01-03 18:36:31Z fkuehne $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
@@ -78,7 +78,11 @@ void E_(CloseVideoGL) ( vlc_object_t * );
 #define BACKGROUND_TEXT N_("Use as Desktop Background")
 #define BACKGROUND_LONGTEXT N_("Use the video as the Desktop Background " \
         "Desktop icons cannot be interacted with in this mode." )
-        
+
+#define FSPANEL_TEXT N_("Show Fullscreen controller")
+#define FSPANEL_LONGTEXT N_("Shows a lucent controller when moving the mouse " \
+                            "in fullscreen mode.") 
+
 #define WIZARD_OPTIONS_SAVING_TEXT N_("Remember wizard options")
 #define WIZARD_OPTIONS_SAVING_LONGTEXT N_("Remember the options in the " \
         "wizard during one session of VLC.") 
@@ -93,10 +97,12 @@ vlc_module_begin();
                      VLC_FALSE );
     add_bool( "macosx-wizard-keep", 1, NULL, WIZARD_OPTIONS_SAVING_TEXT,
                 WIZARD_OPTIONS_SAVING_LONGTEXT, VLC_TRUE );
+    add_bool( "macosx-fspanel", 1, NULL, FSPANEL_TEXT, FSPANEL_LONGTEXT,
+        set_capability( "video output", 100 );
 
     add_submodule();
         set_description( _("Quartz video") );
-        set_capability( "video output", 100 );
+                     VLC_FALSE );
         set_category( CAT_VIDEO);
         set_subcategory( SUBCAT_VIDEO_VOUT );
         set_callbacks( E_(OpenVideoQT), E_(CloseVideoQT) );

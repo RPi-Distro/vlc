@@ -2,7 +2,7 @@
  * skin_main.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: skin_main.cpp 16985 2006-10-08 12:28:17Z jpsaman $
+ * $Id: skin_main.cpp 18266 2006-12-04 15:15:52Z damienf $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -437,6 +437,9 @@ static int onTaskBarChange( vlc_object_t *pObj, const char *pVariable,
 #define SKINS2_TRANSPARENCY_LONG N_("You can disable all transparency effects"\
     " if you want. This is mainly useful when moving windows does not behave" \
     " correctly.")
+#define SKINS2_PLAYLIST      N_("Enable skinned playlist")
+#define SKINS2_PLAYLIST_LONG N_("You can choose whether the playlist window"\
+    " is rendered using the skin or the default GUI.")
 
 vlc_module_begin();
     set_category( CAT_INTERFACE );
@@ -456,8 +459,8 @@ vlc_module_begin();
               SKINS2_TRANSPARENCY_LONG, VLC_FALSE );
 #endif
 
-    add_bool( "skinned-playlist", VLC_TRUE, NULL, SKINS2_TRANSPARENCY,
-              SKINS2_TRANSPARENCY_LONG, VLC_FALSE );
+    add_bool( "skinned-playlist", VLC_TRUE, NULL, SKINS2_PLAYLIST,
+              SKINS2_PLAYLIST_LONG, VLC_FALSE );
     set_shortname( _("Skins"));
     set_description( _("Skinnable Interface") );
     set_capability( "interface", 30 );

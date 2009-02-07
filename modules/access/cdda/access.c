@@ -2,7 +2,7 @@
  * access.c : CD digital audio input module for vlc using libcdio
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: access.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: access.c 18488 2007-01-03 17:49:32Z jb $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -89,17 +89,17 @@ cdio_log_handler (cdio_log_level_t level, const char message[])
   case CDIO_LOG_DEBUG:
   case CDIO_LOG_INFO:
     if (p_cdda->i_debug & INPUT_DBG_CDIO)
-      msg_Dbg( p_cdda_input, message);
+      msg_Dbg( p_cdda_input, "%s", message);
     break;
   case CDIO_LOG_WARN:
-    msg_Warn( p_cdda_input, message);
+    msg_Warn( p_cdda_input, "%s", message);
     break;
   case CDIO_LOG_ERROR:
   case CDIO_LOG_ASSERT:
-    msg_Err( p_cdda_input, message);
+    msg_Err( p_cdda_input, "%s", message);
     break;
   default:
-    msg_Warn( p_cdda_input, message,
+    msg_Warn( p_cdda_input, "%s\n%s %d", message,
             "the above message had unknown cdio log level",
             level);
   }
@@ -495,7 +495,7 @@ CDDASeek( access_t * p_access, int64_t i_pos )
     }
     
     p_access->info.i_pos = i_pos;
-
+    p_access->info.b_eof = VLC_FALSE;
     return VLC_SUCCESS;
 }
 

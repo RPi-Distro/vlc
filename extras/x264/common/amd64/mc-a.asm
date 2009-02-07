@@ -72,6 +72,9 @@ cglobal x264_mc_copy_w16_sse2
 
 cglobal x264_mc_chroma_mmxext
 
+cglobal x264_prefetch_fenc_mmxext
+cglobal x264_prefetch_ref_mmxext
+
 ;=============================================================================
 ; pixel avg
 ;=============================================================================
@@ -86,24 +89,22 @@ ALIGN 16
 x264_pixel_avg_w4_mmxext:
     mov         r10, parm5q         ; src2
     movsxd      r11, parm6d         ; i_src2_stride
-    movsxd      rax, parm7d         ; i_height
+    mov         eax, parm7d         ; i_height
 
 ALIGN 4
 .height_loop    
     movd        mm0, [parm3q]
-    pavgb       mm0, [r10]
     movd        mm1, [parm3q+parm4q]
+    pavgb       mm0, [r10]
     pavgb       mm1, [r10+r11]
     movd        [parm1q], mm0
     movd        [parm1q+parm2q], mm1
-    dec         rax
-    dec         rax
+    sub         eax, 2
     lea         parm3q, [parm3q+parm4q*2]
     lea         r10, [r10+r11*2]
     lea         parm1q, [parm1q+parm2q*2]
     jne         .height_loop
-
-    ret
+    rep ret
 
                           
 
@@ -115,23 +116,24 @@ ALIGN 16
 ;                                int i_height );
 ;-----------------------------------------------------------------------------
 x264_pixel_avg_w8_mmxext:
-
     mov         r10, parm5q         ; src2
     movsxd      r11, parm6d         ; i_src2_stride
-    movsxd      rax, parm7d         ; i_height
+    mov         eax, parm7d         ; i_height
 
 ALIGN 4
 .height_loop    
     movq        mm0, [parm3q]
+    movq        mm1, [parm3q+parm4q]
     pavgb       mm0, [r10]
+    pavgb       mm1, [r10+r11]
     movq        [parm1q], mm0
-    dec         rax
-    lea         parm3q, [parm3q+parm4q]
-    lea         r10, [r10+r11]
-    lea         parm1q, [parm1q+parm2q]
+    movq        [parm1q+parm2q], mm1
+    sub         eax, 2
+    lea         parm3q, [parm3q+parm4q*2]
+    lea         r10, [r10+r11*2]
+    lea         parm1q, [parm1q+parm2q*2]
     jne         .height_loop
-
-    ret
+    rep ret
 
 ALIGN 16
 ;-----------------------------------------------------------------------------
@@ -143,7 +145,7 @@ ALIGN 16
 x264_pixel_avg_w16_mmxext:
     mov         r10, parm5q         ; src2
     movsxd      r11, parm6d         ; i_src2_stride
-    movsxd      rax, parm7d         ; i_height
+    mov         eax, parm7d         ; i_height
 
 ALIGN 4
 .height_loop    
@@ -153,13 +155,12 @@ ALIGN 4
     pavgb       mm1, [r10+8]
     movq        [parm1q  ], mm0
     movq        [parm1q+8], mm1
-    dec         rax
+    dec         eax
     lea         parm3q, [parm3q+parm4q]
     lea         r10, [r10+r11]
     lea         parm1q, [parm1q+parm2q]
     jne         .height_loop
-
-    ret
+    rep ret
 
 ALIGN 16
 ;-----------------------------------------------------------------------------
@@ -171,21 +172,19 @@ ALIGN 16
 x264_pixel_avg_w16_sse2:
     mov         r10, parm5q         ; src2
     movsxd      r11, parm6d         ; i_src2_stride
-    movsxd      rax, parm7d         ; i_height
+    mov         eax, parm7d         ; i_height
 
 ALIGN 4
 .height_loop    
     movdqu      xmm0, [parm3q]
     pavgb       xmm0, [r10]
     movdqu      [parm1q], xmm0
-
     dec         rax
     lea         parm3q, [parm3q+parm4q]
     lea         r10, [r10+r11]
     lea         parm1q, [parm1q+parm2q]
     jne         .height_loop
-
-    ret
+    rep ret
 
 
 
@@ -246,7 +245,7 @@ x264_pixel_avg_weight_w16_mmxext:
     add  parm3q, parm4q
     dec  r11d
     jnz  .height_loop
-    ret
+    rep ret
 
 ALIGN 16
 ;-----------------------------------------------------------------------------
@@ -255,16 +254,14 @@ ALIGN 16
 x264_pixel_avg_weight_w8_mmxext:
     BIWEIGHT_START_MMX
 
-    BIWEIGHT_4P_MMX  [parm1q         ], [parm3q         ]
-    BIWEIGHT_4P_MMX  [parm1q+4       ], [parm3q+4       ]
-    BIWEIGHT_4P_MMX  [parm1q+parm2q  ], [parm3q+parm4q  ]
-    BIWEIGHT_4P_MMX  [parm1q+parm2q+4], [parm3q+parm4q+4]
+    BIWEIGHT_4P_MMX  [parm1q  ], [parm3q  ]
+    BIWEIGHT_4P_MMX  [parm1q+4], [parm3q+4]
 
-    lea  parm1q, [parm1q+parm2q*2]
-    lea  parm3q, [parm3q+parm4q*2]
-    sub  r11d, byte 2
+    add  parm1q, parm2q
+    add  parm3q, parm4q
+    dec  r11d
     jnz  .height_loop
-    ret
+    rep ret
 
 ALIGN 16
 ;-----------------------------------------------------------------------------
@@ -305,8 +302,7 @@ ALIGN 4
     dec     eax
     dec     eax
     jne     .height_loop
-
-    ret
+    rep ret
 
 ALIGN 16
 ;-----------------------------------------------------------------------------
@@ -334,8 +330,7 @@ ALIGN 4
     
     sub     eax, byte 4
     jnz     .height_loop
-
-    ret
+    rep ret
 
 ALIGN 16
 ;-----------------------------------------------------------------------------
@@ -370,8 +365,7 @@ ALIGN 4
     lea     parm1q, [parm1q+parm2q*4]
     sub     eax, byte 4
     jnz     .height_loop
-    
-    ret
+    rep ret
 
 
 ALIGN 16
@@ -387,13 +381,11 @@ ALIGN 4
     movdqu  xmm1, [parm3q+parm4q]
     movdqu  [parm1q], xmm0
     movdqu  [parm1q+parm2q], xmm1
-    dec     eax
-    dec     eax
+    sub     eax, byte 2
     lea     parm3q, [parm3q+parm4q*2]
     lea     parm1q, [parm1q+parm2q*2]
     jnz     .height_loop
-    
-    ret
+    rep ret
 
 
 
@@ -418,6 +410,7 @@ x264_mc_chroma_mmxext:
     pxor    mm3, mm3
     add     r10d, r11d
     movsxd   r10, r10d
+    mov     r11d, parm8d
     add   parm1q, r10           ; src += (dx>>3) + (dy>>3) * src_stride
     and   parm5d, 7             ; dx &= 7
     je      .mc1d
@@ -444,7 +437,6 @@ x264_mc_chroma_mmxext:
 
     mov     rax, parm1q
     mov     r10, parm3q
-    mov     r11d, parm8d
 
 ALIGN 4
 .height_loop
@@ -471,15 +463,13 @@ ALIGN 4
     paddw   mm0, mm1
     psrlw   mm0, 6
 
-%macro HEIGHT_LOOP_END 1
     packuswb mm0, mm3           ; 00 00 00 00 px1 px2 px3 px4
     movd    [r10], mm0
 
     add     rax, parm2q
     add     r10, parm4q         ; i_dst_stride
-
     dec     r11d
-    jnz     %1
+    jnz     .height_loop
 
     sub     parm7d, 8
     jnz     .finish             ; width != 8 so assume 4
@@ -489,12 +479,10 @@ ALIGN 4
     mov     r11d, parm8d        ; i_height
     add     r10, 4
     add     rax, 4
-    jmp     %1
-%endmacro
-HEIGHT_LOOP_END .height_loop
+    jmp     .height_loop
 
 .finish
-    ret
+    rep ret
 
 ALIGN 4
 .mc1d
@@ -515,13 +503,13 @@ ALIGN 4
     movq      mm7, [pw_4 GLOBAL]
     psubw     mm5, mm6
 
-    mov       rax, parm1q
-    mov       r10, parm3q
-    mov      r11d, parm8d
+    cmp    parm7d, 8
+    je .height_loop1_w8
+
 ALIGN 4
-.height_loop1
-    movd      mm0, [rax+pel_offset]
-    movd      mm1, [rax]
+.height_loop1_w4
+    movd      mm0, [parm1q+pel_offset]
+    movd      mm1, [parm1q]
     punpcklbw mm0, mm3
     punpcklbw mm1, mm3
     pmullw    mm0, mm6
@@ -529,5 +517,84 @@ ALIGN 4
     paddw     mm0, mm7
     paddw     mm0, mm1
     psrlw     mm0, 3
-HEIGHT_LOOP_END .height_loop1
-    nop
+    packuswb  mm0, mm3
+    movd [parm3q], mm0
+    add    parm1q, parm2q
+    add    parm3q, parm4q
+    dec      r11d
+    jnz .height_loop1_w4
+    rep ret
+
+ALIGN 4
+.height_loop1_w8
+    movq      mm0, [parm1q+pel_offset]
+    movq      mm1, [parm1q]
+    movq      mm2, mm0
+    movq      mm4, mm1
+    punpcklbw mm0, mm3
+    punpcklbw mm1, mm3
+    punpckhbw mm2, mm3
+    punpckhbw mm4, mm3
+    pmullw    mm0, mm6
+    pmullw    mm1, mm5
+    pmullw    mm2, mm6
+    pmullw    mm4, mm5
+    paddw     mm0, mm7
+    paddw     mm2, mm7
+    paddw     mm0, mm1
+    paddw     mm2, mm4
+    psrlw     mm0, 3
+    psrlw     mm2, 3
+    packuswb  mm0, mm2
+    movq [parm3q], mm0
+    add    parm1q, parm2q
+    add    parm3q, parm4q
+    dec      r11d
+    jnz .height_loop1_w8
+    rep ret
+
+
+
+;-----------------------------------------------------------------------------
+; void x264_prefetch_fenc_mmxext( uint8_t *pix_y, int stride_y, 
+;                                 uint8_t *pix_uv, int stride_uv, int mb_x )
+;-----------------------------------------------------------------------------
+ALIGN 16
+x264_prefetch_fenc_mmxext:
+    mov     eax, parm5d
+    and     eax, 3
+    imul    eax, parm2d
+    lea  parm1q, [parm1q+rax*4+64]
+    prefetcht0   [parm1q]
+    prefetcht0   [parm1q+parm2q]
+    lea  parm1q, [parm1q+parm2q*2]
+    prefetcht0   [parm1q]
+    prefetcht0   [parm1q+parm2q]
+
+    mov     eax, parm5d
+    and     eax, 6
+    imul    eax, parm4d
+    lea  parm3q, [parm3q+rax+64]
+    prefetcht0   [parm3q]
+    prefetcht0   [parm3q+parm4q]
+    ret
+
+;-----------------------------------------------------------------------------
+; void x264_prefetch_ref_mmxext( uint8_t *pix, int stride, int parity )
+;-----------------------------------------------------------------------------
+ALIGN 16
+x264_prefetch_ref_mmxext:
+    dec  parm3d
+    and  parm3d, parm2d
+    lea  parm1q, [parm1q+parm3q*8+64]
+    lea     rax, [parm2q*3]
+    prefetcht0   [parm1q]
+    prefetcht0   [parm1q+parm2q]
+    prefetcht0   [parm1q+parm2q*2]
+    prefetcht0   [parm1q+rax]
+    lea  parm1q, [parm1q+parm2q*4]
+    prefetcht0   [parm1q]
+    prefetcht0   [parm1q+parm2q]
+    prefetcht0   [parm1q+parm2q*2]
+    prefetcht0   [parm1q+rax]
+    ret

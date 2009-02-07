@@ -302,7 +302,7 @@ target_vendor = @target_vendor@
 uudecode = @uudecode@
 
 basedir = video_output
-mods = vout_directx glwin32
+mods = vout_directx direct3d glwin32
 
 NULL = 
 libvlc_LTLIBRARIES = 
@@ -315,10 +315,17 @@ SUFFIXES = _plugin$(LIBEXT) _plugin.a
 
 libvlcdir = $(libdir)/vlc/$(basedir)
 
-EXTRA_LIBRARIES = libvout_directx_plugin.a libvout_directx.a libglwin32_plugin.a libglwin32.a
-EXTRA_LTLIBRARIES = libvout_directx_plugin.la libvout_directx_builtin.la libglwin32_plugin.la libglwin32_builtin.la
+EXTRA_LIBRARIES = libvout_directx_plugin.a libvout_directx.a libdirect3d_plugin.a libdirect3d.a libglwin32_plugin.a libglwin32.a
+EXTRA_LTLIBRARIES = libvout_directx_plugin.la libvout_directx_builtin.la libdirect3d_plugin.la libdirect3d_builtin.la libglwin32_plugin.la libglwin32_builtin.la
 SOURCES_vout_directx = \
 	directx.c \
+	vout.h \
+	events.c \
+	$(NULL)
+
+
+SOURCES_direct3d = \
+	direct3d.c \
 	vout.h \
 	events.c \
 	$(NULL)
@@ -361,6 +368,30 @@ libvout_directx_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin vout_dir
 libvout_directx_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin vout_directx`
 
 
+# The direct3d plugin
+libdirect3d_plugin_a_SOURCES = $(SOURCES_direct3d)
+libdirect3d_plugin_la_SOURCES = $(SOURCES_direct3d)
+libdirect3d_plugin_a_CFLAGS = `$(VLC_CONFIG) --cflags plugin direct3d`
+libdirect3d_plugin_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin direct3d`
+libdirect3d_plugin_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin direct3d`
+libdirect3d_plugin_la_CFLAGS = `$(VLC_CONFIG) --cflags plugin direct3d`
+libdirect3d_plugin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags plugin direct3d`
+libdirect3d_plugin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags plugin direct3d`
+libdirect3d_plugin_la_LDFLAGS = `$(VLC_CONFIG) --libs plugin direct3d` \
+	-rpath '$(libvlcdir)' -avoid-version -module -shrext $(LIBEXT)
+
+libdirect3d_plugin_la_LIBADD = $(LTLIBVLC)
+
+libdirect3d_a_SOURCES = $(SOURCES_direct3d)
+libdirect3d_builtin_la_SOURCES = $(SOURCES_direct3d)
+libdirect3d_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic direct3d`
+libdirect3d_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic direct3d`
+libdirect3d_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic direct3d`
+libdirect3d_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin direct3d`
+libdirect3d_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin direct3d`
+libdirect3d_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin direct3d`
+
+
 # The glwin32 plugin
 libglwin32_plugin_a_SOURCES = $(SOURCES_glwin32)
 libglwin32_plugin_la_SOURCES = $(SOURCES_glwin32)
@@ -388,63 +419,94 @@ ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/autotools/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
+libdirect3d_a_AR = $(AR) cru
+libdirect3d_a_LIBADD =
+am__objects_1 =
+am__objects_2 = libdirect3d_a-direct3d.$(OBJEXT) \
+	libdirect3d_a-events.$(OBJEXT) $(am__objects_1)
+am_libdirect3d_a_OBJECTS = $(am__objects_2)
+libdirect3d_a_OBJECTS = $(am_libdirect3d_a_OBJECTS)
+libdirect3d_plugin_a_AR = $(AR) cru
+libdirect3d_plugin_a_LIBADD =
+am__objects_3 = libdirect3d_plugin_a-direct3d.$(OBJEXT) \
+	libdirect3d_plugin_a-events.$(OBJEXT) $(am__objects_1)
+am_libdirect3d_plugin_a_OBJECTS = $(am__objects_3)
+libdirect3d_plugin_a_OBJECTS = $(am_libdirect3d_plugin_a_OBJECTS)
 libglwin32_a_AR = $(AR) cru
 libglwin32_a_LIBADD =
-am__objects_1 =
-am__objects_2 = libglwin32_a-glwin32.$(OBJEXT) \
+am__objects_4 = libglwin32_a-glwin32.$(OBJEXT) \
 	libglwin32_a-events.$(OBJEXT) $(am__objects_1)
-am_libglwin32_a_OBJECTS = $(am__objects_2)
+am_libglwin32_a_OBJECTS = $(am__objects_4)
 libglwin32_a_OBJECTS = $(am_libglwin32_a_OBJECTS)
 libglwin32_plugin_a_AR = $(AR) cru
 libglwin32_plugin_a_LIBADD =
-am__objects_3 = libglwin32_plugin_a-glwin32.$(OBJEXT) \
+am__objects_5 = libglwin32_plugin_a-glwin32.$(OBJEXT) \
 	libglwin32_plugin_a-events.$(OBJEXT) $(am__objects_1)
-am_libglwin32_plugin_a_OBJECTS = $(am__objects_3)
+am_libglwin32_plugin_a_OBJECTS = $(am__objects_5)
 libglwin32_plugin_a_OBJECTS = $(am_libglwin32_plugin_a_OBJECTS)
 libvout_directx_a_AR = $(AR) cru
 libvout_directx_a_LIBADD =
-am__objects_4 = libvout_directx_a-directx.$(OBJEXT) \
+am__objects_6 = libvout_directx_a-directx.$(OBJEXT) \
 	libvout_directx_a-events.$(OBJEXT) $(am__objects_1)
-am_libvout_directx_a_OBJECTS = $(am__objects_4)
+am_libvout_directx_a_OBJECTS = $(am__objects_6)
 libvout_directx_a_OBJECTS = $(am_libvout_directx_a_OBJECTS)
 libvout_directx_plugin_a_AR = $(AR) cru
 libvout_directx_plugin_a_LIBADD =
-am__objects_5 = libvout_directx_plugin_a-directx.$(OBJEXT) \
+am__objects_7 = libvout_directx_plugin_a-directx.$(OBJEXT) \
 	libvout_directx_plugin_a-events.$(OBJEXT) $(am__objects_1)
-am_libvout_directx_plugin_a_OBJECTS = $(am__objects_5)
+am_libvout_directx_plugin_a_OBJECTS = $(am__objects_7)
 libvout_directx_plugin_a_OBJECTS = \
 	$(am_libvout_directx_plugin_a_OBJECTS)
 LTLIBRARIES = $(libvlc_LTLIBRARIES) $(noinst_LTLIBRARIES)
 
+libdirect3d_builtin_la_LDFLAGS =
+libdirect3d_builtin_la_LIBADD =
+am__objects_8 = libdirect3d_builtin_la-direct3d.lo \
+	libdirect3d_builtin_la-events.lo $(am__objects_1)
+am_libdirect3d_builtin_la_OBJECTS = $(am__objects_8)
+libdirect3d_builtin_la_OBJECTS = $(am_libdirect3d_builtin_la_OBJECTS)
+libdirect3d_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
+am__objects_9 = libdirect3d_plugin_la-direct3d.lo \
+	libdirect3d_plugin_la-events.lo $(am__objects_1)
+am_libdirect3d_plugin_la_OBJECTS = $(am__objects_9)
+libdirect3d_plugin_la_OBJECTS = $(am_libdirect3d_plugin_la_OBJECTS)
 libglwin32_builtin_la_LDFLAGS =
 libglwin32_builtin_la_LIBADD =
-am__objects_6 = libglwin32_builtin_la-glwin32.lo \
+am__objects_10 = libglwin32_builtin_la-glwin32.lo \
 	libglwin32_builtin_la-events.lo $(am__objects_1)
-am_libglwin32_builtin_la_OBJECTS = $(am__objects_6)
+am_libglwin32_builtin_la_OBJECTS = $(am__objects_10)
 libglwin32_builtin_la_OBJECTS = $(am_libglwin32_builtin_la_OBJECTS)
 libglwin32_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_7 = libglwin32_plugin_la-glwin32.lo \
+am__objects_11 = libglwin32_plugin_la-glwin32.lo \
 	libglwin32_plugin_la-events.lo $(am__objects_1)
-am_libglwin32_plugin_la_OBJECTS = $(am__objects_7)
+am_libglwin32_plugin_la_OBJECTS = $(am__objects_11)
 libglwin32_plugin_la_OBJECTS = $(am_libglwin32_plugin_la_OBJECTS)
 libvout_directx_builtin_la_LDFLAGS =
 libvout_directx_builtin_la_LIBADD =
-am__objects_8 = libvout_directx_builtin_la-directx.lo \
+am__objects_12 = libvout_directx_builtin_la-directx.lo \
 	libvout_directx_builtin_la-events.lo $(am__objects_1)
-am_libvout_directx_builtin_la_OBJECTS = $(am__objects_8)
+am_libvout_directx_builtin_la_OBJECTS = $(am__objects_12)
 libvout_directx_builtin_la_OBJECTS = \
 	$(am_libvout_directx_builtin_la_OBJECTS)
 libvout_directx_plugin_la_DEPENDENCIES = $(top_builddir)/src/libvlc.la
-am__objects_9 = libvout_directx_plugin_la-directx.lo \
+am__objects_13 = libvout_directx_plugin_la-directx.lo \
 	libvout_directx_plugin_la-events.lo $(am__objects_1)
-am_libvout_directx_plugin_la_OBJECTS = $(am__objects_9)
+am_libvout_directx_plugin_la_OBJECTS = $(am__objects_13)
 libvout_directx_plugin_la_OBJECTS = \
 	$(am_libvout_directx_plugin_la_OBJECTS)
 
 DEFAULT_INCLUDES =  -I. -I$(srcdir) -I$(top_builddir)
 depcomp = $(SHELL) $(top_srcdir)/autotools/depcomp
 am__depfiles_maybe = depfiles
-@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libglwin32_a-events.Po \
+@AMDEP_TRUE@DEP_FILES = ./$(DEPDIR)/libdirect3d_a-direct3d.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libdirect3d_a-events.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libdirect3d_builtin_la-direct3d.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libdirect3d_builtin_la-events.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libdirect3d_plugin_a-direct3d.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libdirect3d_plugin_a-events.Po \
+@AMDEP_TRUE@	./$(DEPDIR)/libdirect3d_plugin_la-direct3d.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libdirect3d_plugin_la-events.Plo \
+@AMDEP_TRUE@	./$(DEPDIR)/libglwin32_a-events.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libglwin32_a-glwin32.Po \
 @AMDEP_TRUE@	./$(DEPDIR)/libglwin32_builtin_la-events.Plo \
 @AMDEP_TRUE@	./$(DEPDIR)/libglwin32_builtin_la-glwin32.Plo \
@@ -467,9 +529,12 @@ LTCOMPILE = $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) \
 CCLD = $(CC)
 LINK = $(LIBTOOL) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
 	$(AM_LDFLAGS) $(LDFLAGS) -o $@
-DIST_SOURCES = $(libglwin32_a_SOURCES) $(libglwin32_plugin_a_SOURCES) \
+DIST_SOURCES = $(libdirect3d_a_SOURCES) $(libdirect3d_plugin_a_SOURCES) \
+	$(libglwin32_a_SOURCES) $(libglwin32_plugin_a_SOURCES) \
 	$(libvout_directx_a_SOURCES) \
 	$(libvout_directx_plugin_a_SOURCES) \
+	$(libdirect3d_builtin_la_SOURCES) \
+	$(libdirect3d_plugin_la_SOURCES) \
 	$(libglwin32_builtin_la_SOURCES) \
 	$(libglwin32_plugin_la_SOURCES) \
 	$(libvout_directx_builtin_la_SOURCES) \
@@ -482,7 +547,7 @@ RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
 	check-recursive installcheck-recursive
 DIST_COMMON = $(srcdir)/Makefile.in $(srcdir)/Modules.am Makefile.am
 DIST_SUBDIRS = $(SUBDIRS)
-SOURCES = $(libglwin32_a_SOURCES) $(libglwin32_plugin_a_SOURCES) $(libvout_directx_a_SOURCES) $(libvout_directx_plugin_a_SOURCES) $(libglwin32_builtin_la_SOURCES) $(libglwin32_plugin_la_SOURCES) $(libvout_directx_builtin_la_SOURCES) $(libvout_directx_plugin_la_SOURCES)
+SOURCES = $(libdirect3d_a_SOURCES) $(libdirect3d_plugin_a_SOURCES) $(libglwin32_a_SOURCES) $(libglwin32_plugin_a_SOURCES) $(libvout_directx_a_SOURCES) $(libvout_directx_plugin_a_SOURCES) $(libdirect3d_builtin_la_SOURCES) $(libdirect3d_plugin_la_SOURCES) $(libglwin32_builtin_la_SOURCES) $(libglwin32_plugin_la_SOURCES) $(libvout_directx_builtin_la_SOURCES) $(libvout_directx_plugin_la_SOURCES)
 
 all: $(BUILT_SOURCES)
 	$(MAKE) $(AM_MAKEFLAGS) all-recursive
@@ -494,6 +559,14 @@ $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am $(srcdir)/Modules.am $
 	  $(AUTOMAKE) --gnu  modules/video_output/directx/Makefile
 Makefile: @MAINTAINER_MODE_TRUE@ $(srcdir)/Makefile.in  $(top_builddir)/config.status
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@ $(am__depfiles_maybe)
+libdirect3d.a: $(libdirect3d_a_OBJECTS) $(libdirect3d_a_DEPENDENCIES) 
+	-rm -f libdirect3d.a
+	$(libdirect3d_a_AR) libdirect3d.a $(libdirect3d_a_OBJECTS) $(libdirect3d_a_LIBADD)
+	$(RANLIB) libdirect3d.a
+libdirect3d_plugin.a: $(libdirect3d_plugin_a_OBJECTS) $(libdirect3d_plugin_a_DEPENDENCIES) 
+	-rm -f libdirect3d_plugin.a
+	$(libdirect3d_plugin_a_AR) libdirect3d_plugin.a $(libdirect3d_plugin_a_OBJECTS) $(libdirect3d_plugin_a_LIBADD)
+	$(RANLIB) libdirect3d_plugin.a
 libglwin32.a: $(libglwin32_a_OBJECTS) $(libglwin32_a_DEPENDENCIES) 
 	-rm -f libglwin32.a
 	$(libglwin32_a_AR) libglwin32.a $(libglwin32_a_OBJECTS) $(libglwin32_a_LIBADD)
@@ -547,6 +620,10 @@ clean-noinstLTLIBRARIES:
 	  echo "rm -f \"$${dir}/so_locations\""; \
 	  rm -f "$${dir}/so_locations"; \
 	done
+libdirect3d_builtin.la: $(libdirect3d_builtin_la_OBJECTS) $(libdirect3d_builtin_la_DEPENDENCIES) 
+	$(LINK)  $(libdirect3d_builtin_la_LDFLAGS) $(libdirect3d_builtin_la_OBJECTS) $(libdirect3d_builtin_la_LIBADD) $(LIBS)
+libdirect3d_plugin.la: $(libdirect3d_plugin_la_OBJECTS) $(libdirect3d_plugin_la_DEPENDENCIES) 
+	$(LINK)  $(libdirect3d_plugin_la_LDFLAGS) $(libdirect3d_plugin_la_OBJECTS) $(libdirect3d_plugin_la_LIBADD) $(LIBS)
 libglwin32_builtin.la: $(libglwin32_builtin_la_OBJECTS) $(libglwin32_builtin_la_DEPENDENCIES) 
 	$(LINK)  $(libglwin32_builtin_la_LDFLAGS) $(libglwin32_builtin_la_OBJECTS) $(libglwin32_builtin_la_LIBADD) $(LIBS)
 libglwin32_plugin.la: $(libglwin32_plugin_la_OBJECTS) $(libglwin32_plugin_la_DEPENDENCIES) 
@@ -562,6 +639,14 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdirect3d_a-direct3d.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdirect3d_a-events.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdirect3d_builtin_la-direct3d.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdirect3d_builtin_la-events.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdirect3d_plugin_a-direct3d.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdirect3d_plugin_a-events.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdirect3d_plugin_la-direct3d.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libdirect3d_plugin_la-events.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libglwin32_a-events.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libglwin32_a-glwin32.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libglwin32_builtin_la-events.Plo@am__quote@
@@ -611,6 +696,138 @@ distclean-compile:
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/$*.Plo' tmpdepfile='$(DEPDIR)/$*.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LTCOMPILE) -c -o $@ `test -f '$<' || echo '$(srcdir)/'`$<
+
+libdirect3d_a-direct3d.o: direct3d.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -MT libdirect3d_a-direct3d.o -MD -MP -MF "$(DEPDIR)/libdirect3d_a-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_a-direct3d.o `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_a-direct3d.Tpo" "$(DEPDIR)/libdirect3d_a-direct3d.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_a-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_a-direct3d.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_a-direct3d.Po' tmpdepfile='$(DEPDIR)/libdirect3d_a-direct3d.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_a-direct3d.o `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c
+
+libdirect3d_a-direct3d.obj: direct3d.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -MT libdirect3d_a-direct3d.obj -MD -MP -MF "$(DEPDIR)/libdirect3d_a-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_a-direct3d.obj `if test -f 'direct3d.c'; then $(CYGPATH_W) 'direct3d.c'; else $(CYGPATH_W) '$(srcdir)/direct3d.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_a-direct3d.Tpo" "$(DEPDIR)/libdirect3d_a-direct3d.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_a-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_a-direct3d.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_a-direct3d.Po' tmpdepfile='$(DEPDIR)/libdirect3d_a-direct3d.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_a-direct3d.obj `if test -f 'direct3d.c'; then $(CYGPATH_W) 'direct3d.c'; else $(CYGPATH_W) '$(srcdir)/direct3d.c'; fi`
+
+libdirect3d_a-direct3d.lo: direct3d.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -MT libdirect3d_a-direct3d.lo -MD -MP -MF "$(DEPDIR)/libdirect3d_a-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_a-direct3d.lo `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_a-direct3d.Tpo" "$(DEPDIR)/libdirect3d_a-direct3d.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_a-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_a-direct3d.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_a-direct3d.Plo' tmpdepfile='$(DEPDIR)/libdirect3d_a-direct3d.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_a-direct3d.lo `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c
+
+libdirect3d_a-events.o: events.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -MT libdirect3d_a-events.o -MD -MP -MF "$(DEPDIR)/libdirect3d_a-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_a-events.o `test -f 'events.c' || echo '$(srcdir)/'`events.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_a-events.Tpo" "$(DEPDIR)/libdirect3d_a-events.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_a-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_a-events.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_a-events.Po' tmpdepfile='$(DEPDIR)/libdirect3d_a-events.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_a-events.o `test -f 'events.c' || echo '$(srcdir)/'`events.c
+
+libdirect3d_a-events.obj: events.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -MT libdirect3d_a-events.obj -MD -MP -MF "$(DEPDIR)/libdirect3d_a-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_a-events.obj `if test -f 'events.c'; then $(CYGPATH_W) 'events.c'; else $(CYGPATH_W) '$(srcdir)/events.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_a-events.Tpo" "$(DEPDIR)/libdirect3d_a-events.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_a-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_a-events.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_a-events.Po' tmpdepfile='$(DEPDIR)/libdirect3d_a-events.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_a-events.obj `if test -f 'events.c'; then $(CYGPATH_W) 'events.c'; else $(CYGPATH_W) '$(srcdir)/events.c'; fi`
+
+libdirect3d_a-events.lo: events.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -MT libdirect3d_a-events.lo -MD -MP -MF "$(DEPDIR)/libdirect3d_a-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_a-events.lo `test -f 'events.c' || echo '$(srcdir)/'`events.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_a-events.Tpo" "$(DEPDIR)/libdirect3d_a-events.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_a-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_a-events.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_a-events.Plo' tmpdepfile='$(DEPDIR)/libdirect3d_a-events.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_a-events.lo `test -f 'events.c' || echo '$(srcdir)/'`events.c
+
+libdirect3d_plugin_a-direct3d.o: direct3d.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_a-direct3d.o -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_a-direct3d.o `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Tpo" "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_plugin_a-direct3d.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_a-direct3d.Po' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_a-direct3d.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_a-direct3d.o `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c
+
+libdirect3d_plugin_a-direct3d.obj: direct3d.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_a-direct3d.obj -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_a-direct3d.obj `if test -f 'direct3d.c'; then $(CYGPATH_W) 'direct3d.c'; else $(CYGPATH_W) '$(srcdir)/direct3d.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Tpo" "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_plugin_a-direct3d.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_a-direct3d.Po' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_a-direct3d.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_a-direct3d.obj `if test -f 'direct3d.c'; then $(CYGPATH_W) 'direct3d.c'; else $(CYGPATH_W) '$(srcdir)/direct3d.c'; fi`
+
+libdirect3d_plugin_a-direct3d.lo: direct3d.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_a-direct3d.lo -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_a-direct3d.lo `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Tpo" "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_a-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_plugin_a-direct3d.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_a-direct3d.Plo' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_a-direct3d.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_a-direct3d.lo `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c
+
+libdirect3d_plugin_a-events.o: events.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_a-events.o -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_a-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_a-events.o `test -f 'events.c' || echo '$(srcdir)/'`events.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_a-events.Tpo" "$(DEPDIR)/libdirect3d_plugin_a-events.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_a-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_plugin_a-events.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_a-events.Po' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_a-events.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_a-events.o `test -f 'events.c' || echo '$(srcdir)/'`events.c
+
+libdirect3d_plugin_a-events.obj: events.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_a-events.obj -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_a-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_a-events.obj `if test -f 'events.c'; then $(CYGPATH_W) 'events.c'; else $(CYGPATH_W) '$(srcdir)/events.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_a-events.Tpo" "$(DEPDIR)/libdirect3d_plugin_a-events.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_a-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_plugin_a-events.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_a-events.Po' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_a-events.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_a-events.obj `if test -f 'events.c'; then $(CYGPATH_W) 'events.c'; else $(CYGPATH_W) '$(srcdir)/events.c'; fi`
+
+libdirect3d_plugin_a-events.lo: events.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_a-events.lo -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_a-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_a-events.lo `test -f 'events.c' || echo '$(srcdir)/'`events.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_a-events.Tpo" "$(DEPDIR)/libdirect3d_plugin_a-events.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_a-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_plugin_a-events.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_a-events.Plo' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_a-events.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_a_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_a-events.lo `test -f 'events.c' || echo '$(srcdir)/'`events.c
 
 libglwin32_a-glwin32.o: glwin32.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libglwin32_a_CFLAGS) $(CFLAGS) -MT libglwin32_a-glwin32.o -MD -MP -MF "$(DEPDIR)/libglwin32_a-glwin32.Tpo" \
@@ -875,6 +1092,138 @@ libvout_directx_plugin_a-events.lo: events.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libvout_directx_plugin_a-events.Plo' tmpdepfile='$(DEPDIR)/libvout_directx_plugin_a-events.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvout_directx_plugin_a_CFLAGS) $(CFLAGS) -c -o libvout_directx_plugin_a-events.lo `test -f 'events.c' || echo '$(srcdir)/'`events.c
+
+libdirect3d_builtin_la-direct3d.o: direct3d.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_builtin_la-direct3d.o -MD -MP -MF "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_builtin_la-direct3d.o `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Tpo" "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_builtin_la-direct3d.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_builtin_la-direct3d.Po' tmpdepfile='$(DEPDIR)/libdirect3d_builtin_la-direct3d.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_builtin_la-direct3d.o `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c
+
+libdirect3d_builtin_la-direct3d.obj: direct3d.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_builtin_la-direct3d.obj -MD -MP -MF "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_builtin_la-direct3d.obj `if test -f 'direct3d.c'; then $(CYGPATH_W) 'direct3d.c'; else $(CYGPATH_W) '$(srcdir)/direct3d.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Tpo" "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_builtin_la-direct3d.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_builtin_la-direct3d.Po' tmpdepfile='$(DEPDIR)/libdirect3d_builtin_la-direct3d.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_builtin_la-direct3d.obj `if test -f 'direct3d.c'; then $(CYGPATH_W) 'direct3d.c'; else $(CYGPATH_W) '$(srcdir)/direct3d.c'; fi`
+
+libdirect3d_builtin_la-direct3d.lo: direct3d.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_builtin_la-direct3d.lo -MD -MP -MF "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_builtin_la-direct3d.lo `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Tpo" "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_builtin_la-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_builtin_la-direct3d.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_builtin_la-direct3d.Plo' tmpdepfile='$(DEPDIR)/libdirect3d_builtin_la-direct3d.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_builtin_la-direct3d.lo `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c
+
+libdirect3d_builtin_la-events.o: events.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_builtin_la-events.o -MD -MP -MF "$(DEPDIR)/libdirect3d_builtin_la-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_builtin_la-events.o `test -f 'events.c' || echo '$(srcdir)/'`events.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_builtin_la-events.Tpo" "$(DEPDIR)/libdirect3d_builtin_la-events.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_builtin_la-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_builtin_la-events.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_builtin_la-events.Po' tmpdepfile='$(DEPDIR)/libdirect3d_builtin_la-events.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_builtin_la-events.o `test -f 'events.c' || echo '$(srcdir)/'`events.c
+
+libdirect3d_builtin_la-events.obj: events.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_builtin_la-events.obj -MD -MP -MF "$(DEPDIR)/libdirect3d_builtin_la-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_builtin_la-events.obj `if test -f 'events.c'; then $(CYGPATH_W) 'events.c'; else $(CYGPATH_W) '$(srcdir)/events.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_builtin_la-events.Tpo" "$(DEPDIR)/libdirect3d_builtin_la-events.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_builtin_la-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_builtin_la-events.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_builtin_la-events.Po' tmpdepfile='$(DEPDIR)/libdirect3d_builtin_la-events.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_builtin_la-events.obj `if test -f 'events.c'; then $(CYGPATH_W) 'events.c'; else $(CYGPATH_W) '$(srcdir)/events.c'; fi`
+
+libdirect3d_builtin_la-events.lo: events.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_builtin_la-events.lo -MD -MP -MF "$(DEPDIR)/libdirect3d_builtin_la-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_builtin_la-events.lo `test -f 'events.c' || echo '$(srcdir)/'`events.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_builtin_la-events.Tpo" "$(DEPDIR)/libdirect3d_builtin_la-events.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_builtin_la-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_builtin_la-events.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_builtin_la-events.Plo' tmpdepfile='$(DEPDIR)/libdirect3d_builtin_la-events.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_builtin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_builtin_la-events.lo `test -f 'events.c' || echo '$(srcdir)/'`events.c
+
+libdirect3d_plugin_la-direct3d.o: direct3d.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_la-direct3d.o -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_la-direct3d.o `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Tpo" "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_plugin_la-direct3d.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_la-direct3d.Po' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_la-direct3d.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_la-direct3d.o `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c
+
+libdirect3d_plugin_la-direct3d.obj: direct3d.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_la-direct3d.obj -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_la-direct3d.obj `if test -f 'direct3d.c'; then $(CYGPATH_W) 'direct3d.c'; else $(CYGPATH_W) '$(srcdir)/direct3d.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Tpo" "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_plugin_la-direct3d.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_la-direct3d.Po' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_la-direct3d.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_la-direct3d.obj `if test -f 'direct3d.c'; then $(CYGPATH_W) 'direct3d.c'; else $(CYGPATH_W) '$(srcdir)/direct3d.c'; fi`
+
+libdirect3d_plugin_la-direct3d.lo: direct3d.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_la-direct3d.lo -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_la-direct3d.lo `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Tpo" "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_la-direct3d.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='direct3d.c' object='libdirect3d_plugin_la-direct3d.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_la-direct3d.Plo' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_la-direct3d.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_la-direct3d.lo `test -f 'direct3d.c' || echo '$(srcdir)/'`direct3d.c
+
+libdirect3d_plugin_la-events.o: events.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_la-events.o -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_la-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_la-events.o `test -f 'events.c' || echo '$(srcdir)/'`events.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_la-events.Tpo" "$(DEPDIR)/libdirect3d_plugin_la-events.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_la-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_plugin_la-events.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_la-events.Po' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_la-events.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_la-events.o `test -f 'events.c' || echo '$(srcdir)/'`events.c
+
+libdirect3d_plugin_la-events.obj: events.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_la-events.obj -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_la-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_la-events.obj `if test -f 'events.c'; then $(CYGPATH_W) 'events.c'; else $(CYGPATH_W) '$(srcdir)/events.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_la-events.Tpo" "$(DEPDIR)/libdirect3d_plugin_la-events.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_la-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_plugin_la-events.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_la-events.Po' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_la-events.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_la-events.obj `if test -f 'events.c'; then $(CYGPATH_W) 'events.c'; else $(CYGPATH_W) '$(srcdir)/events.c'; fi`
+
+libdirect3d_plugin_la-events.lo: events.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -MT libdirect3d_plugin_la-events.lo -MD -MP -MF "$(DEPDIR)/libdirect3d_plugin_la-events.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o libdirect3d_plugin_la-events.lo `test -f 'events.c' || echo '$(srcdir)/'`events.c; \
+@am__fastdepCC_TRUE@	then mv -f "$(DEPDIR)/libdirect3d_plugin_la-events.Tpo" "$(DEPDIR)/libdirect3d_plugin_la-events.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "$(DEPDIR)/libdirect3d_plugin_la-events.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='events.c' object='libdirect3d_plugin_la-events.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='$(DEPDIR)/libdirect3d_plugin_la-events.Plo' tmpdepfile='$(DEPDIR)/libdirect3d_plugin_la-events.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libdirect3d_plugin_la_CFLAGS) $(CFLAGS) -c -o libdirect3d_plugin_la-events.lo `test -f 'events.c' || echo '$(srcdir)/'`events.c
 
 libglwin32_builtin_la-glwin32.o: glwin32.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libglwin32_builtin_la_CFLAGS) $(CFLAGS) -MT libglwin32_builtin_la-glwin32.o -MD -MP -MF "$(DEPDIR)/libglwin32_builtin_la-glwin32.Tpo" \

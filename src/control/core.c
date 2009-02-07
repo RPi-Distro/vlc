@@ -2,7 +2,7 @@
  * core.c: Core libvlc new API functions : initialization, exceptions handling
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: core.c 16767 2006-09-21 14:32:45Z hartman $
+ * $Id: core.c 17322 2006-10-28 14:49:42Z jpsaman $
  *
  * Authors: Cl�ent Stenac <zorglub@videolan.org>
  *
@@ -107,7 +107,7 @@ libvlc_instance_t * libvlc_new( int argc, char **argv,
     p_new->p_vlm = NULL;
 
     if( !p_new->p_playlist ) RAISENULL( "Playlist creation failed" );
-    
+
     p_new->i_vlc_id = i_vlc_id;
     return p_new;
 }

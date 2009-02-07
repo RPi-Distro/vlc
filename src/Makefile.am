@@ -320,6 +320,7 @@ SOURCES_libvlc_common = \
 	misc/hashtables.c \
 	extras/libc.c \
 	control/core.c \
+	control/log.c \
 	control/playlist.c \
 	control/vlm.c \
 	control/input.c \

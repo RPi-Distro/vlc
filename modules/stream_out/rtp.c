@@ -2,7 +2,7 @@
  * rtp.c: rtp stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: rtp.c 16986 2006-10-08 12:37:14Z jpsaman $
+ * $Id: rtp.c 17272 2006-10-23 19:08:38Z jpsaman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -434,13 +434,7 @@ static int Open( vlc_object_t *p_this )
         sout_access_out_t *p_grab;
         char *psz_rtpmap, url[NI_MAXHOST + 8], access[17], psz_ttl[5], ipv;
 
-        if( b_rtsp )
-        {
-            msg_Err( p_stream, "muxing is not supported in RTSP mode" );
-            free( p_sys );
-            return VLC_EGENERIC;
-        }
-        else if( !p_sys->psz_destination || *p_sys->psz_destination == '\0' )
+        if( !p_sys->psz_destination || *p_sys->psz_destination == '\0' )
         {
             msg_Err( p_stream, "rtp needs a destination when muxing" );
             free( p_sys );
@@ -1642,7 +1636,7 @@ static rtsp_client_t *RtspClientGet( sout_stream_t *p_stream, char *psz_session 
 {
     int i;
 
-    if( psz_session ) return NULL;
+    if( !psz_session ) return NULL;
 
     for( i = 0; i < p_stream->p_sys->i_rtsp; i++ )
     {

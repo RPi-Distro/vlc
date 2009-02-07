@@ -2,7 +2,7 @@
  * open.cpp : Open dialog box
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: open.cpp 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: open.cpp 18323 2006-12-07 22:40:39Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -50,9 +50,6 @@
 #include <wx/combobox.h>
 #include <wx/statline.h>
 #include <wx/tokenzr.h>
-
-#include <vector>
-
 
 #ifndef wxRB_SINGLE
 #   define wxRB_SINGLE 0
@@ -1131,7 +1128,7 @@ void OpenDialog::UpdateMRL( int i_access_method )
         }
         else
         {
-            int i_value = config_GetInt( p_intf, caching_name.mb_str() );
+            int i_value = config_GetInt( p_intf, caching_name.mb_str(wxConvUTF8) );
             caching_value->SetValue( i_value );
         }
     }
@@ -1174,7 +1171,7 @@ void OpenDialog::OnOk( wxCommandEvent& WXUNUSED(event) )
 
         /* Insert options */
         while( i + 1 < (int)mrl.GetCount() &&
-               ((const char *)mrl[i + 1].mb_str())[0] == ':' )
+               ((const char *)mrl[i + 1].mb_str(wxConvUTF8))[0] == ':' )
         {
             psz_utf8 = wxFromLocale( mrl[i + 1] );
             playlist_ItemAddOption( p_item, psz_utf8 );
@@ -1838,8 +1835,8 @@ void OpenDialog::OnSubsFileSettings( wxCommandEvent& WXUNUSED(event) )
                               (int)subsfile_dialog->size_combo->GetClientData(
                               subsfile_dialog->size_combo->GetSelection()) ) );
         }
-        subsfile_mrl.Add( wxString::Format( wxT("sub-fps=%i"),
-                          subsfile_dialog->fps_spinctrl->GetValue() ) );
+        subsfile_mrl.Add( wxString( wxT("sub-fps="))+
+                                    subsfile_dialog->fps_ctrl->GetValue()  );
         subsfile_mrl.Add( wxString::Format( wxT("sub-delay=%i"),
                           subsfile_dialog->delay_spinctrl->GetValue() ) );
     }

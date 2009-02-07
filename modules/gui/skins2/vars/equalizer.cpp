@@ -2,7 +2,7 @@
  * equalizer.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: equalizer.cpp 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: equalizer.cpp 18282 2006-12-06 07:57:11Z ipkiss $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -96,14 +96,15 @@ void EqualizerBands::onUpdate( Subject<VarPercent> &rBand, void *arg )
             ss << " " << val;
         }
 
+
+        string bands = ss.str();
         aout_instance_t *pAout = (aout_instance_t *)vlc_object_find( getIntf(),
                 VLC_OBJECT_AOUT, FIND_ANYWHERE );
-        char *bands = (char*)ss.str().c_str();
-        config_PutPsz( getIntf(), "equalizer-bands", bands );
+        config_PutPsz( getIntf(), "equalizer-bands", bands.c_str() );
         if( pAout )
         {
             // Update the audio output
-            var_SetString( pAout, "equalizer-bands", bands );
+            var_SetString( pAout, "equalizer-bands", (char*)bands.c_str() );
             vlc_object_release( pAout );
         }
     }

@@ -2,7 +2,7 @@
  * gnutls.c
  *****************************************************************************
  * Copyright (C) 2004-2006 Rémi Denis-Courmont
- * $Id: gnutls.c 16775 2006-09-21 20:35:23Z hartman $
+ * $Id: gnutls.c 18329 2006-12-08 18:07:54Z hartman $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -181,6 +181,42 @@ _get_Bool( vlc_object_t *p_this, const char *var )
 #define get_Bool( a, b ) _get_Bool( (vlc_object_t *)(a), (b) )
 
 
+static int gnutls_Error (vlc_object_t *obj, int val)
+{
+    switch (val)
+    {
+        case GNUTLS_E_AGAIN:
+#if defined(WIN32)
+            WSASetLastError(WSAEWOULDBLOCK);
+#else
+            errno = EAGAIN;
+#endif
+            break;
+
+        case GNUTLS_E_INTERRUPTED:
+#if defined(WIN32)
+            WSASetLastError(WSAEINTR);
+#else
+            errno = EINTR;
+#endif
+            break;
+
+        default:
+            msg_Err (obj, "%s", gnutls_strerror (val));
+#ifdef DEBUG
+            if (!gnutls_error_is_fatal (val))
+                msg_Err (obj, "Error above should be handled");
+#endif
+#if defined(WIN32)
+            WSASetLastError(WSAECONNRESET);
+#else
+            errno = ECONNRESET;
+#endif
+    }
+    return -1;
+}
+
+
 /**
  * Sends data through a TLS session.
  */
@@ -193,8 +229,7 @@ gnutls_Send( void *p_session, const void *buf, int i_length )
     p_sys = (tls_session_sys_t *)(((tls_session_t *)p_session)->p_sys);
 
     val = gnutls_record_send( p_sys->session, buf, i_length );
-    /* TODO: handle fatal error */
-    return val < 0 ? -1 : val;
+    return (val < 0) ? gnutls_Error ((vlc_object_t *)p_session, val) : val;
 }
 
 
@@ -210,8 +245,7 @@ gnutls_Recv( void *p_session, void *buf, int i_length )
     p_sys = (tls_session_sys_t *)(((tls_session_t *)p_session)->p_sys);
 
     val = gnutls_record_recv( p_sys->session, buf, i_length );
-    /* TODO: handle fatal error */
-    return val < 0 ? -1 : val;
+    return (val < 0) ? gnutls_Error ((vlc_object_t *)p_session, val) : val;
 }
 
 
@@ -244,7 +278,7 @@ gnutls_ContinueHandshake( tls_session_t *p_session)
 #ifdef WIN32
         msg_Dbg( p_session, "Winsock error %d", WSAGetLastError( ) );
 #endif
-        msg_Err( p_session, "TLS handshake failed: %s",
+        msg_Err( p_session, "TLS handshake error: %s",
                  gnutls_strerror( val ) );
         p_session->pf_close( p_session );
         return -1;
@@ -539,7 +573,7 @@ gnutls_Addx509Directory( vlc_object_t *p_this,
          || fstat( fd, &st1 ) || utf8_lstat( psz_dirname, &st2 )
          || S_ISLNK( st2.st_mode ) || ( st1.st_ino != st2.st_ino ) )
         {
-            closedir( dir );
+            vlc_closedir_wrapper( dir );
             return VLC_EGENERIC;
         }
     }
@@ -564,7 +598,7 @@ gnutls_Addx509Directory( vlc_object_t *p_this,
         free( psz_filename );
     }
 
-    closedir( dir );
+    vlc_closedir_wrapper( dir );
     return VLC_SUCCESS;
 }
 

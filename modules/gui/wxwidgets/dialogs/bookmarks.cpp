@@ -2,7 +2,7 @@
  * bookmarks.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: bookmarks.cpp 16798 2006-09-22 23:56:12Z xtophe $
+ * $Id: bookmarks.cpp 18107 2006-11-27 13:44:11Z md $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -119,10 +119,10 @@ BookmarkEditDialog::~BookmarkEditDialog()
 void BookmarkEditDialog::OnOK( wxCommandEvent &event )
 {
     if( p_seekpoint->psz_name ) free( p_seekpoint->psz_name );
-    p_seekpoint->psz_name = strdup( name_text->GetValue().mb_str() );
-    p_seekpoint->i_byte_offset = atoi( bytes_text->GetValue().mb_str() );
+    p_seekpoint->psz_name = strdup( name_text->GetValue().mb_str(wxConvUTF8) );
+    p_seekpoint->i_byte_offset = atoi( bytes_text->GetValue().mb_str(wxConvUTF8) );
     p_seekpoint->i_time_offset =  1000000 *
-                                  atoll( time_text->GetValue().mb_str() ) ;
+                                  atoll( time_text->GetValue().mb_str(wxConvUTF8) ) ;
     EndModal( wxID_OK );
 }
 

@@ -2,7 +2,7 @@
  * file.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: file.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: file.c 17451 2006-11-04 14:41:14Z md $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -129,10 +129,9 @@ static int Open( vlc_object_t *p_this )
     }
     else
     {
-        char *psz_localname = ToLocale( p_access->psz_name );
-        char *psz_tmp, *psz_tmp2, *psz_rewriten;
-        int fd, i, i_length = strlen( psz_localname );
-        for( i = 0, psz_tmp = psz_localname ;
+        char *psz_tmp, *psz_tmp2, *psz_localname, *psz_rewriten;
+        int fd, i, i_length = strlen( p_access->psz_name );
+        for( i = 0, psz_tmp = p_access->psz_name ;
              ( psz_tmp = strstr( psz_tmp, "%T" ) ) ; psz_tmp++, i++ )
             ;
         if( i )
@@ -141,7 +140,7 @@ static int Open( vlc_object_t *p_this )
             psz_rewriten = (char *) malloc( i_length );
             if( ! psz_rewriten )
                 return ( VLC_EGENERIC );
-            psz_tmp  = psz_localname;
+            psz_tmp  = p_access->psz_name;
             psz_tmp2 = psz_rewriten;
             while( *psz_tmp )
             {
@@ -156,15 +155,33 @@ static int Open( vlc_object_t *p_this )
                     *psz_tmp2++ = *psz_tmp++;
             }
             *psz_tmp2 = *psz_tmp;
-            fd = open( psz_rewriten, i_flags, 0666 );
-            LocaleFree( psz_localname );
-            free( psz_rewriten );
         }
         else
         {
+            psz_rewriten =  p_access->psz_name;
+        }
+#if defined (WIN32)
+
+        if( GetVersion() < 0x80000000 )
+        {
+            /* for Windows NT and above */
+            wchar_t wpath[MAX_PATH + 1];
+
+            if( !MultiByteToWideChar( CP_UTF8, 0, psz_rewriten, -1,
+                wpath,MAX_PATH ) ) return VLC_EGENERIC;
+
+            wpath[MAX_PATH] = L'\0';
+
+            fd = _wopen( wpath, i_flags, 0666  );
+        }
+        else
+#endif
+        {
+            psz_localname = ToLocale( psz_rewriten );
             fd = open( psz_localname, i_flags, 0666 );
             LocaleFree( psz_localname );
         }
+        if ( i ) free( psz_rewriten );
         if( fd == -1 )
         {
             msg_Err( p_access, "cannot open `%s' (%s)", p_access->psz_name,

@@ -2,7 +2,7 @@
  * extrapanel.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004, 2003 the VideoLAN team
- * $Id: extrapanel.cpp 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: extrapanel.cpp 18210 2006-12-03 11:23:17Z funman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -980,7 +980,7 @@ void ExtraPanel::OnAdjustUpdate( wxScrollEvent &event)
 /* FIXME */
 void ExtraPanel::OnRatio( wxCommandEvent& event )
 {
-   config_PutPsz( p_intf, "aspect-ratio", ratio_combo->GetValue().mb_str() );
+   config_PutPsz( p_intf, "aspect-ratio", ratio_combo->GetValue().mb_str(wxConvUTF8) );
 }
 
 
@@ -1083,12 +1083,12 @@ static void ChangeVFiltersString( intf_thread_t *p_intf,
             {
                 *(psz_string+strlen(psz_string ) -1 ) = '\0';
             }
-         }
-         else
-         {
-             free( psz_string );
-             return;
-         }
+        }
+        else
+        {
+            free( psz_string );
+            return;
+        }
     }
     /* Vout is not kept, so put that in the config */
     config_PutPsz( p_intf, "vout-filter", psz_string );

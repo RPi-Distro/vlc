@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: intf.m 16773 2006-09-21 18:46:25Z hartman $
+ * $Id: intf.m 17495 2006-11-05 21:50:37Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -32,20 +32,21 @@
 #include <string.h>
 #include <vlc_keys.h>
 
-#include "intf.h"
-#include "vout.h"
-#include "prefs.h"
-#include "playlist.h"
-#include "controls.h"
-#include "about.h"
-#include "open.h"
-#include "wizard.h"
-#include "extended.h"
-#include "bookmarks.h"
-#include "interaction.h"
-#include "embeddedwindow.h"
-#include "update.h"
-#include "AppleRemote.h"
+#import "intf.h"
+#import "fspanel.h"
+#import "vout.h"
+#import "prefs.h"
+#import "playlist.h"
+#import "controls.h"
+#import "about.h"
+#import "open.h"
+#import "wizard.h"
+#import "extended.h"
+#import "bookmarks.h"
+#import "interaction.h"
+#import "embeddedwindow.h"
+#import "update.h"
+#import "AppleRemote.h"
 
 /*****************************************************************************
  * Local prototypes.
@@ -477,6 +478,9 @@ static VLCMain *_o_sharedMainInstance = nil;
     var_AddCallback( p_intf, "interaction", InteractCallback, self );
     p_intf->b_interaction = VLC_TRUE;
 
+    /* update the playmode stuff */
+    p_intf->p_sys->b_playmode_update = VLC_TRUE;
+    
     nib_main_loaded = TRUE;
 }
 
@@ -710,6 +714,28 @@ static VLCMain *_o_sharedMainInstance = nil;
     [o_remote stopListening: self];
 }
 
+/* Helper method for the remote control interface in order to trigger forward/backward
+   as long as the user holds the left/right button */
+- (void) triggerMovieStepForRemoteButton: (NSNumber*) buttonIdentifierNumber 
+{
+    if (b_left_right_remote_button_hold) {
+        switch([buttonIdentifierNumber intValue]) {
+            case kRemoteButtonRight_Hold:       
+                [o_controls forward: self];
+            break;
+            case kRemoteButtonLeft_Hold:
+                [o_controls backward: self];
+            break;          
+        }
+        if (b_left_right_remote_button_hold) {
+            /* trigger event */
+            [self performSelector:@selector(triggerMovieStepForRemoteButton:) 
+                       withObject:buttonIdentifierNumber
+                       afterDelay:0.25];         
+        }
+    }
+}
+
 /* Apple Remote callback */
 - (void)appleRemoteButton:(AppleRemoteEventIdentifier)buttonIdentifier
     pressedDown:(BOOL)pressedDown
@@ -720,10 +746,20 @@ static VLCMain *_o_sharedMainInstance = nil;
             [o_controls play: self];
             break;
         case kRemoteButtonVolume_Plus:
-            [o_controls volumeUp: self];
+            /* there are two events when the plus or minus button is pressed
+               one when the button is pressed down and one when the button is released */
+            if( pressedDown )
+            {
+                [o_controls volumeUp: self];
+            }
             break;
         case kRemoteButtonVolume_Minus:
-            [o_controls volumeDown: self];
+            /* there are two events when the plus or minus button is pressed
+               one when the button is pressed down and one when the button is released */
+            if( pressedDown )
+            {
+                [o_controls volumeDown: self];
+            }
             break;
         case kRemoteButtonRight:
             [o_controls next: self];
@@ -732,15 +768,19 @@ static VLCMain *_o_sharedMainInstance = nil;
             [o_controls prev: self];
             break;
         case kRemoteButtonRight_Hold:
-            [o_controls forward: self];
-            break;
         case kRemoteButtonLeft_Hold:
-            [o_controls backward: self];
+            /* simulate an event as long as the user holds the button */
+            b_left_right_remote_button_hold = pressedDown;
+            if( pressedDown )
+            {                
+                NSNumber* buttonIdentifierNumber = [NSNumber numberWithInt: buttonIdentifier];	
+                [self performSelector:@selector(triggerMovieStepForRemoteButton:) 
+                           withObject:buttonIdentifierNumber];
+            }
             break;
         case kRemoteButtonMenu:
             [o_controls windowAction: self];
             break;
-
         default:
             /* Add here whatever you want other buttons to do */
             break;
@@ -1055,6 +1095,8 @@ static VLCMain *_o_sharedMainInstance = nil;
         [o_timeslider setFloatValue: 0.0];
         [o_timeslider setEnabled: b_seekable];
         [o_timefield setStringValue: @"0:00:00"];
+        [[[self getControls] getFSPanel] setStreamPos: 0 andTime: @"0:00:00"];
+        [[[self getControls] getFSPanel] setSeekable: b_seekable];
 
         [o_embedded_window setSeekable: b_seekable];
 
@@ -1111,6 +1153,7 @@ static VLCMain *_o_sharedMainInstance = nil;
                 o_temp = [NSString stringWithCString:
                     p_playlist->status.p_item->input.psz_name];
             [self setScrollField: o_temp stopAfter:-1];
+            [[[self getControls] getFSPanel] setStreamTitle: o_temp];
 
             p_vout = vlc_object_find( p_intf->p_sys->p_input, VLC_OBJECT_VOUT,
                                                     FIND_PARENT );
@@ -1157,6 +1200,7 @@ static VLCMain *_o_sharedMainInstance = nil;
                             (int) (i_seconds / 60 % 60),
                             (int) (i_seconds % 60)];
             [o_timefield setStringValue: o_time];
+            [[[self getControls] getFSPanel] setStreamPos: f_updated andTime: o_time];
             [o_embedded_window setTime: o_time position: f_updated];
         }
 
@@ -1170,6 +1214,7 @@ static VLCMain *_o_sharedMainInstance = nil;
             i_volume_step = config_GetInt( p_intf->p_vlc, "volume-step" );
             [o_volumeslider setFloatValue: (float)i_lastShownVolume / i_volume_step];
             [o_volumeslider setEnabled: TRUE];
+            [[[self getControls] getFSPanel] setVolumeLevel: (float)i_lastShownVolume / i_volume_step];
             p_intf->p_sys->b_mute = ( i_lastShownVolume == 0 );
             p_intf->p_sys->b_volume_update = FALSE;
         }
@@ -1398,6 +1443,7 @@ static VLCMain *_o_sharedMainInstance = nil;
 {
     if( i_status == PLAYING_S )
     {
+        [[[self getControls] getFSPanel] setPause];
         [o_btn_play setImage: o_img_pause];
         [o_btn_play setAlternateImage: o_img_pause_pressed];
         [o_btn_play setToolTip: _NS("Pause")];
@@ -1407,6 +1453,7 @@ static VLCMain *_o_sharedMainInstance = nil;
     }
     else
     {
+        [[[self getControls] getFSPanel] setPlay];
         [o_btn_play setImage: o_img_play];
         [o_btn_play setAlternateImage: o_img_play_pressed];
         [o_btn_play setToolTip: _NS("Play")];
@@ -1482,6 +1529,7 @@ static VLCMain *_o_sharedMainInstance = nil;
                         (int) (i_seconds / 60 % 60),
                         (int) (i_seconds % 60)];
         [o_timefield setStringValue: o_time];
+        [[[self getControls] getFSPanel] setStreamPos: f_updated andTime: o_time];
         [o_embedded_window setTime: o_time position: f_updated];
     }
 #undef p_input

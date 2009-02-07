@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: es_out.c 15241 2006-04-15 16:29:24Z asmax $
+ * $Id: es_out.c 17054 2006-10-13 15:47:39Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -602,8 +602,11 @@ static void EsOutProgramMeta( es_out_t *out, int i_group, vlc_meta_t *p_meta )
         }
     }
 
-    if( p_pgrm == NULL )
-        p_pgrm = EsOutProgramAdd( out, i_group );
+    if( p_pgrm == NULL ) {
+	free( psz_cat );
+	msg_Dbg( p_input, "Trying to add meta for non-existing program" );
+	return;
+    }
 
     /* Update the description text of the program */
     if( psz_name && *psz_name )

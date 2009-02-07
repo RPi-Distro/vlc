@@ -149,6 +149,41 @@ EXTRA_DIST += \
 	extras/MacOSX/Resources/vlc.scriptSuite \
 	extras/MacOSX/Resources/vlc.scriptTerminology \
 	extras/MacOSX/Resources/README \
+	extras/MacOSX/Resources/add_embedded.png \
+	extras/MacOSX/Resources/add_embedded_blue.png \
+	extras/MacOSX/Resources/repeat_embedded.png \
+	extras/MacOSX/Resources/repeat_embedded_blue.png \
+	extras/MacOSX/Resources/repeat_single_embedded_blue.png \
+	extras/MacOSX/Resources/shuffle_embedded.png \
+	extras/MacOSX/Resources/shuffle_embedded_blue.png \
+	extras/MacOSX/Resources/fs_volume_slider_knob_highlight.png \
+	extras/MacOSX/Resources/fs_volume_slider_knob.png \
+	extras/MacOSX/Resources/fs_volume_slider_bar.png \
+	extras/MacOSX/Resources/fs_volume_mute_highlight.png \
+	extras/MacOSX/Resources/fs_volume_mute.png \
+	extras/MacOSX/Resources/fs_volume_max_highlight.png \
+	extras/MacOSX/Resources/fs_volume_max.png \
+	extras/MacOSX/Resources/fs_time_slider_knob_highlight.png \
+	extras/MacOSX/Resources/fs_time_slider_knob.png \
+	extras/MacOSX/Resources/fs_time_slider.png \
+	extras/MacOSX/Resources/fs_stop_highlight.png \
+	extras/MacOSX/Resources/fs_stop.png \
+	extras/MacOSX/Resources/fs_skip_previous_highlight.png \
+	extras/MacOSX/Resources/fs_skip_previous.png \
+	extras/MacOSX/Resources/fs_skip_next_highlight.png \
+	extras/MacOSX/Resources/fs_skip_next.png \
+	extras/MacOSX/Resources/fs_rewind_highlight.png \
+	extras/MacOSX/Resources/fs_rewind.png \
+	extras/MacOSX/Resources/fs_play_highlight.png \
+	extras/MacOSX/Resources/fs_play.png \
+	extras/MacOSX/Resources/fs_pause_highlight.png \
+	extras/MacOSX/Resources/fs_pause.png \
+	extras/MacOSX/Resources/fs_forward_highlight.png \
+	extras/MacOSX/Resources/fs_forward.png \
+	extras/MacOSX/Resources/fs_exit_fullscreen_highlight.png \
+	extras/MacOSX/Resources/fs_exit_fullscreen.png \
+	extras/MacOSX/Resources/fs_background.png \
+	extras/MacOSX/fullscreen_panel.svg \
 	extras/MacOSX/vlc.pbproj/project.pbxproj \
 	extras/MacOSX/Delete_Preferences.app/Contents/Info.plist \
 	extras/MacOSX/Delete_Preferences.app/Contents/PkgInfo \
@@ -311,7 +346,7 @@ vlc-bundle: vlc
 endif
 
 # Install the symlinks
-install-exec-local:
+install-exec-local: install-binPROGRAMS
 	for i in "" $(ALIASES) ; do if test -n "$$i" ; then \
 	  rm -f "$(DESTDIR)$(bindir)/$$i" && \
 	  ln -sf vlc "$(DESTDIR)$(bindir)/$$i" ; \
@@ -838,7 +873,11 @@ package-macosx:
 	mkdir -p "$(top_builddir)/vlc-${VERSION}/";
 
 # Copy relevant files 
-	cp -R "$(top_builddir)/VLC-release.app" "$(top_builddir)/vlc-${VERSION}/VLC.app"
+	@if test -e "$(top_builddir)/VLC-release.app/"; then \
+	  cp -R "$(top_builddir)/VLC-release.app" "$(top_builddir)/vlc-${VERSION}/VLC.app"; \
+	else \
+	  cp -R "$(top_builddir)/VLC.app" "$(top_builddir)/vlc-${VERSION}/VLC.app"; \
+	fi
 	cd "$(srcdir)" && cp AUTHORS COPYING ChangeLog README README.MacOSX.rtf THANKS NEWS $(top_builddir)/vlc-${VERSION}/ && cp -R extras/MacOSX/Delete_Preferences.app $(top_builddir)/vlc-${VERSION}/
 
 # Create disk image 

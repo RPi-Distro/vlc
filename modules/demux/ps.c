@@ -2,7 +2,7 @@
  * ps.c: Program Stream demux module for VLC.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: ps.c 16767 2006-09-21 14:32:45Z hartman $
+ * $Id: ps.c 17768 2006-11-14 20:21:24Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -56,7 +56,7 @@ vlc_module_begin();
     set_callbacks( Open, Close );
     add_shortcut( "ps" );
 
-    add_integer( "ps-trust-timestamps", VLC_TRUE, NULL, TIME_TEXT,
+    add_bool( "ps-trust-timestamps", VLC_TRUE, NULL, TIME_TEXT,
                  TIME_LONGTEXT, VLC_TRUE );
 
     add_submodule();
@@ -184,7 +184,7 @@ static void Close( vlc_object_t *p_this )
     free( p_sys );
 }
 
-static int Demux2( demux_t *p_demux )
+static int Demux2( demux_t *p_demux, vlc_bool_t b_end )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     int i_ret, i_id;
@@ -217,7 +217,14 @@ static int Demux2( demux_t *p_demux )
         ps_track_t *tk = &p_sys->tk[PS_ID_TO_TK(i_id)];
         if( !ps_pkt_parse_pes( p_pkt, tk->i_skip ) )
         {
-            tk->i_last_pts = p_pkt->i_pts;
+            if( b_end && p_pkt->i_pts > tk->i_last_pts )
+            {
+                tk->i_last_pts = p_pkt->i_pts;
+            }
+            else if ( tk->i_first_pts == -1 )
+            {
+                tk->i_first_pts = p_pkt->i_pts;
+            }
         }
     }
     block_Release( p_pkt );
@@ -235,18 +242,25 @@ static void FindLength( demux_t *p_demux )
 
     if( p_sys->i_length == -1 ) /* First time */
     {
+        p_sys->i_length = 0;
+        /* Check beginning */
+        i = 0;
         i_current_pos = stream_Tell( p_demux->s );
+        while( !p_demux->b_die && i < 40 && Demux2( p_demux, VLC_FALSE ) > 0 ) i++;
+
+        /* Check end */
         i_size = stream_Size( p_demux->s );
-        i_end = __MAX( 0, __MIN( 100000, i_size ) );
-        stream_Seek( p_demux->s, stream_Size( p_demux->s ) - i_end );
+        i_end = __MAX( 0, __MIN( 200000, i_size ) );
+        stream_Seek( p_demux->s, i_size - i_end );
     
-        while( Demux2( p_demux ) > 0 && !p_demux->b_die ) ;
+        while( !p_demux->b_die && Demux2( p_demux, VLC_TRUE ) > 0 );
+        if( i_current_pos >= 0 ) stream_Seek( p_demux->s, i_current_pos );
     }
 
     for( i = 0; i < PS_TK_COUNT; i++ )
     {
         ps_track_t *tk = &p_sys->tk[i];
-        if( tk->b_seen && tk->i_first_pts > 0 && tk->i_last_pts > 0 )
+        if( tk->i_first_pts >= 0 && tk->i_last_pts > 0 )
             if( tk->i_last_pts > tk->i_first_pts )
             {
                 int64_t i_length = (int64_t)tk->i_last_pts - tk->i_first_pts;
@@ -254,10 +268,10 @@ static void FindLength( demux_t *p_demux )
                 {
                     p_sys->i_length = i_length;
                     p_sys->i_time_track = i;
+                    msg_Dbg( p_demux, "we found a length of: %lld", p_sys->i_length );
                 }
             }
     }
-    if( i_current_pos >= 0 ) stream_Seek( p_demux->s, i_current_pos );
 }
 
 /*****************************************************************************
@@ -287,7 +301,7 @@ static int Demux( demux_t *p_demux )
     if( p_sys->b_lost_sync ) msg_Warn( p_demux, "found sync code" );
     p_sys->b_lost_sync = VLC_FALSE;
 
-    if( p_sys->b_seekable && p_sys->i_length <= 0 )
+    if( p_sys->i_length < 0 && p_sys->b_seekable )
         FindLength( p_demux );
 
     if( ( p_pkt = ps_pkt_read( p_demux->s, i_code ) ) == NULL )
@@ -381,11 +395,6 @@ static int Demux( demux_t *p_demux )
                     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_pkt->i_pts );
                 }
 
-                if( !tk->i_first_pts && p_pkt->i_pts > 0 )
-                {
-                    tk->i_first_pts = p_pkt->i_pts;
-                    p_sys->i_length = 0;
-                }
                 if( (int64_t)p_pkt->i_pts > p_sys->i_current_pts )
                 {
                     p_sys->i_current_pts = (int64_t)p_pkt->i_pts;
@@ -473,6 +482,19 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             return VLC_EGENERIC;
 
         case DEMUX_SET_TIME:
+            i64 = (int64_t)va_arg( args, int64_t );
+            if( p_sys->i_time_track >= 0 && p_sys->i_current_pts > 0 )
+            {
+                int64_t i_now = p_sys->i_current_pts - p_sys->tk[p_sys->i_time_track].i_first_pts;
+                int64_t i_pos = stream_Tell( p_demux->s );
+                int64_t i_offset = i_pos / (i_now / 1000000) * ((i64 - i_now) / 1000000);
+                stream_Seek( p_demux->s, i_pos + i_offset);
+
+                es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
+                return VLC_SUCCESS;
+            }
+            return VLC_EGENERIC;
+
         case DEMUX_GET_FPS:
         default:
             return VLC_EGENERIC;

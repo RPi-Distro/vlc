@@ -43,7 +43,8 @@ endif
 
 # AltiVec optims
 ifeq ($(ARCH),PPC)
-SRCS += common/ppc/mc.c common/ppc/pixel.c common/ppc/dct.c
+SRCS += common/ppc/mc.c common/ppc/pixel.c common/ppc/dct.c \
+	common/ppc/quant.c
 endif
 
 # VIS optims
@@ -60,7 +61,9 @@ OBJS = $(SRCS:%.c=%.o)
 OBJCLI = $(SRCCLI:%.c=%.o)
 DEP  = depend
 
-.PHONY: default fprofiled clean distclean install install-gtk uninstall
+.PHONY: all default fprofiled clean distclean install install-gtk uninstall
+all: default
+
 default: $(DEP) x264$(EXE)
 
 libx264.a: .depend $(OBJS) $(OBJASM)
@@ -73,9 +76,6 @@ $(SONAME): .depend $(OBJS) $(OBJASM)
 x264$(EXE): $(OBJCLI) libx264.a 
 	$(CC) -o $@ $+ $(LDFLAGS)
 
-x264vfw.dll: libx264.a $(wildcard vfw/*.c vfw/*.h)
-	$(MAKE) -C vfw/build/cygwin
-
 libx264gtk.a: muxers.o libx264.a
 	$(MAKE) -C gtk
 
@@ -86,6 +86,8 @@ common/amd64/*.o: common/amd64/amd64inc.asm
 common/i386/*.o: common/i386/i386inc.asm
 %.o: %.asm
 	$(AS) $(ASFLAGS) -o $@ $<
+# delete local/anonymous symbols, so they don't show up in oprofile
+	-@ strip -x $@
 
 .depend: config.mak
 	rm -f .depend
@@ -129,13 +131,12 @@ clean:
 	rm -f $(OBJS) $(OBJASM) $(OBJCLI) $(SONAME) *.a x264 x264.exe .depend TAGS
 	rm -f checkasm checkasm.exe tools/checkasm.o
 	rm -f tools/avc2avi tools/avc2avi.exe tools/avc2avi.o
-	rm -rf vfw/build/cygwin/bin
 	rm -f $(SRC2:%.c=%.gcda) $(SRC2:%.c=%.gcno)
 	- sed -e 's/ *-fprofile-\(generate\|use\)//g' config.mak > config.mak2 && mv config.mak2 config.mak
 	$(MAKE) -C gtk clean
 
 distclean: clean
-	rm -f config.mak config.h vfw/build/cygwin/config.mak x264.pc
+	rm -f config.mak config.h x264.pc
 	$(MAKE) -C gtk distclean
 
 install: x264 $(SONAME)

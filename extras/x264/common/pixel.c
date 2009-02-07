@@ -292,6 +292,9 @@ PIXEL_SA8D_C( 16, 8 )
 PIXEL_SA8D_C( 8, 16 )
 PIXEL_SA8D_C( 8, 8 )
 
+/****************************************************************************
+ * pixel_sad_x4
+ ****************************************************************************/
 #define SAD_X( size ) \
 static void x264_pixel_sad_x3_##size( uint8_t *fenc, uint8_t *pix0, uint8_t *pix1, uint8_t *pix2, int i_stride, int scores[3] )\
 {\
@@ -322,6 +325,9 @@ SAD_X( 8x16_vis )
 SAD_X( 8x8_vis )
 #endif
 
+/****************************************************************************
+ * structural similarity metric
+ ****************************************************************************/
 static void ssim_4x4x2_core( const uint8_t *pix1, int stride1,
                              const uint8_t *pix2, int stride2,
                              int sums[2][4])
@@ -379,8 +385,8 @@ float x264_pixel_ssim_wxh( x264_pixel_function_t *pf,
 {
     int x, y, z;
     float ssim = 0.0;
-    int (*sum0)[4] = alloca(4 * (width/4+3) * sizeof(int));
-    int (*sum1)[4] = alloca(4 * (width/4+3) * sizeof(int));
+    int (*sum0)[4] = x264_alloca(4 * (width/4+3) * sizeof(int));
+    int (*sum1)[4] = x264_alloca(4 * (width/4+3) * sizeof(int));
     width >>= 2;
     height >>= 2;
     z = 0;
@@ -396,6 +402,38 @@ float x264_pixel_ssim_wxh( x264_pixel_function_t *pf,
             ssim += pf->ssim_end4( sum0+x, sum1+x, X264_MIN(4,width-x-1) );
     }
     return ssim / ((width-1) * (height-1));
+}
+
+
+/****************************************************************************
+ * successive elimination
+ ****************************************************************************/
+static void pixel_ads4( int enc_dc[4], uint16_t *sums, int delta,
+                        uint16_t *res, int width )
+{
+    int i;
+    for( i=0; i<width; i++, sums++ )
+        res[i] = abs( enc_dc[0] - sums[0] )
+               + abs( enc_dc[1] - sums[8] )
+               + abs( enc_dc[2] - sums[delta] )
+               + abs( enc_dc[3] - sums[delta+8] );
+}
+
+static void pixel_ads2( int enc_dc[2], uint16_t *sums, int delta,
+                        uint16_t *res, int width )
+{
+    int i;
+    for( i=0; i<width; i++, sums++ )
+        res[i] = abs( enc_dc[0] - sums[0] )
+               + abs( enc_dc[1] - sums[delta] );
+}
+
+static void pixel_ads1( int enc_dc[1], uint16_t *sums, int delta,
+                        uint16_t *res, int width )
+{
+    int i;
+    for( i=0; i<width; i++, sums++ )
+        res[i] = abs( enc_dc[0] - sums[0] );
 }
 
 
@@ -428,6 +466,10 @@ void x264_pixel_init( int cpu, x264_pixel_function_t *pixf )
     pixf->ssim_4x4x2_core = ssim_4x4x2_core;
     pixf->ssim_end4 = ssim_end4;
 
+    pixf->ads[PIXEL_16x16] = pixel_ads4;
+    pixf->ads[PIXEL_16x8] = pixel_ads2;
+    pixf->ads[PIXEL_8x8] = pixel_ads1;
+
 #ifdef HAVE_MMXEXT
     if( cpu&X264_CPU_MMX )
     {
@@ -444,6 +486,10 @@ void x264_pixel_init( int cpu, x264_pixel_function_t *pixf )
         pixf->sad_pde[PIXEL_16x16] = x264_pixel_sad_pde_16x16_mmxext;
         pixf->sad_pde[PIXEL_16x8 ] = x264_pixel_sad_pde_16x8_mmxext;
         pixf->sad_pde[PIXEL_8x16 ] = x264_pixel_sad_pde_8x16_mmxext;
+
+        pixf->ads[PIXEL_16x16] = x264_pixel_ads4_mmxext;
+        pixf->ads[PIXEL_16x8 ] = x264_pixel_ads2_mmxext;
+        pixf->ads[PIXEL_8x8  ] = x264_pixel_ads1_mmxext;
 
 #ifdef ARCH_X86
         pixf->sa8d[PIXEL_16x16] = x264_pixel_sa8d_16x16_mmxext;
@@ -516,5 +562,10 @@ void x264_pixel_init( int cpu, x264_pixel_function_t *pixf )
     pixf->sad_x4[PIXEL_16x8]  = x264_pixel_sad_x4_16x8_vis;
     pixf->sad_x4[PIXEL_16x16] = x264_pixel_sad_x4_16x16_vis;
 #endif
+
+    pixf->ads[PIXEL_8x16] =
+    pixf->ads[PIXEL_8x4] =
+    pixf->ads[PIXEL_4x8] = pixf->ads[PIXEL_16x8];
+    pixf->ads[PIXEL_4x4] = pixf->ads[PIXEL_8x8];
 }
 

@@ -2,7 +2,7 @@
  * subtitles.hpp: private wxWindows interface description
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: subtitles.hpp 14187 2006-02-07 16:37:40Z courmisch $
+ * $Id: subtitles.hpp 18323 2006-12-07 22:40:39Z xtophe $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -41,7 +41,7 @@ public:
     wxComboBox *encoding_combo;
     wxComboBox *size_combo;
     wxComboBox *align_combo;
-    wxSpinCtrl *fps_spinctrl;
+    wxTextCtrl *fps_ctrl;
     wxSpinCtrl *delay_spinctrl;
 
 private:

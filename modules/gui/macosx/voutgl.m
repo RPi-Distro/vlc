@@ -69,6 +69,8 @@ struct vout_sys_t
     AGLDrawable         agl_drawable;
     int                 i_offx, i_offy;
     int                 i_width, i_height;
+    WindowRef           theWindow;
+    WindowGroupRef      winGroup;
 };
 
 /*****************************************************************************
@@ -447,6 +449,7 @@ static void Unlock( vout_thread_t * p_vout )
 
 static void aglSetViewport( vout_thread_t *p_vout, Rect viewBounds, Rect clipBounds );
 static void aglReshape( vout_thread_t * p_vout );
+static OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, EventRef event, void *userData);
 
 static int aglInit( vout_thread_t * p_vout )
 {
@@ -477,14 +480,16 @@ static int aglInit( vout_thread_t * p_vout )
     clipBounds.right = val.i_int;
 
     aglSetViewport(p_vout, viewBounds, clipBounds);
-
     aglSetCurrentContext(p_vout->p_sys->agl_ctx);
+    aglReshape( p_vout );
+    
     return VLC_SUCCESS;
 }
 
 static void aglEnd( vout_thread_t * p_vout )
 {
     aglSetCurrentContext(NULL);
+    if( p_vout->p_sys->theWindow ) DisposeWindow( p_vout->p_sys->theWindow );
 }
 
 static void aglReshape( vout_thread_t * p_vout )
@@ -519,6 +524,31 @@ static void aglReshape( vout_thread_t * p_vout )
     }
 }
 
+/* private event class */
+enum 
+{
+    kEventClassVLCPlugin = 'vlcp',
+};
+/* private event kinds */
+enum
+{
+    kEventVLCPluginShowFullscreen = 32768,
+    kEventVLCPluginHideFullscreen,
+};
+
+static void sendEventToMainThread(EventTargetRef target, UInt32 class, UInt32 kind)
+{
+    EventRef myEvent;
+    if( noErr == CreateEvent(NULL, class, kind, 0, kEventAttributeNone, &myEvent) )
+    {
+        if( noErr == SetEventParameter(myEvent, kEventParamPostTarget, typeEventTargetRef, sizeof(EventTargetRef), &target) )
+        {
+            PostEventToQueue(GetMainEventQueue(), myEvent, kEventPriorityStandard);
+        }
+        ReleaseEvent(myEvent);
+    }
+}
+
 static int aglManage( vout_thread_t * p_vout )
 {
     if( p_vout->i_changes & VOUT_ASPECT_CHANGE )
@@ -531,6 +561,109 @@ static int aglManage( vout_thread_t * p_vout )
         aglReshape(p_vout);
         p_vout->i_changes &= ~VOUT_CROP_CHANGE;
     }
+    if( p_vout->i_changes & VOUT_FULLSCREEN_CHANGE )
+    {
+        aglSetDrawable(p_vout->p_sys->agl_ctx, NULL);
+        Lock( p_vout );
+        if( p_vout->b_fullscreen )
+        {
+            /* Close the window resume normal drawing */
+            vlc_value_t val;
+            Rect viewBounds;    
+            Rect clipBounds;
+
+            var_Get( p_vout->p_vlc, "drawable", &val );
+            p_vout->p_sys->agl_drawable = (AGLDrawable)val.i_int;
+            aglSetDrawable(p_vout->p_sys->agl_ctx, p_vout->p_sys->agl_drawable);
+
+            var_Get( p_vout->p_vlc, "drawable-view-top", &val );
+            viewBounds.top = val.i_int;
+            var_Get( p_vout->p_vlc, "drawable-view-left", &val );
+            viewBounds.left = val.i_int;
+            var_Get( p_vout->p_vlc, "drawable-view-bottom", &val );
+            viewBounds.bottom = val.i_int;
+            var_Get( p_vout->p_vlc, "drawable-view-right", &val );
+            viewBounds.right = val.i_int;
+            var_Get( p_vout->p_vlc, "drawable-clip-top", &val );
+            clipBounds.top = val.i_int;
+            var_Get( p_vout->p_vlc, "drawable-clip-left", &val );
+            clipBounds.left = val.i_int;
+            var_Get( p_vout->p_vlc, "drawable-clip-bottom", &val );
+            clipBounds.bottom = val.i_int;
+            var_Get( p_vout->p_vlc, "drawable-clip-right", &val );
+            clipBounds.right = val.i_int;
+
+            aglSetCurrentContext(p_vout->p_sys->agl_ctx);
+            aglSetViewport(p_vout, viewBounds, clipBounds);
+
+            /* Most Carbon APIs are not thread-safe, therefore delagate some GUI visibilty update to the main thread */
+            sendEventToMainThread(GetWindowEventTarget(p_vout->p_sys->theWindow), kEventClassVLCPlugin, kEventVLCPluginHideFullscreen);
+        }
+        else
+        {
+            Rect deviceRect;
+            
+            GDHandle deviceHdl = GetMainDevice();
+            deviceRect = (*deviceHdl)->gdRect;
+            
+            if( !p_vout->p_sys->theWindow )
+            {
+                /* Create a window */
+                WindowAttributes    windowAttrs;
+
+                windowAttrs = kWindowStandardDocumentAttributes
+                            | kWindowStandardHandlerAttribute
+                            | kWindowLiveResizeAttribute
+                            | kWindowNoShadowAttribute;
+                                            
+                windowAttrs &= (~kWindowResizableAttribute);
+
+                CreateNewWindow(kDocumentWindowClass, windowAttrs, &deviceRect, &p_vout->p_sys->theWindow);
+                if( !p_vout->p_sys->winGroup )
+                {
+                    CreateWindowGroup(0, &p_vout->p_sys->winGroup);
+                    SetWindowGroup(p_vout->p_sys->theWindow, p_vout->p_sys->winGroup);
+                    SetWindowGroupParent( p_vout->p_sys->winGroup, GetWindowGroupOfClass(kDocumentWindowClass) ) ;
+                }
+                
+                // Window title
+                CFStringRef titleKey    = CFSTR("Fullscreen VLC media plugin");
+                CFStringRef windowTitle = CFCopyLocalizedString(titleKey, NULL);
+                SetWindowTitleWithCFString(p_vout->p_sys->theWindow, windowTitle);
+                CFRelease(titleKey);
+                CFRelease(windowTitle);
+                
+                //Install event handler
+                static const EventTypeSpec win_events[] = {
+                    { kEventClassMouse, kEventMouseUp },
+                    { kEventClassWindow, kEventWindowClosed },
+                    { kEventClassWindow, kEventWindowBoundsChanged },
+                    { kEventClassCommand, kEventCommandProcess },
+                    { kEventClassVLCPlugin, kEventVLCPluginShowFullscreen },
+                    { kEventClassVLCPlugin, kEventVLCPluginHideFullscreen },
+                };
+                InstallWindowEventHandler (p_vout->p_sys->theWindow, NewEventHandlerUPP (WindowEventHandler), GetEventTypeCount(win_events), win_events, p_vout, NULL);
+            }
+            else
+            {
+                /* just in case device resolution changed */
+                SetWindowBounds(p_vout->p_sys->theWindow, kWindowContentRgn, &deviceRect);
+            }
+            glClear( GL_COLOR_BUFFER_BIT );
+            p_vout->p_sys->agl_drawable = (AGLDrawable)GetWindowPort(p_vout->p_sys->theWindow);
+            aglSetDrawable(p_vout->p_sys->agl_ctx, p_vout->p_sys->agl_drawable);
+            aglSetCurrentContext(p_vout->p_sys->agl_ctx);
+            aglSetViewport(p_vout, deviceRect, deviceRect);
+            //aglSetFullScreen(p_vout->p_sys->agl_ctx, device_width, device_height, 0, 0);
+
+            /* Most Carbon APIs are not thread-safe, therefore delagate some GUI visibilty update to the main thread */
+            sendEventToMainThread(GetWindowEventTarget(p_vout->p_sys->theWindow), kEventClassVLCPlugin, kEventVLCPluginShowFullscreen);
+        }
+        p_vout->b_fullscreen = !p_vout->b_fullscreen;
+        p_vout->i_changes &= ~VOUT_FULLSCREEN_CHANGE;
+        Unlock( p_vout );
+        aglReshape(p_vout);
+    }
     return VLC_SUCCESS;
 }
 
@@ -539,8 +672,8 @@ static int aglControl( vout_thread_t *p_vout, int i_query, va_list args )
     switch( i_query )
     {
         case VOUT_SET_VIEWPORT:
-	{
-	    Rect viewBounds, clipBounds;
+        {
+            Rect viewBounds, clipBounds;
             viewBounds.top = va_arg( args, int);
             viewBounds.left = va_arg( args, int);
             viewBounds.bottom = va_arg( args, int);
@@ -549,20 +682,27 @@ static int aglControl( vout_thread_t *p_vout, int i_query, va_list args )
             clipBounds.left = va_arg( args, int);
             clipBounds.bottom = va_arg( args, int);
             clipBounds.right = va_arg( args, int);
-	    aglSetViewport(p_vout, viewBounds, clipBounds);
+            
+            if( !p_vout->b_fullscreen ) 
+            {
+                Lock( p_vout );
+                aglSetViewport(p_vout, viewBounds, clipBounds);
+                Unlock( p_vout );
+                aglReshape( p_vout );
+            }
             return VLC_SUCCESS;
-	}
+        }
 
         case VOUT_REPARENT:
-	{
-	    AGLDrawable drawable = (AGLDrawable)va_arg( args, int);
-	    if( drawable != p_vout->p_sys->agl_drawable )
-	    {
-		p_vout->p_sys->agl_drawable = drawable;
-		aglSetDrawable(p_vout->p_sys->agl_ctx, drawable);
-	    }
+        {
+            AGLDrawable drawable = (AGLDrawable)va_arg( args, int);
+            if( !p_vout->b_fullscreen && drawable != p_vout->p_sys->agl_drawable )
+            {
+                p_vout->p_sys->agl_drawable = drawable;
+                aglSetDrawable(p_vout->p_sys->agl_ctx, drawable);
+            }
             return VLC_SUCCESS;
-	}
+        }
 
         default:
             return vout_vaControlDefault( p_vout, i_query, args );
@@ -575,6 +715,7 @@ static void aglSwap( vout_thread_t * p_vout )
     aglSwapBuffers(p_vout->p_sys->agl_ctx);
 }
 
+/* Enter this function with the p_vout locked */
 static void aglSetViewport( vout_thread_t *p_vout, Rect viewBounds, Rect clipBounds )
 {
     // mozilla plugin provides coordinates based on port bounds
@@ -608,6 +749,133 @@ static void aglSetViewport( vout_thread_t *p_vout, Rect viewBounds, Rect clipBou
                             - p_vout->p_sys->i_height; 
 
     aglUpdateContext(p_vout->p_sys->agl_ctx);
-    aglReshape( p_vout );
+}
+
+//default window event handler
+static pascal OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, EventRef event, void *userData)
+{
+    OSStatus result = noErr;
+    UInt32 class = GetEventClass (event);
+    UInt32 kind = GetEventKind (event); 
+    vout_thread_t *p_vout = (vout_thread_t *)userData;
+
+    result = CallNextEventHandler(nextHandler, event);
+    if(class == kEventClassCommand)
+    {
+        HICommand theHICommand;
+        GetEventParameter( event, kEventParamDirectObject, typeHICommand, NULL, sizeof( HICommand ), NULL, &theHICommand );
+        
+        switch ( theHICommand.commandID )
+        {
+            default:
+                result = eventNotHandledErr;
+                break;
+        }
+    }
+    else if(class == kEventClassWindow)
+    {
+        WindowRef     window;
+        Rect          rectPort = {0,0,0,0};
+        
+        GetEventParameter(event, kEventParamDirectObject, typeWindowRef, NULL, sizeof(WindowRef), NULL, &window);
+
+        if(window)
+        {
+            GetPortBounds(GetWindowPort(window), &rectPort);
+        }   
+
+        switch (kind)
+        {
+            case kEventWindowClosed:
+            case kEventWindowZoomed:
+            case kEventWindowBoundsChanged:
+                break;
+            
+            default:
+                result = eventNotHandledErr;
+                break;
+        }
+    }
+    else if(class == kEventClassMouse)
+    {
+        UInt16     button;
+        
+        switch (kind)
+        {
+            case kEventMouseDown:
+                GetEventParameter(event, kEventParamMouseButton, typeMouseButton, NULL, sizeof(button), NULL, &button);
+                switch (button)
+                {
+                    case kEventMouseButtonPrimary:
+                    {
+                        vlc_value_t val;
+
+                        var_Get( p_vout, "mouse-button-down", &val );
+                        val.i_int |= 1;
+                        var_Set( p_vout, "mouse-button-down", val );
+                    }
+                    default:
+                        result = eventNotHandledErr;
+                        break;
+                }
+                break;
+
+            case kEventMouseUp:
+                GetEventParameter(event, kEventParamMouseButton, typeMouseButton, NULL, sizeof(button), NULL, &button);
+                switch (button)
+                {
+                    case kEventMouseButtonPrimary:
+                    {
+                        UInt32 clickCount = 0;
+                        GetEventParameter(event, kEventParamClickCount, typeUInt32, NULL, sizeof(clickCount), NULL, &clickCount);
+                        if( clickCount > 1 )
+                        {
+                            vlc_value_t val;
+
+                            val.b_bool = VLC_FALSE;
+                            var_Set((vout_thread_t *) p_vout->p_parent, "fullscreen", val);
+                        }
+                        else
+                        {
+                            vlc_value_t val;
+
+                            var_Get( p_vout, "mouse-button-down", &val );
+                            val.i_int &= ~1;
+                            var_Set( p_vout, "mouse-button-down", val );
+                        }
+                        break;
+                    }
+                    default:
+                        result = eventNotHandledErr;
+                        break;
+                }
+                break;
+            
+            default:
+                result = eventNotHandledErr;
+                break;
+        }
+    }
+    else if(class == kEventClassVLCPlugin)
+    {
+        switch (kind)
+        {
+            case kEventVLCPluginShowFullscreen:
+                ShowWindow (p_vout->p_sys->theWindow);
+                SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+                //CGDisplayHideCursor(kCGDirectMainDisplay);
+                break;
+            case kEventVLCPluginHideFullscreen:
+                HideWindow (p_vout->p_sys->theWindow);
+                SetSystemUIMode( kUIModeNormal, 0);
+                CGDisplayShowCursor(kCGDirectMainDisplay);
+                //DisposeWindow( p_vout->p_sys->theWindow );
+                break;
+            default:
+                result = eventNotHandledErr;
+                break;
+        }
+    }
+    return result;
 }
 

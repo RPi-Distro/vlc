@@ -1,8 +1,8 @@
 /*****************************************************************************
  * playlist.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: playlist.h 16439 2006-08-30 19:33:55Z hartman $
+ * Copyright (C) 2002-2006 the VideoLAN team
+ * $Id: playlist.h 17491 2006-11-05 19:57:51Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -74,8 +74,6 @@
     IBOutlet id o_playlist_view;
     IBOutlet id o_status_field;
     IBOutlet id o_search_field;
-    IBOutlet id o_random_ckb;
-    IBOutlet id o_loop_popup;
     IBOutlet id o_mi_save_playlist;
     IBOutlet id o_ctx_menu;
 
@@ -119,7 +117,6 @@
 - (void)searchfieldChanged:(NSNotification *)o_notification;
 - (NSMenu *)menuForEvent:(NSEvent *)o_event;
 
-- (IBAction)handlePopUp:(id)sender;
 - (IBAction)searchItem:(id)sender;
 
 - (void)playlistUpdated;

@@ -127,9 +127,6 @@ public:
     };
     inline int getStartTime(void) { return _i_time; };
 
-    void setTime(int time);
-    int  getTime(void) { return _i_time; };
-
     void setBaseURL(BSTR url)
     {
         SysFreeString(_bstr_baseurl);
@@ -164,7 +161,7 @@ public:
             _p_pict->AddRef();
         return _p_pict;
     };
-    
+
     BOOL hasFocus(void);
     void setFocus(BOOL fFocus);
 
@@ -272,4 +269,3 @@ private:
 };
 
 #endif
-

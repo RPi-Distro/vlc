@@ -2,7 +2,7 @@
  * ffmpeg.c: video decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: ffmpeg.c 16801 2006-09-23 11:13:16Z thresh $
+ * $Id: ffmpeg.c 17744 2006-11-13 16:54:19Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -847,6 +847,10 @@ static struct
       VIDEO_ES, "Real Video 10" },
     { VLC_FOURCC('R','V','1','3'), CODEC_ID_RV10,
       VIDEO_ES, "Real Video 13" },
+#if LIBAVCODEC_BUILD >= ((51<<16)+(15<<8)+1)
+    { VLC_FOURCC('R','V','2','0'), CODEC_ID_RV20,
+      VIDEO_ES, "Real Video 20" },
+#endif
 
 #if LIBAVCODEC_BUILD >= 4684
     /* Apple Video */
@@ -1087,10 +1091,22 @@ static struct
       AUDIO_ES, "Cook Audio" },
 #endif
 
+#if LIBAVCODEC_BUILD >= ((51<<16)+(4<<8)+0)
+    /* TTA: The Lossless True Audio */
+    { VLC_FOURCC('T','T','A','1'), CODEC_ID_TTA,
+      AUDIO_ES, "The Lossless True Audio" },
+#endif
+
 #if LIBAVCODEC_BUILD >= ((51<<16)+(8<<8)+0)
     /* Shorten */
     { VLC_FOURCC('s','h','n',' '), CODEC_ID_SHORTEN,
       AUDIO_ES, "Shorten Lossless Audio" },
+#endif
+
+#if LIBAVCODEC_BUILD >= ((51<<16)+(16<<8)+0)
+    /* WavPack */
+    { VLC_FOURCC('W','V','P','K'), CODEC_ID_WAVPACK,
+      AUDIO_ES, "WavPack Lossless Audio" },
 #endif
 
     /* PCM */
@@ -1106,6 +1122,22 @@ static struct
       AUDIO_ES, "PCM U16 LE" },
     { VLC_FOURCC('u','1','6','b'), CODEC_ID_PCM_U16BE,
       AUDIO_ES, "PCM U16 BE" },
+    { VLC_FOURCC('s','2','4','l'), CODEC_ID_PCM_S24LE,
+      AUDIO_ES, "PCM S24 LE" },
+    { VLC_FOURCC('s','2','4','b'), CODEC_ID_PCM_S24BE,
+      AUDIO_ES, "PCM S24 BE" },
+    { VLC_FOURCC('u','2','4','l'), CODEC_ID_PCM_U24LE,
+      AUDIO_ES, "PCM U24 LE" },
+    { VLC_FOURCC('u','2','4','b'), CODEC_ID_PCM_U24BE,
+      AUDIO_ES, "PCM U24 BE" },
+    { VLC_FOURCC('s','3','2','l'), CODEC_ID_PCM_S32LE,
+      AUDIO_ES, "PCM S32 LE" },
+    { VLC_FOURCC('s','3','2','b'), CODEC_ID_PCM_S32BE,
+      AUDIO_ES, "PCM S32 BE" },
+    { VLC_FOURCC('u','3','2','l'), CODEC_ID_PCM_U32LE,
+      AUDIO_ES, "PCM U32 LE" },
+    { VLC_FOURCC('u','3','2','b'), CODEC_ID_PCM_U32BE,
+      AUDIO_ES, "PCM U32 BE" },
     { VLC_FOURCC('a','l','a','w'), CODEC_ID_PCM_ALAW,
       AUDIO_ES, "PCM ALAW" },
     { VLC_FOURCC('u','l','a','w'), CODEC_ID_PCM_MULAW,

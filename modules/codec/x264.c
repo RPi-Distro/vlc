@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: x264.c 17011 2006-10-09 19:17:26Z Trax $
+ * $Id: x264.c 17327 2006-10-28 18:06:45Z Trax $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -75,7 +75,7 @@ static void Close( vlc_object_t * );
 #define B_ADAPT_LONGTEXT N_( "Force the specified number of " \
     "consecutive B-frames to be used, except possibly before an I-frame." )
 
-#define B_BIAS_TEXT N_("B-frames usage")
+#define B_BIAS_TEXT N_("Influence (bias) B-frames usage")
 #define B_BIAS_LONGTEXT N_( "Bias the choice to use B-frames. Positive values " \
     "cause more B-frames, negative values cause less B-frames." )
 
@@ -240,7 +240,7 @@ static void Close( vlc_object_t * );
     "independently select a reference frame, as opposed to only one ref " \
     "per macroblock." )
 
-#define CHROMA_ME_TEXT N_("Ignore chroma in motion estimation")
+#define CHROMA_ME_TEXT N_("Chroma in motion estimation")
 #define CHROMA_ME_LONGTEXT N_( "Chroma ME for subpel and mode decision in " \
     "P-frames.")
 
@@ -310,27 +310,26 @@ static void Close( vlc_object_t * );
 
 #if X264_BUILD >= 24
 static char *enc_me_list[] =
-  { "", "dia", "hex", "umh", "esa" };
+  { "dia", "hex", "umh", "esa" };
 static char *enc_me_list_text[] =
-  { N_("default"), N_("dia"), N_("hex"), N_("umh"), N_("esa") };
+  { N_("dia"), N_("hex"), N_("umh"), N_("esa") };
 #endif
 
 static char *enc_analyse_list[] =
-  { "", "none", "fast", "normal", "slow", "all" };
+  { "none", "fast", "normal", "slow", "all" };
 static char *enc_analyse_list_text[] =
-  { N_("default"), N_("none"), N_("fast"), N_("normal"),
-    N_("slow"), N_("all") };
+  { N_("none"), N_("fast"), N_("normal"), N_("slow"), N_("all") };
 
 #if X264_BUILD >= 45 /* r457 */
 static char *direct_pred_list[] =
-  { "", "none", "spatial", "temporal", "auto" };
+  { "none", "spatial", "temporal", "auto" };
 static char *direct_pred_list_text[] =
-  { N_("default"), N_("none"), N_("spatial"), N_("temporal"), N_("auto") };
+  { N_("none"), N_("spatial"), N_("temporal"), N_("auto") };
 #else
 static char *direct_pred_list[] =
-  { "", "none", "spatial", "temporal" };
+  { "none", "spatial", "temporal" };
 static char *direct_pred_list_text[] =
-  { N_("default"), N_("none"), N_("spatial"), N_("temporal") };
+  { N_("none"), N_("spatial"), N_("temporal") };
 #endif
 
 vlc_module_begin();
@@ -374,14 +373,14 @@ vlc_module_begin();
 
     add_integer( SOUT_CFG_PREFIX "ref", 1, NULL, REF_TEXT,
                  REF_LONGTEXT, VLC_FALSE );
-        add_deprecated( SOUT_CFG_PREFIX "frameref", VLC_FALSE ); /* Deprecated since 0.8.5 */
         change_integer_range( 1, 16 );
+    	add_deprecated( SOUT_CFG_PREFIX "frameref", VLC_FALSE ); /* Deprecated since 0.8.5 */
 
     add_bool( SOUT_CFG_PREFIX "nf", 0, NULL, NF_TEXT,
               NF_LONGTEXT, VLC_FALSE );
         add_deprecated( SOUT_CFG_PREFIX "loopfilter", VLC_FALSE ); /* Deprecated since 0.8.5 */
 
-    add_string( SOUT_CFG_PREFIX "deblock", "", NULL, FILTER_TEXT,
+    add_string( SOUT_CFG_PREFIX "deblock", "0:0", NULL, FILTER_TEXT,
                  FILTER_LONGTEXT, VLC_FALSE );
         add_deprecated( SOUT_CFG_PREFIX "filter", VLC_FALSE ); /* Deprecated since 0.8.6 */
 
@@ -407,13 +406,13 @@ vlc_module_begin();
 
     add_integer( SOUT_CFG_PREFIX "qpmin", 10, NULL, QPMIN_TEXT,
                  QPMIN_LONGTEXT, VLC_FALSE );
-        add_deprecated( SOUT_CFG_PREFIX "qp-min", VLC_FALSE ); /* Deprecated since 0.8.5 */
         change_integer_range( 0, 51 );
+    	add_deprecated( SOUT_CFG_PREFIX "qp-min", VLC_FALSE ); /* Deprecated since 0.8.5 */
 
     add_integer( SOUT_CFG_PREFIX "qpmax", 51, NULL, QPMAX_TEXT,
                  QPMAX_LONGTEXT, VLC_FALSE );
-        add_deprecated( SOUT_CFG_PREFIX "qp-max", VLC_FALSE ); /* Deprecated since 0.8.5 */
         change_integer_range( 0, 51 );
+    	add_deprecated( SOUT_CFG_PREFIX "qp-max", VLC_FALSE ); /* Deprecated since 0.8.5 */
 
     add_integer( SOUT_CFG_PREFIX "qpstep", 4, NULL, QPSTEP_TEXT,
                  QPSTEP_LONGTEXT, VLC_FALSE );
@@ -421,8 +420,8 @@ vlc_module_begin();
 
     add_float( SOUT_CFG_PREFIX "ratetol", 1.0, NULL, RATETOL_TEXT,
                RATETOL_LONGTEXT, VLC_FALSE );
-        add_deprecated( SOUT_CFG_PREFIX "tolerance", VLC_FALSE ); /* Deprecated since 0.8.5 */
         change_float_range( 0, 100 );
+    	add_deprecated( SOUT_CFG_PREFIX "tolerance", VLC_FALSE ); /* Deprecated since 0.8.5 */
 
     add_integer( SOUT_CFG_PREFIX "vbv-maxrate", 0, NULL, VBV_MAXRATE_TEXT,
                  VBV_MAXRATE_LONGTEXT, VLC_FALSE );
@@ -462,8 +461,8 @@ vlc_module_begin();
     /* x264 partitions = none (default). set at least "normal" mode. */
     add_string( SOUT_CFG_PREFIX "partitions", "normal", NULL, ANALYSE_TEXT,
                 ANALYSE_LONGTEXT, VLC_FALSE );
-        add_deprecated( SOUT_CFG_PREFIX "analyse", VLC_FALSE ); /* Deprecated since 0.8.6 */
         change_string_list( enc_analyse_list, enc_analyse_list_text, 0 );
+    	add_deprecated( SOUT_CFG_PREFIX "analyse", VLC_FALSE ); /* Deprecated since 0.8.6 */
 
     add_string( SOUT_CFG_PREFIX "direct", "spatial", NULL, DIRECT_PRED_TEXT,
                 DIRECT_PRED_LONGTEXT, VLC_FALSE );
@@ -492,8 +491,8 @@ vlc_module_begin();
 
     add_integer( SOUT_CFG_PREFIX "subme", 5, NULL, SUBME_TEXT,
                  SUBME_LONGTEXT, VLC_FALSE );
-        add_deprecated( SOUT_CFG_PREFIX "subpel", VLC_FALSE ); /* Deprecated since 0.8.5 */
         change_integer_range( 1, SUBME_MAX );
+    	add_deprecated( SOUT_CFG_PREFIX "subpel", VLC_FALSE ); /* Deprecated since 0.8.5 */
 
 #if X264_BUILD >= 41 /* r368 */
     add_bool( SOUT_CFG_PREFIX "b-rdo", 0, NULL, B_RDO_TEXT,
@@ -554,13 +553,8 @@ vlc_module_begin();
 
 /* Input/Output */
 
-#if defined(__DARWIN__) && defined(__INTEL__)
-    add_bool( SOUT_CFG_PREFIX "asm", 0, NULL, ASM_TEXT,
-              ASM_LONGTEXT, VLC_FALSE );
-#else
     add_bool( SOUT_CFG_PREFIX "asm", 1, NULL, ASM_TEXT,
               ASM_LONGTEXT, VLC_FALSE );
-#endif
 
     /* x264 psnr = 1 (default). disable PSNR computation for speed. */
     add_bool( SOUT_CFG_PREFIX "psnr", 0, NULL, PSNR_TEXT,
@@ -916,7 +910,11 @@ static int  Open ( vlc_object_t *p_this )
     var_Get( p_enc, SOUT_CFG_PREFIX "crf", &val ); 
     if( val.i_int > 0 && val.i_int <= 51 )
     {
+#if X264_BUILD >= 54
+        p_sys->param.rc.f_rf_constant = val.i_int;
+#else
         p_sys->param.rc.i_rf_constant = val.i_int;
+#endif
 #if X264_BUILD >= 48
         p_sys->param.rc.i_rc_method = X264_RC_CRF;
 #endif

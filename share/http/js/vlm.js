@@ -2,7 +2,7 @@
  * vlm.js: VLC media player web interface
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: vlm.js 15200 2006-04-13 13:49:45Z dionoea $
+ * $Id: vlm.js 18265 2006-12-04 14:30:29Z md $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -153,7 +153,7 @@ function vlm_schedule_type_change( name )
 
 function sanitize_input( str )
 {
-    return str.replace( /\\/g, '\\\\').replace( /\'/g, '\\\'' ).replace( /\"/g, '\\\"' ).replace( /^/, '"' ).replace( /$/, '"' ).replace( /\ option\ /g, '" option "' );
+    return str.replace( /\"/g, '\\\"' ).replace( /^/, '"' ).replace( /$/, '"' ).replace( /\ option\ /g, '" option "' );
 }
 
 function update_vlm_add_broadcast()

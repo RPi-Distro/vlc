@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
- * $Id: vlc_messages.h 16439 2006-08-30 19:33:55Z hartman $
+ * $Id: vlc_messages.h 17413 2006-11-01 23:09:50Z damienf $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -196,6 +196,7 @@ void __msg_Destroy ( vlc_object_t * );
 VLC_EXPORT( msg_subscription_t*, __msg_Subscribe, ( vlc_object_t *, int ) );
 VLC_EXPORT( void, __msg_Unsubscribe, ( vlc_object_t *, msg_subscription_t * ) );
 
+extern const char *msg_GetObjectTypeName(int i_object_type );
 
 /**
  * @}

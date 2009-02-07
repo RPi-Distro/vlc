@@ -2,7 +2,7 @@
  * modules.c : Builtin and plugin modules management functions
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: modules.c 16965 2006-10-07 16:02:30Z hartman $
+ * $Id: modules.c 17957 2006-11-22 16:12:56Z courmisch $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -1726,7 +1726,7 @@ static void CacheLoad( vlc_object_t *p_this )
 
     for( i = 0; i < i_cache; i++ )
     {
-        int16_t i_size;
+        uint16_t i_size;
         int i_submodules;
 
         pp_cache[i] = malloc( sizeof(module_cache_t) );
@@ -1805,7 +1805,7 @@ static void CacheLoad( vlc_object_t *p_this )
 int CacheLoadConfig( module_t *p_module, FILE *file )
 {
     int i, j, i_lines;
-    int16_t i_size;
+    uint16_t i_size;
 
     /* Calculate the structure length */
     LOAD_IMMEDIATE( p_module->i_config_items );
@@ -2006,8 +2006,8 @@ static void CacheSave( vlc_object_t *p_this )
 
     for( i = 0; i < i_cache; i++ )
     {
-        int16_t i_size;
-        int32_t i_submodule;
+        uint16_t i_size;
+        uint32_t i_submodule;
 
         /* Save common info */
         SAVE_STRING( pp_cache[i]->psz_file );
@@ -2040,7 +2040,7 @@ static void CacheSave( vlc_object_t *p_this )
 
         i_submodule = pp_cache[i]->p_module->i_children;
         SAVE_IMMEDIATE( i_submodule );
-        for( i_submodule = 0; i_submodule < pp_cache[i]->p_module->i_children;
+        for( i_submodule = 0; i_submodule < (unsigned)pp_cache[i]->p_module->i_children;
              i_submodule++ )
         {
             module_t *p_module =
@@ -2076,7 +2076,7 @@ void CacheSaveConfig( module_t *p_module, FILE *file )
 {
     int i, j, i_lines = 0;
     module_config_t *p_item;
-    int16_t i_size;
+    uint16_t i_size;
 
     SAVE_IMMEDIATE( p_module->i_config_items );
     SAVE_IMMEDIATE( p_module->i_bool_items );

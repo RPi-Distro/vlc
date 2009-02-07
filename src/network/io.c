@@ -2,7 +2,7 @@
  * io.c: network I/O functions
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: io.c 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: io.c 17659 2006-11-11 16:50:15Z md $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -113,7 +113,7 @@ int net_Socket( vlc_object_t *p_this, int i_family, int i_socktype,
 # endif
     if( i_family == AF_INET6 )
     {
-        i_val = 30 /*PROTECTION_LEVEL_UNRESTRICTED*/;
+        i_val = 10 /*PROTECTION_LEVEL_UNRESTRICTED*/;
         setsockopt( fd, IPPROTO_IPV6, IPV6_PROTECTION_LEVEL,
                    (const char*)&i_val, sizeof( i_val ) );
     }

@@ -36,7 +36,6 @@ CRCCheck on
 InstType "Recommended"
 InstType "Minimum"
 InstType "Full"
-InstType "Recommended"
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ; NSIS Modern User Interface configuration ;
@@ -175,9 +174,9 @@ Function RegisterExtension
 NoBackup:
   WriteRegStr HKCR "$R0" "" "VLC$R0"
   ReadRegStr $0 HKCR "VLC$R0" ""
-  WriteRegStr HKCR "VLC$R0" "" "VLC media file"
+  WriteRegStr HKCR "VLC$R0" "" "VLC media file ($R0)"
   WriteRegStr HKCR "VLC$R0\shell" "" "Play"
-  WriteRegStr HKCR "VLC$R0\shell\Play\command" "" '"$INSTDIR\vlc.exe" --one-instance-when-started-from-file "%1"'
+  WriteRegStr HKCR "VLC$R0\shell\Play\command" "" '"$INSTDIR\vlc.exe" --started-from-file "%1"'
   WriteRegStr HKCR "VLC$R0\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
 FunctionEnd
 
@@ -197,7 +196,7 @@ NoOwn:
 FunctionEnd
 
 !macro RegisterExtensionSection EXT
-  Section /o ${EXT}
+  Section ${EXT}
     SectionIn 1 3
     Push $R0
     StrCpy $R0 ${EXT}
@@ -223,10 +222,10 @@ FunctionEnd
 
 !macro AddContextMenu EXT
   WriteRegStr HKCR ${EXT}\shell\PlayWithVLC "" "Play with VLC media player"
-  WriteRegStr HKCR ${EXT}\shell\PlayWithVLC\command "" '$INSTDIR\vlc.exe --one-instance-when-started-from-file --no-playlist-enqueue "%1"'
+  WriteRegStr HKCR ${EXT}\shell\PlayWithVLC\command "" '$INSTDIR\vlc.exe --started-from-file --no-playlist-enqueue "%1"'
 
   WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLC "" "Add to VLC media player's Playlist"
-  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLC\command "" '$INSTDIR\vlc.exe --one-instance-when-started-from-file --playlist-enqueue "%1"'
+  WriteRegStr HKCR ${EXT}\shell\AddToPlaylistVLC\command "" '$INSTDIR\vlc.exe --started-from-file --playlist-enqueue "%1"'
 !macroend
 
 !macro DeleteContextMenu EXT
@@ -239,7 +238,6 @@ FunctionEnd
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 !macro delprefs
-  SectionIn 1 3
   StrCpy $0 0
   !define Index 'Line${__LINE__}'
   "${Index}-Loop:"
@@ -341,9 +339,9 @@ Section "Media player (required)" SEC01
   !insertmacro InstallFolder skins
   !insertmacro InstallFolder http
 
-  WriteIniStr "$INSTDIR\${PRODUCT_NAME}.url" "InternetShortcut" "URL" \
+  WriteIniStr "$INSTDIR\${PRODUCT_GROUP} Website.url" "InternetShortcut" "URL" \
     "${PRODUCT_WEB_SITE}"
-  FileWrite $UninstallLog "${PRODUCT_NAME}.url$\r$\n"
+  FileWrite $UninstallLog "${PRODUCT_GROUP} Website.url$\r$\n"
   WriteIniStr "$INSTDIR\Documentation.url" "InternetShortcut" "URL" \
     "${PRODUCT_WEB_SITE}/doc/"
   FileWrite $UninstallLog "Documentation.url$\r$\n"
@@ -355,15 +353,15 @@ Section "Media player (required)" SEC01
   WriteRegStr HKCR Applications\vlc.exe "FriendlyAppName" "VLC media player"
   WriteRegStr HKCR Applications\vlc.exe\shell\Play "" "Play with VLC"
   WriteRegStr HKCR Applications\vlc.exe\shell\Play\command "" \
-    '$INSTDIR\vlc.exe --one-instance-when-started-from-file "%1"'
+    '$INSTDIR\vlc.exe --started-from-file "%1"'
   !insertmacro MacroAllExtensions WriteRegStrSupportedTypes
 
   WriteRegStr HKCR "AudioCD\shell\PlayWithVLC" "" "Play with VLC media player"
   WriteRegStr HKCR "AudioCD\shell\PlayWithVLC\command" "" \
-    "$INSTDIR\vlc.exe --one-instance-when-started-from-file cdda:%1"
+    "$INSTDIR\vlc.exe --started-from-file cdda:%1"
   WriteRegStr HKCR "DVD\shell\PlayWithVLC" "" "Play with VLC media player"
   WriteRegStr HKCR "DVD\shell\PlayWithVLC\command" "" \
-    "$INSTDIR\vlc.exe --one-instance-when-started-from-file dvd:%1"
+    "$INSTDIR\vlc.exe --started-from-file dvd:%1"
 
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDMovieOnArrival" "VLCPlayDVDMovieOnArrival" ""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayDVDMovieOnArrival" "Action" "Play DVD movie"
@@ -374,19 +372,19 @@ Section "Media player (required)" SEC01
 
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayCDAudioOnArrival" "VLCPlayCDAudioOnArrival" ""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayCDAudioOnArrival" "Action" "Play CD audio"
-  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayCDAudioOnArrival" "DefaultIcon" '"$INSTDIR\vlc.exe --one-instance-when-started-from-file",0'
+  WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayCDAudioOnArrival" "DefaultIcon" '"$INSTDIR\vlc.exe --started-from-file",0'
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayCDAudioOnArrival" "InvokeProgID" "VLC.CDAudio"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayCDAudioOnArrival" "InvokeVerb" "play"
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayCDAudioOnArrival" "Provider" "VideoLAN VLC media player"
   WriteRegStr HKCR "VLC.DVDMovie" "" "VLC DVD Movie"
   WriteRegStr HKCR "VLC.DVDMovie\shell" "" "Play"
   WriteRegStr HKCR "VLC.DVDMovie\shell\Play\command" "" \
-    '$INSTDIR\vlc.exe --one-instance-when-started-from-file dvd:%1'
+    '$INSTDIR\vlc.exe --started-from-file dvd:%1'
   WriteRegStr HKCR "VLC.DVDMovie\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
   WriteRegStr HKCR "VLC.CDAudio" "" "VLC CD Audio"
   WriteRegStr HKCR "VLC.CDAudio\shell" "" "Play"
   WriteRegStr HKCR "VLC.CDAudio\shell\Play\command" "" \
-    '$INSTDIR\vlc.exe --one-instance-when-started-from-file cdda:%1'
+    '$INSTDIR\vlc.exe --started-from-file cdda:%1'
   WriteRegStr HKCR "VLC.CDAudio\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
 
 SectionEnd
@@ -394,18 +392,41 @@ SectionEnd
 Section "Start Menu Shortcut" SEC02a
   SectionIn 1 2 3
   CreateDirectory "$SMPROGRAMS\VideoLAN"
-  CreateShortCut "$SMPROGRAMS\VideoLAN\VLC media player.lnk" \
-    "$INSTDIR\vlc.exe" "--intf wx --wx-embed"
-  CreateShortCut "$SMPROGRAMS\VideoLAN\VLC media player (alt).lnk" \
-    "$INSTDIR\vlc.exe" "--intf wx --no-wx-embed"
-  CreateShortCut "$SMPROGRAMS\VideoLAN\VLC media player (skins).lnk" \
-    "$INSTDIR\vlc.exe" "--intf skins"
-  CreateShortCut "$SMPROGRAMS\VideoLAN\Reset VLC defaults and quit.lnk" \
-    "$INSTDIR\vlc.exe" "--reset-config --reset-plugins-cache --save-config vlc:quit "
-  CreateShortCut "$SMPROGRAMS\VideoLAN\${PRODUCT_NAME} Website.lnk" \
-    "$INSTDIR\${PRODUCT_NAME}.url"
+  CreateDirectory "$SMPROGRAMS\VideoLAN\Quick Settings"
+  CreateDirectory "$SMPROGRAMS\VideoLAN\Quick Settings\Audio"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Audio\Set Audio mode to DirectX (default).lnk" \
+    "$INSTDIR\vlc.exe" "--aout aout_directx --save-config vlc:quit"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Audio\Set Audio mode to Waveout.lnk" \
+    "$INSTDIR\vlc.exe" "--aout waveout --save-config vlc:quit"
+  CreateDirectory "$SMPROGRAMS\VideoLAN\Quick Settings\Interface"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Interface\Set Main Interface to Skinnable.lnk" \
+    "$INSTDIR\vlc.exe" "-I skins --save-config vlc:quit"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Interface\Set Main Interface to wxWidgets (default).lnk" \
+    "$INSTDIR\vlc.exe" "-I wxwin --save-config vlc:quit"
+  CreateDirectory "$SMPROGRAMS\VideoLAN\Quick Settings\Video"
+  ; FIXME add detection for Vista. Direct3D will be default there, for all others it's DirectX
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Video\Set Video mode to Direct3D.lnk" \
+    "$INSTDIR\vlc.exe" "--vout direct3d --overlay --directx-hw-yuv --save-config vlc:quit"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Video\Set Video mode to Direct3D (no hardware acceleration).lnk" \
+    "$INSTDIR\vlc.exe" "--vout direct3d --overlay --no-directx-hw-yuv --save-config vlc:quit"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Video\Set Video mode to DirectX.lnk" \
+    "$INSTDIR\vlc.exe" "--vout directx --overlay --directx-hw-yuv --save-config vlc:quit"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Video\Set Video mode to DirectX (no hardware acceleration).lnk" \
+    "$INSTDIR\vlc.exe" "--vout directx --no-overlay --no-directx-hw-yuv --save-config vlc:quit"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Video\Set Video mode to DirectX (no video overlay).lnk" \
+    "$INSTDIR\vlc.exe" "--vout directx --no-overlay --directx-hw-yuv --save-config vlc:quit"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Video\Set Video mode to OpenGL.lnk" \
+    "$INSTDIR\vlc.exe" "--vout opengl --overlay --save-config vlc:quit"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Quick Settings\Reset VLC media player preferences and cache files.lnk" \
+    "$INSTDIR\vlc.exe" "--reset-config --reset-plugins-cache --save-config vlc:quit"
   CreateShortCut "$SMPROGRAMS\VideoLAN\Documentation.lnk" \
     "$INSTDIR\Documentation.url"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\Release Notes.lnk" \
+    "$INSTDIR\NEWS.txt" ""
+  CreateShortCut "$SMPROGRAMS\VideoLAN\${PRODUCT_GROUP} Website.lnk" \
+    "$INSTDIR\${PRODUCT_GROUP} Website.url"
+  CreateShortCut "$SMPROGRAMS\VideoLAN\VLC media player.lnk" \
+    "$INSTDIR\vlc.exe" ""
 SectionEnd
 
 Section "Desktop Shortcut" SEC02b
@@ -415,49 +436,49 @@ Section "Desktop Shortcut" SEC02b
 SectionEnd
 
 Section /o "Mozilla plugin" SEC03
-  SectionIn 1 3
+  SectionIn 3
 
+  SetOutPath "$INSTDIR"
   !insertmacro OpenUninstallLog
-  !insertmacro InstallFolder mozilla
+  !insertmacro InstallFile mozilla\npvlc.dll
   !insertmacro CloseUninstallLog
 
-  ; doesn't work. bug in mozilla/mozilla firefox or moz documentation (xpt file isn't loaded)
-  ; see mozilla bugs 184506 and 159445
-  ;!define Moz "SOFTWARE\MozillaPlugins\@videolan.org/vlc,version=${VERSION}"
-  ;WriteRegStr HKLM ${Moz} "Description" "VideoLAN VLC plugin for Mozilla"
-  ;WriteRegStr HKLM ${Moz} "Path" "$INSTDIR\mozilla\npvlc.dll"
-  ;WriteRegStr HKLM ${Moz} "Product" "VLC media player"
-  ;WriteRegStr HKLM ${Moz} "Vendor" "VideoLAN"
-  ;WriteRegStr HKLM ${Moz} "Version" "${VERSION}"
+  !define Moz "SOFTWARE\MozillaPlugins\@videolan.org/vlc,version=${VERSION}"
+  WriteRegStr HKLM ${Moz} "Description" "VLC Multimedia Plugin"
+  WriteRegStr HKLM ${Moz} "Path" "$INSTDIR\npvlc.dll"
+  WriteRegStr HKLM ${Moz} "Product" "VLC media player"
+  WriteRegStr HKLM ${Moz} "Vendor" "VideoLAN"
+  WriteRegStr HKLM ${Moz} "Version" "${VERSION}"
 
-  Push $R0
-  Push $R1
-  Push $R2
+ ; for very old version of mozilla, these lines may be needed 
+ ;Push $R0
+ ;Push $R1
+ ;Push $R2
 
-  !define Index 'Line${__LINE__}'
-  StrCpy $R1 "0"
+ ;!define Index 'Line${__LINE__}'
+ ;StrCpy $R1 "0"
 
-  "${Index}-Loop:"
+ ;"${Index}-Loop:"
 
-    ; Check for Key
-    EnumRegKey $R0 HKLM "SOFTWARE\Mozilla" "$R1"
-    StrCmp $R0 "" "${Index}-End"
-    IntOp $R1 $R1 + 1
-    ReadRegStr $R2 HKLM "SOFTWARE\Mozilla\$R0\Extensions" "Plugins"
-    StrCmp $R2 "" "${Index}-Loop" ""
+ ;  ; Check for Key
+ ;  EnumRegKey $R0 HKLM "SOFTWARE\Mozilla" "$R1"
+ ;  StrCmp $R0 "" "${Index}-End"
+ ;  IntOp $R1 $R1 + 1
+ ;  ReadRegStr $R2 HKLM "SOFTWARE\Mozilla\$R0\Extensions" "Plugins"
+ ;  StrCmp $R2 "" "${Index}-Loop" ""
 
-    CopyFiles "$INSTDIR\mozilla\*" "$R2"
-    !ifdef LIBVLC_DLL
-    CopyFiles ${LIBVLC_DLL} "$R2"
-    !endif
-    Goto "${Index}-Loop"
+ ;  CopyFiles "$INSTDIR\npvlc.dll" "$R2"
+ ;  !ifdef LIBVLC_DLL
+ ;  CopyFiles ${LIBVLC_DLL} "$R2"
+ ;  !endif
+ ;  Goto "${Index}-Loop"
 
-  "${Index}-End:"
-  !undef Index
+ ;"${Index}-End:"
+ ;!undef Index
 
 SectionEnd
 
-Section /o "ActiveX plugin" SEC04
+Section "ActiveX plugin" SEC04
   SectionIn 1 3
   SetOutPath "$INSTDIR"
   !insertmacro OpenUninstallLog
@@ -611,6 +632,7 @@ Section "Uninstall" SEC91
   !insertmacro MacroAllExtensions UnRegisterExtensionSection
   !insertmacro DeleteContextMenu "Directory"
 
+  ;remove activex plugin
   UnRegDLL "$INSTDIR\axvlc.dll"
   Delete /REBOOTOK "$INSTDIR\axvlc.dll"
 
@@ -631,11 +653,15 @@ Section "Uninstall" SEC91
     ReadRegStr $R2 HKLM "SOFTWARE\Mozilla\$R0\Extensions" "Plugins"
     StrCmp $R2 "" "${Index}-Loop" ""
 
-    Delete "$R2\npvlc.dll"
+    ; old files (0.8.5 and before) that may be lying around
+    Delete /REBOOTOK "$R2\npvlc.dll"
+    Delete /REBOOTOK "$R2\libvlc.dll"
+    Delete /REBOOTOK "$R2\vlcintf.xpt"
     Goto "${Index}-Loop"
 
   "${Index}-End:"
   !undef Index
+  Delete /REBOOTOK "$INSTDIR\npvlc.dll"
 
   RMDir "$SMPROGRAMS\VideoLAN"
   RMDir /r $SMPROGRAMS\VideoLAN
@@ -683,7 +709,6 @@ Section "Uninstall" SEC91
 SectionEnd
 
 Section /o "un.Delete preferences and cache" SEC92
-  SectionIn 1 3
   !insertmacro delprefs
 SectionEnd
 

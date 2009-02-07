@@ -302,31 +302,67 @@ target_os = @target_os@
 target_vendor = @target_vendor@
 uudecode = @uudecode@
 
-@BUILD_JAVA_TRUE@OBJECTS = org/videolan/jvlc/JVLCCanvas.class org/videolan/jvlc/JVLCPanel.class org/videolan/jvlc/AudioIntf.class org/videolan/jvlc/InputIntf.class org/videolan/jvlc/PlaylistIntf.class org/videolan/jvlc/VideoIntf.class org/videolan/jvlc/VLMIntf.class org/videolan/jvlc/Playlist.class org/videolan/jvlc/JLibVLC.class org/videolan/jvlc/JVLC.class org/videolan/jvlc/SWTVideoWidget.class
+SUBDIRS = . src
 
-@BUILD_JAVA_TRUE@JNIHEADERS = org_videolan_jvlc_JVLC.h org_videolan_jvlc_JVLCCanvas.h org_videolan_jvlc_JVLCPanel.h
+EXTRA_DIST = \
+	    FAQ \
+	    TODO \
+	    README \
+	    THANKS \
+	    javadoc.xml \
+	    VlcClient.java \
+	    VLCExample.java\
+\
+	org/videolan/jvlc/AudioIntf.java \
+	org/videolan/jvlc/Audio.java \
+	org/videolan/jvlc/GenericVideoWidget.java \
+	org/videolan/jvlc/InputIntf.java \
+	org/videolan/jvlc/Input.java \
+	org/videolan/jvlc/JLibVLC.java \
+	org/videolan/jvlc/JVLCCanvas.java \
+	org/videolan/jvlc/JVLC.java \
+	org/videolan/jvlc/JVLCPanel.java \
+	org/videolan/jvlc/PlaylistIntf.java \
+	org/videolan/jvlc/Playlist.java \
+	org/videolan/jvlc/VideoIntf.java \
+	org/videolan/jvlc/Video.java \
+	org/videolan/jvlc/VLCException.java \
+	org/videolan/jvlc/VLMIntf.java \
+	org/videolan/jvlc/VLM.java 
+
+
+OBJECTS = org/videolan/jvlc/VLCException.class org/videolan/jvlc/Playlist.class org/videolan/jvlc/AudioIntf.class org/videolan/jvlc/Audio.class org/videolan/jvlc/InputIntf.class org/videolan/jvlc/Input.class org/videolan/jvlc/PlaylistIntf.class org/videolan/jvlc/VideoIntf.class org/videolan/jvlc/Video.class org/videolan/jvlc/JLibVLC.class org/videolan/jvlc/JVLC.class org/videolan/jvlc/JVLCCanvas.class org/videolan/jvlc/JVLCPanel.class org/videolan/jvlc/VLMIntf.class org/videolan/jvlc/VLM.class  org/videolan/jvlc/GenericVideoWidget.class
+
+COBJECTS = src/utils.o src/video-jni.o src/audio-jni.o src/input-jni.o src/playlist-jni.o src/vlm-jni.o src/core-jni.o src/graphics-jni.o
 
 # Include some JAVA stuff
 @BUILD_JAVA_TRUE@PROCESSOR_FAMILY = `uname -m | sed -e 's/^i.86/i386/' | sed -e 's/^x86_64/amd64/'`
-@BUILD_JAVA_TRUE@JINCLUDES = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
-@BUILD_JAVA_TRUE@LIBJINCLUDES = -L$(JAVA_HOME)/jre/lib/$(PROCESSOR_FAMILY) -ljawt
-@BUILD_JAVA_TRUE@SWT_PATH = /usr/share/java
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@JINCLUDES = -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux
 
-# Binaries
-@BUILD_JAVA_TRUE@JCC = gcj -g -I${SWT_PATH}/swt-gtk.jar
-@BUILD_JAVA_TRUE@JCH = gcjh -jni
-
-# Compile flags
-@BUILD_JAVA_TRUE@JAVACXXFLAGS = `top_builddir=../.. ../../vlc-config --cflags pic` -I../../ -I ../../include $(JINCLUDES)
-@BUILD_JAVA_TRUE@JAVALDFLAGS = -L../../lib -lvlc_pic `top_builddir=../.. ../../vlc-config --libs builtin vlc pic`
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@JINCLUDES = -I${JAVA_HOME}/include -I${JAVA_HOME}/include/win32
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@LIBJINCLUDES = -L$(JAVA_HOME)/jre/lib/$(PROCESSOR_FAMILY) -ljawt
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@LIBJINCLUDES = -L${JAVA_HOME}/lib -ljawt
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@JCH = gcjh -jni
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@JCH = javah
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@JAVACXXFLAGS = `top_builddir=../.. ../../vlc-config --cflags pic` -I../../ -I ../../include $(JINCLUDES)
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@JAVACXXFLAGS = `top_builddir=../.. ../../vlc-config --cflags pic` -I../../ -I ../../include $(JINCLUDES)
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@JAVALDFLAGS = -L../../src -lvlc `top_builddir=../.. ../../vlc-config --libs builtin vlc pic`
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@JAVALDFLAGS = -mno-cygwin -L../../src -lvlc `top_builddir=../.. ../../vlc-config --libs builtin vlc pic` -Wl,--kill-at
 subdir = bindings/java
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 mkinstalldirs = $(SHELL) $(top_srcdir)/autotools/mkinstalldirs
 CONFIG_HEADER = $(top_builddir)/config.h
 CONFIG_CLEAN_FILES =
 DIST_SOURCES =
-DIST_COMMON = README $(srcdir)/Makefile.in Makefile.am TODO
-all: all-am
+
+RECURSIVE_TARGETS = info-recursive dvi-recursive pdf-recursive \
+	ps-recursive install-info-recursive uninstall-info-recursive \
+	all-recursive install-data-recursive install-exec-recursive \
+	installdirs-recursive install-recursive uninstall-recursive \
+	check-recursive installcheck-recursive
+DIST_COMMON = README $(srcdir)/Makefile.in Makefile.am THANKS TODO
+DIST_SUBDIRS = $(SUBDIRS)
+all: all-recursive
 
 .SUFFIXES:
 $(srcdir)/Makefile.in: @MAINTAINER_MODE_TRUE@ Makefile.am  $(top_srcdir)/configure.ac $(ACLOCAL_M4)
@@ -344,18 +380,137 @@ clean-libtool:
 distclean-libtool:
 	-rm -f libtool
 uninstall-info-am:
+
+# This directory's subdirectories are mostly independent; you can cd
+# into them and run `make' without going through this Makefile.
+# To change the values of `make' variables: instead of editing Makefiles,
+# (1) if the variable is set in `config.status', edit `config.status'
+#     (which will cause the Makefiles to be regenerated when you run `make');
+# (2) otherwise, pass the desired values on the `make' command line.
+$(RECURSIVE_TARGETS):
+	@set fnord $$MAKEFLAGS; amf=$$2; \
+	dot_seen=no; \
+	target=`echo $@ | sed s/-recursive//`; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    dot_seen=yes; \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done; \
+	if test "$$dot_seen" = "no"; then \
+	  $(MAKE) $(AM_MAKEFLAGS) "$$target-am" || exit 1; \
+	fi; test -z "$$fail"
+
+mostlyclean-recursive clean-recursive distclean-recursive \
+maintainer-clean-recursive:
+	@set fnord $$MAKEFLAGS; amf=$$2; \
+	dot_seen=no; \
+	case "$@" in \
+	  distclean-* | maintainer-clean-*) list='$(DIST_SUBDIRS)' ;; \
+	  *) list='$(SUBDIRS)' ;; \
+	esac; \
+	rev=''; for subdir in $$list; do \
+	  if test "$$subdir" = "."; then :; else \
+	    rev="$$subdir $$rev"; \
+	  fi; \
+	done; \
+	rev="$$rev ."; \
+	target=`echo $@ | sed s/-recursive//`; \
+	for subdir in $$rev; do \
+	  echo "Making $$target in $$subdir"; \
+	  if test "$$subdir" = "."; then \
+	    local_target="$$target-am"; \
+	  else \
+	    local_target="$$target"; \
+	  fi; \
+	  (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) $$local_target) \
+	   || case "$$amf" in *=*) exit 1;; *k*) fail=yes;; *) exit 1;; esac; \
+	done && test -z "$$fail"
+tags-recursive:
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) tags); \
+	done
+ctags-recursive:
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  test "$$subdir" = . || (cd $$subdir && $(MAKE) $(AM_MAKEFLAGS) ctags); \
+	done
+
+ETAGS = etags
+ETAGSFLAGS =
+
+CTAGS = ctags
+CTAGSFLAGS =
+
 tags: TAGS
-TAGS:
+
+ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
+	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	mkid -fID $$unique
+
+TAGS: tags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	if (etags --etags-include --version) >/dev/null 2>&1; then \
+	  include_option=--etags-include; \
+	else \
+	  include_option=--include; \
+	fi; \
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  if test "$$subdir" = .; then :; else \
+	    test -f $$subdir/TAGS && \
+	      tags="$$tags $$include_option=$$here/$$subdir/TAGS"; \
+	  fi; \
+	done; \
+	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(ETAGS_ARGS)$$tags$$unique" \
+	  || $(ETAGS) $(ETAGSFLAGS) $(AM_ETAGSFLAGS) $(ETAGS_ARGS) \
+	     $$tags $$unique
 
 ctags: CTAGS
-CTAGS:
+CTAGS: ctags-recursive $(HEADERS) $(SOURCES)  $(TAGS_DEPENDENCIES) \
+		$(TAGS_FILES) $(LISP)
+	tags=; \
+	here=`pwd`; \
+	list='$(SOURCES) $(HEADERS)  $(LISP) $(TAGS_FILES)'; \
+	unique=`for i in $$list; do \
+	    if test -f "$$i"; then echo $$i; else echo $(srcdir)/$$i; fi; \
+	  done | \
+	  $(AWK) '    { files[$$0] = 1; } \
+	       END { for (i in files) print i; }'`; \
+	test -z "$(CTAGS_ARGS)$$tags$$unique" \
+	  || $(CTAGS) $(CTAGSFLAGS) $(AM_CTAGSFLAGS) $(CTAGS_ARGS) \
+	     $$tags $$unique
 
+GTAGS:
+	here=`$(am__cd) $(top_builddir) && pwd` \
+	  && cd $(top_srcdir) \
+	  && gtags -i $(GTAGS_ARGS) $$here
+
+distclean-tags:
+	-rm -f TAGS ID GTAGS GRTAGS GSYMS GPATH tags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 
 top_distdir = ../..
 distdir = $(top_distdir)/$(PACKAGE)-$(VERSION)
 
 distdir: $(DISTFILES)
+	$(mkinstalldirs) $(distdir)/org/videolan/jvlc
 	@srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`; \
 	topsrcdirstrip=`echo "$(top_srcdir)" | sed 's|.|.|g'`; \
 	list='$(DISTFILES)'; for file in $$list; do \
@@ -382,20 +537,34 @@ distdir: $(DISTFILES)
 	    || exit 1; \
 	  fi; \
 	done
+	list='$(SUBDIRS)'; for subdir in $$list; do \
+	  if test "$$subdir" = .; then :; else \
+	    test -d $(distdir)/$$subdir \
+	    || mkdir $(distdir)/$$subdir \
+	    || exit 1; \
+	    (cd $$subdir && \
+	      $(MAKE) $(AM_MAKEFLAGS) \
+	        top_distdir="$(top_distdir)" \
+	        distdir=../$(distdir)/$$subdir \
+	        distdir) \
+	      || exit 1; \
+	  fi; \
+	done
 check-am: all-am
-check: check-am
+check: check-recursive
 all-am: Makefile
+installdirs: installdirs-recursive
+installdirs-am:
 
-installdirs:
-install: install-am
-install-exec: install-exec-am
-install-data: install-data-am
-uninstall: uninstall-am
+install: install-recursive
+install-exec: install-exec-recursive
+install-data: install-data-recursive
+uninstall: uninstall-recursive
 
 install-am: all-am
 	@$(MAKE) $(AM_MAKEFLAGS) install-exec-am install-data-am
 
-installcheck: installcheck-am
+installcheck: installcheck-recursive
 install-strip:
 	$(MAKE) $(AM_MAKEFLAGS) INSTALL_PROGRAM="$(INSTALL_STRIP_PROGRAM)" \
 	  install_sh_PROGRAM="$(INSTALL_STRIP_PROGRAM)" INSTALL_STRIP_FLAG=-s \
@@ -411,19 +580,20 @@ distclean-generic:
 maintainer-clean-generic:
 	@echo "This command is intended for maintainers to use"
 	@echo "it deletes files that may require special tools to rebuild."
-clean: clean-am
+clean: clean-recursive
 
-clean-am: clean-generic clean-libtool mostlyclean-am
+clean-am: clean-generic clean-libtool clean-local mostlyclean-am
 
-distclean: distclean-am
+distclean: distclean-recursive
 	-rm -f Makefile
-distclean-am: clean-am distclean-generic distclean-libtool
+distclean-am: clean-am distclean-generic distclean-libtool \
+	distclean-tags
 
-dvi: dvi-am
+dvi: dvi-recursive
 
 dvi-am:
 
-info: info-am
+info: info-recursive
 
 info-am:
 
@@ -431,62 +601,77 @@ install-data-am:
 
 install-exec-am:
 
-install-info: install-info-am
+install-info: install-info-recursive
 
 install-man:
 
 installcheck-am:
 
-maintainer-clean: maintainer-clean-am
+maintainer-clean: maintainer-clean-recursive
 	-rm -f Makefile
 maintainer-clean-am: distclean-am maintainer-clean-generic
 
-mostlyclean: mostlyclean-am
+mostlyclean: mostlyclean-recursive
 
 mostlyclean-am: mostlyclean-generic mostlyclean-libtool
 
-pdf: pdf-am
+pdf: pdf-recursive
 
 pdf-am:
 
-ps: ps-am
+ps: ps-recursive
 
 ps-am:
 
 uninstall-am: uninstall-info-am
 
-.PHONY: all all-am check check-am clean clean-generic clean-libtool \
-	distclean distclean-generic distclean-libtool distdir dvi \
-	dvi-am info info-am install install-am install-data \
-	install-data-am install-exec install-exec-am install-info \
-	install-info-am install-man install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-generic \
-	mostlyclean-libtool pdf pdf-am ps ps-am uninstall uninstall-am \
-	uninstall-info-am
+uninstall-info: uninstall-info-recursive
 
+.PHONY: $(RECURSIVE_TARGETS) CTAGS GTAGS all all-am check check-am clean \
+	clean-generic clean-libtool clean-local clean-recursive ctags \
+	ctags-recursive distclean distclean-generic distclean-libtool \
+	distclean-recursive distclean-tags distdir dvi dvi-am \
+	dvi-recursive info info-am info-recursive install install-am \
+	install-data install-data-am install-data-recursive \
+	install-exec install-exec-am install-exec-recursive \
+	install-info install-info-am install-info-recursive install-man \
+	install-recursive install-strip installcheck installcheck-am \
+	installdirs installdirs-am installdirs-recursive \
+	maintainer-clean maintainer-clean-generic \
+	maintainer-clean-recursive mostlyclean mostlyclean-generic \
+	mostlyclean-libtool mostlyclean-recursive pdf pdf-am \
+	pdf-recursive ps ps-am ps-recursive tags tags-recursive \
+	uninstall uninstall-am uninstall-info-am \
+	uninstall-info-recursive uninstall-recursive
+
+
+@BUILD_JAVA_TRUE@export JINCLUDES
 
 # Build targets
-@BUILD_JAVA_TRUE@all: libjvlc.so VlcClient
+@BUILD_JAVA_TRUE@all: libjvlc.so VlcClient VLCExample
 
-@BUILD_JAVA_TRUE@libjvlc.so: vlc-libvlc-jni.o vlc-graphics-jni.o
-@BUILD_JAVA_TRUE@	$(CXX) -shared vlc-libvlc-jni.o vlc-graphics-jni.o $(LIBJINCLUDES) $(LDFLAGS) $(JAVALDFLAGS) -o libjvlc.so
-
-@BUILD_JAVA_TRUE@vlc-graphics-jni.o: VlcClient
-@BUILD_JAVA_TRUE@	$(CXX) -c vlc-graphics-jni.cc $(CXXFLAGS) $(JAVACXXFLAGS)
-
-@BUILD_JAVA_TRUE@vlc-libvlc-jni.o: VlcClient
-@BUILD_JAVA_TRUE@	$(CXX) -c vlc-libvlc-jni.cc $(CXXFLAGS) $(JAVACXXFLAGS)
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@libjvlc.so: $(OBJECTS)
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@	$(MAKE) -C src
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@	$(CXX) -shared $(COBJECTS) $(LIBJINCLUDES) $(LDFLAGS) $(JAVALDFLAGS) -o jvlc.dll
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@libjvlc.so: $(OBJECTS) 	
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@	$(MAKE) -C src
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@	$(CXX) -shared $(COBJECTS) $(LIBJINCLUDES) $(LDFLAGS) $(JAVALDFLAGS) -o libjvlc.so
 
 @BUILD_JAVA_TRUE@VlcClient: $(OBJECTS)
-@BUILD_JAVA_TRUE@	$(JCC) -C VlcClient.java
+@BUILD_JAVA_TRUE@	$(JAVAC) VlcClient.java
 
-@BUILD_JAVA_TRUE@%.class: %.java
-@BUILD_JAVA_TRUE@	$(JCC) -C $?
-@BUILD_JAVA_TRUE@	$(JCH) org/videolan/jvlc/$(*F)
+@BUILD_JAVA_TRUE@VLCExample: $(OBJECTS)
+@BUILD_JAVA_TRUE@	$(JAVAC) VLCExample.java
 
-@BUILD_JAVA_TRUE@clean:
-@BUILD_JAVA_TRUE@	rm -f *.class *~ org/videolan/jvlc/*.class org_videolan*.h *.so *.o
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@%.class: %.java 
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@	$(JAVAC) $? 
+@BUILD_JAVA_TRUE@@HAVE_WIN32_TRUE@	$(JCH) org.videolan.jvlc.$(*F)
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@%.class: %.java
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@	$(JAVAC) $?
+@BUILD_JAVA_TRUE@@HAVE_WIN32_FALSE@	$(JCH) $(@D)/$(*F) -o includes/$(*F).h
+
+@BUILD_JAVA_TRUE@clean-local:
+@BUILD_JAVA_TRUE@	rm -f *.class *~ org/videolan/jvlc/*.class org_videolan*.h includes/*.h src/*.o *.so *.o *.dll
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

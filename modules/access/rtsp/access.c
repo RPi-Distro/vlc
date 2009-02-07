@@ -2,7 +2,7 @@
  * access.c: Real rtsp input
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id: access.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: access.c 18336 2006-12-09 01:01:02Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -150,7 +150,13 @@ static int Open( vlc_object_t *p_this )
     char *psz_server = 0;
     int i_result;
 
-    if( !p_access->b_force ) return VLC_EGENERIC;
+    if( !p_access->psz_access || (
+        strncmp( p_access->psz_access, "rtsp", 4 ) && 
+        strncmp( p_access->psz_access, "pnm", 3 )  &&
+        strncmp( p_access->psz_access, "realrtsp", 8 ) ))
+    {
+            return VLC_EGENERIC;
+    }
 
     p_access->pf_read = NULL;
     p_access->pf_block = BlockRead;
@@ -225,7 +231,7 @@ static int Open( vlc_object_t *p_this )
     }
     else
     {
-        msg_Dbg( p_access, "only real/helix rtsp servers supported for now" );
+        msg_Warn( p_access, "only real/helix rtsp servers supported for now" );
         goto error;
     }
 

@@ -1,12 +1,13 @@
 /*****************************************************************************
  * playlist.m: MacOS X interface module
  *****************************************************************************
-* Copyright (C) 2002-2005 the VideoLAN team
- * $Id: playlist.m 16901 2006-10-01 10:54:22Z fkuehne $
+* Copyright (C) 2002-2006 the VideoLAN team
+ * $Id: playlist.m 17568 2006-11-09 13:31:33Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
  *          Benjamin Pracht <bigben at videolab dot org>
+ *          Felix KŸhne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -25,9 +26,6 @@
 
 /* TODO
  * add 'icons' for different types of nodes? (http://www.cocoadev.com/index.pl?IconAndTextInTableCell)
- * create a new search field build with pictures from the 'regular' search field, so it can be emulated on 10.2
- * create toggle buttons for the shuffle, repeat one, repeat all functions.
- * implement drag and drop and item reordering.
  * reimplement enable/disable item
  * create a new 'tool' button (see the gear button in the Finder window) for 'actions'
    (adding service discovery, other views, new node/playlist, save node/playlist) stuff like that
@@ -44,14 +42,14 @@
 #include <sys/mount.h>
 #include <vlc_keys.h>
 
-#include "intf.h"
+#import "intf.h"
 #import "wizard.h"
 #import "bookmarks.h"
 #import "playlistinfo.h"
-#include "playlist.h"
-#include "controls.h"
-#include "vlc_osd.h"
-#include "misc.h"
+#import "playlist.h"
+#import "controls.h"
+#import "vlc_osd.h"
+#import "misc.h"
 
 /*****************************************************************************
  * VLCPlaylistView implementation 
@@ -306,11 +304,15 @@
 
     if( [[o_tc identifier] isEqualToString:@"1"] )
     {
-        o_value = [NSString stringWithUTF8String:
-            p_item->input.psz_name];
-        if( o_value == NULL )
-            o_value = [NSString stringWithCString:
+        /* sanity check to prevent the NSString class from crashing */
+        if( p_item->input.psz_name != NULL )
+        {
+            o_value = [NSString stringWithUTF8String:
                 p_item->input.psz_name];
+            if( o_value == NULL )
+                o_value = [NSString stringWithCString:
+                    p_item->input.psz_name];
+        }
     }
     else if( [[o_tc identifier] isEqualToString:@"2"] )
     {
@@ -423,40 +425,44 @@
 
     for( i_index = 0; i_index < p_list->i_count; i_index++ )
     {
-        NSMenuItem * o_lmi;
-        module_t * p_parser = (module_t *)p_list->p_values[i_index].p_object ;
+        vlc_bool_t  b_enabled;
+        char        *objectname;
+        NSMenuItem  *o_lmi;
+        module_t    *p_parser = (module_t *)p_list->p_values[i_index].p_object ;
 
         if( !strcmp( p_parser->psz_capability, "services_discovery" ) )
         {
-            /* create the menu entries used in the playlist menu */
+            /* Check for submodules */
+            int i = -1;
+            while( p_parser->pp_shortcuts[++i] != NULL ); i--;
+
+            /* Check whether to enable these menuitems */
+            objectname = i>=0 ? p_parser->pp_shortcuts[i] : p_parser->psz_object_name;
+            b_enabled = playlist_IsServicesDiscoveryLoaded( p_playlist, objectname );
+            
+            /* Create the menu entries used in the playlist menu */
             o_lmi = [[o_mi_services submenu] addItemWithTitle:
                      [NSString stringWithUTF8String:
                      p_parser->psz_longname ? p_parser->psz_longname :
                      ( p_parser->psz_shortname ? p_parser->psz_shortname:
-                     p_parser->psz_object_name)]
+                     objectname)]
                                              action: @selector(servicesChange:)
                                              keyEquivalent: @""];
             [o_lmi setTarget: self];
-            [o_lmi setRepresentedObject:
-                   [NSString stringWithCString: p_parser->psz_object_name]];
-            if( playlist_IsServicesDiscoveryLoaded( p_playlist,
-                    p_parser->psz_object_name ) )
-                [o_lmi setState: NSOnState];
+            [o_lmi setRepresentedObject: [NSString stringWithCString: objectname]];
+            if( b_enabled ) [o_lmi setState: NSOnState];
                 
-            /* create the menu entries for the main menu */
+            /* Create the menu entries for the main menu */
             o_lmi = [[o_mm_mi_services submenu] addItemWithTitle:
                      [NSString stringWithUTF8String:
                      p_parser->psz_longname ? p_parser->psz_longname :
                      ( p_parser->psz_shortname ? p_parser->psz_shortname:
-                     p_parser->psz_object_name)]
+                     objectname)]
                                              action: @selector(servicesChange:)
                                              keyEquivalent: @""];
             [o_lmi setTarget: self];
-            [o_lmi setRepresentedObject:
-                   [NSString stringWithCString: p_parser->psz_object_name]];
-            if( playlist_IsServicesDiscoveryLoaded( p_playlist,
-                    p_parser->psz_object_name ) )
-                [o_lmi setState: NSOnState];
+            [o_lmi setRepresentedObject: [NSString stringWithCString:objectname]];
+            if( b_enabled ) [o_lmi setState: NSOnState];
         }
     }
     vlc_list_release( p_list );
@@ -487,14 +493,10 @@
     [o_status_field setStringValue: [NSString stringWithFormat:
                         _NS("No items in the playlist")]];
 
-    [o_random_ckb setTitle: _NS("Random")];
 #if 0
     [o_search_button setTitle: _NS("Search")];
 #endif
     [o_search_field setToolTip: _NS("Search in Playlist")];
-    [[o_loop_popup itemAtIndex:0] setTitle: _NS("Standard Play")];
-    [[o_loop_popup itemAtIndex:1] setTitle: _NS("Repeat One")];
-    [[o_loop_popup itemAtIndex:2] setTitle: _NS("Repeat All")];
     [o_mi_addNode setTitle: _NS("Add Folder to Playlist")];
 
     [o_save_accessory_text setStringValue: _NS("File Format:")];
@@ -560,19 +562,18 @@
     var_Get( p_playlist, "repeat", &val );
     if( val.b_bool == VLC_TRUE )
     {
-        [o_loop_popup selectItemAtIndex: 1];
+        [[[VLCMain sharedInstance] getControls] repeatOne];
    }
     else if( val2.b_bool == VLC_TRUE )
     {
-        [o_loop_popup selectItemAtIndex: 2];
+        [[[VLCMain sharedInstance] getControls] repeatAll];
     }
     else
     {
-        [o_loop_popup selectItemAtIndex: 0];
+        [[[VLCMain sharedInstance] getControls] repeatOff];
     }
 
-    var_Get( p_playlist, "random", &val );
-    [o_random_ckb setState: val.b_bool];
+    [[[VLCMain sharedInstance] getControls] shuffle];
 
     vlc_object_release( p_playlist );
 }
@@ -1215,53 +1216,6 @@
     }
     vlc_object_release( p_playlist );
 
-}
-
-- (IBAction)handlePopUp:(id)sender
-
-{
-    intf_thread_t * p_intf = VLCIntf;
-    vlc_value_t val1,val2;
-    playlist_t * p_playlist = vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                            FIND_ANYWHERE );
-    if( p_playlist == NULL )
-    {
-        return;
-    }
-
-    switch( [o_loop_popup indexOfSelectedItem] )
-    {
-        case 1:
-
-             val1.b_bool = 0;
-             var_Set( p_playlist, "loop", val1 );
-             val1.b_bool = 1;
-             var_Set( p_playlist, "repeat", val1 );
-             vout_OSDMessage( p_intf, DEFAULT_CHAN, _( "Repeat One" ) );
-        break;
-
-        case 2:
-             val1.b_bool = 0;
-             var_Set( p_playlist, "repeat", val1 );
-             val1.b_bool = 1;
-             var_Set( p_playlist, "loop", val1 );
-             vout_OSDMessage( p_intf, DEFAULT_CHAN, _( "Repeat All" ) );
-        break;
-
-        default:
-             var_Get( p_playlist, "repeat", &val1 );
-             var_Get( p_playlist, "loop", &val2 );
-             if( val1.b_bool || val2.b_bool )
-             {
-                  val1.b_bool = 0;
-                  var_Set( p_playlist, "repeat", val1 );
-                  var_Set( p_playlist, "loop", val1 );
-                  vout_OSDMessage( p_intf, DEFAULT_CHAN, _( "Repeat Off" ) );
-             }
-         break;
-     }
-     vlc_object_release( p_playlist );
-     [self playlistUpdated];
 }
 
 - (NSMutableArray *)subSearchItem:(playlist_item_t *)p_item

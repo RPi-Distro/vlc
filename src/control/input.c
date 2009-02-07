@@ -2,7 +2,7 @@
  * input.c: Libvlc new API input management functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: input.c 17025 2006-10-11 14:00:26Z damienf $
+ * $Id: input.c 17351 2006-10-29 12:09:12Z jpsaman $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -51,8 +51,6 @@ input_thread_t *libvlc_get_input_thread( libvlc_input_t *p_input,
     return p_input_thread;
 }
 
-    
-
 /**************************************************************************
  * Getters for stream information
  **************************************************************************/
@@ -64,7 +62,7 @@ vlc_int64_t libvlc_input_get_length( libvlc_input_t *p_input,
 
     p_input_thread = libvlc_get_input_thread ( p_input, p_e);
     if( libvlc_exception_raised( p_e ) )  return -1;
-       
+
     var_Get( p_input_thread, "length", &val );
     vlc_object_release( p_input_thread );
 
@@ -93,7 +91,7 @@ void libvlc_input_set_time( libvlc_input_t *p_input, vlc_int64_t time,
 
     p_input_thread = libvlc_get_input_thread ( p_input, p_e );
     if( libvlc_exception_raised( p_e ) )  return;
-    
+
     value.i_time = time*1000LL;
     var_Set( p_input_thread, "time", value );
     vlc_object_release( p_input_thread );
@@ -105,7 +103,7 @@ void libvlc_input_set_position( libvlc_input_t *p_input, float position,
     input_thread_t *p_input_thread;
     vlc_value_t val;
     val.f_float = position;
-    
+
     p_input_thread = libvlc_get_input_thread ( p_input, p_e);
     if ( libvlc_exception_raised( p_e ) ) return;
 
@@ -176,7 +174,7 @@ void libvlc_input_set_rate( libvlc_input_t *p_input, float rate,
         RAISEVOID( "Rate value is invalid" );
 
     val.i_int = 1000.0f/rate;
-    
+
     p_input_thread = libvlc_get_input_thread ( p_input, p_e);
     if ( libvlc_exception_raised( p_e ) ) return;
 
@@ -206,11 +204,11 @@ int libvlc_input_get_state( libvlc_input_t *p_input,
     vlc_value_t val;
 
     p_input_thread = libvlc_get_input_thread ( p_input, p_e);
-    if ( libvlc_exception_raised( p_e ) )  return 0;
+    if ( libvlc_exception_raised( p_e ) )
+        return 6; /* on error return ERROR_S state (see include/vlc_input.h) */
 
     var_Get( p_input_thread, "state", &val );
     vlc_object_release( p_input_thread );
 
     return val.i_int;
 }
-

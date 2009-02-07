@@ -2,7 +2,7 @@
 # src/packages.mak : Archive locations
 # ***************************************************************************
 # Copyright (C) 2003 - 2006 the VideoLAN team
-# $Id: packages.mak 16885 2006-09-30 12:47:51Z fkuehne $
+# $Id: packages.mak 18198 2006-12-02 00:52:04Z xtophe $
 #
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>
@@ -31,7 +31,7 @@ PERL_URL=http://ftp.funet.fi/pub/CPAN/src/perl-$(PERL_VERSION).tar.gz
 # Autoconf > 2.57 doesn't work ok on BeOS. Don't ask why.
 # we have to use a newer though, because bootstrap won't work otherwise
 AUTOCONF_VERSION=2.59
-AUTOCONF_URL=$(GNU)/autoconf/autoconf-$(AUTOCONF_VERSION).tar.gz
+AUTOCONF_URL=$(GNU)/autoconf/autoconf-$(AUTOCONF_VERSION).tar.bz2
 LIBTOOL_VERSION=1.5.6
 LIBTOOL_URL=$(GNU)/libtool/libtool-$(LIBTOOL_VERSION).tar.gz
 AUTOMAKE_VERSION=1.9.6
@@ -48,10 +48,11 @@ FRIBIDI_VERSION=0.10.4
 FRIBIDI_URL=http://fribidi.org/download/fribidi-$(FRIBIDI_VERSION).tar.gz
 A52DEC_VERSION=0.7.4
 A52DEC_URL=$(VIDEOLAN)/testing/contrib/a52dec-$(A52DEC_VERSION).tar.gz
-MPEG2DEC_VERSION=0.4.1-cvs
+MPEG2DEC_VERSION=0.4.1
 MPEG2DEC_DATE=20050802
 MPEG2DEC_CVSROOT=:pserver:anonymous@cvs.libmpeg2.sourceforge.net:/cvsroot/libmpeg2
 MPEG2DEC_SNAPSHOT=$(VIDEOLAN)/testing/contrib/mpeg2dec-$(MPEG2DEC_DATE).tar.gz
+MPEG2DEC_URL=$(VIDEOLAN)/testing/contrib/mpeg2dec-$(MPEG2DEC_VERSION).tar.gz
 LIBID3TAG_VERSION=0.15.1b
 LIBID3TAG_URL=$(VIDEOLAN)/testing/contrib/libid3tag-$(LIBID3TAG_VERSION).tar.gz
 LIBMAD_VERSION=0.15.1b
@@ -65,7 +66,7 @@ THEORA_VERSION=1.0alpha7
 THEORA_URL=http://downloads.xiph.org/releases/theora/libtheora-$(THEORA_VERSION).tar.bz2
 FLAC_VERSION=1.1.2
 FLAC_URL=$(SF)/flac/flac-$(FLAC_VERSION).tar.gz
-SPEEX_VERSION=1.1.12
+SPEEX_VERSION=1.2beta1
 SPEEX_URL=http://downloads.us.xiph.org/releases/speex/speex-$(SPEEX_VERSION).tar.gz
 SHOUT_VERSION=2.2.2
 SHOUT_URL=http://downloads.us.xiph.org/releases/libshout/libshout-$(SHOUT_VERSION).tar.gz
@@ -99,6 +100,12 @@ GOOM2k4_URL=$(SF)/goom/goom-$(GOOM2k4_VERSION)-src.tar.gz
 LIBCACA_VERSION=0.9
 LIBCACA_URL=http://libcaca.zoy.org/files/libcaca-$(LIBCACA_VERSION).tar.gz
 LIBDTS_VERSION=0.0.2
+LIBDC1394_VERSION=1.2.1
+LIBDC1394_URL=$(SF)/libdc1394/libdc1394-$(LIBDC1394_VERSION).tar.gz
+LIBDC1394_SVN=https://svn.sourceforge.net/svnroot
+LIBRAW1394_VERSION=1.2.0
+LIBRAW1394_URL=$(SF)/libraw1394/libraw1394-$(LIBRAW1394_VERSION).tar.gz
+LIBRAW1394_SVN=https://svn.sourceforge.net/svnroot
 LIBDTS_URL=http://debian.unnet.nl/pub/videolan/libdts/$(LIBDTS_VERSION)/libdts-$(LIBDTS_VERSION).tar.gz
 LIBDCA_SVN=svn://svn.videolan.org/libdca/trunk
 MODPLUG_VERSION=0.8
@@ -107,9 +114,9 @@ MASH_VERSION=5.2
 MASH_URL=$(SF)/openmash/mash-src-$(MASH_VERSION).tar.gz
 CDDB_VERSION=1.2.1
 CDDB_URL=$(SF)/libcddb/libcddb-$(CDDB_VERSION).tar.bz2
-VCDIMAGER_VERSION=0.7.21
+VCDIMAGER_VERSION=0.7.23
 VCDIMAGER_URL=$(GNU)/vcdimager/vcdimager-$(VCDIMAGER_VERSION).tar.gz
-CDIO_VERSION=0.72
+CDIO_VERSION=0.77
 CDIO_URL=$(GNU)/libcdio/libcdio-$(CDIO_VERSION).tar.gz
 PNG_VERSION=1.2.12
 PNG_URL=$(SF)/libpng/libpng-$(PNG_VERSION).tar.bz2
@@ -139,19 +146,17 @@ X264_VERSION=20050609
 X264_URL=$(VIDEOLAN)/testing/contrib/x264-$(X264_VERSION).tar.gz
 JPEG_VERSION=6b
 JPEG_URL=$(VIDEOLAN)/contrib/jpeg-$(JPEG_VERSION).tar.gz
-TIFF_VERSION=v3.4
-TIFF_URL=ftp://ftp.sgi.com/graphics/tiff/tiff-$(TIFF_VERSION)-tar.gz
-SDL_VERSION=1.2.8
+TIFF_VERSION=3.8.2
+TIFF_URL=ftp://ftp.remotesensing.org/pub/libtiff/tiff-$(TIFF_VERSION).tar.gz
+SDL_VERSION=1.2.11
 SDL_URL=http://www.libsdl.org/release/SDL-$(SDL_VERSION).tar.gz
-SDL_IMAGE_VERSION=1.2.4
+SDL_IMAGE_VERSION=1.2.5
 SDL_IMAGE_URL=http://www.libsdl.org/projects/SDL_image/release/SDL_image-$(SDL_IMAGE_VERSION).tar.gz
 MUSE_VERSION=1.2.2
 #MUSE_URL=http://files.musepack.net/source/libmpcdec-$(MUSE_VERSION).tar.bz2
 MUSE_URL=http://files2.musepack.net/source/libmpcdec-$(MUSE_VERSION).tar.bz2
 WXWIDGETS_VERSION=2.6.3
 WXWIDGETS_URL=$(SF)/wxwindows/wxWidgets-$(WXWIDGETS_VERSION).tar.gz
-QT4_VERSION=4.2.0-tp1
-QT4_URL=$(VIDEOLAN)/testing/contrib/qt4-$(QT4_VERSION)-win32-bin.tar.gz
 ZLIB_VERSION=1.2.3
 ZLIB_URL=$(SF)/libpng/zlib-$(ZLIB_VERSION).tar.gz
 XML_VERSION=2.6.26

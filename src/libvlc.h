@@ -2,7 +2,7 @@
  * libvlc.h: main libvlc header
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: libvlc.h 17036 2006-10-12 17:29:50Z funman $
+ * $Id: libvlc.h 18224 2006-12-03 15:52:27Z xtophe $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -30,17 +30,17 @@
 #if defined (WIN32) || defined (__APPLE__)
 static char *ppsz_language[] =
 { "auto", "en", "en_GB", "ca", "cs", "da", "de", "es", "fr", "gl", "he", "hu",
-  "it", "ja", "ka", "ms", "ko", "nl", "oc", "pt_BR", "ro", "ru", "sk", "sv", "tr",
-  "zh_CN", "zh_TW" };
+  "it", "ja", "ka", "ko", "ms", "ne", "nl", "oc", "pt_BR", "ro", "ru", "sk", 
+  "sl",  "sv", "th", "tr", "zh_CN", "zh_TW" };
 
 static char *ppsz_language_text[] =
 { N_("Auto"), N_("American English"), N_("British English"),
 N_("Catalan"), N_("Czech"), N_("Danish"), N_("German"), N_("Spanish"),
 N_("French"), N_("Galician"), N_("Hebrew"), N_("Hungarian"),N_("Italian"),
-N_("Japanese"),N_("Georgian"), N_("Malay"), N_("Korean"), N_("Dutch"), N_("Occitan"),
-N_("Brazilian Portuguese"), N_("Romanian"), N_("Russian"), N_("Swedish"),
-N_("Slovak"), N_("Turkish"), N_("Simplified Chinese"),
-N_("Chinese Traditional") };
+N_("Japanese"),N_("Georgian"), N_("Korean"), N_("Malay"), N_("Nepali"), 
+N_("Dutch"), N_("Occitan"), N_("Brazilian Portuguese"), N_("Romanian"), 
+N_("Russian"), N_("Slovak"), N_("Slovenian"), N_("Swedish"), N_("Thai"),
+N_("Turkish"),N_("Simplified Chinese"), N_("Chinese Traditional") };
 #endif
 
 static char *ppsz_snap_formats[] =
@@ -1097,6 +1097,8 @@ static char *ppsz_clock_descriptions[] =
 
 #define RECORD_KEY_TEXT N_("Record")
 #define RECORD_KEY_LONGTEXT N_("Record access filter start/stop.")
+#define DUMP_KEY_TEXT N_("Dump")
+#define DUMP_KEY_LONGTEXT N_("Media dump access filter trigger.")
 
 #define UNZOOM_KEY_TEXT N_("Un-Zoom")
 #define UNZOOM_KEY_LONGTEXT N_("Un-Zoom")
@@ -1730,6 +1732,7 @@ vlc_module_begin();
 #   define KEY_HISTORY_BACK       KEY_MODIFIER_COMMAND|'['
 #   define KEY_HISTORY_FORWARD    KEY_MODIFIER_COMMAND|']'
 #   define KEY_RECORD             KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|'r'
+#   define KEY_DUMP               KEY_MODIFIER_COMMAND|KEY_MODIFIER_SHIFT|'d'
 
 #else
 #   define KEY_FULLSCREEN         'f'
@@ -1810,6 +1813,7 @@ vlc_module_begin();
 #   define KEY_HISTORY_BACK       KEY_MODIFIER_CTRL|'v'
 #   define KEY_HISTORY_FORWARD    KEY_MODIFIER_CTRL|'b'
 #   define KEY_RECORD             KEY_MODIFIER_CTRL|'r'
+#   define KEY_DUMP               KEY_MODIFIER_CTRL|KEY_MODIFIER_SHIFT|'d'
 #endif
 
     add_key( "key-fullscreen", KEY_FULLSCREEN, NULL, FULLSCREEN_KEY_TEXT,
@@ -1907,6 +1911,8 @@ vlc_module_begin();
              HISTORY_FORWARD_TEXT, HISTORY_FORWARD_LONGTEXT, VLC_TRUE );
     add_key( "key-record", KEY_RECORD, NULL,
              RECORD_KEY_TEXT, RECORD_KEY_LONGTEXT, VLC_TRUE );
+    add_key( "key-dump", KEY_DUMP, NULL,
+             DUMP_KEY_TEXT, DUMP_KEY_LONGTEXT, VLC_TRUE );
 
     add_key( "key-crop-top", KEY_CROP_TOP, NULL,
              CROP_TOP_KEY_TEXT, CROP_TOP_KEY_LONGTEXT, VLC_TRUE );
@@ -2119,5 +2125,6 @@ static struct hotkey p_hotkeys[] =
     { "key-history-back", ACTIONID_HISTORY_BACK, 0, 0, 0, 0 },
     { "key-history-forward", ACTIONID_HISTORY_FORWARD, 0, 0, 0, 0 },
     { "key-record", ACTIONID_RECORD, 0, 0, 0, 0 },
+    { "key-dump", ACTIONID_DUMP, 0, 0, 0, 0 },
     { NULL, 0, 0, 0, 0, 0 }
 };

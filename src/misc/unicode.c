@@ -2,7 +2,7 @@
  * unicode.c: Unicode <-> locale functions
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: unicode.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: unicode.c 17242 2006-10-21 19:41:22Z hartman $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -51,7 +51,7 @@
 # define lstat( a, b ) stat(a, b)
 #endif
 
-#ifdef __APPLE__
+#if defined( __APPLE__ ) || defined( __BEOS__ )
 /* Define this if the OS always use UTF-8 internally */
 # define ASSUME_UTF8 1
 #endif

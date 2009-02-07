@@ -2,7 +2,7 @@
  * vlc_keys.h: keycode defines
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: vlc_keys.h 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: vlc_keys.h 17606 2006-11-10 20:02:34Z courmisch $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -298,3 +298,4 @@ static inline int StringToKey( char *psz_key )
 #define ACTIONID_UNCROP_BOTTOM         77
 #define ACTIONID_CROP_RIGHT            78
 #define ACTIONID_UNCROP_RIGHT          79
+#define ACTIONID_DUMP                  80

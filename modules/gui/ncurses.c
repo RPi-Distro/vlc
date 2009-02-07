@@ -2,7 +2,7 @@
  * ncurses.c : NCurses plugin for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: ncurses.c 14930 2006-03-25 19:24:05Z zorglub $
+ * $Id: ncurses.c 18329 2006-12-08 18:07:54Z hartman $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -2009,7 +2009,7 @@ static void ReadDir( intf_thread_t *p_intf )
         qsort( p_sys->pp_dir_entries, p_sys->i_dir_entries,
                sizeof(struct dir_entry_t*), &comp_dir_entries );
 
-        closedir( p_current_dir );
+        vlc_closedir_wrapper( p_current_dir );
         return;
     }
     else

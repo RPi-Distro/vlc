@@ -2,7 +2,7 @@
  * speex.c: speex decoder/packetizer/encoder module making use of libspeex.
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: speex.c 15005 2006-03-31 16:28:03Z xtophe $
+ * $Id: speex.c 17236 2006-10-21 19:11:38Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -382,6 +382,13 @@ static int ProcessInitialHeader( decoder_t *p_dec, ogg_packet *p_oggpacket )
         callback.func = speex_std_stereo_request_handler;
         callback.data = &p_sys->stereo;
         speex_decoder_ctl( p_state, SPEEX_SET_HANDLER, &callback );
+    }
+    if( p_header->nb_channels <= 0 ||
+        p_header->nb_channels > 5 )
+    {
+        msg_Err( p_dec, "invalid number of channels (not between 1 and 5): %i",
+                 p_header->nb_channels );
+        return VLC_EGENERIC;
     }
 
     /* Setup the format */

@@ -206,6 +206,10 @@ while test $# -gt 0; do
       ;;
     mozilla)
       ;;
+    activex)
+      ;;
+    pic)
+      ;;
     external)
       echo_external=yes
       ldflags="${ldflags} -lvlc"

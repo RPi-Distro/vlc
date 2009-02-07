@@ -4,7 +4,7 @@
  * It includes functions allowing to declare, get or set configuration options.
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
- * $Id: configuration.h 15074 2006-04-02 19:12:58Z courmisch $
+ * $Id: configuration.h 18150 2006-11-29 13:32:25Z courmisch $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

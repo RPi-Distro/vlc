@@ -2,7 +2,7 @@
  * avi.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: avi.c 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: avi.c 17427 2006-11-02 20:27:24Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -473,6 +473,7 @@ static int Mux      ( sout_mux_t *p_mux )
                 if( p_data->i_buffer & 0x01 )
                 {
                     p_data = block_Realloc( p_data, 0, p_data->i_buffer + 1 );
+                    p_data->p_buffer[ p_data->i_buffer - 1 ] = '\0';
                 }
 
                 p_sys->i_movi_size += p_data->i_buffer;
@@ -625,8 +626,8 @@ static int avi_HeaderAdd_avih( sout_mux_t *p_mux,
         if( p_sys->stream[i_stream].i_duration > 0 )
         {
             i_maxbytespersec +=
-                p_sys->stream[p_sys->i_stream_video].i_totalsize /
-                p_sys->stream[p_sys->i_stream_video].i_duration;
+                p_sys->stream[i_stream].i_totalsize /
+                p_sys->stream[i_stream].i_duration;
         }
     }
 

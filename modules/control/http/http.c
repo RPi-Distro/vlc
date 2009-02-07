@@ -2,7 +2,7 @@
  * http.c : HTTP/HTTPS Remote control interface
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: http.c 16956 2006-10-05 16:41:21Z funman $
+ * $Id: http.c 18327 2006-12-08 17:12:19Z md $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -125,8 +125,8 @@ static int Open( vlc_object_t *p_this )
     int           i_port       = 0;
     char          *psz_src;
 
-    var_Create(p_intf->p_libvlc, "http-host", VLC_VAR_STRING );
-    psz_address=var_GetString(p_intf->p_libvlc, "http-host");
+    var_Create( p_intf->p_libvlc, "http-host", VLC_VAR_STRING );
+    psz_address = var_GetString( p_intf->p_libvlc, "http-host");
     if( !psz_address || !*psz_address )
     {
         psz_address = config_GetPsz( p_intf, "http-host" );
@@ -148,9 +148,7 @@ static int Open( vlc_object_t *p_this )
     {
         return( VLC_ENOMEM );
     }
-    p_sys->p_playlist = NULL;
-    p_sys->p_input    = NULL;
-    p_sys->p_vlm      = NULL;
+    memset( p_intf->p_sys, 0, sizeof( intf_sys_t ) );
     p_sys->psz_address = psz_address;
     p_sys->i_port     = i_port;
 
@@ -294,7 +292,7 @@ static int Open( vlc_object_t *p_this )
         psz_src = malloc( strlen(psz_vlcpath) + strlen("/share/http" ) + 1 );
         if( !psz_src ) return VLC_ENOMEM;
 #if defined(WIN32)
-        sprintf( psz_src, "%s/http", psz_vlcpath );
+        sprintf( psz_src, "%s\\http", psz_vlcpath );
 #else
         sprintf( psz_src, "%s/share/http", psz_vlcpath );
 #endif
@@ -521,9 +519,9 @@ static void ParseExecute( httpd_file_sys_t *p_args, char *p_buffer,
         var_Get( p_sys->p_input, "position", &val);
         sprintf( position, "%d" , (int)((val.f_float) * 100.0));
         var_Get( p_sys->p_input, "time", &val);
-        sprintf( time, "%d" , (int)(val.i_time / 1000000) );
+        sprintf( time, I64Fi, val.i_time / 1000000LL );
         var_Get( p_sys->p_input, "length", &val);
-        sprintf( length, "%d" , (int)(val.i_time / 1000000) );
+        sprintf( length, I64Fi, val.i_time / 1000000LL );
 
         var_Get( p_sys->p_input, "state", &val );
         if( val.i_int == PLAYING_S )

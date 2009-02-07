@@ -2,7 +2,7 @@
  * mp4.c : MP4 file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: mp4.c 16987 2006-10-08 12:54:12Z jpsaman $
+ * $Id: mp4.c 18118 2006-11-27 21:27:38Z hartman $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -368,7 +368,7 @@ static int Open( vlc_object_t * p_this )
                 char      *psz_ref;
                 uint32_t  i_ref_type;
 
-                if( !p_rdrf || !( psz_ref = p_rdrf->data.p_rdrf->psz_ref ) )
+                if( !p_rdrf || !( psz_ref = strdup( p_rdrf->data.p_rdrf->psz_ref ) ) )
                 {
                     continue;
                 }
@@ -387,57 +387,38 @@ static int Open( vlc_object_t * p_this )
                     if( !strncmp( psz_ref, "http://", 7 ) ||
                         !strncmp( psz_ref, "rtsp://", 7 ) )
                     {
-                        msg_Dbg( p_demux, "adding ref = `%s'", psz_ref );
-                        if( p_item )
-                        {
-                            playlist_item_t *p_child =
-                                        playlist_ItemNew( p_playlist,
-                                                          psz_ref, psz_ref );
-                            if( p_child )
-                            {
-                                playlist_NodeAddItem( p_playlist, p_child,
-                                                 p_item->pp_parents[0]->i_view,
-                                                 p_item, PLAYLIST_APPEND,
-                                                 PLAYLIST_END );
-                                playlist_CopyParents( p_item, p_child );
-                                b_play = VLC_TRUE;
-                            }
-                        }
+                        ;
                     }
                     else
                     {
-                        /* msg dbg relative ? */
-                        int i_path_size = strlen( p_demux->psz_access ) + 3 +
-                                         strlen( p_demux->psz_path ) + strlen( psz_ref ) + 1;
-                        char psz_absolute[i_path_size];
-                        char *end = strrchr( p_demux->psz_path, '/' );
+                        char *psz_absolute;
+                        char *psz_path = strdup( p_demux->psz_path );
+                        char *end = strrchr( psz_path, '/' );
 
-                        if( end )
+                        if( end ) end[1] = '\0';
+                        else *psz_path = '\0';
+
+                        asprintf( &psz_absolute, "%s://%s%s",
+                                       p_demux->psz_access, psz_path, psz_ref );
+
+                        if( psz_ref ) free( psz_ref );
+                        psz_ref = psz_absolute;
+                        free( psz_path );
+                    }
+                    msg_Dbg( p_demux, "adding ref = `%s'", psz_ref );
+                    if( p_item )
+                    {
+                        playlist_item_t *p_child =
+                                    playlist_ItemNew( p_playlist,
+                                                      psz_ref, psz_ref );
+                        if( p_child )
                         {
-                            snprintf( psz_absolute, i_path_size, "%s://%s",
-                                      p_demux->psz_access, p_demux->psz_path );
-                        }
-                        else
-                        {
-                            *psz_absolute = '\0';
-                        }
-                        strcat( psz_absolute, psz_ref );
-                        msg_Dbg( p_demux, "adding ref = `%s'", psz_absolute );
-                        if( p_item )
-                        {
-                            playlist_item_t *p_child =
-                                        playlist_ItemNew( p_playlist,
-                                                          psz_absolute,
-                                                          psz_absolute );
-                            if( p_child )
-                            {
-                                playlist_NodeAddItem( p_playlist, p_child,
-                                                 p_item->pp_parents[0]->i_view,
-                                                 p_item, PLAYLIST_APPEND,
-                                                 PLAYLIST_END );
-                                playlist_CopyParents( p_item, p_child );
-                                b_play = VLC_TRUE;
-                            }
+                            playlist_NodeAddItem( p_playlist, p_child,
+                                             p_item->pp_parents[0]->i_view,
+                                             p_item, PLAYLIST_APPEND,
+                                             PLAYLIST_END );
+                            playlist_CopyParents( p_item, p_child );
+                            b_play = VLC_TRUE;
                         }
                     }
                 }
@@ -446,6 +427,7 @@ static int Open( vlc_object_t * p_this )
                     msg_Err( p_demux, "unknown ref type=%4.4s FIXME (send a bug report)",
                              (char*)&p_rdrf->data.p_rdrf->i_ref_type );
                 }
+                if( psz_ref ) free( psz_ref );
             }
             if( b_play == VLC_TRUE )
             {

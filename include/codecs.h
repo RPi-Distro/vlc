@@ -2,7 +2,7 @@
  * codecs.h: codec related structures needed by the demuxers and decoders
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: codecs.h 16439 2006-08-30 19:33:55Z hartman $
+ * $Id: codecs.h 17597 2006-11-10 00:14:34Z hartman $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -243,6 +243,7 @@ typedef struct
 #define WAVE_FORMAT_VORB_2PLUS          0x6770
 #define WAVE_FORMAT_VORB_3              0x6751
 #define WAVE_FORMAT_VORB_3PLUS          0x6771
+#define WAVE_FORMAT_SPEEX               0xa109 /* Speex audio */
 
 
 #if !defined(WAVE_FORMAT_EXTENSIBLE)
@@ -322,6 +323,7 @@ wave_format_tag_to_fourcc[] =
     { WAVE_FORMAT_VORB_2PLUS, VLC_FOURCC( 'v', 'o', '2', '+' ), "Vorbis 2+ Audio" },
     { WAVE_FORMAT_VORB_3,     VLC_FOURCC( 'v', 'o', 'r', '3' ), "Vorbis 3 Audio" },
     { WAVE_FORMAT_VORB_3PLUS, VLC_FOURCC( 'v', 'o', '3', '+' ), "Vorbis 3+ Audio" },
+    { WAVE_FORMAT_SPEEX,      VLC_FOURCC( 's', 'p', 'x', ' ' ), "Speex Audio" },
     { WAVE_FORMAT_UNKNOWN,    VLC_FOURCC( 'u', 'n', 'd', 'f' ), "Unknown" }
 };
 

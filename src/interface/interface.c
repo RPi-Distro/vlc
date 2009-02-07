@@ -4,7 +4,7 @@
  * interface, such as command line.
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: interface.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: interface.c 17040 2006-10-12 19:33:41Z xtophe $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -375,7 +375,7 @@ static void RunInterface( intf_thread_t *p_intf )
     text.psz_string = _("Add Interface");
     var_Change( p_intf, "intf-add", VLC_VAR_SETTEXT, &text, NULL );
 
-    val.psz_string = "rc"; text.psz_string = "Console";
+    val.psz_string = "rc"; text.psz_string = _("Console");
     var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );
     val.psz_string = "telnet"; text.psz_string = _("Telnet Interface");
     var_Change( p_intf, "intf-add", VLC_VAR_ADDCHOICE, &val, &text );

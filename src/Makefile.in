@@ -553,6 +553,7 @@ SOURCES_libvlc_common = \
 	misc/hashtables.c \
 	extras/libc.c \
 	control/core.c \
+	control/log.c \
 	control/playlist.c \
 	control/vlm.c \
 	control/input.c \
@@ -623,12 +624,12 @@ am__libvlc_a_SOURCES_DIST = libvlc.c libvlc.h interface/interface.c \
 	misc/image.c misc/iso_lang.c misc/iso-639_def.h misc/messages.c \
 	misc/objects.c misc/variables.c misc/error.c misc/update.c \
 	misc/vlm.c misc/xml.c misc/hashtables.c extras/libc.c \
-	control/core.c control/playlist.c control/vlm.c control/input.c \
-	control/video.c control/audio.c control/mediacontrol_core.c \
-	control/mediacontrol_util.c control/mediacontrol_audio_video.c \
-	misc/beos_specific.cpp misc/darwin_specific.m \
-	misc/win32_specific.c extras/dirent.c extras/getopt.c \
-	extras/getopt.h extras/getopt1.c misc/version.c
+	control/core.c control/log.c control/playlist.c control/vlm.c \
+	control/input.c control/video.c control/audio.c \
+	control/mediacontrol_core.c control/mediacontrol_util.c \
+	control/mediacontrol_audio_video.c misc/beos_specific.cpp \
+	misc/darwin_specific.m misc/win32_specific.c extras/dirent.c \
+	extras/getopt.c extras/getopt.h extras/getopt1.c misc/version.c
 am__dirstamp = $(am__leading_dot)dirstamp
 am__objects_1 =
 am__objects_2 = libvlc_a-libvlc.$(OBJEXT) \
@@ -689,6 +690,7 @@ am__objects_2 = libvlc_a-libvlc.$(OBJEXT) \
 	misc/libvlc_a-update.$(OBJEXT) misc/libvlc_a-vlm.$(OBJEXT) \
 	misc/libvlc_a-xml.$(OBJEXT) misc/libvlc_a-hashtables.$(OBJEXT) \
 	extras/libvlc_a-libc.$(OBJEXT) control/libvlc_a-core.$(OBJEXT) \
+	control/libvlc_a-log.$(OBJEXT) \
 	control/libvlc_a-playlist.$(OBJEXT) \
 	control/libvlc_a-vlm.$(OBJEXT) control/libvlc_a-input.$(OBJEXT) \
 	control/libvlc_a-video.$(OBJEXT) \
@@ -743,12 +745,12 @@ am__libvlc_la_SOURCES_DIST = libvlc.c libvlc.h interface/interface.c \
 	misc/image.c misc/iso_lang.c misc/iso-639_def.h misc/messages.c \
 	misc/objects.c misc/variables.c misc/error.c misc/update.c \
 	misc/vlm.c misc/xml.c misc/hashtables.c extras/libc.c \
-	control/core.c control/playlist.c control/vlm.c control/input.c \
-	control/video.c control/audio.c control/mediacontrol_core.c \
-	control/mediacontrol_util.c control/mediacontrol_audio_video.c \
-	misc/beos_specific.cpp misc/darwin_specific.m \
-	misc/win32_specific.c extras/dirent.c extras/getopt.c \
-	extras/getopt.h extras/getopt1.c misc/version.c
+	control/core.c control/log.c control/playlist.c control/vlm.c \
+	control/input.c control/video.c control/audio.c \
+	control/mediacontrol_core.c control/mediacontrol_util.c \
+	control/mediacontrol_audio_video.c misc/beos_specific.cpp \
+	misc/darwin_specific.m misc/win32_specific.c extras/dirent.c \
+	extras/getopt.c extras/getopt.h extras/getopt1.c misc/version.c
 am__objects_15 = libvlc_la-libvlc.lo interface/libvlc_la-interface.lo \
 	interface/libvlc_la-intf_eject.lo \
 	interface/libvlc_la-interaction.lo \
@@ -792,9 +794,10 @@ am__objects_15 = libvlc_la-libvlc.lo interface/libvlc_la-interface.lo \
 	misc/libvlc_la-error.lo misc/libvlc_la-update.lo \
 	misc/libvlc_la-vlm.lo misc/libvlc_la-xml.lo \
 	misc/libvlc_la-hashtables.lo extras/libvlc_la-libc.lo \
-	control/libvlc_la-core.lo control/libvlc_la-playlist.lo \
-	control/libvlc_la-vlm.lo control/libvlc_la-input.lo \
-	control/libvlc_la-video.lo control/libvlc_la-audio.lo \
+	control/libvlc_la-core.lo control/libvlc_la-log.lo \
+	control/libvlc_la-playlist.lo control/libvlc_la-vlm.lo \
+	control/libvlc_la-input.lo control/libvlc_la-video.lo \
+	control/libvlc_la-audio.lo \
 	control/libvlc_la-mediacontrol_core.lo \
 	control/libvlc_la-mediacontrol_util.lo \
 	control/libvlc_la-mediacontrol_audio_video.lo $(am__objects_1)
@@ -856,6 +859,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_a-audio.Po \
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_a-core.Po \
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_a-input.Po \
+@AMDEP_TRUE@	control/$(DEPDIR)/libvlc_a-log.Po \
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_a-mediacontrol_audio_video.Po \
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_a-mediacontrol_core.Po \
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_a-mediacontrol_util.Po \
@@ -865,6 +869,7 @@ am__depfiles_maybe = depfiles
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_la-audio.Plo \
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_la-core.Plo \
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_la-input.Plo \
+@AMDEP_TRUE@	control/$(DEPDIR)/libvlc_la-log.Plo \
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_la-mediacontrol_audio_video.Plo \
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_la-mediacontrol_core.Plo \
 @AMDEP_TRUE@	control/$(DEPDIR)/libvlc_la-mediacontrol_util.Plo \
@@ -1320,6 +1325,8 @@ control/$(DEPDIR)/$(am__dirstamp):
 	@: > control/$(DEPDIR)/$(am__dirstamp)
 control/libvlc_a-core.$(OBJEXT): control/$(am__dirstamp) \
 	control/$(DEPDIR)/$(am__dirstamp)
+control/libvlc_a-log.$(OBJEXT): control/$(am__dirstamp) \
+	control/$(DEPDIR)/$(am__dirstamp)
 control/libvlc_a-playlist.$(OBJEXT): control/$(am__dirstamp) \
 	control/$(DEPDIR)/$(am__dirstamp)
 control/libvlc_a-vlm.$(OBJEXT): control/$(am__dirstamp) \
@@ -1529,6 +1536,8 @@ extras/libvlc_la-libc.lo: extras/$(am__dirstamp) \
 	extras/$(DEPDIR)/$(am__dirstamp)
 control/libvlc_la-core.lo: control/$(am__dirstamp) \
 	control/$(DEPDIR)/$(am__dirstamp)
+control/libvlc_la-log.lo: control/$(am__dirstamp) \
+	control/$(DEPDIR)/$(am__dirstamp)
 control/libvlc_la-playlist.lo: control/$(am__dirstamp) \
 	control/$(DEPDIR)/$(am__dirstamp)
 control/libvlc_la-vlm.lo: control/$(am__dirstamp) \
@@ -1611,6 +1620,7 @@ mostlyclean-compile:
 	-rm -f control/libvlc_a-audio.$(OBJEXT)
 	-rm -f control/libvlc_a-core.$(OBJEXT)
 	-rm -f control/libvlc_a-input.$(OBJEXT)
+	-rm -f control/libvlc_a-log.$(OBJEXT)
 	-rm -f control/libvlc_a-mediacontrol_audio_video.$(OBJEXT)
 	-rm -f control/libvlc_a-mediacontrol_core.$(OBJEXT)
 	-rm -f control/libvlc_a-mediacontrol_util.$(OBJEXT)
@@ -1623,6 +1633,8 @@ mostlyclean-compile:
 	-rm -f control/libvlc_la-core.lo
 	-rm -f control/libvlc_la-input.$(OBJEXT)
 	-rm -f control/libvlc_la-input.lo
+	-rm -f control/libvlc_la-log.$(OBJEXT)
+	-rm -f control/libvlc_la-log.lo
 	-rm -f control/libvlc_la-mediacontrol_audio_video.$(OBJEXT)
 	-rm -f control/libvlc_la-mediacontrol_audio_video.lo
 	-rm -f control/libvlc_la-mediacontrol_core.$(OBJEXT)
@@ -1879,6 +1891,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_a-audio.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_a-core.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_a-input.Po@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_a-log.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_a-mediacontrol_audio_video.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_a-mediacontrol_core.Po@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_a-mediacontrol_util.Po@am__quote@
@@ -1888,6 +1901,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_la-audio.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_la-core.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_la-input.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_la-log.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_la-mediacontrol_audio_video.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_la-mediacontrol_core.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@control/$(DEPDIR)/libvlc_la-mediacontrol_util.Plo@am__quote@
@@ -4550,6 +4564,39 @@ control/libvlc_a-core.lo: control/core.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='control/$(DEPDIR)/libvlc_a-core.Plo' tmpdepfile='control/$(DEPDIR)/libvlc_a-core.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_a_CFLAGS) $(CFLAGS) -c -o control/libvlc_a-core.lo `test -f 'control/core.c' || echo '$(srcdir)/'`control/core.c
+
+control/libvlc_a-log.o: control/log.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_a_CFLAGS) $(CFLAGS) -MT control/libvlc_a-log.o -MD -MP -MF "control/$(DEPDIR)/libvlc_a-log.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o control/libvlc_a-log.o `test -f 'control/log.c' || echo '$(srcdir)/'`control/log.c; \
+@am__fastdepCC_TRUE@	then mv -f "control/$(DEPDIR)/libvlc_a-log.Tpo" "control/$(DEPDIR)/libvlc_a-log.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "control/$(DEPDIR)/libvlc_a-log.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='control/log.c' object='control/libvlc_a-log.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='control/$(DEPDIR)/libvlc_a-log.Po' tmpdepfile='control/$(DEPDIR)/libvlc_a-log.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_a_CFLAGS) $(CFLAGS) -c -o control/libvlc_a-log.o `test -f 'control/log.c' || echo '$(srcdir)/'`control/log.c
+
+control/libvlc_a-log.obj: control/log.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_a_CFLAGS) $(CFLAGS) -MT control/libvlc_a-log.obj -MD -MP -MF "control/$(DEPDIR)/libvlc_a-log.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o control/libvlc_a-log.obj `if test -f 'control/log.c'; then $(CYGPATH_W) 'control/log.c'; else $(CYGPATH_W) '$(srcdir)/control/log.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "control/$(DEPDIR)/libvlc_a-log.Tpo" "control/$(DEPDIR)/libvlc_a-log.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "control/$(DEPDIR)/libvlc_a-log.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='control/log.c' object='control/libvlc_a-log.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='control/$(DEPDIR)/libvlc_a-log.Po' tmpdepfile='control/$(DEPDIR)/libvlc_a-log.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_a_CFLAGS) $(CFLAGS) -c -o control/libvlc_a-log.obj `if test -f 'control/log.c'; then $(CYGPATH_W) 'control/log.c'; else $(CYGPATH_W) '$(srcdir)/control/log.c'; fi`
+
+control/libvlc_a-log.lo: control/log.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_a_CFLAGS) $(CFLAGS) -MT control/libvlc_a-log.lo -MD -MP -MF "control/$(DEPDIR)/libvlc_a-log.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o control/libvlc_a-log.lo `test -f 'control/log.c' || echo '$(srcdir)/'`control/log.c; \
+@am__fastdepCC_TRUE@	then mv -f "control/$(DEPDIR)/libvlc_a-log.Tpo" "control/$(DEPDIR)/libvlc_a-log.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "control/$(DEPDIR)/libvlc_a-log.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='control/log.c' object='control/libvlc_a-log.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='control/$(DEPDIR)/libvlc_a-log.Plo' tmpdepfile='control/$(DEPDIR)/libvlc_a-log.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_a_CFLAGS) $(CFLAGS) -c -o control/libvlc_a-log.lo `test -f 'control/log.c' || echo '$(srcdir)/'`control/log.c
 
 control/libvlc_a-playlist.o: control/playlist.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_a_CFLAGS) $(CFLAGS) -MT control/libvlc_a-playlist.o -MD -MP -MF "control/$(DEPDIR)/libvlc_a-playlist.Tpo" \
@@ -7454,6 +7501,39 @@ control/libvlc_la-core.lo: control/core.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='control/$(DEPDIR)/libvlc_la-core.Plo' tmpdepfile='control/$(DEPDIR)/libvlc_la-core.TPlo' @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_la_CFLAGS) $(CFLAGS) -c -o control/libvlc_la-core.lo `test -f 'control/core.c' || echo '$(srcdir)/'`control/core.c
+
+control/libvlc_la-log.o: control/log.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_la_CFLAGS) $(CFLAGS) -MT control/libvlc_la-log.o -MD -MP -MF "control/$(DEPDIR)/libvlc_la-log.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o control/libvlc_la-log.o `test -f 'control/log.c' || echo '$(srcdir)/'`control/log.c; \
+@am__fastdepCC_TRUE@	then mv -f "control/$(DEPDIR)/libvlc_la-log.Tpo" "control/$(DEPDIR)/libvlc_la-log.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "control/$(DEPDIR)/libvlc_la-log.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='control/log.c' object='control/libvlc_la-log.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='control/$(DEPDIR)/libvlc_la-log.Po' tmpdepfile='control/$(DEPDIR)/libvlc_la-log.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_la_CFLAGS) $(CFLAGS) -c -o control/libvlc_la-log.o `test -f 'control/log.c' || echo '$(srcdir)/'`control/log.c
+
+control/libvlc_la-log.obj: control/log.c
+@am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_la_CFLAGS) $(CFLAGS) -MT control/libvlc_la-log.obj -MD -MP -MF "control/$(DEPDIR)/libvlc_la-log.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o control/libvlc_la-log.obj `if test -f 'control/log.c'; then $(CYGPATH_W) 'control/log.c'; else $(CYGPATH_W) '$(srcdir)/control/log.c'; fi`; \
+@am__fastdepCC_TRUE@	then mv -f "control/$(DEPDIR)/libvlc_la-log.Tpo" "control/$(DEPDIR)/libvlc_la-log.Po"; \
+@am__fastdepCC_TRUE@	else rm -f "control/$(DEPDIR)/libvlc_la-log.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='control/log.c' object='control/libvlc_la-log.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='control/$(DEPDIR)/libvlc_la-log.Po' tmpdepfile='control/$(DEPDIR)/libvlc_la-log.TPo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_la_CFLAGS) $(CFLAGS) -c -o control/libvlc_la-log.obj `if test -f 'control/log.c'; then $(CYGPATH_W) 'control/log.c'; else $(CYGPATH_W) '$(srcdir)/control/log.c'; fi`
+
+control/libvlc_la-log.lo: control/log.c
+@am__fastdepCC_TRUE@	if $(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_la_CFLAGS) $(CFLAGS) -MT control/libvlc_la-log.lo -MD -MP -MF "control/$(DEPDIR)/libvlc_la-log.Tpo" \
+@am__fastdepCC_TRUE@	  -c -o control/libvlc_la-log.lo `test -f 'control/log.c' || echo '$(srcdir)/'`control/log.c; \
+@am__fastdepCC_TRUE@	then mv -f "control/$(DEPDIR)/libvlc_la-log.Tpo" "control/$(DEPDIR)/libvlc_la-log.Plo"; \
+@am__fastdepCC_TRUE@	else rm -f "control/$(DEPDIR)/libvlc_la-log.Tpo"; exit 1; \
+@am__fastdepCC_TRUE@	fi
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='control/log.c' object='control/libvlc_la-log.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	depfile='control/$(DEPDIR)/libvlc_la-log.Plo' tmpdepfile='control/$(DEPDIR)/libvlc_la-log.TPlo' @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	$(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_la_CFLAGS) $(CFLAGS) -c -o control/libvlc_la-log.lo `test -f 'control/log.c' || echo '$(srcdir)/'`control/log.c
 
 control/libvlc_la-playlist.o: control/playlist.c
 @am__fastdepCC_TRUE@	if $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libvlc_la_CFLAGS) $(CFLAGS) -MT control/libvlc_la-playlist.o -MD -MP -MF "control/$(DEPDIR)/libvlc_la-playlist.Tpo" \

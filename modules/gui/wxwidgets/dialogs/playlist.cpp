@@ -2,7 +2,7 @@
  * playlist.cpp : wxWindows plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: playlist.cpp 16994 2006-10-08 14:40:02Z jpsaman $
+ * $Id: playlist.cpp 18347 2006-12-09 23:16:30Z hartman $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *          Clément Stenac <zorglub@videolan.org>
@@ -935,9 +935,9 @@ void Playlist::OnSave( wxCommandEvent& WXUNUSED(event) )
 
     if( dialog.ShowModal() == wxID_OK )
     {
-        if( dialog.GetPath().mb_str() )
+        if( dialog.GetPath().mb_str(wxConvUTF8) )
         {
-            playlist_Export( p_playlist, dialog.GetPath().mb_str(),
+            playlist_Export( p_playlist, dialog.GetPath().mb_str(wxConvUTF8),
                              formats[dialog.GetFilterIndex()].psz_module );
         }
     }
@@ -951,7 +951,7 @@ void Playlist::OnOpen( wxCommandEvent& WXUNUSED(event) )
 
     if( dialog.ShowModal() == wxID_OK )
     {
-        playlist_Import( p_playlist, dialog.GetPath().mb_str() );
+        playlist_Import( p_playlist, dialog.GetPath().mb_str(wxConvUTF8) );
     }
 }
 
@@ -1041,16 +1041,23 @@ void Playlist::RecursiveDeleteSelection(  wxTreeItemId root )
 {
     wxTreeItemIdValue cookie;
     wxTreeItemId child = treectrl->GetFirstChild( root, cookie );
+    wxTreeItemId nextchild;
+    bool childIsSelected = FALSE;
+    bool nextchildIsSelected = FALSE;
+
+    if( child.IsOk() ) childIsSelected = treectrl->IsSelected( child );
+
     while( child.IsOk() )
     {
-        if( treectrl->ItemHasChildren( child ) )
-        {
-            RecursiveDeleteSelection( child );
-            if( treectrl->IsSelected(child ) ) DeleteTreeItem( child );
-        }
-        else if( treectrl->IsSelected( child ) )
+        nextchild = treectrl->GetNextChild( root, cookie );
+        if( nextchild.IsOk() )
+            nextchildIsSelected = treectrl->IsSelected( nextchild );
+        if( childIsSelected ) 
             DeleteTreeItem( child );
-        child = treectrl->GetNextChild( root, cookie );
+        else if( treectrl->ItemHasChildren( child ) )
+            RecursiveDeleteSelection( child );
+        child = nextchild;
+        childIsSelected = nextchildIsSelected;
     }
 }
 
@@ -1135,7 +1142,7 @@ void Playlist::OnKeyDown( wxTreeEvent& event )
 {
     long keycode = event.GetKeyCode();
     /* Delete selected items */
-    if( keycode == WXK_BACK || keycode == WXK_DELETE )
+    if( keycode == WXK_BACK || keycode == WXK_DELETE || keycode == WXK_NUMPAD_DELETE )
     {
         /* We send a dummy event */
         OnDeleteSelection( event );

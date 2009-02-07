@@ -2,7 +2,7 @@
  * libasf.h :
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: libasf.h 15118 2006-04-06 17:54:21Z massiot $
+ * $Id: libasf.h 17236 2006-10-21 19:11:38Z hartman $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -118,6 +118,12 @@ static const guid_t asf_object_stream_prioritization =
 
 static const guid_t asf_object_extended_content_description =
 {0xD2D0A440, 0xE307, 0x11D2, {0x97, 0xF0, 0x00, 0xA0, 0xC9, 0x5E, 0xA8, 0x50}};
+
+static const guid_t asf_object_extended_stream_header = 
+{0x3afb65e2, 0x47ef, 0x40f2, { 0xac, 0x2c, 0x70, 0xa9, 0x0d, 0x71, 0xd3, 0x43}};
+
+static const guid_t asf_object_extended_stream_type_audio =
+{0x31178c9d, 0x03e1, 0x4528, { 0xb5, 0x82, 0x3d, 0xf9, 0xdb, 0x22, 0xf5, 0x03}};
 
 #define ASF_OBJECT_COMMON          \
     int          i_type;           \

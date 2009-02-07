@@ -2,7 +2,7 @@
  * interaction.c: User interaction functions
  *****************************************************************************
  * Copyright (C) 2005-2006 VideoLAN
- * $Id: interaction.c 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: interaction.c 17051 2006-10-13 13:23:18Z thresh $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -441,10 +441,12 @@ int __intf_UserLoginPassword( vlc_object_t *p_this,
 
     i_ret = intf_Interact( p_this, p_new );
 
-    if( i_ret != DIALOG_CANCELLED )
+    if( i_ret != DIALOG_CANCELLED && i_ret != VLC_EGENERIC )
     {
-        *ppsz_login = strdup( p_new->pp_widgets[1]->val.psz_string );
-        *ppsz_password = strdup( p_new->pp_widgets[2]->val.psz_string );
+        *ppsz_login = p_new->pp_widgets[1]->val.psz_string? 
+                                strdup( p_new->pp_widgets[1]->val.psz_string ) : NULL;
+        *ppsz_password = p_new->pp_widgets[2]->val.psz_string?
+                                strdup( p_new->pp_widgets[2]->val.psz_string ) : NULL;
     }
     return i_ret;
 }

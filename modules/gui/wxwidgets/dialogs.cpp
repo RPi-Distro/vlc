@@ -2,7 +2,7 @@
  * dialogs.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: dialogs.cpp 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: dialogs.cpp 18107 2006-11-27 13:44:11Z md $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -392,7 +392,7 @@ void DialogsProvider::OnOpenFileGeneric( wxCommandEvent& event )
                                               sizeof(char *) );
         for( size_t i = 0; i < paths.GetCount(); i++ )
         {
-            p_arg->psz_results[i] = strdup( paths[i].mb_str() );
+            p_arg->psz_results[i] = strdup( paths[i].mb_str(wxConvUTF8) );
         }
     }
 

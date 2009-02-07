@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: subsdec.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: subsdec.c 17770 2006-11-14 20:22:25Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -316,9 +316,11 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
     }
 
     /* Check validity of packet data */
-    if( p_block->i_buffer <= 1 || p_block->p_buffer[0] == '\0' )
+    /* An "empty" line containing only \0 can be used to force
+       and ephemer picture from the screen */
+    if( p_block->i_buffer < 1 )
     {
-        msg_Warn( p_dec, "empty subtitle" );
+        msg_Warn( p_dec, "no subtitle data" );
         return NULL;
     }
 

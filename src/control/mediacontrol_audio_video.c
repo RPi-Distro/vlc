@@ -2,7 +2,7 @@
  * audio_video.c: Audio/Video management : volume, snapshot, OSD
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: mediacontrol_audio_video.c 16647 2006-09-14 14:58:57Z hartman $
+ * $Id: mediacontrol_audio_video.c 17322 2006-10-28 14:49:42Z jpsaman $
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *
@@ -166,7 +166,6 @@ int mediacontrol_showtext( vout_thread_t *p_vout, int i_channel,
     return VLC_SUCCESS;
 }
 
-
 void
 mediacontrol_display_text( mediacontrol_Instance *self,
                            const char * message,
@@ -297,10 +296,10 @@ mediacontrol_get_rate( mediacontrol_Instance *self,
 
     p_input = self->p_playlist->p_input;
     if( ! p_input )
-      {
-	RAISE( mediacontrol_InternalException, "No input" );
-	return 0;
-      }
+    {
+	    RAISE( mediacontrol_InternalException, "No input" );
+	    return 0;
+    }
     retval = var_GetInteger(p_input, "rate") / 10;
     return retval;
 }
@@ -314,10 +313,10 @@ mediacontrol_set_rate( mediacontrol_Instance *self,
 
     p_input = self->p_playlist->p_input;
     if( ! p_input )
-      {
-	RAISE( mediacontrol_InternalException, "No input" );
-	return;
-      }
+    {
+	    RAISE( mediacontrol_InternalException, "No input" );
+	    return;
+    }
     var_SetInteger(p_input, "rate", rate * 10);
     return;
 }
@@ -329,22 +328,22 @@ mediacontrol_get_fullscreen( mediacontrol_Instance *self,
     vout_thread_t *p_vout = NULL;
     vlc_value_t val;
     int i_ret;
-    
+
     p_vout = vlc_object_find( self->p_playlist, VLC_OBJECT_VOUT, FIND_CHILD );
     if( ! p_vout )
     {
         RAISE( mediacontrol_InternalException, "no video output" );
         return 0;
     }
-    
+
     i_ret = var_Get( p_vout, "fullscreen", &val );
     vlc_object_release( p_vout );
 
     if( i_ret )
-      {
+    {
           RAISE( mediacontrol_InternalException, "Unexpected error while looking up fullscreen value" );
           return 0;
-      }
+    }
     return val.b_bool == VLC_TRUE ? 1 : 0;
 }
 
@@ -356,7 +355,7 @@ mediacontrol_set_fullscreen( mediacontrol_Instance *self,
     vout_thread_t *p_vout = NULL;
     vlc_value_t val;
     int i_ret;
-    
+
     p_vout = vlc_object_find( self->p_playlist, VLC_OBJECT_VOUT, FIND_CHILD );
     if( ! p_vout )
     {
@@ -371,9 +370,9 @@ mediacontrol_set_fullscreen( mediacontrol_Instance *self,
     vlc_object_release( p_vout );
 
     if( i_ret )
-      {
+    {
           RAISE( mediacontrol_InternalException, "Unexpected error while setting fullscreen value" );
           return;
-      }
+    }
     return;
 }

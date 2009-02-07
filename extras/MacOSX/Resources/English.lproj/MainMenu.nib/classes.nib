@@ -22,6 +22,7 @@
                 prev = id; 
                 random = id; 
                 repeat = id; 
+                repeatButtonAction = id; 
                 slower = id; 
                 stop = id; 
                 toggleVar = id; 
@@ -33,6 +34,10 @@
             CLASS = VLCControls; 
             LANGUAGE = ObjC; 
             OUTLETS = {
+                "o_btn_addNode" = id; 
+                "o_btn_repeat" = id; 
+                "o_btn_shuffle" = id; 
+                "o_fs_panel" = id; 
                 "o_main" = id; 
                 "o_specificTime_cancel_btn" = id; 
                 "o_specificTime_enter_fld" = id; 
@@ -98,6 +103,14 @@
             }; 
             SUPERCLASS = NSObject; 
         }, 
+        {CLASS = VLCFSPanel; LANGUAGE = ObjC; SUPERCLASS = NSWindow; }, 
+        {
+            ACTIONS = {faster = id; next = id; play = id; prev = id; slower = id; }; 
+            CLASS = VLCFSPanelView; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = VLCFSTimeSlider; LANGUAGE = ObjC; SUPERCLASS = NSSlider; }, 
         {
             ACTIONS = {
                 createOutlineGroup = id; 
@@ -225,6 +238,7 @@
                 "o_err_msg" = id; 
                 "o_error" = id; 
                 "o_info" = id; 
+                "o_main_pgbar" = id; 
                 "o_messages" = id; 
                 "o_mi_about" = id; 
                 "o_mi_add_intf" = id; 
@@ -346,7 +360,6 @@
             ACTIONS = {
                 addNode = id; 
                 deleteItem = id; 
-                handlePopUp = id; 
                 playItem = id; 
                 preparseItem = id; 
                 recursiveExpandNode = id; 
@@ -362,7 +375,6 @@
                 "o_btn_addNode" = id; 
                 "o_controller" = id; 
                 "o_ctx_menu" = id; 
-                "o_loop_popup" = id; 
                 "o_mi_addNode" = id; 
                 "o_mi_delete" = id; 
                 "o_mi_info" = id; 

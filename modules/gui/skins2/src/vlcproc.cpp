@@ -2,7 +2,7 @@
  * vlcproc.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: vlcproc.cpp 16876 2006-09-28 15:46:15Z thresh $
+ * $Id: vlcproc.cpp 18010 2006-11-24 09:05:31Z damienf $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teuli�e <ipkiss@via.ecp.fr>
@@ -225,8 +225,7 @@ void VlcProc::dropVout()
 {
     if( m_pVout )
     {
-        if( vout_Control( m_pVout, VOUT_REPARENT, 0 ) != VLC_SUCCESS )
-            vout_Control( m_pVout, VOUT_CLOSE );
+        vout_Control( m_pVout, VOUT_CLOSE );
         m_pVout = NULL;
     }
 }

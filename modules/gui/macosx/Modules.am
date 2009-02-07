@@ -42,5 +42,7 @@ SOURCES_macosx = \
 	embeddedwindow.m \
 	update.h \
 	update.m \
+	fspanel.h \
+	fspanel.m \
 	$(NULL)
 

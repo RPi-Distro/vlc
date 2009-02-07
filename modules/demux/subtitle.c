@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: subtitle.c 17012 2006-10-09 22:11:32Z xtophe $
+ * $Id: subtitle.c 18177 2006-11-30 20:42:25Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -201,6 +201,7 @@ static int Open ( vlc_object_t *p_this )
     if( f_fps >= 1.0 )
     {
         p_sys->i_microsecperframe = (int64_t)( (float)1000000 / f_fps );
+        msg_Dbg( p_demux, "Override subtitle fps %f", f_fps );
     }
 
     p_input = (input_thread_t *)vlc_object_find( p_demux, VLC_OBJECT_INPUT, FIND_PARENT );
@@ -210,6 +211,7 @@ static int Open ( vlc_object_t *p_this )
         if( f_fps >= 1.0 )
             p_sys->i_original_mspf = (int64_t)( (float)1000000 / f_fps );
 
+        msg_Dbg( p_demux, "Movie fps: %f", f_fps );
         vlc_object_release( p_input );
     }
 
@@ -701,7 +703,8 @@ static int ParseMicroDvd( demux_t *p_demux, subtitle_t *p_subtitle )
     int    i_stop;
     unsigned int i;
 
-    int i_microsecperframe = 40000; /* default to 25 fps */
+    /* Try sub-fps value if set, movie rate if know, else 25fps (40000) */
+    int i_microsecperframe = p_sys->i_original_mspf > 0 ? p_sys->i_original_mspf : 40000;
     if( p_sys->i_microsecperframe > 0 )
         i_microsecperframe = p_sys->i_microsecperframe;
 
@@ -729,8 +732,9 @@ next:
     if( i_start == 1 && i_stop == 1 )
     {
         /* We found a possible setting of the framerate "{1}{1}23.976" */
+        /* Use it unless sub-fps was set */
         float tmp = us_strtod( buffer_text, NULL );
-        if( tmp > 0.0 && !var_GetFloat( p_demux, "sub-fps" ) > 0.0 )
+        if( tmp > 0.0 && var_GetFloat( p_demux, "sub-fps" ) <= 0.0 )
             p_sys->i_microsecperframe = (int64_t)( (float)1000000 / tmp );
         goto next;
     }

@@ -87,7 +87,7 @@ void    x264_param_default( x264_param_t *param )
     param->rc.i_vbv_buffer_size = 0;
     param->rc.f_vbv_buffer_init = 0.9;
     param->rc.i_qp_constant = 26;
-    param->rc.i_rf_constant = 0;
+    param->rc.f_rf_constant = 0;
     param->rc.i_qp_min = 10;
     param->rc.i_qp_max = 51;
     param->rc.i_qp_step = 4;
@@ -119,9 +119,12 @@ void    x264_param_default( x264_param_t *param )
     param->analyse.i_subpel_refine = 5;
     param->analyse.b_chroma_me = 1;
     param->analyse.i_mv_range = -1; // set from level_idc
+    param->analyse.i_direct_8x8_inference = -1; // set from level_idc
     param->analyse.i_chroma_qp_offset = 0;
     param->analyse.b_fast_pskip = 1;
     param->analyse.b_dct_decimate = 1;
+    param->analyse.i_luma_deadzone[0] = 21;
+    param->analyse.i_luma_deadzone[1] = 11;
     param->analyse.b_psnr = 1;
     param->analyse.b_ssim = 1;
 
@@ -161,7 +164,7 @@ static int parse_cqm( const char *str, uint8_t *cqm, int length )
     return (i == length) ? 0 : -1;
 }
 
-static int atobool( const char *str )
+static int x264_atobool( const char *str, int *b_error )
 {
     if( !strcmp(str, "1") || 
         !strcmp(str, "true") || 
@@ -171,23 +174,56 @@ static int atobool( const char *str )
         !strcmp(str, "false") || 
         !strcmp(str, "no") )
         return 0;
-    return -1;
+    *b_error = 1;
+    return 0;
 }
 
-#define atobool(str) ( (i = atobool(str)) < 0 ? (b_error = 1) : i )
+static int x264_atoi( const char *str, int *b_error )
+{
+    char *end;
+    int v = strtol( str, &end, 0 );
+    if( end == str || *end != '\0' )
+        *b_error = 1;
+    return v;
+}
+
+static double x264_atof( const char *str, int *b_error )
+{
+    char *end;
+    double v = strtod( str, &end );
+    if( end == str || *end != '\0' )
+        *b_error = 1;
+    return v;
+}
+
+#define atobool(str) ( name_was_bool = 1, x264_atobool( str, &b_error ) )
+#define atoi(str) x264_atoi( str, &b_error )
+#define atof(str) x264_atof( str, &b_error )
 
 int x264_param_parse( x264_param_t *p, const char *name, const char *value )
 {
+    char *name_buf = NULL;
     int b_error = 0;
+    int name_was_bool;
+    int value_was_null = !value;
     int i;
 
     if( !name )
         return X264_PARAM_BAD_NAME;
     if( !value )
-        return X264_PARAM_BAD_VALUE;
+        value = "true";
 
     if( value[0] == '=' )
         value++;
+
+    if( strchr( name, '_' ) ) // s/_/-/g
+    {
+        char *p;
+        name_buf = strdup(name);
+        while( (p = strchr( name_buf, '_' )) )
+            *p = '-';
+        name = name_buf;
+    }
 
     if( (!strncmp( name, "no-", 3 ) && (i = 3)) ||
         (!strncmp( name, "no", 2 ) && (i = 2)) )
@@ -195,8 +231,10 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         name += i;
         value = atobool(value) ? "false" : "true";
     }
+    name_was_bool = 0;
 
 #define OPT(STR) else if( !strcmp( name, STR ) )
+#define OPT2(STR0, STR1) else if( !strcmp( name, STR0 ) || !strcmp( name, STR1 ) )
     if(0);
     OPT("asm")
         p->cpu = atobool(value) ? x264_cpu_detect() : 0;
@@ -207,7 +245,7 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         else
             p->i_threads = atoi(value);
     }
-    OPT("level")
+    OPT2("level", "level-idc")
     {
         if( atof(value) < 6 )
             p->i_level_idc = (int)(10*atof(value)+.5);
@@ -221,15 +259,15 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
     }
     OPT("overscan")
         b_error |= parse_enum( value, x264_overscan_names, &p->vui.i_overscan );
-    OPT("vidformat")
+    OPT("videoformat")
         b_error |= parse_enum( value, x264_vidformat_names, &p->vui.i_vidformat );
     OPT("fullrange")
         b_error |= parse_enum( value, x264_fullrange_names, &p->vui.b_fullrange );
-    OPT("colourprim")
+    OPT("colorprim")
         b_error |= parse_enum( value, x264_colorprim_names, &p->vui.i_colorprim );
     OPT("transfer")
         b_error |= parse_enum( value, x264_transfer_names, &p->vui.i_transfer );
-    OPT("colourmatrix")
+    OPT("colormatrix")
         b_error |= parse_enum( value, x264_colmatrix_names, &p->vui.i_colmatrix );
     OPT("chromaloc")
     {
@@ -238,18 +276,16 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
     }
     OPT("fps")
     {
-        float fps;
         if( sscanf( value, "%d/%d", &p->i_fps_num, &p->i_fps_den ) == 2 )
             ;
-        else if( sscanf( value, "%f", &fps ) )
+        else
         {
+            float fps = atof(value);
             p->i_fps_num = (int)(fps * 1000 + .5);
             p->i_fps_den = 1000;
         }
-        else
-            b_error = 1;
     }
-    OPT("ref")
+    OPT2("ref", "frameref")
         p->i_frame_reference = atoi(value);
     OPT("keyint")
     {
@@ -257,7 +293,7 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         if( p->i_keyint_min > p->i_keyint_max )
             p->i_keyint_min = p->i_keyint_max;
     }
-    OPT("min-keyint")
+    OPT2("min-keyint", "keyint-min")
     {
         p->i_keyint_min = atoi(value);
         if( p->i_keyint_max < p->i_keyint_min )
@@ -274,16 +310,18 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
     OPT("b-pyramid")
         p->b_bframe_pyramid = atobool(value);
     OPT("nf")
-        p->b_deblocking_filter = 0;
-    OPT("filter")
+        p->b_deblocking_filter = !atobool(value);
+    OPT2("filter", "deblock")
     {
-        int count;
-        if( 0 < (count = sscanf( value, "%d:%d", &p->i_deblocking_filter_alphac0, &p->i_deblocking_filter_beta )) ||
-            0 < (count = sscanf( value, "%d,%d", &p->i_deblocking_filter_alphac0, &p->i_deblocking_filter_beta )) )
+        if( 2 == sscanf( value, "%d:%d", &p->i_deblocking_filter_alphac0, &p->i_deblocking_filter_beta ) ||
+            2 == sscanf( value, "%d,%d", &p->i_deblocking_filter_alphac0, &p->i_deblocking_filter_beta ) )
         {
             p->b_deblocking_filter = 1;
-            if( count == 1 )
-                p->i_deblocking_filter_beta = p->i_deblocking_filter_alphac0;
+        }
+        else if( sscanf( value, "%d", &p->i_deblocking_filter_alphac0 ) )
+        {
+            p->b_deblocking_filter = 1;
+            p->i_deblocking_filter_beta = p->i_deblocking_filter_alphac0;
         }
         else
             p->b_deblocking_filter = atobool(value);
@@ -292,6 +330,8 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         p->b_cabac = atobool(value);
     OPT("cabac-idc")
         p->i_cabac_init_idc = atoi(value);
+    OPT("interlaced")
+        p->b_interlaced = atobool(value);
     OPT("cqm")
     {
         if( strstr( value, "flat" ) )
@@ -299,7 +339,7 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         else if( strstr( value, "jvt" ) )
             p->i_cqm_preset = X264_CQM_JVT;
         else
-            b_error = 1;
+            p->psz_cqm_file = strdup(value);
     }
     OPT("cqmfile")
         p->psz_cqm_file = strdup(value);
@@ -361,7 +401,11 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
     }
     OPT("log")
         p->i_log_level = atoi(value);
-    OPT("analyse")
+#ifdef VISUALIZE
+    OPT("visualize")
+        p->b_visualize = atobool(value);
+#endif
+    OPT2("analyse", "partitions")
     {
         p->analyse.inter = 0;
         if( strstr( value, "none" ) )  p->analyse.inter =  0;
@@ -375,25 +419,27 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
     }
     OPT("8x8dct")
         p->analyse.b_transform_8x8 = atobool(value);
-    OPT("weightb")
+    OPT2("weightb", "weight-b")
         p->analyse.b_weighted_bipred = atobool(value);
-    OPT("direct")
+    OPT2("direct", "direct-pred")
         b_error |= parse_enum( value, x264_direct_pred_names, &p->analyse.i_direct_mv_pred );
+    OPT("direct-8x8")
+        p->analyse.i_direct_8x8_inference = atoi(value);
     OPT("chroma-qp-offset")
         p->analyse.i_chroma_qp_offset = atoi(value);
     OPT("me")
         b_error |= parse_enum( value, x264_motion_est_names, &p->analyse.i_me_method );
-    OPT("merange")
+    OPT2("merange", "me-range")
         p->analyse.i_me_range = atoi(value);
     OPT("mvrange")
         p->analyse.i_mv_range = atoi(value);
-    OPT("subme")
+    OPT2("subme", "subq")
         p->analyse.i_subpel_refine = atoi(value);
     OPT("bime")
         p->analyse.b_bidir_me = atobool(value);
     OPT("chroma-me")
         p->analyse.b_chroma_me = atobool(value);
-    OPT("b-rdo")
+    OPT2("b-rdo", "brdo")
         p->analyse.b_bframe_rdo = atobool(value);
     OPT("mixed-refs")
         p->analyse.b_mixed_references = atobool(value);
@@ -403,6 +449,10 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         p->analyse.b_fast_pskip = atobool(value);
     OPT("dct-decimate")
         p->analyse.b_dct_decimate = atobool(value);
+    OPT("deadzone-inter")
+        p->analyse.i_luma_deadzone[0] = atoi(value);
+    OPT("deadzone-intra")
+        p->analyse.i_luma_deadzone[1] = atoi(value);
     OPT("nr")
         p->analyse.i_noise_reduction = atoi(value);
     OPT("bitrate")
@@ -410,21 +460,21 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         p->rc.i_bitrate = atoi(value);
         p->rc.i_rc_method = X264_RC_ABR;
     }
-    OPT("qp")
+    OPT2("qp", "qp_constant")
     {
         p->rc.i_qp_constant = atoi(value);
         p->rc.i_rc_method = X264_RC_CQP;
     }
     OPT("crf")
     {
-        p->rc.i_rf_constant = atoi(value);
+        p->rc.f_rf_constant = atof(value);
         p->rc.i_rc_method = X264_RC_CRF;
     }
-    OPT("qpmin")
+    OPT2("qpmin", "qp-min")
         p->rc.i_qp_min = atoi(value);
-    OPT("qpmax")
+    OPT2("qpmax", "qp-max")
         p->rc.i_qp_max = atoi(value);
-    OPT("qpstep")
+    OPT2("qpstep", "qp-step")
         p->rc.i_qp_step = atoi(value);
     OPT("ratetol")
         p->rc.f_rate_tolerance = !strncmp("inf", value, 3) ? 1e9 : atof(value);
@@ -434,9 +484,9 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         p->rc.i_vbv_buffer_size = atoi(value);
     OPT("vbv-init")
         p->rc.f_vbv_buffer_init = atof(value);
-    OPT("ipratio")
+    OPT2("ipratio", "ip-factor")
         p->rc.f_ip_factor = atof(value);
-    OPT("pbratio")
+    OPT2("pbratio", "pb-factor")
         p->rc.f_pb_factor = atof(value);
     OPT("pass")
     {
@@ -455,7 +505,7 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         p->rc.f_qcompress = atof(value);
     OPT("qblur")
         p->rc.f_qblur = atof(value);
-    OPT("cplxblur")
+    OPT2("cplxblur", "cplx-blur")
         p->rc.f_complexity_blur = atof(value);
     OPT("zones")
         p->rc.psz_zones = strdup(value);
@@ -467,13 +517,22 @@ int x264_param_parse( x264_param_t *p, const char *name, const char *value )
         p->b_aud = atobool(value);
     OPT("sps-id")
         p->i_sps_id = atoi(value);
+    OPT("global-header")
+        p->b_repeat_headers = !atobool(value);
     OPT("repeat-headers")
         p->b_repeat_headers = atobool(value);
     else
         return X264_PARAM_BAD_NAME;
 #undef OPT
+#undef OPT2
 #undef atobool
+#undef atoi
+#undef atof
 
+    if( name_buf )
+        free( name_buf );
+
+    b_error |= value_was_null && !name_was_bool;
     return b_error ? X264_PARAM_BAD_VALUE : 0;
 }
 
@@ -818,10 +877,12 @@ char *x264_param2string( x264_param_t *p, int b_res )
     s += sprintf( s, " trellis=%d", p->analyse.i_trellis );
     s += sprintf( s, " 8x8dct=%d", p->analyse.b_transform_8x8 );
     s += sprintf( s, " cqm=%d", p->i_cqm_preset );
+    s += sprintf( s, " deadzone=%d,%d", p->analyse.i_luma_deadzone[0], p->analyse.i_luma_deadzone[1] );
     s += sprintf( s, " chroma_qp_offset=%d", p->analyse.i_chroma_qp_offset );
     s += sprintf( s, " slices=%d", p->i_threads );
     s += sprintf( s, " nr=%d", p->analyse.i_noise_reduction );
     s += sprintf( s, " decimate=%d", p->analyse.b_dct_decimate );
+    s += sprintf( s, " mbaff=%d", p->b_interlaced );
 
     s += sprintf( s, " bframes=%d", p->i_bframe );
     if( p->i_bframe )
@@ -841,7 +902,7 @@ char *x264_param2string( x264_param_t *p, int b_res )
     if( p->rc.i_rc_method == X264_RC_ABR || p->rc.i_rc_method == X264_RC_CRF )
     {
         if( p->rc.i_rc_method == X264_RC_CRF )
-            s += sprintf( s, " crf=%d", p->rc.i_rf_constant );
+            s += sprintf( s, " crf=%.1f", p->rc.f_rf_constant );
         else
             s += sprintf( s, " bitrate=%d ratetol=%.1f",
                           p->rc.i_bitrate, p->rc.f_rate_tolerance );

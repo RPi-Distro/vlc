@@ -2,7 +2,7 @@
  * vlc_input.h: Core input structures
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: vlc_input.h 16931 2006-10-03 09:04:50Z damienf $
+ * $Id: vlc_input.h 17351 2006-10-29 12:09:12Z jpsaman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -289,7 +289,8 @@ enum input_state_e
     BUFFERING_S,
     PLAYING_S,
     PAUSE_S,
-    END_S
+    END_S,
+    ERROR_S
 };
 
 /* "rate" default, min/max
