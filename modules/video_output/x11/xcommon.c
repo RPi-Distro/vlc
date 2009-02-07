@@ -2,7 +2,7 @@
  * xcommon.c: Functions common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: xcommon.c 19347 2007-03-17 21:21:26Z sam $
+ * $Id: xcommon.c 25069 2008-02-10 12:14:17Z courmisch $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -107,7 +107,7 @@ static IMAGE_TYPE *CreateImage    ( vout_thread_t *,
 #ifdef HAVE_SYS_SHM_H
 static IMAGE_TYPE *CreateShmImage ( vout_thread_t *,
                                     Display *, EXTRA_ARGS_SHM, int, int );
-static vlc_bool_t b_shm = VLC_TRUE;
+static int i_shm_major = 0;
 #endif
 
 static void ToggleFullScreen      ( vout_thread_t * );
@@ -507,7 +507,7 @@ static void DisplayVideo( vout_thread_t *p_vout, picture_t *p_pic )
     vlc_mutex_lock( &p_vout->p_sys->lock );
 
 #ifdef HAVE_SYS_SHM_H
-    if( p_vout->p_sys->b_shm )
+    if( p_vout->p_sys->i_shm_opcode )
     {
         /* Display rendered image using shared memory extension */
 #   ifdef MODULE_NAME_IS_xvideo
@@ -1322,7 +1322,7 @@ static int NewPicture( vout_thread_t *p_vout, picture_t *p_pic )
                       p_vout->output.i_aspect );
 
 #ifdef HAVE_SYS_SHM_H
-    if( p_vout->p_sys->b_shm )
+    if( p_vout->p_sys->i_shm_opcode )
     {
         /* Create image using XShm extension */
         p_pic->p_sys->p_image =
@@ -1338,7 +1338,7 @@ static int NewPicture( vout_thread_t *p_vout, picture_t *p_pic )
                             p_vout->output.i_width, p_vout->output.i_height );
     }
 
-    if( !p_vout->p_sys->b_shm || !p_pic->p_sys->p_image )
+    if( !p_vout->p_sys->i_shm_opcode || !p_pic->p_sys->p_image )
 #endif /* HAVE_SYS_SHM_H */
     {
         /* Create image without XShm extension */
@@ -1356,10 +1356,10 @@ static int NewPicture( vout_thread_t *p_vout, picture_t *p_pic )
                          p_vout->output.i_width, p_vout->output.i_height );
 
 #ifdef HAVE_SYS_SHM_H
-        if( p_pic->p_sys->p_image && p_vout->p_sys->b_shm )
+        if( p_pic->p_sys->p_image && p_vout->p_sys->i_shm_opcode )
         {
             msg_Warn( p_vout, "couldn't create SHM image, disabling SHM" );
-            p_vout->p_sys->b_shm = VLC_FALSE;
+            p_vout->p_sys->i_shm_opcode = 0;
         }
 #endif /* HAVE_SYS_SHM_H */
     }
@@ -1449,7 +1449,7 @@ static void FreePicture( vout_thread_t *p_vout, picture_t *p_pic )
 {
     /* The order of operations is correct */
 #ifdef HAVE_SYS_SHM_H
-    if( p_vout->p_sys->b_shm )
+    if( p_vout->p_sys->i_shm_opcode )
     {
         XShmDetach( p_vout->p_sys->p_display, &p_pic->p_sys->shminfo );
         IMAGE_FREE( p_pic->p_sys->p_image );
@@ -2032,18 +2032,36 @@ static int InitDisplay( vout_thread_t *p_vout )
 #endif
 
 #ifdef HAVE_SYS_SHM_H
-    p_vout->p_sys->b_shm = 0;
+    p_vout->p_sys->i_shm_opcode = 0;
 
     if( config_GetInt( p_vout, MODULE_STRING "-shm" ) )
     {
 #   ifdef __APPLE__
         /* FIXME: As of 2001-03-16, XFree4 for MacOS X does not support Xshm */
 #   else
-        p_vout->p_sys->b_shm =
-                  ( XShmQueryExtension( p_vout->p_sys->p_display ) == True );
+        int major, evt, err;
+
+        if( XQueryExtension( p_vout->p_sys->p_display, "MIT-SHM", &major,
+                             &evt, &err )
+         && XShmQueryExtension( p_vout->p_sys->p_display ) )
+            p_vout->p_sys->i_shm_opcode = major;
+
+        if( p_vout->p_sys->i_shm_opcode )
+        {
+            int major, minor;
+            Bool pixmaps;
+
+            XShmQueryVersion( p_vout->p_sys->p_display, &major, &minor,
+                              &pixmaps );
+            msg_Dbg( p_vout, "XShm video extension v%d.%d "
+                     "(with%s pixmaps, opcode: %d)",
+                     major, minor, pixmaps ? "" : "out",
+                     p_vout->p_sys->i_shm_opcode );
+        }
+
 #   endif
 
-        if( !p_vout->p_sys->b_shm )
+        if( !p_vout->p_sys->i_shm_opcode )
         {
             msg_Warn( p_vout, "XShm video extension is unavailable" );
         }
@@ -2222,9 +2240,9 @@ static IMAGE_TYPE * CreateShmImage( vout_thread_t *p_vout,
 
     /* Attach shared memory segment to X server */
     XSynchronize( p_display, True );
-    b_shm = VLC_TRUE;
+    i_shm_major = p_vout->p_sys->i_shm_opcode;
     result = XShmAttach( p_display, p_shm );
-    if( result == False || !b_shm )
+    if( result == False || !i_shm_major )
     {
         msg_Err( p_vout, "cannot attach shared memory to X server" );
         IMAGE_FREE( p_image );
@@ -2329,16 +2347,10 @@ static int X11ErrorHandler( Display * display, XErrorEvent * event )
         /* Ingnore errors on XSetInputFocus()
          * (they happen when a window is not yet mapped) */
         return 0;
-
-    case 150: /* MIT-SHM */
-    case 146: /* MIT-SHM too, what gives? */
-        if( event->minor_code == X_ShmAttach )
-        {
-            b_shm = VLC_FALSE;
-            return 0;
-        }
-        break;
     }
+
+    if( event->request_code == i_shm_major ) /* MIT-SHM */
+        return i_shm_major = 0;
 
     XSetErrorHandler(NULL);
     return (XSetErrorHandler(X11ErrorHandler))( display, event );

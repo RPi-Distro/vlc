@@ -1,11 +1,1664 @@
 ------------------------------------------------------------------------
-r20579 | jpsaman | 2007-06-16 12:11:51 +0200 (Sat, 16 Jun 2007) | 1 line
+r25364 | thresh | 2008-02-26 16:14:14 -0800 (mar, 26 fév 2008) | 2 lines
+
+Add one more CVE fixed (this time not really ours, but xinelib's).
+
+------------------------------------------------------------------------
+r25363 | thresh | 2008-02-26 16:07:15 -0800 (mar, 26 fév 2008) | 2 lines
+
+Backport [24245] and [24246]
+
+------------------------------------------------------------------------
+r25362 | thresh | 2008-02-26 15:59:58 -0800 (mar, 26 fév 2008) | 2 lines
+
+Backport [24247].
+
+------------------------------------------------------------------------
+r25341 | xtophe | 2008-02-25 14:19:56 -0800 (lun, 25 fév 2008) | 2 lines
+
+Last update to the changelog and refresh the po
+
+------------------------------------------------------------------------
+r25282 | Trax | 2008-02-24 11:58:05 -0800 (dim, 24 fév 2008) | 1 line
+
+NEWS: remove multi-screen improvement for Mac OS X since it isn't included yet
+------------------------------------------------------------------------
+r25280 | Trax | 2008-02-24 19:20:27 +0000 (Sun, 24 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+some cosmetics/consistency in NEWS for readability
+------------------------------------------------------------------------
+r25261 | thresh | 2008-02-22 17:31:20 +0000 (Fri, 22 Feb 2008) | 7 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/audio_output/alsa.c
+
+Fix alsa audio output on intel ICH8 with alsa 1.0.14 (maybe even 1.0.14+).
+This fixes those annoying messages:
+[00000307] main audio output debug: audio output is starving (38397), playing silence
+[00000307] alsa audio output debug: recovered from buffer underrun
+and sound becomes just fine.
+Tested on 32bit and x86_64 systems.
+
+------------------------------------------------------------------------
+r25258 | thresh | 2008-02-22 11:02:10 +0000 (Fri, 22 Feb 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/live555.cpp
+
+Backport [25183], fixes build with gcc4.3.
+
+------------------------------------------------------------------------
+r25257 | fkuehne | 2008-02-21 22:52:50 +0000 (Thu, 21 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+minor fixes
+------------------------------------------------------------------------
+r25240 | Trax | 2008-02-21 14:06:01 +0000 (Thu, 21 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* NEWS: using threads 0 is not supported used on Windows (using older x264)
+------------------------------------------------------------------------
+r25235 | jb | 2008-02-21 10:52:12 +0000 (Thu, 21 Feb 2008) | 3 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/ChangeLog
+   A /branches/0.8.6-bugfix/doc/ChangeLog-2008
+
+Changelogs.
+
+
+------------------------------------------------------------------------
+r25234 | funman | 2008-02-21 10:28:05 +0000 (Thu, 21 Feb 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
+
+don't let system tools load freshly compiled out-of-date (wrt the system) libraries
+
+------------------------------------------------------------------------
+r25233 | Trax | 2008-02-21 10:19:49 +0000 (Thu, 21 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/audio_filter/channel_mixer/simple.c
+
+* modules/audio_filter/channel_mixer/simple.c: revert mistaken commit of simple.c (aac channel order fix keeps haunting me)
+------------------------------------------------------------------------
+r25232 | Trax | 2008-02-21 10:14:45 +0000 (Thu, 21 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/modules/audio_filter/channel_mixer/simple.c
+
+NEWS: remove FLAC issues, this was fixed in 0.8.6d already
+------------------------------------------------------------------------
+r25231 | jb | 2008-02-21 10:07:12 +0000 (Thu, 21 Feb 2008) | 3 lines
+Changed paths:
+   A /branches/0.8.6-bugfix/doc/ChangeLog-2007
+
+Add changelog for 2007.
+
+
+------------------------------------------------------------------------
+r25230 | funman | 2008-02-21 10:05:28 +0000 (Thu, 21 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/bootstrap
+
+-e option isn't available on all echo
+------------------------------------------------------------------------
+r25227 | Trax | 2008-02-21 09:16:00 +0000 (Thu, 21 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/mkv.cpp
+
+* modules/demux/mkv.cpp: backport [19988] apply open probes when checking .mkv in same folder; fix memleak and fix crash when there are multiple .mkv and one of them is corrupt or incomplete
+------------------------------------------------------------------------
+r25224 | Trax | 2008-02-21 08:58:15 +0000 (Thu, 21 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/ogg.c
+
+* modules/demux/ogg.c: backport [25189] compare right amount of data (more strict) in ogg demux
+------------------------------------------------------------------------
+r25223 | Trax | 2008-02-21 08:51:03 +0000 (Thu, 21 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/THANKS
+   M /branches/0.8.6-bugfix/modules/codec/faad.c
+
+* modules/codec/faad.c: revert [25155] channel order fix since it needs more than also backporting [23226] simple.c so revert for now until we have something that applies to bugfix
+------------------------------------------------------------------------
+r25206 | Trax | 2008-02-20 17:56:52 +0000 (Wed, 20 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/mozilla/control/npolibvlc.cpp
+
+* mozilla/control/npolibvlc.cpp: backport [25203] fixed name argument in add(url, name, options) for mozilla
+------------------------------------------------------------------------
+r25167 | Trax | 2008-02-15 22:59:18 +0000 (Fri, 15 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
+   M /branches/0.8.6-bugfix/extras/contrib/src/Patches/x264-svn-darwin.patch
+
+* extras/contrib/src/Makefile: update x264 to latest revision (736) and backport darwin patch [24127] to match revision (trunk uses latest too); several memleaks fixed, minor bugfixes, few Altivec improvements, amd64 and FreeBSD support fixes
+------------------------------------------------------------------------
+r25160 | Trax | 2008-02-15 17:51:33 +0000 (Fri, 15 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/THANKS
+
+uhmm. this is the typo in THANKS.. previous commit was cosmetics unneeded dots in NEWS..
+------------------------------------------------------------------------
+r25159 | Trax | 2008-02-15 17:49:54 +0000 (Fri, 15 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+typo in THANKS
+------------------------------------------------------------------------
+r25158 | courmisch | 2008-02-15 17:16:03 +0000 (Fri, 15 Feb 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/mp4/mp4.c
+
+Backport [24941] and [25157] memory error handling
+
+------------------------------------------------------------------------
+r25156 | Trax | 2008-02-15 16:48:31 +0000 (Fri, 15 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: remove FIXME on plugins, change SA number for MP4 issue; prepare for release based on what we have to keep things upto speed..
+------------------------------------------------------------------------
+r25155 | Trax | 2008-02-15 16:23:22 +0000 (Fri, 15 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/THANKS
+   M /branches/0.8.6-bugfix/modules/codec/faad.c
+
+* modules/codec/faad.c: backport [25080] channel order fix for multichannel AAC
+------------------------------------------------------------------------
+r25153 | Trax | 2008-02-14 23:21:20 +0000 (Thu, 14 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/modules/codec/x264.c
+
+* modules/codec/x264.c: backport [25152] fix for x264 threads=0 (auto)
+------------------------------------------------------------------------
+r25150 | jb | 2008-02-14 19:19:14 +0000 (Thu, 14 Feb 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/INSTALL.win32
+
+Give the correct link to the win32 contribs
+
+------------------------------------------------------------------------
+r25149 | jb | 2008-02-14 19:04:43 +0000 (Thu, 14 Feb 2008) | 3 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+More NEWS.
+
+
+------------------------------------------------------------------------
+r25148 | jb | 2008-02-14 18:53:58 +0000 (Thu, 14 Feb 2008) | 3 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: Some have  been fixed, IIRC.
+
+
+------------------------------------------------------------------------
+r25147 | jb | 2008-02-14 18:51:35 +0000 (Thu, 14 Feb 2008) | 3 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/InfoPlist.strings
+   M /branches/0.8.6-bugfix/extras/MacOSX/vlc.xcodeproj/project.pbxproj
+
+Branch: 0.8.6e will be the number.
+
+
+------------------------------------------------------------------------
+r25146 | Trax | 2008-02-14 17:35:42 +0000 (Thu, 14 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/codec/x264.c
+
+* modules/codec/x264.c: backport [25144] cosmetics in reporting version info for x264
+------------------------------------------------------------------------
+r25111 | jpsaman | 2008-02-12 11:42:54 +0000 (Tue, 12 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/live555.cpp
+
+Backport of [25110] and hack to workaround a bug withe descrpeURL() in older live555 libraries.
+------------------------------------------------------------------------
+r25105 | Trax | 2008-02-11 23:10:04 +0000 (Mon, 11 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/codec/x264.c
+
+* modules/codec/x264.c: backport [25104] add x264 version debug info
+------------------------------------------------------------------------
+r25091 | jpsaman | 2008-02-10 22:36:49 +0000 (Sun, 10 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/codec/ffmpeg/video_filter.c
+
+Backport of [25090]: Cleanup in the error path
+------------------------------------------------------------------------
+r25088 | jpsaman | 2008-02-10 22:12:30 +0000 (Sun, 10 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/codec/ffmpeg/video_filter.c
+
+Fix memleak ffmpeg/video_filter.c
+------------------------------------------------------------------------
+r25075 | Trax | 2008-02-10 15:12:17 +0000 (Sun, 10 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/live555.cpp
+
+* modules/demux/live555.cpp: uint -> uint32_t compile fix
+------------------------------------------------------------------------
+r25069 | courmisch | 2008-02-10 12:14:17 +0000 (Sun, 10 Feb 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/video_output/x11/xcommon.c
+   M /branches/0.8.6-bugfix/modules/video_output/x11/xcommon.h
+
+Backport [22107] and [25067] MIT-SHM fixes.
+
+------------------------------------------------------------------------
+r25029 | jpsaman | 2008-02-09 14:38:13 +0000 (Sat, 09 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/live555.cpp
+
+Fix handling of authorization
+------------------------------------------------------------------------
+r25011 | Trax | 2008-02-08 23:43:15 +0000 (Fri, 08 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+
+configure.ac: backport [24902] use build_os instead of SYS for detecting cygwin for hostname check because when we deal with mingw32 compiler (mno-cygwin mode) then SYS value isn't cygwin but (forced to) mingw32
+------------------------------------------------------------------------
+r25010 | Trax | 2008-02-08 23:32:20 +0000 (Fri, 08 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/codec/x264.c
+
+* modules/codec/x264.c: backport [25007] fix direct 8x8 inference warnings
+------------------------------------------------------------------------
+r24999 | jpsaman | 2008-02-08 20:44:09 +0000 (Fri, 08 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/live555.cpp
+
+Backport of [24998]
+------------------------------------------------------------------------
+r24997 | jpsaman | 2008-02-08 20:35:34 +0000 (Fri, 08 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/live555.cpp
+
+Backport [23166] [23170] [23182] [23183] [23483] [23526] [23527] [23596]: Several live555 demuxer fixes.
+------------------------------------------------------------------------
+r24945 | courmisch | 2008-02-07 18:53:40 +0000 (Thu, 07 Feb 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/mp4/mp4.c
+
+Backport [24944] (CORE-2008-0130)
+
+------------------------------------------------------------------------
+r24880 | jb | 2008-02-05 04:14:56 +0000 (Tue, 05 Feb 2008) | 3 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
+   M /branches/0.8.6-bugfix/extras/contrib/src/Patches/xml2-win32.patch
+   M /branches/0.8.6-bugfix/extras/contrib/src/packages.mak
+
+Contribs for branch: XML CVE-2007-6284 backport with adaptations...
+
+
+------------------------------------------------------------------------
+r24744 | fkuehne | 2008-02-01 11:01:00 +0000 (Fri, 01 Feb 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
+   A /branches/0.8.6-bugfix/extras/contrib/src/Patches/SDL_image-CVE-2006-4484.patch
+
+SDL_image: backported a fixed version of thresh's patch [24741]
+------------------------------------------------------------------------
+r24693 | Trax | 2008-01-29 18:58:49 +0000 (Tue, 29 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+
+* configure.ac: backport [24621] fix hostname reporting on Cygwin
+------------------------------------------------------------------------
+r24565 | funman | 2008-01-25 12:32:17 +0000 (Fri, 25 Jan 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/po/pl.po
+
+polish translation update
+
+------------------------------------------------------------------------
+r24518 | Trax | 2008-01-23 13:23:12 +0000 (Wed, 23 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: add fix for SPS/PPS in h264 packetizer
+------------------------------------------------------------------------
+r24466 | jb | 2008-01-21 20:38:31 +0000 (Mon, 21 Jan 2008) | 3 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/vlc.win32.nsi.in
+
+Backport [24465], for romanian installer...
+
+
+------------------------------------------------------------------------
+r24447 | Trax | 2008-01-20 23:14:16 +0000 (Sun, 20 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/ogg.c
+
+* modules/demux/ogg.c: backport [24258] fix for demuxing Ogg with skeleton track. As noted in #1412 all content in Ogg now require a skeleton track..
+------------------------------------------------------------------------
+r24446 | Trax | 2008-01-20 21:54:09 +0000 (Sun, 20 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/THANKS
+   M /branches/0.8.6-bugfix/modules/audio_output/alsa.c
+
+* modules/audio_output/alsa.c: backport [24390] fix for 5.1 audio on ALSA (broken pipe)
+------------------------------------------------------------------------
+r24443 | xtophe | 2008-01-20 19:45:00 +0000 (Sun, 20 Jan 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access/rtsp/real_sdpplin.c
+
+Backport [24440]. Avoid buffer overflow. Fix #1442. Refs CVE-2008-0295 CVE-2008-0296
+
+------------------------------------------------------------------------
+r24427 | courmisch | 2008-01-19 20:49:31 +0000 (Sat, 19 Jan 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+Sort out all CVE numbers I could find
+
+------------------------------------------------------------------------
+r24426 | courmisch | 2008-01-19 20:39:08 +0000 (Sat, 19 Jan 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+CVE references (backport)
+
+------------------------------------------------------------------------
+r24413 | xtophe | 2008-01-19 14:03:15 +0000 (Sat, 19 Jan 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/po/pl.po
+
+Polish translation update by Micha?\197?\130 Trzebiatowski
+
+------------------------------------------------------------------------
+r24387 | Trax | 2008-01-18 13:26:53 +0000 (Fri, 18 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/ts.c
+
+* modules/demux/ts.c: backport [24386] removal of excessive ;
+------------------------------------------------------------------------
+r24384 | jpsaman | 2008-01-18 10:13:07 +0000 (Fri, 18 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/packetizer/h264.c
+
+Backport [24383]: fix regression introduced in [24382]
+------------------------------------------------------------------------
+r24382 | jpsaman | 2008-01-18 08:02:19 +0000 (Fri, 18 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/packetizer/h264.c
+
+Backport of [24381]
+------------------------------------------------------------------------
+r24380 | jpsaman | 2008-01-18 07:48:17 +0000 (Fri, 18 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/include/vlc_common.h
+
+Oops forgot that in previous commit
+------------------------------------------------------------------------
+r24355 | jpsaman | 2008-01-17 11:32:13 +0000 (Thu, 17 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/ts.c
+
+Backport various fixes from trunk/modules/demux/ts.c this fixes playback of some mp4/h264 files.
+------------------------------------------------------------------------
+r24354 | jpsaman | 2008-01-17 10:12:08 +0000 (Thu, 17 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/packetizer/h264.c
+
+Backport h264.c part of [20345] and sync with [24090], [24240], [24241].
+------------------------------------------------------------------------
+r24300 | Trax | 2008-01-14 20:17:23 +0000 (Mon, 14 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/modules/gui/wxwidgets/interface.cpp
+
+* configure.ac, modules/gui/wxwidgets/interface.cpp: backport (where it applied to wx) [23985] COPYRIGHT_YEARS, [24271] hostname -s and [24272] HAVE_LIBPNG
+------------------------------------------------------------------------
+r24243 | Trax | 2008-01-11 20:34:57 +0000 (Fri, 11 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/mux/mp4.c
+
+* modules/mux/mp4.c: backport [24242] typo opend -> opened
+------------------------------------------------------------------------
+r24238 | fkuehne | 2008-01-11 16:45:19 +0000 (Fri, 11 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access/cdda.c
+
+cdda: recognise vlc_input_item_AddInfo()'s order, so we show our artist correctly in CDDB mode
+------------------------------------------------------------------------
+r24211 | Trax | 2008-01-09 23:08:29 +0000 (Wed, 09 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: add H.264 fix for playback on iPhones
+------------------------------------------------------------------------
+r24208 | jpsaman | 2008-01-09 19:50:03 +0000 (Wed, 09 Jan 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/THANKS
+   M /branches/0.8.6-bugfix/modules/mux/mp4.c
+
+Patch by Christopher Key. Attached is a patch that fixes a long standing problem whereby video encoded with vlc using x264 cannot be made playable on an iPhone. The issue was traced to the H264 profile value being incorrectly set, which this patch addresses.  Looking at the code, the trunk appears to have had a complete rewrite and should be unaffected, but this may be useful for a 0.8.6e release.
+
+------------------------------------------------------------------------
+r24206 | fkuehne | 2008-01-09 11:52:43 +0000 (Wed, 09 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: added a note about the video-device reset on first launch
+------------------------------------------------------------------------
+r24203 | fkuehne | 2008-01-08 16:11:38 +0000 (Tue, 08 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/packages.mak
+
+contrib: use ganesh as mirror for gnupg.org stuff for this branch, too
+------------------------------------------------------------------------
+r24202 | fkuehne | 2008-01-08 16:02:50 +0000 (Tue, 08 Jan 2008) | 1 line
+Changed paths:
+   D /branches/0.8.6-bugfix/extras/contrib/src/Patches/live-config.patch
+   D /branches/0.8.6-bugfix/extras/contrib/src/Patches/live-osx.patch
+   D /branches/0.8.6-bugfix/extras/contrib/src/Patches/live.patch
+   D /branches/0.8.6-bugfix/extras/contrib/src/Patches/livedotcom-win32.patch
+
+contrib: delete old live patches
+------------------------------------------------------------------------
+r24201 | fkuehne | 2008-01-08 16:01:18 +0000 (Tue, 08 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
+
+contrib: used latest live555
+------------------------------------------------------------------------
+r24197 | fkuehne | 2008-01-08 15:03:04 +0000 (Tue, 08 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/bootstrap
+
+contrib: use the 10.3.9 SDK for compilation on PowerPC-based Macs
+------------------------------------------------------------------------
+r24196 | fkuehne | 2008-01-08 13:40:36 +0000 (Tue, 08 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/embeddedwindow.m
+
+gui/macosx: adapted fspanel and embeddedwindow to the changes in [24189] (also refs #1427)
+------------------------------------------------------------------------
+r24195 | fkuehne | 2008-01-08 13:22:38 +0000 (Tue, 08 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/fspanel.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
+
+gui/macosx: fixed a few logic errors introduced in [24189] (refs #1427)
+------------------------------------------------------------------------
+r24189 | pdherbemont | 2008-01-07 23:51:57 +0000 (Mon, 07 Jan 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/fspanel.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/fspanel.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
+
+gui/macosx: Make sure we treat screens as screen, instead of screen number.
+
+------------------------------------------------------------------------
+r24166 | fkuehne | 2008-01-07 14:55:36 +0000 (Mon, 07 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/macosx.m
+
+macosx: hide the 'embedded vout' setting, since we don't want it to be used. NEWS
+------------------------------------------------------------------------
+r24165 | fkuehne | 2008-01-07 14:48:17 +0000 (Mon, 07 Jan 2008) | 6 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
+   M /branches/0.8.6-bugfix/modules/video_output/opengl.c
+
+* restore full compatibility for Mac OS X 10.3.9
+    - limited to Quartz video output (OpenGL refuses to work in fullscreen mode)
+        - controlled by opengl.c, which is linked to Carbon for this purpose
+    - removed blocker from intf.m
+    - introduced memory management to VLCEmbeddedList (!!!)
+    - sanity checks for vout.m
+------------------------------------------------------------------------
+r24146 | Trax | 2008-01-06 17:11:53 +0000 (Sun, 06 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: add fix for FTP pausing
+------------------------------------------------------------------------
+r24145 | Trax | 2008-01-06 17:10:37 +0000 (Sun, 06 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access/ftp.c
+
+* modules/access/ftp.c: backport [24140] fix for FTP pausing
+------------------------------------------------------------------------
+r24033 | jpsaman | 2008-01-02 13:03:06 +0000 (Wed, 02 Jan 2008) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/live555.cpp
+
+Backport [24032]: Fix signed int, unsigned int comparison
+------------------------------------------------------------------------
+r23998 | pdherbemont | 2008-01-01 20:37:16 +0000 (Tue, 01 Jan 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+Dts to S/PDIF in the News.
+
+------------------------------------------------------------------------
+r23997 | pdherbemont | 2008-01-01 20:36:56 +0000 (Tue, 01 Jan 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/THANKS
+
+Backport Julien Robert.
+
+------------------------------------------------------------------------
+r23994 | pdherbemont | 2008-01-01 19:07:13 +0000 (Tue, 01 Jan 2008) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/audio_filter/converter/dtstospdif.c
+
+Backport Julien Robert's dts fixes [23948] and [23941].
+
+------------------------------------------------------------------------
+r23964 | fkuehne | 2007-12-31 12:09:38 +0000 (Mon, 31 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
+
+macosx: prevent VLC from crashing on quit while playing by adding additional checks
+------------------------------------------------------------------------
+r23963 | fkuehne | 2007-12-31 10:05:05 +0000 (Mon, 31 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/MacOSX/vlc.xcodeproj/project.pbxproj
+
+vlc-proj: backport [23962] (closes #1279)
+------------------------------------------------------------------------
+r23961 | funman | 2007-12-31 04:04:05 +0000 (Mon, 31 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/vlc.win32.nsi.in
+
+backport [20671]
+------------------------------------------------------------------------
+r23953 | funman | 2007-12-30 20:55:54 +0000 (Sun, 30 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/ncurses.c
+
+backport [23952]
+------------------------------------------------------------------------
+r23945 | funman | 2007-12-30 15:39:40 +0000 (Sun, 30 Dec 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
+
+builds wxwidgets with unicode support
+
+------------------------------------------------------------------------
+r23944 | funman | 2007-12-30 15:33:27 +0000 (Sun, 30 Dec 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/po/af.po
+   M /branches/0.8.6-bugfix/po/ar.po
+   M /branches/0.8.6-bugfix/po/ca.po
+   M /branches/0.8.6-bugfix/po/co.po
+   M /branches/0.8.6-bugfix/po/cs.po
+   M /branches/0.8.6-bugfix/po/da.po
+   M /branches/0.8.6-bugfix/po/de.po
+   M /branches/0.8.6-bugfix/po/en_GB.po
+   M /branches/0.8.6-bugfix/po/es.po
+   M /branches/0.8.6-bugfix/po/eu.po
+   M /branches/0.8.6-bugfix/po/fa.po
+   M /branches/0.8.6-bugfix/po/fr.po
+   M /branches/0.8.6-bugfix/po/fur.po
+   M /branches/0.8.6-bugfix/po/gl.po
+   M /branches/0.8.6-bugfix/po/he.po
+   M /branches/0.8.6-bugfix/po/hi.po
+   M /branches/0.8.6-bugfix/po/hu.po
+   M /branches/0.8.6-bugfix/po/it.po
+   M /branches/0.8.6-bugfix/po/ja.po
+   M /branches/0.8.6-bugfix/po/ka.po
+   M /branches/0.8.6-bugfix/po/ko.po
+   M /branches/0.8.6-bugfix/po/lt.po
+   M /branches/0.8.6-bugfix/po/lv.po
+   M /branches/0.8.6-bugfix/po/ms.po
+   M /branches/0.8.6-bugfix/po/nb.po
+   M /branches/0.8.6-bugfix/po/ne.po
+   M /branches/0.8.6-bugfix/po/nl.po
+   M /branches/0.8.6-bugfix/po/nn.po
+   M /branches/0.8.6-bugfix/po/oc.po
+   M /branches/0.8.6-bugfix/po/pa.po
+   M /branches/0.8.6-bugfix/po/pl.po
+   M /branches/0.8.6-bugfix/po/pt_BR.po
+   M /branches/0.8.6-bugfix/po/ro.po
+   M /branches/0.8.6-bugfix/po/ru.po
+   M /branches/0.8.6-bugfix/po/sk.po
+   M /branches/0.8.6-bugfix/po/sl.po
+   M /branches/0.8.6-bugfix/po/sq.po
+   M /branches/0.8.6-bugfix/po/sv.po
+   M /branches/0.8.6-bugfix/po/th.po
+   M /branches/0.8.6-bugfix/po/tr.po
+   M /branches/0.8.6-bugfix/po/vlc.pot
+   M /branches/0.8.6-bugfix/po/zh_CN.po
+   M /branches/0.8.6-bugfix/po/zh_TW.po
+
+update Romanian and Polish translations, make update-po
+
+------------------------------------------------------------------------
+r23943 | fkuehne | 2007-12-30 14:59:04 +0000 (Sun, 30 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/prefs.m
+
+macosx: backport [23942] as it is save
+------------------------------------------------------------------------
+r23927 | jpsaman | 2007-12-29 12:17:38 +0000 (Sat, 29 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/codec/ffmpeg/mux.c
+
+Backport [23204] and [23274] for building 0.8.6-bugfix branch with newer ffmpeg.
+------------------------------------------------------------------------
+r23888 | fkuehne | 2007-12-27 12:44:35 +0000 (Thu, 27 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* prepare NEWS for 0.8.6e (DRAFT)
+------------------------------------------------------------------------
+r23884 | fkuehne | 2007-12-26 20:09:53 +0000 (Wed, 26 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/embeddedwindow.m
+
+* fix 'fullscreen only opens where my vout is, but I told it to open on another screen'. Remember that CGScreenID is different from VLC's 'video-device'
+------------------------------------------------------------------------
+r23864 | Trax | 2007-12-25 20:49:49 +0000 (Tue, 25 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access/dc1394.c
+   M /branches/0.8.6-bugfix/modules/access/v4l/v4l.c
+
+* modules/access/v4l.c and dc1394.c: backport [23688] typo openened -> opened
+------------------------------------------------------------------------
+r23859 | Trax | 2007-12-24 19:06:04 +0000 (Mon, 24 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/mp4/libmp4.c
+
+* modules/demux/mp4/libmp4.c: backport part of [23751] for proper spelling of the word incompletely
+------------------------------------------------------------------------
+r23855 | courmisch | 2007-12-24 16:42:08 +0000 (Mon, 24 Dec 2007) | 5 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/subtitle.c
+
+[20715] is too large to be backported. Put buffer size limits instead.
+
+When you commit security fixes, please don't bundle them with feature extensions, and 
+please *do* backport them yourself.
+
+------------------------------------------------------------------------
+r23854 | courmisch | 2007-12-24 16:35:53 +0000 (Mon, 24 Dec 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/src/network/httpd.c
+
+Backport [23839] HTTP Connection format string
+
+------------------------------------------------------------------------
+r23588 | xtophe | 2007-12-12 23:18:07 +0000 (Wed, 12 Dec 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/po/ro.po
+
+Romanian translation update by Cristian Secar?\196?\131
+
+------------------------------------------------------------------------
+r23505 | Trax | 2007-12-09 00:59:20 +0000 (Sun, 09 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/playlist/m3u.c
+
+backport [23504] typo in m3u.c
+------------------------------------------------------------------------
+r23470 | Trax | 2007-12-06 00:59:36 +0000 (Thu, 06 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/codec/dmo/dmo.c
+
+also in dmo.c typo ouput -> output
+------------------------------------------------------------------------
+r23469 | Trax | 2007-12-06 00:58:02 +0000 (Thu, 06 Dec 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access/dshow/crossbar.cpp
+
+typo ouput -> output
+------------------------------------------------------------------------
+r23388 | fkuehne | 2007-11-27 22:14:22 +0000 (Tue, 27 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+
+* cough, cough
+------------------------------------------------------------------------
+r23382 | fkuehne | 2007-11-27 19:27:20 +0000 (Tue, 27 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/po/Makefile.in.in
+   M /branches/0.8.6-bugfix/po/POTFILES.in
+   M /branches/0.8.6-bugfix/po/af.po
+   M /branches/0.8.6-bugfix/po/ar.po
+   M /branches/0.8.6-bugfix/po/ca.po
+   M /branches/0.8.6-bugfix/po/co.po
+   M /branches/0.8.6-bugfix/po/cs.po
+   M /branches/0.8.6-bugfix/po/da.po
+   M /branches/0.8.6-bugfix/po/de.po
+   M /branches/0.8.6-bugfix/po/en_GB.po
+   M /branches/0.8.6-bugfix/po/es.po
+   M /branches/0.8.6-bugfix/po/eu.po
+   M /branches/0.8.6-bugfix/po/fa.po
+   M /branches/0.8.6-bugfix/po/fr.po
+   M /branches/0.8.6-bugfix/po/fur.po
+   M /branches/0.8.6-bugfix/po/gl.po
+   M /branches/0.8.6-bugfix/po/he.po
+   M /branches/0.8.6-bugfix/po/hi.po
+   M /branches/0.8.6-bugfix/po/hu.po
+   M /branches/0.8.6-bugfix/po/it.po
+   M /branches/0.8.6-bugfix/po/ja.po
+   M /branches/0.8.6-bugfix/po/ka.po
+   M /branches/0.8.6-bugfix/po/ko.po
+   M /branches/0.8.6-bugfix/po/lt.po
+   M /branches/0.8.6-bugfix/po/lv.po
+   M /branches/0.8.6-bugfix/po/ms.po
+   M /branches/0.8.6-bugfix/po/nb.po
+   M /branches/0.8.6-bugfix/po/ne.po
+   M /branches/0.8.6-bugfix/po/nl.po
+   M /branches/0.8.6-bugfix/po/nn.po
+   M /branches/0.8.6-bugfix/po/oc.po
+   M /branches/0.8.6-bugfix/po/pa.po
+   M /branches/0.8.6-bugfix/po/pl.po
+   M /branches/0.8.6-bugfix/po/pt_BR.po
+   M /branches/0.8.6-bugfix/po/ro.po
+   M /branches/0.8.6-bugfix/po/ru.po
+   M /branches/0.8.6-bugfix/po/sk.po
+   M /branches/0.8.6-bugfix/po/sl.po
+   M /branches/0.8.6-bugfix/po/sq.po
+   M /branches/0.8.6-bugfix/po/sv.po
+   M /branches/0.8.6-bugfix/po/th.po
+   M /branches/0.8.6-bugfix/po/tr.po
+   M /branches/0.8.6-bugfix/po/vlc.pot
+   M /branches/0.8.6-bugfix/po/zh_CN.po
+   M /branches/0.8.6-bugfix/po/zh_TW.po
+
+* updated the po files again as we removed files
+------------------------------------------------------------------------
+r23381 | fkuehne | 2007-11-27 19:26:51 +0000 (Tue, 27 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+
+* be clean and nice
+------------------------------------------------------------------------
+r23380 | fkuehne | 2007-11-27 19:17:20 +0000 (Tue, 27 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/Makefile.am
+   M /branches/0.8.6-bugfix/NEWS
+   D /branches/0.8.6-bugfix/modules/gui/macosx/update.h
+   D /branches/0.8.6-bugfix/modules/gui/macosx/update.m
+
+* announce the update facility removal and fix make dist (broken in previous commit)
+------------------------------------------------------------------------
+r23379 | fkuehne | 2007-11-27 19:10:16 +0000 (Tue, 27 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/classes.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/keyedobjects.nib
+   D /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Update.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/vlc.xcodeproj/project.pbxproj
+   M /branches/0.8.6-bugfix/modules/gui/macosx/Modules.am
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+   M /branches/0.8.6-bugfix/modules/gui/wxwidgets/interface.cpp
+
+* removed the check-for-update dialogues for 0.8.6d
+------------------------------------------------------------------------
+r23376 | fkuehne | 2007-11-27 17:00:43 +0000 (Tue, 27 Nov 2007) | 1 line
+Changed paths:
+   D /branches/0.8.6-bugfix/m4/glibc2.m4
+   A /branches/0.8.6-bugfix/m4/glibc21.m4
+
+* typo in previous commit
+------------------------------------------------------------------------
+r23375 | fkuehne | 2007-11-27 16:50:14 +0000 (Tue, 27 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/m4/Makefile.am
+   M /branches/0.8.6-bugfix/m4/codeset.m4
+   M /branches/0.8.6-bugfix/m4/gettext.m4
+   D /branches/0.8.6-bugfix/m4/glibc21.m4
+   M /branches/0.8.6-bugfix/m4/iconv.m4
+   M /branches/0.8.6-bugfix/m4/intdiv0.m4
+   D /branches/0.8.6-bugfix/m4/intl.m4
+   D /branches/0.8.6-bugfix/m4/intldir.m4
+   D /branches/0.8.6-bugfix/m4/intmax.m4
+   M /branches/0.8.6-bugfix/m4/inttypes-pri.m4
+   A /branches/0.8.6-bugfix/m4/inttypes.m4
+   M /branches/0.8.6-bugfix/m4/inttypes_h.m4
+   A /branches/0.8.6-bugfix/m4/isc-posix.m4
+   M /branches/0.8.6-bugfix/m4/lcmessage.m4
+   M /branches/0.8.6-bugfix/m4/lib-ld.m4
+   M /branches/0.8.6-bugfix/m4/lib-link.m4
+   M /branches/0.8.6-bugfix/m4/lib-prefix.m4
+   D /branches/0.8.6-bugfix/m4/lock.m4
+   D /branches/0.8.6-bugfix/m4/longdouble.m4
+   D /branches/0.8.6-bugfix/m4/longlong.m4
+   D /branches/0.8.6-bugfix/m4/nls.m4
+   D /branches/0.8.6-bugfix/m4/po.m4
+   D /branches/0.8.6-bugfix/m4/printf-posix.m4
+   D /branches/0.8.6-bugfix/m4/private.m4
+   M /branches/0.8.6-bugfix/m4/progtest.m4
+   D /branches/0.8.6-bugfix/m4/size_max.m4
+   M /branches/0.8.6-bugfix/m4/stdint_h.m4
+   M /branches/0.8.6-bugfix/m4/uintmax_t.m4
+   M /branches/0.8.6-bugfix/m4/ulonglong.m4
+   D /branches/0.8.6-bugfix/m4/visibility.m4
+   D /branches/0.8.6-bugfix/m4/wchar_t.m4
+   D /branches/0.8.6-bugfix/m4/wint_t.m4
+   D /branches/0.8.6-bugfix/m4/xsize.m4
+
+* reverting [23201], part 2, as current m4 files obviously are not compatible with older gettext releases (should have been part of [23368]
+------------------------------------------------------------------------
+r23373 | fkuehne | 2007-11-27 13:09:10 +0000 (Tue, 27 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/InfoPlist.strings
+   M /branches/0.8.6-bugfix/extras/MacOSX/plugin/English.lproj/InfoPlist.strings
+   M /branches/0.8.6-bugfix/extras/MacOSX/plugin/Info.plist
+   M /branches/0.8.6-bugfix/extras/MacOSX/plugin/InstallerInfo.plist
+   M /branches/0.8.6-bugfix/extras/MacOSX/vlc.xcodeproj/project.pbxproj
+
+* prepare for release
+------------------------------------------------------------------------
+r23369 | damienf | 2007-11-27 00:11:18 +0000 (Tue, 27 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/mozilla/vlcplugin.cpp
+
+mozilla: backport absolute URL parsing from trunk
+
+------------------------------------------------------------------------
+r23368 | fkuehne | 2007-11-26 23:30:15 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/bootstrap
+   M /branches/0.8.6-bugfix/configure.ac
+
+* reverted [22301] as it breaks more than it solves
+------------------------------------------------------------------------
+r23362 | Trax | 2007-11-26 19:34:14 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/codec/dmo/dmo.c
+
+* modules/codec/dmo/dmo.c: backport [16784] add MSS2, MSS1, WMVA, WVP2 and WMVP (still using the old dll name scheme).
+------------------------------------------------------------------------
+r23360 | Trax | 2007-11-26 18:57:51 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/codec/dmo/dmo.c
+
+* modules/codec/dmo/dmo.c: backport (part of) [23314] missing fourcc capitalization
+------------------------------------------------------------------------
+r23357 | Trax | 2007-11-26 18:47:33 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: remove autoreconnect for shout
+------------------------------------------------------------------------
+r23356 | Trax | 2007-11-26 18:44:59 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access_output/shout.c
+
+* modules/access_output/shout.c: Revert [23295], [23317] and [23318] - Autoreconnect mechanism (not all issues are covered yet for bugfix). Reopened #1167 for now
+------------------------------------------------------------------------
+r23346 | fkuehne | 2007-11-26 13:26:15 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* update NEWS for test1
+------------------------------------------------------------------------
+r23345 | fkuehne | 2007-11-26 13:24:07 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/playlist/playlist.c
+
+* fix [23303]
+------------------------------------------------------------------------
+r23344 | fkuehne | 2007-11-26 13:15:24 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/Makefile.am
+
+* fixed make dist
+------------------------------------------------------------------------
+r23343 | fkuehne | 2007-11-26 13:03:01 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/po/POTFILES.in
+   M /branches/0.8.6-bugfix/po/af.po
+   M /branches/0.8.6-bugfix/po/ar.po
+   M /branches/0.8.6-bugfix/po/ca.po
+   M /branches/0.8.6-bugfix/po/co.po
+   M /branches/0.8.6-bugfix/po/cs.po
+   M /branches/0.8.6-bugfix/po/da.po
+   M /branches/0.8.6-bugfix/po/de.po
+   M /branches/0.8.6-bugfix/po/en_GB.po
+   M /branches/0.8.6-bugfix/po/es.po
+   M /branches/0.8.6-bugfix/po/eu.po
+   M /branches/0.8.6-bugfix/po/fa.po
+   M /branches/0.8.6-bugfix/po/fr.po
+   M /branches/0.8.6-bugfix/po/fur.po
+   M /branches/0.8.6-bugfix/po/gl.po
+   M /branches/0.8.6-bugfix/po/he.po
+   M /branches/0.8.6-bugfix/po/hi.po
+   M /branches/0.8.6-bugfix/po/hu.po
+   M /branches/0.8.6-bugfix/po/it.po
+   M /branches/0.8.6-bugfix/po/ja.po
+   M /branches/0.8.6-bugfix/po/ka.po
+   M /branches/0.8.6-bugfix/po/ko.po
+   M /branches/0.8.6-bugfix/po/lt.po
+   M /branches/0.8.6-bugfix/po/lv.po
+   M /branches/0.8.6-bugfix/po/ms.po
+   M /branches/0.8.6-bugfix/po/nb.po
+   M /branches/0.8.6-bugfix/po/ne.po
+   M /branches/0.8.6-bugfix/po/nl.po
+   M /branches/0.8.6-bugfix/po/nn.po
+   M /branches/0.8.6-bugfix/po/oc.po
+   M /branches/0.8.6-bugfix/po/pa.po
+   M /branches/0.8.6-bugfix/po/pl.po
+   M /branches/0.8.6-bugfix/po/pt_BR.po
+   M /branches/0.8.6-bugfix/po/ro.po
+   M /branches/0.8.6-bugfix/po/ru.po
+   M /branches/0.8.6-bugfix/po/sk.po
+   M /branches/0.8.6-bugfix/po/sl.po
+   M /branches/0.8.6-bugfix/po/sq.po
+   M /branches/0.8.6-bugfix/po/sv.po
+   M /branches/0.8.6-bugfix/po/th.po
+   M /branches/0.8.6-bugfix/po/tr.po
+   M /branches/0.8.6-bugfix/po/vlc.pot
+   M /branches/0.8.6-bugfix/po/zh_CN.po
+   M /branches/0.8.6-bugfix/po/zh_TW.po
+
+* updated the po-files for test1
+------------------------------------------------------------------------
+r23342 | fkuehne | 2007-11-26 13:00:38 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/extras/MacOSX/vlc.xcodeproj/project.pbxproj
+
+* forgot these 2
+------------------------------------------------------------------------
+r23341 | fkuehne | 2007-11-26 12:55:45 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/Patches/x264-svn-darwin.patch
+
+* small addition to the existing x264 trunk patch to work-around a GCC 4.0.1 darwin-ppc limitation
+------------------------------------------------------------------------
+r23340 | fkuehne | 2007-11-26 12:30:22 +0000 (Mon, 26 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/InfoPlist.strings
+   M /branches/0.8.6-bugfix/extras/MacOSX/plugin/English.lproj/InfoPlist.strings
+   M /branches/0.8.6-bugfix/extras/MacOSX/plugin/Info.plist
+   M /branches/0.8.6-bugfix/extras/MacOSX/plugin/InstallerInfo.plist
+
+* updated the version strings for test1
+------------------------------------------------------------------------
+r23332 | fkuehne | 2007-11-25 22:01:25 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* same as previous commit
+------------------------------------------------------------------------
+r23331 | fkuehne | 2007-11-25 21:58:48 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* spelling improvements
+------------------------------------------------------------------------
+r23330 | Trax | 2007-11-25 21:33:18 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: no need to capitalize Mac :)
+------------------------------------------------------------------------
+r23329 | Trax | 2007-11-25 21:20:39 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access_output/shout.c
+
+* modules/access_output/shout.c: backport [23318] auto reconnect on startup.
+------------------------------------------------------------------------
+r23328 | fkuehne | 2007-11-25 20:54:07 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/bootstrap
+
+* we discontinued 10.3 by this release
+------------------------------------------------------------------------
+r23327 | fkuehne | 2007-11-25 16:54:29 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
+
+clean up before committing... sorry for the disturbance
+------------------------------------------------------------------------
+r23326 | fkuehne | 2007-11-25 16:40:36 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+
+this wasn't intended to be committed...
+------------------------------------------------------------------------
+r23325 | fkuehne | 2007-11-25 16:37:49 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+
+* disable 10.3 usage, as we can't provide a reliable version due to missing testing possibilities and linking issues against the 10.3.9 SDK
+------------------------------------------------------------------------
+r23323 | Trax | 2007-11-25 15:59:43 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: improved H.264 encoding speed on Mac
+------------------------------------------------------------------------
+r23322 | fkuehne | 2007-11-25 15:49:20 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
+   A /branches/0.8.6-bugfix/extras/contrib/src/Patches/x264-svn-darwin.patch
+
+* upgraded x264 to the latest revision (701) with a minor patch for Darwin to include recent speed improvements
+------------------------------------------------------------------------
+r23319 | Trax | 2007-11-25 12:50:19 +0000 (Sun, 25 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access_output/shout.c
+
+* modules/access_output/shout.c: backport [23317] sync before you shout.
+------------------------------------------------------------------------
+r23305 | Trax | 2007-11-24 19:30:50 +0000 (Sat, 24 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: auto reconnect for shout module
+------------------------------------------------------------------------
+r23304 | Trax | 2007-11-24 19:27:24 +0000 (Sat, 24 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access_output/shout.c
+
+backport [23295] fix for proper automatic reconnect in shout module
+------------------------------------------------------------------------
+r23303 | dionoea | 2007-11-24 19:15:12 +0000 (Sat, 24 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/modules/demux/playlist/m3u.c
+   M /branches/0.8.6-bugfix/modules/demux/playlist/playlist.c
+
+EXTVLCOPT parsing: Revert r23198 and backport r23299.
+
+------------------------------------------------------------------------
+r23289 | jb | 2007-11-24 01:03:49 +0000 (Sat, 24 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+FLAC CVE mention
+
+------------------------------------------------------------------------
+r23271 | funman | 2007-11-23 13:17:32 +0000 (Fri, 23 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/m4/Makefile.am
+
+fix make dist. reported by kwizart
+------------------------------------------------------------------------
+r23245 | jpsaman | 2007-11-22 18:16:01 +0000 (Thu, 22 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/bootstrap
+
+Always test in decending order of version numbers. Fixes detection of older versions even when newer are available.
+------------------------------------------------------------------------
+r23241 | fkuehne | 2007-11-22 09:06:32 +0000 (Thu, 22 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+
+* don't use NSLog here
+------------------------------------------------------------------------
+r23240 | fkuehne | 2007-11-22 08:55:54 +0000 (Thu, 22 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/bootstrap
+   M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
+   M /branches/0.8.6-bugfix/extras/contrib/src/Patches/flac-mactel.patch
+
+* updated patch for FLAC 1.2.1 and disabled all ASM optimisations for OSX Intel, as they aren't supported. I object this update and would like to continue using the 1.1.x series of FLAC for this branch.
+------------------------------------------------------------------------
+r23238 | xtophe | 2007-11-21 23:43:22 +0000 (Wed, 21 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access/smb.c
+
+Prevent problem with new glibc. backport [21941]
+------------------------------------------------------------------------
+r23237 | xtophe | 2007-11-21 22:42:00 +0000 (Wed, 21 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/share/applications/vlc.desktop
+
+Backport [23236]
+------------------------------------------------------------------------
+r23234 | xtophe | 2007-11-21 22:29:18 +0000 (Wed, 21 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/share/applications/vlc.desktop
+
+Backport [20874], [21248], [22667] 
+
+------------------------------------------------------------------------
+r23230 | funman | 2007-11-21 22:17:44 +0000 (Wed, 21 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/src/misc/charset.c
+
+Prefer ISO-8859-8 over CP1255 for subtitles encoding on Windows systems with Hebrew language
+------------------------------------------------------------------------
+r23229 | jpsaman | 2007-11-21 22:11:12 +0000 (Wed, 21 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/live555.cpp
+
+Patch by Glen Gray: Enable keepalive for Kasenna servers, they parse the User Agent string and check for _KA appended to the User Agent name.
+
+------------------------------------------------------------------------
+r23228 | jpsaman | 2007-11-21 22:00:20 +0000 (Wed, 21 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/THANKS
+   M /branches/0.8.6-bugfix/modules/demux/live555.cpp
+
+Patch by Glen Gray: RTSP keep alive fix. If the server doesn't handle RTCP-RR packets and requires specific GET_PARAMETER commands (such as Kasenna) then the session times out when vlc is paused because the current version only sends the info when Demux() is called. Demux() is only called when data is received. This patch fixes this issue with a boolean that is set during PAUSED state that allows the timer thread to send the GET_PARAMTER messages instead and thus keeping the RTSP session alive.
+
+------------------------------------------------------------------------
+r23212 | fkuehne | 2007-11-20 23:46:37 +0000 (Tue, 20 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+
+* re-enabled the update panel
+------------------------------------------------------------------------
+r23210 | Trax | 2007-11-20 23:02:30 +0000 (Tue, 20 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* NEWS: slightly improved description on stream discontinuity fix
+------------------------------------------------------------------------
+r23202 | courmisch | 2007-11-20 19:40:20 +0000 (Tue, 20 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/src/misc/update.c
+
+Backport [22022], [22051]
+
+------------------------------------------------------------------------
+r23201 | courmisch | 2007-11-20 19:34:19 +0000 (Tue, 20 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix
+   M /branches/0.8.6-bugfix/bootstrap
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/m4/ac_prog_java.m4
+   M /branches/0.8.6-bugfix/m4/ac_prog_java_cc.m4
+   M /branches/0.8.6-bugfix/m4/ac_prog_java_works.m4
+   M /branches/0.8.6-bugfix/m4/ac_prog_javac.m4
+   M /branches/0.8.6-bugfix/m4/ac_prog_javac_works.m4
+   M /branches/0.8.6-bugfix/m4/ac_prog_javah.m4
+   M /branches/0.8.6-bugfix/m4/codeset.m4
+   M /branches/0.8.6-bugfix/m4/gettext.m4
+   A /branches/0.8.6-bugfix/m4/glibc2.m4
+   M /branches/0.8.6-bugfix/m4/glibc21.m4
+   M /branches/0.8.6-bugfix/m4/iconv.m4
+   M /branches/0.8.6-bugfix/m4/intdiv0.m4
+   A /branches/0.8.6-bugfix/m4/intl.m4
+   A /branches/0.8.6-bugfix/m4/intldir.m4
+   A /branches/0.8.6-bugfix/m4/intmax.m4
+   M /branches/0.8.6-bugfix/m4/inttypes-pri.m4
+   D /branches/0.8.6-bugfix/m4/inttypes.m4
+   M /branches/0.8.6-bugfix/m4/inttypes_h.m4
+   D /branches/0.8.6-bugfix/m4/isc-posix.m4
+   M /branches/0.8.6-bugfix/m4/lcmessage.m4
+   M /branches/0.8.6-bugfix/m4/lib-ld.m4
+   M /branches/0.8.6-bugfix/m4/lib-link.m4
+   M /branches/0.8.6-bugfix/m4/lib-prefix.m4
+   A /branches/0.8.6-bugfix/m4/lock.m4
+   A /branches/0.8.6-bugfix/m4/longdouble.m4
+   A /branches/0.8.6-bugfix/m4/longlong.m4
+   A /branches/0.8.6-bugfix/m4/nls.m4
+   A /branches/0.8.6-bugfix/m4/po.m4
+   A /branches/0.8.6-bugfix/m4/printf-posix.m4
+   A /branches/0.8.6-bugfix/m4/private.m4
+   M /branches/0.8.6-bugfix/m4/progtest.m4
+   A /branches/0.8.6-bugfix/m4/size_max.m4
+   M /branches/0.8.6-bugfix/m4/stdint_h.m4
+   M /branches/0.8.6-bugfix/m4/uintmax_t.m4
+   M /branches/0.8.6-bugfix/m4/ulonglong.m4
+   A /branches/0.8.6-bugfix/m4/visibility.m4
+   M /branches/0.8.6-bugfix/m4/vlc.m4
+   A /branches/0.8.6-bugfix/m4/wchar_t.m4
+   A /branches/0.8.6-bugfix/m4/wint_t.m4
+   A /branches/0.8.6-bugfix/m4/xsize.m4
+   M /branches/0.8.6-bugfix/po/Makefile.in.in
+
+Update gettext
+
+------------------------------------------------------------------------
+r23198 | courmisch | 2007-11-20 19:18:45 +0000 (Tue, 20 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/demux/playlist/m3u.c
+
+Backport [23197]
+
+------------------------------------------------------------------------
+r23180 | jb | 2007-11-20 03:27:16 +0000 (Tue, 20 Nov 2007) | 3 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/packages.mak
+
+FLAC version has to be 1.2.1...
+
+
+------------------------------------------------------------------------
+r23152 | fkuehne | 2007-11-19 00:09:18 +0000 (Mon, 19 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/about.m
+
+* fixed platform detection code *coughcough*
+------------------------------------------------------------------------
+r23151 | fkuehne | 2007-11-18 23:31:13 +0000 (Sun, 18 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/embeddedwindow.h
+
+arf, here'S the header for [23150]
+------------------------------------------------------------------------
+r23150 | fkuehne | 2007-11-18 23:30:42 +0000 (Sun, 18 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/embeddedwindow.m
+
+* fixed a minor variable conflict
+------------------------------------------------------------------------
+r23149 | fkuehne | 2007-11-18 23:15:10 +0000 (Sun, 18 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/src/input/clock.c
+
+* backport an adapted version of [23117] aka 'Feed synchro with new ref. point after unexpected discontinuity'
+------------------------------------------------------------------------
+r23148 | fkuehne | 2007-11-18 23:12:26 +0000 (Sun, 18 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/embeddedwindow.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/embeddedwindow.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/misc.m
+
+* fixed a minor 10.3.9 compatibility issue, removed some unused variables, etc. pp.
+------------------------------------------------------------------------
+r23147 | Trax | 2007-11-18 22:59:35 +0000 (Sun, 18 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* NEWS: add top/bottom field order fix for correct bob/linear deinterlacing
+------------------------------------------------------------------------
+r23146 | fkuehne | 2007-11-18 22:33:08 +0000 (Sun, 18 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* another update
+------------------------------------------------------------------------
+r23143 | fkuehne | 2007-11-18 21:38:05 +0000 (Sun, 18 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/packages.mak
+
+* backport [23142]
+------------------------------------------------------------------------
+r23123 | pdherbemont | 2007-11-18 15:32:51 +0000 (Sun, 18 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+Add a NEWS about the suppression of the white flashes artefacts on Mac OS X.
+
+------------------------------------------------------------------------
+r23121 | pdherbemont | 2007-11-18 15:07:03 +0000 (Sun, 18 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
+
+gui/macosx/vout.m: Backport fixes about white flashes.
+
+------------------------------------------------------------------------
+r23120 | pdherbemont | 2007-11-18 15:01:05 +0000 (Sun, 18 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
+
+Backport more code about [19128]. (Close the embedded window only when playlist stops on Mac OS X). This part make sure the window won't be animated if it is offscreen.
+
+------------------------------------------------------------------------
+r23119 | pdherbemont | 2007-11-18 14:35:18 +0000 (Sun, 18 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/embeddedwindow.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/embeddedwindow.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
+
+Backport [19128]. (Close the embedded window only when playlist stops on Mac OS X).
+
+------------------------------------------------------------------------
+r23116 | fkuehne | 2007-11-18 03:09:21 +0000 (Sun, 18 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/About.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/About.nib/keyedobjects.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Bookmarks.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Bookmarks.nib/keyedobjects.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Extended.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Extended.nib/keyedobjects.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Interaction.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Interaction.nib/keyedobjects.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/classes.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/keyedobjects.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Open.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Open.nib/keyedobjects.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Preferences.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Preferences.nib/keyedobjects.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Update.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Update.nib/keyedobjects.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Wizard.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Wizard.nib/keyedobjects.nib
+
+* use the binary format instead of the text archive, since it is smaller and faster
+------------------------------------------------------------------------
+r23115 | pdherbemont | 2007-11-18 00:22:06 +0000 (Sun, 18 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/classes.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/info.nib
+   M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/keyedobjects.nib
+   M /branches/0.8.6-bugfix/modules/gui/macosx/controls.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/embeddedwindow.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/embeddedwindow.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/extended.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/interaction.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/misc.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/misc.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/vout.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/voutgl.m
+
+Mac OS X gui: Backport part of [19115], in order to work around leopard glitches. (quickdraw part ignored for now). (We may need to also back port [19128] "Close the embedded window only when playlist stop.").
+
+------------------------------------------------------------------------
+r23113 | yoann | 2007-11-17 22:52:19 +0000 (Sat, 17 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/share/Makefile.am
+
+Backports [19234]
+
+------------------------------------------------------------------------
+r23112 | damienf | 2007-11-17 22:36:47 +0000 (Sat, 17 Nov 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/activex/plugin.cpp
+
+activex: fix recursive plugin release, which may cause explorer to crash and opens activex to security exploit as detected by Ricardo Narvaja from Core Security Technologies
+
+------------------------------------------------------------------------
+r23109 | fkuehne | 2007-11-17 15:58:26 +0000 (Sat, 17 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* re-worded the vout fix news entry (thanks to Trax!) and added a warning about 10.3 compatiblity
+------------------------------------------------------------------------
+r23108 | fkuehne | 2007-11-17 15:41:48 +0000 (Sat, 17 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* added some more news for 0.8.6d
+------------------------------------------------------------------------
+r23055 | funman | 2007-11-13 17:12:18 +0000 (Tue, 13 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/modules/audio_output/alsa.c
+
+Backports [23022]
+------------------------------------------------------------------------
+r23033 | fkuehne | 2007-11-12 13:00:47 +0000 (Mon, 12 Nov 2007) | 9 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/fspanel.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
+
+* backported some fspanel improvements by Pierre (earlier this year)
+fspanel.m:
+    - faster hiding of the curser when the panel vanishes [19133]
+    - smoother fading [20660]
+
+vout.m:
+    - avoid white flashs (10.4+ only)
+
+Note that "hey, it doesn't appear with Float-on-top" isn't fixed yet.
+------------------------------------------------------------------------
+r23032 | fkuehne | 2007-11-12 12:14:09 +0000 (Mon, 12 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/MacOSX/vlc.xcodeproj/project.pbxproj
+
+* ehm, save before committing. here go the MIME types *coughcough*
+------------------------------------------------------------------------
+r23031 | fkuehne | 2007-11-12 12:12:13 +0000 (Mon, 12 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/MacOSX/vlc.xcodeproj/project.pbxproj
+
+* added a couple of MIME types (to be forward-ported) and back-ported [22782] (refs #1279)
+------------------------------------------------------------------------
+r23030 | fkuehne | 2007-11-12 11:52:15 +0000 (Mon, 12 Nov 2007) | 1 line
+Changed paths:
+   D /branches/0.8.6-bugfix/extras/MacOSX/vlc.pbproj
+   A /branches/0.8.6-bugfix/extras/MacOSX/vlc.xcodeproj (from /branches/0.8.6-bugfix/extras/MacOSX/vlc.pbproj:22924)
+
+* renamed the project file to work-around a Xcode 3 restriction
+------------------------------------------------------------------------
+r22978 | Trax | 2007-11-06 22:47:49 +0000 (Tue, 06 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/video_filter/deinterlace.c
+
+* modules/video_filter/deinterlace.c: backport [22579], use field order (top/bottom) for correct bob/linear deinterlacing.
+------------------------------------------------------------------------
+r22938 | fkuehne | 2007-11-04 11:56:03 +0000 (Sun, 04 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/about.m
+
+* show the platform the in the about panel to make end-user-support a bit easier
+------------------------------------------------------------------------
+r22925 | fkuehne | 2007-11-01 23:46:45 +0000 (Thu, 01 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* added AR support for Leopard
+------------------------------------------------------------------------
+r22924 | funman | 2007-11-01 23:14:41 +0000 (Thu, 01 Nov 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+NEWS: mention the mozilla plugin fix
+------------------------------------------------------------------------
+r22894 | fkuehne | 2007-10-29 16:18:55 +0000 (Mon, 29 Oct 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/controls.m
+
+* remove debug
+------------------------------------------------------------------------
+r22893 | fkuehne | 2007-10-29 16:11:15 +0000 (Mon, 29 Oct 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/AppleRemote.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/AppleRemote.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/controls.m
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.h
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+
+* modernise the Apple Remote architecture by back-porting an adapted trunk version. This fixes the AR support on Tiger and provides a couple of new features (skipping, better volume control, easy to find fullscreen-mode-toggle). additionally, fixed a nasty bug which prevented proper toggling of the fullscreen mode.
+------------------------------------------------------------------------
+r22892 | fkuehne | 2007-10-29 15:22:50 +0000 (Mon, 29 Oct 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+
+* fixed SDK support on Intel-based Macs
+------------------------------------------------------------------------
+r22881 | fkuehne | 2007-10-29 00:10:14 +0000 (Mon, 29 Oct 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/gui/macosx/AppleRemote.m
+
+* backport [22872]
+------------------------------------------------------------------------
+r22876 | fkuehne | 2007-10-28 23:22:04 +0000 (Sun, 28 Oct 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+
+* backport [22675]
+------------------------------------------------------------------------
+r22873 | fkuehne | 2007-10-28 22:38:59 +0000 (Sun, 28 Oct 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/packages.mak
+
+* the belnet mirror is broken. Let's use heanet instead
+------------------------------------------------------------------------
+r22871 | jpsaman | 2007-10-28 21:40:19 +0000 (Sun, 28 Oct 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/Makefile.am
+
+make [22865] conditinonal for MacOS X only
+------------------------------------------------------------------------
+r22865 | jpsaman | 2007-10-27 20:40:39 +0100 (Sat, 27 Oct 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/Makefile.am
+
+Hack to make sure the MacOS X 10.4 linker is used in the last linking stage.
+------------------------------------------------------------------------
+r22608 | funman | 2007-10-15 13:51:37 +0100 (Mon, 15 Oct 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
+   D /branches/0.8.6-bugfix/extras/contrib/src/Patches/live-starttime.patch
+
+backports [22276] : fix live555 compilation
+------------------------------------------------------------------------
+r22347 | jpsaman | 2007-10-01 07:47:35 +0100 (Mon, 01 Oct 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/src/osd/osd.c
+
+Backport of [22325]: Fixed tiny race condition.
+------------------------------------------------------------------------
+r22338 | funman | 2007-09-30 23:04:26 +0100 (Sun, 30 Sep 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/mozilla/npvlc_rc.rc
+
+mozilla: backports windows mime types definitions from trunk, closes #1093
+------------------------------------------------------------------------
+r22307 | courmisch | 2007-09-29 11:14:47 +0100 (Sat, 29 Sep 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/po/POTFILES.in
+
+Fix make dist
+
+------------------------------------------------------------------------
+r22108 | courmisch | 2007-09-16 20:19:06 +0100 (Sun, 16 Sep 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/modules/access/pvr.c
+
+Backport videodev2 include fix - closes #1238
+
+------------------------------------------------------------------------
+r22024 | courmisch | 2007-09-15 10:58:59 +0100 (Sat, 15 Sep 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/control/rc.c
+   M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
+   M /branches/0.8.6-bugfix/modules/gui/wxwidgets/dialogs.cpp
+
+Disable auto-update.
+
+------------------------------------------------------------------------
+r22023 | courmisch | 2007-09-15 10:51:34 +0100 (Sat, 15 Sep 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/misc/rtsp.c
+   M /branches/0.8.6-bugfix/modules/stream_out/rtp.c
+
+Fix remote DoS in RTSP code
+
+------------------------------------------------------------------------
+r21542 | jpsaman | 2007-08-28 12:05:11 +0100 (Tue, 28 Aug 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/configure.ac
+
+Remove reference to corba Makefile from configure.ac 
+------------------------------------------------------------------------
+r21308 | oaubert | 2007-08-20 14:16:55 +0100 (Mon, 20 Aug 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/MAINTAINERS
+   M /branches/0.8.6-bugfix/configure.ac
+   D /branches/0.8.6-bugfix/modules/control/corba
+   M /branches/0.8.6-bugfix/vlc.roku
+
+Remove outdated corba control module
+
+------------------------------------------------------------------------
+r20913 | thresh | 2007-07-30 08:51:32 +0100 (Mon, 30 Jul 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/include/codecs.h
+
+Backport #19003. Should fix AAC-in-AVI decoding with files created by ffmpeg/mencoder.
+
+------------------------------------------------------------------------
+r20737 | fkuehne | 2007-07-04 20:43:22 +0100 (Wed, 04 Jul 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/po/sv.po
+
+* "%i objekt i spellistan" as translation for "No items in the playlist" may trigger unexpected UI strings on OSX. I've removed that translation for now, but we should get a correct translation for the release. Fixes #1234
+------------------------------------------------------------------------
+r20718 | xtophe | 2007-06-30 00:59:29 +0100 (Sat, 30 Jun 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/po/ro.po
+
+Update of the romanian l10n by Cristian Secar?\196?\131
+
+------------------------------------------------------------------------
+r20696 | fkuehne | 2007-06-26 19:59:26 +0100 (Tue, 26 Jun 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/Makefile.am
+
+* backport [20695]
+------------------------------------------------------------------------
+r20692 | xtophe | 2007-06-25 23:48:02 +0100 (Mon, 25 Jun 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/THANKS
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/po/pl.po
+   M /branches/0.8.6-bugfix/po/vlc.pot
+   M /branches/0.8.6-bugfix/src/libvlc.h
+   M /branches/0.8.6-bugfix/src/misc/darwin_specific.m
+
+Polish translation for 0.8.6-bugfix branch by Micha?\197?\130 Trzebiatowski.
+
+------------------------------------------------------------------------
+r20658 | courmisch | 2007-06-22 08:09:18 +0100 (Fri, 22 Jun 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+Add CVE reference
+
+------------------------------------------------------------------------
+r20619 | dionoea | 2007-06-18 20:56:45 +0100 (Mon, 18 Jun 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+   M /branches/0.8.6-bugfix/configure.ac
+   M /branches/0.8.6-bugfix/src/input/input.c
+
+* backport [20618] to stable branch (in case we release it one day).
+
+------------------------------------------------------------------------
+r20585 | sigmunau | 2007-06-16 14:34:18 +0100 (Sat, 16 Jun 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/modules/access/Modules.am
+
+fix make dist
+
+------------------------------------------------------------------------
+r20584 | Trax | 2007-06-16 14:19:41 +0100 (Sat, 16 Jun 2007) | 1 line
+Changed paths:
+   M /branches/0.8.6-bugfix/NEWS
+
+* NEWS: add FLAC and v4l2 API info
+------------------------------------------------------------------------
+r20580 | jb | 2007-06-16 11:28:25 +0100 (Sat, 16 Jun 2007) | 2 lines
+Changed paths:
+   M /branches/0.8.6-bugfix/ChangeLog
+
+More Changelogs.
+
+------------------------------------------------------------------------
+r20579 | jpsaman | 2007-06-16 11:11:51 +0100 (Sat, 16 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/misc/freetype.c
 
 Fix potential memleaks
 ------------------------------------------------------------------------
-r20573 | xtophe | 2007-06-15 00:45:57 +0200 (Fri, 15 Jun 2007) | 2 lines
+r20573 | xtophe | 2007-06-14 23:45:57 +0100 (Thu, 14 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/THANKS
    M /branches/0.8.6-bugfix/modules/codec/flac.c
@@ -13,45 +1666,45 @@ Changed paths:
 New FLAC API compatibility. Backport of [18855] and [18858]
 
 ------------------------------------------------------------------------
-r20571 | xtophe | 2007-06-15 00:02:46 +0200 (Fri, 15 Jun 2007) | 2 lines
+r20571 | xtophe | 2007-06-14 23:02:46 +0100 (Thu, 14 Jun 2007) | 2 lines
 Changed paths:
    A /branches/0.8.6-bugfix/modules/access/videodev2.h (from /branches/0.8.6-bugfix/modules/access/pvr/videodev2.h:20507)
 
 This file was forgotten in [20508]
 
 ------------------------------------------------------------------------
-r20569 | Trax | 2007-06-14 20:11:16 +0200 (Thu, 14 Jun 2007) | 1 line
+r20569 | Trax | 2007-06-14 19:11:16 +0100 (Thu, 14 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/video_output/vout_subpictures.c
 
 * src/video_output/vout_subpictures.c: backport [20562], potential memleak/crash
 ------------------------------------------------------------------------
-r20568 | xtophe | 2007-06-14 19:42:14 +0200 (Thu, 14 Jun 2007) | 2 lines
+r20568 | xtophe | 2007-06-14 18:42:14 +0100 (Thu, 14 Jun 2007) | 2 lines
 Changed paths:
    A /branches/0.8.6-bugfix/po/fa.po
 
 oups forgot that yesterday
 
 ------------------------------------------------------------------------
-r20566 | Trax | 2007-06-14 19:29:46 +0200 (Thu, 14 Jun 2007) | 1 line
+r20566 | Trax | 2007-06-14 18:29:46 +0100 (Thu, 14 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 * NEWS: more cosmetics :)
 ------------------------------------------------------------------------
-r20564 | Trax | 2007-06-14 19:21:29 +0200 (Thu, 14 Jun 2007) | 1 line
+r20564 | Trax | 2007-06-14 18:21:29 +0100 (Thu, 14 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 * NEWS: cosmetics..
 ------------------------------------------------------------------------
-r20563 | Trax | 2007-06-14 19:16:25 +0200 (Thu, 14 Jun 2007) | 1 line
+r20563 | Trax | 2007-06-14 18:16:25 +0100 (Thu, 14 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 * NEWS: changed description for subtitle detection fix in AVI
 ------------------------------------------------------------------------
-r20559 | jb | 2007-06-14 01:45:26 +0200 (Thu, 14 Jun 2007) | 3 lines
+r20559 | jb | 2007-06-14 00:45:26 +0100 (Thu, 14 Jun 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/ChangeLog
    A /branches/0.8.6-bugfix/doc/ChangeLog-2006
@@ -60,7 +1713,7 @@ Update changelogs.
 
 
 ------------------------------------------------------------------------
-r20558 | jb | 2007-06-14 01:42:57 +0200 (Thu, 14 Jun 2007) | 4 lines
+r20558 | jb | 2007-06-14 00:42:57 +0100 (Thu, 14 Jun 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/INSTALL.win32
    M /branches/0.8.6-bugfix/configure.ac
@@ -70,14 +1723,14 @@ Update version in configure.ac and Contribs link.
 ------------------------------------------------------------------------
 
 ------------------------------------------------------------------------
-r20555 | xtophe | 2007-06-13 23:47:43 +0200 (Wed, 13 Jun 2007) | 2 lines
+r20555 | xtophe | 2007-06-13 22:47:43 +0100 (Wed, 13 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/extras/MacOSX/plugin/InstallerInfo.plist
 
 Changes the version string
 
 ------------------------------------------------------------------------
-r20554 | xtophe | 2007-06-13 23:34:20 +0200 (Wed, 13 Jun 2007) | 2 lines
+r20554 | xtophe | 2007-06-13 22:34:20 +0100 (Wed, 13 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
    M /branches/0.8.6-bugfix/THANKS
@@ -138,146 +1791,146 @@ Changed paths:
 Backport the l10n from trunk, activate arabic and persian  
 
 ------------------------------------------------------------------------
-r20552 | fenrir | 2007-06-13 21:27:36 +0200 (Wed, 13 Jun 2007) | 2 lines
+r20552 | fenrir | 2007-06-13 20:27:36 +0100 (Wed, 13 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/aiff.c
 
 Backport [20551] (stereo + odd chunk size)
 
 ------------------------------------------------------------------------
-r20542 | Trax | 2007-06-12 23:19:23 +0200 (Tue, 12 Jun 2007) | 1 line
+r20542 | Trax | 2007-06-12 22:19:23 +0100 (Tue, 12 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/wxwidgets/interface.cpp
 
 * modules/gui/wxwidgets/interface.cpp: Revert [20519] as time display is a bit too wide now (at least on XP, the defaults were fine). Needs more tweaking to be properly backported.
 ------------------------------------------------------------------------
-r20540 | Trax | 2007-06-12 22:31:04 +0200 (Tue, 12 Jun 2007) | 1 line
+r20540 | Trax | 2007-06-12 21:31:04 +0100 (Tue, 12 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 NEWS: add security updates.
 ------------------------------------------------------------------------
-r20537 | fenrir | 2007-06-12 20:32:04 +0200 (Tue, 12 Jun 2007) | 2 lines
+r20537 | fenrir | 2007-06-12 19:32:04 +0100 (Tue, 12 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/access/http.c
 
 Backport [20328] (Do not forbid seeking on 401 error.)
 
 ------------------------------------------------------------------------
-r20536 | fenrir | 2007-06-12 20:28:40 +0200 (Tue, 12 Jun 2007) | 2 lines
+r20536 | fenrir | 2007-06-12 19:28:40 +0100 (Tue, 12 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/playlist/m3u.c
 
 Backport [20311] (m3u length parsing, BUT it is incomplete as it will break ABI)
 
 ------------------------------------------------------------------------
-r20535 | fenrir | 2007-06-12 20:27:18 +0200 (Tue, 12 Jun 2007) | 2 lines
+r20535 | fenrir | 2007-06-12 19:27:18 +0100 (Tue, 12 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/audio_output/output.c
 
 Backport [20534] (Use of released buffer on race condition)
 
 ------------------------------------------------------------------------
-r20533 | Trax | 2007-06-12 20:19:09 +0200 (Tue, 12 Jun 2007) | 1 line
+r20533 | Trax | 2007-06-12 19:19:09 +0100 (Tue, 12 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/osd/osd_parser.c
 
 * src/osd/osd_parser.c: backport [20349], remove dead code.
 ------------------------------------------------------------------------
-r20532 | Trax | 2007-06-12 19:04:06 +0200 (Tue, 12 Jun 2007) | 1 line
+r20532 | Trax | 2007-06-12 18:04:06 +0100 (Tue, 12 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 NEWS: add MKV demuxer crash fix.
 ------------------------------------------------------------------------
-r20531 | Trax | 2007-06-12 18:58:30 +0200 (Tue, 12 Jun 2007) | 1 line
+r20531 | Trax | 2007-06-12 17:58:30 +0100 (Tue, 12 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/THANKS
    M /branches/0.8.6-bugfix/modules/demux/rawdv.c
 
 * modules/demux/rawdv.c: backport [19931], patch for rawdv and fix memleak.
 ------------------------------------------------------------------------
-r20530 | Trax | 2007-06-12 18:40:27 +0200 (Tue, 12 Jun 2007) | 1 line
+r20530 | Trax | 2007-06-12 17:40:27 +0100 (Tue, 12 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/osd/osd.c
    M /branches/0.8.6-bugfix/src/osd/osd_parser.c
 
 * src/osd/osd.c osd_parser.c: backport [20352], Fix memleaks.
 ------------------------------------------------------------------------
-r20529 | Trax | 2007-06-12 18:31:11 +0200 (Tue, 12 Jun 2007) | 1 line
+r20529 | Trax | 2007-06-12 17:31:11 +0100 (Tue, 12 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/THANKS
    M /branches/0.8.6-bugfix/modules/demux/mkv.cpp
 
 * modules/demux/mkv.cpp: backport [20041], Fix im MKV demuxer.
 ------------------------------------------------------------------------
-r20528 | damienf | 2007-06-12 18:10:37 +0200 (Tue, 12 Jun 2007) | 2 lines
+r20528 | damienf | 2007-06-12 17:10:37 +0100 (Tue, 12 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/mozilla/vlcshell.cpp
 
 mozilla: backport [20527]
 
 ------------------------------------------------------------------------
-r20522 | damienf | 2007-06-12 11:06:50 +0200 (Tue, 12 Jun 2007) | 2 lines
+r20522 | damienf | 2007-06-12 10:06:50 +0100 (Tue, 12 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/vlc.win32.nsi.in
 
 NSIS installer: fixed small typo in mozilla registry key
 
 ------------------------------------------------------------------------
-r20519 | Trax | 2007-06-11 22:28:02 +0200 (Mon, 11 Jun 2007) | 1 line
+r20519 | Trax | 2007-06-11 21:28:02 +0100 (Mon, 11 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/wxwidgets/interface.cpp
 
 * modules/gui/wxwidgets/interface.cpp: Backport [19972], Wx - increase the time display.
 ------------------------------------------------------------------------
-r20517 | Trax | 2007-06-11 17:57:39 +0200 (Mon, 11 Jun 2007) | 1 line
+r20517 | Trax | 2007-06-11 16:57:39 +0100 (Mon, 11 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 * NEWS: Added fixes for memory leaks and Embedded subtitles (GAB2)
 ------------------------------------------------------------------------
-r20516 | Trax | 2007-06-11 17:45:34 +0200 (Mon, 11 Jun 2007) | 1 line
+r20516 | Trax | 2007-06-11 16:45:34 +0100 (Mon, 11 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/misc/svg.c
 
 * modules/misc/svg.c: Backport [20353], Fix memleak
 ------------------------------------------------------------------------
-r20515 | Trax | 2007-06-11 17:38:59 +0200 (Mon, 11 Jun 2007) | 1 line
+r20515 | Trax | 2007-06-11 16:38:59 +0100 (Mon, 11 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/avi/libavi.c
 
 * modules/demux/avi/linavi.c: Backport [19904], Patch to fix ticket #1162 by npl at chello.at
 ------------------------------------------------------------------------
-r20513 | damienf | 2007-06-11 16:23:41 +0200 (Mon, 11 Jun 2007) | 2 lines
+r20513 | damienf | 2007-06-11 15:23:41 +0100 (Mon, 11 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 NEWS: more Direct3D news
 
 ------------------------------------------------------------------------
-r20512 | damienf | 2007-06-11 14:53:18 +0200 (Mon, 11 Jun 2007) | 2 lines
+r20512 | damienf | 2007-06-11 13:53:18 +0100 (Mon, 11 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/live555.cpp
 
 live555: backport [19973]
 
 ------------------------------------------------------------------------
-r20511 | damienf | 2007-06-11 14:48:31 +0200 (Mon, 11 Jun 2007) | 2 lines
+r20511 | damienf | 2007-06-11 13:48:31 +0100 (Mon, 11 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/libmpeg2.c
 
 libmpeg2: backport [20298]
 
 ------------------------------------------------------------------------
-r20510 | damienf | 2007-06-11 14:45:39 +0200 (Mon, 11 Jun 2007) | 2 lines
+r20510 | damienf | 2007-06-11 13:45:39 +0100 (Mon, 11 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/ffmpeg/video.c
 
 ffmpeg: backport [20343]
 
 ------------------------------------------------------------------------
-r20509 | damienf | 2007-06-11 14:28:43 +0200 (Mon, 11 Jun 2007) | 2 lines
+r20509 | damienf | 2007-06-11 13:28:43 +0100 (Mon, 11 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_output/directx/direct3d.c
    M /branches/0.8.6-bugfix/modules/video_output/directx/events.c
@@ -285,7 +1938,7 @@ Changed paths:
 directx: backport [20153], and stay on top fix in [20028]
 
 ------------------------------------------------------------------------
-r20508 | sigmunau | 2007-06-11 14:03:55 +0200 (Mon, 11 Jun 2007) | 3 lines
+r20508 | sigmunau | 2007-06-11 13:03:55 +0100 (Mon, 11 Jun 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/THANKS
    M /branches/0.8.6-bugfix/configure.ac
@@ -297,14 +1950,14 @@ backported half of [16084] and [19842] and [20507]. Gives support for the new v4
 encoder api. 
 
 ------------------------------------------------------------------------
-r20506 | damienf | 2007-06-11 13:37:38 +0200 (Mon, 11 Jun 2007) | 2 lines
+r20506 | damienf | 2007-06-11 12:37:38 +0100 (Mon, 11 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/wxwidgets/input_manager.cpp
 
 wxwidgets: backport [20017]
 
 ------------------------------------------------------------------------
-r20505 | damienf | 2007-06-11 13:21:05 +0200 (Mon, 11 Jun 2007) | 2 lines
+r20505 | damienf | 2007-06-11 12:21:05 +0100 (Mon, 11 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_chroma/i420_rgb16.c
    M /branches/0.8.6-bugfix/modules/video_chroma/i420_yuy2.c
@@ -313,48 +1966,48 @@ Changed paths:
 MMX chromas: removed MMX registers from clobbered list as it causes errors on some version of GCC not properly configured for MMX (Gentoo ?)
 
 ------------------------------------------------------------------------
-r20501 | pdherbemont | 2007-06-10 22:10:40 +0200 (Sun, 10 Jun 2007) | 2 lines
+r20501 | pdherbemont | 2007-06-10 21:10:40 +0100 (Sun, 10 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/control/core.c
 
 Backport [20379]. control/core.c: Don't leak the p_instance.
 
 ------------------------------------------------------------------------
-r20496 | dionoea | 2007-06-10 17:32:56 +0200 (Sun, 10 Jun 2007) | 2 lines
+r20496 | dionoea | 2007-06-10 16:32:56 +0100 (Sun, 10 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/ffmpeg/demux.c
 
 Backport [20188]. "ffmpeg/demux.c: Don't change an ffmpeg demux's .flags member permanently. Fixes the "ffmpeg demuxer can't be used more that once" bug with libavformat revisions newer than 7589 (included)."
 
 ------------------------------------------------------------------------
-r20495 | courmisch | 2007-06-10 17:27:51 +0200 (Sun, 10 Jun 2007) | 2 lines
+r20495 | courmisch | 2007-06-10 16:27:51 +0100 (Sun, 10 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/misc/strings.c
 
 Backport [19981]: handle NULL in decode_URI and unescape_URI
 
 ------------------------------------------------------------------------
-r20494 | dionoea | 2007-06-10 15:16:34 +0200 (Sun, 10 Jun 2007) | 2 lines
+r20494 | dionoea | 2007-06-10 14:16:34 +0100 (Sun, 10 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 Start adding some NEWS.
 
 ------------------------------------------------------------------------
-r20493 | dionoea | 2007-06-10 15:10:29 +0200 (Sun, 10 Jun 2007) | 2 lines
+r20493 | dionoea | 2007-06-10 14:10:29 +0100 (Sun, 10 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_filter/rss.c
 
 Backport rss bugfix for missing 0 char at the end of the string [20038].
 
 ------------------------------------------------------------------------
-r20491 | fkuehne | 2007-06-09 18:50:22 +0200 (Sat, 09 Jun 2007) | 1 line
+r20491 | fkuehne | 2007-06-09 17:50:22 +0100 (Sat, 09 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/packages.mak
 
 * libcddb is broken on sf's switch server. let's use heanet instead.
 ------------------------------------------------------------------------
-r20490 | pdherbemont | 2007-06-09 17:36:51 +0200 (Sat, 09 Jun 2007) | 2 lines
+r20490 | pdherbemont | 2007-06-09 16:36:51 +0100 (Sat, 09 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/macosx/intf.h
    M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
@@ -364,7 +2017,7 @@ Changed paths:
 Mac OS X gui: Hopefuly fix the fullscreen change crash by back porting the NSView main thread creation fix.
 
 ------------------------------------------------------------------------
-r20484 | fkuehne | 2007-06-08 17:11:44 +0200 (Fri, 08 Jun 2007) | 1 line
+r20484 | fkuehne | 2007-06-08 16:11:44 +0100 (Fri, 08 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/InfoPlist.strings
    M /branches/0.8.6-bugfix/extras/MacOSX/plugin/English.lproj/InfoPlist.strings
@@ -373,7 +2026,7 @@ Changed paths:
 
 * updated to *c
 ------------------------------------------------------------------------
-r20480 | fkuehne | 2007-06-08 16:22:20 +0200 (Fri, 08 Jun 2007) | 1 line
+r20480 | fkuehne | 2007-06-08 15:22:20 +0100 (Fri, 08 Jun 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
    A /branches/0.8.6-bugfix/extras/contrib/src/Patches/live-config.patch
@@ -384,7 +2037,7 @@ Changed paths:
 
 * update live building, removed support for compilation on OSX < 10.4 and included the current patches
 ------------------------------------------------------------------------
-r20474 | damienf | 2007-06-08 01:44:35 +0200 (Fri, 08 Jun 2007) | 2 lines
+r20474 | damienf | 2007-06-08 00:44:35 +0100 (Fri, 08 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_output/directx/direct3d.c
    M /branches/0.8.6-bugfix/modules/video_output/directx/events.c
@@ -392,7 +2045,7 @@ Changed paths:
 - direct3d: backport [20420],[20412],[19993]
 
 ------------------------------------------------------------------------
-r20471 | damienf | 2007-06-08 00:57:09 +0200 (Fri, 08 Jun 2007) | 2 lines
+r20471 | damienf | 2007-06-07 23:57:09 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_chroma/i420_rgb16.c
    M /branches/0.8.6-bugfix/modules/video_chroma/i420_yuy2.c
@@ -401,28 +2054,28 @@ Changed paths:
 video_chroma: re-enable FPU registers after using MMX instructions
 
 ------------------------------------------------------------------------
-r20469 | xtophe | 2007-06-08 00:32:10 +0200 (Fri, 08 Jun 2007) | 2 lines
+r20469 | xtophe | 2007-06-07 23:32:10 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/doc/vlc.1
 
 Backport [19419], [20466] and partially [20468]
 
 ------------------------------------------------------------------------
-r20458 | courmisch | 2007-06-07 20:50:00 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20458 | courmisch | 2007-06-07 19:50:00 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/bootstrap
 
 Quick hack to support automake 1.10
 
 ------------------------------------------------------------------------
-r20457 | courmisch | 2007-06-07 20:47:35 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20457 | courmisch | 2007-06-07 19:47:35 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/bindings/java/src
 
 svn:ignore
 
 ------------------------------------------------------------------------
-r20455 | courmisch | 2007-06-07 19:34:50 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20455 | courmisch | 2007-06-07 18:34:50 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/access/cdda.c
    M /branches/0.8.6-bugfix/modules/services_discovery/sap.c
@@ -430,21 +2083,21 @@ Changed paths:
 Backport [20454] and [20448]
 
 ------------------------------------------------------------------------
-r20453 | courmisch | 2007-06-07 19:32:36 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20453 | courmisch | 2007-06-07 18:32:36 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/theora.c
 
 Backport [20452]
 
 ------------------------------------------------------------------------
-r20449 | courmisch | 2007-06-07 19:31:10 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20449 | courmisch | 2007-06-07 18:31:10 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/vorbis.c
 
 Fix format string usage. Problem reported by David Thiel.
 
 ------------------------------------------------------------------------
-r20447 | courmisch | 2007-06-07 18:58:32 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20447 | courmisch | 2007-06-07 17:58:32 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/THANKS
    M /branches/0.8.6-bugfix/src/audio_output/dec.c
@@ -452,35 +2105,35 @@ Changed paths:
 Sanitize audio format
 
 ------------------------------------------------------------------------
-r20445 | courmisch | 2007-06-07 18:57:15 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20445 | courmisch | 2007-06-07 17:57:15 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/audio_output/input.c
 
 Partial backport of [20441]: unitialized variable
 
 ------------------------------------------------------------------------
-r20444 | courmisch | 2007-06-07 18:55:46 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20444 | courmisch | 2007-06-07 17:55:46 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/audio_output/dec.c
 
 Backport [20439]: deadlock
 
 ------------------------------------------------------------------------
-r20443 | courmisch | 2007-06-07 18:55:08 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20443 | courmisch | 2007-06-07 17:55:08 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/include/vlc_es.h
 
 Use unsigned. Retain layout and byte size due to ABI freeze.
 
 ------------------------------------------------------------------------
-r20435 | courmisch | 2007-06-07 18:09:09 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20435 | courmisch | 2007-06-07 17:09:09 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/wav.c
 
 Backport [20434]
 
 ------------------------------------------------------------------------
-r20433 | courmisch | 2007-06-07 17:33:23 +0200 (Thu, 07 Jun 2007) | 2 lines
+r20433 | courmisch | 2007-06-07 16:33:23 +0100 (Thu, 07 Jun 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
    M /branches/0.8.6-bugfix/configure.ac
@@ -488,14 +2141,14 @@ Changed paths:
 Open 0.8.6c for business
 
 ------------------------------------------------------------------------
-r20192 | courmisch | 2007-05-19 11:42:41 +0200 (Sat, 19 May 2007) | 2 lines
+r20192 | courmisch | 2007-05-19 10:42:41 +0100 (Sat, 19 May 2007) | 2 lines
 Changed paths:
    A /branches/0.8.6-bugfix (from /branches/0.8.6-bugfix:19864)
 
 Not every bug have been fixed right? so why REMOVE the bugfix BRANCH ?
 
 ------------------------------------------------------------------------
-r19864 | damienf | 2007-04-18 18:30:27 +0200 (Wed, 18 Apr 2007) | 2 lines
+r19864 | damienf | 2007-04-18 17:30:27 +0100 (Wed, 18 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/activex/axvlc.tlb
    M /branches/0.8.6-bugfix/activex/axvlc_idl.c
@@ -504,13 +2157,13 @@ Changed paths:
 - activex: use Microsoft MIDL compiler to compile IDL for backward compatibility
 
 ------------------------------------------------------------------------
-r19862 | fkuehne | 2007-04-17 23:47:22 +0200 (Tue, 17 Apr 2007) | 1 line
+r19862 | fkuehne | 2007-04-17 22:47:22 +0100 (Tue, 17 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/ChangeLog
 
 * updated the changelog
 ------------------------------------------------------------------------
-r19861 | fkuehne | 2007-04-17 23:43:59 +0200 (Tue, 17 Apr 2007) | 1 line
+r19861 | fkuehne | 2007-04-17 22:43:59 +0100 (Tue, 17 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
    M /branches/0.8.6-bugfix/configure.ac
@@ -521,46 +2174,46 @@ Changed paths:
 
 * prepare for release :)
 ------------------------------------------------------------------------
-r19810 | md | 2007-04-15 11:52:35 +0200 (Sun, 15 Apr 2007) | 2 lines
+r19810 | md | 2007-04-15 10:52:35 +0100 (Sun, 15 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/access/udp.c
 
 Fix error in backport of [18891] - Closes #1171
 
 ------------------------------------------------------------------------
-r19808 | courmisch | 2007-04-15 10:52:35 +0200 (Sun, 15 Apr 2007) | 2 lines
+r19808 | courmisch | 2007-04-15 09:52:35 +0100 (Sun, 15 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/control/rc.c
 
 Backport [19806] and [19807]: remove rc-fake-tty and rc-unix from Win32
 
 ------------------------------------------------------------------------
-r19803 | courmisch | 2007-04-15 08:46:21 +0200 (Sun, 15 Apr 2007) | 2 lines
+r19803 | courmisch | 2007-04-15 07:46:21 +0100 (Sun, 15 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/misc/gnutls.c
 
 Backport [19802]: double CRT deinit
 
 ------------------------------------------------------------------------
-r19783 | Trax | 2007-04-14 14:50:35 +0200 (Sat, 14 Apr 2007) | 1 line
+r19783 | Trax | 2007-04-14 13:50:35 +0100 (Sat, 14 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 NEWS: some very important grammar fixes...
 ------------------------------------------------------------------------
-r19778 | Trax | 2007-04-12 22:39:18 +0200 (Thu, 12 Apr 2007) | 1 line
+r19778 | Trax | 2007-04-12 21:39:18 +0100 (Thu, 12 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 NEWS: add note about fixed behaviour for shoutcast/icecast output.
 ------------------------------------------------------------------------
-r19777 | Trax | 2007-04-12 21:15:48 +0200 (Thu, 12 Apr 2007) | 1 line
+r19777 | Trax | 2007-04-12 20:15:48 +0100 (Thu, 12 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/access_output/shout.c
 
 * modules/access_output/shout.c: Make ICY the default protocol and set protocol rollover from shoutcast to icecast. This fixes some libshout Socket error messages. Refs #1003. Partly backported from [19745].
 ------------------------------------------------------------------------
-r19775 | courmisch | 2007-04-12 19:30:41 +0200 (Thu, 12 Apr 2007) | 8 lines
+r19775 | courmisch | 2007-04-12 18:30:41 +0100 (Thu, 12 Apr 2007) | 8 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/services_discovery/sap.c
 
@@ -573,7 +2226,7 @@ This series of commits tries to address of the bugs that were already fixed
 without backporting the all refactored code. Needs testing (ECP people?).
 
 ------------------------------------------------------------------------
-r19774 | fkuehne | 2007-04-12 19:18:31 +0200 (Thu, 12 Apr 2007) | 1 line
+r19774 | fkuehne | 2007-04-12 18:18:31 +0100 (Thu, 12 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/configure.ac
    M /branches/0.8.6-bugfix/extras/MacOSX/plugin/English.lproj/InfoPlist.strings
@@ -583,7 +2236,7 @@ Changed paths:
 
 * prepare for test1 and also update the plugin info (it's 2007.. ;)
 ------------------------------------------------------------------------
-r19773 | courmisch | 2007-04-12 19:03:00 +0200 (Thu, 12 Apr 2007) | 3 lines
+r19773 | courmisch | 2007-04-12 18:03:00 +0100 (Thu, 12 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/services_discovery/sap.c
 
@@ -591,14 +2244,14 @@ Fix previous commit: Only add brackets if actually needed,
 i.e. do not add them around DNS hostnames
 
 ------------------------------------------------------------------------
-r19772 | courmisch | 2007-04-12 19:00:34 +0200 (Thu, 12 Apr 2007) | 2 lines
+r19772 | courmisch | 2007-04-12 18:00:34 +0100 (Thu, 12 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/services_discovery/sap.c
 
 Relax c= parsing so that it does not reject valid IPv6 announces
 
 ------------------------------------------------------------------------
-r19771 | jb | 2007-04-12 18:55:51 +0200 (Thu, 12 Apr 2007) | 3 lines
+r19771 | jb | 2007-04-12 17:55:51 +0100 (Thu, 12 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
@@ -606,7 +2259,7 @@ Update News
 
 
 ------------------------------------------------------------------------
-r19769 | jb | 2007-04-12 18:14:33 +0200 (Thu, 12 Apr 2007) | 3 lines
+r19769 | jb | 2007-04-12 17:14:33 +0100 (Thu, 12 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/access/dvb/en50221.c
 
@@ -614,13 +2267,13 @@ Backport of [18946]
 
 
 ------------------------------------------------------------------------
-r19765 | jpsaman | 2007-04-12 11:41:58 +0200 (Thu, 12 Apr 2007) | 1 line
+r19765 | jpsaman | 2007-04-12 10:41:58 +0100 (Thu, 12 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/extras/libc.c
 
 Backport of rev [19271]
 ------------------------------------------------------------------------
-r19761 | damienf | 2007-04-11 23:27:39 +0200 (Wed, 11 Apr 2007) | 2 lines
+r19761 | damienf | 2007-04-11 22:27:39 +0100 (Wed, 11 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_output/directx/direct3d.c
    M /branches/0.8.6-bugfix/modules/video_output/directx/vout.h
@@ -628,41 +2281,41 @@ Changed paths:
 - direct3d: backported texture to quad video rendering code from trunk, that seems a better option for Vista
 
 ------------------------------------------------------------------------
-r19759 | damienf | 2007-04-11 00:40:50 +0200 (Wed, 11 Apr 2007) | 2 lines
+r19759 | damienf | 2007-04-10 23:40:50 +0100 (Tue, 10 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_output/directx/direct3d.c
 
 - direct3d: try Vista workaround documented in VirtualDub blog
 
 ------------------------------------------------------------------------
-r19758 | damienf | 2007-04-10 23:43:29 +0200 (Tue, 10 Apr 2007) | 2 lines
+r19758 | damienf | 2007-04-10 22:43:29 +0100 (Tue, 10 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_output/directx/direct3d.c
 
 - direct3d: more possible Vista fixes, needs testing
 
 ------------------------------------------------------------------------
-r19751 | fkuehne | 2007-04-09 20:33:45 +0200 (Mon, 09 Apr 2007) | 1 line
+r19751 | fkuehne | 2007-04-09 19:33:45 +0100 (Mon, 09 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/libvlc.h
 
 * default enable interface interactions. feel free to give reasons to disable it again on non-mac platforms
 ------------------------------------------------------------------------
-r19750 | courmisch | 2007-04-09 17:15:59 +0200 (Mon, 09 Apr 2007) | 2 lines
+r19750 | courmisch | 2007-04-09 16:15:59 +0100 (Mon, 09 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/stream_out/rtp.c
 
 Backport [19749]: b= SDP ordering fix
 
 ------------------------------------------------------------------------
-r19748 | courmisch | 2007-04-09 17:10:40 +0200 (Mon, 09 Apr 2007) | 2 lines
+r19748 | courmisch | 2007-04-09 16:10:40 +0100 (Mon, 09 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/stream_out/rtp.c
 
 Backport [19747]: IPv6 SDP TTL removal
 
 ------------------------------------------------------------------------
-r19729 | damienf | 2007-04-07 01:09:20 +0200 (Sat, 07 Apr 2007) | 2 lines
+r19729 | damienf | 2007-04-07 00:09:20 +0100 (Sat, 07 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_output/directx/direct3d.c
    M /branches/0.8.6-bugfix/modules/video_output/directx/directx.c
@@ -671,14 +2324,14 @@ Changed paths:
 - directx vout: misc bug fixes
 
 ------------------------------------------------------------------------
-r19721 | massiot | 2007-04-06 20:12:06 +0200 (Fri, 06 Apr 2007) | 2 lines
+r19721 | massiot | 2007-04-06 19:12:06 +0100 (Fri, 06 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
  * NEWS : Added teletext decoder.
 
 ------------------------------------------------------------------------
-r19719 | massiot | 2007-04-06 20:03:48 +0200 (Fri, 06 Apr 2007) | 5 lines
+r19719 | massiot | 2007-04-06 19:03:48 +0100 (Fri, 06 Apr 2007) | 5 lines
 Changed paths:
    M /branches/0.8.6-bugfix/AUTHORS
    M /branches/0.8.6-bugfix/configure.ac
@@ -695,7 +2348,7 @@ Changed paths:
    [18633] [19717]
 
 ------------------------------------------------------------------------
-r19716 | jb | 2007-04-06 18:23:23 +0200 (Fri, 06 Apr 2007) | 3 lines
+r19716 | jb | 2007-04-06 17:23:23 +0100 (Fri, 06 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
@@ -703,32 +2356,32 @@ Update the NEWS a bit too.
 
 
 ------------------------------------------------------------------------
-r19715 | fkuehne | 2007-04-06 18:02:54 +0200 (Fri, 06 Apr 2007) | 1 line
+r19715 | fkuehne | 2007-04-06 17:02:54 +0100 (Fri, 06 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 * updated the news a bit
 ------------------------------------------------------------------------
-r19712 | fkuehne | 2007-04-06 16:51:26 +0200 (Fri, 06 Apr 2007) | 1 line
+r19712 | fkuehne | 2007-04-06 15:51:26 +0100 (Fri, 06 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
 
 * libdca: use revision 35 instead of the latest possible, since that one is broken and since we want to mostly use 0.8.6a's contribs for 0.8.6b
 ------------------------------------------------------------------------
-r19667 | fkuehne | 2007-04-04 22:24:46 +0200 (Wed, 04 Apr 2007) | 1 line
+r19667 | fkuehne | 2007-04-04 21:24:46 +0100 (Wed, 04 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
 
 * make sure that the fspanel is being actived in all possible vout-goes-fullscreen ways (closes #1132)
 ------------------------------------------------------------------------
-r19664 | courmisch | 2007-04-04 16:29:10 +0200 (Wed, 04 Apr 2007) | 2 lines
+r19664 | courmisch | 2007-04-04 15:29:10 +0100 (Wed, 04 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/skins2/x11/x11_window.cpp
 
 Revert fix-revert
 
 ------------------------------------------------------------------------
-r19663 | lool | 2007-04-04 16:21:33 +0200 (Wed, 04 Apr 2007) | 4 lines
+r19663 | lool | 2007-04-04 15:21:33 +0100 (Wed, 04 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/skins2/src/theme_loader.cpp
 
@@ -737,7 +2390,7 @@ Changed paths:
   Martin Michlmayr; Debian #417750.
 
 ------------------------------------------------------------------------
-r19657 | jb | 2007-04-03 23:23:26 +0200 (Tue, 03 Apr 2007) | 3 lines
+r19657 | jb | 2007-04-03 22:23:26 +0100 (Tue, 03 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/ffmpeg/ffmpeg.c
    M /branches/0.8.6-bugfix/modules/demux/nsv.c
@@ -746,13 +2399,13 @@ Backport [18408]
 
 
 ------------------------------------------------------------------------
-r19652 | jpsaman | 2007-04-03 13:27:47 +0200 (Tue, 03 Apr 2007) | 1 line
+r19652 | jpsaman | 2007-04-03 12:27:47 +0100 (Tue, 03 Apr 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/activex/vlccontrol2.cpp
 
 Backport of rev [19651]
 ------------------------------------------------------------------------
-r19648 | pdherbemont | 2007-04-03 00:47:28 +0200 (Tue, 03 Apr 2007) | 4 lines
+r19648 | pdherbemont | 2007-04-02 23:47:28 +0100 (Mon, 02 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
 
@@ -761,14 +2414,14 @@ Changed paths:
 Mac OS X gui: Fix a crash when asking for fullscreen state when no p_real_vout is defined.
 
 ------------------------------------------------------------------------
-r19645 | dionoea | 2007-04-03 00:01:01 +0200 (Tue, 03 Apr 2007) | 2 lines
+r19645 | dionoea | 2007-04-02 23:01:01 +0100 (Mon, 02 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/playlist/item-ext.c
 
 Fix 0.8.6 only bug reported by fireblade on the forums ( http://forum.videolan.org/viewtopic.php?p=106488 ).
 
 ------------------------------------------------------------------------
-r19628 | jb | 2007-04-01 20:06:10 +0200 (Sun, 01 Apr 2007) | 3 lines
+r19628 | jb | 2007-04-01 19:06:10 +0100 (Sun, 01 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/po/POTFILES.in
    M /branches/0.8.6-bugfix/po/vlc.pot
@@ -777,7 +2430,7 @@ Try to repair distclean
 
 
 ------------------------------------------------------------------------
-r19613 | jb | 2007-04-01 14:11:21 +0200 (Sun, 01 Apr 2007) | 3 lines
+r19613 | jb | 2007-04-01 13:11:21 +0100 (Sun, 01 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
 
@@ -785,7 +2438,7 @@ gnutls disable C++ lib
 
 
 ------------------------------------------------------------------------
-r19612 | jb | 2007-04-01 14:09:19 +0200 (Sun, 01 Apr 2007) | 3 lines
+r19612 | jb | 2007-04-01 13:09:19 +0100 (Sun, 01 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/packages.mak
 
@@ -793,7 +2446,7 @@ Change libIDL location on videolan.org:
 
 
 ------------------------------------------------------------------------
-r19610 | hartman | 2007-04-01 03:37:01 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19610 | hartman | 2007-04-01 02:37:01 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/dvbsub.c
 
@@ -802,7 +2455,7 @@ Changed paths:
 fixes dvbsub positioning
 
 ------------------------------------------------------------------------
-r19609 | hartman | 2007-04-01 03:32:48 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19609 | hartman | 2007-04-01 02:32:48 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/include/vlc_es.h
 
@@ -811,7 +2464,7 @@ Changed paths:
 Fixed es_format_Clean (when called multiple times with the same es_format).
 
 ------------------------------------------------------------------------
-r19608 | hartman | 2007-04-01 03:31:55 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19608 | hartman | 2007-04-01 02:31:55 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/flac.c
 
@@ -820,7 +2473,7 @@ Changed paths:
   Fixed a memleak per packetizer module_Need in flac.c
 
 ------------------------------------------------------------------------
-r19607 | hartman | 2007-04-01 03:28:22 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19607 | hartman | 2007-04-01 02:28:22 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/rawvideo.c
 
@@ -829,7 +2482,7 @@ Changed paths:
 Do not use visible_pitch when walking trough the lines
 
 ------------------------------------------------------------------------
-r19606 | hartman | 2007-04-01 03:24:53 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19606 | hartman | 2007-04-01 02:24:53 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/mkv.cpp
 
@@ -838,7 +2491,7 @@ Changed paths:
   matroska crash. don't use block, in case when it can be ( block || simpleblock)
 
 ------------------------------------------------------------------------
-r19605 | hartman | 2007-04-01 03:23:18 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19605 | hartman | 2007-04-01 02:23:18 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/mp4/libmp4.c
    M /branches/0.8.6-bugfix/modules/stream_out/rtp.c
@@ -848,7 +2501,7 @@ Changed paths:
 Fixed wrong type used in mp4 parsing
 
 ------------------------------------------------------------------------
-r19603 | hartman | 2007-04-01 03:19:51 +0200 (Sun, 01 Apr 2007) | 3 lines
+r19603 | hartman | 2007-04-01 02:19:51 +0100 (Sun, 01 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/packetizer/h264.c
    M /branches/0.8.6-bugfix/modules/stream_out/rtp.c
@@ -857,7 +2510,7 @@ Changed paths:
   H264 packetization fixes
 
 ------------------------------------------------------------------------
-r19602 | hartman | 2007-04-01 03:10:23 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19602 | hartman | 2007-04-01 02:10:23 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/control/telnet.c
 
@@ -866,7 +2519,7 @@ Changed paths:
 Patch by ILEoo to make the telnet interface work with "telnet" again (on linux). Looks ok according to the recv(2) manpage. Please fix if this is flawed.
 
 ------------------------------------------------------------------------
-r19601 | hartman | 2007-04-01 03:08:43 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19601 | hartman | 2007-04-01 02:08:43 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/faad.c
 
@@ -875,7 +2528,7 @@ Fixed segfault when faad reports an unknown channel configuration
 (Fixed lol-vlc.aac segfault, http://sam.zoy.org/zzuf/)
 
 ------------------------------------------------------------------------
-r19600 | hartman | 2007-04-01 03:06:18 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19600 | hartman | 2007-04-01 02:06:18 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/input/decoder.c
 
@@ -884,7 +2537,7 @@ Changed paths:
 Copy complete es format descriptor when extra data is added.
 
 ------------------------------------------------------------------------
-r19599 | hartman | 2007-04-01 03:03:06 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19599 | hartman | 2007-04-01 02:03:06 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/packetizer/mpeg4audio.c
 
@@ -893,7 +2546,7 @@ Changed paths:
 Fixed uninitialized value for ADTS stream.
 
 ------------------------------------------------------------------------
-r19598 | hartman | 2007-04-01 02:59:25 +0200 (Sun, 01 Apr 2007) | 5 lines
+r19598 | hartman | 2007-04-01 01:59:25 +0100 (Sun, 01 Apr 2007) | 5 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/video_output/vout_subpictures.c
 
@@ -903,7 +2556,7 @@ Fixed subtitle/osd memory leaks (subpicture_region_t->psz_text was not freed).
 
 
 ------------------------------------------------------------------------
-r19596 | hartman | 2007-04-01 02:53:38 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19596 | hartman | 2007-04-01 01:53:38 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/access/dvb/linux_dvb.c
 
@@ -912,7 +2565,7 @@ Changed paths:
 Fixed memory leak at each new PMT if we don't have CAM.
 
 ------------------------------------------------------------------------
-r19595 | hartman | 2007-04-01 02:52:46 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19595 | hartman | 2007-04-01 01:52:46 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/ts.c
 
@@ -921,14 +2574,14 @@ Changed paths:
   don't malloc(0)
 
 ------------------------------------------------------------------------
-r19594 | hartman | 2007-04-01 02:48:20 +0200 (Sun, 01 Apr 2007) | 2 lines
+r19594 | hartman | 2007-04-01 01:48:20 +0100 (Sun, 01 Apr 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/video_output/vout_intf.c
 
 * this is a "bugfix release" define because this was centralized in 0.9.0
 
 ------------------------------------------------------------------------
-r19593 | hartman | 2007-04-01 02:37:00 +0200 (Sun, 01 Apr 2007) | 3 lines
+r19593 | hartman | 2007-04-01 01:37:00 +0100 (Sun, 01 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/access/udp.c
 
@@ -936,7 +2589,7 @@ Changed paths:
   Fix use of uninitialized memory with raw UDP 
 
 ------------------------------------------------------------------------
-r19592 | hartman | 2007-04-01 02:31:04 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19592 | hartman | 2007-04-01 01:31:04 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/THANKS
    M /branches/0.8.6-bugfix/modules/access_output/http.c
@@ -947,7 +2600,7 @@ Changed paths:
 HTTP and UDP access outputs return byte count
 
 ------------------------------------------------------------------------
-r19591 | hartman | 2007-04-01 02:28:24 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19591 | hartman | 2007-04-01 01:28:24 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/stream_out/switcher.c
 
@@ -956,7 +2609,7 @@ Changed paths:
 Fix out-of-bound read in switcher
 
 ------------------------------------------------------------------------
-r19590 | hartman | 2007-04-01 02:24:31 +0200 (Sun, 01 Apr 2007) | 5 lines
+r19590 | hartman | 2007-04-01 01:24:31 +0100 (Sun, 01 Apr 2007) | 5 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/control/telnet.c
 
@@ -966,7 +2619,7 @@ Close telnet connection in case of error (fixes #995)
 
 
 ------------------------------------------------------------------------
-r19588 | hartman | 2007-04-01 02:17:01 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19588 | hartman | 2007-04-01 01:17:01 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/THANKS
    M /branches/0.8.6-bugfix/configure.ac
@@ -976,7 +2629,7 @@ Changed paths:
 Configure patches in use by Gentoo on 0.8.6 tree already
 
 ------------------------------------------------------------------------
-r19586 | hartman | 2007-04-01 02:11:10 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19586 | hartman | 2007-04-01 01:11:10 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/ts.c
 
@@ -985,7 +2638,7 @@ Changed paths:
  modules/demux/ts.c: Fixed erroneous warning messages (reported by Bill May).
 
 ------------------------------------------------------------------------
-r19585 | hartman | 2007-04-01 02:09:11 +0200 (Sun, 01 Apr 2007) | 3 lines
+r19585 | hartman | 2007-04-01 01:09:11 +0100 (Sun, 01 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/video_output/vout_intf.c
 
@@ -993,7 +2646,7 @@ Changed paths:
  Don't crash on messed up aspect ratios
 
 ------------------------------------------------------------------------
-r19584 | hartman | 2007-04-01 02:03:53 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19584 | hartman | 2007-04-01 01:03:53 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/video_output/vout_intf.c
 
@@ -1002,7 +2655,7 @@ Changed paths:
 Use DIR_SEP instead of "/"
 
 ------------------------------------------------------------------------
-r19583 | jb | 2007-04-01 01:59:39 +0200 (Sun, 01 Apr 2007) | 3 lines
+r19583 | jb | 2007-04-01 00:59:39 +0100 (Sun, 01 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
    M /branches/0.8.6-bugfix/extras/contrib/src/Patches/gnutls-win32.patch
@@ -1012,7 +2665,7 @@ Backport GNutls update for security reasons.
 
 
 ------------------------------------------------------------------------
-r19582 | hartman | 2007-04-01 01:56:53 +0200 (Sun, 01 Apr 2007) | 5 lines
+r19582 | hartman | 2007-04-01 00:56:53 +0100 (Sun, 01 Apr 2007) | 5 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_output/opengl.c
 
@@ -1022,7 +2675,7 @@ Changed paths:
 
 
 ------------------------------------------------------------------------
-r19581 | hartman | 2007-04-01 01:50:36 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19581 | hartman | 2007-04-01 00:50:36 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/video_output/vout_subpictures.c
 
@@ -1031,7 +2684,7 @@ Changed paths:
 Don't allow negative offsets when blending subpictures
 
 ------------------------------------------------------------------------
-r19580 | jb | 2007-04-01 01:43:52 +0200 (Sun, 01 Apr 2007) | 3 lines
+r19580 | jb | 2007-04-01 00:43:52 +0100 (Sun, 01 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/packages.mak
 
@@ -1039,7 +2692,7 @@ Backport of [19534]
 
 
 ------------------------------------------------------------------------
-r19579 | hartman | 2007-04-01 01:43:46 +0200 (Sun, 01 Apr 2007) | 4 lines
+r19579 | hartman | 2007-04-01 00:43:46 +0100 (Sun, 01 Apr 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/extras/MacOSX/Delete_Preferences.app/Contents/Info.plist
    M /branches/0.8.6-bugfix/extras/MacOSX/Delete_Preferences.app/Contents/Resources/Scripts/main.scpt
@@ -1051,7 +2704,7 @@ Changed paths:
 applied Westacular's patch with minor modifications, which solves some issues with this script in certain situations and lets the Finder do most of the work. Note that this script isn't 10.2-save anymore and triggers the Finder to launch in case that it is closed.
 
 ------------------------------------------------------------------------
-r19578 | hartman | 2007-04-01 01:38:35 +0200 (Sun, 01 Apr 2007) | 3 lines
+r19578 | hartman | 2007-04-01 00:38:35 +0100 (Sun, 01 Apr 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/live555.cpp
 
@@ -1059,7 +2712,7 @@ Changed paths:
   small isolated feature. Enables H264 playback in apple's special RTP style
 
 ------------------------------------------------------------------------
-r19577 | hartman | 2007-04-01 01:25:52 +0200 (Sun, 01 Apr 2007) | 5 lines
+r19577 | hartman | 2007-04-01 00:25:52 +0100 (Sun, 01 Apr 2007) | 5 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/skins2/x11/x11_window.cpp
 
@@ -1069,7 +2722,7 @@ Do not assume long integers are 32-bits.
 Should fix fullscreen on amd64
 
 ------------------------------------------------------------------------
-r19496 | jpsaman | 2007-03-27 14:39:54 +0200 (Tue, 27 Mar 2007) | 1 line
+r19496 | jpsaman | 2007-03-27 13:39:54 +0100 (Tue, 27 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/activex/axvlc.tlb
    M /branches/0.8.6-bugfix/activex/axvlc_idl.c
@@ -1077,7 +2730,7 @@ Changed paths:
 
 Revert to previous ActiveX JS api
 ------------------------------------------------------------------------
-r19495 | jpsaman | 2007-03-27 14:38:10 +0200 (Tue, 27 Mar 2007) | 1 line
+r19495 | jpsaman | 2007-03-27 13:38:10 +0100 (Tue, 27 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/activex/axvlc.idl
    M /branches/0.8.6-bugfix/activex/vlccontrol2.cpp
@@ -1089,14 +2742,14 @@ Changed paths:
 
 Revert the ABI breakage introduced in rev [19469] [19471]
 ------------------------------------------------------------------------
-r19493 | jpsaman | 2007-03-27 10:41:07 +0200 (Tue, 27 Mar 2007) | 1 line
+r19493 | jpsaman | 2007-03-27 09:41:07 +0100 (Tue, 27 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/extras/getopt.c
    M /branches/0.8.6-bugfix/src/misc/configuration.c
 
 Backport of rev [19371]
 ------------------------------------------------------------------------
-r19481 | damienf | 2007-03-26 00:38:56 +0200 (Mon, 26 Mar 2007) | 2 lines
+r19481 | damienf | 2007-03-25 23:38:56 +0100 (Sun, 25 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/mozilla/control/npolibvlc.cpp
    M /branches/0.8.6-bugfix/mozilla/control/npolibvlc.h
@@ -1108,7 +2761,7 @@ Changed paths:
 - mozilla: nultiple bugfix backports from trunk
 
 ------------------------------------------------------------------------
-r19480 | damienf | 2007-03-26 00:38:10 +0200 (Mon, 26 Mar 2007) | 2 lines
+r19480 | damienf | 2007-03-25 23:38:10 +0100 (Sun, 25 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/activex/main.cpp
    M /branches/0.8.6-bugfix/activex/plugin.cpp
@@ -1122,7 +2775,7 @@ Changed paths:
 - activex: multiple bugfix backports from trunk
 
 ------------------------------------------------------------------------
-r19479 | damienf | 2007-03-26 00:35:20 +0200 (Mon, 26 Mar 2007) | 2 lines
+r19479 | damienf | 2007-03-25 23:35:20 +0100 (Sun, 25 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/control/audio.c
    M /branches/0.8.6-bugfix/src/control/core.c
@@ -1132,44 +2785,44 @@ Changed paths:
 - src/control: multiple bug fix backport from trunk
 
 ------------------------------------------------------------------------
-r19477 | jpsaman | 2007-03-26 00:09:33 +0200 (Mon, 26 Mar 2007) | 1 line
+r19477 | jpsaman | 2007-03-25 23:09:33 +0100 (Sun, 25 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/configure.ac
 
 Detect firefox headerfiles and configuration.
 ------------------------------------------------------------------------
-r19475 | fkuehne | 2007-03-25 22:54:35 +0200 (Sun, 25 Mar 2007) | 1 line
+r19475 | fkuehne | 2007-03-25 21:54:35 +0100 (Sun, 25 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/macosx/voutgl.m
 
 * revert previous commit for Intel-based Macs
 ------------------------------------------------------------------------
-r19474 | fkuehne | 2007-03-25 22:34:26 +0200 (Sun, 25 Mar 2007) | 1 line
+r19474 | fkuehne | 2007-03-25 21:34:26 +0100 (Sun, 25 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/macosx/voutgl.m
 
 * revert OpenGL context locking, as this is 10.4-only
 ------------------------------------------------------------------------
-r19473 | fkuehne | 2007-03-25 21:56:49 +0200 (Sun, 25 Mar 2007) | 1 line
+r19473 | fkuehne | 2007-03-25 20:56:49 +0100 (Sun, 25 Mar 2007) | 1 line
 Changed paths:
    D /branches/0.8.6-bugfix/src/misc/darwin_specific.c
 
 * that shouldn't be there
 ------------------------------------------------------------------------
-r19472 | fkuehne | 2007-03-25 21:49:02 +0200 (Sun, 25 Mar 2007) | 1 line
+r19472 | fkuehne | 2007-03-25 20:49:02 +0100 (Sun, 25 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/Makefile.am
    A /branches/0.8.6-bugfix/src/misc/darwin_specific.m (from /branches/0.8.6-bugfix/src/misc/darwin_specific.c:19459)
 
 * revert Pierre's fixes for 0.8.6b, as they aren't 10.3.9 compatible without further configure/makefile changes
 ------------------------------------------------------------------------
-r19471 | jpsaman | 2007-03-25 21:36:27 +0200 (Sun, 25 Mar 2007) | 1 line
+r19471 | jpsaman | 2007-03-25 20:36:27 +0100 (Sun, 25 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/include/vlc/libvlc.h
 
 Don't forget the API definitions.
 ------------------------------------------------------------------------
-r19469 | jpsaman | 2007-03-25 21:34:50 +0200 (Sun, 25 Mar 2007) | 2 lines
+r19469 | jpsaman | 2007-03-25 20:34:50 +0100 (Sun, 25 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/activex/axvlc.idl
    M /branches/0.8.6-bugfix/activex/axvlc_idl.c
@@ -1184,25 +2837,25 @@ Changed paths:
 Backport of rev [18432] [19304] [19383] with audio.track audio.channel and video.subtitle support.
 
 ------------------------------------------------------------------------
-r19464 | fkuehne | 2007-03-25 19:50:04 +0200 (Sun, 25 Mar 2007) | 1 line
+r19464 | fkuehne | 2007-03-25 18:50:04 +0100 (Sun, 25 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
 
 * fixed ffmpeg's configure options and set the approbiate svn revisions for x264 (604) and libmatroska/libebml (1254)
 ------------------------------------------------------------------------
-r19461 | fkuehne | 2007-03-25 18:55:02 +0200 (Sun, 25 Mar 2007) | 1 line
+r19461 | fkuehne | 2007-03-25 17:55:02 +0100 (Sun, 25 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
 
 hmm, 0.8.6a used 7407 instead of 7400...
 ------------------------------------------------------------------------
-r19460 | fkuehne | 2007-03-25 18:21:53 +0200 (Sun, 25 Mar 2007) | 1 line
+r19460 | fkuehne | 2007-03-25 17:21:53 +0100 (Sun, 25 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
 
 * limit ffmpeg to revision 7400 to match 0.8.6a and prevent potential compatiblity issue. needs a bit of further testing
 ------------------------------------------------------------------------
-r19459 | fkuehne | 2007-03-25 18:15:33 +0200 (Sun, 25 Mar 2007) | 1 line
+r19459 | fkuehne | 2007-03-25 17:15:33 +0100 (Sun, 25 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
    M /branches/0.8.6-bugfix/configure.ac
@@ -1210,47 +2863,47 @@ Changed paths:
 
 * updated for the potential 0.8.6b
 ------------------------------------------------------------------------
-r19395 | massiot | 2007-03-23 00:13:24 +0100 (Fri, 23 Mar 2007) | 2 lines
+r19395 | massiot | 2007-03-22 23:13:24 +0000 (Thu, 22 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/mux/mpeg/ts.c
 
 Backport [18833].
 
 ------------------------------------------------------------------------
-r19386 | jpsaman | 2007-03-22 15:44:14 +0100 (Thu, 22 Mar 2007) | 1 line
+r19386 | jpsaman | 2007-03-22 14:44:14 +0000 (Thu, 22 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/control/playlist.c
 
 Backport of rev [19385]
 ------------------------------------------------------------------------
-r19384 | jpsaman | 2007-03-22 14:50:34 +0100 (Thu, 22 Mar 2007) | 1 line
+r19384 | jpsaman | 2007-03-22 13:50:34 +0000 (Thu, 22 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/control/input.c
 
 Backport of rev [19383]
 ------------------------------------------------------------------------
-r19347 | sam | 2007-03-17 22:21:26 +0100 (Sat, 17 Mar 2007) | 2 lines
+r19347 | sam | 2007-03-17 21:21:26 +0000 (Sat, 17 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/video_output/x11/xcommon.c
 
   * modules/video_output/x11/xcommon.c: fix XShm detection on remote X.
 
 ------------------------------------------------------------------------
-r19337 | xtophe | 2007-03-14 22:54:16 +0100 (Wed, 14 Mar 2007) | 2 lines
+r19337 | xtophe | 2007-03-14 21:54:16 +0000 (Wed, 14 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/Makefile
 
 backport [19336]. make install dir configurable
 
 ------------------------------------------------------------------------
-r19306 | sam | 2007-03-12 16:31:42 +0100 (Mon, 12 Mar 2007) | 2 lines
+r19306 | sam | 2007-03-12 15:31:42 +0000 (Mon, 12 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/audio_filter/format.c
 
   * modules/audio_filter/format.c: fix audio conversion crashes and bugs.
 
 ------------------------------------------------------------------------
-r19298 | courmisch | 2007-03-11 16:54:09 +0100 (Sun, 11 Mar 2007) | 2 lines
+r19298 | courmisch | 2007-03-11 15:54:09 +0000 (Sun, 11 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/skins2/x11/x11_window.cpp
    M /branches/0.8.6-bugfix/modules/video_output/x11/xcommon.h
@@ -1258,28 +2911,28 @@ Changed paths:
 Backport [19297]: Another attempt to fix X11 fullscreen on amd64
 
 ------------------------------------------------------------------------
-r19257 | hartman | 2007-03-09 21:48:26 +0100 (Fri, 09 Mar 2007) | 2 lines
+r19257 | hartman | 2007-03-09 20:48:26 +0000 (Fri, 09 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/macosx/voutgl.m
 
 * backport opengl context locking bugfix from [19427]
 
 ------------------------------------------------------------------------
-r19248 | md | 2007-03-08 15:41:12 +0100 (Thu, 08 Mar 2007) | 2 lines
+r19248 | md | 2007-03-08 14:41:12 +0000 (Thu, 08 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/vlc.c
 
 backport [18818]
 
 ------------------------------------------------------------------------
-r19246 | hartman | 2007-03-08 02:10:24 +0100 (Thu, 08 Mar 2007) | 2 lines
+r19246 | hartman | 2007-03-08 01:10:24 +0000 (Thu, 08 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
 
 * Fix ffmpeg building on bugfix tree
 
 ------------------------------------------------------------------------
-r19224 | courmisch | 2007-03-06 21:17:40 +0100 (Tue, 06 Mar 2007) | 4 lines
+r19224 | courmisch | 2007-03-06 20:17:40 +0000 (Tue, 06 Mar 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/misc/win32_specific.c
    M /branches/0.8.6-bugfix/src/vlc.c
@@ -1289,27 +2942,27 @@ Closes #1031
 It's probably unrealistic to fix this completely within the 0.8.6 branch
 
 ------------------------------------------------------------------------
-r19215 | jpsaman | 2007-03-06 10:11:26 +0100 (Tue, 06 Mar 2007) | 2 lines
+r19215 | jpsaman | 2007-03-06 09:11:26 +0000 (Tue, 06 Mar 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/control/core.c
 
 Backport rev [19192].
 
 ------------------------------------------------------------------------
-r19180 | jpsaman | 2007-03-04 14:41:26 +0100 (Sun, 04 Mar 2007) | 1 line
+r19180 | jpsaman | 2007-03-04 13:41:26 +0000 (Sun, 04 Mar 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/control/input.c
 
 Backport from rev [19109]
 ------------------------------------------------------------------------
-r19055 | courmisch | 2007-02-27 21:46:38 +0100 (Tue, 27 Feb 2007) | 2 lines
+r19055 | courmisch | 2007-02-27 20:46:38 +0000 (Tue, 27 Feb 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/stream_out/rtp.c
 
 Typo
 
 ------------------------------------------------------------------------
-r19051 | courmisch | 2007-02-27 21:22:19 +0100 (Tue, 27 Feb 2007) | 3 lines
+r19051 | courmisch | 2007-02-27 20:22:19 +0000 (Tue, 27 Feb 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/stream_output/sap.c
 
@@ -1317,20 +2970,20 @@ Changed paths:
 - Do not send TTL with IN IP6
 
 ------------------------------------------------------------------------
-r19050 | courmisch | 2007-02-27 21:19:39 +0100 (Tue, 27 Feb 2007) | 2 lines
+r19050 | courmisch | 2007-02-27 20:19:39 +0000 (Tue, 27 Feb 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/stream_out/rtp.c
 
 Backport [19049]: no TTL for IN IP6
 
 ------------------------------------------------------------------------
-r18985 | fkuehne | 2007-02-24 19:19:31 +0100 (Sat, 24 Feb 2007) | 1 line
+r18985 | fkuehne | 2007-02-24 18:19:31 +0000 (Sat, 24 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/MacOSX/vlc.pbproj/project.pbxproj
 
 * added flv to the list of supported file types
 ------------------------------------------------------------------------
-r18980 | fkuehne | 2007-02-23 21:18:37 +0100 (Fri, 23 Feb 2007) | 1 line
+r18980 | fkuehne | 2007-02-23 20:18:37 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
    M /branches/0.8.6-bugfix/po/POTFILES.in
@@ -1378,7 +3031,7 @@ Changed paths:
 
 * updated po-files
 ------------------------------------------------------------------------
-r18978 | fkuehne | 2007-02-23 21:07:18 +0100 (Fri, 23 Feb 2007) | 1 line
+r18978 | fkuehne | 2007-02-23 20:07:18 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Wizard.nib/info.nib
    M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Wizard.nib/keyedobjects.nib
@@ -1386,7 +3039,7 @@ Changed paths:
 
 * fixed 2 minor, but nasty typos and converted wizard.nib back to its binary format
 ------------------------------------------------------------------------
-r18977 | fkuehne | 2007-02-23 20:50:01 +0100 (Fri, 23 Feb 2007) | 1 line
+r18977 | fkuehne | 2007-02-23 19:50:01 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Wizard.nib/classes.nib
    M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/Wizard.nib/info.nib
@@ -1396,33 +3049,33 @@ Changed paths:
 
 * added 2 boxes to the wizard to allow access to sout-transcode-soverlay with the GUI. needs further testing, but can't break anything. Additionally, the wizard's nib got converted to the diff-able xml-like format. refs #1005
 ------------------------------------------------------------------------
-r18976 | fkuehne | 2007-02-23 19:57:14 +0100 (Fri, 23 Feb 2007) | 1 line
+r18976 | fkuehne | 2007-02-23 18:57:14 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
    M /branches/0.8.6-bugfix/modules/gui/macosx/vout.m
 
 * back-port a fix, which allows sleeping or showing the screensaver when a video is paused [18565] and originally solved #963
 ------------------------------------------------------------------------
-r18975 | fkuehne | 2007-02-23 19:50:55 +0100 (Fri, 23 Feb 2007) | 1 line
+r18975 | fkuehne | 2007-02-23 18:50:55 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
    M /branches/0.8.6-bugfix/extras/MacOSX/Delete_Preferences.app/Contents/Resources/Scripts/main.scpt
 
 * back-port the improved delete-prefs script [18568], which solved #911
 ------------------------------------------------------------------------
-r18973 | fkuehne | 2007-02-23 19:08:54 +0100 (Fri, 23 Feb 2007) | 1 line
+r18973 | fkuehne | 2007-02-23 18:08:54 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/MacOSX/vlc.pbproj/project.pbxproj
 
 * added embeddedwindow.* to the xcode project
 ------------------------------------------------------------------------
-r18971 | fkuehne | 2007-02-23 18:17:38 +0100 (Fri, 23 Feb 2007) | 1 line
+r18971 | fkuehne | 2007-02-23 17:17:38 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/macosx/intf.m
 
 * removed duplicated, buggy code without changing the user's GUI experience (fixes #744)
 ------------------------------------------------------------------------
-r18969 | fkuehne | 2007-02-23 17:29:41 +0100 (Fri, 23 Feb 2007) | 1 line
+r18969 | fkuehne | 2007-02-23 16:29:41 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/Makefile.am
    A /branches/0.8.6-bugfix/src/misc/darwin_specific.c (from /branches/0.8.6-bugfix/src/misc/darwin_specific.m:18968)
@@ -1430,25 +3083,25 @@ Changed paths:
 
 * rename the file accordingly to the changed C style (Obj-C to plain C)
 ------------------------------------------------------------------------
-r18968 | fkuehne | 2007-02-23 17:28:27 +0100 (Fri, 23 Feb 2007) | 1 line
+r18968 | fkuehne | 2007-02-23 16:28:27 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/src/misc/darwin_specific.m
 
 * back-port Pierre d'Herbemont's locale detection code cleanup
 ------------------------------------------------------------------------
-r18963 | fkuehne | 2007-02-23 14:32:54 +0100 (Fri, 23 Feb 2007) | 1 line
+r18963 | fkuehne | 2007-02-23 13:32:54 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 * update NEWS
 ------------------------------------------------------------------------
-r18962 | fkuehne | 2007-02-23 14:28:06 +0100 (Fri, 23 Feb 2007) | 1 line
+r18962 | fkuehne | 2007-02-23 13:28:06 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/macosx/misc.m
 
 * back-port Pierre d'Herbemont's patch to prioritize Cocoa menu short-cuts against VLC's native hotkeys [18766]
 ------------------------------------------------------------------------
-r18961 | fkuehne | 2007-02-23 14:22:13 +0100 (Fri, 23 Feb 2007) | 1 line
+r18961 | fkuehne | 2007-02-23 13:22:13 +0000 (Fri, 23 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/classes.nib
    M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/MainMenu.nib/info.nib
@@ -1461,74 +3114,74 @@ Changed paths:
 
 * back-port Pierre d'Herbemont's patch to animate vout-window resizing [18882]. the nib file was manually adapted by myself as the patch failed. I hope that I got everything. It works right now :)
 ------------------------------------------------------------------------
-r18917 | courmisch | 2007-02-20 20:10:18 +0100 (Tue, 20 Feb 2007) | 2 lines
+r18917 | courmisch | 2007-02-20 19:10:18 +0000 (Tue, 20 Feb 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/stream_output/sap.c
 
 COmpile fix
 
 ------------------------------------------------------------------------
-r18916 | courmisch | 2007-02-20 20:02:32 +0100 (Tue, 20 Feb 2007) | 2 lines
+r18916 | courmisch | 2007-02-20 19:02:32 +0000 (Tue, 20 Feb 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/stream_output/sap.c
 
 x-plgroup should really be a session-level attribute
 
 ------------------------------------------------------------------------
-r18898 | fkuehne | 2007-02-20 08:26:43 +0100 (Tue, 20 Feb 2007) | 1 line
+r18898 | fkuehne | 2007-02-20 07:26:43 +0000 (Tue, 20 Feb 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/macosx/fspanel.m
 
 * don't double free an object! Thanks to nivix for pointing me to the right direction and keeping to bug me about this. Fixes #978
 ------------------------------------------------------------------------
-r18787 | courmisch | 2007-02-11 11:39:09 +0100 (Sun, 11 Feb 2007) | 2 lines
+r18787 | courmisch | 2007-02-11 10:39:09 +0000 (Sun, 11 Feb 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/stream_output/sap.c
 
 Woops. Misread the spec.
 
 ------------------------------------------------------------------------
-r18775 | courmisch | 2007-02-10 21:34:15 +0100 (Sat, 10 Feb 2007) | 2 lines
+r18775 | courmisch | 2007-02-10 20:34:15 +0000 (Sat, 10 Feb 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/stream_out/gather.c
 
 Backport [18773]: double free in gather stream output
 
 ------------------------------------------------------------------------
-r18741 | courmisch | 2007-02-09 20:52:52 +0100 (Fri, 09 Feb 2007) | 2 lines
+r18741 | courmisch | 2007-02-09 19:52:52 +0000 (Fri, 09 Feb 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/stream_output/sap.c
 
 SDP conformance fix
 
 ------------------------------------------------------------------------
-r18694 | xtophe | 2007-02-04 20:24:17 +0100 (Sun, 04 Feb 2007) | 2 lines
+r18694 | xtophe | 2007-02-04 19:24:17 +0000 (Sun, 04 Feb 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/configure.ac
 
 Compile twolame plugin with -DLIBTWOLAME_STATIC on win32
 
 ------------------------------------------------------------------------
-r18624 | fkuehne | 2007-01-21 20:23:38 +0100 (Sun, 21 Jan 2007) | 1 line
+r18624 | fkuehne | 2007-01-21 19:23:38 +0000 (Sun, 21 Jan 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/MacOSX/vlc.pbproj/project.pbxproj
 
 * publish gvp support to launch-services (this was enabled in /trunk a long time ago, but forgotten to be back-ported to 0.8.6)
 ------------------------------------------------------------------------
-r18622 | fkuehne | 2007-01-21 20:15:43 +0100 (Sun, 21 Jan 2007) | 1 line
+r18622 | fkuehne | 2007-01-21 19:15:43 +0000 (Sun, 21 Jan 2007) | 1 line
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/packages.mak
 
 * download the SDL stuff from sourceforge instead of the bogus official server, as the SF park is much faster and more reliable
 ------------------------------------------------------------------------
-r18621 | courmisch | 2007-01-21 10:48:28 +0100 (Sun, 21 Jan 2007) | 2 lines
+r18621 | courmisch | 2007-01-21 09:48:28 +0000 (Sun, 21 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 Update News
 
 ------------------------------------------------------------------------
-r18619 | fkuehne | 2007-01-20 13:17:58 +0100 (Sat, 20 Jan 2007) | 4 lines
+r18619 | fkuehne | 2007-01-20 12:17:58 +0000 (Sat, 20 Jan 2007) | 4 lines
 Changed paths:
    M /branches/0.8.6-bugfix/extras/contrib/src/Makefile
    A /branches/0.8.6-bugfix/extras/contrib/src/Patches/twolame-osx.patch
@@ -1539,35 +3192,35 @@ Changed paths:
     - more recent library version (0.3.9 instead of 0.3.8)
     - [18618], [18552], [18530], [18525], [18524] (partially)
 ------------------------------------------------------------------------
-r18617 | courmisch | 2007-01-19 20:51:20 +0100 (Fri, 19 Jan 2007) | 2 lines
+r18617 | courmisch | 2007-01-19 19:51:20 +0000 (Fri, 19 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/include/vlc_block.h
 
 Backport [18616]
 
 ------------------------------------------------------------------------
-r18614 | xtophe | 2007-01-19 17:57:37 +0100 (Fri, 19 Jan 2007) | 2 lines
+r18614 | xtophe | 2007-01-19 16:57:37 +0000 (Fri, 19 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/po/it.po
 
 Update Italian l10n courtesy of Vincenzo Reale
 
 ------------------------------------------------------------------------
-r18611 | xtophe | 2007-01-18 15:15:22 +0100 (Thu, 18 Jan 2007) | 2 lines
+r18611 | xtophe | 2007-01-18 14:15:22 +0000 (Thu, 18 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/NEWS
 
 Update NEWS to please make dist
 
 ------------------------------------------------------------------------
-r18599 | md | 2007-01-16 10:53:28 +0100 (Tue, 16 Jan 2007) | 2 lines
+r18599 | md | 2007-01-16 09:53:28 +0000 (Tue, 16 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/misc/mtime.c
 
 Make branch compile
 
 ------------------------------------------------------------------------
-r18598 | xtophe | 2007-01-16 10:11:53 +0100 (Tue, 16 Jan 2007) | 2 lines
+r18598 | xtophe | 2007-01-16 09:11:53 +0000 (Tue, 16 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/configure.ac
    M /branches/0.8.6-bugfix/extras/MacOSX/Resources/English.lproj/InfoPlist.strings
@@ -1576,7 +3229,7 @@ Changed paths:
 Change version string
 
 ------------------------------------------------------------------------
-r18597 | md | 2007-01-16 09:17:34 +0100 (Tue, 16 Jan 2007) | 2 lines
+r18597 | md | 2007-01-16 08:17:34 +0000 (Tue, 16 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/po/af.po
    M /branches/0.8.6-bugfix/po/ar.po
@@ -1618,14 +3271,14 @@ Changed paths:
 Fix #969 for branch
 
 ------------------------------------------------------------------------
-r18591 | courmisch | 2007-01-14 21:45:12 +0100 (Sun, 14 Jan 2007) | 2 lines
+r18591 | courmisch | 2007-01-14 20:45:12 +0000 (Sun, 14 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/ffmpeg/encoder.c
 
 Backport [18589]
 
 ------------------------------------------------------------------------
-r18588 | courmisch | 2007-01-14 21:33:16 +0100 (Sun, 14 Jan 2007) | 2 lines
+r18588 | courmisch | 2007-01-14 20:33:16 +0000 (Sun, 14 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/asf/asf.c
    M /branches/0.8.6-bugfix/modules/demux/asf/libasf.c
@@ -1634,28 +3287,28 @@ Changed paths:
 Backport [18573:18578] various leaks and crashes
 
 ------------------------------------------------------------------------
-r18587 | courmisch | 2007-01-14 21:30:57 +0100 (Sun, 14 Jan 2007) | 2 lines
+r18587 | courmisch | 2007-01-14 20:30:57 +0000 (Sun, 14 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/asf/libasf.c
 
 Backport [18556] denial of service fix
 
 ------------------------------------------------------------------------
-r18586 | courmisch | 2007-01-14 21:30:15 +0100 (Sun, 14 Jan 2007) | 2 lines
+r18586 | courmisch | 2007-01-14 20:30:15 +0000 (Sun, 14 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/gui/skins2/x11/x11_window.cpp
 
 Backport [18555] skins2 fullscreen fix
 
 ------------------------------------------------------------------------
-r18585 | courmisch | 2007-01-14 21:26:41 +0100 (Sun, 14 Jan 2007) | 2 lines
+r18585 | courmisch | 2007-01-14 20:26:41 +0000 (Sun, 14 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/ffmpeg/encoder.c
 
 Backport previous stuff correctly
 
 ------------------------------------------------------------------------
-r18584 | courmisch | 2007-01-14 21:24:29 +0100 (Sun, 14 Jan 2007) | 5 lines
+r18584 | courmisch | 2007-01-14 20:24:29 +0000 (Sun, 14 Jan 2007) | 5 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/codec/ffmpeg/encoder.c
 
@@ -1665,28 +3318,28 @@ I am very suspicious about the original commit to trunk by the way
  Could be, but really looks unlikely to me)
 
 ------------------------------------------------------------------------
-r18583 | courmisch | 2007-01-14 21:17:28 +0100 (Sun, 14 Jan 2007) | 2 lines
+r18583 | courmisch | 2007-01-14 20:17:28 +0000 (Sun, 14 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/src/misc/mtime.c
 
 Backport [18545] RTC fix
 
 ------------------------------------------------------------------------
-r18582 | courmisch | 2007-01-14 21:15:51 +0100 (Sun, 14 Jan 2007) | 2 lines
+r18582 | courmisch | 2007-01-14 20:15:51 +0000 (Sun, 14 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/demux/avi/libavi.c
 
 Backport [15827] OpenML fix
 
 ------------------------------------------------------------------------
-r18581 | courmisch | 2007-01-14 21:05:24 +0100 (Sun, 14 Jan 2007) | 2 lines
+r18581 | courmisch | 2007-01-14 20:05:24 +0000 (Sun, 14 Jan 2007) | 2 lines
 Changed paths:
    M /branches/0.8.6-bugfix/modules/access/directory.c
 
 Backport deadlock fix from [18502]
 
 ------------------------------------------------------------------------
-r18580 | courmisch | 2007-01-14 20:54:22 +0100 (Sun, 14 Jan 2007) | 4 lines
+r18580 | courmisch | 2007-01-14 19:54:22 +0000 (Sun, 14 Jan 2007) | 4 lines
 Changed paths:
    A /branches/0.8.6-bugfix (from /tags/0.8.6b:18579)
    D /tags/0.8.6b
@@ -1696,7 +3349,7 @@ Please retain the branch alive at least until 0.9.0 is out (if ever);
 you can still tag release individually
 
 ------------------------------------------------------------------------
-r18579 | courmisch | 2007-01-14 20:52:22 +0100 (Sun, 14 Jan 2007) | 4 lines
+r18579 | courmisch | 2007-01-14 19:52:22 +0000 (Sun, 14 Jan 2007) | 4 lines
 Changed paths:
    A /tags/0.8.6b (from /tags/0.8.6a:18578)
 
@@ -1705,32 +3358,32 @@ Hopefully, we won't run short of letters
 (but we still have 0.8.7a-0.8.9z too, which means 100+ possible releases)
 
 ------------------------------------------------------------------------
-r18494 | fkuehne | 2007-01-03 23:06:34 +0100 (Wed, 03 Jan 2007) | 1 line
+r18494 | fkuehne | 2007-01-03 22:06:34 +0000 (Wed, 03 Jan 2007) | 1 line
 Changed paths:
    M /tags/0.8.6a/modules/gui/macosx/macosx.m
 
 * stupid =GWEOLn%%= -- patch and diff are sooo lovely tools
 ------------------------------------------------------------------------
-r18493 | fkuehne | 2007-01-03 19:36:31 +0100 (Wed, 03 Jan 2007) | 1 line
+r18493 | fkuehne | 2007-01-03 18:36:31 +0000 (Wed, 03 Jan 2007) | 1 line
 Changed paths:
    M /tags/0.8.6a/modules/gui/macosx/macosx.m
 
 * fixed compilation issue introduced by improper auto-patching
 ------------------------------------------------------------------------
-r18492 | fkuehne | 2007-01-03 19:27:44 +0100 (Wed, 03 Jan 2007) | 1 line
+r18492 | fkuehne | 2007-01-03 18:27:44 +0000 (Wed, 03 Jan 2007) | 1 line
 Changed paths:
    D /branches/0.8.6a
    A /tags/0.8.6a (from /branches/0.8.6a:18491)
 
 * tag 0.8.6a
 ------------------------------------------------------------------------
-r18491 | fkuehne | 2007-01-03 19:23:24 +0100 (Wed, 03 Jan 2007) | 1 line
+r18491 | fkuehne | 2007-01-03 18:23:24 +0000 (Wed, 03 Jan 2007) | 1 line
 Changed paths:
    M /branches/0.8.6a/NEWS
 
 * update news
 ------------------------------------------------------------------------
-r18490 | fkuehne | 2007-01-03 19:18:24 +0100 (Wed, 03 Jan 2007) | 1 line
+r18490 | fkuehne | 2007-01-03 18:18:24 +0000 (Wed, 03 Jan 2007) | 1 line
 Changed paths:
    M /branches/0.8.6a/configure.ac
    M /branches/0.8.6a/extras/MacOSX/Resources/English.lproj/InfoPlist.strings
@@ -1738,13 +3391,13 @@ Changed paths:
 
 * update the copyright dates
 ------------------------------------------------------------------------
-r18489 | fkuehne | 2007-01-03 19:16:42 +0100 (Wed, 03 Jan 2007) | 1 line
+r18489 | fkuehne | 2007-01-03 18:16:42 +0000 (Wed, 03 Jan 2007) | 1 line
 Changed paths:
    M /branches/0.8.6a/mozilla/install.js
 
 * update the hard-coded version correctly
 ------------------------------------------------------------------------
-r18488 | jb | 2007-01-03 18:49:32 +0100 (Wed, 03 Jan 2007) | 3 lines
+r18488 | jb | 2007-01-03 17:49:32 +0000 (Wed, 03 Jan 2007) | 3 lines
 Changed paths:
    M /branches/0.8.6a/modules/access/cdda/access.c
    M /branches/0.8.6a/modules/access/vcdx/access.c
@@ -1753,7 +3406,7 @@ Application of the patch for CDDA and VCDX in 0.8.6a.
 
 
 ------------------------------------------------------------------------
-r18487 | fkuehne | 2007-01-03 18:37:12 +0100 (Wed, 03 Jan 2007) | 1 line
+r18487 | fkuehne | 2007-01-03 17:37:12 +0000 (Wed, 03 Jan 2007) | 1 line
 Changed paths:
    M /branches/0.8.6a/modules/gui/macosx/fspanel.h
    M /branches/0.8.6a/modules/gui/macosx/fspanel.m
@@ -1762,7 +3415,7 @@ Changed paths:
 
 * port fullscreen controller fixes, thus [18458], [18417], [18409], [18384]
 ------------------------------------------------------------------------
-r18486 | fkuehne | 2007-01-03 18:25:40 +0100 (Wed, 03 Jan 2007) | 1 line
+r18486 | fkuehne | 2007-01-03 17:25:40 +0000 (Wed, 03 Jan 2007) | 1 line
 Changed paths:
    M /branches/0.8.6a/configure.ac
    M /branches/0.8.6a/extras/MacOSX/Resources/English.lproj/InfoPlist.strings
@@ -1771,7 +3424,7 @@ Changed paths:
 
 * update version to 0.8.6a
 ------------------------------------------------------------------------
-r18485 | fkuehne | 2007-01-03 18:18:24 +0100 (Wed, 03 Jan 2007) | 1 line
+r18485 | fkuehne | 2007-01-03 17:18:24 +0000 (Wed, 03 Jan 2007) | 1 line
 Changed paths:
    A /branches/0.8.6a (from /tags/0.8.6:18484)
 

@@ -2,7 +2,7 @@
  * vout_subpictures.c : subpicture management functions
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: vout_subpictures.c 20581 2007-06-16 11:15:56Z jb $
+ * $Id: vout_subpictures.c 20569 2007-06-14 18:11:16Z Trax $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

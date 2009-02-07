@@ -2,7 +2,7 @@
  * dialogs.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: dialogs.cpp 18107 2006-11-27 13:44:11Z md $
+ * $Id: dialogs.cpp 22024 2007-09-15 09:58:59Z courmisch $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -549,8 +549,8 @@ void DialogsProvider::OnExitThread( wxCommandEvent& WXUNUSED(event) )
 void DialogsProvider::OnUpdateVLC( wxCommandEvent& WXUNUSED(event) )
 {
     /* Show/hide the file info window */
-    if( !p_updatevlc_dialog )
-        p_updatevlc_dialog = new UpdateVLC( p_intf, this );
+    /*if( !p_updatevlc_dialog )
+        p_updatevlc_dialog = new UpdateVLC( p_intf, this );*/
 
     if( p_updatevlc_dialog )
     {

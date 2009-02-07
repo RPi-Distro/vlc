@@ -1,4 +1,79 @@
-$Id: NEWS 20582 2007-06-16 13:10:18Z Trax $
+$Id: NEWS 25364 2008-02-27 00:14:14Z thresh $
+
+Changes between 0.8.6d and 0.8.6e:
+----------------------------------
+
+Various bugfixes:
+ * Resume playback for viewing content over FTP
+ * Fixed XShm detection with remote X11
+
+Security updates:
+ * Subtitle demuxers overflow (CVE-2007-6681)
+ * HTTP listener format string injection (CVE-2007-6682)
+ * Fixed buffer overflow in the SDL_image library (CVE-2006-4484)
+ * Real RTSP overflows (CVE-2008-0225, CVE-2008-0295, CVE-2008-0296, VideoLAN-SA-0801)
+ * Arbitrary memory overwrite in the MP4 demuxer (CORE-2008-0130, VideoLAN-SA-0802)
+
+Audio filter:
+ * Fixed DTS to S/PDIF converter
+
+Audio output:
+ * Fixed 5.1 audio on ALSA
+
+Access:
+ * Fixed some RTSP hanging and user/password passing through RTSP URLs
+
+Stream output:
+ * Fixed waiting for SPS/PPS problem in H.264 packetizer
+
+Encoders:
+ * Improved compatibility for creating H.264 video files playable on iPhones
+ * Improved detection of optimal amount of threads for multi-threaded H.264 encoding on multi-cpu systems
+    - Note that this is used when transcode threads is set to 0 (default)
+    - Not supported on Windows (multiple threads require manual configuration)
+
+Mac OS X Interface & Port:
+ * Restored compatibility with Mac OS X 10.3.9
+ * Corrected behavior of the Preferences panel
+ * VLC no longer crashes on quit while playing
+
+Localization:
+ * Updated Romanian and Polish translations
+
+
+Changes between 0.8.6c and 0.8.6d:
+----------------------------------
+
+Various bugfixes:
+ * Mozilla plugin: supports a reasonable amount of MIME types on Windows
+ * Linux: Fixed S/PDIF passthrough with ALSA
+ * Automatic recovery on unexpected stream discontinuity (clock gap) occurrences in input
+ * Use field order (top/bottom) for correct bob/linear deinterlacing
+ * Fix invalid free in bookmarks loading code
+
+Windows and Mac OS Binaries
+ * FLAC Security Update (CVE-2007-4619) to prevent multiple integer overflows 
+
+Active X plugin:
+ * Security update (VideoLAN-SA-0703, CVE-2007-6262)
+ 
+Mac OS X Interface & Port:
+ * Apple Remote support on Mac OS X 10.5 Leopard with enhanced functionality
+ * Improved Video Output compatibility for Mac OS X 10.5 Leopard
+ * Improved behavior of the Fullscreen Controller and mode changes between Fullscreen and Windowed Video Output
+ * Softened the white flash artifacts that may appear during the transition of two different movies
+ * Support for current Ogg file formats
+ NOTE: This release requires Mac OS X 10.4 or higher. Mac OS X 10.3.9 is not supported anymore.
+
+Encoders:
+ * Improved H.264 encoding speed on Mac OS X
+
+Other changes:
+ * The automatic updating facility was removed
+ * You now need to append --m3u-extvlcopt to your command line to enable
+   EXTVLCOPT options parsing in m3u playlists (CVE-2007-6683)
+ * RTSP server remote denial of service fixed (CVE-2007-6684)
+
 
 Changes between 0.8.6b and 0.8.6c:
 ----------------------------------
@@ -12,10 +87,11 @@ Various bugfixes, notably:
  * MKV demuxer crash (related to seeking)
 
 CDDA / Vorbis / Theora / SAP plugins:
- * Security updates (VideoLAN-SA-0702)
+ * Security updates (VideoLAN-SA-0702, CVE-2007-3316, US-CERT VU#200928)
 
 Demuxers:
  * Fixed a problem with detecting embedded subtitles (GAB2 format) in AVI
+ * Prevent WAV file integer overflow (CVE-2007-3467 & CVE-2007-3468)
 
 Decoders:
  * Updated FLAC API compatibility
@@ -56,7 +132,7 @@ Changes between 0.8.6 and 0.8.6a:
 ---------------------------------
 
 CDDA / VCDX plugins:
- * Security updates (VideoLAN-SA-0701)
+ * Security updates (VideoLAN-SA-0701, CVE-2007-0017)
 
 Mac OS X Interface:
  * Fullscreen controller improvements
@@ -110,12 +186,12 @@ Interfaces:
 Windows port:
  * Support for Unicode filenames (Windows NT and above)
    Windows 9x/ME users: 
-     - Please note that these versions of Windows are not officially supported
-     - Unicode support for Windows 9x/ME applications is available through the
-       Microsoft Layer for Unicode available from the following location:
-       http://www.microsoft.com.nsatc.net/globaldev/handson/dev/mslu_announce.mspx
-       Download the MSLU package (unicows) and extract the content into the folder
-       C:\Windows\System
+    - Please note that these versions of Windows are not officially supported
+    - Unicode support for Windows 9x/ME applications is available through the
+      Microsoft Layer for Unicode available from the following location:
+      http://www.microsoft.com.nsatc.net/globaldev/handson/dev/mslu_announce.mspx
+      Download the MSLU package (unicows) and extract the content into the folder
+      C:\Windows\System
  * Fixed IPv6 support on the client side
  * Fixed disable screensaver (Direct3D and DirectX video output)
 
@@ -142,8 +218,8 @@ Input:
  * Initial support for RTSP-over-HTTP (to allow NAT traversal)
  * Linux DV (Digital Video - Firewire) input
  * Improvements to the Audio CD input
-     - Separate playlist entries for the tracks 
-     - Support for CDDB 
+    - Separate playlist entries for the tracks 
+    - Support for CDDB 
  * Support for more DVB (satellite) encryption modules
  * Improved subtitles encoding support
  * Improved support for playing MP4 files from the Web

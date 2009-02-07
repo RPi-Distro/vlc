@@ -134,7 +134,6 @@ AC_DEFUN([VLC_CONFIG_HELPER], [
     lirc) list="\${list} control/liblirc" ;;
     rc) list="\${list} control/librc" ;;
     http) list="\${list} control/http/libhttp" ;;
-    corba) list="\${list} control/corba/libcorba" ;;
     a52sys) list="\${list} demux/liba52sys" ;;
     dtssys) list="\${list} demux/libdtssys" ;;
     flac) list="\${list} demux/libflac" ;;

@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004 - 2005 the VideoLAN team
- * $Id: rc.c 19808 2007-04-15 08:52:35Z courmisch $
+ * $Id: rc.c 22024 2007-09-15 09:58:59Z courmisch $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -820,10 +820,10 @@ static void Run( intf_thread_t *p_intf )
 
             Help( p_intf, b_longhelp );
         }
-        else if( !strcmp( psz_cmd, "check-updates" ) )
+        /*else if( !strcmp( psz_cmd, "check-updates" ) )
         {
             checkUpdates( p_intf, psz_arg );
-        }
+        }*/
         else switch( psz_cmd[0] )
         {
         case 'f':

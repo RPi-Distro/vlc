@@ -1,13 +1,14 @@
 dnl Autoconf settings for vlc
 
-AC_INIT(vlc,0.8.6c)
+AC_INIT(vlc,0.8.6e)
 VERSION_MAJOR="0"
 VERSION_MINOR="8"
 VERSION_REVISION="6"
-VERSION_EXTRA="c"
+VERSION_EXTRA="e"
 
 CONFIGURE_LINE="$0 $*"
 CODENAME="Janus"
+COPYRIGHT_YEARS="1996-2008"
 
 AC_PREREQ(2.50)
 AC_CONFIG_SRCDIR(src/libvlc.c)
@@ -188,18 +189,6 @@ case "${target_os}" in
         ;;
     esac
     ;;
-  darwin1.[0123])
-    dnl Mac OS X < 10.3
-    SYS=darwin
-    CFLAGS_save="${CFLAGS_save} -no-cpp-precomp -D_INTL_REDIRECT_MACROS"; CFLAGS="${CFLAGS_save}"
-    CXXFLAGS_save="${CXXFLAGS_save} -no-cpp-precomp -D_INTL_REDIRECT_MACROS"; CXXFLAGS="${CXXFLAGS_save}"
-    OBJCFLAGS_save="${OBJCFLAGS_save} -no-cpp-precomp -D_INTL_REDIRECT_MACROS"; OBJCFLAGS="${OBJCFLAGS_save}"
-    VLC_ADD_LDFLAGS([vlc ffmpeg ffmpegaltivec],[-all_load])
-    VLC_ADD_LDFLAGS([mkv mp4], [-framework IOKit -framework CoreFoundation])
-    VLC_ADD_CFLAGS([libvlc],[-x objective-c])
-    VLC_ADD_CFLAGS([vlc],[-x objective-c])
-    VLC_ADD_LDFLAGS([vlc],[-Wl,-m -Wl,-multiply_defined -Wl,suppress])
-    ;;
   darwin*)
     SYS=darwin
     CFLAGS_save="${CFLAGS_save} -D_INTL_REDIRECT_MACROS"; CFLAGS="${CFLAGS_save}"
@@ -294,20 +283,24 @@ dnl
 dnl  Check for Mac OS X SDK settings
 dnl
 AC_ARG_WITH(macosx-sdk,
-   [  --with-macosx-sdk       compile for Mac OS X 10.3 SDK],[], with_macosx_sdk=no)
-if test "${with_macosx_sdk}" != "no" ; then
-  CFLAGS_save="${CFLAGS_save} -DMACOSX_DEPLOYMENT_TARGET=10.3 -isysroot /Developer/SDKs/MacOSX10.3.9.sdk"; CFLAGS="${CFLAGS_save}"
-  CXXFLAGS_save="${CXXFLAGS_save} -DMACOSX_DEPLOYMENT_TARGET=10.3 -isysroot /Developer/SDKs/MacOSX10.3.9.sdk"; CXXFLAGS="${CXXFLAGS_save}"
-  OBJCFLAGS_save="${OBJCFLAGS_save} -DMACOSX_DEPLOYMENT_TARGET=10.3 -isysroot /Developer/SDKs/MacOSX10.3.9.sdk"; OBJCFLAGS="${OBJCFLAGS_save}"
-  LDFLAGS_save="${LDFLAGS_save} -isysroot /Developer/SDKs/MacOSX10.3.9.sdk -Wl,-syslibroot,/Developer/SDKs/MacOSX10.3.9.sdk"; LDFLAGS="${LDFLAGS_save}"
-  export MACOSX_DEPLOYMENT_TARGET=10.3
-  MACOSX_DEPLOYMENT_TARGET="10.3"
+   [  --with-macosx-sdk       compile with the Mac OS X 10.4u SDK],[], with_macosx_sdk=no)
+if test "${with_macosx_sdk}" != "no"; then
+  CC="${CC} -isysroot /Developer/SDKs/MacOSX10.4u.sdk" 
+  CXX="${CXX} -isysroot /Developer/SDKs/MacOSX10.4u.sdk" 
+  OBJC="${OBJC} -isysroot /Developer/SDKs/MacOSX10.4u.sdk" 
+  LD="${LD} -syslibroot /Developer/SDKs/MacOSX10.4u.sdk"
+  CFLAGS_save="${CFLAGS_save} -DMACOSX_DEPLOYMENT_TARGET=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"; CFLAGS="${CFLAGS_save}"
+  CXXFLAGS_save="${CXXFLAGS_save} -DMACOSX_DEPLOYMENT_TARGET=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"; CXXFLAGS="${CXXFLAGS_save}"
+  OBJCFLAGS_save="${OBJCFLAGS_save} -DMACOSX_DEPLOYMENT_TARGET=10.4 -isysroot /Developer/SDKs/MacOSX10.4u.sdk"; OBJCFLAGS="${OBJCFLAGS_save}"
+  LDFLAGS_save="${LDFLAGS_save} -isysroot /Developer/SDKs/MacOSX10.4u.sdk -Wl,-syslibroot,/Developer/SDKs/MacOSX10.4u.sdk"; LDFLAGS="${LDFLAGS_save}"
+  export MACOSX_DEPLOYMENT_TARGET=10.4
+  MACOSX_DEPLOYMENT_TARGET="10.4"
 fi
 
 dnl
 dnl Gettext stuff
 dnl
-ALL_LINGUAS="af ar ca co cs da de en_GB es eu fa fr fur gl he hi hu it ja lt lv  ka ko ms nb ne nl nn oc pa pt_BR ro ru sk sl sq sv th tr zh_CN zh_TW"
+ALL_LINGUAS="af ar ca co cs da de en_GB es eu fa fr fur gl he hi hu it ja lt lv  ka ko ms nb ne nl nn oc pa pl pt_BR ro ru sk sl sq sv th tr zh_CN zh_TW"
 AM_GNU_GETTEXT_VERSION(0.11.5)
 AM_GNU_GETTEXT
 if test "${nls_cv_force_use_gnu_gettext}" = "yes"; then
@@ -1339,7 +1332,7 @@ if test -n "${with_tuning}"; then
         CFLAGS_TUNING="-mtune=${with_tuning}"
     fi
 else
-    if test "${SYS}" = "darwin" -a "${target_cpu}" = "i686"; then
+    if test "${SYS}" = "darwin" -a "${target_cpu}" != "powerpc"; then
         CFLAGS_TUNING="-march=pentium-m -mtune=prescott"
     elif test "${target_cpu}" = "i686" -o "${target_cpu}" = "i586" -o "${target_cpu}" = "i486" -o "${target_cpu}" = "i386"; then
         CFLAGS_TUNING="-mtune=pentium2"
@@ -2021,15 +2014,21 @@ then
   if test "${with_videodev2}" != "no" -a -n "${with_videodev2}"
   then
     AC_DEFINE_UNQUOTED(VIDEODEV2_H_FILE, "${with_videodev2}", [Location of videodev2.h])
-  else
-    AC_DEFINE(VIDEODEV2_H_FILE, <linux/videodev2.h>, [Location of videodev2.h])
+  dnl else
+  dnl AC_DEFINE(VIDEODEV2_H_FILE, "linux/videodev2.h", [Location of videodev2.h])
   fi
     
 
   AC_CACHE_CHECK([for new linux/videodev2.h],
       [new_linux_videodev2_h],
-      [AC_TRY_COMPILE([#include <sys/types.h>
-          #include VIDEODEV2_H_FILE],
+      [AC_TRY_COMPILE([
+          #include <sys/types.h>
+          #   ifdef VIDEODEV2_H_FILE
+	  #   include VIDEODEV2_H_FILE
+	  #   else
+	  #   include <linux/videodev2.h>
+	  #   endif
+	  ],
           [struct v4l2_ext_controls ctrls; ctrls.ctrl_class = V4L2_CTRL_CLASS_MPEG; ],
           new_linux_videodev2_h=yes,
           new_linux_videodev2_h=no)])
@@ -3362,7 +3361,7 @@ AC_CHECK_HEADERS(png.h, [
     VLC_ADD_LDFLAGS([png],[-lpng -lz])
     VLC_ADD_PLUGINS([png])
     VLC_ADD_PLUGINS([osdmenu])
-    AC_DEFINE(HAVE_LIBPNG, [], [Define if you have the PNG library: libpng])],
+    AC_DEFINE(HAVE_LIBPNG, 1, [Define if you have the PNG library: libpng])],
     [],[-lz])
   LDFLAGS="${LDFLAGS_save}"
   ])
@@ -3617,7 +3616,7 @@ if test "${enable_opengl}" != "no" &&
   else
     dnl OS X special case (no GL/gl.h but OpenGL/gl.h)
     VLC_ADD_PLUGINS([opengl])
-    VLC_ADD_LDFLAGS([opengl],[-framework OpenGL])
+    VLC_ADD_LDFLAGS([opengl],[-framework OpenGL -framework Carbon])
   fi
 fi
 
@@ -4960,30 +4959,6 @@ then
 fi
 
 
-dnl
-dnl corba (ORBit) plugin
-dnl
-dnl Default: do not enable corba
-enablecorba=false
-AC_ARG_ENABLE(corba,
-  [  --enable-corba          corba interface support (default disabled)])
-if test "${enable_corba}" = "yes"; then
-      GLIB_VERSION=2.3.2
-      PKG_CHECK_MODULES(CORBA, 
-	ORBit-2.0 >= 2.8.0 \
-	glib-2.0 >= $GLIB_VERSION \
-	gobject-2.0 >= $GLIB_VERSION \
-	gthread-2.0 >= $GLIB_VERSION,
-	[
-	  enablecorba=true
- 	  VLC_ADD_LDFLAGS([corba],[$CORBA_LIBS])
-      	  VLC_ADD_CFLAGS([corba],[$CORBA_CFLAGS])
-          VLC_ADD_PLUGINS([corba snapshot]) ],
-        [ enablecorba=false
-	  AC_MSG_WARN(corba library not found) ])
-fi
-AM_CONDITIONAL(ENABLE_CORBA, test "$enablecorba" = "true")
-
 AC_ARG_WITH(,[Misc options:])
 
 dnl
@@ -5482,7 +5457,8 @@ dnl
 dnl  Stuff used by the program
 dnl
 AC_DEFINE_UNQUOTED(VERSION_MESSAGE, "${VERSION} ${CODENAME}", [Simple version string])
-AC_DEFINE_UNQUOTED(COPYRIGHT_MESSAGE, "VLC media player - version ${VERSION} ${CODENAME} - (c) 1996-2007 the VideoLAN team", [Copyright string])
+AC_DEFINE_UNQUOTED(COPYRIGHT_MESSAGE, "VLC media player - version ${VERSION} ${CODENAME} - (c) ${COPYRIGHT_YEARS} the VideoLAN team", [Copyright string])
+AC_DEFINE_UNQUOTED(COPYRIGHT_YEARS, "${COPYRIGHT_YEARS}", [The copyright years])
 AC_DEFINE_UNQUOTED(CONFIGURE_LINE, "${CONFIGURE_LINE}", [The ./configure command line])
 AC_DEFINE_UNQUOTED(PACKAGE_VERSION_MAJOR,"${VERSION_MAJOR}", [version major number])
 AC_DEFINE_UNQUOTED(PACKAGE_VERSION_MINOR,"${VERSION_MINOR}", [version minor number])
@@ -5492,7 +5468,12 @@ AC_SUBST(VERSION_MAJOR)
 AC_SUBST(VERSION_MINOR)
 AC_SUBST(VERSION_REVISION)
 AC_DEFINE_UNQUOTED(VLC_COMPILE_BY, "`whoami`", [user who ran configure]) 
-AC_DEFINE_UNQUOTED(VLC_COMPILE_HOST, "`hostname`", [host which ran configure]) 
+if test "${build_os}" = "cygwin"
+then
+    AC_DEFINE_UNQUOTED(VLC_COMPILE_HOST, "`hostname`", [host which ran configure])
+else
+    AC_DEFINE_UNQUOTED(VLC_COMPILE_HOST, "`hostname -s`", [host which ran configure])
+fi
 AC_DEFINE_UNQUOTED(VLC_COMPILE_DOMAIN, "`dnsdomainname 2>/dev/null || domainname 2>/dev/null || echo unknown`", [domain of the host which ran configure]) 
 AC_DEFINE_UNQUOTED(VLC_COMPILER, "`$CC -v 2>&1 | tail -n 1`", [compiler]) 
 
@@ -5598,7 +5579,6 @@ AC_CONFIG_FILES([
   modules/codec/spudec/Makefile
   modules/control/Makefile
   modules/control/http/Makefile
-  modules/control/corba/Makefile
   modules/demux/Makefile
   modules/demux/asf/Makefile
   modules/demux/avi/Makefile

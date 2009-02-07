@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: misc.m 18962 2007-02-23 13:28:06Z fkuehne $
+ * $Id: misc.m 23148 2007-11-18 23:12:26Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -27,6 +27,130 @@
 #include "misc.h"
 #include "playlist.h"
 #include "controls.h"
+
+/*****************************************************************************
+ * NSScreen (VLCAdditions)
+ *
+ *  Missing extension to NSScreen
+ *****************************************************************************/
+
+@implementation NSScreen (VLCAdditions)
+
+static NSMutableArray *blackoutWindows = NULL;
+
++ (void)load
+{
+    /* init our fake object attribute */
+    blackoutWindows = [[NSMutableArray alloc] initWithCapacity:1];
+}
+
++ (NSScreen *)screenWithDisplayID: (CGDirectDisplayID)displayID
+{
+    unsigned int i;
+ 
+    for( i = 0; i < [[NSScreen screens] count]; i++ )
+    {
+        NSScreen *screen = [[NSScreen screens] objectAtIndex: i];
+        if([screen displayID] == displayID)
+            return screen;
+    }
+    return nil;
+}
+
+- (BOOL)isMainScreen
+{
+    return ([self displayID] == [[[NSScreen screens] objectAtIndex:0] displayID]);
+}
+
+- (BOOL)isScreen: (NSScreen*)screen
+{
+    return ([self displayID] == [screen displayID]);
+}
+
+- (CGDirectDisplayID)displayID
+{
+    return (CGDirectDisplayID)_screenNumber;
+}
+
+- (void)blackoutOtherScreens
+{
+    unsigned int i;
+
+    /* Free our previous blackout window (follow blackoutWindow alloc strategy) */
+    [blackoutWindows makeObjectsPerformSelector:@selector(close)];
+    [blackoutWindows removeAllObjects];
+
+ 
+    for(i = 0; i < [[NSScreen screens] count]; i++)
+    {
+        NSScreen *screen = [[NSScreen screens] objectAtIndex: i];
+        VLCWindow *blackoutWindow;
+        NSRect screen_rect;
+ 
+        if([self isScreen: screen])
+            continue;
+
+        screen_rect = [screen frame];
+        screen_rect.origin.x = screen_rect.origin.y = 0.0f;
+
+        /* blackoutWindow alloc strategy
+            - The NSMutableArray blackoutWindows has the blackoutWindow references
+            - blackoutOtherDisplays is responsible for alloc/releasing its Windows
+        */
+        blackoutWindow = [[VLCWindow alloc] initWithContentRect: screen_rect styleMask: NSBorderlessWindowMask
+                backing: NSBackingStoreBuffered defer: NO screen: screen];
+        [blackoutWindow setBackgroundColor:[NSColor blackColor]];
+        [blackoutWindow setLevel: NSFloatingWindowLevel]; /* Disappear when Expose is triggered */
+ 
+        [blackoutWindow orderFront: self];
+
+        [blackoutWindows addObject: blackoutWindow];
+        [blackoutWindow release];
+    }
+}
+
++ (void)unblackoutScreens
+{
+    unsigned int i;
+
+    for(i = 0; i < [blackoutWindows count]; i++)
+    {
+        VLCWindow *blackoutWindow = [blackoutWindows objectAtIndex: i];
+        [blackoutWindow close];
+    }
+}
+
+@end
+
+/*****************************************************************************
+ * VLCWindow
+ *
+ *  Missing extension to NSWindow
+ *****************************************************************************/
+
+@implementation VLCWindow
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask
+    backing:(NSBackingStoreType)backingType defer:(BOOL)flag
+{
+    self = [super initWithContentRect:contentRect styleMask:styleMask backing:backingType defer:flag];
+    if( self )
+        b_isset_canBecomeKeyWindow = NO;
+    return self;
+}
+- (void)setCanBecomeKeyWindow: (BOOL)canBecomeKey
+{
+    b_isset_canBecomeKeyWindow = YES;
+    b_canBecomeKeyWindow = canBecomeKey;
+}
+
+- (BOOL)canBecomeKeyWindow
+{
+    if(b_isset_canBecomeKeyWindow)
+        return b_canBecomeKeyWindow;
+
+    return [super canBecomeKeyWindow];
+}
+@end
 
 /*****************************************************************************
  * VLCControllerWindow

@@ -2,7 +2,7 @@
  * vout.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: vout.h 18961 2007-02-23 13:22:13Z fkuehne $
+ * $Id: vout.h 23115 2007-11-18 00:22:06Z pdherbemont $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -44,12 +44,16 @@
 /*****************************************************************************
  * VLCVoutView interface
  *****************************************************************************/
+@protocol VLCVoutViewResetting
++ (void)resetVout: (vout_thread_t *)p_vout;
+@end
+
 @interface VLCVoutView : NSView
 {
     vout_thread_t * p_vout;
-    NSView        * o_view;
     NSRect        * s_frame;
 
+    NSView <VLCVoutViewResetting> * o_view;
     vout_thread_t * p_real_vout;
     id              o_window;
 }
@@ -70,6 +74,8 @@
                             frame: (NSRect *) s_frame;
 + (vout_thread_t *)getRealVout: (vout_thread_t *)p_vout;
 
+- (void)enterFullscreen;
+- (void)leaveFullscreen;
 @end
 
 /*****************************************************************************
@@ -105,14 +111,15 @@
 
 @interface VLCDetachedEmbeddedVoutView : VLCEmbeddedVoutView
 {
+    id o_embeddedwindow;
 }
 
 @end
 
 /*****************************************************************************
- * VLCWindow interface
+ * VLCVoutWindow interface
  *****************************************************************************/
-@interface VLCWindow : NSWindow
+@interface VLCVoutWindow : NSWindow
 {
     vout_thread_t * p_vout;
     VLCVoutView   * o_view;

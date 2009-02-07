@@ -2,7 +2,7 @@
  * mux.c: muxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: mux.c 16603 2006-09-10 20:40:21Z sam $
+ * $Id: mux.c 23927 2007-12-29 12:17:38Z jpsaman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -132,8 +132,11 @@ int E_(OpenMux)( vlc_object_t *p_this )
         free( p_sys );
         return VLC_EGENERIC;
     }
-
+#if LIBAVFORMAT_VERSION_INT >= ((52<<16)+(0<<8)+0)
+    p_sys->oc->pb = &p_sys->io;
+#else
     p_sys->oc->pb = p_sys->io;
+#endif
     p_sys->oc->nb_streams = 0;
 
     p_sys->b_write_header = VLC_TRUE;
@@ -348,14 +351,19 @@ static int Mux( sout_mux_t *p_mux )
     {
         msg_Dbg( p_mux, "writing header" );
 
-        p_sys->b_write_header = VLC_FALSE;
-
         if( av_write_header( p_sys->oc ) < 0 )
         {
             msg_Err( p_mux, "could not write header" );
+            p_sys->b_write_header = VLC_FALSE;
             p_sys->b_error = VLC_TRUE;
             return VLC_EGENERIC;
         }
+#if LIBAVFORMAT_VERSION_INT >= ((52<<16)+(0<<8)+0)
+        put_flush_packet( p_sys->oc->pb );
+#else
+         put_flush_packet( &p_sys->oc->pb );
+#endif
+         p_sys->b_write_header = VLC_FALSE;
     }
 
     for( ;; )

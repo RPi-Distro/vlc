@@ -132,7 +132,14 @@ update_t *__update_New( vlc_object_t *p_this )
     p_update->i_mirrors = 0;
     p_update->b_mirrors = VLC_FALSE;
 
-    return p_update;
+#if 1
+    msg_Err( p_this, "Auto-update currently disabled." );
+    vlc_mutex_destroy( &p_update->lock );
+    free( p_update );
+    return NULL;
+#else
+    return p_update
+#endif
 }
 
 /**

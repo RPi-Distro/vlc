@@ -2,7 +2,7 @@
  * libmp4.c : LibMP4 library for mp4 module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: libmp4.c 19605 2007-04-01 01:23:18Z hartman $
+ * $Id: libmp4.c 23859 2007-12-24 19:06:04Z Trax $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -2147,14 +2147,14 @@ static int MP4_ReadBox_default( stream_t *p_stream, MP4_Box_t *p_box )
                 return MP4_ReadBox_sample_tx3g( p_stream, p_box );
             default:
                 msg_Warn( p_stream,
-                          "unknown handler type in stsd (uncompletetly loaded)" );
+                          "unknown handler type in stsd (incompletely loaded)" );
                 return 1;
         }
     }
 
 unknown:
     msg_Warn( p_stream,
-              "unknown box type %4.4s (uncompletetly loaded)",
+              "unknown box type %4.4s (incompletely loaded)",
               (char*)&p_box->i_type );
 
     return 1;

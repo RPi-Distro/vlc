@@ -2,7 +2,7 @@
  * ncurses.c : NCurses plugin for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: ncurses.c 18329 2006-12-08 18:07:54Z hartman $
+ * $Id: ncurses.c 23953 2007-12-30 20:55:54Z funman $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -623,11 +623,12 @@ static int HandleKey( intf_thread_t *p_intf, int i_key )
             case ' ':
                 if( p_sys->pp_dir_entries[p_sys->i_box_bidx]->b_file || i_key == ' ' )
                 {
-                    int i_size_entry = strlen( p_sys->psz_current_dir ) +
+                    int i_size_entry = strlen( "directory://" ) +
+                                       strlen( p_sys->psz_current_dir ) +
                                        strlen( p_sys->pp_dir_entries[p_sys->i_box_bidx]->psz_path ) + 2;
                     char *psz_uri = (char *)malloc( sizeof(char)*i_size_entry);
 
-                    sprintf( psz_uri, "%s/%s", p_sys->psz_current_dir, p_sys->pp_dir_entries[p_sys->i_box_bidx]->psz_path );
+                    sprintf( psz_uri, "directory://%s/%s", p_sys->psz_current_dir, p_sys->pp_dir_entries[p_sys->i_box_bidx]->psz_path );
                     playlist_Add( p_sys->p_playlist, psz_uri,
                                   psz_uri,
                                   PLAYLIST_APPEND, PLAYLIST_END );

@@ -2,7 +2,7 @@
  * httpd.c
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: httpd.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: httpd.c 23854 2007-12-24 16:35:53Z courmisch $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -414,7 +414,7 @@ static int httpd_FileCallBack( httpd_callback_sys_t *p_sys, httpd_client_t *cl, 
     psz_connection = httpd_MsgGet( &cl->query, "Connection" );
     if( psz_connection != NULL )
     {
-        httpd_MsgAdd( answer, "Connection", psz_connection );
+        httpd_MsgAdd( answer, "Connection", "%s", psz_connection );
     }
 
     httpd_MsgAdd( answer, "Content-Length", "%d", answer->i_body );

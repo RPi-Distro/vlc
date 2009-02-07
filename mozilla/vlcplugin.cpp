@@ -2,7 +2,7 @@
  * vlcplugin.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: vlcplugin.cpp 19481 2007-03-25 22:38:56Z damienf $
+ * $Id: vlcplugin.cpp 23369 2007-11-27 00:11:18Z damienf $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf.fouilleul@laposte.net>
@@ -303,15 +303,26 @@ char *VlcPlugin::getAbsoluteURL(const char *url)
         {
             // validate protocol header
             const char *start = url;
-            while( start != end ) {
-                char c = tolower(*start);
-                if( (c < 'a') || (c > 'z') )
-                    // not valid protocol header, assume relative URL
-                    goto relativeurl;
+            char c = *start;
+            if( isalpha(c) )
+            {
                 ++start;
+                while( start != end )
+                {
+                    c  = *start;
+                    if( ! (isalnum(c)
+                       || ('-' == c)
+                       || ('+' == c)
+                       || ('.' == c)
+                       || ('/' == c)) ) /* VLC uses / to allow user to specify a demuxer */
+                        // not valid protocol header, assume relative URL
+                        goto relativeurl;
+                    ++start;
+                }
+                /* we have a protocol header, therefore URL is absolute */
+                return strdup(url);
             }
-            /* we have a protocol header, therefore URL is absolute */
-            return strdup(url);
+            // not a valid protocol header, assume relative URL
         }
 
 relativeurl:

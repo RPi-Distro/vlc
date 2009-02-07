@@ -2,7 +2,7 @@
  * ftp.c: FTP input module
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: ftp.c 16774 2006-09-21 19:29:10Z hartman $
+ * $Id: ftp.c 24145 2008-01-06 17:10:37Z Trax $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -432,7 +432,9 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
         /* */
         case ACCESS_SET_PAUSE_STATE:
-            /* Nothing to do */
+            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );  
+            if ( !pb_bool )  
+                return Seek( p_access, p_access->info.i_pos );  
             break;
 
         case ACCESS_GET_TITLE_INFO:

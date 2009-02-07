@@ -46,11 +46,12 @@
 /*****************************************************************************
  * VLCView interface
  *****************************************************************************/
-@interface VLCGLView : NSOpenGLView
+@interface VLCGLView : NSOpenGLView <VLCVoutViewResetting>
 {
     vout_thread_t * p_vout;
 }
 
++ (void)resetVout: (vout_thread_t *)p_vout;
 - (id) initWithVout: (vout_thread_t *) p_vout;
 @end
 
@@ -243,22 +244,12 @@ static int Manage( vout_thread_t * p_vout )
     {
         NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
 
-        if( !p_vout->b_fullscreen )
-        {
-            /* Save window size and position */
-            p_vout->p_sys->s_frame.size =
-                [p_vout->p_sys->o_vout_view frame].size;
-            p_vout->p_sys->s_frame.origin =
-                [[p_vout->p_sys->o_vout_view getWindow ]frame].origin;
-            p_vout->p_sys->b_saved_frame = VLC_TRUE;
-        }
-        [p_vout->p_sys->o_vout_view performSelectorOnMainThread:@selector(closeVout) withObject:NULL waitUntilDone:YES];
-
         p_vout->b_fullscreen = !p_vout->b_fullscreen;
 
-        [VLCGLView performSelectorOnMainThread:@selector(initVout:) withObject:[NSValue valueWithPointer:p_vout] waitUntilDone:YES];
-
-        [[p_vout->p_sys->o_glview openGLContext] makeCurrentContext];
+        if( p_vout->b_fullscreen ) 
+            [p_vout->p_sys->o_vout_view enterFullscreen];
+        else
+            [p_vout->p_sys->o_vout_view leaveFullscreen];
 
         [o_pool release];
 
@@ -336,6 +327,42 @@ static void Unlock( vout_thread_t * p_vout )
     p_vout->p_sys->o_vout_view = [VLCVoutView getVoutView: p_vout
                                   subView: p_vout->p_sys->o_glview
                                   frame: frame];
+}
+
+/* This function will reset the o_vout_view. It's useful to go fullscreen. */
++ (void)resetVout:(NSData *)arg
+{
+    vout_thread_t * p_vout = [arg pointerValue];
+
+    if( p_vout->b_fullscreen )
+    {
+        /* Save window size and position */
+        p_vout->p_sys->s_frame.size =
+            [p_vout->p_sys->o_vout_view frame].size;
+        p_vout->p_sys->s_frame.origin =
+            [[p_vout->p_sys->o_vout_view getWindow ]frame].origin;
+        p_vout->p_sys->b_saved_frame = VLC_TRUE;
+    }
+
+    [p_vout->p_sys->o_vout_view closeVout];
+
+#define o_glview p_vout->p_sys->o_glview
+    o_glview = [[VLCGLView alloc] initWithVout: p_vout];
+    [o_glview autorelease];
+ 
+    if( p_vout->p_sys->b_saved_frame )
+    {
+        p_vout->p_sys->o_vout_view = [VLCVoutView getVoutView: p_vout
+                                                      subView: o_glview
+                                                        frame: &p_vout->p_sys->s_frame];
+    }
+    else
+    {
+        p_vout->p_sys->o_vout_view = [VLCVoutView getVoutView: p_vout
+                                                      subView: o_glview frame: nil];
+ 
+    }
+#undef o_glview
 }
 
 - (id) initWithVout: (vout_thread_t *) vout

@@ -2,7 +2,7 @@
  * prefs.m: MacOS X module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: prefs.m 18150 2006-11-29 13:32:25Z courmisch $
+ * $Id: prefs.m 23943 2007-12-30 14:59:04Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -108,9 +108,6 @@ static VLCPrefs *_o_sharedMainInstance = nil;
 
 - (void)showPrefs
 {
-    /* load our nib (if not already loaded) */
-    [NSBundle loadNibNamed:@"Preferences" owner:self];
-
     [o_prefs_window center];
     [o_prefs_window makeKeyAndOrderFront:self];
 }

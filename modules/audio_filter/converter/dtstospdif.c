@@ -2,7 +2,7 @@
  * dtstospdif.c : encapsulates DTS frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2003, 2006 the VideoLAN team
- * $Id: dtstospdif.c 14997 2006-03-31 15:15:07Z fkuehne $
+ * $Id: dtstospdif.c 23994 2008-01-01 19:07:13Z pdherbemont $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -156,6 +156,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
 
     for( i_frame = 0; i_frame < 3; i_frame++ )
     {
+        uint16_t i_length_padded = i_length;
         byte_t * p_out = p_out_buf->p_buffer + (i_frame * i_fz);
         byte_t * p_in = p_filter->p_sys->p_buf + (i_frame * i_length);
 
@@ -202,6 +203,13 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
                 p_tmp += 2; p_in += 2;
             }
 #endif
+            /* If i_length is odd, we have to adjust swapping a bit.. */
+            if( i_length & 1 )
+            {
+                p_out[8+i_length-1] = 0;
+                p_out[8+i_length] = p_in[i_length-1];
+                i_length_padded++;
+            }
         }
         else
         {
@@ -210,8 +218,8 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
 
         if( i_fz > i_length + 8 )
         {
-            p_filter->p_vlc->pf_memset( p_out + 8 + i_length, 0,
-                                        i_fz - i_length - 8 );
+            p_filter->p_vlc->pf_memset( p_out + 8 + i_length_padded, 0,
+                                        i_fz - i_length_padded - 8 );
         }
     }
 

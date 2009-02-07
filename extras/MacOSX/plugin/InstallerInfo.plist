@@ -3,11 +3,11 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleGetInfoString</key>
-	<string>0.8.6c, The VideoLAN Team, All Rights Reserved.</string>
+	<string>0.8.6d, The VideoLAN Team, All Rights Reserved.</string>
 	<key>CFBundleIdentifier</key>
 	<string>org.videolan.vlc</string>
 	<key>CFBundleShortVersionString</key>
-	<string>0.8.6c</string>
+	<string>0.8.6d</string>
 	<key>IFMajorVersion</key>
 	<integer>0</integer>
 	<key>IFMinorVersion</key>

@@ -2,7 +2,7 @@
  * playlist.c :  Playlist import module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: playlist.c 16994 2006-10-08 14:40:02Z jpsaman $
+ * $Id: playlist.c 23345 2007-11-26 13:24:07Z fkuehne $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -42,6 +42,11 @@
 #define SHOW_ADULT_LONGTEXT N_( "Show NC17 rated video streams when " \
                 "using shoutcast video playlists." )
 
+#define EXTVLCOPT_TEXT N_( "Enable parsing of EXTVLCOPT: options" )
+#define EXTVLCOPT_LONGTEXT N_( "Enable parsing of EXTVLCOPT: options in m3u " \
+    "playlists. This option is default disabled to prevent untrusted sources " \
+    "using VLC options without the user's knowledge." )
+
 vlc_module_begin();
     add_shortcut( "playlist" );
     set_category( CAT_INPUT );
@@ -67,6 +72,8 @@ vlc_module_begin();
         set_description( _("M3U playlist import") );
         add_shortcut( "m3u-open" );
         set_capability( "demux2", 10 );
+        add_bool( "m3u-extvlcopt", VLC_FALSE, NULL,
+                  EXTVLCOPT_TEXT, EXTVLCOPT_LONGTEXT, VLC_FALSE );
         set_callbacks( E_(Import_M3U), E_(Close_M3U) );
     add_submodule();
         set_description( _("PLS playlist import") );

@@ -2,7 +2,7 @@
  * extended.m: MacOS X Extended interface panel
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: extended.m 15209 2006-04-14 09:37:39Z zorglub $
+ * $Id: extended.m 23115 2007-11-18 00:22:06Z pdherbemont $
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net>
  *
@@ -366,7 +366,7 @@ static VLCExtended *_o_sharedInstance = nil;
 
         while ((o_window = [o_enumerator nextObject]))
         {
-            if( [[o_window className] isEqualToString: @"VLCWindow"] ||
+            if( [[o_window className] isEqualToString: @"VLCVoutWindow"] ||
                 [[[VLCMain sharedInstance] getEmbeddedList]
                                     windowContainsEmbedded: o_window])
             {

@@ -2,7 +2,7 @@
  * xcommon.h: Defines common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: xcommon.h 19298 2007-03-11 15:54:09Z courmisch $
+ * $Id: xcommon.h 25069 2008-02-10 12:14:17Z courmisch $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -103,7 +103,7 @@ struct vout_sys_t
     /* X11 generic properties */
     vlc_bool_t          b_altfullscreen;          /* which fullscreen method */
 #ifdef HAVE_SYS_SHM_H
-    vlc_bool_t          b_shm;               /* shared memory extension flag */
+    int                 i_shm_opcode;      /* shared memory extension opcode */
 #endif
 
 #ifdef MODULE_NAME_IS_xvideo

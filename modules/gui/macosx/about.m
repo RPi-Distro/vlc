@@ -2,7 +2,7 @@
  * about.m: MacOS X About Panel
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: about.m 16431 2006-08-30 14:30:06Z hartman $
+ * $Id: about.m 23152 2007-11-19 00:09:18Z fkuehne $
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *
@@ -26,6 +26,14 @@
  *****************************************************************************/
 #include "intf.h"
 #include "about.h"
+
+#ifdef __x86_64__
+#define PLATFORM "Intel"
+#elif __i386__
+#define PLATFORM "Intel"
+#else
+#define PLATFORM "PowerPC"
+#endif
 
 /*****************************************************************************
  * VLAboutBox implementation 
@@ -55,9 +63,8 @@ static VLAboutBox *_o_sharedInstance = nil;
     if (!o_credits_path)
     {
         NSString *o_name;
-        NSString *o_version;
         NSString *o_thanks_path;
-		
+
         /* Get the info dictionary (Info.plist) */
         o_info_dict = [[NSBundle mainBundle] infoDictionary];
         
@@ -68,45 +75,40 @@ static VLAboutBox *_o_sharedInstance = nil;
         
         /* Setup the name field */
         o_name = [o_local_dict objectForKey:@"CFBundleName"];
-        
+
         /* Set the about box title */
         [o_about_window setTitle:_NS("About VLC media player")];
-        
-        /* Setup the version field */
-        o_version = [o_info_dict objectForKey:@"CFBundleVersion"];
-        
+
         /* setup the creator / revision field */
         if( VLC_Changeset() != "exported" )
-        [o_revision_field setStringValue: [NSString stringWithFormat: \
-            _NS("Compiled by %s, based on SVN revision %s"), VLC_CompileBy(), \
-            VLC_Changeset()]];
+            [o_revision_field setStringValue: 
+                [NSString stringWithFormat: _NS("Compiled by %s, based on SVN revision %s"), VLC_CompileBy(), VLC_Changeset()]];
         else
-        [o_revision_field setStringValue: [NSString stringWithFormat: \
-            _NS("Compiled by %s"), VLC_CompileBy()]];
-    
+            [o_revision_field setStringValue: [NSString stringWithFormat: _NS("Compiled by %s"), VLC_CompileBy()]];
+
         /* Setup the nameversion field */
-        o_name_version = [NSString stringWithFormat:@"Version %@", o_version];
+        o_name_version = [NSString stringWithFormat:@"Version %s (%s)", VLC_Version(), PLATFORM];
         [o_name_version_field setStringValue: o_name_version];
-        
+
         /* Setup our credits */
         o_credits_path = [[NSBundle mainBundle] pathForResource:@"AUTHORS" ofType:nil];
         o_credits = [[NSString alloc] initWithData: [NSData dataWithContentsOfFile: o_credits_path ] encoding:NSUTF8StringEncoding];
-        
+
         /* Parse the authors string */
         NSMutableString *o_outString = [NSMutableString stringWithFormat: @"%@\n\n", _NS(INTF_ABOUT_MSG)];
         NSScanner *o_scan_credits = [NSScanner scannerWithString: o_credits];
         NSCharacterSet *o_stopSet = [NSCharacterSet characterSetWithCharactersInString:@"\n\r"];
-        
+
         while( ![o_scan_credits isAtEnd] )
         {
             NSString *o_person;
             NSScanner *o_scan_person;
-            
+    
             [o_scan_credits scanUpToString:@"N:" intoString: nil];
             [o_scan_credits scanString:@"N:" intoString: nil];
             [o_scan_credits scanUpToString:@"N:" intoString: &o_person];
             o_scan_person = [NSScanner scannerWithString: o_person];
-            
+
             NSString *o_name;
             NSString *o_email;
             NSMutableString *o_jobs = [NSMutableString string];
@@ -118,7 +120,7 @@ static VLAboutBox *_o_sharedInstance = nil;
             [o_scan_person scanUpToString:@"D:" intoString: &o_next];
             [o_scan_person scanUpToString:@":" intoString: &o_next];
             [o_scan_person scanString:@":" intoString: nil];
-    
+   
             while ( [o_next characterAtIndex:[o_next length] - 1] == 'D' )
             {
                 NSString *o_job;
@@ -127,30 +129,30 @@ static VLAboutBox *_o_sharedInstance = nil;
                 [o_scan_person scanUpToString:@":" intoString: &o_next];
                 [o_scan_person scanString:@":" intoString: nil];
             }
-            
+           
             [o_outString appendFormat: @"%@ <%@>\n%@\n\n", o_name, o_email, o_jobs];
         }
-        
+       
         /* Parse the thanks string */
         o_thanks_path = [[NSBundle mainBundle] pathForResource:@"THANKS" ofType:nil];
         o_thanks = [[NSString alloc] initWithData: [NSData dataWithContentsOfFile: 
                         o_thanks_path ] encoding:NSUTF8StringEncoding];
-        
+       
         NSScanner *o_scan_thanks = [NSScanner scannerWithString: o_thanks];
         [o_scan_thanks scanUpToCharactersFromSet: o_stopSet intoString: nil];
-        
+       
         while( ![o_scan_thanks isAtEnd] )
         {
             NSString *o_person;
             NSString *o_job;
-            
+           
             [o_scan_thanks scanUpToString:@" - " intoString: &o_person];
             [o_scan_thanks scanString:@" - " intoString: nil];
             [o_scan_thanks scanUpToCharactersFromSet: o_stopSet intoString: &o_job];
             [o_outString appendFormat: @"%@\n%@\n\n", o_person, o_job];
         }
         [o_credits_textview setString:o_outString];
-        
+       
         /* Setup the copyright field */
         o_copyright = [o_local_dict objectForKey:@"NSHumanReadableCopyright"];
         [o_copyright_field setStringValue:o_copyright];
@@ -162,7 +164,7 @@ static VLAboutBox *_o_sharedInstance = nil;
         [o_about_window setMenu:nil];
         [o_about_window center];
     }
-    
+
     /* Show the window */
     b_restart = YES;
     [o_about_window makeKeyAndOrderFront:nil];

@@ -2,7 +2,7 @@
  * v4l.c : Video4Linux input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: v4l.c 15016 2006-03-31 23:07:01Z xtophe $
+ * $Id: v4l.c 23864 2007-12-25 20:49:49Z Trax $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *         Paul Forgey <paulf at aphrodite dot com>
@@ -1364,7 +1364,7 @@ static int OpenAudioDev( demux_t *p_demux, char *psz_device )
         goto adev_fail;
     }
 
-    msg_Dbg( p_demux, "openened adev=`%s' %s %dHz",
+    msg_Dbg( p_demux, "opened adev=`%s' %s %dHz",
              psz_device, p_sys->b_stereo ? "stereo" : "mono",
              p_sys->i_sample_rate );
 

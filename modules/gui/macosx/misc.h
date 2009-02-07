@@ -2,7 +2,7 @@
  * misc.h: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: misc.h 13905 2006-01-12 23:10:04Z dionoea $
+ * $Id: misc.h 23115 2007-11-18 00:22:06Z pdherbemont $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -20,6 +20,37 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+/*****************************************************************************
+ * NSScreen (VLCAdditions)
+ *
+ *  Missing extension to NSScreen
+ *****************************************************************************/
+
+@interface NSScreen (VLCAdditions)
+
++ (NSScreen *)screenWithDisplayID: (CGDirectDisplayID)displayID;
+- (BOOL)isMainScreen;
+- (BOOL)isScreen: (NSScreen*)screen;
+- (CGDirectDisplayID)displayID;
+- (void)blackoutOtherScreens;
++ (void)unblackoutScreens;
+@end
+
+/*****************************************************************************
+ * VLCWindow
+ *
+ *  Missing extension to NSWindow
+ *****************************************************************************/
+
+@interface VLCWindow : NSWindow
+{
+    BOOL b_canBecomeKeyWindow;
+    BOOL b_isset_canBecomeKeyWindow;
+}
+
+- (void)setCanBecomeKeyWindow: (BOOL)canBecomeKey;
+@end
 
 /*****************************************************************************
  * VLCControllerWindow

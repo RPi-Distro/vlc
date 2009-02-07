@@ -2,7 +2,7 @@
  * osd.c - The OSD Menu core code.
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id: osd.c 20530 2007-06-12 16:40:27Z Trax $
+ * $Id: osd.c 22347 2007-10-01 06:47:35Z jpsaman $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -117,8 +117,8 @@ osd_menu_t *__osd_MenuCreate( vlc_object_t *p_this, const char *psz_file )
 
 error:
     msg_Err( p_this, "creating OSD menu object failed" );
-    vlc_mutex_unlock( lockval.p_address );
     vlc_object_destroy( p_osd );
+    vlc_mutex_unlock( lockval.p_address );
     return NULL;
 }
 

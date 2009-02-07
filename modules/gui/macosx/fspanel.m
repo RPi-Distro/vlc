@@ -29,6 +29,7 @@
 #import "controls.h"
 #import "vout.h"
 #import "fspanel.h"
+#import "misc.h"
 
 #define KEEP_VISIBLE_AFTER_ACTION 4 /* time in half-sec until this panel will hide again after an user's action */
 
@@ -50,9 +51,9 @@
     /* let the window sit on top of everything else and start out completely transparent */
     [win setLevel:NSFloatingWindowLevel];
     [win setAlphaValue:0.0];
-    i_device = 0;
-
+    o_screen = nil;
     [win center];
+
     return win;
 }
 
@@ -109,12 +110,10 @@
     NSRect theScreensFrame;
     NSRect theWindowsFrame;
 
-    if( i_device < 0 || i_device >= (signed int)[[NSScreen screens] count] )
-        /* invalid preferences or none specified, using main screen */
-        theScreensFrame = [[NSScreen mainScreen] frame];
+    if( o_screen )
+        theScreensFrame = [o_screen frame];
     else
-        /* user-defined screen */
-        theScreensFrame = [[[NSScreen screens] objectAtIndex: i_device] frame];
+        theScreensFrame = [[NSScreen mainScreen] frame];
 
     theWindowsFrame = [self frame];
     
@@ -194,7 +193,7 @@
         if( b_fadeQueued )
         {
             b_fadeQueued=NO;
-            [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(unfocus:) userInfo:NULL repeats:YES]];
+            [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(unfocus:) userInfo:NULL repeats:YES]];
         }
     }
 }
@@ -211,8 +210,8 @@
         return;
     }
     if( [self alphaValue] > 0.0 )
-        [self setAlphaValue:[self alphaValue]-0.1];
-    if( [self alphaValue] <= 0.1 )
+        [self setAlphaValue:[self alphaValue]-0.05];
+    if( [self alphaValue] <= 0.05 )
     {
         b_displayed = NO;
         [self setAlphaValue:0.0];
@@ -248,7 +247,7 @@
     if( [self alphaValue] < 1.0 || b_displayed != YES )
     {
         if (![self fadeTimer])
-            [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(focus:) userInfo:[NSNumber numberWithShort:1] repeats:YES]];
+            [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(focus:) userInfo:[NSNumber numberWithShort:1] repeats:YES]];
         else if ([[[self fadeTimer] userInfo] shortValue]==0)
             b_fadeQueued=YES;
     }
@@ -302,6 +301,7 @@
     i_timeToKeepVisibleInSec -= 1;
     if( i_timeToKeepVisibleInSec < 1 )
     {
+        [NSCursor setHiddenUntilMouseMoves: YES];
         [self fadeOut];
         [timer invalidate];
         [timer release];
@@ -342,12 +342,12 @@
     return b_displayed;
 }
 
-- (void)setVoutWasUpdated: (int)i_newdevice;
+- (void)setVoutWasUpdated: (NSScreen *)o_new_screen;
 {
     b_voutWasUpdated = YES;
-    if( i_newdevice != i_device )
+    if( ![o_new_screen isScreen: o_screen] )
     {
-        i_device = i_newdevice;
+        o_screen = o_new_screen;
         [self center];
     }
 }

@@ -2,7 +2,7 @@
  * dmo.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: dmo.c 16460 2006-08-31 22:01:13Z hartman $
+ * $Id: dmo.c 23470 2007-12-06 00:59:36Z Trax $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -134,12 +134,14 @@ struct decoder_sys_t
 };
 
 static const GUID guid_wvc1 = { 0xc9bfbccf, 0xe60e, 0x4588, { 0xa3, 0xdf, 0x5a, 0x03, 0xb1, 0xfd, 0x95, 0x85 } };
-
 static const GUID guid_wmv9 = { 0x724bb6a4, 0xe526, 0x450f, { 0xaf, 0xfa, 0xab, 0x9b, 0x45, 0x12, 0x91, 0x11 } };
-static const GUID guid_wma9 = { 0x27ca0808, 0x01f5, 0x4e7a, { 0x8b, 0x05, 0x87, 0xf8, 0x07, 0xa2, 0x33, 0xd1 } };
 
 static const GUID guid_wmv = { 0x82d353df, 0x90bd, 0x4382, { 0x8b, 0xc2, 0x3f, 0x61, 0x92, 0xb7, 0x6e, 0x34 } };
+static const GUID guid_wms = { 0x7bafb3b1, 0xd8f4, 0x4279, { 0x92, 0x53, 0x27, 0xda, 0x42, 0x31, 0x08, 0xde } };
+static const GUID guid_wmva ={ 0x03be3ac4, 0x84b7, 0x4e0e, { 0xa7, 0x8d, 0xd3, 0x52, 0x4e, 0x60, 0x39, 0x5a } };
+
 static const GUID guid_wma = { 0x874131cb, 0x4ecc, 0x443b, { 0x89, 0x48, 0x74, 0x6b, 0x89, 0x59, 0x5d, 0x20 } };
+static const GUID guid_wma9 = { 0x27ca0808, 0x01f5, 0x4e7a, { 0x8b, 0x05, 0x87, 0xf8, 0x07, 0xa2, 0x33, 0xd1 } };
 
 static const GUID guid_wmv_enc = { 0x3181343b, 0x94a2, 0x4feb, { 0xad, 0xef, 0x30, 0xa1, 0xdd, 0xe6, 0x17, 0xb4 } };
 static const GUID guid_wma_enc = { 0x70f598e9, 0xf4ab, 0x495a, { 0x99, 0xe2, 0xa7, 0xc4, 0xd3, 0xd8, 0x9a, 0xbf } };
@@ -160,22 +162,36 @@ static const codec_dll decoders_table[] =
     /* WMV3 */
     { VLC_FOURCC('W','M','V','3'), "wmv9dmod.dll", &guid_wmv9 },
     { VLC_FOURCC('w','m','v','3'), "wmv9dmod.dll", &guid_wmv9 },
+    { VLC_FOURCC('W','M','V','P'), "wmv9dmod.dll", &guid_wmv9 },
+    { VLC_FOURCC('w','m','v','p'), "wmv9dmod.dll", &guid_wmv9 },
     /* WMV2 */
     { VLC_FOURCC('W','M','V','2'), "wmvdmod.dll", &guid_wmv },
     { VLC_FOURCC('w','m','v','2'), "wmvdmod.dll", &guid_wmv },
     /* WMV1 */
     { VLC_FOURCC('W','M','V','1'), "wmvdmod.dll", &guid_wmv },
     { VLC_FOURCC('w','m','v','1'), "wmvdmod.dll", &guid_wmv },
+    /* Screen codecs */
+    { VLC_FOURCC('M','S','S','2'), "wmsdmod.dll", &guid_wms },
+    { VLC_FOURCC('m','s','s','2'), "wmsdmod.dll", &guid_wms },
+    { VLC_FOURCC('M','S','S','1'), "wmsdmod.dll", &guid_wms },
+    { VLC_FOURCC('m','s','s','1'), "wmsdmod.dll", &guid_wms },
+    /* Windows Media Video Adv */
+    { VLC_FOURCC('W','M','V','A'), "wmvadvd.dll", &guid_wmva },
+    { VLC_FOURCC('w','m','v','a'), "wmvadvd.dll", &guid_wmva },
+    { VLC_FOURCC('W','V','P','2'), "wmvadvd.dll", &guid_wmva },
+    { VLC_FOURCC('w','v','p','2'), "wmvadvd.dll", &guid_wmva },
 
     /* WMA 3 */
     { VLC_FOURCC('W','M','A','3'), "wma9dmod.dll", &guid_wma9 },
     { VLC_FOURCC('w','m','a','3'), "wma9dmod.dll", &guid_wma9 },
+    { VLC_FOURCC('W','M','A','P'), "wma9dmod.dll", &guid_wma9 },
     { VLC_FOURCC('w','m','a','p'), "wma9dmod.dll", &guid_wma9 },
     /* WMA 2 */
     { VLC_FOURCC('W','M','A','2'), "wma9dmod.dll", &guid_wma9 },
     { VLC_FOURCC('w','m','a','2'), "wma9dmod.dll", &guid_wma9 },
 
     /* WMA Speech */
+    { VLC_FOURCC('W','M','A','S'), "wmspdmod.dll", &guid_wma },
     { VLC_FOURCC('w','m','a','s'), "wmspdmod.dll", &guid_wma },
 
     /* */
@@ -1209,7 +1225,7 @@ static int EncoderSetAudioType( encoder_t *p_enc, IMediaObject *p_dmo )
 
     if( i_selected < 0 )
     {
-        msg_Err( p_enc, "couldn't find a matching ouput" );
+        msg_Err( p_enc, "couldn't find a matching output" );
         return VLC_EGENERIC;
     }
 

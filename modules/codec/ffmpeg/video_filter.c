@@ -3,7 +3,7 @@
  *               using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: video_filter.c 14796 2006-03-18 11:27:10Z zorglub $
+ * $Id: video_filter.c 25091 2008-02-10 22:36:49Z jpsaman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -130,7 +130,9 @@ static int OpenFilterEx( vlc_object_t *p_this, vlc_bool_t b_enable_croppadd )
                      p_filter->fmt_out.video.i_height );
 
     if( CheckInit( p_filter ) != VLC_SUCCESS )
-    {
+    {	
+        if( p_sys->p_rsc ) img_resample_close( p_sys->p_rsc );
+        avpicture_free( &p_sys->tmp_pic );
         free( p_sys );
         return VLC_EGENERIC;
     }
@@ -173,7 +175,6 @@ void E_(CloseFilter)( vlc_object_t *p_this )
     filter_sys_t *p_sys = p_filter->p_sys;
 
     if( p_sys->p_rsc ) img_resample_close( p_sys->p_rsc );
-
     avpicture_free( &p_sys->tmp_pic );
 
     free( p_sys );

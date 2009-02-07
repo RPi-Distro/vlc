@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: vlc_common.h 17810 2006-11-16 13:36:28Z md $
+ * $Id: vlc_common.h 24380 2008-01-18 07:48:17Z jpsaman $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -598,6 +598,19 @@ static int64_t GCD( int64_t a, int64_t b )
         (i_oldsize)--;                                                        \
     }                                                                         \
     while( 0 )
+
+#define TAB_INIT( count, tab )                  \
+  do {                                          \
+    (count) = 0;                                \
+    (tab) = NULL;                               \
+  } while(0)
+
+#define TAB_CLEAN( count, tab )                 \
+  do {                                          \
+    if( tab ) free( tab );                      \
+    (count)= 0;                                 \
+    (tab)= NULL;                                \
+  } while(0)
 
 
 #define TAB_APPEND( count, tab, p )             \
