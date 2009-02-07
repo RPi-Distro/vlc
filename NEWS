@@ -1,5 +1,43 @@
+Changes between 0.9.5 and 0.9.6:
+--------------------------------
+New Localizations:
+ * Ukranian
+
+Security updates:
+ * Fixed overflow in CUE support from VCD access (SA-0810, CVE-2008-xxxx)
+ * Fixed overflow in RealText subtitles support (SA-0810, CVE-2008-xxxx)
+
+
+Changes between 0.9.4 and 0.9.5:
+--------------------------------
+Security updates:
+ * Fixed buffer overflow in TiVo demuxer (SA-0809, CVE-2008-4686, CVE-2008-4654)
+ * Fixed libpng CVE-2008-3964 in Win32 and MacOS builds
+
+Features:
+ * Closed Caption EIA 608/708 parsing enabled for libmpeg2
+
+Various bugfixes:
+ * Fixed various potential crashes and memleaks
+ * Fixed issues with reading from files (especially non-local)
+
+Windows port:
+ * Fix bug where interface was "eating" some media keys
+ * Fix some crashes in DirectShow access
+
+Qt Interface:
+ * Fix bug when the resetting of preferences didn't reset the dialog states
+ * Right-click menu to select playlist columns reenabled
+ * Various fixed in playlist
+
+Access:
+ * MMAP module is now deactivated by default
+
+Translations:
+ * Update of Brazillian, Swedish translation
+
 Changes between 0.9.3 and 0.9.4:
-------------------------------------
+--------------------------------
 Various bugfixes:
  * Crashes fixed in ogg, vobsub, dvdread
  * Fixes several memory leaks.
@@ -14,7 +52,7 @@ Windows port:
 
 
 Changes between 0.9.2 and 0.9.3:
-------------------------------------
+--------------------------------
 
 Various bugfixes:
  * Fixed DTS channel order on 5.1 systems

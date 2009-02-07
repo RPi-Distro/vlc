@@ -2,7 +2,7 @@
  * record.c
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: 67dba9d280a221898da2188881f4ac723b6a6ddf $
+ * $Id: 090319164abcdf58ba11551b6db5bc828703df2f $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -133,7 +133,7 @@ static int Open( vlc_object_t *p_this )
 
     p_access->info = p_src->info;
 
-    p_access->p_sys = p_sys = malloc( sizeof( access_t ) );
+    p_access->p_sys = p_sys = malloc( sizeof( *p_sys ) );
     if( !p_sys ) return VLC_ENOMEM;
 
     /* */

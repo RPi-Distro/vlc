@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 68fbf89c739dfe0ccc0c16107963e254921fce34 $
+ * $Id: 0909832c4a6a0ca568636a71a997e13732b22870 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -1842,19 +1842,16 @@ static int ParseRealText( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
     demux_sys_t *p_sys = p_demux->p_sys;
     text_t      *txt = &p_sys->txt;
     char *psz_text = NULL;
-    char psz_end[12]= "", psz_begin[12] = "";
 
     for( ;; )
     {
         int h1 = 0, m1 = 0, s1 = 0, f1 = 0;
         int h2 = 0, m2 = 0, s2 = 0, f2 = 0;
         const char *s = TextGetLine( txt );
+        free( psz_text );
 
         if( !s )
-        {
-            free( psz_text );
             return VLC_EGENERIC;
-        }
 
         psz_text = malloc( strlen( s ) + 1 );
         if( !psz_text )
@@ -1865,17 +1862,17 @@ static int ParseRealText( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
         char *psz_temp = strcasestr( s, "<time");
         if( psz_temp != NULL )
         {
+            char psz_end[12], psz_begin[12];
             /* Line has begin and end */
             if( ( sscanf( psz_temp,
-                  "<%*[t|T]ime %*[b|B]egin=\"%[^\"]\" %*[e|E]nd=\"%[^\"]%*[^>]%[^\n\r]",
+                  "<%*[t|T]ime %*[b|B]egin=\"%11[^\"]\" %*[e|E]nd=\"%11[^\"]%*[^>]%[^\n\r]",
                             psz_begin, psz_end, psz_text) != 3 ) &&
                     /* Line has begin and no end */
                     ( sscanf( psz_temp,
-                              "<%*[t|T]ime %*[b|B]egin=\"%[^\"]\"%*[^>]%[^\n\r]",
+                              "<%*[t|T]ime %*[b|B]egin=\"%11[^\"]\"%*[^>]%[^\n\r]",
                               psz_begin, psz_text ) != 2) )
                 /* Line is not recognized */
             {
-                free( psz_text );
                 continue;
             }
 
@@ -1893,12 +1890,6 @@ static int ParseRealText( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
             }
             break;
         }
-        /* Line is not recognized */
-        else
-        {
-            free( psz_text );
-            continue;
-        }
     }
 
     /* Get the following Lines */
@@ -1907,7 +1898,10 @@ static int ParseRealText( demux_t *p_demux, subtitle_t *p_subtitle, int i_idx )
         const char *s = TextGetLine( txt );
 
         if( !s )
+        {
+            free( psz_text );
             return VLC_EGENERIC;
+        }
 
         int i_len = strlen( s );
         if( i_len == 0 ) break;

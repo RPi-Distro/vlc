@@ -786,7 +786,7 @@ libtheora: libtheora-$(THEORA_VERSION).tar.bz2
 ifdef HAVE_BEOS
 	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-sdltest --disable-oggtest --disable-vorbistest --disable-asm --disable-examples && make && make install)
 else
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-sdltest --disable-oggtest --disable-vorbistest --disable-examples && make && make install)
+	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-sdltest --disable-oggtest --disable-vorbistest --disable-examples --disable-doc && make && make install)
 endif
 	$(INSTALL_NAME)
 	touch $@
@@ -1056,7 +1056,7 @@ DISTCLEAN_PKG += amrwb-$(LIBAMR_WB_VERSION).tar.bz2
 
 ifdef SVN
 ffmpeg:
-	$(SVN) co $(FFMPEG_SVN) ffmpeg -r 15261
+	$(SVN) co $(FFMPEG_SVN) ffmpeg -r 15594
 ifeq ($(HOST),i586-pc-beos)
 	(cd $@; patch -p0 < ../Patches/ffmpeg-svn-beos.patch)
 endif
@@ -1069,13 +1069,13 @@ endif
 ifdef HAVE_DARWIN_OS_ON_INTEL
 	(cd $@; patch -p0 < ../Patches/ffmpeg-macosx-intel-mmx.patch)
 endif
-ifdef HAVE_DARWIN_OS
-	(cd $@; patch -p1 < ../Patches/ffmpeg-altivec-fix.patch)
-endif
 ifdef HAVE_UCLIBC
 	patch -p0 < Patches/ffmpeg-svn-uclibc.patch
 	patch -p0 < Patches/ffmpeg-svn-internal-define.patch
 	patch -p0 < Patches/ffmpeg-svn-libavformat.patch
+endif
+ifdef HAVE_WIN32
+	(cd $@; patch -p0 < ../Patches/ffmpeg-svn-win32.patch)
 endif
 ifdef NO_TEXT_RELOCATION
 	echo "Broken LD. Fix your tools."
@@ -1429,6 +1429,7 @@ libmodplug: libmodplug-$(MODPLUG_VERSION).tar.gz
 	$(EXTRACT_GZ)
 #ifdef HAVE_WIN32
 	patch -p0 < Patches/libmodplug-win32.patch
+	(cd $@; autoreconf)
 #end
 
 .mod: libmodplug
@@ -1746,6 +1747,9 @@ zvbi-$(ZVBI_VERSION).tar.bz2:
 
 zvbi: zvbi-$(ZVBI_VERSION).tar.bz2
 	$(EXTRACT_BZ2)
+ifdef HAVE_WIN32
+	(cd $@; patch -p1 < ../Patches/zvbi-win32.patch; patch -p1 < ../Patches/zvbi-makefile.patch; autoreconf)
+endif
 
 ifdef HAVE_WIN32
 .zvbi: zvbi .pthreads
@@ -1755,7 +1759,11 @@ endif
 ifdef HAVE_DARWIN_OS
 	(cd $<; ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS) -fnested-functions" && make && make install)
 else
-	(cd $<; ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" && make && make install)
+ifdef HAVE_WIN32
+	(cd $<; ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS) --std=gnu99" LIBS="-lpthreadGC2" && make && make install)
+else
+	(cd $<; ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" && make -C src && make -C src install)
+endif
 endif
 	$(INSTALL_NAME)
 	touch $@
@@ -2343,7 +2351,7 @@ pthreads: pthreads-w32-$(PTHREADS_VERSION)-release.tar.gz
 	$(EXTRACT_GZ)
 
 .pthreads: pthreads
-	(cd $<; $(HOSTCC) make $(PTHREADSCONF) GC-static && mkdir -p $(PREFIX)/include && cp -v pthread.h sched.h semaphore.h $(PREFIX)/include/ && mkdir -p $(PREFIX)/lib && cp -v *.a $(PREFIX)/lib/)
+	(cd $<; $(HOSTCC) make $(PTHREADSCONF) GC GC-static && mkdir -p $(PREFIX)/include && cp -v pthread.h sched.h semaphore.h $(PREFIX)/include/ && mkdir -p $(PREFIX)/lib && cp -v *.{a,dll} $(PREFIX)/lib/)
 	$(INSTALL_NAME)
 	touch $@
 
@@ -2459,7 +2467,7 @@ libass: libass-$(ASS_VERSION).tar.bz2
 	patch -p0 < Patches/libass_mplayer_updates.patch
 ifneq ($(HOST),$(BUILD))
 	patch -p0 < Patches/libass-cross.patch
-	cd $@; autoconf; automake
+	(cd $@; autoreconf; automake)
 endif
 
 .libass: libass .png

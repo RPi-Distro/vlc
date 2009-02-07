@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: e57b6ebc95dd52ad0b4c92eb7c5ce9a6ae0c65d3 $
+ * $Id: e1e59680ab9a66cc4c76afeda1dfc265b5f676b2 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -423,8 +423,14 @@ static void openDirectory( intf_thread_t *p_intf, bool pl, bool go )
 
     if (!dir.isEmpty() )
     {
-        input_item_t *p_input = input_item_NewExt( THEPL,
-                              qtu( "directory://" + toNativeSeparators(dir) ),
+        QString dir2 ;
+        if( dir.endsWith( "VIDEO_TS", Qt::CaseInsensitive ) )
+            dir2 = "dvd://" + dir;
+        else
+            dir2 = "directory://" + dir;
+
+        msg_Dbg( p_intf, "Directory opening: %s", qtu( dir2 ) );
+        input_item_t *p_input = input_item_NewExt( THEPL, qtu( dir2 ),
                               NULL, 0, NULL, -1 );
 
         /* FIXME: playlist_AddInput() can fail */

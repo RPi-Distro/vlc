@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: dc84bb01b51d5b5ce57dc6374a05492220d1bdd7 $
+ * $Id: d48bb0d6159d40eb629458c9307cd14e09879eec $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -269,7 +269,12 @@ static void Close( vlc_object_t * );
 
 #define SUBME_TEXT N_("Subpixel motion estimation and partition decision " \
     "quality")
-#if X264_BUILD >= 46 /* r477 */
+#if X264_BUILD >= 65 
+#define SUBME_MAX 9
+#define SUBME_LONGTEXT N_( "This parameter controls quality versus speed " \
+    "tradeoffs involved in the motion estimation decision process " \
+    "(lower = quicker and higher = better quality). Range 1 to 9." )
+#elif X264_BUILD >= 46 /* r477 */
 #define SUBME_MAX 7
 #define SUBME_LONGTEXT N_( "This parameter controls quality versus speed " \
     "tradeoffs involved in the motion estimation decision process " \
@@ -589,7 +594,7 @@ vlc_module_begin();
         change_integer_range( 1, SUBME_MAX );
         add_deprecated_alias( SOUT_CFG_PREFIX "subpel" ); /* Deprecated since 0.8.5 */
 
-#if X264_BUILD >= 41 /* r368 */
+#if X264_BUILD >= 41 && X264_BUILD < 65 /* r368 */
     add_bool( SOUT_CFG_PREFIX "b-rdo", 0, NULL, B_RDO_TEXT,
               B_RDO_LONGTEXT, false );
 #endif
@@ -604,7 +609,7 @@ vlc_module_begin();
               CHROMA_ME_LONGTEXT, false );
 #endif
 
-#if X264_BUILD >= 43 /* r390 */
+#if X264_BUILD >= 43 && X264_BUILD < 65 /* r390 */
     add_bool( SOUT_CFG_PREFIX "bime", 0, NULL, BIME_TEXT,
               BIME_LONGTEXT, false );
 #endif
@@ -1082,7 +1087,7 @@ static int  Open ( vlc_object_t *p_this )
         p_sys->param.analyse.i_trellis = val.i_int;
 #endif
 
-#if X264_BUILD >= 41
+#if X264_BUILD >= 41 && X264_BUILD < 65
     var_Get( p_enc, SOUT_CFG_PREFIX "b-rdo", &val );
     p_sys->param.analyse.b_bframe_rdo = val.b_bool;
 #endif
@@ -1092,7 +1097,7 @@ static int  Open ( vlc_object_t *p_this )
     p_sys->param.analyse.b_fast_pskip = val.b_bool;
 #endif
 
-#if X264_BUILD >= 43
+#if X264_BUILD >= 43 && X264_BUILD < 65
     var_Get( p_enc, SOUT_CFG_PREFIX "bime", &val );
     p_sys->param.analyse.b_bidir_me = val.b_bool;
 #endif

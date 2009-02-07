@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: c000471fa4567133efcb640dbac752cebdbcd738 $
+ * $Id: 5b4724d58b7a983eec0171c5f801d0f798fe3825 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -530,12 +530,12 @@ VLMBroadcast::VLMBroadcast( QString _name, QString _input, QString _output,
     b_looped = _looped;
 
     playButton = new QToolButton;
-    playButton->setIcon( QIcon( QPixmap( ":/play_16px" ) ) );
+    playButton->setIcon( QIcon( QPixmap( ":/play" ) ) );
     objLayout->addWidget( playButton, 1, 0 );
     b_playing = true;
 
     QToolButton *stopButton = new QToolButton;
-    stopButton->setIcon( QIcon( QPixmap( ":/stop_16px" ) ) );
+    stopButton->setIcon( QIcon( QPixmap( ":/stop_b" ) ) );
     objLayout->addWidget( stopButton, 1, 1 );
 
     loopButton = new QToolButton;

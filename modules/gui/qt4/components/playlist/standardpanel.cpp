@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: e3ed5a61827aed9a8c252f4f0235a014b784230f $
+ * $Id: d0be2e9c8d1641ac05b2752d7d550dc66525eabf $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -89,10 +89,10 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
         /* Configure the size of the header */
         view->header()->resizeSection( 0, 200 );
         view->header()->resizeSection( 1, 80 );
-        view->header()->setSortIndicatorShown( true );
-        view->header()->setClickable( true );
-        view->header()->setContextMenuPolicy( Qt::CustomContextMenu );
     }
+    view->header()->setSortIndicatorShown( true );
+    view->header()->setClickable( true );
+    view->header()->setContextMenuPolicy( Qt::CustomContextMenu );
     getSettings()->endGroup();
 
     /* Connections for the TreeView */

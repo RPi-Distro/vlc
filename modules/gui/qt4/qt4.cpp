@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: ec788f6ab6682ce84fc90651c07b5b6db8c51b4e $
+ * $Id: f5f62bcc0f517982b843737b41acd1d2a93aa46c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -220,6 +220,19 @@ vlc_module_begin();
 #endif
 vlc_module_end();
 
+#if defined(Q_WS_WIN)
+bool WinQtApp::winEventFilter( MSG *msg, long *result )
+{
+    switch( msg->message )
+    {
+        case 0x0319: /* WM_APPCOMMAND 0x0319 */
+        DefWindowProc( msg->hwnd, msg->message, msg->wParam, msg->lParam );
+        break;
+    }
+    return false;
+}
+#endif /* Q_WS_WIN */
+
 /*****************************************************************************
  * Module callbacks
  *****************************************************************************/
@@ -333,7 +346,11 @@ static void *Init( vlc_object_t *obj )
 #endif
 
     /* Start the QApplication here */
+#ifdef WIN32
+    WinQtApp *app = new WinQtApp( argc, argv , true );
+#else
     QApplication *app = new QApplication( argc, argv , true );
+#endif
     p_intf->p_sys->p_app = app;
 
     p_intf->p_sys->mainSettings = new QSettings(

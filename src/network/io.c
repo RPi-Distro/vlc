@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005, 2007 the VideoLAN team
  * Copyright © 2005-2006 Rémi Denis-Courmont
- * $Id: a463569356247deed7cf23a43c7b4e7130baec2e $
+ * $Id: afe46a71ff0100d628997e24101deff10692e1e5 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -427,7 +427,7 @@ ssize_t __net_Write( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
 
         ufd[0].revents = ufd[1].revents = 0;
 
-        if (poll (ufd, 1, -1) == -1)
+        if (poll (ufd, sizeof (ufd) / sizeof (ufd[0]), -1) == -1)
         {
             if (errno == EINTR)
                 continue;

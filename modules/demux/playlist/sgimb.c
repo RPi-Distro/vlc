@@ -2,7 +2,7 @@
  * sgimb.c: a meta demux to parse sgimb referrer files
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 612e5e763a204b3d4a9d8d9ccbce6c11096a5655 $
+ * $Id: 772b763a6926b8715c5262887a91e233f6bf3701 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -211,6 +211,7 @@ static int ParseLine ( demux_t *p_demux, char *psz_line )
     if( !strncasecmp( psz_bol, "rtsp://", sizeof("rtsp://") - 1 ) )
     {
         /* We found the link, it was inside a sgiQTFileBegin */
+        free( p_sys->psz_uri );
         p_sys->psz_uri = strdup( psz_bol );
     }
     else if( !strncasecmp( psz_bol, "Stream=\"", sizeof("Stream=\"") - 1 ) )
@@ -218,7 +219,10 @@ static int ParseLine ( demux_t *p_demux, char *psz_line )
         psz_bol += sizeof("Stream=\"") - 1;
         if ( !psz_bol )
             return 0;
-        strrchr( psz_bol, '"' )[0] = '\0';
+        char* psz_tmp = strrchr( psz_bol, '"' );
+        if( !psz_tmp )
+            return 0;
+        psz_tmp[0] = '\0';
         /* We cheat around xdma. for some reason xdma links work different then rtsp */
         if( !strncasecmp( psz_bol, "xdma://", sizeof("xdma://") - 1 ) )
         {
@@ -227,31 +231,37 @@ static int ParseLine ( demux_t *p_demux, char *psz_line )
             psz_bol[2] = 's';
             psz_bol[3] = 'p';
         }
+        free( p_sys->psz_uri );
         p_sys->psz_uri = strdup( psz_bol );
     }
     else if( !strncasecmp( psz_bol, "sgiNameServerHost=", sizeof("sgiNameServerHost=") - 1 ) )
     {
         psz_bol += sizeof("sgiNameServerHost=") - 1;
+        free( p_sys->psz_server );
         p_sys->psz_server = strdup( psz_bol );
     }
     else if( !strncasecmp( psz_bol, "sgiMovieName=", sizeof("sgiMovieName=") - 1 ) )
     {
         psz_bol += sizeof("sgiMovieName=") - 1;
+        free( p_sys->psz_location );
         p_sys->psz_location = strdup( psz_bol );
     }
     else if( !strncasecmp( psz_bol, "sgiUserAccount=", sizeof("sgiUserAccount=") - 1 ) )
     {
         psz_bol += sizeof("sgiUserAccount=") - 1;
+        free( p_sys->psz_user );
         p_sys->psz_user = strdup( psz_bol );
     }
     else if( !strncasecmp( psz_bol, "sgiUserPassword=", sizeof("sgiUserPassword=") - 1 ) )
     {
         psz_bol += sizeof("sgiUserPassword=") - 1;
+        free( p_sys->psz_password );
         p_sys->psz_password = strdup( psz_bol );
     }
     else if( !strncasecmp( psz_bol, "sgiShowingName=", sizeof("sgiShowingName=") - 1 ) )
     {
         psz_bol += sizeof("sgiShowingName=") - 1;
+        free( p_sys->psz_name );
         p_sys->psz_name = strdup( psz_bol );
     }
     else if( !strncasecmp( psz_bol, "sgiFormatName=", sizeof("sgiFormatName=") - 1 ) )
@@ -263,6 +273,7 @@ static int ParseLine ( demux_t *p_demux, char *psz_line )
     else if( !strncasecmp( psz_bol, "sgiMulticastAddress=", sizeof("sgiMulticastAddress=") - 1 ) )
     {
         psz_bol += sizeof("sgiMulticastAddress=") - 1;
+        free( p_sys->psz_mcast_ip );
         p_sys->psz_mcast_ip = strdup( psz_bol );
     }
     else if( !strncasecmp( psz_bol, "sgiMulticastPort=", sizeof("sgiMulticastPort=") - 1 ) )

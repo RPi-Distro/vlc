@@ -2,7 +2,7 @@
  * mmap.c: memory-mapped file input
  *****************************************************************************
  * Copyright © 2007-2008 Rémi Denis-Courmont
- * $Id: e49c0412e4a7b0f3bb6ec7dcc5c1c821bf8a3256 $
+ * $Id: 4c41bb6c2815196ff193c6cd6d62c955afb12c88 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -58,8 +58,7 @@ vlc_module_begin();
     set_capability ("access", 52);
     add_shortcut ("file");
     set_callbacks (Open, Close);
-
-    add_bool ("file-mmap", true, NULL,
+    add_bool ("file-mmap", false, NULL,
               FILE_MMAP_TEXT, FILE_MMAP_LONGTEXT, true);
 vlc_module_end();
 
@@ -83,6 +82,8 @@ static int Open (vlc_object_t *p_this)
     const char *path = p_access->psz_path;
     int fd;
 
+    assert ((INT64_C(1) << 63) == ((off_t)(INT64_C(1) << 63)));
+
     if (!var_CreateGetBool (p_this, "file-mmap"))
         return VLC_EGENERIC; /* disabled */
 
@@ -101,6 +102,7 @@ static int Open (vlc_object_t *p_this)
         msg_Warn (p_access, "cannot open %s: %m", path);
         goto error;
     }
+    fcntl (fd, F_SETFD, fcntl (fd, F_GETFD) | FD_CLOEXEC);
 
     /* mmap() is only safe for regular and block special files.
      * For other types, it may be some idiosyncrasic interface (e.g. packet

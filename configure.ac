@@ -1,10 +1,10 @@
 dnl Autoconf settings for vlc
 
-AC_INIT(vlc, 0.9.4)
+AC_INIT(vlc, 0.9.6)
 VERSION_MAJOR="0"
 VERSION_MINOR="9"
-VERSION_REVISION="4"
-VERSION_EXTRA=""
+VERSION_REVISION="6"
+VERSION_EXTRA="-git"
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Grishenko"
@@ -496,6 +496,7 @@ AC_CHECK_FUNCS(strcasecmp,,[AC_CHECK_FUNCS(stricmp)])
 AC_CHECK_FUNCS(strncasecmp,,[AC_CHECK_FUNCS(strnicmp)])
 AC_CHECK_FUNCS(strcasestr,,[AC_CHECK_FUNCS(stristr)])
 AC_FUNC_ALLOCA
+AC_CHECK_FUNCS(fcntl)
 
 AH_BOTTOM([#include <vlc_fixups.h>])
 
@@ -2430,6 +2431,20 @@ then
   CPPFLAGS="${CPPFLAGS_save}"
 fi
 
+dnl
+dnl libv4l2 support for video4linux.
+dnl
+AC_ARG_ENABLE( libv4l2,
+  [  --enable-libv4l2        Libv4l2 Video4Linux2 support (default enabled)])
+if test "${enable_libv4l2}" != "no" -a "${enable_v4l2}" != "no"
+then
+    PKG_CHECK_MODULES( LIBV4L2, libv4l2, [
+      VLC_ADD_LDFLAGS([v4l2],[${LIBV4L2_LIBS}])
+      VLC_ADD_CFLAGS([v4l2],[${LIBV4L2_CFLAGS}])
+      AC_DEFINE(HAVE_LIBV4L2, 1, Define if libv4l is available)],
+      AC_MSG_WARN([LibV4L2 support disabled because libv4l2 development headers were not found])
+    )
+fi
 
 dnl
 dnl  special access module for Hauppauge PVR cards
@@ -2484,6 +2499,8 @@ dnl Need to test libcdio and libvcdinfo for a number of things. Do it now.
 AC_ARG_ENABLE(libcdio,
   [  --enable-libcdio        CD input and control library support (default enabled)])
 
+AC_ARG_ENABLE(vcdinfo,
+  [  --enable-libvcdinfo     VCD information library support (default enabled)])
 
 have_libcdio=no
 have_libvcdinfo=no
@@ -2495,11 +2512,14 @@ then
      [Define if you have libcdio 0.78.2 or greater installed]),
      [AC_MSG_WARN(CD Reading and information library not found)])
 
-  PKG_CHECK_MODULES(VCDINFO, libvcdinfo >= 0.7.22,
-     [have_libvcdinfo=yes
-     AC_DEFINE(HAVE_VCDINFO, 1, 
-     [Define if you have libvcdinfo 0.7.22 or greater installed])],
-     [AC_MSG_WARN(VCD information library not found)])
+  if test "${enable_vcdinfo}" != "no"
+  then
+    PKG_CHECK_MODULES(VCDINFO, libvcdinfo >= 0.7.22,
+       [have_libvcdinfo=yes
+       AC_DEFINE(HAVE_VCDINFO, 1, 
+       [Define if you have libvcdinfo 0.7.22 or greater installed])],
+       [AC_MSG_WARN(VCD information library not found)])
+  fi
 fi
 
 dnl
@@ -3810,7 +3830,7 @@ AS_IF( [test "${enable_libass}" = "yes"], [
         AC_CHECK_HEADERS(fontconfig/fontconfig.h,
           [VLC_ADD_CPPFLAGS([libass],[-DHAVE_FONTCONFIG])
         if test "${SYS}" = "mingw32"; then
-           VLC_ADD_LIBS([libass],[-lfontconfig -lfreetype -liconv  -lxml2])
+           VLC_ADD_LIBS([libass],[-lfontconfig -lfreetype -liconv -lz -lxml2])
         else
            VLC_ADD_LIBS([libass],[-lfontconfig])
         fi

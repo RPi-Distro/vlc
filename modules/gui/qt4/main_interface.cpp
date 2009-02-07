@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: f1525421635ec573cc13f090a1dbdb0ca094d93d $
+ * $Id: ab1a1e8cbfbdc6d18dc32c02b78de3f7b7588a7a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -787,7 +787,7 @@ void MainInterface::toggleMinimalView()
     if( i_visualmode != QT_ALWAYS_VIDEO_MODE &&
         i_visualmode != QT_MINIMAL_MODE )
     { /* NORMAL MODE then */
-        if( videoWidget->isHidden() ) emit askBgWidgetToToggle();
+        if( !videoWidget || videoWidget->isHidden() ) emit askBgWidgetToToggle();
         else
         {
             /* If video is visible, then toggle the status of bgWidget */

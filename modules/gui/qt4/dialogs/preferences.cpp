@@ -2,7 +2,7 @@
  * preferences.cpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: f00fec2d7257f63032d3e1857021601776a57b91 $
+ * $Id: a8e436f7a55613a902b62d0215b0ca813a4afc06 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -360,9 +360,10 @@ void PrefsDialog::reset()
     {
         config_ResetAll( p_intf );
         config_SaveConfigFile( p_intf, NULL );
+        getSettings()->clear();
 
-        instance = NULL;
         close();
+        instance = NULL;
         PrefsDialog::getInstance( p_intf )->show();
     }
 }
