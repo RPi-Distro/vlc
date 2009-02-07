@@ -2,7 +2,7 @@
  * vlcproc.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: vlcproc.cpp 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: vlcproc.cpp 16876 2006-09-28 15:46:15Z thresh $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teuli�e <ipkiss@via.ecp.fr>
@@ -209,7 +209,7 @@ void VlcProc::registerVoutWindow( void *pVoutWindow )
     // Reparent the vout window
     if( m_pVout )
     {
-        if( vout_Control( m_pVout, VOUT_REPARENT ) != VLC_SUCCESS )
+        if( vout_Control( m_pVout, VOUT_REPARENT, 0 ) != VLC_SUCCESS )
             vout_Control( m_pVout, VOUT_CLOSE );
     }
 }
@@ -225,7 +225,7 @@ void VlcProc::dropVout()
 {
     if( m_pVout )
     {
-        if( vout_Control( m_pVout, VOUT_REPARENT ) != VLC_SUCCESS )
+        if( vout_Control( m_pVout, VOUT_REPARENT, 0 ) != VLC_SUCCESS )
             vout_Control( m_pVout, VOUT_CLOSE );
         m_pVout = NULL;
     }

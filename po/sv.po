@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2006-09-23 02:09+0200\n"
+"POT-Creation-Date: 2006-10-01 17:46+0200\n"
 "PO-Revision-Date: 2006-04-11 00:56+0100\n"
 "Last-Translator: Daniel Nylander <po@danielnylander.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
@@ -366,7 +366,7 @@ msgstr ""
 msgid "General playlist behaviour"
 msgstr "Allmänt spellistebeteende"
 
-#: include/vlc_config_cat.h:188 modules/gui/macosx/playlist.m:489
+#: include/vlc_config_cat.h:188 modules/gui/macosx/playlist.m:486
 msgid "Services discovery"
 msgstr "Tjänsteidentifiering"
 
@@ -480,7 +480,7 @@ msgstr ""
 "-I wxwin\"\n"
 
 #: include/vlc_meta.h:28 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1296 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlist.m:1293 modules/gui/macosx/playlistinfo.m:205
 #: modules/gui/macosx/playlistinfo.m:310 modules/misc/growl.c:166
 #: modules/misc/growl.c:169 modules/misc/notify.c:156
 #: modules/misc/notify.c:159
@@ -503,7 +503,7 @@ msgid "Author"
 msgstr "Upphovsman"
 
 #: include/vlc_meta.h:31 modules/gui/macosx/playlist.m:318
-#: modules/gui/macosx/playlist.m:1296 modules/gui/macosx/playlistinfo.m:205
+#: modules/gui/macosx/playlist.m:1293 modules/gui/macosx/playlistinfo.m:205
 #: modules/gui/macosx/playlistinfo.m:310
 msgid "Artist"
 msgstr "Artist"
@@ -5492,7 +5492,7 @@ msgid "IVTV MPEG Encoding cards input"
 msgstr ""
 
 #: modules/access/rtsp/access.c:40 modules/access_output/udp.c:75
-#: modules/demux/live555.cpp:62 modules/demux/livedotcom.cpp:61
+#: modules/demux/live555.cpp:62
 msgid "Caching value (ms)"
 msgstr ""
 
@@ -8915,76 +8915,74 @@ msgstr ""
 msgid "FLAC demuxer"
 msgstr ""
 
-#: modules/demux/live555.cpp:64 modules/demux/livedotcom.cpp:63
+#: modules/demux/live555.cpp:64
 msgid ""
 "Allows you to modify the default caching value for RTSP streams. This value "
 "should be set in millisecond units."
 msgstr ""
 
-#: modules/demux/live555.cpp:67 modules/demux/livedotcom.cpp:66
+#: modules/demux/live555.cpp:67
 msgid "Kasenna RTSP dialect"
 msgstr ""
 
-#: modules/demux/live555.cpp:68 modules/demux/livedotcom.cpp:67
+#: modules/demux/live555.cpp:68
 msgid ""
 "Kasenna servers use an old and unstandard dialect of RTSP. When you set this "
 "parameter, VLC will try this dialect for communication. In this mode you "
 "cannot connect to normal RTSP servers."
 msgstr ""
 
-#: modules/demux/live555.cpp:72 modules/demux/livedotcom.cpp:71
+#: modules/demux/live555.cpp:72
 #, fuzzy
 msgid "RTSP user name"
 msgstr "FTP-användarnamn"
 
-#: modules/demux/live555.cpp:73 modules/demux/livedotcom.cpp:72
+#: modules/demux/live555.cpp:73
 #, fuzzy
 msgid ""
 "Allows you to modify the user name that will be used for authenticating the "
 "connection."
 msgstr "Användarnamn att använda för anslutningen."
 
-#: modules/demux/live555.cpp:75 modules/demux/livedotcom.cpp:74
+#: modules/demux/live555.cpp:75
 #, fuzzy
 msgid "RTSP password"
 msgstr "FTP-lösenord"
 
-#: modules/demux/live555.cpp:76 modules/demux/livedotcom.cpp:75
+#: modules/demux/live555.cpp:76
 #, fuzzy
 msgid "Allows you to modify the password that will be used for the connection."
 msgstr "Lösenord att använda för anslutningen."
 
-#: modules/demux/live555.cpp:80 modules/demux/livedotcom.cpp:79
+#: modules/demux/live555.cpp:80
 msgid "RTP/RTSP/SDP demuxer (using Live555)"
 msgstr ""
 
-#: modules/demux/live555.cpp:90 modules/demux/livedotcom.cpp:89
+#: modules/demux/live555.cpp:90
 msgid "RTSP/RTP access and demux"
 msgstr ""
 
 #: modules/demux/live555.cpp:96 modules/demux/live555.cpp:97
-#: modules/demux/livedotcom.cpp:95 modules/demux/livedotcom.cpp:96
 msgid "Use RTP over RTSP (TCP)"
 msgstr "Använd RTP över RTSP (TCP)"
 
-#: modules/demux/live555.cpp:99 modules/demux/livedotcom.cpp:98
+#: modules/demux/live555.cpp:99
 msgid "Client port"
 msgstr "Klientport"
 
-#: modules/demux/live555.cpp:100 modules/demux/livedotcom.cpp:99
+#: modules/demux/live555.cpp:100
 msgid "Port to use for the RTP source of the session"
 msgstr ""
 
 #: modules/demux/live555.cpp:103 modules/demux/live555.cpp:104
-#: modules/demux/livedotcom.cpp:102 modules/demux/livedotcom.cpp:103
 msgid "Tunnel RTSP and RTP over HTTP"
 msgstr ""
 
-#: modules/demux/live555.cpp:106 modules/demux/livedotcom.cpp:105
+#: modules/demux/live555.cpp:106
 msgid "HTTP tunnel port"
 msgstr "HTTP-tunnelport"
 
-#: modules/demux/live555.cpp:107 modules/demux/livedotcom.cpp:106
+#: modules/demux/live555.cpp:107
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr ""
 
@@ -9855,9 +9853,9 @@ msgstr "Öppna även filer från alla undermappar?"
 
 #: modules/gui/beos/InterfaceWindow.cpp:159 modules/gui/macosx/bookmarks.m:107
 #: modules/gui/macosx/controls.m:49 modules/gui/macosx/interaction.m:121
-#: modules/gui/macosx/open.m:158 modules/gui/macosx/playlistinfo.m:60
-#: modules/gui/macosx/prefs.m:122 modules/gui/macosx/prefs.m:142
-#: modules/gui/macosx/wizard.m:363
+#: modules/gui/macosx/interaction.m:179 modules/gui/macosx/open.m:158
+#: modules/gui/macosx/playlistinfo.m:60 modules/gui/macosx/prefs.m:122
+#: modules/gui/macosx/prefs.m:142 modules/gui/macosx/wizard.m:363
 msgid "Cancel"
 msgstr "Avbryt"
 
@@ -9973,7 +9971,7 @@ msgid "Edit"
 msgstr "Redigera"
 
 #: modules/gui/beos/PlayListWindow.cpp:103 modules/gui/macosx/intf.m:531
-#: modules/gui/macosx/playlist.m:484
+#: modules/gui/macosx/playlist.m:481
 msgid "Select All"
 msgstr "Markera allt"
 
@@ -10027,7 +10025,7 @@ msgid "Apply"
 msgstr "Verkställ"
 
 #: modules/gui/beos/PreferencesWindow.cpp:254 modules/gui/macosx/output.m:526
-#: modules/gui/macosx/playlist.m:780 modules/gui/macosx/prefs.m:121
+#: modules/gui/macosx/playlist.m:777 modules/gui/macosx/prefs.m:121
 msgid "Save"
 msgstr "Spara"
 
@@ -10107,7 +10105,7 @@ msgstr "Extrahera"
 msgid "Time"
 msgstr "Tid"
 
-#: modules/gui/macosx/bookmarks.m:136 modules/gui/macosx/playlist.m:776
+#: modules/gui/macosx/bookmarks.m:136 modules/gui/macosx/playlist.m:773
 msgid "Untitled"
 msgstr "Namnlös"
 
@@ -10170,20 +10168,20 @@ msgid "Random Off"
 msgstr "Slumpmässig av"
 
 #: modules/gui/macosx/controls.m:197 modules/gui/macosx/controls.m:725
-#: modules/gui/macosx/intf.m:541 modules/gui/macosx/playlist.m:499
-#: modules/gui/macosx/playlist.m:1243
+#: modules/gui/macosx/intf.m:541 modules/gui/macosx/playlist.m:496
+#: modules/gui/macosx/playlist.m:1240
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:54
 msgid "Repeat One"
 msgstr "Repetera en gång"
 
 #: modules/gui/macosx/controls.m:202 modules/gui/macosx/controls.m:236
-#: modules/gui/macosx/playlist.m:1262
+#: modules/gui/macosx/playlist.m:1259
 msgid "Repeat Off"
 msgstr "Repetering av"
 
 #: modules/gui/macosx/controls.m:231 modules/gui/macosx/controls.m:732
-#: modules/gui/macosx/intf.m:542 modules/gui/macosx/playlist.m:500
-#: modules/gui/macosx/playlist.m:1251
+#: modules/gui/macosx/intf.m:542 modules/gui/macosx/playlist.m:497
+#: modules/gui/macosx/playlist.m:1248
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:53
 msgid "Repeat All"
 msgstr "Repetera alla"
@@ -10214,7 +10212,7 @@ msgid "Fit to Screen"
 msgstr "Anpassa till skärm"
 
 #: modules/gui/macosx/controls.m:718 modules/gui/macosx/intf.m:540
-#: modules/gui/macosx/playlist.m:493
+#: modules/gui/macosx/playlist.m:490
 msgid "Random"
 msgstr "Slumpmässig"
 
@@ -10240,7 +10238,7 @@ msgstr "Snabbt framåt"
 #: modules/gui/macosx/intf.m:534 modules/gui/macosx/intf.m:612
 #: modules/gui/macosx/intf.m:619 modules/gui/macosx/intf.m:1412
 #: modules/gui/macosx/intf.m:1413 modules/gui/macosx/intf.m:1414
-#: modules/gui/macosx/intf.m:1415 modules/gui/macosx/playlist.m:481
+#: modules/gui/macosx/intf.m:1415 modules/gui/macosx/playlist.m:478
 #: modules/gui/pda/pda_interface.c:262 modules/gui/pda/pda_interface.c:263
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:274
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:283
@@ -10400,6 +10398,21 @@ msgid ""
 "can be set in the Preferences, Video / Filters section."
 msgstr ""
 
+#: modules/gui/macosx/interaction.m:125 modules/gui/macosx/intf.m:630
+#: modules/gui/wxwidgets/dialogs/wizard.cpp:81
+msgid "Error"
+msgstr "Fel"
+
+#: modules/gui/macosx/interaction.m:178
+#, fuzzy
+msgid "Yes"
+msgstr "&Ja"
+
+#: modules/gui/macosx/interaction.m:178
+#, fuzzy
+msgid "No"
+msgstr "&Nej"
+
 #: modules/gui/macosx/intf.m:485
 msgid "VLC - Controller"
 msgstr "VLC - Kontroller"
@@ -10520,7 +10533,7 @@ msgid "Extended Controls"
 msgstr "Utökade kontroller"
 
 #: modules/gui/macosx/intf.m:597 modules/gui/macosx/intf.m:639
-#: modules/gui/macosx/playlist.m:485 modules/gui/macosx/playlistinfo.m:55
+#: modules/gui/macosx/playlist.m:482 modules/gui/macosx/playlistinfo.m:55
 #: modules/gui/macosx/playlistinfo.m:371
 msgid "Information"
 msgstr "Information"
@@ -10560,10 +10573,6 @@ msgstr "Gör en donation"
 #: modules/gui/macosx/intf.m:609
 msgid "Online Forum"
 msgstr "Onlineforum"
-
-#: modules/gui/macosx/intf.m:630 modules/gui/wxwidgets/dialogs/wizard.cpp:81
-msgid "Error"
-msgstr "Fel"
 
 #: modules/gui/macosx/intf.m:631
 msgid ""
@@ -10873,83 +10882,83 @@ msgstr "SDP URL"
 msgid "Save File"
 msgstr "Spara fil"
 
-#: modules/gui/macosx/playlist.m:480
+#: modules/gui/macosx/playlist.m:477
 msgid "Save Playlist..."
 msgstr "Spara spellista..."
 
-#: modules/gui/macosx/playlist.m:482 modules/gui/pda/pda_interface.c:1254
+#: modules/gui/macosx/playlist.m:479 modules/gui/pda/pda_interface.c:1254
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:278
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:285
 #: modules/gui/wxwidgets/dialogs/vlm/vlm_streampanel.cpp:105
 msgid "Delete"
 msgstr "Ta bort"
 
-#: modules/gui/macosx/playlist.m:483
+#: modules/gui/macosx/playlist.m:480
 msgid "Expand Node"
 msgstr "Expandera nod"
 
-#: modules/gui/macosx/playlist.m:486
+#: modules/gui/macosx/playlist.m:483
 msgid "Get Stream Information"
 msgstr "Få ströminformation"
 
-#: modules/gui/macosx/playlist.m:487
+#: modules/gui/macosx/playlist.m:484
 msgid "Sort Node by Name"
 msgstr "Sortera nod efter namn"
 
-#: modules/gui/macosx/playlist.m:488
+#: modules/gui/macosx/playlist.m:485
 msgid "Sort Node by Author"
 msgstr "Sortera nod efter upphovsman"
 
-#: modules/gui/macosx/playlist.m:491 modules/gui/macosx/playlist.m:541
-#: modules/gui/macosx/playlist.m:1590
+#: modules/gui/macosx/playlist.m:488 modules/gui/macosx/playlist.m:538
+#: modules/gui/macosx/playlist.m:1587
 msgid "No items in the playlist"
 msgstr "%i objekt i spellistan"
 
-#: modules/gui/macosx/playlist.m:495
+#: modules/gui/macosx/playlist.m:492
 #: modules/gui/wxwidgets/dialogs/playlist.cpp:323
 msgid "Search"
 msgstr "Sök"
 
-#: modules/gui/macosx/playlist.m:497
+#: modules/gui/macosx/playlist.m:494
 msgid "Search in Playlist"
 msgstr "Sök i spellista"
 
-#: modules/gui/macosx/playlist.m:498
+#: modules/gui/macosx/playlist.m:495
 msgid "Standard Play"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:501
+#: modules/gui/macosx/playlist.m:498
 msgid "Add Folder to Playlist"
 msgstr "Lägg till mapp i spellista"
 
-#: modules/gui/macosx/playlist.m:503
+#: modules/gui/macosx/playlist.m:500
 #, fuzzy
 msgid "File Format:"
 msgstr "Arkiv"
 
-#: modules/gui/macosx/playlist.m:504
+#: modules/gui/macosx/playlist.m:501
 #, fuzzy
 msgid "Extended M3U"
 msgstr "Utökat gränssnitt"
 
-#: modules/gui/macosx/playlist.m:505
+#: modules/gui/macosx/playlist.m:502
 msgid "XML Shareable Playlist Format (XSPF)"
 msgstr ""
 
-#: modules/gui/macosx/playlist.m:535 modules/gui/macosx/playlist.m:1584
+#: modules/gui/macosx/playlist.m:532 modules/gui/macosx/playlist.m:1581
 #, c-format
 msgid "%i items in the playlist"
 msgstr "%i objekt i spellistan"
 
-#: modules/gui/macosx/playlist.m:545 modules/gui/macosx/playlist.m:1594
+#: modules/gui/macosx/playlist.m:542 modules/gui/macosx/playlist.m:1591
 msgid "1 item in the playlist"
 msgstr "Ett objekt i spellistan"
 
-#: modules/gui/macosx/playlist.m:779
+#: modules/gui/macosx/playlist.m:776
 msgid "Save Playlist"
 msgstr "Spara spellista"
 
-#: modules/gui/macosx/playlist.m:1559
+#: modules/gui/macosx/playlist.m:1556
 msgid "Empty Folder"
 msgstr "Tom mapp"
 

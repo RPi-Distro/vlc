@@ -393,7 +393,6 @@ modules/demux/demuxdump.c
 modules/demux/dts.c
 modules/demux/flac.c
 modules/demux/live555.cpp
-modules/demux/livedotcom.cpp
 modules/demux/m3u.c
 modules/demux/mjpeg.c
 modules/demux/mkv.cpp

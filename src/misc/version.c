@@ -3,5 +3,5 @@
  * WHETHER THEY ARE BUILT BY OTHERS OR DURING DEVELOPMENT OR FOR THE
  * OFFICIAL VLC STABLE RELEASES.
  */
-const char psz_vlc_changeset[] = "16844";
+const char psz_vlc_changeset[] = "16915";
 

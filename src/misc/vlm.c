@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: vlm.c 15025 2006-04-01 11:27:40Z fkuehne $
+ * $Id: vlm.c 16906 2006-10-01 14:15:23Z jpsaman $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -2415,7 +2415,10 @@ static int Manage( vlc_object_t* p_object )
                 else
                 {
                     if( vlm_MediaControl( vlm, p_media, p_instance->psz_name,
-                                          "stop", 0 ) == VLC_SUCCESS ) i--;
+                                          "stop", 0 ) == VLC_SUCCESS )
+                    {
+                        j--; /* the aray is one element smaller now. */
+                    }
                 }
             }
         }

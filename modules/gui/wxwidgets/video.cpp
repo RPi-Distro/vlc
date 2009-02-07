@@ -2,7 +2,7 @@
  * video.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004, 2003 the VideoLAN team
- * $Id: video.cpp 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: video.cpp 16876 2006-09-28 15:46:15Z thresh $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -154,11 +154,11 @@ VideoWindow::~VideoWindow()
         if( !p_intf->psz_switch_intf )
         {
             if( vout_Control( p_vout, VOUT_CLOSE ) != VLC_SUCCESS )
-                vout_Control( p_vout, VOUT_REPARENT );
+                vout_Control( p_vout, VOUT_REPARENT, 0 );
         }
         else
         {
-            if( vout_Control( p_vout, VOUT_REPARENT ) != VLC_SUCCESS )
+            if( vout_Control( p_vout, VOUT_REPARENT, 0 ) != VLC_SUCCESS )
                 vout_Control( p_vout, VOUT_CLOSE );
         }
     }

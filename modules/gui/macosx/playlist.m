@@ -2,7 +2,7 @@
  * playlist.m: MacOS X interface module
  *****************************************************************************
 * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: playlist.m 16442 2006-08-30 22:15:52Z hartman $
+ * $Id: playlist.m 16901 2006-10-01 10:54:22Z fkuehne $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -368,6 +368,18 @@
 @end
 
 /*****************************************************************************
+* extension to NSOutlineView's interface to fix compilation warnings
+* and let us access these 2 functions properly
+* this uses a private Apple-API, but works finely on all current OSX releases
+* keep checking for compatiblity with future releases though
+*****************************************************************************/
+
+@interface NSOutlineView (UndocumentedSortImages)
++ (NSImage *)_defaultTableHeaderSortImage;
++ (NSImage *)_defaultTableHeaderReverseSortImage;
+@end
+
+/*****************************************************************************
  * VLCPlaylist implementation
  *****************************************************************************/
 @implementation VLCPlaylist
@@ -401,26 +413,11 @@
         @"VLCPlaylistItemPboardType", nil]];
     [o_outline_view setIntercellSpacing: NSMakeSize (0.0, 1.0)];
 
-/* We need to check whether _defaultTableHeaderSortImage exists, since it 
-belongs to an Apple hidden private API, and then can "disapear" at any time*/
-
-    if( [[NSOutlineView class] respondsToSelector:@selector(_defaultTableHeaderSortImage)] )
-    {
-        o_ascendingSortingImage = [[NSOutlineView class] _defaultTableHeaderSortImage];
-    }
-    else
-    {
-        o_ascendingSortingImage = nil;
-    }
-
-    if( [[NSOutlineView class] respondsToSelector:@selector(_defaultTableHeaderReverseSortImage)] )
-    {
-        o_descendingSortingImage = [[NSOutlineView class] _defaultTableHeaderReverseSortImage];
-    }
-    else
-    {
-        o_descendingSortingImage = nil;
-    }
+    /* this uses private Apple API which works fine on all releases incl. 10.4, 
+        * but keep checking in the future!
+        * These methods were added artificially to NSOutlineView's public interface above */
+    o_ascendingSortingImage = [[NSOutlineView class] _defaultTableHeaderSortImage];
+    o_descendingSortingImage = [[NSOutlineView class] _defaultTableHeaderReverseSortImage];
 
     o_tc_sortColumn = nil;
 
