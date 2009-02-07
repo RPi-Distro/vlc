@@ -1,6 +1,6 @@
 dnl Autoconf settings for vlc
 
-AC_INIT(vlc,0.8.5-1-svn)
+AC_INIT(vlc,0.8.5-1-svn-debian)
 VERSION_MAJOR="0"
 VERSION_MINOR="8"
 VERSION_REVISION="5"

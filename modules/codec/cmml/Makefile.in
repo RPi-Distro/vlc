@@ -348,9 +348,9 @@ libcmml_plugin_la_LIBADD = $(LTLIBVLC)
 
 libcmml_a_SOURCES = $(SOURCES_cmml)
 libcmml_builtin_la_SOURCES = $(SOURCES_cmml)
-libcmml_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) cmml`
-libcmml_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) cmml`
-libcmml_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) cmml`
+libcmml_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic cmml`
+libcmml_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic cmml`
+libcmml_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic cmml`
 libcmml_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin cmml`
 libcmml_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin cmml`
 libcmml_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin cmml`

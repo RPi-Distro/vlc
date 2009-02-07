@@ -104,9 +104,9 @@ libpda_plugin_la_LIBADD = $(LTLIBVLC)
 
 libpda_a_SOURCES = $(SOURCES_pda)
 libpda_builtin_la_SOURCES = $(SOURCES_pda)
-libpda_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) pda`
-libpda_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) pda`
-libpda_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) pda`
+libpda_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic pda`
+libpda_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic pda`
+libpda_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic pda`
 libpda_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin pda`
 libpda_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pda`
 libpda_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pda`

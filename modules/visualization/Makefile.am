@@ -104,9 +104,9 @@ libgoom_plugin_la_LIBADD = $(LTLIBVLC)
 
 libgoom_a_SOURCES = $(SOURCES_goom)
 libgoom_builtin_la_SOURCES = $(SOURCES_goom)
-libgoom_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) goom`
-libgoom_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) goom`
-libgoom_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) goom`
+libgoom_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic goom`
+libgoom_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic goom`
+libgoom_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic goom`
 libgoom_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin goom`
 libgoom_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin goom`
 libgoom_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin goom`
@@ -127,9 +127,9 @@ libxosd_plugin_la_LIBADD = $(LTLIBVLC)
 
 libxosd_a_SOURCES = $(SOURCES_xosd)
 libxosd_builtin_la_SOURCES = $(SOURCES_xosd)
-libxosd_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) xosd`
-libxosd_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) xosd`
-libxosd_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) xosd`
+libxosd_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic xosd`
+libxosd_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic xosd`
+libxosd_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic xosd`
 libxosd_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin xosd`
 libxosd_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin xosd`
 libxosd_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin xosd`

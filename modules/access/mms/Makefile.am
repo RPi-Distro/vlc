@@ -104,9 +104,9 @@ libaccess_mms_plugin_la_LIBADD = $(LTLIBVLC)
 
 libaccess_mms_a_SOURCES = $(SOURCES_access_mms)
 libaccess_mms_builtin_la_SOURCES = $(SOURCES_access_mms)
-libaccess_mms_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) access_mms`
-libaccess_mms_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) access_mms`
-libaccess_mms_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) access_mms`
+libaccess_mms_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic access_mms`
+libaccess_mms_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic access_mms`
+libaccess_mms_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic access_mms`
 libaccess_mms_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin access_mms`
 libaccess_mms_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin access_mms`
 libaccess_mms_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin access_mms`

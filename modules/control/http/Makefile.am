@@ -104,9 +104,9 @@ libhttp_plugin_la_LIBADD = $(LTLIBVLC)
 
 libhttp_a_SOURCES = $(SOURCES_http)
 libhttp_builtin_la_SOURCES = $(SOURCES_http)
-libhttp_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) http`
-libhttp_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) http`
-libhttp_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) http`
+libhttp_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic http`
+libhttp_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic http`
+libhttp_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic http`
 libhttp_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin http`
 libhttp_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin http`
 libhttp_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin http`

@@ -104,9 +104,9 @@ libwxwidgets_plugin_la_LIBADD = $(LTLIBVLC)
 
 libwxwidgets_a_SOURCES = $(SOURCES_wxwidgets)
 libwxwidgets_builtin_la_SOURCES = $(SOURCES_wxwidgets)
-libwxwidgets_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) wxwidgets`
-libwxwidgets_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) wxwidgets`
-libwxwidgets_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) wxwidgets`
+libwxwidgets_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic wxwidgets`
+libwxwidgets_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic wxwidgets`
+libwxwidgets_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic wxwidgets`
 libwxwidgets_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin wxwidgets`
 libwxwidgets_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin wxwidgets`
 libwxwidgets_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin wxwidgets`

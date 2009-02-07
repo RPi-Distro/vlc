@@ -351,9 +351,9 @@ libmux_ps_plugin_la_LIBADD = $(LTLIBVLC)
 
 libmux_ps_a_SOURCES = $(SOURCES_mux_ps)
 libmux_ps_builtin_la_SOURCES = $(SOURCES_mux_ps)
-libmux_ps_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) mux_ps`
-libmux_ps_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) mux_ps`
-libmux_ps_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) mux_ps`
+libmux_ps_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic mux_ps`
+libmux_ps_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic mux_ps`
+libmux_ps_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic mux_ps`
 libmux_ps_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin mux_ps`
 libmux_ps_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin mux_ps`
 libmux_ps_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin mux_ps`
@@ -375,9 +375,9 @@ libmux_ts_plugin_la_LIBADD = $(LTLIBVLC)
 
 libmux_ts_a_SOURCES = $(SOURCES_mux_ts)
 libmux_ts_builtin_la_SOURCES = $(SOURCES_mux_ts)
-libmux_ts_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) mux_ts`
-libmux_ts_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) mux_ts`
-libmux_ts_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) mux_ts`
+libmux_ts_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic mux_ts`
+libmux_ts_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic mux_ts`
+libmux_ts_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic mux_ts`
 libmux_ts_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin mux_ts`
 libmux_ts_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin mux_ts`
 libmux_ts_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin mux_ts`

@@ -104,9 +104,9 @@ libipv4_plugin_la_LIBADD = $(LTLIBVLC)
 
 libipv4_a_SOURCES = $(SOURCES_ipv4)
 libipv4_builtin_la_SOURCES = $(SOURCES_ipv4)
-libipv4_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) ipv4`
-libipv4_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) ipv4`
-libipv4_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) ipv4`
+libipv4_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic ipv4`
+libipv4_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic ipv4`
+libipv4_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic ipv4`
 libipv4_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin ipv4`
 libipv4_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin ipv4`
 libipv4_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin ipv4`
@@ -127,9 +127,9 @@ libipv6_plugin_la_LIBADD = $(LTLIBVLC)
 
 libipv6_a_SOURCES = $(SOURCES_ipv6)
 libipv6_builtin_la_SOURCES = $(SOURCES_ipv6)
-libipv6_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) ipv6`
-libipv6_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) ipv6`
-libipv6_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) ipv6`
+libipv6_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic ipv6`
+libipv6_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic ipv6`
+libipv6_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic ipv6`
 libipv6_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin ipv6`
 libipv6_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin ipv6`
 libipv6_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin ipv6`

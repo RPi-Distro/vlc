@@ -338,9 +338,9 @@ librtcp_plugin_la_LIBADD = $(LTLIBVLC)
 
 librtcp_a_SOURCES = $(SOURCES_rtcp)
 librtcp_builtin_la_SOURCES = $(SOURCES_rtcp)
-librtcp_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) rtcp`
-librtcp_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) rtcp`
-librtcp_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) rtcp`
+librtcp_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic rtcp`
+librtcp_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic rtcp`
+librtcp_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic rtcp`
 librtcp_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin rtcp`
 librtcp_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin rtcp`
 librtcp_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin rtcp`

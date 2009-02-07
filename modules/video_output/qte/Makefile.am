@@ -104,9 +104,9 @@ libqte_plugin_la_LIBADD = $(LTLIBVLC)
 
 libqte_a_SOURCES = $(SOURCES_qte)
 libqte_builtin_la_SOURCES = $(SOURCES_qte)
-libqte_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) qte`
-libqte_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) qte`
-libqte_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) qte`
+libqte_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic qte`
+libqte_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic qte`
+libqte_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic qte`
 libqte_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin qte`
 libqte_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin qte`
 libqte_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin qte`

@@ -104,9 +104,9 @@ libstream_out_transrate_plugin_la_LIBADD = $(LTLIBVLC)
 
 libstream_out_transrate_a_SOURCES = $(SOURCES_stream_out_transrate)
 libstream_out_transrate_builtin_la_SOURCES = $(SOURCES_stream_out_transrate)
-libstream_out_transrate_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) stream_out_transrate`
-libstream_out_transrate_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) stream_out_transrate`
-libstream_out_transrate_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) stream_out_transrate`
+libstream_out_transrate_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic stream_out_transrate`
+libstream_out_transrate_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic stream_out_transrate`
+libstream_out_transrate_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic stream_out_transrate`
 libstream_out_transrate_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin stream_out_transrate`
 libstream_out_transrate_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin stream_out_transrate`
 libstream_out_transrate_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin stream_out_transrate`

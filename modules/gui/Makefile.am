@@ -104,9 +104,9 @@ libncurses_plugin_la_LIBADD = $(LTLIBVLC)
 
 libncurses_a_SOURCES = $(SOURCES_ncurses)
 libncurses_builtin_la_SOURCES = $(SOURCES_ncurses)
-libncurses_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) ncurses`
-libncurses_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) ncurses`
-libncurses_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) ncurses`
+libncurses_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic ncurses`
+libncurses_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic ncurses`
+libncurses_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic ncurses`
 libncurses_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin ncurses`
 libncurses_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin ncurses`
 libncurses_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin ncurses`

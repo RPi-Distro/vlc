@@ -104,9 +104,9 @@ libvcdx_plugin_la_LIBADD = $(LTLIBVLC)
 
 libvcdx_a_SOURCES = $(SOURCES_vcdx)
 libvcdx_builtin_la_SOURCES = $(SOURCES_vcdx)
-libvcdx_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin $(pic) vcdx`
-libvcdx_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin $(pic) vcdx`
-libvcdx_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin $(pic) vcdx`
+libvcdx_a_CFLAGS = `$(VLC_CONFIG) --cflags builtin pic vcdx`
+libvcdx_a_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin pic vcdx`
+libvcdx_a_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin pic vcdx`
 libvcdx_builtin_la_CFLAGS = `$(VLC_CONFIG) --cflags builtin vcdx`
 libvcdx_builtin_la_CXXFLAGS = `$(VLC_CONFIG) --cxxflags builtin vcdx`
 libvcdx_builtin_la_OBJCFLAGS = `$(VLC_CONFIG) --objcflags builtin vcdx`
