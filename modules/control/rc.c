@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004 - 2005 the VideoLAN team
- * $Id: rc.c 15533 2006-05-04 21:26:26Z dionoea $
+ * $Id: rc.c 16669 2006-09-16 10:31:26Z thresh $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -53,6 +53,8 @@
 #include "vlc_error.h"
 #include "network.h"
 #include "vlc_url.h"
+
+#include "charset.h"
 
 #if defined(AF_UNIX) && !defined(AF_LOCAL)
 #    define AF_LOCAL AF_UNIX
@@ -137,7 +139,7 @@ void __msg_rc( intf_thread_t *p_intf, const char *psz_fmt, ... )
 
     if( p_intf->p_sys->i_socket == -1 )
     {
-        vprintf( psz_fmt, args );
+        utf8_vfprintf( stdout, psz_fmt, args );
         printf( "\r\n" );
     }
     else

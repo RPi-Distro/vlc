@@ -2,7 +2,7 @@
  * libvlc.c: main libvlc source
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: libvlc.c 16441 2006-08-30 21:36:35Z hartman $
+ * $Id: libvlc.c 16647 2006-09-14 14:58:57Z hartman $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -1279,7 +1279,7 @@ int VLC_Pause( int i_object )
 }
 
 /*****************************************************************************
- * VLC_Pause: toggle pause
+ * VLC_Stop: stop playback
  *****************************************************************************/
 int VLC_Stop( int i_object )
 {

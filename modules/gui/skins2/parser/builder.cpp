@@ -2,7 +2,7 @@
  * builder.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: builder.cpp 16454 2006-08-31 19:54:36Z hartman $
+ * $Id: builder.cpp 16647 2006-09-14 14:58:57Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -1061,7 +1061,7 @@ GenericFont *Builder::getFont( const string &fontId )
 string Builder::getFilePath( const string &rFileName ) const
 {
     OSFactory *pFactory = OSFactory::instance( getIntf() );
-    return m_path + pFactory->getDirSeparator() + rFileName;
+    return m_path + pFactory->getDirSeparator() + sFromLocale( rFileName );
 }
 
 

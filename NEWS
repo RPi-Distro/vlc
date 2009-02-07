@@ -1,7 +1,41 @@
-$Id: NEWS 15460 2006-04-30 15:48:29Z dionoea 0.8.5-1-svn-debian $
+$Id: NEWS 16713 2006-09-17 21:37:22Z zorglub $
+
+Changes between 0.8.5 and 0.8.6:
+--------------------------------
+
+Playlist:
+ * Shoutcast TV listings support
+
+Input:
+ * Support for RTSP authentication
+ * Support for adding subtitles on the fly
+ * Fixed MPEG-PS duration calculation
+ * ATSC support for DVB
+
+Decoders:
+ * Native WMV3 / VC-1 support
+ * WMA Speech support (through binary codecs)
+
+Video output:
+ * Additional OpenGL effects (cylinder, torus, sphere, ...)
+ * Improved libcaca support
+
+Interfaces:
+ * New hotkeys for crop and zoom
+ * Systray support in skins (Windows only)
+ * Support for Apple Remote control
+ * Notifications using notification-daemon on Linux
+ * Support for snapshots from the HTTP interface
+
+Localization:
+ * Add Czech
+
+Developers:
+ * Updates to the libvlc API
+
 
 Changes between 0.8.4a and 0.8.5:
---------------------------------------------------------
+----------------------------------
 
 Core support:
  * Statistics collection (bitrates, packets, connections, ...)

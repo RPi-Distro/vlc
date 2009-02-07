@@ -342,16 +342,10 @@ SOURCES_libvlc = \
 	$(OPT_SOURCES_libvlc_getopt) \
 	$(NULL)
 
-
 if !USE_LIBTOOL
 if !BUILD_SHARED
 SOURCES_libvlc += misc/version.c
 CLEANFILES += misc/version.c
-
-misc/version.c: FORCE
-	$(TOOLBOX) --update-version
-FORCE:
-
 endif
 
 # Install shared libvlc
@@ -362,6 +356,9 @@ install-exec-local:
 uninstall-local:
 	test -z "$(DATA_noinst_libvlc)" || rm -f "$(DESTDIR)$(libdir)/$(DATA_noinst_libvlc)"
 endif
+
+misc/version.c: FORCE
+	$(TOOLBOX) --update-version
 
 ###############################################################################
 # Stamp rules
@@ -389,3 +386,4 @@ test_url_LDADD = libvlc.la
 test_url_CFLAGS = $(CFLAGS_tests)
 endif
 
+FORCE:
