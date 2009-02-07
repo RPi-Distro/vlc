@@ -2,7 +2,7 @@
  * mosaic_bridge.c:
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: mosaic_bridge.c 14912 2006-03-25 10:57:34Z zorglub $
+ * $Id: mosaic_bridge.c 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -431,7 +431,10 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
 
         if ( p_sys->i_height || p_sys->i_width )
         {
-            video_format_t fmt_out = {0}, fmt_in = {0};
+            video_format_t fmt_out, fmt_in;
+
+            memset( &fmt_in, 0, sizeof(video_format_t) );
+            memset( &fmt_out, 0, sizeof(video_format_t) );
             fmt_in = p_sys->p_decoder->fmt_out.video;
 
             fmt_out.i_chroma = VLC_FOURCC('Y','U','V','A');

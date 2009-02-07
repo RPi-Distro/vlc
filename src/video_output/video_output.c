@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: video_output.c 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: video_output.c 16775 2006-09-21 20:35:23Z hartman $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -701,6 +701,8 @@ static void RunThread( vout_thread_t *p_vout)
 
     subpicture_t *  p_subpic = NULL;                   /* subpicture pointer */
 
+    input_thread_t *p_input = NULL ;           /* Parent input, if it exists */
+
     vlc_value_t     val;
     vlc_bool_t      b_drop_late;
 
@@ -895,7 +897,11 @@ static void RunThread( vout_thread_t *p_vout)
          */
         if( display_date > 0 )
         {
-            p_subpic = spu_SortSubpictures( p_vout->p_spu, display_date );
+            if( !p_input )
+                p_input = vlc_object_find( p_vout, VLC_OBJECT_INPUT,
+                                           FIND_PARENT );
+            p_subpic = spu_SortSubpictures( p_vout->p_spu, display_date,
+            p_input ? var_GetBool( p_input, "state" ) == PAUSE_S : VLC_FALSE );
         }
 
         /*
@@ -1042,6 +1048,11 @@ static void RunThread( vout_thread_t *p_vout)
 
             vlc_mutex_unlock( &p_vout->picture_lock );
         }
+    }
+
+    if( p_input )
+    {
+        vlc_object_release( p_input );
     }
 
     /*

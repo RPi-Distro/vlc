@@ -2,7 +2,7 @@
  * scaled_bitmap.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: scaled_bitmap.cpp 14118 2006-02-01 18:06:48Z courmisch $
+ * $Id: scaled_bitmap.cpp 16767 2006-09-21 14:32:45Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -45,10 +45,10 @@ ScaledBitmap::ScaledBitmap( intf_thread_t *pIntf, const GenericBitmap &rBitmap,
         // Decision variables for Bresenham algorithm
         int incX1 = 2 * (srcWidth-1);
         int incX2 = incX1 - 2 * (width-1);
-        int dX = incX1 - (width-1);
 
         for( int y = 0; y < height; y++ )
         {
+            int dX = incX1 - (width-1);
             uint32_t yOffset = ((y * srcHeight) / height) * srcWidth;
             pSrcData = ((uint32_t*)rBitmap.getData()) + yOffset;
 
@@ -74,14 +74,18 @@ ScaledBitmap::ScaledBitmap( intf_thread_t *pIntf, const GenericBitmap &rBitmap,
         // Decision variables for Bresenham algorithm
         int incX1 = 2 * (width-1);
         int incX2 = incX1 - 2 * (srcWidth-1);
-        int dX = incX1 - (srcWidth-1);
 
         for( int y = 0; y < height; y++ )
         {
+            int dX = incX1 - (srcWidth-1);
             uint32_t yOffset = ((y * srcHeight) / height) * srcWidth;
             pSrcData = ((uint32_t*)rBitmap.getData()) + yOffset;
 
-            for( int x = 0; x < width; x++ )
+            if (width == 1)
+            {
+                *(pDestData++) = *pSrcData;
+            }
+            else for( int x = 0; x < width; x++ )
             {
                 *(pDestData++) = *(pSrcData++);
 

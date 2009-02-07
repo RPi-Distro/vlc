@@ -323,7 +323,7 @@ struct module_symbols_t
     subpicture_region_t * (*__spu_CreateRegion_inner) (vlc_object_t *, video_format_t *);
     subpicture_region_t * (*__spu_MakeRegion_inner) (vlc_object_t *, video_format_t *, picture_t *);
     void (*__spu_DestroyRegion_inner) (vlc_object_t *, subpicture_region_t *);
-    subpicture_t * (*spu_SortSubpictures_inner) (spu_t *, mtime_t);
+    subpicture_t * (*spu_SortSubpictures_inner) (spu_t *, mtime_t, vlc_bool_t);
     void (*spu_RenderSubpictures_inner) (spu_t *,  video_format_t *, picture_t *, picture_t *, subpicture_t *, int, int);
     char * (*stream_ReadLine_inner) (stream_t *);
     stream_t * (*__stream_DemuxNew_inner) (vlc_object_t *p_obj, char *psz_demux, es_out_t *out);
@@ -495,6 +495,8 @@ struct module_symbols_t
     vlc_bool_t (*input_AddSubtitles_inner) (input_thread_t *, char *, vlc_bool_t);
     int (*utf8_fprintf_inner) (FILE *, const char *, ...);
     int (*utf8_vfprintf_inner) (FILE *stream, const char *fmt, va_list ap);
+    void *utf8_fprintf_deprecated;
+    void *utf8_vfprintf_deprecated;
 };
 # if defined (__PLUGIN__)
 #  define aout_FiltersCreatePipeline (p_symbols)->aout_FiltersCreatePipeline_inner
@@ -1451,6 +1453,8 @@ struct module_symbols_t
     (p_symbols)->net_ConvertIPv4_deprecated = NULL; \
     (p_symbols)->__stats_CounterGet_deprecated = NULL; \
     (p_symbols)->__stats_TimerDumpAll_deprecated = NULL; \
+    (p_symbols)->utf8_fprintf_deprecated = NULL; \
+    (p_symbols)->utf8_vfprintf_deprecated = NULL; \
 
 # endif /* __PLUGIN__ */
 #endif /* __VLC_SYMBOLS_H */

@@ -2,7 +2,7 @@
  * rootwrap.c
  *****************************************************************************
  * Copyright © 2005 Rémi Denis-Courmont
- * $Id: rootwrap.c 15025 2006-04-01 11:27:40Z fkuehne $
+ * $Id: rootwrap.c 16773 2006-09-21 18:46:25Z hartman $
  *
  * Author: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -51,6 +51,11 @@
 #include <errno.h>
 #include <netinet/in.h>
 #include <pthread.h>
+
+#if defined (AF_INET6) && !defined (IPV6_V6ONLY)
+# warning Uho, your IPv6 support is broken and has been disabled. Fix your C library.
+# undef AF_INET6
+#endif
 
 /*#ifndef HAVE_CLEARENV
 extern char **environ;

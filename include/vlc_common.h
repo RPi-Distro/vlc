@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: vlc_common.h 16434 2006-08-30 15:18:13Z hartman $
+ * $Id: vlc_common.h 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -1138,10 +1138,10 @@ VLC_EXPORT( char *, vlc_dgettext, ( const char *package, const char *msgid ) );
 #   else
 #       define _(String) dgettext(PACKAGE_NAME, String)
 #   endif
-#   define N_(String) ((char*)(String))
+#   define N_(String) (String)
 #else
-#   define _(String) ((char*)(String))
-#   define N_(String) ((char*)(String))
+#   define _(String) (String)
+#   define N_(String) (String)
 #endif
 
 /*****************************************************************************

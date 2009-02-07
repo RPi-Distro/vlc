@@ -2,7 +2,7 @@
  * ftp.c: FTP input module
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: ftp.c 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: ftp.c 16774 2006-09-21 19:29:10Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -63,7 +63,7 @@ vlc_module_begin();
                  CACHING_TEXT, CACHING_LONGTEXT, VLC_TRUE );
     add_string( "ftp-user", "anonymous", NULL, USER_TEXT, USER_LONGTEXT,
                 VLC_FALSE );
-    add_string( "ftp-pwd", "anonymous@dummy.org", NULL, PASS_TEXT,
+    add_string( "ftp-pwd", "anonymous@example.com", NULL, PASS_TEXT,
                 PASS_LONGTEXT, VLC_FALSE );
     add_string( "ftp-account", "anonymous", NULL, ACCOUNT_TEXT,
                 ACCOUNT_LONGTEXT, VLC_FALSE );

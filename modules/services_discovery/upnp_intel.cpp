@@ -2,7 +2,7 @@
  * Upnp_intell.cpp :  UPnP discovery module (Intel SDK)
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: upnp_intel.cpp 14727 2006-03-11 23:19:59Z dionoea $
+ * $Id: upnp_intel.cpp 16767 2006-09-21 14:32:45Z hartman $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org> (original plugin)
  *          Christian Henz <henz # c-lab.de>
@@ -411,7 +411,9 @@ IXML_Document* parseBrowseResult( IXML_Document* doc )
     if ( !textNode ) return 0;
 
     const char* resultString = ixmlNode_getNodeValue( textNode );
-    char* resultXML = convert_xml_special_chars( resultString );
+    char* resultXML = strdup( resultString );
+    
+    resolve_xml_special_chars( resultXML );
 
     IXML_Document* browseDoc = ixmlParseBuffer( resultXML );
 

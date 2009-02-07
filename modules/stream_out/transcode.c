@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: transcode.c 16601 2006-09-10 20:21:46Z zorglub $
+ * $Id: transcode.c 16774 2006-09-21 19:29:10Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -503,8 +503,8 @@ static int Open( vlc_object_t *p_this )
 
     if( p_sys->i_acodec )
     {
-        if( (strncmp( (char *)&p_sys->i_acodec, "mp3", 3) == 0) &&
-                            (p_sys->i_channels > 2) )
+        if( p_sys->i_acodec == VLC_FOURCC('m','p','3',0) &&
+            p_sys->i_channels > 2 )
         {
             msg_Warn( p_stream, "%d channels invalid for mp3, forcing to 2",
                       p_sys->i_channels );
@@ -623,28 +623,20 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_canvas_height = val.i_int;
     
     var_Get( p_stream, SOUT_CFG_PREFIX "canvas-aspect", &val );
-    if ( val.psz_string )
+    p_sys->i_canvas_aspect = 0;
+    if( val.psz_string && *val.psz_string )
     {
         char *psz_parser = strchr( val.psz_string, ':' );
-
         if( psz_parser )
         {
             *psz_parser++ = '\0';
-            p_sys->i_canvas_aspect = atoi( val.psz_string ) * VOUT_ASPECT_FACTOR
-                / atoi( psz_parser );
+            p_sys->i_canvas_aspect = atoi( val.psz_string ) *
+                VOUT_ASPECT_FACTOR / atoi( psz_parser );
         }
-        else
-        {
-            msg_Warn( p_stream, "bad aspect ratio %s", val.psz_string );
-            p_sys->i_canvas_aspect = 0;
-        }
+        else msg_Warn( p_stream, "bad aspect ratio %s", val.psz_string );
 
-        free( val.psz_string );
     }
-    else
-    {
-        p_sys->i_canvas_aspect = 0;
-    }
+    if( val.psz_string ) free( val.psz_string );
 
     var_Get( p_stream, SOUT_CFG_PREFIX "threads", &val );
     p_sys->i_threads = val.i_int;
@@ -1295,7 +1287,7 @@ static int transcode_audio_new( sout_stream_t *p_stream,
     {
         msg_Err( p_stream, "cannot find encoder (%s)", p_sys->psz_aenc );
         module_Unneed( id->p_decoder, id->p_decoder->p_module );
-        id->p_decoder->p_module = 0;
+        id->p_decoder->p_module = NULL;
         return VLC_EGENERIC;
     }
     id->p_encoder->fmt_in.audio.i_format = id->p_encoder->fmt_in.i_codec;
@@ -1344,11 +1336,11 @@ static int transcode_audio_new( sout_stream_t *p_stream,
 
     if( fmt_last.audio.i_channels != id->p_encoder->fmt_in.audio.i_channels )
     {
-        msg_Err( p_stream, "no audio filter found for mixing from"
-                 " %i to %i channels", fmt_last.audio.i_channels,
-                 id->p_encoder->fmt_in.audio.i_channels );
-#if 0
-        /* FIXME : this might work, but only if the encoder is restarted */
+#if 1
+        module_Unneed( id->p_encoder, id->p_encoder->p_module );
+        id->p_encoder->p_module = NULL;
+
+        /* This might work, but only if the encoder is restarted */
         id->p_encoder->fmt_in.audio.i_channels = fmt_last.audio.i_channels;
         id->p_encoder->fmt_out.audio.i_channels = fmt_last.audio.i_channels;
 
@@ -1358,7 +1350,30 @@ static int transcode_audio_new( sout_stream_t *p_stream,
         id->p_encoder->fmt_out.audio.i_physical_channels =
             id->p_encoder->fmt_out.audio.i_original_channels =
                 fmt_last.audio.i_physical_channels;
+
+        msg_Dbg( p_stream, "number of audio channels for mixing changed, "
+                 "trying to reopen the encoder for mixing %i to %i channels",
+                 fmt_last.audio.i_channels,
+                 id->p_encoder->fmt_in.audio.i_channels );
+
+        /* reload encoder */
+        id->p_encoder->p_cfg = p_stream->p_sys->p_audio_cfg;
+        id->p_encoder->p_module =
+            module_Need( id->p_encoder, "encoder", p_sys->psz_aenc, VLC_TRUE );
+        if( !id->p_encoder->p_module )
+        {
+            msg_Err( p_stream, "cannot find encoder (%s)", p_sys->psz_aenc );
+            transcode_audio_close( p_stream, id );
+            return VLC_EGENERIC;
+        }
+        id->p_encoder->fmt_in.audio.i_format = id->p_encoder->fmt_in.i_codec;
+        id->p_encoder->fmt_in.audio.i_bitspersample =
+            audio_BitsPerSample( id->p_encoder->fmt_in.i_codec );
 #else
+        msg_Err( p_stream, "no audio filter found for mixing from"
+                 " %i to %i channels", fmt_last.audio.i_channels,
+                 id->p_encoder->fmt_in.audio.i_channels );
+
         transcode_audio_close( p_stream, id );
         return VLC_EGENERIC;
 #endif
@@ -1394,12 +1409,12 @@ static void transcode_audio_close( sout_stream_t *p_stream,
     /* Close decoder */
     if( id->p_decoder->p_module )
         module_Unneed( id->p_decoder, id->p_decoder->p_module );
-    id->p_decoder->p_module = 0;
+    id->p_decoder->p_module = NULL;
 
     /* Close encoder */
     if( id->p_encoder->p_module )
         module_Unneed( id->p_encoder, id->p_encoder->p_module );
-    id->p_encoder->p_module = 0;
+    id->p_encoder->p_module = NULL;
 
     /* Close filters */
     for( i = 0; i < id->i_filter; i++ )
@@ -2222,7 +2237,8 @@ static int transcode_video_process( sout_stream_t *p_stream,
         /* Check if we have a subpicture to overlay */
         if( p_sys->p_spu )
         {
-            p_subpic = spu_SortSubpictures( p_sys->p_spu, p_pic->date );
+            p_subpic = spu_SortSubpictures( p_sys->p_spu, p_pic->date,
+                       VLC_FALSE /* Fixme: check if stream is paused */ );
             /* TODO: get another pic */
         }
 
@@ -2797,7 +2813,7 @@ static int transcode_osd_process( sout_stream_t *p_stream,
     /* Check if we have a subpicture to send */
     if( p_sys->p_spu && in->i_dts > 0)
     {
-        p_subpic = spu_SortSubpictures( p_sys->p_spu, in->i_dts );
+        p_subpic = spu_SortSubpictures( p_sys->p_spu, in->i_dts, VLC_FALSE );
     }
     else
     {

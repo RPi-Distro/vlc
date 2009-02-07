@@ -2,7 +2,7 @@
  * menus.cpp : wxWidgets plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: menus.cpp 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: menus.cpp 16774 2006-09-21 19:29:10Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -174,6 +174,7 @@ int VideoAutoMenuBuilder( vlc_object_t *p_object, vector<int> &ri_objects,
                                                  FIND_PARENT );
     if( p_dec_obj != NULL )
     {
+        vlc_object_t *p_object = p_dec_obj;
         PUSH_VAR( "ffmpeg-pp-q" );
         vlc_object_release( p_dec_obj );
     }

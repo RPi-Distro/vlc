@@ -2,7 +2,7 @@
  * subtitle.c: Demux for subtitle text files.
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: subtitle.c 14790 2006-03-18 02:06:16Z xtophe $
+ * $Id: subtitle.c 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -171,13 +171,14 @@ static int Control( demux_t *, int, va_list );
  *****************************************************************************/
 static int Open ( vlc_object_t *p_this )
 {
-    demux_t     *p_demux = (demux_t*)p_this;
-    demux_sys_t *p_sys;
-    es_format_t fmt;
-    float f_fps;
-    char *psz_type;
+    demux_t        *p_demux = (demux_t*)p_this;
+    demux_sys_t    *p_sys;
+    es_format_t    fmt;
+    input_thread_t *p_input;
+    float          f_fps;
+    char           *psz_type;
     int  (*pf_read)( demux_t *, subtitle_t* );
-    int i, i_max;
+    int            i, i_max;
 
     if( strcmp( p_demux->psz_demux, "subtitle" ) )
     {
@@ -188,11 +189,12 @@ static int Open ( vlc_object_t *p_this )
     p_demux->pf_demux = Demux;
     p_demux->pf_control = Control;
     p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
-    p_sys->psz_header = NULL;
-    p_sys->i_subtitle = 0;
-    p_sys->i_subtitles= 0;
-    p_sys->subtitle   = NULL;
-
+    p_sys->psz_header         = NULL;
+    p_sys->i_subtitle         = 0;
+    p_sys->i_subtitles        = 0;
+    p_sys->subtitle           = NULL;
+    p_sys->i_microsecperframe = 0;
+    p_sys->i_original_mspf    = 0;
 
     /* Get the FPS */
     f_fps = var_CreateGetFloat( p_demux, "sub-fps" );
@@ -200,19 +202,15 @@ static int Open ( vlc_object_t *p_this )
     {
         p_sys->i_microsecperframe = (int64_t)( (float)1000000 / f_fps );
     }
-    else
-    {
-        p_sys->i_microsecperframe = 0;
-    }
 
-    f_fps = var_CreateGetFloat( p_demux, "sub-original-fps" );
-    if( f_fps >= 1.0 )
+    p_input = (input_thread_t *)vlc_object_find( p_demux, VLC_OBJECT_INPUT, FIND_PARENT );
+    if( p_input )
     {
-        p_sys->i_original_mspf = (int64_t)( (float)1000000 / f_fps );
-    }
-    else
-    {
-        p_sys->i_original_mspf = 0;
+        f_fps = var_GetFloat( p_input, "sub-original-fps" );
+        if( f_fps >= 1.0 )
+            p_sys->i_original_mspf = (int64_t)( (float)1000000 / f_fps );
+
+        vlc_object_release( p_input );
     }
 
     /* Get or probe the type */
@@ -711,6 +709,7 @@ static int ParseMicroDvd( demux_t *p_demux, subtitle_t *p_subtitle )
     p_subtitle->i_stop  = 0;
     p_subtitle->psz_text = NULL;
 
+next:
     for( ;; )
     {
         if( ( s = TextGetLine( txt ) ) == NULL )
@@ -727,6 +726,15 @@ static int ParseMicroDvd( demux_t *p_demux, subtitle_t *p_subtitle )
             break;
         }
     }
+    if( i_start == 1 && i_stop == 1 )
+    {
+        /* We found a possible setting of the framerate "{1}{1}23.976" */
+        float tmp = us_strtod( buffer_text, NULL );
+        if( tmp > 0.0 && !var_GetFloat( p_demux, "sub-fps" ) > 0.0 )
+            p_sys->i_microsecperframe = (int64_t)( (float)1000000 / tmp );
+        goto next;
+    }
+
     /* replace | by \n */
     for( i = 0; i < strlen( buffer_text ); i++ )
     {

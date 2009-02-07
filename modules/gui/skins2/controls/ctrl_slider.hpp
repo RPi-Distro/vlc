@@ -2,7 +2,7 @@
  * ctrl_slider.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ctrl_slider.hpp 16457 2006-08-31 20:51:12Z hartman $
+ * $Id: ctrl_slider.hpp 16767 2006-09-21 14:32:45Z hartman $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -128,6 +128,9 @@ class CtrlSliderBg: public CtrlGeneric, public Observer<VarPercent>
         /// Handle an event
         virtual void handleEvent( EvtGeneric &rEvent );
 
+        /// Method called when the control is resized
+        virtual void onResize();
+
         /// Get the type of control (custom RTTI)
         virtual string getType() const { return "slider_bg"; }
 
@@ -146,7 +149,7 @@ class CtrlSliderBg: public CtrlGeneric, public Observer<VarPercent>
         /// Initial size of the control
         int m_width, m_height;
         /// Background image sequence (optional)
-        OSGraphics *m_pImgSeq;
+        GenericBitmap *m_pImgSeq;
         /// Number of images in the background bitmap
         int m_nbHoriz, m_nbVert;
         /// Number of pixels between two images

@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: logo.c 15002 2006-03-31 16:12:31Z fkuehne $
+ * $Id: logo.c 16767 2006-09-21 14:32:45Z hartman $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>
@@ -707,7 +707,6 @@ static int CreateFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys;
-    vlc_object_t *p_input;
     logo_list_t *p_logo_list;
 
     /* Allocate structure */
@@ -726,43 +725,32 @@ static int CreateFilter( vlc_object_t *p_this )
     }
 
     /* Hook used for callback variables */
-    p_input = vlc_object_find( p_this, VLC_OBJECT_INPUT, FIND_PARENT );
-    if( !p_input )
-    {
-        free( p_sys );
-        free( p_logo_list );
-        return VLC_ENOOBJ;
-    }
-
     p_logo_list->psz_filename =
-        var_CreateGetString( p_input->p_libvlc , "logo-file" );
+        var_CreateGetString( p_filter->p_libvlc , "logo-file" );
     if( !p_logo_list->psz_filename || !*p_logo_list->psz_filename )
     {
         msg_Err( p_this, "logo file not specified" );
-        vlc_object_release( p_input );
-        //if( p_sys->psz_filename ) free( p_sys->psz_filename );
         free( p_sys );
         free( p_logo_list );
         return VLC_EGENERIC;
     }
 
-    p_sys->posx = var_CreateGetInteger( p_input->p_libvlc , "logo-x" );
-    p_sys->posy = var_CreateGetInteger( p_input->p_libvlc , "logo-y" );
-    p_sys->pos = var_CreateGetInteger( p_input->p_libvlc , "logo-position" );
+    p_sys->posx = var_CreateGetInteger( p_filter->p_libvlc , "logo-x" );
+    p_sys->posy = var_CreateGetInteger( p_filter->p_libvlc , "logo-y" );
+    p_sys->pos = var_CreateGetInteger( p_filter->p_libvlc , "logo-position" );
     p_logo_list->i_alpha = __MAX( __MIN( var_CreateGetInteger(
-                           p_input->p_libvlc, "logo-transparency"), 255 ), 0 );
+                           p_filter->p_libvlc, "logo-transparency"), 255 ), 0 );
     p_logo_list->i_delay =
-                    var_CreateGetInteger( p_input->p_libvlc , "logo-delay" );
+                    var_CreateGetInteger( p_filter->p_libvlc , "logo-delay" );
     p_logo_list->i_repeat =
-                    var_CreateGetInteger( p_input->p_libvlc , "logo-repeat" );
+                    var_CreateGetInteger( p_filter->p_libvlc , "logo-repeat" );
 
-    var_AddCallback( p_input->p_libvlc, "logo-file", LogoCallback, p_sys );
-    var_AddCallback( p_input->p_libvlc, "logo-x", LogoCallback, p_sys );
-    var_AddCallback( p_input->p_libvlc, "logo-y", LogoCallback, p_sys );
-    var_AddCallback( p_input->p_libvlc, "logo-position", LogoCallback, p_sys );
-    var_AddCallback( p_input->p_libvlc, "logo-transparency", LogoCallback, p_sys );
-    var_AddCallback( p_input->p_libvlc, "logo-repeat", LogoCallback, p_sys );
-    vlc_object_release( p_input );
+    var_AddCallback( p_filter->p_libvlc, "logo-file", LogoCallback, p_sys );
+    var_AddCallback( p_filter->p_libvlc, "logo-x", LogoCallback, p_sys );
+    var_AddCallback( p_filter->p_libvlc, "logo-y", LogoCallback, p_sys );
+    var_AddCallback( p_filter->p_libvlc, "logo-position", LogoCallback, p_sys );
+    var_AddCallback( p_filter->p_libvlc, "logo-transparency", LogoCallback, p_sys );
+    var_AddCallback( p_filter->p_libvlc, "logo-repeat", LogoCallback, p_sys );
 
     vlc_mutex_init( p_filter, &p_logo_list->lock );
     vlc_mutex_lock( &p_logo_list->lock );
@@ -787,7 +775,6 @@ static void DestroyFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
-    vlc_object_t *p_input;
 
     vlc_mutex_destroy( &p_sys->p_logo_list->lock );
     FreeLogoList( p_sys->p_logo_list );
@@ -795,17 +782,13 @@ static void DestroyFilter( vlc_object_t *p_this )
     free( p_sys );
 
     /* Delete the logo variables from INPUT */
-    p_input = vlc_object_find( p_this, VLC_OBJECT_INPUT, FIND_PARENT );
-    if( !p_input ) return;
-
-    var_Destroy( p_input->p_libvlc , "logo-file" );
-    var_Destroy( p_input->p_libvlc , "logo-x" );
-    var_Destroy( p_input->p_libvlc , "logo-y" );
-    var_Destroy( p_input->p_libvlc , "logo-delay" );
-    var_Destroy( p_input->p_libvlc , "logo-repeat" );
-    var_Destroy( p_input->p_libvlc , "logo-position" );
-    var_Destroy( p_input->p_libvlc , "logo-transparency" );
-    vlc_object_release( p_input );
+    var_Destroy( p_filter->p_libvlc , "logo-file" );
+    var_Destroy( p_filter->p_libvlc , "logo-x" );
+    var_Destroy( p_filter->p_libvlc , "logo-y" );
+    var_Destroy( p_filter->p_libvlc , "logo-delay" );
+    var_Destroy( p_filter->p_libvlc , "logo-repeat" );
+    var_Destroy( p_filter->p_libvlc , "logo-position" );
+    var_Destroy( p_filter->p_libvlc , "logo-transparency" );
 }
 
 /*****************************************************************************

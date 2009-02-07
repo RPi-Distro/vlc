@@ -2,7 +2,7 @@
  * switcher.c: MPEG2 video switcher module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: switcher.c 14820 2006-03-19 01:27:21Z xtophe $
+ * $Id: switcher.c 16773 2006-09-21 18:46:25Z hartman $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -51,7 +51,6 @@
 #define SOUT_CFG_PREFIX "sout-switcher-"
 #define MAX_PICTURES 10
 #define MAX_AUDIO 30
-#define AVCODEC_MAX_VIDEO_FRAME_SIZE (3*1024*1024)
 #define MAX_THRESHOLD 99999999
 
 /*****************************************************************************
@@ -651,7 +650,7 @@ static void NetCommand( sout_stream_t *p_stream )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     char psz_buffer[10];
-    int i_len = net_ReadNonBlock( p_stream, p_sys->i_fd, NULL, psz_buffer,
+    int i_len = net_ReadNonBlock( p_stream, p_sys->i_fd, NULL, (char *)&psz_buffer[0],
                                   sizeof( psz_buffer ), 0 );
 
     if ( i_len > 0 )
@@ -779,7 +778,7 @@ static mtime_t VideoCommand( sout_stream_t *p_stream, sout_stream_id_t *id )
             return 0;
         }
 
-        id->p_buffer_out = malloc( AVCODEC_MAX_VIDEO_FRAME_SIZE );
+        id->p_buffer_out = malloc( id->ff_enc_c->width * id->ff_enc_c->height * 3 );
         id->p_frame = avcodec_alloc_frame();
         id->p_frame->linesize[0] = p_sys->p_pictures[p_sys->i_cmd-1].p[0].i_pitch;
         id->p_frame->linesize[1] = p_sys->p_pictures[p_sys->i_cmd-1].p[1].i_pitch;
@@ -833,7 +832,7 @@ static block_t *VideoGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
     }
 
     i_out = avcodec_encode_video( id->ff_enc_c, id->p_buffer_out,
-                                  AVCODEC_MAX_VIDEO_FRAME_SIZE,
+                                  id->ff_enc_c->width * id->ff_enc_c->height * 3,
                                   id->p_frame );
 
     if ( i_out <= 0 )
@@ -847,7 +846,7 @@ static block_t *VideoGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
         int mb_height = (id->ff_enc_c->height + 15) / 16;
         int h_chroma_shift, v_chroma_shift;
         int i;
-        
+
         avcodec_get_chroma_sub_sample( id->ff_enc_c->pix_fmt, &h_chroma_shift,
                                        &v_chroma_shift );
 
@@ -859,7 +858,7 @@ static block_t *VideoGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
                                     id->ff_enc_c->coded_frame->mb_type,
                                     (mb_width + 1) * mb_height
                                       * sizeof(id->p_frame->mb_type[0]));
-        
+
         for ( i = 0; i < 2; i++ )
         {
             int stride = ((16 * mb_width )
@@ -942,4 +941,3 @@ static block_t *AudioGetBuffer( sout_stream_t *p_stream, sout_stream_id_t *id,
 
     return p_out;
 }
-
