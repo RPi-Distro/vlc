@@ -213,7 +213,7 @@ vlc_module_begin();
 
         set_callbacks( OpenDialogs, Close );
 
-#ifdef WIN32
+#if 0
     add_submodule();
         set_capability( "vout window", 50 );
         set_callbacks( WindowOpen, WindowClose );

@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: e1e59680ab9a66cc4c76afeda1dfc265b5f676b2 $
+ * $Id: 0182f352b8915ea4ca0a39b205f3adab9aa85a37 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -370,7 +370,7 @@ QStringList DialogsProvider::showSimpleOpen( QString help,
     fileTypes.replace(QString(";*"), QString(" *"));
 
     return QFileDialog::getOpenFileNames( NULL,
-        help.isEmpty() ? qfu(I_OP_SEL_FILES ) : help,
+        help.isEmpty() ? qtr(I_OP_SEL_FILES ) : help,
         path.isEmpty() ? qfu( p_intf->p_sys->psz_filepath ) : path,
         fileTypes );
 }

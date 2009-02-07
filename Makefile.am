@@ -36,6 +36,7 @@ EXTRA_DIST = \
 	INSTALL.win32 \
 	INSTALL.wince \
 	extras/package/win32/vlc.exe.manifest \
+	extras/package/win32/libvlc.dll.manifest \
 	MAINTAINERS \
 	extras/package/macosx/README.MacOSX.rtf \
 	vlc-config.in.in \
@@ -48,8 +49,9 @@ EXTRA_DIST = \
 	extras/package/win32/languages/french.nsh
 
 dist_noinst_SCRIPTS = bootstrap toolbox
+nodist_noinst_SCRIPTS = compile
 
-BUILT_SOURCES_distclean = vlc-config compile extras/package/win32/vlc.win32.nsi
+BUILT_SOURCES_distclean = vlc-config extras/package/win32/vlc.win32.nsi
 if HAVE_DARWIN
 BUILT_SOURCES_clean = macosx-sdk
 else
@@ -690,6 +692,7 @@ package-win-common:
 # Copy executables and libs
 	cp "$(top_builddir)/bin/.libs/vlc$(EXEEXT)" "$(win32_destdir)/"
 	cp "$(top_srcdir)/extras/package/win32/vlc.exe.manifest" "$(win32_destdir)/"
+		cp "$(top_srcdir)/extras/package/win32/libvlc.dll.manifest" "$(win32_destdir)/"
 	cp "$(top_builddir)/src/.libs/libvlccore$(LIBEXT)" "$(win32_destdir)/"
 	cp "$(top_builddir)/src/.libs/libvlc$(LIBEXT)" "$(win32_destdir)/"
 
@@ -718,6 +721,7 @@ package-win-common:
 if BUILD_MOZILLA
 	mkdir -p "$(win32_destdir)/mozilla"
 	cp $(top_builddir)/projects/mozilla/.libs/npvlc$(LIBEXT) $(win32_destdir)/mozilla/
+	cp $(top_srcdir)/projects/mozilla/npvlc.dll.manifest $(win32_destdir)/mozilla/
 endif
 
 # ActiveX plugin
@@ -728,6 +732,7 @@ if BUILD_ACTIVEX
 	unix2dos $(win32_destdir)/activex/*
 
 	cp $(top_builddir)/projects/activex/.libs/axvlc$(LIBEXT) $(win32_destdir)/activex/
+	cp $(top_srcdir)/projects/activex/axvlc.dll.manifest $(win32_destdir)/activex/
 endif
 
 # Rebase all those DLLs to speed up loading (need cygwin rebase)
@@ -1090,7 +1095,14 @@ if BUILD_MOZILLA
 	mkdir -p "$(top_builddir)/macosx-plugin-instdata"
 	cp -R "$(top_builddir)/projects/mozilla/VLC Plugin.plugin" "$(top_builddir)/macosx-plugin-instdata"
 	rm -rf "$(top_builddir)/VLC Internet Plug-In.pkg"
-	PATH=/Developer/usr/bin:/Developer/Tools:$$PATH packagemaker -build -ds -p "$(top_builddir)/VLC Internet Plug-In.pkg" \
+	export PACKAGEMAKER=
+	if test -x /Developer/Tools/packagemaker; then \
+	   export PACKAGEMAKER=/Developer/Tools/packagemaker; \
+	fi; \
+	if test -x /Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker; then \
+	   export PACKAGEMAKER=/Developer/Applications/Utilities/PackageMaker.app/Contents/MacOS/PackageMaker; \
+	fi; \
+	$${PACKAGEMAKER} -build -ds -p "$(top_builddir)/VLC Internet Plug-In.pkg" \
 	-f "$(top_builddir)/macosx-plugin-instdata" \
 	-i "$(srcdir)/extras/package/macosx/plugin/InstallerInfo.plist" \
 	-d "$(srcdir)/extras/package/macosx/plugin/InstallerDescription.plist"; true

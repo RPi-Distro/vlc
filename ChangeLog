@@ -1,25 +1,658 @@
-commit d88960cc386dc6c8b145427385dea537a7d7eba1
+commit a684d0267892b3cafed7cbf2ae8175a806bb547d
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Dec 2 18:55:39 2008 +0200
+
+    Grmbl!!!
+
+commit 6bdbaea352348b1ffbb56bf831d8a9120c38f13d
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Tue Dec 2 16:04:22 2008 +0100
+
+    Fix for VLC installer commands.
+
+commit f6f8478d92fe05a63f090666b416f30ad68dfea2
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Mon Dec 1 21:50:49 2008 +0200
+
+    Update PO version number
+    
+    (seldom has a PO sync been so small)
+
+commit 4bc422b0de26c38e70b87f63ee3391d6b6322ac5
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Mon Dec 1 21:45:23 2008 +0200
+
+    Really fix the real overflow
+
+commit a8e4f023de1a34120100dca59416a9ab5c3560f0
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Mon Dec 1 21:45:10 2008 +0200
+
+    Version 0.9.8
+
+commit 2b8b58df98b88d01163b4eb05c7008debf7c8d03
+Merge: ab3e5dc... abacfd8...
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sun Nov 30 16:09:21 2008 +0200
+
+    Merge branch '0.9-bugfix' of git@git.videolan.org:vlc into 0.9-bugfix
+
+commit ab3e5dc6a50fb282e7f6a00cae97758d29880c4d
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sun Nov 30 16:08:06 2008 +0200
+
+    0.9.7
+
+commit 28a834b649c241d5d31dd45e522feea80565a0dc
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sun Nov 30 16:07:48 2008 +0200
+
+    Sync PO files
+
+commit abacfd868b0dc96345323ba19a97034207bf0353
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Nov 26 17:20:17 2008 +0100
+
+    manifest files are in srcdir not builddir
+    (cherry picked from commit c61844bbd475c42b157dc21ba60e12add0831be6)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 33c2cf03414bb52b95faf283805eaf6e31dfda9f
+Author: Geoffroy Couprie <geo.couprie@gmail.com>
+Date:   Thu Nov 27 21:57:14 2008 +0100
+
+    Using a not sxs-aware CRT won't work
+    (cherry picked from commit b047088a37ba72508baaff4c19970245394c7b86)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d19de4e9f2211cbe5bde00726b66c47a424f4e07
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Mon Nov 17 04:18:10 2008 +0200
+
+    Real: fix integer overflow
+    
+    This is trivially exploitable to run code.
+    
+    Pointed-out-by: Tobias Klein
+    (cherry picked from commit eb9963eb49daa8ab00b5c6986a8ec5294c6b5bf3)
+
+commit 9d01dfdcfaa7843c9b5a0aeda1583ba52e51bbe8
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Thu Nov 27 20:36:43 2008 +0200
+
+    httpd: full URL is also valid for HTTP (fixes #2320)
+    
+    Also skip URI authority properly.
+    (cherry picked from commit a40078c86eac6ad595e26271e9eb636eedccdcd4)
+
+commit 2ebf6498354e66e15e7bda49b66d9303c0bd12e9
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Wed Nov 19 20:22:01 2008 +0100
+
+    Make icecast server detection more robust.
+    (cherry picked from commit b35ccb11b7fc6301e1622f9c1621fdc396ddaf95)
+
+commit 91719eaa42c3f4c2fb3e4344dab042764d2daf38
+Author: Sébastien Escudier <sebastien-devel@celeos.eu>
+Date:   Mon Nov 24 10:59:29 2008 +0100
+
+    Correctly handle multiple clients in httpd
+    
+    Signed-off-by: Rémi Denis-Courmont <rdenis@simphalempin.com>
+    (cherry picked from commit 96db1d57943e0ffc6af5db3f119898b4d3079e1c)
+
+commit 4e4a9aee953b96fffe5259ec32d06d785dac0ea5
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Wed Nov 26 19:38:22 2008 +0200
+
+    Unlikely memory leak (fixes #2304)
+    (cherry picked from commit d7c5e8057c4a938155c614392c1212c49e61f83d)
+
+commit 16dd19e618852c4ec8d85c34b78ca186c02d1659
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 25 22:28:22 2008 +0000
+
+    Revert "(live555) RTSP fastforward works from Qt4 interface."
+    
+    This reverts commit d57d4de31b836e1642a8676e199d2386ff2d644b.
+    
+    New features that are not self-contained and modify src/ are not
+    welcomed in -bugfix branches without pre-existent consensus.
+
+commit 786f58ff93d94bf56fe0199bdbd7841069c23620
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 25 22:28:16 2008 +0000
+
+    Revert "Allowing for rate < 0 enables rewind playback for eg: RTSP streams."
+    
+    This reverts commit 76cfaf8a84620ad53f5b08142e4251c90bdf7f36.
+    
+    New features that are not self-contained and modify src/ are not
+    welcomed in -bugfix branches without pre-existent consensus.
+
+commit 8c510fef6b61e98e5476a2ae97a7dcc6545aad27
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 25 22:28:09 2008 +0000
+
+    Revert "Signal can_rewind for use by user interfaces."
+    
+    This reverts commit 61a2101bcf0a08fd88ea742b4dd3e534229fe2f9.
+    
+    New features that are not self-contained and modify src/ are not
+    welcomed in -bugfix branches without pre-existent consensus.
+
+commit 64e2fdc488430c36e786c7554d32fd45c5f9144a
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 25 22:27:58 2008 +0000
+
+    Revert "(qt4) Define reverse playback direction button in qt4 interface (not visible yet)."
+    
+    This reverts commit 552963d528623bd92fd68220fdb8b105ea5f69c2.
+    
+    New features that are not self-contained and modify src/ are not
+    welcomed in -bugfix branches without pre-existent consensus.
+
+commit 5eb7ee45960f45f2410c6e7276231eb1c66ed226
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 25 22:27:50 2008 +0000
+
+    Revert "Document new feature RTSP trickplay support."
+    
+    This reverts commit 814eafd9571523728c3693d804c6c5a1615ec445.
+    
+    New features that are not self-contained and modify src/ are not
+    welcomed in -bugfix branches without pre-existent consensus.
+
+commit b90c40a940371faab9ed331eb454adf9748db00c
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 25 22:27:41 2008 +0000
+
+    Revert "Fix rate slower/faster in rewind mode."
+    
+    This reverts commit 15f3efd9842ee3bceca4518a2c31861943a5ca31.
+    
+    New features that are not self-contained and modify src/ are not
+    welcomed in -bugfix branches without pre-existent consensus.
+
+commit ee59e04674ff21a6bcc48741cea1de248b9b085f
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 25 22:27:33 2008 +0000
+
+    Revert "Enable rc fastforward and rewind commands for RTSP trickplay."
+    
+    This reverts commit 17014fad90c436ac07cb5688e71a4777a7b8398f.
+    
+    New features that are not self-contained and modify src/ are not
+    welcomed in -bugfix branches without pre-existent consensus.
+
+commit 99913ba2d397d00bcd0487f7044697a81bc0c099
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 25 22:27:24 2008 +0000
+
+    Revert "Add can-rate to distinguish between normal rate control and negative playback direction."
+    
+    This reverts commit db41a5c20d4a75f9a7473ba8d649e9a3509b8a5c.
+    
+    New features that are not self-contained and modify src/ are not
+    welcomed in -bugfix branches without pre-existent consensus.
+
+commit 04b4fecf9ec66458c4723cd17c6e8d92ff011c10
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 25 22:27:14 2008 +0000
+
+    Revert "(live555) Reset PCR after returning to normal rate after fastforward or rewind."
+    
+    This reverts commit e063c7bb19fa205dd23de5e79337e7638fdc234c.
+    
+    New features that are not self-contained and modify src/ are not
+    welcomed in -bugfix branches without pre-existent consensus.
+
+commit 5aa6f64e024aeb8a723bac2a04fb8dc71f29aef7
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 25 22:25:12 2008 +0000
+
+    Revert "(live555) Fix seeking"
+    
+    This reverts commit 36e06224b0d29631f42708fb91e0a75dc562efc6.
+    
+    New features that are not self-contained and modify src/ are not
+    welcomed in -bugfix branches without pre-existent consensus.
+
+commit 311f28a1e4791e901df6fd911d80332d538e618d
+Author: Geoffroy Couprie <geo.couprie@gmail.com>
+Date:   Mon Nov 24 23:06:47 2008 +0100
+
+    specify dependency to msvcrt for vlc.exe and libvlc.dll
+    (cherry picked from commit e45586d00e21d212bfad4dc5579283d00e27e3b5)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d954581a696a0365b5df56bb6b6770704553949c
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Nov 24 22:56:22 2008 +0100
+
+    NSIS: put the manifest on install.
+    (cherry picked from commit d06621e6fd1ca10c4ce6f0dfa17000d4c5ca1b5e)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 514e6957256f65412a94c489a3b049d858029221
+Author: Geoffroy Couprie <geo.couprie@gmail.com>
+Date:   Mon Nov 24 22:33:11 2008 +0100
+
+    Add manifests to browser plugins
+    (cherry picked from commit 86f0fc91f623d8989fab8bfaffd220183b7ef731)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit a643d7e59b8fa7b8525dd12ae733baa2a1333f26
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sat Nov 22 23:09:01 2008 +0100
+
+    macosx: properly set up the nextKeyView for all text fields in the sprefs
+
+commit 5a127f08f7686de3bedbf763e822ce0acf78dfa8
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sat Nov 22 18:31:04 2008 +0000
+
+    Fix my previous commit
+    (cherry picked from commit 80c485427a5167340f27f43a7cf5620dfe00cede)
+
+commit f2edd8c2cded94ac8424520581a724d8c967b0b2
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sat Nov 22 16:23:11 2008 +0000
+
+    Fix memleak
+    
+    Untested
+    Closes #2306
+    
+    (cherry picked from commit 88a9bbf30fcb8a5371440699d6cce7e12b7667fe)
+
+commit 1f53d4701e17b1a55cc8acd73aa2f663cf7e8c41
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sat Nov 22 16:33:07 2008 +0000
+
+    Fix memleak
+    
+    Closes #2300
+    (cherry picked from commit d95eef28a329c5da0274f2833c7c10861d48c4bc)
+
+commit e7cf1b701fa8249ea89ea96e1e5e368db600ff0d
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sat Nov 22 16:22:24 2008 +0000
+
+    Fix memleak
+    
+    Closes #2308
+    (cherry picked from commit f4407931afb32f6bb93c8217fa806ced3e847aa5)
+
+commit 0a82b84517198ca4f63e1d74b4c74744f210ed19
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sat Nov 22 16:17:23 2008 +0000
+
+    Fix memleak
+    
+    Closes #2307
+    (cherry picked from commit 6b176dfcf7b7c2bcbaf86846b76ac28c2dd107e4)
+
+commit d4e58af37b4c3047a42ac4297b8a03979db706b8
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sat Nov 22 16:04:24 2008 +0000
+
+    Fix mem leak
+    
+    Closes #2305
+    (cherry picked from commit aa79a7b23841cd0a7b7ac8c4426ba191d5115e01)
+
+commit e135593907ec36633fb563c530929024a6552638
+Author: Joseph Tulou <brezhoneg1@yahoo.fr>
+Date:   Sat Nov 22 00:36:49 2008 +0000
+
+    Fix a typo in SDL vout plugin
+    
+    It was preventing mouse to work properly.
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+    (cherry picked from commit 31412310fd0a5ecf23e3c8ba39e0b0818cb861ab)
+
+commit fcf37208c806d4e8ca7efed65cc44168bbb1d9fe
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Fri Nov 21 21:09:12 2008 +0100
+
+    Missing assert include.
+
+commit cde0d0f1712b8ed50f6a3eaa464ec70d2af9bf9b
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Thu Nov 20 20:12:51 2008 +0100
+
+    Fixed double free.
+    (cherry picked from commit 469dc54720a2bafd6c2b7529904073b529d29f1f)
+
+commit 36e06224b0d29631f42708fb91e0a75dc562efc6
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Fri Nov 21 15:32:57 2008 +0100
+
+    (live555) Fix seeking
+
+commit e063c7bb19fa205dd23de5e79337e7638fdc234c
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Fri Nov 21 12:33:14 2008 +0100
+
+    (live555) Reset PCR after returning to normal rate after fastforward or rewind.
+
+commit db41a5c20d4a75f9a7473ba8d649e9a3509b8a5c
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Fri Nov 21 11:48:18 2008 +0100
+
+    Add can-rate to distinguish between normal rate control and negative playback direction.
+    
+    (cherry picked from commit: f400b1431cbb7abfced4042def176cf2f905ec5a)
+    
+    Signed-off-by: Jean-Paul Saman <jpsaman@videolan.org>
+
+commit 17014fad90c436ac07cb5688e71a4777a7b8398f
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Fri Nov 21 10:21:31 2008 +0100
+
+    Enable rc fastforward and rewind commands for RTSP trickplay.
+    (cherry picked from commit bda9ff6d9630e4319459e1a065ab422b33f5267b)
+
+commit 15f3efd9842ee3bceca4518a2c31861943a5ca31
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Thu Nov 20 19:21:22 2008 +0100
+
+    Fix rate slower/faster in rewind mode.
+    
+    (cherry picked from commit: 4ad64a6000d86ac689be9bc0ba8248203c90ccb7)
+    
+    Signed-off-by: Jean-Paul Saman <jpsaman@videolan.org>
+
+commit 814eafd9571523728c3693d804c6c5a1615ec445
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Fri Nov 21 10:51:50 2008 +0100
+
+    Document new feature RTSP trickplay support.
+
+commit 552963d528623bd92fd68220fdb8b105ea5f69c2
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Thu Nov 20 17:56:43 2008 +0100
+
+    (qt4) Define reverse playback direction button in qt4 interface (not visible yet).
+
+commit 61a2101bcf0a08fd88ea742b4dd3e534229fe2f9
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Thu Nov 20 14:19:37 2008 +0100
+
+    Signal can_rewind for use by user interfaces.
+    
+    (cherry picked from commit: 3a632c159fd106e8150aef6dc6b6b41903009989)
+    
+    Signed-off-by: Jean-Paul Saman <jpsaman@videolan.org>
+
+commit 76cfaf8a84620ad53f5b08142e4251c90bdf7f36
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Wed Nov 19 16:07:34 2008 +0100
+
+    Allowing for rate < 0 enables rewind playback for eg: RTSP streams.
+    
+    Don't allow rate < 0 when p_input->p->input.b_rescale_ts is true.
+    Setting b_rescale_ts to true says to vlc, rescale the timestamp.
+    Setting it to false is like saying, I can completely handle the rate, just aknoledge the fact that the rate is not the default one.
+    
+    (cherry picked from commit: ba6ebdc85b2738f46510e69812295a27e211b3c6)
+    
+    Signed-off-by: Jean-Paul Saman <jpsaman@videolan.org>
+
+commit d57d4de31b836e1642a8676e199d2386ff2d644b
+Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
+Date:   Wed Nov 19 15:45:19 2008 +0100
+
+    (live555) RTSP fastforward works from Qt4 interface.
+    
+    (cherry picked from commit faa9f43ccc2b9fad0ddd7fd33045179d0f6cb074)
+    
+    Signed-off-by: Jean-Paul Saman <jpsaman@videolan.org>
+
+commit 3b673a91f2ddb0295a98a98366f0bbb066ee4e44
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Tue Nov 18 21:05:13 2008 +0100
+
+    Include stddef (to match master behavior).
+    
+    It fixes block.c compilation and may help future cherry-picks.
+
+commit f6d206ee099740212ff8504c96e4d7e11962e199
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Tue Nov 18 19:19:50 2008 +0100
+
+    Fixed double free.
+    
+    Fixed double free.
+    (cherry picked from commit 9236f9f6d562a5d76729a8e5be1c88de2cd827b1)
+    
+    Signed-off-by: Laurent Aimar <fenrir@videolan.org>
+
+commit c652dde12766c312faacc10c243e164d50631d4e
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Tue Nov 18 19:05:49 2008 +0100
+
+    Fixed block_Realloc when block_t->p_buffer has changed.
+    (cherry picked from commit 4e54fc160224190187431e60a8a3b14d767b65ee)
+    
+    Signed-off-by: Laurent Aimar <fenrir@videolan.org>
+
+commit 902edb3c71486fcbebdbba5994998420f88d7f09
+Author: Éric lassauge <lassauge@userssourceforge.net>
+Date:   Mon Nov 17 22:05:31 2008 +0000
+
+    l10n: French update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 083d6905522334deda38d763f946e22b3fef753b
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Mon Nov 17 00:18:48 2008 +0000
+
+    Don't distribute ./compile
+    (cherry picked from commit 4c930da51936b79c1ec749c1d1cc8d691d12d83e)
+
+commit 7eb643d6c7a51fc30bee3f2a74b212c727e977ef
+Author: Alexis Ballier <aballier@gentoo.org>
+Date:   Sat Nov 15 14:42:19 2008 +0100
+
+    Allow disabling libsysfs support
+    
+    Add a configure switch to allow disabling libsysfs support instead of letting it check what is on the build host and enable it accordingly. The default behavior is unchanged.
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+    (cherry picked from commit 31d3d2771558286943061572dd479209efd15d66)
+
+commit 8e8ffccdab1dae3d4fa1d0871827c2f0d2d8656e
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Nov 16 22:12:01 2008 +0000
+
+    Fix numbers
+
+commit ae54de36b5106f02fbc2caec85fa75fd837fee96
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Mon Nov 3 20:53:34 2008 +0100
+
+    xspf: both "xmlns" and "xmlns:vlc" are acceptable. (Fix #2260)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 1fe5ac7cfd439904dd3c682b4baa8f85768a6897
+Author: COCQUEBERT Cédric <cedric.cocquebert@cea.fr>
+Date:   Thu Nov 13 18:05:25 2008 +0100
+
+    Fix toggling when Video is not embedded
+    
+    Slight modification by jb
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit fbb04b5b0db0eca95dd44746c71bbafa2530acde)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 03c979c4106f4a3499c622a813f7b983655291b1
+Author: Vicente Jimenez Aguilar <googuy@gmail.com>
+Date:   Thu Nov 13 15:20:04 2008 +0100
+
+    Misspelling DCCP code
+    
+    Signed-off-by: Rémi Denis-Courmont <rdenis@simphalempin.com>
+    (cherry picked from commit 4b07d84daa85a9ac984ca8f088b456e9793f588f)
+
+commit faffd539c9c6e9489af26d92ec5fd919e6b6d153
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Nov 12 22:15:27 2008 +0100
+
+    ub.sh: prettified the comments a bit
+
+commit 5b113afad959a191ddde3c0813506d16d20d190e
+Author: Paul Corke <paulc@datatote.co.uk>
+Date:   Tue Nov 11 10:05:45 2008 +0000
+
+    httpd:  correctly reads from ufd[]...
+    
+    ...in the case where there are multiple clients, not all of which are
+    waiting to be serviced.
+    
+    Signed-off-by: Rémi Denis-Courmont <rdenis@simphalempin.com>
+    (cherry picked from commit 52193737a575d2e26e7be17cf5ca78f9a063a2b5)
+
+commit 4b45098ca655f35b0fd140a2fdf78b46eb48c536
+Author: Antonio Javier Varela <tonxabar@gmail.com>
+Date:   Tue Nov 11 23:43:21 2008 +0000
+
+    l10n: Spanish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 13b8ee370c601da0db4548a6cd228907a9f0262d
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Nov 11 20:07:48 2008 +0000
+
+    i18: Translate one more string
+    (cherry picked from commit 24e636d13505e7e5a04118a152463c140ca22bf3)
+
+commit 31932ea8ff1c03f12f23bf383d5c978a943b7347
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Tue Nov 11 19:47:05 2008 +0100
+
+    Fix package-macosx-plugin target on MacOS X 10.5 (Leopard).
+    
+    forward-port [578af5df020a05e7deb7f4b0fdf5b6c5d402814e]
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit ce551cf189cfc36ff4dae3a85f0218b7dffeb7a1
+Author: Myckel Habets <myckel@sdf.lonestar.org>
+Date:   Mon Nov 10 22:16:33 2008 +0000
+
+    l10n: Dutch update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 8a95f5fb1a48435e79bd8c22501a08a6e314329c
+Author: Sidney Doria <ssdoria@gmail.com>
+Date:   Mon Nov 10 22:14:03 2008 +0000
+
+    l10n: Brazillian Portuguese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 4fdab13c6b7a025ef14538dc70710821a58e2292
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sun Nov 9 20:11:22 2008 +0200
+
+    Embedded video crashes on Windows as well (fixes #2279)
+    
+    Told you so.
+
+commit ecf0e952ef668e1785ee53505f5f072b9e0024d5
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sat Nov 8 17:51:28 2008 +0200
+
+    mmap: fix large file support on 32-bits archs (closes #2188)
+    (cherry picked from commit 5b0e367ea7bd4aef9927bd2fe1231ec625a1509c)
+
+commit 219b054e44ba278bb3eacb8fdcc642d90ac79011
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sat Nov 8 17:43:54 2008 +0200
+
+    mmap: fix debug message formats
+    (cherry picked from commit f3c8f164bfff4e4074d3c6987802a6d64b10705e)
+
+commit 6977b855d5f0f3a0753733d32d0bfb53f8284c58
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sat Nov 8 00:43:15 2008 +0000
+
+    It's no longer 0.9.6
+
+commit f788297ec93cf08b642ef0cd9f223a1cd25fb980
+Author: Matej Urbančič <mateju@svn.gnome.org>
+Date:   Sat Nov 8 00:42:00 2008 +0000
+
+    l10n: Slovenian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 0859c70f5e6d794faf49e1f6eac7e87dda007009
+Author: Eric Lassauge <lassauge@users.sf.net>
+Date:   Sat Nov 8 00:36:08 2008 +0000
+
+    l10n: French update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit e90f9886a02208a02c7bddba5f2b8de649158c1b
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Thu Nov 6 20:12:47 2008 +0100
+
+    Update live555 contrib patch
+    (cherry picked from commit e3fe478bbe1a8566d37d549f997efa7a973f39ba)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 969ebf913a96b0703980e78134db642443f42ead
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Mon Oct 6 10:45:46 2008 +0200
+
+    Repair GnuTLS/win32
+    (cherry picked from commit 5a75b21fac588d9e833ea17fde89443448f4ab16)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 66ddb162fe047b4e0a95f84584260c5a960edeee
 Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
 Date:   Wed Nov 5 21:59:48 2008 +0200
 
     Version 0.9.6
 
-commit 1505f878700f92e1237a21a768a73d8f4df59173
+commit 16d4e1f155049f12a82950a3495cab888a133711
 Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
 Date:   Wed Nov 5 21:59:25 2008 +0200
 
     Sync PO files
 
-commit 9834fc56d86dc048f8c7187ee39e96d927ddd42f
-Merge: c486b8e... dee48b4...
+commit e3cef651125701a2e33a8d75b815b3e39681a447
 Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
-Date:   Wed Nov 5 21:57:25 2008 +0200
+Date:   Wed Nov 5 22:04:56 2008 +0200
 
-    Merge commit 'origin/security' into 0.9-bugfix
+    Fix sscanf overflow
     
-    Conflicts:
+    Pointed-out-by: Tobias Klein <tk@trapkit.de>
+
+commit 5f63f1562d43f32331006c2c1a61742de031b84d
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Nov 4 21:31:17 2008 +0200
+
+    Fix buffer overflow
     
-    	modules/demux/subtitle.c
+    Pointed-out-by. Tobias Klein <tk@trapkit.de>
 
 commit c486b8e603f4d49a86c4891511e4f99f85bba3b1
 Author: Michał Trzebiatowski <hippie_1968@hotmail.com>
@@ -28,22 +661,6 @@ Date:   Wed Nov 5 19:03:07 2008 +0000
     l10n: Polish update
     
     Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
-
-commit dee48b4fa6da270155cf60f521d4297f3cb2968f
-Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
-Date:   Tue Nov 4 21:16:56 2008 +0200
-
-    Fix sscanf overflow
-    
-    Pointed-out-by: Tobias Klein <tk@trapkit.de>
-
-commit dd9a9913dbea77161dd6e3c5267629973f0c990d
-Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
-Date:   Tue Nov 4 21:31:17 2008 +0200
-
-    Fix buffer overflow
-    
-    Pointed-out-by. Tobias Klein <tk@trapkit.de>
 
 commit dbce350712821cff4a89a541f110b489acdaa14b
 Author: Daniel Mierswa <impulze@impulze.org>

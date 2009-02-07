@@ -3,8 +3,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 0.9.0\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2008-11-05 22:00+0200\n"
-"PO-Revision-Date: 2008-07-31 16:11+0100\n"
+"POT-Creation-Date: 2008-12-03 17:20+0200\n"
+"PO-Revision-Date: 2008-11-06 10:27+0100\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian <sl@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Poedit-Country: SLOVENIA\n"
 "X-Poedit-SourceCharset: utf-8\n"
 
-#: include/vlc_common.h:893
+#: include/vlc_common.h:894
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -1497,7 +1497,6 @@ msgid "Portuguese"
 msgstr "portugalščina"
 
 #: src/libvlc-module.c:115
-#, fuzzy
 msgid "Punjabi"
 msgstr "pandžabščina"
 
@@ -2196,7 +2195,7 @@ msgstr "Filtrirna enota odvoda slike"
 
 #: src/libvlc-module.c:443
 msgid "This adds video output filters like clone or wall"
-msgstr ""
+msgstr "S tem dodate filter odvoda kot sta kloniranje ali zid"
 
 #: src/libvlc-module.c:445
 msgid "Video filter module"
@@ -2577,7 +2576,6 @@ msgid "Subtitle language"
 msgstr "Jezik podnapisov"
 
 #: src/libvlc-module.c:628
-#, fuzzy
 msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
 "three letters country code)."
@@ -3353,11 +3351,8 @@ msgid ""
 msgstr "Možnost je uporabna, če želite zmanjšati prikritost ob branju pretoka"
 
 #: src/libvlc-module.c:1007
-#, fuzzy
 msgid "(Experimental) Minimize latency whenreading live stream."
-msgstr ""
-"(Preizkusno) Samodejno prilagajanje predpomnjenja za zmanjšanje odzivnosti "
-"med branjem živega pretoka."
+msgstr "(Preizkusno) Samodejno prilagajanje med branjem živega pretoka."
 
 #: src/libvlc-module.c:1013
 msgid "Modules search path"
@@ -4572,22 +4567,22 @@ msgstr "glavni program"
 #: src/misc/update.c:1458
 #, c-format
 msgid "%.1f GB"
-msgstr ""
+msgstr "%.1f GB"
 
 #: src/misc/update.c:1460
 #, c-format
 msgid "%.1f MB"
-msgstr ""
+msgstr "%.1f MB"
 
 #: src/misc/update.c:1462
 #, c-format
 msgid "%.1f kB"
-msgstr ""
+msgstr "%.1f kB"
 
 #: src/misc/update.c:1464
-#, fuzzy, c-format
+#, c-format
 msgid "%ld B"
-msgstr "%d Hz"
+msgstr "%ld B"
 
 #: src/misc/update.c:1568 src/misc/update.c:1592
 #, c-format
@@ -4595,11 +4590,12 @@ msgid ""
 "%s\n"
 "Downloading... %s/%s %.1f%% done"
 msgstr ""
+"%s\n"
+"Preneseno... %s/%s %.1f%%"
 
 #: src/misc/update.c:1571
-#, fuzzy
 msgid "Downloading ..."
-msgstr "Prenesi takoj"
+msgstr "Prenašanje ..."
 
 #: src/misc/update.c:1611
 #, c-format
@@ -4607,6 +4603,8 @@ msgid ""
 "%s\n"
 "Done %s (100.0%%)"
 msgstr ""
+"%s\n"
+"Končano %s (100.0%%)"
 
 #: src/misc/update.c:1632
 msgid "File could not be verified"
@@ -4659,9 +4657,8 @@ msgstr ""
 "izbrisal."
 
 #: src/misc/update.c:1707
-#, fuzzy
 msgid "Cancelled"
-msgstr "Prekliči"
+msgstr "Preklicano"
 
 #: src/playlist/tree.c:66 modules/access/bda/bda.c:62
 #: modules/access/bda/bda.c:115 modules/access/bda/bda.c:123
@@ -6212,13 +6209,12 @@ msgid "AM Tuner mode"
 msgstr "AM način uglaševanja"
 
 #: modules/access/dshow/dshow.cpp:161
-#, fuzzy
 msgid ""
 "AM Tuner mode. Can be one of Default (0), TV (1),AM Radio (2), FM Radio (3) "
 "or DSS (4)."
 msgstr ""
-"AM način uglaševanja. Vrednost je lahko PRIVZETO, TV, AM_RADIO, FM_RADIO ali "
-"DSS."
+"AM način uglaševanja. Vrednost je lahko privzeto (0), TV (1), AM radio (2), "
+"FM radio (3) ali DSS (4)."
 
 #: modules/access/dshow/dshow.cpp:164
 msgid "Number of audio channels"
@@ -6330,11 +6326,11 @@ msgstr ""
 #: modules/access/dvb/access.c:173 modules/access_output/http.c:74
 #: modules/control/http/http.c:55
 msgid "Certificate file"
-msgstr "Datoteka certifikata"
+msgstr "Datoteka potrdila"
 
 #: modules/access/dvb/access.c:174
 msgid "HTTP interface x509 PEM certificate file (enables SSL)"
-msgstr "Certifikat x509 PEM za vmesnik HTTP (omogoča SSL)"
+msgstr "Potrdilo  x509 PEM za vmesnik HTTP (omogoča SSL)"
 
 #: modules/access/dvb/access.c:177 modules/access_output/http.c:77
 #: modules/control/http/http.c:58
@@ -6352,7 +6348,7 @@ msgstr "Skrbniška CA datoteka"
 
 #: modules/access/dvb/access.c:181
 msgid "HTTP interface x509 PEM trusted root CA certificates file"
-msgstr "Zaupljiv CA certifikat x509 PEM za vmesnik HTTP"
+msgstr "Zaupljivo CA potrdilo x509 PEM za vmesnik HTTP"
 
 #: modules/access/dvb/access.c:184 modules/access_output/http.c:86
 #: modules/control/http/http.c:63
@@ -6527,11 +6523,11 @@ msgstr ""
 "dovod ali -2 za združeni dovod (RCA)"
 
 #: modules/access/eyetv.m:63
-#, fuzzy
 msgid ""
 "Caching value for EyeTV captures. This value should be set in milliseconds."
 msgstr ""
-"Predpomnilna vrednost za V4L pretok. Vrednost je določena v milisekundah."
+"Predpomnilna vrednost za EyeTV zajemanje. Vrednost je določena v "
+"milisekundah."
 
 #: modules/access/eyetv.m:68
 msgid "EyeTV access module"
@@ -7026,7 +7022,7 @@ msgstr ""
 
 #: modules/access_output/http.c:75
 msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
-msgstr "Pot do x509 PEM datoteke s certifikatom, ki ga zahteva HTTPS povezava."
+msgstr "Pot do x509 PEM datoteke s potrdilom, ki ga zahteva HTTPS povezava."
 
 #: modules/access_output/http.c:78
 msgid ""
@@ -7039,16 +7035,16 @@ msgid ""
 "Path to the x509 PEM trusted root CA certificates (certificate authority) "
 "file that will be used for HTTPS. Leave empty if you don't have one."
 msgstr ""
-"Pot do x509 PEM datoteke z zaupnim CA certifikatom (overitev), ki ga zahteva "
-"HTTPS povezava. Pustite vrednost neizpolnjeno, če certifikata nimate."
+"Pot do x509 PEM datoteke z zaupnim CA potrdilom (overitev), ki ga zahteva "
+"HTTPS povezava. Pustite vrednost neizpolnjeno, če potrdila nimate."
 
 #: modules/access_output/http.c:87
 msgid ""
 "Path to the x509 PEM Certificates Revocation List file that will be used for "
 "SSL. Leave empty if you don't have one."
 msgstr ""
-"Pot do x509 PEM seznama preklicanih certifikatov, ki jo zahteva SSL "
-"povezava. Pustite vrednost neizpolnjeno, če seznama certifikata nimate."
+"Pot do x509 PEM seznama preklicanih potrdil, ki jo zahteva SSL povezava. "
+"Pustite vrednost neizpolnjeno, če seznama potrdil nimate."
 
 #: modules/access_output/http.c:90
 msgid "Advertise with Bonjour"
@@ -8340,7 +8336,6 @@ msgid "Use downmix algorithm"
 msgstr "Uporabi downmix algoritem"
 
 #: modules/audio_filter/channel_mixer/mono.c:90
-#, fuzzy
 msgid ""
 "This option selects a stereo to mono downmix algorithm that is used in the "
 "headphone channel mixer. It gives the effect of standing in a room full of "
@@ -8717,7 +8712,7 @@ msgstr "Dolžina v milisekundah pri iskanju najboljšega mesta prekrivanja."
 #: modules/audio_filter/spatializer/spatializer.cpp:49
 #: modules/audio_filter/spatializer/spatializer.cpp:50
 msgid "spatializer"
-msgstr "prostorsko"
+msgstr "prostorski prikaz"
 
 #: modules/audio_mixer/float32.c:50
 msgid "Float32 audio mixer"
@@ -9522,6 +9517,13 @@ msgid ""
 "This is not an error inside VLC media player.\n"
 "Do not contact the VideoLAN project about this issue.\n"
 msgstr ""
+"Videti je, da namestitvi FFMPEG (libavcodec) manjka kodirnik:\n"
+"%s.\n"
+"V primeru, da niste prepričani, kako napako odpraviti, poiščite pomoč na "
+"forumu distribucije.\n"
+"\n"
+"To ni napaka predvajalnika VLC .\n"
+"VideoLAN tim vam pri tem ne more pomagati.\n"
 
 #: modules/codec/avcodec/encoder.c:682 modules/codec/avcodec/encoder.c:691
 msgid "VLC could not open the encoder."
@@ -9788,9 +9790,8 @@ msgid "Kate comment"
 msgstr "Kate opomba"
 
 #: modules/codec/libass.c:54
-#, fuzzy
 msgid "Subtitle renderers using libass"
-msgstr "Ovijanje za prikaz podnapisov s CSRI/asa"
+msgstr "Izris podnapisov z knjižnico libass"
 
 #: modules/codec/libmpeg2.c:104
 msgid "MPEG I/II video decoder (using libmpeg2)"
@@ -10610,7 +10611,6 @@ msgid "Subpixel motion estimation and partition decision quality"
 msgstr "Kakovost gibanja podpik in odločanja delitve"
 
 #: modules/codec/x264.c:274
-#, fuzzy
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
 "motion estimation decision process (lower = quicker and higher = better "
@@ -10618,7 +10618,7 @@ msgid ""
 msgstr ""
 "Parameter nadzira kakovost nad hitrostjo pri predvidevanju procesov "
 "odločanja (nižja vrednost = hitro in več = boljša kakovost). Območje je med "
-"1 in 7."
+"1 in 9."
 
 #: modules/codec/x264.c:279
 msgid ""
@@ -11093,7 +11093,7 @@ msgstr ""
 
 #: modules/control/http/http.c:56
 msgid "HTTP interface x509 PEM certificate file (enables SSL)."
-msgstr "Certifikat x509 PEM za vmesnik HTTP (omogoča SSL)"
+msgstr "Potrdilo x509 PEM za vmesnik HTTP (omogoča SSL)"
 
 #: modules/control/http/http.c:59
 msgid "HTTP interface x509 PEM private key file."
@@ -11101,7 +11101,7 @@ msgstr "Osebni ključ x509 PEM za vmesnik HTTP"
 
 #: modules/control/http/http.c:61
 msgid "HTTP interface x509 PEM trusted root CA certificates file."
-msgstr "Zaupljiv CA certifikat x509 PEM za vmesnik HTTP"
+msgstr "Zaupljivo CA potrdilo x509 PEM za vmesnik HTTP"
 
 #: modules/control/http/http.c:64
 msgid "HTTP interace Certificates Revocation List file."
@@ -11667,8 +11667,8 @@ msgid "Press menu select or pause to continue."
 msgstr "Pritisnite izbor menija ali premor za nadaljevanje."
 
 #: modules/control/rc.c:1316 modules/control/rc.c:1576
-#: modules/control/rc.c:1647 modules/control/rc.c:1827
-#: modules/control/rc.c:1925
+#: modules/control/rc.c:1647 modules/control/rc.c:1828
+#: modules/control/rc.c:1926
 msgid "Type 'menu select' or 'pause' to continue."
 msgstr "Vtipkajte 'menu select' ali 'pause' za nadaljevanje."
 
@@ -11681,91 +11681,91 @@ msgstr "Napaka: `goto' zahteva argument večji od nič."
 msgid "Playlist has only %d elements"
 msgstr "Seznama predvajanja vsebuje le %d predmetov"
 
-#: modules/control/rc.c:1912 modules/control/rc.c:1952
+#: modules/control/rc.c:1913 modules/control/rc.c:1953
 msgid "Please provide one of the following parameters:"
 msgstr "Prosim, vstavite enega izmed naslednjih parametrov:"
 
-#: modules/control/rc.c:1984
+#: modules/control/rc.c:1985
 msgid "Unknown command!"
 msgstr "Neznan ukaz!"
 
-#: modules/control/rc.c:2000 modules/gui/ncurses.c:2039
+#: modules/control/rc.c:2001 modules/gui/ncurses.c:2039
 msgid "+-[Incoming]"
 msgstr "+-[Prihajajoče]"
 
-#: modules/control/rc.c:2001 modules/gui/ncurses.c:2042
+#: modules/control/rc.c:2002 modules/gui/ncurses.c:2042
 #, c-format
 msgid "| input bytes read : %8.0f kB"
 msgstr "| prebrani dovodni bajti : %8.0f kB"
 
-#: modules/control/rc.c:2003 modules/gui/ncurses.c:2045
+#: modules/control/rc.c:2004 modules/gui/ncurses.c:2045
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr "| dovodna bitna hitrost    :   %6.0f kb/s"
 
-#: modules/control/rc.c:2005 modules/gui/ncurses.c:2047
+#: modules/control/rc.c:2006 modules/gui/ncurses.c:2047
 #, c-format
 msgid "| demux bytes read : %8.0f kB"
 msgstr "| prebrani bajti razvijanja : %8.0f kB"
 
-#: modules/control/rc.c:2007 modules/gui/ncurses.c:2050
+#: modules/control/rc.c:2008 modules/gui/ncurses.c:2050
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr "| bitna hitrost razvijanja    :   %6.0f kb/s"
 
-#: modules/control/rc.c:2011 modules/gui/ncurses.c:2058
+#: modules/control/rc.c:2012 modules/gui/ncurses.c:2058
 msgid "+-[Video Decoding]"
 msgstr "+-[Dekodiranje slike]"
 
-#: modules/control/rc.c:2012 modules/gui/ncurses.c:2061
+#: modules/control/rc.c:2013 modules/gui/ncurses.c:2061
 #, c-format
 msgid "| video decoded    :    %5i"
 msgstr "| dekodirana slika    :    %5i"
 
-#: modules/control/rc.c:2014 modules/gui/ncurses.c:2064
+#: modules/control/rc.c:2015 modules/gui/ncurses.c:2064
 #, c-format
 msgid "| frames displayed :    %5i"
 msgstr "| prikazane slike :    %5i"
 
-#: modules/control/rc.c:2016 modules/gui/ncurses.c:2067
+#: modules/control/rc.c:2017 modules/gui/ncurses.c:2067
 #, c-format
 msgid "| frames lost      :    %5i"
 msgstr "| izgubljene slike      :    %5i"
 
-#: modules/control/rc.c:2020 modules/gui/ncurses.c:2075
+#: modules/control/rc.c:2021 modules/gui/ncurses.c:2075
 msgid "+-[Audio Decoding]"
 msgstr "+-[Dekodiranje zvoka]"
 
-#: modules/control/rc.c:2021 modules/gui/ncurses.c:2078
+#: modules/control/rc.c:2022 modules/gui/ncurses.c:2078
 #, c-format
 msgid "| audio decoded    :    %5i"
 msgstr "| dekodiran zvok    :    %5i"
 
-#: modules/control/rc.c:2023 modules/gui/ncurses.c:2081
+#: modules/control/rc.c:2024 modules/gui/ncurses.c:2081
 #, c-format
 msgid "| buffers played   :    %5i"
 msgstr "| predvajan predpomnilnik   :    %5i"
 
-#: modules/control/rc.c:2025 modules/gui/ncurses.c:2084
+#: modules/control/rc.c:2026 modules/gui/ncurses.c:2084
 #, c-format
 msgid "| buffers lost     :    %5i"
 msgstr "| izgubljeni predpomnilnik     :    %5i"
 
-#: modules/control/rc.c:2029 modules/gui/ncurses.c:2090
+#: modules/control/rc.c:2030 modules/gui/ncurses.c:2090
 msgid "+-[Streaming]"
 msgstr "+-[Pretakanje]"
 
-#: modules/control/rc.c:2030 modules/gui/ncurses.c:2093
+#: modules/control/rc.c:2031 modules/gui/ncurses.c:2093
 #, c-format
 msgid "| packets sent     :    %5i"
 msgstr "| poslanih paketov     :    %5i"
 
-#: modules/control/rc.c:2031 modules/gui/ncurses.c:2095
+#: modules/control/rc.c:2032 modules/gui/ncurses.c:2095
 #, c-format
 msgid "| bytes sent       : %8.0f kB"
 msgstr "| poslanih bajtov       : %8.0f kB"
 
-#: modules/control/rc.c:2033
+#: modules/control/rc.c:2034
 #, c-format
 msgid "| sending bitrate  :   %6.0f kb/s"
 msgstr "| bitna hitrost pošiljanja  :   %6.0f kb/s"
@@ -12584,20 +12584,20 @@ msgstr ""
 "\", \"realtext\", \"dks\", \"subviewer1\" in \"auto\" (slednji predstavlja "
 "samodejno zaznavanje)."
 
-#: modules/demux/ts.c:110
+#: modules/demux/ts.c:112
 msgid "Extra PMT"
 msgstr "Dodatni PMT"
 
-#: modules/demux/ts.c:112
+#: modules/demux/ts.c:114
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
 "Dovoljuje uporabniku določitev dodatnega PMT (pmt_pid=pid:stream_tip[,...])."
 
-#: modules/demux/ts.c:114
+#: modules/demux/ts.c:116
 msgid "Set id of ES to PID"
 msgstr "Določitev ID ES v PID"
 
-#: modules/demux/ts.c:115
+#: modules/demux/ts.c:117
 msgid ""
 "Set the internal ID of each elementary stream handled by VLC to the same "
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
@@ -12607,35 +12607,35 @@ msgstr ""
 "vrednost, kot je PID v TS pretoku, namesto 1, 2, 3, ... (uporabno pri "
 "podvojevanju '#duplicate{..., select=\"es=<pid>\"}'."
 
-#: modules/demux/ts.c:120
+#: modules/demux/ts.c:122
 msgid "Fast udp streaming"
 msgstr "Hitro UDP pretakanje"
 
-#: modules/demux/ts.c:122
+#: modules/demux/ts.c:124
 msgid "Sends TS to specific ip:port by udp (you must know what you are doing)."
 msgstr "Pošiljanje TS na določena IP:VRATA preko UDP protokola."
 
-#: modules/demux/ts.c:124
+#: modules/demux/ts.c:126
 msgid "MTU for out mode"
 msgstr "MTU za odvodni način"
 
-#: modules/demux/ts.c:125
+#: modules/demux/ts.c:127
 msgid "MTU for out mode."
 msgstr "MTU za odvodni način"
 
-#: modules/demux/ts.c:127
+#: modules/demux/ts.c:129
 msgid "CSA ck"
 msgstr "CSA ck"
 
-#: modules/demux/ts.c:128
+#: modules/demux/ts.c:130
 msgid "Control word for the CSA encryption algorithm"
 msgstr "Nadzorna beseda za CSA algoritem šifriranja"
 
-#: modules/demux/ts.c:130 modules/mux/mpeg/ts.c:170
+#: modules/demux/ts.c:132 modules/mux/mpeg/ts.c:170
 msgid "Second CSA Key"
 msgstr "Drugi CSA ključ"
 
-#: modules/demux/ts.c:131 modules/mux/mpeg/ts.c:171
+#: modules/demux/ts.c:133 modules/mux/mpeg/ts.c:171
 msgid ""
 "The even CSA encryption key. This must be a 16 char string (8 hexadecimal "
 "bytes)."
@@ -12643,27 +12643,27 @@ msgstr ""
 "Soda različica CSA šifrirnega ključa. Ključ mora biti zapisan kot 16 "
 "znakovna nit (8 šestnajstiških bajtov)"
 
-#: modules/demux/ts.c:134
+#: modules/demux/ts.c:136
 msgid "Silent mode"
 msgstr "Tihi način"
 
-#: modules/demux/ts.c:135
+#: modules/demux/ts.c:137
 msgid "Do not complain on encrypted PES."
 msgstr "Ne opozarjaj na šifriran PES."
 
-#: modules/demux/ts.c:137
+#: modules/demux/ts.c:139
 msgid "CAPMT System ID"
 msgstr "ID CAPMT Sistema"
 
-#: modules/demux/ts.c:138
+#: modules/demux/ts.c:140
 msgid "Only forward descriptors from this SysID to the CAM."
 msgstr "Pošiljanje opisovalcev preko določenega SysID na CAM."
 
-#: modules/demux/ts.c:140
+#: modules/demux/ts.c:142
 msgid "Packet size in bytes to decrypt"
 msgstr "Velikost paketov za dešifriranje"
 
-#: modules/demux/ts.c:141
+#: modules/demux/ts.c:143
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
 "subtract the TS-header from the value before decrypting. "
@@ -12671,19 +12671,19 @@ msgstr ""
 "Določitev velikosti TS paketov za dešifriranje. Dešifriranje oddeli TS-glavo "
 "iz vrednosti pred samim dešifriranjem."
 
-#: modules/demux/ts.c:145
+#: modules/demux/ts.c:147
 msgid "Filename of dump"
 msgstr "Ime datoteke odlaganja"
 
-#: modules/demux/ts.c:146
+#: modules/demux/ts.c:148
 msgid "Specify a filename where to dump the TS in."
 msgstr "Določitev datoteke za odlaganje TS."
 
-#: modules/demux/ts.c:148
+#: modules/demux/ts.c:150
 msgid "Append"
 msgstr "Pripni"
 
-#: modules/demux/ts.c:150
+#: modules/demux/ts.c:152
 msgid ""
 "If the file exists and this option is selected, the existing file will not "
 "be overwritten."
@@ -12691,11 +12691,11 @@ msgstr ""
 "Če datoteka obstaja in je možnost izbrana, obstoječa datoteka ne bo "
 "izbrisana."
 
-#: modules/demux/ts.c:153
+#: modules/demux/ts.c:155
 msgid "Dump buffer size"
 msgstr "Velikost medpomnilnika odlaganja"
 
-#: modules/demux/ts.c:155
+#: modules/demux/ts.c:157
 msgid ""
 "Tweak the buffer size for reading and writing an integer number of packets."
 "Specify the size of the buffer here and not the number of packets."
@@ -12704,71 +12704,69 @@ msgstr ""
 "vrednostjo paketov. Tu določite velikosti medpomnilnika in ne števila "
 "paketov."
 
-#: modules/demux/ts.c:159
+#: modules/demux/ts.c:161
 msgid "MPEG Transport Stream demuxer"
 msgstr "MPEG Transport Stream odvijalec"
 
-#: modules/demux/ts.c:3419
+#: modules/demux/ts.c:3421
 #: modules/gui/qt4/components/interface_widgets.cpp:631
 #: modules/gui/qt4/components/interface_widgets.cpp:827
 msgid "Teletext"
 msgstr "Teletekst"
 
-#: modules/demux/ts.c:3429
+#: modules/demux/ts.c:3431
 msgid "Teletext subtitles"
 msgstr "Teletekst podnapisi"
 
-#: modules/demux/ts.c:3439
-#, fuzzy
+#: modules/demux/ts.c:3441
 msgid "Teletext additional information"
-msgstr "Podrobnosti medija"
+msgstr "Podrobnosti teleteksta"
 
-#: modules/demux/ts.c:3449
-#, fuzzy
+#: modules/demux/ts.c:3451
 msgid "Teletext programme schedule"
-msgstr "Teletekst stran"
+msgstr "Teleteksti program"
 
-#: modules/demux/ts.c:3459
+#: modules/demux/ts.c:3461
 msgid "Teletext hearing impaired subtitles"
 msgstr "Teletekst podnapisi za slušno omejene"
 
-#: modules/demux/ts.c:3554
+#: modules/demux/ts.c:3556
 msgid "subtitles"
 msgstr "podnapisi"
 
-#: modules/demux/ts.c:3558
+#: modules/demux/ts.c:3560
 msgid "4:3 subtitles"
 msgstr "4:3 podnapisi"
 
-#: modules/demux/ts.c:3562
+#: modules/demux/ts.c:3564
 msgid "16:9 subtitles"
 msgstr "16:9 podnapisi"
 
-#: modules/demux/ts.c:3566
+#: modules/demux/ts.c:3568
 msgid "2.21:1 subtitles"
 msgstr "2.21:1 podnapisi"
 
-#: modules/demux/ts.c:3570 modules/demux/ts.c:3751 modules/demux/ts.c:3792
+#: modules/demux/ts.c:3572 modules/demux/ts.c:3753 modules/demux/ts.c:3794
 msgid "hearing impaired"
 msgstr "slušno omejeni"
 
-#: modules/demux/ts.c:3574
+#: modules/demux/ts.c:3576
 msgid "4:3 hearing impaired"
 msgstr "4:3 slušno omejeni"
 
-#: modules/demux/ts.c:3578
+#: modules/demux/ts.c:3580
 msgid "16:9 hearing impaired"
 msgstr "16:9 slušno omejeni"
 
-#: modules/demux/ts.c:3582
+#: modules/demux/ts.c:3584
 msgid "2.21:1 hearing impaired"
 msgstr "2.21:1 slušno omejeni"
 
-#: modules/demux/ts.c:3747 modules/demux/ts.c:3788
+#: modules/demux/ts.c:3749 modules/demux/ts.c:3790
 msgid "clean effects"
 msgstr "počisti učinke"
 
-#: modules/demux/ts.c:3755 modules/demux/ts.c:3796
+#: modules/demux/ts.c:3757 modules/demux/ts.c:3798
 msgid "visual impaired commentary"
 msgstr "vidno omejeni"
 
@@ -13809,18 +13807,16 @@ msgid "Online Forum..."
 msgstr "Spletni forum ..."
 
 #: modules/gui/macosx/intf.m:636
-#, fuzzy
 msgid "Send"
-msgstr "konec"
+msgstr "Pošlji"
 
 #: modules/gui/macosx/intf.m:637
-#, fuzzy
 msgid "Don't Send"
-msgstr "Ne popravi"
+msgstr "Ne pošlji"
 
 #: modules/gui/macosx/intf.m:638 modules/gui/macosx/intf.m:639
 msgid "VLC crashed previously"
-msgstr ""
+msgstr "Predvajalnik se je že sesul."
 
 #: modules/gui/macosx/intf.m:640
 msgid ""
@@ -13830,16 +13826,24 @@ msgid ""
 "along with other helpful information: a link to download a sample file, a "
 "URL of a network stream, ..."
 msgstr ""
+"Ali želite poslati podrobno poročilo o napaki razvijalcem programa VLC??\n"
+"\n"
+"V primeru, da bi želeli pomagati, lahko vpišete nekaj vrstic o vašem delu "
+"preden se je program sesul, skupaj s podrobnostmi ..."
 
 #: modules/gui/macosx/intf.m:641
 msgid "I agree to be possibly contacted about this bugreport."
 msgstr ""
+"Strinjam se, da lahko v primeru, da potrebujete več podrobnosti o napaki, "
+"stopite v stik z menoj preko elektronskega naslova."
 
 #: modules/gui/macosx/intf.m:642
 msgid ""
 "Only your default E-Mail address will be submitted, including no further "
 "information."
 msgstr ""
+"Poslan bo le vaš privzeti elektronski naslov, drugi podatki pa ne bodo "
+"poslani."
 
 #: modules/gui/macosx/intf.m:1627
 #, c-format
@@ -13856,15 +13860,15 @@ msgstr "Preverjanje posodobitev v tej različici ni omogočeno."
 
 #: modules/gui/macosx/intf.m:2122
 msgid "Crash Report successfully sent"
-msgstr ""
+msgstr "Poročilo o napaki je bilo uspešno poslano."
 
 #: modules/gui/macosx/intf.m:2123
 msgid "Thanks for your report!"
-msgstr ""
+msgstr "Zahvaljujemo se vam za poročilo!"
 
 #: modules/gui/macosx/intf.m:2131
 msgid "Error when sending the Crash Report"
-msgstr ""
+msgstr "Napaka med pošiljanjem poročila o napaki."
 
 #: modules/gui/macosx/intf.m:2222
 msgid "No CrashLog found"
@@ -13880,22 +13884,20 @@ msgid "Couldn't find any trace of a previous crash."
 msgstr "Ni mogoče najti znakov predhodnega sesutja programa."
 
 #: modules/gui/macosx/intf.m:2249
-#, fuzzy
 msgid "Remove old preferences?"
-msgstr "Počisti lastnosti"
+msgstr "Počisti stare lastnosti?"
 
 #: modules/gui/macosx/intf.m:2250
 msgid "We just found an older version of VLC's preferences files."
-msgstr ""
+msgstr "Zaznana je starejša različica nastavitvenih datotek predvajalnika VLC."
 
 #: modules/gui/macosx/intf.m:2251
 msgid "Move To Trash and Relaunch VLC"
-msgstr ""
+msgstr "Premakni v smeti in ponovno zaženi VLC"
 
 #: modules/gui/macosx/intf.m:2251
-#, fuzzy
 msgid "Ignore"
-msgstr "noben"
+msgstr "Prezri"
 
 #: modules/gui/macosx/macosx.m:52
 msgid "Video device"
@@ -14125,9 +14127,8 @@ msgid "Launch EyeTV now"
 msgstr "Zaženi ExeTV"
 
 #: modules/gui/macosx/open.m:219
-#, fuzzy
 msgid "Download Plugin"
-msgstr "Prenesi takoj"
+msgstr "Prenesi vstavek"
 
 #: modules/gui/macosx/open.m:286
 msgid "Load subtitles file:"
@@ -14387,9 +14388,8 @@ msgid "Expand Node"
 msgstr "Razširi vozlišče"
 
 #: modules/gui/macosx/playlist.m:447
-#, fuzzy
 msgid "Download Cover Art"
-msgstr "Prenesi takoj"
+msgstr "Prenesi naslovnice"
 
 #: modules/gui/macosx/playlist.m:448
 msgid "Fetch Meta Data"
@@ -14493,9 +14493,8 @@ msgid "Select"
 msgstr "Izberite"
 
 #: modules/gui/macosx/simple_prefs.m:89
-#, fuzzy
 msgid "Not Set"
-msgstr "Opomba:"
+msgstr "Ni določeno"
 
 #: modules/gui/macosx/simple_prefs.m:173
 #: modules/gui/qt4/components/simple_preferences.cpp:458
@@ -14854,9 +14853,8 @@ msgid "No"
 msgstr "Ne"
 
 #: modules/gui/macosx/update.m:138
-#, fuzzy
 msgid "Save As:"
-msgstr "Shrani &kot ..."
+msgstr "Shrani kot:"
 
 #: modules/gui/macosx/update.m:178
 msgid "This version of VLC is the latest available."
@@ -16254,9 +16252,8 @@ msgid "dB"
 msgstr "dB"
 
 #: modules/gui/qt4/components/extended_panels.cpp:1132
-#, fuzzy
 msgid "Enable spatializer"
-msgstr "prostorsko"
+msgstr "Omogoči prostorski prikaz"
 
 #: modules/gui/qt4/components/extended_panels.cpp:1273
 msgid "Audio/Video"
@@ -16299,9 +16296,8 @@ msgid "Force update of this dialog's values"
 msgstr "Prisilno posodobi vrednosti pogovornega okna"
 
 #: modules/gui/qt4/components/info_panels.cpp:129
-#, fuzzy
 msgid "Comments"
-msgstr "Opomba"
+msgstr "Opombe"
 
 #: modules/gui/qt4/components/info_panels.cpp:334
 msgid "Extra metadata and other information are shown in this panel.\n"
@@ -16328,6 +16324,8 @@ msgid ""
 "Play\n"
 "If the playlist is empty, open a media"
 msgstr ""
+"Predvajaj\n"
+"V primeru, da je seznam predvajanja prazen, odpri medij"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:277
 msgid "Current visualization"
@@ -16359,11 +16357,11 @@ msgstr ""
 
 #: modules/gui/qt4/components/interface_widgets.cpp:458
 msgid "Click to set point B"
-msgstr ""
+msgstr "Kliknite za nastavitev točke B"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:463
 msgid "Stop the A to B loop"
-msgstr ""
+msgstr "Zaustavi krožno predvajanje od A do B"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:570
 msgid "Menu"
@@ -16414,9 +16412,8 @@ msgid "Revert to normal play speed"
 msgstr "Povrni na običajno hitrost predvajanja"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:1628
-#, fuzzy
 msgid "Download cover art"
-msgstr "Prenesi takoj"
+msgstr "Prenesi naslovnice"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:1644
 msgid "Toggle between elapsed and remaining time"
@@ -16736,11 +16733,8 @@ msgid "Copyright (C) "
 msgstr "Avtorske pravice (c)"
 
 #: modules/gui/qt4/dialogs/help.cpp:128
-#, fuzzy
 msgid " by the VideoLAN Team.\n"
-msgstr ""
-"(c) 1996-2006 - VideoLAN Tim\n"
-"\n"
+msgstr "VideoLAN Team.\n"
 
 #: modules/gui/qt4/dialogs/help.cpp:149
 msgid ""
@@ -16913,9 +16907,8 @@ msgid "&Convert / Save"
 msgstr "&Pretvori / Shrani"
 
 #: modules/gui/qt4/dialogs/preferences.cpp:66
-#, fuzzy
 msgid "Show settings"
-msgstr "Shrani nastavitve"
+msgstr "Prikaži nastavitve"
 
 #: modules/gui/qt4/dialogs/preferences.cpp:70
 msgid "Simple"
@@ -16982,15 +16975,14 @@ msgid "Stream Output"
 msgstr "Prikaz pretoka"
 
 #: modules/gui/qt4/dialogs/sout.cpp:162
-#, fuzzy
 msgid ""
 "Stream output string.\n"
 "This is automatically generated when you change the above settings,\n"
 "but you can update it manually."
 msgstr ""
 "Pretok odvodne niti.\n"
-" Nastavitev se samodejno spremeni, ko spremenite zgornje nastavitve,\n"
-" lahko pa spremembe vnesete ročno."
+"Nastavitev se samodejno ustvari, ko spremenite zgornje nastavitve,\n"
+"lahko pa spremembe vnesete ročno."
 
 #: modules/gui/qt4/dialogs/sout.cpp:217
 msgid "Save file"
@@ -17001,23 +16993,20 @@ msgid "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 msgstr "Zabojniki (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)"
 
 #: modules/gui/qt4/dialogs/sout.cpp:345
-#, fuzzy
 msgid "Audio Port:"
-msgstr "Vrata prenosa zvoka"
+msgstr "Vrata prenosa zvoka:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:75
-#, fuzzy
 msgid "Broadcast"
 msgstr "Oddajanje"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:76
-#, fuzzy
 msgid "Schedule"
-msgstr "Nastavi urnik"
+msgstr "Urnik"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:77
 msgid "Video On Demand ( VOD )"
-msgstr ""
+msgstr "Video na zahtevo (VNZ)"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:82
 msgid "Hours / Minutes / Seconds:"
@@ -17060,19 +17049,16 @@ msgid "Open a VLM Configuration File"
 msgstr "Odpri nastavitveno datoteko VLM"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:528
-#, fuzzy
 msgid "Broadcast: "
-msgstr "Oddajanje"
+msgstr "Oddajanje:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:596
-#, fuzzy
 msgid "Schedule: "
-msgstr "Nastavi urnik"
+msgstr "Urnik:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:618
-#, fuzzy
 msgid "VOD: "
-msgstr "VOD"
+msgstr "VNZ: "
 
 #: modules/gui/qt4/main_interface.cpp:309
 msgid ""
@@ -17152,9 +17138,8 @@ msgid "&Open File..."
 msgstr "&Odpri datoteko ..."
 
 #: modules/gui/qt4/menus.cpp:292
-#, fuzzy
 msgid "Advanced Open File..."
-msgstr "&Napredno odpiranje ..."
+msgstr "Napredno odpiranje ..."
 
 #: modules/gui/qt4/menus.cpp:299 modules/gui/qt4/menus.cpp:687
 msgid "Open &Disc..."
@@ -17269,9 +17254,8 @@ msgid "Always &On Top"
 msgstr "&Vedno na vrhu"
 
 #: modules/gui/qt4/menus.cpp:510
-#, fuzzy
 msgid "DirectX Wallpaper"
-msgstr "Tapeta"
+msgstr "DirectX tapeta"
 
 #: modules/gui/qt4/menus.cpp:512
 msgid "Sna&pshot"
@@ -17675,7 +17659,6 @@ msgid "Play locally"
 msgstr "Predvajaj lokalno"
 
 #: modules/gui/qt4/ui/sout.ui:338
-#, fuzzy
 msgid "Video Port"
 msgstr "Vrata prenosa slike"
 
@@ -18171,9 +18154,8 @@ msgid "Save playlist"
 msgstr "Shrani seznam predvajanja"
 
 #: modules/gui/skins2/src/dialogs.cpp:240
-#, fuzzy
 msgid "XSPF playlist|*.xspf|M3U file|*.m3u"
-msgstr "XSPF seznam predvajanja (*.xspf);; "
+msgstr "XSPF  seznam predvajanja|*.xspf|M3U datoteka|*.m3u"
 
 #: modules/gui/skins2/src/skin_main.cpp:436
 msgid "Skin to use"

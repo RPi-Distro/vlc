@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist import functions
  *******************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: ad55da0c0e8720bf4d350a5e1405c5953b5c2c49 $
+ * $Id: 852ce1a22927941442a54b5ac84a2c19e85c69c1 $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -206,7 +206,7 @@ static bool parse_playlist_node COMPLEX_INTERFACE
                 msg_Warn( p_demux, "unsupported XSPF version" );
         }
         /* attribute: xmlns */
-        else if( !strcmp( psz_name, "xmlns" ) )
+        else if( !strcmp( psz_name, "xmlns" ) || !strcmp( psz_name, "xmlns:vlc" ) )
             ;
         else if( !strcmp( psz_name, "xml:base" ) )
         {

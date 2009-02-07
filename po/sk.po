@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Slovak translation for VLC Media Player\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2008-11-05 22:00+0200\n"
+"POT-Creation-Date: 2008-12-03 17:20+0200\n"
 "PO-Revision-Date: 2008-11-01 21:58+0100\n"
 "Last-Translator: Marián Hikaník <podnety-at-mojepreklady.net>\n"
 "Language-Team: Marián Hikaník, translation controlled by: Pavel Kříž\n"
@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: include/vlc_common.h:893
+#: include/vlc_common.h:894
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -11933,8 +11933,8 @@ msgstr ""
 "prehrávania."
 
 #: modules/control/rc.c:1316 modules/control/rc.c:1576
-#: modules/control/rc.c:1647 modules/control/rc.c:1827
-#: modules/control/rc.c:1925
+#: modules/control/rc.c:1647 modules/control/rc.c:1828
+#: modules/control/rc.c:1926
 msgid "Type 'menu select' or 'pause' to continue."
 msgstr ""
 "Pre pokračovanie stlačte tlačidlo pre výber menu alebo pozastavenie "
@@ -11949,91 +11949,91 @@ msgstr "Chyba: Funkcia `goto' vyžaduje argument väčší ako 0."
 msgid "Playlist has only %d elements"
 msgstr "Playlist má len %d položiek!"
 
-#: modules/control/rc.c:1912 modules/control/rc.c:1952
+#: modules/control/rc.c:1913 modules/control/rc.c:1953
 msgid "Please provide one of the following parameters:"
 msgstr "Prosím zadajte jeden z týchto parametrov:"
 
-#: modules/control/rc.c:1984
+#: modules/control/rc.c:1985
 msgid "Unknown command!"
 msgstr "Neznámy príkaz!"
 
-#: modules/control/rc.c:2000 modules/gui/ncurses.c:2039
+#: modules/control/rc.c:2001 modules/gui/ncurses.c:2039
 msgid "+-[Incoming]"
 msgstr "+-[Prichádzajúce]"
 
-#: modules/control/rc.c:2001 modules/gui/ncurses.c:2042
+#: modules/control/rc.c:2002 modules/gui/ncurses.c:2042
 #, c-format
 msgid "| input bytes read : %8.0f kB"
 msgstr "| nacitane vstupne byty : %8.0f kB"
 
-#: modules/control/rc.c:2003 modules/gui/ncurses.c:2045
+#: modules/control/rc.c:2004 modules/gui/ncurses.c:2045
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr "| dátový tok na vstupe    :   %6.0f kb/s"
 
-#: modules/control/rc.c:2005 modules/gui/ncurses.c:2047
+#: modules/control/rc.c:2006 modules/gui/ncurses.c:2047
 #, c-format
 msgid "| demux bytes read : %8.0f kB"
 msgstr "| čítanie demux. bytov : %8.0f kB"
 
-#: modules/control/rc.c:2007 modules/gui/ncurses.c:2050
+#: modules/control/rc.c:2008 modules/gui/ncurses.c:2050
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr "| dátový tok pri demuxovaní    :   %6.0f kb/s"
 
-#: modules/control/rc.c:2011 modules/gui/ncurses.c:2058
+#: modules/control/rc.c:2012 modules/gui/ncurses.c:2058
 msgid "+-[Video Decoding]"
 msgstr "+-[Dekódovanie videa]"
 
-#: modules/control/rc.c:2012 modules/gui/ncurses.c:2061
+#: modules/control/rc.c:2013 modules/gui/ncurses.c:2061
 #, c-format
 msgid "| video decoded    :    %5i"
 msgstr "| dekódované video    :    %5i"
 
-#: modules/control/rc.c:2014 modules/gui/ncurses.c:2064
+#: modules/control/rc.c:2015 modules/gui/ncurses.c:2064
 #, c-format
 msgid "| frames displayed :    %5i"
 msgstr "| zobrazené snímky :    %5i"
 
-#: modules/control/rc.c:2016 modules/gui/ncurses.c:2067
+#: modules/control/rc.c:2017 modules/gui/ncurses.c:2067
 #, c-format
 msgid "| frames lost      :    %5i"
 msgstr "| stratené snímky      :    %5i"
 
-#: modules/control/rc.c:2020 modules/gui/ncurses.c:2075
+#: modules/control/rc.c:2021 modules/gui/ncurses.c:2075
 msgid "+-[Audio Decoding]"
 msgstr "+-[Dekódovanie zvuku]"
 
-#: modules/control/rc.c:2021 modules/gui/ncurses.c:2078
+#: modules/control/rc.c:2022 modules/gui/ncurses.c:2078
 #, c-format
 msgid "| audio decoded    :    %5i"
 msgstr "| dekódovaný zvuk    :    %5i"
 
-#: modules/control/rc.c:2023 modules/gui/ncurses.c:2081
+#: modules/control/rc.c:2024 modules/gui/ncurses.c:2081
 #, c-format
 msgid "| buffers played   :    %5i"
 msgstr "| prehrané z vyr. pamäte   :    %5i"
 
-#: modules/control/rc.c:2025 modules/gui/ncurses.c:2084
+#: modules/control/rc.c:2026 modules/gui/ncurses.c:2084
 #, c-format
 msgid "| buffers lost     :    %5i"
 msgstr "| stratené z vyr. pamäte     :    %5i"
 
-#: modules/control/rc.c:2029 modules/gui/ncurses.c:2090
+#: modules/control/rc.c:2030 modules/gui/ncurses.c:2090
 msgid "+-[Streaming]"
 msgstr "+-[Streamovanie]"
 
-#: modules/control/rc.c:2030 modules/gui/ncurses.c:2093
+#: modules/control/rc.c:2031 modules/gui/ncurses.c:2093
 #, c-format
 msgid "| packets sent     :    %5i"
 msgstr "| odoslané pakety     :    %5i"
 
-#: modules/control/rc.c:2031 modules/gui/ncurses.c:2095
+#: modules/control/rc.c:2032 modules/gui/ncurses.c:2095
 #, c-format
 msgid "| bytes sent       : %8.0f kB"
 msgstr "| odoslané byty       : %8.0f kB"
 
-#: modules/control/rc.c:2033
+#: modules/control/rc.c:2034
 #, c-format
 msgid "| sending bitrate  :   %6.0f kb/s"
 msgstr "| dátový tok pri odosielaní  :   %6.0f kb/s"
@@ -12872,20 +12872,20 @@ msgstr ""
 "\", \"realtext\", \"dks\", \"subviewer1\",  and \"auto\" (Hodnota auto = "
 "automaticky detekovať formát titulkov. Táto voľba by mala fungovať vždy.)."
 
-#: modules/demux/ts.c:110
+#: modules/demux/ts.c:112
 msgid "Extra PMT"
 msgstr "Extra PMT"
 
-#: modules/demux/ts.c:112
+#: modules/demux/ts.c:114
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
 "Umožňuje užívateľovi, aby zadal extra pmt (pmt_pid=pid:stream_type[,...])."
 
-#: modules/demux/ts.c:114
+#: modules/demux/ts.c:116
 msgid "Set id of ES to PID"
 msgstr "Nastaviť ident. číslo elementárnych streamov na PID"
 
-#: modules/demux/ts.c:115
+#: modules/demux/ts.c:117
 msgid ""
 "Set the internal ID of each elementary stream handled by VLC to the same "
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
@@ -12895,37 +12895,37 @@ msgstr ""
 "PID v streame TS. Je vhodné zadať nasledujúci príkaz: '#duplicate{..., "
 "select=\"es=<pid>\"}'."
 
-#: modules/demux/ts.c:120
+#: modules/demux/ts.c:122
 msgid "Fast udp streaming"
 msgstr "Rýchle UDP streamovanie"
 
-#: modules/demux/ts.c:122
+#: modules/demux/ts.c:124
 msgid "Sends TS to specific ip:port by udp (you must know what you are doing)."
 msgstr ""
 "Odoslať TS na špecifickú IP-adresu: port vybrať podľa protokolu UDP (pozor, "
 "mali by ste presne vedieť, čo nastavujete)."
 
-#: modules/demux/ts.c:124
+#: modules/demux/ts.c:126
 msgid "MTU for out mode"
 msgstr "Max. veľkosť paketu na výstupe mód."
 
-#: modules/demux/ts.c:125
+#: modules/demux/ts.c:127
 msgid "MTU for out mode."
 msgstr "Max. veľkosť paketu na výstupe."
 
-#: modules/demux/ts.c:127
+#: modules/demux/ts.c:129
 msgid "CSA ck"
 msgstr "CSA ck"
 
-#: modules/demux/ts.c:128
+#: modules/demux/ts.c:130
 msgid "Control word for the CSA encryption algorithm"
 msgstr "Heslo pre kryptovací algoritmus CSA"
 
-#: modules/demux/ts.c:130 modules/mux/mpeg/ts.c:170
+#: modules/demux/ts.c:132 modules/mux/mpeg/ts.c:170
 msgid "Second CSA Key"
 msgstr "Druhý kľúč CSA"
 
-#: modules/demux/ts.c:131 modules/mux/mpeg/ts.c:171
+#: modules/demux/ts.c:133 modules/mux/mpeg/ts.c:171
 msgid ""
 "The even CSA encryption key. This must be a 16 char string (8 hexadecimal "
 "bytes)."
@@ -12933,27 +12933,27 @@ msgstr ""
 "Prvý kryptovací kľúč CSA. Tento kľúč musí mať 16 znakov (alebo 8 bytov v "
 "hex. vyjadrení)."
 
-#: modules/demux/ts.c:134
+#: modules/demux/ts.c:136
 msgid "Silent mode"
 msgstr "Tichý mód"
 
-#: modules/demux/ts.c:135
+#: modules/demux/ts.c:137
 msgid "Do not complain on encrypted PES."
 msgstr "Nezodpovedá štandardu pre kryptovaný súbor PES."
 
-#: modules/demux/ts.c:137
+#: modules/demux/ts.c:139
 msgid "CAPMT System ID"
 msgstr "Systémové ident. číslo CAPMT"
 
-#: modules/demux/ts.c:138
+#: modules/demux/ts.c:140
 msgid "Only forward descriptors from this SysID to the CAM."
 msgstr "Len preposielať deskriptory z tohto Syst. ident. čísla na CAM."
 
-#: modules/demux/ts.c:140
+#: modules/demux/ts.c:142
 msgid "Packet size in bytes to decrypt"
 msgstr "Veľkosť paketu (v bytoch), ktorý treba dekryptovať"
 
-#: modules/demux/ts.c:141
+#: modules/demux/ts.c:143
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
 "subtract the TS-header from the value before decrypting. "
@@ -12961,19 +12961,19 @@ msgstr ""
 "Zadajte veľkosť paketu TS, ktorý treba dekryptovať. Pred dekryptovaním sa "
 "automaticky vyextrahuje TS-hlavička."
 
-#: modules/demux/ts.c:145
+#: modules/demux/ts.c:147
 msgid "Filename of dump"
 msgstr "Názov súboru s výpisom"
 
-#: modules/demux/ts.c:146
+#: modules/demux/ts.c:148
 msgid "Specify a filename where to dump the TS in."
 msgstr "Zadajte názov súboru, do ktoré sa uloží analýza TS."
 
-#: modules/demux/ts.c:148
+#: modules/demux/ts.c:150
 msgid "Append"
 msgstr "Pripojiť"
 
-#: modules/demux/ts.c:150
+#: modules/demux/ts.c:152
 msgid ""
 "If the file exists and this option is selected, the existing file will not "
 "be overwritten."
@@ -12981,11 +12981,11 @@ msgstr ""
 "Ak už cieľový súbor existuje a Vy si zvolíte túto funkciu, pôvodný súbor sa "
 "neprepíše, nové údaje sa k nemu len pripoja."
 
-#: modules/demux/ts.c:153
+#: modules/demux/ts.c:155
 msgid "Dump buffer size"
 msgstr "Udávať túto veľkosť vyrovnávacej pamäte:"
 
-#: modules/demux/ts.c:155
+#: modules/demux/ts.c:157
 msgid ""
 "Tweak the buffer size for reading and writing an integer number of packets."
 "Specify the size of the buffer here and not the number of packets."
@@ -12993,69 +12993,69 @@ msgstr ""
 "Upravte veľkosť vyrovnávacej pamäte tak, aby bolo možné zapisovať celé čísla "
 "paketov. Zadávajte veľkosť pamäte, nie počet paketov!"
 
-#: modules/demux/ts.c:159
+#: modules/demux/ts.c:161
 msgid "MPEG Transport Stream demuxer"
 msgstr "Demuxér transportných streamov MPEG"
 
-#: modules/demux/ts.c:3419
+#: modules/demux/ts.c:3421
 #: modules/gui/qt4/components/interface_widgets.cpp:631
 #: modules/gui/qt4/components/interface_widgets.cpp:827
 msgid "Teletext"
 msgstr "Teletext"
 
-#: modules/demux/ts.c:3429
+#: modules/demux/ts.c:3431
 msgid "Teletext subtitles"
 msgstr "Titulky v teletexte"
 
-#: modules/demux/ts.c:3439
+#: modules/demux/ts.c:3441
 msgid "Teletext additional information"
 msgstr "Dodatočné teletextové informácie"
 
-#: modules/demux/ts.c:3449
+#: modules/demux/ts.c:3451
 msgid "Teletext programme schedule"
 msgstr "Plánovanie teletextového programu"
 
-#: modules/demux/ts.c:3459
+#: modules/demux/ts.c:3461
 msgid "Teletext hearing impaired subtitles"
 msgstr "Teletext obsahujúci poškodené titulky"
 
-#: modules/demux/ts.c:3554
+#: modules/demux/ts.c:3556
 msgid "subtitles"
 msgstr "titulky"
 
-#: modules/demux/ts.c:3558
+#: modules/demux/ts.c:3560
 msgid "4:3 subtitles"
 msgstr "Titulky 4:3"
 
-#: modules/demux/ts.c:3562
+#: modules/demux/ts.c:3564
 msgid "16:9 subtitles"
 msgstr "Titulky 16:9"
 
-#: modules/demux/ts.c:3566
+#: modules/demux/ts.c:3568
 msgid "2.21:1 subtitles"
 msgstr "Titulky 2.21:1"
 
-#: modules/demux/ts.c:3570 modules/demux/ts.c:3751 modules/demux/ts.c:3792
+#: modules/demux/ts.c:3572 modules/demux/ts.c:3753 modules/demux/ts.c:3794
 msgid "hearing impaired"
 msgstr "poškodený zvuk"
 
-#: modules/demux/ts.c:3574
+#: modules/demux/ts.c:3576
 msgid "4:3 hearing impaired"
 msgstr "4:3 - stlmený zvuk"
 
-#: modules/demux/ts.c:3578
+#: modules/demux/ts.c:3580
 msgid "16:9 hearing impaired"
 msgstr "16:9 - stlmený zvuk"
 
-#: modules/demux/ts.c:3582
+#: modules/demux/ts.c:3584
 msgid "2.21:1 hearing impaired"
 msgstr "2.21:1 - stlmený zvuk"
 
-#: modules/demux/ts.c:3747 modules/demux/ts.c:3788
+#: modules/demux/ts.c:3749 modules/demux/ts.c:3790
 msgid "clean effects"
 msgstr "čistiace efekty"
 
-#: modules/demux/ts.c:3755 modules/demux/ts.c:3796
+#: modules/demux/ts.c:3757 modules/demux/ts.c:3798
 msgid "visual impaired commentary"
 msgstr "vizuálne poškodený komentár"
 

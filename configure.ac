@@ -1,10 +1,10 @@
 dnl Autoconf settings for vlc
 
-AC_INIT(vlc, 0.9.6)
+AC_INIT(vlc, 0.9.8a)
 VERSION_MAJOR="0"
 VERSION_MINOR="9"
-VERSION_REVISION="6"
-VERSION_EXTRA="-git"
+VERSION_REVISION="8"
+VERSION_EXTRA="a"
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Grishenko"
@@ -3281,9 +3281,14 @@ AC_CHECK_HEADERS(zlib.h, [
   VLC_ADD_LIBS([mp4 skins2 sap mkv gme],[-lz])
 ] )
 
-AC_CHECK_HEADERS(sysfs/libsysfs.h, [
-  VLC_ADD_LIBS([mp4 mkv],[-lsysfs])
-] )
+AC_ARG_ENABLE(libsysfs,
+  [  --enable-libsysfs       Get user key from firewire connected iPod via libsysfs (default enabled)])
+
+AS_IF([test "${enable_libsysfs}" != "no"],[
+  AC_CHECK_HEADERS(sysfs/libsysfs.h, [
+    VLC_ADD_LIBS([mp4 mkv],[-lsysfs])
+  ] )
+])
 
 dnl
 dnl skins2 module

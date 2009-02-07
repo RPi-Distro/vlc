@@ -8,15 +8,15 @@ msgid ""
 msgstr ""
 "Project-Id-Version: pt_BR\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2008-11-05 22:00+0200\n"
-"PO-Revision-Date: 2008-10-25 18:40-0300\n"
+"POT-Creation-Date: 2008-12-03 17:20+0200\n"
+"PO-Revision-Date: 2008-11-10 04:13-0300\n"
 "Last-Translator: Sidney Doria <ssdoria@gmail.com>\n"
 "Language-Team: Brazilian Portuguese\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: include/vlc_common.h:893
+#: include/vlc_common.h:894
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -4588,22 +4588,22 @@ msgstr "programa principal"
 #: src/misc/update.c:1458
 #, c-format
 msgid "%.1f GB"
-msgstr ""
+msgstr "%.1f GB"
 
 #: src/misc/update.c:1460
 #, c-format
 msgid "%.1f MB"
-msgstr ""
+msgstr "%.1f MB"
 
 #: src/misc/update.c:1462
 #, c-format
 msgid "%.1f kB"
-msgstr ""
+msgstr "%.1f KB"
 
 #: src/misc/update.c:1464
-#, fuzzy, c-format
+#, c-format
 msgid "%ld B"
-msgstr "%d Hz"
+msgstr "%ld B"
 
 #: src/misc/update.c:1568 src/misc/update.c:1592
 #, c-format
@@ -4611,11 +4611,12 @@ msgid ""
 "%s\n"
 "Downloading... %s/%s %.1f%% done"
 msgstr ""
+"%s\n"
+"Baixando... %s/%s %.1f%% concluído(s)"
 
 #: src/misc/update.c:1571
-#, fuzzy
 msgid "Downloading ..."
-msgstr "Baixar Plugin"
+msgstr "Baixando..."
 
 #: src/misc/update.c:1611
 #, c-format
@@ -4623,6 +4624,8 @@ msgid ""
 "%s\n"
 "Done %s (100.0%%)"
 msgstr ""
+"%s\n"
+"Concluído %s (100.0%%)"
 
 #: src/misc/update.c:1632
 msgid "File could not be verified"
@@ -4673,9 +4676,8 @@ msgid "Downloaded file \"%s\" was corrupted. Thus, it was deleted."
 msgstr "O arquivo \"%s\" estava corrompido. Portanto, foi excluído."
 
 #: src/misc/update.c:1707
-#, fuzzy
 msgid "Cancelled"
-msgstr "Cancelar"
+msgstr "Cancelado"
 
 #: src/playlist/tree.c:66 modules/access/bda/bda.c:62
 #: modules/access/bda/bda.c:115 modules/access/bda/bda.c:123
@@ -4779,7 +4781,7 @@ msgstr "Eslavo Eclesiástico"
 
 #: src/text/iso-639_def.h:64
 msgid "Chuvash"
-msgstr ""
+msgstr "Chuvash"
 
 #: src/text/iso-639_def.h:65
 msgid "Cornish"
@@ -4879,7 +4881,7 @@ msgstr "Indonésio"
 
 #: src/text/iso-639_def.h:98
 msgid "Inupiaq"
-msgstr ""
+msgstr "Inupiaque"
 
 #: src/text/iso-639_def.h:100
 msgid "Javanese"
@@ -4919,7 +4921,7 @@ msgstr "Quirguiz"
 
 #: src/text/iso-639_def.h:110
 msgid "Komi"
-msgstr ""
+msgstr "Komi"
 
 #: src/text/iso-639_def.h:112
 msgid "Kuanyama"
@@ -4999,11 +5001,11 @@ msgstr "Navajo"
 
 #: src/text/iso-639_def.h:132
 msgid "Ndebele, South"
-msgstr ""
+msgstr "Ndebele do Sul"
 
 #: src/text/iso-639_def.h:133
 msgid "Ndebele, North"
-msgstr ""
+msgstr "Ndebele do Norte"
 
 #: src/text/iso-639_def.h:134
 msgid "Ndonga"
@@ -5055,7 +5057,7 @@ msgstr "Páli"
 
 #: src/text/iso-639_def.h:150
 msgid "Pushto"
-msgstr ""
+msgstr "Pashto"
 
 #: src/text/iso-639_def.h:151
 msgid "Quechua"
@@ -5075,7 +5077,7 @@ msgstr "Kirundi"
 
 #: src/text/iso-639_def.h:157
 msgid "Sango"
-msgstr ""
+msgstr "Sango"
 
 #: src/text/iso-639_def.h:158
 msgid "Sanskrit"
@@ -5099,11 +5101,11 @@ msgstr "Samoano"
 
 #: src/text/iso-639_def.h:166
 msgid "Shona"
-msgstr ""
+msgstr "Chona"
 
 #: src/text/iso-639_def.h:167
 msgid "Sindhi"
-msgstr ""
+msgstr "Sindhi"
 
 #: src/text/iso-639_def.h:168
 msgid "Somali"
@@ -6121,6 +6123,8 @@ msgid ""
 "Force the DirectShow video input to use a specific frame rate(eg. 0 means "
 "default, 25, 29.97, 50, 59.94, etc.)"
 msgstr ""
+"Impõe que a entrada de vídeo DirectShow use uma taxa de quadros específica "
+"(e.g., 0 = padrão, 25, 29.97, 50, 59.94, etc.)"
 
 #: modules/access/dshow/dshow.cpp:125
 msgid "Device properties"
@@ -6130,6 +6134,8 @@ msgstr "Propriedades do dispositivo"
 msgid ""
 "Show the properties dialog of the selected device before starting the stream."
 msgstr ""
+"Mostra a janela de propriedades do dispositivo selecionado, antes de iniciar "
+"o fluxo."
 
 #: modules/access/dshow/dshow.cpp:129
 msgid "Tuner properties"
@@ -6228,6 +6234,8 @@ msgstr "Número de canais de áudio"
 msgid ""
 "Select audio input format with the given number of audio channels (if non 0)"
 msgstr ""
+"Selecionar o formato de entrada de áudio pelo número de canais informado (se "
+"não for 0)"
 
 #: modules/access/dshow/dshow.cpp:168 modules/stream_out/transcode.c:103
 msgid "Audio sample rate"
@@ -6236,6 +6244,8 @@ msgstr "Taxa de amostragem de áudio"
 #: modules/access/dshow/dshow.cpp:170
 msgid "Select audio input format with the given sample rate (if non 0)"
 msgstr ""
+"Selecionar o formato de entrada de áudio para a taxa de amostragem informada "
+"(se não for 0)"
 
 #: modules/access/dshow/dshow.cpp:172
 msgid "Audio bits per sample"
@@ -6244,6 +6254,8 @@ msgstr "Bits de áudio por amostra"
 #: modules/access/dshow/dshow.cpp:174
 msgid "Select audio input format with the given bits/sample (if non 0)"
 msgstr ""
+"Selecionar o formato de entrada de áudio pela amostragem/bits dados (se não "
+"for 0)"
 
 #: modules/access/dshow/dshow.cpp:186
 msgid "DirectShow"
@@ -6323,6 +6335,8 @@ msgid ""
 "Access control list (equivalent to .hosts) file path, which will limit the "
 "range of IPs entitled to log into the internal HTTP server."
 msgstr ""
+"Caminho do arquivo de lista de controle de acesso (equivalente ao .hosts), "
+"que limitará a faixa de IPs a ser registrada no servidor HTTP interno."
 
 #: modules/access/dvb/access.c:173 modules/access_output/http.c:74
 #: modules/control/http/http.c:55
@@ -6378,6 +6392,8 @@ msgid ""
 "The given syntax is deprecated. Run \"vlc -p dvb\" to see an explanation of "
 "the new syntax."
 msgstr ""
+"A sintaxe informada está obsoleta. Execute \"vlc -p dvb\" para ver uma "
+"explicação sobre a nova sintaxe."
 
 #: modules/access/dvb/access.c:780
 msgid "Illegal Polarization"
@@ -6507,6 +6523,8 @@ msgid ""
 "EyeTV program number, or use 0 for last channel, -1 for S-Video input, -2 "
 "for Composite input"
 msgstr ""
+"Número do programa EyeTV, ou use 0 para o último canal, -1 para entrada S-"
+"Vídeo, -2 para entrada Vídeo Componente"
 
 #: modules/access/eyetv.m:63
 msgid ""
@@ -6567,6 +6585,8 @@ msgstr "Entrada fictícia"
 #: modules/access/file.c:86
 msgid "Caching value for files. This value should be set in milliseconds."
 msgstr ""
+"Valor de cache para arquivos. Este valor deve ser preenchido em "
+"milissegundos."
 
 #: modules/access/file.c:90
 msgid "File input"
@@ -6606,6 +6626,8 @@ msgid ""
 "The bandwidth module will drop any data in excess of that many bytes per "
 "seconds."
 msgstr ""
+"O módulo de controle de banda descartará quaisquer dados que excederem essa "
+"quantidade de bytes por segundo."
 
 #: modules/access_filter/bandwidth.c:45
 #: modules/gui/qt4/components/open_panels.cpp:670
@@ -6623,7 +6645,7 @@ msgstr "Forçar uso do módulo de despejo"
 
 #: modules/access_filter/dump.c:43
 msgid "Activate the dump module even for media with fast seeking."
-msgstr ""
+msgstr "Ativa o módulo de descarga, mesmo para mídia de acesso rápido."
 
 #: modules/access_filter/dump.c:46
 msgid "Maximum size of temporary file (Mb)"
@@ -6756,6 +6778,8 @@ msgstr "Sua tentativa de conexão ao servidor foi rejeitada."
 msgid ""
 "Caching value for GnomeVFS streams.This value should be set in milliseconds."
 msgstr ""
+"Valor de cache para os fluxos GnomeVFS. Este valor deve ser preenchido em "
+"milissegundos."
 
 #: modules/access/gnomevfs.c:53
 msgid "GnomeVFS input"
@@ -6784,6 +6808,8 @@ msgstr "Se o seu proxy HTTP requer uma senha, configure ela aqui."
 msgid ""
 "Caching value for HTTP streams. This value should be set in milliseconds."
 msgstr ""
+"Valor de cache para fluxos HTTP. Este valor deve ser preenchido em "
+"milissegundos."
 
 #: modules/access/http.c:80
 msgid "HTTP user agent"
@@ -6791,7 +6817,7 @@ msgstr "User agent do HTTP"
 
 #: modules/access/http.c:81
 msgid "User agent that will be used for the connection."
-msgstr ""
+msgstr "User agent que será usado para a conexão."
 
 #: modules/access/http.c:84
 msgid "Auto re-connect"
@@ -6873,11 +6899,12 @@ msgstr "Entrada JACK"
 
 #: modules/access/mmap.c:42
 msgid "Use file memory mapping"
-msgstr ""
+msgstr "Usar mapeamento de memória em arquivo"
 
 #: modules/access/mmap.c:44
 msgid "Try to use memory mapping to read files and block devices."
 msgstr ""
+"Tentar usar mapeamento em memória para ler arquivos e dispositivos de bloco."
 
 #: modules/access/mmap.c:54
 msgid "MMap"
@@ -6885,12 +6912,14 @@ msgstr "MMap"
 
 #: modules/access/mmap.c:55
 msgid "Memory-mapped file input"
-msgstr ""
+msgstr "Arquivo de entrada para mapeamento em memória"
 
 #: modules/access/mms/mms.c:51
 msgid ""
 "Caching value for MMS streams. This value should be set in milliseconds."
 msgstr ""
+"Valor de cache para fluxos MMS. Este valor deve ser preenchido em "
+"milissegundos."
 
 #: modules/access/mms/mms.c:54
 msgid "Force selection of all streams"
@@ -6963,7 +6992,7 @@ msgstr "Usuário"
 
 #: modules/access_output/http.c:66
 msgid "User name that will be requested to access the stream."
-msgstr ""
+msgstr "Nome do usuário que será solicitado para acessar o fluxo."
 
 #: modules/access_output/http.c:68 modules/control/telnet.c:87
 #: modules/gui/macosx/simple_prefs.m:227
@@ -6975,7 +7004,7 @@ msgstr "Senha"
 
 #: modules/access_output/http.c:69
 msgid "Password that will be requested to access the stream."
-msgstr ""
+msgstr "Senha que será solicitada para acessar o fluxo."
 
 #: modules/access_output/http.c:71
 msgid "Mime"
@@ -6984,6 +7013,8 @@ msgstr "Mime"
 #: modules/access_output/http.c:72
 msgid "MIME returned by the server (autodetected if not specified)."
 msgstr ""
+"MIME retornado pelo servidor (detectado automaticamente se não foi "
+"especificado)."
 
 #: modules/access_output/http.c:75
 msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
@@ -7009,11 +7040,11 @@ msgstr ""
 
 #: modules/access_output/http.c:90
 msgid "Advertise with Bonjour"
-msgstr ""
+msgstr "Auxiliar com Bonjour"
 
 #: modules/access_output/http.c:91
 msgid "Advertise the stream with the Bonjour protocol."
-msgstr ""
+msgstr "Auxilia o fluxo com o protocolo Bonjour."
 
 #: modules/access_output/http.c:95
 msgid "HTTP stream output"
@@ -7217,6 +7248,8 @@ msgstr "Freqüência a ser capturada (em KHz), se aplicável."
 #: modules/access/v4l.c:141
 msgid "Framerate to capture, if applicable (-1 for autodetect)."
 msgstr ""
+"Taxa de quadros para captura, se aplicável (-1 para detectar "
+"automaticamente)."
 
 #: modules/access/pvr.c:90
 msgid "Key interval"
@@ -7224,7 +7257,7 @@ msgstr "Intervalo-chave"
 
 #: modules/access/pvr.c:91
 msgid "Interval between keyframes (-1 for autodetect)."
-msgstr ""
+msgstr "Intervalo entre os quadros-chave (-1 para detectar automaticamente)."
 
 #: modules/access/pvr.c:93
 msgid "B Frames"
@@ -7366,17 +7399,19 @@ msgstr "Falha na sessão"
 
 #: modules/access/rtsp/access.c:233
 msgid "The requested RTSP session could not be established."
-msgstr ""
+msgstr "A sessão RTSP solicitada não pôde ser estabelecida."
 
 #: modules/access/screen/screen.c:41
 msgid ""
 "Caching value for screen capture. This value should be set in milliseconds."
 msgstr ""
+"Valor de cache para captura de tela. Este valor deve ser preenchido em "
+"milissegundos."
 
 #: modules/access/screen/screen.c:45
 #: modules/gui/qt4/components/open_panels.cpp:957
 msgid "Desired frame rate for the capture."
-msgstr ""
+msgstr "Taxa de quadros desejada para a captura."
 
 #: modules/access/screen/screen.c:48
 msgid "Capture fragment size"
@@ -7527,7 +7562,7 @@ msgstr "Entrada de áudio"
 
 #: modules/access/v4l2/v4l2.c:109
 msgid "Audio input of the card to use (see debug)."
-msgstr ""
+msgstr "Placa de áudio a ser usada (veja depuração)."
 
 #: modules/access/v4l2/v4l2.c:110
 msgid "IO Method"
@@ -7539,11 +7574,11 @@ msgstr "Método de E/S (READ, MMAP, USERPTR)."
 
 #: modules/access/v4l2/v4l2.c:115
 msgid "Force width (-1 for autodetect)."
-msgstr ""
+msgstr "Impõe a largura (-1 para detectar automaticamente)."
 
 #: modules/access/v4l2/v4l2.c:118
 msgid "Force height (-1 for autodetect)."
-msgstr ""
+msgstr "Impõe a altura (-1 para detectar automaticamente)."
 
 #: modules/access/v4l2/v4l2.c:123
 msgid "Reset v4l2 controls"
@@ -11328,8 +11363,8 @@ msgid "Press menu select or pause to continue."
 msgstr ""
 
 #: modules/control/rc.c:1316 modules/control/rc.c:1576
-#: modules/control/rc.c:1647 modules/control/rc.c:1827
-#: modules/control/rc.c:1925
+#: modules/control/rc.c:1647 modules/control/rc.c:1828
+#: modules/control/rc.c:1926
 msgid "Type 'menu select' or 'pause' to continue."
 msgstr ""
 
@@ -11342,91 +11377,91 @@ msgstr ""
 msgid "Playlist has only %d elements"
 msgstr "A lista de reprodução tem apenas %d elementos"
 
-#: modules/control/rc.c:1912 modules/control/rc.c:1952
+#: modules/control/rc.c:1913 modules/control/rc.c:1953
 msgid "Please provide one of the following parameters:"
 msgstr "Por favor informe um dos seguintes parâmetros:"
 
-#: modules/control/rc.c:1984
+#: modules/control/rc.c:1985
 msgid "Unknown command!"
 msgstr "Comando desconhecido!"
 
-#: modules/control/rc.c:2000 modules/gui/ncurses.c:2039
+#: modules/control/rc.c:2001 modules/gui/ncurses.c:2039
 msgid "+-[Incoming]"
 msgstr ""
 
-#: modules/control/rc.c:2001 modules/gui/ncurses.c:2042
+#: modules/control/rc.c:2002 modules/gui/ncurses.c:2042
 #, c-format
 msgid "| input bytes read : %8.0f kB"
 msgstr "| bytes lidos na entrada : %8.0f KB"
 
-#: modules/control/rc.c:2003 modules/gui/ncurses.c:2045
+#: modules/control/rc.c:2004 modules/gui/ncurses.c:2045
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
 msgstr "| taxa de bits da entrada    :   %6.0f kb/s"
 
-#: modules/control/rc.c:2005 modules/gui/ncurses.c:2047
+#: modules/control/rc.c:2006 modules/gui/ncurses.c:2047
 #, c-format
 msgid "| demux bytes read : %8.0f kB"
 msgstr "| bytes lidos pelo descombinador : %8.0f kB"
 
-#: modules/control/rc.c:2007 modules/gui/ncurses.c:2050
+#: modules/control/rc.c:2008 modules/gui/ncurses.c:2050
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
 msgstr "| taxa de bits do descombinador    :   %6.0f kb/s"
 
-#: modules/control/rc.c:2011 modules/gui/ncurses.c:2058
+#: modules/control/rc.c:2012 modules/gui/ncurses.c:2058
 msgid "+-[Video Decoding]"
 msgstr "+-[Decodificação de Vídeo]"
 
-#: modules/control/rc.c:2012 modules/gui/ncurses.c:2061
+#: modules/control/rc.c:2013 modules/gui/ncurses.c:2061
 #, c-format
 msgid "| video decoded    :    %5i"
 msgstr "| vídeo decodificado    :    %5i"
 
-#: modules/control/rc.c:2014 modules/gui/ncurses.c:2064
+#: modules/control/rc.c:2015 modules/gui/ncurses.c:2064
 #, c-format
 msgid "| frames displayed :    %5i"
 msgstr "| quadros exibidos :    %5i"
 
-#: modules/control/rc.c:2016 modules/gui/ncurses.c:2067
+#: modules/control/rc.c:2017 modules/gui/ncurses.c:2067
 #, c-format
 msgid "| frames lost      :    %5i"
 msgstr "| quadros perdidos      :    %5i"
 
-#: modules/control/rc.c:2020 modules/gui/ncurses.c:2075
+#: modules/control/rc.c:2021 modules/gui/ncurses.c:2075
 msgid "+-[Audio Decoding]"
 msgstr "+-[Decodificação de Áudio]"
 
-#: modules/control/rc.c:2021 modules/gui/ncurses.c:2078
+#: modules/control/rc.c:2022 modules/gui/ncurses.c:2078
 #, c-format
 msgid "| audio decoded    :    %5i"
 msgstr "| áudio decodificado    :    %5i"
 
-#: modules/control/rc.c:2023 modules/gui/ncurses.c:2081
+#: modules/control/rc.c:2024 modules/gui/ncurses.c:2081
 #, c-format
 msgid "| buffers played   :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:2025 modules/gui/ncurses.c:2084
+#: modules/control/rc.c:2026 modules/gui/ncurses.c:2084
 #, c-format
 msgid "| buffers lost     :    %5i"
 msgstr ""
 
-#: modules/control/rc.c:2029 modules/gui/ncurses.c:2090
+#: modules/control/rc.c:2030 modules/gui/ncurses.c:2090
 msgid "+-[Streaming]"
 msgstr "+-[Fluxo]"
 
-#: modules/control/rc.c:2030 modules/gui/ncurses.c:2093
+#: modules/control/rc.c:2031 modules/gui/ncurses.c:2093
 #, c-format
 msgid "| packets sent     :    %5i"
 msgstr "| pacotes enviados     :    %5i"
 
-#: modules/control/rc.c:2031 modules/gui/ncurses.c:2095
+#: modules/control/rc.c:2032 modules/gui/ncurses.c:2095
 #, c-format
 msgid "| bytes sent       : %8.0f kB"
 msgstr "| bytes enviados       : %8.0f kB"
 
-#: modules/control/rc.c:2033
+#: modules/control/rc.c:2034
 #, c-format
 msgid "| sending bitrate  :   %6.0f kb/s"
 msgstr "| taxa de bits no envio  :   %6.0f kb/s"
@@ -12206,177 +12241,176 @@ msgid ""
 "autodetection, this should always work)."
 msgstr ""
 
-#: modules/demux/ts.c:110
+#: modules/demux/ts.c:112
 msgid "Extra PMT"
 msgstr ""
 
-#: modules/demux/ts.c:112
+#: modules/demux/ts.c:114
 msgid "Allows a user to specify an extra pmt (pmt_pid=pid:stream_type[,...])."
 msgstr ""
 
-#: modules/demux/ts.c:114
+#: modules/demux/ts.c:116
 msgid "Set id of ES to PID"
 msgstr ""
 
-#: modules/demux/ts.c:115
+#: modules/demux/ts.c:117
 msgid ""
 "Set the internal ID of each elementary stream handled by VLC to the same "
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
 "'#duplicate{..., select=\"es=<pid>\"}'."
 msgstr ""
 
-#: modules/demux/ts.c:120
+#: modules/demux/ts.c:122
 msgid "Fast udp streaming"
 msgstr ""
 
-#: modules/demux/ts.c:122
+#: modules/demux/ts.c:124
 msgid "Sends TS to specific ip:port by udp (you must know what you are doing)."
 msgstr ""
 
-#: modules/demux/ts.c:124
+#: modules/demux/ts.c:126
 msgid "MTU for out mode"
 msgstr ""
 
-#: modules/demux/ts.c:125
+#: modules/demux/ts.c:127
 msgid "MTU for out mode."
 msgstr ""
 
-#: modules/demux/ts.c:127
+#: modules/demux/ts.c:129
 msgid "CSA ck"
 msgstr "CSA ck"
 
-#: modules/demux/ts.c:128
+#: modules/demux/ts.c:130
 msgid "Control word for the CSA encryption algorithm"
 msgstr ""
 
-#: modules/demux/ts.c:130 modules/mux/mpeg/ts.c:170
+#: modules/demux/ts.c:132 modules/mux/mpeg/ts.c:170
 msgid "Second CSA Key"
 msgstr ""
 
-#: modules/demux/ts.c:131 modules/mux/mpeg/ts.c:171
+#: modules/demux/ts.c:133 modules/mux/mpeg/ts.c:171
 msgid ""
 "The even CSA encryption key. This must be a 16 char string (8 hexadecimal "
 "bytes)."
 msgstr ""
 
-#: modules/demux/ts.c:134
+#: modules/demux/ts.c:136
 msgid "Silent mode"
 msgstr "Modo silencioso"
 
-#: modules/demux/ts.c:135
+#: modules/demux/ts.c:137
 msgid "Do not complain on encrypted PES."
 msgstr ""
 
-#: modules/demux/ts.c:137
+#: modules/demux/ts.c:139
 msgid "CAPMT System ID"
 msgstr ""
 
-#: modules/demux/ts.c:138
+#: modules/demux/ts.c:140
 msgid "Only forward descriptors from this SysID to the CAM."
 msgstr ""
 
-#: modules/demux/ts.c:140
+#: modules/demux/ts.c:142
 msgid "Packet size in bytes to decrypt"
 msgstr ""
 
-#: modules/demux/ts.c:141
+#: modules/demux/ts.c:143
 msgid ""
 "Specify the size of the TS packet to decrypt. The decryption routines "
 "subtract the TS-header from the value before decrypting. "
 msgstr ""
 
-#: modules/demux/ts.c:145
+#: modules/demux/ts.c:147
 msgid "Filename of dump"
 msgstr "Nome do arquivo de descarga"
 
-#: modules/demux/ts.c:146
+#: modules/demux/ts.c:148
 msgid "Specify a filename where to dump the TS in."
 msgstr ""
 
-#: modules/demux/ts.c:148
+#: modules/demux/ts.c:150
 msgid "Append"
 msgstr "Adicionar"
 
-#: modules/demux/ts.c:150
+#: modules/demux/ts.c:152
 msgid ""
 "If the file exists and this option is selected, the existing file will not "
 "be overwritten."
 msgstr ""
 
-#: modules/demux/ts.c:153
+#: modules/demux/ts.c:155
 msgid "Dump buffer size"
 msgstr ""
 
-#: modules/demux/ts.c:155
+#: modules/demux/ts.c:157
 msgid ""
 "Tweak the buffer size for reading and writing an integer number of packets."
 "Specify the size of the buffer here and not the number of packets."
 msgstr ""
 
-#: modules/demux/ts.c:159
+#: modules/demux/ts.c:161
 msgid "MPEG Transport Stream demuxer"
 msgstr "Descombinador de fluxo de transporte MPEG"
 
-#: modules/demux/ts.c:3419
+#: modules/demux/ts.c:3421
 #: modules/gui/qt4/components/interface_widgets.cpp:631
 #: modules/gui/qt4/components/interface_widgets.cpp:827
 msgid "Teletext"
 msgstr ""
 
-#: modules/demux/ts.c:3429
+#: modules/demux/ts.c:3431
 msgid "Teletext subtitles"
 msgstr ""
 
-#: modules/demux/ts.c:3439
-#, fuzzy
+#: modules/demux/ts.c:3441
 msgid "Teletext additional information"
-msgstr "Informações da mídia"
+msgstr "Informações adicionais do teletexto"
 
-#: modules/demux/ts.c:3449
+#: modules/demux/ts.c:3451
 msgid "Teletext programme schedule"
 msgstr ""
 
-#: modules/demux/ts.c:3459
+#: modules/demux/ts.c:3461
 msgid "Teletext hearing impaired subtitles"
 msgstr ""
 
-#: modules/demux/ts.c:3554
+#: modules/demux/ts.c:3556
 msgid "subtitles"
 msgstr "legenda"
 
-#: modules/demux/ts.c:3558
+#: modules/demux/ts.c:3560
 msgid "4:3 subtitles"
 msgstr "legenda 4:3"
 
-#: modules/demux/ts.c:3562
+#: modules/demux/ts.c:3564
 msgid "16:9 subtitles"
 msgstr "legenda 16:9"
 
-#: modules/demux/ts.c:3566
+#: modules/demux/ts.c:3568
 msgid "2.21:1 subtitles"
 msgstr "legenda 2.21:1"
 
-#: modules/demux/ts.c:3570 modules/demux/ts.c:3751 modules/demux/ts.c:3792
+#: modules/demux/ts.c:3572 modules/demux/ts.c:3753 modules/demux/ts.c:3794
 msgid "hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3574
+#: modules/demux/ts.c:3576
 msgid "4:3 hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3578
+#: modules/demux/ts.c:3580
 msgid "16:9 hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3582
+#: modules/demux/ts.c:3584
 msgid "2.21:1 hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3747 modules/demux/ts.c:3788
+#: modules/demux/ts.c:3749 modules/demux/ts.c:3790
 msgid "clean effects"
 msgstr "desativar efeitos"
 
-#: modules/demux/ts.c:3755 modules/demux/ts.c:3796
+#: modules/demux/ts.c:3757 modules/demux/ts.c:3798
 msgid "visual impaired commentary"
 msgstr ""
 
@@ -13414,7 +13448,7 @@ msgstr "Não Enviar"
 
 #: modules/gui/macosx/intf.m:638 modules/gui/macosx/intf.m:639
 msgid "VLC crashed previously"
-msgstr ""
+msgstr "O VLC travou na última sessão"
 
 #: modules/gui/macosx/intf.m:640
 msgid ""
@@ -13424,10 +13458,16 @@ msgid ""
 "along with other helpful information: a link to download a sample file, a "
 "URL of a network stream, ..."
 msgstr ""
+"Gostaria de enviar detalhes do travamento à equipe de desenvolvimento do "
+"VLC?\n"
+"\n"
+"Se você quiser, pode adicionar algumas linhas sobre os passos que ocorreram "
+"antes do travamento e outras informações úteis: um endereço para baixar "
+"arquivo, uma URL de um fluxo de rede, etc."
 
 #: modules/gui/macosx/intf.m:641
 msgid "I agree to be possibly contacted about this bugreport."
-msgstr ""
+msgstr "Concordo em ser contactado sobre este relatório de erros."
 
 #: modules/gui/macosx/intf.m:642
 msgid ""
@@ -13450,15 +13490,15 @@ msgstr "A verificação de atualizações não está habilitada nesta versão."
 
 #: modules/gui/macosx/intf.m:2122
 msgid "Crash Report successfully sent"
-msgstr ""
+msgstr "Relatório de Travamento enviado com sucesso"
 
 #: modules/gui/macosx/intf.m:2123
 msgid "Thanks for your report!"
-msgstr ""
+msgstr "Obrigado pela informação!"
 
 #: modules/gui/macosx/intf.m:2131
 msgid "Error when sending the Crash Report"
-msgstr ""
+msgstr "Erro enviando o Relatório de Problemas"
 
 #: modules/gui/macosx/intf.m:2222
 msgid "No CrashLog found"
@@ -13474,9 +13514,8 @@ msgid "Couldn't find any trace of a previous crash."
 msgstr "Não foi possível encotrar nenhum registro do defeito anterior."
 
 #: modules/gui/macosx/intf.m:2249
-#, fuzzy
 msgid "Remove old preferences?"
-msgstr "preferências do vlc"
+msgstr "Excluir as preferências anteriores?"
 
 #: modules/gui/macosx/intf.m:2250
 msgid "We just found an older version of VLC's preferences files."
@@ -13484,12 +13523,11 @@ msgstr ""
 
 #: modules/gui/macosx/intf.m:2251
 msgid "Move To Trash and Relaunch VLC"
-msgstr ""
+msgstr "Excluir e reiniciar o VLC"
 
 #: modules/gui/macosx/intf.m:2251
-#, fuzzy
 msgid "Ignore"
-msgstr "Nenhum"
+msgstr "Ignorar"
 
 #: modules/gui/macosx/macosx.m:52
 msgid "Video device"
@@ -13699,17 +13737,19 @@ msgstr "Obtendo informações do canal..."
 
 #: modules/gui/macosx/open.m:216
 msgid "EyeTV is not launched"
-msgstr ""
+msgstr "EyeTV não está iniciado"
 
 #: modules/gui/macosx/open.m:217
 msgid ""
 "VLC could not connect to EyeTV.\n"
 "Make sure that you installed VLC's EyeTV plugin."
 msgstr ""
+"O VLC não pôde se conectar ao EyeTV.\n"
+"Verifique se o plugin do EyeTV está instalado."
 
 #: modules/gui/macosx/open.m:218
 msgid "Launch EyeTV now"
-msgstr ""
+msgstr "Iniciar o EyeTV agora"
 
 #: modules/gui/macosx/open.m:219
 msgid "Download Plugin"
@@ -13934,12 +13974,12 @@ msgstr "Taxa de envio"
 #: modules/gui/macosx/playlistinfo.m:112
 #: modules/gui/qt4/components/info_panels.cpp:536
 msgid "Played buffers"
-msgstr ""
+msgstr "Memórias (buffers) reproduzidas"
 
 #: modules/gui/macosx/playlistinfo.m:113
 #: modules/gui/qt4/components/info_panels.cpp:538
 msgid "Lost buffers"
-msgstr ""
+msgstr "Memórias (buffers) perdidas"
 
 #: modules/gui/macosx/playlistinfo.m:423
 msgid "Error while saving meta"
@@ -13947,7 +13987,7 @@ msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:424
 msgid "VLC was unable to save the meta data."
-msgstr ""
+msgstr "O VLC não conseguiu salvar os metadados."
 
 #: modules/gui/macosx/playlistinfo.m:449
 msgid "Information"
@@ -13967,9 +14007,8 @@ msgid "Expand Node"
 msgstr ""
 
 #: modules/gui/macosx/playlist.m:447
-#, fuzzy
 msgid "Download Cover Art"
-msgstr "Baixar agora"
+msgstr "Baixar Capa"
 
 #: modules/gui/macosx/playlist.m:448
 msgid "Fetch Meta Data"
@@ -14132,7 +14171,7 @@ msgstr "Língua de Áudio Preferida"
 
 #: modules/gui/macosx/simple_prefs.m:226
 msgid "Enable Last.fm submissions"
-msgstr ""
+msgstr "Ativar assinaturas do Last.fm"
 
 #: modules/gui/macosx/simple_prefs.m:228
 msgid "User name"
@@ -14221,7 +14260,7 @@ msgstr "Política de obtenção de capas de álbuns"
 
 #: modules/gui/macosx/simple_prefs.m:264
 msgid "Add controls to the video window"
-msgstr ""
+msgstr "Adicionar controles à janela de vídeo"
 
 #: modules/gui/macosx/simple_prefs.m:265
 msgid "Show Fullscreen Controller"
@@ -14362,11 +14401,11 @@ msgstr "As Configurações de Vídeo não foram salvas"
 
 #: modules/gui/macosx/simple_prefs.m:926
 msgid "Input Settings not saved"
-msgstr ""
+msgstr "As Configurações de Entrada não foram salvas"
 
 #: modules/gui/macosx/simple_prefs.m:954
 msgid "On Screen Display/Subtitle Settings not saved"
-msgstr ""
+msgstr "As configurações de OSD/Legendas não foram salvas"
 
 #: modules/gui/macosx/simple_prefs.m:979
 msgid "Hotkeys not saved"
@@ -14385,6 +14424,8 @@ msgid ""
 "Press new keys for\n"
 "\"%@\""
 msgstr ""
+"Digite novas teclas para\n"
+"\"%@\""
 
 #: modules/gui/macosx/simple_prefs.m:1243
 msgid "Invalid combination"
@@ -14396,7 +14437,7 @@ msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:1262
 msgid "This combination is already taken by \"%@\"."
-msgstr ""
+msgstr "Esta combinação já é usada por \"%@\"."
 
 #: modules/gui/macosx/update.m:63
 msgid "Check for Updates"
@@ -14427,9 +14468,8 @@ msgid "No"
 msgstr "Não"
 
 #: modules/gui/macosx/update.m:138
-#, fuzzy
 msgid "Save As:"
-msgstr "Salvar &Como..."
+msgstr "Salvar Como:"
 
 #: modules/gui/macosx/update.m:178
 msgid "This version of VLC is the latest available."
@@ -14560,7 +14600,7 @@ msgstr "Amostras de áudio descomprimidas (podem ser usadas com WAV)"
 
 #: modules/gui/macosx/wizard.m:234
 msgid "MPEG Program Stream"
-msgstr ""
+msgstr "Fluxo de Programa MPEG"
 
 #: modules/gui/macosx/wizard.m:236
 msgid "MPEG Transport Stream"
@@ -14686,7 +14726,7 @@ msgstr "Selecione um fluxo"
 
 #: modules/gui/macosx/wizard.m:345
 msgid "Existing playlist item"
-msgstr ""
+msgstr "Item existente na lista de reprodução"
 
 #: modules/gui/macosx/wizard.m:351 modules/gui/macosx/wizard.m:431
 msgid "Partial Extract"
@@ -14994,7 +15034,7 @@ msgstr ""
 
 #: modules/gui/ncurses.c:119
 msgid "Filebrowser starting point"
-msgstr ""
+msgstr "Início para procura de arquivo"
 
 #: modules/gui/ncurses.c:121
 msgid ""
@@ -15031,7 +15071,7 @@ msgstr "Estado    : Reproduzindo %s"
 #: modules/gui/ncurses.c:1567
 #, c-format
 msgid " State    : Stopped %s"
-msgstr ""
+msgstr " Status    : Parado %s"
 
 #: modules/gui/ncurses.c:1571
 #, c-format
@@ -15143,7 +15183,7 @@ msgstr "     <espaço>     Pausar/Reproduzir"
 
 #: modules/gui/ncurses.c:1679
 msgid "     f           Toggle Fullscreen"
-msgstr ""
+msgstr "     f           Alternar Tela Cheia"
 
 #: modules/gui/ncurses.c:1680
 msgid "     n, p        Next/Previous playlist item"
@@ -15169,11 +15209,11 @@ msgstr ""
 
 #: modules/gui/ncurses.c:1685
 msgid "     a           Volume Up"
-msgstr ""
+msgstr "     a           Aumentar Volume"
 
 #: modules/gui/ncurses.c:1686
 msgid "     z           Volume Down"
-msgstr ""
+msgstr "     z           Diminuir Volume"
 
 #: modules/gui/ncurses.c:1691
 msgid "[Playlist]"
@@ -15217,7 +15257,7 @@ msgstr ""
 
 #: modules/gui/ncurses.c:1703
 msgid "     <backspace> Delete an entry"
-msgstr ""
+msgstr "     <backspace> Exclui uma entrada "
 
 #: modules/gui/ncurses.c:1704
 msgid "     e           Eject (if stopped)"
@@ -15317,7 +15357,7 @@ msgstr " Lista de Reprodução (Por categoria) "
 
 #: modules/gui/ncurses.c:2137
 msgid " Playlist (Manually added) "
-msgstr ""
+msgstr "Lista de Reprodução (adicionado manualmente)"
 
 #: modules/gui/ncurses.c:2225 modules/gui/ncurses.c:2229
 #, c-format
@@ -15816,12 +15856,11 @@ msgstr "Velocidade da legenda:"
 
 #: modules/gui/qt4/components/extended_panels.cpp:1380
 msgid "Force update of this dialog's values"
-msgstr ""
+msgstr "Forçar atualização dos valores desta janela"
 
 #: modules/gui/qt4/components/info_panels.cpp:129
-#, fuzzy
 msgid "Comments"
-msgstr "Comentário"
+msgstr "Comentários"
 
 #: modules/gui/qt4/components/info_panels.cpp:334
 msgid "Extra metadata and other information are shown in this panel.\n"
@@ -15848,6 +15887,8 @@ msgid ""
 "Play\n"
 "If the playlist is empty, open a media"
 msgstr ""
+"Reproduzir\n"
+"Se a lista de reprodução estiver vazia, abre uma mídia"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:277
 msgid "Current visualization"
@@ -15858,6 +15899,8 @@ msgid ""
 "Loop from point A to point B continuously.\n"
 "Click to set point A"
 msgstr ""
+"Laço contínuo do ponto A até o ponto B.\n"
+"Clique para definir o ponto A"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:359
 msgid "Frame by frame"
@@ -15875,11 +15918,11 @@ msgstr ""
 
 #: modules/gui/qt4/components/interface_widgets.cpp:458
 msgid "Click to set point B"
-msgstr ""
+msgstr "Clique para definir o ponto B"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:463
 msgid "Stop the A to B loop"
-msgstr ""
+msgstr "Pára o laço A para B"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:570
 msgid "Menu"
@@ -15887,7 +15930,7 @@ msgstr "Menu"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:619
 msgid "Teletext on"
-msgstr ""
+msgstr "Teletexto ligado"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:681
 msgid "Previous media in the playlist"
@@ -15930,9 +15973,8 @@ msgid "Revert to normal play speed"
 msgstr ""
 
 #: modules/gui/qt4/components/interface_widgets.cpp:1628
-#, fuzzy
 msgid "Download cover art"
-msgstr "Baixar agora"
+msgstr "Baixar capa"
 
 #: modules/gui/qt4/components/interface_widgets.cpp:1644
 msgid "Toggle between elapsed and remaining time"
@@ -15966,12 +16008,12 @@ msgstr "Ejetar o disco"
 #: modules/gui/qt4/components/open_panels.cpp:637
 #: modules/gui/qt4/components/open_panels.cpp:893
 msgid "DVB Type:"
-msgstr ""
+msgstr "Tipo do DVB:"
 
 #: modules/gui/qt4/components/open_panels.cpp:661
 #: modules/gui/qt4/components/open_panels.cpp:923
 msgid "Transponder symbol rate"
-msgstr ""
+msgstr "Taxa de símbolos do transponder"
 
 #: modules/gui/qt4/components/open_panels.cpp:783
 msgid "Channels:"
@@ -16275,7 +16317,7 @@ msgstr "Atualizações do VLC media player"
 
 #: modules/gui/qt4/dialogs/help.cpp:211
 msgid "&Recheck version"
-msgstr ""
+msgstr "Ve&rificar novamente"
 
 #: modules/gui/qt4/dialogs/help.cpp:218
 msgid "Checking for an update..."
@@ -16286,6 +16328,8 @@ msgid ""
 "\n"
 "Do you want to download it?\n"
 msgstr ""
+"\n"
+"Deseja baixar?\n"
 
 #: modules/gui/qt4/dialogs/help.cpp:270
 msgid "Launching an update request..."
@@ -16353,7 +16397,7 @@ msgstr "&Salvar como..."
 
 #: modules/gui/qt4/dialogs/messages.cpp:86
 msgid "Save all the displayed logs to a file"
-msgstr ""
+msgstr "Salvar todos os registros exibidos em um arquivo"
 
 #: modules/gui/qt4/dialogs/messages.cpp:94
 msgid "Verbosity Level"
@@ -16508,14 +16552,12 @@ msgid "Audio Port:"
 msgstr "Porta de Áudio:"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:75
-#, fuzzy
 msgid "Broadcast"
-msgstr "Difusões"
+msgstr "Difusão"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:76
-#, fuzzy
 msgid "Schedule"
-msgstr "Configurar a programação"
+msgstr "Programar"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:77
 msgid "Video On Demand ( VOD )"
@@ -16562,19 +16604,16 @@ msgid "Open a VLM Configuration File"
 msgstr "Abrir um Arquivo de Configuração do VLM"
 
 #: modules/gui/qt4/dialogs/vlm.cpp:528
-#, fuzzy
 msgid "Broadcast: "
-msgstr "Difusões"
+msgstr "Difusão: "
 
 #: modules/gui/qt4/dialogs/vlm.cpp:596
-#, fuzzy
 msgid "Schedule: "
-msgstr "Configurar a programação"
+msgstr "Programação: "
 
 #: modules/gui/qt4/dialogs/vlm.cpp:618
-#, fuzzy
 msgid "VOD: "
-msgstr "VOD"
+msgstr "VOD: "
 
 #: modules/gui/qt4/main_interface.cpp:309
 msgid ""
@@ -16652,9 +16691,8 @@ msgid "&Open File..."
 msgstr "A&brir..."
 
 #: modules/gui/qt4/menus.cpp:292
-#, fuzzy
 msgid "Advanced Open File..."
-msgstr "Ab&rir..."
+msgstr "Abrir (com opções)..."
 
 #: modules/gui/qt4/menus.cpp:299 modules/gui/qt4/menus.cpp:687
 msgid "Open &Disc..."
@@ -17209,7 +17247,7 @@ msgstr "Volume padrão"
 
 #: modules/gui/qt4/ui/sprefs_audio.ui:77
 msgid "256 corresponds to 100%, 1024 to 400%"
-msgstr ""
+msgstr "256 corresponde a 100%, 1024 a 400%"
 
 #: modules/gui/qt4/ui/sprefs_audio.ui:106
 msgid "Save volume on exit"
@@ -17221,11 +17259,11 @@ msgstr "Língua de áudio preferida"
 
 #: modules/gui/qt4/ui/sprefs_audio.ui:293
 msgid "last.fm"
-msgstr ""
+msgstr "last.fm"
 
 #: modules/gui/qt4/ui/sprefs_audio.ui:299
 msgid "Enable last.fm submission"
-msgstr ""
+msgstr "Ativar assinatura do last.fm"
 
 #: modules/gui/qt4/ui/sprefs_input.ui:20
 msgid "Disc Devices"
@@ -17415,7 +17453,7 @@ msgstr "Rotacionar"
 
 #: modules/gui/qt4/ui/video_effects.ui:49
 msgid "Sharpen"
-msgstr ""
+msgstr "Suavidade"
 
 #: modules/gui/qt4/ui/video_effects.ui:61
 msgid "Sigma"
@@ -17431,11 +17469,11 @@ msgstr "Limiar de brilho"
 
 #: modules/gui/qt4/ui/video_effects.ui:245
 msgid "Color fun"
-msgstr ""
+msgstr "Cores divertidas"
 
 #: modules/gui/qt4/ui/video_effects.ui:251
 msgid "Color extraction"
-msgstr ""
+msgstr "Remoção de cores"
 
 #: modules/gui/qt4/ui/video_effects.ui:287
 #: modules/video_filter/colorthres.c:69
@@ -17448,11 +17486,11 @@ msgstr "Similaridade"
 
 #: modules/gui/qt4/ui/video_effects.ui:427
 msgid "Synchronize top and bottom"
-msgstr ""
+msgstr "Sincronizar topo e base"
 
 #: modules/gui/qt4/ui/video_effects.ui:434
 msgid "Synchronize left and right"
-msgstr ""
+msgstr "Sincronizar esquerda e direita"
 
 #: modules/gui/qt4/ui/video_effects.ui:466
 msgid "Geometry"
@@ -17518,7 +17556,7 @@ msgstr "Desenho"
 
 #: modules/gui/qt4/ui/video_effects.ui:718
 msgid "Vout/Overlay"
-msgstr ""
+msgstr "Vout/Sobreposição"
 
 #: modules/gui/qt4/ui/video_effects.ui:724
 msgid "Wall"
@@ -17576,7 +17614,7 @@ msgstr "Filtros de vídeo"
 
 #: modules/gui/qt4/ui/video_effects.ui:1052
 msgid "Vout filters"
-msgstr ""
+msgstr "Filtros Vout"
 
 #: modules/gui/qt4/ui/vlm.ui:22
 msgid "VLM configurator"
@@ -17608,11 +17646,11 @@ msgstr "Selecionar Saída"
 
 #: modules/gui/qt4/ui/vlm.ui:120
 msgid "Time Control"
-msgstr ""
+msgstr "Controle do Tempo"
 
 #: modules/gui/qt4/ui/vlm.ui:127
 msgid "Mux Control"
-msgstr ""
+msgstr "Controle do Misturador"
 
 #: modules/gui/qt4/ui/vlm.ui:169
 msgid "Loop"
@@ -18069,11 +18107,11 @@ msgstr ""
 
 #: modules/misc/audioscrobbler.c:133
 msgid "The username of your last.fm account"
-msgstr ""
+msgstr "O nome do usuário para sua conta last.fm"
 
 #: modules/misc/audioscrobbler.c:135
 msgid "The password of your last.fm account"
-msgstr ""
+msgstr "A senha para sua conta last.fm"
 
 #: modules/misc/audioscrobbler.c:159
 msgid "Audioscrobbler"
@@ -18081,11 +18119,11 @@ msgstr ""
 
 #: modules/misc/audioscrobbler.c:160
 msgid "Submission of played songs to last.fm"
-msgstr ""
+msgstr "Envio das músicas reproduzidas ao last.fm"
 
 #: modules/misc/audioscrobbler.c:297
 msgid "Last.fm username not set"
-msgstr ""
+msgstr "O usuário do last.fm não foi configurado"
 
 #: modules/misc/audioscrobbler.c:298
 msgid ""
@@ -18096,7 +18134,7 @@ msgstr ""
 
 #: modules/misc/audioscrobbler.c:815
 msgid "last.fm: Authentication failed"
-msgstr ""
+msgstr "Last.fm: falha na autenticação"
 
 #: modules/misc/audioscrobbler.c:816
 msgid ""
@@ -18201,6 +18239,8 @@ msgid ""
 "The opacity (inverse of transparency) of the text that will be rendered on "
 "the video. 0 = transparent, 255 = totally opaque. "
 msgstr ""
+"A opacidade (inverso de translucidez) do texto que será desenhado na tela. 0 "
+"= transparente, 255 = totalmente opaco."
 
 #: modules/misc/freetype.c:95 modules/misc/quartztext.c:90
 #: modules/misc/win32text.c:68
@@ -18274,11 +18314,11 @@ msgstr "Segundo Plano"
 
 #: modules/misc/freetype.c:121
 msgid "Outline"
-msgstr ""
+msgstr "Roteiro"
 
 #: modules/misc/freetype.c:121
 msgid "Fat Outline"
-msgstr ""
+msgstr "Roteiro Negrito"
 
 #: modules/misc/freetype.c:133 modules/misc/win32text.c:92
 msgid "Text renderer"
@@ -18429,7 +18469,7 @@ msgstr "Complemento de notificação do Growl"
 
 #: modules/misc/notify/growl.m:280
 msgid "Now playing"
-msgstr ""
+msgstr "Reproduzindo agora"
 
 #: modules/misc/notify/growl_udp.c:60
 msgid "Server"
@@ -18619,7 +18659,7 @@ msgstr ""
 
 #: modules/misc/rtsp.c:73
 msgid "MUX for RAW RTSP transport"
-msgstr ""
+msgstr "Misturador para o transporte do RTSP bruto"
 
 #: modules/misc/rtsp.c:75
 msgid "Sets the timeout option in the RTSP session string"
@@ -18635,19 +18675,19 @@ msgstr ""
 
 #: modules/misc/rtsp.c:83
 msgid "RTSP VoD"
-msgstr ""
+msgstr "RTSP VoD"
 
 #: modules/misc/rtsp.c:84
 msgid "RTSP VoD server"
-msgstr ""
+msgstr "Servidor do RTSP VoD"
 
 #: modules/misc/screensaver.c:88
 msgid "X Screensaver disabler"
-msgstr ""
+msgstr "Desativador da proteção de tela do X"
 
 #: modules/misc/stats/stats.c:48
 msgid "Stats"
-msgstr ""
+msgstr "Estatísticas"
 
 #: modules/misc/stats/stats.c:49
 msgid "Stats encoder function"
@@ -18793,7 +18833,7 @@ msgstr ""
 
 #: modules/mux/mpeg/ps.c:55
 msgid "PES maximum size"
-msgstr ""
+msgstr "Tamanho máximo do PES"
 
 #: modules/mux/mpeg/ps.c:56
 msgid "Set the maximum allowed PES size when producing the MPEG PS streams."
@@ -18805,53 +18845,55 @@ msgstr "Misturador PS"
 
 #: modules/mux/mpeg/ts.c:95
 msgid "Video PID"
-msgstr ""
+msgstr "PID do vídeo"
 
 #: modules/mux/mpeg/ts.c:96
 msgid ""
 "Assign a fixed PID to the video stream. The PCR PID will automatically be "
 "the video."
 msgstr ""
+"Define um PID fixo para o fluxo de vídeo. O PID do PCR será automaticamente "
+"o do vídeo."
 
 #: modules/mux/mpeg/ts.c:98
 msgid "Audio PID"
-msgstr ""
+msgstr "PID do áudio"
 
 #: modules/mux/mpeg/ts.c:99
 msgid "Assign a fixed PID to the audio stream."
-msgstr ""
+msgstr "Define um PID fixo para o fluxo de áudio."
 
 #: modules/mux/mpeg/ts.c:100
 msgid "SPU PID"
-msgstr ""
+msgstr "PID do SPU"
 
 #: modules/mux/mpeg/ts.c:101
 msgid "Assign a fixed PID to the SPU."
-msgstr ""
+msgstr "Define um PID fixo para o SPU"
 
 #: modules/mux/mpeg/ts.c:102
 msgid "PMT PID"
-msgstr ""
+msgstr "PID do PMT"
 
 #: modules/mux/mpeg/ts.c:103
 msgid "Assign a fixed PID to the PMT"
-msgstr ""
+msgstr "Define um PID fixo para o PMT"
 
 #: modules/mux/mpeg/ts.c:104
 msgid "TS ID"
-msgstr ""
+msgstr "ID do TS"
 
 #: modules/mux/mpeg/ts.c:105
 msgid "Assign a fixed Transport Stream ID."
-msgstr ""
+msgstr "Define um ID fixo para o transporte do fluxo."
 
 #: modules/mux/mpeg/ts.c:106
 msgid "NET ID"
-msgstr ""
+msgstr "ID da rede"
 
 #: modules/mux/mpeg/ts.c:107
 msgid "Assign a fixed Network ID (for SDT table)"
-msgstr ""
+msgstr "Define um ID de rede fixo (para a tabela SDT)"
 
 #: modules/mux/mpeg/ts.c:109
 msgid "PMT Program numbers"

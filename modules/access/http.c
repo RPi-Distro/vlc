@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: eaa703576e80bbd98367181183fa4099465228db $
+ * $Id: 66e32ffac17e8cd717aca74bfc2aa4c929809bf4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1408,6 +1408,8 @@ static int Request( access_t *p_access, int64_t i_tell )
             p_sys->i_icy_meta = atoi( p );
             if( p_sys->i_icy_meta < 0 )
                 p_sys->i_icy_meta = 0;
+            if( p_sys->i_icy_meta > 0 )
+                p_sys->b_icecast = true;
 
             msg_Warn( p_access, "ICY metaint=%d", p_sys->i_icy_meta );
         }
