@@ -2,7 +2,7 @@
  * cmdline.c: command line parsing
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id$
+ * $Id: 961b2a343a2b450dec3a05c36463900423b678c6 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -282,6 +282,14 @@ int __config_LoadCmdLine( vlc_object_t *p_this, int *pi_argc,
 
                     psz_name = p_conf->psz_name;
                 }
+
+               if( p_conf->i_type != CONFIG_ITEM_BOOL && !optarg )
+               {
+                   fprintf( stderr, "Warning: missing argument for option --%s\n", p_conf->psz_name );
+                   fprintf( stderr, "Try specifying options as '--optionname=value' instead of '--optionname value'\n" );
+                   continue;
+               }
+
 
                 switch( p_conf->i_type )
                 {

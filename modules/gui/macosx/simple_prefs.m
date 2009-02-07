@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008 the VideoLAN team
-* $Id$
+* $Id: e63e7f847f007a85a10b1e40fef069f30c6868ea $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -269,7 +269,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     /* Subtitles and OSD */
     [o_osd_encoding_txt setStringValue: _NS("Default Encoding")];
     [o_osd_font_box setTitle: _NS("Display Settings")];
-    [o_osd_font_btn setTitle: _NS("Browse...")];
+    [o_osd_font_btn setTitle: _NS("Choose...")];
     [o_osd_font_color_txt setStringValue: _NS("Font Color")];
     [o_osd_font_size_txt setStringValue: _NS("Font Size")];
     [o_osd_font_txt setStringValue: _NS("Font")];
@@ -428,7 +428,11 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     
     psz_tmp = config_GetPsz( p_intf, "audio-filter" );
     if( psz_tmp )
-        [o_audio_norm_ckb setState: (int)strstr( psz_tmp, "normvol" )];
+    {
+        [o_audio_norm_ckb setState: (int)strstr( psz_tmp, "volnorm" )];
+        [o_audio_norm_fld setEnabled: [o_audio_norm_ckb state]];
+        [o_audio_norm_stepper setEnabled: [o_audio_norm_ckb state]];
+    }
     [o_audio_norm_fld setFloatValue: config_GetFloat( p_intf, "norm-max-level" )];
 
     [self setupButton: o_audio_visual_pop forModuleList: "audio-visual"];
@@ -647,8 +651,8 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     if( i_return == NSAlertAlternateReturn )
     {
         config_ResetAll( p_intf );
-        b_intfSettingChanged = b_videoSettingChanged = b_audioSettingChanged = YES;
         [self resetControls];
+        config_SaveConfigFile( p_intf, NULL );
     }
 }
 
@@ -751,21 +755,28 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         config_PutPsz( p_intf, "audio-language", [[o_audio_lang_fld stringValue] UTF8String] );
         config_PutInt( p_intf, "headphone-dolby", [o_audio_headphone_ckb state] );
 
-        psz_tmp = config_GetPsz( p_intf, "audio-filter" );
-        if(! psz_tmp)
-            config_PutPsz( p_intf, "audio-filter", "volnorm" );
-        else if( (int)strstr( psz_tmp, "normvol" ) == NO )
+        if( [o_audio_norm_ckb state] == NSOnState )
         {
-            /* work-around a GCC 4.0.1 bug */
-            psz_tmp = (char *)[[NSString stringWithFormat: @"%s:volnorm", psz_tmp] UTF8String];
-            config_PutPsz( p_intf, "audio-filter", psz_tmp );
+            psz_tmp = config_GetPsz( p_intf, "audio-filter" );
+            if(! psz_tmp)
+                config_PutPsz( p_intf, "audio-filter", "volnorm" );
+            else if( (int)strstr( psz_tmp, "normvol" ) == NO )
+            {
+                /* work-around a GCC 4.0.1 bug */
+                psz_tmp = (char *)[[NSString stringWithFormat: @"%s:volnorm", psz_tmp] UTF8String];
+                config_PutPsz( p_intf, "audio-filter", psz_tmp );
+            }
         }
         else
         {
-            psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@":volnorm"]] UTF8String];
-            psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"volnorm:"]] UTF8String];
-            psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"volnorm"]] UTF8String];
-            config_PutPsz( p_intf, "audio-filter", psz_tmp );
+            psz_tmp = config_GetPsz( p_intf, "audio-filter" );
+            if( psz_tmp )
+            {
+                psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@":volnorm"]] UTF8String];
+                psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"volnorm:"]] UTF8String];
+                psz_tmp = (char *)[[[NSString stringWithUTF8String: psz_tmp] stringByTrimmingCharactersInSet: [NSCharacterSet characterSetWithCharactersInString:@"volnorm"]] UTF8String];
+                config_PutPsz( p_intf, "audio-filter", psz_tmp );
+            }
         }
         config_PutFloat( p_intf, "norm-max-level", [o_audio_norm_fld floatValue] );
 
@@ -1027,6 +1038,12 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
     if( sender == o_audio_vol_fld )
         [o_audio_vol_sld setIntValue: [o_audio_vol_fld intValue]];
 
+    if( sender == o_audio_norm_ckb )
+    {
+        [o_audio_norm_stepper setEnabled: [o_audio_norm_ckb state]];
+        [o_audio_norm_fld setEnabled: [o_audio_norm_ckb state]];
+    }
+
     if( sender == o_audio_last_ckb )
     {
         if( [o_audio_last_ckb state] == NSOnState )
@@ -1096,29 +1113,35 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 
 - (IBAction)osdSettingChanged:(id)sender
 {
-    if( sender == o_osd_font_btn )
-    {
-        o_selectFolderPanel = [[NSOpenPanel alloc] init];
-        [o_selectFolderPanel setCanChooseDirectories: NO];
-        [o_selectFolderPanel setCanChooseFiles: YES];
-        [o_selectFolderPanel setResolvesAliases: YES];
-        [o_selectFolderPanel setAllowsMultipleSelection: NO];
-        [o_selectFolderPanel setMessage: _NS("Choose the font to display your Subtitles with.")];
-        [o_selectFolderPanel setCanCreateDirectories: NO];
-        [o_selectFolderPanel setPrompt: _NS("Choose")];
-        [o_selectFolderPanel setAllowedFileTypes: [NSArray arrayWithObjects: @"dfont", @"ttf", @"otf", @"FFIL", nil]];
-        [o_selectFolderPanel beginSheetForDirectory: @"/System/Library/Fonts/" file: nil modalForWindow: o_sprefs_win 
-                                      modalDelegate: self 
-                                     didEndSelector: @selector(savePanelDidEnd:returnCode:contextInfo:)
-                                        contextInfo: o_osd_font_btn];
-    }
-    else
-        b_osdSettingChanged = YES;
+    b_osdSettingChanged = YES;
 }
 
 - (void)showOSDSettings
 {
     [self showSettingsForCategory: o_osd_view];
+}
+
+- (IBAction)showFontPicker:(id)sender
+{
+    char * font = config_GetPsz( p_intf, "quartztext-font" );
+    NSString * fontFamilyName = font ? [NSString stringWithUTF8String: font] : nil;
+    free(font);
+    if( fontFamilyName )
+    {
+        NSFontDescriptor * fd = [NSFontDescriptor fontDescriptorWithFontAttributes:nil];
+        NSFont * font = [NSFont fontWithDescriptor:[fd fontDescriptorWithFamily:fontFamilyName] textTransform:nil];
+        [[NSFontManager sharedFontManager] setSelectedFont:font isMultiple:NO];
+    }
+    [[NSFontManager sharedFontManager] setDelegate: self];
+    [o_sprefs_win makeFirstResponder: o_sprefs_win];
+    [[NSFontPanel sharedFontPanel] orderFront:self];
+}
+
+- (void)changeFont:(id)sender
+{
+    NSFont * font = [sender convertFont:[[NSFontManager sharedFontManager] selectedFont]];
+    [o_osd_font_fld setStringValue:[font familyName]];
+    [self osdSettingChanged:self];
 }
 
 - (IBAction)inputSettingChanged:(id)sender
@@ -1296,4 +1319,17 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
     return FALSE;
 }
 
+@end
+
+@implementation VLCSimplePrefsWindow
+
+- (BOOL)acceptsFirstResponder
+{
+    return YES;
+}
+
+- (void)changeFont:(id)sender
+{
+    [[[VLCMain sharedInstance] getSimplePreferences] changeFont: sender];
+}
 @end

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id$
+ * $Id: b2b2b23308068fefe33f9058c26946a455606bfd $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -245,6 +245,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
                 msg_Err (p_access, "read failed (%m)");
                 intf_UserFatal (p_access, false, _("File reading failed"),
                                 _("VLC could not read the file."));
+                return 0;
         }
     }
     else if( i_ret > 0 )

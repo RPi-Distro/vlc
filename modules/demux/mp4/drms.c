@@ -2,7 +2,7 @@
  * drms.c: DRMS
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: aa0b561f5f6b594f9194a2e4451d0b8d125f3169 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Sam Hocevar <sam@zoy.org>
@@ -2032,6 +2032,7 @@ static int GetiPodID( int64_t *p_ipod_id )
 
                 IOObjectRelease( iterator );
             }
+            CFRelease( match_dic );
         }
 
         mach_port_deallocate( mach_task_self(), port );

@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 699bd48f8f838f7cad9f30f8d32b305e0f890a7b $
+ * $Id: 2e0f270f6acf3300e43245eaa4898f06a4b9fc5c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -216,7 +216,7 @@ void SoutDialog::fileBrowse()
 {
     QString fileName = QFileDialog::getSaveFileName( this, qtr( "Save file" ), "",
         qtr( "Containers (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav *.raw *.flv)" ) );
-    ui.fileEdit->setText( fileName );
+    ui.fileEdit->setText( toNativeSeparators( fileName ) );
     updateMRL();
 }
 

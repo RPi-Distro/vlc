@@ -2,7 +2,7 @@
  * sorting.h : commun sorting & column display code
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id$
+ * $Id: bcbdf8c933603c3438707c8ff8118fa67b5d80e3 $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -32,11 +32,14 @@ enum
     COLUMN_ALBUM        = 0x0020,
     COLUMN_TRACK_NUMBER = 0x0040,
     COLUMN_DESCRIPTION  = 0x0080,
+    COLUMN_URI          = 0x0100,
 
     /* Add new entries here and update the COLUMN_END value*/
 
-    COLUMN_END          = 0x0100
+    COLUMN_END          = 0x0200
 };
+
+#define COLUMN_DEFAULT (COLUMN_TITLE|COLUMN_DURATION|COLUMN_ALBUM)
 
 /* Return the title of a column */
 static const char * psz_column_title( uint32_t i_column )
@@ -51,6 +54,7 @@ static const char * psz_column_title( uint32_t i_column )
     case COLUMN_ALBUM:           return VLC_META_ALBUM;
     case COLUMN_TRACK_NUMBER:    return VLC_META_TRACK_NUMBER;
     case COLUMN_DESCRIPTION:     return VLC_META_DESCRIPTION;
+    case COLUMN_URI:             return _("URI");
     default: abort();
     }
 }
@@ -85,6 +89,8 @@ static char * psz_column_meta( input_item_t *p_item, uint32_t i_column )
         return input_item_GetTrackNum( p_item );
     case COLUMN_DESCRIPTION:
         return input_item_GetDescription( p_item );
+    case COLUMN_URI:
+        return input_item_GetURI( p_item );
     default:
         abort();
     }
@@ -103,6 +109,7 @@ static inline int i_column_sorting( uint32_t i_column )
     case COLUMN_ALBUM:          return SORT_ALBUM;
     case COLUMN_TRACK_NUMBER:   return SORT_TRACK_NUMBER;
     case COLUMN_DESCRIPTION:    return SORT_DESCRIPTION;
+    case COLUMN_URI:            return SORT_URI;
     default: abort();
     }
 }

@@ -158,6 +158,10 @@
 				<string>NSButton</string>
 				<key>o_crashrep_fld</key>
 				<string>NSTextView</string>
+				<key>o_crashrep_includeEmail_ckb</key>
+				<string>NSButton</string>
+				<key>o_crashrep_includeEmail_txt</key>
+				<string>NSTextField</string>
 				<key>o_crashrep_send_btn</key>
 				<string>NSButton</string>
 				<key>o_crashrep_title_txt</key>
@@ -458,14 +462,6 @@
 		</dict>
 		<dict>
 			<key>CLASS</key>
-			<string>FirstResponder</string>
-			<key>LANGUAGE</key>
-			<string>ObjC</string>
-			<key>SUPERCLASS</key>
-			<string>NSObject</string>
-		</dict>
-		<dict>
-			<key>CLASS</key>
 			<string>ITSlider</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
@@ -477,6 +473,14 @@
 			<string>NSObject</string>
 			<key>LANGUAGE</key>
 			<string>ObjC</string>
+		</dict>
+		<dict>
+			<key>CLASS</key>
+			<string>FirstResponder</string>
+			<key>LANGUAGE</key>
+			<string>ObjC</string>
+			<key>SUPERCLASS</key>
+			<string>NSObject</string>
 		</dict>
 		<dict>
 			<key>ACTIONS</key>
@@ -699,6 +703,8 @@
 				<string>id</string>
 				<key>deleteItem</key>
 				<string>id</string>
+				<key>downloadCoverArt</key>
+				<string>id</string>
 				<key>playItem</key>
 				<string>id</string>
 				<key>preparseItem</key>
@@ -735,6 +741,8 @@
 				<key>o_mi_addNode</key>
 				<string>id</string>
 				<key>o_mi_delete</key>
+				<string>id</string>
+				<key>o_mi_dl_cover_art</key>
 				<string>id</string>
 				<key>o_mi_info</key>
 				<string>id</string>

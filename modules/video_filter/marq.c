@@ -2,7 +2,7 @@
  * marq.c : marquee display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2008 the VideoLAN team
- * $Id$
+ * $Id: e454ca907c5a24913e1799effd6bab0f4fa2a331 $
  *
  * Authors: Mark Moriarty
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>

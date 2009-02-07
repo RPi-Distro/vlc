@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 37ae32f73f26102e4f7c724fd773d7f1d24c7447 $
+ * $Id: fa2118054895545a3903f3acacc06aeafc08ff91 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -259,6 +259,11 @@ static subpicture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         return NULL;
 
     p_block = *pp_block;
+    if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    {
+        block_Release( p_block );
+        return NULL;
+    }
     if( p_block->i_rate != 0 )
         p_block->i_length = p_block->i_length * p_block->i_rate / INPUT_RATE_DEFAULT;
 

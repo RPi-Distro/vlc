@@ -1,9 +1,9 @@
 dnl Autoconf settings for vlc
 
-AC_INIT(vlc, 0.9.2)
+AC_INIT(vlc, 0.9.4)
 VERSION_MAJOR="0"
 VERSION_MINOR="9"
-VERSION_REVISION="2"
+VERSION_REVISION="4"
 VERSION_EXTRA=""
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
@@ -1037,7 +1037,12 @@ AC_CACHE_CHECK([if \$CC accepts -fomit-frame-pointer],
     [CFLAGS="${CFLAGS_save} -fomit-frame-pointer"
      AC_TRY_COMPILE([],,ac_cv_c_omit_frame_pointer=yes, ac_cv_c_omit_frame_pointer=no)])
 if test "${ac_cv_c_omit_frame_pointer}" != "no"; then
+ if test "${SYS}" != "darwin"; then
     CFLAGS_OPTIM_NODEBUG="${CFLAGS_OPTIM_NODEBUG} -fomit-frame-pointer"
+ else
+    dnl On darwin we explicitely disable it.
+    CFLAGS_OPTIM_NODEBUG="${CFLAGS_OPTIM_NODEBUG} -fno-omit-frame-pointer"
+ fi
 fi
 
 dnl Check for Darwin plugin linking flags
@@ -1583,6 +1588,16 @@ if test "${enable_optimizations}" != "no"; then
 fi
 
 dnl
+dnl Allow runing as root (usefull for people runing on embedded platforms)
+dnl
+AC_ARG_ENABLE(run-as-root,
+[  --enable-run-as-root    allow runing VLC as root (default disabled)])
+AS_IF([test "${enable_run_as_root}" == "yes"],[
+    AC_DEFINE(ALLOW_RUN_AS_ROOT, 1,
+              [Define to 1 to allow runing VLC as root (uid 0).])
+])
+
+dnl
 dnl  Test coverage
 dnl
 AC_ARG_ENABLE(coverage,
@@ -1843,6 +1858,8 @@ lternatively you can use --disable-live555 to disable the liveMedia plugin.])
           VLC_ADD_PLUGIN([live555])
           VLC_ADD_LIBS([live555], [-lliveMedia ${other_libs}])
         ],[],[${other_libs}]) ],[${other_libs_pic}])
+    ],[
+       AC_MSG_WARN([The development files for liveMedia (live555) can't be found])
     ])
     CPPFLAGS="${CPPFLAGS_save}"
     AC_LANG_POP(C++)
@@ -2989,7 +3006,7 @@ then
       VLC_ADD_CFLAGS([avcodec],[$AVCODEC_CFLAGS])
       VLC_RESTORE_FLAGS
     ],[
-      AC_MSG_ERROR([Could not find libavcodec or libavutil. Use --disable-avcodec to ignore this error.])
+      AC_MSG_FAILURE([Could not find libavcodec or libavutil. Use --disable-avcodec to ignore this error.])
   ])
 fi
 
@@ -3013,7 +3030,7 @@ then
       VLC_ADD_CFLAGS([avformat],[$AVFORMAT_CFLAGS])
       VLC_RESTORE_FLAGS
     ],[
-      AC_MSG_ERROR([Could not find libavformat or libavutil. Use --disable-avformat to ignore this error.])
+      AC_MSG_FAILURE([Could not find libavformat or libavutil. Use --disable-avformat to ignore this error.])
   ])
 fi
 
@@ -3070,7 +3087,7 @@ then
           AC_MSG_WARN([Could not find img_resample in libavcodec.])
           if test "${enable_swscale}" != "no"
           then
-            AC_MSG_ERROR([swscale (and its fallback module imgresample) support will be missing. Use --disable-swscale to ignore this error. (This basically means that you will be missing any good software scaling module and some video chroma converters.)])
+            AC_MSG_FAILURE([swscale (and its fallback module imgresample) support will be missing. Use --disable-swscale to ignore this error. (This basically means that you will be missing any good software scaling module and some video chroma converters.)])
           fi
 	# That sed hack to add -rpath is kind of ugly but at least it fixes
         # detection when linking against a shared libavcodec with

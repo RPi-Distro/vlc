@@ -2,7 +2,7 @@
  * vlc_playlist.h : Playlist functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 54e457c40377caa32b1efd1ed5bab0f5c7195804 $
+ * $Id: c422e79c5a7eb123d8edf181f84055ce1b7afed1 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -246,6 +246,7 @@ struct playlist_add_t
 #define SORT_TRACK_NUMBER 9
 #define SORT_DESCRIPTION 10
 #define SORT_RATING 11
+#define SORT_URI 12
 
 #define ORDER_NORMAL 0
 #define ORDER_REVERSE 1

@@ -2,7 +2,7 @@
  * control.h: private header for mediacontrol
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 3e741ea02f88dc06fbf007b243ce79787f9f64d3 $
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *
@@ -57,8 +57,8 @@ mediacontrol_RGBPicture *private_mediacontrol_createRGBPicture( int, int, long, 
 #define RAISE( c, m )  if( exception ) { exception->code = c;    \
                                          exception->message = strdup(m); }
 
-#define RAISE_NULL( c, m ) { RAISE( c, m ); return NULL; }
-#define RAISE_VOID( c, m ) { RAISE( c, m ); return; }
+#define RAISE_NULL( c, m ) do{ RAISE( c, m ); return NULL; } while(0)
+#define RAISE_VOID( c, m ) do{ RAISE( c, m ); return;      } while(0)
 
 #define HANDLE_LIBVLC_EXCEPTION_VOID( e )  if( libvlc_exception_raised( e ) ) {    \
     RAISE( mediacontrol_InternalException, libvlc_exception_get_message( e )); \

@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: ed999e22fd771e03c24f961046ad745269e2b6af $
+ * $Id: d0acee095c852bcb2f6a0e03cbd26f0c1be16491 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -163,6 +163,8 @@ struct intf_sys_t
     IBOutlet NSTextField * o_crashrep_title_txt;
     IBOutlet NSTextField * o_crashrep_desc_txt;
     IBOutlet NSWindow * o_crashrep_win;
+    IBOutlet NSButton * o_crashrep_includeEmail_ckb;
+    IBOutlet NSTextField * o_crashrep_includeEmail_txt;
 
     /* main menu */
 

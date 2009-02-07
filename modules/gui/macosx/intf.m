@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 256f6a23318c4b55f082cdcad2829cb73caa2a61 $
+ * $Id: 03a285177806073b9124302e3feaf520b6cd935f $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -31,6 +31,7 @@
 #include <sys/param.h>                                    /* for MAXPATHLEN */
 #include <string.h>
 #include <vlc_keys.h>
+#include <unistd.h> /* execl() */
 
 #ifdef HAVE_CONFIG_H
 #   include "config.h"
@@ -212,6 +213,11 @@ static int InteractCallback( vlc_object_t *p_this, const char *psz_variable,
 }
 
 #pragma mark -
+#pragma mark Private
+
+@interface VLCMain ()
+- (void)_removeOldPreferences;
+@end
 
 /*****************************************************************************
  * VLCMain implementation
@@ -460,6 +466,8 @@ static VLCMain *_o_sharedMainInstance = nil;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    [self _removeOldPreferences];
+
 #ifdef UPDATE_CHECK
     /* Check for update silently on startup */
     if( !nib_update_loaded )
@@ -630,6 +638,8 @@ static VLCMain *_o_sharedMainInstance = nil;
     [o_crashrep_title_txt setStringValue: _NS("VLC crashed previously")];
     [o_crashrep_win setTitle: _NS("VLC crashed previously")];
     [o_crashrep_desc_txt setStringValue: _NS("Do you want to send details on the crash to VLC's development team?\n\nIf you want, you can enter a few lines on what you did before VLC crashed along with other helpful information: a link to download a sample file, a URL of a network stream, ...")];
+    [o_crashrep_includeEmail_ckb setTitle: _NS("I agree to be possibly contacted about this bugreport.")];
+    [o_crashrep_includeEmail_txt setStringValue: _NS("Only your default E-Mail address will be submitted, including no further information.")];
 }
 
 #pragma mark -
@@ -2084,11 +2094,16 @@ end:
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:url];
     [req setHTTPMethod:@"POST"];
 
-    ABPerson * contact = [[ABAddressBook sharedAddressBook] me];
-
-    ABMultiValue *emails = [contact valueForProperty:kABEmailProperty];
-    NSString * email = [emails valueAtIndex:[emails indexForIdentifier:
-                [emails primaryIdentifier]]];
+    NSString * email;
+    if( [o_crashrep_includeEmail_ckb state] == NSOnState )
+    {
+        ABPerson * contact = [[ABAddressBook sharedAddressBook] me];
+        ABMultiValue *emails = [contact valueForProperty:kABEmailProperty];
+        email = [emails valueAtIndex:[emails indexForIdentifier:
+                                      [emails primaryIdentifier]]];
+    }
+    else
+        email = [NSString string];    
 
     NSString *postBody;
     postBody = [NSString stringWithFormat:@"CrashLog=%@&Comment=%@&Email=%@\r\n",
@@ -2206,6 +2221,61 @@ end:
     {
         NSBeginInformationalAlertSheet(_NS("No CrashLog found"), _NS("Continue"), nil, nil, o_msgs_panel, self, NULL, NULL, nil, _NS("Couldn't find any trace of a previous crash.") );
     }
+}
+
+#pragma mark -
+#pragma mark Remove old prefs
+
+- (void)_removeOldPreferences
+{
+    static NSString * kVLCPreferencesVersion = @"VLCPreferencesVersion";
+    static const int kCurrentPreferencesVersion = 1;
+    int version = [[NSUserDefaults standardUserDefaults] integerForKey:kVLCPreferencesVersion];
+    if( version >= kCurrentPreferencesVersion ) return;
+
+    NSArray *libraries = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, 
+        NSUserDomainMask, YES);
+    if( !libraries || [libraries count] == 0) return;
+    NSString * preferences = [[libraries objectAtIndex:0] stringByAppendingPathComponent:@"Preferences"];
+
+    /* File not found, don't attempt anything */
+    if(![[NSFileManager defaultManager] fileExistsAtPath:[preferences stringByAppendingPathComponent:@"VLC"]] &&
+       ![[NSFileManager defaultManager] fileExistsAtPath:[preferences stringByAppendingPathComponent:@"org.videolan.vlc.plist"]] )
+    {
+        [[NSUserDefaults standardUserDefaults] setInteger:kCurrentPreferencesVersion forKey:kVLCPreferencesVersion];
+        return;
+    }
+
+    int res = NSRunInformationalAlertPanel(_NS("Remove old preferences?"),
+                _NS("We just found an older version of VLC's preferences files."),
+                _NS("Move To Trash and Relaunch VLC"), _NS("Ignore"), nil, nil);
+    if( res != NSOKButton )
+    {
+        [[NSUserDefaults standardUserDefaults] setInteger:kCurrentPreferencesVersion forKey:kVLCPreferencesVersion];
+        return;
+    }
+
+    NSArray * ourPreferences = [NSArray arrayWithObjects:@"org.videolan.vlc.plist", @"VLC", nil];
+
+    /* Move the file to trash so that user can find them later */
+    [[NSWorkspace sharedWorkspace] performFileOperation:NSWorkspaceRecycleOperation source:preferences destination:nil files:ourPreferences tag:0];
+
+    /* really reset the defaults from now on */
+    [NSUserDefaults resetStandardUserDefaults];
+
+    [[NSUserDefaults standardUserDefaults] setInteger:kCurrentPreferencesVersion forKey:kVLCPreferencesVersion];
+    [[NSUserDefaults standardUserDefaults] synchronize];
+
+    /* Relaunch now */
+    const char * path = [[[NSBundle mainBundle] executablePath] UTF8String];
+
+    /* For some reason we need to fork(), not just execl(), which reports a ENOTSUP then. */
+    if(fork() != 0)
+    {
+        exit(0);
+        return;
+    }
+    execl(path, path, NULL);
 }
 
 #pragma mark -

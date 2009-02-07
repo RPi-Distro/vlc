@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id$
+ * $Id: 518029c7830982a9ef5c3e6c69383f0cb90b9063 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -280,6 +280,20 @@
     [o_textfield setStringValue: init_value];                               \
 }
 
+#define ADD_SECURETEXTFIELD( o_textfield, superFrame, x_offset, my_y_offset,      \
+my_width, tooltip, init_value )                                         \
+{                                                                           \
+NSRect s_rc = superFrame;                                               \
+s_rc.origin.x = x_offset;                                               \
+s_rc.origin.y = my_y_offset;                                            \
+s_rc.size.height = 22;                                                  \
+s_rc.size.width = my_width;                                             \
+o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
+[o_textfield setFont:[NSFont systemFontOfSize:0]];                      \
+[o_textfield setToolTip: tooltip];                                      \
+[o_textfield setStringValue: init_value];                               \
+}
+
 #define ADD_COMBO( o_combo, superFrame, x_offset, my_y_offset, x2_offset,   \
     tooltip )                                                               \
 {                                                                           \
@@ -428,9 +442,11 @@
     switch( i_curItem )
     {
     case CONFIG_ITEM_STRING:
+    case CONFIG_ITEM_PASSWORD:
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
+        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -469,6 +485,7 @@
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
+        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -507,6 +524,7 @@
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
+        case CONFIG_ITEM_PASSWORD:
             i_margin = 13;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -545,6 +563,7 @@
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
+        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -583,6 +602,7 @@
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
+        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -621,6 +641,7 @@
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
+        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -659,6 +680,7 @@
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
+        case CONFIG_ITEM_PASSWORD:
             i_margin = 10;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -697,6 +719,7 @@
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
+        case CONFIG_ITEM_PASSWORD:
             i_margin = 6;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -735,6 +758,7 @@
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
+        case CONFIG_ITEM_PASSWORD:
             i_margin = 8;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -773,6 +797,7 @@
         switch( i_lastItem )
         {
         case CONFIG_ITEM_STRING:
+        case CONFIG_ITEM_PASSWORD:
             i_margin = 10;
             break;
         case CONFIG_ITEM_STRING_LIST:
@@ -822,6 +847,7 @@
     switch( _p_item->i_type )
     {
     case CONFIG_ITEM_STRING:
+    case CONFIG_ITEM_PASSWORD:
         if( !_p_item->i_list )
         {
             p_control = [[StringConfigControl alloc]
@@ -944,6 +970,7 @@
     switch( p_item->i_type )
     {
     case CONFIG_ITEM_STRING:
+    case CONFIG_ITEM_PASSWORD:
     case CONFIG_ITEM_FILE:
     case CONFIG_ITEM_DIRECTORY:
     case CONFIG_ITEM_MODULE:
@@ -990,7 +1017,11 @@
 
     if( [super initWithFrame: mainFrame item: _p_item] != nil )
     {
-        i_view_type = CONFIG_ITEM_STRING;
+        if( p_item->i_type == CONFIG_ITEM_PASSWORD )
+            i_view_type = CONFIG_ITEM_PASSWORD;
+        else
+            i_view_type = CONFIG_ITEM_STRING;
+
         o_textfieldTooltip = [[VLCMain sharedInstance] wrapString:
                               [[VLCMain sharedInstance] localizedString: (char *)p_item->psz_longtext]
                                                           toWidth: PREFS_WRAP];
@@ -1011,10 +1042,20 @@
                                     localizedString: (char *)p_item->value.psz];
         else
             o_textfieldString = [NSString stringWithString: @""];
-        ADD_TEXTFIELD( o_textfield, mainFrame, [o_label frame].size.width + 2,
-                        0, mainFrame.size.width - [o_label frame].size.width -
-                        2, o_textfieldTooltip, o_textfieldString )
+        if( p_item->i_type == CONFIG_ITEM_PASSWORD )
+        {
+            ADD_SECURETEXTFIELD( o_textfield, mainFrame, [o_label frame].size.width + 2,
+                          0, mainFrame.size.width - [o_label frame].size.width -
+                          2, o_textfieldTooltip, o_textfieldString )
+        }
+        else
+        {
+            ADD_TEXTFIELD( o_textfield, mainFrame, [o_label frame].size.width + 2,
+                            0, mainFrame.size.width - [o_label frame].size.width -
+                            2, o_textfieldTooltip, o_textfieldString )
+        }
         [o_textfield setAutoresizingMask:NSViewWidthSizable ];
+
         [self addSubview: o_textfield];
     }
     return self;

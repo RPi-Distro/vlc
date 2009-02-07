@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id$
+ * $Id: e7ea50f6d81d229bf00fdbb86b9c8ed7935326d5 $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -111,7 +111,7 @@ vcddev_t *ioctl_Open( vlc_object_t *p_this, const char *psz_dev )
     }
 
 #else
-    if( stat( psz_dev, &fileinfo ) < 0 )
+    if( utf8_stat( psz_dev, &fileinfo ) < 0 )
     {
         free( p_vcddev );
         return NULL;

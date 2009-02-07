@@ -2,7 +2,7 @@
  * embeddedwindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2005-2008 the VideoLAN team
- * $Id$
+ * $Id: 4a5cc69031af138de2791db21c64e44a22b02e47 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -277,8 +277,6 @@
             [[self contentView] replaceSubview:o_view with:o_temp_view];
             [o_temp_view setFrame:[o_view frame]];
             [o_fullscreen_window setContentView:o_view];
-
-            [o_fullscreen_window makeKeyAndOrderFront:self];
 
             [o_fullscreen_window makeKeyAndOrderFront:self];
             [o_fullscreen_window orderFront:self animate:YES];

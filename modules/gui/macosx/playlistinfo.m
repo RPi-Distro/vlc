@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id$
+ * $Id: f0f84553d7805308cab210ff82333051b4c9ff11 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -423,6 +423,13 @@ error:
     NSRunAlertPanel(_NS("Error while saving meta"),
         _NS("VLC was unable to save the meta data."),
         _NS("OK"), nil, nil);
+}
+
+- (IBAction)downloadCoverArt:(id)sender
+{
+    playlist_t * p_playlist = pl_Yield( VLCIntf );
+    if( p_item) playlist_AskForArtEnqueue( p_playlist, p_item );
+    pl_Release( VLCIntf );
 }
 
 - (input_item_t *)item

@@ -2,7 +2,7 @@
  * playlist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id$
+ * $Id: d8be0421b78c75cbf1b4688bdd4a328fa34a6ae9 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -80,6 +80,7 @@
     IBOutlet id o_mi_delete;
     IBOutlet id o_mi_info;
     IBOutlet id o_mi_preparse;
+    IBOutlet id o_mi_dl_cover_art;
     IBOutlet id o_mi_selectall;
     IBOutlet id o_mi_sort_name;
     IBOutlet id o_mi_sort_author;
@@ -128,6 +129,7 @@
 - (IBAction)servicesChange:(id)sender;
 - (IBAction)playItem:(id)sender;
 - (IBAction)preparseItem:(id)sender;
+- (IBAction)downloadCoverArt:(id)sender;
 - (IBAction)savePlaylist:(id)sender;
 - (IBAction)deleteItem:(id)sender;
 - (IBAction)selectAll:(id)sender;

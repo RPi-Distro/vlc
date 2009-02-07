@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: 86f9a5e1a3fa1b33371cab3ea62433e79decc244 $
+ * $Id: c614cb8d6406dd70553dbd9adab22224d9715b51 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -287,7 +287,13 @@ QMenu *QVLCMenu::FileMenu()
     QMenu *menu = new QMenu();
 
     addDPStaticEntry( menu, qtr( "&Open File..." ), "",
+#ifdef WIN32
+        ":/file-asym", SLOT( simpleOpenDialog() ), "Ctrl+O" );
+    addDPStaticEntry( menu, qtr( "Advanced Open File..." ), "",
+        ":/file-asym", SLOT( openFileDialog() ), "" );
+#else
         ":/file-asym", SLOT( openFileDialog() ), "Ctrl+O" );
+#endif
     addDPStaticEntry( menu, qtr( I_OPEN_FOLDER ), "",
         ":/folder-grey", SLOT( PLOpenDir() ), "Ctrl+F" );
     addDPStaticEntry( menu, qtr( "Open &Disc..." ), "",

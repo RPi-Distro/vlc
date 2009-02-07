@@ -1,13 +1,78 @@
-Changes between 0.8.6i and 0.9.2:
----------------------------------
+Changes between 0.9.3 and 0.9.4:
+------------------------------------
+Various bugfixes:
+ * Crashes fixed in ogg, vobsub, dvdread
+ * Fixes several memory leaks.
 
-Note: version 0.9.0 was skipped due to bugs being discovered at the last
-minute.
+Mac OS X port:
+ * Apple machines without Quartz Extreme are no longer supported (use 0.9.2 or earlier )
+ * Fixed a crash with deletion of old preferences.
+ * Fixed targetname for downloaded updates
+
+Windows port:
+ * Stability fix for the video output.
+
+
+Changes between 0.9.2 and 0.9.3:
+------------------------------------
+
+Various bugfixes:
+ * Fixed DTS channel order on 5.1 systems
+ * Fixed pausing behavior for subtitles and for Audio-CD
+ * Multiple subtitles and podcast fixes
+ * Various crashes fixed in PS, SSA, mkv, xspf, freetype
+ * Fixed update system bugs
+ * Other bug fixes (dvd language selection, subtitle colours, HTTP keep-alive...)
+
+Mac OS X port:
+ * Fixed ffmpeg slowness on PowerPC-based Macs
+ * Fixed crash on startup when installed on old preferences
+ * Fixed bug in directory opening on Mac OS X
+ * Fixed font selection in the Simple Preferences
+ * Thicker border to the subtitle renderer
+ * Fixed the appearance of playlist items in the Streaming/Transcoding Wizard
+ * Fixed AC3 passthrough on Mac OS X
+ * Fixed behavior of the Volume Normalizer settings on Mac OS X
+ * Removed the deprecated QuickDraw video output module to avoid crashes on
+   modern Mac OS X versions
+
+Windows port:
+ * Fixed sensitivity of Fullscreen Controller
+ * Fixed error messages on startup when VLC wasn't correctly uninstalled
+   before installation
+ * Fix showing of controller when returning from fullscreen playback
+ * Multiple directory and path location fixes.
+
+Qt4 interface:
+ * Added Faster/Slower icons to the controller panel
+ * Fixed lost playlist columns when switching the playlist view
+ * Added needed options to Simple preferences (to avoid NVIDIA drivers issues)
+ * Fullscreen controller: added time label, remembering of last position
+ * Fixed drag'n drop behaviour on the playlist
+ * Multiple other fixes (Enter hotkey in preferences, Skins selection...)
+
+
+Changes between 0.9.1 and 0.9.2:
+--------------------------------
+
+ * Restored the old behavior of --sout-keep. It is now de-activated by default.
+ * Skins2 interface repaired on Windows.
+ * Multiple bugfixes.
+
+
+Changes between 0.9.1 and 0.9.0:
+--------------------------------
+
+ * Multiple bug fixes.
+
+
+Changes between 0.8.6i and 0.9.0:
+---------------------------------
 
 Important notes:
 ----------------
- * This release will need Windows 2000 and Mac OS X 10.4 (Tiger) to work
-   correctly
+ * This release will need Windows 2000 and Mac OS X 10.4 (Tiger), or more
+   recent to work correctly
  * The HTTP interface is now only available on the local machine by default.
    If you want to make it available from other machines, you will have to
    edit the ".hosts" file.
@@ -22,6 +87,7 @@ Important notes:
    This interface has a fullscreen controller and simplified preferences.
    This interface lacks the "Streaming Wizard" that used to be present in VLC
    0.8.6, but provides basic profiles.
+ * The behavior of --sout-keep was changed. It's now activated by default.
  * The marq, mosaic and logo commands in the rc interface changed. They
    now require a target name as their first argument. Example:
    vlc --sub-filter "marq@test{marquee=Hello}" -I rc <somevideo>

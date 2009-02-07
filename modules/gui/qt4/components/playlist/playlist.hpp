@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Playlist Widgets
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 71180e0c0f36a017fea950a0cfa67b9ee896051c $
+ * $Id: fbe83a52a8d63f0921897244d18315aeb17027d8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -48,14 +48,13 @@ class PlaylistWidget : public QSplitter
 {
     Q_OBJECT;
 public:
-    PlaylistWidget( intf_thread_t *_p_i, QWidget *parent ) ;
+    PlaylistWidget( intf_thread_t *_p_i );
     virtual ~PlaylistWidget();
 private:
     PLSelector *selector;
     PLPanel *rightPanel;
     QPushButton *addButton;
     ArtLabel *art;
-    QWidget *parent;
 protected:
     intf_thread_t *p_intf;
     virtual void dropEvent( QDropEvent *);

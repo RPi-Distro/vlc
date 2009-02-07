@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: c98b51c22797faa21727b9ff2256a6661d1e7bde $
+ * $Id: c9c6cc85ac0fdfdfc5464685f324e1058e47c929 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -1120,6 +1120,7 @@ error:
     free( psz_host );
     if( httpd->i_host <= 0 )
     {
+        libvlc_priv (httpd->p_libvlc)->p_httpd = NULL;
         vlc_object_release( httpd );
         vlc_object_detach( httpd );
         vlc_object_release( httpd );
@@ -2350,8 +2351,8 @@ retry:
                     }
 
                     if( ( ( cl->query.i_proto == HTTPD_PROTO_HTTP ) &&
-                          ( ( cl->answer.i_version == 0 && b_keepalive ) ||
-                            ( cl->answer.i_version == 1 && !b_connection ) ) ) ||
+                          ( ( cl->query.i_version == 0 && b_keepalive ) ||
+                            ( cl->query.i_version == 1 && !b_connection ) ) ) ||
                         ( ( cl->query.i_proto == HTTPD_PROTO_RTSP ) &&
                           !b_query && !b_connection ) )
                     {

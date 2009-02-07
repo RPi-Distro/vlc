@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: aeba245bb46007e454d4ffd763171c6a32151221 $
+ * $Id: a82520ef9c9359cafcb6dc93023e62ab0c1d2793 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -1033,7 +1033,7 @@ static int Play( demux_t *p_demux )
     if( p_sys->rtsp )
     {
         /* The PLAY */
-        if( !p_sys->rtsp->playMediaSession( *p_sys->ms, p_sys->i_npt_start, -1, 1 ) )
+        if( !p_sys->rtsp->playMediaSession( *p_sys->ms, p_sys->i_npt_start / (double)1000000.0 , -1, 1 ) )
         {
             msg_Err( p_demux, "RTSP PLAY failed %s", p_sys->env->getResultMsg() );
             return VLC_EGENERIC;

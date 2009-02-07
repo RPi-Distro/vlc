@@ -2,7 +2,7 @@
  * xosd.c : X On Screen Display interface
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 0b61f3eb626b544ccf3ef526cc2c942bfb2ed17e $
+ * $Id: a65b7c5922e5d91d4269ec1d78925bc3b58cdc1e $
  *
  * Authors: Loïc Minier <lool@videolan.org>
  *
@@ -108,7 +108,7 @@ static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
     xosd *p_osd;
-    char *psz_font, psz_colour;
+    char *psz_font, *psz_colour;
 
     /* Allocate instance and initialize some members */
     p_intf->p_sys = (intf_sys_t *)malloc( sizeof( intf_sys_t ) );

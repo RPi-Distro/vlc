@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2007 the VideoLAN team
- * $Id: 8d42bc0fafc2efd50558b662850faa8292a3db24 $
+ * $Id: b99760b30ff800e14b9ecf97076df0aea843ba5b $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1724,10 +1724,9 @@ static int RenderTag( filter_t *p_filter, FT_Face p_face, int i_font_color,
                     glyph_size.xMin + ((FT_BitmapGlyph)tmp_glyph)->left;
         if( line.xMax > (int)p_filter->fmt_out.video.i_visible_width - 20 )
         {
-            while( --i > *pi_start )
-            {
+            for( ; i >= *pi_start; i-- )
                 FT_Done_Glyph( (FT_Glyph)p_line->pp_glyphs[ i ] );
-            }
+            i = *pi_start;
 
             while( psz_unicode > psz_unicode_start && *psz_unicode != ' ' )
             {
@@ -1751,8 +1750,6 @@ static int RenderTag( filter_t *p_filter, FT_Face p_face, int i_font_color,
                 p_result->x = __MAX( p_result->x, line.xMax );
                 p_result->y = __MAX( p_result->y, __MAX( p_line->i_height,
                                                          i_yMax - i_yMin ) );
-
-                *pi_start = i;
                 return VLC_SUCCESS;
             }
             else
@@ -2070,7 +2067,8 @@ static int ProcessNodes( filter_t *p_filter,
         rv = PushFont( &p_fonts,
                        FC_DEFAULT_FONT,
                        p_sys->i_font_size,
-                       0x00ffffff,
+                       (p_sys->i_font_color & 0xffffff) |
+                          (((255-p_sys->i_font_opacity) & 0xff) << 24),
                        0x00ffffff );
     }
     if( rv != VLC_SUCCESS )

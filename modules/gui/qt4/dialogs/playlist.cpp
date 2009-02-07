@@ -2,7 +2,7 @@
  * playlist.cpp : Playlist dialog
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: f15e584e9ae1473f12f7410796bdbc7af3046546 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -52,7 +52,7 @@ PlaylistDialog::PlaylistDialog( intf_thread_t *_p_intf )
 
     getSettings()->beginGroup("playlistdialog");
 
-    playlistWidget = new PlaylistWidget( p_intf, this );
+    playlistWidget = new PlaylistWidget( p_intf );
     l->addWidget( playlistWidget );
 
     readSettings( getSettings(), QSize( 600,700 ) );

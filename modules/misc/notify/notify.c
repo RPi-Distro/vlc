@@ -2,7 +2,7 @@
  * notify.c : libnotify notification plugin
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id$
+ * $Id: ccfb05a097da55e5c0434408ee00405a2b788d2a $
  *
  * Authors: Christophe Mutricy <xtophe -at- videolan -dot- org>
  *
@@ -94,6 +94,7 @@ static int Open( vlc_object_t *p_this )
 
     if( !notify_init( APPLICATION_NAME ) )
     {
+        free( p_sys );
         msg_Err( p_intf, "can't find notification daemon" );
         return VLC_EGENERIC;
     }

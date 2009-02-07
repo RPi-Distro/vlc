@@ -2,7 +2,7 @@
  * vlc_arrays.h : Arrays and data structures handling
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id$
+ * $Id: 79e7722507463c5c4ad8104693381d9b7120f3fc $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -442,6 +442,7 @@ static inline void vlc_dictionary_clear( vlc_dictionary_t * p_dict )
             }
         }
         free( p_dict->p_entries );
+        p_dict->p_entries = NULL;
     }
     p_dict->i_size = 0;
 }

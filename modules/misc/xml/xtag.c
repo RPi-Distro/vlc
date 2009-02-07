@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2000-2004 the VideoLAN team
  *
- * $Id$
+ * $Id: 602c4e5a9ac49023ba927ab21bad82b810bb576d $
  *
  * Authors: Conrad Parker <Conrad.Parker@csiro.au>
  *          Andre Pang <Andre.Pang@csiro.au>
@@ -644,7 +644,11 @@ static XTag *xtag_parse_tag( XTagParser *parser )
         while (parser->end - s > 2) {
             if (strncmp( s, "]]>", 3 ) == 0) {
                 if ( !(tag = malloc( sizeof(*tag))) ) return NULL;
-                if ( !(pcdata = malloc( sizeof(char)*(s - parser->start + 1))) ) return NULL;
+                if ( !(pcdata = malloc( sizeof(char)*(s - parser->start + 1))) )
+                {
+                    free( tag );
+                    return NULL;
+                }
                 strncpy( pcdata, parser->start, s - parser->start );
                 pcdata[s - parser->start]='\0';
                 parser->start = s = &s[3];

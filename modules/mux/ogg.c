@@ -2,7 +2,7 @@
  * ogg.c: ogg muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: ed60f58eeeec37f33233503f75b3914092bcd3c3 $
+ * $Id: 8a63fdee88a49900f52fdecd533c69ceade568a5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -872,6 +872,9 @@ static void OggSetDate( block_t *p_og, mtime_t i_dts, mtime_t i_length )
     {
         i_count++;
     }
+
+    if( i_count == 0 ) return; /* ignore. */
+
     i_delta = i_length / i_count;
 
     for( p_tmp = p_og; p_tmp != NULL; p_tmp = p_tmp->p_next )

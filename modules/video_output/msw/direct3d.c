@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- *$Id$
+ *$Id: f78287e32a91e1fb7befc7435b763245afc8e7a8 $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -266,6 +266,14 @@ static void CloseVideo( vlc_object_t *p_this )
     vout_thread_t * p_vout = (vout_thread_t *)p_this;
 
     Direct3DVoutRelease( p_vout );
+
+    if( p_vout->b_fullscreen )
+    {
+        msg_Dbg( p_vout, "Quitting fullscreen" );
+        Win32ToggleFullscreen( p_vout );
+        /* Force fullscreen in the core for the next video */
+        var_SetBool( p_vout, "fullscreen", true );
+    }
 
     if( p_vout->p_sys->p_event )
     {

@@ -2,7 +2,7 @@
  * loadsave.c : Playlist loading / saving functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id$
+ * $Id: 3bb3b2abee92f8065db92c1285308266b4a10aca $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -51,14 +51,14 @@ int playlist_Export( playlist_t * p_playlist, const char *psz_filename ,
     p_export = (playlist_export_t *)malloc( sizeof(playlist_export_t) );
     if( !p_export)
         return VLC_ENOMEM;
-    p_export->psz_filename = NULL;
-    if ( psz_filename )
-        p_export->psz_filename = strdup( psz_filename );
+    p_export->psz_filename = psz_filename ? strdup( psz_filename ) : NULL;
     p_export->p_file = utf8_fopen( psz_filename, "wt" );
     if( !p_export->p_file )
     {
         msg_Err( p_playlist , "could not create playlist file %s (%m)",
                  psz_filename );
+        free( p_export->psz_filename );
+        free( p_export );
         return VLC_EGENERIC;
     }
 
@@ -69,23 +69,27 @@ int playlist_Export( playlist_t * p_playlist, const char *psz_filename ,
     p_playlist->p_private = (void *)p_export;
 
     /* And call the module ! All work is done now */
+    int i_ret;
     p_module = module_Need( p_playlist, "playlist export", psz_type, true);
     if( !p_module )
     {
         msg_Warn( p_playlist, "exporting playlist failed" );
-        vlc_object_unlock( p_playlist );
-        return VLC_ENOOBJ;
+        i_ret = VLC_ENOOBJ;
     }
-    module_Unneed( p_playlist , p_module );
+    else
+    {
+        module_Unneed( p_playlist , p_module );
+        i_ret = VLC_SUCCESS;
+    }
 
     /* Clean up */
     fclose( p_export->p_file );
     free( p_export->psz_filename );
-    free ( p_export );
+    free( p_export );
     p_playlist->p_private = NULL;
     vlc_object_unlock( p_playlist );
 
-    return VLC_SUCCESS;
+    return i_ret;
 }
 
 /*****************************************************************************

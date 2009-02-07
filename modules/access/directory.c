@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id$
+ * $Id: ae7bf4b4c1a98563269528a3d41de6c56b60c5d5 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont
@@ -152,10 +152,6 @@ static int Open( vlc_object_t *p_this )
     if( !p_access->psz_path )
         return VLC_EGENERIC;
 
-    struct stat st;
-    if( !stat( p_access->psz_path, &st ) && !S_ISDIR( st.st_mode ) )
-        return VLC_EGENERIC;
-
     DIR *handle = OpenDir (p_this, p_access->psz_path);
     if (handle == NULL)
         return VLC_EGENERIC;
@@ -212,7 +208,6 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len)
     input_thread_t     *p_input = (input_thread_t*)vlc_object_find( p_access, VLC_OBJECT_INPUT, FIND_PARENT );
 
     playlist_item_t    *p_item_in_category;
-    input_item_t       *p_current_input;
     playlist_item_t    *p_current;
 
     if( !p_input )
@@ -223,8 +218,9 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len)
         return VLC_ENOOBJ;
     }
 
-    p_current_input = input_GetItem( p_input );
-    p_current = playlist_ItemGetByInput( p_playlist, p_current_input, pl_Unlocked );
+    vlc_mutex_lock( &input_GetItem(p_input)->lock );
+    p_current = playlist_ItemGetByInput( p_playlist, input_GetItem( p_input ), pl_Unlocked );
+    vlc_mutex_unlock( &input_GetItem(p_input)->lock );
 
     if( !p_current )
     {
@@ -264,8 +260,9 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len)
 
     ReadDir( p_access, p_playlist, psz_name, i_mode,
              p_item_in_category,
-             p_current_input, (DIR *)p_access->p_sys, NULL );
+             p_current->p_input, (DIR *)p_access->p_sys, NULL );
 
+    var_SetBool( p_playlist, "intf-change", true );
     playlist_Signal( p_playlist );
 
     free( psz_name );
@@ -572,18 +569,17 @@ static int ReadDir( access_t *p_access, playlist_t *p_playlist,
 
 static DIR *OpenDir (vlc_object_t *obj, const char *path)
 {
-    msg_Dbg (obj, "opening directory `%s'", path);
     DIR *handle = utf8_opendir (path);
     if (handle == NULL)
     {
         int err = errno;
         if (err != ENOTDIR)
             msg_Err (obj, "%s: %m", path);
-        else
-            msg_Dbg (obj, "skipping non-directory `%s'", path);
+        // else not a dir
         errno = err;
 
         return NULL;
     }
+    msg_Dbg (obj, "opening directory `%s'", path);
     return handle;
 }

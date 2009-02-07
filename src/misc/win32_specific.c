@@ -2,7 +2,7 @@
  * win32_specific.c: Win32 specific features
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 85d52a573bfaf5e6ec77465a929fa6ebf6347373 $
+ * $Id: c43a37604a0eb8f32a8560a3e607d8fb85fb5050 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -129,7 +129,7 @@ typedef struct
 {
   int argc;
   int enqueue;
-  char data[0];
+  char data[];
 } vlc_ipc_data_t;
 
 void system_Configure( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )

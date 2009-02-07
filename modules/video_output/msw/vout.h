@@ -2,7 +2,7 @@
  * vout.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 52bf8169cdb6c3828e1ee088e645ae24628a4220 $
+ * $Id: d964c3630007c5479d34ebada27f0a71d985ce12 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -32,6 +32,39 @@ typedef struct event_thread_t
     vout_thread_t * p_vout;
 
 } event_thread_t;
+
+#ifdef MODULE_NAME_IS_wingapi
+    typedef struct GXDisplayProperties {
+        DWORD cxWidth;
+        DWORD cyHeight;
+        long cbxPitch;
+        long cbyPitch;
+        long cBPP;
+        DWORD ffFormat;
+    } GXDisplayProperties;
+
+    typedef struct GXScreenRect {
+        DWORD dwTop;
+        DWORD dwLeft;
+        DWORD dwWidth;
+        DWORD dwHeight;
+    } GXScreenRect;
+
+#   define GX_FULLSCREEN    0x01
+#   define GX_NORMALKEYS    0x02
+#   define GX_LANDSCAPEKEYS 0x03
+
+#   ifndef kfLandscape
+#       define kfLandscape      0x8
+#       define kfPalette        0x10
+#       define kfDirect         0x20
+#       define kfDirect555      0x40
+#       define kfDirect565      0x80
+#       define kfDirect888      0x100
+#       define kfDirect444      0x200
+#       define kfDirectInverted 0x400
+#   endif
+#endif
 
 /*****************************************************************************
  * vout_sys_t: video output method descriptor
@@ -219,18 +252,18 @@ void Win32ToggleFullscreen ( vout_thread_t *p_vout );
 #   define GCL_HBRBACKGROUND (-10)
 #endif
 
-#define FindWindowEx(a,b,c,d) 0
+//#define FindWindowEx(a,b,c,d) 0
 
 #define GetWindowPlacement(a,b)
 #define SetWindowPlacement(a,b)
-typedef struct _WINDOWPLACEMENT {
+/*typedef struct _WINDOWPLACEMENT {
     UINT length;
     UINT flags;
     UINT showCmd;
     POINT ptMinPosition;
     POINT ptMaxPosition;
     RECT rcNormalPosition;
-} WINDOWPLACEMENT;
+} WINDOWPLACEMENT;*/
 
 #ifndef WM_NCMOUSEMOVE
 #   define WM_NCMOUSEMOVE 160
@@ -257,8 +290,8 @@ typedef struct _WINDOWPLACEMENT {
 #define WS_EX_APPWINDOW 0x40000
 #endif
 
-#define SetWindowLongPtr SetWindowLong
-#define GetWindowLongPtr GetWindowLong
-#define GWLP_USERDATA GWL_USERDATA
+//#define SetWindowLongPtr SetWindowLong
+//#define GetWindowLongPtr GetWindowLong
+//#define GWLP_USERDATA GWL_USERDATA
 
 #endif //UNDER_CE

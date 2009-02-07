@@ -2,7 +2,7 @@
  * preferences.cpp : "Normal preferences"
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id$
+ * $Id: 7284a5a1397d4546542f2693648e76d0fd868bb7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -457,7 +457,7 @@ AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
                 layout->addWidget( box, i_line, 0, 1, -1 );
                 i_line++;
             }
-            box = new QGroupBox( qtr( p_item->psz_text ) );
+            box = new QGroupBox( qtr( p_item->psz_text ), this );
             box->hide();
             boxlayout = new QGridLayout();
         }
@@ -472,10 +472,10 @@ AdvPrefsPanel::AdvPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
         ConfigControl *control;
         if( ! box )
             control = ConfigControl::createControl( VLC_OBJECT( p_intf ),
-                                        p_item, NULL, layout, i_line );
+                                        p_item, this, layout, i_line );
         else
             control = ConfigControl::createControl( VLC_OBJECT( p_intf ),
-                                    p_item, NULL, boxlayout, i_boxline );
+                                    p_item, this, boxlayout, i_boxline );
         if( !control )
             continue;
 

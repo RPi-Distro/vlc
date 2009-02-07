@@ -208,6 +208,8 @@ EXTRA_DIST += \
 	pixmaps/noart.png \
 	pixmaps/pause_16px.png \
 	pixmaps/pause.png \
+	pixmaps/faster.png \
+	pixmaps/slower.png \
 	pixmaps/play_16px.png \
 	pixmaps/playlist/add.png \
 	pixmaps/playlist/playlist.png \

@@ -2,7 +2,7 @@
  * telnet.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: cffbdd849cf17b9b26effb8772e972acfd8fd3b2 $
+ * $Id: c271d7e33dff5ea26dae370427960f9503c7a9d9 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -297,6 +297,7 @@ static void Run( intf_thread_t *p_intf )
                 net_Close( cl->fd );
                 TAB_REMOVE( p_intf->p_sys->i_clients ,
                             p_intf->p_sys->clients , cl );
+                free( cl->buffer_write );
                 free( cl );
                 continue;
             }

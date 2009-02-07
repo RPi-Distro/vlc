@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 89cc449d2f8e81af1b16640753bcd152af2ac781 $
+ * $Id: d084a34cf8a5386e390ff174593c17cb9608487c $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -1376,7 +1376,7 @@ static bool Ogg_IsVorbisFormatCompatible( const es_format_t *p_new, const es_for
 }
 static bool Ogg_LogicalStreamResetEsFormat( demux_t *p_demux, logical_stream_t *p_stream )
 {
-    bool b_compatible;
+    bool b_compatible = false;
     if( !p_stream->fmt_old.i_cat || !p_stream->fmt_old.i_codec )
         return true;
 

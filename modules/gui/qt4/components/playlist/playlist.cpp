@@ -2,7 +2,7 @@
  * playlist.cpp : Custom widgets for the playlist
  ****************************************************************************
  * Copyright © 2007-2008 the VideoLAN team
- * $Id: a16d39e81765f8b82b9379edd3bafa3d7a030980 $
+ * $Id: c17896901168cd4477df1696795a29e3fc8f02ca $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -42,9 +42,7 @@
  * Playlist Widget. The embedded playlist
  **********************************************************************/
 
-PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i,
-                                QWidget *_parent )
-               : p_intf ( _p_i ), parent( _parent )
+PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i ) : p_intf ( _p_i )
 {
     setContentsMargins( 3, 3, 3, 3 );
 
@@ -117,7 +115,9 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i,
     // components shall never write there setting to a fixed location, may infer
     // with other uses of the same component...
     // getSettings()->beginGroup( "playlist" );
+    getSettings()->beginGroup("Playlist");
     restoreState( getSettings()->value("splitterSizes").toByteArray());
+    getSettings()->endGroup();
 
     setAcceptDrops( true );
     setWindowTitle( qtr( "Playlist" ) );
@@ -126,16 +126,17 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i,
 
 PlaylistWidget::~PlaylistWidget()
 {
-    getSettings()->beginGroup("playlistdialog");
+    getSettings()->beginGroup("Playlist");
     getSettings()->setValue( "splitterSizes", saveState() );
     getSettings()->endGroup();
+    msg_Dbg( p_intf, "Playlist Destroyed" );
 }
 
 #include "main_interface.hpp"
 void PlaylistWidget::dropEvent(QDropEvent *event)
 {
     if( p_intf->p_sys->p_mi )
-        p_intf->p_sys->p_mi->dropEvent( event );
+        p_intf->p_sys->p_mi->dropEventPlay( event, false );
 }
 void PlaylistWidget::dragEnterEvent(QDragEnterEvent *event)
 {

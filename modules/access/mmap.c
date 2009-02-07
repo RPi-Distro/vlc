@@ -2,7 +2,7 @@
  * mmap.c: memory-mapped file input
  *****************************************************************************
  * Copyright © 2007-2008 Rémi Denis-Courmont
- * $Id$
+ * $Id: e49c0412e4a7b0f3bb6ec7dcc5c1c821bf8a3256 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -119,6 +119,13 @@ static int Open (vlc_object_t *p_this)
         goto error;
     }
 
+# if defined(HAVE_FCNTL_H) && defined(F_FDAHEAD) && defined(F_NOCACHE)
+    /* We'd rather use any available memory for reading ahead
+     * than for caching what we've already mmap'ed */
+    fcntl (fd, F_RDAHEAD, 1);
+    fcntl (fd, F_NOCACHE, 1);
+# endif
+
     /* Autodetect mmap() support */
     if (st.st_size > 0)
     {
@@ -213,8 +220,7 @@ static block_t *Block (access_t *p_access)
         msg_Err (p_access, "memory mapping failed (%m)");
         intf_UserFatal (p_access, false, _("File reading failed"),
                         _("VLC could not read the file."));
-        msleep (INPUT_ERROR_SLEEP);
-        return NULL;
+        goto fatal;
     }
 #ifdef HAVE_POSIX_MADVISE    
     posix_madvise (addr, length, POSIX_MADV_SEQUENTIAL);
@@ -222,7 +228,7 @@ static block_t *Block (access_t *p_access)
 
     block_t *block = block_mmap_Alloc (addr, length);
     if (block == NULL)
-        return NULL;
+        goto fatal;
 
     block->p_buffer += inner_offset;
     block->i_buffer -= inner_offset;
@@ -245,6 +251,10 @@ static block_t *Block (access_t *p_access)
 
     p_access->info.i_pos = outer_offset + length;
     return block;
+
+fatal:
+    p_access->info.b_eof = true;
+    return NULL;
 }
 
 
@@ -278,8 +288,11 @@ static int Control (access_t *p_access, int query, va_list args)
             return VLC_SUCCESS;
 
         case ACCESS_GET_PTS_DELAY:
-            *((int64_t *)va_arg (args, int64_t *)) = DEFAULT_PTS_DELAY;
+        {
+            int delay_ms = var_CreateGetInteger (p_access, "file-caching");
+            *((int64_t *)va_arg (args, int64_t *)) = delay_ms * INT64_C (1000);
             return VLC_SUCCESS;
+        }
 
         case ACCESS_GET_TITLE_INFO:
         case ACCESS_GET_META:

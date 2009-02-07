@@ -2,7 +2,7 @@
  * media_discoverer.c: libvlc new API media discoverer functions
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: e9124f193c62d42dcaba6ef58ea879be832b9426 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -178,8 +178,9 @@ libvlc_media_discoverer_new_from_name( libvlc_instance_t * p_inst,
 
     if( !p_mdis->p_sd )
     {
-        free( p_mdis );
         libvlc_exception_raise( p_e, "Can't find the services_discovery module named '%s'", psz_name );
+        libvlc_media_list_release( p_mdis->p_mlist );
+        free( p_mdis );
         return NULL;
     }
 

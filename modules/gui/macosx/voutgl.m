@@ -2,7 +2,7 @@
  * voutgl.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2004, 2007 the VideoLAN team
- * $Id$
+ * $Id: fff52ee28559bbe1afe0be8bb68564075dc69fc7 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -104,8 +104,7 @@ int OpenVideoGL  ( vlc_object_t * p_this )
     if( !CGDisplayUsesOpenGLAcceleration( kCGDirectMainDisplay ) )
     {
         msg_Warn( p_vout, "no OpenGL hardware acceleration found. "
-                          "Video display will be slow" );
-        return( 1 );
+                          "Video display might be slow" );
     }
     msg_Dbg( p_vout, "display is Quartz Extreme accelerated" );
 

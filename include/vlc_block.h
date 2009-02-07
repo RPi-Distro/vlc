@@ -2,7 +2,7 @@
  * vlc_block.h: Data blocks management functions
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a17530ec36e881aa8d5e5e7ebdd1124cc557eda2 $
+ * $Id: 4cca0acd2dc6843cabf0b9bcea3362856ee8b278 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -79,8 +79,13 @@ typedef struct block_sys_t block_sys_t;
 /** This block is corrupted and/or there is data loss  */
 #define BLOCK_FLAG_CORRUPTED     0x1000
 
-#define BLOCK_FLAG_PRIVATE_MASK  0xffff0000
-#define BLOCK_FLAG_PRIVATE_SHIFT 16
+/* These are for input core private usage only */
+#define BLOCK_FLAG_CORE_PRIVATE_MASK  0x00ff0000
+#define BLOCK_FLAG_CORE_PRIVATE_SHIFT 16
+
+/* These are for module private usage only */
+#define BLOCK_FLAG_PRIVATE_MASK  0xff000000
+#define BLOCK_FLAG_PRIVATE_SHIFT 24
 
 typedef void (*block_free_t) (block_t *);
 

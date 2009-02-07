@@ -2,7 +2,7 @@
  * swscale.c: scaling and chroma conversion using libswscale
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 81a963259dad1893873d3414feecca226d47e8d1 $
+ * $Id: cf45e2dac26740934465b82761cf01d6f5fb8bf6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -177,10 +177,7 @@ static int OpenScaler( vlc_object_t *p_this )
     default: p_sys->i_sws_flags = SWS_BICUBIC; i_sws_mode = 2; break;
     }
 
-    p_sys->p_src_filter =
-        sws_getDefaultFilter( sws_lum_gblur, sws_chr_gblur,
-                              sws_lum_sharpen, sws_chr_sharpen,
-                              sws_chr_hshift, sws_chr_vshift, 0 );
+    p_sys->p_src_filter = NULL;
     p_sys->p_dst_filter = NULL;
 
     /* Misc init */

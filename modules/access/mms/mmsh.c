@@ -2,7 +2,7 @@
  * mmsh.c:
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id$
+ * $Id: 87bb09b4382ddddb8dd460d6f029338c874523f5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -187,6 +187,9 @@ int MMSHOpen( access_t *p_access )
 
         input_thread_t * p_input = vlc_object_find( p_access, VLC_OBJECT_INPUT, FIND_PARENT );
         input_item_t * p_new_loc;
+
+        if( !p_input )
+            return VLC_EGENERIC;
         /** \bug we do not autodelete here */
         p_new_loc = input_item_New( p_access, psz_location, psz_location );
         input_item_AddSubItem( input_GetItem( p_input ), p_new_loc );

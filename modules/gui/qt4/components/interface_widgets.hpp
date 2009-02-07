@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 535ca32d020635cdeba89947d78a6bb32558a5ca $
+ * $Id: 5bfcd1fdd6ba6ab4891b62c572ec85875045361f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -252,6 +252,10 @@ public:
     void attachVout( vout_thread_t *p_vout );
     void detachVout();
     void fullscreenChanged( vout_thread_t *, bool b_fs, int i_timeout );
+    vout_thread_t *p_vout;
+
+    int i_mouse_last_move_x;
+    int i_mouse_last_move_y;
 
 protected:
     friend class MainInterface;
@@ -291,7 +295,6 @@ private:
 
     virtual void customEvent( QEvent *event );
 
-    vout_thread_t *p_vout;
 
     /* Shared variable between FSC and VLC (protected by a lock) */
     vlc_mutex_t lock;
@@ -329,16 +332,25 @@ private:
 class TimeLabel : public QLabel
 {
     Q_OBJECT
-    void mousePressEvent( QMouseEvent *event )
+public:
+    TimeLabel( intf_thread_t *_p_intf );
+protected:
+    virtual void mousePressEvent( QMouseEvent *event )
     {
-        emit timeLabelClicked();
+        toggleTimeDisplay();
     }
-    void mouseDoubleClickEvent( QMouseEvent *event )
+    virtual void mouseDoubleClickEvent( QMouseEvent *event )
     {
+        toggleTimeDisplay();
         emit timeLabelDoubleClicked();
     }
+private slots:
+    void setDisplayPosition( float pos, int time, int length );
+private:
+    intf_thread_t *p_intf;
+    bool b_remainingTime;
+    void toggleTimeDisplay();
 signals:
-    void timeLabelClicked();
     void timeLabelDoubleClicked();
 };
 

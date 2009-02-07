@@ -2,7 +2,7 @@
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008 the VideoLAN team
-* $Id$
+* $Id: f5a279afbeef92435075b68cf7193e4c6768eb57 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -43,6 +43,7 @@
     IBOutlet id o_audio_lastuser_txt;
     IBOutlet id o_audio_norm_ckb;
     IBOutlet id o_audio_norm_fld;
+    IBOutlet id o_audio_norm_stepper;
     IBOutlet id o_audio_spdif_ckb;
     IBOutlet id o_audio_view;
     IBOutlet id o_audio_visual_pop;
@@ -193,7 +194,9 @@
 
 /* OSD / subtitles */
 - (IBAction)osdSettingChanged:(id)sender;
+- (IBAction)showFontPicker:(id)sender;
 - (void)showOSDSettings;
+- (void)changeFont:(id)sender;
 
 /* input & codecs */
 - (IBAction)inputSettingChanged:(id)sender;
@@ -209,5 +212,9 @@
 @end
 
 @interface VLCHotkeyChangeWindow : NSWindow
+
+@end
+
+@interface VLCSimplePrefsWindow : NSWindow
 
 @end

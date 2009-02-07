@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: f1b4f3810e4c05982c2a328b9cda4acec28773c3 $
+ * $Id: 1319e056b735576c696f1a48f743a2fb6ba5389b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -1427,6 +1427,8 @@ static int EsOutSend( es_out_t *out, es_out_id_t *es, block_t *p_block )
         p_block->i_pts =
             input_ClockGetTS( p_input, &p_pgrm->clock, p_block->i_pts ) + i_delay;
     }
+
+    p_block->i_rate = p_sys->i_rate;
     if ( p_block->i_rate == INPUT_RATE_DEFAULT &&
          es->fmt.i_codec == VLC_FOURCC( 't', 'e', 'l', 'x' ) )
     {
@@ -1441,8 +1443,6 @@ static int EsOutSend( es_out_t *out, es_out_id_t *es, block_t *p_block )
                                + p_input->i_pts_delay + i_delay;
         }
     }
-
-    p_block->i_rate = p_sys->i_rate;
 
     /* TODO handle mute */
     if( es->p_dec &&

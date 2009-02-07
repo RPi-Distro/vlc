@@ -2,7 +2,7 @@
  * mms.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 72eac8417526bec7ea980b0c59bcbf239f5e7b1c $
+ * $Id: 72c817e1a0f1944f56146dcbb9dd9882c589334d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -221,10 +221,13 @@ void MMSTUClose( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
 
-    vlc_object_kill( p_sys->p_keepalive_thread );
-    if( !p_sys->p_keepalive_thread->b_thread_error )
-        vlc_thread_join( p_sys->p_keepalive_thread );
-    vlc_object_release( p_sys->p_keepalive_thread );
+    if( p_sys->p_keepalive_thread )
+    {
+        vlc_object_kill( p_sys->p_keepalive_thread );
+        if( !p_sys->p_keepalive_thread->b_thread_error )
+            vlc_thread_join( p_sys->p_keepalive_thread );
+        vlc_object_release( p_sys->p_keepalive_thread );
+    }
 
     /* close connection with server */
     MMSClose( p_access );

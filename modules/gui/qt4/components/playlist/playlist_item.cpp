@@ -2,7 +2,7 @@
  * playlist_item.cpp : Manage playlist item
  ****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id$
+ * $Id: 71f3fd04bd479af39088cb4a3ad98c97058bac71 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -64,13 +64,14 @@ void PLItem::init( int _i_id, int _i_input_id, PLItem *parent, PLModel *m, QSett
     {
         if( model->i_depth == DEPTH_SEL )  /* Selector Panel */
         {
+            i_showflags = 0;
             item_col_strings.append( "" );
         }
         else
         {
-            i_showflags = settings->value( "qt-pl-showflags", 38 ).toInt();
+            i_showflags = settings->value( "qt-pl-showflags", COLUMN_DEFAULT ).toInt();
             if( i_showflags < 1)
-                i_showflags = 38; /* reasonable default to show something; */
+                i_showflags = COLUMN_DEFAULT; /* reasonable default to show something; */
             else if ( i_showflags >= COLUMN_END )
                 i_showflags = COLUMN_END - 1; /* show everything */
 
@@ -185,10 +186,10 @@ void PLItem::update( playlist_item_t *p_item, bool iscurrent )
         return;
     }
 
-    assert( parentItem->i_showflags < COLUMN_END );
+    i_showflags = parentItem ? parentItem->i_showflags : i_showflags;
 
     /* Meta: ID */
-    if( parentItem->i_showflags & COLUMN_NUMBER )
+    if( i_showflags & COLUMN_NUMBER )
     {
         QModelIndex idx = model->index( this, 0 );
         item_col_strings.append( QString::number( idx.row() + 1 ) );
@@ -196,7 +197,7 @@ void PLItem::update( playlist_item_t *p_item, bool iscurrent )
     /* Other meta informations */
     for( uint32_t i_index=2; i_index < COLUMN_END; i_index <<= 1 )
     {
-        if( parentItem->i_showflags & i_index )
+        if( i_showflags & i_index )
         {
             char *psz = psz_column_meta( p_item->p_input, i_index );
             item_col_strings.append( qfu( psz ) );
@@ -204,3 +205,4 @@ void PLItem::update( playlist_item_t *p_item, bool iscurrent )
         }
     }
 }
+
