@@ -1,3 +1,18 @@
+vlc (0.8.6.h-5) unstable; urgency=high
+
+  * Acknowledge NMU by Nico Golde. Thanks.
+  * Fix buffer overflow in CUE demuxer (Closes: #504639) 
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 05 Nov 2008 22:02:06 +0100
+
+vlc (0.8.6.h-4.1) unstable; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * Fix integer overflows that could possibly lead to arbitrary
+    code execution (CVE-2008-4686.diff; Closes: #503118).
+
+ -- Nico Golde <nion@debian.org>  Mon, 03 Nov 2008 14:41:58 +0100
+
 vlc (0.8.6.h-4) unstable; urgency=high
 
   * Security: Fix integer overflow in mms module
