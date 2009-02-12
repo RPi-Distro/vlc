@@ -1,3 +1,11 @@
+vlc (0.8.6.h-4+lenny2) testing-security; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * Fix buffer overflow in CUE demuxer
+    (No CVE id yet; Closes: #504639).
+
+ -- Nico Golde <nion@debian.org>  Thu, 06 Nov 2008 00:32:12 +0100
+
 vlc (0.8.6.h-4+lenny1) testing-security; urgency=high
 
   * Non-maintainer upload by the Security Team.
