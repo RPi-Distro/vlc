@@ -1,3 +1,18 @@
+vlc (0.9.8a-1ubuntu3) jaunty; urgency=low
+
+  [ Andreas Wenning ]
+  * Remove arts from dependencies. (LP: #320915)
+    - debian/control:
+      - Remove libarts1-dev from build depends
+      - Don't build package vlc-plugin-arts
+      - Remove all notions of vlc-plugin-arts from packages descriptions
+    - debian/rules:
+      - Remove --enable-arts from confflags
+    - Delete debian/vlc-plugin-arts.install
+    - Delete debian/vlc-plugin-arts.links
+
+ -- Mario Limonciello <mario_limonciello@dell.com>  Thu, 12 Feb 2009 14:58:45 -0600
+
 vlc (0.9.8a-1ubuntu2) jaunty; urgency=low
 
   * no change rebuild to pick up new libx264, LP: #325720

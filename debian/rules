@@ -44,7 +44,6 @@ confflags += \
 	--enable-sdl \
 	--enable-esd \
 	--enable-mad \
-	--enable-arts \
 	--enable-alsa \
 	--enable-jack \
         --enable-pulse \

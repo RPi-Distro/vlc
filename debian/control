@@ -18,7 +18,6 @@ Build-Depends: debhelper (>= 6),
                libxul-dev,
                liba52-0.7.4-dev,
                libaa1-dev,
-               libarts1-dev (>= 1.4.2),
                libasound2-dev (>= 0.9.0beta10a) [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libass-dev (>= 0.9.5-2),
                libaudiofile-dev,
@@ -121,10 +120,9 @@ Description: multimedia player and streamer
  VLC has support for on-the-fly transcoding of audio and video formats, either
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added
- by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl,
- vlc-plugin-arts) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
- vlc-plugin-svgalib). There is also a web browser plugin in the 
- mozilla-plugin-vlc package.
+ by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl) or
+ video plugins (vlc-plugin-sdl, vlc-plugin-ggi, vlc-plugin-svgalib). There is
+ also a web browser plugin in the mozilla-plugin-vlc package.
 
 Package: vlc-dbg
 Section: graphics
@@ -165,9 +163,9 @@ Description: multimedia player and streamer (without X support)
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added
  by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl,
- vlc-plugin-arts, vlc-plugin-jack) or video plugins (vlc-plugin-sdl, 
- vlc-plugin-ggi, vlc-plugin-svgalib). There is also a web browser plugin in 
- the mozilla-plugin-vlc package.
+ vlc-plugin-jack) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
+ vlc-plugin-svgalib). There is also a web browser plugin in the
+ mozilla-plugin-vlc package.
  .
  This package contains a version of VLC that does not require X and that is
  thus suitable for headless servers.
@@ -260,18 +258,6 @@ Description: GGI video output plugin for VLC
  This is a GGI plugin for the VLC media player.  To activate it, use
  the `--vout ggi' flag or select the `ggi' video output plugin from the
  preferences menu.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
-Package: vlc-plugin-arts
-Architecture: any
-Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
-Description: aRts audio output plugin for VLC
- This plugin adds support for the aRts Sound System to the VLC media
- player. To activate it, use the `--aout arts' flag or select the `arts'
- audio output plugin from the preferences menu.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
