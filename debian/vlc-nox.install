@@ -4,7 +4,6 @@ usr/bin/rvlc
 usr/bin/vlc
 usr/bin/vlc-wrapper
 usr/lib/vlc/access/libaccess_directory_plugin.so
-usr/lib/vlc/access/libaccess_dv_plugin.so
 usr/lib/vlc/access/libaccess_fake_plugin.so
 usr/lib/vlc/access/libaccess_file_plugin.so
 usr/lib/vlc/access/libaccess_ftp_plugin.so

@@ -100,13 +100,14 @@ confflags += \
 	--enable-libass \
 	--enable-libdca \
 	--enable-realrtsp \
+	--disable-dv \
 	$(NULL)
 
 #	--enable-dts \
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
-confflags += --enable-alsa --enable-dv --enable-v4l --enable-v4l2 --enable-pvr
+confflags += --enable-alsa --enable-v4l --enable-v4l2 --enable-pvr
 endif
 
 # svgalib is only for x86 and x86-64 on Linux
