@@ -1,16 +1,16 @@
 /*****************************************************************************
  * embeddedwindow.h: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: f1b5d2d8d6396dcb0d9b93fbb0e90315edb50a3d $
+ * Copyright (C) 2005-2007 the VideoLAN team
+ * $Id$
  *
- * Authors: Benjamin Pracht <bigben at videolan dot org> 
+ * Authors: Benjamin Pracht <bigben at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -41,20 +41,28 @@
     NSImage * o_img_play_pressed;
     NSImage * o_img_pause;
     NSImage * o_img_pause_pressed;
-    
-    NSRect o_saved_frame;
 
     VLCWindow       * o_fullscreen_window;
+    NSViewAnimation * o_fullscreen_anim1;
+    NSViewAnimation * o_fullscreen_anim2;
     NSView          * o_temp_view;
     /* set to yes if we are fullscreen and all animations are over */
     BOOL              b_fullscreen;
     NSRecursiveLock * o_animation_lock;
+
+    BOOL              b_window_is_invisible;
+
+    NSSize videoRatio;
+    int originalLevel;
 }
 
-- (void)setTime:(NSString *)o_arg_ime position:(float)f_position;
-- (void)playStatusUpdated:(int)i_status;
-- (void)setSeekable:(BOOL)b_seekable;
-- (void)setFullscreen:(BOOL)b_fullscreen_state;
+- (void)controlTintChanged;
+
+- (void)setTime: (NSString *)o_arg_ime position: (float)f_position;
+- (void)playStatusUpdated: (int)i_status;
+- (void)setSeekable: (BOOL)b_seekable;
+
+- (void)setVideoRatio:(NSSize)ratio;
 
 - (NSView *)mainView;
 

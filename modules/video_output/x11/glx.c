@@ -2,7 +2,7 @@
  * glx.c: GLX OpenGL provider
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 1061b5e0f84f08a366af376f1156c9ff183b11de $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,13 +25,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <errno.h>                                                 /* ENOMEM */
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <errno.h>                                                 /* ENOMEM */
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_interface.h>
+#include <vlc_vout.h>
 
 #ifdef HAVE_SYS_SHM_H
 #   include <sys/shm.h>                                /* shmget(), shmctl() */
@@ -76,7 +80,6 @@ static void SwapBuffers  ( vout_thread_t * );
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int  CheckGLX     ( vlc_object_t *, vlc_bool_t * );
 static int  InitGLX12    ( vout_thread_t * );
 static int  InitGLX13    ( vout_thread_t * );
 static void SwitchContext( vout_thread_t * );
@@ -103,6 +106,10 @@ static void SwitchContext( vout_thread_t * );
     "X11 hardware display to use. By default VLC will " \
     "use the value of the DISPLAY environment variable.")
 
+#define SHM_TEXT N_("Use shared memory")
+#define SHM_LONGTEXT N_( \
+    "Use shared memory to communicate between VLC and the X server.")
+
 #define SCREEN_TEXT N_("Screen for fullscreen mode.")
 #define SCREEN_LONGTEXT N_( \
     "Screen to use in fullscreen mode. For instance " \
@@ -112,23 +119,26 @@ vlc_module_begin();
     set_shortname( "OpenGL(GLX)" );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_description( _("OpenGL(GLX) provider") );
+    set_description( N_("OpenGL(GLX) provider") );
     set_capability( "opengl provider", 50 );
     set_callbacks( CreateOpenGL, DestroyOpenGL );
 
-    add_string( "glx-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, VLC_TRUE );
-    add_integer( "glx-adaptor", -1, NULL, ADAPTOR_TEXT, ADAPTOR_LONGTEXT, VLC_TRUE );
-    add_bool( "glx-altfullscreen", 0, NULL, ALT_FS_TEXT, ALT_FS_LONGTEXT, VLC_TRUE );
+    add_string( "glx-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, true );
+    add_integer( "glx-adaptor", -1, NULL, ADAPTOR_TEXT, ADAPTOR_LONGTEXT, true );
+    add_bool( "glx-altfullscreen", 0, NULL, ALT_FS_TEXT, ALT_FS_LONGTEXT, true );
+#ifdef HAVE_SYS_SHM_H
+    add_bool( "glx-shm", 1, NULL, SHM_TEXT, SHM_LONGTEXT, true );
+#endif
 #ifdef HAVE_XINERAMA
-    add_integer ( "glx-xineramascreen", 0, NULL, SCREEN_TEXT, SCREEN_LONGTEXT, VLC_TRUE );
+    add_integer ( "glx-xineramascreen", 0, NULL, SCREEN_TEXT, SCREEN_LONGTEXT, true );
 #endif
 vlc_module_end();
 
 /*****************************************************************************
  * Exported prototypes
  *****************************************************************************/
-extern int  E_(Activate)   ( vlc_object_t * );
-extern void E_(Deactivate) ( vlc_object_t * );
+extern int  Activate   ( vlc_object_t * );
+extern void Deactivate ( vlc_object_t * );
 
 /*****************************************************************************
  * CreateOpenGL: initialize an OpenGL provider
@@ -136,15 +146,8 @@ extern void E_(Deactivate) ( vlc_object_t * );
 static int CreateOpenGL( vlc_object_t *p_this )
 {
     vout_thread_t *p_vout = (vout_thread_t *)p_this;
-    vlc_bool_t b_glx13;
 
-    if( CheckGLX( p_this, &b_glx13 ) != VLC_SUCCESS )
-    {
-        msg_Err( p_vout, "no GLX support" );
-        return VLC_EGENERIC;
-    }
-
-    if( E_(Activate)( p_this ) != VLC_SUCCESS )
+    if( Activate( p_this ) != VLC_SUCCESS )
     {
         return VLC_EGENERIC;
     }
@@ -152,7 +155,6 @@ static int CreateOpenGL( vlc_object_t *p_this )
     /* Set the function pointer */
     p_vout->pf_init = InitOpenGL;
     p_vout->pf_swap = SwapBuffers;
-    p_vout->p_sys->b_glx13 = b_glx13;
 
     return VLC_SUCCESS;
 }
@@ -171,60 +173,7 @@ static void DestroyOpenGL( vlc_object_t *p_this )
         glXDestroyWindow( p_sys->p_display, p_sys->gwnd );
     }
 
-    E_(Deactivate)( p_this );
-}
-
-/*****************************************************************************
- * OpenDisplay: open and initialize OpenGL device
- *****************************************************************************/
-static int CheckGLX( vlc_object_t *p_this, vlc_bool_t *b_glx13 )
-{
-    Display *p_display = NULL;
-    int i_opcode, i_evt, i_err = 0;
-    int i_maj, i_min = 0;
-
-    /* Open the display */
-    p_display = XOpenDisplay( NULL );
-    if( p_display == NULL )
-    {
-        msg_Err( p_this, "cannot open display" );
-        return VLC_EGENERIC;
-    }
-
-    /* Check for GLX extension */
-    if( !XQueryExtension( p_display, "GLX", &i_opcode, &i_evt, &i_err ) )
-    {
-        msg_Err( p_this, "GLX extension not supported" );
-        XCloseDisplay( p_display );
-        return VLC_EGENERIC;
-    }
-    if( !glXQueryExtension( p_display, &i_err, &i_evt ) )
-    {
-        msg_Err( p_this, "glXQueryExtension failed" );
-        XCloseDisplay( p_display );
-        return VLC_EGENERIC;
-    }
-
-    /* Check GLX version */
-    if (!glXQueryVersion( p_display, &i_maj, &i_min ) )
-    {
-        msg_Err( p_this, "glXQueryVersion failed" );
-        XCloseDisplay( p_display );
-        return VLC_EGENERIC;
-    }
-    if( i_maj <= 0 || ((i_maj == 1) && (i_min < 3)) )
-    {
-        *b_glx13 = VLC_FALSE;
-        msg_Dbg( p_this, "using GLX 1.2 API" );
-    }
-    else
-    {
-        *b_glx13 = VLC_TRUE;
-        msg_Dbg( p_this, "using GLX 1.3 API" );
-    }
-
-    XCloseDisplay( p_display );
-    return VLC_SUCCESS;
+    Deactivate( p_this );
 }
 
 /*****************************************************************************

@@ -2,7 +2,7 @@
  * sdl_image.c: sdl decoder module making use of libsdl_image.
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: f6784f374c29a96e11788d1a6790401c014b5ff1 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -24,8 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_vout.h>
 
 #include SDL_IMAGE_INCLUDE_FILE
 
@@ -51,7 +57,8 @@ static picture_t *DecodeBlock  ( decoder_t *, block_t ** );
 vlc_module_begin();
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_description( _("SDL_image video decoder") );
+    set_shortname( N_("SDL Image decoder"));
+    set_description( N_("SDL_image video decoder") );
     set_capability( "decoder", 60 );
     set_callbacks( OpenDecoder, CloseDecoder );
     add_shortcut( "sdl_image" );
@@ -60,7 +67,7 @@ vlc_module_end();
 static const struct supported_fmt_t
 {
     vlc_fourcc_t i_fourcc;
-    char *psz_sdl_type;
+    const char *psz_sdl_type;
 } p_supported_fmt[] =
 {
     { VLC_FOURCC('t','g','a',' '), "TGA" },
@@ -101,10 +108,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
     p_sys->psz_sdl_type = p_supported_fmt[i].psz_sdl_type;
 
     /* Set output properties - this is a decoy and isn't used anywhere */
@@ -179,7 +183,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             uint8_t r, g, b;
             for ( i = 0; i < p_surface->h; i++ )
             {
-                p_src = p_surface->pixels + i * p_surface->pitch;
+                p_src = (uint8_t*)p_surface->pixels + i * p_surface->pitch;
                 p_dst = p_pic->p[0].p_pixels + i * p_pic->p[0].i_pitch;
                 for ( j = 0; j < p_surface->w; j++ )
                 {
@@ -202,7 +206,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
             for ( i = 0; i < p_surface->h; i++ )
             {
-                p_dec->p_vlc->pf_memcpy( p_dst, p_src, i_pitch );
+                vlc_memcpy( p_dst, p_src, i_pitch );
                 p_src += p_surface->pitch;
                 p_dst += p_pic->p[0].i_pitch;
             }
@@ -215,7 +219,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             uint8_t r, g, b;
             for ( i = 0; i < p_surface->h; i++ )
             {
-                p_src = p_surface->pixels + i * p_surface->pitch;
+                p_src = (uint8_t*)p_surface->pixels + i * p_surface->pitch;
                 p_dst = p_pic->p[0].p_pixels + i * p_pic->p[0].i_pitch;
                 for ( j = 0; j < p_surface->w; j++ )
                 {
@@ -236,7 +240,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             uint8_t r, g, b, a;
             for ( i = 0; i < p_surface->h; i++ )
             {
-                p_src = p_surface->pixels + i * p_surface->pitch;
+                p_src = (uint8_t*)p_surface->pixels + i * p_surface->pitch;
                 p_dst = p_pic->p[0].p_pixels + i * p_pic->p[0].i_pitch;
                 for ( j = 0; j < p_surface->w; j++ )
                 {

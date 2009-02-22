@@ -2,7 +2,7 @@
  * per_pixel_eqn.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 3a49e823f3e984591cf8f5091d2f44220772d6f2 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -21,8 +21,6 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
-
 
 #include <stdio.h>
 #include <string.h>
@@ -54,7 +52,7 @@ extern int mesh_j;
 
 
 /* Evaluates a per pixel equation */
-inline void evalPerPixelEqn(per_pixel_eqn_t * per_pixel_eqn) {
+void evalPerPixelEqn(per_pixel_eqn_t * per_pixel_eqn) {
 
   double ** param_matrix = NULL;
   gen_expr_t * eqn_ptr = NULL;
@@ -96,7 +94,7 @@ inline void evalPerPixelEqn(per_pixel_eqn_t * per_pixel_eqn) {
   per_pixel_eqn->param->matrix_flag = 1; 
 }
 
-inline void evalPerPixelEqns() {
+void evalPerPixelEqns() {
 
   /* Evaluate all per pixel equations using splay traversal */
   splay_traverse(evalPerPixelEqn, active_preset->per_pixel_eqn_tree);
@@ -213,13 +211,7 @@ void free_per_pixel_eqn(per_pixel_eqn_t * per_pixel_eqn) {
 	return;
 }
 
-inline int isPerPixelEqn(int op) {
-    
-  return active_preset->per_pixel_flag[op];
-
-}
-
-inline int resetPerPixelEqnFlags(preset_t * preset) {
+static inline int resetPerPixelEqnFlags(preset_t * preset) {
   int i;
 
   for (i = 0; i < NUM_OPS;i++)

@@ -2,7 +2,7 @@
  * messages.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 6e6795067b738dfbfdedf4e5f3c40961da7081e1 $
+ * $Id: c5338a0726c43d292dea0ad3e1f948f5e0286a75 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,11 +25,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                            /* strerror() */
-#include <stdio.h>
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 #include "wince.h"
 
@@ -65,10 +66,10 @@ Messages::Messages( intf_thread_t *p_intf, CBaseWindow *p_parent,
 }
 
 /***********************************************************************
-FUNCTION: 
+FUNCTION:
   WndProc
 
-PURPOSE: 
+PURPOSE:
   Processes messages sent to the main window.
 ***********************************************************************/
 LRESULT Messages::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
@@ -93,7 +94,7 @@ LRESULT Messages::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
                                   WS_VISIBLE | WS_CHILD | LVS_REPORT |
                                   LVS_SHOWSELALWAYS | WS_VSCROLL | WS_HSCROLL |
                                   WS_BORDER | LVS_NOCOLUMNHEADER, 0, 0, 0, 0,
-                                  hwnd, NULL, hInst, NULL );            
+                                  hwnd, NULL, hInst, NULL );
         ListView_SetExtendedListViewStyle( hListView, LVS_EX_FULLROWSELECT );
 
         LVCOLUMN lv;
@@ -119,7 +120,7 @@ LRESULT Messages::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
         break;
 
     case WM_SETFOCUS:
-        SHSipPreference( hwnd, SIP_DOWN ); 
+        SHSipPreference( hwnd, SIP_DOWN );
         SHFullScreen( hwnd, SHFS_HIDESIPBUTTON );
         break;
 
@@ -142,15 +143,15 @@ LRESULT Messages::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
             ListView_DeleteAllItems( hListView );
             break;
 
-        case IDSAVEAS:  
+        case IDSAVEAS:
             memset( &(ofn), 0, sizeof(ofn) );
             ofn.lStructSize = sizeof(ofn);
             ofn.hwndOwner = hwnd;
             ofn.lpstrFile = _T("");
-            ofn.nMaxFile = NMAXFILE;    
+            ofn.nMaxFile = NMAXFILE;
             ofn.lpstrFilter = _T("Text (*.txt)\0*.txt\0");
             ofn.lpstrTitle = _T("Save File As");
-            ofn.Flags = OFN_HIDEREADONLY; 
+            ofn.Flags = OFN_HIDEREADONLY;
             ofn.lpstrDefExt = _T("txt");
 
             if( GetSaveFileName( (LPOPENFILENAME)&ofn ) )
@@ -209,19 +210,19 @@ void Messages::UpdateLog()
             {
             case VLC_MSG_ERR:
             case VLC_MSG_INFO:
-                if( p_intf->p_libvlc->i_verbose < 0 ) continue;
+                if( p_intf->p_libvlc_global->i_verbose < 0 ) continue;
                 break;
             case VLC_MSG_WARN:
-                if( p_intf->p_libvlc->i_verbose < 1 ) continue;
+                if( p_intf->p_libvlc_global->i_verbose < 1 ) continue;
                 break;
             case VLC_MSG_DBG:
-                if( p_intf->p_libvlc->i_verbose < 2 ) continue;
+                if( p_intf->p_libvlc_global->i_verbose < 2 ) continue;
                 break;
             }
 
             /* Append all messages to log window */
             debug = p_sub->p_msg[i_start].psz_module;
-        
+ 
             switch( p_sub->p_msg[i_start].i_type )
             {
             case VLC_MSG_INFO: debug += ": "; break;

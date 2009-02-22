@@ -1,15 +1,7 @@
-001_am_maintainer_mode.diff
-010_iceape.diff
-050_bootstrap.diff
+052_as-needed.diff
 101_certificates_paths.diff
 102_dejavu_font.diff
-103_kfreebsd.diff
 104_notify.diff
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
-401-CVE-2008-2430.diff
-405-CVE-2008-3732.diff
-406-live555-crash.diff
-407-mms-overflow.diff
-408-CVE-2008-4686.diff
-409-cue-overflow.diff
+401_detect_xinerama_fullscreen.diff

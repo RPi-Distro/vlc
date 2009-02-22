@@ -2,9 +2,9 @@
  * cmd_dvd.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f2d3472364a093dcf91cdfb6fa216035dcf8c69a $
+ * $Id$
  *
- * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
+ * Authors: Olivier TeuliÃ¨re <ipkiss@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,7 +22,7 @@
  *****************************************************************************/
 
 #include "cmd_dvd.hpp"
-
+#include <vlc_input.h>
 
 void CmdDvdNextTitle::execute()
 {
@@ -32,7 +32,7 @@ void CmdDvdNextTitle::execute()
     if( p_input )
     {
         vlc_value_t val;
-        val.b_bool = VLC_TRUE;
+        val.b_bool = true;
         var_Set( p_input, "next-title", val );
         vlc_object_release( p_input );
     }
@@ -47,7 +47,7 @@ void CmdDvdPreviousTitle::execute()
     if( p_input )
     {
         vlc_value_t val;
-        val.b_bool = VLC_TRUE;
+        val.b_bool = true;
         var_Set( p_input, "prev-title", val );
         vlc_object_release( p_input );
     }
@@ -62,7 +62,7 @@ void CmdDvdNextChapter::execute()
     if( p_input )
     {
         vlc_value_t val;
-        val.b_bool = VLC_TRUE;
+        val.b_bool = true;
         var_Set( p_input, "next-chapter", val );
         vlc_object_release( p_input );
     }
@@ -77,7 +77,7 @@ void CmdDvdPreviousChapter::execute()
     if( p_input )
     {
         vlc_value_t val;
-        val.b_bool = VLC_TRUE;
+        val.b_bool = true;
         var_Set( p_input, "prev-chapter", val );
         vlc_object_release( p_input );
     }

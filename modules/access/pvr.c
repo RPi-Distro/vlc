@@ -2,7 +2,7 @@
  * pvr.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 24ba512812556a21fdbf2b68bfd50435f5316c50 $
+ * $Id$
  *
  * Authors: Eric Petit <titer@videolan.org>
  *          Paul Corke <paulc@datatote.co.uk>
@@ -25,10 +25,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <stdlib.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_access.h>
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -96,8 +100,7 @@ static void Close( vlc_object_t * );
 #define BITRATE_PEAK_TEXT N_( "Bitrate peak" )
 #define BITRATE_PEAK_LONGTEXT N_( "Peak bitrate in VBR mode." )
 
-/// \bug extra parenthesis
-#define BITRATE_MODE_TEXT N_( "Bitrate mode)" )
+#define BITRATE_MODE_TEXT N_( "Bitrate mode" )
 #define BITRATE_MODE_LONGTEXT N_( "Bitrate mode to use (VBR or CBR)." )
 
 #define BITMASK_TEXT N_( "Audio bitmask" )
@@ -111,56 +114,56 @@ static void Close( vlc_object_t * );
 #define CHAN_LONGTEXT N_( "Channel of the card to use (Usually, 0 = tuner, " \
     "1 = composite, 2 = svideo)" )
 
-static int i_norm_list[] =
+static const int i_norm_list[] =
     { V4L2_STD_UNKNOWN, V4L2_STD_SECAM, V4L2_STD_PAL, V4L2_STD_NTSC };
-static const char *psz_norm_list_text[] =
+static const char *const psz_norm_list_text[] =
     { N_("Automatic"), N_("SECAM"), N_("PAL"),  N_("NTSC") };
 
-static int i_bitrates[] = { 0, 1 };
-static const char *psz_bitrates_list_text[] = { N_("vbr"), N_("cbr") };
+static const int i_bitrates[] = { 0, 1 };
+static const char *const psz_bitrates_list_text[] = { N_("vbr"), N_("cbr") };
 
-static int pi_radio_range[2] = { 65000, 108000 };
+static const int pi_radio_range[2] = { 65000, 108000 };
 
 vlc_module_begin();
-    set_shortname( _("PVR") );
-    set_description( _("IVTV MPEG Encoding cards input") );
+    set_shortname( N_("PVR") );
+    set_description( N_("IVTV MPEG Encoding cards input") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACCESS );
-    set_capability( "access2", 0 );
+    set_capability( "access", 0 );
     add_shortcut( "pvr" );
 
     add_integer( "pvr-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, VLC_TRUE );
+                 CACHING_LONGTEXT, true );
     add_string( "pvr-device", "/dev/video0", NULL, DEVICE_TEXT,
-                 DEVICE_LONGTEXT, VLC_FALSE );
+                 DEVICE_LONGTEXT, false );
     add_string( "pvr-radio-device", "/dev/radio0", NULL, RADIO_DEVICE_TEXT,
-                 RADIO_DEVICE_LONGTEXT, VLC_FALSE );
+                 RADIO_DEVICE_LONGTEXT, false );
     add_integer( "pvr-norm", V4L2_STD_UNKNOWN , NULL, NORM_TEXT,
-                 NORM_LONGTEXT, VLC_FALSE );
-       change_integer_list( i_norm_list, psz_norm_list_text, 0 );
-    add_integer( "pvr-width", -1, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, VLC_TRUE );
+                 NORM_LONGTEXT, false );
+       change_integer_list( i_norm_list, psz_norm_list_text, NULL );
+    add_integer( "pvr-width", -1, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, true );
     add_integer( "pvr-height", -1, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT,
-                 VLC_TRUE );
+                 true );
     add_integer( "pvr-frequency", -1, NULL, FREQUENCY_TEXT, FREQUENCY_LONGTEXT,
-                 VLC_FALSE );
+                 false );
     add_integer( "pvr-framerate", -1, NULL, FRAMERATE_TEXT, FRAMERATE_LONGTEXT,
-                 VLC_TRUE );
+                 true );
     add_integer( "pvr-keyint", -1, NULL, KEYINT_TEXT, KEYINT_LONGTEXT,
-                 VLC_TRUE );
+                 true );
     add_integer( "pvr-bframes", -1, NULL, FRAMERATE_TEXT, FRAMERATE_LONGTEXT,
-                 VLC_TRUE );
+                 true );
     add_integer( "pvr-bitrate", -1, NULL, BITRATE_TEXT, BITRATE_LONGTEXT,
-                 VLC_FALSE );
+                 false );
     add_integer( "pvr-bitrate-peak", -1, NULL, BITRATE_PEAK_TEXT,
-                 BITRATE_PEAK_LONGTEXT, VLC_TRUE );
+                 BITRATE_PEAK_LONGTEXT, true );
     add_integer( "pvr-bitrate-mode", -1, NULL, BITRATE_MODE_TEXT,
-                 BITRATE_MODE_LONGTEXT, VLC_TRUE );
-        change_integer_list( i_bitrates, psz_bitrates_list_text, 0 );
+                 BITRATE_MODE_LONGTEXT, true );
+        change_integer_list( i_bitrates, psz_bitrates_list_text, NULL );
     add_integer( "pvr-audio-bitmask", -1, NULL, BITMASK_TEXT,
-                 BITMASK_LONGTEXT, VLC_TRUE );
+                 BITMASK_LONGTEXT, true );
     add_integer( "pvr-audio-volume", -1, NULL, VOLUME_TEXT,
-                 VOLUME_LONGTEXT, VLC_TRUE );
-    add_integer( "pvr-channel", -1, NULL, CHAN_TEXT, CHAN_LONGTEXT, VLC_TRUE );
+                 VOLUME_LONGTEXT, true );
+    add_integer( "pvr-channel", -1, NULL, CHAN_TEXT, CHAN_LONGTEXT, true );
 
     set_callbacks( Open, Close );
 vlc_module_end();
@@ -168,7 +171,7 @@ vlc_module_end();
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
-static int Read   ( access_t *, uint8_t *, int );
+static ssize_t Read   ( access_t *, uint8_t *, size_t );
 static int Control( access_t *, int, va_list );
 
 /* ivtv specific ioctls */
@@ -220,7 +223,7 @@ struct access_sys_t
     int i_volume;
 
     /* driver version */
-    vlc_bool_t b_v4l2_api;
+    bool b_v4l2_api;
 };
 
 /*****************************************************************************
@@ -558,7 +561,7 @@ static int Open( vlc_object_t * p_this )
     p_access->info.i_update = 0;
     p_access->info.i_size = 0;
     p_access->info.i_pos = 0;
-    p_access->info.b_eof = VLC_FALSE;
+    p_access->info.b_eof = false;
     p_access->info.i_title = 0;
     p_access->info.i_seekpoint = 0;
 
@@ -824,8 +827,7 @@ static int Open( vlc_object_t * p_this )
 
     if( psz_device )
     {
-        if( p_sys->psz_videodev )
-            free( p_sys->psz_videodev );
+        free( p_sys->psz_videodev );
         p_sys->psz_videodev = psz_device;
     }
 
@@ -833,7 +835,7 @@ static int Open( vlc_object_t * p_this )
     p_sys->i_fd = open( p_sys->psz_videodev, O_RDWR );
     if( p_sys->i_fd < 0 )
     {
-        msg_Err( p_access, "Cannot open device (%s).", strerror( errno ) );
+        msg_Err( p_access, "Cannot open device (%m)." );
         Close( VLC_OBJECT(p_access) );
         return VLC_EGENERIC;
     }
@@ -843,25 +845,29 @@ static int Open( vlc_object_t * p_this )
     result = ioctl( p_sys->i_fd, VIDIOC_QUERYCAP, &device_capability );
     if( result < 0 )
     {
-        msg_Err( p_access, "unknown ivtv driver version in use" );
+        msg_Err( p_access, "unknown ivtv/pvr driver version in use" );
         Close( VLC_OBJECT(p_access) );
         return VLC_EGENERIC;
     }
 
-    msg_Dbg( p_access, "ivtv driver version %02x.%02x.%02x",
+    msg_Dbg( p_access, "%s driver (%s on %s) version %02x.%02x.%02x",
+              device_capability.driver,
+              device_capability.card,
+              device_capability.bus_info,
             ( device_capability.version >> 16 ) & 0xff,
             ( device_capability.version >>  8 ) & 0xff,
             ( device_capability.version       ) & 0xff);
 
-    if ( device_capability.version >= 0x000800 )
+    if ( strncmp( (char *) device_capability.driver, "ivtv", 4 )
+           || device_capability.version >= 0x000800 )
     {
         /* Drivers > 0.8.0 use v4l2 API instead of IVTV ioctls */
         msg_Dbg( p_access, "this driver uses the v4l2 API" );
-        p_sys->b_v4l2_api = VLC_TRUE;
+        p_sys->b_v4l2_api = true;
     }
     else
     {
-        p_sys->b_v4l2_api = VLC_FALSE;
+        p_sys->b_v4l2_api = false;
     }
 
     /* set the input */
@@ -938,8 +944,7 @@ static int Open( vlc_object_t * p_this )
             p_sys->i_radio_fd = open( p_sys->psz_radiodev, O_RDWR );
             if( p_sys->i_radio_fd < 0 )
             {
-                msg_Err( p_access, "Cannot open radio device (%s).",
-                         strerror( errno ) );
+                msg_Err( p_access, "Cannot open radio device (%m)." );
                 Close( VLC_OBJECT(p_access) );
                 return VLC_EGENERIC;
             }
@@ -956,8 +961,7 @@ static int Open( vlc_object_t * p_this )
         result = ioctl( i_fd, VIDIOC_G_TUNER, &vt );
         if ( result < 0 )
         {
-            msg_Warn( p_access, "Failed to read tuner information (%s).",
-                      strerror( errno ) );
+            msg_Warn( p_access, "Failed to read tuner information (%m)." );
         }
         else
         {
@@ -969,8 +973,7 @@ static int Open( vlc_object_t * p_this )
             result = ioctl( i_fd, VIDIOC_G_FREQUENCY, &vf );
             if ( result < 0 )
             {
-                msg_Warn( p_access, "Failed to read tuner frequency (%s).",
-                          strerror( errno ) );
+                msg_Warn( p_access, "Failed to read tuner frequency (%m)." );
             }
             else
             {
@@ -982,8 +985,7 @@ static int Open( vlc_object_t * p_this )
                 result = ioctl( i_fd, VIDIOC_S_FREQUENCY, &vf );
                 if( result < 0 )
                 {
-                    msg_Warn( p_access, "Failed to set tuner frequency (%s).",
-                              strerror( errno ) );
+                    msg_Warn( p_access, "Failed to set tuner frequency (%m)." );
                 }
                 else
                 {
@@ -1025,7 +1027,6 @@ static int Open( vlc_object_t * p_this )
             result = ConfigureV4L2( p_access );
             if( result != VLC_SUCCESS )
             {
-                msg_Err( p_access, "Failed configuring device" );
                 Close( VLC_OBJECT(p_access) );
                 return result;
             }
@@ -1056,22 +1057,19 @@ static void Close( vlc_object_t * p_this )
     access_t *p_access = (access_t*) p_this;
     access_sys_t *p_sys = (access_sys_t *) p_access->p_sys;
 
-    msg_Err( p_this, "Called Close()" );
     if ( p_sys->i_fd != -1 )
         close( p_sys->i_fd );
     if ( p_sys->i_radio_fd != -1 )
         close( p_sys->i_radio_fd );
-    if ( p_sys->psz_videodev )
-        free( p_sys->psz_videodev );
-    if ( p_sys->psz_radiodev )
-        free( p_sys->psz_radiodev );
+    free( p_sys->psz_videodev );
+    free( p_sys->psz_radiodev );
     free( p_sys );
 }
 
 /*****************************************************************************
  * Read
  *****************************************************************************/
-static int Read( access_t * p_access, uint8_t * p_buffer, int i_len )
+static ssize_t Read( access_t * p_access, uint8_t * p_buffer, size_t i_len )
 {
     access_sys_t *p_sys = (access_sys_t *) p_access->p_sys;
     struct pollfd ufd;
@@ -1085,7 +1083,7 @@ static int Read( access_t * p_access, uint8_t * p_buffer, int i_len )
 
     do
     {
-        if( p_access->b_die )
+        if( !vlc_object_alive (p_access) )
             return 0;
 
         ufd.revents = 0;
@@ -1094,14 +1092,14 @@ static int Read( access_t * p_access, uint8_t * p_buffer, int i_len )
 
     if( i_ret < 0 )
     {
-        msg_Err( p_access, "Select error (%s).", strerror( errno ) );
+        msg_Err( p_access, "Polling error (%m)." );
         return -1;
     }
 
     i_ret = read( p_sys->i_fd, p_buffer, i_len );
     if( i_ret == 0 )
     {
-        p_access->info.b_eof = VLC_TRUE;
+        p_access->info.b_eof = true;
     }
     else if( i_ret > 0 )
     {
@@ -1116,7 +1114,7 @@ static int Read( access_t * p_access, uint8_t * p_buffer, int i_len )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    vlc_bool_t   *pb_bool;
+    bool   *pb_bool;
     int          *pi_int;
     int64_t      *pi_64;
 
@@ -1125,16 +1123,16 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_FALSE;
+            pb_bool = (bool*)va_arg( args, bool* );
+            *pb_bool = false;
             break;
         case ACCESS_CAN_PAUSE:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_FALSE;
+            pb_bool = (bool*)va_arg( args, bool* );
+            *pb_bool = false;
             break;
         case ACCESS_CAN_CONTROL_PACE:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_FALSE;
+            pb_bool = (bool*)va_arg( args, bool* );
+            *pb_bool = false;
             break;
 
         /* */
@@ -1157,6 +1155,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         case ACCESS_SET_TITLE:
         case ACCESS_SET_SEEKPOINT:
         case ACCESS_SET_PRIVATE_ID_STATE:
+        case ACCESS_GET_CONTENT_TYPE:
             return VLC_EGENERIC;
 
         default:

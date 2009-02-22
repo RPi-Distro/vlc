@@ -2,7 +2,7 @@
  * mixer.c : audio output mixing operations
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 0f939c787123fdebafb9f0ec28289610cf67f585 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -24,18 +24,18 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                            /* calloc(), malloc(), free() */
-#include <string.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/vlc.h>
+#include <stddef.h>
+#include <vlc_common.h>
 
 #ifdef HAVE_ALLOCA_H
 #   include <alloca.h>
 #endif
-
-#include "audio_output.h"
+#include <vlc_aout.h>
 #include "aout_internal.h"
-
 /*****************************************************************************
  * aout_MixerNew: prepare a mixer plug-in
  *****************************************************************************
@@ -80,7 +80,7 @@ static int MixBuffer( aout_instance_t * p_aout )
     if ( p_aout->mixer.b_error )
     {
         /* Free all incoming buffers. */
-        vlc_mutex_lock( &p_aout->input_fifos_lock );
+        aout_lock_input_fifos( p_aout );
         for ( i = 0; i < p_aout->i_nb_inputs; i++ )
         {
             aout_input_t * p_input = p_aout->pp_inputs[i];
@@ -93,13 +93,13 @@ static int MixBuffer( aout_instance_t * p_aout )
                 p_buffer = p_next;
             }
         }
-        vlc_mutex_unlock( &p_aout->input_fifos_lock );
+        aout_unlock_input_fifos( p_aout );
         return -1;
     }
 
 
-    vlc_mutex_lock( &p_aout->output_fifo_lock );
-    vlc_mutex_lock( &p_aout->input_fifos_lock );
+    aout_lock_output_fifo( p_aout );
+    aout_lock_input_fifos( p_aout );
 
     /* Retrieve the date of the next buffer. */
     memcpy( &exact_start_date, &p_aout->output.fifo.end_date,
@@ -111,14 +111,14 @@ static int MixBuffer( aout_instance_t * p_aout )
         /* The output is _very_ late. This can only happen if the user
          * pauses the stream (or if the decoder is buggy, which cannot
          * happen :). */
-        msg_Warn( p_aout, "output PTS is out of range ("I64Fd"), clearing out",
+        msg_Warn( p_aout, "output PTS is out of range (%"PRId64"), clearing out",
                   mdate() - start_date );
         aout_FifoSet( p_aout, &p_aout->output.fifo, 0 );
         aout_DateSet( &exact_start_date, 0 );
         start_date = 0;
     }
 
-    vlc_mutex_unlock( &p_aout->output_fifo_lock );
+    aout_unlock_output_fifo( p_aout );
 
     /* See if we have enough data to prepare a new buffer for the audio
      * output. First : start date. */
@@ -136,7 +136,7 @@ static int MixBuffer( aout_instance_t * p_aout )
             p_buffer = p_fifo->p_first;
             while ( p_buffer != NULL && p_buffer->start_date < mdate() )
             {
-                msg_Warn( p_aout, "input PTS is out of range ("I64Fd"), "
+                msg_Warn( p_aout, "input PTS is out of range (%"PRId64"), "
                           "trashing", mdate() - p_buffer->start_date );
                 p_buffer = aout_FifoPop( p_aout, p_fifo );
                 aout_BufferFree( p_buffer );
@@ -164,7 +164,7 @@ static int MixBuffer( aout_instance_t * p_aout )
         if ( i < p_aout->i_nb_inputs )
         {
             /* Interrupted before the end... We can't run. */
-            vlc_mutex_unlock( &p_aout->input_fifos_lock );
+            aout_unlock_input_fifos( p_aout );
             return -1;
         }
     }
@@ -179,7 +179,7 @@ static int MixBuffer( aout_instance_t * p_aout )
         aout_fifo_t * p_fifo = &p_input->fifo;
         aout_buffer_t * p_buffer;
         mtime_t prev_date;
-        vlc_bool_t b_drop_buffers;
+        bool b_drop_buffers;
 
         if ( p_input->b_error )
         {
@@ -199,7 +199,7 @@ static int MixBuffer( aout_instance_t * p_aout )
             /* We authorize a +-1 because rounding errors get compensated
              * regularly. */
             aout_buffer_t * p_next = p_buffer->p_next;
-            msg_Warn( p_aout, "the mixer got a packet in the past ("I64Fd")",
+            msg_Warn( p_aout, "the mixer got a packet in the past (%"PRId64")",
                       start_date - p_buffer->end_date );
             aout_BufferFree( p_buffer );
             if( p_input->p_input_thread )
@@ -232,7 +232,7 @@ static int MixBuffer( aout_instance_t * p_aout )
                 if ( prev_date != p_buffer->start_date )
                 {
                     msg_Warn( p_aout,
-                              "buffer hole, dropping packets ("I64Fd")",
+                              "buffer hole, dropping packets (%"PRId64")",
                               p_buffer->start_date - prev_date );
                     b_drop_buffers = 1;
                     break;
@@ -278,7 +278,7 @@ static int MixBuffer( aout_instance_t * p_aout )
                    (i_nb_bytes < p_aout->mixer.mixer.i_bytes_per_frame
                      + mixer_nb_bytes)) )
             {
-                msg_Warn( p_aout, "mixer start isn't output start ("I64Fd")",
+                msg_Warn( p_aout, "mixer start isn't output start (%"PRId64")",
                           i_nb_bytes - mixer_nb_bytes );
 
                 /* Round to the nearest multiple */
@@ -287,8 +287,10 @@ static int MixBuffer( aout_instance_t * p_aout )
                 if( i_nb_bytes < 0 )
                 {
                     /* Is it really the best way to do it ? */
+                    aout_lock_output_fifo( p_aout );
                     aout_FifoSet( p_aout, &p_aout->output.fifo, 0 );
                     aout_DateSet( &exact_start_date, 0 );
+                    aout_unlock_output_fifo( p_aout );
                     break;
                 }
 
@@ -300,7 +302,7 @@ static int MixBuffer( aout_instance_t * p_aout )
     if ( i < p_aout->i_nb_inputs || i_first_input == p_aout->i_nb_inputs )
     {
         /* Interrupted before the end... We can't run. */
-        vlc_mutex_unlock( &p_aout->input_fifos_lock );
+        aout_unlock_input_fifos( p_aout );
         return -1;
     }
 
@@ -314,8 +316,7 @@ static int MixBuffer( aout_instance_t * p_aout )
                       p_output_buffer );
     if ( p_output_buffer == NULL )
     {
-        msg_Err( p_aout, "out of memory" );
-        vlc_mutex_unlock( &p_aout->input_fifos_lock );
+        aout_unlock_input_fifos( p_aout );
         return -1;
     }
     /* This is again a bit kludgy - for the S/PDIF mixer. */
@@ -331,7 +332,7 @@ static int MixBuffer( aout_instance_t * p_aout )
 
     p_aout->mixer.pf_do_work( p_aout, p_output_buffer );
 
-    vlc_mutex_unlock( &p_aout->input_fifos_lock );
+    aout_unlock_input_fifos( p_aout );
 
     aout_OutputPlay( p_aout, p_output_buffer );
 
@@ -357,7 +358,7 @@ void aout_MixerRun( aout_instance_t * p_aout )
 int aout_MixerMultiplierSet( aout_instance_t * p_aout, float f_multiplier )
 {
     float f_old = p_aout->mixer.f_multiplier;
-    vlc_bool_t b_new_mixer = 0;
+    bool b_new_mixer = 0;
 
     if ( !p_aout->mixer.b_error )
     {

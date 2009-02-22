@@ -2,7 +2,7 @@
  * vlc_block_helper.h: Helper functions for data blocks management.
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 404033cecab2d7b9a38622f1200180900cb8dc2c $
+ * $Id: 679d0e5152a9b335cd2bff18b8ea875187e5bc9c $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -21,23 +21,23 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_BLOCK_HELPER_H
-#define _VLC_BLOCK_HELPER_H 1
+#ifndef VLC_BLOCK_HELPER_H
+#define VLC_BLOCK_HELPER_H 1
+
+#include <vlc_block.h>
 
 typedef struct block_bytestream_t
 {
     block_t             *p_chain;
     block_t             *p_block;
-    int                 i_offset;
+    size_t              i_offset;
 
 } block_bytestream_t;
-
-#define block_BytestreamInit( a ) __block_BytestreamInit( VLC_OBJECT(a) )
 
 /*****************************************************************************
  * block_bytestream_t management
  *****************************************************************************/
-static inline block_bytestream_t __block_BytestreamInit( vlc_object_t *p_obj )
+static inline block_bytestream_t block_BytestreamInit( void )
 {
     block_bytestream_t bytestream;
 
@@ -210,10 +210,10 @@ static inline int block_GetByte( block_bytestream_t *p_bytestream,
 }
 
 static inline int block_WaitBytes( block_bytestream_t *p_bytestream,
-                                   int i_data )
+                                   size_t i_data )
 {
     block_t *p_block;
-    int i_offset, i_copy, i_size;
+    size_t i_offset, i_copy, i_size;
 
     /* Check we have that much data */
     i_offset = p_bytestream->i_offset;
@@ -238,10 +238,10 @@ static inline int block_WaitBytes( block_bytestream_t *p_bytestream,
 }
 
 static inline int block_SkipBytes( block_bytestream_t *p_bytestream,
-                                   int i_data )
+                                   size_t i_data )
 {
     block_t *p_block;
-    int i_offset, i_copy;
+    size_t i_offset, i_copy;
 
     /* Check we have that much data */
     i_offset = p_bytestream->i_offset;
@@ -269,10 +269,10 @@ static inline int block_SkipBytes( block_bytestream_t *p_bytestream,
 }
 
 static inline int block_PeekBytes( block_bytestream_t *p_bytestream,
-                                   uint8_t *p_data, int i_data )
+                                   uint8_t *p_data, size_t i_data )
 {
     block_t *p_block;
-    int i_offset, i_copy, i_size;
+    size_t i_offset, i_copy, i_size;
 
     /* Check we have that much data */
     i_offset = p_bytestream->i_offset;
@@ -319,10 +319,10 @@ static inline int block_PeekBytes( block_bytestream_t *p_bytestream,
 }
 
 static inline int block_GetBytes( block_bytestream_t *p_bytestream,
-                                  uint8_t *p_data, int i_data )
+                                  uint8_t *p_data, size_t i_data )
 {
     block_t *p_block;
-    int i_offset, i_copy, i_size;
+    size_t i_offset, i_copy, i_size;
 
     /* Check we have that much data */
     i_offset = p_bytestream->i_offset;
@@ -373,10 +373,10 @@ static inline int block_GetBytes( block_bytestream_t *p_bytestream,
 }
 
 static inline int block_PeekOffsetBytes( block_bytestream_t *p_bytestream,
-    int i_peek_offset, uint8_t *p_data, int i_data )
+    size_t i_peek_offset, uint8_t *p_data, size_t i_data )
 {
     block_t *p_block;
-    int i_offset, i_copy, i_size;
+    size_t i_offset, i_copy, i_size;
 
     /* Check we have that much data */
     i_offset = p_bytestream->i_offset;
@@ -437,11 +437,12 @@ static inline int block_PeekOffsetBytes( block_bytestream_t *p_bytestream,
 }
 
 static inline int block_FindStartcodeFromOffset(
-    block_bytestream_t *p_bytestream, int *pi_offset,
+    block_bytestream_t *p_bytestream, size_t *pi_offset,
     uint8_t *p_startcode, int i_startcode_length )
 {
     block_t *p_block, *p_block_backup = 0;
-    int i_size, i_offset, i_offset_backup = 0;
+    int i_size = 0;
+    size_t i_offset, i_offset_backup = 0;
     int i_caller_offset_backup = 0, i_match;
 
     /* Find the right place */
@@ -462,7 +463,7 @@ static inline int block_FindStartcodeFromOffset(
     /* Begin the search.
      * We first look for an occurrence of the 1st startcode byte and
      * if found, we do a more thorough check. */
-    i_size = p_block->i_buffer + i_size;
+    i_size += p_block->i_buffer;
     *pi_offset -= i_size;
     i_match = 0;
     for( ; p_block != NULL; p_block = p_block->p_next )

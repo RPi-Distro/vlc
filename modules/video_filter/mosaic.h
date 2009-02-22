@@ -1,8 +1,8 @@
 /*****************************************************************************
  * mosaic.h:
  *****************************************************************************
- * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 81af77c9154eae60a197f955bb427783169f4b20 $
+ * Copyright (C) 2004-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -27,8 +27,12 @@ typedef struct bridged_es_t
     es_format_t fmt;
     picture_t *p_picture;
     picture_t **pp_last;
-    vlc_bool_t b_empty;
+    bool b_empty;
     char *psz_id;
+
+    int i_alpha;
+    int i_x;
+    int i_y;
 } bridged_es_t;
 
 typedef struct bridge_t
@@ -40,19 +44,16 @@ typedef struct bridge_t
 #define GetBridge(a) __GetBridge( VLC_OBJECT(a) )
 static bridge_t *__GetBridge( vlc_object_t *p_object )
 {
-    libvlc_t *p_libvlc = p_object->p_libvlc;
-    bridge_t *p_bridge;
+    vlc_object_t *p_libvlc = VLC_OBJECT( p_object->p_libvlc );
     vlc_value_t val;
 
     if( var_Get( p_libvlc, "mosaic-struct", &val ) != VLC_SUCCESS )
     {
-        p_bridge = NULL;
+        return NULL;
     }
     else
     {
-        p_bridge = val.p_address;
+        return val.p_address;
     }
-
-    return p_bridge;
 }
 

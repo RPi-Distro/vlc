@@ -2,7 +2,7 @@
  * plugin.h:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: f6c3056cb414fd4b675a3b54e8b4ff43be914bdb $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *
@@ -24,9 +24,13 @@
 #ifndef _GALAKTOS_PLUGIN_H_
 #define _GALAKTOS_PLUGIN_H_
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+ #include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_aout.h>
+#include <vlc_vout.h>
 
 #define MAX_BLOCKS 10
 

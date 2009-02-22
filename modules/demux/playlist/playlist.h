@@ -2,7 +2,7 @@
  * playlist.h:  Playlist import module common functions
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 7225366d35a341cb2b9a18925655b6615f183454 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -21,34 +21,61 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-char *E_(ProcessMRL)( char *, char * );
-char *E_(FindPrefix)( demux_t * );
+#include <vlc_input.h>
 
-vlc_bool_t E_(FindItem)( demux_t *, playlist_t *, playlist_item_t **);
+char *ProcessMRL( char *, char * );
+char *FindPrefix( demux_t * );
 
-int E_(Import_Old) ( vlc_object_t * );
-void E_(Close_Old) ( vlc_object_t *);
+int Import_Old ( vlc_object_t * );
 
-int E_(Import_Native) ( vlc_object_t * );
-void E_(Close_Native) ( vlc_object_t * );
+int Import_Native ( vlc_object_t * );
+void Close_Native ( vlc_object_t * );
 
-int E_(Import_M3U) ( vlc_object_t * );
-void E_(Close_M3U) ( vlc_object_t * );
+int Import_M3U ( vlc_object_t * );
+void Close_M3U ( vlc_object_t * );
 
-int E_(Import_PLS) ( vlc_object_t * );
-void E_(Close_PLS) ( vlc_object_t * );
+int Import_PLS ( vlc_object_t * );
+void Close_PLS ( vlc_object_t * );
 
-int E_(Import_B4S) ( vlc_object_t * );
-void E_(Close_B4S) ( vlc_object_t * );
+int Import_B4S ( vlc_object_t * );
+void Close_B4S ( vlc_object_t * );
 
-int E_(Import_DVB) ( vlc_object_t * );
-void E_(Close_DVB) ( vlc_object_t * );
+int Import_DVB ( vlc_object_t * );
+void Close_DVB ( vlc_object_t * );
 
-int E_(Import_podcast) ( vlc_object_t * );
-void E_(Close_podcast) ( vlc_object_t * );
+int Import_podcast ( vlc_object_t * );
+void Close_podcast ( vlc_object_t * );
 
-int E_(Import_xspf) ( vlc_object_t * );
-void E_(Close_xspf) ( vlc_object_t * );
+int Import_xspf ( vlc_object_t * );
+void Close_xspf ( vlc_object_t * );
 
-int E_(Import_Shoutcast) ( vlc_object_t * );
-void E_(Close_Shoutcast) ( vlc_object_t * );
+int Import_Shoutcast ( vlc_object_t * );
+void Close_Shoutcast ( vlc_object_t * );
+
+int Import_ASX ( vlc_object_t * );
+void Close_ASX ( vlc_object_t * );
+
+int Import_SGIMB ( vlc_object_t * );
+void Close_SGIMB ( vlc_object_t * );
+
+int Import_QTL ( vlc_object_t * );
+void Close_QTL ( vlc_object_t * );
+
+int Import_GVP ( vlc_object_t * );
+void Close_GVP ( vlc_object_t * );
+
+int Import_IFO ( vlc_object_t * );
+void Close_IFO ( vlc_object_t * );
+
+int Import_VideoPortal ( vlc_object_t * );
+void Close_VideoPortal ( vlc_object_t * );
+
+int Import_iTML ( vlc_object_t * );
+void Close_iTML ( vlc_object_t * );
+
+#define INIT_PLAYLIST_STUFF \
+    input_thread_t *p_input_thread = (input_thread_t *)vlc_object_find( p_demux, VLC_OBJECT_INPUT, FIND_PARENT ); \
+    input_item_t *p_current_input = input_GetItem( p_input_thread );
+
+#define HANDLE_PLAY_AND_RELEASE \
+    vlc_object_release( p_input_thread );

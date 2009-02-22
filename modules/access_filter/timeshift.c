@@ -2,7 +2,7 @@
  * timeshift.c: access filter implementing timeshifting capabilities
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 3a988f0167e94439a5eb2e69a7d922109c0de0fa $
+ * $Id: b943e90a0bbcbdce2121dbe8541fe28ad46d2733 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,15 +25,24 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 
 #include <errno.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include "charset.h"
+#include <vlc_access.h>
+#include <vlc_charset.h>
+#include <vlc_input.h>
 
 #include <unistd.h>
+
+#ifdef WIN32
+#  include <direct.h>                                        /* _wgetcwd  */
+#endif
 
 /*****************************************************************************
  * Module descriptor
@@ -44,7 +53,7 @@ static void Close( vlc_object_t * );
 #define GRANULARITY_TEXT N_("Timeshift granularity")
 /// \bug [String] typo
 #define GRANULARITY_LONGTEXT N_( "This is the size of the temporary files " \
-  "tha will be used to store the timeshifted streams." )
+  "that will be used to store the timeshifted streams." )
 #define DIR_TEXT N_("Timeshift directory")
 #define DIR_LONGTEXT N_( "Directory used to store the timeshift temporary " \
   "files." )
@@ -53,8 +62,8 @@ static void Close( vlc_object_t * );
   "access declares that it can control pace or pause." )
 
 vlc_module_begin();
-    set_shortname( _("Timeshift") );
-    set_description( _("Timeshift") );
+    set_shortname( N_("Timeshift") );
+    set_description( N_("Timeshift") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACCESS_FILTER );
     set_capability( "access_filter", 0 );
@@ -62,10 +71,11 @@ vlc_module_begin();
     set_callbacks( Open, Close );
 
     add_integer( "timeshift-granularity", 50, NULL, GRANULARITY_TEXT,
-                 GRANULARITY_LONGTEXT, VLC_TRUE );
-    add_directory( "timeshift-dir", 0, 0, DIR_TEXT, DIR_LONGTEXT, VLC_FALSE );
-    add_bool( "timeshift-force", VLC_FALSE, NULL, FORCE_TEXT, FORCE_LONGTEXT,
-              VLC_FALSE );
+                 GRANULARITY_LONGTEXT, true );
+    add_directory( "timeshift-dir", 0, 0, DIR_TEXT, DIR_LONGTEXT, false );
+        change_unsafe();
+    add_bool( "timeshift-force", false, NULL, FORCE_TEXT, FORCE_LONGTEXT,
+              false );
 vlc_module_end();
 
 /*****************************************************************************
@@ -75,7 +85,7 @@ vlc_module_end();
 static int      Seek( access_t *, int64_t );
 static block_t *Block  ( access_t *p_access );
 static int      Control( access_t *, int i_query, va_list args );
-static void     Thread ( access_t *p_access );
+static void*    Thread ( vlc_object_t *p_this );
 static int      WriteBlockToFile( access_t *p_access, block_t *p_block );
 static block_t *ReadBlockFromFile( access_t *p_access );
 static char    *GetTmpFilePath( access_t *p_access );
@@ -95,9 +105,9 @@ struct access_sys_t
 {
     block_fifo_t *p_fifo;
 
-    int  i_files;
-    int  i_file_size;
-    int  i_write_size;
+    unsigned  i_files;
+    unsigned  i_file_size;
+    unsigned  i_write_size;
 
     ts_entry_t *p_read_list;
     ts_entry_t **pp_read_last;
@@ -106,6 +116,8 @@ struct access_sys_t
 
     char *psz_filename_base;
     char *psz_filename;
+
+    int64_t i_data;
 };
 
 /*****************************************************************************
@@ -116,25 +128,24 @@ static int Open( vlc_object_t *p_this )
     access_t *p_access = (access_t*)p_this;
     access_t *p_src = p_access->p_source;
     access_sys_t *p_sys;
-    vlc_bool_t b_bool;
+    bool b_bool;
 
-    var_Create( p_access, "timeshift-force",
-                VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    if( var_GetBool( p_access, "timeshift-force" ) == VLC_TRUE )
+    var_Create( p_access, "timeshift-force", VLC_VAR_BOOL|VLC_VAR_DOINHERIT );
+    if( var_GetBool( p_access, "timeshift-force" ) )
     {
         msg_Dbg( p_access, "Forcing use of timeshift even if access can control pace or pause" );
     }
     else
     {
         /* Only work with not pace controled access */
-        if( access2_Control( p_src, ACCESS_CAN_CONTROL_PACE, &b_bool )
-            || b_bool )
+        if( access_Control( p_src, ACCESS_CAN_CONTROL_PACE, &b_bool ) ||
+            b_bool )
         {
             msg_Dbg( p_src, "ACCESS_CAN_CONTROL_PACE: timeshift useless" );
             return VLC_EGENERIC;
         }
         /* Refuse access that can be paused */
-        if( access2_Control( p_src, ACCESS_CAN_PAUSE, &b_bool ) || b_bool )
+        if( access_Control( p_src, ACCESS_CAN_PAUSE, &b_bool ) || b_bool )
         {
             msg_Dbg( p_src, "ACCESS_CAN_PAUSE: timeshift useless" );
             return VLC_EGENERIC;
@@ -149,11 +160,14 @@ static int Open( vlc_object_t *p_this )
     p_access->info = p_src->info;
 
     p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
+    if( !p_sys )
+        return VLC_ENOMEM;
 
     /* */
-    p_sys->p_fifo = block_FifoNew( p_access );
+    p_sys->p_fifo = block_FifoNew();
     p_sys->i_write_size = 0;
     p_sys->i_files = 0;
+    p_sys->i_data = 0;
 
     p_sys->p_read_list = NULL;
     p_sys->pp_read_last = &p_sys->p_read_list;
@@ -172,8 +186,9 @@ static int Open( vlc_object_t *p_this )
     p_sys->psz_filename = malloc( strlen( p_sys->psz_filename_base ) + 1000 );
 
     if( vlc_thread_create( p_access, "timeshift thread", Thread,
-                           VLC_THREAD_PRIORITY_LOW, VLC_FALSE ) )
+                           VLC_THREAD_PRIORITY_LOW, false ) )
     {
+        Close( p_this );
         msg_Err( p_access, "cannot spawn timeshift access thread" );
         return VLC_EGENERIC;
     }
@@ -189,7 +204,7 @@ static void Close( vlc_object_t *p_this )
     access_t     *p_access = (access_t*)p_this;
     access_sys_t *p_sys = p_access->p_sys;
     ts_entry_t *p_entry;
-    int i;
+    unsigned i;
 
     msg_Dbg( p_access, "timeshift close called" );
     vlc_thread_join( p_access );
@@ -227,72 +242,82 @@ static void Close( vlc_object_t *p_this )
 static block_t *Block( access_t *p_access )
 {
     access_sys_t *p_sys = p_access->p_sys;
-    block_t *p_block;
+    access_t *p_src = p_access->p_source;
+    block_t *p_block = NULL;
 
-    if( p_access->b_die )
+    /* Update info (we probably ought to be time caching that as well) */
+    if( p_src->info.i_update & INPUT_UPDATE_META )
     {
-        p_access->info.b_eof = VLC_TRUE;
-        return NULL;
+        p_src->info.i_update &= ~INPUT_UPDATE_META;
+        p_access->info.i_update |= INPUT_UPDATE_META;
     }
 
-    p_block = block_FifoGet( p_sys->p_fifo );
-    //p_access->info.i_size -= p_block->i_buffer;
-    return p_block;
+    /* Get data from timeshift fifo */
+    if( !p_access->info.b_eof )
+        p_block = block_FifoGet( p_sys->p_fifo );
+
+    if( p_block && !p_block->i_buffer ) /* Used to signal EOF */
+    { block_Release( p_block ); p_block = 0; }
+
+    if( p_block )
+    {
+        p_sys->i_data -= p_block->i_buffer;
+        return p_block;
+    }
+
+    p_access->info.b_eof = p_src->info.b_eof;
+    return NULL;
 }
 
 /*****************************************************************************
  *
  *****************************************************************************/
-static void Thread( access_t *p_access )
+static void* Thread( vlc_object_t* p_this )
 {
+    access_t *p_access = (access_t*)p_this;
     access_sys_t *p_sys = p_access->p_sys;
     access_t     *p_src = p_access->p_source;
-    int i;
+    block_t      *p_block;
 
-    while( !p_access->b_die )
+    while( vlc_object_alive (p_access) )
     {
-        block_t *p_block;
-
         /* Get a new block from the source */
         if( p_src->pf_block )
         {
             p_block = p_src->pf_block( p_src );
-
-            if( p_block == NULL )
-            {
-                if( p_src->info.b_eof ) break;
-                msleep( 1000 );
-                continue;
-            }
         }
         else
         {
+            int i_read;
+
             if( ( p_block = block_New( p_access, 2048 ) ) == NULL ) break;
 
-            p_block->i_buffer =
-                p_src->pf_read( p_src, p_block->p_buffer, 2048 );
-
-            if( p_block->i_buffer < 0 )
+            i_read = p_src->pf_read( p_src, p_block->p_buffer, 2048 );
+            if( i_read <= 0 )
             {
-                block_Release( p_block );
-                if( p_block->i_buffer == 0 ) break;
-                msleep( 1000 );
-                continue;
+              block_Release( p_block );
+              p_block = NULL;
             }
+            else
+                p_block->i_buffer = i_read;
         }
+
+        if( p_block == NULL )
+        {
+          if( p_src->info.b_eof ) break;
+          msleep( 10000 );
+          continue;
+        }
+
+        p_sys->i_data += p_block->i_buffer;
 
         /* Write block */
         if( !p_sys->p_write_list && !p_sys->p_read_list &&
-            p_sys->p_fifo->i_size < TIMESHIFT_FIFO_MAX )
+            block_FifoSize( p_sys->p_fifo ) < TIMESHIFT_FIFO_MAX )
         {
             /* If there isn't too much timeshifted data,
              * write directly to FIFO */
             block_FifoPut( p_sys->p_fifo, p_block );
-
-            //p_access->info.i_size += p_block->i_buffer;
-            //p_access->info.i_update |= INPUT_UPDATE_SIZE;
-
-            /* Nothing else to do */
             continue;
         }
 
@@ -300,25 +325,40 @@ static void Thread( access_t *p_access )
         block_Release( p_block );
 
         /* Read from file to fill up the fifo */
-        while( p_sys->p_fifo->i_size < TIMESHIFT_FIFO_MIN &&
-               !p_access->b_die )
+        while( block_FifoSize( p_sys->p_fifo ) < TIMESHIFT_FIFO_MIN &&
+               vlc_object_alive (p_access) )
         {
             p_block = ReadBlockFromFile( p_access );
             if( !p_block ) break;
+
             block_FifoPut( p_sys->p_fifo, p_block );
         }
     }
 
-    msg_Dbg( p_access, "timeshift: EOF" );
+    msg_Dbg( p_access, "timeshift: no more input data" );
 
-    /* Send dummy packet to avoid deadlock in TShiftBlock */
-    for( i = 0; i < 2; i++ )
+    while( vlc_object_alive (p_access) &&
+           (p_sys->p_read_list || block_FifoSize( p_sys->p_fifo ) ) )
     {
-        block_t *p_dummy = block_New( p_access, 128 );
-        p_dummy->i_flags |= BLOCK_FLAG_DISCONTINUITY;
-        memset( p_dummy->p_buffer, 0, p_dummy->i_buffer );
-        block_FifoPut( p_sys->p_fifo, p_dummy );
+        /* Read from file to fill up the fifo */
+        while( block_FifoSize( p_sys->p_fifo ) < TIMESHIFT_FIFO_MIN &&
+               vlc_object_alive (p_access) && p_sys->p_read_list )
+        {
+            p_block = ReadBlockFromFile( p_access );
+            if( !p_block ) break;
+
+            block_FifoPut( p_sys->p_fifo, p_block );
+        }
+
+        msleep( 100000 );
     }
+
+    msg_Dbg( p_access, "timeshift: EOF" );
+    p_src->info.b_eof = true;
+
+    /* Send dummy packet to avoid deadlock in Block() */
+    block_FifoPut( p_sys->p_fifo, block_New( p_access, 0 ) );
+    return NULL;
 }
 
 /*****************************************************************************
@@ -391,15 +431,15 @@ static int WriteBlockToFile( access_t *p_access, block_t *p_block )
     {
         FILE *file;
 
-        sprintf( p_sys->psz_filename, "%s%i.dat",
+        sprintf( p_sys->psz_filename, "%s%u.dat",
                  p_sys->psz_filename_base, p_sys->i_files );
         file = utf8_fopen( p_sys->psz_filename, "w+b" );
 
         if( !file && p_sys->i_files < 2 )
         {
             /* We just can't work with less than 2 buffer files */
-            msg_Err( p_access, "cannot open temporary file '%s' (%s)",
-                     p_sys->psz_filename, strerror(errno) );
+            msg_Err( p_access, "cannot open temporary file '%s' (%m)",
+                     p_sys->psz_filename );
             return VLC_EGENERIC;
         }
         else if( !file ) return VLC_EGENERIC;
@@ -483,6 +523,8 @@ static block_t *ReadBlockFromFile( access_t *p_access )
 static int Seek( access_t *p_access, int64_t i_pos )
 {
     //access_sys_t *p_sys = p_access->p_sys;
+    (void)p_access;
+    (void)i_pos;
     return VLC_SUCCESS;
 }
 
@@ -491,53 +533,34 @@ static int Seek( access_t *p_access, int64_t i_pos )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    access_t     *p_src = p_access->p_source;
-
-    vlc_bool_t   *pb_bool;
+    bool   *pb_bool;
     int          *pi_int;
-    int64_t      *pi_64;
 
     switch( i_query )
     {
-        case ACCESS_CAN_SEEK:
-        case ACCESS_CAN_FASTSEEK:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_TRUE;
-            break;
+    case ACCESS_CAN_SEEK:
+    case ACCESS_CAN_FASTSEEK:
+        pb_bool = (bool*)va_arg( args, bool* );
+        *pb_bool = true;
+        break;
 
-        case ACCESS_CAN_CONTROL_PACE:   /* Not really true */
-        case ACCESS_CAN_PAUSE:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_TRUE;
-            break;
+    case ACCESS_CAN_CONTROL_PACE:   /* Not really true */
+    case ACCESS_CAN_PAUSE:
+        pb_bool = (bool*)va_arg( args, bool* );
+        *pb_bool = true;
+        break;
 
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = 0;
-            break;
+    case ACCESS_GET_MTU:
+        pi_int = (int*)va_arg( args, int * );
+        *pi_int = 0;
+        break;
 
-        case ACCESS_GET_PTS_DELAY:
-            pi_64 = (int64_t*)va_arg( args, int64_t * );
-            return access2_Control( p_src, ACCESS_GET_PTS_DELAY, pi_64 );
+    case ACCESS_SET_PAUSE_STATE:
+        break;
 
-        case ACCESS_SET_PAUSE_STATE:
-            return VLC_SUCCESS;
-
-        case ACCESS_GET_TITLE_INFO:
-        case ACCESS_SET_TITLE:
-        case ACCESS_SET_SEEKPOINT:
-        case ACCESS_GET_META:
-            return VLC_EGENERIC;
-
-        case ACCESS_SET_PRIVATE_ID_STATE:
-        case ACCESS_GET_PRIVATE_ID_STATE:
-        case ACCESS_SET_PRIVATE_ID_CA:
-            return access2_vaControl( p_src, i_query, args );
-
-        default:
-            msg_Warn( p_access, "unimplemented query in control" );
-            return VLC_EGENERIC;
-
+    /* Forward everything else to the source access */
+    default:
+        return access_vaControl( p_access->p_source, i_query, args );
     }
     return VLC_SUCCESS;
 }
@@ -546,44 +569,43 @@ static int Control( access_t *p_access, int i_query, va_list args )
  * GetTmpFilePath:
  *****************************************************************************/
 #ifdef WIN32
-#define getpid() GetCurrentProcessId()
+#define getpid() (int)GetCurrentProcessId()
 #endif
 static char *GetTmpFilePath( access_t *p_access )
 {
-    char *psz_dir = var_GetString( p_access, "timeshift-dir" );
+    char *psz_dir = var_GetNonEmptyString( p_access, "timeshift-dir" );
     char *psz_filename_base;
-
-    if( ( psz_dir != NULL ) && ( psz_dir[0] == '\0' ) )
-    {
-        free( psz_dir );
-        psz_dir = NULL;
-    }
 
     if( psz_dir == NULL )
     {
 #ifdef WIN32
-        char psz_local_dir[MAX_PATH];
-        int i_size;
+        DWORD ret = GetTempPathW (0, NULL);
+        wchar_t wdir[ret + 3]; // can at least old "C:" + nul
+        const wchar_t *pwdir = wdir;
+        wchar_t *pwdir_free = NULL;
 
-        i_size = GetTempPath( MAX_PATH, psz_local_dir );
-        if( i_size <= 0 || i_size > MAX_PATH )
+        if (GetTempPathW (ret + 1, wdir) == 0)
         {
-            if( !getcwd( psz_local_dir, MAX_PATH ) )
-                strcpy( psz_local_dir, "C:" );
+            pwdir_free = pwdir = _wgetcwd (NULL, 0);
+            if (pwdir == NULL)
+                pwdir = L"C:";
         }
 
-        psz_dir = FromLocaleDup( psz_local_dir );
+        psz_dir = FromWide (pwdir);
+        if (pwdir_free != NULL)
+            free (pwdir_free);
 
-        /* remove last \\ if any */
-        if( psz_dir[strlen(psz_dir)-1] == '\\' )
-            psz_dir[strlen(psz_dir)-1] = '\0';
+        /* remove trailing antislash if any */
+        if (psz_dir[strlen (psz_dir) - 1] == '\\')
+            psz_dir[strlen (psz_dir) - 1] = '\0';
 #else
         psz_dir = strdup( "/tmp" );
 #endif
     }
 
-    asprintf( &psz_filename_base, "%s/vlc-timeshift-%d-%d-",
-              psz_dir, getpid(), p_access->i_object_id );
+    if( asprintf( &psz_filename_base, "%s/vlc-timeshift-%d-%d-",
+              psz_dir, getpid(), p_access->i_object_id ) == -1 )
+        psz_filename_base = NULL;
     free( psz_dir );
 
     return psz_filename_base;

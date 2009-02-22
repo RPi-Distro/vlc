@@ -2,7 +2,7 @@
  * builder.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 49f4b365fd86d3b6378f67e95b34f1064cf7f936 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,6 +22,10 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #ifndef BUILDER_HPP
 #define BUILDER_HPP
 
@@ -37,7 +41,7 @@ class Bezier;
 class CmdGeneric;
 class GenericFont;
 class Position;
-class Box;
+class GenericRect;
 
 
 /// Class for skin construction
@@ -79,6 +83,7 @@ class Builder: public SkinObject
         void addButton( const BuilderData::Button &rData );
         void addCheckbox( const BuilderData::Checkbox &rData );
         void addImage( const BuilderData::Image &rData );
+        void addPanel( const BuilderData::Panel &rData );
         void addText( const BuilderData::Text &rData );
         void addRadialSlider( const BuilderData::RadialSlider &rData );
         void addSlider( const BuilderData::Slider &rData );
@@ -90,7 +95,8 @@ class Builder: public SkinObject
         const Position makePosition( const string &rLeftTop,
                                      const string &rRightBottom,
                                      int xPos, int yPos, int width, int height,
-                                     const Box &rBox, bool xKeepRatio = false,
+                                     const GenericRect &rRect,
+                                     bool xKeepRatio = false,
                                      bool yKeepRatio = false ) const;
 
         // Build the full path of a file

@@ -2,7 +2,7 @@
  * mod.c: MOD file demuxer (using libmodplug)
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 316388cc6a0337fe48e7e55742ca4d762756628d $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,10 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_demux.h>
 
 #include <libmodplug/modplug.h>
 
@@ -44,8 +48,7 @@
 static int  Open    ( vlc_object_t * );
 static void Close  ( vlc_object_t * );
 
-/// \bug [String] missing .
-#define NOISE_LONGTEXT N_("Enable noise reduction algorithm")
+#define NOISE_LONGTEXT N_("Enable noise reduction algorithm.")
 #define REVERB_LONGTEXT N_("Enable reverberation" )
 #define REVERB_LEVEL_LONGTEXT N_( "Reverberation level (from 0 " \
                 "to 100, default value is 0)." )
@@ -54,45 +57,44 @@ static void Close  ( vlc_object_t * );
 #define MEGABASS_LONGTEXT N_( "Enable megabass mode" )
 #define MEGABASS_LEVEL_LONGTEXT N_("Megabass mode level (from 0 to 100, " \
                 "default value is 0)." )
-/// \bug [String] Missing space after dot
-#define MEGABASS_RANGE_LONGTEXT N_("Megabass mode cutoff frequency, in Hz." \
+#define MEGABASS_RANGE_LONGTEXT N_("Megabass mode cutoff frequency, in Hz. " \
                 "This is the maximum frequency for which the megabass " \
-                "effect applies. Valid values are from 10 to 100 Hz" )
+                "effect applies. Valid values are from 10 to 100 Hz." )
 #define SURROUND_LEVEL_LONGTEXT N_( "Surround effect level (from 0 to 100, " \
                 "default value is 0)." )
 #define SURROUND_DELAY_LONGTEXT N_("Surround delay, in ms. Usual values are " \
-                "from 5 to 40 ms" )
+                "from 5 to 40 ms." )
 
 vlc_module_begin();
     set_shortname( "MOD");
-    set_description( _("MOD demuxer (libmodplug)" ) );
-    set_capability( "demux2", 10 );
+    set_description( N_("MOD demuxer (libmodplug)" ) );
+    set_capability( "demux", 10 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_DEMUX );
 
-    add_bool( "mod-noisereduction", VLC_TRUE, NULL, N_("Noise reduction"),
-              NOISE_LONGTEXT, VLC_FALSE );
+    add_bool( "mod-noisereduction", true, NULL, N_("Noise reduction"),
+              NOISE_LONGTEXT, false );
 
-    add_bool( "mod-reverb", VLC_FALSE, NULL, N_("Reverb"),
-              REVERB_LONGTEXT, VLC_FALSE );
+    add_bool( "mod-reverb", false, NULL, N_("Reverb"),
+              REVERB_LONGTEXT, false );
     add_integer_with_range( "mod-reverb-level", 0, 0, 100, NULL,
-             N_("Reverberation level"), REVERB_LEVEL_LONGTEXT, VLC_TRUE );
+             N_("Reverberation level"), REVERB_LEVEL_LONGTEXT, true );
     add_integer_with_range( "mod-reverb-delay", 40, 0, 1000, NULL,
-             N_("Reverberation delay"), REVERB_DELAY_LONGTEXT, VLC_TRUE );
+             N_("Reverberation delay"), REVERB_DELAY_LONGTEXT, true );
 
-    add_bool( "mod-megabass", VLC_FALSE, NULL, N_("Mega bass"),
-                    MEGABASS_LONGTEXT, VLC_FALSE );
+    add_bool( "mod-megabass", false, NULL, N_("Mega bass"),
+                    MEGABASS_LONGTEXT, false );
     add_integer_with_range( "mod-megabass-level", 0, 0, 100, NULL,
-              N_("Mega bass level"), MEGABASS_LEVEL_LONGTEXT, VLC_TRUE );
+              N_("Mega bass level"), MEGABASS_LEVEL_LONGTEXT, true );
     add_integer_with_range( "mod-megabass-range", 10, 10, 100, NULL,
-              N_("Mega bass cutoff"), MEGABASS_RANGE_LONGTEXT, VLC_TRUE );
+              N_("Mega bass cutoff"), MEGABASS_RANGE_LONGTEXT, true );
 
-    add_bool( "mod-surround", VLC_FALSE, NULL, N_("Surround"), N_("Surround"),
-               VLC_FALSE );
+    add_bool( "mod-surround", false, NULL, N_("Surround"), N_("Surround"),
+               false );
     add_integer_with_range( "mod-surround-level", 0, 0, 100, NULL,
-              N_("Surround level"), SURROUND_LEVEL_LONGTEXT, VLC_TRUE );
+              N_("Surround level"), SURROUND_LEVEL_LONGTEXT, true );
     add_integer_with_range( "mod-surround-delay", 5, 0, 1000, NULL,
-              N_("Surround delay (ms)"), SURROUND_DELAY_LONGTEXT, VLC_TRUE );
+              N_("Surround delay (ms)"), SURROUND_DELAY_LONGTEXT, true );
 
     set_callbacks( Open, Close );
     add_shortcut( "mod" );
@@ -132,14 +134,14 @@ static int Open( vlc_object_t *p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
-    char        *ext;
-    int         i;
     ModPlug_Settings settings;
     vlc_value_t val;
 
     /* We accept file based on extension match */
-    if( strcasecmp( p_demux->psz_demux, "mod" ) )
+    if( !p_demux->b_force )
     {
+        char *ext;
+        int i;
         if( ( ext = strrchr( p_demux->psz_path, '.' ) ) == NULL ||
             stream_Size( p_demux->s ) == 0 ) return VLC_EGENERIC;
 
@@ -231,7 +233,7 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_time  = 1;
     p_sys->i_length = ModPlug_GetLength( p_sys->f ) * (int64_t)1000;
 
-    msg_Dbg( p_demux, "MOD loaded name=%s lenght="I64Fd"ms",
+    msg_Dbg( p_demux, "MOD loaded name=%s lenght=%"PRId64"ms",
              ModPlug_GetName( p_sys->f ),
              p_sys->i_length );
 
@@ -271,16 +273,18 @@ static int Demux( demux_t *p_demux )
     block_t     *p_frame;
     int         i_bk = ( p_sys->fmt.audio.i_bitspersample / 8 ) *
                        p_sys->fmt.audio.i_channels;
+    int         i_read;
 
     p_frame = block_New( p_demux, p_sys->fmt.audio.i_rate / 10 * i_bk );
 
-    p_frame->i_buffer = ModPlug_Read( p_sys->f, p_frame->p_buffer, p_frame->i_buffer );
-    if( p_frame->i_buffer <= 0 )
+    i_read = ModPlug_Read( p_sys->f, p_frame->p_buffer, p_frame->i_buffer );
+    if( i_read <= 0 )
     {
         /* EOF */
         block_Release( p_frame );
         return 0;
     }
+    p_frame->i_buffer = i_read;
 
     /* Set PCR */
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, (int64_t)p_sys->i_time );

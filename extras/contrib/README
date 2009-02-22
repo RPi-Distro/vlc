@@ -10,12 +10,14 @@ You can specify an argument to cross compile, for example:
 This will look for a i586-pc-beos-gcc cross compiler. Default is to
 build natively.
 
+Bootstrap generates your default contrib configuration and puts it in a file
+named 'distro.mak'. Edit this file to fine-tune your preferences for 3rd-party
+libraries that will be build in the contrib system.
+
 Customize config.mak if you need to, then you need to choose between
 building from source (can take a long time but is easily customizable)
 and fetching a pre-compiled binary package. Either type 'make src'
 or 'make bin' (also from the contrib directory).
-
-make bin IS NOT WORKING atm USE make src
 
 Once the contribs are built, you can start building VLC.
 See: http://developers.videolan.org/vlc/osx-compile.html 
@@ -24,8 +26,19 @@ or INSTALL.win32 for more details on that.
 Happy hacking.
 --Meuuh 2003-11-15
 
+Appendix: 
+ I) BUILDING AMR SUPPORT IN FFMPEG
 
-The following patches have already been sent to the upstream developers:
+To build ffmpeg with AMR support add HAVE_AMR=1 to config.mak or do:
+
+echo "HAVE_AMR=1" >> config.mak
+
+and add .libamrwb .libamrnb (before .ffmpeg) to your distro.mak. Then rebuild the contrib with: 
+
+make src
+
+
+ II) The following patches have already been sent to the upstream developers:
 
 ffmpeg-cvs-mactel.patch - split in 5 and sent to ffmpeg-devel@mplayerhq.hu
  o patch-ffmpeg-0b.diff

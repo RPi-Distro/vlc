@@ -2,7 +2,7 @@
  * url.c: Test for url encoding/decoding stuff
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: df8961704d8159a6f9e2857a4b2349fd22556b80 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 #include "vlc_url.h"
+#include "vlc_strings.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -81,10 +86,12 @@ int main (void)
 
     /* Base 64 tests */
     test_b64 ("", "");
-    test_b64 ("d", "ZA==");
-    test_b64 ("ab", "YWI=");
-    test_b64 ("abc", "YWJj");
-    test_b64 ("abcd", "YWJjZA==");
+    test_b64 ("f", "Zg==");
+    test_b64 ("fo", "Zm8=");
+    test_b64 ("foo", "Zm9v");
+    test_b64 ("foob", "Zm9vYg==");
+    test_b64 ("fooba", "Zm9vYmE=");
+    test_b64 ("foobar", "Zm9vYmFy");
 
     return 0;
 }

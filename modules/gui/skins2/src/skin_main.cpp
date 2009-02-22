@@ -2,7 +2,7 @@
  * skin_main.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f1093f6e7bc7cc2183a56297539abe9fc3d3e6de $
+ * $Id: 84651abea3404018cb9d02ea58e5d24be5d71594 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,8 +22,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdlib.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_input.h>
+#include <vlc_demux.h>
+#include <vlc_playlist.h>
+#include <vlc_window.h>
+
 #include "dialogs.hpp"
 #include "os_factory.hpp"
 #include "os_loop.hpp"
@@ -37,7 +46,6 @@
 #include "../commands/cmd_quit.hpp"
 #include "../commands/cmd_dialogs.hpp"
 #include "../commands/cmd_minimize.hpp"
-
 
 //---------------------------------------------------------------------------
 // Exported interface functions.
@@ -62,14 +70,13 @@ static int DemuxControl( demux_t *, int, va_list );
 //---------------------------------------------------------------------------
 // Prototypes for configuration callbacks
 //---------------------------------------------------------------------------
-#ifdef WIN32
 static int onSystrayChange( vlc_object_t *pObj, const char *pVariable,
                             vlc_value_t oldVal, vlc_value_t newVal,
                             void *pParam );
 static int onTaskBarChange( vlc_object_t *pObj, const char *pVariable,
                             vlc_value_t oldVal, vlc_value_t newVal,
                             void *pParam );
-#endif
+
 
 //---------------------------------------------------------------------------
 // Open: initialize interface
@@ -89,17 +96,10 @@ static int Open( vlc_object_t *p_this )
     p_intf->pf_run = Run;
 
     // Suscribe to messages bank
-    p_intf->p_sys->p_sub = msg_Subscribe( p_intf, MSG_QUEUE_NORMAL );
+    p_intf->p_sys->p_sub = msg_Subscribe( p_intf );
 
     p_intf->p_sys->p_input = NULL;
-    p_intf->p_sys->p_playlist = (playlist_t *)vlc_object_find( p_intf,
-        VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
-    if( p_intf->p_sys->p_playlist == NULL )
-    {
-        msg_Err( p_intf, "No playlist object found" );
-        msg_Unsubscribe( p_intf, p_intf->p_sys->p_sub );
-        return VLC_EGENERIC;
-    }
+    p_intf->p_sys->p_playlist = pl_Yield( p_intf );
 
     // Initialize "singleton" objects
     p_intf->p_sys->p_logger = NULL;
@@ -157,8 +157,9 @@ static int Open( vlc_object_t *p_this )
     Dialogs::instance( p_intf );
     ThemeRepository::instance( p_intf );
 
-    // We support play on start
-    p_intf->b_play = VLC_TRUE;
+#ifdef WIN32
+    p_intf->b_should_run_on_first_thread = true;
+#endif
 
     return( VLC_SUCCESS );
 }
@@ -241,26 +242,10 @@ static void Run( intf_thread_t *p_intf )
     }
     delete pLoader;
 
-    if( skin_last )
-    {
-        free( skin_last );
-    }
+    free( skin_last );
 
     // Get the instance of OSLoop
     OSLoop *loop = OSFactory::instance( p_intf )->getOSLoop();
-
-    // Check if we need to start playing
-    if( p_intf->b_play )
-    {
-        playlist_t *p_playlist =
-            (playlist_t *)vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                           FIND_ANYWHERE );
-        if( p_playlist )
-        {
-            playlist_LockControl( p_playlist, PLAYLIST_AUTOPLAY );
-            vlc_object_release( p_playlist );
-        }
-    }
 
     // Enter the main event loop
     loop->run();
@@ -274,6 +259,35 @@ static void Run( intf_thread_t *p_intf )
     }
 }
 
+
+// Callbacks for vout requests
+static int WindowOpen( vlc_object_t *p_this )
+{
+    vout_window_t *pWnd = (vout_window_t *)p_this;
+    intf_thread_t *pIntf = (intf_thread_t *)
+        vlc_object_find_name( p_this, "skins2", FIND_ANYWHERE );
+
+    if( pIntf == NULL )
+        return VLC_EGENERIC;
+
+    /* FIXME: most probably not thread-safe,
+     * albeit no worse than ever before */
+    pWnd->handle = VlcProc::getWindow( pIntf, pWnd->vout,
+                                       &pWnd->pos_x, &pWnd->pos_y,
+                                       &pWnd->width, &pWnd->height );
+    pWnd->p_private = pIntf;
+    pWnd->control = &VlcProc::controlWindow;
+    return VLC_SUCCESS;
+}
+
+
+static void WindowClose( vlc_object_t *p_this )
+{
+    vout_window_t *pWnd = (vout_window_t *)p_this;
+    intf_thread_t *pIntf = (intf_thread_t *)p_this->p_private;
+
+    VlcProc::releaseWindow( pIntf, pWnd->handle );
+}
 
 //---------------------------------------------------------------------------
 // DemuxOpen: initialize demux
@@ -303,16 +317,11 @@ static int DemuxOpen( vlc_object_t *p_this )
         // Do nothing is skins2 is not the main interface
         if( var_Type( p_intf, "skin-to-load" ) == VLC_VAR_STRING )
         {
-            playlist_t *p_playlist =
-                (playlist_t *) vlc_object_find( p_this, VLC_OBJECT_PLAYLIST,
-                                                FIND_ANYWHERE );
-            if( p_playlist != NULL )
-            {
-                // Make sure the item is deleted afterwards
-                p_playlist->pp_items[p_playlist->i_index]->b_autodeletion =
-                    VLC_TRUE;
-                vlc_object_release( p_playlist );
-            }
+            playlist_t *p_playlist = pl_Yield( p_this );
+            // Make sure the item is deleted afterwards
+            /// \bug does not always work
+            p_playlist->status.p_item->i_flags |= PLAYLIST_REMOVE_FLAG;
+            vlc_object_release( p_playlist );
 
             vlc_value_t val;
             val.psz_string = p_demux->psz_path;
@@ -345,14 +354,14 @@ static int Demux( demux_t *p_demux )
 //---------------------------------------------------------------------------
 static int DemuxControl( demux_t *p_demux, int i_query, va_list args )
 {
-    return demux2_vaControlHelper( p_demux->s, 0, 0, 0, 1, i_query, args );
+    return demux_vaControlHelper( p_demux->s, 0, 0, 0, 1, i_query, args );
 }
 
 
 //---------------------------------------------------------------------------
 // Callbacks
 //---------------------------------------------------------------------------
-#ifdef WIN32
+
 /// Callback for the systray configuration option
 static int onSystrayChange( vlc_object_t *pObj, const char *pVariable,
                             vlc_value_t oldVal, vlc_value_t newVal,
@@ -419,7 +428,7 @@ static int onTaskBarChange( vlc_object_t *pObj, const char *pVariable,
     vlc_object_release( pIntf );
     return VLC_SUCCESS;
 }
-#endif
+
 
 //---------------------------------------------------------------------------
 // Module descriptor
@@ -437,40 +446,43 @@ static int onTaskBarChange( vlc_object_t *pObj, const char *pVariable,
 #define SKINS2_TRANSPARENCY_LONG N_("You can disable all transparency effects"\
     " if you want. This is mainly useful when moving windows does not behave" \
     " correctly.")
-#define SKINS2_PLAYLIST      N_("Enable skinned playlist")
-#define SKINS2_PLAYLIST_LONG N_("You can choose whether the playlist window"\
-    " is rendered using the skin or the default GUI.")
+#define SKINS2_PLAYLIST N_("Use a skinned playlist")
+#define SKINS2_PLAYLIST_LONG N_("Use a skinned playlist")
 
 vlc_module_begin();
     set_category( CAT_INTERFACE );
     set_subcategory( SUBCAT_INTERFACE_MAIN );
-    add_string( "skins2-last", "", NULL, SKINS2_LAST, SKINS2_LAST_LONG,
-                VLC_TRUE );
+    add_file( "skins2-last", "", NULL, SKINS2_LAST, SKINS2_LAST_LONG,
+              true );
         change_autosave();
     add_string( "skins2-config", "", NULL, SKINS2_CONFIG, SKINS2_CONFIG_LONG,
-                VLC_TRUE );
+                true );
         change_autosave();
+        change_internal();
 #ifdef WIN32
-    add_bool( "skins2-systray", VLC_FALSE, onSystrayChange, SKINS2_SYSTRAY,
-              SKINS2_SYSTRAY_LONG, VLC_FALSE );
-    add_bool( "skins2-taskbar", VLC_TRUE, onTaskBarChange, SKINS2_TASKBAR,
-              SKINS2_TASKBAR_LONG, VLC_FALSE );
-    add_bool( "skins2-transparency", VLC_FALSE, NULL, SKINS2_TRANSPARENCY,
-              SKINS2_TRANSPARENCY_LONG, VLC_FALSE );
+    add_bool( "skins2-systray", false, onSystrayChange, SKINS2_SYSTRAY,
+              SKINS2_SYSTRAY_LONG, false );
+    add_bool( "skins2-taskbar", true, onTaskBarChange, SKINS2_TASKBAR,
+              SKINS2_TASKBAR_LONG, false );
+    add_bool( "skins2-transparency", false, NULL, SKINS2_TRANSPARENCY,
+              SKINS2_TRANSPARENCY_LONG, false );
 #endif
 
-    add_bool( "skinned-playlist", VLC_TRUE, NULL, SKINS2_PLAYLIST,
-              SKINS2_PLAYLIST_LONG, VLC_FALSE );
-    set_shortname( _("Skins"));
-    set_description( _("Skinnable Interface") );
+    add_bool( "skinned-playlist", true, NULL, SKINS2_PLAYLIST,
+              SKINS2_PLAYLIST_LONG, false );
+    set_shortname( N_("Skins"));
+    set_description( N_("Skinnable Interface") );
     set_capability( "interface", 30 );
     set_callbacks( Open, Close );
     add_shortcut( "skins" );
-    set_program( "svlc" );
 
     add_submodule();
-        set_description( _("Skins loader demux") );
-        set_capability( "demux2", 5 );
+        set_capability( "vout window", 51 );
+        set_callbacks( WindowOpen, WindowClose );
+
+    add_submodule();
+        set_description( N_("Skins loader demux") );
+        set_capability( "demux", 5 );
         set_callbacks( DemuxOpen, NULL );
 
 vlc_module_end();

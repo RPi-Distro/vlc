@@ -2,7 +2,7 @@
  * parser.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 573c63ac5a874a3dcaee20bb2b419dc6f3e161f5 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -26,9 +26,9 @@
 
 /* parser.c */
 
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>
 
 #include "common.h"
 #include "fatal.h"

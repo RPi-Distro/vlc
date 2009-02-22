@@ -24,9 +24,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <errno.h>                                                 /* ENOMEM */
-#include <stdlib.h>                                                /* free() */
-#include <string.h>                                            /* strerror() */
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
+#include <vlc_interface.h>
+#include <vlc_playlist.h>
+#include <vlc_keys.h>
 
 #include <caca.h>
 
@@ -53,11 +61,6 @@
 #   define caca_set_display_title(x,y) caca_set_window_title(y)
 #endif
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include <vlc/intf.h>
-#include <vlc_keys.h>
-
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
@@ -77,7 +80,7 @@ vlc_module_begin();
     set_shortname( "Caca" );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_description( _("Color ASCII art video output") );
+    set_description( N_("Color ASCII art video output") );
     set_capability( "video output", 12 );
     set_callbacks( Create, Destroy );
 vlc_module_end();
@@ -160,10 +163,7 @@ static int Create( vlc_object_t *p_this )
     /* Allocate structure */
     p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
         return VLC_ENOMEM;
-    }
 
     p_vout->p_sys->p_cv = cucul_create_canvas(0, 0);
     if( !p_vout->p_sys->p_cv )
@@ -362,23 +362,22 @@ static int Manage( vout_thread_t *p_vout )
                 * p_vout->render.i_height
                          / cucul_get_canvas_height( p_vout->p_sys->p_cv );
             var_Set( p_vout, "mouse-y", val );
-            val.b_bool = VLC_TRUE;
+            val.b_bool = true;
             var_Set( p_vout, "mouse-moved", val );
             break;
         case CACA_EVENT_MOUSE_RELEASE:
-            val.b_bool = VLC_TRUE;
+            val.b_bool = true;
             var_Set( p_vout, "mouse-clicked", val );
             break;
         case CACA_EVENT_QUIT:
         {
-            p_playlist = vlc_object_find( p_vout,
-                                          VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+            p_playlist = pl_Yield( p_vout );
             if( p_playlist )
             {
                 playlist_Stop( p_playlist );
-                vlc_object_release( p_playlist );
+                pl_Release( p_vout );
             }
-            p_vout->p_libvlc->b_die = VLC_TRUE;
+            vlc_object_kill( p_vout->p_libvlc );
             break;
         }
 #endif
@@ -395,7 +394,7 @@ static int Manage( vout_thread_t *p_vout )
  *****************************************************************************/
 static void Render( vout_thread_t *p_vout, picture_t *p_pic )
 {
-    cucul_set_color( p_vout->p_sys->p_cv,
+    cucul_set_color_ansi( p_vout->p_sys->p_cv,
                      CUCUL_COLOR_DEFAULT, CUCUL_COLOR_BLACK );
     cucul_clear_canvas( p_vout->p_sys->p_cv );
     cucul_dither_bitmap( p_vout->p_sys->p_cv, 0, 0,
@@ -409,6 +408,7 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
  *****************************************************************************/
 static void Display( vout_thread_t *p_vout, picture_t *p_pic )
 {
+    VLC_UNUSED(p_pic);
     caca_refresh_display( p_vout->p_sys->p_dp );
 }
 

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: ed2dfdb8c992bf4783d036cc2e1c6518f54fd414 $
+ * $Id: 66a36ce709157a5d2a429e33c81c68c01d981979 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -22,10 +22,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#include <stdio.h>
-#include <string.h>
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #include "rtsp.h"
 #include "real.h"
@@ -160,37 +162,37 @@ static void hash(char *field, char *param)
   b = ((b << 0x17) | (b >> 0x09)) + c;
 
   a = ((~d | b) ^ c)  + LE_32((param+0x00)) + a - 0x0BD6DDBC;
-  a = ((a << 0x06) | (a >> 0x1a)) + b; 
+  a = ((a << 0x06) | (a >> 0x1a)) + b;
   d = ((~c | a) ^ b)  + LE_32((param+0x1c)) + d + 0x432AFF97;
-  d = ((d << 0x0a) | (d >> 0x16)) + a; 
+  d = ((d << 0x0a) | (d >> 0x16)) + a;
   c = ((~b | d) ^ a)  + LE_32((param+0x38)) + c - 0x546BDC59;
-  c = ((c << 0x0f) | (c >> 0x11)) + d; 
+  c = ((c << 0x0f) | (c >> 0x11)) + d;
   b = ((~a | c) ^ d)  + LE_32((param+0x14)) + b - 0x036C5FC7;
-  b = ((b << 0x15) | (b >> 0x0b)) + c; 
+  b = ((b << 0x15) | (b >> 0x0b)) + c;
   a = ((~d | b) ^ c)  + LE_32((param+0x30)) + a + 0x655B59C3;
-  a = ((a << 0x06) | (a >> 0x1a)) + b; 
+  a = ((a << 0x06) | (a >> 0x1a)) + b;
   d = ((~c | a) ^ b)  + LE_32((param+0x0C)) + d - 0x70F3336E;
-  d = ((d << 0x0a) | (d >> 0x16)) + a; 
+  d = ((d << 0x0a) | (d >> 0x16)) + a;
   c = ((~b | d) ^ a)  + LE_32((param+0x28)) + c - 0x00100B83;
-  c = ((c << 0x0f) | (c >> 0x11)) + d; 
+  c = ((c << 0x0f) | (c >> 0x11)) + d;
   b = ((~a | c) ^ d)  + LE_32((param+0x04)) + b - 0x7A7BA22F;
-  b = ((b << 0x15) | (b >> 0x0b)) + c; 
+  b = ((b << 0x15) | (b >> 0x0b)) + c;
   a = ((~d | b) ^ c)  + LE_32((param+0x20)) + a + 0x6FA87E4F;
-  a = ((a << 0x06) | (a >> 0x1a)) + b; 
+  a = ((a << 0x06) | (a >> 0x1a)) + b;
   d = ((~c | a) ^ b)  + LE_32((param+0x3c)) + d - 0x01D31920;
-  d = ((d << 0x0a) | (d >> 0x16)) + a; 
+  d = ((d << 0x0a) | (d >> 0x16)) + a;
   c = ((~b | d) ^ a)  + LE_32((param+0x18)) + c - 0x5CFEBCEC;
-  c = ((c << 0x0f) | (c >> 0x11)) + d; 
+  c = ((c << 0x0f) | (c >> 0x11)) + d;
   b = ((~a | c) ^ d)  + LE_32((param+0x34)) + b + 0x4E0811A1;
-  b = ((b << 0x15) | (b >> 0x0b)) + c; 
+  b = ((b << 0x15) | (b >> 0x0b)) + c;
   a = ((~d | b) ^ c)  + LE_32((param+0x10)) + a - 0x08AC817E;
-  a = ((a << 0x06) | (a >> 0x1a)) + b; 
+  a = ((a << 0x06) | (a >> 0x1a)) + b;
   d = ((~c | a) ^ b)  + LE_32((param+0x2c)) + d - 0x42C50DCB;
-  d = ((d << 0x0a) | (d >> 0x16)) + a; 
+  d = ((d << 0x0a) | (d >> 0x16)) + a;
   c = ((~b | d) ^ a)  + LE_32((param+0x08)) + c + 0x2AD7D2BB;
-  c = ((c << 0x0f) | (c >> 0x11)) + d; 
+  c = ((c << 0x0f) | (c >> 0x11)) + d;
   b = ((~a | c) ^ d)  + LE_32((param+0x24)) + b - 0x14792C6F;
-  b = ((b << 0x15) | (b >> 0x0b)) + c; 
+  b = ((b << 0x15) | (b >> 0x0b)) + c;
 
   lprintf("hash output: %x %x %x %x\n", a, b, c, d);
 
@@ -210,8 +212,8 @@ static void call_hash (char *key, char *challenge, int len) {
   uint8_t *ptr1, *ptr2;
   uint32_t a, b, c, d, tmp;
 
-  ptr1=(key+16);
-  ptr2=(key+20);
+  ptr1=(uint8_t*)(key+16);
+  ptr2=(uint8_t*)(key+20);
 
   a = LE_32(ptr1);
   b = (a >> 3) & 0x3f;
@@ -338,7 +340,7 @@ void real_calc_response_and_checksum (char *response, char *chksum, char *challe
 
   if (xor_table != NULL)
   {
-    table_len = strlen(xor_table);
+    table_len = strlen((char *)xor_table);
 
     if (table_len > 56) table_len=56;
 
@@ -478,7 +480,7 @@ rmff_header_t *real_parse_sdp(char *data, char **stream_rules, uint32_t bandwidt
 
     if (!desc->stream[i]->mlti_data) {
       len = 0;
-      if( buf ) free( buf );
+      free( buf );
       buf = NULL;
     } else
       len=select_mlti_data(desc->stream[i]->mlti_data,
@@ -529,13 +531,13 @@ rmff_header_t *real_parse_sdp(char *data, char **stream_rules, uint32_t bandwidt
   rmff_fix_header(header);
 
   if( desc ) sdpplin_free( desc );
-  if( buf ) free(buf);
+  free( buf );
   return header;
 
 error:
   if( desc ) sdpplin_free( desc );
   if( header ) rmff_free_header( header );
-  if( buf ) free( buf );
+  free( buf );
   return NULL;
 }
 
@@ -597,8 +599,8 @@ int real_get_rdt_chunk(rtsp_client_t *rtsp_session, rmff_pheader_t *ph,
                        unsigned char **buffer) {
 
   int n;
-  rmff_dump_pheader(ph, *buffer);
-  n=rtsp_read_data(rtsp_session, *buffer + 12, ph->length - 12);
+  rmff_dump_pheader(ph, (char*)*buffer);
+  n=rtsp_read_data(rtsp_session, (uint8_t*)(*buffer + 12), ph->length - 12);
   return (n <= 0) ? 0 : n+12;
 }
 
@@ -639,11 +641,10 @@ rmff_header_t  *real_setup_and_get_header(rtsp_client_t *rtsp_session, int bandw
     if (alert) {
         lprintf("real: got message from server:\n%s\n", alert);
     }
-    printf( "bou\n");
-    rtsp_send_ok(rtsp_session);
-    if( challenge1 ) free(challenge1);
-    if( alert ) free(alert);
-    if( buf ) free(buf);
+    rtsp_send_ok( rtsp_session );
+    free( challenge1 );
+    free( alert );
+    free( buf );
     return NULL;
   }
 
@@ -670,7 +671,7 @@ rmff_header_t  *real_setup_and_get_header(rtsp_client_t *rtsp_session, int bandw
   description = (char*)malloc(sizeof(char)*(size+1));
   if( !description )
     goto error;
-  if( rtsp_read_data(rtsp_session, description, size) <= 0)
+  if( rtsp_read_data(rtsp_session, (uint8_t*)description, size) <= 0)
     goto error;
   description[size]=0;
   //fprintf(stderr, "%s", description);
@@ -722,19 +723,19 @@ rmff_header_t  *real_setup_and_get_header(rtsp_client_t *rtsp_session, int bandw
   rtsp_schedule_field(rtsp_session, "Range: npt=0-");
   rtsp_request_play(rtsp_session,NULL);
 
-  if( challenge1 ) free( challenge1 );
-  if( session_id ) free( session_id );
-  if( description ) free(description);
-  if( subscribe ) free(subscribe);
-  if( buf ) free(buf);
+  free( challenge1 );
+  free( session_id );
+  free( description );
+  free( subscribe );
+  free( buf );
   return h;
 
 error:
   if( h ) rmff_free_header( h );
-  if( challenge1 ) free( challenge1 );
-  if( session_id ) free( session_id );
-  if( description ) free(description);
-  if( subscribe ) free(subscribe);
-  if( buf ) free(buf);
+  free( challenge1 );
+  free( session_id );
+  free( description );
+  free( subscribe );
+  free( buf );
   return NULL;
 }

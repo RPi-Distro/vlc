@@ -1,8 +1,8 @@
 /*****************************************************************************
  * tls.c
  *****************************************************************************
- * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: eb145d148f7d8a14a4971f7f71ce6b97d760441f $
+ * Copyright © 2004-2007 Rémi Denis-Courmont
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -26,123 +26,131 @@
  * libvlc interface to the Transport Layer Security (TLS) plugins.
  */
 
-#include <stdlib.h>
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "vlc_tls.h"
+#include <vlc_common.h>
+#include "libvlc.h"
 
-static tls_t *
-tls_Init( vlc_object_t *p_this )
-{
-    tls_t *p_tls;
-    vlc_value_t lockval;
-
-    var_Create( p_this->p_libvlc, "tls_mutex", VLC_VAR_MUTEX );
-    var_Get( p_this->p_libvlc, "tls_mutex", &lockval );
-    vlc_mutex_lock( lockval.p_address );
-
-    p_tls = vlc_object_find( p_this, VLC_OBJECT_TLS, FIND_ANYWHERE );
-
-    if( p_tls == NULL )
-    {
-        p_tls = vlc_object_create( p_this, VLC_OBJECT_TLS );
-        if( p_tls == NULL )
-        {
-            vlc_mutex_unlock( lockval.p_address );
-            return NULL;
-        }
-
-        p_tls->p_module = module_Need( p_tls, "tls", 0, 0 );
-        if( p_tls->p_module == NULL )
-        {
-            msg_Err( p_tls, "TLS/SSL provider not found" );
-            vlc_mutex_unlock( lockval.p_address );
-            vlc_object_destroy( p_tls );
-            return NULL;
-        }
-
-        vlc_object_attach( p_tls, p_this->p_vlc );
-        vlc_object_yield( p_tls );
-        msg_Dbg( p_tls, "TLS/SSL provider initialized" );
-    }
-    vlc_mutex_unlock( lockval.p_address );
-
-    return p_tls;
-}
-
-static void
-tls_Deinit( tls_t *p_tls )
-{
-    int i;
-    vlc_value_t lockval;
-
-    var_Get( p_tls->p_libvlc, "tls_mutex", &lockval );
-    vlc_mutex_lock( lockval.p_address );
-
-    vlc_object_release( p_tls );
-    
-    i = p_tls->i_refcount;
-    if( i == 0 )
-        vlc_object_detach( p_tls );
-
-    vlc_mutex_unlock( lockval.p_address );
-
-    if( i == 0 )
-    {
-        module_Unneed( p_tls, p_tls->p_module );
-        msg_Dbg( p_tls, "TLS/SSL provider deinitialized" );
-        vlc_object_destroy( p_tls );
-    }
-}
+#include <vlc_tls.h>
 
 /**
  * Allocates a whole server's TLS credentials.
  *
- * @param psz_cert required (Unicode) path to an x509 certificate.
- * @param psz_key required (Unicode) path to the PKCS private key for
- * the certificate.
+ * @param cert_path required (Unicode) path to an x509 certificate,
+ *                  if NULL, anonymous key exchange will be used.
+ * @param key_path (UTF-8) path to the PKCS private key for the certificate,
+ *                 if NULL; cert_path will be used.
  *
  * @return NULL on error.
  */
 tls_server_t *
-tls_ServerCreate( vlc_object_t *p_this, const char *psz_cert,
-                  const char *psz_key )
+tls_ServerCreate (vlc_object_t *obj, const char *cert_path,
+                  const char *key_path)
 {
-    tls_t *p_tls;
-    tls_server_t *p_server;
+    tls_server_t *srv;
 
-    p_tls = tls_Init( p_this );
-    if( p_tls == NULL )
+    srv = (tls_server_t *)vlc_custom_create (obj, sizeof (*srv),
+                                             VLC_OBJECT_GENERIC,
+                                             "tls server");
+    if (srv == NULL)
         return NULL;
 
-    if( psz_key == NULL )
-        psz_key = psz_cert;
+    var_Create (srv, "tls-x509-cert", VLC_VAR_STRING);
+    var_Create (srv, "tls-x509-key", VLC_VAR_STRING);
 
-    p_server = p_tls->pf_server_create( p_tls, psz_cert, psz_key );
-    if( p_server != NULL )
+    if (cert_path != NULL)
     {
-        msg_Dbg( p_tls, "TLS/SSL server initialized" );
-        return p_server;
-    }
-    else
-        msg_Err( p_tls, "TLS/SSL server error" );
+        var_SetString (srv, "tls-x509-cert", cert_path);
 
-    tls_Deinit( p_tls );
-    return NULL;
+        if (key_path == NULL)
+            key_path = cert_path;
+        var_SetString (srv, "tls-x509-key", key_path);
+    }
+
+    srv->p_module = module_Need (srv, "tls server", 0, 0);
+    if (srv->p_module == NULL)
+    {
+        msg_Err (srv, "TLS server plugin not available");
+        vlc_object_release (srv);
+        return NULL;
+    }
+
+    vlc_object_attach (srv, obj);
+    msg_Dbg (srv, "TLS server plugin initialized");
+    return srv;
 }
 
 
 /**
  * Releases data allocated with tls_ServerCreate.
+ * @param srv TLS server object to be destroyed, or NULL
  */
-void
-tls_ServerDelete( tls_server_t *p_server )
+void tls_ServerDelete (tls_server_t *srv)
 {
-    tls_t *p_tls = (tls_t *)p_server->p_parent;
+    if (srv == NULL)
+        return;
 
-    p_server->pf_delete( p_server );
+    module_Unneed (srv, srv->p_module);
+    vlc_object_detach (srv);
+    vlc_object_release (srv);
+}
 
-    tls_Deinit( p_tls );
+
+/**
+ * Adds one or more certificate authorities from a file.
+ * @return -1 on error, 0 on success.
+ */
+int tls_ServerAddCA (tls_server_t *srv, const char *path)
+{
+    return srv->pf_add_CA (srv, path);
+}
+
+
+/**
+ * Adds one or more certificate revocation list from a file.
+ * @return -1 on error, 0 on success.
+ */
+int tls_ServerAddCRL (tls_server_t *srv, const char *path)
+{
+    return srv->pf_add_CRL (srv, path);
+}
+
+
+tls_session_t *tls_ServerSessionPrepare (tls_server_t *srv)
+{
+    tls_session_t *ses;
+
+    ses = srv->pf_open (srv);
+    if (ses == NULL)
+        return NULL;
+
+    vlc_object_attach (ses, srv);
+    return ses;
+}
+
+
+void tls_ServerSessionClose (tls_session_t *ses)
+{
+    tls_server_t *srv = (tls_server_t *)(ses->p_parent);
+    srv->pf_close (srv, ses);
+}
+
+
+int tls_ServerSessionHandshake (tls_session_t *ses, int fd)
+{
+    ses->pf_set_fd (ses, fd);
+    return 2;
+}
+
+
+int tls_SessionContinueHandshake (tls_session_t *ses)
+{
+    int val = ses->pf_handshake (ses);
+    if (val < 0)
+        tls_ServerSessionClose (ses);
+    return val;
 }
 
 
@@ -157,36 +165,50 @@ tls_ServerDelete( tls_server_t *p_server )
  * @return NULL on error.
  **/
 tls_session_t *
-tls_ClientCreate( vlc_object_t *p_this, int fd, const char *psz_hostname )
+tls_ClientCreate (vlc_object_t *obj, int fd, const char *psz_hostname)
 {
-    tls_t *p_tls;
-    tls_session_t *p_session;
+    tls_session_t *cl;
+    int val;
 
-    p_tls = tls_Init( p_this );
-    if( p_tls == NULL )
+    cl = (tls_session_t *)vlc_custom_create (obj, sizeof (*cl),
+                                             VLC_OBJECT_GENERIC,
+                                             "tls client");
+    if (cl == NULL)
         return NULL;
-        
-    p_session = p_tls->pf_client_create( p_tls );
-    if( p_session != NULL )
+
+    var_Create (cl, "tls-server-name", VLC_VAR_STRING);
+    if (psz_hostname != NULL)
     {
-        int i_val;
-
-        for( i_val = tls_ClientSessionHandshake( p_session, fd,
-                                                 psz_hostname );
-             i_val > 0;
-             i_val = tls_SessionContinueHandshake( p_session ) );
-
-        if( i_val == 0 )
-        {
-            msg_Dbg( p_this, "TLS/SSL client initialized" );
-            return p_session;
-        }
-        msg_Err( p_this, "TLS/SSL session handshake error" );
+        msg_Dbg (cl, "requested server name: %s", psz_hostname);
+        var_SetString (cl, "tls-server-name", psz_hostname);
     }
     else
-        msg_Err( p_this, "TLS/SSL client error" );
+        msg_Dbg (cl, "requested anonymous server");
 
-    tls_Deinit( p_tls );
+    cl->p_module = module_Need (cl, "tls client", 0, 0);
+    if (cl->p_module == NULL)
+    {
+        msg_Err (cl, "TLS client plugin not available");
+        vlc_object_release (cl);
+        return NULL;
+    }
+
+    cl->pf_set_fd (cl, fd);
+
+    do
+        val = cl->pf_handshake (cl);
+    while (val > 0);
+
+    if (val == 0)
+    {
+        msg_Dbg (cl, "TLS client session initialized");
+        vlc_object_attach (cl, obj);
+        return cl;
+    }
+    msg_Err (cl, "TLS client session handshake error");
+
+    module_Unneed (cl, cl->p_module);
+    vlc_object_release (cl);
     return NULL;
 }
 
@@ -195,12 +217,12 @@ tls_ClientCreate( vlc_object_t *p_this, int fd, const char *psz_hostname )
  * Releases data allocated with tls_ClientCreate.
  * It is your job to close the underlying socket.
  */
-void
-tls_ClientDelete( tls_session_t *p_session )
+void tls_ClientDelete (tls_session_t *cl)
 {
-    tls_t *p_tls = (tls_t *)p_session->p_parent;
+    if (cl == NULL)
+        return;
 
-    p_session->pf_close( p_session );
-
-    tls_Deinit( p_tls );
+    module_Unneed (cl, cl->p_module);
+    vlc_object_detach (cl);
+    vlc_object_release (cl);
 }

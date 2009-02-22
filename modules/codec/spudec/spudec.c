@@ -2,7 +2,7 @@
  * spudec.c : SPU decoder thread
  *****************************************************************************
  * Copyright (C) 2000-2001, 2006 the VideoLAN team
- * $Id: 26c053c3e266f8dc762a049a7da51f3e9fc640f4 $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -25,8 +25,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
 
 #include "spudec.h"
 
@@ -38,14 +43,14 @@ static int  PacketizerOpen( vlc_object_t * );
 static void Close         ( vlc_object_t * );
 
 vlc_module_begin();
-    set_description( _("DVD subtitles decoder") );
+    set_description( N_("DVD subtitles decoder") );
     set_capability( "decoder", 50 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_SCODEC );
     set_callbacks( DecoderOpen, Close );
 
     add_submodule();
-    set_description( _("DVD subtitles packetizer") );
+    set_description( N_("DVD subtitles packetizer") );
     set_capability( "packetizer", 50 );
     set_callbacks( PacketizerOpen, Close );
 vlc_module_end();
@@ -76,7 +81,7 @@ static int DecoderOpen( vlc_object_t *p_this )
 
     p_dec->p_sys = p_sys = malloc( sizeof( decoder_sys_t ) );
 
-    p_sys->b_packetizer = VLC_FALSE;
+    p_sys->b_packetizer = false;
     p_sys->i_spu_size = 0;
     p_sys->i_spu      = 0;
     p_sys->p_block    = NULL;
@@ -104,7 +109,7 @@ static int PacketizerOpen( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
     p_dec->pf_packetize  = Packetize;
-    p_dec->p_sys->b_packetizer = VLC_TRUE;
+    p_dec->p_sys->b_packetizer = true;
     es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
     p_dec->fmt_out.i_codec = VLC_FOURCC( 's','p','u',' ' );
 
@@ -146,10 +151,11 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     /* FIXME: what the, we shouldn’t need to allocate 64k of buffer --sam. */
     p_sys->i_spu = block_ChainExtract( p_spu_block, p_sys->buffer, 65536 );
     p_sys->i_pts = p_spu_block->i_pts;
+    p_sys->i_rate = p_spu_block->i_rate;
     block_ChainRelease( p_spu_block );
 
     /* Parse and decode */
-    p_spu = E_(ParsePacket)( p_dec );
+    p_spu = ParsePacket( p_dec );
 
     /* reinit context */
     p_sys->i_spu_size = 0;
@@ -201,7 +207,7 @@ static block_t *Reassemble( decoder_t *p_dec, block_t **pp_block )
         ( p_block->i_pts <= 0 || p_block->i_buffer < 4 ) )
     {
         msg_Dbg( p_dec, "invalid starting packet (size < 4 or pts <=0)" );
-        msg_Dbg( p_dec, "spu size: %d, i_pts: "I64Fd" i_buffer: %d",
+        msg_Dbg( p_dec, "spu size: %d, i_pts: %"PRId64" i_buffer: %zu",
                  p_sys->i_spu_size, p_block->i_pts, p_block->i_buffer );
         block_Release( p_block );
         return NULL;

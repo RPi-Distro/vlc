@@ -2,7 +2,7 @@
  * common.h : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 4b69d7e67928e1cf4d5fa6aef22a7456f6dfd67a $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -41,7 +41,9 @@ using namespace std;
 #   define AM_NOVTABLE
 #   define _OBJBASE_H_
 #   undef _X86_
-#   define _I64_MAX LONG_LONG_MAX
+#   ifndef _I64_MAX
+#     define _I64_MAX LONG_LONG_MAX
+#   endif
 #   define LONGLONG long long
 #endif
 
@@ -93,5 +95,5 @@ struct access_sys_t
     int            i_width;
     int            i_height;
     int            i_chroma;
-    vlc_bool_t     b_chroma; /* Force a specific chroma on the dshow input */
+    bool           b_chroma; /* Force a specific chroma on the dshow input */
 };

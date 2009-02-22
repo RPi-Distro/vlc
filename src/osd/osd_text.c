@@ -1,8 +1,8 @@
 /*****************************************************************************
  * osd_text.c : text manipulation functions
  *****************************************************************************
- * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: 39cf6d1d5bb59ca4960c0f8663d4b36fb9f946e5 $
+ * Copyright (C) 1999-2007 the VideoLAN team
+ * $Id: fc878fc37b6e4bc40e323041be8568174c58154b $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -20,8 +20,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
- 
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_vout.h>
 #include <vlc_block.h>
 #include <vlc_filter.h>
 #include <vlc_osd.h>
@@ -70,6 +74,7 @@ int osd_ShowTextAbsolute( spu_t *p_spu_channel, int i_channel,
 {
     subpicture_t *p_spu;
     video_format_t fmt;
+    (void)p_style;
 
     if( !psz_string ) return VLC_EGENERIC;
 
@@ -91,14 +96,15 @@ int osd_ShowTextAbsolute( spu_t *p_spu_channel, int i_channel,
     }
 
     p_spu->p_region->psz_text = strdup( psz_string );
+    p_spu->p_region->i_align = i_flags & SUBPICTURE_ALIGN_MASK;
     p_spu->i_start = i_start;
     p_spu->i_stop = i_stop;
-    p_spu->b_ephemer = VLC_TRUE;
-    p_spu->b_absolute = VLC_FALSE;
+    p_spu->b_ephemer = true;
+    p_spu->b_absolute = false;
 
     p_spu->i_x = i_hmargin;
     p_spu->i_y = i_vmargin;
-    p_spu->i_flags = i_flags;
+    p_spu->i_flags = i_flags & ~SUBPICTURE_ALIGN_MASK;
     p_spu->i_channel = i_channel;
 
     spu_DisplaySubpicture( p_spu_channel, p_spu );
@@ -117,18 +123,19 @@ int osd_ShowTextAbsolute( spu_t *p_spu_channel, int i_channel,
 void osd_Message( spu_t *p_spu, int i_channel,
                         char *psz_format, ... )
 {
-    char *psz_string;
     va_list args;
 
     if( p_spu )
     {
+        char *psz_string;
         va_start( args, psz_format );
-        vasprintf( &psz_string, psz_format, args );
+        if( vasprintf( &psz_string, psz_format, args ) != -1 )
+        {
+            osd_ShowTextRelative( p_spu, i_channel, psz_string, NULL,
+                    OSD_ALIGN_TOP|OSD_ALIGN_RIGHT, 30,20,1000000 );
 
-        osd_ShowTextRelative( p_spu, i_channel, psz_string, NULL,
-                               OSD_ALIGN_TOP|OSD_ALIGN_RIGHT, 30,20,1000000 );
-
-        free( psz_string );
+            free( psz_string );
+        }
         va_end( args );
     }
 }

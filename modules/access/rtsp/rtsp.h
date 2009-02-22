@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: 0b00d9567dae4f090904f464ea11ff4ccc3e337e $
+ * $Id$
  *
  * a minimalistic implementation of rtsp protocol,
  * *not* RFC 2326 compilant yet.
@@ -58,7 +58,7 @@ int rtsp_request_tearoff( rtsp_client_t *, const char *what );
 
 int rtsp_send_ok( rtsp_client_t * );
 
-int rtsp_read_data( rtsp_client_t *, char *buffer, unsigned int size );
+int rtsp_read_data( rtsp_client_t *, uint8_t *buffer, unsigned int size );
 
 char* rtsp_search_answers( rtsp_client_t *, const char *tag );
 void rtsp_free_answers( rtsp_client_t * );

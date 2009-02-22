@@ -2,7 +2,7 @@
  * xml.h: XML abstraction layer
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 4b6d4d12a83f35e7f45035909ee2d4c18fe74fe6 $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -21,8 +21,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_XML_H
-#define _VLC_XML_H
+#ifndef VLC_XML_H
+#define VLC_XML_H
+
+/**
+ * \file
+ * This file defines functions and structures to handle xml tags in vlc
+ *
+ */
 
 # ifdef __cplusplus
 extern "C" {
@@ -64,7 +70,7 @@ struct xml_reader_t
     char * (*pf_value) ( xml_reader_t * );
     int (*pf_next_attr) ( xml_reader_t * );
 
-    int (*pf_use_dtd) ( xml_reader_t *, vlc_bool_t );
+    int (*pf_use_dtd) ( xml_reader_t *, bool );
 };
 
 #define xml_ReaderRead( a ) a->pf_read( a )

@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: 7cb46ebaa8195642b1dc71d8335a0e7fddb0ded2 $
+ * $Id: be950c2f07d9ea409ccd829abeef31e7ddf326df $
  *
  * sdp/sdpplin parser.
  *
@@ -96,7 +96,7 @@ static int filter(const char *in, const char *filter, char **out, size_t outlen)
 
   if (!in) return 0;
 
-  len = (strchr(in,'\n')) ? strchr(in,'\n')-in : strlen(in);
+  len = (strchr(in,'\n')) ? (size_t)(strchr(in,'\n')-in) : strlen(in);
   if (!strncmp(in,filter,flen)) {
     if(in[flen]=='"') flen++;
     if(in[len-1]==13) len--;
@@ -216,14 +216,14 @@ static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
       *data=nl(*data);
     }
   }
-  if( buf ) free(buf);
-  if( decoded )free(decoded);
+  free( buf );
+  free( decoded) ;
   return desc;
 
 error:
-  if( decoded ) free(decoded);
-  if( desc ) free( desc );
-  if( buf ) free( buf );
+  free( decoded );
+  free( desc );
+  free( buf );
   return NULL;
 }
 
@@ -231,16 +231,18 @@ sdpplin_t *sdpplin_parse(char *data) {
 
   sdpplin_t        *desc = malloc(sizeof(sdpplin_t));
   sdpplin_stream_t *stream;
-  char             *buf=malloc(BUFLEN);
-  char             *decoded=malloc(BUFLEN);
+  char             *buf=NULL;
+  char             *decoded=NULL;
   int              handled;
   int              len;
 
   if( !desc ) return NULL;
+  buf = malloc(BUFLEN);
   if( !buf ) {
     free( desc );
     return NULL;
   }
+  decoded = malloc(BUFLEN);
   if( !decoded ) {
     free( buf );
     free( desc );
@@ -329,8 +331,8 @@ sdpplin_t *sdpplin_parse(char *data) {
     }
   }
 
-  free(decoded);
-  free(buf);
+  free( decoded );
+  free( buf );
   return desc;
 }
 
@@ -342,36 +344,36 @@ void sdpplin_free(sdpplin_t *description) {
 
   for( i=0; i<description->stream_count; i++ ) {
     if( description->stream[i] ) {
-      if( description->stream[i]->id ) free( description->stream[i]->id );
-      if( description->stream[i]->bandwidth ) free( description->stream[i]->bandwidth );
-      if( description->stream[i]->range ) free( description->stream[i]->range );
-      if( description->stream[i]->length ) free( description->stream[i]->length );
-      if( description->stream[i]->rtpmap ) free( description->stream[i]->rtpmap );
-      if( description->stream[i]->mimetype ) free( description->stream[i]->mimetype );
-      if( description->stream[i]->stream_name ) free( description->stream[i]->stream_name );
-      if( description->stream[i]->mime_type ) free( description->stream[i]->mime_type );
-      if( description->stream[i]->mlti_data ) free( description->stream[i]->mlti_data );
-      if( description->stream[i]->rmff_flags ) free( description->stream[i]->rmff_flags );
-      if( description->stream[i]->asm_rule_book ) free( description->stream[i]->asm_rule_book );
+      free( description->stream[i]->id );
+      free( description->stream[i]->bandwidth );
+      free( description->stream[i]->range );
+      free( description->stream[i]->length );
+      free( description->stream[i]->rtpmap );
+      free( description->stream[i]->mimetype );
+      free( description->stream[i]->stream_name );
+      free( description->stream[i]->mime_type );
+      free( description->stream[i]->mlti_data );
+      free( description->stream[i]->rmff_flags );
+      free( description->stream[i]->asm_rule_book );
       free( description->stream[i] );
     }
   }
   if( description->stream_count ) free( description->stream );
 
-  if( description->owner ) free( description->owner );
-  if( description->session_name ) free( description->session_name );
-  if( description->session_info ) free( description->session_info );
-  if( description->uri ) free( description->uri );
-  if( description->email ) free( description->email );
-  if( description->phone ) free( description->phone );
-  if( description->connection ) free( description->connection );
-  if( description->bandwidth ) free( description->bandwidth );
-  if( description->title ) free( description->title );
-  if( description->author ) free( description->author );
-  if( description->copyright ) free( description->copyright );
-  if( description->keywords ) free( description->keywords );
-  if( description->asm_rule_book ) free( description->asm_rule_book );
-  if( description->abstract ) free( description->abstract );
-  if( description->range ) free( description->range );
+  free( description->owner );
+  free( description->session_name );
+  free( description->session_info );
+  free( description->uri );
+  free( description->email );
+  free( description->phone );
+  free( description->connection );
+  free( description->bandwidth );
+  free( description->title );
+  free( description->author );
+  free( description->copyright );
+  free( description->keywords );
+  free( description->asm_rule_book );
+  free( description->abstract );
+  free( description->range );
   free(description);
 }

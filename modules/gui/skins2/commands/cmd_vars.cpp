@@ -2,7 +2,7 @@
  * cmd_vars.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: ce08f358131fc6bb7befe0f9981c6b421ff5bfa8 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -25,16 +25,8 @@
 #include "../src/vlcproc.hpp"
 #include "../utils/var_text.hpp"
 #include "../vars/equalizer.hpp"
-#include "../vars/playlist.hpp"
 #include "../vars/playtree.hpp"
 
-
-void CmdNotifyPlaylist::execute()
-{
-    // Notify the playlist variable
-    Playlist &rVar = VlcProc::instance( getIntf() )->getPlaylistVar();
-    rVar.onChange();
-}
 
 void CmdPlaytreeChanged::execute()
 {
@@ -42,7 +34,6 @@ void CmdPlaytreeChanged::execute()
     Playtree &rVar = VlcProc::instance( getIntf() )->getPlaytreeVar();
     rVar.onChange();
 }
-
 
 void CmdPlaytreeUpdate::execute()
 {
@@ -53,9 +44,8 @@ void CmdPlaytreeUpdate::execute()
 
 bool CmdPlaytreeUpdate::checkRemove( CmdGeneric *pQueuedCommand ) const
 {
-
+    // We don't use RTTI - Use C-style cast
     CmdPlaytreeUpdate *pUpdateCommand = (CmdPlaytreeUpdate *)(pQueuedCommand);
-    //CmdPlaytreeUpdate *pUpdateCommand = dynamic_cast<CmdPlaytreeUpdate *>(pQueuedCommand);
     if( m_id == pUpdateCommand->m_id )
     {
         return true;

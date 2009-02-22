@@ -1,8 +1,8 @@
 /*****************************************************************************
  * osd_widgets.c : OSD widgets manipulation functions
  *****************************************************************************
- * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: c89ad56c7b56f1922aa6598cd73b67afbd242aec $
+ * Copyright (C) 2004-2007 the VideoLAN team
+ * $Id$
  *
  * Author: Yoann Peronneau <yoann@videolan.org>
  *
@@ -24,11 +24,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                                /* free() */
-#include <vlc/vout.h>
-#include <vlc_osd.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc_video.h>
+#include <vlc_common.h>
+#include <vlc_osd.h>
+#include <vlc_vout.h>
 #include <vlc_filter.h>
 
 #define STYLE_EMPTY 0
@@ -201,8 +203,8 @@ subpicture_t *osd_CreateWidget( spu_t *p_spu, int i_channel )
     p_subpic->i_channel = i_channel;
     p_subpic->i_start = i_now;
     p_subpic->i_stop = i_now + 1200000;
-    p_subpic->b_ephemer = VLC_TRUE;
-    p_subpic->b_fade = VLC_TRUE;
+    p_subpic->b_ephemer = true;
+    p_subpic->b_fade = true;
 
     return p_subpic;
 }
@@ -218,6 +220,7 @@ int osd_Slider( vlc_object_t *p_this, spu_t *p_spu,
 {
     subpicture_t *p_subpic;
     int i_x_margin, i_y_margin, i_x, i_y, i_width, i_height;
+    (void)p_this;
 
     p_subpic = osd_CreateWidget( p_spu, i_channel );
     if( p_subpic == NULL )
@@ -280,6 +283,7 @@ int osd_Icon( vlc_object_t *p_this, spu_t *p_spu,
 {
     subpicture_t *p_subpic;
     int i_x_margin, i_y_margin, i_x, i_y, i_width, i_height;
+    (void)p_this;
 
     p_subpic = osd_CreateWidget( p_spu, i_channel );
     if( p_subpic == NULL )

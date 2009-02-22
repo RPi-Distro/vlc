@@ -2,7 +2,7 @@
  * file.c : audio output which writes the samples to a file
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 7b05249cce1a3faf97e62c5e119638e972d9b0a5 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -25,16 +25,18 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <string.h>
-#include <stdlib.h>
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <errno.h>
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
-#include "charset.h"
-
-#include "aout_internal.h"
-#include "codecs.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
+#include <vlc_codecs.h> /* WAVEHEADER */
+#include <vlc_charset.h>
 
 #define FRAME_SIZE 2048
 #define A52_FRAME_NB 1536
@@ -48,13 +50,13 @@
 struct aout_sys_t
 {
     FILE     * p_file;
-    vlc_bool_t b_add_wav_header;
+    bool b_add_wav_header;
 
     WAVEHEADER waveh;                      /* Wave header of the output file */
 };
 
 #define CHANNELS_MAX 6
-static int pi_channels_maps[CHANNELS_MAX+1] =
+static const int pi_channels_maps[CHANNELS_MAX+1] =
 {
     0,
     AOUT_CHAN_CENTER,
@@ -90,37 +92,38 @@ static void    Play        ( aout_instance_t * );
 #define WAV_LONGTEXT N_("Instead of writing a raw file, you can add a WAV " \
                         "header to the file.")
 
-static char *format_list[] = { "u8", "s8", "u16", "s16", "u16_le", "s16_le",
-                               "u16_be", "s16_be", "fixed32", "float32",
-                               "spdif" };
-static int format_int[] = { VLC_FOURCC('u','8',' ',' '),
-                            VLC_FOURCC('s','8',' ',' '),
-                            AOUT_FMT_U16_NE, AOUT_FMT_S16_NE,
-                            VLC_FOURCC('u','1','6','l'),
-                            VLC_FOURCC('s','1','6','l'),
-                            VLC_FOURCC('u','1','6','b'),
-                            VLC_FOURCC('s','1','6','b'),
-                            VLC_FOURCC('f','i','3','2'),
-                            VLC_FOURCC('f','l','3','2'),
-                            VLC_FOURCC('s','p','i','f') };
+static const char *const format_list[] = { "u8", "s8", "u16", "s16", "u16_le",
+                                     "s16_le", "u16_be", "s16_be", "fixed32",
+                                     "float32", "spdif" };
+static const int format_int[] = { VLC_FOURCC('u','8',' ',' '),
+                                  VLC_FOURCC('s','8',' ',' '),
+                                  AOUT_FMT_U16_NE, AOUT_FMT_S16_NE,
+                                  VLC_FOURCC('u','1','6','l'),
+                                  VLC_FOURCC('s','1','6','l'),
+                                  VLC_FOURCC('u','1','6','b'),
+                                  VLC_FOURCC('s','1','6','b'),
+                                  VLC_FOURCC('f','i','3','2'),
+                                  VLC_FOURCC('f','l','3','2'),
+                                  VLC_FOURCC('s','p','i','f') };
 
 #define FILE_TEXT N_("Output file")
-#define FILE_LONGTEXT N_("File to which the audio samples will be written to.")
+#define FILE_LONGTEXT N_("File to which the audio samples will be written to. (\"-\" for stdout")
 
 vlc_module_begin();
-    set_description( _("File audio output") );
-    set_shortname( _("File") );
+    set_description( N_("File audio output") );
+    set_shortname( N_("File") );
     set_category( CAT_AUDIO );
     set_subcategory( SUBCAT_AUDIO_AOUT );
 
     add_string( "audiofile-format", "s16", NULL,
-                FORMAT_TEXT, FORMAT_LONGTEXT, VLC_TRUE );
+                FORMAT_TEXT, FORMAT_LONGTEXT, true );
         change_string_list( format_list, 0, 0 );
     add_integer( "audiofile-channels", 0, NULL,
-                 CHANNELS_TEXT, CHANNELS_LONGTEXT, VLC_TRUE );
+                 CHANNELS_TEXT, CHANNELS_LONGTEXT, true );
     add_file( "audiofile-file", "audiofile.wav", NULL, FILE_TEXT,
-              FILE_LONGTEXT, VLC_FALSE );
-    add_bool( "audiofile-wav", 1, NULL, WAV_TEXT, WAV_LONGTEXT, VLC_TRUE );
+              FILE_LONGTEXT, false );
+        change_unsafe();
+    add_bool( "audiofile-wav", 1, NULL, WAV_TEXT, WAV_LONGTEXT, true );
 
     set_capability( "audio output", 0 );
     add_shortcut( "file" );
@@ -135,7 +138,7 @@ static int Open( vlc_object_t * p_this )
 {
     aout_instance_t * p_aout = (aout_instance_t *)p_this;
     char * psz_name, * psz_format;
-    char ** ppsz_compare = format_list;
+    const char * const * ppsz_compare = format_list;
     vlc_value_t val;
     int i_channels, i = 0;
 
@@ -145,19 +148,20 @@ static int Open( vlc_object_t * p_this )
     if( !psz_name || !*psz_name )
     {
         msg_Err( p_aout, "you need to specify an output file name" );
-        if( psz_name ) free( psz_name );
+        free( psz_name );
         return VLC_EGENERIC;
     }
 
     /* Allocate structure */
     p_aout->output.p_sys = malloc( sizeof( aout_sys_t ) );
     if( p_aout->output.p_sys == NULL )
-    {
-        msg_Err( p_aout, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
-    p_aout->output.p_sys->p_file = utf8_fopen( psz_name, "wb" );
+    if( !strcmp( psz_name, "-" ) )
+        p_aout->output.p_sys->p_file = stdout;
+    else
+        p_aout->output.p_sys->p_file = utf8_fopen( psz_name, "wb" );
+
     free( psz_name );
     if ( p_aout->output.p_sys->p_file == NULL )
     {
@@ -185,10 +189,13 @@ static int Open( vlc_object_t * p_this )
     {
         msg_Err( p_aout, "cannot understand the format string (%s)",
                  psz_format );
-        fclose( p_aout->output.p_sys->p_file );
+        if( p_aout->output.p_sys->p_file != stdout )
+            fclose( p_aout->output.p_sys->p_file );
         free( p_aout->output.p_sys );
+        free( psz_format );
         return VLC_EGENERIC;
     }
+    free( psz_format );
 
     p_aout->output.output.i_format = format_int[i];
     if ( AOUT_FMT_NON_LINEAR( &p_aout->output.output ) )
@@ -271,7 +278,7 @@ static int Open( vlc_object_t * p_this )
         if( fwrite( wh, sizeof(WAVEHEADER), 1,
                     p_aout->output.p_sys->p_file ) != 1 )
         {
-            msg_Err( p_aout, "write error (%s)", strerror(errno) );
+            msg_Err( p_aout, "write error (%m)" );
         }
     }
 
@@ -296,7 +303,7 @@ static void Close( vlc_object_t * p_this )
         /* Write Wave Header */
         if( fseek( p_aout->output.p_sys->p_file, 0, SEEK_SET ) )
         {
-            msg_Err( p_aout, "seek error (%s)", strerror(errno) );
+            msg_Err( p_aout, "seek error (%m)" );
         }
 
         /* Header -> little endian format */
@@ -308,11 +315,12 @@ static void Close( vlc_object_t * p_this )
         if( fwrite( &p_aout->output.p_sys->waveh, sizeof(WAVEHEADER), 1,
                     p_aout->output.p_sys->p_file ) != 1 )
         {
-            msg_Err( p_aout, "write error (%s)", strerror(errno) );
+            msg_Err( p_aout, "write error (%m)" );
         }
     }
 
-    fclose( p_aout->output.p_sys->p_file );
+    if( p_aout->output.p_sys->p_file != stdout )
+        fclose( p_aout->output.p_sys->p_file );
     free( p_aout->output.p_sys );
 }
 
@@ -328,7 +336,7 @@ static void Play( aout_instance_t * p_aout )
     if( fwrite( p_buffer->p_buffer, p_buffer->i_nb_bytes, 1,
                 p_aout->output.p_sys->p_file ) != 1 )
     {
-        msg_Err( p_aout, "write error (%s)", strerror(errno) );
+        msg_Err( p_aout, "write error (%m)" );
     }
 
     if( p_aout->output.p_sys->b_add_wav_header )

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * filters.c : audio output filters management
  *****************************************************************************
- * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 197dcd296989c7d8b220d466a24b3d6fd2f8fdc3 $
+ * Copyright (C) 2002-2007 the VideoLAN team
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -24,17 +24,20 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                            /* calloc(), malloc(), free() */
-#include <string.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/vlc.h>
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 #ifdef HAVE_ALLOCA_H
 #   include <alloca.h>
 #endif
 
-#include "audio_output.h"
+#include <vlc_aout.h>
 #include "aout_internal.h"
+#include <libvlc.h>
 
 /*****************************************************************************
  * FindFilter: find an audio filter for a specific transformation
@@ -43,8 +46,11 @@ static aout_filter_t * FindFilter( aout_instance_t * p_aout,
                              const audio_sample_format_t * p_input_format,
                              const audio_sample_format_t * p_output_format )
 {
-    aout_filter_t * p_filter = vlc_object_create( p_aout,
-                                                  sizeof(aout_filter_t) );
+    static const char typename[] = "audio output";
+    aout_filter_t * p_filter;
+
+    p_filter = vlc_custom_create( p_aout, sizeof(*p_filter),
+                                  VLC_OBJECT_GENERIC, typename );
 
     if ( p_filter == NULL ) return NULL;
     vlc_object_attach( p_filter, p_aout );
@@ -56,11 +62,11 @@ static aout_filter_t * FindFilter( aout_instance_t * p_aout,
     if ( p_filter->p_module == NULL )
     {
         vlc_object_detach( p_filter );
-        vlc_object_destroy( p_filter );
+        vlc_object_release( p_filter );
         return NULL;
     }
 
-    p_filter->b_continuity = VLC_FALSE;
+    p_filter->b_continuity = false;
 
     return p_filter;
 }
@@ -78,10 +84,10 @@ static int SplitConversion( const audio_sample_format_t * p_input_format,
                             const audio_sample_format_t * p_output_format,
                             audio_sample_format_t * p_middle_format )
 {
-    vlc_bool_t b_format =
+    bool b_format =
              (p_input_format->i_format != p_output_format->i_format);
-    vlc_bool_t b_rate = (p_input_format->i_rate != p_output_format->i_rate);
-    vlc_bool_t b_channels =
+    bool b_rate = (p_input_format->i_rate != p_output_format->i_rate);
+    bool b_channels =
         (p_input_format->i_physical_channels
           != p_output_format->i_physical_channels)
      || (p_input_format->i_original_channels
@@ -120,7 +126,7 @@ static void ReleaseFilter( aout_filter_t * p_filter )
 {
     module_Unneed( p_filter, p_filter->p_module );
     vlc_object_detach( p_filter );
-    vlc_object_destroy( p_filter );
+    vlc_object_release( p_filter );
 }
 
 /*****************************************************************************
@@ -150,6 +156,9 @@ int aout_FiltersCreatePipeline( aout_instance_t * p_aout,
     if( *pi_nb_filters + 1 > AOUT_MAX_FILTERS )
     {
         msg_Err( p_aout, "max filter reached (%d)", AOUT_MAX_FILTERS );
+        intf_UserFatal( p_aout, false, _("Audio filtering failed"),
+                        _("The maximum number of filters (%d) was reached."),
+                        AOUT_MAX_FILTERS );
         return -1;
     }
 
@@ -194,6 +203,9 @@ int aout_FiltersCreatePipeline( aout_instance_t * p_aout,
     {
         ReleaseFilter( pp_filters[0] );
         msg_Err( p_aout, "max filter reached (%d)", AOUT_MAX_FILTERS );
+        intf_UserFatal( p_aout, false, _("Audio filtering failed"),
+                        _("The maximum number of filters (%d) was reached."),
+                        AOUT_MAX_FILTERS );
         return -1;
     }
     pp_filters[1] = FindFilter( p_aout, &pp_filters[0]->output,
@@ -214,6 +226,9 @@ int aout_FiltersCreatePipeline( aout_instance_t * p_aout,
         {
             ReleaseFilter( pp_filters[0] );
             msg_Err( p_aout, "max filter reached (%d)", AOUT_MAX_FILTERS );
+            intf_UserFatal( p_aout, false, _("Audio filtering failed"),
+                            _("The maximum number of filters (%d) was reached."),
+                            AOUT_MAX_FILTERS );
             return -1;
         }
         pp_filters[1] = FindFilter( p_aout, &pp_filters[0]->output,
@@ -256,12 +271,13 @@ void aout_FiltersDestroyPipeline( aout_instance_t * p_aout,
                                   int i_nb_filters )
 {
     int i;
+    (void)p_aout;
 
     for ( i = 0; i < i_nb_filters; i++ )
     {
         module_Unneed( pp_filters[i], pp_filters[i]->p_module );
         vlc_object_detach( pp_filters[i] );
-        vlc_object_destroy( pp_filters[i] );
+        vlc_object_release( pp_filters[i] );
     }
 }
 
@@ -282,10 +298,10 @@ void aout_FiltersHintBuffers( aout_instance_t * p_aout,
         aout_filter_t * p_filter = pp_filters[i];
 
         int i_output_size = p_filter->output.i_bytes_per_frame
-                             * p_filter->output.i_rate
+                             * p_filter->output.i_rate * AOUT_MAX_INPUT_RATE
                              / p_filter->output.i_frame_length;
         int i_input_size = p_filter->input.i_bytes_per_frame
-                             * p_filter->input.i_rate
+                             * p_filter->input.i_rate * AOUT_MAX_INPUT_RATE
                              / p_filter->input.i_frame_length;
 
         p_first_alloc->i_bytes_per_sec = __MAX( p_first_alloc->i_bytes_per_sec,
@@ -318,7 +334,7 @@ void aout_FiltersPlay( aout_instance_t * p_aout,
 {
     int i;
 
-    for ( i = 0; i < i_nb_filters; i++ )
+    for( i = 0; i < i_nb_filters; i++ )
     {
         aout_filter_t * p_filter = pp_filters[i];
         aout_buffer_t * p_output_buffer;
@@ -327,25 +343,32 @@ void aout_FiltersPlay( aout_instance_t * p_aout,
          * p_filter->output.i_rate / p_filter->input.i_rate) so we need
          * slightly bigger buffers. */
         aout_BufferAlloc( &p_filter->output_alloc,
-            ((mtime_t)(*pp_input_buffer)->i_nb_samples + 2)
-            * 1000000 / p_filter->input.i_rate,
-            *pp_input_buffer, p_output_buffer );
-        if ( p_output_buffer == NULL )
-        {
-            msg_Err( p_aout, "out of memory" );
+                          ((mtime_t)(*pp_input_buffer)->i_nb_samples + 2)
+                          * 1000000 / p_filter->input.i_rate,
+                          *pp_input_buffer, p_output_buffer );
+        if( p_output_buffer == NULL )
             return;
-        }
+
         /* Please note that p_output_buffer->i_nb_samples & i_nb_bytes
          * shall be set by the filter plug-in. */
+        if( (*pp_input_buffer)->i_nb_samples > 0 )
+        {
+            p_filter->pf_do_work( p_aout, p_filter, *pp_input_buffer,
+                                  p_output_buffer );
+        }
+        else
+        {
+            p_output_buffer->i_nb_bytes = 0;
+            p_output_buffer->i_nb_samples = 0;
+        }
 
-        p_filter->pf_do_work( p_aout, p_filter, *pp_input_buffer,
-                              p_output_buffer );
-
-        if ( !p_filter->b_in_place )
+        if( !p_filter->b_in_place )
         {
             aout_BufferFree( *pp_input_buffer );
             *pp_input_buffer = p_output_buffer;
         }
     }
+
+    assert( (*pp_input_buffer) == NULL || (*pp_input_buffer)->i_alloc_type != AOUT_ALLOC_STACK );
 }
 

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * vlc_httpd.h: builtin HTTP/RTSP server.
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: 02b1b44781eed0cb5555d1fc4f3d515aef203044 $
+ * Copyright (C) 2004-2006 the VideoLAN team
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,18 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_HTTPD_H
-#define _VLC_HTTPD_H 1
+#ifndef VLC_HTTPD_H
+#define VLC_HTTPD_H 1
 
-/* NEVER touch that, it's here only because src/misc/objects.c
- * need sizeof(httpd_t) */
-struct httpd_t
-{
-    VLC_COMMON_MEMBERS
-
-    int          i_host;
-    httpd_host_t **host;
-};
+/**
+ * \file
+ * This file defines functions, structures, enums and macros for httpd functionality in vlc.
+ */
 
 enum
 {
@@ -55,63 +50,31 @@ enum
     HTTPD_MSG_SETUP,
     HTTPD_MSG_PLAY,
     HTTPD_MSG_PAUSE,
+    HTTPD_MSG_GETPARAMETER,
     HTTPD_MSG_TEARDOWN,
 
     /* just to track the count of MSG */
     HTTPD_MSG_MAX
 };
 
-/* each host run in his own thread */
-struct httpd_host_t
-{
-    VLC_COMMON_MEMBERS
-
-    httpd_t     *httpd;
-
-    /* ref count */
-    int         i_ref;
-
-    /* address/port and socket for listening at connections */
-    char        *psz_hostname;
-    int         i_port;
-    int         *fd;
-
-    vlc_mutex_t lock;
-
-    /* all registered url (becarefull that 2 httpd_url_t could point at the same url)
-     * This will slow down the url research but make my live easier
-     * All url will have their cb trigger, but only the first one can answer
-     * */
-    int         i_url;
-    httpd_url_t **url;
-
-    int            i_client;
-    httpd_client_t **client;
-
-    /* TLS data */
-    tls_server_t *p_tls;
-};
-
-
-
 enum
 {
     HTTPD_PROTO_NONE,
-    HTTPD_PROTO_HTTP,
-    HTTPD_PROTO_RTSP,
+    HTTPD_PROTO_HTTP,  /* HTTP/1.x */
+    HTTPD_PROTO_RTSP,  /* RTSP/1.x */
+    HTTPD_PROTO_HTTP0, /* HTTP/0.x */
 };
 
 struct httpd_message_t
 {
     httpd_client_t *cl; /* NULL if not throught a connection e vlc internal */
 
-    int     i_type;
-    int     i_proto;
-    int     i_version;
+    uint8_t i_type;
+    uint8_t i_proto;
+    uint8_t i_version;
 
     /* for an answer */
     int     i_status;
-    char    *psz_status;
 
     /* for a query */
     char    *psz_url;
@@ -159,11 +122,11 @@ VLC_EXPORT( char*,          httpd_ServerIP, ( const httpd_client_t *cl, char *ps
 /* High level */
 
 VLC_EXPORT( httpd_file_t *, httpd_FileNew, ( httpd_host_t *, const char *psz_url, const char *psz_mime, const char *psz_user, const char *psz_password, const vlc_acl_t *p_acl, httpd_file_callback_t pf_fill, httpd_file_sys_t * ) );
-VLC_EXPORT( void,           httpd_FileDelete, ( httpd_file_t * ) );
+VLC_EXPORT( httpd_file_sys_t *, httpd_FileDelete, ( httpd_file_t * ) );
 
 
 VLC_EXPORT( httpd_handler_t *, httpd_HandlerNew, ( httpd_host_t *, const char *psz_url, const char *psz_user, const char *psz_password, const vlc_acl_t *p_acl, httpd_handler_callback_t pf_fill, httpd_handler_sys_t * ) );
-VLC_EXPORT( void,           httpd_HandlerDelete, ( httpd_handler_t * ) );
+VLC_EXPORT( httpd_handler_sys_t *, httpd_HandlerDelete, ( httpd_handler_t * ) );
 
 
 VLC_EXPORT( httpd_redirect_t *, httpd_RedirectNew, ( httpd_host_t *, const char *psz_url_dst, const char *psz_url_src ) );
@@ -178,9 +141,9 @@ VLC_EXPORT( int,              httpd_StreamSend,   ( httpd_stream_t *, uint8_t *p
 
 /* Msg functions facilities */
 VLC_EXPORT( void,         httpd_MsgInit, ( httpd_message_t * )  );
-VLC_EXPORT( void,         httpd_MsgAdd, ( httpd_message_t *, char *psz_name, char *psz_value, ... ) );
+VLC_EXPORT( void,         httpd_MsgAdd, ( httpd_message_t *, const char *psz_name, const char *psz_value, ... ) LIBVLC_FORMAT( 3, 4 ) );
 /* return "" if not found. The string is not allocated */
-VLC_EXPORT( char *,       httpd_MsgGet, ( httpd_message_t *, char *psz_name ) );
+VLC_EXPORT( const char *, httpd_MsgGet, ( const httpd_message_t *, const char *psz_name ) );
 VLC_EXPORT( void,         httpd_MsgClean, ( httpd_message_t * ) );
 
 #endif /* _VLC_HTTPD_H */

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * aiff.c: Audio Interchange File Format demuxer
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: 8e744e648a26796177706697468e01bd5ad2b9cb $
+ * Copyright (C) 2004-2007 the VideoLAN team
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,10 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_demux.h>
 
 /* TODO:
  *  - ...
@@ -42,8 +46,8 @@ static void Close  ( vlc_object_t * );
 vlc_module_begin();
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_description( _("AIFF demuxer" ) );
-    set_capability( "demux2", 10 );
+    set_description( N_("AIFF demuxer" ) );
+    set_capability( "demux", 10 );
     set_callbacks( Open, Close );
     add_shortcut( "aiff" );
 vlc_module_end();
@@ -75,13 +79,13 @@ static int Demux  ( demux_t *p_demux );
 static int Control( demux_t *p_demux, int i_query, va_list args );
 
 /* GetF80BE: read a 80 bits float in big endian */
-static unsigned int GetF80BE( uint8_t p[10] )
+static unsigned int GetF80BE( const uint8_t p[10] )
 {
     unsigned int i_mantissa = GetDWBE( &p[2] );
     int          i_exp = 30 - p[1];
     unsigned int i_last = 0;
 
-    while( i_exp-- )
+    while( i_exp-- > 0 )
     {
         i_last = i_mantissa;
         i_mantissa >>= 1;
@@ -101,22 +105,19 @@ static int Open( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
 
-    uint8_t     *p_peek;
+    const uint8_t *p_peek;
 
-    if( stream_Peek( p_demux->s, &p_peek, 12 ) < 12 ) return VLC_EGENERIC;
-    if( strncmp( (char *)&p_peek[0], "FORM", 4 ) || strncmp( (char *)&p_peek[8], "AIFF", 4 ) )
-    {
+    if( stream_Peek( p_demux->s, &p_peek, 12 ) < 12 )
         return VLC_EGENERIC;
-    }
+    if( memcmp( p_peek, "FORM", 4 )
+     || memcmp( &p_peek[8], "AIFF", 4 ) )
+        return VLC_EGENERIC;
 
     /* skip aiff header */
     stream_Read( p_demux->s, NULL, 12 );
 
     /* Fill p_demux field */
-    p_demux->pf_demux = Demux;
-    p_demux->pf_control = Control;
-    p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
-
+    DEMUX_INIT_COMMON(); p_sys = p_demux->p_sys;
     es_format_Init( &p_sys->fmt, UNKNOWN_ES, 0 );
     p_sys->i_time = 1;
     p_sys->i_ssnd_pos = -1;
@@ -125,22 +126,14 @@ static int Open( vlc_object_t *p_this )
     {
         uint32_t i_size;
 
-        if( stream_Peek( p_demux->s, &p_peek, 8 ) < 8 )
-        {
-            msg_Dbg( p_demux, "cannot peek()" );
-            goto error;
-        }
+        CHECK_PEEK_GOTO( p_peek, 8 );
         i_size = GetDWBE( &p_peek[4] );
 
         msg_Dbg( p_demux, "chunk fcc=%4.4s size=%d", p_peek, i_size );
 
-        if( !strncmp( (char *)&p_peek[0], "COMM", 4 ) )
+        if( !memcmp( p_peek, "COMM", 4 ) )
         {
-            if( stream_Peek( p_demux->s, &p_peek, 18 + 8 ) < 18 + 8 )
-            {
-                msg_Dbg( p_demux, "cannot peek()" );
-                goto error;
-            }
+            CHECK_PEEK_GOTO( p_peek, 18+8 );
             es_format_Init( &p_sys->fmt, AUDIO_ES, VLC_FOURCC( 't', 'w', 'o', 's' ) );
             p_sys->fmt.audio.i_channels = GetWBE( &p_peek[8] );
             p_sys->fmt.audio.i_bitspersample = GetWBE( &p_peek[14] );
@@ -149,14 +142,9 @@ static int Open( vlc_object_t *p_this )
             msg_Dbg( p_demux, "COMM: channels=%d samples_frames=%d bits=%d rate=%d",
                      GetWBE( &p_peek[8] ), GetDWBE( &p_peek[10] ), GetWBE( &p_peek[14] ), GetF80BE( &p_peek[16] ) );
         }
-        else if( !strncmp( (char *)&p_peek[0], "SSND", 4 ) )
+        else if( !memcmp( p_peek, "SSND", 4 ) )
         {
-            if( stream_Peek( p_demux->s, &p_peek, 8 + 8 ) < 8 + 8 )
-            {
-                msg_Dbg( p_demux, "cannot peek()" );
-                goto error;
-            }
-
+            CHECK_PEEK_GOTO( p_peek, 8+8 );
             p_sys->i_ssnd_pos = stream_Tell( p_demux->s );
             p_sys->i_ssnd_size = i_size;
             p_sys->i_ssnd_offset = GetDWBE( &p_peek[8] );

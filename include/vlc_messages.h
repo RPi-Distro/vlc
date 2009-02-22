@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
- * $Id: d6f1ad59ed39fcec12eb382b93b491f55c465df9 $
+ * $Id: c0b8ee5e178ee6bd185bb20f83e0c3da4ea03316 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -24,10 +24,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdarg.h>
+#ifndef VLC_MESSAGES_H_
+#define VLC_MESSAGES_H_
 
-int vlc_mutex_lock(  vlc_mutex_t * ) ;
-int vlc_mutex_unlock(  vlc_mutex_t * ) ;
+/**
+ * \file
+ * This file defines structures and functions to handle messages and statistics gathering
+ */
+
+#include <stdarg.h>
 
 /**
  * \defgroup messages Messages
@@ -37,15 +42,14 @@ int vlc_mutex_unlock(  vlc_mutex_t * ) ;
  * @{
  */
 
-
 /**
- * Store a single message.
+ * Store a single message sent to user.
  */
 typedef struct
 {
     int     i_type;                             /**< message type, see below */
     int     i_object_id;
-    int     i_object_type;
+    const char *psz_object_type;
     char *  psz_module;
     char *  psz_msg;                            /**< the message itself */
     char *  psz_header;                         /**< Additional header */
@@ -63,42 +67,6 @@ typedef struct
 /** debug messages */
 #define VLC_MSG_DBG   3
 
-#define MSG_QUEUE_NORMAL 0
-#define MSG_QUEUE_HTTPD_ACCESS 1
-
-/**
- * Store all data requiered by messages interfaces.
- */
-struct msg_bank_t
-{
-    vlc_mutex_t             lock;
-    int                     i_queues;
-    msg_queue_t           **pp_queues;
-};
-
-struct msg_queue_t
-{
-    int                     i_id;
-
-    /** Message queue lock */
-    vlc_mutex_t             lock;
-    vlc_bool_t              b_overflow;
-
-    /* Message queue */
-    msg_item_t              msg[VLC_MSG_QSIZE];           /**< message queue */
-    int i_start;
-    int i_stop;
-
-    /* Subscribers */
-    int i_sub;
-    msg_subscription_t **pp_sub;
-
-    /* Logfile for WinCE */
-#ifdef UNDER_CE
-    FILE *logfile;
-#endif
-};
-
 /**
  * Used by interface plugins which subscribe to the message bank.
  */
@@ -114,89 +82,31 @@ struct msg_subscription_t
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
-VLC_EXPORT( void, __msg_Generic, ( vlc_object_t *, int, int, const char *, const char *, ... ) ATTRIBUTE_FORMAT( 5, 6 ) );
-VLC_EXPORT( void, __msg_GenericVa, ( vlc_object_t *, int, int, const char *, const char *, va_list args ) );
-#define msg_GenericVa(a, b, c, d, e,f) __msg_GenericVa(VLC_OBJECT(a), b, c, d, e,f)
-VLC_EXPORT( void, __msg_Info,    ( vlc_object_t *, const char *, ... ) ATTRIBUTE_FORMAT( 2, 3 ) );
-VLC_EXPORT( void, __msg_Err,     ( vlc_object_t *, const char *, ... ) ATTRIBUTE_FORMAT( 2, 3 ) );
-VLC_EXPORT( void, __msg_Warn,    ( vlc_object_t *, const char *, ... ) ATTRIBUTE_FORMAT( 2, 3 ) );
-VLC_EXPORT( void, __msg_Dbg,    ( vlc_object_t *, const char *, ... ) ATTRIBUTE_FORMAT( 2, 3 ) );
+VLC_EXPORT( void, __msg_Generic, ( vlc_object_t *, int, const char *, const char *, ... ) LIBVLC_FORMAT( 4, 5 ) );
+VLC_EXPORT( void, __msg_GenericVa, ( vlc_object_t *, int, const char *, const char *, va_list args ) );
+#define msg_GenericVa(a, b, c, d, e) __msg_GenericVa(VLC_OBJECT(a), b, c, d, e)
+VLC_EXPORT( void, __msg_Info,    ( vlc_object_t *, const char *, ... ) LIBVLC_FORMAT( 2, 3 ) );
+VLC_EXPORT( void, __msg_Err,     ( vlc_object_t *, const char *, ... ) LIBVLC_FORMAT( 2, 3 ) );
+VLC_EXPORT( void, __msg_Warn,    ( vlc_object_t *, const char *, ... ) LIBVLC_FORMAT( 2, 3 ) );
+VLC_EXPORT( void, __msg_Dbg,    ( vlc_object_t *, const char *, ... ) LIBVLC_FORMAT( 2, 3 ) );
 
-#ifdef HAVE_VARIADIC_MACROS
+#define msg_Info( p_this, ... ) \
+      __msg_Generic( VLC_OBJECT(p_this), VLC_MSG_INFO, \
+                     MODULE_STRING, __VA_ARGS__ )
+#define msg_Err( p_this, ... ) \
+      __msg_Generic( VLC_OBJECT(p_this), VLC_MSG_ERR, \
+                     MODULE_STRING, __VA_ARGS__ )
+#define msg_Warn( p_this, ... ) \
+      __msg_Generic( VLC_OBJECT(p_this), VLC_MSG_WARN, \
+                     MODULE_STRING, __VA_ARGS__ )
+#define msg_Dbg( p_this, ... ) \
+      __msg_Generic( VLC_OBJECT(p_this), VLC_MSG_DBG, \
+                     MODULE_STRING, __VA_ARGS__ )
 
-#   define msg_Info( p_this, psz_format, args... ) \
-      __msg_Generic( VLC_OBJECT(p_this), MSG_QUEUE_NORMAL,VLC_MSG_INFO, MODULE_STRING, \
-                     psz_format, ## args )
-
-#   define msg_Err( p_this, psz_format, args... ) \
-      __msg_Generic( VLC_OBJECT(p_this), MSG_QUEUE_NORMAL, VLC_MSG_ERR, MODULE_STRING, \
-                     psz_format, ## args )
-
-#   define msg_Warn( p_this, psz_format, args... ) \
-      __msg_Generic( VLC_OBJECT(p_this), MSG_QUEUE_NORMAL, VLC_MSG_WARN, MODULE_STRING, \
-                     psz_format, ## args )
-
-#   define msg_Dbg( p_this, psz_format, args... ) \
-      __msg_Generic( VLC_OBJECT(p_this), MSG_QUEUE_NORMAL, VLC_MSG_DBG, MODULE_STRING, \
-                     psz_format, ## args )
-
-#elif defined(_MSC_VER) /* To avoid warnings and even errors with c++ files */
-
-inline void msg_Info( void *p_this, const char *psz_format, ... )
-{
-  va_list ap;
-  va_start( ap, psz_format );
-  __msg_GenericVa( ( vlc_object_t *)p_this, MSG_QUEUE_NORMAL,VLC_MSG_INFO, MODULE_STRING,
-                   psz_format, ap );
-  va_end(ap);
-}
-inline void msg_Err( void *p_this, const char *psz_format, ... )
-{
-  va_list ap;
-  va_start( ap, psz_format );
-  __msg_GenericVa( ( vlc_object_t *)p_this,MSG_QUEUE_NORMAL, VLC_MSG_ERR, MODULE_STRING,
-                   psz_format, ap );
-  va_end(ap);
-}
-inline void msg_Warn( void *p_this, const char *psz_format, ... )
-{
-  va_list ap;
-  va_start( ap, psz_format );
-  __msg_GenericVa( ( vlc_object_t *)p_this, MSG_QUEUE_NORMAL, VLC_MSG_WARN, MODULE_STRING,
-                   psz_format, ap );
-  va_end(ap);
-}
-inline void msg_Dbg( void *p_this, const char *psz_format, ... )
-{
-  va_list ap;
-  va_start( ap, psz_format );
-  __msg_GenericVa( ( vlc_object_t *)p_this, MSG_QUEUE_NORMAL, VLC_MSG_DBG, MODULE_STRING,
-                   psz_format, ap );
-  va_end(ap);
-}
-
-#else /* _MSC_VER */
-
-#   define msg_Info __msg_Info
-#   define msg_Err __msg_Err
-#   define msg_Warn __msg_Warn
-#   define msg_Dbg __msg_Dbg
-
-#endif /* HAVE_VARIADIC_MACROS */
-
-#define msg_Create(a) __msg_Create(VLC_OBJECT(a))
-#define msg_Flush(a) __msg_Flush(VLC_OBJECT(a))
-#define msg_Destroy(a) __msg_Destroy(VLC_OBJECT(a))
-void __msg_Create  ( vlc_object_t * );
-void __msg_Flush   ( vlc_object_t * );
-void __msg_Destroy ( vlc_object_t * );
-
-#define msg_Subscribe(a,b) __msg_Subscribe(VLC_OBJECT(a),b)
+#define msg_Subscribe(a) __msg_Subscribe(VLC_OBJECT(a))
 #define msg_Unsubscribe(a,b) __msg_Unsubscribe(VLC_OBJECT(a),b)
-VLC_EXPORT( msg_subscription_t*, __msg_Subscribe, ( vlc_object_t *, int ) );
+VLC_EXPORT( msg_subscription_t*, __msg_Subscribe, ( vlc_object_t * ) );
 VLC_EXPORT( void, __msg_Unsubscribe, ( vlc_object_t *, msg_subscription_t * ) );
-
-extern const char *msg_GetObjectTypeName(int i_object_type );
 
 /**
  * @}
@@ -229,10 +139,10 @@ struct counter_sample_t
 
 struct counter_t
 {
-    /* The list is *NOT* sorted at the moment, it could be ... */
-    uint64_t            i_index;
+    unsigned int        i_id;
     char              * psz_name;
     int                 i_type;
+    void              * p_obj;
     int                 i_compute_type;
     int                 i_samples;
     counter_sample_t ** pp_samples;
@@ -261,77 +171,75 @@ enum
     STATS_DISPLAYED_PICTURES,
     STATS_LOST_PICTURES,
 
-    STATS_TIMER_PLAYLIST_WALK,
+    STATS_TIMER_PLAYLIST_BUILD,
+    STATS_TIMER_ML_LOAD,
+    STATS_TIMER_ML_DUMP,
     STATS_TIMER_INTERACTION,
     STATS_TIMER_PREPARSE,
+    STATS_TIMER_INPUT_LAUNCHING,
+    STATS_TIMER_MODULE_NEED,
+    STATS_TIMER_VIDEO_FRAME_ENCODING,
+    STATS_TIMER_AUDIO_FRAME_ENCODING,
 
     STATS_TIMER_SKINS_PLAYTREE_IMAGE,
 };
 
-struct stats_handler_t
-{
-    VLC_COMMON_MEMBERS
+#define stats_Update(a,b,c) __stats_Update( VLC_OBJECT(a), b, c )
+VLC_EXPORT( int, __stats_Update, (vlc_object_t*, counter_t *, vlc_value_t, vlc_value_t *) );
+#define stats_CounterCreate(a,b,c) __stats_CounterCreate( VLC_OBJECT(a), b, c )
+VLC_EXPORT( counter_t *, __stats_CounterCreate, (vlc_object_t*, int, int) );
+#define stats_Get(a,b,c) __stats_Get( VLC_OBJECT(a), b, c)
+VLC_EXPORT( int, __stats_Get, (vlc_object_t*, counter_t *, vlc_value_t*) );
 
-    int                 i_counters;
-    counter_t         **pp_counters;
-};
+VLC_EXPORT (void, stats_CounterClean, (counter_t * ) );
 
-VLC_EXPORT( void, stats_HandlerDestroy, (stats_handler_t*) );
-
-#define stats_Update(a,b,c,d) __stats_Update( VLC_OBJECT( a ), b, c, d )
-VLC_EXPORT( int, __stats_Update, (vlc_object_t*, unsigned int, vlc_value_t, vlc_value_t *) );
-#define stats_Create(a,b,c,d,e) __stats_Create( VLC_OBJECT(a), b, c, d,e )
-VLC_EXPORT( int, __stats_Create, (vlc_object_t*, const char *, unsigned int, int, int) );
-#define stats_Get(a,b,c,d) __stats_Get( VLC_OBJECT(a), b, c, d )
-VLC_EXPORT( int, __stats_Get, (vlc_object_t*, int, unsigned int, vlc_value_t*) );
-#define stats_CounterGet(a,b,c) __stats_CounterGet( VLC_OBJECT(a), b, c )
-VLC_EXPORT( counter_t*, __stats_CounterGet, (vlc_object_t*, int, unsigned int ) );
-
-#define stats_GetInteger(a,b,c,d) __stats_GetInteger( VLC_OBJECT(a), b, c, d )
-static inline int __stats_GetInteger( vlc_object_t *p_obj, int i_id,
-                                      unsigned int i_counter, int *value )
+#define stats_GetInteger(a,b,c) __stats_GetInteger( VLC_OBJECT(a), b, c )
+static inline int __stats_GetInteger( vlc_object_t *p_obj, counter_t *p_counter,
+                                      int *value )
 {
     int i_ret;
     vlc_value_t val; val.i_int = 0;
-    i_ret = __stats_Get( p_obj, i_id, i_counter, &val );
+    if( !p_counter ) return VLC_EGENERIC;
+    i_ret = __stats_Get( p_obj, p_counter, &val );
     *value = val.i_int;
     return i_ret;
 }
 
-#define stats_GetFloat(a,b,c,d) __stats_GetFloat( VLC_OBJECT(a), b, c, d )
-static inline int __stats_GetFloat( vlc_object_t *p_obj, int i_id,
-                                    unsigned int i_counter, float *value )
+#define stats_GetFloat(a,b,c) __stats_GetFloat( VLC_OBJECT(a), b, c )
+static inline int __stats_GetFloat( vlc_object_t *p_obj, counter_t *p_counter,
+                                    float *value )
 {
     int i_ret;
-    vlc_value_t val;val.f_float = 0.0;
-    i_ret = __stats_Get( p_obj, i_id, i_counter, &val );
+    vlc_value_t val; val.f_float = 0.0;
+    if( !p_counter ) return VLC_EGENERIC;
+    i_ret = __stats_Get( p_obj, p_counter, &val );
     *value = val.f_float;
     return i_ret;
 }
 #define stats_UpdateInteger(a,b,c,d) __stats_UpdateInteger( VLC_OBJECT(a),b,c,d )
-static inline int __stats_UpdateInteger( vlc_object_t *p_obj,
-                                         unsigned int i_counter, int i,
-                                         int *pi_new )
+static inline int __stats_UpdateInteger( vlc_object_t *p_obj,counter_t *p_co,
+                                         int i, int *pi_new )
 {
     int i_ret;
     vlc_value_t val;
     vlc_value_t new_val; new_val.i_int = 0;
+    if( !p_co ) return VLC_EGENERIC;
     val.i_int = i;
-    i_ret = __stats_Update( p_obj, i_counter, val , &new_val );
+    i_ret = __stats_Update( p_obj, p_co, val, &new_val );
     if( pi_new )
         *pi_new = new_val.i_int;
     return i_ret;
 }
 #define stats_UpdateFloat(a,b,c,d) __stats_UpdateFloat( VLC_OBJECT(a),b,c,d )
-static inline int __stats_UpdateFloat( vlc_object_t *p_obj,
-                                       unsigned int i_counter, float f,
-                                       float *pf_new )
+static inline int __stats_UpdateFloat( vlc_object_t *p_obj, counter_t *p_co,
+                                       float f, float *pf_new )
 {
     vlc_value_t val;
     int i_ret;
     vlc_value_t new_val;new_val.f_float = 0.0;
+    if( !p_co ) return VLC_EGENERIC;
     val.f_float = f;
-    i_ret =  __stats_Update( p_obj, i_counter, val, &new_val );
+    i_ret =  __stats_Update( p_obj, p_co, val, &new_val );
     if( pf_new )
         *pf_new = new_val.f_float;
     return i_ret;
@@ -399,18 +307,18 @@ VLC_EXPORT( void, __stats_ComputeGlobalStats, (vlc_object_t*,global_stats_t*));
 /*********
  * Timing
  ********/
-#ifdef DEBUG
 #define stats_TimerStart(a,b,c) __stats_TimerStart( VLC_OBJECT(a), b,c )
 #define stats_TimerStop(a,b) __stats_TimerStop( VLC_OBJECT(a), b )
 #define stats_TimerDump(a,b) __stats_TimerDump( VLC_OBJECT(a), b )
 #define stats_TimersDumpAll(a) __stats_TimersDumpAll( VLC_OBJECT(a) )
-#else
-#define stats_TimerStart(a,b,c) {}
-#define stats_TimerStop(a,b) {}
-#define stats_TimerDump(a,b) {}
-#define stats_TimersDumpAll(a) {}
-#endif
 VLC_EXPORT( void,__stats_TimerStart, (vlc_object_t*, const char *, unsigned int ) );
 VLC_EXPORT( void,__stats_TimerStop, (vlc_object_t*, unsigned int) );
 VLC_EXPORT( void,__stats_TimerDump, (vlc_object_t*, unsigned int) );
 VLC_EXPORT( void,__stats_TimersDumpAll, (vlc_object_t*) );
+#define stats_TimersCleanAll(a) __stats_TimersCleanAll( VLC_OBJECT(a) )
+VLC_EXPORT( void, __stats_TimersCleanAll, (vlc_object_t * ) );
+
+#define stats_TimerClean(a,b) __stats_TimerClean( VLC_OBJECT(a), b )
+VLC_EXPORT( void, __stats_TimerClean, (vlc_object_t *, unsigned int ) );
+
+#endif

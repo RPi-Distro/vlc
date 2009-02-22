@@ -2,7 +2,7 @@
  * video_init.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 9839a01a649d824a204eef0ec4b8dcb961df178b $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -32,6 +32,7 @@
 //also able to handle resizing and fullscreening of windows
 //just call init_display again with differant variables
 
+#include <stdlib.h>
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "video_init.h"

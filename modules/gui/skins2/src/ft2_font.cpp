@@ -2,7 +2,7 @@
  * ft2_font.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 42a6a927d52da275331a6f648d5cc9ddd1e6af3e $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -54,10 +54,7 @@ FT2Font::~FT2Font()
     {
         FT_Done_FreeType( m_lib );
     }
-    if( m_buffer )
-    {
-        free( m_buffer );
-    }
+    free( m_buffer );
 }
 
 

@@ -1,8 +1,8 @@
 /*****************************************************************************
- * i18n_atof.c: Test for i18n_atof
+ * i18n_atof.c: Test for us_atof
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: b7307eeca5bf61b1148a3140bd5c6d208f155d9f $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,8 +19,12 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc/vlc.h>
-#include "charset.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include "vlc_charset.h"
 
 #undef NDEBUG
 #include <assert.h>
@@ -32,16 +36,6 @@ int main (void)
     const char sharp9[] = "999999#999999";
     char *end;
 
-    assert (i18n_atof("0") == 0.);
-    assert (i18n_atof("1") == 1.);
-    assert (i18n_atof("1.") == 1.);
-    assert (i18n_atof("1,") == 1.);
-    assert (i18n_atof("1#") == 1.);
-    assert (i18n_atof(dot9) == 999999.999999);
-    assert (i18n_atof(comma9) == 999999.999999);
-    assert (i18n_atof(sharp9) == 999999.);
-    assert (i18n_atof("invalid") == 0.);
-
     assert (us_atof("0") == 0.);
     assert (us_atof("1") == 1.);
     assert (us_atof("1.") == 1.);
@@ -51,13 +45,6 @@ int main (void)
     assert (us_atof(comma9) == 999999.);
     assert (us_atof(sharp9) == 999999.);
     assert (us_atof("invalid") == 0.);
-
-    assert ((i18n_strtod(dot9, &end ) == 999999.999999)
-            && (*end == '\0'));
-    assert ((i18n_strtod(comma9, &end ) == 999999.999999)
-            && (*end == '\0'));
-    assert ((i18n_strtod(sharp9, &end ) == 999999.)
-            && (*end == '#'));
 
     assert ((us_strtod(dot9, &end ) == 999999.999999)
             && (*end == '\0'));

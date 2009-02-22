@@ -2,7 +2,7 @@
  * dolby.c : simple decoder for dolby surround encoded streams
  *****************************************************************************
  * Copyright (C) 2005, 2006 the VideoLAN team
- * $Id: 63ec93a27c84ff8ba7190e9fb49e13b91d408838 $
+ * $Id$
  *
  * Authors: Boris Dorès <babal@via.ecp.fr>
  *
@@ -24,12 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include "audio_output.h"
-#include "aout_internal.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -44,8 +46,8 @@ static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("Simple decoder for Dolby Surround encoded streams") );
-    set_shortname( _("Dolby Surround decoder") );
+    set_description( N_("Simple decoder for Dolby Surround encoded streams") );
+    set_shortname( N_("Dolby Surround decoder") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACODEC );
     set_capability( "audio filter", 5 );
@@ -104,10 +106,7 @@ static int Create( vlc_object_t *p_this )
     /* Allocate the memory needed to store the module's structure */
     p_filter->p_sys = malloc( sizeof(struct aout_filter_sys_t) );
     if ( p_filter->p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
     p_filter->p_sys->i_left = -1;
     p_filter->p_sys->i_center = -1;
     p_filter->p_sys->i_right = -1;
@@ -171,6 +170,7 @@ static void Destroy( vlc_object_t *p_this )
 static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
                     aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
 {
+    VLC_UNUSED(p_aout);
     float * p_in = (float*) p_in_buf->p_buffer;
     float * p_out = (float*) p_out_buf->p_buffer;
     size_t i_nb_samples = p_in_buf->i_nb_samples;

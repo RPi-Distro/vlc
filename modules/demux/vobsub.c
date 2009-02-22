@@ -2,7 +2,7 @@
  * subtitle.c: Demux vobsub files.
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 0393b21302d4d4ca11d5683c9617b155c4624718 $
+ * $Id: 88a84e56007013e88dacd988c9640661548570ea $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -25,14 +25,18 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+
 #include <errno.h>
 #include <sys/types.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include "vlc_video.h"
-#include "charset.h"
+#include <vlc_demux.h>
+#include <vlc_charset.h>
 
 #include "ps.h"
 
@@ -45,10 +49,10 @@ static int  Open ( vlc_object_t *p_this );
 static void Close( vlc_object_t *p_this );
 
 vlc_module_begin();
-    set_description( _("Vobsub subtitles parser") );
+    set_description( N_("Vobsub subtitles parser") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_capability( "demux2", 1 );
+    set_capability( "demux", 1 );
 
     set_callbacks( Open, Close );
 
@@ -102,7 +106,7 @@ struct demux_sys_t
 
     int         i_original_frame_width;
     int         i_original_frame_height;
-    vlc_bool_t  b_palette;
+    bool  b_palette;
     uint32_t    palette[16];
 };
 
@@ -152,7 +156,7 @@ static int Open ( vlc_object_t *p_this )
     p_sys->track = (vobsub_track_t *)malloc( sizeof( vobsub_track_t ) );
     p_sys->i_original_frame_width = -1;
     p_sys->i_original_frame_height = -1;
-    p_sys->b_palette = VLC_FALSE;
+    p_sys->b_palette = false;
     memset( p_sys->palette, 0, 16 * sizeof( uint32_t ) );
 
     /* Load the whole file */
@@ -178,9 +182,13 @@ static int Open ( vlc_object_t *p_this )
         }
     }
 
-    psz_vobname = strdup( p_demux->psz_path );
+    if( asprintf( &psz_vobname, "%s://%s", p_demux->psz_access, p_demux->psz_path ) == -1 )
+    {
+        free( p_sys );
+        return VLC_EGENERIC;
+    }
     i_len = strlen( psz_vobname );
-    memcpy( psz_vobname + i_len - 4, ".sub", 4 );
+    if( i_len >= 4 ) memcpy( psz_vobname + i_len - 4, ".sub", 4 );
 
     /* open file */
     p_sys->p_vobsub_stream = stream_UrlNew( p_demux, psz_vobname );
@@ -208,10 +216,9 @@ static void Close( vlc_object_t *p_this )
 
     /* Clean all subs from all tracks */
     for( i = 0; i < p_sys->i_tracks; i++ )
-    {
-        if( p_sys->track[i].p_subtitles ) free( p_sys->track[i].p_subtitles );
-    }
-    if( p_sys->track ) free( p_sys->track );
+        free( p_sys->track[i].p_subtitles );
+
+    free( p_sys->track );
 
     if( p_sys->p_vobsub_stream )
         stream_Delete( p_sys->p_vobsub_stream );
@@ -240,7 +247,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             pi64 = (int64_t*)va_arg( args, int64_t * );
             for( i = 0; i < p_sys->i_tracks; i++ )
             {
-                vlc_bool_t b_selected;
+                bool b_selected;
                 /* Check the ES is selected */
                 es_out_Control( p_demux->out, ES_OUT_GET_ES_STATE,
                                 p_sys->track[i].p_es, &b_selected );
@@ -273,7 +280,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             pf = (double*)va_arg( args, double * );
             for( i = 0; i < p_sys->i_tracks; i++ )
             {
-                vlc_bool_t b_selected;
+                bool b_selected;
                 /* Check the ES is selected */
                 es_out_Control( p_demux->out, ES_OUT_GET_ES_STATE,
                                 p_sys->track[i].p_es, &b_selected );
@@ -333,7 +340,7 @@ static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     int64_t i_maxdate;
-    int i;
+    int i, i_read;
 
     for( i = 0; i < p_sys->i_tracks; i++ )
     {
@@ -341,11 +348,11 @@ static int Demux( demux_t *p_demux )
         if( tk.i_current_subtitle >= tk.i_subtitles )
             continue;
 
-        i_maxdate = (int64_t) p_sys->i_next_demux_date;
+        i_maxdate = p_sys->i_next_demux_date;
         if( i_maxdate <= 0 && tk.i_current_subtitle < tk.i_subtitles )
         {
             /* Should not happen */
-            i_maxdate = (int64_t) tk.p_subtitles[tk.i_current_subtitle].i_start + 1;
+            i_maxdate = tk.p_subtitles[tk.i_current_subtitle].i_start + 1;
         }
 
         while( tk.i_current_subtitle < tk.i_subtitles &&
@@ -379,13 +386,14 @@ static int Demux( demux_t *p_demux )
             }
 
             /* read data */
-            p_block->i_buffer = stream_Read( p_sys->p_vobsub_stream, p_block->p_buffer, i_size );
-            if( p_block->i_buffer <= 6 )
+            i_read = stream_Read( p_sys->p_vobsub_stream, p_block->p_buffer, i_size );
+            if( i_read <= 6 )
             {
                 block_Release( p_block );
                 tk.i_current_subtitle++;
                 continue;
             }
+            p_block->i_buffer = i_read;
 
             /* pts */
             p_block->i_pts = tk.p_subtitles[tk.i_current_subtitle].i_start;
@@ -413,6 +421,8 @@ static int TextLoad( text_t *txt, stream_t *s )
     txt->i_line_count   = 0;
     txt->i_line         = 0;
     txt->line           = calloc( i_line_max, sizeof( char * ) );
+    if( !txt->line )
+        return VLC_EGENERIC;
 
     /* load the complete file */
     for( ;; )
@@ -425,14 +435,21 @@ static int TextLoad( text_t *txt, stream_t *s )
         txt->line[txt->i_line_count++] = psz;
         if( txt->i_line_count >= i_line_max )
         {
+            char **ppsz_old = txt->line;
+
             i_line_max += 100;
             txt->line = realloc( txt->line, i_line_max * sizeof( char*) );
+            if( !txt->line )
+            {
+                free( ppsz_old );
+                break;
+            }
         }
     }
 
     if( txt->i_line_count <= 0 )
     {
-        if( txt->line ) free( txt->line );
+        free( txt->line );
         return VLC_EGENERIC;
     }
 
@@ -443,10 +460,9 @@ static void TextUnload( text_t *txt )
     int i;
 
     for( i = 0; i < txt->i_line_count; i++ )
-    {
-        if( txt->line[i] ) free( txt->line[i] );
-    }
-    if( txt->line ) free( txt->line );
+        free( txt->line[i] );
+
+    free( txt->line );
     txt->i_line       = 0;
     txt->i_line_count = 0;
 }
@@ -464,7 +480,7 @@ static int ParseVobSubIDX( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
     text_t      *txt = &p_sys->txt;
     char        *line;
-    vobsub_track_t *current_tk;
+    vobsub_track_t *current_tk = NULL;
 
     for( ;; )
     {
@@ -473,8 +489,10 @@ static int ParseVobSubIDX( demux_t *p_demux )
             return( VLC_EGENERIC );
         }
 
-        if( *line == 0 || *line == '\r' || *line == '\n' || *line == '#' ) 
+        if( *line == 0 || *line == '\r' || *line == '\n' || *line == '#' )
+        {
             continue;
+        }
         else if( !strncmp( "size:", line, 5 ) )
         {
             /* Store the original size of the video */
@@ -494,9 +512,9 @@ static int ParseVobSubIDX( demux_t *p_demux )
 
             /* Store the palette of the subs */
             if( sscanf( line, "palette: %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x, %x",
-                        &p_sys->palette[0], &p_sys->palette[1], &p_sys->palette[2], &p_sys->palette[3], 
-                        &p_sys->palette[4], &p_sys->palette[5], &p_sys->palette[6], &p_sys->palette[7], 
-                        &p_sys->palette[8], &p_sys->palette[9], &p_sys->palette[10], &p_sys->palette[11], 
+                        &p_sys->palette[0], &p_sys->palette[1], &p_sys->palette[2], &p_sys->palette[3],
+                        &p_sys->palette[4], &p_sys->palette[5], &p_sys->palette[6], &p_sys->palette[7],
+                        &p_sys->palette[8], &p_sys->palette[9], &p_sys->palette[10], &p_sys->palette[11],
                         &p_sys->palette[12], &p_sys->palette[13], &p_sys->palette[14], &p_sys->palette[15] ) == 16 )
             {
                 for( i = 0; i < 16; i++ )
@@ -517,7 +535,7 @@ static int ParseVobSubIDX( demux_t *p_demux )
                     /* msg_Dbg( p_demux, "palette %d: y=%x, u=%x, v=%x", i, y, u, v ); */
 
                 }
-                p_sys->b_palette = VLC_TRUE;
+                p_sys->b_palette = true;
                 msg_Dbg( p_demux, "vobsub palette read" );
             }
             else
@@ -536,14 +554,14 @@ static int ParseVobSubIDX( demux_t *p_demux )
                         language, &i_track_id ) == 2 )
             {
                 p_sys->i_tracks++;
-                p_sys->track = (vobsub_track_t*)realloc( p_sys->track, sizeof( vobsub_track_t ) * (p_sys->i_tracks + 1 ) );
+                p_sys->track = realloc( p_sys->track, sizeof( vobsub_track_t ) * (p_sys->i_tracks + 1 ) );
 
                 /* Init the track */
                 current_tk = &p_sys->track[p_sys->i_tracks - 1];
                 memset( current_tk, 0, sizeof( vobsub_track_t ) );
                 current_tk->i_current_subtitle = 0;
                 current_tk->i_subtitles = 0;
-                current_tk->p_subtitles = (subtitle_t*)malloc( sizeof( subtitle_t ) );;
+                current_tk->p_subtitles = malloc( sizeof( subtitle_t ) );;
                 current_tk->i_track_id = i_track_id;
                 current_tk->i_delay = (int64_t)0;
 
@@ -575,11 +593,11 @@ static int ParseVobSubIDX( demux_t *p_demux )
             int i_sign = 1;
             int64_t i_start, i_location = 0;
 
-            vobsub_track_t *current_tk = &p_sys->track[p_sys->i_tracks - 1];
-
-            if( sscanf( line, "timestamp: %d%n:%d:%d:%d, filepos: %x",
+            if( p_sys->i_tracks > 0 &&
+                sscanf( line, "timestamp: %d%n:%d:%d:%d, filepos: %x",
                         &h, &count, &m, &s, &ms, &loc ) >= 5  )
             {
+                vobsub_track_t *current_tk = &p_sys->track[p_sys->i_tracks - 1];
                 subtitle_t *current_sub;
 
                 if( line[count-3] == '-' )
@@ -594,12 +612,16 @@ static int ParseVobSubIDX( demux_t *p_demux )
                 i_location = loc;
 
                 current_tk->i_subtitles++;
-                current_tk->p_subtitles = (subtitle_t*)realloc( current_tk->p_subtitles, sizeof( subtitle_t ) * (current_tk->i_subtitles + 1 ) );
+                current_tk->p_subtitles = realloc( current_tk->p_subtitles, sizeof( subtitle_t ) * (current_tk->i_subtitles + 1 ) );
                 current_sub = &current_tk->p_subtitles[current_tk->i_subtitles - 1];
 
-                current_sub->i_start = (int64_t) i_start * i_sign;
+                current_sub->i_start = i_start * i_sign;
                 current_sub->i_start += current_tk->i_delay;
                 current_sub->i_vobsub_location = i_location;
+            }
+            else
+            {
+                msg_Warn( p_demux, "reading timestamp failed" );
             }
         }
         else if( !strncasecmp( line, "delay:", 6 ) )
@@ -611,11 +633,11 @@ static int ParseVobSubIDX( demux_t *p_demux )
             int i_sign = 1;
             int64_t i_gap = 0;
 
-            vobsub_track_t *current_tk = &p_sys->track[p_sys->i_tracks - 1];
-
-            if( sscanf( line, "%*celay: %d%n:%d:%d:%d",
+            if( p_sys->i_tracks > 0 &&
+                sscanf( line, "%*celay: %d%n:%d:%d:%d",
                         &h, &count, &m, &s, &ms ) >= 4 )
             {
+                vobsub_track_t *current_tk = &p_sys->track[p_sys->i_tracks - 1];
                 if( line[count-3] == '-' )
                 {
                     i_sign = -1;
@@ -627,7 +649,13 @@ static int ParseVobSubIDX( demux_t *p_demux )
                             ms ) * 1000;
 
                 current_tk->i_delay = current_tk->i_delay + (i_gap * i_sign);
-                msg_Dbg( p_demux, "sign: %+d gap: %+lld global delay: %+lld", i_sign, i_gap, current_tk->i_delay  );
+                msg_Dbg( p_demux, "sign: %+d gap: %+lld global delay: %+lld",
+                         i_sign, (long long)i_gap,
+                         (long long)current_tk->i_delay  );
+            }
+            else
+            {
+                msg_Warn( p_demux, "reading delay failed" );
             }
         }
     }
@@ -641,7 +669,7 @@ static int DemuxVobSub( demux_t *p_demux, block_t *p_bk )
     uint8_t     *p_end = &p_bk->p_buffer[p_bk->i_buffer];
     int i;
 
-    while( p < p_end )
+    while( p + 6 < p_end )
     {
         int i_size = ps_pkt_size( p, p_end - p );
         block_t *p_pkt;
@@ -649,9 +677,14 @@ static int DemuxVobSub( demux_t *p_demux, block_t *p_bk )
         int      i_spu;
 
         if( i_size <= 0 )
+            break;
+
+        if( i_size > p_end - p )
         {
+            msg_Warn( p_demux, "broken PES size" );
             break;
         }
+
         if( p[0] != 0 || p[1] != 0 || p[2] != 0x01 )
         {
             msg_Warn( p_demux, "invalid PES" );
@@ -682,13 +715,14 @@ static int DemuxVobSub( demux_t *p_demux, block_t *p_bk )
 
         for( i = 0; i < p_sys->i_tracks; i++ )
         {
-#define tk p_sys->track[i]
+            vobsub_track_t *p_tk = &p_sys->track[i];
+
             p_pkt->i_dts = p_pkt->i_pts = p_bk->i_pts;
             p_pkt->i_length = 0;
 
-            if( tk.p_es && tk.i_track_id == i_spu )
+            if( p_tk->p_es && p_tk->i_track_id == i_spu )
             {
-                es_out_Send( p_demux->out, tk.p_es, p_pkt );
+                es_out_Send( p_demux->out, p_tk->p_es, p_pkt );
                 p_bk->i_pts = 0;     /*only first packet has a pts */
                 break;
             }
@@ -696,9 +730,9 @@ static int DemuxVobSub( demux_t *p_demux, block_t *p_bk )
             {
                 block_Release( p_pkt );
             }
-#undef tk
         }
     }
 
     return VLC_SUCCESS;
 }
+

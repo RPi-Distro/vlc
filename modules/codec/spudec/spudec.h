@@ -2,7 +2,7 @@
  * spudec.h : sub picture unit decoder thread interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2006 the VideoLAN team
- * $Id: 5d59b52f56f2a5a711f420699b978ea9c7afad26 $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
@@ -10,7 +10,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -28,6 +28,7 @@ struct decoder_sys_t
     int b_packetizer;
 
     mtime_t i_pts;
+    int     i_rate;
     unsigned int i_spu_size;
     unsigned int i_rle_size;
     unsigned int i_spu;
@@ -46,12 +47,12 @@ typedef struct subpicture_data_t
     void *p_data;
 
     /* Color information */
-    vlc_bool_t b_palette;
+    bool b_palette;
     uint8_t    pi_alpha[4];
     uint8_t    pi_yuv[4][3];
 
     /* Auto crop fullscreen subtitles */
-    vlc_bool_t b_auto_crop;
+    bool b_auto_crop;
     int i_y_top_offset;
     int i_y_bottom_offset;
 
@@ -77,4 +78,4 @@ typedef struct subpicture_data_t
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
-subpicture_t * E_(ParsePacket)( decoder_t * );
+subpicture_t * ParsePacket( decoder_t * );

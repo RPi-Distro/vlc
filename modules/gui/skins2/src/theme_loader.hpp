@@ -2,7 +2,7 @@
  * theme_loader.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ea001984c1ecfbde8f364c70196d33b35216b05f $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,10 +37,7 @@ class ThemeLoader: public SkinObject
         ThemeLoader( intf_thread_t *pIntf ): SkinObject( pIntf ) {}
         virtual ~ThemeLoader() {}
 
-        /**
-         * The expected fileName must be an UTF-8 string (usually the result of
-         * a call to FromLocale())
-         */
+        /// The expected fileName must be an UTF-8 string
         bool load( const string &fileName );
 
     private:

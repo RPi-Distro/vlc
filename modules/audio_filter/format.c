@@ -2,7 +2,7 @@
  * format.c : PCM format converter
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: 687d95ba4a3a659512518e23501c16dd253c171f $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,11 +25,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
+#include <vlc_block.h>
 #include "vlc_filter.h"
 
 #ifdef WORDS_BIGENDIAN
@@ -113,7 +117,7 @@ static block_t *S8toU8( filter_t *, block_t * );
 static block_t *Swap16( filter_t *, block_t * );
 static block_t *Swap24( filter_t *, block_t * );
 
-static struct
+static const struct
 {
     vlc_fourcc_t i_src;
     vlc_fourcc_t i_dst;
@@ -159,7 +163,7 @@ static struct
     { VLC_FOURCC('s','8',' ',' '), AOUT_FMT_U16_NE,             S8toU16 },
     { VLC_FOURCC('s','8',' ',' '), AOUT_FMT_U16_IE,             S8toU16Invert },
     { VLC_FOURCC('s','8',' ',' '), VLC_FOURCC('u','8',' ',' '), S8toU8 },
-    
+ 
     /* From u8 */
     { VLC_FOURCC('u','8',' ',' '), VLC_FOURCC('f','l','3','2'), U8toFloat32 },
     { VLC_FOURCC('u','8',' ',' '), AOUT_FMT_S16_NE,             U8toS16 },
@@ -198,7 +202,7 @@ static struct
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("Audio filter for PCM format conversion") );
+    set_description( N_("Audio filter for PCM format conversion") );
     set_category( CAT_AUDIO );
     set_subcategory( SUBCAT_AUDIO_MISC );
     set_capability( "audio filter2", 1 );
@@ -225,11 +229,14 @@ static int Open( vlc_object_t *p_this )
     p_filter->pf_audio_filter = ConvertTable[i].pf_convert;
     p_filter->fmt_out.audio = p_filter->fmt_in.audio;
     p_filter->fmt_out.audio.i_format = p_filter->fmt_out.i_codec;
+    p_filter->fmt_out.audio.i_bitspersample =
+        aout_BitsPerSample( p_filter->fmt_out.i_codec );
 
-    msg_Dbg( p_this, "%4.4s->%4.4s, bits per sample: %i",
+    msg_Dbg( p_this, "%4.4s->%4.4s, bits per sample: %i->%i",
              (char *)&p_filter->fmt_in.i_codec,
              (char *)&p_filter->fmt_out.i_codec,
-             p_filter->fmt_in.audio.i_bitspersample );
+             p_filter->fmt_in.audio.i_bitspersample,
+             p_filter->fmt_out.audio.i_bitspersample );
 
     return VLC_SUCCESS;
 }
@@ -239,6 +246,7 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static block_t *Float32toS24( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     float *p_in = (float *)p_block->p_buffer;
     uint8_t *p_out = (uint8_t *)p_in;
@@ -251,11 +259,11 @@ static block_t *Float32toS24( filter_t *p_filter, block_t *p_block )
         else out = *p_in * 8388608.0;
 
 #ifdef WORDS_BIGENDIAN
-	*((int16_t *)p_out) = out >> 8;
-	p_out[2] = out & 0xFF;
+    *((int16_t *)p_out) = out >> 8;
+    p_out[2] = out & 0xFF;
 #else
-	*((int16_t *)(p_out+1)) = out >> 8;
-	p_out[0] = out & 0xFF;
+    *((int16_t *)(p_out+1)) = out >> 8;
+    p_out[0] = out & 0xFF;
 #endif
 
         p_in++; p_out += 3;
@@ -267,6 +275,7 @@ static block_t *Float32toS24( filter_t *p_filter, block_t *p_block )
 
 static block_t *Float32toS16( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     float *p_in = (float *)p_block->p_buffer;
     int16_t *p_out = (int16_t *)p_in;
@@ -295,6 +304,7 @@ static block_t *Float32toS16( filter_t *p_filter, block_t *p_block )
 
 static block_t *Float32toU16( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     float *p_in = (float *)p_block->p_buffer;
     uint16_t *p_out = (uint16_t *)p_in;
@@ -348,12 +358,13 @@ static block_t *S24toFloat32( filter_t *p_filter, block_t *p_block )
     p_block_out->i_length = p_block->i_length;
     p_block_out->i_rate = p_block->i_rate;
 
-    p_block->pf_release( p_block );
+    block_Release( p_block );
     return p_block_out;
 }
 
 static block_t *S24toS16( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     uint8_t *p_in = (uint8_t *)p_block->p_buffer;
     uint8_t *p_out = (uint8_t *)p_in;
@@ -416,7 +427,7 @@ static block_t *S16toFloat32( filter_t *p_filter, block_t *p_block )
     p_block_out->i_length = p_block->i_length;
     p_block_out->i_rate = p_block->i_rate;
 
-    p_block->pf_release( p_block );
+    block_Release( p_block );
     return p_block_out;
 }
 
@@ -449,7 +460,7 @@ static block_t *U16toFloat32( filter_t *p_filter, block_t *p_block )
     p_block_out->i_length = p_block->i_length;
     p_block_out->i_rate = p_block->i_rate;
 
-    p_block->pf_release( p_block );
+    block_Release( p_block );
     return p_block_out;
 }
 
@@ -489,12 +500,13 @@ static block_t *S16toS24( filter_t *p_filter, block_t *p_block )
     p_block_out->i_length = p_block->i_length;
     p_block_out->i_rate = p_block->i_rate;
 
-    p_block->pf_release( p_block );
+    block_Release( p_block );
     return p_block_out;
 }
 
 static block_t *S16toS8( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     int16_t *p_in = (int16_t *)p_block->p_buffer;
     int8_t *p_out = (int8_t *)p_in;
@@ -507,6 +519,7 @@ static block_t *S16toS8( filter_t *p_filter, block_t *p_block )
 }
 static block_t *S16toU8( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     int16_t *p_in = (int16_t *)p_block->p_buffer;
     uint8_t *p_out = (uint8_t *)p_in;
@@ -519,6 +532,7 @@ static block_t *S16toU8( filter_t *p_filter, block_t *p_block )
 }
 static block_t *S16toU16( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     int16_t *p_in = (int16_t *)p_block->p_buffer;
     uint16_t *p_out = (uint16_t *)p_in;
@@ -531,6 +545,7 @@ static block_t *S16toU16( filter_t *p_filter, block_t *p_block )
 
 static block_t *U16toS8( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     uint16_t *p_in = (uint16_t *)p_block->p_buffer;
     int8_t *p_out = (int8_t *)p_in;
@@ -543,6 +558,7 @@ static block_t *U16toS8( filter_t *p_filter, block_t *p_block )
 }
 static block_t *U16toU8( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     uint16_t *p_in = (uint16_t *)p_block->p_buffer;
     uint8_t *p_out = (uint8_t *)p_in;
@@ -555,6 +571,7 @@ static block_t *U16toU8( filter_t *p_filter, block_t *p_block )
 }
 static block_t *U16toS16( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     uint16_t *p_in = (uint16_t *)p_block->p_buffer;
     int16_t *p_out = (int16_t *)p_in;
@@ -567,6 +584,7 @@ static block_t *U16toS16( filter_t *p_filter, block_t *p_block )
 
 static block_t *S8toU8( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     int8_t *p_in = (int8_t *)p_block->p_buffer;
     uint8_t *p_out = (uint8_t *)p_in;
@@ -578,6 +596,7 @@ static block_t *S8toU8( filter_t *p_filter, block_t *p_block )
 }
 static block_t *U8toS8( filter_t *p_filter, block_t *p_block )
 {
+    VLC_UNUSED(p_filter);
     int i;
     uint8_t *p_in = (uint8_t *)p_block->p_buffer;
     int8_t *p_out = (int8_t *)p_in;
@@ -616,7 +635,7 @@ static block_t *S8toU16( filter_t *p_filter, block_t *p_block )
     p_block_out->i_length = p_block->i_length;
     p_block_out->i_rate = p_block->i_rate;
 
-    p_block->pf_release( p_block );
+    block_Release( p_block );
     return p_block_out;
 }
 
@@ -647,7 +666,7 @@ static block_t *U8toS16( filter_t *p_filter, block_t *p_block )
     p_block_out->i_length = p_block->i_length;
     p_block_out->i_rate = p_block->i_rate;
 
-    p_block->pf_release( p_block );
+    block_Release( p_block );
     return p_block_out;
 }
 
@@ -679,7 +698,7 @@ static block_t *S8toS16( filter_t *p_filter, block_t *p_block )
     p_block_out->i_length = p_block->i_length;
     p_block_out->i_rate = p_block->i_rate;
 
-    p_block->pf_release( p_block );
+    block_Release( p_block );
     return p_block_out;
 }
 
@@ -710,7 +729,7 @@ static block_t *U8toU16( filter_t *p_filter, block_t *p_block )
     p_block_out->i_length = p_block->i_length;
     p_block_out->i_rate = p_block->i_rate;
 
-    p_block->pf_release( p_block );
+    block_Release( p_block );
     return p_block_out;
 }
 
@@ -719,7 +738,8 @@ static block_t *U8toU16( filter_t *p_filter, block_t *p_block )
  *****************************************************************************/
 static block_t *Swap16( filter_t *p_filter, block_t *p_block )
 {
-    int i;
+    VLC_UNUSED(p_filter);
+    size_t i;
     uint8_t *p_in = (uint8_t *)p_block->p_buffer;
     uint8_t tmp;
 
@@ -736,7 +756,8 @@ static block_t *Swap16( filter_t *p_filter, block_t *p_block )
 
 static block_t *Swap24( filter_t *p_filter, block_t *p_block )
 {
-    int i;
+    VLC_UNUSED(p_filter);
+    size_t i;
     uint8_t *p_in = (uint8_t *)p_block->p_buffer;
     uint8_t tmp;
 

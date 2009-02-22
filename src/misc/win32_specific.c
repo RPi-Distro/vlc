@@ -2,7 +2,7 @@
  * win32_specific.c: Win32 specific features
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 52a6392ddd1f9a216205083c2dff5c97c1749e45 $
+ * $Id: c43a37604a0eb8f32a8560a3e607d8fb85fb5050 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -21,21 +21,23 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#include <string.h>                                              /* strdup() */
-#include <stdlib.h>                                                /* free() */
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include "vlc_playlist.h"
-#include "charset.h"
-
-#ifdef WIN32                       /* optind, getopt(), included in unistd.h */
-#   include "../extras/getopt.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
+
+#define UNICODE
+#include <vlc_common.h>
+#include "../libvlc.h"
+#include <vlc_playlist.h>
+#include <vlc_charset.h>
+
+#include "../extras/getopt.h"
 
 #if !defined( UNDER_CE )
 #   include <io.h>
 #   include <fcntl.h>
+#   include  <mmsystem.h>
 #endif
 
 #include <winsock.h>
@@ -43,7 +45,7 @@
 /*****************************************************************************
  * system_Init: initialize winsock and misc other things.
  *****************************************************************************/
-void system_Init( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
+void system_Init( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
 {
     WSADATA Data;
 
@@ -51,7 +53,6 @@ void system_Init( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
     char psz_path[MAX_PATH];
     char *psz_vlc;
 
-#if defined( UNDER_CE )
     wchar_t psz_wpath[MAX_PATH];
     if( GetModuleFileName( NULL, psz_wpath, MAX_PATH ) )
     {
@@ -60,25 +61,29 @@ void system_Init( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
     }
     else psz_path[0] = '\0';
 
-#else
-    if( ppsz_argv[0] )
+    if( (psz_vlc = strrchr( psz_path, '\\' )) ) *psz_vlc = '\0';
+
+#ifndef HAVE_RELEASE
     {
-        GetFullPathName( ppsz_argv[0], MAX_PATH, psz_path, &psz_vlc );
-    }
-    else if( !GetModuleFileName( NULL, psz_path, MAX_PATH ) )
-    {
-        psz_path[0] = '\0';
+        /* remove trailing \.libs from executable dir path if seen,
+           we assume we are running vlc through libtool wrapper in build dir */
+        int offset  = strlen(psz_path)-sizeof("\\.libs")+1;
+        if( offset > 0 )
+        {
+            psz_vlc = psz_path+offset;
+            if( ! strcmp(psz_vlc, "\\.libs") ) *psz_vlc = '\0';
+        }
     }
 #endif
 
-    if( (psz_vlc = strrchr( psz_path, '\\' )) ) *psz_vlc = '\0';
-
-    p_this->p_libvlc->psz_vlcpath = strdup( psz_path );
+    vlc_global()->psz_vlcpath = strdup( psz_path );
 
     /* Set the default file-translation mode */
 #if !defined( UNDER_CE )
     _fmode = _O_BINARY;
     _setmode( _fileno( stdin ), _O_BINARY ); /* Needed for pipes */
+
+    timeBeginPeriod(5);
 #endif
 
     /* Call mdate() once to make sure it is initialized properly */
@@ -115,15 +120,21 @@ void system_Init( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
 /*****************************************************************************
  * system_Configure: check for system specific configuration options.
  *****************************************************************************/
-static void IPCHelperThread( vlc_object_t * );
+static unsigned __stdcall IPCHelperThread( void * );
 LRESULT CALLBACK WMCOPYWNDPROC( HWND, UINT, WPARAM, LPARAM );
+static vlc_object_t *p_helper = NULL;
+static unsigned long hIPCHelper;
 
-void system_Configure( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
+typedef struct
+{
+  int argc;
+  int enqueue;
+  char data[];
+} vlc_ipc_data_t;
+
+void system_Configure( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
 {
 #if !defined( UNDER_CE )
-    p_this->p_libvlc->b_fast_mutex = config_GetInt( p_this, "fast-mutex" );
-    p_this->p_libvlc->i_win9x_cv = config_GetInt( p_this, "win9x-cv-method" );
-
     /* Raise default priority of the current process */
 #ifndef ABOVE_NORMAL_PRIORITY_CLASS
 #   define ABOVE_NORMAL_PRIORITY_CLASS 0x00008000
@@ -150,7 +161,7 @@ void system_Configure( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
         msg_Info( p_this, "one instance mode ENABLED");
 
         /* Use a named mutex to check if another instance is already running */
-        if( !( hmutex = CreateMutex( 0, TRUE, _T("VLC ipc ") _T(VERSION) ) ) )
+        if( !( hmutex = CreateMutex( 0, TRUE, L"VLC ipc "VERSION ) ) )
         {
             /* Failed for some reason. Just ignore the option and go on as
              * normal. */
@@ -162,17 +173,27 @@ void system_Configure( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
         if( GetLastError() != ERROR_ALREADY_EXISTS )
         {
             /* We are the 1st instance. */
-            vlc_object_t *p_helper =
-             (vlc_object_t *)vlc_object_create( p_this, sizeof(vlc_object_t) );
+            static const char typename[] = "ipc helper";
+            p_helper =
+                vlc_custom_create( p_this, sizeof(vlc_object_t),
+                                   VLC_OBJECT_GENERIC, typename );
+            vlc_object_lock( p_helper );
 
             /* Run the helper thread */
-            if( vlc_thread_create( p_helper, "IPC helper", IPCHelperThread,
-                                   VLC_THREAD_PRIORITY_LOW, VLC_TRUE ) )
+            hIPCHelper = _beginthreadex( NULL, 0, IPCHelperThread, p_helper,
+                                         0, NULL );
+            if( hIPCHelper )
+                vlc_object_wait( p_helper );
+            vlc_object_unlock( p_helper );
+
+            if( !hIPCHelper )
             {
                 msg_Err( p_this, "one instance mode DISABLED "
                          "(IPC helper thread couldn't be created)" );
-
+                vlc_object_release (p_helper);
+                p_helper = NULL;
             }
+            vlc_object_attach (p_helper, p_this);
 
             /* Initialization done.
              * Release the mutex to unblock other instances */
@@ -189,7 +210,7 @@ void system_Configure( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
 
             /* Locate the window created by the IPC helper thread of the
              * 1st instance */
-            if( !( ipcwindow = FindWindow( 0, _T("VLC ipc ") _T(VERSION) ) ) )
+            if( !( ipcwindow = FindWindow( 0, L"VLC ipc "VERSION ) ) )
             {
                 msg_Err( p_this, "one instance mode DISABLED "
                          "(couldn't find 1st instance of program)" );
@@ -202,27 +223,31 @@ void system_Configure( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
             if( *pi_argc - 1 >= optind )
             {
                 COPYDATASTRUCT wm_data;
-                int i_opt, i_data;
-                char *p_data;
-
-                i_data = sizeof(int);
+                int i_opt;
+                vlc_ipc_data_t *p_data;
+                size_t i_data = sizeof (*p_data);
 
                 for( i_opt = optind; i_opt < *pi_argc; i_opt++ )
                 {
-                    i_data += sizeof(int);
+                    i_data += sizeof (size_t);
                     i_data += strlen( ppsz_argv[ i_opt ] ) + 1;
                 }
-                p_data = (char *)malloc( i_data );
-                *((int *)&p_data[0]) = *pi_argc - optind;
-                i_data = sizeof(int);
+
+                p_data = malloc( i_data );
+                p_data->argc = *pi_argc - optind;
+                p_data->enqueue = config_GetInt( p_this, "playlist-enqueue" );
+                i_data = 0;
                 for( i_opt = optind; i_opt < *pi_argc; i_opt++ )
                 {
-                    int i_len = strlen( ppsz_argv[ i_opt ] ) + 1;
-                    *((int *)&p_data[i_data]) = i_len;
-                    i_data += sizeof(int);
-                    memcpy( &p_data[i_data], ppsz_argv[ i_opt ], i_len );
+                    size_t i_len = strlen( ppsz_argv[ i_opt ] ) + 1;
+                    /* Windows will never switch to an architecture
+                     * with stronger alignment requirements, right. */
+                    *((size_t *)(p_data->data + i_data)) = i_len;
+                    i_data += sizeof (size_t);
+                    memcpy( &p_data->data[i_data], ppsz_argv[ i_opt ], i_len );
                     i_data += i_len;
                 }
+                i_data += sizeof (*p_data);
 
                 /* Send our playlist items to the 1st instance */
                 wm_data.dwData = 0;
@@ -244,14 +269,15 @@ void system_Configure( vlc_t *p_this, int *pi_argc, char *ppsz_argv[] )
 #endif
 }
 
-static void IPCHelperThread( vlc_object_t *p_this )
+static unsigned __stdcall IPCHelperThread( void *data )
 {
+    vlc_object_t *p_this = data;
     HWND ipcwindow;
     MSG message;
 
     ipcwindow =
-        CreateWindow( _T("STATIC"),                  /* name of window class */
-                  _T("VLC ipc ") _T(VERSION),       /* window title bar text */
+        CreateWindow( L"STATIC",                     /* name of window class */
+                  L"VLC ipc "VERSION,               /* window title bar text */
                   0,                                         /* window style */
                   0,                                 /* default X coordinate */
                   0,                                 /* default Y coordinate */
@@ -262,17 +288,18 @@ static void IPCHelperThread( vlc_object_t *p_this )
                   GetModuleHandle(NULL),  /* handle of this program instance */
                   NULL );                               /* sent to WM_CREATE */
 
-    SetWindowLong( ipcwindow, GWL_WNDPROC, (LONG)WMCOPYWNDPROC );
-    SetWindowLong( ipcwindow, GWL_USERDATA, (LONG)p_this );
+    SetWindowLongPtr( ipcwindow, GWLP_WNDPROC, (LRESULT)WMCOPYWNDPROC );
+    SetWindowLongPtr( ipcwindow, GWLP_USERDATA, (LONG_PTR)p_this );
 
     /* Signal the creation of the thread and events queue */
-    vlc_thread_ready( p_this );
+    vlc_object_signal( p_this );
 
     while( GetMessage( &message, NULL, 0, 0 ) )
     {
         TranslateMessage( &message );
         DispatchMessage( &message );
     }
+    return 0;
 }
 
 LRESULT CALLBACK WMCOPYWNDPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
@@ -284,30 +311,27 @@ LRESULT CALLBACK WMCOPYWNDPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
         vlc_object_t *p_this;
         playlist_t *p_playlist;
 
-        p_this = (vlc_object_t *)GetWindowLong( hwnd, GWL_USERDATA );
+        p_this = (vlc_object_t *)
+            (uintptr_t)GetWindowLongPtr( hwnd, GWLP_USERDATA );
 
         if( !p_this ) return 0;
 
         /* Add files to the playlist */
-        p_playlist = (playlist_t *)vlc_object_find( p_this,
-                                                    VLC_OBJECT_PLAYLIST,
-                                                    FIND_ANYWHERE );
+        p_playlist = pl_Yield( p_this );
         if( !p_playlist ) return 0;
 
         if( pwm_data->lpData )
         {
-            int i_argc, i_data, i_opt, i_options;
             char **ppsz_argv;
-            char *p_data = (char *)pwm_data->lpData;
+            vlc_ipc_data_t *p_data = (vlc_ipc_data_t *)pwm_data->lpData;
+            size_t i_data = 0;
+            int i_argc = p_data->argc, i_opt, i_options;
 
-            i_argc = *((int *)&p_data[0]);
             ppsz_argv = (char **)malloc( i_argc * sizeof(char *) );
-            i_data = sizeof(int);
             for( i_opt = 0; i_opt < i_argc; i_opt++ )
             {
-                ppsz_argv[i_opt] = &p_data[i_data + sizeof(int)];
-                i_data += *((int *)&p_data[i_data]);
-                i_data += sizeof(int);
+                ppsz_argv[i_opt] = p_data->data + i_data + sizeof(int);
+                i_data += sizeof(int) + *((int *)(p_data->data + i_data));
             }
 
             for( i_opt = 0; i_opt < i_argc; i_opt++ )
@@ -320,20 +344,12 @@ LRESULT CALLBACK WMCOPYWNDPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
                 {
                     i_options++;
                 }
-                if( i_opt || config_GetInt( p_this, "playlist-enqueue" ) )
-                {
-                  playlist_AddExt( p_playlist, ppsz_argv[i_opt],
-                    ppsz_argv[i_opt], PLAYLIST_APPEND ,
-                    PLAYLIST_END, -1,
-                    (char const **)( i_options ? &ppsz_argv[i_opt+1] : NULL ),
-                    i_options );
-                } else {
-                  playlist_AddExt( p_playlist, ppsz_argv[i_opt],
-                    ppsz_argv[i_opt], PLAYLIST_APPEND | PLAYLIST_GO,
-                    PLAYLIST_END, -1,
-                    (char const **)( i_options ? &ppsz_argv[i_opt+1] : NULL ),
-                    i_options );
-                }
+                playlist_AddExt( p_playlist, ppsz_argv[i_opt],
+                  NULL, PLAYLIST_APPEND |
+                        ( ( i_opt || p_data->enqueue ) ? 0 : PLAYLIST_GO ),
+                  PLAYLIST_END, -1,
+                  (char const **)( i_options ? &ppsz_argv[i_opt+1] : NULL ),
+                  i_options, true, pl_Unlocked );
 
                 i_opt += i_options;
             }
@@ -350,13 +366,26 @@ LRESULT CALLBACK WMCOPYWNDPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
 /*****************************************************************************
  * system_End: terminate winsock.
  *****************************************************************************/
-void system_End( vlc_t *p_this )
+void system_End( libvlc_int_t *p_this )
 {
-    if( p_this && p_this->p_libvlc && p_this->p_libvlc->psz_vlcpath )
+    if( p_this && vlc_global() )
     {
-        free( p_this->p_libvlc->psz_vlcpath );
-        p_this->p_libvlc->psz_vlcpath = NULL;
+        free( vlc_global()->psz_vlcpath );
+        vlc_global()->psz_vlcpath = NULL;
     }
+    if (p_helper && p_helper->p_parent == VLC_OBJECT(p_this) )
+    {
+        /* FIXME: thread-safety... */
+        SendMessage( NULL, WM_QUIT, 0, 0 );
+        vlc_thread_join (p_helper);
+        vlc_object_detach (p_helper);
+        vlc_object_release (p_helper);
+        p_helper = NULL;
+    }
+
+#if !defined( UNDER_CE )
+    timeEndPeriod(5);
+#endif
 
     WSACleanup();
 }

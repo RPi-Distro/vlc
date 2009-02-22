@@ -1,8 +1,8 @@
 /*****************************************************************************
  * var.c: object variables for input thread
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: f22a4d1d8d90c6f3f274097ecc0afa8753a79124 $
+ * Copyright (C) 2004-2007 the VideoLAN team
+ * $Id: d3d1c0c47eb1b1405198639003cac489cc76f5ee $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,21 +24,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <stdio.h>
 #include <stdlib.h>
-#include <vlc/vlc.h>
-#include <vlc/input.h>
 
 #include "input_internal.h"
-
-/*****************************************************************************
- * Exported prototypes
- *****************************************************************************/
-void input_ControlVarInit ( input_thread_t * );
-void input_ControlVarClean( input_thread_t * );
-void input_ControlVarNavigation( input_thread_t * );
-void input_ControlVarTitle( input_thread_t *p_input, int i_title );
-
-void input_ConfigVarInit ( input_thread_t *p_input );
 
 /*****************************************************************************
  * Callbacks
@@ -67,6 +61,57 @@ static int EsDelayCallback ( vlc_object_t *p_this, char const *psz_cmd,
 static int BookmarkCallback( vlc_object_t *p_this, char const *psz_cmd,
                              vlc_value_t oldval, vlc_value_t newval, void * );
 
+typedef struct
+{
+    const char *psz_name;
+    vlc_callback_t callback;
+} vlc_input_callback_t;
+static void InputAddCallbacks( input_thread_t *, const vlc_input_callback_t * );
+static void InputDelCallbacks( input_thread_t *, const vlc_input_callback_t * );
+
+#ifdef CALLBACK /* For windows */
+# undef CALLBACK /* We don't care of this one here */
+#endif
+/* List all callbacks added by input */
+#define CALLBACK(name,cb) { name, cb }
+static const vlc_input_callback_t p_input_callbacks[] =
+{
+    CALLBACK( "state", StateCallback ),
+    CALLBACK( "rate", RateCallback ),
+    CALLBACK( "rate-slower", RateCallback ),
+    CALLBACK( "rate-faster", RateCallback ),
+    CALLBACK( "position", PositionCallback ),
+    CALLBACK( "position-offset", PositionCallback ),
+    CALLBACK( "time", TimeCallback ),
+    CALLBACK( "time-offset", TimeCallback ),
+    CALLBACK( "bookmark", BookmarkCallback ),
+    CALLBACK( "program", ProgramCallback ),
+    CALLBACK( "title", TitleCallback ),
+    CALLBACK( "chapter", SeekpointCallback ),
+    CALLBACK( "audio-delay", EsDelayCallback ),
+    CALLBACK( "spu-delay", EsDelayCallback ),
+    CALLBACK( "video-es", ESCallback ),
+    CALLBACK( "audio-es", ESCallback ),
+    CALLBACK( "spu-es", ESCallback ),
+
+    CALLBACK( NULL, NULL )
+};
+static const vlc_input_callback_t p_input_navigation_callbacks[] =
+{
+    CALLBACK( "next-title", TitleCallback ),
+    CALLBACK( "prev-title", TitleCallback ),
+
+    CALLBACK( NULL, NULL )
+};
+static const vlc_input_callback_t p_input_title_callbacks[] =
+{
+    CALLBACK( "next-chapter", SeekpointCallback ),
+    CALLBACK( "prev-chapter", SeekpointCallback ),
+
+    CALLBACK( NULL, NULL )
+};
+#undef CALLBACK
+
 /*****************************************************************************
  * input_ControlVarInit:
  *  Create all control object variables with their callbacks
@@ -79,42 +124,33 @@ void input_ControlVarInit ( input_thread_t *p_input )
     var_Create( p_input, "state", VLC_VAR_INTEGER );
     val.i_int = p_input->i_state;
     var_Change( p_input, "state", VLC_VAR_SETVALUE, &val, NULL );
-    var_AddCallback( p_input, "state", StateCallback, NULL );
 
     /* Rate */
     var_Create( p_input, "rate", VLC_VAR_INTEGER );
-    val.i_int = p_input->i_rate;
+    val.i_int = p_input->p->i_rate;
     var_Change( p_input, "rate", VLC_VAR_SETVALUE, &val, NULL );
-    var_AddCallback( p_input, "rate", RateCallback, NULL );
 
     var_Create( p_input, "rate-slower", VLC_VAR_VOID );
-    var_AddCallback( p_input, "rate-slower", RateCallback, NULL );
 
     var_Create( p_input, "rate-faster", VLC_VAR_VOID );
-    var_AddCallback( p_input, "rate-faster", RateCallback, NULL );
 
     /* Position */
     var_Create( p_input, "position",  VLC_VAR_FLOAT );
     var_Create( p_input, "position-offset",  VLC_VAR_FLOAT );
     val.f_float = 0.0;
     var_Change( p_input, "position", VLC_VAR_SETVALUE, &val, NULL );
-    var_AddCallback( p_input, "position", PositionCallback, NULL );
-    var_AddCallback( p_input, "position-offset", PositionCallback, NULL );
 
     /* Time */
     var_Create( p_input, "time",  VLC_VAR_TIME );
     var_Create( p_input, "time-offset",  VLC_VAR_TIME );    /* relative */
     val.i_time = 0;
     var_Change( p_input, "time", VLC_VAR_SETVALUE, &val, NULL );
-    var_AddCallback( p_input, "time", TimeCallback, NULL );
-    var_AddCallback( p_input, "time-offset", TimeCallback, NULL );
 
     /* Bookmark */
     var_Create( p_input, "bookmark", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE |
                 VLC_VAR_ISCOMMAND );
     val.psz_string = _("Bookmark");
     var_Change( p_input, "bookmark", VLC_VAR_SETTEXT, &val, NULL );
-    var_AddCallback( p_input, "bookmark", BookmarkCallback, NULL );
 
     /* Program */
     var_Create( p_input, "program", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE |
@@ -124,7 +160,6 @@ void input_ControlVarInit ( input_thread_t *p_input )
         var_Change( p_input, "program", VLC_VAR_DELCHOICE, &val, NULL );
     text.psz_string = _("Program");
     var_Change( p_input, "program", VLC_VAR_SETTEXT, &text, NULL );
-    var_AddCallback( p_input, "program", ProgramCallback, NULL );
 
     /* Programs */
     var_Create( p_input, "programs", VLC_VAR_LIST | VLC_VAR_DOINHERIT );
@@ -135,13 +170,11 @@ void input_ControlVarInit ( input_thread_t *p_input )
     var_Create( p_input, "title", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE );
     text.psz_string = _("Title");
     var_Change( p_input, "title", VLC_VAR_SETTEXT, &text, NULL );
-    var_AddCallback( p_input, "title", TitleCallback, NULL );
 
     /* Chapter */
     var_Create( p_input, "chapter", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE );
     text.psz_string = _("Chapter");
     var_Change( p_input, "chapter", VLC_VAR_SETTEXT, &text, NULL );
-    var_AddCallback( p_input, "chapter", SeekpointCallback, NULL );
 
     /* Navigation The callback is added after */
     var_Create( p_input, "navigation", VLC_VAR_VARIABLE | VLC_VAR_HASCHOICE );
@@ -152,29 +185,27 @@ void input_ControlVarInit ( input_thread_t *p_input )
     var_Create( p_input, "audio-delay", VLC_VAR_TIME );
     val.i_time = 0;
     var_Change( p_input, "audio-delay", VLC_VAR_SETVALUE, &val, NULL );
-    var_AddCallback( p_input, "audio-delay", EsDelayCallback, NULL );
     var_Create( p_input, "spu-delay", VLC_VAR_TIME );
     val.i_time = 0;
     var_Change( p_input, "spu-delay", VLC_VAR_SETVALUE, &val, NULL );
-    var_AddCallback( p_input, "spu-delay", EsDelayCallback, NULL );
+
+    p_input->p->pts_adjust.auto_adjust = var_CreateGetBool(
+            p_input, "auto-adjust-pts-delay" );
 
     /* Video ES */
     var_Create( p_input, "video-es", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE );
     text.psz_string = _("Video Track");
     var_Change( p_input, "video-es", VLC_VAR_SETTEXT, &text, NULL );
-    var_AddCallback( p_input, "video-es", ESCallback, NULL );
 
     /* Audio ES */
     var_Create( p_input, "audio-es", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE );
     text.psz_string = _("Audio Track");
     var_Change( p_input, "audio-es", VLC_VAR_SETTEXT, &text, NULL );
-    var_AddCallback( p_input, "audio-es", ESCallback, NULL );
 
     /* Spu ES */
     var_Create( p_input, "spu-es", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE );
     text.psz_string = _("Subtitles Track");
     var_Change( p_input, "spu-es", VLC_VAR_SETTEXT, &text, NULL );
-    var_AddCallback( p_input, "spu-es", ESCallback, NULL );
 
     /* Special read only objects variables for intf */
     var_Create( p_input, "bookmarks", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
@@ -183,62 +214,52 @@ void input_ControlVarInit ( input_thread_t *p_input )
     val.i_time = 0;
     var_Change( p_input, "length", VLC_VAR_SETVALUE, &val, NULL );
 
-    /* Special "intf-change" variable, it allows intf to set up a callback
-     * to be notified of some changes.
-     * TODO list all changes warn by this callbacks */
-    var_Create( p_input, "intf-change", VLC_VAR_BOOL );
-    var_SetBool( p_input, "intf-change", VLC_TRUE );
+    if( !p_input->b_preparsing )
+    {
+        /* Special "intf-change" variable, it allows intf to set up a callback
+         * to be notified of some changes.
+         *
+         * Add rate-change to inform about rate changin
+         *
+         * TODO list all changes warn by this callbacks */
+        var_Create( p_input, "intf-change", VLC_VAR_BOOL );
+        var_SetBool( p_input, "intf-change", true );
+        var_Create( p_input, "rate-change", VLC_VAR_BOOL );
+        var_SetBool( p_input, "rate-change", true );
 
-   /* item-change variable */
-    var_Create( p_input, "item-change", VLC_VAR_INTEGER );
+        var_Create( p_input, "intf-change-vout", VLC_VAR_BOOL );
+        var_SetBool( p_input, "intf-change-vout", true );
+    }
+
+    /* Add all callbacks
+     * XXX we put callback only in non preparsing mode. We need to create the variable
+     * unless someone want to check all var_Get/var_Change return value ... */
+    if( !p_input->b_preparsing )
+        InputAddCallbacks( p_input, p_input_callbacks );
 }
 
 /*****************************************************************************
- * input_ControlVarClean:
+ * input_ControlVarStop:
  *****************************************************************************/
-void input_ControlVarClean( input_thread_t *p_input )
+void input_ControlVarStop( input_thread_t *p_input )
 {
-    var_Destroy( p_input, "state" );
-    var_Destroy( p_input, "rate" );
-    var_Destroy( p_input, "rate-slower" );
-    var_Destroy( p_input, "rate-faster" );
-    var_Destroy( p_input, "position" );
-    var_Destroy( p_input, "position-offset" );
-    var_Destroy( p_input, "time" );
-    var_Destroy( p_input, "time-offset" );
+    InputDelCallbacks( p_input, p_input_callbacks );
 
-    var_Destroy( p_input, "audio-delay" );
-    var_Destroy( p_input, "spu-delay" );
-
-    var_Destroy( p_input, "bookmark" );
-
-    var_Destroy( p_input, "program" );
-    if( p_input->i_title > 1 )
+    if( p_input->p->i_title > 0 )
     {
-        /* TODO Destroy sub navigation var ? */
+        char name[sizeof("title ") + 5 ];
+        int i;
 
-        var_Destroy( p_input, "next-title" );
-        var_Destroy( p_input, "prev-title" );
+        InputDelCallbacks( p_input, p_input_navigation_callbacks );
+        InputDelCallbacks( p_input, p_input_title_callbacks );
+
+        for( i = 0; i < p_input->p->i_title; i++ )
+        {
+            snprintf( name, sizeof(name), "title %2i", i );
+            var_DelCallback( p_input, name, NavigationCallback, (void *)(intptr_t)i );
+        }
     }
-    if( p_input->i_title > 0 )
-    {
-        /* FIXME title > 0 doesn't mean current title has more than 1 seekpoint */
-        var_Destroy( p_input, "next-chapter" );
-        var_Destroy( p_input, "prev-chapter" );
-    }
-    var_Destroy( p_input, "title" );
-    var_Destroy( p_input, "chapter" );
-    var_Destroy( p_input, "navigation" );
-
-    var_Destroy( p_input, "video-es" );
-    var_Destroy( p_input, "audio-es" );
-    var_Destroy( p_input, "spu-es" );
-
-    var_Destroy( p_input, "bookmarks" );
-    var_Destroy( p_input, "length" );
-
-    var_Destroy( p_input, "intf-change" );
- }
+}
 
 /*****************************************************************************
  * input_ControlVarNavigation:
@@ -250,7 +271,7 @@ void input_ControlVarNavigation( input_thread_t *p_input )
     int  i;
 
     /* Create more command variables */
-    if( p_input->i_title > 1 )
+    if( p_input->p->i_title > 1 )
     {
         var_Create( p_input, "next-title", VLC_VAR_VOID );
         text.psz_string = _("Next title");
@@ -265,9 +286,12 @@ void input_ControlVarNavigation( input_thread_t *p_input )
 
     /* Create title and navigation */
     val.psz_string = malloc( sizeof("title ") + 5 );
-    for( i = 0; i < p_input->i_title; i++ )
+    if( !val.psz_string )
+        return;
+
+    for( i = 0; i < p_input->p->i_title; i++ )
     {
-        vlc_value_t val2, text, text2;
+        vlc_value_t val2, text2;
         int j;
 
         /* Add Navigation entries */
@@ -276,17 +300,18 @@ void input_ControlVarNavigation( input_thread_t *p_input )
         var_Create( p_input, val.psz_string,
                     VLC_VAR_INTEGER|VLC_VAR_HASCHOICE|VLC_VAR_ISCOMMAND );
         var_AddCallback( p_input, val.psz_string,
-                         NavigationCallback, (void *)i );
+                         NavigationCallback, (void *)(intptr_t)i );
 
-        if( p_input->title[i]->psz_name == NULL ||
-            *p_input->title[i]->psz_name == '\0' )
+        if( p_input->p->title[i]->psz_name == NULL ||
+            *p_input->p->title[i]->psz_name == '\0' )
         {
-            asprintf( &text.psz_string, _("Title %i"),
-                      i + p_input->i_title_offset );
+            if( asprintf( &text.psz_string, _("Title %i"),
+                      i + p_input->p->i_title_offset ) == -1 )
+                continue;
         }
         else
         {
-            text.psz_string = strdup( p_input->title[i]->psz_name );
+            text.psz_string = strdup( p_input->p->title[i]->psz_name );
         }
         var_Change( p_input, "navigation", VLC_VAR_ADDCHOICE, &val, &text );
 
@@ -296,26 +321,27 @@ void input_ControlVarNavigation( input_thread_t *p_input )
 
         free( text.psz_string );
 
-        for( j = 0; j < p_input->title[i]->i_seekpoint; j++ )
+        for( j = 0; j < p_input->p->title[i]->i_seekpoint; j++ )
         {
             val2.i_int = j;
 
-            if( p_input->title[i]->seekpoint[j]->psz_name == NULL ||
-                *p_input->title[i]->seekpoint[j]->psz_name == '\0' )
+            if( p_input->p->title[i]->seekpoint[j]->psz_name == NULL ||
+                *p_input->p->title[i]->seekpoint[j]->psz_name == '\0' )
             {
                 /* Default value */
-                asprintf( &text2.psz_string, _("Chapter %i"),
-                          j + p_input->i_seekpoint_offset );
+                if( asprintf( &text2.psz_string, _("Chapter %i"),
+                          j + p_input->p->i_seekpoint_offset ) == -1 )
+                    continue;
             }
             else
             {
                 text2.psz_string =
-                    strdup( p_input->title[i]->seekpoint[j]->psz_name );
+                    strdup( p_input->p->title[i]->seekpoint[j]->psz_name );
             }
 
             var_Change( p_input, val.psz_string, VLC_VAR_ADDCHOICE,
                         &val2, &text2 );
-            if( text2.psz_string ) free( text2.psz_string );
+            free( text2.psz_string );
         }
 
     }
@@ -328,8 +354,8 @@ void input_ControlVarNavigation( input_thread_t *p_input )
  *****************************************************************************/
 void input_ControlVarTitle( input_thread_t *p_input, int i_title )
 {
-    input_title_t *t = p_input->title[i_title];
-    vlc_value_t val;
+    input_title_t *t = p_input->p->title[i_title];
+    vlc_value_t val, text;
     int  i;
 
     /* Create/Destroy command variables */
@@ -340,8 +366,6 @@ void input_ControlVarTitle( input_thread_t *p_input, int i_title )
     }
     else if( var_Get( p_input, "next-chapter", &val ) != VLC_SUCCESS )
     {
-        vlc_value_t text;
-
         var_Create( p_input, "next-chapter", VLC_VAR_VOID );
         text.psz_string = _("Next chapter");
         var_Change( p_input, "next-chapter", VLC_VAR_SETTEXT, &text, NULL );
@@ -357,15 +381,15 @@ void input_ControlVarTitle( input_thread_t *p_input, int i_title )
     var_Change( p_input, "chapter", VLC_VAR_CLEARCHOICES, NULL, NULL );
     for( i = 0; i <  t->i_seekpoint; i++ )
     {
-        vlc_value_t text;
         val.i_int = i;
 
         if( t->seekpoint[i]->psz_name == NULL ||
             *t->seekpoint[i]->psz_name == '\0' )
         {
             /* Default value */
-            asprintf( &text.psz_string, _("Chapter %i"),
-                      i + p_input->i_seekpoint_offset );
+            if( asprintf( &text.psz_string, _("Chapter %i"),
+                      i + p_input->p->i_seekpoint_offset ) == -1 )
+                continue;
         }
         else
         {
@@ -373,7 +397,7 @@ void input_ControlVarTitle( input_thread_t *p_input, int i_title )
         }
 
         var_Change( p_input, "chapter", VLC_VAR_ADDCHOICE, &val, &text );
-        if( text.psz_string ) free( text.psz_string );
+        free( text.psz_string );
     }
 }
 
@@ -386,55 +410,69 @@ void input_ConfigVarInit ( input_thread_t *p_input )
     vlc_value_t val;
 
     /* Create Object Variables for private use only */
-    var_Create( p_input, "video", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Create( p_input, "audio", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Create( p_input, "spu", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
 
-    var_Create( p_input, "audio-track", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sub-track", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
+    if( !p_input->b_preparsing )
+    {
+        var_Create( p_input, "video", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "audio", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "spu", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
 
-    var_Create( p_input, "audio-language", VLC_VAR_STRING|VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sub-language", VLC_VAR_STRING|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "audio-track", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sub-track", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
 
-    var_Create( p_input, "audio-track-id", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sub-track-id", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "audio-language",
+                    VLC_VAR_STRING|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sub-language",
+                    VLC_VAR_STRING|VLC_VAR_DOINHERIT );
 
-    var_Create( p_input, "sub-file", VLC_VAR_FILE | VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sub-autodetect-file", VLC_VAR_BOOL |
-                VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sub-autodetect-path", VLC_VAR_STRING |
-                VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sub-autodetect-fuzzy", VLC_VAR_INTEGER |
-                VLC_VAR_DOINHERIT );
+        var_Create( p_input, "audio-track-id",
+                    VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sub-track-id",
+                    VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
 
-    var_Create( p_input, "sout", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sout-all",   VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sout-audio", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sout-video", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sout-spu", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Create( p_input, "sout-keep",  VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sub-file", VLC_VAR_FILE | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sub-autodetect-file", VLC_VAR_BOOL |
+                    VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sub-autodetect-path", VLC_VAR_STRING |
+                    VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sub-autodetect-fuzzy", VLC_VAR_INTEGER |
+                    VLC_VAR_DOINHERIT );
 
-    var_Create( p_input, "input-repeat", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sout", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sout-all",   VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sout-audio", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sout-video", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sout-spu", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "sout-keep",  VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
 
-    var_Create( p_input, "start-time", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
-    var_Create( p_input, "stop-time", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "input-repeat",
+                    VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "start-time", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "stop-time", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "run-time", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
 
-    var_Create( p_input, "minimize-threads", VLC_VAR_BOOL|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "input-slave",
+                    VLC_VAR_STRING | VLC_VAR_DOINHERIT );
 
-    var_Create( p_input, "demuxed-id3", VLC_VAR_BOOL ); /* FIXME beurk */
-    val.b_bool = VLC_FALSE;
-    var_Change( p_input, "demuxed-id3", VLC_VAR_SETVALUE, &val, NULL );
+        var_Create( p_input, "minimize-threads",
+                    VLC_VAR_BOOL|VLC_VAR_DOINHERIT );
 
-    var_Create( p_input, "audio-desync", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-
-    var_Create( p_input, "cr-average", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Create( p_input, "clock-synchro", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
+        var_Create( p_input, "audio-desync",
+                    VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "cr-average",
+                    VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
+        var_Create( p_input, "clock-synchro",
+                    VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
+    }
 
     var_Create( p_input, "seekable", VLC_VAR_BOOL );
-    val.b_bool = VLC_TRUE; /* Fixed later*/
+    val.b_bool = true; /* Fixed later*/
     var_Change( p_input, "seekable", VLC_VAR_SETVALUE, &val, NULL );
-
-    var_Create( p_input, "input-slave", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
+    var_Create( p_input, "can-pause", VLC_VAR_BOOL );
+    val.b_bool = true; /* Fixed later*/
+    var_Change( p_input, "can-pause", VLC_VAR_SETVALUE, &val, NULL );
+    var_Create( p_input, "teletext-es", VLC_VAR_INTEGER );
+    var_SetInteger( p_input, "teletext-es", -1 );
 
     /* */
     var_Create( p_input, "access-filter", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
@@ -453,6 +491,27 @@ void input_ConfigVarInit ( input_thread_t *p_input )
 }
 
 /*****************************************************************************
+ * Callbacks managements:
+ *****************************************************************************/
+static void InputAddCallbacks( input_thread_t *p_input,
+                               const vlc_input_callback_t *p_callbacks )
+{
+    int i;
+    for( i = 0; p_callbacks[i].psz_name != NULL; i++ )
+        var_AddCallback( p_input,
+                         p_callbacks[i].psz_name,
+                         p_callbacks[i].callback, NULL );
+}
+static void InputDelCallbacks( input_thread_t *p_input,
+                               const vlc_input_callback_t *p_callbacks )
+{
+    int i;
+    for( i = 0; p_callbacks[i].psz_name != NULL; i++ )
+        var_DelCallback( p_input,
+                         p_callbacks[i].psz_name,
+                         p_callbacks[i].callback, NULL );
+}
+/*****************************************************************************
  * All Callbacks:
  *****************************************************************************/
 static int StateCallback( vlc_object_t *p_this, char const *psz_cmd,
@@ -460,7 +519,7 @@ static int StateCallback( vlc_object_t *p_this, char const *psz_cmd,
                           void *p_data )
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
-
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     if( newval.i_int == PLAYING_S || newval.i_int == PAUSE_S )
     {
@@ -475,6 +534,7 @@ static int RateCallback( vlc_object_t *p_this, char const *psz_cmd,
                          vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
+    VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     /* Problem with this way: the "rate" variable is update after the input thread do the change */
     if( !strcmp( psz_cmd, "rate-slower" ) )
@@ -499,6 +559,7 @@ static int PositionCallback( vlc_object_t *p_this, char const *psz_cmd,
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
     vlc_value_t val, length;
+    VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     if( !strcmp( psz_cmd, "position-offset" ) )
     {
@@ -531,6 +592,7 @@ static int TimeCallback( vlc_object_t *p_this, char const *psz_cmd,
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
     vlc_value_t val, length;
+    VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     if( !strcmp( psz_cmd, "time-offset" ) )
     {
@@ -562,6 +624,7 @@ static int ProgramCallback( vlc_object_t *p_this, char const *psz_cmd,
                             void *p_data )
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     input_ControlPush( p_input, INPUT_CONTROL_SET_PROGRAM, &newval );
 
@@ -574,6 +637,7 @@ static int TitleCallback( vlc_object_t *p_this, char const *psz_cmd,
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
     vlc_value_t val, count;
+    VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     if( !strcmp( psz_cmd, "next-title" ) )
     {
@@ -606,6 +670,7 @@ static int SeekpointCallback( vlc_object_t *p_this, char const *psz_cmd,
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
     vlc_value_t val, count;
+    VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     if( !strcmp( psz_cmd, "next-chapter" ) )
     {
@@ -638,9 +703,10 @@ static int NavigationCallback( vlc_object_t *p_this, char const *psz_cmd,
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
     vlc_value_t     val;
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval);
 
     /* Issue a title change */
-    val.i_int = (int)p_data;
+    val.i_int = (intptr_t)p_data;
     input_ControlPush( p_input, INPUT_CONTROL_SET_TITLE, &val );
 
     var_Change( p_input, "title", VLC_VAR_SETVALUE, &val, NULL );
@@ -657,6 +723,7 @@ static int ESCallback( vlc_object_t *p_this, char const *psz_cmd,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
+    VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     if( newval.i_int < 0 )
     {
@@ -682,10 +749,10 @@ static int ESCallback( vlc_object_t *p_this, char const *psz_cmd,
 }
 
 static int EsDelayCallback ( vlc_object_t *p_this, char const *psz_cmd,
-                             vlc_value_t oldval, vlc_value_t newval, void *p )
+                             vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
-
+    VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     if( !strcmp( psz_cmd, "audio-delay" ) )
     {
@@ -706,6 +773,7 @@ static int BookmarkCallback( vlc_object_t *p_this, char const *psz_cmd,
                              void *p_data )
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     input_ControlPush( p_input, INPUT_CONTROL_SET_BOOKMARK, &newval );
 

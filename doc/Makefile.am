@@ -1,7 +1,5 @@
 NULL =
 
-docdir = $(datadir)/doc/@PACKAGE@
-
 doc_DATA = \
 	bugreport-howto.txt \
 	fortunes.txt \
@@ -32,6 +30,7 @@ EXTRA_DIST = \
 	intf-vcd.txt \
 	release-howto.txt \
 	arm-crosscompile-howto.sgml \
+	Doxyfile.in \
 	Configure.help \
 	lirc/example.lircrc \
 	skins/skins-howto.txt \
@@ -47,11 +46,17 @@ EXTRA_DIST = \
 	demo.sh \
 	$(NULL)
 
-DISTCLEANFILES = $(CHANGELOGS)
+DISTCLEANFILES = $(CHANGELOGS) Doxyfile
+
+Doxyfile: Doxyfile.in $(top_builddir)/config.status
+	cd $(top_builddir) && $(SHELL) ./config.status --file=$(subdir)/$@
+
+doc: Doxyfile
+	doxygen
 
 $(CHANGELOGS): Makefile.am
 	if test -d "$(top_srcdir)/.git"; then \
-		y="$$(echo "$@" | sed -e 's,ChangeLog-,,')" ; \
+		y="$@"; y="$${y##ChangeLog-}" ; \
 		git --git-dir="$(top_srcdir)/.git" log \
 			--since="$$y-01-01" \
 			--until="$$y-12-31 23:00:00 -0100" \
@@ -59,7 +64,9 @@ $(CHANGELOGS): Makefile.am
 	fi
 
 # This one needs to be rebuilt all the time :)
-.PHONY: ChangeLog-2008
-#
+.PHONY: ChangeLog-2008 changelogs doc
+
+changelogs: $(CHANGELOGS)
+
 #distclean-hook:
 #	test "$(srcdir)" = "$(builddir)" || rm -f -- $(CHANGELOGS)

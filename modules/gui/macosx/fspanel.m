@@ -1,11 +1,11 @@
 /*****************************************************************************
  * fspanel.m: MacOS X full screen panel
  *****************************************************************************
- * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: fspanel.m 17038 2006-10-12 18:24:34Z fkuehne $
+ * Copyright (C) 2006-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
- *          Felix Kühne <fkuehne at videolan dot org>
+ *          Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,10 +28,12 @@
 #import "intf.h"
 #import "controls.h"
 #import "vout.h"
-#import "fspanel.h"
 #import "misc.h"
+#import "fspanel.h"
 
-#define KEEP_VISIBLE_AFTER_ACTION 4 /* time in half-sec until this panel will hide again after an user's action */
+@interface VLCFSPanel ()
+- (void)hideMouse;
+@end
 
 /*****************************************************************************
  * VLCFSPanel
@@ -49,11 +51,11 @@
     [win setBackgroundColor:[NSColor clearColor]];
     
     /* let the window sit on top of everything else and start out completely transparent */
-    [win setLevel:NSFloatingWindowLevel];
-    [win setAlphaValue:0.0];
-    o_screen = nil;
+    [win setLevel:NSModalPanelWindowLevel];
+    i_device = 0;
     [win center];
-
+    hideAgainTimer = fadeTimer = nil;
+    [self setNonActive:nil];
     return win;
 }
 
@@ -96,9 +98,12 @@
 -(void)dealloc
 {
     [[NSNotificationCenter defaultCenter] removeObserver: self];
-    
+
     if( hideAgainTimer )
+    {
+        [hideAgainTimer invalidate];
         [hideAgainTimer release];
+    }
     [self setFadeTimer:nil];
     [super dealloc];
 }
@@ -109,11 +114,18 @@
     NSPoint theCoordinate;
     NSRect theScreensFrame;
     NSRect theWindowsFrame;
+    NSScreen *screen;
+    
+    /* user-defined screen */
+    screen = [NSScreen screenWithDisplayID: (CGDirectDisplayID)i_device];
+    
+    if (!screen)
+    {
+        /* invalid preferences or none specified, using main screen */
+        screen = [NSScreen mainScreen];
+    }
 
-    if( o_screen )
-        theScreensFrame = [o_screen frame];
-    else
-        theScreensFrame = [[NSScreen mainScreen] frame];
+    theScreensFrame = [screen frame];
 
     theWindowsFrame = [self frame];
     
@@ -193,7 +205,7 @@
         if( b_fadeQueued )
         {
             b_fadeQueued=NO;
-            [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(unfocus:) userInfo:NULL repeats:YES]];
+            [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(unfocus:) userInfo:NULL repeats:YES]];
         }
     }
 }
@@ -236,18 +248,31 @@
         [[[[[VLCMain sharedInstance] getControls] getVoutView] window] makeKeyWindow];
 }
 
+- (void)hideMouse
+{
+    [NSCursor setHiddenUntilMouseMoves: YES];
+}
+
 - (void)fadeIn
 {
-    /* in case that the user don't want us to appear, just return here */
-    if(! config_GetInt( VLCIntf, "macosx-fspanel" ) || b_nonActive )
+    /* in case that the user don't want us to appear, make sure we hide the mouse */
+
+    if( !config_GetInt( VLCIntf, "macosx-fspanel" ) )
+    {
+        float time = (float)var_CreateGetInteger( VLCIntf, "mouse-hide-timeout" ) / 1000.;
+        [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:time target:self selector:@selector(hideMouse) userInfo:nil repeats:NO]];
         return;
-    
+    }
+
+    if( b_nonActive )
+        return;
+
     [self orderFront: nil];
     
     if( [self alphaValue] < 1.0 || b_displayed != YES )
     {
         if (![self fadeTimer])
-            [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(focus:) userInfo:[NSNumber numberWithShort:1] repeats:YES]];
+            [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(focus:) userInfo:[NSNumber numberWithShort:1] repeats:YES]];
         else if ([[[self fadeTimer] userInfo] shortValue]==0)
             b_fadeQueued=YES;
     }
@@ -262,7 +287,7 @@
     if( ( [self alphaValue] > 0.0 ) )
     {
         if (![self fadeTimer])
-            [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(unfocus:) userInfo:[NSNumber numberWithShort:0] repeats:YES]];
+            [self setFadeTimer:[NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(unfocus:) userInfo:[NSNumber numberWithShort:0] repeats:YES]];
         else if ([[[self fadeTimer] userInfo] shortValue]==1)
             b_fadeQueued=YES;
     }
@@ -277,13 +302,18 @@
     /* get us a valid timer */
     if(! b_alreadyCounting )
     {
-        hideAgainTimer = [NSTimer scheduledTimerWithTimeInterval: 0.5
+        i_timeToKeepVisibleInSec = var_CreateGetInteger( VLCIntf, "mouse-hide-timeout" ) / 500;
+        if( hideAgainTimer )
+        {
+            [hideAgainTimer invalidate];
+            [hideAgainTimer autorelease];
+        }
+        /* released in -autoHide and -dealloc */
+        hideAgainTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.5
                                                           target: self 
                                                         selector: @selector(keepVisible:)
                                                         userInfo: nil 
-                                                         repeats: YES];
-        [hideAgainTimer fire];
-        [hideAgainTimer retain];
+                                                         repeats: YES] retain];
         b_alreadyCounting = YES;
     }
 }
@@ -292,21 +322,15 @@
 {
     /* if the user triggered an action, start over again */
     if( b_keptVisible )
-    {
-        i_timeToKeepVisibleInSec = KEEP_VISIBLE_AFTER_ACTION;
         b_keptVisible = NO;
-    }
-    
+
     /* count down until we hide ourselfes again and do so if necessary */
-    i_timeToKeepVisibleInSec -= 1;
-    if( i_timeToKeepVisibleInSec < 1 )
+    if( --i_timeToKeepVisibleInSec < 1 )
     {
-        [NSCursor setHiddenUntilMouseMoves: YES];
+        [self hideMouse];
         [self fadeOut];
-        [timer invalidate];
-        [timer release];
+        [hideAgainTimer invalidate]; /* released in -autoHide and -dealloc */
         b_alreadyCounting = NO;
-        timer = NULL;
     }
 }
 
@@ -320,7 +344,7 @@
 {
     [timer retain];
     [fadeTimer invalidate];
-    [fadeTimer release];
+    [fadeTimer autorelease];
     fadeTimer=timer;
 }
 
@@ -342,12 +366,12 @@
     return b_displayed;
 }
 
-- (void)setVoutWasUpdated: (NSScreen *)o_new_screen;
+- (void)setVoutWasUpdated: (int)i_newdevice;
 {
     b_voutWasUpdated = YES;
-    if( ![o_new_screen isScreen: o_screen] )
+    if( i_newdevice != i_device )
     {
-        o_screen = o_new_screen;
+        i_device = i_newdevice;
         [self center];
     }
 }
@@ -548,7 +572,7 @@
 
 - (void)drawRect:(NSRect)rect
 {
-	NSRect frame = [self frame];
+    NSRect frame = [self frame];
     NSRect image_rect;
     NSImage *img;
     addImage( @"fs_background", 0, 0, NSCompositeCopy, 0 );
@@ -625,3 +649,4 @@
 }
 
 @end
+

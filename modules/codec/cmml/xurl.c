@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2004 the VideoLAN team
  *
- * $Id: 254fab9a219997b57fe89e4a637f60d4494f58aa $
+ * $Id: 73c6833d27de3aa64d63556eb5e94968724a6b74 $
  *
  * Authors: Andre Pang <Andre.Pang@csiro.au>
  *
@@ -13,7 +13,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -23,10 +23,11 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 
 #include "xurl.h"
 
@@ -38,6 +39,7 @@ static char *xurl_strdup( const char *psz_string );
 #define xurl_strdup strdup
 #endif
 
+char        *XURL_FindQuery             ( char *psz_url );
 static char *XURL_FindHostname          ( char *psz_url );
 static char *XURL_FindPath              ( char *psz_url );
 static char *XURL_FindFragment          ( char *psz_url );
@@ -83,7 +85,7 @@ char *XURL_Concat( char *psz_url, char *psz_append )
         {
             /* psz_append is a relative URL */
             char *psz_new_url;
-            
+ 
             /* strip off last path component */
             psz_new_url = XURL_GetHead( psz_url );
             psz_new_url = streallocat( psz_new_url, psz_append );
@@ -242,12 +244,12 @@ char *XURL_GetSchemeAndHostname( char *psz_url )
     return psz_scheme_and_hostname;
 }
 
-static 
+static
 char *XURL_FindFragment( char *psz_url )
 {
     char *pc_hash = NULL;
     char *pc_return_value = NULL;
-    
+ 
     pc_hash = strchr( psz_url, '#' );
     if( pc_hash != NULL )
     {
@@ -257,12 +259,11 @@ char *XURL_FindFragment( char *psz_url )
     return pc_return_value;
 }
 
-
 char *XURL_FindQuery( char *psz_url )
 {
     char *pc_question_mark = NULL;
     char *pc_return_value = NULL;
-    
+ 
     pc_question_mark = strchr( psz_url, '?' );
     if( pc_question_mark != NULL )
     {
@@ -312,14 +313,14 @@ XURL_Bool XURL_IsFileURL( char *psz_url )
 }
 
 #ifndef HAVE_STRDUP
-static 
+static
 char *xurl_strdup( const char *psz_string )
 {
     size_t i_length;
     char *psz_new_string;
 
     if( !psz_string ) return NULL;
-    
+ 
     i_length = strlen( psz_string ) + 1;
     psz_new_string = (char *) xurl_malloc( i_length );
     if( psz_new_string == NULL ) return NULL;
@@ -330,7 +331,7 @@ char *xurl_strdup( const char *psz_string )
 }
 #endif
 
-static 
+static
 char *XURL_FindPath( char *psz_url )
 {
     char *psz_return_value = NULL;
@@ -469,18 +470,18 @@ char *XURL_GetWithoutFragment( char *psz_url )
             psz_return_value = psz_without_fragment;
         }
     }
-    
+ 
     return psz_return_value;
 }
 
-static 
+static
 char *streallocat( char *psz_string, char *psz_to_append )
 {
     size_t i_new_string_length = strlen( psz_string ) +
         strlen( psz_to_append ) + 1;
 
     psz_string = (char *) realloc( psz_string, i_new_string_length );
-    
+ 
     return strcat( psz_string, psz_to_append );
 }
 

@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2004 the VideoLAN team
  *
- * $Id: 1cf719ccb727cc11e85758733a0d9df49b1b1cc7 $
+ * $Id$
  *
  * Authors: Andre Pang <Andre.Pang@csiro.au>
  *
@@ -13,7 +13,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -27,12 +27,12 @@
 #ifndef __XURL_H__
 #define __XURL_H__
 
-#include <vlc/vlc.h>
+#include <vlc_common.h>
 
 /* Specialise boolean definitions to VLC's boolean types */
-typedef vlc_bool_t XURL_Bool;
-#define XURL_FALSE VLC_FALSE
-#define XURL_TRUE VLC_TRUE
+typedef bool XURL_Bool;
+#define XURL_FALSE false
+#define XURL_TRUE true
 
 /* Specialise general C functions to VLC's standards */
 #define xurl_malloc malloc

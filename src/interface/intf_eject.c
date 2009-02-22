@@ -2,7 +2,7 @@
  * intf_eject.c: CD/DVD-ROM ejection handling functions
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 8a764bf91ca9827913dfc5457edab7f658282779 $
+ * $Id$
  *
  * Authors: Julien Blache <jb@technologeek.org> for the Linux part
  *                with code taken from the Linux "eject" command
@@ -29,16 +29,15 @@
  *  This file contain functions to eject CD and DVD drives
  */
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <vlc_common.h>
 
 #ifdef HAVE_UNISTD_H
 #    include <unistd.h>
 #endif
-
-#include <string.h>
 
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>
@@ -48,7 +47,7 @@
 #   include <dvd.h>
 #endif
 
-#if defined(SYS_LINUX) && defined(HAVE_LINUX_VERSION_H)
+#if defined(__linux__) && defined(HAVE_LINUX_VERSION_H)
 #   include <linux/version.h>
     /* handy macro found in 2.1 kernels, but not in older ones */
 #   ifndef KERNEL_VERSION
@@ -76,10 +75,12 @@
 #   include <mmsystem.h>
 #endif
 
+#include <vlc_interface.h>
+
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-#if defined(SYS_LINUX) && defined(HAVE_LINUX_VERSION_H)
+#if defined(__linux__) && defined(HAVE_LINUX_VERSION_H)
 static int EjectSCSI ( int i_fd );
 #endif
 
@@ -99,6 +100,7 @@ static int EjectSCSI ( int i_fd );
  */
 int __intf_Eject( vlc_object_t *p_this, const char *psz_device )
 {
+    VLC_UNUSED(p_this);
     int i_ret = VLC_SUCCESS;
 
 #ifdef __APPLE__
@@ -190,7 +192,7 @@ int __intf_Eject( vlc_object_t *p_this, const char *psz_device )
         return VLC_EGENERIC;
     }
 
-#if defined(SYS_LINUX) && defined(HAVE_LINUX_VERSION_H)
+#if defined(__linux__) && defined(HAVE_LINUX_VERSION_H)
     /* Try a simple ATAPI eject */
     i_ret = ioctl( i_fd, CDROMEJECT, 0 );
 
@@ -220,7 +222,7 @@ int __intf_Eject( vlc_object_t *p_this, const char *psz_device )
 
 /* The following functions are local */
 
-#if defined(SYS_LINUX) && defined(HAVE_LINUX_VERSION_H)
+#if defined(__linux__) && defined(HAVE_LINUX_VERSION_H)
 /*****************************************************************************
  * Eject using SCSI commands. Return 0 if successful
  *****************************************************************************/

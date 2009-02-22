@@ -1,10 +1,10 @@
 /*****************************************************************************
  * messages.c: messages interface
  * This library provides an interface to the message queue to be used by other
- * modules, especially intf modules. See config.h for output configuration.
+ * modules, especially intf modules. See vlc_config.h for output configuration.
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id$
+ * $Id: be832c65c87fba5ec3ea54be0cd2c8e3768f2059 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -27,12 +27,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdio.h>                                               /* required */
-#include <stdarg.h>                                       /* va_list for BSD */
-#include <stdlib.h>                                              /* malloc() */
-#include <string.h>                                            /* strerror() */
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+
+#include <stdarg.h>                                       /* va_list for BSD */
 
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>                  /* O_CREAT, O_TRUNC, O_WRONLY, O_SYNC */
@@ -40,12 +42,18 @@
 
 #include <errno.h>                                                  /* errno */
 
+#ifdef WIN32
+#   include <vlc_network.h>          /* 'net_strerror' and 'WSAGetLastError' */
+#endif
+
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>                                   /* close(), write() */
 #endif
 
-#include "vlc_interface.h"
-#include "charset.h"
+#include <assert.h>
+
+#include <vlc_charset.h>
+#include "../libvlc.h"
 
 /*****************************************************************************
  * Local macros
@@ -58,205 +66,123 @@
 #   define vlc_va_copy(dest,src) (dest)=(src)
 #endif
 
+#define QUEUE priv->msg_bank.queue
+#define LOCK_BANK vlc_mutex_lock( &priv->msg_bank.lock );
+#define UNLOCK_BANK vlc_mutex_unlock( &priv->msg_bank.lock );
+
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static void QueueMsg ( vlc_object_t *, int, int , const char *,
+static void QueueMsg ( vlc_object_t *, int, const char *,
                        const char *, va_list );
 static void FlushMsg ( msg_queue_t * );
 static void PrintMsg ( vlc_object_t *, msg_item_t * );
-static void CreateMsgQueue( vlc_object_t *p_this, int i_queue );
 
 /**
  * Initialize messages queues
  * This function initializes all message queues
  */
-void __msg_Create( vlc_object_t *p_this )
+void msg_Create (libvlc_int_t *p_libvlc)
 {
-    vlc_mutex_init( p_this, &(p_this->p_libvlc->msg_bank.lock) );
-
-    CreateMsgQueue( p_this, MSG_QUEUE_NORMAL );
-    CreateMsgQueue( p_this, MSG_QUEUE_HTTPD_ACCESS );
+    libvlc_priv_t *priv = libvlc_priv (p_libvlc);
+    vlc_mutex_init( &priv->msg_bank.lock );
+    vlc_mutex_init( &QUEUE.lock );
+    QUEUE.b_overflow = false;
+    QUEUE.i_start = 0;
+    QUEUE.i_stop = 0;
+    QUEUE.i_sub = 0;
+    QUEUE.pp_sub = 0;
 
 #ifdef UNDER_CE
-    p_this->p_libvlc->msg_bank.pp_queues[MSG_QUEUE_NORMAL]->logfile =
+    QUEUE.logfile =
         CreateFile( L"vlc-log.txt", GENERIC_WRITE,
                     FILE_SHARE_READ|FILE_SHARE_WRITE, NULL,
                     CREATE_ALWAYS, 0, NULL );
-    SetFilePointer( p_this->p_libvlc->msg_bank.pp_queues[MSG_QUEUE_NORMAL]->
-                                     logfile, 0, NULL, FILE_END );
+    SetFilePointer( QUEUE.logfile, 0, NULL, FILE_END );
 #endif
-
-}
-
-static void CreateMsgQueue( vlc_object_t *p_this, int i_queue )
-{
-    msg_queue_t *p_queue = (msg_queue_t *)malloc( sizeof( msg_queue_t ) );
-
-    vlc_mutex_init( p_this, &p_queue->lock );
-
-    p_queue->b_overflow = VLC_FALSE;
-    p_queue->i_id = i_queue;
-    p_queue->i_start = 0;
-    p_queue->i_stop = 0;
-
-    p_queue->i_sub = 0;
-    p_queue->pp_sub = NULL;
-
-    INSERT_ELEM( p_this->p_libvlc->msg_bank.pp_queues,
-                 p_this->p_libvlc->msg_bank.i_queues,
-                 i_queue,
-                 p_queue );
 }
 
 /**
  * Flush all message queues
  */
-void __msg_Flush( vlc_object_t *p_this )
+void msg_Flush (libvlc_int_t *p_libvlc)
 {
-    int i;
-
-    for( i = 0 ; i < p_this->p_libvlc->msg_bank.i_queues; i++ )
-    {
-        vlc_mutex_lock( &p_this->p_libvlc->msg_bank.pp_queues[i]->lock );
-        FlushMsg( p_this->p_libvlc->msg_bank.pp_queues[i] );
-        vlc_mutex_unlock( &p_this->p_libvlc->msg_bank.pp_queues[i]->lock );
-    }
+    libvlc_priv_t *priv = libvlc_priv (p_libvlc);
+    vlc_mutex_lock( &QUEUE.lock );
+    FlushMsg( &QUEUE );
+    vlc_mutex_unlock( &QUEUE.lock );
 }
 
 /**
- * Free resources allocated by msg_Create
+ * Destroy the message queues
  *
- * This functions prints all messages remaining in the normal queue,
+ * This functions prints all messages remaining in the queues,
  * then frees all the allocated ressources
  * No other messages interface functions should be called after this one.
  */
-void __msg_Destroy( vlc_object_t *p_this )
+void msg_Destroy (libvlc_int_t *p_libvlc)
 {
-    int i;
-    for( i = p_this->p_libvlc->msg_bank.i_queues -1 ; i >= 0;  i-- )
-    {
-        msg_queue_t *p_queue = p_this->p_libvlc->msg_bank.pp_queues[i];
-        if( p_queue->i_sub )
-        {
-            msg_Err( p_this, "stale interface subscribers" );
-        }
-        FlushMsg( p_queue );
+    libvlc_priv_t *priv = libvlc_priv (p_libvlc);
+
+    if( QUEUE.i_sub )
+        msg_Err( p_libvlc, "stale interface subscribers" );
+
+    FlushMsg( &QUEUE );
 
 #ifdef UNDER_CE
-        if( i == MSG_QUEUE_NORMAL )
-            CloseHandle( p_this->p_libvlc->msg_bank.pp_queues[MSG_QUEUE_NORMAL]->logfile );
+    CloseHandle( QUEUE.logfile );
 #endif
-        /* Destroy lock */
-        vlc_mutex_destroy( &p_queue->lock );
-        REMOVE_ELEM( p_this->p_libvlc->msg_bank.pp_queues,
-                     p_this->p_libvlc->msg_bank.i_queues, i );
-        free( p_queue );
-    }
-    vlc_mutex_destroy( &(p_this->p_libvlc->msg_bank.lock) );
+    /* Destroy lock */
+    vlc_mutex_destroy( &QUEUE.lock );
+    vlc_mutex_destroy( &priv->msg_bank.lock);
 }
 
 /**
- * Subscribe to the message queue.
+ * Subscribe to a message queue.
  */
-msg_subscription_t *__msg_Subscribe( vlc_object_t *p_this, int i_queue )
+msg_subscription_t *__msg_Subscribe( vlc_object_t *p_this )
 {
-    msg_bank_t *p_bank = &p_this->p_libvlc->msg_bank;
+    libvlc_priv_t *priv = libvlc_priv (p_this->p_libvlc);
     msg_subscription_t *p_sub = malloc( sizeof( msg_subscription_t ) );
-    msg_queue_t *p_queue = NULL;
-    int i;
 
-    vlc_mutex_lock( &p_bank->lock );
-
-    for( i = 0 ; i <p_bank->i_queues ;i++ )
-    {
-        if( p_bank->pp_queues[i]->i_id == i_queue )
-        {
-            p_queue = p_bank->pp_queues[i];
-        }
-    }
-
-    if( p_queue == NULL )
-    {
-        vlc_mutex_unlock( &p_bank->lock );
+    if (p_sub == NULL)
         return NULL;
-    }
 
-    vlc_mutex_lock( &p_queue->lock );
+    LOCK_BANK;
+    vlc_mutex_lock( &QUEUE.lock );
 
-    /* Add subscription to the list */
-    INSERT_ELEM( p_bank->pp_queues[i_queue]->pp_sub,
-                 p_bank->pp_queues[i_queue]->i_sub,
-                 p_bank->pp_queues[i_queue]->i_sub,
-                 p_sub );
+    TAB_APPEND( QUEUE.i_sub, QUEUE.pp_sub, p_sub );
 
-    p_sub->i_start = p_queue->i_start;
-    p_sub->pi_stop = &p_queue->i_stop;
+    p_sub->i_start = QUEUE.i_start;
+    p_sub->pi_stop = &QUEUE.i_stop;
+    p_sub->p_msg   = QUEUE.msg;
+    p_sub->p_lock  = &QUEUE.lock;
 
-    p_sub->p_msg   = p_queue->msg;
-    p_sub->p_lock  = &p_queue->lock;
-
-    vlc_mutex_unlock( &p_queue->lock );
-    vlc_mutex_unlock( &p_bank->lock );
+    vlc_mutex_unlock( &QUEUE.lock );
+    UNLOCK_BANK;
 
     return p_sub;
 }
 
 /**
- * Unsubscribe from the message queue.
+ * Unsubscribe from a message queue.
  */
 void __msg_Unsubscribe( vlc_object_t *p_this, msg_subscription_t *p_sub )
 {
-    msg_bank_t *p_bank = &p_this->p_libvlc->msg_bank;
-    int i,j;
+    libvlc_priv_t *priv = libvlc_priv (p_this->p_libvlc);
 
-    free( p_sub ); /* we won't dereference the pointer */
-
-    vlc_mutex_lock( &p_bank->lock );
-
-    for( i = 0 ; i< p_bank->i_queues ; i++ )
+    LOCK_BANK;
+    vlc_mutex_lock( &QUEUE.lock );
+    for( int j = 0 ; j< QUEUE.i_sub ; j++ )
     {
-        vlc_mutex_lock( & p_bank->pp_queues[i]->lock );
-        for( j = 0 ; j< p_bank->pp_queues[i]->i_sub ; j++ )
+        if( QUEUE.pp_sub[j] == p_sub )
         {
-            if( p_bank->pp_queues[i]->pp_sub[j] == p_sub )
-            {
-                REMOVE_ELEM( p_bank->pp_queues[i]->pp_sub,
-                             p_bank->pp_queues[i]->i_sub,
-                             j );
-            }
+            REMOVE_ELEM( QUEUE.pp_sub, QUEUE.i_sub, j );
+            free( p_sub );
         }
-        vlc_mutex_unlock( & p_bank->pp_queues[i]->lock );
     }
-
-    vlc_mutex_unlock( &p_bank->lock );
-}
-
-const char *msg_GetObjectTypeName(int i_object_type )
-{
-    switch( i_object_type )
-    {
-        case VLC_OBJECT_ROOT: return "root";
-        case VLC_OBJECT_MODULE: return "module";
-        case VLC_OBJECT_INTF: return "interface";
-        case VLC_OBJECT_PLAYLIST: return "playlist";
-        case VLC_OBJECT_ITEM: return "item";
-        case VLC_OBJECT_INPUT: return "input";
-        case VLC_OBJECT_DECODER: return "decoder";
-        case VLC_OBJECT_PACKETIZER: return "packetizer";
-        case VLC_OBJECT_ENCODER: return "encoder";
-        case VLC_OBJECT_VOUT: return "video output";
-        case VLC_OBJECT_AOUT: return "audio output";
-        case VLC_OBJECT_SOUT: return "stream output";
-        case VLC_OBJECT_HTTPD: return "http server";
-        case VLC_OBJECT_HTTPD_HOST: return "http server";
-        case VLC_OBJECT_DIALOGS: return "dialogs provider";
-        case VLC_OBJECT_VLM: return "vlm";
-        case VLC_OBJECT_ANNOUNCE: return "announce handler";
-        case VLC_OBJECT_DEMUX: return "demuxer";
-        case VLC_OBJECT_ACCESS: return "access";
-        default: return "private";
-    }
+    vlc_mutex_unlock( &QUEUE.lock );
+    UNLOCK_BANK;
 }
 
 /*****************************************************************************
@@ -264,22 +190,20 @@ const char *msg_GetObjectTypeName(int i_object_type )
  *****************************************************************************
  * These functions queue a message for later printing.
  *****************************************************************************/
-void __msg_Generic( vlc_object_t *p_this, int i_queue_id, int i_type,
-                    const char *psz_module,
+void __msg_Generic( vlc_object_t *p_this, int i_type, const char *psz_module,
                     const char *psz_format, ... )
 {
     va_list args;
 
     va_start( args, psz_format );
-    QueueMsg( p_this, i_queue_id, i_type, psz_module, psz_format, args );
+    QueueMsg( p_this, i_type, psz_module, psz_format, args );
     va_end( args );
 }
 
-void __msg_GenericVa( vlc_object_t *p_this, int i_queue_id,
-                      int i_type, const char *psz_module,
+void __msg_GenericVa( vlc_object_t *p_this, int i_type, const char *psz_module,
                       const char *psz_format, va_list args )
 {
-    QueueMsg( p_this, i_queue_id, i_type, psz_module, psz_format, args );
+    QueueMsg( p_this, i_type, psz_module, psz_format, args );
 }
 
 /* Generic functions used when variadic macros are not available. */
@@ -288,8 +212,7 @@ void __msg_GenericVa( vlc_object_t *p_this, int i_queue_id,
     { \
         va_list args; \
         va_start( args, psz_format ); \
-        QueueMsg( (vlc_object_t *)p_this,MSG_QUEUE_NORMAL, FN_TYPE, "unknown", \
-                  psz_format, args ); \
+        QueueMsg( p_this, FN_TYPE, "unknown", psz_format, args ); \
         va_end( args ); \
     } \
     struct _
@@ -320,48 +243,110 @@ DECLARE_MSG_FN( __msg_Dbg,  VLC_MSG_DBG );
  * is full). If the message can't be converted to string in memory, it issues
  * a warning.
  */
-static void QueueMsg( vlc_object_t *p_this, int i_queue_id, int i_type,
-                      const char *psz_module,
+static void QueueMsg( vlc_object_t *p_this, int i_type, const char *psz_module,
                       const char *psz_format, va_list _args )
 {
+    assert (p_this);
+    libvlc_priv_t *priv = libvlc_priv (p_this->p_libvlc);
     int         i_header_size;             /* Size of the additionnal header */
     vlc_object_t *p_obj;
-    msg_bank_t  *p_bank;                                     /* message bank */
-    msg_queue_t *p_queue = NULL;
     char *       psz_str = NULL;                 /* formatted message string */
     char *       psz_header = NULL;
     va_list      args;
     msg_item_t * p_item = NULL;                        /* pointer to message */
     msg_item_t   item;                    /* message in case of a full queue */
+    msg_queue_t *p_queue;
 
 #if !defined(HAVE_VASPRINTF) || defined(__APPLE__) || defined(SYS_BEOS)
     int          i_size = strlen(psz_format) + INTF_MAX_MSG_SIZE;
 #endif
-    int i;
 
-    if( p_this == NULL || p_this->i_flags & OBJECT_FLAGS_QUIET ||
+    if( p_this->i_flags & OBJECT_FLAGS_QUIET ||
         (p_this->i_flags & OBJECT_FLAGS_NODBG && i_type == VLC_MSG_DBG) )
-    {
         return;
+
+#ifndef __GLIBC__
+    /* Expand %m to strerror(errno) - only once */
+    char buf[strlen( psz_format ) + 2001], *ptr;
+    strcpy( buf, psz_format );
+    ptr = (char*)buf;
+    psz_format = (const char*) buf;
+
+    for( ;; )
+    {
+        ptr = strchr( ptr, '%' );
+        if( ptr == NULL )
+            break;
+
+        if( ptr[1] == 'm' )
+        {
+            char errbuf[2001];
+            size_t errlen;
+
+#ifndef WIN32
+            strerror_r( errno, errbuf, 1001 );
+#else
+            int sockerr = WSAGetLastError( );
+            if( sockerr )
+            {
+                strncpy( errbuf, net_strerror( sockerr ), 1001 );
+                WSASetLastError( sockerr );
+            }
+            if ((sockerr == 0)
+             || (strcmp ("Unknown network stack error", errbuf) == 0))
+                strncpy( errbuf, strerror( errno ), 1001 );
+#endif
+            errbuf[1000] = 0;
+
+            /* Escape '%' from the error string */
+            for( char *percent = strchr( errbuf, '%' );
+                 percent != NULL;
+                 percent = strchr( percent + 2, '%' ) )
+            {
+                memmove( percent + 1, percent, strlen( percent ) + 1 );
+            }
+
+            errlen = strlen( errbuf );
+            memmove( ptr + errlen, ptr + 2, strlen( ptr + 2 ) + 1 );
+            memcpy( ptr, errbuf, errlen );
+            break; /* Only once, so we don't overflow */
+        }
+
+        /* Looks for conversion specifier... */
+        do
+            ptr++;
+        while( *ptr && ( strchr( "diouxXeEfFgGaAcspn%", *ptr ) == NULL ) );
+        if( *ptr )
+            ptr++; /* ...and skip it */
     }
+#endif
 
-    p_bank = &p_this->p_libvlc->msg_bank;
-
-    /*
-     * Convert message to string
-     */
+    /* Convert message to string  */
 #if defined(HAVE_VASPRINTF) && !defined(__APPLE__) && !defined( SYS_BEOS )
     vlc_va_copy( args, _args );
-    vasprintf( &psz_str, psz_format, args );
+    if( vasprintf( &psz_str, psz_format, args ) == -1 )
+        psz_str = NULL;
     va_end( args );
 #else
-    psz_str = (char*) malloc( i_size * sizeof(char) );
+    psz_str = (char*) malloc( i_size );
 #endif
 
     if( psz_str == NULL )
     {
-        fprintf( stderr, "main warning: can't store message (%s): ",
-                 strerror(errno) );
+#ifdef __GLIBC__
+        fprintf( stderr, "main warning: can't store message (%m): " );
+#else
+        char psz_err[1001];
+#ifndef WIN32
+        /* we're not using GLIBC, so we are sure that the error description
+         * will be stored in the buffer we provide to strerror_r() */
+        strerror_r( errno, psz_err, 1001 );
+#else
+        strncpy( psz_err, strerror( errno ), 1001 );
+#endif
+        psz_err[1000] = '\0';
+        fprintf( stderr, "main warning: can't store message (%s): ", psz_err );
+#endif
         vlc_va_copy( args, _args );
         /* We should use utf8_vfprintf - but it calls malloc()... */
         vfprintf( stderr, psz_format, args );
@@ -375,7 +360,6 @@ static void QueueMsg( vlc_object_t *p_this, int i_queue_id, int i_type,
     while( p_obj != NULL )
     {
         char *psz_old = NULL;
-        if( p_obj == NULL ) break;
         if( p_obj->psz_header )
         {
             i_header_size += strlen( p_obj->psz_header ) + 4;
@@ -393,7 +377,7 @@ static void QueueMsg( vlc_object_t *p_this, int i_queue_id, int i_type,
                           p_obj->psz_header );
             }
         }
-        if( psz_old ) free( psz_old );
+        free( psz_old );
         p_obj = p_obj->p_parent;
     }
 
@@ -404,24 +388,8 @@ static void QueueMsg( vlc_object_t *p_this, int i_queue_id, int i_type,
     psz_str[ i_size - 1 ] = 0; /* Just in case */
 #endif
 
-    /* Put message in queue */
-    vlc_mutex_lock( &p_bank->lock );
-    for( i = 0 ; i <p_bank->i_queues ;i++ )
-    {
-        if( p_bank->pp_queues[i]->i_id == i_queue_id )
-        {
-            p_queue = p_bank->pp_queues[i];
-        }
-    }
-
-    if( p_queue == NULL )
-    {
-        vlc_mutex_unlock( &p_bank->lock );
-        if( psz_str ) free( psz_str );
-        if( psz_header ) free( psz_header );
-        return;
-    }
-
+    LOCK_BANK;
+    p_queue = &QUEUE;
     vlc_mutex_lock( &p_queue->lock );
 
     /* Check there is room in the queue for our message */
@@ -437,7 +405,7 @@ static void QueueMsg( vlc_object_t *p_this, int i_queue_id, int i_type,
         else
         {
             /* Pheeew, at last, there is room in the queue! */
-            p_queue->b_overflow = VLC_FALSE;
+            p_queue->b_overflow = false;
         }
     }
     else if( ((p_queue->i_stop - p_queue->i_start + 2) % VLC_MSG_QSIZE) == 0 )
@@ -446,25 +414,22 @@ static void QueueMsg( vlc_object_t *p_this, int i_queue_id, int i_type,
 
         if( ((p_queue->i_stop - p_queue->i_start + 2) % VLC_MSG_QSIZE) == 0 )
         {
-            p_queue->b_overflow = VLC_TRUE;
+            p_queue->b_overflow = true;
 
-            if( p_queue->i_id == MSG_QUEUE_NORMAL )
-            {
-               /* Put the overflow message in the queue */
-                p_item = p_queue->msg + p_queue->i_stop;
-                p_queue->i_stop = (p_queue->i_stop + 1) % VLC_MSG_QSIZE;
+            /* Put the overflow message in the queue */
+            p_item = p_queue->msg + p_queue->i_stop;
+            p_queue->i_stop = (p_queue->i_stop + 1) % VLC_MSG_QSIZE;
 
-                p_item->i_type =        VLC_MSG_WARN;
-                p_item->i_object_id =   p_this->i_object_id;
-                p_item->i_object_type = p_this->i_object_type;
-                p_item->psz_module =    strdup( "message" );
-                p_item->psz_msg =       strdup( "message queue overflowed" );
-                p_item->psz_header =    NULL;
+            p_item->i_type =        VLC_MSG_WARN;
+            p_item->i_object_id =   p_this->i_object_id;
+            p_item->psz_object_type = p_this->psz_object_type;
+            p_item->psz_module =    strdup( "message" );
+            p_item->psz_msg =       strdup( "message queue overflowed" );
+            p_item->psz_header =    NULL;
 
-               PrintMsg( p_this, p_item );
-               /* We print from a dummy item */
-               p_item = &item;
-            }
+            PrintMsg( p_this, p_item );
+            /* We print from a dummy item */
+            p_item = &item;
         }
     }
 
@@ -478,26 +443,22 @@ static void QueueMsg( vlc_object_t *p_this, int i_queue_id, int i_type,
     /* Fill message information fields */
     p_item->i_type =        i_type;
     p_item->i_object_id =   p_this->i_object_id;
-    p_item->i_object_type = p_this->i_object_type;
+    p_item->psz_object_type = p_this->psz_object_type;
     p_item->psz_module =    strdup( psz_module );
     p_item->psz_msg =       psz_str;
     p_item->psz_header =    psz_header;
 
-    if( p_queue->i_id == MSG_QUEUE_NORMAL )
-        PrintMsg( p_this, p_item );
+    PrintMsg( p_this, p_item );
 
     if( p_queue->b_overflow )
     {
-        if( p_item->psz_module )
-            free( p_item->psz_module );
-        if( p_item->psz_msg )
-            free( p_item->psz_msg );
-        if( p_item->psz_header )
-            free( p_item->psz_header );
+        free( p_item->psz_module );
+        free( p_item->psz_msg );
+        free( p_item->psz_header );
     }
 
     vlc_mutex_unlock ( &p_queue->lock );
-    vlc_mutex_unlock( &p_bank->lock );
+    UNLOCK_BANK;
 }
 
 /* following functions are local */
@@ -536,12 +497,9 @@ static void FlushMsg ( msg_queue_t *p_queue )
          i_index != i_stop;
          i_index = (i_index+1) % VLC_MSG_QSIZE )
     {
-        if( p_queue->msg[i_index].psz_msg )
-            free( p_queue->msg[i_index].psz_msg );
-        if( p_queue->msg[i_index].psz_module )
-            free( p_queue->msg[i_index].psz_module );
-        if( p_queue->msg[i_index].psz_header )
-            free( p_queue->msg[i_index].psz_header );
+        free( p_queue->msg[i_index].psz_msg );
+        free( p_queue->msg[i_index].psz_module );
+        free( p_queue->msg[i_index].psz_header );
     }
 
     /* Update the new start value */
@@ -559,37 +517,38 @@ static void PrintMsg ( vlc_object_t * p_this, msg_item_t * p_item )
 #   define RED     COL(31)
 #   define GREEN   COL(32)
 #   define YELLOW  COL(33)
-#   define WHITE   COL(37)
+#   define WHITE   COL(0)
 #   define GRAY    "\033[0m"
 
 #ifdef UNDER_CE
     int i_dummy;
 #endif
-    static const char * ppsz_type[4] = { "", " error", " warning", " debug" };
-    static const char *ppsz_color[4] = { WHITE, RED, YELLOW, GRAY };
-    char *psz_object = "private";
+    static const char ppsz_type[4][9] = { "", " error", " warning", " debug" };
+    static const char ppsz_color[4][8] = { WHITE, RED, YELLOW, GRAY };
+    const char *psz_object;
+    libvlc_priv_t *priv = libvlc_priv (p_this->p_libvlc);
     int i_type = p_item->i_type;
 
     switch( i_type )
     {
         case VLC_MSG_ERR:
-            if( p_this->p_libvlc->i_verbose < 0 ) return;
+            if( priv->i_verbose < 0 ) return;
             break;
         case VLC_MSG_INFO:
-            if( p_this->p_libvlc->i_verbose < 0 ) return;
+            if( priv->i_verbose < 0 ) return;
             break;
         case VLC_MSG_WARN:
-            if( p_this->p_libvlc->i_verbose < 1 ) return;
+            if( priv->i_verbose < 1 ) return;
             break;
         case VLC_MSG_DBG:
-            if( p_this->p_libvlc->i_verbose < 2 ) return;
+            if( priv->i_verbose < 2 ) return;
             break;
     }
 
-    psz_object = msg_GetObjectTypeName(p_item->i_object_type);
+    psz_object = p_item->psz_object_type;
 
 #ifdef UNDER_CE
-#   define CE_WRITE(str) WriteFile( p_this->p_libvlc->msg_bank.pp_queues[MSG_QUEUE_NORMAL]->logfile, \
+#   define CE_WRITE(str) WriteFile( QUEUE.logfile, \
                                     str, strlen(str), &i_dummy, NULL );
     CE_WRITE( p_item->psz_module );
     CE_WRITE( " " );
@@ -598,11 +557,11 @@ static void PrintMsg ( vlc_object_t * p_this, msg_item_t * p_item )
     CE_WRITE( ": " );
     CE_WRITE( p_item->psz_msg );
     CE_WRITE( "\r\n" );
-    FlushFileBuffers( p_this->p_libvlc->msg_bank.pp_queues[MSG_QUEUE_NORMAL]->logfile );
+    FlushFileBuffers( QUEUE.logfile );
 
 #else
     /* Send the message to stderr */
-    if( p_this->p_libvlc->b_color )
+    if( priv->b_color )
     {
         if( p_item->psz_header )
         {
@@ -641,4 +600,76 @@ static void PrintMsg ( vlc_object_t * p_this, msg_item_t * p_item )
     fflush( stderr );
 #   endif
 #endif
+}
+
+static msg_context_t* GetContext(void)
+{
+    msg_context_t *p_ctx = vlc_threadvar_get( &msg_context_global_key );
+    if( p_ctx == NULL )
+    {
+        MALLOC_NULL( p_ctx, msg_context_t );
+        p_ctx->psz_message = NULL;
+        vlc_threadvar_set( &msg_context_global_key, p_ctx );
+    }
+    return p_ctx;
+}
+
+void msg_StackDestroy (void *data)
+{
+    msg_context_t *p_ctx = data;
+
+    free (p_ctx->psz_message);
+    free (p_ctx);
+}
+
+void msg_StackSet( int i_code, const char *psz_message, ... )
+{
+    va_list ap;
+    msg_context_t *p_ctx = GetContext();
+
+    if( p_ctx == NULL )
+        return;
+    free( p_ctx->psz_message );
+
+    va_start( ap, psz_message );
+    if( vasprintf( &p_ctx->psz_message, psz_message, ap ) == -1 )
+        p_ctx->psz_message = NULL;
+    va_end( ap );
+
+    p_ctx->i_code = i_code;
+}
+
+void msg_StackAdd( const char *psz_message, ... )
+{
+    char *psz_tmp;
+    va_list ap;
+    msg_context_t *p_ctx = GetContext();
+
+    if( p_ctx == NULL )
+        return;
+
+    va_start( ap, psz_message );
+    if( vasprintf( &psz_tmp, psz_message, ap ) == -1 )
+        psz_tmp = NULL;
+    va_end( ap );
+
+    if( !p_ctx->psz_message )
+        p_ctx->psz_message = psz_tmp;
+    else
+    {
+        char *psz_new;
+        if( asprintf( &psz_new, "%s: %s", psz_tmp, p_ctx->psz_message ) == -1 )
+            psz_new = NULL;
+
+        free( p_ctx->psz_message );
+        p_ctx->psz_message = psz_new;
+        free( psz_tmp );
+    }
+}
+
+const char* msg_StackMsg( void )
+{
+    msg_context_t *p_ctx = GetContext();
+    assert( p_ctx );
+    return p_ctx->psz_message;
 }

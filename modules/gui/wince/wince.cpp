@@ -2,7 +2,7 @@
  * wince.cpp: WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 494c767c1d8ef8f02c44596a021f29f11bbea5d7 $
+ * $Id: 91e3b6c24f0fa3f22734cdc03a70ee5fb16ee58a $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -25,8 +25,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_interface.h>
 
 #if defined( UNDER_CE ) && defined(__MINGW32__)
 /* This is a gross hack for the wince gcc cross-compiler */
@@ -46,7 +51,7 @@ static void Run    ( intf_thread_t * );
 
 static int  OpenDialogs( vlc_object_t * );
 
-static void MainLoop  ( intf_thread_t * );
+static void* MainLoop  ( intf_thread_t * );
 static void ShowDialog( intf_thread_t *, int, int, intf_dialog_args_t * );
 
 /*****************************************************************************
@@ -61,13 +66,12 @@ vlc_module_begin();
     set_capability( "interface", 100 );
     set_callbacks( Open, Close );
     add_shortcut( "wince" );
-    set_program( "wcevlc" );
 
     add_bool( "wince-embed", 1, NULL,
-              EMBED_TEXT, EMBED_LONGTEXT, VLC_FALSE );
+              EMBED_TEXT, EMBED_LONGTEXT, false );
 
     add_submodule();
-    set_description( _("WinCE dialogs provider") );
+    set_description( N_("WinCE dialogs provider") );
     set_capability( "dialogs provider", 10 );
     set_callbacks( OpenDialogs, Close );
 vlc_module_end();
@@ -96,7 +100,7 @@ static int Open( vlc_object_t *p_this )
 
     // Check if the application is running.
     // If it's running then focus its window and bail out.
-    HWND hwndMain = FindWindow( _T("VLC WinCE"), _T("VLC media player") );  
+    HWND hwndMain = FindWindow( _T("VLC WinCE"), _T("VLC media player") );
     if( hwndMain )
     {
         SetForegroundWindow( hwndMain );
@@ -112,7 +116,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     // Suscribe to messages bank
-    p_intf->p_sys->p_sub = msg_Subscribe( p_intf, MSG_QUEUE_NORMAL );
+    p_intf->p_sys->p_sub = msg_Subscribe( p_intf );
 
     // Misc init
     p_intf->p_sys->p_audio_menu = NULL;
@@ -191,7 +195,7 @@ static void Run( intf_thread_t *p_intf )
 
         /* Create a new thread for the dialogs provider */
         if( vlc_thread_create( p_intf, "Skins Dialogs Thread",
-                               MainLoop, 0, VLC_TRUE ) )
+                               MainLoop, 0, true ) )
         {
             msg_Err( p_intf, "cannot create Skins Dialogs Thread" );
             p_intf->pf_show_dialog = NULL;
@@ -204,8 +208,9 @@ static void Run( intf_thread_t *p_intf )
     }
 }
 
-static void MainLoop( intf_thread_t *p_intf )
+static void* MainLoop( vlc_object_t * p_this )
 {
+    intf_thread_t *p_intf = (intf_thread_t*)p_this;
     MSG msg;
     Interface *intf = 0;
 
@@ -249,19 +254,6 @@ static void MainLoop( intf_thread_t *p_intf )
     /* OK, initialization is over */
     vlc_thread_ready( p_intf );
 
-    /* Check if we need to start playing */
-    if( !p_intf->pf_show_dialog && p_intf->b_play )
-    {
-        playlist_t *p_playlist =
-            (playlist_t *)vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                           FIND_ANYWHERE );
-        if( p_playlist )
-        {
-            playlist_Play( p_playlist );
-            vlc_object_release( p_playlist );
-        }
-    }
-
     // Main message loop
     while( GetMessage( &msg, NULL, 0, 0 ) > 0 )
     {
@@ -270,12 +262,13 @@ static void MainLoop( intf_thread_t *p_intf )
     }
 
  end:
-    if( intf ) delete intf;
+    delete intf;
 
 #ifndef UNDER_CE
     /* Uninitialize OLE/COM */
     CoUninitialize();
 #endif
+    return NULL;
 }
 
 /*****************************************************************************

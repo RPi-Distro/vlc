@@ -5,7 +5,7 @@
  * Copyright (C) 2003 Antoine Missout
  * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
- * $Id: 422f167eb43fc6068910c39307765c640d6a16ef $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -87,7 +87,7 @@ typedef struct
     unsigned int new_quantizer_scale;
     unsigned int last_coded_scale;
     int   h_offset, v_offset;
-    vlc_bool_t b_error;
+    bool b_error;
 
     // mb
     double qrate;
@@ -103,10 +103,10 @@ typedef struct
 struct sout_stream_id_t
 {
     void            *id;
-    vlc_bool_t      b_transrate;
+    bool      b_transrate;
 
     block_t         *p_current_buffer;
-    block_t   	    *p_next_gop;
+    block_t           *p_next_gop;
     mtime_t         i_next_gop_duration;
     size_t          i_next_gop_size;
 

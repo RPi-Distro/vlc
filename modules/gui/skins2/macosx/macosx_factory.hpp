@@ -2,7 +2,7 @@
  * macosx_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f2cd09a02fa03f2a5dc880150eba83c43178a63d $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -47,7 +47,7 @@ class MacOSXFactory: public OSFactory
         virtual void destroyOSLoop();
 
         /// Instantiate an OSTimer with the given callback
-        virtual OSTimer *createOSTimer( const Callback &rCallback );
+        virtual OSTimer *createOSTimer( CmdGeneric &rCmd );
 
         /// Minimize all the windows
         virtual void minimize();
@@ -90,7 +90,7 @@ class MacOSXFactory: public OSFactory
         virtual int getScreenHeight() const;
 
         /// Get the work area (screen area without taskbars)
-        virtual Rect getWorkArea() const;
+        virtual SkinsRect getWorkArea() const;
 
         /// Get the position of the mouse
         virtual void getMousePos( int &rXPos, int &rYPos ) const;

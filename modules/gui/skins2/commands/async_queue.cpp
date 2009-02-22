@@ -2,7 +2,7 @@
  * async_queue.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: beee424786c6d4c2179f954020d46b4226d2dcc2 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -31,7 +31,7 @@ AsyncQueue::AsyncQueue( intf_thread_t *pIntf ): SkinObject( pIntf ),
     m_cmdFlush( this )
 {
     // Initialize the mutex
-    vlc_mutex_init( pIntf, &m_lock );
+    vlc_mutex_init( &m_lock );
 
     // Create a timer
     OSFactory *pOsFactory = OSFactory::instance( pIntf );

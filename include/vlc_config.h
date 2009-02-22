@@ -22,6 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+/**
+ * \file
+ * This file defines of values used in interface, vout, aout and vlc core functions.
+ */
+
 /* Conventions regarding names of symbols and variables
  * ----------------------------------------------------
  *
@@ -40,23 +45,6 @@
  * status */
 #define THREAD_SLEEP                    ((mtime_t)(0.010*CLOCK_FREQ))
 
-/* When a thread waits on a condition in debug mode, delay to wait before
- * outputting an error message (in second) */
-#define THREAD_COND_TIMEOUT             1
-
-/* The configuration file and directory */
-#ifdef SYS_BEOS
-#  define CONFIG_DIR                    "config/settings/VideoLAN Client"
-#elif __APPLE__
-#  define CONFIG_DIR                    "Library/Preferences/VLC"
-#elif defined( WIN32 ) || defined( UNDER_CE )
-#  define CONFIG_DIR                    "vlc"
-#else
-#  define CONFIG_DIR                    ".vlc"
-#endif
-#define CONFIG_FILE                     "vlcrc"
-#define PLUGINSCACHE_DIR                "cache"
-
 /*****************************************************************************
  * Interface configuration
  *****************************************************************************/
@@ -71,6 +59,9 @@
 /*****************************************************************************
  * Input thread configuration
  *****************************************************************************/
+
+#define DEFAULT_INPUT_ACTIVITY 1
+#define TRANSCODE_ACTIVITY 10
 
 /* Used in ErrorThread */
 #define INPUT_IDLE_SLEEP                ((mtime_t)(0.100*CLOCK_FREQ))
@@ -92,18 +83,21 @@
 
 /* DVD and VCD devices */
 #if !defined( WIN32 ) && !defined( UNDER_CE )
-#   define VCD_DEVICE "/dev/cdrom"
-#   define CDAUDIO_DEVICE "/dev/cdrom"
+#   define CD_DEVICE      "/dev/cdrom"
+#   define DVD_DEVICE     "/dev/dvd"
 #else
-#   define VCD_DEVICE "D:"
-#   define CDAUDIO_DEVICE "D:"
+#   define CD_DEVICE      "D:"
+#   define DVD_DEVICE     NULL
 #endif
+#define VCD_DEVICE        CD_DEVICE
+#define CDAUDIO_DEVICE    CD_DEVICE
 
 /*****************************************************************************
  * Audio configuration
  *****************************************************************************/
 
 /* Volume */
+/* If you are coding an interface, please see src/audio_output/intf.c */
 #define AOUT_VOLUME_DEFAULT             256
 #define AOUT_VOLUME_STEP                32
 #define AOUT_VOLUME_MAX                 1024
@@ -154,11 +148,7 @@
 
 /* Video heap size - remember that a decompressed picture is big
  * (~1 Mbyte) before using huge values */
-#ifdef OPTIMIZE_MEMORY
-#   define VOUT_MAX_PICTURES               5
-#else
-#   define VOUT_MAX_PICTURES               8
-#endif
+#define VOUT_MAX_PICTURES               8
 
 /* Minimum number of direct pictures the video output will accept without
  * creating additional pictures in system memory */

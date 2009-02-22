@@ -2,7 +2,7 @@
  * mms.c: MMS over tcp, udp and http access plug-in
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: d336b57e7c9250cea85f3be6a6b8a20ae03d5db1 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,14 +21,17 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_access.h>
 
 #include "mms.h"
 
@@ -57,25 +60,33 @@ static void Close( vlc_object_t * );
 #define BITRATE_LONGTEXT N_( \
     "Select the stream with the maximum bitrate under that limit."  )
 
+#define PROXY_TEXT N_("HTTP proxy")
+#define PROXY_LONGTEXT N_( \
+    "HTTP proxy to be used It must be of the form " \
+    "http://[user[:pass]@]myproxy.mydomain:myport/ ; " \
+    "if empty, the http_proxy environment variable will be tried." )
+
 #define TIMEOUT_TEXT N_("TCP/UDP timeout (ms)")
 #define TIMEOUT_LONGTEXT N_("Amount of time (in ms) to wait before aborting network reception of data. Note that there will be 10 retries before completely giving up.")
 
 vlc_module_begin();
     set_shortname( "MMS" );
-    set_description( _("Microsoft Media Server (MMS) input") );
-    set_capability( "access2", -1 );
+    set_description( N_("Microsoft Media Server (MMS) input") );
+    set_capability( "access", -1 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACCESS );
 
     add_integer( "mms-caching", 19 * DEFAULT_PTS_DELAY / 1000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, VLC_TRUE );
+                 CACHING_TEXT, CACHING_LONGTEXT, true );
 
     add_integer( "mms-timeout", 5000, NULL, TIMEOUT_TEXT, TIMEOUT_LONGTEXT,
-                 VLC_TRUE );
+                 true );
 
-    add_bool( "mms-all", 0, NULL, ALL_TEXT, ALL_LONGTEXT, VLC_TRUE );
+    add_bool( "mms-all", 0, NULL, ALL_TEXT, ALL_LONGTEXT, true );
     add_integer( "mms-maxbitrate", 0, NULL, BITRATE_TEXT, BITRATE_LONGTEXT ,
-                 VLC_FALSE );
+                 false );
+    add_string( "mmsh-proxy", NULL, NULL, PROXY_TEXT, PROXY_LONGTEXT,
+                    false );
 
     add_shortcut( "mms" );
     add_shortcut( "mmsu" );
@@ -92,7 +103,6 @@ struct access_sys_t
 {
     int i_proto;
 };
-
 
 /*****************************************************************************
  * Open:
@@ -113,23 +123,23 @@ static int Open( vlc_object_t *p_this )
     {
         if( !strncmp( p_access->psz_access, "mmsu", 4 ) )
         {
-            return E_( MMSTUOpen )( p_access );
+            return  MMSTUOpen ( p_access );
         }
         else if( !strncmp( p_access->psz_access, "mmst", 4 ) )
         {
-            return E_( MMSTUOpen )( p_access );
+            return  MMSTUOpen ( p_access );
         }
         else if( !strncmp( p_access->psz_access, "mmsh", 4 ) ||
                  !strncmp( p_access->psz_access, "http", 4 ) )
         {
-            return E_( MMSHOpen )( p_access );
+            return  MMSHOpen ( p_access );
         }
     }
 
-    if( E_( MMSTUOpen )( p_access ) )
+    if(  MMSTUOpen ( p_access ) )
     {
         /* try mmsh if mmstu failed */
-        return E_( MMSHOpen )( p_access );
+        return  MMSHOpen ( p_access );
     }
     return VLC_SUCCESS;
 }
@@ -142,12 +152,13 @@ static void Close( vlc_object_t *p_this )
     access_t     *p_access = (access_t*)p_this;
     access_sys_t *p_sys = p_access->p_sys;
 
-    if( p_sys->i_proto == MMS_PROTO_TCP || p_sys->i_proto == MMS_PROTO_UDP )
+    if( ( p_sys->i_proto == MMS_PROTO_TCP ) ||
+        ( p_sys->i_proto == MMS_PROTO_UDP ) )
     {
-        E_( MMSTUClose )( p_access );
+         MMSTUClose ( p_access );
     }
     else if( p_sys->i_proto == MMS_PROTO_HTTP )
     {
-        E_( MMSHClose )( p_access );
+         MMSHClose ( p_access );
     }
 }

@@ -2,7 +2,7 @@
  * visual.c : Visualisation system
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: c82621ab15feb029a85a65c499e368ba759ab137 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -24,11 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include "audio_output.h"
-#include "aout_internal.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
+#include <vlc_aout.h>
 
 #include "visual.h"
 
@@ -106,51 +109,51 @@ static int  Open         ( vlc_object_t * );
 static void Close        ( vlc_object_t * );
 
 vlc_module_begin();
-    set_shortname( _("Visualizer"));
+    set_shortname( N_("Visualizer"));
     set_category( CAT_AUDIO );
     set_subcategory( SUBCAT_AUDIO_VISUAL );
-    set_description( _("Visualizer filter") );
+    set_description( N_("Visualizer filter") );
     set_section( N_( "General") , NULL );
     add_string("effect-list", "spectrum", NULL,
-            ELIST_TEXT, ELIST_LONGTEXT, VLC_TRUE );
+            ELIST_TEXT, ELIST_LONGTEXT, true );
     add_integer("effect-width",VOUT_WIDTH,NULL,
-             WIDTH_TEXT, WIDTH_LONGTEXT, VLC_FALSE );
+             WIDTH_TEXT, WIDTH_LONGTEXT, false );
     add_integer("effect-height" , VOUT_HEIGHT , NULL,
-             HEIGHT_TEXT, HEIGHT_LONGTEXT, VLC_FALSE );
+             HEIGHT_TEXT, HEIGHT_LONGTEXT, false );
     set_section( N_("Spectrum analyser") , NULL );
     add_integer("visual-nbbands", 80, NULL,
-             NBBANDS_TEXT, NBBANDS_LONGTEXT, VLC_TRUE );
+             NBBANDS_TEXT, NBBANDS_LONGTEXT, true );
     add_integer("visual-separ", 1, NULL,
-             SEPAR_TEXT, SEPAR_LONGTEXT, VLC_TRUE );
+             SEPAR_TEXT, SEPAR_LONGTEXT, true );
     add_integer("visual-amp", 3, NULL,
-             AMP_TEXT, AMP_LONGTEXT, VLC_TRUE );
-    add_bool("visual-peaks", VLC_TRUE, NULL,
-             PEAKS_TEXT, PEAKS_LONGTEXT, VLC_TRUE );
+             AMP_TEXT, AMP_LONGTEXT, true );
+    add_bool("visual-peaks", true, NULL,
+             PEAKS_TEXT, PEAKS_LONGTEXT, true );
     set_section( N_("Spectrometer") , NULL );
-    add_bool("spect-show-original", VLC_FALSE, NULL,
-             ORIG_TEXT, ORIG_LONGTEXT, VLC_TRUE );
-    add_bool("spect-show-base", VLC_TRUE, NULL,
-             BASE_TEXT, BASE_LONGTEXT, VLC_TRUE );
+    add_bool("spect-show-original", false, NULL,
+             ORIG_TEXT, ORIG_LONGTEXT, true );
+    add_bool("spect-show-base", true, NULL,
+             BASE_TEXT, BASE_LONGTEXT, true );
     add_integer("spect-radius", 42, NULL,
-             RADIUS_TEXT, RADIUS_LONGTEXT, VLC_TRUE );
+             RADIUS_TEXT, RADIUS_LONGTEXT, true );
     add_integer("spect-sections", 3, NULL,
-             SSECT_TEXT, SSECT_LONGTEXT, VLC_TRUE );
+             SSECT_TEXT, SSECT_LONGTEXT, true );
     add_integer("spect-color", 80, NULL,
-             COLOR1_TEXT, COLOR1_LONGTEXT, VLC_TRUE );
-    add_bool("spect-show-bands", VLC_TRUE, NULL,
-             BANDS_TEXT, BANDS_LONGTEXT, VLC_TRUE );
+             COLOR1_TEXT, COLOR1_LONGTEXT, true );
+    add_bool("spect-show-bands", true, NULL,
+             BANDS_TEXT, BANDS_LONGTEXT, true );
     add_integer("spect-nbbands", 32, NULL,
-             NBBANDS_TEXT, SPNBBANDS_LONGTEXT, VLC_TRUE );
+             NBBANDS_TEXT, SPNBBANDS_LONGTEXT, true );
     add_integer("spect-separ", 1, NULL,
-             SEPAR_TEXT, SEPAR_LONGTEXT, VLC_TRUE );
+             SEPAR_TEXT, SEPAR_LONGTEXT, true );
     add_integer("spect-amp", 8, NULL,
-             AMP_TEXT, AMP_LONGTEXT, VLC_TRUE );
-    add_bool("spect-show-peaks", VLC_TRUE, NULL,
-             PEAKS_TEXT, PEAKS_LONGTEXT, VLC_TRUE );
+             AMP_TEXT, AMP_LONGTEXT, true );
+    add_bool("spect-show-peaks", true, NULL,
+             PEAKS_TEXT, PEAKS_LONGTEXT, true );
     add_integer("spect-peak-width", 61, NULL,
-             PEAK_WIDTH_TEXT, PEAK_WIDTH_LONGTEXT, VLC_TRUE );
+             PEAK_WIDTH_TEXT, PEAK_WIDTH_LONGTEXT, true );
     add_integer("spect-peak-height", 1, NULL,
-             PEAK_HEIGHT_TEXT, PEAK_HEIGHT_LONGTEXT, VLC_TRUE );
+             PEAK_HEIGHT_TEXT, PEAK_HEIGHT_LONGTEXT, true );
     set_capability( "visualization", 0 );
     set_callbacks( Open, Close );
     add_shortcut( "visualizer");
@@ -164,14 +167,15 @@ static void DoWork( aout_instance_t *, aout_filter_t *,
                     aout_buffer_t *, aout_buffer_t * );
 static int FilterCallback( vlc_object_t *, char const *,
                            vlc_value_t, vlc_value_t, void * );
-static struct
+static const struct
 {
-    char *psz_name;
+    const char *psz_name;
     int  (*pf_run)( visual_effect_t *, aout_instance_t *,
                     aout_buffer_t *, picture_t *);
 } pf_effect_run[]=
 {
     { "scope",      scope_Run },
+    { "vuMeter",    vuMeter_Run },
     { "spectrum",   spectrum_Run },
     { "spectrometer",   spectrometer_Run },
     { "dummy",      dummy_Run},
@@ -188,7 +192,8 @@ static int Open( vlc_object_t *p_this )
     vlc_value_t        val;
 
     char *psz_effects, *psz_parser;
-    video_format_t fmt = {0};
+    video_format_t fmt;
+
 
     if( ( p_filter->input.i_format != VLC_FOURCC('f','l','3','2') &&
           p_filter->input.i_format != VLC_FOURCC('f','i','3','2') ) )
@@ -198,10 +203,7 @@ static int Open( vlc_object_t *p_this )
 
     p_sys = p_filter->p_sys = malloc( sizeof( aout_filter_sys_t ) );
     if( p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
         return VLC_EGENERIC;
-    }
 
     p_sys->i_height = config_GetInt( p_filter , "effect-height");
     p_sys->i_width  = config_GetInt( p_filter , "effect-width");
@@ -228,6 +230,8 @@ static int Open( vlc_object_t *p_this )
         int  i;
 
         p_effect = malloc( sizeof( visual_effect_t ) );
+        if( !p_effect )
+            break;
         p_effect->i_width = p_sys->i_width;
         p_effect->i_height= p_sys->i_height;
         p_effect->i_nb_chans = aout_FormatNbChannels( &p_filter->input);
@@ -289,10 +293,7 @@ static int Open( vlc_object_t *p_this )
         }
     }
 
-    if( psz_effects )
-    {
-        free( psz_effects );
-    }
+    free( psz_effects );
 
     if( !p_sys->i_effect )
     {
@@ -302,6 +303,8 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* Open the video output */
+    memset( &fmt, 0, sizeof(video_format_t) );
+
     fmt.i_width = fmt.i_visible_width = p_sys->i_width;
     fmt.i_height = fmt.i_visible_height = p_sys->i_height;
     fmt.i_chroma = VLC_FOURCC('I','4','2','0');
@@ -342,7 +345,7 @@ static void DoWork( aout_instance_t *p_aout, aout_filter_t *p_filter,
     /* First, get a new picture */
     while( ( p_outpic = vout_CreatePicture( p_sys->p_vout, 0, 0, 3 ) ) == NULL)
     {
-        if( p_aout->b_die )
+        if( !vlc_object_alive (p_aout) )
         {
             return;
         }
@@ -392,23 +395,14 @@ static void Close( vlc_object_t *p_this )
     for( i = 0; i < p_sys->i_effect; i++ )
     {
 #define p_effect p_sys->effect[i]
-        if( p_effect->psz_name )
-        {
-            free( p_effect->psz_name );
-        }
-        if( p_effect->psz_args )
-        {
-            free( p_effect->psz_args );
-        }
+        free( p_effect->p_data );
+        free( p_effect->psz_name );
+        free( p_effect->psz_args );
         free( p_effect );
 #undef p_effect
     }
 
-    if( p_sys->effect )
-    {
-        free( p_sys->effect );
-    }
-
+    free( p_sys->effect );
     free( p_filter->p_sys );
 }
 
@@ -419,6 +413,8 @@ static int FilterCallback( vlc_object_t *p_this, char const *psz_cmd,
                            vlc_value_t oldval, vlc_value_t newval,
                            void *p_data )
 {
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval);
+    VLC_UNUSED(p_data); VLC_UNUSED(newval);
     aout_filter_t     *p_filter = (aout_filter_t *)p_this;
     /* restart this baby */
     msg_Dbg( p_filter, "we should restart the visual filter" );

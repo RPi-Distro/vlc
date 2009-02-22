@@ -1,0 +1,424 @@
+<ui version="4.0" >
+ <author>Jean-Baptiste Kempf</author>
+ <class>SPrefsAudio</class>
+ <widget class="QWidget" name="SPrefsAudio" >
+  <property name="geometry" >
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>541</width>
+    <height>609</height>
+   </rect>
+  </property>
+  <property name="windowTitle" >
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" >
+   <item>
+    <widget class="QCheckBox" name="enableAudio" >
+     <property name="text" >
+      <string>_("Enable audio")</string>
+     </property>
+     <property name="checked" >
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="audioBox" >
+     <property name="title" >
+      <string>_("General Audio")</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" colspan="2" >
+       <widget class="QLabel" name="label_2" >
+        <property name="text" >
+         <string>_("Default volume")</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2" colspan="2" >
+       <widget class="QSlider" name="defaultVolume" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Minimum" hsizetype="Fixed" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize" >
+         <size>
+          <width>140</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="layoutDirection" >
+         <enum>Qt::LeftToRight</enum>
+        </property>
+        <property name="maximum" >
+         <number>400</number>
+        </property>
+        <property name="value" >
+         <number>100</number>
+        </property>
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="4" >
+       <widget class="QSpinBox" name="volumeValue" >
+        <property name="toolTip" >
+         <string>_("256 corresponds to 100%, 1024 to 400%")</string>
+        </property>
+        <property name="alignment" >
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+        <property name="readOnly" >
+         <bool>true</bool>
+        </property>
+        <property name="suffix" >
+         <string> %</string>
+        </property>
+        <property name="maximum" >
+         <number>400</number>
+        </property>
+        <property name="value" >
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="spdifBox" >
+        <property name="text" >
+         <string>_("Use S/PDIF when available")</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="2" colspan="3" >
+       <widget class="QCheckBox" name="saveVolBox" >
+        <property name="text" >
+         <string>_("Save volume on exit")</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_8" >
+        <property name="text" >
+         <string>_("Force detection of Dolby Surround")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>detectionDolby</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="2" colspan="3" >
+       <widget class="QComboBox" name="detectionDolby" >
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize" >
+         <size>
+          <width>300</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="currentIndex" >
+         <number>-1</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="0" >
+       <widget class="QLabel" name="label" >
+        <property name="text" >
+         <string>_("Preferred audio language")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>preferredAudioLanguage</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="2" colspan="3" >
+       <widget class="QLineEdit" name="preferredAudioLanguage" />
+      </item>
+      <item row="2" column="1" >
+       <spacer name="horizontalSpacer" >
+        <property name="orientation" >
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeType" >
+         <enum>QSizePolicy::Fixed</enum>
+        </property>
+        <property name="sizeHint" stdset="0" >
+         <size>
+          <width>20</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="outputAudioBox" >
+     <property name="title" >
+      <string>Output</string>
+     </property>
+     <layout class="QGridLayout" name="outputAudioLayout" >
+      <item row="0" column="0" >
+       <widget class="QLabel" name="label_3" >
+        <property name="minimumSize" >
+         <size>
+          <width>100</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text" >
+         <string>_("Type")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>outputModule</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1" >
+       <widget class="QComboBox" name="outputModule" >
+        <property name="enabled" >
+         <bool>true</bool>
+        </property>
+        <property name="sizePolicy" >
+         <sizepolicy vsizetype="Fixed" hsizetype="MinimumExpanding" >
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" colspan="2" >
+       <widget class="QWidget" native="1" name="fileControl" >
+        <layout class="QHBoxLayout" >
+         <property name="spacing" >
+          <number>0</number>
+         </property>
+         <property name="margin" >
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="fileLabel" >
+           <property name="minimumSize" >
+            <size>
+             <width>100</width>
+             <height>0</height>
+            </size>
+           </property>
+           <property name="text" >
+            <string>_("File")</string>
+           </property>
+           <property name="buddy" >
+            <cstring>fileName</cstring>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLineEdit" name="fileName" />
+         </item>
+         <item>
+          <widget class="QPushButton" name="fileBrowseButton" >
+           <property name="text" >
+            <string>_("Browse...")</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox" >
+     <property name="title" >
+      <string>_("Effects")</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="2" column="1" >
+       <widget class="QComboBox" name="visualisation" />
+      </item>
+      <item row="0" column="0" >
+       <widget class="QCheckBox" name="headphoneEffect" >
+        <property name="text" >
+         <string>_("Headphone surround effect")</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QCheckBox" name="volNormBox" >
+        <property name="text" >
+         <string>_("Volume normalizer")</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="label_5" >
+        <property name="text" >
+         <string>_("Visualization")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>visualisation</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QDoubleSpinBox" name="volNormSpin" >
+        <property name="alignment" >
+         <set>Qt::AlignRight</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="lastFMBox" >
+     <property name="title" >
+      <string>_("last.fm")</string>
+     </property>
+     <layout class="QGridLayout" >
+      <item row="0" column="0" colspan="2" >
+       <widget class="QCheckBox" name="lastfm" >
+        <property name="text" >
+         <string>_("Enable last.fm submission")</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" colspan="2" >
+       <widget class="QLineEdit" name="lastfm_user_edit" />
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="lastfm_user_label" >
+        <property name="text" >
+         <string>_("Username")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>lastfm_user_edit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="0" >
+       <widget class="QLabel" name="lastfm_pass_label" >
+        <property name="text" >
+         <string>_("Password")</string>
+        </property>
+        <property name="buddy" >
+         <cstring>lastfm_pass_edit</cstring>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="1" colspan="2" >
+       <widget class="QLineEdit" name="lastfm_pass_edit" >
+        <property name="echoMode" >
+         <enum>QLineEdit::Password</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <tabstops>
+  <tabstop>enableAudio</tabstop>
+  <tabstop>defaultVolume</tabstop>
+  <tabstop>volumeValue</tabstop>
+  <tabstop>spdifBox</tabstop>
+  <tabstop>saveVolBox</tabstop>
+  <tabstop>detectionDolby</tabstop>
+  <tabstop>preferredAudioLanguage</tabstop>
+  <tabstop>outputModule</tabstop>
+  <tabstop>fileName</tabstop>
+  <tabstop>fileBrowseButton</tabstop>
+  <tabstop>headphoneEffect</tabstop>
+  <tabstop>volNormBox</tabstop>
+  <tabstop>volNormSpin</tabstop>
+  <tabstop>visualisation</tabstop>
+  <tabstop>lastfm</tabstop>
+  <tabstop>lastfm_user_edit</tabstop>
+  <tabstop>lastfm_pass_edit</tabstop>
+ </tabstops>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>lastfm</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lastfm_pass_edit</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>188</x>
+     <y>619</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>360</x>
+     <y>689</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lastfm</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lastfm_pass_label</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>188</x>
+     <y>619</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>102</x>
+     <y>689</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lastfm</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lastfm_user_edit</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>188</x>
+     <y>619</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>360</x>
+     <y>653</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>lastfm</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>lastfm_user_label</receiver>
+   <slot>setVisible(bool)</slot>
+   <hints>
+    <hint type="sourcelabel" >
+     <x>188</x>
+     <y>619</y>
+    </hint>
+    <hint type="destinationlabel" >
+     <x>102</x>
+     <y>653</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

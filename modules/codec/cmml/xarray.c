@@ -5,7 +5,7 @@
  *                    Organisation (CSIRO) Australia
  * Copyright (C) 2004 the VideoLAN team
  *
- * $Id: 9c2ad303960ce62dbf263fce37847c0fbf491a5c $
+ * $Id$
  *
  * Authors: Andre Pang <Andre.Pang@csiro.au>
  *
@@ -13,7 +13,7 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -23,11 +23,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  ************************************************************************/
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
+#include <stddef.h>
 #include <stdlib.h>
-#include <string.h> /* memmove(1) */
-
+#include <string.h>
 #include "xarray.h"
+
+/* local prototypes */
+XSTATIC XArray * xarray_New (unsigned int);
+
 
 #define XARRAY_ASSERT_NOT_NULL(xarray) \
     { \
@@ -36,9 +43,7 @@
 
 #define XARRAY_BOUNDS_CHECK(xarray, index) \
     { \
-        if (index < 0) \
-            return XARRAY_ENEGATIVEINDEX; \
-        else if (xarray->last_valid_element != -1 && \
+        if (xarray->last_valid_element != -1 && \
                  (int) index > xarray->last_valid_element) \
             return XARRAY_EINDEXTOOLARGE; \
     }
@@ -58,7 +63,7 @@ XSTATIC XArray * xarray_New (unsigned int initial_size_hint)
     new_xarray = (XArray *) malloc (sizeof(XArray));
     if (new_xarray == NULL) return NULL;
 
-    if (initial_size_hint <= 0)
+    if (initial_size_hint == 0)
         initial_size = XARRAY_DEFAULT_SIZE;
     else
         initial_size = initial_size_hint;
@@ -94,7 +99,7 @@ XSTATIC XArray * xarray_New (unsigned int initial_size_hint)
         dummy_reference = xarray_ObjectAtIndex;
         dummy_reference = xarray_Count;
     }
-    
+ 
     return new_xarray;
 }
 
@@ -181,7 +186,7 @@ XSTATIC int xarray_RemoveObject (XArray *xarray, unsigned int at_index)
     xarray->array[xarray->last_valid_element] = NULL;
     --xarray->last_valid_element;
 
-    return XARRAY_SUCCESS;    
+    return XARRAY_SUCCESS;
 }
 
 XSTATIC int xarray_RemoveObjects (XArray *xarray, unsigned int at_index,

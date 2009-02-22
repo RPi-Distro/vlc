@@ -2,7 +2,7 @@
  * macosx_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a239358ca3221a795437953cf03a8c8d15924cb1 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -25,6 +25,7 @@
 #define MACOSX_WINDOW_HPP
 
 #include "../src/os_window.hpp"
+#include <Carbon/Carbon.h>
 
 class MacOSXDisplay;
 class MacOSXDragDrop;
@@ -59,11 +60,16 @@ class MacOSXWindow: public OSWindow
         /// Toggle the window on top
         virtual void toggleOnTop( bool onTop ) const;
 
+        /// Get the Carbon window handle
+        WindowRef getWindowRef() const { return m_win; };
+
     private:
         /// Parent window
         MacOSXWindow *m_pParent;
         /// Indicates whether the window handles drag&drop events
         bool m_dragDrop;
+        /// Carbon Window object
+        WindowRef m_win;
 };
 
 

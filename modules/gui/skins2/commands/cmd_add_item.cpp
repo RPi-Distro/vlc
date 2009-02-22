@@ -2,7 +2,7 @@
  * cmd_add_item.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9bf80b6744e40cee7bc4c98588fb351cb8d48ff3 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,9 +22,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc/vlc.h>
-#include "cmd_add_item.hpp"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
+#include <vlc_common.h>
+#include <vlc_playlist.h>
+#include "cmd_add_item.hpp"
 
 void CmdAddItem::execute()
 {
@@ -37,13 +41,14 @@ void CmdAddItem::execute()
     if( m_playNow )
     {
         // Enqueue and play the item
-        playlist_Add( pPlaylist, m_name.c_str(),m_name.c_str(),
-                      PLAYLIST_APPEND | PLAYLIST_GO, PLAYLIST_END );
+        playlist_Add( pPlaylist, m_name.c_str(), NULL,
+                      PLAYLIST_APPEND | PLAYLIST_GO, PLAYLIST_END, true,
+                      false );
     }
     else
     {
         // Enqueue the item only
-        playlist_Add( pPlaylist, m_name.c_str(), m_name.c_str(),
-                      PLAYLIST_APPEND, PLAYLIST_END );
+        playlist_Add( pPlaylist, m_name.c_str(), NULL,
+                      PLAYLIST_APPEND, PLAYLIST_END, true, false );
     }
 }

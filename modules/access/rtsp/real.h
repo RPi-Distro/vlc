@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: e72125dc22afe5ca0680e2666e89eec1c8bc3e98 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -25,11 +25,15 @@
 #ifndef HAVE_REAL_H
 #define HAVE_REAL_H
 
+#ifdef HAVE_CONFIG_H 
+# include "config.h" 
+#endif
+
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
 
-#include <vlc/vlc.h>
+#include <vlc_common.h>
 #include "rtsp.h"
 #include "real_rmff.h"
 #include "real_sdpplin.h"
@@ -37,7 +41,7 @@
 #ifdef REALDEBUG
 #   define lprintf printf
 #else
-    static inline void lprintf( char *dummy, ... ){}
+    static inline void lprintf( const char *dummy, ... ){}
 #endif
 
 int real_get_rdt_chunk_header(rtsp_client_t *, rmff_pheader_t *);

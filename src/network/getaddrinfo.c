@@ -2,8 +2,8 @@
  * getaddrinfo.c: getaddrinfo/getnameinfo replacement functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * Copyright (C) 2002-2004 Rémi Denis-Courmont
- * $Id: db1cfc271eeb5e2cf86c4111bb25afc7c7752748 $
+ * Copyright (C) 2002-2007 Rémi Denis-Courmont
+ * $Id: a886ec20e5ae7da33ffeac288423c304be7dd262 $
  *
  * Author: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -22,12 +22,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_charset.h>
 
 #include <stddef.h> /* size_t */
 #include <string.h> /* strlen(), memcpy(), memset(), strchr() */
 #include <stdlib.h> /* malloc(), free(), strtoul() */
 #include <errno.h>
+#include <assert.h>
 
 #ifdef HAVE_SYS_TYPES_H
 #   include <sys/types.h>
@@ -42,7 +48,7 @@
 #   include <unistd.h>
 #endif
 
-#include "network.h"
+#include <vlc_network.h>
 
 #ifndef NO_ADDRESS
 #   define NO_ADDRESS  NO_DATA
@@ -54,17 +60,13 @@
 #   define AF_UNSPEC   0
 #endif
 
-#define _NI_MASK (NI_NUMERICHOST|NI_NUMERICSERV|NI_NOFQDN|NI_NAMEREQD|\
-                  NI_DGRAM)
-#define _AI_MASK (AI_PASSIVE|AI_CANONNAME|AI_NUMERICHOST)
-
 
 #ifndef HAVE_GAI_STRERROR
-static struct
+static const struct
 {
-    int code;
-    const char *msg;
-} const __gai_errlist[] =
+    int        code;
+    const char msg[41];
+} gai_errlist[] =
 {
     { 0,              "Error 0" },
     { EAI_BADFLAGS,   "Invalid flag used" },
@@ -77,42 +79,108 @@ static struct
     { EAI_SERVICE,    "Incompatible service for socket type" },
     { EAI_ADDRFAMILY, "Unavailable address family for host name" },
     { EAI_MEMORY,     "Memory allocation failure" },
+    { EAI_OVERFLOW,   "Buffer overflow" },
     { EAI_SYSTEM,     "System error" },
-    { 0,              NULL }
+    { 0,              "" },
 };
 
-static const char *__gai_unknownerr = "Unrecognized error number";
+static const char gai_unknownerr[] = "Unrecognized error number";
 
 /****************************************************************************
  * Converts an EAI_* error code into human readable english text.
  ****************************************************************************/
-const char *vlc_gai_strerror( int errnum )
+const char *vlc_gai_strerror (int errnum)
 {
-    int i;
+    for (unsigned i = 0; *gai_errlist[i].msg; i++)
+        if (errnum == gai_errlist[i].code)
+            return gai_errlist[i].msg;
 
-    for (i = 0; __gai_errlist[i].msg != NULL; i++)
-        if (errnum == __gai_errlist[i].code)
-            return __gai_errlist[i].msg;
-
-    return __gai_unknownerr;
+    return gai_unknownerr;
 }
-# undef _EAI_POSITIVE_MAX
 #else /* ifndef HAVE_GAI_STRERROR */
-const char *vlc_gai_strerror( int errnum )
+const char *vlc_gai_strerror (int errnum)
 {
-    return gai_strerror( errnum );
+    return gai_strerror (errnum);
 }
 #endif
 
-#if !(defined (HAVE_GETNAMEINFO) && defined (HAVE_GETADDRINFO))
+#ifndef HAVE_GETNAMEINFO
+#define _NI_MASK (NI_NUMERICHOST|NI_NUMERICSERV|NI_NOFQDN|NI_NAMEREQD|\
+                  NI_DGRAM)
+/*
+ * getnameinfo() non-thread-safe IPv4-only implementation,
+ * Address-family-independent address to hostname translation
+ * (reverse DNS lookup in case of IPv4).
+ *
+ * This is meant for use on old IP-enabled systems that are not IPv6-aware,
+ * and probably do not have getnameinfo(), but have the old gethostbyaddr()
+ * function.
+ *
+ * GNU C library 2.0.x is known to lack this function, even though it defines
+ * getaddrinfo().
+ */
+#ifdef WIN32
+static int WSAAPI
+stub_getnameinfo (const struct sockaddr *sa, socklen_t salen,
+             char *host, DWORD hostlen, char *serv, DWORD servlen, int flags)
+#else
+static int
+stub_getnameinfo (const struct sockaddr *sa, socklen_t salen,
+             char *host, int hostlen, char *serv, int servlen, int flags)
+#endif
+{
+    if (((size_t)salen < sizeof (struct sockaddr_in))
+     || (sa->sa_family != AF_INET))
+        return EAI_FAMILY;
+    else if (flags & (~_NI_MASK))
+        return EAI_BADFLAGS;
+    else
+    {
+        const struct sockaddr_in *addr;
+
+        addr = (const struct sockaddr_in *)sa;
+
+        if (host != NULL)
+        {
+            /* host name resolution */
+            if (!(flags & NI_NUMERICHOST))
+            {
+                if (flags & NI_NAMEREQD)
+                    return EAI_NONAME;
+            }
+
+            /* inet_ntoa() is not thread-safe, do not use it */
+            uint32_t ipv4 = ntohl (addr->sin_addr.s_addr);
+
+            if (snprintf (host, hostlen, "%u.%u.%u.%u", ipv4 >> 24,
+                          (ipv4 >> 16) & 0xff, (ipv4 >> 8) & 0xff,
+                          ipv4 & 0xff) >= (int)hostlen)
+                return EAI_OVERFLOW;
+        }
+
+        if (serv != NULL)
+        {
+            if (snprintf (serv, servlen, "%u",
+                          (unsigned int)ntohs (addr->sin_port)) >= (int)servlen)
+                return EAI_OVERFLOW;
+        }
+    }
+    return 0;
+}
+#undef getnameinfo
+#define getnameifo stub_getnameinfo
+#endif /* if !HAVE_GETNAMEINFO */
+
+#ifndef HAVE_GETADDRINFO
+#define _AI_MASK (AI_PASSIVE|AI_CANONNAME|AI_NUMERICHOST)
 /*
  * Converts the current herrno error value into an EAI_* error code.
  * That error code is normally returned by getnameinfo() or getaddrinfo().
  */
 static int
-gai_error_from_herrno( void )
+gai_error_from_herrno (void)
 {
-    switch(h_errno)
+    switch (h_errno)
     {
         case HOST_NOT_FOUND:
             return EAI_NONAME;
@@ -131,129 +199,22 @@ gai_error_from_herrno( void )
     }
     return EAI_SYSTEM;
 }
-#endif /* if !(HAVE_GETNAMEINFO && HAVE_GETADDRINFO) */
 
-#ifndef HAVE_GETNAMEINFO
-/*
- * getnameinfo() non-thread-safe IPv4-only implementation,
- * Address-family-independant address to hostname translation
- * (reverse DNS lookup in case of IPv4).
- *
- * This is meant for use on old IP-enabled systems that are not IPv6-aware,
- * and probably do not have getnameinfo(), but have the old gethostbyaddr()
- * function.
- *
- * GNU C library 2.0.x is known to lack this function, even though it defines
- * getaddrinfo().
- */
-static int
-__getnameinfo( const struct sockaddr *sa, socklen_t salen,
-               char *host, int hostlen, char *serv, int servlen, int flags )
-{
-    if (((unsigned)salen < sizeof (struct sockaddr_in))
-     || (sa->sa_family != AF_INET))
-        return EAI_FAMILY;
-    else if (flags & (~_NI_MASK))
-        return EAI_BADFLAGS;
-    else
-    {
-        const struct sockaddr_in *addr;
-
-        addr = (const struct sockaddr_in *)sa;
-
-        if (host != NULL)
-        {
-            int solved = 0;
-
-            /* host name resolution */
-            if (!(flags & NI_NUMERICHOST))
-            {
-                struct hostent *hent;
-
-                hent = gethostbyaddr ((const void*)&addr->sin_addr,
-                                      4, AF_INET);
-
-                if (hent != NULL)
-                {
-                    strlcpy (host, hent->h_name, hostlen);
-
-                    /*
-                     * only keep first part of hostname
-                     * if user don't want fully qualified
-                     * domain name
-                     */
-                    if (flags & NI_NOFQDN)
-                    {
-                        char *ptr;
-
-                        ptr = strchr (host, '.');
-                        if (ptr != NULL)
-                            *ptr = 0;
-                    }
-
-                    solved = 1;
-                }
-                else if (flags & NI_NAMEREQD)
-                    return gai_error_from_herrno ();
-            }
-
-            if (!solved)
-                /* inet_ntoa() can't fail */
-                strlcpy (host, inet_ntoa (addr->sin_addr), hostlen);
-        }
-
-        if (serv != NULL)
-        {
-            struct servent *sent = NULL;
-
-#ifndef SYS_BEOS /* No getservbyport() */
-            int solved = 0;
-
-            /* service name resolution */
-            if (!(flags & NI_NUMERICSERV))
-            {
-
-                sent = getservbyport(addr->sin_port,
-                                     (flags & NI_DGRAM)
-                                     ? "udp" : "tcp");
-                if (sent != NULL)
-                {
-                    strlcpy (serv, sent->s_name, servlen);
-                    solved = 1;
-                }
-            }
-            if (sent == NULL)
-#endif
-            {
-                snprintf (serv, servlen, "%u",
-                          (unsigned int)ntohs (addr->sin_port));
-                serv[servlen - 1] = '\0';
-            }
-        }
-    }
-    return 0;
-}
-
-#endif /* if !HAVE_GETNAMEINFO */
-
-
-#ifndef HAVE_GETADDRINFO
 /*
  * This functions must be used to free the memory allocated by getaddrinfo().
  */
-static void
-__freeaddrinfo (struct addrinfo *res)
+#ifdef WIN32
+static void WSAAPI stub_freeaddrinfo (struct addrinfo *res)
+#else
+static void stub_freeaddrinfo (struct addrinfo *res)
+#endif
 {
-    if (res != NULL)
-    {
-        if (res->ai_canonname != NULL)
-            free (res->ai_canonname);
-        if (res->ai_addr != NULL)
-            free (res->ai_addr);
-        if (res->ai_next != NULL)
-            free (res->ai_next);
-        free (res);
-    }
+    if (res == NULL)
+        return;
+    free (res->ai_canonname);
+    free (res->ai_addr);
+    free (res->ai_next);
+    free (res);
 }
 
 
@@ -319,16 +280,22 @@ makeipv4info (int type, int proto, u_long ip, u_short port, const char *name)
 
 /*
  * getaddrinfo() non-thread-safe IPv4-only implementation
- * Address-family-independant hostname to address resolution.
+ * Address-family-independent hostname to address resolution.
  *
  * This is meant for IPv6-unaware systems that do probably not provide
  * getaddrinfo(), but still have old function gethostbyname().
  *
  * Only UDP and TCP over IPv4 are supported here.
  */
+#ifdef WIN32
+static int WSAAPI
+stub_getaddrinfo (const char *node, const char *service,
+             const struct addrinfo *hints, struct addrinfo **res)
+#else
 static int
-__getaddrinfo (const char *node, const char *service,
-               const struct addrinfo *hints, struct addrinfo **res)
+stub_getaddrinfo (const char *node, const char *service,
+             const struct addrinfo *hints, struct addrinfo **res)
+#endif
 {
     struct addrinfo *info;
     u_long ip;
@@ -382,7 +349,7 @@ __getaddrinfo (const char *node, const char *service,
                 protocol = IPPROTO_UDP;
                 break;
 
-#ifndef SYS_BEOS
+#ifndef SOCK_RAW
             case SOCK_RAW:
 #endif
             case 0:
@@ -416,7 +383,7 @@ __getaddrinfo (const char *node, const char *service,
             entry = gethostbyname (node);
 
         if (entry == NULL)
-            return EAI_NONAME;
+            return gai_error_from_herrno ();
 
         if ((entry->h_length != 4) || (entry->h_addrtype != AF_INET))
             return EAI_FAMILY;
@@ -434,38 +401,14 @@ __getaddrinfo (const char *node, const char *service,
         port = 0;
     else
     {
-        long d;
+        unsigned long d;
         char *end;
 
         d = strtoul (service, &end, 0);
-        if (end[0] /* service is not a number */
-         || (d > 65535))
-        {
-            struct servent *entry;
-            const char *protoname;
+        if (end[0] || (d > 65535u))
+            return EAI_SERVICE;
 
-            switch (protocol)
-            {
-                case IPPROTO_TCP:
-                    protoname = "tcp";
-                    break;
-
-                case IPPROTO_UDP:
-                    protoname = "udp";
-                    break;
-
-                default:
-                    protoname = NULL;
-            }
-
-            entry = getservbyname (service, protoname);
-            if (entry == NULL)
-                return EAI_SERVICE;
-
-            port = entry->s_port;
-        }
-        else
-            port = htons ((u_short)d);
+        port = htons ((u_short)d);
     }
 
     /* building results... */
@@ -497,7 +440,101 @@ __getaddrinfo (const char *node, const char *service,
 
     return 0;
 }
+#undef getaddrinfo
+#define getaddrifo stub_getaddrinfo
+#undef freeaddrinfo
+#define freeaddrifo stub_freeaddrinfo
 #endif /* if !HAVE_GETADDRINFO */
+
+#if defined( WIN32 ) && !defined( UNDER_CE )
+    /*
+     * Here is the kind of kludge you need to keep binary compatibility among
+     * varying OS versions...
+     */
+typedef int (WSAAPI * GETNAMEINFO) ( const struct sockaddr FAR *, socklen_t,
+                                           char FAR *, DWORD, char FAR *, DWORD, int );
+typedef int (WSAAPI * GETADDRINFO) (const char FAR *, const char FAR *,
+                                          const struct addrinfo FAR *,
+                                          struct addrinfo FAR * FAR *);
+
+typedef void (WSAAPI * FREEADDRINFO) ( struct addrinfo FAR * );
+
+static int WSAAPI _ws2_getnameinfo_bind ( const struct sockaddr FAR *, socklen_t,
+                                           char FAR *, DWORD, char FAR *, DWORD, int );
+static int WSAAPI _ws2_getaddrinfo_bind (const char FAR *, const char FAR *,
+                                          const struct addrinfo FAR *,
+                                          struct addrinfo FAR * FAR *);
+
+static GETNAMEINFO ws2_getnameinfo = _ws2_getnameinfo_bind;
+static GETADDRINFO ws2_getaddrinfo = _ws2_getaddrinfo_bind;
+static FREEADDRINFO ws2_freeaddrinfo;
+
+static FARPROC ws2_find_api (LPCTSTR name)
+{
+    FARPROC f = NULL;
+
+    HMODULE m = GetModuleHandle (TEXT("WS2_32"));
+    if (m != NULL)
+        f = GetProcAddress (m, name);
+
+    if (f == NULL)
+    {
+        /* Windows 2K IPv6 preview */
+        m = LoadLibrary (TEXT("WSHIP6"));
+        if (m != NULL)
+            f = GetProcAddress (m, name);
+    }
+
+    return f;
+}
+
+static WSAAPI int _ws2_getnameinfo_bind( const struct sockaddr FAR * sa, socklen_t salen,
+               char FAR *host, DWORD hostlen, char FAR *serv, DWORD servlen, int flags )
+{
+    GETNAMEINFO entry = (GETNAMEINFO)ws2_find_api (TEXT("getnameinfo"));
+    int result;
+
+    if (entry == NULL)
+    {
+        /* not found, use replacement API instead */
+        entry = stub_getnameinfo;
+    }
+    /* call API before replacing function pointer to avoid crash */
+    result = entry (sa, salen, host, hostlen, serv, servlen, flags);
+    ws2_getnameinfo = entry;
+    return result;
+}
+#undef getnameinfo
+#define getnameinfo ws2_getnameinfo
+
+static WSAAPI int _ws2_getaddrinfo_bind(const char FAR *node, const char FAR *service,
+               const struct addrinfo FAR *hints, struct addrinfo FAR * FAR *res)
+{
+    GETADDRINFO entry;
+    FREEADDRINFO freentry;
+    int result;
+
+    entry = (GETADDRINFO)ws2_find_api (TEXT("getaddrinfo"));
+    freentry = (FREEADDRINFO)ws2_find_api (TEXT("freeaddrinfo"));
+
+    if ((entry == NULL) ||  (freentry == NULL))
+    {
+        /* not found, use replacement API instead */
+        entry = stub_getaddrinfo;
+        freentry = stub_freeaddrinfo;
+    }
+    /* call API before replacing function pointer to avoid crash */
+    result = entry (node, service, hints, res);
+    ws2_freeaddrinfo = freentry;
+    ws2_getaddrinfo = entry;
+    return result;
+}
+#undef getaddrinfo
+#undef freeaddrinfo
+#define getaddrinfo ws2_getaddrinfo
+#define freeaddrinfo ws2_freeaddrinfo
+#define HAVE_GETADDRINFO
+#endif
 
 
 int vlc_getnameinfo( const struct sockaddr *sa, int salen,
@@ -505,16 +542,6 @@ int vlc_getnameinfo( const struct sockaddr *sa, int salen,
 {
     char psz_servbuf[6], *psz_serv;
     int i_servlen, i_val;
-#if defined( WIN32 ) && !defined( UNDER_CE )
-    /*
-     * Here is the kind of kludge you need to keep binary compatibility among
-     * varying OS versions...
-     */
-    typedef int (CALLBACK * GETNAMEINFO) ( const struct sockaddr*, socklen_t,
-                                           char*, DWORD, char*, DWORD, int );
-    HINSTANCE module;
-    GETNAMEINFO ws2_getnameinfo;
-#endif
 
     flags |= NI_NUMERICSERV;
     if( portnum != NULL )
@@ -527,47 +554,8 @@ int vlc_getnameinfo( const struct sockaddr *sa, int salen,
         psz_serv = NULL;
         i_servlen = 0;
     }
-#if defined( WIN32 ) && !defined( UNDER_CE )
-    /* Production IPv6 stack releases are in WS2_32.DLL */
-    module = LoadLibrary( "ws2_32.dll" );
-    if( module != NULL )
-    {
-        ws2_getnameinfo = (GETNAMEINFO)GetProcAddress( module, "getnameinfo" );
 
-        if( ws2_getnameinfo != NULL )
-        {
-            i_val = ws2_getnameinfo( sa, salen, host, hostlen, psz_serv,
-                                     i_servlen, flags );
-            FreeLibrary( module );
-
-            if( portnum != NULL )
-                *portnum = atoi( psz_serv );
-            return i_val;
-        }
-            
-        FreeLibrary( module );
-    }
-#endif
-#if defined( HAVE_GETNAMEINFO ) || defined( UNDER_CE )
     i_val = getnameinfo(sa, salen, host, hostlen, psz_serv, i_servlen, flags);
-#else
-    {
-# ifdef HAVE_USABLE_MUTEX_THAT_DONT_NEED_LIBVLC_POINTER
-        static vlc_value_t lock;
-    
-        /* my getnameinfo implementation is not thread-safe as it uses
-         * gethostbyaddr and the likes */
-        vlc_mutex_lock( lock.p_address );
-#else
-//# warning FIXME : This is not thread-safe!
-#endif
-        i_val = __getnameinfo( sa, salen, host, hostlen, psz_serv, i_servlen,
-                               flags );
-# ifdef HAVE_USABLE_MUTEX_THAT_DONT_NEED_LIBVLC_POINTER
-        vlc_mutex_unlock( lock.p_address );
-# endif
-    }
-#endif
 
     if( portnum != NULL )
         *portnum = atoi( psz_serv );
@@ -576,13 +564,12 @@ int vlc_getnameinfo( const struct sockaddr *sa, int salen,
 }
 
 
-/* TODO: support for setting sin6_scope_id */
 int vlc_getaddrinfo( vlc_object_t *p_this, const char *node,
                      int i_port, const struct addrinfo *p_hints,
                      struct addrinfo **res )
 {
     struct addrinfo hints;
-    char psz_buf[NI_MAXHOST], *psz_node, psz_service[6];
+    char psz_buf[NI_MAXHOST], psz_service[6];
 
     /*
      * In VLC, we always use port number as integer rather than strings
@@ -598,156 +585,189 @@ int vlc_getaddrinfo( vlc_object_t *p_this, const char *node,
     snprintf( psz_service, 6, "%d", i_port );
 
     /* Check if we have to force ipv4 or ipv6 */
-    if( p_hints == NULL )
-        memset( &hints, 0, sizeof( hints ) );
-    else
-        memcpy( &hints, p_hints, sizeof( hints ) );
+    memset (&hints, 0, sizeof (hints));
+    if (p_hints != NULL)
+    {
+        const int safe_flags =
+            AI_PASSIVE |
+            AI_CANONNAME |
+            AI_NUMERICHOST |
+            AI_NUMERICSERV |
+#ifdef AI_ALL
+            AI_ALL |
+#endif
+#ifdef AI_ADDRCONFIG
+            AI_ADDRCONFIG |
+#endif
+#ifdef AI_V4MAPPED
+            AI_V4MAPPED |
+#endif
+            0;
+
+        hints.ai_family = p_hints->ai_family;
+        hints.ai_socktype = p_hints->ai_socktype;
+        hints.ai_protocol = p_hints->ai_protocol;
+        /* Unfortunately, some flags chang the layout of struct addrinfo, so
+         * they cannot be copied blindly from p_hints to &hints. Therefore, we
+         * only copy flags that we know for sure are "safe".
+         */
+        hints.ai_flags = p_hints->ai_flags & safe_flags;
+    }
+
+    /* We only ever use port *numbers* */
+    hints.ai_flags |= AI_NUMERICSERV;
 
     if( hints.ai_family == AF_UNSPEC )
     {
-        vlc_value_t val;
-
-        var_Create( p_this, "ipv4", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-        var_Get( p_this, "ipv4", &val );
-        if( val.b_bool )
-            hints.ai_family = AF_INET;
-
 #ifdef AF_INET6
-        var_Create( p_this, "ipv6", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-        var_Get( p_this, "ipv6", &val );
-        if( val.b_bool )
+        if (var_CreateGetBool (p_this, "ipv6"))
             hints.ai_family = AF_INET6;
+        else
 #endif
+        if (var_CreateGetBool (p_this, "ipv4"))
+            hints.ai_family = AF_INET;
     }
 
-    /* 
+    /*
      * VLC extensions :
      * - accept "" as NULL
      * - ignore square brackets
      */
-    if( ( node == NULL ) || (node[0] == '\0' ) )
+    if (node != NULL)
     {
-        psz_node = NULL;
-    }
-    else
-    {
-        strlcpy( psz_buf, node, NI_MAXHOST );
-
-        psz_node = psz_buf;
-
-        if( psz_buf[0] == '[' )
+        if (node[0] == '[')
         {
-            char *ptr;
-
-            ptr = strrchr( psz_buf, ']' );
-            if( ( ptr != NULL ) && (ptr[1] == '\0' ) )
+            size_t len = strlen (node + 1);
+            if ((len <= sizeof (psz_buf)) && (node[len] == ']'))
             {
-                *ptr = '\0';
-                psz_node++;
+                assert (len > 0);
+                memcpy (psz_buf, node + 1, len - 1);
+                psz_buf[len - 1] = '\0';
+                node = psz_buf;
             }
         }
+        if (node[0] == '\0')
+            node = NULL;
     }
 
-#if defined( WIN32 ) && !defined( UNDER_CE )
+    int ret;
+    node = ToLocale (node);
+#ifdef WIN32
+    /*
+     * Winsock tries to resolve numerical IPv4 addresses as AAAA
+     * and IPv6 addresses as A... There comes the bug-to-bug fix.
+     */
+    if ((hints.ai_flags & AI_NUMERICHOST) == 0)
     {
-        typedef int (CALLBACK * GETADDRINFO) ( const char *, const char *,
-                                            const struct addrinfo *,
-                                            struct addrinfo ** );
-        HINSTANCE module;
-        GETADDRINFO ws2_getaddrinfo;
-
-        module = LoadLibrary( "ws2_32.dll" );
-        if( module != NULL )
-        {
-            ws2_getaddrinfo = (GETADDRINFO)GetProcAddress( module, "getaddrinfo" );
-
-            if( ws2_getaddrinfo != NULL )
-            {
-                int i_ret;
-
-                i_ret = ws2_getaddrinfo( psz_node, psz_service, &hints, res );
-                FreeLibrary( module ); /* is this wise ? */
-                return i_ret;
-            }
-
-            FreeLibrary( module );
-        }
+        hints.ai_flags |= AI_NUMERICHOST;
+        ret = getaddrinfo (node, psz_service, &hints, res);
+        if (ret == 0)
+            goto out;
+        hints.ai_flags &= ~AI_NUMERICHOST;
     }
 #endif
-#if defined( HAVE_GETADDRINFO ) || defined( UNDER_CE )
-# ifdef AI_IDN
+#ifdef AI_IDN
     /* Run-time I18n Domain Names support */
-    {
-        static vlc_bool_t i_idn = VLC_TRUE; /* beware of thread-safety */
-
-        if( i_idn )
-        {
-            int i_ret;
-
-            hints.ai_flags |= AI_IDN;
-            i_ret = getaddrinfo( psz_node, psz_service, &hints, res );
-
-            if( i_ret != EAI_BADFLAGS )
-                return i_ret;
-
-            /* libidn not available: disable and retry without it */
-
-            /* NOTE: Using i_idn here would not be thread-safe */
-            hints.ai_flags &= ~AI_IDN;
-            i_idn = VLC_FALSE;
-            msg_Dbg( p_this, "localized Domain Names not supported - " \
-                "disabled" );
-        }
-    }
-# endif
-    return getaddrinfo( psz_node, psz_service, &hints, res );
-#else
-{
-    int i_ret;
-
-    vlc_value_t lock;
-
-    var_Create( p_this->p_libvlc, "getaddrinfo_mutex", VLC_VAR_MUTEX );
-    var_Get( p_this->p_libvlc, "getaddrinfo_mutex", &lock );
-    vlc_mutex_lock( lock.p_address );
-
-    i_ret = __getaddrinfo( psz_node, psz_service, &hints, res );
-    vlc_mutex_unlock( lock.p_address );
-    return i_ret;
-}
+    hints.ai_flags |= AI_IDN;
+    ret = getaddrinfo (node, psz_service, &hints, res);
+    if (ret != EAI_BADFLAGS)
+        goto out;
+    /* IDN not available: disable and retry without it */
+    hints.ai_flags &= ~AI_IDN;
 #endif
+    ret = getaddrinfo (node, psz_service, &hints, res);
+
+out:
+    LocaleFree (node);
+    return ret;
 }
 
 
 void vlc_freeaddrinfo( struct addrinfo *infos )
 {
-#if defined( WIN32 ) && !defined( UNDER_CE )
-    typedef void (CALLBACK * FREEADDRINFO) ( struct addrinfo * );
-    HINSTANCE module;
-    FREEADDRINFO ws2_freeaddrinfo;
-     
-    module = LoadLibrary( "ws2_32.dll" );
-    if( module != NULL )
-    {
-        ws2_freeaddrinfo = (FREEADDRINFO)GetProcAddress( module, "freeaddrinfo" );
-
-        /*
-         * NOTE: it is assumed that ws2_32.dll defines either both or neither
-         * getaddrinfo() and freeaddrinfo().
-         */
-        if( ws2_freeaddrinfo != NULL )
-        {
-            ws2_freeaddrinfo( infos );
-            FreeLibrary( module );
-            return;
-        }
-
-        FreeLibrary( module );
-    }
-#endif
-#if defined( HAVE_GETADDRINFO ) || defined( UNDER_CE )
-    freeaddrinfo( infos );
-#else
-    __freeaddrinfo( infos );
-#endif
+    freeaddrinfo (infos);
 }
+
+/**
+ * inet_pton() replacement
+ */
+int vlc_inet_pton (int af, const char *src, void *dst)
+{
+#ifndef HAVE_INET_PTON
+    /* Windows Vista has inet_pton(), but not XP. */
+    /* We have a pretty good example of abstraction inversion here... */
+    struct addrinfo hints = {
+        .ai_family = af,
+        .ai_socktype = SOCK_DGRAM, /* make sure we have... */
+        .ai_protocol = IPPROTO_UDP, /* ...only one response */
+        .ai_flags = AI_NUMERICHOST,
+    }, *res;
+
+    if (getaddrinfo (src, NULL, &hints, &res))
+        return 0;
+
+    const void *data;
+    size_t len;
+
+    switch (af)
+    {
+        case AF_INET:
+            data = &((const struct sockaddr_in *)res->ai_addr)->sin_addr;
+            len = sizeof (struct in_addr);
+            break;
+#ifdef AF_INET6
+        case AF_INET6:
+            data = &((const struct sockaddr_in6 *)res->ai_addr)->sin6_addr;
+            len = sizeof (struct in6_addr);
+            break;
+#endif
+        default:
+            freeaddrinfo (res);
+            return -1;
+    }
+    memcpy (dst, data, len);
+    freeaddrinfo (res);
+    return 1;
+#else /* HAVE_INET_PTON */
+    return inet_pton( af, src, dst );
+#endif /* HAVE_INET_PTON */
+}
+
+/**
+ * inet_ntop() replacement
+ */
+const char *vlc_inet_ntop (int af, const void *src, char *dst, socklen_t cnt)
+{
+#ifndef HAVE_INET_NTOP
+    int ret = EAI_FAMILY;
+
+    switch (af)
+    {
+#ifdef AF_INET6
+        case AF_INET6:
+            {
+                struct sockaddr_in6 addr;
+                memset (&addr, 0, sizeof(addr));
+                addr.sin6_family = AF_INET6;
+                addr.sin6_addr = *(struct in6_addr *)src;
+                ret = getnameinfo ((struct sockaddr *)&addr, sizeof (addr),
+                                   dst, cnt, NULL, 0, NI_NUMERICHOST);
+            }
+
+#endif
+        case AF_INET:
+            {
+                struct sockaddr_in addr;
+                memset(&addr, 0, sizeof(addr));
+                addr.sin_family = AF_INET;
+                addr.sin_addr = *(struct in_addr *)src;
+                ret = getnameinfo ((struct sockaddr *)&addr, sizeof (addr),
+                                   dst, cnt, NULL, 0, NI_NUMERICHOST);
+            }
+    }
+    return (ret == 0) ? dst : NULL;
+#else /* HAVE_INET_NTOP */
+    return inet_ntop( af, src, dst, cnt );
+#endif /* HAVE_INET_NTOP */
+}
+

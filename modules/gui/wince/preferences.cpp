@@ -2,7 +2,7 @@
  * preferences.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 31c478aea6352890a6e89bfbc9f72e5ec3c4904c $
+ * $Id: 3905575d03455451516d9b1bb66fb96d4fe9c8b3 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,11 +25,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                            /* strerror() */
-#include <stdio.h>
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 #include "wince.h"
 
@@ -77,7 +78,7 @@ public:
     /*void CleanChanges();*/
 
     void OnSelectTreeItem( LPNM_TREEVIEW pnmtv, HWND parent, HINSTANCE hInst );
-        
+ 
     ConfigTreeData *FindModuleConfig( ConfigTreeData *config_data );
 
     HWND hwndTV;
@@ -85,7 +86,7 @@ public:
 private:
     intf_thread_t *p_intf;
     PrefsDialog *p_prefs_dialog;
-    vlc_bool_t b_advanced;
+    bool b_advanced;
 
     HTREEITEM general_item;
     HTREEITEM plugins_item;
@@ -114,7 +115,7 @@ private:
     intf_thread_t *p_intf;
     PrefsDialog *p_prefs_dialog;
 
-    vlc_bool_t b_advanced;
+    bool b_advanced;
 
     HWND label;
 
@@ -127,11 +128,11 @@ public:
 
     ConfigTreeData() { b_submodule = 0; panel = NULL; psz_section = NULL;
                        psz_help = NULL; }
-    virtual ~ConfigTreeData() { if( panel ) delete panel;
-                                if( psz_section) free(psz_section);
-                                if( psz_help) free(psz_help); }
+    virtual ~ConfigTreeData() { delete panel;
+                                free( psz_section );
+                                free( psz_help ); }
 
-    vlc_bool_t b_submodule;
+    bool b_submodule;
 
     PrefsPanel *panel;
     int i_object_id;
@@ -152,10 +153,10 @@ PrefsDialog::PrefsDialog( intf_thread_t *p_intf, CBaseWindow *p_parent,
 
 /***********************************************************************
 
-FUNCTION: 
+FUNCTION:
   WndProc
 
-PURPOSE: 
+PURPOSE:
   Processes messages sent to the main window.
 
 ***********************************************************************/
@@ -192,7 +193,7 @@ LRESULT PrefsDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
         // Get the client area rect to put the panels in
         GetClientRect(hwnd, &rcClient);
 
-        /* Create the buttons */            
+        /* Create the buttons */
         advanced_checkbox =
             CreateWindow( _T("BUTTON"), _T("Advanced options"),
                         WS_CHILD | WS_VISIBLE | BS_AUTOCHECKBOX,
@@ -254,19 +255,19 @@ LRESULT PrefsDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
         TVITEM tvi = {0};
         tvi.mask = TVIF_PARAM;
         tvi.hItem = TreeView_GetSelection( prefs_tree->hwndTV );
-	if( !tvi.hItem ) break;
+    if( !tvi.hItem ) break;
 
         if( !TreeView_GetItem( prefs_tree->hwndTV, &tvi ) ) break;
 
         ConfigTreeData *config_data =
             prefs_tree->FindModuleConfig( (ConfigTreeData *)tvi.lParam );
-        if( config_data && hwnd == config_data->panel->config_window ) 
+        if( config_data && hwnd == config_data->panel->config_window )
         {
             int dy;
             RECT rc;
             GetWindowRect( hwnd, &rc);
             int newvalue = config_data->panel->oldvalue;
-            switch ( GET_WM_VSCROLL_CODE(wp,lp) ) 
+            switch ( GET_WM_VSCROLL_CODE(wp,lp) )
             {
             case SB_BOTTOM       : newvalue = 0; break;
             case SB_TOP          : newvalue = config_data->panel->maxvalue; break;
@@ -284,7 +285,7 @@ LRESULT PrefsDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
             ScrollWindowEx( hwnd, 0, dy, NULL, NULL, NULL, NULL, SW_SCROLLCHILDREN );
             UpdateWindow ( hwnd);
 
-            config_data->panel->oldvalue = newvalue;                                
+            config_data->panel->oldvalue = newvalue;
         }
         break;
     }
@@ -323,8 +324,8 @@ PrefsTreeCtrl::PrefsTreeCtrl( intf_thread_t *_p_intf,
 
     INITCOMMONCONTROLSEX iccex;
     RECT rcClient;
-    TVITEM tvi = {0}; 
-    TVINSERTSTRUCT tvins = {0}; 
+    TVITEM tvi = {0};
+    TVINSERTSTRUCT tvins = {0};
     HTREEITEM hPrev;
 
     size_t i_capability_count = 0;
@@ -335,7 +336,7 @@ PrefsTreeCtrl::PrefsTreeCtrl( intf_thread_t *_p_intf,
     /* Initializations */
     p_intf = _p_intf;
     p_prefs_dialog = _p_prefs_dialog;
-    b_advanced = VLC_FALSE;
+    b_advanced = false;
 
     /* Create a tree view */
     // Initialize the INITCOMMONCONTROLSEX structure.
@@ -412,15 +413,15 @@ PrefsTreeCtrl::PrefsTreeCtrl( intf_thread_t *_p_intf,
                 config_data->i_object_id = p_module->i_object_id;
 
                 /* Add the category to the tree */
-                // Set the text of the item. 
-                tvi.pszText = _FROMMB(p_item->psz_text); 
+                // Set the text of the item.
+                tvi.pszText = _FROMMB(p_item->psz_text);
                 tvi.cchTextMax = _tcslen(tvi.pszText);
                 tvi.lParam = (long)config_data;
                 tvins.item = tvi;
-                tvins.hInsertAfter = hPrev; 
+                tvins.hInsertAfter = hPrev;
                 tvins.hParent = general_item; //level 3
-    
-                // Add the item to the tree-view control. 
+ 
+                // Add the item to the tree-view control.
                 hPrev = (HTREEITEM)TreeView_InsertItem( hwndTV, &tvins );
 
                 break;
@@ -430,7 +431,7 @@ PrefsTreeCtrl::PrefsTreeCtrl( intf_thread_t *_p_intf,
 
         TreeView_SortChildren( hwndTV, general_item, 0 );
     }
-        
+ 
     /*
      * Build a tree of all the plugins
      */
@@ -511,10 +512,10 @@ PrefsTreeCtrl::PrefsTreeCtrl( intf_thread_t *_p_intf,
             tvi.cchTextMax = _tcslen(tvi.pszText);
             tvi.lParam = (long)config_data;
             tvins.item = tvi;
-            tvins.hInsertAfter = plugins_item; 
+            tvins.hInsertAfter = plugins_item;
             tvins.hParent = plugins_item;// level 3
 
-            // Add the item to the tree-view control. 
+            // Add the item to the tree-view control.
             capability_item = (HTREEITEM) TreeView_InsertItem( hwndTV, &tvins);
 
             i_capability_count++;
@@ -531,10 +532,10 @@ PrefsTreeCtrl::PrefsTreeCtrl( intf_thread_t *_p_intf,
         tvi.cchTextMax = _tcslen(tvi.pszText);
         tvi.lParam = (long)config_data;
         tvins.item = tvi;
-        tvins.hInsertAfter = capability_item; 
+        tvins.hInsertAfter = capability_item;
         tvins.hParent = capability_item;// level 4
 
-        // Add the item to the tree-view control. 
+        // Add the item to the tree-view control.
         TreeView_InsertItem( hwndTV, &tvins );
     }
 
@@ -586,7 +587,7 @@ void PrefsTreeCtrl::ApplyChanges()
     {
         HTREEITEM item2 = TreeView_GetChild( hwndTV, item );
         while( item2 != 0 )
-        {       
+        {
             TVITEM tvi = {0};
             tvi.mask = TVIF_PARAM;
             tvi.hItem = item2;
@@ -619,7 +620,7 @@ ConfigTreeData *PrefsTreeCtrl::FindModuleConfig( ConfigTreeData *config_data )
     {
         HTREEITEM item2 = TreeView_GetChild( hwndTV, item );
         while( item2 != 0 )
-        {       
+        {
             TVITEM tvi = {0};
             tvi.mask = TVIF_PARAM;
             tvi.hItem = item2;
@@ -690,7 +691,7 @@ PrefsPanel::PrefsPanel( HWND parent, HINSTANCE hInst, intf_thread_t *_p_intf,
     p_intf = _p_intf;
     p_prefs_dialog = _p_prefs_dialog;
 
-    b_advanced = VLC_TRUE;
+    b_advanced = true;
 
     if( i_object_id == PLUGIN_ID || i_object_id == GENERAL_ID ||
         i_object_id == CAPABILITY_ID )
@@ -704,12 +705,7 @@ PrefsPanel::PrefsPanel( HWND parent, HINSTANCE hInst, intf_thread_t *_p_intf,
     else
     {
         /* Get a pointer to the module */
-        p_module = (module_t *)vlc_object_get( p_intf,  i_object_id );
-        if( p_module->i_object_type != VLC_OBJECT_MODULE )
-        {
-            /* 0OOoo something went really bad */
-            return;
-        }
+        p_module = (module_t *)vlc_object_get( i_object_id );
 
         /* Enumerate config options and add corresponding config boxes
          * (submodules don't have config options, they are stored in the
@@ -779,7 +775,7 @@ PrefsPanel::PrefsPanel( HWND parent, HINSTANCE hInst, intf_thread_t *_p_intf,
             config_array.push_back( control );
         }
         while( p_item->i_type != CONFIG_HINT_END && p_item++ );
-                
+ 
         GetWindowRect( config_window, &rc);
         maxvalue = y_pos - (rc.bottom - rc.top) + 5;
         oldvalue = 0;
@@ -819,7 +815,7 @@ void PrefsPanel::ApplyChanges()
         case CONFIG_ITEM_KEY:
             /* So you don't need to restart to have the changes take effect */
             val.i_int = control->GetIntValue();
-            var_Set( p_intf->p_vlc, control->GetName(), val );
+            var_Set( p_intf->p_libvlc, control->GetName(), val );
         case CONFIG_ITEM_INTEGER:
         case CONFIG_ITEM_BOOL:
             config_PutInt( p_intf, control->GetName(),

@@ -2,7 +2,7 @@
  * access.h : access headers for CD digital audio input module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 8b1c1ad3cac395d3340597b3061ea1ef9c9ce36b $
+ * $Id$
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -22,7 +22,7 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * Open: open cdda device or image file and initialize structures 
+ * Open: open cdda device or image file and initialize structures
  * for subsequent operations.
  *****************************************************************************/
 int  CDDAOpen     ( vlc_object_t * );

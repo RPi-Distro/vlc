@@ -6,7 +6,7 @@
  * Authors: Iuri Diniz <iuri@digizap.com.br>
  *
  * This code is based in sdl.c and fb.c, thanks for VideoLAN team.
- * 
+ *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
@@ -26,11 +26,14 @@
  * Preamble
  *****************************************************************************/
 #include <errno.h>                                                 /* ENOMEM */
-#include <stdlib.h>                                                /* free() */
-#include <string.h>                                            /* strerror() */
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
 #include <directfb.h>
 
 /*****************************************************************************
@@ -56,7 +59,7 @@ struct vout_sys_t
     int i_width;
     int i_height;
 
-    byte_t* p_pixels;
+    uint8_t* p_pixels;
 };
 
 /*****************************************************************************
@@ -66,14 +69,14 @@ vlc_module_begin();
     set_shortname( "DirectFB" );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_description( _("DirectFB video output http://www.directfb.org/") );
+    set_description( N_("DirectFB video output http://www.directfb.org/") );
     set_capability( "video output", 60 );
     add_shortcut( "directfb" );
     set_callbacks( Create, Destroy );
 vlc_module_end();
 
 
-static int Create( vlc_object_t *p_this ) 
+static int Create( vlc_object_t *p_this )
 {
     vout_thread_t *p_vout = (vout_thread_t *)p_this;
     vout_sys_t *p_sys = NULL;
@@ -86,10 +89,7 @@ static int Create( vlc_object_t *p_this )
     /* Allocate structure */
     p_vout->p_sys = p_sys = malloc( sizeof( vout_sys_t ) );
     if( !p_sys )
-    {
-        msg_Err( p_vout, "out of memory" );
         return VLC_ENOMEM;
-    }
 
     p_sys->p_directfb = NULL;
     p_sys->p_primary = NULL;
@@ -118,7 +118,7 @@ static int Init( vout_thread_t *p_vout )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
     IDirectFBSurface *p_primary = (IDirectFBSurface *) p_vout->p_sys->p_primary;
-    byte_t* p_pixels = NULL;
+    uint8_t* p_pixels = NULL;
     picture_t *p_pic = NULL;
     int i_rlength, i_glength, i_blength;
     int i_roffset, i_goffset, i_boffset;
@@ -130,7 +130,7 @@ static int Init( vout_thread_t *p_vout )
 
     switch( p_sys->p_pixel_format )
     {
-        case DSPF_RGB332: 
+        case DSPF_RGB332:
             /* 8 bit RGB (1 byte, red 3@5, green 3@2, blue 2@0) */
             /* i_pixel_pitch = 1; */
             i_rlength = 3;
@@ -218,7 +218,7 @@ static int Init( vout_thread_t *p_vout )
 
     /* allocate p_pixels */
     i_size = i_line_pitch * p_sys->i_height;
-    p_sys->p_pixels = malloc( sizeof(byte_t) * i_size );
+    p_sys->p_pixels = malloc( i_size );
     if( p_sys->p_pixels == NULL )
     {
         p_primary->Unlock(p_primary);
@@ -253,8 +253,7 @@ static void End( vout_thread_t *p_vout )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
 
-    if( p_sys->p_pixels )
-        free( p_sys->p_pixels );
+    free( p_sys->p_pixels );
 }
 
 static void Destroy( vlc_object_t *p_this )
@@ -263,7 +262,7 @@ static void Destroy( vlc_object_t *p_this )
     vout_sys_t *p_sys = p_vout->p_sys;
 
     CloseDisplay( p_vout );
-    if( p_sys ) free( p_sys );
+    free( p_sys );
     p_sys = NULL;
 }
 
@@ -276,7 +275,7 @@ static void Display( vout_thread_t *p_vout, picture_t *p_pic )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
     IDirectFBSurface *p_primary = (IDirectFBSurface *) p_sys->p_primary;
-    byte_t* p_pixels = NULL;
+    uint8_t* p_pixels = NULL;
     int i_size;
     int i_line_pitch;
 

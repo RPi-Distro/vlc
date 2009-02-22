@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: ac17d2bfd574048ba5465a43e64cf7afb3746c71 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -25,15 +25,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/intf.h>
-#include "vlc_interaction.h"
-#include "charset.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <errno.h>                                                 /* ENOMEM */
+#include <vlc_common.h>
+#include <vlc_demux.h>
+#include <vlc_charset.h>
+
 #include "playlist.h"
 
 struct demux_sys_t
@@ -47,66 +47,76 @@ struct demux_sys_t
 static int Demux( demux_t *p_demux);
 static int Control( demux_t *p_demux, int i_query, va_list args );
 static void parseEXTINF( char *psz_string, char **ppsz_artist, char **ppsz_name, int *pi_duration );
+static bool ContainsURL( demux_t *p_demux );
 
 /*****************************************************************************
  * Import_M3U: main import function
  *****************************************************************************/
-int E_(Import_M3U)( vlc_object_t *p_this )
+int Import_M3U( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
+    const uint8_t *p_peek;
+    CHECK_PEEK( p_peek, 8 );
 
-    uint8_t *p_peek;
-    char    *psz_ext;
-
-    if( stream_Peek( p_demux->s , &p_peek, 7 ) < 7 )
-    {
+    if(! ( POKE( p_peek, "#EXTM3U", 7 ) || POKE( p_peek, "RTSPtext", 8 ) ||
+           demux_IsPathExtension( p_demux, ".m3u" ) || demux_IsPathExtension( p_demux, ".vlc" ) ||
+           /* A .ram file can contain a single rtsp link */
+           demux_IsPathExtension( p_demux, ".ram" ) || demux_IsPathExtension( p_demux, ".rm" ) ||
+           demux_IsForced( p_demux,  "m3u" ) || ContainsURL( p_demux ) ) )
         return VLC_EGENERIC;
-    }
-    psz_ext = strrchr ( p_demux->psz_path, '.' );
 
-    if( !strncmp( (char *)p_peek, "#EXTM3U", 7 ) )
-    {
-        ;
-    }
-    else if( ( psz_ext && !strcasecmp( psz_ext, ".m3u") ) ||
-             ( psz_ext && !strcasecmp( psz_ext, ".ram") ) ||
-             ( psz_ext && !strcasecmp( psz_ext, ".rm") ) ||
-             /* A .ram file can contain a single rtsp link */
-             ( p_demux->psz_demux && !strcmp(p_demux->psz_demux, "m3u") ) )
-    {
-        ;
-    }
-    else
-    {
-        return VLC_EGENERIC;
-    }
-    msg_Dbg( p_demux, "found valid M3U playlist file");
-
-    p_demux->pf_control = Control;
-    p_demux->pf_demux = Demux;
-    p_demux->p_sys = malloc( sizeof(demux_sys_t) );
-    if( p_demux->p_sys == NULL )
-    {
-        msg_Err( p_demux, "Out of memory" );
-        return VLC_ENOMEM;
-    }
-    p_demux->p_sys->psz_prefix = E_(FindPrefix)( p_demux );
+    STANDARD_DEMUX_INIT_MSG( "found valid M3U playlist" );
+    p_demux->p_sys->psz_prefix = FindPrefix( p_demux );
 
     return VLC_SUCCESS;
+}
+
+static bool ContainsURL( demux_t *p_demux )
+{
+    const uint8_t *p_peek, *p_peek_end;
+    int i_peek;
+
+    i_peek = stream_Peek( p_demux->s, &p_peek, 1024 );
+    if( i_peek <= 0 ) return false;
+    p_peek_end = p_peek + i_peek;
+
+    while( p_peek + sizeof( "https://" ) < p_peek_end )
+    {
+        /* One line starting with an URL is enough */
+        if( !strncasecmp( (const char *)p_peek, "http://", 7 ) ||
+            !strncasecmp( (const char *)p_peek, "mms://", 6 ) ||
+            !strncasecmp( (const char *)p_peek, "rtsp://", 7 ) ||
+            !strncasecmp( (const char *)p_peek, "https://", 8 ) ||
+            !strncasecmp( (const char *)p_peek, "ftp://", 6 ) )
+        {
+            return true;
+        }
+        /* Comments and blank lines are ignored */
+        else if( *p_peek != '#' && *p_peek != '\n' && *p_peek != '\r')
+        {
+            return false;
+        }
+
+        while( p_peek < p_peek_end && *p_peek != '\n' )
+            p_peek++;
+        if ( *p_peek == '\n' )
+            p_peek++;
+    }
+    return false;
 }
 
 /*****************************************************************************
  * Deactivate: frees unused data
  *****************************************************************************/
-void E_(Close_M3U)( vlc_object_t *p_this )
+void Close_M3U( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
-
-    if( p_demux->p_sys->psz_prefix ) free( p_demux->p_sys->psz_prefix );
+    free( p_demux->p_sys->psz_prefix );
     free( p_demux->p_sys );
 }
 
-/* Kvik! */
+
+/* Gruik! */
 static inline char *MaybeFromLocaleDup (const char *str)
 {
     if (str == NULL)
@@ -127,37 +137,20 @@ static inline void MaybeFromLocaleRep (char **str)
     }
 }
 
+
 static int Demux( demux_t *p_demux )
 {
-    playlist_t *p_playlist;
     char       *psz_line;
-
     char       *psz_name = NULL;
     char       *psz_artist = NULL;
     int        i_parsed_duration = 0;
     mtime_t    i_duration = -1;
-    char       **ppsz_options = NULL;
-    int        i_options = 0, i;
-    vlc_bool_t b_enable_extvlcopt = config_GetInt( p_demux, "m3u-extvlcopt" );
+    const char**ppsz_options = NULL;
+    int        i_options = 0;
+    bool b_cleanup = false;
+    input_item_t *p_input;
 
-    playlist_item_t *p_item, *p_current;
-
-    vlc_bool_t b_play;
-
-    vlc_bool_t b_cleanup = VLC_FALSE;
-
-    p_playlist = (playlist_t *) vlc_object_find( p_demux, VLC_OBJECT_PLAYLIST,
-                                                 FIND_ANYWHERE );
-    if( !p_playlist )
-    {
-        msg_Err( p_demux, "can't find playlist" );
-        return -1;
-    }
-
-    b_play = E_(FindItem)( p_demux, p_playlist, &p_current );
-
-    playlist_ItemToNode( p_playlist, p_current );
-    p_current->input.i_type = ITEM_TYPE_PLAYLIST;
+    INIT_PLAYLIST_STUFF;
 
     psz_line = stream_ReadLine( p_demux->s );
     while( psz_line )
@@ -184,35 +177,30 @@ static int Demux( demux_t *p_demux )
                 /* Extended info */
                 psz_parse += sizeof("EXTINF:") - 1;
                 parseEXTINF( psz_parse, &psz_artist, &psz_name, &i_parsed_duration );
-                if ( i_parsed_duration >= 0 )
-                    i_duration = i_parsed_duration * I64C(1000000);
-                if ( psz_name )
+                if( i_parsed_duration >= 0 )
+                    i_duration = i_parsed_duration * INT64_C(1000000);
+                if( psz_name )
                     psz_name = strdup( psz_name );
-                if ( psz_artist )
+                if( psz_artist )
                     psz_artist = strdup( psz_artist );
             }
             else if( !strncasecmp( psz_parse, "EXTVLCOPT:",
                                    sizeof("EXTVLCOPT:") -1 ) )
             {
-                if( b_enable_extvlcopt )
-                {
-                    /* VLC Option */
-                    char *psz_option;
-                    psz_parse += sizeof("EXTVLCOPT:") -1;
-                    if( !*psz_parse ) goto error;
+                /* VLC Option */
+                char *psz_option;
+                psz_parse += sizeof("EXTVLCOPT:") -1;
+                if( !*psz_parse ) goto error;
 
-                    psz_option = MaybeFromLocaleDup( psz_parse );
-                    if( psz_option )
-                        INSERT_ELEM( ppsz_options, i_options, i_options,
-                                     psz_option );
-                }
-                else
-                {
-                    intf_UserFatal( p_demux, _("Options disabled") ,
-                     _("m3u EXTVLCOPT parsing is disabled for security reasons.\nIf you need it and trust the m3u playlist you are trying to open, please enable it from:\nPreferences > Input/Codecs > Demuxers > Playlist > Enable parsinf of EXTVLCOPT: options.\nDon't forget to disable it before opening an untrusted playlist") );
-                    msg_Err( p_demux, "m3u EXTVLCOPT parsing is disabled for security reasons. If you need it and trust the m3u playlist you are trying to open, please append --m3u-extvlcopt to your command line." );
-                }
+                psz_option = MaybeFromLocaleDup( psz_parse );
+                if( psz_option )
+                    INSERT_ELEM( ppsz_options, i_options, i_options,
+                                 psz_option );
             }
+        }
+        else if( !strncasecmp( psz_parse, "RTSPtext", sizeof("RTSPtext") -1 ) )
+        {
+            ;/* special case to handle QuickTime RTSPtext redirect files */
         }
         else if( *psz_parse )
         {
@@ -223,33 +211,22 @@ static int Demux( demux_t *p_demux )
                 psz_name = MaybeFromLocaleDup( psz_parse );
             }
 
-            psz_mrl = E_(ProcessMRL)( psz_parse, p_demux->p_sys->psz_prefix );
-            MaybeFromLocaleRep( &psz_mrl);
+            psz_mrl = ProcessMRL( psz_parse, p_demux->p_sys->psz_prefix );
+            MaybeFromLocaleRep( &psz_mrl );
 
-            b_cleanup = VLC_TRUE;
+            b_cleanup = true;
             if( !psz_mrl ) goto error;
 
-            p_item = playlist_ItemNew( p_playlist, psz_mrl, psz_name );
-            for( i = 0; i< i_options; i++ )
-            {
-                playlist_ItemAddOption( p_item, ppsz_options[i] );
-            }
-            p_item->input.i_duration = i_duration;
+            p_input = input_item_NewExt( p_demux, psz_mrl, psz_name,
+                                        0, NULL, i_duration );
+
             if ( psz_artist && *psz_artist )
-                vlc_input_item_AddInfo( &p_item->input, _(VLC_META_INFO_CAT),
-                                        _(VLC_META_ARTIST), "%s", psz_artist );
-            playlist_NodeAddItem( p_playlist, p_item,
-                                  p_current->pp_parents[0]->i_view,
-                                  p_current, PLAYLIST_APPEND,
-                                  PLAYLIST_END );
+                input_item_SetArtist( p_input, psz_artist );
 
-            /* We need to declare the parents of the node as the
-             *                  * same of the parent's ones */
-            playlist_CopyParents( p_current, p_item );
-
-            vlc_input_item_CopyOptions( &p_current->input,
-                                        &p_item->input );
-
+            input_item_AddSubItem( p_current_input, p_input );
+            for( int i = 0; i < i_options; i++ )
+                input_item_AddOpt( p_input, ppsz_options[i], 0 );
+            vlc_gc_decref( p_input );
             free( psz_mrl );
         }
 
@@ -258,45 +235,36 @@ static int Demux( demux_t *p_demux )
         /* Fetch another line */
         free( psz_line );
         psz_line = stream_ReadLine( p_demux->s );
-        if( !psz_line ) b_cleanup = VLC_TRUE;
+        if( !psz_line ) b_cleanup = true;
 
         if( b_cleanup )
         {
             /* Cleanup state */
-            while( i_options-- ) free( ppsz_options[i_options] );
-            if( ppsz_options ) free( ppsz_options );
+            while( i_options-- ) free( (char*)ppsz_options[i_options] );
+            free( ppsz_options );
             ppsz_options = NULL; i_options = 0;
-            if( psz_name ) free( psz_name );
+            free( psz_name );
             psz_name = NULL;
-            if ( psz_artist ) free( psz_artist );
+            free( psz_artist );
             psz_artist = NULL;
             i_parsed_duration = 0;
             i_duration = -1;
 
-            b_cleanup = VLC_FALSE;
+            b_cleanup = false;
         }
     }
-
-    /* Go back and play the playlist */
-    if( b_play && p_playlist->status.p_item &&
-        p_playlist->status.p_item->i_children > 0 )
-    {
-        playlist_Control( p_playlist, PLAYLIST_VIEWPLAY,
-                          p_playlist->status.i_view,
-                          p_playlist->status.p_item,
-                          p_playlist->status.p_item->pp_children[0] );
-    }
-
-    vlc_object_release( p_playlist );
-    return VLC_SUCCESS;
+    HANDLE_PLAY_AND_RELEASE;
+    var_Destroy( p_demux, "m3u-extvlcopt" );
+    return 0; /* Needed for correct operation of go back */
 }
 
 static int Control( demux_t *p_demux, int i_query, va_list args )
 {
+    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
     return VLC_EGENERIC;
 }
 
-static void parseEXTINF(char *psz_string, char **ppsz_artist, 
+static void parseEXTINF(char *psz_string, char **ppsz_artist,
                         char **ppsz_name, int *pi_duration)
 {
     char *end = NULL;
@@ -305,7 +273,7 @@ static void parseEXTINF(char *psz_string, char **ppsz_artist,
     end = psz_string + strlen( psz_string );
 
     /* ignore whitespaces */
-    for (; psz_string < end && ( *psz_string == '\t' || *psz_string == ' ' ); 
+    for (; psz_string < end && ( *psz_string == '\t' || *psz_string == ' ' );
          psz_string++ );
 
     /* duration: read to next comma */
@@ -335,7 +303,7 @@ static void parseEXTINF(char *psz_string, char **ppsz_artist,
         *ppsz_artist = psz_string;
         *ppsz_name = psz_item + 3;          /* points directly after ' - ' */
         return;
-    } 
+    }
 
     /* reaching this point means: 0.8.1- with artist or something without artist */
     if ( *psz_string == ',' )
@@ -344,7 +312,7 @@ static void parseEXTINF(char *psz_string, char **ppsz_artist,
         psz_string++;
         *ppsz_name = psz_string;
         return;
-    } 
+    }
 
     psz_item = psz_string;
     psz_string = strchr( psz_string, ',' );

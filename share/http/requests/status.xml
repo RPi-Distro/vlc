@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="<vlc id="value" param1="charset"/>" standalone="yes" ?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
 <vlc id="if" param1="0"/>
 <!--  - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - >
 <  status.xml: VLC media player web interface
@@ -100,6 +100,9 @@
   <vlc id="if" param1="command value 'seek' strcmp 0 =" />
     <vlc id="rpn" param1="val value vlc_seek" />
   <vlc id="end"/>
+  <vlc id="if" param1="command value 'key' strcmp 0 =" />
+    <vlc id="rpn" param1="'key-' val value strcat 'VLC_OBJECT_VLC' vlc_var_get key-pressed 'VLC_OBJECT_VLC' vlc_var_set" />
+  <vlc id="end"/>
 
 <vlc id="end" />
 <root>
@@ -114,9 +117,9 @@
   <repeat><vlc id="value" param1="'repeat' 'VLC_OBJECT_PLAYLIST' vlc_var_get" /></repeat>
   <information>
     <vlc id="foreach" param1="inf" param2="information" />
-      <category name="<vlc id="value" param1="inf.name" />">
+      <category name="<vlc id="value" param1="inf.name xml_encode" />">
         <vlc id="foreach" param1="subinf" param2="inf.info" />
-          <info name="<vlc id="value" param1="subinf.name" />"><vlc id="value" param1="subinf.value" /></info>
+          <info name="<vlc id="value" param1="subinf.name xml_encode" />"><vlc id="value" param1="subinf.value xml_encode" /></info>
         <vlc id="end" />
       </category>
     <vlc id="end" />

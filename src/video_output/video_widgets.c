@@ -2,7 +2,7 @@
  * video_widgets.c : OSD widgets manipulation functions
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 504c7d5ee815866bb23cf37d39c998abb867a2ef $
+ * $Id$
  *
  * Author: Yoann Peronneau <yoann@videolan.org>
  *
@@ -24,12 +24,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                                /* free() */
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_vout.h>
 #include <vlc_osd.h>
 
-#include "vlc_video.h"
-#include "vlc_filter.h"
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Displays an OSD slider.

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * announce.c : announce handler
  *****************************************************************************
- * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: c4d73beb464778af4eee0c281bbbcd6ae7ef6ba8 $
+ * Copyright (C) 2002-2007 the VideoLAN team
+ * $Id: 7dedc1e0508c412716c6c08213d29f5bd8243f11 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -24,72 +24,44 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                                /* free() */
-#include <stdio.h>                                              /* sprintf() */
-#include <string.h>                                            /* strerror() */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/vlc.h>
-#include <vlc/sout.h>
+#include <vlc_common.h>
+#include <vlc_sout.h>
+#include "stream_output.h"
 
-/*****************************************************************************
- * Local prototypes
- *****************************************************************************/
-#define FREE( p ) if( p ) { free( p ); (p) = NULL; }
+#include <assert.h>
 
+/* Private functions for the announce handler */
+static announce_handler_t*  announce_HandlerCreate( vlc_object_t *);
+static int announce_Register( announce_handler_t *p_announce,
+                              session_descriptor_t *p_session,
+                              announce_method_t *p_method );
+static int announce_UnRegister( announce_handler_t *p_announce,
+                                session_descriptor_t *p_session );
+
+struct announce_method_t
+{
+} sap_method;
 
 /****************************************************************************
  * Sout-side functions
  ****************************************************************************/
 
 /**
- *  Register a new session with the announce handler
- *
- * \param p_sout a sout instance structure
- * \param p_session a session descriptor
- * \param p_method an announce method descriptor
- * \return VLC_SUCCESS or an error
- */
-int sout_AnnounceRegister( sout_instance_t *p_sout,
-                       session_descriptor_t *p_session,
-                       announce_method_t *p_method )
-{
-    int i_ret;
-    announce_handler_t *p_announce = (announce_handler_t*)
-                              vlc_object_find( p_sout,
-                                              VLC_OBJECT_ANNOUNCE,
-                                              FIND_ANYWHERE );
-
-    if( !p_announce )
-    {
-        msg_Dbg( p_sout, "No announce handler found, creating one" );
-        p_announce = announce_HandlerCreate( p_sout );
-        if( !p_announce )
-        {
-            msg_Err( p_sout, "Creation failed" );
-            return VLC_ENOMEM;
-        }
-        vlc_object_yield( p_announce );
-        msg_Dbg( p_sout, "creation done" );
-    }
-
-    i_ret = announce_Register( p_announce, p_session, p_method );
-    vlc_object_release( p_announce );
-
-    return i_ret;
-}
-
-/**
  *  Register a new session with the announce handler, using a pregenerated SDP
  *
  * \param p_sout a sout instance structure
  * \param psz_sdp the SDP to register
- * \param psz_uri session URI (needed for SAP address auto detection
+ * \param psz_dst session address (needed for SAP address auto detection)
  * \param p_method an announce method descriptor
  * \return the new session descriptor structure
  */
-session_descriptor_t *sout_AnnounceRegisterSDP( sout_instance_t *p_sout,
-                          const char *psz_sdp, const char *psz_uri,
-                          announce_method_t *p_method )
+session_descriptor_t *
+sout_AnnounceRegisterSDP( sout_instance_t *p_sout, const char *psz_sdp,
+                            const char *psz_dst, announce_method_t *p_method )
 {
     session_descriptor_t *p_session;
     announce_handler_t *p_announce = (announce_handler_t*)
@@ -99,7 +71,7 @@ session_descriptor_t *sout_AnnounceRegisterSDP( sout_instance_t *p_sout,
     if( !p_announce )
     {
         msg_Dbg( p_sout, "no announce handler found, creating one" );
-        p_announce = announce_HandlerCreate( p_sout );
+        p_announce = announce_HandlerCreate( VLC_OBJECT( p_sout ) );
         if( !p_announce )
         {
             msg_Err( p_sout, "Creation failed" );
@@ -108,14 +80,20 @@ session_descriptor_t *sout_AnnounceRegisterSDP( sout_instance_t *p_sout,
         vlc_object_yield( p_announce );
     }
 
-    if( p_method->i_type != METHOD_TYPE_SAP )
+    p_session = malloc( sizeof( *p_session ) );
+    memset( p_session, 0, sizeof( *p_session ) );
+    p_session->psz_sdp = strdup( psz_sdp );
+
+    /* GRUIK. We should not convert back-and-forth from string to numbers */
+    struct addrinfo *res;
+    if (vlc_getaddrinfo (VLC_OBJECT (p_sout), psz_dst, 0, NULL, &res) == 0)
     {
-        msg_Warn( p_sout, "forcing SAP announcement");
+        if (res->ai_addrlen <= sizeof (p_session->addr))
+            memcpy (&p_session->addr, res->ai_addr,
+                    p_session->addrlen = res->ai_addrlen);
+        vlc_freeaddrinfo (res);
     }
 
-    p_session = sout_AnnounceSessionCreate();
-    p_session->psz_sdp = strdup( psz_sdp );
-    p_session->psz_uri = strdup( psz_uri );
     announce_Register( p_announce, p_session, p_method );
 
     vlc_object_release( p_announce );
@@ -143,6 +121,8 @@ int sout_AnnounceUnRegister( sout_instance_t *p_sout,
         return VLC_ENOOBJ;
     }
     i_ret  = announce_UnRegister( p_announce, p_session );
+    if( i_ret == 0 )
+        free( p_session );
 
     vlc_object_release( p_announce );
 
@@ -150,63 +130,16 @@ int sout_AnnounceUnRegister( sout_instance_t *p_sout,
 }
 
 /**
- * Create and initialize a session descriptor
- *
- * \return a new session descriptor
+ * \return the SAP announce method
  */
-session_descriptor_t * sout_AnnounceSessionCreate(void)
+announce_method_t * sout_SAPMethod (void)
 {
-    session_descriptor_t *p_session;
-
-    p_session = (session_descriptor_t *)malloc( sizeof(session_descriptor_t));
-
-    if( p_session)
-    {
-        p_session->p_sap = NULL;
-        p_session->psz_sdp = NULL;
-        p_session->psz_name = NULL;
-        p_session->psz_uri = NULL;
-        p_session->i_port = 0;
-        p_session->psz_group = NULL;
-    }
-
-    return p_session;
+    return &sap_method;
 }
 
-/**
- * Destroy a session descriptor and free all
- *
- * \param p_session the session to destroy
- * \return Nothing
- */
-void sout_AnnounceSessionDestroy( session_descriptor_t *p_session )
+void sout_MethodRelease (announce_method_t *m)
 {
-    if( p_session )
-    {
-        FREE( p_session->psz_name );
-        FREE( p_session->psz_group );
-        FREE( p_session->psz_uri );
-        FREE( p_session->psz_sdp );
-        free( p_session );
-    }
-}
-
-/**
- * Create and initialize an announcement method structure
- *
- * \param i_type METHOD_TYPE_SAP
- * \return a new announce_method structure
- */
-announce_method_t * sout_AnnounceMethodCreate( int i_type )
-{
-    announce_method_t *p_method;
-
-    p_method = (announce_method_t *)malloc( sizeof(announce_method_t) );
-    if( p_method == NULL )
-        return NULL;
-
-    p_method->i_type = i_type;
-    return p_method;
+    assert (m == &sap_method);
 }
 
 /************************************************************************
@@ -219,22 +152,17 @@ announce_method_t * sout_AnnounceMethodCreate( int i_type )
  * \param p_this a vlc_object structure
  * \return the new announce handler or NULL on error
  */
-announce_handler_t *__announce_HandlerCreate( vlc_object_t *p_this )
+static announce_handler_t *announce_HandlerCreate( vlc_object_t *p_this )
 {
     announce_handler_t *p_announce;
 
     p_announce = vlc_object_create( p_this, VLC_OBJECT_ANNOUNCE );
 
     if( !p_announce )
-    {
-        msg_Err( p_this, "out of memory" );
         return NULL;
-    }
 
     p_announce->p_sap = NULL;
-
-    vlc_object_attach( p_announce, p_this->p_vlc);
-
+    vlc_object_attach( p_announce, p_this->p_libvlc);
 
     return p_announce;
 }
@@ -247,29 +175,28 @@ announce_handler_t *__announce_HandlerCreate( vlc_object_t *p_this )
  */
 int announce_HandlerDestroy( announce_handler_t *p_announce )
 {
-
     if( p_announce->p_sap )
     {
-        p_announce->p_sap->b_die = VLC_TRUE;
-        /* Wait for the SAP thread to exit */
-        vlc_thread_join( p_announce->p_sap );
-        announce_SAPHandlerDestroy( p_announce->p_sap );
+        /* Exit the SAP */
+        vlc_object_release( p_announce->p_sap );
     }
 
     /* Free the structure */
-    vlc_object_destroy( p_announce );
+    vlc_object_release( p_announce );
 
     return VLC_SUCCESS;
 }
 
 /* Register an announce */
-int announce_Register( announce_handler_t *p_announce,
-                       session_descriptor_t *p_session,
-                       announce_method_t *p_method )
+static int announce_Register( announce_handler_t *p_announce,
+                              session_descriptor_t *p_session,
+                              announce_method_t *p_method )
 {
+    if (p_method == NULL)
+        return VLC_EGENERIC;
 
     msg_Dbg( p_announce, "registering announce");
-    if( p_method->i_type == METHOD_TYPE_SAP )
+    if( p_method == &sap_method )
     {
         /* Do we already have a SAP announce handler ? */
         if( !p_announce->p_sap )
@@ -289,26 +216,19 @@ int announce_Register( announce_handler_t *p_announce,
     }
     else
     {
-        msg_Dbg( p_announce, "announce type unsupported" );
+        msg_Err( p_announce, "announce type unsupported" );
         return VLC_EGENERIC;
     }
-    return VLC_SUCCESS;;
+    return VLC_SUCCESS;
 }
 
 
 /* Unregister an announce */
-int announce_UnRegister( announce_handler_t *p_announce,
-                  session_descriptor_t *p_session )
+static int announce_UnRegister( announce_handler_t *p_announce,
+                                session_descriptor_t *p_session )
 {
     msg_Dbg( p_announce, "unregistering announce" );
-    if( p_session->p_sap != NULL ) /* SAP Announce */
-    {
-        if( !p_announce->p_sap )
-        {
-            msg_Err( p_announce, "can't remove announce, no SAP handler");
-            return VLC_ENOOBJ;
-        }
+    if( p_announce->p_sap )
         p_announce->p_sap->pf_del( p_announce->p_sap, p_session );
-    }
     return VLC_SUCCESS;
 }

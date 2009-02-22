@@ -2,7 +2,7 @@
  * dump.c
  *****************************************************************************
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: b27d2300056c5e875f56959b9a6f2b1e4a361cc4 $
+ * $Id$
  *
  * Author: Rémi Denis-Courmont <rem # videolan,org>
  *
@@ -21,17 +21,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <stdio.h>
-#include <stdlib.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+
 #include <assert.h>
 #include <time.h>
 #include <errno.h>
 
-#include "vlc_access.h"
-#include "vlc_block.h"
-#include "charset.h"
+#include <vlc_access.h>
+
+#include <vlc_charset.h>
 #include "vlc_keys.h"
 
 #define DEFAULT_MARGIN 32 // megabytes
@@ -48,21 +51,21 @@ static int  Open (vlc_object_t *);
 static void Close (vlc_object_t *);
 
 vlc_module_begin ();
-    set_shortname (_("Dump"));
-    set_description (_("Dump"));
+    set_shortname (N_("Dump"));
+    set_description (N_("Dump"));
     set_category (CAT_INPUT);
     set_subcategory (SUBCAT_INPUT_ACCESS_FILTER);
     set_capability ("access_filter", 0);
     add_shortcut ("dump");
     set_callbacks (Open, Close);
 
-    add_bool ("dump-force", VLC_FALSE, NULL, FORCE_TEXT,
-              FORCE_LONGTEXT, VLC_FALSE);
+    add_bool ("dump-force", false, NULL, FORCE_TEXT,
+              FORCE_LONGTEXT, false);
     add_integer ("dump-margin", DEFAULT_MARGIN, NULL, MARGIN_TEXT,
-                 MARGIN_LONGTEXT, VLC_FALSE);
+                 MARGIN_LONGTEXT, false);
 vlc_module_end();
 
-static int Read (access_t *access, uint8_t *buffer, int len);
+static ssize_t Read (access_t *access, uint8_t *buffer, size_t len);
 static block_t *Block (access_t *access);
 static int Seek (access_t *access, int64_t offset);
 static int Control (access_t *access, int cmd, va_list ap);
@@ -85,12 +88,11 @@ static int Open (vlc_object_t *obj)
 {
     access_t *access = (access_t*)obj;
     access_t *src = access->p_source;
-    access_sys_t *p_sys;
 
     if (!var_CreateGetBool (access, "dump-force"))
     {
-        vlc_bool_t b;
-        if ((access2_Control (src, ACCESS_CAN_FASTSEEK, &b) == 0) && b)
+        bool b;
+        if ((access_Control (src, ACCESS_CAN_FASTSEEK, &b) == 0) && b)
         {
             msg_Dbg (obj, "dump filter useless");
             return VLC_EGENERIC;
@@ -107,20 +109,20 @@ static int Open (vlc_object_t *obj)
     access->pf_control = Control;
     access->info = src->info;
 
-    p_sys = access->p_sys = malloc (sizeof (*p_sys));
+    access_sys_t *p_sys = access->p_sys = malloc (sizeof (*p_sys));
     if (p_sys == NULL)
         return VLC_ENOMEM;
     memset (p_sys, 0, sizeof (*p_sys));
 
     if ((p_sys->stream = tmpfile ()) == NULL)
     {
-        msg_Err (access, "cannot create temporary file: %s", strerror (errno));
+        msg_Err (access, "cannot create temporary file: %m");
         free (p_sys);
         return VLC_EGENERIC;
     }
     p_sys->tmp_max = ((int64_t)var_CreateGetInteger (access, "dump-margin")) << 20;
 
-    var_AddCallback (access->p_vlc, "key-pressed", KeyHandler, access);
+    var_AddCallback (access->p_libvlc, "key-action", KeyHandler, access);
 
     return VLC_SUCCESS;
 }
@@ -134,7 +136,7 @@ static void Close (vlc_object_t *obj)
     access_t *access = (access_t *)obj;
     access_sys_t *p_sys = access->p_sys;
 
-    var_DelCallback (access->p_vlc, "key-pressed", KeyHandler, access);
+    var_DelCallback (access->p_libvlc, "key-action", KeyHandler, access);
 
     if (p_sys->stream != NULL)
         fclose (p_sys->stream);
@@ -146,13 +148,12 @@ static void Dump (access_t *access, const uint8_t *buffer, size_t len)
 {
     access_sys_t *p_sys = access->p_sys;
     FILE *stream = p_sys->stream;
-    size_t needed;
 
     if ((stream == NULL) /* not dumping */
      || (access->info.i_pos < p_sys->dumpsize) /* already known data */)
         return;
 
-    needed = access->info.i_pos - p_sys->dumpsize;
+    size_t needed = access->info.i_pos - p_sys->dumpsize;
     if (len < needed)
         return; /* gap between data and dump offset (seek too far ahead?) */
 
@@ -171,7 +172,7 @@ static void Dump (access_t *access, const uint8_t *buffer, size_t len)
     assert (len > 0);
     if (fwrite (buffer, len, 1, stream) != 1)
     {
-        msg_Err (access, "cannot write to file: %s", strerror (errno));
+        msg_Err (access, "cannot write to file: %m");
         goto error;
     }
 
@@ -184,7 +185,7 @@ error:
 }
 
 
-static int Read (access_t *access, uint8_t *buffer, int len)
+static ssize_t Read (access_t *access, uint8_t *buffer, size_t len)
 {
     access_t *src = access->p_source;
 
@@ -228,7 +229,6 @@ static int Seek (access_t *access, int64_t offset)
 {
     access_t *src = access->p_source;
     access_sys_t *p_sys = access->p_sys;
-    int ret;
 
     if (p_sys->tmp_max == -1)
     {
@@ -240,38 +240,14 @@ static int Seek (access_t *access, int64_t offset)
         msg_Dbg (access, "seeking - dump might not work");
 
     src->info.i_update = access->info.i_update;
-    ret = src->pf_seek (src, offset);
+    int ret = src->pf_seek (src, offset);
     access->info = src->info;
     return ret;
 }
 
-
-#ifndef HAVE_LOCALTIME_R
-static inline struct tm *localtime_r (const time_t *now, struct tm *res)
-{
-    struct tm *unsafe = localtime (now);
-    /*
-     * This is not thread-safe. Blame your C library.
-     * On Win32 there SHOULD be _localtime_s instead, but of course
-     * Cygwin and Mingw32 don't know about it. You're on your own if you
-     * this platform.
-     */
-    if (unsafe == NULL)
-        return NULL;
-
-    memcpy (res, unsafe, sizeof (*res));
-    return res;
-}
-#endif
-
-
 static void Trigger (access_t *access)
 {
     access_sys_t *p_sys = access->p_sys;
-    const char *home = access->p_vlc->psz_homedir;
-    FILE *newstream, *oldstream;
-    struct tm t;
-    time_t now;
 
     if (p_sys->stream == NULL)
         return; // too late
@@ -279,8 +255,10 @@ static void Trigger (access_t *access)
     if (p_sys->tmp_max == -1)
         return; // already triggered - should we stop? FIXME
 
+    time_t now;
     time (&now);
 
+    struct tm t;
     if (localtime_r (&now, &t) == NULL)
         return; // No time, eh? Well, I'd rather not run on your computer.
 
@@ -288,26 +266,25 @@ static void Trigger (access_t *access)
         // Humanity is about 300 times older than when this was written,
         // and there is an off-by-one in the following sprintf().
         return;
-    else
+
+    const char *home = config_GetHomeDir();
+
+    /* Hmm what about the extension?? */
+    char filename[strlen (home) + sizeof ("/vlcdump-YYYYYYYYY-MM-DD-HH-MM-SS.ts")];
+    sprintf (filename, "%s/vlcdump-%04u-%02u-%02u-%02u-%02u-%02u.ts", home,
+             t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
+
+    msg_Info (access, "dumping media to \"%s\"...", filename);
+
+    FILE *newstream = utf8_fopen (filename, "wb");
+    if (newstream == NULL)
     {
-        /* Hmm what about the extension?? */
-        char filename[strlen (home) + sizeof ("/vlcdump-YYYYYYYYY-MM-DD-HH-MM-SS.ts")];
-        sprintf (filename, "%s/vlcdump-%04u-%02u-%02u-%02u-%02u-%02u.ts", home,
-                t.tm_year, t.tm_mon, t.tm_mday, t.tm_hour, t.tm_min, t.tm_sec);
-
-        msg_Info (access, "dumping media to \"%s\"...", filename);
-
-        newstream = utf8_fopen (filename, "wb");
-        if (newstream == NULL)
-        {
-            msg_Err (access, "cannot create dump file \"%s\": %s", filename,
-                    strerror (errno));
-            return;
-        }
+        msg_Err (access, "cannot create dump file \"%s\": %m", filename);
+        return;
     }
 
     /* This might cause excessive hard drive work :( */
-    oldstream = p_sys->stream;
+    FILE *oldstream = p_sys->stream;
     rewind (oldstream);
 
     for (;;)
@@ -318,8 +295,7 @@ static void Trigger (access_t *access)
         {
             if (ferror (oldstream))
             {
-                msg_Err (access, "cannot read temporary file: %s",
-                         strerror (errno));
+                msg_Err (access, "cannot read temporary file: %m");
                 break;
             }
 
@@ -332,7 +308,7 @@ static void Trigger (access_t *access)
 
         if (fwrite (buf, len, 1, newstream) != 1)
         {
-            msg_Err (access, "cannot write dump file: %s", strerror (errno));
+            msg_Err (access, "cannot write dump file: %m");
             break;
         }
     }
@@ -348,20 +324,12 @@ static int KeyHandler (vlc_object_t *obj, char const *varname,
                        vlc_value_t oldval, vlc_value_t newval, void *data)
 {
     access_t *access = data;
-    struct hotkey *key;
 
+    (void)varname;
     (void)oldval;
     (void)obj;
 
-    for (key = access->p_vlc->p_hotkeys; key->psz_action != NULL; key++)
-    {
-        if (key->i_key == newval.i_int)
-        {
-            if (key->i_action == ACTIONID_DUMP)
-                Trigger ((access_t *)data);
-            break;
-        }
-    }
-
+    if (newval.i_int == ACTIONID_DUMP)
+        Trigger (access);
     return VLC_SUCCESS;
 }

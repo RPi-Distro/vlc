@@ -2,7 +2,7 @@
  * tcp.c: TCP input module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: e8690e6c1f685f54bb5ff82968a86768908a5eff $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,12 +24,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "network.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_access.h>
+
+#include <vlc_network.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -43,15 +47,15 @@ static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
 vlc_module_begin();
-    set_shortname( _("TCP") );
-    set_description( _("TCP input") );
+    set_shortname( N_("TCP") );
+    set_description( N_("TCP input") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACCESS );
 
     add_integer( "tcp-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, VLC_TRUE );
+                 CACHING_LONGTEXT, true );
 
-    set_capability( "access2", 0 );
+    set_capability( "access", 0 );
     add_shortcut( "tcp" );
     set_callbacks( Open, Close );
 vlc_module_end();
@@ -65,7 +69,7 @@ struct access_sys_t
 };
 
 
-static int Read( access_t *, uint8_t *, int );
+static ssize_t Read( access_t *, uint8_t *, size_t );
 static int Control( access_t *, int, va_list );
 
 /*****************************************************************************
@@ -98,17 +102,10 @@ static int Open( vlc_object_t *p_this )
     *psz_parser++ = '\0';
 
     /* Init p_access */
-    p_access->pf_read = Read;
-    p_access->pf_block = NULL;
-    p_access->pf_control = Control;
-    p_access->pf_seek = NULL;
-    p_access->info.i_update = 0;
-    p_access->info.i_size = 0;
-    p_access->info.i_pos = 0;
-    p_access->info.b_eof = VLC_FALSE;
-    p_access->info.i_title = 0;
-    p_access->info.i_seekpoint = 0;
-    p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
+    access_InitFields( p_access ); \
+    ACCESS_SET_CALLBACKS( Read, NULL, Control, NULL ); \
+    MALLOC_ERR( p_access->p_sys, access_sys_t ); \
+    p_sys = p_access->p_sys; memset( p_sys, 0, sizeof( access_sys_t ) );
 
     p_sys->fd = net_ConnectTCP( p_access, psz_dup, atoi( psz_parser ) );
     free( psz_dup );
@@ -138,9 +135,9 @@ static void Close( vlc_object_t *p_this )
 }
 
 /*****************************************************************************
- * Read: read on a file descriptor, checking b_die periodically
+ * Read: read on a file descriptor
  *****************************************************************************/
-static int Read( access_t *p_access, uint8_t *p_buffer, int i_len )
+static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
 {
     access_sys_t *p_sys = p_access->p_sys;
     int i_read;
@@ -149,9 +146,9 @@ static int Read( access_t *p_access, uint8_t *p_buffer, int i_len )
         return 0;
 
     i_read = net_Read( p_access, p_sys->fd, NULL, p_buffer, i_len,
-                       VLC_FALSE );
+                       false );
     if( i_read == 0 )
-        p_access->info.b_eof = VLC_TRUE;
+        p_access->info.b_eof = true;
     else if( i_read > 0 )
         p_access->info.i_pos += i_read;
 
@@ -163,7 +160,7 @@ static int Read( access_t *p_access, uint8_t *p_buffer, int i_len )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    vlc_bool_t   *pb_bool;
+    bool   *pb_bool;
     int          *pi_int;
     int64_t      *pi_64;
 
@@ -172,16 +169,16 @@ static int Control( access_t *p_access, int i_query, va_list args )
         /* */
         case ACCESS_CAN_SEEK:
         case ACCESS_CAN_FASTSEEK:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_FALSE;
+            pb_bool = (bool*)va_arg( args, bool* );
+            *pb_bool = false;
             break;
         case ACCESS_CAN_PAUSE:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_TRUE;    /* FIXME */
+            pb_bool = (bool*)va_arg( args, bool* );
+            *pb_bool = true;    /* FIXME */
             break;
         case ACCESS_CAN_CONTROL_PACE:
-            pb_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t* );
-            *pb_bool = VLC_TRUE;    /* FIXME */
+            pb_bool = (bool*)va_arg( args, bool* );
+            *pb_bool = true;    /* FIXME */
             break;
 
         /* */
@@ -192,7 +189,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
 
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
-            *pi_64 = (int64_t)var_GetInteger( p_access, "tcp-caching" ) * I64C(1000);
+            *pi_64 = (int64_t)var_GetInteger( p_access, "tcp-caching" ) * INT64_C(1000);
             break;
 
         /* */
@@ -204,6 +201,7 @@ static int Control( access_t *p_access, int i_query, va_list args )
         case ACCESS_SET_TITLE:
         case ACCESS_SET_SEEKPOINT:
         case ACCESS_SET_PRIVATE_ID_STATE:
+        case ACCESS_GET_CONTENT_TYPE:
             return VLC_EGENERIC;
 
         default:

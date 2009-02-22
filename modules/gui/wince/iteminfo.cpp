@@ -2,7 +2,7 @@
  * iteminfo.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 5beaf2d05d68b76bf55d25c62beb396b9fdd939a $
+ * $Id: c0f967f40b38b98cc45b8c4a0c3b53d544301595 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,11 +25,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                            /* strerror() */
-#include <stdio.h>
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 #include "wince.h"
 
@@ -57,12 +58,12 @@ ItemInfoDialog::ItemInfoDialog( intf_thread_t *p_intf, CBaseWindow *p_parent,
 
 /***********************************************************************
 
-FUNCTION: 
+FUNCTION:
   WndProc
 
-PURPOSE: 
+PURPOSE:
   Processes messages sent to the main window.
-  
+ 
 ***********************************************************************/
 LRESULT ItemInfoDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
 {
@@ -73,7 +74,7 @@ LRESULT ItemInfoDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
 
     switch( msg )
     {
-    case WM_INITDIALOG: 
+    case WM_INITDIALOG:
         shidi.dwMask = SHIDIM_FLAGS;
         shidi.dwFlags = SHIDIF_DONEBUTTON | SHIDIF_SIPDOWN |
             SHIDIF_FULLSCREENNOMENUBAR;//SHIDIF_SIZEDLGFULLSCREEN;
@@ -103,9 +104,11 @@ LRESULT ItemInfoDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
                         WS_CHILD | WS_VISIBLE | SS_RIGHT,
                         0, 10, 60, 15, hwnd, NULL, hInst, NULL);
 
-        uri_text = CreateWindow( _T("EDIT"), _FROMMB(p_item->input.psz_uri),
+        char *psz_uri = input_item_GetURI( &p_item->input );
+        uri_text = CreateWindow( _T("EDIT"), _FROMMB(psz_uri),
             WS_CHILD | WS_VISIBLE | WS_BORDER | SS_LEFT | ES_AUTOHSCROLL,
             70, 10 - 3, rcClient.right - 70 - 10, 15 + 6, hwnd, 0, hInst, 0 );
+        free( psz_uri );
 
         /* Name Textbox */
         name_label = CreateWindow( _T("STATIC"), _T("Name:"),
@@ -130,7 +133,7 @@ LRESULT ItemInfoDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
             rcClient.right - 15 - 10, 10 + 4*( 15 + 10 ) + 5, 15, 15,
             hwnd, NULL, hInst, NULL );
 
-        SendMessage( enabled_checkbox, BM_SETCHECK, 
+        SendMessage( enabled_checkbox, BM_SETCHECK,
                      p_item->b_enabled ? BST_CHECKED : BST_UNCHECKED, 0 );
 
         /* Treeview */
@@ -154,7 +157,7 @@ LRESULT ItemInfoDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
         break;
 
     case WM_SETFOCUS:
-        SHSipPreference( hwnd, SIP_DOWN ); 
+        SHSipPreference( hwnd, SIP_DOWN );
         SHFullScreen( hwnd, SHFS_HIDESIPBUTTON );
         break;
 
@@ -178,27 +181,27 @@ LRESULT ItemInfoDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
  *****************************************************************************/
  void ItemInfoDialog::UpdateInfo()
 {
-    TVITEM tvi = {0}; 
-    TVINSERTSTRUCT tvins = {0}; 
-    HTREEITEM hPrev = (HTREEITEM)TVI_FIRST; 
-    HTREEITEM hPrevRootItem = NULL; 
-    HTREEITEM hPrevLev2Item = NULL; 
+    TVITEM tvi = {0};
+    TVINSERTSTRUCT tvins = {0};
+    HTREEITEM hPrev = (HTREEITEM)TVI_FIRST;
+    HTREEITEM hPrevRootItem = NULL;
+    HTREEITEM hPrevLev2Item = NULL;
 
-    tvi.mask = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM; 
+    tvi.mask = TVIF_TEXT | TVIF_IMAGE | TVIF_SELECTEDIMAGE | TVIF_PARAM;
 
-    // Set the text of the item. 
+    // Set the text of the item.
     tvi.pszText = _FROMMB(p_item->input.psz_name);
     tvi.cchTextMax = _tcslen(tvi.pszText);
 
-    // Save the heading level in the item's application-defined data area 
+    // Save the heading level in the item's application-defined data area
     tvi.lParam = (LPARAM)1; // root level
-    tvins.item = tvi; 
-    tvins.hInsertAfter = hPrev; 
-    tvins.hParent = TVI_ROOT; 
+    tvins.item = tvi;
+    tvins.hInsertAfter = hPrev;
+    tvins.hParent = TVI_ROOT;
 
-    // Add the item to the tree-view control. 
+    // Add the item to the tree-view control.
     hPrev = (HTREEITEM)TreeView_InsertItem( info_tree, &tvins );
-    hPrevRootItem = hPrev; 
+    hPrevRootItem = hPrev;
 
     /* Rebuild the tree */
     vlc_mutex_lock( &p_item->input.lock );
@@ -206,17 +209,17 @@ LRESULT ItemInfoDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
     {
         info_category_t *p_cat = p_item->input.pp_categories[i];
 
-        // Set the text of the item. 
+        // Set the text of the item.
         tvi.pszText = _FROMMB( p_item->input.psz_name );
         tvi.cchTextMax = _tcslen( tvi.pszText );
-        
+ 
         // Save the heading level in the item's application-defined data area
         tvi.lParam = (LPARAM)2; // level 2
-        tvins.item = tvi; 
-        tvins.hInsertAfter = hPrev; 
+        tvins.item = tvi;
+        tvins.hInsertAfter = hPrev;
         tvins.hParent = hPrevRootItem;
 
-        // Add the item to the tree-view control. 
+        // Add the item to the tree-view control.
         hPrev = (HTREEITEM)TreeView_InsertItem( info_tree, &tvins );
 
         hPrevLev2Item = hPrev;
@@ -225,18 +228,18 @@ LRESULT ItemInfoDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
         {
             info_t *p_info = p_cat->pp_infos[j];
 
-            // Set the text of the item. 
+            // Set the text of the item.
             string szAnsi = (string)p_info->psz_name;
             szAnsi += ": ";
             szAnsi += p_info->psz_value;
             tvi.pszText = (TCHAR *)_FROMMB( szAnsi.c_str() );
             tvi.cchTextMax = _tcslen( tvi.pszText );
             tvi.lParam = (LPARAM)3; // level 3
-            tvins.item = tvi; 
-            tvins.hInsertAfter = hPrev; 
+            tvins.item = tvi;
+            tvins.hInsertAfter = hPrev;
             tvins.hParent = hPrevLev2Item;
-    
-            // Add the item to the tree-view control. 
+ 
+            // Add the item to the tree-view control.
             hPrev = (HTREEITEM)TreeView_InsertItem( info_tree, &tvins );
         }
 
@@ -253,36 +256,27 @@ LRESULT ItemInfoDialog::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
  *****************************************************************************/
 void ItemInfoDialog::OnOk()
 {
-    int b_state = VLC_FALSE;
-
-    vlc_mutex_lock( &p_item->input.lock );
+    int b_state = false;
 
     TCHAR psz_name[MAX_PATH];
     Edit_GetText( name_text, psz_name, MAX_PATH );
-    if( p_item->input.psz_name ) free( p_item->input.psz_name );
-    p_item->input.psz_name = strdup( _TOMB(psz_name) );
+    input_item_SetName( &p_item->input, _TOMB( psz_name ) );
 
     TCHAR psz_uri[MAX_PATH];
     Edit_GetText( uri_text, psz_uri, MAX_PATH );
-    if( p_item->input.psz_uri ) free( p_item->input.psz_uri );
-    p_item->input.psz_uri = strdup( _TOMB(psz_uri) );
+    input_item_SetURI( &p_item->input, _TOMB(psz_uri) );
 
-    vlc_bool_t b_old_enabled = p_item->b_enabled;
+    vlc_mutex_lock( &p_item->input.lock );
+    bool b_old_enabled = p_item->b_enabled;
 
-    playlist_t * p_playlist = (playlist_t *)
-        vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+    playlist_t * p_playlist = pl_Yield( p_intf );
     if( p_playlist != NULL )
     {
         b_state = SendMessage( enabled_checkbox, BM_GETCHECK, 0, 0 );
-        if( b_old_enabled == VLC_FALSE && (b_state & BST_CHECKED) )
-            p_playlist->i_enabled ++;
-        else if( b_old_enabled == VLC_TRUE && (b_state & BST_UNCHECKED) )
-            p_playlist->i_enabled --;
-
-        vlc_object_release( p_playlist );
+        pl_Release( p_intf );
     }
 
-    p_item->b_enabled = (b_state & BST_CHECKED) ? VLC_TRUE : VLC_FALSE ;
+    p_item->b_enabled = (b_state & BST_CHECKED) ? true : false ;
 
     vlc_mutex_unlock( &p_item->input.lock );
 }

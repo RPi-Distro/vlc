@@ -1,7 +1,7 @@
 /*****************************************************************************
  * acl.c:
  *****************************************************************************
- * Copyright (C) 2005 Rémi Denis-Courmont
+ * Copyright © 2005-2007 Rémi Denis-Courmont
  * $Id$
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
@@ -24,17 +24,19 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "vlc_acl.h"
+#include <vlc_common.h>
+
+#include <ctype.h>
+#include <vlc_acl.h>
 
 #include <errno.h>
 
-#include "network.h"
-#include "charset.h"
+#include <vlc_network.h>
+#include <vlc_charset.h>
 
 /* FIXME: rwlock on acl, but libvlc doesn't implement rwlock */
 typedef struct vlc_acl_entry_t
@@ -42,7 +44,7 @@ typedef struct vlc_acl_entry_t
     uint8_t    host[17];
     uint8_t    i_bytes_match;
     uint8_t    i_bits_mask;
-    vlc_bool_t b_allow;
+    bool b_allow;
 } vlc_acl_entry_t;
 
 struct vlc_acl_t
@@ -50,7 +52,7 @@ struct vlc_acl_t
     vlc_object_t    *p_owner;
     unsigned         i_size;
     vlc_acl_entry_t *p_entries;
-    vlc_bool_t       b_allow_default;
+    bool       b_allow_default;
 };
 
 static int ACL_Resolve( vlc_object_t *p_this, uint8_t *p_bytes,
@@ -152,7 +154,7 @@ int ACL_Check( vlc_acl_t *p_acl, const char *psz_ip )
  * Items are always matched in the same order as they are added.
  */
 int ACL_AddNet( vlc_acl_t *p_acl, const char *psz_ip, int i_len,
-                vlc_bool_t b_allow )
+                bool b_allow )
 {
     vlc_acl_entry_t *p_ent;
     unsigned i_size;
@@ -203,12 +205,12 @@ int ACL_AddNet( vlc_acl_t *p_acl, const char *psz_ip, int i_len,
 /**
  * Creates an empty ACL.
  *
- * @param b_allow whether to grant (VLC_TRUE) or deny (VLC_FALSE) access
+ * @param b_allow whether to grant (true) or deny (false) access
  * by default (ie if none of the ACL entries matched).
  *
  * @return an ACL object. NULL in case of error.
  */
-vlc_acl_t *__ACL_Create( vlc_object_t *p_this, vlc_bool_t b_allow )
+vlc_acl_t *__ACL_Create( vlc_object_t *p_this, bool b_allow )
 {
     vlc_acl_t *p_acl;
 
@@ -286,9 +288,6 @@ void ACL_Destroy( vlc_acl_t *p_acl )
     }
 }
 
-#ifndef isblank 
-#   define isblank(c) ((c) == ' ' || (c) == '\t')
-#endif
 
 /**
  * Reads ACL entries from a file.
@@ -319,8 +318,7 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
         {
             if( ferror( file ) )
             {
-                msg_Err( p_acl->p_owner, "error reading %s : %s\n", psz_path,
-                        strerror( errno ) );
+                msg_Err( p_acl->p_owner, "error reading %s : %m", psz_path );
                 goto error;
             }
             continue;
@@ -339,16 +337,18 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
         ptr = strchr( psz_ip, '\n' );
         if( ptr == NULL )
         {
-            msg_Warn( p_acl->p_owner, "skipping overly long line in %s\n",
+            msg_Warn( p_acl->p_owner, "skipping overly long line in %s",
                       psz_path);
             do
             {
-                fgets( line, sizeof( line ), file );
-                if( ferror( file ) || feof( file ) )
+                if( fgets( line, sizeof( line ), file ) == NULL )
                 {
-                    msg_Err( p_acl->p_owner, "error reading %s : %s\n",
-                             psz_path, strerror( errno ) );
-                    goto error;
+                     if( ferror( file ) )
+                     {
+                         msg_Err( p_acl->p_owner, "error reading %s : %m",
+                                  psz_path );
+                     }
+                     goto error;
                 }
             }
             while( strchr( line, '\n' ) == NULL);
@@ -373,11 +373,11 @@ int ACL_LoadFile( vlc_acl_t *p_acl, const char *psz_path )
             *ptr++ = '\0'; /* separate address from mask length */
 
         if( (ptr != NULL)
-            ? ACL_AddNet( p_acl, psz_ip, atoi( ptr ), VLC_TRUE ) 
-            : ACL_AddHost( p_acl, psz_ip, VLC_TRUE ) )
+            ? ACL_AddNet( p_acl, psz_ip, atoi( ptr ), true )
+            : ACL_AddHost( p_acl, psz_ip, true ) )
         {
             msg_Err( p_acl->p_owner, "cannot add ACL from %s", psz_path );
-            goto error;
+            continue;
         }
     }
 

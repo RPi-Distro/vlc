@@ -3,7 +3,7 @@
  *          (http://www.bbc.co.uk/rd/projects/dirac/index.shtml)
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 2028775388d37fad7a9d01f0000f7b9235f4d94c $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -25,9 +25,15 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
-#include <vlc/sout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_codec.h>
+#include <vlc_sout.h>
+#include <vlc_vout.h>
 
 #include <libdirac_decoder/dirac_parser.h>
 #include <libdirac_encoder/dirac_encoder.h>
@@ -56,7 +62,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict );
 
 #define ENC_CFG_PREFIX "sout-dirac-"
 
-static const char *ppsz_enc_options[] = {
+static const char *const ppsz_enc_options[] = {
     "quality", NULL
 };
 
@@ -70,18 +76,17 @@ static const char *ppsz_enc_options[] = {
 vlc_module_begin();
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_description( _("Dirac video decoder") );
+    set_description( N_("Dirac video decoder") );
     set_capability( "decoder", 100 );
     set_callbacks( OpenDecoder, CloseDecoder );
     add_shortcut( "dirac" );
 
     add_submodule();
-    set_description( _("Dirac video encoder") );
+    set_description( N_("Dirac video encoder") );
     set_capability( "encoder", 100 );
     set_callbacks( OpenEncoder, CloseEncoder );
-    add_shortcut( "dirac" );
     add_float( ENC_CFG_PREFIX "quality", 7.0, NULL, ENC_QUALITY_TEXT,
-               ENC_QUALITY_LONGTEXT, VLC_FALSE );
+               ENC_QUALITY_LONGTEXT, false );
 
 vlc_module_end();
 
@@ -105,10 +110,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     p_sys->p_dirac = p_dirac;
 
@@ -129,7 +131,7 @@ static void FreeFrameBuffer( dirac_decoder_t *p_dirac )
         int i;
         for( i = 0; i < 3; i++ )
         {
-            if( p_dirac->fbuf->buf[i] ) free( p_dirac->fbuf->buf[i] );
+            free( p_dirac->fbuf->buf[i] );
             p_dirac->fbuf->buf[i] = 0;
         }
     }
@@ -144,32 +146,34 @@ static picture_t *GetNewPicture( decoder_t *p_dec )
     picture_t *p_pic;
     int i_plane;
 
-    p_dec->fmt_out.i_codec =
-        p_sys->p_dirac->seq_params.chroma == format411 ?
-        VLC_FOURCC('I','4','1','1') :
-        p_sys->p_dirac->seq_params.chroma == format420 ?
-        VLC_FOURCC('I','4','2','0') :
-        p_sys->p_dirac->seq_params.chroma == format422 ?
-        VLC_FOURCC('I','4','2','2') : 0;
+    switch( p_sys->p_dirac->src_params.chroma )
+    {
+    case format420: p_dec->fmt_out.i_codec = VLC_FOURCC('I','4','2','0'); break;
+    case format422: p_dec->fmt_out.i_codec = VLC_FOURCC('I','4','2','2'); break;
+    case format444: p_dec->fmt_out.i_codec = VLC_FOURCC('I','4','4','4'); break;    // XXX 0.6 ?
+    default:
+        p_dec->fmt_out.i_codec = 0;
+        break;
+    }
 
     p_dec->fmt_out.video.i_visible_width =
-    p_dec->fmt_out.video.i_width = p_sys->p_dirac->seq_params.width;
+    p_dec->fmt_out.video.i_width = p_sys->p_dirac->src_params.width;
     p_dec->fmt_out.video.i_visible_height =
-    p_dec->fmt_out.video.i_height = p_sys->p_dirac->seq_params.height;
+    p_dec->fmt_out.video.i_height = p_sys->p_dirac->src_params.height;
     p_dec->fmt_out.video.i_aspect = VOUT_ASPECT_FACTOR * 4 / 3;
 
     p_dec->fmt_out.video.i_frame_rate =
-        p_sys->p_dirac->seq_params.frame_rate.numerator;
+        p_sys->p_dirac->src_params.frame_rate.numerator;
     p_dec->fmt_out.video.i_frame_rate_base =
-        p_sys->p_dirac->seq_params.frame_rate.denominator;
+        p_sys->p_dirac->src_params.frame_rate.denominator;
 
     /* Get a new picture */
     p_pic = p_dec->pf_vout_buffer_new( p_dec );
 
     if( p_pic == NULL ) return NULL;
+    p_pic->b_progressive = !p_sys->p_dirac->src_params.source_sampling;
+    p_pic->b_top_field_first = p_sys->p_dirac->src_params.topfieldfirst;
 
-    p_pic->b_progressive = !p_sys->p_dirac->seq_params.interlace;
-    p_pic->b_top_field_first = p_sys->p_dirac->seq_params.topfieldfirst;
     p_pic->i_nb_fields = 2;
 
     /* Copy picture stride by stride */
@@ -184,7 +188,7 @@ static picture_t *GetNewPicture( decoder_t *p_dec )
 
         for( i_line = 0; i_line < p_pic->p[i_plane].i_visible_lines; i_line++ )
         {
-            p_dec->p_vlc->pf_memcpy( p_dst, p_src, i_width );
+            vlc_memcpy( p_dst, p_src, i_width );
             p_src += i_width;
             p_dst += i_dst_stride;
         }
@@ -248,19 +252,19 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             uint8_t *buf[3];
 
             msg_Dbg( p_dec, "%dx%d, chroma %i, %f fps",
-                     p_sys->p_dirac->seq_params.width,
-                     p_sys->p_dirac->seq_params.height,
-                     p_sys->p_dirac->seq_params.chroma,
-                     (float)p_sys->p_dirac->seq_params.frame_rate.numerator/
-                     p_sys->p_dirac->seq_params.frame_rate.denominator );
+                     p_sys->p_dirac->src_params.width,
+                     p_sys->p_dirac->src_params.height,
+                     p_sys->p_dirac->src_params.chroma,
+                     (float)p_sys->p_dirac->src_params.frame_rate.numerator/
+                     p_sys->p_dirac->src_params.frame_rate.denominator );
 
             FreeFrameBuffer( p_sys->p_dirac );
-            buf[0] = malloc( p_sys->p_dirac->seq_params.width *
-                             p_sys->p_dirac->seq_params.height );
-            buf[1] = malloc( p_sys->p_dirac->seq_params.chroma_width *
-                             p_sys->p_dirac->seq_params.chroma_height );
-            buf[2] = malloc( p_sys->p_dirac->seq_params.chroma_width *
-                             p_sys->p_dirac->seq_params.chroma_height );
+            buf[0] = malloc( p_sys->p_dirac->src_params.width *
+                             p_sys->p_dirac->src_params.height );
+            buf[1] = malloc( p_sys->p_dirac->src_params.chroma_width *
+                             p_sys->p_dirac->src_params.chroma_height );
+            buf[2] = malloc( p_sys->p_dirac->src_params.chroma_width *
+                             p_sys->p_dirac->src_params.chroma_height );
 
             dirac_set_buf( p_sys->p_dirac, buf, NULL );
             break;
@@ -271,16 +275,9 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             FreeFrameBuffer( p_sys->p_dirac );
             break;
 
-        case STATE_PICTURE_START:
-            msg_Dbg( p_dec, "PICTURE_START: frame_type=%i frame_num=%d",
-                     p_sys->p_dirac->frame_params.ftype,
-                     p_sys->p_dirac->frame_params.fnum );
-            break;
-
         case STATE_PICTURE_AVAIL:
-            msg_Dbg( p_dec, "PICTURE_AVAI : frame_type=%i frame_num=%d",
-                     p_sys->p_dirac->frame_params.ftype,
-                     p_sys->p_dirac->frame_params.fnum );
+            msg_Dbg( p_dec, "PICTURE_AVAIL : frame_num=%d",
+                     p_sys->p_dirac->frame_num );
 
             /* Picture available for display */
             p_pic = GetNewPicture( p_dec );
@@ -338,10 +335,7 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_sys = (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_enc, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
     memset( p_sys, 0, sizeof(encoder_sys_t) );
     p_enc->p_sys = p_sys;
 
@@ -350,22 +344,20 @@ static int OpenEncoder( vlc_object_t *p_this )
     p_enc->fmt_in.video.i_bits_per_pixel = 12;
     p_enc->fmt_out.i_codec = VLC_FOURCC('d','r','a','c');
 
-    sout_CfgParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
+    config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
 
-    /* Initialse the encoder context with the presets for SD576 - Standard
-     * Definition Digital (some parameters will be overwritten later on) */
-    dirac_encoder_context_init( &p_sys->ctx, SD576 );
-
-    /* Override parameters if required */
-    p_sys->ctx.seq_params.width = p_enc->fmt_in.video.i_width;
-    p_sys->ctx.seq_params.height = p_enc->fmt_in.video.i_height;
-    p_sys->ctx.seq_params.chroma = format420;
-    p_sys->ctx.seq_params.frame_rate.numerator =
+    dirac_encoder_context_init( &p_sys->ctx, VIDEO_FORMAT_CUSTOM );
+    /* */
+    p_sys->ctx.src_params.width = p_enc->fmt_in.video.i_width;
+    p_sys->ctx.src_params.height = p_enc->fmt_in.video.i_height;
+    p_sys->ctx.src_params.chroma = format420;
+    /* */
+    p_sys->ctx.src_params.frame_rate.numerator =
         p_enc->fmt_in.video.i_frame_rate;
-    p_sys->ctx.seq_params.frame_rate.denominator =
+    p_sys->ctx.src_params.frame_rate.denominator =
         p_enc->fmt_in.video.i_frame_rate_base;
-    p_sys->ctx.seq_params.interlace = 0;
-    p_sys->ctx.seq_params.topfieldfirst = 0;
+    p_sys->ctx.src_params.source_sampling = 0;
+    p_sys->ctx.src_params.topfieldfirst = 0;
 
     var_Get( p_enc, ENC_CFG_PREFIX "quality", &val );
     f_quality = val.f_float;
@@ -406,7 +398,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
 
         for( i_line = 0; i_line < p_pic->p[i_plane].i_visible_lines; i_line++ )
         {
-            p_enc->p_vlc->pf_memcpy( p_dst, p_src, i_width );
+            vlc_memcpy( p_dst, p_src, i_width );
             p_dst += i_width;
             p_src += i_src_stride;
         }
@@ -448,7 +440,7 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pic )
             }
             if( p_sys->p_dirac->decoded_frame_avail )
             {
-                //locally decoded frame is available in 
+                //locally decoded frame is available in
                 //encoder->dec_buf
                 //locally decoded frame parameters available
                 //in encoder->dec_fparams
@@ -477,7 +469,7 @@ static void CloseEncoder( vlc_object_t *p_this )
     encoder_t *p_enc = (encoder_t *)p_this;
     encoder_sys_t *p_sys = p_enc->p_sys;
 
-    msg_Dbg( p_enc, "resulting bit-rate: %i bits/sec",
+    msg_Dbg( p_enc, "resulting bit-rate: %lld bits/sec",
              p_sys->p_dirac->enc_seqstats.bit_rate );
 
     /* Free the encoder resources */

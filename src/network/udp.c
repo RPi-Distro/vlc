@@ -2,7 +2,9 @@
  * udp.c:
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: 92a2c0d23411e1bc6539758de8a0bacbd6a867f1 $
+ * Copyright © 2006-2007 Rémi Denis-Courmont
+ *
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -25,8 +27,11 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #include <errno.h>
 
@@ -34,7 +39,7 @@
 #    include <sys/time.h>
 #endif
 
-#include "network.h"
+#include <vlc_network.h>
 
 #ifdef WIN32
 #   if defined(UNDER_CE)
@@ -52,6 +57,13 @@
 #   endif
 #endif
 
+#ifdef HAVE_LINUX_DCCP_H
+# include <linux/dccp.h>
+# ifndef SOCK_DCCP /* provisional API */
+#  define SOCK_DCCP 6
+# endif
+#endif
+
 #ifndef SOL_IP
 # define SOL_IP IPPROTO_IP
 #endif
@@ -59,29 +71,158 @@
 # define SOL_IPV6 IPPROTO_IPV6
 #endif
 #ifndef IPPROTO_IPV6
-# define IPPROTO_IPV6 41
+# define IPPROTO_IPV6 41 /* IANA */
+#endif
+#ifndef SOL_DCCP
+# define SOL_DCCP IPPROTO_DCCP
+#endif
+#ifndef IPPROTO_DCCP
+# define IPPROTO_DCCP 33 /* IANA */
+#endif
+#ifndef SOL_UDPLITE
+# define SOL_UDPLITE IPPROTO_UDPLITE
+#endif
+#ifndef IPPROTO_UDPLITE
+# define IPPROTO_UDPLITE 136 /* IANA */
+#endif
+
+#if defined (HAVE_NETINET_UDPLITE_H)
+# include <netinet/udplite.h>
+#elif defined (__linux__)
+/* still missing from glibc 2.6 */
+# define UDPLITE_SEND_CSCOV     10
+# define UDPLITE_RECV_CSCOV     11
 #endif
 
 extern int net_Socket( vlc_object_t *p_this, int i_family, int i_socktype,
                        int i_protocol );
 
+/* */
+static int net_SetupDgramSocket( vlc_object_t *p_obj, int fd, const struct addrinfo *ptr )
+{
+#ifdef SO_REUSEPORT
+    setsockopt (fd, SOL_SOCKET, SO_REUSEPORT, &(int){ 1 }, sizeof (int));
+#endif
+
+#ifdef SO_RCVBUF
+    /* Increase the receive buffer size to 1/2MB (8Mb/s during 1/2s)
+     * to avoid packet loss caused in case of scheduling hiccups */
+    setsockopt (fd, SOL_SOCKET, SO_RCVBUF,
+                (void *)&(int){ 0x80000 }, sizeof (int));
+    setsockopt (fd, SOL_SOCKET, SO_SNDBUF,
+                (void *)&(int){ 0x80000 }, sizeof (int));
+#endif
+
+#if defined (WIN32) || defined (UNDER_CE)
+    if (net_SockAddrIsMulticast (ptr->ai_addr, ptr->ai_addrlen)
+     && (sizeof (struct sockaddr_storage) >= ptr->ai_addrlen))
+    {
+        // This works for IPv4 too - don't worry!
+        struct sockaddr_in6 dumb =
+        {
+            .sin6_family = ptr->ai_addr->sa_family,
+            .sin6_port =  ((struct sockaddr_in *)(ptr->ai_addr))->sin_port
+        };
+
+        bind (fd, (struct sockaddr *)&dumb, ptr->ai_addrlen);
+    }
+    else
+#endif
+    if (bind (fd, ptr->ai_addr, ptr->ai_addrlen))
+    {
+        msg_Err( p_obj, "socket bind error (%m)" );
+        net_Close (fd);
+        return -1;
+    }
+    return fd;
+}
+
+/* */
+static int net_ListenSingle (vlc_object_t *obj, const char *host, int port,
+                             int family, int protocol)
+{
+    struct addrinfo hints, *res;
+
+    memset (&hints, 0, sizeof( hints ));
+    hints.ai_family = family;
+    hints.ai_socktype = SOCK_DGRAM;
+    hints.ai_flags = AI_PASSIVE;
+
+    if (host && !*host)
+        host = NULL;
+
+    msg_Dbg (obj, "net: opening %s datagram port %d", host ?: "any", port);
+
+    int val = vlc_getaddrinfo (obj, host, port, &hints, &res);
+    if (val)
+    {
+        msg_Err (obj, "Cannot resolve %s port %d : %s", host, port,
+                 vlc_gai_strerror (val));
+        return -1;
+    }
+
+    val = -1;
+
+    for (const struct addrinfo *ptr = res; ptr != NULL; ptr = ptr->ai_next)
+    {
+        int fd = net_Socket (obj, ptr->ai_family, ptr->ai_socktype,
+                             protocol ?: ptr->ai_protocol);
+        if (fd == -1)
+        {
+            msg_Dbg (obj, "socket error: %m");
+            continue;
+        }
+
+        if (ptr->ai_next != NULL)
+        {
+#ifdef IPV6_V6ONLY
+            if ((ptr->ai_family != AF_INET6)
+             || setsockopt (fd, SOL_IPV6, IPV6_V6ONLY, &(int){ 0 },
+                            sizeof (int)))
+#endif
+            {
+                msg_Err (obj, "Multiple network protocols present");
+                msg_Err (obj, "Please select network protocol manually");
+            }
+        }
+
+        fd = net_SetupDgramSocket( obj, fd, ptr );
+        if( fd == -1 )
+            continue;
+
+        if (net_SockAddrIsMulticast (ptr->ai_addr, ptr->ai_addrlen)
+         && net_Subscribe (obj, fd, ptr->ai_addr, ptr->ai_addrlen))
+        {
+            net_Close (fd);
+            continue;
+        }
+
+        val = fd;
+        break;
+    }
+
+    vlc_freeaddrinfo (res);
+    return val;
+}
+
 
 static int net_SetMcastHopLimit( vlc_object_t *p_this,
                                  int fd, int family, int hlim )
 {
-#ifndef SYS_BEOS
     int proto, cmd;
 
-    /* There is some confusion in the world whether IP_MULTICAST_TTL 
+    /* There is some confusion in the world whether IP_MULTICAST_TTL
      * takes a byte or an int as an argument.
      * BSD seems to indicate byte so we are going with that and use
      * int as a fallback to be safe */
     switch( family )
     {
+#ifdef IP_MULTICAST_TTL
         case AF_INET:
             proto = SOL_IP;
             cmd = IP_MULTICAST_TTL;
             break;
+#endif
 
 #ifdef IPV6_MULTICAST_HOPS
         case AF_INET6:
@@ -91,7 +232,8 @@ static int net_SetMcastHopLimit( vlc_object_t *p_this,
 #endif
 
         default:
-            msg_Warn( p_this, "%s", strerror( EAFNOSUPPORT ) );
+            errno = EAFNOSUPPORT;
+            msg_Warn( p_this, "%m" );
             return VLC_EGENERIC;
     }
 
@@ -104,83 +246,401 @@ static int net_SetMcastHopLimit( vlc_object_t *p_this,
         if( setsockopt( fd, proto, cmd, &buf, sizeof( buf ) ) )
             return VLC_EGENERIC;
     }
-#endif
+
     return VLC_SUCCESS;
 }
 
 
-static int net_SetMcastIface( vlc_object_t *p_this,
-                              int fd, int family, const char *str )
+static int net_SetMcastOutIface (int fd, int family, int scope)
 {
-    switch( family )
+    switch (family)
     {
-#ifndef SYS_BEOS
-        case AF_INET:
-        {
-            struct in_addr addr;
-
-            if( inet_pton( AF_INET, str, &addr) <= 0 )
-            {
-                msg_Err( p_this, "Invalid multicast interface %s", str );
-                return VLC_EGENERIC;
-            }
-
-            if( setsockopt( fd, SOL_IP, IP_MULTICAST_IF, &addr,
-                            sizeof( addr ) ) < 0 )
-            {
-                msg_Err( p_this, "Cannot use %s as multicast interface: %s",
-                         str, strerror(errno) );
-                return VLC_EGENERIC;
-            }
-            break;
-        }
-#endif /* SYS_BEOS */
-
 #ifdef IPV6_MULTICAST_IF
         case AF_INET6:
-        {
-            int scope = if_nametoindex( str );
-
-            if( scope == 0 )
-            {
-                msg_Err( p_this, "Invalid multicast interface %s", str );
-                return VLC_EGENERIC;
-            }
-
-            if( setsockopt( fd, SOL_IPV6, IPV6_MULTICAST_IF,
-                            &scope, sizeof( scope ) ) < 0 )
-            {
-                msg_Err( p_this, "Cannot use %s as multicast interface: %s",
-                         str, strerror( errno ) );
-                return VLC_EGENERIC;
-            }
-            break;
-        }
+            return setsockopt (fd, SOL_IPV6, IPV6_MULTICAST_IF,
+                               &scope, sizeof (scope));
 #endif
 
-        default:
-            msg_Warn( p_this, "%s", strerror( EAFNOSUPPORT ) );
-            return VLC_EGENERIC;
+#ifdef __linux__
+        case AF_INET:
+        {
+            struct ip_mreqn req = { .imr_ifindex = scope };
+
+            return setsockopt (fd, SOL_IP, IP_MULTICAST_IF, &req,
+                               sizeof (req));
+        }
+#endif
     }
 
-    return VLC_SUCCESS;
+    errno = EAFNOSUPPORT;
+    return -1;
 }
 
+
+static inline int net_SetMcastOutIPv4 (int fd, struct in_addr ipv4)
+{
+#ifdef IP_MULTICAST_IF
+    return setsockopt( fd, SOL_IP, IP_MULTICAST_IF, &ipv4, sizeof (ipv4));
+#else
+    errno = EAFNOSUPPORT;
+    return -1;
+#endif
+}
+
+
+static int net_SetMcastOut (vlc_object_t *p_this, int fd, int family,
+                            const char *iface, const char *addr)
+{
+    if (iface != NULL)
+    {
+        int scope = if_nametoindex (iface);
+        if (scope == 0)
+        {
+            msg_Err (p_this, "invalid multicast interface: %s", iface);
+            return -1;
+        }
+
+        if (net_SetMcastOutIface (fd, family, scope) == 0)
+            return 0;
+
+        msg_Err (p_this, "%s: %m", iface);
+    }
+
+    if (addr != NULL)
+    {
+        if (family == AF_INET)
+        {
+            struct in_addr ipv4;
+            if (inet_pton (AF_INET, addr, &ipv4) <= 0)
+            {
+                msg_Err (p_this, "invalid IPv4 address for multicast: %s",
+                         addr);
+                return -1;
+            }
+
+            if (net_SetMcastOutIPv4 (fd, ipv4) == 0)
+                return 0;
+
+            msg_Err (p_this, "%s: %m", addr);
+        }
+    }
+
+    return -1;
+}
+
+
+/**
+ * Old-style any-source multicast join.
+ * In use on Windows XP/2003 and older.
+ */
+static int
+net_IPv4Join (vlc_object_t *obj, int fd,
+              const struct sockaddr_in *src, const struct sockaddr_in *grp)
+{
+#ifdef IP_ADD_MEMBERSHIP
+    union
+    {
+        struct ip_mreq gr4;
+# ifdef IP_ADD_SOURCE_MEMBERSHIP
+        struct ip_mreq_source gsr4;
+# endif
+    } opt;
+    int cmd;
+    struct in_addr id = { .s_addr = INADDR_ANY };
+    socklen_t optlen;
+
+    /* Multicast interface IPv4 address */
+    char *iface = var_CreateGetNonEmptyString (obj, "miface-addr");
+    if ((iface != NULL)
+     && (inet_pton (AF_INET, iface, &id) <= 0))
+    {
+        msg_Err (obj, "invalid multicast interface address %s", iface);
+        free (iface);
+        goto error;
+    }
+    free (iface);
+
+    memset (&opt, 0, sizeof (opt));
+    if (src != NULL)
+    {
+# ifdef IP_ADD_SOURCE_MEMBERSHIP
+        cmd = IP_ADD_SOURCE_MEMBERSHIP;
+        opt.gsr4.imr_multiaddr = grp->sin_addr;
+        opt.gsr4.imr_sourceaddr = src->sin_addr;
+        opt.gsr4.imr_interface = id;
+        optlen = sizeof (opt.gsr4);
+# else
+        errno = ENOSYS;
+        goto error;
+# endif
+    }
+    else
+    {
+        cmd = IP_ADD_MEMBERSHIP;
+        opt.gr4.imr_multiaddr = grp->sin_addr;
+        opt.gr4.imr_interface = id;
+        optlen = sizeof (opt.gr4);
+    }
+
+    msg_Dbg (obj, "IP_ADD_%sMEMBERSHIP multicast request",
+             (src != NULL) ? "SOURCE_" : "");
+
+    if (setsockopt (fd, SOL_IP, cmd, &opt, optlen) == 0)
+        return 0;
+
+error:
+#endif
+
+    msg_Err (obj, "cannot join IPv4 multicast group (%m)");
+    return -1;
+}
+
+
+static int
+net_IPv6Join (vlc_object_t *obj, int fd, const struct sockaddr_in6 *src)
+{
+#ifdef IPV6_JOIN_GROUP
+    struct ipv6_mreq gr6;
+    memset (&gr6, 0, sizeof (gr6));
+    gr6.ipv6mr_interface = src->sin6_scope_id;
+    memcpy (&gr6.ipv6mr_multiaddr, &src->sin6_addr, 16);
+
+    msg_Dbg (obj, "IPV6_JOIN_GROUP multicast request");
+
+    if (!setsockopt (fd, SOL_IPV6, IPV6_JOIN_GROUP, &gr6, sizeof (gr6)))
+        return 0;
+#else
+    errno = ENOSYS;
+#endif
+
+    msg_Err (obj, "cannot join IPv6 any-source multicast group (%m)");
+    return -1;
+}
+
+
+#if defined (WIN32) && !defined (MCAST_JOIN_SOURCE_GROUP)
+/*
+ * I hate manual definitions: Error-prone. Portability hell.
+ * Developers shall use UP-TO-DATE compilers. Full point.
+ * If you remove the warning, you remove the whole ifndef.
+ */
+#  warning Your C headers are out-of-date. Please update.
+
+#  define MCAST_JOIN_GROUP 41
+struct group_req
+{
+    ULONG gr_interface;
+    struct sockaddr_storage gr_group;
+};
+
+#  define MCAST_JOIN_SOURCE_GROUP 45 /* from <ws2ipdef.h> */
+struct group_source_req
+{
+    uint32_t gsr_interface;
+    struct sockaddr_storage gsr_group;
+    struct sockaddr_storage gsr_source;
+};
+#endif
+
+/**
+ * IP-agnostic multicast join,
+ * with fallback to old APIs, and fallback from SSM to ASM.
+ */
+static int
+net_SourceSubscribe (vlc_object_t *obj, int fd,
+                     const struct sockaddr *src, socklen_t srclen,
+                     const struct sockaddr *grp, socklen_t grplen)
+{
+    int level, iid = 0;
+
+    char *iface = var_CreateGetNonEmptyString (obj, "miface");
+    if (iface != NULL)
+    {
+        iid = if_nametoindex (iface);
+        if (iid == 0)
+        {
+            msg_Err (obj, "invalid multicast interface: %s", iface);
+            free (iface);
+            return -1;
+        }
+        free (iface);
+    }
+
+    switch (grp->sa_family)
+    {
+#ifdef AF_INET6
+        case AF_INET6:
+            level = SOL_IPV6;
+            if (((const struct sockaddr_in6 *)grp)->sin6_scope_id)
+                iid = ((const struct sockaddr_in6 *)grp)->sin6_scope_id;
+            break;
+#endif
+
+        case AF_INET:
+            level = SOL_IP;
+            break;
+
+        default:
+            errno = EAFNOSUPPORT;
+            return -1;
+    }
+
+    if (src != NULL)
+        switch (src->sa_family)
+        {
+#ifdef AF_INET6
+            case AF_INET6:
+                if (memcmp (&((const struct sockaddr_in6 *)src)->sin6_addr,
+                            &in6addr_any, sizeof (in6addr_any)) == 0)
+                    src = NULL;
+            break;
+#endif
+
+            case AF_INET:
+                if (((const struct sockaddr_in *)src)->sin_addr.s_addr
+                     == INADDR_ANY)
+                    src = NULL;
+                break;
+        }
+
+
+    /* Agnostic ASM/SSM multicast join */
+#ifdef MCAST_JOIN_SOURCE_GROUP
+    union
+    {
+        struct group_req gr;
+        struct group_source_req gsr;
+    } opt;
+    socklen_t optlen;
+
+    memset (&opt, 0, sizeof (opt));
+
+    if (src != NULL)
+    {
+        if ((grplen > sizeof (opt.gsr.gsr_group))
+         || (srclen > sizeof (opt.gsr.gsr_source)))
+            return -1;
+
+        opt.gsr.gsr_interface = iid;
+        memcpy (&opt.gsr.gsr_source, src, srclen);
+        memcpy (&opt.gsr.gsr_group,  grp, grplen);
+        optlen = sizeof (opt.gsr);
+    }
+    else
+    {
+        if (grplen > sizeof (opt.gr.gr_group))
+            return -1;
+
+        opt.gr.gr_interface = iid;
+        memcpy (&opt.gr.gr_group, grp, grplen);
+        optlen = sizeof (opt.gr);
+    }
+
+    msg_Dbg (obj, "Multicast %sgroup join request", src ? "source " : "");
+
+    if (setsockopt (fd, level,
+                    src ? MCAST_JOIN_SOURCE_GROUP : MCAST_JOIN_GROUP,
+                    (void *)&opt, optlen) == 0)
+        return 0;
+#endif
+
+    /* Fallback to IPv-specific APIs */
+    if ((src != NULL) && (src->sa_family != grp->sa_family))
+        return -1;
+
+    switch (grp->sa_family)
+    {
+        case AF_INET:
+            if ((grplen < sizeof (struct sockaddr_in))
+             || ((src != NULL) && (srclen < sizeof (struct sockaddr_in))))
+                return -1;
+
+            if (net_IPv4Join (obj, fd, (const struct sockaddr_in *)src,
+                              (const struct sockaddr_in *)grp) == 0)
+                return 0;
+            break;
+
+#ifdef AF_INET6
+        case AF_INET6:
+            if ((grplen < sizeof (struct sockaddr_in6))
+             || ((src != NULL) && (srclen < sizeof (struct sockaddr_in6))))
+                return -1;
+
+            /* IPv6-specific SSM API does not exist. So if we're here
+             * it means IPv6 SSM is not supported on this OS and we
+             * directly fallback to ASM */
+
+            if (net_IPv6Join (obj, fd, (const struct sockaddr_in6 *)grp) == 0)
+                return 0;
+            break;
+#endif
+    }
+
+    msg_Err (obj, "Multicast group join error (%m)");
+
+    if (src != NULL)
+    {
+        msg_Warn (obj, "Trying ASM instead of SSM...");
+        return net_Subscribe (obj, fd, grp, grplen);
+    }
+
+    msg_Err (obj, "Multicast not supported");
+    return -1;
+}
+
+
+int net_Subscribe (vlc_object_t *obj, int fd,
+                   const struct sockaddr *addr, socklen_t addrlen)
+{
+    return net_SourceSubscribe (obj, fd, NULL, 0, addr, addrlen);
+}
+
+
+static int net_SetDSCP( int fd, uint8_t dscp )
+{
+    struct sockaddr_storage addr;
+    if( getsockname( fd, (struct sockaddr *)&addr, &(socklen_t){ sizeof (addr) }) )
+        return -1;
+
+    int level, cmd;
+
+    switch( addr.ss_family )
+    {
+#ifdef IPV6_TCLASS
+        case AF_INET6:
+            level = SOL_IPV6;
+            cmd = IPV6_TCLASS;
+            break;
+#endif
+
+        case AF_INET:
+            level = SOL_IP;
+            cmd = IP_TOS;
+            break;
+
+        default:
+#ifdef ENOPROTOOPT
+            errno = ENOPROTOOPT;
+#endif
+            return -1;
+    }
+
+    return setsockopt( fd, level, cmd, &(int){ dscp }, sizeof (int));
+}
+
+
 /*****************************************************************************
- * __net_ConnectUDP:
+ * __net_ConnectDgram:
  *****************************************************************************
- * Open a UDP socket to send data to a defined destination, with an optional
- * hop limit.
+ * Open a datagram socket to send data to a defined destination, with an
+ * optional hop limit.
  *****************************************************************************/
-int __net_ConnectUDP( vlc_object_t *p_this, const char *psz_host, int i_port,
-                      int i_hlim )
+int __net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
+                        int i_hlim, int proto )
 {
     struct addrinfo hints, *res, *ptr;
     int             i_val, i_handle = -1;
-    vlc_bool_t      b_unreach = VLC_FALSE;
-
-    if( i_port == 0 )
-        i_port = 1234; /* historical VLC thing */
+    bool      b_unreach = false;
 
     if( i_hlim < 1 )
         i_hlim = var_CreateGetInteger( p_this, "ttl" );
@@ -188,55 +648,52 @@ int __net_ConnectUDP( vlc_object_t *p_this, const char *psz_host, int i_port,
     memset( &hints, 0, sizeof( hints ) );
     hints.ai_socktype = SOCK_DGRAM;
 
-    msg_Dbg( p_this, "net: connecting to %s port %d", psz_host, i_port );
+    msg_Dbg( p_this, "net: connecting to [%s]:%d", psz_host, i_port );
 
     i_val = vlc_getaddrinfo( p_this, psz_host, i_port, &hints, &res );
     if( i_val )
     {
-        msg_Err( p_this, "cannot resolve %s port %d : %s", psz_host, i_port,
+        msg_Err( p_this, "cannot resolve [%s]:%d : %s", psz_host, i_port,
                  vlc_gai_strerror( i_val ) );
         return -1;
     }
 
     for( ptr = res; ptr != NULL; ptr = ptr->ai_next )
     {
-        int fd;
-        char *psz_mif;
-
-        fd = net_Socket( p_this, ptr->ai_family, ptr->ai_socktype,
-                         ptr->ai_protocol );
-        if( fd == -1 )
+        char *str;
+        int fd = net_Socket (p_this, ptr->ai_family, ptr->ai_socktype,
+                             proto ?: ptr->ai_protocol);
+        if (fd == -1)
             continue;
+
 #if !defined( SYS_BEOS )
-        else
-        {
-            int i_val;
+        /* Increase the receive buffer size to 1/2MB (8Mb/s during 1/2s)
+        * to avoid packet loss caused by scheduling problems */
+        setsockopt (fd, SOL_SOCKET, SO_RCVBUF, &(int){ 0x80000 }, sizeof (int));
+        setsockopt (fd, SOL_SOCKET, SO_SNDBUF, &(int){ 0x80000 }, sizeof (int));
 
-            /* Increase the receive buffer size to 1/2MB (8Mb/s during 1/2s)
-             * to avoid packet loss caused by scheduling problems */
-            i_val = 0x80000;
-            setsockopt( fd, SOL_SOCKET, SO_RCVBUF, (void *)&i_val,
-                        sizeof( i_val ) );
-            i_val = 0x80000;
-            setsockopt( fd, SOL_SOCKET, SO_SNDBUF, (void *)&i_val,
-                        sizeof( i_val ) );
-
-            /* Allow broadcast sending */
-            i_val = 1;
-            setsockopt( fd, SOL_SOCKET, SO_BROADCAST, (void*)&i_val,
-                        sizeof( i_val ) );
-        }
+        /* Allow broadcast sending */
+        setsockopt (fd, SOL_SOCKET, SO_BROADCAST, &(int){ 1 }, sizeof (int));
 #endif
 
         if( i_hlim > 0 )
             net_SetMcastHopLimit( p_this, fd, ptr->ai_family, i_hlim );
-        psz_mif = config_GetPsz( p_this, (ptr->ai_family != AF_INET)
-                                            ? "miface" : "miface-addr" );
-        if( psz_mif != NULL )
+
+        str = var_CreateGetNonEmptyString (p_this, "miface");
+        if (str != NULL)
         {
-            net_SetMcastIface( p_this, fd, ptr->ai_family, psz_mif );
-            free( psz_mif );
+            net_SetMcastOut (p_this, fd, ptr->ai_family, str, NULL);
+            free (str);
         }
+
+        str = var_CreateGetNonEmptyString (p_this, "miface-addr");
+        if (str != NULL)
+        {
+            net_SetMcastOut (p_this, fd, ptr->ai_family, NULL, str);
+            free (str);
+        }
+
+        net_SetDSCP (fd, var_CreateGetInteger (p_this, "dscp"));
 
         if( connect( fd, ptr->ai_addr, ptr->ai_addrlen ) == 0 )
         {
@@ -250,11 +707,10 @@ int __net_ConnectUDP( vlc_object_t *p_this, const char *psz_host, int i_port,
 #else
         if( errno == ENETUNREACH )
 #endif
-            b_unreach = VLC_TRUE;
+            b_unreach = true;
         else
         {
-            msg_Warn( p_this, "%s port %d : %s", psz_host, i_port,
-                      strerror( errno ) );
+            msg_Warn( p_this, "%s port %d : %m", psz_host, i_port);
             net_Close( fd );
             continue;
         }
@@ -273,102 +729,154 @@ int __net_ConnectUDP( vlc_object_t *p_this, const char *psz_host, int i_port,
     return i_handle;
 }
 
+
 /*****************************************************************************
- * __net_OpenUDP:
+ * __net_OpenDgram:
  *****************************************************************************
- * Open a UDP connection and return a handle
+ * OpenDgram a datagram socket and return a handle
  *****************************************************************************/
-int __net_OpenUDP( vlc_object_t *p_this, const char *psz_bind, int i_bind,
-                   const char *psz_server, int i_server )
+int __net_OpenDgram( vlc_object_t *obj, const char *psz_bind, int i_bind,
+                     const char *psz_server, int i_server,
+                     int family, int protocol )
 {
-    vlc_value_t      v4, v6;
-    void            *private;
-    network_socket_t sock;
-    module_t         *p_network = NULL;
+    if ((psz_server == NULL) || (psz_server[0] == '\0'))
+        return net_ListenSingle (obj, psz_bind, i_bind, family, protocol);
 
-/*    if( ( psz_server != NULL ) && ( psz_server[0] == '\0' ) )
-        msg_Warn( p_this, "calling net_OpenUDP with an explicit destination "
-                  "is obsolete - use net_ConnectUDP instead" );
-    if( i_server != 0 )
-        msg_Warn( p_this, "calling net_OpenUDP with an explicit destination "
-                  "port is obsolete - use __net_ConnectUDP instead" );*/
+    msg_Dbg (obj, "net: connecting to [%s]:%d from [%s]:%d",
+             psz_server, i_server, psz_bind, i_bind);
 
-    if( psz_server == NULL ) psz_server = "";
-    if( psz_bind == NULL ) psz_bind = "";
+    struct addrinfo hints, *loc, *rem;
+    int val;
 
-    /* Prepare the network_socket_t structure */
-    sock.psz_bind_addr   = psz_bind;
-    sock.i_bind_port     = i_bind;
-    sock.psz_server_addr = psz_server;
-    sock.i_server_port   = i_server;
-    sock.i_ttl           = 0;
-    sock.v6only          = 0;
-    sock.i_handle        = -1;
+    memset (&hints, 0, sizeof (hints));
+    hints.ai_family = family;
+    hints.ai_socktype = SOCK_DGRAM;
 
-    msg_Dbg( p_this, "net: connecting to '[%s]:%d@[%s]:%d'",
-             psz_server, i_server, psz_bind, i_bind );
-
-    /* Check if we have force ipv4 or ipv6 */
-    var_Create( p_this, "ipv4", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Get( p_this, "ipv4", &v4 );
-    var_Create( p_this, "ipv6", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Get( p_this, "ipv6", &v6 );
-
-    if( !v4.b_bool )
+    val = vlc_getaddrinfo (obj, psz_server, i_server, &hints, &rem);
+    if (val)
     {
-        if( v6.b_bool )
-            sock.v6only = 1;
-
-        /* try IPv6 first (unless IPv4 forced) */
-        private = p_this->p_private;
-        p_this->p_private = (void*)&sock;
-        p_network = module_Need( p_this, "network", "ipv6", VLC_TRUE );
-
-        if( p_network != NULL )
-            module_Unneed( p_this, p_network );
-
-        p_this->p_private = private;
-
-        /*
-         * Check if the IP stack can receive IPv4 packets on IPv6 sockets.
-         * If yes, then it is better to use the IPv6 socket.
-         * Otherwise, if we also get an IPv4, we have to choose, so we use
-         * IPv4 only.
-         */
-        if( ( sock.i_handle != -1 ) && ( ( sock.v6only == 0 ) || v6.b_bool ) )
-            return sock.i_handle;
+        msg_Err (obj, "cannot resolve %s port %d : %s", psz_bind, i_bind,
+                 vlc_gai_strerror (val));
+        return -1;
     }
 
-    if( !v6.b_bool )
+    hints.ai_flags = AI_PASSIVE;
+    val = vlc_getaddrinfo (obj, psz_bind, i_bind, &hints, &loc);
+    if (val)
     {
-        int fd6 = sock.i_handle;
+        msg_Err (obj, "cannot resolve %s port %d : %s", psz_bind, i_bind,
+                 vlc_gai_strerror (val));
+        vlc_freeaddrinfo (rem);
+        return -1;
+    }
 
-        /* also try IPv4 (unless IPv6 forced) */
-        private = p_this->p_private;
-        p_this->p_private = (void*)&sock;
-        p_network = module_Need( p_this, "network", "ipv4", VLC_TRUE );
+    for (struct addrinfo *ptr = loc; ptr != NULL; ptr = ptr->ai_next)
+    {
+        int fd = net_Socket (obj, ptr->ai_family, ptr->ai_socktype,
+                             protocol ?: ptr->ai_protocol);
+        if (fd == -1)
+            continue; // usually, address family not supported
 
-        if( p_network != NULL )
-            module_Unneed( p_this, p_network );
+        fd = net_SetupDgramSocket( obj, fd, ptr );
+        if( fd == -1 )
+            continue;
 
-        p_this->p_private = private;
-
-        if( fd6 != -1 )
+        val = -1;
+        for (struct addrinfo *ptr2 = rem; ptr2 != NULL; ptr2 = ptr2->ai_next)
         {
-            if( sock.i_handle != -1 )
+            if ((ptr2->ai_family != ptr->ai_family)
+             || (ptr2->ai_socktype != ptr->ai_socktype)
+             || (ptr2->ai_protocol != ptr->ai_protocol))
+                continue;
+
+            if (net_SockAddrIsMulticast (ptr->ai_addr, ptr->ai_addrlen)
+              ? net_SourceSubscribe (obj, fd,
+                                     ptr2->ai_addr, ptr2->ai_addrlen,
+                                     ptr->ai_addr, ptr->ai_addrlen)
+              : connect (fd, ptr2->ai_addr, ptr2->ai_addrlen))
             {
-                msg_Warn( p_this, "net: lame IPv6/IPv4 dual-stack present, "
-                                  "using only IPv4." );
-                net_Close( fd6 );
+                msg_Err (obj, "cannot connect to %s port %d: %m",
+                         psz_server, i_server);
+                continue;
             }
-            else
-                sock.i_handle = fd6;
+            val = fd;
+            break;
         }
+
+        if (val != -1)
+            break;
+
+        net_Close (fd);
     }
 
-    if( sock.i_handle == -1 )
-        msg_Dbg( p_this, "net: connection to '[%s]:%d@[%s]:%d' failed",
-                psz_server, i_server, psz_bind, i_bind );
+    vlc_freeaddrinfo (rem);
+    vlc_freeaddrinfo (loc);
+    return val;
+}
 
-    return sock.i_handle;
+
+/**
+ * net_SetCSCov:
+ * Sets the send and receive checksum coverage of a socket:
+ * @param fd socket
+ * @param sendcov payload coverage of sent packets (bytes), -1 for full
+ * @param recvcov minimum payload coverage of received packets, -1 for full
+ */
+int net_SetCSCov (int fd, int sendcov, int recvcov)
+{
+    int type;
+
+    if (getsockopt (fd, SOL_SOCKET, SO_TYPE,
+                    &type, &(socklen_t){ sizeof (type) }))
+        return VLC_EGENERIC;
+
+    switch (type)
+    {
+#ifdef UDPLITE_RECV_CSCOV
+        case SOCK_DGRAM: /* UDP-Lite */
+            if (sendcov == -1)
+                sendcov = 0;
+            else
+                sendcov += 8; /* partial */
+            if (setsockopt (fd, SOL_UDPLITE, UDPLITE_SEND_CSCOV, &sendcov,
+                            sizeof (sendcov)))
+                return VLC_EGENERIC;
+
+            if (recvcov == -1)
+                recvcov = 0;
+            else
+                recvcov += 8;
+            if (setsockopt (fd, SOL_UDPLITE, UDPLITE_RECV_CSCOV,
+                            &recvcov, sizeof (recvcov)))
+                return VLC_EGENERIC;
+
+            return VLC_SUCCESS;
+#endif
+#ifdef DCCP_SOCKOPT_SEND_CSCOV
+        case SOCK_DCCP: /* DCCP and its ill-named socket type */
+            if ((sendcov == -1) || (sendcov > 56))
+                sendcov = 0;
+            else
+                sendcov = (sendcov + 3) / 4;
+            if (setsockopt (fd, SOL_DCCP, DCCP_SOCKOPT_SEND_CSCOV,
+                            &sendcov, sizeof (sendcov)))
+                return VLC_EGENERIC;
+
+            if ((recvcov == -1) || (recvcov > 56))
+                recvcov = 0;
+            else
+                recvcov = (recvcov + 3) / 4;
+            if (setsockopt (fd, SOL_DCCP, DCCP_SOCKOPT_RECV_CSCOV,
+                            &recvcov, sizeof (recvcov)))
+                return VLC_EGENERIC;
+
+            return VLC_SUCCESS;
+#endif
+    }
+#if !defined( UDPLITE_RECV_CSCOV ) && !defined( DCCP_SOCKOPT_SEND_CSCOV )
+    VLC_UNUSED(sendcov);
+    VLC_UNUSED(recvcov);
+#endif
+
+    return VLC_EGENERIC;
 }

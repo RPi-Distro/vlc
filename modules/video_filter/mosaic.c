@@ -1,10 +1,10 @@
 /*****************************************************************************
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
- * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 257797ae49700529a0f45e44f8c68ed04800f396 $
+ * Copyright (C) 2004-2008 the VideoLAN team
+ * $Id: 8c6ac46f684cacbb0c27256e854d4a87b5ed9a3a $
  *
- * Authors: Antoine Cellerier <dionoea@via.ecp.fr>
+ * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,61 +25,60 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
-#include <math.h>
-
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-
-#ifdef HAVE_LIMITS_H
-#   include <limits.h> /* INT_MAX */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
 #endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
+
+#include <math.h>
+#include <limits.h> /* INT_MAX */
 
 #include "vlc_filter.h"
 #include "vlc_image.h"
 
 #include "mosaic.h"
 
-#define BLANK_DELAY I64C(1000000)
+#define BLANK_DELAY INT64_C(1000000)
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 static int  CreateFilter    ( vlc_object_t * );
 static void DestroyFilter   ( vlc_object_t * );
+static subpicture_t *Filter ( filter_t *, mtime_t );
 
-static subpicture_t *Filter( filter_t *, mtime_t );
-
-static int MosaicCallback( vlc_object_t *, char const *, vlc_value_t,
-                           vlc_value_t, void * );
+static int MosaicCallback   ( vlc_object_t *, char const *, vlc_value_t,
+                              vlc_value_t, void * );
 
 /*****************************************************************************
  * filter_sys_t : filter descriptor
  *****************************************************************************/
 struct filter_sys_t
 {
-    vlc_mutex_t lock;
-    vlc_mutex_t *p_lock;
+    vlc_mutex_t lock;         /* Internal filter lock */
+    vlc_mutex_t *p_lock;      /* Pointer to mosaic bridge lock */
 
     image_handler_t *p_image;
-    picture_t *p_pic;
 
-    int i_position; /* mosaic positioning method */
-    vlc_bool_t b_ar; /* do we keep the aspect ratio ? */
-    vlc_bool_t b_keep; /* do we keep the original picture format ? */
-    int i_width, i_height; /* mosaic height and width */
-    int i_cols, i_rows; /* mosaic rows and cols */
-    int i_align; /* mosaic alignment in background video */
-    int i_xoffset, i_yoffset; /* top left corner offset */
-    int i_borderw, i_borderh; /* border width/height between miniatures */
-    int i_alpha; /* subfilter alpha blending */
+    int i_position;           /* Mosaic positioning method */
+    bool b_ar;          /* Do we keep the aspect ratio ? */
+    bool b_keep;        /* Do we keep the original picture format ? */
+    int i_width, i_height;    /* Mosaic height and width */
+    int i_cols, i_rows;       /* Mosaic rows and cols */
+    int i_align;              /* Mosaic alignment in background video */
+    int i_xoffset, i_yoffset; /* Top left corner offset */
+    int i_borderw, i_borderh; /* Border width/height between miniatures */
+    int i_alpha;              /* Subfilter alpha blending */
 
-    vlc_bool_t b_bs; /* Bluescreen vars */
-    int i_bsu, i_bsv, i_bsut, i_bsvt;
-
-    char **ppsz_order; /* list of picture-id */
+    char **ppsz_order;        /* List of picture-ids */
     int i_order_length;
+
+    int *pi_x_offsets;        /* List of substreams x offsets */
+    int *pi_y_offsets;        /* List of substreams y offsets */
+    int i_offsets_length;
 
     mtime_t i_delay;
 };
@@ -88,7 +87,8 @@ struct filter_sys_t
  * Module descriptor
  *****************************************************************************/
 #define ALPHA_TEXT N_("Transparency")
-#define ALPHA_LONGTEXT N_("Transparency of the mosaic foreground pictures. " \
+#define ALPHA_LONGTEXT N_( \
+        "Transparency of the mosaic foreground pictures. " \
         "0 means transparent, 255 opaque (default)." )
 
 #define HEIGHT_TEXT N_("Height")
@@ -97,125 +97,184 @@ struct filter_sys_t
 #define WIDTH_LONGTEXT N_( "Total width of the mosaic, in pixels." )
 
 #define XOFFSET_TEXT N_("Top left corner X coordinate")
-#define XOFFSET_LONGTEXT N_("X Coordinate of the top-left corner of the mosaic.")
+#define XOFFSET_LONGTEXT N_( \
+        "X Coordinate of the top-left corner of the mosaic.")
 #define YOFFSET_TEXT N_("Top left corner Y coordinate")
-#define YOFFSET_LONGTEXT N_("Y Coordinate of the top-left corner of the mosaic.")
+#define YOFFSET_LONGTEXT N_( \
+        "Y Coordinate of the top-left corner of the mosaic.")
+
 #define BORDERW_TEXT N_("Border width")
-#define BORDERW_LONGTEXT N_( "Width in pixels of the border between miniatures." )
+#define BORDERW_LONGTEXT N_( \
+        "Width in pixels of the border between miniatures." )
 #define BORDERH_TEXT N_("Border height")
-#define BORDERH_LONGTEXT N_( "Height in pixels of the border between miniatures." )
+#define BORDERH_LONGTEXT N_( \
+        "Height in pixels of the border between miniatures." )
 
 #define ALIGN_TEXT N_("Mosaic alignment" )
 #define ALIGN_LONGTEXT N_( \
-  "You can enforce the mosaic alignment on the video " \
-  "(0=center, 1=left, 2=right, 4=top, 8=bottom, you can " \
-  "also use combinations of these values, eg 6 = top-right).")
+        "You can enforce the mosaic alignment on the video " \
+        "(0=center, 1=left, 2=right, 4=top, 8=bottom, you can " \
+        "also use combinations of these values, eg 6 = top-right).")
 
 #define POS_TEXT N_("Positioning method")
-#define POS_LONGTEXT N_("Positioning method for the mosaic. auto: " \
+#define POS_LONGTEXT N_( \
+        "Positioning method for the mosaic. auto: " \
         "automatically choose the best number of rows and columns. " \
-        "fixed: use the user-defined number of rows and columns.")
+        "fixed: use the user-defined number of rows and columns. " \
+        "offsets: use the user-defined offsets for each image." )
 
-/// \bug [String] missing closing parenthesis
 #define ROWS_TEXT N_("Number of rows")
-#define ROWS_LONGTEXT N_("Number of image rows in the mosaic (only used if "\
-        "positionning method is set to \"fixed\"." )
+#define ROWS_LONGTEXT N_( \
+        "Number of image rows in the mosaic (only used if " \
+        "positionning method is set to \"fixed\")." )
+
 #define COLS_TEXT N_("Number of columns")
-#define COLS_LONGTEXT N_("Number of image columns in the mosaic (only used if "\
+#define COLS_LONGTEXT N_( \
+        "Number of image columns in the mosaic (only used if " \
         "positionning method is set to \"fixed\"." )
 
 #define AR_TEXT N_("Keep aspect ratio")
-#define AR_LONGTEXT N_("Keep the original aspect ratio when resizing " \
+#define AR_LONGTEXT N_( \
+        "Keep the original aspect ratio when resizing " \
         "mosaic elements." )
 #define KEEP_TEXT N_("Keep original size")
-#define KEEP_LONGTEXT N_("Keep the original size of mosaic elements." )
+#define KEEP_LONGTEXT N_( \
+        "Keep the original size of mosaic elements." )
 
 #define ORDER_TEXT N_("Elements order" )
-#define ORDER_LONGTEXT N_( "You can enforce the order of the elements on " \
+#define ORDER_LONGTEXT N_( \
+        "You can enforce the order of the elements on " \
         "the mosaic. You must give a comma-separated list of picture ID(s)." \
         "These IDs are assigned in the \"mosaic-bridge\" module." )
 
+#define OFFSETS_TEXT N_("Offsets in order" )
+#define OFFSETS_LONGTEXT N_( \
+        "You can enforce the (x,y) offsets of the elements on the mosaic " \
+        "(only used if positioning method is set to \"offsets\"). You " \
+        "must give a comma-separated list of coordinates (eg: 10,10,150,10)." )
+
 #define DELAY_TEXT N_("Delay")
-#define DELAY_LONGTEXT N_("Pictures coming from the mosaic elements " \
-        "will be delayed according to this value (in milliseconds). For high " \
+#define DELAY_LONGTEXT N_( \
+        "Pictures coming from the mosaic elements will be delayed " \
+        "according to this value (in milliseconds). For high " \
         "values you will need to raise caching at input.")
 
-#define BLUESCREEN_TEXT N_("Bluescreen" )
-#define BLUESCREEN_LONGTEXT N_( "This effect, also known as \"greenscreen\" "\
-   "or \"chroma key\" blends the \"blue parts\" of the foreground images of " \
-   "the mosaic on the background (like wheather forecast presenters). You " \
-   "can choose the \"key\" color for blending (blue by default)." )
+enum
+{
+    position_auto = 0, position_fixed = 1, position_offsets = 2
+};
+static const int pi_pos_values[] = { 0, 1, 2 };
+static const char *const ppsz_pos_descriptions[] =
+    { N_("auto"), N_("fixed"), N_("offsets") };
 
-#define BLUESCREENU_TEXT N_("Bluescreen U value")
-#define BLUESCREENU_LONGTEXT N_("\"U\" value for the bluescreen key color " \
-        "(in YUV values). From 0 to 255. Defaults to 120 for blue." )
-#define BLUESCREENV_TEXT N_("Bluescreen V value")
-#define BLUESCREENV_LONGTEXT N_("\"V\" value for the bluescreen key color " \
-        "(in YUV values). From 0 to 255. Defaults to 90 for blue." )
-#define BLUESCREENUTOL_TEXT N_("Bluescreen U tolerance")
-#define BLUESCREENUTOL_LONGTEXT N_("Tolerance of the bluescreen blender " \
-        "on color variations for the U plane. A value between 10 and 20 " \
-        "seems sensible." )
-#define BLUESCREENVTOL_TEXT N_("Bluescreen V tolerance")
-#define BLUESCREENVTOL_LONGTEXT N_("Tolerance of the bluescreen blender " \
-        "on color variations for the V plane. A value between 10 and 20 " \
-        "seems sensible." )
-
-static int pi_pos_values[] = { 0, 1 };
-static char * ppsz_pos_descriptions[] =
-{ N_("auto"), N_("fixed") };
-
-static int pi_align_values[] = { 0, 1, 2, 4, 8, 5, 6, 9, 10 };
-static char *ppsz_align_descriptions[] =
+static const int pi_align_values[] = { 0, 1, 2, 4, 8, 5, 6, 9, 10 };
+static const char *const ppsz_align_descriptions[] =
      { N_("Center"), N_("Left"), N_("Right"), N_("Top"), N_("Bottom"),
      N_("Top-Left"), N_("Top-Right"), N_("Bottom-Left"), N_("Bottom-Right") };
 
+#define CFG_PREFIX "mosaic-"
 
 vlc_module_begin();
-    set_description( _("Mosaic video sub filter") );
-    set_shortname( _("Mosaic") );
+    set_description( N_("Mosaic video sub filter") );
+    set_shortname( N_("Mosaic") );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_SUBPIC);
     set_capability( "sub filter", 0 );
     set_callbacks( CreateFilter, DestroyFilter );
 
-    add_integer( "mosaic-alpha", 255, NULL, ALPHA_TEXT, ALPHA_LONGTEXT, VLC_FALSE );
-    add_integer( "mosaic-height", 100, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT, VLC_FALSE );
-    add_integer( "mosaic-width", 100, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, VLC_FALSE );
-    add_integer( "mosaic-align", 5, NULL, ALIGN_TEXT, ALIGN_LONGTEXT, VLC_TRUE);
-        change_integer_list( pi_align_values, ppsz_align_descriptions, 0 );
-    add_integer( "mosaic-xoffset", 0, NULL, XOFFSET_TEXT, XOFFSET_LONGTEXT, VLC_TRUE );
-    add_integer( "mosaic-yoffset", 0, NULL, YOFFSET_TEXT, YOFFSET_LONGTEXT, VLC_TRUE );
-    add_integer( "mosaic-borderw", 0, NULL, BORDERW_TEXT, BORDERW_LONGTEXT, VLC_TRUE );
-        add_deprecated( "mosaic-vborder", VLC_FALSE );
-    add_integer( "mosaic-borderh", 0, NULL, BORDERH_TEXT, BORDERH_LONGTEXT, VLC_TRUE );
-        add_deprecated( "mosaic-hborder", VLC_FALSE );
+    add_integer_with_range( CFG_PREFIX "alpha", 255, 0, 255, NULL,
+                            ALPHA_TEXT, ALPHA_LONGTEXT, false );
 
-    add_integer( "mosaic-position", 0, NULL, POS_TEXT, POS_LONGTEXT, VLC_FALSE );
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, 0 );
-    add_integer( "mosaic-rows", 2, NULL, ROWS_TEXT, ROWS_LONGTEXT, VLC_FALSE );
-    add_integer( "mosaic-cols", 2, NULL, COLS_TEXT, COLS_LONGTEXT, VLC_FALSE );
-    add_bool( "mosaic-keep-aspect-ratio", 0, NULL, AR_TEXT, AR_LONGTEXT, VLC_FALSE );
-    add_bool( "mosaic-keep-picture", 0, NULL, KEEP_TEXT, KEEP_LONGTEXT, VLC_FALSE );
-    add_string( "mosaic-order", "", NULL, ORDER_TEXT, ORDER_LONGTEXT, VLC_FALSE );
+    add_integer( CFG_PREFIX "height", 100, NULL,
+                 HEIGHT_TEXT, HEIGHT_LONGTEXT, false );
+    add_integer( CFG_PREFIX "width", 100, NULL,
+                 WIDTH_TEXT, WIDTH_LONGTEXT, false );
 
-    add_integer( "mosaic-delay", 0, NULL, DELAY_TEXT, DELAY_LONGTEXT,
-                 VLC_FALSE );
+    add_integer( CFG_PREFIX "align", 5, NULL,
+                 ALIGN_TEXT, ALIGN_LONGTEXT, true);
+        change_integer_list( pi_align_values, ppsz_align_descriptions, NULL );
 
-    add_bool( "mosaic-bs", 0, NULL, BLUESCREEN_TEXT,
-              BLUESCREEN_LONGTEXT, VLC_FALSE );
-    add_integer( "mosaic-bsu", 120, NULL, BLUESCREENU_TEXT,
-                 BLUESCREENU_LONGTEXT, VLC_FALSE );
-    add_integer( "mosaic-bsv", 90, NULL, BLUESCREENV_TEXT,
-                 BLUESCREENV_LONGTEXT, VLC_FALSE );
-    add_integer( "mosaic-bsut", 17, NULL, BLUESCREENUTOL_TEXT,
-                 BLUESCREENUTOL_LONGTEXT, VLC_FALSE );
-    add_integer( "mosaic-bsvt", 17, NULL, BLUESCREENVTOL_TEXT,
-                 BLUESCREENVTOL_LONGTEXT, VLC_FALSE );
+    add_integer( CFG_PREFIX "xoffset", 0, NULL,
+                 XOFFSET_TEXT, XOFFSET_LONGTEXT, true );
+    add_integer( CFG_PREFIX "yoffset", 0, NULL,
+                 YOFFSET_TEXT, YOFFSET_LONGTEXT, true );
 
-    var_Create( p_module->p_libvlc, "mosaic-lock", VLC_VAR_MUTEX );
+    add_integer( CFG_PREFIX "borderw", 0, NULL,
+                 BORDERW_TEXT, BORDERW_LONGTEXT, true );
+        add_deprecated_alias( CFG_PREFIX "vborder" );
+    add_integer( CFG_PREFIX "borderh", 0, NULL,
+                 BORDERH_TEXT, BORDERH_LONGTEXT, true );
+        add_deprecated_alias( CFG_PREFIX "hborder" );
+
+    add_integer( CFG_PREFIX "position", 0, NULL,
+                 POS_TEXT, POS_LONGTEXT, false );
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
+    add_integer( CFG_PREFIX "rows", 2, NULL,
+                 ROWS_TEXT, ROWS_LONGTEXT, false );
+    add_integer( CFG_PREFIX "cols", 2, NULL,
+                 COLS_TEXT, COLS_LONGTEXT, false );
+
+    add_bool( CFG_PREFIX "keep-aspect-ratio", 0, NULL,
+              AR_TEXT, AR_LONGTEXT, false );
+    add_bool( CFG_PREFIX "keep-picture", 0, NULL,
+              KEEP_TEXT, KEEP_LONGTEXT, false );
+
+    add_string( CFG_PREFIX "order", "", NULL,
+                ORDER_TEXT, ORDER_LONGTEXT, false );
+
+    add_string( CFG_PREFIX "offsets", "", NULL,
+                OFFSETS_TEXT, OFFSETS_LONGTEXT, false );
+
+    add_integer( CFG_PREFIX "delay", 0, NULL, DELAY_TEXT, DELAY_LONGTEXT,
+                 false );
 vlc_module_end();
 
+static const char *const ppsz_filter_options[] = {
+    "alpha", "height", "width", "align", "xoffset", "yoffset",
+    "borderw", "borderh", "position", "rows", "cols",
+    "keep-aspect-ratio", "keep-picture", "order", "offsets",
+    "delay", NULL
+};
+
+/*****************************************************************************
+ * mosaic_ParseSetOffsets:
+ * parse the "--mosaic-offsets x1,y1,x2,y2,x3,y3" parameter
+ * and set the corresponding struct filter_sys_t entries.
+ *****************************************************************************/
+#define mosaic_ParseSetOffsets( a, b, c ) \
+      __mosaic_ParseSetOffsets( VLC_OBJECT( a ), b, c )
+static void __mosaic_ParseSetOffsets( vlc_object_t *p_this,
+                                      filter_sys_t *p_sys,
+                                      char *psz_offsets )
+{
+    if( *psz_offsets )
+    {
+        char *psz_end = NULL;
+        int i_index = 0;
+        do
+        {
+            i_index++;
+
+            p_sys->pi_x_offsets =
+                realloc( p_sys->pi_x_offsets, i_index * sizeof(int) );
+            p_sys->pi_x_offsets[i_index - 1] = atoi( psz_offsets );
+            psz_end = strchr( psz_offsets, ',' );
+            psz_offsets = psz_end + 1;
+
+            p_sys->pi_y_offsets =
+                realloc( p_sys->pi_y_offsets, i_index * sizeof(int) );
+            p_sys->pi_y_offsets[i_index - 1] = atoi( psz_offsets );
+            psz_end = strchr( psz_offsets, ',' );
+            psz_offsets = psz_end + 1;
+
+            msg_Dbg( p_this, CFG_PREFIX "offset: id %d, x=%d, y=%d",
+                     i_index, p_sys->pi_x_offsets[i_index - 1],
+                              p_sys->pi_y_offsets[i_index - 1]  );
+
+        } while( psz_end );
+        p_sys->i_offsets_length = i_index;
+    }
+}
 
 /*****************************************************************************
  * CreateFiler: allocate mosaic video filter
@@ -224,8 +283,9 @@ static int CreateFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys;
-    libvlc_t *p_libvlc = p_filter->p_libvlc;
+    vlc_object_t *p_libvlc = VLC_OBJECT( p_filter->p_libvlc );
     char *psz_order, *_psz_order;
+    char *psz_offsets;
     int i_index;
     vlc_value_t val;
 
@@ -235,58 +295,50 @@ static int CreateFilter( vlc_object_t *p_this )
     /* Allocate structure */
     p_sys = p_filter->p_sys = malloc( sizeof( filter_sys_t ) );
     if( p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
         return VLC_ENOMEM;
-    }
 
     p_filter->pf_sub_filter = Filter;
-    p_sys->p_pic = NULL;
 
-    vlc_mutex_init( p_filter, &p_sys->lock );
+    vlc_mutex_init( &p_sys->lock );
     vlc_mutex_lock( &p_sys->lock );
 
+    var_Create( p_libvlc, "mosaic-lock", VLC_VAR_MUTEX );
     var_Get( p_libvlc, "mosaic-lock", &val );
     p_sys->p_lock = val.p_address;
 
+    config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options,
+                       p_filter->p_cfg );
+
 #define GET_VAR( name, min, max )                                           \
     p_sys->i_##name = __MIN( max, __MAX( min,                               \
-                var_CreateGetInteger( p_filter, "mosaic-" #name ) ) );      \
-    var_Destroy( p_filter, "mosaic-" #name );                               \
-    var_Create( p_libvlc, "mosaic-" #name, VLC_VAR_INTEGER );               \
-    var_SetInteger( p_libvlc, "mosaic-" #name, p_sys->i_##name );           \
-    var_AddCallback( p_libvlc, "mosaic-" #name, MosaicCallback, p_sys );
+        var_CreateGetIntegerCommand( p_filter, CFG_PREFIX #name ) ) );      \
+    var_AddCallback( p_filter, CFG_PREFIX #name, MosaicCallback, p_sys );
 
     GET_VAR( width, 0, INT_MAX );
     GET_VAR( height, 0, INT_MAX );
     GET_VAR( xoffset, 0, INT_MAX );
     GET_VAR( yoffset, 0, INT_MAX );
 
-    p_sys->i_align = __MIN( 10, __MAX( 0,  var_CreateGetInteger( p_filter, "mosaic-align" ) ) );
+    GET_VAR( align, 0, 10 );
     if( p_sys->i_align == 3 || p_sys->i_align == 7 )
         p_sys->i_align = 5;
-    var_Destroy( p_filter, "mosaic-align" );
-    var_Create( p_libvlc, "mosaic-align", VLC_VAR_INTEGER );
-    var_SetInteger( p_libvlc, "mosaic-align", p_sys->i_align );
-    var_AddCallback( p_libvlc, "mosaic-align", MosaicCallback, p_sys );
 
     GET_VAR( borderw, 0, INT_MAX );
     GET_VAR( borderh, 0, INT_MAX );
     GET_VAR( rows, 1, INT_MAX );
     GET_VAR( cols, 1, INT_MAX );
     GET_VAR( alpha, 0, 255 );
-    GET_VAR( position, 0, 1 );
+    GET_VAR( position, 0, 2 );
     GET_VAR( delay, 100, INT_MAX );
     p_sys->i_delay *= 1000;
 
-    p_sys->b_ar = var_CreateGetBool( p_filter, "mosaic-keep-aspect-ratio" );
-    var_Destroy( p_filter, "mosaic-keep-aspect-ratio" );
-    var_Create( p_libvlc, "mosaic-keep-aspect-ratio", VLC_VAR_INTEGER );
-    var_SetBool( p_libvlc, "mosaic-keep-aspect-ratio", p_sys->b_ar );
-    var_AddCallback( p_libvlc, "mosaic-keep-aspect-ratio", MosaicCallback,
+    p_sys->b_ar = var_CreateGetBoolCommand( p_filter,
+                                            CFG_PREFIX "keep-aspect-ratio" );
+    var_AddCallback( p_filter, CFG_PREFIX "keep-aspect-ratio", MosaicCallback,
                      p_sys );
 
-    p_sys->b_keep = var_CreateGetBool( p_filter, "mosaic-keep-picture" );
+    p_sys->b_keep = var_CreateGetBoolCommand( p_filter,
+                                              CFG_PREFIX "keep-picture" );
     if ( !p_sys->b_keep )
     {
         p_sys->p_image = image_HandlerCreate( p_filter );
@@ -294,9 +346,11 @@ static int CreateFilter( vlc_object_t *p_this )
 
     p_sys->i_order_length = 0;
     p_sys->ppsz_order = NULL;
-    psz_order = _psz_order = var_CreateGetString( p_filter, "mosaic-order" );
+    psz_order = var_CreateGetStringCommand( p_filter, CFG_PREFIX "order" );
+    _psz_order = psz_order;
+    var_AddCallback( p_filter, CFG_PREFIX "order", MosaicCallback, p_sys );
 
-    if( psz_order[0] != 0 )
+    if( *psz_order )
     {
         char *psz_end = NULL;
         i_index = 0;
@@ -309,27 +363,20 @@ static int CreateFilter( vlc_object_t *p_this )
             p_sys->ppsz_order[i_index - 1] = strndup( psz_order,
                                            psz_end - psz_order );
             psz_order = psz_end+1;
-        } while( NULL !=  psz_end );
+        } while( psz_end );
         p_sys->i_order_length = i_index;
     }
 
     free( _psz_order );
 
-    /* Bluescreen specific stuff */
-    GET_VAR( bsu, 0x00, 0xff );
-    GET_VAR( bsv, 0x00, 0xff );
-    GET_VAR( bsut, 0x00, 0xff );
-    GET_VAR( bsvt, 0x00, 0xff );
-    p_sys->b_bs = var_CreateGetBool( p_filter, "mosaic-bs" );
-    var_Destroy( p_filter, "mosaic-bs" );
-    var_Create( p_libvlc, "mosaic-bs", VLC_VAR_INTEGER );
-    var_SetBool( p_libvlc, "mosaic-bs", p_sys->b_bs );
-    var_AddCallback( p_libvlc, "mosaic-bs", MosaicCallback, p_sys );
-    if( p_sys->b_bs && p_sys->b_keep )
-    {
-        msg_Warn( p_filter, "mosaic-keep-picture needs to be disabled for"
-                            " bluescreen to work" );
-    }
+    /* Manage specific offsets for substreams */
+    psz_offsets = var_CreateGetStringCommand( p_filter, CFG_PREFIX "offsets" );
+    p_sys->i_offsets_length = 0;
+    p_sys->pi_x_offsets = NULL;
+    p_sys->pi_y_offsets = NULL;
+    mosaic_ParseSetOffsets( p_filter, p_sys, psz_offsets );
+    free( psz_offsets );
+    var_AddCallback( p_filter, CFG_PREFIX "offsets", MosaicCallback, p_sys );
 
     vlc_mutex_unlock( &p_sys->lock );
 
@@ -343,7 +390,6 @@ static void DestroyFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t*)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
-    libvlc_t *p_libvlc = p_filter->p_libvlc;
     int i_index;
 
     vlc_mutex_lock( &p_sys->lock );
@@ -361,27 +407,13 @@ static void DestroyFilter( vlc_object_t *p_this )
         }
         free( p_sys->ppsz_order );
     }
+    if( p_sys->i_offsets_length )
+    {
+        free( p_sys->pi_x_offsets );
+        free( p_sys->pi_y_offsets );
+        p_sys->i_offsets_length = 0;
+    }
 
-    var_Destroy( p_libvlc, "mosaic-alpha" );
-    var_Destroy( p_libvlc, "mosaic-height" );
-    var_Destroy( p_libvlc, "mosaic-align" );
-    var_Destroy( p_libvlc, "mosaic-width" );
-    var_Destroy( p_libvlc, "mosaic-xoffset" );
-    var_Destroy( p_libvlc, "mosaic-yoffset" );
-    var_Destroy( p_libvlc, "mosaic-borderw" );
-    var_Destroy( p_libvlc, "mosaic-borderh" );
-    var_Destroy( p_libvlc, "mosaic-position" );
-    var_Destroy( p_libvlc, "mosaic-rows" );
-    var_Destroy( p_libvlc, "mosaic-cols" );
-    var_Destroy( p_libvlc, "mosaic-keep-aspect-ratio" );
-
-    var_Destroy( p_libvlc, "mosaic-bsu" );
-    var_Destroy( p_libvlc, "mosaic-bsv" );
-    var_Destroy( p_libvlc, "mosaic-bsut" );
-    var_Destroy( p_libvlc, "mosaic-bsvt" );
-    var_Destroy( p_libvlc, "mosaic-bs" );
-
-    if( p_sys->p_pic && p_sys->p_pic->pf_release ) p_sys->p_pic->pf_release( p_sys->p_pic );
     vlc_mutex_unlock( &p_sys->lock );
     vlc_mutex_destroy( &p_sys->lock );
     free( p_sys );
@@ -394,8 +426,7 @@ static void MosaicReleasePicture( picture_t *p_picture )
 {
     picture_t *p_original_pic = (picture_t *)p_picture->p_sys;
 
-    if( p_original_pic->pf_release )
-        p_original_pic->pf_release( p_original_pic );
+    picture_Release( p_original_pic );
 }
 
 /*****************************************************************************
@@ -417,20 +448,18 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     subpicture_region_t *p_region_prev = NULL;
 
     /* Allocate the subpicture internal data. */
-    p_spu = p_filter->pf_sub_buffer_new( p_filter );
+    p_spu = filter_NewSubpicture( p_filter );
     if( !p_spu )
-    {
         return NULL;
-    }
 
     /* Initialize subpicture */
     p_spu->i_channel = 0;
     p_spu->i_start  = date;
     p_spu->i_stop = 0;
-    p_spu->b_ephemer = VLC_TRUE;
+    p_spu->b_ephemer = true;
     p_spu->i_alpha = p_sys->i_alpha;
     p_spu->i_flags = p_sys->i_align;
-    p_spu->b_absolute = VLC_FALSE;
+    p_spu->b_absolute = false;
 
     vlc_mutex_lock( &p_sys->lock );
     vlc_mutex_lock( p_sys->p_lock );
@@ -443,7 +472,22 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         return p_spu;
     }
 
-    if ( p_sys->i_position == 0 ) /* use automatic positioning */
+    if ( p_sys->i_position == position_offsets )
+    {
+        /* If we have either too much or not enough offsets, fall-back
+         * to automatic positioning. */
+        if ( p_sys->i_offsets_length != p_sys->i_order_length )
+        {
+            msg_Err( p_filter,
+                     "Number of specified offsets (%d) does not match number "
+                     "of input substreams in mosaic-order (%d), falling back "
+                     "to mosaic-position=0",
+                     p_sys->i_offsets_length, p_sys->i_order_length );
+            p_sys->i_position = position_auto;
+        }
+    }
+
+    if ( p_sys->i_position == position_auto )
     {
         int i_numpics = p_sys->i_order_length; /* keep slots and all */
         for ( i_index = 0; i_index < p_bridge->i_es_num; i_index++ )
@@ -469,7 +513,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
                 }
             }
         }
-        p_sys->i_rows = ((int)ceil(sqrt( (float)i_numpics )));
+        p_sys->i_rows = ceil(sqrt( (double)i_numpics ));
         p_sys->i_cols = ( i_numpics % p_sys->i_rows == 0 ?
                             i_numpics / p_sys->i_rows :
                             i_numpics / p_sys->i_rows + 1 );
@@ -485,8 +529,11 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     for ( i_index = 0; i_index < p_bridge->i_es_num; i_index++ )
     {
         bridged_es_t *p_es = p_bridge->pp_es[i_index];
-        video_format_t fmt_in = {0}, fmt_out = {0};
+        video_format_t fmt_in, fmt_out;
         picture_t *p_converted;
+
+        memset( &fmt_in, 0, sizeof( video_format_t ) );
+        memset( &fmt_out, 0, sizeof( video_format_t ) );
 
         if ( p_es->b_empty )
             continue;
@@ -497,23 +544,21 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             if ( p_es->p_picture->p_next != NULL )
             {
                 picture_t *p_next = p_es->p_picture->p_next;
-                if( p_es->p_picture->pf_release )
-                    p_es->p_picture->pf_release( p_es->p_picture );
+                picture_Release( p_es->p_picture );
                 p_es->p_picture = p_next;
             }
             else if ( p_es->p_picture->date + p_sys->i_delay + BLANK_DELAY <
                         date )
             {
                 /* Display blank */
-                if( p_es->p_picture->pf_release )
-                    p_es->p_picture->pf_release( p_es->p_picture );
+                picture_Release( p_es->p_picture );
                 p_es->p_picture = NULL;
                 p_es->pp_last = &p_es->p_picture;
                 break;
             }
             else
             {
-                msg_Dbg( p_filter, "too late picture for %s (" I64Fd ")",
+                msg_Dbg( p_filter, "too late picture for %s (%"PRId64 ")",
                          p_es->psz_id,
                          date - p_es->p_picture->date - p_sys->i_delay );
                 break;
@@ -552,7 +597,11 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             fmt_in.i_height = p_es->p_picture->format.i_height;
             fmt_in.i_width = p_es->p_picture->format.i_width;
 
-            fmt_out.i_chroma = VLC_FOURCC('Y','U','V','A');
+            if( fmt_in.i_chroma == VLC_FOURCC('Y','U','V','A') ||
+                fmt_in.i_chroma == VLC_FOURCC('R','G','B','A') )
+                fmt_out.i_chroma = VLC_FOURCC('Y','U','V','A');
+            else
+                fmt_out.i_chroma = VLC_FOURCC('I','4','2','0');
             fmt_out.i_width = col_inner_width;
             fmt_out.i_height = row_inner_height;
 
@@ -582,91 +631,11 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
                            "image resizing and chroma conversion failed" );
                 continue;
             }
-
-            /* Bluescreen stuff */
-            if( p_sys->b_bs )
-            {
-                int i,j;
-                int i_lines = p_converted->p[ A_PLANE ].i_lines;
-                int i_pitch = p_converted->p[ A_PLANE ].i_pitch;
-                uint8_t *p_a = p_converted->p[ A_PLANE ].p_pixels;
-                uint8_t *p_at = malloc( i_lines * i_pitch * sizeof( uint8_t ) );
-                uint8_t *p_u = p_converted->p[ U_PLANE ].p_pixels;
-                uint8_t *p_v = p_converted->p[ V_PLANE ].p_pixels;
-                uint8_t umin, umax, vmin, vmax;
-                umin = p_sys->i_bsu - p_sys->i_bsut >= 0x00 ?
-                       p_sys->i_bsu - p_sys->i_bsut : 0x00;
-                umax = p_sys->i_bsu + p_sys->i_bsut <= 0xff ?
-                       p_sys->i_bsu + p_sys->i_bsut : 0xff;
-                vmin = p_sys->i_bsv - p_sys->i_bsvt >= 0x00 ?
-                       p_sys->i_bsv - p_sys->i_bsvt : 0x00;
-                vmax = p_sys->i_bsv + p_sys->i_bsvt <= 0xff ?
-                       p_sys->i_bsv + p_sys->i_bsvt : 0xff;
-
-                for( i = 0; i < i_lines*i_pitch; i++ )
-                {
-                    if(    p_u[i] < umax
-                        && p_u[i] > umin
-                        && p_v[i] < vmax
-                        && p_v[i] > vmin )
-                    {
-                        p_at[i] = 0x00;
-                    }
-                    else
-                    {
-                        p_at[i] = 0xff;
-                    }
-                }
-                /* Gaussian convolution to make it look cleaner */
-                memset( p_a, 0, 2 * i_pitch );
-                for( i = 2; i < i_lines - 2; i++ )
-                {
-                    p_a[i*i_pitch] = 0x00;
-                    p_a[i*i_pitch+1] = 0x00;
-                    for( j = 2; j < i_pitch - 2; j ++ )
-                    {
-                        p_a[i*i_pitch+j] = (uint8_t)((
-                          /* 2 rows up */
-                            ( p_at[(i-2)*i_pitch+j-2]<<1 )
-                          + ( p_at[(i-2)*i_pitch+j-1]<<2 )
-                          + ( p_at[(i-2)*i_pitch+j]<<2 )
-                          + ( p_at[(i-2)*i_pitch+j+1]<<2 )
-                          + ( p_at[(i-2)*i_pitch+j+2]<<1 )
-                          /* 1 row up */
-                          + ( p_at[(i-1)*i_pitch+j-1]<<3 )
-                          + ( p_at[(i-1)*i_pitch+j-2]<<2 )
-                          + ( p_at[(i-1)*i_pitch+j]*12 )
-                          + ( p_at[(i-1)*i_pitch+j+1]<<3 )
-                          + ( p_at[(i-1)*i_pitch+j+2]<<2 )
-                          /* */
-                          + ( p_at[i*i_pitch+j-2]<<2 )
-                          + ( p_at[i*i_pitch+j-1]*12 )
-                          + ( p_at[i*i_pitch+j]<<4 )
-                          + ( p_at[i*i_pitch+j+1]*12 )
-                          + ( p_at[i*i_pitch+j+2]<<2 )
-                          /* 1 row down */
-                          + ( p_at[(i+1)*i_pitch+j-2]<<2 )
-                          + ( p_at[(i+1)*i_pitch+j-1]<<3 )
-                          + ( p_at[(i+1)*i_pitch+j]*12 )
-                          + ( p_at[(i+1)*i_pitch+j+1]<<3 )
-                          + ( p_at[(i+1)*i_pitch+j+2]<<2 )
-                          /* 2 rows down */
-                          + ( p_at[(i+2)*i_pitch+j-2]<<1 )
-                          + ( p_at[(i+2)*i_pitch+j-1]<<2 )
-                          + ( p_at[(i+2)*i_pitch+j]<<2 )
-                          + ( p_at[(i+2)*i_pitch+j+1]<<2 )
-                          + ( p_at[(i+2)*i_pitch+j+2]<<1 )
-                          )/152);
-                          if( p_a[i*i_pitch+j] < 0xbf ) p_a[i*i_pitch+j] = 0x00;
-                    }
-                }
-                free( p_at );
-            }
         }
         else
         {
             p_converted = p_es->p_picture;
-            p_converted->i_refcount++;
+            picture_Yield( p_converted );
             fmt_in.i_width = fmt_out.i_width = p_converted->format.i_width;
             fmt_in.i_height = fmt_out.i_height = p_converted->format.i_height;
             fmt_in.i_chroma = fmt_out.i_chroma = p_converted->format.i_chroma;
@@ -685,7 +654,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             return p_spu;
         }
 
-        /* HACK ALERT : let's fix the pointers to avoid picture duplication.
+        /* HACK ALERT: let's fix the pointers to avoid picture duplication.
          * This is necessary because p_region->picture is not a pointer
          * as it ought to be. */
         if( !p_sys->b_keep )
@@ -699,41 +668,56 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             p_region->picture.pf_release = MosaicReleasePicture;
         }
 
-        if( fmt_out.i_width > col_inner_width ||
-            p_sys->b_ar || p_sys->b_keep )
+        if( p_es->i_x >= 0 && p_es->i_y >= 0 )
         {
-            /* we don't have to center the video since it takes the
-            whole rectangle area or it's larger than the rectangle */
-            p_region->i_x = p_sys->i_xoffset
+            p_region->i_x = p_es->i_x;
+            p_region->i_y = p_es->i_y;
+        }
+        else if( p_sys->i_position == position_offsets )
+        {
+            p_region->i_x = p_sys->pi_x_offsets[i_real_index];
+            p_region->i_y = p_sys->pi_y_offsets[i_real_index];
+        }
+        else
+        {
+            if( fmt_out.i_width > col_inner_width ||
+                p_sys->b_ar || p_sys->b_keep )
+            {
+                /* we don't have to center the video since it takes the
+                whole rectangle area or it's larger than the rectangle */
+                p_region->i_x = p_sys->i_xoffset
+                            + i_col * ( p_sys->i_width / p_sys->i_cols )
+                            + ( i_col * p_sys->i_borderw ) / p_sys->i_cols;
+            }
+            else
+            {
+                /* center the video in the dedicated rectangle */
+                p_region->i_x = p_sys->i_xoffset
                         + i_col * ( p_sys->i_width / p_sys->i_cols )
-                        + ( i_col * p_sys->i_borderw ) / p_sys->i_cols;
-        }
-        else
-        {
-            /* center the video in the dedicated rectangle */
-            p_region->i_x = p_sys->i_xoffset
-                    + i_col * ( p_sys->i_width / p_sys->i_cols )
-                    + ( i_col * p_sys->i_borderw ) / p_sys->i_cols
-                    + ( col_inner_width - fmt_out.i_width ) / 2;
-        }
+                        + ( i_col * p_sys->i_borderw ) / p_sys->i_cols
+                        + ( col_inner_width - fmt_out.i_width ) / 2;
+            }
 
-        if( fmt_out.i_height < row_inner_height
-            || p_sys->b_ar || p_sys->b_keep )
-        {
-            /* we don't have to center the video since it takes the
-            whole rectangle area or it's taller than the rectangle */
-            p_region->i_y = p_sys->i_yoffset
-                    + i_row * ( p_sys->i_height / p_sys->i_rows )
-                    + ( i_row * p_sys->i_borderh ) / p_sys->i_rows;
+            if( fmt_out.i_height > row_inner_height
+                || p_sys->b_ar || p_sys->b_keep )
+            {
+                /* we don't have to center the video since it takes the
+                whole rectangle area or it's taller than the rectangle */
+                p_region->i_y = p_sys->i_yoffset
+                        + i_row * ( p_sys->i_height / p_sys->i_rows )
+                        + ( i_row * p_sys->i_borderh ) / p_sys->i_rows;
+            }
+            else
+            {
+                /* center the video in the dedicated rectangle */
+                p_region->i_y = p_sys->i_yoffset
+                        + i_row * ( p_sys->i_height / p_sys->i_rows )
+                        + ( i_row * p_sys->i_borderh ) / p_sys->i_rows
+                        + ( row_inner_height - fmt_out.i_height ) / 2;
+            }
         }
-        else
-        {
-            /* center the video in the dedicated rectangle */
-            p_region->i_y = p_sys->i_yoffset
-                    + i_row * ( p_sys->i_height / p_sys->i_rows )
-                    + ( i_row * p_sys->i_borderh ) / p_sys->i_rows
-                    + ( row_inner_height - fmt_out.i_height ) / 2;
-        }
+        p_region->i_align = p_sys->i_align;
+        p_region->i_alpha = p_es->i_alpha;
 
         if( p_region_prev == NULL )
         {
@@ -760,8 +744,11 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
                             vlc_value_t oldval, vlc_value_t newval,
                             void *p_data )
 {
+    VLC_UNUSED(oldval);
     filter_sys_t *p_sys = (filter_sys_t *) p_data;
-    if( !strcmp( psz_var, "mosaic-alpha" ) )
+
+#define VAR_IS( a ) !strcmp( psz_var, CFG_PREFIX a )
+    if( VAR_IS( "alpha" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing alpha from %d/255 to %d/255",
@@ -769,7 +756,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_alpha = __MIN( __MAX( newval.i_int, 0 ), 255 );
         vlc_mutex_unlock( &p_sys->lock );
     }
-    else if( !strcmp( psz_var, "mosaic-height" ) )
+    else if( VAR_IS( "height" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing height from %dpx to %dpx",
@@ -777,7 +764,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_height = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
-    else if( !strcmp( psz_var, "mosaic-width" ) )
+    else if( VAR_IS( "width" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing width from %dpx to %dpx",
@@ -785,7 +772,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_width = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
-    else if( !strcmp( psz_var, "mosaic-xoffset" ) )
+    else if( VAR_IS( "xoffset" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing x offset from %dpx to %dpx",
@@ -793,7 +780,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_xoffset = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
-    else if( !strcmp( psz_var, "mosaic-yoffset" ) )
+    else if( VAR_IS( "yoffset" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing y offset from %dpx to %dpx",
@@ -801,7 +788,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_yoffset = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
-    else if( !strcmp( psz_var, "mosaic-align" ) )
+    else if( VAR_IS( "align" ) )
     {
         int i_old = 0, i_new = 0;
         vlc_mutex_lock( &p_sys->lock );
@@ -816,7 +803,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_align = newval.i_int;
         vlc_mutex_unlock( &p_sys->lock );
     }
-    else if( !strcmp( psz_var, "mosaic-borderw" ) )
+    else if( VAR_IS( "borderw" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing border width from %dpx to %dpx",
@@ -824,7 +811,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_borderw = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
-    else if( !strcmp( psz_var, "mosaic-borderh" ) )
+    else if( VAR_IS( "borderh" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing border height from %dpx to %dpx",
@@ -832,23 +819,27 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_borderh = __MAX( newval.i_int, 0 );
         vlc_mutex_unlock( &p_sys->lock );
     }
-    else if( !strcmp( psz_var, "mosaic-position" ) )
+    else if( VAR_IS( "position" ) )
     {
-        if( newval.i_int > 1 || newval.i_int < 0 )
+        if( newval.i_int > 2 || newval.i_int < 0 )
         {
-            msg_Err( p_this, "Position is either 0 (auto) or 1 (fixed)" );
+            msg_Err( p_this,
+                     "Position is either 0 (%s), 1 (%s) or 2 (%s)",
+                     ppsz_pos_descriptions[0],
+                     ppsz_pos_descriptions[1],
+                     ppsz_pos_descriptions[2] );
         }
         else
         {
             vlc_mutex_lock( &p_sys->lock );
             msg_Dbg( p_this, "changing position method from %d (%s) to %d (%s)",
-                             p_sys->i_position, ppsz_pos_descriptions[p_sys->i_position],
-                             newval.i_int, ppsz_pos_descriptions[newval.i_int]);
+                    p_sys->i_position, ppsz_pos_descriptions[p_sys->i_position],
+                    newval.i_int, ppsz_pos_descriptions[newval.i_int]);
             p_sys->i_position = newval.i_int;
             vlc_mutex_unlock( &p_sys->lock );
         }
     }
-    else if( !strcmp( psz_var, "mosaic-rows" ) )
+    else if( VAR_IS( "rows" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing number of rows from %d to %d",
@@ -856,7 +847,7 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_rows = __MAX( newval.i_int, 1 );
         vlc_mutex_unlock( &p_sys->lock );
     }
-    else if( !strcmp( psz_var, "mosaic-cols" ) )
+    else if( VAR_IS( "cols" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         msg_Dbg( p_this, "changing number of columns from %d to %d",
@@ -864,7 +855,60 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_cols = __MAX( newval.i_int, 1 );
         vlc_mutex_unlock( &p_sys->lock );
     }
-    else if( !strcmp( psz_var, "mosaic-keep-aspect-ratio" ) )
+    else if( VAR_IS( "order" ) )
+    {
+        char *psz_order;
+        int i_index;
+        vlc_mutex_lock( &p_sys->lock );
+        msg_Dbg( p_this, "Changing mosaic order to %s", newval.psz_string );
+
+        psz_order = newval.psz_string;
+
+        while( p_sys->i_order_length-- )
+        {
+            free( p_sys->ppsz_order[p_sys->i_order_length] );
+        }
+        free( p_sys->ppsz_order );
+        p_sys->ppsz_order = NULL;
+
+        if( *psz_order )
+        {
+            char *psz_end = NULL;
+            i_index = 0;
+            do
+            {
+                psz_end = strchr( psz_order, ',' );
+                i_index++;
+                p_sys->ppsz_order = realloc( p_sys->ppsz_order,
+                                    i_index * sizeof(char *) );
+                p_sys->ppsz_order[i_index - 1] = strndup( psz_order,
+                                           psz_end - psz_order );
+                psz_order = psz_end+1;
+            } while( psz_end );
+            p_sys->i_order_length = i_index;
+        }
+
+        vlc_mutex_unlock( &p_sys->lock );
+    }
+    else if( VAR_IS( "offsets" ) )
+    {
+        vlc_mutex_lock( &p_sys->lock );
+        msg_Info( p_this, "Changing mosaic-offsets to %s", newval.psz_string );
+
+        if( p_sys->i_offsets_length != 0 )
+        {
+            p_sys->i_offsets_length = 0;
+            free( p_sys->pi_x_offsets );
+            free( p_sys->pi_y_offsets );
+            p_sys->pi_x_offsets = NULL;
+            p_sys->pi_y_offsets = NULL;
+        }
+
+        mosaic_ParseSetOffsets( p_this, p_sys, newval.psz_string );
+
+        vlc_mutex_unlock( &p_sys->lock );
+    }
+    else if( VAR_IS( "keep-aspect-ratio" ) )
     {
         vlc_mutex_lock( &p_sys->lock );
         if( newval.i_int )
@@ -879,5 +923,16 @@ static int MosaicCallback( vlc_object_t *p_this, char const *psz_var,
         }
         vlc_mutex_unlock( &p_sys->lock );
     }
+    else if( VAR_IS( "keep-picture" ) )
+    {
+        vlc_mutex_lock( &p_sys->lock );
+        p_sys->b_keep = newval.b_bool;
+        if ( !p_sys->b_keep && !p_sys->p_image )
+        {
+            p_sys->p_image = image_HandlerCreate( p_this );
+        }
+        vlc_mutex_unlock( &p_sys->lock );
+    }
+
     return VLC_SUCCESS;
 }

@@ -2,7 +2,7 @@
  * decoder.c: dummy decoder plugin for vlc.
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 898dd2e48bd48bca9d5ee2d2eb3e8ed34092076a $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -24,8 +24,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_codec.h>
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h> /* write(), close() */
@@ -42,11 +46,10 @@
 #   include <fcntl.h>
 #endif
 
-#ifdef HAVE_LIMITS_H
-#   include <limits.h> /* PATH_MAX */
-#endif
+#include <limits.h> /* PATH_MAX */
 
-#include <stdio.h> /* sprintf() */
+
+#include "dummy.h"
 
 /*****************************************************************************
  * decoder_sys_t : theora decoder descriptor
@@ -64,7 +67,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block );
 /*****************************************************************************
  * OpenDecoder: Open the decoder
  *****************************************************************************/
-int E_(OpenDecoder) ( vlc_object_t *p_this )
+int OpenDecoder ( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
@@ -132,7 +135,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         write( p_sys->i_fd, p_block->p_buffer, p_block->i_buffer );
 #endif
 
-        msg_Dbg( p_dec, "dumped %i bytes", p_block->i_buffer );
+        msg_Dbg( p_dec, "dumped %zu bytes", p_block->i_buffer );
     }
 
     block_Release( p_block );
@@ -142,7 +145,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 /*****************************************************************************
  * CloseDecoder: decoder destruction
  *****************************************************************************/
-void E_(CloseDecoder) ( vlc_object_t *p_this )
+void CloseDecoder ( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t *)p_this;
     decoder_sys_t *p_sys = p_dec->p_sys;

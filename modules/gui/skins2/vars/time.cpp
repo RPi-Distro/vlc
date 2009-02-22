@@ -2,7 +2,7 @@
  * time.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 57eb8da9e3d2e50cf6c4e909672e54c0a3a0e29d $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,11 +22,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdio.h>  // snprintf
 
 #include "time.hpp"
-#include <vlc/input.h>
-
+#include <vlc_input.h>
 
 void StreamTime::set( float percentage, bool updateVLC )
 {

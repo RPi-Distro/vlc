@@ -2,7 +2,7 @@
  * pda_callbacks.c : Callbacks for the pda Linux Gtk+ plugin.
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: f3bdf14ed58713285504e4f7da48c4f0e0738d46 $
+ * $Id: 936060489a2f56443927e9ce0783b2f701f5697a $
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *
@@ -25,22 +25,22 @@
  * Preamble
  *****************************************************************************/
 #include <sys/types.h>                                              /* off_t */
-#include <stdlib.h>
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/vout.h>
 
-#include <stdio.h>
-#include <string.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_input.h>
+#include <vlc_interface.h>
+#include <vlc_playlist.h>
+#include <vlc_vout.h>
+
 #include <dirent.h>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <pwd.h>
 #include <grp.h>
-
-#ifdef HAVE_CONFIG_H
-#  include <config.h>
-#endif
 
 #include <gtk/gtk.h>
 
@@ -56,7 +56,7 @@ static char *get_file_perms(struct stat st);
 /*****************************************************************************
  * Useful function to retrieve p_intf
  ****************************************************************************/
-void * E_(__GtkGetIntf)( GtkWidget * widget )
+void * __GtkGetIntf( GtkWidget * widget )
 {
     void *p_data;
 
@@ -87,15 +87,14 @@ void * E_(__GtkGetIntf)( GtkWidget * widget )
     return p_data;
 }
 
-void PlaylistAddItem(GtkWidget *widget, gchar *name, char **ppsz_options, int i_size)
+static void PlaylistAddItem(GtkWidget *widget, gchar *name, char **ppsz_options, int i_size)
 {
     intf_thread_t *p_intf = GtkGetIntf( widget );
     playlist_t    *p_playlist;
     int           i_id , i_pos=0;
     GtkTreeView   *p_tvplaylist = NULL;
 
-    p_playlist = (playlist_t *)
-             vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+    p_playlist = pl_Yield( p_intf );
 
     if( p_playlist ==  NULL)
     {   /* Bail out when VLC's playlist object is not found. */
@@ -110,7 +109,7 @@ void PlaylistAddItem(GtkWidget *widget, gchar *name, char **ppsz_options, int i_
         GtkTreeIter   p_play_iter;
 
         p_play_model = gtk_tree_view_get_model(p_tvplaylist);
-        
+ 
         if (p_play_model)
         {
             int i;
@@ -120,7 +119,7 @@ void PlaylistAddItem(GtkWidget *widget, gchar *name, char **ppsz_options, int i_
             gtk_list_store_set (GTK_LIST_STORE(p_play_model), &p_play_iter,
                                     0, name,   /* Add path to it !!! */
                                     1, "no info",
-                                    2, p_playlist->i_size, /* Hidden index. */
+                                    2, playlist_CurrentSize(p_playlist), /* Hidden index. */
                                     -1 );
 
             /* Add to VLC's playlist */
@@ -137,7 +136,8 @@ void PlaylistAddItem(GtkWidget *widget, gchar *name, char **ppsz_options, int i_
                               (const char*)name,
                               PLAYLIST_APPEND, PLAYLIST_END,
                               (mtime_t) 0,
-                              (const char **) ppsz_options, i_pos );
+                              (const char **) ppsz_options, i_pos,
+                              true, pl_Unlocked );
             }
 
             /* Cleanup memory */
@@ -146,10 +146,11 @@ void PlaylistAddItem(GtkWidget *widget, gchar *name, char **ppsz_options, int i_
             free(ppsz_options);
         }
     }
-    vlc_object_release( p_playlist );
+    pl_Release( p_intf );
 }
 
-void PlaylistRebuildListStore( GtkListStore * p_list, playlist_t * p_playlist )
+void PlaylistRebuildListStore( intf_thread_t *p_intf,
+    GtkListStore * p_list, playlist_t * p_playlist )
 {
     GtkTreeIter iter;
     int         i_dummy;
@@ -160,19 +161,23 @@ void PlaylistRebuildListStore( GtkListStore * p_list, playlist_t * p_playlist )
     red.blue    = 0;
     red.green   = 0;
 #endif
-    vlc_mutex_lock( &p_playlist->object_lock );
-    for( i_dummy = 0; i_dummy < p_playlist->i_size ; i_dummy++ )
+    vlc_object_lock( p_playlist );
+    for( i_dummy = 0; i_dummy < playlist_CurrentSize(p_playlist) ; i_dummy++ )
     {
-        ppsz_text[0] = p_playlist->pp_items[i_dummy]->input.psz_name;
-        ppsz_text[1] = "no info";
-        gtk_list_store_append (p_list, &iter);
-        gtk_list_store_set (p_list, &iter,
-                            0, ppsz_text[0],
-                            1, ppsz_text[1],
-                            2, i_dummy, /* Hidden index */
-                            -1);
+        playlist_item_t *p_item = playlist_ItemGetById( p_playlist, i_dummy, pl_Locked );
+        if( p_item )
+        {
+            ppsz_text[0] = p_item->p_input->psz_name;
+            ppsz_text[1] = "no info";
+            gtk_list_store_append (p_list, &iter);
+            gtk_list_store_set (p_list, &iter,
+                                0, ppsz_text[0],
+                                1, ppsz_text[1],
+                                2, i_dummy, /* Hidden index */
+                                -1);
+        }
     }
-    vlc_mutex_unlock( &p_playlist->object_lock );
+    vlc_object_unlock( p_playlist );
 }
 
 /*****************************************************************
@@ -225,11 +230,11 @@ void ReadDirectory(intf_thread_t *p_intf, GtkListStore *p_list, char *psz_dir )
                                 4, ppsz_text[3],
                                 -1);
 
-            if (ppsz_text[1]) free(ppsz_text[1]);
+            free(ppsz_text[1]);
         }
             /* kludge */
         for (i=0; i<n; i++)
-        {           
+        {
             if ((pp_namelist[i]->d_name[0] != '.') &&
                 (lstat(pp_namelist[i]->d_name, &st)==0))
             {
@@ -254,7 +259,7 @@ void ReadDirectory(intf_thread_t *p_intf, GtkListStore *p_list, char *psz_dir )
                                     4, ppsz_text[3],
                                     -1);
 
-                if (ppsz_text[1]) free(ppsz_text[1]);
+                free(ppsz_text[1]);
             }
         }
         free(pp_namelist);
@@ -342,7 +347,7 @@ gboolean onPDADeleteEvent(GtkWidget *widget, GdkEvent *event, gpointer user_data
     intf_thread_t *p_intf = GtkGetIntf( widget );
 
     vlc_mutex_lock( &p_intf->change_lock );
-    p_intf->p_vlc->b_die = VLC_TRUE;
+    vlc_object_kill( p_intf->p_libvlc );
     vlc_mutex_unlock( &p_intf->change_lock );
     msg_Dbg( p_intf, "about to exit vlc ... signaled" );
 
@@ -373,34 +378,33 @@ void onPause(GtkButton *button, gpointer user_data)
 void onPlay(GtkButton *button, gpointer user_data)
 {
     intf_thread_t *p_intf = GtkGetIntf( GTK_WIDGET( button ) );
-    playlist_t *p_playlist = vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+    playlist_t *p_playlist = pl_Yield( p_intf );
 
     if (p_playlist)
     {
-        vlc_mutex_lock( &p_playlist->object_lock );
-        if (p_playlist->i_size)
+        vlc_object_lock( p_playlist );
+        if (playlist_CurrentSize(p_playlist))
         {
-            vlc_mutex_unlock( &p_playlist->object_lock );
+            vlc_object_unlock( p_playlist );
             playlist_Play( p_playlist );
             gdk_window_lower( p_intf->p_sys->p_window->window );
         }
         else
         {
-            vlc_mutex_unlock( &p_playlist->object_lock );
+            vlc_object_unlock( p_playlist );
         }
-        vlc_object_release( p_playlist );
+        pl_Release( p_intf );
     }
 }
 
 void onStop(GtkButton *button, gpointer user_data)
 {
     intf_thread_t *p_intf = GtkGetIntf( GTK_WIDGET( button ) );
-    playlist_t *p_playlist = vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                                       FIND_ANYWHERE );
+    playlist_t *p_playlist = pl_Yield( p_intf );
     if (p_playlist)
     {
         playlist_Stop( p_playlist );
-        vlc_object_release( p_playlist );
+        pl_Release( p_intf );
         gdk_window_raise( p_intf->p_sys->p_window->window );
     }
 }
@@ -459,7 +463,7 @@ void SliderMove(GtkRange *range, GtkScrollType scroll, gpointer user_data)
 }
 
 
-void addSelectedToPlaylist(GtkTreeModel *model, GtkTreePath *path,
+static void addSelectedToPlaylist(GtkTreeModel *model, GtkTreePath *path,
                            GtkTreeIter *iter, gpointer *userdata)
 {
     gchar *psz_filename;
@@ -480,7 +484,7 @@ void onFileListRow(GtkTreeView *treeview, GtkTreePath *path,
         struct stat   st;
         GtkTreeModel *p_model;
         GtkTreeIter   iter;
-        gchar        *psz_filename;
+        char         *psz_filename;
 
         /* This might be a directory selection */
         p_model = gtk_tree_view_get_model(treeview);
@@ -531,7 +535,7 @@ void onAddFileToPlaylist(GtkButton *button, gpointer user_data)
     {
         GtkTreeSelection *p_selection = gtk_tree_view_get_selection(p_treeview);
 
-        gtk_tree_selection_selected_foreach(p_selection, (GtkTreeSelectionForeachFunc) &addSelectedToPlaylist, (gpointer) p_treeview);    
+        gtk_tree_selection_selected_foreach(p_selection, (GtkTreeSelectionForeachFunc) &addSelectedToPlaylist, (gpointer) p_treeview);
     }
 }
 
@@ -597,7 +601,7 @@ void onAddNetworkPlaylist(GtkButton *button, gpointer user_data)
     if (b_network_transcode)
     {
         msg_Dbg( p_intf, "Network transcode option selected." );
-        onAddTranscodeToPlaylist(GTK_WIDGET(button), (gchar *)psz_mrl_name);
+        onAddTranscodeToPlaylist(button, (gchar *)psz_mrl_name);
     }
     else
     {
@@ -642,7 +646,7 @@ void onAddCameraToPlaylist(GtkButton *button, gpointer user_data)
 
     GtkCheckButton  *p_check_v4l_transcode = NULL;
     gboolean         b_v4l_transcode;
-    
+ 
     char **ppsz_options = NULL; /* list of options */
     int  i_options=0;
     char v4l_mrl[6];
@@ -735,7 +739,7 @@ void onAddCameraToPlaylist(GtkButton *button, gpointer user_data)
     if (b_v4l_transcode)
     {
         msg_Dbg( p_intf, "Camera transcode option selected." );
-        onAddTranscodeToPlaylist(GTK_WIDGET(button), (gchar *)v4l_mrl);
+        onAddTranscodeToPlaylist(button, (gchar *)v4l_mrl);
     }
     else
     {
@@ -767,8 +771,7 @@ void onPlaylistRow(GtkTreeView *treeview, GtkTreePath *path,
 {
     intf_thread_t *p_intf = GtkGetIntf( GTK_WIDGET(treeview) );
     GtkTreeSelection *p_selection = gtk_tree_view_get_selection(treeview);
-    playlist_t * p_playlist = vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                                       FIND_ANYWHERE );
+    playlist_t * p_playlist = pl_Yield( p_intf );
 
     if( p_playlist == NULL )
     {
@@ -780,6 +783,7 @@ void onPlaylistRow(GtkTreeView *treeview, GtkTreePath *path,
         GtkTreeModel *p_model;
         GtkTreeIter   iter;
         int           i_row;
+        int           i_skip;
 
         /* This might be a directory selection */
         p_model = gtk_tree_view_get_model(treeview);
@@ -795,17 +799,17 @@ void onPlaylistRow(GtkTreeView *treeview, GtkTreePath *path,
         }
 
         gtk_tree_model_get(p_model, &iter, 2, &i_row, -1);
-        playlist_Goto( p_playlist, i_row );
+        i_skip = i_row - p_playlist->i_current_index;
+        playlist_Skip( p_playlist, i_skip );
     }
-    vlc_object_release( p_playlist );
+    pl_Release( p_intf );
 }
 
 
 void onUpdatePlaylist(GtkButton *button, gpointer user_data)
 {
     intf_thread_t *  p_intf = GtkGetIntf( button );
-    playlist_t * p_playlist = vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                                       FIND_ANYWHERE );
+    playlist_t * p_playlist = pl_Yield( p_intf );
     GtkTreeView *p_tvplaylist = NULL;
 
     if( p_playlist == NULL )
@@ -825,15 +829,15 @@ void onUpdatePlaylist(GtkButton *button, gpointer user_data)
                     G_TYPE_UINT);  /* Hidden field */
         if (p_model)
         {
-            PlaylistRebuildListStore(p_model, p_playlist);
+            PlaylistRebuildListStore(p_intf, p_model, p_playlist);
             gtk_tree_view_set_model(GTK_TREE_VIEW(p_tvplaylist), GTK_TREE_MODEL(p_model));
             g_object_unref(p_model);
         }
     }
-    vlc_object_release( p_playlist );
+    pl_Release( p_intf );
 }
 
-void deleteItemFromPlaylist(gpointer data, gpointer user_data)
+static void deleteItemFromPlaylist(gpointer data, gpointer user_data)
 {
     gtk_tree_path_free((GtkTreePath*) data); // removing an item.
 }
@@ -841,8 +845,7 @@ void deleteItemFromPlaylist(gpointer data, gpointer user_data)
 void onDeletePlaylist(GtkButton *button, gpointer user_data)
 {
     intf_thread_t *p_intf = GtkGetIntf( button );
-    playlist_t * p_playlist = vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                                       FIND_ANYWHERE );
+    playlist_t * p_playlist = pl_Yield( p_intf );
     GtkTreeView    *p_tvplaylist;
 
     /* Delete an arbitrary item from the playlist */
@@ -881,11 +884,11 @@ void onDeletePlaylist(GtkButton *button, gpointer user_data)
                         gint item;
 
                         gtk_tree_model_get(p_model, &iter, 2, &item, -1);
-                        playlist_LockDelete(p_playlist, item);
+                        msg_Err( p_playlist, "PDA delete broken");
                     }
                 }
             }
-#if 0 
+#if 0
             g_list_foreach (p_rows, (GFunc*)gtk_tree_path_free, NULL);
 #endif /* Testing the next line */
             g_list_foreach (p_rows, deleteItemFromPlaylist, NULL);
@@ -899,20 +902,19 @@ void onDeletePlaylist(GtkButton *button, gpointer user_data)
                     G_TYPE_UINT);  /* Hidden field */
         if (p_store)
         {
-            PlaylistRebuildListStore(p_store, p_playlist);
+            PlaylistRebuildListStore(p_intf, p_store, p_playlist);
             gtk_tree_view_set_model(GTK_TREE_VIEW(p_tvplaylist), GTK_TREE_MODEL(p_store));
             g_object_unref(p_store);
         }
     }
-    vlc_object_release( p_playlist );
+    pl_Release( p_intf );
 }
 
 
 void onClearPlaylist(GtkButton *button, gpointer user_data)
 {
     intf_thread_t *p_intf = GtkGetIntf( button );
-    playlist_t * p_playlist = vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                                       FIND_ANYWHERE );
+    playlist_t * p_playlist = pl_Yield( p_intf );
     GtkTreeView    *p_tvplaylist;
     int item;
 
@@ -921,11 +923,11 @@ void onClearPlaylist(GtkButton *button, gpointer user_data)
         return;
     }
 
-    for(item = p_playlist->i_size - 1; item >= 0 ;item-- )
+    for(item = playlist_CurrentSize(p_playlist) - 1; item >= 0 ;item-- )
     {
-        playlist_LockDelete( p_playlist, item);
+        msg_Err( p_playlist, "fix pda delete" );
     }
-    vlc_object_release( p_playlist );
+    pl_Release( p_intf );
 
     // Remove all entries from the Playlist widget.
     p_tvplaylist = (GtkTreeView*) lookup_widget( GTK_WIDGET(button), "tvPlaylist");
@@ -1037,7 +1039,7 @@ void onAddTranscodeToPlaylist(GtkButton *button, gpointer user_data)
     }
 
     /* Update the playlist */
-    playlist_t *p_playlist = (playlist_t *)vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+    playlist_t *p_playlist = pl_Yield( p_intf );
     if( p_playlist == NULL ) return;
 
     /* Get all the options. */
@@ -1051,12 +1053,12 @@ void onAddTranscodeToPlaylist(GtkButton *button, gpointer user_data)
     p_entryVideoBitrate = (GtkSpinButton*) lookup_widget( GTK_WIDGET(button), "entryVideoBitrate" );
     p_entryVideoBitrateTolerance = (GtkSpinButton*) lookup_widget( GTK_WIDGET(button), "entryVideoBitrateTolerance" );
     p_entryVideoKeyFrameInterval = (GtkSpinButton*) lookup_widget( GTK_WIDGET(button), "entryVideoKeyFrameInterval" );
-    
+ 
     p_video_codec = gtk_entry_get_text(GTK_ENTRY(p_entryVideoCodec));
     i_video_bitrate = gtk_spin_button_get_value_as_int(p_entryVideoBitrate);
     i_video_bitrate_tolerance = gtk_spin_button_get_value_as_int(p_entryVideoBitrateTolerance);
     i_video_keyframe_interval = gtk_spin_button_get_value_as_int(p_entryVideoKeyFrameInterval);
-    
+ 
     i_pos += snprintf( &ppsz_options[i_options][i_pos], VLC_MAX_MRL - i_pos, "vcodec=%s,", (char*)p_video_codec );
     if (i_pos>=VLC_MAX_MRL) ppsz_options[i_options][VLC_MAX_MRL-1] = '\0';
     i_pos += snprintf( &ppsz_options[i_options][i_pos], VLC_MAX_MRL - i_pos, "vb=%d,", (int)i_video_bitrate );
@@ -1148,7 +1150,7 @@ void onEntryStdAccessChanged(GtkEditable *editable, gpointer user_data)
     GtkCheckButton *p_checkSAP = NULL;
     GtkCheckButton *p_checkSLP = NULL;
     GtkEntry       *p_entryStdAccess = NULL;
-    const gchar    *p_std_access = NULL;    
+    const gchar    *p_std_access = NULL;
     gboolean        b_announce = FALSE;
 
     p_entryStdAccess = (GtkEntry*) lookup_widget( GTK_WIDGET(editable), "entryStdAccess" );

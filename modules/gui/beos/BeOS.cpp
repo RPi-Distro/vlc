@@ -2,11 +2,11 @@
  * beos.cpp : BeOS plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: a33901150af2655222ab3e9037d9c8564df46a29 $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
- *          Stephan AÃmus <stippi@yellowbites.com>
+ *          Stephan Aßmus <stippi@yellowbites.com>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,22 +26,25 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 
 /*****************************************************************************
  * External prototypes
  *****************************************************************************/
-int  E_(OpenIntf)     ( vlc_object_t * );
-void E_(CloseIntf)    ( vlc_object_t * );
+int  OpenIntf     ( vlc_object_t * );
+void CloseIntf    ( vlc_object_t * );
 
-int  E_(OpenAudio)    ( vlc_object_t * );
-void E_(CloseAudio)   ( vlc_object_t * );
+int  OpenAudio    ( vlc_object_t * );
+void CloseAudio   ( vlc_object_t * );
 
-int  E_(OpenVideo)    ( vlc_object_t * );
-void E_(CloseVideo)   ( vlc_object_t * );
+int  OpenVideo    ( vlc_object_t * );
+void CloseVideo   ( vlc_object_t * );
 
 /*****************************************************************************
  * Module descriptor
@@ -49,16 +52,16 @@ void E_(CloseVideo)   ( vlc_object_t * );
 vlc_module_begin();
     set_category( CAT_INTERFACE );
     set_subcategory( SUBCAT_INTERFACE_MAIN );
-    add_bool( "beos-dvdmenus", 0, NULL, _("Use DVD Menus"), "", VLC_TRUE );
+    add_bool( "beos-dvdmenus", 0, NULL, _("Use DVD Menus"), "", true );
     set_shortname( "BeOS" );
-    set_description( _("BeOS standard API interface") );
+    set_description( N_("BeOS standard API interface") );
     set_capability( "interface", 100 );
-    set_callbacks( E_(OpenIntf), E_(CloseIntf) );
+    set_callbacks( OpenIntf, CloseIntf );
 
     add_submodule();
         set_capability( "video output", 100 );
-        set_callbacks( E_(OpenVideo), E_(CloseVideo) );
+        set_callbacks( OpenVideo, CloseVideo );
     add_submodule();
         set_capability( "audio output", 100 );
-        set_callbacks( E_(OpenAudio), E_(CloseAudio) );
+        set_callbacks( OpenAudio, CloseAudio );
 vlc_module_end();

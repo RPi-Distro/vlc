@@ -2,7 +2,7 @@
  * realaudio.c: a realaudio decoder that uses the realaudio library/dll
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 4989aae208c958870662bf8faa0f398f8ee7421b $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,10 +22,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
-#include <vlc/vout.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
+#include <vlc_codec.h>
 
 #ifdef LOADER
 /* Need the w32dll loader from mplayer */
@@ -58,7 +62,7 @@ static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
 vlc_module_begin();
-    set_description( _("RealAudio library decoder") );
+    set_description( N_("RealAudio library decoder") );
     set_capability( "decoder", 10 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_VCODEC );
@@ -85,7 +89,7 @@ struct decoder_sys_t
 
     /* Codec params */
     void *context;
-    int i_codec_flavor;
+    short int i_codec_flavor;
 
     void *dll;
     unsigned long (*raCloseCodec)(void*);
@@ -151,7 +155,7 @@ typedef struct __attribute__((__packed__)) {
 void *__builtin_new(unsigned long size) {return malloc(size);}
 void __builtin_delete(void *p) {free(p);}
 
-static int pi_channels_maps[7] =
+static const int pi_channels_maps[7] =
 {
     0,
     AOUT_CHAN_CENTER,
@@ -179,12 +183,15 @@ static int Open( vlc_object_t *p_this )
     switch( p_dec->fmt_in.i_codec )
     {
     case VLC_FOURCC('c','o','o','k'):
+    case VLC_FOURCC('a','t','r','c'):
+    case VLC_FOURCC('s','i','p','r'):
         break;
 
     default:
         return VLC_EGENERIC;
     }
 
+    /* Channel detection */
     if( p_dec->fmt_in.audio.i_channels <= 0 ||
         p_dec->fmt_in.audio.i_channels > 6 )
     {
@@ -194,19 +201,16 @@ static int Open( vlc_object_t *p_this )
     }
 
     p_dec->p_sys = p_sys = malloc( sizeof( decoder_sys_t ) );
+    if( !p_sys )
+        return VLC_ENOMEM;
     memset( p_sys, 0, sizeof(decoder_sys_t) );
 
+    /* Flavor for SIPR codecs */
     p_sys->i_codec_flavor = -1;
     if( p_dec->fmt_in.i_codec == VLC_FOURCC('s','i','p','r') )
     {
-        if( p_dec->fmt_in.audio.i_bitspersample > 1531 )
-            p_sys->i_codec_flavor = 3;
-        else if( p_dec->fmt_in.audio.i_bitspersample > 937 )
-            p_sys->i_codec_flavor = 1;
-        else if( p_dec->fmt_in.audio.i_bitspersample > 719 )
-            p_sys->i_codec_flavor = 0;
-        else
-            p_sys->i_codec_flavor = 2;
+        p_sys->i_codec_flavor = p_dec->fmt_in.audio.i_flavor;
+        msg_Dbg( p_dec, "Got sipr flavor %d", p_sys->i_codec_flavor );
     }
 
     if( OpenDll( p_dec ) != VLC_SUCCESS )
@@ -234,6 +238,11 @@ static int Open( vlc_object_t *p_this )
     p_dec->pf_decode_audio = Decode;
 
     p_sys->p_out = malloc( 4096 * 10 );
+    if( !p_sys->p_out )
+    {
+        free( p_sys );
+        return VLC_ENOMEM;
+    }
     p_sys->i_out = 0;
 
     return VLC_SUCCESS;
@@ -247,7 +256,7 @@ static void Close( vlc_object_t *p_this )
     decoder_t *p_dec = (decoder_t*)p_this;
 
     CloseDll( p_dec );
-    if( p_dec->p_sys->p_out ) free( p_dec->p_sys->p_out );
+    free( p_dec->p_sys->p_out );
     free( p_dec->p_sys );
 }
 
@@ -259,6 +268,7 @@ static int OpenDll( decoder_t *p_dec )
     char *psz_dll;
     int i, i_result;
 
+    /** Find the good path for the dlls.**/
     char *ppsz_path[] =
     {
       ".",
@@ -268,9 +278,16 @@ static int OpenDll( decoder_t *p_dec )
       "/usr/lib/RealPlayer8/Codecs",
       "/opt/RealPlayer8/Codecs",
       "/usr/lib/RealPlayer9/users/Real/Codecs",
+      "/usr/lib/RealPlayer10/codecs",
+      "/usr/lib/RealPlayer10GOLD/codecs",
+      "/usr/lib/helix/player/codecs",
       "/usr/lib64/RealPlayer8/Codecs",
       "/usr/lib64/RealPlayer9/users/Real/Codecs",
+      "/usr/lib64/RealPlayer10/codecs",
+      "/usr/lib64/RealPlayer10GOLD/codecs",
       "/usr/lib/win32",
+      "/usr/lib/codecs",
+      "/usr/local/lib/codecs",
 #endif
       NULL,
       NULL,
@@ -280,18 +297,7 @@ static int OpenDll( decoder_t *p_dec )
 #ifdef WIN32
     char psz_win32_real_codecs[MAX_PATH + 1];
     char psz_win32_helix_codecs[MAX_PATH + 1];
-#endif
 
-    for( i = 0; ppsz_path[i]; i++ )
-    {
-        asprintf( &psz_dll, "%s/%4.4s.so.6.0", ppsz_path[i],
-                  (char *)&p_dec->fmt_in.i_codec );
-        i_result = OpenNativeDll( p_dec, ppsz_path[i], psz_dll );
-        free( psz_dll );
-        if( i_result == VLC_SUCCESS ) return VLC_SUCCESS;
-    }
-
-#ifdef WIN32
     {
         HKEY h_key;
         DWORD i_type, i_data = MAX_PATH + 1, i_index = 1;
@@ -333,22 +339,54 @@ static int OpenDll( decoder_t *p_dec )
     }
 #endif
 
+
+    /** Try the native libraries first **/
+#ifndef WIN32
+    for( i = 0; ppsz_path[i]; i++ )
+    {
+        /* Old format */
+        if( asprintf( &psz_dll, "%s/%4.4s.so.6.0", ppsz_path[i],
+                  (char *)&p_dec->fmt_in.i_codec ) != -1 )
+        {
+            i_result = OpenNativeDll( p_dec, ppsz_path[i], psz_dll );
+            free( psz_dll );
+            if( i_result == VLC_SUCCESS ) return VLC_SUCCESS;
+        }
+
+        /* New format */
+        if( asprintf( &psz_dll, "%s/%4.4s.so", ppsz_path[i],
+                  (char *)&p_dec->fmt_in.i_codec ) != -1 )
+        {
+            i_result = OpenNativeDll( p_dec, ppsz_path[i], psz_dll );
+            free( psz_dll );
+            if( i_result == VLC_SUCCESS ) return VLC_SUCCESS;
+        }
+    }
+#endif
+
+    /** Or use the WIN32 dlls **/
+#if defined(LOADER) || defined(WIN32)
     for( i = 0; ppsz_path[i]; i++ )
     {
         /* New format */
-        asprintf( &psz_dll, "%s\\%4.4s.dll", ppsz_path[i],
-                  (char *)&p_dec->fmt_in.i_codec );
-        i_result = OpenWin32Dll( p_dec, ppsz_path[i], psz_dll );
-        free( psz_dll );
-        if( i_result == VLC_SUCCESS ) return VLC_SUCCESS;
+        if( asprintf( &psz_dll, "%s\\%4.4s.dll", ppsz_path[i],
+                  (char *)&p_dec->fmt_in.i_codec ) != -1 )
+        {
+            i_result = OpenWin32Dll( p_dec, ppsz_path[i], psz_dll );
+            free( psz_dll );
+            if( i_result == VLC_SUCCESS ) return VLC_SUCCESS;
+        }
 
         /* Old format */
-        asprintf( &psz_dll, "%s\\%4.4s3260.dll", ppsz_path[i],
-                  (char *)&p_dec->fmt_in.i_codec );
-        i_result = OpenWin32Dll( p_dec, ppsz_path[i], psz_dll );
-        free( psz_dll );
-        if( i_result == VLC_SUCCESS ) return VLC_SUCCESS;
+        if( asprintf( &psz_dll, "%s\\%4.4s3260.dll", ppsz_path[i],
+                  (char *)&p_dec->fmt_in.i_codec ) != -1 )
+        {
+            i_result = OpenWin32Dll( p_dec, ppsz_path[i], psz_dll );
+            free( psz_dll );
+            if( i_result == VLC_SUCCESS ) return VLC_SUCCESS;
+        }
     }
+#endif
 
     return VLC_EGENERIC;
 }
@@ -626,7 +664,7 @@ static aout_buffer_t *Decode( decoder_t *p_dec, block_t **pp_block )
         if( OpenDll( p_dec ) != VLC_SUCCESS )
         {
             /* Fatal */
-            p_dec->b_error = VLC_TRUE;
+            p_dec->b_error = true;
             return NULL;
         }
     }

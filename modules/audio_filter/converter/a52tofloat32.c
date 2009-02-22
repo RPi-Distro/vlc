@@ -4,7 +4,7 @@
  *   (http://liba52.sf.net/).
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 400bbd98ec5a3bba1cf0c7124692bec2b2a01527 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -27,10 +27,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                              /* strdup() */
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+
 #ifdef HAVE_STDINT_H
 #   include <stdint.h>                                         /* int16_t .. */
 #elif HAVE_INTTYPES_H
@@ -47,16 +50,16 @@
 #   include "a52dec/a52.h"
 #endif
 
-#include <vlc/decoder.h>
-#include "aout_internal.h"
-#include "vlc_filter.h"
+#include <vlc_aout.h>
+#include <vlc_block.h>
+#include <vlc_filter.h>
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 static int  Create    ( vlc_object_t * );
 static void Destroy   ( vlc_object_t * );
-static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,  
+static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
                         aout_buffer_t * );
 static int  Open      ( vlc_object_t *, filter_sys_t *,
                         audio_format_t, audio_format_t );
@@ -68,11 +71,7 @@ static block_t *Convert( filter_t *, block_t * );
 /* liba52 channel order */
 static const uint32_t pi_channels_in[] =
 { AOUT_CHAN_LFE, AOUT_CHAN_LEFT, AOUT_CHAN_CENTER, AOUT_CHAN_RIGHT,
-  AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT, 0 };
-/* our internal channel order (WG-4 order) */
-static const uint32_t pi_channels_out[] =
-{ AOUT_CHAN_LEFT, AOUT_CHAN_RIGHT, AOUT_CHAN_REARLEFT, AOUT_CHAN_REARRIGHT,
-  AOUT_CHAN_CENTER, AOUT_CHAN_LFE, 0 };
+  AOUT_CHAN_REARLEFT, AOUT_CHAN_REARCENTER, AOUT_CHAN_REARRIGHT, 0 };
 
 /*****************************************************************************
  * Local structures
@@ -80,9 +79,9 @@ static const uint32_t pi_channels_out[] =
 struct filter_sys_t
 {
     a52_state_t * p_liba52; /* liba52 internal structure */
-    vlc_bool_t b_dynrng; /* see below */
+    bool b_dynrng; /* see below */
     int i_flags; /* liba52 flags, see a52dec/doc/liba52.txt */
-    vlc_bool_t b_dontwarn;
+    bool b_dontwarn;
     int i_nb_channels; /* number of float32 per sample */
 
     int pi_chan_table[AOUT_CHAN_MAX]; /* channel reordering */
@@ -104,16 +103,16 @@ struct filter_sys_t
 
 vlc_module_begin();
     set_shortname( "A/52" );
-    set_description( _("ATSC A/52 (AC-3) audio decoder") );
+    set_description( N_("ATSC A/52 (AC-3) audio decoder") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACODEC );
-    add_bool( "a52-dynrng", 1, NULL, DYNRNG_TEXT, DYNRNG_LONGTEXT, VLC_FALSE );
-    add_bool( "a52-upmix", 0, NULL, UPMIX_TEXT, UPMIX_LONGTEXT, VLC_TRUE );
+    add_bool( "a52-dynrng", 1, NULL, DYNRNG_TEXT, DYNRNG_LONGTEXT, false );
+    add_bool( "a52-upmix", 0, NULL, UPMIX_TEXT, UPMIX_LONGTEXT, true );
     set_capability( "audio filter", 100 );
     set_callbacks( Create, Destroy );
 
     add_submodule();
-    set_description( _("ATSC A/52 (AC-3) audio decoder") );
+    set_description( N_("ATSC A/52 (AC-3) audio decoder") );
     set_capability( "audio filter2", 100 );
     set_callbacks( OpenFilter, CloseFilter );
 vlc_module_end();
@@ -146,10 +145,7 @@ static int Create( vlc_object_t *p_this )
     p_sys = malloc( sizeof(filter_sys_t) );
     p_filter->p_sys = (struct aout_filter_sys_t *)p_sys;
     if( p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
         return -1;
-    }
 
     i_ret = Open( VLC_OBJECT(p_filter), p_sys,
                   p_filter->input, p_filter->output );
@@ -161,7 +157,7 @@ static int Create( vlc_object_t *p_this )
 }
 
 /*****************************************************************************
- * Open: 
+ * Open:
  *****************************************************************************/
 static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
                  audio_format_t input, audio_format_t output )
@@ -271,7 +267,7 @@ static int Open( vlc_object_t *p_this, filter_sys_t *p_sys,
         return VLC_EGENERIC;
     }
 
-    aout_CheckChannelReorder( pi_channels_in, pi_channels_out,
+    aout_CheckChannelReorder( pi_channels_in, NULL,
                               output.i_physical_channels & AOUT_CHAN_PHYSMASK,
                               p_sys->i_nb_channels,
                               p_sys->pi_chan_table );
@@ -379,7 +375,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
         if ( ((p_sys->i_flags & A52_CHANNEL_MASK) == A52_CHANNEL1
                || (p_sys->i_flags & A52_CHANNEL_MASK) == A52_CHANNEL2
                || (p_sys->i_flags & A52_CHANNEL_MASK) == A52_MONO)
-              && (p_filter->output.i_physical_channels 
+              && (p_filter->output.i_physical_channels
                    & (AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT)) )
         {
             Duplicate( (float *)(p_out_buf->p_buffer + i * i_bytes_per_block),
@@ -416,7 +412,7 @@ static void Destroy( vlc_object_t *p_this )
 }
 
 /*****************************************************************************
- * OpenFilter: 
+ * OpenFilter:
  *****************************************************************************/
 static int OpenFilter( vlc_object_t *p_this )
 {
@@ -435,22 +431,13 @@ static int OpenFilter( vlc_object_t *p_this )
 #else
         p_filter->fmt_out.i_codec = VLC_FOURCC('f','l','3','2');
 #endif
-
-    /* Allocate the memory needed to store the module's structure */
-    p_sys = p_filter->p_sys = malloc( sizeof(filter_sys_t) );
-    if( p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
-        return VLC_EGENERIC;
-    }
+    p_filter->fmt_out.audio.i_bitspersample =
+        aout_BitsPerSample( p_filter->fmt_out.i_codec );
 
     /* Allocate the memory needed to store the module's structure */
     p_filter->p_sys = p_sys = malloc( sizeof(filter_sys_t) );
     if( p_sys == NULL )
-    {
-        msg_Err( p_filter, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     i_ret = Open( VLC_OBJECT(p_filter), p_sys,
                   p_filter->fmt_in.audio, p_filter->fmt_out.audio );
@@ -482,7 +469,8 @@ static block_t *Convert( filter_t *p_filter, block_t *p_block )
 
     if( !p_block || !p_block->i_samples )
     {
-        if( p_block ) p_block->pf_release( p_block );
+        if( p_block )
+            block_Release( p_block );
         return NULL;
     }
 
@@ -494,7 +482,7 @@ static block_t *Convert( filter_t *p_filter, block_t *p_block )
     if( !p_out )
     {
         msg_Warn( p_filter, "can't get output buffer" );
-        p_block->pf_release( p_block );
+        block_Release( p_block );
         return NULL;
     }
 
@@ -521,7 +509,7 @@ static block_t *Convert( filter_t *p_filter, block_t *p_block )
     p_out->i_buffer = out_buf.i_nb_bytes;
     p_out->i_samples = out_buf.i_nb_samples;
 
-    p_block->pf_release( p_block );
+    block_Release( p_block );
 
     return p_out;
 }

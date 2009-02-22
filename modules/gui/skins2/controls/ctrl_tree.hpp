@@ -1,10 +1,11 @@
 /*****************************************************************************
  * ctrl_tree.hpp
  *****************************************************************************
- * Copyright (C) 2003 VideoLAN
- * $Id: da3ccd785ba5ecdddc2cc2325e5cf31aa5b8b7be $
+ * Copyright (C) 2003 the VideoLAN team
+ * $Id$
  *
- * Authors: Antoine Cellerier
+ * Authors: Antoine Cellerier <dionoea@videolan.org>
+ *          Clément Stenac <zorglub@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

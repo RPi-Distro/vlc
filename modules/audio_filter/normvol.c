@@ -2,7 +2,7 @@
  * normvol.c: volume normalizer
  *****************************************************************************
  * Copyright (C) 2001, 2006 the VideoLAN team
- * $Id: 80cb8f38e0c48c7edc2ad02bd71d658af4098cc8 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -31,21 +31,22 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
 #include <errno.h>                                                 /* ENOMEM */
-#include <stdio.h>
 #include <ctype.h>
 #include <signal.h>
 
 #include <math.h>
 
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 
-#include <aout_internal.h>
+#include <vlc_aout.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -79,15 +80,15 @@ typedef struct aout_filter_sys_t
                "between 0.5 and 10 seems sensible." )
 
 vlc_module_begin();
-    set_description( _("Volume normalizer") );
-    set_shortname( _("Volume normalizer") );
+    set_description( N_("Volume normalizer") );
+    set_shortname( N_("Volume normalizer") );
     set_category( CAT_AUDIO );
     set_subcategory( SUBCAT_AUDIO_AFILTER );
     add_shortcut( "volnorm" );
     add_integer( "norm-buff-size", 20 ,NULL ,BUFF_TEXT, BUFF_LONGTEXT,
-                 VLC_TRUE);
+                 true);
     add_float( "norm-max-level", 2.0, NULL, LEVEL_TEXT,
-               LEVEL_LONGTEXT, VLC_TRUE );
+               LEVEL_LONGTEXT, true );
     set_capability( "audio filter", 0 );
     set_callbacks( Open, Close );
 vlc_module_end();
@@ -98,15 +99,14 @@ vlc_module_end();
 static int Open( vlc_object_t *p_this )
 {
     aout_filter_t *p_filter = (aout_filter_t*)p_this;
-    vlc_bool_t b_fit = VLC_TRUE;
+    bool b_fit = true;
     int i_channels;
-    aout_filter_sys_t *p_sys = p_filter->p_sys =
-        malloc( sizeof( aout_filter_sys_t ) );
+    aout_filter_sys_t *p_sys;
 
     if( p_filter->input.i_format != VLC_FOURCC('f','l','3','2' ) ||
         p_filter->output.i_format != VLC_FOURCC('f','l','3','2') )
     {
-        b_fit = VLC_FALSE;
+        b_fit = false;
         p_filter->input.i_format = VLC_FOURCC('f','l','3','2');
         p_filter->output.i_format = VLC_FOURCC('f','l','3','2');
         msg_Warn( p_filter, "bad input or output format" );
@@ -114,7 +114,7 @@ static int Open( vlc_object_t *p_this )
 
     if ( !AOUT_FMTS_SIMILAR( &p_filter->input, &p_filter->output ) )
     {
-        b_fit = VLC_FALSE;
+        b_fit = false;
         memcpy( &p_filter->output, &p_filter->input,
                 sizeof(audio_sample_format_t) );
         msg_Warn( p_filter, "input and output formats are not similar" );
@@ -126,10 +126,13 @@ static int Open( vlc_object_t *p_this )
     }
 
     p_filter->pf_do_work = DoWork;
-    p_filter->b_in_place = VLC_TRUE;
+    p_filter->b_in_place = true;
 
     i_channels = aout_FormatNbChannels( &p_filter->input );
 
+    p_sys = p_filter->p_sys = malloc( sizeof( aout_filter_sys_t ) );
+    if( !p_sys )
+        return VLC_ENOMEM;
     p_sys->i_nb = var_CreateGetInteger( p_filter->p_parent, "norm-buff-size" );
     p_sys->f_max = var_CreateGetFloat( p_filter->p_parent, "norm-max-level" );
 
@@ -138,6 +141,11 @@ static int Open( vlc_object_t *p_this )
     /* We need to store (nb_buffers+1)*nb_channels floats */
     p_sys->p_last = malloc( sizeof( float ) * (i_channels) *
                             (p_filter->p_sys->i_nb + 2) );
+    if( !p_sys->p_last )
+    {
+        free( p_sys );
+        return VLC_ENOMEM;
+    }
     memset( p_sys->p_last, 0 ,sizeof( float ) * (i_channels) *
             (p_filter->p_sys->i_nb + 2) );
     return VLC_SUCCESS;
@@ -161,10 +169,17 @@ static int Open( vlc_object_t *p_this )
 
     struct aout_filter_sys_t *p_sys = p_filter->p_sys;
 
-    pf_sum = (float *)malloc( sizeof(float) * i_channels );
+    pf_sum = malloc( sizeof(float) * i_channels );
+    if( !pf_sum )
+        return;
     memset( pf_sum, 0, sizeof(float) * i_channels );
 
-    pf_gain = (float *)malloc( sizeof(float) * i_channels );
+    pf_gain = malloc( sizeof(float) * i_channels );
+    if( !pf_gain )
+    {
+        free( pf_sum );
+        return;
+    }
 
     p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
     p_out_buf->i_nb_bytes = p_in_buf->i_nb_bytes;
@@ -243,7 +258,7 @@ static void Close( vlc_object_t *p_this )
 
     if( p_sys )
     {
-        if( p_sys->p_last) free( p_sys->p_last );
+        free( p_sys->p_last );
         free( p_sys );
     }
 }

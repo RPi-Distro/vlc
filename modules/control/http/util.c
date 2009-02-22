@@ -2,7 +2,7 @@
  * util.c : Utility functions for HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: b20a5ae26470e372ec1993c3ec2281dc95d2de73 $
+ * $Id: 5ee140087b6fe0edf250a059513e3170237a063f $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -23,6 +23,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 #include "http.h"
 #include "vlc_strings.h"
 
@@ -31,13 +36,13 @@
  ****************************************************************************/
 
 /* ToUrl: create a good name for an url from filename */
-char *E_(FileToUrl)( char *name, vlc_bool_t *pb_index )
+char *FileToUrl( char *name, bool *pb_index )
 {
     char *url, *p;
 
     url = p = malloc( strlen( name ) + 1 );
 
-    *pb_index = VLC_FALSE;
+    *pb_index = false;
     if( !url || !p )
     {
         return NULL;
@@ -72,14 +77,14 @@ char *E_(FileToUrl)( char *name, vlc_bool_t *pb_index )
         if( !strncmp( p, "/index.", 7 ) )
         {
             p[1] = '\0';
-            *pb_index = VLC_TRUE;
+            *pb_index = true;
         }
     }
     return url;
 }
 
 /* Load a file */
-int E_(FileLoad)( FILE *f, char **pp_data, int *pi_data )
+int FileLoad( FILE *f, char **pp_data, int *pi_data )
 {
     int i_read;
 
@@ -101,14 +106,11 @@ int E_(FileLoad)( FILE *f, char **pp_data, int *pi_data )
 }
 
 /* Parse a directory and recursively add files */
-int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
+int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
                         char *psz_dir )
 {
     intf_sys_t     *p_sys = p_intf->p_sys;
     char           dir[MAX_DIR_SIZE];
-#ifdef HAVE_SYS_STAT_H
-    struct stat   stat_info;
-#endif
     DIR           *p_dir;
     vlc_acl_t     *p_acl;
     FILE          *file;
@@ -126,16 +128,10 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
     sep = '/';
 #endif
 
-#ifdef HAVE_SYS_STAT_H
-    if( utf8_stat( psz_dir, &stat_info ) == -1 || !S_ISDIR( stat_info.st_mode ) )
-    {
-        return VLC_EGENERIC;
-    }
-#endif
-
     if( ( p_dir = utf8_opendir( psz_dir ) ) == NULL )
     {
-        msg_Err( p_intf, "cannot open directory (%s)", psz_dir );
+        if( errno != ENOENT && errno != ENOTDIR )
+            msg_Err( p_intf, "cannot open directory (%s)", psz_dir );
         return VLC_EGENERIC;
     }
 
@@ -143,12 +139,13 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
     if( i_dirlen + 10 > MAX_DIR_SIZE )
     {
         msg_Warn( p_intf, "skipping too deep directory (%s)", psz_dir );
+        closedir( p_dir );
         return 0;
     }
 
     msg_Dbg( p_intf, "dir=%s", psz_dir );
 
-    sprintf( dir, "%s%c.access", psz_dir, sep );
+    snprintf( dir, sizeof( dir ), "%s%c.access", psz_dir, sep );
     if( ( file = utf8_fopen( dir, "r" ) ) != NULL )
     {
         char line[1024];
@@ -182,17 +179,24 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
         fclose( file );
     }
 
-    sprintf( dir, "%s%c.hosts", psz_dir, sep );
-    p_acl = ACL_Create( p_intf, VLC_FALSE );
+    snprintf( dir, sizeof( dir ), "%s%c.hosts", psz_dir, sep );
+    p_acl = ACL_Create( p_intf, false );
     if( ACL_LoadFile( p_acl, dir ) )
     {
         ACL_Destroy( p_acl );
+
+        struct stat st;
+        if( utf8_stat( dir, &st ) == 0 )
+        {
+            closedir( p_dir );
+            return VLC_EGENERIC;
+        }
         p_acl = NULL;
     }
 
     for( ;; )
     {
-        const char *psz_filename;
+        char *psz_filename;
         /* parse psz_src dir */
         if( ( psz_filename = utf8_readdir( p_dir ) ) == NULL )
         {
@@ -201,26 +205,23 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
 
         if( ( psz_filename[0] == '.' )
          || ( i_dirlen + strlen( psz_filename ) > MAX_DIR_SIZE ) )
+        {
+            free( psz_filename );
             continue;
+        }
 
-        sprintf( dir, "%s%c%s", psz_dir, sep, psz_filename );
-        LocaleFree( psz_filename );
+        snprintf( dir, sizeof( dir ), "%s%c%s", psz_dir, sep, psz_filename );
+        free( psz_filename );
 
-        if( E_(ParseDirectory)( p_intf, psz_root, dir ) )
+        if( ParseDirectory( p_intf, psz_root, dir ) )
         {
             httpd_file_sys_t *f = NULL;
             httpd_handler_sys_t *h = NULL;
-            vlc_bool_t b_index;
-            char *psz_tmp, *psz_file, *psz_name, *psz_ext;
+            bool b_index;
+            char *psz_name, *psz_ext;
 
-            psz_tmp = vlc_fix_readdir_charset( p_intf, dir );
-            psz_file = E_(FromUTF8)( p_intf, psz_tmp );
-            free( psz_tmp );
-            psz_tmp = vlc_fix_readdir_charset( p_intf,
-                                               &dir[strlen( psz_root )] );
-            psz_name = E_(FileToUrl)( psz_tmp, &b_index );
-            free( psz_tmp );
-            psz_ext = strrchr( psz_file, '.' );
+            psz_name = FileToUrl( &dir[strlen( psz_root )], &b_index );
+            psz_ext = strrchr( dir, '.' );
             if( psz_ext != NULL )
             {
                 int i;
@@ -232,28 +233,28 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
                 {
                     f = malloc( sizeof( httpd_handler_sys_t ) );
                     h = (httpd_handler_sys_t *)f;
-                    f->b_handler = VLC_TRUE;
+                    f->b_handler = true;
                     h->p_association = p_sys->pp_handlers[i];
                 }
             }
             if( f == NULL )
             {
                 f = malloc( sizeof( httpd_file_sys_t ) );
-                f->b_handler = VLC_FALSE;
+                f->b_handler = false;
             }
 
             f->p_intf  = p_intf;
             f->p_file = NULL;
             f->p_redir = NULL;
             f->p_redir2 = NULL;
-            f->file = psz_file;
+            f->file = strdup (dir);
             f->name = psz_name;
-            f->b_html = strstr( &dir[strlen( psz_root )], ".htm" ) || strstr( &dir[strlen( psz_root )], ".xml" ) ? VLC_TRUE : VLC_FALSE;
+            f->b_html = strstr( &dir[strlen( psz_root )], ".htm" ) || strstr( &dir[strlen( psz_root )], ".xml" ) ? true : false;
 
             if( !f->name )
             {
                 msg_Err( p_intf , "unable to parse directory" );
-                vlc_closedir_wrapper( p_dir );
+                closedir( p_dir );
                 free( f );
                 return( VLC_ENOMEM );
             }
@@ -262,7 +263,7 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
 
             if( !f->b_handler )
             {
-                char *psz_type = strdup( p_sys->psz_html_type );
+                char *psz_type = strdup( "text/html; charset=UTF-8" );
                 if( strstr( &dir[strlen( psz_root )], ".xml" ) )
                 {
                     char *psz = strstr( psz_type, "html;" );
@@ -279,7 +280,7 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
                                            f->name,
                                            f->b_html ? psz_type : NULL,
                                            user, password, p_acl,
-                                           E_(HttpCallback), f );
+                                           HttpCallback, f );
                 free( psz_type );
                 if( f->p_file != NULL )
                 {
@@ -291,7 +292,7 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
                 h->p_handler = httpd_HandlerNew( p_sys->p_httpd_host,
                                                  f->name,
                                                  user, password, p_acl,
-                                                 E_(HandlerCallback), h );
+                                                 HandlerCallback, h );
                 if( h->p_handler != NULL )
                 {
                     TAB_APPEND( p_sys->i_files, p_sys->pp_files,
@@ -314,106 +315,33 @@ int E_(ParseDirectory)( intf_thread_t *p_intf, char *psz_root,
 
                 if( b_index && ( p = strstr( f->file, "index." ) ) )
                 {
-                    asprintf( &psz_redir, "%s%s", f->name, p );
+                    if( asprintf( &psz_redir, "%s%s", f->name, p ) != -1 )
+                    {
+                        msg_Dbg( p_intf, "redir=%s -> %s", psz_redir, f->name );
+                        f->p_redir2 = httpd_RedirectNew( p_sys->p_httpd_host,
+                                                         f->name, psz_redir );
 
-                    msg_Dbg( p_intf, "redir=%s -> %s", psz_redir, f->name );
-                    f->p_redir2 = httpd_RedirectNew( p_sys->p_httpd_host,
-                                                     f->name, psz_redir );
-
-                    free( psz_redir );
+                        free( psz_redir );
+                    }
                 }
             }
         }
     }
 
-    if( user )
-    {
-        free( user );
-    }
-    if( password )
-    {
-        free( password );
-    }
+    free( user );
+    free( password );
 
     ACL_Destroy( p_acl );
-    vlc_closedir_wrapper( p_dir );
+    closedir( p_dir );
 
     return VLC_SUCCESS;
 }
 
 
-/**************************************************************************
- * Locale functions
- **************************************************************************/
-char *E_(FromUTF8)( intf_thread_t *p_intf, char *psz_utf8 )
-{
-    intf_sys_t    *p_sys = p_intf->p_sys;
-
-    if ( p_sys->iconv_from_utf8 != (vlc_iconv_t)-1 )
-    {
-        size_t i_in = strlen(psz_utf8);
-        size_t i_out = i_in * 2;
-        char *psz_local = malloc(i_out + 1);
-        char *psz_out = psz_local;
-        size_t i_ret;
-        char psz_tmp[i_in + 1];
-        const char *psz_in = psz_tmp;
-        strcpy( psz_tmp, psz_utf8 );
-
-        i_in = strlen( psz_tmp );
-
-        i_ret = vlc_iconv( p_sys->iconv_from_utf8, &psz_in, &i_in,
-                           &psz_out, &i_out );
-        if( i_ret == (size_t)-1 || i_in )
-        {
-            msg_Warn( p_intf,
-                      "failed to convert \"%s\" to desired charset (%s)",
-                      psz_utf8, strerror(errno) );
-            free( psz_local );
-            return strdup( psz_utf8 );
-        }
-
-        *psz_out = '\0';
-        return psz_local;
-    }
-    else
-        return strdup( psz_utf8 );
-}
-
-char *E_(ToUTF8)( intf_thread_t *p_intf, char *psz_local )
-{
-    intf_sys_t    *p_sys = p_intf->p_sys;
-
-    if ( p_sys->iconv_to_utf8 != (vlc_iconv_t)-1 )
-    {
-        const char *psz_in = psz_local;
-        size_t i_in = strlen(psz_in);
-        size_t i_out = i_in * 6;
-        char *psz_utf8 = malloc(i_out + 1);
-        char *psz_out = psz_utf8;
-
-        size_t i_ret = vlc_iconv( p_sys->iconv_to_utf8, &psz_in, &i_in,
-                                  &psz_out, &i_out );
-        if( i_ret == (size_t)-1 || i_in )
-        {
-            msg_Warn( p_intf,
-                      "failed to convert \"%s\" to desired charset (%s)",
-                      psz_local, strerror(errno) );
-            free( psz_utf8 );
-            return strdup( psz_local );
-        }
-
-        *psz_out = '\0';
-        return psz_utf8;
-    }
-    else
-        return strdup( psz_local );
-}
-
 /*************************************************************************
  * Playlist stuff
  *************************************************************************/
-void E_(PlaylistListNode)( intf_thread_t *p_intf, playlist_t *p_pl,
+void PlaylistListNode( intf_thread_t *p_intf, playlist_t *p_pl,
                            playlist_item_t *p_node, char *name, mvar_t *s,
                            int i_depth )
 {
@@ -423,79 +351,85 @@ void E_(PlaylistListNode)( intf_thread_t *p_intf, playlist_t *p_pl,
         {
             char value[512];
             char *psz;
-            mvar_t *itm = E_(mvar_New)( name, "set" );
+            mvar_t *itm = mvar_New( name, "set" );
 
-            sprintf( value, "%d", ( p_pl->status.p_item == p_node )? 1 : 0 );
-            E_(mvar_AppendNewVar)( itm, "current", value );
-
-            sprintf( value, "%d", p_node->input.i_id );
-            E_(mvar_AppendNewVar)( itm, "index", value );
-
-            psz = E_(FromUTF8)( p_intf, p_node->input.psz_name );
-            E_(mvar_AppendNewVar)( itm, "name", psz );
-            free( psz );
-
-            psz = E_(FromUTF8)( p_intf, p_node->input.psz_uri );
-            E_(mvar_AppendNewVar)( itm, "uri", psz );
-            free( psz );
-
-            sprintf( value, "Item");
-            E_(mvar_AppendNewVar)( itm, "type", value );
-
-            sprintf( value, "%d", i_depth );
-            E_(mvar_AppendNewVar)( itm, "depth", value );
-
-            if( p_node->i_flags & PLAYLIST_RO_FLAG )
+            if( p_pl->status.p_item && p_node &&
+                p_pl->status.p_item->p_input && p_node->p_input &&
+                p_pl->status.p_item->p_input->i_id == p_node->p_input->i_id )
             {
-                E_(mvar_AppendNewVar)( itm, "ro", "ro" );
+                mvar_AppendNewVar( itm, "current", "1" );
             }
             else
             {
-                E_(mvar_AppendNewVar)( itm, "ro", "rw" );
+                mvar_AppendNewVar( itm, "current", "0" );
             }
 
-            sprintf( value, "%ld", (long)p_node->input.i_duration );
-            E_(mvar_AppendNewVar)( itm, "duration", value );
+            sprintf( value, "%d", p_node->i_id );
+            mvar_AppendNewVar( itm, "index", value );
 
-            E_(mvar_AppendVar)( s, itm );
+            psz = input_item_GetName( p_node->p_input );
+            mvar_AppendNewVar( itm, "name", psz );
+            free( psz );
+
+            psz = input_item_GetURI( p_node->p_input );
+            mvar_AppendNewVar( itm, "uri", psz );
+            free( psz );
+
+            sprintf( value, "Item");
+            mvar_AppendNewVar( itm, "type", value );
+
+            sprintf( value, "%d", i_depth );
+            mvar_AppendNewVar( itm, "depth", value );
+
+            if( p_node->i_flags & PLAYLIST_RO_FLAG )
+            {
+                mvar_AppendNewVar( itm, "ro", "ro" );
+            }
+            else
+            {
+                mvar_AppendNewVar( itm, "ro", "rw" );
+            }
+
+            sprintf( value, "%ld",
+                    (long) input_item_GetDuration( p_node->p_input ) );
+            mvar_AppendNewVar( itm, "duration", value );
+
+            mvar_AppendVar( s, itm );
         }
         else
         {
             char value[512];
-            char *psz;
             int i_child;
-            mvar_t *itm = E_(mvar_New)( name, "set" );
+            mvar_t *itm = mvar_New( name, "set" );
 
-            psz = E_(FromUTF8)( p_intf, p_node->input.psz_name );
-            E_(mvar_AppendNewVar)( itm, "name", psz );
-            E_(mvar_AppendNewVar)( itm, "uri", psz );
-            free( psz );
+            mvar_AppendNewVar( itm, "name", p_node->p_input->psz_name );
+            mvar_AppendNewVar( itm, "uri", p_node->p_input->psz_name );
 
             sprintf( value, "Node" );
-            E_(mvar_AppendNewVar)( itm, "type", value );
+            mvar_AppendNewVar( itm, "type", value );
 
-            sprintf( value, "%d", p_node->input.i_id );
-            E_(mvar_AppendNewVar)( itm, "index", value );
+            sprintf( value, "%d", p_node->i_id );
+            mvar_AppendNewVar( itm, "index", value );
 
             sprintf( value, "%d", p_node->i_children);
-            E_(mvar_AppendNewVar)( itm, "i_children", value );
+            mvar_AppendNewVar( itm, "i_children", value );
 
             sprintf( value, "%d", i_depth );
-            E_(mvar_AppendNewVar)( itm, "depth", value );
+            mvar_AppendNewVar( itm, "depth", value );
 
             if( p_node->i_flags & PLAYLIST_RO_FLAG )
             {
-                E_(mvar_AppendNewVar)( itm, "ro", "ro" );
+                mvar_AppendNewVar( itm, "ro", "ro" );
             }
             else
             {
-                E_(mvar_AppendNewVar)( itm, "ro", "rw" );
+                mvar_AppendNewVar( itm, "ro", "rw" );
             }
 
-            E_(mvar_AppendVar)( s, itm );
+            mvar_AppendVar( s, itm );
 
             for (i_child = 0 ; i_child < p_node->i_children ; i_child++)
-                E_(PlaylistListNode)( p_intf, p_pl,
+                PlaylistListNode( p_intf, p_pl,
                                       p_node->pp_children[i_child],
                                       name, s, i_depth + 1);
 
@@ -506,7 +440,7 @@ void E_(PlaylistListNode)( intf_thread_t *p_intf, playlist_t *p_pl,
 /****************************************************************************
  * Seek command parsing handling
  ****************************************************************************/
-void E_(HandleSeek)( intf_thread_t *p_intf, char *p_value )
+void HandleSeek( intf_thread_t *p_intf, char *p_value )
 {
     intf_sys_t     *p_sys = p_intf->p_sys;
     vlc_value_t val;
@@ -698,7 +632,7 @@ void E_(HandleSeek)( intf_thread_t *p_intf, char *p_value )
 /****************************************************************************
  * URI Parsing functions
  ****************************************************************************/
-int E_(TestURIParam)( char *psz_uri, const char *psz_name )
+int TestURIParam( char *psz_uri, const char *psz_name )
 {
     char *p = psz_uri;
 
@@ -708,17 +642,19 @@ int E_(TestURIParam)( char *psz_uri, const char *psz_name )
         if( (p == psz_uri || *(p - 1) == '&' || *(p - 1) == '\n')
               && p[strlen(psz_name)] == '=' )
         {
-            return VLC_TRUE;
+            return true;
         }
         p++;
     }
 
-    return VLC_FALSE;
+    return false;
 }
-char *E_(ExtractURIValue)( char *psz_uri, const char *psz_name,
-                             char *psz_value, int i_value_max )
+
+static char *FindURIValue( char *psz_uri, const char *restrict psz_name,
+                           size_t *restrict p_len )
 {
-    char *p = psz_uri;
+    char *p = psz_uri, *end;
+    size_t len;
 
     while( (p = strstr( p, psz_name )) )
     {
@@ -729,56 +665,89 @@ char *E_(ExtractURIValue)( char *psz_uri, const char *psz_name,
         p++;
     }
 
-    if( p )
+    if( p == NULL )
     {
-        int i_len;
+        *p_len = 0;
+        return NULL;
+    }
 
-        p += strlen( psz_name );
-        if( *p == '=' ) p++;
+    p += strlen( psz_name );
+    if( *p == '=' ) p++;
 
-        if( strchr( p, '&' ) )
-        {
-            i_len = strchr( p, '&' ) - p;
-        }
-        else
-        {
-            /* for POST method */
-            if( strchr( p, '\n' ) )
-            {
-                i_len = strchr( p, '\n' ) - p;
-                if( i_len && *(p+i_len-1) == '\r' ) i_len--;
-            }
-            else
-            {
-                i_len = strlen( p );
-            }
-        }
-        i_len = __MIN( i_value_max - 1, i_len );
-        if( i_len > 0 )
-        {
-            strncpy( psz_value, p, i_len );
-            psz_value[i_len] = '\0';
-        }
-        else
-        {
-            strncpy( psz_value, "", i_value_max );
-        }
-        p += i_len;
+    if( ( end = strchr( p, '\n' ) ) != NULL )
+    {
+        /* POST method */
+        if( ( end > p ) && ( end[-1] == '\r' ) )
+            end--;
+
+        len = end - p;
     }
     else
     {
-        strncpy( psz_value, "", i_value_max );
+        /* GET method */
+        if( ( end = strchr( p, '&' ) ) != NULL )
+            len = end - p;
+        else
+            len = strlen( p );
     }
 
+    *p_len = len;
     return p;
+}
+
+char *ExtractURIValue( char *restrict psz_uri,
+                           const char *restrict psz_name,
+                           char *restrict psz_buf, size_t bufsize )
+{
+    size_t len;
+    char *psz_value = FindURIValue( psz_uri, psz_name, &len );
+    char *psz_next;
+
+    if( psz_value == NULL )
+    {
+        if( bufsize > 0 )
+            *psz_buf = '\0';
+        return NULL;
+    }
+
+    psz_next = psz_value + len;
+
+    if( len >= bufsize )
+        len = bufsize - 1;
+
+    if( len > 0 )
+        strncpy( psz_buf, psz_value, len );
+    if( bufsize > 0 )
+        psz_buf[len] = '\0';
+
+    return psz_next;
+}
+
+char *ExtractURIString( char *restrict psz_uri,
+                            const char *restrict psz_name )
+{
+    size_t len;
+    char *psz_value = FindURIValue( psz_uri, psz_name, &len );
+
+    if( psz_value == NULL )
+        return NULL;
+
+    char *res = malloc( len + 1 );
+    if( res == NULL )
+        return NULL;
+
+    memcpy( res, psz_value, len );
+    res[len] = '\0';
+
+    return res;
 }
 
 /* Since the resulting string is smaller we can work in place, so it is
  * permitted to have psz == new. new points to the first word of the
  * string, the function returns the remaining string. */
-char *E_(FirstWord)( char *psz, char *new )
+char *FirstWord( char *psz, char *new )
 {
-    vlc_bool_t b_end;
+    bool b_end;
 
     while( *psz == ' ' )
         psz++;
@@ -823,7 +792,7 @@ char *E_(FirstWord)( char *psz, char *new )
  * of space to delimit option boundaries. */
 static char *FirstOption( char *psz, char *new )
 {
-    vlc_bool_t b_end, b_start = VLC_TRUE;
+    bool b_end, b_start = true;
 
     while( *psz == ' ' )
         psz++;
@@ -838,7 +807,7 @@ static char *FirstOption( char *psz, char *new )
                 if( *psz == '\\' && psz[1] != '\0' )
                     psz++;
                 *new++ = *psz++;
-                b_start = VLC_FALSE;
+                b_start = false;
             }
             if( *psz == c )
                 psz++;
@@ -848,7 +817,7 @@ static char *FirstOption( char *psz, char *new )
             if( *psz == '\\' && psz[1] != '\0' )
                 psz++;
             *new++ = *psz++;
-            b_start = VLC_FALSE;
+            b_start = false;
         }
     }
     b_end = !*psz;
@@ -864,14 +833,12 @@ static char *FirstOption( char *psz, char *new )
         return NULL;
 }
 
-playlist_item_t *E_(MRLParse)( intf_thread_t *p_intf, char *_psz,
-                               char *psz_name )
+input_item_t *MRLParse( intf_thread_t *p_intf, const char *mrl,
+                                   char *psz_name )
 {
-    char *psz = strdup( _psz );
-    char *s_mrl = psz;
-    char *s_temp;
-    playlist_item_t * p_item = NULL;
-
+    char *psz = strdup( mrl ), *s_mrl = psz, *s_temp;
+    if( psz == NULL )
+        return NULL;
     /* extract the mrl */
     s_temp = FirstOption( s_mrl, s_mrl );
     if( s_temp == NULL )
@@ -879,7 +846,9 @@ playlist_item_t *E_(MRLParse)( intf_thread_t *p_intf, char *_psz,
         s_temp = s_mrl + strlen( s_mrl );
     }
 
-    p_item = playlist_ItemNew( p_intf, s_mrl, psz_name );
+    input_item_t *p_input = input_item_New( p_intf, s_mrl, psz_name );
+    if( p_input == NULL )
+        return NULL;
     s_mrl = s_temp;
 
     /* now we can take care of the options */
@@ -892,30 +861,22 @@ playlist_item_t *E_(MRLParse)( intf_thread_t *p_intf, char *_psz,
         {
             s_temp = s_mrl + strlen( s_mrl );
         }
-        playlist_ItemAddOption( p_item, s_mrl );
+        input_item_AddOption( p_input, s_mrl );
         s_mrl = s_temp;
     }
 
-    free( psz );
-
-    return p_item;
+    return p_input;
 }
 
 /**********************************************************************
  * RealPath: parse ../, ~ and path stuff
  **********************************************************************/
-char *E_(RealPath)( intf_thread_t *p_intf, const char *psz_src )
+char *RealPath( const char *psz_src )
 {
     char *psz_dir;
     char *p;
     int i_len = strlen(psz_src);
-    char sep;
-
-#if defined( WIN32 )
-    sep = '\\';
-#else
-    sep = '/';
-#endif
+    const char sep = DIR_SEP_CHAR;
 
     psz_dir = malloc( i_len + 2 );
     strcpy( psz_dir, psz_src );
@@ -924,7 +885,7 @@ char *E_(RealPath)( intf_thread_t *p_intf, const char *psz_src )
     psz_dir[i_len] = sep;
     psz_dir[i_len + 1] = '\0';
 
-#ifdef WIN32
+#if (DIR_SEP_CHAR != '/')
     /* Convert all / to native separator */
     p = psz_dir;
     while( (p = strchr( p, '/' )) != NULL )
@@ -933,6 +894,7 @@ char *E_(RealPath)( intf_thread_t *p_intf, const char *psz_src )
     }
 #endif
 
+    /* FIXME: this could be O(N) rather than O(N²)... */
     /* Remove multiple separators and /./ */
     p = psz_dir;
     while( (p = strchr( p, sep )) != NULL )
@@ -947,10 +909,8 @@ char *E_(RealPath)( intf_thread_t *p_intf, const char *psz_src )
 
     if( psz_dir[0] == '~' )
     {
-        char *dir = malloc( strlen(psz_dir)
-                             + strlen(p_intf->p_vlc->psz_userdir) );
-        /* This is incomplete : we should also support the ~cmassiot/ syntax. */
-        sprintf( dir, "%s%s", p_intf->p_vlc->psz_userdir, psz_dir + 1 );
+        char *dir;
+        asprintf( &dir, "%s%s", config_GetHomeDir(), psz_dir + 1 );
         free( psz_dir );
         psz_dir = dir;
     }

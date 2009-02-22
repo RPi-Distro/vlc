@@ -1,10 +1,11 @@
 /*****************************************************************************
  * var_tree.hpp
  *****************************************************************************
- * Copyright (C) 2005 VideoLAN
- * $Id: a343662069c9f35ce7735c858508a15c7e46c8b1 $
+ * Copyright (C) 2005 the VideoLAN team
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
+ *          Clément Stenac <zorglub@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

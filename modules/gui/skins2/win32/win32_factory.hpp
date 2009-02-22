@@ -2,7 +2,7 @@
  * win32_factory.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 42a181799ed4efba9d7fbc8697aba9c55c042b27 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -98,7 +98,7 @@ class Win32Factory: public OSFactory
         virtual int getScreenHeight() const;
 
         /// Get the work area (screen area without taskbars)
-        virtual Rect getWorkArea() const;
+        virtual SkinsRect getWorkArea() const;
 
         /// Get the position of the mouse
         virtual void getMousePos( int &rXPos, int &rYPos ) const;

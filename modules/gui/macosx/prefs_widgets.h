@@ -1,16 +1,16 @@
 /*****************************************************************************
  * prefs_widgets.h: Preferences controls
  *****************************************************************************
- * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: 1db82dd1b45b716c898b4eadebc80d9263089e1e $
+ * Copyright (C) 2002-2007 the VideoLAN team
+ * $Id$
  *
- * Authors: Derk-Jan Hartman <hartman at videolan.org> 
+ * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -35,7 +35,7 @@
     NSTextField     *o_label;
     int             i_type;
     int             i_view_type;
-    vlc_bool_t      b_advanced;
+    bool      b_advanced;
 }
 
 + (VLCConfigControl *)newControl: (module_config_t *)_p_item
@@ -183,21 +183,7 @@ static NSMenu   *o_keys_menu = nil;
 
 @end
 
-@interface KeyConfigControlBefore103 : VLCConfigControl
-{
-    NSButton        *o_cmd_checkbox;
-    NSButton        *o_ctrl_checkbox;
-    NSButton        *o_alt_checkbox;
-    NSButton        *o_shift_checkbox;
-    NSPopUpButton   *o_popup;
-}
-
-- (id) initWithItem: (module_config_t *)_p_item
-           withView: (NSView *)o_parent_view;
-
-@end
-
-@interface KeyConfigControlAfter103 : VLCConfigControl
+@interface KeyConfigControl : VLCConfigControl
 {
     NSPopUpButton   *o_popup;
 }
@@ -216,7 +202,7 @@ static NSMenu   *o_keys_menu = nil;
 
 - (id) initWithItem: (module_config_t *)_p_item
            withView: (NSView *)o_parent_view;
-           
+
 @end
 
 //#undef CONFIG_ITEM_LIST_STRING

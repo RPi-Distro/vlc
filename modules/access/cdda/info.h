@@ -2,7 +2,7 @@
  * info.h : CD digital audio input information routine headers
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 5469200f5e6e3af0443e078effe41e279f406831 $
+ * $Id$
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -25,7 +25,7 @@
  Fills out playlist information.
  */
 int      CDDAFixupPlaylist( access_t *p_access, cdda_data_t *p_cdda,
-                            vlc_bool_t b_single_track );
+                            bool b_single_track );
 
 /*
  Sets CDDA Meta Information. In the Control routine,

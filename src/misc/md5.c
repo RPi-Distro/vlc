@@ -2,7 +2,7 @@
  * md5.c: not so strong MD5 hashing
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: ce6d52bcd9d7a0790e8d60126c912ed50f87974c $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Sam Hocevar <sam@zoy.org>
@@ -22,8 +22,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <string.h>
-#include <vlc/vlc.h>
+
+#include <vlc_common.h>
 #include <vlc_md5.h>
 
 #ifdef WORDS_BIGENDIAN
@@ -55,7 +60,7 @@ static inline void Reverse( uint32_t *p_buffer, int n )
 /*****************************************************************************
  * DigestMD5: update the MD5 digest with 64 bytes of data
  *****************************************************************************/
-void DigestMD5( struct md5_s *p_md5, uint32_t *p_input )
+static void DigestMD5( struct md5_s *p_md5, uint32_t *p_input )
 {
     uint32_t a, b, c, d;
 
@@ -159,10 +164,10 @@ void InitMD5( struct md5_s *p_md5 )
 /*****************************************************************************
  * AddMD5: add i_len bytes to an MD5 message
  *****************************************************************************/
-void AddMD5( struct md5_s *p_md5, const uint8_t *p_src, uint32_t i_len )
+void AddMD5( struct md5_s *p_md5, const void *p_src, size_t i_len )
 {
     unsigned int i_current; /* Current bytes in the spare buffer */
-    unsigned int i_offset = 0;
+    size_t i_offset = 0;
 
     i_current = (p_md5->i_bits / 8) & 63;
 
@@ -185,14 +190,15 @@ void AddMD5( struct md5_s *p_md5, const uint8_t *p_src, uint32_t i_len )
     while( i_len >= 64 )
     {
         uint32_t p_tmp[ 16 ];
-        memcpy( p_tmp, p_src + i_offset, 64 );
+        memcpy( p_tmp, ((const uint8_t *)p_src) + i_offset, 64 );
         DigestMD5( p_md5, p_tmp );
         i_offset += 64;
         i_len -= 64;
     }
 
     /* Copy our remaining data to the message's spare buffer */
-    memcpy( ((uint8_t *)p_md5->p_data) + i_current, p_src + i_offset, i_len );
+    memcpy( ((uint8_t *)p_md5->p_data) + i_current,
+            ((const uint8_t *)p_src) + i_offset, i_len );
 }
 
 /*****************************************************************************

@@ -2,7 +2,7 @@
  * init_cond.:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 1f76668a8df312dbad935c3754c8582eb4ee24cd $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -22,7 +22,11 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 /* Library functions to manipulate initial condition values */
 
@@ -126,7 +130,7 @@ void init_cond_to_string(init_cond_t * init_cond) {
 		case P_TYPE_DOUBLE:
                         div = lldiv( init_cond->init_val.double_val * 1000000,
                                      1000000 );
-			sprintf(string, "%s="I64Fd".%06u\n", init_cond->param->name, div.quot, (unsigned int) div.rem );
+			sprintf(string, "%s=%"PRId64".%06u\n", init_cond->param->name, div.quot, (unsigned int) div.rem );
 			break;
 		default:
 			return;

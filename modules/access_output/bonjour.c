@@ -2,7 +2,7 @@
  * bonjour.c
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 1f21a7fe7a6b43000af955b76c37d4d7979570cf $
+ * $Id: 9d37308c0bff8f75483932fabb0ae60bbbda4caa $
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *
@@ -24,13 +24,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include "bonjour.h"
 
 #ifdef HAVE_AVAHI_CLIENT
-#include <vlc/intf.h>
-#include <vlc/sout.h>
+#include <vlc_sout.h>
 
 #include <avahi-client/client.h>
 #ifdef HAVE_AVAHI_06
@@ -78,6 +81,7 @@ static void entry_group_callback( AvahiEntryGroup *g,
                                   AvahiEntryGroupState state,
                                   void *userdata )
 {
+    (void)g;
     bonjour_t *p_sys = (bonjour_t *)userdata;
 
     if( state == AVAHI_ENTRY_GROUP_ESTABLISHED )
@@ -178,30 +182,30 @@ static void client_callback( AvahiClient *c,
 /*****************************************************************************
  * poll_iterate_thread
  *****************************************************************************/
-static void poll_iterate_thread( poll_thread_t *p_pt )
+static void* poll_iterate_thread( vlc_object_t *p_this )
 {
+    poll_thread_t *p_pt = (poll_thread_t*)p_this;
     vlc_thread_ready( p_pt );
 
-    while( !p_pt->b_die )
+    while( vlc_object_alive (p_pt) )
         if( avahi_simple_poll_iterate( p_pt->simple_poll, 100 ) != 0 )
             break;
+
+    return NULL;
 }
 
 /*****************************************************************************
  * bonjour_start_service
  *****************************************************************************/
-void *bonjour_start_service( vlc_object_t *p_log, char *psz_stype,
-                            char *psz_name, int i_port, char *psz_txt )
+void *bonjour_start_service( vlc_object_t *p_log, const char *psz_stype,
+                             const char *psz_name, int i_port, char *psz_txt )
 {
     int err;
     bonjour_t *p_sys;
 
     p_sys = (bonjour_t *)malloc( sizeof(*p_sys) );
     if( p_sys == NULL )
-    {
-        msg_Err( p_log, "out of memory" );
         return NULL;
-    }
 
     memset( p_sys, 0, sizeof(*p_sys) );
 
@@ -211,19 +215,13 @@ void *bonjour_start_service( vlc_object_t *p_log, char *psz_stype,
     p_sys->psz_name = avahi_strdup( psz_name );
     p_sys->psz_stype = avahi_strdup( psz_stype );
     if( p_sys->psz_name == NULL || p_sys->psz_stype == NULL )
-    {
-        msg_Err( p_sys->p_log, "out of memory" );
         goto error;
-    }
 
     if( psz_txt != NULL )
     {
         p_sys->psz_txt = avahi_strdup( psz_txt );
         if( p_sys->psz_txt == NULL )
-        {
-            msg_Err( p_sys->p_log, "out of memory" );
             goto error;
-        }
     }
 
     p_sys->simple_poll = avahi_simple_poll_new();
@@ -248,15 +246,12 @@ void *bonjour_start_service( vlc_object_t *p_log, char *psz_stype,
     p_sys->poll_thread = vlc_object_create( p_sys->p_log,
                                             sizeof(poll_thread_t) );
     if( p_sys->poll_thread == NULL )
-    {
-        msg_Err( p_sys->p_log, "out of memory" );
         goto error;
-    }
     p_sys->poll_thread->simple_poll = p_sys->simple_poll;
 
     if( vlc_thread_create( p_sys->poll_thread, "Avahi Poll Iterate Thread",
                            poll_iterate_thread,
-                           VLC_THREAD_PRIORITY_HIGHEST, VLC_FALSE ) )
+                           VLC_THREAD_PRIORITY_HIGHEST, false ) )
     {
         msg_Err( p_sys->p_log, "failed to create poll iterate thread" );
         goto error;
@@ -266,7 +261,7 @@ void *bonjour_start_service( vlc_object_t *p_log, char *psz_stype,
 
 error:
     if( p_sys->poll_thread != NULL )
-        vlc_object_destroy( p_sys->poll_thread );
+        vlc_object_release( p_sys->poll_thread );
     if( p_sys->client != NULL )
         avahi_client_free( p_sys->client );
     if( p_sys->simple_poll != NULL )
@@ -278,7 +273,7 @@ error:
     if( p_sys->psz_txt != NULL )
         avahi_free( p_sys->psz_txt );
 
-    free( (void *)p_sys );
+    free( p_sys );
 
     return NULL;
 }
@@ -290,13 +285,9 @@ void bonjour_stop_service( void *_p_sys )
 {
     bonjour_t *p_sys = (bonjour_t *)_p_sys;
 
-    if( p_sys->poll_thread->b_thread )
-    {
-        p_sys->poll_thread->b_die = 1;
-        vlc_thread_join( p_sys->poll_thread );
-    }
-
-    vlc_object_destroy( p_sys->poll_thread );
+    vlc_object_kill( p_sys->poll_thread );
+    vlc_thread_join( p_sys->poll_thread );
+    vlc_object_release( p_sys->poll_thread );
 
     if( p_sys->group != NULL )
         avahi_entry_group_free( p_sys->group );

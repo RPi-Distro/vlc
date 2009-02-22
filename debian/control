@@ -5,119 +5,106 @@ Maintainer: Debian multimedia packages maintainers <pkg-multimedia-maintainers@l
 Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
            Clément Stenac <zorglub@debian.org>,
            Loic Minier <lool@dooz.org>,
-           Christophe Mutricy <xtophe@videolan.org>
+           Christophe Mutricy <xtophe@videolan.org>,
+           Mohammed Adnène Trojette <adn+deb@diwi.org>
 Build-Depends: debhelper (>= 6),
                dh-buildinfo,
+               gettext,
                quilt,
                nasm,
                yasm [amd64 kfreebsd-amd64],
-               gettext,
-               iceape-dev (>= 1.1.9-4),
-               libgl1-mesa-dev,
+               iceape-dev (>=  1.1.9-4),
                liba52-0.7.4-dev,
                libaa1-dev,
                libarts1-dev (>= 1.4.2),
                libasound2-dev (>= 0.9.0beta10a) [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
+               libass-dev (>= 0.9.5-2),
                libaudiofile-dev,
                libavahi-client-dev,
-               libavcodec-dev (>= 0.cvs20070307-3),
-               libavformat-dev (>= 0.cvs20070307-3),
+               libavc1394-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
+               libavcodec-dev (>= 0.cvs20060823),
+               libavformat-dev (>= 0.cvs20060823),
                libcaca-dev (>= 0.99.beta4),
                libcdio-dev,
+               libdc1394-22-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
+               libdca-dev,
                libdvbpsi4-dev,
                libdvdnav-dev,
                libdvdread-dev (>= 0.9.5),
-               libdts-dev,
                libesd0-dev,
-               libflac-dev (>= 1.1.4-3),
+               libfaad-dev,
+               libflac-dev (>= 1.1.2-3),
                libfreetype6-dev,
                libfribidi-dev,
                libggi2-dev,
+               libgl1-mesa-dev,
                libglib2.0-0,
-               libglide2-dev [i386],
                libgnutls-dev (>= 1.2.8),
                libhal-dev (>= 0.5.5.1-3) [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libid3tag0-dev,
                libidl0,
                libimlib2-dev,
+               libjack-dev,
                liblircclient-dev,
-               liblivemedia-dev (>= 2006.03.17),
+               liblivemedia-dev (>= 2008.07.24),
+               liblua5.1-0-dev,
                libmad0-dev,
                libmatroska-dev (>= 0.8.0),
                libmodplug-dev,
                libmpcdec-dev,
                libmpeg2-4-dev,
-               libncurses5-dev,
+               libncursesw5-dev,
+               libnotify-dev,
                libogg-dev,
-               libpostproc-dev (>= 0.cvs20070307-3),
                libpng12-dev,
+               libpostproc-dev (>= 0.cvs20060823),
+               libpulse-dev,
+               libqt4-dev,
+               libraw1394-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
+               libschroedinger-dev,
+               libsdl-image1.2-dev,
                libsdl1.2-dev (>= 1.2.7+1.2.8cvs20041007-5.3),
+               libshout3-dev,
                libsmbclient-dev,
+               libspeex-dev,
                libsvga1-dev [amd64 i386],
+               libswscale-dev,
                libsysfs-dev,
+               libtag1-dev,
                libtar-dev,
                libtheora-dev,
+               libtwolame-dev (>= 0.3.8),
+               libv4l-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libvcdinfo-dev,
                libvorbis-dev,
-               libwxgtk2.6-dev,
                libx11-dev,
                libxext-dev,
                libxml2-dev,
+               libxpm-dev,
                libxt-dev,
                libxv-dev,
-               zlib1g-dev,
-               libavc1394-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
-               libraw1394-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
-               libdc1394-22-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
-               libxosd-dev,
-               libtwolame-dev (>= 0.3.8),
-               libspeex-dev,
-               libsdl-image1.2-dev,
-               libnotify-dev,
-               libgtk2.0-dev,
-               python-dev,
-               libfaad-dev,
-               libjack-dev
-Standards-Version: 3.7.3
+               pkg-config,
+               qt4-dev-tools,
+               zlib1g-dev
+Standards-Version: 3.8.0
 Homepage: http://www.videolan.org/vlc
-Vcs-Svn: svn://svn.debian.org/svn/pkg-multimedia/unstable/vlc
-Vcs-Browser: http://svn.debian.org/wsvn/pkg-multimedia/unstable/vlc/
+Vcs-Svn: svn://svn.debian.org/svn/pkg-multimedia/experimental/vlc/
+Vcs-Browser: http://svn.debian.org/wsvn/pkg-multimedia/experimental/vlc/
 
 Package: vlc
 Section: graphics
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}),
-         ${shlibs:Depends},
+Depends: vlc-nox (= ${binary:Version}), 
+         ${shlibs:Depends}, 
          ${misc:Depends},
          ttf-dejavu-core
 Suggests: mozilla-plugin-vlc,
           videolan-doc
-Replaces: vlc-plugin-dvb (<< 0.5.2-2),
-          vlc-plugin-xosd (<< 0.5.2-2),
-          vlc-plugin-dv (<< 0.5.2-2),
-          vlc-plugin-mad (<< 0.5.2-2),
-          vlc-mad (<< 0.5.0),
-          vlc-plugin-a52 (<< 0.5.2-2),
-          vlc-plugin-ogg (<< 0.5.2-2),
-          vlc-plugin-lirc (<< 0.5.2-2),
-          vlc-lirc (<< 0.5.0),
-          vlc-plugin-aa (<< 0.5.2-2),
-          vlc-aa (<< 0.5.0),
-          wxvlc (<< 0.8.5-test3.debian-4),
-          vlc-plugin-alsa (<< 0.8.5-test3.debian-4)
-Conflicts: vlc-plugin-dvb (<< 0.5.2-2),
-           vlc-plugin-xosd (<< 0.5.2-2),
-           vlc-plugin-dv (<< 0.5.2-2),
-           vlc-plugin-mad (<< 0.5.2-2),
-           vlc-mad (<< 0.5.0),
-           vlc-plugin-a52 (<< 0.5.2-2),
-           vlc-plugin-ogg (<< 0.5.2-2),
-           vlc-plugin-lirc (<< 0.5.2-2),
-           vlc-lirc (<< 0.5.0),
-           vlc-plugin-aa (<< 0.5.2-2),
-           vlc-aa (<< 0.5.0),
-           wxvlc (<< 0.8.5-test3.debian-4),
-           vlc-plugin-alsa (<< 0.8.5-test3.debian-4)
+Replaces: wxvlc (<< 0.8.5-test3.debian-4),
+          vlc-plugin-alsa (<< 0.8.5-test3.debian-4),
+          vlc-nox (<< 0.9.2-1)
+Conflicts: vlc-plugin-alsa (<< 0.8.5-test3.debian-4),
+           vlc-nox (<< 0.9.2-1)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -133,40 +120,32 @@ Description: multimedia player and streamer
  most output methods is provided by this package, but features can be added
  by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl,
  vlc-plugin-arts) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
- vlc-plugin-glide, vlc-plugin-svgalib). There is also a web browser plugin
- in the mozilla-plugin-vlc package.
+ vlc-plugin-svgalib). There is also a web browser plugin in the 
+ mozilla-plugin-vlc package.
+
+Package: vlc-dbg
+Section: graphics
+Priority: extra
+Architecture: any
+Depends: ${shlibs:Depends},
+         ${misc:Depends},
+         vlc-nox (= ${binary:Version})
+Description: debugging symbols for vlc
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+ .
+ This package contains the debugging symbols for vlc.
 
 Package: vlc-nox
 Section: net
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Replaces: vlc-plugin-dvb (<< 0.5.2-2),
-          vlc-plugin-xosd (<< 0.5.2-2),
-          vlc-plugin-dv (<< 0.5.2-2),
-          vlc-plugin-mad (<< 0.5.2-2),
-          vlc-mad (<< 0.5.0),
-          vlc-plugin-a52 (<< 0.5.2-2),
-          vlc-plugin-ogg (<< 0.5.2-2),
-          vlc-plugin-lirc (<< 0.5.2-2),
-          vlc-lirc (<< 0.5.0),
-          vlc-plugin-aa (<< 0.5.2-2),
-          vlc-aa (<< 0.5.0),
-          wxvlc (<< 0.8.5-test3.debian-4),
+Replaces: wxvlc (<< 0.8.5-test3.debian-4),
           vlc-plugin-alsa (<< 0.8.5-test3.debian-4),
           vlc (<< 0.8.6-svn20060911.0.8.5-1-svn.debian-3)
-Conflicts: vlc-plugin-dvb (<< 0.5.2-2),
-           vlc-plugin-xosd (<< 0.5.2-2),
-           vlc-plugin-dv (<< 0.5.2-2),
-           vlc-plugin-mad (<< 0.5.2-2),
-           vlc-mad (<< 0.5.0),
-           vlc-plugin-a52 (<< 0.5.2-2),
-           vlc-plugin-ogg (<< 0.5.2-2),
-           vlc-plugin-lirc (<< 0.5.2-2),
-           vlc-lirc (<< 0.5.0),
-           vlc-plugin-aa (<< 0.5.2-2),
-           vlc-aa (<< 0.5.0),
-           wxvlc (<< 0.8.5-test3.debian-4),
+Conflicts: wxvlc (<< 0.8.5-test3.debian-4),
            vlc-plugin-alsa (<< 0.8.5-test3.debian-4),
            vlc (<< 0.8.6-svn20060911.0.8.5-1-svn.debian-3)
 Provides: mp3-decoder
@@ -183,20 +162,33 @@ Description: multimedia player and streamer (without X support)
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added
  by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl,
- vlc-plugin-arts) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
- vlc-plugin-glide, vlc-plugin-svgalib). There is also a web browser plugin
- in the mozilla-plugin-vlc package.
+ vlc-plugin-arts, vlc-plugin-jack) or video plugins (vlc-plugin-sdl, 
+ vlc-plugin-ggi, vlc-plugin-svgalib). There is also a web browser plugin in 
+ the mozilla-plugin-vlc package.
  .
  This package contains a version of VLC that does not require X and that is
  thus suitable for headless servers.
 
-Package: libvlc0
+Package: libvlccore0
+Section: libs
+Architecture: any
+Depends: vlc-data,
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: multimedia player and streamer library
+ This package contains the shared library required by VLC modules and libvlc.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
+Package: libvlc2
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Replaces: vlc (<< 0.8.6-svn20060911.0.8.5-1-svn.debian-3)
-Conflicts: vlc (<< 0.8.6-svn20060911.0.8.5-1-svn.debian-3)
+Replaces: vlc (<< 0.8.6.c-6)
+Conflicts: vlc (<< 0.8.6.c-6)
 Description: multimedia player and streamer library
  This package contains the shared library required by applications using VLC
  features.
@@ -205,15 +197,29 @@ Description: multimedia player and streamer library
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
  streams from various network sources.
 
-Package: libvlc0-dev
+Package: libvlccore-dev
 Section: libdevel
 Architecture: any
-Depends: libvlc0 (= ${binary:Version}),
-         ${shlibs:Depends},
-         ${misc:Depends}
+Depends: libvlccore0 (= ${binary:Version}), pkg-config, 
+         ${shlibs:Depends}, ${misc:Depends}
 Description: development files for VLC
  This package contains headers and a static library required to build plugins
- for VLC, or standalone applications that use VLC features.
+ for VLC.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
+Package: libvlc-dev
+Section: libdevel
+Architecture: any
+Depends: libvlc2 (= ${binary:Version}), libvlccore-dev, pkg-config, 
+         ${shlibs:Depends}, ${misc:Depends}
+Replaces: libvlc0-dev
+Conflicts: libvlc0-dev
+Description: development files for VLC
+ This package contains headers and a static library required to build 
+ standalone applications that use VLC features.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
@@ -221,11 +227,7 @@ Description: development files for VLC
 
 Package: vlc-plugin-esd
 Architecture: any
-Depends: vlc-nox,
-         ${shlibs:Depends},
-         ${misc:Depends}
-Conflicts: vlc-esd (<< 0.5.0)
-Replaces: vlc-esd (<< 0.5.0)
+Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
 Description: Esound audio output plugin for VLC
  This plugin adds support for the Enlightened Sound Daemon to the VLC
  media player. To activate it, use the `--aout esd' flag or select the
@@ -237,11 +239,7 @@ Description: Esound audio output plugin for VLC
 
 Package: vlc-plugin-sdl
 Architecture: any
-Depends: vlc-nox,
-         ${shlibs:Depends},
-         ${misc:Depends}
-Conflicts: vlc-sdl (<< 0.5.0)
-Replaces: vlc-sdl (<< 0.5.0)
+Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
 Description: SDL video and audio output plugin for VLC
  This plugin adds support for the Simple DirectMedia Layer library to
  the VLC media player. To activate it, use the `--vout sdl' or
@@ -254,11 +252,7 @@ Description: SDL video and audio output plugin for VLC
 
 Package: vlc-plugin-ggi
 Architecture: any
-Depends: vlc-nox,
-         ${shlibs:Depends},
-         ${misc:Depends}
-Conflicts: vlc-ggi (<< 0.5.0)
-Replaces: vlc-ggi (<< 0.5.0)
+Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
 Description: GGI video output plugin for VLC
  This is a GGI plugin for the VLC media player.  To activate it, use
  the `--vout ggi' flag or select the `ggi' video output plugin from the
@@ -268,28 +262,9 @@ Description: GGI video output plugin for VLC
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
  streams from various network sources.
 
-Package: vlc-plugin-glide
-Architecture: i386
-Depends: vlc-nox,
-         ${shlibs:Depends}
-Conflicts: vlc-glide (<< 0.5.0)
-Replaces: vlc-glide (<< 0.5.0)
-Description: Glide video output plugin for VLC
- This is a Glide (3dfx) plugin for the VLC media player. To activate
- it, use the `--vout glide' flag or select the `glide' video output
- plugin from the preferences menu.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
 Package: vlc-plugin-arts
 Architecture: any
-Depends: vlc-nox,
-         ${shlibs:Depends},
-         ${misc:Depends}
-Conflicts: vlc-arts (<< 0.5.0)
-Replaces: vlc-arts (<< 0.5.0)
+Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
 Description: aRts audio output plugin for VLC
  This plugin adds support for the aRts Sound System to the VLC media
  player. To activate it, use the `--aout arts' flag or select the `arts'
@@ -301,10 +276,7 @@ Description: aRts audio output plugin for VLC
 
 Package: mozilla-plugin-vlc
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}),
-         vlc,
-         ${shlibs:Depends},
-         ${misc:Depends}
+Depends: vlc-nox (= ${binary:Version}), vlc, ${shlibs:Depends}, ${misc:Depends}
 Description: multimedia plugin for web browsers based on VLC
  This plugin adds support for MPEG, MPEG2, DVD, DivX, Ogg/Vorbis and many
  more formats to your Gecko-based web browser (Firefox, Galeon, etc.). The
@@ -318,9 +290,7 @@ Description: multimedia plugin for web browsers based on VLC
 
 Package: vlc-plugin-svgalib
 Architecture: amd64 i386
-Depends: vlc-nox (= ${binary:Version}),
-         ${shlibs:Depends},
-         ${misc:Depends}
+Depends: vlc-nox (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends}
 Description: SVGAlib video output plugin for VLC
  This plugin adds support for SVGAlib to the VLC media player. To
  activate it, use the `--vout svgalib' flag or select the `svgalib' video
@@ -340,8 +310,33 @@ Description: Jack audio plugins for VLC
  These plugins add support for JACK to the VLC media player. To
  activate the audio output module, use the `--aout jack' flag or
  select the `jack' audio output plugin from the preferences menu.
+ For the jack input, use `vlc jack://channels=...:ports=...'
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
  streams from various network sources.
 
+Package: vlc-plugin-pulse
+Architecture: any
+Depends: vlc-nox (= ${binary:Version}),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: PulseAudio plugin for VLC
+ This plugin adds support for PulseAudio to the VLC media player. To
+ activate the audio output module, use the `--aout pulse' flag or
+ select the `pulse' audio output plugin from the preferences menu.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
+Package: vlc-data
+Architecture: all
+Conflicts: vlc-nox (<< 0.9.2-1), mozilla-plugin-vlc (<< 0.9.2-1)
+Replaces: vlc-nox (<< 0.9.2-1), mozilla-plugin-vlc (<< 0.9.2-1)
+Description: Common data for VLC
+ Localisations, HTTP interface files, Lua scripts for VLC media player 
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.

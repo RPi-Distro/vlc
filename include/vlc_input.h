@@ -1,8 +1,8 @@
 /*****************************************************************************
  * vlc_input.h: Core input structures
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 55bde9bd37aba04960af657bf0c6ba3876932af1 $
+ * Copyright (C) 1999-2006 the VideoLAN team
+ * $Id: f97d196061c900d61048b5c98437724b71056d67 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -23,8 +23,22 @@
  *****************************************************************************/
 
 /* __ is need because conflict with <vlc/input.h> */
-#ifndef _VLC__INPUT_H
-#define _VLC__INPUT_H 1
+#ifndef VLC__INPUT_H
+#define VLC__INPUT_H 1
+
+/**
+ * \file
+ * This file defines functions, structures and enums for input objects in vlc
+ */
+
+#include <vlc_es.h>
+#include <vlc_meta.h>
+#include <vlc_epg.h>
+#include <vlc_events.h>
+
+#include <string.h>                                     /* strcasestr() */
+
+struct vlc_meta_t;
 
 /*****************************************************************************
  * input_item_t: Describes an input and is used to spawn input_thread_t objects
@@ -44,129 +58,172 @@ struct info_category_t
 
 struct input_item_t
 {
+    VLC_GC_MEMBERS
+    int        i_id;                 /**< Identifier of the item */
+
     char       *psz_name;            /**< text describing this item */
     char       *psz_uri;             /**< mrl of this item */
+    bool       b_fixed_name;        /**< Can the interface change the name ?*/
 
     int        i_options;            /**< Number of input options */
     char       **ppsz_options;       /**< Array of input options */
+    uint8_t    *optflagv;            /**< Some flags of input options */
+    unsigned   optflagc;
 
-    mtime_t    i_duration;           /**< A hint about the duration of this
-                                      * item, in milliseconds*/
+    mtime_t    i_duration;           /**< Duration in milliseconds*/
 
-    int        i_id;                 /**< Identifier of the item */
     uint8_t    i_type;               /**< Type (file, disc, ...) */
+    bool b_prefers_tree;             /**< Do we prefer being displayed as tree*/
 
     int        i_categories;         /**< Number of info categories */
     info_category_t **pp_categories; /**< Pointer to the first info category */
 
     int         i_es;                /**< Number of es format descriptions */
-    es_format_t **es;                /**< Pointer to an array of es formats */
-
-    vlc_bool_t  b_fixed_name;        /**< Can the interface change the name ?*/
+    es_format_t **es;                /**< Es formats */
 
     input_stats_t *p_stats;          /**< Statistics */
+    int           i_nb_played;       /**< Number of times played */
 
-    vlc_mutex_t lock;                /**< Item cannot be changed without this lock */
+    bool          b_error_when_reading;       /**< Error When Reading */
+
+    vlc_meta_t *p_meta;
+
+    vlc_event_manager_t event_manager;
+
+    vlc_mutex_t lock;                 /**< Lock for the item */
 };
 
 #define ITEM_TYPE_UNKNOWN       0
-#define ITEM_TYPE_AFILE         1
-#define ITEM_TYPE_VFILE         2
-#define ITEM_TYPE_DIRECTORY     3
-#define ITEM_TYPE_DISC          4
-#define ITEM_TYPE_CDDA          5
-#define ITEM_TYPE_CARD          6
-#define ITEM_TYPE_NET           7
-#define ITEM_TYPE_PLAYLIST      8
-#define ITEM_TYPE_NODE          9
+#define ITEM_TYPE_FILE          1
+#define ITEM_TYPE_DIRECTORY     2
+#define ITEM_TYPE_DISC          3
+#define ITEM_TYPE_CDDA          4
+#define ITEM_TYPE_CARD          5
+#define ITEM_TYPE_NET           6
+#define ITEM_TYPE_PLAYLIST      7
+#define ITEM_TYPE_NODE          8
+#define ITEM_TYPE_NUMBER        9
 
-static inline void vlc_input_item_Init( vlc_object_t *p_o, input_item_t *p_i )
+VLC_EXPORT( void, input_item_CopyOptions, ( input_item_t *p_parent, input_item_t *p_child ) );
+VLC_EXPORT( void, input_item_SetName, ( input_item_t *p_item, const char *psz_name ) );
+
+/* This won't hold the item, but can tell to interested third parties
+ * Like the playlist, that there is a new sub item. With this design
+ * It is not the input item's responsability to keep all the ref of
+ * the input item children. */
+VLC_EXPORT( void, input_item_AddSubItem, ( input_item_t *p_parent, input_item_t *p_child ) );
+
+
+/* Flags handled past input_item_AddOpt() */
+#define VLC_INPUT_OPTION_TRUSTED 0x2
+
+/* Flags handled within input_item_AddOpt() */
+#define VLC_INPUT_OPTION_UNIQUE  0x100
+
+VLC_EXPORT( int, input_item_AddOpt, ( input_item_t *, const char *str, unsigned flags ) );
+VLC_EXPORT( int, input_item_AddOption, (input_item_t *item, const char *str) );
+VLC_EXPORT( int ,input_item_AddOption, (input_item_t *item, const char *str) );
+VLC_EXPORT( bool,input_item_HasErrorWhenReading, (input_item_t *item) );
+VLC_EXPORT( void, input_item_SetMeta, ( input_item_t *p_i, vlc_meta_type_t meta_type, const char *psz_val ));
+
+VLC_EXPORT( bool,input_item_HasErrorWhenReading, (input_item_t *item) );
+
+VLC_EXPORT( bool,input_item_MetaMatch, ( input_item_t *p_i, vlc_meta_type_t meta_type, const char *psz ) );
+VLC_EXPORT( char *, input_item_GetMeta, ( input_item_t *p_i, vlc_meta_type_t meta_type ) );
+VLC_EXPORT( char *, input_item_GetName, ( input_item_t * p_i ) );
+VLC_EXPORT( char *, input_item_GetURI, ( input_item_t * p_i ) );
+VLC_EXPORT( void,   input_item_SetURI, ( input_item_t * p_i, char * psz_uri ));
+VLC_EXPORT(mtime_t, input_item_GetDuration, ( input_item_t * p_i ) );
+VLC_EXPORT( void,   input_item_SetDuration, ( input_item_t * p_i, mtime_t i_duration ));
+VLC_EXPORT( bool,   input_item_IsPreparsed, ( input_item_t *p_i ));
+VLC_EXPORT( bool,   input_item_IsArtFetched, ( input_item_t *p_i ));
+VLC_EXPORT( const vlc_meta_t *, input_item_GetMetaObject, ( input_item_t *p_i ));
+VLC_EXPORT( void,   input_item_MetaMerge, ( input_item_t *p_i, const vlc_meta_t * p_new_meta ));
+
+
+#define input_item_SetTitle( item, b )       input_item_SetMeta( item, vlc_meta_Title, b )
+#define input_item_SetArtist( item, b )      input_item_SetMeta( item, vlc_meta_Artist, b )
+#define input_item_SetGenre( item, b )       input_item_SetMeta( item, vlc_meta_Genre, b )
+#define input_item_SetCopyright( item, b )   input_item_SetMeta( item, vlc_meta_Copyright, b )
+#define input_item_SetAlbum( item, b )       input_item_SetMeta( item, vlc_meta_Album, b )
+#define input_item_SetTrackNum( item, b )    input_item_SetMeta( item, vlc_meta_TrackNumber, b )
+#define input_item_SetDescription( item, b ) input_item_SetMeta( item, vlc_meta_Description, b )
+#define input_item_SetRating( item, b )      input_item_SetMeta( item, vlc_meta_Rating, b )
+#define input_item_SetDate( item, b )        input_item_SetMeta( item, vlc_meta_Date, b )
+#define input_item_SetSetting( item, b )     input_item_SetMeta( item, vlc_meta_Setting, b )
+#define input_item_SetURL( item, b )         input_item_SetMeta( item, vlc_meta_URL, b )
+#define input_item_SetLanguage( item, b )    input_item_SetMeta( item, vlc_meta_Language, b )
+#define input_item_SetNowPlaying( item, b )  input_item_SetMeta( item, vlc_meta_NowPlaying, b )
+#define input_item_SetPublisher( item, b )   input_item_SetMeta( item, vlc_meta_Publisher, b )
+#define input_item_SetEncodedBy( item, b )   input_item_SetMeta( item, vlc_meta_EncodedBy, b )
+#define input_item_SetArtURL( item, b )      input_item_SetMeta( item, vlc_meta_ArtworkURL, b )
+#define input_item_SetTrackID( item, b )     input_item_SetMeta( item, vlc_meta_TrackID, b )
+
+#define input_item_GetTitle( item )          input_item_GetMeta( item, vlc_meta_Title )
+#define input_item_GetArtist( item )         input_item_GetMeta( item, vlc_meta_Artist )
+#define input_item_GetGenre( item )          input_item_GetMeta( item, vlc_meta_Genre )
+#define input_item_GetCopyright( item )      input_item_GetMeta( item, vlc_meta_Copyright )
+#define input_item_GetAlbum( item )          input_item_GetMeta( item, vlc_meta_Album )
+#define input_item_GetTrackNum( item )       input_item_GetMeta( item, vlc_meta_TrackNumber )
+#define input_item_GetDescription( item )    input_item_GetMeta( item, vlc_meta_Description )
+#define input_item_GetRating( item )         input_item_GetMeta( item, vlc_meta_Rating )
+#define input_item_GetDate( item )           input_item_GetMeta( item, vlc_meta_Date )
+#define input_item_GetGetting( item )        input_item_GetMeta( item, vlc_meta_Getting )
+#define input_item_GetURL( item )            input_item_GetMeta( item, vlc_meta_URL )
+#define input_item_GetLanguage( item )       input_item_GetMeta( item, vlc_meta_Language )
+#define input_item_GetNowPlaying( item )     input_item_GetMeta( item, vlc_meta_NowPlaying )
+#define input_item_GetPublisher( item )      input_item_GetMeta( item, vlc_meta_Publisher )
+#define input_item_GetEncodedBy( item )      input_item_GetMeta( item, vlc_meta_EncodedBy )
+#define input_item_GetArtURL( item )         input_item_GetMeta( item, vlc_meta_ArtworkURL )
+#define input_item_GetTrackID( item )        input_item_GetMeta( item, vlc_meta_TrackID )
+#define input_item_GetSetting( item )        input_item_GetMeta( item, vlc_meta_Setting )
+
+VLC_EXPORT( char *, input_item_GetInfo, ( input_item_t *p_i, const char *psz_cat,const char *psz_name ) );
+VLC_EXPORT(int, input_item_AddInfo, ( input_item_t *p_i, const char *psz_cat, const char *psz_name, const char *psz_format, ... ) LIBVLC_FORMAT( 4, 5 ) );
+
+#define input_item_New( a,b,c ) input_item_NewExt( a, b, c, 0, NULL, -1 )
+#define input_item_NewExt(a,b,c,d,e,f) __input_item_NewExt( VLC_OBJECT(a),b,c,d,e,f)
+VLC_EXPORT( input_item_t *, __input_item_NewExt, (vlc_object_t *, const char *, const char*, int, const char *const *, mtime_t i_duration )  );
+VLC_EXPORT( input_item_t *, input_item_NewWithType, ( vlc_object_t *, const char *, const char *e, int, const char *const *, mtime_t i_duration, int ) );
+
+#define input_item_GetById(a,b) __input_item_GetById( VLC_OBJECT(a),b )
+VLC_EXPORT( input_item_t *, __input_item_GetById, (vlc_object_t *, int ) );
+
+/*****************************************************************************
+ * Meta data helpers
+ *****************************************************************************/
+static inline void vlc_audio_replay_gain_MergeFromMeta( audio_replay_gain_t *p_dst,
+                                                        const vlc_meta_t *p_meta )
 {
-    memset( p_i, 0, sizeof(input_item_t) );
-    p_i->i_options  = 0;
-    p_i->i_es = 0;
-    p_i->i_categories = 0 ;
-    p_i->psz_name = 0;
-    p_i->psz_uri = 0;
-    p_i->ppsz_options = 0;
-    p_i->pp_categories = 0;
-    p_i->es = 0;
-    p_i->i_type = ITEM_TYPE_UNKNOWN;
-    p_i->b_fixed_name = VLC_TRUE;
+    char * psz_value;
 
-    p_i->p_stats = (input_stats_t*) malloc( sizeof( input_stats_t ) );
-    vlc_mutex_init( p_o, &p_i->p_stats->lock );
+    if( !p_meta )
+        return;
 
-    vlc_mutex_init( p_o, &p_i->lock );
-}
-
-static inline void vlc_input_item_CopyOptions( input_item_t *p_parent,
-                                               input_item_t *p_child )
-{
-    int i;
-    for( i = 0 ; i< p_parent->i_options; i++ )
+    if( (psz_value = (char *)vlc_dictionary_value_for_key( &p_meta->extra_tags, "REPLAYGAIN_TRACK_GAIN" )) ||
+        (psz_value = (char *)vlc_dictionary_value_for_key( &p_meta->extra_tags, "RG_RADIO" )) )
     {
-        char *psz_option= strdup( p_parent->ppsz_options[i] );
-        p_child->i_options++;
-        p_child->ppsz_options = (char **)realloc( p_child->ppsz_options,
-                                                  p_child->i_options *
-                                                  sizeof( char * ) );
-        p_child->ppsz_options[p_child->i_options-1] = psz_option;
+        p_dst->pb_gain[AUDIO_REPLAY_GAIN_TRACK] = true;
+        p_dst->pf_gain[AUDIO_REPLAY_GAIN_TRACK] = atof( psz_value );
+    }
+    else if( (psz_value = (char *)vlc_dictionary_value_for_key( &p_meta->extra_tags, "REPLAYGAIN_TRACK_PEAK" )) ||
+             (psz_value = (char *)vlc_dictionary_value_for_key( &p_meta->extra_tags, "RG_PEAK" )) )
+    {
+        p_dst->pb_peak[AUDIO_REPLAY_GAIN_TRACK] = true;
+        p_dst->pf_peak[AUDIO_REPLAY_GAIN_TRACK] = atof( psz_value );
+    }
+    else if( (psz_value = (char *)vlc_dictionary_value_for_key( &p_meta->extra_tags, "REPLAYGAIN_ALBUM_GAIN" )) ||
+             (psz_value = (char *)vlc_dictionary_value_for_key( &p_meta->extra_tags, "RG_AUDIOPHILE" )) )
+    {
+        p_dst->pb_gain[AUDIO_REPLAY_GAIN_ALBUM] = true;
+        p_dst->pf_gain[AUDIO_REPLAY_GAIN_ALBUM] = atof( psz_value );
+    }
+    else if( (psz_value = (char *)vlc_dictionary_value_for_key( &p_meta->extra_tags, "REPLAYGAIN_ALBUM_PEAK" )) )
+    {
+        p_dst->pb_peak[AUDIO_REPLAY_GAIN_ALBUM] = true;
+        p_dst->pf_peak[AUDIO_REPLAY_GAIN_ALBUM] = atof( psz_value );
     }
 }
-
-static inline void vlc_input_item_Clean( input_item_t *p_i )
-{
-    if( p_i->psz_name ) free( p_i->psz_name );
-    if( p_i->psz_uri ) free( p_i->psz_uri );
-    if( p_i->p_stats ) free( p_i->p_stats );
-    p_i->psz_name = 0;
-    p_i->psz_uri = 0;
-
-    while( p_i->i_options )
-    {
-        p_i->i_options--;
-        if( p_i->ppsz_options[p_i->i_options] )
-            free( p_i->ppsz_options[p_i->i_options] );
-        if( !p_i->i_options ) free( p_i->ppsz_options );
-    }
-
-    while( p_i->i_es )
-    {
-        p_i->i_es--;
-        es_format_Clean( p_i->es[p_i->i_es] );
-        if( !p_i->i_es ) free( p_i->es );
-    }
-
-    while( p_i->i_categories )
-    {
-        info_category_t *p_category =
-            p_i->pp_categories[--(p_i->i_categories)];
-
-        while( p_category->i_infos )
-        {
-            p_category->i_infos--;
-
-            if( p_category->pp_infos[p_category->i_infos]->psz_name )
-                free( p_category->pp_infos[p_category->i_infos]->psz_name);
-            if( p_category->pp_infos[p_category->i_infos]->psz_value )
-                free( p_category->pp_infos[p_category->i_infos]->psz_value );
-            free( p_category->pp_infos[p_category->i_infos] );
-
-            if( !p_category->i_infos ) free( p_category->pp_infos );
-        }
-
-        if( p_category->psz_name ) free( p_category->psz_name );
-        free( p_category );
-
-        if( !p_i->i_categories ) free( p_i->pp_categories );
-    }
-
-    vlc_mutex_destroy( &p_i->lock );
-}
-
-VLC_EXPORT( char *, vlc_input_item_GetInfo, ( input_item_t *p_i, const char *psz_cat,const char *psz_name ) );
-VLC_EXPORT(int, vlc_input_item_AddInfo, ( input_item_t *p_i, const char *psz_cat, const char *psz_name, const char *psz_format, ... ) );
 
 /*****************************************************************************
  * Seek point: (generalisation of chapters)
@@ -192,7 +249,7 @@ static inline seekpoint_t *vlc_seekpoint_New( void )
 static inline void vlc_seekpoint_Delete( seekpoint_t *point )
 {
     if( !point ) return;
-    if( point->psz_name ) free( point->psz_name );
+    free( point->psz_name );
     free( point );
 }
 
@@ -212,7 +269,7 @@ typedef struct
 {
     char        *psz_name;
 
-    vlc_bool_t  b_menu;      /* Is it a menu or a normal entry */
+    bool        b_menu;      /* Is it a menu or a normal entry */
 
     int64_t     i_length;   /* Length(microsecond) if known, else 0 */
     int64_t     i_size;     /* Size (bytes) if known, else 0 */
@@ -223,12 +280,12 @@ typedef struct
 
 } input_title_t;
 
-static inline input_title_t *vlc_input_title_New( )
+static inline input_title_t *vlc_input_title_New(void)
 {
     input_title_t *t = (input_title_t*)malloc( sizeof( input_title_t ) );
 
     t->psz_name = NULL;
-    t->b_menu = VLC_FALSE;
+    t->b_menu = false;
     t->i_length = 0;
     t->i_size   = 0;
     t->i_seekpoint = 0;
@@ -243,13 +300,13 @@ static inline void vlc_input_title_Delete( input_title_t *t )
     if( t == NULL )
         return;
 
-    if( t->psz_name ) free( t->psz_name );
+    free( t->psz_name );
     for( i = 0; i < t->i_seekpoint; i++ )
     {
-        if( t->seekpoint[i]->psz_name ) free( t->seekpoint[i]->psz_name );
+        free( t->seekpoint[i]->psz_name );
         free( t->seekpoint[i] );
     }
-    if( t->seekpoint ) free( t->seekpoint );
+    free( t->seekpoint );
     free( t );
 }
 
@@ -278,20 +335,77 @@ static inline input_title_t *vlc_input_title_Duplicate( input_title_t *t )
 }
 
 /*****************************************************************************
+ * Attachments
+ *****************************************************************************/
+struct input_attachment_t
+{
+    char *psz_name;
+    char *psz_mime;
+    char *psz_description;
+
+    int  i_data;
+    void *p_data;
+};
+
+static inline input_attachment_t *vlc_input_attachment_New( const char *psz_name,
+                                                            const char *psz_mime,
+                                                            const char *psz_description,
+                                                            const void *p_data,
+                                                            int i_data )
+{
+    input_attachment_t *a =
+        (input_attachment_t*)malloc( sizeof(input_attachment_t) );
+    if( !a )
+        return NULL;
+    a->psz_name = strdup( psz_name ? psz_name : "" );
+    a->psz_mime = strdup( psz_mime ? psz_mime : "" );
+    a->psz_description = strdup( psz_description ? psz_description : "" );
+    a->i_data = i_data;
+    a->p_data = NULL;
+    if( i_data > 0 )
+    {
+        a->p_data = malloc( i_data );
+        if( a->p_data && p_data )
+            memcpy( a->p_data, p_data, i_data );
+    }
+    return a;
+}
+static inline input_attachment_t *vlc_input_attachment_Duplicate( const input_attachment_t *a )
+{
+    return vlc_input_attachment_New( a->psz_name, a->psz_mime, a->psz_description,
+                                     a->p_data, a->i_data );
+}
+static inline void vlc_input_attachment_Delete( input_attachment_t *a )
+{
+    if( !a )
+        return;
+    free( a->psz_name );
+    free( a->psz_mime );
+    free( a->psz_description );
+    free( a->p_data );
+    free( a );
+}
+
+/*****************************************************************************
  * input defines/constants.
  *****************************************************************************/
 
 /* "state" value */
-enum input_state_e
+/* NOTE: you need to update ppsz_input_state in the RC interface
+ * if you modify this list. */
+typedef enum input_state_e
 {
-    INIT_S,
+    INIT_S = 0,
     OPENING_S,
     BUFFERING_S,
     PLAYING_S,
     PAUSE_S,
+    STOP_S,
+    FORWARD_S,
+    BACKWARD_S,
     END_S,
-    ERROR_S
-};
+    ERROR_S,
+} input_state_e;
 
 /* "rate" default, min/max
  * A rate below 1000 plays the movie faster,
@@ -299,41 +413,7 @@ enum input_state_e
  */
 #define INPUT_RATE_DEFAULT  1000
 #define INPUT_RATE_MIN       125            /* Up to 8/1 */
-#define INPUT_RATE_MAX      8000            /* Up to 1/8 */
-
-/* input_source_t: gathers all information per input source */
-typedef struct
-{
-    /* Input item description */
-    input_item_t *p_item;
-
-    /* Access/Stream/Demux plugins */
-    access_t *p_access;
-    stream_t *p_stream;
-    demux_t  *p_demux;
-
-    /* Title infos for that input */
-    vlc_bool_t   b_title_demux; /* Titles/Seekpoints provided by demux */
-    int          i_title;
-    input_title_t **title;
-
-    int i_title_offset;
-    int i_seekpoint_offset;
-
-    int i_title_start;
-    int i_title_end;
-    int i_seekpoint_start;
-    int i_seekpoint_end;
-
-    /* Properties */
-    vlc_bool_t b_can_pace_control;
-    vlc_bool_t b_can_pause;
-    vlc_bool_t b_eof;   /* eof of demuxer */
-
-    /* Clock average variation */
-    int     i_cr_average;
-
-} input_source_t;
+#define INPUT_RATE_MAX     32000            /* Up to 1/32 */
 
 /* i_update field of access_t/demux_t */
 #define INPUT_UPDATE_NONE       0x0000
@@ -345,89 +425,50 @@ typedef struct
 /* Input control XXX: internal */
 #define INPUT_CONTROL_FIFO_SIZE    100
 
-/*****************************************************************************
- * input_thread_t
- *****************************************************************************
- * XXX: this strucrures is *PRIVATE* so nobody can touch it out of src/input.
- * I plan to move it to src/input/input_internal.h anyway
- *
- * XXX: look at src/input/input.c:input_CreateThread for accessible variables
- *      YOU CANNOT HAVE ACCESS TO THE CONTENT OF input_thread_t except
- *      p_input->input.p_item (and it's only temporary).
- * XXX: move the docs somewhere (better than src/input )
- *****************************************************************************/
+/** Get the input item for an input thread */
+VLC_EXPORT(input_item_t*, input_GetItem, (input_thread_t*));
+
+typedef struct input_thread_private_t input_thread_private_t;
+
+/**
+ * Main structure representing an input thread. This structure is mostly
+ * private. The only public fields are READ-ONLY. You must use the helpers
+ * to modify them
+ */
 struct input_thread_t
 {
-    VLC_COMMON_MEMBERS
+    VLC_COMMON_MEMBERS;
 
-     /* Global properties */
-    vlc_bool_t  b_eof;
-    vlc_bool_t  b_can_pace_control;
-    vlc_bool_t  b_can_pause;
+    bool  b_eof;
+    bool b_preparsing;
 
-    /* Global state */
-    int         i_state;
-    int         i_rate;
-
-    /* */
-    int64_t     i_start;    /* :start-time,0 by default */
+    int i_state;
+    bool b_can_pace_control;
     int64_t     i_time;     /* Current time */
-    int64_t     i_stop;     /* :stop-time, 0 if none */
 
-    /* Title infos FIXME multi-input (not easy) ? */
-    int          i_title;
-    input_title_t **title;
+    /* Internal caching common to all inputs */
+    mtime_t i_pts_delay;
 
-    int i_title_offset;
-    int i_seekpoint_offset;
-
-    /* User bookmarks FIXME won't be easy with multiples input */
-    int         i_bookmark;
-    seekpoint_t **bookmark;
-
-    /* Global meta datas FIXME move to input_item_t ? */
-    vlc_meta_t  *p_meta;
-
-    /* Output */
-    es_out_t    *p_es_out;
-    sout_instance_t *p_sout;            /* XXX Move it to es_out ? */
-    vlc_bool_t      b_out_pace_control; /*     idem ? */
-
-    /* Internal caching common for all inputs */
-    int64_t i_pts_delay;
-
-    /* Main input properties */
-    input_source_t input;
-
-    /* Slave demuxers (subs, and others) */
-    int            i_slave;
-    input_source_t **slave;
-
-    /* Buffer of pending actions */
-    vlc_mutex_t lock_control;
-    int i_control;
-    struct
-    {
-        /* XXX: val isn't duplicated so it won't works with string */
-        int         i_type;
-        vlc_value_t val;
-    } control[INPUT_CONTROL_FIFO_SIZE];
+    /* All other data is input_thread is PRIVATE. You can't access it
+     * outside of src/input */
+    input_thread_private_t *p;
 };
 
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
+
+/* input_CreateThread
+ * Release the returned input_thread_t using vlc_object_release() */
 #define input_CreateThread(a,b) __input_CreateThread(VLC_OBJECT(a),b)
 VLC_EXPORT( input_thread_t *, __input_CreateThread, ( vlc_object_t *, input_item_t * ) );
-#define input_CreateThread2(a,b,c) __input_CreateThread2(VLC_OBJECT(a),b,c)
-VLC_EXPORT( input_thread_t *, __input_CreateThread2, ( vlc_object_t *, input_item_t *, char * ) );
+
 #define input_Preparse(a,b) __input_Preparse(VLC_OBJECT(a),b)
 VLC_EXPORT( int, __input_Preparse, ( vlc_object_t *, input_item_t * ) );
 
 #define input_Read(a,b,c) __input_Read(VLC_OBJECT(a),b, c)
-VLC_EXPORT( int, __input_Read, ( vlc_object_t *, input_item_t *, vlc_bool_t ) );
+VLC_EXPORT( int, __input_Read, ( vlc_object_t *, input_item_t *, bool ) );
 VLC_EXPORT( void,             input_StopThread,     ( input_thread_t * ) );
-VLC_EXPORT( void,             input_DestroyThread,  ( input_thread_t * ) );
 
 enum input_query_e
 {
@@ -468,6 +509,7 @@ enum input_query_e
     /* Input properties */
     INPUT_GET_BYTE_POSITION,     /* arg1= int64_t *       res=    */
     INPUT_SET_BYTE_SIZE,         /* arg1= int64_t *       res=    */
+    INPUT_GET_VIDEO_FPS,         /* arg1= double *        res=can fail */
 
     /* bookmarks */
     INPUT_GET_BOOKMARKS,   /* arg1= seekpoint_t *** arg2= int * res=can fail */
@@ -477,6 +519,10 @@ enum input_query_e
     INPUT_DEL_BOOKMARK,    /* arg1= seekpoint_t *  res=can fail   */
     INPUT_SET_BOOKMARK,    /* arg1= int  res=can fail    */
 
+    /* Attachments */
+    INPUT_GET_ATTACHMENTS, /* arg1=input_attachment_t***, arg2=int*  res=can fail */
+    INPUT_GET_ATTACHMENT,  /* arg1=input_attachment_t**, arg2=char*  res=can fail */
+
     /* On the fly input slave */
     INPUT_ADD_SLAVE        /* arg1= char * */
 };
@@ -484,10 +530,27 @@ enum input_query_e
 VLC_EXPORT( int, input_vaControl,( input_thread_t *, int i_query, va_list  ) );
 VLC_EXPORT( int, input_Control,  ( input_thread_t *, int i_query, ...  ) );
 
-VLC_EXPORT( decoder_t *, input_DecoderNew, ( input_thread_t *, es_format_t *, vlc_bool_t b_force_decoder ) );
+static inline input_state_e input_GetState( input_thread_t * p_input )
+{
+    input_state_e state = INIT_S;
+    input_Control( p_input, INPUT_GET_STATE, &state );
+    return state;
+}
+VLC_EXPORT( decoder_t *, input_DecoderNew, ( input_thread_t *, es_format_t *, bool b_force_decoder ) );
 VLC_EXPORT( void, input_DecoderDelete, ( decoder_t * ) );
 VLC_EXPORT( void, input_DecoderDecode,( decoder_t *, block_t * ) );
 
-VLC_EXPORT( vlc_bool_t, input_AddSubtitles, ( input_thread_t *, char *, vlc_bool_t ) );
+VLC_EXPORT( bool, input_AddSubtitles, ( input_thread_t *, char *, bool ) );
+
+VLC_EXPORT( vlc_event_manager_t *, input_get_event_manager, ( input_thread_t * ) );
+
+/**
+ * This function allows to split a MRL into access, demux and path part.
+ *
+ *  You should not write into access and demux string as they may not point into
+ * the provided buffer.
+ *  The buffer provided by psz_dup will be modified.
+ */
+VLC_EXPORT( void, input_SplitMRL, ( const char **ppsz_access, const char **ppsz_demux, char **ppsz_path, char *psz_dup ) );
 
 #endif

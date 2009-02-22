@@ -2,7 +2,7 @@
  * win32text.c : Text drawing routines using the TextOut win32 API
  *****************************************************************************
  * Copyright (C) 2002 - 2005 the VideoLAN team
- * $Id: 9c6d2204eee0399536e1777ab75d535e70cf019c $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,14 +24,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include "vlc_osd.h"
-#include "vlc_block.h"
-#include "vlc_filter.h"
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
+#include <vlc_osd.h>
+#include <vlc_block.h>
+#include <vlc_filter.h>
 
 #include <math.h>
 
@@ -54,11 +57,10 @@ static int SetFont( filter_t *, int );
 #define FONT_TEXT N_("Font")
 #define FONT_LONGTEXT N_("Filename for the font you want to use")
 #define FONTSIZE_TEXT N_("Font size in pixels")
-/// \bug [String] extra space
 #define FONTSIZE_LONGTEXT N_("This is the default size of the fonts " \
      "that will be rendered on the video. " \
      "If set to something different than 0 this option will override the " \
-     "relative font size. " )
+     "relative font size." )
 #define OPACITY_TEXT N_("Opacity")
 #define OPACITY_LONGTEXT N_("The opacity (inverse of transparency) of the " \
      "text that will be rendered on the video. 0 = transparent, " \
@@ -73,40 +75,40 @@ static int SetFont( filter_t *, int );
   "fonts that will be rendered on the video. If absolute font size is set, "\
    "relative size will be overriden." )
 
-static int   pi_sizes[] = { 20, 18, 16, 12, 6 };
-static char *ppsz_sizes_text[] = { N_("Smaller"), N_("Small"), N_("Normal"),
-                                   N_("Large"), N_("Larger") };
-static int pi_color_values[] = {
+static int const pi_sizes[] = { 20, 18, 16, 12, 6 };
+static char *const ppsz_sizes_text[] = {
+    N_("Smaller"), N_("Small"), N_("Normal"), N_("Large"), N_("Larger") };
+static const int pi_color_values[] = {
   0x00000000, 0x00808080, 0x00C0C0C0, 0x00FFFFFF, 0x00800000,
   0x00FF0000, 0x00FF00FF, 0x00FFFF00, 0x00808000, 0x00008000, 0x00008080,
   0x0000FF00, 0x00800080, 0x00000080, 0x000000FF, 0x0000FFFF };
 
-static char *ppsz_color_descriptions[] = {
+static const char *const ppsz_color_descriptions[] = {
   N_("Black"), N_("Gray"), N_("Silver"), N_("White"), N_("Maroon"),
   N_("Red"), N_("Fuchsia"), N_("Yellow"), N_("Olive"), N_("Green"), N_("Teal"),
   N_("Lime"), N_("Purple"), N_("Navy"), N_("Blue"), N_("Aqua") };
 
 vlc_module_begin();
-    set_shortname( _("Text renderer"));
-    set_description( _("Win32 font renderer") );
+    set_shortname( N_("Text renderer"));
+    set_description( N_("Win32 font renderer") );
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_SUBPIC );
 
     add_integer( "win32text-fontsize", 0, NULL, FONTSIZE_TEXT,
-                 FONTSIZE_LONGTEXT, VLC_TRUE );
+                 FONTSIZE_LONGTEXT, true );
 
     /* opacity valid on 0..255, with default 255 = fully opaque */
     add_integer_with_range( "win32-opacity", 255, 0, 255, NULL,
-        OPACITY_TEXT, OPACITY_LONGTEXT, VLC_FALSE );
+        OPACITY_TEXT, OPACITY_LONGTEXT, false );
 
     /* hook to the color values list, with default 0x00ffffff = white */
     add_integer( "win32text-color", 0x00FFFFFF, NULL, COLOR_TEXT,
-                 COLOR_LONGTEXT, VLC_TRUE );
-        change_integer_list( pi_color_values, ppsz_color_descriptions, 0 );
+                 COLOR_LONGTEXT, true );
+        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL );
 
     add_integer( "win32text-rel-fontsize", 16, NULL, FONTSIZER_TEXT,
-                 FONTSIZER_LONGTEXT, VLC_FALSE );
-        change_integer_list( pi_sizes, ppsz_sizes_text, 0 );
+                 FONTSIZER_LONGTEXT, false );
+        change_integer_list( pi_sizes, ppsz_sizes_text, NULL );
 
     set_capability( "text renderer", 50 );
     add_shortcut( "text" );
@@ -131,7 +133,7 @@ struct filter_sys_t
     int i_logpy;
 };
 
-static uint8_t pi_gamma[16] =
+static const uint8_t pi_gamma[16] =
   {0x00, 0x41, 0x52, 0x63, 0x84, 0x85, 0x96, 0xa7, 0xb8, 0xc9,
    0xca, 0xdb, 0xdc, 0xed, 0xee, 0xff};
 
@@ -149,10 +151,7 @@ static int Create( vlc_object_t *p_this )
     /* Allocate structure */
     p_filter->p_sys = p_sys = malloc( sizeof( filter_sys_t ) );
     if( !p_sys )
-    {
-        msg_Err( p_filter, "out of memory" );
         return VLC_ENOMEM;
-    }
     p_sys->i_font_size = 0;
     p_sys->i_display_height = 0;
 
@@ -182,12 +181,13 @@ static int Create( vlc_object_t *p_this )
     p_sys->i_default_font_size = val.i_int;
     if( SetFont( p_filter, 0 ) != VLC_SUCCESS ) goto error;
 
-    if( psz_fontfile ) free( psz_fontfile );
+    free( psz_fontfile );
     p_filter->pf_render_text = RenderText;
+    p_filter->pf_render_html = NULL;
     return VLC_SUCCESS;
 
  error:
-    if( psz_fontfile ) free( psz_fontfile );
+    free( psz_fontfile );
     free( p_sys );
     return VLC_EGENERIC;
 }
@@ -218,7 +218,7 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
     video_format_t fmt;
     int i, i_pitch;
     subpicture_region_t *p_region_tmp;
-    vlc_bool_t b_outline = VLC_TRUE;
+    bool b_outline = true;
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );

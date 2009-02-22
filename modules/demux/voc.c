@@ -2,7 +2,7 @@
  * voc.c : Creative Voice File (.VOC) demux module for vlc
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
- * $Id: 15029da5ea076d53e3e34a3cf1e8f07888603049 $
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -24,13 +24,17 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/aout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <codecs.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_demux.h>
+#include <vlc_aout.h>
+
+#include <vlc_codecs.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -39,10 +43,10 @@ static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
 vlc_module_begin();
-    set_description( _("VOC demuxer") );
+    set_description( N_("VOC demuxer") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_capability( "demux2", 10 );
+    set_capability( "demux", 10 );
     set_callbacks( Open, Close );
 vlc_module_end();
 
@@ -76,7 +80,7 @@ static int Open( vlc_object_t * p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
-    uint8_t     *p_buf;
+    const uint8_t *p_buf;
     uint16_t    i_data_offset, i_version;
 
     if( stream_Peek( p_demux->s, &p_buf, 26 ) < 26 )
@@ -250,8 +254,8 @@ static int ReadBlockHeader( demux_t *p_demux )
             }
             break;
 
-        case 8: 
-            /* 
+        case 8:
+            /*
              * Block 8 is a big kludge to add stereo support to block 1 :
              * A block of type 8 is always followed by a block of type 1
              * and specifies the number of channels in that 1-block
@@ -281,7 +285,7 @@ static int ReadBlockHeader( demux_t *p_demux )
             /* read subsequent block 1 */
             if( stream_Read( p_demux->s, buf, 4 ) < 4 )
                 return VLC_EGENERIC; /* EOF */
-        
+ 
             i_block_size = GetDWLE( buf ) >> 8;
             msg_Dbg( p_demux, "new block: type: %u, size: %u",
                     (unsigned)*buf, i_block_size );
@@ -351,7 +355,7 @@ static int ReadBlockHeader( demux_t *p_demux )
                     }
                     break;
 
-                default: 
+                default:
                     msg_Err( p_demux, "unsupported compression" );
                     return VLC_EGENERIC;
             }
@@ -485,7 +489,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 {
     demux_sys_t *p_sys  = p_demux->p_sys;
 
-    return demux2_vaControlHelper( p_demux->s, p_sys->i_block_start,
+    return demux_vaControlHelper( p_demux->s, p_sys->i_block_start,
                                    p_sys->i_block_end,
                                    p_sys->fmt.i_bitrate,
                                    p_sys->fmt.audio.i_blockalign,

@@ -2,7 +2,7 @@
  * splaytree.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 798418c6fd468a5258fdc5e8332c32b70a462e25 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -72,9 +72,8 @@
   (cep@andrew.cmu.edu), to suit personal needs, 
 */
 
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "common.h"
 #include "fatal.h"
@@ -84,19 +83,19 @@
 
 
 
-static inline splaynode_t * splay (void * key, splaynode_t * t, int * match_type, int (*compare)());
-static inline int free_splaynode(splaynode_t * splaynode, void (*free_key)());
-static inline void splay_traverse_helper (void (*func_ptr)(), splaynode_t * splaynode);
-static inline splaynode_t * splay_delete_helper(void * key, splaynode_t * t, int (*compare)(), void (*free_key)());
-static inline void splay_find_above_min_helper(void * max_key, void ** closest_key, splaynode_t * root, int (*compare)());
-static inline void splay_find_below_max_helper(void * max_key, void ** closest_key, splaynode_t * root, int (*compare)());
-static inline splaynode_t * new_splaynode(int type, void * key, void * data);
-static inline int splay_insert_node(splaynode_t * splaynode, splaytree_t * splaytree);
-static inline int splay_rec_size(splaynode_t * splaynode);
+splaynode_t * splay (void * key, splaynode_t * t, int * match_type, int (*compare)());
+int free_splaynode(splaynode_t * splaynode, void (*free_key)());
+void splay_traverse_helper (void (*func_ptr)(), splaynode_t * splaynode);
+splaynode_t * splay_delete_helper(void * key, splaynode_t * t, int (*compare)(), void (*free_key)());
+void splay_find_above_min_helper(void * max_key, void ** closest_key, splaynode_t * root, int (*compare)());
+void splay_find_below_max_helper(void * max_key, void ** closest_key, splaynode_t * root, int (*compare)());
+splaynode_t * new_splaynode(int type, void * key, void * data);
+int splay_insert_node(splaynode_t * splaynode, splaytree_t * splaytree);
+int splay_rec_size(splaynode_t * splaynode);
 
 /* Creates a splay tree given a compare key function, copy key function, and free key function.
    Ah yes, the wonders of procedural programming */
-inline splaytree_t * create_splaytree(int (*compare)(), void * (*copy_key)(), void (*free_key)()) {
+splaytree_t * create_splaytree(int (*compare)(), void * (*copy_key)(), void (*free_key)()) {
 
   splaytree_t * splaytree;
 
@@ -115,7 +114,7 @@ inline splaytree_t * create_splaytree(int (*compare)(), void * (*copy_key)(), vo
 }
 
 /* Destroys a splay tree */
-inline int destroy_splaytree(splaytree_t * splaytree) {
+int destroy_splaytree(splaytree_t * splaytree) {
 
   /* Null argument check */
   if (splaytree == NULL)
@@ -133,7 +132,7 @@ inline int destroy_splaytree(splaytree_t * splaytree) {
 }
 
 /* Recursively free all the splaynodes */
-static inline int free_splaynode(splaynode_t * splaynode, void (*free_key)()) {
+int free_splaynode(splaynode_t * splaynode, void (*free_key)()) {
 
   /* Ok if this happens, a recursive base case */
   if (splaynode == NULL)
@@ -160,7 +159,7 @@ static inline int free_splaynode(splaynode_t * splaynode, void (*free_key)()) {
 }
 
 /* Traverses the entire splay tree with the given function func_ptr */
-inline void splay_traverse(void (*func_ptr)(), splaytree_t * splaytree) {
+void splay_traverse(void (*func_ptr)(), splaytree_t * splaytree) {
 
   /* Null argument check */
 
@@ -176,7 +175,7 @@ inline void splay_traverse(void (*func_ptr)(), splaytree_t * splaytree) {
 }
 
 /* Helper function to traverse the entire splaytree */
-static inline void splay_traverse_helper (void (*func_ptr)(), splaynode_t * splaynode) {  
+void splay_traverse_helper (void (*func_ptr)(), splaynode_t * splaynode) {  
 
   /* Normal if this happens, its a base case of recursion */
   if (splaynode == NULL)
@@ -206,7 +205,7 @@ static inline void splay_traverse_helper (void (*func_ptr)(), splaynode_t * spla
 }
 
 /* Find the node corresponding to the given key in splaytree, return its data pointer */
-inline void * splay_find(void * key, splaytree_t * splaytree) {
+void * splay_find(void * key, splaytree_t * splaytree) {
 
   splaynode_t * splaynode;
   int match_type;
@@ -246,7 +245,7 @@ inline void * splay_find(void * key, splaytree_t * splaytree) {
 }
 
 /* Gets the splaynode that the given key points to */
-inline splaynode_t * get_splaynode_of(void * key, splaytree_t * splaytree) {
+splaynode_t * get_splaynode_of(void * key, splaytree_t * splaytree) {
 
   splaynode_t * splaynode;
   int match_type;
@@ -273,7 +272,7 @@ inline splaynode_t * get_splaynode_of(void * key, splaytree_t * splaytree) {
 }
 
 /* Finds the desired node, and changes the tree such that it is the root */
-static inline splaynode_t * splay (void * key, splaynode_t * t, int * match_type, int (*compare)()) {
+splaynode_t * splay (void * key, splaynode_t * t, int * match_type, int (*compare)()) {
   
 /* Simple top down splay, not requiring key to be in the tree t. 
    What it does is described above. */
@@ -327,7 +326,7 @@ static inline splaynode_t * splay (void * key, splaynode_t * t, int * match_type
 
 /* Deletes a splay node from a splay tree. If the node doesn't exist
    then nothing happens */
-inline int splay_delete(void * key, splaytree_t * splaytree) {
+int splay_delete(void * key, splaytree_t * splaytree) {
   
   splaynode_t * splaynode;
 
@@ -343,7 +342,7 @@ inline int splay_delete(void * key, splaytree_t * splaytree) {
 }
 
 /* Deletes a splay node */
-static inline splaynode_t * splay_delete_helper(void * key, splaynode_t * splaynode, int (*compare)(), void (*free_key)()) {
+splaynode_t * splay_delete_helper(void * key, splaynode_t * splaynode, int (*compare)(), void (*free_key)()) {
 	
     splaynode_t * new_root;
     int match_type;
@@ -382,7 +381,7 @@ static inline splaynode_t * splay_delete_helper(void * key, splaynode_t * splayn
 }
 
 /* Create a new splay node type */
-static inline splaynode_t * new_splaynode(int type, void * key, void * data) {
+splaynode_t * new_splaynode(int type, void * key, void * data) {
 	splaynode_t * splaynode;	
 	/* Argument checks */
 	if (data == NULL)
@@ -404,7 +403,7 @@ static inline splaynode_t * new_splaynode(int type, void * key, void * data) {
 }
 
 /* Inserts a link into the splay tree */
-inline int splay_insert_link(void * alias_key, void * orig_key, splaytree_t * splaytree) {
+int splay_insert_link(void * alias_key, void * orig_key, splaytree_t * splaytree) {
 
    splaynode_t * splaynode, * data_node;
    void * key_clone;
@@ -441,7 +440,7 @@ inline int splay_insert_link(void * alias_key, void * orig_key, splaytree_t * sp
 }	
 
 /* Inserts 'data' into the 'splaytree' paired with the passed 'key' */
-inline int splay_insert(void * data, void * key, splaytree_t * splaytree) {
+int splay_insert(void * data, void * key, splaytree_t * splaytree) {
 
 	splaynode_t * splaynode;
 	void * key_clone;
@@ -476,7 +475,7 @@ inline int splay_insert(void * data, void * key, splaytree_t * splaytree) {
 }
 
 /* Helper function to insert splaynodes into the splaytree */
-static inline int splay_insert_node(splaynode_t * splaynode, splaytree_t * splaytree) {
+int splay_insert_node(splaynode_t * splaynode, splaytree_t * splaytree) {
   int match_type;
   int cmpval;
   void * key;
@@ -529,7 +528,7 @@ static inline int splay_insert_node(splaynode_t * splaynode, splaytree_t * splay
 }
 
 /* Returns the 'maximum' key that is less than the given key in the splaytree */
-inline void * splay_find_below_max(void * key, splaytree_t * splaytree) {
+void * splay_find_below_max(void * key, splaytree_t * splaytree) {
 	
 	void * closest_key;
 	
@@ -550,7 +549,7 @@ inline void * splay_find_below_max(void * key, splaytree_t * splaytree) {
 
 
 /* Returns the 'minimum' key that is greater than the given key in the splaytree */
-inline void * splay_find_above_min(void * key, splaytree_t * splaytree) {
+void * splay_find_above_min(void * key, splaytree_t * splaytree) {
 	
 	void * closest_key;
 	
@@ -572,7 +571,7 @@ inline void * splay_find_above_min(void * key, splaytree_t * splaytree) {
 }
 
 /* Helper function */
-static inline void splay_find_below_max_helper(void * min_key, void ** closest_key, splaynode_t * root, int (*compare)()) {
+void splay_find_below_max_helper(void * min_key, void ** closest_key, splaynode_t * root, int (*compare)()) {
 
 		/* Empty root, return*/	
 		if (root == NULL)
@@ -609,7 +608,7 @@ static inline void splay_find_below_max_helper(void * min_key, void ** closest_k
 }
 
 /* Helper function */
-static inline void splay_find_above_min_helper(void * max_key, void ** closest_key, splaynode_t * root, int (*compare)()) {
+void splay_find_above_min_helper(void * max_key, void ** closest_key, splaynode_t * root, int (*compare)()) {
 
 		/* Empty root, stop */	
 		if (root == NULL)
@@ -645,7 +644,7 @@ static inline void splay_find_above_min_helper(void * max_key, void ** closest_k
 }	
 
 /* Find the minimum entry of the splay tree */
-inline void * splay_find_min(splaytree_t * t) {
+void * splay_find_min(splaytree_t * t) {
 
 	splaynode_t * splaynode;
 	
@@ -664,7 +663,7 @@ inline void * splay_find_min(splaytree_t * t) {
 
 
 /* Find the maximum entry of the splay tree */
-inline void * splay_find_max(splaytree_t * t) {
+void * splay_find_max(splaytree_t * t) {
 
 	splaynode_t * splaynode;
 	
@@ -682,7 +681,7 @@ inline void * splay_find_max(splaytree_t * t) {
 	return splaynode->data;
 }
 
-inline int splay_size(splaytree_t * t) {
+int splay_size(splaytree_t * t) {
 
 	if (t == NULL)
 	  return 0;
@@ -693,7 +692,7 @@ inline int splay_size(splaytree_t * t) {
 	 
 }
 
-static inline int splay_rec_size(splaynode_t * splaynode) {
+int splay_rec_size(splaynode_t * splaynode) {
 
   if (!splaynode)
     return 0;

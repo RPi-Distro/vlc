@@ -1,13 +1,15 @@
---- a/modules/misc/gnutls.c
-+++ b/modules/misc/gnutls.c
-@@ -714,6 +714,10 @@ gnutls_ClientCreate( tls_t *p_tls )
-                                 p_sys->x509_cred, psz_path, VLC_FALSE );
-             free( psz_path );
-         }
-+        gnutls_Addx509File( (vlc_object_t *)p_session,
-+                            p_sys->x509_cred,
-+                            "/etc/ssl/certs/ca-certificates.crt",VLC_FALSE );
-+        
-         p_session->pf_handshake2 = gnutls_HandshakeAndValidate;
+Index: vlc-debian/modules/misc/gnutls.c
+===================================================================
+--- vlc-debian.orig/modules/misc/gnutls.c	2008-06-01 00:46:01.000000000 +0200
++++ vlc-debian/modules/misc/gnutls.c	2008-06-01 11:38:57.000000000 +0200
+@@ -688,6 +688,10 @@
+         sprintf (path, "%s/ssl/certs/ca-certificates.crt", confdir);
+         gnutls_Addx509File (VLC_OBJECT (p_session),
+                             p_sys->x509_cred, path, false);
++    gnutls_Addx509File( VLC_OBJECT(p_session),
++                        p_sys->x509_cred,
++                        "/etc/ssl/certs/ca-certificates.crt",false );
++
      }
-     else
+     p_session->pf_handshake = gnutls_HandshakeAndValidate;
+     /*p_session->pf_handshake = gnutls_ContinueHandshake;*/

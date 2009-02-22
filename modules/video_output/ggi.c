@@ -2,7 +2,7 @@
  * ggi.c : GGI plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 01e9e86e784be3060a68fadc0544eab9b75d567b $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -25,15 +25,18 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 #include <errno.h>                                                 /* ENOMEM */
 
 #include <ggi/ggi.h>
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_interface.h>
+#include <vlc_vout.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -60,7 +63,7 @@ static void SetPalette     ( vout_thread_t *, uint16_t *, uint16_t *, uint16_t *
             "environment variable.")
 
 vlc_module_begin();
-    add_string( "ggi-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, VLC_TRUE );
+    add_string( "ggi-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, true );
     set_description( "General Graphics Interface video output" );
     set_capability( "video output", 30 );
     set_callbacks( Create, Destroy );
@@ -84,7 +87,7 @@ struct vout_sys_t
     ggi_directbuffer *  pp_buffer[2];                             /* buffers */
     int                 i_index;
 
-    vlc_bool_t          b_must_acquire;   /* must be acquired before writing */
+    bool          b_must_acquire;   /* must be acquired before writing */
 };
 
 /*****************************************************************************
@@ -101,10 +104,7 @@ static int Create( vlc_object_t *p_this )
     /* Allocate structure */
     p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
         return( 1 );
-    }
 
     /* Open and initialize device */
     if( OpenDisplay( p_vout ) )
@@ -293,7 +293,7 @@ static int Manage( vout_thread_t *p_vout )
                     case 'q':
                     case 'Q':
                     case GIIUC_Escape:
-                        p_vout->p_vlc->b_die = 1;
+                        vlc_object_kill( p_vout->p_libvlc );
                         break;
 
                     default:
@@ -306,7 +306,7 @@ static int Manage( vout_thread_t *p_vout )
                 switch( event.pbutton.button )
                 {
                     case GII_PBUTTON_LEFT:
-                        val.b_bool = VLC_TRUE;
+                        val.b_bool = true;
                         var_Set( p_vout, "mouse-clicked", val );
                         break;
 
@@ -393,7 +393,7 @@ static int OpenDisplay( vout_thread_t *p_vout )
     psz_display = config_GetPsz( p_vout, "ggi_display" );
 
     p_vout->p_sys->p_display = ggiOpen( psz_display, NULL );
-    if( psz_display ) free( psz_display );
+    free( psz_display );
 
     if( p_vout->p_sys->p_display == NULL )
     {

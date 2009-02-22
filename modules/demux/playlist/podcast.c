@@ -2,7 +2,7 @@
  * podcast.c : podcast playlist imports
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 8122d967ded59f210d6e1766e9d06ccedd3270bd $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -24,21 +24,19 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <ctype.h>                                              /* isspace() */
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/intf.h>
+#include <vlc_common.h>
+#include <vlc_demux.h>
 
-#include <errno.h>                                                 /* ENOMEM */
 #include "playlist.h"
 #include "vlc_xml.h"
 
 struct demux_sys_t
 {
     char *psz_prefix;
-    playlist_t *p_playlist;
     xml_t *p_xml;
     xml_reader_t *p_xml_reader;
 };
@@ -52,37 +50,17 @@ static int Control( demux_t *p_demux, int i_query, va_list args );
 /*****************************************************************************
  * Import_podcast: main import function
  *****************************************************************************/
-int E_(Import_podcast)( vlc_object_t *p_this )
+int Import_podcast( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
-    demux_sys_t *p_sys;
 
-    char    *psz_ext;
-
-    psz_ext = strrchr ( p_demux->psz_path, '.' );
-
-    if( p_demux->psz_demux && !strcmp(p_demux->psz_demux, "podcast") )
-    {
-        ;
-    }
-    else
-    {
+    if( !demux_IsForced( p_demux, "podcast" ) )
         return VLC_EGENERIC;
-    }
-    msg_Dbg( p_demux, "using podcast playlist import");
 
-    p_demux->pf_control = Control;
-    p_demux->pf_demux = Demux;
-    p_demux->p_sys = p_sys = malloc( sizeof(demux_sys_t) );
-    if( p_sys == NULL )
-    {
-        msg_Err( p_demux, "out of memory" );
-        return VLC_ENOMEM;
-    }
-    p_sys->psz_prefix = E_(FindPrefix)( p_demux );
-    p_sys->p_playlist = NULL;
-    p_sys->p_xml = NULL;
-    p_sys->p_xml_reader = NULL;
+    STANDARD_DEMUX_INIT_MSG( "using podcast reader" );
+    p_demux->p_sys->psz_prefix = FindPrefix( p_demux );
+    p_demux->p_sys->p_xml = NULL;
+    p_demux->p_sys->p_xml_reader = NULL;
 
     return VLC_SUCCESS;
 }
@@ -90,13 +68,12 @@ int E_(Import_podcast)( vlc_object_t *p_this )
 /*****************************************************************************
  * Deactivate: frees unused data
  *****************************************************************************/
-void E_(Close_podcast)( vlc_object_t *p_this )
+void Close_podcast( vlc_object_t *p_this )
 {
     demux_t *p_demux = (demux_t *)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
 
-    if( p_sys->psz_prefix ) free( p_sys->psz_prefix );
-    if( p_sys->p_playlist ) vlc_object_release( p_sys->p_playlist );
+    free( p_sys->psz_prefix );
     if( p_sys->p_xml_reader ) xml_ReaderDelete( p_sys->p_xml, p_sys->p_xml_reader );
     if( p_sys->p_xml ) xml_Delete( p_sys->p_xml );
     free( p_sys );
@@ -106,12 +83,9 @@ void E_(Close_podcast)( vlc_object_t *p_this )
 static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    playlist_t *p_playlist;
-    playlist_item_t *p_item, *p_current;
 
-    vlc_bool_t b_play;
-    vlc_bool_t b_item = VLC_FALSE;
-    vlc_bool_t b_image = VLC_FALSE;
+    bool b_item = false;
+    bool b_image = false;
     int i_ret;
 
     xml_t *p_xml;
@@ -129,20 +103,9 @@ static int Demux( demux_t *p_demux )
     char *psz_item_subtitle = NULL;
     char *psz_item_summary = NULL;
     int i_type;
+    input_item_t *p_input;
 
-    p_playlist = (playlist_t *) vlc_object_find( p_demux, VLC_OBJECT_PLAYLIST,
-                                                 FIND_ANYWHERE );
-    if( !p_playlist )
-    {
-        msg_Err( p_demux, "can't find playlist" );
-        return -1;
-    }
-    p_sys->p_playlist = p_playlist;
-
-    b_play = E_(FindItem)( p_demux, p_playlist, &p_current );
-
-    playlist_ItemToNode( p_playlist, p_current );
-    p_current->input.i_type = ITEM_TYPE_PLAYLIST;
+    INIT_PLAYLIST_STUFF;
 
     p_xml = p_sys->p_xml = xml_Create( p_demux );
     if( !p_xml ) return -1;
@@ -162,13 +125,21 @@ static int Demux( demux_t *p_demux )
         msg_Err( p_demux, "invalid file (no root node)" );
         return -1;
     }
+
+    while( xml_ReaderNodeType( p_xml_reader ) == XML_READER_NONE )
+        if( xml_ReaderRead( p_xml_reader ) != 1 )
+        {
+            msg_Err( p_demux, "invalid file (no root node)" );
+            return -1;
+        }
+
     if( xml_ReaderNodeType( p_xml_reader ) != XML_READER_STARTELEM ||
         ( psz_elname = xml_ReaderName( p_xml_reader ) ) == NULL ||
         strcmp( psz_elname, "rss" ) )
     {
         msg_Err( p_demux, "invalid root node %i, %s",
                  xml_ReaderNodeType( p_xml_reader ), psz_elname );
-        if( psz_elname ) free( psz_elname );
+        free( psz_elname );
         return -1;
     }
     free( psz_elname ); psz_elname = NULL;
@@ -187,17 +158,17 @@ static int Demux( demux_t *p_demux )
             case XML_READER_STARTELEM:
             {
                 // Read the element name
-                if( psz_elname ) free( psz_elname );
+                free( psz_elname );
                 psz_elname = xml_ReaderName( p_xml_reader );
                 if( !psz_elname ) return -1;
 
                 if( !strcmp( psz_elname, "item" ) )
                 {
-                    b_item = VLC_TRUE;
+                    b_item = true;
                 }
                 else if( !strcmp( psz_elname, "image" ) )
                 {
-                    b_item = VLC_TRUE;
+                    b_item = true;
                 }
 
                 // Read the attributes
@@ -205,7 +176,12 @@ static int Demux( demux_t *p_demux )
                 {
                     char *psz_name = xml_ReaderName( p_xml_reader );
                     char *psz_value = xml_ReaderValue( p_xml_reader );
-                    if( !psz_name || !psz_value ) return -1;
+                    if( !psz_name || !psz_value )
+                    {
+                        free( psz_name );
+                        free( psz_value );
+                        return -1;
+                    }
                     if( !strcmp( psz_elname, "enclosure" ) &&
                         !strcmp( psz_name, "url" ) )
                     {
@@ -233,109 +209,59 @@ static int Demux( demux_t *p_demux )
             }
             case XML_READER_TEXT:
             {
+#define SET_DATA( field, name ) else if( b_item == true \
+                && !strcmp( psz_elname, name ) ) \
+                { \
+                    field = strdup( psz_text ); \
+                }
                 char *psz_text = xml_ReaderValue( p_xml_reader );
                 /* item specific meta data */
-                if( b_item == VLC_TRUE && !strcmp( psz_elname, "title" ) )
+                if( b_item == true && !strcmp( psz_elname, "title" ) )
                 {
                     psz_item_name = strdup( psz_text );
                 }
-                else if( b_item == VLC_TRUE
-                         && !strcmp( psz_elname, "pubDate" ) )
-                {
-                    psz_item_date = strdup( psz_text );
-                }
-                else if( b_item == VLC_TRUE
+                else if( b_item == true
                          && ( !strcmp( psz_elname, "itunes:author" )
                             ||!strcmp( psz_elname, "author" ) ) )
                 { /* <author> isn't standard iTunes podcast stuff */
                     psz_item_author = strdup( psz_text );
                 }
-                else if( b_item == VLC_TRUE
-                         && !strcmp( psz_elname, "itunes:category" ) )
-                {
-                    psz_item_category = strdup( psz_text );
-                }
-                else if( b_item == VLC_TRUE
-                         && !strcmp( psz_elname, "itunes:duration" ) )
-                {
-                    psz_item_duration = strdup( psz_text );
-                }
-                else if( b_item == VLC_TRUE
-                         && !strcmp( psz_elname, "itunes:keywords" ) )
-                {
-                    psz_item_keywords = strdup( psz_text );
-                }
-                else if( b_item == VLC_TRUE
-                         && !strcmp( psz_elname, "itunes:subtitle" ) )
-                {
-                    psz_item_subtitle = strdup( psz_text );
-                }
-                else if( b_item == VLC_TRUE
+                else if( b_item == true
                          && ( !strcmp( psz_elname, "itunes:summary" )
                             ||!strcmp( psz_elname, "description" ) ) )
                 { /* <description> isn't standard iTunes podcast stuff */
                     psz_item_summary = strdup( psz_text );
                 }
+                SET_DATA( psz_item_date, "pubDate" )
+                SET_DATA( psz_item_category, "itunes:category" )
+                SET_DATA( psz_item_duration, "itunes:duration" )
+                SET_DATA( psz_item_keywords, "itunes:keywords" )
+                SET_DATA( psz_item_subtitle, "itunes:subtitle" )
                 /* toplevel meta data */
-                else if( b_item == VLC_FALSE && b_image == VLC_FALSE
+                else if( b_item == false && b_image == false
                          && !strcmp( psz_elname, "title" ) )
                 {
-                    playlist_ItemSetName( p_current, psz_text );
+                    input_item_SetName( p_current_input, psz_text );
                 }
-                else if( b_item == VLC_FALSE && b_image == VLC_FALSE
-                         && !strcmp( psz_elname, "link" ) )
-                {
-                    vlc_input_item_AddInfo( &(p_current->input),
-                                            _( "Podcast Info" ),
-                                            _( "Podcast Link" ),
-                                            "%s",
-                                            psz_text );
-                }
-                else if( b_item == VLC_FALSE && b_image == VLC_FALSE
-                         && !strcmp( psz_elname, "copyright" ) )
-                {
-                    vlc_input_item_AddInfo( &(p_current->input),
-                                            _( "Podcast Info" ),
-                                            _( "Podcast Copyright" ),
-                                            "%s",
-                                            psz_text );
-                }
-                else if( b_item == VLC_FALSE && b_image == VLC_FALSE
-                         && !strcmp( psz_elname, "itunes:category" ) )
-                {
-                    vlc_input_item_AddInfo( &(p_current->input),
-                                            _( "Podcast Info" ),
-                                            _( "Podcast Category" ),
-                                            "%s",
-                                            psz_text );
-                }
-                else if( b_item == VLC_FALSE && b_image == VLC_FALSE
-                         && !strcmp( psz_elname, "itunes:keywords" ) )
-                {
-                    vlc_input_item_AddInfo( &(p_current->input),
-                                            _( "Podcast Info" ),
-                                            _( "Podcast Keywords" ),
-                                            "%s",
-                                            psz_text );
-                }
-                else if( b_item == VLC_FALSE && b_image == VLC_FALSE
-                         && !strcmp( psz_elname, "itunes:subtitle" ) )
-                {
-                    vlc_input_item_AddInfo( &(p_current->input),
-                                            _( "Podcast Info" ),
-                                            _( "Podcast Subtitle" ),
-                                            "%s",
-                                            psz_text );
-                }
-                else if( b_item == VLC_FALSE && b_image == VLC_FALSE
+#define ADD_GINFO( info, name ) \
+    else if( !b_item && !b_image && !strcmp( psz_elname, name ) ) \
+    { \
+        input_item_AddInfo( p_current_input, _("Podcast Info"), \
+                                _( info ), "%s", psz_text ); \
+    }
+                ADD_GINFO( "Podcast Link", "link" )
+                ADD_GINFO( "Podcast Copyright", "copyright" )
+                ADD_GINFO( "Podcast Category", "itunes:category" )
+                ADD_GINFO( "Podcast Keywords", "itunes:keywords" )
+                ADD_GINFO( "Podcast Subtitle", "itunes:subtitle" )
+#undef ADD_GINFO
+                else if( b_item == false && b_image == false
                          && ( !strcmp( psz_elname, "itunes:summary" )
                             ||!strcmp( psz_elname, "description" ) ) )
                 { /* <description> isn't standard iTunes podcast stuff */
-                    vlc_input_item_AddInfo( &(p_current->input),
-                                            _( "Podcast Info" ),
-                                            _( "Podcast Summary" ),
-                                            "%s",
-                                            psz_text );
+                    input_item_AddInfo( p_current_input,
+                             _( "Podcast Info" ), _( "Podcast Summary" ),
+                             "%s", psz_text );
                 }
                 else
                 {
@@ -354,110 +280,51 @@ static int Demux( demux_t *p_demux )
                 if( !psz_elname ) return -1;
                 if( !strcmp( psz_elname, "item" ) )
                 {
-                    p_item = playlist_ItemNew( p_playlist, psz_item_mrl,
-                                               psz_item_name );
-                    if( p_item == NULL ) break;
-                    playlist_NodeAddItem( p_playlist, p_item,
-                                          p_current->pp_parents[0]->i_view,
-                                          p_current, PLAYLIST_APPEND,
-                                          PLAYLIST_END );
-
-                    /* We need to declare the parents of the node as the
-                     *                  * same of the parent's ones */
-                    playlist_CopyParents( p_current, p_item );
-
-                    if( psz_item_date )
+                    if( psz_item_mrl == NULL )
                     {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _( "Podcast Info" ),
-                                                _( "Podcast Publication Date" ),
-                                                "%s",
-                                                psz_item_date );
+                        msg_Err( p_demux, "invalid XML (no enclosure markup)" );
+                        return -1;
                     }
-                    if( psz_item_author )
-                    {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _( "Podcast Info" ),
-                                                _( "Podcast Author" ),
-                                                "%s",
-                                                psz_item_author );
-                    }
-                    if( psz_item_category )
-                    {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _( "Podcast Info" ),
-                                                _( "Podcast Subcategory" ),
-                                                "%s",
-                                                psz_item_category );
-                    }
-                    if( psz_item_duration )
-                    {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _( "Podcast Info" ),
-                                                _( "Podcast Duration" ),
-                                                "%s",
-                                                psz_item_duration );
-                    }
-                    if( psz_item_keywords )
-                    {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _( "Podcast Info" ),
-                                                _( "Podcast Keywords" ),
-                                                "%s",
-                                                psz_item_keywords );
-                    }
-                    if( psz_item_subtitle )
-                    {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _( "Podcast Info" ),
-                                                _( "Podcast Subtitle" ),
-                                                "%s",
-                                                psz_item_subtitle );
-                    }
-                    if( psz_item_summary )
-                    {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _( "Podcast Info" ),
-                                                _( "Podcast Summary" ),
-                                                "%s",
-                                                psz_item_summary );
-                    }
+                    p_input = input_item_NewExt( p_demux, psz_item_mrl,
+                                                psz_item_name, 0, NULL, -1 );
+                    if( p_input == NULL ) break;
+#define ADD_INFO( info, field ) \
+    if( field ) { input_item_AddInfo( p_input, \
+                            _( "Podcast Info" ),  _( info ), "%s", field ); }
+                    ADD_INFO( "Podcast Publication Date", psz_item_date  );
+                    ADD_INFO( "Podcast Author", psz_item_author );
+                    ADD_INFO( "Podcast Subcategory", psz_item_category );
+                    ADD_INFO( "Podcast Duration", psz_item_duration );
+                    ADD_INFO( "Podcast Keywords", psz_item_keywords );
+                    ADD_INFO( "Podcast Subtitle", psz_item_subtitle );
+                    ADD_INFO( "Podcast Summary", psz_item_summary );
+                    ADD_INFO( "Podcast Type", psz_item_type );
                     if( psz_item_size )
                     {
-                        vlc_input_item_AddInfo( &p_item->input,
+                        input_item_AddInfo( p_input,
                                                 _( "Podcast Info" ),
                                                 _( "Podcast Size" ),
                                                 "%s bytes",
                                                 psz_item_size );
                     }
-                    if( psz_item_type )
-                    {
-                        vlc_input_item_AddInfo( &p_item->input,
-                                                _( "Podcast Info" ),
-                                                _( "Podcast Type" ),
-                                                "%s",
-                                                psz_item_type );
-                    }
-
-#define FREE(a) if( a ) free( a ); a = NULL;
-                    FREE( psz_item_name );
-                    FREE( psz_item_mrl );
-                    FREE( psz_item_size );
-                    FREE( psz_item_type );
-                    FREE( psz_item_date );
-                    FREE( psz_item_author );
-                    FREE( psz_item_category );
-                    FREE( psz_item_duration );
-                    FREE( psz_item_keywords );
-                    FREE( psz_item_subtitle );
-                    FREE( psz_item_summary );
-#undef FREE
-
-                    b_item = VLC_FALSE;
+                    input_item_AddSubItem( p_current_input, p_input );
+                    vlc_gc_decref( p_input );
+                    FREENULL( psz_item_name );
+                    FREENULL( psz_item_mrl );
+                    FREENULL( psz_item_size );
+                    FREENULL( psz_item_type );
+                    FREENULL( psz_item_date );
+                    FREENULL( psz_item_author );
+                    FREENULL( psz_item_category );
+                    FREENULL( psz_item_duration );
+                    FREENULL( psz_item_keywords );
+                    FREENULL( psz_item_subtitle );
+                    FREENULL( psz_item_summary );
+                    b_item = false;
                 }
                 else if( !strcmp( psz_elname, "image" ) )
                 {
-                    b_image = VLC_FALSE;
+                    b_image = false;
                 }
                 free( psz_elname );
                 psz_elname = strdup("");
@@ -472,22 +339,12 @@ static int Demux( demux_t *p_demux )
         msg_Warn( p_demux, "error while parsing data" );
     }
 
-    /* Go back and play the playlist */
-    if( b_play && p_playlist->status.p_item &&
-        p_playlist->status.p_item->i_children > 0 )
-    {
-        playlist_Control( p_playlist, PLAYLIST_VIEWPLAY,
-                          p_playlist->status.i_view,
-                          p_playlist->status.p_item,
-                          p_playlist->status.p_item->pp_children[0] );
-    }
-
-    vlc_object_release( p_playlist );
-    p_sys->p_playlist = NULL;
-    return VLC_SUCCESS;
+    HANDLE_PLAY_AND_RELEASE;
+    return 0; /* Needed for correct operation of go back */
 }
 
 static int Control( demux_t *p_demux, int i_query, va_list args )
 {
+    VLC_UNUSED(p_demux); VLC_UNUSED(i_query); VLC_UNUSED(args);
     return VLC_EGENERIC;
 }

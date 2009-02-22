@@ -2,7 +2,7 @@
  * pes.c: PES packetizer used by the MPEG multiplexers
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 0128f1a695787d7c2627f1002992458c41fcbf67 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -25,29 +25,32 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <string.h>
 #include <errno.h>
 #include <fcntl.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/sout.h>
+#include <vlc_common.h>
+#include <vlc_sout.h>
+#include <vlc_block.h>
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
 #endif
 
-#include "codecs.h"
+#include <vlc_codecs.h>
 #include "pes.h"
 #include "bits.h"
 
 static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
                              int i_es_size, es_format_t *p_fmt,
                              int i_stream_id, int i_private_id,
-                             vlc_bool_t b_mpeg2, vlc_bool_t b_data_alignment,
+                             bool b_mpeg2, bool b_data_alignment,
                              int i_header_size )
 {
     bits_buffer_t bits;
@@ -228,7 +231,7 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
     }
 }
 
-int E_( EStoPES )( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
+int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
                    es_format_t *p_fmt, int i_stream_id,
                    int b_mpeg2, int b_data_alignment, int i_header_size,
                    int i_max_pes_size )
@@ -271,7 +274,7 @@ int E_( EStoPES )( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
 
     *pp_pes = p_pes = NULL;
 
-#ifdef DEBUG
+#ifndef NDEBUG
     memset( header, 0, 50 );
 #endif
 
@@ -304,8 +307,8 @@ int E_( EStoPES )( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
             p_pes->i_length = 0;
             if( i_pes_payload > 0 )
             {
-                p_sout->p_vlc->pf_memcpy( p_pes->p_buffer + i_pes_header,
-                                          p_data, i_pes_payload );
+                vlc_memcpy( p_pes->p_buffer + i_pes_header, p_data,
+                            i_pes_payload );
             }
             i_pes_count++;
         }

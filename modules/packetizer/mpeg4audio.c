@@ -2,7 +2,7 @@
  * mpeg4audio.c: parse and packetize an MPEG 4 audio stream
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: ab5d5956d4738080904edb28e2d08eaf394da1be $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -25,20 +25,24 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                              /* strdup() */
-#include <assert.h>
 
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
-#include <vlc/decoder.h>
-#include <vlc/input.h>
-#include <vlc/sout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
+#include <vlc_codec.h>
 #include <vlc_block.h>
+#include <vlc_sout.h>
+#include <vlc_codecs.h>
+#include <vlc_input.h>
 #include <vlc_bits.h>
-#include "codecs.h"
 
 #include "vlc_block_helper.h"
+
+#include <assert.h>
 
 /* AAC Config in ES:
  *
@@ -134,7 +138,7 @@ struct decoder_sys_t
     int i_input_rate;
 
     /* LOAS */
-    vlc_bool_t b_latm_cfg;
+    bool b_latm_cfg;
     latm_mux_t latm;
 };
 
@@ -178,7 +182,7 @@ static block_t *PacketizeStreamBlock( decoder_t *, block_t ** );
 vlc_module_begin();
     set_category( CAT_SOUT );
     set_subcategory( SUBCAT_SOUT_PACKETIZER );
-    set_description( _("MPEG4 audio packetizer") );
+    set_description( N_("MPEG4 audio packetizer") );
     set_capability( "packetizer", 50 );
     set_callbacks( OpenPacketizer, ClosePacketizer );
 vlc_module_end();
@@ -199,17 +203,14 @@ static int OpenPacketizer( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     /* Misc init */
     p_sys->i_state = STATE_NOSYNC;
     aout_DateSet( &p_sys->end_date, 0 );
-    p_sys->bytestream = block_BytestreamInit( p_dec );
+    p_sys->bytestream = block_BytestreamInit();
     p_sys->i_input_rate = INPUT_RATE_DEFAULT;
-    p_sys->b_latm_cfg = VLC_FALSE;
+    p_sys->b_latm_cfg = false;
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
@@ -324,14 +325,14 @@ static block_t *PacketizeRawBlock( decoder_t *p_dec, block_t **pp_block )
 /****************************************************************************
  * ADTS helpers
  ****************************************************************************/
-static int ADTSSyncInfo( decoder_t * p_dec, const byte_t * p_buf,
+static int ADTSSyncInfo( decoder_t * p_dec, const uint8_t * p_buf,
                          unsigned int * pi_channels,
                          unsigned int * pi_sample_rate,
                          unsigned int * pi_frame_length,
                          unsigned int * pi_header_size )
 {
     int i_profile, i_sample_rate_idx, i_frame_size;
-    vlc_bool_t b_crc;
+    bool b_crc;
 
     /* Fixed header between frames */
     //int i_id = ( (p_buf[1] >> 3) & 0x01) ? 2 : 4; /* MPEG-2 or 4 */
@@ -703,13 +704,13 @@ static int LatmReadStreamMuxConfiguration( latm_mux_t *m, bs_t *s )
         for( i_layer = 0; i_layer < m->pi_layers[i_program]; i_layer++ )
         {
             latm_stream_t *st = &m->stream[m->i_streams];
-            vlc_bool_t b_previous_cfg;
+            bool b_previous_cfg;
 
             m->pi_stream[i_program][i_layer] = m->i_streams;
             st->i_program = i_program;
             st->i_layer = i_layer;
 
-            b_previous_cfg = VLC_FALSE;
+            b_previous_cfg = false;
             if( i_program != 0 || i_layer != 0 )
                 b_previous_cfg = bs_read1( s );
 
@@ -819,14 +820,14 @@ static int LOASParse( decoder_t *p_dec, uint8_t *p_buffer, int i_buffer )
                 memcpy( p_dec->fmt_out.p_extra, st->extra, st->i_extra );
             }
 
-            p_sys->b_latm_cfg = VLC_TRUE;
+            p_sys->b_latm_cfg = true;
         }
     }
     /* Wait for the configuration */
     if( !p_sys->b_latm_cfg )
         return 0;
 
-    /* FIXME do we need to split the subframe into independant packet ? */
+    /* FIXME do we need to split the subframe into independent packet ? */
     if( p_sys->latm.i_sub_frames > 1 )
         msg_Err( p_dec, "latm sub frames not yet supported, please send a sample" );
 
@@ -1139,7 +1140,7 @@ static block_t *PacketizeStreamBlock( decoder_t *p_dec, block_t **pp_block )
             p_out_buffer = block_New( p_dec, p_sys->i_frame_size );
             if( !p_out_buffer )
             {
-                //p_dec->b_error = VLC_TRUE;
+                //p_dec->b_error = true;
                 return NULL;
             }
             p_buf = p_out_buffer->p_buffer;

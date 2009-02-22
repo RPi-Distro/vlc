@@ -2,7 +2,7 @@
  * InterfaceWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: ee3e17ebaf97f96b62d937853e8ca22c0b7709db $
+ * $Id: 03b304651f32d60cbdb157e14c227b0f50114885 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -35,13 +35,15 @@
 #include <scsi.h>
 #include <scsiprobe_driver.h>
 #include <fs_info.h>
-#include <string.h>
 
 /* VLC headers */
-#include <vlc/vlc.h>
-#include <vlc/aout.h>
-#include <vlc/intf.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_aout.h>
+#include <vlc_interface.h>
 
 /* BeOS interface headers */
 #include "MsgVals.h"
@@ -201,8 +203,7 @@ InterfaceWindow::InterfaceWindow( intf_thread_t * _p_intf, BRect frame,
       fLastUpdateTime( system_time() ),
       fSettings( new BMessage( 'sett' ) )
 {
-    p_playlist = (playlist_t *)
-        vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+    p_playlist = pl_Yield( p_intf );
 
     var_AddCallback( p_playlist, "intf-change", PlaylistChanged, this );
     var_AddCallback( p_playlist, "item-change", PlaylistChanged, this );
@@ -227,11 +228,13 @@ InterfaceWindow::InterfaceWindow( intf_thread_t * _p_intf, BRect frame,
                      screen_rect.top + 50,
                      screen_rect.right - 150,
                      screen_rect.top + 250 );
+#if 0
     fPlaylistWindow = new PlayListWindow( window_rect, _("Playlist"), this, p_intf );
     window_rect.Set( screen_rect.right - 550,
                      screen_rect.top + 300,
                      screen_rect.right - 150,
                      screen_rect.top + 500 );
+#endif
     fMessagesWindow = new MessagesWindow( p_intf, window_rect, _("Messages") );
 
     // the media control view
@@ -353,10 +356,12 @@ InterfaceWindow::~InterfaceWindow()
     {
         vlc_object_release( p_playlist );
     }
+#if 0
     if( fPlaylistWindow )
     {
         fPlaylistWindow->ReallyQuit();
     }
+#endif
     if( fMessagesWindow )
     {
         fMessagesWindow->ReallyQuit();
@@ -411,7 +416,7 @@ void InterfaceWindow::MessageReceived( BMessage * p_message )
         case LOAD_SUBFILE:
             _ShowFilePanel( SUBFILE_RECEIVED, _("VLC media player: Open Subtitle File") );
             break;
-
+#if 0
         case OPEN_PLAYLIST:
             if (fPlaylistWindow->Lock())
             {
@@ -422,7 +427,7 @@ void InterfaceWindow::MessageReceived( BMessage * p_message )
                 fPlaylistWindow->Unlock();
             }
             break;
-
+#endif
         case OPEN_DVD:
             {
                 const char * psz_device;
@@ -433,7 +438,7 @@ void InterfaceWindow::MessageReceived( BMessage * p_message )
                     memset( psz_uri, 0, 1024 );
                     snprintf( psz_uri, 1024, "dvdnav:%s", psz_device );
                     playlist_Add( p_playlist, psz_uri, psz_device,
-                                  PLAYLIST_APPEND | PLAYLIST_GO, PLAYLIST_END );
+                        PLAYLIST_APPEND | PLAYLIST_GO, PLAYLIST_END, true );
                 }
                 UpdatePlaylist();
             }
@@ -728,12 +733,12 @@ void InterfaceWindow::MessageReceived( BMessage * p_message )
                 break;
             }
 
-            vlc_bool_t b_remove = ( p_message->WasDropped() &&
+            bool b_remove = ( p_message->WasDropped() &&
                                     !( modifiers() & B_SHIFT_KEY ) );
 
             if( b_remove && p_playlist )
             {
-                playlist_Clear( p_playlist );
+                playlist_Clear( p_playlist, true );
             }
 
             entry_ref ref;
@@ -745,8 +750,8 @@ void InterfaceWindow::MessageReceived( BMessage * p_message )
 
                 if( p_playlist )
                 {
-                    playlist_Add( p_playlist, path.Path(), path.Path(),
-                                  PLAYLIST_APPEND | PLAYLIST_GO, PLAYLIST_END );
+                    playlist_Add( p_playlist, path.Path(), NULL,
+                       PLAYLIST_APPEND | PLAYLIST_GO, PLAYLIST_END, true );
                 }
             }
 
@@ -801,7 +806,7 @@ bool InterfaceWindow::QuitRequested()
 
      _StoreSettings();
 
-    p_intf->b_die = 1;
+    vlc_object_kill( p_intf );
 
     return( true );
 }
@@ -830,13 +835,15 @@ void InterfaceWindow::UpdateInterface()
 
     if( b_playlist_update )
     {
+#if 0
         if( fPlaylistWindow->Lock() )
         {
             fPlaylistWindow->UpdatePlaylist( true );
             fPlaylistWindow->Unlock();
             b_playlist_update = false;
         }
-        p_mediaControl->SetEnabled( p_playlist->i_size );
+#endif
+        p_mediaControl->SetEnabled( !playlist_IsEmpty( p_playlist ) );
     }
 
     if( p_input )
@@ -1066,8 +1073,10 @@ InterfaceWindow::_RestoreSettings()
         BRect frame;
         if ( fSettings->FindRect( "main frame", &frame ) == B_OK )
             set_window_pos( this, frame );
+#if 0
         if (fSettings->FindRect( "playlist frame", &frame ) == B_OK )
             set_window_pos( fPlaylistWindow, frame );
+#endif
         if (fSettings->FindRect( "messages frame", &frame ) == B_OK )
             set_window_pos( fMessagesWindow, frame );
         if (fSettings->FindRect( "settings frame", &frame ) == B_OK )
@@ -1079,16 +1088,19 @@ InterfaceWindow::_RestoreSettings()
         }
 
         bool showing;
+#if 0
         if ( fSettings->FindBool( "playlist showing", &showing ) == B_OK )
             launch_window( fPlaylistWindow, showing );
+#endif
         if ( fSettings->FindBool( "messages showing", &showing ) == B_OK )
             launch_window( fMessagesWindow, showing );
         if ( fSettings->FindBool( "settings showing", &showing ) == B_OK )
             launch_window( fPreferencesWindow, showing );
-
+#if 0
         uint32 displayMode;
         if ( fSettings->FindInt32( "playlist display mode", (int32*)&displayMode ) == B_OK )
             fPlaylistWindow->SetDisplayMode( displayMode );
+#endif
     }
 }
 
@@ -1105,6 +1117,7 @@ InterfaceWindow::_StoreSettings()
     /* Save the windows positions */
     if ( fSettings->ReplaceRect( "main frame", Frame() ) != B_OK )
         fSettings->AddRect( "main frame", Frame() );
+#if 0
     if ( fPlaylistWindow->Lock() )
     {
         if (fSettings->ReplaceRect( "playlist frame", fPlaylistWindow->Frame() ) != B_OK)
@@ -1113,6 +1126,7 @@ InterfaceWindow::_StoreSettings()
             fSettings->AddBool( "playlist showing", !fPlaylistWindow->IsHidden() );
         fPlaylistWindow->Unlock();
     }
+#endif
     if ( fMessagesWindow->Lock() )
     {
         if (fSettings->ReplaceRect( "messages frame", fMessagesWindow->Frame() ) != B_OK)
@@ -1129,10 +1143,11 @@ InterfaceWindow::_StoreSettings()
             fSettings->AddBool( "settings showing", !fPreferencesWindow->IsHidden() );
         fPreferencesWindow->Unlock();
     }
+#if 0
     uint32 displayMode = fPlaylistWindow->DisplayMode();
     if (fSettings->ReplaceInt32( "playlist display mode", displayMode ) != B_OK )
         fSettings->AddInt32( "playlist display mode", displayMode );
-
+#endif
     save_settings( fSettings, "interface_settings", "VideoLAN Client" );
 }
 

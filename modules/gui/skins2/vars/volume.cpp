@@ -2,7 +2,7 @@
  * volume.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e1f83d6b2d0f2dd02aec068eb7b4d9241bd36110 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,11 +22,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdio.h>  // snprintf
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/aout.h>
+#include <vlc_common.h>
+#include <vlc_aout.h>
 #include "volume.hpp"
-
 
 Volume::Volume( intf_thread_t *pIntf ): VarPercent( pIntf )
 {

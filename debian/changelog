@@ -1,3 +1,143 @@
+vlc (0.9.8a-1) experimental; urgency=low
+
+  * New upstream release
+    + Fix integer overflow in Real demux (VideoLAN SA-2008-11, CVE-2008-5276)
+  * Enable RealRTSP access module
+  * Depends on libv4l-dev to add support of some webcam 
+  * Don't rebootstrap. The packages causing troubles previously have been fixed
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 03 Dec 2008 20:20:52 +0100
+
+vlc (0.9.6-1) experimental; urgency=low
+
+  [ Reinhard Tartler ]
+  * Build against libass. Closes: #499063, LP: #210354, #199870
+  * Explicitly build against libdca in debian/rules
+  * Tighten build depends on a libass-dev version that ships without .la file
+
+  [ Christophe Mutricy ]
+  * New bugfix upstream releases
+    + Remove 402_tivo_overflow.diff
+    + Fix buffer overflow in CUE demuxer (Closes: #504639)
+    + Fix buffer overflow in Realtext decoder
+  * Honor DEB_BUILD_OPTIONS 
+  * Rebootstrap in order to avoid problem with .la
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 08 Nov 2008 03:14:29 +0100
+
+vlc (0.9.4-2) experimental; urgency=low
+
+  * Fix buffer overflow in Tivo demuxer
+    + Closes: #502726, VideoLAN SA-0809
+    + 402_tivo_overflow.diff taken from upstream
+  * Better xinerama fullscreen behaviour
+    + 401_detect_xinerama_fullscreen.diff taken from upstream
+  * Builddepends on libcursesw5-dev rather than libcurses5-dev 
+    for proper wide char handling 
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Mon, 20 Oct 2008 23:23:46 +0200
+
+vlc (0.9.4-1) experimental; urgency=low
+
+  * New upstream bugfix version
+  * rules: Pass the debian version in configure.ac so that the cache 
+    is invalidated between binary version
+  * control: Don't forget commas in builddep list
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Tue, 07 Oct 2008 00:17:30 +0200
+
+vlc (0.9.3-1) experimental; urgency=low
+
+  [ Christophe Mutricy ]
+  * New upstream release
+  * Build-depends on libdca-dev
+  * vlc-nox.install
+    + Be more general for the memcopy modules.
+      Fix a FTBFS on non-intel arch (Closes: #499860). 
+  * Sort builddep list 
+
+  [ Reinhard Tartler ]
+  * remove spurious conflicts on libvlc2. LP: #274614
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Fri, 26 Sep 2008 23:49:48 +0200
+
+vlc (0.9.2-1) experimental; urgency=low
+
+  [ Christophe Mutricy ]
+  * New upstream release
+    + Soname changed
+    + Bugs fixed upstream: Closes: #487646,  #298150, #325069, #392292, 
+      #458004, #470903, #458004, #423121
+    + new upstream fixes various crasher bugs reported in ubuntu:
+      LP: #189575, #113927, #103741, #111615, #107899, #112076, #198916, 221428,
+          #91679, #96978, #123589, #133528, #231621, #259025
+    + plays files with '+' in its name, LP: #239431, #217305
+    + New packages: libvlccore0, libvlccore-dev, vlc-plugin-pulse
+     (Closes: #471069)
+    + Build-depends on libswsale-dev, libshout3-dev, libxpm-dev,
+      zlib1g-dev, liblua5.1-0-dev, libschroedinger-dev, libtag1-dev,
+      libqt4-dev, libqt4-dev-tools and pkg-config. (Closes: #461324)
+    + time display no longer incomplete, LP: #193445
+    + fixed volume bar behavior, LP: #250041
+    + shout support closes LP: #127594, #84098, 
+    + Install new modules:
+      - vlc-nox: alphamask, blendbench, bluescreen, canvas, cc, cdg, chain,
+        colorthres, croppadd, dynamicoverlay, erase, faad, gaussianblur, grain,
+        inhibit, lua, memcpy*, mmap, osd_parser, puzzle, remoteosd, rtmp, 
+        schroedinger, sharpen, stats, subusf, t140, telepathy, v4l2, vmem
+      - vlc: qt4
+      - vlc-plugin-jack: access_jack
+    + Distribute the .pc for libvlc and vlc-plugin (Closes: #289507)
+    + Remove wx interface and glide plugin as they've been dropped by upstream
+      LP: #205325, #88487, #90603, 
+    + The Python and java bindings are no longer part of the upstream tarballs 
+      (Closes: #469011)
+    + Temporarly disable libdca module until a pkg with the new 
+      API get in unstable
+    + Delete or refresh patches
+    + New patches:
+        - 052_as-needed taken from bug #347650 to teach libtool about 
+          -Wl,--as-needed
+  * Install the skins DTD and the default skins it's only 113kB
+  * Improve watch file
+  * Add a vlc-data package for /usr/share  (13 MB)
+  * Add a vlc-dbg package (Closes: #491564)
+  * Sort vlc.install and vlc-nox.install
+
+  [ Mohammed Adnène Trojette ]
+  * Add myself to Uploaders.
+  * debian/control:
+    + Add proper conflicts/replaces to vlc-data with mozilla-plugin-vlc.
+    + Add proper conflicts/replaces to vlc with vlc-nox.
+
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 17 Sep 2008 00:49:48 +0200
+
+vlc (0.8.6.i-2) experimental; urgency=high
+
+  [ Loic Minier ]
+  * Fix changelog entries for 0.8.6.h-2 and 0.8.6.h-3.
+  * Bump up Standards-Version to 3.8.0.
+
+  [ Christophe Mutricy ]
+  * Security: Fix integer overflow in mms module (CVE-2008-3794)
+    (Closes: #496265)(407-mms-overflow.diff taken from upstream)
+
+  [ Sam Hocevar ]
+  * debian/patches/300_manpage_syntax.diff: fix vlc-config.1 syntax.
+
+ -- Sam Hocevar (Debian packages) <sam+deb@zoy.org>  Tue, 26 Aug 2008 23:25:13 +0000
+
+vlc (0.8.6.i-1) experimental; urgency=low
+
+  * New upstream release.
+    - Refresh patch 010_iceape and change it to only patch the name of the .pc
+      files, keep using FIREFOX_CFLAGS and _LIBS etc. as to allow us to only
+      run autoconf, not automake.
+    - Drop patch 401-CVE-2008-2430, merged upstream.
+    - Update and rename patch 050_bootstrap to 900_autoconf.
+
+ -- Loic Minier <lool@dooz.org>  Fri, 22 Aug 2008 19:13:30 +0200
 vlc (0.8.6.h-5) unstable; urgency=high
 
   * Acknowledge NMU by Nico Golde. Thanks.

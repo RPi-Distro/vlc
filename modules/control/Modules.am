@@ -1,3 +1,4 @@
+SUBDIRS = http
 SOURCES_gestures = gestures.c
 SOURCES_showintf = showintf.c
 SOURCES_telnet = telnet.c
@@ -6,3 +7,14 @@ SOURCES_ntservice = ntservice.c
 SOURCES_hotkeys = hotkeys.c
 SOURCES_lirc = lirc.c
 SOURCES_rc = rc.c
+SOURCES_dbus = dbus.c dbus.h
+SOURCES_signals = signals.c
+if HAVE_DARWIN
+motion_extra = unimotion.c unimotion.h
+else
+motion_extra = $(NULL)
+endif
+SOURCES_motion = \
+        motion.c \
+        $(motion_extra) \
+        $(NULL)

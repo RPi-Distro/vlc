@@ -1,10 +1,10 @@
 /*****************************************************************************
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
- * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: cb60704efd3ea02bb7c8d4d0542b3f67bcd5f8b0 $
+ * Copyright (C) 2001-2006 the VideoLAN team
+ * $Id: 3e51aadc00c43bf6fa9aa761dcba7b2b30e1a0cc $
  *
- * Authors: St�hane Borel <stef@via.ecp.fr>
+ * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -25,14 +25,20 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdio.h>
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                              /* strdup() */
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include "iso_lang.h"
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_input.h>
+#include <vlc_access.h>
+#include <vlc_charset.h>
+
+#include <vlc_interface.h>
+
+#include <vlc_iso_lang.h>
 
 #include "../demux/ps.h"
 
@@ -43,13 +49,22 @@
 #include <fcntl.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <string.h>
 
-#include <dvdread/dvd_reader.h>
-#include <dvdread/ifo_types.h>
-#include <dvdread/ifo_read.h>
-#include <dvdread/nav_read.h>
-#include <dvdread/nav_print.h>
+#ifdef HAVE_DVDREAD_DVD_READER_H
+  #include <dvdread/dvd_reader.h>
+  #include <dvdread/ifo_types.h>
+  #include <dvdread/ifo_read.h>
+  #include <dvdread/nav_read.h>
+  #include <dvdread/nav_print.h>
+#else
+  #include <libdvdread/dvd_reader.h>
+  #include <libdvdread/ifo_types.h>
+  #include <libdvdread/ifo_read.h>
+  #include <libdvdread/nav_read.h>
+  #include <libdvdread/nav_print.h>
+#endif
+
+#include <assert.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -80,23 +95,23 @@
            "libcss.\n" \
     "The default method is: key.")
 
-static char *psz_css_list[] = { "title", "disc", "key" };
-static char *psz_css_list_text[] = { N_("title"), N_("Disc"), N_("Key") };
+static const char *const psz_css_list[] = { "title", "disc", "key" };
+static const char *const psz_css_list_text[] = { N_("title"), N_("Disc"), N_("Key") };
 
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
 vlc_module_begin();
-    set_shortname( _("DVD without menus") );
-    set_description( _("DVDRead Input (DVD without menu support)") );
+    set_shortname( N_("DVD without menus") );
+    set_description( N_("DVDRead Input (DVD without menu support)") );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACCESS );
     add_integer( "dvdread-angle", 1, NULL, ANGLE_TEXT,
-        ANGLE_LONGTEXT, VLC_FALSE );
+        ANGLE_LONGTEXT, false );
     add_integer( "dvdread-caching", DEFAULT_PTS_DELAY / 1000, NULL,
-        CACHING_TEXT, CACHING_LONGTEXT, VLC_TRUE );
+        CACHING_TEXT, CACHING_LONGTEXT, true );
     add_string( "dvdread-css-method", NULL, NULL, CSSMETHOD_TEXT,
-                CSSMETHOD_LONGTEXT, VLC_TRUE );
+                CSSMETHOD_LONGTEXT, true );
         change_string_list( psz_css_list, psz_css_list_text, 0 );
     set_capability( "access_demux", 0 );
     add_shortcut( "dvd" );
@@ -200,20 +215,22 @@ static int Open( vlc_object_t *p_this )
         }
     }
     else
-        psz_name = strdup( p_demux->psz_path );
+        psz_name = ToLocaleDup( p_demux->psz_path );
 
 #ifdef WIN32
     if( psz_name[0] && psz_name[1] == ':' &&
         psz_name[2] == '\\' && psz_name[3] == '\0' ) psz_name[2] = '\0';
 #endif
 
-    /* Override environment variable DVDCSS_METHOD with config option
-     * (FIXME: this creates a small memory leak) */
+    /* Override environment variable DVDCSS_METHOD with config option */
     psz_dvdcss_env = config_GetPsz( p_demux, "dvdread-css-method" );
     if( psz_dvdcss_env && *psz_dvdcss_env )
+#ifdef HAVE_SETENV
+        setenv( "DVDCSS_METHOD", psz_dvdcss_env, 1 );
+#else
     {
+        /* FIXME: this create a small memory leak */
         char *psz_env;
-
         psz_env = malloc( strlen("DVDCSS_METHOD=") +
                           strlen( psz_dvdcss_env ) + 1 );
         if( !psz_env )
@@ -221,17 +238,18 @@ static int Open( vlc_object_t *p_this )
             free( psz_dvdcss_env );
             return VLC_ENOMEM;
         }
-
         sprintf( psz_env, "%s%s", "DVDCSS_METHOD=", psz_dvdcss_env );
-
         putenv( psz_env );
     }
-    if( psz_dvdcss_env ) free( psz_dvdcss_env );
+#endif
+    free( psz_dvdcss_env );
 
     /* Open dvdread */
     if( !(p_dvdread = DVDOpen( psz_name )) )
     {
         msg_Err( p_demux, "DVDRead cannot open source: %s", psz_name );
+        intf_UserFatal( p_demux, false, _("Playback failure"),
+                        _("DVDRead could not open the disk \"%s\"."), psz_name );
         free( psz_name );
         return VLC_EGENERIC;
     }
@@ -246,10 +264,7 @@ static int Open( vlc_object_t *p_this )
     msg_Dbg( p_demux, "VMG opened" );
 
     /* Fill p_demux field */
-    p_demux->pf_demux = Demux;
-    p_demux->pf_control = Control;
-    p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
-    memset( p_sys, 0, sizeof( demux_sys_t ) );
+    DEMUX_INIT_COMMON(); p_sys = p_demux->p_sys;
 
     ps_track_init( p_sys->tk );
     p_sys->i_aspect = -1;
@@ -327,7 +342,7 @@ static int64_t dvdtime_to_time( dvd_time_t *dtime, uint8_t still_time )
         i_micro_second += (int64_t)(BCD2D(dtime->minute)) * 60 * 1000000;
         i_micro_second += (int64_t)(BCD2D(dtime->second)) * 1000000;
 
-        switch((dtime->frame_u & 0xc0) >> 6) 
+        switch((dtime->frame_u & 0xc0) >> 6)
         {
         case 1:
             f_fps = 25.0;
@@ -358,7 +373,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     double f, *pf;
-    vlc_bool_t *pb;
+    bool *pb;
     int64_t *pi64;
     input_title_t ***ppp_title;
     int *pi_int;
@@ -389,7 +404,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             pi64 = (int64_t*)va_arg( args, int64_t * );
             if( p_demux->info.i_title >= 0 && p_demux->info.i_title < p_sys->i_titles )
             {
-                *pi64 = (int64_t) dvdtime_to_time( &p_sys->p_cur_pgc->playback_time, 0 ) / 
+                *pi64 = (int64_t) dvdtime_to_time( &p_sys->p_cur_pgc->playback_time, 0 ) /
                         p_sys->i_title_blocks * p_sys->i_title_offset;
                 return VLC_SUCCESS;
             }
@@ -408,10 +423,11 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         /* Special for access_demux */
         case DEMUX_CAN_PAUSE:
+        case DEMUX_CAN_SEEK:
         case DEMUX_CAN_CONTROL_PACE:
             /* TODO */
-            pb = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
-            *pb = VLC_TRUE;
+            pb = (bool*)va_arg( args, bool * );
+            *pb = true;
             return VLC_SUCCESS;
 
         case DEMUX_SET_PAUSE_STATE:
@@ -492,6 +508,9 @@ static int Demux( demux_t *p_demux )
                            1, p_buffer ) != 1 )
         {
             msg_Err( p_demux, "read failed for block %d", p_sys->i_next_vobu );
+            intf_UserWarn( p_demux, _("Playback failure"),
+                            _("DVDRead could not read block %d."),
+                           p_sys->i_next_vobu );
             return -1;
         }
 
@@ -551,6 +570,9 @@ static int Demux( demux_t *p_demux )
     {
         msg_Err( p_demux, "read failed for %d/%d blocks at 0x%02x",
                  i_read, i_blocks_once, p_sys->i_cur_block );
+        intf_UserFatal( p_demux, false, _("Playback failure"),
+                        _("DVDRead could not read %d/%d blocks at 0x%02x."),
+                        i_read, i_blocks_once, p_sys->i_cur_block );
         return -1;
     }
 
@@ -581,10 +603,15 @@ static int DemuxBlock( demux_t *p_demux, uint8_t *pkt, int i_pkt )
     demux_sys_t *p_sys = p_demux->p_sys;
     uint8_t     *p = pkt;
 
-    while( p < &pkt[i_pkt] )
+    while( p && p < &pkt[i_pkt] )
     {
-        int i_size = ps_pkt_size( p, &pkt[i_pkt] - p );
         block_t *p_pkt;
+        int i_size = &pkt[i_pkt] - p;
+
+        if( i_size < 6 )
+            break;
+ 
+        i_size = ps_pkt_size( p, i_size );
         if( i_size <= 0 )
         {
             break;
@@ -688,9 +715,15 @@ static void ESNew( demux_t *p_demux, int i_id, int i_lang )
     /* Add a new ES */
     if( tk->fmt.i_cat == VIDEO_ES )
     {
-        if( p_sys->i_aspect >= 0 )
+        switch( p_sys->i_aspect )
         {
-            tk->fmt.video.i_aspect = p_sys->i_aspect;
+        case 1: tk->fmt.video.i_aspect = VOUT_ASPECT_FACTOR; break;
+        case 2: tk->fmt.video.i_aspect = VOUT_ASPECT_FACTOR * 4 / 3; break;
+        case 3: tk->fmt.video.i_aspect = VOUT_ASPECT_FACTOR * 16 / 9; break;
+        case 4: tk->fmt.video.i_aspect = VOUT_ASPECT_FACTOR * 221 / 10; break;
+        default:
+            tk->fmt.video.i_aspect = 0;
+            break;
         }
     }
     else if( tk->fmt.i_cat == AUDIO_ES )
@@ -727,7 +760,7 @@ static void ESNew( demux_t *p_demux, int i_id, int i_lang )
     }
 
     tk->es = es_out_Add( p_demux->out, &tk->fmt );
-    tk->b_seen = VLC_TRUE;
+    tk->b_seen = true;
 }
 
 /*****************************************************************************
@@ -772,6 +805,9 @@ static int DvdReadSetArea( demux_t *p_demux, int i_title, int i_chapter,
 
         /* Title position inside the selected vts */
         p_sys->i_ttn = p_vmg->tt_srpt->title[i_title].vts_ttn;
+
+        if( p_sys->i_ttn < 1 )
+            return VLC_EGENERIC; /* Couldn't set title */
 
         /* Find title start/end */
         pgc_id = p_vts->vts_ptt_srpt->title[p_sys->i_ttn - 1].ptt[0].pgcn;
@@ -858,7 +894,7 @@ static int DvdReadSetArea( demux_t *p_demux, int i_title, int i_chapter,
                 es_format_Clean( &tk->fmt );
                 if( tk->es ) es_out_Del( p_demux->out, tk->es );
             }
-            tk->b_seen = VLC_FALSE;
+            tk->b_seen = false;
         }
 
         if( p_demux->info.i_title != i_title )
@@ -1218,7 +1254,7 @@ static void DvdReadHandleDSI( demux_t *p_demux, uint8_t *p_data )
              p_sys->dsi_pack.dsi_gi.vobu_c_idn,
              dvdtime_to_time( &p_sys->dsi_pack.dsi_gi.c_eltm, 0 ) );
 
-    msg_Dbg( p_demux, "cell duration: %lld", 
+    msg_Dbg( p_demux, "cell duration: %lld",
              (mtime_t)dvdtime_to_time( &p_sys->p_cur_pgc->cell_playback[p_sys->i_cur_cell].playback_time, 0 ) );
 
     msg_Dbg( p_demux, "cat 0x%02x ilvu_ea %d ilvu_sa %d size %d",

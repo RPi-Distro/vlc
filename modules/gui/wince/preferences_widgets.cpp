@@ -2,7 +2,7 @@
  * preferences_widgets.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 69e618c0367c617d34ec33adf6d2ed14e87f5731 $
+ * $Id: bdfefeadfb886f149912f11d83846cc5b1488cf4 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,11 +25,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                            /* strerror() */
-#include <stdio.h>
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 #include "wince.h"
 
@@ -50,10 +51,6 @@ ConfigControl *CreateConfigControl( vlc_object_t *p_this,
 {
     ConfigControl *p_control = NULL;
 
-    if( p_item->psz_current )
-    {
-        return NULL;
-    }
     switch( p_item->i_type )
     {
     case CONFIG_ITEM_MODULE:
@@ -143,7 +140,7 @@ int ConfigControl::GetType()
     return i_type;
 }
 
-vlc_bool_t ConfigControl::IsAdvanced()
+bool ConfigControl::IsAdvanced()
 {
     return b_advanced;
 }
@@ -476,7 +473,7 @@ void StringListConfigControl::OnAction( wxCommandEvent& event )
     {
         combo->Clear();
         UpdateCombo( p_item );
-        p_item->b_dirty = VLC_FALSE;
+        p_item->b_dirty = false;
     }
 }
 
@@ -674,7 +671,7 @@ void IntegerListConfigControl::OnAction( wxCommandEvent& event )
     {
         combo->Clear();
         UpdateCombo( p_item );
-        p_item->b_dirty = VLC_FALSE;
+        p_item->b_dirty = false;
     }
 }
 
@@ -692,7 +689,7 @@ int IntegerListConfigControl::GetIntValue()
  * RangedIntConfigControl implementation
  *****************************************************************************/
 RangedIntConfigControl::RangedIntConfigControl( vlc_object_t *p_this,
-                                                module_config_t *p_item, 
+                                                module_config_t *p_item,
                                                 HWND parent, HINSTANCE hInst,
                                                 int * py_pos )
   : ConfigControl( p_this, p_item, parent, hInst )
@@ -753,7 +750,7 @@ float FloatConfigControl::GetFloatValue()
 {
     float f_value;
 
-    int i_size = Edit_GetTextLength( textctrl );  
+    int i_size = Edit_GetTextLength( textctrl );
     TCHAR *psz_string = (TCHAR *)malloc( (i_size + 1) * sizeof(TCHAR) );
     Edit_GetText( textctrl, psz_string, i_size + 1 );
 

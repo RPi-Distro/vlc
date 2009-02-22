@@ -1,10 +1,11 @@
 /*****************************************************************************
  * cmd_playtree.cpp
  *****************************************************************************
- * Copyright (C) 2005 VideoLAN
- * $Id: e40da6351988c0fe87f09bbc9da4b2a731de9d41 $
+ * Copyright (C) 2005 the VideoLAN team
+ * $Id: 9d61617f2cbcc3f6b9674c9cf515e968bfbefa72 $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
+ *          Clément Stenac <zorglub@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +23,7 @@
  *****************************************************************************/
 
 #include "cmd_playtree.hpp"
+#include <vlc_playlist.h>
 #include "../src/vlcproc.hpp"
 #include "../utils/var_bool.hpp"
 
@@ -33,11 +35,12 @@ void CmdPlaytreeDel::execute()
 void CmdPlaytreeSort::execute()
 {
     /// \todo Choose sort method/order - Need more commands
+    /// \todo Choose the correct view
     playlist_t *p_playlist = getIntf()->p_sys->p_playlist;
-    vlc_mutex_lock( &p_playlist->object_lock );
-    playlist_view_t* p_view = playlist_ViewFind( p_playlist, p_playlist->status.i_view );
-    playlist_RecursiveNodeSort( p_playlist, p_view->p_root , SORT_TITLE, ORDER_NORMAL );
-    vlc_mutex_unlock( &p_playlist->object_lock );
+    vlc_object_lock( p_playlist );
+    playlist_RecursiveNodeSort( p_playlist, p_playlist->p_root_onelevel,
+                                SORT_TITLE, ORDER_NORMAL );
+    vlc_object_unlock( p_playlist );
 
     // Ask for rebuild
     Playtree &rVar = VlcProc::instance( getIntf() )->getPlaytreeVar();

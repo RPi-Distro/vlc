@@ -2,7 +2,7 @@
  * xmlparser.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: dcfc2cde9df85feed98d2bb3caba4f2c9a2b0719 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -67,7 +67,7 @@ XMLParser::XMLParser( intf_thread_t *pIntf, const string &rFileName,
         return;
     }
 
-    xml_ReaderUseDTD( m_pReader, useDTD ? VLC_TRUE : VLC_FALSE );
+    xml_ReaderUseDTD( m_pReader, useDTD ? true : false );
 
 }
 
@@ -163,7 +163,12 @@ bool XMLParser::parse()
                 {
                     char *name = xml_ReaderName( m_pReader );
                     char *value = xml_ReaderValue( m_pReader );
-                    if( !name || !value ) return false;
+                    if( !name || !value )
+                    {
+                        free( name );
+                        free( value );
+                        return false;
+                    }
                     attributes[name] = value;
                 }
 

@@ -1,5 +1,6 @@
---- libpng/scripts/makefile.darwin.orig	2008-05-08 13:58:09.000000000 +0200
-+++ libpng/scripts/makefile.darwin	2008-05-24 02:01:02.000000000 +0200
+diff -ruN libpng-1.2.30/scripts/makefile.darwin libpng/scripts/makefile.darwin
+--- libpng-1.2.30/scripts/makefile.darwin	2008-08-15 16:14:44.000000000 +0200
++++ libpng/scripts/makefile.darwin	2008-08-20 01:48:40.000000000 +0200
 @@ -7,14 +7,14 @@
  # For conditions of distribution and use, see copyright notice in png.h
  
@@ -23,10 +24,10 @@
 @@ -39,8 +39,8 @@
  RM_F=/bin/rm -f
  
- # CFLAGS=-I$(ZLIBINC) -Wall -O3 -funroll-loops -DPNG_NO_MMX_CODE
--CFLAGS=-I$(ZLIBINC) -Wall -O -funroll-loops
+ # CFLAGS=-I$(ZLIBINC) -W -Wall -O3 -funroll-loops -DPNG_NO_MMX_CODE
+-CFLAGS=-I$(ZLIBINC) -W -Wall -O -funroll-loops
 -LDFLAGS=-L. -L$(ZLIBLIB) -lpng12 -lz
-+CFLAGS=??EXTRA_CFLAGS?? -I$(ZLIBINC) -Wall -O3 -funroll-loops
++CFLAGS=??EXTRA_CFLAGS?? -I$(ZLIBINC) -W -Wall -O -funroll-loops
 +LDFLAGS=??EXTRA_LDFLAGS?? -L. -L$(ZLIBLIB) -lpng12 -lz
  
  INCPATH=$(prefix)/include

@@ -2,7 +2,7 @@
  * mem_stream.c: stream_t wrapper around memory buffer
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 07dcc4beaf8ea7e381275f279781e29d521e5ed6 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -21,23 +21,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include <stdlib.h>
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #include "input_internal.h"
 
 struct stream_sys_t
 {
-    vlc_bool_t  i_preserve_memory;
+    bool  i_preserve_memory;
     int64_t     i_pos;      /* Current reading offset */
     int64_t     i_size;
     uint8_t    *p_buffer;
 
 };
 
-static int  Read   ( stream_t *, void *p_read, int i_read );
-static int  Peek   ( stream_t *, uint8_t **pp_peek, int i_read );
+static int  Read   ( stream_t *, void *p_read, unsigned int i_read );
+static int  Peek   ( stream_t *, const uint8_t **pp_peek, unsigned int i_read );
 static int  Control( stream_t *, int i_query, va_list );
 static void Delete ( stream_t * );
 
@@ -47,13 +49,13 @@ static void Delete ( stream_t * );
  * \param p_this the calling vlc_object
  * \param p_buffer the memory buffer for the stream
  * \param i_buffer the size of the buffer
- * \param i_preserve_memory if this is set to VLC_FALSE the memory buffer
+ * \param i_preserve_memory if this is set to false the memory buffer
  *        pointed to by p_buffer is freed on stream_Destroy
  */
 stream_t *__stream_MemoryNew( vlc_object_t *p_this, uint8_t *p_buffer,
-                              int64_t i_size, vlc_bool_t i_preserve_memory )
+                              int64_t i_size, bool i_preserve_memory )
 {
-    stream_t *s = vlc_object_create( p_this, VLC_OBJECT_STREAM );
+    stream_t *s = vlc_stream_create( p_this );
     stream_sys_t *p_sys;
 
     if( !s ) return NULL;
@@ -64,14 +66,13 @@ stream_t *__stream_MemoryNew( vlc_object_t *p_this, uint8_t *p_buffer,
     p_sys->p_buffer = p_buffer;
     p_sys->i_preserve_memory = i_preserve_memory;
 
-    s->pf_block   = NULL;
     s->pf_read    = Read;
     s->pf_peek    = Peek;
     s->pf_control = Control;
     s->pf_destroy = Delete;
 
     s->i_char_width = 1;
-    s->b_little_endian = VLC_FALSE;
+    s->b_little_endian = false;
     vlc_object_attach( s, p_this );
 
     return s;
@@ -82,7 +83,7 @@ static void Delete( stream_t *s )
     if( !s->p_sys->i_preserve_memory ) free( s->p_sys->p_buffer );
     free( s->p_sys );
     vlc_object_detach( s );
-    vlc_object_destroy( s );
+    vlc_object_release( s );
 }
 
 /****************************************************************************
@@ -92,7 +93,7 @@ static int Control( stream_t *s, int i_query, va_list args )
 {
     stream_sys_t *p_sys = s->p_sys;
 
-    vlc_bool_t *p_bool;
+    bool *p_bool;
     int64_t    *pi_64, i_64;
     int        i_int;
 
@@ -104,13 +105,13 @@ static int Control( stream_t *s, int i_query, va_list args )
             break;
 
         case STREAM_CAN_SEEK:
-            p_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
-            *p_bool = VLC_TRUE;
+            p_bool = (bool*)va_arg( args, bool * );
+            *p_bool = true;
             break;
 
         case STREAM_CAN_FASTSEEK:
-            p_bool = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
-            *p_bool = VLC_TRUE;
+            p_bool = (bool*)va_arg( args, bool * );
+            *p_bool = true;
             break;
 
         case STREAM_GET_POSITION:
@@ -121,11 +122,12 @@ static int Control( stream_t *s, int i_query, va_list args )
         case STREAM_SET_POSITION:
             i_64 = (int64_t)va_arg( args, int64_t );
             i_64 = __MAX( i_64, 0 );
-            i_64 = __MIN( i_64, s->p_sys->i_size ); 
+            i_64 = __MIN( i_64, s->p_sys->i_size );
             p_sys->i_pos = i_64;
             break;
 
         case STREAM_GET_MTU:
+        case STREAM_GET_CONTENT_TYPE:
             return VLC_EGENERIC;
 
         case STREAM_CONTROL_ACCESS:
@@ -141,7 +143,7 @@ static int Control( stream_t *s, int i_query, va_list args )
     return VLC_SUCCESS;
 }
 
-static int Read( stream_t *s, void *p_read, int i_read )
+static int Read( stream_t *s, void *p_read, unsigned int i_read )
 {
     stream_sys_t *p_sys = s->p_sys;
     int i_res = __MIN( i_read, p_sys->i_size - p_sys->i_pos );
@@ -150,7 +152,7 @@ static int Read( stream_t *s, void *p_read, int i_read )
     return i_res;
 }
 
-static int Peek( stream_t *s, uint8_t **pp_peek, int i_read )
+static int Peek( stream_t *s, const uint8_t **pp_peek, unsigned int i_read )
 {
     stream_sys_t *p_sys = s->p_sys;
     int i_res = __MIN( i_read, p_sys->i_size - p_sys->i_pos );

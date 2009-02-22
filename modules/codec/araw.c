@@ -2,7 +2,7 @@
  * araw.c: Pseudo audio decoder; for raw pcm data
  *****************************************************************************
  * Copyright (C) 2001, 2003 the VideoLAN team
- * $Id: dec1eeff0e41543d6caa8ea02e04e065f521bf28 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -24,8 +24,14 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <vlc/vlc.h>
-#include <vlc/decoder.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_aout.h>
+#include <vlc_codec.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -40,7 +46,7 @@ static void EncoderClose( vlc_object_t * );
 
 vlc_module_begin();
     /* audio decoder module */
-    set_description( _("Raw/Log Audio decoder") );
+    set_description( N_("Raw/Log Audio decoder") );
     set_capability( "decoder", 100 );
     set_category( CAT_INPUT );
     set_subcategory( SUBCAT_INPUT_ACODEC );
@@ -49,7 +55,7 @@ vlc_module_begin();
 #ifdef ENABLE_SOUT
     /* audio encoder submodule */
     add_submodule();
-    set_description( _("Raw audio encoder") );
+    set_description( N_("Raw audio encoder") );
     set_capability( "encoder", 150 );
     set_callbacks( EncoderOpen, EncoderClose );
 #endif
@@ -65,12 +71,13 @@ static block_t *EncoderEncode( encoder_t *, aout_buffer_t * );
 
 struct decoder_sys_t
 {
-    int16_t *p_logtos16;  /* used with m/alaw to int16_t */
+    const int16_t *p_logtos16;  /* used with m/alaw to int16_t */
+    int i_bytespersample;
 
     audio_date_t end_date;
 };
 
-static int pi_channels_maps[] =
+static const int pi_channels_maps[] =
 {
     0,
     AOUT_CHAN_CENTER,
@@ -90,7 +97,7 @@ static int pi_channels_maps[] =
      | AOUT_CHAN_MIDDLELEFT | AOUT_CHAN_MIDDLERIGHT | AOUT_CHAN_LFE
 };
 
-static int16_t ulawtos16[256] =
+static const int16_t ulawtos16[256] =
 {
     -32124, -31100, -30076, -29052, -28028, -27004, -25980, -24956,
     -23932, -22908, -21884, -20860, -19836, -18812, -17788, -16764,
@@ -126,7 +133,7 @@ static int16_t ulawtos16[256] =
         56,     48,     40,     32,     24,     16,      8,      0
 };
 
-static int16_t alawtos16[256] =
+static const int16_t alawtos16[256] =
 {
      -5504,  -5248,  -6016,  -5760,  -4480,  -4224,  -4992,  -4736,
      -7552,  -7296,  -8064,  -7808,  -6528,  -6272,  -7040,  -6784,
@@ -195,6 +202,9 @@ static int DecoderOpen( vlc_object_t *p_this )
     case VLC_FOURCC('s','1','6','b'):
     case VLC_FOURCC('s','8',' ',' '):
     case VLC_FOURCC('u','8',' ',' '):
+    case VLC_FOURCC('i','n','2','4'): /* Quicktime in24, bigendian int24 */
+    case VLC_FOURCC('4','2','n','i'): /* Quicktime in24, little-endian int24 */
+    case VLC_FOURCC('i','n','3','2'): /* Quicktime in32, bigendian int32 */
         break;
 
     default:
@@ -218,10 +228,7 @@ static int DecoderOpen( vlc_object_t *p_this )
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     p_sys->p_logtos16 = NULL;
 
@@ -245,10 +252,27 @@ static int DecoderOpen( vlc_object_t *p_this )
         p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
         p_dec->fmt_in.audio.i_bitspersample = 32;
     }
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'i', 'n', '3', '2' ) )
+    {
+        /* FIXME: mplayer uses bigendian for in24 .... but here it works
+         * with little endian ... weird */
+        p_dec->fmt_out.i_codec = VLC_FOURCC( 's', '3', '2', 'l' );
+        p_dec->fmt_in.audio.i_bitspersample = 32;
+    }
     else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 's', '2', '4', 'l' ) ||
              p_dec->fmt_in.i_codec == VLC_FOURCC( 's', '2', '4', 'b' ) )
     {
         p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
+        p_dec->fmt_in.audio.i_bitspersample = 24;
+    }
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'i', 'n', '2', '4' ) )
+    {
+        p_dec->fmt_out.i_codec = VLC_FOURCC( 's', '2', '4', 'b' );
+        p_dec->fmt_in.audio.i_bitspersample = 24;
+    }
+    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( '4', '2', 'n', 'i' ) )
+    {
+        p_dec->fmt_out.i_codec = VLC_FOURCC( 's', '2', '4', 'l' );
         p_dec->fmt_in.audio.i_bitspersample = 24;
     }
     else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 's', '1', '6', 'l' ) ||
@@ -381,6 +405,7 @@ static int DecoderOpen( vlc_object_t *p_this )
 
     aout_DateInit( &p_sys->end_date, p_dec->fmt_out.audio.i_rate );
     aout_DateSet( &p_sys->end_date, 0 );
+    p_sys->i_bytespersample = ( p_dec->fmt_in.audio.i_bitspersample + 7 ) / 8;
 
     p_dec->pf_decode_audio = DecodeBlock;
 
@@ -418,7 +443,7 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     /* Don't re-use the same pts twice */
     p_block->i_pts = 0;
 
-    i_samples = p_block->i_buffer * 8 / p_dec->fmt_in.audio.i_bitspersample /
+    i_samples = p_block->i_buffer / p_sys->i_bytespersample /
         p_dec->fmt_in.audio.i_channels;
 
     if( i_samples <= 0 )
@@ -483,7 +508,7 @@ struct encoder_sys_t
     int i_s16tolog;  /* used with int16_t to m/alaw */
 };
 
-static int8_t alaw_encode[2049] =
+static const int8_t alaw_encode[2049] =
 {
     0xD5, 0xD4, 0xD7, 0xD6, 0xD1, 0xD0, 0xD3, 0xD2, 0xDD, 0xDC, 0xDF, 0xDE,
     0xD9, 0xD8, 0xDB, 0xDA, 0xC5, 0xC4, 0xC7, 0xC6, 0xC1, 0xC0, 0xC3, 0xC2,
@@ -658,7 +683,7 @@ static int8_t alaw_encode[2049] =
     0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0xAA, 0x2A
 }; /* alaw_encode */
 
-static int8_t ulaw_encode[8193] =
+static const int8_t ulaw_encode[8193] =
 {
     0xFF, 0xFE, 0xFE, 0xFD, 0xFD, 0xFC, 0xFC, 0xFB, 0xFB, 0xFA, 0xFA, 0xF9,
     0xF9, 0xF8, 0xF8, 0xF7, 0xF7, 0xF6, 0xF6, 0xF5, 0xF5, 0xF4, 0xF4, 0xF3,
@@ -1371,7 +1396,8 @@ static int EncoderOpen( vlc_object_t *p_this )
     else if( p_enc->fmt_out.i_codec == VLC_FOURCC('u','2','4','l') ||
              p_enc->fmt_out.i_codec == VLC_FOURCC('u','2','4','b') ||
              p_enc->fmt_out.i_codec == VLC_FOURCC('s','2','4','l') ||
-             p_enc->fmt_out.i_codec == VLC_FOURCC('s','2','4','b') )
+             p_enc->fmt_out.i_codec == VLC_FOURCC('s','2','4','b') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('i','n','2','4') )
     {
         p_enc->fmt_out.audio.i_bitspersample = 24;
     }
@@ -1379,6 +1405,7 @@ static int EncoderOpen( vlc_object_t *p_this )
              p_enc->fmt_out.i_codec == VLC_FOURCC('u','3','2','b') ||
              p_enc->fmt_out.i_codec == VLC_FOURCC('s','3','2','l') ||
              p_enc->fmt_out.i_codec == VLC_FOURCC('s','3','2','b') ||
+             p_enc->fmt_out.i_codec == VLC_FOURCC('i','n','3','2') ||
              p_enc->fmt_out.i_codec == VLC_FOURCC('f','i','3','2') ||
              p_enc->fmt_out.i_codec == VLC_FOURCC('f','l','3','2') )
     {
@@ -1396,10 +1423,7 @@ static int EncoderOpen( vlc_object_t *p_this )
     /* Allocate the memory needed to store the encoder's structure */
     if( ( p_enc->p_sys = p_sys =
           (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
-    {
-        msg_Err( p_enc, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
     p_enc->pf_encode_audio = EncoderEncode;
     p_enc->fmt_in.i_codec = p_enc->fmt_out.i_codec;
@@ -1419,6 +1443,11 @@ static int EncoderOpen( vlc_object_t *p_this )
         p_sys->i_s16tolog = ULAW;
     }
 
+    p_enc->fmt_out.i_bitrate =
+        p_enc->fmt_in.audio.i_channels *
+        p_enc->fmt_in.audio.i_rate *
+        p_enc->fmt_in.audio.i_bitspersample;
+
     msg_Dbg( p_enc, "samplerate:%dHz channels:%d bits/sample:%d",
              p_enc->fmt_out.audio.i_rate, p_enc->fmt_out.audio.i_channels,
              p_enc->fmt_out.audio.i_bitspersample );
@@ -1431,7 +1460,7 @@ static int EncoderOpen( vlc_object_t *p_this )
  *****************************************************************************/
 static void EncoderClose ( vlc_object_t *p_this )
 {
-    return;
+    VLC_UNUSED(p_this);
 }
 
 /*****************************************************************************

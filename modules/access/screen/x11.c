@@ -2,7 +2,7 @@
  * x11.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 6febe21d1176902df247bcf4dced3abc7aa97dc2 $
+ * $Id: f576096785f298fc9ddbfb3003da9e6b25507401 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,10 +24,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -111,8 +113,32 @@ block_t *screen_Capture( demux_t *p_demux )
     XImage *image;
     int i_size;
 
+    if( p_sys->b_follow_mouse )
+    {
+        Window root = DefaultRootWindow( p_display ), child;
+        int root_x, root_y;
+        int win_x, win_y;
+        unsigned int mask;
+        if( XQueryPointer( p_display, root,
+            &root, &child, &root_x, &root_y, &win_x, &win_y,
+            &mask ) )
+        {
+            root_x -= p_sys->i_width/2;
+            if( root_x < 0 ) root_x = 0;
+            p_sys->i_left = __MIN( (unsigned int)root_x,
+                                   p_sys->i_screen_width - p_sys->i_width );
+            root_y -= p_sys->i_height/2;
+            if( root_y < 0 ) root_y = 0;
+            p_sys->i_top = __MIN( (unsigned int)root_y,
+                                  p_sys->i_screen_height - p_sys->i_height );
+        }
+        else
+            msg_Dbg( p_demux, "XQueryPointer() failed" );
+
+    }
+
     image = XGetImage( p_display, DefaultRootWindow( p_display ),
-                       0, 0, p_sys->fmt.video.i_width,
+                       p_sys->i_left, p_sys->i_top, p_sys->fmt.video.i_width,
                        p_sys->fmt.video.i_height, AllPlanes, ZPixmap );
 
     if( !image )
@@ -130,7 +156,7 @@ block_t *screen_Capture( demux_t *p_demux )
         return 0;
     }
 
-    memcpy( p_block->p_buffer, image->data, i_size );
+    vlc_memcpy( p_block->p_buffer, image->data, i_size );
 
     XDestroyImage( image );
 

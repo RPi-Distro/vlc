@@ -1,8 +1,8 @@
 /*****************************************************************************
  * video_text.c : text manipulation functions
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 80a1b7294677321056739c78beaf61b004e2b6e2 $
+ * Copyright (C) 1999-2007 the VideoLAN team
+ * $Id: 2083438707dbf764e05636ab00100de85b163da2 $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -20,7 +20,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#include <vlc/vout.h>
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_vout.h>
 #include <vlc_block.h>
 #include <vlc_filter.h>
 #include <vlc_osd.h>
@@ -63,12 +69,14 @@ int vout_ShowTextRelative( vout_thread_t *p_vout, int i_channel,
  *               is about to be shown
  */
 int vout_ShowTextAbsolute( vout_thread_t *p_vout, int i_channel,
-                           char *psz_string, text_style_t *p_style,
+                           const char *psz_string, text_style_t *p_style,
                            int i_flags, int i_hmargin, int i_vmargin,
                            mtime_t i_start, mtime_t i_stop )
 {
+    (void)p_style;
     subpicture_t *p_spu;
     video_format_t fmt;
+    /* (void)p_style; FIXME: <-- why ask for this if it's unused?!? */
 
     if( !psz_string ) return VLC_EGENERIC;
 
@@ -90,14 +98,16 @@ int vout_ShowTextAbsolute( vout_thread_t *p_vout, int i_channel,
     }
 
     p_spu->p_region->psz_text = strdup( psz_string );
+    p_spu->p_region->i_align = i_flags & SUBPICTURE_ALIGN_MASK;
     p_spu->i_start = i_start;
     p_spu->i_stop = i_stop;
-    p_spu->b_ephemer = VLC_TRUE;
-    p_spu->b_absolute = VLC_FALSE;
+    p_spu->b_ephemer = true;
+    p_spu->b_absolute = false;
+    p_spu->b_fade = true;
 
     p_spu->i_x = i_hmargin;
     p_spu->i_y = i_vmargin;
-    p_spu->i_flags = i_flags;
+    p_spu->i_flags = i_flags & ~SUBPICTURE_ALIGN_MASK;
     p_spu->i_channel = i_channel;
 
     spu_DisplaySubpicture( p_vout->p_spu, p_spu );
@@ -114,10 +124,10 @@ int vout_ShowTextAbsolute( vout_thread_t *p_vout, int i_channel,
  * \param psz_format printf style formatting
  **/
 void __vout_OSDMessage( vlc_object_t *p_caller, int i_channel,
-                        char *psz_format, ... )
+                        const char *psz_format, ... )
 {
     vout_thread_t *p_vout;
-    char *psz_string;
+    char *psz_string = NULL;
     va_list args;
 
     if( !config_GetInt( p_caller, "osd" ) ) return;
@@ -126,17 +136,17 @@ void __vout_OSDMessage( vlc_object_t *p_caller, int i_channel,
     if( p_vout )
     {
         va_start( args, psz_format );
-        vasprintf( &psz_string, psz_format, args );
-
-        vout_ShowTextRelative( p_vout, i_channel, psz_string, NULL,
-                               OSD_ALIGN_TOP|OSD_ALIGN_RIGHT,
-                               30 + p_vout->fmt_in.i_width
-                                  - p_vout->fmt_in.i_visible_width
-                                  - p_vout->fmt_in.i_x_offset,
-                               20 + p_vout->fmt_in.i_y_offset, 1000000 );
-
+        if( vasprintf( &psz_string, psz_format, args ) != -1 )
+        {
+            vout_ShowTextRelative( p_vout, i_channel, psz_string, NULL,
+                                   OSD_ALIGN_TOP|OSD_ALIGN_RIGHT,
+                                   30 + p_vout->fmt_in.i_width
+                                      - p_vout->fmt_in.i_visible_width
+                                      - p_vout->fmt_in.i_x_offset,
+                                   20 + p_vout->fmt_in.i_y_offset, 1000000 );
+            free( psz_string );
+        }
         vlc_object_release( p_vout );
-        free( psz_string );
         va_end( args );
     }
 }

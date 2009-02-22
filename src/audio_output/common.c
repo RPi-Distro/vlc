@@ -1,8 +1,8 @@
 /*****************************************************************************
  * common.c : audio output management of common data structures
  *****************************************************************************
- * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: ea0a1fe2ed81117a64585e9e8f7de847085a1c49 $
+ * Copyright (C) 2002-2007 the VideoLAN team
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -24,18 +24,48 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                            /* calloc(), malloc(), free() */
-#include <string.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <vlc/vlc.h>
+#include <assert.h>
 
-#include "audio_output.h"
+#include <vlc_common.h>
+#include <vlc_aout.h>
 #include "aout_internal.h"
-
 
 /*
  * Instances management (internal and external)
  */
+
+#define AOUT_ASSERT_FIFO_LOCKED aout_assert_fifo_locked(p_aout, p_fifo)
+static inline void aout_assert_fifo_locked( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
+{
+#ifndef NDEBUG
+    if( p_fifo == &p_aout->output.fifo )
+        vlc_assert_locked( &p_aout->output_fifo_lock );
+    else
+    {
+        int i;
+        for( i = 0; i < p_aout->i_nb_inputs; i++ )
+        {
+            if( p_fifo == &p_aout->pp_inputs[i]->fifo)
+            {
+                vlc_assert_locked( &p_aout->input_fifos_lock );
+                break;
+            }
+        }
+        if( i == p_aout->i_nb_inputs )
+            vlc_assert_locked( &p_aout->mixer_lock );
+    }
+#else
+    (void)p_aout;
+    (void)p_fifo;
+#endif
+}
+
+/* Local functions */
+static void aout_Destructor( vlc_object_t * p_this );
 
 /*****************************************************************************
  * aout_New: initialize aout structure
@@ -53,9 +83,9 @@ aout_instance_t * __aout_New( vlc_object_t * p_parent )
     }
 
     /* Initialize members. */
-    vlc_mutex_init( p_parent, &p_aout->input_fifos_lock );
-    vlc_mutex_init( p_parent, &p_aout->mixer_lock );
-    vlc_mutex_init( p_parent, &p_aout->output_fifo_lock );
+    vlc_mutex_init( &p_aout->input_fifos_lock );
+    vlc_mutex_init( &p_aout->mixer_lock );
+    vlc_mutex_init( &p_aout->output_fifo_lock );
     p_aout->i_nb_inputs = 0;
     p_aout->mixer.f_multiplier = 1.0;
     p_aout->mixer.b_error = 1;
@@ -63,25 +93,23 @@ aout_instance_t * __aout_New( vlc_object_t * p_parent )
     p_aout->output.b_starving = 1;
 
     var_Create( p_aout, "intf-change", VLC_VAR_BOOL );
-    val.b_bool = VLC_TRUE;
+    val.b_bool = true;
     var_Set( p_aout, "intf-change", val );
+
+    vlc_object_set_destructor( p_aout, aout_Destructor );
 
     return p_aout;
 }
 
 /*****************************************************************************
- * aout_Delete: destroy aout structure
+ * aout_Destructor: destroy aout structure
  *****************************************************************************/
-void aout_Delete( aout_instance_t * p_aout )
+static void aout_Destructor( vlc_object_t * p_this )
 {
-    var_Destroy( p_aout, "intf-change" );
-
+    aout_instance_t * p_aout = (aout_instance_t *)p_this;
     vlc_mutex_destroy( &p_aout->input_fifos_lock );
     vlc_mutex_destroy( &p_aout->mixer_lock );
     vlc_mutex_destroy( &p_aout->output_fifo_lock );
-
-    /* Free structure. */
-    vlc_object_destroy( p_aout );
 }
 
 
@@ -109,52 +137,56 @@ unsigned int aout_FormatNbChannels( const audio_sample_format_t * p_format )
 }
 
 /*****************************************************************************
- * aout_FormatPrepare : compute the number of bytes per frame & frame length
+ * aout_BitsPerSample : get the number of bits per sample
  *****************************************************************************/
-void aout_FormatPrepare( audio_sample_format_t * p_format )
+unsigned int aout_BitsPerSample( vlc_fourcc_t i_format )
 {
-    int i_result;
-
-    switch ( p_format->i_format )
+    switch( i_format )
     {
     case VLC_FOURCC('u','8',' ',' '):
     case VLC_FOURCC('s','8',' ',' '):
-        i_result = 1;
-        break;
+        return 8;
 
     case VLC_FOURCC('u','1','6','l'):
     case VLC_FOURCC('s','1','6','l'):
     case VLC_FOURCC('u','1','6','b'):
     case VLC_FOURCC('s','1','6','b'):
-        i_result = 2;
-        break;
+        return 16;
 
     case VLC_FOURCC('u','2','4','l'):
     case VLC_FOURCC('s','2','4','l'):
     case VLC_FOURCC('u','2','4','b'):
     case VLC_FOURCC('s','2','4','b'):
-        i_result = 3;
-        break;
+        return 24;
 
+    case VLC_FOURCC('s','3','2','l'):
+    case VLC_FOURCC('s','3','2','b'):
     case VLC_FOURCC('f','l','3','2'):
     case VLC_FOURCC('f','i','3','2'):
-        i_result = 4;
-        break;
+        return 32;
 
-    case VLC_FOURCC('s','p','d','i'):
-    case VLC_FOURCC('s','p','d','b'): /* Big endian spdif output */
-    case VLC_FOURCC('a','5','2',' '):
-    case VLC_FOURCC('d','t','s',' '):
-    case VLC_FOURCC('m','p','g','a'):
-    case VLC_FOURCC('m','p','g','3'):
+    case VLC_FOURCC('f','l','6','4'):
+        return 64;
+
     default:
         /* For these formats the caller has to indicate the parameters
          * by hand. */
-        return;
+        return 0;
     }
+}
 
-    p_format->i_bytes_per_frame = i_result * aout_FormatNbChannels( p_format );
-    p_format->i_frame_length = 1;
+/*****************************************************************************
+ * aout_FormatPrepare : compute the number of bytes per frame & frame length
+ *****************************************************************************/
+void aout_FormatPrepare( audio_sample_format_t * p_format )
+{
+    p_format->i_bitspersample = aout_BitsPerSample( p_format->i_format );
+    if( p_format->i_bitspersample > 0 )
+    {
+        p_format->i_bytes_per_frame = ( p_format->i_bitspersample / 8 )
+                                    * aout_FormatNbChannels( p_format );
+        p_format->i_frame_length = 1;
+    }
 }
 
 /*****************************************************************************
@@ -294,6 +326,8 @@ void aout_FormatsPrint( aout_instance_t * p_aout, const char * psz_text,
 void aout_FifoInit( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
                     uint32_t i_rate )
 {
+    AOUT_ASSERT_FIFO_LOCKED;
+
     if( i_rate == 0 )
     {
         msg_Err( p_aout, "initialising fifo with zero divider" );
@@ -310,6 +344,9 @@ void aout_FifoInit( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
 void aout_FifoPush( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
                     aout_buffer_t * p_buffer )
 {
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
+
     *p_fifo->pp_last = p_buffer;
     p_fifo->pp_last = &p_buffer->p_next;
     *p_fifo->pp_last = NULL;
@@ -334,6 +371,8 @@ void aout_FifoSet( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
                    mtime_t date )
 {
     aout_buffer_t * p_buffer;
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
 
     aout_DateSet( &p_fifo->end_date, date );
     p_buffer = p_fifo->p_first;
@@ -354,6 +393,8 @@ void aout_FifoMoveDates( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
                          mtime_t difference )
 {
     aout_buffer_t * p_buffer;
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
 
     aout_DateMove( &p_fifo->end_date, difference );
     p_buffer = p_fifo->p_first;
@@ -370,6 +411,8 @@ void aout_FifoMoveDates( aout_instance_t * p_aout, aout_fifo_t * p_fifo,
  *****************************************************************************/
 mtime_t aout_FifoNextStart( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 {
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
     return aout_DateGet( &p_fifo->end_date );
 }
 
@@ -379,6 +422,8 @@ mtime_t aout_FifoNextStart( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
  *****************************************************************************/
 mtime_t aout_FifoFirstDate( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 {
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
     return p_fifo->p_first ?  p_fifo->p_first->start_date : 0;
 }
 
@@ -388,6 +433,8 @@ mtime_t aout_FifoFirstDate( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 aout_buffer_t * aout_FifoPop( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 {
     aout_buffer_t * p_buffer;
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
 
     p_buffer = p_fifo->p_first;
     if ( p_buffer == NULL ) return NULL;
@@ -406,6 +453,8 @@ aout_buffer_t * aout_FifoPop( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 void aout_FifoDestroy( aout_instance_t * p_aout, aout_fifo_t * p_fifo )
 {
     aout_buffer_t * p_buffer;
+    (void)p_aout;
+    AOUT_ASSERT_FIFO_LOCKED;
 
     p_buffer = p_fifo->p_first;
     while ( p_buffer != NULL )
@@ -485,10 +534,16 @@ int aout_CheckChannelReorder( const uint32_t *pi_chan_order_in,
                               uint32_t i_channel_mask,
                               int i_channels, int *pi_chan_table )
 {
-    vlc_bool_t b_chan_reorder = VLC_FALSE;
+    bool b_chan_reorder = false;
     int i, j, k, l;
 
-    if( i_channels > AOUT_CHAN_MAX ) return VLC_FALSE;
+    if( i_channels > AOUT_CHAN_MAX )
+        return false;
+
+    if( pi_chan_order_in == NULL )
+        pi_chan_order_in = pi_vlc_chan_order_wg4;
+    if( pi_chan_order_out == NULL )
+        pi_chan_order_out = pi_vlc_chan_order_wg4;
 
     for( i = 0, j = 0; pi_chan_order_in[i]; i++ )
     {
@@ -504,7 +559,7 @@ int aout_CheckChannelReorder( const uint32_t *pi_chan_order_in,
 
     for( i = 0; i < i_channels; i++ )
     {
-        if( pi_chan_table[i] != i ) b_chan_reorder = VLC_TRUE;
+        if( pi_chan_table[i] != i ) b_chan_reorder = true;
     }
 
     return b_chan_reorder;

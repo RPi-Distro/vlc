@@ -2,7 +2,7 @@
  * menus.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 0c9f50f61449a29f6503810ed7aa0f8d63f6db3a $
+ * $Id: 75b27c152179af72010a052f65685d10a3e2e255 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -25,11 +25,12 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>                                            /* strerror() */
-#include <stdio.h>
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 #include "wince.h"
 
@@ -220,15 +221,13 @@ void PopupMenu( intf_thread_t *p_intf, HWND p_parent, POINT point )
     }
     else
     {
-        playlist_t * p_playlist =
-            (playlist_t *)vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                           FIND_ANYWHERE );
+        playlist_t * p_playlist = pl_Yield( p_intf );
         if( p_playlist && p_playlist->i_size )
         {
             AppendMenu( hmenu, MF_SEPARATOR, 0, _T("") );
             AppendMenu( hmenu, MF_STRING, PlayStream_Event, _T("Play") );
         }
-        if( p_playlist ) vlc_object_release( p_playlist );
+        if( p_playlist ) pl_Release( p_intf );
     }
 
     AppendMenu( hmenu, MF_POPUP|MF_STRING, (UINT)MiscMenu( p_intf ),
@@ -374,7 +373,7 @@ void RefreshNavigMenu( intf_thread_t *p_intf, HMENU hMenu )
     /* Delete old menu */
     int count = wce_GetMenuItemCount( hMenu );
     for( i = 0; i <= count; i++ ) RemoveMenu( hMenu, 0, MF_BYPOSITION );
-        
+ 
     if( p_intf->p_sys->p_navig_menu )
         MenuItemExt::ClearList( p_intf->p_sys->p_navig_menu );
     else p_intf->p_sys->p_navig_menu = new vector<MenuItemExt*>;
@@ -442,8 +441,6 @@ void RefreshSettingsMenu( intf_thread_t *p_intf, HMENU hMenu )
         vlc_object_find( p_intf, VLC_OBJECT_INTF, FIND_PARENT );
     if( p_object != NULL )
     {
-        ppsz_varnames[i] = "intf-switch";
-        pi_objects[i++] = p_object->i_object_id;
         ppsz_varnames[i] = "intf-add";
         pi_objects[i++] = p_object->i_object_id;
         vlc_object_release( p_object );
@@ -458,11 +455,11 @@ void RefreshSettingsMenu( intf_thread_t *p_intf, HMENU hMenu )
  * Refresh the menu.
  *****************************************************************************/
 void RefreshMenu( intf_thread_t *p_intf, vector<MenuItemExt*> *p_menu_list,
-                  HMENU hMenu , int i_count, char **ppsz_varnames, 
+                  HMENU hMenu , int i_count, char **ppsz_varnames,
                   int *pi_objects, int i_start_id )
 {
     vlc_object_t *p_object;
-    vlc_bool_t b_section_empty = VLC_FALSE;
+    bool b_section_empty = false;
     int i;
 
     /* Initializations */
@@ -479,7 +476,7 @@ void RefreshMenu( intf_thread_t *p_intf, vector<MenuItemExt*> *p_menu_list,
             }
 
             AppendMenu( hMenu, MF_SEPARATOR, 0, _T("") );
-            b_section_empty = VLC_TRUE;
+            b_section_empty = true;
             continue;
         }
 
@@ -488,14 +485,14 @@ void RefreshMenu( intf_thread_t *p_intf, vector<MenuItemExt*> *p_menu_list,
             AppendMenu( hMenu, MF_GRAYED | MF_STRING,
                         MenuDummy_Event, _FROMMB(ppsz_varnames[i]) );
 
-            b_section_empty = VLC_FALSE;
+            b_section_empty = false;
             continue;
         }
 
-        p_object = (vlc_object_t *)vlc_object_get( p_intf, pi_objects[i] );
+        p_object = (vlc_object_t *)vlc_object_get( pi_objects[i] );
         if( p_object == NULL ) continue;
 
-        b_section_empty = VLC_FALSE;
+        b_section_empty = false;
         CreateMenuItem( p_intf, p_menu_list, hMenu, ppsz_varnames[i],
                         p_object, &i_item_id );
         vlc_object_release( p_object );
@@ -559,7 +556,7 @@ void CreateMenuItem( intf_thread_t *p_intf, vector<MenuItemExt*> *p_menu_list,
         AppendMenu( hMenu, MF_STRING | MF_POPUP, (UINT)hMenuItem,
                     _FROMMB(text.psz_string ? text.psz_string : psz_var) );
         if( (i_type & VLC_VAR_TYPE) == VLC_VAR_STRING ) free( val.psz_string );
-        if( text.psz_string ) free( text.psz_string );
+        free( text.psz_string );
         return;
     }
 
@@ -582,20 +579,20 @@ void CreateMenuItem( intf_thread_t *p_intf, vector<MenuItemExt*> *p_menu_list,
         p_menu_list->push_back( pMenuItemExt );
         CheckMenuItem( hMenu, *pi_item_id ,
                        ( val.b_bool ? MF_UNCHECKED : MF_CHECKED ) |
-                       MF_BYCOMMAND ); 
+                       MF_BYCOMMAND );
         break;
 
     default:
-        if( text.psz_string ) free( text.psz_string );
+        free( text.psz_string );
         return;
     }
 
     if( (i_type & VLC_VAR_TYPE) == VLC_VAR_STRING ) free( val.psz_string );
-    if( text.psz_string ) free( text.psz_string );
+    free( text.psz_string );
 }
 
 HMENU CreateChoicesMenu( intf_thread_t *p_intf,
-                         vector<MenuItemExt*> *p_menu_list, char *psz_var, 
+                         vector<MenuItemExt*> *p_menu_list, char *psz_var,
                          vlc_object_t *p_object, int *pi_item_id )
 {
     MenuItemExt *pMenuItemExt;
@@ -735,7 +732,7 @@ void OnMenuEvent( intf_thread_t *p_intf, int id )
 
     if( p_intf->p_sys->p_audio_menu && !p_menuitemext )
     for( iter = p_intf->p_sys->p_audio_menu->begin();
-         iter != p_intf->p_sys->p_audio_menu->end(); iter++ ) 
+         iter != p_intf->p_sys->p_audio_menu->end(); iter++ )
         if( (*iter)->id == id )
         {
             p_menuitemext = *iter;
@@ -763,7 +760,7 @@ void OnMenuEvent( intf_thread_t *p_intf, int id )
     if( p_menuitemext )
     {
         vlc_object_t *p_object = (vlc_object_t *)
-            vlc_object_get( p_intf, p_menuitemext->i_object_id );
+            vlc_object_get( p_menuitemext->i_object_id );
         if( p_object == NULL ) return;
 
         var_Set( p_object, p_menuitemext->psz_var, p_menuitemext->val );
@@ -803,9 +800,9 @@ MenuItemExt::MenuItemExt( intf_thread_t *p_intf, int _id, char *_psz_var,
 
 MenuItemExt::~MenuItemExt()
 {
-    if( psz_var ) free( psz_var );
-    if( ((i_val_type & VLC_VAR_TYPE) == VLC_VAR_STRING)
-        && val.psz_string ) free( val.psz_string );
+    free( psz_var );
+    if( ( i_val_type & VLC_VAR_TYPE ) == VLC_VAR_STRING )
+        free( val.psz_string );
 };
 
 void MenuItemExt::ClearList( vector<MenuItemExt*> *p_menu_list )

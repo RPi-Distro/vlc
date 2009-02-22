@@ -2,7 +2,7 @@
  * cmd_audio.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 44ec89648631911952da0c2cee78232daf54cd62 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -22,8 +22,7 @@
  *****************************************************************************/
 
 #include "cmd_audio.hpp"
-#include <vlc/aout.h>
-#include "aout_internal.h"
+#include <vlc_aout.h>
 #include <string>
 
 void CmdSetEqualizer::execute()
@@ -44,7 +43,7 @@ void CmdSetEqualizer::execute()
         var_SetString( pAout, "audio-filter", (char*)filters.c_str() );
         for( int i = 0; i < pAout->i_nb_inputs; i++ )
         {
-            pAout->pp_inputs[i]->b_restart = VLC_TRUE;
+            pAout->pp_inputs[i]->b_restart = true;
         }
         vlc_object_release( pAout );
     }

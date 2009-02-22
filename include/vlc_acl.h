@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 Rémi Denis-Courmont
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 3c706a569c269e7e97f75afb58bbd33d0e0ac447 $
+ * $Id: 5e1ebd57cd87af912a1bd524bc64258aa972e6b2 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -22,19 +22,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef __VLC_ACL_H
-# define __VLC_ACL_H
+#ifndef VLC_ACL_H
+# define VLC_ACL_H
 
 #define ACL_Create(a, b) __ACL_Create(VLC_OBJECT(a), b)
 #define ACL_Duplicate(a,b) __ACL_Duplicate(VLC_OBJECT(a),b)
 
 VLC_EXPORT( int, ACL_Check, ( vlc_acl_t *p_acl, const char *psz_ip ) );
-VLC_EXPORT( vlc_acl_t *, __ACL_Create, ( vlc_object_t *p_this, vlc_bool_t b_allow ) );
+VLC_EXPORT( vlc_acl_t *, __ACL_Create, ( vlc_object_t *p_this, bool b_allow ) );
 VLC_EXPORT( vlc_acl_t *, __ACL_Duplicate, ( vlc_object_t *p_this, const vlc_acl_t *p_acl ) );
 VLC_EXPORT( void, ACL_Destroy, ( vlc_acl_t *p_acl ) );
 
 #define ACL_AddHost(a,b,c) ACL_AddNet(a,b,-1,c)
-VLC_EXPORT( int, ACL_AddNet, ( vlc_acl_t *p_acl, const char *psz_ip, int i_len, vlc_bool_t b_allow ) );
+VLC_EXPORT( int, ACL_AddNet, ( vlc_acl_t *p_acl, const char *psz_ip, int i_len, bool b_allow ) );
 VLC_EXPORT( int, ACL_LoadFile, ( vlc_acl_t *p_acl, const char *path ) );
 
 #endif

@@ -1,7 +1,7 @@
 /*****************************************************************************
  * dc1394.c: firewire input module
  *****************************************************************************
- * Copyright (C) 2006, the VideoLAN team
+ * Copyright (C) 2006 the VideoLAN team
  *
  * Authors: Xant Majere <xant@xant.net>
  *
@@ -26,13 +26,16 @@
  * Preamble
  *****************************************************************************/
 
-#include <vlc/vlc.h>
-#include <vlc/input.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_input.h>
+#include <vlc_vout.h>
+#include <vlc_demux.h>
+
 
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>
@@ -61,7 +64,7 @@ static void OpenAudioDev( demux_t *p_demux );
 static inline void CloseAudioDev( demux_t *p_demux );
 
 vlc_module_begin();
-    set_description( _("dc1394 input") );
+    set_description( N_("dc1394 input") );
     set_capability( "access_demux", 10 );
     add_shortcut( "dc1394" );
     set_callbacks( Open, Close );
@@ -87,8 +90,8 @@ typedef struct demux_sys_t
     u_int64_t           selected_uid;
 
     dc_camera           *camera_nodes;
-	dc1394_camerainfo   camera_info;
-	dc1394_miscinfo     misc_info;
+    dc1394_camerainfo   camera_info;
+    dc1394_miscinfo     misc_info;
     raw1394handle_t     fd_video;
     quadlet_t           supported_framerates;
 
@@ -107,7 +110,6 @@ typedef struct demux_sys_t
     int                 i_audio_max_frame_size;
     int                 fd_audio;
     char                *audio_device;
-    int                 rotate;
 #define NO_ROTATION 0
 #define ROTATION_LEFT 1
 #define ROTATION_RIGHT 2
@@ -126,13 +128,13 @@ static int process_options( demux_t *p_demux);
 /*****************************************************************************
  * ScanCameras
  *****************************************************************************/
-static int ScanCameras( dc1394_sys *sys, demux_t *p_demux )
+static void ScanCameras( dc1394_sys *sys, demux_t *p_demux )
 {
     struct raw1394_portinfo portinfo[MAX_IEEE1394_HOSTS];
     raw1394handle_t tempFd;
     dc1394_camerainfo  info;
-    dc_camera       *node_list = NULL;
-    nodeid_t        *nodes = NULL;
+    dc_camera *node_list = NULL;
+    nodeid_t  *nodes = NULL;
     int num_ports = 0;
     int num_cameras = 0;
     int nodecount;
@@ -158,7 +160,7 @@ static int ScanCameras( dc1394_sys *sys, demux_t *p_demux )
         tempFd = dc1394_create_handle( i );
 
         /* skip this port if we can't obtain a valid handle */
-        if(!tempFd)
+        if( !tempFd )
             continue;
         msg_Dbg( p_demux, "Found ieee1394 port %d (%s) ... "
                           "checking for camera nodes",
@@ -171,7 +173,7 @@ static int ScanCameras( dc1394_sys *sys, demux_t *p_demux )
             msg_Dbg( p_demux, "Found %d dc1394 cameras on port %d (%s)",
                      nodecount, i, portinfo[i].name );
 
-            if(node_list)
+            if( node_list )
                 node_list = realloc( node_list, sizeof(dc_camera) * (num_cameras+nodecount) );
             else
                 node_list = malloc( sizeof(dc_camera) * nodecount);
@@ -192,15 +194,14 @@ static int ScanCameras( dc1394_sys *sys, demux_t *p_demux )
         }
         else
             msg_Dbg( p_demux, "no cameras found  on port %d (%s)",
-                     i, portinfo[i].name);
+                     i, portinfo[i].name );
 
-        if(tempFd)
+        if( tempFd )
             dc1394_destroy_handle( tempFd );
     }
     sys->num_ports = num_ports;
     sys->num_cameras = num_cameras;
     sys->camera_nodes = node_list;
-    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -226,10 +227,7 @@ static int Open( vlc_object_t *p_this )
 
     p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
     if( !p_sys )
-    {
-        msg_Err( p_demux, "not enough memory available" );
         return VLC_ENOMEM;
-    }
     memset( p_sys, 0, sizeof( demux_sys_t ) );
     memset( &fmt, 0, sizeof( es_format_t ) );
 
@@ -247,7 +245,6 @@ static int Open( vlc_object_t *p_this )
     p_sys->selected_camera = 0;
     p_sys->dma_device = NULL;
     p_sys->selected_uid = 0;
-    p_sys->rotate = NO_ROTATION;
 
     /* PROCESS INPUT OPTIONS */
     if( process_options(p_demux) != VLC_SUCCESS )
@@ -267,7 +264,8 @@ static int Open( vlc_object_t *p_this )
     if( !p_sys->camera_nodes )
     {
         msg_Err( p_demux, "No camera found !!" );
-        Close( p_this );
+        free( p_sys );
+        p_demux->p_sys = NULL;
         return VLC_EGENERIC;
     }
 
@@ -474,16 +472,8 @@ static int Open( vlc_object_t *p_this )
     /* TODO - UYV444 chroma converter is missing, when it will be available
      * fourcc will become variable (and not just a fixed value for UYVY)
      */
-    if( p_sys->rotate == NO_ROTATION )
-    {
-        i_width = p_sys->camera.frame_width;
-        i_height = p_sys->camera.frame_height;
-    }
-    else
-    {
-        i_width = p_sys->camera.frame_height;
-        i_height = p_sys->camera.frame_width;
-    }
+    i_width = p_sys->camera.frame_width;
+    i_height = p_sys->camera.frame_height;
 
     i_aspect = vout_InitPicture( VLC_OBJECT(p_demux), &p_sys->pic,
                     VLC_FOURCC('U', 'Y', 'V', 'Y'),
@@ -580,8 +570,7 @@ static void OpenAudioDev( demux_t *p_demux )
     result = ioctl( p_sys->fd_audio, SNDCTL_DSP_SPEED, &p_sys->i_sample_rate );
     if( result < 0 )
     {
-        msg_Err( p_demux, "cannot set audio sample rate (%d)",
-                 p_sys->i_sample_rate );
+        msg_Err( p_demux, "cannot set audio sample rate (%s)", p_sys->i_sample_rate );
         CloseAudioDev( p_demux );
     }
 
@@ -637,10 +626,8 @@ static void Close( vlc_object_t *p_this )
         dc1394_destroy_handle( p_sys->fd_video );
     CloseAudioDev( p_demux );
 
-    if( p_sys->camera_nodes )
-        free( p_sys->camera_nodes );
-    if( p_sys->audio_device )
-        free( p_sys->audio_device );
+    free( p_sys->camera_nodes );
+    free( p_sys->audio_device );
 
     free( p_sys );
 }
@@ -721,45 +708,8 @@ static block_t *GrabVideo( demux_t *p_demux )
         return NULL;
     }
 
-    if( p_sys->rotate == NO_ROTATION )
-    {
-        memcpy( p_block->p_buffer, (const char *)p_sys->camera.capture_buffer,
-                p_sys->camera.frame_width * p_sys->camera.frame_height * 2 );
-    }
-    else
-    {
-        int index = 0;
-        int offset = 0;
-        int i = 0, k = 0;
-
-        /* rotate UYVY image */
-        if( p_sys->rotate == ROTATION_LEFT )
-        {
-            for( i = p_sys->width-1; i >= 0; i-- )
-            {
-                for( k = 0; k < p_sys->height; k++ )
-                {
-                    index = (k * p_sys->width) + i;
-                    MovePixelUYVY( p_sys->camera.capture_buffer, index,
-                                   p_block->p_buffer, offset );
-                    offset++;
-                }
-            }
-        }
-        else
-        { /* ROTATION RIGHT */
-            for( i = 0; i < p_sys->width; i++ )
-            {
-                for( k = p_sys->height-1; k >= 0; k-- )
-                {
-                    index = (k * p_sys->width) + i;
-                    MovePixelUYVY( p_sys->camera.capture_buffer, index,
-                                   p_block->p_buffer, offset );
-                    offset++;
-                }
-            }
-        }
-    }
+    memcpy( p_block->p_buffer, (const char *)p_sys->camera.capture_buffer,
+            p_sys->camera.frame_width * p_sys->camera.frame_height * 2 );
 
     p_block->i_pts = p_block->i_dts = mdate();
     if( p_sys->dma_capture )
@@ -798,7 +748,7 @@ static block_t *GrabAudio( demux_t *p_demux )
         i_correct += buf_info.bytes;
 
     p_block->i_pts = p_block->i_dts =
-                        mdate() - I64C(1000000) * (mtime_t)i_correct /
+                        mdate() - INT64_C(1000000) * (mtime_t)i_correct /
                         2 / p_sys->channels / p_sys->i_sample_rate;
     return p_block;
 }
@@ -845,17 +795,18 @@ static int Demux( demux_t *p_demux )
  *****************************************************************************/
 static int Control( demux_t *p_demux, int i_query, va_list args )
 {
-    vlc_bool_t *pb;
+    bool *pb;
     int64_t    *pi64;
 
     switch( i_query )
     {
         /* Special for access_demux */
         case DEMUX_CAN_PAUSE:
+        case DEMUX_CAN_SEEK:
         case DEMUX_SET_PAUSE_STATE:
         case DEMUX_CAN_CONTROL_PACE:
-            pb = (vlc_bool_t*)va_arg( args, vlc_bool_t * );
-            *pb = VLC_FALSE;
+            pb = (bool*)va_arg( args, bool * );
+            *pb = false;
             return VLC_SUCCESS;
 
         case DEMUX_GET_PTS_DELAY:
@@ -878,13 +829,13 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 static int process_options( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    char *psz_dup; 
+    char *psz_dup;
     char *psz_parser;
     char *token = NULL;
     char *state = NULL;
     float rate_f;
 
-    if( strncmp(p_demux->psz_access,"dc1394",6) != 0 )
+    if( strncmp(p_demux->psz_access, "dc1394", 6) != 0 )
         return VLC_EGENERIC;
 
     psz_dup = strdup( p_demux->psz_path );
@@ -904,7 +855,7 @@ static int process_options( demux_t *p_demux )
                     "video size of 160x120 is actually disabled for lack of chroma "
                     "support. It will relased ASAP, until then try an higher size "
                     "(320x240 and 640x480 are fully supported)" );
-                free(psz_dup);
+                free( psz_dup );
                 return VLC_EGENERIC;
 #if 0
                 p_sys->frame_size = MODE_160x120_YUV444;
@@ -931,7 +882,7 @@ static int process_options( demux_t *p_demux )
                     " 160x120, 320x240, and 640x480. "
                     "Please specify one of them. You have specified %s.",
                     token );
-                free(psz_dup);
+                free( psz_dup );
                 return VLC_EGENERIC;
             }
             msg_Dbg( p_demux, "Requested video size : %s",token );
@@ -959,7 +910,7 @@ static int process_options( demux_t *p_demux )
                     " 1.875, 3.75, 7.5, 15, 30, 60. "
                     "Please specify one of them. You have specified %s.",
                     token);
-                free(psz_dup);
+                free( psz_dup );
                 return VLC_EGENERIC;
             }
             msg_Dbg( p_demux, "Requested frame rate : %s",token );
@@ -974,7 +925,7 @@ static int process_options( demux_t *p_demux )
                 msg_Err( p_demux, "Bad brightness value '%s', "
                                   "must be an unsigned integer.",
                                   token );
-                free(psz_dup);
+                free( psz_dup );
                 return VLC_EGENERIC;
             }
         }
@@ -1003,7 +954,7 @@ static int process_options( demux_t *p_demux )
                 msg_Err( p_demux, "Bad camera number '%s', "
                                   "must be an unsigned integer.",
                                   token );
-                free(psz_dup);
+                free( psz_dup );
                 return VLC_EGENERIC;
             }
         }
@@ -1025,7 +976,7 @@ static int process_options( demux_t *p_demux )
                 msg_Err(p_demux, "Bad capture method value '%s', "
                                  "it can be 'raw1394' or 'video1394'.",
                                 token );
-                free(psz_dup);
+                free( psz_dup );
                 return VLC_EGENERIC;
             }
         }
@@ -1055,29 +1006,8 @@ static int process_options( demux_t *p_demux )
             token += strlen("uid=");
             sscanf( token, "0x%llx", &p_sys->selected_uid );
         }
-        else if( strncmp( token, "rotate=", strlen( "rotate=" ) ) == 0)
-        {
-            token += strlen("rotate=");
-            if( strncmp( token, "left", 4) == 0 )
-            {
-                msg_Dbg( p_demux, "Left Rotation enabled" );
-                p_sys->rotate = ROTATION_LEFT;
-            }
-            else if( strncmp( token, "right", 5 ) == 0 )
-            {
-                msg_Dbg( p_demux, "Right Rotation enabled" );
-                p_sys->rotate = ROTATION_RIGHT;
-            }
-            else
-            {
-                msg_Err( p_demux, "Bad rotation value '%s', "
-                                  "it can be 'left' or 'right'.",
-                                  token);
-                free(psz_dup);
-                return VLC_EGENERIC;
-            }
-        }
     }
-    if( psz_dup ) free( psz_dup );
+    free( psz_dup );
     return VLC_SUCCESS;
 }
+

@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: 5160c2dcfb987a8ec8a75eae997c146175c33169 $
+ * $Id: a16cf0103f5118fea8d71eb496acb17ff22acc28 $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -29,35 +29,17 @@
  * This file is a collection of common definitions and types
  */
 
+#ifndef VLC_COMMON_H
+# define VLC_COMMON_H 1
+
 /*****************************************************************************
  * Required vlc headers
  *****************************************************************************/
-#if defined( __BORLANDC__ )
-#   undef PACKAGE
-#endif
-
-#include "config.h"
-
-#if defined(PACKAGE)
-#   undef PACKAGE_NAME
-#   define PACKAGE_NAME PACKAGE
-#endif
-#if defined(VERSION)
-#   undef PACKAGE_VERSION
-#   define PACKAGE_VERSION VERSION
-#endif
-
-#if defined( __BORLANDC__ )
-#   undef HAVE_VARIADIC_MACROS
-#   undef HAVE_STDINT_H
-#   undef HAVE_INTTYPES_H
-#   undef off_t
-#elif defined( _MSC_VER )
+#if defined( _MSC_VER )
 #   pragma warning( disable : 4244 )
 #endif
 
 #include "vlc_config.h"
-#include "modules_inner.h"
 
 /*****************************************************************************
  * Required system headers
@@ -65,72 +47,18 @@
 #include <stdlib.h>
 #include <stdarg.h>
 
-#ifdef HAVE_STRING_H
-#   include <string.h>                                         /* strerror() */
-#endif
+#include <string.h>
+#include <stdio.h>
+#include <inttypes.h>
+#include <stddef.h>
 
-#ifdef HAVE_SYS_TYPES_H
-#   include <sys/types.h>
+#ifndef __cplusplus
+# include <stdbool.h>
 #endif
 
 /*****************************************************************************
  * Basic types definitions
  *****************************************************************************/
-#if defined( HAVE_STDINT_H )
-#   include <stdint.h>
-#elif defined( HAVE_INTTYPES_H )
-#   include <inttypes.h>
-#elif defined( SYS_CYGWIN )
-#   include <sys/types.h>
-    /* Cygwin only defines half of these... */
-    typedef u_int8_t            uint8_t;
-    typedef u_int16_t           uint16_t;
-    typedef u_int32_t           uint32_t;
-    typedef u_int64_t           uint64_t;
-#else
-    /* Fallback types (very x86-centric, sorry) */
-    typedef unsigned char       uint8_t;
-    typedef signed char         int8_t;
-    typedef unsigned short      uint16_t;
-    typedef signed short        int16_t;
-    typedef unsigned int        uint32_t;
-    typedef signed int          int32_t;
-#   if defined( _MSC_VER ) \
-      || defined( UNDER_CE ) \
-      || ( defined( WIN32 ) && !defined( __MINGW32__ ) )
-    typedef unsigned __int64    uint64_t;
-    typedef signed __int64      int64_t;
-#   else
-    typedef unsigned long long  uint64_t;
-    typedef signed long long    int64_t;
-#   endif
-    typedef uint32_t            uintptr_t;
-    typedef int32_t             intptr_t;
-#endif
-
-typedef uint8_t                 byte_t;
-
-/* Systems that don't have stdint.h may not define INT64_MIN and
-   INT64_MAX */
-#ifndef INT64_MIN
-#define INT64_MIN (-9223372036854775807LL-1)
-#endif
-#ifndef INT64_MAX
-#define INT64_MAX (9223372036854775807LL)
-#endif
-
-/* ptrdiff_t definition */
-#ifdef HAVE_STDDEF_H
-#   include <stddef.h>
-#else
-#   include <malloc.h>
-#   ifndef _PTRDIFF_T
-#       define _PTRDIFF_T
-/* Not portable in a 64-bit environment. */
-typedef int                 ptrdiff_t;
-#   endif
-#endif
-
 #if defined( WIN32 ) || defined( UNDER_CE )
 #   include <malloc.h>
 #   ifndef PATH_MAX
@@ -138,25 +66,11 @@ typedef int                 ptrdiff_t;
 #   endif
 #endif
 
-#if (defined( WIN32 ) || defined( UNDER_CE )) && !defined( _SSIZE_T_ )
-typedef int                 ssize_t;
-#endif
-
 /* Counter for statistics and profiling */
 typedef unsigned long       count_t;
 
-/* DCT elements types */
-typedef int16_t             dctelem_t;
-
-/* Video buffer types */
-typedef uint8_t             yuv_data_t;
-
 /* Audio volume */
 typedef uint16_t            audio_volume_t;
-
-#ifndef HAVE_SOCKLEN_T
-typedef int                 socklen_t;
-#endif
 
 /**
  * High precision date or time interval
@@ -193,20 +107,29 @@ typedef uint32_t vlc_fourcc_t;
 
 #endif
 
+static inline void __vlc_fourcc_to_char( vlc_fourcc_t fcc, char *psz_fourcc )
+{
+    memcpy( psz_fourcc, &fcc, 4 );
+}
+
+#define vlc_fourcc_to_char( a, b ) \
+    __vlc_fourcc_to_char( (vlc_fourcc_t)(a), (char *)(b) )
+
 /*****************************************************************************
  * Classes declaration
  *****************************************************************************/
 
 /* Internal types */
-typedef struct libvlc_t libvlc_t;
-typedef struct vlc_t vlc_t;
+typedef struct vlc_list_t vlc_list_t;
+typedef struct vlc_object_t vlc_object_t;
+typedef struct libvlc_int_t libvlc_int_t;
 typedef struct variable_t variable_t;
 typedef struct date_t date_t;
-typedef struct hashtable_entry_t hashtable_entry_t;
+typedef struct dict_entry_t dict_entry_t;
+typedef struct dict_t dict_t;
+typedef struct gc_object_t gc_object_t ;
 
 /* Messages */
-typedef struct msg_bank_t msg_bank_t;
-typedef struct msg_queue_t msg_queue_t;
 typedef struct msg_subscription_t msg_subscription_t;
 
 /* Playlist */
@@ -217,15 +140,11 @@ typedef struct msg_subscription_t msg_subscription_t;
  */
 typedef enum {
     PLAYLIST_PLAY,      /**< No arg.                            res=can fail*/
-    PLAYLIST_AUTOPLAY,  /**< No arg.                            res=cant fail*/
-    PLAYLIST_VIEWPLAY,  /**< arg1= int, arg2= playlist_item_t*,*/
-                        /**  arg3 = playlist_item_t*          , res=can fail */
-    PLAYLIST_ITEMPLAY,  /** <arg1 = playlist_item_t *         , res=can fail */
+    PLAYLIST_VIEWPLAY,  /**< arg1= playlist_item_t*,*/
+                        /**  arg2 = playlist_item_t*          , res=can fail */
     PLAYLIST_PAUSE,     /**< No arg                             res=can fail*/
     PLAYLIST_STOP,      /**< No arg                             res=can fail*/
     PLAYLIST_SKIP,      /**< arg1=int,                          res=can fail*/
-    PLAYLIST_GOTO,      /**< arg1=int                           res=can fail */
-    PLAYLIST_VIEWGOTO   /**< arg1=int                           res=can fail */
 } playlist_command_t;
 
 
@@ -237,6 +156,7 @@ typedef struct services_discovery_t services_discovery_t;
 typedef struct services_discovery_sys_t services_discovery_sys_t;
 typedef struct playlist_add_t playlist_add_t;
 typedef struct playlist_preparse_t playlist_preparse_t;
+typedef struct playlist_fetcher_t playlist_fetcher_t;
 
 /* Modules */
 typedef struct module_bank_t module_bank_t;
@@ -265,6 +185,7 @@ typedef struct access_sys_t access_sys_t;
 typedef struct stream_t     stream_t;
 typedef struct stream_sys_t stream_sys_t;
 typedef struct demux_t  demux_t;
+typedef struct demux_meta_t demux_meta_t;
 typedef struct demux_sys_t demux_sys_t;
 typedef struct es_out_t     es_out_t;
 typedef struct es_out_id_t  es_out_id_t;
@@ -273,6 +194,7 @@ typedef struct es_descriptor_t es_descriptor_t;
 typedef struct seekpoint_t seekpoint_t;
 typedef struct info_t info_t;
 typedef struct info_category_t info_category_t;
+typedef struct input_attachment_t input_attachment_t;
 
 /* Format */
 typedef struct audio_format_t audio_format_t;
@@ -294,8 +216,6 @@ typedef struct aout_filter_t aout_filter_t;
 /* Video */
 typedef struct vout_thread_t vout_thread_t;
 typedef struct vout_sys_t vout_sys_t;
-typedef struct vout_synchro_t vout_synchro_t;
-typedef struct chroma_sys_t chroma_sys_t;
 
 typedef video_format_t video_frame_format_t;
 typedef struct picture_t picture_t;
@@ -327,7 +247,7 @@ typedef struct sout_mux_sys_t sout_mux_sys_t;
 typedef struct sout_stream_t    sout_stream_t;
 typedef struct sout_stream_sys_t sout_stream_sys_t;
 
-typedef struct sout_cfg_t       sout_cfg_t;
+typedef struct config_chain_t       config_chain_t;
 typedef struct sap_session_t    sap_session_t;
 typedef struct sap_address_t sap_address_t;
 typedef struct session_descriptor_t session_descriptor_t;
@@ -335,9 +255,22 @@ typedef struct announce_method_t announce_method_t;
 typedef struct announce_handler_t announce_handler_t;
 typedef struct sap_handler_t sap_handler_t;
 
+typedef struct sout_param_t sout_param_t;
+typedef struct sout_pcat_t sout_pcat_t;
+typedef struct sout_std_t sout_std_t;
+typedef struct sout_display_t sout_display_t;
+typedef struct sout_duplicate_t sout_duplicate_t;
+typedef struct sout_transcode_t sout_transcode_t;
+typedef struct sout_chain_t sout_chain_t;
+typedef struct streaming_profile_t streaming_profile_t;
+typedef struct sout_module_t sout_module_t;
+typedef struct sout_gui_descr_t sout_gui_descr_t;
+typedef struct profile_parser_t profile_parser_t;
+
 /* Decoders */
-typedef struct decoder_t      decoder_t;
-typedef struct decoder_sys_t  decoder_sys_t;
+typedef struct decoder_t         decoder_t;
+typedef struct decoder_sys_t     decoder_sys_t;
+typedef struct decoder_synchro_t decoder_synchro_t;
 
 /* Encoders */
 typedef struct encoder_t      encoder_t;
@@ -353,9 +286,13 @@ typedef struct virtual_socket_t v_socket_t;
 typedef struct sockaddr sockaddr;
 typedef struct addrinfo addrinfo;
 typedef struct vlc_acl_t vlc_acl_t;
+typedef struct vlc_url_t vlc_url_t;
 
 /* Misc */
 typedef struct iso639_lang_t iso639_lang_t;
+typedef struct device_t device_t;
+typedef struct device_probe_t device_probe_t;
+typedef struct probe_sys_t probe_sys_t;
 
 /* block */
 typedef struct block_t      block_t;
@@ -368,7 +305,7 @@ typedef struct httpd_url_t      httpd_url_t;
 typedef struct httpd_client_t   httpd_client_t;
 typedef struct httpd_callback_sys_t httpd_callback_sys_t;
 typedef struct httpd_message_t  httpd_message_t;
-typedef int    (*httpd_callback_t)( httpd_callback_sys_t *, httpd_client_t *, httpd_message_t *answer, httpd_message_t *query );
+typedef int    (*httpd_callback_t)( httpd_callback_sys_t *, httpd_client_t *, httpd_message_t *answer, const httpd_message_t *query );
 typedef struct httpd_file_t     httpd_file_t;
 typedef struct httpd_file_sys_t httpd_file_sys_t;
 typedef int (*httpd_file_callback_t)( httpd_file_sys_t *, httpd_file_t *, uint8_t *psz_request, uint8_t **pp_data, int *pi_data );
@@ -379,7 +316,6 @@ typedef struct httpd_redirect_t httpd_redirect_t;
 typedef struct httpd_stream_t httpd_stream_t;
 
 /* TLS support */
-typedef struct tls_t tls_t;
 typedef struct tls_server_t tls_server_t;
 typedef struct tls_session_t tls_session_t;
 
@@ -411,11 +347,10 @@ typedef struct osd_menu_state_t osd_menu_state_t;
 /* VLM */
 typedef struct vlm_t         vlm_t;
 typedef struct vlm_message_t vlm_message_t;
-typedef struct vlm_media_t   vlm_media_t;
-typedef struct vlm_schedule_t vlm_schedule_t;
 
 /* divers */
 typedef struct vlc_meta_t    vlc_meta_t;
+typedef struct meta_export_t meta_export_t;
 
 /* Stats */
 typedef struct counter_t     counter_t;
@@ -427,6 +362,94 @@ typedef struct global_stats_t global_stats_t;
 /* Update */
 typedef struct update_t update_t;
 typedef struct update_iterator_t update_iterator_t;
+
+/* Meta engine */
+typedef struct meta_engine_t meta_engine_t;
+
+/* stat/lstat/fstat */
+#ifdef WIN32
+#include <sys/stat.h>
+struct _stati64;
+#define stat _stati64
+#define fstat _fstati64
+/* You should otherwise use utf8_stat and utf8_lstat. */
+#else
+struct stat;
+#endif
+
+/**
+ * VLC value structure
+ */
+typedef union
+{
+    int             i_int;
+    bool            b_bool;
+    float           f_float;
+    char *          psz_string;
+    void *          p_address;
+    vlc_object_t *  p_object;
+    vlc_list_t *    p_list;
+    mtime_t         i_time;
+
+    struct { char *psz_name; int i_object_id; } var;
+
+   /* Make sure the structure is at least 64bits */
+    struct { char a, b, c, d, e, f, g, h; } padding;
+
+} vlc_value_t;
+
+/**
+ * VLC list structure
+ */
+struct vlc_list_t
+{
+    int             i_count;
+    vlc_value_t *   p_values;
+    int *           pi_types;
+
+};
+
+/**
+ * \defgroup var_type Variable types
+ * These are the different types a vlc variable can have.
+ * @{
+ */
+#define VLC_VAR_VOID      0x0010
+#define VLC_VAR_BOOL      0x0020
+#define VLC_VAR_INTEGER   0x0030
+#define VLC_VAR_HOTKEY    0x0031
+#define VLC_VAR_STRING    0x0040
+#define VLC_VAR_MODULE    0x0041
+#define VLC_VAR_FILE      0x0042
+#define VLC_VAR_DIRECTORY 0x0043
+#define VLC_VAR_VARIABLE  0x0044
+#define VLC_VAR_FLOAT     0x0050
+#define VLC_VAR_TIME      0x0060
+#define VLC_VAR_ADDRESS   0x0070
+#define VLC_VAR_MUTEX     0x0080
+#define VLC_VAR_LIST      0x0090
+/**@}*/
+
+/*****************************************************************************
+ * Error values (shouldn't be exposed)
+ *****************************************************************************/
+#define VLC_SUCCESS         -0                                   /* No error */
+#define VLC_ENOMEM          -1                          /* Not enough memory */
+#define VLC_ETHREAD         -2                               /* Thread error */
+#define VLC_ETIMEOUT        -3                                    /* Timeout */
+
+#define VLC_ENOMOD         -10                           /* Module not found */
+
+#define VLC_ENOOBJ         -20                           /* Object not found */
+
+#define VLC_ENOVAR         -30                         /* Variable not found */
+#define VLC_EBADVAR        -31                         /* Bad variable value */
+
+#define VLC_ENOITEM        -40                           /**< Item not found */
+
+#define VLC_EEXIT         -255                             /* Program exited */
+#define VLC_EEXITSUCCESS  -999                /* Program exited successfully */
+#define VLC_EGENERIC      -666                              /* Generic error */
 
 /*****************************************************************************
  * Variable callbacks
@@ -440,16 +463,19 @@ typedef int ( * vlc_callback_t ) ( vlc_object_t *,      /* variable's object */
 /*****************************************************************************
  * Plug-in stuff
  *****************************************************************************/
-#if !defined (__PLUGIN__) || defined (HAVE_SHARED_LIBVLC)
-#   ifdef __cplusplus
-#      define VLC_EXPORT( type, name, args ) extern "C" type name args
-#   else
-#      define VLC_EXPORT( type, name, args ) type name args
-#   endif
+
+#ifdef __cplusplus
+# define LIBVLC_EXTERN extern "C"
 #else
-#   define VLC_EXPORT( type, name, args ) struct _u_n_u_s_e_d_
-    extern module_symbols_t* p_symbols;
+# define LIBVLC_EXTERN extern
 #endif
+#if defined (WIN32) && defined (DLL_EXPORT)
+# define LIBVLC_EXPORT __declspec(dllexport)
+#else
+# define LIBVLC_EXPORT
+#endif
+#define VLC_EXPORT( type, name, args ) \
+                        LIBVLC_EXTERN LIBVLC_EXPORT type name args
 
 /*****************************************************************************
  * OS-specific headers and thread types
@@ -464,7 +490,10 @@ typedef int ( * vlc_callback_t ) ( vlc_object_t *,      /* variable's object */
 #   endif
 #endif
 
+#include "vlc_mtime.h"
 #include "vlc_threads.h"
+
+typedef struct vlc_object_internals_t vlc_object_internals_t;
 
 /*****************************************************************************
  * Common structure members
@@ -485,34 +514,16 @@ typedef int ( * vlc_callback_t ) ( vlc_object_t *,      /* variable's object */
     char *psz_header;                                                       \
     int  i_flags;                                                           \
                                                                             \
-    /* Thread properties, if any */                                         \
-    vlc_bool_t   b_thread;                                                  \
-    vlc_thread_t thread_id;                                                 \
-                                                                            \
-    /* Object access lock */                                                \
-    vlc_mutex_t  object_lock;                                               \
-    vlc_cond_t   object_wait;                                               \
-                                                                            \
     /* Object properties */                                                 \
-    volatile vlc_bool_t b_error;                  /**< set by the object */ \
-    volatile vlc_bool_t b_die;                   /**< set by the outside */ \
-    volatile vlc_bool_t b_dead;                   /**< set by the object */ \
-    volatile vlc_bool_t b_attached;               /**< set by the object */ \
-    vlc_bool_t b_force;      /**< set by the outside (eg. module_Need()) */ \
-                                                                            \
-    /* Object variables */                                                  \
-    vlc_mutex_t     var_lock;                                               \
-    int             i_vars;                                                 \
-    variable_t *    p_vars;                                                 \
+    volatile bool b_error;                  /**< set by the object */ \
+    volatile bool b_die;                   /**< set by the outside */ \
+    volatile bool b_dead;                   /**< set by the object */ \
+    bool b_force;      /**< set by the outside (eg. module_Need()) */ \
                                                                             \
     /* Stuff related to the libvlc structure */                             \
-    libvlc_t *      p_libvlc;                      /**< root of all evil */ \
-    vlc_t *         p_vlc;                   /**< (root of all evil) - 1 */ \
+    libvlc_int_t *p_libvlc;                  /**< (root of all evil) - 1 */ \
                                                                             \
-    volatile int    i_refcount;                         /**< usage count */ \
     vlc_object_t *  p_parent;                            /**< our parent */ \
-    vlc_object_t ** pp_children;                       /**< our children */ \
-    volatile int    i_children;                                             \
                                                                             \
     /* Private data */                                                      \
     void *          p_private;                                              \
@@ -522,19 +533,41 @@ typedef int ( * vlc_callback_t ) ( vlc_object_t *,      /* variable's object */
 /**@}*/                                                                     \
 
 /* VLC_OBJECT: attempt at doing a clever cast */
-#define VLC_OBJECT( x ) \
-    ((vlc_object_t *)(x))+0*(x)->be_sure_to_add_VLC_COMMON_MEMBERS_to_struct
+#ifdef __GNUC__
+# define VLC_OBJECT( x ) \
+    (((vlc_object_t *)(x))+0*(((typeof(x))0)->be_sure_to_add_VLC_COMMON_MEMBERS_to_struct))
+#else
+# define VLC_OBJECT( x ) ((vlc_object_t *)(x))
+#endif
+
+#define VLC_GC_MEMBERS                                                       \
+/** \name VLC_GC_MEMBERS                                                     \
+ * these members are common to all objects that wish to be garbage-collected \
+ */                                                                          \
+/**@{*/                                                                      \
+    int i_gc_refcount;                                                       \
+    void (*pf_destructor) ( gc_object_t * );                                 \
+    void *p_destructor_arg;                                                  \
+/**@}*/
+
+struct gc_object_t
+{
+    VLC_GC_MEMBERS
+};
+
+VLC_EXPORT(void, __vlc_gc_incref, ( gc_object_t * p_gc ));
+VLC_EXPORT(void, __vlc_gc_decref, ( gc_object_t * p_gc ));
+VLC_EXPORT(void, __vlc_gc_init, ( gc_object_t * p_gc,
+    void (*pf_destructor)( gc_object_t * ), void * arg));
+
+#define vlc_gc_incref( a ) __vlc_gc_incref( (gc_object_t *)a )
+#define vlc_gc_decref( a ) __vlc_gc_decref( (gc_object_t *)a )
+#define vlc_gc_init( a,b,c ) __vlc_gc_init( (gc_object_t *)a,b,c )
+
 
 /*****************************************************************************
  * Macros and inline functions
  *****************************************************************************/
-#ifdef NTOHL_IN_SYS_PARAM_H
-#   include <sys/param.h>
-
-#elif !defined(WIN32) && !defined( UNDER_CE )
-#   include <netinet/in.h>
-
-#endif /* NTOHL_IN_SYS_PARAM_H || WIN32 */
 
 /* CEIL: division with round to nearest greater integer */
 #define CEIL(n, d)  ( ((n) / (d)) + ( ((n) % (d)) ? 1 : 0) )
@@ -561,162 +594,73 @@ static inline int64_t GCD( int64_t a, int64_t b )
     return a;
 }
 
-/* Dynamic array handling: realloc array, move data, increment position */
-#if defined( _MSC_VER ) && _MSC_VER < 1300 && !defined( UNDER_CE )
-#   define VLCCVP (void**) /* Work-around for broken compiler */
-#else
-#   define VLCCVP
-#endif
-#define INSERT_ELEM( p_ar, i_oldsize, i_pos, elem )                           \
-    do                                                                        \
-    {                                                                         \
-        if( !i_oldsize ) (p_ar) = NULL;                                       \
-        (p_ar) = VLCCVP realloc( p_ar, ((i_oldsize) + 1) * sizeof(*(p_ar)) ); \
-        if( (i_oldsize) - (i_pos) )                                           \
-        {                                                                     \
-            memmove( (p_ar) + (i_pos) + 1, (p_ar) + (i_pos),                  \
-                     ((i_oldsize) - (i_pos)) * sizeof( *(p_ar) ) );           \
-        }                                                                     \
-        (p_ar)[i_pos] = elem;                                                 \
-        (i_oldsize)++;                                                        \
-    }                                                                         \
-    while( 0 )
-
-#define REMOVE_ELEM( p_ar, i_oldsize, i_pos )                                 \
-    do                                                                        \
-    {                                                                         \
-        if( (i_oldsize) - (i_pos) - 1 )                                       \
-        {                                                                     \
-            memmove( (p_ar) + (i_pos),                                        \
-                     (p_ar) + (i_pos) + 1,                                    \
-                     ((i_oldsize) - (i_pos) - 1) * sizeof( *(p_ar) ) );       \
-        }                                                                     \
-        if( i_oldsize > 1 )                                                   \
-        {                                                                     \
-            (p_ar) = realloc( p_ar, ((i_oldsize) - 1) * sizeof( *(p_ar) ) );  \
-        }                                                                     \
-        else                                                                  \
-        {                                                                     \
-            free( p_ar );                                                     \
-            (p_ar) = NULL;                                                    \
-        }                                                                     \
-        (i_oldsize)--;                                                        \
-    }                                                                         \
-    while( 0 )
-
-#define TAB_INIT( count, tab )                  \
-  do {                                          \
-    (count) = 0;                                \
-    (tab) = NULL;                               \
-  } while(0)
-
-#define TAB_CLEAN( count, tab )                 \
-  do {                                          \
-    if( tab ) free( tab );                      \
-    (count)= 0;                                 \
-    (tab)= NULL;                                \
-  } while(0)
-
-
-#define TAB_APPEND( count, tab, p )             \
-    if( (count) > 0 )                           \
-    {                                           \
-        (tab) = realloc( tab, sizeof( void ** ) * ( (count) + 1 ) ); \
-    }                                           \
-    else                                        \
-    {                                           \
-        (tab) = malloc( sizeof( void ** ) );    \
-    }                                           \
-    (tab)[count] = (p);        \
-    (count)++
-
-#define TAB_FIND( count, tab, p, index )        \
-    {                                           \
-        int _i_;                                \
-        (index) = -1;                           \
-        for( _i_ = 0; _i_ < (count); _i_++ )    \
-        {                                       \
-            if( (tab)[_i_] == (p) )  \
-            {                                   \
-                (index) = _i_;                  \
-                break;                          \
-            }                                   \
-        }                                       \
-    }
-
-#define TAB_REMOVE( count, tab, p )             \
-    {                                           \
-        int _i_index_;                          \
-        TAB_FIND( count, tab, p, _i_index_ );   \
-        if( _i_index_ >= 0 )                    \
-        {                                       \
-            if( (count) > 1 )                     \
-            {                                   \
-                memmove( ((void**)(tab) + _i_index_),    \
-                         ((void**)(tab) + _i_index_+1),  \
-                         ( (count) - _i_index_ - 1 ) * sizeof( void* ) );\
-            }                                   \
-            (count)--;                          \
-            if( (count) == 0 )                  \
-            {                                   \
-                free( tab );                    \
-                (tab) = NULL;                   \
-            }                                   \
-        }                                       \
-    }
-
-/* Hash tables handling */
-struct hashtable_entry_t
+/* function imported from libavutil/common.h */
+static inline uint8_t clip_uint8_vlc( int32_t a )
 {
-    int       i_id;
-    char     *psz_name;
-    uint64_t  i_hash;
-    void     *p_data;
-};
+    if( a&(~255) ) return (-a)>>31;
+    else           return a;
+}
 
-VLC_EXPORT( void, vlc_HashInsert, (hashtable_entry_t **, int *, int, const char *, void *));
-VLC_EXPORT( void*, vlc_HashRetrieve, (hashtable_entry_t*, int, int, const char *) );
-VLC_EXPORT( int, vlc_HashLookup, (hashtable_entry_t *, int, int, const char *) );
+/* Malloc with automatic error */
+#define MALLOC_VOID( var, type ) do { var = (type*)malloc( sizeof( type) ); \
+                                   if( !var ) return; } while(0)
+#define MALLOC_NULL( var, type ) do { var = (type*)malloc( sizeof( type) ); \
+                                   if( !var ) return NULL; } while(0)
+#define MALLOC_ERR( var, type ) do { var = (type*)malloc( sizeof( type) ); \
+                                   if( !var ) return VLC_ENOMEM; } while(0)
+#define MALLOC_GOTOERR( var, type ) do { var = (type*)malloc( sizeof( type) ); \
+                                      if( !var ) goto error; } while(0)
+#define DECMALLOC_VOID( var, type ) type* var = (type*)malloc( sizeof(type) );\
+                                    if( !var ) return;
+#define DECMALLOC_ERR( var, type )  type* var = (type*)malloc( sizeof(type) );\
+                                    if( !var ) return VLC_ENOMEM;
+#define DECMALLOC_NULL( var, type ) type* var = (type*)malloc( sizeof(type) );\
+                                    if( !var ) return NULL;
 
+#define FREENULL(a) do { free( a ); a = NULL; } while(0)
+
+#define EMPTY_STR(str) (!str || !*str)
+
+VLC_EXPORT( char const *, vlc_error, ( int ) );
+
+#include <vlc_arrays.h>
 
 /* MSB (big endian)/LSB (little endian) conversions - network order is always
- * MSB, and should be used for both network communications and files. Note that
- * byte orders other than little and big endians are not supported, but only
- * the VAX seems to have such exotic properties. */
-static inline uint16_t U16_AT( void const * _p )
+ * MSB, and should be used for both network communications and files. */
+static inline uint16_t U16_AT( const void * _p )
 {
-    uint8_t * p = (uint8_t *)_p;
+    const uint8_t * p = (const uint8_t *)_p;
     return ( ((uint16_t)p[0] << 8) | p[1] );
 }
-static inline uint32_t U32_AT( void const * _p )
+static inline uint32_t U32_AT( const void * _p )
 {
-    uint8_t * p = (uint8_t *)_p;
+    const uint8_t * p = (const uint8_t *)_p;
     return ( ((uint32_t)p[0] << 24) | ((uint32_t)p[1] << 16)
               | ((uint32_t)p[2] << 8) | p[3] );
 }
-static inline uint64_t U64_AT( void const * _p )
+static inline uint64_t U64_AT( const void * _p )
 {
-    uint8_t * p = (uint8_t *)_p;
+    const uint8_t * p = (const uint8_t *)_p;
     return ( ((uint64_t)p[0] << 56) | ((uint64_t)p[1] << 48)
               | ((uint64_t)p[2] << 40) | ((uint64_t)p[3] << 32)
               | ((uint64_t)p[4] << 24) | ((uint64_t)p[5] << 16)
               | ((uint64_t)p[6] << 8) | p[7] );
 }
 
-static inline uint16_t GetWLE( void const * _p )
+static inline uint16_t GetWLE( const void * _p )
 {
-    uint8_t * p = (uint8_t *)_p;
+    const uint8_t * p = (const uint8_t *)_p;
     return ( ((uint16_t)p[1] << 8) | p[0] );
 }
-static inline uint32_t GetDWLE( void const * _p )
+static inline uint32_t GetDWLE( const void * _p )
 {
-    uint8_t * p = (uint8_t *)_p;
+    const uint8_t * p = (const uint8_t *)_p;
     return ( ((uint32_t)p[3] << 24) | ((uint32_t)p[2] << 16)
               | ((uint32_t)p[1] << 8) | p[0] );
 }
-static inline uint64_t GetQWLE( void const * _p )
+static inline uint64_t GetQWLE( const void * _p )
 {
-    uint8_t * p = (uint8_t *)_p;
+    const uint8_t * p = (const uint8_t *)_p;
     return ( ((uint64_t)p[7] << 56) | ((uint64_t)p[6] << 48)
               | ((uint64_t)p[5] << 40) | ((uint64_t)p[4] << 32)
               | ((uint64_t)p[3] << 24) | ((uint64_t)p[2] << 16)
@@ -728,14 +672,14 @@ static inline uint64_t GetQWLE( void const * _p )
 #define GetQWBE( p )    U64_AT( p )
 
 /* Helper writer functions */
-#define SetWLE( p, v ) _SetWLE( (uint8_t*)p, v)
+#define SetWLE( p, v ) _SetWLE( (uint8_t*)(p), v)
 static inline void _SetWLE( uint8_t *p, uint16_t i_dw )
 {
     p[1] = ( i_dw >>  8 )&0xff;
     p[0] = ( i_dw       )&0xff;
 }
 
-#define SetDWLE( p, v ) _SetDWLE( (uint8_t*)p, v)
+#define SetDWLE( p, v ) _SetDWLE( (uint8_t*)(p), v)
 static inline void _SetDWLE( uint8_t *p, uint32_t i_dw )
 {
     p[3] = ( i_dw >> 24 )&0xff;
@@ -743,20 +687,20 @@ static inline void _SetDWLE( uint8_t *p, uint32_t i_dw )
     p[1] = ( i_dw >>  8 )&0xff;
     p[0] = ( i_dw       )&0xff;
 }
-#define SetQWLE( p, v ) _SetQWLE( (uint8_t*)p, v)
+#define SetQWLE( p, v ) _SetQWLE( (uint8_t*)(p), v)
 static inline void _SetQWLE( uint8_t *p, uint64_t i_qw )
 {
     SetDWLE( p,   i_qw&0xffffffff );
     SetDWLE( p+4, ( i_qw >> 32)&0xffffffff );
 }
-#define SetWBE( p, v ) _SetWBE( (uint8_t*)p, v)
+#define SetWBE( p, v ) _SetWBE( (uint8_t*)(p), v)
 static inline void _SetWBE( uint8_t *p, uint16_t i_dw )
 {
     p[0] = ( i_dw >>  8 )&0xff;
     p[1] = ( i_dw       )&0xff;
 }
 
-#define SetDWBE( p, v ) _SetDWBE( (uint8_t*)p, v)
+#define SetDWBE( p, v ) _SetDWBE( (uint8_t*)(p), v)
 static inline void _SetDWBE( uint8_t *p, uint32_t i_dw )
 {
     p[0] = ( i_dw >> 24 )&0xff;
@@ -764,282 +708,47 @@ static inline void _SetDWBE( uint8_t *p, uint32_t i_dw )
     p[2] = ( i_dw >>  8 )&0xff;
     p[3] = ( i_dw       )&0xff;
 }
-#define SetQWBE( p, v ) _SetQWBE( (uint8_t*)p, v)
+#define SetQWBE( p, v ) _SetQWBE( (uint8_t*)(p), v)
 static inline void _SetQWBE( uint8_t *p, uint64_t i_qw )
 {
     SetDWBE( p+4,   i_qw&0xffffffff );
     SetDWBE( p, ( i_qw >> 32)&0xffffffff );
 }
 
-#if WORDS_BIGENDIAN
-#   define hton16(i)   ( i )
-#   define hton32(i)   ( i )
-#   define hton64(i)   ( i )
-#   define ntoh16(i)   ( i )
-#   define ntoh32(i)   ( i )
-#   define ntoh64(i)   ( i )
-#else
-#   define hton16(i)   U16_AT(&i)
-#   define hton32(i)   U32_AT(&i)
-#   define hton64(i)   U64_AT(&i)
-#   define ntoh16(i)   U16_AT(&i)
-#   define ntoh32(i)   U32_AT(&i)
-#   define ntoh64(i)   U64_AT(&i)
-#endif
+#define hton16(i) htons(i)
+#define hton32(i) htonl(i)
+#define ntoh16(i) ntohs(i)
+#define ntoh32(i) ntohl(i)
+
+static inline uint64_t ntoh64 (uint64_t ll)
+{
+    union { uint64_t qw; uint8_t b[16]; } v = { ll };
+    return ((uint64_t)v.b[0] << 56)
+         | ((uint64_t)v.b[1] << 48)
+         | ((uint64_t)v.b[2] << 40)
+         | ((uint64_t)v.b[3] << 32)
+         | ((uint64_t)v.b[4] << 24)
+         | ((uint64_t)v.b[5] << 16)
+         | ((uint64_t)v.b[6] <<  8)
+         | ((uint64_t)v.b[7] <<  0);
+}
+#define hton64(i) ntoh64(i)
 
 /* Format string sanity checks */
-#ifdef HAVE_ATTRIBUTE_FORMAT
-#   define ATTRIBUTE_FORMAT(x,y) __attribute__ ((format(printf,x,y)))
+#ifdef __GNUC__
+#   define LIBVLC_FORMAT(x,y) __attribute__ ((format(printf,x,y)))
 #else
-#   define ATTRIBUTE_FORMAT(x,y)
+#   define LIBVLC_FORMAT(x,y)
 #endif
 
-/* Alignment of critical static data structures */
-#ifdef ATTRIBUTE_ALIGNED_MAX
-#   define ATTR_ALIGN(align) __attribute__ ((__aligned__ ((ATTRIBUTE_ALIGNED_MAX < align) ? ATTRIBUTE_ALIGNED_MAX : align)))
-#else
-#   define ATTR_ALIGN(align)
-#endif
-
-/* Alignment of critical dynamic data structure
- *
- * Not all platforms support memalign so we provide a vlc_memalign wrapper
- * void *vlc_memalign( size_t align, size_t size, void **pp_orig )
- * *pp_orig is the pointer that has to be freed afterwards.
- */
-#if 0
-#ifdef HAVE_POSIX_MEMALIGN
-#   define vlc_memalign(align,size,pp_orig) \
-    ( !posix_memalign( pp_orig, align, size ) ? *(pp_orig) : NULL )
-#endif
-#endif
-#ifdef HAVE_MEMALIGN
-    /* Some systems have memalign() but no declaration for it */
-    void * memalign( size_t align, size_t size );
-
-#   define vlc_memalign(pp_orig,align,size) \
-    ( *(pp_orig) = memalign( align, size ) )
-
-#else /* We don't have any choice but to align manually */
-#   define vlc_memalign(pp_orig,align,size) \
-    (( *(pp_orig) = malloc( size + align - 1 )) \
-        ? (void *)( (((unsigned long)*(pp_orig)) + (unsigned long)(align-1) ) \
-                       & (~(unsigned long)(align-1)) ) \
-        : NULL )
-
-#endif
+/* */
+#define VLC_UNUSED(x) (void)(x)
 
 /* Stuff defined in src/extras/libc.c */
-#ifndef HAVE_STRDUP
-#   define strdup vlc_strdup
-    VLC_EXPORT( char *, vlc_strdup, ( const char *s ) );
-#elif !defined(__PLUGIN__)
-#   define vlc_strdup NULL
-#endif
+VLC_EXPORT( size_t, vlc_strlcpy, ( char *, const char *, size_t ) );
+VLC_EXPORT( long long, vlc_strtoll, ( const char *nptr, char **endptr, int base ) );
 
-#if !defined(HAVE_VASPRINTF) || defined(__APPLE__) || defined(SYS_BEOS)
-#   define vasprintf vlc_vasprintf
-    VLC_EXPORT( int, vlc_vasprintf, (char **, const char *, va_list ) );
-#elif !defined(__PLUGIN__)
-#   define vlc_vasprintf NULL
-#endif
-
-#if !defined(HAVE_ASPRINTF) || defined(__APPLE__) || defined(SYS_BEOS)
-#   define asprintf vlc_asprintf
-    VLC_EXPORT( int, vlc_asprintf, (char **, const char *, ... ) );
-#elif !defined(__PLUGIN__)
-#   define vlc_asprintf NULL
-#endif
-
-#ifndef HAVE_STRNDUP
-#   if defined(STRNDUP_IN_GNOME_H) && \
-        (defined(MODULE_NAME_IS_gnome)||defined(MODULE_NAME_IS_gnome_main)||\
-         defined(MODULE_NAME_IS_gnome2)||defined(MODULE_NAME_IS_gnome2_main))
-        /* Do nothing: gnome.h defines strndup for us */
-#   else
-#       define strndup vlc_strndup
-        VLC_EXPORT( char *, vlc_strndup, ( const char *s, size_t n ) );
-#   endif
-#elif !defined(__PLUGIN__)
-#   define vlc_strndup NULL
-#endif
-
-#ifndef HAVE_STRLCPY
-#   define strlcpy vlc_strlcpy
-    VLC_EXPORT( size_t, vlc_strlcpy, ( char *, const char *, size_t ) );
-#elif !defined(__PLUGIN__)
-#   define vlc_strlcpy NULL
-#endif
-
-#ifndef HAVE_ATOF
-#   define atof vlc_atof
-    VLC_EXPORT( double, vlc_atof, ( const char *nptr ) );
-#elif !defined(__PLUGIN__)
-#   define vlc_atof NULL
-#endif
-
-#ifndef HAVE_STRTOF
-#   ifdef HAVE_STRTOD
-#       define strtof strtod
-#   endif
-#endif
-
-#ifndef HAVE_ATOLL
-#   define atoll vlc_atoll
-    VLC_EXPORT( int64_t, vlc_atoll, ( const char *nptr ) );
-#elif !defined(__PLUGIN__)
-#   define vlc_atoll NULL
-#endif
-
-#ifndef HAVE_STRTOLL
-#   define strtoll vlc_strtoll
-    VLC_EXPORT( int64_t, vlc_strtoll, ( const char *nptr, char **endptr, int base ) );
-#elif !defined(__PLUGIN__)
-#   define vlc_strtoll NULL
-#endif
-
-#if defined(SYS_BEOS) \
- || (defined (__FreeBSD__) && (__FreeBSD__ < 5))
-    typedef struct {
-        long long quot; /* Quotient. */
-        long long rem;  /* Remainder. */
-    } lldiv_t;
-#   define lldiv vlc_lldiv
-    VLC_EXPORT( lldiv_t, vlc_lldiv, ( long long numer, long long denom ) );
-#elif !defined(__PLUGIN__)
-#   define vlc_lldiv NULL
-#endif
-
-#ifndef HAVE_SCANDIR
-#   define scandir vlc_scandir
-#   define alphasort vlc_alphasort
-    struct dirent;
-    VLC_EXPORT( int, vlc_scandir, ( const char *name, struct dirent ***namelist, int (*filter) ( const struct dirent * ), int (*compar) ( const struct dirent **, const struct dirent ** ) ) );
-    VLC_EXPORT( int, vlc_alphasort, ( const struct dirent **a, const struct dirent **b ) );
-#elif !defined(__PLUGIN__)
-#   define vlc_scandir NULL
-#   define vlc_alphasort NULL
-#endif
-
-#ifndef HAVE_GETENV
-#   define getenv vlc_getenv
-    VLC_EXPORT( char *, vlc_getenv, ( const char *name ) );
-#elif !defined(__PLUGIN__)
-#   define vlc_getenv NULL
-#endif
-
-#ifndef HAVE_STRCASECMP
-#   ifndef HAVE_STRICMP
-#       define strcasecmp vlc_strcasecmp
-        VLC_EXPORT( int, vlc_strcasecmp, ( const char *s1, const char *s2 ) );
-#   else
-#       define strcasecmp stricmp
-#       if !defined(__PLUGIN__)
-#           define vlc_strcasecmp NULL
-#       endif
-#   endif
-#elif !defined(__PLUGIN__)
-#   define vlc_strcasecmp NULL
-#endif
-
-#ifndef HAVE_STRNCASECMP
-#   ifndef HAVE_STRNICMP
-#       define strncasecmp vlc_strncasecmp
-        VLC_EXPORT( int, vlc_strncasecmp, ( const char *s1, const char *s2, size_t n ) );
-#   else
-#       define strncasecmp strnicmp
-#       if !defined(__PLUGIN__)
-#           define vlc_strncasecmp NULL
-#       endif
-#   endif
-#elif !defined(__PLUGIN__)
-#   define vlc_strncasecmp NULL
-#endif
-
-#ifndef HAVE_STRCASESTR
-#   ifndef HAVE_STRISTR
-#       define strcasestr vlc_strcasestr
-        VLC_EXPORT( char *, vlc_strcasestr, ( const char *s1, const char *s2 ) );
-#   else
-#       define strcasestr stristr
-#       if !defined(__PLUGIN__)
-#           define vlc_strcasestr NULL
-#       endif
-#   endif
-#elif !defined(__PLUGIN__)
-#   define vlc_strcasestr NULL
-#endif
-
-#ifndef HAVE_DIRENT_H
-    typedef void DIR;
-#   ifndef FILENAME_MAX
-#       define FILENAME_MAX (260)
-#   endif
-    struct dirent
-    {
-        long            d_ino;          /* Always zero. */
-        unsigned short  d_reclen;       /* Always zero. */
-        unsigned short  d_namlen;       /* Length of name in d_name. */
-        char            d_name[FILENAME_MAX]; /* File name. */
-    };
-#   define opendir vlc_opendir
-#   define readdir vlc_readdir
-#   define closedir vlc_closedir
-    VLC_EXPORT( void *, vlc_opendir, ( const char * ) );
-    VLC_EXPORT( void *, vlc_readdir, ( void * ) );
-    VLC_EXPORT( int, vlc_closedir, ( void * ) );
-#else
-    struct dirent;  /* forward declaration for vlc_symbols.h */
-#   if !defined(__PLUGIN__)
-#       define vlc_opendir  NULL
-#       define vlc_readdir  NULL
-#       define vlc_closedir NULL
-#   endif
-#endif
-
-    VLC_EXPORT( void *, vlc_opendir_wrapper, ( const char * ) );
-    VLC_EXPORT( struct dirent *, vlc_readdir_wrapper, ( void * ) );
-    VLC_EXPORT( int, vlc_closedir_wrapper, ( void * ) );
-
-/* Format type specifiers for 64 bits numbers */
-#if defined(__CYGWIN32__) || (!defined(WIN32) && !defined(UNDER_CE))
-#   if defined(__WORDSIZE) && __WORDSIZE == 64
-#       define I64Fd "%ld"
-#       define I64Fi "%li"
-#       define I64Fo "%lo"
-#       define I64Fu "%lu"
-#       define I64Fx "%lx"
-#       define I64FX "%lX"
-#   else
-#       define I64Fd "%lld"
-#       define I64Fi "%lli"
-#       define I64Fo "%llo"
-#       define I64Fu "%llu"
-#       define I64Fx "%llx"
-#       define I64FX "%llX"
-#   endif
-#else
-#   define I64Fd "%I64d"
-#   define I64Fi "%I64i"
-#   define I64Fo "%I64o"
-#   define I64Fu "%I64u"
-#   define I64Fx "%I64x"
-#   define I64FX "%I64X"
-#endif /* defined(WIN32)||defined(UNDER_CE) */
-
-/* 64 bits integer constant suffix */
-#if defined( __MINGW32__ ) || (!defined(WIN32) && !defined(UNDER_CE))
-#   if defined(__WORDSIZE) && __WORDSIZE == 64
-#       define I64C(x)         x##L
-#       define UI64C(x)        x##UL
-#   else
-#       define I64C(x)         x##LL
-#       define UI64C(x)        x##ULL
-#   endif
-#else
-#   define I64C(x)         x##i64
-#   define UI64C(x)        x##ui64
-#endif /* defined(WIN32)||defined(UNDER_CE) */
+VLC_EXPORT( char *, vlc_strcasestr, ( const char *s1, const char *s2 ) );
 
 #if defined(WIN32) || defined(UNDER_CE)
 /* win32, cl and icl support */
@@ -1101,8 +810,7 @@ static inline void _SetQWBE( uint8_t *p, uint64_t i_qw )
 #   include <tchar.h>
 #endif
 
-VLC_EXPORT( vlc_bool_t, vlc_ureduce, ( unsigned *, unsigned *, uint64_t, uint64_t, uint64_t ) );
-VLC_EXPORT( char **, vlc_parse_cmdline, ( const char *, int * ) );
+VLC_EXPORT( bool, vlc_ureduce, ( unsigned *, unsigned *, uint64_t, uint64_t, uint64_t ) );
 
 /* vlc_wraptext (defined in src/extras/libc.c) */
 #define wraptext vlc_wraptext
@@ -1115,8 +823,11 @@ VLC_EXPORT( size_t, vlc_iconv, ( vlc_iconv_t, const char **, size_t *, char **, 
 VLC_EXPORT( int, vlc_iconv_close, ( vlc_iconv_t ) );
 
 /* execve wrapper (defined in src/extras/libc.c) */
-VLC_EXPORT( int, __vlc_execve, ( vlc_object_t *p_object, int i_argc, char **pp_argv, char **pp_env, char *psz_cwd, char *p_in, int i_in, char **pp_data, int *pi_data ) );
+VLC_EXPORT( int, __vlc_execve, ( vlc_object_t *p_object, int i_argc, char *const *pp_argv, char *const *pp_env, const char *psz_cwd, const char *p_in, size_t i_in, char **pp_data, size_t *pi_data ) );
 #define vlc_execve(a,b,c,d,e,f,g,h,i) __vlc_execve(VLC_OBJECT(a),b,c,d,e,f,g,h,i)
+
+/* dir wrappers (defined in src/extras/libc.c) */
+VLC_EXPORT(int, vlc_wclosedir, ( void *_p_dir ));
 
 /*****************************************************************************
  * CPU capabilities
@@ -1132,36 +843,19 @@ VLC_EXPORT( int, __vlc_execve, ( vlc_object_t *p_object, int i_argc, char **pp_a
 #define CPU_CAPABILITY_SSE2    (1<<7)
 #define CPU_CAPABILITY_ALTIVEC (1<<16)
 #define CPU_CAPABILITY_FPU     (1<<31)
+VLC_EXPORT( unsigned, vlc_CPU, ( void ) );
+
+typedef void *(*vlc_memcpy_t) (void *tgt, const void *src, size_t n);
+typedef void *(*vlc_memset_t) (void *tgt, int c, size_t n);
+
+VLC_EXPORT( void, vlc_fastmem_register, (vlc_memcpy_t cpy, vlc_memset_t set) );
+VLC_EXPORT( void *, vlc_memcpy, ( void *, const void *, size_t ) );
+VLC_EXPORT( void *, vlc_memset, ( void *, int, size_t ) );
 
 /*****************************************************************************
  * I18n stuff
  *****************************************************************************/
-#if defined (WIN32) || !defined (HAVE_SHARED_LIBVLC)
-VLC_EXPORT( char *, vlc_dgettext, ( const char *package, const char *msgid ) );
-#endif
-
-#if defined( ENABLE_NLS ) && \
-     (defined(MODULE_NAME_IS_gnome)||defined(MODULE_NAME_IS_gnome_main)||\
-      defined(MODULE_NAME_IS_gnome2)||defined(MODULE_NAME_IS_gnome2_main)||\
-      defined(MODULE_NAME_IS_pda))
-    /* Declare nothing: gnome.h will do it for us */
-#elif defined( ENABLE_NLS )
-#   if defined( HAVE_INCLUDED_GETTEXT )
-#       include "libintl.h"
-#   else
-#       include <libintl.h>
-#   endif
-#   undef _
-#   if defined (WIN32) || !defined (HAVE_SHARED_LIBVLC)
-#       define _(String) vlc_dgettext (PACKAGE_NAME, String)
-#   else
-#       define _(String) dgettext(PACKAGE_NAME, String)
-#   endif
-#   define N_(String) (String)
-#else
-#   define _(String) (String)
-#   define N_(String) (String)
-#endif
+VLC_EXPORT( char *, vlc_gettext, ( const char *msgid ) );
 
 /*****************************************************************************
  * libvlc features
@@ -1172,28 +866,34 @@ VLC_EXPORT( const char *, VLC_CompileHost, ( void ) );
 VLC_EXPORT( const char *, VLC_CompileDomain, ( void ) );
 VLC_EXPORT( const char *, VLC_Compiler, ( void ) );
 VLC_EXPORT( const char *, VLC_Error, ( int ) );
+VLC_EXPORT( const char *, VLC_Changeset, ( void ) );
 
 /*****************************************************************************
  * Additional vlc stuff
  *****************************************************************************/
-#ifndef HAVE_SHARED_LIBVLC
-VLC_EXPORT( const char *, VLC_Changeset, ( void ) );
-#   include "vlc_symbols.h"
-#else
-#   define VLC_Changeset( ) ("exported")
-#endif
-#include "os_specific.h"
 #include "vlc_messages.h"
-#include "variables.h"
+#include "vlc_variables.h"
 #include "vlc_objects.h"
-#include "vlc_threads_funcs.h"
-#include "mtime.h"
-#include "modules.h"
-#include "main.h"
-#include "configuration.h"
+#include "vlc_modules.h"
+#include "vlc_main.h"
+#include "vlc_configuration.h"
 
-#if defined( __BORLANDC__ )
-#   undef PACKAGE
-#   define PACKAGE
+#if defined( WIN32 ) || defined( UNDER_CE )
+#   define DIR_SEP_CHAR '\\'
+#   define DIR_SEP "\\"
+#   define PATH_SEP_CHAR ';'
+#   define PATH_SEP ";"
+#else
+#   define DIR_SEP_CHAR '/'
+#   define DIR_SEP "/"
+#   define PATH_SEP_CHAR ':'
+#   define PATH_SEP ":"
 #endif
 
+#define LICENSE_MSG \
+  _("This program comes with NO WARRANTY, to the extent permitted by " \
+    "law.\nYou may redistribute it under the terms of the GNU General " \
+    "Public License;\nsee the file named COPYING for details.\n" \
+    "Written by the VideoLAN team; see the AUTHORS file.\n")
+
+#endif /* !VLC_COMMON_H */

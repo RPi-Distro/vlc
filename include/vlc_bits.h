@@ -2,7 +2,7 @@
  * bits.h : Bit handling helpers
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 1a6bab607140a0b5527f0de87a6ff4b80b6cee0a $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -21,8 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _VLC_BITS_H
-#define _VLC_BITS_H 1
+#ifndef VLC_BITS_H
+#define VLC_BITS_H 1
+
+/**
+ * \file
+ * This file defines functions, structures for handling streams of bits in vlc
+ */
 
 typedef struct bs_s
 {
@@ -40,17 +45,20 @@ static inline void bs_init( bs_t *s, void *p_data, int i_data )
     s->p_end   = s->p + i_data;
     s->i_left  = 8;
 }
+
 static inline int bs_pos( bs_t *s )
 {
     return( 8 * ( s->p - s->p_start ) + 8 - s->i_left );
 }
+
 static inline int bs_eof( bs_t *s )
 {
     return( s->p >= s->p_end ? 1: 0 );
 }
+
 static inline uint32_t bs_read( bs_t *s, int i_count )
 {
-     static uint32_t i_mask[33] =
+     static const uint32_t i_mask[33] =
      {  0x00,
         0x01,      0x03,      0x07,      0x0f,
         0x1f,      0x3f,      0x7f,      0xff,
@@ -167,6 +175,7 @@ static inline void bs_align( bs_t *s )
         s->p++;
     }
 }
+
 static inline void bs_align_0( bs_t *s )
 {
     if( s->i_left != 8 )
@@ -174,6 +183,7 @@ static inline void bs_align_0( bs_t *s )
         bs_write( s, s->i_left, 0 );
     }
 }
+
 static inline void bs_align_1( bs_t *s )
 {
     while( s->i_left != 8 )

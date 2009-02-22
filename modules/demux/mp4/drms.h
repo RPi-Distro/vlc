@@ -2,7 +2,7 @@
  * drms.h : DRMS
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 0635f40d00cb5b5b2d3c0b08e1964b8a144525f2 $
  *
  * Author: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -24,7 +24,7 @@
 #ifndef _VLC_DRMS_H
 #define _VLC_DRMS_H 1
 
-extern void *drms_alloc( char *psz_homedir );
+extern void *drms_alloc( const char *psz_homedir );
 extern void drms_free( void *p_drms );
 extern int drms_init( void *p_drms, uint32_t i_type,
                       uint8_t *p_info, uint32_t i_len );

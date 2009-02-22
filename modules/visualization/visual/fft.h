@@ -1,17 +1,17 @@
 /*****************************************************************************
  * fft.h: Headers for iterative implementation of a FFT
  *****************************************************************************
- * $Id: 779f3070d34527623259115b7f749b1b6d15b0b3 $
+ * $Id$
  *
  * Mainly taken from XMMS's code
- * 
+ *
  * Authors: Richard Boulton <richard@tartarus.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -36,6 +36,14 @@ struct _struct_fft_state {
      /* Temporary data stores to perform FFT in. */
      float real[FFT_BUFFER_SIZE];
      float imag[FFT_BUFFER_SIZE];
+
+     /* */
+     unsigned int bitReverse[FFT_BUFFER_SIZE];
+
+     /* The next two tables could be made to use less space in memory, since they
+      * overlap hugely, but hey. */
+     float sintable[FFT_BUFFER_SIZE / 2];
+     float costable[FFT_BUFFER_SIZE / 2];
 };
 
 /* FFT prototypes */

@@ -2,7 +2,7 @@
  * PlayListWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: 35d9bf3f0238c5b1e958cb52975838d5944f4a33 $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -24,15 +24,18 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-
+#if 0
 /* System headers */
 #include <InterfaceKit.h>
 #include <StorageKit.h>
-#include <string.h>
 
 /* VLC headers */
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_interface.h>
 
 /* BeOS interface headers */
 #include "InterfaceWindow.h"
@@ -72,7 +75,7 @@ PlayListWindow::PlayListWindow( BRect frame, const char* name,
     snprintf( psz_tmp, 1024, "%s%s", a, B_UTF8_ELLIPSIS );
 
     p_intf = p_interface;
-    
+ 
     SetName( _("playlist") );
 
     // set up the main menu bar
@@ -191,7 +194,7 @@ PlayListWindow::~PlayListWindow()
 bool
 PlayListWindow::QuitRequested()
 {
-    Hide(); 
+    Hide();
     return false;
 }
 
@@ -288,11 +291,10 @@ PlayListWindow::UpdatePlaylist( bool rebuild )
     if( rebuild )
         fListView->RebuildList();
 
-    p_playlist = (playlist_t *)
-        vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST, FIND_ANYWHERE );
+    p_playlist = pl_Yield( p_intf );
     fListView->SetCurrent( p_playlist->i_index );
     fListView->SetPlaying( p_playlist->status.i_status == PLAYLIST_RUNNING );
-    vlc_object_release( p_playlist );
+    pl_Release( p_intf );
 
     _CheckItemsEnableState();
 }
@@ -366,3 +368,4 @@ PlayListWindow::_SetMenuItemEnabled( BMenuItem* item, bool enabled ) const
     if ( item->IsEnabled() != enabled )
         item->SetEnabled( enabled );
 }
+#endif

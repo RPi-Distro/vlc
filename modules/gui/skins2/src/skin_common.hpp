@@ -2,7 +2,7 @@
  * skin_common.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 41b3b458102611bf900a4038ff27675209e02901 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -22,12 +22,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #ifndef SKIN_COMMON_HPP
 #define SKIN_COMMON_HPP
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include "charset.h"
+#include <vlc_common.h>
+#include <vlc_interface.h>
+#include "vlc_charset.h"
 
 #include <string>
 using namespace std;
@@ -76,6 +80,7 @@ static inline string sFromLocale( const string &rLocale )
     return res;
 }
 
+#ifdef WIN32
 /// Wrapper around FromWide, to avoid the need to call free()
 static inline string sFromWide( const wstring &rWide )
 {
@@ -84,6 +89,7 @@ static inline string sFromWide( const wstring &rWide )
     free( s );
     return res;
 }
+#endif
 
 /// Wrapper around ToLocale, to avoid the need to call LocaleFree()
 static inline string sToLocale( const string &rUTF8 )

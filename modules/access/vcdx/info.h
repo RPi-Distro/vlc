@@ -2,7 +2,7 @@
  * info.h : VCD information routine headers
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 4eb601805f7519afe82d65e7fdc25cd3670367bd $
+ * $Id$
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -27,14 +27,14 @@
 #include "vcdplayer.h"
 
 /*
- Sets VCD meta information and navigation/playlist entries. 
+ Sets VCD meta information and navigation/playlist entries.
  */
 void VCDMetaInfo( access_t *p_access, /*const*/ char *psz_mrl );
 
 
 char * VCDFormatStr(const access_t *p_access, vcdplayer_t *p_vcdplayer,
-		    const char format_str[], const char *mrl,
-		    const vcdinfo_itemid_t *itemid);
+            const char format_str[], const char *mrl,
+            const vcdinfo_itemid_t *itemid);
 
 void VCDUpdateTitle( access_t *p_access );
 

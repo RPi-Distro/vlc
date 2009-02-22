@@ -2,7 +2,7 @@
  * memcpyaltivec.c : AltiVec memcpy module
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 99f2057ed2dbdc4398f05364254555cd3c186df5 $
+ * $Id$
  *
  * Author: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -26,10 +26,13 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
-#include <string.h>
 
-#include <vlc/vlc.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
 
 #ifdef HAVE_ALTIVEC_H
 #   include <altivec.h>
@@ -45,7 +48,7 @@ static void * fast_memcpy ( void * to, const void * from, size_t len );
  *****************************************************************************/
 static int Activate ( vlc_object_t *p_this )
 {
-    p_this->p_vlc->pf_memcpy = fast_memcpy;
+    vlc_fastmem_register( fast_memcpy, NULL );
     return VLC_SUCCESS;
 }
 
@@ -53,7 +56,7 @@ static int Activate ( vlc_object_t *p_this )
  * Module descriptor.
  *****************************************************************************/
 vlc_module_begin();
-    set_description( _("AltiVec memcpy") );
+    set_description( N_("AltiVec memcpy") );
     set_category( CAT_ADVANCED );
     set_subcategory( SUBCAT_ADVANCED_MISC );
     add_requirement( ALTIVEC );
@@ -157,62 +160,62 @@ static void * fast_memcpy( void * _to, const void * _from, size_t len )
 static void * fast_memcpy( void * _to, const void * _from, size_t len )
 {
     asm ("                                              \n"
-	"	cmplwi		%cr0, %r5,  16		\n"
-	"	mr		%r9,  %r3		\n"
-	"	bc		4,    1,    ._L3	\n"
-	"	andi.		%r0,  %r3,  15		\n"
-	"	bc		12,   2,    ._L4	\n"
-	"	subfic		%r0,  %r0,  16		\n"
-	"	add		%r11, %r3,  %r0		\n"
-	"	cmplw		%cr0, %r3,  %r11	\n"
-	"	subf		%r5,  %r0,  %r5		\n"
-	"	bc		4,    0,    ._L4	\n"
-	"	._L7:					\n"
-	"	lbz		%r0,  0(%r4)		\n"
-	"	stb		%r0,  0(%r9)		\n"
-	"	addi		%r9,  %r9,  1		\n"
-	"	cmplw		%cr0, %r9,  %r11	\n"
-	"	addi		%r4,  %r4,  1		\n"
-	"	bc		12,   0,    ._L7	\n"
-	"	._L4:					\n"
-	"	rlwinm.		%r0,  %r5,  0,	  0,	27    \n"
-	"	bc		12,   2,    ._L3	\n"
-	"	addi		%r5,  %r5,  -16		\n"
-	"	li		%r11, 15		\n"
-	"	lvsl		%v12, 0,    %r4		\n"
-	"	lvx		%v1,  0,    %r4		\n"
-	"	lvx		%v0,  %r11, %r4		\n"
-	"	rlwinm.		%r0,  %r5,  0,	  0,	27    \n"
-	"	vperm		%v13, %v1,  %v0,  %v12	\n"
-	"	addi		%r4,  %r4,  16		\n"
-	"	bc		12,   2,    ._L11	\n"
-	"	._L12:					\n"
-	"	addi		%r5,  %r5,  -16		\n"
-	"	li		%r11, 15		\n"
-	"	lvx		%v1,  0,    %r4		\n"
-	"	lvx		%v0,  %r11, %r4		\n"
-	"	rlwinm.		%r0,  %r5,  0,	  0,	27    \n"
-	"	stvx		%v13, 0,    %r9		\n"
-	"	vperm		%v13, %v1,  %v0,  %v12	\n"
-	"	addi		%r4,  %r4,  16		\n"
-	"	addi		%r9,  %r9,  16		\n"
-	"	bc		4,    2,    ._L12	\n"
-	"	._L11:					\n"
-	"	stvx		%v13, 0,    %r9		\n"
-	"	addi		%r9,  %r9,  16		\n"
-	"	._L3:					\n"
-	"	cmpwi		%cr0, %r5,  0		\n"
-	"	bclr		12,   2			\n"
-	"	add		%r5,  %r9,  %r5		\n"
-	"	cmplw		%cr0, %r9,  %r5		\n"
-	"	bclr		4,    0			\n"
-	"	._L17:					\n"
-	"	lbz		%r0,  0(%r4)		\n"
-	"	stb		%r0,  0(%r9)		\n"
-	"	addi		%r9,  %r9,  1		\n"
-	"	cmplw		%cr0, %r9,  %r5		\n"
-	"	addi		%r4,  %r4,  1		\n"
-	"	bc		12,   0,    ._L17	\n"
+    "    cmplwi        %cr0, %r5,  16        \n"
+    "    mr        %r9,  %r3        \n"
+    "    bc        4,    1,    ._L3    \n"
+    "    andi.        %r0,  %r3,  15        \n"
+    "    bc        12,   2,    ._L4    \n"
+    "    subfic        %r0,  %r0,  16        \n"
+    "    add        %r11, %r3,  %r0        \n"
+    "    cmplw        %cr0, %r3,  %r11    \n"
+    "    subf        %r5,  %r0,  %r5        \n"
+    "    bc        4,    0,    ._L4    \n"
+    "    ._L7:                    \n"
+    "    lbz        %r0,  0(%r4)        \n"
+    "    stb        %r0,  0(%r9)        \n"
+    "    addi        %r9,  %r9,  1        \n"
+    "    cmplw        %cr0, %r9,  %r11    \n"
+    "    addi        %r4,  %r4,  1        \n"
+    "    bc        12,   0,    ._L7    \n"
+    "    ._L4:                    \n"
+    "    rlwinm.        %r0,  %r5,  0,      0,    27    \n"
+    "    bc        12,   2,    ._L3    \n"
+    "    addi        %r5,  %r5,  -16        \n"
+    "    li        %r11, 15        \n"
+    "    lvsl        %v12, 0,    %r4        \n"
+    "    lvx        %v1,  0,    %r4        \n"
+    "    lvx        %v0,  %r11, %r4        \n"
+    "    rlwinm.        %r0,  %r5,  0,      0,    27    \n"
+    "    vperm        %v13, %v1,  %v0,  %v12    \n"
+    "    addi        %r4,  %r4,  16        \n"
+    "    bc        12,   2,    ._L11    \n"
+    "    ._L12:                    \n"
+    "    addi        %r5,  %r5,  -16        \n"
+    "    li        %r11, 15        \n"
+    "    lvx        %v1,  0,    %r4        \n"
+    "    lvx        %v0,  %r11, %r4        \n"
+    "    rlwinm.        %r0,  %r5,  0,      0,    27    \n"
+    "    stvx        %v13, 0,    %r9        \n"
+    "    vperm        %v13, %v1,  %v0,  %v12    \n"
+    "    addi        %r4,  %r4,  16        \n"
+    "    addi        %r9,  %r9,  16        \n"
+    "    bc        4,    2,    ._L12    \n"
+    "    ._L11:                    \n"
+    "    stvx        %v13, 0,    %r9        \n"
+    "    addi        %r9,  %r9,  16        \n"
+    "    ._L3:                    \n"
+    "    cmpwi        %cr0, %r5,  0        \n"
+    "    bclr        12,   2            \n"
+    "    add        %r5,  %r9,  %r5        \n"
+    "    cmplw        %cr0, %r9,  %r5        \n"
+    "    bclr        4,    0            \n"
+    "    ._L17:                    \n"
+    "    lbz        %r0,  0(%r4)        \n"
+    "    stb        %r0,  0(%r9)        \n"
+    "    addi        %r9,  %r9,  1        \n"
+    "    cmplw        %cr0, %r9,  %r5        \n"
+    "    addi        %r4,  %r4,  1        \n"
+    "    bc        12,   0,    ._L17    \n"
         );
 }
 

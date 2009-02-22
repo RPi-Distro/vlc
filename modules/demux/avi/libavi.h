@@ -2,7 +2,7 @@
  * libavi.h : LibAVI library
  ******************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 19be0d14439dff82d412aa220a3b9519be8d8ca5 $
+ * $Id$
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -234,14 +234,17 @@ void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t  *p_chk );
     /* *** avi stuff *** */
 
 #define AVIFOURCC_RIFF         VLC_FOURCC('R','I','F','F')
+#define AVIFOURCC_ON2          VLC_FOURCC('O','N','2',' ')
 #define AVIFOURCC_LIST         VLC_FOURCC('L','I','S','T')
 #define AVIFOURCC_JUNK         VLC_FOURCC('J','U','N','K')
 #define AVIFOURCC_AVI          VLC_FOURCC('A','V','I',' ')
 #define AVIFOURCC_AVIX         VLC_FOURCC('A','V','I','X')
+#define AVIFOURCC_ON2f         VLC_FOURCC('O','N','2','f')
 #define AVIFOURCC_WAVE         VLC_FOURCC('W','A','V','E')
 #define AVIFOURCC_INFO         VLC_FOURCC('I','N','F','O')
 
 #define AVIFOURCC_avih         VLC_FOURCC('a','v','i','h')
+#define AVIFOURCC_ON2h         VLC_FOURCC('O','N','2','h')
 #define AVIFOURCC_hdrl         VLC_FOURCC('h','d','r','l')
 #define AVIFOURCC_movi         VLC_FOURCC('m','o','v','i')
 #define AVIFOURCC_idx1         VLC_FOURCC('i','d','x','1')
@@ -258,6 +261,8 @@ void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t  *p_chk );
 #define AVIFOURCC_vids         VLC_FOURCC('v','i','d','s')
 #define AVIFOURCC_txts         VLC_FOURCC('t','x','t','s')
 #define AVIFOURCC_mids         VLC_FOURCC('m','i','d','s')
+#define AVIFOURCC_iavs         VLC_FOURCC('i','a','v','s')
+#define AVIFOURCC_ivas         VLC_FOURCC('i','v','a','s')
 
 #define AVIFOURCC_IARL         VLC_FOURCC('I','A','R','L')
 #define AVIFOURCC_IART         VLC_FOURCC('I','A','R','T')
@@ -285,7 +290,7 @@ void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t  *p_chk );
 #define AVIFOURCC_ISMP         VLC_FOURCC('I','S','M','P')
 #define AVIFOURCC_IDIT         VLC_FOURCC('I','D','I','T')
 
-    
+ 
 #define AVITWOCC_wb            VLC_TWOCC('w','b')
 #define AVITWOCC_db            VLC_TWOCC('d','b')
 #define AVITWOCC_dc            VLC_TWOCC('d','c')
@@ -360,3 +365,10 @@ void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t  *p_chk );
 #define FOURCC_H264         VLC_FOURCC('H','2','6','4')
 #define FOURCC_h264         VLC_FOURCC('h','2','6','4')
 #define FOURCC_VSSH         VLC_FOURCC('V','S','S','H')
+
+    /* DV */
+#define FOURCC_dvsd         VLC_FOURCC('d','v','s','d')
+#define FOURCC_dvhd         VLC_FOURCC('d','v','h','d')
+#define FOURCC_dvsl         VLC_FOURCC('d','v','s','l')
+#define FOURCC_dv25         VLC_FOURCC('d','v','2','5')
+#define FOURCC_dv50         VLC_FOURCC('d','v','5','0')

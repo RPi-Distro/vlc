@@ -2,7 +2,7 @@
  * libc.c: Extra libc function for some systems.
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: ef02ac237a7ecf5b3f1a064067b0c419b509ee84 $
+ * $Id: f58f05fe77899f3a59d67608bdb0a739a575fd55 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Samuel Hocevar <sam@zoy.org>
@@ -25,11 +25,14 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#include <string.h>                                              /* strdup() */
-#include <stdlib.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+
 #include <ctype.h>
 
-#include <vlc/vlc.h>
 
 #undef iconv_t
 #undef iconv_open
@@ -44,122 +47,43 @@
 #   include <dirent.h>
 #endif
 
+#ifdef HAVE_SIGNAL_H
+#   include <signal.h>
+#endif
+
 #ifdef HAVE_FORK
 #   include <sys/time.h>
 #   include <unistd.h>
 #   include <errno.h>
 #   include <sys/wait.h>
+#   include <fcntl.h>
+#   include <sys/socket.h>
+#   include <sys/poll.h>
 #endif
 
 #if defined(WIN32) || defined(UNDER_CE)
+#   undef _wopendir
+#   undef _wreaddir
+#   undef _wclosedir
+#   undef rewinddir
 #   define WIN32_LEAN_AND_MEAN
 #   include <windows.h>
-#endif
-
-#ifdef UNDER_CE
-#   define strcoll strcmp
-#endif
-
-/*****************************************************************************
- * getenv: just in case, but it should never be called
- *****************************************************************************/
-#if !defined( HAVE_GETENV )
-char *vlc_getenv( const char *name )
-{
-    return NULL;
-}
-#endif
-
-/*****************************************************************************
- * strdup: returns a malloc'd copy of a string
- *****************************************************************************/
-#if !defined( HAVE_STRDUP )
-char *vlc_strdup( const char *string )
-{
-    return strndup( string, strlen( string ) );
-}
-#endif
-
-/*****************************************************************************
- * strndup: returns a malloc'd copy of at most n bytes of string
- * Does anyone know whether or not it will be present in Jaguar?
- *****************************************************************************/
-#if !defined( HAVE_STRNDUP )
-char *vlc_strndup( const char *string, size_t n )
-{
-    char *psz;
-    size_t len = strlen( string );
-
-    len = __MIN( len, n );
-    psz = (char*)malloc( len + 1 );
-    if( psz != NULL )
-    {
-        memcpy( (void*)psz, (const void*)string, len );
-        psz[ len ] = 0;
-    }
-
-    return psz;
-}
-#endif
-
-/*****************************************************************************
- * strcasecmp: compare two strings ignoring case
- *****************************************************************************/
-#if !defined( HAVE_STRCASECMP ) && !defined( HAVE_STRICMP )
-int vlc_strcasecmp( const char *s1, const char *s2 )
-{
-    int c1, c2;
-    if( !s1 || !s2 ) return  -1;
-
-    while( *s1 && *s2 )
-    {
-        c1 = tolower(*s1);
-        c2 = tolower(*s2);
-
-        if( c1 != c2 ) return (c1 < c2 ? -1 : 1);
-        s1++; s2++;
-    }
-
-    if( !*s1 && !*s2 ) return 0;
-    else return (*s1 ? 1 : -1);
-}
-#endif
-
-/*****************************************************************************
- * strncasecmp: compare n chars from two strings ignoring case
- *****************************************************************************/
-#if !defined( HAVE_STRNCASECMP ) && !defined( HAVE_STRNICMP )
-int vlc_strncasecmp( const char *s1, const char *s2, size_t n )
-{
-    int c1, c2;
-    if( !s1 || !s2 ) return  -1;
-
-    while( n > 0 && *s1 && *s2 )
-    {
-        c1 = tolower(*s1);
-        c2 = tolower(*s2);
-
-        if( c1 != c2 ) return (c1 < c2 ? -1 : 1);
-        s1++; s2++; n--;
-    }
-
-    if( !n || (!*s1 && !*s2) ) return 0;
-    else return (*s1 ? 1 : -1);
-}
 #endif
 
 /******************************************************************************
  * strcasestr: find a substring (little) in another substring (big)
  * Case sensitive. Return NULL if not found, return big if little == null
  *****************************************************************************/
-#if !defined( HAVE_STRCASESTR ) && !defined( HAVE_STRISTR )
 char * vlc_strcasestr( const char *psz_big, const char *psz_little )
 {
+#if defined (HAVE_STRCASESTR) || defined (HAVE_STRISTR)
+    return strcasestr (psz_big, psz_little);
+#else
     char *p_pos = (char *)psz_big;
 
     if( !psz_big || !psz_little || !*psz_little ) return p_pos;
  
-    while( *p_pos ) 
+    while( *p_pos )
     {
         if( toupper( *p_pos ) == toupper( *psz_little ) )
         {
@@ -176,100 +100,18 @@ char * vlc_strcasestr( const char *psz_big, const char *psz_little )
         p_pos++;
     }
     return NULL;
-}
 #endif
-
-/*****************************************************************************
- * vasprintf:
- *****************************************************************************/
-#if !defined(HAVE_VASPRINTF) || defined(__APPLE__) || defined(SYS_BEOS)
-int vlc_vasprintf(char **strp, const char *fmt, va_list ap)
-{
-    /* Guess we need no more than 100 bytes. */
-    int     i_size = 100;
-    char    *p = malloc( i_size );
-    int     n;
-
-    if( p == NULL )
-    {
-        *strp = NULL;
-        return -1;
-    }
-
-    for( ;; )
-    {
-        /* Try to print in the allocated space. */
-        n = vsnprintf( p, i_size, fmt, ap );
-
-        /* If that worked, return the string. */
-        if (n > -1 && n < i_size)
-        {
-            *strp = p;
-            return strlen( p );
-        }
-        /* Else try again with more space. */
-        if (n > -1)    /* glibc 2.1 */
-        {
-           i_size = n+1; /* precisely what is needed */
-        }
-        else           /* glibc 2.0 */
-        {
-           i_size *= 2;  /* twice the old size */
-        }
-        if( (p = realloc( p, i_size ) ) == NULL)
-        {
-            *strp = NULL;
-            return -1;
-        }
-    }
 }
-#endif
-
-/*****************************************************************************
- * asprintf:
- *****************************************************************************/
-#if !defined(HAVE_ASPRINTF) || defined(__APPLE__) || defined(SYS_BEOS)
-int vlc_asprintf( char **strp, const char *fmt, ... )
-{
-    va_list args;
-    int i_ret;
-
-    va_start( args, fmt );
-    i_ret = vasprintf( strp, fmt, args );
-    va_end( args );
-
-    return i_ret;
-}
-#endif
-
-/*****************************************************************************
- * atof: convert a string to a double.
- *****************************************************************************/
-#if !defined( HAVE_ATOF )
-double vlc_atof( const char *nptr )
-{
-    double f_result;
-    wchar_t *psz_tmp = NULL;
-    int i_len = strlen( nptr ) + 1;
-
-    psz_tmp = malloc( i_len * sizeof(wchar_t) );
-    if( !psz_tmp )
-        return NULL;
-    MultiByteToWideChar( CP_ACP, 0, nptr, -1, psz_tmp, i_len );
-    f_result = wcstod( psz_tmp, NULL );
-    free( psz_tmp );
-
-    return f_result;
-}
-#endif
 
 /*****************************************************************************
  * strtoll: convert a string to a 64 bits int.
  *****************************************************************************/
-#if !defined( HAVE_STRTOLL )
-int64_t vlc_strtoll( const char *nptr, char **endptr, int base )
+long long vlc_strtoll( const char *nptr, char **endptr, int base )
 {
-    int64_t i_value = 0;
+#if defined( HAVE_STRTOLL )
+    return strtoll( nptr, endptr, base );
+#else
+    long long i_value = 0;
     int sign = 1, newbase = base ? base : 10;
 
     while( isspace(*nptr) ) nptr++;
@@ -332,33 +174,8 @@ int64_t vlc_strtoll( const char *nptr, char **endptr, int base )
     }
 
     return i_value * sign;
-}
 #endif
-
-/*****************************************************************************
- * atoll: convert a string to a 64 bits int.
- *****************************************************************************/
-#if !defined( HAVE_ATOLL )
-int64_t vlc_atoll( const char *nptr )
-{
-    return strtoll( nptr, (char **)NULL, 10 );
 }
-#endif
-
-/*****************************************************************************
- * lldiv: returns quotient and remainder
- *****************************************************************************/
-#if defined(SYS_BEOS) \
- || (defined (__FreeBSD__) && (__FreeBSD__ < 5))
-lldiv_t vlc_lldiv( long long numer, long long denom )
-{
-    lldiv_t d;
-    d.quot = numer / denom;
-    d.rem  = numer % denom;
-    return d;
-}
-#endif
-
 
 /**
  * Copy a string to a sized buffer. The result is always nul-terminated
@@ -371,9 +188,11 @@ lldiv_t vlc_lldiv( long long numer, long long denom )
  *
  * @return strlen(src)
  */
-#ifndef HAVE_STRLCPY
 extern size_t vlc_strlcpy (char *tgt, const char *src, size_t bufsize)
 {
+#ifdef HAVE_STRLCPY
+    return strlcpy (tgt, src, bufsize);
+#else
     size_t length;
 
     for (length = 1; (length < bufsize) && *src; length++)
@@ -386,29 +205,31 @@ extern size_t vlc_strlcpy (char *tgt, const char *src, size_t bufsize)
         length++;
 
     return length - 1;
-}
 #endif
+}
 
 /*****************************************************************************
  * vlc_*dir_wrapper: wrapper under Windows to return the list of drive letters
  * when called with an empty argument or just '\'
  *****************************************************************************/
 #if defined(WIN32) && !defined(UNDER_CE)
+#   include <assert.h>
+
 typedef struct vlc_DIR
 {
-    DIR *p_real_dir;
+    _WDIR *p_real_dir;
     int i_drives;
-    struct dirent dd_dir;
-    vlc_bool_t b_insert_back;
+    struct _wdirent dd_dir;
+    bool b_insert_back;
 } vlc_DIR;
 
-void *vlc_opendir_wrapper( const char *psz_path )
+void *vlc_wopendir( const wchar_t *wpath )
 {
     vlc_DIR *p_dir = NULL;
-    DIR *p_real_dir = NULL;
+    _WDIR *p_real_dir = NULL;
 
-    if ( psz_path == NULL || psz_path[0] == '\0'
-          || (psz_path[0] == '\\' && psz_path[1] == '\0') )
+    if ( wpath == NULL || wpath[0] == '\0'
+          || (wcscmp (wpath, L"\\") == 0) )
     {
         /* Special mode to list drive letters */
         p_dir = malloc( sizeof(vlc_DIR) );
@@ -419,7 +240,7 @@ void *vlc_opendir_wrapper( const char *psz_path )
         return (void *)p_dir;
     }
 
-    p_real_dir = opendir( psz_path );
+    p_real_dir = _wopendir( wpath );
     if ( p_real_dir == NULL )
         return NULL;
 
@@ -430,12 +251,13 @@ void *vlc_opendir_wrapper( const char *psz_path )
         return NULL;
     }
     p_dir->p_real_dir = p_real_dir;
-    p_dir->b_insert_back = ( psz_path[1] == ':' && psz_path[2] == '\\'
-                              && psz_path[3] =='\0' );
+
+    assert (wpath[0]); // wpath[1] is defined
+    p_dir->b_insert_back = !wcscmp (wpath + 1, L":\\");
     return (void *)p_dir;
 }
 
-struct dirent *vlc_readdir_wrapper( void *_p_dir )
+struct _wdirent *vlc_wreaddir( void *_p_dir )
 {
     vlc_DIR *p_dir = (vlc_DIR *)_p_dir;
     unsigned int i;
@@ -445,15 +267,16 @@ struct dirent *vlc_readdir_wrapper( void *_p_dir )
     {
         if ( p_dir->b_insert_back )
         {
+            /* Adds "..", gruik! */
             p_dir->dd_dir.d_ino = 0;
             p_dir->dd_dir.d_reclen = 0;
             p_dir->dd_dir.d_namlen = 2;
-            strcpy( p_dir->dd_dir.d_name, ".." );
-            p_dir->b_insert_back = VLC_FALSE;
+            wcscpy( p_dir->dd_dir.d_name, L".." );
+            p_dir->b_insert_back = false;
             return &p_dir->dd_dir;
         }
 
-        return readdir( p_dir->p_real_dir );
+        return _wreaddir( p_dir->p_real_dir );
     }
 
     /* Drive letters mode */
@@ -467,115 +290,49 @@ struct dirent *vlc_readdir_wrapper( void *_p_dir )
     if ( i >= 26 )
         return NULL; /* this should not happen */
 
-    sprintf( p_dir->dd_dir.d_name, "%c:\\", 'A' + i );
-    p_dir->dd_dir.d_namlen = strlen(p_dir->dd_dir.d_name);
+    swprintf( p_dir->dd_dir.d_name, L"%c:\\", 'A' + i );
+    p_dir->dd_dir.d_namlen = wcslen(p_dir->dd_dir.d_name);
     p_dir->i_drives &= ~(1UL << i);
     return &p_dir->dd_dir;
 }
 
-int vlc_closedir_wrapper( void *_p_dir )
+void vlc_rewinddir( void *_p_dir )
 {
     vlc_DIR *p_dir = (vlc_DIR *)_p_dir;
 
     if ( p_dir->p_real_dir != NULL )
-    {
-        int i_ret = closedir( p_dir->p_real_dir );
-        free( p_dir );
-        return i_ret;
-    }
+        _wrewinddir( p_dir->p_real_dir );
+}
+#endif
+
+/* This one is in the libvlccore exported symbol list */
+int vlc_wclosedir( void *_p_dir )
+{
+#if defined(WIN32) && !defined(UNDER_CE)
+    vlc_DIR *p_dir = (vlc_DIR *)_p_dir;
+    int i_ret = 0;
+
+    if ( p_dir->p_real_dir != NULL )
+        i_ret = _wclosedir( p_dir->p_real_dir );
 
     free( p_dir );
-    return 0;
-}
+    return i_ret;
 #else
-void *vlc_opendir_wrapper( const char *psz_path )
-{
-    return (void *)opendir( psz_path );
-}
-struct dirent *vlc_readdir_wrapper( void *_p_dir )
-{
-    return readdir( (DIR *)_p_dir );
-}
-int vlc_closedir_wrapper( void *_p_dir )
-{
-    return closedir( (DIR *)_p_dir );
-}
+    return closedir( _p_dir );
 #endif
-
-/*****************************************************************************
- * scandir: scan a directory alpha-sorted
- *****************************************************************************/
-#if !defined( HAVE_SCANDIR )
-int vlc_alphasort( const struct dirent **a, const struct dirent **b )
-{
-    return strcoll( (*a)->d_name, (*b)->d_name );
 }
 
-int vlc_scandir( const char *name, struct dirent ***namelist,
-                    int (*filter) ( const struct dirent * ),
-                    int (*compar) ( const struct dirent **,
-                                    const struct dirent ** ) )
+/**
+ * In-tree plugins share their gettext domain with LibVLC.
+ */
+char *vlc_gettext( const char *msgid )
 {
-    DIR            * p_dir;
-    struct dirent  * p_content;
-    struct dirent ** pp_list;
-    int              ret, size;
-
-    if( !namelist || !( p_dir = vlc_opendir_wrapper( name ) ) ) return -1;
-
-    ret     = 0;
-    pp_list = NULL;
-    while( ( p_content = vlc_readdir_wrapper( p_dir ) ) )
-    {
-        if( filter && !filter( p_content ) )
-        {
-            continue;
-        }
-        pp_list = realloc( pp_list, ( ret + 1 ) * sizeof( struct dirent * ) );
-        size = sizeof( struct dirent ) + strlen( p_content->d_name ) + 1;
-        pp_list[ret] = malloc( size );
-        if( pp_list[ret] )
-        {
-            memcpy( pp_list[ret], p_content, size );
-            ret++;
-        }
-        else
-        {
-            /* Continuing is useless when no more memory can be allocted,
-             * so better return what we have found.
-             */
-            ret = -1;
-            break;
-        }
-    }
-
-    vlc_closedir_wrapper( p_dir );
-
-    if( compar )
-    {
-        qsort( pp_list, ret, sizeof( struct dirent * ),
-               (int (*)(const void *, const void *)) compar );
-    }
-
-    *namelist = pp_list;
-    return ret;
-}
-#endif
-
-#if defined (WIN32) || !defined (HAVE_SHARED_LIBVLC)
-/*****************************************************************************
- * dgettext: gettext for plugins.
- *****************************************************************************/
-char *vlc_dgettext( const char *package, const char *msgid )
-{
-#if defined( ENABLE_NLS ) \
-     && ( defined(HAVE_GETTEXT) || defined(HAVE_INCLUDED_GETTEXT) )
-    return dgettext( package, msgid );
+#ifdef ENABLE_NLS
+    return dgettext( PACKAGE_NAME, msgid );
 #else
     return (char *)msgid;
 #endif
 }
-#endif
 
 /*****************************************************************************
  * count_utf8_string: returns the number of characters in the string.
@@ -660,7 +417,7 @@ vlc_iconv_t vlc_iconv_open( const char *tocode, const char *fromcode )
 #if defined(HAVE_ICONV)
     return iconv_open( tocode, fromcode );
 #else
-    return NULL;
+    return (vlc_iconv_t)(-1);
 #endif
 }
 
@@ -671,21 +428,7 @@ size_t vlc_iconv( vlc_iconv_t cd, const char **inbuf, size_t *inbytesleft,
     return iconv( cd, (ICONV_CONST char **)inbuf, inbytesleft,
                   outbuf, outbytesleft );
 #else
-    int i_bytes;
-
-    if (inbytesleft == NULL || outbytesleft == NULL)
-    {
-        return 0;
-    }
-
-    i_bytes = __MIN(*inbytesleft, *outbytesleft);
-    if( !inbuf || !outbuf || !i_bytes ) return (size_t)(-1);
-    memcpy( *outbuf, *inbuf, i_bytes );
-    inbuf += i_bytes;
-    outbuf += i_bytes;
-    inbytesleft -= i_bytes;
-    outbytesleft -= i_bytes;
-    return i_bytes;
+    abort ();
 #endif
 }
 
@@ -694,7 +437,7 @@ int vlc_iconv_close( vlc_iconv_t cd )
 #if defined(HAVE_ICONV)
     return iconv_close( cd );
 #else
-    return 0;
+    abort ();
 #endif
 }
 
@@ -702,10 +445,10 @@ int vlc_iconv_close( vlc_iconv_t cd )
  * reduce a fraction
  *   (adapted from libavcodec, author Michael Niedermayer <michaelni@gmx.at>)
  *****************************************************************************/
-vlc_bool_t vlc_ureduce( unsigned *pi_dst_nom, unsigned *pi_dst_den,
+bool vlc_ureduce( unsigned *pi_dst_nom, unsigned *pi_dst_den,
                         uint64_t i_nom, uint64_t i_den, uint64_t i_max )
 {
-    vlc_bool_t b_exact = 1;
+    bool b_exact = 1;
     uint64_t i_gcd;
 
     if( i_den == 0 )
@@ -719,7 +462,7 @@ vlc_bool_t vlc_ureduce( unsigned *pi_dst_nom, unsigned *pi_dst_den,
     i_nom /= i_gcd;
     i_den /= i_gcd;
 
-    if( i_max == 0 ) i_max = I64C(0xFFFFFFFF);
+    if( i_max == 0 ) i_max = INT64_C(0xFFFFFFFF);
 
     if( i_nom > i_max || i_den > i_max )
     {
@@ -752,265 +495,132 @@ vlc_bool_t vlc_ureduce( unsigned *pi_dst_nom, unsigned *pi_dst_den,
 }
 
 /*************************************************************************
- * vlc_parse_cmdline: Command line parsing into elements.
- *
- * The command line is composed of space/tab separated arguments.
- * Quotes can be used as argument delimiters and a backslash can be used to
- * escape a quote.
- *************************************************************************/
-static void find_end_quote( char **s, char **ppsz_parser, int i_quote )
-{
-    int i_bcount = 0;
-
-    while( **s )
-    {
-        if( **s == '\\' )
-        {
-            **ppsz_parser = **s;
-            (*ppsz_parser)++; (*s)++;
-            i_bcount++;
-        }
-        else if( **s == '"' || **s == '\'' )
-        {
-            /* Preceeded by a number of '\' which we erase. */
-            *ppsz_parser -= i_bcount / 2;
-            if( i_bcount & 1 )
-            {
-                /* '\\' followed by a '"' or '\'' */
-                *ppsz_parser -= 1;
-                **ppsz_parser = **s;
-                (*ppsz_parser)++; (*s)++;
-                i_bcount = 0;
-                continue;
-            }
-
-            if( **s == i_quote )
-            {
-                /* End */
-                return;
-            }
-            else
-            {
-                /* Different quoting */
-                int i_quote = **s;
-                **ppsz_parser = **s;
-                (*ppsz_parser)++; (*s)++;
-                find_end_quote( s, ppsz_parser, i_quote );
-                **ppsz_parser = **s;
-                (*ppsz_parser)++; (*s)++;
-            }
-
-            i_bcount = 0;
-        }
-        else
-        {
-            /* A regular character */
-            **ppsz_parser = **s;
-            (*ppsz_parser)++; (*s)++;
-            i_bcount = 0;
-        }
-    }
-}
-
-char **vlc_parse_cmdline( const char *psz_cmdline, int *i_args )
-{
-    int argc = 0;
-    char **argv = 0;
-    char *s, *psz_parser, *psz_arg, *psz_orig;
-    int i_bcount = 0;
-
-    if( !psz_cmdline ) return 0;
-    psz_orig = strdup( psz_cmdline );
-    psz_arg = psz_parser = s = psz_orig;
-
-    while( *s )
-    {
-        if( *s == '\t' || *s == ' ' )
-        {
-            /* We have a complete argument */
-            *psz_parser = 0;
-            TAB_APPEND( argc, argv, strdup(psz_arg) );
-
-            /* Skip trailing spaces/tabs */
-            do{ s++; } while( *s == '\t' || *s == ' ' );
-
-            /* New argument */
-            psz_arg = psz_parser = s;
-            i_bcount = 0;
-        }
-        else if( *s == '\\' )
-        {
-            *psz_parser++ = *s++;
-            i_bcount++;
-        }
-        else if( *s == '"' || *s == '\'' )
-        {
-            if( ( i_bcount & 1 ) == 0 )
-            {
-                /* Preceeded by an even number of '\', this is half that
-                 * number of '\', plus a quote which we erase. */
-                int i_quote = *s;
-                psz_parser -= i_bcount / 2;
-                s++;
-                find_end_quote( &s, &psz_parser, i_quote );
-                s++;
-            }
-            else
-            {
-                /* Preceeded by an odd number of '\', this is half that
-                 * number of '\' followed by a '"' */
-                psz_parser = psz_parser - i_bcount/2 - 1;
-                *psz_parser++ = '"';
-                s++;
-            }
-            i_bcount = 0;
-        }
-        else
-        {
-            /* A regular character */
-            *psz_parser++ = *s++;
-            i_bcount = 0;
-        }
-    }
-
-    /* Take care of the last arg */
-    if( *psz_arg )
-    {
-        *psz_parser = '\0';
-        TAB_APPEND( argc, argv, strdup(psz_arg) );
-    }
-
-    if( i_args ) *i_args = argc;
-    free( psz_orig );
-    return argv;
-}
-
-/*************************************************************************
  * vlc_execve: Execute an external program with a given environment,
  * wait until it finishes and return its standard output
  *************************************************************************/
-int __vlc_execve( vlc_object_t *p_object, int i_argc, char **ppsz_argv,
-                  char **ppsz_env, char *psz_cwd, char *p_in, int i_in,
-                  char **pp_data, int *pi_data )
+int __vlc_execve( vlc_object_t *p_object, int i_argc, char *const *ppsz_argv,
+                  char *const *ppsz_env, const char *psz_cwd,
+                  const char *p_in, size_t i_in,
+                  char **pp_data, size_t *pi_data )
 {
+    (void)i_argc; // <-- hmph
 #ifdef HAVE_FORK
-    int pi_stdin[2];
-    int pi_stdout[2];
-    pid_t i_child_pid;
+# define BUFSIZE 1024
+    int fds[2], i_status;
 
-    pipe( pi_stdin );
-    pipe( pi_stdout );
-
-    if ( (i_child_pid = fork()) == -1 )
-    {
-        msg_Err( p_object, "unable to fork (%s)", strerror(errno) );
+    if (socketpair (AF_LOCAL, SOCK_STREAM, 0, fds))
         return -1;
-    }
 
-    if ( i_child_pid == 0 )
+    pid_t pid = -1;
+    if ((fds[0] > 2) && (fds[1] > 2))
+        pid = fork ();
+
+    switch (pid)
     {
-        close(0);
-        dup(pi_stdin[1]);
-        close(pi_stdin[0]);
+        case -1:
+            msg_Err (p_object, "unable to fork (%m)");
+            close (fds[0]);
+            close (fds[1]);
+            return -1;
 
-        close(1);
-        dup(pi_stdout[1]);
-        close(pi_stdout[0]);
+        case 0:
+        {
+            sigset_t set;
+            sigemptyset (&set);
+            pthread_sigmask (SIG_SETMASK, &set, NULL);
 
-        close(2);
+            /* NOTE:
+             * Like it or not, close can fail (and not only with EBADF)
+             */
+            if ((close (0) == 0) && (close (1) == 0) && (close (2) == 0)
+             && (dup (fds[1]) == 0) && (dup (fds[1]) == 1)
+             && (open ("/dev/null", O_RDONLY) == 2)
+             && ((psz_cwd == NULL) || (chdir (psz_cwd) == 0)))
+                execve (ppsz_argv[0], ppsz_argv, ppsz_env);
 
-        if ( psz_cwd != NULL )
-            chdir( psz_cwd );
-        execve( ppsz_argv[0], ppsz_argv, ppsz_env );
-        exit(1);
+            exit (EXIT_FAILURE);
+        }
     }
 
-    close(pi_stdin[1]);
-    close(pi_stdout[1]);
-    if ( !i_in )
-        close( pi_stdin[0] );
+    close (fds[1]);
 
     *pi_data = 0;
-    if( *pp_data )
-        free( *pp_data );
+    if (*pp_data)
+        free (*pp_data);
     *pp_data = NULL;
-    *pp_data = malloc( 1025 );  /* +1 for \0 */
-    if( !*pp_data )
-        return -1;
 
-    while ( !p_object->b_die )
+    if (i_in == 0)
+        shutdown (fds[0], SHUT_WR);
+
+    while (!p_object->b_die)
     {
-        int i_ret, i_status;
-        fd_set readfds, writefds;
-        struct timeval tv;
+        struct pollfd ufd[1];
+        memset (ufd, 0, sizeof (ufd));
+        ufd[0].fd = fds[0];
+        ufd[0].events = POLLIN;
 
-        FD_ZERO( &readfds );
-        FD_ZERO( &writefds );
-        FD_SET( pi_stdout[0], &readfds );
-        if ( i_in )
-            FD_SET( pi_stdin[0], &writefds );
+        if (i_in > 0)
+            ufd[0].events |= POLLOUT;
 
-        tv.tv_sec = 0;
-        tv.tv_usec = 10000;
+        if (poll (ufd, 1, 10) <= 0)
+            continue;
 
-        i_ret = select( pi_stdin[0] > pi_stdout[0] ? pi_stdin[0] + 1 :
-                        pi_stdout[0] + 1, &readfds, &writefds, NULL, &tv );
-        if ( i_ret > 0 )
+        if (ufd[0].revents & ~POLLOUT)
         {
-            if ( FD_ISSET( pi_stdout[0], &readfds ) )
-            {
-                ssize_t i_read = read( pi_stdout[0], &(*pp_data)[*pi_data],
-                                       1024 );
-                if ( i_read > 0 )
-                {
-                    *pi_data += i_read;
-                    *pp_data = realloc( *pp_data, *pi_data + 1025 );
-                }
-            }
-            if ( FD_ISSET( pi_stdin[0], &writefds ) )
-            {
-                ssize_t i_write = write( pi_stdin[0], p_in, __MIN(i_in, 1024) );
+            char *ptr = realloc (*pp_data, *pi_data + BUFSIZE + 1);
+            if (ptr == NULL)
+                break; /* safely abort */
 
-                if ( i_write > 0 )
-                {
-                    p_in += i_write;
-                    i_in -= i_write;
-                }
-                if ( !i_in )
-                    close( pi_stdin[0] );
+            *pp_data = ptr;
+
+            ssize_t val = read (fds[0], ptr + *pi_data, BUFSIZE);
+            switch (val)
+            {
+                case -1:
+                case 0:
+                    shutdown (fds[0], SHUT_RD);
+                    break;
+
+                default:
+                    *pi_data += val;
             }
         }
 
-        if ( waitpid( i_child_pid, &i_status, WNOHANG ) == i_child_pid )
+        if (ufd[0].revents & POLLOUT)
         {
-            if ( WIFEXITED( i_status ) )
+            ssize_t val = write (fds[0], p_in, i_in);
+            switch (val)
             {
-                if ( WEXITSTATUS( i_status ) )
-                {
-                    msg_Warn( p_object,
-                              "child %s returned with error code %d",
-                              ppsz_argv[0], WEXITSTATUS( i_status ) );
-                }
-            }
-            else
-            {
-                if ( WIFSIGNALED( i_status ) )
-                {
-                    msg_Warn( p_object,
-                              "child %s quit on signal %d", ppsz_argv[0],
-                              WTERMSIG( i_status ) );
-                }
-            }
-            if ( i_in )
-                close( pi_stdin[0] );
-            close( pi_stdout[0] );
-            break;
-        }
+                case -1:
+                case 0:
+                    i_in = 0;
+                    shutdown (fds[0], SHUT_WR);
+                    break;
 
-        if ( i_ret < 0 && errno != EINTR )
-        {
-            msg_Warn( p_object, "select failed (%s)", strerror(errno) );
+                default:
+                    i_in -= val;
+                    p_in += val;
+            }
         }
+    }
+
+    close (fds[0]);
+
+    while (waitpid (pid, &i_status, 0) == -1);
+
+    if (WIFEXITED (i_status))
+    {
+        i_status = WEXITSTATUS (i_status);
+        if (i_status)
+            msg_Warn (p_object,  "child %s (PID %d) exited with error code %d",
+                      ppsz_argv[0], (int)pid, i_status);
+    }
+    else
+    if (WIFSIGNALED (i_status)) // <-- this should be redumdant a check
+    {
+        i_status = WTERMSIG (i_status);
+        msg_Warn (p_object, "child %s (PID %d) exited on signal %d (%s)",
+                  ppsz_argv[0], (int)pid, i_status, strsignal (i_status));
     }
 
 #elif defined( WIN32 ) && !defined( UNDER_CE )
@@ -1184,6 +794,9 @@ int __vlc_execve( vlc_object_t *p_object, int i_argc, char **ppsz_argv,
     return -1;
 
 #endif
+
+    if (*pp_data == NULL)
+        return -1;
 
     (*pp_data)[*pi_data] = '\0';
     return 0;

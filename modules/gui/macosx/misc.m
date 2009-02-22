@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: 68d5c2e4bb6e3b6aed4dadf8dd76c76dcfee4794 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -31,6 +31,92 @@
 #import "controls.h"
 
 /*****************************************************************************
+ * NSImage (VLCAdditions)
+ *
+ *  Addition to NSImage
+ *****************************************************************************/
+@implementation NSImage (VLCAdditions)
++ (id)imageWithSystemName:(int)name
+{
+    /* ugly Carbon stuff following...
+     * regrettably, you can't get the icons through clean Cocoa */
+
+    /* retrieve our error icon */
+    NSImage * icon;
+    IconRef ourIconRef;
+    int returnValue;
+    returnValue = GetIconRef(kOnSystemDisk, 'macs', name, &ourIconRef);
+    icon = [[[NSImage alloc] initWithSize:NSMakeSize(32,32)] autorelease];
+    [icon lockFocus];
+    CGRect rect = CGRectMake(0,0,32,32);
+    PlotIconRefInContext((CGContextRef)[[NSGraphicsContext currentContext]
+        graphicsPort],
+        &rect,
+        kAlignNone,
+        kTransformNone,
+        NULL /*inLabelColor*/,
+        kPlotIconRefNormalFlags,
+        (IconRef)ourIconRef);
+    [icon unlockFocus];
+    returnValue = ReleaseIconRef(ourIconRef);
+    return icon;
+}
+
++ (id)imageWithWarningIcon
+{
+    static NSImage * imageWithWarningIcon = nil;
+    if( !imageWithWarningIcon )
+    {
+        imageWithWarningIcon = [[[self class] imageWithSystemName:'caut'] retain];
+    }
+    return imageWithWarningIcon;
+}
+
++ (id)imageWithErrorIcon
+{
+    static NSImage * imageWithErrorIcon = nil;
+    if( !imageWithErrorIcon )
+    {
+        imageWithErrorIcon = [[[self class] imageWithSystemName:'stop'] retain];
+    }
+    return imageWithErrorIcon;
+}
+
+@end
+/*****************************************************************************
+ * NSAnimation (VLCAdditions)
+ *
+ *  Missing extension to NSAnimation
+ *****************************************************************************/
+
+@implementation NSAnimation (VLCAdditions)
+/* fake class attributes  */
+static NSMapTable *VLCAdditions_userInfo = NULL;
+
++ (void)load
+{
+    /* init our fake object attribute */
+    VLCAdditions_userInfo = NSCreateMapTable(NSNonRetainedObjectMapKeyCallBacks, NSObjectMapValueCallBacks, 16);
+}
+
+- (void)dealloc
+{
+    NSMapRemove(VLCAdditions_userInfo, self);
+    [super dealloc];
+}
+
+- (void)setUserInfo: (void *)userInfo
+{
+    NSMapInsert(VLCAdditions_userInfo, self, (void*)userInfo);
+}
+
+- (void *)userInfo
+{
+    return NSMapGet(VLCAdditions_userInfo, self);
+}
+@end
+
+/*****************************************************************************
  * NSScreen (VLCAdditions)
  *
  *  Missing extension to NSScreen
@@ -48,7 +134,7 @@ static NSMutableArray *blackoutWindows = NULL;
 
 + (NSScreen *)screenWithDisplayID: (CGDirectDisplayID)displayID
 {
-    unsigned int i;
+    int i;
  
     for( i = 0; i < [[NSScreen screens] count]; i++ )
     {
@@ -79,7 +165,7 @@ static NSMutableArray *blackoutWindows = NULL;
     unsigned int i;
 
     /* Free our previous blackout window (follow blackoutWindow alloc strategy) */
-    [blackoutWindows makeObjectsPerformSelector:@selector(orderOut:)];
+    [blackoutWindows makeObjectsPerformSelector:@selector(close)];
     [blackoutWindows removeAllObjects];
 
     for(i = 0; i < [[NSScreen screens] count]; i++)
@@ -104,7 +190,7 @@ static NSMutableArray *blackoutWindows = NULL;
         [blackoutWindow setLevel: NSFloatingWindowLevel]; /* Disappear when Expose is triggered */
  
         [blackoutWindow displayIfNeeded];
-        [blackoutWindow orderFront: self];
+        [blackoutWindow orderFront: self animate: YES];
 
         [blackoutWindows addObject: blackoutWindow];
         [blackoutWindow release];
@@ -121,7 +207,7 @@ static NSMutableArray *blackoutWindows = NULL;
     for(i = 0; i < [blackoutWindows count]; i++)
     {
         VLCWindow *blackoutWindow = [blackoutWindows objectAtIndex: i];
-        [blackoutWindow orderOut: self];
+        [blackoutWindow closeAndAnimate: YES];
     }
     
    SetSystemUIMode( kUIModeNormal, 0);
@@ -156,6 +242,158 @@ static NSMutableArray *blackoutWindows = NULL;
         return b_canBecomeKeyWindow;
 
     return [super canBecomeKeyWindow];
+}
+
+- (void)closeAndAnimate: (BOOL)animate
+{
+    NSInvocation *invoc;
+ 
+    if (!animate || MACOS_VERSION < 10.4f)
+    {
+        [super close];
+        return;
+    }
+
+    invoc = [NSInvocation invocationWithMethodSignature:[super methodSignatureForSelector:@selector(close)]];
+    [invoc setTarget: (id)super];
+
+    if (![self isVisible] || [self alphaValue] == 0.0)
+    {
+        [super close];
+        return;
+    }
+
+    [self orderOut: self animate: YES callback: invoc];
+}
+
+- (void)orderOut: (id)sender animate: (BOOL)animate
+{
+    NSInvocation *invoc = [NSInvocation invocationWithMethodSignature:[super methodSignatureForSelector:@selector(orderOut:)]];
+    [invoc setTarget: (id)super];
+    [invoc setArgument: sender atIndex: 0];
+    [self orderOut: sender animate: animate callback: invoc];
+}
+
+- (void)orderOut: (id)sender animate: (BOOL)animate callback:(NSInvocation *)callback
+{
+    NSViewAnimation *anim;
+    NSViewAnimation *current_anim;
+    NSMutableDictionary *dict;
+
+    if (!animate || MACOS_VERSION < 10.4f)
+    {
+        [self orderOut: sender];
+        return;
+    }
+
+    dict = [[NSMutableDictionary alloc] initWithCapacity:2];
+
+    [dict setObject:self forKey:NSViewAnimationTargetKey];
+
+    [dict setObject:NSViewAnimationFadeOutEffect forKey:NSViewAnimationEffectKey];
+    anim = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:dict, nil]];
+    [dict release];
+
+    [anim setAnimationBlockingMode:NSAnimationNonblocking];
+    [anim setDuration:0.9];
+    [anim setFrameRate:30];
+    [anim setUserInfo: callback];
+
+    @synchronized(self) {
+        current_anim = self->animation;
+
+        if ([[[current_anim viewAnimations] objectAtIndex:0] objectForKey: NSViewAnimationEffectKey] == NSViewAnimationFadeOutEffect && [current_anim isAnimating])
+        {
+            [anim release];
+        }
+        else
+        {
+            if (current_anim)
+            {
+                [current_anim stopAnimation];
+                [anim setCurrentProgress:1.0-[current_anim currentProgress]];
+                [current_anim release];
+            }
+            else
+                [anim setCurrentProgress:1.0 - [self alphaValue]];
+            self->animation = anim;
+            [self setDelegate: self];
+            [anim startAnimation];
+        }
+    }
+}
+
+- (void)orderFront: (id)sender animate: (BOOL)animate
+{
+    NSViewAnimation *anim;
+    NSViewAnimation *current_anim;
+    NSMutableDictionary *dict;
+ 
+    if (!animate || MACOS_VERSION < 10.4f)
+    {
+        [super orderFront: sender];
+        [self setAlphaValue: 1.0];
+        return;
+    }
+
+    if (![self isVisible])
+    {
+        [self setAlphaValue: 0.0];
+        [super orderFront: sender];
+    }
+    else if ([self alphaValue] == 1.0)
+    {
+        [super orderFront: self];
+        return;
+    }
+
+    dict = [[NSMutableDictionary alloc] initWithCapacity:2];
+
+    [dict setObject:self forKey:NSViewAnimationTargetKey];
+ 
+    [dict setObject:NSViewAnimationFadeInEffect forKey:NSViewAnimationEffectKey];
+    anim = [[NSViewAnimation alloc] initWithViewAnimations:[NSArray arrayWithObjects:dict, nil]];
+    [dict release];
+ 
+    [anim setAnimationBlockingMode:NSAnimationNonblocking];
+    [anim setDuration:0.5];
+    [anim setFrameRate:30];
+
+    @synchronized(self) {
+        current_anim = self->animation;
+
+        if ([[[current_anim viewAnimations] objectAtIndex:0] objectForKey: NSViewAnimationEffectKey] == NSViewAnimationFadeInEffect && [current_anim isAnimating])
+        {
+            [anim release];
+        }
+        else
+        {
+            if (current_anim)
+            {
+                [current_anim stopAnimation];
+                [anim setCurrentProgress:1.0 - [current_anim currentProgress]];
+                [current_anim release];
+            }
+            else
+                [anim setCurrentProgress:[self alphaValue]];
+            self->animation = anim;
+            [self setDelegate: self];
+            [self orderFront: sender];
+            [anim startAnimation];
+        }
+    }
+}
+
+- (void)animationDidEnd:(NSAnimation*)anim
+{
+    if ([self alphaValue] <= 0.0)
+    {
+        NSInvocation * invoc;
+        [super orderOut: nil];
+        [self setAlphaValue: 1.0];
+        if ((invoc = [anim userInfo]))
+            [invoc invoke];
+    }
 }
 @end
 
@@ -205,13 +443,13 @@ static NSMutableArray *blackoutWindows = NULL;
 
 - (void)awakeFromNib
 {
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSTIFFPboardType, 
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSTIFFPboardType,
         NSFilenamesPboardType, nil]];
 }
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
 {
-    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) 
+    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask])
                 == NSDragOperationGeneric)
     {
         return NSDragOperationGeneric;
@@ -283,13 +521,13 @@ static NSMutableArray *blackoutWindows = NULL;
 
 - (void)awakeFromNib
 {
-    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSTIFFPboardType, 
+    [self registerForDraggedTypes:[NSArray arrayWithObjects:NSTIFFPboardType,
         NSFilenamesPboardType, nil]];
 }
 
 - (NSDragOperation)draggingEntered:(id <NSDraggingInfo>)sender
 {
-    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask]) 
+    if ((NSDragOperationGeneric & [sender draggingSourceOperationMask])
                 == NSDragOperationGeneric)
     {
         return NSDragOperationGeneric;
@@ -311,6 +549,7 @@ static NSMutableArray *blackoutWindows = NULL;
     NSArray *o_types = [NSArray arrayWithObjects: NSFilenamesPboardType, nil];
     NSString *o_desired_type = [o_paste availableTypeFromArray:o_types];
     NSData *o_carried_data = [o_paste dataForType:o_desired_type];
+    BOOL b_autoplay = config_GetInt( VLCIntf, "macosx-autoplay" );
 
     if( o_carried_data )
     {
@@ -327,7 +566,10 @@ static NSMutableArray *blackoutWindows = NULL;
                 o_dic = [NSDictionary dictionaryWithObject:[o_values objectAtIndex:i] forKey:@"ITEM_URL"];
                 o_array = [o_array arrayByAddingObject: o_dic];
             }
-            [[[VLCMain sharedInstance] getPlaylist] appendArray: o_array atPos: -1 enqueue:NO];
+            if( b_autoplay )
+                [[[VLCMain sharedInstance] getPlaylist] appendArray: o_array atPos: -1 enqueue:NO];
+            else
+                [[[VLCMain sharedInstance] getPlaylist] appendArray: o_array atPos: -1 enqueue:YES];
             return YES;
         }
     }
@@ -353,7 +595,7 @@ void _drawKnobInRect(NSRect knobRect)
     // Center knob in given rect
     knobRect.origin.x += (int)((float)(knobRect.size.width - 7)/2.0);
     knobRect.origin.y += (int)((float)(knobRect.size.height - 7)/2.0);
-    
+ 
     // Draw diamond
     NSRectFillUsingOperation(NSMakeRect(knobRect.origin.x + 3, knobRect.origin.y + 6, 1, 1), NSCompositeSourceOver);
     NSRectFillUsingOperation(NSMakeRect(knobRect.origin.x + 2, knobRect.origin.y + 5, 3, 1), NSCompositeSourceOver);
@@ -380,7 +622,7 @@ void _drawFrameInRect(NSRect frameRect)
     NSRectClip(NSZeroRect);
     [super drawRect:rect];
     [[NSGraphicsContext currentContext] restoreGraphicsState];
-    
+ 
     // Full size
     rect = [self bounds];
     int diff = (int)(([[self cell] knobThickness] - 7.0)/2.0) - 1;
@@ -388,13 +630,13 @@ void _drawFrameInRect(NSRect frameRect)
     rect.origin.y += diff;
     rect.size.width -= 2*diff-2;
     rect.size.height -= 2*diff;
-    
+ 
     // Draw dark
     NSRect knobRect = [[self cell] knobRectFlipped:NO];
     [[[NSColor blackColor] colorWithAlphaComponent:0.6] set];
     _drawFrameInRect(rect);
     _drawKnobInRect(knobRect);
-    
+ 
     // Draw shadow
     [[[NSColor blackColor] colorWithAlphaComponent:0.1] set];
     rect.origin.x++;
@@ -425,7 +667,7 @@ void _drawFrameInRect(NSRect frameRect)
         [newCell setAction:[oldCell action]];
         [newCell setControlSize:[oldCell controlSize]];
         [newCell setType:[oldCell type]];
-        [newCell setState:[oldCell state]]; 
+        [newCell setState:[oldCell state]];
         [newCell setAllowsTickMarkValuesOnly:[oldCell allowsTickMarkValuesOnly]];
         [newCell setAltIncrementValue:[oldCell altIncrementValue]];
         [newCell setControlTint:[oldCell controlTint]];
@@ -453,14 +695,27 @@ void _drawFrameInRect(NSRect frameRect)
 - (id)init
 {
     self = [super init];
-    _knobOff = [[NSImage imageNamed:@"volumeslider_normal"] retain];
-    _knobOn = [[NSImage imageNamed:@"volumeslider_blue"] retain];
+    _knobOff = [NSImage imageNamed:@"volumeslider_normal"];
+    [self controlTintChanged];
+    [[NSNotificationCenter defaultCenter] addObserver: self
+                                             selector: @selector( controlTintChanged )
+                                                 name: NSControlTintDidChangeNotification
+                                               object: nil];
     b_mouse_down = FALSE;
     return self;
 }
 
+- (void)controlTintChanged
+{
+    if( [NSColor currentControlTint] == NSGraphiteControlTint )
+        _knobOn = [NSImage imageNamed:@"volumeslider_graphite"];
+    else
+        _knobOn = [NSImage imageNamed:@"volumeslider_blue"];
+}
+
 - (void)dealloc
 {
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
     [_knobOff release];
     [_knobOn release];
     [super dealloc];
@@ -477,12 +732,12 @@ void _drawFrameInRect(NSRect frameRect)
 
     [[self controlView] lockFocus];
     [knob compositeToPoint:NSMakePoint( knob_rect.origin.x + 1,
-        knob_rect.origin.y + knob_rect.size.height -2 )  
+        knob_rect.origin.y + knob_rect.size.height -2 )
         operation:NSCompositeSourceOver];
     [[self controlView] unlockFocus];
 }
 
-- (void)stopTracking:(NSPoint)lastPoint at:(NSPoint)stopPoint inView: 
+- (void)stopTracking:(NSPoint)lastPoint at:(NSPoint)stopPoint inView:
         (NSView *)controlView mouseIsUp:(BOOL)flag
 {
     b_mouse_down = NO;

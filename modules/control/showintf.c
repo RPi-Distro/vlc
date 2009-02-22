@@ -2,7 +2,7 @@
  * showintf.c: control the display of the interface in fullscreen mode
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 1a98e7a1c2c355343e3881f60e0fe42c6011d419 $
+ * $Id: bebf0679b1f8b559b07dd466ab61ffcfe5dcfe85 $
  *
  * Authors: Olivier Teuliere <ipkiss@via.ecp.fr>
  *
@@ -24,12 +24,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>                                      /* malloc(), free() */
-#include <string.h>
 
-#include <vlc/vlc.h>
-#include <vlc/intf.h>
-#include <vlc/vout.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_interface.h>
+#include <vlc_vout.h>
+#include <vlc_playlist.h>
 
 #ifdef HAVE_UNISTD_H
 #    include <unistd.h>
@@ -41,16 +45,16 @@
 struct intf_sys_t
 {
     vlc_object_t * p_vout;
-    vlc_bool_t     b_button_pressed;
-    vlc_bool_t     b_triggered;
+    bool     b_button_pressed;
+    bool     b_triggered;
     int            i_threshold;
 };
 
 /*****************************************************************************
  * Local prototypes.
  *****************************************************************************/
-int  E_(Open) ( vlc_object_t * );
-void E_(Close)( vlc_object_t * );
+int  Open ( vlc_object_t * );
+void Close( vlc_object_t * );
 static void RunIntf( intf_thread_t *p_intf );
 static int  InitThread( intf_thread_t *p_intf );
 static int  MouseEvent( vlc_object_t *, char const *,
@@ -64,17 +68,17 @@ static int  MouseEvent( vlc_object_t *, char const *,
 
 vlc_module_begin();
     set_shortname( "Showintf" );
-    add_integer( "showintf-threshold", 10, NULL, THRESHOLD_TEXT, THRESHOLD_LONGTEXT, VLC_TRUE );
-    set_description( _("Show interface with mouse") );
+    add_integer( "showintf-threshold", 10, NULL, THRESHOLD_TEXT, THRESHOLD_LONGTEXT, true );
+    set_description( N_("Show interface with mouse") );
 
     set_capability( "interface", 0 );
-    set_callbacks( E_(Open), E_(Close) );
+    set_callbacks( Open, Close );
 vlc_module_end();
 
 /*****************************************************************************
  * Open: initialize interface
  *****************************************************************************/
-int E_(Open)( vlc_object_t *p_this )
+int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
 
@@ -93,7 +97,7 @@ int E_(Open)( vlc_object_t *p_this )
 /*****************************************************************************
  * Close: destroy interface
  *****************************************************************************/
-void E_(Close)( vlc_object_t *p_this )
+void Close( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
 
@@ -116,32 +120,22 @@ static void RunIntf( intf_thread_t *p_intf )
     }
 
     /* Main loop */
-    while( !p_intf->b_die )
+    while( !intf_ShouldDie( p_intf ) )
     {
         vlc_mutex_lock( &p_intf->change_lock );
 
         /* Notify the interfaces */
         if( p_intf->p_sys->b_triggered )
         {
-            playlist_t *p_playlist =
-                (playlist_t *)vlc_object_find( p_intf, VLC_OBJECT_PLAYLIST,
-                                               FIND_ANYWHERE );
-
-            if( p_playlist != NULL )
-            {
-                vlc_value_t val;
-                val.b_bool = VLC_TRUE;
-                var_Set( p_playlist, "intf-show", val );
-                vlc_object_release( p_playlist );
-            }
-            p_intf->p_sys->b_triggered = VLC_FALSE;
+            var_SetBool( p_intf->p_libvlc, "intf-show", true );
+            p_intf->p_sys->b_triggered = false;
         }
 
         vlc_mutex_unlock( &p_intf->change_lock );
 
 
         /* Take care of the video output */
-        if( p_intf->p_sys->p_vout && p_intf->p_sys->p_vout->b_die )
+        if( p_intf->p_sys->p_vout && !vlc_object_alive (p_intf->p_sys->p_vout) )
         {
             var_DelCallback( p_intf->p_sys->p_vout, "mouse-moved",
                              MouseEvent, p_intf );
@@ -183,12 +177,12 @@ static void RunIntf( intf_thread_t *p_intf )
  *****************************************************************************/
 static int InitThread( intf_thread_t * p_intf )
 {
-    if( !p_intf->b_die )
+    if( !intf_ShouldDie( p_intf ) )
     {
         vlc_mutex_lock( &p_intf->change_lock );
 
-        p_intf->p_sys->b_triggered = VLC_FALSE;
-        p_intf->p_sys->b_button_pressed = VLC_FALSE;
+        p_intf->p_sys->b_triggered = false;
+        p_intf->p_sys->b_button_pressed = false;
         p_intf->p_sys->i_threshold =
             config_GetInt( p_intf, "showintf-threshold" );
 
@@ -208,6 +202,7 @@ static int InitThread( intf_thread_t * p_intf )
 static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
+    VLC_UNUSED(p_this); VLC_UNUSED(oldval); VLC_UNUSED(newval);
     vlc_value_t val;
 
     int i_mouse_x, i_mouse_y;
@@ -234,7 +229,7 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
         if ( i_mouse_y < p_intf->p_sys->i_threshold )
         {
             msg_Dbg( p_intf, "interface showing requested" );
-            p_intf->p_sys->b_triggered = VLC_TRUE;
+            p_intf->p_sys->b_triggered = true;
         }
     }
 
@@ -243,12 +238,12 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
     if( !p_intf->p_sys->b_button_pressed &&
         !strcmp( psz_var, "mouse-button-down" ) )
     {
-        p_intf->p_sys->b_button_pressed = VLC_TRUE;
+        p_intf->p_sys->b_button_pressed = true;
     }
     if( p_intf->p_sys->b_button_pressed &&
         !strcmp( psz_var, "mouse-button-down" ) )
     {
-        p_intf->p_sys->b_button_pressed = VLC_FALSE;
+        p_intf->p_sys->b_button_pressed = false;
     }
 
     vlc_mutex_unlock( &p_intf->change_lock );

@@ -2,7 +2,7 @@
  * libasf.h :
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 28e5efa38cba3e428d1f52e083a17e8562347710 $
+ * $Id$
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -119,7 +119,7 @@ static const guid_t asf_object_stream_prioritization =
 static const guid_t asf_object_extended_content_description =
 {0xD2D0A440, 0xE307, 0x11D2, {0x97, 0xF0, 0x00, 0xA0, 0xC9, 0x5E, 0xA8, 0x50}};
 
-static const guid_t asf_object_extended_stream_header = 
+static const guid_t asf_object_extended_stream_header =
 {0x3afb65e2, 0x47ef, 0x40f2, { 0xac, 0x2c, 0x70, 0xa9, 0x0d, 0x71, 0xd3, 0x43}};
 
 static const guid_t asf_object_extended_stream_type_audio =
@@ -151,8 +151,8 @@ typedef struct
 /****************************************************************************
  * High level asf object
  ****************************************************************************/
-/* This is the first header find in a asf file
- * It's the only object that have subobject */
+/* This is the first header found in an asf file
+ * It's the only object that has subobjects */
 typedef struct
 {
     ASF_OBJECT_COMMON
@@ -270,7 +270,7 @@ typedef struct
     ASF_OBJECT_COMMON
 
     char *psz_title;
-    char *psz_author;
+    char *psz_artist;
     char *psz_copyright;
     char *psz_description;
     char *psz_rating;
@@ -442,15 +442,19 @@ typedef union asf_object_u
     asf_object_metadata_t           metadata;
     asf_object_codec_list_t         codec_list;
     asf_object_marker_t             marker;
-    asf_object_language_list_t      lang;
+    asf_object_language_list_t      language_list;
     asf_object_stream_bitrate_properties_t stream_bitrate;
     asf_object_extended_stream_properties_t ext_stream;
+    asf_object_content_description_t content_description;
+    asf_object_advanced_mutual_exclusion_t advanced_mutual_exclusion;
+    asf_object_stream_prioritization_t stream_prioritization;
+    asf_object_extended_content_description_t extended_content_description;
 
 } asf_object_t;
 
 
-void ASF_GetGUID( guid_t *p_guid, uint8_t *p_data );
-int  ASF_CmpGUID( const guid_t *p_guid1, const guid_t *p_guid2 );
+void ASF_GetGUID( guid_t *p_guid, const uint8_t *p_data );
+bool ASF_CmpGUID( const guid_t *p_guid1, const guid_t *p_guid2 );
 
 asf_object_root_t *ASF_ReadObjectRoot( stream_t *, int b_seekable );
 void               ASF_FreeObjectRoot( stream_t *, asf_object_root_t *p_root );

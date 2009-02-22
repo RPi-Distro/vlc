@@ -1,14 +1,8 @@
-$Id: README.Debian 125 2007-01-08 02:02:15Z sho $
+$Id: README.Debian 1436 2008-08-31 23:06:34Z xtophe-guest $
 
 Notes for anyone wanting to build Debian packages of VLC.
 
  - Default configuration is supposed to be latest unstable.
-
- - Usually VLC will come with a copy of x264 in the extras/ directory,
-   because it is not yet available in Debian.
-
- - If there is no CVS directory in the root, debian/rules will assume a
-   full build is requested and will clean x264/.
 
  - VLC does not link with libdvdcss by default, thus it will not depend
    on the libdvdcss packages. However it will use libdvdread that can

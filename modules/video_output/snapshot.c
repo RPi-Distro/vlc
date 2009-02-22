@@ -2,7 +2,7 @@
  * snapshot.c : snapshot plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 10fc991542475208441375b80807ca6f19d6e783 $
+ * $Id$
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *
@@ -22,12 +22,12 @@
  *****************************************************************************/
 
 /*****************************************************************************
- * This module is a pseudo video output the offers the possibility to
+ * This module is a pseudo video output that offers the possibility to
  * keep a cache of low-res snapshots.
  * The snapshot structure is defined in include/snapshot.h
  * In order to access the current snapshot cache, object variables are used:
  *   snapshot-list-pointer : the pointer on the first element in the list
- *   snapshot-datasize     : size of a snapshot 
+ *   snapshot-datasize     : size of a snapshot
  *                           (also available in snapshot_t->i_datasize)
  *   snapshot-cache-size   : size of the cache list
  *
@@ -38,12 +38,16 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#include <stdlib.h>
 
-#include <vlc/vlc.h>
-#include <vlc/vout.h>
-#include <vlc/intf.h>
-#include <snapshot.h>
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_plugin.h>
+#include <vlc_vout.h>
+#include <vlc_interface.h>
+#include <vlc_input.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -52,6 +56,7 @@ static int  Create    ( vlc_object_t * );
 static void Destroy   ( vlc_object_t * );
 
 static int  Init      ( vout_thread_t * );
+static void End       ( vout_thread_t * );
 static void Display   ( vout_thread_t *, picture_t * );
 
 /*****************************************************************************
@@ -72,17 +77,17 @@ static void Display   ( vout_thread_t *, picture_t * );
 
 
 vlc_module_begin( );
-    set_description( _( "Snapshot module" ) );
-    set_shortname( _("Snapshot") );
+    set_description( N_( "Snapshot module" ) );
+    set_shortname( N_("Snapshot") );
 
     set_category( CAT_VIDEO );
     set_subcategory( SUBCAT_VIDEO_VOUT );
     set_capability( "video output", 1 );
 
-    add_integer( "snapshot-width", 320, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, VLC_FALSE );
-    add_integer( "snapshot-height", 200, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT, VLC_FALSE );
-    add_string( "snapshot-chroma", "RV32", NULL, CHROMA_TEXT, CHROMA_LONGTEXT, VLC_TRUE );
-    add_integer( "snapshot-cache-size", 50, NULL, CACHE_TEXT, CACHE_LONGTEXT, VLC_TRUE );
+    add_integer( "snapshot-width", 320, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, false );
+    add_integer( "snapshot-height", 200, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT, false );
+    add_string( "snapshot-chroma", "RV32", NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true );
+    add_integer( "snapshot-cache-size", 50, NULL, CACHE_TEXT, CACHE_LONGTEXT, true );
 
     set_callbacks( Create, Destroy );
 vlc_module_end();
@@ -120,7 +125,7 @@ static int Create( vlc_object_t *p_this )
     var_Create( p_vout, "snapshot-list-pointer", VLC_VAR_ADDRESS );
 
     p_vout->pf_init = Init;
-    p_vout->pf_end = NULL;
+    p_vout->pf_end = End;
     p_vout->pf_manage = NULL;
     p_vout->pf_render = NULL;
     p_vout->pf_display = Display;
@@ -315,6 +320,14 @@ static int Init( vout_thread_t *p_vout )
 }
 
 /*****************************************************************************
+ * End: terminate video thread output method
+ *****************************************************************************/
+static void End( vout_thread_t *p_vout )
+{
+    (void)p_vout;
+}
+
+/*****************************************************************************
  * Destroy: destroy video thread
  *****************************************************************************
  * Terminate an output method created by Create
@@ -322,22 +335,14 @@ static int Init( vout_thread_t *p_vout )
 static void Destroy( vlc_object_t *p_this )
 {
     vout_thread_t *p_vout = ( vout_thread_t * )p_this;
-    vlc_object_t *p_vlc;
     int i_index;
+
+    var_Destroy( p_vout->p_sys->p_input, "snapshot-id" );
 
     vlc_object_release( p_vout->p_sys->p_input );
     var_Destroy( p_this, "snapshot-width" );
     var_Destroy( p_this, "snapshot-height" );
     var_Destroy( p_this, "snapshot-datasize" );
-
-    p_vlc = vlc_object_find( p_this, VLC_OBJECT_ROOT, FIND_PARENT );
-    if( p_vlc )
-    {
-        /* UnRegister the snapshot vout module at the root level */
-        /* var_Destroy (p_vlc, "snapshot-id"); */
-        var_Destroy( p_this->p_libvlc, "snapshot-id" );
-        vlc_object_release( p_vlc );
-    }
 
     for( i_index = 0 ; i_index < p_vout->p_sys->i_size ; i_index++ )
     {
@@ -378,9 +383,8 @@ static void Display( vout_thread_t *p_vout, picture_t *p_pic )
 
     i_index = p_vout->p_sys->i_index;
 
-    p_vout->p_vlc->pf_memcpy( p_vout->p_sys->p_list[i_index]->p_data,
-                              p_pic->p->p_pixels,
-                              p_vout->p_sys->i_datasize );
+    vlc_memcpy( p_vout->p_sys->p_list[i_index]->p_data, p_pic->p->p_pixels,
+                p_vout->p_sys->i_datasize );
 
     i_date = snapshot_GetMovietime( p_vout );
 
