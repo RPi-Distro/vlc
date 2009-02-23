@@ -146,7 +146,7 @@ clean-real:
 	dh_testroot
 	rm -f build-stamp
 	# Clean VLC
-	[ ! -f Makefile ] || $(MAKE) distclean
+	[ ! -f Makefile ] || $(MAKE) clean
 	rm -rf tmp/
 	# Clean zsh completion stuff
 	rm -f extras/zsh
