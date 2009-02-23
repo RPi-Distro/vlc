@@ -85,8 +85,8 @@ Build-Depends: debhelper (>= 7),
                zlib1g-dev
 Standards-Version: 3.8.0
 Homepage: http://www.videolan.org/vlc
-Vcs-Svn: svn://svn.debian.org/svn/pkg-multimedia/experimental/vlc/
-Vcs-Browser: http://svn.debian.org/wsvn/pkg-multimedia/experimental/vlc/
+Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
+Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/heads/sid
 
 Package: vlc
 Section: graphics
