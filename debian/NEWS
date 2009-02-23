@@ -1,3 +1,15 @@
+vlc (0.9.8a-2) unstable; urgency=low
+
+  HTTP interface:
+
+   The .hosts file used to control which remote hosts have access to the http
+  interface has been moved to /etc/vlc/http/hosts and is now a conffile.
+   If you do more change to the http interface, you need to do that out of
+  /usr/share/vlc/http and use --http-src option of vlc. If you don't, your
+  modifications will get lost at the next upgrade of vlc.
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Mon, 23 Feb 2009 22:41:46 +0000
+
 vlc (0.9.2-1) experimental; urgency=low
 
   Important changes in this new upstream version:

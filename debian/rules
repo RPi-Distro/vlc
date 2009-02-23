@@ -183,6 +183,11 @@ install: build
 	mv debian/tmp/$(VIDDIR)/vlc32x32.xpm debian/tmp/$(VIDDIR)/vlc.xpm
 	# Install stuff
 	dh_install -si --fail-missing --sourcedir=debian/tmp
+	# move .hosts
+	mkdir -p debian/vlc-data/etc/vlc/http
+	mv debian/vlc-data/usr/share/vlc/http/.hosts debian/vlc-data/etc/vlc/http
+	ln -s /etc/vlc/http/hosts debian/vlc-data/usr/share/vlc/http/.hosts
+
 	#install BTS stuff
 	mkdir -p  debian/vlc-nox/usr/share/bug/vlc-nox
 	cp debian/bug/* debian/vlc-nox/usr/share/bug/vlc-nox
