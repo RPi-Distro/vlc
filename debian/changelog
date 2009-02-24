@@ -11,8 +11,9 @@ vlc (0.9.8a-2) unstable; urgency=low
   * Improve some short descriptions
   * Depends on debhelper >7
   * Fix for 2 builds in a row
+  * Add a note in NEWS about running as root and vlc-wrapper (Closes: #507872)
 
- -- Christophe Mutricy <xtophe@videolan.org>  Tue, 24 Feb 2009 00:55:55 +0100
+ -- Christophe Mutricy <xtophe@videolan.org>  Tue, 24 Feb 2009 16:00:31 +0100
 
 vlc (0.9.8a-1) experimental; urgency=low
 
