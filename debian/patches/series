@@ -6,3 +6,4 @@
 300_manpage_syntax.diff
 301_DVD_media.diff
 401_detect_xinerama_fullscreen.diff
+vlc-notify.diff

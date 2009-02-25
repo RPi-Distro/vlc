@@ -1,3 +1,11 @@
+vlc (0.9.8a-1ubuntu4) jaunty; urgency=low
+
+  [ Cody Russell ]
+  * Check whether the server allows actions before trying to send them.
+    (LP: #328605)
+
+ -- James Westby <james.westby@ubuntu.com>  Wed, 25 Feb 2009 11:37:57 +0000
+
 vlc (0.9.8a-1ubuntu3) jaunty; urgency=low
 
   [ Andreas Wenning ]
