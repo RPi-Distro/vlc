@@ -30,7 +30,7 @@ include /usr/share/quilt/quilt.make
 LDFLAGS = -Wl,--as-needed
 
 # configure flags
-confflags += --enable-maintaner-mode --enable-release --prefix=/usr
+confflags += --enable-maintainer-mode --enable-release --prefix=/usr
 confflags += \
 	--enable-libtool \
 	--enable-fast-install \
