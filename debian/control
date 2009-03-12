@@ -83,7 +83,7 @@ Build-Depends: debhelper (>= 7),
                pkg-config,
                qt4-dev-tools,
                zlib1g-dev
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 Homepage: http://www.videolan.org/vlc
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/heads/sid
