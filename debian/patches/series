@@ -5,3 +5,4 @@
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
 401_detect_xinerama_fullscreen.diff
+402_fortune_pruning.diff
