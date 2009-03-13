@@ -1,3 +1,23 @@
+vlc (0.9.8a-3) unstable; urgency=low
+
+  [ Reinhard Tartler ]
+  * fix typo in '--enable-maintainer-mode' (Closes: #517155)
+
+  [ Christophe Mutricy ]
+  * Fix build on non-Linux arch
+  * Fix cross-compilation
+  * VLC is GPV v2 or later. So point to v2 of the GPL
+  * We can use debhelper v7 without trouble
+  * Add lintian overrides.
+  * Set policy to 3.8.1
+  * debian/patches/*
+    + Prune doc/fortunes.txt from personnal attack (Closes: #401560,
+      #518300)
+    + Delete unused patches
+    + Add comments to the patches
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Fri, 13 Mar 2009 11:49:33 +0100
+
 vlc (0.9.8a-2) unstable; urgency=low
 
   * Upload to unstable
