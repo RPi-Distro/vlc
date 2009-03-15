@@ -1,5 +1,5 @@
 Source: vlc
-Section: graphics
+Section: video
 Priority: optional
 Maintainer: Debian multimedia packages maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
 Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
@@ -89,7 +89,7 @@ Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/heads/sid
 
 Package: vlc
-Section: graphics
+Section: video
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}), 
          ${shlibs:Depends}, 
@@ -121,7 +121,7 @@ Description: multimedia player and streamer
  mozilla-plugin-vlc package.
 
 Package: vlc-dbg
-Section: graphics
+Section: debug
 Priority: extra
 Architecture: any
 Depends: ${shlibs:Depends},
@@ -135,7 +135,7 @@ Description: debugging symbols for vlc
  This package contains the debugging symbols for vlc.
 
 Package: vlc-nox
-Section: net
+Section: video
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
