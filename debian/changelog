@@ -15,8 +15,9 @@ vlc (0.9.8a-3) unstable; urgency=low
       #518300)
     + Delete unused patches
     + Add comments to the patches
+  * Move to the video and debug sections  
 
- -- Christophe Mutricy <xtophe@videolan.org>  Fri, 13 Mar 2009 11:49:33 +0100
+ -- Christophe Mutricy <xtophe@videolan.org>  Sun, 15 Mar 2009 16:50:18 +0000
 
 vlc (0.9.8a-2) unstable; urgency=low
 
