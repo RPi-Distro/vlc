@@ -1,0 +1,26 @@
+Index: vlc-debian/configure.ac
+===================================================================
+--- vlc-debian.orig/configure.ac	2009-03-16 10:54:52.000000000 +0000
++++ vlc-debian/configure.ac	2009-03-16 10:55:49.000000000 +0000
+@@ -3098,20 +3098,13 @@
+   else
+     LDFLAGS="${LDFLAGS_save} ${LDFLAGS_dtstofloat32}"
+     AC_CHECK_HEADERS(dts.h, [
+-      AC_CHECK_LIB(dts_pic, dts_free, [
+         VLC_ADD_PLUGINS([dtstofloat32])
+-        VLC_ADD_LDFLAGS([dtstofloat32],[-ldts_pic])
+-      ],[
+-        AC_CHECK_LIB(dts, dts_free, [
+-          VLC_ADD_BUILTINS([dtstofloat32])
+-          VLC_ADD_LDFLAGS([dtstofloat32],[-ldts])
++          VLC_ADD_LDFLAGS([dtstofloat32],[-ldca])
+         ],[
+           if test "${enable_dts}" = "yes"; then
+             AC_MSG_ERROR([Could not find libdts on your system: you may get it from http://www.videolan.org/dtsdec.html])
+           fi
+         ])
+-      ], [-lm])
+-    ])
+     LDFLAGS="${LDFLAGS_save}"
+   fi
+ fi
