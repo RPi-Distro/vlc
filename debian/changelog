@@ -1,3 +1,9 @@
+vlc (0.8.6.h-6) testing-proposed-updates; urgency=low
+
+  * Relax the detection of libdts to work with the wrapper around libdca
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sun, 15 Mar 2009 22:32:00 +0000
+
 vlc (0.8.6.h-5) unstable; urgency=high
 
   * Acknowledge NMU by Nico Golde. Thanks.
