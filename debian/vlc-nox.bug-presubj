@@ -10,10 +10,10 @@ at all, you need to check that the module handling it is present.
    If you have yellow warning lines at the top, that could well be the
    problem
 
- * If you have installed libraries from other reposotories (e.g. to use
-   patent-encumbred encoders), revert to the official Debian libraries
-   before reporting a bug.
+ * If you have installed libraries from other repositories (e.g. to use
+   allegedly patent-encumbred encoders), revert to the official Debian 
+   libraries before reporting a bug.
 
-The debug log of vlc ("vlc -vvv --options") is very usefull for the
+The debug log of vlc ("vlc -vvv --options") is very useful for the
 developers, do include it in your report.
 
