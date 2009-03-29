@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005, 2007 the VideoLAN team
  * Copyright © 2005-2006 Rémi Denis-Courmont
- * $Id: afe46a71ff0100d628997e24101deff10692e1e5 $
+ * $Id: 5fda12293c7153da9390a75fbc0fc72722689bf5 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -375,6 +375,9 @@ __net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
             switch (errno)
             {
                 case EAGAIN: /* spurious wakeup or no TLS data */
+#if (EAGAIN != EWOULDBLOCK)
+                case EWOULDBLOCK:
+#endif
                 case EINTR:  /* asynchronous signal */
                     continue;
             }

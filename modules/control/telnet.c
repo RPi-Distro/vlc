@@ -2,7 +2,7 @@
  * telnet.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: c271d7e33dff5ea26dae370427960f9503c7a9d9 $
+ * $Id: f7ce883c7d1f59fab2dab5414aef8941d240ab47 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -28,6 +28,10 @@
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
+#endif
+
+#ifdef WIN32
+# include "winsock2.h"
 #endif
 
 #include <vlc_common.h>
@@ -371,7 +375,14 @@ static void Run( intf_thread_t *p_intf )
                                    cl->i_mode + 2 );
                 }
 
-                if (i_recv <= 0 && ( end || errno != EAGAIN ) )
+#ifdef WIN32
+                if( i_recv <= 0 && WSAGetLastError() == WSAEWOULDBLOCK )
+                {
+                    errno=EAGAIN;
+                }
+#endif
+
+                if( i_recv == 0 || ( i_recv == -1 && ( end || errno != EAGAIN ) ) )
                     goto drop;
             }
         }
@@ -448,7 +459,7 @@ static void Run( intf_thread_t *p_intf )
                     if( psz_msg )
                     {
                         vlm_message_t *message;
-                        message = vlm_MessageNew( "Module command", psz_msg );
+                        message = vlm_MessageNew( "Module command", "%s", psz_msg );
                         Write_message( cl, message, NULL, WRITE_MODE_CMD );
                         vlm_MessageDelete( message );
                         free( psz_msg );

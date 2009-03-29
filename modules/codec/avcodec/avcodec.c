@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id$
+ * $Id: 1c2b0b80cf6f4d1ac61cad42f94998cb1951def6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -188,7 +188,7 @@ vlc_module_begin();
 
 #if LIBAVCODEC_VERSION_INT >= ((51<<16)+(40<<8)+4)
     /* Audio AAC encoder profile */
-    add_string( ENC_CFG_PREFIX "aac-profile", "main", NULL,
+    add_string( ENC_CFG_PREFIX "aac-profile", "low", NULL,
                 ENC_PROFILE_TEXT, ENC_PROFILE_LONGTEXT, true );
 #endif
 #endif /* ENABLE_SOUT */

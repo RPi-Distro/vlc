@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: cb1a9882806ee58e8d29716928674dbfb2447ec5 $
+ * $Id: 5fc6f081c159d6bc8e91e621ee7e2938a3bf8a84 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -846,6 +846,8 @@ void QVLCMenu::PopupMenu( intf_thread_t *p_intf, bool show )
             }
             addDPStaticEntry( submenu, qtr( I_MENU_EXT ), "",
                 ":/settings", SLOT( extendedDialog() ) );
+            addDPStaticEntry( submenu, qtr( I_MENU_EXT ), "",
+                ":/settings", SLOT( extendedDialog() ) );
             if( mi )
             {
                 action = submenu->addAction( QIcon( "" ),
@@ -862,6 +864,8 @@ void QVLCMenu::PopupMenu( intf_thread_t *p_intf, bool show )
             else /* We are using the skins interface.
                     If not, this entry will not show. */
             {
+                addDPStaticEntry( submenu, qtr( "&Preferences..." ),
+                    ":/preferences", SLOT( prefsDialog() ), "Ctrl+P" );
                 objects.clear();
                 varnames.clear();
                 vlc_object_t *p_object = ( vlc_object_t* )

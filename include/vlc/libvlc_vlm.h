@@ -2,7 +2,7 @@
  * libvlc_vlm.h:  libvlc_* new external API
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: de314e4095d61ad53dc4763d1f687f5bb9b6848d $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>

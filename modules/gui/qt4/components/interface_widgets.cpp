@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 6fca0caa224c4c3fddb350e4379286d106e0f5e9 $
+ * $Id: da24cae0b402842254bfef1db7a0e6f4a873332b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -916,7 +916,7 @@ void ControlsWidget::updateVolume()
     /* Audio part */
     audio_volume_t i_volume;
     aout_VolumeGet( p_intf, &i_volume );
-    i_volume = ( i_volume *  VOLUME_MAX )/ (AOUT_VOLUME_MAX/2);
+    i_volume = ( (i_volume + 1)*  VOLUME_MAX )/ (AOUT_VOLUME_MAX/2);
     int i_gauge = volumeSlider->value();
     b_my_volume = false;
     if( i_volume - i_gauge > 1 || i_gauge - i_volume > 1 )

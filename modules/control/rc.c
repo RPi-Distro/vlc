@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 2deed0641f336471c7b71b8fa8bcc4a667b7810e $
+ * $Id: 168aaa84e2b3c06ac597a64c3205f055645f4958 $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -638,7 +638,7 @@ static void Run( intf_thread_t *p_intf )
 
                 if( psz_msg )
                 {
-                    msg_rc( psz_msg );
+                    msg_rc( "%s", psz_msg );
                     free( psz_msg );
                 }
             }

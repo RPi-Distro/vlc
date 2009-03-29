@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id$
+ * $Id: 590c8251679764197b88687c824b8c26e88ef6ee $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -29,6 +29,7 @@
 #include <assert.h>
 #include <vlc_playlist.h>
 #include "playlist_internal.h"
+#include "control/libvlc_internal.h"
 
 static void AddItem( playlist_t *p_playlist, playlist_item_t *p_item,
                      playlist_item_t *p_node, int i_mode, int i_pos );
@@ -382,10 +383,23 @@ int playlist_AddExt( playlist_t *p_playlist, const char * psz_uri,
                      mtime_t i_duration, const char *const *ppsz_options,
                      int i_options, bool b_playlist, bool b_locked )
 {
+    return playlist_AddExtOpt( p_playlist, psz_uri, psz_name, i_mode, i_pos,
+                               i_duration, ppsz_options, i_options,
+                               VLC_INPUT_OPTION_TRUSTED,
+                               b_playlist, b_locked );
+}
+
+int playlist_AddExtOpt( playlist_t *p_playlist, const char * psz_uri,
+                        const char *psz_name, int i_mode, int i_pos,
+                        mtime_t i_duration, const char *const *ppsz_options,
+                        int i_options, int flags,
+                        bool b_playlist, bool b_locked )
+{
     int i_ret;
     input_item_t *p_input = input_item_NewExt( p_playlist, psz_uri, psz_name,
-                                              i_options, ppsz_options,
-                                              i_duration );
+                                               0, NULL, i_duration );
+    for( int i = 0; i < i_options; i++ )
+        input_item_AddOpt( p_input, ppsz_options[i], flags );
 
     i_ret = playlist_AddInput( p_playlist, p_input, i_mode, i_pos, b_playlist,
                                b_locked );

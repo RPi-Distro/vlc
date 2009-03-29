@@ -2,7 +2,7 @@
  * vlc_config_cat.h : Definition of configuration categories
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 9696abc95b9966049fb4cb96f7e5bfd8617b19ed $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Anil Daoud <anil@videolan.org>

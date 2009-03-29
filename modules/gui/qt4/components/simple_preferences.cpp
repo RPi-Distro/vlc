@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: d196990ea3053b2025487ac35cceb0085db89f7e $
+ * $Id: 92c072c6c0d67d01b3139d0c7705a6e66bd38b2e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -693,10 +693,7 @@ void SPrefsPanel::apply()
                    that we have to remove */
                 if( !b_normChecked )
                 {
-                    /* Ugly :D */
-                    qs_filter.remove( "volnorm:" );
-                    qs_filter.remove( ":volnorm" );
-                    qs_filter.remove( "volnorm" );
+                    qs_filter.remove( QRegExp(":?volnorm:?") );
                 }
             }
             else /* qs_filter not empty, but doesn't have volnorm inside */
@@ -777,7 +774,7 @@ void SPrefsPanel::assoDialog()
 
     aTa( ".a52" ); aTa( ".aac" ); aTa( ".ac3" ); aTa( ".dts" ); aTa( ".flac" );
     aTa( ".m4a" ); aTa( ".m4p" ); aTa( ".mka" ); aTa( ".mod" ); aTa( ".mp1" );
-    aTa( ".mp2" ); aTa( ".mp3" ); aTa( ".oma" ); aTa( ".ogg" ); aTa( ".spx" );
+    aTa( ".mp2" ); aTa( ".mp3" ); aTa( ".oma" ); aTa( ".oga" ); aTa( ".spx" );
     aTa( ".wav" ); aTa( ".wma" ); aTa( ".xm" );
     audioType->setCheckState( 0, ( i_temp > 0 ) ?
                               ( ( i_temp == audioType->childCount() ) ?
@@ -789,7 +786,8 @@ void SPrefsPanel::assoDialog()
     aTv( ".gxf" ); aTv( ".m1v" ); aTv( ".m2v" ); aTv( ".m2ts" ); aTv( ".m4v" );
     aTv( ".mkv" ); aTv( ".mov" ); aTv( ".mp2" ); aTv( ".mp4" ); aTv( ".mpeg" );
     aTv( ".mpeg1" ); aTv( ".mpeg2" ); aTv( ".mpeg4" ); aTv( ".mpg" );
-    aTv( ".mts" ); aTv( ".mxf" ); aTv( ".ogm" ); aTv( ".ts" );
+    aTv( ".mts" ); aTv( ".mxf" );
+    aTv( ".ogg" ); aTv( ".ogm" ); aTv( ".ogx" ); aTv( ".ogv" );  aTv( ".ts" );
     aTv( ".vob" ); aTv( ".wmv" );
     videoType->setCheckState( 0, ( i_temp > 0 ) ?
                               ( ( i_temp == audioType->childCount() ) ?

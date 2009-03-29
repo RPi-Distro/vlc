@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 97fa3e0a791cccd1a2f8e82daefe541c9aa80e35 $
+ * $Id: 95b60fbf4c77d2622b9465a42c49dbd0b4c4e637 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -2336,6 +2336,10 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
                 tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'R', 'V', '3', '0' );
             else if( !strcmp( tracks[i_track]->psz_codec, "V_REAL/RV40" ) )
                 tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'R', 'V', '4', '0' );
+        }
+        else if( !strncmp( tracks[i_track]->psz_codec, "V_DIRAC", 7 ) )
+        {
+            tracks[i_track]->fmt.i_codec = VLC_FOURCC('d', 'r', 'a', 'c' );
         }
         else if( !strncmp( tracks[i_track]->psz_codec, "V_MPEG4", 7 ) )
         {

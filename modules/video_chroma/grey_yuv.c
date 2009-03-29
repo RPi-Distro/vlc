@@ -2,7 +2,7 @@
  * grey_yuv.c : grayscale to others conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2007, 2008 the VideoLAN team
- * $Id$
+ * $Id: d8a805cfcfff8ded1146ce89d1deb0897196b1cd $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *

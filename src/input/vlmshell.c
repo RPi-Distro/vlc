@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: 0d8bc10e61e9a0d6301e3871ddb264adb31b8d5f $
+ * $Id: 5a8796a80078fa960645028e466fbe049bbfaeb6 $
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -522,7 +522,7 @@ static int ExecuteExport( vlm_t *p_vlm, vlm_message_t **pp_status )
 {
     char *psz_export = Save( p_vlm );
 
-    *pp_status = vlm_MessageNew( "export", psz_export );
+    *pp_status = vlm_MessageNew( "export", "%s", psz_export );
     free( psz_export );
     return VLC_SUCCESS;
 }
@@ -898,7 +898,7 @@ int ExecuteCommand( vlm_t *p_vlm, const char *psz_command,
 
         if( psz_temp == NULL )
         {
-            p_message = vlm_MessageNew( "Incomplete command", psz_command );
+            p_message = vlm_MessageNew( "Incomplete command", "%s", psz_command );
             goto error;
         }
 
@@ -1293,7 +1293,7 @@ static vlm_message_t *vlm_ShowMedia( vlm_media_sys_t *p_media )
 
     if( p_cfg->b_vod )
         vlm_MessageAdd( p_msg,
-                        vlm_MessageNew( "mux", p_cfg->vod.psz_mux ) );
+                        vlm_MessageNew( "mux", "%s", p_cfg->vod.psz_mux ) );
     else
         vlm_MessageAdd( p_msg,
                         vlm_MessageNew( "loop", p_cfg->broadcast.b_loop ? "yes" : "no" ) );
@@ -1305,13 +1305,13 @@ static vlm_message_t *vlm_ShowMedia( vlm_media_sys_t *p_media )
         if( asprintf( &psz_tmp, "%d", i+1 ) != -1 )
         {
             vlm_MessageAdd( p_msg_sub,
-                            vlm_MessageNew( psz_tmp, p_cfg->ppsz_input[i] ) );
+                            vlm_MessageNew( psz_tmp, "%s", p_cfg->ppsz_input[i] ) );
             free( psz_tmp );
         }
     }
 
     vlm_MessageAdd( p_msg,
-                    vlm_MessageNew( "output", p_cfg->psz_output ? p_cfg->psz_output : "" ) );
+                    vlm_MessageNew( "output", "%s", p_cfg->psz_output ? p_cfg->psz_output : "" ) );
 
     p_msg_sub = vlm_MessageAdd( p_msg, vlm_MessageNew( "options", vlm_NULL ) );
     for( i = 0; i < p_cfg->i_option; i++ )
@@ -1332,7 +1332,7 @@ static vlm_message_t *vlm_ShowMedia( vlm_media_sys_t *p_media )
         p_msg_instance = vlm_MessageAdd( p_msg_sub, vlm_MessageNew( "instance" , vlm_NULL ) );
 
         vlm_MessageAdd( p_msg_instance,
-                        vlm_MessageNew( "name" , p_instance->psz_name ? p_instance->psz_name : "default" ) );
+                        vlm_MessageNew( "name" , "%s", p_instance->psz_name ? p_instance->psz_name : "default" ) );
         vlm_MessageAdd( p_msg_instance,
                         vlm_MessageNew( "state",
                             val.i_int == PLAYING_S ? "playing" :
@@ -1347,7 +1347,7 @@ static vlm_message_t *vlm_ShowMedia( vlm_media_sys_t *p_media )
                       var_Get ## type( p_instance->p_input, a ) ) != -1 ) \
             { \
                 vlm_MessageAdd( p_msg_instance, vlm_MessageNew( a, \
-                                psz_tmp ) ); \
+                                "%s", psz_tmp ) ); \
                 free( psz_tmp ); \
             }
             APPEND_INPUT_INFO( "position", "%f", Float );
@@ -1362,7 +1362,7 @@ static vlm_message_t *vlm_ShowMedia( vlm_media_sys_t *p_media )
         if( asprintf( &psz_tmp, "%d", p_instance->i_index + 1 ) != -1 )
         {
             vlm_MessageAdd( p_msg_instance, vlm_MessageNew( "playlistindex",
-                            psz_tmp ) );
+                            "%s", psz_tmp ) );
             free( psz_tmp );
         }
     }
@@ -1411,7 +1411,7 @@ static vlm_message_t *vlm_Show( vlm_t *vlm, vlm_media_sys_t *media,
                           date.tm_hour, date.tm_min, date.tm_sec ) != -1 )
             {
                  vlm_MessageAdd( msg_schedule,
-                                 vlm_MessageNew( "date", psz_date ) );
+                                 vlm_MessageNew( "date", "%s", psz_date ) );
                  free( psz_date );
             }
         }
@@ -1439,13 +1439,13 @@ static vlm_message_t *vlm_Show( vlm_t *vlm, vlm_media_sys_t *media,
             sprintf( buffer, "%d/%d/%d-%d:%d:%d", date.tm_year, date.tm_mon,
                      date.tm_mday, date.tm_hour, date.tm_min, date.tm_sec);
 
-            vlm_MessageAdd( msg_schedule, vlm_MessageNew("period", buffer) );
+            vlm_MessageAdd( msg_schedule, vlm_MessageNew("period", "%s", buffer) );
         }
         else
             vlm_MessageAdd( msg_schedule, vlm_MessageNew("period", "0") );
 
         sprintf( buffer, "%d", schedule->i_repeat );
-        vlm_MessageAdd( msg_schedule, vlm_MessageNew( "repeat", buffer ) );
+        vlm_MessageAdd( msg_schedule, vlm_MessageNew( "repeat", "%s", buffer ) );
 
         msg_child =
             vlm_MessageAdd( msg_schedule, vlm_MessageNew("commands", vlm_NULL ) );
@@ -1480,7 +1480,8 @@ static vlm_message_t *vlm_Show( vlm_t *vlm, vlm_media_sys_t *media,
                       i_vod) == -1 )
             return NULL;
         p_msg = vlm_MessageNew( "show", vlm_NULL );
-        p_msg_child = vlm_MessageAdd( p_msg, vlm_MessageNew( "media", psz_count ) );
+        p_msg_child = vlm_MessageAdd( p_msg, vlm_MessageNew( "media", "%s",
+                                                             psz_count ) );
         free( psz_count );
 
         for( i = 0; i < vlm->i_media; i++ )
@@ -1539,7 +1540,7 @@ static vlm_message_t *vlm_Show( vlm_t *vlm, vlm_media_sys_t *media,
 #endif
 
                 vlm_MessageAdd( msg_schedule,
-                                vlm_MessageNew( "next launch", psz_date ) );
+                                vlm_MessageNew( "next launch", "%s", psz_date ) );
 #endif
             }
         }

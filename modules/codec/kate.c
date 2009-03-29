@@ -2,7 +2,7 @@
  * kate.c : a decoder for the kate bitstream format
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 09f2ed29fc0fb1089471f297f56593109a64ba8b $
+ * $Id$
  *
  * Authors: Vincent Penquerc'h <ogg.k.ogg.k@googlemail.com>
  *

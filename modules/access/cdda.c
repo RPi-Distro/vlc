@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003 the VideoLAN team
- * $Id: accc7a4f93c8af59c30e1639fbd8b42be3fde7c4 $
+ * $Id: 9bc7313d0339c5ac02ea123a346aecabfd24c8ff $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -465,7 +465,7 @@ static int GetTracks( access_t *p_access,
 //        }
 
         /* Define a "default name" */
-        if( asprintf( &psz_name, _("Audio CD - Track %i"), (i+1) ) == -1 )
+        if( asprintf( &psz_name, _("Audio CD - Track %02i"), (i+1) ) == -1 )
             psz_name = NULL;
 
         /* Create playlist items */

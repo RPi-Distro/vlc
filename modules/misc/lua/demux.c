@@ -2,7 +2,7 @@
  * demux.c :  Lua playlist demux module
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id$
+ * $Id: b106cf5c2452bf4a1ec87e773454d149b8a1fa6d $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *

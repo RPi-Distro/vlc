@@ -2,7 +2,7 @@
  * simple_preferences.hpp : Simple prefs
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: afff9f4bee3ef54269f181c6b6ce21b1573227d5 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

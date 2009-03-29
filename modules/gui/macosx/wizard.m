@@ -1,8 +1,8 @@
 /*****************************************************************************
  * wizard.m: MacOS X Streaming Wizard
  *****************************************************************************
- * Copyright (C) 2005-2007 the VideoLAN team
- * $Id: cf31817686f18913a40a7bfe77ed86d0f3bd9d99 $
+ * Copyright (C) 2005-2008 the VideoLAN team
+ * $Id: dedb7b70efe568b3f483d6bda6d87c5c22de2a55 $
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net>
  *
@@ -557,8 +557,7 @@ static VLCWizard *_o_sharedInstance = nil;
                     if( p_item->i_children <= 0 )
                     {
                         char *psz_uri = input_item_GetURI( p_item->p_input );
-                        [tempArray addObject: [NSString stringWithUTF8String:
-                        psz_uri]];
+                        [tempArray addObject: [NSString stringWithUTF8String: psz_uri]];
                         free( psz_uri );
                         stop = NO;
                     }
@@ -710,6 +709,9 @@ static VLCWizard *_o_sharedInstance = nil;
         } else {
             [o_userSelections setObject:@"NO" forKey:@"trnscdAudio"];
         }
+
+        /* store the currently selected item for further reference */
+        int i_temp = [[o_t5_matrix_encap selectedCell] tag];
 
         /* disable all encap-formats */
         [[o_t5_matrix_encap cellAtRow:0 column:0] setEnabled:NO];
@@ -1048,6 +1050,10 @@ static VLCWizard *_o_sharedInstance = nil;
         }
         if (anythingEnabled == YES)
         {
+            /* re-select the previously chosen item, if available */
+            if( [[o_t5_matrix_encap cellWithTag: i_temp] isEnabled] )
+                [o_t5_matrix_encap selectCellWithTag: i_temp];
+
             /* go the encap-tab */
             [o_tab_pageHolder selectTabViewItemAtIndex:4];
         } else {
@@ -1468,10 +1474,9 @@ static VLCWizard *_o_sharedInstance = nil;
         if ([[o_userSelections objectForKey:@"trnscdVideo"] isEqualToString:@"YES"])
         {
             [o_trnscdCmd appendString: @"transcode{"];
-            [o_trnscdCmd appendFormat: @"vcodec=%s,vb=%i", [[[o_videoCodecs
-                objectAtIndex:[[o_userSelections objectForKey:@"trnscdVideoCodec"]
-                intValue]] objectAtIndex:1] UTF8String],  [[o_userSelections
-                objectForKey:@"trnscdVideoBitrate"] intValue]];
+            [o_trnscdCmd appendFormat: @"vcodec=%@,vb=%i", 
+                [[o_videoCodecs objectAtIndex:[[o_userSelections objectForKey:@"trnscdVideoCodec"] intValue]] objectAtIndex:1],
+                [[o_userSelections objectForKey:@"trnscdVideoBitrate"] intValue]];
             if ([[o_userSelections objectForKey:@"trnscdAudio"] isEqualToString:@"YES"])
             {
                 [o_trnscdCmd appendString: @","];
@@ -1496,21 +1501,20 @@ static VLCWizard *_o_sharedInstance = nil;
                 /* in case we transcode the audio only, add this */
                 [o_trnscdCmd appendString: @"transcode{"];
             }
-            [o_trnscdCmd appendFormat: @"acodec=%s,ab=%i}:", [[[o_audioCodecs
-                objectAtIndex:[[o_userSelections objectForKey:@"trnscdAudioCodec"]
-                intValue]] objectAtIndex:1] UTF8String],  [[o_userSelections
-                objectForKey:@"trnscdAudioBitrate"] intValue]];
+            [o_trnscdCmd appendFormat: @"acodec=%@,ab=%i}:", 
+                [[o_audioCodecs objectAtIndex:[[o_userSelections objectForKey:@"trnscdAudioCodec"] intValue]] objectAtIndex:1],
+                [[o_userSelections objectForKey:@"trnscdAudioBitrate"] intValue]];
         }
  
         if ([[o_userSelections objectForKey:@"trnscdOrStrmg"] isEqualToString:@"trnscd"])
         {
             /* we are just transcoding and dumping the stuff to a file */
             [o_opts_string appendFormat:
-                @":sout=#%s%sstandard{mux=%s,dst=%s,access=file}", [o_duplicateCmd
-                UTF8String], [o_trnscdCmd UTF8String], [[[o_encapFormats
-                objectAtIndex: [[o_userSelections objectForKey:@"encapFormat"]
-                intValue]] objectAtIndex:0] UTF8String], [[[o_userSelections
-                objectForKey: @"trnscdFilePath"] objectAtIndex: x] UTF8String]];
+                @":sout=#%@%@standard{mux=%@,dst=%@,access=file}", 
+                o_duplicateCmd,
+                o_trnscdCmd, 
+                [[o_encapFormats objectAtIndex: [[o_userSelections objectForKey:@"encapFormat"] intValue]] objectAtIndex:0],
+                [[o_userSelections objectForKey: @"trnscdFilePath"] objectAtIndex: x]];
         }
         else
         {
@@ -1526,31 +1530,28 @@ static VLCWizard *_o_sharedInstance = nil;
                 }
                 else
                 {
-                    [o_sap_option appendFormat: @"sap,name=\"%s\"",
-                        [[o_userSelections objectForKey:@"sapText"] UTF8String]];
+                    [o_sap_option appendFormat: @"sap,name=\"%@\"",
+                        [o_userSelections objectForKey:@"sapText"]];
                 }
                 if( [[o_strmgMthds objectAtIndex: [[o_userSelections objectForKey: @"stmgMhd"] intValue]] objectAtIndex:0] == @"rtp" )
                 {
                     /* RTP is no access out, but a stream out module */
                     [o_opts_string appendFormat:
-                                             @":sout=#%s%srtp{mux=%s,dst=%s,%s}",
-                        [o_duplicateCmd UTF8String], [o_trnscdCmd UTF8String],
-                        [[[o_encapFormats objectAtIndex: [[o_userSelections objectForKey: @"encapFormat"] intValue]] objectAtIndex:0]
-                            UTF8String], 
-                        [[o_userSelections objectForKey: @"stmgDest"] UTF8String],
-                        [o_sap_option UTF8String]];
+                                             @":sout=#%@%@rtp{mux=%@,dst=%@,%@}",
+                        o_duplicateCmd, o_trnscdCmd,
+                        [[o_encapFormats objectAtIndex: [[o_userSelections objectForKey: @"encapFormat"] intValue]] objectAtIndex:0], 
+                        [o_userSelections objectForKey: @"stmgDest"],
+                        o_sap_option];
                 }
                 else
                 {
                     [o_opts_string appendFormat:
-                                             @":sout=#%s%sstandard{mux=%s,dst=%s,access=%s,%s}",
-                        [o_duplicateCmd UTF8String], [o_trnscdCmd UTF8String],
-                        [[[o_encapFormats objectAtIndex: [[o_userSelections objectForKey: @"encapFormat"] intValue]] objectAtIndex:0]
-                            UTF8String], 
-                        [[o_userSelections objectForKey: @"stmgDest"] UTF8String], 
-                        [[[o_strmgMthds objectAtIndex: [[o_userSelections objectForKey: @"stmgMhd"] intValue]] objectAtIndex:0]
-                            UTF8String], 
-                        [o_sap_option UTF8String]];                    
+                                             @":sout=#%@%@standard{mux=%@,dst=%@,access=%@,%@}",
+                        o_duplicateCmd, o_trnscdCmd,
+                        [[o_encapFormats objectAtIndex: [[o_userSelections objectForKey: @"encapFormat"] intValue]] objectAtIndex:0], 
+                        [o_userSelections objectForKey: @"stmgDest"],
+                        [[o_strmgMthds objectAtIndex: [[o_userSelections objectForKey: @"stmgMhd"] intValue]] objectAtIndex:0], 
+                        o_sap_option];
                 }
             }
             else
@@ -1560,24 +1561,22 @@ static VLCWizard *_o_sharedInstance = nil;
                 {
                     /* RTP is different from the other protocols, as it isn't provided through an access out module anymore */
                     [o_opts_string appendFormat:
-                                             @":sout=#%s%srtp{mux=%s,dst=%s}",
-                        [o_duplicateCmd UTF8String], 
-                        [o_trnscdCmd UTF8String],
-                        [[[o_encapFormats objectAtIndex: [[o_userSelections objectForKey: @"encapFormat"] intValue]] objectAtIndex:0]
-                            UTF8String], 
-                        [[o_userSelections objectForKey: @"stmgDest"] UTF8String]];
+                                             @":sout=#%@%@rtp{mux=%@,dst=%@}",
+                        o_duplicateCmd,
+                        o_trnscdCmd,
+                        [[o_encapFormats objectAtIndex: [[o_userSelections objectForKey: @"encapFormat"] intValue]] objectAtIndex:0], 
+                        [o_userSelections objectForKey: @"stmgDest"]];
                 }
                 else
                 {
                     /* all other protocols are cool */
                     [o_opts_string appendFormat:
-                                             @":sout=#%s%sstandard{mux=%s,dst=%s,access=%s}",
-                        [o_duplicateCmd UTF8String], 
-                        [o_trnscdCmd UTF8String],
-                        [[[o_encapFormats objectAtIndex: [[o_userSelections objectForKey: @"encapFormat"] intValue]] objectAtIndex:0]
-                            UTF8String], 
-                        [[o_userSelections objectForKey: @"stmgDest"] UTF8String], 
-                        [[[o_strmgMthds objectAtIndex: [[o_userSelections objectForKey: @"stmgMhd"] intValue]] objectAtIndex:0] UTF8String]];
+                                             @":sout=#%@%@standard{mux=%@,dst=%@,access=%@}",
+                        o_duplicateCmd,
+                        o_trnscdCmd,
+                        [[o_encapFormats objectAtIndex: [[o_userSelections objectForKey: @"encapFormat"] intValue]] objectAtIndex:0], 
+                        [o_userSelections objectForKey: @"stmgDest"],
+                        [[o_strmgMthds objectAtIndex: [[o_userSelections objectForKey: @"stmgMhd"] intValue]] objectAtIndex:0]];
                 }
             }
         }

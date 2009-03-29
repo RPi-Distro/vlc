@@ -41,7 +41,7 @@ host_triplet = @host@
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@am__append_2 = VLC\ Plugin.plugin
 subdir = projects/mozilla
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in \
-	$(srcdir)/npvlc_rc.rc.in
+	$(srcdir)/npvlc_rc.rc.in $(srcdir)/vlc.r.in COPYING
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
@@ -56,7 +56,7 @@ am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
 CONFIG_HEADER = $(top_builddir)/config.h
-CONFIG_CLEAN_FILES = npvlc_rc.rc
+CONFIG_CLEAN_FILES = npvlc_rc.rc vlc.r
 am__vpath_adj_setup = srcdirstrip=`echo "$(srcdir)" | sed 's|.|.|g'`;
 am__vpath_adj = case $$p in \
     $(srcdir)/*) f=`echo "$$p" | sed "s|^$$srcdirstrip/||"`;; \
@@ -68,11 +68,11 @@ am__installdirs = "$(DESTDIR)$(libdir)" "$(DESTDIR)$(npvlcdir)" \
 libLTLIBRARIES_INSTALL = $(INSTALL)
 npvlcLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES) $(npvlc_LTLIBRARIES)
-am__libvlcplugin_la_SOURCES_DIST = vlcshell.cpp vlcplugin.cpp \
-	vlcplugin.h control/npolibvlc.cpp control/npolibvlc.h \
-	control/nporuntime.cpp control/nporuntime.h \
-	support/classinfo.h support/npunix.c support/npmac.cpp \
-	support/npwin.cpp
+am__libvlcplugin_la_SOURCES_DIST = vlcshell.cpp vlcshell.h \
+	vlcplugin.cpp vlcplugin.h control/npolibvlc.cpp \
+	control/npolibvlc.h control/nporuntime.cpp \
+	control/nporuntime.h support/classinfo.h support/npunix.c \
+	support/npmac.cpp support/npwin.cpp
 am__objects_1 = libvlcplugin_la-vlcshell.lo \
 	libvlcplugin_la-vlcplugin.lo libvlcplugin_la-npolibvlc.lo \
 	libvlcplugin_la-nporuntime.lo
@@ -89,8 +89,8 @@ libvlcplugin_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(libvlcplugin_la_LDFLAGS) $(LDFLAGS) -o $@
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@am_libvlcplugin_la_rpath = -rpath \
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@	$(npvlcdir)
-am__npvlc_la_SOURCES_DIST = vlcshell.cpp vlcplugin.cpp vlcplugin.h \
-	control/npolibvlc.cpp control/npolibvlc.h \
+am__npvlc_la_SOURCES_DIST = vlcshell.cpp vlcshell.h vlcplugin.cpp \
+	vlcplugin.h control/npolibvlc.cpp control/npolibvlc.h \
 	control/nporuntime.cpp control/nporuntime.h \
 	support/classinfo.h support/npunix.c support/npmac.cpp \
 	support/npwin.cpp
@@ -260,6 +260,7 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
+LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
@@ -579,6 +580,8 @@ OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -698,13 +701,15 @@ sharedstatedir = @sharedstatedir@
 srcdir = @srcdir@
 sysconfdir = @sysconfdir@
 target_alias = @target_alias@
+top_build_prefix = @top_build_prefix@
 top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 MOSTLYCLEANFILES = $(am__append_1)
 CLEANFILES = $(BUILT_SOURCES) $(am__append_2)
-EXTRA_DIST = $(DIST_sources) install.js npvlc_rc.rc.in vlc.r
+EXTRA_DIST = $(DIST_sources) install.js npvlc_rc.rc.in vlc.r COPYING
 SOURCES_mozilla_common = \
 	vlcshell.cpp \
+	vlcshell.h \
 	vlcplugin.cpp \
 	vlcplugin.h \
 	control/npolibvlc.cpp \
@@ -779,7 +784,6 @@ DIST_sources = $(SOURCES_mozilla_common) \
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@noinst_npvlc_rc_DATA = npvlc_rc.$(OBJEXT)
 @BUILD_MOZILLA_TRUE@@HAVE_WIN32_TRUE@noinst_npvlc_rcdir = 
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@noinst_DATA = npvlc.rsrc VLC\ Plugin.plugin
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@ACTION = "release-makefile" PRODUCT="VLC Plugin.plugin" src_dir=$(srcdir) build_dir=$(top_builddir) sh $(srcdir)/projects/macosx/framework/Pre-Compile.sh
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@npvlc_LTLIBRARIES = libvlcplugin.la
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@npvlc = libvlcplugin$(LIBEXT)
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_FALSE@@HAVE_WIN32_FALSE@npvlcdir = $(libdir)/mozilla/plugins
@@ -824,6 +828,8 @@ $(top_srcdir)/configure: @MAINTAINER_MODE_TRUE@ $(am__configure_deps)
 $(ACLOCAL_M4): @MAINTAINER_MODE_TRUE@ $(am__aclocal_m4_deps)
 	cd $(top_builddir) && $(MAKE) $(AM_MAKEFLAGS) am--refresh
 npvlc_rc.rc: $(top_builddir)/config.status $(srcdir)/npvlc_rc.rc.in
+	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
+vlc.r: $(top_builddir)/config.status $(srcdir)/vlc.r.in
 	cd $(top_builddir) && $(SHELL) ./config.status $(subdir)/$@
 install-libLTLIBRARIES: $(lib_LTLIBRARIES)
 	@$(NORMAL_INSTALL)
@@ -1278,12 +1284,16 @@ uninstall-am: uninstall-libLTLIBRARIES uninstall-noinst_npvlc_rcDATA \
 
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@VLC\ Plugin.plugin: npvlc.rsrc $(lib_LTLIBRARIES)
 @BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	rm -Rf "$@"
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(INSTALL) -d "$@/Contents/MacOS/lib"
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(INSTALL) -d "$@/Contents/Resources"
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(INSTALL) npvlc.rsrc "$@/Contents/Resources/VLC Plugin.rsrc"
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	cp -r "$(top_srcdir)/extras/package/macosx/plugin/English.lproj" "$@/Contents/Resources/"
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	cp -r "$(top_builddir)/extras/package/macosx/plugin/English.lproj" "$@/Contents/Resources/"
-@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(INSTALL) "$(top_builddir)/extras/package/macosx/plugin/Info.plist" "$@/Contents/Info.plist"
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(INSTALL) -d "VLC-Plugin.plugin/Contents/MacOS/lib"
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(INSTALL) -d "VLC-Plugin.plugin/Contents/Resources"
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	ACTION="release-makefile" PRODUCT="VLC-Plugin.plugin" src_dir=$(srcdir) build_dir=$(top_builddir) sh ../macosx/framework/Pre-Compile.sh
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(INSTALL) .libs/npvlc.dylib "VLC-Plugin.plugin/Contents/MacOS/VLC Plugin"
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	dylib="VLC-Plugin.plugin/Contents/MacOS/VLC Plugin"; $(FIXEXECPATH);
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(INSTALL) npvlc.rsrc "VLC-Plugin.plugin/Contents/Resources/VLC Plugin.rsrc"
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	cp -r "$(top_srcdir)/extras/package/macosx/plugin/English.lproj" "VLC-Plugin.plugin/Contents/Resources/"
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	cp -r "$(top_builddir)/extras/package/macosx/plugin/English.lproj" "VLC-Plugin.plugin/Contents/Resources/"
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	$(INSTALL) "$(top_builddir)/extras/package/macosx/plugin/Info.plist" "VLC-Plugin.plugin/Contents/Info.plist"
+@BUILD_MOZILLA_TRUE@@HAVE_DARWIN_TRUE@@HAVE_WIN32_FALSE@	mv "VLC-Plugin.plugin" "VLC Plugin.plugin"
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

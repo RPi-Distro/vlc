@@ -56,6 +56,8 @@
 
 #include "npupp.h"
 
+#include "../vlcshell.h"
+
 #ifdef __MWERKS__
 #ifndef powerc
 #pragma pointers_in_A0
@@ -92,7 +94,6 @@
 #else
 #define PLUGINDEBUGSTR(msg) {}
 #endif
-
 
 #if defined(XP_MACOSX) && defined(__POWERPC__) && (!defined(TARGET_RT_MAC_CFM))
 

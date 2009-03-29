@@ -2,7 +2,7 @@
  * sort.c : Playlist sorting functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id$
+ * $Id: 9ec10f3c1937497aac1623f626a3637b792ca496 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -156,7 +156,7 @@ static int playlist_cmp(const void *first, const void *second)
     } \
     else \
     { \
-        if( !integer ) i_test = strcmp( psz_a, psz_b ); \
+        if( !integer ) i_test = strcasecmp( psz_a, psz_b ); \
         else           i_test = atoi( psz_a ) - atoi( psz_b ); \
     } \
     free( psz_a ); \

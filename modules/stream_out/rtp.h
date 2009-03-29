@@ -2,7 +2,7 @@
  * rtp.h: rtp stream output module header
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 8788dc8d07c0a7266f2fdc54d80cab23e7d1998d $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont

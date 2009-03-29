@@ -2,7 +2,7 @@
  * m4a.c : MPEG-4 audio demuxer
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: a54f793b82c5b4a4c185eee340c051562733a59f $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

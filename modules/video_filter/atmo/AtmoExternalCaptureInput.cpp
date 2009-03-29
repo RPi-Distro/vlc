@@ -5,11 +5,15 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 535cc95baeb3d7d4b39dc8035329e657b850f5cd $
+ * $Id: 8d8cec6cebb7d75ca9227102f27c2133d6038f58 $
 */
 
 #include "AtmoExternalCaptureInput.h"
 #include "AtmoTools.h"
+
+#ifndef INT64_C
+#define INT64_C(c)  c ## LL
+#endif
 
 #if defined(_ATMO_VLC_PLUGIN_)
 

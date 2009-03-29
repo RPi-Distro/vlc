@@ -2,7 +2,7 @@
  * input_slider.hpp : A slider that controls an input
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: fa6214d9444adf8a13a43b41d4ea42ce4920b177 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

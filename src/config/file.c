@@ -2,7 +2,7 @@
  * file.c: configuration file handling
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 894ebbb14e081062cd69a7f446e5881b0612b9a4 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

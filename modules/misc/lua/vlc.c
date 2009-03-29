@@ -2,7 +2,7 @@
  * vlc.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id$
+ * $Id: 397c279e7a3d99c3098fcfa3cf789d65f67cbf05 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -317,7 +317,7 @@ void __vlclua_read_custom_meta_data( vlc_object_t *p_this, lua_State *L,
                                  psz_meta_category, psz_meta_name,
                                  psz_meta_value );
                         input_item_AddInfo( p_input, psz_meta_category,
-                                           psz_meta_name, psz_meta_value );
+                                           psz_meta_name, "%s", psz_meta_value );
                     }
                     lua_pop( L, 1 ); /* pop item */
                     /* ... item meta key value key2 */

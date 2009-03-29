@@ -2,7 +2,7 @@
  * osdmenu.c: osd filter module
  *****************************************************************************
  * Copyright (C) 2004-2007 M2X
- * $Id: 3e8e583530ccba94eafa488aeb4d8fa0e29778f0 $
+ * $Id$
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *

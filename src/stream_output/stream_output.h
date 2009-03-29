@@ -2,7 +2,7 @@
  * stream_output.h : internal stream output
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: 7745a9ebf18c6cfa9919bbc63f0e945fa7336bfc $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
