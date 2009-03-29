@@ -2,7 +2,7 @@
  * rtcp.c: RTCP stream output support
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id$
+ * $Id: 39091a443315109b02e74ca7c9b6da044a9f020b $
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -35,6 +35,10 @@
 #include "rtp.h"
 
 #include <assert.h>
+
+#ifndef SOL_IP
+# define SOL_IP IPPROTO_IP
+#endif
 
 /*
  * NOTE on RTCP implementation:
@@ -99,6 +103,16 @@ rtcp_sender_t *OpenRTCP (vlc_object_t *obj, int rtp_fd, int proto,
         dport++;
 
         fd = net_OpenDgram (obj, src, sport, dst, dport, AF_UNSPEC, proto);
+
+        /* Copy the multicast IPv4 TTL value (useless for IPv6) */
+        if (fd != -1)
+        {
+            int ttl;
+            socklen_t len = sizeof (ttl);
+
+            if (!getsockopt (rtp_fd, SOL_IP, IP_MULTICAST_TTL, &ttl, &len))
+                setsockopt (fd, SOL_IP, IP_MULTICAST_TTL, &ttl, len);
+        }
     }
 
     if (fd == -1)

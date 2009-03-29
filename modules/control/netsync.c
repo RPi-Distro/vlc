@@ -2,7 +2,7 @@
  * netsync.c: synchronisation between several network clients.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 8be09774b1e4104c626d0226ab742345829795a1 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000 the VideoLAN team
- * $Id: 0270b96db1b1c7165ea7ab5927be9ffb1f3cd1c9 $
+ * $Id: f3a0305a780cbec1ba78a700726aed3ccaa310e0 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -179,13 +179,14 @@ typedef enum vlc_dialog {
 #define INTF_ABOUT_MSG LICENSE_MSG
 
 #define EXTENSIONS_AUDIO "*.a52;*.aac;*.ac3;*.dts;*.flac;*.m4a;*.m4p;*.mka;" \
-                         "*.mod;*.mp1;*.mp2;*.mp3;*.ogg;*.oma;*.spx;" \
+                         "*.mod;*.mp1;*.mp2;*.mp3;*.oga;*.ogg;*.oma;*.spx;" \
                          "*.wav;*.wma;*.xm"
 
 #define EXTENSIONS_VIDEO "*.asf;*.avi;*.divx;*.dv;*.flv;*.gxf;*.m1v;*.m2v;" \
                          "*.m2ts;*.m4v;*.mkv;*.mov;*.mp2;*.mp4;*.mpeg;*.mpeg1;" \
                          "*.mpeg2;*.mpeg4;*.mpg;*.mts;*.mxf;*.ogg;*.ogm;" \
-                         "*.ps;*.ts;*.vob;*.wmv"
+                         "*.ogv;*.ogx;" \
+                         "*.ps;*.rm;*.rmvb;*.ts;*.vob;*.wmv"
 
 #define EXTENSIONS_PLAYLIST "*.asx;*.b4s;*.m3u;*.pls;*.vlc;*.xspf"
 

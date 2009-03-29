@@ -2,7 +2,7 @@
  * mux.c: muxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 5853db72c939a2f7cddd4fdcc90f9a3d86ca568d $
+ * $Id: 90d72ef3268dd962d589a8203948fc6384b8b35c $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -252,6 +252,10 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                    &codec->sample_aspect_ratio.den,
                    i_aspect_num * (int64_t)codec->height,
                    i_aspect_den * (int64_t)codec->width, 1 << 30 );
+#if LIBAVFORMAT_VERSION_INT >= ((52<<16)+(21<<8)+0)
+        stream->sample_aspect_ratio.num = codec->sample_aspect_ratio.num;
+        stream->sample_aspect_ratio.den = codec->sample_aspect_ratio.den;
+#endif
         codec->time_base.den = p_input->p_fmt->video.i_frame_rate;
         codec->time_base.num = p_input->p_fmt->video.i_frame_rate_base;
         break;

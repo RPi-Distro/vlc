@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: d48bb0d6159d40eb629458c9307cd14e09879eec $
+ * $Id: 68508c940a82b14cbd7ac51fe616c3ae3edf61be $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1122,9 +1122,11 @@ static int  Open ( vlc_object_t *p_this )
     if( val.i_int >= 0 && val.i_int <= 32 )
         p_sys->param.analyse.i_luma_deadzone[1] = val.i_int;
 
+#if X264_BUILD <= 65
     var_Get( p_enc, SOUT_CFG_PREFIX "direct-8x8", &val );
     if( val.i_int >= -1 && val.i_int <= 1 )
         p_sys->param.analyse.i_direct_8x8_inference = val.i_int;
+#endif
 #endif
 
     var_Get( p_enc, SOUT_CFG_PREFIX "asm", &val );

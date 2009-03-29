@@ -1,8 +1,8 @@
 /*****************************************************************************
  * taglib.cpp: Taglib tag parser/writer
  *****************************************************************************
- * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: e08f5e7f5fcfce81e09f0fba94f72e1edfe9a77d $
+ * Copyright (C) 2003-2009 the VideoLAN team
+ * $Id: 2b390591c10455f10cc033ff305337518df69282 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman@videolanorg>
@@ -437,6 +437,7 @@ static int WriteMeta( vlc_object_t *p_this )
     playlist_t *p_playlist = (playlist_t *)p_this;
     meta_export_t *p_export = (meta_export_t *)p_playlist->p_private;
     input_item_t *p_item = p_export->p_item;
+    FileRef f;
 
     if( p_item == NULL )
     {
@@ -444,7 +445,25 @@ static int WriteMeta( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    FileRef f( p_export->psz_file );
+#if defined(WIN32) || defined (UNDER_CE)
+    if(GetVersion() < 0x80000000)
+    {
+        wchar_t wpath[MAX_PATH + 1];
+        if( !MultiByteToWideChar( CP_UTF8, 0, p_export->psz_file, -1, wpath, MAX_PATH) )
+            return VLC_EGENERIC;
+        wpath[MAX_PATH] = L'\0';
+        f = FileRef( wpath );
+    }
+    else
+        return VLC_EGENERIC;
+#else
+    const char* local_name = ToLocale( p_export->psz_file );
+    if( !local_name )
+        return VLC_EGENERIC;
+    f = FileRef( local_name );
+    LocaleFree( local_name );
+#endif
+
     if( f.isNull() || !f.tag() || f.file()->readOnly() )
     {
         msg_Err( p_this, "File %s can't be opened for tag writing\n",

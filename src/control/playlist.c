@@ -2,7 +2,7 @@
  * playlist.c: libvlc new API playlist handling functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 86d68688ad87ae948810d2f3ad9e1ac85db34c10 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -158,10 +158,11 @@ int libvlc_playlist_add( libvlc_instance_t *p_instance, const char *psz_uri,
                                          0, NULL, p_e );
 }
 
-int libvlc_playlist_add_extended( libvlc_instance_t *p_instance,
-                                  const char *psz_uri, const char *psz_name,
-                                  int i_options, const char **ppsz_options,
-                                  libvlc_exception_t *p_e )
+static int PlaylistAddExtended( libvlc_instance_t *p_instance,
+                                const char *psz_uri, const char *psz_name,
+                                int i_options, const char **ppsz_options,
+                                unsigned i_option_flags,
+                                libvlc_exception_t *p_e )
 {
     assert( PL );
     if( playlist_was_locked( p_instance ) )
@@ -170,11 +171,28 @@ int libvlc_playlist_add_extended( libvlc_instance_t *p_instance,
                                "calling libvlc_playlist_add" );
         return VLC_EGENERIC;
     }
-    return playlist_AddExt( PL, psz_uri, psz_name,
-                            PLAYLIST_INSERT, PLAYLIST_END, -1, ppsz_options,
-                            i_options, 1, pl_Unlocked );
+    return playlist_AddExtOpt( PL, psz_uri, psz_name, PLAYLIST_INSERT,
+                               PLAYLIST_END, -1, ppsz_options, i_options,
+                               i_option_flags, true, pl_Unlocked );
 }
-
+int libvlc_playlist_add_extended( libvlc_instance_t *p_instance,
+                                  const char *psz_uri, const char *psz_name,
+                                  int i_options, const char **ppsz_options,
+                                  libvlc_exception_t *p_e )
+{
+    return PlaylistAddExtended( p_instance, psz_uri, psz_name,
+                                i_options, ppsz_options, VLC_INPUT_OPTION_TRUSTED,
+                                p_e );
+}
+int libvlc_playlist_add_extended_untrusted( libvlc_instance_t *p_instance,
+                                            const char *psz_uri, const char *psz_name,
+                                            int i_options, const char **ppsz_options,
+                                            libvlc_exception_t *p_e )
+{
+    return PlaylistAddExtended( p_instance, psz_uri, psz_name,
+                                i_options, ppsz_options, 0,
+                                p_e );
+}
 
 int libvlc_playlist_delete_item( libvlc_instance_t *p_instance, int i_id,
                                  libvlc_exception_t *p_e )

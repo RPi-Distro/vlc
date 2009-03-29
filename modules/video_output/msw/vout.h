@@ -2,7 +2,7 @@
  * vout.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id$
+ * $Id: d964c3630007c5479d34ebada27f0a71d985ce12 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>

@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id$
+ * $Id: 05c1aae0cbf9b4fcbc9cb2634e7e11684a1fefe6 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -85,7 +85,7 @@ static int vlclua_osd_message( lua_State *L )
     const char *psz_message = luaL_checkstring( L, 1 );
     int i_chan = luaL_optint( L, 2, DEFAULT_CHAN );
     vlc_object_t *p_this = vlclua_get_this( L );
-    vout_OSDMessage( p_this, i_chan, psz_message );
+    vout_OSDMessage( p_this, i_chan, "%s", psz_message );
     return 0;
 }
 

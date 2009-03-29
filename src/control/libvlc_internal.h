@@ -3,7 +3,7 @@
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 7d62b88ac2162bf13066cb5b333e1660ba0ce45d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -45,6 +45,9 @@ VLC_EXPORT (int, libvlc_InternalCleanup, ( libvlc_int_t * ) );
 VLC_EXPORT (int, libvlc_InternalDestroy, ( libvlc_int_t * ) );
 
 VLC_EXPORT (int, libvlc_InternalAddIntf, ( libvlc_int_t *, const char * ) );
+
+VLC_EXPORT (int, playlist_AddExtOpt, ( playlist_t *, const char *, const char *, int, int, mtime_t, const char *const *, int, int, bool, bool ) );
+
 
 /***************************************************************************
  * Opaque structures for libvlc API

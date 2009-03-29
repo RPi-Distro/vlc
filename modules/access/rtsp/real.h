@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id$
+ * $Id: d4513d192082b6b217f25deab7bd725302c22595 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -48,6 +48,6 @@ int real_get_rdt_chunk_header(rtsp_client_t *, rmff_pheader_t *);
 int real_get_rdt_chunk(rtsp_client_t *, rmff_pheader_t *, unsigned char **);
 rmff_header_t *real_setup_and_get_header(rtsp_client_t *, int bandwidth);
 
-int asmrp_match(const char *rules, int bandwidth, int *matches) ;
+int asmrp_match(const char *rules, int bandwidth, int *matches, int matchsize) ;
 
 #endif

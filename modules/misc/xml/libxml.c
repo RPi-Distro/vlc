@@ -2,7 +2,7 @@
  * libxml.c: XML parser using libxml2
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 1b25a828c54b221ff0db7c0bc3b800b77a576426 $
+ * $Id: 6712dcb748434f7f6dc2ff90d0a392e51999d5a8 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -74,6 +74,9 @@ static int Open( vlc_object_t *p_this )
 {
     xml_t *p_xml = (xml_t *)p_this;
 
+    if( !xmlHasFeature( XML_WITH_THREAD ) )
+        return VLC_EGENERIC;
+
     xmlInitParser();
 
     p_xml->pf_reader_create = ReaderCreate;
@@ -90,7 +93,6 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    xmlCleanupParser();
     VLC_UNUSED(p_this);
     return;
 }

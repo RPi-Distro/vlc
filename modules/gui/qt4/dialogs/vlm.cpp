@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 5b4724d58b7a983eec0171c5f801d0f798fe3825 $
+ * $Id: b873204703d41630dfc8df609704fcc3ace4e9b5 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -559,7 +559,7 @@ void VLMBroadcast::update()
 
 void VLMBroadcast::togglePlayPause()
 {
-    if( b_playing = true )
+    if( b_playing )
     {
         VLMWrapper::ControlBroadcast( name, ControlBroadcastPause );
         playButton->setIcon( QIcon( QPixmap( ":/pause_16px" ) ) );

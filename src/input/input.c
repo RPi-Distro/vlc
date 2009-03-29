@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
- * $Id: 6840657836708c4684c0b2f04efac3bce10fd289 $
+ * $Id: 9fc59c741625e66923ad4ed9a2f5f82bc2cd7f6c $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -2063,8 +2063,6 @@ static int InputSourceInit( input_thread_t *p_input,
                             const char *psz_forced_demux )
 {
     const bool b_master = in == &p_input->p->input;
-
-    char psz_dup[strlen (psz_mrl) + 1];
     const char *psz_access;
     const char *psz_demux;
     char *psz_path;
@@ -2073,10 +2071,13 @@ static int InputSourceInit( input_thread_t *p_input,
     vlc_value_t val;
     double f_fps;
 
-    strcpy( psz_dup, psz_mrl );
-
     if( !in ) return VLC_EGENERIC;
     if( !p_input ) return VLC_EGENERIC;
+
+    char *psz_dup = strdup( psz_mrl );
+
+    if( psz_dup == NULL )
+        goto error;
 
     /* Split uri */
     input_SplitMRL( &psz_access, &psz_demux, &psz_path, psz_dup );
@@ -2328,6 +2329,8 @@ static int InputSourceInit( input_thread_t *p_input,
         }
     }
 
+    free( psz_dup );
+
     /* get attachment
      * FIXME improve for b_preparsing: move it after GET_META and check psz_arturl */
     if( 1 || !p_input->b_preparsing )
@@ -2367,6 +2370,7 @@ error:
 
     if( in->p_access )
         access_Delete( in->p_access );
+    free( psz_dup );
 
     return VLC_EGENERIC;
 }

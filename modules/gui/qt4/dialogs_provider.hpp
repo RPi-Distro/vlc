@@ -2,7 +2,7 @@
  * dialogs_provider.hpp : Dialogs provider
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id$
+ * $Id: fe7d02b0df8694f88a8a4a992d59e2ebec4dd7e6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -68,7 +68,7 @@
     string += ");;";
 #define ADD_FILTER_ALL( string )       \
     string += qtr( "All Files" );      \
-    string += " (*.*)";
+    string += " (*)";
 
 enum {
     EXT_FILTER_MEDIA     =  0x01,

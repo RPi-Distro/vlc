@@ -2,7 +2,7 @@
  * cc608.c : CC 608/708 subtitles decoder
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: f753ff026f0dbcbe9abee9935e44cb59f9a38dd0 $
+ * $Id$
  *
  * Authors: Laurent Aimar < fenrir # via.ecp.fr>
  *

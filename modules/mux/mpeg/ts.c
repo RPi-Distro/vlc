@@ -2,7 +2,7 @@
  * ts.c: MPEG-II TS Muxer
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id$
+ * $Id: c4c64ad2dc0e6bd9b64b3878a932a8afdf4fd681 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -1065,7 +1065,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                      * is implemented for AAC in TS */
                     //p_stream->i_stream_type = 0x11; /* LOAS/LATM */
                     p_stream->i_stream_type = 0x0f; /* ADTS */
-                    p_stream->i_stream_id = 0xfa;
+                    p_stream->i_stream_id = 0xc0;
                     p_sys->i_mpeg4_streams++;
                     p_stream->i_es_id = p_stream->i_pid;
                     break;

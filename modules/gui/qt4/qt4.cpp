@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: f5f62bcc0f517982b843737b41acd1d2a93aa46c $
+ * $Id: 3545f4d2aac04121d5930aa3d0c199167a293345 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

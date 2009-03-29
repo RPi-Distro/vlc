@@ -2,7 +2,7 @@
  * bridge.c: bridge stream output module
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 1e0a7ada2dbcf3df5df1146e719b785e4a68d6f1 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

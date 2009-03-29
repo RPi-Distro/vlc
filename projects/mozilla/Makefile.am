@@ -4,10 +4,11 @@
 
 MOSTLYCLEANFILES = 
 CLEANFILES = $(BUILT_SOURCES)
-EXTRA_DIST = $(DIST_sources) install.js npvlc_rc.rc.in vlc.r
+EXTRA_DIST = $(DIST_sources) install.js npvlc_rc.rc.in vlc.r COPYING
 
 SOURCES_mozilla_common = \
 	vlcshell.cpp \
+	vlcshell.h \
 	vlcplugin.cpp \
 	vlcplugin.h \
 	control/npolibvlc.cpp \
@@ -104,13 +105,16 @@ endef
 
 VLC\ Plugin.plugin: npvlc.rsrc $(lib_LTLIBRARIES)
 	rm -Rf "$@"
-	$(INSTALL) -d "$@/Contents/MacOS/lib"
-	$(INSTALL) -d "$@/Contents/Resources"
-	$(INSTALL) npvlc.rsrc "$@/Contents/Resources/VLC Plugin.rsrc"
-	cp -r "$(top_srcdir)/extras/package/macosx/plugin/English.lproj" "$@/Contents/Resources/"
-	cp -r "$(top_builddir)/extras/package/macosx/plugin/English.lproj" "$@/Contents/Resources/"
-	$(INSTALL) "$(top_builddir)/extras/package/macosx/plugin/Info.plist" "$@/Contents/Info.plist"
-   ACTION="release-makefile" PRODUCT="VLC Plugin.plugin" src_dir=$(srcdir) build_dir=$(top_builddir) sh $(srcdir)/projects/macosx/framework/Pre-Compile.sh
+	$(INSTALL) -d "VLC-Plugin.plugin/Contents/MacOS/lib"
+	$(INSTALL) -d "VLC-Plugin.plugin/Contents/Resources"
+	ACTION="release-makefile" PRODUCT="VLC-Plugin.plugin" src_dir=$(srcdir) build_dir=$(top_builddir) sh ../macosx/framework/Pre-Compile.sh
+	$(INSTALL) .libs/npvlc.dylib "VLC-Plugin.plugin/Contents/MacOS/VLC Plugin"
+	dylib="VLC-Plugin.plugin/Contents/MacOS/VLC Plugin"; $(FIXEXECPATH);
+	$(INSTALL) npvlc.rsrc "VLC-Plugin.plugin/Contents/Resources/VLC Plugin.rsrc"
+	cp -r "$(top_srcdir)/extras/package/macosx/plugin/English.lproj" "VLC-Plugin.plugin/Contents/Resources/"
+	cp -r "$(top_builddir)/extras/package/macosx/plugin/English.lproj" "VLC-Plugin.plugin/Contents/Resources/"
+	$(INSTALL) "$(top_builddir)/extras/package/macosx/plugin/Info.plist" "VLC-Plugin.plugin/Contents/Info.plist"
+	mv "VLC-Plugin.plugin" "VLC Plugin.plugin"
 
 # uncomment if dependencies on XPCOM libs is sought
 #	if test -d "$(MOZILLA_SDK_PATH)/lib"; then \

@@ -2,7 +2,7 @@
  * image.c : image video output
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: 3bcecbcbe8272bda2b86b1af99548373b5f878e5 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

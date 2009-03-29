@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 2e0f270f6acf3300e43245eaa4898f06a4b9fc5c $
+ * $Id: 9e4dbc61d90a5b1072451680f74a3a194c44a2dc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -439,7 +439,7 @@ void SoutDialog::updateMRL()
 #define SMUX( x, txt ) if( ui.x->isChecked() ) sout.psz_mux = strdup( txt );
     SMUX( PSMux, "ps" );
     SMUX( TSMux, "ts" );
-    SMUX( MPEG1Mux, "mpeg" );
+    SMUX( MPEG1Mux, "mpeg1" );
     SMUX( OggMux, "ogg" );
     SMUX( ASFMux, "asf" );
     SMUX( MP4Mux, "mp4" );
@@ -459,7 +459,7 @@ void SoutDialog::updateMRL()
         {
             mrl = ":sout=#transcode{";
             mrl.append( "vcodec=" );
-            mrl.append( sout.psz_vcodec );
+            mrl.append( qfu( sout.psz_vcodec ) );
             mrl.append( "," );
             mrl.append( "vb=" );
             mrl.append( QString::number( sout.i_vb,10 ) );
@@ -480,7 +480,7 @@ void SoutDialog::updateMRL()
                 mrl = ":sout=#transcode{";
             }
             mrl.append( "acodec=" );
-            mrl.append( sout.psz_acodec );
+            mrl.append( qfu( sout.psz_acodec ) );
             mrl.append( "," );
             mrl.append( "ab=" );
             mrl.append( QString::number( sout.i_ab,10 ) );
@@ -496,7 +496,7 @@ void SoutDialog::updateMRL()
     if ( sout.b_file && sout.b_dump )
     {
         mrl = ":demux=dump :demuxdump-file=";
-        mrl.append( sout.psz_file );
+        mrl.append( qfu( sout.psz_file ) );
     }
     else
 
@@ -539,7 +539,7 @@ void SoutDialog::updateMRL()
             mrl.append( "std{access=file" );
             CHECKMUX();
             mrl.append( ",dst=" );
-            mrl.append( sout.psz_file );
+            mrl.append( qfu( sout.psz_file ) );
             mrl.append( "}" );
             more = true;
         }
@@ -551,7 +551,7 @@ void SoutDialog::updateMRL()
             mrl.append( "std{access=http" );
             CHECKMUX();
             mrl.append( ",dst=" );
-            mrl.append( sout.psz_http );
+            mrl.append( qfu( sout.psz_http ) );
             mrl.append( ":" );
             mrl.append( QString::number( sout.i_http,10 ) );
             mrl.append( "}" );
@@ -565,7 +565,7 @@ void SoutDialog::updateMRL()
             mrl.append( "std{access=mmsh" );
             CHECKMUX();
             mrl.append( ",dst=" );
-            mrl.append( sout.psz_mms );
+            mrl.append( qfu( sout.psz_mms ) );
             mrl.append( ":" );
             mrl.append( QString::number( sout.i_mms,10 ) );
             mrl.append( "}" );
@@ -581,7 +581,7 @@ void SoutDialog::updateMRL()
                 mrl.append( "std{access=udp" );
                 CHECKMUX();
                 mrl.append( ",dst=" );
-                mrl.append( sout.psz_udp );
+                mrl.append( qfu( sout.psz_udp ) );
                 mrl.append( ":" );
                 mrl.append( QString::number( sout.i_udp,10 ) );
             }
@@ -589,7 +589,7 @@ void SoutDialog::updateMRL()
             {
                 mrl.append( "rtp{" );
                 mrl.append( "dst=" );
-                mrl.append( sout.psz_rtp );
+                mrl.append( qfu( sout.psz_rtp ) );
                 CHECKMUX();
                 mrl.append( ",port=" );
                 mrl.append( QString::number( sout.i_rtp,10 ) );
@@ -607,10 +607,10 @@ void SoutDialog::updateMRL()
             {
                 mrl.append( ",sap," );
                 mrl.append( "group=\"" );
-                mrl.append( sout.psz_group );
+                mrl.append( qfu( sout.psz_group ) );
                 mrl.append( "\"," );
                 mrl.append( "name=\"" );
-                mrl.append( sout.psz_name );
+                mrl.append( qfu( sout.psz_name ) );
                 mrl.append( "\"" );
             }
 
@@ -624,13 +624,13 @@ void SoutDialog::updateMRL()
             ATLEASTONE();
             mrl.append( "std{access=shout,mux=ogg" );
             mrl.append( ",dst=" );
-            mrl.append( sout.sa_icecast.psz_username );
+            mrl.append( qfu( sout.sa_icecast.psz_username ) );
             mrl.append( "@" );
-            mrl.append( sout.psz_icecast );
+            mrl.append( qfu( sout.psz_icecast ) );
             mrl.append( ":" );
             mrl.append( QString::number( sout.i_icecast, 10 ) );
             mrl.append( "/" );
-            mrl.append( sout.psz_icecast_mountpoint );
+            mrl.append( qfu( sout.psz_icecast_mountpoint ) );
             mrl.append( "}" );
             more = true;
         }

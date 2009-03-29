@@ -1,3 +1,283 @@
+commit 34e429ee8b1c4c827a93724129381f5779d506b5
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Tue Dec 30 17:16:02 2008 +0200
+
+    PS mux implements MPEG1 as "mpeg1", not "mpeg" - fixes #2380
+    (cherry picked from commit dfbb9b5e4a754f42e686153c0d82291efb01324a)
+
+commit b34d09f9b5c5926666752f46e70aa60107263e01
+Author: Sidney Doria <ssdoria@gmail.com>
+Date:   Tue Dec 30 15:19:22 2008 +0100
+
+    l10n: Brazillian Portuguese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 87a2c44f5f827435b37961d57ca61fdf42154943
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Dec 29 01:05:44 2008 +0100
+
+    osx-wizard: make sure to only re-select encap formats that are actually available *coughcough*
+
+commit 0f2ad9ea4e437421827c9f651d148b69cf7aac8a
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Dec 29 00:03:00 2008 +0100
+
+    osx-wizard: fixed a couple of UTF8-bugs which prevented the proper naming of non-ascii output files
+    
+    additionally, the wizard now remembers the last selected encap format correctly
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 87127396b834306e87300d466328d461a58cdcfe
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Mon Dec 29 00:04:49 2008 +0100
+
+    framework: compilation fix
+
+commit ededbdb4023d8a11539e56d73581a04c14c3f045
+Author: Tadashi Jokagi <elf2000@users.sourceforge.net>
+Date:   Tue Dec 23 15:44:20 2008 +0100
+
+    l10n: Japanese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 391e53cc1897b2e770c4078c07bd17f0c495c6ca
+Author: Omer Ensari <oensari@gmail.com>
+Date:   Fri Dec 19 16:06:50 2008 +0100
+
+    l10n: Initial Kurmanji (Kurdish) translation
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit bdc4c9e2b486156517974f867c17cb970a7398e6
+Author: Myckel Habets <myckel@sdf.lonestar.org>
+Date:   Fri Dec 19 16:05:13 2008 +0100
+
+    l10n: Dutch fixes
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 36fd093c87ad770ac0e09cb888a87bcc1272240a
+Author: Eric Lassauge <lassauge@users.sf.net>
+Date:   Fri Dec 19 16:04:20 2008 +0100
+
+    l10n: French update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit bcca70d787d4ce8ed638a186a2016d5f0201d6e9
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Dec 19 01:17:05 2008 +0100
+
+    Telnet: fix win32 work.
+    
+    Code by fpostma on the forum - fpostma __ xs4all | nl
+    Thanks to Lorni for testing.
+    Close #2022
+
+commit eef31bda1385b5536d392311e0265e3ae8aeea32
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Fri Dec 19 00:07:02 2008 +0100
+
+    Add .rm and .rmvb extensions.
+
+commit 5a85f7f686ccd4f7fce9daf20d3a0662eff4b100
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Wed Dec 17 21:59:14 2008 +0100
+
+    Match the Real Demuxer from the branch with trunk.
+    
+    Backport of [910e28a178347d3ba913e503365184a21fa16ce2], [5ba06d3f71805cf58a4fd55cfc298e456efaea75], [aedd9391fe11bc71d4f097b2f72f59dc19e71aba], [ab7639bdedce1ef0562d985688a83ba72388826f] and [6de3db02f9b9b45d92743d3274ee84b1ec8a54de]
+
+commit fe3896a96a539e514bcae12adf5a8b5231c876aa
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Tue Oct 28 14:45:11 2008 +0200
+
+    remove unneeded if for aac-profile
+    default aac-profile to low instead of main
+    (cherry picked from commit 397a4949116cf332dca73f904740c2768efff015)
+
+commit 218b97eb355a6e8cf29ab3f5fe06c80506db4df9
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sun Dec 14 12:57:03 2008 +0100
+
+    Increase its priority.
+    
+    It should be safe(?).
+    It actually works better than ffmpeg except that seeking without
+    index does not work.
+    It was used anyway for .rm file.
+
+commit 7150ca8006ffb9570d4d98be5bf7bda5e61c390a
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sun Dec 14 12:22:16 2008 +0100
+
+    Big clean up/rewrite of the real demuxer.
+    
+    It fixes:
+     - a bunch of array overflows
+     - a bunch of non checked malloc.
+     - pcr value
+     - video frame gathering.
+     - seeking.
+
+commit 3fdcbbdd03151909fd1e02119e2aba7c9d3accee
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sun Dec 14 16:37:46 2008 +0100
+
+    Removed useless real video code in avcodec.
+    (cherry picked from commit 94086c17556b9a49007150246f9421c3eaa3831a)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 6ef11c7ac8504196308aeaaa6a0b8efbe8bec940
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Sun Dec 14 16:37:09 2008 +0100
+
+    Fixed frame rate output value.
+    (cherry picked from commit 14f520d1ae6d7cb9a1cb11b90a4986ac7ae90367)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 40a42de8a814256cb571582ec343ff3e0c8337ea
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 17 20:56:05 2008 +0100
+
+    [FFmpeg] support for native RV40
+    (cherry picked from commit 07dc019fff656ff82057828e044b66321f48172a)
+    
+    Conflicts:
+    
+    	modules/codec/avcodec/fourcc.h
+
+commit 88c450158727883a7501d4e646e54f5379c9aee0
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Fri Dec 12 22:48:09 2008 +0100
+
+    realrtsp: don't write outside a static buffer.
+    (cherry picked from commit a01be865ac16f249d9b502936c43c2a7911bca1e)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit ee14153f334b8b3194dba5b24570239e3ffd5492
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Fri Dec 12 21:48:45 2008 +0100
+
+    realrtsp: initialize *all* the array
+    (cherry picked from commit 520eaf2ff5ccc48efd800dae1fffa628ca5ec0aa)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 663ceb64128da786785f0ca0e6d3459f35a87a3d
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Fri Dec 12 22:12:50 2008 +0100
+
+    realrtsp: fix read after the end of the string if the input buffer length isn't a multiple of 4.
+    (cherry picked from commit 3e7b45b07d9284ac70e4eaeb35c212f98f149933)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit f563abe56e1a4f44a49c218009c3894fb2744217
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Fri Dec 12 21:43:38 2008 +0100
+
+    realrtsp: fix potential memleaks.
+    (cherry picked from commit a69589d375efb7839e4729f53581d21e0635dc95)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit d78b37ba0f530a0dc360acc7ead8da1616975f38
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Mon Dec 15 13:48:22 2008 +0200
+
+    [QT] cosmetic, use regexp instead of multiple removes in simple preferences
+    (cherry picked from commit b3da319e29b52d3849d0c3c33d1156a3e532fa67)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit c89f6fcae4b71a31c15c593ae286089033f6f94a
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Mon Dec 15 23:11:05 2008 +0100
+
+    Qt/vlm: == instead of =
+    (cherry picked from commit 923575b183b54d9562e26910ebe3675e9d7fdfa9)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 3fd68411a8286be8118f9ff91fa289d45653e91f
+Author: Myckel Habets <myckel@sdf.lonestar.org>
+Date:   Mon Dec 15 22:21:34 2008 +0000
+
+    l10n: Dutch update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit bd59e2058bcbe3286d3cdfeb0fec455b325b7b40
+Author: Myckel Habets <myckel@sdf.lonestar.org>
+Date:   Thu Dec 11 23:19:09 2008 +0000
+
+    l10n: Dutch update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit c74bf4c754efa0dfcb3cd0c0a50d9ec29bfb6d37
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Wed Dec 10 10:59:47 2008 +0100
+
+    put CVE numbers for 0.9.6
+
+commit 808cc79fa2cf3464f8299621118278e4cd3a18f0
+Author: Salar Khalilzadeh <salarsoftwares@gmail.com>
+Date:   Tue Dec 9 22:07:07 2008 +0000
+
+    l10n: Persian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit b87e8c8489824b5cacb822f0e56b4beb40f54a5e
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Dec 7 17:42:33 2008 +0000
+
+    l10n: New Indonesian localisation by Luqman Hakim
+    
+    Based on the Malaysian transalation
+
+commit e81f61f6d1133db535cdb34634b71f9ee9b312f6
+Author: Michał Trzebiatowski <hippie_1968@hotmail.com>
+Date:   Sun Dec 7 17:33:10 2008 +0000
+
+    l10n: Polish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit d10a6748c8ec2710d295004c9f66cd5b82ffe8f7
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Sun Dec 7 16:04:44 2008 +0100
+
+    Updated translation by M.T. with a few changes by myself
+
+commit 9045253afdb979fec53d34722c117cd490b32fc8
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sun Dec 7 11:03:28 2008 +0200
+
+    Start version 0.9.9
+
+commit da7a3441cb31e3251798a8324715e14096c1884a
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Sun Dec 7 10:36:20 2008 +0200
+
+    Looks like something is removing vlc-config.in.in in some cases
+
+commit 7790a125a093eb931807bbdf54adeb68fb0d5b80
+Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
+Date:   Wed Dec 3 17:35:38 2008 +0200
+
+    Update version number
+    
+    (and I am not allowed to "fix" the tag)
+
 commit a684d0267892b3cafed7cbf2ae8175a806bb547d
 Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
 Date:   Tue Dec 2 18:55:39 2008 +0200
@@ -31,7 +311,7 @@ Date:   Mon Dec 1 21:45:10 2008 +0200
     Version 0.9.8
 
 commit 2b8b58df98b88d01163b4eb05c7008debf7c8d03
-Merge: ab3e5dc... abacfd8...
+Merge: ab3e5dc abacfd8
 Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
 Date:   Sun Nov 30 16:09:21 2008 +0200
 
@@ -1454,7 +1734,7 @@ Date:   Thu Oct 9 20:49:49 2008 +0300
     (cherry picked from commit 9dd13ebf18681e4ff58af0b52325d12aa1c23d90)
 
 commit 6f78ad85fe15223ae4af82563c22abca6260899a
-Merge: a2952cb... 59a6eb3...
+Merge: a2952cb 59a6eb3
 Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
 Date:   Thu Oct 9 20:50:54 2008 +0300
 
@@ -1476,7 +1756,7 @@ Date:   Wed Oct 8 20:37:26 2008 +0200
     Signed-off-by: Derk-Jan Hartman <hartman@videolan.org>
 
 commit a2952cb56d6a34b10ff0906c8ab1c7134bde8eb2
-Merge: 432dba7... 7140c12...
+Merge: 432dba7 7140c12
 Author: Rémi Denis-Courmont <rdenis@simphalempin.com>
 Date:   Tue Oct 7 21:06:09 2008 +0300
 
@@ -6592,7 +6872,7 @@ Date:   Fri Aug 22 14:50:07 2008 -0700
     Use FIND_CHILD when possible to look for the vout as suggested by dionoea and nefrir
 
 commit b38e99dd1389bc6b9a7579dd3fa872fdc59e88c1
-Merge: e40db6d... 2d5437c...
+Merge: e40db6d 2d5437c
 Author: Loïc Minier <lool@dooz.org>
 Date:   Fri Aug 22 23:50:02 2008 +0200
 
@@ -7911,7 +8191,7 @@ Date:   Thu Aug 14 19:50:23 2008 +0200
     mkv: bool spacing cleanup
 
 commit 75348facc56350e53eb336252c496876a5d04c09
-Merge: 0b30110... 7b3f256...
+Merge: 0b30110 7b3f256
 Author: Pierre d'Herbemont <pdherbemont@videolan.org>
 Date:   Fri Aug 15 00:59:10 2008 +0200
 
@@ -9335,7 +9615,7 @@ Date:   Sun Aug 3 17:26:38 2008 +0200
     Signed-off-by: Rémi Denis-Courmont <rdenis@simphalempin.com>
 
 commit 6ebae83db81a80cdc3cead264455074702223ac0
-Merge: 626d109... 6841797...
+Merge: 626d109 6841797
 Author: Derk-Jan Hartman <hartman@videolan.org>
 Date:   Sat Aug 9 02:07:55 2008 +0200
 
@@ -10958,7 +11238,7 @@ Date:   Fri Aug 1 00:46:52 2008 +0200
     pda gui: Set prio to 0, so it is not eligible for automatic selection. This is bad since it's a GTK module, and with our Qt switch and demise of wxGTK module, this module might be selected more often. It is not for the average user, and 0 tested under 0.9.0. Relates to #1798
 
 commit 35824733e305214dfada18dd6362cfa02a86dcd3
-Merge: ec6ed81... 7ca75b8...
+Merge: ec6ed81 7ca75b8
 Author: Derk-Jan Hartman <hartman@videolan.org>
 Date:   Fri Aug 1 00:41:33 2008 +0200
 
@@ -12815,7 +13095,7 @@ Date:   Mon Jul 21 09:13:45 2008 +0200
     Use pl_Locked and pl_Unlocked.
 
 commit cd4c4f1dadf2a9b595948da6d70ac2eaad93c990
-Merge: 344b1df... 9525c2b...
+Merge: 344b1df 9525c2b
 Author: Derk-Jan Hartman <hartman@videolan.org>
 Date:   Mon Jul 21 02:35:21 2008 +0200
 
@@ -16842,7 +17122,7 @@ Date:   Thu Jun 26 18:38:55 2008 +0300
     Remove dummy $Id$
 
 commit e2a614c82b502ea6c3cdee7d0fc39cbb9627041e
-Merge: 51f898a... c617646...
+Merge: 51f898a c617646
 Author: Ilkka Ollakka <ileoo@videolan.org>
 Date:   Thu Jun 26 10:38:53 2008 +0300
 
@@ -16910,7 +17190,7 @@ Date:   Wed Jun 25 12:53:43 2008 -0700
     If you are unpleased about that, fix the core (threading and networking).
 
 commit 84e0f97a07c049c9c7082032699d54f9b4e5708a
-Merge: 2f53d49... 12b1883...
+Merge: 2f53d49 12b1883
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Wed Jun 25 12:49:51 2008 -0700
 
@@ -22387,7 +22667,7 @@ Date:   Wed May 28 18:21:48 2008 +0200
     Fix [95e3bb2eaf22929dac3e2c37a26a23e9a0619333]
 
 commit 975a356c965b7f84586b929b14ea8a70c6535beb
-Merge: b4fdd33... e41bccd...
+Merge: b4fdd33 e41bccd
 Author: Jean-Paul Saman <jpsaman@videolan.org>
 Date:   Wed May 28 18:12:49 2008 +0200
 
@@ -22425,7 +22705,7 @@ Date:   Wed May 28 17:41:51 2008 +0200
     This case is already handled in vlc_object_find()
 
 commit dd61f37b57429f10db99ffef010ec1c4e2fa0498
-Merge: e1629c2... c807daf...
+Merge: e1629c2 c807daf
 Author: Jean-Paul Saman <jpsaman@videolan.org>
 Date:   Wed May 28 17:33:49 2008 +0200
 
@@ -28103,7 +28383,7 @@ Date:   Mon Apr 14 16:13:21 2008 +0200
     Signed-off-by: Meuuh the cow
 
 commit df61d33b06e2b3cbbe746b2f5a9bea5b370c24ff
-Merge: cb23a82... 0311983...
+Merge: cb23a82 0311983
 Author: Jean-Paul Saman <jpsaman@videolan.org>
 Date:   Mon Apr 14 15:44:31 2008 +0200
 
@@ -28450,7 +28730,7 @@ Date:   Fri Apr 11 13:20:51 2008 +0200
     Compile fix.
 
 commit dff434365d951b38be69859dc8c3b210c82e019f
-Merge: c72f2f9... 87db766...
+Merge: c72f2f9 87db766
 Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
 Date:   Fri Apr 11 10:53:45 2008 +0200
 
@@ -28564,7 +28844,7 @@ Date:   Wed Apr 9 21:09:05 2008 +0200
     more VLM tests
 
 commit 1ac8441a1c11c1c242a4c5ad7ed9918fbf14da37
-Merge: 665cd92... 569f294...
+Merge: 665cd92 569f294
 Author: Jean-Paul Saman <jean-paul.saman@m2x.nl>
 Date:   Wed Apr 9 12:45:24 2008 +0200
 
@@ -31501,7 +31781,7 @@ Date:   Sun Mar 23 23:00:27 2008 +0000
     Do not allocate arbitrary length on the stack
 
 commit c8e6c21dc43999ad81e6801011c57553a07e85ab
-Merge: 0527816... e5189c4...
+Merge: 0527816 e5189c4
 Author: Rafaël Carré <funman@videolan.org>
 Date:   Sun Mar 23 22:28:03 2008 +0000
 
@@ -31910,7 +32190,7 @@ Date:   Thu Mar 20 17:43:48 2008 +0000
     missing \param and \return tags (though a lot remains to be done).
 
 commit 4e0e4d6d4a3421ccf21715b0705b582826b0d62e
-Merge: cfc9828... 3b0534e...
+Merge: cfc9828 3b0534e
 Author: Sam Hocevar <sam@zoy.org>
 Date:   Thu Mar 20 17:38:00 2008 +0000
 
@@ -34624,7 +34904,7 @@ Date:   Sun Mar 2 20:02:34 2008 +0200
     Signed-off-by: Rémi Denis-Courmont <rem@videolan.org>
 
 commit 132bf65db16a3496f2b14bb219b90695bdec3b86
-Merge: 79223aa... bd9f771...
+Merge: 79223aa bd9f771
 Author: André Weber <WeberAndre@gmx.de>
 Date:   Sun Mar 2 18:37:32 2008 +0100
 

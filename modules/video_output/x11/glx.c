@@ -2,7 +2,7 @@
  * glx.c: GLX OpenGL provider
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: a54e7626d1113ac11242bb2aff5f8aa6e96a3ddb $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -233,32 +233,47 @@ int InitGLX12( vout_thread_t *p_vout )
 int InitGLX13( vout_thread_t *p_vout )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
-    int i_nbelem;
-    GLXFBConfig *p_fbconfs, fbconf;
-    XVisualInfo *p_vi;
-    int p_attr[] = { GLX_RED_SIZE, 5, GLX_GREEN_SIZE, 5,
-                     GLX_BLUE_SIZE, 5, GLX_DOUBLEBUFFER, True,
-                     GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT, 0 };
+    int i_nb, ret = VLC_EGENERIC;
+    GLXFBConfig *p_fbconfs = NULL, fbconf;
+    XWindowAttributes att;
+    static const int p_attr[] = {
+        GLX_RED_SIZE, 5, GLX_GREEN_SIZE, 5, GLX_BLUE_SIZE, 5,
+        GLX_DOUBLEBUFFER, True, GLX_X_RENDERABLE, True,
+        GLX_DRAWABLE_TYPE, GLX_WINDOW_BIT,
+        None,
+    };
 
     /* Get the FB configuration */
-    p_fbconfs = glXChooseFBConfig( p_sys->p_display, 0, p_attr, &i_nbelem );
-    if( (i_nbelem <= 0) || !p_fbconfs )
+    p_fbconfs = glXChooseFBConfig( p_sys->p_display, p_sys->i_screen, p_attr, &i_nb );
+    if( p_fbconfs == NULL )
     {
         msg_Err( p_vout, "Cannot get FB configurations");
-        if( p_fbconfs ) XFree( p_fbconfs );
         return VLC_EGENERIC;
     }
-    fbconf = p_fbconfs[0];
 
-    /* Get the X11 visual */
-    p_vi = glXGetVisualFromFBConfig( p_sys->p_display, fbconf );
-    if( !p_vi )
+    /* We should really create the window _after_ the frame buffer
+     * configuration was chosen, instead of selecting the frame buffer from
+     * the window. That requires reworking xcommon.c though.
+     * -- Courmisch */
+    XGetWindowAttributes( p_sys->p_display, p_sys->p_win->video_window, &att );
+    for( int i = 0; i < i_nb && !fbconf; i++ )
     {
-        msg_Err( p_vout, "Cannot get X11 visual" );
-        XFree( p_fbconfs );
-        return VLC_EGENERIC;
+        XVisualInfo *p_vi;
+
+        /* Get the X11 visual */
+        p_vi = glXGetVisualFromFBConfig( p_sys->p_display, p_fbconfs[i] );
+        if( !p_vi )
+            continue; /* OoM? */
+
+        if( p_vi->visualid == att.visual->visualid )
+            fbconf = p_fbconfs[i];
+        XFree( p_vi );
     }
-    XFree( p_vi );
+    if( !fbconf )
+    {
+        msg_Err( p_vout, "Cannot find matching frame buffer" );
+        goto out;
+    }
 
     /* Create the GLX window */
     p_sys->gwnd = glXCreateWindow( p_sys->p_display, fbconf,
@@ -266,20 +281,20 @@ int InitGLX13( vout_thread_t *p_vout )
     if( p_sys->gwnd == None )
     {
         msg_Err( p_vout, "Cannot create GLX window" );
-        return VLC_EGENERIC;
+        goto out;
     }
 
     /* Create an OpenGL context */
     p_sys->gwctx = glXCreateNewContext( p_sys->p_display, fbconf,
                                         GLX_RGBA_TYPE, NULL, True );
-    XFree( p_fbconfs );
     if( !p_sys->gwctx )
-    {
         msg_Err( p_vout, "Cannot create OpenGL context");
-        return VLC_EGENERIC;
-    }
+    else
+        ret = VLC_SUCCESS;
 
-    return VLC_SUCCESS;
+out:
+    XFree( p_fbconfs );
+    return ret;
 }
 
 /*****************************************************************************

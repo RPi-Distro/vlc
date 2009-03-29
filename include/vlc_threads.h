@@ -3,7 +3,7 @@
  * This header provides portable declarations for mutexes & conditions
  *****************************************************************************
  * Copyright (C) 1999, 2002 the VideoLAN team
- * $Id: e2810e945155daff03c39a134bbb4e6e90e60d68 $
+ * $Id: 4871fcd40a3c69319663a6edc10751fe966075a6 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -359,12 +359,26 @@ static inline void __vlc_cond_wait( const char * psz_file, int i_line,
 #define vlc_cond_timedwait( P_COND, P_MUTEX, DEADLINE )                      \
     __vlc_cond_timedwait( __FILE__, __LINE__, P_COND, P_MUTEX, DEADLINE  )
 
+#if defined(__APPLE__) && !defined(__powerpc__) 
+# include <sys/time.h> /* gettimeofday in vlc_cond_timedwait */
+#endif
+
 static inline int __vlc_cond_timedwait( const char * psz_file, int i_line,
                                         vlc_cond_t *p_condvar,
                                         vlc_mutex_t *p_mutex,
                                         mtime_t deadline )
 {
 #if defined(LIBVLC_USE_PTHREAD)
+#if defined(__APPLE__) && !defined(__powerpc__)
+    /* mdate() is mac_absolute_time on osx, which we must convert to do
+     * the same base than gettimeofday() on which pthread_cond_timedwait
+     * counts on. */
+    mtime_t oldbase = mdate();
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    mtime_t newbase = (mtime_t)tv.tv_sec * 1000000 + (mtime_t) tv.tv_usec;
+    deadline = deadline - oldbase + newbase;
+#endif
     lldiv_t d = lldiv( deadline, 1000000 );
     struct timespec ts = { d.quot, d.rem * 1000 };
 

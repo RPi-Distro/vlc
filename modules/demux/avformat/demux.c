@@ -2,7 +2,7 @@
  * demux.c: demuxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 0fc23017281a9bd21d3e4cb969b9f71e88ac3f6f $
+ * $Id: 685fc8fc25986af9d46299cd7fff1bf886e830ad $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -523,8 +523,12 @@ static int64_t IOSeek( void *opaque, int64_t offset, int whence )
             return -1;
 
     }
+
     if( i_absolute < 0 )
-        i_absolute = 0;
+    {
+        msg_Dbg( p_demux, "Trying to seek before the beginning" );
+        return -1;
+    }
 
     if( i_size > 0 && i_absolute >= i_size )
     {

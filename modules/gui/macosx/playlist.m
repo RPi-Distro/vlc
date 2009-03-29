@@ -1,8 +1,8 @@
 /*****************************************************************************
  * playlist.m: MacOS X interface module
  *****************************************************************************
-* Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 831b64d6b699d81254db624f1cd74d549a3e6fa0 $
+* Copyright (C) 2002-2009 the VideoLAN team
+ * $Id: 69e0fa20c29288614dc22155dbe44b83cfde3a8e $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videola/n dot org>
@@ -479,6 +479,7 @@
 
     playlist_t *p_playlist = pl_Yield( VLCIntf );
 
+    PL_LOCK;
     if( playlist_CurrentSize( p_playlist ) >= 2 )
     {
         [o_status_field setStringValue: [NSString stringWithFormat:
@@ -492,6 +493,7 @@
         else
             [o_status_field setStringValue: _NS("1 item")];
     }
+    PL_UNLOCK;
     vlc_object_release( p_playlist );
 
     [self outlineViewSelectionDidChange: nil];
@@ -520,9 +522,9 @@
     // FIXME: unsafe
     playlist_item_t * p_item = [[o_outline_view itemAtRow:[o_outline_view selectedRow]] pointerValue];
 
-    if( p_item )
+    if( p_item && [[VLCMain sharedInstance] isPlaylistCollapsed] == NO )
     {
-        /* update our info-panel to reflect the new item */
+        /* update our info-panel to reflect the new item, if we aren't collapsed */
         [[[VLCMain sharedInstance] getInfo] updatePanelWithItem:p_item->p_input];
     }
 }
@@ -569,7 +571,6 @@
     }
 
     vlc_object_release( p_playlist );
-
 }
 
 /* Check if p_item is a child of p_node recursively. We need to check the item
@@ -1289,10 +1290,10 @@
     return( o_ctx_menu );
 }
 
-- (void)outlineView: (NSTableView*)o_tv
+- (void)outlineView: (NSTableView *)o_tv
                   didClickTableColumn:(NSTableColumn *)o_tc
 {
-    int i_mode = 0, i_type;
+    int i_mode, i_type = 0;
     intf_thread_t *p_intf = VLCIntf;
 
     playlist_t *p_playlist = pl_Yield( p_intf );
@@ -1431,6 +1432,7 @@
     id o_value = [super outlineView: outlineView child: index ofItem: item];
     playlist_t *p_playlist = pl_Yield( VLCIntf );
 
+    PL_LOCK;
     if( playlist_CurrentSize( p_playlist )  >= 2 )
     {
         [o_status_field setStringValue: [NSString stringWithFormat:
@@ -1448,6 +1450,7 @@
             [o_status_field setStringValue: _NS("1 item")];
         }
     }
+    PL_UNLOCK;
     vlc_object_release( p_playlist );
 
     [o_outline_dict setObject:o_value forKey:[NSString stringWithFormat:@"%p",

@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: be950c2f07d9ea409ccd829abeef31e7ddf326df $
+ * $Id: 4a043182ec1e7d1b51818128c42d13c843a5d725 $
  *
  * sdp/sdpplin parser.
  *
@@ -36,28 +36,29 @@ static char *b64_decode(const char *in, char *out, int *size) {
   int i,k;
   unsigned int j;
 
-  for (i = 0; i < 255; i++) {
+  for( i = 0; i < 256; i++ )
     dtable[i] = 0x80;
-  }
-  for (i = 'A'; i <= 'Z'; i++) {
+
+  for( i = 'A'; i <= 'Z'; i++ )
     dtable[i] = 0 + (i - 'A');
-  }
-  for (i = 'a'; i <= 'z'; i++) {
+
+  for( i = 'a'; i <= 'z'; i++ )
     dtable[i] = 26 + (i - 'a');
-  }
-  for (i = '0'; i <= '9'; i++) {
+
+  for( i = '0'; i <= '9'; i++ )
     dtable[i] = 52 + (i - '0');
-  }
+
   dtable['+'] = 62;
   dtable['/'] = 63;
   dtable['='] = 0;
 
   k=0;
   /*CONSTANTCONDITION*/
-  for (j=0; j<strlen(in); j+=4) {
+  int in_len = strlen(in);
+  for (j=0; j < in_len; j+=4) {
     char a[4], b[4];
 
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4 && j + i < in_len; i++) {
       int c = in[i+j];
 
       if (dtable[c] & 0x80) {
@@ -115,16 +116,22 @@ static int filter(const char *in, const char *filter, char **out, size_t outlen)
 
 static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
 
-  sdpplin_stream_t *desc = malloc(sizeof(sdpplin_stream_t));
-  char      *buf = malloc(BUFLEN);
-  char      *decoded = malloc(BUFLEN);
-  int       handled;
+  sdpplin_stream_t *desc;
+  char* buf = NULL;
+  char* decoded = NULL;
+  int handled;
 
-  if( !desc ) return NULL;
-  memset(desc, 0, sizeof(sdpplin_stream_t));
+  desc = calloc( 1, sizeof(sdpplin_stream_t) );
+  if( !desc )
+    return NULL;
 
-  if( !buf ) goto error;
-  if( !decoded ) goto error;
+  buf = malloc( BUFLEN );
+  if( !buf )
+    goto error;
+
+  decoded = malloc( BUFLEN );
+  if( !decoded )
+    goto error;
 
   if (filter(*data, "m=", &buf, BUFLEN)) {
     desc->id = strdup(buf);
@@ -227,31 +234,35 @@ error:
   return NULL;
 }
 
-sdpplin_t *sdpplin_parse(char *data) {
 
-  sdpplin_t        *desc = malloc(sizeof(sdpplin_t));
-  sdpplin_stream_t *stream;
-  char             *buf=NULL;
-  char             *decoded=NULL;
-  int              handled;
-  int              len;
+sdpplin_t *sdpplin_parse(char *data)
+{
+  sdpplin_t*        desc;
+  sdpplin_stream_t* stream;
+  char*             buf;
+  char*             decoded;
+  int               handled;
+  int               len;
 
-  if( !desc ) return NULL;
-  buf = malloc(BUFLEN);
-  if( !buf ) {
+  desc = calloc( 1, sizeof(sdpplin_t) );
+  if( !desc )
+    return NULL;
+
+  buf = malloc( BUFLEN );
+  if( !buf )
+  {
     free( desc );
     return NULL;
   }
-  decoded = malloc(BUFLEN);
-  if( !decoded ) {
+
+  decoded = malloc( BUFLEN );
+  if( !decoded )
+  {
     free( buf );
     free( desc );
     return NULL;
   }
-
   desc->stream = NULL;
-
-  memset(desc, 0, sizeof(sdpplin_t));
 
   while (data && *data) {
     handled=0;
@@ -358,7 +369,8 @@ void sdpplin_free(sdpplin_t *description) {
       free( description->stream[i] );
     }
   }
-  if( description->stream_count ) free( description->stream );
+  if( description->stream_count )
+    free( description->stream );
 
   free( description->owner );
   free( description->session_name );
@@ -375,5 +387,6 @@ void sdpplin_free(sdpplin_t *description) {
   free( description->asm_rule_book );
   free( description->abstract );
   free( description->range );
-  free(description);
+  free( description );
 }
+

@@ -213,7 +213,7 @@ FunctionEnd
   !insertmacro ${_action} ".mp2"
   !insertmacro ${_action} ".mp3"
   !insertmacro ${_action} ".oma"
-  !insertmacro ${_action} ".ogg"
+  !insertmacro ${_action} ".oga"
   !insertmacro ${_action} ".spx"
   !insertmacro ${_action} ".wav"
   !insertmacro ${_action} ".wma"
@@ -241,7 +241,10 @@ FunctionEnd
   !insertmacro ${_action} ".mpg"
   !insertmacro ${_action} ".mts"
   !insertmacro ${_action} ".mxf"
+  !insertmacro ${_action} ".ogg"
   !insertmacro ${_action} ".ogm"
+  !insertmacro ${_action} ".ogx"
+  !insertmacro ${_action} ".ogv"
   !insertmacro ${_action} ".ts"
   !insertmacro ${_action} ".vob"
   !insertmacro ${_action} ".wmv"
@@ -543,7 +546,7 @@ Section /o $Name_Section03 SEC03
 
 SectionEnd
 
-Section /o $Name_Section04 SEC04
+Section $Name_Section04 SEC04
   SectionIn 3
   SetOutPath "$INSTDIR"
   !insertmacro OpenUninstallLog
@@ -781,6 +784,7 @@ Section "un.$Name_Section91" SEC91
   ;remove activex plugin
   UnRegDLL "$INSTDIR\axvlc.dll"
   Delete /REBOOTOK "$INSTDIR\axvlc.dll"
+  Delete /REBOOTOK "$INSTDIR\axvlc.dll.manifest"
 
   ;remove mozilla plugin
   Push $R0
@@ -808,6 +812,7 @@ Section "un.$Name_Section91" SEC91
   "${Index}-End:"
   !undef Index
   Delete /REBOOTOK "$INSTDIR\npvlc.dll"
+  Delete /REBOOTOK "$INSTDIR\npvlc.dll.manifest"
 
   RMDir "$SMPROGRAMS\VideoLAN"
   RMDir /r $SMPROGRAMS\VideoLAN
