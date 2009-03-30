@@ -38,6 +38,7 @@ libvlc.so.2 libvlc2 #MINVER#
  libvlc_log_iterator_next@Base 0.9.1
  libvlc_log_open@Base 0.9.1
  libvlc_media_add_option@Base 0.9.1
+ libvlc_media_add_option_untrusted@Base 0.9.9
  libvlc_media_discoverer_event_manager@Base 0.9.1
  libvlc_media_discoverer_is_running@Base 0.9.1
  libvlc_media_discoverer_localized_name@Base 0.9.1
@@ -144,6 +145,7 @@ libvlc.so.2 libvlc2 #MINVER#
  libvlc_new@Base 0.9.1
  libvlc_playlist_add@Base 0.9.1
  libvlc_playlist_add_extended@Base 0.9.1
+ libvlc_playlist_add_extended_untrusted@Base 0.9.9
  libvlc_playlist_clear@Base 0.9.1
  libvlc_playlist_delete_item@Base 0.9.1
  libvlc_playlist_get_current_index@Base 0.9.1
