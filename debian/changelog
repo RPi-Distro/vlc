@@ -1,3 +1,16 @@
+vlc (0.9.9-1) unstable; urgency=low
+
+  * New upstream version 0.9.9
+   + Closes: #520149, #522170, #522185
+   + Update symbol files
+  * Fix some typo in bug/presubj
+  * Remove some Replaces/Conflicts against version not in etch
+  * Move the caca module to vlc-nox
+    + Re-add some Replaces/Conflicts
+    + Closes: #522040
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Fri, 03 Apr 2009 00:12:49 +0200
+
 vlc (0.9.8a-3) unstable; urgency=low
 
   [ Reinhard Tartler ]
