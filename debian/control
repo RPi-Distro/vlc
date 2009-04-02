@@ -136,6 +136,8 @@ Section: video
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
+Replaces: vlc (<< 0.9.8a-3)
+Conflicts: vlc (<< 0.9.8a-3)
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,

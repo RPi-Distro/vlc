@@ -128,6 +128,7 @@ usr/lib/vlc/video_filter/libswscale_plugin.so
 usr/lib/vlc/video_filter/libtransform_plugin.so
 usr/lib/vlc/video_filter/libwall_plugin.so
 usr/lib/vlc/video_filter/libwave_plugin.so
+usr/lib/vlc/video_output/libcaca_plugin.so
 usr/lib/vlc/video_output/libimage_plugin.so
 usr/lib/vlc/video_output/libvmem_plugin.so
 usr/lib/vlc/visualization/libvisual_plugin.so

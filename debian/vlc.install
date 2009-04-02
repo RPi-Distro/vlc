@@ -8,7 +8,6 @@ usr/lib/vlc/misc/libnotify_plugin.so
 usr/lib/vlc/misc/libscreensaver_plugin.so
 usr/lib/vlc/video_filter/libpanoramix_plugin.so
 usr/lib/vlc/video_output/libaa_plugin.so
-usr/lib/vlc/video_output/libcaca_plugin.so
 usr/lib/vlc/video_output/libglx_plugin.so
 usr/lib/vlc/video_output/libopengl_plugin.so
 usr/lib/vlc/video_output/libx11_plugin.so
