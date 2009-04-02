@@ -187,6 +187,9 @@ install: build
 	mv debian/vlc-data/usr/share/vlc/http/.hosts debian/vlc-data/etc/vlc/http
 	ln -s /etc/vlc/http/hosts debian/vlc-data/usr/share/vlc/http/.hosts
 
+	#install BTS stuff
+	mkdir -p  debian/vlc-nox/usr/share/bug/vlc-nox
+	cp debian/bug/* debian/vlc-nox/usr/share/bug/vlc-nox
 	# Clean up
 	rm -f debian/vlc/$(VIDDIR)/*.png
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
@@ -231,7 +234,6 @@ binary-arch: build install
 	dh_installchangelogs ChangeLog -p vlc-nox
 	dh_desktop
 	dh_lintian 
-	dh_bugfiles
 	dh_strip -s --dbg-package=vlc-dbg
 	dh_compress -s
 	dh_fixperms -s
