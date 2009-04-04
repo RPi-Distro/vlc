@@ -2,7 +2,7 @@
  * ctrl_video.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 7869bd1e263efd3dc6fb00f146b8549ecb232da3 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * decoder.c: dummy decoder plugin for vlc.
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id$
+ * $Id: d02ae31746e482e9e4025df9e0ef94c548c6cf4e $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

@@ -2,7 +2,7 @@
  * cdg.c: CDG decoder module
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id$
+ * $Id: af912284ef4be3e4db7d6a55ba35137fb467eec1 $
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *

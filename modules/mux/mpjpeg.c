@@ -2,7 +2,7 @@
  * mpjpeg.c: mime multipart jpeg  muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id$
+ * $Id: 0d53522a5977fde31a1cc9553b116f0e4e86b526 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

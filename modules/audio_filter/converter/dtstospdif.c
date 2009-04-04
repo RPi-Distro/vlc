@@ -2,7 +2,7 @@
  * dtstospdif.c : encapsulates DTS frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2003, 2006 the VideoLAN team
- * $Id$
+ * $Id: 4fce3130b8ca9badbba27d35da8e1705178a9e53 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *

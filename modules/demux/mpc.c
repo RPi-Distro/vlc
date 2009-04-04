@@ -2,7 +2,7 @@
  * mpc.c : MPC stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id$
+ * $Id: d6d4ed3ea4378a28be242009694cd1cb0b7044e4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr.com>
  *

@@ -3,7 +3,7 @@
  * view functs.
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: 505ce8feddfa81191975da6c60bd0dfc38366a15 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *

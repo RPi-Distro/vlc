@@ -2,7 +2,7 @@
  * gme.cpp: Game Music files demuxer (using Game_Music_Emu)
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: de1c285d0f6c8a1bf230d2fbaed9f49810601f63 $
  *
  * Authors: Jean Sreng <fox@videolan.org>
  *

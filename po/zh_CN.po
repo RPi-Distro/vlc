@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 0.9.8a \n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2009-03-29 20:34+0100\n"
+"POT-Creation-Date: 2009-04-04 16:29+0200\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Yoyo <admin@wisestudio.org>\n"
 "Language-Team: Simplified Chinese\n"
@@ -788,8 +788,8 @@ msgid "Audio Channels"
 msgstr "音频声道"
 
 #: src/audio_output/output.c:105 src/audio_output/output.c:140
-#: modules/access/v4l2/v4l2.c:218 modules/access/v4l2/v4l2.c:269
-#: modules/access/v4l.c:129 modules/audio_output/alsa.c:195
+#: modules/access/v4l.c:129 modules/access/v4l2/v4l2.c:218
+#: modules/access/v4l2/v4l2.c:269 modules/audio_output/alsa.c:195
 #: modules/audio_output/alsa.c:226 modules/audio_output/directx.c:519
 #: modules/audio_output/oss.c:207 modules/audio_output/portaudio.c:402
 #: modules/audio_output/sdl.c:184 modules/audio_output/sdl.c:201
@@ -1010,8 +1010,9 @@ msgstr ""
 msgid "Bits per sample"
 msgstr "位每采样"
 
-#: src/input/es_out.c:2083 modules/access_output/shout.c:91
-#: modules/access/pvr.c:97 modules/gui/qt4/components/open_panels.cpp:865
+#: src/input/es_out.c:2083 modules/access/pvr.c:97
+#: modules/access_output/shout.c:91
+#: modules/gui/qt4/components/open_panels.cpp:865
 msgid "Bitrate"
 msgstr "位率"
 
@@ -1063,8 +1064,8 @@ msgstr "格式 '%s' 无法被检测。请查看日志获取详细信息。"
 msgid "Title"
 msgstr "标题"
 
-#: src/input/meta.c:53 modules/gui/macosx/playlistinfo.m:73
-#: modules/gui/macosx/playlist.m:1157
+#: src/input/meta.c:53 modules/gui/macosx/playlist.m:1157
+#: modules/gui/macosx/playlistinfo.m:73
 msgid "Artist"
 msgstr "艺术家"
 
@@ -1251,94 +1252,6 @@ msgstr "调式日志"
 #: src/interface/interface.c:221
 msgid "Mouse Gestures"
 msgstr "鼠标手势"
-
-#: src/libvlc.c:280 src/libvlc.c:413 src/modules/cache.c:213
-#: src/modules/cache.c:532
-msgid "C"
-msgstr ""
-
-#: src/libvlc.c:1138
-msgid ""
-"Running vlc with the default interface. Use 'cvlc' to use vlc without "
-"interface."
-msgstr "正在以默认界面运行 vlc，使用 'cvlc' 将 vlc 运行在无界面的状态下。"
-
-#: src/libvlc.c:1283
-msgid "To get exhaustive help, use '-H'."
-msgstr "要获取全面的帮助, 请使用 '-H'。"
-
-#: src/libvlc.c:1619
-msgid " (default enabled)"
-msgstr " (默认开启)"
-
-#: src/libvlc.c:1620
-msgid " (default disabled)"
-msgstr " (默认关闭)"
-
-#: src/libvlc.c:1779 src/libvlc.c:1782
-msgid "Note:"
-msgstr "说明:"
-
-#: src/libvlc.c:1780 src/libvlc.c:1783
-msgid "add --advanced to your command line to see advanced options."
-msgstr "add -- 查看您命令行的高级选项。"
-
-#: src/libvlc.c:1887
-#, c-format
-msgid "VLC version %s\n"
-msgstr "VLC 版本 %s\n"
-
-#: src/libvlc.c:1888
-#, c-format
-msgid "Compiled by %s@%s.%s\n"
-msgstr "编译者 %s@%s.%s\n"
-
-#: src/libvlc.c:1890
-#, c-format
-msgid "Compiler: %s\n"
-msgstr "编译器: %s\n"
-
-#: src/libvlc.c:1892
-#, c-format
-msgid "Based upon Git commit [%s]\n"
-msgstr "基于 Git 基础之上 [%s]\n"
-
-#: src/libvlc.c:1928
-msgid ""
-"\n"
-"Dumped content to vlc-help.txt file.\n"
-msgstr ""
-"\n"
-"转储内容到 vlc-help.txt 文件中。\n"
-
-#: src/libvlc.c:1948
-msgid ""
-"\n"
-"Press the RETURN key to continue...\n"
-msgstr ""
-"\n"
-"请按 RETURN 键继续...\n"
-
-#: src/libvlc.h:199 src/libvlc-module.c:1332 src/libvlc-module.c:1333
-#: src/libvlc-module.c:2403 src/video_output/vout_intf.c:274
-msgid "Zoom"
-msgstr "缩放"
-
-#: src/libvlc.h:200 src/libvlc-module.c:1258 src/video_output/vout_intf.c:169
-msgid "1:4 Quarter"
-msgstr "1:4 四分之一"
-
-#: src/libvlc.h:201 src/libvlc-module.c:1259 src/video_output/vout_intf.c:170
-msgid "1:2 Half"
-msgstr "1:2 二分之一"
-
-#: src/libvlc.h:202 src/libvlc-module.c:1260 src/video_output/vout_intf.c:171
-msgid "1:1 Original"
-msgstr "1:1 原始"
-
-#: src/libvlc.h:203 src/libvlc-module.c:1261 src/video_output/vout_intf.c:172
-msgid "2:1 Double"
-msgstr "2:1 双倍"
 
 #: src/libvlc-module.c:91 src/libvlc-module.c:291 modules/access/bda/bda.c:63
 msgid "Auto"
@@ -3782,6 +3695,22 @@ msgstr "音频延迟下"
 msgid "Select the key to decrease the audio delay."
 msgstr "选择用于减少音频延迟的按键。"
 
+#: src/libvlc-module.c:1258 src/libvlc.h:200 src/video_output/vout_intf.c:169
+msgid "1:4 Quarter"
+msgstr "1:4 四分之一"
+
+#: src/libvlc-module.c:1259 src/libvlc.h:201 src/video_output/vout_intf.c:170
+msgid "1:2 Half"
+msgstr "1:2 二分之一"
+
+#: src/libvlc-module.c:1260 src/libvlc.h:202 src/video_output/vout_intf.c:171
+msgid "1:1 Original"
+msgstr "1:1 原始"
+
+#: src/libvlc-module.c:1261 src/libvlc.h:203 src/video_output/vout_intf.c:172
+msgid "2:1 Double"
+msgstr "2:1 双倍"
+
 #: src/libvlc-module.c:1263
 msgid "Play playlist bookmark 1"
 msgstr "播放播放列表书签 1"
@@ -4030,6 +3959,11 @@ msgstr "切换普通/重复/循环播放列表模式"
 #: src/libvlc-module.c:1330
 msgid "Toggle random playlist playback"
 msgstr "切换随机播放列表播放模式"
+
+#: src/libvlc-module.c:1332 src/libvlc-module.c:1333 src/libvlc-module.c:2403
+#: src/libvlc.h:199 src/video_output/vout_intf.c:274
+msgid "Zoom"
+msgstr "缩放"
 
 #: src/libvlc-module.c:1335 src/libvlc-module.c:1336
 msgid "Un-Zoom"
@@ -4350,6 +4284,73 @@ msgstr "打印版本信息"
 #: src/libvlc-module.c:2574
 msgid "main program"
 msgstr "主程序"
+
+#: src/libvlc.c:280 src/libvlc.c:413 src/modules/cache.c:213
+#: src/modules/cache.c:532
+msgid "C"
+msgstr ""
+
+#: src/libvlc.c:1138
+msgid ""
+"Running vlc with the default interface. Use 'cvlc' to use vlc without "
+"interface."
+msgstr "正在以默认界面运行 vlc，使用 'cvlc' 将 vlc 运行在无界面的状态下。"
+
+#: src/libvlc.c:1283
+msgid "To get exhaustive help, use '-H'."
+msgstr "要获取全面的帮助, 请使用 '-H'。"
+
+#: src/libvlc.c:1619
+msgid " (default enabled)"
+msgstr " (默认开启)"
+
+#: src/libvlc.c:1620
+msgid " (default disabled)"
+msgstr " (默认关闭)"
+
+#: src/libvlc.c:1779 src/libvlc.c:1782
+msgid "Note:"
+msgstr "说明:"
+
+#: src/libvlc.c:1780 src/libvlc.c:1783
+msgid "add --advanced to your command line to see advanced options."
+msgstr "add -- 查看您命令行的高级选项。"
+
+#: src/libvlc.c:1887
+#, c-format
+msgid "VLC version %s\n"
+msgstr "VLC 版本 %s\n"
+
+#: src/libvlc.c:1888
+#, c-format
+msgid "Compiled by %s@%s.%s\n"
+msgstr "编译者 %s@%s.%s\n"
+
+#: src/libvlc.c:1890
+#, c-format
+msgid "Compiler: %s\n"
+msgstr "编译器: %s\n"
+
+#: src/libvlc.c:1892
+#, c-format
+msgid "Based upon Git commit [%s]\n"
+msgstr "基于 Git 基础之上 [%s]\n"
+
+#: src/libvlc.c:1928
+msgid ""
+"\n"
+"Dumped content to vlc-help.txt file.\n"
+msgstr ""
+"\n"
+"转储内容到 vlc-help.txt 文件中。\n"
+
+#: src/libvlc.c:1948
+msgid ""
+"\n"
+"Press the RETURN key to continue...\n"
+msgstr ""
+"\n"
+"请按 RETURN 键继续...\n"
 
 #: src/misc/update.c:1458
 #, c-format
@@ -5027,17 +5028,16 @@ msgid "Aspect-ratio"
 msgstr "高宽比"
 
 #: modules/access/bda/bda.c:40 modules/access/cdda.c:66
-#: modules/access/dshow/dshow.cpp:98 modules/access/dvb/access.c:78
-#: modules/access/dv.c:71 modules/access/dvdnav.c:72
+#: modules/access/dshow/dshow.cpp:98 modules/access/dv.c:71
+#: modules/access/dvb/access.c:78 modules/access/dvdnav.c:72
 #: modules/access/dvdread.c:76 modules/access/eyetv.m:61
 #: modules/access/fake.c:43 modules/access/file.c:84 modules/access/ftp.c:57
 #: modules/access/gnomevfs.c:47 modules/access/http.c:75
 #: modules/access/jack.c:62 modules/access/mms/mms.c:49
 #: modules/access/pvr.c:60 modules/access/rtmp/access.c:43
 #: modules/access/screen/screen.c:39 modules/access/smb.c:64
-#: modules/access/tcp.c:41 modules/access/udp.c:49
-#: modules/access/v4l2/v4l2.c:225 modules/access/v4l.c:77
-#: modules/access/vcd/vcd.c:46
+#: modules/access/tcp.c:41 modules/access/udp.c:49 modules/access/v4l.c:77
+#: modules/access/v4l2/v4l2.c:225 modules/access/vcd/vcd.c:46
 msgid "Caching value in ms"
 msgstr "缓存值为毫秒"
 
@@ -5375,15 +5375,6 @@ msgstr ""
 msgid "DirectShow DVB input"
 msgstr "DirectShow DVB 输入"
 
-#: modules/access/cdda/access.c:285
-msgid "CD reading failed"
-msgstr "读取 CD 失败"
-
-#: modules/access/cdda/access.c:286
-#, c-format
-msgid "VLC could not get a new block of size: %i."
-msgstr "VLC 无法获取一个新的块尺寸: %i。"
-
 #: modules/access/cdda.c:68
 msgid ""
 "Default caching value for Audio CDs. This value should be set in "
@@ -5424,6 +5415,15 @@ msgstr "要使用的 CDDB 服务器端口。"
 #, fuzzy, c-format
 msgid "Audio CD - Track %02i"
 msgstr "音频 CD - 音轨 %i"
+
+#: modules/access/cdda/access.c:285
+msgid "CD reading failed"
+msgstr "读取 CD 失败"
+
+#: modules/access/cdda/access.c:286
+#, c-format
+msgid "VLC could not get a new block of size: %i."
+msgstr "VLC 无法获取一个新的块尺寸: %i。"
 
 #: modules/access/cdda/cdda.c:43 modules/access/directory.c:86
 #: modules/codec/x264.c:397 modules/codec/x264.c:403 modules/codec/x264.c:408
@@ -5808,8 +5808,9 @@ msgstr ""
 "将被 DirectShow 插件使用的视频设备名称。如果您不指定任何东西,则将使用默认的设"
 "备。"
 
-#: modules/access/dshow/dshow.cpp:107 modules/access/v4l2/v4l2.c:179
-#: modules/access/v4l.c:85 modules/gui/qt4/components/open_panels.cpp:708
+#: modules/access/dshow/dshow.cpp:107 modules/access/v4l.c:85
+#: modules/access/v4l2/v4l2.c:179
+#: modules/gui/qt4/components/open_panels.cpp:708
 #: modules/gui/qt4/components/open_panels.cpp:743
 msgid "Audio device name"
 msgstr "音频设备名称"
@@ -5836,8 +5837,8 @@ msgstr ""
 "将被 DirectShow 插件显示的视频大小。如果您不指定任何东西,将使用您设备的默认尺"
 "寸。您可以指定一个标准尺寸  (cif, d1, ...) 或 <宽度>x<高度>。"
 
-#: modules/access/dshow/dshow.cpp:117 modules/access/v4l2/v4l2.c:90
-#: modules/access/v4l.c:89
+#: modules/access/dshow/dshow.cpp:117 modules/access/v4l.c:89
+#: modules/access/v4l2/v4l2.c:90
 msgid "Video input chroma format"
 msgstr "适配输入色度格式"
 
@@ -6011,6 +6012,18 @@ msgstr "VLC 不能使用设备 \"%s\", 因为不支持它的类型。"
 msgid "The capture device \"%s\" does not support the required parameters."
 msgstr "捕获设备 \"%s\" 不支持请求的参数。"
 
+#: modules/access/dv.c:73
+msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
+msgstr "DV 流的缓存值。此值应该以毫秒为单位。"
+
+#: modules/access/dv.c:77
+msgid "Digital Video (Firewire/ieee1394)  input"
+msgstr "数字视频 (火线/ieee1394) 输入"
+
+#: modules/access/dv.c:78
+msgid "dv"
+msgstr ""
+
 #: modules/access/dvb/access.c:132
 msgid "Modulation type for front-end device."
 msgstr "前端设备的调制类型。"
@@ -6115,18 +6128,6 @@ msgstr "非法的极化"
 #, c-format
 msgid "The provided polarization \"%c\" is not valid."
 msgstr "提供的极化 \"%c\" 无效。"
-
-#: modules/access/dv.c:73
-msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
-msgstr "DV 流的缓存值。此值应该以毫秒为单位。"
-
-#: modules/access/dv.c:77
-msgid "Digital Video (Firewire/ieee1394)  input"
-msgstr "数字视频 (火线/ieee1394) 输入"
-
-#: modules/access/dv.c:78
-msgid "dv"
-msgstr ""
 
 #: modules/access/dvdnav.c:68 modules/access/dvdread.c:72
 msgid "DVD angle"
@@ -6253,8 +6254,8 @@ msgid ""
 "Caching value for fake streams. This value should be set in milliseconds."
 msgstr "伪装流缓冲值。此值应该以毫秒为单位设置。"
 
-#: modules/access/fake.c:47 modules/access/pvr.c:86
-#: modules/access/v4l2/v4l2.c:111 modules/access/v4l.c:140
+#: modules/access/fake.c:47 modules/access/pvr.c:86 modules/access/v4l.c:140
+#: modules/access/v4l2/v4l2.c:111
 msgid "Framerate"
 msgstr "帧率"
 
@@ -6323,94 +6324,6 @@ msgstr "VLC 无法读取文件。"
 #, c-format
 msgid "VLC could not open the file \"%s\"."
 msgstr "VLC 无法打开文件 \"%s\"。"
-
-#: modules/access_filter/bandwidth.c:34
-msgid "Bandwidth limit (bytes/s)"
-msgstr "带宽限制 (字节/秒)"
-
-#: modules/access_filter/bandwidth.c:36
-msgid ""
-"The bandwidth module will drop any data in excess of that many bytes per "
-"seconds."
-msgstr "带宽限制模块将会放弃任意超过每秒字节数的数据。"
-
-#: modules/access_filter/bandwidth.c:45
-#: modules/gui/qt4/components/open_panels.cpp:670
-msgid "Bandwidth"
-msgstr "带宽"
-
-#: modules/access_filter/bandwidth.c:46 modules/gui/macosx/simple_prefs.m:247
-#: modules/gui/qt4/ui/sprefs_input.ui:208
-msgid "Bandwidth limiter"
-msgstr "带宽限制器"
-
-#: modules/access_filter/dump.c:42
-msgid "Force use of dump module"
-msgstr "强制使用转储模块"
-
-#: modules/access_filter/dump.c:43
-msgid "Activate the dump module even for media with fast seeking."
-msgstr "为媒体的快速搜索激活转储模块。"
-
-#: modules/access_filter/dump.c:46
-msgid "Maximum size of temporary file (Mb)"
-msgstr "临时文件最大大小 (Mb)"
-
-#: modules/access_filter/dump.c:47
-msgid ""
-"The dump module will abort dumping of the media if more than this much "
-"megabyte were performed."
-msgstr "转储文件将会在媒体超过指定的兆字节时放弃转储。"
-
-#: modules/access_filter/record.c:48
-msgid "Record directory"
-msgstr "录制目录"
-
-#: modules/access_filter/record.c:50
-msgid "Directory where the record will be stored."
-msgstr "录制将会储存的目录。"
-
-#: modules/access_filter/record.c:339
-msgid "Recording"
-msgstr "正在录制"
-
-#: modules/access_filter/record.c:341
-msgid "Recording done"
-msgstr "录制完成"
-
-#: modules/access_filter/timeshift.c:53
-msgid "Timeshift granularity"
-msgstr "时间位移间隔"
-
-#: modules/access_filter/timeshift.c:55
-msgid ""
-"This is the size of the temporary files that will be used to store the "
-"timeshifted streams."
-msgstr "这是将被保存时间位移流的临时文件大小。"
-
-#: modules/access_filter/timeshift.c:57
-msgid "Timeshift directory"
-msgstr "时间位移目录"
-
-#: modules/access_filter/timeshift.c:58
-msgid "Directory used to store the timeshift temporary files."
-msgstr "用于储存时间位移临时文件的目录。"
-
-#: modules/access_filter/timeshift.c:60
-msgid "Force use of the timeshift module"
-msgstr "强制使用时间位移模块"
-
-#: modules/access_filter/timeshift.c:61
-msgid ""
-"Force use of the timeshift module even if the access declares that it can "
-"control pace or pause."
-msgstr "即使访问宣告它能控制步调或暂停也强制使用时间位移模块。"
-
-#: modules/access_filter/timeshift.c:65 modules/access_filter/timeshift.c:66
-#: modules/gui/macosx/simple_prefs.m:260
-#: modules/gui/qt4/ui/sprefs_input.ui:187
-msgid "Timeshift"
-msgstr "时间位移"
 
 #: modules/access/ftp.c:59
 msgid ""
@@ -6657,228 +6570,6 @@ msgstr ""
 msgid "Microsoft Media Server (MMS) input"
 msgstr "Microsoft 媒体服务器 (MMS) 输入"
 
-#: modules/access_output/dummy.c:45 modules/stream_out/dummy.c:51
-msgid "Dummy stream output"
-msgstr "空流输出"
-
-#: modules/access_output/dummy.c:46 modules/misc/dummy/dummy.c:61
-msgid "Dummy"
-msgstr "空"
-
-#: modules/access_output/file.c:64
-msgid "Append to file"
-msgstr "附加到文件"
-
-#: modules/access_output/file.c:65
-msgid "Append to file if it exists instead of replacing it."
-msgstr "增补到文件,如果它已经存在就替换它。"
-
-#: modules/access_output/file.c:69
-msgid "File stream output"
-msgstr "文件流输出"
-
-#: modules/access_output/http.c:65 modules/gui/qt4/ui/sprefs_audio.ui:309
-#: modules/misc/audioscrobbler.c:132
-msgid "Username"
-msgstr "用户名"
-
-#: modules/access_output/http.c:66
-msgid "User name that will be requested to access the stream."
-msgstr "将被用户请求访问流的用户名"
-
-#: modules/access_output/http.c:68 modules/control/telnet.c:91
-#: modules/gui/macosx/simple_prefs.m:227
-#: modules/gui/qt4/dialogs/interaction.cpp:99
-#: modules/gui/qt4/ui/sprefs_audio.ui:319 modules/misc/audioscrobbler.c:134
-#: modules/misc/notify/growl_udp.c:64
-msgid "Password"
-msgstr "密码"
-
-#: modules/access_output/http.c:69
-msgid "Password that will be requested to access the stream."
-msgstr "将被用于请求访问流的密码"
-
-#: modules/access_output/http.c:71
-msgid "Mime"
-msgstr ""
-
-#: modules/access_output/http.c:72
-msgid "MIME returned by the server (autodetected if not specified)."
-msgstr "由服务器返回的 MIME (如果未指定则自动检测)。"
-
-#: modules/access_output/http.c:75
-msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
-msgstr "将被用于 HTTPS 的 x509 PEM 证书文件的路径。"
-
-#: modules/access_output/http.c:78
-msgid ""
-"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
-"empty if you don't have one."
-msgstr "将被用于 HTTPS 的 x509 私匙文件的路径。如果您没有请留空。"
-
-#: modules/access_output/http.c:82
-msgid ""
-"Path to the x509 PEM trusted root CA certificates (certificate authority) "
-"file that will be used for HTTPS. Leave empty if you don't have one."
-msgstr ""
-"用于 HTTPS 的 x509 PEM 受信任的根 CA 证书 (证书颁发机构) 文件的路径。如果您没"
-"有请留空。"
-
-#: modules/access_output/http.c:87
-msgid ""
-"Path to the x509 PEM Certificates Revocation List file that will be used for "
-"SSL. Leave empty if you don't have one."
-msgstr "用于 SSL 的 x509 PEM 证书废止列表文件的地址。如果您没有请留空。"
-
-#: modules/access_output/http.c:90
-msgid "Advertise with Bonjour"
-msgstr "使用 Bonjour 发布"
-
-#: modules/access_output/http.c:91
-msgid "Advertise the stream with the Bonjour protocol."
-msgstr "通过 Bonjour 协议发布流。"
-
-#: modules/access_output/http.c:95
-msgid "HTTP stream output"
-msgstr "HTTP 流输出"
-
-#: modules/access_output/rtmp.c:44
-msgid "Active TCP connection"
-msgstr "激活 TCP 连接"
-
-#: modules/access_output/rtmp.c:46
-msgid ""
-"If enabled, VLC will connect to a remote destination instead of waiting for "
-"an incoming connection."
-msgstr "如果开启,VLC 将会连接到远程目标来代替等待入站连接。"
-
-#: modules/access_output/rtmp.c:55
-msgid "RTMP stream output"
-msgstr "RTMP 流输出"
-
-#: modules/access_output/rtmp.c:56 modules/access/rtmp/access.c:53
-msgid "RTMP"
-msgstr ""
-
-#: modules/access_output/shout.c:63
-msgid "Stream name"
-msgstr "流名称"
-
-#: modules/access_output/shout.c:64
-msgid "Name to give to this stream/channel on the shoutcast/icecast server."
-msgstr "给予此流/频道在 shoutcast/icecast 服务器上的名称。"
-
-#: modules/access_output/shout.c:67
-msgid "Stream description"
-msgstr "流描述"
-
-#: modules/access_output/shout.c:68
-msgid "Description of the stream content or information about your channel."
-msgstr "关于您频道的内容或信息的描述。"
-
-#: modules/access_output/shout.c:71
-msgid "Stream MP3"
-msgstr "流 MP3"
-
-#: modules/access_output/shout.c:72
-msgid ""
-"You normally have to feed the shoutcast module with Ogg streams. It is also "
-"possible to stream MP3 instead, so you can forward MP3 streams to the "
-"shoutcast/icecast server."
-msgstr ""
-"您通常会提供给 shoutcast 模块 Ogg 流。它也可以被 MP3 流替代,所以您可以向 "
-"shoutcast/icecast 服务器发送 MP3 流。"
-
-#: modules/access_output/shout.c:81
-msgid "Genre description"
-msgstr "流派描述"
-
-#: modules/access_output/shout.c:82
-msgid "Genre of the content. "
-msgstr "内容的流派。"
-
-#: modules/access_output/shout.c:84
-msgid "URL description"
-msgstr "URL 描述"
-
-#: modules/access_output/shout.c:85
-msgid "URL with information about the stream or your channel. "
-msgstr "您的流或频道的 URL 信息。"
-
-#: modules/access_output/shout.c:92
-msgid "Bitrate information of the transcoded stream. "
-msgstr "被转码流的位率信息。"
-
-#: modules/access_output/shout.c:94 modules/access/v4l2/v4l2.c:221
-#: modules/access/v4l.c:126
-msgid "Samplerate"
-msgstr "采样率"
-
-#: modules/access_output/shout.c:95
-msgid "Samplerate information of the transcoded stream. "
-msgstr "被转码流的采样率信息。"
-
-#: modules/access_output/shout.c:97
-msgid "Number of channels"
-msgstr "频道编号"
-
-#: modules/access_output/shout.c:98
-msgid "Number of channels information of the transcoded stream. "
-msgstr "被转码流的频道编号信息。"
-
-#: modules/access_output/shout.c:100
-msgid "Ogg Vorbis Quality"
-msgstr "Ogg Vorbis 质量"
-
-#: modules/access_output/shout.c:101
-msgid "Ogg Vorbis Quality information of the transcoded stream. "
-msgstr "被转码流的 Ogg Vorbis 质量信息。"
-
-#: modules/access_output/shout.c:103
-msgid "Stream public"
-msgstr "公共流"
-
-#: modules/access_output/shout.c:104
-msgid ""
-"Make the server publicly available on the 'Yellow Pages' (directory listing "
-"of streams) on the icecast/shoutcast website. Requires the bitrate "
-"information specified for shoutcast. Requires Ogg streaming for icecast."
-msgstr ""
-"使服务器能够在 icecast/shoutcast 网站的 '黄页' (流目录列表) 中出现。需要为 "
-"shoutcast 指定位流信息。icecast 需要 Ogg 流。"
-
-#: modules/access_output/shout.c:110
-msgid "IceCAST output"
-msgstr "IceCAST 输出"
-
-#: modules/access_output/udp.c:67 modules/access/rtsp/access.c:46
-#: modules/demux/live555.cpp:74
-msgid "Caching value (ms)"
-msgstr "缓冲值 (毫秒)"
-
-#: modules/access_output/udp.c:69
-msgid ""
-"Default caching value for outbound UDP streams. This value should be set in "
-"milliseconds."
-msgstr "默认出站 UDP 流的缓冲值。此值应该以毫秒为单位设置。"
-
-#: modules/access_output/udp.c:72
-msgid "Group packets"
-msgstr "分组数据包"
-
-#: modules/access_output/udp.c:73
-msgid ""
-"Packets can be sent one by one at the right time or by groups. You can "
-"choose the number of packets that will be sent at a time. It helps reducing "
-"the scheduling load on heavily-loaded systems."
-msgstr ""
-"数据包可以在正确的时间或按分组一个接一个的被发送，您可以选择在一个时间内将被"
-"发送的数据包数量。它将有助于在大负荷的系统上减轻时序安排的负载。"
-
-#: modules/access_output/udp.c:80
-msgid "UDP stream output"
-msgstr "UDP 流输出"
-
 #: modules/access/pvr.c:62
 msgid ""
 "Default caching value for PVR streams. This value should be set in "
@@ -6911,8 +6602,8 @@ msgstr "制式"
 msgid "Norm of the stream (Automatic, SECAM, PAL, or NTSC)."
 msgstr "流制式 (自动, SECAM, PAL, 或 NTSC)。"
 
-#: modules/access/pvr.c:75 modules/access/v4l2/v4l2.c:105
-#: modules/access/v4l.c:106 modules/demux/rawvid.c:48
+#: modules/access/pvr.c:75 modules/access/v4l.c:106
+#: modules/access/v4l2/v4l2.c:105 modules/demux/rawvid.c:48
 #: modules/video_filter/mosaic.c:96 modules/video_output/vmem.c:50
 msgid "Width"
 msgstr "宽度"
@@ -6921,8 +6612,8 @@ msgstr "宽度"
 msgid "Width of the stream to capture (-1 for autodetection)."
 msgstr "捕获流的宽度 (-1 为自动检测)。"
 
-#: modules/access/pvr.c:79 modules/access/v4l2/v4l2.c:108
-#: modules/access/v4l.c:109 modules/demux/rawvid.c:52
+#: modules/access/pvr.c:79 modules/access/v4l.c:109
+#: modules/access/v4l2/v4l2.c:108 modules/demux/rawvid.c:52
 #: modules/video_filter/mosaic.c:94 modules/video_output/vmem.c:53
 msgid "Height"
 msgstr "高度"
@@ -6931,8 +6622,9 @@ msgstr "高度"
 msgid "Height of the stream to capture (-1 for autodetection)."
 msgstr "捕获流的高度 (-1 为自动检测)。"
 
-#: modules/access/pvr.c:83 modules/access/v4l2/v4l2.c:240
-#: modules/access/v4l.c:93 modules/gui/qt4/components/open_panels.cpp:757
+#: modules/access/pvr.c:83 modules/access/v4l.c:93
+#: modules/access/v4l2/v4l2.c:240
+#: modules/gui/qt4/components/open_panels.cpp:757
 #: modules/gui/qt4/components/open_panels.cpp:856
 msgid "Frequency"
 msgstr "频率"
@@ -6941,8 +6633,8 @@ msgstr "频率"
 msgid "Frequency to capture (in kHz), if applicable."
 msgstr "捕获频率 (in kHz), 如果可用。"
 
-#: modules/access/pvr.c:87 modules/access/v4l2/v4l2.c:112
-#: modules/access/v4l.c:141
+#: modules/access/pvr.c:87 modules/access/v4l.c:141
+#: modules/access/v4l2/v4l2.c:112
 msgid "Framerate to capture, if applicable (-1 for autodetect)."
 msgstr "捕获帧率, 如果可用 (-1 自动检测)。"
 
@@ -7014,18 +6706,18 @@ msgstr "卡带要使用声道 (通常, 0 = 调谐器, 1 = 混合, 2 = svideo)"
 msgid "Automatic"
 msgstr "自动"
 
-#: modules/access/pvr.c:120 modules/access/v4l2/v4l2.c:256
-#: modules/access/v4l.c:147
+#: modules/access/pvr.c:120 modules/access/v4l.c:147
+#: modules/access/v4l2/v4l2.c:256
 msgid "SECAM"
 msgstr ""
 
-#: modules/access/pvr.c:120 modules/access/v4l2/v4l2.c:256
-#: modules/access/v4l.c:147
+#: modules/access/pvr.c:120 modules/access/v4l.c:147
+#: modules/access/v4l2/v4l2.c:256
 msgid "PAL"
 msgstr ""
 
-#: modules/access/pvr.c:120 modules/access/v4l2/v4l2.c:256
-#: modules/access/v4l.c:147
+#: modules/access/pvr.c:120 modules/access/v4l.c:147
+#: modules/access/v4l2/v4l2.c:256
 msgid "NTSC"
 msgstr ""
 
@@ -7067,6 +6759,15 @@ msgstr "RTMP 流的缓冲值。此值必须以毫秒为单位设置。"
 #: modules/access/rtmp/access.c:52
 msgid "RTMP input"
 msgstr "RTMP 输入"
+
+#: modules/access/rtmp/access.c:53 modules/access_output/rtmp.c:56
+msgid "RTMP"
+msgstr ""
+
+#: modules/access/rtsp/access.c:46 modules/access_output/udp.c:67
+#: modules/demux/live555.cpp:74
+msgid "Caching value (ms)"
+msgstr "缓冲值 (毫秒)"
 
 #: modules/access/rtsp/access.c:48
 msgid ""
@@ -7203,6 +6904,147 @@ msgstr ""
 msgid "UDP input"
 msgstr "UDP 输入"
 
+#: modules/access/v4l.c:79
+msgid ""
+"Caching value for V4L captures. This value should be set in milliseconds."
+msgstr "V4L 的缓冲值。此值应该以毫秒设置。"
+
+#: modules/access/v4l.c:83
+msgid ""
+"Name of the video device to use. If you don't specify anything, no video "
+"device will be used."
+msgstr "要使用的视频设备名称。如果不指定任何东西,将不会使用视频设备。"
+
+#: modules/access/v4l.c:87
+msgid ""
+"Name of the audio device to use. If you don't specify anything, no audio "
+"device will be used."
+msgstr "要使用的音频设备的名称。如果您不指定任何东西,将无法使用音频设备。"
+
+#: modules/access/v4l.c:91
+msgid ""
+"Force the Video4Linux video device to use a specific chroma format (eg. I420 "
+"(default), RV24, etc.)"
+msgstr ""
+"强制使 Video4Linux 视频设备使用指定的色度格式 (例如 I420 (默认)、RV24、其"
+"它。)"
+
+#: modules/access/v4l.c:98
+msgid ""
+"Channel of the card to use (Usually, 0 = tuner, 1 = composite, 2 = svideo)."
+msgstr "卡带要使用的频道 (通常, 0 = 调谐器, 1 = 混合, 2 = svideo)."
+
+#: modules/access/v4l.c:103
+msgid "Audio Channel"
+msgstr "音频声道"
+
+#: modules/access/v4l.c:105
+msgid "Audio Channel to use, if there are several audio inputs."
+msgstr "要使用的音频声道,如果有多个输入声道的话。"
+
+#: modules/access/v4l.c:107
+msgid "Width of the stream to capture (-1 for autodetect)."
+msgstr "捕获流的宽度 (-1 自动检测)。"
+
+#: modules/access/v4l.c:110
+msgid "Height of the stream to capture (-1 for autodetect)."
+msgstr "捕获流的高度 (-1 自动检测）"
+
+#: modules/access/v4l.c:112 modules/access/v4l2/v4l2.c:124
+#: modules/gui/macosx/extended.m:97 modules/gui/qt4/ui/video_effects.ui:205
+#: modules/video_filter/atmo/atmo.cpp:196
+msgid "Brightness"
+msgstr "亮度"
+
+#: modules/access/v4l.c:114
+msgid "Brightness of the video input."
+msgstr "视频输入亮度。"
+
+#: modules/access/v4l.c:115 modules/access/v4l2/v4l2.c:133
+#: modules/gui/macosx/extended.m:100 modules/gui/qt4/ui/video_effects.ui:219
+msgid "Hue"
+msgstr "色调"
+
+#: modules/access/v4l.c:117
+msgid "Hue of the video input."
+msgstr "视频输入的色调。"
+
+#: modules/access/v4l.c:118 modules/gui/fbosd.c:143
+#: modules/gui/qt4/ui/video_effects.ui:263
+#: modules/gui/qt4/ui/video_effects.ui:327
+#: modules/gui/qt4/ui/video_effects.ui:689 modules/misc/notify/xosd.c:83
+#: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:122
+#: modules/video_filter/rss.c:154
+msgid "Color"
+msgstr "颜色"
+
+#: modules/access/v4l.c:120
+msgid "Color of the video input."
+msgstr "视频输入的色彩。"
+
+#: modules/access/v4l.c:121 modules/access/v4l2/v4l2.c:127
+#: modules/gui/macosx/extended.m:98 modules/gui/qt4/ui/video_effects.ui:198
+msgid "Contrast"
+msgstr "对比度"
+
+#: modules/access/v4l.c:123
+msgid "Contrast of the video input."
+msgstr "视频输入的对比度。"
+
+#: modules/access/v4l.c:124 modules/access/v4l2/v4l2.c:326
+msgid "Tuner"
+msgstr "调谐器"
+
+#: modules/access/v4l.c:125
+msgid "Tuner to use, if there are several ones."
+msgstr "要使用的调谐器,如果有多个设备。"
+
+#: modules/access/v4l.c:126 modules/access/v4l2/v4l2.c:221
+#: modules/access_output/shout.c:94
+msgid "Samplerate"
+msgstr "采样率"
+
+#: modules/access/v4l.c:128
+msgid ""
+"Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100)"
+msgstr "捕获音频流的采样率, 以 Hz 为单位 (例如: 11025, 22050, 44100)"
+
+#: modules/access/v4l.c:131 modules/access/v4l2/v4l2.c:220
+msgid "Capture the audio stream in stereo."
+msgstr "以立体声捕获音频流。"
+
+#: modules/access/v4l.c:132
+msgid "MJPEG"
+msgstr ""
+
+#: modules/access/v4l.c:134
+msgid "Set this option if the capture device outputs MJPEG"
+msgstr "如果捕获设备输出 MJPEG 的设置此选项"
+
+#: modules/access/v4l.c:135
+msgid "Decimation"
+msgstr "废弃"
+
+#: modules/access/v4l.c:137
+msgid "Decimation level for MJPEG streams"
+msgstr "MJPEG 流废弃等级。"
+
+#: modules/access/v4l.c:138
+msgid "Quality"
+msgstr "质量"
+
+#: modules/access/v4l.c:139
+msgid "Quality of the stream."
+msgstr "流质量。"
+
+#: modules/access/v4l.c:150
+msgid "Video4Linux"
+msgstr ""
+
+#: modules/access/v4l.c:151
+msgid "Video4Linux input"
+msgstr "Video4Linux 输入"
+
 #: modules/access/v4l2/v4l2.c:83 modules/gui/macosx/open.m:178
 #: modules/gui/qt4/components/open_panels.cpp:836
 msgid "Device name"
@@ -7279,20 +7121,9 @@ msgstr "重置 v4l2 控制"
 msgid "Reset controls to defaults provided by the v4l2 driver."
 msgstr "按 v4l2 设置重置为默认控制。"
 
-#: modules/access/v4l2/v4l2.c:124 modules/access/v4l.c:112
-#: modules/gui/macosx/extended.m:97 modules/gui/qt4/ui/video_effects.ui:205
-#: modules/video_filter/atmo/atmo.cpp:196
-msgid "Brightness"
-msgstr "亮度"
-
 #: modules/access/v4l2/v4l2.c:126
 msgid "Brightness of the video input (if supported by the v4l2 driver)."
 msgstr "视频输入的亮度 (如果 v4l2 驱动支持)。"
-
-#: modules/access/v4l2/v4l2.c:127 modules/access/v4l.c:121
-#: modules/gui/macosx/extended.m:98 modules/gui/qt4/ui/video_effects.ui:198
-msgid "Contrast"
-msgstr "对比度"
 
 #: modules/access/v4l2/v4l2.c:129
 msgid "Contrast of the video input (if supported by the v4l2 driver)."
@@ -7307,11 +7138,6 @@ msgstr "饱和度"
 #: modules/access/v4l2/v4l2.c:132
 msgid "Saturation of the video input (if supported by the v4l2 driver)."
 msgstr "视频输入的饱和度 (如果 v4l2 驱动支持)。"
-
-#: modules/access/v4l2/v4l2.c:133 modules/access/v4l.c:115
-#: modules/gui/macosx/extended.m:100 modules/gui/qt4/ui/video_effects.ui:219
-msgid "Hue"
-msgstr "色调"
 
 #: modules/access/v4l2/v4l2.c:135
 msgid "Hue of the video input (if supported by the v4l2 driver)."
@@ -7498,10 +7324,6 @@ msgstr "响度"
 msgid "Loudness of the audio input (if supported by the v4l2 driver)."
 msgstr "音频输入的响度 (如果 v4l2 驱动支持)。 "
 
-#: modules/access/v4l2/v4l2.c:220 modules/access/v4l.c:131
-msgid "Capture the audio stream in stereo."
-msgstr "以立体声捕获音频流。"
-
 #: modules/access/v4l2/v4l2.c:223
 msgid ""
 "Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100, "
@@ -7595,10 +7417,6 @@ msgstr "Video4Linux2 输入"
 msgid "Video input"
 msgstr "视频输入"
 
-#: modules/access/v4l2/v4l2.c:326 modules/access/v4l.c:124
-msgid "Tuner"
-msgstr "调谐器"
-
 #: modules/access/v4l2/v4l2.c:336
 msgid "Controls"
 msgstr "控制"
@@ -7614,118 +7432,6 @@ msgstr "Video4Linux2 压缩 A/V"
 #: modules/access/v4l2/v4l2.c:3268
 msgid "Reset controls to default"
 msgstr "重置控制为默认值"
-
-#: modules/access/v4l.c:79
-msgid ""
-"Caching value for V4L captures. This value should be set in milliseconds."
-msgstr "V4L 的缓冲值。此值应该以毫秒设置。"
-
-#: modules/access/v4l.c:83
-msgid ""
-"Name of the video device to use. If you don't specify anything, no video "
-"device will be used."
-msgstr "要使用的视频设备名称。如果不指定任何东西,将不会使用视频设备。"
-
-#: modules/access/v4l.c:87
-msgid ""
-"Name of the audio device to use. If you don't specify anything, no audio "
-"device will be used."
-msgstr "要使用的音频设备的名称。如果您不指定任何东西,将无法使用音频设备。"
-
-#: modules/access/v4l.c:91
-msgid ""
-"Force the Video4Linux video device to use a specific chroma format (eg. I420 "
-"(default), RV24, etc.)"
-msgstr ""
-"强制使 Video4Linux 视频设备使用指定的色度格式 (例如 I420 (默认)、RV24、其"
-"它。)"
-
-#: modules/access/v4l.c:98
-msgid ""
-"Channel of the card to use (Usually, 0 = tuner, 1 = composite, 2 = svideo)."
-msgstr "卡带要使用的频道 (通常, 0 = 调谐器, 1 = 混合, 2 = svideo)."
-
-#: modules/access/v4l.c:103
-msgid "Audio Channel"
-msgstr "音频声道"
-
-#: modules/access/v4l.c:105
-msgid "Audio Channel to use, if there are several audio inputs."
-msgstr "要使用的音频声道,如果有多个输入声道的话。"
-
-#: modules/access/v4l.c:107
-msgid "Width of the stream to capture (-1 for autodetect)."
-msgstr "捕获流的宽度 (-1 自动检测)。"
-
-#: modules/access/v4l.c:110
-msgid "Height of the stream to capture (-1 for autodetect)."
-msgstr "捕获流的高度 (-1 自动检测）"
-
-#: modules/access/v4l.c:114
-msgid "Brightness of the video input."
-msgstr "视频输入亮度。"
-
-#: modules/access/v4l.c:117
-msgid "Hue of the video input."
-msgstr "视频输入的色调。"
-
-#: modules/access/v4l.c:118 modules/gui/fbosd.c:143
-#: modules/gui/qt4/ui/video_effects.ui:263
-#: modules/gui/qt4/ui/video_effects.ui:327
-#: modules/gui/qt4/ui/video_effects.ui:689 modules/misc/notify/xosd.c:83
-#: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:122
-#: modules/video_filter/rss.c:154
-msgid "Color"
-msgstr "颜色"
-
-#: modules/access/v4l.c:120
-msgid "Color of the video input."
-msgstr "视频输入的色彩。"
-
-#: modules/access/v4l.c:123
-msgid "Contrast of the video input."
-msgstr "视频输入的对比度。"
-
-#: modules/access/v4l.c:125
-msgid "Tuner to use, if there are several ones."
-msgstr "要使用的调谐器,如果有多个设备。"
-
-#: modules/access/v4l.c:128
-msgid ""
-"Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100)"
-msgstr "捕获音频流的采样率, 以 Hz 为单位 (例如: 11025, 22050, 44100)"
-
-#: modules/access/v4l.c:132
-msgid "MJPEG"
-msgstr ""
-
-#: modules/access/v4l.c:134
-msgid "Set this option if the capture device outputs MJPEG"
-msgstr "如果捕获设备输出 MJPEG 的设置此选项"
-
-#: modules/access/v4l.c:135
-msgid "Decimation"
-msgstr "废弃"
-
-#: modules/access/v4l.c:137
-msgid "Decimation level for MJPEG streams"
-msgstr "MJPEG 流废弃等级。"
-
-#: modules/access/v4l.c:138
-msgid "Quality"
-msgstr "质量"
-
-#: modules/access/v4l.c:139
-msgid "Quality of the stream."
-msgstr "流质量。"
-
-#: modules/access/v4l.c:150
-msgid "Video4Linux"
-msgstr ""
-
-#: modules/access/v4l.c:151
-msgid "Video4Linux input"
-msgstr "Video4Linux 输入"
 
 #: modules/access/vcd/vcd.c:48
 msgid "Caching value for VCDs. This value should be set in milliseconds."
@@ -7904,6 +7610,302 @@ msgstr "在播放列表 \"作者\" 字段使用的格式。"
 #: modules/access/vcdx/vcd.c:149
 msgid "Format to use in the playlist's \"title\" field."
 msgstr "在播放列表 \"标题\" 字段使用的格式。"
+
+#: modules/access_filter/bandwidth.c:34
+msgid "Bandwidth limit (bytes/s)"
+msgstr "带宽限制 (字节/秒)"
+
+#: modules/access_filter/bandwidth.c:36
+msgid ""
+"The bandwidth module will drop any data in excess of that many bytes per "
+"seconds."
+msgstr "带宽限制模块将会放弃任意超过每秒字节数的数据。"
+
+#: modules/access_filter/bandwidth.c:45
+#: modules/gui/qt4/components/open_panels.cpp:670
+msgid "Bandwidth"
+msgstr "带宽"
+
+#: modules/access_filter/bandwidth.c:46 modules/gui/macosx/simple_prefs.m:247
+#: modules/gui/qt4/ui/sprefs_input.ui:208
+msgid "Bandwidth limiter"
+msgstr "带宽限制器"
+
+#: modules/access_filter/dump.c:42
+msgid "Force use of dump module"
+msgstr "强制使用转储模块"
+
+#: modules/access_filter/dump.c:43
+msgid "Activate the dump module even for media with fast seeking."
+msgstr "为媒体的快速搜索激活转储模块。"
+
+#: modules/access_filter/dump.c:46
+msgid "Maximum size of temporary file (Mb)"
+msgstr "临时文件最大大小 (Mb)"
+
+#: modules/access_filter/dump.c:47
+msgid ""
+"The dump module will abort dumping of the media if more than this much "
+"megabyte were performed."
+msgstr "转储文件将会在媒体超过指定的兆字节时放弃转储。"
+
+#: modules/access_filter/record.c:48
+msgid "Record directory"
+msgstr "录制目录"
+
+#: modules/access_filter/record.c:50
+msgid "Directory where the record will be stored."
+msgstr "录制将会储存的目录。"
+
+#: modules/access_filter/record.c:339
+msgid "Recording"
+msgstr "正在录制"
+
+#: modules/access_filter/record.c:341
+msgid "Recording done"
+msgstr "录制完成"
+
+#: modules/access_filter/timeshift.c:53
+msgid "Timeshift granularity"
+msgstr "时间位移间隔"
+
+#: modules/access_filter/timeshift.c:55
+msgid ""
+"This is the size of the temporary files that will be used to store the "
+"timeshifted streams."
+msgstr "这是将被保存时间位移流的临时文件大小。"
+
+#: modules/access_filter/timeshift.c:57
+msgid "Timeshift directory"
+msgstr "时间位移目录"
+
+#: modules/access_filter/timeshift.c:58
+msgid "Directory used to store the timeshift temporary files."
+msgstr "用于储存时间位移临时文件的目录。"
+
+#: modules/access_filter/timeshift.c:60
+msgid "Force use of the timeshift module"
+msgstr "强制使用时间位移模块"
+
+#: modules/access_filter/timeshift.c:61
+msgid ""
+"Force use of the timeshift module even if the access declares that it can "
+"control pace or pause."
+msgstr "即使访问宣告它能控制步调或暂停也强制使用时间位移模块。"
+
+#: modules/access_filter/timeshift.c:65 modules/access_filter/timeshift.c:66
+#: modules/gui/macosx/simple_prefs.m:260
+#: modules/gui/qt4/ui/sprefs_input.ui:187
+msgid "Timeshift"
+msgstr "时间位移"
+
+#: modules/access_output/dummy.c:45 modules/stream_out/dummy.c:51
+msgid "Dummy stream output"
+msgstr "空流输出"
+
+#: modules/access_output/dummy.c:46 modules/misc/dummy/dummy.c:61
+msgid "Dummy"
+msgstr "空"
+
+#: modules/access_output/file.c:64
+msgid "Append to file"
+msgstr "附加到文件"
+
+#: modules/access_output/file.c:65
+msgid "Append to file if it exists instead of replacing it."
+msgstr "增补到文件,如果它已经存在就替换它。"
+
+#: modules/access_output/file.c:69
+msgid "File stream output"
+msgstr "文件流输出"
+
+#: modules/access_output/http.c:65 modules/gui/qt4/ui/sprefs_audio.ui:309
+#: modules/misc/audioscrobbler.c:132
+msgid "Username"
+msgstr "用户名"
+
+#: modules/access_output/http.c:66
+msgid "User name that will be requested to access the stream."
+msgstr "将被用户请求访问流的用户名"
+
+#: modules/access_output/http.c:68 modules/control/telnet.c:91
+#: modules/gui/macosx/simple_prefs.m:227
+#: modules/gui/qt4/dialogs/interaction.cpp:99
+#: modules/gui/qt4/ui/sprefs_audio.ui:319 modules/misc/audioscrobbler.c:134
+#: modules/misc/notify/growl_udp.c:64
+msgid "Password"
+msgstr "密码"
+
+#: modules/access_output/http.c:69
+msgid "Password that will be requested to access the stream."
+msgstr "将被用于请求访问流的密码"
+
+#: modules/access_output/http.c:71
+msgid "Mime"
+msgstr ""
+
+#: modules/access_output/http.c:72
+msgid "MIME returned by the server (autodetected if not specified)."
+msgstr "由服务器返回的 MIME (如果未指定则自动检测)。"
+
+#: modules/access_output/http.c:75
+msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
+msgstr "将被用于 HTTPS 的 x509 PEM 证书文件的路径。"
+
+#: modules/access_output/http.c:78
+msgid ""
+"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
+"empty if you don't have one."
+msgstr "将被用于 HTTPS 的 x509 私匙文件的路径。如果您没有请留空。"
+
+#: modules/access_output/http.c:82
+msgid ""
+"Path to the x509 PEM trusted root CA certificates (certificate authority) "
+"file that will be used for HTTPS. Leave empty if you don't have one."
+msgstr ""
+"用于 HTTPS 的 x509 PEM 受信任的根 CA 证书 (证书颁发机构) 文件的路径。如果您没"
+"有请留空。"
+
+#: modules/access_output/http.c:87
+msgid ""
+"Path to the x509 PEM Certificates Revocation List file that will be used for "
+"SSL. Leave empty if you don't have one."
+msgstr "用于 SSL 的 x509 PEM 证书废止列表文件的地址。如果您没有请留空。"
+
+#: modules/access_output/http.c:90
+msgid "Advertise with Bonjour"
+msgstr "使用 Bonjour 发布"
+
+#: modules/access_output/http.c:91
+msgid "Advertise the stream with the Bonjour protocol."
+msgstr "通过 Bonjour 协议发布流。"
+
+#: modules/access_output/http.c:95
+msgid "HTTP stream output"
+msgstr "HTTP 流输出"
+
+#: modules/access_output/rtmp.c:44
+msgid "Active TCP connection"
+msgstr "激活 TCP 连接"
+
+#: modules/access_output/rtmp.c:46
+msgid ""
+"If enabled, VLC will connect to a remote destination instead of waiting for "
+"an incoming connection."
+msgstr "如果开启,VLC 将会连接到远程目标来代替等待入站连接。"
+
+#: modules/access_output/rtmp.c:55
+msgid "RTMP stream output"
+msgstr "RTMP 流输出"
+
+#: modules/access_output/shout.c:63
+msgid "Stream name"
+msgstr "流名称"
+
+#: modules/access_output/shout.c:64
+msgid "Name to give to this stream/channel on the shoutcast/icecast server."
+msgstr "给予此流/频道在 shoutcast/icecast 服务器上的名称。"
+
+#: modules/access_output/shout.c:67
+msgid "Stream description"
+msgstr "流描述"
+
+#: modules/access_output/shout.c:68
+msgid "Description of the stream content or information about your channel."
+msgstr "关于您频道的内容或信息的描述。"
+
+#: modules/access_output/shout.c:71
+msgid "Stream MP3"
+msgstr "流 MP3"
+
+#: modules/access_output/shout.c:72
+msgid ""
+"You normally have to feed the shoutcast module with Ogg streams. It is also "
+"possible to stream MP3 instead, so you can forward MP3 streams to the "
+"shoutcast/icecast server."
+msgstr ""
+"您通常会提供给 shoutcast 模块 Ogg 流。它也可以被 MP3 流替代,所以您可以向 "
+"shoutcast/icecast 服务器发送 MP3 流。"
+
+#: modules/access_output/shout.c:81
+msgid "Genre description"
+msgstr "流派描述"
+
+#: modules/access_output/shout.c:82
+msgid "Genre of the content. "
+msgstr "内容的流派。"
+
+#: modules/access_output/shout.c:84
+msgid "URL description"
+msgstr "URL 描述"
+
+#: modules/access_output/shout.c:85
+msgid "URL with information about the stream or your channel. "
+msgstr "您的流或频道的 URL 信息。"
+
+#: modules/access_output/shout.c:92
+msgid "Bitrate information of the transcoded stream. "
+msgstr "被转码流的位率信息。"
+
+#: modules/access_output/shout.c:95
+msgid "Samplerate information of the transcoded stream. "
+msgstr "被转码流的采样率信息。"
+
+#: modules/access_output/shout.c:97
+msgid "Number of channels"
+msgstr "频道编号"
+
+#: modules/access_output/shout.c:98
+msgid "Number of channels information of the transcoded stream. "
+msgstr "被转码流的频道编号信息。"
+
+#: modules/access_output/shout.c:100
+msgid "Ogg Vorbis Quality"
+msgstr "Ogg Vorbis 质量"
+
+#: modules/access_output/shout.c:101
+msgid "Ogg Vorbis Quality information of the transcoded stream. "
+msgstr "被转码流的 Ogg Vorbis 质量信息。"
+
+#: modules/access_output/shout.c:103
+msgid "Stream public"
+msgstr "公共流"
+
+#: modules/access_output/shout.c:104
+msgid ""
+"Make the server publicly available on the 'Yellow Pages' (directory listing "
+"of streams) on the icecast/shoutcast website. Requires the bitrate "
+"information specified for shoutcast. Requires Ogg streaming for icecast."
+msgstr ""
+"使服务器能够在 icecast/shoutcast 网站的 '黄页' (流目录列表) 中出现。需要为 "
+"shoutcast 指定位流信息。icecast 需要 Ogg 流。"
+
+#: modules/access_output/shout.c:110
+msgid "IceCAST output"
+msgstr "IceCAST 输出"
+
+#: modules/access_output/udp.c:69
+msgid ""
+"Default caching value for outbound UDP streams. This value should be set in "
+"milliseconds."
+msgstr "默认出站 UDP 流的缓冲值。此值应该以毫秒为单位设置。"
+
+#: modules/access_output/udp.c:72
+msgid "Group packets"
+msgstr "分组数据包"
+
+#: modules/access_output/udp.c:73
+msgid ""
+"Packets can be sent one by one at the right time or by groups. You can "
+"choose the number of packets that will be sent at a time. It helps reducing "
+"the scheduling load on heavily-loaded systems."
+msgstr ""
+"数据包可以在正确的时间或按分组一个接一个的被发送，您可以选择在一个时间内将被"
+"发送的数据包数量。它将有助于在大负荷的系统上减轻时序安排的负载。"
+
+#: modules/access_output/udp.c:80
+msgid "UDP stream output"
+msgstr "UDP 流输出"
 
 #: modules/audio_filter/channel_mixer/dolby.c:49
 msgid "Simple decoder for Dolby Surround encoded streams"
@@ -12022,40 +12024,9 @@ msgstr "(实验性) 实时协议信号分离器"
 msgid "SMF demuxer"
 msgstr "SMF 信号分离器"
 
-#: modules/demux/subtitle_asa.c:56 modules/demux/subtitle.c:54
+#: modules/demux/subtitle.c:54 modules/demux/subtitle_asa.c:56
 msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
 msgstr "为所有字幕应用一个延迟 (在 1/10 秒,例如 100 代表 10 秒)。"
-
-#: modules/demux/subtitle_asa.c:58
-msgid ""
-"Override the normal frames per second settings. This will only affect frame-"
-"based subtitle formats without a fixed value."
-msgstr "覆盖每秒普通帧的设置。这将只对基于字幕格式没有固定值的帧生效。"
-
-#: modules/demux/subtitle_asa.c:61
-msgid ""
-"Force the subtiles format. Use \"auto\", the set of supported values varies."
-msgstr "强制字幕格式。使用 \"自动\", 支持变量值。"
-
-#: modules/demux/subtitle_asa.c:64
-msgid "Subtitles (asa demuxer)"
-msgstr "字幕 (asa 信号分离器)"
-
-#: modules/demux/subtitle_asa.c:65 modules/demux/subtitle.c:75
-msgid "Text subtitles parser"
-msgstr "文本字幕解析器"
-
-#: modules/demux/subtitle_asa.c:70 modules/demux/subtitle.c:80
-msgid "Frames per second"
-msgstr "帧每秒"
-
-#: modules/demux/subtitle_asa.c:73 modules/demux/subtitle.c:83
-msgid "Subtitles delay"
-msgstr "字幕延迟"
-
-#: modules/demux/subtitle_asa.c:75 modules/demux/subtitle.c:85
-msgid "Subtitles format"
-msgstr "字幕格式"
 
 #: modules/demux/subtitle.c:56
 msgid ""
@@ -12075,6 +12046,37 @@ msgstr ""
 "\", \"ssa2-4\", \"ass\", \"vplayer\", \"sami\", \"dvdsubtitle\", \"mpl2\", "
 "\"aqt\", \"pjs\", \"mpsub\", \"jacosub\", \"psb\", \"realtext\", \"dks\", "
 "\"subviewer1\",  和 \"auto\" (表示自动检测, 这应该总能工作)。"
+
+#: modules/demux/subtitle.c:75 modules/demux/subtitle_asa.c:65
+msgid "Text subtitles parser"
+msgstr "文本字幕解析器"
+
+#: modules/demux/subtitle.c:80 modules/demux/subtitle_asa.c:70
+msgid "Frames per second"
+msgstr "帧每秒"
+
+#: modules/demux/subtitle.c:83 modules/demux/subtitle_asa.c:73
+msgid "Subtitles delay"
+msgstr "字幕延迟"
+
+#: modules/demux/subtitle.c:85 modules/demux/subtitle_asa.c:75
+msgid "Subtitles format"
+msgstr "字幕格式"
+
+#: modules/demux/subtitle_asa.c:58
+msgid ""
+"Override the normal frames per second settings. This will only affect frame-"
+"based subtitle formats without a fixed value."
+msgstr "覆盖每秒普通帧的设置。这将只对基于字幕格式没有固定值的帧生效。"
+
+#: modules/demux/subtitle_asa.c:61
+msgid ""
+"Force the subtiles format. Use \"auto\", the set of supported values varies."
+msgstr "强制字幕格式。使用 \"自动\", 支持变量值。"
+
+#: modules/demux/subtitle_asa.c:64
+msgid "Subtitles (asa demuxer)"
+msgstr "字幕 (asa 信号分离器)"
 
 #: modules/demux/ts.c:112
 msgid "Extra PMT"
@@ -13485,8 +13487,8 @@ msgstr "捕获"
 #: modules/gui/macosx/simple_prefs.m:291
 #: modules/gui/qt4/components/preferences_widgets.cpp:260
 #: modules/gui/qt4/components/simple_preferences.cpp:239
-#: modules/gui/qt4/ui/open_disk.ui:141 modules/gui/qt4/ui/open_file.ui:181
-#: modules/gui/qt4/ui/open.ui:155 modules/gui/qt4/ui/sout.ui:71
+#: modules/gui/qt4/ui/open.ui:155 modules/gui/qt4/ui/open_disk.ui:141
+#: modules/gui/qt4/ui/open_file.ui:181 modules/gui/qt4/ui/sout.ui:71
 #: modules/gui/qt4/ui/sprefs_audio.ui:237
 #: modules/gui/qt4/ui/sprefs_input.ui:39
 #: modules/gui/qt4/ui/sprefs_interface.ui:209
@@ -13732,6 +13734,90 @@ msgstr ""
 msgid "Save File"
 msgstr "保存文件"
 
+#: modules/gui/macosx/playlist.m:128 modules/gui/macosx/wizard.m:350
+#: modules/gui/wince/playlist.cpp:671 modules/mux/asf.c:54
+msgid "Author"
+msgstr "作者"
+
+#: modules/gui/macosx/playlist.m:441
+msgid "Save Playlist..."
+msgstr "保存播放列表..."
+
+#: modules/gui/macosx/playlist.m:444
+msgid "Expand Node"
+msgstr "展开节点"
+
+#: modules/gui/macosx/playlist.m:447
+msgid "Download Cover Art"
+msgstr "下载封面"
+
+#: modules/gui/macosx/playlist.m:448
+msgid "Fetch Meta Data"
+msgstr "获取源数据"
+
+#: modules/gui/macosx/playlist.m:449
+msgid "Sort Node by Name"
+msgstr "按名称排序节点"
+
+#: modules/gui/macosx/playlist.m:450
+msgid "Sort Node by Author"
+msgstr "按作者排序节点"
+
+#: modules/gui/macosx/playlist.m:453 modules/gui/macosx/playlist.m:492
+#: modules/gui/macosx/playlist.m:1446
+msgid "No items in the playlist"
+msgstr "在播放列表中没有项目"
+
+#: modules/gui/macosx/playlist.m:455
+msgid "Search in Playlist"
+msgstr "在播放列表中搜索"
+
+#: modules/gui/macosx/playlist.m:456
+msgid "Add Folder to Playlist"
+msgstr "添加文件夹到播放列表"
+
+#: modules/gui/macosx/playlist.m:458
+msgid "File Format:"
+msgstr "文件格式:"
+
+#: modules/gui/macosx/playlist.m:459
+msgid "Extended M3U"
+msgstr "扩展 M3U"
+
+#: modules/gui/macosx/playlist.m:460
+msgid "XML Shareable Playlist Format (XSPF)"
+msgstr "XML 可分享播放列表格式 (XSPF)"
+
+#: modules/gui/macosx/playlist.m:486 modules/gui/macosx/playlist.m:1439
+#: modules/gui/macosx/wizard.m:1362
+#, c-format
+msgid "%i items"
+msgstr "%i 个项目"
+
+#: modules/gui/macosx/playlist.m:494 modules/gui/macosx/playlist.m:1450
+msgid "1 item"
+msgstr "1 个项目"
+
+#: modules/gui/macosx/playlist.m:683
+msgid "Save Playlist"
+msgstr "保存播放列表"
+
+#: modules/gui/macosx/playlist.m:1157 modules/gui/ncurses.c:1808
+msgid "Meta-information"
+msgstr "源信息"
+
+#: modules/gui/macosx/playlist.m:1404
+msgid "New Node"
+msgstr "新建节点"
+
+#: modules/gui/macosx/playlist.m:1405
+msgid "Please enter a name for the new node."
+msgstr "请为新节点输入一个名称。"
+
+#: modules/gui/macosx/playlist.m:1416
+msgid "Empty Folder"
+msgstr "空文件夹"
+
 #: modules/gui/macosx/playlistinfo.m:70
 #: modules/gui/qt4/dialogs/mediainfo.cpp:55
 msgid "Media Information"
@@ -13826,90 +13912,6 @@ msgstr "VLC 无法保存元数据。"
 #: modules/gui/macosx/playlistinfo.m:449
 msgid "Information"
 msgstr "信息"
-
-#: modules/gui/macosx/playlist.m:128 modules/gui/macosx/wizard.m:350
-#: modules/gui/wince/playlist.cpp:671 modules/mux/asf.c:54
-msgid "Author"
-msgstr "作者"
-
-#: modules/gui/macosx/playlist.m:441
-msgid "Save Playlist..."
-msgstr "保存播放列表..."
-
-#: modules/gui/macosx/playlist.m:444
-msgid "Expand Node"
-msgstr "展开节点"
-
-#: modules/gui/macosx/playlist.m:447
-msgid "Download Cover Art"
-msgstr "下载封面"
-
-#: modules/gui/macosx/playlist.m:448
-msgid "Fetch Meta Data"
-msgstr "获取源数据"
-
-#: modules/gui/macosx/playlist.m:449
-msgid "Sort Node by Name"
-msgstr "按名称排序节点"
-
-#: modules/gui/macosx/playlist.m:450
-msgid "Sort Node by Author"
-msgstr "按作者排序节点"
-
-#: modules/gui/macosx/playlist.m:453 modules/gui/macosx/playlist.m:492
-#: modules/gui/macosx/playlist.m:1446
-msgid "No items in the playlist"
-msgstr "在播放列表中没有项目"
-
-#: modules/gui/macosx/playlist.m:455
-msgid "Search in Playlist"
-msgstr "在播放列表中搜索"
-
-#: modules/gui/macosx/playlist.m:456
-msgid "Add Folder to Playlist"
-msgstr "添加文件夹到播放列表"
-
-#: modules/gui/macosx/playlist.m:458
-msgid "File Format:"
-msgstr "文件格式:"
-
-#: modules/gui/macosx/playlist.m:459
-msgid "Extended M3U"
-msgstr "扩展 M3U"
-
-#: modules/gui/macosx/playlist.m:460
-msgid "XML Shareable Playlist Format (XSPF)"
-msgstr "XML 可分享播放列表格式 (XSPF)"
-
-#: modules/gui/macosx/playlist.m:486 modules/gui/macosx/playlist.m:1439
-#: modules/gui/macosx/wizard.m:1362
-#, c-format
-msgid "%i items"
-msgstr "%i 个项目"
-
-#: modules/gui/macosx/playlist.m:494 modules/gui/macosx/playlist.m:1450
-msgid "1 item"
-msgstr "1 个项目"
-
-#: modules/gui/macosx/playlist.m:683
-msgid "Save Playlist"
-msgstr "保存播放列表"
-
-#: modules/gui/macosx/playlist.m:1157 modules/gui/ncurses.c:1808
-msgid "Meta-information"
-msgstr "源信息"
-
-#: modules/gui/macosx/playlist.m:1404
-msgid "New Node"
-msgstr "新建节点"
-
-#: modules/gui/macosx/playlist.m:1405
-msgid "Please enter a name for the new node."
-msgstr "请为新节点输入一个名称。"
-
-#: modules/gui/macosx/playlist.m:1416
-msgid "Empty Folder"
-msgstr "空文件夹"
 
 #: modules/gui/macosx/prefs.m:127 modules/gui/macosx/simple_prefs.m:301
 msgid "Reset All"
@@ -16350,38 +16352,6 @@ msgstr ""
 "这将会重置您的 VLC 媒体播放器参数。\n"
 "您确实要继续吗?"
 
-#: modules/gui/qt4/dialogs_provider.cpp:422
-msgid "Open Directory"
-msgstr "打开目录"
-
-#: modules/gui/qt4/dialogs_provider.cpp:466
-msgid "Open playlist file"
-msgstr "打开播放列表文件"
-
-#: modules/gui/qt4/dialogs_provider.cpp:477
-msgid "Choose a filename to save playlist"
-msgstr "选择一个要保存的播放列表文件名"
-
-#: modules/gui/qt4/dialogs_provider.cpp:479
-msgid "XSPF playlist (*.xspf);; "
-msgstr "XSPF 播放列表 (*.xspf);; "
-
-#: modules/gui/qt4/dialogs_provider.cpp:480
-msgid "M3U playlist (*.m3u);; Any (*.*) "
-msgstr "M3U 播放列表 (*.m3u);; 任意 (*.*) "
-
-#: modules/gui/qt4/dialogs_provider.hpp:45
-msgid "Media Files"
-msgstr "媒体文件"
-
-#: modules/gui/qt4/dialogs_provider.hpp:65
-msgid "Subtitles Files"
-msgstr "字幕文件"
-
-#: modules/gui/qt4/dialogs_provider.hpp:70
-msgid "All Files"
-msgstr "所有文件"
-
 #: modules/gui/qt4/dialogs/sout.cpp:103 modules/gui/qt4/ui/sout.ui:14
 msgid "Stream Output"
 msgstr "流输出"
@@ -16470,6 +16440,38 @@ msgstr "计划:"
 #: modules/gui/qt4/dialogs/vlm.cpp:618
 msgid "VOD: "
 msgstr ""
+
+#: modules/gui/qt4/dialogs_provider.cpp:422
+msgid "Open Directory"
+msgstr "打开目录"
+
+#: modules/gui/qt4/dialogs_provider.cpp:466
+msgid "Open playlist file"
+msgstr "打开播放列表文件"
+
+#: modules/gui/qt4/dialogs_provider.cpp:477
+msgid "Choose a filename to save playlist"
+msgstr "选择一个要保存的播放列表文件名"
+
+#: modules/gui/qt4/dialogs_provider.cpp:479
+msgid "XSPF playlist (*.xspf);; "
+msgstr "XSPF 播放列表 (*.xspf);; "
+
+#: modules/gui/qt4/dialogs_provider.cpp:480
+msgid "M3U playlist (*.m3u);; Any (*.*) "
+msgstr "M3U 播放列表 (*.m3u);; 任意 (*.*) "
+
+#: modules/gui/qt4/dialogs_provider.hpp:45
+msgid "Media Files"
+msgstr "媒体文件"
+
+#: modules/gui/qt4/dialogs_provider.hpp:65
+msgid "Subtitles Files"
+msgstr "字幕文件"
+
+#: modules/gui/qt4/dialogs_provider.hpp:70
+msgid "All Files"
+msgstr "所有文件"
 
 #: modules/gui/qt4/main_interface.cpp:309
 msgid ""
@@ -16917,6 +16919,50 @@ msgstr "Qt 界面"
 msgid "Preset"
 msgstr "预设"
 
+#: modules/gui/qt4/ui/open.ui:38
+msgid "Show extended options"
+msgstr "显示扩展选项"
+
+#: modules/gui/qt4/ui/open.ui:41
+msgid "Show &more options"
+msgstr "显示更多选项(&M)"
+
+#: modules/gui/qt4/ui/open.ui:61
+msgid "Change the caching for the media"
+msgstr "更改媒体的缓冲"
+
+#: modules/gui/qt4/ui/open.ui:90
+msgid "Start Time"
+msgstr "起始时间"
+
+#: modules/gui/qt4/ui/open.ui:100
+msgid "Change the start time for the media"
+msgstr "更改媒体的起始时间"
+
+#: modules/gui/qt4/ui/open.ui:132
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "同时播放其它媒体 (外部音频文件, ...)"
+
+#: modules/gui/qt4/ui/open.ui:139
+msgid "Extra media"
+msgstr "扩展媒体"
+
+#: modules/gui/qt4/ui/open.ui:152
+msgid "Select the file"
+msgstr "选择文件"
+
+#: modules/gui/qt4/ui/open.ui:165
+msgid "Customize"
+msgstr "自定义"
+
+#: modules/gui/qt4/ui/open.ui:175
+msgid "Complete MRL for VLC internal"
+msgstr "用于 VLC 内部的完整 MRL"
+
+#: modules/gui/qt4/ui/open.ui:216
+msgid "Select play mode"
+msgstr "选择播放模式"
+
 #: modules/gui/qt4/ui/open_capture.ui:17
 msgid "Capture mode"
 msgstr "捕获模式"
@@ -17000,50 +17046,6 @@ msgstr "选择使用的端口"
 #: modules/gui/qt4/ui/open_net.ui:85
 msgid "Enter the URL of the network stream here, with or without the protocol."
 msgstr "请在这里输入网络流的 URL,带或不带协议。"
-
-#: modules/gui/qt4/ui/open.ui:38
-msgid "Show extended options"
-msgstr "显示扩展选项"
-
-#: modules/gui/qt4/ui/open.ui:41
-msgid "Show &more options"
-msgstr "显示更多选项(&M)"
-
-#: modules/gui/qt4/ui/open.ui:61
-msgid "Change the caching for the media"
-msgstr "更改媒体的缓冲"
-
-#: modules/gui/qt4/ui/open.ui:90
-msgid "Start Time"
-msgstr "起始时间"
-
-#: modules/gui/qt4/ui/open.ui:100
-msgid "Change the start time for the media"
-msgstr "更改媒体的起始时间"
-
-#: modules/gui/qt4/ui/open.ui:132
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "同时播放其它媒体 (外部音频文件, ...)"
-
-#: modules/gui/qt4/ui/open.ui:139
-msgid "Extra media"
-msgstr "扩展媒体"
-
-#: modules/gui/qt4/ui/open.ui:152
-msgid "Select the file"
-msgstr "选择文件"
-
-#: modules/gui/qt4/ui/open.ui:165
-msgid "Customize"
-msgstr "自定义"
-
-#: modules/gui/qt4/ui/open.ui:175
-msgid "Complete MRL for VLC internal"
-msgstr "用于 VLC 内部的完整 MRL"
-
-#: modules/gui/qt4/ui/open.ui:216
-msgid "Select play mode"
-msgstr "选择播放模式"
 
 #: modules/gui/qt4/ui/podcast_configuration.ui:19
 #: modules/services_discovery/podcast.c:58
@@ -18312,10 +18314,6 @@ msgstr "Lua 播放列表解析器界面"
 msgid "Lua Interface Module"
 msgstr "Lua 界面模块"
 
-#: modules/misc/memcpy/memcpyaltivec.c:59
-msgid "AltiVec memcpy"
-msgstr "AltiVec 内存复制字符串"
-
 #: modules/misc/memcpy/memcpy.c:82
 msgid "libc memcpy"
 msgstr "libc 内存复制字符串"
@@ -18331,6 +18329,10 @@ msgstr "MMX 内存复制字符串"
 #: modules/misc/memcpy/memcpy.c:98
 msgid "MMX EXT memcpy"
 msgstr "MMX EXT 内存复制字符串"
+
+#: modules/misc/memcpy/memcpyaltivec.c:59
+msgid "AltiVec memcpy"
+msgstr "AltiVec 内存复制字符串"
 
 #: modules/misc/notify/growl.m:96
 msgid "Growl Notification Plugin"
@@ -20376,6 +20378,10 @@ msgstr "为您的 LED 快调节白色照明"
 msgid "Change gradients"
 msgstr "更改变化"
 
+#: modules/video_filter/blend.c:45
+msgid "Video pictures blending"
+msgstr "视频图片混合"
+
 #: modules/video_filter/blendbench.c:52
 msgid "Number of time to blend"
 msgstr "要混合的时间编号"
@@ -20443,10 +20449,6 @@ msgstr "基础图像"
 #: modules/video_filter/blendbench.c:92
 msgid "Blend image"
 msgstr "混合图像"
-
-#: modules/video_filter/blend.c:45
-msgid "Video pictures blending"
-msgstr "视频图片混合"
 
 #: modules/video_filter/bluescreen.c:39
 msgid ""

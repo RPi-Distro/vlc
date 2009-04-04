@@ -2,7 +2,7 @@
  * visual.c : Visualisation system
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id$
+ * $Id: 73a71a67217e56fcee4d674c003569e2c05f309e $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *

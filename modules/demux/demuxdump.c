@@ -2,7 +2,7 @@
  * demuxdump.c : Pseudo demux module for vlc (dump raw stream)
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id$
+ * $Id: 5f2a5f01b14711d9a0a965453a04a32e53529527 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

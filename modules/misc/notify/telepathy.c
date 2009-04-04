@@ -2,7 +2,7 @@
  * telepathy.c : changes Telepathy Presence information using MissionControl
  *****************************************************************************
  * Copyright © 2007 the VideoLAN team
- * $Id$
+ * $Id: 4921d4641758af5b84e91eefb3ccd514910b9a40 $
  *
  * Author: Rafaël Carré <funman@videoanorg>
  *

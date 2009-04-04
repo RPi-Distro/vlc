@@ -2,7 +2,7 @@
  * screen.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 6f92341657e05a0b5ac8a1a72a593b7201b2c198 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

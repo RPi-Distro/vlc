@@ -2,7 +2,7 @@
  * vout_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: df03c2b7a7f20d4f0f0bb9ec6c79b055f9a07abe $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

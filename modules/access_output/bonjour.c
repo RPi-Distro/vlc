@@ -2,7 +2,7 @@
  * bonjour.c
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 9d37308c0bff8f75483932fabb0ae60bbbda4caa $
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *

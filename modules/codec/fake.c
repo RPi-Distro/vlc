@@ -2,7 +2,7 @@
  * fake.c: decoder reading from a fake stream, outputting a fixed image
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: bd4c1cddc8a9575299cd985dd4c3a6ae4dc0d68e $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>

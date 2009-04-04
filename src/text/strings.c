@@ -2,7 +2,7 @@
  * strings.c: String related functions
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: 5d1395782375435cf10a18dedb84537c235b7578 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>

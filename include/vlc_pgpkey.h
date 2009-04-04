@@ -2,7 +2,7 @@
  * vlc_pgpkey.h: VideoLAN PGP Public Key used to sign releases
  *****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id$
+ * $Id: 6aedee3d21a5e0fa713639185a3f20f9fc8159b2 $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *

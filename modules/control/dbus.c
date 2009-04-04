@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright © 2006-2008 Rafaël Carré
  * Copyright © 2007-2008 Mirsal Ennaime
- * $Id$
+ * $Id: 7c8a1c9431258f3661aa1f08d356be6934eaefa7 $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal Ennaime <mirsal dot ennaime at gmail dot com>

@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id$
+ * $Id: 73dc65580715bd8f5b68394f4527ef6bc5a695d4 $
  *
  * functions for real media file format
  * adopted from joschkas real tools

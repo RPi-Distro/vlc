@@ -1,3 +1,11 @@
+Changes between 0.9.9 and 0.9.9a:
+---------------------------------
+
+Mac OS X:
+ * Updated multiple 3rd party libraries to keep in sync with the Win32 port
+ * Playback fixes for PowerPC-based Macs
+
+
 Changes between 0.9.8a and 0.9.9:
 ---------------------------------
 

@@ -2,7 +2,7 @@
  * search.c : Search functions
  *****************************************************************************
  * Copyright (C) 1999-2009 the VideoLAN team
- * $Id: 720f4817b3f8d92934cae91b2e98690361990e88 $
+ * $Id: 1e6a56659d9eec50aee23d16a0fd85d5c8f4aeb1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -171,7 +171,7 @@ static bool playlist_LiveSearchUpdateInternal( playlist_item_t *p_root,
         }
         else
         {
-            if( input_item_MetaMatch( p_item->p_input, vlc_meta_Title, psz_string ) ||
+            if( strcasestr( p_item->p_input->psz_name, psz_string ) || /* Soon to be replaced by vlc_meta_Title */
                 input_item_MetaMatch( p_item->p_input, vlc_meta_Album, psz_string ) ||
                 input_item_MetaMatch( p_item->p_input, vlc_meta_Artist, psz_string ) )
             {

@@ -2,7 +2,7 @@
  * nuv.c:
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 97d8d44f8233b2736880c3e3fe162ddd4ec14219 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

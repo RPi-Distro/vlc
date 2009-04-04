@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: ro\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2009-03-29 20:34+0100\n"
+"POT-Creation-Date: 2009-04-04 16:29+0200\n"
 "PO-Revision-Date: 2008-10-02 23:14+0200\n"
 "Last-Translator: Cristian Secară <cristi AT secarica DOT ro>\n"
 "Language-Team: \n"
@@ -820,8 +820,8 @@ msgid "Audio Channels"
 msgstr "Canale audio"
 
 #: src/audio_output/output.c:105 src/audio_output/output.c:140
-#: modules/access/v4l2/v4l2.c:218 modules/access/v4l2/v4l2.c:269
-#: modules/access/v4l.c:129 modules/audio_output/alsa.c:195
+#: modules/access/v4l.c:129 modules/access/v4l2/v4l2.c:218
+#: modules/access/v4l2/v4l2.c:269 modules/audio_output/alsa.c:195
 #: modules/audio_output/alsa.c:226 modules/audio_output/directx.c:519
 #: modules/audio_output/oss.c:207 modules/audio_output/portaudio.c:402
 #: modules/audio_output/sdl.c:184 modules/audio_output/sdl.c:201
@@ -1044,8 +1044,9 @@ msgstr "%u Hz"
 msgid "Bits per sample"
 msgstr "Biți per eșantion"
 
-#: src/input/es_out.c:2083 modules/access_output/shout.c:91
-#: modules/access/pvr.c:97 modules/gui/qt4/components/open_panels.cpp:865
+#: src/input/es_out.c:2083 modules/access/pvr.c:97
+#: modules/access_output/shout.c:91
+#: modules/gui/qt4/components/open_panels.cpp:865
 msgid "Bitrate"
 msgstr "Rată de biți"
 
@@ -1102,8 +1103,8 @@ msgstr ""
 msgid "Title"
 msgstr "Titlu"
 
-#: src/input/meta.c:53 modules/gui/macosx/playlistinfo.m:73
-#: modules/gui/macosx/playlist.m:1157
+#: src/input/meta.c:53 modules/gui/macosx/playlist.m:1157
+#: modules/gui/macosx/playlistinfo.m:73
 msgid "Artist"
 msgstr "Artist"
 
@@ -1291,94 +1292,6 @@ msgstr "Logging de depanare"
 #: src/interface/interface.c:221
 msgid "Mouse Gestures"
 msgstr "Gesturi de maus"
-
-#: src/libvlc.c:280 src/libvlc.c:413 src/modules/cache.c:213
-#: src/modules/cache.c:532
-msgid "C"
-msgstr "C"
-
-#: src/libvlc.c:1138
-msgid ""
-"Running vlc with the default interface. Use 'cvlc' to use vlc without "
-"interface."
-msgstr ""
-
-#: src/libvlc.c:1283
-msgid "To get exhaustive help, use '-H'."
-msgstr "Pentru a obține ajutor exhaustiv, folosiți „-H”."
-
-#: src/libvlc.c:1619
-msgid " (default enabled)"
-msgstr " (activat implicit)"
-
-#: src/libvlc.c:1620
-msgid " (default disabled)"
-msgstr " (dezactivat implicit)"
-
-#: src/libvlc.c:1779 src/libvlc.c:1782
-msgid "Note:"
-msgstr "Notă:"
-
-#: src/libvlc.c:1780 src/libvlc.c:1783
-msgid "add --advanced to your command line to see advanced options."
-msgstr ""
-
-#: src/libvlc.c:1887
-#, c-format
-msgid "VLC version %s\n"
-msgstr "Versiune VLC %s\n"
-
-#: src/libvlc.c:1888
-#, c-format
-msgid "Compiled by %s@%s.%s\n"
-msgstr "Compilat de %s@%s.%s\n"
-
-#: src/libvlc.c:1890
-#, c-format
-msgid "Compiler: %s\n"
-msgstr "Compilator: %s\n"
-
-#: src/libvlc.c:1892
-#, c-format
-msgid "Based upon Git commit [%s]\n"
-msgstr "Bazat pe commitul Git [%s]\n"
-
-#: src/libvlc.c:1928
-msgid ""
-"\n"
-"Dumped content to vlc-help.txt file.\n"
-msgstr ""
-"\n"
-"Conținut transferat în fișierul vlc-help.txt.\n"
-
-#: src/libvlc.c:1948
-msgid ""
-"\n"
-"Press the RETURN key to continue...\n"
-msgstr ""
-"\n"
-"Apăsați tasta RETURN pentru a continua...\n"
-
-#: src/libvlc.h:199 src/libvlc-module.c:1332 src/libvlc-module.c:1333
-#: src/libvlc-module.c:2403 src/video_output/vout_intf.c:274
-msgid "Zoom"
-msgstr "Zoom"
-
-#: src/libvlc.h:200 src/libvlc-module.c:1258 src/video_output/vout_intf.c:169
-msgid "1:4 Quarter"
-msgstr "1:4 (sfert)"
-
-#: src/libvlc.h:201 src/libvlc-module.c:1259 src/video_output/vout_intf.c:170
-msgid "1:2 Half"
-msgstr "1:2 (jumătate)"
-
-#: src/libvlc.h:202 src/libvlc-module.c:1260 src/video_output/vout_intf.c:171
-msgid "1:1 Original"
-msgstr "1:1 (original)"
-
-#: src/libvlc.h:203 src/libvlc-module.c:1261 src/video_output/vout_intf.c:172
-msgid "2:1 Double"
-msgstr "2:1 (dublu)"
 
 #: src/libvlc-module.c:91 src/libvlc-module.c:291 modules/access/bda/bda.c:63
 msgid "Auto"
@@ -4053,6 +3966,22 @@ msgstr "Micșorare întârziere audio"
 msgid "Select the key to decrease the audio delay."
 msgstr "Selectați tasta pentru a micșora întârzierea audio."
 
+#: src/libvlc-module.c:1258 src/libvlc.h:200 src/video_output/vout_intf.c:169
+msgid "1:4 Quarter"
+msgstr "1:4 (sfert)"
+
+#: src/libvlc-module.c:1259 src/libvlc.h:201 src/video_output/vout_intf.c:170
+msgid "1:2 Half"
+msgstr "1:2 (jumătate)"
+
+#: src/libvlc-module.c:1260 src/libvlc.h:202 src/video_output/vout_intf.c:171
+msgid "1:1 Original"
+msgstr "1:1 (original)"
+
+#: src/libvlc-module.c:1261 src/libvlc.h:203 src/video_output/vout_intf.c:172
+msgid "2:1 Double"
+msgstr "2:1 (dublu)"
+
 #: src/libvlc-module.c:1263
 msgid "Play playlist bookmark 1"
 msgstr "Redă semnul de carte 1 al listei de redare"
@@ -4307,6 +4236,11 @@ msgstr "Comută modurile normal/repetare/buclă ale listei de redare"
 #: src/libvlc-module.c:1330
 msgid "Toggle random playlist playback"
 msgstr "Comută redarea aleatoare a listei de redare"
+
+#: src/libvlc-module.c:1332 src/libvlc-module.c:1333 src/libvlc-module.c:2403
+#: src/libvlc.h:199 src/video_output/vout_intf.c:274
+msgid "Zoom"
+msgstr "Zoom"
 
 # hm ?
 #: src/libvlc-module.c:1335 src/libvlc-module.c:1336
@@ -4644,6 +4578,73 @@ msgstr "tipărește informația despre versiune"
 #: src/libvlc-module.c:2574
 msgid "main program"
 msgstr "program principal"
+
+#: src/libvlc.c:280 src/libvlc.c:413 src/modules/cache.c:213
+#: src/modules/cache.c:532
+msgid "C"
+msgstr "C"
+
+#: src/libvlc.c:1138
+msgid ""
+"Running vlc with the default interface. Use 'cvlc' to use vlc without "
+"interface."
+msgstr ""
+
+#: src/libvlc.c:1283
+msgid "To get exhaustive help, use '-H'."
+msgstr "Pentru a obține ajutor exhaustiv, folosiți „-H”."
+
+#: src/libvlc.c:1619
+msgid " (default enabled)"
+msgstr " (activat implicit)"
+
+#: src/libvlc.c:1620
+msgid " (default disabled)"
+msgstr " (dezactivat implicit)"
+
+#: src/libvlc.c:1779 src/libvlc.c:1782
+msgid "Note:"
+msgstr "Notă:"
+
+#: src/libvlc.c:1780 src/libvlc.c:1783
+msgid "add --advanced to your command line to see advanced options."
+msgstr ""
+
+#: src/libvlc.c:1887
+#, c-format
+msgid "VLC version %s\n"
+msgstr "Versiune VLC %s\n"
+
+#: src/libvlc.c:1888
+#, c-format
+msgid "Compiled by %s@%s.%s\n"
+msgstr "Compilat de %s@%s.%s\n"
+
+#: src/libvlc.c:1890
+#, c-format
+msgid "Compiler: %s\n"
+msgstr "Compilator: %s\n"
+
+#: src/libvlc.c:1892
+#, c-format
+msgid "Based upon Git commit [%s]\n"
+msgstr "Bazat pe commitul Git [%s]\n"
+
+#: src/libvlc.c:1928
+msgid ""
+"\n"
+"Dumped content to vlc-help.txt file.\n"
+msgstr ""
+"\n"
+"Conținut transferat în fișierul vlc-help.txt.\n"
+
+#: src/libvlc.c:1948
+msgid ""
+"\n"
+"Press the RETURN key to continue...\n"
+msgstr ""
+"\n"
+"Apăsați tasta RETURN pentru a continua...\n"
 
 #: src/misc/update.c:1458
 #, c-format
@@ -5322,17 +5323,16 @@ msgid "Aspect-ratio"
 msgstr "Raport de aspect"
 
 #: modules/access/bda/bda.c:40 modules/access/cdda.c:66
-#: modules/access/dshow/dshow.cpp:98 modules/access/dvb/access.c:78
-#: modules/access/dv.c:71 modules/access/dvdnav.c:72
+#: modules/access/dshow/dshow.cpp:98 modules/access/dv.c:71
+#: modules/access/dvb/access.c:78 modules/access/dvdnav.c:72
 #: modules/access/dvdread.c:76 modules/access/eyetv.m:61
 #: modules/access/fake.c:43 modules/access/file.c:84 modules/access/ftp.c:57
 #: modules/access/gnomevfs.c:47 modules/access/http.c:75
 #: modules/access/jack.c:62 modules/access/mms/mms.c:49
 #: modules/access/pvr.c:60 modules/access/rtmp/access.c:43
 #: modules/access/screen/screen.c:39 modules/access/smb.c:64
-#: modules/access/tcp.c:41 modules/access/udp.c:49
-#: modules/access/v4l2/v4l2.c:225 modules/access/v4l.c:77
-#: modules/access/vcd/vcd.c:46
+#: modules/access/tcp.c:41 modules/access/udp.c:49 modules/access/v4l.c:77
+#: modules/access/v4l2/v4l2.c:225 modules/access/vcd/vcd.c:46
 msgid "Caching value in ms"
 msgstr "Valoare de stocare în cache în ms"
 
@@ -5686,16 +5686,6 @@ msgstr "DVB"
 msgid "DirectShow DVB input"
 msgstr "Intrare DirectShow"
 
-#: modules/access/cdda/access.c:285
-msgid "CD reading failed"
-msgstr "Citirea CD-ului a eșuat"
-
-# hm ? sau dimensiunea ?
-#: modules/access/cdda/access.c:286
-#, c-format
-msgid "VLC could not get a new block of size: %i."
-msgstr "VLC nu a putut obține un bloc nou de dimensiune %i."
-
 #: modules/access/cdda.c:68
 msgid ""
 "Default caching value for Audio CDs. This value should be set in "
@@ -5738,6 +5728,16 @@ msgstr "Portul serverului CDDB folosit."
 #, fuzzy, c-format
 msgid "Audio CD - Track %02i"
 msgstr "CD audio - Pista %i"
+
+#: modules/access/cdda/access.c:285
+msgid "CD reading failed"
+msgstr "Citirea CD-ului a eșuat"
+
+# hm ? sau dimensiunea ?
+#: modules/access/cdda/access.c:286
+#, c-format
+msgid "VLC could not get a new block of size: %i."
+msgstr "VLC nu a putut obține un bloc nou de dimensiune %i."
 
 #: modules/access/cdda/cdda.c:43 modules/access/directory.c:86
 #: modules/codec/x264.c:397 modules/codec/x264.c:403 modules/codec/x264.c:408
@@ -6150,8 +6150,9 @@ msgstr ""
 "Numele dispozitivului video care va fi folosit de plugin-ul DirectShow. Dacă "
 "nu specificați nimic, se va folosi dispozitivul implicit."
 
-#: modules/access/dshow/dshow.cpp:107 modules/access/v4l2/v4l2.c:179
-#: modules/access/v4l.c:85 modules/gui/qt4/components/open_panels.cpp:708
+#: modules/access/dshow/dshow.cpp:107 modules/access/v4l.c:85
+#: modules/access/v4l2/v4l2.c:179
+#: modules/gui/qt4/components/open_panels.cpp:708
 #: modules/gui/qt4/components/open_panels.cpp:743
 msgid "Audio device name"
 msgstr "Nume dispozitiv audio"
@@ -6180,8 +6181,8 @@ msgstr ""
 "care îl aveți. Puteți specifica o dimensiune standard (cif, d1, ...), sau "
 "<lățime>x<înălțime>."
 
-#: modules/access/dshow/dshow.cpp:117 modules/access/v4l2/v4l2.c:90
-#: modules/access/v4l.c:89
+#: modules/access/dshow/dshow.cpp:117 modules/access/v4l.c:89
+#: modules/access/v4l2/v4l2.c:90
 msgid "Video input chroma format"
 msgstr "Format de crominanță pe intrarea video"
 
@@ -6374,6 +6375,20 @@ msgstr ""
 msgid "The capture device \"%s\" does not support the required parameters."
 msgstr "Dispozitivul de captură „%s” nu suportă paremetrii necesari."
 
+#: modules/access/dv.c:73
+msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
+msgstr ""
+"Valoarea de stocare în cache pentru fluxuri DV. Această valoare ar trebui "
+"stabilită în milisecunde."
+
+#: modules/access/dv.c:77
+msgid "Digital Video (Firewire/ieee1394)  input"
+msgstr "Intrare video digitală (FireWire/IEEE1394)"
+
+#: modules/access/dv.c:78
+msgid "dv"
+msgstr "dv"
+
 #: modules/access/dvb/access.c:132
 msgid "Modulation type for front-end device."
 msgstr "Tip de modulație pentru dispozitivul frontend."
@@ -6490,20 +6505,6 @@ msgstr "Polarizare nelegală"
 #, c-format
 msgid "The provided polarization \"%c\" is not valid."
 msgstr "Polarizarea „%c” furnizată nu este validă."
-
-#: modules/access/dv.c:73
-msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
-msgstr ""
-"Valoarea de stocare în cache pentru fluxuri DV. Această valoare ar trebui "
-"stabilită în milisecunde."
-
-#: modules/access/dv.c:77
-msgid "Digital Video (Firewire/ieee1394)  input"
-msgstr "Intrare video digitală (FireWire/IEEE1394)"
-
-#: modules/access/dv.c:78
-msgid "dv"
-msgstr "dv"
 
 # hm ? sau unghiul de filmare ?
 #: modules/access/dvdnav.c:68 modules/access/dvdread.c:72
@@ -6648,8 +6649,8 @@ msgstr ""
 "Valoarea de stocare în cache pentru fluxuri false. Această valoare ar trebui "
 "stabilită în milisecunde."
 
-#: modules/access/fake.c:47 modules/access/pvr.c:86
-#: modules/access/v4l2/v4l2.c:111 modules/access/v4l.c:140
+#: modules/access/fake.c:47 modules/access/pvr.c:86 modules/access/v4l.c:140
+#: modules/access/v4l2/v4l2.c:111
 msgid "Framerate"
 msgstr "Frecvență de cadre"
 
@@ -6721,105 +6722,6 @@ msgstr "VLC nu a putut citi fișierul."
 #, c-format
 msgid "VLC could not open the file \"%s\"."
 msgstr "VLC nu a putut deschide fișierul „%s”."
-
-#: modules/access_filter/bandwidth.c:34
-msgid "Bandwidth limit (bytes/s)"
-msgstr "Limită de lățime de bandă (octeți/s)"
-
-#: modules/access_filter/bandwidth.c:36
-msgid ""
-"The bandwidth module will drop any data in excess of that many bytes per "
-"seconds."
-msgstr ""
-"Modulul de lățime de bandă va arunca orice date în exces față de atâția "
-"octeți per secundă."
-
-#: modules/access_filter/bandwidth.c:45
-#: modules/gui/qt4/components/open_panels.cpp:670
-msgid "Bandwidth"
-msgstr "Lățime bandă"
-
-#: modules/access_filter/bandwidth.c:46 modules/gui/macosx/simple_prefs.m:247
-#: modules/gui/qt4/ui/sprefs_input.ui:208
-msgid "Bandwidth limiter"
-msgstr "Limitator de lățime de bandă"
-
-#: modules/access_filter/dump.c:42
-msgid "Force use of dump module"
-msgstr "Forțează folosirea modulului de dump"
-
-# hm ? sau transfer ?
-#: modules/access_filter/dump.c:43
-msgid "Activate the dump module even for media with fast seeking."
-msgstr "Activează modulul de dump chiar și pentru media cu căutare rapidă."
-
-#: modules/access_filter/dump.c:46
-msgid "Maximum size of temporary file (Mb)"
-msgstr "Dimensiunea maximă a fișierului temporar (Mb)"
-
-#: modules/access_filter/dump.c:47
-msgid ""
-"The dump module will abort dumping of the media if more than this much "
-"megabyte were performed."
-msgstr ""
-"Modulul de dump va abandona dumpingul meidei dacă au fost prelucrați mai "
-"mult decât atâția megaocteți per secundă."
-
-#: modules/access_filter/record.c:48
-msgid "Record directory"
-msgstr "Director pentru înregistrare"
-
-#: modules/access_filter/record.c:50
-msgid "Directory where the record will be stored."
-msgstr "Directorul unde va fi stocată înregistrarea."
-
-#: modules/access_filter/record.c:339
-msgid "Recording"
-msgstr "Înregistrare"
-
-# hm ? sau terminată ?
-#: modules/access_filter/record.c:341
-msgid "Recording done"
-msgstr "Înregistrarea este gata"
-
-#: modules/access_filter/timeshift.c:53
-msgid "Timeshift granularity"
-msgstr "Granularitate decalaj temporal"
-
-#: modules/access_filter/timeshift.c:55
-#, fuzzy
-msgid ""
-"This is the size of the temporary files that will be used to store the "
-"timeshifted streams."
-msgstr ""
-"Aceasta este dimensiunea fișierului temporar care va fi folosit pentru a "
-"stoca stream-urile decalate temporal."
-
-#: modules/access_filter/timeshift.c:57
-msgid "Timeshift directory"
-msgstr "Director pentru decalaj temporal"
-
-#: modules/access_filter/timeshift.c:58
-msgid "Directory used to store the timeshift temporary files."
-msgstr "Director folosit pentru a stoca fișiere temporare de decalaj temporal."
-
-#: modules/access_filter/timeshift.c:60
-msgid "Force use of the timeshift module"
-msgstr "Forțează folosirea modulului de decalaj temporal"
-
-#: modules/access_filter/timeshift.c:61
-msgid ""
-"Force use of the timeshift module even if the access declares that it can "
-"control pace or pause."
-msgstr ""
-"Forțează folosirea modulului de decalaj temporal chiar dacă accesul declară "
-"că poate controla pasul sau pauza."
-
-#: modules/access_filter/timeshift.c:65 modules/access_filter/timeshift.c:66
-#: modules/gui/macosx/simple_prefs.m:260
-#: modules/gui/qt4/ui/sprefs_input.ui:187
-msgid "Timeshift"
-msgstr "Decalaj temporal"
 
 #: modules/access/ftp.c:59
 msgid ""
@@ -7091,252 +6993,6 @@ msgstr ""
 msgid "Microsoft Media Server (MMS) input"
 msgstr "Intrare server media Microsoft (MMS)"
 
-# hm ?
-#: modules/access_output/dummy.c:45 modules/stream_out/dummy.c:51
-msgid "Dummy stream output"
-msgstr "Ieșire de flux falsă"
-
-# hm ?
-#: modules/access_output/dummy.c:46 modules/misc/dummy/dummy.c:61
-msgid "Dummy"
-msgstr "Fals"
-
-#: modules/access_output/file.c:64
-msgid "Append to file"
-msgstr "Adaugă la fișier"
-
-#: modules/access_output/file.c:65
-msgid "Append to file if it exists instead of replacing it."
-msgstr ""
-"Adaugă la fișier în cazul în care acesta există, în loc de a-l înlocui."
-
-#: modules/access_output/file.c:69
-msgid "File stream output"
-msgstr "Flux de ieșire în fișier"
-
-#: modules/access_output/http.c:65 modules/gui/qt4/ui/sprefs_audio.ui:309
-#: modules/misc/audioscrobbler.c:132
-msgid "Username"
-msgstr "Nume utilizator"
-
-#: modules/access_output/http.c:66
-msgid "User name that will be requested to access the stream."
-msgstr "Numele utilizator care va fi cerut pentru a accesa fluxul."
-
-#: modules/access_output/http.c:68 modules/control/telnet.c:91
-#: modules/gui/macosx/simple_prefs.m:227
-#: modules/gui/qt4/dialogs/interaction.cpp:99
-#: modules/gui/qt4/ui/sprefs_audio.ui:319 modules/misc/audioscrobbler.c:134
-#: modules/misc/notify/growl_udp.c:64
-msgid "Password"
-msgstr "Parolă"
-
-#: modules/access_output/http.c:69
-msgid "Password that will be requested to access the stream."
-msgstr "Parola care va fi cerută pentru a accesa fluxul."
-
-#: modules/access_output/http.c:71
-msgid "Mime"
-msgstr "MIME"
-
-#: modules/access_output/http.c:72
-#, fuzzy
-msgid "MIME returned by the server (autodetected if not specified)."
-msgstr ""
-"Tipul MIME returnat de server (detectat automat dacă nu este specificat)."
-
-#: modules/access_output/http.c:75
-msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
-msgstr "Calea către certificatul x509 PEM care va fi folosit pentru HTTPS."
-
-#: modules/access_output/http.c:78
-msgid ""
-"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
-"empty if you don't have one."
-msgstr ""
-"Calea către fișierul cu cheia privată x509 PEM care va fi folosit pentru "
-"HTTPS. Lasați gol dacă nu aveți niciunul."
-
-# hm ?
-#: modules/access_output/http.c:82
-msgid ""
-"Path to the x509 PEM trusted root CA certificates (certificate authority) "
-"file that will be used for HTTPS. Leave empty if you don't have one."
-msgstr ""
-"Calea către fișierul cu certificatul rădăcină x509 PEM al CA (autoritatea "
-"certificatoare) de încredere care va fi folosit pentru HTTPS. Lasați gol "
-"dacă nu aveți niciunul."
-
-#: modules/access_output/http.c:87
-msgid ""
-"Path to the x509 PEM Certificates Revocation List file that will be used for "
-"SSL. Leave empty if you don't have one."
-msgstr ""
-"Calea către fișierul cu lista de revocări de certificate x509 PEM care va fi "
-"folosit pentru SSL. Lăsați gol dacă nu aveți niciunul."
-
-#: modules/access_output/http.c:90
-msgid "Advertise with Bonjour"
-msgstr "Anunță cu Bonjour"
-
-#: modules/access_output/http.c:91
-msgid "Advertise the stream with the Bonjour protocol."
-msgstr "Anunță fluxul cu protocolul Bonjour."
-
-#: modules/access_output/http.c:95
-msgid "HTTP stream output"
-msgstr "Flux de ieșire HTTP"
-
-#: modules/access_output/rtmp.c:44
-msgid "Active TCP connection"
-msgstr "Conexiune TCP activă"
-
-#: modules/access_output/rtmp.c:46
-msgid ""
-"If enabled, VLC will connect to a remote destination instead of waiting for "
-"an incoming connection."
-msgstr ""
-"Dacă este activat, VLC se va conecta la o destinație de la distanță în loc "
-"să aștepte sosirea unei conexiuni."
-
-#: modules/access_output/rtmp.c:55
-msgid "RTMP stream output"
-msgstr "Flux de ieșire RTMP"
-
-#: modules/access_output/rtmp.c:56 modules/access/rtmp/access.c:53
-msgid "RTMP"
-msgstr "RTMP"
-
-#: modules/access_output/shout.c:63
-msgid "Stream name"
-msgstr "Nume flux"
-
-#: modules/access_output/shout.c:64
-msgid "Name to give to this stream/channel on the shoutcast/icecast server."
-msgstr "Numele de dat acestui flux/canal pe serverul de shoutcast/icecast."
-
-#: modules/access_output/shout.c:67
-msgid "Stream description"
-msgstr "Descriere flux"
-
-#: modules/access_output/shout.c:68
-msgid "Description of the stream content or information about your channel."
-msgstr ""
-"Descrierea conținutului fluxului, sau informații despre canalul "
-"dumneavoastră."
-
-#: modules/access_output/shout.c:71
-msgid "Stream MP3"
-msgstr "Flux MP3"
-
-# hm ?
-#: modules/access_output/shout.c:72
-msgid ""
-"You normally have to feed the shoutcast module with Ogg streams. It is also "
-"possible to stream MP3 instead, so you can forward MP3 streams to the "
-"shoutcast/icecast server."
-msgstr ""
-"În mod normal trebuie să alimentați modulul shoutcast cu fluxuri Ogg. Este "
-"însă de asemena posibil să difuzați un flux MP3 în loc, încât puteți să "
-"înaintați fluxuri MP3 la serverul shoutcast/icecast."
-
-#: modules/access_output/shout.c:81
-msgid "Genre description"
-msgstr "Descrierea genului"
-
-#: modules/access_output/shout.c:82
-msgid "Genre of the content. "
-msgstr "Genul conținutului."
-
-#: modules/access_output/shout.c:84
-msgid "URL description"
-msgstr "Descriere URL"
-
-#: modules/access_output/shout.c:85
-msgid "URL with information about the stream or your channel. "
-msgstr ""
-
-#: modules/access_output/shout.c:92
-#, fuzzy
-msgid "Bitrate information of the transcoded stream. "
-msgstr "Rata de biți țintă a stream-ului video transcodat"
-
-#: modules/access_output/shout.c:94 modules/access/v4l2/v4l2.c:221
-#: modules/access/v4l.c:126
-msgid "Samplerate"
-msgstr "Frecvență de eșantionare"
-
-#: modules/access_output/shout.c:95
-#, fuzzy
-msgid "Samplerate information of the transcoded stream. "
-msgstr "Rata de biți țintă a stream-ului video transcodat"
-
-#: modules/access_output/shout.c:97
-msgid "Number of channels"
-msgstr "Număr de canale"
-
-#: modules/access_output/shout.c:98
-#, fuzzy
-msgid "Number of channels information of the transcoded stream. "
-msgstr "Numărul canalelor audio în stream-ul transcodat."
-
-#: modules/access_output/shout.c:100
-msgid "Ogg Vorbis Quality"
-msgstr "Calitate Ogg Vorbis"
-
-#: modules/access_output/shout.c:101
-#, fuzzy
-msgid "Ogg Vorbis Quality information of the transcoded stream. "
-msgstr "Rata de biți țintă a stream-ului video transcodat"
-
-# hm ?
-#: modules/access_output/shout.c:103
-msgid "Stream public"
-msgstr "Difuzare publică"
-
-#: modules/access_output/shout.c:104
-msgid ""
-"Make the server publicly available on the 'Yellow Pages' (directory listing "
-"of streams) on the icecast/shoutcast website. Requires the bitrate "
-"information specified for shoutcast. Requires Ogg streaming for icecast."
-msgstr ""
-
-#: modules/access_output/shout.c:110
-msgid "IceCAST output"
-msgstr "Ieșire IceCAST"
-
-#: modules/access_output/udp.c:67 modules/access/rtsp/access.c:46
-#: modules/demux/live555.cpp:74
-msgid "Caching value (ms)"
-msgstr "Valoare de stocare în cache (ms)"
-
-# hm ? outbound ?
-#: modules/access_output/udp.c:69
-msgid ""
-"Default caching value for outbound UDP streams. This value should be set in "
-"milliseconds."
-msgstr ""
-"Valoarea de stocare în cache pentru fluxuri UDP outbound. Această valoare ar "
-"trebui stabilită în milisecunde."
-
-#: modules/access_output/udp.c:72
-msgid "Group packets"
-msgstr "Pachete de grup"
-
-#: modules/access_output/udp.c:73
-msgid ""
-"Packets can be sent one by one at the right time or by groups. You can "
-"choose the number of packets that will be sent at a time. It helps reducing "
-"the scheduling load on heavily-loaded systems."
-msgstr ""
-"Pachetele pot fi trimise unul câte unul la momentul potrivit sau în grup. "
-"Puteți alege numărul pachetelor care vor fi trimise o dată. Ajută la "
-"reducerea încărcării programate pe sistemele foarte încărcate."
-
-#: modules/access_output/udp.c:80
-msgid "UDP stream output"
-msgstr "Flux de ieșire UDP"
-
 #: modules/access/pvr.c:62
 msgid ""
 "Default caching value for PVR streams. This value should be set in "
@@ -7371,8 +7027,8 @@ msgstr "Normă"
 msgid "Norm of the stream (Automatic, SECAM, PAL, or NTSC)."
 msgstr "Norma fluxului (Automat, SECAM, PAL, sau NTSC)."
 
-#: modules/access/pvr.c:75 modules/access/v4l2/v4l2.c:105
-#: modules/access/v4l.c:106 modules/demux/rawvid.c:48
+#: modules/access/pvr.c:75 modules/access/v4l.c:106
+#: modules/access/v4l2/v4l2.c:105 modules/demux/rawvid.c:48
 #: modules/video_filter/mosaic.c:96 modules/video_output/vmem.c:50
 msgid "Width"
 msgstr "Lățime"
@@ -7381,8 +7037,8 @@ msgstr "Lățime"
 msgid "Width of the stream to capture (-1 for autodetection)."
 msgstr "Lățimea fluxului de capturat (-1 pentru detectare automată)."
 
-#: modules/access/pvr.c:79 modules/access/v4l2/v4l2.c:108
-#: modules/access/v4l.c:109 modules/demux/rawvid.c:52
+#: modules/access/pvr.c:79 modules/access/v4l.c:109
+#: modules/access/v4l2/v4l2.c:108 modules/demux/rawvid.c:52
 #: modules/video_filter/mosaic.c:94 modules/video_output/vmem.c:53
 msgid "Height"
 msgstr "Înalțime"
@@ -7391,8 +7047,9 @@ msgstr "Înalțime"
 msgid "Height of the stream to capture (-1 for autodetection)."
 msgstr "Inălțimea fluxului de capturat (-1 pentru detectare automată)."
 
-#: modules/access/pvr.c:83 modules/access/v4l2/v4l2.c:240
-#: modules/access/v4l.c:93 modules/gui/qt4/components/open_panels.cpp:757
+#: modules/access/pvr.c:83 modules/access/v4l.c:93
+#: modules/access/v4l2/v4l2.c:240
+#: modules/gui/qt4/components/open_panels.cpp:757
 #: modules/gui/qt4/components/open_panels.cpp:856
 msgid "Frequency"
 msgstr "Frecvență"
@@ -7401,8 +7058,8 @@ msgstr "Frecvență"
 msgid "Frequency to capture (in kHz), if applicable."
 msgstr "Frecvența de capturat (în kHz), dacă este aplicabil."
 
-#: modules/access/pvr.c:87 modules/access/v4l2/v4l2.c:112
-#: modules/access/v4l.c:141
+#: modules/access/pvr.c:87 modules/access/v4l.c:141
+#: modules/access/v4l2/v4l2.c:112
 msgid "Framerate to capture, if applicable (-1 for autodetect)."
 msgstr ""
 "Rata cadrelor de capturat, dacă este aplicabil (-1 pentru detectare "
@@ -7480,18 +7137,18 @@ msgstr ""
 msgid "Automatic"
 msgstr "Automat"
 
-#: modules/access/pvr.c:120 modules/access/v4l2/v4l2.c:256
-#: modules/access/v4l.c:147
+#: modules/access/pvr.c:120 modules/access/v4l.c:147
+#: modules/access/v4l2/v4l2.c:256
 msgid "SECAM"
 msgstr "SECAM"
 
-#: modules/access/pvr.c:120 modules/access/v4l2/v4l2.c:256
-#: modules/access/v4l.c:147
+#: modules/access/pvr.c:120 modules/access/v4l.c:147
+#: modules/access/v4l2/v4l2.c:256
 msgid "PAL"
 msgstr "PAL"
 
-#: modules/access/pvr.c:120 modules/access/v4l2/v4l2.c:256
-#: modules/access/v4l.c:147
+#: modules/access/pvr.c:120 modules/access/v4l.c:147
+#: modules/access/v4l2/v4l2.c:256
 msgid "NTSC"
 msgstr "NTSC"
 
@@ -7537,6 +7194,15 @@ msgstr ""
 #, fuzzy
 msgid "RTMP input"
 msgstr "Intrare FTP"
+
+#: modules/access/rtmp/access.c:53 modules/access_output/rtmp.c:56
+msgid "RTMP"
+msgstr "RTMP"
+
+#: modules/access/rtsp/access.c:46 modules/access_output/udp.c:67
+#: modules/demux/live555.cpp:74
+msgid "Caching value (ms)"
+msgstr "Valoare de stocare în cache (ms)"
 
 #: modules/access/rtsp/access.c:48
 msgid ""
@@ -7691,6 +7357,154 @@ msgstr "UDP"
 msgid "UDP input"
 msgstr "Intrare UDP"
 
+#: modules/access/v4l.c:79
+msgid ""
+"Caching value for V4L captures. This value should be set in milliseconds."
+msgstr ""
+"Valoarea de stocare în cache pentru capturi V4L. Această valoare ar trebui "
+"stabilită în milisecunde."
+
+#: modules/access/v4l.c:83
+msgid ""
+"Name of the video device to use. If you don't specify anything, no video "
+"device will be used."
+msgstr ""
+"Numele dispozitivului video de folosit. Dacă nu specificați nimic, nu se va "
+"folosi niciun dispozitiv video."
+
+#: modules/access/v4l.c:87
+msgid ""
+"Name of the audio device to use. If you don't specify anything, no audio "
+"device will be used."
+msgstr ""
+"Numele dispozitivului audio de folosit. Dacă nu specificați nimic, nu se va "
+"folosi niciun dispozitiv audio."
+
+#: modules/access/v4l.c:91
+msgid ""
+"Force the Video4Linux video device to use a specific chroma format (eg. I420 "
+"(default), RV24, etc.)"
+msgstr ""
+"Forțează dispozitivul video Video4Linux să folosească un format de "
+"crominanță specific (ex. I420 (implicit), RV24, etc.)"
+
+#: modules/access/v4l.c:98
+msgid ""
+"Channel of the card to use (Usually, 0 = tuner, 1 = composite, 2 = svideo)."
+msgstr ""
+
+#: modules/access/v4l.c:103
+msgid "Audio Channel"
+msgstr "Canal audio"
+
+#: modules/access/v4l.c:105
+msgid "Audio Channel to use, if there are several audio inputs."
+msgstr "Canalul audio de folosit, dacă există mai multe intrări audio."
+
+#: modules/access/v4l.c:107
+msgid "Width of the stream to capture (-1 for autodetect)."
+msgstr "Lățimea fluxului de capturat (-1 pentru detectare automată)."
+
+#: modules/access/v4l.c:110
+msgid "Height of the stream to capture (-1 for autodetect)."
+msgstr "Înălțimea fluxului de capturat (-1 pentru detectare automată)."
+
+#: modules/access/v4l.c:112 modules/access/v4l2/v4l2.c:124
+#: modules/gui/macosx/extended.m:97 modules/gui/qt4/ui/video_effects.ui:205
+#: modules/video_filter/atmo/atmo.cpp:196
+msgid "Brightness"
+msgstr "Luminozitate"
+
+#: modules/access/v4l.c:114
+msgid "Brightness of the video input."
+msgstr "Luminozitatea intrării video"
+
+#: modules/access/v4l.c:115 modules/access/v4l2/v4l2.c:133
+#: modules/gui/macosx/extended.m:100 modules/gui/qt4/ui/video_effects.ui:219
+msgid "Hue"
+msgstr "Nuanță"
+
+#: modules/access/v4l.c:117
+msgid "Hue of the video input."
+msgstr "Nuanța semnanului de intrare video."
+
+#: modules/access/v4l.c:118 modules/gui/fbosd.c:143
+#: modules/gui/qt4/ui/video_effects.ui:263
+#: modules/gui/qt4/ui/video_effects.ui:327
+#: modules/gui/qt4/ui/video_effects.ui:689 modules/misc/notify/xosd.c:83
+#: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:122
+#: modules/video_filter/rss.c:154
+msgid "Color"
+msgstr "Culoare"
+
+# adaptare
+#: modules/access/v4l.c:120
+msgid "Color of the video input."
+msgstr "Culoarea imaginii video de intrare."
+
+#: modules/access/v4l.c:121 modules/access/v4l2/v4l2.c:127
+#: modules/gui/macosx/extended.m:98 modules/gui/qt4/ui/video_effects.ui:198
+msgid "Contrast"
+msgstr "Contrast"
+
+#: modules/access/v4l.c:123
+msgid "Contrast of the video input."
+msgstr "Contrastul semnalului de intrare video"
+
+#: modules/access/v4l.c:124 modules/access/v4l2/v4l2.c:326
+msgid "Tuner"
+msgstr "Tuner"
+
+#: modules/access/v4l.c:125
+msgid "Tuner to use, if there are several ones."
+msgstr "Tuner-ul pentru a fi folosit, dacă există mai multe."
+
+#: modules/access/v4l.c:126 modules/access/v4l2/v4l2.c:221
+#: modules/access_output/shout.c:94
+msgid "Samplerate"
+msgstr "Frecvență de eșantionare"
+
+#: modules/access/v4l.c:128
+msgid ""
+"Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100)"
+msgstr ""
+
+#: modules/access/v4l.c:131 modules/access/v4l2/v4l2.c:220
+msgid "Capture the audio stream in stereo."
+msgstr "Capturează fluxul audio în format stereo."
+
+#: modules/access/v4l.c:132
+msgid "MJPEG"
+msgstr "MJPEG"
+
+#: modules/access/v4l.c:134
+msgid "Set this option if the capture device outputs MJPEG"
+msgstr "Activați această opțiune dacă echipamentul de captură scoate MJPEG"
+
+#: modules/access/v4l.c:135
+msgid "Decimation"
+msgstr "Decimare"
+
+#: modules/access/v4l.c:137
+msgid "Decimation level for MJPEG streams"
+msgstr "Nivel de decimare pentru fluxurile MJPEG"
+
+#: modules/access/v4l.c:138
+msgid "Quality"
+msgstr "Calitate"
+
+#: modules/access/v4l.c:139
+msgid "Quality of the stream."
+msgstr "Calitatea fluxului."
+
+#: modules/access/v4l.c:150
+msgid "Video4Linux"
+msgstr "Video4Linux"
+
+#: modules/access/v4l.c:151
+msgid "Video4Linux input"
+msgstr "Intrare Video4Linux"
+
 #: modules/access/v4l2/v4l2.c:83 modules/gui/macosx/open.m:178
 #: modules/gui/qt4/components/open_panels.cpp:836
 msgid "Device name"
@@ -7771,21 +7585,10 @@ msgstr "Controale extinse"
 msgid "Reset controls to defaults provided by the v4l2 driver."
 msgstr "Resetează la implicit controalele furnizate de driverul v4l2."
 
-#: modules/access/v4l2/v4l2.c:124 modules/access/v4l.c:112
-#: modules/gui/macosx/extended.m:97 modules/gui/qt4/ui/video_effects.ui:205
-#: modules/video_filter/atmo/atmo.cpp:196
-msgid "Brightness"
-msgstr "Luminozitate"
-
 #: modules/access/v4l2/v4l2.c:126
 #, fuzzy
 msgid "Brightness of the video input (if supported by the v4l2 driver)."
 msgstr "Luminozitatea intrării video"
-
-#: modules/access/v4l2/v4l2.c:127 modules/access/v4l.c:121
-#: modules/gui/macosx/extended.m:98 modules/gui/qt4/ui/video_effects.ui:198
-msgid "Contrast"
-msgstr "Contrast"
 
 #: modules/access/v4l2/v4l2.c:129
 #, fuzzy
@@ -7801,11 +7604,6 @@ msgstr "Saturație"
 #: modules/access/v4l2/v4l2.c:132
 msgid "Saturation of the video input (if supported by the v4l2 driver)."
 msgstr "Saturația intrării video (dacă este suportat de driverul v4l2)."
-
-#: modules/access/v4l2/v4l2.c:133 modules/access/v4l.c:115
-#: modules/gui/macosx/extended.m:100 modules/gui/qt4/ui/video_effects.ui:219
-msgid "Hue"
-msgstr "Nuanță"
 
 #: modules/access/v4l2/v4l2.c:135
 msgid "Hue of the video input (if supported by the v4l2 driver)."
@@ -8010,10 +7808,6 @@ msgstr "Loudness"
 msgid "Loudness of the audio input (if supported by the v4l2 driver)."
 msgstr ""
 
-#: modules/access/v4l2/v4l2.c:220 modules/access/v4l.c:131
-msgid "Capture the audio stream in stereo."
-msgstr "Capturează fluxul audio în format stereo."
-
 #: modules/access/v4l2/v4l2.c:223
 #, fuzzy
 msgid ""
@@ -8110,10 +7904,6 @@ msgstr "Intrare Video4Linux2"
 msgid "Video input"
 msgstr "Intrare video"
 
-#: modules/access/v4l2/v4l2.c:326 modules/access/v4l.c:124
-msgid "Tuner"
-msgstr "Tuner"
-
 #: modules/access/v4l2/v4l2.c:336
 msgid "Controls"
 msgstr "Controale"
@@ -8132,125 +7922,6 @@ msgstr "Audio/Video comprimat Video4Linux2"
 #, fuzzy
 msgid "Reset controls to default"
 msgstr "Interfață de control la distanță"
-
-#: modules/access/v4l.c:79
-msgid ""
-"Caching value for V4L captures. This value should be set in milliseconds."
-msgstr ""
-"Valoarea de stocare în cache pentru capturi V4L. Această valoare ar trebui "
-"stabilită în milisecunde."
-
-#: modules/access/v4l.c:83
-msgid ""
-"Name of the video device to use. If you don't specify anything, no video "
-"device will be used."
-msgstr ""
-"Numele dispozitivului video de folosit. Dacă nu specificați nimic, nu se va "
-"folosi niciun dispozitiv video."
-
-#: modules/access/v4l.c:87
-msgid ""
-"Name of the audio device to use. If you don't specify anything, no audio "
-"device will be used."
-msgstr ""
-"Numele dispozitivului audio de folosit. Dacă nu specificați nimic, nu se va "
-"folosi niciun dispozitiv audio."
-
-#: modules/access/v4l.c:91
-msgid ""
-"Force the Video4Linux video device to use a specific chroma format (eg. I420 "
-"(default), RV24, etc.)"
-msgstr ""
-"Forțează dispozitivul video Video4Linux să folosească un format de "
-"crominanță specific (ex. I420 (implicit), RV24, etc.)"
-
-#: modules/access/v4l.c:98
-msgid ""
-"Channel of the card to use (Usually, 0 = tuner, 1 = composite, 2 = svideo)."
-msgstr ""
-
-#: modules/access/v4l.c:103
-msgid "Audio Channel"
-msgstr "Canal audio"
-
-#: modules/access/v4l.c:105
-msgid "Audio Channel to use, if there are several audio inputs."
-msgstr "Canalul audio de folosit, dacă există mai multe intrări audio."
-
-#: modules/access/v4l.c:107
-msgid "Width of the stream to capture (-1 for autodetect)."
-msgstr "Lățimea fluxului de capturat (-1 pentru detectare automată)."
-
-#: modules/access/v4l.c:110
-msgid "Height of the stream to capture (-1 for autodetect)."
-msgstr "Înălțimea fluxului de capturat (-1 pentru detectare automată)."
-
-#: modules/access/v4l.c:114
-msgid "Brightness of the video input."
-msgstr "Luminozitatea intrării video"
-
-#: modules/access/v4l.c:117
-msgid "Hue of the video input."
-msgstr "Nuanța semnanului de intrare video."
-
-#: modules/access/v4l.c:118 modules/gui/fbosd.c:143
-#: modules/gui/qt4/ui/video_effects.ui:263
-#: modules/gui/qt4/ui/video_effects.ui:327
-#: modules/gui/qt4/ui/video_effects.ui:689 modules/misc/notify/xosd.c:83
-#: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:122
-#: modules/video_filter/rss.c:154
-msgid "Color"
-msgstr "Culoare"
-
-# adaptare
-#: modules/access/v4l.c:120
-msgid "Color of the video input."
-msgstr "Culoarea imaginii video de intrare."
-
-#: modules/access/v4l.c:123
-msgid "Contrast of the video input."
-msgstr "Contrastul semnalului de intrare video"
-
-#: modules/access/v4l.c:125
-msgid "Tuner to use, if there are several ones."
-msgstr "Tuner-ul pentru a fi folosit, dacă există mai multe."
-
-#: modules/access/v4l.c:128
-msgid ""
-"Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100)"
-msgstr ""
-
-#: modules/access/v4l.c:132
-msgid "MJPEG"
-msgstr "MJPEG"
-
-#: modules/access/v4l.c:134
-msgid "Set this option if the capture device outputs MJPEG"
-msgstr "Activați această opțiune dacă echipamentul de captură scoate MJPEG"
-
-#: modules/access/v4l.c:135
-msgid "Decimation"
-msgstr "Decimare"
-
-#: modules/access/v4l.c:137
-msgid "Decimation level for MJPEG streams"
-msgstr "Nivel de decimare pentru fluxurile MJPEG"
-
-#: modules/access/v4l.c:138
-msgid "Quality"
-msgstr "Calitate"
-
-#: modules/access/v4l.c:139
-msgid "Quality of the stream."
-msgstr "Calitatea fluxului."
-
-#: modules/access/v4l.c:150
-msgid "Video4Linux"
-msgstr "Video4Linux"
-
-#: modules/access/v4l.c:151
-msgid "Video4Linux input"
-msgstr "Intrare Video4Linux"
 
 #: modules/access/vcd/vcd.c:48
 msgid "Caching value for VCDs. This value should be set in milliseconds."
@@ -8435,6 +8106,337 @@ msgstr ""
 #: modules/access/vcdx/vcd.c:149
 msgid "Format to use in the playlist's \"title\" field."
 msgstr ""
+
+#: modules/access_filter/bandwidth.c:34
+msgid "Bandwidth limit (bytes/s)"
+msgstr "Limită de lățime de bandă (octeți/s)"
+
+#: modules/access_filter/bandwidth.c:36
+msgid ""
+"The bandwidth module will drop any data in excess of that many bytes per "
+"seconds."
+msgstr ""
+"Modulul de lățime de bandă va arunca orice date în exces față de atâția "
+"octeți per secundă."
+
+#: modules/access_filter/bandwidth.c:45
+#: modules/gui/qt4/components/open_panels.cpp:670
+msgid "Bandwidth"
+msgstr "Lățime bandă"
+
+#: modules/access_filter/bandwidth.c:46 modules/gui/macosx/simple_prefs.m:247
+#: modules/gui/qt4/ui/sprefs_input.ui:208
+msgid "Bandwidth limiter"
+msgstr "Limitator de lățime de bandă"
+
+#: modules/access_filter/dump.c:42
+msgid "Force use of dump module"
+msgstr "Forțează folosirea modulului de dump"
+
+# hm ? sau transfer ?
+#: modules/access_filter/dump.c:43
+msgid "Activate the dump module even for media with fast seeking."
+msgstr "Activează modulul de dump chiar și pentru media cu căutare rapidă."
+
+#: modules/access_filter/dump.c:46
+msgid "Maximum size of temporary file (Mb)"
+msgstr "Dimensiunea maximă a fișierului temporar (Mb)"
+
+#: modules/access_filter/dump.c:47
+msgid ""
+"The dump module will abort dumping of the media if more than this much "
+"megabyte were performed."
+msgstr ""
+"Modulul de dump va abandona dumpingul meidei dacă au fost prelucrați mai "
+"mult decât atâția megaocteți per secundă."
+
+#: modules/access_filter/record.c:48
+msgid "Record directory"
+msgstr "Director pentru înregistrare"
+
+#: modules/access_filter/record.c:50
+msgid "Directory where the record will be stored."
+msgstr "Directorul unde va fi stocată înregistrarea."
+
+#: modules/access_filter/record.c:339
+msgid "Recording"
+msgstr "Înregistrare"
+
+# hm ? sau terminată ?
+#: modules/access_filter/record.c:341
+msgid "Recording done"
+msgstr "Înregistrarea este gata"
+
+#: modules/access_filter/timeshift.c:53
+msgid "Timeshift granularity"
+msgstr "Granularitate decalaj temporal"
+
+#: modules/access_filter/timeshift.c:55
+#, fuzzy
+msgid ""
+"This is the size of the temporary files that will be used to store the "
+"timeshifted streams."
+msgstr ""
+"Aceasta este dimensiunea fișierului temporar care va fi folosit pentru a "
+"stoca stream-urile decalate temporal."
+
+#: modules/access_filter/timeshift.c:57
+msgid "Timeshift directory"
+msgstr "Director pentru decalaj temporal"
+
+#: modules/access_filter/timeshift.c:58
+msgid "Directory used to store the timeshift temporary files."
+msgstr "Director folosit pentru a stoca fișiere temporare de decalaj temporal."
+
+#: modules/access_filter/timeshift.c:60
+msgid "Force use of the timeshift module"
+msgstr "Forțează folosirea modulului de decalaj temporal"
+
+#: modules/access_filter/timeshift.c:61
+msgid ""
+"Force use of the timeshift module even if the access declares that it can "
+"control pace or pause."
+msgstr ""
+"Forțează folosirea modulului de decalaj temporal chiar dacă accesul declară "
+"că poate controla pasul sau pauza."
+
+#: modules/access_filter/timeshift.c:65 modules/access_filter/timeshift.c:66
+#: modules/gui/macosx/simple_prefs.m:260
+#: modules/gui/qt4/ui/sprefs_input.ui:187
+msgid "Timeshift"
+msgstr "Decalaj temporal"
+
+# hm ?
+#: modules/access_output/dummy.c:45 modules/stream_out/dummy.c:51
+msgid "Dummy stream output"
+msgstr "Ieșire de flux falsă"
+
+# hm ?
+#: modules/access_output/dummy.c:46 modules/misc/dummy/dummy.c:61
+msgid "Dummy"
+msgstr "Fals"
+
+#: modules/access_output/file.c:64
+msgid "Append to file"
+msgstr "Adaugă la fișier"
+
+#: modules/access_output/file.c:65
+msgid "Append to file if it exists instead of replacing it."
+msgstr ""
+"Adaugă la fișier în cazul în care acesta există, în loc de a-l înlocui."
+
+#: modules/access_output/file.c:69
+msgid "File stream output"
+msgstr "Flux de ieșire în fișier"
+
+#: modules/access_output/http.c:65 modules/gui/qt4/ui/sprefs_audio.ui:309
+#: modules/misc/audioscrobbler.c:132
+msgid "Username"
+msgstr "Nume utilizator"
+
+#: modules/access_output/http.c:66
+msgid "User name that will be requested to access the stream."
+msgstr "Numele utilizator care va fi cerut pentru a accesa fluxul."
+
+#: modules/access_output/http.c:68 modules/control/telnet.c:91
+#: modules/gui/macosx/simple_prefs.m:227
+#: modules/gui/qt4/dialogs/interaction.cpp:99
+#: modules/gui/qt4/ui/sprefs_audio.ui:319 modules/misc/audioscrobbler.c:134
+#: modules/misc/notify/growl_udp.c:64
+msgid "Password"
+msgstr "Parolă"
+
+#: modules/access_output/http.c:69
+msgid "Password that will be requested to access the stream."
+msgstr "Parola care va fi cerută pentru a accesa fluxul."
+
+#: modules/access_output/http.c:71
+msgid "Mime"
+msgstr "MIME"
+
+#: modules/access_output/http.c:72
+#, fuzzy
+msgid "MIME returned by the server (autodetected if not specified)."
+msgstr ""
+"Tipul MIME returnat de server (detectat automat dacă nu este specificat)."
+
+#: modules/access_output/http.c:75
+msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
+msgstr "Calea către certificatul x509 PEM care va fi folosit pentru HTTPS."
+
+#: modules/access_output/http.c:78
+msgid ""
+"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
+"empty if you don't have one."
+msgstr ""
+"Calea către fișierul cu cheia privată x509 PEM care va fi folosit pentru "
+"HTTPS. Lasați gol dacă nu aveți niciunul."
+
+# hm ?
+#: modules/access_output/http.c:82
+msgid ""
+"Path to the x509 PEM trusted root CA certificates (certificate authority) "
+"file that will be used for HTTPS. Leave empty if you don't have one."
+msgstr ""
+"Calea către fișierul cu certificatul rădăcină x509 PEM al CA (autoritatea "
+"certificatoare) de încredere care va fi folosit pentru HTTPS. Lasați gol "
+"dacă nu aveți niciunul."
+
+#: modules/access_output/http.c:87
+msgid ""
+"Path to the x509 PEM Certificates Revocation List file that will be used for "
+"SSL. Leave empty if you don't have one."
+msgstr ""
+"Calea către fișierul cu lista de revocări de certificate x509 PEM care va fi "
+"folosit pentru SSL. Lăsați gol dacă nu aveți niciunul."
+
+#: modules/access_output/http.c:90
+msgid "Advertise with Bonjour"
+msgstr "Anunță cu Bonjour"
+
+#: modules/access_output/http.c:91
+msgid "Advertise the stream with the Bonjour protocol."
+msgstr "Anunță fluxul cu protocolul Bonjour."
+
+#: modules/access_output/http.c:95
+msgid "HTTP stream output"
+msgstr "Flux de ieșire HTTP"
+
+#: modules/access_output/rtmp.c:44
+msgid "Active TCP connection"
+msgstr "Conexiune TCP activă"
+
+#: modules/access_output/rtmp.c:46
+msgid ""
+"If enabled, VLC will connect to a remote destination instead of waiting for "
+"an incoming connection."
+msgstr ""
+"Dacă este activat, VLC se va conecta la o destinație de la distanță în loc "
+"să aștepte sosirea unei conexiuni."
+
+#: modules/access_output/rtmp.c:55
+msgid "RTMP stream output"
+msgstr "Flux de ieșire RTMP"
+
+#: modules/access_output/shout.c:63
+msgid "Stream name"
+msgstr "Nume flux"
+
+#: modules/access_output/shout.c:64
+msgid "Name to give to this stream/channel on the shoutcast/icecast server."
+msgstr "Numele de dat acestui flux/canal pe serverul de shoutcast/icecast."
+
+#: modules/access_output/shout.c:67
+msgid "Stream description"
+msgstr "Descriere flux"
+
+#: modules/access_output/shout.c:68
+msgid "Description of the stream content or information about your channel."
+msgstr ""
+"Descrierea conținutului fluxului, sau informații despre canalul "
+"dumneavoastră."
+
+#: modules/access_output/shout.c:71
+msgid "Stream MP3"
+msgstr "Flux MP3"
+
+# hm ?
+#: modules/access_output/shout.c:72
+msgid ""
+"You normally have to feed the shoutcast module with Ogg streams. It is also "
+"possible to stream MP3 instead, so you can forward MP3 streams to the "
+"shoutcast/icecast server."
+msgstr ""
+"În mod normal trebuie să alimentați modulul shoutcast cu fluxuri Ogg. Este "
+"însă de asemena posibil să difuzați un flux MP3 în loc, încât puteți să "
+"înaintați fluxuri MP3 la serverul shoutcast/icecast."
+
+#: modules/access_output/shout.c:81
+msgid "Genre description"
+msgstr "Descrierea genului"
+
+#: modules/access_output/shout.c:82
+msgid "Genre of the content. "
+msgstr "Genul conținutului."
+
+#: modules/access_output/shout.c:84
+msgid "URL description"
+msgstr "Descriere URL"
+
+#: modules/access_output/shout.c:85
+msgid "URL with information about the stream or your channel. "
+msgstr ""
+
+#: modules/access_output/shout.c:92
+#, fuzzy
+msgid "Bitrate information of the transcoded stream. "
+msgstr "Rata de biți țintă a stream-ului video transcodat"
+
+#: modules/access_output/shout.c:95
+#, fuzzy
+msgid "Samplerate information of the transcoded stream. "
+msgstr "Rata de biți țintă a stream-ului video transcodat"
+
+#: modules/access_output/shout.c:97
+msgid "Number of channels"
+msgstr "Număr de canale"
+
+#: modules/access_output/shout.c:98
+#, fuzzy
+msgid "Number of channels information of the transcoded stream. "
+msgstr "Numărul canalelor audio în stream-ul transcodat."
+
+#: modules/access_output/shout.c:100
+msgid "Ogg Vorbis Quality"
+msgstr "Calitate Ogg Vorbis"
+
+#: modules/access_output/shout.c:101
+#, fuzzy
+msgid "Ogg Vorbis Quality information of the transcoded stream. "
+msgstr "Rata de biți țintă a stream-ului video transcodat"
+
+# hm ?
+#: modules/access_output/shout.c:103
+msgid "Stream public"
+msgstr "Difuzare publică"
+
+#: modules/access_output/shout.c:104
+msgid ""
+"Make the server publicly available on the 'Yellow Pages' (directory listing "
+"of streams) on the icecast/shoutcast website. Requires the bitrate "
+"information specified for shoutcast. Requires Ogg streaming for icecast."
+msgstr ""
+
+#: modules/access_output/shout.c:110
+msgid "IceCAST output"
+msgstr "Ieșire IceCAST"
+
+# hm ? outbound ?
+#: modules/access_output/udp.c:69
+msgid ""
+"Default caching value for outbound UDP streams. This value should be set in "
+"milliseconds."
+msgstr ""
+"Valoarea de stocare în cache pentru fluxuri UDP outbound. Această valoare ar "
+"trebui stabilită în milisecunde."
+
+#: modules/access_output/udp.c:72
+msgid "Group packets"
+msgstr "Pachete de grup"
+
+#: modules/access_output/udp.c:73
+msgid ""
+"Packets can be sent one by one at the right time or by groups. You can "
+"choose the number of packets that will be sent at a time. It helps reducing "
+"the scheduling load on heavily-loaded systems."
+msgstr ""
+"Pachetele pot fi trimise unul câte unul la momentul potrivit sau în grup. "
+"Puteți alege numărul pachetelor care vor fi trimise o dată. Ajută la "
+"reducerea încărcării programate pe sistemele foarte încărcate."
+
+#: modules/access_output/udp.c:80
+msgid "UDP stream output"
+msgstr "Flux de ieșire UDP"
 
 #: modules/audio_filter/channel_mixer/dolby.c:49
 msgid "Simple decoder for Dolby Surround encoded streams"
@@ -12652,10 +12654,41 @@ msgstr ""
 msgid "SMF demuxer"
 msgstr "Multiplexor ASF"
 
-#: modules/demux/subtitle_asa.c:56 modules/demux/subtitle.c:54
+#: modules/demux/subtitle.c:54 modules/demux/subtitle_asa.c:56
 msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
 msgstr ""
 "Aplică o întârziere tuturor subtitlurilor (în 1/10s, ex. 100 înseamnă 10s)."
+
+#: modules/demux/subtitle.c:56
+msgid ""
+"Override the normal frames per second settings. This will only work with "
+"MicroDVD and SubRIP (SRT) subtitles."
+msgstr ""
+
+#: modules/demux/subtitle.c:59
+msgid ""
+"Force the subtiles format. Valid values are : \"microdvd\", \"subrip\", "
+"\"subviewer\", \"ssa1\", \"ssa2-4\", \"ass\", \"vplayer\", \"sami\", "
+"\"dvdsubtitle\", \"mpl2\", \"aqt\", \"pjs\", \"mpsub\", \"jacosub\", \"psb"
+"\", \"realtext\", \"dks\", \"subviewer1\",  and \"auto\" (meaning "
+"autodetection, this should always work)."
+msgstr ""
+
+#: modules/demux/subtitle.c:75 modules/demux/subtitle_asa.c:65
+msgid "Text subtitles parser"
+msgstr "Analizor de text de subtitluri"
+
+#: modules/demux/subtitle.c:80 modules/demux/subtitle_asa.c:70
+msgid "Frames per second"
+msgstr "Cadre pe secundă"
+
+#: modules/demux/subtitle.c:83 modules/demux/subtitle_asa.c:73
+msgid "Subtitles delay"
+msgstr "Întârziere subtitluri"
+
+#: modules/demux/subtitle.c:85 modules/demux/subtitle_asa.c:75
+msgid "Subtitles format"
+msgstr "Format de subtitluri"
 
 #: modules/demux/subtitle_asa.c:58
 msgid ""
@@ -12672,37 +12705,6 @@ msgstr ""
 #, fuzzy
 msgid "Subtitles (asa demuxer)"
 msgstr "Setări demultiplexor subtitlu"
-
-#: modules/demux/subtitle_asa.c:65 modules/demux/subtitle.c:75
-msgid "Text subtitles parser"
-msgstr "Analizor de text de subtitluri"
-
-#: modules/demux/subtitle_asa.c:70 modules/demux/subtitle.c:80
-msgid "Frames per second"
-msgstr "Cadre pe secundă"
-
-#: modules/demux/subtitle_asa.c:73 modules/demux/subtitle.c:83
-msgid "Subtitles delay"
-msgstr "Întârziere subtitluri"
-
-#: modules/demux/subtitle_asa.c:75 modules/demux/subtitle.c:85
-msgid "Subtitles format"
-msgstr "Format de subtitluri"
-
-#: modules/demux/subtitle.c:56
-msgid ""
-"Override the normal frames per second settings. This will only work with "
-"MicroDVD and SubRIP (SRT) subtitles."
-msgstr ""
-
-#: modules/demux/subtitle.c:59
-msgid ""
-"Force the subtiles format. Valid values are : \"microdvd\", \"subrip\", "
-"\"subviewer\", \"ssa1\", \"ssa2-4\", \"ass\", \"vplayer\", \"sami\", "
-"\"dvdsubtitle\", \"mpl2\", \"aqt\", \"pjs\", \"mpsub\", \"jacosub\", \"psb"
-"\", \"realtext\", \"dks\", \"subviewer1\",  and \"auto\" (meaning "
-"autodetection, this should always work)."
-msgstr ""
 
 #: modules/demux/ts.c:112
 msgid "Extra PMT"
@@ -14134,8 +14136,8 @@ msgstr "Capturează"
 #: modules/gui/macosx/simple_prefs.m:291
 #: modules/gui/qt4/components/preferences_widgets.cpp:260
 #: modules/gui/qt4/components/simple_preferences.cpp:239
-#: modules/gui/qt4/ui/open_disk.ui:141 modules/gui/qt4/ui/open_file.ui:181
-#: modules/gui/qt4/ui/open.ui:155 modules/gui/qt4/ui/sout.ui:71
+#: modules/gui/qt4/ui/open.ui:155 modules/gui/qt4/ui/open_disk.ui:141
+#: modules/gui/qt4/ui/open_file.ui:181 modules/gui/qt4/ui/sout.ui:71
 #: modules/gui/qt4/ui/sprefs_audio.ui:237
 #: modules/gui/qt4/ui/sprefs_input.ui:39
 #: modules/gui/qt4/ui/sprefs_interface.ui:209
@@ -14375,6 +14377,91 @@ msgstr "URL SDP"
 msgid "Save File"
 msgstr "Salvează fișier"
 
+#: modules/gui/macosx/playlist.m:128 modules/gui/macosx/wizard.m:350
+#: modules/gui/wince/playlist.cpp:671 modules/mux/asf.c:54
+msgid "Author"
+msgstr "Autor"
+
+#: modules/gui/macosx/playlist.m:441
+msgid "Save Playlist..."
+msgstr "Salvează lista de redare..."
+
+#: modules/gui/macosx/playlist.m:444
+msgid "Expand Node"
+msgstr "Expandează nodul"
+
+#: modules/gui/macosx/playlist.m:447
+msgid "Download Cover Art"
+msgstr "Descarcă grafica de album"
+
+#: modules/gui/macosx/playlist.m:448
+msgid "Fetch Meta Data"
+msgstr "Obține meta data"
+
+#: modules/gui/macosx/playlist.m:449
+msgid "Sort Node by Name"
+msgstr "Sortează nodul după nume"
+
+#: modules/gui/macosx/playlist.m:450
+msgid "Sort Node by Author"
+msgstr "Sortează nodul după autor"
+
+#: modules/gui/macosx/playlist.m:453 modules/gui/macosx/playlist.m:492
+#: modules/gui/macosx/playlist.m:1446
+msgid "No items in the playlist"
+msgstr "Niciun element în lista de redare"
+
+#: modules/gui/macosx/playlist.m:455
+msgid "Search in Playlist"
+msgstr "Caută în lista de redare"
+
+#: modules/gui/macosx/playlist.m:456
+msgid "Add Folder to Playlist"
+msgstr "Adaugă un folder în lista de redare"
+
+#: modules/gui/macosx/playlist.m:458
+msgid "File Format:"
+msgstr "Format de fișier:"
+
+#: modules/gui/macosx/playlist.m:459
+msgid "Extended M3U"
+msgstr "M3U extins"
+
+#: modules/gui/macosx/playlist.m:460
+msgid "XML Shareable Playlist Format (XSPF)"
+msgstr "Format de listă de redare partajabil XML (XSPF)"
+
+#: modules/gui/macosx/playlist.m:486 modules/gui/macosx/playlist.m:1439
+#: modules/gui/macosx/wizard.m:1362
+#, c-format
+msgid "%i items"
+msgstr "%i elemente"
+
+#: modules/gui/macosx/playlist.m:494 modules/gui/macosx/playlist.m:1450
+msgid "1 item"
+msgstr "1 element"
+
+#: modules/gui/macosx/playlist.m:683
+msgid "Save Playlist"
+msgstr "Salvează lista de redare"
+
+#: modules/gui/macosx/playlist.m:1157 modules/gui/ncurses.c:1808
+msgid "Meta-information"
+msgstr "Meta-informație"
+
+#: modules/gui/macosx/playlist.m:1404
+msgid "New Node"
+msgstr "Nod nou"
+
+#: modules/gui/macosx/playlist.m:1405
+msgid "Please enter a name for the new node."
+msgstr "Introduceți numele nodului nou."
+
+# hm ? sau golește folderul ?
+#: modules/gui/macosx/playlist.m:1416
+msgid "Empty Folder"
+msgstr "Folder gol"
+
 #: modules/gui/macosx/playlistinfo.m:70
 #: modules/gui/qt4/dialogs/mediainfo.cpp:55
 msgid "Media Information"
@@ -14470,91 +14557,6 @@ msgstr ""
 #: modules/gui/macosx/playlistinfo.m:449
 msgid "Information"
 msgstr "Informație"
-
-#: modules/gui/macosx/playlist.m:128 modules/gui/macosx/wizard.m:350
-#: modules/gui/wince/playlist.cpp:671 modules/mux/asf.c:54
-msgid "Author"
-msgstr "Autor"
-
-#: modules/gui/macosx/playlist.m:441
-msgid "Save Playlist..."
-msgstr "Salvează lista de redare..."
-
-#: modules/gui/macosx/playlist.m:444
-msgid "Expand Node"
-msgstr "Expandează nodul"
-
-#: modules/gui/macosx/playlist.m:447
-msgid "Download Cover Art"
-msgstr "Descarcă grafica de album"
-
-#: modules/gui/macosx/playlist.m:448
-msgid "Fetch Meta Data"
-msgstr "Obține meta data"
-
-#: modules/gui/macosx/playlist.m:449
-msgid "Sort Node by Name"
-msgstr "Sortează nodul după nume"
-
-#: modules/gui/macosx/playlist.m:450
-msgid "Sort Node by Author"
-msgstr "Sortează nodul după autor"
-
-#: modules/gui/macosx/playlist.m:453 modules/gui/macosx/playlist.m:492
-#: modules/gui/macosx/playlist.m:1446
-msgid "No items in the playlist"
-msgstr "Niciun element în lista de redare"
-
-#: modules/gui/macosx/playlist.m:455
-msgid "Search in Playlist"
-msgstr "Caută în lista de redare"
-
-#: modules/gui/macosx/playlist.m:456
-msgid "Add Folder to Playlist"
-msgstr "Adaugă un folder în lista de redare"
-
-#: modules/gui/macosx/playlist.m:458
-msgid "File Format:"
-msgstr "Format de fișier:"
-
-#: modules/gui/macosx/playlist.m:459
-msgid "Extended M3U"
-msgstr "M3U extins"
-
-#: modules/gui/macosx/playlist.m:460
-msgid "XML Shareable Playlist Format (XSPF)"
-msgstr "Format de listă de redare partajabil XML (XSPF)"
-
-#: modules/gui/macosx/playlist.m:486 modules/gui/macosx/playlist.m:1439
-#: modules/gui/macosx/wizard.m:1362
-#, c-format
-msgid "%i items"
-msgstr "%i elemente"
-
-#: modules/gui/macosx/playlist.m:494 modules/gui/macosx/playlist.m:1450
-msgid "1 item"
-msgstr "1 element"
-
-#: modules/gui/macosx/playlist.m:683
-msgid "Save Playlist"
-msgstr "Salvează lista de redare"
-
-#: modules/gui/macosx/playlist.m:1157 modules/gui/ncurses.c:1808
-msgid "Meta-information"
-msgstr "Meta-informație"
-
-#: modules/gui/macosx/playlist.m:1404
-msgid "New Node"
-msgstr "Nod nou"
-
-#: modules/gui/macosx/playlist.m:1405
-msgid "Please enter a name for the new node."
-msgstr "Introduceți numele nodului nou."
-
-# hm ? sau golește folderul ?
-#: modules/gui/macosx/playlist.m:1416
-msgid "Empty Folder"
-msgstr "Folder gol"
 
 #: modules/gui/macosx/prefs.m:127 modules/gui/macosx/simple_prefs.m:301
 msgid "Reset All"
@@ -16998,38 +17000,6 @@ msgstr ""
 "Aceasta va reseta preferințele VLC media player.\n"
 "Sigur vreți să continuați ?"
 
-#: modules/gui/qt4/dialogs_provider.cpp:422
-msgid "Open Directory"
-msgstr "Deschide un director"
-
-#: modules/gui/qt4/dialogs_provider.cpp:466
-msgid "Open playlist file"
-msgstr "Deschide fișierul de listă de redare"
-
-#: modules/gui/qt4/dialogs_provider.cpp:477
-msgid "Choose a filename to save playlist"
-msgstr "Alegeți un nume de fișier pentru a salva lista de redare"
-
-#: modules/gui/qt4/dialogs_provider.cpp:479
-msgid "XSPF playlist (*.xspf);; "
-msgstr "Listă de redare XSPF (*.xspf);; "
-
-#: modules/gui/qt4/dialogs_provider.cpp:480
-msgid "M3U playlist (*.m3u);; Any (*.*) "
-msgstr ""
-
-#: modules/gui/qt4/dialogs_provider.hpp:45
-msgid "Media Files"
-msgstr "Fișiere media"
-
-#: modules/gui/qt4/dialogs_provider.hpp:65
-msgid "Subtitles Files"
-msgstr "Fișiere de subtitluri"
-
-#: modules/gui/qt4/dialogs_provider.hpp:70
-msgid "All Files"
-msgstr "Toate fișierele"
-
 #: modules/gui/qt4/dialogs/sout.cpp:103 modules/gui/qt4/ui/sout.ui:14
 msgid "Stream Output"
 msgstr "Flux de ieșire"
@@ -17116,6 +17086,38 @@ msgstr "Planificare: "
 #: modules/gui/qt4/dialogs/vlm.cpp:618
 msgid "VOD: "
 msgstr "Video la cerere (VOD): "
+
+#: modules/gui/qt4/dialogs_provider.cpp:422
+msgid "Open Directory"
+msgstr "Deschide un director"
+
+#: modules/gui/qt4/dialogs_provider.cpp:466
+msgid "Open playlist file"
+msgstr "Deschide fișierul de listă de redare"
+
+#: modules/gui/qt4/dialogs_provider.cpp:477
+msgid "Choose a filename to save playlist"
+msgstr "Alegeți un nume de fișier pentru a salva lista de redare"
+
+#: modules/gui/qt4/dialogs_provider.cpp:479
+msgid "XSPF playlist (*.xspf);; "
+msgstr "Listă de redare XSPF (*.xspf);; "
+
+#: modules/gui/qt4/dialogs_provider.cpp:480
+msgid "M3U playlist (*.m3u);; Any (*.*) "
+msgstr ""
+
+#: modules/gui/qt4/dialogs_provider.hpp:45
+msgid "Media Files"
+msgstr "Fișiere media"
+
+#: modules/gui/qt4/dialogs_provider.hpp:65
+msgid "Subtitles Files"
+msgstr "Fișiere de subtitluri"
+
+#: modules/gui/qt4/dialogs_provider.hpp:70
+msgid "All Files"
+msgstr "Toate fișierele"
 
 #: modules/gui/qt4/main_interface.cpp:309
 msgid ""
@@ -17557,6 +17559,52 @@ msgstr "Interfață QT"
 msgid "Preset"
 msgstr "Presetat"
 
+#: modules/gui/qt4/ui/open.ui:38
+msgid "Show extended options"
+msgstr "Arată opțiuni extinse"
+
+#: modules/gui/qt4/ui/open.ui:41
+msgid "Show &more options"
+msgstr "Arată &mai multe opțiuni"
+
+# hm ?
+#: modules/gui/qt4/ui/open.ui:61
+msgid "Change the caching for the media"
+msgstr "Schimbă parametrii de cache pentru media"
+
+#: modules/gui/qt4/ui/open.ui:90
+msgid "Start Time"
+msgstr "Timp de start"
+
+#: modules/gui/qt4/ui/open.ui:100
+msgid "Change the start time for the media"
+msgstr "Schimbă timpul de start pentru media"
+
+#: modules/gui/qt4/ui/open.ui:132
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "Redă sincron alt media (fișier audio suplimentar, ...)"
+
+#: modules/gui/qt4/ui/open.ui:139
+msgid "Extra media"
+msgstr "Media suplimentară"
+
+#: modules/gui/qt4/ui/open.ui:152
+msgid "Select the file"
+msgstr "Selectați fișierul"
+
+#: modules/gui/qt4/ui/open.ui:165
+msgid "Customize"
+msgstr "Personalizează"
+
+#: modules/gui/qt4/ui/open.ui:175
+msgid "Complete MRL for VLC internal"
+msgstr "MRL intern complet pentru VLC"
+
+# !!! adaptare la realitate !!!
+#: modules/gui/qt4/ui/open.ui:216
+msgid "Select play mode"
+msgstr "Selectați tipul acțiunii"
+
 #: modules/gui/qt4/ui/open_capture.ui:17
 msgid "Capture mode"
 msgstr "Mod de captură"
@@ -17641,52 +17689,6 @@ msgstr "Selectați portul utilizat"
 #: modules/gui/qt4/ui/open_net.ui:85
 msgid "Enter the URL of the network stream here, with or without the protocol."
 msgstr "Introduceți aici URL-ul fluxului de rețea, cu sau fără protocol."
-
-#: modules/gui/qt4/ui/open.ui:38
-msgid "Show extended options"
-msgstr "Arată opțiuni extinse"
-
-#: modules/gui/qt4/ui/open.ui:41
-msgid "Show &more options"
-msgstr "Arată &mai multe opțiuni"
-
-# hm ?
-#: modules/gui/qt4/ui/open.ui:61
-msgid "Change the caching for the media"
-msgstr "Schimbă parametrii de cache pentru media"
-
-#: modules/gui/qt4/ui/open.ui:90
-msgid "Start Time"
-msgstr "Timp de start"
-
-#: modules/gui/qt4/ui/open.ui:100
-msgid "Change the start time for the media"
-msgstr "Schimbă timpul de start pentru media"
-
-#: modules/gui/qt4/ui/open.ui:132
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "Redă sincron alt media (fișier audio suplimentar, ...)"
-
-#: modules/gui/qt4/ui/open.ui:139
-msgid "Extra media"
-msgstr "Media suplimentară"
-
-#: modules/gui/qt4/ui/open.ui:152
-msgid "Select the file"
-msgstr "Selectați fișierul"
-
-#: modules/gui/qt4/ui/open.ui:165
-msgid "Customize"
-msgstr "Personalizează"
-
-#: modules/gui/qt4/ui/open.ui:175
-msgid "Complete MRL for VLC internal"
-msgstr "MRL intern complet pentru VLC"
-
-# !!! adaptare la realitate !!!
-#: modules/gui/qt4/ui/open.ui:216
-msgid "Select play mode"
-msgstr "Selectați tipul acțiunii"
 
 #: modules/gui/qt4/ui/podcast_configuration.ui:19
 #: modules/services_discovery/podcast.c:58
@@ -18992,10 +18994,6 @@ msgstr ""
 msgid "Lua Interface Module"
 msgstr "Modúl de interfață"
 
-#: modules/misc/memcpy/memcpyaltivec.c:59
-msgid "AltiVec memcpy"
-msgstr "AltiVec memcpy"
-
 #: modules/misc/memcpy/memcpy.c:82
 msgid "libc memcpy"
 msgstr "libc memcpy"
@@ -19011,6 +19009,10 @@ msgstr "MMX memcpy"
 #: modules/misc/memcpy/memcpy.c:98
 msgid "MMX EXT memcpy"
 msgstr "MMX EXT memcpy"
+
+#: modules/misc/memcpy/memcpyaltivec.c:59
+msgid "AltiVec memcpy"
+msgstr "AltiVec memcpy"
 
 #: modules/misc/notify/growl.m:96
 msgid "Growl Notification Plugin"
@@ -21101,6 +21103,10 @@ msgstr ""
 msgid "Change gradients"
 msgstr ""
 
+#: modules/video_filter/blend.c:45
+msgid "Video pictures blending"
+msgstr ""
+
 # hm ?
 #: modules/video_filter/blendbench.c:52
 msgid "Number of time to blend"
@@ -21170,10 +21176,6 @@ msgstr "Imagine de bază"
 #: modules/video_filter/blendbench.c:92
 msgid "Blend image"
 msgstr "Imagine de amestec"
-
-#: modules/video_filter/blend.c:45
-msgid "Video pictures blending"
-msgstr ""
 
 #: modules/video_filter/bluescreen.c:39
 msgid ""

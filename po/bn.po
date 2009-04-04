@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 0.8.2-svn\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2009-03-29 20:34+0100\n"
+"POT-Creation-Date: 2009-04-04 16:29+0200\n"
 "PO-Revision-Date: 2008-12-31 18:09+0600\n"
 "Last-Translator: Md. Rezwan Shahid <rezwan@ankur.org.bd>\n"
 "Language-Team: Bengali <ankur-bd-l10n@googlegroups.com>\n"
@@ -823,8 +823,8 @@ msgid "Audio Channels"
 msgstr "অডিও চ্যানেলসমূহ"
 
 #: src/audio_output/output.c:105 src/audio_output/output.c:140
-#: modules/access/v4l2/v4l2.c:218 modules/access/v4l2/v4l2.c:269
-#: modules/access/v4l.c:129 modules/audio_output/alsa.c:195
+#: modules/access/v4l.c:129 modules/access/v4l2/v4l2.c:218
+#: modules/access/v4l2/v4l2.c:269 modules/audio_output/alsa.c:195
 #: modules/audio_output/alsa.c:226 modules/audio_output/directx.c:519
 #: modules/audio_output/oss.c:207 modules/audio_output/portaudio.c:402
 #: modules/audio_output/sdl.c:184 modules/audio_output/sdl.c:201
@@ -1047,8 +1047,9 @@ msgstr "%u হার্জ"
 msgid "Bits per sample"
 msgstr "বিট/নমুনা"
 
-#: src/input/es_out.c:2083 modules/access_output/shout.c:91
-#: modules/access/pvr.c:97 modules/gui/qt4/components/open_panels.cpp:865
+#: src/input/es_out.c:2083 modules/access/pvr.c:97
+#: modules/access_output/shout.c:91
+#: modules/gui/qt4/components/open_panels.cpp:865
 msgid "Bitrate"
 msgstr "বিটের হার"
 
@@ -1100,8 +1101,8 @@ msgstr "'%s' ফরম্যাটটি সনাক্ত করা যায়�
 msgid "Title"
 msgstr "শিরোনাম"
 
-#: src/input/meta.c:53 modules/gui/macosx/playlistinfo.m:73
-#: modules/gui/macosx/playlist.m:1157
+#: src/input/meta.c:53 modules/gui/macosx/playlist.m:1157
+#: modules/gui/macosx/playlistinfo.m:73
 msgid "Artist"
 msgstr "শিল্পি"
 
@@ -1288,96 +1289,6 @@ msgstr "ডিবাগ লগিং"
 #: src/interface/interface.c:221
 msgid "Mouse Gestures"
 msgstr "মাউসের ইঙ্গিত"
-
-#: src/libvlc.c:280 src/libvlc.c:413 src/modules/cache.c:213
-#: src/modules/cache.c:532
-msgid "C"
-msgstr "C"
-
-#: src/libvlc.c:1138
-msgid ""
-"Running vlc with the default interface. Use 'cvlc' to use vlc without "
-"interface."
-msgstr ""
-"ডিফল্ট ইন্টারফেস সহকারে ভিএলসি চালানো হচ্ছে। ভিএলসি ইন্টারফেস ছাড়া চালানোর জন্য "
-"'cvlc' ব্যবহার করুন।"
-
-#: src/libvlc.c:1283
-msgid "To get exhaustive help, use '-H'."
-msgstr "সম্পূর্ন সাহায্যের জন্য '-H' ব্যবহার করুন।"
-
-#: src/libvlc.c:1619
-msgid " (default enabled)"
-msgstr " (ডিফল্ট সক্রিয় করা হয়েছে)"
-
-#: src/libvlc.c:1620
-msgid " (default disabled)"
-msgstr " (ডিফল্ট নিষ্ক্রিয় করা হয়েছে)"
-
-#: src/libvlc.c:1779 src/libvlc.c:1782
-msgid "Note:"
-msgstr "নোট:"
-
-#: src/libvlc.c:1780 src/libvlc.c:1783
-msgid "add --advanced to your command line to see advanced options."
-msgstr "উন্নত বৈশিষ্টসমূহ দেখার জন্য আপনার কমান্ড লাইনের সাথে --advanced যোগ করুন।"
-
-#: src/libvlc.c:1887
-#, c-format
-msgid "VLC version %s\n"
-msgstr "ভিএলসি সংস্করন %s\n"
-
-#: src/libvlc.c:1888
-#, c-format
-msgid "Compiled by %s@%s.%s\n"
-msgstr "কম্পাইল করেছেন %s@%s.%s\n"
-
-#: src/libvlc.c:1890
-#, c-format
-msgid "Compiler: %s\n"
-msgstr "কম্পাইলার: %s\n"
-
-#: src/libvlc.c:1892
-#, c-format
-msgid "Based upon Git commit [%s]\n"
-msgstr "Git commit [%s] এর উপর ভিত্তি করে\n"
-
-#: src/libvlc.c:1928
-msgid ""
-"\n"
-"Dumped content to vlc-help.txt file.\n"
-msgstr ""
-"\n"
-"vlc-help.txt ফাইলে বিষয়বস্তু ডাম্প করা হয়েছে।\n"
-
-#: src/libvlc.c:1948
-msgid ""
-"\n"
-"Press the RETURN key to continue...\n"
-msgstr ""
-"\n"
-"চালিয়ে যাওয়ার জন্য রিটার্ন কী চাপুন...\n"
-
-#: src/libvlc.h:199 src/libvlc-module.c:1332 src/libvlc-module.c:1333
-#: src/libvlc-module.c:2403 src/video_output/vout_intf.c:274
-msgid "Zoom"
-msgstr "আকার পরিবর্তন করে প্রদর্শন"
-
-#: src/libvlc.h:200 src/libvlc-module.c:1258 src/video_output/vout_intf.c:169
-msgid "1:4 Quarter"
-msgstr "১:৪ চার ভাগের একভাগ"
-
-#: src/libvlc.h:201 src/libvlc-module.c:1259 src/video_output/vout_intf.c:170
-msgid "1:2 Half"
-msgstr "১:২ অর্ধেক"
-
-#: src/libvlc.h:202 src/libvlc-module.c:1260 src/video_output/vout_intf.c:171
-msgid "1:1 Original"
-msgstr "১:১ আসল"
-
-#: src/libvlc.h:203 src/libvlc-module.c:1261 src/video_output/vout_intf.c:172
-msgid "2:1 Double"
-msgstr "২:১ দ্বিগুন"
 
 #: src/libvlc-module.c:91 src/libvlc-module.c:291 modules/access/bda/bda.c:63
 msgid "Auto"
@@ -3991,6 +3902,22 @@ msgstr "অডিও এগিয়ে নিন"
 msgid "Select the key to decrease the audio delay."
 msgstr "অডিও বিলম্ব কমানোর জন্য কী (key) নির্বাচন করুন।"
 
+#: src/libvlc-module.c:1258 src/libvlc.h:200 src/video_output/vout_intf.c:169
+msgid "1:4 Quarter"
+msgstr "১:৪ চার ভাগের একভাগ"
+
+#: src/libvlc-module.c:1259 src/libvlc.h:201 src/video_output/vout_intf.c:170
+msgid "1:2 Half"
+msgstr "১:২ অর্ধেক"
+
+#: src/libvlc-module.c:1260 src/libvlc.h:202 src/video_output/vout_intf.c:171
+msgid "1:1 Original"
+msgstr "১:১ আসল"
+
+#: src/libvlc-module.c:1261 src/libvlc.h:203 src/video_output/vout_intf.c:172
+msgid "2:1 Double"
+msgstr "২:১ দ্বিগুন"
+
 #: src/libvlc-module.c:1263
 msgid "Play playlist bookmark 1"
 msgstr "বুকমার্ক ১ চালানোর তালিকা চালান"
@@ -4242,6 +4169,11 @@ msgstr "চালানোর তালিকা সাধারন/পুনর
 #: src/libvlc-module.c:1330
 msgid "Toggle random playlist playback"
 msgstr "চালানোর তালিকা উল্টোপাল্টাভাবে চালানো পরিবর্তন করুন"
+
+#: src/libvlc-module.c:1332 src/libvlc-module.c:1333 src/libvlc-module.c:2403
+#: src/libvlc.h:199 src/video_output/vout_intf.c:274
+msgid "Zoom"
+msgstr "আকার পরিবর্তন করে প্রদর্শন"
 
 #: src/libvlc-module.c:1335 src/libvlc-module.c:1336
 msgid "Un-Zoom"
@@ -4572,6 +4504,75 @@ msgstr "সংস্করন তথ্য প্রিন্ট করুন"
 #: src/libvlc-module.c:2574
 msgid "main program"
 msgstr "প্রধান প্রোগ্রাম"
+
+#: src/libvlc.c:280 src/libvlc.c:413 src/modules/cache.c:213
+#: src/modules/cache.c:532
+msgid "C"
+msgstr "C"
+
+#: src/libvlc.c:1138
+msgid ""
+"Running vlc with the default interface. Use 'cvlc' to use vlc without "
+"interface."
+msgstr ""
+"ডিফল্ট ইন্টারফেস সহকারে ভিএলসি চালানো হচ্ছে। ভিএলসি ইন্টারফেস ছাড়া চালানোর জন্য "
+"'cvlc' ব্যবহার করুন।"
+
+#: src/libvlc.c:1283
+msgid "To get exhaustive help, use '-H'."
+msgstr "সম্পূর্ন সাহায্যের জন্য '-H' ব্যবহার করুন।"
+
+#: src/libvlc.c:1619
+msgid " (default enabled)"
+msgstr " (ডিফল্ট সক্রিয় করা হয়েছে)"
+
+#: src/libvlc.c:1620
+msgid " (default disabled)"
+msgstr " (ডিফল্ট নিষ্ক্রিয় করা হয়েছে)"
+
+#: src/libvlc.c:1779 src/libvlc.c:1782
+msgid "Note:"
+msgstr "নোট:"
+
+#: src/libvlc.c:1780 src/libvlc.c:1783
+msgid "add --advanced to your command line to see advanced options."
+msgstr "উন্নত বৈশিষ্টসমূহ দেখার জন্য আপনার কমান্ড লাইনের সাথে --advanced যোগ করুন।"
+
+#: src/libvlc.c:1887
+#, c-format
+msgid "VLC version %s\n"
+msgstr "ভিএলসি সংস্করন %s\n"
+
+#: src/libvlc.c:1888
+#, c-format
+msgid "Compiled by %s@%s.%s\n"
+msgstr "কম্পাইল করেছেন %s@%s.%s\n"
+
+#: src/libvlc.c:1890
+#, c-format
+msgid "Compiler: %s\n"
+msgstr "কম্পাইলার: %s\n"
+
+#: src/libvlc.c:1892
+#, c-format
+msgid "Based upon Git commit [%s]\n"
+msgstr "Git commit [%s] এর উপর ভিত্তি করে\n"
+
+#: src/libvlc.c:1928
+msgid ""
+"\n"
+"Dumped content to vlc-help.txt file.\n"
+msgstr ""
+"\n"
+"vlc-help.txt ফাইলে বিষয়বস্তু ডাম্প করা হয়েছে।\n"
+
+#: src/libvlc.c:1948
+msgid ""
+"\n"
+"Press the RETURN key to continue...\n"
+msgstr ""
+"\n"
+"চালিয়ে যাওয়ার জন্য রিটার্ন কী চাপুন...\n"
 
 #: src/misc/update.c:1458
 #, c-format
@@ -5254,17 +5255,16 @@ msgid "Aspect-ratio"
 msgstr "অ্যাসপেক্ট-অনুপাত"
 
 #: modules/access/bda/bda.c:40 modules/access/cdda.c:66
-#: modules/access/dshow/dshow.cpp:98 modules/access/dvb/access.c:78
-#: modules/access/dv.c:71 modules/access/dvdnav.c:72
+#: modules/access/dshow/dshow.cpp:98 modules/access/dv.c:71
+#: modules/access/dvb/access.c:78 modules/access/dvdnav.c:72
 #: modules/access/dvdread.c:76 modules/access/eyetv.m:61
 #: modules/access/fake.c:43 modules/access/file.c:84 modules/access/ftp.c:57
 #: modules/access/gnomevfs.c:47 modules/access/http.c:75
 #: modules/access/jack.c:62 modules/access/mms/mms.c:49
 #: modules/access/pvr.c:60 modules/access/rtmp/access.c:43
 #: modules/access/screen/screen.c:39 modules/access/smb.c:64
-#: modules/access/tcp.c:41 modules/access/udp.c:49
-#: modules/access/v4l2/v4l2.c:225 modules/access/v4l.c:77
-#: modules/access/vcd/vcd.c:46
+#: modules/access/tcp.c:41 modules/access/udp.c:49 modules/access/v4l.c:77
+#: modules/access/v4l2/v4l2.c:225 modules/access/vcd/vcd.c:46
 msgid "Caching value in ms"
 msgstr "মিলিসেকেন্ডে ক্যাশিং মান"
 
@@ -5610,15 +5610,6 @@ msgstr "ডিভিবি"
 msgid "DirectShow DVB input"
 msgstr "DirectShow ডিভিবি ইনপুট"
 
-#: modules/access/cdda/access.c:285
-msgid "CD reading failed"
-msgstr "সিডি রেকর্ড করতে ব্যর্থ"
-
-#: modules/access/cdda/access.c:286
-#, c-format
-msgid "VLC could not get a new block of size: %i."
-msgstr "ভিএলসি এই আকারের নতুন ব্লক পায়নি: %i."
-
 #: modules/access/cdda.c:68
 msgid ""
 "Default caching value for Audio CDs. This value should be set in "
@@ -5659,6 +5650,15 @@ msgstr "ব্যবহারের জন্য CDDB সার্ভারে�
 #, fuzzy, c-format
 msgid "Audio CD - Track %02i"
 msgstr "অডিও সিডি - ট্র্যাক %i"
+
+#: modules/access/cdda/access.c:285
+msgid "CD reading failed"
+msgstr "সিডি রেকর্ড করতে ব্যর্থ"
+
+#: modules/access/cdda/access.c:286
+#, c-format
+msgid "VLC could not get a new block of size: %i."
+msgstr "ভিএলসি এই আকারের নতুন ব্লক পায়নি: %i."
 
 #: modules/access/cdda/cdda.c:43 modules/access/directory.c:86
 #: modules/codec/x264.c:397 modules/codec/x264.c:403 modules/codec/x264.c:408
@@ -6055,8 +6055,9 @@ msgstr ""
 "DirectShow প্লাগিন দ্বারা যে ভিডিও যন্ত্রটি ব্যবহার করা হবে তার নাম। আপনি যটি কিছু "
 "উল্লেখ না করেন, ডিফল্ট যন্ত্রটি ব্যবহার করা হবে।"
 
-#: modules/access/dshow/dshow.cpp:107 modules/access/v4l2/v4l2.c:179
-#: modules/access/v4l.c:85 modules/gui/qt4/components/open_panels.cpp:708
+#: modules/access/dshow/dshow.cpp:107 modules/access/v4l.c:85
+#: modules/access/v4l2/v4l2.c:179
+#: modules/gui/qt4/components/open_panels.cpp:708
 #: modules/gui/qt4/components/open_panels.cpp:743
 msgid "Audio device name"
 msgstr "অডিও যন্ত্রের নাম"
@@ -6084,8 +6085,8 @@ msgstr ""
 "উল্লেখ না করেন, আপনার যন্ত্রের জন্য ডিফল্ট আকার ব্যবহার করা হবে। আপনি একটি "
 "স্ট্যান্ডার্ড আকার (cif, d1, ...) বা <width>x<height> উল্লেখ করতে পারেন ।"
 
-#: modules/access/dshow/dshow.cpp:117 modules/access/v4l2/v4l2.c:90
-#: modules/access/v4l.c:89
+#: modules/access/dshow/dshow.cpp:117 modules/access/v4l.c:89
+#: modules/access/v4l2/v4l2.c:90
 msgid "Video input chroma format"
 msgstr "ভিডিও ইনপুট ক্রমা ফরম্যাট"
 
@@ -6265,6 +6266,18 @@ msgstr "ভিএলসি \"%s\" যন্ত্রটি শুরু কর�
 msgid "The capture device \"%s\" does not support the required parameters."
 msgstr "ক্যাপচার যন্ত্র \"%s\" প্রয়োজনীয় প্যারামিটার সমর্থন করে না।"
 
+#: modules/access/dv.c:73
+msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
+msgstr "DV স্ট্রিমের জন্য ক্যাশিং মান। এই মানটি মিলিসেকেন্ডে হতে হবে।"
+
+#: modules/access/dv.c:77
+msgid "Digital Video (Firewire/ieee1394)  input"
+msgstr "ডিজিটাল ভিডিও (ফায়ারওয়্যার/ieee1394) ইনপুট"
+
+#: modules/access/dv.c:78
+msgid "dv"
+msgstr "dv"
+
 #: modules/access/dvb/access.c:132
 msgid "Modulation type for front-end device."
 msgstr "ফ্রন্ট-এন্ড যন্ত্রের জন্য মডুলেশনের ধরন।"
@@ -6372,18 +6385,6 @@ msgstr "অবৈধ পোলারাইজেশন"
 #, c-format
 msgid "The provided polarization \"%c\" is not valid."
 msgstr "প্রদত্ত পোলারাইজেশন \"%c\" বৈধ নয়।"
-
-#: modules/access/dv.c:73
-msgid "Caching value for DV streams. Thisvalue should be set in milliseconds."
-msgstr "DV স্ট্রিমের জন্য ক্যাশিং মান। এই মানটি মিলিসেকেন্ডে হতে হবে।"
-
-#: modules/access/dv.c:77
-msgid "Digital Video (Firewire/ieee1394)  input"
-msgstr "ডিজিটাল ভিডিও (ফায়ারওয়্যার/ieee1394) ইনপুট"
-
-#: modules/access/dv.c:78
-msgid "dv"
-msgstr "dv"
 
 #: modules/access/dvdnav.c:68 modules/access/dvdread.c:72
 msgid "DVD angle"
@@ -6518,8 +6519,8 @@ msgid ""
 "Caching value for fake streams. This value should be set in milliseconds."
 msgstr "নকল স্ট্রিমের জন্য ক্যাশিং মান। এই মানটি মিলিসেকেন্ডে সেট করতে হবে।"
 
-#: modules/access/fake.c:47 modules/access/pvr.c:86
-#: modules/access/v4l2/v4l2.c:111 modules/access/v4l.c:140
+#: modules/access/fake.c:47 modules/access/pvr.c:86 modules/access/v4l.c:140
+#: modules/access/v4l2/v4l2.c:111
 msgid "Framerate"
 msgstr "ফ্রেমের হার"
 
@@ -6592,100 +6593,6 @@ msgstr "ভিএলসি ফাইল পড়তে ব্যর্থ।"
 #, c-format
 msgid "VLC could not open the file \"%s\"."
 msgstr "ভিএলসি ফাইল খুলতে ব্যর্থ \"%s\"।"
-
-#: modules/access_filter/bandwidth.c:34
-msgid "Bandwidth limit (bytes/s)"
-msgstr "ব্যন্ডউইডথ সীমা (বাইট/সেকেন্ড)"
-
-#: modules/access_filter/bandwidth.c:36
-msgid ""
-"The bandwidth module will drop any data in excess of that many bytes per "
-"seconds."
-msgstr ""
-"প্রতি সেকেন্ডে এ পরিমান বাইটের অধিক যেকোনো ডেটাকে ব্যান্ডউইড্থ মডিউল বাদ দিয়ে "
-"দেবে।"
-
-#: modules/access_filter/bandwidth.c:45
-#: modules/gui/qt4/components/open_panels.cpp:670
-msgid "Bandwidth"
-msgstr "ব্যান্ডউইড্থ"
-
-#: modules/access_filter/bandwidth.c:46 modules/gui/macosx/simple_prefs.m:247
-#: modules/gui/qt4/ui/sprefs_input.ui:208
-msgid "Bandwidth limiter"
-msgstr "ব্যন্ডউইডথ লিমিটার"
-
-#: modules/access_filter/dump.c:42
-msgid "Force use of dump module"
-msgstr "ডাম্প মডিউলের ব্যবহার কার্যকর করুন।"
-
-#: modules/access_filter/dump.c:43
-msgid "Activate the dump module even for media with fast seeking."
-msgstr "দ্রুত সিকিং এর জন্যও ডাম্প মডিউল সক্রিয় করুন।"
-
-#: modules/access_filter/dump.c:46
-msgid "Maximum size of temporary file (Mb)"
-msgstr "অস্থায়ী ফাইলের সর্বোচ্চ আকার (মেগাবাইট)"
-
-#: modules/access_filter/dump.c:47
-msgid ""
-"The dump module will abort dumping of the media if more than this much "
-"megabyte were performed."
-msgstr ""
-"এই পরিমান মেগাবাইটের বেশি সম্পন্ন হলে ডাম্প মডিউল মিডিয়া ডাম্প করা বন্ধ করবে।"
-
-#: modules/access_filter/record.c:48
-msgid "Record directory"
-msgstr "রেকর্ড ডিরেক্টরি"
-
-#: modules/access_filter/record.c:50
-msgid "Directory where the record will be stored."
-msgstr "ডিরেক্টরির নাম যেখানে রেকর্ডগুলো সংরক্ষিত হবে।"
-
-#: modules/access_filter/record.c:339
-msgid "Recording"
-msgstr "রেকর্ড করা হচ্ছে"
-
-#: modules/access_filter/record.c:341
-msgid "Recording done"
-msgstr "রেকর্ড করা সম্পন্ন"
-
-#: modules/access_filter/timeshift.c:53
-msgid "Timeshift granularity"
-msgstr "টাইমশিফ্ট গ্র্যনুলারিটি"
-
-#: modules/access_filter/timeshift.c:55
-msgid ""
-"This is the size of the temporary files that will be used to store the "
-"timeshifted streams."
-msgstr ""
-"এটি টাইমশিফ্ট স্ট্রিম সংরক্ষন করার জন্য ব্যবহৃত অস্থায়ী ফাইলের সর্বোচ্চ আকার (বাইটে)।"
-
-#: modules/access_filter/timeshift.c:57
-msgid "Timeshift directory"
-msgstr "টাইমশিফ্ট ডিরেক্টরি"
-
-#: modules/access_filter/timeshift.c:58
-msgid "Directory used to store the timeshift temporary files."
-msgstr "টাইমশিফ্টের অস্থায়ী ফাইল সংরক্ষন করার ডিরেক্টরি"
-
-#: modules/access_filter/timeshift.c:60
-msgid "Force use of the timeshift module"
-msgstr "টাইমশিফ্ট মডিউলের ব্যবহার কার্যকর করুন।"
-
-#: modules/access_filter/timeshift.c:61
-msgid ""
-"Force use of the timeshift module even if the access declares that it can "
-"control pace or pause."
-msgstr ""
-"টাইমশিফ্ট মডিউলের ব্যবহার কার্যকর করুন, এমনকি যদি এক্সেস ঘোষনা করে যে সে গতি বা "
-"বিরতি নিয়ন্ত্রন করতে পারবে তবুও।"
-
-#: modules/access_filter/timeshift.c:65 modules/access_filter/timeshift.c:66
-#: modules/gui/macosx/simple_prefs.m:260
-#: modules/gui/qt4/ui/sprefs_input.ui:187
-msgid "Timeshift"
-msgstr "সময়শিফ্ট"
 
 #: modules/access/ftp.c:59
 msgid ""
@@ -6943,238 +6850,6 @@ msgstr ""
 msgid "Microsoft Media Server (MMS) input"
 msgstr "মাইক্রোসফট মিডিয়া সার্ভার (MMS) ইনপুট"
 
-#: modules/access_output/dummy.c:45 modules/stream_out/dummy.c:51
-msgid "Dummy stream output"
-msgstr "ডামি স্ট্রিম আউটপুট"
-
-#: modules/access_output/dummy.c:46 modules/misc/dummy/dummy.c:61
-msgid "Dummy"
-msgstr "ডামি"
-
-#: modules/access_output/file.c:64
-msgid "Append to file"
-msgstr "ফাইলে যোগ করা হবে"
-
-#: modules/access_output/file.c:65
-msgid "Append to file if it exists instead of replacing it."
-msgstr "ফাইল উপস্থিত থাকলে প্রতিস্থাপনের পরিবর্তে যোগ করা হবে।"
-
-#: modules/access_output/file.c:69
-msgid "File stream output"
-msgstr "ফাইল স্ট্রিম আউটপুট"
-
-#: modules/access_output/http.c:65 modules/gui/qt4/ui/sprefs_audio.ui:309
-#: modules/misc/audioscrobbler.c:132
-msgid "Username"
-msgstr "ব্যবহারকারীর নাম"
-
-#: modules/access_output/http.c:66
-msgid "User name that will be requested to access the stream."
-msgstr "স্ট্রিম এক্সেস করার জন্য যে ব্যবহারকারী নাম চাওয়া হবে।"
-
-#: modules/access_output/http.c:68 modules/control/telnet.c:91
-#: modules/gui/macosx/simple_prefs.m:227
-#: modules/gui/qt4/dialogs/interaction.cpp:99
-#: modules/gui/qt4/ui/sprefs_audio.ui:319 modules/misc/audioscrobbler.c:134
-#: modules/misc/notify/growl_udp.c:64
-msgid "Password"
-msgstr "পাসওয়ার্ড"
-
-#: modules/access_output/http.c:69
-msgid "Password that will be requested to access the stream."
-msgstr "স্ট্রিম এক্সেস করার জন্য যে পাসওয়ার্ড চাওয়া হবে।"
-
-#: modules/access_output/http.c:71
-msgid "Mime"
-msgstr "Mime"
-
-#: modules/access_output/http.c:72
-msgid "MIME returned by the server (autodetected if not specified)."
-msgstr ""
-"সার্ভার দ্বারা ফেরত পাঠানো MIME (উল্লেখ করা না থাকলে স্বয়ংক্রিয়সনাক্ত করা হবে)।"
-
-#: modules/access_output/http.c:75
-msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
-msgstr "HTTPS এর জন্য ব্যবহৃতব্য x509 PEM সার্টিফিকেট ফাইলের পাথ।"
-
-#: modules/access_output/http.c:78
-msgid ""
-"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
-"empty if you don't have one."
-msgstr ""
-"HTTPS এর জন্য ব্যবহৃতব্য x509 PEM ব্যক্তিগত কী ফাইলের পাথ। কিছু না থাকলে খালি রাখুন।"
-
-#: modules/access_output/http.c:82
-msgid ""
-"Path to the x509 PEM trusted root CA certificates (certificate authority) "
-"file that will be used for HTTPS. Leave empty if you don't have one."
-msgstr ""
-"HTTPS এর জন্য ব্যবহৃতব্য x509 PEM বিশ্বস্ত রুট CA সার্টিফিকেট (সার্টিফিকেট অথরিটি) "
-"ফাইলের পাথ। কিছু না থাকলে খালি রাখুন।"
-
-#: modules/access_output/http.c:87
-msgid ""
-"Path to the x509 PEM Certificates Revocation List file that will be used for "
-"SSL. Leave empty if you don't have one."
-msgstr ""
-"SSL এর জন্য ব্যবহৃতব্য x509 PEM সার্টিফিকেট রিভোকেশন তালিকার ফাইলের পাথ। কিছু না "
-"থাকলে খালি রাখুন।"
-
-#: modules/access_output/http.c:90
-msgid "Advertise with Bonjour"
-msgstr "Bonjour এর সাথে বিজ্ঞাপন"
-
-#: modules/access_output/http.c:91
-msgid "Advertise the stream with the Bonjour protocol."
-msgstr "Bonjour প্রোটোকলের সাথে স্ট্রিমের বিজ্ঞাপন করুন।"
-
-#: modules/access_output/http.c:95
-msgid "HTTP stream output"
-msgstr "HTTP স্ট্রিম আউটপুট"
-
-#: modules/access_output/rtmp.c:44
-msgid "Active TCP connection"
-msgstr "সক্রিয় TCP সংযোগ"
-
-#: modules/access_output/rtmp.c:46
-msgid ""
-"If enabled, VLC will connect to a remote destination instead of waiting for "
-"an incoming connection."
-msgstr ""
-"যদি সক্রিয় থাকে, ভিএলসি একটি ইনকামিং সংযোগের জন্য অপেক্ষা করার পরিবর্তে একটি "
-"রিমোট গন্তব্যের সাথে সংযোগ করবে।"
-
-#: modules/access_output/rtmp.c:55
-msgid "RTMP stream output"
-msgstr "RTMP স্ট্রিম আউটপুট"
-
-#: modules/access_output/rtmp.c:56 modules/access/rtmp/access.c:53
-msgid "RTMP"
-msgstr "RTMP"
-
-#: modules/access_output/shout.c:63
-msgid "Stream name"
-msgstr "স্ট্রিমের নাম"
-
-#: modules/access_output/shout.c:64
-msgid "Name to give to this stream/channel on the shoutcast/icecast server."
-msgstr "শাউটকাস্ট/আইসকাস্ট সার্ভারে এই স্ট্রিম/চ্যানেল দেয়ার জন্য নাম।"
-
-#: modules/access_output/shout.c:67
-msgid "Stream description"
-msgstr "স্ট্রিমের বিবরন"
-
-#: modules/access_output/shout.c:68
-msgid "Description of the stream content or information about your channel."
-msgstr "আপনার চ্যানেল সম্পর্কে স্ট্রিম বিষয়বস্তু বা তথ্যের বিবরন।"
-
-#: modules/access_output/shout.c:71
-msgid "Stream MP3"
-msgstr "MP3 স্ট্রিম করা হবে"
-
-#: modules/access_output/shout.c:72
-msgid ""
-"You normally have to feed the shoutcast module with Ogg streams. It is also "
-"possible to stream MP3 instead, so you can forward MP3 streams to the "
-"shoutcast/icecast server."
-msgstr ""
-"আপনাকে সাধারনত শাউটকাস্ট মডিউলকে Ogg স্ট্রিমের সাথে ফিড করাতে হবে। MP3 স্ট্রিম "
-"করা সম্ভব, যেন আপনি MP3 স্ট্রিমসমূহকে শাউটকাস্ট/আইসকাস্ট সার্ভারে ফরওয়ার্ড করতে "
-"পারেন।"
-
-#: modules/access_output/shout.c:81
-msgid "Genre description"
-msgstr "ধরনের বিবরন"
-
-#: modules/access_output/shout.c:82
-msgid "Genre of the content. "
-msgstr "বিষয়বস্তুর ধরন"
-
-#: modules/access_output/shout.c:84
-msgid "URL description"
-msgstr "URL বিবরন"
-
-#: modules/access_output/shout.c:85
-msgid "URL with information about the stream or your channel. "
-msgstr "স্ট্রিম বা আপনার চ্যানেল সম্পর্কিত তথ্যসহ URL।"
-
-#: modules/access_output/shout.c:92
-msgid "Bitrate information of the transcoded stream. "
-msgstr "ট্রান্সকোড করা স্ট্রিমের বিটের হারের তথ্য।"
-
-#: modules/access_output/shout.c:94 modules/access/v4l2/v4l2.c:221
-#: modules/access/v4l.c:126
-msgid "Samplerate"
-msgstr "স্যাম্পলের হার"
-
-#: modules/access_output/shout.c:95
-msgid "Samplerate information of the transcoded stream. "
-msgstr "ট্রান্সকোড করা স্ট্রিমের স্যাম্পলহারের তথ্য।"
-
-#: modules/access_output/shout.c:97
-msgid "Number of channels"
-msgstr "চ্যানেলের সংখ্যা"
-
-#: modules/access_output/shout.c:98
-msgid "Number of channels information of the transcoded stream. "
-msgstr "ট্রান্সকোড করা স্ট্রিমের চ্যানেলের সংখ্যার তথ্য।"
-
-#: modules/access_output/shout.c:100
-msgid "Ogg Vorbis Quality"
-msgstr "অগ ভরবিস কোয়ালিটি"
-
-#: modules/access_output/shout.c:101
-msgid "Ogg Vorbis Quality information of the transcoded stream. "
-msgstr "ট্রান্সকোড করা স্ট্রিমের Ogg Vorbis গুনমানের তথ্য।"
-
-#: modules/access_output/shout.c:103
-msgid "Stream public"
-msgstr "স্ট্রিম পাবলিক"
-
-#: modules/access_output/shout.c:104
-msgid ""
-"Make the server publicly available on the 'Yellow Pages' (directory listing "
-"of streams) on the icecast/shoutcast website. Requires the bitrate "
-"information specified for shoutcast. Requires Ogg streaming for icecast."
-msgstr ""
-"আইসকাস্ট/শাউটকাস্ট ওয়েবসাইটের 'ইয়েলো পেজ' এ (স্ট্রিমের ডিরেক্টরি তালিকা) সার্ভারের "
-"প্রচার  অন্তর্ভূক্ত করুন। শাউটকাস্টের জন্য উল্লিখিত বিটের হারের তথ্য প্রয়োজন হবে। "
-"আইসকাস্টের জন্য Ogg স্ট্রিমিং প্রয়োজন হবে।"
-
-#: modules/access_output/shout.c:110
-msgid "IceCAST output"
-msgstr "IceCAST আউটপুট"
-
-#: modules/access_output/udp.c:67 modules/access/rtsp/access.c:46
-#: modules/demux/live555.cpp:74
-msgid "Caching value (ms)"
-msgstr "ক্যাশিং মান (মিলিসেকেন্ড)"
-
-#: modules/access_output/udp.c:69
-msgid ""
-"Default caching value for outbound UDP streams. This value should be set in "
-"milliseconds."
-msgstr ""
-"আউটবাউন্ড UDP স্ট্রিমের জন্য ডিফল্ট ক্যাশিং মান। এই মানটি মিলিসেকেন্ডে সেট করতে হবে।"
-
-#: modules/access_output/udp.c:72
-msgid "Group packets"
-msgstr "গ্রুপ প্যাকেট"
-
-#: modules/access_output/udp.c:73
-msgid ""
-"Packets can be sent one by one at the right time or by groups. You can "
-"choose the number of packets that will be sent at a time. It helps reducing "
-"the scheduling load on heavily-loaded systems."
-msgstr ""
-"প্যাকেটসমূহ সঠিক সময়ে এক এক করে বা গ্রুপ করে পাঠানো যাবে। একক সময়ে কয়টি প্যাকেট "
-"পাঠানো হবে তা আপনি নির্ধারন করতে পারেন। এটি অত্যন্ত-লোডেড সিস্টেমে সিডিউলিং লোড "
-"কমাতে সাহায্য করবে।"
-
-#: modules/access_output/udp.c:80
-msgid "UDP stream output"
-msgstr "UDP স্ট্রিম আউটপুট"
-
 #: modules/access/pvr.c:62
 msgid ""
 "Default caching value for PVR streams. This value should be set in "
@@ -7207,8 +6882,8 @@ msgstr "নর্ম"
 msgid "Norm of the stream (Automatic, SECAM, PAL, or NTSC)."
 msgstr "স্ট্রিমের নর্ম (স্বয়ংক্রিয়, সিকাম, পাল, বা এনটিএসসি)।"
 
-#: modules/access/pvr.c:75 modules/access/v4l2/v4l2.c:105
-#: modules/access/v4l.c:106 modules/demux/rawvid.c:48
+#: modules/access/pvr.c:75 modules/access/v4l.c:106
+#: modules/access/v4l2/v4l2.c:105 modules/demux/rawvid.c:48
 #: modules/video_filter/mosaic.c:96 modules/video_output/vmem.c:50
 msgid "Width"
 msgstr "প্রস্থ"
@@ -7218,8 +6893,8 @@ msgid "Width of the stream to capture (-1 for autodetection)."
 msgstr ""
 "যেই স্ট্রিমটি ক্যাপচার করতে হবে তার প্রস্থ (স্বয়ংক্রিয়ভাবে সনাক্ত করার জন্য -১)।"
 
-#: modules/access/pvr.c:79 modules/access/v4l2/v4l2.c:108
-#: modules/access/v4l.c:109 modules/demux/rawvid.c:52
+#: modules/access/pvr.c:79 modules/access/v4l.c:109
+#: modules/access/v4l2/v4l2.c:108 modules/demux/rawvid.c:52
 #: modules/video_filter/mosaic.c:94 modules/video_output/vmem.c:53
 msgid "Height"
 msgstr "উচ্চতা"
@@ -7229,8 +6904,9 @@ msgid "Height of the stream to capture (-1 for autodetection)."
 msgstr ""
 "যেই স্ট্রিমটি ক্যাপচার করতে হবে তার উচ্চতা (স্বয়ংক্রিয়ভাবে সনাক্ত করার জন্য -১)।"
 
-#: modules/access/pvr.c:83 modules/access/v4l2/v4l2.c:240
-#: modules/access/v4l.c:93 modules/gui/qt4/components/open_panels.cpp:757
+#: modules/access/pvr.c:83 modules/access/v4l.c:93
+#: modules/access/v4l2/v4l2.c:240
+#: modules/gui/qt4/components/open_panels.cpp:757
 #: modules/gui/qt4/components/open_panels.cpp:856
 msgid "Frequency"
 msgstr "কম্পাঙ্ক"
@@ -7239,8 +6915,8 @@ msgstr "কম্পাঙ্ক"
 msgid "Frequency to capture (in kHz), if applicable."
 msgstr "যেই কম্পাঙ্ক ক্যাপচার করতে হবে (কিলোহার্জে), যদি প্রযোজ্য হয়।"
 
-#: modules/access/pvr.c:87 modules/access/v4l2/v4l2.c:112
-#: modules/access/v4l.c:141
+#: modules/access/pvr.c:87 modules/access/v4l.c:141
+#: modules/access/v4l2/v4l2.c:112
 msgid "Framerate to capture, if applicable (-1 for autodetect)."
 msgstr ""
 "যেই ফ্রেমহারে ক্যাপচার করতে হবে, যদি প্রযোজ্য হয় (স্বয়ংক্রিয়ভাবে সনাক্ত করার জন্য -১)"
@@ -7316,18 +6992,18 @@ msgstr "ব্যবহারের জন্য কার্ডের চ্য
 msgid "Automatic"
 msgstr "স্বয়ংক্রিয়"
 
-#: modules/access/pvr.c:120 modules/access/v4l2/v4l2.c:256
-#: modules/access/v4l.c:147
+#: modules/access/pvr.c:120 modules/access/v4l.c:147
+#: modules/access/v4l2/v4l2.c:256
 msgid "SECAM"
 msgstr "সিকাম"
 
-#: modules/access/pvr.c:120 modules/access/v4l2/v4l2.c:256
-#: modules/access/v4l.c:147
+#: modules/access/pvr.c:120 modules/access/v4l.c:147
+#: modules/access/v4l2/v4l2.c:256
 msgid "PAL"
 msgstr "পাল"
 
-#: modules/access/pvr.c:120 modules/access/v4l2/v4l2.c:256
-#: modules/access/v4l.c:147
+#: modules/access/pvr.c:120 modules/access/v4l.c:147
+#: modules/access/v4l2/v4l2.c:256
 msgid "NTSC"
 msgstr "এনটিএসসি"
 
@@ -7371,6 +7047,15 @@ msgstr "RTMP স্ট্রিমের জন্য ডিফল্ট ক্�
 #: modules/access/rtmp/access.c:52
 msgid "RTMP input"
 msgstr "RTMP ইনপুট"
+
+#: modules/access/rtmp/access.c:53 modules/access_output/rtmp.c:56
+msgid "RTMP"
+msgstr "RTMP"
+
+#: modules/access/rtsp/access.c:46 modules/access_output/udp.c:67
+#: modules/demux/live555.cpp:74
+msgid "Caching value (ms)"
+msgstr "ক্যাশিং মান (মিলিসেকেন্ড)"
 
 #: modules/access/rtsp/access.c:48
 msgid ""
@@ -7509,6 +7194,152 @@ msgstr "UDP"
 msgid "UDP input"
 msgstr "UDP ইনপুট"
 
+#: modules/access/v4l.c:79
+msgid ""
+"Caching value for V4L captures. This value should be set in milliseconds."
+msgstr "V4L ক্যাপচারের জন্য ক্যাশিং মান। এই মানটি মিলিসেকেন্ডে সেট করতে হবে।"
+
+#: modules/access/v4l.c:83
+msgid ""
+"Name of the video device to use. If you don't specify anything, no video "
+"device will be used."
+msgstr ""
+"যে ভিডিও যন্ত্রটি ব্যবহার করা হবে তার নাম। আপনি যদি কিছু উল্লেখ না করেন, কোনো "
+"ভিডিও যন্ত্র ব্যবহার করা হবে না।"
+
+#: modules/access/v4l.c:87
+msgid ""
+"Name of the audio device to use. If you don't specify anything, no audio "
+"device will be used."
+msgstr ""
+"যে অডিও যন্ত্রটি ব্যবহার করা হবে তার নাম। আপনি যদি কিছু উল্লেখ না করেন, কোনো অডিও "
+"যন্ত্র ব্যবহার করা হবে না।"
+
+#: modules/access/v4l.c:91
+msgid ""
+"Force the Video4Linux video device to use a specific chroma format (eg. I420 "
+"(default), RV24, etc.)"
+msgstr ""
+"Video4Linux2 ভিডিও যন্ত্রকে একটি উল্লিখিত ক্রোমা ফরম্যাট ব্যবহার করতে বাধ্য করুন "
+"(যেমন I420 (ডিফল্ট), RV24 ইত্যাদি)"
+
+#: modules/access/v4l.c:98
+msgid ""
+"Channel of the card to use (Usually, 0 = tuner, 1 = composite, 2 = svideo)."
+msgstr ""
+"কার্ডের যে চ্যানেল ব্যবহার করা হবে (সাধারনত, ০=টিউনার, ১=কম্পোজিট, ২=svideo)।"
+
+#: modules/access/v4l.c:103
+msgid "Audio Channel"
+msgstr "অডিও চ্যানেল"
+
+#: modules/access/v4l.c:105
+msgid "Audio Channel to use, if there are several audio inputs."
+msgstr "যে অডিও চ্যানেল ব্যবহার করতে হবে, যদি একাধিক অডিও ইনপুট উপস্থিত থাকে।"
+
+#: modules/access/v4l.c:107
+msgid "Width of the stream to capture (-1 for autodetect)."
+msgstr "যে স্ট্রিমটি ক্যাপচার করতে হবে তার প্রস্থ (স্বয়ংক্রিয়ভাবে -১)।"
+
+#: modules/access/v4l.c:110
+msgid "Height of the stream to capture (-1 for autodetect)."
+msgstr "যে স্ট্রিমটি ক্যাপচার করতে হবে তার উচ্চতা (স্বয়ংক্রিয়ভাবে -১)।"
+
+#: modules/access/v4l.c:112 modules/access/v4l2/v4l2.c:124
+#: modules/gui/macosx/extended.m:97 modules/gui/qt4/ui/video_effects.ui:205
+#: modules/video_filter/atmo/atmo.cpp:196
+msgid "Brightness"
+msgstr "উজ্জ্বলতা"
+
+#: modules/access/v4l.c:114
+msgid "Brightness of the video input."
+msgstr "ভিডিও ইনপুটের উজ্জ্বলতা।"
+
+#: modules/access/v4l.c:115 modules/access/v4l2/v4l2.c:133
+#: modules/gui/macosx/extended.m:100 modules/gui/qt4/ui/video_effects.ui:219
+msgid "Hue"
+msgstr "বর্ন"
+
+#: modules/access/v4l.c:117
+msgid "Hue of the video input."
+msgstr "ভিডিও ইনপুটের বর্ন।"
+
+#: modules/access/v4l.c:118 modules/gui/fbosd.c:143
+#: modules/gui/qt4/ui/video_effects.ui:263
+#: modules/gui/qt4/ui/video_effects.ui:327
+#: modules/gui/qt4/ui/video_effects.ui:689 modules/misc/notify/xosd.c:83
+#: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:122
+#: modules/video_filter/rss.c:154
+msgid "Color"
+msgstr "রং"
+
+#: modules/access/v4l.c:120
+msgid "Color of the video input."
+msgstr "ভিডিও ইনপুটের রং।"
+
+#: modules/access/v4l.c:121 modules/access/v4l2/v4l2.c:127
+#: modules/gui/macosx/extended.m:98 modules/gui/qt4/ui/video_effects.ui:198
+msgid "Contrast"
+msgstr "কন্ট্রাস্ট"
+
+#: modules/access/v4l.c:123
+msgid "Contrast of the video input."
+msgstr "ভিডিও ইনপুটের কন্ট্রাস্ট।"
+
+#: modules/access/v4l.c:124 modules/access/v4l2/v4l2.c:326
+msgid "Tuner"
+msgstr "টিউনার"
+
+#: modules/access/v4l.c:125
+msgid "Tuner to use, if there are several ones."
+msgstr "যে টিউনারটি ব্যবহার করা হবে, যদি একাধিক উপস্থিত থাকে।"
+
+#: modules/access/v4l.c:126 modules/access/v4l2/v4l2.c:221
+#: modules/access_output/shout.c:94
+msgid "Samplerate"
+msgstr "স্যাম্পলের হার"
+
+#: modules/access/v4l.c:128
+msgid ""
+"Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100)"
+msgstr "ক্যাপচারকৃত অডিও স্ট্রিমের স্যাম্পলহার, হার্জে (যেমন, ১১০২৫, ২২০৫০, ৪৪১০০)"
+
+#: modules/access/v4l.c:131 modules/access/v4l2/v4l2.c:220
+msgid "Capture the audio stream in stereo."
+msgstr "স্টেরিওতে অডিও স্ট্রিম ক্যাপচার করুন।"
+
+#: modules/access/v4l.c:132
+msgid "MJPEG"
+msgstr "MJPEG"
+
+#: modules/access/v4l.c:134
+msgid "Set this option if the capture device outputs MJPEG"
+msgstr "এই বিকল্পটি সেট করুন যদি ক্যাপচার ডিভাইস MJPEG আউটপুট করে"
+
+#: modules/access/v4l.c:135
+msgid "Decimation"
+msgstr "ডেসিমেশন"
+
+#: modules/access/v4l.c:137
+msgid "Decimation level for MJPEG streams"
+msgstr "MJPEG স্ট্রিমের জন্য ডেসিমেশন লেভেল"
+
+#: modules/access/v4l.c:138
+msgid "Quality"
+msgstr "গুনমান"
+
+#: modules/access/v4l.c:139
+msgid "Quality of the stream."
+msgstr "স্ট্রিমের গুনমান।"
+
+#: modules/access/v4l.c:150
+msgid "Video4Linux"
+msgstr "Video4Linux"
+
+#: modules/access/v4l.c:151
+msgid "Video4Linux input"
+msgstr "Video4Linux ইনপুট"
+
 #: modules/access/v4l2/v4l2.c:83 modules/gui/macosx/open.m:178
 #: modules/gui/qt4/components/open_panels.cpp:836
 msgid "Device name"
@@ -7588,20 +7419,9 @@ msgstr "v4l2 কন্ট্রোল রিসেট করুন"
 msgid "Reset controls to defaults provided by the v4l2 driver."
 msgstr "v4l2 ড্রাইভার দ্বারা প্রদত্ত ডিফল্ট কন্ট্রোল রিসেট করুন।"
 
-#: modules/access/v4l2/v4l2.c:124 modules/access/v4l.c:112
-#: modules/gui/macosx/extended.m:97 modules/gui/qt4/ui/video_effects.ui:205
-#: modules/video_filter/atmo/atmo.cpp:196
-msgid "Brightness"
-msgstr "উজ্জ্বলতা"
-
 #: modules/access/v4l2/v4l2.c:126
 msgid "Brightness of the video input (if supported by the v4l2 driver)."
 msgstr "ভিডিও ইনপুটের উজ্জ্বলতা (v4l2 ড্রাইভার দ্বারা সমর্থিত হলে)।"
-
-#: modules/access/v4l2/v4l2.c:127 modules/access/v4l.c:121
-#: modules/gui/macosx/extended.m:98 modules/gui/qt4/ui/video_effects.ui:198
-msgid "Contrast"
-msgstr "কন্ট্রাস্ট"
 
 #: modules/access/v4l2/v4l2.c:129
 msgid "Contrast of the video input (if supported by the v4l2 driver)."
@@ -7616,11 +7436,6 @@ msgstr "স্যাচুরেশন"
 #: modules/access/v4l2/v4l2.c:132
 msgid "Saturation of the video input (if supported by the v4l2 driver)."
 msgstr "ভিডিও ইনপুটের স্যাচুরেশন (v4l2 ড্রাইভার দ্বারা সমর্থিত হলে)।"
-
-#: modules/access/v4l2/v4l2.c:133 modules/access/v4l.c:115
-#: modules/gui/macosx/extended.m:100 modules/gui/qt4/ui/video_effects.ui:219
-msgid "Hue"
-msgstr "বর্ন"
 
 #: modules/access/v4l2/v4l2.c:135
 msgid "Hue of the video input (if supported by the v4l2 driver)."
@@ -7814,10 +7629,6 @@ msgstr "লাউডনেস"
 msgid "Loudness of the audio input (if supported by the v4l2 driver)."
 msgstr "অডিও ইনপুটের লাউডনেস (v4l2 ড্রাইভার দ্বারা সমর্থিত হলে)।"
 
-#: modules/access/v4l2/v4l2.c:220 modules/access/v4l.c:131
-msgid "Capture the audio stream in stereo."
-msgstr "স্টেরিওতে অডিও স্ট্রিম ক্যাপচার করুন।"
-
 #: modules/access/v4l2/v4l2.c:223
 msgid ""
 "Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100, "
@@ -7913,10 +7724,6 @@ msgstr "Video4Linux2 ইনপুট"
 msgid "Video input"
 msgstr "ভিডিও ইনপুট"
 
-#: modules/access/v4l2/v4l2.c:326 modules/access/v4l.c:124
-msgid "Tuner"
-msgstr "টিউনার"
-
 #: modules/access/v4l2/v4l2.c:336
 msgid "Controls"
 msgstr "নিয়ন্ত্রনসমূহ"
@@ -7932,123 +7739,6 @@ msgstr "Video4Linux2 A/V কে কম্প্রেস করেছে"
 #: modules/access/v4l2/v4l2.c:3268
 msgid "Reset controls to default"
 msgstr "নিয়ন্ত্রন ডিফল্টে রিসেট করুন"
-
-#: modules/access/v4l.c:79
-msgid ""
-"Caching value for V4L captures. This value should be set in milliseconds."
-msgstr "V4L ক্যাপচারের জন্য ক্যাশিং মান। এই মানটি মিলিসেকেন্ডে সেট করতে হবে।"
-
-#: modules/access/v4l.c:83
-msgid ""
-"Name of the video device to use. If you don't specify anything, no video "
-"device will be used."
-msgstr ""
-"যে ভিডিও যন্ত্রটি ব্যবহার করা হবে তার নাম। আপনি যদি কিছু উল্লেখ না করেন, কোনো "
-"ভিডিও যন্ত্র ব্যবহার করা হবে না।"
-
-#: modules/access/v4l.c:87
-msgid ""
-"Name of the audio device to use. If you don't specify anything, no audio "
-"device will be used."
-msgstr ""
-"যে অডিও যন্ত্রটি ব্যবহার করা হবে তার নাম। আপনি যদি কিছু উল্লেখ না করেন, কোনো অডিও "
-"যন্ত্র ব্যবহার করা হবে না।"
-
-#: modules/access/v4l.c:91
-msgid ""
-"Force the Video4Linux video device to use a specific chroma format (eg. I420 "
-"(default), RV24, etc.)"
-msgstr ""
-"Video4Linux2 ভিডিও যন্ত্রকে একটি উল্লিখিত ক্রোমা ফরম্যাট ব্যবহার করতে বাধ্য করুন "
-"(যেমন I420 (ডিফল্ট), RV24 ইত্যাদি)"
-
-#: modules/access/v4l.c:98
-msgid ""
-"Channel of the card to use (Usually, 0 = tuner, 1 = composite, 2 = svideo)."
-msgstr ""
-"কার্ডের যে চ্যানেল ব্যবহার করা হবে (সাধারনত, ০=টিউনার, ১=কম্পোজিট, ২=svideo)।"
-
-#: modules/access/v4l.c:103
-msgid "Audio Channel"
-msgstr "অডিও চ্যানেল"
-
-#: modules/access/v4l.c:105
-msgid "Audio Channel to use, if there are several audio inputs."
-msgstr "যে অডিও চ্যানেল ব্যবহার করতে হবে, যদি একাধিক অডিও ইনপুট উপস্থিত থাকে।"
-
-#: modules/access/v4l.c:107
-msgid "Width of the stream to capture (-1 for autodetect)."
-msgstr "যে স্ট্রিমটি ক্যাপচার করতে হবে তার প্রস্থ (স্বয়ংক্রিয়ভাবে -১)।"
-
-#: modules/access/v4l.c:110
-msgid "Height of the stream to capture (-1 for autodetect)."
-msgstr "যে স্ট্রিমটি ক্যাপচার করতে হবে তার উচ্চতা (স্বয়ংক্রিয়ভাবে -১)।"
-
-#: modules/access/v4l.c:114
-msgid "Brightness of the video input."
-msgstr "ভিডিও ইনপুটের উজ্জ্বলতা।"
-
-#: modules/access/v4l.c:117
-msgid "Hue of the video input."
-msgstr "ভিডিও ইনপুটের বর্ন।"
-
-#: modules/access/v4l.c:118 modules/gui/fbosd.c:143
-#: modules/gui/qt4/ui/video_effects.ui:263
-#: modules/gui/qt4/ui/video_effects.ui:327
-#: modules/gui/qt4/ui/video_effects.ui:689 modules/misc/notify/xosd.c:83
-#: modules/video_filter/colorthres.c:54 modules/video_filter/marq.c:122
-#: modules/video_filter/rss.c:154
-msgid "Color"
-msgstr "রং"
-
-#: modules/access/v4l.c:120
-msgid "Color of the video input."
-msgstr "ভিডিও ইনপুটের রং।"
-
-#: modules/access/v4l.c:123
-msgid "Contrast of the video input."
-msgstr "ভিডিও ইনপুটের কন্ট্রাস্ট।"
-
-#: modules/access/v4l.c:125
-msgid "Tuner to use, if there are several ones."
-msgstr "যে টিউনারটি ব্যবহার করা হবে, যদি একাধিক উপস্থিত থাকে।"
-
-#: modules/access/v4l.c:128
-msgid ""
-"Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100)"
-msgstr "ক্যাপচারকৃত অডিও স্ট্রিমের স্যাম্পলহার, হার্জে (যেমন, ১১০২৫, ২২০৫০, ৪৪১০০)"
-
-#: modules/access/v4l.c:132
-msgid "MJPEG"
-msgstr "MJPEG"
-
-#: modules/access/v4l.c:134
-msgid "Set this option if the capture device outputs MJPEG"
-msgstr "এই বিকল্পটি সেট করুন যদি ক্যাপচার ডিভাইস MJPEG আউটপুট করে"
-
-#: modules/access/v4l.c:135
-msgid "Decimation"
-msgstr "ডেসিমেশন"
-
-#: modules/access/v4l.c:137
-msgid "Decimation level for MJPEG streams"
-msgstr "MJPEG স্ট্রিমের জন্য ডেসিমেশন লেভেল"
-
-#: modules/access/v4l.c:138
-msgid "Quality"
-msgstr "গুনমান"
-
-#: modules/access/v4l.c:139
-msgid "Quality of the stream."
-msgstr "স্ট্রিমের গুনমান।"
-
-#: modules/access/v4l.c:150
-msgid "Video4Linux"
-msgstr "Video4Linux"
-
-#: modules/access/v4l.c:151
-msgid "Video4Linux input"
-msgstr "Video4Linux ইনপুট"
 
 #: modules/access/vcd/vcd.c:48
 msgid "Caching value for VCDs. This value should be set in milliseconds."
@@ -8233,6 +7923,318 @@ msgstr "চালানোর তালিকার \"লেখক\" ফিল�
 #: modules/access/vcdx/vcd.c:149
 msgid "Format to use in the playlist's \"title\" field."
 msgstr "চালানোর তালিকার \"শিরোনাম\" ফিল্ডে ব্যবহার করার ফরম্যাট।"
+
+#: modules/access_filter/bandwidth.c:34
+msgid "Bandwidth limit (bytes/s)"
+msgstr "ব্যন্ডউইডথ সীমা (বাইট/সেকেন্ড)"
+
+#: modules/access_filter/bandwidth.c:36
+msgid ""
+"The bandwidth module will drop any data in excess of that many bytes per "
+"seconds."
+msgstr ""
+"প্রতি সেকেন্ডে এ পরিমান বাইটের অধিক যেকোনো ডেটাকে ব্যান্ডউইড্থ মডিউল বাদ দিয়ে "
+"দেবে।"
+
+#: modules/access_filter/bandwidth.c:45
+#: modules/gui/qt4/components/open_panels.cpp:670
+msgid "Bandwidth"
+msgstr "ব্যান্ডউইড্থ"
+
+#: modules/access_filter/bandwidth.c:46 modules/gui/macosx/simple_prefs.m:247
+#: modules/gui/qt4/ui/sprefs_input.ui:208
+msgid "Bandwidth limiter"
+msgstr "ব্যন্ডউইডথ লিমিটার"
+
+#: modules/access_filter/dump.c:42
+msgid "Force use of dump module"
+msgstr "ডাম্প মডিউলের ব্যবহার কার্যকর করুন।"
+
+#: modules/access_filter/dump.c:43
+msgid "Activate the dump module even for media with fast seeking."
+msgstr "দ্রুত সিকিং এর জন্যও ডাম্প মডিউল সক্রিয় করুন।"
+
+#: modules/access_filter/dump.c:46
+msgid "Maximum size of temporary file (Mb)"
+msgstr "অস্থায়ী ফাইলের সর্বোচ্চ আকার (মেগাবাইট)"
+
+#: modules/access_filter/dump.c:47
+msgid ""
+"The dump module will abort dumping of the media if more than this much "
+"megabyte were performed."
+msgstr ""
+"এই পরিমান মেগাবাইটের বেশি সম্পন্ন হলে ডাম্প মডিউল মিডিয়া ডাম্প করা বন্ধ করবে।"
+
+#: modules/access_filter/record.c:48
+msgid "Record directory"
+msgstr "রেকর্ড ডিরেক্টরি"
+
+#: modules/access_filter/record.c:50
+msgid "Directory where the record will be stored."
+msgstr "ডিরেক্টরির নাম যেখানে রেকর্ডগুলো সংরক্ষিত হবে।"
+
+#: modules/access_filter/record.c:339
+msgid "Recording"
+msgstr "রেকর্ড করা হচ্ছে"
+
+#: modules/access_filter/record.c:341
+msgid "Recording done"
+msgstr "রেকর্ড করা সম্পন্ন"
+
+#: modules/access_filter/timeshift.c:53
+msgid "Timeshift granularity"
+msgstr "টাইমশিফ্ট গ্র্যনুলারিটি"
+
+#: modules/access_filter/timeshift.c:55
+msgid ""
+"This is the size of the temporary files that will be used to store the "
+"timeshifted streams."
+msgstr ""
+"এটি টাইমশিফ্ট স্ট্রিম সংরক্ষন করার জন্য ব্যবহৃত অস্থায়ী ফাইলের সর্বোচ্চ আকার (বাইটে)।"
+
+#: modules/access_filter/timeshift.c:57
+msgid "Timeshift directory"
+msgstr "টাইমশিফ্ট ডিরেক্টরি"
+
+#: modules/access_filter/timeshift.c:58
+msgid "Directory used to store the timeshift temporary files."
+msgstr "টাইমশিফ্টের অস্থায়ী ফাইল সংরক্ষন করার ডিরেক্টরি"
+
+#: modules/access_filter/timeshift.c:60
+msgid "Force use of the timeshift module"
+msgstr "টাইমশিফ্ট মডিউলের ব্যবহার কার্যকর করুন।"
+
+#: modules/access_filter/timeshift.c:61
+msgid ""
+"Force use of the timeshift module even if the access declares that it can "
+"control pace or pause."
+msgstr ""
+"টাইমশিফ্ট মডিউলের ব্যবহার কার্যকর করুন, এমনকি যদি এক্সেস ঘোষনা করে যে সে গতি বা "
+"বিরতি নিয়ন্ত্রন করতে পারবে তবুও।"
+
+#: modules/access_filter/timeshift.c:65 modules/access_filter/timeshift.c:66
+#: modules/gui/macosx/simple_prefs.m:260
+#: modules/gui/qt4/ui/sprefs_input.ui:187
+msgid "Timeshift"
+msgstr "সময়শিফ্ট"
+
+#: modules/access_output/dummy.c:45 modules/stream_out/dummy.c:51
+msgid "Dummy stream output"
+msgstr "ডামি স্ট্রিম আউটপুট"
+
+#: modules/access_output/dummy.c:46 modules/misc/dummy/dummy.c:61
+msgid "Dummy"
+msgstr "ডামি"
+
+#: modules/access_output/file.c:64
+msgid "Append to file"
+msgstr "ফাইলে যোগ করা হবে"
+
+#: modules/access_output/file.c:65
+msgid "Append to file if it exists instead of replacing it."
+msgstr "ফাইল উপস্থিত থাকলে প্রতিস্থাপনের পরিবর্তে যোগ করা হবে।"
+
+#: modules/access_output/file.c:69
+msgid "File stream output"
+msgstr "ফাইল স্ট্রিম আউটপুট"
+
+#: modules/access_output/http.c:65 modules/gui/qt4/ui/sprefs_audio.ui:309
+#: modules/misc/audioscrobbler.c:132
+msgid "Username"
+msgstr "ব্যবহারকারীর নাম"
+
+#: modules/access_output/http.c:66
+msgid "User name that will be requested to access the stream."
+msgstr "স্ট্রিম এক্সেস করার জন্য যে ব্যবহারকারী নাম চাওয়া হবে।"
+
+#: modules/access_output/http.c:68 modules/control/telnet.c:91
+#: modules/gui/macosx/simple_prefs.m:227
+#: modules/gui/qt4/dialogs/interaction.cpp:99
+#: modules/gui/qt4/ui/sprefs_audio.ui:319 modules/misc/audioscrobbler.c:134
+#: modules/misc/notify/growl_udp.c:64
+msgid "Password"
+msgstr "পাসওয়ার্ড"
+
+#: modules/access_output/http.c:69
+msgid "Password that will be requested to access the stream."
+msgstr "স্ট্রিম এক্সেস করার জন্য যে পাসওয়ার্ড চাওয়া হবে।"
+
+#: modules/access_output/http.c:71
+msgid "Mime"
+msgstr "Mime"
+
+#: modules/access_output/http.c:72
+msgid "MIME returned by the server (autodetected if not specified)."
+msgstr ""
+"সার্ভার দ্বারা ফেরত পাঠানো MIME (উল্লেখ করা না থাকলে স্বয়ংক্রিয়সনাক্ত করা হবে)।"
+
+#: modules/access_output/http.c:75
+msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
+msgstr "HTTPS এর জন্য ব্যবহৃতব্য x509 PEM সার্টিফিকেট ফাইলের পাথ।"
+
+#: modules/access_output/http.c:78
+msgid ""
+"Path to the x509 PEM private key file that will be used for HTTPS. Leave "
+"empty if you don't have one."
+msgstr ""
+"HTTPS এর জন্য ব্যবহৃতব্য x509 PEM ব্যক্তিগত কী ফাইলের পাথ। কিছু না থাকলে খালি রাখুন।"
+
+#: modules/access_output/http.c:82
+msgid ""
+"Path to the x509 PEM trusted root CA certificates (certificate authority) "
+"file that will be used for HTTPS. Leave empty if you don't have one."
+msgstr ""
+"HTTPS এর জন্য ব্যবহৃতব্য x509 PEM বিশ্বস্ত রুট CA সার্টিফিকেট (সার্টিফিকেট অথরিটি) "
+"ফাইলের পাথ। কিছু না থাকলে খালি রাখুন।"
+
+#: modules/access_output/http.c:87
+msgid ""
+"Path to the x509 PEM Certificates Revocation List file that will be used for "
+"SSL. Leave empty if you don't have one."
+msgstr ""
+"SSL এর জন্য ব্যবহৃতব্য x509 PEM সার্টিফিকেট রিভোকেশন তালিকার ফাইলের পাথ। কিছু না "
+"থাকলে খালি রাখুন।"
+
+#: modules/access_output/http.c:90
+msgid "Advertise with Bonjour"
+msgstr "Bonjour এর সাথে বিজ্ঞাপন"
+
+#: modules/access_output/http.c:91
+msgid "Advertise the stream with the Bonjour protocol."
+msgstr "Bonjour প্রোটোকলের সাথে স্ট্রিমের বিজ্ঞাপন করুন।"
+
+#: modules/access_output/http.c:95
+msgid "HTTP stream output"
+msgstr "HTTP স্ট্রিম আউটপুট"
+
+#: modules/access_output/rtmp.c:44
+msgid "Active TCP connection"
+msgstr "সক্রিয় TCP সংযোগ"
+
+#: modules/access_output/rtmp.c:46
+msgid ""
+"If enabled, VLC will connect to a remote destination instead of waiting for "
+"an incoming connection."
+msgstr ""
+"যদি সক্রিয় থাকে, ভিএলসি একটি ইনকামিং সংযোগের জন্য অপেক্ষা করার পরিবর্তে একটি "
+"রিমোট গন্তব্যের সাথে সংযোগ করবে।"
+
+#: modules/access_output/rtmp.c:55
+msgid "RTMP stream output"
+msgstr "RTMP স্ট্রিম আউটপুট"
+
+#: modules/access_output/shout.c:63
+msgid "Stream name"
+msgstr "স্ট্রিমের নাম"
+
+#: modules/access_output/shout.c:64
+msgid "Name to give to this stream/channel on the shoutcast/icecast server."
+msgstr "শাউটকাস্ট/আইসকাস্ট সার্ভারে এই স্ট্রিম/চ্যানেল দেয়ার জন্য নাম।"
+
+#: modules/access_output/shout.c:67
+msgid "Stream description"
+msgstr "স্ট্রিমের বিবরন"
+
+#: modules/access_output/shout.c:68
+msgid "Description of the stream content or information about your channel."
+msgstr "আপনার চ্যানেল সম্পর্কে স্ট্রিম বিষয়বস্তু বা তথ্যের বিবরন।"
+
+#: modules/access_output/shout.c:71
+msgid "Stream MP3"
+msgstr "MP3 স্ট্রিম করা হবে"
+
+#: modules/access_output/shout.c:72
+msgid ""
+"You normally have to feed the shoutcast module with Ogg streams. It is also "
+"possible to stream MP3 instead, so you can forward MP3 streams to the "
+"shoutcast/icecast server."
+msgstr ""
+"আপনাকে সাধারনত শাউটকাস্ট মডিউলকে Ogg স্ট্রিমের সাথে ফিড করাতে হবে। MP3 স্ট্রিম "
+"করা সম্ভব, যেন আপনি MP3 স্ট্রিমসমূহকে শাউটকাস্ট/আইসকাস্ট সার্ভারে ফরওয়ার্ড করতে "
+"পারেন।"
+
+#: modules/access_output/shout.c:81
+msgid "Genre description"
+msgstr "ধরনের বিবরন"
+
+#: modules/access_output/shout.c:82
+msgid "Genre of the content. "
+msgstr "বিষয়বস্তুর ধরন"
+
+#: modules/access_output/shout.c:84
+msgid "URL description"
+msgstr "URL বিবরন"
+
+#: modules/access_output/shout.c:85
+msgid "URL with information about the stream or your channel. "
+msgstr "স্ট্রিম বা আপনার চ্যানেল সম্পর্কিত তথ্যসহ URL।"
+
+#: modules/access_output/shout.c:92
+msgid "Bitrate information of the transcoded stream. "
+msgstr "ট্রান্সকোড করা স্ট্রিমের বিটের হারের তথ্য।"
+
+#: modules/access_output/shout.c:95
+msgid "Samplerate information of the transcoded stream. "
+msgstr "ট্রান্সকোড করা স্ট্রিমের স্যাম্পলহারের তথ্য।"
+
+#: modules/access_output/shout.c:97
+msgid "Number of channels"
+msgstr "চ্যানেলের সংখ্যা"
+
+#: modules/access_output/shout.c:98
+msgid "Number of channels information of the transcoded stream. "
+msgstr "ট্রান্সকোড করা স্ট্রিমের চ্যানেলের সংখ্যার তথ্য।"
+
+#: modules/access_output/shout.c:100
+msgid "Ogg Vorbis Quality"
+msgstr "অগ ভরবিস কোয়ালিটি"
+
+#: modules/access_output/shout.c:101
+msgid "Ogg Vorbis Quality information of the transcoded stream. "
+msgstr "ট্রান্সকোড করা স্ট্রিমের Ogg Vorbis গুনমানের তথ্য।"
+
+#: modules/access_output/shout.c:103
+msgid "Stream public"
+msgstr "স্ট্রিম পাবলিক"
+
+#: modules/access_output/shout.c:104
+msgid ""
+"Make the server publicly available on the 'Yellow Pages' (directory listing "
+"of streams) on the icecast/shoutcast website. Requires the bitrate "
+"information specified for shoutcast. Requires Ogg streaming for icecast."
+msgstr ""
+"আইসকাস্ট/শাউটকাস্ট ওয়েবসাইটের 'ইয়েলো পেজ' এ (স্ট্রিমের ডিরেক্টরি তালিকা) সার্ভারের "
+"প্রচার  অন্তর্ভূক্ত করুন। শাউটকাস্টের জন্য উল্লিখিত বিটের হারের তথ্য প্রয়োজন হবে। "
+"আইসকাস্টের জন্য Ogg স্ট্রিমিং প্রয়োজন হবে।"
+
+#: modules/access_output/shout.c:110
+msgid "IceCAST output"
+msgstr "IceCAST আউটপুট"
+
+#: modules/access_output/udp.c:69
+msgid ""
+"Default caching value for outbound UDP streams. This value should be set in "
+"milliseconds."
+msgstr ""
+"আউটবাউন্ড UDP স্ট্রিমের জন্য ডিফল্ট ক্যাশিং মান। এই মানটি মিলিসেকেন্ডে সেট করতে হবে।"
+
+#: modules/access_output/udp.c:72
+msgid "Group packets"
+msgstr "গ্রুপ প্যাকেট"
+
+#: modules/access_output/udp.c:73
+msgid ""
+"Packets can be sent one by one at the right time or by groups. You can "
+"choose the number of packets that will be sent at a time. It helps reducing "
+"the scheduling load on heavily-loaded systems."
+msgstr ""
+"প্যাকেটসমূহ সঠিক সময়ে এক এক করে বা গ্রুপ করে পাঠানো যাবে। একক সময়ে কয়টি প্যাকেট "
+"পাঠানো হবে তা আপনি নির্ধারন করতে পারেন। এটি অত্যন্ত-লোডেড সিস্টেমে সিডিউলিং লোড "
+"কমাতে সাহায্য করবে।"
+
+#: modules/access_output/udp.c:80
+msgid "UDP stream output"
+msgstr "UDP স্ট্রিম আউটপুট"
 
 #: modules/audio_filter/channel_mixer/dolby.c:49
 msgid "Simple decoder for Dolby Surround encoded streams"
@@ -12472,45 +12474,10 @@ msgstr "(পরীক্ষামূলকভাবে) রিয়েল-টা�
 msgid "SMF demuxer"
 msgstr "SMF ডিমাক্সার"
 
-#: modules/demux/subtitle_asa.c:56 modules/demux/subtitle.c:54
+#: modules/demux/subtitle.c:54 modules/demux/subtitle_asa.c:56
 msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
 msgstr ""
 "সকল সাবটাইটেলে একটি বিলম্ব কার্যকর করুন (১/১০ সেকেন্ডে, যেমন ১০০ মনে ১০সেকেন্ড)।"
-
-#: modules/demux/subtitle_asa.c:58
-msgid ""
-"Override the normal frames per second settings. This will only affect frame-"
-"based subtitle formats without a fixed value."
-msgstr ""
-"প্রতি সেকেন্ডে ফ্রেমের সংখ্যার সাধারন সেটিং উপেক্ষা করা হবে। এটি শুধুমাত্র স্থির মান "
-"ব্যতীত ফ্রেম-বেজড সাবটাইটেল ফরম্যাটকে প্রভাবিত করে।"
-
-#: modules/demux/subtitle_asa.c:61
-msgid ""
-"Force the subtiles format. Use \"auto\", the set of supported values varies."
-msgstr ""
-"সাবটাইটেল ফরম্যাট কার্যকর করুন। \"auto\" ব্যবহার করুন, সমর্থিত মানসমূহের সেট "
-"পরিবর্তনীয়।"
-
-#: modules/demux/subtitle_asa.c:64
-msgid "Subtitles (asa demuxer)"
-msgstr "সাবটাইটেল (asa ডিমাক্সার)"
-
-#: modules/demux/subtitle_asa.c:65 modules/demux/subtitle.c:75
-msgid "Text subtitles parser"
-msgstr "টেক্সট সাবটাইটেল পার্সার"
-
-#: modules/demux/subtitle_asa.c:70 modules/demux/subtitle.c:80
-msgid "Frames per second"
-msgstr "প্রতি সেকেন্ডে ফ্রেমের সংখ্যা"
-
-#: modules/demux/subtitle_asa.c:73 modules/demux/subtitle.c:83
-msgid "Subtitles delay"
-msgstr "সাবটাইটেল বিলম্ব"
-
-#: modules/demux/subtitle_asa.c:75 modules/demux/subtitle.c:85
-msgid "Subtitles format"
-msgstr "সাবটাইটেল ফরম্যাট"
 
 #: modules/demux/subtitle.c:56
 msgid ""
@@ -12533,6 +12500,41 @@ msgstr ""
 "\"dvdsubtitle\", \"mpl2\", \"aqt\", \"pjs\", \"mpsub\", \"jacosub\", \"psb"
 "\", \"realtext\", \"dks\", \"subviewer1\",  এবং \"auto\" (মানে স্বয়ংক্রিয় "
 "সনাক্তকরন, এটি অবশ্যই কাজ করবে)।"
+
+#: modules/demux/subtitle.c:75 modules/demux/subtitle_asa.c:65
+msgid "Text subtitles parser"
+msgstr "টেক্সট সাবটাইটেল পার্সার"
+
+#: modules/demux/subtitle.c:80 modules/demux/subtitle_asa.c:70
+msgid "Frames per second"
+msgstr "প্রতি সেকেন্ডে ফ্রেমের সংখ্যা"
+
+#: modules/demux/subtitle.c:83 modules/demux/subtitle_asa.c:73
+msgid "Subtitles delay"
+msgstr "সাবটাইটেল বিলম্ব"
+
+#: modules/demux/subtitle.c:85 modules/demux/subtitle_asa.c:75
+msgid "Subtitles format"
+msgstr "সাবটাইটেল ফরম্যাট"
+
+#: modules/demux/subtitle_asa.c:58
+msgid ""
+"Override the normal frames per second settings. This will only affect frame-"
+"based subtitle formats without a fixed value."
+msgstr ""
+"প্রতি সেকেন্ডে ফ্রেমের সংখ্যার সাধারন সেটিং উপেক্ষা করা হবে। এটি শুধুমাত্র স্থির মান "
+"ব্যতীত ফ্রেম-বেজড সাবটাইটেল ফরম্যাটকে প্রভাবিত করে।"
+
+#: modules/demux/subtitle_asa.c:61
+msgid ""
+"Force the subtiles format. Use \"auto\", the set of supported values varies."
+msgstr ""
+"সাবটাইটেল ফরম্যাট কার্যকর করুন। \"auto\" ব্যবহার করুন, সমর্থিত মানসমূহের সেট "
+"পরিবর্তনীয়।"
+
+#: modules/demux/subtitle_asa.c:64
+msgid "Subtitles (asa demuxer)"
+msgstr "সাবটাইটেল (asa ডিমাক্সার)"
 
 #: modules/demux/ts.c:112
 msgid "Extra PMT"
@@ -13970,8 +13972,8 @@ msgstr "ক্যাপচার"
 #: modules/gui/macosx/simple_prefs.m:291
 #: modules/gui/qt4/components/preferences_widgets.cpp:260
 #: modules/gui/qt4/components/simple_preferences.cpp:239
-#: modules/gui/qt4/ui/open_disk.ui:141 modules/gui/qt4/ui/open_file.ui:181
-#: modules/gui/qt4/ui/open.ui:155 modules/gui/qt4/ui/sout.ui:71
+#: modules/gui/qt4/ui/open.ui:155 modules/gui/qt4/ui/open_disk.ui:141
+#: modules/gui/qt4/ui/open_file.ui:181 modules/gui/qt4/ui/sout.ui:71
 #: modules/gui/qt4/ui/sprefs_audio.ui:237
 #: modules/gui/qt4/ui/sprefs_input.ui:39
 #: modules/gui/qt4/ui/sprefs_interface.ui:209
@@ -14218,6 +14220,90 @@ msgstr "SDP URL"
 msgid "Save File"
 msgstr "ফাইল সংরক্ষন করুন"
 
+#: modules/gui/macosx/playlist.m:128 modules/gui/macosx/wizard.m:350
+#: modules/gui/wince/playlist.cpp:671 modules/mux/asf.c:54
+msgid "Author"
+msgstr "লেখকবৃন্দ"
+
+#: modules/gui/macosx/playlist.m:441
+msgid "Save Playlist..."
+msgstr "চালানোর তালিকা সংরক্ষন করুন..."
+
+#: modules/gui/macosx/playlist.m:444
+msgid "Expand Node"
+msgstr "নোড প্রসারিত করুন"
+
+#: modules/gui/macosx/playlist.m:447
+msgid "Download Cover Art"
+msgstr "Cover Art ডাউনলোড করুন"
+
+#: modules/gui/macosx/playlist.m:448
+msgid "Fetch Meta Data"
+msgstr "মেটা ডাটা সংগ্রহ করুন"
+
+#: modules/gui/macosx/playlist.m:449
+msgid "Sort Node by Name"
+msgstr "নাম অনুসারে নোড সাজান"
+
+#: modules/gui/macosx/playlist.m:450
+msgid "Sort Node by Author"
+msgstr "লেখক অনুসারে নোড সাজান"
+
+#: modules/gui/macosx/playlist.m:453 modules/gui/macosx/playlist.m:492
+#: modules/gui/macosx/playlist.m:1446
+msgid "No items in the playlist"
+msgstr "চালানোর তালিকায় কোনো আইটেম নেই"
+
+#: modules/gui/macosx/playlist.m:455
+msgid "Search in Playlist"
+msgstr "চালানোর তালিকায় খুজুন"
+
+#: modules/gui/macosx/playlist.m:456
+msgid "Add Folder to Playlist"
+msgstr "চালানোর তালিকায় ফোল্ডার যোগ করুন"
+
+#: modules/gui/macosx/playlist.m:458
+msgid "File Format:"
+msgstr "ফাইল ফরম্যাট:"
+
+#: modules/gui/macosx/playlist.m:459
+msgid "Extended M3U"
+msgstr "এক্সটেনডেড M3U"
+
+#: modules/gui/macosx/playlist.m:460
+msgid "XML Shareable Playlist Format (XSPF)"
+msgstr "XML শেয়ারযোগ্য চালানোর তালিকা ফরম্যাট (XSPF)"
+
+#: modules/gui/macosx/playlist.m:486 modules/gui/macosx/playlist.m:1439
+#: modules/gui/macosx/wizard.m:1362
+#, c-format
+msgid "%i items"
+msgstr "%i আইটেম"
+
+#: modules/gui/macosx/playlist.m:494 modules/gui/macosx/playlist.m:1450
+msgid "1 item"
+msgstr "১টি আইটেম"
+
+#: modules/gui/macosx/playlist.m:683
+msgid "Save Playlist"
+msgstr "চালানোর তালিকা সংরক্ষন করুন"
+
+#: modules/gui/macosx/playlist.m:1157 modules/gui/ncurses.c:1808
+msgid "Meta-information"
+msgstr "মেটা-তথ্য"
+
+#: modules/gui/macosx/playlist.m:1404
+msgid "New Node"
+msgstr "নতুন নোড"
+
+#: modules/gui/macosx/playlist.m:1405
+msgid "Please enter a name for the new node."
+msgstr "অনুগ্রহ করে নতুন নোডের জন্য একটি নাম এন্টার করুন।"
+
+#: modules/gui/macosx/playlist.m:1416
+msgid "Empty Folder"
+msgstr "খালি ফোল্ডার"
+
 #: modules/gui/macosx/playlistinfo.m:70
 #: modules/gui/qt4/dialogs/mediainfo.cpp:55
 msgid "Media Information"
@@ -14312,90 +14398,6 @@ msgstr "VLC মেটাডেটা সংরক্ষন করতে ব্�
 #: modules/gui/macosx/playlistinfo.m:449
 msgid "Information"
 msgstr "তথ্য"
-
-#: modules/gui/macosx/playlist.m:128 modules/gui/macosx/wizard.m:350
-#: modules/gui/wince/playlist.cpp:671 modules/mux/asf.c:54
-msgid "Author"
-msgstr "লেখকবৃন্দ"
-
-#: modules/gui/macosx/playlist.m:441
-msgid "Save Playlist..."
-msgstr "চালানোর তালিকা সংরক্ষন করুন..."
-
-#: modules/gui/macosx/playlist.m:444
-msgid "Expand Node"
-msgstr "নোড প্রসারিত করুন"
-
-#: modules/gui/macosx/playlist.m:447
-msgid "Download Cover Art"
-msgstr "Cover Art ডাউনলোড করুন"
-
-#: modules/gui/macosx/playlist.m:448
-msgid "Fetch Meta Data"
-msgstr "মেটা ডাটা সংগ্রহ করুন"
-
-#: modules/gui/macosx/playlist.m:449
-msgid "Sort Node by Name"
-msgstr "নাম অনুসারে নোড সাজান"
-
-#: modules/gui/macosx/playlist.m:450
-msgid "Sort Node by Author"
-msgstr "লেখক অনুসারে নোড সাজান"
-
-#: modules/gui/macosx/playlist.m:453 modules/gui/macosx/playlist.m:492
-#: modules/gui/macosx/playlist.m:1446
-msgid "No items in the playlist"
-msgstr "চালানোর তালিকায় কোনো আইটেম নেই"
-
-#: modules/gui/macosx/playlist.m:455
-msgid "Search in Playlist"
-msgstr "চালানোর তালিকায় খুজুন"
-
-#: modules/gui/macosx/playlist.m:456
-msgid "Add Folder to Playlist"
-msgstr "চালানোর তালিকায় ফোল্ডার যোগ করুন"
-
-#: modules/gui/macosx/playlist.m:458
-msgid "File Format:"
-msgstr "ফাইল ফরম্যাট:"
-
-#: modules/gui/macosx/playlist.m:459
-msgid "Extended M3U"
-msgstr "এক্সটেনডেড M3U"
-
-#: modules/gui/macosx/playlist.m:460
-msgid "XML Shareable Playlist Format (XSPF)"
-msgstr "XML শেয়ারযোগ্য চালানোর তালিকা ফরম্যাট (XSPF)"
-
-#: modules/gui/macosx/playlist.m:486 modules/gui/macosx/playlist.m:1439
-#: modules/gui/macosx/wizard.m:1362
-#, c-format
-msgid "%i items"
-msgstr "%i আইটেম"
-
-#: modules/gui/macosx/playlist.m:494 modules/gui/macosx/playlist.m:1450
-msgid "1 item"
-msgstr "১টি আইটেম"
-
-#: modules/gui/macosx/playlist.m:683
-msgid "Save Playlist"
-msgstr "চালানোর তালিকা সংরক্ষন করুন"
-
-#: modules/gui/macosx/playlist.m:1157 modules/gui/ncurses.c:1808
-msgid "Meta-information"
-msgstr "মেটা-তথ্য"
-
-#: modules/gui/macosx/playlist.m:1404
-msgid "New Node"
-msgstr "নতুন নোড"
-
-#: modules/gui/macosx/playlist.m:1405
-msgid "Please enter a name for the new node."
-msgstr "অনুগ্রহ করে নতুন নোডের জন্য একটি নাম এন্টার করুন।"
-
-#: modules/gui/macosx/playlist.m:1416
-msgid "Empty Folder"
-msgstr "খালি ফোল্ডার"
 
 #: modules/gui/macosx/prefs.m:127 modules/gui/macosx/simple_prefs.m:301
 msgid "Reset All"
@@ -16899,38 +16901,6 @@ msgstr ""
 "এটি আপনার ভিএলসি মিডিয়া প্লেয়ার পছন্দসমূহ রিসেট করবে।\n"
 "আপনি কি নিশ্চিত যে আপনি চালিয়ে যেতে চান?"
 
-#: modules/gui/qt4/dialogs_provider.cpp:422
-msgid "Open Directory"
-msgstr "ডিরেক্টরি খুলুন"
-
-#: modules/gui/qt4/dialogs_provider.cpp:466
-msgid "Open playlist file"
-msgstr "চালানোর তালিকার ফাইল খুলুন"
-
-#: modules/gui/qt4/dialogs_provider.cpp:477
-msgid "Choose a filename to save playlist"
-msgstr "চালানোর তালিকা সংরক্ষন করার জন্য একটি ফাইলের নাম পছন্দ করুন"
-
-#: modules/gui/qt4/dialogs_provider.cpp:479
-msgid "XSPF playlist (*.xspf);; "
-msgstr "XSPF চালানোর তালিকা (*.xspf);; "
-
-#: modules/gui/qt4/dialogs_provider.cpp:480
-msgid "M3U playlist (*.m3u);; Any (*.*) "
-msgstr "M3U চালানোর তালিকা (*.m3u);; যেকোনো (*.*) "
-
-#: modules/gui/qt4/dialogs_provider.hpp:45
-msgid "Media Files"
-msgstr "মিডিয়া ফাইল"
-
-#: modules/gui/qt4/dialogs_provider.hpp:65
-msgid "Subtitles Files"
-msgstr "সাবটাইটেল ফাইল"
-
-#: modules/gui/qt4/dialogs_provider.hpp:70
-msgid "All Files"
-msgstr "সকল ফাইল"
-
 #: modules/gui/qt4/dialogs/sout.cpp:103 modules/gui/qt4/ui/sout.ui:14
 msgid "Stream Output"
 msgstr "স্ট্রিম আউটপুট"
@@ -17020,6 +16990,38 @@ msgstr "সিডিউল:"
 #: modules/gui/qt4/dialogs/vlm.cpp:618
 msgid "VOD: "
 msgstr "VOD: "
+
+#: modules/gui/qt4/dialogs_provider.cpp:422
+msgid "Open Directory"
+msgstr "ডিরেক্টরি খুলুন"
+
+#: modules/gui/qt4/dialogs_provider.cpp:466
+msgid "Open playlist file"
+msgstr "চালানোর তালিকার ফাইল খুলুন"
+
+#: modules/gui/qt4/dialogs_provider.cpp:477
+msgid "Choose a filename to save playlist"
+msgstr "চালানোর তালিকা সংরক্ষন করার জন্য একটি ফাইলের নাম পছন্দ করুন"
+
+#: modules/gui/qt4/dialogs_provider.cpp:479
+msgid "XSPF playlist (*.xspf);; "
+msgstr "XSPF চালানোর তালিকা (*.xspf);; "
+
+#: modules/gui/qt4/dialogs_provider.cpp:480
+msgid "M3U playlist (*.m3u);; Any (*.*) "
+msgstr "M3U চালানোর তালিকা (*.m3u);; যেকোনো (*.*) "
+
+#: modules/gui/qt4/dialogs_provider.hpp:45
+msgid "Media Files"
+msgstr "মিডিয়া ফাইল"
+
+#: modules/gui/qt4/dialogs_provider.hpp:65
+msgid "Subtitles Files"
+msgstr "সাবটাইটেল ফাইল"
+
+#: modules/gui/qt4/dialogs_provider.hpp:70
+msgid "All Files"
+msgstr "সকল ফাইল"
 
 #: modules/gui/qt4/main_interface.cpp:309
 msgid ""
@@ -17475,6 +17477,50 @@ msgstr "Qt ইন্টারফেস"
 msgid "Preset"
 msgstr "প্রিসেট"
 
+#: modules/gui/qt4/ui/open.ui:38
+msgid "Show extended options"
+msgstr "বর্ধিত বিকল্প প্রদর্শন করা হবে"
+
+#: modules/gui/qt4/ui/open.ui:41
+msgid "Show &more options"
+msgstr "আরো বিকল্প প্রদর্শন করা হবে (&m)"
+
+#: modules/gui/qt4/ui/open.ui:61
+msgid "Change the caching for the media"
+msgstr "মিডিয়ার ক্যাশিং পরিবর্তন করুন"
+
+#: modules/gui/qt4/ui/open.ui:90
+msgid "Start Time"
+msgstr "শুরুর সময়"
+
+#: modules/gui/qt4/ui/open.ui:100
+msgid "Change the start time for the media"
+msgstr "মিডিয়ার শুরুর সময় পরিবর্তন করুন"
+
+#: modules/gui/qt4/ui/open.ui:132
+msgid "Play another media synchronously (extra audio file, ...)"
+msgstr "সিনক্রোনাসভাবে আরেকটি মিডিয়া চালানো হবে (অতিরক্ত অডিও ফাইল, ...)"
+
+#: modules/gui/qt4/ui/open.ui:139
+msgid "Extra media"
+msgstr "অতিরিক্ত মিডিয়া"
+
+#: modules/gui/qt4/ui/open.ui:152
+msgid "Select the file"
+msgstr "ফাইল নির্বাচন করুন"
+
+#: modules/gui/qt4/ui/open.ui:165
+msgid "Customize"
+msgstr "কাস্টমাইজ করুন"
+
+#: modules/gui/qt4/ui/open.ui:175
+msgid "Complete MRL for VLC internal"
+msgstr "ভিএলসি এর অভ্যন্তরের জন্য পূর্ণ MRL"
+
+#: modules/gui/qt4/ui/open.ui:216
+msgid "Select play mode"
+msgstr "চালানোর মোড নির্বাচন করুন"
+
 #: modules/gui/qt4/ui/open_capture.ui:17
 msgid "Capture mode"
 msgstr "ক্যাপচার মোড"
@@ -17558,50 +17604,6 @@ msgstr "ব্যবহৃত পোর্ট নির্বাচন করু
 #: modules/gui/qt4/ui/open_net.ui:85
 msgid "Enter the URL of the network stream here, with or without the protocol."
 msgstr "এখানে নেটওয়ার্ক স্ট্রিমের URL দিন, প্রোটোকল এবং প্রোটোকল ব্যতীত।"
-
-#: modules/gui/qt4/ui/open.ui:38
-msgid "Show extended options"
-msgstr "বর্ধিত বিকল্প প্রদর্শন করা হবে"
-
-#: modules/gui/qt4/ui/open.ui:41
-msgid "Show &more options"
-msgstr "আরো বিকল্প প্রদর্শন করা হবে (&m)"
-
-#: modules/gui/qt4/ui/open.ui:61
-msgid "Change the caching for the media"
-msgstr "মিডিয়ার ক্যাশিং পরিবর্তন করুন"
-
-#: modules/gui/qt4/ui/open.ui:90
-msgid "Start Time"
-msgstr "শুরুর সময়"
-
-#: modules/gui/qt4/ui/open.ui:100
-msgid "Change the start time for the media"
-msgstr "মিডিয়ার শুরুর সময় পরিবর্তন করুন"
-
-#: modules/gui/qt4/ui/open.ui:132
-msgid "Play another media synchronously (extra audio file, ...)"
-msgstr "সিনক্রোনাসভাবে আরেকটি মিডিয়া চালানো হবে (অতিরক্ত অডিও ফাইল, ...)"
-
-#: modules/gui/qt4/ui/open.ui:139
-msgid "Extra media"
-msgstr "অতিরিক্ত মিডিয়া"
-
-#: modules/gui/qt4/ui/open.ui:152
-msgid "Select the file"
-msgstr "ফাইল নির্বাচন করুন"
-
-#: modules/gui/qt4/ui/open.ui:165
-msgid "Customize"
-msgstr "কাস্টমাইজ করুন"
-
-#: modules/gui/qt4/ui/open.ui:175
-msgid "Complete MRL for VLC internal"
-msgstr "ভিএলসি এর অভ্যন্তরের জন্য পূর্ণ MRL"
-
-#: modules/gui/qt4/ui/open.ui:216
-msgid "Select play mode"
-msgstr "চালানোর মোড নির্বাচন করুন"
 
 #: modules/gui/qt4/ui/podcast_configuration.ui:19
 #: modules/services_discovery/podcast.c:58
@@ -18889,10 +18891,6 @@ msgstr "Lua চালানোর তালিকা পার্সার ই�
 msgid "Lua Interface Module"
 msgstr "Lua ইন্টারফেস মডিউল"
 
-#: modules/misc/memcpy/memcpyaltivec.c:59
-msgid "AltiVec memcpy"
-msgstr "AltiVec memcpy"
-
 #: modules/misc/memcpy/memcpy.c:82
 msgid "libc memcpy"
 msgstr "libc memcpy"
@@ -18908,6 +18906,10 @@ msgstr "MMX memcpy"
 #: modules/misc/memcpy/memcpy.c:98
 msgid "MMX EXT memcpy"
 msgstr "MMX EXT memcpy"
+
+#: modules/misc/memcpy/memcpyaltivec.c:59
+msgid "AltiVec memcpy"
+msgstr "AltiVec memcpy"
 
 #: modules/misc/notify/growl.m:96
 msgid "Growl Notification Plugin"
@@ -21035,6 +21037,10 @@ msgstr "আপনার LED স্ট্রাইপের সাথে সা�
 msgid "Change gradients"
 msgstr "গ্রেডিয়েন্ট পরিবর্তন করুন"
 
+#: modules/video_filter/blend.c:45
+msgid "Video pictures blending"
+msgstr "ভিডিও চিত্র ব্লেন্ডিং"
+
 #: modules/video_filter/blendbench.c:52
 msgid "Number of time to blend"
 msgstr "যত সংখ্যকবার ব্লেন্ড করা হবে"
@@ -21102,10 +21108,6 @@ msgstr "বেজ ছবি"
 #: modules/video_filter/blendbench.c:92
 msgid "Blend image"
 msgstr "ব্লেন্ড ছবি"
-
-#: modules/video_filter/blend.c:45
-msgid "Video pictures blending"
-msgstr "ভিডিও চিত্র ব্লেন্ডিং"
 
 #: modules/video_filter/bluescreen.c:39
 msgid ""

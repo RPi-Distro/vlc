@@ -2,7 +2,7 @@
  * info.h : CD digital audio input information routine headers
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 0da55e72c4234d8a4118ed175c24ba6d6a3b9e78 $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *

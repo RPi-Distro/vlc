@@ -2,7 +2,7 @@
  * avutil.h: avutil helper functions
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id$
+ * $Id: 4ce1370e760159d080ca7ffccb10a1231f4f60c7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

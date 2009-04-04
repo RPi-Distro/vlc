@@ -2,7 +2,7 @@
  * vlc_codec.h: Definition of the decoder and encoder structures
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id$
+ * $Id: b8347e34d2c870af54ab8244c14ac1574a3b9a77 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

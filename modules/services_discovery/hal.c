@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
  * Copyright © 2006-2007 Rafaël Carré
- * $Id$
+ * $Id: b45b5fdee0485db9e789c5b4fa601b05a91dddae $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman at videolanorg>
