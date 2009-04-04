@@ -2,7 +2,7 @@
  * cmd_resize.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: ea3e4bc66fbd7ebccd914bc4bd85ef959bc52b88 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

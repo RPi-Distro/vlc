@@ -2,7 +2,7 @@
  * linear.c : linear interpolation resampler
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id$
+ * $Id: 59c6e95d34def0a3f12788ed373a25f4db3262ec $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>

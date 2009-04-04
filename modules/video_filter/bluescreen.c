@@ -2,7 +2,7 @@
  * bluescreen.c : Bluescreen (weather channel like) video filter for vlc
  *****************************************************************************
  * Copyright (C) 2005-2007 the VideoLAN team
- * $Id$
+ * $Id: 2499f55d9b016180d56d29c1a85010dd8182f00e $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *

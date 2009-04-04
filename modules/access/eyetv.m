@@ -2,7 +2,7 @@
  * eyetv.c : Access module to connect to our plugin running within EyeTV
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id$
+ * $Id: 81d448e40923ac5a8f4e515247b7c97a7b0b0875 $
  *
  * Author: Felix Kühne <fkuehne at videolan dot org>
  *

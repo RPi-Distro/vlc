@@ -2,7 +2,7 @@
  * imageresample.c: scaling and chroma conversion using the old libavcodec API
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id$
+ * $Id: eef97c737d3f81781a34d3d443a47eb94fc50651 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

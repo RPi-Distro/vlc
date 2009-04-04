@@ -2,7 +2,7 @@
  * tcp.c: TCP input module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id$
+ * $Id: 6b3a0a7111345dee316b82ad97f8c1eb6d46736b $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

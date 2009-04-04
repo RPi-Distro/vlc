@@ -2,7 +2,7 @@
  * dvb.c : DVB channel list import (szap/tzap/czap compatible channel lists)
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 904be67cd4f431eeadf962b3ea2038a044162a13 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

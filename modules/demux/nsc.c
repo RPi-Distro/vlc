@@ -2,7 +2,7 @@
  * nsc.c: NSC file demux and encoding decoder
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: c889af9a8e3f321e2a127ec9fd2e043c24649e17 $
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>

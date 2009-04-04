@@ -2,7 +2,7 @@
  * realaudio.c: a realaudio decoder that uses the realaudio library/dll
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 69308279f48bb63d61d19be4e5e0d517e493c642 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

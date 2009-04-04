@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.m
  * AppleRemote
- * $Id$
+ * $Id: f60942084ea753fa343873a9e5ad9eac4dcc3c58 $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.

@@ -2,7 +2,7 @@
  * pes.h
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id$
+ * $Id: 5b7aab45c38d5a992d6f32d69a37e23d0db70edb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>

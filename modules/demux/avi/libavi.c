@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id$
+ * $Id: add60783b4edd5c1a7339f6c50dbe9ffff9745aa $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify

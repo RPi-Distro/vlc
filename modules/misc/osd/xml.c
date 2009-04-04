@@ -2,7 +2,7 @@
  * xml.c - The OSD Menu XML parser code.
  *****************************************************************************
  * Copyright (C) 2005-2007 M2X
- * $Id$
+ * $Id: 0b24500e2a5c65b0a79ac595e00ccdea1928dae1 $
  *
  * Authors: Jean-Paul Saman
  *

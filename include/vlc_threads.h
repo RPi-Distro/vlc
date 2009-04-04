@@ -3,7 +3,7 @@
  * This header provides portable declarations for mutexes & conditions
  *****************************************************************************
  * Copyright (C) 1999, 2002 the VideoLAN team
- * $Id: 4871fcd40a3c69319663a6edc10751fe966075a6 $
+ * $Id: 8dcdf5a6c9d9d983601706d95f514de9a0fa8386 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -359,7 +359,7 @@ static inline void __vlc_cond_wait( const char * psz_file, int i_line,
 #define vlc_cond_timedwait( P_COND, P_MUTEX, DEADLINE )                      \
     __vlc_cond_timedwait( __FILE__, __LINE__, P_COND, P_MUTEX, DEADLINE  )
 
-#if defined(__APPLE__) && !defined(__powerpc__) 
+#if defined(__APPLE__) && !defined(__powerpc__) && !defined( __ppc__ ) && !defined( __ppc64__ )
 # include <sys/time.h> /* gettimeofday in vlc_cond_timedwait */
 #endif
 
@@ -369,7 +369,7 @@ static inline int __vlc_cond_timedwait( const char * psz_file, int i_line,
                                         mtime_t deadline )
 {
 #if defined(LIBVLC_USE_PTHREAD)
-#if defined(__APPLE__) && !defined(__powerpc__)
+#if defined(__APPLE__) && !defined(__powerpc__) && !defined( __ppc__ ) && !defined( __ppc64__ )
     /* mdate() is mac_absolute_time on osx, which we must convert to do
      * the same base than gettimeofday() on which pthread_cond_timedwait
      * counts on. */
@@ -581,7 +581,7 @@ static inline void barrier (void)
     __sync_synchronize ();
 #elif defined(__APPLE__)
     OSMemoryBarrier ();
-#elif defined(__powerpc__)
+#elif defined(__powerpc__) || defined( __ppc__ ) || defined( __ppc64__ )
     asm volatile ("sync":::"memory");
 #elif 0 // defined(__i386__) /*  Requires SSE2 support */
     asm volatile ("mfence":::"memory");

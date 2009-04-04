@@ -2,7 +2,7 @@
  * ugly.c : ugly resampler (changes pitch)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id$
+ * $Id: 7d9053b044cce2daccd28b6f30a4bf4b113275a5 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

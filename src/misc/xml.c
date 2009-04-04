@@ -2,7 +2,7 @@
  * xml.c: XML parser wrapper for XML modules
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: af32ceeb4b774df72fe044e13ae18e4f3ae39eb1 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

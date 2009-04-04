@@ -2,7 +2,7 @@
  * postproc.c: video postprocessing using libpostproc
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id$
+ * $Id: e05d773beae374eb468cd71ee225b31c829d298f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>

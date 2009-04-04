@@ -2,7 +2,7 @@
  * AudioOutput.cpp: BeOS audio output
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id$
+ * $Id: a65c5cc00e392b9cd780ecebe89879e525b348cf $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

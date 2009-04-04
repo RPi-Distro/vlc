@@ -2,7 +2,7 @@
  * es.c: Elementary stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id$
+ * $Id: 52bb86d7b38642f76529e5c8ed760c4e1cf94b39 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

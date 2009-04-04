@@ -2,7 +2,7 @@
  * voutagl.c: MacOS X agl OpenGL provider (used by webbrowser.plugin)
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id$
+ * $Id: e07880fe2b8024d773d4ad416bcc801ffed92f5d $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>

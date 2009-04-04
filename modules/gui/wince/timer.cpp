@@ -2,7 +2,7 @@
  * timer.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2003 the VideoLAN team
- * $Id$
+ * $Id: 5135609e0e31cc3f10f78f8537cd60b50e7be796 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>

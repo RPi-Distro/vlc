@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: d4235a2100e6b0db6a5d715b9a46ceb470ce8b82 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *

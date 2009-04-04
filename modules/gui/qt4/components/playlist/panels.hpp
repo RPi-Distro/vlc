@@ -2,7 +2,7 @@
  * panels.hpp : Panels for the playlist
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id$
+ * $Id: f19e34424d4d476a215c39aac10eab1ac98479ba $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

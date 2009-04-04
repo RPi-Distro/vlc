@@ -2,7 +2,7 @@
  * win32_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 22e1cbe4e63dfbc8299b7b23b13d947559649525 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

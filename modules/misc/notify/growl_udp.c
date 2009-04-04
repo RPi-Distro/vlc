@@ -2,7 +2,7 @@
  * growl_udp.c : growl UDP notification plugin
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: 17ec991555a10684606aebe64cb05412870dfab3 $
  *
  * Authors: Jérôme Decoodt <djc -at- videolan -dot- org>
  *

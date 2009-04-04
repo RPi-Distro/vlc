@@ -2,7 +2,7 @@
  * vlc_block_helper.h: Helper functions for data blocks management.
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 679d0e5152a9b335cd2bff18b8ea875187e5bc9c $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

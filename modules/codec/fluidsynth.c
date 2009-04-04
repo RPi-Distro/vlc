@@ -2,7 +2,7 @@
  * fluidsynth.c: Software MIDI synthetizer using libfluidsynth
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id$
+ * $Id: 600353fa3ca9604f34bade2c72691a79ce6fecc3 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

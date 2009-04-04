@@ -2,7 +2,7 @@
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id$
+ * $Id: 8c6ac46f684cacbb0c27256e854d4a87b5ed9a3a $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Christophe Massiot <massiot@via.ecp.fr>

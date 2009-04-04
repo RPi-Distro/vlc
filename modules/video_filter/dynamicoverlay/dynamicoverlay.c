@@ -2,7 +2,7 @@
  * dynamicoverlay.c : dynamic overlay plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: 02e9a56cd3dbc7a9b5691a81260185462c5b0a8f $
  *
  * Author: Soren Bog <avacore@videolan.org>
  *

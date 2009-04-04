@@ -2,7 +2,7 @@
  * zsh.cpp: create zsh completion rule for vlc
  *****************************************************************************
  * Copyright © 2005-2008 the VideoLAN team
- * $Id$
+ * $Id: 77c0436d8760a85428699538070377f04573e0ff $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

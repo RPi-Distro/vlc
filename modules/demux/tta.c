@@ -2,7 +2,7 @@
  * tta.c : The Lossless True Audio parser
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: bc7ae25a7045449fa955b638e52cde5a5bf128ef $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *

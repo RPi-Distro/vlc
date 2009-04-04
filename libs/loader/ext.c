@@ -9,7 +9,7 @@
 /*
  * Modified for use with MPlayer, detailed CVS changelog at
  * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
- * $Id$
+ * $Id: 3680dc344d56d2c55afbfd0d69ba93a87e723d78 $
  */
 
 #include "config.h"

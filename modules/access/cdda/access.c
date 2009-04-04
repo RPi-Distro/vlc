@@ -2,7 +2,7 @@
  * access.c : CD digital audio input module for vlc using libcdio
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id$
+ * $Id: d5e3d819befc366b35543dd8a895a8d237152e4f $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>

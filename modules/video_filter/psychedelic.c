@@ -2,7 +2,7 @@
  * Psychedelic.c : Psychedelic video effect plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id$
+ * $Id: 88a2e3515f1d89167bcd34037a87d3f9c5e59788 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>

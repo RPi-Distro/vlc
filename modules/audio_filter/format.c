@@ -2,7 +2,7 @@
  * format.c : PCM format converter
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id$
+ * $Id: b90f109f2d2ed49ee74a5790147c78410d728d8f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

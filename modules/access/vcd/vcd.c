@@ -2,7 +2,7 @@
  * vcd.c : VCD input module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id$
+ * $Id: 575ff326686a9b0343a577442561414b1196f725 $
  *
  * Author: Johan Bilien <jobi@via.ecp.fr>
  *

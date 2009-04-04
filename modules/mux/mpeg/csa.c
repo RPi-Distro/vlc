@@ -2,7 +2,7 @@
  * libcsa.c: CSA scrambler/descrambler
  *****************************************************************************
  * Copyright (C) 2004-2005 Laurent Aimar
- * $Id$
+ * $Id: 9550297473671bf4dc0a0572cf9f193e486fb302 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>

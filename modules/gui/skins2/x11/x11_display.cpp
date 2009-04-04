@@ -2,7 +2,7 @@
  * x11_display.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 5cb0bf130460e988930c4b54f5b902b4c05c8a76 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

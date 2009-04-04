@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
  *
- * $Id$
+ * $Id: b8fb181136fde997648903720c1d12e545812b79 $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *

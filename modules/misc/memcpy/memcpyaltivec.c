@@ -2,7 +2,7 @@
  * memcpyaltivec.c : AltiVec memcpy module
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id$
+ * $Id: d1c7fb5404dd52e38914d4f283846900c2248ec8 $
  *
  * Author: Christophe Massiot <massiot@via.ecp.fr>
  *

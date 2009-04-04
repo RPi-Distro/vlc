@@ -2,7 +2,7 @@
  * selector.hpp : Playlist source selector
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id$
+ * $Id: b6ff6e635f0de9b34829a2f5594adc88c7031814 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

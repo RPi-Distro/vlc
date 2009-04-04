@@ -2,7 +2,7 @@
  * dbus.h : D-Bus control interface
  *****************************************************************************
  * Copyright (C) 2006 Rafaël Carré
- * $Id$
+ * $Id: b1093bd5dc19ee121a8949255a820114209f093c $
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal ENNAIME <mirsal dot ennaime at gmail dot com>

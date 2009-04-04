@@ -2,7 +2,7 @@
  * interaction.cpp : Interaction stuff
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: cf18662b3f9ded6aa44f48d91ec591c933bcc9f3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

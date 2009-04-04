@@ -2,7 +2,7 @@
  * crop.c : Crop video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id$
+ * $Id: 67f0e5c3b8678fb0efcd87721b15418f891cccf1 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          mod by Cedric Cocquebert <Cedric.Cocquebert@supelec.fr>

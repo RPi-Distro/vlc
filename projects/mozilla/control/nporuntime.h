@@ -3,7 +3,7 @@
  *              FYI: http://www.mozilla.org/projects/plugins/npruntime.html
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id$
+ * $Id: 638ce7b4a3f3440dc4553b1d51467ec4f38b62d5 $
  *
  * Authors: Damien Fouilleul <damien.fouilleul@laposte.net>
  *

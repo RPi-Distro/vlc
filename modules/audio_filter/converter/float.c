@@ -2,7 +2,7 @@
  * float.c: Floating point audio format conversions
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id$
+ * $Id: 7d9c0227b68296b0ad676e3d79aa5a884ed794c3 $
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *          Christophe Massiot <massiot@via.ecp.fr>

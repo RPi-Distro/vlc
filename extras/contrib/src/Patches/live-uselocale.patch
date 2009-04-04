@@ -1,8 +1,17 @@
-Copyright (C) 2008 Rémi Denis-Courmont.
+Copyright (C) 2008 Rémi Denis-Courmont, adaptation by Felix Kühne (C) 2009.
 Licensed under GNU General Public License version 2 or higher.
-diff -ru live.old/liveMedia/include/Locale.hh live/liveMedia/include/Locale.hh
---- live.old/liveMedia/include/Locale.hh	2008-07-06 04:10:57.000000000 +0300
-+++ live/liveMedia/include/Locale.hh	2008-07-13 12:54:21.000000000 +0300
+diff -urN live.orig/config.mingw live/config.mingw
+--- live.orig/config.mingw	2009-03-23 01:26:16 +0300
++++ live/config.mingw	2009-03-26 19:17:43 +0300
+@@ -1,4 +1,4 @@
+-COMPILE_OPTS =         $(INCLUDES) -I. -O -DSOCKLEN_T=int
++COMPILE_OPTS =         $(INCLUDES) -I. -O -DSOCKLEN_T=int -DLOCALE_NOT_USED
+ C =                    c
+ C_COMPILER =           $(CC)
+ C_FLAGS =              $(COMPILE_OPTS) -DUSE_OUR_BZERO=1 -D__MINGW32__
+diff -urN live.orig/liveMedia/include/Locale.hh live/liveMedia/include/Locale.hh
+--- live.orig/liveMedia/include/Locale.hh	2009-03-23 01:26:16 +0300
++++ live/liveMedia/include/Locale.hh	2009-03-26 19:17:43 +0300
 @@ -27,23 +27,26 @@
  
  #ifndef LOCALE_NOT_USED
@@ -37,9 +46,9 @@ diff -ru live.old/liveMedia/include/Locale.hh live/liveMedia/include/Locale.hh
  };
  
  #endif
-diff -ru live.old/liveMedia/Locale.cpp live/liveMedia/Locale.cpp
---- live.old/liveMedia/Locale.cpp	2008-07-06 04:10:57.000000000 +0300
-+++ live/liveMedia/Locale.cpp	2008-07-13 12:55:32.000000000 +0300
+diff -urN live.orig/liveMedia/Locale.cpp live/liveMedia/Locale.cpp
+--- live.orig/liveMedia/Locale.cpp	2009-03-23 01:26:16 +0300
++++ live/liveMedia/Locale.cpp	2009-03-26 19:17:43 +0300
 @@ -22,19 +22,18 @@
  #include "Locale.hh"
  #include <strDup.hh>
@@ -66,58 +75,50 @@ diff -ru live.old/liveMedia/Locale.cpp live/liveMedia/Locale.cpp
    }
  #endif
  }
-diff -ru live.old/liveMedia/RTSPClient.cpp live/liveMedia/RTSPClient.cpp
---- live.old/liveMedia/RTSPClient.cpp	2008-07-06 04:10:57.000000000 +0300
-+++ live/liveMedia/RTSPClient.cpp	2008-07-13 12:53:35.000000000 +0300
-@@ -1017,7 +1017,7 @@
+diff -urN live.orig/liveMedia/RTSPClient.cpp live/liveMedia/RTSPClient.cpp
+--- live.orig/liveMedia/RTSPClient.cpp	2009-03-23 01:26:16 +0300
++++ live/liveMedia/RTSPClient.cpp	2009-03-26 19:29:38 +0300
+@@ -1019,7 +1019,7 @@
      // This is the default value; we don't need a "Scale:" header:
      buf[0] = '\0';
    } else {
--    Locale("C", LC_NUMERIC);
-+    Locale("C", LC_NUMERIC_MASK);
+-    Locale l("C", LC_NUMERIC);
++    Locale l("C", LC_NUMERIC_MASK);
      sprintf(buf, "Scale: %f\r\n", scale);
    }
  
-@@ -1031,11 +1031,11 @@
+@@ -1033,11 +1033,11 @@
      buf[0] = '\0';
    } else if (end < 0) {
      // There's no end time:
--    Locale("C", LC_NUMERIC);
-+    Locale("C", LC_NUMERIC_MASK);
+-    Locale l("C", LC_NUMERIC);
++    Locale l("C", LC_NUMERIC_MASK);
      sprintf(buf, "Range: npt=%.3f-\r\n", start);
    } else {
      // There's both a start and an end time; include them both in the "Range:" hdr
--    Locale("C", LC_NUMERIC);
-+    Locale("C", LC_NUMERIC_MASK);
+-    Locale l("C", LC_NUMERIC);
++    Locale l("C", LC_NUMERIC_MASK);
      sprintf(buf, "Range: npt=%.3f-%.3f\r\n", start, end);
    }
  
-@@ -2306,7 +2306,7 @@
+@@ -2342,7 +2342,7 @@
    if (_strncasecmp(line, "Scale: ", 7) != 0) return False;
    line += 7;
  
--  Locale("C", LC_NUMERIC);
-+  Locale("C", LC_NUMERIC_MASK);
+-  Locale l("C", LC_NUMERIC);
++  Locale l("C", LC_NUMERIC_MASK);
    return sscanf(line, "%f", &scale) == 1;
  }
  
-diff -ru live.old/liveMedia/RTSPCommon.cpp live/liveMedia/RTSPCommon.cpp
---- live.old/liveMedia/RTSPCommon.cpp      2008-11-03 23:28:14.000000000 -1000
-+++ live/liveMedia/RTSPCommon.cpp  2008-11-06 09:05:19.000000000 -1000
+diff -urN live.orig/liveMedia/RTSPCommon.cpp live/liveMedia/RTSPCommon.cpp
+--- live.orig/liveMedia/RTSPCommon.cpp	2009-03-23 01:26:16 +0300
++++ live/liveMedia/RTSPCommon.cpp	2009-03-26 19:23:25 +0300
 @@ -146,7 +146,7 @@
    char const* fields = buf + 7;
    while (*fields == ' ') ++fields;
    double start, end;
--  Locale("C", LC_NUMERIC);
-+  Locale("C", LC_NUMERIC_MASK);
+-  Locale l("C", LC_NUMERIC);
++  Locale l("C", LC_NUMERIC_MASK);
    if (sscanf(fields, "npt = %lf - %lf", &start, &end) == 2) {
      rangeStart = start;
      rangeEnd = end;
---- live/config.mingw.old	2008-07-27 17:13:52.000000000 +0100
-+++ live/config.mingw	2008-07-27 17:19:04.000000000 +0100
-@@ -1,4 +1,4 @@
--COMPILE_OPTS =         $(INCLUDES) -I. -O -DSOCKLEN_T=int
-+COMPILE_OPTS =         $(INCLUDES) -I. -O -DSOCKLEN_T=int -DLOCALE_NOT_USED
- C =                    c
- C_COMPILER =           $(CC)
- C_FLAGS =              $(COMPILE_OPTS) -DUSE_OUR_BZERO=1 -D__MINGW32__

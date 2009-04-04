@@ -2,7 +2,7 @@
  * interaction.hpp : Interaction dialogs
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: 909e5bc613e620b7e31164064056d8c4fbd819d5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

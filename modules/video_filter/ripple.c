@@ -2,7 +2,7 @@
  * ripple.c : Ripple video effect plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id$
+ * $Id: 6d9776fe1849ac15ee8472f16b0ecdf3c8bf7c07 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>

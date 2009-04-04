@@ -2,7 +2,7 @@
  * csri.c : Load CSRI subtitle renderer
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: 8e43d178fb4ace1685225c7d217673df422ce340 $
  *
  * Authors: David Lamparter <equinox@videolan.org>
  *

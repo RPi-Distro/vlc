@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id$
+ * $Id: 91d30deff38e59457bfe355602eb47c7db5b8081 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

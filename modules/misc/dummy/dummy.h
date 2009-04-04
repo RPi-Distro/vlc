@@ -2,7 +2,7 @@
  * dummy.h : dummy plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002 the VideoLAN team
- * $Id$
+ * $Id: a31c872b699e55e7be5d3d5b9de16181a3ec42eb $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

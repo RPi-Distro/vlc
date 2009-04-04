@@ -2,7 +2,7 @@
  * subtitles.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id$
+ * $Id: 2f1edb4206f5db8d9e9cb32480ef1423227a1fb4 $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>

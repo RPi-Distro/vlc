@@ -3,7 +3,7 @@
  * using MAD (MPEG Audio Decoder)
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id$
+ * $Id: 5e8de153d5a9f2b5047bac3fdc16e2b0400fdc0c $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>

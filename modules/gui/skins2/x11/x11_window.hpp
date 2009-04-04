@@ -2,7 +2,7 @@
  * x11_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 186a8c2edef955906a8c37a9aa83a50dda7b0d19 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * cinepak.c: cinepak video decoder
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id$
+ * $Id: b7642ec24911bb3240bfc7db3d6aa194f99b9c93 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
