@@ -6,3 +6,4 @@
 300_manpage_syntax.diff
 401_detect_xinerama_fullscreen.diff
 402_fortune_pruning.diff
+403_http_hosts.diff
