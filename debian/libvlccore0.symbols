@@ -342,6 +342,7 @@ libvlccore.so.0 libvlccore0 #MINVER#
  plane_CopyPixels@Base 0.9.1
  playlist_Add@Base 0.9.1
  playlist_AddExt@Base 0.9.1
+ playlist_AddExtOpt@Base 0.9.9
  playlist_AddInput@Base 0.9.1
  playlist_AskForArtEnqueue@Base 0.9.1
  playlist_BothAddInput@Base 0.9.1

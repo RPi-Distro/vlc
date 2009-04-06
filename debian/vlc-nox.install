@@ -4,7 +4,6 @@ usr/bin/rvlc
 usr/bin/vlc
 usr/bin/vlc-wrapper
 usr/lib/vlc/access/libaccess_directory_plugin.so
-usr/lib/vlc/access/libaccess_dv_plugin.so
 usr/lib/vlc/access/libaccess_fake_plugin.so
 usr/lib/vlc/access/libaccess_file_plugin.so
 usr/lib/vlc/access/libaccess_ftp_plugin.so
@@ -129,6 +128,7 @@ usr/lib/vlc/video_filter/libswscale_plugin.so
 usr/lib/vlc/video_filter/libtransform_plugin.so
 usr/lib/vlc/video_filter/libwall_plugin.so
 usr/lib/vlc/video_filter/libwave_plugin.so
+usr/lib/vlc/video_output/libcaca_plugin.so
 usr/lib/vlc/video_output/libimage_plugin.so
 usr/lib/vlc/video_output/libvmem_plugin.so
 usr/lib/vlc/visualization/libvisual_plugin.so

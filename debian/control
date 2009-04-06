@@ -1,5 +1,5 @@
 Source: vlc
-Section: graphics
+Section: video
 Priority: optional
 Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>
 XSBC-Original-Maintainer: Debian multimedia packages maintainers <pkg-multimedia-maintainers@lists.alioth.debian.org>
@@ -8,7 +8,7 @@ Uploaders: Sam Hocevar (Debian packages) <sam+deb@zoy.org>,
            Loic Minier <lool@dooz.org>,
            Christophe Mutricy <xtophe@videolan.org>,
            Mohammed Adnène Trojette <adn+deb@diwi.org>
-Build-Depends: debhelper (>= 6),
+Build-Depends: debhelper (>= 7),
                dh-buildinfo,
                gettext,
                quilt,
@@ -22,12 +22,10 @@ Build-Depends: debhelper (>= 6),
                libass-dev (>= 0.9.5-2),
                libaudiofile-dev,
                libavahi-client-dev,
-               libavc1394-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libavcodec-dev (>= 0.cvs20060823),
                libavformat-dev (>= 0.cvs20060823),
                libcaca-dev (>= 0.99.beta4),
                libcdio-dev,
-               libdc1394-22-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libdca-dev,
                libdvbpsi4-dev,
                libdvdnav-dev,
@@ -61,7 +59,6 @@ Build-Depends: debhelper (>= 6),
                libpostproc-dev (>= 0.cvs20060823),
                libpulse-dev,
                libqt4-dev,
-               libraw1394-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libschroedinger-dev,
                libsdl-image1.2-dev,
                libsdl1.2-dev (>= 1.2.7+1.2.8cvs20041007-5.3),
@@ -88,13 +85,13 @@ Build-Depends: debhelper (>= 6),
                pkg-config,
                qt4-dev-tools,
                zlib1g-dev
-Standards-Version: 3.8.0
+Standards-Version: 3.8.1
 Homepage: http://www.videolan.org/vlc
 Vcs-Bzr: https://code.launchpad.net/~motumedia/vlc/ubuntu
 Vcs-Browser: http://bazaar.launchpad.net/~motumedia/vlc/ubuntu/files
 
 Package: vlc
-Section: graphics
+Section: video
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}), 
          ${shlibs:Depends}, 
@@ -102,11 +99,8 @@ Depends: vlc-nox (= ${binary:Version}),
          ttf-dejavu-core
 Suggests: mozilla-plugin-vlc,
           videolan-doc
-Replaces: wxvlc (<< 0.8.5-test3.debian-4),
-          vlc-plugin-alsa (<< 0.8.5-test3.debian-4),
-          vlc-nox (<< 0.9.2-1)
-Conflicts: vlc-plugin-alsa (<< 0.8.5-test3.debian-4),
-           vlc-nox (<< 0.9.2-1)
+Replaces:  vlc-nox (<< 0.9.2-1)
+Conflicts: vlc-nox (<< 0.9.2-1)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -125,7 +119,7 @@ Description: multimedia player and streamer
  also a web browser plugin in the mozilla-plugin-vlc package.
 
 Package: vlc-dbg
-Section: graphics
+Section: debug
 Priority: extra
 Architecture: any
 Depends: ${shlibs:Depends},
@@ -139,16 +133,12 @@ Description: debugging symbols for vlc
  This package contains the debugging symbols for vlc.
 
 Package: vlc-nox
-Section: net
+Section: video
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Replaces: wxvlc (<< 0.8.5-test3.debian-4),
-          vlc-plugin-alsa (<< 0.8.5-test3.debian-4),
-          vlc (<< 0.8.6-svn20060911.0.8.5-1-svn.debian-3)
-Conflicts: wxvlc (<< 0.8.5-test3.debian-4),
-           vlc-plugin-alsa (<< 0.8.5-test3.debian-4),
-           vlc (<< 0.8.6-svn20060911.0.8.5-1-svn.debian-3)
+Replaces: vlc (<< 0.9.8a-3)
+Conflicts: vlc (<< 0.9.8a-3)
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -163,9 +153,9 @@ Description: multimedia player and streamer (without X support)
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added
  by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl,
- vlc-plugin-jack) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
- vlc-plugin-svgalib). There is also a web browser plugin in the
- mozilla-plugin-vlc package.
+ vlc-plugin-arts, vlc-plugin-jack) or video plugins (vlc-plugin-sdl, 
+ vlc-plugin-ggi, vlc-plugin-svgalib). There is also a web browser plugin in 
+ the mozilla-plugin-vlc package.
  .
  This package contains a version of VLC that does not require X and that is
  thus suitable for headless servers.
@@ -176,7 +166,7 @@ Architecture: any
 Depends: vlc-data,
          ${shlibs:Depends},
          ${misc:Depends}
-Description: multimedia player and streamer library
+Description: base library for VLC and its modules
  This package contains the shared library required by VLC modules and libvlc.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -203,7 +193,7 @@ Section: libdevel
 Architecture: any
 Depends: libvlccore0 (= ${binary:Version}), pkg-config, 
          ${shlibs:Depends}, ${misc:Depends}
-Description: development files for VLC
+Description: development files for libvlccore
  This package contains headers and a static library required to build plugins
  for VLC.
  .
@@ -218,7 +208,7 @@ Depends: libvlc2 (= ${binary:Version}), libvlccore-dev, pkg-config,
          ${shlibs:Depends}, ${misc:Depends}
 Replaces: libvlc0-dev
 Conflicts: libvlc0-dev
-Description: development files for VLC
+Description: development files for libvlc
  This package contains headers and a static library required to build 
  standalone applications that use VLC features.
  .

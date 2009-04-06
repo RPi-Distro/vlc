@@ -1,3 +1,6 @@
+Patch originally taken from the BTS #347650 and then adapted for 
+later libtool version
+
 Index: vlc-0.9.1/autotools/ltmain.sh
 ===================================================================
 --- vlc-0.9.1.orig/autotools/ltmain.sh	2008-04-29 22:21:21.000000000 +0200
