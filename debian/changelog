@@ -1,4 +1,4 @@
-vlc (0.9.9a-2) unstable; urgency=high
+vlc (0.9.9a-2) unstable; urgency=medium
 
   * Security fix
   * The default /usr/share/http/{old}/.hosts was wrong in VLC 0.9.8 and 0.9.
