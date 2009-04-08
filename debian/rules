@@ -16,7 +16,7 @@ confflags := --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE)
 endif
 
 ifneq (,$(filter noopt,$(DEB_BUILD_OPTIONS)))
-confflags += --disable-optimizations
+confflags += --disable-optimizations --disable-mmx --disable-sse --disable-altivec
 endif
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
