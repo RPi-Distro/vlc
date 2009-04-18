@@ -87,8 +87,8 @@ Build-Depends: debhelper (>= 7),
                zlib1g-dev
 Standards-Version: 3.8.1
 Homepage: http://www.videolan.org/vlc
-Vcs-Bzr: https://code.launchpad.net/~motumedia/vlc/ubuntu
-Vcs-Browser: http://bazaar.launchpad.net/~motumedia/vlc/ubuntu/files
+Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
+Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/heads/sid
 
 Package: vlc
 Section: video

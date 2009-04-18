@@ -1,3 +1,12 @@
+vlc (0.9.9a-2) unstable; urgency=medium
+
+  * Security fix
+  * The default /usr/share/http/{old}/.hosts was wrong in VLC 0.9.8 and 0.9.
+    World access of the htp interface was possible when activated in
+    contradiction of what is said in Chagelog.Debian and NEWS.Debian.
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Tue, 07 Apr 2009 23:06:48 +0200
+
 vlc (0.9.9a-1ubuntu1) jaunty; urgency=low
 
   * Merge from Debian. (LP: #356310)
@@ -366,6 +375,27 @@ vlc (0.8.6.i-1) experimental; urgency=low
     - Update and rename patch 050_bootstrap to 900_autoconf.
 
  -- Loic Minier <lool@dooz.org>  Fri, 22 Aug 2008 19:13:30 +0200
+vlc (0.8.6.h-5) unstable; urgency=high
+
+  * Acknowledge NMU by Nico Golde. Thanks.
+  * Fix buffer overflow in CUE demuxer (Closes: #504639) 
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 05 Nov 2008 22:02:06 +0100
+
+vlc (0.8.6.h-4.1) unstable; urgency=high
+
+  * Non-maintainer upload by the Security Team.
+  * Fix integer overflows that could possibly lead to arbitrary
+    code execution (CVE-2008-4686.diff; Closes: #503118).
+
+ -- Nico Golde <nion@debian.org>  Mon, 03 Nov 2008 14:41:58 +0100
+
+vlc (0.8.6.h-4) unstable; urgency=high
+
+  * Security: Fix integer overflow in mms module
+    (Closes: #496265)(407-mms-overflow.diff taken from upstream)
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Mon, 25 Aug 2008 01:07:27 +0100
 
 vlc (0.8.6.h-3) unstable; urgency=low
 
