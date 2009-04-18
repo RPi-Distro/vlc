@@ -1,3 +1,27 @@
+vlc (0.9.9a-2ubuntu1) jaunty; urgency=low
+
+  * Merge from debian which includes a small security fix.
+  * Adjusted Vcs fields to point to pkg-multimedia's git branch. The
+    package is maintained in the 'jaunty' branch.
+  * Remaining changes to debian:
+    - build against libxul-dev instead of iceape-dev
+    - build against libass-dev and libx264-dev
+    - build against and install libx264 plugin
+    - add Xb-Npp header to vlc package
+    - debian/patches/301_DVD_media.diff: Change %U to %f
+       in VLC .desktop file, cf LP #275043
+    - Remove arts from dependencies. (LP: #320915)
+      - debian/control:
+        - Remove libarts1-dev from build depends
+        - Don't build package vlc-plugin-arts
+        - Remove all notions of vlc-plugin-arts from packages descriptions
+      - debian/rules:
+        - Remove --enable-arts from confflags
+      - Delete debian/vlc-plugin-arts.install
+      - Delete debian/vlc-plugin-arts.links
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 18 Apr 2009 19:52:57 +0200
+
 vlc (0.9.9a-2) unstable; urgency=medium
 
   * Security fix
