@@ -1,0 +1,13 @@
+*.debhelper*
+tmp/
+vlc/
+vlc-nox/
+libvlc2/
+libvlccore0/
+libvlc-dev/
+libvlccore-dev/
+vlc-plugin-*/
+mozilla-plugin-vlc/
+vlc-data/
+vlc-dbg/
+*.kfreebsd*
