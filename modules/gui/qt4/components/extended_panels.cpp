@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 1cad74e515a3aa45bba4ba080573a91787f0c593 $
+ * $Id: ff4d763ae06c23942215af27355f216ca19bfa0a $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -877,7 +877,6 @@ Equalizer::~Equalizer()
 
 void Equalizer::clean()
 {
-    ui.enableCheck->setChecked( false );
     enable();
 }
 /* Write down initial values */

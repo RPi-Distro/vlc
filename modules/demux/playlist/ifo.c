@@ -2,7 +2,7 @@
  * ifo.c: Dummy ifo demux to enable opening DVDs rips by double cliking on VIDEO_TS.IFO
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: 058da357782e6e9283dbbcf56872ff1e3d89cb83 $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan d.t org>
  *

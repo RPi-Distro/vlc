@@ -2,7 +2,7 @@
  * fourcc.h: libavcodec <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: f031449d94716306f6cb40291f61f0c0187d6d4c $
+ * $Id: 0cd58244186e27722e113005e3ce6e871454c6e7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -543,19 +543,26 @@ static const struct
 
     /* Real Video */
     { VLC_FOURCC('R','V','1','0'), CODEC_ID_RV10,
-      VIDEO_ES, "Real Video 10" },
+      VIDEO_ES, "Real Video 1.0" },
     { VLC_FOURCC('r','v','1','0'), CODEC_ID_RV10,
-      VIDEO_ES, "Real Video 10" },
+      VIDEO_ES, "Real Video 1.0" },
     { VLC_FOURCC('R','V','1','3'), CODEC_ID_RV10,
-      VIDEO_ES, "Real Video 13" },
+      VIDEO_ES, "Real Video 1.3" },
     { VLC_FOURCC('r','v','1','3'), CODEC_ID_RV10,
       VIDEO_ES, "Real Video 13" },
 #if LIBAVCODEC_VERSION_INT >= ((51<<16)+(15<<8)+1)
     { VLC_FOURCC('R','V','2','0'), CODEC_ID_RV20,
-      VIDEO_ES, "Real Video 20" },
+      VIDEO_ES, "Real Video 2.0" },
     { VLC_FOURCC('r','v','2','0'), CODEC_ID_RV20,
-      VIDEO_ES, "Real Video 20" },
+      VIDEO_ES, "Real Video 2.0" },
 #endif
+#if LIBAVCODEC_VERSION_INT >= ((52<<16)+(5<<8)+0)
+    { VLC_FOURCC('R','V','4','0'), CODEC_ID_RV40,
+      VIDEO_ES, "Real Video 4.0" },
+    { VLC_FOURCC('r','v','4','0'), CODEC_ID_RV40,
+      VIDEO_ES, "Real Video 4.0" },
+#endif
+
 
     /* Apple Video */
     { VLC_FOURCC('r','p','z','a'), CODEC_ID_RPZA,

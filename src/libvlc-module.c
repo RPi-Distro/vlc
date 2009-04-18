@@ -2,7 +2,7 @@
  * libvlc.h: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: 16f6cb03eed5be9358effe437df0fff9577e18c6 $
+ * $Id: fc67965682a0912e2e38e0734f00902eb776a1ae $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -48,6 +48,7 @@ static const char *const ppsz_language[] =
     "auto",
     "en",
     "ar",
+    "bn",
     "pt_BR",
     "en_GB",
     "bg",
@@ -63,6 +64,7 @@ static const char *const ppsz_language[] =
     "de",
     "he",
     "hu",
+    "id",
     "it",
     "ja",
     "ko",
@@ -89,6 +91,7 @@ static const char *const ppsz_language_text[] =
     N_("Auto"),
     N_("American English"),
     N_("Arabic"),
+    N_("Bengali"),
     N_("Brazilian Portuguese"),
     N_("British English"),
     N_("Bulgarian"),
@@ -104,6 +107,7 @@ static const char *const ppsz_language_text[] =
     N_("German"),
     N_("Hebrew"),
     N_("Hungarian"),
+    N_("Indonesian"),
     N_("Italian"),
     N_("Japanese"),
     N_("Korean"),

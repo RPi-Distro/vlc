@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 6c13eacc49b4d578321a2d164020cf5f77d8a99d $
+ * $Id: 3ee71fdc1d44a074b9a87dd912656a8ee267ea39 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Rémi Denis-Courmont <rem$videolan,org>
@@ -58,6 +58,11 @@
 
 #if defined(HAVE_SYS_TIME_H)
 #   include <sys/time.h>
+#endif
+
+#if defined(__APPLE__) && !defined(__powerpc__) && !defined( __ppc__ ) && !defined( __ppc64__ )
+#   include <mach/mach.h>
+#   include <mach/mach_time.h>
 #endif
 
 #if !defined(HAVE_STRUCT_TIMESPEC)
@@ -172,6 +177,15 @@ static inline unsigned mprec( void )
 #endif
 }
 
+#if defined(__APPLE__) && !defined(__powerpc__) && !defined( __ppc__ ) && !defined( __ppc64__ )
+static mach_timebase_info_data_t mtime_timebase_info;
+static pthread_once_t mtime_timebase_info_once = PTHREAD_ONCE_INIT;
+static void mtime_init_timebase(void)
+{
+    mach_timebase_info(&mtime_timebase_info);
+}
+#endif
+
 /**
  * Return high precision date
  *
@@ -197,6 +211,16 @@ mtime_t mdate( void )
 #elif defined( HAVE_KERNEL_OS_H )
     res = real_time_clock_usecs();
 
+#elif defined(__APPLE__) && !defined(__powerpc__) && !defined( __ppc__ ) && !defined( __ppc64__ )
+    pthread_once(&mtime_timebase_info_once, mtime_init_timebase);
+    uint64_t date = mach_absolute_time();
+
+    /* Convert to nanoseconds */
+    date *= mtime_timebase_info.numer;
+    date /= mtime_timebase_info.denom;
+
+    /* Convert to microseconds */
+    res = date / 1000;
 #elif defined( WIN32 ) || defined( UNDER_CE )
     /* We don't need the real date, just the value of a high precision timer */
     static mtime_t freq = INT64_C(-1);
@@ -340,6 +364,12 @@ void mwait( mtime_t date )
         ts.tv_sec = d.quot; ts.tv_nsec = d.rem * 1000;
         while( clock_nanosleep( CLOCK_REALTIME, 0, &ts, NULL ) == EINTR );
     }
+#elif defined(__APPLE__) && !defined(__powerpc__) && !defined( __ppc__ ) && !defined( __ppc64__ )
+    /* The version that should be used, if it was cancelable */
+    pthread_once(&mtime_timebase_info_once, mtime_init_timebase);
+    uint64_t mach_time = date * 1000 * mtime_timebase_info.denom / mtime_timebase_info.numer;
+    mach_wait_until(mach_time);
+
 #else
 
     mtime_t delay = date - mdate();
@@ -384,6 +414,12 @@ void msleep( mtime_t delay )
     ts_delay.tv_nsec = (delay % 1000000) * 1000;
 
     while( nanosleep( &ts_delay, &ts_delay ) && ( errno == EINTR ) );
+
+#elif defined( __APPLE__) && !defined(__powerpc__) && !defined( __ppc__ ) && !defined( __ppc64__ )
+    /* The version that should be used, if it was cancelable */
+    pthread_once(&mtime_timebase_info_once, mtime_init_timebase);
+    uint64_t mach_time = delay * 1000 * mtime_timebase_info.denom / mtime_timebase_info.numer;
+    mach_wait_until(mach_time + mach_absolute_time());
 
 #else
     struct timeval tv_delay;

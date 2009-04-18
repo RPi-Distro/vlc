@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: d0acee095c852bcb2f6a0e03cbd26f0c1be16491 $
+ * $Id: 24bf9ff071fd40ebe38cf3f2dbc690f48c1f2c6a $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -333,6 +333,7 @@ struct intf_sys_t
 - (id)getSimplePreferences;
 - (id)getPreferences;
 - (id)getPlaylist;
+- (BOOL)isPlaylistCollapsed;
 - (id)getInfo;
 - (id)getWizard;
 - (id)getBookmarks;

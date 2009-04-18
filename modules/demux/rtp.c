@@ -182,12 +182,13 @@ static int Open (vlc_object_t *obj)
     {
         case IPPROTO_UDP:
         case IPPROTO_UDPLITE:
-            fd = net_OpenDgram (obj, dhost, (dport + 1) & ~1,
-                                shost, (sport + 1) & ~1, AF_UNSPEC, tp);
+            fd = net_OpenDgram (obj, dhost, dport, shost, sport,
+                                AF_UNSPEC, tp);
             if (fd == -1)
                 break;
-            rtcp_fd = net_OpenDgram (obj, dhost, dport | 1, shost,
-                                     sport ? (sport | 1) : 0, AF_UNSPEC, tp);
+            if ((dport & 1) == 0)
+                rtcp_fd = net_OpenDgram (obj, dhost, dport + 1, shost, 0,
+                                         AF_UNSPEC, tp);
             break;
 
          case IPPROTO_DCCP:
@@ -199,14 +200,14 @@ static int Open (vlc_object_t *obj)
 #ifdef SOCK_DCCP
             var_Create (obj, "dccp-service", VLC_VAR_STRING);
             var_SetString (obj, "dccp-service", "RTPV"); /* FIXME: RTPA? */
-            fd = net_Connect (obj, shost, (sport + 1) & ~1, SOCK_DCCP, tp);
+            fd = net_Connect (obj, shost, sport, SOCK_DCCP, tp);
 #else
             msg_Err (obj, "DCCP support not included");
 #endif
             break;
 
         case IPPROTO_TCP:
-            fd = net_Connect (obj, shost, (sport + 1) & ~1, SOCK_STREAM, tp);
+            fd = net_Connect (obj, shost, sport, SOCK_STREAM, tp);
             break;
     }
 
@@ -554,6 +555,7 @@ static void *mpa_init (demux_t *demux)
 
     es_format_Init (&fmt, AUDIO_ES, VLC_FOURCC ('m', 'p', 'g', 'a'));
     fmt.audio.i_channels = 2;
+    fmt.b_packetized = false;
     return codec_init (demux, &fmt);
 }
 
@@ -580,6 +582,7 @@ static void *mpv_init (demux_t *demux)
     es_format_t fmt;
 
     es_format_Init (&fmt, VIDEO_ES, VLC_FOURCC ('m', 'p', 'g', 'v'));
+    fmt.b_packetized = false;
     return codec_init (demux, &fmt);
 }
 

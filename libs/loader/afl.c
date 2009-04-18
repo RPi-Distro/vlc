@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: 8800df16dbb7d56722e493952b04908dd2bfff3c $
  *
  * Copyright (C) 1998 Patrick Stridvall
  * Copyright (C) 1999 Eric Pouech

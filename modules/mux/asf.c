@@ -2,7 +2,7 @@
  * asf.c: asf muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2004, 2006 the VideoLAN team
- * $Id$
+ * $Id: fbcc6081fd3dfa6bd2636d5e522b5b11d9041260 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

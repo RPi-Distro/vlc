@@ -2,7 +2,7 @@
  * extended.hpp : Extended controls - Undocked
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: d57aaa27f791815e3d1266b46bddfc66aa9a2de4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

@@ -2,7 +2,7 @@
  * hd1000v.cpp: HD1000 video output display method
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: e5cbf29df0671c8dba2650435e6449c1f3831705 $
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *

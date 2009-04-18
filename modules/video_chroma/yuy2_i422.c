@@ -2,7 +2,7 @@
  * yuy2_i422.c : Packed YUV 4:2:2 to Planar YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: 4faea42cc0b9d4bd8e609e8c90efd708cff91a51 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *

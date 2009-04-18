@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist export functions
  ******************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 7ec9f123b3c3777ceeade66a5fe422866bd8bf62 $
+ * $Id: 1f499090e04fa9b181af9fec1b9a5dd46f683e56 $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -324,9 +324,9 @@ static char *assertUTF8URI( char *psz_name )
         return NULL;
 
     /** \todo check for a valid scheme part preceding the colon */
-    size_t i_delim = strcspn( psz_s, ":" );
-    if( i_delim != strlen( psz_s ) )
+    if( strstr( psz_s, "://") != NULL )
     {
+        size_t i_delim = strcspn( psz_s, ":" );
         i_delim++; /* skip the ':' */
         strncpy( psz_ret, psz_s, i_delim );
         psz_d = psz_ret + i_delim;
@@ -354,6 +354,7 @@ static char *assertUTF8URI( char *psz_name )
             *psz_s == ' ' ||
             *psz_s == '+' ||
             *psz_s == '%' ||
+            *psz_s == '\\' ||
             ( b_uri_is_file && (
             *psz_s == ':' ||
             *psz_s == '"' ||

@@ -2,7 +2,7 @@
  * acl.c:
  *****************************************************************************
  * Copyright © 2005-2007 Rémi Denis-Courmont
- * $Id$
+ * $Id: 1a5d8f09ca9e836c29916e0032fbfa02e2fee789 $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

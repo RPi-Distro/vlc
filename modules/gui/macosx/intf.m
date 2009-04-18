@@ -1,8 +1,8 @@
 /*****************************************************************************
  * intf.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 03a285177806073b9124302e3feaf520b6cd935f $
+ * Copyright (C) 2002-2009 the VideoLAN team
+ * $Id: eb6e92e8084c12aba12c4ec80a4f747220007087 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -471,7 +471,7 @@ static VLCMain *_o_sharedMainInstance = nil;
 #ifdef UPDATE_CHECK
     /* Check for update silently on startup */
     if( !nib_update_loaded )
-        nib_update_loaded = [NSBundle loadNibNamed:@"Update" owner:self];
+        nib_update_loaded = [NSBundle loadNibNamed:@"Update" owner: NSApp];
 
     if([o_update shouldCheckForUpdate])
         [NSThread detachNewThreadSelector:@selector(checkForUpdate) toTarget:o_update withObject:nil];
@@ -1247,7 +1247,7 @@ static unsigned int VLCModifiersToCocoa( unsigned int i_key )
         return nil;
 
     if( !nib_prefs_loaded )
-        nib_prefs_loaded = [NSBundle loadNibNamed:@"Preferences" owner: self];
+        nib_prefs_loaded = [NSBundle loadNibNamed:@"Preferences" owner: NSApp];
 
     return o_sprefs;
 }
@@ -1258,7 +1258,7 @@ static unsigned int VLCModifiersToCocoa( unsigned int i_key )
         return nil;
 
     if( !nib_prefs_loaded )
-        nib_prefs_loaded = [NSBundle loadNibNamed:@"Preferences" owner: self];
+        nib_prefs_loaded = [NSBundle loadNibNamed:@"Preferences" owner: NSApp];
 
     return o_prefs;
 }
@@ -1269,6 +1269,11 @@ static unsigned int VLCModifiersToCocoa( unsigned int i_key )
         return o_playlist;
 
     return nil;
+}
+
+- (BOOL)isPlaylistCollapsed
+{
+    return ![o_btn_playlist state];
 }
 
 - (id)getInfo
@@ -1482,7 +1487,12 @@ static void * ManageThread( void *user_data )
             {
                 b_buffering = YES;
             }
-                 
+
+            /* update our info-panel to reflect the new item, if we don't show
+             * the playlist or the selection is empty */
+            if( [self isPlaylistCollapsed] == YES )
+                [[self getInfo] updatePanelWithItem: p_playlist->status.p_item->p_input];
+
             /* seekable streams */
             b_seekable = var_GetBool( p_input, "seekable" );
 
@@ -1574,6 +1584,7 @@ static void * ManageThread( void *user_data )
  
             [o_playlist updateRowSelection];
             p_intf->p_sys->b_current_title_update = FALSE;
+            p_intf->p_sys->b_intf_update = true;
         }
 
         if( [o_timeslider isEnabled] )
@@ -1596,6 +1607,9 @@ static void * ManageThread( void *user_data )
             [o_timefield setStringValue: o_time];
             [[[self getControls] getFSPanel] setStreamPos: f_updated andTime: o_time];
             [o_embedded_window setTime: o_time position: f_updated];
+
+            [o_main_pgbar stopAnimation:self];
+            [o_main_pgbar setHidden:YES];
         }
 
         /* Manage Playing status */
@@ -1893,7 +1907,7 @@ end:
 {
     if( !nib_open_loaded )
     {
-        nib_open_loaded = [NSBundle loadNibNamed:@"Open" owner:self];
+        nib_open_loaded = [NSBundle loadNibNamed:@"Open" owner: NSApp];
         [o_open awakeFromNib];
         [o_open openFile];
     } else {
@@ -1905,7 +1919,7 @@ end:
 {
     if( !nib_open_loaded )
     {
-        nib_open_loaded = [NSBundle loadNibNamed:@"Open" owner:self];
+        nib_open_loaded = [NSBundle loadNibNamed:@"Open" owner: NSApp];
         [o_open awakeFromNib];
         [o_open openFileGeneric];
     } else {
@@ -1917,7 +1931,7 @@ end:
 {
     if( !nib_open_loaded )
     {
-        nib_open_loaded = [NSBundle loadNibNamed:@"Open" owner:self];
+        nib_open_loaded = [NSBundle loadNibNamed:@"Open" owner: NSApp];
         [o_open awakeFromNib];
         [o_open openDisc];
     } else {
@@ -1929,7 +1943,7 @@ end:
 {
     if( !nib_open_loaded )
     {
-        nib_open_loaded = [NSBundle loadNibNamed:@"Open" owner:self];
+        nib_open_loaded = [NSBundle loadNibNamed:@"Open" owner: NSApp];
         [o_open awakeFromNib];
         [o_open openNet];
     } else {
@@ -1941,7 +1955,7 @@ end:
 {
     if( !nib_open_loaded )
     {
-        nib_open_loaded = [NSBundle loadNibNamed:@"Open" owner:self];
+        nib_open_loaded = [NSBundle loadNibNamed:@"Open" owner: NSApp];
         [o_open awakeFromNib];
         [o_open openCapture];
     } else {
@@ -1953,7 +1967,7 @@ end:
 {
     if( !nib_wizard_loaded )
     {
-        nib_wizard_loaded = [NSBundle loadNibNamed:@"Wizard" owner:self];
+        nib_wizard_loaded = [NSBundle loadNibNamed:@"Wizard" owner: NSApp];
         [o_wizard initStrings];
         [o_wizard resetWizard];
         [o_wizard showWizard];
@@ -1969,7 +1983,7 @@ end:
         o_extended = [[VLCExtended alloc] init];
 
     if( !nib_extended_loaded )
-        nib_extended_loaded = [NSBundle loadNibNamed:@"Extended" owner:self];
+        nib_extended_loaded = [NSBundle loadNibNamed:@"Extended" owner: NSApp];
 
     [o_extended showPanel];
 }
@@ -1979,12 +1993,12 @@ end:
     /* we need the wizard-nib for the bookmarks's extract functionality */
     if( !nib_wizard_loaded )
     {
-        nib_wizard_loaded = [NSBundle loadNibNamed:@"Wizard" owner:self];
+        nib_wizard_loaded = [NSBundle loadNibNamed:@"Wizard" owner: NSApp];
         [o_wizard initStrings];
     }
  
     if( !nib_bookmarks_loaded )
-        nib_bookmarks_loaded = [NSBundle loadNibNamed:@"Bookmarks" owner:self];
+        nib_bookmarks_loaded = [NSBundle loadNibNamed:@"Bookmarks" owner: NSApp];
 
     [o_bookmarks showBookmarks];
 }
@@ -1993,7 +2007,7 @@ end:
 {
     if( !nib_prefs_loaded )
     {
-        nib_prefs_loaded = [NSBundle loadNibNamed:@"Preferences" owner: self];
+        nib_prefs_loaded = [NSBundle loadNibNamed:@"Preferences" owner: NSApp];
         o_sprefs = [[VLCSimplePrefs alloc] init];
         o_prefs= [[VLCPrefs alloc] init];
     }
@@ -2008,7 +2022,7 @@ end:
 {
 #ifdef UPDATE_CHECK
     if( !nib_update_loaded )
-        nib_update_loaded = [NSBundle loadNibNamed:@"Update" owner:self];
+        nib_update_loaded = [NSBundle loadNibNamed:@"Update" owner: NSApp];
     [o_update showUpdateWindow];
 #else
     msg_Err( VLCIntf, "Update checker wasn't enabled in this build" );
@@ -2022,7 +2036,7 @@ end:
 - (IBAction)viewAbout:(id)sender
 {
     if( !nib_about_loaded )
-        nib_about_loaded = [NSBundle loadNibNamed:@"About" owner:self];
+        nib_about_loaded = [NSBundle loadNibNamed:@"About" owner: NSApp];
 
     [o_about showAbout];
 }
@@ -2030,7 +2044,7 @@ end:
 - (IBAction)showLicense:(id)sender
 {
     if( !nib_about_loaded )
-        nib_about_loaded = [NSBundle loadNibNamed:@"About" owner:self];
+        nib_about_loaded = [NSBundle loadNibNamed:@"About" owner: NSApp];
 
     [o_about showGPL: sender];
 }
@@ -2039,7 +2053,7 @@ end:
 {
     if( !nib_about_loaded )
     {
-        nib_about_loaded = [NSBundle loadNibNamed:@"About" owner:self];
+        nib_about_loaded = [NSBundle loadNibNamed:@"About" owner: NSApp];
         [o_about showHelp];
     }
     else
@@ -2294,7 +2308,7 @@ end:
 - (IBAction)showInformationPanel:(id)sender
 {
     if(! nib_info_loaded )
-        nib_info_loaded = [NSBundle loadNibNamed:@"MediaInfo" owner: self];
+        nib_info_loaded = [NSBundle loadNibNamed:@"MediaInfo" owner: NSApp];
     
     [o_info initPanel];
 }
@@ -2303,6 +2317,8 @@ end:
 {
     if( [o_notification object] == o_msgs_panel )
     {
+        [self updateMessageArray];
+
         id o_msg;
         NSEnumerator * o_enum;
 
@@ -2321,9 +2337,17 @@ end:
     }
 }
 
+- (void)windowDidUpdate:(NSNotification *)o_notification
+{
+    if( [o_notification object] == o_msgs_panel )
+        [self updateMessageArray];
+}
+
 - (void)updateMessageArray
 {
     int i_start, i_stop;
+
+    if(![o_msgs_panel isVisible]) return;
 
     vlc_mutex_lock( p_intf->p_sys->p_sub->p_lock );
     i_stop = *p_intf->p_sys->p_sub->pi_stop;
@@ -2461,13 +2485,11 @@ end:
 - (void)updateTogglePlaylistState
 {
     if( [o_window contentRectForFrameRect:[o_window frame]].size.height <= 169. )
-    {
         [o_btn_playlist setState: NO];
-    }
     else
-    {
         [o_btn_playlist setState: YES];
-    }
+
+    [[self getPlaylist] outlineViewSelectionDidChange: NULL];
 }
 
 - (NSSize)windowWillResize:(NSWindow *)sender toSize:(NSSize)proposedFrameSize

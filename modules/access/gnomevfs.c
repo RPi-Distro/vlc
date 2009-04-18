@@ -2,7 +2,7 @@
  * gnomevfs.c: GnomeVFS input
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: fb8f56bed8e3e000edd9113cc5e2b07eec55e472 $
  *
  * Authors: Benjamin Pracht <bigben -AT- videolan -DOT- org>
  *

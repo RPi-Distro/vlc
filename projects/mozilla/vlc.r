@@ -13,7 +13,7 @@ data 'carb' (0)
 resource 'STR#' (126)
 {
     {
-        "Version 0.9.0, copyright 1996-2007 The VideoLAN Team"
+        "VLC media player - version 0.9.9a Grishenko - (c) 1996-2009 the VideoLAN team"
         "<BR><A HREF='http://www.videolan.org'>http://www.videolan.org</A>",
         "VLC Multimedia Plug-in"
     };

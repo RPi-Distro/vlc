@@ -2,7 +2,7 @@
  * bits.h : Bit handling helpers
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 4dcfa2f1a37e577448a371dea8c56303551d48bf $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

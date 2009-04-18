@@ -2,7 +2,7 @@
  * vc1.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id$
+ * $Id: 854b93691d3086db3600c8079aa674e6b2ad5672 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

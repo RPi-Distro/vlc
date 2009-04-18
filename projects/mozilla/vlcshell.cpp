@@ -2,7 +2,7 @@
  * vlcshell.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id$
+ * $Id: 727ec01d09408a17ea477d9bec1bc75bb2d0a333 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -42,11 +42,12 @@
 #endif
 
 #include "vlcplugin.h"
+#include "vlcshell.h"
 
 /* Enable/disable debugging printf's for X11 resizing */
 #undef X11_RESIZE_DEBUG
 
-#define WINDOW_TEXT "Video is loading..."
+#define WINDOW_TEXT "Waiting for video"
 
 /*****************************************************************************
  * Unix-only declarations
@@ -79,19 +80,20 @@ static LRESULT CALLBACK Manage( HWND p_hwnd, UINT i_msg, WPARAM wpar, LPARAM lpa
  *****************************************************************************/
 char * NPP_GetMIMEDescription( void )
 {
-    return PLUGIN_MIMETYPES;
+    static char mimetype[] = PLUGIN_MIMETYPES;
+    return mimetype;
 }
 
 NPError NPP_GetValue( NPP instance, NPPVariable variable, void *value )
 {
-
+    static char psz_name[] = PLUGIN_NAME;
     static char psz_desc[1000];
 
     /* plugin class variables */
     switch( variable )
     {
         case NPPVpluginNameString:
-            *((char **)value) = PLUGIN_NAME;
+            *((char **)value) = psz_name;
             return NPERR_NO_ERROR;
 
         case NPPVpluginDescriptionString:
@@ -625,14 +627,12 @@ int32 NPP_WriteReady( NPP instance, NPStream *stream )
     return 8*1024;
 }
 
-
 int32 NPP_Write( NPP instance, NPStream *stream, int32 offset,
                  int32 len, void *buffer )
 {
     /* TODO */
     return len;
 }
-
 
 NPError NPP_DestroyStream( NPP instance, NPStream *stream, NPError reason )
 {
@@ -642,7 +642,6 @@ NPError NPP_DestroyStream( NPP instance, NPStream *stream, NPError reason )
     }
     return NPERR_NO_ERROR;
 }
-
 
 void NPP_StreamAsFile( NPP instance, NPStream *stream, const char* fname )
 {
@@ -666,7 +665,6 @@ void NPP_StreamAsFile( NPP instance, NPStream *stream, const char* fname )
         }
     }
 }
-
 
 void NPP_URLNotify( NPP instance, const char* url,
                     NPReason reason, void* notifyData )

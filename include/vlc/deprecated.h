@@ -2,7 +2,7 @@
  * deprecated.h:  libvlc deprecated API
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id$
+ * $Id: ba9a7be9ded108066ada4cc5bff1b52882119ad1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -212,6 +212,22 @@ VLC_DEPRECATED_API int libvlc_playlist_add( libvlc_instance_t *, const char *,
  * \return the identifier of the new item
  */
 VLC_DEPRECATED_API int libvlc_playlist_add_extended( libvlc_instance_t *, const char *,
+                                                 const char *, int, const char **,
+                                                 libvlc_exception_t * );
+
+/**
+ * Append an item to the playlist. The item is added at the end, with
+ * additional input options from an untrusted source.
+ *
+ * \param p_instance the playlist instance
+ * \param psz_uri the URI to open, using VLC format
+ * \param psz_name a name that you might want to give or NULL
+ * \param i_options the number of options to add
+ * \param ppsz_options strings representing the options to add
+ * \param p_e an initialized exception pointer
+ * \return the identifier of the new item
+ */
+VLC_DEPRECATED_API int libvlc_playlist_add_extended_untrusted( libvlc_instance_t *, const char *,
                                                  const char *, int, const char **,
                                                  libvlc_exception_t * );
 

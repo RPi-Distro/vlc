@@ -2,7 +2,7 @@
  * spudec.h : sub picture unit decoder thread interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2006 the VideoLAN team
- * $Id$
+ * $Id: 71de9ba77a138992250056b3316661f71fdaed61 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *

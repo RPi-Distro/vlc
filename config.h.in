@@ -1,5 +1,8 @@
 /* config.h.in.  Generated from configure.ac by autoheader.  */
 
+/* Define if building universal (internal helper macro) */
+#undef AC_APPLE_UNIVERSAL_BUILD
+
 /* Define to 1 to allow runing VLC as root (uid 0). */
 #undef ALLOW_RUN_AS_ROOT
 
@@ -919,6 +922,28 @@
 /* Define if you want to use the VLC update mechanism */
 #undef UPDATE_CHECK
 
+/* Enable extensions on AIX 3, Interix.  */
+#ifndef _ALL_SOURCE
+# undef _ALL_SOURCE
+#endif
+/* Enable GNU extensions on systems that have them.  */
+#ifndef _GNU_SOURCE
+# undef _GNU_SOURCE
+#endif
+/* Enable threading extensions on Solaris.  */
+#ifndef _POSIX_PTHREAD_SEMANTICS
+# undef _POSIX_PTHREAD_SEMANTICS
+#endif
+/* Enable extensions on HP NonStop.  */
+#ifndef _TANDEM_SOURCE
+# undef _TANDEM_SOURCE
+#endif
+/* Enable general extensions on Solaris.  */
+#ifndef __EXTENSIONS__
+# undef __EXTENSIONS__
+#endif
+
+
 /* Version number of package */
 #undef VERSION
 
@@ -940,9 +965,17 @@
 /* host which ran configure */
 #undef VLC_COMPILE_HOST
 
-/* Define to 1 if your processor stores words with the most significant byte
-   first (like Motorola and SPARC, unlike Intel and VAX). */
-#undef WORDS_BIGENDIAN
+/* Define WORDS_BIGENDIAN to 1 if your processor stores words with the most
+   significant byte first (like Motorola and SPARC, unlike Intel). */
+#if defined AC_APPLE_UNIVERSAL_BUILD
+# if defined __BIG_ENDIAN__
+#  define WORDS_BIGENDIAN 1
+# endif
+#else
+# ifndef WORDS_BIGENDIAN
+#  undef WORDS_BIGENDIAN
+# endif
+#endif
 
 /* Define to 1 if the X Window System is missing or not being used. */
 #undef X_DISPLAY_MISSING
@@ -950,20 +983,8 @@
 /* Define if the zvbi module is built */
 #undef ZVBI_COMPILED
 
-/* Define to 1 if on AIX 3.
-   System headers sometimes define this.
-   We just want to avoid a redefinition error message.  */
-#ifndef _ALL_SOURCE
-# undef _ALL_SOURCE
-#endif
-
 /* Define to '2' to get glibc warnings. */
 #undef _FORTIFY_SOURCE
-
-/* Enable GNU extensions on systems that have them.  */
-#ifndef _GNU_SOURCE
-# undef _GNU_SOURCE
-#endif
 
 /* Define to 1 if on MINIX. */
 #undef _MINIX
@@ -978,17 +999,6 @@
 /* Define to '0x0500' for Windows 2000 APIs. */
 #undef _WIN32_WINNT
 
-/* Enable extensions on Solaris.  */
-#ifndef __EXTENSIONS__
-# undef __EXTENSIONS__
-#endif
-#ifndef _POSIX_PTHREAD_SEMANTICS
-# undef _POSIX_PTHREAD_SEMANTICS
-#endif
-#ifndef _TANDEM_SOURCE
-# undef _TANDEM_SOURCE
-#endif
-
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
 
@@ -998,9 +1008,18 @@
 #undef inline
 #endif
 
-/* Define to equivalent of C99 restrict keyword, or to nothing if this is not
-   supported. Do not define if restrict is supported directly. */
+/* Define to the equivalent of the C99 'restrict' keyword, or to
+   nothing if this is not supported.  Do not define if restrict is
+   supported directly.  */
 #undef restrict
+/* Work around a bug in Sun C++: it does not support _Restrict, even
+   though the corresponding Sun C compiler does, which causes
+   "#define restrict _Restrict" in the previous line.  Perhaps some future
+   version of Sun C++ will work with _Restrict; if so, it'll probably
+   define __RESTRICT, just as Sun C does.  */
+#if defined __SUNPRO_CC && !defined __RESTRICT
+# define _Restrict
+#endif
 
 /* Define to `sockaddr' if <sys/socket.h> does not define. */
 #undef sockaddr_storage

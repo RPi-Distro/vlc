@@ -2,7 +2,7 @@
  * media.c: Libvlc API media descripor management
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: b079aa88b6b7958210575e31542aa4ef88c59b04 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont@videolan.org>
  *
@@ -349,6 +349,20 @@ void libvlc_media_add_option(
     input_item_AddOpt( p_md->p_input_item, ppsz_option,
                       VLC_INPUT_OPTION_UNIQUE|VLC_INPUT_OPTION_TRUSTED );
 }
+
+/**************************************************************************
+ * Same as libvlc_media_add_option but with untrusted source.
+ **************************************************************************/
+void libvlc_media_add_option_untrusted(
+                                   libvlc_media_t * p_md,
+                                   const char * ppsz_option,
+                                   libvlc_exception_t *p_e )
+{
+    VLC_UNUSED(p_e);
+    input_item_AddOpt( p_md->p_input_item, ppsz_option,
+                       VLC_INPUT_OPTION_UNIQUE );
+}
+
 
 /**************************************************************************
  * Delete a media descriptor object

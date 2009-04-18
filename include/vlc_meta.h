@@ -2,7 +2,7 @@
  * vlc_meta.h: Stream meta-data
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: a2abee0bbdb1298370f0ecd939c8dee809ec5478 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

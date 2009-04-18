@@ -3,7 +3,7 @@
  *         vlc-specific things tend to go here.
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id$
+ * $Id: 279c34a1fdc98beb17b1783c4cb25b6ee9685add $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *   Some code is based on the non-libcdio VCD plugin (as there really

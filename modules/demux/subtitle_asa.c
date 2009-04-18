@@ -2,7 +2,7 @@
  * subtitle_asa.c: Demux for subtitle text files using the asa engine.
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id$
+ * $Id: 53899e1dd0189c7ec52399acaeb6072d27aa4daa $
  *
  * Authors: David Lamparter <equinox at videolan dot org>
  *

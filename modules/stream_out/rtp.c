@@ -786,6 +786,9 @@ char *SDPGenerate( const sout_stream_t *p_stream, const char *rtsp_url )
                       id->psz_enc, id->i_clock_rate, id->i_channels,
                       id->psz_fmtp);
 
+        if( !p_sys->rtcp_mux && (id->i_port & 1) ) /* cf RFC4566 §5.14 */
+            sdp_AddAttribute ( &psz_sdp, "rtcp", "%u", id->i_port + 1 );
+
         if( rtsp_url != NULL )
         {
             assert( strlen( rtsp_url ) > 0 );
@@ -1430,6 +1433,16 @@ static int  HttpCallback( httpd_file_sys_t *p_args,
  ****************************************************************************/
 static void* ThreadSend( vlc_object_t *p_this )
 {
+#ifdef WIN32
+# define ECONNREFUSED WSAECONNREFUSED
+# define ENOPROTOOPT  WSAENOPROTOOPT
+# define EHOSTUNREACH WSAEHOSTUNREACH
+# define ENETUNREACH  WSAENETUNREACH
+# define ENETDOWN     WSAENETDOWN
+# define ENOBUFS      WSAENOBUFS
+# define EAGAIN       WSAEWOULDBLOCK
+# define EWOULDBLOCK  WSAEWOULDBLOCK
+#endif
     sout_stream_id_t *id = (sout_stream_id_t *)p_this;
     unsigned i_caching = id->i_caching;
 
@@ -1472,9 +1485,27 @@ static void* ThreadSend( vlc_object_t *p_this )
 
             if( send( id->sinkv[i].rtp_fd, out->p_buffer, len, 0 ) >= 0 )
                 continue;
-            /* Retry sending to root out soft-errors */
-            if( send( id->sinkv[i].rtp_fd, out->p_buffer, len, 0 ) >= 0 )
-                continue;
+            switch( net_errno )
+            {
+                /* Soft errors (e.g. ICMP): */
+                case ECONNREFUSED: /* Port unreachable */
+                case ENOPROTOOPT:
+#ifdef EPROTO
+                case EPROTO:       /* Protocol unreachable */
+#endif
+                case EHOSTUNREACH: /* Host unreachable */
+                case ENETUNREACH:  /* Network unreachable */
+                case ENETDOWN:     /* Entire network down */
+                    send( id->sinkv[i].rtp_fd, out->p_buffer, len, 0 );
+                /* Transient congestion: */
+                case ENOMEM: /* out of socket buffers */
+                case ENOBUFS:
+                case EAGAIN:
+#if (EAGAIN != EWOULDBLOCK)
+                case EWOULDBLOCK:
+#endif
+                    continue;
+            }
 
             deadv[deadc++] = id->sinkv[i].rtp_fd;
         }

@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: d48bb0d6159d40eb629458c9307cd14e09879eec $
+ * $Id: 04fce89b58abf7c28ec8248d1ec7a5a8513c775c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -75,7 +75,7 @@ static void Close( vlc_object_t * );
     "I-frames are inserted only every other keyint frames, which probably " \
     "leads to ugly encoding artifacts. Range 1 to 100." )
 
-#if X264_BUILD >= 55 /* r607 */
+#if X264_BUILD >= 55 /* r607 */ && X264_BUILD < 67 /* r1117 */
 #define PRESCENE_TEXT N_("Faster, less precise scenecut detection" )
 #define PRESCENE_LONGTEXT N_( "Faster, less precise scenecut detection. " \
     "Required and implied by multi-threading." )
@@ -429,8 +429,12 @@ vlc_module_begin();
         change_integer_range( -1, 100 );
 
 #if X264_BUILD >= 55 /* r607 */
+#  if X264_BUILD < 67 /* r1117 */
     add_bool( SOUT_CFG_PREFIX "pre-scenecut", 0, NULL, PRESCENE_TEXT,
               PRESCENE_LONGTEXT, false );
+#  else
+    add_obsolete_bool( "pre-scenecut" )
+#  endif
 #endif
 
     add_integer( SOUT_CFG_PREFIX "bframes", 0, NULL, BFRAMES_TEXT,
@@ -957,9 +961,12 @@ static int  Open ( vlc_object_t *p_this )
         p_sys->param.i_scenecut_threshold = val.i_int;
 #endif
 
-#if X264_BUILD >= 55 /* r607 */
+#if X264_BUILD >= 55 /* r607 */ && X264_BUILD < 67 /* r1117 */
     var_Get( p_enc, SOUT_CFG_PREFIX "pre-scenecut", &val );
     p_sys->param.b_pre_scenecut = val.b_bool;
+#endif
+
+#if X264_BUILD >= 55 /* r607 */
     var_Get( p_enc, SOUT_CFG_PREFIX "non-deterministic", &val );
     p_sys->param.b_deterministic = val.b_bool;
 #endif
@@ -1122,9 +1129,11 @@ static int  Open ( vlc_object_t *p_this )
     if( val.i_int >= 0 && val.i_int <= 32 )
         p_sys->param.analyse.i_luma_deadzone[1] = val.i_int;
 
+#if X264_BUILD <= 65
     var_Get( p_enc, SOUT_CFG_PREFIX "direct-8x8", &val );
     if( val.i_int >= -1 && val.i_int <= 1 )
         p_sys->param.analyse.i_direct_8x8_inference = val.i_int;
+#endif
 #endif
 
     var_Get( p_enc, SOUT_CFG_PREFIX "asm", &val );

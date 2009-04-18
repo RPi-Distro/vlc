@@ -2,7 +2,7 @@
  * dump.c
  *****************************************************************************
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id$
+ * $Id: 50ccf9aa58b96cf5deaf05380f4cc81028f166d2 $
  *
  * Author: Rémi Denis-Courmont <rem # videolan,org>
  *

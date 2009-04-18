@@ -1,3 +1,43 @@
+Changes between 0.9.9 and 0.9.9a:
+---------------------------------
+
+Mac OS X:
+ * Updated multiple 3rd party libraries to keep in sync with the Win32 port
+ * Playback fixes for PowerPC-based Macs
+
+
+Changes between 0.9.8a and 0.9.9:
+---------------------------------
+
+Decoders:
+ * Experimental new decoder for Real Video 3.0 & 4.0
+
+Demuxers:
+ * Various fixes related to real demuxer
+
+Mac OS X Interface:
+ * Fixed circumstances, which could lead to an empty Information panel
+   - Note that VLC will show information on the currently _selected_ item 
+     instead of the currently _playing_ item, if the playlist is visible in the 
+     main controller window.
+ * Fixed multiple UTF8 issues in the Streaming / Exporting Wizard
+
+Mac OS X Port:
+ * Improved video playback performance on Intel-based Macs
+
+New Localizations:
+ * Indonesian
+ * Bengali
+ * Updates of other localizations
+
+Various bugfixes:
+ * Support for receiving RTP packets on odd port numbers.
+ * Lots of small bugfixes.
+ * Correct Fullscreen behaviour on Multi-Screen setups on Windows
+ * Telnet fixes on Windows
+ * Resampling fixes when transcoding
+
+
 Changes between 0.9.6 and 0.9.8a:
 ---------------------------------
 
@@ -6,14 +46,15 @@ Security update:
 
 Bunch of small bugfixes.
 
+
 Changes between 0.9.5 and 0.9.6:
 --------------------------------
 New Localizations:
  * Ukranian
 
 Security updates:
- * Fixed overflow in CUE support from VCD access (SA-0810, CVE-2008-xxxx)
- * Fixed overflow in RealText subtitles support (SA-0810, CVE-2008-xxxx)
+ * Fixed overflow in CUE support from VCD access (SA-0810, CVE-2008-5032)
+ * Fixed overflow in RealText subtitles support (SA-0810, CVE-2008-5036)
 
 
 Changes between 0.9.4 and 0.9.5:
@@ -43,6 +84,7 @@ Access:
 
 Translations:
  * Update of Brazillian, Swedish translation
+
 
 Changes between 0.9.3 and 0.9.4:
 --------------------------------

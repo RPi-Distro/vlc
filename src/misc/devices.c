@@ -2,7 +2,7 @@
  * devices.c : Handling of devices probing
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id$
+ * $Id: e6241c8d473f6520560257fd1f5b609363ddc31b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

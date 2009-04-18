@@ -2,7 +2,7 @@
  * hotkeys.c: Hotkey handling for vlc
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 22a08870ffbcce9cf7f5897645180cf7ef7b1b87 $
+ * $Id: 0cec029f10856827f8ea841f24ff9b80db3020c0 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -985,7 +985,7 @@ static void DisplayPosition( intf_thread_t *p_intf, vout_thread_t *p_vout,
     }
     else if( i_seconds > 0 )
     {
-        vout_OSDMessage( p_input, POSITION_TEXT_CHAN, psz_time );
+        vout_OSDMessage( p_input, POSITION_TEXT_CHAN, "%s", psz_time );
     }
 
     if( !p_vout->p_window || p_vout->b_fullscreen )

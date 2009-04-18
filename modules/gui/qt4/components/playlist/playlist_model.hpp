@@ -2,7 +2,7 @@
  * playlist_model.hpp : Model for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: a097fa63ccde04b3970be195344bce27c994e0c1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

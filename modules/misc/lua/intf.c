@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 2c4eb8882eb6d8d4533b986daed275b4b122ad0c $
+ * $Id: 3a8d0c89f90656fe84d84c6f6e05da30db6aa065 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -158,7 +158,7 @@ int Open_LuaIntf( vlc_object_t *p_this )
     bool b_config_set = false;
     if( !psz_name ) psz_name = strdup( "dummy" );
 
-    p_intf->p_sys = (intf_sys_t*)malloc( sizeof(intf_sys_t*) );
+    p_intf->p_sys = (intf_sys_t*)malloc( sizeof(intf_sys_t) );
     if( !p_intf->p_sys )
     {
         free( psz_name );

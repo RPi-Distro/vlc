@@ -262,6 +262,7 @@ picture_New
 plane_CopyPixels
 playlist_Add
 playlist_AddExt
+playlist_AddExtOpt
 playlist_AddInput
 playlist_AskForArtEnqueue
 playlist_BothAddInput

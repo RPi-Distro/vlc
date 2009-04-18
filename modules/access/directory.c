@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 213095f2ff4de83c31bb3e597ded8ea5fb523c8b $
+ * $Id: 6c8c9a658654b183759d99fb0e9075ae565b7af1 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont
@@ -104,7 +104,7 @@ vlc_module_begin();
     add_string( "recursive", "expand" , NULL, RECURSIVE_TEXT,
                 RECURSIVE_LONGTEXT, false );
       change_string_list( psz_recursive_list, psz_recursive_list_text, 0 );
-    add_string( "ignore-filetypes", "m3u,db,nfo,jpg,gif,sfv,txt,sub,idx,srt,cue",
+    add_string( "ignore-filetypes", "m3u,db,nfo,jpg,gif,sfv,txt,sub,idx,srt,cue,ssa",
                 NULL, IGNORE_TEXT, IGNORE_LONGTEXT, false );
     set_callbacks( Open, Close );
 

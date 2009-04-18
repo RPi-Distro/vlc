@@ -2,7 +2,7 @@
  * xvmc.c : XVMC plugin for vlc
  *****************************************************************************
  * Copyright (C) 1998-2001 VideoLAN
- * $Id$
+ * $Id: 03c0a49aa07973a06a954a57e0d9ef097e4c5e9f $
  *
  * Authors: Shane Harper <shanegh@optusnet.com.au>
  *          Vincent Seguin <seguin@via.ecp.fr>

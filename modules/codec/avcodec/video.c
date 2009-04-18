@@ -2,7 +2,7 @@
  * video.c: video decoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: cba209c7e631161135b3054d3c353d29fedb6ac7 $
+ * $Id: 3fa837e2376c1f7a170bed847be0d9dd8a729533 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -151,8 +151,8 @@ static inline picture_t *ffmpeg_NewPictBuf( decoder_t *p_dec,
         }
     }
 
-    if( p_dec->fmt_out.video.i_frame_rate > 0 &&
-        p_dec->fmt_out.video.i_frame_rate_base > 0 )
+    if( p_dec->fmt_in.video.i_frame_rate > 0 &&
+        p_dec->fmt_in.video.i_frame_rate_base > 0 )
     {
         p_dec->fmt_out.video.i_frame_rate =
             p_dec->fmt_in.video.i_frame_rate;
@@ -733,25 +733,6 @@ static void ffmpeg_InitCodec( decoder_t *p_dec )
             }
         }
     }
-    else if( p_dec->fmt_in.i_codec == VLC_FOURCC( 'R', 'V', '1', '0' ) ||
-             p_dec->fmt_in.i_codec == VLC_FOURCC( 'R', 'V', '1', '3' ) ||
-             p_dec->fmt_in.i_codec == VLC_FOURCC( 'R', 'V', '2', '0' ) )
-    {
-        if( p_dec->fmt_in.i_extra == 8 )
-        {
-            p_sys->p_context->extradata_size = 8;
-            p_sys->p_context->extradata = malloc( 8 );
-            if( p_sys->p_context->extradata )
-            {
-                memcpy( p_sys->p_context->extradata,
-                        p_dec->fmt_in.p_extra, p_dec->fmt_in.i_extra );
-                p_sys->p_context->sub_id = ((uint32_t*)p_dec->fmt_in.p_extra)[1];
-
-                msg_Warn( p_dec, "using extra data for RV codec sub_id=%08x",
-                          p_sys->p_context->sub_id );
-            }
-        }
-    }
     else
     {
         p_sys->p_context->extradata_size = i_size;
@@ -835,9 +816,16 @@ static int ffmpeg_GetFrameBuf( struct AVCodecContext *p_context,
     }
 
     /* Some codecs set pix_fmt only after the 1st frame has been decoded,
-     * so this check is necessary. */
+     * so we need to check for direct rendering again. */
+
+    int i_width = p_sys->p_context->width;
+    int i_height = p_sys->p_context->height;
+    avcodec_align_dimensions( p_sys->p_context, &i_width, &i_height );
+
     if( GetVlcChroma( &p_dec->fmt_out.video, p_context->pix_fmt ) != VLC_SUCCESS ||
-        p_sys->p_context->width % 16 || p_sys->p_context->height % 16 )
+        p_sys->p_context->width % 16 || p_sys->p_context->height % 16 ||
+        /* We only pad picture up to 16 */
+        PAD(p_sys->p_context->width,16) < i_width || PAD(p_sys->p_context->height,16) < i_height )
     {
         msg_Dbg( p_dec, "disabling direct rendering" );
         p_sys->b_direct_rendering = 0;

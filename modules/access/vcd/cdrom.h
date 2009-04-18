@@ -2,7 +2,7 @@
  * cdrom.h: cdrom tools header
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id$
+ * $Id: 238946e05c43517ba9939cf918f42ef726660101 $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>

@@ -2,7 +2,7 @@
  * test3.m : Empty Objective C module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id$
+ * $Id: b593b66cde39283e226e2e13479bef8462cf752e $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

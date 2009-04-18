@@ -2,7 +2,7 @@
  * chain.c : chain multiple video filter modules as a last resort solution
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id$
+ * $Id: 1c295bba856d842c800c93b2bf8f014177a23150 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *

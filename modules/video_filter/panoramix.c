@@ -2,7 +2,7 @@
  * panoramix.c : Wall panoramic video with edge blending plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 VideoLAN
- * $Id$
+ * $Id: 2148e7dba92f5fa2ec0ebee0c20ef79b4152de27 $
  *
  * Authors: Cedric Cocquebert <cedric.cocquebert@supelec.fr>
  *          based on Samuel Hocevar <sam@zoy.org>

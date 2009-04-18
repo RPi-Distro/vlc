@@ -2,7 +2,7 @@
  * errors.hpp : Errors
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: afa14acba9fab9f889524fb187f701a565922d99 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *

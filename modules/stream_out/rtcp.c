@@ -36,6 +36,10 @@
 
 #include <assert.h>
 
+#ifndef SOL_IP
+# define SOL_IP IPPROTO_IP
+#endif
+
 /*
  * NOTE on RTCP implementation:
  * - there is a single sender (us), no conferencing here! => n = sender = 1,
@@ -99,6 +103,16 @@ rtcp_sender_t *OpenRTCP (vlc_object_t *obj, int rtp_fd, int proto,
         dport++;
 
         fd = net_OpenDgram (obj, src, sport, dst, dport, AF_UNSPEC, proto);
+
+        /* Copy the multicast IPv4 TTL value (useless for IPv6) */
+        if (fd != -1)
+        {
+            int ttl;
+            socklen_t len = sizeof (ttl);
+
+            if (!getsockopt (rtp_fd, SOL_IP, IP_MULTICAST_TTL, &ttl, &len))
+                setsockopt (fd, SOL_IP, IP_MULTICAST_TTL, &ttl, len);
+        }
     }
 
     if (fd == -1)

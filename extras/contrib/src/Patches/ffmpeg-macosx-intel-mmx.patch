@@ -1,17 +1,8 @@
-Index: libavcodec/i386/motion_est_mmx.c
+Index: libavcodec/x86/motion_est_mmx.c
 ===================================================================
---- libavcodec/i386/motion_est_mmx.c	(revision 11270)
-+++ libavcodec/i386/motion_est_mmx.c	(working copy)
-@@ -167,7 +167,7 @@
- static inline void sad8_4_mmx2(uint8_t *blk1, uint8_t *blk2, int stride, int h)
- {
-     asm volatile(
--        "movq "MANGLE(bone)", %%mm5     \n\t"
-+        "movq %4, %%mm5     \n\t"
-         "movq (%1), %%mm0               \n\t"
-         "pavgb 1(%1), %%mm0             \n\t"
-         "add %3, %1                     \n\t"
-@@ -190,7 +190,7 @@
+--- libavcodec/x86/motion_est_mmx.c	(revision 18254)
++++ libavcodec/x86/motion_est_mmx.c	(working copy)
+@@ -191,7 +191,7 @@
          "sub $2, %0                     \n\t"
          " jg 1b                         \n\t"
          : "+r" (h), "+r" (blk1), "+r" (blk2)
@@ -20,7 +11,7 @@ Index: libavcodec/i386/motion_est_mmx.c
      );
  }
  
-@@ -258,7 +258,7 @@
+@@ -259,7 +259,7 @@
          "punpckhbw %%mm7, %%mm5         \n\t"
          "paddw %%mm4, %%mm2             \n\t"
          "paddw %%mm5, %%mm3             \n\t"
@@ -29,7 +20,7 @@ Index: libavcodec/i386/motion_est_mmx.c
          "paddw %%mm2, %%mm0             \n\t"
          "paddw %%mm3, %%mm1             \n\t"
          "paddw %%mm5, %%mm0             \n\t"
-@@ -281,7 +281,7 @@
+@@ -282,7 +282,7 @@
          "add %4, %%"REG_a"              \n\t"
          " js 1b                         \n\t"
          : "+a" (len)
@@ -37,12 +28,12 @@ Index: libavcodec/i386/motion_est_mmx.c
 +        : "r" (blk1 - len), "r" (blk1 -len + stride), "r" (blk2 - len), "r" ((x86_reg)stride), "m" (round_tab[0])
      );
  }
-  
-Index: libavcodec/i386/simple_idct_mmx.c
+ 
+Index: libavcodec/x86/simple_idct_mmx.c
 ===================================================================
---- libavcodec/i386/simple_idct_mmx.c	(revision 11270)
-+++ libavcodec/i386/simple_idct_mmx.c	(working copy)
-@@ -363,7 +363,7 @@
+--- libavcodec/x86/simple_idct_mmx.c	(revision 18254)
++++ libavcodec/x86/simple_idct_mmx.c	(working copy)
+@@ -364,7 +364,7 @@
          "movq " #src4 ", %%mm1          \n\t" /* R6     R2      r6      r2 */\
          "movq " #src1 ", %%mm2          \n\t" /* R3     R1      r3      r1 */\
          "movq " #src5 ", %%mm3          \n\t" /* R7     R5      r7      r5 */\
@@ -51,7 +42,7 @@ Index: libavcodec/i386/simple_idct_mmx.c
          "pand %%mm0, %%mm4              \n\t"\
          "por %%mm1, %%mm4               \n\t"\
          "por %%mm2, %%mm4               \n\t"\
-@@ -437,7 +437,7 @@
+@@ -438,7 +438,7 @@
          "jmp 2f                         \n\t"\
          "1:                             \n\t"\
          "pslld $16, %%mm0               \n\t"\
@@ -60,7 +51,7 @@ Index: libavcodec/i386/simple_idct_mmx.c
          "psrad $13, %%mm0               \n\t"\
          "packssdw %%mm0, %%mm0          \n\t"\
          "movq %%mm0, " #dst "           \n\t"\
-@@ -471,7 +471,7 @@
+@@ -472,7 +472,7 @@
          "movq " #src4 ", %%mm1          \n\t" /* R6     R2      r6      r2 */\
          "movq " #src1 ", %%mm2          \n\t" /* R3     R1      r3      r1 */\
          "movq " #src5 ", %%mm3          \n\t" /* R7     R5      r7      r5 */\
@@ -69,7 +60,7 @@ Index: libavcodec/i386/simple_idct_mmx.c
          "pand %%mm0, %%mm4              \n\t"\
          "por %%mm1, %%mm4               \n\t"\
          "por %%mm2, %%mm4               \n\t"\
-@@ -545,7 +545,7 @@
+@@ -546,7 +546,7 @@
          "jmp 2f                         \n\t"\
          "1:                             \n\t"\
          "pslld $16, %%mm0               \n\t"\
@@ -78,7 +69,7 @@ Index: libavcodec/i386/simple_idct_mmx.c
          "psrad $13, %%mm0               \n\t"\
          "packssdw %%mm0, %%mm0          \n\t"\
          "movq %%mm0, " #dst "           \n\t"\
-@@ -1270,7 +1270,7 @@
+@@ -1271,7 +1271,7 @@
  */
  
  "9: \n\t"
@@ -87,15 +78,13 @@ Index: libavcodec/i386/simple_idct_mmx.c
                  : "%eax"
          );
  }
-Index: libavcodec/i386/cavsdsp_mmx.c
+Index: libavcodec/x86/cavsdsp_mmx.c
 ===================================================================
---- libavcodec/i386/cavsdsp_mmx.c	(revision 13752)
-+++ libavcodec/i386/cavsdsp_mmx.c	(working copy)
-@@ -25,8 +25,30 @@
- #include "libavutil/common.h"
- #include "libavutil/x86_cpu.h"
+--- libavcodec/x86/cavsdsp_mmx.c	(revision 18254)
++++ libavcodec/x86/cavsdsp_mmx.c	(working copy)
+@@ -27,6 +27,22 @@
  #include "libavcodec/dsputil.h"
--#include "dsputil_mmx.h"
+ #include "dsputil_mmx.h"
  
 +#define SUMSUB_BA( a, b ) \
 +"paddw "#b", "#a" \n\t"\
@@ -113,29 +102,22 @@ Index: libavcodec/i386/cavsdsp_mmx.c
 +SBUTTERFLY(a,c,d,dq,q) /* a=aeim d=bfjn */\
 +SBUTTERFLY(t,b,c,dq,q) /* t=cgko c=dhlp */
 +
-+DECLARE_ALIGNED_8(static const uint64_t,ff_pw_4 ) = 0x0004000400040004ULL;	 
-+DECLARE_ALIGNED_8(static const uint64_t,ff_pw_5 ) = 0x0005000500050005ULL;	 
-+DECLARE_ALIGNED_8(static const uint64_t,ff_pw_7 ) = 0x0007000700070007ULL;	 
-+DECLARE_ALIGNED_8(static const uint64_t,ff_pw_42) = 0x002A002A002A002AULL;	 
-+DECLARE_ALIGNED_8(static const uint64_t,ff_pw_64) = 0x0040004000400040ULL;	 
-+DECLARE_ALIGNED_8(static const uint64_t,ff_pw_96) = 0x0060006000600060ULL;
-+
  /*****************************************************************************
   *
   * inverse transform
-Index: libavcodec/i386/flacdsp_mmx.c
+Index: libavcodec/x86/flacdsp_mmx.c
 ===================================================================
---- libavcodec/i386/flacdsp_mmx.c	(revision 11888)
-+++ libavcodec/i386/flacdsp_mmx.c	(working copy)
-@@ -26,7 +26,6 @@
+--- libavcodec/x86/flacdsp_mmx.c	(revision 18254)
++++ libavcodec/x86/flacdsp_mmx.c	(working copy)
+@@ -27,7 +27,6 @@
      double c = 2.0 / (len-1.0);
      int n2 = len>>1;
      x86_reg i = -n2*sizeof(int32_t);
 -    x86_reg j =  n2*sizeof(int32_t);
-     asm volatile(
-         "movsd   %0,     %%xmm7 \n\t"
-         "movapd  %1,     %%xmm6 \n\t"
-@@ -54,7 +53,7 @@
+     __asm__ volatile(
+         "movsd   %0,     %%xmm7                \n\t"
+         "movapd  "MANGLE(ff_pd_1)", %%xmm6     \n\t"
+@@ -55,7 +54,7 @@
          "sub      $8,      %1                  \n\t"\
          "add      $8,      %0                  \n\t"\
          "jl 1b                                 \n\t"\
@@ -144,21 +126,3 @@ Index: libavcodec/i386/flacdsp_mmx.c
          :"r"(w_data+n2), "r"(data+n2)\
      );
      if(len&1)
-@@ -84,6 +83,8 @@
-                 "movsd    "MANGLE(ff_pd_1)", %%xmm0 \n\t"
-                 "movsd    "MANGLE(ff_pd_1)", %%xmm1 \n\t"
-                 "movsd    "MANGLE(ff_pd_1)", %%xmm2 \n\t"
-+                :: "m"(*ff_pd_1) );
-+            asm volatile(
-                 "1:                                 \n\t"
-                 "movapd   (%4,%0), %%xmm3           \n\t"
-                 "movupd -8(%5,%0), %%xmm4           \n\t"
-@@ -115,6 +116,8 @@
-             asm volatile(
-                 "movsd    "MANGLE(ff_pd_1)", %%xmm0 \n\t"
-                 "movsd    "MANGLE(ff_pd_1)", %%xmm1 \n\t"
-+                :: "m"(*ff_pd_1) );
-+            asm volatile(
-                 "1:                                 \n\t"
-                 "movapd   (%3,%0), %%xmm3           \n\t"
-                 "movupd -8(%4,%0), %%xmm4           \n\t"

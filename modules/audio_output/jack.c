@@ -2,7 +2,7 @@
  * jack : JACK audio output module
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: f87d4cbe011ed09390e4c97b8a011f6f949f0106 $
  *
  * Authors: Cyril Deguet <asmax _at_ videolan.org>
  *          Jon Griffiths <jon_p_griffiths _At_ yahoo _DOT_ com>

@@ -2,7 +2,7 @@
  * input_dummy.c: dummy input plugin, to manage "vlc://" special options
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id$
+ * $Id: 86169fce482c4e4ffccb68b0e679ce1439f90bbc $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

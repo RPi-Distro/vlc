@@ -2,7 +2,7 @@
  * decoder_synchro.c : frame dropping routines
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id$
+ * $Id: f28aea476921305b37cf9069d09472996ddd9aa5 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>

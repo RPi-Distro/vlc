@@ -2,7 +2,7 @@
  * filter_common.h: Common filter functions
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003 the VideoLAN team
- * $Id$
+ * $Id: 2efc0521d3a6744be35a8d0b091787524e385a0c $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

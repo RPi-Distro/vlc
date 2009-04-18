@@ -2,7 +2,7 @@
  * events.c: Windows DirectX video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: b953e1a9d27939b694b4673be600aef21e782164 $
+ * $Id: 2342797f9007441e45e9984780cb2bffe286bf48 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -1149,15 +1149,6 @@ static WINDOWPLACEMENT getWindowState(HWND hwnd)
     return window_placement;
 }
 
-/* Internal wrapper over SetWindowPlacement */
-static void SetWindowState(HWND hwnd, int nShowCmd,WINDOWPLACEMENT window_placement)
-{
-    window_placement.showCmd = nShowCmd;
-    SetWindowPlacement( hwnd, &window_placement );
-    SetWindowPos( hwnd, 0, 0, 0, 0, 0,
-        SWP_NOMOVE|SWP_NOSIZE|SWP_NOZORDER|SWP_FRAMECHANGED);
-}
-
 /* Internal wrapper to call vout_ControlWindow for hparent */
 static void ControlParentWindow( vout_thread_t *p_vout, int i_query, ... )
 {
@@ -1191,21 +1182,27 @@ void Win32ToggleFullscreen( vout_thread_t *p_vout )
         if( p_vout->p_sys->hparent )
         {
             /* Retrieve current window position so fullscreen will happen
-            * on the right screen */
-            POINT point = {0,0};
-            RECT rect;
-            ClientToScreen( p_vout->p_sys->hwnd, &point );
-            GetClientRect( p_vout->p_sys->hwnd, &rect );
-            SetWindowPos( hwnd, 0, point.x, point.y,
-                          rect.right, rect.bottom,
-                          SWP_NOZORDER|SWP_FRAMECHANGED );
+            *on the right screen */
+            HMONITOR hmon = MonitorFromWindow(p_vout->p_sys->hparent,
+                                            MONITOR_DEFAULTTONEAREST);
+            MONITORINFO mi = {sizeof(mi)};
+            if (GetMonitorInfo(hmon, &mi))
+            SetWindowPos( hwnd, 0,
+                            mi.rcMonitor.left,
+                            mi.rcMonitor.top,
+                            mi.rcMonitor.right - mi.rcMonitor.left,
+                            mi.rcMonitor.bottom - mi.rcMonitor.top,
+                            SWP_NOZORDER|SWP_FRAMECHANGED );
         }
-
-        /* Maximize window */
-        SetWindowState( hwnd, SW_SHOWMAXIMIZED, window_placement );
+        else
+        {
+            /* Maximize non embedded window */
+            ShowWindow( hwnd, SW_SHOWMAXIMIZED );
+        }
 
         if( p_vout->p_sys->hparent )
         {
+            /* Hide the previous window */
             RECT rect;
             GetClientRect( hwnd, &rect );
             SetParent( p_vout->p_sys->hwnd, hwnd );
@@ -1229,9 +1226,6 @@ void Win32ToggleFullscreen( vout_thread_t *p_vout )
         /* Change window style, no borders and no title bar */
         SetWindowLong( hwnd, GWL_STYLE, p_vout->p_sys->i_window_style );
 
-        /* Normal window */
-        SetWindowState( hwnd, SW_SHOWNORMAL, window_placement );
-
         if( p_vout->p_sys->hparent )
         {
             RECT rect;
@@ -1249,6 +1243,12 @@ void Win32ToggleFullscreen( vout_thread_t *p_vout )
             ShowWindow( topLevelParent, SW_SHOW );
             SetForegroundWindow( p_vout->p_sys->hparent );
             ShowWindow( hwnd, SW_HIDE );
+        }
+        else
+        {
+            /* return to normal window for non embedded vout */
+            SetWindowPlacement( hwnd, &window_placement );
+            ShowWindow( hwnd, SW_SHOWNORMAL );
         }
 
         /* Make sure the mouse cursor is displayed */

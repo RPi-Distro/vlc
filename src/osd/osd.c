@@ -2,7 +2,7 @@
  * osd.c - The OSD Menu core code.
  *****************************************************************************
  * Copyright (C) 2005-2008 M2X
- * $Id$
+ * $Id: 7e1f78e1404737adf3b1924e89a348be0a332f83 $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *

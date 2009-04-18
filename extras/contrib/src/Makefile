@@ -1,7 +1,7 @@
 #***************************************************************************
 # src/Makefile : Dearchive and compile all files necessary
 # ***************************************************************************
-# Copyright (C) 2003 - 2008 the VideoLAN team
+# Copyright (C) 2003 - 2009 the VideoLAN team
 # $Id$
 #
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
@@ -132,7 +132,7 @@ endif
 FFMPEGCONF+= --enable-small --disable-debug --disable-mpegaudio-hp
 FFMPEG_CFLAGS += -DHAVE_LRINTF --std=c99
 else
-FFMPEGCONF+= --enable-libmp3lame --enable-libfaac --enable-swscale
+FFMPEGCONF+= --enable-libmp3lame --enable-libfaac
 endif
 
 ifdef HAVE_BEOS
@@ -886,7 +886,7 @@ faad2-$(FAAD2_VERSION).tar.gz:
 
 faad2: faad2-$(FAAD2_VERSION).tar.gz
 	$(EXTRACT_GZ)
-	(cd $@; ./bootstrap)
+	(cd $@; sh bootstrap)
 
 .faad: faad2
 	(cd $< && $(HOSTCC) ./configure $(HOSTCONF) --disable-shared --prefix=$(PREFIX) CFLAGS="-O3" && sed -i.orig "s/shrext_cmds/shrext/g" libtool && make -C libfaad && make -C libfaad install)
@@ -923,7 +923,9 @@ lame-$(LAME_VERSION).tar.gz:
 
 lame: lame-$(LAME_VERSION).tar.gz
 	$(EXTRACT_GZ)
+ifdef HAVE_WIN32
 	patch -p0 < Patches/libmp3lame-mingw32.patch
+endif
 
 .lame: lame
 	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-analyser-hooks --disable-decoder --disable-shared --disable-gtktest --disable-frontend && make && make install)
@@ -1056,7 +1058,7 @@ DISTCLEAN_PKG += amrwb-$(LIBAMR_WB_VERSION).tar.bz2
 
 ifdef SVN
 ffmpeg:
-	$(SVN) co $(FFMPEG_SVN) ffmpeg -r 15594
+	$(SVN) co $(FFMPEG_SVN) ffmpeg -r 18328
 ifeq ($(HOST),i586-pc-beos)
 	(cd $@; patch -p0 < ../Patches/ffmpeg-svn-beos.patch)
 endif
@@ -1065,6 +1067,9 @@ ifdef HAVE_WINCE
 endif
 ifdef HAVE_BEOS
 	(cd $@; patch -p0 < ../Patches/ffmpeg-alignment.patch)
+endif
+ifdef HAVE_DARWIN_OS
+	(cd $@; patch -p0 < ../Patches/ffmpeg-swscale.patch)
 endif
 ifdef HAVE_DARWIN_OS_ON_INTEL
 	(cd $@; patch -p0 < ../Patches/ffmpeg-macosx-intel-mmx.patch)
@@ -1101,7 +1106,7 @@ else
 endif
 endif
 
-	(cd $<; $(HOSTCC) ./configure $(FFMPEGCONF) --prefix=$(PREFIX) --extra-cflags="$(CFLAGS) $(FFMPEG_CFLAGS) -DRUNTIME_CPUDETECT" --extra-ldflags="$(LDFLAGS)" --enable-gpl --enable-postproc --disable-vhook --disable-ffserver --disable-ffmpeg --disable-ffplay --disable-devices --disable-protocols --disable-shared --enable-static && make && make install-libs install-headers)
+	(cd $<; $(HOSTCC) ./configure $(FFMPEGCONF) --prefix=$(PREFIX) --extra-cflags="$(CFLAGS) $(FFMPEG_CFLAGS) -DRUNTIME_CPUDETECT" --extra-ldflags="$(LDFLAGS)" --enable-gpl --enable-postproc --disable-ffserver --disable-ffmpeg --disable-ffplay --disable-devices --disable-protocols --disable-shared --enable-static && make && make install-libs install-headers)
 	touch $@
 
 ifdef SVN
@@ -1872,7 +1877,7 @@ CIPHDIG= --enable-ciphers=aes,des,rfc2268,arcfour --enable-digests=sha1,md5,rmd1
 
 .gcrypt: libgcrypt .gpg-error
 ifdef HAVE_WIN32
-	(cd $<; ./autogen.sh && $(HOSTCC) ./configure $(HOSTCONF) --target=i586-mingw32msvc --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" $(CIPHDIG) --disable-shared --enable-static --disable-nls && sed -i 46s@sys/times.h@sys/time.h@ cipher/random.c && make && make install)
+	(cd $<; ./autogen.sh && $(HOSTCC) ./configure $(HOSTCONF) --target=i586-mingw32msvc --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" $(CIPHDIG) --disable-shared --enable-static --disable-nls && sed -i.orig '46s@sys/times.h@sys/time.h@' "cipher/random.c" && make && make install)
 else
 	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" $(CIPHDIG) && make && make install)
 endif
@@ -2276,7 +2281,7 @@ yasm: yasm-$(YASM_VERSION).tar.gz
 	$(EXTRACT_GZ)
 
 .yasm: yasm
-	(cd $< && $(HOSTCC) ./configure --prefix=$(PREFIX) && make && make install)
+	(cd $< && $(HOSTCC) ./configure --prefix=$(PREFIX) --host=$(HOST) && make && make install)
 	touch $@
 
 CLEAN_FILE += .yasm
@@ -2349,6 +2354,7 @@ pthreads-w32-$(PTHREADS_VERSION)-release.tar.gz:
 
 pthreads: pthreads-w32-$(PTHREADS_VERSION)-release.tar.gz
 	$(EXTRACT_GZ)
+	(cd $@; patch -p0 < ../Patches/pthreads-detach.patch)
 
 .pthreads: pthreads
 	(cd $<; $(HOSTCC) make $(PTHREADSCONF) GC GC-static && mkdir -p $(PREFIX)/include && cp -v pthread.h sched.h semaphore.h $(PREFIX)/include/ && mkdir -p $(PREFIX)/lib && cp -v *.{a,dll} $(PREFIX)/lib/)

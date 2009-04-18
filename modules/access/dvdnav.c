@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 9c4677044631e76949f3215e11403e37eedee506 $
+ * $Id: db2687cef43b4b7a71d5ffb8251b91989d13be85 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -97,6 +97,7 @@ vlc_module_begin();
     set_capability( "access_demux", 5 );
     add_shortcut( "dvd" );
     add_shortcut( "dvdnav" );
+    add_shortcut( "file" );
     set_callbacks( Open, Close );
 vlc_module_end();
 

@@ -2,7 +2,7 @@
  * playlist_model.cpp : Manage playlist model
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 72c4a37b5e133c97380be87f11313838afe2382d $
+ * $Id: deee520b04081092517fa6742669b0a9a9f60c2b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -806,21 +806,21 @@ void PLModel::popup( QModelIndex & index, QPoint &point, QModelIndexList list )
         PL_UNLOCK;
         current_selection = list;
         QMenu *menu = new QMenu;
-        menu->addAction( qfu(I_POP_PLAY), this, SLOT( popupPlay() ) );
-        menu->addAction( qfu(I_POP_DEL), this, SLOT( popupDel() ) );
+        menu->addAction( qtr(I_POP_PLAY), this, SLOT( popupPlay() ) );
+        menu->addAction( qtr(I_POP_DEL), this, SLOT( popupDel() ) );
         menu->addSeparator();
-        menu->addAction( qfu(I_POP_STREAM), this, SLOT( popupStream() ) );
-        menu->addAction( qfu(I_POP_SAVE), this, SLOT( popupSave() ) );
+        menu->addAction( qtr(I_POP_STREAM), this, SLOT( popupStream() ) );
+        menu->addAction( qtr(I_POP_SAVE), this, SLOT( popupSave() ) );
         menu->addSeparator();
-        menu->addAction( qfu(I_POP_INFO), this, SLOT( popupInfo() ) );
+        menu->addAction( qtr(I_POP_INFO), this, SLOT( popupInfo() ) );
         if( p_item->i_children > -1 )
         {
             menu->addSeparator();
-            menu->addAction( qfu(I_POP_SORT), this, SLOT( popupSort() ) );
-            menu->addAction( qfu(I_POP_ADD), this, SLOT( popupAdd() ) );
+            menu->addAction( qtr(I_POP_SORT), this, SLOT( popupSort() ) );
+            menu->addAction( qtr(I_POP_ADD), this, SLOT( popupAdd() ) );
         }
         menu->addSeparator();
-        menu->addAction( qfu( I_POP_EXPLORE ), this, SLOT( popupExplore() ) );
+        menu->addAction( qtr( I_POP_EXPLORE ), this, SLOT( popupExplore() ) );
         menu->popup( point );
     }
     else

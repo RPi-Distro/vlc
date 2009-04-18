@@ -4,7 +4,7 @@
  *          (http://diracvideo.org)
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id$
+ * $Id: b89e7dfa9847aafced5ee0740e2628af66c1ca15 $
  *
  * Authors: Jonathan Rosser <jonathan.rosser@gmail.com>
  *          David Flynn <davidf at rd dot bbc.co.uk>

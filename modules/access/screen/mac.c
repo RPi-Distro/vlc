@@ -2,7 +2,7 @@
  * mac.c: Screen capture module for the Mac.
  *****************************************************************************
  * Copyright (C) 2004, 2008 the VideoLAN team
- * $Id$
+ * $Id: 13afb1216ab4cc05b9183f01c406cb5bf7203d61 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          arai <arai_a@mac.com>
