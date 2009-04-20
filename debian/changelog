@@ -1,9 +1,9 @@
 vlc (0.9.9a-2) unstable; urgency=medium
 
   * Security fix
-  * The default /usr/share/http/{old}/.hosts was wrong in VLC 0.9.8 and 0.9.
-    World access of the htp interface was possible when activated in
-    contradiction of what is said in Chagelog.Debian and NEWS.Debian.
+  * The default /usr/share/http/{old}/.hosts was wrong in VLC 0.9.8 and 0.9.9.
+    World access of the http interface was possible when activated in
+    contradiction of what is said in Changelog.Debian and NEWS.Debian.
 
  -- Christophe Mutricy <xtophe@videolan.org>  Tue, 07 Apr 2009 23:06:48 +0200
 
