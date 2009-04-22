@@ -135,7 +135,13 @@ build-stamp: $(QUILT_STAMPFN)
 ifeq ($(filter nocheck,$(DEB_BUILD_OPTIONS)),)
 ifeq ($(DEB_BUILD_GNU_TYPE), $(DEB_HOST_GNU_TYPE))
 	# Check which plugins were built and whether they load properly.
-	./vlc -vvv --reset-plugins-cache --list --no-color  
+	@if test $$( id -u ) -eq 0 ; then \
+	   echo "Not runing the test as you are compiling as root"; \
+	   echo "Use 'dpkg-buildpackage -rfakeroot' rather than 'fakeroot dpkg-buildpackage'"; \
+	else \
+	   command="./vlc -vvv --reset-plugins-cache --list --no-color"; \
+	   echo "$${command}"; $${command} ; \
+	fi
 endif
 endif
 	touch $@
