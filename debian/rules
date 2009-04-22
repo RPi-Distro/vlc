@@ -32,14 +32,10 @@ LDFLAGS = -Wl,--as-needed
 # configure flags
 confflags += --enable-maintainer-mode --enable-release --prefix=/usr
 confflags += \
-	--enable-libtool \
 	--config-cache \
 	--enable-fast-install \
 	--with-binary-version=$(DEBIAN_VERSION) \
 	--disable-update-check \
-	--disable-gnome \
-	--disable-gtk \
-	--disable-familiar \
 	--disable-fb \
 	--enable-ggi \
 	--enable-sdl \
@@ -54,18 +50,12 @@ confflags += \
 	--enable-dvbpsi \
 	--enable-mozilla \
 	--with-mozilla-pkg=iceape-plugin \
-	--disable-kde \
-	--enable-mp4 \
 	--enable-dvb \
-	--disable-satellite \
 	--enable-ogg \
 	--enable-vorbis \
 	--enable-shout \
 	--enable-qt4 \
-	--disable-slp \
 	--enable-flac \
-	--disable-skins \
-	--disable-basic-skins \
 	--enable-skins2 \
 	--enable-freetype \
 	--enable-mkv \
@@ -74,13 +64,10 @@ confflags += \
 	--enable-live555 \
 	--enable-libmpeg2 \
 	--enable-fribidi \
-	--enable-cdio \
 	--enable-mod \
 	--enable-theora \
-	--enable-modplug \
 	--enable-dvdnav \
 	--enable-gnutls \
-	--enable-ffmpeg \
 	--enable-ncurses \
 	--enable-smb \
 	--disable-gnomevfs \
@@ -93,17 +80,15 @@ confflags += \
 	--enable-faad \
 	--disable-zvbi \
 	--enable-telx \
-	--enable-mediacontrol-bindings \
 	--disable-x264 \
 	--disable-atmo \
 	--enable-taglib \
 	--enable-libass \
-	--enable-libdca \
+	--enable-dca \
 	--enable-realrtsp \
 	--disable-dv \
 	$(NULL)
 
-#	--enable-dts \
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
@@ -114,9 +99,6 @@ endif
 ifneq ($(filter $(DEB_HOST_ARCH), amd64 i386),)
 confflags += --enable-svgalib
 endif
-
-# Remove --without-dvdcss in non-totalitarian countries
-confflags += --enable-dvd --without-dvdcss
 
 # A few shortcuts
 VIDDIR := usr/share/vlc
