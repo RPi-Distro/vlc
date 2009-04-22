@@ -33,6 +33,7 @@ LDFLAGS = -Wl,--as-needed
 confflags += --enable-maintainer-mode --enable-release --prefix=/usr
 confflags += \
 	--enable-libtool \
+	--config-cache \
 	--enable-fast-install \
 	--with-binary-version=$(DEBIAN_VERSION) \
 	--disable-update-check \
