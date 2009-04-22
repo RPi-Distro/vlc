@@ -21,6 +21,12 @@ endif
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 NUMJOBS = $(patsubst parallel=%,%,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
 MAKEFLAGS += -j$(NUMJOBS)
+else
+# on i386 and amd64, we query the system unless overriden by DEB_BUILD_OPTIONS
+ifneq (,$(filter $(DEB_HOST_ARCH),i386 amd64))
+NUMJOBS := $(shell getconf _NPROCESSORS_ONLN 2>/dev/null || echo 1)
+MAKEFLAGS += -j$(NUMJOBS)
+endif
 endif
 
 
