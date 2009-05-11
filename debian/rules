@@ -194,7 +194,7 @@ endif
 	# move .hosts
 	mkdir -p debian/vlc-data/etc/vlc/http
 	mv debian/vlc-data/usr/share/vlc/http/.hosts debian/vlc-data/etc/vlc/http
-	ln -s /etc/vlc/http/hosts debian/vlc-data/usr/share/vlc/http/.hosts
+	ln -s /etc/vlc/http/.hosts debian/vlc-data/usr/share/vlc/http/.hosts
 
 	#install BTS stuff
 	mkdir -p  debian/vlc-nox/usr/share/bug/vlc-nox
