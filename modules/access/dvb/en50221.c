@@ -55,6 +55,8 @@
 #   include <dvbpsi/pmt.h>
 #   include <dvbpsi/dr.h>
 #   include <dvbpsi/psi.h>
+#   include <dvbpsi/demux.h>
+#   include <dvbpsi/sdt.h>
 #else
 #   include "dvbpsi.h"
 #   include "descriptor.h"
@@ -62,6 +64,8 @@
 #   include "tables/pmt.h"
 #   include "descriptors/dr.h"
 #   include "psi.h"
+#   include "demux.h"
+#   include "tables/sdt.h"
 #endif
 
 #ifdef ENABLE_HTTPD
@@ -81,7 +85,6 @@ static void ApplicationInformationOpen( access_t * p_access, int i_session_id );
 static void ConditionalAccessOpen( access_t * p_access, int i_session_id );
 static void DateTimeOpen( access_t * p_access, int i_session_id );
 static void MMIOpen( access_t * p_access, int i_session_id );
-static char *dvbsi_to_utf8( char *psz_instring, size_t i_length );
 
 /*****************************************************************************
  * Utility functions
@@ -174,6 +177,8 @@ static void Dump( bool b_outgoing, uint8_t *p_data, int i_size )
     for ( i = 0; i < i_size && i < MAX_DUMP; i++)
         fprintf(stderr, "%02X ", p_data[i]);
     fprintf(stderr, "%s\n", i_size >= MAX_DUMP ? "..." : "");
+#else
+    VLC_UNUSED(b_outgoing); VLC_UNUSED(p_data); VLC_UNUSED(i_size);
 #endif
 }
 
@@ -1363,9 +1368,7 @@ static void ConditionalAccessOpen( access_t * p_access, int i_session_id )
 
     p_sys->p_sessions[i_session_id - 1].pf_handle = ConditionalAccessHandle;
     p_sys->p_sessions[i_session_id - 1].pf_close = ConditionalAccessClose;
-    p_sys->p_sessions[i_session_id - 1].p_sys = malloc(sizeof(system_ids_t));
-    memset( p_sys->p_sessions[i_session_id - 1].p_sys, 0,
-            sizeof(system_ids_t) );
+    p_sys->p_sessions[i_session_id - 1].p_sys = calloc( 1, sizeof(system_ids_t) );
 
     APDUSend( p_access, i_session_id, AOT_CA_INFO_ENQ, NULL, 0 );
 }
@@ -1495,8 +1498,7 @@ static void DateTimeOpen( access_t * p_access, int i_session_id )
     p_sys->p_sessions[i_session_id - 1].pf_handle = DateTimeHandle;
     p_sys->p_sessions[i_session_id - 1].pf_manage = DateTimeManage;
     p_sys->p_sessions[i_session_id - 1].pf_close = DateTimeClose;
-    p_sys->p_sessions[i_session_id - 1].p_sys = malloc(sizeof(date_time_t));
-    memset( p_sys->p_sessions[i_session_id - 1].p_sys, 0, sizeof(date_time_t) );
+    p_sys->p_sessions[i_session_id - 1].p_sys = calloc( 1, sizeof(date_time_t) );
 
     DateTimeSend( p_access, i_session_id );
 }
@@ -1832,7 +1834,7 @@ static int InitSlot( access_t * p_access, int i_slot )
             break;
         }
 
-        if ( TPDUSend( p_access, i_slot, T_CREATE_TC, NULL, NULL )
+        if ( TPDUSend( p_access, i_slot, T_CREATE_TC, NULL, 0 )
                 != VLC_SUCCESS )
         {
             msg_Err( p_access,
@@ -2028,7 +2030,7 @@ int en50221_Poll( access_t * p_access )
 
         if ( !p_sys->pb_tc_has_data[i_slot] )
         {
-            if ( TPDUSend( p_access, i_slot, T_DATA_LAST, NULL, NULL ) !=
+            if ( TPDUSend( p_access, i_slot, T_DATA_LAST, NULL, 0 ) !=
                     VLC_SUCCESS )
             {
                 msg_Err( p_access,
@@ -2332,7 +2334,7 @@ static inline void *FixUTF8( char *p )
     return p;
 }
 
-static char *dvbsi_to_utf8( char *psz_instring, size_t i_length )
+char *dvbsi_to_utf8( char *psz_instring, size_t i_length )
 {
     const char *psz_encoding, *psz_stringstart;
     char *psz_outstring, *psz_tmp;
@@ -2424,7 +2426,7 @@ static char *dvbsi_to_utf8( char *psz_instring, size_t i_length )
     iconv_handle = vlc_iconv_open( "UTF-8", psz_encoding );
     i_in = i_length - (psz_stringstart - psz_instring );
     i_out = i_in * 6;
-    psz_outstring = psz_tmp = (char*)malloc( i_out * sizeof(char) + 1 );
+    psz_outstring = psz_tmp = (char*)malloc( i_out + 1 );
     vlc_iconv( iconv_handle, &psz_stringstart, &i_in, &psz_tmp, &i_out );
     vlc_iconv_close( iconv_handle );
     *psz_tmp = '\0';

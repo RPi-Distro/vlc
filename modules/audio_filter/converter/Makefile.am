@@ -4,8 +4,8 @@
 basedir = audio_filter
 dir = audio_filter/converter
 mods = a52tofloat32 a52tospdif converter_fixed converter_float dtstofloat32 dtstospdif mpgatofixed32
-libvlc_LTLIBRARIES =  $(LTLIBa52tofloat32) $(LTLIBa52tospdif) $(LTLIBconverter_fixed) $(LTLIBconverter_float) $(LTLIBdtstofloat32) $(LTLIBdtstospdif) $(LTLIBmpgatofixed32)
-EXTRA_LTLIBRARIES =  liba52tofloat32_plugin.la liba52tospdif_plugin.la libconverter_fixed_plugin.la libconverter_float_plugin.la libdtstofloat32_plugin.la libdtstospdif_plugin.la libmpgatofixed32_plugin.la
+libvlc_LTLIBRARIES =  $(LTLIBa52tofloat32) $(LTLIBa52tospdif) $(LTLIBconverter_float) $(LTLIBdtstofloat32) $(LTLIBdtstospdif) $(LTLIBmpgatofixed32)
+EXTRA_LTLIBRARIES =  liba52tofloat32_plugin.la liba52tospdif_plugin.la libconverter_float_plugin.la libdtstofloat32_plugin.la libdtstospdif_plugin.la libmpgatofixed32_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ liba52tofloat32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liba52tofloat32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liba52tofloat32_plugin_la_LIBADD = $(AM_LIBADD)
-liba52tofloat32_plugin_la_DEPENDENCIES =
+liba52tofloat32_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The a52tospdif plugin
 liba52tospdif_plugin_la_SOURCES = $(SOURCES_a52tospdif)
@@ -29,7 +29,7 @@ liba52tospdif_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liba52tospdif_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liba52tospdif_plugin_la_LIBADD = $(AM_LIBADD)
-liba52tospdif_plugin_la_DEPENDENCIES =
+liba52tospdif_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The converter_fixed plugin
 libconverter_fixed_plugin_la_SOURCES = $(SOURCES_converter_fixed)
@@ -40,7 +40,7 @@ libconverter_fixed_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libconverter_fixed_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libconverter_fixed_plugin_la_LIBADD = $(AM_LIBADD)
-libconverter_fixed_plugin_la_DEPENDENCIES =
+libconverter_fixed_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The converter_float plugin
 libconverter_float_plugin_la_SOURCES = $(SOURCES_converter_float)
@@ -51,7 +51,7 @@ libconverter_float_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libconverter_float_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libconverter_float_plugin_la_LIBADD = $(AM_LIBADD)
-libconverter_float_plugin_la_DEPENDENCIES =
+libconverter_float_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The dtstofloat32 plugin
 libdtstofloat32_plugin_la_SOURCES = $(SOURCES_dtstofloat32)
@@ -62,7 +62,7 @@ libdtstofloat32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdtstofloat32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdtstofloat32_plugin_la_LIBADD = $(AM_LIBADD)
-libdtstofloat32_plugin_la_DEPENDENCIES =
+libdtstofloat32_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The dtstospdif plugin
 libdtstospdif_plugin_la_SOURCES = $(SOURCES_dtstospdif)
@@ -73,7 +73,7 @@ libdtstospdif_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdtstospdif_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdtstospdif_plugin_la_LIBADD = $(AM_LIBADD)
-libdtstospdif_plugin_la_DEPENDENCIES =
+libdtstospdif_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mpgatofixed32 plugin
 libmpgatofixed32_plugin_la_SOURCES = $(SOURCES_mpgatofixed32)
@@ -84,5 +84,5 @@ libmpgatofixed32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmpgatofixed32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmpgatofixed32_plugin_la_LIBADD = $(AM_LIBADD)
-libmpgatofixed32_plugin_la_DEPENDENCIES =
+libmpgatofixed32_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

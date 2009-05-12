@@ -18,7 +18,7 @@ libfbosd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libfbosd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libfbosd_plugin_la_LIBADD = $(AM_LIBADD)
-libfbosd_plugin_la_DEPENDENCIES =
+libfbosd_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The ncurses plugin
 libncurses_plugin_la_SOURCES = $(SOURCES_ncurses)
@@ -29,5 +29,5 @@ libncurses_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libncurses_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libncurses_plugin_la_LIBADD = $(AM_LIBADD)
-libncurses_plugin_la_DEPENDENCIES =
+libncurses_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

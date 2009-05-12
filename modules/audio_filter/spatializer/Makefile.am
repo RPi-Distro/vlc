@@ -18,5 +18,5 @@ libspatializer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libspatializer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libspatializer_plugin_la_LIBADD = $(AM_LIBADD)
-libspatializer_plugin_la_DEPENDENCIES =
+libspatializer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

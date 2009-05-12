@@ -2,7 +2,7 @@
  * parse.c: SPU parser
  *****************************************************************************
  * Copyright (C) 2000-2001, 2005, 2006 the VideoLAN team
- * $Id: de175a3e74831ec8f9d95e366daf6bebdfeb1eb1 $
+ * $Id: 84db8df8acaa59aaa2135ff4ec7e7b759b364ffb $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -40,9 +40,39 @@
 /*****************************************************************************
  * Local prototypes.
  *****************************************************************************/
-static int  ParseControlSeq( decoder_t *, subpicture_t *, subpicture_data_t *);
-static int  ParseRLE       ( decoder_t *, subpicture_t *, subpicture_data_t *);
-static void Render         ( decoder_t *, subpicture_t *, subpicture_data_t *);
+typedef struct
+{
+    int i_width;
+    int i_height;
+    int i_x;
+    int i_y;
+} spu_properties_t;
+
+typedef struct
+{
+    mtime_t i_pts;                                 /* presentation timestamp */
+
+    int   pi_offset[2];                              /* byte offsets to data */
+    uint16_t *p_data;
+
+    /* Color information */
+    bool b_palette;
+    uint8_t    pi_alpha[4];
+    uint8_t    pi_yuv[4][3];
+
+    /* Auto crop fullscreen subtitles */
+    bool b_auto_crop;
+    int i_y_top_offset;
+    int i_y_bottom_offset;
+
+} subpicture_data_t;
+
+static int  ParseControlSeq( decoder_t *, subpicture_t *, subpicture_data_t *,
+                             spu_properties_t * );
+static int  ParseRLE       ( decoder_t *, subpicture_data_t *,
+                             const spu_properties_t * );
+static void Render         ( decoder_t *, subpicture_t *, subpicture_data_t *,
+                             const spu_properties_t * );
 
 /*****************************************************************************
  * AddNibble: read a nibble from a source packet and add it to our integer.
@@ -69,63 +99,71 @@ static inline unsigned int AddNibble( unsigned int i_code,
 subpicture_t * ParsePacket( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    subpicture_data_t *p_spu_data;
     subpicture_t *p_spu;
+    subpicture_data_t spu_data;
+    spu_properties_t spu_properties;
 
     /* Allocate the subpicture internal data. */
-    p_spu = p_dec->pf_spu_buffer_new( p_dec );
+    p_spu = decoder_NewSubpicture( p_dec );
     if( !p_spu ) return NULL;
 
-    p_spu->b_pausable = true;
+    /* */
+    spu_data.p_data = NULL;
+    spu_data.b_palette = false;
+    spu_data.b_auto_crop = false;
+    spu_data.i_y_top_offset = 0;
+    spu_data.i_y_bottom_offset = 0;
 
-    /* Rationale for the "p_spudec->i_rle_size * 4": we are going to
-     * expand the RLE stuff so that we won't need to read nibbles later
-     * on. This will speed things up a lot. Plus, we'll only need to do
-     * this stupid interlacing stuff once. */
-    p_spu_data = malloc( sizeof(subpicture_data_t) + 4 * p_sys->i_rle_size );
-    p_spu_data->p_data = (uint8_t *)p_spu_data + sizeof(subpicture_data_t);
-    p_spu_data->b_palette = false;
-    p_spu_data->b_auto_crop = false;
-    p_spu_data->i_y_top_offset = 0;
-    p_spu_data->i_y_bottom_offset = 0;
-
-    p_spu_data->pi_alpha[0] = 0x00;
-    p_spu_data->pi_alpha[1] = 0x0f;
-    p_spu_data->pi_alpha[2] = 0x0f;
-    p_spu_data->pi_alpha[3] = 0x0f;
+    spu_data.pi_alpha[0] = 0x00;
+    spu_data.pi_alpha[1] = 0x0f;
+    spu_data.pi_alpha[2] = 0x0f;
+    spu_data.pi_alpha[3] = 0x0f;
 
     /* Get display time now. If we do it later, we may miss the PTS. */
-    p_spu_data->i_pts = p_sys->i_pts;
+    spu_data.i_pts = p_sys->i_pts;
 
     p_spu->i_original_picture_width =
         p_dec->fmt_in.subs.spu.i_original_frame_width;
     p_spu->i_original_picture_height =
         p_dec->fmt_in.subs.spu.i_original_frame_height;
 
+    memset( &spu_properties, 0, sizeof(spu_properties) );
+
     /* Getting the control part */
-    if( ParseControlSeq( p_dec, p_spu, p_spu_data ) )
+    if( ParseControlSeq( p_dec, p_spu, &spu_data, &spu_properties ) )
     {
         /* There was a parse error, delete the subpicture */
-        p_dec->pf_spu_buffer_del( p_dec, p_spu );
+        decoder_DeleteSubpicture( p_dec, p_spu );
         return NULL;
     }
 
+    /* we are going to expand the RLE stuff so that we won't need to read
+     * nibbles later on. This will speed things up a lot. Plus, we'll only
+     * need to do this stupid interlacing stuff once.
+     *
+     * Rationale for the "p_spudec->i_rle_size * 4*sizeof(*spu_data.p_data)":
+     *  one byte gaves two nibbles and may be used twice (once per field)
+     * generating 4 codes.
+     */
+    spu_data.p_data = malloc( sizeof(*spu_data.p_data) * 2 * 2 * p_sys->i_rle_size );
+
     /* We try to display it */
-    if( ParseRLE( p_dec, p_spu, p_spu_data ) )
+    if( ParseRLE( p_dec, &spu_data, &spu_properties ) )
     {
         /* There was a parse error, delete the subpicture */
-        p_dec->pf_spu_buffer_del( p_dec, p_spu );
+        decoder_DeleteSubpicture( p_dec, p_spu );
+        free( spu_data.p_data );
         return NULL;
     }
 
 #ifdef DEBUG_SPUDEC
     msg_Dbg( p_dec, "total size: 0x%x, RLE offsets: 0x%x 0x%x",
              p_sys->i_spu_size,
-             p_spu_data->pi_offset[0], p_spu_data->pi_offset[1] );
+             spu_data.pi_offset[0], spu_data.pi_offset[1] );
 #endif
 
-    Render( p_dec, p_spu, p_spu_data );
-    free( p_spu_data );
+    Render( p_dec, p_spu, &spu_data, &spu_properties );
+    free( spu_data.p_data );
 
     return p_spu;
 }
@@ -138,7 +176,7 @@ subpicture_t * ParsePacket( decoder_t *p_dec )
  * subtitles format, see http://sam.zoy.org/doc/dvd/subtitles/index.html
  *****************************************************************************/
 static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
-                            subpicture_data_t *p_spu_data )
+                            subpicture_data_t *p_spu_data, spu_properties_t *p_spu_properties )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
@@ -173,8 +211,6 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
 
             /* Get the control sequence date */
             date = (mtime_t)GetWBE( &p_sys->buffer[i_index] ) * 11000;
-            if( p_sys->i_rate )
-                date = date * p_sys->i_rate / INPUT_RATE_DEFAULT;
 
             /* Next offset */
             i_cur_seq = i_index;
@@ -267,18 +303,18 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
                 return VLC_EGENERIC;
             }
 
-            p_spu->i_x = (p_sys->buffer[i_index+1]<<4)|
+            p_spu_properties->i_x = (p_sys->buffer[i_index+1]<<4)|
                          ((p_sys->buffer[i_index+2]>>4)&0x0f);
-            p_spu->i_width = (((p_sys->buffer[i_index+2]&0x0f)<<8)|
-                              p_sys->buffer[i_index+3]) - p_spu->i_x + 1;
+            p_spu_properties->i_width = (((p_sys->buffer[i_index+2]&0x0f)<<8)|
+                              p_sys->buffer[i_index+3]) - p_spu_properties->i_x + 1;
 
-            p_spu->i_y = (p_sys->buffer[i_index+4]<<4)|
+            p_spu_properties->i_y = (p_sys->buffer[i_index+4]<<4)|
                          ((p_sys->buffer[i_index+5]>>4)&0x0f);
-            p_spu->i_height = (((p_sys->buffer[i_index+5]&0x0f)<<8)|
-                              p_sys->buffer[i_index+6]) - p_spu->i_y + 1;
+            p_spu_properties->i_height = (((p_sys->buffer[i_index+5]&0x0f)<<8)|
+                              p_sys->buffer[i_index+6]) - p_spu_properties->i_y + 1;
 
             /* Auto crop fullscreen subtitles */
-            if( p_spu->i_height > 250 )
+            if( p_spu_properties->i_height > 250 )
                 p_spu_data->b_auto_crop = true;
 
             i_index += 7;
@@ -387,19 +423,20 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
  * convenient structure for later decoding. For more information on the
  * subtitles format, see http://sam.zoy.org/doc/dvd/subtitles/index.html
  *****************************************************************************/
-static int ParseRLE( decoder_t *p_dec, subpicture_t * p_spu,
-                     subpicture_data_t *p_spu_data )
+static int ParseRLE( decoder_t *p_dec,
+                     subpicture_data_t *p_spu_data,
+                     const spu_properties_t *p_spu_properties )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     uint8_t       *p_src = &p_sys->buffer[4];
 
     unsigned int i_code;
 
-    unsigned int i_width = p_spu->i_width;
-    unsigned int i_height = p_spu->i_height;
+    unsigned int i_width = p_spu_properties->i_width;
+    unsigned int i_height = p_spu_properties->i_height;
     unsigned int i_x, i_y;
 
-    uint16_t *p_dest = (uint16_t *)p_spu_data->p_data;
+    uint16_t *p_dest = p_spu_data->p_data;
 
     /* The subtitles are interlaced, we need two offsets */
     unsigned int  i_id = 0;                   /* Start on the even SPU layer */
@@ -638,34 +675,24 @@ static int ParseRLE( decoder_t *p_dec, subpicture_t * p_spu,
 }
 
 static void Render( decoder_t *p_dec, subpicture_t *p_spu,
-                    subpicture_data_t *p_spu_data )
+                    subpicture_data_t *p_spu_data,
+                    const spu_properties_t *p_spu_properties )
 {
     uint8_t *p_p;
     int i_x, i_y, i_len, i_color, i_pitch;
-    uint16_t *p_source = (uint16_t *)p_spu_data->p_data;
+    const uint16_t *p_source = p_spu_data->p_data;
     video_format_t fmt;
+    video_palette_t palette;
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
     fmt.i_chroma = VLC_FOURCC('Y','U','V','P');
     fmt.i_aspect = 0; /* 0 means use aspect ratio of background video */
-    fmt.i_width = fmt.i_visible_width = p_spu->i_width;
-    fmt.i_height = fmt.i_visible_height = p_spu->i_height -
+    fmt.i_width = fmt.i_visible_width = p_spu_properties->i_width;
+    fmt.i_height = fmt.i_visible_height = p_spu_properties->i_height -
         p_spu_data->i_y_top_offset - p_spu_data->i_y_bottom_offset;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_spu->p_region = p_spu->pf_create_region( VLC_OBJECT(p_dec), &fmt );
-    if( !p_spu->p_region )
-    {
-        msg_Err( p_dec, "cannot allocate SPU region" );
-        return;
-    }
-
-    p_spu->p_region->i_x = 0;
-    p_spu->p_region->i_y = p_spu_data->i_y_top_offset;
-    p_p = p_spu->p_region->picture.p->p_pixels;
-    i_pitch = p_spu->p_region->picture.p->i_pitch;
-
-    /* Build palette */
+    fmt.p_palette = &palette;
     fmt.p_palette->i_entries = 4;
     for( i_x = 0; i_x < fmt.p_palette->i_entries; i_x++ )
     {
@@ -676,6 +703,18 @@ static void Render( decoder_t *p_dec, subpicture_t *p_spu,
             p_spu_data->pi_alpha[i_x] == 0xf ? 0xff :
             p_spu_data->pi_alpha[i_x] << 4;
     }
+
+    p_spu->p_region = subpicture_region_New( &fmt );
+    if( !p_spu->p_region )
+    {
+        msg_Err( p_dec, "cannot allocate SPU region" );
+        return;
+    }
+
+    p_spu->p_region->i_x = p_spu_properties->i_x;
+    p_spu->p_region->i_y = p_spu_properties->i_y + p_spu_data->i_y_top_offset;
+    p_p = p_spu->p_region->p_picture->p->p_pixels;
+    i_pitch = p_spu->p_region->p_picture->p->i_pitch;
 
     /* Draw until we reach the bottom of the subtitle */
     for( i_y = 0; i_y < (int)fmt.i_height * i_pitch; i_y += i_pitch )

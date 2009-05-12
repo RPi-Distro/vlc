@@ -63,12 +63,12 @@ static void Close( vlc_object_t * );
 static void OpenAudioDev( demux_t *p_demux );
 static inline void CloseAudioDev( demux_t *p_demux );
 
-vlc_module_begin();
-    set_description( N_("dc1394 input") );
-    set_capability( "access_demux", 10 );
-    add_shortcut( "dc1394" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("dc1394 input") )
+    set_capability( "access_demux", 10 )
+    add_shortcut( "dc1394" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 typedef struct __dc_camera
 {
@@ -218,6 +218,9 @@ static int Open( vlc_object_t *p_this )
     int i_aspect;
     int result = 0;
 
+    if( strncmp(p_demux->psz_access, "dc1394", 6) != 0 )
+        return VLC_EGENERIC;
+
     /* Set up p_demux */
     p_demux->pf_demux = Demux;
     p_demux->pf_control = Control;
@@ -225,10 +228,9 @@ static int Open( vlc_object_t *p_this )
     p_demux->info.i_title = 0;
     p_demux->info.i_seekpoint = 0;
 
-    p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
+    p_demux->p_sys = p_sys = calloc( 1, sizeof( demux_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
-    memset( p_sys, 0, sizeof( demux_sys_t ) );
     memset( &fmt, 0, sizeof( es_format_t ) );
 
     /* DEFAULTS */
@@ -834,9 +836,6 @@ static int process_options( demux_t *p_demux )
     char *token = NULL;
     char *state = NULL;
     float rate_f;
-
-    if( strncmp(p_demux->psz_access, "dc1394", 6) != 0 )
-        return VLC_EGENERIC;
 
     psz_dup = strdup( p_demux->psz_path );
     psz_parser = psz_dup;

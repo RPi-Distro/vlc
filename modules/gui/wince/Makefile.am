@@ -18,5 +18,5 @@ libwince_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libwince_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libwince_plugin_la_LIBADD = $(AM_LIBADD)
-libwince_plugin_la_DEPENDENCIES =
+libwince_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

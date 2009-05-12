@@ -18,5 +18,5 @@ libmacosx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmacosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmacosx_plugin_la_LIBADD = $(AM_LIBADD)
-libmacosx_plugin_la_DEPENDENCIES =
+libmacosx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

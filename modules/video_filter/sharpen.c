@@ -2,7 +2,7 @@
  * sharpen.c: Sharpen video filter
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: c95e69b83567cb29d3d216ffb002711aafbd813a $
+ * $Id: 5db8ba3b5527c367b22dc03bc7dda8431ab2d589 $
  *
  * Author: Jérémy DEMEULE <dj_mulder at djduron dot no-ip dot org>
  *         Jean-Baptiste Kempf <jb at videolan dot org>
@@ -62,17 +62,17 @@ static int SharpenCallback( vlc_object_t *, char const *,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Augment contrast between contours.") );
-    set_shortname( N_("Sharpen video filter") );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_capability( "video filter2", 0 );
+vlc_module_begin ()
+    set_description( N_("Augment contrast between contours.") )
+    set_shortname( N_("Sharpen video filter") )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_capability( "video filter2", 0 )
     add_float_with_range( "sharpen-sigma", 0.05, 0.0, 2.0, NULL,
-        SIG_TEXT, SIG_LONGTEXT, false );
-    add_shortcut( "sharpen" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+        SIG_TEXT, SIG_LONGTEXT, false )
+    add_shortcut( "sharpen" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "sigma", NULL
@@ -147,6 +147,8 @@ static int Create( vlc_object_t *p_this )
 static void Destroy( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
+    var_DelCallback( p_filter, FILTER_PREFIX "sigma",
+                     SharpenCallback, p_filter->p_sys );
     free( p_filter->p_sys );
 }
 
@@ -169,8 +171,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     const int v2 = 3; /* 2^3 = 8 */
 
     if( !p_pic ) return NULL;
-    if( !p_filter ) return NULL;
-    if( !p_filter->p_sys ) return NULL;
 
     p_outpic = filter_NewPicture( p_filter );
     if( !p_outpic )
@@ -182,13 +182,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     /* process the Y plane */
     p_src = p_pic->p[Y_PLANE].p_pixels;
     p_out = p_outpic->p[Y_PLANE].p_pixels;
-    if( !p_src || !p_out )
-    {
-        msg_Warn( p_filter, "can't get Y plane" );
-        picture_Release( p_pic );
-        return NULL;
-    }
-
     i_src_pitch = p_pic->p[Y_PLANE].i_visible_pitch;
 
     /* perform convolution only on Y plane. Avoid border line. */

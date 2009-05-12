@@ -2,7 +2,7 @@
  * output.h: MacOS X Output Dialog
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id$
+ * $Id: 56aca1539cab01f83cfbf891606f315266b3980b $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -84,7 +84,7 @@
 }
 
 - (void)setMRL:(NSArray *)o_mrl_string;
-- (NSArray *)getMRL;
+- (NSArray *)mrl;
 - (void)setTranscode:(NSString *)o_transcode_string;
 
 - (void)initStrings;

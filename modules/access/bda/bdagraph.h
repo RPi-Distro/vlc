@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright ( C ) 2007 the VideoLAN team
  *
- * Author: Ken Self <kens@campoz.fslife.co.uk>
+ * Author: Ken Self <kenself(at)optusnet(dot)com(dot)au>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -48,8 +48,27 @@ using namespace std;
 
 #include <dshow.h>
 #include <comcat.h>
+#include <ks.h>
 #include "bdadefs.h"
 #include "bda.h"
+
+class BDAOutput
+{
+public:
+    BDAOutput( access_t * );
+    ~BDAOutput();
+
+    void    Push( block_t * );
+    block_t *Pop();
+    void    Empty();
+
+private:
+    access_t    *p_access;
+    vlc_mutex_t lock;
+    vlc_cond_t  wait;
+    block_t     *p_first;
+    block_t     **pp_next;
+};
 
 /* The main class for building the filter graph */
 class BDAGraph : public ISampleGrabberCB
@@ -58,19 +77,22 @@ public:
     BDAGraph( access_t* p_access );
     virtual ~BDAGraph();
 
+    /* */
     int SubmitATSCTuneRequest();
     int SubmitDVBTTuneRequest();
     int SubmitDVBCTuneRequest();
     int SubmitDVBSTuneRequest();
-    long GetBufferSize();
-    long ReadBuffer( long* l_buffer_len, BYTE* p_buff );
+
+    /* */
+    block_t *Pop();
 
 private:
     /* ISampleGrabberCB methods */
-    STDMETHODIMP_( ULONG ) AddRef( ) { return 1; }
-    STDMETHODIMP_( ULONG ) Release( ) { return 2; }
+    ULONG ul_cbrc;
+    STDMETHODIMP_( ULONG ) AddRef( ) { return ++ul_cbrc; }
+    STDMETHODIMP_( ULONG ) Release( ) { return --ul_cbrc; }
     STDMETHODIMP QueryInterface( REFIID riid, void** p_p_object )
-        {return E_NOTIMPL;  }
+        { return E_NOTIMPL; }
     STDMETHODIMP SampleCB( double d_time, IMediaSample* p_sample );
     STDMETHODIMP BufferCB( double d_time, BYTE* p_buffer, long l_buffer_len );
 
@@ -80,9 +102,7 @@ private:
     /* registration number for the RunningObjectTable */
     DWORD     d_graph_register;
 
-    queue<IMediaSample*> queue_sample;
-    queue<IMediaSample*> queue_buffer;
-    BOOL b_ready;
+    BDAOutput       output;
 
     IMediaControl*  p_media_control;
     IGraphBuilder*  p_filter_graph;

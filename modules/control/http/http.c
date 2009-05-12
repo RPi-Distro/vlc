@@ -63,26 +63,26 @@ static void Close( vlc_object_t * );
 #define CRL_TEXT N_( "CRL file" )
 #define CRL_LONGTEXT N_( "HTTP interace Certificates Revocation List file." )
 
-vlc_module_begin();
-    set_shortname( N_("HTTP"));
-    set_description( N_("HTTP remote control interface") );
-    set_category( CAT_INTERFACE );
-    set_subcategory( SUBCAT_INTERFACE_MAIN );
-        add_string ( "http-host", NULL, NULL, HOST_TEXT, HOST_LONGTEXT, true );
-        add_string ( "http-src",  NULL, NULL, SRC_TEXT,  SRC_LONGTEXT,  true );
-        add_obsolete_string ( "http-charset" );
+vlc_module_begin ()
+    set_shortname( N_("HTTP"))
+    set_description( N_("HTTP remote control interface") )
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_MAIN )
+        add_string ( "http-host", NULL, NULL, HOST_TEXT, HOST_LONGTEXT, true )
+        add_string ( "http-src",  NULL, NULL, SRC_TEXT,  SRC_LONGTEXT,  true )
+        add_obsolete_string ( "http-charset" )
 #if defined( HAVE_FORK ) || defined( WIN32 )
-        add_string ( "http-handlers", NULL, NULL, HANDLERS_TEXT, HANDLERS_LONGTEXT, true );
+        add_string ( "http-handlers", NULL, NULL, HANDLERS_TEXT, HANDLERS_LONGTEXT, true )
 #endif
-        add_bool   ( "http-album-art", false, NULL, ART_TEXT, ART_LONGTEXT, true );
-        set_section( N_("HTTP SSL" ), 0 );
-        add_string ( "http-intf-cert", NULL, NULL, CERT_TEXT, CERT_LONGTEXT, true );
-        add_string ( "http-intf-key",  NULL, NULL, KEY_TEXT,  KEY_LONGTEXT,  true );
-        add_string ( "http-intf-ca",   NULL, NULL, CA_TEXT,   CA_LONGTEXT,   true );
-        add_string ( "http-intf-crl",  NULL, NULL, CRL_TEXT,  CRL_LONGTEXT,  true );
-    set_capability( "interface", 0 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+        add_bool   ( "http-album-art", false, NULL, ART_TEXT, ART_LONGTEXT, true )
+        set_section( N_("HTTP SSL" ), 0 )
+        add_string ( "http-intf-cert", NULL, NULL, CERT_TEXT, CERT_LONGTEXT, true )
+        add_string ( "http-intf-key",  NULL, NULL, KEY_TEXT,  KEY_LONGTEXT,  true )
+        add_string ( "http-intf-ca",   NULL, NULL, CA_TEXT,   CA_LONGTEXT,   true )
+        add_string ( "http-intf-crl",  NULL, NULL, CRL_TEXT,  CRL_LONGTEXT,  true )
+    set_capability( "interface", 0 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -128,7 +128,7 @@ static int Open( vlc_object_t *p_this )
         return( VLC_ENOMEM );
     }
 
-    p_sys->p_playlist = pl_Yield( p_this );
+    p_sys->p_playlist = pl_Hold( p_this );
     p_sys->p_input    = NULL;
     p_sys->p_vlm      = NULL;
     p_sys->psz_address = psz_address;
@@ -263,10 +263,7 @@ static int Open( vlc_object_t *p_this )
         /* FIXME: we're leaking h */
         httpd_handler_sys_t *h = malloc( sizeof( httpd_handler_sys_t ) );
         if( !h )
-        {
-            msg_Err( p_intf, "not enough memory to allocate album art handler" );
             goto failed;
-        }
         h->file.p_intf = p_intf;
         h->file.file = NULL;
         h->file.name = NULL;
@@ -384,10 +381,9 @@ static void ParseExecute( httpd_file_sys_t *p_args, char *p_buffer,
 
     assert( p_sys->p_input == NULL );
     /* FIXME: proper locking anyone? */
-    p_sys->p_input = p_sys->p_playlist->p_input;
+    p_sys->p_input = playlist_CurrentInput( p_sys->p_playlist );
     if( p_sys->p_input )
     {
-        vlc_object_yield( p_sys->p_input );
         var_Get( p_sys->p_input, "position", &val);
         sprintf( position, "%d" , (int)((val.f_float) * 100.0));
         var_Get( p_sys->p_input, "time", &val);
@@ -403,10 +399,6 @@ static void ParseExecute( httpd_file_sys_t *p_args, char *p_buffer,
         else if( val.i_int == OPENING_S )
         {
             state = "opening/connecting";
-        }
-        else if( val.i_int == BUFFERING_S )
-        {
-            state = "buffering";
         }
         else if( val.i_int == PAUSE_S )
         {
@@ -440,7 +432,6 @@ static void ParseExecute( httpd_file_sys_t *p_args, char *p_buffer,
     mvar_AppendNewVar( p_args->vars, "vlc_compile_domain",
                            VLC_CompileDomain() );
     mvar_AppendNewVar( p_args->vars, "vlc_compiler", VLC_Compiler() );
-    mvar_AppendNewVar( p_args->vars, "vlc_changeset", VLC_Changeset() );
     mvar_AppendNewVar( p_args->vars, "stream_position", position );
     mvar_AppendNewVar( p_args->vars, "stream_time", time );
     mvar_AppendNewVar( p_args->vars, "stream_length", length );
@@ -598,41 +589,33 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
 
     if( i_request )
     {
-        psz_tmp = malloc( sizeof("QUERY_STRING=") + i_request );
-        sprintf( psz_tmp, "QUERY_STRING=%s", p_request );
+        asprintf( &psz_tmp, "QUERY_STRING=%s", p_request );
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
 
-        psz_tmp = malloc( sizeof("REQUEST_URI=?") + strlen(p_url)
-                           + i_request );
-        sprintf( psz_tmp, "REQUEST_URI=%s?%s", p_url, p_request );
+        asprintf( &psz_tmp, "REQUEST_URI=%s?%s", p_url, p_request );
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
     else
     {
-        psz_tmp = malloc( sizeof("REQUEST_URI=") + strlen(p_url) );
-        sprintf( psz_tmp, "REQUEST_URI=%s", p_url );
+        asprintf( &psz_tmp, "REQUEST_URI=%s", p_url );
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
 
-    psz_tmp = malloc( sizeof("SCRIPT_NAME=") + strlen(p_url) );
-    sprintf( psz_tmp, "SCRIPT_NAME=%s", p_url );
+    asprintf( &psz_tmp, "SCRIPT_NAME=%s", p_url );
     TAB_APPEND( i_env, ppsz_env, psz_tmp );
 
 #define p_sys p_args->file.p_intf->p_sys
-    psz_tmp = malloc( sizeof("SERVER_NAME=") + strlen(p_sys->psz_address) );
-    sprintf( psz_tmp, "SERVER_NAME=%s", p_sys->psz_address );
+    asprintf( &psz_tmp, "SERVER_NAME=%s", p_sys->psz_address );
     TAB_APPEND( i_env, ppsz_env, psz_tmp );
 
-    psz_tmp = malloc( sizeof("SERVER_PORT=") + 5 );
-    sprintf( psz_tmp, "SERVER_PORT=%u", p_sys->i_port );
+    asprintf( &psz_tmp, "SERVER_PORT=%u", p_sys->i_port );
     TAB_APPEND( i_env, ppsz_env, psz_tmp );
 #undef p_sys
 
     p = getenv( "PATH" );
     if( p != NULL )
     {
-        psz_tmp = malloc( sizeof("PATH=") + strlen(p) );
-        sprintf( psz_tmp, "PATH=%s", p );
+        asprintf( &psz_tmp, "PATH=%s", p );
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
 
@@ -640,23 +623,20 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
     p = getenv( "windir" );
     if( p != NULL )
     {
-        psz_tmp = malloc( sizeof("SYSTEMROOT=") + strlen(p) );
-        sprintf( psz_tmp, "SYSTEMROOT=%s", p );
+        asprintf( &psz_tmp, "SYSTEMROOT=%s", p );
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
 #endif
 
     if( psz_remote_addr != NULL && *psz_remote_addr )
     {
-        psz_tmp = malloc( sizeof("REMOTE_ADDR=") + strlen(psz_remote_addr) );
-        sprintf( psz_tmp, "REMOTE_ADDR=%s", psz_remote_addr );
+        asprintf( &psz_tmp, "REMOTE_ADDR=%s", psz_remote_addr );
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
 
     if( psz_remote_host != NULL && *psz_remote_host )
     {
-        psz_tmp = malloc( sizeof("REMOTE_HOST=") + strlen(psz_remote_host) );
-        sprintf( psz_tmp, "REMOTE_HOST=%s", psz_remote_host );
+        asprintf( &psz_tmp, "REMOTE_HOST=%s", psz_remote_host );
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
     }
 
@@ -671,8 +651,7 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
                 if( end == NULL )
                     break;
                 *end = '\0';
-                psz_tmp = malloc( sizeof("CONTENT_TYPE=") + strlen(p) );
-                sprintf( psz_tmp, "CONTENT_TYPE=%s", p );
+                asprintf( &psz_tmp, "CONTENT_TYPE=%s", p );
                 TAB_APPEND( i_env, ppsz_env, psz_tmp );
                 *end = '\r';
             }
@@ -683,8 +662,7 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
                 if( end == NULL )
                     break;
                 *end = '\0';
-                psz_tmp = malloc( sizeof("CONTENT_LENGTH=") + strlen(p) );
-                sprintf( psz_tmp, "CONTENT_LENGTH=%s", p );
+                asprintf( &psz_tmp, "CONTENT_LENGTH=%s", p );
                 TAB_APPEND( i_env, ppsz_env, psz_tmp );
                 *end = '\r';
             }
@@ -703,8 +681,7 @@ int  HandlerCallback( httpd_handler_sys_t *p_args,
     if( psz_file != NULL )
     {
         psz_file++;
-        psz_tmp = malloc( sizeof("SCRIPT_FILENAME=") + strlen(psz_file) );
-        sprintf( psz_tmp, "SCRIPT_FILENAME=%s", psz_file );
+        asprintf( &psz_tmp, "SCRIPT_FILENAME=%s", psz_file );
         TAB_APPEND( i_env, ppsz_env, psz_tmp );
 
         TAB_APPEND( p_args->p_association->i_argc,
@@ -798,10 +775,12 @@ int  ArtCallback( httpd_handler_sys_t *p_args,
     i_id = atoi( psz_id );
     if( i_id )
     {
+        playlist_Lock( p_sys->p_playlist );
         playlist_item_t *p_pl_item = playlist_ItemGetById( p_sys->p_playlist,
-                                                           i_id, false );
+                                                           i_id );
         if( p_pl_item )
             p_item = p_pl_item->p_input;
+        playlist_Unlock( p_sys->p_playlist );
     }
     else
     {

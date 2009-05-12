@@ -13,7 +13,7 @@ data 'carb' (0)
 resource 'STR#' (126)
 {
     {
-        "@COPYRIGHT_MESSAGE@"
+	"@COPYRIGHT_MESSAGE@"
         "<BR><A HREF='http://www.videolan.org'>http://www.videolan.org</A>",
         "VLC Multimedia Plug-in"
     };

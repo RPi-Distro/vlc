@@ -2,7 +2,7 @@
  * rtsp.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: 25e70bccef8fce1662b02e0ee160316665d07e38 $
+ * $Id: 0dd3e93cce5d6a9088d12ef3919af803bc276790 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -79,22 +79,22 @@ static void Close( vlc_object_t * );
     "the timeout option entirely. This is needed by some IPTV STBs (such as " \
     "those made by HansunTech) which get confused by it. The default is 5." )
 
-vlc_module_begin();
-    set_shortname( N_("RTSP VoD" ) );
-    set_description( N_("RTSP VoD server") );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_VOD );
-    set_capability( "vod server", 1 );
-    set_callbacks( Open, Close );
-    add_shortcut( "rtsp" );
-    add_string ( "rtsp-host", NULL, NULL, HOST_TEXT, HOST_LONGTEXT, true );
+vlc_module_begin ()
+    set_shortname( N_("RTSP VoD" ) )
+    set_description( N_("RTSP VoD server") )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_VOD )
+    set_capability( "vod server", 1 )
+    set_callbacks( Open, Close )
+    add_shortcut( "rtsp" )
+    add_string ( "rtsp-host", NULL, NULL, HOST_TEXT, HOST_LONGTEXT, true )
     add_string( "rtsp-raw-mux", "ts", NULL, RAWMUX_TEXT,
-                RAWMUX_TEXT, true );
+                RAWMUX_TEXT, true )
     add_integer( "rtsp-throttle-users", 0, NULL, THROTLE_TEXT,
-                                           THROTLE_LONGTEXT, true );
+                                           THROTLE_LONGTEXT, true )
     add_integer( "rtsp-session-timeout", 5, NULL, SESSION_TIMEOUT_TEXT,
-                 SESSION_TIMEOUT_LONGTEXT, true );
-vlc_module_end();
+                 SESSION_TIMEOUT_LONGTEXT, true )
+vlc_module_end ()
 
 /*****************************************************************************
  * Exported prototypes
@@ -260,8 +260,8 @@ static void sprintf_hexa( char *s, uint8_t *p_data, int i_data )
 static int Open( vlc_object_t *p_this )
 {
     vod_t *p_vod = (vod_t *)p_this;
-    vod_sys_t *p_sys = 0;
-    char *psz_url = 0;
+    vod_sys_t *p_sys = NULL;
+    char *psz_url = NULL;
     vlc_url_t url;
 
     psz_url = config_GetPsz( p_vod, "rtsp-host" );
@@ -308,7 +308,7 @@ static int Open( vlc_object_t *p_this )
 
     p_sys->p_fifo_cmd = block_FifoNew();
     if( vlc_thread_create( p_vod, "rtsp vod thread", CommandThread,
-                           VLC_THREAD_PRIORITY_LOW, false ) )
+                           VLC_THREAD_PRIORITY_LOW ) )
     {
         msg_Err( p_vod, "cannot spawn rtsp vod thread" );
         block_FifoRelease( p_sys->p_fifo_cmd );
@@ -368,17 +368,16 @@ static void Close( vlc_object_t * p_this )
 static vod_media_t *MediaNew( vod_t *p_vod, const char *psz_name,
                               input_item_t *p_item )
 {
-    vod_sys_t *p_sys = p_vod->p_sys;
-    vod_media_t *p_media = malloc( sizeof(vod_media_t) );
     int i;
+    vod_sys_t *p_sys = p_vod->p_sys;
 
+    vod_media_t *p_media = calloc( 1, sizeof(vod_media_t) );
     if( !p_media )
         return NULL;
 
-    memset( p_media, 0, sizeof(vod_media_t) );
     p_media->id = p_sys->i_media_id++;
     TAB_INIT( p_media->i_es, p_media->es );
-    p_media->psz_mux = 0;
+    p_media->psz_mux = NULL;
     TAB_INIT( p_media->i_rtsp, p_media->rtsp );
     p_media->b_raw = false;
 
@@ -473,11 +472,12 @@ static void MediaDel( vod_t *p_vod, vod_media_t *p_media )
     TAB_REMOVE( p_sys->i_media, p_sys->media, p_media );
     vlc_mutex_unlock( &p_sys->lock_media );
 
+    httpd_UrlDelete( p_media->p_rtsp_url );
+
     while( p_media->i_rtsp > 0 )
         RtspClientDel( p_media, p_media->rtsp[0] );
     TAB_CLEAN( p_media->i_rtsp, p_media->rtsp );
 
-    httpd_UrlDelete( p_media->p_rtsp_url );
     free( p_media->psz_rtsp_path );
     free( p_media->psz_rtsp_control_v6 );
     free( p_media->psz_rtsp_control_v4 );
@@ -498,11 +498,10 @@ static void MediaDel( vod_t *p_vod, vod_media_t *p_media )
 
 static int MediaAddES( vod_t *p_vod, vod_media_t *p_media, es_format_t *p_fmt )
 {
-    media_es_t *p_es = malloc( sizeof(media_es_t) );
     char *psz_urlc;
-
-    if( !p_es ) return VLC_ENOMEM;
-    memset( p_es, 0, sizeof(media_es_t) );
+    media_es_t *p_es = calloc( 1, sizeof(media_es_t) );
+    if( !p_es )
+        return VLC_ENOMEM;
 
     free( p_media->psz_mux );
     p_media->psz_mux = NULL;
@@ -818,6 +817,7 @@ static void* CommandThread( vlc_object_t *p_this )
 {
     vod_t *p_vod = (vod_t*)p_this;
     vod_sys_t *p_sys = p_vod->p_sys;
+    int canc = vlc_savecancel ();
 
     while( vlc_object_alive (p_vod) )
     {
@@ -885,6 +885,8 @@ static void* CommandThread( vlc_object_t *p_this )
         free( cmd.psz_session );
         free( cmd.psz_arg );
     }
+
+    vlc_restorecancel (canc);
     return NULL;
 }
 
@@ -893,10 +895,10 @@ static void* CommandThread( vlc_object_t *p_this )
  ****************************************************************************/
 static rtsp_client_t *RtspClientNew( vod_media_t *p_media, char *psz_session )
 {
-    rtsp_client_t *p_rtsp = malloc( sizeof(rtsp_client_t) );
+    rtsp_client_t *p_rtsp = calloc( 1, sizeof(rtsp_client_t) );
 
-    if( !p_rtsp ) return NULL;
-    memset( p_rtsp, 0, sizeof(rtsp_client_t) );
+    if( !p_rtsp )
+        return NULL;
     p_rtsp->es = 0;
 
     p_rtsp->psz_session = psz_session;
@@ -928,12 +930,13 @@ static void RtspClientDel( vod_media_t *p_media, rtsp_client_t *p_rtsp )
     msg_Dbg( p_media->p_vod, "closing session: %s, connections: %d",
              p_rtsp->psz_session, p_media->p_vod->p_sys->i_throttle_users );
 
-    while( p_rtsp->i_es-- )
+    while( p_rtsp->i_es )
     {
+        p_rtsp->i_es--;
         free( p_rtsp->es[p_rtsp->i_es]->psz_ip );
         free( p_rtsp->es[p_rtsp->i_es] );
-        if( !p_rtsp->i_es ) free( p_rtsp->es );
     }
+    free( p_rtsp->es );
 
     TAB_REMOVE( p_media->i_rtsp, p_media->rtsp, p_rtsp );
 

@@ -1,6 +1,5 @@
 BASE_SUBDIRS = \
 	access \
-	access_filter \
 	audio_filter \
 	audio_mixer \
 	audio_output \
@@ -12,6 +11,7 @@ BASE_SUBDIRS = \
 	misc \
 	packetizer \
 	services_discovery \
+	stream_filter \
 	video_chroma \
 	video_filter \
 	video_output \

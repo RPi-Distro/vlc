@@ -18,14 +18,18 @@ CHANGELOGS = \
 	ChangeLog-2006 \
 	ChangeLog-2007 \
 	ChangeLog-2008 \
+	ChangeLog-2009 \
 	$(NULL)
+
+man1_MANS = \
+	   vlc.1 \
+	   vlc-wrapper.1 \
+	   vlc-config.1
 
 EXTRA_DIST = \
 	$(CHANGELOGS) \
-	vlc.1 \
-	vlc-wrapper.1 \
-	vlc-config.1 \
-	bugreport-howto.txt \
+        $(man1_MANS) \
+        bugreport-howto.txt \
 	fortunes.txt \
 	intf-cdda.txt \
 	intf-vcd.txt \
@@ -65,7 +69,7 @@ $(CHANGELOGS): Makefile.am
 	fi
 
 # This one needs to be rebuilt all the time :)
-.PHONY: ChangeLog-2008 changelogs doc
+.PHONY: ChangeLog-2009 changelogs doc
 
 changelogs: $(CHANGELOGS)
 

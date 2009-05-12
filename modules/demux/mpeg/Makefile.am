@@ -3,11 +3,22 @@
 
 basedir = demux
 dir = demux/mpeg
-mods = h264 m4a m4v mpga mpgv
-libvlc_LTLIBRARIES =  $(LTLIBh264) $(LTLIBm4a) $(LTLIBm4v) $(LTLIBmpga) $(LTLIBmpgv)
-EXTRA_LTLIBRARIES =  libh264_plugin.la libm4a_plugin.la libm4v_plugin.la libmpga_plugin.la libmpgv_plugin.la
+mods = es h264 m4v mpgv
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
+
+# The es plugin
+libes_plugin_la_SOURCES = $(SOURCES_es)
+nodist_libes_plugin_la_SOURCES = $(nodist_SOURCES_es)
+# Force per-target objects:
+libes_plugin_la_CFLAGS = $(AM_CFLAGS)
+libes_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libes_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libes_plugin_la_LIBADD = $(AM_LIBADD)
+libes_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The h264 plugin
 libh264_plugin_la_SOURCES = $(SOURCES_h264)
@@ -18,18 +29,7 @@ libh264_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libh264_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libh264_plugin_la_LIBADD = $(AM_LIBADD)
-libh264_plugin_la_DEPENDENCIES =
-
-# The m4a plugin
-libm4a_plugin_la_SOURCES = $(SOURCES_m4a)
-nodist_libm4a_plugin_la_SOURCES = $(nodist_SOURCES_m4a)
-# Force per-target objects:
-libm4a_plugin_la_CFLAGS = $(AM_CFLAGS)
-libm4a_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libm4a_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libm4a_plugin_la_LIBADD = $(AM_LIBADD)
-libm4a_plugin_la_DEPENDENCIES =
+libh264_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The m4v plugin
 libm4v_plugin_la_SOURCES = $(SOURCES_m4v)
@@ -40,18 +40,7 @@ libm4v_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libm4v_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libm4v_plugin_la_LIBADD = $(AM_LIBADD)
-libm4v_plugin_la_DEPENDENCIES =
-
-# The mpga plugin
-libmpga_plugin_la_SOURCES = $(SOURCES_mpga)
-nodist_libmpga_plugin_la_SOURCES = $(nodist_SOURCES_mpga)
-# Force per-target objects:
-libmpga_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmpga_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmpga_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libmpga_plugin_la_LIBADD = $(AM_LIBADD)
-libmpga_plugin_la_DEPENDENCIES =
+libm4v_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mpgv plugin
 libmpgv_plugin_la_SOURCES = $(SOURCES_mpgv)
@@ -62,5 +51,5 @@ libmpgv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmpgv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmpgv_plugin_la_LIBADD = $(AM_LIBADD)
-libmpgv_plugin_la_DEPENDENCIES =
+libmpgv_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

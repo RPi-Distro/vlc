@@ -2,7 +2,7 @@
  * window_manager.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b2ccf99913ed0479a4ce7d85e55b10cccb9020c3 $
+ * $Id: 01385b5682af2d34042e11638a5c429b18bee4c4 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -639,3 +639,4 @@ void WindowManager::setActiveLayout( TopWindow &rWindow,
     // Rebuild the dependencies
     stopMove();
 }
+

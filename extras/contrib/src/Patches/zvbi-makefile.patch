@@ -3,7 +3,7 @@
 @@ -19,13 +19,7 @@ DISTCLEANFILES = site_def.h
  # Attn order matters.
  SUBDIRS = \
- 	m4 \
+	m4 \
 -	src \
 -	$(proxy_dirs) \
 -	contrib \
@@ -12,6 +12,5 @@
 -	po \
 -	doc
 +	src
- 
+
  ACLOCAL_AMFLAGS = -I m4
- 

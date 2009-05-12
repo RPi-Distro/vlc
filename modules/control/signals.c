@@ -22,7 +22,6 @@
 # include "config.h"
 #endif
 
-#include <pthread.h>
 #include <signal.h>
 #include <time.h>
 
@@ -32,22 +31,20 @@
 
 static int  Open (vlc_object_t *);
 static void Close (vlc_object_t *);
-static void Run (intf_thread_t *);
 static void *SigThread (void *);
 
-vlc_module_begin ();
-    set_shortname (N_("Signals"));
-    set_category (CAT_INTERFACE);
-    set_subcategory (SUBCAT_INTERFACE_CONTROL);
-    set_description (N_("POSIX signals handling interface"));
-    set_capability ("interface", 0);
-    set_callbacks (Open, Close);
-vlc_module_end ();
+vlc_module_begin ()
+    set_shortname (N_("Signals"))
+    set_category (CAT_INTERFACE)
+    set_subcategory (SUBCAT_INTERFACE_CONTROL)
+    set_description (N_("POSIX signals handling interface"))
+    set_capability ("interface", 0)
+    set_callbacks (Open, Close)
+vlc_module_end ()
 
 struct intf_sys_t
 {
-    pthread_t       thread;
-    int             signum;
+    vlc_thread_t    thread;
 };
 
 static int Open (vlc_object_t *obj)
@@ -58,17 +55,16 @@ static int Open (vlc_object_t *obj)
     if (p_sys == NULL)
         return VLC_ENOMEM;
 
-    p_sys->signum = 0;
     intf->p_sys = p_sys;
 
-    if (pthread_create (&p_sys->thread, NULL, SigThread, obj))
+    if (vlc_clone (&p_sys->thread, SigThread, obj, VLC_THREAD_PRIORITY_LOW))
     {
         free (p_sys);
         intf->p_sys = NULL;
         return VLC_ENOMEM;
     }
 
-    intf->pf_run = Run;
+    intf->pf_run = NULL;
     return 0;
 }
 
@@ -77,22 +73,22 @@ static void Close (vlc_object_t *obj)
     intf_thread_t *intf = (intf_thread_t *)obj;
     intf_sys_t *p_sys = intf->p_sys;
 
-    pthread_cancel (p_sys->thread);
+    vlc_cancel (p_sys->thread);
 #ifdef __APPLE__
    /* In Mac OS X up to 10.5 sigwait (among others) is not a pthread
     * cancellation point, so we throw a dummy quit signal to end
     * sigwait() in the sigth thread */
     pthread_kill (p_sys->thread, SIGQUIT);
 # endif
-    pthread_join (p_sys->thread, NULL);
+    vlc_join (p_sys->thread, NULL);
     free (p_sys);
 }
 
 static void *SigThread (void *data)
 {
     intf_thread_t *obj = data;
-    intf_sys_t *p_sys = obj->p_sys;
     sigset_t set;
+    int signum;
 
     sigemptyset (&set);
     sigaddset (&set, SIGHUP);
@@ -102,46 +98,24 @@ static void *SigThread (void *data)
 
     sigaddset (&set, SIGCHLD);
 
-    for (;;)
+    do
     {
-        int signum;
-
         sigwait (&set, &signum);
 
 #ifdef __APPLE__
         /* In Mac OS X up to 10.5 sigwait (among others) is not a pthread
          * cancellation point */
-        pthread_testcancel();
+        vlc_testcancel();
 #endif
-
-        vlc_object_lock (obj);
-        p_sys->signum = signum;
-        vlc_object_signal_unlocked (obj);
-        vlc_object_unlock (obj);
     }
-}
+    while (signum == SIGCHLD);
 
-static void Run (intf_thread_t *obj)
-{
-    intf_sys_t *p_sys = obj->p_sys;
+    msg_Err (obj, "Caught %s signal, exiting...", strsignal (signum));
+    libvlc_Quit (obj->p_libvlc);
 
-    vlc_object_lock (obj);
-    while (vlc_object_alive (obj))
-    {
-        switch (p_sys->signum)
-        {
-            case SIGINT:
-            case SIGHUP:
-            case SIGTERM:
-            case SIGQUIT:
-                msg_Err (obj, "Caught %s signal, exiting...",
-                         strsignal (p_sys->signum));
-                goto out;
-        }
-        vlc_object_wait (obj);
-    }
-
-out:
-    vlc_object_unlock (obj);
-    vlc_object_kill (obj->p_libvlc);
+    /* After 3 seconds, fallback to normal signal handling */
+    msleep (3 * CLOCK_FREQ);
+    pthread_sigmask (SIG_UNBLOCK, &set, NULL);
+    for (;;)
+        pause ();
 }

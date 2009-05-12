@@ -103,7 +103,8 @@ typedef enum libvlc_meta_t {
     libvlc_meta_Publisher,
     libvlc_meta_EncodedBy,
     libvlc_meta_ArtworkURL,
-    libvlc_meta_TrackID
+    libvlc_meta_TrackID,
+    /* Add new meta types HERE */
 } libvlc_meta_t;
 
 /**@} */
@@ -126,11 +127,12 @@ typedef struct libvlc_media_player_t libvlc_media_player_t;
 
 /**
  * Note the order of libvlc_state_t enum must match exactly the order of
- * @see mediacontrol_PlayerStatus and @see input_state_e enums.
+ * @see mediacontrol_PlayerStatus, @see input_state_e enums,
+ * and VideoLAN.LibVLC.State (at bindings/cil/src/media.cs).
  *
  * Expected states by web plugins are:
  * IDLE/CLOSE=0, OPENING=1, BUFFERING=2, PLAYING=3, PAUSED=4,
- * STOPPING=5, FORWARD=6, BACKWARD=7, ENDED=8, ERROR=9
+ * STOPPING=5, ENDED=6, ERROR=7
  */
 typedef enum libvlc_state_t
 {
@@ -140,8 +142,6 @@ typedef enum libvlc_state_t
     libvlc_Playing,
     libvlc_Paused,
     libvlc_Stopped,
-    libvlc_Forward,
-    libvlc_Backward,
     libvlc_Ended,
     libvlc_Error
 } libvlc_state_t;
@@ -209,6 +209,53 @@ typedef struct libvlc_playlist_item_t
 
 /**@} */
 
+/*****************************************************************************
+ * Media Player
+ *****************************************************************************/
+/** \defgroup libvlc_media_player libvlc_media_player
+ * \ingroup libvlc
+ * LibVLC Media Player, object that let you play a media
+ * in a drawable
+ * @{
+ */
+
+/**
+ * Description for video, audio tracks and subtitles. It contains
+ * id, name (description string) and pointer to next record.
+ */
+typedef struct libvlc_track_description_t
+{
+    int   i_id;
+    char *psz_name;
+    struct libvlc_track_description_t *p_next;
+
+} libvlc_track_description_t;
+
+/**@} */
+
+/*****************************************************************************
+ * Audio
+ *****************************************************************************/
+/** \defgroup libvlc_audio libvlc_audio
+ * \ingroup libvlc_media_player
+ * LibVLC Audio handling
+ * @{
+ */
+
+/**
+ * Description for audio output. It contains
+ * name, description and pointer to next record.
+ */
+typedef struct libvlc_audio_output_t
+{
+    char *psz_name;
+    char *psz_description;
+    struct libvlc_audio_output_t *p_next;
+
+} libvlc_audio_output_t;
+
+/**@} */
+
 
 /*****************************************************************************
  * Video
@@ -218,14 +265,6 @@ typedef struct libvlc_playlist_item_t
  * LibVLC Video handling
  * @{
  */
- 
-/**
-* Downcast to this general type as placeholder for a platform specific one, such as:
-*  Drawable on X11,
-*  CGrafPort on MacOSX,
-*  HWND on win32
-*/
-typedef int libvlc_drawable_t;
 
 /**
 * Rectangle type for video geometry

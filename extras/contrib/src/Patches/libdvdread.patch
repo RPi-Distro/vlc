@@ -1,19 +1,6 @@
-Index: src/dvdread/ifo_types.h
-===================================================================
---- src/dvdread/ifo_types.h	(revision 1164)
-+++ src/dvdread/ifo_types.h	(working copy)
-@@ -32,7 +32,7 @@
- 
- #if defined(__GNUC__)
- #if __GNUC__ > 2 || (__GNUC__ == 2 && __GNUC_MINOR__ >= 95)
--#define ATTRIBUTE_PACKED __attribute__ ((packed))
-+#define ATTRIBUTE_PACKED __attribute__ ((gcc_struct,packed))
- #define PRAGMA_PACK 0
- #endif
- #endif
 Index: configure.ac
 ===================================================================
---- configure.ac	(revision 1164)
+--- configure.ac	(revision 1162)
 +++ configure.ac	(working copy)
 @@ -137,27 +137,59 @@
  dnl ---------------------------------------------

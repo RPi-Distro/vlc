@@ -57,7 +57,7 @@ group_contains_listener( libvlc_event_listeners_group_t * group,
  */
 
 /**************************************************************************
- *       libvlc_event_manager_init (internal) :
+ *       libvlc_event_manager_new (internal) :
  *
  * Init an object's event manager.
  **************************************************************************/
@@ -170,8 +170,8 @@ void libvlc_event_send( libvlc_event_manager_t * p_em,
             array_listeners_cached = malloc(sizeof(libvlc_event_listener_t)*(i_cached_listeners));
             if( !array_listeners_cached )
             {
-                printf( "Can't alloc memory in libvlc_event_send" );
-                break;
+                fprintf(stderr, "Can't alloc memory in libvlc_event_send" );
+                return;
             }
 
             listener_cached = array_listeners_cached;
@@ -249,6 +249,7 @@ static const char event_type_to_name[][35] =
     EVENT(libvlc_MediaPlayerBackward),
     EVENT(libvlc_MediaPlayerEndReached),
     EVENT(libvlc_MediaPlayerTimeChanged),
+    EVENT(libvlc_MediaPlayerTitleChanged),
     EVENT(libvlc_MediaPlayerPositionChanged),
     EVENT(libvlc_MediaPlayerSeekableChanged),
     EVENT(libvlc_MediaPlayerPausableChanged),
@@ -268,7 +269,9 @@ static const char event_type_to_name[][35] =
     EVENT(libvlc_MediaListPlayerStopped),
 
     EVENT(libvlc_MediaDiscovererStarted),
-    EVENT(libvlc_MediaDiscovererEnded)
+    EVENT(libvlc_MediaDiscovererEnded),
+
+    EVENT(libvlc_MediaPlayerSnapshotTaken),
 #undef EVENT
 };
 

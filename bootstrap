@@ -22,6 +22,8 @@ export CYGWIN
 set -e
 set -x
 
+cd "$(dirname "$0")"
+
 ##
 ## Check for various tools
 ##
@@ -111,9 +113,6 @@ autoreconf --install --force --verbose ${ACLOCAL_ARGS}
 rm -f po/Makevars.template ABOUT-NLS
 echo > ABOUT-NLS
 mv -f INSTALL.git INSTALL
-
-# Patch po/Makefile.in.in but it's not a drama if it fails
-patch -sfN -p1 < po/makefile-qt4.patch || true
 
 ##
 ##  files which need to be regenerated

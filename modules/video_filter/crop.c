@@ -2,7 +2,7 @@
  * crop.c : Crop video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 67f0e5c3b8678fb0efcd87721b15418f891cccf1 $
+ * $Id: 355b0292f8cebb5b3ac441c389efe23e14616664 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          mod by Cedric Cocquebert <Cedric.Cocquebert@supelec.fr>
@@ -34,7 +34,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_vout.h>
-#include <vlc_interface.h>
+#include <vlc_dialog.h>
 
 #include "filter_common.h"
 
@@ -56,7 +56,7 @@ static void Render    ( vout_thread_t *, picture_t * );
 
 static void UpdateStats    ( vout_thread_t *, picture_t * );
 
-static int  SendEvents( vlc_object_t *, char const *,
+static int  MouseEvent( vlc_object_t *, char const *,
                         vlc_value_t, vlc_value_t, void * );
 
 #ifdef BEST_AUTOCROP
@@ -100,42 +100,42 @@ static int FilterCallback ( vlc_object_t *, char const *,
 #define LUM_LONGTEXT N_("Maximum luminance to consider a pixel as black (0-255).")
 #endif
 
-vlc_module_begin();
-    set_description( N_("Crop video filter") );
-    set_shortname( N_("Crop" ));
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_capability( "video filter", 0 );
+vlc_module_begin ()
+    set_description( N_("Crop video filter") )
+    set_shortname( N_("Crop" ))
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_capability( "video filter", 0 )
 
     add_string( "crop-geometry", NULL, NULL, GEOMETRY_TEXT,
-                                             GEOMETRY_LONGTEXT, false );
+                                             GEOMETRY_LONGTEXT, false )
     add_bool( "autocrop", 0, NULL, AUTOCROP_TEXT,
-                                   AUTOCROP_LONGTEXT, false );
+                                   AUTOCROP_LONGTEXT, false )
 
 #ifdef BEST_AUTOCROP
     add_integer_with_range( "autocrop-ratio-max", 2405, 0, RATIO_MAX, NULL,
-                            RATIOMAX_TEXT, RATIOMAX_LONGTEXT, true );
+                            RATIOMAX_TEXT, RATIOMAX_LONGTEXT, true )
 
     add_integer_with_range( "crop-ratio", 0, 0, RATIO_MAX, NULL, RATIO_TEXT,
-                            RATIO_LONGTEXT, false );
+                            RATIO_LONGTEXT, false )
     add_integer( "autocrop-time", 25, NULL, TIME_TEXT,
-                 TIME_LONGTEXT, true );
+                 TIME_LONGTEXT, true )
     add_integer( "autocrop-diff", 16, NULL, DIFF_TEXT,
-                                            DIFF_LONGTEXT, true );
+                                            DIFF_LONGTEXT, true )
 
     add_integer( "autocrop-non-black-pixels", 3, NULL,
-                 NBP_TEXT, NBP_LONGTEXT, true );
+                 NBP_TEXT, NBP_LONGTEXT, true )
 
     add_integer_with_range( "autocrop-skip-percent", 17, 0, 100, NULL,
-                            SKIP_TEXT, SKIP_LONGTEXT, true );
+                            SKIP_TEXT, SKIP_LONGTEXT, true )
 
     add_integer_with_range( "autocrop-luminance-threshold", 40, 0, 128, NULL,
-                            LUM_TEXT, LUM_LONGTEXT, true );
+                            LUM_TEXT, LUM_LONGTEXT, true )
 #endif //BEST_AUTOCROP
 
-    add_shortcut( "crop" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    add_shortcut( "crop" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 /*****************************************************************************
  * vout_sys_t: Crop video output method descriptor
@@ -200,9 +200,7 @@ static int Create( vlc_object_t *p_this )
  *****************************************************************************/
 static int Init( vout_thread_t *p_vout )
 {
-    int   i_index;
     char *psz_var;
-    picture_t *p_pic;
     video_format_t fmt;
 
     I_OUTPUTPICTURES = 0;
@@ -375,7 +373,7 @@ static int Init( vout_thread_t *p_vout )
     if( p_vout->p_sys->p_vout == NULL )
     {
         msg_Err( p_vout, "failed to create vout" );
-        intf_UserFatal( p_vout, false, _("Cropping failed"),
+        dialog_Fatal( p_vout, _("Cropping failed"),
                         _("VLC could not open the video output module.") );
         return VLC_EGENERIC;
     }
@@ -384,11 +382,9 @@ static int Init( vout_thread_t *p_vout )
     var_AddCallback( p_vout, "ratio-crop", FilterCallback, NULL );
 #endif
 
-    ALLOCATE_DIRECTBUFFERS( VOUT_MAX_PICTURES );
+    vout_filter_AllocateDirectBuffers( p_vout, VOUT_MAX_PICTURES );
 
-    ADD_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
-
-    ADD_PARENT_CALLBACKS( SendEventsToChild );
+    vout_filter_AddChild( p_vout, p_vout->p_sys->p_vout, MouseEvent );
 
     return VLC_SUCCESS;
 }
@@ -398,21 +394,15 @@ static int Init( vout_thread_t *p_vout )
  *****************************************************************************/
 static void End( vout_thread_t *p_vout )
 {
-    int i_index;
+    vout_sys_t *p_sys = p_vout->p_sys;
 
-    DEL_PARENT_CALLBACKS( SendEventsToChild );
-    if( p_vout->p_sys->p_vout )
-        DEL_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
-
-    /* Free the fake output buffers we allocated */
-    for( i_index = I_OUTPUTPICTURES ; i_index ; )
+    if( p_sys->p_vout )
     {
-        i_index--;
-        free( PP_OUTPUTPICTURE[ i_index ]->p_data_orig );
+        vout_filter_DelChild( p_vout, p_sys->p_vout, MouseEvent );
+        vout_CloseAndRelease( p_sys->p_vout );
     }
 
-    if( p_vout->p_sys->p_vout )
-        vout_CloseAndRelease( p_vout->p_sys->p_vout );
+    vout_filter_ReleaseDirectBuffers( p_vout );
 }
 
 /*****************************************************************************
@@ -455,7 +445,7 @@ static int Manage( vout_thread_t *p_vout )
 
     if( p_vout->p_sys->p_vout )
     {
-        DEL_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
+        vout_filter_DelChild( p_vout, p_vout->p_sys->p_vout, MouseEvent );
         vout_CloseAndRelease( p_vout->p_sys->p_vout );
     }
 
@@ -471,11 +461,11 @@ static int Manage( vout_thread_t *p_vout )
     if( p_vout->p_sys->p_vout == NULL )
     {
         msg_Err( p_vout, "failed to create vout" );
-        intf_UserFatal( p_vout, false, _("Cropping failed"),
+        dialog_Fatal( p_vout, _("Cropping failed"),
                         _("VLC could not open the video output module.") );
         return VLC_EGENERIC;
     }
-    ADD_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
+    vout_filter_AddChild( p_vout, p_vout->p_sys->p_vout, MouseEvent );
 
     p_vout->p_sys->b_changed = false;
     p_vout->p_sys->i_lastchange = 0;
@@ -513,7 +503,7 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
         msleep( VOUT_OUTMEM_SLEEP );
     }
 
-    vout_DatePicture( p_vout->p_sys->p_vout, p_outpic, p_pic->date );
+    p_outpic->date = p_pic->date;
     vout_LinkPicture( p_vout->p_sys->p_vout, p_outpic );
 
     for( i_plane = 0 ; i_plane < p_pic->i_planes ; i_plane++ )
@@ -829,41 +819,23 @@ static void UpdateStats( vout_thread_t *p_vout, picture_t *p_pic )
     p_vout->p_sys->b_changed = true;
 }
 
-/*****************************************************************************
- * SendEvents: forward mouse and keyboard events to the parent p_vout
- *****************************************************************************/
-static int SendEvents( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *_p_vout )
-{
-    VLC_UNUSED(p_this); VLC_UNUSED(oldval);
-    vout_thread_t *p_vout = (vout_thread_t *)_p_vout;
-    vlc_value_t sentval = newval;
-
-    /* Translate the mouse coordinates */
-    if( !strcmp( psz_var, "mouse-x" ) )
-    {
-        sentval.i_int += p_vout->p_sys->i_x;
-    }
-    else if( !strcmp( psz_var, "mouse-y" ) )
-    {
-        sentval.i_int += p_vout->p_sys->i_y;
-    }
-
-    var_Set( p_vout, psz_var, sentval );
-
-    return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * SendEventsToChild: forward events to the child/children vout
- *****************************************************************************/
-static int SendEventsToChild( vlc_object_t *p_this, char const *psz_var,
+/**
+ * Forward mouse event with proper conversion.
+ */
+static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
-    VLC_UNUSED(p_data); VLC_UNUSED(oldval);
-    vout_thread_t *p_vout = (vout_thread_t *)p_this;
-    var_Set( p_vout->p_sys->p_vout, psz_var, newval );
-    return VLC_SUCCESS;
+    vout_thread_t *p_vout = p_data;
+    VLC_UNUSED(p_this); VLC_UNUSED(oldval);
+
+    /* Translate the mouse coordinates
+     * FIXME missing lock */
+    if( !strcmp( psz_var, "mouse-x" ) )
+        newval.i_int += p_vout->p_sys->i_x;
+    else if( !strcmp( psz_var, "mouse-y" ) )
+        newval.i_int += p_vout->p_sys->i_y;
+
+    return var_Set( p_vout, psz_var, newval );
 }
 
 #ifdef BEST_AUTOCROP

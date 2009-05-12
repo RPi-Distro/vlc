@@ -2,7 +2,7 @@
  * alphamask.c : Alpha layer mask video filter for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: b1cacbd7302f046cbbbab948733461a4a3ba371e $
+ * $Id: 79999cda566a7e21210623cdc16d1e1af07a9987 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -59,20 +59,20 @@ static int MaskCallback( vlc_object_t *, char const *,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Alpha mask video filter") );
-    set_shortname( N_("Alpha mask" ));
-    set_help( ALPHAMASK_HELP );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_capability( "video filter2", 0 );
-    add_shortcut( "alphamask" );
-    add_shortcut( "mask" );
-    set_callbacks( Create, Destroy );
+vlc_module_begin ()
+    set_description( N_("Alpha mask video filter") )
+    set_shortname( N_("Alpha mask" ))
+    set_help( ALPHAMASK_HELP )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_capability( "video filter2", 0 )
+    add_shortcut( "alphamask" )
+    add_shortcut( "mask" )
+    set_callbacks( Create, Destroy )
 
     add_string( CFG_PREFIX "mask", NULL, NULL, MASK_TEXT,
-                MASK_LONGTEXT, false );
-vlc_module_end();
+                MASK_LONGTEXT, false )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "mask", NULL
@@ -133,11 +133,14 @@ static void Destroy( vlc_object_t *p_this )
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    vlc_mutex_destroy( &p_sys->mask_lock );
-    if( p_filter->p_sys->p_mask )
-        picture_Release( p_filter->p_sys->p_mask );
+    var_DelCallback( p_filter, CFG_PREFIX "mask", MaskCallback,
+                     p_filter );
 
-    free( p_filter->p_sys );
+    vlc_mutex_destroy( &p_sys->mask_lock );
+    if( p_sys->p_mask )
+        picture_Release( p_sys->p_mask );
+
+    free( p_sys );
 }
 
 static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )

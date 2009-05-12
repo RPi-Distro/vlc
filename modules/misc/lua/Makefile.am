@@ -18,5 +18,5 @@ liblua_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liblua_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liblua_plugin_la_LIBADD = $(AM_LIBADD)
-liblua_plugin_la_DEPENDENCIES =
+liblua_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

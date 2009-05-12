@@ -1,7 +1,5 @@
-SUBDIRS = cmml dmo avcodec subtitles spudec xvmc
-# Disabled modules
-SOURCES_a52 = a52.c
-SOURCES_cinepak = cinepak.c
+SUBDIRS = cmml dmo avcodec shine subtitles spudec wmafixed xvmc
+SOURCES_a52 = a52.c a52.h
 SOURCES_dts = dts.c
 SOURCES_flac = flac.c
 SOURCES_lpcm = lpcm.c
@@ -27,6 +25,7 @@ SOURCES_png = png.c
 SOURCES_svcdsub = svcdsub.c
 SOURCES_cvdsub = cvdsub.c
 SOURCES_fake = fake.c
+SOURCES_invmem = invmem.c
 SOURCES_realaudio = realaudio.c
 SOURCES_realvideo = realvideo.c
 SOURCES_sdl_image = sdl_image.c
@@ -38,3 +37,22 @@ SOURCES_cc = cc.c cc.h
 SOURCES_kate = kate.c
 SOURCES_schroedinger = schroedinger.c
 SOURCES_libass = libass.c
+SOURCES_aes3 = aes3.c
+
+libvlc_LTLIBRARIES += \
+	liba52_plugin.la \
+	libadpcm_plugin.la \
+	libaes3_plugin.la \
+	libaraw_plugin.la \
+	libcc_plugin.la \
+        libcdg_plugin.la \
+	libcvdsub_plugin.la \
+	libdts_plugin.la \
+	libflac_plugin.la \
+	libdvbsub_plugin.la \
+	liblpcm_plugin.la \
+	libmpeg_audio_plugin.la \
+	librawvideo_plugin.la \
+	libsvcdsub_plugin.la \
+	libinvmem_plugin.la \
+	$(NULL)

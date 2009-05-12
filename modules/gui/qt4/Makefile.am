@@ -18,5 +18,5 @@ libqt4_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libqt4_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libqt4_plugin_la_LIBADD = $(AM_LIBADD)
-libqt4_plugin_la_DEPENDENCIES =
+libqt4_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

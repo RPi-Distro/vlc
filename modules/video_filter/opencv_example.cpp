@@ -37,6 +37,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_filter.h>
+#include <vlc_vout.h>
 #include "filter_common.h"
 #include <vlc_image.h>
 #include "filter_event_info.h"
@@ -63,20 +64,20 @@ static picture_t *Filter( filter_t *, picture_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("OpenCV face detection example filter") );
-    set_shortname( N_( "OpenCV example" ));
-    set_capability( "opencv example", 1 );
-    add_shortcut( "opencv_example" );
+vlc_module_begin ()
+    set_description( N_("OpenCV face detection example filter") )
+    set_shortname( N_( "OpenCV example" ))
+    set_capability( "opencv example", 1 )
+    add_shortcut( "opencv_example" )
 
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER2 );
-    set_callbacks( OpenFilter, CloseFilter );
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER2 )
+    set_callbacks( OpenFilter, CloseFilter )
 
     add_string( "opencv-haarcascade-file", "c:\\haarcascade_frontalface_alt.xml", NULL,
                           N_("Haar cascade filename"),
                           N_("Name of XML file containing Haar cascade description"), false);
-vlc_module_end();
+vlc_module_end ()
 
 /*****************************************************************************
  * OpenFilter: probe the filter and return score
@@ -103,11 +104,11 @@ static int OpenFilter( vlc_object_t *p_this )
     //create the VIDEO_FILTER_EVENT_VARIABLE
     vlc_value_t val;
     if (var_Create( p_filter->p_libvlc, VIDEO_FILTER_EVENT_VARIABLE, VLC_VAR_ADDRESS | VLC_VAR_DOINHERIT ) != VLC_SUCCESS)
-        msg_Err( p_filter, "Could not create %s\n", VIDEO_FILTER_EVENT_VARIABLE);
+        msg_Err( p_filter, "Could not create %s", VIDEO_FILTER_EVENT_VARIABLE);
 
     val.p_address = &(p_sys->event_info);
     if (var_Set( p_filter->p_libvlc, VIDEO_FILTER_EVENT_VARIABLE, val )!=VLC_SUCCESS)
-        msg_Err( p_filter, "Could not set %s\n", VIDEO_FILTER_EVENT_VARIABLE);
+        msg_Err( p_filter, "Could not set %s", VIDEO_FILTER_EVENT_VARIABLE);
 
     //OpenCV init specific to this example
     char* filename = config_GetPsz( p_filter, "opencv-haarcascade-file" );
@@ -197,7 +198,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         CvRect* r;
         if (faces && (faces->total > 0))
         {
-            //msg_Dbg( p_filter, "Found %d face(s)\n", faces->total );
+            //msg_Dbg( p_filter, "Found %d face(s)", faces->total );
             if (NULL != p_filter->p_sys->event_info.p_region)
             {
                 free(p_filter->p_sys->event_info.p_region);
@@ -228,7 +229,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         }
 
         if (faces && (faces->total > 0))    //raise the video filter event
-            var_Change( p_filter->p_libvlc, VIDEO_FILTER_EVENT_VARIABLE, VLC_VAR_TRIGGER_CALLBACKS, NULL, NULL );
+            var_TriggerCallback( p_filter->p_libvlc, VIDEO_FILTER_EVENT_VARIABLE );
     }
     else
         msg_Err( p_filter, "No cascade - is opencv-haarcascade-file valid?" );

@@ -4,8 +4,8 @@
 basedir = misc
 dir = misc/stats
 mods = stats
-libvlc_LTLIBRARIES =  $(LTLIBstats)
-EXTRA_LTLIBRARIES =  libstats_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,5 +18,5 @@ libstats_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstats_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstats_plugin_la_LIBADD = $(AM_LIBADD)
-libstats_plugin_la_DEPENDENCIES =
+libstats_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

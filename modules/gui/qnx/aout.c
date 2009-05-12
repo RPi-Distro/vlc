@@ -79,10 +79,7 @@ int OpenAudio( vlc_object_t *p_this )
     /* allocate structure */
     p_aout->output.p_sys = malloc( sizeof( aout_sys_t ) );
     if( p_aout->output.p_sys == NULL )
-    {
-        msg_Err( p_aout, "out of memory" );
         return -1;
-    }
 
     /* open audio device */
     if( ( i_ret = snd_pcm_open_preferred( &p_aout->output.p_sys->p_pcm_handle,
@@ -176,7 +173,7 @@ int OpenAudio( vlc_object_t *p_this )
 
     /* Create audio thread and wait for its readiness. */
     if( vlc_thread_create( p_aout, "aout", QNXaoutThread,
-                           VLC_THREAD_PRIORITY_OUTPUT, false ) )
+                           VLC_THREAD_PRIORITY_OUTPUT ) )
     {
         msg_Err( p_aout, "cannot create QNX audio thread (%m)" );
         CloseAudio( p_this );
@@ -265,6 +262,7 @@ static void* QNXaoutThread( vlc_object_t *p_this )
 {
     aout_instance_t * p_aout = (aout_instance_t*)p_this;
     struct aout_sys_t * p_sys = p_aout->output.p_sys;
+    int canc = vlc_savecancel ();
 
     while ( vlc_object_alive (p_aout) )
     {
@@ -321,6 +319,7 @@ static void* QNXaoutThread( vlc_object_t *p_this )
         }
     }
 
+    vlc_restorecancel (canc);
     return NULL;
 }
 

@@ -39,7 +39,6 @@
   <file alias="repeat_all">pixmaps/playlist/repeat_all.png</file>
   <file alias="repeat_off">pixmaps/playlist/repeat_off.png</file>
   <file alias="repeat_one">pixmaps/playlist/repeat_one.png</file>
-  <file alias="shuffle_off">pixmaps/playlist/shuffle_off.png</file>
   <file alias="shuffle_on">pixmaps/playlist/shuffle_on.png</file>
   <file alias="jump_to">pixmaps/playlist/jumpto.png</file>
   <file alias="type_directory">pixmaps/types/type_directory.png</file>
@@ -50,7 +49,6 @@
   <file alias="tv">pixmaps/toolbar/tv.png</file>
   <file alias="fullscreen">pixmaps/toolbar/fullscreen.png</file>
   <file alias="defullscreen">pixmaps/toolbar/defullscreen.png</file>
-  <file alias="tvtelx-trans">pixmaps/toolbar/tvtelx-transparent.png</file>
   <file alias="tvtelx">pixmaps/toolbar/tvtelx.png</file>
   <file alias="extended">pixmaps/toolbar/extended_16px.png</file>
   <file alias="record">pixmaps/toolbar/record_16px.png</file>
@@ -67,6 +65,10 @@
   <file alias="atob">pixmaps/toolbar/atob.png</file>
   <file alias="atob_noa">pixmaps/toolbar/atob_noa.png</file>
   <file alias="atob_nob">pixmaps/toolbar/atob_nob.png</file>
+  <file alias="frame">pixmaps/toolbar/frame-by-frame.png</file>
+  <file alias="skip_fw">pixmaps/toolbar/skip_for.png</file>
+  <file alias="skip_back">pixmaps/toolbar/skip_back.png</file>
+  <file alias="reverse">pixmaps/toolbar/play_reverse.png</file>
   <file alias="next">pixmaps/next_16px.png</file>
   <file alias="next_b">pixmaps/next.png</file>
   <file alias="down_arrow">pixmaps/arrow_down_dark.png</file>
@@ -84,6 +86,9 @@
   <file alias="update">pixmaps/update.png</file>
   <file alias="clear">pixmaps/clear.png</file>
   <file alias="noart.png">pixmaps/noart.png</file>
+  <file alias="space">pixmaps/space.png</file>
   <file>pixmaps/go-next.png</file>
+  <file alias="new.png">pixmaps/profile_new.png</file>
+  <file alias="lock">pixmaps/lock.png</file>
  </qresource>
 </RCC>

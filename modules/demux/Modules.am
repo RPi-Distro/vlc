@@ -1,14 +1,12 @@
-SUBDIRS = asf avformat avi mp4 mpeg playlist
-SOURCES_a52sys = a52.c
-SOURCES_dtssys = dts.c
+SUBDIRS = asf avformat avi mkv mp4 mpeg playlist
 SOURCES_flacsys = flac.c
-SOURCES_ogg = ogg.c
+SOURCES_ogg = ogg.c vorbis.h kate_categories.c kate_categories.h
 SOURCES_demuxdump = demuxdump.c
 SOURCES_rawdv = rawdv.c
 SOURCES_rawvid = rawvid.c
 SOURCES_au = au.c
+SOURCES_rawaud = rawaud.c
 SOURCES_wav = wav.c
-SOURCES_mkv = mkv.cpp mp4/libmp4.c mp4/drms.c
 SOURCES_live555 = live555.cpp ../access/mms/asf.c ../access/mms/buffer.c
 SOURCES_nsv = nsv.c
 SOURCES_real = real.c
@@ -32,19 +30,22 @@ SOURCES_tta = tta.c
 SOURCES_vc1 = vc1.c
 SOURCES_demux_cdg = cdg.c
 SOURCES_smf = smf.c
+SOURCES_dirac = dirac.c
 
 libvlc_LTLIBRARIES += \
-	liba52sys_plugin.la \
 	libaiff_plugin.la \
 	libau_plugin.la \
+	librawaud_plugin.la \
+	libdirac_plugin.la \
 	libdemux_cdg_plugin.la \
 	libdemuxdump_plugin.la \
-	libdtssys_plugin.la \
 	libflacsys_plugin.la \
 	libmjpeg_plugin.la \
+	libnsc_plugin.la \
 	libnsv_plugin.la \
 	libnuv_plugin.la \
 	libpva_plugin.la \
+	libps_plugin.la \
 	librawdv_plugin.la \
 	librawvid_plugin.la \
 	libreal_plugin.la \
@@ -58,16 +59,3 @@ libvlc_LTLIBRARIES += \
 	libwav_plugin.la \
 	libxa_plugin.la \
 	$(NULL)
-
-if HAVE_LIBGCRYPT
-# RTP plugin
-libvlc_LTLIBRARIES += \
-	librtp_plugin.la
-librtp_plugin_la_SOURCES = \
-	rtp.c rtp.h rtpsession.c
-librtp_plugin_la_CFLAGS = $(AM_CFLAGS) -I$(top_srcdir)/libs/srtp
-librtp_plugin_la_LIBADD = $(AM_LIBADD) \
-	$(top_builddir)/libs/srtp/libvlc_srtp.la
-librtp_plugin_la_DEPENDENCIES = \
-	$(top_builddir)/libs/srtp/libvlc_srtp.la
-endif

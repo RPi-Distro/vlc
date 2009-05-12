@@ -18,5 +18,5 @@ libdshow_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdshow_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdshow_plugin_la_LIBADD = $(AM_LIBADD)
-libdshow_plugin_la_DEPENDENCIES =
+libdshow_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

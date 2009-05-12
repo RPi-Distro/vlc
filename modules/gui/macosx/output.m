@@ -2,7 +2,7 @@
  * output.m: MacOS X Output Dialog
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id$
+ * $Id: 14ff97b768d3136a167695b04c08b2967d5afc90 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -59,7 +59,7 @@
     o_mrl = [o_mrl_array copy];
 }
 
-- (NSArray *)getMRL
+- (NSArray *)mrl
 {
     return [o_mrl copy];
 }

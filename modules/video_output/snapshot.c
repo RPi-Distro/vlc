@@ -2,7 +2,7 @@
  * snapshot.c : snapshot plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: fb0b9cf7ce124ac4c7a73e687e5502b619bc54c2 $
+ * $Id: b5dce2551fd7ae80b7e1207c1bd845dfae986a01 $
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *
@@ -76,25 +76,35 @@ static void Display   ( vout_thread_t *, picture_t * );
 #define CACHE_LONGTEXT N_( "Snapshot cache size (number of images to keep)." )
 
 
-vlc_module_begin( );
-    set_description( N_( "Snapshot module" ) );
-    set_shortname( N_("Snapshot") );
+vlc_module_begin ()
+    set_description( N_( "Snapshot output" ) )
+    set_shortname( N_("Snapshot") )
 
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_capability( "video output", 1 );
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VOUT )
+    set_capability( "video output", 1 )
 
-    add_integer( "snapshot-width", 320, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, false );
-    add_integer( "snapshot-height", 200, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT, false );
-    add_string( "snapshot-chroma", "RV32", NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true );
-    add_integer( "snapshot-cache-size", 50, NULL, CACHE_TEXT, CACHE_LONGTEXT, true );
+    add_integer( "snapshot-width", 320, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, false )
+    add_integer( "snapshot-height", 200, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT, false )
+    add_string( "snapshot-chroma", "RV32", NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true )
+    add_integer( "snapshot-cache-size", 50, NULL, CACHE_TEXT, CACHE_LONGTEXT, true )
 
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 /*****************************************************************************
  * vout_sys_t: video output descriptor
  *****************************************************************************/
+typedef struct snapshot_t
+{
+  uint8_t *p_data;   /* Data area */
+
+  int i_width;       /* In pixels */
+  int i_height;      /* In pixels */
+  int i_datasize;    /* In bytes */
+  mtime_t date;      /* Presentation time */
+} snapshot_t;
+
 struct vout_sys_t
 {
     snapshot_t **p_list;    /* List of available snapshots */
@@ -273,9 +283,12 @@ static int Init( vout_thread_t *p_vout )
         p_snapshot->i_height = i_height;
         p_snapshot->i_datasize = i_datasize;
         p_snapshot->date = 0;
-        p_snapshot->p_data = ( char* ) malloc( i_datasize );
+        p_snapshot->p_data = malloc( i_datasize );
         if( p_snapshot->p_data == NULL )
+        {
+            free( p_snapshot );
             return VLC_ENOMEM;
+        }
         p_vout->p_sys->p_list[i_index] = p_snapshot;
     }
 
@@ -301,18 +314,18 @@ static int Init( vout_thread_t *p_vout )
 
     if( var_Create( p_vout->p_sys->p_input, "snapshot-id", VLC_VAR_INTEGER ) )
     {
-        msg_Err( p_vout, "Cannot create snapshot-id variable in p_input (%d).",
-                 p_vout->p_sys->p_input->i_object_id );
+        msg_Err( p_vout, "Cannot create snapshot-id variable in p_input(%p).",
+                 p_vout->p_sys->p_input );
         return VLC_EGENERIC;
     }
 
     /* Register the snapshot vout module at the input level */
-    val.i_int = p_vout->i_object_id;
+    val.p_address = p_vout;
 
     if( var_Set( p_vout->p_sys->p_input, "snapshot-id", val ) )
     {
-        msg_Err( p_vout, "Cannot register snapshot-id in p_input (%d).",
-                 p_vout->p_sys->p_input->i_object_id );
+        msg_Err( p_vout, "Cannot register snapshot-id in p_input(%p).",
+                 p_vout->p_sys->p_input );
         return VLC_EGENERIC;
     }
 
@@ -356,19 +369,11 @@ static void Destroy( vlc_object_t *p_this )
 /* Return the position in ms from the start of the movie */
 static mtime_t snapshot_GetMovietime( vout_thread_t *p_vout )
 {
-    input_thread_t* p_input;
-    vlc_value_t val;
-    mtime_t i_result;
-
-    p_input = p_vout->p_sys->p_input;
+    input_thread_t *p_input = p_vout->p_sys->p_input;
     if( !p_input )
         return 0;
 
-    var_Get( p_input, "time", &val );
-
-    i_result = val.i_time - p_input->i_pts_delay;
-
-    return( i_result / 1000 );
+    return var_GetTime( p_input, "time" ) / 1000;
 }
 
 /*****************************************************************************

@@ -2,7 +2,7 @@
  * media_list_player.c: libvlc new API media_list player functions
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: c5f04511cdfbdca0ec95ff72be555a8502945a50 $
+ * $Id: 0f704bd26998f44a08345abecb84aeffccc056b1 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -376,7 +376,6 @@ libvlc_media_list_player_is_playing( libvlc_media_list_player_t * p_mlp,
 {
     libvlc_state_t state = libvlc_media_player_get_state( p_mlp->p_mi, p_e );
     return (state == libvlc_Opening) || (state == libvlc_Buffering) ||
-           (state == libvlc_Forward) || (state == libvlc_Backward) ||
            (state == libvlc_Playing);
 }
 

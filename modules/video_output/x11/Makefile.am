@@ -18,7 +18,7 @@ libglx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libglx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libglx_plugin_la_LIBADD = $(AM_LIBADD)
-libglx_plugin_la_DEPENDENCIES =
+libglx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The x11 plugin
 libx11_plugin_la_SOURCES = $(SOURCES_x11)
@@ -29,7 +29,7 @@ libx11_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libx11_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libx11_plugin_la_LIBADD = $(AM_LIBADD)
-libx11_plugin_la_DEPENDENCIES =
+libx11_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The xvideo plugin
 libxvideo_plugin_la_SOURCES = $(SOURCES_xvideo)
@@ -40,7 +40,7 @@ libxvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libxvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libxvideo_plugin_la_LIBADD = $(AM_LIBADD)
-libxvideo_plugin_la_DEPENDENCIES =
+libxvideo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The xvmc plugin
 libxvmc_plugin_la_SOURCES = $(SOURCES_xvmc)
@@ -51,5 +51,5 @@ libxvmc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libxvmc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libxvmc_plugin_la_LIBADD = $(AM_LIBADD)
-libxvmc_plugin_la_DEPENDENCIES =
+libxvmc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

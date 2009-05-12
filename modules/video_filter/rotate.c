@@ -2,7 +2,7 @@
  * rotate.c : video rotation filter
  *****************************************************************************
  * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: 55b7c9fbb88f805cd1d85427e0996dfa742f2b07 $
+ * $Id: 8a0873e0c8749d054e05925dded8bd55051432a5 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -63,19 +63,19 @@ static int PreciseRotateCallback( vlc_object_t *p_this, char const *psz_var,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Rotate video filter") );
-    set_shortname( N_( "Rotate" ));
-    set_capability( "video filter2", 0 );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
+vlc_module_begin ()
+    set_description( N_("Rotate video filter") )
+    set_shortname( N_( "Rotate" ))
+    set_capability( "video filter2", 0 )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
 
     add_integer_with_range( FILTER_PREFIX "angle", 30, 0, 359, NULL,
-        ANGLE_TEXT, ANGLE_LONGTEXT, false );
+        ANGLE_TEXT, ANGLE_LONGTEXT, false )
 
-    add_shortcut( "rotate" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    add_shortcut( "rotate" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "angle", NULL
@@ -156,6 +156,10 @@ static int Create( vlc_object_t *p_this )
 static void Destroy( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
+
+    var_DelCallback( p_filter, FILTER_PREFIX "angle", RotateCallback, p_filter->p_sys );
+    var_DelCallback( p_filter, FILTER_PREFIX "deciangle",
+                     PreciseRotateCallback, p_filter->p_sys );
 
     free( p_filter->p_sys );
 }
