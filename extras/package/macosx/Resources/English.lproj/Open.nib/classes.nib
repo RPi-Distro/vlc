@@ -6,265 +6,17 @@
             SUPERCLASS = NSObject;
         },
                 {
-            CLASS = MPSlider;
+            CLASS = NSApplication;
             LANGUAGE = ObjC;
-            SUPERCLASS = NSSlider;
+            SUPERCLASS = NSResponder;
+        },
+                {
+            CLASS = NSObject;
+            LANGUAGE = ObjC;
         },
                 {
             ACTIONS =             {
-                showPanel = id;
-            };
-            CLASS = VLAboutBox;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSObject;
-        },
-                {
-            CLASS = VLBrushedMetalImageView;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSImageView;
-        },
-                {
-            CLASS = VLCApplication;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSApplication;
-        },
-                {
-            CLASS = VLCControllerView;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSView;
-        },
-                {
-            CLASS = VLCControllerWindow;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSWindow;
-        },
-                {
-            ACTIONS =             {
-                backward = id;
-                faster = id;
-                forward = id;
-                loop = id;
-                mute = id;
-                next = id;
-                pause = id;
-                play = id;
-                position = id;
-                prev = id;
-                random = id;
-                repeat = id;
-                slower = id;
-                stop = id;
-                toggleVar = id;
-                volumeDown = id;
-                volumeSliderUpdated = id;
-                volumeUp = id;
-                windowAction = id;
-            };
-            CLASS = VLCControls;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                "o_btn_fullscreen" = id;
-                "o_main" = id;
-                "o_open" = id;
-                "o_volumeslider" = id;
-            };
-            SUPERCLASS = NSObject;
-        },
-                {
-            ACTIONS =             {
-                bandSliderUpdated = id;
-                changePreset = id;
-                enable = id;
-                preampSliderUpdated = id;
-                toggleWindow = id;
-                twopass = id;
-            };
-            CLASS = VLCEqualizer;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                "o_btn_equalizer" = id;
-                "o_ckb_2pass" = id;
-                "o_ckb_enable" = id;
-                "o_fld_preamp" = id;
-                "o_popup_presets" = id;
-                "o_slider_band1" = id;
-                "o_slider_band10" = id;
-                "o_slider_band2" = id;
-                "o_slider_band3" = id;
-                "o_slider_band4" = id;
-                "o_slider_band5" = id;
-                "o_slider_band6" = id;
-                "o_slider_band7" = id;
-                "o_slider_band8" = id;
-                "o_slider_band9" = id;
-                "o_slider_preamp" = id;
-                "o_window" = id;
-            };
-            SUPERCLASS = NSObject;
-        },
-                {
-            ACTIONS =             {
-                createOutlineGroup = id;
-                deleteOutlineGroup = id;
-                infoCancel = id;
-                infoOk = id;
-                toggleInfoPanel = id;
-                togglePlaylistInfoPanel = id;
-            };
-            CLASS = VLCInfo;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                "o_author_lbl" = id;
-                "o_author_txt" = id;
-                "o_btn_cancel" = id;
-                "o_btn_ok" = id;
-                "o_info_window" = id;
-                "o_outline_view" = id;
-                "o_title_lbl" = id;
-                "o_title_txt" = id;
-                "o_uri_lbl" = id;
-                "o_uri_txt" = id;
-            };
-            SUPERCLASS = NSObject;
-        },
-                {
-            ACTIONS =             {
-                clearRecentItems = id;
-                closeError = id;
-                openCrashLog = id;
-                openDocumentation = id;
-                openLicense = id;
-                openReadMe = id;
-                openRecentItem = id;
-                openWebsite = id;
-                reportABug = id;
-                timesliderUpdate = id;
-                viewAbout = id;
-                viewPreferences = id;
-            };
-            CLASS = VLCMain;
-            LANGUAGE = ObjC;
-            OUTLETS =             {
-                "o_btn_ff" = id;
-                "o_btn_fullscreen" = id;
-                "o_btn_next" = id;
-                "o_btn_play" = id;
-                "o_btn_prev" = id;
-                "o_btn_rewind" = id;
-                "o_btn_stop" = id;
-                "o_controls" = id;
-                "o_dmi_mute" = id;
-                "o_dmi_next" = id;
-                "o_dmi_play" = id;
-                "o_dmi_previous" = id;
-                "o_dmi_stop" = id;
-                "o_err_btn_dismiss" = id;
-                "o_err_btn_msgs" = id;
-                "o_err_bug_lbl" = id;
-                "o_err_ckbk_surpress" = id;
-                "o_err_lbl" = id;
-                "o_err_msg" = id;
-                "o_error" = id;
-                "o_info" = id;
-                "o_messages" = id;
-                "o_mi_about" = id;
-                "o_mi_add_intf" = id;
-                "o_mi_audiotrack" = id;
-                "o_mi_bring_atf" = id;
-                "o_mi_bwd" = id;
-                "o_mi_channels" = id;
-                "o_mi_chapter" = id;
-                "o_mi_clear" = id;
-                "o_mi_close_window" = id;
-                "o_mi_controller" = id;
-                "o_mi_copy" = id;
-                "o_mi_cut" = id;
-                "o_mi_deinterlace" = id;
-                "o_mi_device" = id;
-                "o_mi_documentation" = id;
-                "o_mi_double_window" = id;
-                "o_mi_equalizer" = id;
-                "o_mi_faster" = id;
-                "o_mi_ffmpeg_pp" = id;
-                "o_mi_fittoscreen" = id;
-                "o_mi_floatontop" = id;
-                "o_mi_fullscreen" = id;
-                "o_mi_fwd" = id;
-                "o_mi_half_window" = id;
-                "o_mi_hide" = id;
-                "o_mi_hide_others" = id;
-                "o_mi_info" = id;
-                "o_mi_license" = id;
-                "o_mi_loop" = id;
-                "o_mi_messages" = id;
-                "o_mi_minimize" = id;
-                "o_mi_mute" = id;
-                "o_mi_next" = id;
-                "o_mi_normal_window" = id;
-                "o_mi_open_disc" = id;
-                "o_mi_open_file" = id;
-                "o_mi_open_generic" = id;
-                "o_mi_open_net" = id;
-                "o_mi_open_recent" = id;
-                "o_mi_open_recent_cm" = id;
-                "o_mi_paste" = id;
-                "o_mi_play" = id;
-                "o_mi_playlist" = id;
-                "o_mi_prefs" = id;
-                "o_mi_previous" = id;
-                "o_mi_program" = id;
-                "o_mi_quit" = id;
-                "o_mi_random" = id;
-                "o_mi_readme" = id;
-                "o_mi_repeat" = id;
-                "o_mi_reportabug" = id;
-                "o_mi_screen" = id;
-                "o_mi_select_all" = id;
-                "o_mi_services" = id;
-                "o_mi_show_all" = id;
-                "o_mi_slower" = id;
-                "o_mi_snapshot" = id;
-                "o_mi_stop" = id;
-                "o_mi_subtitle" = id;
-                "o_mi_title" = id;
-                "o_mi_videotrack" = id;
-                "o_mi_visual" = id;
-                "o_mi_vol_down" = id;
-                "o_mi_vol_up" = id;
-                "o_mi_website" = id;
-                "o_msgs_btn_crashlog" = id;
-                "o_msgs_panel" = id;
-                "o_mu_add_intf" = id;
-                "o_mu_audio" = id;
-                "o_mu_audiotrack" = id;
-                "o_mu_channels" = id;
-                "o_mu_chapter" = id;
-                "o_mu_controls" = id;
-                "o_mu_deinterlace" = id;
-                "o_mu_device" = id;
-                "o_mu_edit" = id;
-                "o_mu_ffmpeg_pp" = id;
-                "o_mu_file" = id;
-                "o_mu_help" = id;
-                "o_mu_program" = id;
-                "o_mu_screen" = id;
-                "o_mu_subtitle" = id;
-                "o_mu_title" = id;
-                "o_mu_video" = id;
-                "o_mu_videotrack" = id;
-                "o_mu_visual" = id;
-                "o_mu_window" = id;
-                "o_playlist" = id;
-                "o_scrollfield" = id;
-                "o_timefield" = id;
-                "o_timeslider" = id;
-                "o_volumeslider" = id;
-                "o_window" = id;
-            };
-            SUPERCLASS = NSObject;
-        },
-                {
-            ACTIONS =             {
+                expandMRLfieldAction = id;
                 eyetvGetPlugin = id;
                 eyetvLaunch = id;
                 eyetvSwitchChannel = id;
@@ -280,6 +32,7 @@
                 openNet = id;
                 openNetModeChanged = id;
                 openNetStepperChanged = id;
+                openNetUDPButtonAction = id;
                 openVTSBrowse = id;
                 panelCancel = id;
                 panelOk = id;
@@ -301,6 +54,7 @@
                 "o_capture_lbl" = id;
                 "o_capture_long_lbl" = id;
                 "o_capture_mode_pop" = id;
+                "o_currentCaptureView" = id;
                 "o_disc_chapter" = id;
                 "o_disc_chapter_lbl" = id;
                 "o_disc_chapter_stp" = id;
@@ -350,14 +104,25 @@
                 "o_file_sub_size_lbl" = id;
                 "o_file_sub_size_pop" = id;
                 "o_mrl" = id;
+                "o_mrl_btn" = id;
                 "o_mrl_lbl" = id;
+                "o_mrl_view" = id;
+                "o_net_help_lbl" = id;
+                "o_net_help_udp_lbl" = id;
                 "o_net_http_url" = id;
                 "o_net_http_url_lbl" = id;
                 "o_net_mode" = id;
-                "o_net_timeshift_ckbox" = id;
+                "o_net_openUDP_btn" = id;
+                "o_net_udp_address_lbl" = id;
+                "o_net_udp_cancel_btn" = id;
+                "o_net_udp_mode_lbl" = id;
+                "o_net_udp_ok_btn" = id;
+                "o_net_udp_panel" = id;
                 "o_net_udp_port" = id;
                 "o_net_udp_port_lbl" = id;
                 "o_net_udp_port_stp" = id;
+                "o_net_udp_protocol_lbl" = id;
+                "o_net_udp_protocol_mat" = id;
                 "o_net_udpm_addr" = id;
                 "o_net_udpm_addr_lbl" = id;
                 "o_net_udpm_port" = id;
@@ -366,12 +131,25 @@
                 "o_output_ckbox" = id;
                 "o_panel" = id;
                 "o_playlist" = id;
+                "o_screen_follow_mouse_ckb" = id;
                 "o_screen_fps_fld" = id;
                 "o_screen_fps_lbl" = id;
                 "o_screen_fps_stp" = id;
+                "o_screen_height_fld" = id;
+                "o_screen_height_lbl" = id;
+                "o_screen_height_stp" = id;
                 "o_screen_lbl" = id;
+                "o_screen_left_fld" = id;
+                "o_screen_left_lbl" = id;
+                "o_screen_left_stp" = id;
                 "o_screen_long_lbl" = id;
+                "o_screen_top_fld" = id;
+                "o_screen_top_lbl" = id;
+                "o_screen_top_stp" = id;
                 "o_screen_view" = id;
+                "o_screen_width_fld" = id;
+                "o_screen_width_lbl" = id;
+                "o_screen_width_stp" = id;
                 "o_sout_options" = id;
                 "o_tabview" = id;
             };
@@ -448,32 +226,64 @@
             SUPERCLASS = NSObject;
         },
                 {
+            ACTIONS =             {
+                addNode = id;
+                deleteItem = id;
+                downloadCoverArt = id;
+                playItem = id;
+                preparseItem = id;
+                recursiveExpandNode = id;
+                revealItemInFinder = id;
+                savePlaylist = id;
+                searchItem = id;
+                selectAll = id;
+                servicesChange = id;
+                sortNodeByAuthor = id;
+                sortNodeByName = id;
+            };
             CLASS = VLCPlaylist;
             LANGUAGE = ObjC;
-            SUPERCLASS = NSObject;
-        },
-                {
-            CLASS = VLCPlaylistView;
-            LANGUAGE = ObjC;
-            SUPERCLASS = NSOutlineView;
-        },
-                {
-            ACTIONS =             {
-                advancedToggle = id;
-                closePrefs = id;
-                resetAll = id;
-                savePrefs = id;
+            OUTLETS =             {
+                "o_btn_addNode" = id;
+                "o_btn_playlist" = id;
+                "o_controller" = id;
+                "o_ctx_menu" = id;
+                "o_mi_addNode" = id;
+                "o_mi_delete" = id;
+                "o_mi_dl_cover_art" = id;
+                "o_mi_info" = id;
+                "o_mi_play" = id;
+                "o_mi_preparse" = id;
+                "o_mi_recursive_expand" = id;
+                "o_mi_revealInFinder" = id;
+                "o_mi_save_playlist" = id;
+                "o_mi_selectall" = id;
+                "o_mi_services" = id;
+                "o_mi_sort_author" = id;
+                "o_mi_sort_name" = id;
+                "o_mm_mi_revealInFinder" = id;
+                "o_mm_mi_services" = id;
+                "o_mm_mu_services" = id;
+                "o_mu_services" = id;
+                "o_playlist_view" = id;
+                "o_playlist_wizard" = id;
+                "o_save_accessory_popup" = id;
+                "o_save_accessory_text" = id;
+                "o_save_accessory_view" = id;
+                "o_search_field" = id;
+                "o_status_field" = id;
+                "o_tc_sortColumn" = id;
             };
-            CLASS = VLCPrefs;
+            SUPERCLASS = VLCPlaylistCommon;
+        },
+                {
+            CLASS = VLCPlaylistCommon;
             LANGUAGE = ObjC;
             OUTLETS =             {
-                "o_advanced_ckb" = id;
-                "o_cancel_btn" = id;
-                "o_prefs_view" = id;
-                "o_prefs_window" = id;
-                "o_reset_btn" = id;
-                "o_save_btn" = id;
-                "o_tree" = id;
+                "o_outline_view" = id;
+                "o_tc_author" = id;
+                "o_tc_duration" = id;
+                "o_tc_name" = id;
             };
             SUPERCLASS = NSObject;
         }

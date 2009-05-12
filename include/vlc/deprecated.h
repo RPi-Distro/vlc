@@ -2,7 +2,7 @@
  * deprecated.h:  libvlc deprecated API
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: ba9a7be9ded108066ada4cc5bff1b52882119ad1 $
+ * $Id: e3c0d560573475587f7b74ac40cf257fe9431d73 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -30,17 +30,55 @@
  * This file defines libvlc depreceated API
  */
 
+/**
+ * This is the legacy representation of a platform-specific drawable. Because
+ * it cannot accomodate a pointer on most 64-bits platforms, it should not be
+ * used anymore.
+ */
+typedef int libvlc_drawable_t;
+
 # ifdef __cplusplus
 extern "C" {
 # endif
 
 /**
+ * Set the drawable where the media player should render its video output.
+ *
+ * On Windows 32-bits, a window handle (HWND) is expected.
+ * On Windows 64-bits, this function will always fail.
+ *
+ * On OSX 32-bits, a CGrafPort is expected.
+ * On OSX 64-bits, this function will always fail.
+ *
+ * On other platforms, an existing X11 window ID is expected. See
+ * libvlc_media_player_set_xid() for details.
+ *
+ * \param p_mi the Media Player
+ * \param drawable the libvlc_drawable_t where the media player
+ *        should render its video
+ * \param p_e an initialized exception pointer
+ */
+VLC_PUBLIC_API void libvlc_media_player_set_drawable ( libvlc_media_player_t *, libvlc_drawable_t, libvlc_exception_t * );
+
+/**
+ * Get the drawable where the media player should render its video output
+ *
+ * \param p_mi the Media Player
+ * \param p_e an initialized exception pointer
+ * \return the libvlc_drawable_t where the media player
+ *         should render its video
+ */
+VLC_PUBLIC_API libvlc_drawable_t
+                    libvlc_media_player_get_drawable ( libvlc_media_player_t *, libvlc_exception_t * );
+
+/**
  * Set the default video output's parent.
  *
- * This setting will be used as default for all video outputs.
+ * This setting will be used as default for any video output.
  *
  * \param p_instance libvlc instance
- * \param drawable the new parent window (Drawable on X11, CGrafPort on MacOSX, HWND on Win32)
+ * \param drawable the new parent window
+ *                 (see libvlc_media_player_set_drawable() for details)
  * \param p_e an initialized exception pointer
  * @deprecated Use libvlc_media_player_set_drawable
  */
@@ -57,6 +95,16 @@ VLC_PUBLIC_API void libvlc_video_set_parent( libvlc_instance_t *, libvlc_drawabl
  * @deprecated Use libvlc_media_player_get_drawable
  */
 VLC_PUBLIC_API libvlc_drawable_t libvlc_video_get_parent( libvlc_instance_t *, libvlc_exception_t * );
+
+/**
+ * Change the parent for the current the video output.
+ *
+ * \param p_instance libvlc instance
+ * \param drawable the new parent window (Drawable on X11, CGrafPort on MacOSX, HWND on Win32)
+ * \param p_e an initialized exception pointer
+ * \return the success status (boolean)
+ */
+VLC_PUBLIC_API int libvlc_video_reparent( libvlc_media_player_t *, libvlc_drawable_t, libvlc_exception_t * );
 
 /*
  * This function shall not be used at all. It may lead to crash and race condition.
@@ -124,6 +172,8 @@ VLC_DEPRECATED_API int libvlc_playlist_isplaying( libvlc_instance_t *,
 
 /**
  * Get the number of items in the playlist
+ *
+ * Expects the playlist instance to be locked already.
  *
  * \param p_instance the playlist instance
  * \param p_e an initialized exception pointer

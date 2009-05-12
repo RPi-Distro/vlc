@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: 411c33aa344b4a768928c2a850dae2a0fe019a3f $
+ * $Id: d1f1f74809fe72f199e58507ea2a52763f1d62e5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -56,6 +56,23 @@ private:
     bool mDrawClickMsg;
 };
 
+class QToolButton;
+class SearchLineEdit : public QFrame
+{
+    Q_OBJECT
+public:
+    SearchLineEdit( QWidget *parent );
+
+private:
+    ClickLineEdit *searchLine;
+    QToolButton   *clearButton;
+
+private slots:
+    void updateText( const QString& );
+
+signals:
+    void textChanged( const QString& );
+};
 
 /*****************************************************************
  * Custom views
@@ -66,15 +83,13 @@ private:
 #include <QPoint>
 #include <QModelIndex>
 
+/**
+  Special QTreeView that can emit rightClicked()
+  */
 class QVLCTreeView : public QTreeView
 {
     Q_OBJECT;
 public:
-    QVLCTreeView( QWidget * parent ) : QTreeView( parent )
-    {
-    };
-    virtual ~QVLCTreeView()   {};
-
     void mouseReleaseEvent( QMouseEvent* e )
     {
         if( e->button() & Qt::RightButton )
@@ -94,15 +109,20 @@ public:
         }
         QTreeView::mousePressEvent( e );
     }
+
 signals:
     void rightClicked( QModelIndex, QPoint  );
 };
 
+/* VLC Key/Wheel hotkeys interactions */
+
 class QKeyEvent;
 class QWheelEvent;
+
 int qtKeyModifiersToVLC( QInputEvent* e );
 int qtEventToVLCKey( QKeyEvent *e );
 int qtWheelEventToVLCKey( QWheelEvent *e );
 QString VLCKeyToString( int val );
 
 #endif
+

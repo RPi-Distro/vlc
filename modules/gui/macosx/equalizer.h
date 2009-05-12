@@ -2,7 +2,7 @@
  * equalizer.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id$
+ * $Id: e736be44f475c76f1459e7a506b5d4e1d6836fba $
  *
  * Authors: Jérôme Decoodt <djc@videolan.org>
  *
@@ -56,7 +56,7 @@
 - (void)awakeFromNib;
 
 - (void)setValue: (float)value forSlider: (int)index;
-- (id)getSliderByIndex: (int)index;
+- (id)sliderByIndex: (int)index;
 - (void)setBandSlidersValues: (float *)values;
 - (void)initBandSliders;
 

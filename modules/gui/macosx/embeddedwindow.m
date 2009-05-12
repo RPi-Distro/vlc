@@ -1,8 +1,8 @@
 /*****************************************************************************
  * embeddedwindow.m: MacOS X interface module
  *****************************************************************************
- * Copyright (C) 2005-2008 the VideoLAN team
- * $Id: 4a5cc69031af138de2791db21c64e44a22b02e47 $
+ * Copyright (C) 2005-2009 the VideoLAN team
+ * $Id: adcec67b8314e8b72f9f145ed18d0d3af06b4ec7 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -26,9 +26,6 @@
  * Preamble
  *****************************************************************************/
 
-/* DisableScreenUpdates, SetSystemUIMode, ... */
-#import <QuickTime/QuickTime.h>
-
 #import "intf.h"
 #import "controls.h"
 #import "vout.h"
@@ -40,6 +37,22 @@
  *****************************************************************************/
 
 @implementation VLCEmbeddedWindow
+
+- (id)initWithContentRect:(NSRect)contentRect styleMask: (NSUInteger)windowStyle backing:(NSBackingStoreType)bufferingType defer:(BOOL)deferCreation
+{
+    BOOL b_useTextured = YES;
+    if( [[NSWindow class] instancesRespondToSelector:@selector(setContentBorderThickness:forEdge:)] )
+    {
+        b_useTextured = NO;
+        windowStyle ^= NSTexturedBackgroundWindowMask;
+    }
+    self = [super initWithContentRect:contentRect styleMask:windowStyle backing:bufferingType defer:deferCreation];
+    if(! b_useTextured )
+    {
+        [self setContentBorderThickness:28.0 forEdge:NSMinYEdge];
+    }
+    return self;
+}
 
 - (void)awakeFromNib
 {
@@ -157,10 +170,10 @@
 
 - (BOOL)windowShouldClose:(id)sender
 {
-    playlist_t * p_playlist = pl_Yield( VLCIntf );
+    playlist_t * p_playlist = pl_Hold( VLCIntf );
 
     playlist_Stop( p_playlist );
-    vlc_object_release( p_playlist );
+    pl_Release( VLCIntf );
     return YES;
 }
 
@@ -261,10 +274,9 @@
         [o_fullscreen_window setBackgroundColor: [NSColor blackColor]];
         [o_fullscreen_window setCanBecomeKeyWindow: YES];
 
-        if (![self isVisible] || [self alphaValue] == 0.0 || MACOS_VERSION < 10.4f)
+        if (![self isVisible] || [self alphaValue] == 0.0)
         {
-            /* We don't animate if we are not visible or if we are running on
-             * Mac OS X <10.4 which doesn't support NSAnimation, instead we
+            /* We don't animate if we are not visible, instead we
              * simply fade the display */
             CGDisplayFadeReservationToken token;
  
@@ -272,7 +284,7 @@
             CGDisplayFade( token, 0.5, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0, 0, 0, YES );
  
             if ([screen isMainScreen])
-                SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+                [NSMenu setMenuBarVisible:NO];
  
             [[self contentView] replaceSubview:o_view with:o_temp_view];
             [o_temp_view setFrame:[o_view frame]];
@@ -293,20 +305,12 @@
         }
  
         /* Make sure we don't see the o_view disappearing of the screen during this operation */
-        DisableScreenUpdates();
-        [[self contentView] replaceSubview:o_view with:o_temp_view];
+        NSDisableScreenUpdates();
+		[[self contentView] replaceSubview:o_view with:o_temp_view];
         [o_temp_view setFrame:[o_view frame]];
         [o_fullscreen_window setContentView:o_view];
         [o_fullscreen_window makeKeyAndOrderFront:self];
-        EnableScreenUpdates();
-    }
-
-    if (MACOS_VERSION < 10.4f)
-    {
-        /* We were already fullscreen nothing to do when NSAnimation
-         * is not supported */
-        [self unlockFullscreenAnimation];
-        return;
+        NSEnableScreenUpdates();
     }
 
     /* We are in fullscreen (and no animation is running) */
@@ -330,7 +334,7 @@
     }
  
     if ([screen isMainScreen])
-        SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
+        [NSMenu setMenuBarVisible:NO];
 
     dict1 = [[NSMutableDictionary alloc] initWithCapacity:2];
     dict2 = [[NSMutableDictionary alloc] initWithCapacity:3];
@@ -368,18 +372,18 @@
 
 - (void)hasBecomeFullscreen
 {
-    [o_fullscreen_window makeFirstResponder: [[[VLCMain sharedInstance] getControls] getVoutView]];
+    [o_fullscreen_window makeFirstResponder: [[[VLCMain sharedInstance] controls] voutView]];
 
     [o_fullscreen_window makeKeyWindow];
     [o_fullscreen_window setAcceptsMouseMovedEvents: TRUE];
 
     /* tell the fspanel to move itself to front next time it's triggered */
-    [[[[VLCMain sharedInstance] getControls] getFSPanel] setVoutWasUpdated: (int)[[o_fullscreen_window screen] displayID]];
+    [[[[VLCMain sharedInstance] controls] fspanel] setVoutWasUpdated: (int)[[o_fullscreen_window screen] displayID]];
 
     if([self isVisible])
         [super orderOut: self];
 
-    [[[[VLCMain sharedInstance] getControls] getFSPanel] setActive: nil];
+    [[[[VLCMain sharedInstance] controls] fspanel] setActive: nil];
 
     b_fullscreen = YES;
     [self unlockFullscreenAnimation];
@@ -410,18 +414,17 @@
         return;
     }
 
-    if (fadeout || MACOS_VERSION < 10.4f)
+    if (fadeout)
     {
-        /* We don't animate if we are not visible or if we are running on
-        * Mac OS X <10.4 which doesn't support NSAnimation, instead we
+        /* We don't animate if we are not visible, instead we
         * simply fade the display */
         CGDisplayFadeReservationToken token;
 
         CGAcquireDisplayFadeReservation(kCGMaxDisplayReservationInterval, &token);
         CGDisplayFade( token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0, 0, 0, YES );
 
-        [[[[VLCMain sharedInstance] getControls] getFSPanel] setNonActive: nil];
-        SetSystemUIMode( kUIModeNormal, kUIOptionAutoShowMenuBar);
+        [[[[VLCMain sharedInstance] controls] fspanel] setNonActive: nil];
+        [NSMenu setMenuBarVisible:YES];
 
         /* Will release the lock */
         [self hasEndedFullscreen];
@@ -438,8 +441,8 @@
     [self setAlphaValue: 0.0];
     [self orderFront: self];
 
-    [[[[VLCMain sharedInstance] getControls] getFSPanel] setNonActive: nil];
-    SetSystemUIMode( kUIModeNormal, kUIOptionAutoShowMenuBar);
+    [[[[VLCMain sharedInstance] controls] fspanel] setNonActive: nil];
+    [NSMenu setMenuBarVisible:YES];
 
     if (o_fullscreen_anim1)
     {
@@ -494,7 +497,7 @@
 {
     /* This function is private and should be only triggered at the end of the fullscreen change animation */
     /* Make sure we don't see the o_view disappearing of the screen during this operation */
-    DisableScreenUpdates();
+    NSDisableScreenUpdates();
     [o_view retain];
     [o_view removeFromSuperviewWithoutNeedingDisplay];
     [[self contentView] replaceSubview:o_temp_view with:o_view];
@@ -504,7 +507,7 @@
     if ([self isVisible])
         [super makeKeyAndOrderFront:self]; /* our version contains a workaround */
     [o_fullscreen_window orderOut: self];
-    EnableScreenUpdates();
+    NSEnableScreenUpdates();
 
     [o_fullscreen_window release];
     o_fullscreen_window = nil;

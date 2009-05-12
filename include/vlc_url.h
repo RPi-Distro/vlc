@@ -2,7 +2,7 @@
  * vlc_url.h: URL related macros
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: 7cedd5b8b0156cbf9211d215b7ff4cd7b0637661 $
+ * $Id: dc2a021031a408e0ac5b849790189e72a62eafbb $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -85,7 +85,6 @@ static inline void vlc_UrlParse( vlc_url_t *url, const char *psz_url,
     p  = strstr( psz_parse, ":/" );
     if( p != NULL )
     {
-        char *p2;
         for( p2 = psz_parse; p2 < p; p2++ )
         {
 #define I(i,a,b) ( (a) <= (i) && (i) <= (b) )
@@ -132,8 +131,6 @@ static inline void vlc_UrlParse( vlc_url_t *url, const char *psz_url,
     p = strchr( psz_parse, '/' );
     if( !p || psz_parse < p )
     {
-        char *p2;
-
         /* We have a host[:port] */
         url->psz_host = strdup( psz_parse );
         if( p )

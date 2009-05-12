@@ -4,8 +4,8 @@
 basedir = misc
 dir = misc/memcpy
 mods = memcpy memcpy3dn memcpyaltivec memcpymmx memcpymmxext
-libvlc_LTLIBRARIES =  $(LTLIBmemcpy) $(LTLIBmemcpy3dn) $(LTLIBmemcpyaltivec) $(LTLIBmemcpymmx) $(LTLIBmemcpymmxext)
-EXTRA_LTLIBRARIES =  libmemcpy_plugin.la libmemcpy3dn_plugin.la libmemcpyaltivec_plugin.la libmemcpymmx_plugin.la libmemcpymmxext_plugin.la
+libvlc_LTLIBRARIES =  $(LTLIBmemcpy3dn) $(LTLIBmemcpyaltivec) $(LTLIBmemcpymmx) $(LTLIBmemcpymmxext)
+EXTRA_LTLIBRARIES =  libmemcpy3dn_plugin.la libmemcpyaltivec_plugin.la libmemcpymmx_plugin.la libmemcpymmxext_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libmemcpy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmemcpy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmemcpy_plugin_la_LIBADD = $(AM_LIBADD)
-libmemcpy_plugin_la_DEPENDENCIES =
+libmemcpy_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The memcpy3dn plugin
 libmemcpy3dn_plugin_la_SOURCES = $(SOURCES_memcpy3dn)
@@ -29,7 +29,7 @@ libmemcpy3dn_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmemcpy3dn_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmemcpy3dn_plugin_la_LIBADD = $(AM_LIBADD)
-libmemcpy3dn_plugin_la_DEPENDENCIES =
+libmemcpy3dn_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The memcpyaltivec plugin
 libmemcpyaltivec_plugin_la_SOURCES = $(SOURCES_memcpyaltivec)
@@ -40,7 +40,7 @@ libmemcpyaltivec_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmemcpyaltivec_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmemcpyaltivec_plugin_la_LIBADD = $(AM_LIBADD)
-libmemcpyaltivec_plugin_la_DEPENDENCIES =
+libmemcpyaltivec_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The memcpymmx plugin
 libmemcpymmx_plugin_la_SOURCES = $(SOURCES_memcpymmx)
@@ -51,7 +51,7 @@ libmemcpymmx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmemcpymmx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmemcpymmx_plugin_la_LIBADD = $(AM_LIBADD)
-libmemcpymmx_plugin_la_DEPENDENCIES =
+libmemcpymmx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The memcpymmxext plugin
 libmemcpymmxext_plugin_la_SOURCES = $(SOURCES_memcpymmxext)
@@ -62,5 +62,5 @@ libmemcpymmxext_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmemcpymmxext_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmemcpymmxext_plugin_la_LIBADD = $(AM_LIBADD)
-libmemcpymmxext_plugin_la_DEPENDENCIES =
+libmemcpymmxext_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2006 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
  *
- * $Id: 8f6a18f499d88591a0e38ce8c78f815bda576f71 $
+ * $Id: f063e2ffbbfd5a39b395117e87216ed9b0c24d15 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -642,7 +642,7 @@ int __net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
     int             i_val, i_handle = -1;
     bool      b_unreach = false;
 
-    if( i_hlim < 1 )
+    if( i_hlim < 0 )
         i_hlim = var_CreateGetInteger( p_this, "ttl" );
 
     memset( &hints, 0, sizeof( hints ) );
@@ -676,7 +676,7 @@ int __net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
         setsockopt (fd, SOL_SOCKET, SO_BROADCAST, &(int){ 1 }, sizeof (int));
 #endif
 
-        if( i_hlim > 0 )
+        if( i_hlim >= 0 )
             net_SetMcastHopLimit( p_this, fd, ptr->ai_family, i_hlim );
 
         str = var_CreateGetNonEmptyString (p_this, "miface");

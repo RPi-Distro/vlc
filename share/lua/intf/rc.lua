@@ -1,7 +1,7 @@
 --[==========================================================================[
  rc.lua: remote control module for VLC
 --[==========================================================================[
- Copyright (C) 2007 the VideoLAN team
+ Copyright (C) 2007-2009 the VideoLAN team
  $Id$
 
  Authors: Antoine Cellerier <dionoea at videolan dot org>
@@ -73,7 +73,7 @@ for k,v in pairs(env) do
     if config[k] then
         if type(env[k]) == type(config[k]) then
             env[k] = config[k]
-            vlc.msg.dbg("set environement variable `"..k.."' to "..tonumber(env[k]))
+            vlc.msg.dbg("set environement variable `"..k.."' to "..tostring(env[k]))
         else
             vlc.msg.err("environement variable `"..k.."' should be of type "..type(env[k])..". config value will be discarded.")
         end
@@ -155,14 +155,19 @@ function quit(name,client)
 end
 
 function add(name,client,arg)
-    -- TODO: parse (and use) options
+    -- TODO: par single and double quotes properly
     local f
     if name == "enqueue" then
         f = vlc.playlist.enqueue
     else
         f = vlc.playlist.add
     end
-    f({{path=arg}})
+    local options = {}
+    for o in string.gmatch(arg," +:([^ ]*)") do
+        table.insert(options,o)
+    end
+    arg = string.gsub(arg," +:.*$","")
+    f({{path=arg,options=options}})
 end
 
 function playlist_is_tree( client )
@@ -332,8 +337,8 @@ function ret_print(foo,start,stop)
     return function(discard,client,...) client:append(start..tostring(foo(...))..stop) end
 end
 
-function get_time(var,client)
-    return function()
+function get_time(var)
+    return function(name,client)
         local input = vlc.object.input()
         client:append(math.floor(vlc.var.get( input, var )))
     end
@@ -508,7 +513,7 @@ do
         end
     end
     list = list..")"
-    if count ~= 0 then
+    if count ~= 0 and env.welcome then
         env.welcome = env.welcome .. "\r\nWarning: "..count.." functions are still unimplemented "..list.."."
     end
 end
@@ -547,6 +552,18 @@ function call_libvlc_command(cmd,client,arg)
         local a = arg or ""
         if a ~= "" then a = " " .. a end
         client:append("Error in `"..cmd..a.."' ".. vlcerr) -- when pcall fails, the 2nd arg is the error message.
+    end
+    return vlcerr
+end
+
+function call_object_command(cmd,client,arg)
+    local var, val = split_input(arg)
+    local ok, vlcmsg, vlcerr, vlcerrmsg = pcall( vlc.var.command, cmd, var, val )
+    if not ok then
+        client:append("Error in `"..cmd.." "..var.." "..val.."' ".. vlcmsg) -- when pcall fails the 2nd arg is the error message
+    end
+    if vlcmsg ~= "" then
+        client:append(vlcmsg)
     end
     return vlcerr
 end
@@ -599,36 +616,38 @@ while not vlc.misc.should_die() do
             client:switch_status(host.status.write)
             if commands[cmd] then
                 call_command(cmd,client,arg)
+            elseif string.sub(cmd,0,1)=='@'
+            and call_object_command(string.sub(cmd,2,#cmd),client,arg) == 0 then
+                --
+            elseif client.type == host.client_type.stdio
+            and call_libvlc_command(cmd,client,arg) == 0 then
+                --
             else
-                if client.type == host.client_type.stdio 
-                and call_libvlc_command(cmd,client,arg) == 0 then
-                else
-                    local choices = {}
-                    if client.env.autocompletion ~= 0 then
-                        for v,_ in common.pairs_sorted(commands) do
-                            if string.sub(v,0,#cmd)==cmd then
-                                table.insert(choices, v)
-                            end
+                local choices = {}
+                if client.env.autocompletion ~= 0 then
+                    for v,_ in common.pairs_sorted(commands) do
+                        if string.sub(v,0,#cmd)==cmd then
+                            table.insert(choices, v)
                         end
                     end
-                    if #choices == 1 and client.env.autoalias ~= 0 then
-                        -- client:append("Aliasing to \""..choices[1].."\".")
-                        cmd = choices[1]
-                        call_command(cmd,client,arg)
-                    else
-                        client:append("Unknown command `"..cmd.."'. Type `help' for help.")
-                        if #choices ~= 0 then
-                            client:append("Possible choices are:")
-                            local cols = math.floor(client.env.width/(client.env.colwidth+1))
-                            local fmt = "%-"..client.env.colwidth.."s"
-                            for i = 1, #choices do
-                                choices[i] = string.format(fmt,choices[i])
-                            end
-                            for i = 1, #choices, cols do
-                                local j = i + cols - 1
-                                if j > #choices then j = #choices end
-                                client:append("  "..table.concat(choices," ",i,j))
-                            end
+                end
+                if #choices == 1 and client.env.autoalias ~= 0 then
+                    -- client:append("Aliasing to \""..choices[1].."\".")
+                    cmd = choices[1]
+                    call_command(cmd,client,arg)
+                else
+                    client:append("Unknown command `"..cmd.."'. Type `help' for help.")
+                    if #choices ~= 0 then
+                        client:append("Possible choices are:")
+                        local cols = math.floor(client.env.width/(client.env.colwidth+1))
+                        local fmt = "%-"..client.env.colwidth.."s"
+                        for i = 1, #choices do
+                            choices[i] = string.format(fmt,choices[i])
+                        end
+                        for i = 1, #choices, cols do
+                            local j = i + cols - 1
+                            if j > #choices then j = #choices end
+                            client:append("  "..table.concat(choices," ",i,j))
                         end
                     end
                 end

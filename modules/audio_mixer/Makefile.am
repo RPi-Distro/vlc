@@ -4,8 +4,8 @@
 basedir = audio_mixer
 dir = audio_mixer
 mods = float32_mixer spdif_mixer trivial_mixer
-libvlc_LTLIBRARIES =  $(LTLIBfloat32_mixer) $(LTLIBspdif_mixer) $(LTLIBtrivial_mixer)
-EXTRA_LTLIBRARIES =  libfloat32_mixer_plugin.la libspdif_mixer_plugin.la libtrivial_mixer_plugin.la
+libvlc_LTLIBRARIES =  $(LTLIBfloat32_mixer) $(LTLIBspdif_mixer)
+EXTRA_LTLIBRARIES =  libfloat32_mixer_plugin.la libspdif_mixer_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libfloat32_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libfloat32_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libfloat32_mixer_plugin_la_LIBADD = $(AM_LIBADD)
-libfloat32_mixer_plugin_la_DEPENDENCIES =
+libfloat32_mixer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The spdif_mixer plugin
 libspdif_mixer_plugin_la_SOURCES = $(SOURCES_spdif_mixer)
@@ -29,7 +29,7 @@ libspdif_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libspdif_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libspdif_mixer_plugin_la_LIBADD = $(AM_LIBADD)
-libspdif_mixer_plugin_la_DEPENDENCIES =
+libspdif_mixer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The trivial_mixer plugin
 libtrivial_mixer_plugin_la_SOURCES = $(SOURCES_trivial_mixer)
@@ -40,5 +40,5 @@ libtrivial_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtrivial_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtrivial_mixer_plugin_la_LIBADD = $(AM_LIBADD)
-libtrivial_mixer_plugin_la_DEPENDENCIES =
+libtrivial_mixer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

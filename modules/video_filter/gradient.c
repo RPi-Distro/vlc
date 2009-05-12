@@ -2,7 +2,7 @@
  * gradient.c : Gradient and edge detection video effects plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: fcfd058b1c298debcaf4753b2fac57c0c1073781 $
+ * $Id: c875bd16057513285a4c30227cd31200d6450ba9 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -76,32 +76,32 @@ static const char *const mode_list_text[] = { N_("Gradient"), N_("Edge"), N_("Ho
 
 #define FILTER_PREFIX "gradient-"
 
-vlc_module_begin();
-    set_description( N_("Gradient video filter") );
-    set_shortname( N_( "Gradient" ));
-    set_capability( "video filter2", 0 );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
+vlc_module_begin ()
+    set_description( N_("Gradient video filter") )
+    set_shortname( N_( "Gradient" ))
+    set_capability( "video filter2", 0 )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
 
     add_string( FILTER_PREFIX "mode", "gradient", NULL,
-                MODE_TEXT, MODE_LONGTEXT, false );
-        change_string_list( mode_list, mode_list_text, 0 );
+                MODE_TEXT, MODE_LONGTEXT, false )
+        change_string_list( mode_list, mode_list_text, 0 )
 
     add_integer_with_range( FILTER_PREFIX "type", 0, 0, 1, NULL,
-                GRADIENT_TEXT, GRADIENT_LONGTEXT, false );
+                GRADIENT_TEXT, GRADIENT_LONGTEXT, false )
     add_bool( FILTER_PREFIX "cartoon", 1, NULL,
-                CARTOON_TEXT, CARTOON_LONGTEXT, false );
+                CARTOON_TEXT, CARTOON_LONGTEXT, false )
 
-    add_shortcut( "gradient" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    add_shortcut( "gradient" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "mode", "type", "cartoon", NULL
 };
 
 /*****************************************************************************
- * vout_sys_t: Distort video output method descriptor
+ * filter_sys_t: Distort video output method descriptor
  *****************************************************************************
  * This structure is part of the video output thread descriptor.
  * It describes the Distort specific properties of an output thread.

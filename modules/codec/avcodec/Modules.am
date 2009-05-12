@@ -5,8 +5,8 @@ SOURCES_avcodec = \
 	audio.c \
 	deinterlace.c \
 	avutil.h \
-	fourcc.h \
-	chroma.h \
+	fourcc.c \
+	chroma.c \
 	$(NULL)
 
 if ENABLE_SOUT

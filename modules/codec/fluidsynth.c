@@ -2,7 +2,7 @@
  * fluidsynth.c: Software MIDI synthetizer using libfluidsynth
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 600353fa3ca9604f34bade2c72691a79ce6fecc3 $
+ * $Id: f0ef618cf91cb266744a1850ce4e387e9389368e $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,15 +37,16 @@
 static int  Open  (vlc_object_t *);
 static void Close (vlc_object_t *);
 
-vlc_module_begin();
-    set_description (N_("FluidSynth MIDI synthetizer"));
-    set_capability ("decoder", 100);
-    set_category (CAT_INPUT);
-    set_subcategory (SUBCAT_INPUT_ACODEC);
-    set_callbacks (Open, Close);
+vlc_module_begin ()
+    set_description (N_("FluidSynth MIDI synthetizer"))
+    set_capability ("decoder", 100)
+    set_shortname (N_("FluidSynth"))
+    set_category (CAT_INPUT)
+    set_subcategory (SUBCAT_INPUT_ACODEC)
+    set_callbacks (Open, Close)
     add_file ("soundfont", "", NULL,
               SOUNDFONT_TEXT, SOUNDFONT_LONGTEXT, false);
-vlc_module_end();
+vlc_module_end ()
 
 
 struct decoder_sys_t
@@ -177,7 +178,7 @@ static aout_buffer_t *DecodeBlock (decoder_t *p_dec, block_t **pp_block)
     if (samples == 0)
         return NULL;
 
-    aout_buffer_t *p_out = p_dec->pf_aout_buffer_new (p_dec, samples);
+    aout_buffer_t *p_out = decoder_NewAudioBuffer (p_dec, samples);
     if (p_out == NULL)
     {
         block_Release (p_block);

@@ -2,7 +2,7 @@
  * splaytree.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 0417fda2888751baced8cfd0df980aa8a07fd52a $
+ * $Id: 5049cf4ff76de265e060c4ff91b45ef3b7b179a8 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net
@@ -403,7 +403,7 @@ splaynode_t * new_splaynode(int type, void * key, void * data) {
 }
 
 /* Inserts a link into the splay tree */
-int splay_insert_link(void * alias_key, void * orig_key, splaytree_t * splaytree) {
+int splay_insert_link(const void * alias_key, void * orig_key, splaytree_t * splaytree) {
 
    splaynode_t * splaynode, * data_node;
    void * key_clone;

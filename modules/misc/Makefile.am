@@ -4,8 +4,8 @@
 basedir = misc
 dir = misc
 mods = audioscrobbler freetype gnome2_main gnome_main gnutls gtk2_main gtk_main inhibit logger qte_main quartztext screensaver svg vod_rtsp win32text
-libvlc_LTLIBRARIES =  $(LTLIBaudioscrobbler) $(LTLIBfreetype) $(LTLIBgnome2_main) $(LTLIBgnome_main) $(LTLIBgnutls) $(LTLIBgtk2_main) $(LTLIBgtk_main) $(LTLIBinhibit) $(LTLIBlogger) $(LTLIBqte_main) $(LTLIBquartztext) $(LTLIBscreensaver) $(LTLIBsvg) $(LTLIBwin32text)
-EXTRA_LTLIBRARIES =  libaudioscrobbler_plugin.la libfreetype_plugin.la libgnome2_main_plugin.la libgnome_main_plugin.la libgnutls_plugin.la libgtk2_main_plugin.la libgtk_main_plugin.la libinhibit_plugin.la liblogger_plugin.la libqte_main_plugin.la libquartztext_plugin.la libscreensaver_plugin.la libsvg_plugin.la libwin32text_plugin.la
+libvlc_LTLIBRARIES =  $(LTLIBaudioscrobbler) $(LTLIBfreetype) $(LTLIBgnome2_main) $(LTLIBgnome_main) $(LTLIBgnutls) $(LTLIBgtk2_main) $(LTLIBgtk_main) $(LTLIBinhibit) $(LTLIBqte_main) $(LTLIBquartztext) $(LTLIBscreensaver) $(LTLIBsvg) $(LTLIBwin32text)
+EXTRA_LTLIBRARIES =  libaudioscrobbler_plugin.la libfreetype_plugin.la libgnome2_main_plugin.la libgnome_main_plugin.la libgnutls_plugin.la libgtk2_main_plugin.la libgtk_main_plugin.la libinhibit_plugin.la libqte_main_plugin.la libquartztext_plugin.la libscreensaver_plugin.la libsvg_plugin.la libwin32text_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libaudioscrobbler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaudioscrobbler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaudioscrobbler_plugin_la_LIBADD = $(AM_LIBADD)
-libaudioscrobbler_plugin_la_DEPENDENCIES =
+libaudioscrobbler_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The freetype plugin
 libfreetype_plugin_la_SOURCES = $(SOURCES_freetype)
@@ -29,7 +29,7 @@ libfreetype_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libfreetype_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libfreetype_plugin_la_LIBADD = $(AM_LIBADD)
-libfreetype_plugin_la_DEPENDENCIES =
+libfreetype_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The gnome2_main plugin
 libgnome2_main_plugin_la_SOURCES = $(SOURCES_gnome2_main)
@@ -40,7 +40,7 @@ libgnome2_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgnome2_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgnome2_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgnome2_main_plugin_la_DEPENDENCIES =
+libgnome2_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The gnome_main plugin
 libgnome_main_plugin_la_SOURCES = $(SOURCES_gnome_main)
@@ -51,7 +51,7 @@ libgnome_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgnome_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgnome_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgnome_main_plugin_la_DEPENDENCIES =
+libgnome_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The gnutls plugin
 libgnutls_plugin_la_SOURCES = $(SOURCES_gnutls)
@@ -62,7 +62,7 @@ libgnutls_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgnutls_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgnutls_plugin_la_LIBADD = $(AM_LIBADD)
-libgnutls_plugin_la_DEPENDENCIES =
+libgnutls_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The gtk2_main plugin
 libgtk2_main_plugin_la_SOURCES = $(SOURCES_gtk2_main)
@@ -73,7 +73,7 @@ libgtk2_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgtk2_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgtk2_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgtk2_main_plugin_la_DEPENDENCIES =
+libgtk2_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The gtk_main plugin
 libgtk_main_plugin_la_SOURCES = $(SOURCES_gtk_main)
@@ -84,7 +84,7 @@ libgtk_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgtk_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgtk_main_plugin_la_LIBADD = $(AM_LIBADD)
-libgtk_main_plugin_la_DEPENDENCIES =
+libgtk_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The inhibit plugin
 libinhibit_plugin_la_SOURCES = $(SOURCES_inhibit)
@@ -95,7 +95,7 @@ libinhibit_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libinhibit_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libinhibit_plugin_la_LIBADD = $(AM_LIBADD)
-libinhibit_plugin_la_DEPENDENCIES =
+libinhibit_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The logger plugin
 liblogger_plugin_la_SOURCES = $(SOURCES_logger)
@@ -106,7 +106,7 @@ liblogger_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liblogger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liblogger_plugin_la_LIBADD = $(AM_LIBADD)
-liblogger_plugin_la_DEPENDENCIES =
+liblogger_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The qte_main plugin
 libqte_main_plugin_la_SOURCES = $(SOURCES_qte_main)
@@ -117,7 +117,7 @@ libqte_main_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libqte_main_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libqte_main_plugin_la_LIBADD = $(AM_LIBADD)
-libqte_main_plugin_la_DEPENDENCIES =
+libqte_main_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The quartztext plugin
 libquartztext_plugin_la_SOURCES = $(SOURCES_quartztext)
@@ -128,7 +128,7 @@ libquartztext_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libquartztext_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libquartztext_plugin_la_LIBADD = $(AM_LIBADD)
-libquartztext_plugin_la_DEPENDENCIES =
+libquartztext_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The screensaver plugin
 libscreensaver_plugin_la_SOURCES = $(SOURCES_screensaver)
@@ -139,7 +139,7 @@ libscreensaver_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libscreensaver_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libscreensaver_plugin_la_LIBADD = $(AM_LIBADD)
-libscreensaver_plugin_la_DEPENDENCIES =
+libscreensaver_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The svg plugin
 libsvg_plugin_la_SOURCES = $(SOURCES_svg)
@@ -150,7 +150,7 @@ libsvg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsvg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsvg_plugin_la_LIBADD = $(AM_LIBADD)
-libsvg_plugin_la_DEPENDENCIES =
+libsvg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The vod_rtsp plugin
 libvod_rtsp_plugin_la_SOURCES = $(SOURCES_vod_rtsp)
@@ -161,7 +161,7 @@ libvod_rtsp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libvod_rtsp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libvod_rtsp_plugin_la_LIBADD = $(AM_LIBADD)
-libvod_rtsp_plugin_la_DEPENDENCIES =
+libvod_rtsp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The win32text plugin
 libwin32text_plugin_la_SOURCES = $(SOURCES_win32text)
@@ -172,5 +172,5 @@ libwin32text_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libwin32text_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libwin32text_plugin_la_LIBADD = $(AM_LIBADD)
-libwin32text_plugin_la_DEPENDENCIES =
+libwin32text_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

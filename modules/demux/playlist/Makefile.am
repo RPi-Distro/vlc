@@ -4,8 +4,8 @@
 basedir = demux
 dir = demux/playlist
 mods = playlist
-libvlc_LTLIBRARIES =  $(LTLIBplaylist)
-EXTRA_LTLIBRARIES =  libplaylist_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,5 +18,5 @@ libplaylist_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libplaylist_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libplaylist_plugin_la_LIBADD = $(AM_LIBADD)
-libplaylist_plugin_la_DEPENDENCIES =
+libplaylist_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

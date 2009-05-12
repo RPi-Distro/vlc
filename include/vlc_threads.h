@@ -3,7 +3,7 @@
  * This header provides portable declarations for mutexes & conditions
  *****************************************************************************
  * Copyright (C) 1999, 2002 the VideoLAN team
- * $Id: 8dcdf5a6c9d9d983601706d95f514de9a0fa8386 $
+ * Copyright © 2007-2008 Rémi Denis-Courmont
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -35,18 +35,14 @@
  */
 
 #if defined( UNDER_CE )
-                                                                /* WinCE API */
+#   include <errno.h>                                           /* WinCE API */
 #elif defined( WIN32 )
 #   include <process.h>                                         /* Win32 API */
 #   include <errno.h>
 
-#elif defined( SYS_BEOS )                                            /* BeOS */
-#   include <kernel/OS.h>
-#   include <kernel/scheduler.h>
-#   include <byteorder.h>
-
 #else                                         /* pthreads (like Linux & BSD) */
 #   define LIBVLC_USE_PTHREAD 1
+#   define LIBVLC_USE_PTHREAD_CANCEL 1
 #   define _APPLE_C_SOURCE    1 /* Proper pthread semantics on OSX */
 
 #   include <stdlib.h> /* lldiv_t definition (only in C99) */
@@ -71,14 +67,6 @@
 #   define VLC_THREAD_PRIORITY_OUTPUT  22
 #   define VLC_THREAD_PRIORITY_HIGHEST 22
 
-#elif defined(SYS_BEOS)
-#   define VLC_THREAD_PRIORITY_LOW 5
-#   define VLC_THREAD_PRIORITY_INPUT 10
-#   define VLC_THREAD_PRIORITY_AUDIO 10
-#   define VLC_THREAD_PRIORITY_VIDEO 5
-#   define VLC_THREAD_PRIORITY_OUTPUT 15
-#   define VLC_THREAD_PRIORITY_HIGHEST 15
-
 #elif defined(LIBVLC_USE_PTHREAD)
 #   define VLC_THREAD_PRIORITY_LOW      0
 #   define VLC_THREAD_PRIORITY_INPUT   10
@@ -91,15 +79,14 @@
 /* Define different priorities for WinNT/2K/XP and Win9x/Me */
 #   define VLC_THREAD_PRIORITY_LOW 0
 #   define VLC_THREAD_PRIORITY_INPUT \
-        (IS_WINNT ? THREAD_PRIORITY_ABOVE_NORMAL : 0)
+        THREAD_PRIORITY_ABOVE_NORMAL
 #   define VLC_THREAD_PRIORITY_AUDIO \
-        (IS_WINNT ? THREAD_PRIORITY_HIGHEST : 0)
-#   define VLC_THREAD_PRIORITY_VIDEO \
-        (IS_WINNT ? 0 : THREAD_PRIORITY_BELOW_NORMAL )
+        THREAD_PRIORITY_HIGHEST
+#   define VLC_THREAD_PRIORITY_VIDEO 0
 #   define VLC_THREAD_PRIORITY_OUTPUT \
-        (IS_WINNT ? THREAD_PRIORITY_ABOVE_NORMAL : 0)
+        THREAD_PRIORITY_ABOVE_NORMAL
 #   define VLC_THREAD_PRIORITY_HIGHEST \
-        (IS_WINNT ? THREAD_PRIORITY_TIME_CRITICAL : 0)
+        THREAD_PRIORITY_TIME_CRITICAL
 
 #else
 #   define VLC_THREAD_PRIORITY_LOW 0
@@ -118,37 +105,30 @@
 #if defined (LIBVLC_USE_PTHREAD)
 typedef pthread_t       vlc_thread_t;
 typedef pthread_mutex_t vlc_mutex_t;
+#define VLC_STATIC_MUTEX PTHREAD_MUTEX_INITIALIZER
 typedef pthread_cond_t  vlc_cond_t;
 typedef pthread_key_t   vlc_threadvar_t;
 
-#elif defined( WIN32 ) || defined( UNDER_CE )
-typedef HANDLE  vlc_thread_t;
-typedef HANDLE  vlc_mutex_t;
+#elif defined( WIN32 )
+typedef struct
+{
+    HANDLE handle;
+    void  *(*entry) (void *);
+    void  *data;
+#if defined( UNDER_CE )
+    HANDLE cancel_event;
+#endif
+} *vlc_thread_t;
+
+typedef struct
+{
+    LONG initialized;
+    CRITICAL_SECTION mutex;
+} vlc_mutex_t;
+#define VLC_STATIC_MUTEX { 0, }
+
 typedef HANDLE  vlc_cond_t;
 typedef DWORD   vlc_threadvar_t;
-
-#elif defined( SYS_BEOS )
-/* This is the BeOS implementation of the vlc threads, note that the mutex is
- * not a real mutex and the cond_var is not like a pthread cond_var but it is
- * enough for what we need */
-
-typedef thread_id vlc_thread_t;
-
-typedef struct
-{
-    int32_t         init;
-    sem_id          lock;
-} vlc_mutex_t;
-
-typedef struct
-{
-    int32_t         init;
-    thread_id       thread;
-} vlc_cond_t;
-
-typedef struct
-{
-} vlc_threadvar_t;
 
 #endif
 
@@ -161,326 +141,100 @@ typedef struct
  *****************************************************************************/
 VLC_EXPORT( int,  vlc_mutex_init,    ( vlc_mutex_t * ) );
 VLC_EXPORT( int,  vlc_mutex_init_recursive, ( vlc_mutex_t * ) );
-VLC_EXPORT( void,  __vlc_mutex_destroy, ( const char *, int, vlc_mutex_t * ) );
-VLC_EXPORT( int,  __vlc_cond_init,     ( vlc_cond_t * ) );
-VLC_EXPORT( void,  __vlc_cond_destroy,  ( const char *, int, vlc_cond_t * ) );
+VLC_EXPORT( void, vlc_mutex_destroy, ( vlc_mutex_t * ) );
+VLC_EXPORT( void, vlc_mutex_lock, ( vlc_mutex_t * ) );
+VLC_EXPORT( int, vlc_mutex_trylock, ( vlc_mutex_t * ) );
+VLC_EXPORT( void, vlc_mutex_unlock, ( vlc_mutex_t * ) );
+VLC_EXPORT( int,  vlc_cond_init,     ( vlc_cond_t * ) );
+VLC_EXPORT( void, vlc_cond_destroy,  ( vlc_cond_t * ) );
+VLC_EXPORT( void, vlc_cond_signal, (vlc_cond_t *) );
+VLC_EXPORT( void, vlc_cond_broadcast, (vlc_cond_t *) );
+VLC_EXPORT( void, vlc_cond_wait, (vlc_cond_t *, vlc_mutex_t *) );
+VLC_EXPORT( int, vlc_cond_timedwait, (vlc_cond_t *, vlc_mutex_t *, mtime_t) );
 VLC_EXPORT( int, vlc_threadvar_create, (vlc_threadvar_t * , void (*) (void *) ) );
 VLC_EXPORT( void, vlc_threadvar_delete, (vlc_threadvar_t *) );
-VLC_EXPORT( int,  __vlc_thread_create, ( vlc_object_t *, const char *, int, const char *, void * ( * ) ( vlc_object_t * ), int, bool ) );
+VLC_EXPORT( int, vlc_threadvar_set, (vlc_threadvar_t, void *) );
+VLC_EXPORT( void *, vlc_threadvar_get, (vlc_threadvar_t) );
+VLC_EXPORT( int,  vlc_thread_create, ( vlc_object_t *, const char *, int, const char *, void * ( * ) ( vlc_object_t * ), int ) );
 VLC_EXPORT( int,  __vlc_thread_set_priority, ( vlc_object_t *, const char *, int, int ) );
-VLC_EXPORT( void, __vlc_thread_join,   ( vlc_object_t *, const char *, int ) );
+VLC_EXPORT( void, __vlc_thread_join,   ( vlc_object_t * ) );
 
-#define vlc_thread_ready vlc_object_signal
+VLC_EXPORT( int, vlc_clone, (vlc_thread_t *, void * (*) (void *), void *, int) );
+VLC_EXPORT( void, vlc_cancel, (vlc_thread_t) );
+VLC_EXPORT( void, vlc_join, (vlc_thread_t, void **) );
+VLC_EXPORT (void, vlc_control_cancel, (int cmd, ...));
 
-/*****************************************************************************
- * vlc_mutex_lock: lock a mutex
- *****************************************************************************/
-#define vlc_mutex_lock( P_MUTEX )                                           \
-    __vlc_mutex_lock( __FILE__, __LINE__, P_MUTEX )
+#ifndef LIBVLC_USE_PTHREAD_CANCEL
+enum {
+    VLC_DO_CANCEL,
+    VLC_CLEANUP_PUSH,
+    VLC_CLEANUP_POP,
+};
+#endif
 
-VLC_EXPORT(void, vlc_pthread_fatal, (const char *action, int error, const char *file, unsigned line));
+VLC_EXPORT( int, vlc_savecancel, (void) );
+VLC_EXPORT( void, vlc_restorecancel, (int state) );
+VLC_EXPORT( void, vlc_testcancel, (void) );
 
-#if defined(LIBVLC_USE_PTHREAD)
-# define VLC_THREAD_ASSERT( action ) \
-    if (val) \
-        vlc_pthread_fatal (action, val, psz_file, i_line)
+#if defined (LIBVLC_USE_PTHREAD_CANCEL)
+/**
+ * Registers a new procedure to run if the thread is cancelled (or otherwise
+ * exits prematurely). Any call to vlc_cleanup_push() <b>must</b> paired with a
+ * call to either vlc_cleanup_pop() or vlc_cleanup_run(). Branching into or out
+ * of the block between these two function calls is not allowed (read: it will
+ * likely crash the whole process). If multiple procedures are registered,
+ * they are handled in last-in first-out order.
+ *
+ * @param routine procedure to call if the thread ends
+ * @param arg argument for the procedure
+ */
+# define vlc_cleanup_push( routine, arg ) pthread_cleanup_push (routine, arg)
+
+/**
+ * Removes a cleanup procedure that was previously registered with
+ * vlc_cleanup_push().
+ */
+# define vlc_cleanup_pop( ) pthread_cleanup_pop (0)
+
+/**
+ * Removes a cleanup procedure that was previously registered with
+ * vlc_cleanup_push(), and executes it.
+ */
+# define vlc_cleanup_run( ) pthread_cleanup_pop (1)
 #else
-# define VLC_THREAD_ASSERT ((void)(val))
-#endif
+typedef struct vlc_cleanup_t vlc_cleanup_t;
 
-static inline void __vlc_mutex_lock( const char * psz_file, int i_line,
-                                    vlc_mutex_t * p_mutex )
+struct vlc_cleanup_t
 {
-#if defined(LIBVLC_USE_PTHREAD)
-#   define vlc_assert_locked( m ) \
-           assert (pthread_mutex_lock (m) == EDEADLK)
-    int val = pthread_mutex_lock( p_mutex );
-    VLC_THREAD_ASSERT ("locking mutex");
+    vlc_cleanup_t *next;
+    void         (*proc) (void *);
+    void          *data;
+};
 
-#elif defined( UNDER_CE )
-    (void)psz_file; (void)i_line;
+/* This macros opens a code block on purpose. This is needed for multiple
+ * calls within a single function. This also prevent Win32 developpers from
+ * writing code that would break on POSIX (POSIX opens a block as well). */
+# define vlc_cleanup_push( routine, arg ) \
+    do { \
+        vlc_cleanup_t vlc_cleanup_data = { NULL, routine, arg, }; \
+        vlc_control_cancel (VLC_CLEANUP_PUSH, &vlc_cleanup_data)
 
-    EnterCriticalSection( &p_mutex->csection );
+# define vlc_cleanup_pop( ) \
+        vlc_control_cancel (VLC_CLEANUP_POP); \
+    } while (0)
 
-#elif defined( WIN32 )
-    (void)psz_file; (void)i_line;
+# define vlc_cleanup_run( ) \
+        vlc_control_cancel (VLC_CLEANUP_POP); \
+        vlc_cleanup_data.proc (vlc_cleanup_data.data); \
+    } while (0)
 
-    WaitForSingleObject( *p_mutex, INFINITE );
+#endif /* LIBVLC_USE_PTHREAD_CANCEL */
 
-#elif defined( SYS_BEOS )
-    acquire_sem( p_mutex->lock );
-
-#endif
-}
-
-#ifndef vlc_assert_locked
-# define vlc_assert_locked( m ) (void)m
-#endif
-
-/*****************************************************************************
- * vlc_mutex_unlock: unlock a mutex
- *****************************************************************************/
-#define vlc_mutex_unlock( P_MUTEX )                                         \
-    __vlc_mutex_unlock( __FILE__, __LINE__, P_MUTEX )
-
-static inline void __vlc_mutex_unlock( const char * psz_file, int i_line,
-                                      vlc_mutex_t *p_mutex )
+static inline void vlc_cleanup_lock (void *lock)
 {
-#if defined(LIBVLC_USE_PTHREAD)
-    int val = pthread_mutex_unlock( p_mutex );
-    VLC_THREAD_ASSERT ("unlocking mutex");
-
-#elif defined( UNDER_CE )
-    (void)psz_file; (void)i_line;
-
-    LeaveCriticalSection( &p_mutex->csection );
-
-#elif defined( WIN32 )
-    (void)psz_file; (void)i_line;
-
-    ReleaseMutex( *p_mutex );
-
-#elif defined( SYS_BEOS )
-    release_sem( p_mutex->lock );
-
-#endif
+    vlc_mutex_unlock ((vlc_mutex_t *)lock);
 }
-
-/*****************************************************************************
- * vlc_mutex_destroy: destroy a mutex
- *****************************************************************************/
-#define vlc_mutex_destroy( P_MUTEX )                                        \
-    __vlc_mutex_destroy( __FILE__, __LINE__, P_MUTEX )
-
-/*****************************************************************************
- * vlc_cond_init: initialize a condition
- *****************************************************************************/
-#define vlc_cond_init( P_THIS, P_COND )                                     \
-    __vlc_cond_init( P_COND )
-
-/*****************************************************************************
- * vlc_cond_signal: start a thread on condition completion
- *****************************************************************************/
-#define vlc_cond_signal( P_COND )                                           \
-    __vlc_cond_signal( __FILE__, __LINE__, P_COND )
-
-static inline void __vlc_cond_signal( const char * psz_file, int i_line,
-                                      vlc_cond_t *p_condvar )
-{
-#if defined(LIBVLC_USE_PTHREAD)
-    int val = pthread_cond_signal( p_condvar );
-    VLC_THREAD_ASSERT ("signaling condition variable");
-
-#elif defined( UNDER_CE ) || defined( WIN32 )
-    (void)psz_file; (void)i_line;
-
-    /* Release one waiting thread if one is available. */
-    /* For this trick to work properly, the vlc_cond_signal must be surrounded
-     * by a mutex. This will prevent another thread from stealing the signal */
-    /* PulseEvent() only works if none of the waiting threads is suspended.
-     * This is particularily problematic under a debug session.
-     * as documented in http://support.microsoft.com/kb/q173260/ */
-    PulseEvent( *p_condvar );
-
-#elif defined( SYS_BEOS )
-    while( p_condvar->thread != -1 )
-    {
-        thread_info info;
-        if( get_thread_info(p_condvar->thread, &info) == B_BAD_VALUE )
-            return;
-
-        if( info.state != B_THREAD_SUSPENDED )
-        {
-            /* The  waiting thread is not suspended so it could
-             * have been interrupted beetwen the unlock and the
-             * suspend_thread line. That is why we sleep a little
-             * before retesting p_condver->thread. */
-            snooze( 10000 );
-        }
-        else
-        {
-            /* Ok, we have to wake up that thread */
-            resume_thread( p_condvar->thread );
-        }
-    }
-
-#endif
-}
-
-/*****************************************************************************
- * vlc_cond_wait: wait until condition completion
- *****************************************************************************/
-#define vlc_cond_wait( P_COND, P_MUTEX )                                     \
-    __vlc_cond_wait( __FILE__, __LINE__, P_COND, P_MUTEX  )
-
-static inline void __vlc_cond_wait( const char * psz_file, int i_line,
-                                    vlc_cond_t *p_condvar, vlc_mutex_t *p_mutex )
-{
-#if defined(LIBVLC_USE_PTHREAD)
-    int val = pthread_cond_wait( p_condvar, p_mutex );
-    VLC_THREAD_ASSERT ("waiting on condition");
-
-#elif defined( UNDER_CE )
-    LeaveCriticalSection( &p_mutex->csection );
-    WaitForSingleObject( *p_condvar, INFINITE );
-
-    /* Reacquire the mutex before returning. */
-    vlc_mutex_lock( p_mutex );
-
-#elif defined( WIN32 )
-    (void)psz_file; (void)i_line;
-
-    /* Increase our wait count */
-    SignalObjectAndWait( *p_mutex, *p_condvar, INFINITE, FALSE );
-
-    /* Reacquire the mutex before returning. */
-    vlc_mutex_lock( p_mutex );
-
-#elif defined( SYS_BEOS )
-    /* The p_condvar->thread var is initialized before the unlock because
-     * it enables to identify when the thread is interrupted beetwen the
-     * unlock line and the suspend_thread line */
-    p_condvar->thread = find_thread( NULL );
-    vlc_mutex_unlock( p_mutex );
-    suspend_thread( p_condvar->thread );
-    p_condvar->thread = -1;
-
-    vlc_mutex_lock( p_mutex );
-
-#endif
-}
-
-
-/*****************************************************************************
- * vlc_cond_timedwait: wait until condition completion or expiration
- *****************************************************************************
- * Returns 0 if object signaled, an error code in case of timeout or error.
- *****************************************************************************/
-#define vlc_cond_timedwait( P_COND, P_MUTEX, DEADLINE )                      \
-    __vlc_cond_timedwait( __FILE__, __LINE__, P_COND, P_MUTEX, DEADLINE  )
-
-#if defined(__APPLE__) && !defined(__powerpc__) && !defined( __ppc__ ) && !defined( __ppc64__ )
-# include <sys/time.h> /* gettimeofday in vlc_cond_timedwait */
-#endif
-
-static inline int __vlc_cond_timedwait( const char * psz_file, int i_line,
-                                        vlc_cond_t *p_condvar,
-                                        vlc_mutex_t *p_mutex,
-                                        mtime_t deadline )
-{
-#if defined(LIBVLC_USE_PTHREAD)
-#if defined(__APPLE__) && !defined(__powerpc__) && !defined( __ppc__ ) && !defined( __ppc64__ )
-    /* mdate() is mac_absolute_time on osx, which we must convert to do
-     * the same base than gettimeofday() on which pthread_cond_timedwait
-     * counts on. */
-    mtime_t oldbase = mdate();
-    struct timeval tv;
-    gettimeofday(&tv, NULL);
-    mtime_t newbase = (mtime_t)tv.tv_sec * 1000000 + (mtime_t) tv.tv_usec;
-    deadline = deadline - oldbase + newbase;
-#endif
-    lldiv_t d = lldiv( deadline, 1000000 );
-    struct timespec ts = { d.quot, d.rem * 1000 };
-
-    int val = pthread_cond_timedwait (p_condvar, p_mutex, &ts);
-    if (val == ETIMEDOUT)
-        return ETIMEDOUT; /* this error is perfectly normal */
-    VLC_THREAD_ASSERT ("timed-waiting on condition");
-
-#elif defined( UNDER_CE )
-    mtime_t delay_ms = (deadline - mdate())/1000;
-    DWORD result;
-    if( delay_ms < 0 )
-        delay_ms = 0;
-
-    LeaveCriticalSection( &p_mutex->csection );
-    result = WaitForSingleObject( *p_condvar, delay_ms );
-
-    /* Reacquire the mutex before returning. */
-    vlc_mutex_lock( p_mutex );
-
-    if(result == WAIT_TIMEOUT)
-       return ETIMEDOUT; /* this error is perfectly normal */
-
-    (void)psz_file; (void)i_line;
-
-#elif defined( WIN32 )
-    mtime_t total = (deadline - mdate())/1000;
-    DWORD result;
-    if( total < 0 )
-        total = 0;
-
-    do
-    {
-        DWORD delay = (total > 0x7fffffff) ? 0x7fffffff : total;
-        result = SignalObjectAndWait( *p_mutex, *p_condvar,
-                                      delay, FALSE );
-        total -= delay;
-        vlc_mutex_lock (p_mutex);
-    }
-    while (total);
-
-    /* Reacquire the mutex before returning. */
-    if(result == WAIT_TIMEOUT)
-       return ETIMEDOUT; /* this error is perfectly normal */
-
-    (void)psz_file; (void)i_line;
-
-#elif defined( SYS_BEOS )
-#   error Unimplemented
-
-#endif
-
-    return 0;
-}
-
-/*****************************************************************************
- * vlc_cond_destroy: destroy a condition
- *****************************************************************************/
-#define vlc_cond_destroy( P_COND )                                          \
-    __vlc_cond_destroy( __FILE__, __LINE__, P_COND )
-
-/*****************************************************************************
- * vlc_threadvar_set: create: set the value of a thread-local variable
- *****************************************************************************/
-static inline int vlc_threadvar_set( vlc_threadvar_t * p_tls, void *p_value )
-{
-    int i_ret;
-
-#if defined(LIBVLC_USE_PTHREAD)
-    i_ret = pthread_setspecific( *p_tls, p_value );
-
-#elif defined( SYS_BEOS )
-    i_ret = EINVAL;
-
-#elif defined( UNDER_CE ) || defined( WIN32 )
-    i_ret = TlsSetValue( *p_tls, p_value ) ? EINVAL : 0;
-
-#endif
-
-    return i_ret;
-}
-
-/*****************************************************************************
- * vlc_threadvar_get: create: get the value of a thread-local variable
- *****************************************************************************/
-static inline void* vlc_threadvar_get( vlc_threadvar_t * p_tls )
-{
-    void *p_ret;
-
-#if defined(LIBVLC_USE_PTHREAD)
-    p_ret = pthread_getspecific( *p_tls );
-
-#elif defined( SYS_BEOS )
-    p_ret = NULL;
-
-#elif defined( UNDER_CE ) || defined( WIN32 )
-    p_ret = TlsGetValue( *p_tls );
-
-#endif
-
-    return p_ret;
-}
+#define mutex_cleanup_push( lock ) vlc_cleanup_push (vlc_cleanup_lock, lock)
 
 # if defined (_POSIX_SPIN_LOCKS) && ((_POSIX_SPIN_LOCKS - 0) > 0)
 typedef pthread_spinlock_t vlc_spinlock_t;
@@ -526,7 +280,12 @@ typedef CRITICAL_SECTION vlc_spinlock_t;
  */
 static inline int vlc_spin_init (vlc_spinlock_t *spin)
 {
+#ifdef UNDER_CE
+    InitializeCriticalSection(spin);
+    return 0;
+#else
     return !InitializeCriticalSectionAndSpinCount(spin, 4000);
+#endif
 }
 
 /**
@@ -576,12 +335,12 @@ static inline int vlc_spin_init (vlc_spinlock_t *spin)
 #endif
 static inline void barrier (void)
 {
-#if defined (__GNUC__) && \
+#if defined (__GNUC__) && !defined (__APPLE__) && \
             ((__GNUC__ > 4) || (__GNUC__ == 4 && __GNUC_MINOR__ >= 1))
     __sync_synchronize ();
 #elif defined(__APPLE__)
     OSMemoryBarrier ();
-#elif defined(__powerpc__) || defined( __ppc__ ) || defined( __ppc64__ )
+#elif defined(__powerpc__)
     asm volatile ("sync":::"memory");
 #elif 0 // defined(__i386__) /*  Requires SSE2 support */
     asm volatile ("mfence":::"memory");
@@ -597,8 +356,8 @@ static inline void barrier (void)
 /*****************************************************************************
  * vlc_thread_create: create a thread
  *****************************************************************************/
-#define vlc_thread_create( P_THIS, PSZ_NAME, FUNC, PRIORITY, WAIT )         \
-    __vlc_thread_create( VLC_OBJECT(P_THIS), __FILE__, __LINE__, PSZ_NAME, FUNC, PRIORITY, WAIT )
+#define vlc_thread_create( P_THIS, PSZ_NAME, FUNC, PRIORITY )         \
+    vlc_thread_create( VLC_OBJECT(P_THIS), __FILE__, __LINE__, PSZ_NAME, FUNC, PRIORITY )
 
 /*****************************************************************************
  * vlc_thread_set_priority: set the priority of the calling thread
@@ -610,6 +369,29 @@ static inline void barrier (void)
  * vlc_thread_join: wait until a thread exits
  *****************************************************************************/
 #define vlc_thread_join( P_THIS )                                           \
-    __vlc_thread_join( VLC_OBJECT(P_THIS), __FILE__, __LINE__ )
+    __vlc_thread_join( VLC_OBJECT(P_THIS) )
+
+#ifdef __cplusplus
+/**
+ * Helper C++ class to lock a mutex.
+ * The mutex is locked when the object is created, and unlocked when the object
+ * is destroyed.
+ */
+class vlc_mutex_locker
+{
+    private:
+        vlc_mutex_t *lock;
+    public:
+        vlc_mutex_locker (vlc_mutex_t *m) : lock (m)
+        {
+            vlc_mutex_lock (lock);
+        }
+
+        ~vlc_mutex_locker (void)
+        {
+            vlc_mutex_unlock (lock);
+        }
+};
+#endif
 
 #endif /* !_VLC_THREADS_H */

@@ -2,7 +2,7 @@
  * x11_loop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: cc52fa699762c62fd287eb78fec11e9fadeaab96 $
+ * $Id: f9cd7779d62c89a3227bdc2527943ed9eaab9656 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -175,7 +175,6 @@ void X11Loop::handleX11Event()
 
     if( !pWin )
     {
-        msg_Warn( getIntf(), "no associated generic window" );
         return;
     }
 

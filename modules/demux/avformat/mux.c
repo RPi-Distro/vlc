@@ -2,7 +2,7 @@
  * mux.c: muxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 90d72ef3268dd962d589a8203948fc6384b8b35c $
+ * $Id: 3e98975cd24396f8cde64a6f4aac43691e7720b6 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -41,7 +41,7 @@
 #endif
 
 #include "avformat.h"
-#include "../../codec/avcodec/fourcc.h"
+#include "../../codec/avcodec/avcodec.h"
 #include "../../codec/avcodec/avutil.h"
 
 //#define AVFORMAT_DEBUG 1

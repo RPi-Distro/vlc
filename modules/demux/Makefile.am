@@ -3,22 +3,11 @@
 
 basedir = demux
 dir = demux
-mods = a52sys aiff asademux au demux_cdg demuxdump dtssys flacsys gme live555 mjpeg mkv mod mpc nsc nsv nuv ogg ps pva rawdv rawvid real smf subtitle ts tta ty vc1 vobsub voc wav xa
-libvlc_LTLIBRARIES =  $(LTLIBasademux) $(LTLIBgme) $(LTLIBlive555) $(LTLIBmkv) $(LTLIBmod) $(LTLIBmpc) $(LTLIBnsc) $(LTLIBogg) $(LTLIBps) $(LTLIBts)
-EXTRA_LTLIBRARIES =  libasademux_plugin.la libgme_plugin.la liblive555_plugin.la libmkv_plugin.la libmod_plugin.la libmpc_plugin.la libnsc_plugin.la libogg_plugin.la libps_plugin.la libts_plugin.la
+mods = aiff asademux au demux_cdg demuxdump dirac flacsys gme live555 mjpeg mod mpc nsc nsv nuv ogg ps pva rawaud rawdv rawvid real smf subtitle ts tta ty vc1 vobsub voc wav xa
+libvlc_LTLIBRARIES =  $(LTLIBasademux) $(LTLIBgme) $(LTLIBlive555) $(LTLIBmod) $(LTLIBmpc) $(LTLIBogg) $(LTLIBts)
+EXTRA_LTLIBRARIES =  libasademux_plugin.la libgme_plugin.la liblive555_plugin.la libmod_plugin.la libmpc_plugin.la libogg_plugin.la libts_plugin.la
 
 include $(top_srcdir)/modules/common.am
-
-# The a52sys plugin
-liba52sys_plugin_la_SOURCES = $(SOURCES_a52sys)
-nodist_liba52sys_plugin_la_SOURCES = $(nodist_SOURCES_a52sys)
-# Force per-target objects:
-liba52sys_plugin_la_CFLAGS = $(AM_CFLAGS)
-liba52sys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-liba52sys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-liba52sys_plugin_la_LIBADD = $(AM_LIBADD)
-liba52sys_plugin_la_DEPENDENCIES =
 
 # The aiff plugin
 libaiff_plugin_la_SOURCES = $(SOURCES_aiff)
@@ -29,7 +18,7 @@ libaiff_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaiff_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaiff_plugin_la_LIBADD = $(AM_LIBADD)
-libaiff_plugin_la_DEPENDENCIES =
+libaiff_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The asademux plugin
 libasademux_plugin_la_SOURCES = $(SOURCES_asademux)
@@ -40,7 +29,7 @@ libasademux_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libasademux_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libasademux_plugin_la_LIBADD = $(AM_LIBADD)
-libasademux_plugin_la_DEPENDENCIES =
+libasademux_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The au plugin
 libau_plugin_la_SOURCES = $(SOURCES_au)
@@ -51,7 +40,7 @@ libau_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libau_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libau_plugin_la_LIBADD = $(AM_LIBADD)
-libau_plugin_la_DEPENDENCIES =
+libau_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The demux_cdg plugin
 libdemux_cdg_plugin_la_SOURCES = $(SOURCES_demux_cdg)
@@ -62,7 +51,7 @@ libdemux_cdg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdemux_cdg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdemux_cdg_plugin_la_LIBADD = $(AM_LIBADD)
-libdemux_cdg_plugin_la_DEPENDENCIES =
+libdemux_cdg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The demuxdump plugin
 libdemuxdump_plugin_la_SOURCES = $(SOURCES_demuxdump)
@@ -73,18 +62,18 @@ libdemuxdump_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdemuxdump_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdemuxdump_plugin_la_LIBADD = $(AM_LIBADD)
-libdemuxdump_plugin_la_DEPENDENCIES =
+libdemuxdump_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
-# The dtssys plugin
-libdtssys_plugin_la_SOURCES = $(SOURCES_dtssys)
-nodist_libdtssys_plugin_la_SOURCES = $(nodist_SOURCES_dtssys)
+# The dirac plugin
+libdirac_plugin_la_SOURCES = $(SOURCES_dirac)
+nodist_libdirac_plugin_la_SOURCES = $(nodist_SOURCES_dirac)
 # Force per-target objects:
-libdtssys_plugin_la_CFLAGS = $(AM_CFLAGS)
-libdtssys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libdtssys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+libdirac_plugin_la_CFLAGS = $(AM_CFLAGS)
+libdirac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libdirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
-libdtssys_plugin_la_LIBADD = $(AM_LIBADD)
-libdtssys_plugin_la_DEPENDENCIES =
+libdirac_plugin_la_LIBADD = $(AM_LIBADD)
+libdirac_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The flacsys plugin
 libflacsys_plugin_la_SOURCES = $(SOURCES_flacsys)
@@ -95,7 +84,7 @@ libflacsys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libflacsys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libflacsys_plugin_la_LIBADD = $(AM_LIBADD)
-libflacsys_plugin_la_DEPENDENCIES =
+libflacsys_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The gme plugin
 libgme_plugin_la_SOURCES = $(SOURCES_gme)
@@ -106,7 +95,7 @@ libgme_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgme_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgme_plugin_la_LIBADD = $(AM_LIBADD)
-libgme_plugin_la_DEPENDENCIES =
+libgme_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The live555 plugin
 liblive555_plugin_la_SOURCES = $(SOURCES_live555)
@@ -117,7 +106,7 @@ liblive555_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liblive555_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liblive555_plugin_la_LIBADD = $(AM_LIBADD)
-liblive555_plugin_la_DEPENDENCIES =
+liblive555_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mjpeg plugin
 libmjpeg_plugin_la_SOURCES = $(SOURCES_mjpeg)
@@ -128,18 +117,7 @@ libmjpeg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmjpeg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmjpeg_plugin_la_LIBADD = $(AM_LIBADD)
-libmjpeg_plugin_la_DEPENDENCIES =
-
-# The mkv plugin
-libmkv_plugin_la_SOURCES = $(SOURCES_mkv)
-nodist_libmkv_plugin_la_SOURCES = $(nodist_SOURCES_mkv)
-# Force per-target objects:
-libmkv_plugin_la_CFLAGS = $(AM_CFLAGS)
-libmkv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libmkv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libmkv_plugin_la_LIBADD = $(AM_LIBADD)
-libmkv_plugin_la_DEPENDENCIES =
+libmjpeg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mod plugin
 libmod_plugin_la_SOURCES = $(SOURCES_mod)
@@ -150,7 +128,7 @@ libmod_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmod_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmod_plugin_la_LIBADD = $(AM_LIBADD)
-libmod_plugin_la_DEPENDENCIES =
+libmod_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mpc plugin
 libmpc_plugin_la_SOURCES = $(SOURCES_mpc)
@@ -161,7 +139,7 @@ libmpc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmpc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmpc_plugin_la_LIBADD = $(AM_LIBADD)
-libmpc_plugin_la_DEPENDENCIES =
+libmpc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The nsc plugin
 libnsc_plugin_la_SOURCES = $(SOURCES_nsc)
@@ -172,7 +150,7 @@ libnsc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libnsc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libnsc_plugin_la_LIBADD = $(AM_LIBADD)
-libnsc_plugin_la_DEPENDENCIES =
+libnsc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The nsv plugin
 libnsv_plugin_la_SOURCES = $(SOURCES_nsv)
@@ -183,7 +161,7 @@ libnsv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libnsv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libnsv_plugin_la_LIBADD = $(AM_LIBADD)
-libnsv_plugin_la_DEPENDENCIES =
+libnsv_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The nuv plugin
 libnuv_plugin_la_SOURCES = $(SOURCES_nuv)
@@ -194,7 +172,7 @@ libnuv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libnuv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libnuv_plugin_la_LIBADD = $(AM_LIBADD)
-libnuv_plugin_la_DEPENDENCIES =
+libnuv_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The ogg plugin
 libogg_plugin_la_SOURCES = $(SOURCES_ogg)
@@ -205,7 +183,7 @@ libogg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libogg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libogg_plugin_la_LIBADD = $(AM_LIBADD)
-libogg_plugin_la_DEPENDENCIES =
+libogg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The ps plugin
 libps_plugin_la_SOURCES = $(SOURCES_ps)
@@ -216,7 +194,7 @@ libps_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libps_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libps_plugin_la_LIBADD = $(AM_LIBADD)
-libps_plugin_la_DEPENDENCIES =
+libps_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The pva plugin
 libpva_plugin_la_SOURCES = $(SOURCES_pva)
@@ -227,7 +205,18 @@ libpva_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libpva_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libpva_plugin_la_LIBADD = $(AM_LIBADD)
-libpva_plugin_la_DEPENDENCIES =
+libpva_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The rawaud plugin
+librawaud_plugin_la_SOURCES = $(SOURCES_rawaud)
+nodist_librawaud_plugin_la_SOURCES = $(nodist_SOURCES_rawaud)
+# Force per-target objects:
+librawaud_plugin_la_CFLAGS = $(AM_CFLAGS)
+librawaud_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+librawaud_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+librawaud_plugin_la_LIBADD = $(AM_LIBADD)
+librawaud_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The rawdv plugin
 librawdv_plugin_la_SOURCES = $(SOURCES_rawdv)
@@ -238,7 +227,7 @@ librawdv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 librawdv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 librawdv_plugin_la_LIBADD = $(AM_LIBADD)
-librawdv_plugin_la_DEPENDENCIES =
+librawdv_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The rawvid plugin
 librawvid_plugin_la_SOURCES = $(SOURCES_rawvid)
@@ -249,7 +238,7 @@ librawvid_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 librawvid_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 librawvid_plugin_la_LIBADD = $(AM_LIBADD)
-librawvid_plugin_la_DEPENDENCIES =
+librawvid_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The real plugin
 libreal_plugin_la_SOURCES = $(SOURCES_real)
@@ -260,7 +249,7 @@ libreal_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libreal_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libreal_plugin_la_LIBADD = $(AM_LIBADD)
-libreal_plugin_la_DEPENDENCIES =
+libreal_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The smf plugin
 libsmf_plugin_la_SOURCES = $(SOURCES_smf)
@@ -271,7 +260,7 @@ libsmf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsmf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsmf_plugin_la_LIBADD = $(AM_LIBADD)
-libsmf_plugin_la_DEPENDENCIES =
+libsmf_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The subtitle plugin
 libsubtitle_plugin_la_SOURCES = $(SOURCES_subtitle)
@@ -282,7 +271,7 @@ libsubtitle_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsubtitle_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsubtitle_plugin_la_LIBADD = $(AM_LIBADD)
-libsubtitle_plugin_la_DEPENDENCIES =
+libsubtitle_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The ts plugin
 libts_plugin_la_SOURCES = $(SOURCES_ts)
@@ -293,7 +282,7 @@ libts_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libts_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libts_plugin_la_LIBADD = $(AM_LIBADD)
-libts_plugin_la_DEPENDENCIES =
+libts_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The tta plugin
 libtta_plugin_la_SOURCES = $(SOURCES_tta)
@@ -304,7 +293,7 @@ libtta_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtta_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtta_plugin_la_LIBADD = $(AM_LIBADD)
-libtta_plugin_la_DEPENDENCIES =
+libtta_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The ty plugin
 libty_plugin_la_SOURCES = $(SOURCES_ty)
@@ -315,7 +304,7 @@ libty_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libty_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libty_plugin_la_LIBADD = $(AM_LIBADD)
-libty_plugin_la_DEPENDENCIES =
+libty_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The vc1 plugin
 libvc1_plugin_la_SOURCES = $(SOURCES_vc1)
@@ -326,7 +315,7 @@ libvc1_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libvc1_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libvc1_plugin_la_LIBADD = $(AM_LIBADD)
-libvc1_plugin_la_DEPENDENCIES =
+libvc1_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The vobsub plugin
 libvobsub_plugin_la_SOURCES = $(SOURCES_vobsub)
@@ -337,7 +326,7 @@ libvobsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libvobsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libvobsub_plugin_la_LIBADD = $(AM_LIBADD)
-libvobsub_plugin_la_DEPENDENCIES =
+libvobsub_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The voc plugin
 libvoc_plugin_la_SOURCES = $(SOURCES_voc)
@@ -348,7 +337,7 @@ libvoc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libvoc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libvoc_plugin_la_LIBADD = $(AM_LIBADD)
-libvoc_plugin_la_DEPENDENCIES =
+libvoc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The wav plugin
 libwav_plugin_la_SOURCES = $(SOURCES_wav)
@@ -359,7 +348,7 @@ libwav_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libwav_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libwav_plugin_la_LIBADD = $(AM_LIBADD)
-libwav_plugin_la_DEPENDENCIES =
+libwav_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The xa plugin
 libxa_plugin_la_SOURCES = $(SOURCES_xa)
@@ -370,5 +359,5 @@ libxa_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libxa_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libxa_plugin_la_LIBADD = $(AM_LIBADD)
-libxa_plugin_la_DEPENDENCIES =
+libxa_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

@@ -18,7 +18,7 @@ libtest1_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtest1_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtest1_plugin_la_LIBADD = $(AM_LIBADD)
-libtest1_plugin_la_DEPENDENCIES =
+libtest1_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The test2 plugin
 libtest2_plugin_la_SOURCES = $(SOURCES_test2)
@@ -29,7 +29,7 @@ libtest2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtest2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtest2_plugin_la_LIBADD = $(AM_LIBADD)
-libtest2_plugin_la_DEPENDENCIES =
+libtest2_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The test3 plugin
 libtest3_plugin_la_SOURCES = $(SOURCES_test3)
@@ -40,7 +40,7 @@ libtest3_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtest3_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtest3_plugin_la_LIBADD = $(AM_LIBADD)
-libtest3_plugin_la_DEPENDENCIES =
+libtest3_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The test4 plugin
 libtest4_plugin_la_SOURCES = $(SOURCES_test4)
@@ -51,5 +51,5 @@ libtest4_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtest4_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtest4_plugin_la_LIBADD = $(AM_LIBADD)
-libtest4_plugin_la_DEPENDENCIES =
+libtest4_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

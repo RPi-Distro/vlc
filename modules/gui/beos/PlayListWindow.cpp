@@ -2,7 +2,7 @@
  * PlayListWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: dcfc779957ebcfffd31569a2668fadbb39c6a72c $
+ * $Id: 9e7a0de8696a5fbf385e1d8fe778b6c6d8762b8c $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -291,7 +291,7 @@ PlayListWindow::UpdatePlaylist( bool rebuild )
     if( rebuild )
         fListView->RebuildList();
 
-    p_playlist = pl_Yield( p_intf );
+    p_playlist = pl_Hold( p_intf );
     fListView->SetCurrent( p_playlist->i_index );
     fListView->SetPlaying( p_playlist->status.i_status == PLAYLIST_RUNNING );
     pl_Release( p_intf );

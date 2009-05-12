@@ -18,5 +18,5 @@ libgalaktos_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgalaktos_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgalaktos_plugin_la_LIBADD = $(AM_LIBADD)
-libgalaktos_plugin_la_DEPENDENCIES =
+libgalaktos_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

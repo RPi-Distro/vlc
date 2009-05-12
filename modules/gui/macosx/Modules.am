@@ -14,8 +14,8 @@ SOURCES_macosx = \
 	controls.m \
 	equalizer.m \
 	equalizer.h \
-	interaction.m \
-	interaction.h \
+	coredialogs.m \
+	coredialogs.h \
 	intf.m \
 	intf.h \
 	macosx.m \
@@ -52,5 +52,7 @@ SOURCES_macosx = \
 	fspanel.h \
 	eyetv.h \
 	eyetv.m \
+	vlm.h \
+	vlm.m \
 	$(NULL)
 

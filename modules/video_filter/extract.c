@@ -2,7 +2,7 @@
  * extract.c : Extract RGB components
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 192eda0b84e82e779ae95272d024bf55b24b7888 $
+ * $Id: 5515bfddc8f53f56355137031767bd47c9442ea3 $
  *
  * Authors: Antoine Cellerier <dionoea .t videolan d@t org>
  *
@@ -71,20 +71,20 @@ static const char *const ppsz_component_descriptions[] = {
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Extract RGB component video filter") );
-    set_shortname( N_("Extract" ));
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_capability( "video filter2", 0 );
-    add_shortcut( "extract" );
+vlc_module_begin ()
+    set_description( N_("Extract RGB component video filter") )
+    set_shortname( N_("Extract" ))
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_capability( "video filter2", 0 )
+    add_shortcut( "extract" )
 
     add_integer_with_range( FILTER_PREFIX "component", 0xFF0000, 1, 0xFFFFFF,
-                 NULL, COMPONENT_TEXT, COMPONENT_LONGTEXT, false );
-        change_integer_list( pi_component_values, ppsz_component_descriptions, NULL );
+                 NULL, COMPONENT_TEXT, COMPONENT_LONGTEXT, false )
+        change_integer_list( pi_component_values, ppsz_component_descriptions, NULL )
 
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "component", NULL

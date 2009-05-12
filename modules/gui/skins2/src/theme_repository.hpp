@@ -2,7 +2,7 @@
  * theme_repository.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 23f0d8d4cb77304f7c2891b91a7f43b5c021ab46 $
+ * $Id: c374bb58f5475bb075009d70f7e04d9449f6c225 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -44,14 +44,12 @@ class ThemeRepository: public SkinObject
         virtual ~ThemeRepository();
 
     private:
-        /// Identifier for the special menu entry
-        static const char *kOpenDialog;
 
-       /// Look for themes in a directory
+        /// Look for themes in a directory
         void parseDirectory( const string &rDir );
 
         /// Callback for menu item selection
-        static int changeSkin( vlc_object_t *pThis, char const *pCmd,
+        static int changeSkin( vlc_object_t *pThis, char const *pVariable,
                                vlc_value_t oldval, vlc_value_t newval,
                                void *pData );
 };

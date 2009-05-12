@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright( C ) 2007 the VideoLAN team
  *
- * Author: Ken Self <kens@campoz.fslife.co.uk>
+ * Author: Ken Self <kenself(at)optusnet(dot)com(dot)au>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,8 +38,7 @@ extern "C" {
 
     void dvb_deleteBDAGraph( access_t* p_access )
     {
-        if( p_access->p_sys->p_bda_module )
-            delete p_access->p_sys->p_bda_module;
+        delete p_access->p_sys->p_bda_module;
     };
 
     int dvb_SubmitATSCTuneRequest( access_t* p_access )
@@ -70,21 +69,59 @@ extern "C" {
         return VLC_EGENERIC;
     };
 
-    long dvb_GetBufferSize( access_t* p_access )
+    block_t *dvb_Pop( access_t* p_access )
     {
         if( p_access->p_sys->p_bda_module )
-            return p_access->p_sys->p_bda_module->GetBufferSize();
-        return -1;
-    };
-
-    long dvb_ReadBuffer( access_t* p_access, long* l_buffer_len, BYTE* p_buff )
-    {
-        if( p_access->p_sys->p_bda_module )
-            return p_access->p_sys->p_bda_module->ReadBuffer( l_buffer_len,
-                p_buff );
-        return -1;
+            return p_access->p_sys->p_bda_module->Pop();
+        return NULL;
     };
 };
+
+/*****************************************************************************
+* BDAOutput
+*****************************************************************************/
+BDAOutput::BDAOutput( access_t *p_access ) :
+    p_access(p_access), p_first(NULL), pp_next(&p_first)
+{
+    vlc_mutex_init( &lock );
+    vlc_cond_init( &wait );
+}
+BDAOutput::~BDAOutput()
+{
+    Empty();
+    vlc_mutex_destroy( &lock );
+    vlc_cond_destroy( &wait );
+}
+void BDAOutput::Push( block_t *p_block )
+{
+    vlc_mutex_locker l( &lock );
+
+    block_ChainLastAppend( &pp_next, p_block );
+    vlc_cond_signal( &wait );
+}
+block_t *BDAOutput::Pop()
+{
+    vlc_mutex_locker l( &lock );
+
+    if( !p_first )
+        vlc_cond_timedwait( &wait, &lock, mdate() + 250*1000 );
+
+    block_t *p_ret = p_first;
+
+    p_first = NULL;
+    pp_next = &p_first;
+
+    return p_ret;
+}
+void BDAOutput::Empty()
+{
+    vlc_mutex_locker l( &lock );
+
+    if( p_first )
+        block_ChainRelease( p_first );
+    p_first = NULL;
+    pp_next = &p_first;
+}
 
 /*****************************************************************************
 * Constructor
@@ -93,9 +130,9 @@ BDAGraph::BDAGraph( access_t* p_this ):
     p_access( p_this ),
     guid_network_type(GUID_NULL),
     l_tuner_used(-1),
-    d_graph_register( 0 )
+    d_graph_register( 0 ),
+    output( p_this )
 {
-    b_ready = FALSE;
     p_tuning_space = NULL;
     p_tune_request = NULL;
     p_media_control = NULL;
@@ -141,13 +178,12 @@ int BDAGraph::SubmitATSCTuneRequest()
         }
     } l;
     long l_major_channel, l_minor_channel, l_physical_channel;
+    long l_frequency;
 
-    l_major_channel = l_minor_channel = l_physical_channel = -1;
-/*
-    l_major_channel = var_GetInteger( p_access, "dvb-major-channel" );
-    l_minor_channel = var_GetInteger( p_access, "dvb-minor-channel" );
-    l_physical_channel = var_GetInteger( p_access, "dvb-physical-channel" );
-*/
+    l_major_channel     = var_GetInteger( p_access, "dvb-major-channel" );
+    l_minor_channel     = var_GetInteger( p_access, "dvb-minor-channel" );
+    l_physical_channel  = var_GetInteger( p_access, "dvb-physical-channel" );
+    l_frequency         = var_GetInteger( p_access, "dvb-frequency" );
 
     guid_network_type = CLSID_ATSCNetworkProvider;
     hr = CreateTuneRequest();
@@ -176,6 +212,8 @@ int BDAGraph::SubmitATSCTuneRequest()
     }
 
     hr = S_OK;
+    if( l_frequency > 0 )
+        hr = l.p_atsc_locator->put_CarrierFrequency( l_frequency );
     if( l_major_channel > 0 )
         hr = l.p_atsc_tune_request->put_Channel( l_major_channel );
     if( SUCCEEDED( hr ) && l_minor_channel > 0 )
@@ -227,13 +265,17 @@ int BDAGraph::SubmitDVBTTuneRequest()
         public:
         IDVBTuneRequest* p_dvbt_tune_request;
         IDVBTLocator* p_dvbt_locator;
-        localComPtr(): p_dvbt_tune_request(NULL), p_dvbt_locator(NULL) {};
+        IDVBTuningSpace2* p_dvb_tuning_space;
+        localComPtr(): p_dvbt_tune_request(NULL), p_dvbt_locator(NULL),
+           p_dvb_tuning_space(NULL) {};
         ~localComPtr()
         {
             if( p_dvbt_tune_request )
                 p_dvbt_tune_request->Release();
             if( p_dvbt_locator )
                 p_dvbt_locator->Release();
+            if( p_dvb_tuning_space )
+                p_dvb_tuning_space->Release();
         }
     } l;
     long l_frequency, l_bandwidth, l_hp_fec, l_lp_fec, l_guard;
@@ -243,63 +285,81 @@ int BDAGraph::SubmitDVBTTuneRequest()
     TransmissionMode          i_transmission;
     HierarchyAlpha            i_hierarchy;
 
-    l_frequency = l_bandwidth = l_hp_fec = l_lp_fec = l_guard = -1;
-    l_transmission = l_hierarchy = -1;
-    l_frequency = var_GetInteger( p_access, "dvb-frequency" );
-    l_bandwidth = var_GetInteger( p_access, "dvb-bandwidth" );
-    l_hp_fec = var_GetInteger( p_access, "dvb-code-rate-hp" );
-    l_lp_fec = var_GetInteger( p_access, "dvb-code-rate-lp" );
-    l_guard = var_GetInteger( p_access, "dvb-guard" );
+    l_frequency    = var_GetInteger( p_access, "dvb-frequency" ) / 1000;
+    l_bandwidth    = var_GetInteger( p_access, "dvb-bandwidth" );
+    l_hp_fec       = var_GetInteger( p_access, "dvb-code-rate-hp" );
+    l_lp_fec       = var_GetInteger( p_access, "dvb-code-rate-lp" );
+    l_guard        = var_GetInteger( p_access, "dvb-guard" );
     l_transmission = var_GetInteger( p_access, "dvb-transmission" );
-    l_hierarchy = var_GetInteger( p_access, "dvb-hierarchy" );
+    l_hierarchy    = var_GetInteger( p_access, "dvb-hierarchy" );
 
-    i_hp_fec = BDA_BCC_RATE_NOT_SET;
-    if( l_hp_fec == 1 )
-        i_hp_fec = BDA_BCC_RATE_1_2;
-    if( l_hp_fec == 2 )
-        i_hp_fec = BDA_BCC_RATE_2_3;
-    if( l_hp_fec == 3 )
-        i_hp_fec = BDA_BCC_RATE_3_4;
-    if( l_hp_fec == 4 )
-        i_hp_fec = BDA_BCC_RATE_5_6;
-    if( l_hp_fec == 5 )
-        i_hp_fec = BDA_BCC_RATE_7_8;
+    switch( l_hp_fec )
+    {
+    case 1:
+        i_hp_fec = BDA_BCC_RATE_1_2; break;
+    case 2:
+        i_hp_fec = BDA_BCC_RATE_2_3; break;
+    case 3:
+        i_hp_fec = BDA_BCC_RATE_3_4; break;
+    case 4:
+        i_hp_fec = BDA_BCC_RATE_5_6; break;
+    case 5:
+        i_hp_fec = BDA_BCC_RATE_7_8;break;
+    default:
+        i_hp_fec = BDA_BCC_RATE_NOT_SET;
+    }
 
-    i_lp_fec = BDA_BCC_RATE_NOT_SET;
-    if( l_lp_fec == 1 )
-        i_lp_fec = BDA_BCC_RATE_1_2;
-    if( l_lp_fec == 2 )
-        i_lp_fec = BDA_BCC_RATE_2_3;
-    if( l_lp_fec == 3 )
-        i_lp_fec = BDA_BCC_RATE_3_4;
-    if( l_lp_fec == 4 )
-        i_lp_fec = BDA_BCC_RATE_5_6;
-    if( l_lp_fec == 5 )
-        i_lp_fec = BDA_BCC_RATE_7_8;
+    switch( l_lp_fec )
+    {
+    case 1:
+        i_lp_fec = BDA_BCC_RATE_1_2; break;
+    case 2:
+        i_lp_fec = BDA_BCC_RATE_2_3; break;
+    case 3:
+        i_lp_fec = BDA_BCC_RATE_3_4; break;
+    case 4:
+        i_lp_fec = BDA_BCC_RATE_5_6; break;
+    case 5:
+        i_lp_fec = BDA_BCC_RATE_7_8; break;
+    default:
+        i_lp_fec = BDA_BCC_RATE_NOT_SET;
+    }
 
-    i_guard = BDA_GUARD_NOT_SET;
-    if( l_guard == 32 )
-        i_guard = BDA_GUARD_1_32;
-    if( l_guard == 16 )
-        i_guard = BDA_GUARD_1_16;
-    if( l_guard == 8 )
-        i_guard = BDA_GUARD_1_8;
-    if( l_guard == 4 )
-        i_guard = BDA_GUARD_1_4;
+    switch( l_guard )
+    {
+    case 32:
+        i_guard = BDA_GUARD_1_32; break;
+    case 16:
+        i_guard = BDA_GUARD_1_16; break;
+    case 8:
+        i_guard = BDA_GUARD_1_8; break;
+    case 4:
+        i_guard = BDA_GUARD_1_4; break;
+    default:
+        i_guard = BDA_GUARD_NOT_SET;
+    }
 
-    i_transmission = BDA_XMIT_MODE_NOT_SET;
-    if( l_transmission == 2 )
-        i_transmission = BDA_XMIT_MODE_2K;
-    if( l_transmission == 8 )
-        i_transmission = BDA_XMIT_MODE_8K;
+    switch( l_transmission )
+    {
+    case 2:
+        i_transmission = BDA_XMIT_MODE_2K; break;
+    case 8:
+        i_transmission = BDA_XMIT_MODE_8K; break;
+    default:
+        i_transmission = BDA_XMIT_MODE_NOT_SET;
+    }
 
-    i_hierarchy = BDA_HALPHA_NOT_SET;
-    if( l_hierarchy == 1 )
-        i_hierarchy = BDA_HALPHA_1;
-    if( l_hierarchy == 2 )
-        i_hierarchy = BDA_HALPHA_2;
-    if( l_hierarchy == 4 )
-        i_hierarchy = BDA_HALPHA_4;
+    switch( l_hierarchy )
+    {
+    case 1:
+        i_hierarchy = BDA_HALPHA_1; break;
+    case 2:
+        i_hierarchy = BDA_HALPHA_2; break;
+    case 4:
+        i_hierarchy = BDA_HALPHA_4; break;
+    default:
+        i_hierarchy = BDA_HALPHA_NOT_SET;
+    }
 
     guid_network_type = CLSID_DVBTNetworkProvider;
     hr = CreateTuneRequest();
@@ -330,9 +390,19 @@ int BDAGraph::SubmitDVBTTuneRequest()
             "Cannot create the DVBT Locator: hr=0x%8lx", hr );
         return VLC_EGENERIC;
     }
+    hr = p_tuning_space->QueryInterface( IID_IDVBTuningSpace2,
+        (void**)&l.p_dvb_tuning_space );
+    if( FAILED( hr ) )
+    {
+        msg_Warn( p_access, "SubmitDVBTTuneRequest: "\
+            "Cannot QI for IDVBTuningSpace2: hr=0x%8lx", hr );
+        return VLC_EGENERIC;
+    }
 
     hr = S_OK;
-    if( l_frequency > 0 )
+    hr = l.p_dvb_tuning_space->put_SystemType( DVB_Terrestrial );
+
+    if( SUCCEEDED( hr ) && l_frequency > 0 )
         hr = l.p_dvbt_locator->put_CarrierFrequency( l_frequency );
     if( SUCCEEDED( hr ) && l_bandwidth > 0 )
         hr = l.p_dvbt_locator->put_Bandwidth( l_bandwidth );
@@ -392,13 +462,18 @@ int BDAGraph::SubmitDVBCTuneRequest()
         public:
         IDVBTuneRequest* p_dvbc_tune_request;
         IDVBCLocator* p_dvbc_locator;
-        localComPtr(): p_dvbc_tune_request(NULL), p_dvbc_locator(NULL) {};
+        IDVBTuningSpace2* p_dvb_tuning_space;
+
+        localComPtr(): p_dvbc_tune_request(NULL), p_dvbc_locator(NULL),
+                       p_dvb_tuning_space(NULL) {};
         ~localComPtr()
         {
             if( p_dvbc_tune_request )
                 p_dvbc_tune_request->Release();
             if( p_dvbc_locator )
                 p_dvbc_locator->Release();
+            if( p_dvb_tuning_space )
+                p_dvb_tuning_space->Release();
         }
     } l;
 
@@ -406,21 +481,25 @@ int BDAGraph::SubmitDVBCTuneRequest()
     int  i_qam;
     ModulationType i_qam_mod;
 
-    l_frequency = l_symbolrate = i_qam = -1;
-    l_frequency = var_GetInteger( p_access, "dvb-frequency" );
+    l_frequency  = var_GetInteger( p_access, "dvb-frequency" ) / 1000;
     l_symbolrate = var_GetInteger( p_access, "dvb-srate" );
-    i_qam = var_GetInteger( p_access, "dvb-modulation" );
-    i_qam_mod = BDA_MOD_NOT_SET;
-    if( i_qam == 16 )
-        i_qam_mod = BDA_MOD_16QAM;
-    if( i_qam == 32 )
-        i_qam_mod = BDA_MOD_32QAM;
-    if( i_qam == 64 )
-        i_qam_mod = BDA_MOD_64QAM;
-    if( i_qam == 128 )
-        i_qam_mod = BDA_MOD_128QAM;
-    if( i_qam == 256 )
-        i_qam_mod = BDA_MOD_256QAM;
+    i_qam        = var_GetInteger( p_access, "dvb-modulation" );
+
+    switch( i_qam )
+    {
+    case 16:
+        i_qam_mod = BDA_MOD_16QAM; break;
+    case 32:
+        i_qam_mod = BDA_MOD_32QAM; break;
+    case 64:
+        i_qam_mod = BDA_MOD_64QAM; break;
+    case 128:
+        i_qam_mod = BDA_MOD_128QAM; break;
+    case 256:
+        i_qam_mod = BDA_MOD_256QAM; break;
+    default:
+        i_qam_mod = BDA_MOD_NOT_SET;
+    }
 
     guid_network_type = CLSID_DVBCNetworkProvider;
     hr = CreateTuneRequest();
@@ -451,14 +530,25 @@ int BDAGraph::SubmitDVBCTuneRequest()
             "Cannot create the DVB-C Locator: hr=0x%8lx", hr );
         return VLC_EGENERIC;
     }
+    hr = p_tuning_space->QueryInterface( IID_IDVBTuningSpace2,
+        (void**)&l.p_dvb_tuning_space );
+    if( FAILED( hr ) )
+    {
+        msg_Warn( p_access, "SubmitDVBCTuneRequest: "\
+            "Cannot QI for IDVBTuningSpace2: hr=0x%8lx", hr );
+        return VLC_EGENERIC;
+    }
 
     hr = S_OK;
-    if( l_frequency > 0 )
+    hr = l.p_dvb_tuning_space->put_SystemType( DVB_Cable );
+
+    if( SUCCEEDED( hr ) && l_frequency > 0 )
         hr = l.p_dvbc_locator->put_CarrierFrequency( l_frequency );
     if( SUCCEEDED( hr ) && l_symbolrate > 0 )
         hr = l.p_dvbc_locator->put_SymbolRate( l_symbolrate );
     if( SUCCEEDED( hr ) && i_qam_mod != BDA_MOD_NOT_SET )
         hr = l.p_dvbc_locator->put_Modulation( i_qam_mod );
+
     if( FAILED( hr ) )
     {
         msg_Warn( p_access, "SubmitDVBCTuneRequest: "\
@@ -506,8 +596,15 @@ int BDAGraph::SubmitDVBSTuneRequest()
         IDVBTuneRequest* p_dvbs_tune_request;
         IDVBSLocator* p_dvbs_locator;
         IDVBSTuningSpace* p_dvbs_tuning_space;
+        char* psz_polarisation;
+        char* psz_input_range;
+        BSTR bstr_input_range;
+        WCHAR* pwsz_input_range;
+        int i_range_len;
         localComPtr(): p_dvbs_tune_request(NULL), p_dvbs_locator(NULL),
-            p_dvbs_tuning_space(NULL) {};
+            p_dvbs_tuning_space(NULL), bstr_input_range(NULL),
+            pwsz_input_range(NULL), i_range_len(0), psz_polarisation(NULL),
+            psz_input_range(NULL) {};
         ~localComPtr()
         {
             if( p_dvbs_tuning_space )
@@ -516,56 +613,111 @@ int BDAGraph::SubmitDVBSTuneRequest()
                 p_dvbs_tune_request->Release();
             if( p_dvbs_locator )
                 p_dvbs_locator->Release();
+            SysFreeString( bstr_input_range );
+            delete pwsz_input_range;
+            free( psz_input_range );
+            free( psz_polarisation );
         }
     } l;
     long l_frequency, l_symbolrate, l_azimuth, l_elevation, l_longitude;
     long l_lnb_lof1, l_lnb_lof2, l_lnb_slof, l_inversion, l_network_id;
-    char* psz_polarisation;
+    long l_hp_fec;
+    int  i_mod;
     Polarisation i_polar;
     SpectralInversion i_inversion;
     VARIANT_BOOL b_west;
+    BinaryConvolutionCodeRate i_hp_fec;
+    ModulationType i_mod_typ;
 
-    l_frequency = l_symbolrate = l_azimuth = l_elevation = l_longitude = -1;
-    l_lnb_lof1 = l_lnb_lof2 = l_lnb_slof = l_inversion = l_network_id = -1;
-    l_frequency = var_GetInteger( p_access, "dvb-frequency" );
-    l_symbolrate = var_GetInteger( p_access, "dvb-srate" );
-    l_azimuth = var_GetInteger( p_access, "dvb-azimuth" );
-    l_elevation = var_GetInteger( p_access, "dvb-elevation" );
-    l_longitude = var_GetInteger( p_access, "dvb-longitude" );
-    l_lnb_lof1 = var_GetInteger( p_access, "dvb-lnb-lof1" );
-    l_lnb_lof2 = var_GetInteger( p_access, "dvb-lnb-lof2" );
-    l_lnb_slof = var_GetInteger( p_access, "dvb-lnb-slof" );
-    psz_polarisation = var_GetNonEmptyString( p_access, "dvb-polarisation" );
-    l_inversion = var_GetInteger( p_access, "dvb-inversion" );
-    l_network_id = var_GetInteger( p_access, "dvb-network_id" );
+    l_frequency        = var_GetInteger( p_access, "dvb-frequency" );
+    l_symbolrate       = var_GetInteger( p_access, "dvb-srate" );
+    l_azimuth          = var_GetInteger( p_access, "dvb-azimuth" );
+    l_elevation        = var_GetInteger( p_access, "dvb-elevation" );
+    l_longitude        = var_GetInteger( p_access, "dvb-longitude" );
+    l_lnb_lof1         = var_GetInteger( p_access, "dvb-lnb-lof1" );
+    l_lnb_lof2         = var_GetInteger( p_access, "dvb-lnb-lof2" );
+    l_lnb_slof         = var_GetInteger( p_access, "dvb-lnb-slof" );
+    i_mod              = var_GetInteger( p_access, "dvb-modulation" );
+    l_hp_fec           = var_GetInteger( p_access, "dvb-code-rate-hp" );
+    l_inversion        = var_GetInteger( p_access, "dvb-inversion" );
+    l_network_id       = var_GetInteger( p_access, "dvb-network-id" );
 
-    b_west = ( l_longitude < 0 ) ? TRUE : FALSE;
+    l.psz_input_range  = var_GetNonEmptyString( p_access, "dvb-range" );
+    l.psz_polarisation = var_GetNonEmptyString( p_access, "dvb-polarisation" );
+
+    b_west = ( l_longitude < 0 );
 
     i_polar = BDA_POLARISATION_NOT_SET;
-    if( psz_polarisation != NULL )
-        switch( toupper( psz_polarisation[0] ) )
+    if( l.psz_polarisation != NULL )
+    {
+        switch( toupper( l.psz_polarisation[0] ) )
         {
-            case 'H':
-                i_polar = BDA_POLARISATION_LINEAR_H;
-                break;
-            case 'V':
-                i_polar = BDA_POLARISATION_LINEAR_V;
-                break;
-            case 'L':
-                i_polar = BDA_POLARISATION_CIRCULAR_L;
-                break;
-            case 'R':
-                i_polar = BDA_POLARISATION_CIRCULAR_R;
-                break;
+        case 'H':
+            i_polar = BDA_POLARISATION_LINEAR_H;
+            break;
+        case 'V':
+            i_polar = BDA_POLARISATION_LINEAR_V;
+            break;
+        case 'L':
+            i_polar = BDA_POLARISATION_CIRCULAR_L;
+            break;
+        case 'R':
+            i_polar = BDA_POLARISATION_CIRCULAR_R;
+            break;
         }
+    }
 
-    i_inversion = BDA_SPECTRAL_INVERSION_NOT_SET;
-    if( l_inversion == 0 )
-        i_inversion = BDA_SPECTRAL_INVERSION_NORMAL;
-    if( l_inversion == 1 )
-        i_inversion = BDA_SPECTRAL_INVERSION_INVERTED;
-    if( l_inversion == 2 )
-        i_inversion = BDA_SPECTRAL_INVERSION_AUTOMATIC;
+    switch( l_inversion )
+    {
+    case 0:
+        i_inversion = BDA_SPECTRAL_INVERSION_NORMAL; break;
+    case 1:
+        i_inversion = BDA_SPECTRAL_INVERSION_INVERTED; break;
+    case 2:
+        i_inversion = BDA_SPECTRAL_INVERSION_AUTOMATIC; break;
+    default:
+        i_inversion = BDA_SPECTRAL_INVERSION_NOT_SET;
+    }
+
+    switch( i_mod )
+    {
+    case 16:
+        i_mod_typ = BDA_MOD_16QAM; break;
+    case 128:
+        i_mod_typ = BDA_MOD_128QAM; break;
+    case 256:
+        i_mod_typ = BDA_MOD_256QAM; break;
+    case 10004:
+        i_mod_typ = BDA_MOD_QPSK; break;
+    default:
+        i_mod_typ = BDA_MOD_NOT_SET;
+    }
+
+    switch( l_hp_fec )
+    {
+    case 1:
+        i_hp_fec = BDA_BCC_RATE_1_2; break;
+    case 2:
+        i_hp_fec = BDA_BCC_RATE_2_3; break;
+    case 3:
+        i_hp_fec = BDA_BCC_RATE_3_4; break;
+    case 4:
+        i_hp_fec = BDA_BCC_RATE_5_6; break;
+    case 5:
+        i_hp_fec = BDA_BCC_RATE_7_8; break;
+    default:
+        i_hp_fec = BDA_BCC_RATE_NOT_SET;
+    }
+
+    l.i_range_len = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED,
+        l.psz_input_range, -1, l.pwsz_input_range, 0 );
+    if( l.i_range_len > 0 )
+    {
+        l.pwsz_input_range = new WCHAR[l.i_range_len];
+        MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED,
+            l.psz_input_range, -1, l.pwsz_input_range, l.i_range_len );
+        l.bstr_input_range=SysAllocString( l.pwsz_input_range );
+    }
 
     guid_network_type = CLSID_DVBSNetworkProvider;
     hr = CreateTuneRequest();
@@ -607,30 +759,39 @@ int BDAGraph::SubmitDVBSTuneRequest()
     }
 
     hr = S_OK;
-    if( l_frequency > 0 )
+    hr = l.p_dvbs_tuning_space->put_SystemType( DVB_Satellite );
+    if( SUCCEEDED( hr ) && l_lnb_lof1 > 0 )
+        hr = l.p_dvbs_tuning_space->put_LowOscillator( l_lnb_lof1 );
+    if( SUCCEEDED( hr ) && l_lnb_slof > 0 )
+        hr = l.p_dvbs_tuning_space->put_LNBSwitch( l_lnb_slof );
+    if( SUCCEEDED( hr ) && l_lnb_lof2 > 0 )
+        hr = l.p_dvbs_tuning_space->put_HighOscillator( l_lnb_lof2 );
+    if( SUCCEEDED( hr ) && i_inversion != BDA_SPECTRAL_INVERSION_NOT_SET )
+        hr = l.p_dvbs_tuning_space->put_SpectralInversion( i_inversion );
+    if( SUCCEEDED( hr ) && l_network_id > 0 )
+        hr = l.p_dvbs_tuning_space->put_NetworkID( l_network_id );
+    if( SUCCEEDED( hr ) && l.i_range_len > 0 )
+        hr = l.p_dvbs_tuning_space->put_InputRange( l.bstr_input_range );
+
+    if( SUCCEEDED( hr ) && l_frequency > 0 )
         hr = l.p_dvbs_locator->put_CarrierFrequency( l_frequency );
     if( SUCCEEDED( hr ) && l_symbolrate > 0 )
         hr = l.p_dvbs_locator->put_SymbolRate( l_symbolrate );
+    if( SUCCEEDED( hr ) && i_polar != BDA_POLARISATION_NOT_SET )
+        hr = l.p_dvbs_locator->put_SignalPolarisation( i_polar );
+    if( SUCCEEDED( hr ) && i_mod_typ != BDA_MOD_NOT_SET )
+        hr = l.p_dvbs_locator->put_Modulation( i_mod_typ );
+    if( SUCCEEDED( hr ) && i_hp_fec != BDA_BCC_RATE_NOT_SET )
+        hr = l.p_dvbs_locator->put_InnerFECRate( i_hp_fec );
+
     if( SUCCEEDED( hr ) && l_azimuth > 0 )
         hr = l.p_dvbs_locator->put_Azimuth( l_azimuth );
     if( SUCCEEDED( hr ) && l_elevation > 0 )
         hr = l.p_dvbs_locator->put_Elevation( l_elevation );
     if( SUCCEEDED( hr ) )
-        hr = l.p_dvbs_locator->put_OrbitalPosition( labs( l_longitude ) );
-    if( SUCCEEDED( hr ) )
         hr = l.p_dvbs_locator->put_WestPosition( b_west );
-    if( SUCCEEDED( hr ) && i_polar != BDA_POLARISATION_NOT_SET )
-        hr = l.p_dvbs_locator->put_SignalPolarisation( i_polar );
-    if( SUCCEEDED( hr ) && l_lnb_lof1 > 0 )
-        hr = l.p_dvbs_tuning_space->put_LowOscillator( l_lnb_lof1 );
-    if( SUCCEEDED( hr ) && l_lnb_lof2 > 0 )
-        hr = l.p_dvbs_tuning_space->put_HighOscillator( l_lnb_lof2 );
-    if( SUCCEEDED( hr ) && l_lnb_slof > 0 )
-        hr = l.p_dvbs_tuning_space->put_LNBSwitch( l_lnb_slof );
-    if( SUCCEEDED( hr ) && i_inversion != BDA_SPECTRAL_INVERSION_NOT_SET )
-        hr = l.p_dvbs_tuning_space->put_SpectralInversion( i_inversion );
-    if( SUCCEEDED( hr ) && l_network_id > 0 )
-        hr = l.p_dvbs_tuning_space->put_NetworkID( l_network_id );
+    if( SUCCEEDED( hr ) )
+        hr = l.p_dvbs_locator->put_OrbitalPosition( labs( l_longitude ) );
     if( FAILED( hr ) )
     {
         msg_Warn( p_access, "SubmitDVBSTuneRequest: "\
@@ -679,18 +840,52 @@ HRESULT BDAGraph::CreateTuneRequest()
         ITuningSpaceContainer*  p_tuning_space_container;
         IEnumTuningSpaces*      p_tuning_space_enum;
         ITuningSpace*           p_this_tuning_space;
+        IDVBTuningSpace2*       p_dvb_tuning_space;
+        BSTR                    bstr_name;
+        char * psz_network_name;
+        char * psz_create_name;
+        char * psz_bstr_name;
+        WCHAR * wpsz_create_name;
+        int i_name_len;
         localComPtr(): p_tuning_space_container(NULL),
-            p_tuning_space_enum(NULL), p_this_tuning_space(NULL) {};
+            p_tuning_space_enum(NULL), p_this_tuning_space(NULL),
+            p_dvb_tuning_space(NULL),
+            i_name_len(0), psz_network_name(NULL), wpsz_create_name(NULL),
+            psz_create_name(NULL), bstr_name(NULL), psz_bstr_name(NULL) {};
         ~localComPtr()
         {
-            if( p_tuning_space_container )
-                p_tuning_space_container->Release();
             if( p_tuning_space_enum )
                 p_tuning_space_enum->Release();
+            if( p_tuning_space_container )
+                p_tuning_space_container->Release();
             if( p_this_tuning_space )
                 p_this_tuning_space->Release();
+            if( p_dvb_tuning_space )
+                p_dvb_tuning_space->Release();
+            SysFreeString( bstr_name );
+            delete[] psz_bstr_name;
+            delete[] wpsz_create_name;
+            free( psz_network_name );
+            free( psz_create_name );
         }
     } l;
+
+    /* We shall test for a specific Tuning space name supplied on the command
+     * line as dvb-networkname=xxx.
+     * For some users with multiple cards and/or multiple networks this could
+     * be useful. This allows us to reasonably safely apply updates to the
+     * System Tuning Space in the registry without disrupting other streams. */
+    l.psz_network_name = var_GetNonEmptyString( p_access, "dvb-network-name" );
+    if( l.psz_network_name )
+    {
+        msg_Dbg( p_access, "CreateTuneRequest: Find Tuning Space: %s",
+            l.psz_network_name );
+    }
+    else
+    {
+        l.psz_network_name = new char[1];
+        *l.psz_network_name = '\0';
+    }
 
     /* A Tuning Space may already have been set up. If it is for the same
      * network type then all is well. Otherwise, reset the Tuning Space and get
@@ -701,20 +896,44 @@ HRESULT BDAGraph::CreateTuneRequest()
         if( FAILED( hr ) ) guid_this_network_type = GUID_NULL;
         if( guid_this_network_type == guid_network_type )
         {
-            return S_OK;
+            hr = p_tuning_space->get_UniqueName( &l.bstr_name );
+            if( FAILED( hr ) )
+            {
+                msg_Warn( p_access, "CreateTuneRequest: "\
+                    "Cannot get UniqueName for Tuning Space: hr=0x%8lx", hr );
+                return hr;
+            }
+            l.i_name_len = WideCharToMultiByte( CP_ACP, 0, l.bstr_name, -1,
+                l.psz_bstr_name, 0, NULL, NULL );
+            l.psz_bstr_name = new char[ l.i_name_len ];
+            l.i_name_len = WideCharToMultiByte( CP_ACP, 0, l.bstr_name, -1,
+                l.psz_bstr_name, l.i_name_len, NULL, NULL );
+
+            /* Test for a specific Tuning space name supplied on the command
+             * line as dvb-networkname=xxx */
+            if( strlen( l.psz_network_name ) == 0 ||
+                strcmp( l.psz_network_name, l.psz_bstr_name ) == 0 )
+            {
+                msg_Dbg( p_access, "CreateTuneRequest: Using Tuning Space: %s",
+                    l.psz_network_name );
+                return S_OK;
+            }
         }
-        else
-        {
+        /* else different guid_network_type */
+        if( p_tuning_space )
             p_tuning_space->Release();
-            p_tuning_space = NULL;
-        }
+        if( p_tune_request )
+            p_tune_request->Release();
+        p_tuning_space = NULL;
+        p_tune_request = NULL;
     }
 
     /* Force use of the first available Tuner Device during Build */
     l_tuner_used = -1;
 
     /* Get the SystemTuningSpaces container to enumerate through all the
-     * defined tuning spaces */
+     * defined tuning spaces.
+     * l.p_tuning_space_container->Refcount = 1  */
     hr = ::CoCreateInstance( CLSID_SystemTuningSpaces, 0, CLSCTX_INPROC,
         IID_ITuningSpaceContainer, (void**)&l.p_tuning_space_container );
     if( FAILED( hr ) )
@@ -724,6 +943,10 @@ HRESULT BDAGraph::CreateTuneRequest()
         return hr;
     }
 
+    /* Get the SystemTuningSpaces container to enumerate through all the
+     * defined tuning spaces.
+     * l.p_tuning_space_container->Refcount = 2
+     * l.p_tuning_space_enum->Refcount = 1  */
     hr = l.p_tuning_space_container->get_EnumTuningSpaces(
          &l.p_tuning_space_enum );
     if( FAILED( hr ) )
@@ -733,10 +956,19 @@ HRESULT BDAGraph::CreateTuneRequest()
         return hr;
     }
 
-    while( l.p_tuning_space_enum->Next( 1, &l.p_this_tuning_space, NULL ) ==
-        S_OK )
+    do
     {
-       hr = l.p_this_tuning_space->get__NetworkType( &guid_this_network_type );
+        /* l.p_this_tuning_space->RefCount = 1 after the first pass
+         * Release before overwriting with Next */
+        if( l.p_this_tuning_space )
+            l.p_this_tuning_space->Release();
+        l.p_this_tuning_space = NULL;
+        SysFreeString( l.bstr_name );
+
+        hr = l.p_tuning_space_enum->Next( 1, &l.p_this_tuning_space, NULL );
+        if( hr != S_OK ) break;
+
+        hr = l.p_this_tuning_space->get__NetworkType( &guid_this_network_type );
 
         /* GUID_NULL means a non-BDA network was found e.g analog
          * Ignore failures and non-BDA networks and keep looking */
@@ -744,31 +976,166 @@ HRESULT BDAGraph::CreateTuneRequest()
 
         if( guid_this_network_type == guid_network_type )
         {
-            hr = l.p_this_tuning_space->QueryInterface( IID_ITuningSpace,
-                (void**)&p_tuning_space );
+            /* QueryInterface to clone l.p_this_tuning_space
+             * l.p_this_tuning_space->RefCount = 2 */
+            hr = l.p_this_tuning_space->Clone( &p_tuning_space );
             if( FAILED( hr ) )
             {
                 msg_Warn( p_access, "CreateTuneRequest: "\
                     "Cannot QI Tuning Space: hr=0x%8lx", hr );
                 return hr;
             }
-            hr = p_tuning_space->CreateTuneRequest( &p_tune_request );
+            hr = p_tuning_space->get_UniqueName( &l.bstr_name );
             if( FAILED( hr ) )
             {
                 msg_Warn( p_access, "CreateTuneRequest: "\
-                    "Cannot Create Tune Request: hr=0x%8lx", hr );
+                    "Cannot get UniqueName for Tuning Space: hr=0x%8lx", hr );
                 return hr;
             }
-            return hr;
+
+            /* Test for a specific Tuning space name supplied on the command
+             * line as dvb-networkname=xxx */
+            delete[] l.psz_bstr_name;
+            l.i_name_len = WideCharToMultiByte( CP_ACP, 0, l.bstr_name, -1,
+                l.psz_bstr_name, 0, NULL, NULL );
+            l.psz_bstr_name = new char[ l.i_name_len ];
+            l.i_name_len = WideCharToMultiByte( CP_ACP, 0, l.bstr_name, -1,
+                l.psz_bstr_name, l.i_name_len, NULL, NULL );
+            if( strlen( l.psz_network_name ) == 0 ||
+                strcmp( l.psz_network_name, l.psz_bstr_name ) == 0 )
+            {
+                msg_Dbg( p_access, "CreateTuneRequest: Using Tuning Space: %s",
+                    l.psz_bstr_name );
+
+            /* CreateTuneRequest adds TuneRequest to p_tuning_space
+             * p_tune_request->RefCount = 1 */
+                hr = p_tuning_space->CreateTuneRequest( &p_tune_request );
+                if( FAILED( hr ) )
+                    msg_Warn( p_access, "CreateTuneRequest: "\
+                        "Cannot Create Tune Request: hr=0x%8lx", hr );
+                return hr;
+            }
+            if( p_tuning_space )
+                p_tuning_space->Release();
+            p_tuning_space = NULL;
         }
     }
-    hr = E_FAIL;
-    if( FAILED( hr ) )
+    while( true );
+
+    /* No tuning space was found. If the create-name parameter was set then
+     * create a tuning space. By rights should use the same name used in
+     * network-name
+     * Also would be nice to copy a tuning space but we only come here if we do
+     * not find any. */
+    l.psz_create_name = var_GetNonEmptyString( p_access, "dvb-create-name" );
+    if( !l.psz_create_name || strlen( l.psz_create_name ) <= 0 )
     {
+        hr = E_FAIL;
         msg_Warn( p_access, "CreateTuneRequest: "\
             "Cannot find a suitable System Tuning Space: hr=0x%8lx", hr );
         return hr;
     }
+    if( strcmp( l.psz_create_name, l.psz_network_name ) )
+    {
+        hr = E_FAIL;
+        msg_Warn( p_access, "CreateTuneRequest: "\
+            "dvb-create-name %s must match dvb-network-name %s",
+            l.psz_create_name, l.psz_network_name );
+        return hr;
+    }
+
+    /* Need to use DVBSTuningSpace for DVB-S and ATSCTuningSpace for ATSC */
+    VARIANT var_id;
+    CLSID cls_tuning_space;
+
+    if( IsEqualCLSID( guid_network_type, CLSID_ATSCNetworkProvider ) )
+        cls_tuning_space = CLSID_ATSCTuningSpace;
+    if( IsEqualCLSID( guid_network_type, CLSID_DVBTNetworkProvider ) )
+        cls_tuning_space = CLSID_DVBTuningSpace;
+    if( IsEqualCLSID( guid_network_type, CLSID_DVBCNetworkProvider ) )
+        cls_tuning_space = CLSID_DVBTuningSpace;
+    if( IsEqualCLSID( guid_network_type, CLSID_DVBSNetworkProvider ) )
+        cls_tuning_space = CLSID_DVBSTuningSpace;
+
+    l.i_name_len = MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED,
+        l.psz_create_name, -1, l.wpsz_create_name, 0 );
+    if( l.i_name_len <= 0 )
+    {
+        hr = E_FAIL;
+        msg_Warn( p_access, "CreateTuneRequest: "\
+            "Cannot convert zero length dvb-create-name %s",
+            l.psz_create_name );
+        return hr;
+    }
+    l.wpsz_create_name = new WCHAR[l.i_name_len];
+    MultiByteToWideChar(CP_ACP, MB_PRECOMPOSED, l.psz_create_name, -1,
+            l.wpsz_create_name, l.i_name_len );
+    if( l.bstr_name )
+        SysFreeString( l.bstr_name );
+    l.bstr_name = SysAllocString( l.wpsz_create_name );
+
+    msg_Dbg( p_access, "CreateTuneRequest: Create Tuning Space: %s",
+        l.psz_create_name );
+
+    hr = ::CoCreateInstance( cls_tuning_space, 0, CLSCTX_INPROC,
+         IID_ITuningSpace, (void**)&p_tuning_space );
+
+    if( FAILED( hr ) )
+        msg_Warn( p_access, "CreateTuneRequest: "\
+            "Cannot CoCreate new TuningSpace: hr=0x%8lx", hr );
+    if( SUCCEEDED( hr ) )
+        hr = p_tuning_space->put__NetworkType( guid_network_type );
+    if( FAILED( hr ) )
+        msg_Warn( p_access, "CreateTuneRequest: "\
+            "Cannot Put Network Type: hr=0x%8lx", hr );
+    if( SUCCEEDED( hr ) )
+        hr = p_tuning_space->put_UniqueName( l.bstr_name );
+    if( FAILED( hr ) )
+        msg_Warn( p_access, "CreateTuneRequest: "\
+            "Cannot Put Unique Name: hr=0x%8lx", hr );
+    if( SUCCEEDED( hr ) )
+        hr = p_tuning_space->put_FriendlyName( l.bstr_name );
+    if( FAILED( hr ) )
+        msg_Warn( p_access, "CreateTuneRequest: "\
+            "Cannot Put Friendly Name: hr=0x%8lx", hr );
+    if( guid_network_type == CLSID_DVBTNetworkProvider ||
+        guid_network_type == CLSID_DVBCNetworkProvider ||
+        guid_network_type == CLSID_DVBSNetworkProvider )
+    {
+        hr = p_tuning_space->QueryInterface( IID_IDVBTuningSpace2,
+            (void**)&l.p_dvb_tuning_space );
+        if( FAILED( hr ) )
+        {
+            msg_Warn( p_access, "CreateTuneRequest: "\
+                "Cannot QI for IDVBTuningSpace2: hr=0x%8lx", hr );
+            return hr;
+        }
+        if( guid_network_type == CLSID_DVBTNetworkProvider )
+            hr = l.p_dvb_tuning_space->put_SystemType( DVB_Terrestrial );
+        if( guid_network_type == CLSID_DVBCNetworkProvider )
+            hr = l.p_dvb_tuning_space->put_SystemType( DVB_Cable );
+        if( guid_network_type == CLSID_DVBSNetworkProvider )
+            hr = l.p_dvb_tuning_space->put_SystemType( DVB_Satellite );
+    }
+
+    if( SUCCEEDED( hr ) )
+        hr = l.p_tuning_space_container->Add( p_tuning_space, &var_id );
+
+    if( FAILED( hr ) )
+    {
+        msg_Warn( p_access, "CreateTuneRequest: "\
+            "Cannot Create new TuningSpace: hr=0x%8lx", hr );
+        return hr;
+    }
+
+    msg_Dbg( p_access, "CreateTuneRequest: Tuning Space: %s created",
+         l.psz_create_name );
+
+    hr = p_tuning_space->CreateTuneRequest( &p_tune_request );
+    if( FAILED( hr ) )
+        msg_Warn( p_access, "CreateTuneRequest: "\
+            "Cannot Create Tune Request: hr=0x%8lx", hr );
+
     return hr;
 }
 
@@ -781,7 +1148,49 @@ HRESULT BDAGraph::Build()
 {
     HRESULT hr = S_OK;
     long l_capture_used, l_tif_used;
+    VARIANT l_tuning_space_id;
     AM_MEDIA_TYPE grabber_media_type;
+    class localComPtr
+    {
+        public:
+        ITuningSpaceContainer*  p_tuning_space_container;
+        localComPtr(): p_tuning_space_container(NULL) {};
+        ~localComPtr()
+        {
+            if( p_tuning_space_container )
+                p_tuning_space_container->Release();
+        }
+    } l;
+
+    /* Get the SystemTuningSpaces container to save the Tuning space */
+    l_tuning_space_id.vt = VT_I4;
+    l_tuning_space_id.lVal = 0L;
+    hr = ::CoCreateInstance( CLSID_SystemTuningSpaces, 0, CLSCTX_INPROC,
+        IID_ITuningSpaceContainer, (void**)&l.p_tuning_space_container );
+    if( FAILED( hr ) )
+    {
+        msg_Warn( p_access, "Build: "\
+            "Cannot CoCreate SystemTuningSpaces: hr=0x%8lx", hr );
+        return hr;
+    }
+    hr = l.p_tuning_space_container->FindID( p_tuning_space,
+        &l_tuning_space_id.lVal );
+    if( FAILED( hr ) )
+    {
+        msg_Warn( p_access, "Build: "\
+            "Cannot Find Tuning Space ID: hr=0x%8lx", hr );
+        return hr;
+    }
+    msg_Dbg( p_access, "Build: Using Tuning Space ID %d",
+        l_tuning_space_id.lVal );
+    hr = l.p_tuning_space_container->put_Item( l_tuning_space_id,
+        p_tuning_space );
+    if( FAILED( hr ) )
+    {
+        msg_Warn( p_access, "Build: "\
+            "Cannot save Tuning Space: hr=0x%8lx", hr );
+        return hr;
+    }
 
     /* If we have already have a filter graph, rebuild it*/
     Destroy();
@@ -838,7 +1247,18 @@ HRESULT BDAGraph::Build()
     }
 
     /* Add the Network Tuner to the Network Provider. On subsequent calls,
-     * l_tuner_used will cause a different tuner to be selected */
+     * l_tuner_used will cause a different tuner to be selected
+     * To select a specific device first get the parameter that nominates the
+     * device (dvb-adapter) and use the value to initialise l_tuner_used.
+     * When FindFilter returns check the contents of l_tuner_used.
+     * If it is not what was selected then the requested device was not
+     * available so return with an error. */
+
+    long l_adapter = -1;
+    l_adapter = var_GetInteger( p_access, "dvb-adapter" );
+    if( l_tuner_used < 0 && l_adapter >= 0 )
+        l_tuner_used = l_adapter - 1;
+
     hr = FindFilter( KSCATEGORY_BDA_NETWORK_TUNER, &l_tuner_used,
         p_network_provider, &p_tuner_device );
     if( FAILED( hr ) )
@@ -848,7 +1268,16 @@ HRESULT BDAGraph::Build()
             "hr=0x%8lx", hr );
         return hr;
     }
+    if( l_adapter > 0 && l_tuner_used != l_adapter )
+    {
+         msg_Warn( p_access, "Build: "\
+             "Tuner device %d is not available", l_adapter );
+        return E_FAIL;
+    }
+    msg_Dbg( p_access, "BDAGraph: Using adapter %d", l_tuner_used );
 
+/* VLC 1.0 works reliably up this point then crashes
+ * Obvious candidate is FindFilter */
     /* Always look for all capture devices to match the Network Tuner */
     l_capture_used = -1;
     hr = FindFilter( KSCATEGORY_BDA_RECEIVER_COMPONENT, &l_capture_used,
@@ -862,7 +1291,9 @@ HRESULT BDAGraph::Build()
         msg_Warn( p_access, "Build: "\
             "Cannot find Capture device. Connecting to tuner: hr=0x%8lx", hr );
     }
-
+    if( p_sample_grabber )
+         p_sample_grabber->Release();
+    p_sample_grabber = NULL;
     /* Insert the Sample Grabber to tap into the Transport Stream. */
     hr = ::CoCreateInstance( CLSID_SampleGrabber, NULL, CLSCTX_INPROC_SERVER,
         IID_IBaseFilter, (void**)&p_sample_grabber );
@@ -880,6 +1311,9 @@ HRESULT BDAGraph::Build()
         return hr;
     }
 
+    if( p_grabber )
+        p_grabber->Release();
+    p_grabber = NULL;
     hr = p_sample_grabber->QueryInterface( IID_ISampleGrabber,
         (void**)&p_grabber );
     if( FAILED( hr ) )
@@ -889,23 +1323,33 @@ HRESULT BDAGraph::Build()
         return hr;
     }
 
-    ZeroMemory( &grabber_media_type, sizeof( AM_MEDIA_TYPE ) );
-    grabber_media_type.majortype == MEDIATYPE_Stream;
-    grabber_media_type.subtype == MEDIASUBTYPE_MPEG2_TRANSPORT;
-    hr = p_grabber->SetMediaType( &grabber_media_type );
-    if( FAILED( hr ) )
+    /* Try the possible stream type */
+    hr = E_FAIL;
+    for( int i = 0; i < 2; i++ )
     {
-        msg_Warn( p_access, "Build: "\
-            "Cannot set media type on grabber filter: hr=0x%8lx", hr );
-        return hr;
+        ZeroMemory( &grabber_media_type, sizeof( AM_MEDIA_TYPE ) );
+        grabber_media_type.majortype = MEDIATYPE_Stream;
+        grabber_media_type.subtype   =  i == 0 ? MEDIASUBTYPE_MPEG2_TRANSPORT : KSDATAFORMAT_SUBTYPE_BDA_MPEG2_TRANSPORT;
+        msg_Dbg( p_access, "Build: "
+                           "Trying connecting with subtype %s",
+                           i == 0 ? "MEDIASUBTYPE_MPEG2_TRANSPORT" : "KSDATAFORMAT_SUBTYPE_BDA_MPEG2_TRANSPORT" );
+        hr = p_grabber->SetMediaType( &grabber_media_type );
+        if( SUCCEEDED( hr ) )
+        {
+            hr = Connect( p_capture_device, p_sample_grabber );
+            if( SUCCEEDED( hr ) )
+                break;
+            msg_Warn( p_access, "Build: "\
+                "Cannot connect Sample Grabber to Capture device: hr=0x%8lx (try %d/2)", hr, 1+i );
+        }
+        else
+        {
+            msg_Warn( p_access, "Build: "\
+                "Cannot set media type on grabber filter: hr=0x%8lx (try %d/2", hr, 1+i );
+        }
     }
-    hr = Connect( p_capture_device, p_sample_grabber );
-    if( FAILED( hr ) )
-    {
-        msg_Warn( p_access, "Build: "\
-            "Cannot connect Sample Grabber to Capture device: hr=0x%8lx", hr );
+    if( hr )
         return hr;
-    }
 
     /* We need the MPEG2 Demultiplexer even though we are going to use the VLC
      * TS demuxer. The TIF filter connects to the MPEG2 demux and works with
@@ -925,7 +1369,6 @@ HRESULT BDAGraph::Build()
             "Cannot add demux filter to graph: hr=0x%8lx", hr );
         return hr;
     }
-
     hr = Connect( p_sample_grabber, p_mpeg_demux );
     if( FAILED( hr ) )
     {
@@ -945,16 +1388,15 @@ HRESULT BDAGraph::Build()
             "Cannot load TIF onto demux: hr=0x%8lx", hr );
         return hr;
     }
-
     /* Configure the Sample Grabber to buffer the samples continuously */
-    hr = p_grabber->SetBufferSamples( TRUE );
+    hr = p_grabber->SetBufferSamples( true );
     if( FAILED( hr ) )
     {
         msg_Warn( p_access, "Build: "\
             "Cannot set Sample Grabber to buffering: hr=0x%8lx", hr );
         return hr;
     }
-    hr = p_grabber->SetOneShot( FALSE );
+    hr = p_grabber->SetOneShot( false );
     if( FAILED( hr ) )
     {
         msg_Warn( p_access, "Build: "\
@@ -976,6 +1418,9 @@ HRESULT BDAGraph::Build()
     }
 
     /* The Media Control is used to Run and Stop the Graph */
+    if( p_media_control )
+        p_media_control->Release();
+    p_media_control = NULL;
     hr = p_filter_graph->QueryInterface( IID_IMediaControl,
         (void**)&p_media_control );
     if( FAILED( hr ) )
@@ -984,7 +1429,9 @@ HRESULT BDAGraph::Build()
             "Cannot QI Media Control: hr=0x%8lx", hr );
         return hr;
     }
+
     return hr;
+
 }
 
 /******************************************************************************
@@ -994,7 +1441,7 @@ HRESULT BDAGraph::Build()
 * On subsequent calls, this can be used to start from that point to find
 * another match.
 * This is used when the graph does not run because a tuner device is in use so
-* another one needs to be slected.
+* another one needs to be selected.
 ******************************************************************************/
 HRESULT BDAGraph::FindFilter( REFCLSID clsid, long* i_moniker_used,
     IBaseFilter* p_upstream, IBaseFilter** p_p_downstream )
@@ -1009,23 +1456,27 @@ HRESULT BDAGraph::FindFilter( REFCLSID clsid, long* i_moniker_used,
         IBaseFilter*   p_filter;
         IPropertyBag*  p_property_bag;
         VARIANT        var_bstr;
+        char *         psz_bstr;
+        int            i_bstr_len;
         localComPtr():
             p_moniker(NULL),
             p_moniker_enum(NULL),
             p_filter(NULL),
-            p_property_bag(NULL)
+            p_property_bag(NULL),
+            psz_bstr( NULL )
             { ::VariantInit(&var_bstr); };
         ~localComPtr()
         {
+            if( p_property_bag )
+                p_property_bag->Release();
+            if( p_filter )
+                p_filter->Release();
             if( p_moniker )
                 p_moniker->Release();
             if( p_moniker_enum )
                 p_moniker_enum->Release();
-            if( p_filter )
-                p_filter->Release();
-            if( p_property_bag )
-                p_property_bag->Release();
             ::VariantClear(&var_bstr);
+            delete[] psz_bstr;
         }
     } l;
 
@@ -1049,27 +1500,38 @@ HRESULT BDAGraph::FindFilter( REFCLSID clsid, long* i_moniker_used,
             "Cannot CreateClassEnumerator: hr=0x%8lx", hr );
         return E_FAIL;
     }
-    while( l.p_moniker_enum->Next( 1, &l.p_moniker, 0 ) == S_OK )
+
+    do
     {
+        /* We are overwriting l.p_moniker so we should Release and nullify
+         * It is important that p_moniker and p_property_bag are fully released
+         * l.p_filter may not be dereferenced so we could force to NULL */
+        if( l.p_property_bag )
+            l.p_property_bag->Release();
+        l.p_property_bag = NULL;
+        if( l.p_filter )
+            l.p_filter->Release();
+        l.p_filter = NULL;
+        if( l.p_moniker )
+            l.p_moniker->Release();
+         l.p_moniker = NULL;
+
+        hr = l.p_moniker_enum->Next( 1, &l.p_moniker, 0 );
+        if( hr != S_OK ) break;
         i_moniker_index++;
 
         /* Skip over devices already found on previous calls */
         if( i_moniker_index <= *i_moniker_used ) continue;
         *i_moniker_used = i_moniker_index;
 
+        /* l.p_filter is Released at the top of the loop */
         hr = l.p_moniker->BindToObject( NULL, NULL, IID_IBaseFilter,
             (void**)&l.p_filter );
         if( FAILED( hr ) )
         {
-            if( l.p_moniker )
-                l.p_moniker->Release();
-            l.p_moniker = NULL;
-            if( l.p_filter)
-                 l.p_filter->Release();
-            l.p_filter = NULL;
             continue;
         }
-
+        /* l.p_property_bag is released at the top of the loop */
         hr = l.p_moniker->BindToStorage( NULL, NULL, IID_IPropertyBag,
             (void**)&l.p_property_bag );
         if( FAILED( hr ) )
@@ -1078,7 +1540,6 @@ HRESULT BDAGraph::FindFilter( REFCLSID clsid, long* i_moniker_used,
                 "Cannot Bind to Property Bag: hr=0x%8lx", hr );
             return hr;
         }
-
         hr = l.p_property_bag->Read( L"FriendlyName", &l.var_bstr, NULL );
         if( FAILED( hr ) )
         {
@@ -1094,11 +1555,17 @@ HRESULT BDAGraph::FindFilter( REFCLSID clsid, long* i_moniker_used,
                 "Cannot add filter: hr=0x%8lx", hr );
             return hr;
         }
-
         hr = Connect( p_upstream, l.p_filter );
         if( SUCCEEDED( hr ) )
         {
-            msg_Dbg( p_access, "FindFilter: Connected %S", l.var_bstr.bstrVal );
+            /* p_p_downstream has not been touched yet so no release needed */
+            delete[] l.psz_bstr;
+            l.i_bstr_len = WideCharToMultiByte( CP_ACP, 0,
+                l.var_bstr.bstrVal, -1, l.psz_bstr, 0, NULL, NULL );
+            l.psz_bstr = new char[l.i_bstr_len];
+            l.i_bstr_len = WideCharToMultiByte( CP_ACP, 0,
+                l.var_bstr.bstrVal, -1, l.psz_bstr, l.i_bstr_len, NULL, NULL );
+            msg_Dbg( p_access, "FindFilter: Connected %s", l.psz_bstr );
             l.p_filter->QueryInterface( IID_IBaseFilter,
                 (void**)p_p_downstream );
             return S_OK;
@@ -1112,13 +1579,8 @@ HRESULT BDAGraph::FindFilter( REFCLSID clsid, long* i_moniker_used,
             return hr;
         }
 
-        if( l.p_moniker )
-            l.p_moniker->Release();
-        l.p_moniker = NULL;
-        if( l.p_filter)
-            l.p_filter->Release();
-        l.p_filter = NULL;
     }
+    while( true );
 
     hr = E_FAIL;
     msg_Warn( p_access, "FindFilter: No filter connected: hr=0x%8lx", hr );
@@ -1144,21 +1606,20 @@ HRESULT BDAGraph::Connect( IBaseFilter* p_upstream, IBaseFilter* p_downstream )
             p_pin_temp(NULL) { };
         ~localComPtr()
         {
-            if( p_pin_upstream )
-                p_pin_upstream->Release();
-            if( p_pin_downstream )
-                p_pin_downstream->Release();
-            if( p_pin_upstream_enum )
-                p_pin_upstream_enum->Release();
-            if( p_pin_downstream_enum )
-                p_pin_downstream_enum->Release();
             if( p_pin_temp )
                 p_pin_temp->Release();
+            if( p_pin_downstream )
+                p_pin_downstream->Release();
+            if( p_pin_upstream )
+                p_pin_upstream->Release();
+            if( p_pin_downstream_enum )
+                p_pin_downstream_enum->Release();
+            if( p_pin_upstream_enum )
+                p_pin_upstream_enum->Release();
         }
     } l;
 
-    PIN_INFO            pin_info_upstream;
-    PIN_INFO            pin_info_downstream;
+    PIN_DIRECTION pin_dir;
 
     hr = p_upstream->EnumPins( &l.p_pin_upstream_enum );
     if( FAILED( hr ) )
@@ -1167,26 +1628,36 @@ HRESULT BDAGraph::Connect( IBaseFilter* p_upstream, IBaseFilter* p_downstream )
             "Cannot get upstream filter enumerator: hr=0x%8lx", hr );
         return hr;
     }
-    while( l.p_pin_upstream_enum->Next( 1, &l.p_pin_upstream, 0 ) == S_OK )
+
+    do
     {
-        hr = l.p_pin_upstream->QueryPinInfo( &pin_info_upstream );
+        /* Release l.p_pin_upstream before next iteration */
+        if( l.p_pin_upstream  )
+            l.p_pin_upstream ->Release();
+        l.p_pin_upstream = NULL;
+        hr = l.p_pin_upstream_enum->Next( 1, &l.p_pin_upstream, 0 );
+        if( hr != S_OK ) break;
+
+        hr = l.p_pin_upstream->QueryDirection( &pin_dir );
         if( FAILED( hr ) )
         {
             msg_Warn( p_access, "Connect: "\
-                "Cannot get upstream filter pin information: hr=0x%8lx", hr );
+                "Cannot get upstream filter pin direction: hr=0x%8lx", hr );
             return hr;
         }
         hr = l.p_pin_upstream->ConnectedTo( &l.p_pin_downstream );
-        if( hr == S_OK )
+        if( SUCCEEDED( hr ) )
+        {
             l.p_pin_downstream->Release();
-        if(FAILED( hr ) && hr != VFW_E_NOT_CONNECTED )
+            l.p_pin_downstream = NULL;
+        }
+        if( FAILED( hr ) && hr != VFW_E_NOT_CONNECTED )
         {
             msg_Warn( p_access, "Connect: "\
                 "Cannot check upstream filter connection: hr=0x%8lx", hr );
             return hr;
         }
-        if(( pin_info_upstream.dir == PINDIR_OUTPUT ) &&
-           ( hr == VFW_E_NOT_CONNECTED ) )
+        if( ( pin_dir == PINDIR_OUTPUT ) && ( hr == VFW_E_NOT_CONNECTED ) )
         {
             /* The upstream pin is not yet connected so check each pin on the
              * downstream filter */
@@ -1197,19 +1668,33 @@ HRESULT BDAGraph::Connect( IBaseFilter* p_upstream, IBaseFilter* p_downstream )
                     "downstream filter enumerator: hr=0x%8lx", hr );
                 return hr;
             }
-            while( l.p_pin_downstream_enum->Next( 1, &l.p_pin_downstream, 0 )
-                == S_OK )
+            do
             {
-                hr = l.p_pin_downstream->QueryPinInfo( &pin_info_downstream );
+                /* Release l.p_pin_downstream before next iteration */
+                if( l.p_pin_downstream  )
+                    l.p_pin_downstream ->Release();
+                l.p_pin_downstream = NULL;
+
+                hr = l.p_pin_downstream_enum->Next( 1, &l.p_pin_downstream, 0 );
+                if( hr != S_OK ) break;
+
+                hr = l.p_pin_downstream->QueryDirection( &pin_dir );
                 if( FAILED( hr ) )
                 {
                     msg_Warn( p_access, "Connect: Cannot get "\
-                        "downstream filter pin information: hr=0x%8lx", hr );
+                        "downstream filter pin direction: hr=0x%8lx", hr );
                     return hr;
                 }
 
+                /* Looking for a free Pin to connect to
+                 * A connected Pin may have an reference count > 1
+                 * so Release and nullify the pointer */
                 hr = l.p_pin_downstream->ConnectedTo( &l.p_pin_temp );
-                if( hr == S_OK ) l.p_pin_temp->Release();
+                if( SUCCEEDED( hr ) )
+                {
+                    l.p_pin_temp->Release();
+                    l.p_pin_temp = NULL;
+                }
                 if( hr != VFW_E_NOT_CONNECTED )
                 {
                     if( FAILED( hr ) )
@@ -1219,32 +1704,39 @@ HRESULT BDAGraph::Connect( IBaseFilter* p_upstream, IBaseFilter* p_downstream )
                         return hr;
                     }
                 }
-                if(( pin_info_downstream.dir == PINDIR_INPUT ) &&
-                   ( hr == VFW_E_NOT_CONNECTED ) )
+                if( ( pin_dir == PINDIR_INPUT ) &&
+                    ( hr == VFW_E_NOT_CONNECTED ) )
                 {
                     hr = p_filter_graph->ConnectDirect( l.p_pin_upstream,
                         l.p_pin_downstream, NULL );
                     if( SUCCEEDED( hr ) )
                     {
-                        pin_info_downstream.pFilter->Release();
-                        pin_info_upstream.pFilter->Release();
+                        /* If we arrive here then we have a matching pair of
+                         * pins. */
                         return S_OK;
                     }
                 }
-                /* If we fall out here it means this downstream pin was not
-                 * suitable so try the next downstream pin */
-                l.p_pin_downstream = NULL;
-                pin_info_downstream.pFilter->Release();
+                /* If we arrive here it means this downstream pin is not
+                 * suitable so try the next downstream pin.
+                 * l.p_pin_downstream is released at the top of the loop */
             }
+            while( true );
+            /* If we arrive here then we ran out of pins before we found a
+             * suitable one. Release outstanding refcounts */
+            if( l.p_pin_downstream_enum )
+                l.p_pin_downstream_enum->Release();
+            l.p_pin_downstream_enum = NULL;
+            if( l.p_pin_downstream )
+                l.p_pin_downstream->Release();
+            l.p_pin_downstream = NULL;
         }
-
-        /* If we fall out here it means we did not find any suitable downstream
-         * pin so try the next upstream pin */
-        l.p_pin_upstream = NULL;
-        pin_info_upstream.pFilter->Release();
+        /* If we arrive here it means this upstream pin is not suitable
+         * so try the next upstream pin
+         * l.p_pin_upstream is released at the top of the loop */
     }
-
-    /* If we fall out here it means we did not find any pair of suitable pins */
+    while( true );
+    /* If we arrive here it means we did not find any pair of suitable pins
+     * Outstanding refcounts are released in the destructor */
     return E_FAIL;
 }
 
@@ -1262,6 +1754,7 @@ HRESULT BDAGraph::Start()
         return E_FAIL;
     }
     hr = p_media_control->Run();
+    msg_Dbg( p_access, "Graph started hr=0x%lx", hr );
     if( hr == S_OK )
         return hr;
 
@@ -1280,7 +1773,7 @@ HRESULT BDAGraph::Start()
 
     /* The Graph is not running so stop it and return an error */
     msg_Warn( p_access, "Start: Graph not started: %d", i_state );
-    hr = p_media_control->Stop();
+    hr = p_media_control->StopWhenReady(); /* Instead of Stop() */
     if( FAILED( hr ) )
     {
         msg_Warn( p_access,
@@ -1291,61 +1784,11 @@ HRESULT BDAGraph::Start()
 }
 
 /*****************************************************************************
-* Read the stream of data - query the buffer size required
+* Pop the stream of data
 *****************************************************************************/
-long BDAGraph::GetBufferSize()
+block_t *BDAGraph::Pop()
 {
-    long l_buffer_size = 0;
-    long l_queue_size;
-
-    b_ready = true;
-
-    for( int i_timer = 0; queue_sample.empty() && i_timer < 200; i_timer++ )
-        Sleep( 10 );
-
-    l_queue_size = queue_sample.size();
-    if( l_queue_size <= 0 )
-    {
-        msg_Warn( p_access, "BDA GetBufferSize: Timed Out waiting for sample" );
-        return -1;
-    }
-
-    /* Establish the length of the queue as it grows quickly. If the queue
-     * size is checked dynamically there is a risk of not exiting the loop */
-    for( long l_queue_count=0; l_queue_count < l_queue_size; l_queue_count++ )
-    {
-        l_buffer_size += queue_sample.front()->GetActualDataLength();
-        queue_buffer.push( queue_sample.front() );
-        queue_sample.pop();
-    }
-    return l_buffer_size;
-}
-
-/*****************************************************************************
-* Read the stream of data - Retrieve from the buffer queue
-******************************************************************************/
-long BDAGraph::ReadBuffer( long* pl_buffer_len, BYTE* p_buffer )
-{
-    HRESULT hr = S_OK;
-
-    *pl_buffer_len = 0;
-    BYTE *p_buff_temp;
-
-    while( !queue_buffer.empty() )
-    {
-        queue_buffer.front()->GetPointer( &p_buff_temp );
-        hr = queue_buffer.front()->IsDiscontinuity();
-        if( hr == S_OK )
-            msg_Warn( p_access,
-                "BDA ReadBuffer: Sample Discontinuity. 0x%8lx", hr );
-        memcpy( p_buffer + *pl_buffer_len, p_buff_temp,
-            queue_buffer.front()->GetActualDataLength() );
-        *pl_buffer_len += queue_buffer.front()->GetActualDataLength();
-        queue_buffer.front()->Release();
-        queue_buffer.pop();
-    }
-
-    return *pl_buffer_len;
+    return output.Pop();
 }
 
 /******************************************************************************
@@ -1353,16 +1796,24 @@ long BDAGraph::ReadBuffer( long* pl_buffer_len, BYTE* p_buffer )
 ******************************************************************************/
 STDMETHODIMP BDAGraph::SampleCB( double d_time, IMediaSample *p_sample )
 {
-    if( b_ready )
+    if( p_sample->IsDiscontinuity() == S_OK )
+        msg_Warn( p_access, "BDA SampleCB: Sample Discontinuity.");
+
+    const size_t i_sample_size = p_sample->GetActualDataLength();
+    BYTE *p_sample_data;
+    p_sample->GetPointer( &p_sample_data );
+
+    if( i_sample_size > 0 && p_sample_data )
     {
-        p_sample->AddRef();
-        queue_sample.push( p_sample );
-    }
-    else
-    {
-        msg_Warn( p_access, "BDA SampleCB: Not ready - dropped sample" );
-    }
-    return S_OK;
+        block_t *p_block = block_New( p_access, i_sample_size );
+
+        if( p_block )
+        {
+            memcpy( p_block->p_buffer, p_sample_data, i_sample_size );
+            output.Push( p_block );
+        }
+     }
+     return S_OK;
 }
 
 STDMETHODIMP BDAGraph::BufferCB( double d_time, BYTE* p_buffer,
@@ -1377,9 +1828,23 @@ STDMETHODIMP BDAGraph::BufferCB( double d_time, BYTE* p_buffer,
 HRESULT BDAGraph::Destroy()
 {
     HRESULT hr = S_OK;
+    ULONG ul_refcount = 0;
 
     if( p_media_control )
-        hr = p_media_control->Stop();
+        hr = p_media_control->StopWhenReady(); /* Instead of Stop() */
+
+    if( d_graph_register )
+    {
+        Deregister();
+    }
+
+    output.Empty();
+
+    if( p_grabber )
+    {
+        p_grabber->Release();
+        p_grabber = NULL;
+    }
 
     if( p_transport_info )
     {
@@ -1411,6 +1876,11 @@ HRESULT BDAGraph::Destroy()
         p_tuner_device->Release();
         p_tuner_device = NULL;
     }
+    if( p_scanning_tuner )
+    {
+        p_scanning_tuner->Release();
+        p_scanning_tuner = NULL;
+    }
     if( p_network_provider )
     {
         p_filter_graph->RemoveFilter( p_network_provider );
@@ -1418,11 +1888,6 @@ HRESULT BDAGraph::Destroy()
         p_network_provider = NULL;
     }
 
-    if( p_scanning_tuner )
-    {
-        p_scanning_tuner->Release();
-        p_scanning_tuner = NULL;
-    }
     if( p_media_control )
     {
         p_media_control->Release();
@@ -1433,10 +1898,10 @@ HRESULT BDAGraph::Destroy()
         p_filter_graph->Release();
         p_filter_graph = NULL;
     }
-
-    if( d_graph_register )
+    if( p_system_dev_enum )
     {
-        Deregister();
+        p_system_dev_enum->Release();
+        p_system_dev_enum = NULL;
     }
 
     return S_OK;
@@ -1487,7 +1952,7 @@ HRESULT BDAGraph::Register()
         msg_Warn( p_access, "Register: Cannot Register Graph: hr=0x%8lx", hr );
         return hr;
     }
-    msg_Dbg( p_access, "Register: registered Graph: %S", psz_w_graph_name );
+//    msg_Dbg( p_access, "Register: registered Graph: %S", psz_w_graph_name );
     return hr;
 }
 

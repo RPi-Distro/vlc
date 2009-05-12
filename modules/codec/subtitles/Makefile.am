@@ -4,8 +4,8 @@
 basedir = codec
 dir = codec/subtitles
 mods = subsdec subsusf t140
-libvlc_LTLIBRARIES =  $(LTLIBsubsdec) $(LTLIBsubsusf) $(LTLIBt140)
-EXTRA_LTLIBRARIES =  libsubsdec_plugin.la libsubsusf_plugin.la libt140_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libsubsdec_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsubsdec_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsubsdec_plugin_la_LIBADD = $(AM_LIBADD)
-libsubsdec_plugin_la_DEPENDENCIES =
+libsubsdec_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The subsusf plugin
 libsubsusf_plugin_la_SOURCES = $(SOURCES_subsusf)
@@ -29,7 +29,7 @@ libsubsusf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsubsusf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsubsusf_plugin_la_LIBADD = $(AM_LIBADD)
-libsubsusf_plugin_la_DEPENDENCIES =
+libsubsusf_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The t140 plugin
 libt140_plugin_la_SOURCES = $(SOURCES_t140)
@@ -40,5 +40,5 @@ libt140_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libt140_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libt140_plugin_la_LIBADD = $(AM_LIBADD)
-libt140_plugin_la_DEPENDENCIES =
+libt140_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

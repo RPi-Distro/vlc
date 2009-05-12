@@ -2,7 +2,7 @@
  * sort.c : Playlist sorting functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 9ec10f3c1937497aac1623f626a3637b792ca496 $
+ * $Id: b6e59f28dd97103eb6a3ed99cfdb59b09f020c33 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -89,8 +89,6 @@ static int playlist_ItemArraySort( playlist_t *p_playlist, int i_items,
 {
     int i_position;
     playlist_item_t *p_temp;
-    vlc_value_t val;
-    val.b_bool = true;
     sort_mode = i_mode;
     sort_type = i_type;
 
@@ -121,9 +119,12 @@ static int playlist_cmp(const void *first, const void *second)
 {
 
 #define META_STRCASECMP_NAME( ) { \
-    char *psz_i = input_item_GetName( (*(playlist_item_t **)first)->p_input ); \
-    char *psz_ismall = input_item_GetName( (*(playlist_item_t **)second)->p_input ); \
-    i_test = strcasecmp( psz_i, psz_ismall ); \
+    char *psz_i = input_item_GetTitleFbName( (*(playlist_item_t **)first)->p_input ); \
+    char *psz_ismall = input_item_GetTitleFbName( (*(playlist_item_t **)second)->p_input ); \
+    if( psz_i != NULL && psz_ismall != NULL ) i_test = strcasecmp( psz_i, psz_ismall ); \
+    else if ( psz_i == NULL && psz_ismall != NULL ) i_test = 1; \
+    else if ( psz_ismall == NULL && psz_i != NULL ) i_test = -1; \
+    else i_test = 0; \
     free( psz_i ); \
     free( psz_ismall ); \
 }
@@ -167,14 +168,15 @@ static int playlist_cmp(const void *first, const void *second)
     int i_test = 0;
 
     if( sort_mode == SORT_TITLE )
-        {
-            META_STRCASECMP_NAME( );
-        }
+    {
+        META_STRCASECMP_NAME( );
+    }
     else if( sort_mode == SORT_TITLE_NUMERIC )
     {
-        char *psz_i = input_item_GetName( (*(playlist_item_t **)first)->p_input );
-        char *psz_ismall =
-                input_item_GetName( (*(playlist_item_t **)second)->p_input );
+        char *psz_i = input_item_GetTitleFbName(
+                                (*(playlist_item_t **)first)->p_input );
+        char *psz_ismall = input_item_GetTitleFbName(
+                                (*(playlist_item_t **)second)->p_input );
         i_test = atoi( psz_i ) - atoi( psz_ismall );
         free( psz_i );
         free( psz_ismall );
@@ -232,8 +234,7 @@ static int playlist_cmp(const void *first, const void *second)
         }
         else
         {
-            i_test = strcasecmp( (*(playlist_item_t **)first)->p_input->psz_name,
-                                 (*(playlist_item_t **)second)->p_input->psz_name );
+            META_STRCASECMP_NAME();
         }
     }
     else if( sort_mode == SORT_URI )

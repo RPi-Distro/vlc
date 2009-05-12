@@ -1,8 +1,8 @@
 /******************************************************************************
  * xspf.c : XSPF playlist export functions
  ******************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 1f499090e04fa9b181af9fec1b9a5dd46f683e56 $
+ * Copyright (C) 2006-2009 the VideoLAN team
+ * $Id: 9b7ef9640c1c7af546aefdb9b97d0f56044d390a $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -31,12 +31,9 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_interface.h>
 #include <vlc_playlist.h>
 #include <vlc_input.h>
-#include <vlc_meta.h>
 #include <vlc_strings.h>
-#include <vlc_url.h>
 #include <vlc_charset.h>
 #include "xspf.h"
 
@@ -70,14 +67,6 @@ int xspf_export_playlist( vlc_object_t *p_this )
     if( *psz_temp )
     {
         fprintf(  p_export->p_file, "\t<title>%s</title>\n", psz_temp );
-    }
-    free( psz_temp );
-
-    /* save location of the playlist node */
-    psz_temp = assertUTF8URI( p_export->psz_filename );
-    if( psz_temp && *psz_temp )
-    {
-        fprintf( p_export->p_file, "\t<location>%s</location>\n", psz_temp );
     }
     free( psz_temp );
 
@@ -319,7 +308,7 @@ static char *assertUTF8URI( char *psz_name )
 
     /* max. 3x for URI conversion (percent escaping) and
        8 bytes for "file://" and NULL-termination */
-    psz_ret = (char *)malloc( sizeof(char)*strlen(psz_name)*6*3+8 );
+    psz_ret = (char *)malloc( strlen(psz_name)*6*3+8 );
     if( !psz_ret )
         return NULL;
 
@@ -379,5 +368,5 @@ static char *assertUTF8URI( char *psz_name )
     }
     *psz_d = '\0';
 
-    return (char *)realloc( psz_ret, sizeof(char)*strlen( psz_ret ) + 1 );
+    return (char *)realloc( psz_ret, strlen( psz_ret ) + 1 );
 }

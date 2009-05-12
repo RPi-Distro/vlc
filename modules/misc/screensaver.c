@@ -2,7 +2,7 @@
  * screensaver.c : disable screen savers when VLC is playing
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 782333070579c3580f586f2040fe25baae510777 $
+ * $Id: 24448bc5030e201517a872a4acca7432126b0a7f $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Benjamin Pracht <bigben AT videolan DOT org>
@@ -40,10 +40,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <unistd.h>
-
-#ifdef HAVE_SIGNAL_H
-#   include <signal.h>
-#endif
+#include <signal.h>
 
 #ifdef HAVE_DBUS
 
@@ -84,11 +81,11 @@ struct intf_sys_t
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("X Screensaver disabler") );
-    set_capability( "interface", 0 );
-    set_callbacks( Activate, Deactivate );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("X Screensaver disabler") )
+    set_capability( "interface", 0 )
+    set_callbacks( Activate, Deactivate )
+vlc_module_end ()
 
 /*****************************************************************************
  * Activate: initialize and create stuff
@@ -166,19 +163,14 @@ static void Execute( intf_thread_t *p_this, const char *const *ppsz_args )
  *****************************************************************************/
 static void Run( intf_thread_t *p_intf )
 {
-    mtime_t deadline = mdate();
-
-    vlc_object_lock( p_intf );
+    int canc = vlc_savecancel();
 #ifdef HAVE_DBUS
     p_intf->p_sys->p_connection = dbus_init( p_intf );
 #endif
 
-    while( vlc_object_alive( p_intf ) )
+    for( ;; )
     {
         vlc_object_t *p_vout;
-
-        if( vlc_object_timedwait( p_intf, deadline ) == 0 )
-            continue;
 
         p_vout = vlc_object_find( p_intf, VLC_OBJECT_VOUT, FIND_ANYWHERE );
 
@@ -190,7 +182,7 @@ static void Run( intf_thread_t *p_intf )
             vlc_object_release( p_vout );
             if( p_input )
             {
-                if( PLAYING_S == p_input->i_state )
+                if( PLAYING_S == var_GetInteger( p_input, "state" ) )
                 {
                     /* http://www.jwz.org/xscreensaver/faq.html#dvd */
                     const char *const ppsz_xsargs[] = { "/bin/sh", "-c",
@@ -213,10 +205,11 @@ static void Run( intf_thread_t *p_intf )
             }
         }
 
+        vlc_restorecancel( canc );
         /* Check screensaver every 30 seconds */
-        deadline = mdate() + 30000000;
+        msleep( 30 * CLOCK_FREQ );
+        canc = vlc_savecancel( );
     }
-    vlc_object_unlock( p_intf );
 }
 
 #ifdef HAVE_DBUS
