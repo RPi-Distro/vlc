@@ -184,6 +184,7 @@ endif
 	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
+	rm -rf debian/tmp/usr/share/man/man1
 	# Move stuff around
 	mkdir -p debian/tmp/$(PIXDIR)
 	mv debian/tmp/$(VIDDIR)/vlc48x48.png debian/tmp/$(PIXDIR)/vlc.png
@@ -237,7 +238,7 @@ binary-arch: build install
 	dh_installmenu -s
 	dh_installmime -s
 	dh_installman doc/vlc.1 -p vlc-nox
-	dh_installman debian/vlc-wrapper.1 -p vlc-nox
+	dh_installman doc/vlc-wrapper.1 -p vlc-nox
 	dh_installchangelogs ChangeLog -p vlc
 	dh_installchangelogs ChangeLog -p vlc-nox
 	dh_desktop
