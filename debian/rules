@@ -247,9 +247,9 @@ binary-arch: build install
 	dh_compress -s
 	dh_fixperms -s
 	dh_makeshlibs -plibvlc2 -V # -V is nasty, but I mean it
-	dh_makeshlibs -plibvlccore0 -V # -V is nasty, but I mean it
+	dh_makeshlibs -plibvlccore2 -V # -V is nasty, but I mean it
 	dh_installdeb -s
-	dh_shlibdeps -s -ldebian/libvlc2/usr/lib:debian/libvlccore0/usr/lib 
+	dh_shlibdeps -s -ldebian/libvlc2/usr/lib:debian/libvlccore2/usr/lib
 	dh_gencontrol -s
 	dh_md5sums -s
 	dh_builddeb -s
