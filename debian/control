@@ -16,7 +16,6 @@ Build-Depends: debhelper (>= 7),
                iceape-dev (>=  1.1.9-4),
                liba52-0.7.4-dev,
                libaa1-dev,
-               libarts1-dev (>= 1.4.2),
                libasound2-dev (>= 0.9.0beta10a) [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libass-dev (>= 0.9.5-2),
                libaudiofile-dev,
@@ -29,7 +28,6 @@ Build-Depends: debhelper (>= 7),
                libdvbpsi4-dev,
                libdvdnav-dev,
                libdvdread-dev (>= 0.9.5),
-               libesd0-dev,
                libfaad-dev,
                libflac-dev (>= 1.1.2-3),
                libfreetype6-dev,
@@ -112,10 +110,9 @@ Description: multimedia player and streamer
  VLC has support for on-the-fly transcoding of audio and video formats, either
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added
- by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl,
- vlc-plugin-arts) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
- vlc-plugin-svgalib). There is also a web browser plugin in the 
- mozilla-plugin-vlc package.
+ by installing additional audio plugins (vlc-plugin-pulse, vlc-plugin-sdl)
+ or video plugins (vlc-plugin-sdl, vlc-plugin-ggi, vlc-plugin-svgalib). There
+ is also a web browser plugin in the mozilla-plugin-vlc package.
 
 Package: vlc-dbg
 Section: debug
@@ -151,10 +148,10 @@ Description: multimedia player and streamer (without X support)
  VLC has support for on-the-fly transcoding of audio and video formats, either
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added
- by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl,
- vlc-plugin-arts, vlc-plugin-jack) or video plugins (vlc-plugin-sdl, 
- vlc-plugin-ggi, vlc-plugin-svgalib). There is also a web browser plugin in 
- the mozilla-plugin-vlc package.
+ by installing additional audio plugins (vlc-plugin-pulse, vlc-plugin-sdl,
+ vlc-plugin-jack) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
+ vlc-plugin-svgalib). There is also a web browser plugin in  the
+ mozilla-plugin-vlc package.
  .
  This package contains a version of VLC that does not require X and that is
  thus suitable for headless servers.
@@ -215,18 +212,6 @@ Description: development files for libvlc
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
  streams from various network sources.
 
-Package: vlc-plugin-esd
-Architecture: any
-Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
-Description: Esound audio output plugin for VLC
- This plugin adds support for the Enlightened Sound Daemon to the VLC
- media player. To activate it, use the `--aout esd' flag or select the
- `esd' audio output plugin from the preferences menu.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
 Package: vlc-plugin-sdl
 Architecture: any
 Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
@@ -247,18 +232,6 @@ Description: GGI video output plugin for VLC
  This is a GGI plugin for the VLC media player.  To activate it, use
  the `--vout ggi' flag or select the `ggi' video output plugin from the
  preferences menu.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
-Package: vlc-plugin-arts
-Architecture: any
-Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
-Description: aRts audio output plugin for VLC
- This plugin adds support for the aRts Sound System to the VLC media
- player. To activate it, use the `--aout arts' flag or select the `arts'
- audio output plugin from the preferences menu.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia

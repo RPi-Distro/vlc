@@ -45,9 +45,7 @@ confflags += \
 	--disable-fb \
 	--enable-ggi \
 	--enable-sdl \
-	--enable-esd \
 	--enable-mad \
-	--enable-arts \
 	--enable-jack \
 	--enable-pulse \
 	--enable-lirc \
