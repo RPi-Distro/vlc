@@ -1,6 +1,6 @@
 usr/bin/qvlc
 usr/bin/svlc
-usr/lib/vlc/access/libscreen_plugin.so
+usr/lib/vlc/access/libx11_screen_plugin.so
 usr/lib/vlc/codec/libsdl_image_plugin.so
 usr/lib/vlc/gui/libqt4_plugin.so
 usr/lib/vlc/gui/libskins2_plugin.so
@@ -8,6 +8,7 @@ usr/lib/vlc/misc/libnotify_plugin.so
 usr/lib/vlc/misc/libscreensaver_plugin.so
 usr/lib/vlc/video_filter/libpanoramix_plugin.so
 usr/lib/vlc/video_output/libaa_plugin.so
+usr/lib/vlc/video_output/libdrawable_plugin.so
 usr/lib/vlc/video_output/libglx_plugin.so
 usr/lib/vlc/video_output/libopengl_plugin.so
 usr/lib/vlc/video_output/libx11_plugin.so
