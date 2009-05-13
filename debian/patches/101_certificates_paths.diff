@@ -4,9 +4,9 @@ look for certificates
 
 Index: vlc-debian/modules/misc/gnutls.c
 ===================================================================
---- vlc-debian.orig/modules/misc/gnutls.c	2008-06-01 00:46:01.000000000 +0200
-+++ vlc-debian/modules/misc/gnutls.c	2008-06-01 11:38:57.000000000 +0200
-@@ -688,6 +688,10 @@
+--- vlc-debian.orig/modules/misc/gnutls.c	2009-05-12 13:55:44.000000000 +0200
++++ vlc-debian/modules/misc/gnutls.c	2009-05-12 14:36:22.000000000 +0200
+@@ -695,6 +695,10 @@
          sprintf (path, "%s/ssl/certs/ca-certificates.crt", confdir);
          gnutls_Addx509File (VLC_OBJECT (p_session),
                              p_sys->x509_cred, path, false);

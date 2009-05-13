@@ -2,28 +2,18 @@ Use the installed files for osdmenu rather than the ones in the current dir
 
 Index: vlc-debian/share/osdmenu/default.cfg
 ===================================================================
---- vlc-debian.orig/share/osdmenu/default.cfg	2008-06-01 00:46:01.000000000 +0200
-+++ vlc-debian/share/osdmenu/default.cfg	2008-06-01 11:38:57.000000000 +0200
+--- vlc-debian.orig/share/osdmenu/default.cfg	2009-05-12 13:55:46.000000000 +0200
++++ vlc-debian/share/osdmenu/default.cfg	2009-05-12 15:11:37.000000000 +0200
 @@ -1,4 +1,4 @@
 -dir share/osdmenu/default
 +dir /usr/share/vlc/osdmenu/default
  action	key-play-pause (0,0)
  	unselect unselected.png
  	select   selection/play_pause.png
-Index: vlc-debian/share/osdmenu/dvd.cfg
-===================================================================
---- vlc-debian.orig/share/osdmenu/dvd.cfg	2008-06-01 00:46:01.000000000 +0200
-+++ vlc-debian/share/osdmenu/dvd.cfg	2008-06-01 11:38:57.000000000 +0200
-@@ -1,4 +1,4 @@
--dir share/osdmenu/dvd
-+dir /usr/share/vlc/osdmenu/dvd
- action	key-play (0,0)
- 	unselect unselect/barroff.png
- 	select   selection/play.png
 Index: vlc-debian/modules/video_filter/osdmenu.c
 ===================================================================
---- vlc-debian.orig/modules/video_filter/osdmenu.c	2008-06-01 00:46:01.000000000 +0200
-+++ vlc-debian/modules/video_filter/osdmenu.c	2008-06-01 11:38:57.000000000 +0200
+--- vlc-debian.orig/modules/video_filter/osdmenu.c	2009-05-12 13:55:44.000000000 +0200
++++ vlc-debian/modules/video_filter/osdmenu.c	2009-05-12 15:11:37.000000000 +0200
 @@ -105,7 +105,7 @@
  #if defined( WIN32 ) || defined( UNDER_CE )
  #define OSD_DEFAULT_CFG "osdmenu/default.cfg"

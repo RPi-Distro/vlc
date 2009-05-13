@@ -2,22 +2,21 @@ We don't install the icons where upstream expects them.
 so modify the code where needed.
 
 
-Index: vlc-0.9.1/modules/misc/notify/notify.c
+Index: vlc-debian/modules/misc/notify/notify.c
 ===================================================================
---- vlc-0.9.1.orig/modules/misc/notify/notify.c	2008-08-25 23:40:43.000000000 +0200
-+++ vlc-0.9.1/modules/misc/notify/notify.c	2008-09-04 00:46:24.000000000 +0200
-@@ -216,13 +216,7 @@
-         free( psz_arturl );
-     }
+--- vlc-debian.orig/modules/misc/notify/notify.c	2009-05-12 15:43:35.000000000 +0200
++++ vlc-debian/modules/misc/notify/notify.c	2009-05-12 15:50:17.000000000 +0200
+@@ -231,12 +231,7 @@
      else /* else we show state-of-the art logo */
--    {
--        const char *data_path = config_GetDataDir ();
--        char buf[strlen (data_path) + sizeof ("/vlc48x48.png")];
--
--        snprintf (buf, sizeof (buf), "%s/vlc48x48.png", data_path);
--        pix = gdk_pixbuf_new_from_file( buf, &p_error );
--    }
+     {
+         GError *p_error = NULL;
+-        char *psz_pixbuf;
+-        if( asprintf( &psz_pixbuf, "%s/vlc48x48.png", config_GetDataDir() ) >= 0 )
+-        {
+-            pix = gdk_pixbuf_new_from_file( psz_pixbuf, &p_error );
+-            free( psz_pixbuf );
+-        }
 +        pix = gdk_pixbuf_new_from_file( "/usr/share/pixmaps/vlc.png", &p_error );
+     }
  
      /* we need to replace '&' with '&amp;' because '&' is a keyword of
-      * notification-daemon parser */
