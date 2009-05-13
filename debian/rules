@@ -114,6 +114,7 @@ build-stamp: $(QUILT_STAMPFN)
 	# We need to build the static library apart
 	# Else it's a mess when we build the modules
 	./configure --enable-static $(confflags)
+	$(MAKE) -C compat
 	$(MAKE) -C src libvlccore.la libvlc.la
 	mkdir -p tmp
 	cp src/.libs/libvlccore.a tmp/libvlccore.a
