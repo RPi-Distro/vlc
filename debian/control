@@ -89,13 +89,13 @@ Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/h
 Package: vlc
 Section: video
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}), 
-         ${shlibs:Depends}, 
+Depends: vlc-nox (= ${binary:Version}),
+         ${shlibs:Depends},
          ${misc:Depends},
          ttf-dejavu-core
 Suggests: mozilla-plugin-vlc,
           videolan-doc
-Replaces:  vlc-nox (<< 0.9.2-1)
+Replaces: vlc-nox (<< 0.9.2-1)
 Conflicts: vlc-nox (<< 0.9.2-1)
 Provides: mp3-decoder
 Description: multimedia player and streamer
@@ -200,7 +200,7 @@ Description: development files for libvlccore
 Package: libvlc-dev
 Section: libdevel
 Architecture: any
-Depends: libvlc2 (= ${binary:Version}), libvlccore-dev, pkg-config, 
+Depends: libvlc2 (= ${binary:Version}), libvlccore-dev, pkg-config,
          ${shlibs:Depends}, ${misc:Depends}
 Replaces: libvlc0-dev
 Conflicts: libvlc0-dev

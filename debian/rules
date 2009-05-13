@@ -216,7 +216,7 @@ binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_link -i
-	dh_installdocs -p vlc-data 
+	dh_installdocs -p vlc-data
 	dh_installchangelogs ChangeLog -p vlc-data
 	dh_compress -i
 	dh_fixperms -i
