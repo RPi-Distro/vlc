@@ -159,7 +159,7 @@ Description: multimedia player and streamer (without X support)
 Package: libvlccore2
 Section: libs
 Architecture: any
-Depends: vlc-data,
+Depends: vlc-data (= ${binary:Version}), 
          ${shlibs:Depends},
          ${misc:Depends}
 Description: base library for VLC and its modules
