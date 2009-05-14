@@ -1,3 +1,22 @@
+vlc (0.9.9a-3) unstable; urgency=low
+
+  * Correct typo in 0.9.9a-2 changelog entry
+  * Disable more optimization with DEB_BUILD_OPTIONS=noopt
+  * Cache the configure test results as we're running configure several
+    times
+  * Fix building as root
+  * Fix the clean target
+  * Remove unexistant config options
+  * Better check commad line
+  * Use all the procs on i386 and amd64
+  * Build a version of libvlccore without altivec (Closes: #523035)
+  * Fix typo (thanks to Salvatore Bonaccorso)(Closes: #528044)
+  * Reword the command line to get full logs in bug/presubj (Closes: #527012)
+  * Remove duplicate "extended Settings" entry in context menu
+   (Closes: #526603) - thanks to Matt Kraai
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 14 May 2009 19:19:27 +0200
+
 vlc (0.9.9a-2) unstable; urgency=medium
 
   * Security fix
