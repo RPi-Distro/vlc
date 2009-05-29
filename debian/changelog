@@ -31,9 +31,11 @@ vlc (0.9.9a-3) unstable; urgency=low
   * Use all the procs on i386 and amd64
   * Build a version of libvlccore without altivec (Closes: #523035)
   * Fix typo (thanks to Salvatore Bonaccorso)(Closes: #528044)
-  * Reword the command line to get full logs in bug/presubj
+  * Reword the command line to get full logs in bug/presubj (Closes: #527012)
+  * Remove duplicate "extended Settings" entry in context menu
+   (Closes: #526603) - thanks to Matt Kraai
 
- -- Christophe Mutricy <xtophe@videolan.org>  Tue, 12 May 2009 19:02:04 +0200
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 14 May 2009 19:19:27 +0200
 
 vlc (0.9.9a-2) unstable; urgency=medium
 
