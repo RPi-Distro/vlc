@@ -1,6 +1,6 @@
-vlc (1.0.0~rc1-1) UNRELEASED; urgency=low
+vlc (1.0.0~rc2-1) experimental; urgency=low
 
-  * New Upstream RC
+  * New Upstream Release Candidate
     + Closes: #527010, #491441, #508618, #522824
   * Delete patches which were picked from upstream
   * Refresh patches
@@ -15,8 +15,9 @@ vlc (1.0.0~rc1-1) UNRELEASED; urgency=low
   * Point out in NEWS the modules renamed or splited
   * Add links to upstream NEWS and co in vlc-nox
   * Version the depedency of libvlcore2 on vlc-data
+  * Remove unnecessary "Section:" in debian/control
 
- -- Christophe Mutricy <xtophe@videolan.org>  Thu, 14 May 2009 17:28:16 +0200
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 03 Jun 2009 17:55:10 +0200
 
 vlc (0.9.9a-3) unstable; urgency=low
 
