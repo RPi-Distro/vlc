@@ -87,7 +87,6 @@ Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/heads/sid
 
 Package: vlc
-Section: video
 Architecture: any
 Depends: vlc-nox (= ${binary:Version}),
          ${shlibs:Depends},
@@ -129,7 +128,6 @@ Description: debugging symbols for vlc
  This package contains the debugging symbols for vlc.
 
 Package: vlc-nox
-Section: video
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
