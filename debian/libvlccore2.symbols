@@ -297,6 +297,7 @@ libvlccore.so.2 libvlccore2 #MINVER#
  libvlc_InternalInit@Base 1.0.0~rc1
  libvlc_InternalWait@Base 1.0.0~rc1
  libvlc_Quit@Base 1.0.0~rc1
+ make_URI@Base 1.0.0~rc2
  mdate@Base 1.0.0~rc1
  module_config_free@Base 1.0.0~rc1
  module_config_get@Base 1.0.0~rc1

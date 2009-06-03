@@ -200,6 +200,7 @@ libvlc.so.2 libvlc2 #MINVER#
  libvlc_video_get_crop_geometry@Base 0.9.1
  libvlc_video_get_height@Base 0.9.1
  libvlc_video_get_parent@Base 0.9.1
+ libvlc_video_get_scale@Base 1.0.0~rc2
  libvlc_video_get_spu@Base 0.9.1
  libvlc_video_get_spu_count@Base 1.0.0~rc1
  libvlc_video_get_spu_description@Base 1.0.0~rc1
@@ -215,6 +216,7 @@ libvlc.so.2 libvlc2 #MINVER#
  libvlc_video_set_aspect_ratio@Base 0.9.1
  libvlc_video_set_crop_geometry@Base 0.9.1
  libvlc_video_set_parent@Base 0.9.1
+ libvlc_video_set_scale@Base 1.0.0~rc2
  libvlc_video_set_size@Base 0.9.1
  libvlc_video_set_spu@Base 0.9.1
  libvlc_video_set_subtitle_file@Base 0.9.1
