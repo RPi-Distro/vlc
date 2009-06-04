@@ -9,3 +9,5 @@
 403_http_hosts.diff
 404_duplicate_extended.diff
 405_javascript_log.diff
+406-libmpc6-api.diff
+406b-rebootstrap.diff
