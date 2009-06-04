@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: 4d77a3824b94d39f8b7cfdbd67d1507ee8fff918 $
+ * $Id: fe7b5077568c3e14fbabb8b369514997837e6291 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -91,7 +91,7 @@
 
 @implementation NSAnimation (VLCAdditions)
 /* fake class attributes  */
-static NSMapTable *VLCAdditions_userInfo = NULL;
+static NSMapTable *VLCAdditions_userInfo = nil;
 
 + (void)load
 {
@@ -124,12 +124,18 @@ static NSMapTable *VLCAdditions_userInfo = NULL;
 
 @implementation NSScreen (VLCAdditions)
 
-static NSMutableArray *blackoutWindows = NULL;
+static NSMutableArray *blackoutWindows = nil;
 
 + (void)load
 {
     /* init our fake object attribute */
     blackoutWindows = [[NSMutableArray alloc] initWithCapacity:1];
+}
+
+- (void)dealloc
+{
+    [blackoutWindows release];
+    [super dealloc];
 }
 
 + (NSScreen *)screenWithDisplayID: (CGDirectDisplayID)displayID

@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 6f85f516007bf73920b5ba6703b48803af02970e $
+ * $Id: f0e87d246489be4ccfc6b104ec4f0a2e665c01e1 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -83,8 +83,6 @@ struct intf_sys_t
     msg_subscription_t * p_sub;
 };
 
-static void MsgCallback( msg_cb_data_t *, msg_item_t *, unsigned );
-
 /*****************************************************************************
  * VLCMain interface
  *****************************************************************************/
@@ -104,7 +102,6 @@ static void MsgCallback( msg_cb_data_t *, msg_item_t *, unsigned );
     id o_wizard;                /* VLCWizard      */
     id o_extended;              /* VLCExtended    */
     id o_bookmarks;             /* VLCBookmarks   */
-    id o_vlm;                   /* VLCVLMController */
     id o_embedded_list;         /* VLCEmbeddedList*/
     id o_coredialogs;           /* VLCCoreDialogProvider */
     VLCInformation * o_info;                  /* VLCInformation */
@@ -121,7 +118,6 @@ static void MsgCallback( msg_cb_data_t *, msg_item_t *, unsigned );
     BOOL nib_prefs_loaded;      /* preferences nibfile */
     BOOL nib_update_loaded;     /* update nibfile */
     BOOL nib_info_loaded;       /* information panel nibfile */
-    BOOL nib_vlm_loaded;        /* VLM Panel nibfile */
     BOOL nib_coredialogs_loaded; /* CoreDialogs nibfile */
 
     IBOutlet VLCControllerWindow * o_window;                     /* main window */
@@ -197,7 +193,6 @@ static void MsgCallback( msg_cb_data_t *, msg_item_t *, unsigned );
     IBOutlet NSMenuItem * o_mi_open_recent;
     IBOutlet NSMenuItem * o_mi_open_recent_cm;
     IBOutlet NSMenuItem * o_mi_open_wizard;
-    IBOutlet NSMenuItem * o_mi_open_vlm;
 
     IBOutlet NSMenu * o_mu_edit;
     IBOutlet NSMenuItem * o_mi_cut;
@@ -392,7 +387,6 @@ static void MsgCallback( msg_cb_data_t *, msg_item_t *, unsigned );
 - (IBAction)intfOpenCapture:(id)sender;
 
 - (IBAction)showWizard:(id)sender;
-- (IBAction)showVLM:(id)sender;
 - (IBAction)showExtended:(id)sender;
 - (IBAction)showBookmarks:(id)sender;
 

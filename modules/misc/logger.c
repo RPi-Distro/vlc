@@ -2,7 +2,7 @@
  * logger.c : file logging plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 2cd9a7f212febbfd11973d74f23d03c2afe963eb $
+ * $Id: 88d49624b89f64015f220b89adee23cfa1458083 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -348,11 +348,10 @@ static void SyslogPrint( const msg_item_t *p_msg )
     int i_priority = i_prio[p_msg->i_type];
 
     if( p_msg->psz_header )
-        syslog( i_priority, "%s%s %s: %s", p_msg->psz_header,
-                ppsz_type[p_msg->i_type],
-                p_msg->psz_module, p_msg->psz_msg );
+        syslog( i_priority, "%s %s%s%s", p_msg->psz_header, p_msg->psz_module,
+                ppsz_type[p_msg->i_type], p_msg->psz_msg );
     else
-        syslog( i_priority, "%s%s: %s", p_msg->psz_module, 
+        syslog( i_priority, "%s%s%s", p_msg->psz_module, 
                 ppsz_type[p_msg->i_type], p_msg->psz_msg );
  
 }

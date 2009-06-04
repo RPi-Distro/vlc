@@ -2,7 +2,7 @@
  * xcommon.c: Functions common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: ea973d8663a051e78887f14b0ccea3e899310188 $
+ * $Id: 9cd132c91c71b4c8178b8ea1b02ee602c42928f0 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -1232,6 +1232,8 @@ static int ManageVideo( vout_thread_t *p_vout )
                     val.i_int |= 1;
                     var_Set( p_vout, "mouse-button-down", val );
 
+                    var_SetBool( p_vout->p_libvlc, "intf-popupmenu", false );
+
                     /* detect double-clicks */
                     if( ( ((XButtonEvent *)&xevent)->time -
                           p_vout->p_sys->i_time_button_last_pressed ) < 300 )
@@ -1252,6 +1254,7 @@ static int ManageVideo( vout_thread_t *p_vout )
                     var_Get( p_vout, "mouse-button-down", &val );
                     val.i_int |= 4;
                     var_Set( p_vout, "mouse-button-down", val );
+                    var_SetBool( p_vout->p_libvlc, "intf-popupmenu", true );
                     break;
 
                 case Button4:
@@ -1279,7 +1282,6 @@ static int ManageVideo( vout_thread_t *p_vout )
                         var_Set( p_vout, "mouse-button-down", val );
 
                         var_SetBool( p_vout, "mouse-clicked", true );
-                        var_SetBool( p_vout->p_libvlc, "intf-popupmenu", false );
                     }
                     break;
 
@@ -1301,7 +1303,6 @@ static int ManageVideo( vout_thread_t *p_vout )
                         val.i_int &= ~4;
                         var_Set( p_vout, "mouse-button-down", val );
 
-                        var_SetBool( p_vout->p_libvlc, "intf-popupmenu", true );
                     }
                     break;
 

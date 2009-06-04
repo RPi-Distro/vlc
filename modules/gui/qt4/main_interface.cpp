@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: ab0eb9ae7a1f1663c61cab7c133c5ef478aa6ca6 $
+ * $Id: 0bde8ff48183de77858407a11509becbe32228ca $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -84,6 +84,7 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     cryptedLabel         = NULL;
     controls             = NULL;
     inputC               = NULL;
+    b_shouldHide         = false;
 
     bgWasVisible         = false;
     i_bg_height          = 0;
@@ -205,8 +206,6 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
 
     /* END CONNECTS ON IM */
 
-    dialogHandler = new DialogHandler (p_intf);
-
     /************
      * Callbacks
      ************/
@@ -265,7 +264,7 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
     /* Final sizing and showing */
     setMinimumWidth( __MAX( controls->sizeHint().width(),
                             menuBar()->sizeHint().width() ) );
-    show();
+    setVisible( !b_shouldHide );
 
     /* And switch to minimal view if needed
        Must be called after the show() */
@@ -282,8 +281,6 @@ MainInterface::MainInterface( intf_thread_t *_p_intf ) : QVLCMW( _p_intf )
 MainInterface::~MainInterface()
 {
     msg_Dbg( p_intf, "Destroying the main interface" );
-
-    delete dialogHandler;
 
     /* Unsure we hide the videoWidget before destroying it */
     if( videoIsActive ) videoWidget->hide();
@@ -462,7 +459,7 @@ inline void MainInterface::initSystray()
         if( b_systrayAvailable )
         {
             b_systrayWanted = true;
-            hide();
+            b_shouldHide = true;
         }
         else
             msg_Err( p_intf, "cannot start minimized without system tray bar" );
@@ -637,7 +634,7 @@ QSize MainInterface::sizeHint() const
  */
 void MainInterface::doComponentsUpdate()
 {
-    if( isFullScreen() ) return;
+    if( isFullScreen() || isMaximized() ) return;
 
     msg_Dbg( p_intf, "Updating the geometry" );
     /* Here we resize to sizeHint() and not adjustsize because we want

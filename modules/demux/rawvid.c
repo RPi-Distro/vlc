@@ -2,7 +2,7 @@
  * rawvid.c : raw video input module for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 22ded17b8e4ce979880fc7cdc50781fbc172f88c $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan d.t org>

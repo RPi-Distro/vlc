@@ -2,7 +2,7 @@
  * udp.c
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: d9782ca4236c2b7d9d137520bea6c2a757d24606 $
+ * $Id: dae64f1e477c6adf1f2a42e85680276a67252dc7 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -175,7 +175,7 @@ static int Open( vlc_object_t *p_this )
     if (psz_parser[0] == '[')
         psz_parser = strchr (psz_parser, ']');
 
-    psz_parser = strchr (psz_parser ?: psz_dst_addr, ':');
+    psz_parser = strchr (psz_parser ? psz_parser : psz_dst_addr, ':');
     if (psz_parser != NULL)
     {
         *psz_parser++ = '\0';

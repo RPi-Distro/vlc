@@ -2,7 +2,7 @@
  * macro.c : Custom <vlc> macro handling
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: 38a6cc1af25d625d7378574af52ecb4c0280602a $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>

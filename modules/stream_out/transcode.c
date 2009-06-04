@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: bc66396838b4d51f3f931cc3e356fc40f47e24e0 $
+ * $Id: b4bf89136ab1126212cc4a0286783aac5d89a22c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1492,11 +1492,15 @@ static int transcode_video_new( sout_stream_t *p_stream, sout_stream_id_t *id )
     /* The dimensions will be set properly later on.
      * Just put sensible values so we can test an encoder is available. */
     id->p_encoder->fmt_in.video.i_width =
-        id->p_encoder->fmt_out.video.i_width ?:
-        id->p_decoder->fmt_in.video.i_width ?: 16;
+        id->p_encoder->fmt_out.video.i_width
+          ? id->p_encoder->fmt_out.video.i_width
+          : id->p_decoder->fmt_in.video.i_width
+            ? id->p_decoder->fmt_in.video.i_width : 16;
     id->p_encoder->fmt_in.video.i_height =
-        id->p_encoder->fmt_out.video.i_height ?:
-        id->p_decoder->fmt_in.video.i_height ?: 16;
+        id->p_encoder->fmt_out.video.i_height
+          ? id->p_encoder->fmt_out.video.i_height
+          : id->p_decoder->fmt_in.video.i_height
+            ? id->p_decoder->fmt_in.video.i_height : 16;
     id->p_encoder->fmt_in.video.i_frame_rate = ENC_FRAMERATE;
     id->p_encoder->fmt_in.video.i_frame_rate_base = ENC_FRAMERATE_BASE;
 

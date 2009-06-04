@@ -2,7 +2,7 @@
  * dirs.hpp : String Directory helpers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 113eb0d5c63310b1c2c77182f5ba2ec03f5c7026 $
+ * $Id$
  *
  * Authors:       Jean-Baptiste Kempf <jb@videolan.org>
  *

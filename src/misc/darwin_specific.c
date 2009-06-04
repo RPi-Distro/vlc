@@ -2,7 +2,7 @@
  * darwin_specific.m: Darwin specific features
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: b33b3bb7419966dc7d91cf8c454e0a26eece34af $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Christophe Massiot <massiot@via.ecp.fr>

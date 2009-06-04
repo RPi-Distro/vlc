@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: 10c5a7db98f6f14f323b1575c8ab28b58ef49453 $
+ * $Id: a8d0f4dfeae097fdcb0f7c610cfe7c821c2c010d $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -1330,7 +1330,8 @@ static int CdTextParse( vlc_meta_t ***ppp_tracks, int *pi_tracks,
         for( int i = 0; i <= i_track_last; i++ )
         {
             /* */
-            EnsureUTF8( pppsz_info[i][j] );
+            if( pppsz_info[i][j] )
+                EnsureUTF8( pppsz_info[i][j] );
 
             /* */
             const char *psz_default = pppsz_info[0][j];
@@ -1361,13 +1362,16 @@ static int CdTextParse( vlc_meta_t ***ppp_tracks, int *pi_tracks,
                 }
                 break;
             case 0x01: /* Performer */
-                vlc_meta_SetArtist( p_track, psz_value ?: psz_default );
+                vlc_meta_SetArtist( p_track,
+                                    psz_value ? psz_value : psz_default );
                 break;
             case 0x05: /* Messages */
-                vlc_meta_SetDescription( p_track, psz_value ?: psz_default );
+                vlc_meta_SetDescription( p_track,
+                                         psz_value ? psz_value : psz_default );
                 break;
             case 0x07: /* Genre */
-                vlc_meta_SetGenre( p_track, psz_value ?: psz_default );
+                vlc_meta_SetGenre( p_track,
+                                   psz_value ? psz_value : psz_default );
                 break;
             /* FIXME unsupported:
              * 0x02: songwriter

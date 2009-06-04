@@ -2,7 +2,7 @@
  * playlist_model.cpp : Manage playlist model
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: a474abd94e7abb35f90f535360bce286bce7afcd $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -224,7 +224,7 @@ void PLModel::addCallbacks()
 {
     /* Some global changes happened -> Rebuild all */
     var_AddCallback( p_playlist, "intf-change", PlaylistChanged, this );
-    /* We went to the next item 
+    /* We went to the next item
     var_AddCallback( p_playlist, "item-current", PlaylistNext, this );
     */
     /* One item has been updated */

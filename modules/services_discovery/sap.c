@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: a43a89233c831728ae51086894f228ab3199eba4 $
+ * $Id: 2e1d070fccd11a3f05ecef278a7672ae2b642dc7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -918,9 +918,11 @@ static const char *FindAttribute (const sdp_t *sdp, unsigned media,
                                   const char *name)
 {
     /* Look for media attribute, and fallback to session */
-    return GetAttribute (sdp->mediav[media].pp_attributes,
-                         sdp->mediav[media].i_attributes, name)
-        ?: GetAttribute (sdp->pp_attributes, sdp->i_attributes, name);
+    const char *attr = GetAttribute (sdp->mediav[media].pp_attributes,
+                                     sdp->mediav[media].i_attributes, name);
+    if (attr == NULL)
+        attr = GetAttribute (sdp->pp_attributes, sdp->i_attributes, name);
+    return attr;
 }
 
 

@@ -2,7 +2,7 @@
  * dshow.cpp : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 5dbce84fa6923adae5298bd6e98d62eb1ef98436 $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *         Damien Fouilleul <damienf@videolan.org>

@@ -617,8 +617,6 @@ WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
-XCB_AUX_CFLAGS = @XCB_AUX_CFLAGS@
-XCB_AUX_LIBS = @XCB_AUX_LIBS@
 XCB_CFLAGS = @XCB_CFLAGS@
 XCB_KEYSYMS_CFLAGS = @XCB_KEYSYMS_CFLAGS@
 XCB_KEYSYMS_LIBS = @XCB_KEYSYMS_LIBS@
@@ -701,7 +699,7 @@ vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
 MOSTLYCLEANFILES = $(am__append_1)
 CLEANFILES = $(BUILT_SOURCES) $(am__append_2)
-EXTRA_DIST = $(DIST_sources) install.js npvlc_rc.rc.in vlc.r COPYING
+EXTRA_DIST = $(DIST_sources) npvlc_rc.rc.in COPYING
 SOURCES_mozilla_common = \
 	vlcshell.cpp \
 	vlcshell.h \

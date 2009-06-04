@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist import functions
  *******************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: ed1ed924a83025f54ac0eda0d1ac0f21eebd143b $
+ * $Id$
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>

@@ -2,7 +2,7 @@
  * canvas.c : automatically resize and padd a video to fit in canvas
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: ef48f2236b71434cf24254a105a8fc7ea4e880d0 $
+ * $Id: 4b87b7ea5b07ed60582690fe9fab690d1f17a43e $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -67,6 +67,9 @@ vlc_module_begin ()
     set_description( N_("Automatically resize and padd a video") )
     set_capability( "video filter2", 0 )
     set_callbacks( Activate, Destroy )
+
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER2 )
 
     add_integer_with_range( CFG_PREFIX "width", 0, 0, INT_MAX, NULL,
                             WIDTH_TEXT, WIDTH_LONGTEXT, false )

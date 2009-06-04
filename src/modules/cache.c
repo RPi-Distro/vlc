@@ -2,7 +2,7 @@
  * cache.c: Plugins cache
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 2c190e0b6509cab8806a9a4899b54f13584e760b $
+ * $Id: 89d1a99a6d51f0a798c25fc33b2133097c058f5e $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -508,7 +508,12 @@ void CacheSave( vlc_object_t *p_this, module_bank_t *p_bank )
 
     char psz_tmpname[sizeof (psz_filename) + 12];
     snprintf (psz_tmpname, sizeof (psz_tmpname), "%s.%"PRIu32, psz_filename,
-              (uint32_t)getpid ());
+#ifdef UNDER_CE
+              (uint32_t)GetCurrentProcessId ()
+#else
+              (uint32_t)getpid ()
+#endif
+             );
     file = utf8_fopen( psz_tmpname, "wb" );
     if (file == NULL)
         goto error;

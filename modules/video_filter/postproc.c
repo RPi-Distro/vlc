@@ -2,7 +2,7 @@
  * postproc.c: video postprocessing using libpostproc
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: db9e56d0e54f645d63d8207be8b73c6ab15f0510 $
+ * $Id: 9d1dc57b4989ca37a7e1e5e7fdcd7a38a0c9c0b2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -197,7 +197,8 @@ static int OpenPostproc( vlc_object_t *p_this )
     var_AddCallback( p_filter, FILTER_PREFIX "name", PPNameCallback, NULL );
     if( val_orig.i_int )
     {
-        p_sys->pp_mode = pp_get_mode_by_name_and_quality( val.psz_string?:
+        p_sys->pp_mode = pp_get_mode_by_name_and_quality( val.psz_string ?
+                                                          val.psz_string :
                                                           "default",
                                                           val_orig.i_int );
 
@@ -238,7 +239,7 @@ static int OpenPostproc( vlc_object_t *p_this )
                     &val, text.psz_string?&text:NULL );
     }
 
-    vlc_mutex_init( &p_sys->lock );
+    vlc_mutex_init( &p_sys->lock ); /* FIXME: too late w.r.t. callback */
 
     p_filter->pf_video_filter = PostprocPict;
     p_sys->b_had_matrix = true;
@@ -253,6 +254,8 @@ static void ClosePostproc( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
+
+    /* FIXME: delete callbacks before mutex */
     vlc_mutex_destroy( &p_sys->lock );
     pp_free_context( p_sys->pp_context );
     if( p_sys->pp_mode ) pp_free_mode( p_sys->pp_mode );
@@ -328,7 +331,8 @@ static void PPChangeMode( filter_t *p_filter, const char *psz_name,
     vlc_mutex_lock( &p_sys->lock );
     if( i_quality > 0 )
     {
-        pp_mode_t *pp_mode = pp_get_mode_by_name_and_quality( psz_name?:
+        pp_mode_t *pp_mode = pp_get_mode_by_name_and_quality( psz_name ?
+                                                              psz_name :
                                                               "default",
                                                               i_quality );
         if( pp_mode )

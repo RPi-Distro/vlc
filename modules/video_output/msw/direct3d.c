@@ -2,7 +2,7 @@
  * direct3d.c: Windows Direct3D video output module
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- *$Id: dcb73107bca90fae92ccb8f68b848d847169beb4 $
+ *$Id: 6435154de92ad388439666af3a9666aa4794bc28 $
  *
  * Authors: Damien Fouilleul <damienf@videolan.org>
  *
@@ -1031,7 +1031,8 @@ static int Direct3DVoutCreatePictures( vout_thread_t *p_vout, size_t i_num_pics 
     HRESULT hr;
     size_t c;
     // if vout is already running, use current chroma, otherwise choose from upstream
-    int i_chroma = p_vout->output.i_chroma ? : p_vout->render.i_chroma;
+    int i_chroma = p_vout->output.i_chroma ? p_vout->output.i_chroma
+                                           : p_vout->render.i_chroma;
 
     I_OUTPUTPICTURES = 0;
 

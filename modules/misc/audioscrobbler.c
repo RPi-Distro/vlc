@@ -2,7 +2,7 @@
  * audioscrobbler.c : audioscrobbler submission plugin
  *****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 739b7c8b36a0a1ef52751a0b0105d7edb32d7a84 $
+ * $Id$
  *
  * Author: Rafaël Carré <funman at videolanorg>
  *         Ilkka Ollakka <ileoo at videolan org>

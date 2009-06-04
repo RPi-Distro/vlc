@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: d411dc02222bf03f542d7f7e1a3d94ea7ba40fa8 $
+ * $Id: 62fcebe479a7501714d7a421cc8562fc3ad707fb $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -54,7 +54,6 @@
 #import "AppleRemote.h"
 #import "eyetv.h"
 #import "simple_prefs.h"
-#import "vlm.h"
 
 #import <AddressBook/AddressBook.h>         /* for crashlog send mechanism */
 #import <IOKit/hidsystem/ev_keymap.h>         /* for the media key support */
@@ -68,6 +67,12 @@ static void * ManageThread( void *user_data );
 
 static unichar VLCKeyToCocoa( unsigned int i_key );
 static unsigned int VLCModifiersToCocoa( unsigned int i_key );
+
+static void updateProgressPanel (void *, const char *, float);
+static bool checkProgressPanel (void *);
+static void destroyProgressPanel (void *);
+
+static void MsgCallback( msg_cb_data_t *, msg_item_t *, unsigned );
 
 #pragma mark -
 #pragma mark VLC Interface Object Callbacks
@@ -176,7 +181,6 @@ static void MsgCallback( msg_cb_data_t *data, msg_item_t *item, unsigned int i )
     vlc_restorecancel( canc );
 }
 
-
 /*****************************************************************************
  * playlistChanged: Callback triggered by the intf-change playlist
  * variable, to let the intf update the playlist.
@@ -231,13 +235,51 @@ static int DialogCallback( vlc_object_t *p_this, const char *type, vlc_value_t p
     NSAutoreleasePool * o_pool = [[NSAutoreleasePool alloc] init];
     VLCMain *interface = (VLCMain *)data;
 
-    const dialog_fatal_t *p_dialog = (const dialog_fatal_t *)value.p_address;
+    if( [[NSString stringWithUTF8String: type] isEqualToString: @"dialog-progress-bar"] )
+    {
+        /* the progress panel needs to update itself and therefore wants special treatment within this context */
+        dialog_progress_bar_t *p_dialog = (dialog_progress_bar_t *)value.p_address;
 
-    NSValue *o_value = [NSValue valueWithPointer:p_dialog];
+        p_dialog->pf_update = updateProgressPanel;
+        p_dialog->pf_check = checkProgressPanel;
+        p_dialog->pf_destroy = destroyProgressPanel;
+        p_dialog->p_sys = VLCIntf->p_libvlc;
+    }
+
+    NSValue *o_value = [NSValue valueWithPointer:value.p_address];
     [[NSNotificationCenter defaultCenter] postNotificationName: @"VLCNewCoreDialogEventNotification" object:[interface coreDialogProvider] userInfo:[NSDictionary dictionaryWithObjectsAndKeys: o_value, @"VLCDialogPointer", [NSString stringWithUTF8String: type], @"VLCDialogType", nil]];
 
     [o_pool release];
     return VLC_SUCCESS;
+}
+
+void updateProgressPanel (void *priv, const char *text, float value)
+{
+    NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
+
+    NSString *o_txt;
+    if( text != NULL )
+        o_txt = [NSString stringWithUTF8String: text];
+    else
+        o_txt = @"";
+
+    [[[VLCMain sharedInstance] coreDialogProvider] updateProgressPanelWithText: o_txt andNumber: (double)(value * 1000.)];
+
+    [o_pool release];
+}
+
+void destroyProgressPanel (void *priv)
+{
+    NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
+    [[[VLCMain sharedInstance] coreDialogProvider] destroyProgressPanel];
+    [o_pool release];
+}
+
+bool checkProgressPanel (void *priv)
+{
+    NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
+    return [[[VLCMain sharedInstance] coreDialogProvider] progressCancelled];
+    [o_pool release];
 }
 
 #pragma mark -
@@ -281,7 +323,6 @@ static VLCMain *_o_sharedMainInstance = nil;
     o_prefs = nil;
     o_open = [[VLCOpen alloc] init];
     o_wizard = [[VLCWizard alloc] init];
-    o_vlm = [[VLCVLMController alloc] init];
     o_extended = nil;
     o_bookmarks = [[VLCBookmarks alloc] init];
     o_embedded_list = [[VLCEmbeddedList alloc] init];
@@ -1377,11 +1418,6 @@ static unsigned int VLCModifiersToCocoa( unsigned int i_key )
     return nil;
 }
 
-- (id)vlm
-{
-    return o_vlm;
-}
-
 - (id)bookmarks
 {
     if( o_bookmarks )
@@ -1565,6 +1601,19 @@ static void manage_cleanup( void * args )
         p_intf->p_sys->b_intf_update = true;
         p_intf->p_sys->b_input_update = false;
         [self setupMenus]; /* Make sure input menu is up to date */
+
+        /* update our info-panel to reflect the new item, if we don't show
+         * the playlist or the selection is empty */
+        if( [self isPlaylistCollapsed] == YES )
+        {
+            playlist_t * p_playlist = pl_Hold( p_intf );
+            PL_LOCK;
+            playlist_item_t * p_item = playlist_CurrentPlayingItem( p_playlist );
+            PL_UNLOCK;
+            if( p_item )
+                [[self info] updatePanelWithItem: p_item->p_input];
+            pl_Release( p_intf );
+        }
     }
     if( p_intf->p_sys->b_intf_update )
     {
@@ -1592,15 +1641,6 @@ static void manage_cleanup( void * args )
                  cachedInputState == OPENING_S )
             {
                 b_buffering = YES;
-            }
-
-            /* update our info-panel to reflect the new item, if we don't show
-             * the playlist or the selection is empty */
-            if( [self isPlaylistCollapsed] == YES )
-            {
-                PL_LOCK;
-                [[self info] updatePanelWithItem: playlist_CurrentPlayingItem( p_playlist )->p_input];
-                PL_UNLOCK;
             }
 
             /* seekable streams */
@@ -1696,6 +1736,7 @@ static void manage_cleanup( void * args )
             [[o_controls voutView] updateTitle];
  
             [o_playlist updateRowSelection];
+
             p_intf->p_sys->b_current_title_update = FALSE;
         }
 
@@ -2110,14 +2151,6 @@ end:
         [o_wizard resetWizard];
         [o_wizard showWizard];
     }
-}
-
-- (IBAction)showVLM:(id)sender
-{
-    if( !nib_vlm_loaded )
-        nib_vlm_loaded = [NSBundle loadNibNamed:@"VLM" owner: NSApp];
-
-    [o_vlm showVLMWindow];
 }
 
 - (IBAction)showExtended:(id)sender

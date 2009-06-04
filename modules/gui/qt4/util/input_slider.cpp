@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 125e7a946b6e77b535615e57299a7e1e26bc4e19 $
+ * $Id: 4140c38b2e0ef8c1089a858a122dccf00f1af7c3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -168,7 +168,7 @@ SoundSlider::SoundSlider( QWidget *_parent, int _i_step, bool b_hard,
 
 #define c(i) colorList.at(i).toInt()
     gradient.setColorAt( 0.0, QColor( c(0), c(1), c(2) ) );
-    gradient.setColorAt( 0.2, QColor( c(3), c(4), c(5) ) );
+    gradient.setColorAt( 0.22, QColor( c(3), c(4), c(5) ) );
     gradient.setColorAt( 0.5, QColor( c(6), c(7), c(8) ) );
     gradient.setColorAt( 1.0, QColor( c(9), c(10), c(11) ) );
 

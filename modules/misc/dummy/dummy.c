@@ -2,7 +2,7 @@
  * dummy.c : dummy plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 22b7469c118adb92425eb9f14d85cb87f539deeb $
+ * $Id: 547c84bf7634b790cb7b897c0d7a1aaf0499912a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -82,6 +82,8 @@ vlc_module_begin ()
         set_description( N_("Dummy decoder function") )
         set_capability( "decoder", 0 )
         set_callbacks( OpenDecoder, CloseDecoder )
+        set_category( CAT_INPUT )
+        set_subcategory( SUBCAT_INPUT_SCODEC )
         add_bool( "dummy-save-es", 0, NULL, SAVE_TEXT, SAVE_LONGTEXT, true )
     add_submodule ()
         set_section( N_( "Dump decoder" ), NULL )
@@ -102,6 +104,8 @@ vlc_module_begin ()
         set_section( N_( "Dummy Video output" ), NULL )
         set_capability( "video output", 1 )
         set_callbacks( OpenVideo, NULL )
+        set_category( CAT_VIDEO )
+        set_subcategory( SUBCAT_VIDEO_VOUT )
         add_category_hint( N_("Video"), NULL, false )
         add_string( "dummy-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true )
     add_submodule ()

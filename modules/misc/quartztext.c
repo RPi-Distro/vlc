@@ -2,7 +2,7 @@
  * quartztext.c : Put text on the video, using Mac OS X Quartz Engine
  *****************************************************************************
  * Copyright (C) 2007, 2009 the VideoLAN team
- * $Id: a19c2a3cfd1df8829067bed9277187d67c2dcba1 $
+ * $Id$
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *

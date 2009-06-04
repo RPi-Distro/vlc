@@ -2,7 +2,7 @@
  * variables.h: object variables typedefs
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: dde10ae654e2ecba9b70755df9b5f8d77170aafc $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

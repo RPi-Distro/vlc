@@ -2,7 +2,7 @@
  * deinterlace.c : deinterlacer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 the VideoLAN team
- * $Id: 08f135d8707e5a781800ce428c273ef3c71cc43f $
+ * $Id$
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *

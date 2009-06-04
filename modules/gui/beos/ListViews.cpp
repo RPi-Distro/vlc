@@ -2,7 +2,7 @@
  * ListViews.h: BeOS interface list view class implementation
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: c3ccc84cf7efab9c4bfb7f92d93c0df5fb6c22b9 $
+ * $Id$
  *
  * Authors: Stephan Aßmus <stippi@yellowbites.com>
  *

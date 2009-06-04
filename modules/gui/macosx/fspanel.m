@@ -2,7 +2,7 @@
  * fspanel.m: MacOS X full screen panel
  *****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 7b31e6ec34939feb8e90fc6f99f6b61b552a0d2b $
+ * $Id$
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

@@ -2,7 +2,7 @@
  * Help.cpp : Help and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 563edb100d6fefd0feedc29cd46582ec487732ad $
+ * $Id: f3b40779f323d4eb0d3624f0723502c5c20c59c9 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Rémi Duraffort <ivoire (at) via.ecp.fr>
@@ -96,7 +96,7 @@ AboutDialog::AboutDialog( QWidget *parent, intf_thread_t *_p_intf)
     closeButton->setDefault( true );
 
     QLabel *introduction = new QLabel(
-            qtr( "VLC media player" " " VERSION_MESSAGE ) );
+            qtr( "VLC media player" ) + qfu( " " VERSION_MESSAGE ) );
     QLabel *iconVLC = new QLabel;
     if( QDate::currentDate().dayOfYear() >= 354 )
         iconVLC->setPixmap( QPixmap( ":/vlc48-christmas.png" ) );

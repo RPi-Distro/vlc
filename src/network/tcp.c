@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright (C) 2005-2006 Rémi Denis-Courmont
- * $Id: b509b66b339057641f5f39aff1a19fcbb20439c0 $
+ * $Id: 0fabdd0afab905728d421f5905e4c07657242b84 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -153,8 +153,9 @@ int __net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
 
     for( ptr = res; ptr != NULL; ptr = ptr->ai_next )
     {
-        int fd = net_Socket( p_this, ptr->ai_family, type ?: ptr->ai_socktype,
-                             proto ?: ptr->ai_protocol );
+        int fd = net_Socket( p_this, ptr->ai_family,
+                             type ? type : ptr->ai_socktype,
+                             proto ? proto : ptr->ai_protocol );
         if( fd == -1 )
         {
             msg_Dbg( p_this, "socket error: %m" );

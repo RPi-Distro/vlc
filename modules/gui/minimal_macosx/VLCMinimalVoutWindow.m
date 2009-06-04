@@ -2,7 +2,7 @@
  * VLCMinimalVoutWindow.m: MacOS X Minimal interface window
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 8d998c9bf8a991607e72bcd236cc08a504e93380 $
+ * $Id: f3357e0adc43d90c602cd45d74481a054a9a2f8c $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -30,6 +30,9 @@
 #include "VLCMinimalVoutWindow.h"
 
 #import <Cocoa/Cocoa.h>
+
+/* SetSystemUIMode, ... */
+#import <Carbon/Carbon.h>
 
 @implementation VLCMinimalVoutWindow
 - (id)initWithContentRect:(NSRect)contentRect
@@ -64,14 +67,14 @@
 {
     fullscreen = YES;
     initialFrame = [self frame];
-    [NSMenu setMenuBarVisible:NO];
+    SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
     [self setFrame:[[self screen] frame] display:YES animate:YES];
 }
 
 - (void)leaveFullscreen
 {
     fullscreen = NO;
-    [NSMenu setMenuBarVisible:YES];
+    SetSystemUIMode( kUIModeNormal, kUIOptionAutoShowMenuBar);
     [self setFrame:initialFrame display:YES animate:YES];
 }
 

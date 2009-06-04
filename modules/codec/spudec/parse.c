@@ -2,7 +2,7 @@
  * parse.c: SPU parser
  *****************************************************************************
  * Copyright (C) 2000-2001, 2005, 2006 the VideoLAN team
- * $Id: 84db8df8acaa59aaa2135ff4ec7e7b759b364ffb $
+ * $Id: b2ea3a177c1f18ae7365a7e3e377ebba60ccb689 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -50,8 +50,6 @@ typedef struct
 
 typedef struct
 {
-    mtime_t i_pts;                                 /* presentation timestamp */
-
     int   pi_offset[2];                              /* byte offsets to data */
     uint16_t *p_data;
 
@@ -68,7 +66,7 @@ typedef struct
 } subpicture_data_t;
 
 static int  ParseControlSeq( decoder_t *, subpicture_t *, subpicture_data_t *,
-                             spu_properties_t * );
+                             spu_properties_t *, mtime_t i_pts );
 static int  ParseRLE       ( decoder_t *, subpicture_data_t *,
                              const spu_properties_t * );
 static void Render         ( decoder_t *, subpicture_t *, subpicture_data_t *,
@@ -78,7 +76,7 @@ static void Render         ( decoder_t *, subpicture_t *, subpicture_data_t *,
  * AddNibble: read a nibble from a source packet and add it to our integer.
  *****************************************************************************/
 static inline unsigned int AddNibble( unsigned int i_code,
-                                      uint8_t *p_src, unsigned int *pi_index )
+                                      const uint8_t *p_src, unsigned int *pi_index )
 {
     if( *pi_index & 0x1 )
     {
@@ -107,30 +105,13 @@ subpicture_t * ParsePacket( decoder_t *p_dec )
     p_spu = decoder_NewSubpicture( p_dec );
     if( !p_spu ) return NULL;
 
-    /* */
-    spu_data.p_data = NULL;
-    spu_data.b_palette = false;
-    spu_data.b_auto_crop = false;
-    spu_data.i_y_top_offset = 0;
-    spu_data.i_y_bottom_offset = 0;
-
-    spu_data.pi_alpha[0] = 0x00;
-    spu_data.pi_alpha[1] = 0x0f;
-    spu_data.pi_alpha[2] = 0x0f;
-    spu_data.pi_alpha[3] = 0x0f;
-
-    /* Get display time now. If we do it later, we may miss the PTS. */
-    spu_data.i_pts = p_sys->i_pts;
-
     p_spu->i_original_picture_width =
         p_dec->fmt_in.subs.spu.i_original_frame_width;
     p_spu->i_original_picture_height =
         p_dec->fmt_in.subs.spu.i_original_frame_height;
 
-    memset( &spu_properties, 0, sizeof(spu_properties) );
-
     /* Getting the control part */
-    if( ParseControlSeq( p_dec, p_spu, &spu_data, &spu_properties ) )
+    if( ParseControlSeq( p_dec, p_spu, &spu_data, &spu_properties, p_sys->i_pts ) )
     {
         /* There was a parse error, delete the subpicture */
         decoder_DeleteSubpicture( p_dec, p_spu );
@@ -176,7 +157,7 @@ subpicture_t * ParsePacket( decoder_t *p_dec )
  * subtitles format, see http://sam.zoy.org/doc/dvd/subtitles/index.html
  *****************************************************************************/
 static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
-                            subpicture_data_t *p_spu_data, spu_properties_t *p_spu_properties )
+                            subpicture_data_t *p_spu_data, spu_properties_t *p_spu_properties, mtime_t i_pts )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
@@ -189,13 +170,35 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
     /* Command and date */
     uint8_t i_command = SPU_CMD_END;
     mtime_t date = 0;
+    bool b_cmd_offset = false;
+    bool b_cmd_alpha = false;
+    subpicture_data_t spu_data_cmd;
 
     if( !p_spu || !p_spu_data )
         return VLC_EGENERIC;
 
+    /* Create working space for spu data */
+    memset( &spu_data_cmd, 0, sizeof(spu_data_cmd) );
+    spu_data_cmd.pi_offset[0] = -1;
+    spu_data_cmd.pi_offset[1] = -1;
+    spu_data_cmd.p_data = NULL;
+    spu_data_cmd.b_palette = false;
+    spu_data_cmd.b_auto_crop = false;
+    spu_data_cmd.i_y_top_offset = 0;
+    spu_data_cmd.i_y_bottom_offset = 0;
+    spu_data_cmd.pi_alpha[0] = 0x00;
+    spu_data_cmd.pi_alpha[1] = 0x0f;
+    spu_data_cmd.pi_alpha[2] = 0x0f;
+    spu_data_cmd.pi_alpha[3] = 0x0f;
+
     /* Initialize the structure */
     p_spu->i_start = p_spu->i_stop = 0;
     p_spu->b_ephemer = false;
+
+    memset( p_spu_properties, 0, sizeof(*p_spu_properties) );
+
+    /* */
+    *p_spu_data = spu_data_cmd;
 
     for( i_index = 4 + p_sys->i_rle_size; i_index < p_sys->i_spu_size ; )
     {
@@ -209,6 +212,9 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
                 return VLC_EGENERIC;
             }
 
+            /* */
+            b_cmd_offset = false;
+            b_cmd_alpha = false;
             /* Get the control sequence date */
             date = (mtime_t)GetWBE( &p_sys->buffer[i_index] ) * 11000;
 
@@ -231,19 +237,19 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
         switch( i_command )
         {
         case SPU_CMD_FORCE_DISPLAY: /* 00 (force displaying) */
-            p_spu->i_start = p_spu_data->i_pts + date;
+            p_spu->i_start = i_pts + date;
             p_spu->b_ephemer = true;
             i_index += 1;
             break;
 
         /* Convert the dates in seconds to PTS values */
         case SPU_CMD_START_DISPLAY: /* 01 (start displaying) */
-            p_spu->i_start = p_spu_data->i_pts + date;
+            p_spu->i_start = i_pts + date;
             i_index += 1;
             break;
 
         case SPU_CMD_STOP_DISPLAY: /* 02 (stop displaying) */
-            p_spu->i_stop = p_spu_data->i_pts + date;
+            p_spu->i_stop = i_pts + date;
             i_index += 1;
             break;
 
@@ -260,7 +266,7 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
                 unsigned int idx[4];
                 int i;
 
-                p_spu_data->b_palette = true;
+                spu_data_cmd.b_palette = true;
 
                 idx[0] = (p_sys->buffer[i_index+1]>>4)&0x0f;
                 idx[1] = (p_sys->buffer[i_index+1])&0x0f;
@@ -272,9 +278,9 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
                     uint32_t i_color = p_dec->fmt_in.subs.spu.palette[1+idx[i]];
 
                     /* FIXME: this job should be done sooner */
-                    p_spu_data->pi_yuv[3-i][0] = (i_color>>16) & 0xff;
-                    p_spu_data->pi_yuv[3-i][1] = (i_color>>0) & 0xff;
-                    p_spu_data->pi_yuv[3-i][2] = (i_color>>8) & 0xff;
+                    spu_data_cmd.pi_yuv[3-i][0] = (i_color>>16) & 0xff;
+                    spu_data_cmd.pi_yuv[3-i][1] = (i_color>>0) & 0xff;
+                    spu_data_cmd.pi_yuv[3-i][2] = (i_color>>8) & 0xff;
                 }
             }
 
@@ -288,10 +294,11 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
                 return VLC_EGENERIC;
             }
 
-            p_spu_data->pi_alpha[3] = (p_sys->buffer[i_index+1]>>4)&0x0f;
-            p_spu_data->pi_alpha[2] = (p_sys->buffer[i_index+1])&0x0f;
-            p_spu_data->pi_alpha[1] = (p_sys->buffer[i_index+2]>>4)&0x0f;
-            p_spu_data->pi_alpha[0] = (p_sys->buffer[i_index+2])&0x0f;
+            b_cmd_alpha = true;
+            spu_data_cmd.pi_alpha[3] = (p_sys->buffer[i_index+1]>>4)&0x0f;
+            spu_data_cmd.pi_alpha[2] = (p_sys->buffer[i_index+1])&0x0f;
+            spu_data_cmd.pi_alpha[1] = (p_sys->buffer[i_index+2]>>4)&0x0f;
+            spu_data_cmd.pi_alpha[0] = (p_sys->buffer[i_index+2])&0x0f;
 
             i_index += 3;
             break;
@@ -327,12 +334,25 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
                 return VLC_EGENERIC;
             }
 
+            b_cmd_offset = true;
             p_spu_data->pi_offset[0] = GetWBE(&p_sys->buffer[i_index+1]) - 4;
             p_spu_data->pi_offset[1] = GetWBE(&p_sys->buffer[i_index+3]) - 4;
             i_index += 5;
             break;
 
         case SPU_CMD_END: /* ff (end) */
+            if( b_cmd_offset )
+            {
+                /* It seems that palette and alpha from the block having
+                 * the cmd offset have to be used
+                 * XXX is it all ? */
+                p_spu_data->b_palette = spu_data_cmd.b_palette;
+                if( spu_data_cmd.b_palette )
+                    memcpy( p_spu_data->pi_yuv, spu_data_cmd.pi_yuv, sizeof(spu_data_cmd.pi_yuv) );
+                if( b_cmd_alpha )
+                    memcpy( p_spu_data->pi_alpha, spu_data_cmd.pi_alpha, sizeof(spu_data_cmd.pi_alpha) );
+            }
+
             i_index += 1;
             break;
 
@@ -362,16 +382,9 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
             }
         }
 
-        /* We need to check for quit commands here */
-        if( !vlc_object_alive (p_dec) )
-        {
-            return VLC_EGENERIC;
-        }
-
+        /* */
         if( i_command == SPU_CMD_END && i_index != i_next_seq )
-        {
             break;
-        }
     }
 
     /* Check that the next sequence index matches the current one */
@@ -386,6 +399,14 @@ static int ParseControlSeq( decoder_t *p_dec, subpicture_t *p_spu,
     {
         msg_Err( p_dec, "uh-oh, we went too far (0x%.4x > 0x%.4x)",
                  i_index, p_sys->i_spu_size );
+        return VLC_EGENERIC;
+    }
+
+    const int i_spu_size = p_sys->i_spu - 4;
+    if( p_spu_data->pi_offset[0] < 0 || p_spu_data->pi_offset[0] >= i_spu_size ||
+        p_spu_data->pi_offset[1] < 0 || p_spu_data->pi_offset[1] >= i_spu_size )
+    {
+        msg_Err( p_dec, "invalid offset values" );
         return VLC_EGENERIC;
     }
 
@@ -428,12 +449,9 @@ static int ParseRLE( decoder_t *p_dec,
                      const spu_properties_t *p_spu_properties )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    uint8_t       *p_src = &p_sys->buffer[4];
 
-    unsigned int i_code;
-
-    unsigned int i_width = p_spu_properties->i_width;
-    unsigned int i_height = p_spu_properties->i_height;
+    const unsigned int i_width = p_spu_properties->i_width;
+    const unsigned int i_height = p_spu_properties->i_height;
     unsigned int i_x, i_y;
 
     uint16_t *p_dest = p_spu_data->p_data;
@@ -457,42 +475,26 @@ static int ParseRLE( decoder_t *p_dec,
 
     for( i_y = 0 ; i_y < i_height ; i_y++ )
     {
+        unsigned int i_code;
         pi_offset = pi_table + i_id;
 
         for( i_x = 0 ; i_x < i_width ; i_x += i_code >> 2 )
         {
-            i_code = AddNibble( 0, p_src, pi_offset );
-
-            if( i_code < 0x04 )
+            i_code = 0;
+            for( unsigned int i_min = 1; i_min <= 0x40 && i_code < i_min; i_min <<= 2 )
             {
-                i_code = AddNibble( i_code, p_src, pi_offset );
-
-                if( i_code < 0x10 )
+                if( (*pi_offset >> 1) >= p_sys->i_spu_size )
                 {
-                    i_code = AddNibble( i_code, p_src, pi_offset );
-
-                    if( i_code < 0x040 )
-                    {
-                        i_code = AddNibble( i_code, p_src, pi_offset );
-
-                        if( i_code < 0x0100 )
-                        {
-                            /* If the 14 first bits are set to 0, then it's a
-                             * new line. We emulate it. */
-                            if( i_code < 0x0004 )
-                            {
-                                i_code |= ( i_width - i_x ) << 2;
-                            }
-                            else
-                            {
-                                /* We have a boo boo ! */
-                                msg_Err( p_dec, "unknown RLE code "
-                                         "0x%.4x", i_code );
-                                return VLC_EGENERIC;
-                            }
-                        }
-                    }
+                    msg_Err( p_dec, "out of bounds while reading rle" );
+                    return VLC_EGENERIC;
                 }
+                i_code = AddNibble( i_code, &p_sys->buffer[4], pi_offset );
+            }
+            if( i_code < 0x0004 )
+            {
+                /* If the 14 first bits are set to 0, then it's a
+                 * new line. We emulate it. */
+                i_code |= ( i_width - i_x ) << 2;
             }
 
             if( ( (i_code >> 2) + i_x + i_y * i_width ) > i_height * i_width )

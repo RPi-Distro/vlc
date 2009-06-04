@@ -2,7 +2,7 @@
  * Controller_widget.cpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 26fdcfc6aff27dcde85f52684e660f71a0dd4eb9 $
+ * $Id: f9761a78808a7a817090805d97a9e6761799eab5 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -107,7 +107,7 @@ SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
     if( b_special )
         subLayout->addWidget( volumeSlider );
     else
-        layout->addWidget( volumeSlider );
+        layout->addWidget( volumeSlider, 0, Qt::AlignBottom  );
 
     /* Set the volume from the config */
     volumeSlider->setValue( ( config_GetInt( p_intf, "volume" ) ) *

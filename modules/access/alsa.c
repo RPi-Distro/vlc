@@ -2,7 +2,7 @@
  * alsa.c : Alsa input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 43bd16fe5a66897259d05eb752ad2b4e0093746e $
+ * $Id$
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>

@@ -2,7 +2,7 @@
  * coredialogs.h: Mac OS X Core Dialogs
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 5beb045e088f911b8800ad6addbe1cba7c2bb1cb $
+ * $Id: 8fecec162a98cac925045458428b2675ee163217 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -69,23 +69,28 @@
     IBOutlet id o_auth_win;
 
     /* progress dialogue */
-    IBOutlet id o_prog_bar;
+    IBOutlet NSProgressIndicator * o_prog_bar;
     IBOutlet id o_prog_cancel_btn;
     IBOutlet id o_prog_description_txt;
     IBOutlet id o_prog_title_txt;
     IBOutlet id o_prog_win;
+    BOOL b_progress_cancelled;
 }
 + (VLCCoreDialogProvider *)sharedInstance;
 
 -(void)performDialogEvent: (NSNotification *)o_notification;
--(void)performProgressBarEvent: (NSNotification *)o_notification;
 
 -(void)showFatalDialog: (NSValue *)o_value;
 -(void)showQuestionDialog: (NSValue *)o_value;
+
 -(void)showLoginDialog: (NSValue *)o_value;
 -(IBAction)loginDialogAction:(id)sender;
+
 -(void)showProgressDialog: (NSValue *)o_value;
 -(IBAction)progDialogAction:(id)sender;
+-(BOOL)progressCancelled;
+-(void)updateProgressPanelWithText: (NSString *)string andNumber: (double)d_number;
+-(void)destroyProgressPanel;
 
 -(id)errorPanel;
 

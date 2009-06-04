@@ -2,7 +2,7 @@
  * trivial.c : trivial channel mixer plug-in (drops unwanted channels)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: ee393ed48deac87a410381317b587a827b08d844 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

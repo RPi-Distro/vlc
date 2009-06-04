@@ -2,7 +2,7 @@
  * dynamicoverlay_commands.c : dynamic overlay plugin commands
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 3f3f5b82fc5e513dff7f3d5beea1bf936c92297e $
+ * $Id$
  *
  * Author: Soren Bog <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>

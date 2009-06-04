@@ -2,7 +2,7 @@
  * vout.m: MacOS X video output module
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 224ed25f48363f64ebd811760ee1966d488b9b16 $
+ * $Id: 94548d3e40488c013a3983217762d504a015a3fc $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -36,6 +36,13 @@
 
 /* prevent system sleep */
 #import <CoreServices/CoreServices.h>
+/* FIXME: HACK!! */
+#ifdef __x86_64__
+#import <CoreServices/../Frameworks/OSServices.framework/Headers/Power.h>
+#endif
+
+/* SystemUIMode */
+#import <Carbon/Carbon.h>
 
 #include <vlc_keys.h>
 
@@ -451,7 +458,6 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     if( !VLCIntf || !VLCIntf->p_sys )
         return;
 
-    UInt8 UsrActivity;
     if( VLCIntf->p_sys->i_play_status == PLAYING_S )
         UpdateSystemActivity( UsrActivity );
 }
@@ -1113,7 +1119,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     [self setMovableByWindowBackground: NO];
 
     if( [screen isMainScreen] )
-        [NSMenu setMenuBarVisible:NO];
+        SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
 
     initialFrame = [self frame];
     [self setFrame:[screen frame] display:YES animate:YES];
@@ -1134,7 +1140,7 @@ int DeviceCallback( vlc_object_t *p_this, const char *psz_variable,
     [NSScreen unblackoutScreens];
 
     [[[[VLCMain sharedInstance] controls] fspanel] setNonActive: nil];
-    [NSMenu setMenuBarVisible:YES];
+    SetSystemUIMode( kUIModeNormal, kUIOptionAutoShowMenuBar);
 
     [self setFrame:initialFrame display:YES animate:YES];
     [self setMovableByWindowBackground: YES];

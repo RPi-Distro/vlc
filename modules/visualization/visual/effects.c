@@ -2,7 +2,7 @@
  * effects.c : Effects for the visualization system
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 7e70d71916402c00f7e7f8692b0962f64eb047b5 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *          Adrien Maglo <magsoft@videolan.org>

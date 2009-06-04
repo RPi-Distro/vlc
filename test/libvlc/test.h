@@ -1,7 +1,7 @@
 /*
  * test.h - libvlc smoke test common definitions
  *
- * $Id: 388a465d33181f510c745cfb9eaea72404c027cb $
+ * $Id$
  */
 
 /**********************************************************************

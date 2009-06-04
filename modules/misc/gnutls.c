@@ -2,7 +2,7 @@
  * gnutls.c
  *****************************************************************************
  * Copyright (C) 2004-2006 Rémi Denis-Courmont
- * $Id: 7a0a18a9f54dd3c50cc4e3c17a24664a6b38302c $
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

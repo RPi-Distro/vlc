@@ -2,7 +2,7 @@
  * demux.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 3d210ffe62c28dbbcaf05257cb29f46900f89528 $
+ * $Id: 4d983212f84ebcb8731dd693ad5c06e975a7122a $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -234,7 +234,7 @@ int demux_vaControlHelper( stream_t *s,
 
         case DEMUX_GET_TIME:
             pi64 = (int64_t*)va_arg( args, int64_t * );
-            if( i_bitrate > 0 && i_end > i_start )
+            if( i_bitrate > 0 && i_tell >= i_start )
             {
                 *pi64 = INT64_C(8000000) * (i_tell - i_start) / i_bitrate;
                 return VLC_SUCCESS;

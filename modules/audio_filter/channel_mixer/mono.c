@@ -2,7 +2,7 @@
  * mono.c : stereo2mono downmixsimple channel mixer plug-in
  *****************************************************************************
  * Copyright (C) 2006 M2X
- * $Id: 77bc29f2b1e346cb46283e28396c7e3a086cf369 $
+ * $Id: 2d68a00a1078663c0d17b45a6cad8dd687f047a9 $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -108,6 +108,10 @@ static const uint32_t pi_channels_out[] =
 vlc_module_begin ()
     set_description( N_("Audio filter for stereo to mono conversion") )
     set_capability( "audio filter2", 2 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_callbacks( OpenFilter, CloseFilter )
+    set_shortname( "Mono" )
 
     add_bool( MONO_CFG "downmix", true, NULL, MONO_DOWNMIX_TEXT,
               MONO_DOWNMIX_LONGTEXT, false )
@@ -115,10 +119,6 @@ vlc_module_begin ()
         MONO_CHANNEL_LONGTEXT, false )
         change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
 
-    set_category( CAT_AUDIO )
-    set_subcategory( SUBCAT_AUDIO_MISC )
-    set_callbacks( OpenFilter, CloseFilter )
-    set_shortname( "Mono" )
 vlc_module_end ()
 
 /* Init() and ComputeChannelOperations() -

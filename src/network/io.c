@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005, 2007 the VideoLAN team
  * Copyright © 2005-2006 Rémi Denis-Courmont
- * $Id: 6b62d902ff6eac1affbdd316685202651d07ce6c $
+ * $Id: 313e0e8a9494ce83aa46d4ca5ba638d060e0832c $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -219,8 +219,8 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
             net_Close (fd);
 #if !defined(WIN32) && !defined(UNDER_CE)
             fd = rootwrap_bind (ptr->ai_family, socktype,
-                                protocol ?: ptr->ai_protocol, ptr->ai_addr,
-                                ptr->ai_addrlen);
+                                protocol ? protocol : ptr->ai_protocol,
+                                ptr->ai_addr, ptr->ai_addrlen);
             if (fd != -1)
             {
                 msg_Dbg (p_this, "got socket %d from rootwrap", fd);

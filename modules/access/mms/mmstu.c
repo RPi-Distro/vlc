@@ -2,7 +2,7 @@
  * mms.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 1ae4b90c551806bbd21b897bafc02d0d1ced4369 $
+ * $Id: 4a860fd889ddba5b01b2f0da5176c7e783c3518f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -201,6 +201,11 @@ int  MMSTUOpen( access_t *p_access )
 
     /* Keep the connection alive when paused */
     p_sys->p_keepalive = malloc( sizeof( mmstu_keepalive_t ) );
+    if( !p_sys->p_keepalive )
+    {
+        MMSTUClose ( p_access );
+        return VLC_ENOMEM;
+    }
     p_sys->p_keepalive->p_access = p_access;
     vlc_mutex_init( &p_sys->p_keepalive->lock );
     vlc_cond_init( &p_sys->p_keepalive->wait );
@@ -305,11 +310,14 @@ static int Control( access_t *p_access, int i_query, va_list args )
             else
                 Seek( p_access, p_access->info.i_pos );
 
-            vlc_mutex_lock( &p_sys->p_keepalive->lock );
-            p_sys->p_keepalive->b_paused = b_bool;
-            if( b_bool )
-                vlc_cond_signal( &p_sys->p_keepalive->wait );
-            vlc_mutex_unlock( &p_sys->p_keepalive->lock );
+            if( p_sys->p_keepalive )
+            {
+                vlc_mutex_lock( &p_sys->p_keepalive->lock );
+                p_sys->p_keepalive->b_paused = b_bool;
+                if( b_bool )
+                    vlc_cond_signal( &p_sys->p_keepalive->wait );
+                vlc_mutex_unlock( &p_sys->p_keepalive->lock );
+            }
             break;
 
         case ACCESS_GET_TITLE_INFO:
@@ -1027,6 +1035,7 @@ static int mms_CommandSend( access_t *p_access, int i_command,
     vlc_mutex_unlock( &p_sys->lock_netwrite );
     if( i_ret != buffer.i_data - ( 8 - ( i_data - i_data_old ) ) )
     {
+        var_buffer_free( &buffer );
         msg_Err( p_access, "failed to send command" );
         return VLC_EGENERIC;
     }

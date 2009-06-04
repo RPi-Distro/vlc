@@ -2,7 +2,7 @@
  * embeddedwindow.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: adcec67b8314e8b72f9f145ed18d0d3af06b4ec7 $
+ * $Id: 9409690b4ef548c5e6c0083b699c59ba630720b0 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -31,6 +31,9 @@
 #import "vout.h"
 #import "embeddedwindow.h"
 #import "fspanel.h"
+
+/* SetSystemUIMode, ... */
+#import <Carbon/Carbon.h>
 
 /*****************************************************************************
  * VLCEmbeddedWindow Implementation
@@ -195,11 +198,14 @@
     if( videoRatio.height == 0. || videoRatio.width == 0. )
         return proposedFrameSize;
 
-    NSRect viewRect = [o_view convertRect:[o_view bounds] toView: nil];
-    NSRect contentRect = [self contentRectForFrameRect:[self frame]];
-    float marginy = viewRect.origin.y + [self frame].size.height - contentRect.size.height;
-    float marginx = contentRect.size.width - viewRect.size.width;
-    proposedFrameSize.height = (proposedFrameSize.width - marginx) * videoRatio.height / videoRatio.width + marginy;
+    if( [[[VLCMain sharedInstance] controls] aspectRatioIsLocked] )
+    {
+        NSRect viewRect = [o_view convertRect:[o_view bounds] toView: nil];
+        NSRect contentRect = [self contentRectForFrameRect:[self frame]];
+        float marginy = viewRect.origin.y + [self frame].size.height - contentRect.size.height;
+        float marginx = contentRect.size.width - viewRect.size.width;
+        proposedFrameSize.height = (proposedFrameSize.width - marginx) * videoRatio.height / videoRatio.width + marginy;
+    }
 
     return proposedFrameSize;
 }
@@ -284,7 +290,7 @@
             CGDisplayFade( token, 0.5, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0, 0, 0, YES );
  
             if ([screen isMainScreen])
-                [NSMenu setMenuBarVisible:NO];
+                SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
  
             [[self contentView] replaceSubview:o_view with:o_temp_view];
             [o_temp_view setFrame:[o_view frame]];
@@ -334,7 +340,7 @@
     }
  
     if ([screen isMainScreen])
-        [NSMenu setMenuBarVisible:NO];
+        SetSystemUIMode( kUIModeAllHidden, kUIOptionAutoShowMenuBar);
 
     dict1 = [[NSMutableDictionary alloc] initWithCapacity:2];
     dict2 = [[NSMutableDictionary alloc] initWithCapacity:3];
@@ -424,7 +430,7 @@
         CGDisplayFade( token, 0.3, kCGDisplayBlendNormal, kCGDisplayBlendSolidColor, 0, 0, 0, YES );
 
         [[[[VLCMain sharedInstance] controls] fspanel] setNonActive: nil];
-        [NSMenu setMenuBarVisible:YES];
+        SetSystemUIMode( kUIModeNormal, kUIOptionAutoShowMenuBar);
 
         /* Will release the lock */
         [self hasEndedFullscreen];
@@ -442,7 +448,7 @@
     [self orderFront: self];
 
     [[[[VLCMain sharedInstance] controls] fspanel] setNonActive: nil];
-    [NSMenu setMenuBarVisible:YES];
+    SetSystemUIMode( kUIModeNormal, kUIOptionAutoShowMenuBar);
 
     if (o_fullscreen_anim1)
     {

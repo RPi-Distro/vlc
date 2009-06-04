@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: d2eb628f5c80072ad7ac60b68e678b4694a6bf7e $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

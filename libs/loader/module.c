@@ -1,7 +1,7 @@
 /*
  * Modules
  *
- * $Id: 635f4b54ea10ad734eb6073b8dfe4795b9695e7f $
+ * $Id$
  *
  * Copyright 1995 Alexandre Julliard
  *

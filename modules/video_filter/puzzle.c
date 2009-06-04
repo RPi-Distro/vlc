@@ -2,7 +2,7 @@
  * puzzle.c : Puzzle game
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: f62cb21327754bb5078388c79eb02599acbc99e2 $
+ * $Id: 3f5e682cb579cc61400873ae3f6811b0fa40b2a8 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -518,6 +518,8 @@ static int PuzzleCallback( vlc_object_t *p_this, char const *psz_var,
 {
     VLC_UNUSED(p_this); VLC_UNUSED(oldval);
     vout_sys_t *p_sys = (vout_sys_t *)p_data;
+
+    /* FIXME: thread safety */
     if( !strcmp( psz_var, CFG_PREFIX "rows" ) )
     {
         p_sys->i_rows = __MAX( 1, newval.i_int );

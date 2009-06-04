@@ -2,7 +2,7 @@
  * oss.c : OSS input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 7ea65275881bd78f28ebce2729d4b58c5e280971 $
+ * $Id$
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>

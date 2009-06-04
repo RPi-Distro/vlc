@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: 7ef11385de6e22d20873f6455a573fb77e6fb9f7 $
+ * $Id: c82b2a0939659be1e95b70ed373d8aa8c181014d $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -27,6 +27,7 @@
 #include <assert.h>
 
 #include <vlc_common.h>
+#include <vlc_url.h>
 #include "vlc_playlist.h"
 #include "vlc_interface.h"
 
@@ -367,8 +368,33 @@ void input_item_SetURI( input_item_t *p_i, const char *psz_uri )
             p_i->psz_name = strdup( psz_filename );
     }
 
+    /* The name is NULL: fill it with everything except login and password */
     if( !p_i->psz_name )
-        p_i->psz_name = strdup( p_i->psz_uri );
+    {
+        vlc_url_t url;
+        vlc_UrlParse( &url, psz_uri, 0 );
+        if( url.psz_protocol )
+        {
+            if( url.i_port > 0 )
+                asprintf( &p_i->psz_name, "%s://%s:%d%s", url.psz_protocol,
+                          url.psz_host, url.i_port,
+                          url.psz_path ? url.psz_path : "" );
+            else
+                asprintf( &p_i->psz_name, "%s://%s%s", url.psz_protocol,
+                          url.psz_host ? url.psz_host : "",
+                          url.psz_path ? url.psz_path : "" );
+        }
+        else
+        {
+            if( url.i_port > 0 )
+                asprintf( &p_i->psz_name, "%s:%d%s", url.psz_host, url.i_port,
+                          url.psz_path ? url.psz_path : "" );
+            else
+                asprintf( &p_i->psz_name, "%s%s", url.psz_host,
+                          url.psz_path ? url.psz_path : "" );
+        }
+        vlc_UrlClean( &url );
+    }
 
     vlc_mutex_unlock( &p_i->lock );
 }
@@ -788,10 +814,12 @@ static void GuessType( input_item_t *p_item)
         { "dvb", ITEM_TYPE_CARD },
         { "qpsk", ITEM_TYPE_CARD },
         { "sdp", ITEM_TYPE_NET },
+        { "ftp", ITEM_TYPE_NET },
+        { "smb", ITEM_TYPE_NET },
         { NULL, 0 }
     };
 
-    if( !p_item->psz_uri )
+    if( !p_item->psz_uri || !strstr( p_item->psz_uri, "://" ) )
     {
         p_item->i_type = ITEM_TYPE_FILE;
         return;

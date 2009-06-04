@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 2f74e238f95403358bfd9d17e904276a998d60a2 $
+ * $Id: d522a8b7ae7719e85745307e42e66c9a31cf7fce $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -49,7 +49,6 @@ class FullscreenControllerWidget;
 class SpeedControlWidget;
 class QMenu;
 class QSize;
-class DialogHandler;
 
 enum {
     CONTROLS_VISIBLE = 0x1,
@@ -110,7 +109,6 @@ private:
     ControlsWidget      *controls;
     InputControlsWidget *inputC;
     FullscreenControllerWidget *fullscreenControls;
-    DialogHandler       *dialogHandler;
 
     void createMainWidget( QSettings* );
     void createStatusBar();
@@ -144,6 +142,7 @@ private:
     pl_dock_e            i_pl_dock;
     bool                 isDocked() { return ( i_pl_dock != PL_UNDOCKED ); }
     int                  i_bg_height;         ///< Save height of bgWidget
+    bool                 b_shouldHide;
 
     /* Status Bar */
     QLabel              *nameLabel;

@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: 9fef443c491a3c1d0d100dd9c455ef26cc05fbf4 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -249,7 +249,7 @@ void SoutDialog::updateMRL()
 
     mrl = smrl.getMrl();
 
-    /* FIXME, deal with SAP 
+    /* FIXME, deal with SAP
     sout.b_sap = ui.sap->isChecked();
     sout.psz_group = strdup( qtu( ui.sapGroup->text() ) );
     sout.psz_name = strdup( qtu( ui.sapName->text() ) ); */

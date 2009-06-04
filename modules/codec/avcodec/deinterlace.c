@@ -3,7 +3,7 @@
  *               using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 4b97455b15fb98b4642b0293860e377b00956e88 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

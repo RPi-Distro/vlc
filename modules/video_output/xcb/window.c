@@ -31,7 +31,6 @@
 #include <limits.h> /* HOST_NAME_MAX */
 
 #include <xcb/xcb.h>
-#include <xcb/xcb_aux.h>
 typedef xcb_atom_t Atom;
 #include <X11/Xatom.h> /* XA_WM_NAME */
 
@@ -80,11 +79,18 @@ struct vout_window_sys_t
 };
 
 static inline
+void set_string (xcb_connection_t *conn, xcb_window_t window,
+                 xcb_atom_t type, xcb_atom_t atom, const char *str)
+{
+    xcb_change_property (conn, XCB_PROP_MODE_REPLACE, window, atom, type,
+                         /* format */ 8, strlen (str), str);
+}
+
+static inline
 void set_ascii_prop (xcb_connection_t *conn, xcb_window_t window,
                      xcb_atom_t atom, const char *value)
 {
-    xcb_change_property (conn, XCB_PROP_MODE_REPLACE, window, atom,
-                         XA_STRING, 8, strlen (value), value);
+    set_string (conn, window, atom, XA_STRING, value);
 }
 
 static inline
@@ -97,6 +103,12 @@ void set_hostname_prop (xcb_connection_t *conn, xcb_window_t window)
         hostname[sizeof (hostname) - 1] = '\0';
         set_ascii_prop (conn, window, XA_WM_CLIENT_MACHINE, hostname);
     }
+}
+
+static inline
+xcb_intern_atom_cookie_t intern_string (xcb_connection_t *c, const char *s)
+{
+    return xcb_intern_atom (c, 0, strlen (s), s);
 }
 
 static
@@ -113,6 +125,10 @@ xcb_atom_t get_atom (xcb_connection_t *conn, xcb_intern_atom_cookie_t ck)
     free (reply);
     return atom;
 }
+
+#define NET_WM_STATE_REMOVE 0
+#define NET_WM_STATE_ADD    1
+#define NET_WM_STATE_TOGGLE 2
 
 /**
  * Create an X11 window.
@@ -136,8 +152,26 @@ static int Open (vlc_object_t *obj)
     if (xcb_connection_has_error (conn) /*== NULL*/)
         goto error;
 
+    /* Find configured screen */
+    const xcb_setup_t *setup = xcb_get_setup (conn);
+    xcb_screen_t *scr = NULL;
+    for (xcb_screen_iterator_t i = xcb_setup_roots_iterator (setup);
+         i.rem > 0; xcb_screen_next (&i))
+    {
+        if (snum == 0)
+        {
+            scr = i.data;
+            break;
+        }
+        snum--;
+    }
+    if (scr == NULL)
+    {
+        msg_Err (wnd, "bad X11 screen number");
+        goto error;
+    }
+
     /* Create window */
-    xcb_screen_t *scr = xcb_aux_get_screen (conn, snum);
     const uint32_t mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
     uint32_t values[2] = {
         /* XCB_CW_BACK_PIXEL */
@@ -158,6 +192,14 @@ static int Open (vlc_object_t *obj)
         goto error;
     }
 
+    wnd->handle.xid = window;
+    wnd->p_sys = p_sys;
+    wnd->control = Control;
+
+    p_sys->conn = conn;
+    p_sys->keys = CreateKeyHandler (obj, conn);
+    p_sys->root = scr->root;
+
     /* ICCCM
      * No cut&paste nor drag&drop, only Window Manager communication. */
     /* Plain ASCII localization of VLC for ICCCM window name */
@@ -169,19 +211,34 @@ static int Open (vlc_object_t *obj)
                          XA_STRING, 8, 8, "vlc\0Vlc");
     set_hostname_prop (conn, window);
 
-    wnd->handle.xid = window;
-    wnd->p_sys = p_sys;
-    wnd->control = Control;
+    /* EWMH */
+    xcb_intern_atom_cookie_t utf8_string_ck
+        = intern_string (conn, "UTF8_STRING");;
+    xcb_intern_atom_cookie_t net_wm_name_ck
+        = intern_string (conn, "_NET_WM_NAME");
+    xcb_intern_atom_cookie_t net_wm_icon_name_ck
+        = intern_string (conn, "_NET_WM_ICON_NAME");
 
-    p_sys->conn = conn;
-    p_sys->keys = CreateKeyHandler (obj, conn);
-    p_sys->root = scr->root;
+    xcb_atom_t utf8 = get_atom (conn, utf8_string_ck);
+
+    xcb_atom_t net_wm_name = get_atom (conn, net_wm_name_ck);
+    char *title = var_CreateGetNonEmptyString (wnd, "video-title");
+    if (title)
+    {
+        set_string (conn, window, utf8, net_wm_name, title);
+        free (title);
+    }
+    else
+        set_string (conn, window, utf8, net_wm_name, _("VLC media player"));
+
+    xcb_atom_t net_wm_icon_name = get_atom (conn, net_wm_icon_name_ck);
+    set_string (conn, window, utf8, net_wm_icon_name, _("VLC"));
 
     /* Cache any EWMH atom we may need later */
     xcb_intern_atom_cookie_t wm_state_ck, wm_state_above_ck;
 
-    wm_state_ck = xcb_intern_atom (conn, 0, 13, "_NET_WM_STATE");
-    wm_state_above_ck = xcb_intern_atom (conn, 0, 18, "_NET_WM_STATE_ABOVE");
+    wm_state_ck = intern_string (conn, "_NET_WM_STATE");
+    wm_state_above_ck = intern_string (conn, "_NET_WM_STATE_ABOVE");
 
     p_sys->wm_state = get_atom (conn, wm_state_ck);
     p_sys->wm_state_above = get_atom (conn, wm_state_above_ck);
@@ -289,16 +346,16 @@ static int Control (vout_window_t *wnd, int cmd, va_list ap)
         case VOUT_SET_STAY_ON_TOP:
         {   /* From EWMH "_WM_STATE" */
             xcb_client_message_event_t ev = {
-                .response_type = 0x80 | XCB_CLIENT_MESSAGE,
+                .response_type = XCB_CLIENT_MESSAGE,
                 .format = 32,
                 .window = wnd->handle.xid,
                 .type = p_sys->wm_state,
             };
             bool on = va_arg (ap, int);
 
-            ev.data.data32[0] = on;
+            ev.data.data32[0] = on ? NET_WM_STATE_ADD : NET_WM_STATE_REMOVE;
             ev.data.data32[1] = p_sys->wm_state_above;
-            ev.data.data32[1] = 289;
+            ev.data.data32[2] = 0;
             ev.data.data32[3] = 1;
 
             /* From ICCCM "Changing Window State" */

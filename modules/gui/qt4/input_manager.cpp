@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 94b08b4b9510f0a5cb21b8ce3fb70838d0184033 $
+ * $Id: 0b456ad086193ae58c4b1e8c2a962ddf2a3bc139 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -883,11 +883,9 @@ MainInputManager::MainInputManager( intf_thread_t *_p_intf )
     CONNECT( this, inputChanged( input_thread_t * ),
              im, setInput( input_thread_t * ) );
 
-    /* emit check if playlist has allready started playing */
-    vlc_value_t val;
-    var_Change( THEPL, "item-current", VLC_VAR_CHOICESCOUNT, &val, NULL );
-
-    IMEvent *event = new IMEvent( ItemChanged_Type, val.i_int);
+    /* emit check if playlist has already started playing */
+    IMEvent *event = new IMEvent( ItemChanged_Type,
+                                  var_GetInteger( THEPL, "item-current" ) );
     customEvent( event );
     delete event;
 }

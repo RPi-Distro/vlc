@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 5e1fdf74ff16176cdcc40d81926024a75892f597 $
+ * $Id$
  */
 
 #include <stdio.h>
