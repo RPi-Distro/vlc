@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008 the VideoLAN team
-* $Id: 2e457c1680a116196d98b658b4bd65f3bdb2de5f $
+* $Id: debf9efd70d9d216449fef365715fba317d0e373 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -570,7 +570,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     /********************
      * hotkeys settings *
      ********************/
-    struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
+    const struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
     o_hotkeySettings = [[NSMutableArray alloc] init];
     NSMutableArray *o_tempArray_desc = [[NSMutableArray alloc] init];
     i = 1;
@@ -661,7 +661,11 @@ static inline void save_string_list( intf_thread_t * p_intf, id object, const ch
     p_item = config_FindConfig( VLC_OBJECT(p_intf), name );
     p_stringobject = (NSString *)[[object selectedItem] representedObject];
     assert([p_stringobject isKindOfClass:[NSString class]]);
-    if( p_stringobject ) config_PutPsz( p_intf, name, [p_stringobject UTF8String] );
+    if( p_stringobject )
+    {
+        config_PutPsz( p_intf, name, [p_stringobject UTF8String] );
+        [p_stringobject release];
+    }
 }
 
 static inline void save_module_list( intf_thread_t * p_intf, id object, const char * name )
@@ -694,7 +698,6 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 {
     char *psz_tmp;
     int i;
-    NSString *p_stringobject;
     
 #define SaveIntList( object, name ) save_int_list( p_intf, object, name )
                     
@@ -931,7 +934,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
      ********************/
     if( b_hotkeyChanged )
     {
-        struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
+        const struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
         i = 1;
         while( i < [o_hotkeySettings count] )
         {

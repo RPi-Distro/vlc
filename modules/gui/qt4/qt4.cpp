@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 7455ac0407fa4f0891e163338e256a4761334be1 $
+ * $Id: ec2efbe96c6fc0e27393c56d10dff48d6570cab1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -223,7 +223,7 @@ vlc_module_begin ()
                  UPDATER_DAYS_TEXT, false )
 #endif
     add_string( "qt-slider-colours",
-                "255;255;255;20;226;20;255;176;15;235;30;20",
+                "255;255;255;20;210;20;255;199;15;245;39;29",
                 NULL, SLIDERCOL_TEXT, SLIDERCOL_LONGTEXT, false )
 
     add_bool( "qt-privacy-ask", true, NULL, PRIVACY_TEXT, PRIVACY_TEXT,

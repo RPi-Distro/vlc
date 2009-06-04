@@ -3,7 +3,7 @@
  * Also contains some internal utility functions
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 67e8c284469e4b7a171784a114f120e29afdc69f $
+ * $Id: 417d38e01f11f7048b2c8e7ef50a1d05e8bf66d3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -163,18 +163,6 @@ struct libvlc_media_player_t
     } drawable;
 
     bool        b_own_its_input_thread;
-};
-
-struct libvlc_media_list_player_t
-{
-    libvlc_event_manager_t *    p_event_manager;
-    libvlc_instance_t *         p_libvlc_instance;
-    int                         i_refcount;
-    vlc_mutex_t                 object_lock;
-    libvlc_media_list_path_t    current_playing_item_path;
-    libvlc_media_t *            p_current_playing_item;
-    libvlc_media_list_t *       p_mlist;
-    libvlc_media_player_t *     p_mi;
 };
 
 struct libvlc_media_library_t

@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: bfea0b79a7d9cb66ca7ed8d34deb3b908f0d2755 $
+ * $Id$
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify

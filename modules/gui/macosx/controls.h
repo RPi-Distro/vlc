@@ -2,7 +2,7 @@
  * controls.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: bd123bde20026886fb57b33e0a4444344aa3cb20 $
+ * $Id: 3708813f47af30ff616afb5dd2cd5281359a7f9e $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -53,10 +53,12 @@
     IBOutlet id o_specificTime_mi;
 
     VLCFSPanel *o_fs_panel;
+    BOOL b_lockAspectRatio;
 }
 - (void)controlTintChanged;
 
 - (id)voutView;
+- (BOOL)aspectRatioIsLocked;
 
 - (IBAction)play:(id)sender;
 - (IBAction)stop:(id)sender;
@@ -91,6 +93,7 @@
 
 - (IBAction)telxTransparent:(id)sender;
 - (IBAction)telxNavLink:(id)sender;
+- (IBAction)lockVideosAspectRatio:(id)sender;
 - (IBAction)addSubtitleFile:(id)sender;
 
 - (BOOL)keyEvent:(NSEvent *)o_event;

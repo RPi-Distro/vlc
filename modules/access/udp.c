@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
  * Copyright (C) 2007 Remi Denis-Courmont
- * $Id: 433ccfb98e822b13217c07391cfaaea885f89ecb $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Tristan Leteurtre <tooney@via.ecp.fr>

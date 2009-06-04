@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 23fd3e63c0f68eba2d48b405964b615ae84f1465 $
+ * $Id: bcd3bad24d63d73219149c3c0f68f60dc7b3b76f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -52,6 +52,7 @@
 #include "dialogs/podcast_configuration.hpp"
 #include "dialogs/toolbar.hpp"
 #include "dialogs/plugins.hpp"
+#include "dialogs/external.hpp"
 
 #include <QEvent>
 #include <QApplication>
@@ -76,6 +77,8 @@ DialogsProvider::DialogsProvider( intf_thread_t *_p_intf ) :
 
     SDMapper = new QSignalMapper();
     CONNECT( SDMapper, mapped (QString), this, SDMenuAction( QString ) );
+
+    DialogHandler *dialogHandler = new DialogHandler (p_intf, this );
 }
 
 DialogsProvider::~DialogsProvider()
@@ -400,7 +403,7 @@ void DialogsProvider::addFromSimple( bool pl, bool go)
 {
     QStringList files = DialogsProvider::showSimpleOpen();
     int i = 0;
-	files.sort();
+    files.sort();
     foreach( const QString &file, files )
     {
         playlist_Add( THEPL, qtu( toNativeSeparators( file ) ), NULL,

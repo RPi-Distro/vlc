@@ -2,7 +2,7 @@
  * showintf.c: control the display of the interface in fullscreen mode
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 4ec461b1d3bf17607f77f92cd367a78eaf9c4bff $
+ * $Id: 2f1149b5f4db8361ccfa73a53e1eea326b752500 $
  *
  * Authors: Olivier Teuliere <ipkiss@via.ecp.fr>
  *
@@ -68,11 +68,15 @@ static int  MouseEvent( vlc_object_t *, char const *,
 
 vlc_module_begin ()
     set_shortname( "Showintf" )
-    add_integer( "showintf-threshold", 10, NULL, THRESHOLD_TEXT, THRESHOLD_LONGTEXT, true )
     set_description( N_("Show interface with mouse") )
 
     set_capability( "interface", 0 )
     set_callbacks( Open, Close )
+
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_CONTROL )
+
+    add_integer( "showintf-threshold", 10, NULL, THRESHOLD_TEXT, THRESHOLD_LONGTEXT, true )
 vlc_module_end ()
 
 /*****************************************************************************

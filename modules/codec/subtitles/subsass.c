@@ -2,7 +2,7 @@
  * subsass.c : ASS/SSA subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: e642673288c6426079a4a1cf27c6679268fa018e $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>

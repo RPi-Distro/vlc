@@ -2,7 +2,7 @@
  * alsa.c : alsa plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id: 2d03d1da2785dfa25057dc5e41d1b0bfad11d44e $
+ * $Id$
  *
  * Authors: Henri Fallon <henri@videolan.org> - Original Author
  *          Jeffrey Baker <jwbaker@acm.org> - Port to ALSA 1.0 API

@@ -2,7 +2,7 @@
  * param_eq.c:
  *****************************************************************************
  * Copyright © 2006 the VideoLAN team
- * $Id: b20a84a6e5a81212da79f5605d47e980e611d96b $
+ * $Id$
  *
  * Authors: Antti Huovilainen
  *          Sigmund A. Helberg <dnumgis@videolan.org>

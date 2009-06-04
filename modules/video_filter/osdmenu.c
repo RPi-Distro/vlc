@@ -2,7 +2,7 @@
  * osdmenu.c: osd filter module
  *****************************************************************************
  * Copyright (C) 2004-2007 M2X
- * $Id: 82816578b1a0a323a28aabbc2707152aabe6b6d6 $
+ * $Id: 76214056519fe5ddb6ba84223963ea7e98bff044 $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -113,6 +113,16 @@ static int MouseEvent( vlc_object_t *, char const *,
 #define OSD_UPDATE_MAX     1000
 
 vlc_module_begin ()
+    set_capability( "sub filter", 100 )
+    set_description( N_("On Screen Display menu") )
+    set_shortname( N_("OSD menu") )
+    add_shortcut( "osdmenu" )
+
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_SUBPIC )
+
+    set_callbacks( CreateFilter, DestroyFilter )
+
     add_integer( OSD_CFG "x", -1, NULL, POSX_TEXT, POSX_LONGTEXT, false )
     add_integer( OSD_CFG "y", -1, NULL, POSY_TEXT, POSY_LONGTEXT, false )
     add_integer( OSD_CFG "position", 8, NULL, POS_TEXT, POS_LONGTEXT,
@@ -130,15 +140,6 @@ vlc_module_begin ()
     add_integer_with_range( OSD_CFG "alpha", 255, 0, 255, NULL,
         OSD_ALPHA_TEXT, OSD_ALPHA_LONGTEXT, true )
 
-    set_capability( "sub filter", 100 )
-    set_description( N_("On Screen Display menu") )
-    set_shortname( N_("OSD menu") )
-    add_shortcut( "osdmenu" )
-
-    set_category( CAT_VIDEO )
-    set_subcategory( SUBCAT_VIDEO_SUBPIC )
-
-    set_callbacks( CreateFilter, DestroyFilter )
 vlc_module_end ()
 
 /*****************************************************************************
@@ -218,6 +219,7 @@ static int CreateFilter ( vlc_object_t *p_this )
     if( p_sys->p_menu == NULL )
         goto error;
 
+    /* FIXME: this plugin is not at all thread-safe w.r.t. callbacks */
     p_sys->p_menu->i_position = p_sys->i_position;
 
     /* Check if menu position was overridden */
@@ -289,7 +291,7 @@ static void DestroyFilter( vlc_object_t *p_this )
     var_DelCallback( p_filter, OSD_CFG "update", OSDMenuCallback, p_sys );
     var_DelCallback( p_filter, OSD_CFG "alpha", OSDMenuCallback, p_sys );
 
-    if( p_sys )
+    if( p_sys ) /* FIXME: <-- WTF??? what about the 4 ones above? */
     {
         var_DelCallback( p_sys->p_menu, "osd-menu-update",
                          OSDMenuUpdateEvent, p_filter );

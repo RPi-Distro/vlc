@@ -2,7 +2,7 @@
  * qt4.hpp : QT4 interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: dbcd04f7aa47f8a311e575d1f298b0ad6a9c43e4 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

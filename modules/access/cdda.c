@@ -2,7 +2,7 @@
  * cdda.c : CD digital audio input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003 the VideoLAN team
- * $Id: d8d0f2dff6d320dfffb60baa78f1ac2072b13c3a $
+ * $Id: bddbfbfd900e0f8e28079886f967471ed8e59b55 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -604,6 +604,9 @@ static int GetTracks( access_t *p_access, input_item_t *p_current )
 #ifdef HAVE_LIBCDDB
 static cddb_disc_t *GetCDDBInfo( access_t *p_access, int i_titles, int *p_sectors )
 {
+    if( var_CreateGetInteger( p_access, "album-art" ) == ALBUM_ART_WHEN_ASKED )
+        return NULL;
+
     /* */
     cddb_conn_t *p_cddb = cddb_new();
     if( !p_cddb )

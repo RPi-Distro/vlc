@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 the VideoLAN team
- * $Id: 5308c6a77f2d3ac597a815ea21b4ff5ac125e7c0 $
+ * $Id: 825e1d6f25ac2e92877e12460fd713f1696b754c $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1213,6 +1213,9 @@ static void* RunThread( void *p_this )
 
                 picture_Copy( p_pic, p_directbuffer );
 
+                p_pic->format.i_sar_num = p_vout->fmt_out.i_sar_num;
+                p_pic->format.i_sar_den = p_vout->fmt_out.i_sar_den;
+
                 p_pic->p_next = p_vout->p->snapshot.p_picture;
                 p_vout->p->snapshot.p_picture = p_pic;
                 p_vout->p->snapshot.i_request--;
@@ -1927,7 +1930,8 @@ static int DeinterlaceCallback( vlc_object_t *p_this, char const *psz_cmd,
     const deinterlace_mode_t *p_mode;
     for( p_mode = &p_deinterlace_mode[0]; p_mode->psz_mode; p_mode++ )
     {
-        if( !strcmp( p_mode->psz_mode, newval.psz_string ?: "" ) )
+        if( !strcmp( p_mode->psz_mode,
+                     newval.psz_string ? newval.psz_string : "" ) )
             break;
     }
     if( !p_mode->psz_mode )
@@ -2023,7 +2027,7 @@ static void DeinterlaceEnable( vout_thread_t *p_vout )
         else if( DeinterlaceIsPresent( p_vout, false ) )
             psz_mode = var_CreateGetNonEmptyString( p_vout, "sout-deinterlace-mode" );
     }
-    var_SetString( p_vout, "deinterlace", psz_mode ?: "" );
+    var_SetString( p_vout, "deinterlace", psz_mode ? psz_mode : "" );
     free( psz_mode );
 }
 

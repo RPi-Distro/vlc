@@ -2,7 +2,7 @@
  * voutgl.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2004, 2007-2009 the VideoLAN team
- * $Id: 6921963e1dcf7873066be847438108db03b43e44 $
+ * $Id: 7f88fe2b34ae0d012ab6672ed296b5fb8179e28e $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -211,6 +211,19 @@ void CloseVideoGL ( vlc_object_t * p_this )
     msg_Dbg( p_this, "Closing" );
 
 #ifndef __x86_64__
+    /* If the fullscreen window is still open, close it */
+    if( p_vout->b_fullscreen )
+    {
+        p_vout->i_changes |= VOUT_FULLSCREEN_CHANGE;
+        if( p_vout->p_sys->b_embedded )
+        {
+            aglManage( p_vout );
+            var_SetBool( p_vout->p_parent, "fullscreen", false );
+        }
+        else
+            Manage( p_vout );
+    }
+
     if( p_vout->p_sys->b_embedded )
     {
         if( p_vout->p_sys->agl_ctx )

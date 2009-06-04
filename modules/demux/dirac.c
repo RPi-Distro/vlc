@@ -2,7 +2,7 @@
  * dirac.c : Dirac Video demuxer
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 84e66913830f3aef1a2b85b0cd4fa7c981adebdc $
+ * $Id$
  *
  * Authors: David Flynn <davidf@rd.bbc.co.uk>
  * Based on vc1.c by: Laurent Aimar <fenrir@via.ecp.fr>

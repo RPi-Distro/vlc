@@ -2,7 +2,7 @@
  * speex.c: speex decoder/packetizer/encoder module making use of libspeex.
  *****************************************************************************
  * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: af1ea6bd1ba4f231dea96c17adf299f99de01db9 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

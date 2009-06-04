@@ -2,7 +2,7 @@
  * cmd_playlist.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0e658a07f0f50ae89ecc18647e347fcd288cc465 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

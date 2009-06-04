@@ -2,7 +2,7 @@
  * vlcshell.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: b59c42d1651d92c5f7105510ccd1aab0a60740e6 $
+ * $Id: 151c615a185ff726e6ac4628af39d2f95fef109a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -167,8 +167,7 @@ int16 NPP_HandleEvent( NPP instance, void * event )
         return false;
     }
 
-    VlcPlugin *p_plugin = (VlcPlugin*)instance->pdata;
-
+    VlcPlugin* p_plugin = reinterpret_cast<VlcPlugin*>(instance->pdata);
     if( p_plugin == NULL )
     {
         return false;
@@ -392,8 +391,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
         {
             /* set/change parent window */
             libvlc_video_set_parent(p_vlc, (libvlc_drawable_t)drawable, &ex);
-            if( libvlc_exception_raised(&ex) )
-                fprintf( stderr, "Exception: %s\n", libvlc_exception_get_message(&ex) );
             libvlc_exception_clear(&ex);
         }
 
@@ -417,8 +414,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
         clip.right   = window->clipRect.right;
 
         libvlc_video_set_viewport(p_vlc, p_plugin->getMD(&ex), &view, &clip, &ex);
-        if( libvlc_exception_raised(&ex) )
-            fprintf( stderr, "Exception: %s\n", libvlc_exception_get_message(&ex) );
         libvlc_exception_clear(&ex);
 
         /* remember new window */
@@ -428,8 +423,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
     {
         /* change/set parent */
         libvlc_video_set_parent(p_vlc, 0, &ex);
-        if( libvlc_exception_raised(&ex) )
-            fprintf( stderr, "Exception: %s\n", libvlc_exception_get_message(&ex) );
         libvlc_exception_clear(&ex);
 
         curwin.window = NULL;
@@ -466,8 +459,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
 
             /* change/set parent */
             libvlc_video_set_parent(p_vlc, (libvlc_drawable_t)drawable, &ex);
-            if( libvlc_exception_raised(&ex) )
-                fprintf( stderr, "Exception: %s\n", libvlc_exception_get_message(&ex) );
             libvlc_exception_clear(&ex);
 
             /* remember new window */
@@ -487,8 +478,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
 
         /* change/set parent */
         libvlc_video_set_parent(p_vlc, 0, &ex);
-        if( libvlc_exception_raised(&ex) )
-            fprintf( stderr, "Exception: %s\n", libvlc_exception_get_message(&ex) );
         libvlc_exception_clear(&ex);
 
         curwin.window = NULL;
@@ -542,8 +531,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
 
             /* set/change parent window */
             libvlc_video_set_parent( p_vlc, (libvlc_drawable_t) video, &ex );
-            if( libvlc_exception_raised(&ex) )
-                fprintf( stderr, "Exception: %s\n", libvlc_exception_get_message(&ex) );
             libvlc_exception_clear(&ex);
 
             /* remember window */
@@ -568,8 +555,6 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
     {
         /* change/set parent */
         libvlc_video_set_parent(p_vlc, 0, &ex);
-        if( libvlc_exception_raised(&ex) )
-            fprintf( stderr, "Exception: %s\n", libvlc_exception_get_message(&ex) );
         libvlc_exception_clear(&ex);
         curwin.window = NULL;
     }
@@ -838,13 +823,9 @@ static void ControlHandler( Widget w, XtPointer closure, XEvent *event )
 
         libvlc_exception_init( &ex );
         libvlc_media_player_t *p_md = p_plugin->getMD(&ex);
-        if( libvlc_exception_raised(&ex) )
-            fprintf( stderr, "%s\n", libvlc_exception_get_message(&ex));
         libvlc_exception_clear( &ex );
 
         i_playing = p_plugin->playlist_isplaying( &ex );
-        if( libvlc_exception_raised(&ex) )
-            fprintf( stderr, "%s\n", libvlc_exception_get_message(&ex));
         libvlc_exception_clear( &ex );
 
         vlc_toolbar_clicked_t clicked;
@@ -859,8 +840,6 @@ static void ControlHandler( Widget w, XtPointer closure, XEvent *event )
                 else
                     p_plugin->playlist_play( &ex );
 
-                if( libvlc_exception_raised(&ex) )
-                    fprintf( stderr, "%s\n", libvlc_exception_get_message(&ex));
                 libvlc_exception_clear( &ex );
             }
             break;
@@ -868,8 +847,6 @@ static void ControlHandler( Widget w, XtPointer closure, XEvent *event )
             case clicked_Stop:
             {
                 p_plugin->playlist_stop(&ex);
-                if( libvlc_exception_raised(&ex) )
-                    fprintf( stderr, "%s\n", libvlc_exception_get_message(&ex));
                 libvlc_exception_clear( &ex );
             }
             break;
@@ -877,8 +854,6 @@ static void ControlHandler( Widget w, XtPointer closure, XEvent *event )
             case clicked_Fullscreen:
             {
                 p_plugin->set_fullscreen( 1, &ex );
-                if( libvlc_exception_raised(&ex) )
-                    fprintf( stderr, "%s\n", libvlc_exception_get_message(&ex));
                 libvlc_exception_clear( &ex );
             }
             break;
@@ -887,8 +862,6 @@ static void ControlHandler( Widget w, XtPointer closure, XEvent *event )
             case clicked_Unmute:
             {
                 libvlc_audio_toggle_mute( p_plugin->getVLC(), &ex );
-                if( libvlc_exception_raised(&ex) )
-                    fprintf( stderr, "%s\n", libvlc_exception_get_message(&ex));
                 libvlc_exception_clear( &ex );
             }
             break;
@@ -906,8 +879,6 @@ static void ControlHandler( Widget w, XtPointer closure, XEvent *event )
                             ( ((float)i_xPos-4.0 ) / ( ((float)i_width-8.0)/100) );
 
                     libvlc_media_player_set_time( p_md, f_length, &ex );
-                    if( libvlc_exception_raised(&ex) )
-                        fprintf( stderr, "%s\n", libvlc_exception_get_message(&ex));
                     libvlc_exception_clear( &ex );
                 }
             }

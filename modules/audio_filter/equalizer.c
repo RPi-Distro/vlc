@@ -2,7 +2,7 @@
  * equalizer.c:
  *****************************************************************************
  * Copyright (C) 2004, 2006 the VideoLAN team
- * $Id: 33b646943764a176179bd5e4029dc2bf41023c4e $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
- * $Id: 396994b2674a52cb6f2b67d4519293718bef1c68 $
+ * $Id: 01bc04ffe2a60aa5d529abcab51441bde8bff783 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -1107,13 +1107,11 @@ static void InitPrograms( input_thread_t * p_input )
     /* Set up es_out */
     es_out_Control( p_input->p->p_es_out, ES_OUT_SET_ACTIVE, true );
     i_es_out_mode = ES_OUT_MODE_AUTO;
-    val.p_list = NULL;
     if( p_input->p->p_sout )
     {
         if( var_GetBool( p_input, "sout-all" ) )
         {
             i_es_out_mode = ES_OUT_MODE_ALL;
-            val.p_list = NULL;
         }
         else
         {
@@ -1125,8 +1123,7 @@ static void InitPrograms( input_thread_t * p_input )
             }
             else
             {
-                var_Change( p_input, "programs", VLC_VAR_FREELIST, &val,
-                            NULL );
+                var_Change( p_input, "programs", VLC_VAR_FREELIST, &val, NULL );
             }
         }
     }
@@ -2435,7 +2432,7 @@ static int InputSourceInit( input_thread_t *p_input,
             in->b_can_pause = false;
         var_SetBool( p_input, "can-pause", in->b_can_pause || !in->b_can_pace_control ); /* XXX temporary because of es_out_timeshift*/
         var_SetBool( p_input, "can-rate", !in->b_can_pace_control || in->b_can_rate_control ); /* XXX temporary because of es_out_timeshift*/
-        var_SetBool( p_input, "can-rewind", !in->b_rescale_ts && !in->b_can_pace_control );
+        var_SetBool( p_input, "can-rewind", !in->b_rescale_ts && !in->b_can_pace_control && in->b_can_rate_control );
 
         bool b_can_seek;
         if( demux_Control( in->p_demux, DEMUX_CAN_SEEK, &b_can_seek ) )

@@ -2,7 +2,7 @@
  * playlist.c :  Playlist import module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: d3a1ff92bba6c37652c3f153b5d4dadf031e935f $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

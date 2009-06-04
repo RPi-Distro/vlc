@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: cb89dd19226321001cd4daad96e68dc8a1ad6ec5 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

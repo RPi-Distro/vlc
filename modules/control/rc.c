@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 1303d219afe37c29bbf13cbc01284ec8b3b4fb03 $
+ * $Id$
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>

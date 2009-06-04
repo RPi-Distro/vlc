@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 6a2b8ce8c68686a27e0d16cbbde6131c3f91b05a $
+ * $Id$
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>

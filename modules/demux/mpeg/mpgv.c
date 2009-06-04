@@ -2,7 +2,7 @@
  * mpgv.c : MPEG-I/II Video demuxer
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 946739aa3c07e190e96ea08907b8bfc08122d6c5 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

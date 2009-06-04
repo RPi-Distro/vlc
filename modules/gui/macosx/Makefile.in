@@ -90,7 +90,7 @@ am__objects_2 = libmacosx_plugin_la-AppleRemote.lo \
 	libmacosx_plugin_la-bookmarks.lo \
 	libmacosx_plugin_la-embeddedwindow.lo \
 	libmacosx_plugin_la-fspanel.lo libmacosx_plugin_la-eyetv.lo \
-	libmacosx_plugin_la-vlm.lo $(am__objects_1)
+	$(am__objects_1)
 am_libmacosx_plugin_la_OBJECTS = $(am__objects_2)
 nodist_libmacosx_plugin_la_OBJECTS =
 libmacosx_plugin_la_OBJECTS = $(am_libmacosx_plugin_la_OBJECTS) \
@@ -604,8 +604,6 @@ WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
-XCB_AUX_CFLAGS = @XCB_AUX_CFLAGS@
-XCB_AUX_LIBS = @XCB_AUX_LIBS@
 XCB_CFLAGS = @XCB_CFLAGS@
 XCB_KEYSYMS_CFLAGS = @XCB_KEYSYMS_CFLAGS@
 XCB_KEYSYMS_LIBS = @XCB_KEYSYMS_LIBS@
@@ -760,8 +758,6 @@ SOURCES_macosx = \
 	fspanel.h \
 	eyetv.h \
 	eyetv.m \
-	vlm.h \
-	vlm.m \
 	$(NULL)
 
 
@@ -867,7 +863,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-prefs_widgets.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-simple_prefs.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-update.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-vlm.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-vout.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-voutgl.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libmacosx_plugin_la-wizard.Plo@am__quote@
@@ -1067,13 +1062,6 @@ libmacosx_plugin_la-eyetv.lo: eyetv.m
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='eyetv.m' object='libmacosx_plugin_la-eyetv.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepOBJC_FALSE@	$(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-eyetv.lo `test -f 'eyetv.m' || echo '$(srcdir)/'`eyetv.m
-
-libmacosx_plugin_la-vlm.lo: vlm.m
-@am__fastdepOBJC_TRUE@	$(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -MT libmacosx_plugin_la-vlm.lo -MD -MP -MF $(DEPDIR)/libmacosx_plugin_la-vlm.Tpo -c -o libmacosx_plugin_la-vlm.lo `test -f 'vlm.m' || echo '$(srcdir)/'`vlm.m
-@am__fastdepOBJC_TRUE@	mv -f $(DEPDIR)/libmacosx_plugin_la-vlm.Tpo $(DEPDIR)/libmacosx_plugin_la-vlm.Plo
-@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	source='vlm.m' object='libmacosx_plugin_la-vlm.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepOBJC_FALSE@	DEPDIR=$(DEPDIR) $(OBJCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepOBJC_FALSE@	$(LIBTOOL) $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(OBJC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libmacosx_plugin_la_OBJCFLAGS) $(OBJCFLAGS) -c -o libmacosx_plugin_la-vlm.lo `test -f 'vlm.m' || echo '$(srcdir)/'`vlm.m
 
 mostlyclean-libtool:
 	-rm -f *.lo

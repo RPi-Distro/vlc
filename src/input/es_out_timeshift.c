@@ -2,7 +2,7 @@
  * es_out_timeshift.c: Es Out timeshift.
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 837878e0a65a6e39f3626a16a86ab34843931aa7 $
+ * $Id$
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org>
  *

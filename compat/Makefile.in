@@ -34,10 +34,10 @@ build_triplet = @build@
 host_triplet = @host@
 subdir = compat
 DIST_COMMON = $(srcdir)/Makefile.am $(srcdir)/Makefile.in asprintf.c \
-	atof.c atoll.c gmtime_r.c lldiv.c localtime_r.c rewind.c \
-	strcasecmp.c strcasestr.c strdup.c strlcpy.c strncasecmp.c \
-	strndup.c strnlen.c strsep.c strtof.c strtoll.c swab.c \
-	vasprintf.c
+	atof.c atoll.c getcwd.c gmtime_r.c lldiv.c localtime_r.c \
+	rewind.c strcasecmp.c strcasestr.c strdup.c strlcpy.c \
+	strncasecmp.c strndup.c strnlen.c strsep.c strtof.c strtoll.c \
+	swab.c vasprintf.c
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
@@ -551,8 +551,6 @@ WINDRES = @WINDRES@
 WINE_SDK_PATH = @WINE_SDK_PATH@
 X264_CFLAGS = @X264_CFLAGS@
 X264_LIBS = @X264_LIBS@
-XCB_AUX_CFLAGS = @XCB_AUX_CFLAGS@
-XCB_AUX_LIBS = @XCB_AUX_LIBS@
 XCB_CFLAGS = @XCB_CFLAGS@
 XCB_KEYSYMS_CFLAGS = @XCB_KEYSYMS_CFLAGS@
 XCB_KEYSYMS_LIBS = @XCB_KEYSYMS_LIBS@
@@ -691,6 +689,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/asprintf.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/atof.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/atoll.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/getcwd.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/gmtime_r.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/lldiv.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@$(DEPDIR)/localtime_r.Plo@am__quote@

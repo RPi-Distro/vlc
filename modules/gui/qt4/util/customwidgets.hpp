@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: d1f1f74809fe72f199e58507ea2a52763f1d62e5 $
+ * $Id: ea5b3309a1b84470b51e15899a33581ca98245fd $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -93,15 +93,18 @@ public:
     void mouseReleaseEvent( QMouseEvent* e )
     {
         if( e->button() & Qt::RightButton )
-        {
-            emit rightClicked( indexAt( QPoint( e->x(), e->y() ) ),
-                               QCursor::pos() );
-        }
+            return; /* Do NOT forward to QTreeView!! */
         QTreeView::mouseReleaseEvent( e );
     }
 
     void mousePressEvent( QMouseEvent* e )
     {
+        if( e->button() & Qt::RightButton )
+        {
+            emit rightClicked( indexAt( QPoint( e->x(), e->y() ) ),
+                               QCursor::pos() );
+            return;
+        }
         if( e->button() & Qt::LeftButton )
         {
             if( !indexAt( QPoint( e->x(), e->y() ) ).isValid() )

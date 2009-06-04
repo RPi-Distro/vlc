@@ -2,7 +2,7 @@
  * opengl.c: OpenGL video output
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 3fbe5e642feda3306762b49a135bcafe7fc2af96 $
+ * $Id: ecacbeb48b45134afc1b450791a37d3a2c57c7cc $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -193,6 +193,8 @@ static int CreateVout( vlc_object_t *p_this )
     p_sys->p_vout->b_autoscale = p_vout->b_autoscale;
     p_sys->p_vout->i_zoom = p_vout->i_zoom;
     p_sys->p_vout->i_alignment = p_vout->i_alignment;
+    var_Create( p_sys->p_vout, "video-deco",
+                VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
 
     psz = var_CreateGetString( p_vout, "opengl-provider" );
     p_sys->p_vout->p_module =

@@ -2,7 +2,7 @@
  * motion.c: control VLC with laptop built-in motion sensors
  *****************************************************************************
  * Copyright (C) 2006 - 2007 the VideoLAN team
- * $Id: a0555a7d5c81afdd0f4daf4daaa830585414db08 $
+ * $Id: 03a011192d2e3cabfc315bc3d965fb00b14bdf71 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *         Jérôme Decoodt <djc@videolan.org> (unimotion integration)
@@ -77,6 +77,7 @@ static int GetOrientation( intf_thread_t *p_intf );
 vlc_module_begin ()
     set_shortname( N_("motion"))
     set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_CONTROL )
     set_description( N_("motion control interface") )
     set_help( N_("Use HDAPS, AMS, APPLESMC or UNIMOTION motion sensors " \
                  "to rotate the video") )

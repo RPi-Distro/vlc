@@ -2,7 +2,7 @@
  * open.cpp : Advanced open dialog
  *****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 836e7741e6c441958b0947736cbd768302f6ca62 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -396,7 +396,7 @@ void OpenDialog::stream( bool b_transcode_only )
     /* Dbg and send :D */
     msg_Dbg( p_intf, "MRL passed to the Sout: %s", qtu( soutMRL ) );
     THEDP->streamingDialog( this, soutMRL, b_transcode_only,
-                            ui.advancedLineInput->text().split( ":" ) );
+                            ui.advancedLineInput->text().split( " :" ) );
 }
 
 /* Update the MRL */

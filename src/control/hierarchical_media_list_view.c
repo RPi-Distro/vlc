@@ -2,7 +2,7 @@
  * hierarchical_media_list_view.c: libvlc hierarchical media list view functs.
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 4d345280ff3a8653fdf2b3b880c5e6d5f91c6997 $
+ * $Id$
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *

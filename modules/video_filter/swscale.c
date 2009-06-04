@@ -2,7 +2,7 @@
  * swscale.c: scaling and chroma conversion using libswscale
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 61d0d8250423b10eac3fcce496c792a1420bb9b0 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

@@ -2,7 +2,7 @@
  * access.c : CD digital audio input module for vlc using libcdio
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: 19c986c087417aa726e16760661cfa3d60b0258f $
+ * $Id: 90f67358fe1a5f2d94a1930092e937d102dbdf2b $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -644,6 +644,7 @@ int CDDAOpen( vlc_object_t *p_this )
     cddb_log_set_handler ( cddb_log_handler );
     p_cdda->cddb.disc = NULL;
     p_cdda->b_cddb_enabled =
+        var_CreateGetInteger( p_access, "album-art" ) != ALBUM_ART_WHEN_ASKED &&
         config_GetInt( p_access, MODULE_STRING "-cddb-enabled" );
 #endif
     p_cdda->b_cdtext =

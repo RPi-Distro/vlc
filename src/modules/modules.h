@@ -2,7 +2,7 @@
  * modules.h : Module management functions.
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 00836dde077124bc8c537967396cab7afe549868 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

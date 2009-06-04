@@ -4,7 +4,7 @@
  * Copyright (C) 2007-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 7a9144be73abd53f55345fdbba13c7dd754d143a $
+ * $Id: 324acb8d0c3087b833f57b923809736ea6bd9565 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Pierre-Luc Beaudoin <pierre-luc.beaudoin@savoirfairelinux.com>
@@ -144,6 +144,7 @@ HTTPDestBox::HTTPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     layout->addWidget(HTTPPortLabel, 2, 0, 1, 1);
 
     HTTPEdit = new QLineEdit(this);
+    HTTPEdit->setText( "0.0.0.0" );
 
     HTTPPort = new QSpinBox(this);
     HTTPPort->setMaximumSize(QSize(90, 16777215));
@@ -188,6 +189,7 @@ MMSHDestBox::MMSHDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     layout->addWidget(MMSHPortLabel, 2, 0, 1, 1);
 
     MMSHEdit = new QLineEdit(this);
+    MMSHEdit->setText( "0.0.0.0" );
 
     MMSHPort = new QSpinBox(this);
     MMSHPort->setMaximumSize(QSize(90, 16777215));

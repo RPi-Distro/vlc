@@ -2,7 +2,7 @@
  * media_discoverer.c: libvlc new API media discoverer functions
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 4615d5f51fdb0f99f0f70c26fde5d614d3b94132 $
+ * $Id$
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *

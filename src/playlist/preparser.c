@@ -2,7 +2,7 @@
  * preparse.c: Preparser thread.
  *****************************************************************************
  * Copyright © 1999-2009 the VideoLAN team
- * $Id: 74b3961f475a75e0e3dd8c345d1e81815c058c76 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>

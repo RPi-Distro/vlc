@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc 0.8.2-svn\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2009-05-09 01:51+0100\n"
+"POT-Creation-Date: 2009-05-27 02:28+0200\n"
 "PO-Revision-Date: 2008-12-31 18:09+0600\n"
 "Last-Translator: Md. Rezwan Shahid <rezwan@ankur.org.bd>\n"
 "Language-Team: Bengali <ankur-bd-l10n@googlegroups.com>\n"
@@ -40,7 +40,7 @@ msgstr "সকল অপসন দেখার জন্য \"উন্নত �
 
 #: include/vlc_config_cat.h:37 modules/gui/macosx/simple_prefs.m:174
 #: modules/gui/qt4/components/simple_preferences.cpp:77
-#: modules/gui/qt4/menus.cpp:965 modules/misc/dummy/dummy.c:67
+#: modules/gui/qt4/menus.cpp:967 modules/misc/dummy/dummy.c:67
 msgid "Interface"
 msgstr "ইন্টারফেস"
 
@@ -76,7 +76,7 @@ msgstr "হট কী (key) সেটিং"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2656 src/input/es_out.c:2690
 #: src/libvlc-module.c:1504 modules/gui/beos/InterfaceWindow.cpp:283
-#: modules/gui/macosx/intf.m:611 modules/gui/macosx/output.m:170
+#: modules/gui/macosx/intf.m:652 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:113 modules/gui/macosx/simple_prefs.m:178
 #: modules/gui/macosx/wizard.m:380
 #: modules/gui/qt4/components/info_panels.cpp:517
@@ -105,7 +105,7 @@ msgid "Audio filters are used to process the audio stream."
 msgstr "অডিও স্ট্রিমের পরবর্তী প্রসেস করার জন্য অডিও ফিল্টারগুলো ব্যবহার করা হয়।"
 
 #: include/vlc_config_cat.h:60 src/audio_output/input.c:112
-#: modules/gui/macosx/intf.m:621 modules/gui/macosx/intf.m:622
+#: modules/gui/macosx/intf.m:662 modules/gui/macosx/intf.m:663
 msgid "Visualizations"
 msgstr "দৃশ্যায়ণ"
 
@@ -132,13 +132,13 @@ msgid "Miscellaneous audio settings and modules."
 msgstr "বিবিধ অডিও সেটিং এবং মডিউল।"
 
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2659 src/input/es_out.c:2739
-#: src/libvlc-module.c:1557 modules/gui/macosx/intf.m:624
+#: src/libvlc-module.c:1557 modules/gui/macosx/intf.m:665
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:102
 #: modules/gui/macosx/simple_prefs.m:182 modules/gui/macosx/wizard.m:381
 #: modules/gui/qt4/components/info_panels.cpp:518
 #: modules/gui/qt4/components/simple_preferences.cpp:80
 #: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:291
-#: modules/misc/dummy/dummy.c:105 modules/stream_out/es.c:101
+#: modules/misc/dummy/dummy.c:109 modules/stream_out/es.c:101
 #: modules/stream_out/transcode.c:169
 msgid "Video"
 msgstr "ভিডিও"
@@ -360,12 +360,12 @@ msgstr "ভিডিও অন-ডিমান্ডের ভিএলসি-�
 #: src/playlist/engine.c:119 modules/demux/playlist/playlist.c:66
 #: modules/demux/playlist/playlist.c:67
 #: modules/gui/beos/InterfaceWindow.cpp:232
-#: modules/gui/beos/InterfaceWindow.cpp:326 modules/gui/macosx/intf.m:554
+#: modules/gui/beos/InterfaceWindow.cpp:326 modules/gui/macosx/intf.m:595
 #: modules/gui/pda/pda_interface.c:1262
 #: modules/gui/qt4/components/controller.hpp:103
 #: modules/gui/qt4/components/playlist/playlist.cpp:114
 #: modules/gui/qt4/dialogs/playlist.cpp:43
-#: modules/gui/qt4/main_interface.cpp:149
+#: modules/gui/qt4/main_interface.cpp:150
 msgid "Playlist"
 msgstr "চালানোর তালিকা"
 
@@ -524,7 +524,7 @@ msgstr "বার্তাসমূহ"
 msgid "Jump to Specific &Time"
 msgstr "নির্দিষ্ট সময়ে যান... (&T)"
 
-#: include/vlc_intf_strings.h:46 modules/gui/qt4/menus.cpp:596
+#: include/vlc_intf_strings.h:46 modules/gui/qt4/menus.cpp:598
 msgid "&Bookmarks"
 msgstr "বুকমার্ক (&B)"
 
@@ -539,14 +539,14 @@ msgid "&About"
 msgstr "পরিচিতি"
 
 #: include/vlc_intf_strings.h:52 modules/control/rc.c:76
-#: modules/gui/macosx/embeddedwindow.m:64
-#: modules/gui/macosx/embeddedwindow.m:154 modules/gui/macosx/intf.m:547
-#: modules/gui/macosx/intf.m:592 modules/gui/macosx/intf.m:679
-#: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:1944
-#: modules/gui/macosx/intf.m:1945 modules/gui/macosx/intf.m:1946
-#: modules/gui/macosx/intf.m:1947 modules/gui/macosx/playlist.m:436
+#: modules/gui/macosx/embeddedwindow.m:67
+#: modules/gui/macosx/embeddedwindow.m:157 modules/gui/macosx/intf.m:588
+#: modules/gui/macosx/intf.m:633 modules/gui/macosx/intf.m:720
+#: modules/gui/macosx/intf.m:727 modules/gui/macosx/intf.m:1985
+#: modules/gui/macosx/intf.m:1986 modules/gui/macosx/intf.m:1987
+#: modules/gui/macosx/intf.m:1988 modules/gui/macosx/playlist.m:436
 #: modules/gui/pda/pda_interface.c:260 modules/gui/pda/pda_interface.c:261
-#: modules/gui/qt4/components/controller.hpp:101 modules/gui/qt4/menus.cpp:728
+#: modules/gui/qt4/components/controller.hpp:101 modules/gui/qt4/menus.cpp:730
 #: modules/gui/qt4/ui/open.h:275
 msgid "Play"
 msgstr "চালান"
@@ -600,7 +600,7 @@ msgid "No repeat"
 msgstr "কোনো পুনরাবৃত্তি হবে না"
 
 #: include/vlc_intf_strings.h:68 src/libvlc-module.c:1395
-#: modules/gui/macosx/controls.m:1014 modules/gui/macosx/intf.m:598
+#: modules/gui/macosx/controls.m:1041 modules/gui/macosx/intf.m:639
 msgid "Random"
 msgstr "উল্টোপাল্টা"
 
@@ -790,7 +790,7 @@ msgstr "ফিল্টারের সর্বোচ্চ সংখ্যা�
 
 #: src/audio_output/input.c:114 src/audio_output/input.c:160
 #: src/input/es_out.c:890 src/libvlc-module.c:608
-#: src/video_output/video_output.c:1756 modules/video_filter/postproc.c:225
+#: src/video_output/video_output.c:1759 modules/video_filter/postproc.c:226
 msgid "Disable"
 msgstr "নিষ্ক্রিয় করুন"
 
@@ -824,8 +824,8 @@ msgid "Replay gain"
 msgstr "গেইন আবার চালান"
 
 #: src/audio_output/output.c:102 src/audio_output/output.c:129
-#: modules/access/vcdx/info.c:121 modules/gui/macosx/intf.m:617
-#: modules/gui/macosx/intf.m:618
+#: modules/access/vcdx/info.c:121 modules/gui/macosx/intf.m:658
+#: modules/gui/macosx/intf.m:659
 msgid "Audio Channels"
 msgstr "অডিও চ্যানেলসমূহ"
 
@@ -871,23 +871,23 @@ msgstr "ডলবি সারাউন্ড"
 msgid "Reverse stereo"
 msgstr "উল্টো স্টেরিও"
 
-#: src/config/file.c:593
+#: src/config/file.c:599
 msgid "key"
 msgstr "কী (key)"
 
-#: src/config/file.c:602
+#: src/config/file.c:608
 msgid "boolean"
 msgstr "বুলিয়ান"
 
-#: src/config/file.c:602 src/libvlc.c:1649
+#: src/config/file.c:608 src/libvlc.c:1649
 msgid "integer"
 msgstr "ইন্টিজার"
 
-#: src/config/file.c:611 src/libvlc.c:1678
+#: src/config/file.c:617 src/libvlc.c:1678
 msgid "float"
 msgstr "ফ্লোট"
 
-#: src/config/file.c:634 src/libvlc.c:1628
+#: src/config/file.c:640 src/libvlc.c:1628
 msgid "string"
 msgstr "স্ট্রিং"
 
@@ -983,7 +983,7 @@ msgstr ""
 #: src/input/es_out.c:911 src/input/es_out.c:916 src/libvlc-module.c:346
 #: modules/access/cdda/info.c:391 modules/access/vcdx/access.c:477
 #: modules/access/vcdx/info.c:290 modules/access/vcdx/info.c:291
-#: modules/gui/qt4/components/open_panels.cpp:380
+#: modules/gui/qt4/components/open_panels.cpp:381
 msgid "Track"
 msgstr "ট্র্যাক"
 
@@ -993,8 +993,8 @@ msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
 #: src/input/es_out.c:1118 src/input/es_out.c:1123 src/input/var.c:173
-#: src/libvlc-module.c:641 modules/gui/macosx/intf.m:604
-#: modules/gui/macosx/intf.m:605
+#: src/libvlc-module.c:641 modules/gui/macosx/intf.m:645
+#: modules/gui/macosx/intf.m:646
 msgid "Program"
 msgstr "প্রোগ্রাম"
 
@@ -1069,7 +1069,7 @@ msgstr "বিট/নমুনা"
 
 #: src/input/es_out.c:2717 modules/access/pvr.c:97
 #: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:410
-#: modules/gui/qt4/components/open_panels.cpp:951
+#: modules/gui/qt4/components/open_panels.cpp:952
 #: modules/gui/qt4/ui/profiles.h:471 modules/gui/qt4/ui/profiles.h:490
 msgid "Bitrate"
 msgstr "বিটের হার"
@@ -1105,30 +1105,30 @@ msgstr "পর্দার রেসল্যুশন"
 msgid "Frame rate"
 msgstr "ফ্রেমের হার"
 
-#: src/input/input.c:2465
+#: src/input/input.c:2462
 msgid "Your input can't be opened"
 msgstr "আপনার ইনপুট খোলা যাবেনা"
 
-#: src/input/input.c:2466
+#: src/input/input.c:2463
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr "ভিএলসি '%s' MRL টি খুলবে ব্যর্থ। বিস্তারিত জানার জন্য লগ পরীক্ষা করুন।"
 
-#: src/input/input.c:2597
+#: src/input/input.c:2594
 msgid "VLC can't recognize the input's format"
 msgstr "ভিএলসি ইনপুটের ফরম্যাট চিনতে পারেনি"
 
-#: src/input/input.c:2598
+#: src/input/input.c:2595
 #, fuzzy, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
 msgstr "'%s' ফরম্যাটটি সনাক্ত করা যায়নি। বিস্তারিত জানার জন্য লগ পরীক্ষা করুন।"
 
 #: src/input/meta.c:39 src/input/var.c:183
-#: modules/gui/beos/MediaControlView.cpp:1236 modules/gui/macosx/intf.m:606
-#: modules/gui/macosx/intf.m:607 modules/gui/macosx/open.m:178
+#: modules/gui/beos/MediaControlView.cpp:1236 modules/gui/macosx/intf.m:647
+#: modules/gui/macosx/intf.m:648 modules/gui/macosx/open.m:178
 #: modules/gui/macosx/playlistinfo.m:75 modules/gui/macosx/wizard.m:348
-#: modules/gui/qt4/components/open_panels.cpp:354
+#: modules/gui/qt4/components/open_panels.cpp:355
 #: modules/gui/qt4/ui/open_disk.h:302 modules/mux/asf.c:52
 msgid "Title"
 msgstr "শিরোনাম"
@@ -1200,7 +1200,7 @@ msgid "Programs"
 msgstr "প্রোগ্রাম"
 
 #: src/input/var.c:188 modules/gui/beos/MediaControlView.cpp:1237
-#: modules/gui/macosx/intf.m:608 modules/gui/macosx/intf.m:609
+#: modules/gui/macosx/intf.m:649 modules/gui/macosx/intf.m:650
 #: modules/gui/macosx/open.m:179 modules/gui/qt4/ui/open_disk.h:303
 msgid "Chapter"
 msgstr "অধ্যায়"
@@ -1210,19 +1210,19 @@ msgstr "অধ্যায়"
 msgid "Navigation"
 msgstr "নেভিগেশন"
 
-#: src/input/var.c:206 modules/gui/macosx/intf.m:632
-#: modules/gui/macosx/intf.m:633
+#: src/input/var.c:206 modules/gui/macosx/intf.m:673
+#: modules/gui/macosx/intf.m:674
 msgid "Video Track"
 msgstr "ভিডিও ট্র্যাক"
 
-#: src/input/var.c:211 modules/gui/macosx/intf.m:615
-#: modules/gui/macosx/intf.m:616
+#: src/input/var.c:211 modules/gui/macosx/intf.m:656
+#: modules/gui/macosx/intf.m:657
 msgid "Audio Track"
 msgstr "অডিও ট্র্যাক"
 
-#: src/input/var.c:216 modules/gui/macosx/controls.m:795
-#: modules/gui/macosx/controls.m:856 modules/gui/macosx/intf.m:640
-#: modules/gui/macosx/intf.m:641
+#: src/input/var.c:216 modules/gui/macosx/controls.m:822
+#: modules/gui/macosx/controls.m:883 modules/gui/macosx/intf.m:681
+#: modules/gui/macosx/intf.m:682
 msgid "Subtitles Track"
 msgstr "সাবটাইটেল ট্র্যাক"
 
@@ -1257,8 +1257,8 @@ msgstr "পূর্ববর্তী অধ্যায়"
 msgid "Media: %s"
 msgstr "মিডিয়া: %s"
 
-#: src/interface/interface.c:199 modules/gui/macosx/intf.m:566
-#: modules/gui/macosx/intf.m:567
+#: src/interface/interface.c:199 modules/gui/macosx/intf.m:607
+#: modules/gui/macosx/intf.m:608
 msgid "Add Interface"
 msgstr "ইন্টারফেস যোগ করুন"
 
@@ -1284,7 +1284,7 @@ msgstr "মাউসের ইঙ্গিত"
 
 #. xgettext: Translate "C" to the language code: "fr", "en_GB", "nl", "ru"...
 #: src/libvlc.c:343 src/libvlc.c:454 src/modules/cache.c:212
-#: src/modules/cache.c:535
+#: src/modules/cache.c:540
 msgid "C"
 msgstr "C"
 
@@ -1362,7 +1362,7 @@ msgstr ""
 "চালিয়ে যাওয়ার জন্য রিটার্ন কী চাপুন...\n"
 
 #: src/libvlc.h:186 src/libvlc-module.c:1398 src/libvlc-module.c:1399
-#: src/libvlc-module.c:2527 src/video_output/vout_intf.c:278
+#: src/libvlc-module.c:2531 src/video_output/vout_intf.c:278
 msgid "Zoom"
 msgstr "আকার পরিবর্তন করে প্রদর্শন"
 
@@ -1384,7 +1384,7 @@ msgstr "২:১ দ্বিগুন"
 
 #: src/libvlc-module.c:93 src/libvlc-module.c:305 modules/access/bda/bda.c:69
 #: modules/codec/subtitles/subsdec.c:97
-#: modules/gui/qt4/components/open_panels.cpp:1027
+#: modules/gui/qt4/components/open_panels.cpp:1028
 msgid "Auto"
 msgstr "স্বয়ংক্রিয়"
 
@@ -1510,7 +1510,7 @@ msgstr ""
 "এটি যখন সক্রিয় করা হয়, পছন্দসমূহ এবং/অথবা ইন্টারফেসসমূহ সকল উপস্থিত বিকল্পগুলো "
 "প্রদর্শন করবে, এমনকি সেগুলোও যেগুলো ব্যবহারকারীর কখনও ধরা উচিত নয়।"
 
-#: src/libvlc-module.c:213 modules/control/showintf.c:72
+#: src/libvlc-module.c:213 modules/control/showintf.c:71
 msgid "Show interface with mouse"
 msgstr "মাউসের সাথে ইন্টারফেস প্রদর্শন করা হবে"
 
@@ -2369,7 +2369,7 @@ msgstr ""
 #: modules/audio_output/alsa.c:105 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1254
 #: modules/gui/macosx/simple_prefs.m:377 modules/gui/macosx/simple_prefs.m:472
-#: modules/gui/macosx/simple_prefs.m:689 modules/gui/macosx/vout.m:208
+#: modules/gui/macosx/simple_prefs.m:693 modules/gui/macosx/vout.m:215
 #: modules/gui/qt4/components/preferences_widgets.cpp:568
 #: modules/video_filter/marq.c:61 modules/video_filter/rss.c:70
 #: modules/video_filter/rss.c:182 modules/video_output/msw/directx.c:162
@@ -3599,11 +3599,11 @@ msgstr ""
 "এই সেটিংগুলো গ্লোবাল ভিএলসি কী (key) বাইন্ডিং যা \"হটকী (hotkyes)\" নামে পরিচিত।"
 
 #: src/libvlc-module.c:1214 src/video_output/vout_intf.c:434
-#: modules/gui/beos/VideoOutput.cpp:1058 modules/gui/macosx/controls.m:454
-#: modules/gui/macosx/controls.m:508 modules/gui/macosx/controls.m:1056
-#: modules/gui/macosx/controls.m:1087 modules/gui/macosx/embeddedwindow.m:63
-#: modules/gui/macosx/intf.m:551 modules/gui/macosx/intf.m:629
-#: modules/gui/macosx/intf.m:693 modules/gui/macosx/simple_prefs.m:283
+#: modules/gui/beos/VideoOutput.cpp:1058 modules/gui/macosx/controls.m:460
+#: modules/gui/macosx/controls.m:514 modules/gui/macosx/controls.m:1083
+#: modules/gui/macosx/controls.m:1114 modules/gui/macosx/embeddedwindow.m:66
+#: modules/gui/macosx/intf.m:592 modules/gui/macosx/intf.m:670
+#: modules/gui/macosx/intf.m:734 modules/gui/macosx/simple_prefs.m:283
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/ui/sprefs_video.h:282
 msgid "Fullscreen"
@@ -3645,8 +3645,8 @@ msgstr "শুধুমাত্র চালানো"
 msgid "Select the hotkey to use to play."
 msgstr "চালানোর জন্য হটকী (hotkey) নির্বাচন করুন।"
 
-#: src/libvlc-module.c:1224 modules/control/hotkeys.c:716
-#: modules/gui/macosx/controls.m:986 modules/gui/macosx/intf.m:594
+#: src/libvlc-module.c:1224 modules/control/hotkeys.c:720
+#: modules/gui/macosx/controls.m:1013 modules/gui/macosx/intf.m:635
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/components/controller.hpp:109
 msgid "Faster"
@@ -3656,8 +3656,8 @@ msgstr "আরো দ্রুতগতি"
 msgid "Select the hotkey to use for fast forward playback."
 msgstr "প্লেব্যাক দ্রুত করার জন্য হটকী (hotkey) নির্বাচন করুন।"
 
-#: src/libvlc-module.c:1226 modules/control/hotkeys.c:722
-#: modules/gui/macosx/controls.m:987 modules/gui/macosx/intf.m:595
+#: src/libvlc-module.c:1226 modules/control/hotkeys.c:726
+#: modules/gui/macosx/controls.m:1014 modules/gui/macosx/intf.m:636
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/components/controller.hpp:109
 msgid "Slower"
@@ -3677,20 +3677,20 @@ msgstr "সাধারন আকার"
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "এই চালানোর তালিকা বুকমার্কটি সেট করার জন্য কী (key) নির্বাচন করুন।"
 
-#: src/libvlc-module.c:1230 modules/gui/qt4/menus.cpp:749
+#: src/libvlc-module.c:1230 modules/gui/qt4/menus.cpp:751
 #, fuzzy
 msgid "Faster (fine)"
 msgstr "আরো দ্রুতগতি"
 
-#: src/libvlc-module.c:1232 modules/gui/qt4/menus.cpp:757
+#: src/libvlc-module.c:1232 modules/gui/qt4/menus.cpp:759
 #, fuzzy
 msgid "Slower (fine)"
 msgstr "ধীরগতি"
 
-#: src/libvlc-module.c:1234 modules/control/hotkeys.c:693
-#: modules/gui/macosx/about.m:185 modules/gui/macosx/controls.m:1007
-#: modules/gui/macosx/intf.m:550 modules/gui/macosx/intf.m:597
-#: modules/gui/macosx/intf.m:681 modules/gui/macosx/intf.m:689
+#: src/libvlc-module.c:1234 modules/control/hotkeys.c:697
+#: modules/gui/macosx/about.m:185 modules/gui/macosx/controls.m:1034
+#: modules/gui/macosx/intf.m:591 modules/gui/macosx/intf.m:638
+#: modules/gui/macosx/intf.m:722 modules/gui/macosx/intf.m:730
 #: modules/gui/macosx/wizard.m:309 modules/gui/macosx/wizard.m:321
 #: modules/gui/macosx/wizard.m:1626
 #: modules/gui/qt4/components/controller.hpp:102 modules/gui/qt4/ui/sout.h:333
@@ -3703,10 +3703,10 @@ msgstr "পরবর্তী"
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr "চালানোর তালিকার পরবর্তী আইটেমে যাওয়ার জন্য হটকী (hotkey) নির্বাচন করুন।"
 
-#: src/libvlc-module.c:1236 modules/control/hotkeys.c:699
-#: modules/gui/macosx/about.m:186 modules/gui/macosx/controls.m:1006
-#: modules/gui/macosx/intf.m:545 modules/gui/macosx/intf.m:596
-#: modules/gui/macosx/intf.m:682 modules/gui/macosx/intf.m:688
+#: src/libvlc-module.c:1236 modules/control/hotkeys.c:703
+#: modules/gui/macosx/about.m:186 modules/gui/macosx/controls.m:1033
+#: modules/gui/macosx/intf.m:586 modules/gui/macosx/intf.m:637
+#: modules/gui/macosx/intf.m:723 modules/gui/macosx/intf.m:729
 #: modules/gui/qt4/components/controller.hpp:102 modules/gui/qt4/ui/sout.h:343
 #: modules/gui/qt4/ui/sout.h:353 modules/misc/notify/notify.c:323
 msgid "Previous"
@@ -3716,9 +3716,9 @@ msgstr "পূর্ববর্তী"
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr "চালানোর তালিকার পূর্ববর্তী আইটেমে যাওয়ার জন্য হটকী (hotkey) নির্বাচন করুন।"
 
-#: src/libvlc-module.c:1238 modules/gui/macosx/controls.m:998
-#: modules/gui/macosx/intf.m:548 modules/gui/macosx/intf.m:593
-#: modules/gui/macosx/intf.m:680 modules/gui/macosx/intf.m:687
+#: src/libvlc-module.c:1238 modules/gui/macosx/controls.m:1025
+#: modules/gui/macosx/intf.m:589 modules/gui/macosx/intf.m:634
+#: modules/gui/macosx/intf.m:721 modules/gui/macosx/intf.m:728
 #: modules/gui/pda/pda_interface.c:272 modules/gui/pda/pda_interface.c:273
 #: modules/gui/qt4/components/controller.hpp:101
 #: modules/gui/qt4/ui/streampanel.h:181 modules/misc/notify/xosd.c:234
@@ -3731,7 +3731,7 @@ msgstr "প্লেব্যাক বন্ধ করার জন্য হ�
 
 #: src/libvlc-module.c:1240 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
-#: modules/gui/macosx/embeddedwindow.m:65 modules/gui/macosx/intf.m:553
+#: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:594
 #: modules/gui/qt4/ui/video_effects.h:928 modules/video_filter/marq.c:155
 #: modules/video_filter/rss.c:197
 msgid "Position"
@@ -3805,7 +3805,7 @@ msgstr "বেশ সামনে যান"
 msgid "Select the hotkey to make a long forward jump."
 msgstr "বেশ সামনে যাওয়ার জন্য হটকী (hotkey) নির্বাচন করুন।"
 
-#: src/libvlc-module.c:1268 modules/control/hotkeys.c:710
+#: src/libvlc-module.c:1268 modules/control/hotkeys.c:714
 msgid "Next frame"
 msgstr "পরবর্তী ফ্রেম"
 
@@ -3845,10 +3845,10 @@ msgstr "সামনে/পেছনে যাওয়ার বড় দৈর্�
 msgid "Long jump length, in seconds."
 msgstr "সামনে/পেছনে যাওয়ার বড় দৈর্ঘ্য, সেকেন্ডে।"
 
-#: src/libvlc-module.c:1281 modules/control/hotkeys.c:209
-#: modules/gui/beos/InterfaceWindow.cpp:277 modules/gui/macosx/intf.m:344
+#: src/libvlc-module.c:1281 modules/control/hotkeys.c:211
+#: modules/gui/beos/InterfaceWindow.cpp:277 modules/gui/macosx/intf.m:385
 #: modules/gui/qt4/components/controller.hpp:105
-#: modules/gui/qt4/components/controller.hpp:114 modules/gui/qt4/menus.cpp:824
+#: modules/gui/qt4/components/controller.hpp:114 modules/gui/qt4/menus.cpp:826
 #: modules/gui/skins2/commands/cmd_quit.cpp:40
 msgid "Quit"
 msgstr "বন্ধ করুন"
@@ -3954,10 +3954,10 @@ msgid "Select the key to decrease audio volume."
 msgstr "অডিও ভলিয়ুম কমানোর জন্য কী (key) নির্বাচন করুন।"
 
 #: src/libvlc-module.c:1307 modules/access/v4l2.c:166
-#: modules/gui/macosx/controls.m:1046 modules/gui/macosx/intf.m:614
-#: modules/gui/macosx/intf.m:683 modules/gui/macosx/intf.m:692
+#: modules/gui/macosx/controls.m:1073 modules/gui/macosx/intf.m:655
+#: modules/gui/macosx/intf.m:724 modules/gui/macosx/intf.m:733
 #: modules/gui/qt4/components/controller_widget.cpp:143
-#: modules/gui/qt4/menus.cpp:509
+#: modules/gui/qt4/menus.cpp:511
 msgid "Mute"
 msgstr "শব্দ বন্ধ করুন"
 
@@ -4448,8 +4448,8 @@ msgstr ""
 "  vlc://quit                     ভিএলসি থেকে প্রস্থান করার বিশেষ আইটেম\n"
 
 #: src/libvlc-module.c:1603 src/video_output/vout_intf.c:440
-#: modules/gui/macosx/controls.m:492 modules/gui/macosx/controls.m:1055
-#: modules/gui/macosx/intf.m:631 modules/gui/macosx/intf.m:694
+#: modules/gui/macosx/controls.m:498 modules/gui/macosx/controls.m:1082
+#: modules/gui/macosx/intf.m:672 modules/gui/macosx/intf.m:735
 #: modules/gui/qt4/components/controller.hpp:103
 #: modules/video_output/snapshot.c:81
 msgid "Snapshot"
@@ -4528,25 +4528,25 @@ msgstr "প্লাগিনসমূহ"
 msgid "Performance options"
 msgstr "পারফর্ম্যানস বিকল্পসমূহ"
 
-#: src/libvlc-module.c:2098
+#: src/libvlc-module.c:2102
 msgid "Hot keys"
 msgstr "হট কীসমূহ (hot keys)"
 
-#: src/libvlc-module.c:2537
+#: src/libvlc-module.c:2541
 msgid "Jump sizes"
 msgstr "জাম্প আকার"
 
-#: src/libvlc-module.c:2614
+#: src/libvlc-module.c:2618
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "ভিএলসি এর সহায়তা প্রিন্ট করুন (--উন্নত এবং --সহায়তা-বাগাম্বরপূর্ণ এর সাথে সংযুক্ত "
 "থাকতে পারে)"
 
-#: src/libvlc-module.c:2617
+#: src/libvlc-module.c:2621
 msgid "Exhaustive help for VLC and its modules"
 msgstr "ভিএলসি এবং এর মডিউলসমূহের সম্পূর্ণ সহায়তা"
 
-#: src/libvlc-module.c:2619
+#: src/libvlc-module.c:2623
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4554,19 +4554,19 @@ msgstr ""
 "ভিএলসি এবং এর মডিউলসমূহের সহায়তা প্রিন্ট করুন (--উন্নত এবং --সহায়তা-বাগাম্বরপূর্ণ এর "
 "সাথে সংযুক্ত থাকতে পারে)"
 
-#: src/libvlc-module.c:2622
+#: src/libvlc-module.c:2626
 msgid "ask for extra verbosity when displaying help"
 msgstr "সহায়াতা প্রদর্শনের সময় অতিরিক্ত বাগাম্বপূর্ণতা প্রদর্শন করা হবে"
 
-#: src/libvlc-module.c:2624
+#: src/libvlc-module.c:2628
 msgid "print a list of available modules"
 msgstr "উপস্থিত মডিউলসমূহের তালিকা প্রিন্ট করুন"
 
-#: src/libvlc-module.c:2626
+#: src/libvlc-module.c:2630
 msgid "print a list of available modules with extra detail"
 msgstr "অতিরিক্ত বিবরনসহ উপস্থিত মডিউলসমূহের তালিকা প্রিন্ট করুন"
 
-#: src/libvlc-module.c:2628
+#: src/libvlc-module.c:2632
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
 "verbose). Prefix the module name with = for strictmatches."
@@ -4575,31 +4575,31 @@ msgstr ""
 "সাথে সংযুক্ত থাকতে পারে)। স্ট্রিক্টম্যাচের জন্য উপসর্গ হিসেবে মডিউলের নামের আগে = "
 "দিন।"
 
-#: src/libvlc-module.c:2632
+#: src/libvlc-module.c:2636
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr "কোনো কনফিগারেশন বিকল্প লোড করা হবে না বা কনফিগ ফাইলে সংরক্ষন করা হবে না"
 
-#: src/libvlc-module.c:2634
+#: src/libvlc-module.c:2638
 msgid "save the current command line options in the config"
 msgstr "কনফিগে বর্তমান কমান্ড লাইন বিকল্প সংরক্ষন করা হবে"
 
-#: src/libvlc-module.c:2636
+#: src/libvlc-module.c:2640
 msgid "reset the current config to the default values"
 msgstr "বর্তমান কনফিগ ডিফল্ট মানে রিসেট করুন"
 
-#: src/libvlc-module.c:2638
+#: src/libvlc-module.c:2642
 msgid "use alternate config file"
 msgstr "বিকল্প কনফিগ ফাইল ব্যবহার করুন"
 
-#: src/libvlc-module.c:2640
+#: src/libvlc-module.c:2644
 msgid "resets the current plugins cache"
 msgstr "বর্তমান প্লাগিন ক্যাশ রিসেট করে"
 
-#: src/libvlc-module.c:2642
+#: src/libvlc-module.c:2646
 msgid "print version information"
 msgstr "সংস্করন তথ্য প্রিন্ট করুন"
 
-#: src/libvlc-module.c:2698
+#: src/libvlc-module.c:2702
 msgid "main program"
 msgstr "প্রধান প্রোগ্রাম"
 
@@ -4648,12 +4648,12 @@ msgstr "ডাউনলোড করা হচ্ছে..."
 #: src/misc/update.c:1611 modules/access/dvb/scan.c:321
 #: modules/demux/avi/avi.c:688 modules/demux/avi/avi.c:2409
 #: modules/gui/beos/InterfaceWindow.cpp:161 modules/gui/macosx/bookmarks.m:102
-#: modules/gui/macosx/controls.m:83 modules/gui/macosx/open.m:167
-#: modules/gui/macosx/open.m:194 modules/gui/macosx/prefs.m:185
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:238
+#: modules/gui/macosx/controls.m:84 modules/gui/macosx/open.m:167
+#: modules/gui/macosx/open.m:194 modules/gui/macosx/prefs.m:197
+#: modules/gui/macosx/prefs.m:218 modules/gui/macosx/simple_prefs.m:238
 #: modules/gui/macosx/simple_prefs.m:297 modules/gui/macosx/simple_prefs.m:619
 #: modules/gui/macosx/wizard.m:320
-#: modules/gui/qt4/components/open_panels.cpp:1307
+#: modules/gui/qt4/components/open_panels.cpp:1311
 #: modules/gui/qt4/components/preferences_widgets.cpp:1367
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
@@ -4725,21 +4725,21 @@ msgstr "ডাউনলোড করা ফাইল \"%s\" নষ্ট ছি�
 msgid "Undefined"
 msgstr "অনির্ধারিত"
 
-#: src/video_output/video_output.c:2003 modules/gui/macosx/intf.m:643
-#: modules/gui/macosx/intf.m:644 modules/gui/qt4/dialogs/convert.cpp:85
+#: src/video_output/video_output.c:2007 modules/gui/macosx/intf.m:684
+#: modules/gui/macosx/intf.m:685 modules/gui/qt4/dialogs/convert.cpp:85
 #: modules/video_filter/deinterlace.c:127
 msgid "Deinterlace"
 msgstr "ডিইন্টারলেস"
 
-#: src/video_output/vout_intf.c:311 modules/gui/macosx/intf.m:636
-#: modules/gui/macosx/intf.m:637 modules/gui/qt4/ui/video_effects.h:893
-#: modules/video_filter/crop.c:105 modules/video_filter/croppadd.c:83
+#: src/video_output/vout_intf.c:311 modules/gui/macosx/intf.m:677
+#: modules/gui/macosx/intf.m:678 modules/gui/qt4/ui/video_effects.h:893
+#: modules/video_filter/crop.c:105 modules/video_filter/croppadd.c:86
 #: modules/video_output/x11/xvmc.c:133
 msgid "Crop"
 msgstr "ক্রপ"
 
-#: src/video_output/vout_intf.c:375 modules/gui/macosx/intf.m:634
-#: modules/gui/macosx/intf.m:635
+#: src/video_output/vout_intf.c:375 modules/gui/macosx/controls.m:810
+#: modules/gui/macosx/intf.m:675 modules/gui/macosx/intf.m:676
 msgid "Aspect-ratio"
 msgstr "অ্যাসপেক্ট-অনুপাত"
 
@@ -4819,7 +4819,7 @@ msgid ""
 msgstr "DVB স্ট্রিমের জন্য ক্যাশিং মান। এই মানটি মিলিসেকেন্ডে সেট করতে হবে।"
 
 #: modules/access/bda/bda.c:51 modules/access/dvb/access.c:89
-#: modules/gui/qt4/components/open_panels.cpp:978
+#: modules/gui/qt4/components/open_panels.cpp:979
 msgid "Adapter card to tune"
 msgstr "টিউন করার জন্য অ্যাডাপ্টার কার্ড"
 
@@ -4836,8 +4836,8 @@ msgid "Device number to use on adapter"
 msgstr "অ্যাডাপ্টারে ব্যবহারের জন্য ডিভাইস নম্বর"
 
 #: modules/access/bda/bda.c:58 modules/access/dvb/access.c:95
-#: modules/gui/qt4/components/open_panels.cpp:735
-#: modules/gui/qt4/components/open_panels.cpp:1000
+#: modules/gui/qt4/components/open_panels.cpp:736
+#: modules/gui/qt4/components/open_panels.cpp:1001
 msgid "Transponder/multiplex frequency"
 msgstr "ট্রান্সপন্ডার/মাল্টিপ্লেক্স কম্পাঙ্ক"
 
@@ -5061,17 +5061,17 @@ msgid "Terrestrial bandwidth [0=auto,6,7,8 in MHz]"
 msgstr "টেরেস্ট্রিয়াল ব্যান্ডউইড্থ [০=স্বয়ংক্রিয়,৬,৭,৮, মেগাহার্জে]"
 
 #: modules/access/bda/bda.c:151
-#: modules/gui/qt4/components/open_panels.cpp:1028
+#: modules/gui/qt4/components/open_panels.cpp:1029
 msgid "6 MHz"
 msgstr "৬ মেগাহার্জ"
 
 #: modules/access/bda/bda.c:151
-#: modules/gui/qt4/components/open_panels.cpp:1029
+#: modules/gui/qt4/components/open_panels.cpp:1030
 msgid "7 MHz"
 msgstr "৭ মেগাহার্জ"
 
 #: modules/access/bda/bda.c:151
-#: modules/gui/qt4/components/open_panels.cpp:1030
+#: modules/gui/qt4/components/open_panels.cpp:1031
 msgid "8 MHz"
 msgstr "৮ মেগাহার্জ"
 
@@ -5649,8 +5649,8 @@ msgid ""
 msgstr "DirectShow স্ট্রিমের জন্য ক্যাশিং মান। এই মানটি মিলিসেকেন্ডে সেট করতে হবে।"
 
 #: modules/access/dshow/dshow.cpp:103 modules/access/v4l.c:75
-#: modules/gui/qt4/components/open_panels.cpp:788
-#: modules/gui/qt4/components/open_panels.cpp:823
+#: modules/gui/qt4/components/open_panels.cpp:789
+#: modules/gui/qt4/components/open_panels.cpp:824
 msgid "Video device name"
 msgstr "ভিডিও যন্ত্রের নাম"
 
@@ -5663,8 +5663,8 @@ msgstr ""
 "উল্লেখ না করেন, ডিফল্ট যন্ত্রটি ব্যবহার করা হবে।"
 
 #: modules/access/dshow/dshow.cpp:108
-#: modules/gui/qt4/components/open_panels.cpp:794
-#: modules/gui/qt4/components/open_panels.cpp:829
+#: modules/gui/qt4/components/open_panels.cpp:795
+#: modules/gui/qt4/components/open_panels.cpp:830
 msgid "Audio device name"
 msgstr "অডিও যন্ত্রের নাম"
 
@@ -5677,7 +5677,7 @@ msgstr ""
 "উল্লেখ না করেন, ডিফল্ট যন্ত্রটি ব্যবহার করা হবে।"
 
 #: modules/access/dshow/dshow.cpp:113
-#: modules/gui/qt4/components/open_panels.cpp:698
+#: modules/gui/qt4/components/open_panels.cpp:699
 msgid "Video size"
 msgstr "ভিডিওর আকার"
 
@@ -6540,8 +6540,8 @@ msgid "PVR radio device"
 msgstr "PVR রেডিও যন্ত্র"
 
 #: modules/access/pvr.c:71 modules/access/v4l.c:90
-#: modules/gui/qt4/components/open_panels.cpp:836
-#: modules/gui/qt4/components/open_panels.cpp:935
+#: modules/gui/qt4/components/open_panels.cpp:837
+#: modules/gui/qt4/components/open_panels.cpp:936
 msgid "Norm"
 msgstr "নর্ম"
 
@@ -6574,8 +6574,8 @@ msgstr ""
 "যেই স্ট্রিমটি ক্যাপচার করতে হবে তার উচ্চতা (স্বয়ংক্রিয়ভাবে সনাক্ত করার জন্য -১)।"
 
 #: modules/access/pvr.c:83 modules/access/v4l.c:83 modules/access/v4l2.c:194
-#: modules/gui/qt4/components/open_panels.cpp:843
-#: modules/gui/qt4/components/open_panels.cpp:942
+#: modules/gui/qt4/components/open_panels.cpp:844
+#: modules/gui/qt4/components/open_panels.cpp:943
 msgid "Frequency"
 msgstr "কম্পাঙ্ক"
 
@@ -6638,7 +6638,7 @@ msgid "Bitmask that will get used by the audio part of the card."
 msgstr "কার্ডের অডিও অংশ দ্বারা ব্যবহৃতব্য বিটমাস্ক।"
 
 #: modules/access/pvr.c:110 modules/access/v4l2.c:160
-#: modules/access/vcdx/info.c:100 modules/gui/macosx/intf.m:552
+#: modules/access/vcdx/info.c:100 modules/gui/macosx/intf.m:593
 #: modules/gui/qt4/dialogs/toolbar.cpp:343 modules/stream_out/raop.c:143
 msgid "Volume"
 msgstr "ভলিউম"
@@ -6842,7 +6842,7 @@ msgid ""
 msgstr "স্ক্রিন ক্যাপচার করার জন্য ক্যাশিং মান। এই মানটি মিলিসেকেন্ডে সেট করতে হবে।"
 
 #: modules/access/screen/screen.c:46
-#: modules/gui/qt4/components/open_panels.cpp:1066
+#: modules/gui/qt4/components/open_panels.cpp:1067
 msgid "Desired frame rate for the capture."
 msgstr "ক্যাপচারের কাঙ্খিত ফ্রেমের হার।"
 
@@ -6901,7 +6901,7 @@ msgstr "পর্দা ইনপুট"
 
 #: modules/access/screen/screen.c:95 modules/gui/macosx/open.m:211
 #: modules/gui/macosx/open.m:411 modules/gui/macosx/open.m:980
-#: modules/gui/macosx/simple_prefs.m:478 modules/gui/macosx/vout.m:219
+#: modules/gui/macosx/simple_prefs.m:478 modules/gui/macosx/vout.m:226
 msgid "Screen"
 msgstr "পর্দা"
 
@@ -7086,7 +7086,7 @@ msgstr "Video4Linux"
 msgid "Video4Linux input"
 msgstr "Video4Linux ইনপুট"
 
-#: modules/access/v4l2.c:68 modules/gui/qt4/components/open_panels.cpp:801
+#: modules/access/v4l2.c:68 modules/gui/qt4/components/open_panels.cpp:802
 #: modules/stream_out/standard.c:100
 msgid "Standard"
 msgstr "স্ট্যান্ডার্ড"
@@ -7468,7 +7468,7 @@ msgstr "[vcd:][device][@[title][,[chapter]]]"
 #: modules/access/vcdx/access.c:286 modules/access/vcdx/access.c:369
 #: modules/access/vcdx/access.c:696 modules/access/vcdx/info.c:294
 #: modules/access/vcdx/info.c:295
-#: modules/gui/qt4/components/open_panels.cpp:367
+#: modules/gui/qt4/components/open_panels.cpp:368
 msgid "Entry"
 msgstr "এন্ট্রি"
 
@@ -8352,8 +8352,8 @@ msgstr "ALSA যন্ত্রের নাম"
 #: modules/audio_output/auhal.c:968 modules/audio_output/directx.c:457
 #: modules/audio_output/oss.c:133 modules/audio_output/portaudio.c:385
 #: modules/audio_output/sdl.c:179 modules/audio_output/sdl.c:197
-#: modules/audio_output/waveout.c:462 modules/gui/macosx/intf.m:619
-#: modules/gui/macosx/intf.m:620
+#: modules/audio_output/waveout.c:462 modules/gui/macosx/intf.m:660
+#: modules/gui/macosx/intf.m:661
 msgid "Audio Device"
 msgstr "অডিও যন্ত্র"
 
@@ -8580,17 +8580,18 @@ msgstr "আউটপুট যন্ত্রের জন্য Portaudio আ�
 msgid "PORTAUDIO audio output"
 msgstr "PORTAUDIO অডিও আউটপুট"
 
-#: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:541
-#: modules/gui/macosx/intf.m:542 modules/gui/macosx/intf.m:1924
+#: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:582
+#: modules/gui/macosx/intf.m:583 modules/gui/macosx/intf.m:1965
 #: modules/gui/pda/pda_interface.c:210 modules/gui/pda/pda_interface.c:1353
-#: modules/gui/qt4/main_interface.cpp:933
-#: modules/gui/qt4/main_interface.cpp:937
-#: modules/gui/qt4/main_interface.cpp:971
-#: modules/gui/qt4/main_interface.cpp:973
-#: modules/gui/qt4/main_interface.cpp:1041
-#: modules/gui/qt4/main_interface.cpp:1058
-#: modules/gui/qt4/main_interface.cpp:1065
-#: modules/gui/qt4/main_interface.cpp:1084
+#: modules/gui/qt4/dialogs/help.cpp:99 modules/gui/qt4/main_interface.cpp:930
+#: modules/gui/qt4/main_interface.cpp:934
+#: modules/gui/qt4/main_interface.cpp:968
+#: modules/gui/qt4/main_interface.cpp:970
+#: modules/gui/qt4/main_interface.cpp:1038
+#: modules/gui/qt4/main_interface.cpp:1055
+#: modules/gui/qt4/main_interface.cpp:1062
+#: modules/gui/qt4/main_interface.cpp:1081
+#: modules/video_output/xcb/window.c:232
 msgid "VLC media player"
 msgstr "ভিএলসি মিডিয়া প্লেয়ার"
 
@@ -8670,7 +8671,7 @@ msgstr "Bidir"
 msgid "Non-key"
 msgstr "Non-key"
 
-#: modules/codec/avcodec/avcodec.c:71 modules/gui/macosx/prefs.m:188
+#: modules/codec/avcodec/avcodec.c:71 modules/gui/macosx/prefs.m:200
 #: modules/gui/macosx/simple_prefs.m:296
 #: modules/gui/qt4/dialogs/preferences.cpp:68
 msgid "All"
@@ -9463,7 +9464,7 @@ msgstr "এনকোড করা সাবটাইটেলের Y স্থ�
 msgid "DVB subtitles decoder"
 msgstr "DVB সাবটাইটেল ডিকোডার"
 
-#: modules/codec/dvbsub.c:92 modules/demux/ts.c:3359 modules/demux/ts.c:3416
+#: modules/codec/dvbsub.c:92 modules/demux/ts.c:3361 modules/demux/ts.c:3418
 msgid "DVB subtitles"
 msgstr "DVB সাবটাইটেল"
 
@@ -9688,7 +9689,7 @@ msgid "Maroon"
 msgstr "মেরুন"
 
 #: modules/codec/kate.c:213 modules/gui/fbosd.c:172
-#: modules/gui/macosx/controls.m:543 modules/gui/macosx/intf.m:650
+#: modules/gui/macosx/controls.m:549 modules/gui/macosx/intf.m:691
 #: modules/misc/freetype.c:128 modules/misc/quartztext.c:104
 #: modules/misc/win32text.c:88 modules/video_filter/colorthres.c:63
 #: modules/video_filter/marq.c:62 modules/video_filter/rss.c:71
@@ -9703,7 +9704,7 @@ msgid "Fuchsia"
 msgstr "গোলাপী"
 
 #: modules/codec/kate.c:213 modules/gui/fbosd.c:173
-#: modules/gui/macosx/controls.m:547 modules/gui/macosx/intf.m:652
+#: modules/gui/macosx/controls.m:553 modules/gui/macosx/intf.m:693
 #: modules/misc/freetype.c:128 modules/misc/quartztext.c:104
 #: modules/misc/win32text.c:88 modules/video_filter/colorthres.c:63
 #: modules/video_filter/marq.c:63 modules/video_filter/rss.c:72
@@ -9718,7 +9719,7 @@ msgid "Olive"
 msgstr "জলপাই রং"
 
 #: modules/codec/kate.c:213 modules/gui/fbosd.c:173
-#: modules/gui/macosx/controls.m:545 modules/gui/macosx/intf.m:651
+#: modules/gui/macosx/controls.m:551 modules/gui/macosx/intf.m:692
 #: modules/misc/freetype.c:128 modules/misc/quartztext.c:104
 #: modules/misc/win32text.c:88 modules/video_filter/marq.c:63
 #: modules/video_filter/rss.c:72
@@ -9754,7 +9755,7 @@ msgid "Navy"
 msgstr "নেভী"
 
 #: modules/codec/kate.c:214 modules/gui/fbosd.c:174
-#: modules/gui/macosx/controls.m:549 modules/gui/macosx/intf.m:653
+#: modules/gui/macosx/controls.m:555 modules/gui/macosx/intf.m:694
 #: modules/misc/freetype.c:129 modules/misc/quartztext.c:105
 #: modules/misc/win32text.c:89 modules/video_filter/colorthres.c:63
 #: modules/video_filter/marq.c:64 modules/video_filter/rss.c:73
@@ -11351,7 +11352,7 @@ msgstr "সময় নিয়ন্ত্রন"
 msgid "Position Control"
 msgstr "অবস্থান"
 
-#: modules/control/hotkeys.c:100 modules/gui/macosx/intf.m:2408
+#: modules/control/hotkeys.c:100 modules/gui/macosx/intf.m:2441
 msgid "Ignore"
 msgstr "উপেক্ষা করা হবে"
 
@@ -11364,28 +11365,28 @@ msgstr "হটকী (hotkey)"
 msgid "Hotkeys management interface"
 msgstr "হটকী (hotkey) ম্যানেজমেন্ট ইন্টারফেস"
 
-#: modules/control/hotkeys.c:109
+#: modules/control/hotkeys.c:111
 #, fuzzy
 msgid "MouseWheel x-axis Control"
 msgstr "মাক্স নিয়ন্ত্রন"
 
-#: modules/control/hotkeys.c:110
+#: modules/control/hotkeys.c:112
 msgid ""
 "MouseWheel x-axis can control volume, position or mousewheel event can be "
 "ignored"
 msgstr ""
 
-#: modules/control/hotkeys.c:387
+#: modules/control/hotkeys.c:383
 #, c-format
 msgid "Audio Device: %s"
 msgstr "অডিও যন্ত্র: %s"
 
-#: modules/control/hotkeys.c:478
+#: modules/control/hotkeys.c:476
 #, c-format
 msgid "Audio track: %s"
 msgstr "অডিও ট্র্যাক: %s"
 
-#: modules/control/hotkeys.c:494 modules/control/hotkeys.c:517
+#: modules/control/hotkeys.c:494 modules/control/hotkeys.c:519
 #, c-format
 msgid "Subtitle track: %s"
 msgstr "সাবটাইটেল ট্র্যাক: %s"
@@ -11394,69 +11395,69 @@ msgstr "সাবটাইটেল ট্র্যাক: %s"
 msgid "N/A"
 msgstr "N/A"
 
-#: modules/control/hotkeys.c:541
+#: modules/control/hotkeys.c:545
 #, c-format
 msgid "Aspect ratio: %s"
 msgstr "অ্যাসপেক্ট অনুপাত: %s"
 
-#: modules/control/hotkeys.c:569
+#: modules/control/hotkeys.c:573
 #, c-format
 msgid "Crop: %s"
 msgstr "ক্রপ: %s"
 
-#: modules/control/hotkeys.c:583
+#: modules/control/hotkeys.c:587
 msgid "Zooming reset"
 msgstr ""
 
-#: modules/control/hotkeys.c:591
+#: modules/control/hotkeys.c:595
 #, fuzzy
 msgid "Scaled to screen"
 msgstr "পর্দার মাপ অনুসারে"
 
-#: modules/control/hotkeys.c:594
+#: modules/control/hotkeys.c:598
 #, fuzzy
 msgid "Original Size"
 msgstr "আসল অডিও"
 
-#: modules/control/hotkeys.c:636
+#: modules/control/hotkeys.c:640
 #, c-format
 msgid "Deinterlace mode: %s"
 msgstr "ডিইন্টারলেস মোড: %s"
 
-#: modules/control/hotkeys.c:668
+#: modules/control/hotkeys.c:672
 #, c-format
 msgid "Zoom mode: %s"
 msgstr "জুম মোড: %s"
 
-#: modules/control/hotkeys.c:728
+#: modules/control/hotkeys.c:732
 #, fuzzy
 msgid "1.00x"
 msgstr "১০০%"
 
-#: modules/control/hotkeys.c:754
+#: modules/control/hotkeys.c:758
 #, fuzzy, c-format
 msgid "%.2fx"
 msgstr "%.2f ডেসিবল"
 
-#: modules/control/hotkeys.c:790 modules/control/hotkeys.c:800
+#: modules/control/hotkeys.c:794 modules/control/hotkeys.c:804
 #, c-format
 msgid "Subtitle delay %i ms"
 msgstr "সাবটাইটেল বিলম্ব %i মিলিসেকেন্ড"
 
-#: modules/control/hotkeys.c:810 modules/control/hotkeys.c:820
+#: modules/control/hotkeys.c:814 modules/control/hotkeys.c:824
 #, c-format
 msgid "Audio delay %i ms"
 msgstr "অডিও বিলম্ব %i মিলিসেকেন্ড"
 
-#: modules/control/hotkeys.c:871
+#: modules/control/hotkeys.c:875
 msgid "Recording"
 msgstr "রেকর্ড করা হচ্ছে"
 
-#: modules/control/hotkeys.c:873
+#: modules/control/hotkeys.c:877
 msgid "Recording done"
 msgstr "রেকর্ড করা সম্পন্ন"
 
-#: modules/control/hotkeys.c:1096
+#: modules/control/hotkeys.c:1101
 #, c-format
 msgid "Volume %d%%"
 msgstr "ভলিউম: %d%%"
@@ -11559,11 +11560,11 @@ msgstr "রুপান্তরের পরিবর্তে রোটেট 
 msgid "motion"
 msgstr "গতি"
 
-#: modules/control/motion.c:80
+#: modules/control/motion.c:81
 msgid "motion control interface"
 msgstr "গতি নিয়ন্ত্রন ইন্টারফেস"
 
-#: modules/control/motion.c:81
+#: modules/control/motion.c:82
 msgid ""
 "Use HDAPS, AMS, APPLESMC or UNIMOTION motion sensors to rotate the video"
 msgstr ""
@@ -11652,11 +11653,11 @@ msgstr "শুরু করা হচ্ছে"
 msgid "Opening"
 msgstr "খোলা হচ্ছে"
 
-#: modules/control/rc.c:77 modules/gui/macosx/embeddedwindow.m:148
-#: modules/gui/macosx/intf.m:1934 modules/gui/macosx/intf.m:1935
-#: modules/gui/macosx/intf.m:1936 modules/gui/macosx/intf.m:1937
+#: modules/control/rc.c:77 modules/gui/macosx/embeddedwindow.m:151
+#: modules/gui/macosx/intf.m:1975 modules/gui/macosx/intf.m:1976
+#: modules/gui/macosx/intf.m:1977 modules/gui/macosx/intf.m:1978
 #: modules/gui/pda/pda_interface.c:248 modules/gui/pda/pda_interface.c:249
-#: modules/gui/qt4/menus.cpp:734 modules/misc/notify/xosd.c:238
+#: modules/gui/qt4/menus.cpp:736 modules/misc/notify/xosd.c:238
 msgid "Pause"
 msgstr "বিরতি"
 
@@ -12199,10 +12200,10 @@ msgstr ""
 #: modules/control/telnet.c:83 modules/gui/macosx/open.m:188
 #: modules/gui/macosx/open.m:190 modules/gui/macosx/output.m:147
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:142
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:186
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:230
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:276
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:352
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:187
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:232
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:278
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:354
 #: modules/gui/qt4/ui/open_net.h:126 modules/stream_out/rtp.c:109
 msgid "Port"
 msgstr "পোর্ট"
@@ -13128,8 +13129,8 @@ msgstr ""
 msgid "MPEG Transport Stream demuxer"
 msgstr "MPEG ট্রান্সপোর্ট স্ট্রিম ডিমাক্সার"
 
-#: modules/demux/ts.c:177 modules/gui/macosx/controls.m:1099
-#: modules/gui/macosx/intf.m:647 modules/gui/qt4/dialogs/toolbar.cpp:403
+#: modules/demux/ts.c:177 modules/gui/macosx/controls.m:1126
+#: modules/gui/macosx/intf.m:688 modules/gui/qt4/dialogs/toolbar.cpp:403
 msgid "Teletext"
 msgstr "টেলিটেক্সট"
 
@@ -13152,19 +13153,19 @@ msgstr "টেলিটেক্সট: প্রোগ্রাম সিডি
 msgid "Teletext subtitles: hearing impaired"
 msgstr "DVB সাবটাইটেল: হিয়ারিং ইমপেয়ার্ড"
 
-#: modules/demux/ts.c:3422
+#: modules/demux/ts.c:3424
 msgid "DVB subtitles: hearing impaired"
 msgstr "DVB সাবটাইটেল: হিয়ারিং ইমপেয়ার্ড"
 
-#: modules/demux/ts.c:3676 modules/demux/ts.c:3718
+#: modules/demux/ts.c:3678 modules/demux/ts.c:3720
 msgid "clean effects"
 msgstr "এফেক্ট পরিষ্কার করুন"
 
-#: modules/demux/ts.c:3680 modules/demux/ts.c:3722
+#: modules/demux/ts.c:3682 modules/demux/ts.c:3724
 msgid "hearing impaired"
 msgstr "হিয়ারিং ইমপেয়ার্ড"
 
-#: modules/demux/ts.c:3684 modules/demux/ts.c:3726
+#: modules/demux/ts.c:3686 modules/demux/ts.c:3728
 msgid "visual impaired commentary"
 msgstr "ভিজুয়াল ইম্পেয়ার্ড কমেন্টারী"
 
@@ -13241,14 +13242,14 @@ msgid "Open"
 msgstr "খুলুন"
 
 #: modules/gui/beos/InterfaceWindow.cpp:226
-#: modules/gui/beos/InterfaceWindow.cpp:331 modules/gui/macosx/prefs.m:183
+#: modules/gui/beos/InterfaceWindow.cpp:331 modules/gui/macosx/prefs.m:195
 #: modules/gui/macosx/simple_prefs.m:300
 #: modules/gui/qt4/dialogs/preferences.cpp:46
 msgid "Preferences"
 msgstr "পছন্দসমূহ..."
 
 #: modules/gui/beos/InterfaceWindow.cpp:238
-#: modules/gui/beos/InterfaceWindow.cpp:329 modules/gui/macosx/intf.m:557
+#: modules/gui/beos/InterfaceWindow.cpp:329 modules/gui/macosx/intf.m:598
 #: modules/gui/qt4/dialogs/messages.cpp:75
 #: modules/gui/qt4/dialogs/messages.cpp:94
 msgid "Messages"
@@ -13297,15 +13298,15 @@ msgstr "অধ্যায়ে যান"
 msgid "Speed"
 msgstr "গতি"
 
-#: modules/gui/beos/InterfaceWindow.cpp:324 modules/gui/macosx/intf.m:655
+#: modules/gui/beos/InterfaceWindow.cpp:324 modules/gui/macosx/intf.m:696
 msgid "Window"
 msgstr "উইন্ডো"
 
 #: modules/gui/beos/InterfaceWindow.cpp:405 modules/gui/macosx/bookmarks.m:101
 #: modules/gui/macosx/bookmarks.m:213 modules/gui/macosx/bookmarks.m:221
 #: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/bookmarks.m:279
-#: modules/gui/macosx/controls.m:84 modules/gui/macosx/extended.m:519
-#: modules/gui/macosx/intf.m:2281 modules/gui/macosx/open.m:307
+#: modules/gui/macosx/controls.m:85 modules/gui/macosx/extended.m:519
+#: modules/gui/macosx/intf.m:2314 modules/gui/macosx/open.m:307
 #: modules/gui/macosx/output.m:138 modules/gui/macosx/playlistinfo.m:429
 #: modules/gui/macosx/simple_prefs.m:239 modules/gui/macosx/update.m:65
 #: modules/gui/macosx/wizard.m:600 modules/gui/macosx/wizard.m:664
@@ -13313,9 +13314,9 @@ msgstr "উইন্ডো"
 #: modules/gui/macosx/wizard.m:1155 modules/gui/macosx/wizard.m:1681
 #: modules/gui/macosx/wizard.m:1689 modules/gui/macosx/wizard.m:1870
 #: modules/gui/macosx/wizard.m:1881 modules/gui/macosx/wizard.m:1894
-#: modules/gui/qt4/components/open_panels.cpp:1306
+#: modules/gui/qt4/components/open_panels.cpp:1310
 #: modules/gui/qt4/components/preferences_widgets.cpp:1366
-#: modules/gui/qt4/main_interface.cpp:556
+#: modules/gui/qt4/main_interface.cpp:553
 msgid "OK"
 msgstr "ঠিক আছে"
 
@@ -13340,11 +13341,11 @@ msgid "Close"
 msgstr "বন্ধ করুন"
 
 #: modules/gui/beos/PlayListWindow.cpp:104 modules/gui/macosx/bookmarks.m:90
-#: modules/gui/macosx/intf.m:584
+#: modules/gui/macosx/intf.m:625
 msgid "Edit"
 msgstr "সম্পাদনা করুন"
 
-#: modules/gui/beos/PlayListWindow.cpp:106 modules/gui/macosx/intf.m:589
+#: modules/gui/beos/PlayListWindow.cpp:106 modules/gui/macosx/intf.m:630
 #: modules/gui/macosx/playlist.m:439
 msgid "Select All"
 msgstr "সকল নির্বাচন করুন"
@@ -13395,7 +13396,7 @@ msgid "Apply"
 msgstr "কার্যকর করুন"
 
 #: modules/gui/beos/PreferencesWindow.cpp:257 modules/gui/macosx/output.m:526
-#: modules/gui/macosx/playlist.m:709 modules/gui/macosx/prefs.m:184
+#: modules/gui/macosx/playlist.m:709 modules/gui/macosx/prefs.m:196
 #: modules/gui/macosx/simple_prefs.m:299
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
 #: modules/gui/qt4/ui/vlm.h:302
@@ -13586,7 +13587,7 @@ msgstr "কমান্ড"
 msgid "GNU/Linux osd/overlay framebuffer interface"
 msgstr "জিএনইউ/লিনাক্স ওএসডি/ওভারলে ফ্রেমবাফার ইন্টারফেস"
 
-#: modules/gui/macosx/about.m:86 modules/gui/macosx/intf.m:562
+#: modules/gui/macosx/about.m:86 modules/gui/macosx/intf.m:603
 msgid "About VLC media player"
 msgstr "ভিএলসি মিডিয়া প্লেয়ার পরিচিতি"
 
@@ -13600,7 +13601,7 @@ msgid "VLC was brought to you by:"
 msgstr "ভিএলসি আপনার কাছে এনেছে:"
 
 #: modules/gui/macosx/about.m:108 modules/gui/macosx/about.m:171
-#: modules/gui/macosx/intf.m:672 modules/gui/qt4/dialogs/help.cpp:166
+#: modules/gui/macosx/intf.m:713 modules/gui/qt4/dialogs/help.cpp:166
 msgid "License"
 msgstr "লাইসেন্স"
 
@@ -13608,8 +13609,8 @@ msgstr "লাইসেন্স"
 msgid "VLC media player Help"
 msgstr "ভিএলসি মিডিয়া প্লেয়ার সহায়তা"
 
-#: modules/gui/macosx/about.m:187 modules/gui/macosx/controls.m:541
-#: modules/gui/macosx/intf.m:649 modules/gui/pda/pda.c:283
+#: modules/gui/macosx/about.m:187 modules/gui/macosx/controls.m:547
+#: modules/gui/macosx/intf.m:690 modules/gui/pda/pda.c:281
 msgid "Index"
 msgstr "সূচী"
 
@@ -13623,7 +13624,7 @@ msgstr "বুকমার্ক"
 msgid "Add"
 msgstr "যোগ করুন"
 
-#: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/intf.m:588
+#: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/intf.m:629
 #: modules/gui/macosx/simple_prefs.m:240
 #: modules/gui/qt4/components/preferences_widgets.cpp:1154
 #: modules/gui/qt4/dialogs/bookmarks.cpp:48 modules/gui/qt4/ui/vlm.h:301
@@ -13637,7 +13638,7 @@ msgid "Extract"
 msgstr "এক্সট্রাক্ট করুন"
 
 #: modules/gui/macosx/bookmarks.m:98 modules/gui/macosx/bookmarks.m:104
-#: modules/gui/pda/pda.c:276 modules/gui/qt4/dialogs/bookmarks.cpp:68
+#: modules/gui/pda/pda.c:274 modules/gui/qt4/dialogs/bookmarks.cpp:68
 #: modules/gui/qt4/dialogs/toolbar.cpp:359
 msgid "Time"
 msgstr "সময়"
@@ -13685,85 +13686,90 @@ msgstr "কোনো ইনপুট পাওয়া যায়নি"
 msgid "The stream must be playing or paused for bookmarks to work."
 msgstr "বুকমার্ক কাজ করার জন্য় স্ট্রিমটিকে অবশ্যই চালাতে বা বিরতিতে থাকতে হবে।"
 
-#: modules/gui/macosx/controls.m:82 modules/gui/macosx/controls.m:1037
+#: modules/gui/macosx/controls.m:83 modules/gui/macosx/controls.m:1064
 msgid "Jump To Time"
 msgstr "সময়ে যাওয়া হবে"
 
-#: modules/gui/macosx/controls.m:85
+#: modules/gui/macosx/controls.m:86
 msgid "sec."
 msgstr "সেকেন্ড"
 
-#: modules/gui/macosx/controls.m:86
+#: modules/gui/macosx/controls.m:87
 msgid "Jump to time"
 msgstr "সময়ে যাওয়া হবে"
 
-#: modules/gui/macosx/controls.m:227
+#: modules/gui/macosx/controls.m:233
 msgid "Random On"
 msgstr "উল্টোপাল্টা চালু"
 
-#: modules/gui/macosx/controls.m:232
+#: modules/gui/macosx/controls.m:238
 msgid "Random Off"
 msgstr "উল্টোপাল্টা বন্ধ"
 
-#: modules/gui/macosx/controls.m:289 modules/gui/macosx/controls.m:349
-#: modules/gui/macosx/controls.m:1021 modules/gui/macosx/intf.m:599
+#: modules/gui/macosx/controls.m:295 modules/gui/macosx/controls.m:355
+#: modules/gui/macosx/controls.m:1048 modules/gui/macosx/intf.m:640
 msgid "Repeat One"
 msgstr "একটি রিপিট করা হবে"
 
-#: modules/gui/macosx/controls.m:305 modules/gui/macosx/controls.m:378
-#: modules/gui/macosx/controls.m:1028 modules/gui/macosx/intf.m:600
+#: modules/gui/macosx/controls.m:311 modules/gui/macosx/controls.m:384
+#: modules/gui/macosx/controls.m:1055 modules/gui/macosx/intf.m:641
 msgid "Repeat All"
 msgstr "সকল রিপিট করা হবে"
 
-#: modules/gui/macosx/controls.m:321 modules/gui/macosx/controls.m:354
-#: modules/gui/macosx/controls.m:383
+#: modules/gui/macosx/controls.m:327 modules/gui/macosx/controls.m:360
+#: modules/gui/macosx/controls.m:389
 msgid "Repeat Off"
 msgstr "রিপিট বন্ধ"
 
-#: modules/gui/macosx/controls.m:478 modules/gui/macosx/controls.m:1051
-#: modules/gui/macosx/intf.m:625
+#: modules/gui/macosx/controls.m:484 modules/gui/macosx/controls.m:1078
+#: modules/gui/macosx/intf.m:666
 msgid "Half Size"
 msgstr "অর্ধেক আকার"
 
-#: modules/gui/macosx/controls.m:480 modules/gui/macosx/controls.m:1052
-#: modules/gui/macosx/controls.m:1097 modules/gui/macosx/intf.m:626
+#: modules/gui/macosx/controls.m:486 modules/gui/macosx/controls.m:1079
+#: modules/gui/macosx/controls.m:1124 modules/gui/macosx/intf.m:667
 msgid "Normal Size"
 msgstr "সাধারন আকার"
 
-#: modules/gui/macosx/controls.m:482 modules/gui/macosx/controls.m:1053
-#: modules/gui/macosx/intf.m:627
+#: modules/gui/macosx/controls.m:488 modules/gui/macosx/controls.m:1080
+#: modules/gui/macosx/intf.m:668
 msgid "Double Size"
 msgstr "দ্বিগুন আকার"
 
-#: modules/gui/macosx/controls.m:484 modules/gui/macosx/controls.m:1057
-#: modules/gui/macosx/controls.m:1068 modules/gui/macosx/intf.m:630
+#: modules/gui/macosx/controls.m:490 modules/gui/macosx/controls.m:1084
+#: modules/gui/macosx/controls.m:1095 modules/gui/macosx/intf.m:671
 msgid "Float on Top"
 msgstr "উপরে ভাসবে"
 
-#: modules/gui/macosx/controls.m:486 modules/gui/macosx/controls.m:1054
-#: modules/gui/macosx/intf.m:628
+#: modules/gui/macosx/controls.m:492 modules/gui/macosx/controls.m:1081
+#: modules/gui/macosx/intf.m:669
 msgid "Fit to Screen"
 msgstr "পর্দার মাপ অনুসারে"
 
-#: modules/gui/macosx/controls.m:798 modules/gui/macosx/intf.m:576
-#: modules/gui/macosx/intf.m:642 modules/gui/qt4/menus.cpp:550
+#: modules/gui/macosx/controls.m:813
+#, fuzzy
+msgid "Lock Aspect Ratio"
+msgstr "অ্যাসপেক্ট অনুপাত কার্যকর করুন"
+
+#: modules/gui/macosx/controls.m:825 modules/gui/macosx/intf.m:617
+#: modules/gui/macosx/intf.m:683 modules/gui/qt4/menus.cpp:552
 msgid "Open File..."
 msgstr "ফাইল খুলুন..."
 
-#: modules/gui/macosx/controls.m:1035 modules/gui/macosx/intf.m:601
+#: modules/gui/macosx/controls.m:1062 modules/gui/macosx/intf.m:642
 msgid "Step Forward"
 msgstr "সামনে স্টেপ"
 
-#: modules/gui/macosx/controls.m:1036 modules/gui/macosx/intf.m:602
+#: modules/gui/macosx/controls.m:1063 modules/gui/macosx/intf.m:643
 msgid "Step Backward"
 msgstr "পেছনে স্টেপ"
 
-#: modules/gui/macosx/embeddedwindow.m:61 modules/gui/macosx/intf.m:546
+#: modules/gui/macosx/embeddedwindow.m:64 modules/gui/macosx/intf.m:587
 #: modules/gui/pda/pda_interface.c:236 modules/gui/pda/pda_interface.c:237
 msgid "Rewind"
 msgstr "পেছনে যান"
 
-#: modules/gui/macosx/embeddedwindow.m:62 modules/gui/macosx/intf.m:549
+#: modules/gui/macosx/embeddedwindow.m:65 modules/gui/macosx/intf.m:590
 msgid "Fast Forward"
 msgstr "সামনে যান"
 
@@ -13922,29 +13928,29 @@ msgstr ""
 msgid "(no item is being played)"
 msgstr "(কোনো আইটেম প্রদর্শন করা হচ্ছে না)"
 
-#: modules/gui/macosx/intf.m:337
+#: modules/gui/macosx/intf.m:378
 msgid "VLC's last release for your OS is the 0.9 series."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:339
+#: modules/gui/macosx/intf.m:380
 msgid ""
 "VLC's last release for your OS is VLC 0.8.6i, which is prone to known "
 "security issues."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:341
+#: modules/gui/macosx/intf.m:382
 msgid ""
 "VLC's last release for your OS is VLC 0.7.2, which is highly out of date and "
 "prone to known security issues. We recommend you to update your Mac to a "
 "modern version of Mac OS X."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:343
+#: modules/gui/macosx/intf.m:384
 #, fuzzy
 msgid "Your version of Mac OS X is no longer supported"
 msgstr "আপনার ম্যাক অপারেটিল সিস্টেম X সংস্করন সমর্থিত নয়।"
 
-#: modules/gui/macosx/intf.m:347
+#: modules/gui/macosx/intf.m:388
 #, fuzzy
 msgid ""
 "VLC media player %s requires Mac OS X 10.5 or higher.\n"
@@ -13952,209 +13958,209 @@ msgid ""
 "%@"
 msgstr "ভিএলসি মিডিয়া প্লেয়ারের ম্যাক অপারেটিং সিস্টেম X ১০.৪ বা উচ্চ প্রয়োজন।"
 
-#: modules/gui/macosx/intf.m:558
+#: modules/gui/macosx/intf.m:599
 msgid "Open CrashLog..."
 msgstr "CrashLog খুলুন..."
 
-#: modules/gui/macosx/intf.m:559
+#: modules/gui/macosx/intf.m:600
 #, fuzzy
 msgid "Save this Log..."
 msgstr "নতুনভাবে সংরক্ষন করুন... (&S)"
 
-#: modules/gui/macosx/intf.m:564
+#: modules/gui/macosx/intf.m:605
 msgid "Check for Update..."
 msgstr "আপডেট পরীক্ষা করা হবে..."
 
-#: modules/gui/macosx/intf.m:565
+#: modules/gui/macosx/intf.m:606
 msgid "Preferences..."
 msgstr "পছন্দসমূহ..."
 
-#: modules/gui/macosx/intf.m:568
+#: modules/gui/macosx/intf.m:609
 msgid "Services"
 msgstr "সেবাসমূহ"
 
-#: modules/gui/macosx/intf.m:569
+#: modules/gui/macosx/intf.m:610
 msgid "Hide VLC"
 msgstr "ভিএলসি লুকানো হবে"
 
-#: modules/gui/macosx/intf.m:570
+#: modules/gui/macosx/intf.m:611
 msgid "Hide Others"
 msgstr "অন্যান্য লুকানো হবে"
 
-#: modules/gui/macosx/intf.m:571
+#: modules/gui/macosx/intf.m:612
 msgid "Show All"
 msgstr "সকল প্রদর্শন করা হবে"
 
-#: modules/gui/macosx/intf.m:572
+#: modules/gui/macosx/intf.m:613
 msgid "Quit VLC"
 msgstr "ভিএলসি প্রস্থান করো"
 
-#: modules/gui/macosx/intf.m:574
+#: modules/gui/macosx/intf.m:615
 msgid "1:File"
 msgstr "1:ফাইল"
 
-#: modules/gui/macosx/intf.m:575 modules/gui/qt4/menus.cpp:308
+#: modules/gui/macosx/intf.m:616 modules/gui/qt4/menus.cpp:308
 msgid "Advanced Open File..."
 msgstr "ফাইল খোলার উন্নত বৈশিষ্ট্য..."
 
-#: modules/gui/macosx/intf.m:577
+#: modules/gui/macosx/intf.m:618
 msgid "Open Disc..."
 msgstr "ডিস্ক খুলুন..."
 
-#: modules/gui/macosx/intf.m:578
+#: modules/gui/macosx/intf.m:619
 msgid "Open Network..."
 msgstr "নেটওয়ার্ক খুলুন..."
 
-#: modules/gui/macosx/intf.m:579
+#: modules/gui/macosx/intf.m:620
 msgid "Open Capture Device..."
 msgstr "ক্যাপচার যন্ত্র খুলুন..."
 
-#: modules/gui/macosx/intf.m:580
+#: modules/gui/macosx/intf.m:621
 msgid "Open Recent"
 msgstr "সাম্প্রতিক খুলুন"
 
-#: modules/gui/macosx/intf.m:581 modules/gui/macosx/intf.m:2697
+#: modules/gui/macosx/intf.m:622 modules/gui/macosx/intf.m:2730
 msgid "Clear Menu"
 msgstr "মেনু পরিষ্কার করুন"
 
-#: modules/gui/macosx/intf.m:582
+#: modules/gui/macosx/intf.m:623
 msgid "Streaming/Exporting Wizard..."
 msgstr "স্ট্রিমিং/এক্সপোর্টিং উইজার্ড..."
 
-#: modules/gui/macosx/intf.m:585
+#: modules/gui/macosx/intf.m:626
 msgid "Cut"
 msgstr "কাটুন"
 
-#: modules/gui/macosx/intf.m:586
+#: modules/gui/macosx/intf.m:627
 msgid "Copy"
 msgstr "কপি করুন"
 
-#: modules/gui/macosx/intf.m:587
+#: modules/gui/macosx/intf.m:628
 msgid "Paste"
 msgstr "পেস্ট করুন"
 
-#: modules/gui/macosx/intf.m:591
+#: modules/gui/macosx/intf.m:632
 msgid "Playback"
 msgstr "চালান"
 
-#: modules/gui/macosx/intf.m:612 modules/gui/qt4/menus.cpp:503
+#: modules/gui/macosx/intf.m:653 modules/gui/qt4/menus.cpp:505
 #, fuzzy
 msgid "Increase Volume"
 msgstr "ডিফল্ট ভলিউম"
 
-#: modules/gui/macosx/intf.m:613 modules/gui/qt4/menus.cpp:506
+#: modules/gui/macosx/intf.m:654 modules/gui/qt4/menus.cpp:508
 #, fuzzy
 msgid "Decrease Volume"
 msgstr "ডিফল্ট ভলিউম"
 
-#: modules/gui/macosx/intf.m:638 modules/gui/macosx/intf.m:639
-#: modules/gui/macosx/simple_prefs.m:280 modules/gui/macosx/vout.m:202
+#: modules/gui/macosx/intf.m:679 modules/gui/macosx/intf.m:680
+#: modules/gui/macosx/simple_prefs.m:280 modules/gui/macosx/vout.m:209
 msgid "Fullscreen Video Device"
 msgstr "পূর্নপর্দা ভিডিও যন্ত্র"
 
-#: modules/gui/macosx/intf.m:645 modules/gui/macosx/intf.m:646
+#: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:687
 #: modules/video_filter/postproc.c:189
 msgid "Post processing"
 msgstr "পোস্ট প্রসেসিং"
 
-#: modules/gui/macosx/intf.m:648
+#: modules/gui/macosx/intf.m:689
 msgid "Transparent"
 msgstr "স্বচ্ছ"
 
-#: modules/gui/macosx/intf.m:656
+#: modules/gui/macosx/intf.m:697
 msgid "Minimize Window"
 msgstr "উইন্ডো ছোট করুন"
 
-#: modules/gui/macosx/intf.m:657
+#: modules/gui/macosx/intf.m:698
 msgid "Close Window"
 msgstr "উইন্ডো বন্ধ করুন"
 
-#: modules/gui/macosx/intf.m:658
+#: modules/gui/macosx/intf.m:699
 msgid "Controller..."
 msgstr "নিয়ন্ত্রক..."
 
-#: modules/gui/macosx/intf.m:659
+#: modules/gui/macosx/intf.m:700
 msgid "Equalizer..."
 msgstr "ইকুয়ালাইজার..."
 
-#: modules/gui/macosx/intf.m:660
+#: modules/gui/macosx/intf.m:701
 msgid "Extended Controls..."
 msgstr "বর্ধিত নিয়ন্ত্রনসমূহ..."
 
-#: modules/gui/macosx/intf.m:661
+#: modules/gui/macosx/intf.m:702
 msgid "Bookmarks..."
 msgstr "বুকমার্ক..."
 
-#: modules/gui/macosx/intf.m:662
+#: modules/gui/macosx/intf.m:703
 msgid "Playlist..."
 msgstr "চালানোর তালিকা..."
 
-#: modules/gui/macosx/intf.m:663 modules/gui/macosx/playlist.m:440
+#: modules/gui/macosx/intf.m:704 modules/gui/macosx/playlist.m:440
 msgid "Media Information..."
 msgstr "মিডিয়া তথ্য..."
 
-#: modules/gui/macosx/intf.m:664
+#: modules/gui/macosx/intf.m:705
 msgid "Messages..."
 msgstr "বার্তাসমূহ..."
 
-#: modules/gui/macosx/intf.m:665
+#: modules/gui/macosx/intf.m:706
 msgid "Errors and Warnings..."
 msgstr "সমস্যা এবং সতর্কবার্তা..."
 
-#: modules/gui/macosx/intf.m:667
+#: modules/gui/macosx/intf.m:708
 msgid "Bring All to Front"
 msgstr "সকল সামনে আনা হবে"
 
-#: modules/gui/macosx/intf.m:669 modules/gui/qt4/dialogs/help.cpp:55
-#: modules/gui/qt4/menus.cpp:820
+#: modules/gui/macosx/intf.m:710 modules/gui/qt4/dialogs/help.cpp:55
+#: modules/gui/qt4/menus.cpp:822
 msgid "Help"
 msgstr "সহায়তা"
 
-#: modules/gui/macosx/intf.m:670
+#: modules/gui/macosx/intf.m:711
 msgid "VLC media player Help..."
 msgstr "ভিএলসি মিডিয়া প্লেয়ার সহায়তা..."
 
-#: modules/gui/macosx/intf.m:671
+#: modules/gui/macosx/intf.m:712
 msgid "ReadMe / FAQ..."
 msgstr "রিড মি / FAQ..."
 
-#: modules/gui/macosx/intf.m:673
+#: modules/gui/macosx/intf.m:714
 msgid "Online Documentation..."
 msgstr "অনলাইন ডকুমেন্টেশন"
 
-#: modules/gui/macosx/intf.m:674
+#: modules/gui/macosx/intf.m:715
 msgid "VideoLAN Website..."
 msgstr "ভিডিওল্যান ওয়েবসাইটসমূহ..."
 
-#: modules/gui/macosx/intf.m:675
+#: modules/gui/macosx/intf.m:716
 msgid "Make a donation..."
 msgstr "ডোনেশন করুন..."
 
-#: modules/gui/macosx/intf.m:676
+#: modules/gui/macosx/intf.m:717
 msgid "Online Forum..."
 msgstr "অনলাইন ফোরাম..."
 
-#: modules/gui/macosx/intf.m:690
+#: modules/gui/macosx/intf.m:731
 msgid "Volume Up"
 msgstr "ভলিউম বাড়ান"
 
-#: modules/gui/macosx/intf.m:691
+#: modules/gui/macosx/intf.m:732
 msgid "Volume Down"
 msgstr "ভলিউম কমান"
 
-#: modules/gui/macosx/intf.m:697
+#: modules/gui/macosx/intf.m:738
 msgid "Send"
 msgstr "প্রেরন করুন"
 
-#: modules/gui/macosx/intf.m:698
+#: modules/gui/macosx/intf.m:739
 msgid "Don't Send"
 msgstr "প্রেরন করা হবে না"
 
-#: modules/gui/macosx/intf.m:699 modules/gui/macosx/intf.m:700
+#: modules/gui/macosx/intf.m:740 modules/gui/macosx/intf.m:741
 msgid "VLC crashed previously"
 msgstr "ভিএলসি পূর্বে ক্র্যাশ করেছিল"
 
-#: modules/gui/macosx/intf.m:701
+#: modules/gui/macosx/intf.m:742
 msgid ""
 "Do you want to send details on the crash to VLC's development team?\n"
 "\n"
@@ -14168,68 +14174,68 @@ msgstr ""
 "সাহায্যকারী তথ্যসহ কয়েক লাইন লিখতে পারেন: একটি স্যাম্পল ফাইল ডাউনলোড করার লিঙ্ক, "
 "একটি নেটওয়ার্ক স্ট্রিমের URL, ..."
 
-#: modules/gui/macosx/intf.m:702
+#: modules/gui/macosx/intf.m:743
 msgid "I agree to be possibly contacted about this bugreport."
 msgstr "এই বাগরিপোর্টের ব্যপারে আমার সাথে যোগাযোগ করা হবে, এতে আমি রাজি আছি।"
 
-#: modules/gui/macosx/intf.m:703
+#: modules/gui/macosx/intf.m:744
 msgid ""
 "Only your default E-Mail address will be submitted, including no further "
 "information."
 msgstr ""
 "শুধুমাত্র আপনার ডিফল্ট ই-মেইল ঠিকানা জমা দেয়া হবে, আর কোনো তথ্য দেয়া হবে না।"
 
-#: modules/gui/macosx/intf.m:1756
+#: modules/gui/macosx/intf.m:1797
 #, c-format
 msgid "Volume: %d%%"
 msgstr "ভলিউম: %d%%"
 
-#: modules/gui/macosx/intf.m:2172
+#: modules/gui/macosx/intf.m:2205
 msgid "Update check failed"
 msgstr "আপডেট পরীক্ষা ব্যর্থ"
 
-#: modules/gui/macosx/intf.m:2172
+#: modules/gui/macosx/intf.m:2205
 msgid "Checking for updates was not enabled in this build."
 msgstr "এই বিল্ড-এ আপডেট পরীক্ষা সক্রিয় করা নেই।"
 
-#: modules/gui/macosx/intf.m:2279
+#: modules/gui/macosx/intf.m:2312
 msgid "Crash Report successfully sent"
 msgstr "ক্র্যাশ রিপোর্ট সফলভাবে পাঠানো হয়েছে"
 
-#: modules/gui/macosx/intf.m:2280
+#: modules/gui/macosx/intf.m:2313
 msgid "Thanks for your report!"
 msgstr "আপনার রিপোর্টের জন্য ধন্যবাদ!"
 
-#: modules/gui/macosx/intf.m:2288
+#: modules/gui/macosx/intf.m:2321
 msgid "Error when sending the Crash Report"
 msgstr "ক্র্যাশ রিপোর্ট প্রেরনের সময় সমস্যা দেখা দিয়েছে"
 
-#: modules/gui/macosx/intf.m:2379
+#: modules/gui/macosx/intf.m:2412
 msgid "No CrashLog found"
 msgstr "কোনো CrashLog পাওয়া যায়নি"
 
-#: modules/gui/macosx/intf.m:2379 modules/gui/macosx/prefs.m:207
+#: modules/gui/macosx/intf.m:2412 modules/gui/macosx/prefs.m:219
 #: modules/gui/macosx/simple_prefs.m:620
 msgid "Continue"
 msgstr "চালিয়ে যান"
 
-#: modules/gui/macosx/intf.m:2379
+#: modules/gui/macosx/intf.m:2412
 msgid "Couldn't find any trace of a previous crash."
 msgstr "পূর্ববর্তী ক্র্যাশের কোনো আলামত পাওয়া যায়নি।"
 
-#: modules/gui/macosx/intf.m:2406
+#: modules/gui/macosx/intf.m:2439
 msgid "Remove old preferences?"
 msgstr "পুরনো পছন্দসমূহ মুছে ফেলা হবে?"
 
-#: modules/gui/macosx/intf.m:2407
+#: modules/gui/macosx/intf.m:2440
 msgid "We just found an older version of VLC's preferences files."
 msgstr "আমরা এইমাত্র ভিএলসি এর পছন্দসমূহ ফাইলের একটি পুরাতন সংস্করন খুজে পেয়েছি।"
 
-#: modules/gui/macosx/intf.m:2408
+#: modules/gui/macosx/intf.m:2441
 msgid "Move To Trash and Relaunch VLC"
 msgstr "ট্র্যাশে পাঠান এবং ভিএলসি পুনরায় চালু করুন"
 
-#: modules/gui/macosx/intf.m:2542
+#: modules/gui/macosx/intf.m:2575
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr ""
@@ -14381,7 +14387,7 @@ msgid "Treat as a pipe rather than as a file"
 msgstr "ফাইলের পরিবর্তে একটি পাইপ হিসেবে ব্যবহার করা হবে"
 
 #: modules/gui/macosx/open.m:177
-#: modules/gui/qt4/components/open_panels.cpp:922
+#: modules/gui/qt4/components/open_panels.cpp:923
 msgid "Device name"
 msgstr "যন্ত্রের নাম"
 
@@ -14431,10 +14437,10 @@ msgstr "প্রোটোকল"
 
 #: modules/gui/macosx/open.m:199 modules/gui/macosx/output.m:146
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:141
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:185
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:229
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:275
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:351
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:186
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:231
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:277
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:353
 #: modules/gui/qt4/ui/open_net.h:125
 msgid "Address"
 msgstr "ঠিকানা"
@@ -14816,7 +14822,7 @@ msgstr "হারিয়ে যাওয়া ফ্রেমসমূহ"
 
 #: modules/gui/macosx/playlistinfo.m:108 modules/gui/macosx/wizard.m:363
 #: modules/gui/qt4/components/info_panels.cpp:520
-#: modules/gui/qt4/dialogs_provider.cpp:613
+#: modules/gui/qt4/dialogs_provider.cpp:616
 #: modules/video_filter/deinterlace.c:143
 msgid "Streaming"
 msgstr "স্ট্রিম করা হচ্ছে"
@@ -14857,21 +14863,21 @@ msgstr "VLC মেটাডেটা সংরক্ষন করতে ব্�
 msgid "Information"
 msgstr "তথ্য"
 
-#: modules/gui/macosx/prefs.m:186 modules/gui/macosx/simple_prefs.m:298
+#: modules/gui/macosx/prefs.m:198 modules/gui/macosx/simple_prefs.m:298
 msgid "Reset All"
 msgstr "সকল রিসেট করুন"
 
-#: modules/gui/macosx/prefs.m:187 modules/gui/macosx/simple_prefs.m:295
+#: modules/gui/macosx/prefs.m:199 modules/gui/macosx/simple_prefs.m:295
 #: modules/gui/qt4/ui/video_effects.h:882
 msgid "Basic"
 msgstr "বেসিক"
 
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:619
+#: modules/gui/macosx/prefs.m:218 modules/gui/macosx/simple_prefs.m:619
 #: modules/gui/qt4/dialogs/preferences.cpp:309
 msgid "Reset Preferences"
 msgstr "পছন্দসমূহ রিসেট করুন..."
 
-#: modules/gui/macosx/prefs.m:209 modules/gui/macosx/simple_prefs.m:622
+#: modules/gui/macosx/prefs.m:221 modules/gui/macosx/simple_prefs.m:622
 msgid ""
 "Beware this will reset the VLC media player preferences.\n"
 "Are you sure you want to continue?"
@@ -15115,7 +15121,7 @@ msgid "Sequential numbering"
 msgstr "ধারাবাহিক সংখ্যায়িতকরন"
 
 #: modules/gui/macosx/simple_prefs.m:508 modules/gui/macosx/simple_prefs.m:552
-#: modules/gui/macosx/simple_prefs.m:1113
+#: modules/gui/macosx/simple_prefs.m:1116
 #: modules/gui/qt4/components/simple_preferences.cpp:412
 msgid "Custom"
 msgstr "স্বনির্ধারিত"
@@ -15147,48 +15153,48 @@ msgstr "উচ্চ বিলম্ব"
 msgid "Higher latency"
 msgstr "উচ্চতর বিলম্ব"
 
-#: modules/gui/macosx/simple_prefs.m:723
+#: modules/gui/macosx/simple_prefs.m:726
 msgid "Interface Settings not saved"
 msgstr "ইন্টারফেস সেটিং সংরক্ষন করা হয়নি"
 
-#: modules/gui/macosx/simple_prefs.m:724 modules/gui/macosx/simple_prefs.m:796
-#: modules/gui/macosx/simple_prefs.m:829 modules/gui/macosx/simple_prefs.m:895
-#: modules/gui/macosx/simple_prefs.m:923 modules/gui/macosx/simple_prefs.m:948
+#: modules/gui/macosx/simple_prefs.m:727 modules/gui/macosx/simple_prefs.m:799
+#: modules/gui/macosx/simple_prefs.m:832 modules/gui/macosx/simple_prefs.m:898
+#: modules/gui/macosx/simple_prefs.m:926 modules/gui/macosx/simple_prefs.m:951
 #, c-format
 msgid "An error occured while saving your settings via SimplePrefs (%i)."
 msgstr ""
 "SimplePrefs (%i) এর মাধ্যমে আপনার সেটিং সংরক্ষন করার সময় একটি সমস্যা দেখা "
 "দিয়েছে।"
 
-#: modules/gui/macosx/simple_prefs.m:795
+#: modules/gui/macosx/simple_prefs.m:798
 msgid "Audio Settings not saved"
 msgstr "অডিও সেটিং সংরক্ষন করা হয়নি"
 
-#: modules/gui/macosx/simple_prefs.m:828
+#: modules/gui/macosx/simple_prefs.m:831
 msgid "Video Settings not saved"
 msgstr "ভিডিও সেটিং সংরক্ষন করা হয়নি"
 
-#: modules/gui/macosx/simple_prefs.m:894
+#: modules/gui/macosx/simple_prefs.m:897
 msgid "Input Settings not saved"
 msgstr "ইনপুট সেটিং সংরক্ষন করা হয়নি"
 
-#: modules/gui/macosx/simple_prefs.m:922
+#: modules/gui/macosx/simple_prefs.m:925
 msgid "On Screen Display/Subtitle Settings not saved"
 msgstr "পর্দায় প্রদর্শিত বার্তা/সাবটাইটেল সেটিং সংরক্ষন করা হয়নি"
 
-#: modules/gui/macosx/simple_prefs.m:947
+#: modules/gui/macosx/simple_prefs.m:950
 msgid "Hotkeys not saved"
 msgstr "হটকী সংরক্ষন করা হয়নি"
 
-#: modules/gui/macosx/simple_prefs.m:1046
+#: modules/gui/macosx/simple_prefs.m:1049
 msgid "Choose the folder to save your video snapshots to."
 msgstr "যে ফোল্ডারে আপনার ভিডিও স্ন্যাপশট সংরক্ষন করা হবে তা নির্বাচন করুন।"
 
-#: modules/gui/macosx/simple_prefs.m:1048
+#: modules/gui/macosx/simple_prefs.m:1051
 msgid "Choose"
 msgstr "নির্বাচন করুন"
 
-#: modules/gui/macosx/simple_prefs.m:1131
+#: modules/gui/macosx/simple_prefs.m:1134
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -15196,15 +15202,15 @@ msgstr ""
 "এর জন্য নতুন কী চাপুন:\n"
 "\"%@\""
 
-#: modules/gui/macosx/simple_prefs.m:1205
+#: modules/gui/macosx/simple_prefs.m:1208
 msgid "Invalid combination"
 msgstr "অবৈধ সমাবেশ"
 
-#: modules/gui/macosx/simple_prefs.m:1206
+#: modules/gui/macosx/simple_prefs.m:1209
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "আফসোস, এই কী-গুলো হটকী (hotkey) শর্টকাট হিসেবে অ্যাসাইন করা যাবে না।"
 
-#: modules/gui/macosx/simple_prefs.m:1224
+#: modules/gui/macosx/simple_prefs.m:1227
 msgid "This combination is already taken by \"%@\"."
 msgstr "এই সমাবেশটি \"%@\" এর দ্বারা নিয়ে নেয়া হয়েছে।"
 
@@ -15244,18 +15250,6 @@ msgstr "ভিএলসি এর এই সংস্করনটি অনে�
 #, c-format
 msgid "The current release is %d.%d.%d%c."
 msgstr "বর্তমান রিলিজ হলোজ %d.%d.%d%c ।"
-
-#: modules/gui/macosx/vlm.m:98
-msgid "Video On Demand"
-msgstr "ভিডিও অন ডিমান্ড"
-
-#: modules/gui/macosx/vlm.m:102 modules/gui/qt4/dialogs/vlm.cpp:76
-msgid "Schedule"
-msgstr "সিডিউল"
-
-#: modules/gui/macosx/vlm.m:106 modules/gui/qt4/dialogs/vlm.cpp:75
-msgid "Broadcast"
-msgstr "ব্রডকাস্ট"
 
 #: modules/gui/macosx/wizard.m:113
 msgid "MPEG-1 Video codec (usable with MPEG PS, MPEG TS, MPEG1, OGG and RAW)"
@@ -16212,37 +16206,37 @@ msgstr "অনুসন্ধান: %s"
 msgid "Open: %s"
 msgstr "খুলুন: %s"
 
-#: modules/gui/pda/pda.c:62
+#: modules/gui/pda/pda.c:61
 msgid "Autoplay selected file"
 msgstr "নির্বাচিত ফাইল স্বয়ংক্রিয়ভাবে চালানো হবে"
 
-#: modules/gui/pda/pda.c:63
+#: modules/gui/pda/pda.c:62
 msgid "Automatically play a file when selected in the file selection list"
 msgstr ""
 "ফাইল নির্বাচন তালিকায় কোনো ফাইল নির্বাচন করা হলে সেটি স্বয়ংক্রিয়ভাবে চালানো হবে"
 
-#: modules/gui/pda/pda.c:70
+#: modules/gui/pda/pda.c:69
 msgid "PDA Linux Gtk2+ interface"
 msgstr "PDA লিনাক্স Gtk2+ ইন্টারফেস"
 
-#: modules/gui/pda/pda.c:215 modules/gui/pda/pda.c:270
+#: modules/gui/pda/pda.c:213 modules/gui/pda/pda.c:268
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:92
 msgid "Filename"
 msgstr "ফাইলের নাম"
 
-#: modules/gui/pda/pda.c:221
+#: modules/gui/pda/pda.c:219
 msgid "Permissions"
 msgstr "অনুমতিসমূহ"
 
-#: modules/gui/pda/pda.c:227
+#: modules/gui/pda/pda.c:225
 msgid "Size"
 msgstr "আকার"
 
-#: modules/gui/pda/pda.c:233
+#: modules/gui/pda/pda.c:231
 msgid "Owner"
 msgstr "মালিক"
 
-#: modules/gui/pda/pda.c:239
+#: modules/gui/pda/pda.c:237
 msgid "Group"
 msgstr "গ্রুপ"
 
@@ -16635,7 +16629,7 @@ msgstr "লেখনবৃন্দ: ভিডিওল্যান দল, http
 msgid "(c) 1996-2004 the the VideoLAN team team"
 msgstr "(c) ১৯৯৬-২০০৪ ভিডিওল্যান দল"
 
-#: modules/gui/pda/pda_support.c:88 modules/gui/pda/pda_support.c:112
+#: modules/gui/pda/pda_support.c:90 modules/gui/pda/pda_support.c:114
 #, c-format
 msgid "Couldn't find pixmap file: %s"
 msgstr "পিক্সম্যাপ ফাইল পাওয়া যায়নি: %s"
@@ -16917,62 +16911,62 @@ msgstr "ফাইলের নাম:"
 msgid "Filter:"
 msgstr "ফিল্টার:"
 
-#: modules/gui/qt4/components/open_panels.cpp:192
+#: modules/gui/qt4/components/open_panels.cpp:193
 msgid "Open subtitles file"
 msgstr "সাবটাইটেল ফাইল খুলুন"
 
-#: modules/gui/qt4/components/open_panels.cpp:304
+#: modules/gui/qt4/components/open_panels.cpp:305
 msgid "Eject the disc"
 msgstr "ডিস্ক বের করুন"
 
-#: modules/gui/qt4/components/open_panels.cpp:719
-#: modules/gui/qt4/components/open_panels.cpp:979
+#: modules/gui/qt4/components/open_panels.cpp:720
+#: modules/gui/qt4/components/open_panels.cpp:980
 msgid "DVB Type:"
 msgstr "ডিভিবি ধরন:"
 
-#: modules/gui/qt4/components/open_panels.cpp:745
-#: modules/gui/qt4/components/open_panels.cpp:1010
+#: modules/gui/qt4/components/open_panels.cpp:746
+#: modules/gui/qt4/components/open_panels.cpp:1011
 msgid "Transponder symbol rate"
 msgstr "ট্রান্সপন্ডার সিম্বল হার"
 
-#: modules/gui/qt4/components/open_panels.cpp:754
-#: modules/gui/qt4/components/open_panels.cpp:1019
+#: modules/gui/qt4/components/open_panels.cpp:755
+#: modules/gui/qt4/components/open_panels.cpp:1020
 msgid "Bandwidth"
 msgstr "ব্যান্ডউইড্থ"
 
-#: modules/gui/qt4/components/open_panels.cpp:869
+#: modules/gui/qt4/components/open_panels.cpp:870
 msgid "Channels:"
 msgstr "চ্যানেলসমূহ:"
 
-#: modules/gui/qt4/components/open_panels.cpp:880
+#: modules/gui/qt4/components/open_panels.cpp:881
 msgid "Selected ports:"
 msgstr "নির্বাচিত পোর্টসমূহ:"
 
-#: modules/gui/qt4/components/open_panels.cpp:883
+#: modules/gui/qt4/components/open_panels.cpp:884
 msgid ".*"
 msgstr ".*"
 
-#: modules/gui/qt4/components/open_panels.cpp:890
+#: modules/gui/qt4/components/open_panels.cpp:891
 msgid "Input caching:"
 msgstr "ইনপুট ক্যাশিং:"
 
-#: modules/gui/qt4/components/open_panels.cpp:900
+#: modules/gui/qt4/components/open_panels.cpp:901
 msgid "Use VLC pace"
 msgstr "ভিএলসি পেস ব্যবহার করুন"
 
-#: modules/gui/qt4/components/open_panels.cpp:904
+#: modules/gui/qt4/components/open_panels.cpp:905
 msgid "Auto connnection"
 msgstr "স্বয়ংক্রিয় সংযোগ"
 
-#: modules/gui/qt4/components/open_panels.cpp:928
+#: modules/gui/qt4/components/open_panels.cpp:929
 msgid "Radio device name"
 msgstr "রেডিও যন্ত্রের নাম"
 
-#: modules/gui/qt4/components/open_panels.cpp:1060
+#: modules/gui/qt4/components/open_panels.cpp:1061
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:1280
+#: modules/gui/qt4/components/open_panels.cpp:1284
 msgid "Advanced Options"
 msgstr "উন্নত বিকল্পসমূহ"
 
@@ -17187,39 +17181,39 @@ msgstr "ধারনকারী (*.ps *.ts *.mpg *.ogg *.asf *.mp4 *.mov *.wav 
 msgid "This module outputs the transcoded stream to a network via HTTP."
 msgstr "এর মাধ্যমে নেটওয়ার্কে স্ট্রিম করা যায়।"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:181
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:182
 msgid ""
 "This module outputs the transcoded stream to a network  via the mms protocol."
 msgstr ""
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:225
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:227
 #, fuzzy
 msgid "This module outputs the transcoded stream to a network via UDP."
 msgstr "এর মাধ্যমে নেটওয়ার্কে স্ট্রিম করা যায়।"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:271
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:273
 #, fuzzy
 msgid "This module outputs the transcoded stream to a network via RTP."
 msgstr "এর মাধ্যমে নেটওয়ার্কে স্ট্রিম করা যায়।"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:306
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:308
 #, fuzzy
 msgid "Audio Port"
 msgstr "অডিও পোর্ট:"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:307
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:309
 msgid "Video Port"
 msgstr "ভিডিও পোর্ট"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:347
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:349
 msgid "This module outputs the transcoded stream to an Icecast server."
 msgstr ""
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:368
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:370
 msgid "Mount Point"
 msgstr "মাউন্ড পয়েন্ট"
 
-#: modules/gui/qt4/components/sout/sout_widgets.cpp:369
+#: modules/gui/qt4/components/sout/sout_widgets.cpp:371
 #, fuzzy
 msgid "Login:pass"
 msgstr "লগইন:পাস:"
@@ -17252,7 +17246,7 @@ msgstr "সকল বুকমার্ক মুছে দিন"
 #: modules/gui/qt4/dialogs/messages.cpp:109
 #: modules/gui/qt4/dialogs/plugins.cpp:83
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:38
-#: modules/gui/qt4/dialogs/vlm.cpp:138
+#: modules/gui/qt4/dialogs/vlm.cpp:139
 msgid "&Close"
 msgstr "বন্ধ করুন (&C)"
 
@@ -17299,7 +17293,7 @@ msgid "Errors"
 msgstr "সমস্যা"
 
 #: modules/gui/qt4/dialogs/errors.cpp:51
-#: modules/gui/qt4/dialogs/messages.cpp:170 modules/gui/qt4/menus.cpp:1430
+#: modules/gui/qt4/dialogs/messages.cpp:170 modules/gui/qt4/menus.cpp:1432
 msgid "&Clear"
 msgstr "পরিষ্কার করুন (&C)"
 
@@ -17342,10 +17336,6 @@ msgstr "যান (&G)"
 #: modules/gui/qt4/dialogs/gototime.cpp:59
 msgid "Go to time"
 msgstr "এই সময়ে যান"
-
-#: modules/gui/qt4/dialogs/help.cpp:99
-msgid "VLC media player "
-msgstr "ভিএলসি মিডিয়া প্লেয়ার"
 
 #: modules/gui/qt4/dialogs/help.cpp:114
 msgid ""
@@ -17517,7 +17507,7 @@ msgstr ""
 "ফাইল লিখতে ব্যর্থ %1:\n"
 "%2।"
 
-#: modules/gui/qt4/dialogs/open.cpp:91 modules/gui/qt4/menus.cpp:804
+#: modules/gui/qt4/dialogs/open.cpp:91 modules/gui/qt4/menus.cpp:806
 #, fuzzy
 msgid "Open Media"
 msgstr "মিডিয়া খুলুন (&O)"
@@ -17786,93 +17776,101 @@ msgstr "কোনো ডিভিডি মেনু নেই"
 msgid "Advanced Buttons"
 msgstr "উন্নত বিকল্পসমূহ"
 
+#: modules/gui/qt4/dialogs/vlm.cpp:76
+msgid "Broadcast"
+msgstr "ব্রডকাস্ট"
+
 #: modules/gui/qt4/dialogs/vlm.cpp:77
+msgid "Schedule"
+msgstr "সিডিউল"
+
+#: modules/gui/qt4/dialogs/vlm.cpp:78
 msgid "Video On Demand ( VOD )"
 msgstr "ভিডিও অন ডিমান্ড ( VOD )"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:82
+#: modules/gui/qt4/dialogs/vlm.cpp:83
 msgid "Hours / Minutes / Seconds:"
 msgstr "ঘন্টা / মিনিট / সেকেন্ড:"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:84
+#: modules/gui/qt4/dialogs/vlm.cpp:85
 msgid "Day / Month / Year:"
 msgstr "দিন / মাস / বছর:"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:86
+#: modules/gui/qt4/dialogs/vlm.cpp:87
 msgid "Repeat:"
 msgstr "রিপিট:"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:88
+#: modules/gui/qt4/dialogs/vlm.cpp:89
 msgid "Repeat delay:"
 msgstr "রিপিট বিলম্ব:"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:113
+#: modules/gui/qt4/dialogs/vlm.cpp:114
 #: modules/gui/qt4/ui/sprefs_interface.h:323
 msgid " days"
 msgstr " দিন:"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:132
+#: modules/gui/qt4/dialogs/vlm.cpp:133
 #, fuzzy
 msgid "I&mport"
 msgstr "ইম্পোর্ট করুন"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:135
+#: modules/gui/qt4/dialogs/vlm.cpp:136
 #, fuzzy
 msgid "E&xport"
 msgstr "এক্সপোর্ট করুন"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:267
+#: modules/gui/qt4/dialogs/vlm.cpp:268
 msgid "Save VLM configuration as..."
 msgstr "VLM কনফিগারেশন নতুনভাবে সংরক্ষন করুন..."
 
-#: modules/gui/qt4/dialogs/vlm.cpp:269 modules/gui/qt4/dialogs/vlm.cpp:355
+#: modules/gui/qt4/dialogs/vlm.cpp:270 modules/gui/qt4/dialogs/vlm.cpp:357
 #, fuzzy
 msgid "VLM conf (*.vlm);;All (*)"
 msgstr "VLM conf (*.vlm);;সকল (*.*)"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:353
+#: modules/gui/qt4/dialogs/vlm.cpp:355
 msgid "Open VLM configuration..."
 msgstr "VLM কনফিগারেশন খুলুন..."
 
-#: modules/gui/qt4/dialogs/vlm.cpp:547
+#: modules/gui/qt4/dialogs/vlm.cpp:549
 msgid "Broadcast: "
 msgstr "ব্রডকাস্ট:"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:615
+#: modules/gui/qt4/dialogs/vlm.cpp:617
 msgid "Schedule: "
 msgstr "সিডিউল:"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:637
+#: modules/gui/qt4/dialogs/vlm.cpp:639
 msgid "VOD: "
 msgstr "VOD: "
 
-#: modules/gui/qt4/dialogs_provider.cpp:465
+#: modules/gui/qt4/dialogs_provider.cpp:468
 msgid "Open Directory"
 msgstr "ডিরেক্টরি খুলুন"
 
-#: modules/gui/qt4/dialogs_provider.cpp:504
+#: modules/gui/qt4/dialogs_provider.cpp:507
 msgid "Open playlist..."
 msgstr "চালানোর তালিকা খুলুন..."
 
-#: modules/gui/qt4/dialogs_provider.cpp:515
+#: modules/gui/qt4/dialogs_provider.cpp:518
 msgid "Save playlist as..."
 msgstr "চালানোর তালিকা নতুনভাবে সংরক্ষন করুন..."
 
-#: modules/gui/qt4/dialogs_provider.cpp:517
+#: modules/gui/qt4/dialogs_provider.cpp:520
 msgid "XSPF playlist (*.xspf);; "
 msgstr "XSPF চালানোর তালিকা (*.xspf);; "
 
-#: modules/gui/qt4/dialogs_provider.cpp:518
+#: modules/gui/qt4/dialogs_provider.cpp:521
 #, fuzzy
 msgid "M3U playlist (*.m3u);; "
 msgstr "M3U চালানোর তালিকা (*.m3u);; যেকোনো (*.*) "
 
-#: modules/gui/qt4/dialogs_provider.cpp:519
+#: modules/gui/qt4/dialogs_provider.cpp:522
 #, fuzzy
 msgid "HTML playlist (*.html)"
 msgstr "HTML চালানোর তালিকা (*.html);;"
 
-#: modules/gui/qt4/dialogs_provider.cpp:664
+#: modules/gui/qt4/dialogs_provider.cpp:667
 msgid "Open subtitles..."
 msgstr "সাবটাইটেল খুলুন..."
 
@@ -17888,15 +17886,15 @@ msgstr "সাবটাইটেল ফাইল"
 msgid "All Files"
 msgstr "সকল ফাইল"
 
-#: modules/gui/qt4/main_interface.cpp:503
+#: modules/gui/qt4/main_interface.cpp:500
 msgid "Privacy and Network Policies"
 msgstr "গোপনীয়তা এবং নেটওয়ার্ক নীতিমালা"
 
-#: modules/gui/qt4/main_interface.cpp:507
+#: modules/gui/qt4/main_interface.cpp:504
 msgid "Privacy and Network Warning"
 msgstr "গোপনীয়তা এবং নেটওয়ার্ক সতর্কবার্তা"
 
-#: modules/gui/qt4/main_interface.cpp:510
+#: modules/gui/qt4/main_interface.cpp:507
 #, fuzzy
 msgid ""
 "<p>The <i>VideoLAN Team</i> doesn't like when an application goes online "
@@ -17917,11 +17915,11 @@ msgstr ""
 "<p>কাজেই অনুগ্রহ করে নিচের বিকল্পসমূহ থেকে নির্বাচন করুন, ডিফল্ট হল ইন্টারনেটে প্রায় "
 "কোনো এক্সেস না থাকা।</p>\n"
 
-#: modules/gui/qt4/main_interface.cpp:1042
+#: modules/gui/qt4/main_interface.cpp:1039
 msgid "Control menu for the player"
 msgstr "প্লেয়ারের জন্য নিয়ন্ত্রন মেনু"
 
-#: modules/gui/qt4/main_interface.cpp:1095
+#: modules/gui/qt4/main_interface.cpp:1092
 msgid "Paused"
 msgstr "বিরতি"
 
@@ -17933,11 +17931,11 @@ msgstr "মিডিয়া (&M)"
 msgid "P&layback"
 msgstr "প্লেব্যাক (&l)"
 
-#: modules/gui/qt4/menus.cpp:288 modules/gui/qt4/menus.cpp:941
+#: modules/gui/qt4/menus.cpp:288 modules/gui/qt4/menus.cpp:943
 msgid "&Audio"
 msgstr "অডিও (&A)"
 
-#: modules/gui/qt4/menus.cpp:289 modules/gui/qt4/menus.cpp:948
+#: modules/gui/qt4/menus.cpp:289 modules/gui/qt4/menus.cpp:950
 msgid "&Video"
 msgstr "ভিডিও (&V)"
 
@@ -17945,7 +17943,7 @@ msgstr "ভিডিও (&V)"
 msgid "&Tools"
 msgstr "টুল (&T)"
 
-#: modules/gui/qt4/menus.cpp:292 modules/gui/qt4/menus.cpp:401
+#: modules/gui/qt4/menus.cpp:292 modules/gui/qt4/menus.cpp:403
 msgid "V&iew"
 msgstr "প্রদর্শন (&i)"
 
@@ -17953,11 +17951,11 @@ msgstr "প্রদর্শন (&i)"
 msgid "&Help"
 msgstr "সহায়িকা (&H)"
 
-#: modules/gui/qt4/menus.cpp:306 modules/gui/qt4/menus.cpp:805
+#: modules/gui/qt4/menus.cpp:306 modules/gui/qt4/menus.cpp:807
 msgid "&Open File..."
 msgstr "ফাইল খুলুন... (&O)"
 
-#: modules/gui/qt4/menus.cpp:312 modules/gui/qt4/menus.cpp:809
+#: modules/gui/qt4/menus.cpp:312 modules/gui/qt4/menus.cpp:811
 msgid "Open &Disc..."
 msgstr "ডিস্ক খুলুন... (&D)"
 
@@ -17966,7 +17964,7 @@ msgstr "ডিস্ক খুলুন... (&D)"
 msgid "Open &Network Stream..."
 msgstr "নেটওয়ার্ক খুলুন... (&N)"
 
-#: modules/gui/qt4/menus.cpp:316 modules/gui/qt4/menus.cpp:813
+#: modules/gui/qt4/menus.cpp:316 modules/gui/qt4/menus.cpp:815
 msgid "Open &Capture Device..."
 msgstr "ক্যাপচার যন্ত্র খুলুন... (&C)"
 
@@ -17979,241 +17977,241 @@ msgstr ""
 msgid "&Recent Media"
 msgstr "মিডিয়া খুলুন (&O)"
 
-#: modules/gui/qt4/menus.cpp:337
+#: modules/gui/qt4/menus.cpp:338
 msgid "Conve&rt / Save..."
 msgstr "রুপান্তর/সংরক্ষন করুন... (&r)"
 
-#: modules/gui/qt4/menus.cpp:339
+#: modules/gui/qt4/menus.cpp:340
 msgid "&Streaming..."
 msgstr "স্ট্রিমিং... (&S)"
 
-#: modules/gui/qt4/menus.cpp:344 modules/gui/qt4/menus.cpp:1045
+#: modules/gui/qt4/menus.cpp:346 modules/gui/qt4/menus.cpp:1047
 msgid "&Quit"
 msgstr "প্রস্থান (&Q)"
 
-#: modules/gui/qt4/menus.cpp:354
+#: modules/gui/qt4/menus.cpp:356
 #, fuzzy
 msgid "&Effects and Filters"
 msgstr "প্রভাবের তালিকা"
 
-#: modules/gui/qt4/menus.cpp:357
+#: modules/gui/qt4/menus.cpp:359
 #, fuzzy
 msgid "&Track Synchronization"
 msgstr "সিনক্রোনাইজেশন"
 
-#: modules/gui/qt4/menus.cpp:376
+#: modules/gui/qt4/menus.cpp:378
 #, fuzzy
 msgid "Plu&gins and extensions"
 msgstr "উপেক্ষা করা এক্সটেনসমূহ"
 
-#: modules/gui/qt4/menus.cpp:380
+#: modules/gui/qt4/menus.cpp:382
 #, fuzzy
 msgid "&Preferences"
 msgstr "পছন্দসমূহ..."
 
-#: modules/gui/qt4/menus.cpp:404
+#: modules/gui/qt4/menus.cpp:406
 #, fuzzy
 msgid "Play&list"
 msgstr "চালানোর তালিকা"
 
-#: modules/gui/qt4/menus.cpp:405
+#: modules/gui/qt4/menus.cpp:407
 msgid "Ctrl+L"
 msgstr "কন্ট্রোল+L"
 
-#: modules/gui/qt4/menus.cpp:423
+#: modules/gui/qt4/menus.cpp:425
 #, fuzzy
 msgid "Mi&nimal View"
 msgstr "সংক্ষেপ প্রদর্শন (&n)"
 
-#: modules/gui/qt4/menus.cpp:424
+#: modules/gui/qt4/menus.cpp:426
 msgid "Ctrl+H"
 msgstr "কন্ট্রোল+H"
 
-#: modules/gui/qt4/menus.cpp:433
+#: modules/gui/qt4/menus.cpp:435
 msgid "&Fullscreen Interface"
 msgstr "পূর্ণপর্দা ইন্টারফেস (&F)"
 
-#: modules/gui/qt4/menus.cpp:441
+#: modules/gui/qt4/menus.cpp:443
 msgid "&Advanced Controls"
 msgstr "উন্নত নিয়ন্ত্রন (&A)"
 
-#: modules/gui/qt4/menus.cpp:450
+#: modules/gui/qt4/menus.cpp:452
 #, fuzzy
 msgid "Quit after Playback"
 msgstr "চালানোতে বিরতি দিন"
 
-#: modules/gui/qt4/menus.cpp:456
+#: modules/gui/qt4/menus.cpp:458
 msgid "Visualizations selector"
 msgstr "দৃশ্যায়ণ নির্বাচক"
 
-#: modules/gui/qt4/menus.cpp:463
+#: modules/gui/qt4/menus.cpp:465
 msgid "Customi&ze Interface..."
 msgstr "ইন্টারফেস কাস্টমাইজ করুন... (&z)"
 
-#: modules/gui/qt4/menus.cpp:495
+#: modules/gui/qt4/menus.cpp:497
 msgid "Audio &Track"
 msgstr "অডিও ট্র্যাক (&T)"
 
-#: modules/gui/qt4/menus.cpp:496
+#: modules/gui/qt4/menus.cpp:498
 msgid "Audio &Channels"
 msgstr "অডিও চ্যানেল (&C)"
 
-#: modules/gui/qt4/menus.cpp:497
+#: modules/gui/qt4/menus.cpp:499
 msgid "Audio &Device"
 msgstr "অডিও যন্ত্র (&D)"
 
-#: modules/gui/qt4/menus.cpp:500
+#: modules/gui/qt4/menus.cpp:502
 msgid "&Visualizations"
 msgstr "দৃশ্যায়ণ (&V)"
 
-#: modules/gui/qt4/menus.cpp:544
+#: modules/gui/qt4/menus.cpp:546
 msgid "Video &Track"
 msgstr "ভিডিও ট্র্যাক (&T)"
 
-#: modules/gui/qt4/menus.cpp:547
+#: modules/gui/qt4/menus.cpp:549
 msgid "&Subtitles Track"
 msgstr "সাবটাইটেল ট্র্যাক (&S)"
 
-#: modules/gui/qt4/menus.cpp:555
+#: modules/gui/qt4/menus.cpp:557
 msgid "&Fullscreen"
 msgstr "পূর্ণপর্দা (&F)"
 
-#: modules/gui/qt4/menus.cpp:556
+#: modules/gui/qt4/menus.cpp:558
 msgid "Always &On Top"
 msgstr "সর্বদা উপরে থাকবে (&O)"
 
-#: modules/gui/qt4/menus.cpp:558
+#: modules/gui/qt4/menus.cpp:560
 msgid "DirectX Wallpaper"
 msgstr "DirectX ওয়ালপেপার"
 
-#: modules/gui/qt4/menus.cpp:560
+#: modules/gui/qt4/menus.cpp:562
 msgid "Sna&pshot"
 msgstr "স্ন্যাপশট (&p)"
 
-#: modules/gui/qt4/menus.cpp:564
+#: modules/gui/qt4/menus.cpp:566
 msgid "&Zoom"
 msgstr "বড় করে প্রদর্শন (&Z)"
 
-#: modules/gui/qt4/menus.cpp:565
+#: modules/gui/qt4/menus.cpp:567
 #, fuzzy
 msgid "Sca&le"
 msgstr "স্কেল"
 
-#: modules/gui/qt4/menus.cpp:566
+#: modules/gui/qt4/menus.cpp:568
 msgid "&Aspect Ratio"
 msgstr "অ্যাসপেক্ট অনুপাত (&A)"
 
-#: modules/gui/qt4/menus.cpp:567
+#: modules/gui/qt4/menus.cpp:569
 msgid "&Crop"
 msgstr "ক্রপ (&C)"
 
-#: modules/gui/qt4/menus.cpp:568
+#: modules/gui/qt4/menus.cpp:570
 msgid "&Deinterlace"
 msgstr "ডিইন্টারলেস (&D)"
 
-#: modules/gui/qt4/menus.cpp:569
+#: modules/gui/qt4/menus.cpp:571
 #, fuzzy
 msgid "&Post processing"
 msgstr "পোস্ট প্রসেসিং"
 
-#: modules/gui/qt4/menus.cpp:597
+#: modules/gui/qt4/menus.cpp:599
 #, fuzzy
 msgid "Manage &bookmarks"
 msgstr "বুকমার্ক (&B)"
 
-#: modules/gui/qt4/menus.cpp:603
+#: modules/gui/qt4/menus.cpp:605
 msgid "T&itle"
 msgstr "শিরোনাম (&i)"
 
-#: modules/gui/qt4/menus.cpp:604
+#: modules/gui/qt4/menus.cpp:606
 msgid "&Chapter"
 msgstr "অধ্যায় (&C)"
 
-#: modules/gui/qt4/menus.cpp:605
+#: modules/gui/qt4/menus.cpp:607
 msgid "&Navigation"
 msgstr "নেভিগেশন (&N)"
 
-#: modules/gui/qt4/menus.cpp:606
+#: modules/gui/qt4/menus.cpp:608
 msgid "&Program"
 msgstr "প্রোগ্রাম (&P)"
 
-#: modules/gui/qt4/menus.cpp:672
+#: modules/gui/qt4/menus.cpp:674
 msgid "Configure podcasts..."
 msgstr "পডকাস্ট কনফিগার করুন..."
 
-#: modules/gui/qt4/menus.cpp:691
+#: modules/gui/qt4/menus.cpp:693
 msgid "&Help..."
 msgstr "সহায়িকা... (&H)"
 
-#: modules/gui/qt4/menus.cpp:694
+#: modules/gui/qt4/menus.cpp:696
 msgid "Check for &Updates..."
 msgstr "আপডেট পরীক্ষা করুন... (&U)"
 
-#: modules/gui/qt4/menus.cpp:744
+#: modules/gui/qt4/menus.cpp:746
 #, fuzzy
 msgid "&Faster"
 msgstr "আরো দ্রুতগতি"
 
-#: modules/gui/qt4/menus.cpp:753
+#: modules/gui/qt4/menus.cpp:755
 #, fuzzy
 msgid "N&ormal Speed"
 msgstr "সাধারন আকার"
 
-#: modules/gui/qt4/menus.cpp:761
+#: modules/gui/qt4/menus.cpp:763
 #, fuzzy
 msgid "Slo&wer"
 msgstr "ধীরগতি"
 
-#: modules/gui/qt4/menus.cpp:768
+#: modules/gui/qt4/menus.cpp:770
 #, fuzzy
 msgid "&Jump Forward"
 msgstr "সামনে স্টেপ"
 
-#: modules/gui/qt4/menus.cpp:773
+#: modules/gui/qt4/menus.cpp:775
 #, fuzzy
 msgid "Jump Bac&kward"
 msgstr "পেছনে স্টেপ"
 
-#: modules/gui/qt4/menus.cpp:788
+#: modules/gui/qt4/menus.cpp:790
 #, fuzzy
 msgid "&Stop"
 msgstr "বন্ধ করুন"
 
-#: modules/gui/qt4/menus.cpp:795
+#: modules/gui/qt4/menus.cpp:797
 #, fuzzy
 msgid "Pre&vious"
 msgstr "পূর্ববর্তী"
 
-#: modules/gui/qt4/menus.cpp:797
+#: modules/gui/qt4/menus.cpp:799
 #, fuzzy
 msgid "Ne&xt"
 msgstr "পরবর্তী"
 
-#: modules/gui/qt4/menus.cpp:811
+#: modules/gui/qt4/menus.cpp:813
 msgid "Open &Network..."
 msgstr "নেটওয়ার্ক খুলুন... (&N)"
 
-#: modules/gui/qt4/menus.cpp:928
+#: modules/gui/qt4/menus.cpp:930
 msgid "Leave Fullscreen"
 msgstr "পূর্ণপর্দা থেকে প্রস্থান"
 
-#: modules/gui/qt4/menus.cpp:955
+#: modules/gui/qt4/menus.cpp:957
 msgid "&Playback"
 msgstr "প্লেব্যাক (&P)"
 
-#: modules/gui/qt4/menus.cpp:1027
+#: modules/gui/qt4/menus.cpp:1029
 msgid "Hide VLC media player in taskbar"
 msgstr "ভিএলসি মিডিয়া প্লেয়ার টাস্কবারে লুকানো হবে"
 
-#: modules/gui/qt4/menus.cpp:1033
+#: modules/gui/qt4/menus.cpp:1035
 msgid "Show VLC media player"
 msgstr "ভিএলসি মিডিয়া প্লেয়ার প্রদর্শন করা হবে"
 
-#: modules/gui/qt4/menus.cpp:1043
+#: modules/gui/qt4/menus.cpp:1045
 msgid "&Open Media"
 msgstr "মিডিয়া খুলুন (&O)"
 
-#: modules/gui/qt4/menus.cpp:1415
+#: modules/gui/qt4/menus.cpp:1417
 #, fuzzy
 msgid " - Empty - "
 msgstr "খালি"
@@ -19800,31 +19798,31 @@ msgstr "ডামি ডিকোডার"
 msgid "Dummy decoder function"
 msgstr "ডামি ডিকোডার ফাংশন"
 
-#: modules/misc/dummy/dummy.c:87
+#: modules/misc/dummy/dummy.c:89
 msgid "Dump decoder"
 msgstr "ডিকোডার ডাম্প করুন"
 
-#: modules/misc/dummy/dummy.c:88
+#: modules/misc/dummy/dummy.c:90
 msgid "Dump decoder function"
 msgstr "ডিকোডার ফাংশন ডাম্প করুন"
 
-#: modules/misc/dummy/dummy.c:93
+#: modules/misc/dummy/dummy.c:95
 msgid "Dummy encoder function"
 msgstr "ডামি এনকোডার ফাংশন"
 
-#: modules/misc/dummy/dummy.c:97
+#: modules/misc/dummy/dummy.c:99
 msgid "Dummy audio output function"
 msgstr "ডামি অডিও আউটপুট ফাংশন"
 
-#: modules/misc/dummy/dummy.c:101
+#: modules/misc/dummy/dummy.c:103
 msgid "Dummy video output function"
 msgstr "ডামি ভিডিও আউটপুট ফাংশন"
 
-#: modules/misc/dummy/dummy.c:102
+#: modules/misc/dummy/dummy.c:104
 msgid "Dummy Video output"
 msgstr "ডামি ভিডিও আউটপুট"
 
-#: modules/misc/dummy/dummy.c:108
+#: modules/misc/dummy/dummy.c:112
 msgid "Dummy font renderer function"
 msgstr "ডামি ফন্ট রেন্ডারার ফাংশন"
 
@@ -20205,11 +20203,11 @@ msgstr "XOSD আউটপুটে টেক্সট প্রদর্শন�
 msgid "XOSD interface"
 msgstr "XOSD ইন্টারফেস"
 
-#: modules/misc/osd/parser.c:54
+#: modules/misc/osd/parser.c:51
 msgid "OSD configuration importer"
 msgstr "পর্দায় প্রদর্শিত বার্তা কনফিগারেশন ইম্পোর্টার"
 
-#: modules/misc/osd/parser.c:60
+#: modules/misc/osd/parser.c:57
 msgid "XML OSD configuration importer"
 msgstr "XML পর্দায় প্রদর্শিত বার্তা কনফিগারেশন ইম্পোর্টার"
 
@@ -20322,7 +20320,7 @@ msgstr "RTSP VoD"
 msgid "RTSP VoD server"
 msgstr "RTSP VoD সার্ভার"
 
-#: modules/misc/screensaver.c:85
+#: modules/misc/screensaver.c:92
 msgid "X Screensaver disabler"
 msgstr "X স্ক্রিনসেভাব নিষ্ক্রিয়কারী"
 
@@ -21714,7 +21712,7 @@ msgstr ""
 "যোগ করতে পারেন। ফিল্টার দ্বারা উৎপন্ন উপছবিসমূহ ভিডিওর ওপর সরাসরি ওভারলে করা "
 "হবে। আপনাকে কমা দ্বারা পৃথককৃত উপছবি মডিউলের একটি তালিকা দিতে হবে"
 
-#: modules/stream_out/transcode.c:130 modules/video_filter/osdmenu.c:135
+#: modules/stream_out/transcode.c:130 modules/video_filter/osdmenu.c:118
 msgid "OSD menu"
 msgstr "পর্দায় প্রদর্শিত বার্তার মেনু"
 
@@ -22650,11 +22648,11 @@ msgstr "একটি পিক্সেলকে কালো হিসেবে
 msgid "Crop video filter"
 msgstr "ভিডিও ফিল্টার ক্রপ করুন"
 
-#: modules/video_filter/crop.c:376 modules/video_filter/crop.c:464
+#: modules/video_filter/crop.c:374 modules/video_filter/crop.c:466
 msgid "Cropping failed"
 msgstr "ক্রপ করতে ব্যর্থ"
 
-#: modules/video_filter/crop.c:377 modules/video_filter/crop.c:465
+#: modules/video_filter/crop.c:375 modules/video_filter/crop.c:467
 msgid "VLC could not open the video output module."
 msgstr "ভিএলসি ভিডিও আউটপুট মডিউল খুলতে পারেনি।"
 
@@ -22727,7 +22725,7 @@ msgstr "ক্রপ করার পর ছবির ডানে যত সং
 msgid "Video scaling filter"
 msgstr "ভিডিও স্কেলিং ফিল্টার"
 
-#: modules/video_filter/croppadd.c:93
+#: modules/video_filter/croppadd.c:96
 msgid "Padd"
 msgstr "প্যাড"
 
@@ -23443,7 +23441,7 @@ msgstr ""
 "যায়। নিম্নতর মান বুঝায় বেশি স্বচ্ছতা, উচ্চতর মান বুঝায় কম স্বচ্ছতা। ডিফল্ট হল অস্বচ্চ "
 "(মান ২৫৫), সর্বনিম্ন হল সম্পূর্ণ স্বচ্ছ (মান ০)।"
 
-#: modules/video_filter/osdmenu.c:134
+#: modules/video_filter/osdmenu.c:117
 msgid "On Screen Display menu"
 msgstr "পর্দায় প্রদর্শিত বার্তার মেনুর"
 
@@ -23700,11 +23698,11 @@ msgstr "ভিডিও পোস্ট প্রসেসিং ফিল্ট
 msgid "Postproc"
 msgstr "পোস্ট প্রসেসিং"
 
-#: modules/video_filter/postproc.c:228
+#: modules/video_filter/postproc.c:229
 msgid "Lowest"
 msgstr "সর্বনিম্ন"
 
-#: modules/video_filter/postproc.c:231
+#: modules/video_filter/postproc.c:232
 msgid "Highest"
 msgstr "সর্বোচ্চ"
 
@@ -24238,7 +24236,7 @@ msgstr "GNU/লিনাক্স কনসোল ফ্রেমবাফার
 
 #: modules/video_output/ggi.c:59 modules/video_output/x11/glx.c:104
 #: modules/video_output/x11/x11.c:55 modules/video_output/x11/xvideo.c:61
-#: modules/video_output/xcb/x11.c:40 modules/video_output/xcb/window.c:44
+#: modules/video_output/xcb/x11.c:40 modules/video_output/xcb/window.c:43
 msgid "X11 display"
 msgstr "X11 ডিসপ্লে"
 
@@ -24530,7 +24528,7 @@ msgstr ""
 
 #: modules/video_output/x11/glx.c:106 modules/video_output/x11/x11.c:57
 #: modules/video_output/x11/xvideo.c:63 modules/video_output/xcb/x11.c:42
-#: modules/video_output/xcb/window.c:46
+#: modules/video_output/xcb/window.c:45
 msgid ""
 "X11 hardware display to use. By default VLC will use the value of the "
 "DISPLAY environment variable."
@@ -24653,25 +24651,30 @@ msgstr ""
 msgid "(Experimental) XCB video output"
 msgstr "DirectX ভিডিও আউটপুট"
 
-#: modules/video_output/xcb/window.c:56
+#: modules/video_output/xcb/window.c:55
 #, fuzzy
 msgid "XCB window"
 msgstr "উইন্ডো বন্ধ করুন"
 
-#: modules/video_output/xcb/window.c:57
+#: modules/video_output/xcb/window.c:56
 #, fuzzy
 msgid "(Experimental) XCB video window"
 msgstr "DirectX ভিডিও আউটপুট"
 
-#: modules/video_output/xcb/window.c:165
+#: modules/video_output/xcb/window.c:207
 #, fuzzy
 msgctxt "ASCII"
 msgid "VLC media player"
 msgstr "ভিএলসি মিডিয়া প্লেয়ার"
 
-#: modules/video_output/xcb/window.c:167
+#: modules/video_output/xcb/window.c:209
 #, fuzzy
 msgctxt "ASCII"
+msgid "VLC"
+msgstr "ভিএলসি"
+
+#: modules/video_output/xcb/window.c:235
+#, fuzzy
 msgid "VLC"
 msgstr "ভিএলসি"
 
@@ -24883,6 +24886,12 @@ msgstr "দৃশ্যায়ণ ফিল্টার"
 #: modules/visualization/visual/visual.c:123
 msgid "Spectrum analyser"
 msgstr "স্পেকট্রাম অ্যানালাইজার"
+
+#~ msgid "Video On Demand"
+#~ msgstr "ভিডিও অন ডিমান্ড"
+
+#~ msgid "VLC media player "
+#~ msgstr "ভিএলসি মিডিয়া প্লেয়ার"
 
 #~ msgid "FFmpeg video filter"
 #~ msgstr "FFmpeg ভিডিও ফিল্টার"

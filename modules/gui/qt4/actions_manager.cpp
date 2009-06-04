@@ -2,7 +2,7 @@
  * Controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 9a77bb654f7803d315c1611ad805135fa543bedd $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>

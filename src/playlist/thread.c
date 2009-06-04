@@ -2,7 +2,7 @@
  * thread.c : Playlist management functions
  *****************************************************************************
  * Copyright © 1999-2008 the VideoLAN team
- * $Id: eacfd379f37ff5b52fd86a79efa340e543b574de $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>

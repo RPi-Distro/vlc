@@ -2,7 +2,7 @@
  * art.c : Art metadata handling
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 002ec6ed332fbfe8b540638880bae22833e523c9 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org

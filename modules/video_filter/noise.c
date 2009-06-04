@@ -2,7 +2,7 @@
  * noise.c : "add noise to image" video filter
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: dcd6cdeea9fc0cc4fefda3454c1f635bd4a31910 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

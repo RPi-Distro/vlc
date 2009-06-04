@@ -2,7 +2,7 @@
  * parser.c :  OSD import module
  *****************************************************************************
  * Copyright (C) 2007 M2X
- * $Id: 5978b1bc1a9104ebfdec75e9deec3cdeefa68fad $
+ * $Id: 70f01be6f3eef7edaa32a54ab273889635056e12 $
  *
  * Authors: Jean-Paul Saman
  *
@@ -46,9 +46,6 @@ static void osd_parser_Close( vlc_object_t *p_this );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
-
-    set_category( CAT_OSD )
-    set_subcategory( SUBCAT_OSD_IMPORT )
 
     add_submodule ()
         set_description( N_("OSD configuration importer") )

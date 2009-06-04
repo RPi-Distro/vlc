@@ -2,7 +2,7 @@
  * menus.cpp : Qt menus
  *****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 948fcee36168ce71f06147c14cc69165ee5a2656 $
+ * $Id: 0a12c20bd6e1048ec2e9035c99ea2716987103f1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -334,12 +334,14 @@ QMenu *QVLCMenu::FileMenu( intf_thread_t *p_intf, QWidget *parent )
         "Ctrl+Y" );
     menu->addSeparator();
 
+#ifdef ENABLE_SOUT
     addDPStaticEntry( menu, qtr( "Conve&rt / Save..." ), "",
         SLOT( openAndTranscodingDialogs() ), "Ctrl+R" );
     addDPStaticEntry( menu, qtr( "&Streaming..." ),
         ":/stream", SLOT( openAndStreamingDialogs() ),
         "Ctrl+S" );
     menu->addSeparator();
+#endif
 
     addDPStaticEntry( menu, qtr( "&Quit" ) ,
         ":/quit", SLOT( quit() ), "Ctrl+Q" );
@@ -347,7 +349,7 @@ QMenu *QVLCMenu::FileMenu( intf_thread_t *p_intf, QWidget *parent )
 }
 
 /**
- * Tools, like Media Information, Preferences or Messages 
+ * Tools, like Media Information, Preferences or Messages
  **/
 QMenu *QVLCMenu::ToolsMenu( QMenu *menu )
 {

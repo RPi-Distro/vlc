@@ -2,11 +2,11 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2009 the VideoLAN team])
 
-AC_INIT(vlc, 1.0.0-rc1)
+AC_INIT(vlc, 1.0.0-rc2)
 VERSION_MAJOR="1"
 VERSION_MINOR="0"
 VERSION_REVISION="0"
-VERSION_EXTRA="-rc1"
+VERSION_EXTRA="-rc2"
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
@@ -471,7 +471,7 @@ VLC_ADD_CFLAGS([libvlccore],[${INCICONV}])
 VLC_ADD_LIBS([libvlccore],[${LTLIBICONV}])
 
 dnl Check for broken versions of mingw-runtime compatability library
-AS_IF([test "${SYS}" = "mingw32"], [
+AS_IF([test "${SYS}" = "mingw32" -o "${SYS}" = "mingwce"], [
     AC_MSG_CHECKING(for broken mingw-runtime)
     AC_PREPROC_IFELSE([
 #include <_mingw.h>
@@ -578,7 +578,7 @@ dnl Check for usual libc functions
 AC_CHECK_FUNCS([gettimeofday isatty sigrelse getpwuid_r memalign posix_memalign if_nametoindex getenv putenv setenv ctime_r lrintf daemon fork lstat posix_fadvise posix_madvise uselocale])
 AC_FUNC_ALLOCA
 AC_CHECK_FUNCS(fcntl)
-AC_REPLACE_FUNCS([asprintf atof atoll gmtime_r lldiv localtime_r rewind strcasecmp strcasestr strdup strlcpy strncasecmp strndup strnlen strsep strtof strtoll vasprintf swab])
+AC_REPLACE_FUNCS([asprintf atof atoll getcwd gmtime_r lldiv localtime_r rewind strcasecmp strcasestr strdup strlcpy strncasecmp strndup strnlen strsep strtof strtoll vasprintf swab])
 AC_CHECK_FUNCS([stricmp strnicmp])
 AC_CHECK_FUNCS(fdatasync,,
   [AC_DEFINE(fdatasync, fsync, [Alias fdatasync() to fsync() if missing.])
@@ -4106,12 +4106,14 @@ AS_IF([test "$enable_xinerama" != "no"], [
       VLC_ADD_LIBS([xvideo],[-lXinerama_pic])
       VLC_ADD_LIBS([x11],[-lXinerama_pic])
       VLC_ADD_LIBS([glx],[-lXinerama_pic])
+      VLC_ADD_LIBS([xvmc],[-lXinerama_pic])
       ac_cv_have_xinerama="yes"
     ],[
       AC_CHECK_LIB(Xinerama, XineramaQueryExtension,[
         VLC_ADD_LIBS([xvideo],[-lXinerama])
         VLC_ADD_LIBS([x11],[-lXinerama])
         VLC_ADD_LIBS([glx],[-lXinerama])
+        VLC_ADD_LIBS([xvmc],[-lXinerama])
         ac_cv_have_xinerama="yes"
       ])
     ])
@@ -4176,7 +4178,6 @@ AS_IF([test "${enable_xcb}" != "no"], [
   ])
 
   dnl xcb-utils
-  PKG_CHECK_MODULES(XCB_AUX, [xcb-aux])
   PKG_CHECK_MODULES(XCB_KEYSYMS, [xcb-keysyms])
 
   VLC_ADD_PLUGIN([xcb])
@@ -4724,7 +4725,7 @@ AC_ARG_ENABLE(pulse,
   [  --enable-pulse          Pulseaudio support (default enabled)])
   if test "${enable_pulse}" != "no"
    then
-     PKG_CHECK_MODULES(PULSE, libpulse >= 0.9.8,
+     PKG_CHECK_MODULES(PULSE, libpulse >= 0.9.11,
        [ VLC_ADD_PLUGIN([pulse])
         VLC_ADD_CFLAGS([pulse],[${PULSE_CFLAGS}])
         VLC_ADD_LDFLAGS([pulse],[${PULSE_LIBS}])],

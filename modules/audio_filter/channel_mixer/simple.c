@@ -2,7 +2,7 @@
  * simple.c : simple channel mixer plug-in (only 7/7.1/5/5.1 -> Stereo for now)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 02def5eee4ee910cdcad99eba275356f0c9ad750 $
+ * $Id: 443c3cf19fd2b4758ec5b0a3fe9f0a4ec3bb67f3 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -102,7 +102,8 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
 
     const bool b_input_7_0 = (i_input_physical & ~AOUT_CHAN_LFE) == AOUT_CHANS_7_0;
     const bool b_input_5_0 = !b_input_7_0 &&
-                             (i_input_physical & (AOUT_CHANS_5_0|AOUT_CHANS_5_0_MIDDLE));
+                             ( (i_input_physical & AOUT_CHANS_5_0) == AOUT_CHANS_5_0 ||
+                               (i_input_physical & AOUT_CHANS_5_0_MIDDLE) == AOUT_CHANS_5_0_MIDDLE );
     int i_input_nb = aout_FormatNbChannels( &p_filter->input );
     int i_output_nb = aout_FormatNbChannels( &p_filter->output );
     float *p_dest = (float *)p_out_buf->p_buffer;

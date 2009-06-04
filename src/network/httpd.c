@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: 48e18a9432c4e4012398a9fda49496008b5b76f0 $
+ * $Id: 7bfc071f04a2e7ad0bdd0a3fb1e7a1a81b03e65d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -366,7 +366,7 @@ static size_t httpd_HtmlError (char **body, int code, const char *url)
         "<a href=\"http://www.videolan.org\">VideoLAN</a>\n"
         "</body>\n"
         "</html>\n", errname, code, errname,
-        (url ? " (" : ""), (url ?: ""), (url ? ")" : ""));
+        (url ? " (" : ""), (url ? url : ""), (url ? ")" : ""));
 
     if (res == -1)
     {

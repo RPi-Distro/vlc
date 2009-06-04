@@ -2,7 +2,7 @@
  * hotkeys.c: Hotkey handling for vlc
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 0604bea528b6f9dc96d0aebc4e2da73653441e71 $
+ * $Id: 706db0c149ac8ca4298c50cda07dfb13e534c581 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -104,6 +104,8 @@ vlc_module_begin ()
     set_description( N_("Hotkeys management interface") )
     set_capability( "interface", 0 )
     set_callbacks( Open, Close )
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_HOTKEYS )
 
     add_integer( "hotkeys-mousewheel-mode", MOUSEWHEEL_VOLUME, NULL,
                  N_("MouseWheel x-axis Control"),
@@ -207,13 +209,7 @@ static void Run( intf_thread_t *p_intf )
 
             ClearChannels( p_intf, p_vout );
             vout_OSDMessage( p_intf, DEFAULT_CHAN, _( "Quit" ) );
-            if( p_aout )
-                vlc_object_release( p_aout );
-            if( p_vout )
-                vlc_object_release( p_vout );
-            if( p_input )
-                vlc_object_release( p_input );
-            continue;
+            goto cleanup_and_continue;
         }
         /* Volume and audio actions */
         else if( i_action == ACTIONID_VOL_UP )
@@ -387,6 +383,8 @@ static void Run( intf_thread_t *p_intf )
                         _("Audio Device: %s"),
                         list2.p_list->p_values[i].psz_string);
             }
+            var_Change( p_aout, "audio-device", VLC_VAR_FREELIST, &list,
+                        &list2 );
         }
         /* Input options */
         else if( p_input )
@@ -478,6 +476,8 @@ static void Run( intf_thread_t *p_intf )
                                      _("Audio track: %s"),
                                      list2.p_list->p_values[i].psz_string );
                 }
+                var_Change( p_input, "audio-es", VLC_VAR_FREELIST, &list,
+                            &list2 );
             }
             else if( i_action == ACTIONID_SUBTITLE_TRACK )
             {
@@ -492,7 +492,9 @@ static void Run( intf_thread_t *p_intf )
                 {
                     vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
                                      _("Subtitle track: %s"), _("N/A") );
-                    continue;
+                    var_Change( p_input, "spu-es", VLC_VAR_FREELIST, &list,
+                                &list2 );
+                    goto cleanup_and_continue;
                 }
                 for( i = 0; i < i_count; i++ )
                 {
@@ -516,6 +518,8 @@ static void Run( intf_thread_t *p_intf )
                 vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
                                  _("Subtitle track: %s"),
                                  list2.p_list->p_values[i].psz_string );
+                var_Change( p_input, "spu-es", VLC_VAR_FREELIST, &list,
+                            &list2 );
             }
             else if( i_action == ACTIONID_ASPECT_RATIO && p_vout )
             {
@@ -875,6 +879,7 @@ static void Run( intf_thread_t *p_intf )
                 }
             }
         }
+cleanup_and_continue:
         if( p_aout )
             vlc_object_release( p_aout );
         if( p_vout )

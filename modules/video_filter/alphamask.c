@@ -2,7 +2,7 @@
  * alphamask.c : Alpha layer mask video filter for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 79999cda566a7e21210623cdc16d1e1af07a9987 $
+ * $Id: f6b969c075c39d0f3b731a5a1722ac99ea862ae0 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -108,12 +108,8 @@ static int Create( vlc_object_t *p_this )
     config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
 
-    vlc_mutex_init( &p_sys->mask_lock );
     psz_string =
         var_CreateGetStringCommand( p_filter, CFG_PREFIX "mask" );
-    var_AddCallback( p_filter, CFG_PREFIX "mask", MaskCallback,
-                     p_filter );
-    p_sys->p_mask = NULL;
     if( psz_string && *psz_string )
     {
         LoadMask( p_filter, psz_string );
@@ -121,8 +117,13 @@ static int Create( vlc_object_t *p_this )
             msg_Err( p_filter, "Error while loading mask (%s).",
                      psz_string );
     }
+    else
+       p_sys->p_mask = NULL;
     free( psz_string );
 
+    vlc_mutex_init( &p_sys->mask_lock );
+    var_AddCallback( p_filter, CFG_PREFIX "mask", MaskCallback,
+                     p_filter );
     p_filter->pf_video_filter = Filter;
 
     return VLC_SUCCESS;

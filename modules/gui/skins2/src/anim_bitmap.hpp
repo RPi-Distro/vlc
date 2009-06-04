@@ -2,7 +2,7 @@
  * anim_bitmap.hpp
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 58fd30a9845649c4c63c69f29766d56a5af0a887 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -59,6 +59,8 @@ class AnimBitmap: public SkinObject, public Box,
         virtual int getHeight() const;
 
     private:
+        /// Bitmap stored
+        const GenericBitmap &m_rBitmap;
         /// Graphics to store the bitmap
         OSGraphics *m_pImage;
         /// Number of frames

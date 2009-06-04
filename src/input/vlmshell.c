@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: ba62608c1c9b4891bf9a9b11bf7343152e7d2ea8 $
+ * $Id$
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>

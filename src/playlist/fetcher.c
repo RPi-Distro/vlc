@@ -2,7 +2,7 @@
  * fetcher.c: Art fetcher thread.
  *****************************************************************************
  * Copyright © 1999-2009 the VideoLAN team
- * $Id: 6136d4cedce5667599aabcf3975ef7de24d03da9 $
+ * $Id: c9384b4d2418cb1134f04042bfeca221b2d5879a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -69,6 +69,7 @@ playlist_fetcher_t *playlist_fetcher_New( playlist_t *p_playlist )
     if( !p_fetcher )
         return NULL;
 
+    vlc_object_attach( p_fetcher, p_playlist );
     p_fetcher->p_playlist = p_playlist;
     vlc_mutex_init( &p_fetcher->lock );
     vlc_cond_init( &p_fetcher->wait );
@@ -81,7 +82,7 @@ playlist_fetcher_t *playlist_fetcher_New( playlist_t *p_playlist )
                    VLC_THREAD_PRIORITY_LOW ) )
     {
         msg_Err( p_fetcher, "cannot spawn secondary preparse thread" );
-        free( p_fetcher );
+        vlc_object_release( p_fetcher );
         return NULL;
     }
 

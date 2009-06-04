@@ -2,7 +2,7 @@
  * folder.c
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 4d41b0ac199ff5d55df280aaf5e3f4f6e8c5d905 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

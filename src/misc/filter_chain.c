@@ -2,7 +2,7 @@
  * filter_chain.c : Handle chains of filter_t objects.
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 7061c929f20018c68a2cfffe20711c263fd692ae $
+ * $Id: c2b14f9f3183f3873e7d6dccc762305401cf2875 $
  *
  * Author: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -344,7 +344,7 @@ static filter_t *filter_chain_AppendFilterInternal( filter_chain_t *p_chain,
     vlc_array_append( &p_chain->filters, p_filter );
 
     msg_Dbg( p_chain->p_this, "Filter '%s' (%p) appended to chain",
-             psz_name?:p_filter->psz_object_name, p_filter );
+             psz_name ? psz_name : p_filter->psz_object_name, p_filter );
 
     return p_filter;
 

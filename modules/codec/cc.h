@@ -2,7 +2,7 @@
  * cc.h
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: 80ee56b0b7427b60a7fabb9d5c36be5014c4b91f $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

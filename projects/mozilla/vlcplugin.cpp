@@ -2,7 +2,7 @@
  * vlcplugin.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 51704b18df12d0bd907ffb0de989c5d62b8d7f3d $
+ * $Id: ed968bf41d74a4a984d57f5043aedf5ce5f0d90a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf.fouilleul@laposte.net>
@@ -50,7 +50,6 @@ VlcPlugin::VlcPlugin( NPP instance, uint16 mode ) :
     libvlc_instance(NULL),
     libvlc_media_list(NULL),
     libvlc_media_player(NULL),
-    libvlc_log(NULL),
     p_scriptClass(NULL),
     p_browser(instance),
     psz_baseURL(NULL)
@@ -136,7 +135,7 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
     /* parse plugin arguments */
     for( int i = 0; i < argc ; i++ )
     {
-        fprintf(stderr, "argn=%s, argv=%s\n", argn[i], argv[i]);
+       /* fprintf(stderr, "argn=%s, argv=%s\n", argn[i], argv[i]); */
 
         if( !strcmp( argn[i], "target" )
          || !strcmp( argn[i], "mrl")
@@ -187,7 +186,7 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
         }
         else if( !strcmp( argn[i], "toolbar" ) )
         {
-/* FIXME: Remove this when toolbar functionality has been implemented on\
+/* FIXME: Remove this when toolbar functionality has been implemented on
  * MacOS X and Win32 for Firefox/Mozilla/Safari. */
 #ifdef XP_UNIX
             b_toolbar = boolValue(argv[i]);
@@ -199,7 +198,6 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
     libvlc_exception_init(&ex);
 
     libvlc_instance = libvlc_new(ppsz_argc, ppsz_argv, &ex);
-
     if( libvlc_exception_raised(&ex) )
     {
         libvlc_exception_clear(&ex);
@@ -268,8 +266,6 @@ VlcPlugin::~VlcPlugin()
 {
     free(psz_baseURL);
     free(psz_target);
-    if( libvlc_log )
-        libvlc_log_close(libvlc_log, NULL);
     if( libvlc_media_player )
         libvlc_media_player_release( libvlc_media_player );
     if( libvlc_media_list )

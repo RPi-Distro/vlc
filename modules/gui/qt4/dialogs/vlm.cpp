@@ -2,7 +2,7 @@
  * vlm.cpp : VLM Management
  ****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 12702799faf67d9e87e436ee27dee829122820cb $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Jean-François Massol <jf.massol -at- gmail.com>
@@ -32,6 +32,7 @@
 #ifdef ENABLE_VLM
 #include "dialogs/open.hpp"
 #include "dialogs/sout.hpp"
+#include "util/qt_dirs.hpp"
 
 #include <QString>
 #include <QComboBox>
@@ -349,10 +350,11 @@ void VLMDialog::mediasPopulator()
 
 bool VLMDialog::importVLMConf()
 {
-    QString openVLMConfFileName = QFileDialog::getOpenFileName(
+    QString openVLMConfFileName = toNativeSeparators(
+            QFileDialog::getOpenFileName(
             this, qtr( "Open VLM configuration..." ),
             qfu( config_GetHomeDir() ),
-            qtr( "VLM conf (*.vlm);;All (*)" ) );
+            qtr( "VLM conf (*.vlm);;All (*)" ) ) );
 
     if( !openVLMConfFileName.isEmpty() )
     {

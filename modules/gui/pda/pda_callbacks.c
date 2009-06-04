@@ -2,7 +2,7 @@
  * pda_callbacks.c : Callbacks for the pda Linux Gtk+ plugin.
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: a5a155a34d6abe063ef9cd87750b9fcb1b76f494 $
+ * $Id: e1abc08bb1c0422bdcbabd31024c5db980da7fc1 $
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *
@@ -136,7 +136,7 @@ static void PlaylistAddItem(GtkWidget *widget, gchar *name, char **ppsz_options,
                               (const char*)name,
                               PLAYLIST_APPEND, PLAYLIST_END,
                               (mtime_t) 0,
-                              i_options, (const char **) ppsz_options, VLC_INPUT_OPTION_TRUSTED,
+                              i_size, (const char **) ppsz_options, VLC_INPUT_OPTION_TRUSTED,
                               true, pl_Unlocked );
             }
 

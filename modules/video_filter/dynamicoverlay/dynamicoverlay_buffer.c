@@ -2,7 +2,7 @@
  * dynamicoverlay_buffer.h : dynamic overlay buffer
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: dce831b79371986befc0d144a6d8341f673c750c $
+ * $Id$
  *
  * Author: SÃ¸ren BÃ¸g <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>

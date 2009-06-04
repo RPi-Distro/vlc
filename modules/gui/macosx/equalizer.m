@@ -2,7 +2,7 @@
  * equalizer.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 4f78770d3fa6e233f7bca6f43515daa9aa29101b $
+ * $Id$
  *
  * Authors: Jérôme Decoodt <djc@videolan.org>
  *          Felix Paul Kühne <fkuehne -at- videolan -dot- org>

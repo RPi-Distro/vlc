@@ -133,7 +133,8 @@ endif
 FFMPEGCONF+= --enable-small --disable-debug --disable-mpegaudio-hp
 FFMPEG_CFLAGS += -DHAVE_LRINTF --std=c99
 else
-FFMPEGCONF+= --enable-libmp3lame --enable-libfaac --enable-libgsm
+FFMPEGCONF+= --enable-libmp3lame --enable-libgsm
+#--enable-libfaac
 endif
 
 ifdef HAVE_BEOS
@@ -148,6 +149,7 @@ ifdef HAVE_DARWIN_OS
 X264CONF += --enable-pic
 FFMPEGCONF += --cc=$(CC)
 FFMPEGCONF += --arch=$(ARCH)
+FFMPEGCONF += --disable-libfaac
 ifdef HAVE_DARWIN_10
 FFMPEGCONF += --cpu=core2
 endif
@@ -655,6 +657,7 @@ ifdef HAVE_WIN32
 	(cd $<; $(HOSTCC) make $(LUA_MAKEPLATEFORM); cd src; $(HOSTCC) make liblua.a; cd ..;$(HOSTCC) make install INSTALL_TOP=$(PREFIX); $(RANLIB) $(PREFIX)/lib/liblua.a)
 	(cd $<; sed -i.orig 's@prefix= /usr/local@prefix= $(PREFIX)@' etc/lua.pc; mkdir -p $(PREFIX)/lib/pkgconfig; cp etc/lua.pc $(PREFIX)/lib/pkgconfig)
 else
+	(cd $<; patch -p1) < Patches/lua-noreadline.patch
 	(cd $<; $(HOSTCC) make $(LUA_MAKEPLATEFORM) && make install INSTALL_TOP=$(PREFIX))
 endif
 	touch $@

@@ -2,7 +2,7 @@
  * modules.c : Builtin and plugin modules management functions
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: e21323488aa00b4fecd3c7105843510e1b601497 $
+ * $Id: c69cf70d01c96beb796cb7aa70fe7ce110ad5e82 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -172,7 +172,8 @@ void module_EndBank( vlc_object_t *p_this, bool b_plugins )
     assert (p_bank != NULL);
 
     /* Save the configuration */
-    config_AutoSaveConfigFile( p_this );
+    if( !config_GetInt( p_this, "ignore-config" ) )
+        config_AutoSaveConfigFile( p_this );
 
     /* If plugins were _not_ loaded, then the caller still has the bank lock
      * from module_InitBank(). */
@@ -292,7 +293,7 @@ const char *module_get_name( const module_t *m, bool long_name )
     if( long_name && ( m->psz_longname != NULL) )
         return m->psz_longname;
 
-    return m->psz_shortname ?: m->psz_object_name;
+    return m->psz_shortname ? m->psz_shortname : m->psz_object_name;
 }
 
 /**

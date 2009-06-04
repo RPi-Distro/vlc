@@ -2,7 +2,7 @@
  * file.c: configuration file handling
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 0b2ba422c36e911c1dc1801d96b376d5b2a617f2 $
+ * $Id: 6c411f23ed9308c07c889b69aac826845a45c6b9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -512,7 +512,13 @@ static int SaveConfigFile( vlc_object_t *p_this, const char *psz_module_name,
         goto error;
     }
 
-    if (asprintf (&temporary, "%s.%u", permanent, getpid ()) == -1)
+    if (asprintf (&temporary, "%s.%u", permanent,
+#ifdef UNDER_CE
+                  GetCurrentProcessId ()
+#else
+                  getpid ()
+#endif
+                 ) == -1)
     {
         temporary = NULL;
         module_list_free (list);
