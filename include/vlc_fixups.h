@@ -26,181 +26,122 @@
 #ifndef LIBVLC_FIXUPS_H
 # define LIBVLC_FIXUPS_H 1
 
-#ifndef HAVE_STRDUP
-# include <string.h>
-# include <stdlib.h>
-static inline char *strdup (const char *str)
-{
-    size_t len = strlen (str) + 1;
-    char *res = (char *)malloc (len);
-    if (res) memcpy (res, str, len);
-    return res;
-}
-#endif
-
-#ifndef HAVE_VASPRINTF
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdarg.h>
-static inline int vasprintf (char **strp, const char *fmt, va_list ap)
-{
-    int len = vsnprintf (NULL, 0, fmt, ap) + 1;
-    char *res = (char *)malloc (len);
-    if (res == NULL)
-        return -1;
-    *strp = res;
-    return vsprintf (res, fmt, ap);
-}
-#endif
-
-#ifndef HAVE_ASPRINTF
-# include <stdio.h>
-# include <stdarg.h>
-static inline int asprintf (char **strp, const char *fmt, ...)
-{
-    va_list ap;
-    int ret;
-    va_start (ap, fmt);
-    ret = vasprintf (strp, fmt, ap);
-    va_end (ap);
-    return ret;
-}
-#endif
-
-#ifndef HAVE_STRNLEN
-# include <string.h>
-static inline size_t strnlen (const char *str, size_t max)
-{
-    const char *end = (const char *) memchr (str, 0, max);
-    return end ? (size_t)(end - str) : max;
-}
-#endif
-
-#ifndef HAVE_STRNDUP
-# include <string.h>
-# include <stdlib.h>
-static inline char *strndup (const char *str, size_t max)
-{
-    size_t len = strnlen (str, max);
-    char *res = (char *) malloc (len + 1);
-    if (res)
-    {
-        memcpy (res, str, len);
-        res[len] = '\0';
-    }
-    return res;
-}
-#endif
-
-#ifndef HAVE_STRLCPY
-# define strlcpy vlc_strlcpy
-#endif
-
-#ifndef HAVE_STRTOF
-# define strtof( a, b ) ((float)strtod (a, b))
-#endif
-
-#ifndef HAVE_ATOF
-# define atof( str ) (strtod ((str), (char **)NULL, 10))
-#endif
-
-#ifndef HAVE_STRTOLL
-# define strtoll vlc_strtoll
-#endif
-
-#ifndef HAVE_ATOLL
-# define atoll( str ) (strtoll ((str), (char **)NULL, 10))
+#if !defined (HAVE_GMTIME_R) || !defined (HAVE_LOCALTIME_R)
+# include <time.h> /* time_t */
 #endif
 
 #ifndef HAVE_LLDIV
-typedef struct {
+typedef struct
+{
     long long quot; /* Quotient. */
     long long rem;  /* Remainder. */
 } lldiv_t;
-
-static inline lldiv_t lldiv (long long numer, long long denom)
-{
-    lldiv_t d = { .quot = numer / denom, .rem = numer % denom };
-    return d;
-}
 #endif
 
-#ifndef HAVE_SCANDIR
-# define scandir vlc_scandir
-# define alphasort vlc_alphasort
+#ifndef HAVE_REWIND
+# include <stdio.h> /* FILE */
 #endif
 
-#ifndef HAVE_GETENV
-static inline getenv (const char *name)
-{
-    (void)name;
-    return NULL;
-}
+#if !defined (HAVE_STRLCPY) || \
+    !defined (HAVE_STRNDUP) || \
+    !defined (HAVE_STRNLEN) || \
+    !defined (HAVE_GETCWD)
+# include <stddef.h> /* size_t */
+#endif
+
+#ifndef HAVE_VASPRINTF
+# include <stdarg.h> /* va_list */
+#endif
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#ifndef HAVE_STRDUP
+char *strdup (const char *);
+#endif
+
+#ifndef HAVE_VASPRINTF
+int vasprintf (char **, const char *, va_list);
+#endif
+
+#ifndef HAVE_ASPRINTF
+int asprintf (char **, const char *, ...);
+#endif
+
+#ifndef HAVE_STRNLEN
+size_t strnlen (const char *, size_t);
+#endif
+
+#ifndef HAVE_STRNDUP
+char *strndup (const char *, size_t);
+#endif
+
+#ifndef HAVE_STRLCPY
+size_t strlcpy (char *, const char *, size_t);
+#endif
+
+#ifndef HAVE_STRTOF
+float strtof (const char *, char **);
+#endif
+
+#ifndef HAVE_ATOF
+double atof (const char *);
+#endif
+
+#ifndef HAVE_STRTOLL
+long long int strtoll (const char *, char **, int);
+#endif
+
+#ifndef HAVE_STRSEP
+char *strsep (char **, const char *);
+#endif
+
+#ifndef HAVE_ATOLL
+long long atoll (const char *);
+#endif
+
+#ifndef HAVE_LLDIV
+lldiv_t lldiv (long long, long long);
 #endif
 
 #ifndef HAVE_STRCASECMP
-# ifndef HAVE_STRICMP
-#  include <ctype.h>
-static inline int strcasecmp (const char *s1, const char *s2)
-{
-    for (size_t i = 0;; i++)
-    {
-        int d = tolower (s1[i]) - tolower (s2[i]);
-        if (d || !s1[i]) return d;
-    }
-    return 0;
-}
-# else
-#  define strcasecmp stricmp
-# endif
+int strcasecmp (const char *, const char *);
 #endif
 
 #ifndef HAVE_STRNCASECMP
-# ifndef HAVE_STRNICMP
-#  include <ctype.h>
-static inline int strncasecmp (const char *s1, const char *s2, size_t n)
-{
-    for (size_t i = 0; i < n; i++)
-    {
-        int d = tolower (s1[i]) - tolower (s2[i]);
-        if (d || !s1[i]) return d;
-    }
-    return 0;
-}
-# else
-#  define strncasecmp strnicmp
-# endif
+int strncasecmp (const char *, const char *, size_t);
 #endif
 
 #ifndef HAVE_STRCASESTR
-# ifndef HAVE_STRISTR
-#  define strcasestr vlc_strcasestr
-# else
-#  define strcasestr stristr
-# endif
+char *strcasestr (const char *, const char *);
+#endif
+
+#ifndef HAVE_GMTIME_R
+struct tm *gmtime_r (const time_t *, struct tm *);
 #endif
 
 #ifndef HAVE_LOCALTIME_R
-/* If localtime_r() is not provided, we assume localtime() uses
- * thread-specific storage. */
-# include <time.h>
-static inline struct tm *localtime_r (const time_t *timep, struct tm *result)
-{
-    struct tm *s = localtime (timep);
-    if (s == NULL)
-        return NULL;
+struct tm *localtime_r (const time_t *, struct tm *);
+#endif
 
-    *result = *s;
-    return result;
-}
-static inline struct tm *gmtime_r (const time_t *timep, struct tm *result)
-{
-    struct tm *s = gmtime (timep);
-    if (s == NULL)
-        return NULL;
+#ifndef HAVE_REWIND
+void rewind (FILE *);
+#endif
 
-    *result = *s;
-    return result;
+#ifndef HAVE_GETCWD
+char *getcwd (char *buf, size_t size);
+#endif
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
+#ifndef HAVE_GETENV
+static inline char *getenv (const char *name)
+{
+    (void)name;
+    return NULL;
 }
 #endif
 
@@ -226,13 +167,12 @@ typedef void *locale_t;
 #endif
 
 /* libintl support */
-#define _(str) vlc_gettext (str)
-
-#if defined (ENABLE_NLS)
-# include <libintl.h>
-#endif
-
-#define N_(str) gettext_noop (str)
+#define _(str)            vlc_gettext (str)
+#define N_(str)           gettext_noop (str)
 #define gettext_noop(str) (str)
+
+#ifndef HAVE_SWAB
+void swab (const void *, void *, ssize_t);
+#endif
 
 #endif /* !LIBVLC_FIXUPS_H */

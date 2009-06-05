@@ -18,5 +18,5 @@ libbda_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libbda_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libbda_plugin_la_LIBADD = $(AM_LIBADD)
-libbda_plugin_la_DEPENDENCIES =
+libbda_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

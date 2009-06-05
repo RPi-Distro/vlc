@@ -2,7 +2,7 @@
  * meta.c: Get meta/artwork using lua scripts
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 80474c616b6b7e30aebb3eda57e984d8ec55fd7f $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -191,12 +191,16 @@ static int fetch_art( vlc_object_t *p_this, const char * psz_filename,
  *****************************************************************************/
 int FindArt( vlc_object_t *p_this )
 {
-    playlist_t *p_playlist = (playlist_t *)p_this;
-    input_item_t *p_item = (input_item_t *)(p_playlist->p_private);
-    lua_State *L = vlclua_meta_init( p_this, p_item );
+    playlist_t *p_playlist = pl_Hold( p_this );
+    if( !p_playlist )
+        return VLC_EGENERIC;
 
+    input_item_t *p_item = (input_item_t *)p_this->p_private;
+    lua_State *L = vlclua_meta_init( p_this, p_item );
     int i_ret = vlclua_scripts_batch_execute( p_this, "meta", &fetch_art, L, p_item );
     lua_close( L );
+
+    pl_Release( p_this );
     return i_ret;
 }
 

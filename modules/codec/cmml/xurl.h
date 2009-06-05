@@ -3,9 +3,9 @@
  *****************************************************************************
  * Copyright (C) 2003-2004 Commonwealth Scientific and Industrial Research
  *                         Organisation (CSIRO) Australia
- * Copyright (C) 2004 the VideoLAN team
+ * Copyright (C) 2004-2008 the VideoLAN team
  *
- * $Id: 9a57b00bc4f250a3f0a00be114452bdf9f24598f $
+ * $Id$
  *
  * Authors: Andre Pang <Andre.Pang@csiro.au>
  *
@@ -29,15 +29,6 @@
 
 #include <vlc_common.h>
 
-/* Specialise boolean definitions to VLC's boolean types */
-typedef bool XURL_Bool;
-#define XURL_FALSE false
-#define XURL_TRUE true
-
-/* Specialise general C functions to VLC's standards */
-#define xurl_malloc malloc
-#define xurl_free free
-
 /* Use DOS/Windows path separators? */
 #ifdef WIN32
 #  define XURL_WIN32_PATHING
@@ -48,21 +39,21 @@ typedef bool XURL_Bool;
 /* Debugging */
 #undef XURL_DEBUG
 
-char *      XURL_Join                   ( char *psz_url1, char *psz_url2 );
-char *      XURL_Concat                 ( char *psz_url,  char *psz_append );
+char* XURL_Join                   ( char *psz_url1, char *psz_url2 );
+char* XURL_Concat                 ( char *psz_url,  char *psz_append );
 
-XURL_Bool   XURL_IsAbsolute             ( char *psz_url );
-XURL_Bool   XURL_HasAbsolutePath        ( char *psz_url );
-XURL_Bool   XURL_IsFileURL              ( char *psz_url );
-XURL_Bool   XURL_HasFragment            ( char *psz_url );
+bool  XURL_IsAbsolute             ( char *psz_url );
+bool  XURL_HasAbsolutePath        ( char *psz_url );
+bool  XURL_IsFileURL              ( char *psz_url );
+bool  XURL_HasFragment            ( char *psz_url );
 
-char *      XURL_GetHostname            ( char *psz_url );
-char *      XURL_GetSchemeAndHostname   ( char *psz_url );
-char *      XURL_GetScheme              ( char *psz_url );
-char *      XURL_GetPath                ( char *psz_url );
-char *      XURL_GetWithoutFragment     ( char *psz_url );
+char* XURL_GetHostname            ( char *psz_url );
+char* XURL_GetSchemeAndHostname   ( char *psz_url );
+char* XURL_GetScheme              ( char *psz_url );
+char* XURL_GetPath                ( char *psz_url );
+char* XURL_GetWithoutFragment     ( char *psz_url );
 
-char *      XURL_GetHead                ( const char *psz_path );
+char* XURL_GetHead                ( const char *psz_path );
 
 #endif /* __XURL_H__ */
 

@@ -4,7 +4,7 @@
  *          (http://diracvideo.org)
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: b89e7dfa9847aafced5ee0740e2628af66c1ca15 $
+ * $Id$
  *
  * Authors: Jonathan Rosser <jonathan.rosser@gmail.com>
  *          David Flynn <davidf at rd dot bbc.co.uk>
@@ -45,30 +45,19 @@
 static int        OpenDecoder  ( vlc_object_t * );
 static void       CloseDecoder ( vlc_object_t * );
 
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_description( N_("Schroedinger video decoder") );
-    set_capability( "decoder", 200 );
-    set_callbacks( OpenDecoder, CloseDecoder );
-    add_shortcut( "schroedinger" );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_description( N_("Schroedinger video decoder") )
+    set_capability( "decoder", 200 )
+    set_callbacks( OpenDecoder, CloseDecoder )
+    add_shortcut( "schroedinger" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 static picture_t *DecodeBlock  ( decoder_t *p_dec, block_t **pp_block );
-
-/*****************************************************************************
- * picture_pts_t : store pts alongside picture number, not carried through
- * decoder
- *****************************************************************************/
-struct picture_pts_t
-{
-   int i_empty;      //not in use
-   uint32_t u_pnum;  //picture number from dirac header
-   mtime_t i_pts;    //pts for this picture
-};
 
 struct picture_free_t
 {
@@ -79,7 +68,6 @@ struct picture_free_t
 /*****************************************************************************
  * decoder_sys_t : Schroedinger decoder descriptor
  *****************************************************************************/
-#define PTS_TLB_SIZE 16
 struct decoder_sys_t
 {
     /*
@@ -89,22 +77,7 @@ struct decoder_sys_t
     mtime_t i_frame_pts_delta;
     SchroDecoder *p_schro;
     SchroVideoFormat *p_format;
-    struct picture_pts_t pts_tlb[PTS_TLB_SIZE];
-    int i_ts_resync_hack;
 };
-
-//#define TRACE
-
-/*****************************************************************************
- * ResetPTStlb: Purge all entries in @p_dec@'s PTS-tlb
- *****************************************************************************/
-static void ResetPTStlb( decoder_t *p_dec )
-{
-    decoder_sys_t *p_sys = p_dec->p_sys;
-    for( int i=0; i<PTS_TLB_SIZE; i++) {
-        p_sys->pts_tlb[i].i_empty = 1;
-    }
-}
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -141,9 +114,6 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->p_format = NULL;
     p_sys->i_lastpts = -1;
     p_sys->i_frame_pts_delta = 0;
-    p_sys->i_ts_resync_hack = 0;
-
-    ResetPTStlb(p_dec);
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = VIDEO_ES;
@@ -180,10 +150,12 @@ static void SetVideoFormat( decoder_t *p_dec )
         break;
     }
 
-    p_dec->fmt_out.video.i_visible_width =
+    p_dec->fmt_out.video.i_visible_width = p_sys->p_format->clean_width;
+    p_dec->fmt_out.video.i_x_offset = p_sys->p_format->left_offset;
     p_dec->fmt_out.video.i_width = p_sys->p_format->width;
 
-    p_dec->fmt_out.video.i_visible_height =
+    p_dec->fmt_out.video.i_visible_height = p_sys->p_format->clean_height;
+    p_dec->fmt_out.video.i_y_offset = p_sys->p_format->top_offset;
     p_dec->fmt_out.video.i_height = p_sys->p_format->height;
 
     /* aspect_ratio_[numerator|denominator] describes the pixel aspect ratio */
@@ -200,51 +172,6 @@ static void SetVideoFormat( decoder_t *p_dec )
 }
 
 /*****************************************************************************
- * StorePicturePTS: Store the PTS value for a particular picture number
- *****************************************************************************/
-static void StorePicturePTS( decoder_t *p_dec, block_t *p_block, int i_pupos )
-{
-    decoder_sys_t *p_sys = p_dec->p_sys;
-    uint32_t u_pnum;
-
-    u_pnum = GetDWBE( p_block->p_buffer + i_pupos + 13 );
-
-    for( int i=0; i<PTS_TLB_SIZE; i++ ) {
-        if( p_sys->pts_tlb[i].i_empty ) {
-
-            p_sys->pts_tlb[i].u_pnum = u_pnum;
-            p_sys->pts_tlb[i].i_pts = p_block->i_pts;
-            p_sys->pts_tlb[i].i_empty = 0;
-
-            return;
-        }
-    }
-
-    msg_Err( p_dec, "Could not store PTS %"PRId64" for picture %u",
-             p_block->i_pts, u_pnum );
-}
-
-/*****************************************************************************
- * GetPicturePTS: Retrieve the PTS value for a particular picture number
- *****************************************************************************/
-static mtime_t GetPicturePTS( decoder_t *p_dec, uint32_t u_pnum )
-{
-    decoder_sys_t *p_sys = p_dec->p_sys;
-
-    for( int i=0; i<PTS_TLB_SIZE; i++ ) {
-        if( (!p_sys->pts_tlb[i].i_empty) &&
-            (p_sys->pts_tlb[i].u_pnum == u_pnum)) {
-
-             p_sys->pts_tlb[i].i_empty = 1;
-             return p_sys->pts_tlb[i].i_pts;
-        }
-    }
-
-    msg_Err( p_dec, "Could not retrieve PTS for picture %u", u_pnum );
-    return 0;
-}
-
-/*****************************************************************************
  * SchroFrameFree: schro_frame callback to release the associated picture_t
  * When schro_decoder_reset() is called there will be pictures in the
  * decoding pipeline that need to be released rather than displayed.
@@ -256,7 +183,7 @@ static void SchroFrameFree( SchroFrame *frame, void *priv)
     if( !p_free )
         return;
 
-    p_free->p_dec->pf_vout_buffer_del( p_free->p_dec, p_free->p_pic );
+    decoder_DeletePicture( p_free->p_dec, p_free->p_pic );
     free(p_free);
     (void)frame;
 }
@@ -274,7 +201,7 @@ static SchroFrame *CreateSchroFrameFromPic( decoder_t *p_dec )
     if( !p_schroframe )
         return NULL;
 
-    p_pic = p_dec->pf_vout_buffer_new( p_dec );
+    p_pic = decoder_NewPicture( p_dec );
 
     if( !p_pic )
         return NULL;
@@ -351,16 +278,8 @@ static void CloseDecoder( vlc_object_t *p_this )
 /****************************************************************************
  * DecodeBlock: the whole thing
  ****************************************************************************
- * Blocks must start with a Dirac parse unit.
- * Blocks must contain at least one Dirac parse unit.
- * Blocks must end with a picture parse unit.
- * Blocks must not contain more than one picture parse unit.
- * If a block has a PTS signaled, it applies to the first picture in p_block
- *   - Schroedinger has no internal means to tag pictures with a PTS
- *   - In this case, the picture number is extracted and stored in a TLB
- * When a picture is extracted from schro, it is looked up in the pts_tlb
- *   - If the picture was never tagged with a PTS, a new one is calculated
- *     based upon the frame rate and last output PTS.
+ * Blocks need not be Dirac dataunit aligned.
+ * If a block has a PTS signaled, it applies to the first picture at or after p_block
  *
  * If this function returns a picture (!NULL), it is called again and the
  * same block is resubmitted.  To avoid this, set *pp_block to NULL;
@@ -370,150 +289,59 @@ static void CloseDecoder( vlc_object_t *p_this )
 static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    int state;
-    SchroBuffer *p_schrobuffer;
-    SchroFrame *p_schroframe;
-    picture_t *p_pic;
-    block_t *p_block;
-    uint32_t u_pnum;
 
     if( !pp_block ) return NULL;
 
-    p_block = *pp_block;
-
-    if ( p_block ) do {
-        /* prepare block for submission */
-
-        if (p_sys->i_ts_resync_hack && p_sys->i_ts_resync_hack--)
-            return NULL;
-
-        if( !p_block->i_buffer ) {
-            msg_Err( p_dec, "block is of zero size" );
-            break;
-        }
+    if ( *pp_block ) {
+        block_t *p_block = *pp_block;
 
         /* reset the decoder when seeking as the decode in progress is invalid */
         /* discard the block as it is just a null magic block */
-        if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) ) {
-#ifdef TRACE
-            msg_Dbg( p_dec, "SCHRO_DECODER_RESET" );
-#endif
+        if( p_block->i_flags & BLOCK_FLAG_DISCONTINUITY ) {
             schro_decoder_reset( p_sys->p_schro );
 
-            ResetPTStlb( p_dec );
-
             p_sys->i_lastpts = -1;
-
-            /* The ts layer manages to corrupt the next packet we are to receive
-             * Since schro has no sync support, we need to drop it */
-            p_sys->i_ts_resync_hack = 1;
-
             block_Release( p_block );
             *pp_block = NULL;
             return NULL;
         }
 
-        /* Unsatisfactory, and will later be fixed in schro:
-         *  - Schro can only handle a single Dirac parse unit at a time
-         *  - Multiple parse units may exist in p_block
-         *  - All mapping specs so far guarantee that p_block would
-         *    not contain anything after a picture
-         * So, we can not give the whole block to schro, but piecemeal
-         */
-        size_t i_bufused = 0;
-        while( schro_decoder_push_ready( p_sys->p_schro )) {
-            if( p_block->i_buffer - i_bufused < 13 ) {
-                *pp_block = NULL;
-                block_Release( p_block );
-                msg_Err( p_dec, "not enough data left in block" );
-                break;
+        SchroBuffer *p_schrobuffer;
+        p_schrobuffer = schro_buffer_new_with_data( p_block->p_buffer, p_block->i_buffer );
+        p_schrobuffer->free = SchroBufferFree;
+        p_schrobuffer->priv = p_block;
+        if( p_block->i_pts != VLC_TS_INVALID ) {
+            mtime_t *p_pts = malloc( sizeof(*p_pts) );
+            if( p_pts ) {
+                *p_pts = p_block->i_pts;
+                /* if this call fails, p_pts is freed automatically */
+                p_schrobuffer->tag = schro_tag_new( p_pts, free );
             }
-
-            int b_bail = 0;
-            size_t i_pulen = GetDWBE( p_block->p_buffer + i_bufused + 5 );
-            uint8_t *p_pu = p_block->p_buffer + i_bufused;
-
-            if( 0 == i_pulen ) {
-                i_pulen = 13;
-            }
-
-            /* blocks that do not start with the parse info prefix are invalid */
-            if( p_pu[0] != 'B' || p_pu[1] != 'B' ||
-                p_pu[2] != 'C' || p_pu[3] != 'D')
-            {
-                *pp_block = NULL;
-                block_Release( p_block );
-                msg_Err( p_dec, "block does not start with dirac parse code" );
-                break;
-            }
-
-            if( i_bufused + i_pulen > p_block->i_buffer ) {
-                *pp_block = NULL;
-                block_Release( p_block );
-                break;
-            }
-
-            if( p_pu[4] & 0x08 )
-                StorePicturePTS( p_dec, p_block, i_bufused );
-
-            p_schrobuffer = schro_buffer_new_with_data( p_pu, i_pulen );
-            if( i_pulen + i_bufused < p_block->i_buffer ) {
-                /* don't let schro free this block, more data still in it */
-                p_schrobuffer->free = 0;
-            }
-            else {
-                p_schrobuffer->free = SchroBufferFree;
-                p_schrobuffer->priv = p_block;
-                b_bail = 1;
-            }
-
-#ifdef TRACE
-            msg_Dbg( p_dec, "Inserting bytes into decoder len=%zu of %zu pts=%"PRId64,
-                     i_pulen, p_block->i_buffer, p_block->i_pts);
-#endif
-            /* this stops the same block being fed back into this function if
-             * we were on the next iteration of this loop to output a picture */
-            *pp_block = NULL;
-            state = schro_decoder_push( p_sys->p_schro, p_schrobuffer );
-
-            /* DO NOT refer to p_block after this point, it may have been freed */
-
-            i_bufused += i_pulen;
-
-            if( state == SCHRO_DECODER_FIRST_ACCESS_UNIT ) {
-#ifdef TRACE
-                msg_Dbg( p_dec, "SCHRO_DECODER_FIRST_ACCESS_UNIT");
-#endif
-                SetVideoFormat( p_dec );
-                ResetPTStlb( p_dec );
-
-                p_schroframe = CreateSchroFrameFromPic( p_dec );
-                if( p_schroframe ) {
-                    schro_decoder_add_output_picture( p_sys->p_schro, p_schroframe);
-                }
-            }
-
-            if( b_bail )
-                break;
         }
-    } while( 0 );
+
+        /* this stops the same block being fed back into this function if
+         * we were on the next iteration of this loop to output a picture */
+        *pp_block = NULL;
+        schro_decoder_autoparse_push( p_sys->p_schro, p_schrobuffer );
+        /* DO NOT refer to p_block after this point, it may have been freed */
+    }
 
     while( 1 )
     {
-        state = schro_decoder_wait( p_sys->p_schro );
+        SchroFrame *p_schroframe;
+        picture_t *p_pic;
+        int state = schro_decoder_autoparse_wait( p_sys->p_schro );
 
         switch( state )
         {
+        case SCHRO_DECODER_FIRST_ACCESS_UNIT:
+            SetVideoFormat( p_dec );
+            break;
+
         case SCHRO_DECODER_NEED_BITS:
-#ifdef TRACE
-            msg_Dbg( p_dec, "SCHRO_DECODER_NEED_BITS" );
-#endif
             return NULL;
 
         case SCHRO_DECODER_NEED_FRAME:
-#ifdef TRACE
-            msg_Dbg( p_dec, "SCHRO_DECODER_NEED_FRAME" );
-#endif
             p_schroframe = CreateSchroFrameFromPic( p_dec );
 
             if( !p_schroframe )
@@ -525,42 +353,46 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             schro_decoder_add_output_picture( p_sys->p_schro, p_schroframe);
             break;
 
-        case SCHRO_DECODER_OK:
-            u_pnum = schro_decoder_get_picture_number( p_sys->p_schro );
+        case SCHRO_DECODER_OK: {
+            SchroTag *p_tag = schro_decoder_get_picture_tag( p_sys->p_schro );
             p_schroframe = schro_decoder_pull( p_sys->p_schro );
+            if( !p_schroframe || !p_schroframe->priv )
+            {
+                /* frame can't be one that was allocated by us
+                 *   -- no private data: discard */
+                if( p_tag ) schro_tag_free( p_tag );
+                if( p_schroframe ) schro_frame_unref( p_schroframe );
+                break;
+            }
             p_pic = ((struct picture_free_t*) p_schroframe->priv)->p_pic;
             p_schroframe->priv = NULL;
-            schro_frame_unref( p_schroframe );
 
-            /* solve presentation time stamp for picture.  If this picture
-             * was not tagged with a pts when presented to decoder, interpolate
-             * one
-             * This means no need to set p_pic->b_force, as we have a pts on
-             * each picture */
-            p_pic->date = GetPicturePTS( p_dec, u_pnum );
-            if (p_sys->i_lastpts >= 0 && p_pic->date == 0)
+            if( p_tag )
+            {
+                /* free is handled by schro_frame_unref */
+                p_pic->date = *(mtime_t*) p_tag->value;
+                schro_tag_free( p_tag );
+            }
+            else if( p_sys->i_lastpts >= 0 )
+            {
+                /* NB, this shouldn't happen since the packetizer does a
+                 * very thorough job of inventing timestamps.  The
+                 * following is just a very rough fall back incase packetizer
+                 * is missing. */
+                /* maybe it would be better to set p_pic->b_force ? */
                 p_pic->date = p_sys->i_lastpts + p_sys->i_frame_pts_delta;
+            }
             p_sys->i_lastpts = p_pic->date;
 
-#ifdef TRACE
-            msg_Dbg( p_dec, "SCHRO_DECODER_OK num=%u date=%"PRId64,
-                     u_pnum, p_pic->date);
-#endif
+            schro_frame_unref( p_schroframe );
             return p_pic;
-
+        }
         case SCHRO_DECODER_EOS:
-#ifdef TRACE
-            msg_Dbg( p_dec, "SCHRO_DECODER_EOS");
-#endif
-            /* reset the decoder -- schro doesn't do this itself automatically */
-            /* there are no more pictures in the output buffer at this point */
-            schro_decoder_reset( p_sys->p_schro );
+            /* NB, the new api will not emit _EOS, it handles the reset internally */
             break;
 
         case SCHRO_DECODER_ERROR:
-#ifdef TRACE
-            msg_Dbg( p_dec, "SCHRO_DECODER_ERROR");
-#endif
+            msg_Err( p_dec, "SCHRO_DECODER_ERROR");
             return NULL;
         }
     }

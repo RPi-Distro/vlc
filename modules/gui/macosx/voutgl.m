@@ -1,8 +1,8 @@
 /*****************************************************************************
  * voutgl.m: MacOS X OpenGL provider
  *****************************************************************************
- * Copyright (C) 2001-2004, 2007 the VideoLAN team
- * $Id: fff52ee28559bbe1afe0be8bb68564075dc69fc7 $
+ * Copyright (C) 2001-2004, 2007-2009 the VideoLAN team
+ * $Id: 7f88fe2b34ae0d012ab6672ed296b5fb8179e28e $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -58,22 +58,24 @@
 
 struct vout_sys_t
 {
-    NSAutoreleasePool * o_pool;
     VLCGLView         * o_glview;
     VLCVoutView       * o_vout_view;
-    bool          b_saved_frame;
+    bool                b_saved_frame;
     NSRect              s_frame;
-    bool          b_got_frame;
-    /* Mozilla plugin-related variables */
-    bool          b_embedded;
+    bool                b_got_frame;
+
+    /* Mozilla plugin-related variables (not 64bit compatible) */
+    bool                b_embedded;
+#ifndef __x86_64__
     AGLContext          agl_ctx;
     AGLDrawable         agl_drawable;
     int                 i_offx, i_offy;
     int                 i_width, i_height;
     WindowRef           theWindow;
     WindowGroupRef      winGroup;
-    bool          b_clipped_out;
+    bool                b_clipped_out;
     Rect                clipBounds, viewBounds;
+#endif
 };
 
 /*****************************************************************************
@@ -88,6 +90,7 @@ static void Swap   ( vout_thread_t * p_vout );
 static int  Lock   ( vout_thread_t * p_vout );
 static void Unlock ( vout_thread_t * p_vout );
 
+#ifndef __x86_64__
 static int  aglInit   ( vout_thread_t * p_vout );
 static void aglEnd    ( vout_thread_t * p_vout );
 static int  aglManage ( vout_thread_t * p_vout );
@@ -95,6 +98,7 @@ static int  aglControl( vout_thread_t *, int, va_list );
 static void aglSwap   ( vout_thread_t * p_vout );
 static int  aglLock   ( vout_thread_t * p_vout );
 static void aglUnlock ( vout_thread_t * p_vout );
+#endif
 
 int OpenVideoGL  ( vlc_object_t * p_this )
 {
@@ -110,14 +114,12 @@ int OpenVideoGL  ( vlc_object_t * p_this )
 
     p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
-        return( 1 );
-    }
+        return VLC_ENOMEM;
 
     memset( p_vout->p_sys, 0, sizeof( vout_sys_t ) );
 
-    var_Get( p_vout->p_libvlc, "drawable", &value_drawable );
+#ifndef __x86_64__
+    var_Get( p_vout->p_libvlc, "drawable-agl", &value_drawable );
     if( value_drawable.i_int != 0 )
     {
         static const GLint ATTRIBUTES[] = {
@@ -141,6 +143,7 @@ int OpenVideoGL  ( vlc_object_t * p_this )
         if( NULL == pixFormat )
         {
             msg_Err( p_vout, "no screen renderer available for required attributes." );
+            free( p_vout->p_sys );
             return VLC_EGENERIC;
         }
  
@@ -149,9 +152,11 @@ int OpenVideoGL  ( vlc_object_t * p_this )
         if( NULL == p_vout->p_sys->agl_ctx )
         {
             msg_Err( p_vout, "cannot create AGL context." );
+            free( p_vout->p_sys );
             return VLC_EGENERIC;
         }
-        else {
+        else
+        {
             // tell opengl not to sync buffer swap with vertical retrace (too inefficient)
             GLint param = 0;
             aglSetInteger(p_vout->p_sys->agl_ctx, AGL_SWAP_INTERVAL, &param);
@@ -168,6 +173,7 @@ int OpenVideoGL  ( vlc_object_t * p_this )
     }
     else
     {
+#endif
         NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
 
         p_vout->p_sys->b_embedded = false;
@@ -177,9 +183,9 @@ int OpenVideoGL  ( vlc_object_t * p_this )
         [o_pool release];
 
         /* Check to see if initVout: was successfull */
-
         if( !p_vout->p_sys->o_vout_view )
         {
+            free( p_vout->p_sys );
             return VLC_EGENERIC;
         }
 
@@ -190,7 +196,9 @@ int OpenVideoGL  ( vlc_object_t * p_this )
         p_vout->pf_swap   = Swap;
         p_vout->pf_lock   = Lock;
         p_vout->pf_unlock = Unlock;
+#ifndef __x86_64__
     }
+#endif
     p_vout->p_sys->b_got_frame = false;
 
     return VLC_SUCCESS;
@@ -202,9 +210,27 @@ void CloseVideoGL ( vlc_object_t * p_this )
 
     msg_Dbg( p_this, "Closing" );
 
+#ifndef __x86_64__
+    /* If the fullscreen window is still open, close it */
+    if( p_vout->b_fullscreen )
+    {
+        p_vout->i_changes |= VOUT_FULLSCREEN_CHANGE;
+        if( p_vout->p_sys->b_embedded )
+        {
+            aglManage( p_vout );
+            var_SetBool( p_vout->p_parent, "fullscreen", false );
+        }
+        else
+            Manage( p_vout );
+    }
+
     if( p_vout->p_sys->b_embedded )
     {
-        aglDestroyContext(p_vout->p_sys->agl_ctx);
+        if( p_vout->p_sys->agl_ctx )
+        {
+            aglEnd( p_vout );
+            aglDestroyContext(p_vout->p_sys->agl_ctx);
+        }
     }
     else if(VLCIntf && vlc_object_alive (VLCIntf))
     {
@@ -215,6 +241,17 @@ void CloseVideoGL ( vlc_object_t * p_this )
 
         [o_pool release];
     }
+#else
+	if(VLCIntf && vlc_object_alive (VLCIntf))
+    {
+        NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
+
+        /* Close the window */
+        [p_vout->p_sys->o_vout_view performSelectorOnMainThread:@selector(closeVout) withObject:NULL waitUntilDone:YES];
+
+        [o_pool release];
+    }
+#endif
     /* Clean up */
     free( p_vout->p_sys );
 }
@@ -278,10 +315,8 @@ static int Control( vout_thread_t *p_vout, int i_query, va_list args )
             [p_vout->p_sys->o_vout_view setOnTop: b_arg];
             return VLC_SUCCESS;
 
-        case VOUT_CLOSE:
-        case VOUT_REPARENT:
         default:
-            return vout_vaControlDefault( p_vout, i_query, args );
+            return VLC_EGENERIC;
     }
 }
 
@@ -320,8 +355,8 @@ static void Unlock( vout_thread_t * p_vout )
 
     /* Spawn the window */
     id old_vout = p_vout->p_sys->o_vout_view;
-    p_vout->p_sys->o_vout_view = [[VLCVoutView getVoutView: p_vout
-                        subView: p_vout->p_sys->o_glview frame: nil] retain];
+    p_vout->p_sys->o_vout_view = [[VLCVoutView voutView: p_vout
+                                                subView: p_vout->p_sys->o_glview frame: nil] retain];
     [old_vout release];
 }
 
@@ -335,7 +370,7 @@ static void Unlock( vout_thread_t * p_vout )
         p_vout->p_sys->s_frame.size =
             [p_vout->p_sys->o_vout_view frame].size;
         p_vout->p_sys->s_frame.origin =
-            [[p_vout->p_sys->o_vout_view getWindow ]frame].origin;
+            [[p_vout->p_sys->o_vout_view voutWindow]frame].origin;
         p_vout->p_sys->b_saved_frame = true;
     }
 
@@ -348,16 +383,16 @@ static void Unlock( vout_thread_t * p_vout )
     if( p_vout->p_sys->b_saved_frame )
     {
         id old_vout = p_vout->p_sys->o_vout_view;
-        p_vout->p_sys->o_vout_view = [[VLCVoutView getVoutView: p_vout
-                                                      subView: o_glview
-                                                        frame: &p_vout->p_sys->s_frame] retain];
+        p_vout->p_sys->o_vout_view = [[VLCVoutView voutView: p_vout
+                                                    subView: o_glview
+                                                      frame: &p_vout->p_sys->s_frame] retain];
         [old_vout release];
     }
     else
     {
         id old_vout = p_vout->p_sys->o_vout_view;
-        p_vout->p_sys->o_vout_view = [[VLCVoutView getVoutView: p_vout
-                                                      subView: o_glview frame: nil] retain];
+        p_vout->p_sys->o_vout_view = [[VLCVoutView voutView: p_vout
+                                                    subView: o_glview frame: nil] retain];
         [old_vout release];
     }
 #undef o_glview
@@ -417,13 +452,11 @@ static void Unlock( vout_thread_t * p_vout )
 - (void) reshape
 {
     int x, y;
-    vlc_value_t val;
 
     Lock( p_vout );
     NSRect bounds = [self bounds];
 
-    var_Get( p_vout, "macosx-stretch", &val );
-    if( val.b_bool )
+    if( var_GetBool( p_vout, "macosx-stretch" ) )
     {
         x = bounds.size.width;
         y = bounds.size.height;
@@ -491,37 +524,29 @@ static void Unlock( vout_thread_t * p_vout )
  * embedded AGL context implementation
  *****************************************************************************/
 
+#ifndef __x86_64__
+
 static void aglSetViewport( vout_thread_t *p_vout, Rect viewBounds, Rect clipBounds );
 static void aglReshape( vout_thread_t * p_vout );
 static OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, EventRef event, void *userData);
 
 static int aglInit( vout_thread_t * p_vout )
 {
-    vlc_value_t val;
-
     Rect viewBounds;
     Rect clipBounds;
  
-    var_Get( p_vout->p_libvlc, "drawable", &val );
-    p_vout->p_sys->agl_drawable = (AGLDrawable)val.i_int;
+    p_vout->p_sys->agl_drawable = (AGLDrawable)
+            var_GetInteger( p_vout->p_libvlc, "drawable-agl" );
     aglSetDrawable(p_vout->p_sys->agl_ctx, p_vout->p_sys->agl_drawable);
 
-    var_Get( p_vout->p_libvlc, "drawable-view-top", &val );
-    viewBounds.top = val.i_int;
-    var_Get( p_vout->p_libvlc, "drawable-view-left", &val );
-    viewBounds.left = val.i_int;
-    var_Get( p_vout->p_libvlc, "drawable-view-bottom", &val );
-    viewBounds.bottom = val.i_int;
-    var_Get( p_vout->p_libvlc, "drawable-view-right", &val );
-    viewBounds.right = val.i_int;
-    var_Get( p_vout->p_libvlc, "drawable-clip-top", &val );
-    clipBounds.top = val.i_int;
-    var_Get( p_vout->p_libvlc, "drawable-clip-left", &val );
-    clipBounds.left = val.i_int;
-    var_Get( p_vout->p_libvlc, "drawable-clip-bottom", &val );
-    clipBounds.bottom = val.i_int;
-    var_Get( p_vout->p_libvlc, "drawable-clip-right", &val );
-    clipBounds.right = val.i_int;
+    viewBounds.top = var_GetInteger( p_vout->p_libvlc, "drawable-view-top" );
+    viewBounds.left = var_GetInteger( p_vout->p_libvlc, "drawable-view-left" );
+    viewBounds.bottom = var_GetInteger( p_vout->p_libvlc, "drawable-view-bottom" );
+    viewBounds.right = var_GetInteger( p_vout->p_libvlc, "drawable-view-right" );
+    clipBounds.top = var_GetInteger( p_vout->p_libvlc, "drawable-clip-top" );
+    clipBounds.left = var_GetInteger( p_vout->p_libvlc, "drawable-clip-left" );
+    clipBounds.bottom = var_GetInteger( p_vout->p_libvlc, "drawable-clip-bottom" );
+    clipBounds.right = var_GetInteger( p_vout->p_libvlc, "drawable-clip-right" );
 
     p_vout->p_sys->b_clipped_out = (clipBounds.top == clipBounds.bottom)
                                  || (clipBounds.left == clipBounds.right);
@@ -541,7 +566,11 @@ static int aglInit( vout_thread_t * p_vout )
 static void aglEnd( vout_thread_t * p_vout )
 {
     aglSetCurrentContext(NULL);
-    if( p_vout->p_sys->theWindow ) DisposeWindow( p_vout->p_sys->theWindow );
+    if( p_vout->p_sys->theWindow )
+    {
+        DisposeWindow( p_vout->p_sys->theWindow );
+        p_vout->p_sys->theWindow = NULL;
+    }
 }
 
 static void aglReshape( vout_thread_t * p_vout )
@@ -618,39 +647,37 @@ static int aglManage( vout_thread_t * p_vout )
         if( p_vout->b_fullscreen )
         {
             /* Close the fullscreen window and resume normal drawing */
-            vlc_value_t val;
             Rect viewBounds;
             Rect clipBounds;
 
-            var_Get( p_vout->p_libvlc, "drawable", &val );
-            p_vout->p_sys->agl_drawable = (AGLDrawable)val.i_int;
+            p_vout->p_sys->agl_drawable = (AGLDrawable)
+                    var_GetInteger( p_vout->p_libvlc, "drawable-agl" );
+
             aglSetDrawable(p_vout->p_sys->agl_ctx, p_vout->p_sys->agl_drawable);
 
-            var_Get( p_vout->p_libvlc, "drawable-view-top", &val );
-            viewBounds.top = val.i_int;
-            var_Get( p_vout->p_libvlc, "drawable-view-left", &val );
-            viewBounds.left = val.i_int;
-            var_Get( p_vout->p_libvlc, "drawable-view-bottom", &val );
-            viewBounds.bottom = val.i_int;
-            var_Get( p_vout->p_libvlc, "drawable-view-right", &val );
-            viewBounds.right = val.i_int;
-            var_Get( p_vout->p_libvlc, "drawable-clip-top", &val );
-            clipBounds.top = val.i_int;
-            var_Get( p_vout->p_libvlc, "drawable-clip-left", &val );
-            clipBounds.left = val.i_int;
-            var_Get( p_vout->p_libvlc, "drawable-clip-bottom", &val );
-            clipBounds.bottom = val.i_int;
-            var_Get( p_vout->p_libvlc, "drawable-clip-right", &val );
-            clipBounds.right = val.i_int;
+            viewBounds.top = var_GetInteger( p_vout->p_libvlc, "drawable-view-top" );
+            viewBounds.left = var_GetInteger( p_vout->p_libvlc, "drawable-view-left" );
+            viewBounds.bottom = var_GetInteger( p_vout->p_libvlc, "drawable-view-bottom" );
+            viewBounds.right = var_GetInteger( p_vout->p_libvlc, "drawable-view-right" );
+            clipBounds.top = var_GetInteger( p_vout->p_libvlc, "drawable-clip-top" );
+            clipBounds.left = var_GetInteger( p_vout->p_libvlc, "drawable-clip-left" );
+            clipBounds.bottom = var_GetInteger( p_vout->p_libvlc, "drawable-clip-bottom" );
+            clipBounds.right = var_GetInteger( p_vout->p_libvlc, "drawable-clip-right" );
 
             aglSetCurrentContext(p_vout->p_sys->agl_ctx);
             aglSetViewport(p_vout, viewBounds, clipBounds);
 
-            /* Most Carbon APIs are not thread-safe, therefore delagate some GUI visibilty update to the main thread */
-            sendEventToMainThread(GetWindowEventTarget(p_vout->p_sys->theWindow), kEventClassVLCPlugin, kEventVLCPluginHideFullscreen);
+            if( p_vout->p_sys->theWindow )
+            {
+                /* Most Carbon APIs are not thread-safe, therefore delagate some GUI visibilty
+                 * update to the main thread */
+                sendEventToMainThread(GetWindowEventTarget(p_vout->p_sys->theWindow),
+                                      kEventClassVLCPlugin, kEventVLCPluginHideFullscreen);
+            }
         }
         else
         {
+            /* Go into fullscreen */
             Rect deviceRect;
  
             GDHandle deviceHdl = GetMainDevice();
@@ -659,7 +686,7 @@ static int aglManage( vout_thread_t * p_vout )
             if( !p_vout->p_sys->theWindow )
             {
                 /* Create a window */
-                WindowAttributes    windowAttrs;
+                WindowAttributes windowAttrs;
 
                 windowAttrs = kWindowStandardDocumentAttributes
                             | kWindowStandardHandlerAttribute
@@ -708,8 +735,13 @@ static int aglManage( vout_thread_t * p_vout )
             aglSetViewport(p_vout, deviceRect, deviceRect);
             //aglSetFullScreen(p_vout->p_sys->agl_ctx, device_width, device_height, 0, 0);
 
-            /* Most Carbon APIs are not thread-safe, therefore delagate some GUI visibilty update to the main thread */
-            sendEventToMainThread(GetWindowEventTarget(p_vout->p_sys->theWindow), kEventClassVLCPlugin, kEventVLCPluginShowFullscreen);
+            if( p_vout->p_sys->theWindow )
+            {
+                /* Most Carbon APIs are not thread-safe, therefore delagate some GUI visibilty
+                 * update to the main thread */
+                sendEventToMainThread(GetWindowEventTarget(p_vout->p_sys->theWindow),
+                                      kEventClassVLCPlugin, kEventVLCPluginShowFullscreen);
+            }
         }
         aglReshape(p_vout);
         aglUnlock( p_vout );
@@ -784,19 +816,8 @@ static int aglControl( vout_thread_t *p_vout, int i_query, va_list args )
             return VLC_SUCCESS;
         }
 
-        case VOUT_REPARENT:
-        {
-            AGLDrawable drawable = (AGLDrawable)va_arg( args, int);
-            if( !p_vout->b_fullscreen && drawable != p_vout->p_sys->agl_drawable )
-            {
-                p_vout->p_sys->agl_drawable = drawable;
-                aglSetDrawable(p_vout->p_sys->agl_ctx, drawable);
-            }
-            return VLC_SUCCESS;
-        }
-
         default:
-            return vout_vaControlDefault( p_vout, i_query, args );
+            return VLC_EGENERIC;
     }
 }
 
@@ -837,6 +858,7 @@ static void aglSetViewport( vout_thread_t *p_vout, Rect viewBounds, Rect clipBou
             - clipBounds.bottom;                // from window bottom edge
     rect[2] = clipBounds.right-clipBounds.left; // width
     rect[3] = clipBounds.bottom-clipBounds.top; // height
+
     aglSetInteger(p_vout->p_sys->agl_ctx, AGL_BUFFER_RECT, rect);
     aglEnable(p_vout->p_sys->agl_ctx, AGL_BUFFER_RECT);
 
@@ -959,8 +981,7 @@ static pascal OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, Event
                         {
                             vlc_value_t val;
 
-                            val.b_bool = true;
-                            var_Set( p_vout, "mouse-clicked", val );
+                            var_SetBool( p_vout, "mouse-clicked", true );
 
                             var_Get( p_vout, "mouse-button-down", &val );
                             val.i_int &= ~1;
@@ -1083,4 +1104,4 @@ static void aglUnlock( vout_thread_t * p_vout )
     }
 }
 
-
+#endif

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * vlcplugin.cpp: a VLC plugin for Mozilla
  *****************************************************************************
- * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 239684ddfe20e5c0563b11616a96f94041f099cf $
+ * Copyright (C) 2002-2009 the VideoLAN team
+ * $Id: ed968bf41d74a4a984d57f5043aedf5ce5f0d90a $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf.fouilleul@laposte.net>
@@ -46,8 +46,10 @@ VlcPlugin::VlcPlugin( NPP instance, uint16 mode ) :
     b_autoplay(1),
     b_toolbar(0),
     psz_target(NULL),
+    playlist_index(-1),
     libvlc_instance(NULL),
-    libvlc_log(NULL),
+    libvlc_media_list(NULL),
+    libvlc_media_player(NULL),
     p_scriptClass(NULL),
     p_browser(instance),
     psz_baseURL(NULL)
@@ -71,6 +73,10 @@ VlcPlugin::VlcPlugin( NPP instance, uint16 mode ) :
 #endif
 {
     memset(&npwindow, 0, sizeof(NPWindow));
+#if XP_UNIX
+    memset(&npvideo, 0, sizeof(Window));
+    memset(&npcontrol, 0, sizeof(Window));
+#endif
 }
 
 static bool boolValue(const char *value) {
@@ -84,6 +90,10 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
     /* prepare VLC command line */
     const char *ppsz_argv[32];
     int ppsz_argc = 0;
+
+#ifndef NDEBUG
+    ppsz_argv[ppsz_argc++] = "--no-plugins-cache";
+#endif
 
     /* locate VLC module path */
 #ifdef XP_MACOSX
@@ -118,13 +128,14 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
     ppsz_argv[ppsz_argc++] = "--no-media-library";
     ppsz_argv[ppsz_argc++] = "--ignore-config";
     ppsz_argv[ppsz_argc++] = "--intf=dummy";
+    ppsz_argv[ppsz_argc++] = "--no-video-title-show";
 
     const char *progid = NULL;
 
     /* parse plugin arguments */
     for( int i = 0; i < argc ; i++ )
     {
-        fprintf(stderr, "argn=%s, argv=%s\n", argn[i], argv[i]);
+       /* fprintf(stderr, "argn=%s, argv=%s\n", argn[i], argv[i]); */
 
         if( !strcmp( argn[i], "target" )
          || !strcmp( argn[i], "mrl")
@@ -153,8 +164,7 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
         {
             if( boolValue(argv[i]) )
             {
-                ppsz_argv[ppsz_argc++] = "--volume";
-                ppsz_argv[ppsz_argc++] = "0";
+                ppsz_argv[ppsz_argc++] = "--volume=0";
             }
         }
         else if( !strcmp( argn[i], "loop")
@@ -176,7 +186,11 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
         }
         else if( !strcmp( argn[i], "toolbar" ) )
         {
+/* FIXME: Remove this when toolbar functionality has been implemented on
+ * MacOS X and Win32 for Firefox/Mozilla/Safari. */
+#ifdef XP_UNIX
             b_toolbar = boolValue(argv[i]);
+#endif
         }
     }
 
@@ -189,7 +203,13 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
         libvlc_exception_clear(&ex);
         return NPERR_GENERIC_ERROR;
     }
-    libvlc_exception_clear(&ex);
+
+    libvlc_media_list = libvlc_media_list_new(libvlc_instance,&ex);
+    if( libvlc_exception_raised(&ex) )
+    {
+        libvlc_exception_clear(&ex);
+        return NPERR_GENERIC_ERROR;
+    }
 
     /*
     ** fetch plugin base URL, which is the URL of the page containing the plugin
@@ -246,10 +266,166 @@ VlcPlugin::~VlcPlugin()
 {
     free(psz_baseURL);
     free(psz_target);
-    if( libvlc_log )
-        libvlc_log_close(libvlc_log, NULL);
+    if( libvlc_media_player )
+        libvlc_media_player_release( libvlc_media_player );
+    if( libvlc_media_list )
+        libvlc_media_list_release( libvlc_media_list );
     if( libvlc_instance )
         libvlc_release(libvlc_instance);
+}
+
+/*****************************************************************************
+ * VlcPlugin playlist replacement methods
+ *****************************************************************************/
+void VlcPlugin::set_player_window( libvlc_exception_t *ex )
+{
+#ifdef XP_UNIX
+    libvlc_media_player_set_xwindow(libvlc_media_player,
+                                    (libvlc_drawable_t)getVideoWindow(),
+                                    ex);
+#endif
+#ifdef XP_MACOSX
+    // XXX FIXME insert appropriate call here
+#endif
+#ifdef XP_WIN
+    libvlc_media_player_set_hwnd(libvlc_media_player,
+                                 getWindow().window,
+                                 ex);
+#endif
+}
+
+int VlcPlugin::playlist_add( const char *mrl, libvlc_exception_t *ex )
+{
+    int item = -1;
+    libvlc_media_t *p_m = libvlc_media_new(libvlc_instance,mrl,ex);
+    if( libvlc_exception_raised(ex) )
+        return -1;
+
+    libvlc_media_list_lock(libvlc_media_list);
+    libvlc_media_list_add_media(libvlc_media_list,p_m,ex);
+    if( !libvlc_exception_raised(ex) )
+        item = libvlc_media_list_count(libvlc_media_list,ex)-1;
+    libvlc_media_list_unlock(libvlc_media_list);
+
+    libvlc_media_release(p_m);
+
+    return item;
+}
+
+int VlcPlugin::playlist_add_extended_untrusted( const char *mrl, const char *name,
+                    int optc, const char **optv, libvlc_exception_t *ex )
+{
+    libvlc_media_t *p_m = libvlc_media_new(libvlc_instance, mrl,ex);
+    int item = -1;
+    if( libvlc_exception_raised(ex) )
+        return -1;
+
+    for( int i = 0; i < optc; ++i )
+    {
+        libvlc_media_add_option_untrusted(p_m, optv[i],ex);
+        if( libvlc_exception_raised(ex) )
+        {
+            libvlc_media_release(p_m);
+            return -1;
+        }
+    }
+
+    libvlc_media_list_lock(libvlc_media_list);
+    libvlc_media_list_add_media(libvlc_media_list,p_m,ex);
+    if( !libvlc_exception_raised(ex) )
+        item = libvlc_media_list_count(libvlc_media_list,ex)-1;
+    libvlc_media_list_unlock(libvlc_media_list);
+    libvlc_media_release(p_m);
+
+    return item;
+}
+
+bool VlcPlugin::playlist_select( int idx, libvlc_exception_t *ex )
+{
+    libvlc_media_t *p_m = NULL;
+
+    libvlc_media_list_lock(libvlc_media_list);
+
+    int count = libvlc_media_list_count(libvlc_media_list,ex);
+    if( libvlc_exception_raised(ex) )
+        goto bad_unlock;
+
+    if( idx<0||idx>=count )
+        goto bad_unlock;
+
+    playlist_index = idx;
+
+    p_m = libvlc_media_list_item_at_index(libvlc_media_list,playlist_index,ex);
+    libvlc_media_list_unlock(libvlc_media_list);
+
+    if( libvlc_exception_raised(ex) )
+        return false;
+
+    if( libvlc_media_player )
+    {
+        libvlc_media_player_release( libvlc_media_player );
+        libvlc_media_player = NULL;
+    }
+
+    libvlc_media_player = libvlc_media_player_new_from_media(p_m,ex);
+    if( libvlc_media_player )
+        set_player_window(ex);
+
+    libvlc_media_release( p_m );
+    return !libvlc_exception_raised(ex);
+
+bad_unlock:
+    libvlc_media_list_unlock(libvlc_media_list);
+    return false;
+}
+
+void VlcPlugin::playlist_delete_item( int idx, libvlc_exception_t *ex )
+{
+    libvlc_media_list_lock(libvlc_media_list);
+    libvlc_media_list_remove_index(libvlc_media_list,idx,ex);
+    libvlc_media_list_unlock(libvlc_media_list);
+}
+
+void VlcPlugin::playlist_clear( libvlc_exception_t *ex )
+{
+    if( libvlc_media_list )
+        libvlc_media_list_release(libvlc_media_list);
+    libvlc_media_list = libvlc_media_list_new(getVLC(),ex);
+}
+
+int VlcPlugin::playlist_count( libvlc_exception_t *ex )
+{
+    int items_count = 0;
+    libvlc_media_list_lock(libvlc_media_list);
+    items_count = libvlc_media_list_count(libvlc_media_list,ex);
+    libvlc_media_list_unlock(libvlc_media_list);
+    return items_count;
+}
+
+void VlcPlugin::toggle_fullscreen( libvlc_exception_t *ex )
+{
+    if( playlist_isplaying(ex) )
+        libvlc_toggle_fullscreen(libvlc_media_player,ex);
+}
+void VlcPlugin::set_fullscreen( int yes, libvlc_exception_t *ex )
+{
+    if( playlist_isplaying(ex) )
+        libvlc_set_fullscreen(libvlc_media_player,yes,ex);
+}
+int  VlcPlugin::get_fullscreen( libvlc_exception_t *ex )
+{
+    int r = 0;
+    if( playlist_isplaying(ex) )
+        r = libvlc_get_fullscreen(libvlc_media_player,ex);
+    return r;
+}
+
+int  VlcPlugin::player_has_vout( libvlc_exception_t *ex )
+{
+    int r = 0;
+    if( playlist_isplaying(ex) )
+        r = libvlc_media_player_has_vout(libvlc_media_player, ex);
+    return r;
 }
 
 /*****************************************************************************
@@ -553,10 +729,8 @@ void VlcPlugin::hideToolbar()
 
 void VlcPlugin::redrawToolbar()
 {
-    libvlc_media_player_t *p_md = NULL;
     libvlc_exception_t ex;
-    float f_position = 0.0;
-    int i_playing = 0;
+    int is_playing = 0;
     bool b_mute = false;
     unsigned int dst_x, dst_y;
     GC gc;
@@ -573,26 +747,11 @@ void VlcPlugin::redrawToolbar()
 
     getToolbarSize( &i_tb_width, &i_tb_height );
 
-    /* get media instance */
     libvlc_exception_init( &ex );
-    p_md = libvlc_playlist_get_media_player( getVLC(), &ex );
-    libvlc_exception_clear( &ex );
-
-    /* get isplaying */
-    i_playing = libvlc_playlist_isplaying( getVLC(), &ex );
-    libvlc_exception_clear( &ex );
 
     /* get mute info */
     b_mute = libvlc_audio_get_mute( getVLC(), &ex );
     libvlc_exception_clear( &ex );
-
-    /* get movie position in % */
-    if( i_playing == 1 )
-    {
-        f_position = libvlc_media_player_get_position( p_md, &ex ) * 100;
-        libvlc_exception_clear( &ex );
-    }
-    libvlc_media_player_release( p_md );
 
     gcv.foreground = BlackPixel( p_display, 0 );
     gc = XCreateGC( p_display, control, GCForeground, &gcv );
@@ -606,7 +765,7 @@ void VlcPlugin::redrawToolbar()
     dst_x = BTN_SPACE;
     dst_y = i_tb_height >> 1; /* baseline = vertical middle */
 
-    if( p_btnPause && (i_playing == 1) )
+    if( p_btnPause && (is_playing == 1) )
     {
         XPutImage( p_display, control, gc, p_btnPause, 0, 0, dst_x,
                    dst_y - (p_btnPause->height >> 1),
@@ -657,9 +816,13 @@ void VlcPlugin::redrawToolbar()
                    dst_y - (p_timeline->height >> 1),
                    (window.width-(dst_x+BTN_SPACE)), p_timeline->height );
 
-    if( f_position > 0 )
-        i_last_position = (int)( f_position *
-                        ( ((float)(window.width-(dst_x+BTN_SPACE))) / 100.0 ));
+    /* get movie position in % */
+    if( playlist_isplaying(&ex) )
+    {
+        i_last_position = (int)((window.width-(dst_x+BTN_SPACE))*
+                   libvlc_media_player_get_position(libvlc_media_player,&ex));
+    }
+    libvlc_exception_clear( &ex );
 
     if( p_btnTime )
         XPutImage( p_display, control, gc, p_btnTime,
@@ -672,15 +835,16 @@ void VlcPlugin::redrawToolbar()
 
 vlc_toolbar_clicked_t VlcPlugin::getToolbarButtonClicked( int i_xpos, int i_ypos )
 {
-    unsigned int i_dest = BTN_SPACE;//(i_tb_height >> 1);
-    int i_playing = 0;
+    unsigned int i_dest = BTN_SPACE;
+    int is_playing = 0;
     bool b_mute = false;
     libvlc_exception_t ex;
 
+#ifndef NDEBUG
     fprintf( stderr, "ToolbarButtonClicked:: "
                      "trying to match (%d,%d) (%d,%d)\n",
              i_xpos, i_ypos, i_tb_height, i_tb_width );
-
+#endif
     if( i_ypos >= i_tb_width )
         return clicked_Unknown;
 
@@ -691,7 +855,7 @@ vlc_toolbar_clicked_t VlcPlugin::getToolbarButtonClicked( int i_xpos, int i_ypos
 
     /* get isplaying */
     libvlc_exception_init( &ex );
-    i_playing = libvlc_playlist_isplaying( getVLC(), &ex );
+    is_playing = playlist_isplaying( &ex );
     libvlc_exception_clear( &ex );
 
     /* get mute info */
@@ -699,7 +863,7 @@ vlc_toolbar_clicked_t VlcPlugin::getToolbarButtonClicked( int i_xpos, int i_ypos
     libvlc_exception_clear( &ex );
 
     /* is Pause of Play button clicked */
-    if( (i_playing != 1) &&
+    if( (is_playing != 1) &&
         (i_xpos >= (BTN_SPACE>>1)) &&
         (i_xpos <= i_dest + p_btnPlay->width + (BTN_SPACE>>1)) )
         return clicked_Play;
@@ -708,7 +872,7 @@ vlc_toolbar_clicked_t VlcPlugin::getToolbarButtonClicked( int i_xpos, int i_ypos
         return clicked_Pause;
 
     /* is Stop button clicked */
-    if( i_playing != 1 )
+    if( is_playing != 1 )
         i_dest += (p_btnPlay->width + (BTN_SPACE>>1));
     else
         i_dest += (p_btnPause->width + (BTN_SPACE>>1));

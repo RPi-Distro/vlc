@@ -2,7 +2,7 @@
  * m3u.c : M3U playlist format import
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: b5369ef7126bbcb5dd6891f24bc16493efdcb8bb $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -60,8 +60,6 @@ int Import_M3U( vlc_object_t *p_this )
 
     if(! ( POKE( p_peek, "#EXTM3U", 7 ) || POKE( p_peek, "RTSPtext", 8 ) ||
            demux_IsPathExtension( p_demux, ".m3u" ) || demux_IsPathExtension( p_demux, ".vlc" ) ||
-           /* A .ram file can contain a single rtsp link */
-           demux_IsPathExtension( p_demux, ".ram" ) || demux_IsPathExtension( p_demux, ".rm" ) ||
            demux_IsForced( p_demux,  "m3u" ) || ContainsURL( p_demux ) ) )
         return VLC_EGENERIC;
 
@@ -218,14 +216,12 @@ static int Demux( demux_t *p_demux )
             if( !psz_mrl ) goto error;
 
             p_input = input_item_NewExt( p_demux, psz_mrl, psz_name,
-                                        0, NULL, i_duration );
+                                        i_options, ppsz_options, 0, i_duration );
 
             if ( psz_artist && *psz_artist )
                 input_item_SetArtist( p_input, psz_artist );
 
             input_item_AddSubItem( p_current_input, p_input );
-            for( int i = 0; i < i_options; i++ )
-                input_item_AddOpt( p_input, ppsz_options[i], 0 );
             vlc_gc_decref( p_input );
             free( psz_mrl );
         }

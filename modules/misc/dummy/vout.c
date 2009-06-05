@@ -2,7 +2,7 @@
  * vout_dummy.c: Dummy video output display method for testing purposes
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 78147b15d8e26661f50dd8c228236c1f9c3d9105 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -73,11 +73,8 @@ int OpenVideo ( vlc_object_t *p_this )
  *****************************************************************************/
 static int Control( vout_thread_t *p_vout, int i_query, va_list args )
 {
-    switch( i_query )
-    {
-       default:
-            return vout_vaControlDefault( p_vout, i_query, args );
-    }
+    (void) p_vout; (void) i_query; (void) args;
+    return VLC_EGENERIC;
 }
 
 

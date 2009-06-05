@@ -2,7 +2,7 @@
  * ustring.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 90175b6c214f4ccccac31eb7684d2deef4f1d309 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -58,9 +58,9 @@ class UString: public SkinObject
         bool operator >( const UString &rOther ) const;
         bool operator >=( const UString &rOther ) const;
         /// Assignment
-        void operator =( const UString &rOther );
+        UString& operator =( const UString &rOther );
         /// Concatenation with assignment
-        void operator +=( const UString &rOther );
+        UString& operator +=( const UString &rOther );
         /// Concatenation
         const UString operator +( const UString &rOther ) const;
         const UString operator +( const char *pString ) const;
@@ -84,9 +84,6 @@ class UString: public SkinObject
 
         /// Build a string from an integer
         static UString fromInt(intf_thread_t *pIntf, int number);
-
-        /// XXX: temporary
-        void debug() const;
 
     private:
         /// Unicode string

@@ -2,7 +2,7 @@
  * libavi.h : LibAVI library
  ******************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 08c2c6456a0919ed70262bd3183649705a10a24b $
+ * $Id$
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -295,6 +295,7 @@ void    AVI_ChunkFreeRoot( stream_t *, avi_chunk_t  *p_chk );
 #define AVITWOCC_db            VLC_TWOCC('d','b')
 #define AVITWOCC_dc            VLC_TWOCC('d','c')
 #define AVITWOCC_pc            VLC_TWOCC('p','c')
+#define AVITWOCC_AC            VLC_TWOCC('A','C')
     /* *** codex stuff ***  */
 
     /* Microsoft RLE video */

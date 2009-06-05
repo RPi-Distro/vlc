@@ -2,7 +2,7 @@
  * gvp.c: Google Video Playlist demuxer
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 089284d409f0a43769cbbf810d7d8033bfe28733 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea @t videolan d.t org>
  *
@@ -96,7 +96,9 @@ int Import_GVP( vlc_object_t *p_this )
     STANDARD_DEMUX_INIT_MSG(  "using Google Video Playlist (gvp) import" );
     p_demux->pf_control = Control;
     p_demux->pf_demux = Demux;
-    MALLOC_ERR( p_demux->p_sys, demux_sys_t );
+    p_demux->p_sys = malloc( sizeof( demux_sys_t ) );
+    if( !p_demux->p_sys )
+        return VLC_ENOMEM;
 
     return VLC_SUCCESS;
 }
@@ -178,9 +180,8 @@ static int Demux( demux_t *p_demux )
             else
             {
                 /* handle multi-line descriptions */
-                buf = malloc( strlen( psz_description )
-                            + strlen( psz_attrvalue ) + 2 );
-                sprintf( buf, "%s\n%s", psz_description, psz_attrvalue );
+                if( asprintf( &buf, "%s\n%s", psz_description, psz_attrvalue ) == -1 )
+                    buf = NULL;
                 free( psz_description );
                 psz_description = buf;
             }
@@ -201,10 +202,9 @@ static int Demux( demux_t *p_demux )
     }
     else
     {
-        p_input = input_item_NewExt( p_demux,
-                                    psz_url, psz_title, 0, NULL, -1 );
+        p_input = input_item_New( p_demux, psz_url, psz_title );
 #define SADD_INFO( type, field ) if( field ) { input_item_AddInfo( \
-                    p_input, _("Google Video"), _(type), "%s", field ) ; }
+                    p_input, _("Google Video"), type, "%s", field ) ; }
         SADD_INFO( "gvp_version", psz_version );
         SADD_INFO( "docid", psz_docid );
         SADD_INFO( "description", psz_description );

@@ -2,7 +2,7 @@
  * eyetv.c : Access module to connect to our plugin running within EyeTV
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 81d448e40923ac5a8f4e515247b7c97a7b0b0875 $
+ * $Id$
  *
  * Author: Felix Kühne <fkuehne at videolan dot org>
  *
@@ -63,21 +63,21 @@ static void Close( vlc_object_t * );
     "Caching value for EyeTV captures. This " \
     "value should be set in milliseconds." )
 
-vlc_module_begin();
-    set_shortname( "EyeTV" );
-    set_description( N_("EyeTV access module") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
+vlc_module_begin ()
+    set_shortname( "EyeTV" )
+    set_description( N_("EyeTV input") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
 
     add_integer( "eyetv-channel", 0, NULL,
-                 CHANNEL_TEXT, CHANNEL_LONGTEXT, false );
+                 CHANNEL_TEXT, CHANNEL_LONGTEXT, false )
 
-    set_capability( "access", 0 );
-    add_shortcut( "eyetv" );
-    set_callbacks( Open, Close );
+    set_capability( "access", 0 )
+    add_shortcut( "eyetv" )
+    set_callbacks( Open, Close )
     add_integer( "eyetv-caching", DEFAULT_PTS_DELAY / 1000, NULL,
                  CACHING_TEXT, CACHING_LONGTEXT, true);
-vlc_module_end();
+vlc_module_end ()
 
 /*****************************************************************************
  * Access: local prototypes
@@ -160,23 +160,20 @@ static int Open( vlc_object_t *p_this )
     struct sockaddr_un publicAddr, peerAddr;
     int publicSock;
  
-    vlc_value_t val;
-
     /* Init p_access */
-    access_InitFields( p_access ); \
-    ACCESS_SET_CALLBACKS( NULL, BlockRead, Control, NULL ); \
-    MALLOC_ERR( p_access->p_sys, access_sys_t ); \
-    p_access->info.b_prebuffered = false;
+    access_InitFields( p_access );
+    ACCESS_SET_CALLBACKS( NULL, BlockRead, Control, NULL );
+    p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ) );
+    if( !p_sys )
+        return VLC_ENOMEM;
 
-    p_sys = p_access->p_sys; memset( p_sys, 0, sizeof( access_sys_t ) );
     p_sys->i_pts_delay = var_CreateGetInteger( p_access, "eyetv-caching" );
 
-    var_Create( p_access, "eyetv-channel", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_access, "eyetv-channel", &val);
+    int val = var_CreateGetInteger( p_access, "eyetv-channel" );
 
     msg_Dbg( p_access, "coming up" );
 
-    selectChannel(p_this, val.i_int);
+    selectChannel( p_this, val );
 
     /* socket */
     memset(&publicAddr, 0, sizeof(publicAddr));
@@ -327,11 +324,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = MTU;
-            break;
-
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = (int64_t) p_sys->i_pts_delay * 1000;

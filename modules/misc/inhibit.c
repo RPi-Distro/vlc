@@ -2,7 +2,7 @@
  * inhibit.c : prevents the computer from suspending when VLC is playing
  *****************************************************************************
  * Copyright © 2007 Rafaël Carré
- * $Id: 7615108b2bf76bd41b05f8ce36e0b0631c7a90c2 $
+ * $Id$
  *
  * Author: Rafaël Carré <funman@videolanorg>
  *
@@ -38,11 +38,12 @@
 #include <vlc_plugin.h>
 #include <vlc_input.h>
 #include <vlc_interface.h>
+#include <vlc_playlist.h>
 
 #include <dbus/dbus.h>
 
 #define PM_SERVICE   "org.freedesktop.PowerManagement"
-#define PM_PATH     "/org/freedesktop/PowerManagement/Inhibit"
+#define PM_PATH      "/org/freedesktop/PowerManagement/Inhibit"
 #define PM_INTERFACE "org.freedesktop.PowerManagement.Inhibit"
 
 /*****************************************************************************
@@ -65,11 +66,11 @@ struct intf_sys_t
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Power Management Inhibitor") );
-    set_capability( "interface", 0 );
-    set_callbacks( Activate, Deactivate );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Power Management Inhibitor") )
+    set_capability( "interface", 0 )
+    set_callbacks( Activate, Deactivate )
+vlc_module_end ()
 
 /*****************************************************************************
  * Activate: initialize and create stuff
@@ -79,11 +80,8 @@ static int Activate( vlc_object_t *p_this )
     intf_thread_t *p_intf = (intf_thread_t*)p_this;
     DBusError     error;
 
-
     p_intf->pf_run = Run;
-
     p_intf->p_sys = (intf_sys_t *) calloc( 1, sizeof( intf_sys_t ) );
-
     if( !p_intf->p_sys )
         return VLC_ENOMEM;
 
@@ -128,8 +126,6 @@ static int Inhibit( intf_thread_t *p_intf )
     DBusMessage *p_msg;
     DBusMessageIter args;
     DBusMessage *p_reply;
-    DBusError error;
-    dbus_error_init( &error );
     dbus_uint32_t i_cookie;
 
     p_conn = p_intf->p_sys->p_conn;
@@ -142,7 +138,8 @@ static int Inhibit( intf_thread_t *p_intf )
     dbus_message_iter_init_append( p_msg, &args );
 
     char *psz_app = strdup( PACKAGE );
-    if( !dbus_message_iter_append_basic( &args, DBUS_TYPE_STRING, &psz_app ) )
+    if( !psz_app ||
+        !dbus_message_iter_append_basic( &args, DBUS_TYPE_STRING, &psz_app ) )
     {
         free( psz_app );
         dbus_message_unref( p_msg );
@@ -150,7 +147,7 @@ static int Inhibit( intf_thread_t *p_intf )
     }
     free( psz_app );
 
-    char *psz_inhibit_reason = strdup( "Playing some media." );
+    char *psz_inhibit_reason = strdup( _("Playing some media.") );
     if( !psz_inhibit_reason )
     {
         dbus_message_unref( p_msg );
@@ -166,8 +163,7 @@ static int Inhibit( intf_thread_t *p_intf )
     free( psz_inhibit_reason );
 
     p_reply = dbus_connection_send_with_reply_and_block( p_conn, p_msg,
-        50, &error ); /* blocks 50ms maximum */
-
+        50, NULL ); /* blocks 50ms maximum */
     dbus_message_unref( p_msg );
     if( p_reply == NULL )
     {   /* g-p-m is not active, or too slow. Better luck next time? */
@@ -175,7 +171,7 @@ static int Inhibit( intf_thread_t *p_intf )
     }
 
     /* extract the cookie from the reply */
-    if( dbus_message_get_args( p_reply, &error,
+    if( dbus_message_get_args( p_reply, NULL,
             DBUS_TYPE_UINT32, &i_cookie,
             DBUS_TYPE_INVALID ) == FALSE )
     {
@@ -197,8 +193,6 @@ static int UnInhibit( intf_thread_t *p_intf )
     DBusConnection *p_conn;
     DBusMessage *p_msg;
     DBusMessageIter args;
-    DBusError error;
-    dbus_error_init( &error );
     dbus_uint32_t i_cookie;
 
     p_conn = p_intf->p_sys->p_conn;
@@ -230,47 +224,57 @@ static int UnInhibit( intf_thread_t *p_intf )
 /*****************************************************************************
  * Run: main thread
  *****************************************************************************/
+static void vlc_cleanup_playlist( void *p_playlist )
+{
+    pl_Release( (playlist_t*)p_playlist );
+}
 static void Run( intf_thread_t *p_intf )
 {
-    vlc_object_lock( p_intf );
-    while( vlc_object_alive( p_intf ) )
+    int canc = vlc_savecancel();
+
+    playlist_t *p_playlist = pl_Hold( p_intf );
+
+    vlc_cleanup_push( vlc_cleanup_playlist, p_intf );
+
+    for( ;; )
     {
-        input_thread_t *p_input;
+        vlc_restorecancel( canc );
 
-        /* Check playing state every 30 seconds */
-        vlc_object_timedwait( p_intf, mdate() + 30000000 );
+        /* FIXME wake up on playlist event instead ?
+         * Check playing state every 30 seconds */
+        msleep( 30 * CLOCK_FREQ );
 
-        p_input = vlc_object_find( p_intf, VLC_OBJECT_INPUT, FIND_ANYWHERE );
+        canc = vlc_savecancel();
+
+        /* */
+        input_thread_t *p_input = playlist_CurrentInput( p_playlist );
         if( p_input )
         {
-            if( PLAYING_S == p_input->i_state )
+            const int i_state = var_GetInteger( p_input, "state" );
+            vlc_object_release( p_input );
+
+            if( PLAYING_S == i_state )
             {
                if( !p_intf->p_sys->i_cookie )
                {
                    if( !Inhibit( p_intf ) )
-                   {
-                       vlc_object_release( p_input );
-                       goto end;
-                   }
+                       break;
                }
             }
             else if( p_intf->p_sys->i_cookie )
             {
                 if( !UnInhibit( p_intf ) )
-                {
-                    vlc_object_release( p_input );
-                    goto end;
-                }
+                    break;
             }
-            vlc_object_release( p_input );
         }
         else if( p_intf->p_sys->i_cookie )
         {
             if( !UnInhibit( p_intf ) )
-                goto end;
+                break;
         }
     }
 
-end:
-    vlc_object_unlock( p_intf );
+    /* */
+    vlc_cleanup_run();
+    vlc_restorecancel( canc );
 }

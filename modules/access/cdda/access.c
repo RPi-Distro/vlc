@@ -2,7 +2,7 @@
  * access.c : CD digital audio input module for vlc using libcdio
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: d5e3d819befc366b35543dd8a895a8d237152e4f $
+ * $Id: 90f67358fe1a5f2d94a1930092e937d102dbdf2b $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -30,8 +30,8 @@
 #include "cdda.h"          /* private structures. Also #includes vlc things */
 #include "info.h"          /* headers for meta info retrieval */
 #include "access.h"
-#include "vlc_keys.h"
-#include <vlc_interface.h>
+#include <vlc_keys.h>
+#include <vlc_dialog.h>
 
 #include <cdio/cdio.h>
 #include <cdio/logging.h>
@@ -282,7 +282,7 @@ static block_t * CDDAReadBlocks( access_t * p_access )
     {
         msg_Err( p_access, "cannot get a new block of size: %i",
                 i_blocks * CDIO_CD_FRAMESIZE_RAW );
-        intf_UserFatal( p_access, false, _("CD reading failed"),
+        dialog_Fatal( p_access, _("CD reading failed"),
                         _("VLC could not get a new block of size: %i."),
                         i_blocks * CDIO_CD_FRAMESIZE_RAW );
         return NULL;
@@ -302,14 +302,14 @@ static block_t * CDDAReadBlocks( access_t * p_access )
                 char *psz_mes = cdio_cddap_messages( p_cdda->paranoia_cd );
 
                 if( psz_mes || psz_err )
-                    msg_Err( p_access, "%s%s\n", psz_mes ? psz_mes: "",
+                    msg_Err( p_access, "%s%s", psz_mes ? psz_mes: "",
                              psz_err ? psz_err: "" );
 
                 free( psz_err );
                 free( psz_mes );
                 if( !p_readbuf )
                 {
-                    msg_Err( p_access, "paranoia read error on frame %i\n",
+                    msg_Err( p_access, "paranoia read error on frame %i",
                     p_cdda->i_lsn+i );
                 }
                 else
@@ -644,6 +644,7 @@ int CDDAOpen( vlc_object_t *p_this )
     cddb_log_set_handler ( cddb_log_handler );
     p_cdda->cddb.disc = NULL;
     p_cdda->b_cddb_enabled =
+        var_CreateGetInteger( p_access, "album-art" ) != ALBUM_ART_WHEN_ASKED &&
         config_GetInt( p_access, MODULE_STRING "-cddb-enabled" );
 #endif
     p_cdda->b_cdtext =
@@ -928,15 +929,6 @@ static int CDDAControl( access_t *p_access, int i_query, va_list args )
                 *pb_bool = true;
                 return VLC_SUCCESS;
             }
-
-        /* */
-        case ACCESS_GET_MTU:
-        {
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = p_cdda-> i_blocks_per_read * CDIO_CD_FRAMESIZE_RAW;
-            dbg_print( INPUT_DBG_META, "Get MTU %d", *pi_int);
-            break;
-        }
 
         case ACCESS_GET_PTS_DELAY:
         {

@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 the VideoLAN team
- * $Id: ab8526f98a1113f31d5b3ac141e6727b2ca0b89f $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -35,9 +35,7 @@
 #include <vlc_sout.h>
 #include <vlc_block.h>
 
-#ifdef HAVE_TIME_H
 #include <time.h>
-#endif
 
 #include <vlc_iso_lang.h>
 #include "vlc_meta.h"
@@ -56,21 +54,21 @@ static void Close  ( vlc_object_t * );
 
 #define SOUT_CFG_PREFIX "sout-mp4-"
 
-vlc_module_begin();
-    set_description( N_("MP4/MOV muxer") );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_MUX );
-    set_shortname( "MP4" );
+vlc_module_begin ()
+    set_description( N_("MP4/MOV muxer") )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_MUX )
+    set_shortname( "MP4" )
 
     add_bool( SOUT_CFG_PREFIX "faststart", 1, NULL,
               FASTSTART_TEXT, FASTSTART_LONGTEXT,
-              true );
-    set_capability( "sout mux", 5 );
-    add_shortcut( "mp4" );
-    add_shortcut( "mov" );
-    add_shortcut( "3gp" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+              true )
+    set_capability( "sout mux", 5 )
+    add_shortcut( "mp4" )
+    add_shortcut( "mov" )
+    add_shortcut( "3gp" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Exported prototypes
@@ -2158,13 +2156,10 @@ static void box_send( sout_mux_t *p_mux,  bo_t *box )
 
 static int64_t get_timestamp(void)
 {
-    int64_t i_timestamp = 0;
+    int64_t i_timestamp = time(NULL);
 
-#ifdef HAVE_TIME_H
-    i_timestamp = time(NULL);
     i_timestamp += 2082844800; // MOV/MP4 start date is 1/1/1904
     // 208284480 is (((1970 - 1904) * 365) + 17) * 24 * 60 * 60
-#endif
 
     return i_timestamp;
 }

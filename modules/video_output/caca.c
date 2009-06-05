@@ -1,8 +1,8 @@
 /*****************************************************************************
  * caca.c: Color ASCII Art video output plugin using libcaca
  *****************************************************************************
- * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: c0287b3707f1b5117f3cb7b4adb8e156d5b95e8e $
+ * Copyright (C) 2003-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
@@ -76,14 +76,14 @@ static void Display   ( vout_thread_t *, picture_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_shortname( "Caca" );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_description( N_("Color ASCII art video output") );
-    set_capability( "video output", 12 );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "Caca" )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VOUT )
+    set_description( N_("Color ASCII art video output") )
+    set_capability( "video output", 12 )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 /*****************************************************************************
  * vout_sys_t: libcaca video output method descriptor
@@ -163,12 +163,20 @@ static int Create( vlc_object_t *p_this )
     /* Allocate structure */
     p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
+    {
+#if defined( WIN32 ) && !defined( UNDER_CE )
+        FreeConsole();
+#endif
         return VLC_ENOMEM;
+    }
 
     p_vout->p_sys->p_cv = cucul_create_canvas(0, 0);
     if( !p_vout->p_sys->p_cv )
     {
         msg_Err( p_vout, "cannot initialize libcucul" );
+#if defined( WIN32 ) && !defined( UNDER_CE )
+        FreeConsole();
+#endif
         free( p_vout->p_sys );
         return VLC_EGENERIC;
     }
@@ -178,6 +186,9 @@ static int Create( vlc_object_t *p_this )
     {
         msg_Err( p_vout, "cannot initialize libcaca" );
         cucul_free_canvas( p_vout->p_sys->p_cv );
+#if defined( WIN32 ) && !defined( UNDER_CE )
+        FreeConsole();
+#endif
         free( p_vout->p_sys );
         return VLC_EGENERIC;
     }
@@ -362,22 +373,20 @@ static int Manage( vout_thread_t *p_vout )
                 * p_vout->render.i_height
                          / cucul_get_canvas_height( p_vout->p_sys->p_cv );
             var_Set( p_vout, "mouse-y", val );
-            val.b_bool = true;
-            var_Set( p_vout, "mouse-moved", val );
+            var_SetBool( p_vout, "mouse-moved", true );
             break;
         case CACA_EVENT_MOUSE_RELEASE:
-            val.b_bool = true;
-            var_Set( p_vout, "mouse-clicked", val );
+            var_SetBool( p_vout, "mouse-clicked", true );
             break;
         case CACA_EVENT_QUIT:
         {
-            p_playlist = pl_Yield( p_vout );
+            p_playlist = pl_Hold( p_vout );
             if( p_playlist )
             {
                 playlist_Stop( p_playlist );
                 pl_Release( p_vout );
             }
-            vlc_object_kill( p_vout->p_libvlc );
+            libvlc_Quit( p_vout->p_libvlc );
             break;
         }
 #endif

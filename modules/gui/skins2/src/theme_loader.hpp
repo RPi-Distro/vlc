@@ -2,7 +2,7 @@
  * theme_loader.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 5a5beceeefc6fd5fb5b9d4b4a7ce293ef97df5f5 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -28,7 +28,7 @@
 #include "skin_common.hpp"
 #include <string>
 #if defined( HAVE_ZLIB_H )
-#   include "../unzip/unzip.h"
+#   include "unzip.h"
 #endif
 
 class ThemeLoader: public SkinObject

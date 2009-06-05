@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: d4513d192082b6b217f25deab7bd725302c22595 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -41,7 +41,7 @@
 #ifdef REALDEBUG
 #   define lprintf printf
 #else
-    static inline void lprintf( const char *dummy, ... ){}
+    static inline void lprintf( const char *dummy, ... ) { (void)dummy; }
 #endif
 
 int real_get_rdt_chunk_header(rtsp_client_t *, rmff_pheader_t *);

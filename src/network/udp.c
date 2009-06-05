@@ -4,7 +4,7 @@
  * Copyright (C) 2004-2006 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
  *
- * $Id: 8f6a18f499d88591a0e38ce8c78f815bda576f71 $
+ * $Id: f3e60981ab1f2d4e39babb83fd9e4ca1bc55d5bd $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -151,7 +151,8 @@ static int net_ListenSingle (vlc_object_t *obj, const char *host, int port,
     if (host && !*host)
         host = NULL;
 
-    msg_Dbg (obj, "net: opening %s datagram port %d", host ?: "any", port);
+    msg_Dbg (obj, "net: opening %s datagram port %d",
+             host ? host : "any", port);
 
     int val = vlc_getaddrinfo (obj, host, port, &hints, &res);
     if (val)
@@ -166,7 +167,7 @@ static int net_ListenSingle (vlc_object_t *obj, const char *host, int port,
     for (const struct addrinfo *ptr = res; ptr != NULL; ptr = ptr->ai_next)
     {
         int fd = net_Socket (obj, ptr->ai_family, ptr->ai_socktype,
-                             protocol ?: ptr->ai_protocol);
+                             protocol ? protocol : ptr->ai_protocol);
         if (fd == -1)
         {
             msg_Dbg (obj, "socket error: %m");
@@ -642,7 +643,7 @@ int __net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
     int             i_val, i_handle = -1;
     bool      b_unreach = false;
 
-    if( i_hlim < 1 )
+    if( i_hlim < 0 )
         i_hlim = var_CreateGetInteger( p_this, "ttl" );
 
     memset( &hints, 0, sizeof( hints ) );
@@ -662,7 +663,7 @@ int __net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
     {
         char *str;
         int fd = net_Socket (p_this, ptr->ai_family, ptr->ai_socktype,
-                             proto ?: ptr->ai_protocol);
+                             proto ? proto : ptr->ai_protocol);
         if (fd == -1)
             continue;
 
@@ -676,7 +677,7 @@ int __net_ConnectDgram( vlc_object_t *p_this, const char *psz_host, int i_port,
         setsockopt (fd, SOL_SOCKET, SO_BROADCAST, &(int){ 1 }, sizeof (int));
 #endif
 
-        if( i_hlim > 0 )
+        if( i_hlim >= 0 )
             net_SetMcastHopLimit( p_this, fd, ptr->ai_family, i_hlim );
 
         str = var_CreateGetNonEmptyString (p_this, "miface");
@@ -773,7 +774,7 @@ int __net_OpenDgram( vlc_object_t *obj, const char *psz_bind, int i_bind,
     for (struct addrinfo *ptr = loc; ptr != NULL; ptr = ptr->ai_next)
     {
         int fd = net_Socket (obj, ptr->ai_family, ptr->ai_socktype,
-                             protocol ?: ptr->ai_protocol);
+                             protocol ? protocol : ptr->ai_protocol);
         if (fd == -1)
             continue; // usually, address family not supported
 

@@ -2,7 +2,7 @@
  * b4s.c : B4S playlist format import
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: c463c6518173a63635c583c20197233a1d7eadd9 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -261,8 +261,7 @@ static int Demux( demux_t *p_demux )
                 if( !psz_elname ) return -1;
                 if( !strcmp( psz_elname, "entry" ) )
                 {
-                    p_input = input_item_NewExt( p_demux, psz_mrl, psz_name,
-                                                0, NULL, -1 );
+                    p_input = input_item_New( p_demux, psz_mrl, psz_name );
                     if( psz_now )
                         input_item_SetNowPlaying( p_input, psz_now );
                     if( psz_genre )

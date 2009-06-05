@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 650cd8a51ccee2458437cd2d4c05bb763c7752f5 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -36,7 +36,6 @@
 #include <vlc_codec.h>
 #include <vlc_aout.h>
 #include <vlc_input.h>
-#include <vlc_playlist.h>
 #include <vlc_sout.h>
 
 #include <ogg/ogg.h>
@@ -86,8 +85,6 @@ struct decoder_sys_t
      */
     audio_date_t end_date;
     int          i_last_block_size;
-
-    int i_input_rate;
 
     /*
     ** Channel reordering
@@ -179,43 +176,44 @@ static block_t *Encode   ( encoder_t *, aout_buffer_t * );
 #define ENC_CBR_LONGTEXT N_( \
   "Force a constant bitrate encoding (CBR)." )
 
-vlc_module_begin();
-    set_shortname( "Vorbis" );
-    set_description( N_("Vorbis audio decoder") );
+vlc_module_begin ()
+    set_shortname( "Vorbis" )
+    set_description( N_("Vorbis audio decoder") )
 #ifdef MODULE_NAME_IS_tremor
-    set_capability( "decoder", 90 );
+    set_capability( "decoder", 90 )
 #else
-    set_capability( "decoder", 100 );
+    set_capability( "decoder", 100 )
 #endif
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
-    set_callbacks( OpenDecoder, CloseDecoder );
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
+    set_callbacks( OpenDecoder, CloseDecoder )
 
-    add_submodule();
-    set_description( N_("Vorbis audio packetizer") );
-    set_capability( "packetizer", 100 );
-    set_callbacks( OpenPacketizer, CloseDecoder );
+    add_submodule ()
+    set_description( N_("Vorbis audio packetizer") )
+    set_capability( "packetizer", 100 )
+    set_callbacks( OpenPacketizer, CloseDecoder )
 
 #ifndef MODULE_NAME_IS_tremor
 #   define ENC_CFG_PREFIX "sout-vorbis-"
-    add_submodule();
-    set_description( N_("Vorbis audio encoder") );
-    set_capability( "encoder", 100 );
+    add_submodule ()
+    set_description( N_("Vorbis audio encoder") )
+    set_capability( "encoder", 100 )
 #if defined(HAVE_VORBIS_VORBISENC_H)
-    set_callbacks( OpenEncoder, CloseEncoder );
+    set_callbacks( OpenEncoder, CloseEncoder )
 #endif
 
     add_integer( ENC_CFG_PREFIX "quality", 0, NULL, ENC_QUALITY_TEXT,
-                 ENC_QUALITY_LONGTEXT, false );
+                 ENC_QUALITY_LONGTEXT, false )
+        change_integer_range( 0, 10 )
     add_integer( ENC_CFG_PREFIX "max-bitrate", 0, NULL, ENC_MAXBR_TEXT,
-                 ENC_MAXBR_LONGTEXT, false );
+                 ENC_MAXBR_LONGTEXT, false )
     add_integer( ENC_CFG_PREFIX "min-bitrate", 0, NULL, ENC_MINBR_TEXT,
-                 ENC_MINBR_LONGTEXT, false );
+                 ENC_MINBR_LONGTEXT, false )
     add_bool( ENC_CFG_PREFIX "cbr", 0, NULL, ENC_CBR_TEXT,
-                 ENC_CBR_LONGTEXT, false );
+                 ENC_CBR_LONGTEXT, false )
 #endif
 
-vlc_module_end();
+vlc_module_end ()
 
 #ifndef MODULE_NAME_IS_tremor
 static const char *const ppsz_enc_options[] = {
@@ -237,8 +235,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     }
 
     /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_dec->p_sys = p_sys =
-          (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
+    if( ( p_dec->p_sys = p_sys = malloc( sizeof(*p_sys) ) ) == NULL )
         return VLC_ENOMEM;
 
     /* Misc init */
@@ -246,7 +243,6 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->i_last_block_size = 0;
     p_sys->b_packetizer = false;
     p_sys->i_headers = 0;
-    p_sys->i_input_rate = INPUT_RATE_DEFAULT;
 
     /* Take care of vorbis init */
     vorbis_info_init( &p_sys->vi );
@@ -301,9 +297,6 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         /* Block to Ogg packet */
         oggpacket.packet = (*pp_block)->p_buffer;
         oggpacket.bytes = (*pp_block)->i_buffer;
-
-        if( (*pp_block)->i_rate > 0 )
-            p_sys->i_input_rate = (*pp_block)->i_rate;
     }
     else
     {
@@ -555,7 +548,7 @@ static aout_buffer_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
         aout_buffer_t *p_aout_buffer;
 
         p_aout_buffer =
-            p_dec->pf_aout_buffer_new( p_dec, i_samples );
+            decoder_NewAudioBuffer( p_dec, i_samples );
 
         if( p_aout_buffer == NULL ) return NULL;
 
@@ -573,8 +566,7 @@ static aout_buffer_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
 
         /* Date management */
         p_aout_buffer->start_date = aout_DateGet( &p_sys->end_date );
-        p_aout_buffer->end_date = aout_DateIncrement( &p_sys->end_date,
-                                                      i_samples * p_sys->i_input_rate / INPUT_RATE_DEFAULT );
+        p_aout_buffer->end_date = aout_DateIncrement( &p_sys->end_date, i_samples );
         return p_aout_buffer;
     }
     else
@@ -601,9 +593,7 @@ static block_t *SendPacket( decoder_t *p_dec, ogg_packet *p_oggpacket,
     p_block->i_dts = p_block->i_pts = aout_DateGet( &p_sys->end_date );
 
     if( p_sys->i_headers >= 3 )
-        p_block->i_length = aout_DateIncrement( &p_sys->end_date,
-            i_samples * p_sys->i_input_rate / INPUT_RATE_DEFAULT ) -
-                p_block->i_pts;
+        p_block->i_length = aout_DateIncrement( &p_sys->end_date, i_samples ) - p_block->i_pts;
     else
         p_block->i_length = 0;
 
@@ -615,14 +605,8 @@ static block_t *SendPacket( decoder_t *p_dec, ogg_packet *p_oggpacket,
  *****************************************************************************/
 static void ParseVorbisComments( decoder_t *p_dec )
 {
-    input_thread_t *p_input = (input_thread_t *)p_dec->p_parent;
     char *psz_name, *psz_value, *psz_comment;
-    input_item_t *p_item;
     int i = 0;
-
-    if( p_input->i_object_type != VLC_OBJECT_INPUT ) return;
-
-    p_item = input_GetItem( p_input );
 
     while( i < p_dec->p_sys->vc.comments )
     {
@@ -635,33 +619,12 @@ static void ParseVorbisComments( decoder_t *p_dec )
         {
             *psz_value = '\0';
             psz_value++;
-            input_Control( p_input, INPUT_ADD_INFO, _("Vorbis comment"),
-                           psz_name, "%s", psz_value );
-/*TODO: dot he test at the beginning and save time !! */
-#ifndef HAVE_TAGLIB
-            if( psz_value && ( *psz_value != '\0' ) )
-            {
-                if( !strcasecmp( psz_name, "artist" ) )
-                    input_item_SetArtist( p_item, psz_value );
-                else if( !strcasecmp( psz_name, "title" ) )
-                {
-                    input_item_SetTitle( p_item, psz_value );
-                    p_item->psz_name = strdup( psz_value );
-                }
-                else if( !strcasecmp( psz_name, "album" ) )
-                {
-                    input_item_SetAlbum( p_item, psz_value );
-                }
-                else if( !strcasecmp( psz_name, "musicbrainz_trackid" ) )
-                    input_item_SetTrackID( p_item, psz_value );
-#if 0 //not used
-                else if( !strcasecmp( psz_name, "musicbrainz_artistid" ) )
-                    vlc_meta_SetArtistID( p_item, psz_value );
-                else if( !strcasecmp( psz_name, "musicbrainz_albumid" ) )
-                    input_item_SetAlbumID( p_item, psz_value );
-#endif
-            }
-#endif
+
+            if( !p_dec->p_description )
+                p_dec->p_description = vlc_meta_New();
+            if( p_dec->p_description )
+                vlc_meta_AddExtra( p_dec->p_description, psz_name, psz_value );
+
             if( !strcasecmp( psz_name, "REPLAYGAIN_TRACK_GAIN" ) ||
                      !strcasecmp( psz_name, "RG_RADIO" ) )
             {
@@ -694,8 +657,6 @@ static void ParseVorbisComments( decoder_t *p_dec )
                 r->pf_peak[AUDIO_REPLAY_GAIN_ALBUM] = atof( psz_value );
             }
         }
-        var_SetInteger( pl_Yield( p_input ), "item-change", p_item->i_id );
-        pl_Release( p_input );
         free( psz_comment );
         i++;
     }

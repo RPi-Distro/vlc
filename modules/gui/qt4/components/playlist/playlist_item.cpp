@@ -2,7 +2,7 @@
  * playlist_item.cpp : Manage playlist item
  ****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: 71f3fd04bd479af39088cb4a3ad98c97058bac71 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -169,9 +169,6 @@ int PLItem::row() const
    */
 void PLItem::update( playlist_item_t *p_item, bool iscurrent )
 {
-    char psz_duration[MSTRTIME_MAX_SIZE];
-    char *psz_meta;
-
     assert( p_item->p_input->i_id == i_input_id );
 
     /* Useful for the model */

@@ -33,6 +33,7 @@
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
+#include <vlc_common.h>
 
 #if !defined (__STDC__) || !__STDC__
 /* This is a separate conditional since some stdc systems
@@ -92,7 +93,7 @@
    When compiling libc, the _ macro is predefined.  */
 #ifdef HAVE_LIBINTL_H
 #include <libintl.h>
-#define _(msgid)    gettext (msgid)
+#define _(msgid)    vlc_gettext (msgid)
 #else
 #define _(msgid)    (msgid)
 #endif

@@ -2,7 +2,7 @@
  * libcsa.c: CSA scrambler/descrambler
  *****************************************************************************
  * Copyright (C) 2004-2005 Laurent Aimar
- * $Id: 9550297473671bf4dc0a0572cf9f193e486fb302 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -66,16 +66,13 @@ static void csa_BlockCypher( uint8_t kk[57], uint8_t bd[8], uint8_t ib[8] );
  *****************************************************************************/
 csa_t *csa_New( void )
 {
-    csa_t *c = malloc( sizeof( csa_t ) );
-    memset( c, 0, sizeof( csa_t ) );
-
-    return c;
+    return calloc( 1, sizeof( csa_t ) );
 }
 
 /*****************************************************************************
  * csa_Delete:
  *****************************************************************************/
-void   csa_Delete( csa_t *c )
+void csa_Delete( csa_t *c )
 {
     free( c );
 }

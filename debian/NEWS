@@ -1,3 +1,16 @@
+vlc (1.0.0~rc1-1) experimental; urgency=low
+
+  Important changes which migh affect your command lines and scripts
+
+    + Alsa and OSS audio capture has been splited out of the v4l and v4l2
+      accesses. Use --input-slave alsa:// or oss:// if needed.
+
+    + Image video output has been rewritten into a video-filter named 'scene'.
+ 
+  For other changes, see /usr/share/vlc-nox/NEWS.gz
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 13 May 2009 14:36:54 +0200
+
 vlc (0.9.8a-2) unstable; urgency=low
 
   HTTP interface:

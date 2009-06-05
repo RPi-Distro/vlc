@@ -2,7 +2,7 @@
  * registry.cpp: Windows Registry Manipulation
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: a05f2d3eadf7258a010c3a6928254d54628c256f $
+ * $Id$
  *
  * Authors: Andre Weber <WeberAndre # gmx - de>
  *
@@ -187,7 +187,7 @@ double QVLCRegistry::ReadRegistryDouble( const char *path, const char *valueName
     return default_value;
 }
 
-int QVLCRegistry::DeleteValue( char *path, char *valueName )
+int QVLCRegistry::DeleteValue( const char *path, const char *valueName )
 {
     HKEY keyHandle;
     long result;
@@ -200,7 +200,7 @@ int QVLCRegistry::DeleteValue( char *path, char *valueName )
     return result;
 }
 
-long QVLCRegistry::DeleteKey( char *path, char *keyName )
+long QVLCRegistry::DeleteKey( const char *path, const char *keyName )
 {
     HKEY keyHandle;
     long result;

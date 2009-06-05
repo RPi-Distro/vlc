@@ -2,7 +2,7 @@
  * dvb.c : DVB channel list import (szap/tzap/czap compatible channel lists)
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 904be67cd4f431eeadf962b3ea2038a044162a13 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -106,7 +106,7 @@ static int Demux( demux_t *p_demux )
     while( (psz_line = stream_ReadLine( p_demux->s )) )
     {
         char **ppsz_options = NULL;
-        int  i, i_options = 0;
+        int  i_options = 0;
         char *psz_name = NULL;
 
         if( !ParseLine( psz_line, &psz_name, &ppsz_options, &i_options ) )
@@ -116,16 +116,16 @@ static int Demux( demux_t *p_demux )
         }
 
         EnsureUTF8( psz_name );
-
-        p_input = input_item_NewExt( p_demux, "dvb://", psz_name, 0, NULL, -1 );
-        for( i = 0; i< i_options; i++ )
-        {
+        for( int i = 0; i< i_options; i++ )
             EnsureUTF8( ppsz_options[i] );
-            input_item_AddOption( p_input, ppsz_options[i] );
-        }
+
+        p_input = input_item_NewExt( p_demux, "dvb://", psz_name,
+                                     i_options, (const char**)ppsz_options, VLC_INPUT_OPTION_TRUSTED, -1 );
         input_item_AddSubItem( p_current_input, p_input );
         vlc_gc_decref( p_input );
-        while( i_options-- ) free( ppsz_options[i_options] );
+
+        while( i_options-- )
+            free( ppsz_options[i_options] );
         free( ppsz_options );
 
         free( psz_line );
@@ -193,13 +193,13 @@ static const struct
 static int ParseLine( char *psz_line, char **ppsz_name,
                       char ***pppsz_options, int *pi_options )
 {
-    char *psz_name = 0, *psz_parse = psz_line;
-    int i_count = 0, i_program = 0, i_frequency = 0;
+    char *psz_name = NULL, *psz_parse = psz_line;
+    int i_count = 0, i_program = 0, i_frequency = 0, i_symbolrate = 0;
     bool b_valid = false;
 
-    if( pppsz_options ) *pppsz_options = 0;
+    if( pppsz_options ) *pppsz_options = NULL;
     if( pi_options ) *pi_options = 0;
-    if( ppsz_name ) *ppsz_name = 0;
+    if( ppsz_name ) *ppsz_name = NULL;
 
     /* Skip leading tabs and spaces */
     while( *psz_parse == ' ' || *psz_parse == '\t' ||
@@ -210,7 +210,7 @@ static int ParseLine( char *psz_line, char **ppsz_name,
 
     while( psz_parse )
     {
-        const char *psz_option = 0;
+        const char *psz_option = NULL;
         char *psz_end = strchr( psz_parse, ':' );
         if( psz_end ) { *psz_end = 0; psz_end++; }
 
@@ -257,6 +257,12 @@ static int ParseLine( char *psz_line, char **ppsz_name,
 
                 i_value = strtol( psz_parse, &psz_end, 10 );
                 if( psz_end != psz_parse &&
+                    i_value != LONG_MAX && i_value != LONG_MIN &&
+                    !i_symbolrate )
+                {
+                    i_symbolrate = i_value;
+                }
+                else if( psz_end != psz_parse &&
                     i_value != LONG_MAX && i_value != LONG_MIN )
                 {
                     i_program = i_value;
@@ -281,24 +287,32 @@ static int ParseLine( char *psz_line, char **ppsz_name,
         /* This isn't a valid channels file, cleanup everything */
         while( (*pi_options)-- ) free( (*pppsz_options)[*pi_options] );
         free( *pppsz_options );
-        *pppsz_options = 0; *pi_options = 0;
+        *pppsz_options = NULL; *pi_options = 0;
     }
 
     if( i_program && pppsz_options && pi_options )
     {
         char *psz_option;
 
-        asprintf( &psz_option, "program=%i", i_program );
-        INSERT_ELEM( *pppsz_options, (*pi_options), (*pi_options),
-                     psz_option );
+        if( asprintf( &psz_option, "program=%i", i_program ) != -1 )
+            INSERT_ELEM( *pppsz_options, (*pi_options), (*pi_options),
+                         psz_option );
     }
     if( i_frequency && pppsz_options && pi_options )
     {
         char *psz_option;
 
-        asprintf( &psz_option, "dvb-frequency=%i", i_frequency );
-        INSERT_ELEM( *pppsz_options, (*pi_options), (*pi_options),
-                     psz_option );
+        if( asprintf( &psz_option, "dvb-frequency=%i", i_frequency ) != -1 )
+            INSERT_ELEM( *pppsz_options, (*pi_options), (*pi_options),
+                         psz_option );
+    }
+    if( i_symbolrate && pppsz_options && pi_options )
+    {
+        char *psz_option;
+
+        if( asprintf( &psz_option, "dvb-srate=%i", i_symbolrate ) != -1 )
+            INSERT_ELEM( *pppsz_options, (*pi_options), (*pi_options),
+                         psz_option );
     }
     if( ppsz_name && psz_name ) *ppsz_name = strdup( psz_name );
 

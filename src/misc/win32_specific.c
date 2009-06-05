@@ -2,7 +2,7 @@
  * win32_specific.c: Win32 specific features
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: c43a37604a0eb8f32a8560a3e607d8fb85fb5050 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -76,7 +76,7 @@ void system_Init( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv[] )
     }
 #endif
 
-    vlc_global()->psz_vlcpath = strdup( psz_path );
+    psz_vlcpath = strdup( psz_path );
 
     /* Set the default file-translation mode */
 #if !defined( UNDER_CE )
@@ -124,6 +124,7 @@ static unsigned __stdcall IPCHelperThread( void * );
 LRESULT CALLBACK WMCOPYWNDPROC( HWND, UINT, WPARAM, LPARAM );
 static vlc_object_t *p_helper = NULL;
 static unsigned long hIPCHelper;
+static HANDLE hIPCHelperReady;
 
 typedef struct
 {
@@ -177,16 +178,14 @@ void system_Configure( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv
             p_helper =
                 vlc_custom_create( p_this, sizeof(vlc_object_t),
                                    VLC_OBJECT_GENERIC, typename );
-            vlc_object_lock( p_helper );
 
             /* Run the helper thread */
+            hIPCHelperReady = CreateEvent( NULL, FALSE, FALSE, NULL );
             hIPCHelper = _beginthreadex( NULL, 0, IPCHelperThread, p_helper,
                                          0, NULL );
             if( hIPCHelper )
-                vlc_object_wait( p_helper );
-            vlc_object_unlock( p_helper );
-
-            if( !hIPCHelper )
+                WaitForSingleObject( hIPCHelperReady, INFINITE );
+            else
             {
                 msg_Err( p_this, "one instance mode DISABLED "
                          "(IPC helper thread couldn't be created)" );
@@ -194,6 +193,7 @@ void system_Configure( libvlc_int_t *p_this, int *pi_argc, const char *ppsz_argv
                 p_helper = NULL;
             }
             vlc_object_attach (p_helper, p_this);
+            CloseHandle( hIPCHelperReady );
 
             /* Initialization done.
              * Release the mutex to unblock other instances */
@@ -292,7 +292,7 @@ static unsigned __stdcall IPCHelperThread( void *data )
     SetWindowLongPtr( ipcwindow, GWLP_USERDATA, (LONG_PTR)p_this );
 
     /* Signal the creation of the thread and events queue */
-    vlc_object_signal( p_this );
+    SetEvent( hIPCHelperReady );
 
     while( GetMessage( &message, NULL, 0, 0 ) )
     {
@@ -317,7 +317,7 @@ LRESULT CALLBACK WMCOPYWNDPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
         if( !p_this ) return 0;
 
         /* Add files to the playlist */
-        p_playlist = pl_Yield( p_this );
+        p_playlist = pl_Hold( p_this );
         if( !p_playlist ) return 0;
 
         if( pwm_data->lpData )
@@ -348,8 +348,10 @@ LRESULT CALLBACK WMCOPYWNDPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
                   NULL, PLAYLIST_APPEND |
                         ( ( i_opt || p_data->enqueue ) ? 0 : PLAYLIST_GO ),
                   PLAYLIST_END, -1,
+                  i_options,
                   (char const **)( i_options ? &ppsz_argv[i_opt+1] : NULL ),
-                  i_options, true, pl_Unlocked );
+                  VLC_INPUT_OPTION_TRUSTED,
+                  true, pl_Unlocked );
 
                 i_opt += i_options;
             }
@@ -368,16 +370,21 @@ LRESULT CALLBACK WMCOPYWNDPROC( HWND hwnd, UINT uMsg, WPARAM wParam,
  *****************************************************************************/
 void system_End( libvlc_int_t *p_this )
 {
-    if( p_this && vlc_global() )
+    HWND ipcwindow;
+    if( p_this )
     {
-        free( vlc_global()->psz_vlcpath );
-        vlc_global()->psz_vlcpath = NULL;
+        free( psz_vlcpath );
+        psz_vlcpath = NULL;
     }
+
+    if( ( ipcwindow = FindWindow( 0, L"VLC ipc "VERSION ) ) != 0 )
+    {
+        SendMessage( ipcwindow, WM_QUIT, 0, 0 );
+    }
+
     if (p_helper && p_helper->p_parent == VLC_OBJECT(p_this) )
     {
         /* FIXME: thread-safety... */
-        SendMessage( NULL, WM_QUIT, 0, 0 );
-        vlc_thread_join (p_helper);
         vlc_object_detach (p_helper);
         vlc_object_release (p_helper);
         p_helper = NULL;

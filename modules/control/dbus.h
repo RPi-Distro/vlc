@@ -2,7 +2,7 @@
  * dbus.h : D-Bus control interface
  *****************************************************************************
  * Copyright (C) 2006 Rafaël Carré
- * $Id: b1093bd5dc19ee121a8949255a820114209f093c $
+ * $Id$
  *
  * Authors:    Rafaël Carré <funman at videolanorg>
  *             Mirsal ENNAIME <mirsal dot ennaime at gmail dot com>
@@ -205,9 +205,6 @@ const char* psz_introspection_xml_data_tracklist =
 "</node>\n"
 ;
 
-#define MPRIS_DBUS_ROOT_PATH      "/"
-#define MPRIS_DBUS_PLAYER_PATH    "/Player"
-#define MPRIS_DBUS_TRACKLIST_PATH "/TrackList"
 
 /* Handle  messages reception */
 DBUS_METHOD( handle_root );

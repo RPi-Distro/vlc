@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2000-2004 the VideoLAN team
  *
- * $Id: 602c4e5a9ac49023ba927ab21bad82b810bb576d $
+ * $Id$
  *
  * Authors: Conrad Parker <Conrad.Parker@csiro.au>
  *          Andre Pang <Andre.Pang@csiro.au>
@@ -87,11 +87,11 @@ typedef struct _XTagParser
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("Simple XML Parser") );
-    set_capability( "xml", 5 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Simple XML Parser") )
+    set_capability( "xml", 5 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 struct xml_reader_sys_t
 {
@@ -122,8 +122,10 @@ static char *xtag_get_attribute( XTag *, char * );
 #endif
 static XTag *xtag_first_child( XTag *, char * );
 static XTag *xtag_next_child( XTag *, char * );
-static XTag *xtag_free( XTag * );
+static void  xtag_free( XTag * );
+#if 0
 static int xtag_snprint( char *, int, XTag * );
+#endif
 
 /*****************************************************************************
  * Module initialization
@@ -193,26 +195,32 @@ static xml_reader_t *ReaderCreate( xml_t *p_xml, stream_t *s )
         }
         p_buffer = p_new;
     }
-    p_buffer[ i_pos + i_size ] = 0; /* 0 terminated string */
-
     if( i_pos + i_size == 0 )
     {
         msg_Dbg( p_xml, "empty XML" );
         free( p_buffer );
-        return 0;
+        return NULL;
     }
+    p_buffer[ i_pos + i_size ] = '\0'; /* 0 terminated string */
 
     p_root = xtag_new_parse( p_buffer, i_buffer );
     if( !p_root )
     {
         msg_Warn( p_xml, "couldn't parse XML" );
         free( p_buffer );
-        return 0;
+        return NULL;
     }
 
     free( p_buffer );
     p_reader = malloc( sizeof(xml_reader_t) );
+    if( !p_reader )
+        return NULL;
     p_reader->p_sys = malloc( sizeof(xml_reader_sys_t) );
+    if( !p_reader->p_sys )
+    {
+        free( p_reader );
+        return NULL;
+    }
     p_reader->p_sys->p_root = p_root;
     p_reader->p_sys->p_curtag = NULL;
     p_reader->p_sys->p_curattr = NULL;
@@ -252,12 +260,12 @@ static int ReaderRead( xml_reader_t *p_reader )
         return 1;
     }
 
-    while( 1 )
+    while( true )
     {
         if( (p_child = xtag_next_child( p_reader->p_sys->p_curtag, 0 )) )
         {
             p_reader->p_sys->p_curtag = p_child;
-            p_reader->p_sys->p_curattr = 0;
+            p_reader->p_sys->p_curattr = NULL;
             p_reader->p_sys->b_endtag = false;
             return 1;
         }
@@ -279,10 +287,12 @@ static int ReaderRead( xml_reader_t *p_reader )
 
 static int ReaderNodeType( xml_reader_t *p_reader )
 {
-    if( p_reader->p_sys->p_curtag->name &&
-        p_reader->p_sys->b_endtag ) return XML_READER_ENDELEM;
-    if( p_reader->p_sys->p_curtag->name ) return XML_READER_STARTELEM;
-    if( p_reader->p_sys->p_curtag->pcdata ) return XML_READER_TEXT;
+    if( p_reader->p_sys->p_curtag->name && p_reader->p_sys->b_endtag )
+        return XML_READER_ENDELEM;
+    if( p_reader->p_sys->p_curtag->name )
+        return XML_READER_STARTELEM;
+    if( p_reader->p_sys->p_curtag->pcdata )
+        return XML_READER_TEXT;
     return XML_READER_NONE;
 }
 
@@ -300,8 +310,7 @@ static char *ReaderName( xml_reader_t *p_reader )
     else
         psz_name = ((XAttribute *)p_reader->p_sys->p_curattr->data)->name;
 
-    if( psz_name ) return strdup( psz_name );
-    else return 0;
+    return psz_name ? strdup( psz_name ) : NULL;
 }
 
 static char *ReaderValue( xml_reader_t *p_reader )
@@ -315,7 +324,7 @@ static char *ReaderValue( xml_reader_t *p_reader )
         return strdup( p_reader->p_sys->p_curtag->pcdata );
     }
 
-    if( !p_reader->p_sys->p_curattr ) return 0;
+    if( !p_reader->p_sys->p_curattr ) return NULL;
 
 #ifdef XTAG_DEBUG
     fprintf( stderr, "%s=%s\n", ((XAttribute *)p_reader->p_sys->p_curattr->data)->name,
@@ -324,8 +333,7 @@ static char *ReaderValue( xml_reader_t *p_reader )
 
     psz_name = ((XAttribute *)p_reader->p_sys->p_curattr->data)->value;
 
-    if( psz_name ) return strdup( psz_name );
-    else return 0;
+    return psz_name ? strdup( psz_name ) : NULL;
 }
 
 static int ReaderNextAttr( xml_reader_t *p_reader )
@@ -334,9 +342,8 @@ static int ReaderNextAttr( xml_reader_t *p_reader )
         p_reader->p_sys->p_curattr = p_reader->p_sys->p_curtag->attributes;
     else if( p_reader->p_sys->p_curattr )
         p_reader->p_sys->p_curattr = p_reader->p_sys->p_curattr->next;
- 
-    if( p_reader->p_sys->p_curattr ) return VLC_SUCCESS;
-    else return VLC_EGENERIC;
+
+    return p_reader->p_sys->p_curattr ? VLC_SUCCESS : VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -351,10 +358,14 @@ static XList *xlist_append( XList *list, void *data )
     l->prev = l->next = NULL;
     l->data = data;
 
-    if( list == NULL ) return l;
+    if( !list )
+        return l;
 
     for( last = list; last; last = last->next )
-        if( last->next == NULL ) break;
+    {
+        if( !last->next )
+            break;
+    }
 
     if( last ) last->next = l;
     l->prev = last;
@@ -449,7 +460,7 @@ static char *xtag_slurp_to( XTagParser *parser, int good_end, int bad_end )
 
     if( xi > 0 && xtag_cin (s[xi], good_end) )
     {
-        ret = malloc( (xi+1) * sizeof(char) );
+        ret = malloc( xi+1 );
         strncpy( ret, s, xi );
         ret[xi] = '\0';
         parser->start = &s[xi];
@@ -502,12 +513,16 @@ static char *xtag_slurp_quoted( XTagParser *parser )
         }
     }
 
-    ret = malloc( (xi+1) * sizeof(char) );
+    ret = malloc( xi+1 );
     strncpy( ret, s, xi );
     ret[xi] = '\0';
     parser->start = &s[xi];
 
-    if( !xtag_assert_and_pass( parser, quote ) ) return NULL;
+    if( !xtag_assert_and_pass( parser, quote ) )
+    {
+        free( ret );
+        return NULL;
+    }
 
     return ret;
 }
@@ -518,12 +533,14 @@ static XAttribute *xtag_parse_attribute( XTagParser *parser )
     char *name, *value;
     char *s;
 
-    if( !parser->valid ) return NULL;
+    if( !parser->valid )
+        return NULL;
 
     xtag_skip_whitespace( parser );
  
     name = xtag_slurp_to( parser, X_WHITESPACE|X_EQUAL, X_SLASH|X_CLOSETAG );
-    if( name == NULL ) return NULL;
+    if( !name )
+        return NULL;
 
     xtag_skip_whitespace( parser );
     s = parser->start;
@@ -644,7 +661,7 @@ static XTag *xtag_parse_tag( XTagParser *parser )
         while (parser->end - s > 2) {
             if (strncmp( s, "]]>", 3 ) == 0) {
                 if ( !(tag = malloc( sizeof(*tag))) ) return NULL;
-                if ( !(pcdata = malloc( sizeof(char)*(s - parser->start + 1))) )
+                if ( !(pcdata = malloc( s - parser->start + 1)) )
                 {
                     free( tag );
                     return NULL;
@@ -741,13 +758,14 @@ static XTag *xtag_parse_tag( XTagParser *parser )
     return tag;
 }
 
-static XTag *xtag_free( XTag *xtag )
+static void xtag_free( XTag *xtag )
 {
     XList *l;
     XAttribute *attr;
     XTag *child;
 
-    if( xtag == NULL ) return NULL;
+    if( !xtag )
+        return;
 
     free( xtag->name );
     free( xtag->pcdata );
@@ -771,8 +789,6 @@ static XTag *xtag_free( XTag *xtag )
     xlist_free( xtag->children );
 
     free( xtag );
-
-    return NULL;
 }
 
 static XTag *xtag_new_parse( const char *s, int n )
@@ -951,6 +967,7 @@ static XTag *xtag_next_child( XTag *xtag, char *name )
     return NULL;
 }
 
+#if 0
 /*
  * This snprints function takes a variable list of char *, the last of
  * which must be NULL, and prints each in turn to buf.
@@ -1052,3 +1069,5 @@ static int xtag_snprint( char *buf, int n, XTag *xtag )
 
     return written;
 }
+#endif
+

@@ -2,7 +2,7 @@
  * cmd_input.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0aafe14db548a8a2636628c611f482b128afd110 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -36,8 +36,14 @@ void CmdPlay::execute()
         return;
     }
 
-    if( !playlist_IsEmpty( pPlaylist ) )
+    playlist_Lock( pPlaylist );
+    const bool b_empty = playlist_IsEmpty( pPlaylist );
+    playlist_Unlock( pPlaylist );
+
+    if( !b_empty )
+    {
         playlist_Play( pPlaylist );
+    }
     else
     {
         // If the playlist is empty, open a file requester instead

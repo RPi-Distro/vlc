@@ -2,7 +2,7 @@
  * vcd.c : VCD input module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: e4d525f8bd31dd68b5d8bada2dd933b60f68af14 $
+ * $Id$
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -97,57 +97,57 @@ int  BlocksPerReadCallback ( vlc_object_t *p_this, const char *psz_name,
  * Module descriptor
  *****************************************************************************/
 
-vlc_module_begin();
-    set_shortname( N_("(Super) Video CD"));
-    set_description( N_("Video CD (VCD 1.0, 1.1, 2.0, SVCD, HQVCD) input") );
-    add_usage_hint( N_("vcdx://[device-or-file][@{P,S,T}num]") );
-    add_shortcut( "vcdx" );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
-    set_capability( "access", 55 /* slightly lower than vcd */ );
-    set_callbacks( VCDOpen, VCDClose );
+vlc_module_begin ()
+    set_shortname( N_("(Super) Video CD"))
+    set_description( N_("Video CD (VCD 1.0, 1.1, 2.0, SVCD, HQVCD) input") )
+    add_usage_hint( N_("vcdx://[device-or-file][@{P,S,T}num]") )
+    add_shortcut( "vcdx" )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
+    set_capability( "access", 55 /* slightly lower than vcd */ )
+    set_callbacks( VCDOpen, VCDClose )
 
     /* Configuration options */
     add_integer ( MODULE_STRING "-debug", 0, NULL,
                   N_("If nonzero, this gives additional debug information."),
-                  DEBUG_LONGTEXT, true );
+                  DEBUG_LONGTEXT, true )
 
     add_integer ( MODULE_STRING "-blocks-per-read", 20,
           NULL,
                   N_("Number of CD blocks to get in a single read."),
                   N_("Number of CD blocks to get in a single read."),
-          true );
+          true )
 
     add_bool( MODULE_STRING "-PBC", 0, NULL,
               N_("Use playback control?"),
               N_("If VCD is authored with playback control, use it. "
                  "Otherwise we play by tracks."),
-              false );
+              false )
 
     add_bool( MODULE_STRING "-track-length", true,
           NULL,
               N_("Use track length as maximum unit in seek?"),
               N_("If set, the length of the seek bar is the track rather than "
          "the length of an entry."),
-              false );
+              false )
 
     add_bool( MODULE_STRING "-extended-info", 0, NULL,
               N_("Show extended VCD info?"),
               N_("Show the maximum amount of information under Stream and "
                  "Media Info. Shows for example playback control navigation."),
-              false );
+              false )
 
     add_string( MODULE_STRING "-author-format",
                 "%v - %F disc %c of %C",
                 NULL,
                 N_("Format to use in the playlist's \"author\" field."),
-                VCD_TITLE_FMT_LONGTEXT, true );
+                VCD_TITLE_FMT_LONGTEXT, true )
 
     add_string( MODULE_STRING "-title-format",
                 "%I %N %L%S - %M %A %v - disc %c of %C %F",
                 NULL,
                 N_("Format to use in the playlist's \"title\" field."),
-                VCD_TITLE_FMT_LONGTEXT, false );
+                VCD_TITLE_FMT_LONGTEXT, false )
 
-vlc_module_end();
+vlc_module_end ()
 

@@ -51,17 +51,17 @@ static void Close( vlc_object_t * );
 
 #define SOUT_CFG_PREFIX "sout-rtmp-"
 
-vlc_module_begin();
-    set_description( N_("RTMP stream output") );
-    set_shortname( N_("RTMP" ) );
-    set_capability( "sout access", 50 );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_STREAM );
-    add_shortcut( "rtmp" );
-    set_callbacks( Open, Close );
+vlc_module_begin ()
+    set_description( N_("RTMP stream output") )
+    set_shortname( N_("RTMP" ) )
+    set_capability( "sout access", 0 )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_STREAM )
+    add_shortcut( "rtmp" )
+    set_callbacks( Open, Close )
     add_bool( "rtmp-connect", false, NULL, RTMP_CONNECT_TEXT,
-              RTMP_CONNECT_LONGTEXT, false );
-vlc_module_end();
+              RTMP_CONNECT_LONGTEXT, false )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -90,19 +90,13 @@ static int Open( vlc_object_t *p_this )
     int i;
 
     if( !( p_sys = calloc ( 1, sizeof( sout_access_out_sys_t ) ) ) )
-    {
-        msg_Err( p_access, "not enough memory" );
         return VLC_ENOMEM;
-    }
     p_access->p_sys = p_sys;
 
     p_sys->p_thread =
         vlc_object_create( p_access, sizeof( rtmp_control_thread_t ) );
     if( !p_sys->p_thread )
-    {
-        msg_Err( p_access, "out of memory" );
         return VLC_ENOMEM;
-    }
     vlc_object_attach( p_sys->p_thread, p_access );
 
     /* Parse URI - remove spaces */
@@ -176,7 +170,7 @@ static int Open( vlc_object_t *p_this )
         p_sys->p_thread->rtmp_headers_send[i].body = NULL;
     }
 
-    vlc_cond_init( p_sys->p_thread, &p_sys->p_thread->wait );
+    vlc_cond_init( &p_sys->p_thread->wait );
     vlc_mutex_init( &p_sys->p_thread->lock );
 
     p_sys->p_thread->result_connect = 1;
@@ -224,7 +218,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     if( vlc_thread_create( p_sys->p_thread, "rtmp control thread", ThreadControl,
-                           VLC_THREAD_PRIORITY_INPUT, false ) )
+                           VLC_THREAD_PRIORITY_INPUT ) )
     {
         msg_Err( p_access, "cannot spawn rtmp control thread" );
         goto error2;
@@ -275,7 +269,6 @@ static void Close( vlc_object_t * p_this )
 //    p_sys->p_thread->b_die = true;
     vlc_object_kill( p_sys->p_thread );
     block_FifoWake( p_sys->p_thread->p_fifo_input );
-    block_FifoWake( p_sys->p_thread->p_empty_blocks );
 
     vlc_thread_join( p_sys->p_thread );
 
@@ -386,6 +379,7 @@ static void* ThreadControl( vlc_object_t *p_this )
 {
     rtmp_control_thread_t *p_thread = (rtmp_control_thread_t *) p_this;
     rtmp_packet_t *rtmp_packet;
+    int canc = vlc_savecancel ();
 
     rtmp_init_handler( p_thread->rtmp_handler );
 
@@ -419,5 +413,6 @@ static void* ThreadControl( vlc_object_t *p_this )
             p_thread->b_die = 1;
         }
     }
+    vlc_restorecancel (canc);
     return NULL;
 }

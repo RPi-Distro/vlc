@@ -4,7 +4,7 @@
  *   (http://liba52.sf.net/).
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 699ca3f30bcbf60462a13c5e172ed7cd866e2491 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -34,11 +34,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 
-#ifdef HAVE_STDINT_H
-#   include <stdint.h>                                         /* int16_t .. */
-#elif HAVE_INTTYPES_H
-#   include <inttypes.h>                                       /* int16_t .. */
-#endif
+#include <stdint.h>                                         /* int16_t .. */
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
@@ -101,21 +97,21 @@ struct filter_sys_t
 #define UPMIX_LONGTEXT N_( \
     "Enable the internal upmixing algorithm (not recommended).")
 
-vlc_module_begin();
-    set_shortname( "A/52" );
-    set_description( N_("ATSC A/52 (AC-3) audio decoder") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
-    add_bool( "a52-dynrng", 1, NULL, DYNRNG_TEXT, DYNRNG_LONGTEXT, false );
-    add_bool( "a52-upmix", 0, NULL, UPMIX_TEXT, UPMIX_LONGTEXT, true );
-    set_capability( "audio filter", 100 );
-    set_callbacks( Create, Destroy );
+vlc_module_begin ()
+    set_shortname( "A/52" )
+    set_description( N_("ATSC A/52 (AC-3) audio decoder") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
+    add_bool( "a52-dynrng", 1, NULL, DYNRNG_TEXT, DYNRNG_LONGTEXT, false )
+    add_bool( "a52-upmix", 0, NULL, UPMIX_TEXT, UPMIX_LONGTEXT, true )
+    set_capability( "audio filter", 100 )
+    set_callbacks( Create, Destroy )
 
-    add_submodule();
-    set_description( N_("ATSC A/52 (AC-3) audio decoder") );
-    set_capability( "audio filter2", 100 );
-    set_callbacks( OpenFilter, CloseFilter );
-vlc_module_end();
+    add_submodule ()
+    set_description( N_("ATSC A/52 (AC-3) audio decoder") )
+    set_capability( "audio filter2", 100 )
+    set_callbacks( OpenFilter, CloseFilter )
+vlc_module_end ()
 
 /*****************************************************************************
  * Create:

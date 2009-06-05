@@ -2,7 +2,7 @@
  * ctrl_generic.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7d4796f8b6f0c2682aa21e758e9fbc26458789c5 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -45,10 +45,7 @@ CtrlGeneric::CtrlGeneric( intf_thread_t *pIntf, const UString &rHelp,
 
 CtrlGeneric::~CtrlGeneric()
 {
-    if( m_pPosition )
-    {
-        delete m_pPosition;
-    }
+    delete m_pPosition;
     if( m_pVisible )
     {
         m_pVisible->delObserver( this );
@@ -60,10 +57,7 @@ void CtrlGeneric::setLayout( GenericLayout *pLayout,
                              const Position &rPosition )
 {
     m_pLayout = pLayout;
-    if( m_pPosition )
-    {
-        delete m_pPosition;
-    }
+    delete m_pPosition;
     m_pPosition = new Position( rPosition );
     onPositionChange();
 }

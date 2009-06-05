@@ -2,7 +2,7 @@
  * demux.c :  Lua playlist demux module
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: b106cf5c2452bf4a1ec87e773454d149b8a1fa6d $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -41,6 +41,7 @@
 
 #include "vlc.h"
 #include "libs.h"
+#include "libs/playlist.h"
 
 
 /*****************************************************************************
@@ -246,7 +247,7 @@ static int Demux( demux_t *p_demux )
     input_thread_t *p_input_thread = (input_thread_t *)
         vlc_object_find( p_demux, VLC_OBJECT_INPUT, FIND_PARENT );
     input_item_t *p_current_input = input_GetItem( p_input_thread );
-    playlist_t *p_playlist = pl_Yield( p_demux );
+    playlist_t *p_playlist = pl_Hold( p_demux );
 
     luaL_register( L, "vlc", p_reg_parse );
 
@@ -256,6 +257,7 @@ static int Demux( demux_t *p_demux )
     {
         msg_Warn( p_demux, "Error while runing script %s, "
                   "function parse() not found", psz_filename );
+        pl_Release( p_demux );
         return VLC_EGENERIC;
     }
 
@@ -264,6 +266,7 @@ static int Demux( demux_t *p_demux )
         msg_Warn( p_demux, "Error while runing script %s, "
                   "function parse(): %s", psz_filename,
                   lua_tostring( L, lua_gettop( L ) ) );
+        pl_Release( p_demux );
         return VLC_EGENERIC;
     }
 

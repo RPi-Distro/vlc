@@ -2,7 +2,7 @@
  * pes.h
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 5b7aab45c38d5a992d6f32d69a37e23d0db70edb $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -31,6 +31,7 @@
 #define PES_PROGRAM_STREAM_DIRECTORY    0xff
 #define PES_DSMCC_STREAM                0xf2
 #define PES_ITU_T_H222_1_TYPE_E_STREAM  0xf8
+#define PES_EXTENDED_STREAM_ID          0xfd
 
 #define PES_PAYLOAD_SIZE_MAX 65500
 

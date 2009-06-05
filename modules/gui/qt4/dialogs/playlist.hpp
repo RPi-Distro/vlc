@@ -2,7 +2,7 @@
  * playlist.hpp: Playlist dialog
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 3516c051f25e1ed977e15ea61c20d4fa8ecfa092 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _PLAYLIST_DIALOG_H_
-#define _PLAYLIST_DIALOG_H_
+#ifndef QVLC_PLAYLIST_DIALOG_H_
+#define QVLC_PLAYLIST_DIALOG_H_ 1
 
 #include "util/qvlcframe.hpp"
 #include "../components/playlist/playlist.hpp"
@@ -48,12 +48,12 @@ public:
     }
     static void killInstance()
     {
-        if( instance ) delete instance;
+        delete instance;
         instance = NULL;
     }
-    virtual ~PlaylistDialog();
 private:
     PlaylistDialog( intf_thread_t * );
+    virtual ~PlaylistDialog();
 
     void dropEvent( QDropEvent *);
     void dragEnterEvent( QDragEnterEvent * );

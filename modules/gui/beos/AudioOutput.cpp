@@ -2,7 +2,7 @@
  * AudioOutput.cpp: BeOS audio output
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: a65c5cc00e392b9cd780ecebe89879e525b348cf $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -69,10 +69,7 @@ int OpenAudio ( vlc_object_t * p_this )
     aout_instance_t * p_aout = (aout_instance_t*) p_this;
     p_aout->output.p_sys = (aout_sys_t*) malloc( sizeof( aout_sys_t ) );
     if( p_aout->output.p_sys == NULL )
-    {
-        msg_Err( p_aout, "out of memory" );
         return -1;
-    }
     aout_sys_t * p_sys = p_aout->output.p_sys;
 
     aout_VolumeSoftInit( p_aout );

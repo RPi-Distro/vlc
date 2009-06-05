@@ -2,7 +2,7 @@
  * Messages.hpp : Information about a stream
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 4ca1b1744cef4b51a003fe9c4e546c38fb22df8b $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _MESSAGES_DIALOG_H_
-#define _MESSAGES_DIALOG_H_
+#ifndef QVLC_MESSAGES_DIALOG_H_
+#define QVLC_MESSAGES_DIALOG_H_ 1
 
 #include "util/qvlcframe.hpp"
 
@@ -47,14 +47,15 @@ public:
     }
     static void killInstance()
     {
-        if( instance ) delete instance;
+        delete instance;
         instance = NULL;
     }
 
-    virtual ~MessagesDialog(){ writeSettings( "messages" ); };
 
 private:
     MessagesDialog( intf_thread_t * );
+    virtual ~MessagesDialog();
+
     static MessagesDialog *instance;
     QTabWidget *mainTab;
     QSpinBox *verbosityBox;
@@ -63,10 +64,14 @@ private:
     QTreeWidget *modulesTree;
     QPushButton *clearUpdateButton;
     QPushButton *saveLogButton;
+    msg_subscription_t *sub;
+    msg_cb_data_t *cbData;
+    static void sinkMessage( msg_cb_data_t *, msg_item_t *, unsigned );
+    void customEvent( QEvent * );
+    void sinkMessage( msg_item_t *item );
 
 private slots:
     void updateTab( int );
-    void updateLog();
     void clearOrUpdate();
     bool save();
 private:

@@ -1,5 +1,5 @@
 /*
- * $Id: 24c871511a24f7dc2b32dafe068b869a10dc57de $
+ * $Id$
  *
  * Copyright 1993, 1994 Martin Ayotte
  * Copyright 1998 Marcus Meissner
@@ -95,7 +95,7 @@ static int needs_free=0;
 void SetCodecPath(const char* path)
 {
     if(needs_free)free(def_path);
-    if(path==0)
+    if(path==NULL)
     {
 	def_path=WIN32_PATH;
 	needs_free=0;

@@ -2,7 +2,7 @@
  * dvdread.c : DvdRead input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: 3e51aadc00c43bf6fa9aa761dcba7b2b30e1a0cc $
+ * $Id$
  *
  * Authors: Stéphane Borel <stef@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -35,8 +35,8 @@
 #include <vlc_input.h>
 #include <vlc_access.h>
 #include <vlc_charset.h>
-
 #include <vlc_interface.h>
+#include <vlc_dialog.h>
 
 #include <vlc_iso_lang.h>
 
@@ -101,24 +101,24 @@ static const char *const psz_css_list_text[] = { N_("title"), N_("Disc"), N_("Ke
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_shortname( N_("DVD without menus") );
-    set_description( N_("DVDRead Input (DVD without menu support)") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
+vlc_module_begin ()
+    set_shortname( N_("DVD without menus") )
+    set_description( N_("DVDRead Input (no menu support)") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
     add_integer( "dvdread-angle", 1, NULL, ANGLE_TEXT,
-        ANGLE_LONGTEXT, false );
+        ANGLE_LONGTEXT, false )
     add_integer( "dvdread-caching", DEFAULT_PTS_DELAY / 1000, NULL,
-        CACHING_TEXT, CACHING_LONGTEXT, true );
+        CACHING_TEXT, CACHING_LONGTEXT, true )
     add_string( "dvdread-css-method", NULL, NULL, CSSMETHOD_TEXT,
-                CSSMETHOD_LONGTEXT, true );
-        change_string_list( psz_css_list, psz_css_list_text, 0 );
-    set_capability( "access_demux", 0 );
-    add_shortcut( "dvd" );
-    add_shortcut( "dvdread" );
-    add_shortcut( "dvdsimple" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+                CSSMETHOD_LONGTEXT, true )
+        change_string_list( psz_css_list, psz_css_list_text, 0 )
+    set_capability( "access_demux", 0 )
+    add_shortcut( "dvd" )
+    add_shortcut( "dvdread" )
+    add_shortcut( "dvdsimple" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /* how many blocks DVDRead will read in each loop */
 #define DVD_BLOCK_READ_ONCE 4
@@ -248,8 +248,8 @@ static int Open( vlc_object_t *p_this )
     if( !(p_dvdread = DVDOpen( psz_name )) )
     {
         msg_Err( p_demux, "DVDRead cannot open source: %s", psz_name );
-        intf_UserFatal( p_demux, false, _("Playback failure"),
-                        _("DVDRead could not open the disk \"%s\"."), psz_name );
+        dialog_Fatal( p_demux, _("Playback failure"),
+                        _("DVDRead could not open the disc \"%s\"."), psz_name );
         free( psz_name );
         return VLC_EGENERIC;
     }
@@ -508,9 +508,9 @@ static int Demux( demux_t *p_demux )
                            1, p_buffer ) != 1 )
         {
             msg_Err( p_demux, "read failed for block %d", p_sys->i_next_vobu );
-            intf_UserWarn( p_demux, _("Playback failure"),
-                            _("DVDRead could not read block %d."),
-                           p_sys->i_next_vobu );
+            dialog_Fatal( p_demux, _("Playback failure"),
+                          _("DVDRead could not read block %d."),
+                          p_sys->i_next_vobu );
             return -1;
         }
 
@@ -570,7 +570,7 @@ static int Demux( demux_t *p_demux )
     {
         msg_Err( p_demux, "read failed for %d/%d blocks at 0x%02x",
                  i_read, i_blocks_once, p_sys->i_cur_block );
-        intf_UserFatal( p_demux, false, _("Playback failure"),
+        dialog_Fatal( p_demux, _("Playback failure"),
                         _("DVDRead could not read %d/%d blocks at 0x%02x."),
                         i_read, i_blocks_once, p_sys->i_cur_block );
         return -1;
@@ -805,9 +805,6 @@ static int DvdReadSetArea( demux_t *p_demux, int i_title, int i_chapter,
 
         /* Title position inside the selected vts */
         p_sys->i_ttn = p_vmg->tt_srpt->title[i_title].vts_ttn;
-
-        if( p_sys->i_ttn < 1 )
-            return VLC_EGENERIC; /* Couldn't set title */
 
         /* Find title start/end */
         pgc_id = p_vts->vts_ptt_srpt->title[p_sys->i_ttn - 1].ptt[0].pgcn;

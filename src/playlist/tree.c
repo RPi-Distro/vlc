@@ -2,7 +2,7 @@
  * tree.c : Playlist tree walking functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: bdc3fb8408b180dc4f477d295077a50b3dfac618 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -67,7 +67,7 @@ playlist_item_t * playlist_NodeCreate( playlist_t *p_playlist,
 
     if( !p_input )
         p_new_input = input_item_NewWithType( VLC_OBJECT(p_playlist), NULL,
-                                        psz_name, 0, NULL, -1, ITEM_TYPE_NODE );
+                                        psz_name, 0, NULL, 0, -1, ITEM_TYPE_NODE );
     p_item = playlist_ItemNewFromInput( p_playlist,
                                         p_input ? p_input : p_new_input );
     if( p_new_input )
@@ -164,7 +164,7 @@ int playlist_NodeDelete( playlist_t *p_playlist, playlist_item_t *p_root,
     else
     {
         int i;
-        var_SetInteger( p_playlist, "item-deleted", p_root->i_id );
+        var_SetInteger( p_playlist, "playlist-item-deleted", p_root->i_id );
         ARRAY_BSEARCH( p_playlist->all_items, ->i_id, int,
                        p_root->i_id, i );
         if( i != -1 )
@@ -239,35 +239,6 @@ int playlist_NodeRemoveItem( playlist_t *p_playlist,
    return VLC_SUCCESS;
 }
 
-
-/**
- * Count the children of a node
- *
- * \param p_playlist the playlist
- * \param p_node the node
- * \return the number of children
- */
-int playlist_NodeChildrenCount( playlist_t *p_playlist, playlist_item_t*p_node)
-{
-    PL_ASSERT_LOCKED;
-    int i;
-    int i_nb = 0;
-
-    if( p_node->i_children == -1 )
-        return 0;
-
-    i_nb = p_node->i_children;
-    for( i=0 ; i< p_node->i_children;i++ )
-    {
-        if( p_node->pp_children[i]->i_children == -1 )
-            break;
-        else
-            i_nb += playlist_NodeChildrenCount( p_playlist,
-                                                p_node->pp_children[i] );
-    }
-    return i_nb;
-}
-
 /**
  * Search a child of a node by its name
  *
@@ -336,7 +307,7 @@ playlist_item_t * playlist_GetPreferredNode( playlist_t *p_playlist,
     int i;
     if( p_node->p_parent == p_playlist->p_root_category )
     {
-        if( p_playlist->b_tree || p_node->p_input->b_prefers_tree )
+        if( pl_priv(p_playlist)->b_tree || p_node->p_input->b_prefers_tree )
             return p_node;
         for( i = 0 ; i< p_playlist->p_root_onelevel->i_children; i++ )
         {
@@ -347,7 +318,7 @@ playlist_item_t * playlist_GetPreferredNode( playlist_t *p_playlist,
     }
     else if( p_node->p_parent == p_playlist->p_root_onelevel )
     {
-        if( !p_playlist->b_tree || !p_node->p_input->b_prefers_tree )
+        if( !pl_priv(p_playlist)->b_tree || !p_node->p_input->b_prefers_tree )
             return p_node;
         for( i = 0 ; i< p_playlist->p_root_category->i_children; i++ )
         {

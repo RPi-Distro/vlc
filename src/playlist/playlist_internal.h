@@ -1,8 +1,8 @@
 /*****************************************************************************
- * playlist_internal.h : Functions for use by the playlist
+ * playlist_internal.h : Playlist internals
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 6ea98a2743174f452e442667e5ba501856caf9bc $
+ * Copyright (C) 1999-2008 the VideoLAN team
+ * $Id: cae5b040959b483053dd7d63128fa612209370ac $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -34,58 +34,94 @@
  * @{
  */
 
-#include "input/input_internal.h"
+#include "input/input_interface.h"
 #include <assert.h>
 
-struct playlist_preparse_t
-{
-    VLC_COMMON_MEMBERS
-    vlc_mutex_t     lock;
-    int             i_waiting;
-    input_item_t  **pp_waiting;
-};
+#include "art.h"
+#include "fetcher.h"
+#include "preparser.h"
 
-struct playlist_fetcher_t
-{
-    VLC_COMMON_MEMBERS
-    vlc_mutex_t     lock;
-    int             i_art_policy;
-    int             i_waiting;
-    input_item_t    **pp_waiting;
+typedef struct playlist_services_discovery_support_t {
+    /* the playlist items for category and onelevel */
+    playlist_item_t      *p_cat;
+    playlist_item_t      *p_one;
+    services_discovery_t *p_sd; /**< Loaded service discovery modules */
+    char                 *psz_name;
+} vlc_sd_internal_t;
 
-    DECL_ARRAY(playlist_album_t) albums;
-};
+
+typedef struct playlist_private_t
+{
+    playlist_t           public_data;
+    playlist_preparser_t *p_preparser;  /**< Preparser data */
+    playlist_fetcher_t   *p_fetcher;    /**< Meta and art fetcher data */
+
+    playlist_item_array_t items_to_delete; /**< Array of items and nodes to
+            delete... At the very end. This sucks. */
+
+    vlc_sd_internal_t   **pp_sds;
+    int                   i_sds;   /**< Number of service discovery modules */
+    input_thread_t *      p_input;  /**< the input thread associated
+                                     * with the current item */
+    input_resource_t *   p_input_resource; /**< input resources */
+    struct {
+        /* Current status. These fields are readonly, only the playlist
+         * main loop can touch it*/
+        playlist_status_t   i_status;  /**< Current status of playlist */
+        playlist_item_t *   p_item; /**< Currently playing/active item */
+        playlist_item_t *   p_node; /**< Current node to play from */
+    } status;
+
+    struct {
+        /* Request. Use this to give orders to the playlist main loop  */
+        playlist_status_t   i_status; /**< requested playlist status */
+        playlist_item_t *   p_node;   /**< requested node to play from */
+        playlist_item_t *   p_item;   /**< requested item to play in the node */
+
+        int                 i_skip;   /**< Number of items to skip */
+
+        bool          b_request;/**< Set to true by the requester
+                                           The playlist sets it back to false
+                                           when processing the request */
+        vlc_mutex_t         lock;     /**< Lock to protect request */
+    } request;
+
+    vlc_thread_t thread; /**< engine thread */
+    vlc_mutex_t lock; /**< dah big playlist global lock */
+    vlc_cond_t signal; /**< wakes up the playlist engine thread */
+
+    int      i_last_playlist_id; /**< Last id to an item */
+    bool     b_reset_currently_playing; /** Reset current item array */
+
+    bool     b_tree; /**< Display as a tree */
+    bool     b_doing_ml; /**< Doing media library stuff  get quicker */
+    bool     b_auto_preparse;
+    mtime_t  last_rebuild_date;
+
+} playlist_private_t;
+
+#define pl_priv( pl ) ((playlist_private_t *)(pl))
 
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
 
-/* Global thread */
-#define playlist_ThreadCreate(a) __playlist_ThreadCreate(VLC_OBJECT(a))
-void        __playlist_ThreadCreate   ( vlc_object_t * );
+/* Creation/Deletion */
+playlist_t *playlist_Create( vlc_object_t * );
 
+/* */
+void playlist_Activate( playlist_t * );
+void playlist_Deactivate( playlist_t * );
+
+/* */
 playlist_item_t *playlist_ItemNewFromInput( playlist_t *p_playlist,
                                               input_item_t *p_input );
 
-/* Creation/Deletion */
-playlist_t *playlist_Create   ( vlc_object_t * );
-
 /* Engine */
-void playlist_MainLoop( playlist_t * );
-void playlist_LastLoop( playlist_t * );
-void playlist_PreparseLoop( playlist_preparse_t * );
-void playlist_FetcherLoop( playlist_fetcher_t * );
-
-void ResetCurrentlyPlaying( playlist_t *, bool, playlist_item_t * );
-
 playlist_item_t * get_current_status_item( playlist_t * p_playlist);
 playlist_item_t * get_current_status_node( playlist_t * p_playlist );
 void set_current_status_item( playlist_t *, playlist_item_t * );
 void set_current_status_node( playlist_t *, playlist_item_t * );
-
-/* Control */
-playlist_item_t * playlist_NextItem  ( playlist_t * );
-int playlist_PlayItem  ( playlist_t *, playlist_item_t * );
 
 /* Load/Save */
 int playlist_MLLoad( playlist_t *p_playlist );
@@ -110,9 +146,10 @@ int playlist_DeleteFromInputInParent( playlist_t *, int, playlist_item_t *, bool
 int playlist_DeleteFromItemId( playlist_t*, int );
 int playlist_ItemRelease( playlist_item_t * );
 
-void playlist_release_current_input( playlist_t * p_playlist );
-void playlist_set_current_input(
-    playlist_t * p_playlist, input_thread_t * p_input );
+
+void playlist_NodesPairCreate( playlist_t *, const char *, playlist_item_t **, playlist_item_t **, bool );
+int playlist_NodeEmpty( playlist_t *, playlist_item_t *, bool );
+
 
 /**
  * @}
@@ -134,8 +171,6 @@ void playlist_set_current_input(
 #endif
 
 #define PLI_NAME( p ) p && p->p_input ? p->p_input->psz_name : "null"
-
-#define PL_ASSERT_LOCKED vlc_assert_locked( &(vlc_internals(p_playlist)->lock) )
 
 #define PL_LOCK_IF( cond ) pl_lock_if( p_playlist, cond )
 static inline void pl_lock_if( playlist_t * p_playlist, bool cond )

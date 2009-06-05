@@ -2,7 +2,7 @@
  * playlist_model.hpp : Model for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: a097fa63ccde04b3970be195344bce27c994e0c1 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -28,12 +28,12 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
+#include "qt4.hpp"
+
 #include <vlc_input.h>
 #include <vlc_playlist.h>
-#include "playlist_item.hpp"
 
-#include "qt4.hpp"
+#include "playlist_item.hpp"
 
 #include <QModelIndex>
 #include <QObject>
@@ -50,24 +50,32 @@ class PLItem;
 #define DEPTH_PL -1
 #define DEPTH_SEL 1
 
-static const int ItemUpdate_Type = QEvent::User + PLEventType + 2;
-static const int ItemDelete_Type = QEvent::User + PLEventType + 3;
-static const int ItemAppend_Type = QEvent::User + PLEventType + 4;
-static const int PLUpdate_Type   = QEvent::User + PLEventType + 5;
+enum {
+    ItemUpdate_Type = QEvent::User + PLEventType + 2,
+    ItemDelete_Type = QEvent::User + PLEventType + 3,
+    ItemAppend_Type = QEvent::User + PLEventType + 4,
+    PLUpdate_Type   = QEvent::User + PLEventType + 5,
+};
 
 class PLEvent : public QEvent
 {
 public:
     PLEvent( int type, int id ) : QEvent( (QEvent::Type)(type) )
-    { i_id = id; p_add = NULL; };
+    {
+        i_id = id;
+        add.i_node = -1;
+        add.i_item = -1;
+    };
 
-    PLEvent(  playlist_add_t  *a ) : QEvent( (QEvent::Type)(ItemAppend_Type) )
-    { p_add = a; };
+    PLEvent( const playlist_add_t  *a ) : QEvent( (QEvent::Type)(ItemAppend_Type) )
+    {
+        add = *a;
+    };
 
-    virtual ~PLEvent() {};
+    virtual ~PLEvent() { };
 
     int i_id;
-    playlist_add_t *p_add;
+    playlist_add_t add;
 };
 
 
@@ -105,7 +113,7 @@ public:
     /* Actions made by the views */
     void popup( QModelIndex & index, QPoint &point, QModelIndexList list );
     void doDelete( QModelIndexList selected );
-    void search( QString search );
+    void search( const QString& search_text );
     void sort( int column, Qt::SortOrder order );
     void removeItem( int );
 
@@ -132,9 +140,8 @@ private:
     static QIcon icons[ITEM_TYPE_NUMBER];
 
     /* Update processing */
-    void ProcessInputItemUpdate( int i_input_id );
     void ProcessItemRemoval( int i_id );
-    void ProcessItemAppend( playlist_add_t *p_add );
+    void ProcessItemAppend( const playlist_add_t *p_add );
 
     void UpdateTreeItem( PLItem *, bool, bool force = false );
     void UpdateTreeItem( playlist_item_t *, PLItem *, bool, bool forc = false );
@@ -176,6 +183,8 @@ private slots:
     void popupSave();
     void popupExplore();
     void viewchanged( int );
+    void ProcessInputItemUpdate( int i_input_id );
+    void ProcessInputItemUpdate( input_thread_t* p_input );
 };
 
 #endif

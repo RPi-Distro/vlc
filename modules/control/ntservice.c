@@ -2,7 +2,7 @@
  * ntservice.c: Windows NT/2K/XP service interface
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 52aa47c1ac58483f90bab2af55d918ad77f6c03b $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -61,25 +61,25 @@ static void Close   ( vlc_object_t * );
     "properly configured. Use a comma separated list of interface modules. " \
     "(common values are: logger, sap, rc, http)")
 
-vlc_module_begin();
-    set_shortname( N_("NT Service"));
-    set_description( N_("Windows Service interface") );
-    set_category( CAT_INTERFACE );
-    set_subcategory( SUBCAT_INTERFACE_CONTROL );
+vlc_module_begin ()
+    set_shortname( N_("NT Service"))
+    set_description( N_("Windows Service interface") )
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_CONTROL )
     add_bool( "ntservice-install", 0, NULL,
-              INSTALL_TEXT, INSTALL_LONGTEXT, true );
+              INSTALL_TEXT, INSTALL_LONGTEXT, true )
     add_bool( "ntservice-uninstall", 0, NULL,
-              UNINSTALL_TEXT, UNINSTALL_LONGTEXT, true );
+              UNINSTALL_TEXT, UNINSTALL_LONGTEXT, true )
     add_string ( "ntservice-name", VLCSERVICENAME, NULL,
-                 NAME_TEXT, NAME_LONGTEXT, true );
+                 NAME_TEXT, NAME_LONGTEXT, true )
     add_string ( "ntservice-options", NULL, NULL,
-                 OPTIONS_TEXT, OPTIONS_LONGTEXT, true );
+                 OPTIONS_TEXT, OPTIONS_LONGTEXT, true )
     add_string ( "ntservice-extraintf", NULL, NULL,
-                 EXTRAINTF_TEXT, EXTRAINTF_LONGTEXT, true );
+                 EXTRAINTF_TEXT, EXTRAINTF_LONGTEXT, true )
 
-    set_capability( "interface", 0 );
-    set_callbacks( Activate, Close );
-vlc_module_end();
+    set_capability( "interface", 0 )
+    set_callbacks( Activate, Close )
+vlc_module_end ()
 
 struct intf_sys_t
 {
@@ -107,9 +107,6 @@ static int Activate( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t*)p_this;
 
-    /* Only works on NT/2K/XP */
-    if( !IS_WINNT ) return VLC_EGENERIC;
-
     p_intf->pf_run = Run;
     return VLC_SUCCESS;
 }
@@ -119,6 +116,7 @@ static int Activate( vlc_object_t *p_this )
  *****************************************************************************/
 void Close( vlc_object_t *p_this )
 {
+    (void)p_this;
 }
 
 /*****************************************************************************
@@ -126,6 +124,7 @@ void Close( vlc_object_t *p_this )
  *****************************************************************************/
 static void Run( intf_thread_t *p_intf )
 {
+    intf_sys_t sys;
     intf_thread_t *p_extraintf;
     SERVICE_TABLE_ENTRY dispatchTable[] =
     {
@@ -133,8 +132,9 @@ static void Run( intf_thread_t *p_intf )
         { NULL, NULL }
     };
 
+    int canc = vlc_savecancel();
     p_global_intf = p_intf;
-    p_intf->p_sys = alloca( sizeof( intf_sys_t ) );
+    p_intf->p_sys = &sys;
     p_intf->p_sys->psz_service = config_GetPsz( p_intf, "ntservice-name" );
     p_intf->p_sys->psz_service = p_intf->p_sys->psz_service ?
         p_intf->p_sys->psz_service : strdup(VLCSERVICENAME);
@@ -158,17 +158,9 @@ static void Run( intf_thread_t *p_intf )
 
     free( p_intf->p_sys->psz_service );
 
-    /* Stop and destroy the interfaces we spawned */
-    while( (p_extraintf = vlc_object_find(p_intf, VLC_OBJECT_INTF, FIND_CHILD)))
-    {
-        intf_StopThread( p_extraintf );
-        vlc_object_detach( p_extraintf );
-        vlc_object_release( p_extraintf );
-        vlc_object_release( p_extraintf );
-    }
-
     /* Make sure we exit (In case other interfaces have been spawned) */
-    vlc_object_kill( p_intf->p_libvlc );
+    libvlc_Quit( p_intf->p_libvlc );
+    vlc_restorecancel( canc );
 }
 
 /*****************************************************************************
@@ -279,6 +271,8 @@ static int NTServiceUninstall( intf_thread_t *p_intf )
 
 static void WINAPI ServiceDispatch( DWORD numArgs, char **args )
 {
+    (void)numArgs;
+    (void)args;
     intf_thread_t *p_intf = (intf_thread_t *)p_global_intf;
     intf_sys_t    *p_sys  = p_intf->p_sys;
     char *psz_modules, *psz_parser;
@@ -312,11 +306,10 @@ static void WINAPI ServiceDispatch( DWORD numArgs, char **args )
             *psz_parser = '\0';
             psz_parser++;
         }
-        psz_temp = (char *)malloc( strlen(psz_module) + sizeof(",none") );
-        if( psz_temp )
+
+        if( asprintf( &psz_temp, "%s,none", psz_module ) != -1 )
         {
             intf_thread_t *p_new_intf;
-            sprintf( psz_temp, "%s,none", psz_module );
 
             /* Try to create the interface */
             p_new_intf = intf_Create( p_intf, psz_temp );

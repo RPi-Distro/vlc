@@ -2,7 +2,7 @@
  * gnutls.c
  *****************************************************************************
  * Copyright (C) 2004-2006 Rémi Denis-Courmont
- * $Id: b49c7a6d2c189a4786c8c29c08af95131b67cef5 $
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -85,30 +85,32 @@ static void CloseServer (vlc_object_t *);
     "This is the maximum number of resumed TLS sessions that " \
     "the cache will hold." )
 
-vlc_module_begin();
-    set_shortname( "GnuTLS" );
-    set_description( N_("GnuTLS transport layer security") );
-    set_capability( "tls client", 1 );
-    set_callbacks( OpenClient, CloseClient );
-    set_category( CAT_ADVANCED );
-    set_subcategory( SUBCAT_ADVANCED_MISC );
+vlc_module_begin ()
+    set_shortname( "GnuTLS" )
+    set_description( N_("GnuTLS transport layer security") )
+    set_capability( "tls client", 1 )
+    set_callbacks( OpenClient, CloseClient )
+    set_category( CAT_ADVANCED )
+    set_subcategory( SUBCAT_ADVANCED_MISC )
 
-    add_obsolete_bool( "tls-check-cert" );
-    add_obsolete_bool( "tls-check-hostname" );
+    add_obsolete_bool( "tls-check-cert" )
+    add_obsolete_bool( "tls-check-hostname" )
 
-    add_submodule();
-        set_description( N_("GnuTLS server") );
-        set_capability( "tls server", 1 );
-        set_category( CAT_ADVANCED );
-        set_subcategory( SUBCAT_ADVANCED_MISC );
-        set_callbacks( OpenServer, CloseServer );
+    add_submodule ()
+        set_description( N_("GnuTLS server") )
+        set_capability( "tls server", 1 )
+        set_category( CAT_ADVANCED )
+        set_subcategory( SUBCAT_ADVANCED_MISC )
+        set_callbacks( OpenServer, CloseServer )
 
-        add_obsolete_integer( "gnutls-dh-bits" );
+        add_obsolete_integer( "gnutls-dh-bits" )
         add_integer( "gnutls-cache-timeout", CACHE_TIMEOUT, NULL,
-                    CACHE_TIMEOUT_TEXT, CACHE_TIMEOUT_LONGTEXT, true );
+                    CACHE_TIMEOUT_TEXT, CACHE_TIMEOUT_LONGTEXT, true )
         add_integer( "gnutls-cache-size", CACHE_SIZE, NULL, CACHE_SIZE_TEXT,
-                    CACHE_SIZE_LONGTEXT, true );
-vlc_module_end();
+                    CACHE_SIZE_LONGTEXT, true )
+vlc_module_end ()
+
+static vlc_mutex_t gnutls_mutex = VLC_STATIC_MUTEX;
 
 /**
  * Initializes GnuTLS with proper locking.
@@ -120,7 +122,7 @@ static int gnutls_Init (vlc_object_t *p_this)
 
     vlc_gcrypt_init (); /* GnuTLS depends on gcrypt */
 
-    vlc_mutex_t *lock = var_AcquireMutex ("gnutls_mutex");
+    vlc_mutex_lock (&gnutls_mutex);
     if (gnutls_global_init ())
     {
         msg_Err (p_this, "cannot initialize GnuTLS");
@@ -139,7 +141,7 @@ static int gnutls_Init (vlc_object_t *p_this)
     ret = VLC_SUCCESS;
 
 error:
-    vlc_mutex_unlock (lock);
+    vlc_mutex_unlock (&gnutls_mutex);
     return ret;
 }
 
@@ -149,11 +151,11 @@ error:
  */
 static void gnutls_Deinit (vlc_object_t *p_this)
 {
-    vlc_mutex_t *lock = var_AcquireMutex( "gnutls_mutex" );
+    vlc_mutex_lock (&gnutls_mutex);
 
     gnutls_global_deinit ();
     msg_Dbg (p_this, "GnuTLS deinitialized");
-    vlc_mutex_unlock (lock);
+    vlc_mutex_unlock (&gnutls_mutex);
 }
 
 
@@ -418,6 +420,7 @@ gnutls_SessionPrioritize (vlc_object_t *obj, gnutls_session_t session)
     /* Note that ordering matters (on the client side) */
     static const int protos[] =
     {
+        /*GNUTLS_TLS1_2, as of GnuTLS 2.6.5, still not ratified */
         GNUTLS_TLS1_1,
         GNUTLS_TLS1_0,
         GNUTLS_SSL3,
@@ -431,6 +434,9 @@ gnutls_SessionPrioritize (vlc_object_t *obj, gnutls_session_t session)
     };
     static const int macs[] =
     {
+        GNUTLS_MAC_SHA512,
+        GNUTLS_MAC_SHA384,
+        GNUTLS_MAC_SHA256,
         GNUTLS_MAC_SHA1,
         GNUTLS_MAC_RMD160, // RIPEMD
         GNUTLS_MAC_MD5,
@@ -444,6 +450,7 @@ gnutls_SessionPrioritize (vlc_object_t *obj, gnutls_session_t session)
         GNUTLS_CIPHER_AES_128_CBC,
         GNUTLS_CIPHER_3DES_CBC,
         GNUTLS_CIPHER_ARCFOUR_128,
+        // TODO? Camellia ciphers?
         //GNUTLS_CIPHER_DES_CBC,
         //GNUTLS_CIPHER_ARCFOUR_40,
         //GNUTLS_CIPHER_RC2_40_CBC,

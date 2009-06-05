@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>482</width>
-    <height>516</height>
+    <width>647</width>
+    <height>682</height>
    </rect>
   </property>
   <property name="windowTitle" >
@@ -23,7 +23,7 @@
    <item>
     <widget class="QCheckBox" name="enableVideo" >
      <property name="text" >
-      <string>_("Enable video")</string>
+      <string>Enable video</string>
      </property>
      <property name="checked" >
       <bool>true</bool>
@@ -33,7 +33,7 @@
    <item>
     <widget class="QGroupBox" name="displayBox" >
      <property name="title" >
-      <string>_("Display")</string>
+      <string>Display</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -45,7 +45,7 @@
       <item row="1" column="2" >
        <widget class="QCheckBox" name="windowDecorations" >
         <property name="text" >
-         <string>_("Window decorations")</string>
+         <string>Window decorations</string>
         </property>
         <property name="checked" >
          <bool>true</bool>
@@ -55,14 +55,14 @@
       <item row="0" column="0" colspan="2" >
        <widget class="QCheckBox" name="fullscreen" >
         <property name="text" >
-         <string>_("Fullscreen")</string>
+         <string>Fullscreen</string>
         </property>
        </widget>
       </item>
       <item row="1" column="0" colspan="2" >
        <widget class="QCheckBox" name="alwaysOnTop" >
         <property name="text" >
-         <string>_("Always on top")</string>
+         <string>Always on top</string>
         </property>
        </widget>
       </item>
@@ -70,9 +70,9 @@
        <widget class="QComboBox" name="outputModule" />
       </item>
       <item row="3" column="0" >
-       <widget class="QLabel" name="label_4" >
+       <widget class="QLabel" name="voutLabel" >
         <property name="text" >
-         <string>_("Output")</string>
+         <string>Output</string>
         </property>
         <property name="buddy" >
          <cstring>outputModule</cstring>
@@ -82,7 +82,7 @@
       <item row="0" column="2" >
        <widget class="QCheckBox" name="overlay" >
         <property name="text" >
-         <string>_("Accelerated video output")</string>
+         <string>Accelerated video output (Overlay)</string>
         </property>
         <property name="checked" >
          <bool>true</bool>
@@ -92,7 +92,7 @@
       <item row="2" column="0" colspan="2" >
        <widget class="QCheckBox" name="skipFrames" >
         <property name="text" >
-         <string>_("Skip frames")</string>
+         <string>Skip frames</string>
         </property>
         <property name="checked" >
          <bool>true</bool>
@@ -102,7 +102,7 @@
       <item row="2" column="2" >
        <widget class="QCheckBox" name="hwYUVBox" >
         <property name="text" >
-         <string>_("Use hardware YUV->RGB conversions")</string>
+         <string>Use hardware YUV->RGB conversions</string>
         </property>
        </widget>
       </item>
@@ -112,7 +112,7 @@
    <item>
     <widget class="QGroupBox" name="directXBox" >
      <property name="title" >
-      <string>_("DirectX")</string>
+      <string>DirectX</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -125,9 +125,9 @@
        <widget class="QComboBox" name="dXdisplayDevice" />
       </item>
       <item row="1" column="0" >
-       <widget class="QLabel" name="label_5" >
+       <widget class="QLabel" name="dxDeviceLabel" >
         <property name="text" >
-         <string>_("Display device")</string>
+         <string>Display device</string>
         </property>
         <property name="buddy" >
          <cstring>dXdisplayDevice</cstring>
@@ -137,7 +137,7 @@
       <item row="0" column="0" colspan="2" >
        <widget class="QCheckBox" name="wallpaperMode" >
         <property name="text" >
-         <string>_("Enable wallpaper mode")</string>
+         <string>Enable wallpaper mode</string>
         </property>
        </widget>
       </item>
@@ -145,9 +145,38 @@
     </widget>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox_2" >
+     <property name="title" >
+      <string>Video</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout" >
+      <item row="0" column="1" >
+       <widget class="QComboBox" name="deinterlaceBox" />
+      </item>
+      <item row="0" column="0" >
+       <widget class="QLabel" name="deinterLabel" >
+        <property name="text" >
+         <string>Deinterlacing Mode</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="0" >
+       <widget class="QLabel" name="arLabel" >
+        <property name="text" >
+         <string>Force Aspect Ratio</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1" >
+       <widget class="QLineEdit" name="arLine" />
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="QGroupBox" name="groupBox" >
      <property name="title" >
-      <string>_("Video snapshots")</string>
+      <string>Video snapshots</string>
      </property>
      <layout class="QGridLayout" >
       <property name="margin" >
@@ -162,14 +191,14 @@
       <item row="0" column="3" >
        <widget class="QPushButton" name="snapshotsDirectoryBrowse" >
         <property name="text" >
-         <string>_("Browse...")</string>
+         <string>Browse...</string>
         </property>
        </widget>
       </item>
       <item row="0" column="0" >
-       <widget class="QLabel" name="label" >
+       <widget class="QLabel" name="dirLabel" >
         <property name="text" >
-         <string>_("Directory")</string>
+         <string>Directory</string>
         </property>
         <property name="buddy" >
          <cstring>snapshotsDirectory</cstring>
@@ -177,9 +206,9 @@
        </widget>
       </item>
       <item row="1" column="0" >
-       <widget class="QLabel" name="label_2" >
+       <widget class="QLabel" name="prefixLabel" >
         <property name="text" >
-         <string>_("Prefix")</string>
+         <string>Prefix</string>
         </property>
         <property name="buddy" >
          <cstring>snapshotsPrefix</cstring>
@@ -194,9 +223,9 @@
        </widget>
       </item>
       <item row="2" column="0" >
-       <widget class="QLabel" name="label_3" >
+       <widget class="QLabel" name="formatLabel" >
         <property name="text" >
-         <string>_("Format")</string>
+         <string>Format</string>
         </property>
         <property name="buddy" >
          <cstring>snapshotsFormat</cstring>
@@ -209,7 +238,7 @@
       <item row="1" column="2" colspan="2" >
        <widget class="QCheckBox" name="snapshotsSequentialNumbering" >
         <property name="text" >
-         <string>_("Sequential numbering")</string>
+         <string>Sequential numbering</string>
         </property>
        </widget>
       </item>

@@ -2,7 +2,7 @@
  * decoder.c: dummy decoder plugin for vlc.
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: d02ae31746e482e9e4025df9e0ef94c548c6cf4e $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -67,7 +67,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block );
 /*****************************************************************************
  * OpenDecoder: Open the decoder
  *****************************************************************************/
-int OpenDecoder ( vlc_object_t *p_this )
+static int OpenDecoderCommon( vlc_object_t *p_this, bool b_force_dump )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
@@ -78,22 +78,26 @@ int OpenDecoder ( vlc_object_t *p_this )
     if( ( p_dec->p_sys = p_sys =
           (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
     {
-        msg_Err( p_dec, "out of memory" );
-        return VLC_EGENERIC;
+        return VLC_ENOMEM;
     }
 
-    sprintf( psz_file, "stream.%i", p_dec->i_object_id );
+    snprintf( psz_file, sizeof( psz_file), "stream.%p", p_dec );
 
 #ifndef UNDER_CE
-    var_Create( p_dec, "dummy-save-es", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Get( p_dec, "dummy-save-es", &val );
-    if( val.b_bool )
+    if( !b_force_dump )
+    {
+        var_Create( p_dec, "dummy-save-es", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
+        var_Get( p_dec, "dummy-save-es", &val );
+        b_force_dump = val.b_bool;
+    }
+    if( b_force_dump )
     {
         p_sys->i_fd = open( psz_file, O_WRONLY | O_CREAT | O_TRUNC, 00644 );
 
         if( p_sys->i_fd == -1 )
         {
             msg_Err( p_dec, "cannot create `%s'", psz_file );
+            free( p_sys );
             return VLC_EGENERIC;
         }
 
@@ -113,7 +117,18 @@ int OpenDecoder ( vlc_object_t *p_this )
     p_dec->pf_decode_sub = (subpicture_t *(*)(decoder_t *, block_t **))
         DecodeBlock;
 
+    es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
+
     return VLC_SUCCESS;
+}
+
+int OpenDecoder( vlc_object_t *p_this )
+{
+    return OpenDecoderCommon( p_this, false );
+}
+int  OpenDecoderDump( vlc_object_t *p_this )
+{
+    return OpenDecoderCommon( p_this, true );
 }
 
 /****************************************************************************
@@ -129,7 +144,9 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     if( !pp_block || !*pp_block ) return NULL;
     p_block = *pp_block;
 
-    if( p_sys->i_fd >= 0 && p_block->i_buffer )
+    if( p_sys->i_fd >= 0 &&
+        p_block->i_buffer > 0 &&
+        (p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) ) == 0 )
     {
 #ifndef UNDER_CE
         write( p_sys->i_fd, p_block->p_buffer, p_block->i_buffer );
@@ -151,8 +168,10 @@ void CloseDecoder ( vlc_object_t *p_this )
     decoder_sys_t *p_sys = p_dec->p_sys;
 
 #ifndef UNDER_CE
-    if( p_sys->i_fd >= 0 ) close( p_sys->i_fd );
+    if( p_sys->i_fd >= 0 )
+        close( p_sys->i_fd );
 #endif
 
     free( p_sys );
 }
+

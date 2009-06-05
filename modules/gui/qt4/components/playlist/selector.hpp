@@ -2,7 +2,7 @@
  * selector.hpp : Playlist source selector
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: b6ff6e635f0de9b34829a2f5594adc88c7031814 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -28,10 +28,9 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-#include <QWidget>
-#include <QString>
 #include "components/playlist/playlist_model.hpp"
+
+#include <QWidget>
 
 class QTreeView;
 class PlaylistWidget;
@@ -40,7 +39,7 @@ class PLSelector: public QWidget
 {
     Q_OBJECT;
 public:
-    PLSelector( QWidget *p, intf_thread_t *_p_intf, playlist_t * );
+    PLSelector( QWidget *p, intf_thread_t *_p_intf );
     virtual ~PLSelector();
 protected:
     PLModel *model;

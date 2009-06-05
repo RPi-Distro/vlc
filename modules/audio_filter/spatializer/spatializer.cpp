@@ -1,5 +1,5 @@
 /*****************************************************************************
- * spatializer.cpp:
+ * spatializer.cpp: sound reverberation
  *****************************************************************************
  * Copyright (C) 2004, 2006, 2007 the VideoLAN team
  *
@@ -45,31 +45,48 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("spatializer") );
-    set_shortname( N_("spatializer" ) );
-    set_capability( "audio filter", 0 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AFILTER );
+#define ROOMSIZE_TEXT N_("Room size")
+#define ROOMSIZE_LONGTEXT N_("Defines the virtual surface of the room" \
+                                "emulated by the filter." )
 
-    set_callbacks( Open, Close );
-    add_shortcut( "spatializer" );
-    add_float( "Roomsize", 1.05, NULL, NULL,NULL, true);
-    add_float( "Width", 10.0, NULL, NULL,NULL, true);
-    add_float( "Wet", 3.0, NULL, NULL,NULL, true);
-    add_float( "Dry", 2.0, NULL, NULL,NULL, true);
-    add_float( "Damp", 1.0, NULL, NULL,NULL, true);
-vlc_module_end();
+#define WIDTH_TEXT N_("Room width")
+#define WIDTH_LONGTEXT N_("Width of the virtual room")
+
+#define WET_TEXT N_("Wet")
+#define WET_LONGTEXT NULL
+
+#define DRY_TEXT N_("Dry")
+#define DRY_LONGTEXT NULL
+
+#define DAMP_TEXT N_("Damp")
+#define DAMP_LONGTEXT NULL
+
+vlc_module_begin ()
+    set_description( N_("Audio Spatializer") )
+    set_shortname( N_("Spatializer" ) )
+    set_capability( "audio filter", 0 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AFILTER )
+
+    set_callbacks( Open, Close )
+    add_shortcut( "spatializer" )
+    add_float( "spatializer-roomsize", 1.05, NULL, ROOMSIZE_TEXT,
+               ROOMSIZE_LONGTEXT, true )
+    add_float( "spatializer-width", 10., NULL, WIDTH_TEXT,WIDTH_LONGTEXT, true )
+    add_float( "spatializer-wet", 3., NULL, WET_TEXT,WET_LONGTEXT, true )
+    add_float( "spatializer-dry", 2., NULL, DRY_TEXT,DRY_LONGTEXT, true )
+    add_float( "spatializer-damp", 1., NULL, DAMP_TEXT,DAMP_LONGTEXT, true )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-typedef struct aout_filter_sys_t
+struct aout_filter_sys_t
 {
     vlc_mutex_t lock;
     revmodel *p_reverbm;
 
-} aout_filter_sys_t;
+};
 
 class CLocker
 {
@@ -86,7 +103,8 @@ private:
 
 static const char *psz_control_names[] =
 {
-    "Roomsize", "Width" , "Wet", "Dry", "Damp"
+    "spatializer-roomsize", "spatializer-width" ,
+    "spatializer-wet", "spatializer-dry", "spatializer-damp"
 };
 static void DoWork( aout_instance_t *, aout_filter_t *,
                     aout_buffer_t *, aout_buffer_t * );
@@ -114,7 +132,7 @@ static int Open( vlc_object_t *p_this )
     aout_filter_t     *p_filter = (aout_filter_t *)p_this;
     aout_filter_sys_t *p_sys;
     bool         b_fit = true;
-    msg_Dbg(p_this, "Opening filter spatializer %s %s %d\n", __FILE__,__func__,__LINE__);
+    msg_Dbg(p_this, "Opening filter spatializer %s %s %d", __FILE__,__func__,__LINE__);
 
     if( p_filter->input.i_format != VLC_FOURCC('f','l','3','2' ) ||
         p_filter->output.i_format != VLC_FOURCC('f','l','3','2') )
@@ -168,13 +186,11 @@ static void Close( vlc_object_t *p_this )
     delete p_sys->p_reverbm;
     vlc_mutex_destroy( &p_sys->lock );
     free( p_sys );
-    msg_Dbg(p_this, "Closing filter spatializer %s %s %d\n", __FILE__,__func__,__LINE__);
+    msg_Dbg(p_this, "Closing filter spatializer %s %s %d", __FILE__,__func__,__LINE__);
 }
 
 /*****************************************************************************
  * DoWork: process samples buffer
- *****************************************************************************
- *
  *****************************************************************************/
 static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
                     aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
@@ -195,9 +211,8 @@ static int SpatInit( aout_filter_t *p_filter )
     aout_instance_t *p_aout = (aout_instance_t *)p_filter->p_parent;
 
     for( i = 0; i < 5 ; i ++ )
-    {
-        var_CreateGetFloatCommand( p_aout, psz_control_names[i] );
-    }
+        var_Create( p_aout, psz_control_names[i], VLC_VAR_FLOAT
+                            | VLC_VAR_DOINHERIT | VLC_VAR_ISCOMMAND );
 
     /* Get initial values */
     var_Get( p_aout, psz_control_names[0], &val1 );
@@ -255,6 +270,10 @@ static void SpatClean( aout_filter_t *p_filter )
     var_DelCallback( p_aout, psz_control_names[4], DampCallback, p_sys );
 }
 
+/*****************************************************************************
+ * Variables callbacks
+ *****************************************************************************/
+
 static int RoomCallback( vlc_object_t *p_this, char const *psz_cmd,
                          vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
@@ -262,7 +281,7 @@ static int RoomCallback( vlc_object_t *p_this, char const *psz_cmd,
     CLocker locker( &p_sys->lock );
 
     p_sys->p_reverbm->setroomsize(newval.f_float);
-    msg_Dbg (p_this,"room callback %3.1f %s %s %d\n", newval.f_float, __FILE__,__func__,__LINE__);
+    msg_Dbg (p_this,"room callback %3.1f %s %s %d", newval.f_float, __FILE__,__func__,__LINE__);
     return VLC_SUCCESS;
 }
 
@@ -273,7 +292,7 @@ static int WidthCallback( vlc_object_t *p_this, char const *psz_cmd,
     CLocker locker( &p_sys->lock );
 
     p_sys->p_reverbm->setwidth(newval.f_float);
-    msg_Dbg (p_this,"width callback %3.1f %s %s %d\n", newval.f_float,  __FILE__,__func__,__LINE__);
+    msg_Dbg (p_this,"width callback %3.1f %s %s %d", newval.f_float,  __FILE__,__func__,__LINE__);
     return VLC_SUCCESS;
 }
 static int WetCallback( vlc_object_t *p_this, char const *psz_cmd,
@@ -283,7 +302,7 @@ static int WetCallback( vlc_object_t *p_this, char const *psz_cmd,
     CLocker locker( &p_sys->lock );
 
     p_sys->p_reverbm->setwet(newval.f_float);
-    msg_Dbg (p_this,"wet callback %3.1f %s %s %d\n", newval.f_float,  __FILE__,__func__,__LINE__);
+    msg_Dbg (p_this,"wet callback %3.1f %s %s %d", newval.f_float,  __FILE__,__func__,__LINE__);
     return VLC_SUCCESS;
 }
 static int DryCallback( vlc_object_t *p_this, char const *psz_cmd,
@@ -293,7 +312,7 @@ static int DryCallback( vlc_object_t *p_this, char const *psz_cmd,
     CLocker locker( &p_sys->lock );
 
     p_sys->p_reverbm->setdry(newval.f_float);
-    msg_Dbg (p_this,"dry callback %3.1f %s %s %d\n", newval.f_float, __FILE__,__func__,__LINE__);
+    msg_Dbg (p_this,"dry callback %3.1f %s %s %d", newval.f_float, __FILE__,__func__,__LINE__);
     return VLC_SUCCESS;
 }
 static int DampCallback( vlc_object_t *p_this, char const *psz_cmd,
@@ -303,7 +322,7 @@ static int DampCallback( vlc_object_t *p_this, char const *psz_cmd,
     CLocker locker( &p_sys->lock );
 
     p_sys->p_reverbm->setdamp(newval.f_float);
-    msg_Dbg (p_this, "damp callback %3.1f %s %s %d\n", newval.f_float, __FILE__,__func__,__LINE__);
+    msg_Dbg (p_this, "damp callback %3.1f %s %s %d", newval.f_float, __FILE__,__func__,__LINE__);
     return VLC_SUCCESS;
 }
 

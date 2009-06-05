@@ -18,5 +18,5 @@ libdynamicoverlay_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdynamicoverlay_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdynamicoverlay_plugin_la_LIBADD = $(AM_LIBADD)
-libdynamicoverlay_plugin_la_DEPENDENCIES =
+libdynamicoverlay_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

@@ -2,7 +2,7 @@
  * update.m: MacOS X Check-For-Update window
  *****************************************************************************
  * Copyright © 2005-2008 the VideoLAN team
- * $Id: cb5248432b78649329bd1433811d6b2da1eb2990 $
+ * $Id$
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net>
  *          Rafaël Carré <funman@videolanorg>
@@ -36,7 +36,7 @@ static NSString * kPrefUpdateOnStartup = @"UpdateOnStartup";
 static NSString * kPrefUpdateLastTimeChecked = @"UpdateLastTimeChecked";
 
 /*****************************************************************************
- * VLCExtended implementation
+ * VLCUpdate implementation
  *****************************************************************************/
 
 @implementation VLCUpdate
@@ -69,6 +69,11 @@ static VLCUpdate *_o_sharedInstance = nil;
     return _o_sharedInstance;
 }
 
+- (void)end
+{
+    if( p_u ) update_Delete( p_u );
+}
+
 - (void)awakeFromNib
 {
     /* we don't use - (BOOL)shouldCheckUpdateOnStartup because we don't want
@@ -80,6 +85,9 @@ static VLCUpdate *_o_sharedInstance = nil;
 {
     [[NSUserDefaults standardUserDefaults] setBool: check forKey: kPrefUpdateOnStartup];
     [o_chk_updateOnStartup setState: check];
+
+    /* make sure we got this set, even if we crash later on */
+    [[NSUserDefaults standardUserDefaults] synchronize];
 }
 
 - (BOOL)shouldCheckForUpdate
@@ -90,7 +98,7 @@ static VLCUpdate *_o_sharedInstance = nil;
     if( ![[NSUserDefaults standardUserDefaults] objectForKey: kPrefUpdateOnStartup] )
     {
         /* We don't have any preferences stored, ask the user. */
-        int res = NSRunInformationalAlertPanel( _NS("Do you want VLC to check for updates automatically?"),
+        NSInteger res = NSRunInformationalAlertPanel( _NS("Do you want VLC to check for updates automatically?"),
               _NS("You can change this option in VLC's update window later on."), _NS("Yes"), _NS("No"), nil );
         [self setShouldCheckUpdate: res];
     }
@@ -102,7 +110,7 @@ static VLCUpdate *_o_sharedInstance = nil;
     if( !o_last_update )
         return YES;
 
-    o_next_update = [[[NSDate alloc] initWithTimeInterval: 60*60*24*2 /* every two days */ sinceDate: o_last_update] autorelease];
+    o_next_update = [[[NSDate alloc] initWithTimeInterval: 60*60*24*7 /* every seven days */ sinceDate: o_last_update] autorelease];
     if( !o_next_update )
         return YES;
 
@@ -129,13 +137,11 @@ static VLCUpdate *_o_sharedInstance = nil;
 {
     /* provide a save dialogue */
     SEL sel = @selector(getLocationForSaving:returnCode:contextInfo:);
-    NSOpenPanel * saveFilePanel = [[NSOpenPanel alloc] init];
+    NSSavePanel * saveFilePanel = [[NSSavePanel alloc] init];
 
-    [saveFilePanel setCanChooseFiles: NO];
-    [saveFilePanel setCanChooseDirectories: YES];
+    [saveFilePanel setRequiredFileType: @"dmg"];
+    [saveFilePanel setCanSelectHiddenExtension: YES];
     [saveFilePanel setCanCreateDirectories: YES];
-    [saveFilePanel setPrompt: _NS("Save" )];
-    [saveFilePanel setNameFieldLabel: _NS("Save As:" )];
     update_release_t *p_release = update_GetRelease( p_u );
     assert( p_release );
     [saveFilePanel beginSheetForDirectory:@"~/Downloads" file:
@@ -146,14 +152,14 @@ static VLCUpdate *_o_sharedInstance = nil;
                               contextInfo:nil];
 }
 
-- (void)getLocationForSaving: (NSOpenPanel *)sheet
+- (void)getLocationForSaving: (NSSavePanel *)sheet
                   returnCode: (int)returnCode 
                  contextInfo: (void *)contextInfo
 {
     if( returnCode == NSOKButton )
     {
         /* perform download and pass the selected path */
-        [NSThread detachNewThreadSelector:@selector(performDownload:) toTarget:self withObject:[sheet directory]];
+        [NSThread detachNewThreadSelector:@selector(performDownload:) toTarget:self withObject:[sheet filename]];
     }
     [sheet release];
 }
@@ -218,8 +224,7 @@ static void updateCallback( void * p_data, bool b_success )
 - (void)performDownload:(NSString *)path
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    NSString *local = [NSString stringWithFormat: @"%@/", path];
-    update_Download( p_u, [local UTF8String] );
+    update_Download( p_u, [path UTF8String] );
     [o_btn_DownloadNow setEnabled: NO];
     [o_update_window orderOut: self];
     update_WaitDownload( p_u );

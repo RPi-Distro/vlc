@@ -2,7 +2,7 @@
  * plugin.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 729390c7a046f012ce6b1f06c1c8040c7db44551 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Implementation of the winamp plugin MilkDrop
@@ -44,21 +44,21 @@
 static int  Open         ( vlc_object_t * );
 static void Close        ( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("GaLaktos visualization plugin") );
-    set_capability( "visualization", 0 );
-    set_callbacks( Open, Close );
-    add_shortcut( "galaktos" );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("GaLaktos visualization") )
+    set_capability( "visualization", 0 )
+    set_callbacks( Open, Close )
+    add_shortcut( "galaktos" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-typedef struct aout_filter_sys_t
+struct aout_filter_sys_t
 {
     galaktos_thread_t *p_thread;
 
-} aout_filter_sys_t;
+};
 
 static void DoWork   ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
                        aout_buffer_t * );
@@ -121,7 +121,7 @@ static int Open( vlc_object_t *p_this )
     p_thread->psz_title = TitleGet( VLC_OBJECT( p_filter ) );
 
     if( vlc_thread_create( p_thread, "galaktos update thread", Thread,
-                           VLC_THREAD_PRIORITY_LOW, false ) )
+                           VLC_THREAD_PRIORITY_LOW ) )
     {
         msg_Err( p_filter, "cannot lauch galaktos thread" );
         free( p_thread->psz_title );
@@ -197,12 +197,16 @@ static void* Thread( vlc_object_t *p_this )
     int timed=0;
     int timestart=0;
     int mspf=0;
+    int canc = vlc_savecancel ();
 
     /* Get on OpenGL provider */
     p_thread->p_opengl =
-        (vout_thread_t *)vlc_object_create( p_this, VLC_OBJECT_OPENGL );
+        (vout_thread_t *)vlc_object_create( p_this, sizeof( vout_thread_t ) );
     if( p_thread->p_opengl == NULL )
+    {
+        vlc_restorecancel (canc);
         return NULL;
+    }
     vlc_object_attach( p_thread->p_opengl, p_this );
 
     /* Initialize vout parameters */
@@ -214,7 +218,6 @@ static void* Thread( vlc_object_t *p_this )
     p_thread->p_opengl->render.i_width = p_thread->i_width;
     p_thread->p_opengl->render.i_height = p_thread->i_width;
     p_thread->p_opengl->render.i_aspect = VOUT_ASPECT_FACTOR;
-    p_thread->p_opengl->b_scale = true;
     p_thread->p_opengl->b_fullscreen = false;
     p_thread->p_opengl->i_alignment = 0;
     p_thread->p_opengl->fmt_in.i_sar_num = 1;
@@ -222,12 +225,13 @@ static void* Thread( vlc_object_t *p_this )
     p_thread->p_opengl->fmt_render = p_thread->p_opengl->fmt_in;
 
     p_thread->p_module =
-        module_Need( p_thread->p_opengl, "opengl provider", NULL, 0 );
+        module_need( p_thread->p_opengl, "opengl provider", NULL, false );
     if( p_thread->p_module == NULL )
     {
         msg_Err( p_thread, "unable to initialize OpenGL" );
         vlc_object_detach( p_thread->p_opengl );
         vlc_object_release( p_thread->p_opengl );
+        vlc_restorecancel (canc);
         return NULL;
     }
 
@@ -264,9 +268,10 @@ static void* Thread( vlc_object_t *p_this )
     }
 
     /* Free the openGL provider */
-    module_Unneed( p_thread->p_opengl, p_thread->p_module );
+    module_unneed( p_thread->p_opengl, p_thread->p_module );
     vlc_object_detach( p_thread->p_opengl );
     vlc_object_release( p_thread->p_opengl );
+    vlc_restorecancel (canc);
     return NULL;
 }
 

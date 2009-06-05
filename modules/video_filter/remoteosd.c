@@ -2,7 +2,7 @@
  * remoteosd.c: remote osd over vnc filter module
  *****************************************************************************
  * Copyright (C) 2007-2008 Matthias Bauer
- * $Id: 6e4a5be941cf63a4d66185cf2636fe165bfa5575 $
+ * $Id$
  *
  * Authors: Matthias Bauer <matthias dot bauer #_at_# gmx dot ch>
  *
@@ -115,34 +115,34 @@
 static int  CreateFilter ( vlc_object_t * );
 static void DestroyFilter( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("Remote-OSD over VNC") );
-    set_capability( "sub filter", 100 );
-    set_shortname( N_("Remote-OSD") );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_SUBPIC );
-    add_shortcut( "rmtosd" );
-    set_callbacks( CreateFilter, DestroyFilter );
+vlc_module_begin ()
+    set_description( N_("Remote-OSD over VNC") )
+    set_capability( "sub filter", 100 )
+    set_shortname( N_("Remote-OSD") )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_SUBPIC )
+    add_shortcut( "rmtosd" )
+    set_callbacks( CreateFilter, DestroyFilter )
 
     add_string( RMTOSD_CFG "host", "myvdr", NULL, RMTOSD_HOST_TEXT,
-        RMTOSD_HOST_LONGTEXT, false );
+        RMTOSD_HOST_LONGTEXT, false )
     add_integer_with_range( RMTOSD_CFG "port", 20001, 1, 0xFFFF, NULL,
-        RMTOSD_PORT_TEXT, RMTOSD_PORT_LONGTEXT, false );
+        RMTOSD_PORT_TEXT, RMTOSD_PORT_LONGTEXT, false )
     add_password( RMTOSD_CFG "password", "", NULL, RMTOSD_PASSWORD_TEXT,
-        RMTOSD_PASSWORD_LONGTEXT, false );
+        RMTOSD_PASSWORD_LONGTEXT, false )
     add_integer_with_range( RMTOSD_CFG "update", RMTOSD_UPDATE_DEFAULT,
         RMTOSD_UPDATE_MIN, RMTOSD_UPDATE_MAX, NULL, RMTOSD_UPDATE_TEXT,
-        RMTOSD_UPDATE_LONGTEXT, true );
+        RMTOSD_UPDATE_LONGTEXT, true )
     add_bool( RMTOSD_CFG "vnc-polling", 0, NULL,
-              RMTOSD_POLL_TEXT , RMTOSD_POLL_LONGTEXT, false );
+              RMTOSD_POLL_TEXT , RMTOSD_POLL_LONGTEXT, false )
     add_bool( RMTOSD_CFG "mouse-events", 0, NULL,
-              RMTOSD_MOUSE_TEXT , RMTOSD_MOUSE_LONGTEXT, false );
+              RMTOSD_MOUSE_TEXT , RMTOSD_MOUSE_LONGTEXT, false )
     add_bool( RMTOSD_CFG "key-events", 0, NULL,
-              RMTOSD_KEYS_TEXT , RMTOSD_KEYS_LONGTEXT, false );
+              RMTOSD_KEYS_TEXT , RMTOSD_KEYS_LONGTEXT, false )
     add_integer_with_range( RMTOSD_CFG "alpha", 255, 0, 255, NULL,
-        RMTOSD_ALPHA_TEXT, RMTOSD_ALPHA_LONGTEXT, true );
+        RMTOSD_ALPHA_TEXT, RMTOSD_ALPHA_LONGTEXT, true )
 
-vlc_module_end();
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -282,7 +282,7 @@ static int CreateFilter ( vlc_object_t *p_this )
 
     p_sys->i_alpha = var_CreateGetIntegerCommand( p_this, RMTOSD_CFG "alpha" );
 
-    /* in miliseconds, 0 disables polling, should not be lower than 100 */
+    /* in milliseconds, 0 disables polling, should not be lower than 100 */
     p_sys->i_vnc_poll_interval  = var_CreateGetIntegerCommand( p_this,
                                                        RMTOSD_CFG "update" );
     if ( p_sys->i_vnc_poll_interval < 100)
@@ -333,8 +333,7 @@ static int CreateFilter ( vlc_object_t *p_this )
                                                 sizeof( vlc_object_t ) );
     vlc_object_attach( p_sys->p_worker_thread, p_this );
     if( vlc_thread_create( p_sys->p_worker_thread, "vnc worker thread",
-                           vnc_worker_thread,
-                           VLC_THREAD_PRIORITY_LOW, false ) )
+                           vnc_worker_thread, VLC_THREAD_PRIORITY_LOW ) )
     {
         vlc_object_detach( p_sys->p_worker_thread );
         vlc_object_release( p_sys->p_worker_thread );
@@ -677,6 +676,7 @@ static void* vnc_worker_thread( vlc_object_t *p_thread_obj )
     filter_t* p_filter = (filter_t*)(p_thread_obj->p_parent);
     filter_sys_t *p_sys = p_filter->p_sys;
     vlc_object_t *p_update_request_thread;
+    int canc = vlc_savecancel ();
 
     msg_Dbg( p_filter, "VNC worker thread started" );
 
@@ -714,8 +714,7 @@ static void* vnc_worker_thread( vlc_object_t *p_thread_obj )
     vlc_object_attach( p_update_request_thread, p_filter );
     if( vlc_thread_create( p_update_request_thread,
                            "vnc update request thread",
-                           update_request_thread,
-                           VLC_THREAD_PRIORITY_LOW, false ) )
+                           update_request_thread, VLC_THREAD_PRIORITY_LOW ) )
     {
         vlc_object_detach( p_update_request_thread );
         vlc_object_release( p_update_request_thread );
@@ -799,6 +798,7 @@ exit:
     vlc_mutex_unlock( &p_sys->lock );
 
     msg_Dbg( p_filter, "VNC message reader thread ended" );
+    vlc_restorecancel (canc);
     return NULL;
 }
 
@@ -806,6 +806,7 @@ static void* update_request_thread( vlc_object_t *p_thread_obj )
 {
     filter_t* p_filter = (filter_t*)(p_thread_obj->p_parent);
     filter_sys_t *p_sys = p_filter->p_sys;
+    int canc = vlc_savecancel ();
 
     msg_Dbg( p_filter, "VNC update request thread started" );
 
@@ -848,6 +849,7 @@ static void* update_request_thread( vlc_object_t *p_thread_obj )
     }
 
     msg_Dbg( p_filter, "VNC update request thread ended" );
+    vlc_restorecancel (canc);
     return NULL;
 }
 
@@ -1158,7 +1160,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     fmt.i_width = fmt.i_visible_width = p_pic->p[Y_PLANE].i_visible_pitch;
     fmt.i_height = fmt.i_visible_height = p_pic->p[Y_PLANE].i_visible_lines;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_region = p_spu->pf_create_region( VLC_OBJECT(p_filter), &fmt );
+    p_region = subpicture_region_New( &fmt );
     if( !p_region )
     {
         msg_Err( p_filter, "cannot allocate SPU region" );
@@ -1167,7 +1169,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         return NULL;
     }
 
-    vout_CopyPicture( p_filter, &p_region->picture, p_pic );
+    /* FIXME the copy is probably not needed anymore */
+    picture_Copy( p_region->p_picture, p_pic );
 
     p_sys->b_need_update = false;
 
@@ -1178,8 +1181,6 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     p_spu->b_absolute = false;
 
 
-    p_spu->i_x = 0;
-    p_spu->i_y = 0;
     p_spu->i_original_picture_width = 0; /*Let vout core do the horizontal scaling */
     p_spu->i_original_picture_height = fmt.i_height;
 

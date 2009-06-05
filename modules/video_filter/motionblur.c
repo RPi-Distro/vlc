@@ -2,7 +2,7 @@
  * motion_blur.c : motion blur filter for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 the VideoLAN team
- * $Id: 4b9bafeb7172fa7a6e02b2ef0d13c3b4f60fd57c $
+ * $Id: e975efcfb581cc97b13c72cddc872b27a72cbe1c $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Antoine Cellerier <dionoea &t videolan d.t org>
@@ -56,20 +56,20 @@ static int MotionBlurCallback( vlc_object_t *, char const *,
 
 #define FILTER_PREFIX "blur-"
 
-vlc_module_begin();
-    set_shortname( N_("Motion blur") );
-    set_description( N_("Motion blur filter") );
-    set_capability( "video filter2", 0 );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
+vlc_module_begin ()
+    set_shortname( N_("Motion blur") )
+    set_description( N_("Motion blur filter") )
+    set_capability( "video filter2", 0 )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
 
     add_integer_with_range( FILTER_PREFIX "factor", 80, 1, 127, NULL,
-                            FACTOR_TEXT, FACTOR_LONGTEXT, false );
+                            FACTOR_TEXT, FACTOR_LONGTEXT, false )
 
-    add_shortcut( "blur" );
+    add_shortcut( "blur" )
 
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "factor", NULL
@@ -80,6 +80,7 @@ static const char *const ppsz_filter_options[] = {
  *****************************************************************************/
 struct filter_sys_t
 {
+    vlc_spinlock_t lock;
     int        i_factor;
 
     uint8_t  **pp_planes;
@@ -105,6 +106,7 @@ static int Create( vlc_object_t *p_this )
 
     p_filter->p_sys->i_factor =
         var_CreateGetIntegerCommand( p_filter, FILTER_PREFIX "factor" );
+    vlc_spin_init( &p_filter->p_sys->lock );
     var_AddCallback( p_filter, FILTER_PREFIX "factor",
                      MotionBlurCallback, p_filter->p_sys );
 
@@ -120,6 +122,10 @@ static int Create( vlc_object_t *p_this )
 static void Destroy( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
+
+    var_DelCallback( p_filter, FILTER_PREFIX "factor",
+                     MotionBlurCallback, p_filter->p_sys );
+    vlc_spin_destroy( &p_filter->p_sys->lock );
 
     while( p_filter->p_sys->i_planes-- )
         free( p_filter->p_sys->pp_planes[p_filter->p_sys->i_planes] );
@@ -220,7 +226,12 @@ static int MotionBlurCallback( vlc_object_t *p_this, char const *psz_var,
 {
     VLC_UNUSED(p_this); VLC_UNUSED(oldval);
     filter_sys_t *p_sys = (filter_sys_t *)p_data;
+
     if( !strcmp( psz_var, FILTER_PREFIX "factor" ) )
+    {
+        vlc_spin_lock( &p_sys->lock );
         p_sys->i_factor = __MIN( 127, __MAX( 1, newval.i_int ) );
+        vlc_spin_unlock( &p_sys->lock );
+    }
     return VLC_SUCCESS;
 }

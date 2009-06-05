@@ -2,7 +2,7 @@
  * normvol.c: volume normalizer
  *****************************************************************************
  * Copyright (C) 2001, 2006 the VideoLAN team
- * $Id: 8b9f34272ba0f6e393a6fc6de832f064fee7bb31 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -57,12 +57,12 @@ static void Close    ( vlc_object_t * );
 static void DoWork   ( aout_instance_t * , aout_filter_t *,
                 aout_buffer_t * , aout_buffer_t *);
 
-typedef struct aout_filter_sys_t
+struct aout_filter_sys_t
 {
     int i_nb;
     float *p_last;
     float f_max;
-} aout_filter_sys_t;
+};
 
 /*****************************************************************************
  * Module descriptor
@@ -79,19 +79,19 @@ typedef struct aout_filter_sys_t
                "This value is a positive floating point number. A value " \
                "between 0.5 and 10 seems sensible." )
 
-vlc_module_begin();
-    set_description( N_("Volume normalizer") );
-    set_shortname( N_("Volume normalizer") );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AFILTER );
-    add_shortcut( "volnorm" );
+vlc_module_begin ()
+    set_description( N_("Volume normalizer") )
+    set_shortname( N_("Volume normalizer") )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AFILTER )
+    add_shortcut( "volnorm" )
     add_integer( "norm-buff-size", 20 ,NULL ,BUFF_TEXT, BUFF_LONGTEXT,
-                 true);
+                 true )
     add_float( "norm-max-level", 2.0, NULL, LEVEL_TEXT,
-               LEVEL_LONGTEXT, true );
-    set_capability( "audio filter", 0 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+               LEVEL_LONGTEXT, true )
+    set_capability( "audio filter", 0 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: initialize and create stuff
@@ -139,15 +139,13 @@ static int Open( vlc_object_t *p_this )
     if( p_sys->f_max <= 0 ) p_sys->f_max = 0.01;
 
     /* We need to store (nb_buffers+1)*nb_channels floats */
-    p_sys->p_last = malloc( sizeof( float ) * (i_channels) *
-                            (p_filter->p_sys->i_nb + 2) );
+    p_sys->p_last = calloc( i_channels * (p_filter->p_sys->i_nb + 2), sizeof(float) );
     if( !p_sys->p_last )
     {
         free( p_sys );
         return VLC_ENOMEM;
     }
-    memset( p_sys->p_last, 0 ,sizeof( float ) * (i_channels) *
-            (p_filter->p_sys->i_nb + 2) );
+
     return VLC_SUCCESS;
 }
 
@@ -169,10 +167,9 @@ static int Open( vlc_object_t *p_this )
 
     struct aout_filter_sys_t *p_sys = p_filter->p_sys;
 
-    pf_sum = malloc( sizeof(float) * i_channels );
+    pf_sum = calloc( i_channels, sizeof(float) );
     if( !pf_sum )
         return;
-    memset( pf_sum, 0, sizeof(float) * i_channels );
 
     pf_gain = malloc( sizeof(float) * i_channels );
     if( !pf_gain )

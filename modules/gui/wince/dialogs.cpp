@@ -2,7 +2,7 @@
  * dialogs.cpp : WinCE plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: 2dbc9c8d4795057b1dc9f838648a8e8284f63fec $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -32,6 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_aout.h>
 #include <vlc_interface.h>
+#include <vlc_playlist.h>
 
 #include "wince.h"
 
@@ -149,9 +150,6 @@ LRESULT DialogsProvider::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
 
 void DialogsProvider::OnIdle( void )
 {
-    /* Update the log window */
-    if( p_messages_dialog ) p_messages_dialog->UpdateLog();
-
     /* Update the playlist */
     if( p_playlist_dialog ) p_playlist_dialog->UpdatePlaylist();
 
@@ -330,9 +328,9 @@ void DialogsProvider::OnOpenFileSimple( int i_arg )
 {
     OPENFILENAME ofn;
     TCHAR szFile[MAX_PATH] = _T("\0");
-    static TCHAR szFilter[] = _T("All (*.*)\0*.*\0");
+    static TCHAR szFilter[] = _T("wav (*.wav)\0*.wav\0mp3 (*.mp3 *.mpga)\0*.mp3;*.mpga\0All (*.*)\0*.*\0");
 
-    playlist_t *p_playlist = pl_Yield( p_intf );
+    playlist_t *p_playlist = pl_Hold( p_intf );
     if( p_playlist == NULL ) return;
 
     memset( &ofn, 0, sizeof(OPENFILENAME) );
@@ -363,7 +361,8 @@ void DialogsProvider::OnOpenFileSimple( int i_arg )
     {
         char *psz_filename = _TOMB(ofn.lpstrFile);
         playlist_Add( p_playlist, psz_filename, psz_filename,
-                      PLAYLIST_APPEND | (i_arg?PLAYLIST_GO:0), PLAYLIST_END );
+                      PLAYLIST_APPEND | (i_arg?PLAYLIST_GO:0), PLAYLIST_END,
+                      TRUE, FALSE );
     }
 
     pl_Release( p_intf );
@@ -405,7 +404,7 @@ void DialogsProvider::OnOpenDirectory( int i_arg )
 
     if( !SUCCEEDED( SHGetMalloc(&p_malloc) ) ) goto error;
 
-    p_playlist = pl_Yield( p_intf );
+    p_playlist = pl_Hold( p_intf );
     if( !p_playlist ) goto error;
 
     memset( &bi, 0, sizeof(BROWSEINFO) );
@@ -423,7 +422,7 @@ void DialogsProvider::OnOpenDirectory( int i_arg )
             char *psz_filename = _TOMB(psz_result);
             playlist_Add( p_playlist, psz_filename, psz_filename,
                           PLAYLIST_APPEND | (i_arg ? PLAYLIST_GO : 0),
-                          PLAYLIST_END );
+                          PLAYLIST_END, TRUE, FALSE );
         }
         p_malloc->Free( pidl );
     }

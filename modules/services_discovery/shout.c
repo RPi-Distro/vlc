@@ -2,7 +2,7 @@
  * shout.c:  Shoutcast services discovery module
  *****************************************************************************
  * Copyright (C) 2005-2007 the VideoLAN team
- * $Id: bab1f0204b8370572e9e95697daa8f13f792cf25 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Antoine Cellerier <dionoea -@T- videolan -d.t- org>
@@ -100,48 +100,52 @@ OPEN( ShoutTV )
 OPEN( Freebox )
 OPEN( FrenchTV )
 
-vlc_module_begin();
-    set_category( CAT_PLAYLIST );
-    set_subcategory( SUBCAT_PLAYLIST_SD );
+vlc_module_begin ()
+    set_category( CAT_PLAYLIST )
+    set_subcategory( SUBCAT_PLAYLIST_SD )
 
-    add_obsolete_integer( "shoutcast-limit" );
+    add_obsolete_integer( "shoutcast-limit" )
 
-        set_shortname( "Shoutcast");
-        set_description( N_("Shoutcast radio listings") );
-        set_capability( "services_discovery", 0 );
-        set_callbacks( OpenShoutRadio, Close );
-        add_shortcut( "shoutcast" );
+        set_shortname( "Shoutcast")
+        set_description( N_("Shoutcast radio listings") )
+        set_capability( "services_discovery", 0 )
+        set_callbacks( OpenShoutRadio, Close )
+        add_shortcut( "shoutcast" )
 
-    add_submodule();
-        set_shortname( "ShoutcastTV" );
-        set_description( N_("Shoutcast TV listings") );
-        set_capability( "services_discovery", 0 );
-        set_callbacks( OpenShoutTV, Close );
-        add_shortcut( "shoutcasttv" );
+    add_submodule ()
+        set_shortname( "ShoutcastTV" )
+        set_description( N_("Shoutcast TV listings") )
+        set_capability( "services_discovery", 0 )
+        set_callbacks( OpenShoutTV, Close )
+        add_shortcut( "shoutcasttv" )
 
-    add_submodule();
-        set_shortname( "frenchtv");
-        set_description( N_("French TV") );
-        set_capability( "services_discovery", 0 );
-        set_callbacks( OpenFrenchTV, Close );
-        add_shortcut( "frenchtv" );
+    add_submodule ()
+        set_shortname( "frenchtv")
+        set_description( N_("French TV") )
+        set_capability( "services_discovery", 0 )
+        set_callbacks( OpenFrenchTV, Close )
+        add_shortcut( "frenchtv" )
 
-    add_submodule();
-        set_shortname( "Freebox");
-        set_description( N_("Freebox TV listing (French ISP free.fr services)") );
-        set_capability( "services_discovery", 0 );
-        set_callbacks( OpenFreebox, Close );
-        add_shortcut( "freebox" );
+    add_submodule ()
+        set_shortname( "Freebox")
+        set_description( N_("Freebox TV listing (French ISP free.fr services)") )
+        set_capability( "services_discovery", 0 )
+        set_callbacks( OpenFreebox, Close )
+        add_shortcut( "freebox" )
 
-vlc_module_end();
+vlc_module_end ()
 
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 
-static void Run( services_discovery_t *p_sd );
-
+static void *Run( void * );
+struct services_discovery_sys_t
+{
+    vlc_thread_t thread;
+    enum type_e i_type;
+};
 
 /*****************************************************************************
  * Open: initialize and create stuff
@@ -149,9 +153,17 @@ static void Run( services_discovery_t *p_sd );
 static int Open( vlc_object_t *p_this, enum type_e i_type )
 {
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
-    services_discovery_SetLocalizedName( p_sd, _(p_items[i_type].psz_name) );
-    p_sd->pf_run = Run;
-    p_sd->p_sys = (void *)i_type;
+
+    p_sd->p_sys = malloc (sizeof (*(p_sd->p_sys)));
+    if (p_sd->p_sys == NULL)
+        return VLC_ENOMEM;
+
+    p_sd->p_sys->i_type = i_type;
+    if (vlc_clone (&p_sd->p_sys->thread, Run, p_sd, VLC_THREAD_PRIORITY_LOW))
+    {
+        free (p_sd->p_sys);
+        return VLC_EGENERIC;
+    }
     return VLC_SUCCESS;
 }
 
@@ -174,14 +186,13 @@ static input_item_t * CreateInputItemFromShoutItem( services_discovery_t *p_sd,
 {
     int i;
     /* Create the item */
-    input_item_t *p_input = input_item_NewExt( p_sd,
-                    p_item->psz_url, _(p_item->psz_name),
-                    0, NULL, -1 );
+    input_item_t *p_input = input_item_New( p_sd, p_item->psz_url,
+                                            vlc_gettext(p_item->psz_name) );
 
     /* Copy options */
     for( i = 0; p_item->ppsz_options[i] != NULL; i++ )
-        input_item_AddOption( p_input, p_item->ppsz_options[i] );
-    input_item_AddOption( p_input, "no-playlist-autostart" );
+        input_item_AddOption( p_input, p_item->ppsz_options[i], VLC_INPUT_OPTION_TRUSTED );
+    input_item_AddOption( p_input, "no-playlist-autostart", VLC_INPUT_OPTION_TRUSTED );
 
     return p_input;
 }
@@ -211,15 +222,19 @@ static void AddSubitemsOfShoutItemURL( services_discovery_t *p_sd,
 /*****************************************************************************
  * Run:
  *****************************************************************************/
-static void Run( services_discovery_t *p_sd )
+static void *Run( void *data )
 {
-    enum type_e i_type = (enum type_e)p_sd->p_sys;
+    services_discovery_t *p_sd = data;
+    services_discovery_sys_t *p_sys = p_sd->p_sys;
+    enum type_e i_type = p_sys->i_type;
     int i, j;
+    int canc = vlc_savecancel();
     
     if( !p_items[i_type].p_children )
     {
         AddSubitemsOfShoutItemURL( p_sd, &p_items[i_type], NULL );
-        return;
+        vlc_restorecancel(canc);
+        return NULL;
     }
     for( i = 0; p_items[i_type].p_children[i].psz_name; i++ )
     {
@@ -238,6 +253,8 @@ static void Run( services_discovery_t *p_sd )
             vlc_gc_decref( p_input );
         }
     }
+    vlc_restorecancel(canc);
+    return NULL;
 }
 
 /*****************************************************************************
@@ -245,5 +262,9 @@ static void Run( services_discovery_t *p_sd )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    VLC_UNUSED(p_this);
+    services_discovery_t *p_sd = (services_discovery_t *)p_this;
+    services_discovery_sys_t *p_sys = p_sd->p_sys;
+
+    vlc_join (p_sys->thread, NULL);
+    free (p_sys);
 }

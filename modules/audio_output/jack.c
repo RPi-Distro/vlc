@@ -2,7 +2,7 @@
  * jack : JACK audio output module
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: f87d4cbe011ed09390e4c97b8a011f6f949f0106 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax _at_ videolan.org>
  *          Jon Griffiths <jon_p_griffiths _At_ yahoo _DOT_ com>
@@ -79,18 +79,18 @@ static int  Process      ( jack_nframes_t i_frames, void *p_arg );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_shortname( "JACK" );
-    set_description( N_("JACK audio output") );
-    set_capability( "audio output", 100 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AOUT );
+vlc_module_begin ()
+    set_shortname( "JACK" )
+    set_description( N_("JACK audio output") )
+    set_capability( "audio output", 100 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AOUT )
     add_bool( AUTO_CONNECT_OPTION, 0, NULL, AUTO_CONNECT_TEXT,
-              AUTO_CONNECT_LONGTEXT, true );
+              AUTO_CONNECT_LONGTEXT, true )
     add_string( CONNECT_REGEX_OPTION, NULL, NULL, CONNECT_REGEX_TEXT,
-                CONNECT_REGEX_LONGTEXT, true );
-    set_callbacks( Open, Close );
-vlc_module_end();
+                CONNECT_REGEX_LONGTEXT, true )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: create a JACK client

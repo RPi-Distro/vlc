@@ -18,5 +18,5 @@ libavcodec_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libavcodec_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libavcodec_plugin_la_LIBADD = $(AM_LIBADD)
-libavcodec_plugin_la_DEPENDENCIES =
+libavcodec_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

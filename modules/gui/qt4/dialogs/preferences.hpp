@@ -2,7 +2,7 @@
  * preferences.hpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 44260ff7f789fb86c1fbedf8c0326a9d0d721051 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _PREFS_DIALOG_H_
-#define _PREFS_DIALOG_H_
+#ifndef QVLC_PREFS_DIALOG_H_
+#define QVLC_PREFS_DIALOG_H_ 1
 
 #include "util/qvlcframe.hpp"
 #include "components/simple_preferences.hpp"
@@ -45,25 +45,15 @@ class PrefsDialog : public QVLCDialog
 {
     Q_OBJECT;
 public:
-    static PrefsDialog * getInstance( intf_thread_t *p_intf )
-    {
-        if( !instance )
-            instance = new PrefsDialog( (QWidget *)p_intf->p_sys->p_mi, p_intf );
-        return instance;
-    }
-    virtual ~PrefsDialog() {};
+    PrefsDialog( QWidget *, intf_thread_t * );
+    virtual ~PrefsDialog() {}
 #if 0
     /*Called from extended settings, is not used anymore, but could be useful one day*/
     void showModulePrefs( char* );
 #endif
 
-protected:
-    virtual void closeEvent( QCloseEvent *e ){ instance = NULL; close(); }
 private:
-    PrefsDialog( QWidget *, intf_thread_t * );
     QGridLayout *main_layout;
-
-    void destroyPanels();
 
     QWidget *main_panel;
     QHBoxLayout *main_panel_l;
@@ -81,7 +71,7 @@ private:
     QGroupBox *types;
     QRadioButton *small,*all;
 
-    static PrefsDialog *instance;
+    bool b_small;
 
 private slots:
     void setAdvanced();
@@ -93,6 +83,7 @@ private slots:
     void save();
     void cancel();
     void reset();
+    void close() { save(); };
 };
 
 #endif

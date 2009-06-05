@@ -1,3 +1,43 @@
+vlc (1.0.0~rc2-1) experimental; urgency=low
+
+  * New Upstream Release Candidate
+    + Closes: #527010, #491441, #508618, #522824
+  * Delete patches which were picked from upstream
+  * Refresh patches
+  * Remove vlc-plugin-esd and vlc-plugin-arts as they have been removed
+    by upstream
+  * SONAME change for libvlccore
+  * Add new symbols for libvlc2
+  * Fix static libs compile
+  * Use vlc-wrapper manpage from upstream
+  * vlc.install: add drawable and screen was renamed x11_screen
+  * vlc-nox.install: Add and remove modules added/removed upstream
+  * Point out in NEWS the modules renamed or splited
+  * Add links to upstream NEWS and co in vlc-nox
+  * Version the depedency of libvlcore2 on vlc-data
+  * Remove unnecessary "Section:" in debian/control
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 03 Jun 2009 17:55:10 +0200
+
+vlc (0.9.9a-3) unstable; urgency=low
+
+  * Correct typo in 0.9.9a-2 changelog entry
+  * Disable more optimization with DEB_BUILD_OPTIONS=noopt
+  * Cache the configure test results as we're running configure several
+    times
+  * Fix building as root
+  * Fix the clean target
+  * Remove unexistant config options
+  * Better check commad line
+  * Use all the procs on i386 and amd64
+  * Build a version of libvlccore without altivec (Closes: #523035)
+  * Fix typo (thanks to Salvatore Bonaccorso)(Closes: #528044)
+  * Reword the command line to get full logs in bug/presubj (Closes: #527012)
+  * Remove duplicate "extended Settings" entry in context menu
+   (Closes: #526603) - thanks to Matt Kraai
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 14 May 2009 19:19:27 +0200
+
 vlc (0.9.9a-2ubuntu2) karmic; urgency=low
 
   * Rebuild for libass1 -> libass3 transistion.
@@ -31,9 +71,9 @@ vlc (0.9.9a-2ubuntu1) jaunty; urgency=low
 vlc (0.9.9a-2) unstable; urgency=medium
 
   * Security fix
-  * The default /usr/share/http/{old}/.hosts was wrong in VLC 0.9.8 and 0.9.
-    World access of the htp interface was possible when activated in
-    contradiction of what is said in Chagelog.Debian and NEWS.Debian.
+  * The default /usr/share/http/{old}/.hosts was wrong in VLC 0.9.8 and 0.9.9.
+    World access of the http interface was possible when activated in
+    contradiction of what is said in Changelog.Debian and NEWS.Debian.
 
  -- Christophe Mutricy <xtophe@videolan.org>  Tue, 07 Apr 2009 23:06:48 +0200
 

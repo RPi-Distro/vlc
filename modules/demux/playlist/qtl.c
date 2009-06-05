@@ -2,7 +2,7 @@
  * qtl.c: QuickTime Media Link Importer
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 778608765b92e00f1a5cb418fa816534fb32748a $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -@t- videolan -Dot- org>
  *
@@ -349,18 +349,16 @@ static int Demux( demux_t *p_demux )
     }
     else
     {
-        p_input = input_item_NewExt( p_demux,
-                                psz_src, psz_moviename, 0, NULL, -1 );
+        p_input = input_item_New( p_demux, psz_src, psz_moviename );
 #define SADD_INFO( type, field ) if( field ) { input_item_AddInfo( \
-                    p_input, "QuickTime Media Link", _(type), "%s", field ) ; }
+                    p_input, "QuickTime Media Link", type, "%s", field ) ; }
         SADD_INFO( "href", psz_href );
-        SADD_INFO( "mime type", psz_mimetype );
+        SADD_INFO( _("Mime"), psz_mimetype );
         input_item_AddSubItem( p_current_input, p_input );
         vlc_gc_decref( p_input );
         if( psz_qtnext )
         {
-            p_input = input_item_NewExt( p_demux,
-                                        psz_qtnext, NULL, 0, NULL, -1 );
+            p_input = input_item_New( p_demux, psz_qtnext, NULL );
             input_item_AddSubItem( p_current_input, p_input );
             vlc_gc_decref( p_input );
         }

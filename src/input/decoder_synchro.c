@@ -2,7 +2,7 @@
  * decoder_synchro.c : frame dropping routines
  *****************************************************************************
  * Copyright (C) 1999-2005 the VideoLAN team
- * $Id: f28aea476921305b37cf9069d09472996ddd9aa5 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Samuel Hocevar <sam@via.ecp.fr>
@@ -116,7 +116,6 @@ struct decoder_synchro_t
 
     /* */
     int             i_frame_rate;
-    int             i_current_rate;
     bool      b_no_skip;
     bool      b_quiet;
 
@@ -162,10 +161,9 @@ struct decoder_synchro_t
  *****************************************************************************/
 decoder_synchro_t * decoder_SynchroInit( decoder_t *p_dec, int i_frame_rate )
 {
-    decoder_synchro_t * p_synchro = malloc( sizeof(*p_synchro) );
-    if ( p_synchro == NULL )
+    decoder_synchro_t * p_synchro = calloc( 1, sizeof(*p_synchro) );
+    if( !p_synchro )
         return NULL;
-    memset( p_synchro, 0, sizeof(*p_synchro) );
 
     p_synchro->p_dec = p_dec;
     p_synchro->b_no_skip = !config_GetInt( p_dec, "skip-frames" );
@@ -178,7 +176,7 @@ decoder_synchro_t * decoder_SynchroInit( decoder_t *p_dec, int i_frame_rate )
     memset( p_synchro->pi_meaningful, 0, 4 * sizeof(unsigned int) );
     p_synchro->i_nb_ref = 0;
     p_synchro->i_trash_nb_ref = p_synchro->i_dec_nb_ref = 0;
-    p_synchro->current_pts = mdate() + DEFAULT_PTS_DELAY;
+    p_synchro->current_pts = 1,
     p_synchro->backward_pts = 0;
     p_synchro->i_current_period = p_synchro->i_backward_period = 0;
     p_synchro->i_trashed_pic = p_synchro->i_not_chosen_pic =
@@ -219,13 +217,16 @@ bool decoder_SynchroChoose( decoder_synchro_t * p_synchro, int i_coding_type,
     mtime_t         now, period;
     mtime_t         pts = 0;
     bool      b_decode = 0;
+    int       i_current_rate;
 
     if ( p_synchro->b_no_skip )
         return 1;
 
+    i_current_rate = decoder_GetDisplayRate( p_synchro->p_dec );
+
     now = mdate();
     period = 1000000 * 1001 / p_synchro->i_frame_rate
-                     * p_synchro->i_current_rate / INPUT_RATE_DEFAULT;
+                     * i_current_rate / INPUT_RATE_DEFAULT;
 
     p_synchro->i_render_time = i_render_time;
 
@@ -234,11 +235,11 @@ bool decoder_SynchroChoose( decoder_synchro_t * p_synchro, int i_coding_type,
     case I_CODING_TYPE:
         if( b_low_delay )
         {
-            pts = S.current_pts;
+            pts = decoder_GetDisplayDate( p_synchro->p_dec, S.current_pts );
         }
         else if( S.backward_pts )
         {
-            pts = S.backward_pts;
+            pts = decoder_GetDisplayDate( p_synchro->p_dec, S.backward_pts );
         }
         else
         {
@@ -247,7 +248,7 @@ bool decoder_SynchroChoose( decoder_synchro_t * p_synchro, int i_coding_type,
              *                      |       +- current picture
              *                      +- current PTS
              */
-            pts = S.current_pts + period * (S.i_n_b + 2);
+            pts = decoder_GetDisplayDate( p_synchro->p_dec, S.current_pts ) + period * (S.i_n_b + 2);
         }
 
         if( (1 + S.i_n_p * (S.i_n_b + 1)) * period >
@@ -269,15 +270,15 @@ bool decoder_SynchroChoose( decoder_synchro_t * p_synchro, int i_coding_type,
     case P_CODING_TYPE:
         if( b_low_delay )
         {
-            pts = S.current_pts;
+            pts = decoder_GetDisplayDate( p_synchro->p_dec, S.current_pts );
         }
         else if( S.backward_pts )
         {
-            pts = S.backward_pts;
+            pts = decoder_GetDisplayDate( p_synchro->p_dec, S.backward_pts );
         }
         else
         {
-            pts = S.current_pts + period * (S.i_n_b + 1);
+            pts = decoder_GetDisplayDate( p_synchro->p_dec, S.current_pts + period * (S.i_n_b + 1) );
         }
 
         if( p_synchro->i_nb_ref < 1 )
@@ -310,7 +311,7 @@ bool decoder_SynchroChoose( decoder_synchro_t * p_synchro, int i_coding_type,
         break;
 
     case B_CODING_TYPE:
-        pts = S.current_pts;
+        pts = decoder_GetDisplayDate( p_synchro->p_dec, S.current_pts );
 
         if( p_synchro->i_nb_ref < 2 )
         {
@@ -397,16 +398,13 @@ mtime_t decoder_SynchroDate( decoder_synchro_t * p_synchro )
  * decoder_SynchroNewPicture: Update stream structure and PTS
  *****************************************************************************/
 void decoder_SynchroNewPicture( decoder_synchro_t * p_synchro, int i_coding_type,
-                             int i_repeat_field, mtime_t next_pts,
-                             mtime_t next_dts, int i_current_rate,
-                             bool b_low_delay )
+                                int i_repeat_field, mtime_t next_pts,
+                                mtime_t next_dts, bool b_low_delay )
 {
-    mtime_t         period = 1000000 * 1001 / p_synchro->i_frame_rate
-                              * i_current_rate / INPUT_RATE_DEFAULT;
+    mtime_t         period = 1000000 * 1001 / p_synchro->i_frame_rate;
 #if 0
     mtime_t         now = mdate();
 #endif
-    p_synchro->i_current_rate = i_current_rate;
 
     switch( i_coding_type )
     {

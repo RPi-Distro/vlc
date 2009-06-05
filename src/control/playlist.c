@@ -2,7 +2,7 @@
  * playlist.c: libvlc new API playlist handling functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 86d68688ad87ae948810d2f3ad9e1ac85db34c10 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -22,13 +22,12 @@
  *****************************************************************************/
 
 #include "libvlc_internal.h"
+#include "libvlc.h"
 
 #include <vlc/libvlc.h>
 #include <vlc_playlist.h>
 
 #include <assert.h>
-
-#include "../playlist/playlist_internal.h"
 
 #define PL (libvlc_priv (p_instance->p_libvlc_int)->p_playlist)
 
@@ -75,27 +74,21 @@ void libvlc_playlist_play( libvlc_instance_t *p_instance, int i_id,
         if (! playlist_was_locked( p_instance ) )
         {
             playlist_mark_locked( p_instance, 1 );
-            vlc_object_lock( PL );
+            playlist_Lock( PL );
             did_lock = 1;
         }
 
         p_item = playlist_ItemGetByInputId( PL, i_id,
-                                            PL->status.p_node );
-        if( !p_item )
-        {
-            if( did_lock == 1 )
-            {
-                vlc_object_unlock( PL );
-                playlist_mark_locked( p_instance, 0 );
-            }
+                                            PL->p_root_category );
+        if( p_item )
+            playlist_Control( PL, PLAYLIST_VIEWPLAY, pl_Locked,
+                              PL->p_root_category, p_item );
+       else
             RAISEVOID( "Unable to find item" );
-        }
 
-        playlist_Control( PL, PLAYLIST_VIEWPLAY, pl_Locked,
-                          PL->status.p_node, p_item );
         if( did_lock == 1 )
         {
-            vlc_object_unlock( PL );
+            playlist_Unlock( PL );
             playlist_mark_locked( p_instance, 0 );
         }
     }
@@ -171,9 +164,10 @@ static int PlaylistAddExtended( libvlc_instance_t *p_instance,
                                "calling libvlc_playlist_add" );
         return VLC_EGENERIC;
     }
-    return playlist_AddExtOpt( PL, psz_uri, psz_name, PLAYLIST_INSERT,
-                               PLAYLIST_END, -1, ppsz_options, i_options,
-                               i_option_flags, true, pl_Unlocked );
+    return playlist_AddExt( PL, psz_uri, psz_name,
+                            PLAYLIST_INSERT, PLAYLIST_END, -1,
+                            i_options, ppsz_options, i_option_flags,
+                            true, pl_Unlocked );
 }
 int libvlc_playlist_add_extended( libvlc_instance_t *p_instance,
                                   const char *psz_uri, const char *psz_name,
@@ -214,7 +208,7 @@ int libvlc_playlist_isplaying( libvlc_instance_t *p_instance,
     VLC_UNUSED(p_e);
 
     assert( PL );
-    return playlist_IsPlaying( PL );
+    return playlist_Status( PL ) == PLAYLIST_RUNNING;
 }
 
 int libvlc_playlist_items_count( libvlc_instance_t *p_instance,
@@ -232,15 +226,16 @@ int libvlc_playlist_get_current_index ( libvlc_instance_t *p_instance,
     VLC_UNUSED(p_e);
 
     assert( PL );
-    if( !PL->status.p_item )
+    playlist_item_t *p_item = playlist_CurrentPlayingItem( PL );
+    if( !p_item )
         return -1;
-    return playlist_CurrentId( PL );
+    return p_item->i_id;
 }
 
 void libvlc_playlist_lock( libvlc_instance_t *p_instance )
 {
     assert( PL );
-    vlc_object_lock( PL );
+    playlist_Lock( PL );
     p_instance->b_playlist_locked = 1;
 }
 
@@ -248,7 +243,7 @@ void libvlc_playlist_unlock( libvlc_instance_t *p_instance )
 {
     assert( PL );
     p_instance->b_playlist_locked = 0;
-    vlc_object_unlock( PL );
+    playlist_Unlock( PL );
 }
 
 libvlc_media_player_t * libvlc_playlist_get_media_player(
@@ -257,12 +252,12 @@ libvlc_media_player_t * libvlc_playlist_get_media_player(
 {
     libvlc_media_player_t *p_mi;
     assert( PL );
-
-    vlc_object_lock( PL );
-    if( PL->p_input )
+    input_thread_t * input = playlist_CurrentInput( PL );
+    if( input )
     {
         p_mi = libvlc_media_player_new_from_input_thread(
-                            p_instance, PL->p_input, p_e );
+                            p_instance, input, p_e );
+        vlc_object_release( input );
     }
     else
     {
@@ -270,7 +265,6 @@ libvlc_media_player_t * libvlc_playlist_get_media_player(
         p_mi = NULL;
         libvlc_exception_raise( p_e, "No active input" );
     }
-    vlc_object_unlock( PL );
 
     return p_mi;
 }

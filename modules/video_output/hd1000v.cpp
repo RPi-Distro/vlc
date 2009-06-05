@@ -2,7 +2,7 @@
  * hd1000v.cpp: HD1000 video output display method
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: e5cbf29df0671c8dba2650435e6449c1f3831705 $
+ * $Id$
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *
@@ -56,12 +56,12 @@ static void FreePicture( vout_thread_t *, picture_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("HD1000 video output") );
-    set_capability( "video output", 100 );
-    add_shortcut( "hd1000v" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("HD1000 video output") )
+    set_capability( "video output", 100 )
+    add_shortcut( "hd1000v" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 /*****************************************************************************
  * vout_sys_t: video output method descriptor

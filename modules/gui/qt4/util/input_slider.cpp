@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 0eeb8ef9c7bc6723c9079f9cdb2bd402ca84a9bd $
+ * $Id: 4140c38b2e0ef8c1089a858a122dccf00f1af7c3 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -31,17 +31,16 @@
 #include <QPaintEvent>
 #include <QPainter>
 #include <QBitmap>
-#include <QStyle>
 
 InputSlider::InputSlider( QWidget *_parent ) : QSlider( _parent )
 {
     InputSlider::InputSlider( Qt::Horizontal, _parent );
 }
 
-InputSlider::InputSlider( Qt::Orientation q,QWidget *_parent ) :
+InputSlider::InputSlider( Qt::Orientation q, QWidget *_parent ) :
                                  QSlider( q, _parent )
 {
-    b_sliding = false;
+    b_isSliding = false;
     setMinimum( 0 );
     setMouseTracking(true);
     setMaximum( 1000 );
@@ -57,21 +56,19 @@ InputSlider::InputSlider( Qt::Orientation q,QWidget *_parent ) :
 void InputSlider::setPosition( float pos, int a, int b )
 {
     if( pos == -1.0 )
-    {
         setEnabled( false );
-        b_sliding = false;
-    }
     else
         setEnabled( true );
 
-    if( !b_sliding )
+    if( !b_isSliding )
         setValue( (int)(pos * 1000.0 ) );
+
     inputLength = b;
 }
 
 void InputSlider::userDrag( int new_value )
 {
-    if( b_sliding )
+    if( b_isSliding )
     {
         float f_pos = (float)(new_value)/1000.0;
         emit sliderDragged( f_pos );
@@ -80,12 +77,14 @@ void InputSlider::userDrag( int new_value )
 
 void InputSlider::mouseReleaseEvent( QMouseEvent *event )
 {
-    b_sliding = false;
+    b_isSliding = false;
+    event->accept();
+    QSlider::mouseReleaseEvent( event );
 }
 
 void InputSlider::mousePressEvent(QMouseEvent* event)
 {
-    b_sliding = true ;
+    b_isSliding = true ;
     if( event->button() != Qt::LeftButton &&
         event->button() != Qt::MidButton )
     {
@@ -102,19 +101,20 @@ void InputSlider::mousePressEvent(QMouseEvent* event)
 
 void InputSlider::mouseMoveEvent(QMouseEvent *event)
 {
-    if( b_sliding )
+    if( b_isSliding )
     {
         QSlider::mouseMoveEvent( event );
     }
 
     secstotimestr( psz_length, ( event->x() * inputLength) / size().width() );
     setToolTip( psz_length );
+    event->accept();
 }
 
 void InputSlider::wheelEvent( QWheelEvent *event)
 {
     /* Don't do anything if we are for somehow reason sliding */
-    if( !b_sliding )
+    if( !b_isSliding )
     {
         setValue( value() + event->delta()/12 ); /* 12 = 8 * 15 / 10
          Since delta is in 1/8 of ° and mouse have steps of 15 °
@@ -143,8 +143,8 @@ SoundSlider::SoundSlider( QWidget *_parent, int _i_step, bool b_hard,
     f_step = ( _i_step * 100 ) / AOUT_VOLUME_MAX ;
     setRange( SOUNDMIN, b_hard ? (2 * SOUNDMAX) : SOUNDMAX  );
     setMouseTracking( true );
-    b_sliding = false;
-    b_outside = false;
+    b_isSliding = false;
+    b_mouseOutside = true;
 
     pixOutside = QPixmap( ":/volslide-outside" );
 
@@ -168,7 +168,7 @@ SoundSlider::SoundSlider( QWidget *_parent, int _i_step, bool b_hard,
 
 #define c(i) colorList.at(i).toInt()
     gradient.setColorAt( 0.0, QColor( c(0), c(1), c(2) ) );
-    gradient.setColorAt( 0.2, QColor( c(3), c(4), c(5) ) );
+    gradient.setColorAt( 0.22, QColor( c(3), c(4), c(5) ) );
     gradient.setColorAt( 0.5, QColor( c(6), c(7), c(8) ) );
     gradient.setColorAt( 1.0, QColor( c(9), c(10), c(11) ) );
 
@@ -194,7 +194,7 @@ void SoundSlider::mousePressEvent( QMouseEvent *event )
     if( event->button() != Qt::RightButton )
     {
         /* We enter the sliding mode */
-        b_sliding = true;
+        b_isSliding = true;
         i_oldvalue = value();
         emit sliderPressed();
         changeValue( event->x() - paddingL );
@@ -205,31 +205,31 @@ void SoundSlider::mouseReleaseEvent( QMouseEvent *event )
 {
     if( event->button() != Qt::RightButton )
     {
-        if( !b_outside && value() != i_oldvalue )
+        if( !b_mouseOutside && value() != i_oldvalue )
         {
             emit sliderReleased();
             setValue( value() );
         }
-        b_sliding = false;
-        b_outside = false;
+        b_isSliding = false;
+        b_mouseOutside = false;
     }
 }
 
 void SoundSlider::mouseMoveEvent( QMouseEvent *event )
 {
-    if( b_sliding )
+    if( b_isSliding )
     {
         QRect rect( paddingL - 15,    -1,
                     WLENGTH + 15 * 2 , WHEIGHT + 5 );
         if( !rect.contains( event->pos() ) )
         { /* We are outside */
-            if ( !b_outside )
+            if ( !b_mouseOutside )
                 setValue( i_oldvalue );
-            b_outside = true;
+            b_mouseOutside = true;
         }
         else
         { /* We are inside */
-            b_outside = false;
+            b_mouseOutside = false;
             changeValue( event->x() - paddingL );
             emit sliderMoved( value() );
         }
@@ -247,7 +247,7 @@ void SoundSlider::changeValue( int x )
     setValue( (x * maximum() + 40 ) / WLENGTH );
 }
 
-void SoundSlider::paintEvent(QPaintEvent *e)
+void SoundSlider::paintEvent( QPaintEvent *e )
 {
     QPainter painter( this );
     const int offset = int( ( WLENGTH * value() + 100 ) / maximum() ) + paddingL;
@@ -266,5 +266,6 @@ void SoundSlider::paintEvent(QPaintEvent *e)
                       QString::number( value() ) + '%' );
 
     painter.end();
+    e->accept();
 }
 

@@ -2,7 +2,7 @@
  * smb.c: SMB input module
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: b5f518b366e5b47349d03486e3839da99cff3e8b $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -75,23 +75,24 @@ static void Close( vlc_object_t * );
 #define DOMAIN_LONGTEXT N_("Domain/Workgroup that " \
     "will be used for the connection.")
 
-vlc_module_begin();
-    set_shortname( "SMB" );
-    set_description( N_("SMB input") );
-    set_capability( "access", 0 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
+vlc_module_begin ()
+    set_shortname( "SMB" )
+    set_description( N_("SMB input") )
+    set_capability( "access", 0 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
     add_integer( "smb-caching", 2 * DEFAULT_PTS_DELAY / 1000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, true );
+                 CACHING_TEXT, CACHING_LONGTEXT, true )
+        change_safe()
     add_string( "smb-user", NULL, NULL, USER_TEXT, USER_LONGTEXT,
-                false );
+                false )
     add_string( "smb-pwd", NULL, NULL, PASS_TEXT,
-                PASS_LONGTEXT, false );
+                PASS_LONGTEXT, false )
     add_string( "smb-domain", NULL, NULL, DOMAIN_TEXT,
-                DOMAIN_LONGTEXT, false );
-    add_shortcut( "smb" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+                DOMAIN_LONGTEXT, false )
+    add_shortcut( "smb" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -129,7 +130,7 @@ static int Open( vlc_object_t *p_this )
     access_sys_t *p_sys;
     struct stat  filestat;
     char         *psz_path, *psz_uri;
-    char         *psz_user = 0, *psz_pwd = 0, *psz_domain = 0;
+    char         *psz_user = NULL, *psz_pwd = NULL, *psz_domain = NULL;
     int          i_ret;
 
 #ifdef USE_CTX
@@ -189,11 +190,11 @@ static int Open( vlc_object_t *p_this )
      * smb://[[[domain;]user[:password@]]server[/share[/path[/file]]]] */
 
     if( !psz_user ) psz_user = var_CreateGetString( p_access, "smb-user" );
-    if( psz_user && !*psz_user ) { free( psz_user ); psz_user = 0; }
+    if( psz_user && !*psz_user ) { free( psz_user ); psz_user = NULL; }
     if( !psz_pwd ) psz_pwd = var_CreateGetString( p_access, "smb-pwd" );
-    if( psz_pwd && !*psz_pwd ) { free( psz_pwd ); psz_pwd = 0; }
+    if( psz_pwd && !*psz_pwd ) { free( psz_pwd ); psz_pwd = NULL; }
     if( !psz_domain ) psz_domain = var_CreateGetString( p_access, "smb-domain" );
-    if( psz_domain && !*psz_domain ) { free( psz_domain ); psz_domain = 0; }
+    if( psz_domain && !*psz_domain ) { free( psz_domain ); psz_domain = NULL; }
 
 #ifdef WIN32
     if( psz_user )
@@ -384,9 +385,8 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    bool   *pb_bool;
-    int          *pi_int;
-    int64_t      *pi_64;
+    bool        *pb_bool;
+    int64_t     *pi_64;
 
     switch( i_query )
     {
@@ -405,11 +405,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
     case ACCESS_CAN_CONTROL_PACE:
         pb_bool = (bool*)va_arg( args, bool* );
         *pb_bool = true;
-        break;
-
-    case ACCESS_GET_MTU:
-        pi_int = (int*)va_arg( args, int * );
-        *pi_int = 0;
         break;
 
     case ACCESS_GET_PTS_DELAY:

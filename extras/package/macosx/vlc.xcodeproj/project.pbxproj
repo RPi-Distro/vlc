@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		CC0FB34C0F8BED1100F057F7 /* CoreDialogs.nib in Resources */ = {isa = PBXBuildFile; fileRef = CC0FB34A0F8BED1100F057F7 /* CoreDialogs.nib */; };
 		CC402EB00E00ABBB006A4BA4 /* vlc.icns in Resources */ = {isa = PBXBuildFile; fileRef = F74F13DF02C2A53401EE194C /* vlc.icns */; };
 		CC402EB10E00ABBB006A4BA4 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = F74F13EA02C2A79C01EE194C /* MainMenu.nib */; };
 		CC402EB20E00ABBB006A4BA4 /* divx.icns in Resources */ = {isa = PBXBuildFile; fileRef = F6E4F90A02D2648B01A80112 /* divx.icns */; };
@@ -84,8 +85,6 @@
 		CC402EFB0E00ABBB006A4BA4 /* skip_forward_embedded_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = C2F2A704095AE51600018C74 /* skip_forward_embedded_blue.png */; };
 		CC402EFC0E00ABBB006A4BA4 /* skip_previous_embedded_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = C2F2A705095AE51600018C74 /* skip_previous_embedded_blue.png */; };
 		CC402EFD0E00ABBB006A4BA4 /* Update.nib in Resources */ = {isa = PBXBuildFile; fileRef = CC26BF2A09A7A05000E94D62 /* Update.nib */; };
-		CC402EFE0E00ABBB006A4BA4 /* Interaction.nib in Resources */ = {isa = PBXBuildFile; fileRef = CC1B4B4B09A8CF9E0078AD2E /* Interaction.nib */; };
-		CC402EFF0E00ABBB006A4BA4 /* InteractionErrorPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CC1AC1BA0A7BDA41002478C3 /* InteractionErrorPanel.nib */; };
 		CC402F000E00ABBB006A4BA4 /* add_embedded_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = CC4ED9AC0ABE07C800CA4CC5 /* add_embedded_blue.png */; };
 		CC402F010E00ABBB006A4BA4 /* add_embedded.png in Resources */ = {isa = PBXBuildFile; fileRef = CC4ED9AD0ABE07C800CA4CC5 /* add_embedded.png */; };
 		CC402F020E00ABBB006A4BA4 /* repeat_embedded_blue.png in Resources */ = {isa = PBXBuildFile; fileRef = CC4ED9AE0ABE07C800CA4CC5 /* repeat_embedded_blue.png */; };
@@ -154,6 +153,12 @@
 		CC402F420E00ABBB006A4BA4 /* ApplicationServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC3DC89B0A7CDB9600B53F32 /* ApplicationServices.framework */; };
 		CC402F430E00ABBB006A4BA4 /* QTKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC1941240B9C1F8400635F6B /* QTKit.framework */; };
 		CC402F440E00ABBB006A4BA4 /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CC962E2C0CC7992800A56695 /* WebKit.framework */; };
+		CCB60A420E6E5E3F00407004 /* VLM.nib in Resources */ = {isa = PBXBuildFile; fileRef = CCB60A400E6E5E3F00407004 /* VLM.nib */; };
+		CCBE999F0F922C51000705F8 /* CoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CCBE999E0F922C51000705F8 /* CoreServices.framework */; };
+		CCD90F4E0E87C86D0034564A /* add_schedule.png in Resources */ = {isa = PBXBuildFile; fileRef = CCD90F4B0E87C86D0034564A /* add_schedule.png */; };
+		CCD90F4F0E87C86D0034564A /* add_vod.png in Resources */ = {isa = PBXBuildFile; fileRef = CCD90F4C0E87C86D0034564A /* add_vod.png */; };
+		CCD90F500E87C86D0034564A /* add_broadcast.png in Resources */ = {isa = PBXBuildFile; fileRef = CCD90F4D0E87C86D0034564A /* add_broadcast.png */; };
+		CCF11B540F8BFB520088542D /* ErrorPanel.nib in Resources */ = {isa = PBXBuildFile; fileRef = CCF11B520F8BFB520088542D /* ErrorPanel.nib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -256,11 +261,8 @@
 		CC0B723A0D54F2B000448E00 /* spref_cone_Interface_64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spref_cone_Interface_64.png; path = Resources/spref_cone_Interface_64.png; sourceTree = "<group>"; };
 		CC0B723B0D54F2B000448E00 /* spref_cone_Subtitles_64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spref_cone_Subtitles_64.png; path = Resources/spref_cone_Subtitles_64.png; sourceTree = "<group>"; };
 		CC0B723C0D54F2B000448E00 /* spref_cone_Video_64.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = spref_cone_Video_64.png; path = Resources/spref_cone_Video_64.png; sourceTree = "<group>"; };
+		CC0FB34B0F8BED1100F057F7 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/CoreDialogs.nib; sourceTree = "<group>"; };
 		CC1941240B9C1F8400635F6B /* QTKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QTKit.framework; path = /System/Library/Frameworks/QTKit.framework; sourceTree = "<absolute>"; };
-		CC1AC1BB0A7BDA41002478C3 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/InteractionErrorPanel.nib; sourceTree = "<group>"; };
-		CC1B4B4C09A8CF9E0078AD2E /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/Interaction.nib; sourceTree = "<group>"; };
-		CC1B4C1409A8EC690078AD2E /* interaction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = interaction.h; path = ../../../modules/gui/macosx/interaction.h; sourceTree = "<group>"; };
-		CC1B4C1509A8EC690078AD2E /* interaction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = interaction.m; path = ../../../modules/gui/macosx/interaction.m; sourceTree = "<group>"; };
 		CC1C41D00D9BAD7F002728FA /* noart.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = noart.png; path = Resources/noart.png; sourceTree = "<group>"; };
 		CC26BF2B09A7A05000E94D62 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/Update.nib; sourceTree = "<group>"; };
 		CC26BF3109A7A08C00E94D62 /* update.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = update.h; path = ../../../modules/gui/macosx/update.h; sourceTree = SOURCE_ROOT; };
@@ -286,6 +288,8 @@
 		CC33C2500D2578F5008C4683 /* fullscreen_graphite.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fullscreen_graphite.png; path = Resources/fullscreen_graphite.png; sourceTree = "<group>"; };
 		CC3DC89B0A7CDB9600B53F32 /* ApplicationServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ApplicationServices.framework; path = /System/Library/Frameworks/ApplicationServices.framework; sourceTree = "<absolute>"; };
 		CC402F4B0E00ABBB006A4BA4 /* VLC.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = VLC.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		CC4A33210F8CB017000FC4A7 /* coredialogs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = coredialogs.m; path = ../../../modules/gui/macosx/coredialogs.m; sourceTree = SOURCE_ROOT; };
+		CC4A33220F8CB017000FC4A7 /* coredialogs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = coredialogs.h; path = ../../../modules/gui/macosx/coredialogs.h; sourceTree = SOURCE_ROOT; };
 		CC4ED9AC0ABE07C800CA4CC5 /* add_embedded_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = add_embedded_blue.png; path = Resources/add_embedded_blue.png; sourceTree = "<group>"; };
 		CC4ED9AD0ABE07C800CA4CC5 /* add_embedded.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = add_embedded.png; path = Resources/add_embedded.png; sourceTree = "<group>"; };
 		CC4ED9AE0ABE07C800CA4CC5 /* repeat_embedded_blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = repeat_embedded_blue.png; path = Resources/repeat_embedded_blue.png; sourceTree = "<group>"; };
@@ -319,6 +323,8 @@
 		CC965D5F0DA5880F0088F222 /* display_right.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = display_right.png; path = Resources/display_right.png; sourceTree = "<group>"; };
 		CCB24D5D0D54BBAE004D780C /* simple_prefs.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; lineEnding = 0; name = simple_prefs.m; path = ../../../modules/gui/macosx/simple_prefs.m; sourceTree = SOURCE_ROOT; };
 		CCB24D5E0D54BBAE004D780C /* simple_prefs.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = simple_prefs.h; path = ../../../modules/gui/macosx/simple_prefs.h; sourceTree = SOURCE_ROOT; };
+		CCB60A410E6E5E3F00407004 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/VLM.nib; sourceTree = "<group>"; };
+		CCBE999E0F922C51000705F8 /* CoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreServices.framework; path = /System/Library/Frameworks/CoreServices.framework; sourceTree = "<absolute>"; };
 		CCC593780AB4A9FB0004FF52 /* embeddedwindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = embeddedwindow.h; path = ../../../modules/gui/macosx/embeddedwindow.h; sourceTree = SOURCE_ROOT; };
 		CCC593790AB4A9FB0004FF52 /* embeddedwindow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = embeddedwindow.m; path = ../../../modules/gui/macosx/embeddedwindow.m; sourceTree = SOURCE_ROOT; };
 		CCC895830D9A8A82005AE59C /* eyetv.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = eyetv.m; path = ../../../modules/access/eyetv.m; sourceTree = SOURCE_ROOT; };
@@ -350,6 +356,10 @@
 		CCCB86D80ACFDFB300CF1E10 /* fs_stop_highlight.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fs_stop_highlight.png; path = Resources/fs_stop_highlight.png; sourceTree = "<group>"; };
 		CCCB86D90ACFDFB300CF1E10 /* fs_stop.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fs_stop.png; path = Resources/fs_stop.png; sourceTree = "<group>"; };
 		CCCB86DA0ACFDFB300CF1E10 /* fs_background.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = fs_background.png; path = Resources/fs_background.png; sourceTree = "<group>"; };
+		CCD90F4B0E87C86D0034564A /* add_schedule.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = add_schedule.png; path = Resources/add_schedule.png; sourceTree = "<group>"; };
+		CCD90F4C0E87C86D0034564A /* add_vod.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = add_vod.png; path = Resources/add_vod.png; sourceTree = "<group>"; };
+		CCD90F4D0E87C86D0034564A /* add_broadcast.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = add_broadcast.png; path = Resources/add_broadcast.png; sourceTree = "<group>"; };
+		CCF11B530F8BFB520088542D /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/ErrorPanel.nib; sourceTree = "<group>"; };
 		DC769AB7085DF0DB001A838D /* wizard.m */ = {isa = PBXFileReference; fileEncoding = 5; indentWidth = 4; lastKnownFileType = sourcecode.c.objc; name = wizard.m; path = ../../../modules/gui/macosx/wizard.m; sourceTree = SOURCE_ROOT; tabWidth = 4; usesTabs = 0; };
 		DC769AB8085DF0DB001A838D /* wizard.h */ = {isa = PBXFileReference; fileEncoding = 5; lastKnownFileType = sourcecode.c.h; name = wizard.h; path = ../../../modules/gui/macosx/wizard.h; sourceTree = SOURCE_ROOT; };
 		DC7F46EC08A183FC0027DB24 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = Resources/English.lproj/Extended.nib; sourceTree = "<group>"; };
@@ -383,6 +393,7 @@
 				CC402F420E00ABBB006A4BA4 /* ApplicationServices.framework in Frameworks */,
 				CC402F430E00ABBB006A4BA4 /* QTKit.framework in Frameworks */,
 				CC402F440E00ABBB006A4BA4 /* WebKit.framework in Frameworks */,
+				CCBE999F0F922C51000705F8 /* CoreServices.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -422,6 +433,7 @@
 				F69B0CA602E24F6401A80112 /* InfoPlist.strings */,
 				8EBF3FA303F13FFB0059A3A7 /* vlc.scriptSuite */,
 				CC1C41D00D9BAD7F002728FA /* noart.png */,
+				CCD90F4A0E87C82D0034564A /* VLM */,
 				CC0B71E00D54F0DD00448E00 /* simple prefs (taken from qt4) */,
 				8EBF3FA503F140960059A3A7 /* vlc.scriptTerminology */,
 				8EDAC3430440F72D0059A3A7 /* README.MacOSX.rtf */,
@@ -435,8 +447,8 @@
 				8ED6C27E03E2EB1C0059A3A7 /* macosx.m */,
 				8ED6C27C03E2EB1C0059A3A7 /* intf.h */,
 				8ED6C27D03E2EB1C0059A3A7 /* intf.m */,
-				CC1B4C1409A8EC690078AD2E /* interaction.h */,
-				CC1B4C1509A8EC690078AD2E /* interaction.m */,
+				CC4A33220F8CB017000FC4A7 /* coredialogs.h */,
+				CC4A33210F8CB017000FC4A7 /* coredialogs.m */,
 				8E6BC6FA041684EC0059A3A7 /* controls.h */,
 				8ED6C27B03E2EB1C0059A3A7 /* controls.m */,
 				8E6BC6F6041643860059A3A7 /* applescript.h */,
@@ -487,6 +499,7 @@
 		1058C7ACFEA557BF11CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CCBE999E0F922C51000705F8 /* CoreServices.framework */,
 				CC962E2C0CC7992800A56695 /* WebKit.framework */,
 				CC1941240B9C1F8400635F6B /* QTKit.framework */,
 				CC3DC89B0A7CDB9600B53F32 /* ApplicationServices.framework */,
@@ -729,9 +742,22 @@
 			name = "Native FSPanel icons";
 			sourceTree = "<group>";
 		};
+		CCD90F4A0E87C82D0034564A /* VLM */ = {
+			isa = PBXGroup;
+			children = (
+				CCD90F4B0E87C86D0034564A /* add_schedule.png */,
+				CCD90F4C0E87C86D0034564A /* add_vod.png */,
+				CCD90F4D0E87C86D0034564A /* add_broadcast.png */,
+			);
+			name = VLM;
+			sourceTree = "<group>";
+		};
 		DCF358BC077F1236007DB450 /* nibs */ = {
 			isa = PBXGroup;
 			children = (
+				CCF11B520F8BFB520088542D /* ErrorPanel.nib */,
+				CC0FB34A0F8BED1100F057F7 /* CoreDialogs.nib */,
+				CCB60A400E6E5E3F00407004 /* VLM.nib */,
 				CCC896B80D9AA9E8005AE59C /* MediaInfo.nib */,
 				DCA00AA7075F948800E6BF46 /* About.nib */,
 				F74F13EA02C2A79C01EE194C /* MainMenu.nib */,
@@ -741,8 +767,6 @@
 				DC7F46EB08A183FC0027DB24 /* Extended.nib */,
 				DCE7BD0308A56C8B007B10AE /* Bookmarks.nib */,
 				CC26BF2A09A7A05000E94D62 /* Update.nib */,
-				CC1B4B4B09A8CF9E0078AD2E /* Interaction.nib */,
-				CC1AC1BA0A7BDA41002478C3 /* InteractionErrorPanel.nib */,
 			);
 			name = nibs;
 			sourceTree = "<group>";
@@ -867,8 +891,6 @@
 				CC402EFB0E00ABBB006A4BA4 /* skip_forward_embedded_blue.png in Resources */,
 				CC402EFC0E00ABBB006A4BA4 /* skip_previous_embedded_blue.png in Resources */,
 				CC402EFD0E00ABBB006A4BA4 /* Update.nib in Resources */,
-				CC402EFE0E00ABBB006A4BA4 /* Interaction.nib in Resources */,
-				CC402EFF0E00ABBB006A4BA4 /* InteractionErrorPanel.nib in Resources */,
 				CC402F000E00ABBB006A4BA4 /* add_embedded_blue.png in Resources */,
 				CC402F010E00ABBB006A4BA4 /* add_embedded.png in Resources */,
 				CC402F020E00ABBB006A4BA4 /* repeat_embedded_blue.png in Resources */,
@@ -933,6 +955,12 @@
 				CC402F3D0E00ABBB006A4BA4 /* display_middle.png in Resources */,
 				CC402F3E0E00ABBB006A4BA4 /* display_left.png in Resources */,
 				CC402F3F0E00ABBB006A4BA4 /* display_right.png in Resources */,
+				CCB60A420E6E5E3F00407004 /* VLM.nib in Resources */,
+				CCD90F4E0E87C86D0034564A /* add_schedule.png in Resources */,
+				CCD90F4F0E87C86D0034564A /* add_vod.png in Resources */,
+				CCD90F500E87C86D0034564A /* add_broadcast.png in Resources */,
+				CC0FB34C0F8BED1100F057F7 /* CoreDialogs.nib in Resources */,
+				CCF11B540F8BFB520088542D /* ErrorPanel.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -949,20 +977,12 @@
 /* End PBXRezBuildPhase section */
 
 /* Begin PBXVariantGroup section */
-		CC1AC1BA0A7BDA41002478C3 /* InteractionErrorPanel.nib */ = {
+		CC0FB34A0F8BED1100F057F7 /* CoreDialogs.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
-				CC1AC1BB0A7BDA41002478C3 /* English */,
+				CC0FB34B0F8BED1100F057F7 /* English */,
 			);
-			name = InteractionErrorPanel.nib;
-			sourceTree = "<group>";
-		};
-		CC1B4B4B09A8CF9E0078AD2E /* Interaction.nib */ = {
-			isa = PBXVariantGroup;
-			children = (
-				CC1B4B4C09A8CF9E0078AD2E /* English */,
-			);
-			name = Interaction.nib;
+			name = CoreDialogs.nib;
 			sourceTree = "<group>";
 		};
 		CC26BF2A09A7A05000E94D62 /* Update.nib */ = {
@@ -973,12 +993,28 @@
 			name = Update.nib;
 			sourceTree = "<group>";
 		};
+		CCB60A400E6E5E3F00407004 /* VLM.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CCB60A410E6E5E3F00407004 /* English */,
+			);
+			name = VLM.nib;
+			sourceTree = "<group>";
+		};
 		CCC896B80D9AA9E8005AE59C /* MediaInfo.nib */ = {
 			isa = PBXVariantGroup;
 			children = (
 				CCC896B90D9AA9E8005AE59C /* English */,
 			);
 			name = MediaInfo.nib;
+			sourceTree = "<group>";
+		};
+		CCF11B520F8BFB520088542D /* ErrorPanel.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CCF11B530F8BFB520088542D /* English */,
+			);
+			name = ErrorPanel.nib;
 			sourceTree = "<group>";
 		};
 		DC7F46EB08A183FC0027DB24 /* Extended.nib */ = {

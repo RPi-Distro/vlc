@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: f7a8261ae9f2ddbca27d39e34a94921ac8e6632d $
+ * $Id: 2e1d070fccd11a3f05ecef278a7672ae2b642dc7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rémi Denis-Courmont
@@ -113,9 +113,6 @@
        "This enables a SAP caching mechanism. " \
        "This will result in lower SAP startup time, but you could end up " \
        "with items corresponding to legacy streams." )
-#define SAP_TIMESHIFT_TEXT N_("Allow timeshifting")
-#define SAP_TIMESHIFT_LONGTEXT N_( "This automatically enables timeshifting " \
-        "for streams discovered through SAP announcements." )
 
 /* Callbacks */
     static int  Open ( vlc_object_t * );
@@ -123,40 +120,39 @@
     static int  OpenDemux ( vlc_object_t * );
     static void CloseDemux ( vlc_object_t * );
 
-vlc_module_begin();
-    set_shortname( N_("SAP"));
-    set_description( N_("SAP Announcements") );
-    set_category( CAT_PLAYLIST );
-    set_subcategory( SUBCAT_PLAYLIST_SD );
+vlc_module_begin ()
+    set_shortname( N_("SAP"))
+    set_description( N_("SAP Announcements") )
+    set_category( CAT_PLAYLIST )
+    set_subcategory( SUBCAT_PLAYLIST_SD )
 
     add_string( "sap-addr", NULL, NULL,
-                SAP_ADDR_TEXT, SAP_ADDR_LONGTEXT, true );
+                SAP_ADDR_TEXT, SAP_ADDR_LONGTEXT, true )
     add_bool( "sap-ipv4", 1 , NULL,
-               SAP_IPV4_TEXT,SAP_IPV4_LONGTEXT, true );
+               SAP_IPV4_TEXT,SAP_IPV4_LONGTEXT, true )
     add_bool( "sap-ipv6", 1 , NULL,
-              SAP_IPV6_TEXT, SAP_IPV6_LONGTEXT, true );
+              SAP_IPV6_TEXT, SAP_IPV6_LONGTEXT, true )
     add_integer( "sap-timeout", 1800, NULL,
-                 SAP_TIMEOUT_TEXT, SAP_TIMEOUT_LONGTEXT, true );
+                 SAP_TIMEOUT_TEXT, SAP_TIMEOUT_LONGTEXT, true )
     add_bool( "sap-parse", 1 , NULL,
-               SAP_PARSE_TEXT,SAP_PARSE_LONGTEXT, true );
+               SAP_PARSE_TEXT,SAP_PARSE_LONGTEXT, true )
     add_bool( "sap-strict", 0 , NULL,
-               SAP_STRICT_TEXT,SAP_STRICT_LONGTEXT, true );
+               SAP_STRICT_TEXT,SAP_STRICT_LONGTEXT, true )
 #if 0
     add_bool( "sap-cache", 0 , NULL,
-               SAP_CACHE_TEXT,SAP_CACHE_LONGTEXT, true );
+               SAP_CACHE_TEXT,SAP_CACHE_LONGTEXT, true )
 #endif
-    add_bool( "sap-timeshift", 0 , NULL,
-              SAP_TIMESHIFT_TEXT,SAP_TIMESHIFT_LONGTEXT, true );
+    add_obsolete_bool( "sap-timeshift" ) /* Redumdant since 1.0.0 */
 
-    set_capability( "services_discovery", 0 );
-    set_callbacks( Open, Close );
+    set_capability( "services_discovery", 0 )
+    set_callbacks( Open, Close )
 
-    add_submodule();
-        set_description( N_("SDP Descriptions parser") );
-        add_shortcut( "sdp" );
-        set_capability( "demux", 51 );
-        set_callbacks( OpenDemux, CloseDemux );
-vlc_module_end();
+    add_submodule ()
+        set_description( N_("SDP Descriptions parser") )
+        add_shortcut( "sdp" )
+        set_capability( "demux", 51 )
+        set_callbacks( OpenDemux, CloseDemux )
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -199,6 +195,7 @@ struct  sdp_t
     /* "computed" URI */
     char *psz_uri;
     int           i_media_type;
+    unsigned rtcp_port;
 
     /* a= global attributes */
     int           i_attributes;
@@ -232,6 +229,8 @@ struct sap_announce_t
 
 struct services_discovery_sys_t
 {
+    vlc_thread_t thread;
+
     /* Socket descriptors */
     int i_fd;
     int *pi_fd;
@@ -243,7 +242,6 @@ struct services_discovery_sys_t
     /* Modes */
     bool  b_strict;
     bool  b_parse;
-    bool  b_timeshift;
 
     int i_timeout;
 };
@@ -261,7 +259,7 @@ struct demux_sys_t
 /* Main functions */
     static int Demux( demux_t *p_demux );
     static int Control( demux_t *, int, va_list );
-    static void Run    ( services_discovery_t *p_sd );
+    static void *Run  ( void *p_sd );
 
 /* Main parsing functions */
     static int ParseConnection( vlc_object_t *p_obj, sdp_t *p_sdp );
@@ -292,9 +290,11 @@ static bool IsWellKnownPayload (int type)
     switch (type)
     {   /* Should be in sync with modules/demux/rtp.c */
         case  0: /* PCMU/8000 */
+        case  3:
         case  8: /* PCMA/8000 */
         case 10: /* L16/44100/2 */
         case 11: /* L16/44100 */
+        case 12:
         case 14: /* MPA/90000 */
         case 32: /* MPV/90000 */
         case 33: /* MP2/90000 */
@@ -316,7 +316,6 @@ static int Open( vlc_object_t *p_this )
 
     p_sys->i_timeout = var_CreateGetInteger( p_sd, "sap-timeout" );
 
-    p_sd->pf_run = Run;
     p_sd->p_sys  = p_sys;
 
     p_sys->pi_fd = NULL;
@@ -332,14 +331,14 @@ static int Open( vlc_object_t *p_this )
     }
 #endif
 
-    /* Cache sap_timeshift value */
-    p_sys->b_timeshift = var_CreateGetInteger( p_sd, "sap-timeshift" );
-
-    /* Set our name */
-    services_discovery_SetLocalizedName( p_sd, _("SAP") );
-
     p_sys->i_announces = 0;
     p_sys->pp_announces = NULL;
+    /* TODO: create sockets here, and fix racy sockets table */
+    if (vlc_clone (&p_sys->thread, Run, p_sd, VLC_THREAD_PRIORITY_LOW))
+    {
+        free (p_sys);
+        return VLC_EGENERIC;
+    }
 
     return VLC_SUCCESS;
 }
@@ -436,8 +435,10 @@ static void Close( vlc_object_t *p_this )
 {
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
     services_discovery_sys_t    *p_sys  = p_sd->p_sys;
-
     int i;
+
+    vlc_cancel (p_sys->thread);
+    vlc_join (p_sys->thread, NULL);
 
     for( i = p_sys->i_fd-1 ; i >= 0 ; i-- )
     {
@@ -481,11 +482,13 @@ static void CloseDemux( vlc_object_t *p_this )
  *****************************************************************************/
 #define MAX_SAP_BUFFER 5000
 
-static void Run( services_discovery_t *p_sd )
+static void *Run( void *data )
 {
+    services_discovery_t *p_sd = data;
     char *psz_addr;
     int i;
     int timeout = -1;
+    int canc = vlc_savecancel ();
 
     /* Braindead Winsock DNS resolver will get stuck over 2 seconds per failed
      * DNS queries, even if the DNS server returns an error with milliseconds.
@@ -558,14 +561,15 @@ static void Run( services_discovery_t *p_sd )
     if( p_sd->p_sys->i_fd == 0 )
     {
         msg_Err( p_sd, "unable to listen on any address" );
-        return;
+        return NULL;
     }
 
     /* read SAP packets */
-    while( vlc_object_alive( p_sd ) )
+    for (;;)
     {
+        vlc_restorecancel (canc);
         unsigned n = p_sd->p_sys->i_fd;
-        struct pollfd ufd[n+1];
+        struct pollfd ufd[n];
 
         for (unsigned i = 0; i < n; i++)
         {
@@ -574,12 +578,9 @@ static void Run( services_discovery_t *p_sd )
             ufd[i].revents = 0;
         }
 
-        /* Make sure we track vlc_object_signal() */
-        ufd[n].fd = vlc_object_waitpipe( p_sd );
-        ufd[n].events = POLLIN;
-        ufd[n].revents = 0;
-
-        if (poll (ufd, n+1, timeout) > 0)
+        int val = poll (ufd, n, timeout);
+        canc = vlc_savecancel ();
+        if (val > 0)
         {
             for (unsigned i = 0; i < n; i++)
             {
@@ -637,6 +638,7 @@ static void Run( services_discovery_t *p_sd )
         else if( timeout < 200 )
             timeout = 200; /* Don't wakeup too fast. */
     }
+    assert (0);
 }
 
 /**********************************************************************
@@ -658,12 +660,21 @@ static int Demux( demux_t *p_demux )
         return VLC_EGENERIC;
     }
 
-    /* This item hasn't been yield by input_GetItem
+    /* This item hasn't been held by input_GetItem
      * don't release it */
     p_parent_input = input_GetItem( p_input );
 
     input_item_SetURI( p_parent_input, p_sdp->psz_uri );
     input_item_SetName( p_parent_input, p_sdp->psz_sessionname );
+    if( p_sdp->rtcp_port )
+    {
+        char *rtcp;
+        if( asprintf( &rtcp, ":rtcp-port=%u", p_sdp->rtcp_port ) != -1 )
+        {
+            input_item_AddOption( p_parent_input, rtcp, VLC_INPUT_OPTION_TRUSTED );
+            free( rtcp );
+        }
+    }
 
     vlc_mutex_lock( &p_parent_input->lock );
 
@@ -860,7 +871,7 @@ sap_announce_t *CreateAnnounce( services_discovery_t *p_sd, uint16_t i_hash,
     p_input = input_item_NewWithType( VLC_OBJECT(p_sd),
                                      p_sap->p_sdp->psz_uri,
                                      p_sdp->psz_sessionname,
-                                     0, NULL, -1, ITEM_TYPE_NET );
+                                     0, NULL, 0, -1, ITEM_TYPE_NET );
     p_sap->p_item = p_input;
     if( !p_input )
     {
@@ -868,8 +879,15 @@ sap_announce_t *CreateAnnounce( services_discovery_t *p_sd, uint16_t i_hash,
         return NULL;
     }
 
-    if( p_sys->b_timeshift )
-        input_item_AddOption( p_input, ":access-filter=timeshift" );
+    if( p_sdp->rtcp_port )
+    {
+        char *rtcp;
+        if( asprintf( &rtcp, ":rtcp-port=%u", p_sdp->rtcp_port ) != -1 )
+        {
+            input_item_AddOption( p_input, rtcp, VLC_INPUT_OPTION_TRUSTED );
+            free( rtcp );
+        }
+    }
 
     psz_value = GetAttribute( p_sap->p_sdp->pp_attributes, p_sap->p_sdp->i_attributes, "tool" );
     if( psz_value != NULL )
@@ -900,9 +918,11 @@ static const char *FindAttribute (const sdp_t *sdp, unsigned media,
                                   const char *name)
 {
     /* Look for media attribute, and fallback to session */
-    return GetAttribute (sdp->mediav[media].pp_attributes,
-                         sdp->mediav[media].i_attributes, name)
-        ?: GetAttribute (sdp->pp_attributes, sdp->i_attributes, name);
+    const char *attr = GetAttribute (sdp->mediav[media].pp_attributes,
+                                     sdp->mediav[media].i_attributes, name);
+    if (attr == NULL)
+        attr = GetAttribute (sdp->pp_attributes, sdp->i_attributes, name);
+    return attr;
 }
 
 
@@ -1006,11 +1026,19 @@ static int ParseConnection( vlc_object_t *p_obj, sdp_t *p_sdp )
         return VLC_EGENERIC;
     }
 
-    if (strcmp (vlc_proto, "udp")
-     && (port & 1) /* odd media port? */
-     && !FindAttribute (p_sdp, 0, "rtcp-mux")
-     && !FindAttribute (p_sdp, 0, "rtcp"))
-        port++; /* RTP on next even port */
+    if (!strcmp (vlc_proto, "udp") || FindAttribute (p_sdp, 0, "rtcp-mux"))
+        p_sdp->rtcp_port = 0;
+    else
+    {
+        const char *rtcp = FindAttribute (p_sdp, 0, "rtcp");
+        if (rtcp)
+            p_sdp->rtcp_port = atoi (rtcp);
+        else
+        if (port & 1) /* odd port -> RTCP; next even port -> RTP */
+            p_sdp->rtcp_port = port++;
+        else /* even port -> RTP; next odd port -> RTCP */
+            p_sdp->rtcp_port = port + 1;
+    }
 
     if (flags & 1)
     {
@@ -1032,7 +1060,6 @@ static int ParseConnection( vlc_object_t *p_obj, sdp_t *p_sdp )
     else
     {
         /* Non-connected (normally multicast) media */
-
         char psz_source[258] = "";
         const char *sfilter = FindAttribute (p_sdp, 0, "source-filter");
         if (sfilter != NULL)
@@ -1225,7 +1252,7 @@ static sdp_t *ParseSDP (vlc_object_t *p_obj, const char *psz_sdp)
                  || ((p_sdp->orig_ip_version != 4)
                   && (p_sdp->orig_ip_version != 6)))
                 {
-                    msg_Dbg (p_obj, "SDP origin not supported: %s\n", data);
+                    msg_Dbg (p_obj, "SDP origin not supported: %s", data);
                     /* Or maybe out-of-range, but this looks suspicious */
                     return NULL;
                 }
@@ -1466,6 +1493,7 @@ static int Decompress( const unsigned char *psz_src, unsigned char **_dst, int i
         if( ( i_result != Z_OK ) && ( i_result != Z_STREAM_END ) )
         {
             inflateEnd( &d_stream );
+            free( psz_dst );
             return( -1 );
         }
     }

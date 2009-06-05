@@ -1,8 +1,8 @@
 /*****************************************************************************
  * misc.m: code not specific to vlc
  *****************************************************************************
- * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: 3a033f820aed22e43137cceaba0b5a8dbccd8d9e $
+ * Copyright (C) 2003-2009 the VideoLAN team
+ * $Id: fe7b5077568c3e14fbabb8b369514997837e6291 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -23,7 +23,7 @@
  *****************************************************************************/
 
 #import <Cocoa/Cocoa.h>
-#import <QuickTime/QuickTime.h>
+#import <Carbon/Carbon.h>
 
 #import "intf.h"                                          /* VLCApplication */
 #import "misc.h"
@@ -91,7 +91,7 @@
 
 @implementation NSAnimation (VLCAdditions)
 /* fake class attributes  */
-static NSMapTable *VLCAdditions_userInfo = NULL;
+static NSMapTable *VLCAdditions_userInfo = nil;
 
 + (void)load
 {
@@ -124,12 +124,18 @@ static NSMapTable *VLCAdditions_userInfo = NULL;
 
 @implementation NSScreen (VLCAdditions)
 
-static NSMutableArray *blackoutWindows = NULL;
+static NSMutableArray *blackoutWindows = nil;
 
 + (void)load
 {
     /* init our fake object attribute */
     blackoutWindows = [[NSMutableArray alloc] initWithCapacity:1];
+}
+
+- (void)dealloc
+{
+    [blackoutWindows release];
+    [super dealloc];
 }
 
 + (NSScreen *)screenWithDisplayID: (CGDirectDisplayID)displayID
@@ -157,7 +163,7 @@ static NSMutableArray *blackoutWindows = NULL;
 
 - (CGDirectDisplayID)displayID
 {
-    return (CGDirectDisplayID)_screenNumber;
+	return (CGDirectDisplayID)[[[self deviceDescription] objectForKey: @"NSScreenNumber"] intValue];
 }
 
 - (void)blackoutOtherScreens
@@ -222,7 +228,7 @@ static NSMutableArray *blackoutWindows = NULL;
  *****************************************************************************/
 
 @implementation VLCWindow
-- (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask
     backing:(NSBackingStoreType)backingType defer:(BOOL)flag
 {
     self = [super initWithContentRect:contentRect styleMask:styleMask backing:backingType defer:flag];
@@ -248,7 +254,7 @@ static NSMutableArray *blackoutWindows = NULL;
 {
     NSInvocation *invoc;
  
-    if (!animate || MACOS_VERSION < 10.4f)
+    if (!animate)
     {
         [super close];
         return;
@@ -280,7 +286,7 @@ static NSMutableArray *blackoutWindows = NULL;
     NSViewAnimation *current_anim;
     NSMutableDictionary *dict;
 
-    if (!animate || MACOS_VERSION < 10.4f)
+    if (!animate)
     {
         [self orderOut: sender];
         return;
@@ -329,7 +335,7 @@ static NSMutableArray *blackoutWindows = NULL;
     NSViewAnimation *current_anim;
     NSMutableDictionary *dict;
  
-    if (!animate || MACOS_VERSION < 10.4f)
+    if (!animate)
     {
         [super orderFront: sender];
         [self setAlphaValue: 1.0];
@@ -403,15 +409,31 @@ static NSMutableArray *blackoutWindows = NULL;
 
 @implementation VLCControllerWindow
 
-- (id)initWithContentRect:(NSRect)contentRect styleMask:(unsigned int)styleMask
+- (id)initWithContentRect:(NSRect)contentRect styleMask:(NSUInteger)styleMask
     backing:(NSBackingStoreType)backingType defer:(BOOL)flag
 {
+    /* FIXME: this should enable the SnowLeopard window style, however, it leads to ugly artifacts
+     *        needs some further investigation! -- feepk
+     BOOL b_useTextured = YES;
+
+    if( [[NSWindow class] instancesRespondToSelector:@selector(setContentBorderThickness:forEdge:)] )
+    {
+        b_useTextured = NO;
+        styleMask ^= NSTexturedBackgroundWindowMask;
+    } */
+
     self = [super initWithContentRect:contentRect styleMask:styleMask //& ~NSTitledWindowMask
     backing:backingType defer:flag];
 
     [[VLCMain sharedInstance] updateTogglePlaylistState];
 
-    return( self );
+    /* FIXME: see above...
+    if(! b_useTextured )
+    {
+        [self setContentBorderThickness:28.0 forEdge:NSMinYEdge];
+    }
+    */
+    return self;
 }
 
 - (BOOL)performKeyEquivalent:(NSEvent *)o_event
@@ -422,7 +444,7 @@ static NSMutableArray *blackoutWindows = NULL;
         return TRUE;
 
     return [[VLCMain sharedInstance] hasDefinedShortcutKey:o_event] ||
-           [(VLCControls *)[[VLCMain sharedInstance] getControls] keyEvent:o_event];
+           [(VLCControls *)[[VLCMain sharedInstance] controls] keyEvent:o_event];
 }
 
 @end
@@ -487,7 +509,7 @@ static NSMutableArray *blackoutWindows = NULL;
                 o_dic = [NSDictionary dictionaryWithObject:[o_values objectAtIndex:i] forKey:@"ITEM_URL"];
                 o_array = [o_array arrayByAddingObject: o_dic];
             }
-            [(VLCPlaylist *)[[VLCMain sharedInstance] getPlaylist] appendArray: o_array atPos: -1 enqueue:NO];
+            [(VLCPlaylist *)[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:NO];
             return YES;
         }
     }
@@ -567,9 +589,9 @@ static NSMutableArray *blackoutWindows = NULL;
                 o_array = [o_array arrayByAddingObject: o_dic];
             }
             if( b_autoplay )
-                [[[VLCMain sharedInstance] getPlaylist] appendArray: o_array atPos: -1 enqueue:NO];
+                [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:NO];
             else
-                [[[VLCMain sharedInstance] getPlaylist] appendArray: o_array atPos: -1 enqueue:YES];
+                [[[VLCMain sharedInstance] playlist] appendArray: o_array atPos: -1 enqueue:YES];
             return YES;
         }
     }
@@ -678,7 +700,7 @@ void _drawFrameInRect(NSRect frameRect)
         [newCell setNumberOfTickMarks:[oldCell numberOfTickMarks]];
         [newCell setEditable:[oldCell isEditable]];
         [newCell setEnabled:[oldCell isEnabled]];
-        [newCell setEntryType:[oldCell entryType]];
+        [newCell setFormatter:[oldCell formatter]];
         [newCell setHighlighted:[oldCell isHighlighted]];
         [newCell setTickMarkPosition:[oldCell tickMarkPosition]];
         [self setCell:newCell];

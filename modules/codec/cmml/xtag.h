@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2000-2004 the VideoLAN team
  *
- * $Id: 0c999699f9112f701a75e4f1805c157082aa7a70 $
+ * $Id$
  *
  * Authors: Conrad Parker <Conrad.Parker@csiro.au>
  *          Andre Pang <Andre.Pang@csiro.au>
@@ -36,9 +36,9 @@ char * xtag_get_name (XTag * xtag);
 
 char * xtag_get_pcdata (XTag * xtag);
 
-char * xtag_get_attribute (XTag * xtag, char * attribute);
+char * xtag_get_attribute (XTag * xtag, const char * attribute);
 
-XTag * xtag_first_child (XTag * xtag, char * name);
+XTag * xtag_first_child (XTag * xtag, const char * name);
 
 XTag * xtag_next_child (XTag * xtag, char * name);
 

@@ -18,5 +18,5 @@ libcmml_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libcmml_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcmml_plugin_la_LIBADD = $(AM_LIBADD)
-libcmml_plugin_la_DEPENDENCIES =
+libcmml_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

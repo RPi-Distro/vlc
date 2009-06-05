@@ -2,7 +2,7 @@
  * mono.c : stereo2mono downmixsimple channel mixer plug-in
  *****************************************************************************
  * Copyright (C) 2006 M2X
- * $Id: 6e6be609349603a066ef8b7390b76f79402282eb $
+ * $Id: 2d68a00a1078663c0d17b45a6cad8dd687f047a9 $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -29,12 +29,7 @@
 #endif
 
 #include <math.h>                                        /* sqrt */
-
-#ifdef HAVE_STDINT_H
-#   include <stdint.h>                                         /* int16_t .. */
-#elif defined(HAVE_INTTYPES_H)
-#   include <inttypes.h>                                       /* int16_t .. */
-#endif
+#include <stdint.h>                                         /* int16_t .. */
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
@@ -110,21 +105,21 @@ static const uint32_t pi_channels_out[] =
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Audio filter for stereo to mono conversion") );
-    set_capability( "audio filter2", 2 );
+vlc_module_begin ()
+    set_description( N_("Audio filter for stereo to mono conversion") )
+    set_capability( "audio filter2", 2 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_callbacks( OpenFilter, CloseFilter )
+    set_shortname( "Mono" )
 
     add_bool( MONO_CFG "downmix", true, NULL, MONO_DOWNMIX_TEXT,
-              MONO_DOWNMIX_LONGTEXT, false );
+              MONO_DOWNMIX_LONGTEXT, false )
     add_integer( MONO_CFG "channel", -1, NULL, MONO_CHANNEL_TEXT,
-        MONO_CHANNEL_LONGTEXT, false );
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
+        MONO_CHANNEL_LONGTEXT, false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
 
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_MISC );
-    set_callbacks( OpenFilter, CloseFilter );
-    set_shortname( "Mono" );
-vlc_module_end();
+vlc_module_end ()
 
 /* Init() and ComputeChannelOperations() -
  * Code taken from modules/audio_filter/channel_mixer/headphone.c

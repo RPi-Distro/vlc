@@ -2,7 +2,7 @@
  * demux.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: b924e65d013e8425441ac8dc65b079a2b2b26375 $
+ * $Id: 4d983212f84ebcb8731dd693ad5c06e975a7122a $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -25,9 +25,10 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-
-#include "input_internal.h"
+#include "demux.h"
+#include <libvlc.h>
+#include <vlc_codec.h>
+#include <vlc_meta.h>
 
 static bool SkipID3Tag( demux_t * );
 static bool SkipAPETag( demux_t *p_demux );
@@ -97,16 +98,21 @@ demux_t *__demux_New( vlc_object_t *p_obj,
             { "au",   "au" },
             { "flac", "flac" },
             { "dv",   "dv" },
+            { "drc",  "dirac" },
             { "m3u",  "playlist" },
             { "mkv",  "mkv" }, { "mka",  "mkv" }, { "mks",  "mkv" },
             { "mp4",  "mp4" }, { "m4a",  "mp4" }, { "mov",  "mp4" }, { "moov", "mp4" },
-            { "mod",  "mod" }, { "xm",   "mod" },
+            { "mod",  "mod" }, { "it",  "mod" }, { "s3m",  "mod" }, { "xm",   "mod" },
             { "nsv",  "nsv" },
-            { "ogg",  "ogg" }, { "ogm",  "ogg" },
+            { "ogg",  "ogg" }, { "ogm",  "ogg" }, /* legacy Ogg */
+            { "oga",  "ogg" }, { "spx",  "ogg" }, { "ogv", "ogg" },
+            { "ogx",  "ogg" }, /*RFC5334*/
             { "pva",  "pva" },
             { "rm",   "rm" },
             { "m4v",  "m4v" },
-            { "h264",  "h264" },
+            { "h264", "h264" },
+            { "voc",  "voc" },
+            { "mid",  "smf" }, { "rmi",  "smf" },
             { "",  "" },
         };
         /* Here, we don't mind if it does not work, it must be quick */
@@ -146,7 +152,7 @@ demux_t *__demux_New( vlc_object_t *p_obj,
         }
     }
 
-    /* Before module_Need (for var_Create...) */
+    /* Before module_need (for var_Create...) */
     vlc_object_attach( p_demux, p_obj );
 
     if( s )
@@ -158,14 +164,14 @@ demux_t *__demux_New( vlc_object_t *p_obj,
             SkipAPETag( p_demux );
 
         p_demux->p_module =
-            module_Need( p_demux, "demux", psz_module,
+            module_need( p_demux, "demux", psz_module,
                          !strcmp( psz_module, p_demux->psz_demux ) ?
                          true : false );
     }
     else
     {
         p_demux->p_module =
-            module_Need( p_demux, "access_demux", psz_module,
+            module_need( p_demux, "access_demux", psz_module,
                          !strcmp( psz_module, p_demux->psz_access ) ?
                          true : false );
     }
@@ -188,7 +194,7 @@ demux_t *__demux_New( vlc_object_t *p_obj,
  *****************************************************************************/
 void demux_Delete( demux_t *p_demux )
 {
-    module_Unneed( p_demux, p_demux->p_module );
+    module_unneed( p_demux, p_demux->p_module );
     vlc_object_detach( p_demux );
 
     free( p_demux->psz_path );
@@ -203,7 +209,7 @@ void demux_Delete( demux_t *p_demux )
  *****************************************************************************/
 int demux_vaControlHelper( stream_t *s,
                             int64_t i_start, int64_t i_end,
-                            int i_bitrate, int i_align,
+                            int64_t i_bitrate, int i_align,
                             int i_query, va_list args )
 {
     int64_t i_tell;
@@ -228,7 +234,7 @@ int demux_vaControlHelper( stream_t *s,
 
         case DEMUX_GET_TIME:
             pi64 = (int64_t*)va_arg( args, int64_t * );
-            if( i_bitrate > 0 && i_end > i_start )
+            if( i_bitrate > 0 && i_tell >= i_start )
             {
                 *pi64 = INT64_C(8000000) * (i_tell - i_start) / i_bitrate;
                 return VLC_SUCCESS;
@@ -280,6 +286,8 @@ int demux_vaControlHelper( stream_t *s,
         case DEMUX_GET_TITLE_INFO:
         case DEMUX_SET_GROUP:
         case DEMUX_GET_ATTACHMENTS:
+        case DEMUX_CAN_RECORD:
+        case DEMUX_SET_RECORD_STATE:
             return VLC_EGENERIC;
 
         default:
@@ -289,279 +297,48 @@ int demux_vaControlHelper( stream_t *s,
 }
 
 /****************************************************************************
- * stream_Demux*: create a demuxer for an outpout stream (allow demuxer chain)
- ****************************************************************************/
-typedef struct
-{
-    /* Data buffer */
-    block_fifo_t *p_fifo;
-    block_t      *p_block;
-
-    int64_t     i_pos;
-
-    /* Demuxer */
-    char        *psz_name;
-    es_out_t    *out;
-    demux_t     *p_demux;
-
-} d_stream_sys_t;
-
-static int DStreamRead   ( stream_t *, void *p_read, unsigned int i_read );
-static int DStreamPeek   ( stream_t *, const uint8_t **pp_peek, unsigned int i_peek );
-static int DStreamControl( stream_t *, int i_query, va_list );
-static void* DStreamThread ( vlc_object_t * );
-
-
-stream_t *__stream_DemuxNew( vlc_object_t *p_obj, const char *psz_demux,
-                             es_out_t *out )
-{
-    /* We create a stream reader, and launch a thread */
-    stream_t       *s;
-    d_stream_sys_t *p_sys;
-
-    if( psz_demux == NULL || *psz_demux == '\0' ) return NULL;
-
-    s = vlc_stream_create( p_obj );
-    if( s == NULL )
-        return NULL;
-    s->pf_read   = DStreamRead;
-    s->pf_peek   = DStreamPeek;
-    s->pf_control= DStreamControl;
-
-    s->i_char_width = 1;
-    s->b_little_endian = false;
-
-    s->p_sys = malloc( sizeof( d_stream_sys_t) );
-    if( s->p_sys == NULL )
-    {
-        vlc_object_release( s );
-        return NULL;
-    }
-    p_sys = (d_stream_sys_t*)s->p_sys;
-
-    p_sys->i_pos = 0;
-    p_sys->out = out;
-    p_sys->p_demux = NULL;
-    p_sys->p_block = NULL;
-    p_sys->psz_name = strdup( psz_demux );
-
-    /* decoder fifo */
-    if( ( p_sys->p_fifo = block_FifoNew() ) == NULL )
-    {
-        vlc_object_release( s );
-        free( p_sys->psz_name );
-        free( p_sys );
-        return NULL;
-    }
-
-    if( vlc_thread_create( s, "stream out", DStreamThread,
-                           VLC_THREAD_PRIORITY_INPUT, false ) )
-    {
-        vlc_object_release( s );
-        free( p_sys->psz_name );
-        free( p_sys );
-        return NULL;
-    }
-
-    return s;
-}
-
-void stream_DemuxSend( stream_t *s, block_t *p_block )
-{
-    d_stream_sys_t *p_sys = (d_stream_sys_t*)s->p_sys;
-    if( p_block ) block_FifoPut( p_sys->p_fifo, p_block );
-}
-
-void stream_DemuxDelete( stream_t *s )
-{
-    d_stream_sys_t *p_sys = (d_stream_sys_t*)s->p_sys;
-    block_t *p_empty;
-
-    vlc_object_kill( s );
-    if( p_sys->p_demux )
-        vlc_object_kill( p_sys->p_demux );
-    p_empty = block_New( s, 1 ); p_empty->i_buffer = 0;
-    block_FifoPut( p_sys->p_fifo, p_empty );
-    vlc_thread_join( s );
-
-    if( p_sys->p_demux ) demux_Delete( p_sys->p_demux );
-    if( p_sys->p_block ) block_Release( p_sys->p_block );
-
-    block_FifoRelease( p_sys->p_fifo );
-    free( p_sys->psz_name );
-    free( p_sys );
-
-    vlc_object_release( s );
-}
-
-
-static int DStreamRead( stream_t *s, void *p_read, unsigned int i_read )
-{
-    d_stream_sys_t *p_sys = (d_stream_sys_t*)s->p_sys;
-    uint8_t *p_out = p_read;
-    int i_out = 0;
-
-    //msg_Dbg( s, "DStreamRead: wanted %d bytes", i_read );
-
-    while( !s->b_die && !s->b_error && i_read )
-    {
-        block_t *p_block = p_sys->p_block;
-        int i_copy;
-
-        if( !p_block )
-        {
-            p_block = block_FifoGet( p_sys->p_fifo );
-            if( !p_block ) s->b_error = 1;
-            p_sys->p_block = p_block;
-        }
-
-        if( p_block && i_read )
-        {
-            i_copy = __MIN( i_read, p_block->i_buffer );
-            if( p_out && i_copy ) memcpy( p_out, p_block->p_buffer, i_copy );
-            i_read -= i_copy;
-            i_out += i_copy;
-            p_block->i_buffer -= i_copy;
-            p_block->p_buffer += i_copy;
-
-            if( !p_block->i_buffer )
-            {
-                block_Release( p_block );
-                p_sys->p_block = NULL;
-            }
-        }
-    }
-
-    p_sys->i_pos += i_out;
-    return i_out;
-}
-
-static int DStreamPeek( stream_t *s, const uint8_t **pp_peek, unsigned int i_peek )
-{
-    d_stream_sys_t *p_sys = (d_stream_sys_t*)s->p_sys;
-    block_t **pp_block = &p_sys->p_block;
-    int i_out = 0;
-    *pp_peek = 0;
-
-    //msg_Dbg( s, "DStreamPeek: wanted %d bytes", i_peek );
-
-    while( !s->b_die && !s->b_error && i_peek )
-    {
-        int i_copy;
-
-        if( !*pp_block )
-        {
-            *pp_block = block_FifoGet( p_sys->p_fifo );
-            if( !*pp_block ) s->b_error = 1;
-        }
-
-        if( *pp_block && i_peek )
-        {
-            i_copy = __MIN( i_peek, (*pp_block)->i_buffer );
-            i_peek -= i_copy;
-            i_out += i_copy;
-
-            if( i_peek ) pp_block = &(*pp_block)->p_next;
-        }
-    }
-
-    if( p_sys->p_block )
-    {
-        p_sys->p_block = block_ChainGather( p_sys->p_block );
-        *pp_peek = p_sys->p_block->p_buffer;
-    }
-
-    return i_out;
-}
-
-static int DStreamControl( stream_t *s, int i_query, va_list args )
-{
-    d_stream_sys_t *p_sys = (d_stream_sys_t*)s->p_sys;
-    int64_t    *p_i64;
-    bool *p_b;
-    int        *p_int;
-
-    switch( i_query )
-    {
-        case STREAM_GET_SIZE:
-            p_i64 = (int64_t*) va_arg( args, int64_t * );
-            *p_i64 = 0;
-            return VLC_SUCCESS;
-
-        case STREAM_CAN_SEEK:
-            p_b = (bool*) va_arg( args, bool * );
-            *p_b = false;
-            return VLC_SUCCESS;
-
-        case STREAM_CAN_FASTSEEK:
-            p_b = (bool*) va_arg( args, bool * );
-            *p_b = false;
-            return VLC_SUCCESS;
-
-        case STREAM_GET_POSITION:
-            p_i64 = (int64_t*) va_arg( args, int64_t * );
-            *p_i64 = p_sys->i_pos;
-            return VLC_SUCCESS;
-
-        case STREAM_SET_POSITION:
-        {
-            int64_t i64 = (int64_t)va_arg( args, int64_t );
-            int i_skip;
-            if( i64 < p_sys->i_pos ) return VLC_EGENERIC;
-            i_skip = i64 - p_sys->i_pos;
-
-            while( i_skip > 0 )
-            {
-                int i_read = DStreamRead( s, NULL, (long)i_skip );
-                if( i_read <= 0 ) return VLC_EGENERIC;
-                i_skip -= i_read;
-            }
-            return VLC_SUCCESS;
-        }
-
-        case STREAM_GET_MTU:
-            p_int = (int*) va_arg( args, int * );
-            *p_int = 0;
-            return VLC_SUCCESS;
-
-        case STREAM_CONTROL_ACCESS:
-        case STREAM_GET_CONTENT_TYPE:
-            return VLC_EGENERIC;
-
-        default:
-            msg_Err( s, "invalid DStreamControl query=0x%x", i_query );
-            return VLC_EGENERIC;
-    }
-}
-
-static void* DStreamThread( vlc_object_t* p_this )
-{
-    stream_t *s = (stream_t *)p_this;
-    d_stream_sys_t *p_sys = (d_stream_sys_t*)s->p_sys;
-    demux_t *p_demux;
-
-    /* Create the demuxer */
-    if( !(p_demux = demux_New( s, "", p_sys->psz_name, "", s, p_sys->out,
-                               false )) )
-    {
-        return NULL;
-    }
-
-    p_sys->p_demux = p_demux;
-
-    /* Main loop */
-    while( !s->b_die && !p_demux->b_die )
-    {
-        if( p_demux->pf_demux( p_demux ) <= 0 ) break;
-    }
-
-    vlc_object_kill( p_demux );
-    return NULL;
-}
-
-/****************************************************************************
  * Utility functions
  ****************************************************************************/
+decoder_t *demux_PacketizerNew( demux_t *p_demux, es_format_t *p_fmt, const char *psz_msg )
+{
+    decoder_t *p_packetizer = vlc_object_create( p_demux, VLC_OBJECT_PACKETIZER );
+
+    if( !p_packetizer )
+    {
+        es_format_Clean( p_fmt );
+        return NULL;
+    }
+    p_fmt->b_packetized = false;
+
+    p_packetizer->pf_decode_audio = NULL;
+    p_packetizer->pf_decode_video = NULL;
+    p_packetizer->pf_decode_sub = NULL;
+    p_packetizer->pf_packetize = NULL;
+
+    p_packetizer->fmt_in = *p_fmt;
+    es_format_Init( &p_packetizer->fmt_out, UNKNOWN_ES, 0 );
+
+    p_packetizer->p_module = module_need( p_packetizer, "packetizer", NULL, false );
+    if( !p_packetizer->p_module )
+    {
+        es_format_Clean( p_fmt );
+        vlc_object_release( p_packetizer );
+        msg_Err( p_demux, "cannot find packetizer for %s", psz_msg );
+        return NULL;
+    }
+
+    return p_packetizer;
+}
+void demux_PacketizerDestroy( decoder_t *p_packetizer )
+{
+    if( p_packetizer->p_module )
+        module_unneed( p_packetizer, p_packetizer->p_module );
+    es_format_Clean( &p_packetizer->fmt_in );
+    if( p_packetizer->p_description )
+        vlc_meta_Delete( p_packetizer->p_description );
+    vlc_object_release( p_packetizer );
+}
+
 static bool SkipID3Tag( demux_t *p_demux )
 {
     const uint8_t *p_peek;

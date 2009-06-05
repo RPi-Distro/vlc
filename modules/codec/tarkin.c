@@ -2,7 +2,7 @@
  * tarkin.c: tarkin decoder module making use of libtarkin.
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: a408ba9cc7e5666571a0f11b0078a2e15bbfd862 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -76,14 +76,14 @@ static void tarkin_CopyPicture( decoder_t *, picture_t *, uint8_t *, int );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Tarkin decoder module") );
-    set_capability( "decoder", 100 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_callbacks( OpenDecoder, CloseDecoder );
-    add_shortcut( "tarkin" );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Tarkin decoder") )
+    set_capability( "decoder", 100 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_callbacks( OpenDecoder, CloseDecoder )
+    add_shortcut( "tarkin" )
+vlc_module_end ()
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -266,7 +266,7 @@ static picture_t *DecodePacket( decoder_t *p_dec, block_t **pp_block,
         p_dec->fmt_out.i_codec = i_chroma;
 
         /* Get a new picture */
-        if( (p_pic = p_dec->pf_vout_buffer_new( p_dec )) )
+        if( (p_pic = decoder_NewPicture( p_dec )) )
         {
             tarkin_CopyPicture( p_dec, p_pic, rgb, i_stride );
 

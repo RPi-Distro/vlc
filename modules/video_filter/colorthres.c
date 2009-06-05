@@ -2,7 +2,7 @@
  * colorthres.c: Theshold color based on similarity to reference color
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: b27b7a5ed18b6ff92bd37cfd71d0b516451075d9 $
+ * $Id$
  *
  * Authors: Sigmund Augdal <dnumgis@videolan.org>
  *
@@ -64,21 +64,21 @@ static const char *const ppsz_color_descriptions[] = {
 
 #define CFG_PREFIX "colorthres-"
 
-vlc_module_begin();
-    set_description( N_("Color threshold filter") );
-    set_shortname( N_("Color threshold" ));
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_capability( "video filter2", 0 );
+vlc_module_begin ()
+    set_description( N_("Color threshold filter") )
+    set_shortname( N_("Color threshold" ))
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_capability( "video filter2", 0 )
     add_integer( CFG_PREFIX "color", 0x00FF0000, NULL, COLOR_TEXT,
-                 COLOR_LONGTEXT, false );
-        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL );
+                 COLOR_LONGTEXT, false )
+        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL )
     add_integer( CFG_PREFIX "saturationthres", 20, NULL,
-                 _("Saturaton threshold"), "", false );
+                 N_("Saturaton threshold"), "", false )
     add_integer( CFG_PREFIX "similaritythres", 15, NULL,
-                 _("Similarity threshold"), "", false );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+                 N_("Similarity threshold"), "", false )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "color", "saturationthes", "similaritythres", NULL
@@ -119,9 +119,9 @@ static int Create( vlc_object_t *p_this )
 
     config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
-    var_CreateGetIntegerCommand( p_filter, CFG_PREFIX "color" );
-    var_CreateGetIntegerCommand( p_filter, CFG_PREFIX "similaritythres" );
-    var_CreateGetIntegerCommand( p_filter, CFG_PREFIX "saturationthres" );
+    var_Create( p_filter, CFG_PREFIX "color", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT | VLC_VAR_ISCOMMAND );
+    var_Create( p_filter, CFG_PREFIX "similaritythres", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT | VLC_VAR_ISCOMMAND );
+    var_Create( p_filter, CFG_PREFIX "saturationthres", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT | VLC_VAR_ISCOMMAND );
 
     /* Allocate structure */
     p_filter->p_sys = malloc( sizeof( filter_sys_t ) );

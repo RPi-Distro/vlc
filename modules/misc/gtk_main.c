@@ -2,7 +2,7 @@
  * gtk_main.c : Gtk+ wrapper for gtk_main
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 7834352beb8c5bfe894722e9c7db39421e1a1df7 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -59,42 +59,42 @@ static vlc_object_t * p_gtk_main = NULL;
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
+vlc_module_begin ()
     int i_cap;
-    set_description( N_("Gtk+ GUI helper") );
+    set_description( N_("Gtk+ GUI helper") )
 #if defined(MODULE_NAME_IS_gtk_main)
     i_cap = 90;
-    add_shortcut( "gtk" );
+    add_shortcut( "gtk" )
 #elif defined(MODULE_NAME_IS_gnome_main)
     i_cap = 100;
-    add_shortcut( "gtk" );
-    add_shortcut( "gnome" );
+    add_shortcut( "gtk" )
+    add_shortcut( "gnome" )
 #elif defined(MODULE_NAME_IS_gtk2_main)
     i_cap = 95;
-    add_shortcut( "gtk2" );
+    add_shortcut( "gtk2" )
 #elif defined(MODULE_NAME_IS_gnome2_main)
     i_cap = 105;
-    add_shortcut( "gtk2" );
-    add_shortcut( "gnome2" );
+    add_shortcut( "gtk2" )
+    add_shortcut( "gnome2" )
 #endif
-    set_capability( "gui-helper", i_cap );
-    set_callbacks( Open, Close );
-    linked_with_a_crap_library_which_uses_atexit();
-vlc_module_end();
+    set_capability( "gui-helper", i_cap )
+    set_callbacks( Open, Close )
+    linked_with_a_crap_library_which_uses_atexit ()
+vlc_module_end ()
+
+static vlc_mutex_t gtk_lock = VLC_STATIC_MUTEX;
 
 /*****************************************************************************
  * Open: initialize and create window
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
 {
-    vlc_mutex_t *lock;
-
-    lock = var_AcquireMutex( "gtk" );
+    vlc_mutex_lock( &gtk_lock );
 
     if( i_refcount > 0 )
     {
         i_refcount++;
-        vlc_mutex_unlock( lock );
+        vlc_mutex_unlock( &gtk_lock );
 
         return VLC_SUCCESS;
     }
@@ -110,16 +110,16 @@ static int Open( vlc_object_t *p_this )
     /* Launch the gtk_main() thread. It will not return until it has
      * called gdk_threads_enter(), which ensures us thread safety. */
     if( vlc_thread_create( p_gtk_main, "gtk_main", GtkMain,
-                           VLC_THREAD_PRIORITY_LOW, true ) )
+                           VLC_THREAD_PRIORITY_LOW ) )
     {
         vlc_object_release( p_gtk_main );
         i_refcount--;
-        vlc_mutex_unlock( lock );
+        vlc_mutex_unlock( &gtk_lock );
         return VLC_ETHREAD;
     }
 
     i_refcount++;
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &gtk_lock );
 
     return VLC_SUCCESS;
 }
@@ -129,25 +129,19 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    vlc_mutex_t *lock;
-
-    lock = var_AcquireMutex( "gtk" );
+    vlc_mutex_lock( &gtk_lock );
 
     i_refcount--;
 
-    if( i_refcount > 0 )
+    if( --i_refcount == 0 )
     {
-        vlc_mutex_unlock( lock );
-        return;
+        gtk_main_quit();
+        vlc_thread_join( p_gtk_main );
+
+        vlc_object_release( p_gtk_main );
+        p_gtk_main = NULL;
     }
-
-    gtk_main_quit();
-    vlc_thread_join( p_gtk_main );
-
-    vlc_object_release( p_gtk_main );
-    p_gtk_main = NULL;
-
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &gtk_lock );
 }
 
 static gint foo( gpointer bar ) { return TRUE; }
@@ -167,6 +161,7 @@ static void* GtkMain( vlc_object_t *p_this )
     static char **pp_args  = p_args;
 #endif
     static int    i_args   = 1;
+    int canc = vlc_savecancel ();
 
     /* FIXME: deprecated ? */
 #if defined(MODULE_NAME_IS_gtk2_main) || defined(MODULE_NAME_IS_gnome2_main)
@@ -197,5 +192,6 @@ static void* GtkMain( vlc_object_t *p_this )
     gtk_main();
 
     gdk_threads_leave();
+    vlc_restorecancel (canc);
     return NULL;
 }

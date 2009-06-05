@@ -2,7 +2,7 @@
  * gnomevfs.c: GnomeVFS input
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: fb8f56bed8e3e000edd9113cc5e2b07eec55e472 $
+ * $Id$
  *
  * Authors: Benjamin Pracht <bigben -AT- videolan -DOT- org>
  *
@@ -49,23 +49,23 @@ static void Close( vlc_object_t * );
     "Caching value for GnomeVFS streams."\
     "This value should be set in milliseconds." )
 
-vlc_module_begin();
-    set_description( N_("GnomeVFS input") );
-    set_shortname( "GnomeVFS" );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
-    add_integer( "gnomevfs-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT, CACHING_LONGTEXT, true );
-    set_capability( "access", 10 );
-    add_shortcut( "gnomevfs" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("GnomeVFS input") )
+    set_shortname( "GnomeVFS" )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
+    add_integer( "gnomevfs-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT, CACHING_LONGTEXT, true )
+    set_capability( "access", 10 )
+    add_shortcut( "gnomevfs" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 
 /*****************************************************************************
  * Exported prototypes
  *****************************************************************************/
 static int  Seek( access_t *, int64_t );
-static int  Read( access_t *, uint8_t *, int );
+static int  Read( access_t *, uint8_t *, size_t );
 static int  Control( access_t *, int, va_list );
 
 struct access_sys_t
@@ -80,6 +80,9 @@ struct access_sys_t
     bool b_seekable;
     bool b_pace_control;
 };
+
+/* NOTE: we do not handle memory errors in this plugin.
+ * Underlying glib does not, so there is no point in doing it here either. */
 
 /*****************************************************************************
  * Open: open the file
@@ -116,9 +119,7 @@ static int Open( vlc_object_t *p_this )
     if( strcmp( "gnomevfs", p_access->psz_access ) &&
                                             *(p_access->psz_access) != '\0')
     {
-        psz_name = malloc( strlen( p_access->psz_access ) +
-                                            strlen( p_access->psz_path ) + 4 );
-        sprintf( psz_name, "%s://%s", p_access->psz_access,
+        asprintf( &psz_name, "%s://%s", p_access->psz_access,
                                                     p_access->psz_path );
     }
     else
@@ -156,9 +157,7 @@ static int Open( vlc_object_t *p_this )
             psz_path_begin = psz_unescaped + strlen( psz_unescaped )
                                            - strlen( url.psz_path );
             *psz_path_begin = '\0';
-            psz_uri = malloc( strlen( psz_unescaped ) +
-                                        strlen( psz_escaped_path ) + 1 );
-            sprintf( psz_uri, "%s%s",psz_unescaped, psz_escaped_path );
+            asprintf( &psz_uri, "%s%s", psz_unescaped, psz_escaped_path );
 
             g_free( psz_escaped_path );
             g_free( psz_unescaped );
@@ -188,7 +187,7 @@ static int Open( vlc_object_t *p_this )
             gnome_vfs_file_info_unref( p_sys->p_file_info );
             gnome_vfs_uri_unref( p_uri);
             free( p_sys );
-            g_free( psz_uri );
+            free( psz_uri );
             free( psz_name );
             return VLC_EGENERIC;
         }
@@ -196,7 +195,7 @@ static int Open( vlc_object_t *p_this )
     else
     {
         msg_Warn( p_access, "cannot parse MRL %s or unsupported protocol", psz_name );
-        g_free( psz_uri );
+        free( psz_uri );
         free( p_sys );
         free( psz_name );
         return VLC_EGENERIC;
@@ -210,7 +209,7 @@ static int Open( vlc_object_t *p_this )
                                 gnome_vfs_result_to_string( i_ret ) );
 
         gnome_vfs_uri_unref( p_uri);
-        g_free( psz_uri );
+        free( psz_uri );
         free( p_sys );
         free( psz_name );
         return VLC_EGENERIC;
@@ -246,7 +245,7 @@ static int Open( vlc_object_t *p_this )
         gnome_vfs_file_info_unref( p_sys->p_file_info );
         gnome_vfs_uri_unref( p_uri);
         free( p_sys );
-        g_free( psz_uri );
+        free( psz_uri );
         free( psz_name );
         return VLC_EGENERIC;
     }
@@ -255,7 +254,7 @@ static int Open( vlc_object_t *p_this )
     var_Create( p_access, "gnomevfs-caching",
                                     VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
 
-    g_free( psz_uri );
+    free( psz_uri );
     p_sys->psz_name = psz_name;
     gnome_vfs_uri_unref( p_uri);
     return VLC_SUCCESS;
@@ -286,7 +285,7 @@ static void Close( vlc_object_t * p_this )
 /*****************************************************************************
  * Read: standard read on a file descriptor.
  *****************************************************************************/
-static int Read( access_t *p_access, uint8_t *p_buffer, int i_len )
+static int Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
 {
     access_sys_t *p_sys = p_access->p_sys;
     GnomeVFSFileSize i_read_len;
@@ -377,7 +376,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
 {
     access_sys_t *p_sys = p_access->p_sys;
     bool   *pb_bool;
-    int          *pi_int;
     int64_t      *pi_64;
 
     switch( i_query )
@@ -393,12 +391,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
         case ACCESS_CAN_CONTROL_PACE:
             pb_bool = (bool*)va_arg( args, bool* );
             *pb_bool = p_sys->b_pace_control;
-            break;
-
-        /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = 0;
             break;
 
         case ACCESS_GET_PTS_DELAY:

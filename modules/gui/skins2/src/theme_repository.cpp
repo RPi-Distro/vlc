@@ -2,7 +2,7 @@
  * theme_repository.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 3db8a424bd7e53b418870cca251405e09aba8b10 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -34,8 +34,6 @@
 #   include <dirent.h>
 #endif
 
-
-const char *ThemeRepository::kOpenDialog = "{openSkin}";
 
 
 ThemeRepository *ThemeRepository::instance( intf_thread_t *pIntf )
@@ -78,14 +76,19 @@ ThemeRepository::ThemeRepository( intf_thread_t *pIntf ): SkinObject( pIntf )
         parseDirectory( *it );
     }
 
-    // Add an entry for the "open skin" dialog
-    val.psz_string = (char*)kOpenDialog;
-    text.psz_string = _("Open skin...");
-    var_Change( getIntf(), "intf-skins", VLC_VAR_ADDCHOICE, &val,
-                &text );
-
     // Set the callback
     var_AddCallback( pIntf, "intf-skins", changeSkin, this );
+
+
+    // variable for opening a dialog box to change skins
+    var_Create( pIntf, "intf-skins-interactive", VLC_VAR_VOID |
+                VLC_VAR_ISCOMMAND );
+    text.psz_string = _("Open skin ...");
+    var_Change( pIntf, "intf-skins-interactive", VLC_VAR_SETTEXT, &text, NULL );
+
+    // Set the callback
+    var_AddCallback( pIntf, "intf-skins-interactive", changeSkin, this );
+
 }
 
 
@@ -131,14 +134,12 @@ void ThemeRepository::parseDirectory( const string &rDir_locale )
 
             // Add the theme in the popup menu
             string shortname = name.substr( 0, name.size() - 4 );
-            val.psz_string = new char[path.size() + 1];
-            text.psz_string = new char[shortname.size() + 1];
-            strcpy( val.psz_string, path.c_str() );
-            strcpy( text.psz_string, shortname.c_str() );
+            val.psz_string = strdup( path.c_str() );
+            text.psz_string = strdup( shortname.c_str() );
             var_Change( getIntf(), "intf-skins", VLC_VAR_ADDCHOICE, &val,
                         &text );
-            delete[] val.psz_string;
-            delete[] text.psz_string;
+            free( val.psz_string );
+            free( text.psz_string );
         }
 
         free( pszDirContent );
@@ -149,19 +150,18 @@ void ThemeRepository::parseDirectory( const string &rDir_locale )
 
 
 
-int ThemeRepository::changeSkin( vlc_object_t *pIntf, char const *pCmd,
+int ThemeRepository::changeSkin( vlc_object_t *pIntf, char const *pVariable,
                                  vlc_value_t oldval, vlc_value_t newval,
                                  void *pData )
 {
     ThemeRepository *pThis = (ThemeRepository*)(pData);
 
-    // Special menu entry for the open skin dialog
-    if( !strcmp( newval.psz_string, kOpenDialog ) )
+    if( !strcmp( pVariable, "intf-skins-interactive" ) )
     {
         CmdDlgChangeSkin cmd( pThis->getIntf() );
         cmd.execute();
     }
-    else
+    else if( !strcmp( pVariable, "intf-skins" ) )
     {
         // Try to load the new skin
         CmdChangeSkin *pCmd = new CmdChangeSkin( pThis->getIntf(),

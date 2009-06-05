@@ -2,7 +2,7 @@
  * bonjour.c
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 9d37308c0bff8f75483932fabb0ae60bbbda4caa $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *
@@ -36,10 +36,8 @@
 #include <vlc_sout.h>
 
 #include <avahi-client/client.h>
-#ifdef HAVE_AVAHI_06
-# include <avahi-client/publish.h>
-# include <avahi-client/lookup.h>
-#endif
+#include <avahi-client/publish.h>
+#include <avahi-client/lookup.h>
 #include <avahi-common/alternative.h>
 #include <avahi-common/simple-watch.h>
 #include <avahi-common/malloc.h>
@@ -122,11 +120,7 @@ static int create_service( bonjour_t *p_sys )
     }
 
     error = avahi_entry_group_add_service( p_sys->group, AVAHI_IF_UNSPEC,
-#ifdef HAVE_AVAHI_06
                                            AVAHI_PROTO_UNSPEC, 0, p_sys->psz_name,
-#else
-                                           AVAHI_PROTO_UNSPEC, p_sys->psz_name,
-#endif
                                            p_sys->psz_stype, NULL, NULL,
                                            p_sys->i_port,
                                            p_sys->psz_txt, NULL );
@@ -167,12 +161,8 @@ static void client_callback( AvahiClient *c,
         if( p_sys->group != NULL )
             avahi_entry_group_reset( p_sys->group );
     }
-#ifdef HAVE_AVAHI_06
     else if( state == AVAHI_CLIENT_FAILURE &&
               (avahi_client_errno(c) == AVAHI_ERR_DISCONNECTED) )
-#else
-    else if( state == AVAHI_CLIENT_DISCONNECTED )
-#endif
     {
         msg_Err( p_sys->p_log, "avahi client disconnected" );
         avahi_simple_poll_quit( p_sys->simple_poll );
@@ -185,12 +175,13 @@ static void client_callback( AvahiClient *c,
 static void* poll_iterate_thread( vlc_object_t *p_this )
 {
     poll_thread_t *p_pt = (poll_thread_t*)p_this;
-    vlc_thread_ready( p_pt );
+    int canc = vlc_savecancel ();
 
     while( vlc_object_alive (p_pt) )
         if( avahi_simple_poll_iterate( p_pt->simple_poll, 100 ) != 0 )
             break;
 
+    vlc_restorecancel (canc);
     return NULL;
 }
 
@@ -201,16 +192,12 @@ void *bonjour_start_service( vlc_object_t *p_log, const char *psz_stype,
                              const char *psz_name, int i_port, char *psz_txt )
 {
     int err;
-    bonjour_t *p_sys;
 
-    p_sys = (bonjour_t *)malloc( sizeof(*p_sys) );
+    bonjour_t* p_sys = calloc( 1, sizeof(*p_sys) );
     if( p_sys == NULL )
         return NULL;
 
-    memset( p_sys, 0, sizeof(*p_sys) );
-
     p_sys->p_log = p_log;
-
     p_sys->i_port = i_port;
     p_sys->psz_name = avahi_strdup( psz_name );
     p_sys->psz_stype = avahi_strdup( psz_stype );
@@ -232,9 +219,7 @@ void *bonjour_start_service( vlc_object_t *p_log, const char *psz_stype,
     }
 
     p_sys->client = avahi_client_new( avahi_simple_poll_get(p_sys->simple_poll),
-#ifdef HAVE_AVAHI_06
                                       0,
-#endif
                                       client_callback, p_sys, &err );
     if( p_sys->client == NULL )
     {
@@ -251,7 +236,7 @@ void *bonjour_start_service( vlc_object_t *p_log, const char *psz_stype,
 
     if( vlc_thread_create( p_sys->poll_thread, "Avahi Poll Iterate Thread",
                            poll_iterate_thread,
-                           VLC_THREAD_PRIORITY_HIGHEST, false ) )
+                           VLC_THREAD_PRIORITY_HIGHEST ) )
     {
         msg_Err( p_sys->p_log, "failed to create poll iterate thread" );
         goto error;

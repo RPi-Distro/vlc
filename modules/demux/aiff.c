@@ -2,7 +2,7 @@
  * aiff.c: Audio Interchange File Format demuxer
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 092357493a627b6e5e8ea02c993b851de0d50b7f $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -43,14 +43,14 @@
 static int  Open    ( vlc_object_t * );
 static void Close  ( vlc_object_t * );
 
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_description( N_("AIFF demuxer" ) );
-    set_capability( "demux", 10 );
-    set_callbacks( Open, Close );
-    add_shortcut( "aiff" );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_description( N_("AIFF demuxer" ) )
+    set_capability( "demux", 10 )
+    set_callbacks( Open, Close )
+    add_shortcut( "aiff" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -109,8 +109,7 @@ static int Open( vlc_object_t *p_this )
 
     if( stream_Peek( p_demux->s, &p_peek, 12 ) < 12 )
         return VLC_EGENERIC;
-    if( memcmp( p_peek, "FORM", 4 )
-     || memcmp( &p_peek[8], "AIFF", 4 ) )
+    if( memcmp( p_peek, "FORM", 4 ) || memcmp( &p_peek[8], "AIFF", 4 ) )
         return VLC_EGENERIC;
 
     /* skip aiff header */
@@ -126,14 +125,18 @@ static int Open( vlc_object_t *p_this )
     {
         uint32_t i_size;
 
-        CHECK_PEEK_GOTO( p_peek, 8 );
+        if( stream_Peek( p_demux->s, &p_peek, 8 ) < 8 )
+            goto error;
+
         i_size = GetDWBE( &p_peek[4] );
 
         msg_Dbg( p_demux, "chunk fcc=%4.4s size=%d", p_peek, i_size );
 
         if( !memcmp( p_peek, "COMM", 4 ) )
         {
-            CHECK_PEEK_GOTO( p_peek, 18+8 );
+            if( stream_Peek( p_demux->s, &p_peek, 18+8 ) < 18+8 )
+                goto error;
+
             es_format_Init( &p_sys->fmt, AUDIO_ES, VLC_FOURCC( 't', 'w', 'o', 's' ) );
             p_sys->fmt.audio.i_channels = GetWBE( &p_peek[8] );
             p_sys->fmt.audio.i_bitspersample = GetWBE( &p_peek[14] );
@@ -144,7 +147,9 @@ static int Open( vlc_object_t *p_this )
         }
         else if( !memcmp( p_peek, "SSND", 4 ) )
         {
-            CHECK_PEEK_GOTO( p_peek, 8+8 );
+            if( stream_Peek( p_demux->s, &p_peek, 8+8 ) < 8+8 )
+                goto error;
+
             p_sys->i_ssnd_pos = stream_Tell( p_demux->s );
             p_sys->i_ssnd_size = i_size;
             p_sys->i_ssnd_offset = GetDWBE( &p_peek[8] );

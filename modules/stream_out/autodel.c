@@ -2,7 +2,7 @@
  * autodel.c: monitor mux inputs and automatically add/delete streams
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 9cc8c4b719b65d702c17b7075cccb6ac0f8e4d7f $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -42,13 +42,13 @@ static void Close   ( vlc_object_t * );
 
 #define SOUT_CFG_PREFIX "sout-autodel-"
 
-vlc_module_begin();
-    set_shortname( N_("Autodel"));
-    set_description( N_("Automatically add/delete input streams"));
-    set_capability( "sout stream", 50 );
-    add_shortcut( "autodel" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( N_("Autodel"))
+    set_description( N_("Automatically add/delete input streams"))
+    set_capability( "sout stream", 50 )
+    add_shortcut( "autodel" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 
 /*****************************************************************************

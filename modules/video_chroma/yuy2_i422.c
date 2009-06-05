@@ -2,7 +2,7 @@
  * yuy2_i422.c : Packed YUV 4:2:2 to Planar YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 4faea42cc0b9d4bd8e609e8c90efd708cff91a51 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -54,11 +54,11 @@ static picture_t *cyuv_I422_Filter    ( filter_t *, picture_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) );
-    set_capability( "video filter2", 80 );
-    set_callbacks( Activate, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) )
+    set_capability( "video filter2", 80 )
+    set_callbacks( Activate, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Activate: allocate a chroma function

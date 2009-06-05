@@ -2,7 +2,7 @@
  * rawvideo.c: Pseudo video decoder/packetizer for raw video data
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: c1498644df2659eb9b0803bedc629ee968974eac $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -50,8 +50,7 @@ struct decoder_sys_t
     /*
      * Common properties
      */
-    mtime_t i_pts;
-
+    date_t pts;
 };
 
 /****************************************************************************
@@ -69,18 +68,18 @@ static block_t   *SendFrame  ( decoder_t *, block_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Pseudo raw video decoder") );
-    set_capability( "decoder", 50 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_callbacks( OpenDecoder, CloseDecoder );
+vlc_module_begin ()
+    set_description( N_("Pseudo raw video decoder") )
+    set_capability( "decoder", 50 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_callbacks( OpenDecoder, CloseDecoder )
 
-    add_submodule();
-    set_description( N_("Pseudo raw video packetizer") );
-    set_capability( "packetizer", 100 );
-    set_callbacks( OpenPacketizer, CloseDecoder );
-vlc_module_end();
+    add_submodule ()
+    set_description( N_("Pseudo raw video packetizer") )
+    set_capability( "packetizer", 100 )
+    set_callbacks( OpenPacketizer, CloseDecoder )
+vlc_module_end ()
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -135,7 +134,6 @@ static int OpenDecoder( vlc_object_t *p_this )
         return VLC_ENOMEM;
     /* Misc init */
     p_dec->p_sys->b_packetizer = false;
-    p_sys->i_pts = 0;
     p_sys->b_invert = 0;
 
     if( (int)p_dec->fmt_in.video.i_height < 0 )
@@ -153,6 +151,19 @@ static int OpenDecoder( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
+    es_format_Copy( &p_dec->fmt_out, &p_dec->fmt_in );
+
+    date_Init( &p_sys->pts, p_dec->fmt_out.video.i_frame_rate,
+               p_dec->fmt_out.video.i_frame_rate_base );
+    if( p_dec->fmt_out.video.i_frame_rate == 0 ||
+        p_dec->fmt_out.video.i_frame_rate_base == 0)
+    {
+        msg_Warn( p_dec, "invalid frame rate %d/%d, using 25 fps instead",
+                  p_dec->fmt_out.video.i_frame_rate,
+                  p_dec->fmt_out.video.i_frame_rate_base);
+        date_Init( &p_sys->pts, 25, 1 );
+    }
+
     /* Find out p_vdec->i_raw_size */
     vout_InitFormat( &p_dec->fmt_out.video, p_dec->fmt_in.i_codec,
                      p_dec->fmt_in.video.i_width,
@@ -161,22 +172,11 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->i_raw_size = p_dec->fmt_out.video.i_bits_per_pixel *
         p_dec->fmt_out.video.i_width * p_dec->fmt_out.video.i_height / 8;
 
-    /* Set output properties */
-    p_dec->fmt_out.i_cat = VIDEO_ES;
-    p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
     if( !p_dec->fmt_in.video.i_aspect )
     {
         p_dec->fmt_out.video.i_aspect = VOUT_ASPECT_FACTOR *
             p_dec->fmt_out.video.i_width / p_dec->fmt_out.video.i_height;
     }
-    else p_dec->fmt_out.video.i_aspect = p_dec->fmt_in.video.i_aspect;
-
-    if( p_dec->fmt_in.video.i_rmask )
-        p_dec->fmt_out.video.i_rmask = p_dec->fmt_in.video.i_rmask;
-    if( p_dec->fmt_in.video.i_gmask )
-        p_dec->fmt_out.video.i_gmask = p_dec->fmt_in.video.i_gmask;
-    if( p_dec->fmt_in.video.i_bmask )
-        p_dec->fmt_out.video.i_bmask = p_dec->fmt_in.video.i_bmask;
 
     /* Set callbacks */
     p_dec->pf_decode_video = (picture_t *(*)(decoder_t *, block_t **))
@@ -213,18 +213,26 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 
     p_block = *pp_block;
 
-    if( !p_sys->i_pts && !p_block->i_pts && !p_block->i_dts )
+
+    if( !p_block->i_pts && !p_block->i_dts && !date_Get( &p_sys->pts ) )
     {
         /* We've just started the stream, wait for the first PTS. */
         block_Release( p_block );
         return NULL;
     }
 
-    /* Date management */
-    if( p_block->i_pts > 0 || p_block->i_dts > 0 )
+    /* Date management: If there is a pts avaliable, use that. */
+    if( p_block->i_pts )
     {
-        if( p_block->i_pts > 0 ) p_sys->i_pts = p_block->i_pts;
-        else if( p_block->i_dts > 0 ) p_sys->i_pts = p_block->i_dts;
+        date_Set( &p_sys->pts, p_block->i_pts );
+    }
+    else if( p_block->i_dts )
+    {
+        /* NB, davidf doesn't quite agree with this in general, it is ok
+         * for rawvideo since it is in order (ie pts=dts), however, it
+         * may not be ok for an out-of-order codec, so don't copy this
+         * without thinking */
+        date_Set( &p_sys->pts, p_block->i_dts );
     }
 
     if( p_block->i_buffer < p_sys->i_raw_size )
@@ -246,7 +254,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     }
 
     /* Date management: 1 frame per packet */
-    p_sys->i_pts += ( INT64_C(1000000) * 1.0 / 25 /*FIXME*/ );
+    date_Increment( &p_sys->pts, 1 );
     *pp_block = NULL;
 
     return p_buf;
@@ -289,7 +297,7 @@ static picture_t *DecodeFrame( decoder_t *p_dec, block_t *p_block )
     picture_t *p_pic;
 
     /* Get a new picture */
-    p_pic = p_dec->pf_vout_buffer_new( p_dec );
+    p_pic = decoder_NewPicture( p_dec );
     if( !p_pic )
     {
         block_Release( p_block );
@@ -298,7 +306,8 @@ static picture_t *DecodeFrame( decoder_t *p_dec, block_t *p_block )
 
     FillPicture( p_dec, p_block, p_pic );
 
-    p_pic->date = p_sys->i_pts;
+    p_pic->date = date_Get( &p_sys->pts );
+    p_pic->b_progressive = true;
 
     block_Release( p_block );
     return p_pic;
@@ -311,7 +320,7 @@ static block_t *SendFrame( decoder_t *p_dec, block_t *p_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    p_block->i_dts = p_block->i_pts = p_sys->i_pts;
+    p_block->i_dts = p_block->i_pts = date_Get( &p_sys->pts );
 
     if( p_sys->b_invert )
     {

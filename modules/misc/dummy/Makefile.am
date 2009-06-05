@@ -4,8 +4,8 @@
 basedir = misc
 dir = misc/dummy
 mods = dummy
-libvlc_LTLIBRARIES =  $(LTLIBdummy)
-EXTRA_LTLIBRARIES =  libdummy_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,5 +18,5 @@ libdummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdummy_plugin_la_LIBADD = $(AM_LIBADD)
-libdummy_plugin_la_DEPENDENCIES =
+libdummy_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

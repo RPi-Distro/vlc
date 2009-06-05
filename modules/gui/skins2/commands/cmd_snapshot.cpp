@@ -1,8 +1,8 @@
 /*****************************************************************************
  * cmd_snapshot.cpp
  *****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: 23e5a37a306271d60b2d92044625af0ab764e5f9 $
+ * Copyright (C) 2006-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *
@@ -27,19 +27,14 @@
 
 void CmdSnapshot::execute()
 {
-    vout_thread_t *pVout;
-
     if( getIntf()->p_sys->p_input == NULL )
-    {
         return;
-    }
 
-    pVout = (vout_thread_t *)vlc_object_find( getIntf()->p_sys->p_input,
-                                              VLC_OBJECT_VOUT, FIND_CHILD );
+    vout_thread_t *pVout = input_GetVout( getIntf()->p_sys->p_input );
     if( pVout )
     {
         // Take a snapshot
-        vout_Control( pVout, VOUT_SNAPSHOT );
+        var_TriggerCallback( pVout, "video-snapshot" );
         vlc_object_release( pVout );
     }
 }

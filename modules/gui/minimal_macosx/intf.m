@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 526bc708baaafa48b13e8ccdfb48037752814c36 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -39,6 +39,7 @@
 #include <vlc_keys.h>
 
 #include <vlc_input.h>
+#import <vlc_interface.h>
 
 #import <intf.h>
 
@@ -98,12 +99,18 @@ static void * KillerThread( void *user_data )
 
     intf_thread_t *p_intf = user_data;
 
-    vlc_object_lock ( p_intf );
-    while( vlc_object_alive( p_intf ) )
-        vlc_object_wait( p_intf );
-    vlc_object_unlock( p_intf );
+    vlc_mutex_init( &p_intf->p_sys->lock );
+    vlc_cond_init( &p_intf->p_sys->wait );
 
-    msg_Dbg( p_intf, "Killing the Mac OS X module" );
+    vlc_mutex_lock ( &p_intf->p_sys->lock );
+    while( vlc_object_alive( p_intf ) )
+        vlc_cond_wait( &p_intf->p_sys->wait, &p_intf->p_sys->lock );
+    vlc_mutex_unlock( &p_intf->p_sys->lock );
+
+    vlc_mutex_destroy( &p_intf->p_sys->lock );
+    vlc_cond_destroy( &p_intf->p_sys->wait );
+
+    msg_Dbg( p_intf, "Killing the Minimal Mac OS X module" );
 
     /* We are dead, terminate */
     [NSApp terminate: nil];

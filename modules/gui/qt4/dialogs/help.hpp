@@ -2,7 +2,7 @@
  * Help.hpp : Help and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: cc6963d593d8699495518cc2eb2d5801067cb2b3 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _HELP_DIALOG_H_
-#define _HELP_DIALOG_H_
+#ifndef QVLC_HELP_DIALOG_H_
+#define QVLC_HELP_DIALOG_H_ 1
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -50,12 +50,14 @@ public:
         return instance;
     }
     static void killInstance()
-    { if( instance ) delete instance; instance = NULL;}
-    virtual ~HelpDialog();
+    { delete instance; instance = NULL;}
 
 private:
     HelpDialog( intf_thread_t * );
+    virtual ~HelpDialog();
+
     static HelpDialog *instance;
+
 public slots:
     void close();
 };
@@ -99,7 +101,7 @@ public:
         return instance;
     }
     static void killInstance()
-    { if( instance ) delete instance; instance = NULL;}
+    { delete instance; instance = NULL;}
 
     void updateNotify( bool );
 

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * old.c : Old playlist format import/export
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: 6de9648a6038c00a8824cb7bafac475272915c63 $
+ * Copyright (C) 2004-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -30,12 +30,10 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_interface.h>
 #include <vlc_playlist.h>
 #include <vlc_input.h>
 #include <vlc_charset.h>
 
-#include <errno.h>                                                 /* ENOMEM */
 
 #define PLAYLIST_FILE_HEADER "# vlc playlist file version 0.5"
 

@@ -2,7 +2,7 @@
  * scaletempo.c: Scale audio tempo while maintaining pitch
  *****************************************************************************
  * Copyright © 2008 the VideoLAN team
- * $Id: 08541f175c179e32f6904f04daba869a8d117555 $
+ * $Id$
  *
  * Authors: Rov Juvano <rovjuvano@users.sourceforge.net>
  *
@@ -43,22 +43,22 @@ static void Close( vlc_object_t * );
 static void DoWork( aout_instance_t *, aout_filter_t *,
                     aout_buffer_t *, aout_buffer_t * );
 
-vlc_module_begin();
-    set_description( N_("Scale audio tempo in sync with playback rate") );
-    set_shortname( N_("Scaletempo") );
-    set_capability( "audio filter", 0 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AFILTER );
+vlc_module_begin ()
+    set_description( N_("Audio tempo scaler synched with rate") )
+    set_shortname( N_("Scaletempo") )
+    set_capability( "audio filter", 0 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AFILTER )
 
     add_integer_with_range( "scaletempo-stride", 30, 1, 2000, NULL,
-        N_("Stride Length"), N_("Length in milliseconds to output each stride"), true );
+        N_("Stride Length"), N_("Length in milliseconds to output each stride"), true )
     add_float_with_range( "scaletempo-overlap", .20, 0.0, 1.0, NULL,
-        N_("Overlap Length"), N_("Percentage of stride to overlap"), true );
+        N_("Overlap Length"), N_("Percentage of stride to overlap"), true )
     add_integer_with_range( "scaletempo-search", 14, 0, 200, NULL,
-        N_("Search Length"), N_("Length in milliseconds to search for best overlap position"), true );
+        N_("Search Length"), N_("Length in milliseconds to search for best overlap position"), true )
 
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*
  * Scaletempo works by producing audio in constant sized chunks (a "stride") but
@@ -76,7 +76,7 @@ vlc_module_end();
  * frame: a single set of samples, one for each channel
  * VLC uses these terms differently
  */
-typedef struct aout_filter_sys_t
+struct aout_filter_sys_t
 {
     /* Filter static config */
     double    scale;
@@ -114,7 +114,7 @@ typedef struct aout_filter_sys_t
     /* for "audio filter" only, manage own buffers */
     int       i_buf;
     uint8_t  *p_buffers[2];
-} aout_filter_sys_t;
+};
 
 /*****************************************************************************
  * best_overlap_offset: calculate best offset for overlap

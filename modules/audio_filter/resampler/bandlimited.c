@@ -2,7 +2,7 @@
  * bandlimited.c : band-limited interpolation resampler
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 3eddef55bf45f0949f66e472a0a5d25f6ae0dc47 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -92,18 +92,18 @@ struct filter_sys_t
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_MISC );
-    set_description( N_("Audio filter for band-limited interpolation resampling") );
-    set_capability( "audio filter", 20 );
-    set_callbacks( Create, Close );
+vlc_module_begin ()
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_description( N_("Audio filter for band-limited interpolation resampling") )
+    set_capability( "audio filter", 20 )
+    set_callbacks( Create, Close )
 
-    add_submodule();
-    set_description( _("Audio filter for band-limited interpolation resampling") );
-    set_capability( "audio filter2", 20 );
-    set_callbacks( OpenFilter, CloseFilter );
-vlc_module_end();
+    add_submodule ()
+    set_description( N_("Audio filter for band-limited interpolation resampling") )
+    set_capability( "audio filter2", 20 )
+    set_callbacks( OpenFilter, CloseFilter )
+vlc_module_end ()
 
 /*****************************************************************************
  * Create: allocate linear resampler
@@ -184,7 +184,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
                     aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
 {
     filter_sys_t *p_sys = (filter_sys_t *)p_filter->p_sys;
-    float *p_in, *p_in_orig, *p_out = (float *)p_out_buf->p_buffer;
+    float *p_out = (float *)p_out_buf->p_buffer;
 
     int i_nb_channels = aout_FormatNbChannels( &p_filter->input );
     int i_in_nb = p_in_buf->i_nb_samples;
@@ -253,17 +253,9 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
 
     /* Prepare the source buffer */
     i_in_nb += (p_sys->i_old_wing * 2);
-#ifdef HAVE_ALLOCA
-    p_in = p_in_orig = (float *)alloca( i_in_nb *
-                                        p_filter->input.i_bytes_per_frame );
-#else
-    p_in = p_in_orig = (float *)malloc( i_in_nb *
-                                        p_filter->input.i_bytes_per_frame );
-#endif
-    if( p_in == NULL )
-    {
-        return;
-    }
+
+    float p_in_orig[i_in_nb * p_filter->input.i_bytes_per_frame / 4],
+         *p_in = p_in_orig;
 
     /* Copy all our samples in p_in */
     if( p_sys->i_old_wing )
@@ -460,11 +452,6 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
              i_out * p_filter->input.i_bytes_per_frame );
 #endif
 
-    /* Free the temp buffer */
-#ifndef HAVE_ALLOCA
-    free( p_in_orig );
-#endif
-
     /* Finalize aout buffer */
     p_out_buf->i_nb_samples = i_out;
     p_out_buf->start_date = aout_DateGet( &p_sys->end_date );
@@ -570,8 +557,10 @@ static block_t *Resample( filter_t *p_filter, block_t *p_block )
     i_bytes_per_frame = p_filter->fmt_out.audio.i_channels *
                   p_filter->fmt_out.audio.i_bitspersample / 8;
 
-    i_out_size = i_bytes_per_frame * ( 1 + (p_block->i_samples *
-        p_filter->fmt_out.audio.i_rate / p_filter->fmt_in.audio.i_rate));
+    i_out_size = i_bytes_per_frame * ( 1 + ( p_block->i_samples *
+                                             p_filter->fmt_out.audio.i_rate /
+                                             p_filter->fmt_in.audio.i_rate) ) +
+                 p_filter->p_sys->i_buf_size;
 
     p_out = p_filter->pf_audio_buffer_new( p_filter, i_out_size );
     if( !p_out )

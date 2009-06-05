@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
  * Copyright © 2006-2007 Rafaël Carré
- * $Id: b45b5fdee0485db9e789c5b4fa601b05a91dddae $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Rafaël Carré <funman at videolanorg>
@@ -30,6 +30,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_playlist.h>
+#include <vlc_services_discovery.h>
 
 #include <vlc_network.h>
 
@@ -59,13 +60,13 @@ struct udi_input_id_t
 
 struct services_discovery_sys_t
 {
+    vlc_thread_t            thread;
     LibHalContext           *p_ctx;
     DBusConnection          *p_connection;
     int                     i_devices_number;
     struct udi_input_id_t   **pp_devices;
 };
-static void Run    ( services_discovery_t *p_intf );
-
+static void *Run ( void * );
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
@@ -79,15 +80,15 @@ services_discovery_t        *p_sd_global;
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("HAL devices detection") );
-    set_category( CAT_PLAYLIST );
-    set_subcategory( SUBCAT_PLAYLIST_SD );
+vlc_module_begin ()
+    set_description( N_("HAL devices detection") )
+    set_category( CAT_PLAYLIST )
+    set_subcategory( SUBCAT_PLAYLIST_SD )
 
-    set_capability( "services_discovery", 0 );
-    set_callbacks( Open, Close );
+    set_capability( "services_discovery", 0 )
+    set_callbacks( Open, Close )
 
-vlc_module_end();
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -102,13 +103,12 @@ static int Open( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     DBusError           dbus_error;
-    DBusConnection      *p_connection;
+    DBusConnection      *p_connection = NULL;
 
     p_sd_global = p_sd;
     p_sys->i_devices_number = 0;
     p_sys->pp_devices = NULL;
 
-    p_sd->pf_run = Run;
     p_sd->p_sys  = p_sys;
 
     dbus_error_init( &dbus_error );
@@ -124,32 +124,34 @@ static int Open( vlc_object_t *p_this )
     if( dbus_error_is_set( &dbus_error ) )
     {
         msg_Err( p_sd, "unable to connect to DBUS: %s", dbus_error.message );
-        dbus_error_free( &dbus_error );
-        free( p_sys );
-        return VLC_EGENERIC;
+        goto error;
     }
     libhal_ctx_set_dbus_connection( p_sys->p_ctx, p_connection );
     p_sys->p_connection = p_connection;
     if( !libhal_ctx_init( p_sys->p_ctx, &dbus_error ) )
     {
         msg_Err( p_sd, "hal not available : %s", dbus_error.message );
-        dbus_error_free( &dbus_error );
-        free( p_sys );
-        return VLC_EGENERIC;
+        goto error;
     }
 
     if( !libhal_ctx_set_device_added( p_sys->p_ctx, DeviceAdded ) ||
             !libhal_ctx_set_device_removed( p_sys->p_ctx, DeviceRemoved ) )
     {
         msg_Err( p_sd, "unable to add callback" );
-        dbus_error_free( &dbus_error );
-        free( p_sys );
-        return VLC_EGENERIC;
+        goto error;
     }
 
-    services_discovery_SetLocalizedName( p_sd, _("Devices") );
+    if( vlc_clone( &p_sys->thread, Run, p_this, VLC_THREAD_PRIORITY_LOW ) )
+        goto error;
 
     return VLC_SUCCESS;
+error:
+    if( p_connection )
+        dbus_connection_unref( p_connection );
+    dbus_error_free( &dbus_error );
+    libhal_ctx_free( p_sys->p_ctx );
+    free( p_sys );
+    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -160,6 +162,9 @@ static void Close( vlc_object_t *p_this )
     services_discovery_t *p_sd = ( services_discovery_t* )p_this;
     services_discovery_sys_t *p_sys  = p_sd->p_sys;
 
+    /*vlc_cancel( p_sys->thread );*/
+    vlc_object_kill( p_sd );
+    vlc_join( p_sys->thread, NULL );
     dbus_connection_unref( p_sys->p_connection );
     struct udi_input_id_t *p_udi_entry;
 
@@ -172,6 +177,8 @@ static void Close( vlc_object_t *p_this )
         free( p_udi_entry );
     }
     p_sys->pp_devices = NULL;
+
+    libhal_ctx_free( p_sys->p_ctx );
 
     free( p_sys );
 }
@@ -295,11 +302,13 @@ static void ParseDevice( services_discovery_t *p_sd, const char *psz_device )
 /*****************************************************************************
  * Run: main HAL thread
  *****************************************************************************/
-static void Run( services_discovery_t *p_sd )
+static void *Run( void *data )
 {
-    int i, i_devices;
+    services_discovery_t     *p_sd  = data;
+    services_discovery_sys_t *p_sys = p_sd->p_sys;
     char **devices;
-    services_discovery_sys_t    *p_sys  = p_sd->p_sys;
+    int i, i_devices;
+    int canc = vlc_savecancel();
 
     /* parse existing devices first */
     if( ( devices = libhal_get_all_devices( p_sys->p_ctx, &i_devices, NULL ) ) )
@@ -309,13 +318,19 @@ static void Run( services_discovery_t *p_sd )
             ParseDevice( p_sd, devices[ i ] );
             libhal_free_string( devices[ i ] );
         }
+        free( devices );
     }
+
+    /* FIXME: Totally lame. There are DBus watch functions to do this properly.
+     * -- Courmisch, 28/08/2008 */
     while( vlc_object_alive (p_sd) )
     {
         /* look for events on the bus, blocking 1 second */
         dbus_connection_read_write_dispatch( p_sys->p_connection, 1000 );
         /* HAL 0.5.8.1 can use libhal_ctx_get_dbus_connection(p_sys->p_ctx) */
     }
+    vlc_restorecancel (canc);
+    return NULL;
 }
 
 void DeviceAdded( LibHalContext *p_ctx, const char *psz_udi )

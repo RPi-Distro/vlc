@@ -2,7 +2,7 @@
  * qte_main.c : QT Embedded wrapper for gte_main
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 696290ae47a93553410d1c8c2564a949aa62ebcf $
+ * $Id$
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *
@@ -72,29 +72,29 @@ static qte_thread_t * p_qte_main = NULL;
     "Qt/Embedded GUI Server. This option is equivalent to the -qws option " \
     "from normal Qt.")
 
-vlc_module_begin();
-    set_description( N_("Qt Embedded GUI helper") );
-    set_capability( "gui-helper", 90 );
-    add_bool( "qte-guiserver", 0, NULL, STANDALONE_TEXT, STANDALONE_LONGTEXT, false );
-    add_shortcut( "qte" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Qt Embedded GUI helper") )
+    set_capability( "gui-helper", 90 )
+    add_bool( "qte-guiserver", 0, NULL, STANDALONE_TEXT, STANDALONE_LONGTEXT, false )
+    add_shortcut( "qte" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 } /* extern "C" */
+
+static vlc_mutex_t qte_lock = VLC_STATIC_MUTEX;
 
 /*****************************************************************************
  * Open: initialize and create window
  *****************************************************************************/
 static int Open( vlc_object_t *p_this )
 {
-    vlc_mutex_t *lock;
-
-    lock = var_AcquireMutex( "qte" );
+    vlc_mutex_lock( &qte_lock );
 
     if( i_refcount > 0 )
     {
         i_refcount++;
-        vlc_mutex_unlock( lock );
+        vlc_mutex_unlock( &qte_lock );
 
         return VLC_SUCCESS;
     }
@@ -113,7 +113,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     i_refcount++;
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &qte_lock );
 
     vlc_object_attach( p_qte_main, p_this );
     msg_Dbg( p_this, "qte_main running" );
@@ -126,9 +126,7 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    vlc_mutex_t *lock;
-
-    lock = var_AcquireMutex( "qte" );
+    vlc_mutex_lock( &qte_lock );
 
     i_refcount--;
 
@@ -149,7 +147,7 @@ static void Close( vlc_object_t *p_this )
     vlc_object_release( p_qte_main );
     p_qte_main = NULL;
 
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &qte_lock );
 }
 
 /*****************************************************************************
@@ -162,6 +160,7 @@ static void* QteMain( vlc_object_t* p_vlc_obj )
 {
     qte_thread_t *p_this = (qte_thread_t*)p_vlc_obj;
     int i_argc = 1;
+    int canc = vlc_savecancel ();
 
     p_this->b_gui_server = false;
     if( config_GetInt( p_this, "qte-guiserver" ) )
@@ -191,5 +190,6 @@ static void* QteMain( vlc_object_t* p_vlc_obj )
     vlc_thread_ready( p_this );
     p_this->p_qte_application->exec();
 
+    vlc_restorecancel (canc);
     return NULL;
 }

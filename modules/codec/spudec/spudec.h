@@ -2,7 +2,7 @@
  * spudec.h : sub picture unit decoder thread interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2006 the VideoLAN team
- * $Id: 71de9ba77a138992250056b3316661f71fdaed61 $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
@@ -28,7 +28,6 @@ struct decoder_sys_t
     int b_packetizer;
 
     mtime_t i_pts;
-    int     i_rate;
     unsigned int i_spu_size;
     unsigned int i_rle_size;
     unsigned int i_spu;
@@ -38,25 +37,6 @@ struct decoder_sys_t
     /* We will never overflow */
     uint8_t buffer[65536];
 };
-
-typedef struct subpicture_data_t
-{
-    mtime_t i_pts;                                 /* presentation timestamp */
-
-    int   pi_offset[2];                              /* byte offsets to data */
-    void *p_data;
-
-    /* Color information */
-    bool b_palette;
-    uint8_t    pi_alpha[4];
-    uint8_t    pi_yuv[4][3];
-
-    /* Auto crop fullscreen subtitles */
-    bool b_auto_crop;
-    int i_y_top_offset;
-    int i_y_bottom_offset;
-
-} subpicture_data_t;
 
 /*****************************************************************************
  * Amount of bytes we GetChunk() in one go

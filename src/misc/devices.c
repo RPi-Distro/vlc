@@ -2,7 +2,7 @@
  * devices.c : Handling of devices probing
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: e6241c8d473f6520560257fd1f5b609363ddc31b $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -44,7 +44,7 @@ void devices_ProbeCreate( vlc_object_t *p_this )
     p_probe = vlc_object_create( p_this, VLC_OBJECT_INTF );
     if( !p_probe )
         return;
-    p_probe->p_module = module_Need( p_probe, "devices probe", "", false );
+    p_probe->p_module = module_need( p_probe, "devices probe", "", false );
     if( p_probe->p_module == NULL )
     {
         msg_Err( p_this, "no devices probing module could be loaded" );

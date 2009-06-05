@@ -2,7 +2,7 @@
  * preferences.cpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: a8e436f7a55613a902b62d0215b0ca813a4afc06 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -27,7 +27,6 @@
 #endif
 
 #include "dialogs/preferences.hpp"
-#include "dialogs_provider.hpp"
 #include "util/qvlcframe.hpp"
 
 #include "components/complete_preferences.hpp"
@@ -36,13 +35,9 @@
 #include <QHBoxLayout>
 #include <QGroupBox>
 #include <QRadioButton>
-#include <QVBoxLayout>
 #include <QPushButton>
-#include <QCheckBox>
 #include <QMessageBox>
 #include <QDialogButtonBox>
-
-PrefsDialog *PrefsDialog::instance = NULL;
 
 PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
             : QVLCDialog( parent, _p_intf )
@@ -68,10 +63,10 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
     QHBoxLayout *types_l = new QHBoxLayout;
     types_l->setSpacing( 3 ); types_l->setMargin( 3 );
     small = new QRadioButton( qtr( "Simple" ), types );
-    small->setToolTip( qtr( "Switch to simple preferences" ) );
+    small->setToolTip( qtr( "Switch to simple preferences view" ) );
     types_l->addWidget( small );
     all = new QRadioButton( qtr("All"), types ); types_l->addWidget( all );
-    all->setToolTip( qtr( "Switch to complete preferences" ) );
+    all->setToolTip( qtr( "Switch to full preferences view" ) );
     types->setLayout( types_l );
     small->setChecked( true );
 
@@ -84,6 +79,7 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
     /* Buttons */
     QDialogButtonBox *buttonsBox = new QDialogButtonBox();
     QPushButton *save = new QPushButton( qtr( "&Save" ) );
+    save->setToolTip( qtr( "Save and close the dialog" ) );
     QPushButton *cancel = new QPushButton( qtr( "&Cancel" ) );
     QPushButton *reset = new QPushButton( qtr( "&Reset Preferences" ) );
 
@@ -101,7 +97,7 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
     main_layout->setColumnMinimumWidth( 1, 10 );
     main_layout->setColumnStretch( 0, 1 );
     main_layout->setColumnStretch( 1, 0 );
-    main_layout->setColumnStretch( 2, 3 );
+    main_layout->setColumnStretch( 2, 10 );
 
     main_layout->setRowStretch( 2, 4 );
 
@@ -112,9 +108,12 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
     tree_panel_l->setMargin( 1 );
     main_panel_l->setLayoutMargins( 6, 0, 0, 3, 3 );
 
+    b_small = (p_intf->p_sys->i_screenHeight < 750);
+    if( b_small ) msg_Dbg( p_intf, "Small");
+    setMaximumHeight( p_intf->p_sys->i_screenHeight );
     for( int i = 0; i < SPrefsMax ; i++ ) simple_panels[i] = NULL;
 
-    if( config_GetInt( p_intf, "qt-advanced-pref" ) == 1 )
+    if( config_GetInt( p_intf, "qt-advanced-pref" ) || config_GetInt( p_intf, "advanced" ) )
         setAdvanced();
     else
         setSmall();
@@ -126,7 +125,7 @@ PrefsDialog::PrefsDialog( QWidget *parent, intf_thread_t *_p_intf )
     BUTTONACT( small, setSmall() );
     BUTTONACT( all, setAdvanced() );
 
-    resize( 750, sizeHint().height() );
+    resize( 780, sizeHint().height() );
 }
 
 void PrefsDialog::setAdvanced()
@@ -179,7 +178,7 @@ void PrefsDialog::setSmall()
     /* If no simple_tree, create one, connect it */
     if( !simple_tree )
     {
-         simple_tree = new SPrefsCatList( p_intf, tree_panel );
+         simple_tree = new SPrefsCatList( p_intf, tree_panel, b_small );
          CONNECT( simple_tree,
                   currentItemChanged( int ),
                   this,  changeSimplePanel( int ) );
@@ -196,7 +195,7 @@ void PrefsDialog::setSmall()
     if( !current_simple_panel )
     {
         current_simple_panel =
-            new SPrefsPanel( p_intf, main_panel, SPrefsDefaultCat );
+            new SPrefsPanel( p_intf, main_panel, SPrefsDefaultCat, b_small );
         simple_panels[SPrefsDefaultCat] =  current_simple_panel;
         main_panel_l->addWidget( current_simple_panel );
     }
@@ -214,7 +213,7 @@ void PrefsDialog::changeSimplePanel( int number )
     current_simple_panel = simple_panels[number];
     if( !current_simple_panel )
     {
-        current_simple_panel  = new SPrefsPanel( p_intf, main_panel, number );
+        current_simple_panel  = new SPrefsPanel( p_intf, main_panel, number, b_small );
         simple_panels[number] = current_simple_panel;
         main_panel_l->addWidget( current_simple_panel );
     }
@@ -293,56 +292,13 @@ void PrefsDialog::save()
 
     /* Save to file */
     config_SaveConfigFile( p_intf, NULL );
-
-    destroyPanels();
-
-    hide();
+    accept();
 }
-
-void PrefsDialog::destroyPanels()
-{
-    msg_Dbg( p_intf, "Destroying the Panels" );
-    /* Delete the other panel in order to force its reload after clicking
-       on apply. In fact, if we don't do that, the preferences from the other
-       panels won't be accurate, so we would have to recreate the whole dialog,
-       and we don't want that.*/
-    if( small->isChecked() && advanced_panel )
-    {
-        /* Deleting only the active panel from the advanced config doesn't work
-           because the data records of PrefsItemData  contains still a
-           reference to it only cleanAll() is sure to remove all Panels! */
-        advanced_tree->cleanAll();
-        advanced_panel = NULL;
-    }
-    if( all->isChecked() && current_simple_panel )
-    {
-        for( int i = 0 ; i< SPrefsMax; i++ )
-        {
-            if( simple_panels[i] )
-            {
-               delete simple_panels[i];
-               simple_panels[i] = NULL;
-            }
-        }
-        current_simple_panel  = NULL;
-    }
-}
-
 
 /* Clean the preferences, dunno if it does something really */
 void PrefsDialog::cancel()
 {
-    if( small->isChecked() && simple_tree )
-    {
-        for( int i = 0 ; i< SPrefsMax; i++ )
-            if( simple_panels[i] ) simple_panels[i]->clean();
-    }
-    else if( all->isChecked() && advanced_tree )
-    {
-        advanced_tree->cleanAll();
-        advanced_panel = NULL;
-    }
-    hide();
+    reject();
 }
 
 /* Reset all the preferences, when you click the button */
@@ -351,8 +307,7 @@ void PrefsDialog::reset()
     int ret = QMessageBox::question(
                  this,
                  qtr( "Reset Preferences" ),
-                 qtr( "This will reset your VLC media player preferences.\n"
-                      "Are you sure you want to continue?" ),
+                 qtr( "Are you sure you want to reset your VLC media player preferences?" ),
                  QMessageBox::Ok | QMessageBox::Cancel,
                  QMessageBox::Ok);
 
@@ -362,8 +317,6 @@ void PrefsDialog::reset()
         config_SaveConfigFile( p_intf, NULL );
         getSettings()->clear();
 
-        close();
-        instance = NULL;
-        PrefsDialog::getInstance( p_intf )->show();
+        accept();
     }
 }

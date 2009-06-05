@@ -2,7 +2,7 @@
  * xvmc.c : XVMC plugin for vlc
  *****************************************************************************
  * Copyright (C) 1998-2001 VideoLAN
- * $Id: 03c0a49aa07973a06a954a57e0d9ef097e4c5e9f $
+ * $Id$
  *
  * Authors: Shane Harper <shanegh@optusnet.com.au>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -133,25 +133,25 @@ extern void Deactivate ( vlc_object_t * );
 #define CROP_TEXT N_("Crop")
 #define CROP_LONGTEXT N_("You can choose the crop style to apply.")
 
-vlc_module_begin();
-    set_shortname( "XVMC" );
-    add_string( "xvmc-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, true );
-    add_integer( "xvmc-adaptor", -1, NULL, ADAPTOR_TEXT, ADAPTOR_LONGTEXT, true );
-    add_bool( "xvmc-altfullscreen", 0, NULL, ALT_FS_TEXT, ALT_FS_LONGTEXT, true );
-    add_string( "xvmc-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true );
+vlc_module_begin ()
+    set_shortname( "XVMC" )
+    add_string( "xvmc-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, true )
+    add_integer( "xvmc-adaptor", -1, NULL, ADAPTOR_TEXT, ADAPTOR_LONGTEXT, true )
+    add_bool( "xvmc-altfullscreen", 0, NULL, ALT_FS_TEXT, ALT_FS_LONGTEXT, true )
+    add_string( "xvmc-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true )
 #ifdef HAVE_SYS_SHM_H
-    add_bool( "xvmc-shm", 1, NULL, SHM_TEXT, SHM_LONGTEXT, true );
+    add_bool( "xvmc-shm", 1, NULL, SHM_TEXT, SHM_LONGTEXT, true )
 #endif
 #ifdef HAVE_XINERAMA
-    add_integer ( "xvmc-xineramascreen", 0, NULL, SCREEN_TEXT, SCREEN_LONGTEXT, true );
+    add_integer ( "xvmc-xineramascreen", -1, NULL, SCREEN_TEXT, SCREEN_LONGTEXT, true )
 #endif
-    add_string( "xvmc-deinterlace-mode", "bob", NULL, MODE_TEXT, MODE_LONGTEXT, false );
-    add_string( "xvmc-crop-style", "eq", NULL, CROP_TEXT, CROP_LONGTEXT, false );
+    add_string( "xvmc-deinterlace-mode", "bob", NULL, MODE_TEXT, MODE_LONGTEXT, false )
+    add_string( "xvmc-crop-style", "eq", NULL, CROP_TEXT, CROP_LONGTEXT, false )
 
-    set_description( N_("XVMC extension video output") );
-    set_capability( "video output", 10 );
-    set_callbacks( Activate, Deactivate );
-vlc_module_end();
+    set_description( N_("XVMC extension video output") )
+    set_capability( "video output", 10 )
+    set_callbacks( Activate, Deactivate )
+vlc_module_end ()
 
 /* following functions are local */
 
@@ -545,7 +545,7 @@ XvMCSubpicture *xxmc_xvmc_alloc_subpicture( vout_thread_t *p_vout,
                 return NULL;
             }
             XVMCUNLOCKDISPLAY( p_vout->p_sys->p_display );
-            msg_Dbg( p_vout, "video_out_xxmc: created subpicture %d\n", i );
+            msg_Dbg( p_vout, "video_out_xxmc: created subpicture %d", i );
             handler->subInUse[i] = 1;
             handler->subValid[i] = 1;
             pthread_mutex_unlock( &handler->mutex );
@@ -1304,7 +1304,7 @@ void xxmc_do_update_frame( picture_t *picture, uint32_t width, uint32_t height,
     /* Wait a little till frame is being displayed */
     while( status & XVMC_DISPLAYING )
     {
-        msleep(1);
+        /* msleep(1); */
 
         XvMCGetSurfaceStatus( p_vout->p_sys->p_display,
                               picture->p_sys->xvmc_surf,

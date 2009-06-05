@@ -2,7 +2,7 @@
  * modules.h : Module descriptor and load functions
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 97023972974e47a077d4520b3813475c30c27da2 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -30,43 +30,36 @@
  * Exported functions.
  *****************************************************************************/
 
-#define module_Need(a,b,c,d) __module_Need(VLC_OBJECT(a),b,c,d)
-VLC_EXPORT( module_t *, __module_Need, ( vlc_object_t *, const char *, const char *, bool ) );
-#define module_Unneed(a,b) __module_Unneed(VLC_OBJECT(a),b)
-VLC_EXPORT( void, __module_Unneed, ( vlc_object_t *, module_t * ) );
-#define module_Exists(a,b) __module_Exists(VLC_OBJECT(a),b)
-VLC_EXPORT( bool,  __module_Exists, ( vlc_object_t *, const char * ) );
+#define module_need(a,b,c,d) __module_need(VLC_OBJECT(a),b,c,d)
+VLC_EXPORT( module_t *, __module_need, ( vlc_object_t *, const char *, const char *, bool ) );
+#define module_unneed(a,b) __module_unneed(VLC_OBJECT(a),b)
+VLC_EXPORT( void, __module_unneed, ( vlc_object_t *, module_t * ) );
+VLC_EXPORT( bool,  module_exists, (const char *) );
+VLC_EXPORT( module_t *, module_find, (const char *) );
 
-#define module_Find(a,b) __module_Find(VLC_OBJECT(a),b)
-VLC_EXPORT( module_t *, __module_Find, ( vlc_object_t *, const char * ) );
-VLC_EXPORT( void, module_Put, ( module_t *module ) );
+VLC_EXPORT( module_config_t *, module_config_get, ( const module_t *, unsigned * ) );
+VLC_EXPORT( void, module_config_free, ( module_config_t * ) );
 
-VLC_EXPORT( module_config_t *, module_GetConfig, ( const module_t *, unsigned * ) );
-VLC_EXPORT( void, module_PutConfig, ( module_config_t * ) );
+VLC_EXPORT( module_t *, module_hold, (module_t *module) );
+VLC_EXPORT( void, module_release, (module_t *module) );
+VLC_EXPORT( void, module_list_free, (module_t **) );
+VLC_EXPORT( module_t **, module_list_get, (size_t *n) );
 
-/* Return a NULL terminated array with the names of the modules that have a
- * certain capability.
- * Free after uses both the string and the table. */
- #define module_GetModulesNamesForCapability(a,b,c) \
-                    __module_GetModulesNamesForCapability(VLC_OBJECT(a),b,c)
-VLC_EXPORT(char **, __module_GetModulesNamesForCapability,
-                    ( vlc_object_t *p_this, const char * psz_capability,
-                      char ***psz_longname ) );
+VLC_EXPORT( bool, module_provides, ( const module_t *m, const char *cap ) );
+VLC_EXPORT( const char *, module_get_object, ( const module_t *m ) );
+VLC_EXPORT( const char *, module_get_name, ( const module_t *m, bool long_name ) );
+#define module_GetLongName( m ) module_get_name( m, true )
+VLC_EXPORT( const char *, module_get_help, ( const module_t *m ) );
+VLC_EXPORT( const char *, module_get_capability, ( const module_t *m ) );
+VLC_EXPORT( int, module_get_score, ( const module_t *m ) );
 
-VLC_EXPORT( bool, module_IsCapable, ( const module_t *m, const char *cap ) );
-VLC_EXPORT( const char *, module_GetObjName, ( const module_t *m ) );
-VLC_EXPORT( const char *, module_GetName, ( const module_t *m, bool long_name ) );
-#define module_GetLongName( m ) module_GetName( m, true )
-VLC_EXPORT( const char *, module_GetHelp, ( const module_t *m ) );
-
-
-#define module_GetMainModule(a) __module_GetMainModule(VLC_OBJECT(a))
-static inline module_t * __module_GetMainModule( vlc_object_t * p_this )
+static inline module_t *module_get_main (void)
 {
-    return module_Find( p_this, "main" );
+    return module_find ("main");
 }
+#define module_get_main(a) module_get_main()
 
-static inline bool module_IsMainModule( const module_t * p_module )
+static inline bool module_is_main( const module_t * p_module )
 {
-    return !strcmp( module_GetObjName( p_module ), "main" );
+    return !strcmp( module_get_object( p_module ), "main" );
 }

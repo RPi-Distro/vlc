@@ -1,3 +1,126 @@
+Changes between 0.9.9a and 1.0.0-rc2:
+------------------------------------
+
+Important notes:
+----------------
+ * Alsa and OSS audio capture has been removed from the v4l and v4l2 accesses.
+   See 'Access:' for more info.
+
+Playback:
+ * Instantaneous pausing
+ * Frame-by-Frame playback
+ * Finer speed control
+ * On-the-fly recording for all medias
+ * Timeshift for most medias
+ * RTSP trickplay support
+ * Subtitles core improvements and fixes
+
+Decoders:
+ * New AES3 (SMPTE 302M) decoder
+ * New Dolby Digital Plus - E-AC-3 (A/52b) decoder
+ * New True HD/MLP decoder and parser
+ * New Blu-Ray Linear PCM decoder
+ * New QCELP (Qualcomm PureVoice) decoder
+ * Improved Real Video 3.0 & 4.0 decoder
+ * New WMA v1/2 fixed point integer decoder
+ * Close Caption under SCTE-20 standard are now correctly decoded
+ * Improvement of WavPack decoder to support all integer modes and float mode
+ * Corrections on 5.1 and 7.1 channel decoding and ordering
+
+Demuxers:
+ * Support for Dirac, MLP and RealVideo in Matroska files
+ * Major improvements in RealMedia files opening (.rm and .rmvb)
+ * Improvements of the TS demuxer for M2TS files from Blu-Ray and AVCHD
+ * Metadata for mod files are supported
+ * GSM codecs in Wav files are supported
+ * New raw audio demuxer supporting raw PCM streams
+ * New dirac demuxer for raw dirac streams
+
+Encoders:
+ * Dirac encoding using libdirac (supported in Ogg and in TS)
+ * Shine mp3 fixed-point encoder
+
+Access:
+ * RTSP authentication with Darwin Streaming Server
+ * On-the-fly gzip and bzip2 file decompression (except on Windows)
+ * Playback for video in uncompressed multi-RAR archives
+ * DVB-S and ATSC cards support on Windows
+ * New OSS and Alsa accesses. The v4l2 and v4l modules no longer support
+   OSS or Alsa audio input. Use --input-slave alsa:// or oss:// if needed.
+ * DVB scanning on linux
+ * EXPERIMENTAL Blu-Ray Disc and AVCHD Folders support
+ * On-the-fly zip file decompression and browsing (MRL of the form zip://file.zip!/file.avi to specify the file - the development form of zip://file.zip|file.avi is not supported anymore)
+ * Opening of any file descriptor using 'fd://'
+ * MTP device access on Unix
+ * CD-Text support on the cdda module (CD-Audio)
+ * :start-time and :stop-time can handle sub-second values
+
+Inputs:
+ * Mouse cursor support in x11 and win32 screen modules
+ * Screen module now features partial screen capture and mouse following on
+   Windows.
+
+Playlist:
+ * Export the playlist in HTML
+ * Lua script for BBC radio playback
+ * Better metadata handling and reading
+
+Linux/Windows interface:
+ * Global Hotkeys on Windows and Linux
+ * Various fixes for skins2 interface
+ * Recently played items list
+ * Interface toolbar customizations
+ * Various Improvements on the Qt interface:
+    - More menus actions
+    - Finer speed slider
+    - Improvements on many dialogs
+    - New dialog for plugins listing
+    - Fixed-size mode for videos
+    - Better teletext, trickplay and encrypted streams control
+ * Better integration in GTK environments
+
+Mac OS X Interface:
+ * Controllable by the Media Keys on modern Apple keyboards (brushed Aluminium)
+ * Reveal-in-Finder functionality for locally stored items.
+ * Easy addition of Subtitles through the Video menu
+ * Additional usability improvements
+
+Stream output:
+ * Restored the old mpeg2 transrating module.
+ * Multiple bridge-in instances are now possible.
+ * bridge-in can be used to configure a placeholder stream.
+ * Remote Audio Output Protocol (AirTunes) module.
+ * Fixed mosaic memleak. Mosaics are now usable again.
+
+Maemo Port:
+ * New Maemo port with:
+   - an interface based on Hildon framework.
+   - scaler based on the swscale_nokia770 library.
+
+Windows CE Port:
+ EXPERIMENTAL work for the winCE port has been done.
+
+Mac OS X Port:
+ * Support for Mac OS X 10.4.x was dropped due to its technical limitations
+ * Speed improvements by using llvm-gcc
+
+Audio output:
+ * Removed obsolete Esound and aRts plugins
+ * Surround support for PulseAudio
+
+Video output:
+ * Effects (cube, torus, etc.) removed from OpenGL video output
+ * Video is able to stay in original size and to zoom in fullscreen
+   (hotkey 'o') while keeping black borders
+ * Image video output has been rewritten into a video-filter named 'scene'.
+   The old image video output has been removed.
+ * Support for scaling and converting video chromas with FFMPEG imgresample was
+   withdrawn due to bugs. Please use the newer FFMPEG swscale instead.
+
+Miscellanous:
+ * Invmem, a fake codec to display images from external applications
+
+
 Changes between 0.9.9 and 0.9.9a:
 ---------------------------------
 
@@ -18,7 +141,7 @@ Demuxers:
 Mac OS X Interface:
  * Fixed circumstances, which could lead to an empty Information panel
    - Note that VLC will show information on the currently _selected_ item 
-     instead of the currently _playing_ item, if the playlist is visible in the 
+     instead of the currently _playing_ item, if the playlist is visible in the
      main controller window.
  * Fixed multiple UTF8 issues in the Streaming / Exporting Wizard
 
@@ -36,7 +159,6 @@ Various bugfixes:
  * Correct Fullscreen behaviour on Multi-Screen setups on Windows
  * Telnet fixes on Windows
  * Resampling fixes when transcoding
-
 
 Changes between 0.9.6 and 0.9.8a:
 ---------------------------------
@@ -87,7 +209,7 @@ Translations:
 
 
 Changes between 0.9.3 and 0.9.4:
---------------------------------
+------------------------------------
 Various bugfixes:
  * Crashes fixed in ogg, vobsub, dvdread
  * Fixes several memory leaks.
@@ -110,7 +232,7 @@ Various bugfixes:
  * Multiple subtitles and podcast fixes
  * Various crashes fixed in PS, SSA, mkv, xspf, freetype
  * Fixed update system bugs
- * Other bug fixes (dvd language selection, subtitle colours, HTTP keep-alive...)
+ * Other bug fixes (dvd language selection, subtitle colours, HTTP keep-alive...+)
 
 Mac OS X port:
  * Fixed ffmpeg slowness on PowerPC-based Macs

@@ -2,7 +2,7 @@
  * mac.c: Screen capture module for the Mac.
  *****************************************************************************
  * Copyright (C) 2004, 2008 the VideoLAN team
- * $Id: 13afb1216ab4cc05b9183f01c406cb5bf7203d61 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          arai <arai_a@mac.com>
@@ -25,7 +25,6 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-#import <stdlib.h>
 
 #ifdef HAVE_CONFIG_H
 # import "config.h"
@@ -36,6 +35,7 @@
 #import <ApplicationServices/ApplicationServices.h>
 #import <OpenGL/OpenGL.h>
 #import <OpenGL/gl.h>
+#import <stdlib.h>
 
 typedef int CGSConnectionRef;
 extern CGError CGSNewConnection( void *, CGSConnectionRef * );
@@ -103,10 +103,14 @@ int screen_InitCapture( demux_t *p_demux )
     p_data->screen_width = viewport[2];
     p_data->screen_height = viewport[3];
     
-    p_data->left = 0;
-    p_data->top = 0;
-    p_data->src_width = p_data->screen_width;
-    p_data->src_height = p_data->screen_height;
+    p_data->left = p_sys->i_left;
+    p_data->top = p_sys->i_top;
+    p_data->src_width = var_CreateGetInteger( p_demux, "screen-width" );
+    p_data->src_height = var_CreateGetInteger( p_demux, "screen-height" );
+    if (p_data->src_width <= 0 || p_data->src_height <= 0) {
+      p_data->src_width = p_data->screen_width;
+      p_data->src_height = p_data->screen_height;
+    }
     p_data->dest_width = p_data->src_width;
     p_data->dest_height = p_data->src_height;
     
@@ -127,9 +131,10 @@ int screen_InitCapture( demux_t *p_demux )
     
     es_format_Init( &p_sys->fmt, VIDEO_ES, VLC_FOURCC( 'R','V','3','2' ) );
     
-    p_sys->fmt.video.i_width = p_data->dest_width;
-    p_sys->fmt.video.i_visible_width = p_data->dest_width;
-    p_sys->fmt.video.i_height = p_data->dest_height;
+    /* p_sys->fmt.video.i_* must set to screen size, not subscreen size */
+    p_sys->fmt.video.i_width = p_data->screen_width;
+    p_sys->fmt.video.i_visible_width = p_data->screen_width;
+    p_sys->fmt.video.i_height = p_data->screen_height;
     p_sys->fmt.video.i_bits_per_pixel = 32;
     
     glGenTextures( 1, &( p_data->texture ) );
@@ -181,7 +186,24 @@ block_t *screen_Capture( demux_t *p_demux )
     if( !( p_block = block_New( p_demux, i_size ) ) )
     {
         msg_Warn( p_demux, "cannot get block" );
-        return 0;
+        return NULL;
+    }
+    
+    CGPoint cursor_pos;
+    CGError cursor_result;
+    
+    cursor_pos.x = 0;
+    cursor_pos.y = 0;
+    
+    cursor_result
+      = CGSGetCurrentCursorLocation( p_data->connection, &cursor_pos );
+    
+    if( p_sys->b_follow_mouse
+        && cursor_result == kCGErrorSuccess )
+    {
+        FollowMouse( p_sys, cursor_pos.x, cursor_pos.y );
+        p_data->left = p_sys->i_left;
+        p_data->top = p_sys->i_top;
     }
     
     CGLSetCurrentContext( p_data->screen );
@@ -212,18 +234,13 @@ block_t *screen_Capture( demux_t *p_demux )
     glEnd();
     glDisable( GL_TEXTURE_2D );
     
-    CGPoint cursor_pos;
     int size;
     int tmp1, tmp2, tmp3, tmp4;
     unsigned char *cursor_image;
     CGRect cursor_rect;
     CGPoint cursor_hot;
     
-    cursor_pos.x = 0;
-    cursor_pos.y = 0;
-    
-    if( CGSGetCurrentCursorLocation( p_data->connection, &cursor_pos )
-        == kCGErrorSuccess
+    if( cursor_result == kCGErrorSuccess
         && CGSGetGlobalCursorDataSize( p_data->connection, &size )
         == kCGErrorSuccess )
     {

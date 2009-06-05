@@ -2,7 +2,7 @@
  * video_text.c : text manipulation functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 2083438707dbf764e05636ab00100de85b163da2 $
+ * $Id$
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -80,8 +80,17 @@ int vout_ShowTextAbsolute( vout_thread_t *p_vout, int i_channel,
 
     if( !psz_string ) return VLC_EGENERIC;
 
-    p_spu = spu_CreateSubpicture( p_vout->p_spu );
-    if( !p_spu ) return VLC_EGENERIC;
+    p_spu = subpicture_New();
+    if( !p_spu )
+        return VLC_EGENERIC;
+
+    p_spu->i_channel = i_channel;
+    p_spu->i_start = i_start;
+    p_spu->i_stop = i_stop;
+    p_spu->b_ephemer = true;
+    p_spu->b_absolute = false;
+    p_spu->b_fade = true;
+
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
@@ -89,26 +98,18 @@ int vout_ShowTextAbsolute( vout_thread_t *p_vout, int i_channel,
     fmt.i_aspect = 0;
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_spu->p_region = p_spu->pf_create_region( VLC_OBJECT(p_vout), &fmt );
+    p_spu->p_region = subpicture_region_New( &fmt );
     if( !p_spu->p_region )
     {
         msg_Err( p_vout, "cannot allocate SPU region" );
-        spu_DestroySubpicture( p_vout->p_spu, p_spu );
+        subpicture_Delete( p_spu );
         return VLC_EGENERIC;
     }
 
     p_spu->p_region->psz_text = strdup( psz_string );
     p_spu->p_region->i_align = i_flags & SUBPICTURE_ALIGN_MASK;
-    p_spu->i_start = i_start;
-    p_spu->i_stop = i_stop;
-    p_spu->b_ephemer = true;
-    p_spu->b_absolute = false;
-    p_spu->b_fade = true;
-
-    p_spu->i_x = i_hmargin;
-    p_spu->i_y = i_vmargin;
-    p_spu->i_flags = i_flags & ~SUBPICTURE_ALIGN_MASK;
-    p_spu->i_channel = i_channel;
+    p_spu->p_region->i_x = i_hmargin;
+    p_spu->p_region->i_y = i_vmargin;
 
     spu_DisplaySubpicture( p_vout->p_spu, p_spu );
 

@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 88e14c0aa685f20706f6704e82fab7662f1dbdb8 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -97,29 +97,31 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict );
   "Enforce a quality between 1 (low) and 10 (high), instead " \
   "of specifying a particular bitrate. This will produce a VBR stream." )
 
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_shortname( "Theora" );
-    set_description( N_("Theora video decoder") );
-    set_capability( "decoder", 100 );
-    set_callbacks( OpenDecoder, CloseDecoder );
-    add_shortcut( "theora" );
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_shortname( "Theora" )
+    set_description( N_("Theora video decoder") )
+    set_capability( "decoder", 100 )
+    set_callbacks( OpenDecoder, CloseDecoder )
+    add_shortcut( "theora" )
 
-    add_submodule();
-    set_description( N_("Theora video packetizer") );
-    set_capability( "packetizer", 100 );
-    set_callbacks( OpenPacketizer, CloseDecoder );
+    add_submodule ()
+    set_description( N_("Theora video packetizer") )
+    set_capability( "packetizer", 100 )
+    set_callbacks( OpenPacketizer, CloseDecoder )
+    add_shortcut( "theora" )
 
-    add_submodule();
-    set_description( N_("Theora video encoder") );
-    set_capability( "encoder", 150 );
-    set_callbacks( OpenEncoder, CloseEncoder );
+    add_submodule ()
+    set_description( N_("Theora video encoder") )
+    set_capability( "encoder", 150 )
+    set_callbacks( OpenEncoder, CloseEncoder )
+    add_shortcut( "theora" )
 
 #   define ENC_CFG_PREFIX "sout-theora-"
     add_integer( ENC_CFG_PREFIX "quality", 2, NULL, ENC_QUALITY_TEXT,
-                 ENC_QUALITY_LONGTEXT, false );
-vlc_module_end();
+                 ENC_QUALITY_LONGTEXT, false )
+vlc_module_end ()
 
 static const char *const ppsz_enc_options[] = {
     "quality", NULL
@@ -139,8 +141,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     }
 
     /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_dec->p_sys = p_sys =
-          (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
+    if( ( p_dec->p_sys = p_sys = malloc(sizeof(*p_sys)) ) == NULL )
         return VLC_ENOMEM;
     p_dec->p_sys->b_packetizer = false;
 
@@ -495,7 +496,7 @@ static picture_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
         return NULL;
 
     /* Get a new picture */
-    p_pic = p_dec->pf_vout_buffer_new( p_dec );
+    p_pic = decoder_NewPicture( p_dec );
     if( !p_pic ) return NULL;
 
     theora_CopyPicture( p_dec, p_pic, &yuv );
@@ -506,32 +507,29 @@ static picture_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
 }
 
 /*****************************************************************************
- * ParseTheoraComments: FIXME should be done in demuxer
+ * ParseTheoraComments:
  *****************************************************************************/
 static void ParseTheoraComments( decoder_t *p_dec )
 {
-    input_thread_t *p_input = (input_thread_t *)p_dec->p_parent;
     char *psz_name, *psz_value, *psz_comment;
     int i = 0;
-
-    if( p_input->i_object_type != VLC_OBJECT_INPUT ) return;
 
     while ( i < p_dec->p_sys->tc.comments )
     {
         psz_comment = strdup( p_dec->p_sys->tc.user_comments[i] );
         if( !psz_comment )
-        {
-            msg_Warn( p_dec, "out of memory" );
             break;
-        }
         psz_name = psz_comment;
         psz_value = strchr( psz_comment, '=' );
         if( psz_value )
         {
             *psz_value = '\0';
             psz_value++;
-            input_Control( p_input, INPUT_ADD_INFO, _("Theora comment"),
-                           psz_name, "%s", psz_value );
+
+            if( !p_dec->p_description )
+                p_dec->p_description = vlc_meta_New();
+            if( p_dec->p_description )
+                vlc_meta_AddExtra( p_dec->p_description, psz_name, psz_value );
         }
         free( psz_comment );
         i++;

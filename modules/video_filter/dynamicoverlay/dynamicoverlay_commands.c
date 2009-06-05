@@ -2,7 +2,7 @@
  * dynamicoverlay_commands.c : dynamic overlay plugin commands
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 03e28b2fe602603f05a2d6cb8c9ea6f930a596c3 $
+ * $Id$
  *
  * Author: Soren Bog <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
@@ -269,7 +269,7 @@ static int parser_SetTextColor( char *psz_command, char *psz_end,
         if( parse_digit( &psz_command, &b ) == VLC_EGENERIC )
             return VLC_EGENERIC;
     }
-    p_params->fontstyle.i_font_color = (r<<24) | (g<<16) | (b<<8);
+    p_params->fontstyle.i_font_color = (r<<16) | (g<<8) | (b<<0);
     return VLC_SUCCESS;
 }
 
@@ -372,15 +372,15 @@ static int unparse_GetTextAlpha( const commandparams_t *p_results,
 static int unparse_GetTextColor( const commandparams_t *p_results,
                                  buffer_t *p_output )
 {
-    int ret = BufferPrintf( p_output, " %d", (p_results->fontstyle.i_font_color & 0xff0000)>>24 );
+    int ret = BufferPrintf( p_output, " %d", (p_results->fontstyle.i_font_color & 0xff0000)>>16 );
     if( ret != VLC_SUCCESS )
         return ret;
 
-    ret = BufferPrintf( p_output, " %d", (p_results->fontstyle.i_font_color & 0x00ff00)>>16 );
+    ret = BufferPrintf( p_output, " %d", (p_results->fontstyle.i_font_color & 0x00ff00)>>8 );
     if( ret != VLC_SUCCESS )
         return ret;
 
-    ret = BufferPrintf( p_output, " %d", (p_results->fontstyle.i_font_color & 0x0000ff)>>8 );
+    ret = BufferPrintf( p_output, " %d", (p_results->fontstyle.i_font_color & 0x0000ff) );
     if( ret != VLC_SUCCESS )
         return ret;
 

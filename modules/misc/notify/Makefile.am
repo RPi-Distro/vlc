@@ -18,7 +18,7 @@ libgrowl_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgrowl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgrowl_plugin_la_LIBADD = $(AM_LIBADD)
-libgrowl_plugin_la_DEPENDENCIES =
+libgrowl_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The growl_udp plugin
 libgrowl_udp_plugin_la_SOURCES = $(SOURCES_growl_udp)
@@ -29,7 +29,7 @@ libgrowl_udp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgrowl_udp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgrowl_udp_plugin_la_LIBADD = $(AM_LIBADD)
-libgrowl_udp_plugin_la_DEPENDENCIES =
+libgrowl_udp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The msn plugin
 libmsn_plugin_la_SOURCES = $(SOURCES_msn)
@@ -40,7 +40,7 @@ libmsn_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmsn_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmsn_plugin_la_LIBADD = $(AM_LIBADD)
-libmsn_plugin_la_DEPENDENCIES =
+libmsn_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The notify plugin
 libnotify_plugin_la_SOURCES = $(SOURCES_notify)
@@ -51,7 +51,7 @@ libnotify_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libnotify_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libnotify_plugin_la_LIBADD = $(AM_LIBADD)
-libnotify_plugin_la_DEPENDENCIES =
+libnotify_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The telepathy plugin
 libtelepathy_plugin_la_SOURCES = $(SOURCES_telepathy)
@@ -62,7 +62,7 @@ libtelepathy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtelepathy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtelepathy_plugin_la_LIBADD = $(AM_LIBADD)
-libtelepathy_plugin_la_DEPENDENCIES =
+libtelepathy_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The xosd plugin
 libxosd_plugin_la_SOURCES = $(SOURCES_xosd)
@@ -73,5 +73,5 @@ libxosd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libxosd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libxosd_plugin_la_LIBADD = $(AM_LIBADD)
-libxosd_plugin_la_DEPENDENCIES =
+libxosd_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

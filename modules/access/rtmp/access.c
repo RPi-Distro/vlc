@@ -48,19 +48,19 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("RTMP input") );
-    set_shortname( N_("RTMP") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
+vlc_module_begin ()
+    set_description( N_("RTMP input") )
+    set_shortname( N_("RTMP") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
 
     add_integer( "rtmp-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, true );
+                 CACHING_LONGTEXT, true )
 
-    set_capability( "access", 0 );
-    set_callbacks( Open, Close );
-    add_shortcut( "rtmp" );
-vlc_module_end();
+    set_capability( "access", 0 )
+    set_callbacks( Open, Close )
+    add_shortcut( "rtmp" )
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -160,7 +160,7 @@ static int Open( vlc_object_t *p_this )
 
     p_sys->p_thread->p_base_object = p_this;
 
-    vlc_cond_init( p_sys->p_thread, &p_sys->p_thread->wait );
+    vlc_cond_init( &p_sys->p_thread->wait );
 
     vlc_mutex_init( &p_sys->p_thread->lock );
 
@@ -212,7 +212,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     if( vlc_thread_create( p_sys->p_thread, "rtmp control thread", ThreadControl,
-                           VLC_THREAD_PRIORITY_INPUT, false ) )
+                           VLC_THREAD_PRIORITY_INPUT ) )
     {
         msg_Err( p_access, "cannot spawn rtmp control thread" );
         goto error2;
@@ -267,7 +267,6 @@ static void Close( vlc_object_t * p_this )
 /*    p_sys->p_thread->b_die = true;*/
     vlc_object_kill( p_sys->p_thread );
     block_FifoWake( p_sys->p_thread->p_fifo_input );
-    block_FifoWake( p_sys->p_thread->p_empty_blocks );
 
     vlc_thread_join( p_sys->p_thread );
 
@@ -449,7 +448,6 @@ static int Seek( access_t *p_access, int64_t i_pos )
 static int Control( access_t *p_access, int i_query, va_list args )
 {
     bool    *pb_bool;
-    int     *pi_int;
     int64_t *pi_64;
 
     switch( i_query )
@@ -472,11 +470,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*) va_arg( args, int * );
-            *pi_int = 0;
-            break;
-
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*) va_arg( args, int64_t * );
             *pi_64 = var_GetInteger( p_access, "rtmp-caching" ) * INT64_C(1000);
@@ -510,6 +503,7 @@ static void* ThreadControl( vlc_object_t *p_this )
 {
     rtmp_control_thread_t *p_thread = (rtmp_control_thread_t *) p_this;
     rtmp_packet_t *rtmp_packet;
+    int canc = vlc_savecancel ();
 
     rtmp_init_handler( p_thread->rtmp_handler );
 
@@ -546,5 +540,6 @@ static void* ThreadControl( vlc_object_t *p_this )
             block_FifoWake( p_thread->p_fifo_input );
         }
     }
+    vlc_restorecancel (canc);
     return NULL;
 }

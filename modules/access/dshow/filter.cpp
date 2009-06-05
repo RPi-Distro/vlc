@@ -2,7 +2,7 @@
  * filter.c : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 37c34c7721de76ac899a52d9145033fd5289108e $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -120,6 +120,7 @@ const GUID MEDIASUBTYPE_Y211 = {0x31313259, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0
 const GUID MEDIASUBTYPE_YUY2 = {0x32595559, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
 const GUID MEDIASUBTYPE_YVYU = {0x55595659, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
 const GUID MEDIASUBTYPE_UYVY = {0x59565955, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
+const GUID MEDIASUBTYPE_HDYC = {0x43594448, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
 
 /* Planar YUV formats */
 const GUID MEDIASUBTYPE_YVU9 = {0x39555659, 0x0000, 0x0010, {0x80, 0x00, 0x00, 0xaa, 0x00, 0x38, 0x9b, 0x71}};
@@ -276,6 +277,12 @@ int GetFourCCFromMediaType( const AM_MEDIA_TYPE &media_type )
                i_fourcc = VLC_FOURCC( 'Y', 'U', 'Y', '2' );
             else if( media_type.subtype == MEDIASUBTYPE_UYVY )
                i_fourcc = VLC_FOURCC( 'U', 'Y', 'V', 'Y' );
+            /* HDYC uses UYVY sample positions but Rec709 colourimetry */
+            /* FIXME: When VLC understands colourspace, something will need
+             * to be added / changed here. Until then, just make it behave
+             * like UYVY */
+            else if( media_type.subtype == MEDIASUBTYPE_HDYC )
+                i_fourcc = VLC_FOURCC( 'U', 'Y', 'V', 'Y');
 
             /* MPEG2 video elementary stream */
             else if( media_type.subtype == MEDIASUBTYPE_MPEG2_VIDEO )
@@ -351,21 +358,49 @@ CapturePin::~CapturePin()
     FreeMediaType(cx_media_type);
 }
 
+/**
+ * Returns the complete queue of samples that have been received so far.
+ * Lock the p_sys->lock before calling this function.
+ * @param samples_queue [out] Empty queue that will get all elements from
+ * the pin queue.
+ * @return S_OK if a sample was available, S_FALSE if no sample was
+ * available
+ */
+HRESULT CapturePin::CustomGetSamples( deque<VLCMediaSample> &external_queue )
+{
+#if 0 //def DEBUG_DSHOW
+    msg_Dbg( p_input, "CapturePin::CustomGetSamples: %d samples in the queue", samples_queue.size());
+#endif
+
+    if( !samples_queue.empty() )
+    {
+        external_queue.swap(samples_queue);
+        return S_OK;
+    }
+    return S_FALSE;
+}
+
+/**
+ * Returns a sample from its sample queue. Proper locking must be done prior
+ * to this call. Current dshow code protects the access to any sample queue
+ * (audio and video) with the p_sys->lock
+ * @param vlc_sample [out] Address of a sample if sucessfull. Undefined
+ * otherwise.
+ * @return S_OK if a sample was available, S_FALSE if no sample was
+ * available
+ */
 HRESULT CapturePin::CustomGetSample( VLCMediaSample *vlc_sample )
 {
 #if 0 //def DEBUG_DSHOW
     msg_Dbg( p_input, "CapturePin::CustomGetSample" );
 #endif
 
-    vlc_mutex_lock( &p_sys->lock );
     if( samples_queue.size() )
     {
         *vlc_sample = samples_queue.back();
         samples_queue.pop_back();
-        vlc_mutex_unlock( &p_sys->lock );
         return S_OK;
     }
-    vlc_mutex_unlock( &p_sys->lock );
     return S_FALSE;
 }
 

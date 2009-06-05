@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2003 ANEVIA
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: d4708dc1d852e4f3afb19ff3c697c7f4f43bea76 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien LUCAS <damien.lucas@anevia.com>
@@ -86,29 +86,30 @@ static int OpenEncoder  ( vlc_object_t * );
 static void CloseEncoder( vlc_object_t * );
 static block_t *Encode  ( encoder_t *, subpicture_t * );
 
-vlc_module_begin();
+vlc_module_begin ()
 #   define DVBSUB_CFG_PREFIX "dvbsub-"
-    set_description( N_("DVB subtitles decoder") );
-    set_capability( "decoder", 50 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_SCODEC );
-    set_callbacks( Open, Close );
+    set_description( N_("DVB subtitles decoder") )
+    set_shortname( N_("DVB subtitles") )
+    set_capability( "decoder", 50 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_SCODEC )
+    set_callbacks( Open, Close )
 
-    add_integer( DVBSUB_CFG_PREFIX "position", 8, NULL, POS_TEXT, POS_LONGTEXT, true );
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
-    add_integer( DVBSUB_CFG_PREFIX "x", -1, NULL, POSX_TEXT, POSX_LONGTEXT, false );
-    add_integer( DVBSUB_CFG_PREFIX "y", -1, NULL, POSY_TEXT, POSY_LONGTEXT, false );
+    add_integer( DVBSUB_CFG_PREFIX "position", 8, NULL, POS_TEXT, POS_LONGTEXT, true )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
+    add_integer( DVBSUB_CFG_PREFIX "x", -1, NULL, POSX_TEXT, POSX_LONGTEXT, false )
+    add_integer( DVBSUB_CFG_PREFIX "y", -1, NULL, POSY_TEXT, POSY_LONGTEXT, false )
 
 #   define ENC_CFG_PREFIX "sout-dvbsub-"
-    add_submodule();
-    set_description( N_("DVB subtitles encoder") );
-    set_capability( "encoder", 100 );
-    set_callbacks( OpenEncoder, CloseEncoder );
+    add_submodule ()
+    set_description( N_("DVB subtitles encoder") )
+    set_capability( "encoder", 100 )
+    set_callbacks( OpenEncoder, CloseEncoder )
 
-    add_integer( ENC_CFG_PREFIX "x", -1, NULL, ENC_POSX_TEXT, ENC_POSX_LONGTEXT, false );
-    add_integer( ENC_CFG_PREFIX "y", -1, NULL, ENC_POSY_TEXT, ENC_POSY_LONGTEXT, false );
-    add_obsolete_integer( ENC_CFG_PREFIX "timeout" ); /* Suppressed since 0.8.5 */
-vlc_module_end();
+    add_integer( ENC_CFG_PREFIX "x", -1, NULL, ENC_POSX_TEXT, ENC_POSX_LONGTEXT, false )
+    add_integer( ENC_CFG_PREFIX "y", -1, NULL, ENC_POSY_TEXT, ENC_POSY_LONGTEXT, false )
+    add_obsolete_integer( ENC_CFG_PREFIX "timeout" ) /* Suppressed since 0.8.5 */
+vlc_module_end ()
 
 static const char *const ppsz_enc_options[] = { "x", "y", NULL };
 
@@ -339,7 +340,8 @@ static int Open( vlc_object_t *p_this )
         p_sys->i_spu_y = i_posy;
     }
 
-    es_format_Init( &p_dec->fmt_out, SPU_ES, VLC_FOURCC( 'd','v','b','s' ) );
+    p_dec->fmt_out.i_cat = SPU_ES;
+    p_dec->fmt_out.i_codec = 0;
 
     default_clut_init( p_dec );
 
@@ -931,7 +933,7 @@ static void decode_region_composition( decoder_t *p_dec, bs_t *s )
         p_obj->i_x          = bs_read( s, 12 );
         bs_skip( s, 4 ); /* Reserved */
         p_obj->i_y          = bs_read( s, 12 );
-        p_obj->psz_text     = 0;
+        p_obj->psz_text     = NULL;
 
         i_processed_length += 6;
 
@@ -1445,10 +1447,42 @@ static subpicture_t *render( decoder_t *p_dec )
     subpicture_t *p_spu;
     subpicture_region_t **pp_spu_region;
     int i, j, i_timeout = 0;
+    int i_base_x;
+    int i_base_y;
 
     /* Allocate the subpicture internal data. */
-    p_spu = p_dec->pf_spu_buffer_new( p_dec );
-    if( !p_spu ) return NULL;
+    p_spu = decoder_NewSubpicture( p_dec );
+    if( !p_spu )
+        return NULL;
+
+    p_spu->b_absolute = p_sys->b_absolute;
+    /* Set the pf_render callback */
+    p_spu->i_start = (mtime_t) p_sys->i_pts;
+    //p_spu->i_stop = (mtime_t) 0;
+    p_spu->b_ephemer = true;
+    //p_spu->b_fade = true;
+    //p_spu->i_stop = p_spu->i_start + (mtime_t) (i_timeout * 1000000);
+
+    /* Correct positioning of SPU */
+    i_base_x = p_sys->i_spu_x;
+    i_base_y = p_sys->i_spu_y;
+    p_spu->i_original_picture_width = 720;
+    p_spu->i_original_picture_height = 576;
+
+    if( p_sys->p_display )
+    {
+        p_spu->i_original_picture_width = p_sys->p_display->i_width;
+        p_spu->i_original_picture_height = p_sys->p_display->i_height;
+
+        if( p_sys->p_display->b_windowed )
+        {
+            /* TODO: check that this actually works */
+            p_spu->i_original_picture_width = p_sys->p_display->i_max_x - p_sys->p_display->i_x;
+            p_spu->i_original_picture_height = p_sys->p_display->i_max_y - p_sys->p_display->i_y;
+            i_base_x += p_sys->p_display->i_x;
+            i_base_y += p_sys->p_display->i_y;
+        }
+    }
 
     pp_spu_region = &p_spu->p_region;
 
@@ -1467,6 +1501,7 @@ static subpicture_t *render( decoder_t *p_dec )
         subpicture_region_t *p_spu_region;
         uint8_t *p_src, *p_dst;
         video_format_t fmt;
+        video_palette_t palette;
         int i_pitch;
 
         i_timeout = p_sys->p_page->i_timeout;
@@ -1512,19 +1547,7 @@ static subpicture_t *render( decoder_t *p_dec )
         fmt.i_width = fmt.i_visible_width = p_region->i_width;
         fmt.i_height = fmt.i_visible_height = p_region->i_height;
         fmt.i_x_offset = fmt.i_y_offset = 0;
-        p_spu_region = p_spu->pf_create_region( VLC_OBJECT(p_dec), &fmt );
-        if( !p_spu_region )
-        {
-            msg_Err( p_dec, "cannot allocate SPU region" );
-            continue;
-        }
-        p_spu_region->i_x = p_regiondef->i_x;
-        p_spu_region->i_y = p_regiondef->i_y;
-        p_spu_region->i_align = p_sys->i_spu_position;
-        *pp_spu_region = p_spu_region;
-        pp_spu_region = &p_spu_region->p_next;
-
-        /* Build palette */
+        fmt.p_palette = &palette;
         fmt.p_palette->i_entries = ( p_region->i_depth == 1 ) ? 4 :
             ( ( p_region->i_depth == 2 ) ? 16 : 256 );
         p_color = ( p_region->i_depth == 1 ) ? p_clut->c_2b :
@@ -1537,9 +1560,21 @@ static subpicture_t *render( decoder_t *p_dec )
             fmt.p_palette->palette[j][3] = 0xff - p_color[j].T;
         }
 
+        p_spu_region = subpicture_region_New( &fmt );
+        if( !p_spu_region )
+        {
+            msg_Err( p_dec, "cannot allocate SPU region" );
+            continue;
+        }
+        p_spu_region->i_x = i_base_x + p_regiondef->i_x;
+        p_spu_region->i_y = i_base_y + p_regiondef->i_y;
+        p_spu_region->i_align = p_sys->i_spu_position;
+        *pp_spu_region = p_spu_region;
+        pp_spu_region = &p_spu_region->p_next;
+
         p_src = p_region->p_pixbuf;
-        p_dst = p_spu_region->picture.Y_PIXELS;
-        i_pitch = p_spu_region->picture.Y_PITCH;
+        p_dst = p_spu_region->p_picture->Y_PIXELS;
+        i_pitch = p_spu_region->p_picture->Y_PITCH;
 
         /* Copy pixel buffer */
         for( j = 0; j < p_region->i_height; j++ )
@@ -1565,7 +1600,7 @@ static subpicture_t *render( decoder_t *p_dec )
             fmt.i_width = fmt.i_visible_width = p_region->i_width;
             fmt.i_height = fmt.i_visible_height = p_region->i_height;
             fmt.i_x_offset = fmt.i_y_offset = 0;
-            p_spu_region = p_spu->pf_create_region( VLC_OBJECT(p_dec), &fmt );
+            p_spu_region = subpicture_region_New( &fmt );
             if( !p_region )
             {
                 msg_Err( p_dec, "cannot allocate SPU region" );
@@ -1573,41 +1608,11 @@ static subpicture_t *render( decoder_t *p_dec )
             }
 
             p_spu_region->psz_text = strdup( p_object_def->psz_text );
-            p_spu_region->i_x = p_regiondef->i_x + p_object_def->i_x;
-            p_spu_region->i_y = p_regiondef->i_y + p_object_def->i_y;
+            p_spu_region->i_x = i_base_x + p_regiondef->i_x + p_object_def->i_x;
+            p_spu_region->i_y = i_base_y + p_regiondef->i_y + p_object_def->i_y;
             p_spu_region->i_align = p_sys->i_spu_position;
             *pp_spu_region = p_spu_region;
             pp_spu_region = &p_spu_region->p_next;
-        }
-    }
-
-    /* Set the pf_render callback */
-    p_spu->i_start = (mtime_t) p_sys->i_pts;
-    //p_spu->i_stop = (mtime_t) 0;
-    p_spu->b_ephemer = true;
-    p_spu->b_pausable = true;
-    //p_spu->b_fade = true;
-    //p_spu->i_stop = p_spu->i_start + (mtime_t) (i_timeout * 1000000);
-
-    /* Correct positioning of SPU */
-    p_spu->b_absolute = p_sys->b_absolute;
-    p_spu->i_x = p_sys->i_spu_x;
-    p_spu->i_y = p_sys->i_spu_y;
-    p_spu->i_original_picture_width = 720;
-    p_spu->i_original_picture_height = 576;
-
-    if( p_sys->p_display )
-    {
-        p_spu->i_original_picture_width = p_sys->p_display->i_width;
-        p_spu->i_original_picture_height = p_sys->p_display->i_height;
-
-        if( p_sys->p_display->b_windowed )
-        {
-            /* TODO: check that this actually works */
-            p_spu->i_original_picture_width = p_sys->p_display->i_max_x - p_sys->p_display->i_x;
-            p_spu->i_original_picture_height = p_sys->p_display->i_max_y - p_sys->p_display->i_y;
-            p_spu->i_x += p_sys->p_display->i_x;
-            p_spu->i_y += p_sys->p_display->i_y;
         }
     }
 
@@ -1707,11 +1712,11 @@ static subpicture_t *YuvaYuvp( subpicture_t *p_subpic )
 #else
         int *pi_delta;
 #endif
-        int i_pixels = p_region->picture.p[0].i_visible_lines
-                        * p_region->picture.p[0].i_pitch;
-        int i_iterator = p_region->picture.p[0].i_visible_lines * 3 / 4
-                            * p_region->picture.p[0].i_pitch
-                        + p_region->picture.p[0].i_pitch * 1 / 3;
+        int i_pixels = p_region->p_picture->p[0].i_visible_lines
+                        * p_region->p_picture->p[0].i_pitch;
+        int i_iterator = p_region->p_picture->p[0].i_visible_lines * 3 / 4
+                            * p_region->p_picture->p[0].i_pitch
+                        + p_region->p_picture->p[0].i_pitch * 1 / 3;
         int i_tolerance = 0;
 
 #ifdef DEBUG_DVBSUB
@@ -1751,10 +1756,10 @@ static subpicture_t *YuvaYuvp( subpicture_t *p_subpic )
             for( i = 0; i < i_pixels ; )
             {
                 uint8_t y, u, v, a;
-                y = p_region->picture.p[0].p_pixels[i];
-                u = p_region->picture.p[1].p_pixels[i];
-                v = p_region->picture.p[2].p_pixels[i];
-                a = p_region->picture.p[3].p_pixels[i];
+                y = p_region->p_picture->p[0].p_pixels[i];
+                u = p_region->p_picture->p[1].p_pixels[i];
+                v = p_region->p_picture->p[2].p_pixels[i];
+                a = p_region->p_picture->p[3].p_pixels[i];
                 for( j = 0; j < p_fmt->p_palette->i_entries; j++ )
                 {
                     if( abs((int)p_fmt->p_palette->palette[j][0] - (int)y) <= i_tolerance &&
@@ -1796,29 +1801,29 @@ static subpicture_t *YuvaYuvp( subpicture_t *p_subpic )
 #endif
 
 #ifndef RANDOM_DITHERING
-        pi_delta = malloc( ( p_region->picture.p[0].i_pitch + 1 )
+        pi_delta = malloc( ( p_region->p_picture->p[0].i_pitch + 1 )
                             * sizeof(int) * 4  );
-        for( i = 0; i < (p_region->picture.p[0].i_pitch + 1) * 4 ; i++ )
+        for( i = 0; i < (p_region->p_picture->p[0].i_pitch + 1) * 4 ; i++ )
         {
             pi_delta[ i ] = 0;
         }
 #endif
 
         /* Fill image with our new colours */
-        for( p = 0; p < p_region->picture.p[0].i_visible_lines ; p++ )
+        for( p = 0; p < p_region->p_picture->p[0].i_visible_lines ; p++ )
         {
             int i_ydelta = 0, i_udelta = 0, i_vdelta = 0, i_adelta = 0;
 
-            for( n = 0; n < p_region->picture.p[0].i_pitch ; n++ )
+            for( n = 0; n < p_region->p_picture->p[0].i_pitch ; n++ )
             {
-                int i_offset = p * p_region->picture.p[0].i_pitch + n;
+                int i_offset = p * p_region->p_picture->p[0].i_pitch + n;
                 int y, u, v, a;
                 int i_mindist, i_best;
 
-                y = (int)p_region->picture.p[0].p_pixels[i_offset];
-                u = (int)p_region->picture.p[1].p_pixels[i_offset];
-                v = (int)p_region->picture.p[2].p_pixels[i_offset];
-                a = (int)p_region->picture.p[3].p_pixels[i_offset];
+                y = (int)p_region->p_picture->p[0].p_pixels[i_offset];
+                u = (int)p_region->p_picture->p[1].p_pixels[i_offset];
+                v = (int)p_region->p_picture->p[2].p_pixels[i_offset];
+                a = (int)p_region->p_picture->p[3].p_pixels[i_offset];
 
                 /* Add dithering compensation */
 #ifdef RANDOM_DITHERING
@@ -1851,7 +1856,7 @@ static subpicture_t *YuvaYuvp( subpicture_t *p_subpic )
                 }
 
                 /* Set pixel to best color */
-                p_region->picture.p[0].p_pixels[i_offset] = i_best;
+                p_region->p_picture->p[0].p_pixels[i_offset] = i_best;
 
                 /* Update dithering state */
 #ifdef RANDOM_DITHERING
@@ -2092,8 +2097,8 @@ static void encode_page_composition( encoder_t *p_enc, bs_t *s,
         }
         else
         {
-            bs_write( s, 16, p_subpic->i_x + p_region->i_x );
-            bs_write( s, 16, p_subpic->i_y + p_region->i_y );
+            bs_write( s, 16, p_region->i_x );
+            bs_write( s, 16, p_region->i_y );
         }
     }
 }
@@ -2361,8 +2366,8 @@ static void encode_pixel_line_2bp( bs_t *s, subpicture_region_t *p_region,
                                    int i_line )
 {
     unsigned int i, i_length = 0;
-    int i_pitch = p_region->picture.p->i_pitch;
-    uint8_t *p_data = &p_region->picture.p->p_pixels[ i_pitch * i_line ];
+    int i_pitch = p_region->p_picture->p->i_pitch;
+    uint8_t *p_data = &p_region->p_picture->p->p_pixels[ i_pitch * i_line ];
     int i_last_pixel = p_data[0];
 
     for( i = 0; i <= p_region->fmt.i_visible_width; i++ )
@@ -2452,8 +2457,8 @@ static void encode_pixel_line_4bp( bs_t *s, subpicture_region_t *p_region,
                                    int i_line )
 {
     unsigned int i, i_length = 0;
-    int i_pitch = p_region->picture.p->i_pitch;
-    uint8_t *p_data = &p_region->picture.p->p_pixels[ i_pitch * i_line ];
+    int i_pitch = p_region->p_picture->p->i_pitch;
+    uint8_t *p_data = &p_region->p_picture->p->p_pixels[ i_pitch * i_line ];
     int i_last_pixel = p_data[0];
 
     for( i = 0; i <= p_region->fmt.i_visible_width; i++ )
@@ -2550,8 +2555,8 @@ static void encode_pixel_line_8bp( bs_t *s, subpicture_region_t *p_region,
                                    int i_line )
 {
     unsigned int i, i_length = 0;
-    int i_pitch = p_region->picture.p->i_pitch;
-    uint8_t *p_data = &p_region->picture.p->p_pixels[ i_pitch * i_line ];
+    int i_pitch = p_region->p_picture->p->i_pitch;
+    uint8_t *p_data = &p_region->p_picture->p->p_pixels[ i_pitch * i_line ];
     int i_last_pixel = p_data[0];
 
     for( i = 0; i <= p_region->fmt.i_visible_width; i++ )

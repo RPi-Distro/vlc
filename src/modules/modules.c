@@ -2,7 +2,7 @@
  * modules.c : Builtin and plugin modules management functions
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: f2d2fa363d5352365913ea6574f4befbb1ba9084 $
+ * $Id: c69cf70d01c96beb796cb7aa70fe7ce110ad5e82 $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -88,19 +88,25 @@
 #include "vlc_arrays.h"
 
 #include "modules/modules.h"
-#include "modules/builtin.h"
+
+static module_bank_t *p_module_bank = NULL;
+static vlc_mutex_t module_lock = VLC_STATIC_MUTEX;
+
+int vlc_entry__main( module_t * );
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 #ifdef HAVE_DYNAMIC_PLUGINS
-static void AllocateAllPlugins  ( vlc_object_t * );
-static void AllocatePluginDir   ( vlc_object_t *, const char *, int );
-static int  AllocatePluginFile  ( vlc_object_t *, char *, int64_t, int64_t );
-static module_t * AllocatePlugin( vlc_object_t *, char * );
+static void AllocateAllPlugins( vlc_object_t *, module_bank_t * );
+static void AllocatePluginDir( vlc_object_t *, module_bank_t *, const char *,
+                               unsigned );
+static int  AllocatePluginFile( vlc_object_t *, module_bank_t *, const char *,
+                                int64_t, int64_t );
+static module_t * AllocatePlugin( vlc_object_t *, const char * );
 #endif
 static int  AllocateBuiltinModule( vlc_object_t *, int ( * ) ( module_t * ) );
-static void DeleteModule ( module_t *, bool );
+static void DeleteModule ( module_bank_t *, module_t * );
 #ifdef HAVE_DYNAMIC_PLUGINS
 static void   DupModule        ( module_t * );
 static void   UndupModule      ( module_t * );
@@ -117,23 +123,20 @@ static void   UndupModule      ( module_t * );
 void __module_InitBank( vlc_object_t *p_this )
 {
     module_bank_t *p_bank = NULL;
-    libvlc_global_data_t *p_libvlc_global = vlc_global();
 
-    vlc_mutex_t *lock = var_AcquireMutex( "libvlc" );
+    vlc_mutex_lock( &module_lock );
 
-    if( p_libvlc_global->p_module_bank == NULL )
+    if( p_module_bank == NULL )
     {
-        p_bank = vlc_custom_create( p_this, sizeof(module_bank_t),
-                                    VLC_OBJECT_GENERIC, "module bank");
+        p_bank = calloc (1, sizeof(*p_bank));
         p_bank->i_usage = 1;
         p_bank->i_cache = p_bank->i_loaded_cache = 0;
         p_bank->pp_cache = p_bank->pp_loaded_cache = NULL;
-        p_bank->b_cache = p_bank->b_cache_dirty =
-        p_bank->b_cache_delete = false;
+        p_bank->b_cache = p_bank->b_cache_dirty = false;
+        p_bank->head = NULL;
 
         /* Everything worked, attach the object */
-        p_libvlc_global->p_module_bank = p_bank;
-        vlc_object_attach( p_bank, p_libvlc_global );
+        p_module_bank = p_bank;
 
         /* Fills the module bank structure with the main module infos.
          * This is very useful as it will allow us to consider the main
@@ -143,51 +146,59 @@ void __module_InitBank( vlc_object_t *p_this )
         AllocateBuiltinModule( p_this, vlc_entry__main );
     }
     else
-        p_libvlc_global->p_module_bank->i_usage++;
+        p_module_bank->i_usage++;
 
-    vlc_mutex_unlock( lock );
+    /* We do retain the module bank lock until the plugins are loaded as well.
+     * This is ugly, this staged loading approach is needed: LibVLC gets
+     * some configuration parameters relevant to loading the plugins from
+     * the main (builtin) module. The module bank becomes shared read-only data
+     * once it is ready, so we need to fully serialize initialization.
+     * DO NOT UNCOMMENT the following line unless you managed to squeeze
+     * module_LoadPlugins() before you unlock the mutex. */
+    /*vlc_mutex_unlock( &module_lock );*/
 }
 
-
+#undef module_EndBank
 /**
- * End bank
- *
  * Unloads all unused plugin modules and empties the module
  * bank in case of success.
  * \param p_this vlc object structure
  * \return nothing
  */
-void __module_EndBank( vlc_object_t *p_this )
+void module_EndBank( vlc_object_t *p_this, bool b_plugins )
 {
-    module_t * p_next = NULL;
-    libvlc_global_data_t *p_libvlc_global = vlc_global();
+    module_bank_t *p_bank = p_module_bank;
 
-    vlc_mutex_t *lock = var_AcquireMutex( "libvlc" );
-    if( !p_libvlc_global->p_module_bank )
-    {
-        vlc_mutex_unlock( lock );
-        return;
-    }
-    if( --p_libvlc_global->p_module_bank->i_usage )
-    {
-        vlc_mutex_unlock( lock );
-        return;
-    }
-    vlc_mutex_unlock( lock );
+    assert (p_bank != NULL);
 
     /* Save the configuration */
-    config_AutoSaveConfigFile( p_this );
+    if( !config_GetInt( p_this, "ignore-config" ) )
+        config_AutoSaveConfigFile( p_this );
+
+    /* If plugins were _not_ loaded, then the caller still has the bank lock
+     * from module_InitBank(). */
+    if( b_plugins )
+        vlc_mutex_lock( &module_lock );
+    /*else
+        vlc_assert_locked( &module_lock ); not for static mutexes :( */
+
+    if( --p_bank->i_usage > 0 )
+    {
+        vlc_mutex_unlock( &module_lock );
+        return;
+    }
+    p_module_bank = NULL;
+    vlc_mutex_unlock( &module_lock );
 
 #ifdef HAVE_DYNAMIC_PLUGINS
-# define p_bank p_libvlc_global->p_module_bank
-    if( p_bank->b_cache ) CacheSave( p_this );
+    if( p_bank->b_cache )
+        CacheSave( p_this, p_bank );
     while( p_bank->i_loaded_cache-- )
     {
         if( p_bank->pp_loaded_cache[p_bank->i_loaded_cache] )
         {
-            DeleteModule(
-                    p_bank->pp_loaded_cache[p_bank->i_loaded_cache]->p_module,
-                    p_bank->pp_loaded_cache[p_bank->i_loaded_cache]->b_used );
+            DeleteModule( p_bank,
+                    p_bank->pp_loaded_cache[p_bank->i_loaded_cache]->p_module );
             free( p_bank->pp_loaded_cache[p_bank->i_loaded_cache]->psz_file );
             free( p_bank->pp_loaded_cache[p_bank->i_loaded_cache] );
             p_bank->pp_loaded_cache[p_bank->i_loaded_cache] = NULL;
@@ -209,77 +220,42 @@ void __module_EndBank( vlc_object_t *p_this )
         free( p_bank->pp_cache );
         p_bank->pp_cache = NULL;
     }
-# undef p_bank
 #endif
 
-    vlc_object_detach( p_libvlc_global->p_module_bank );
+    while( p_bank->head != NULL )
+        DeleteModule( p_bank, p_bank->head );
 
-    while( vlc_internals( p_libvlc_global->p_module_bank )->i_children )
-    {
-        p_next = (module_t *)vlc_internals( p_libvlc_global->p_module_bank )->pp_children[0];
-        DeleteModule( p_next, true );
-    }
-
-    vlc_object_release( p_libvlc_global->p_module_bank );
-    p_libvlc_global->p_module_bank = NULL;
+    free( p_bank );
 }
 
+#undef module_LoadPlugins
 /**
- * Load all modules which we built with.
- *
- * Fills the module bank structure with the builtin modules.
- * \param p_this vlc object structure
- * \return nothing
- */
-void __module_LoadBuiltins( vlc_object_t * p_this )
-{
-    libvlc_global_data_t *p_libvlc_global = vlc_global();
-
-    vlc_mutex_t *lock = var_AcquireMutex( "libvlc" );
-    if( p_libvlc_global->p_module_bank->b_builtins )
-    {
-        vlc_mutex_unlock( lock );
-        return;
-    }
-    p_libvlc_global->p_module_bank->b_builtins = true;
-    vlc_mutex_unlock( lock );
-
-    msg_Dbg( p_this, "checking builtin modules" );
-    ALLOCATE_ALL_BUILTINS();
-}
-
-/**
- * Load all plugins
- *
- * Load all plugin modules we can find.
+ * Loads module descriptions for all available plugins.
  * Fills the module bank structure with the plugin modules.
+ *
  * \param p_this vlc object structure
  * \return nothing
  */
-void __module_LoadPlugins( vlc_object_t * p_this )
+void module_LoadPlugins( vlc_object_t * p_this, bool b_cache_delete )
 {
+    module_bank_t *p_bank = p_module_bank;
+
+    assert( p_bank );
+    /*vlc_assert_locked( &module_lock ); not for static mutexes :( */
+
 #ifdef HAVE_DYNAMIC_PLUGINS
-    libvlc_global_data_t *p_libvlc_global = vlc_global();
-
-    vlc_mutex_t *lock = var_AcquireMutex( "libvlc" );
-    if( p_libvlc_global->p_module_bank->b_plugins )
+    if( p_bank->i_usage == 1 )
     {
-        vlc_mutex_unlock( lock );
-        return;
+        msg_Dbg( p_this, "checking plugin modules" );
+        p_module_bank->b_cache = config_GetInt( p_this, "plugins-cache" ) > 0;
+
+        if( p_module_bank->b_cache || b_cache_delete )
+            CacheLoad( p_this, p_module_bank, b_cache_delete );
+        AllocateAllPlugins( p_this, p_module_bank );
     }
-    p_libvlc_global->p_module_bank->b_plugins = true;
-    vlc_mutex_unlock( lock );
-
-    msg_Dbg( p_this, "checking plugin modules" );
-
-    if( config_GetInt( p_this, "plugins-cache" ) )
-        p_libvlc_global->p_module_bank->b_cache = true;
-
-    if( p_libvlc_global->p_module_bank->b_cache ||
-        p_libvlc_global->p_module_bank->b_cache_delete ) CacheLoad( p_this );
-
-    AllocateAllPlugins( p_this );
 #endif
+    p_module_bank->b_plugins = true;
+    vlc_mutex_unlock( &module_lock );
 }
 
 /**
@@ -289,7 +265,7 @@ void __module_LoadPlugins( vlc_object_t * p_this )
  * \param cap the capability to check
  * \return TRUE if the module have the capability
  */
-bool module_IsCapable( const module_t *m, const char *cap )
+bool module_provides( const module_t *m, const char *cap )
 {
     return !strcmp( m->psz_capability, cap );
 }
@@ -300,7 +276,7 @@ bool module_IsCapable( const module_t *m, const char *cap )
  * \param m the module
  * \return the module name
  */
-const char *module_GetObjName( const module_t *m )
+const char *module_get_object( const module_t *m )
 {
     return m->psz_object_name;
 }
@@ -312,12 +288,12 @@ const char *module_GetObjName( const module_t *m )
  * \param long_name TRUE to have the long name of the module
  * \return the short or long name of the module
  */
-const char *module_GetName( const module_t *m, bool long_name )
+const char *module_get_name( const module_t *m, bool long_name )
 {
     if( long_name && ( m->psz_longname != NULL) )
         return m->psz_longname;
 
-    return m->psz_shortname ?: m->psz_object_name;
+    return m->psz_shortname ? m->psz_shortname : m->psz_object_name;
 }
 
 /**
@@ -326,47 +302,136 @@ const char *module_GetName( const module_t *m, bool long_name )
  * \param m the module
  * \return the help
  */
-const char *module_GetHelp( const module_t *m )
+const char *module_get_help( const module_t *m )
 {
     return m->psz_help;
+}
+
+/**
+ * Get the capability for a module
+ *
+ * \param m the module
+ * return the capability
+ */
+const char *module_get_capability( const module_t *m )
+{
+    return m->psz_capability;
+}
+
+/**
+ * Get the score for a module
+ *
+ * \param m the module
+ * return the score for the capability
+ */
+int module_get_score( const module_t *m )
+{
+    return m->i_score;
+}
+
+module_t *module_hold (module_t *m)
+{
+    vlc_hold (&m->vlc_gc_data);
+    return m;
+}
+
+void module_release (module_t *m)
+{
+    vlc_release (&m->vlc_gc_data);
+}
+
+/**
+ * Frees the flat list of VLC modules.
+ * @param list list obtained by module_list_get()
+ * @param length number of items on the list
+ * @return nothing.
+ */
+void module_list_free (module_t **list)
+{
+    if (list == NULL)
+        return;
+
+    for (size_t i = 0; list[i] != NULL; i++)
+         module_release (list[i]);
+    free (list);
+}
+
+/**
+ * Gets the flat list of VLC modules.
+ * @param n [OUT] pointer to the number of modules or NULL
+ * @return NULL-terminated table of module pointers
+ *         (release with module_list_free()), or NULL in case of error.
+ */
+module_t **module_list_get (size_t *n)
+{
+    /* TODO: this whole module lookup is quite inefficient */
+    /* Remove this and improve module_need */
+    module_t **tab = NULL;
+    size_t i = 0;
+
+    assert (p_module_bank);
+    for (module_t *mod = p_module_bank->head; mod; mod = mod->next)
+    {
+         module_t **nt;
+         nt  = realloc (tab, (i + 2 + mod->submodule_count) * sizeof (*tab));
+         if (nt == NULL)
+         {
+             module_list_free (tab);
+             return NULL;
+         }
+
+         tab = nt;
+         tab[i++] = module_hold (mod);
+         for (module_t *subm = mod->submodule; subm; subm = subm->next)
+             tab[i++] = module_hold (subm);
+         tab[i] = NULL;
+    }
+    if (n != NULL)
+        *n = i;
+    return tab;
+}
+
+typedef struct module_list_t
+{
+    module_t *p_module;
+    int16_t  i_score;
+    bool     b_force;
+} module_list_t;
+
+static int modulecmp (const void *a, const void *b)
+{
+    const module_list_t *la = a, *lb = b;
+    /* Note that qsort() uses _ascending_ order,
+     * so the smallest module is the one with the biggest score. */
+    return lb->i_score - la->i_score;
 }
 
 /**
  * module Need
  *
  * Return the best module function, given a capability list.
+ *
+ * If the p_this object doesn't have it's psz_object_name set, then
+ * psz_object_name will be set to the module's name, unless the user
+ * provided an alias using the "module name@alias" syntax in which case
+ * psz_object_name will be set to the alias.
+ *
  * \param p_this the vlc object
  * \param psz_capability list of capabilities needed
  * \param psz_name name of the module asked
  * \param b_strict TRUE yto use the strict mode
  * \return the module or NULL in case of a failure
  */
-module_t * __module_Need( vlc_object_t *p_this, const char *psz_capability,
+module_t * __module_need( vlc_object_t *p_this, const char *psz_capability,
                           const char *psz_name, bool b_strict )
 {
-    typedef struct module_list_t module_list_t;
+    stats_TimerStart( p_this, "module_need()", STATS_TIMER_MODULE_NEED );
 
-    stats_TimerStart( p_this, "module_Need()", STATS_TIMER_MODULE_NEED );
-
-    struct module_list_t
-    {
-        module_t *p_module;
-        int i_score;
-        bool b_force;
-        module_list_t *p_next;
-    };
-
-    module_list_t *p_list, *p_first, *p_tmp;
-    vlc_list_t *p_all;
-
-    int i_which_module, i_index = 0;
-
+    module_list_t *p_list;
     module_t *p_module;
-
-    int   i_shortcuts = 0;
+    int i_shortcuts = 0;
     char *psz_shortcuts = NULL, *psz_var = NULL, *psz_alias = NULL;
     bool b_force_backup = p_this->b_force;
-
 
     /* Deal with variables */
     if( psz_name && psz_name[0] == '$' )
@@ -419,41 +484,28 @@ module_t * __module_Need( vlc_object_t *p_this, const char *psz_capability,
     }
 
     /* Sort the modules and test them */
-    p_all = vlc_list_find( p_this, VLC_OBJECT_MODULE, FIND_ANYWHERE );
-    p_list = malloc( p_all->i_count * sizeof( module_list_t ) );
-    p_first = NULL;
+    size_t count;
+    module_t **p_all = module_list_get (&count);
+    p_list = malloc( count * sizeof( module_list_t ) );
     unsigned i_cpu = vlc_CPU();
 
     /* Parse the module list for capabilities and probe each of them */
-    for( i_which_module = 0; i_which_module < p_all->i_count; i_which_module++ )
+    count = 0;
+    for (size_t i = 0; (p_module = p_all[i]) != NULL; i++)
     {
-        int i_shortcut_bonus = 0;
-
-        p_module = (module_t *)p_all->p_values[i_which_module].p_object;
+        bool b_shortcut_bonus = false;
 
         /* Test that this module can do what we need */
-        if( !module_IsCapable( p_module, psz_capability ) )
-        {
-            /* Don't recurse through the sub-modules because vlc_list_find()
-             * will list them anyway. */
+        if( !module_provides( p_module, psz_capability ) )
             continue;
-        }
-
         /* Test if we have the required CPU */
         if( (p_module->i_cpu & i_cpu) != p_module->i_cpu )
-        {
             continue;
-        }
 
         /* If we required a shortcut, check this plugin provides it. */
         if( i_shortcuts > 0 )
         {
-            bool b_trash;
             const char *psz_name = psz_shortcuts;
-
-            /* Let's drop modules with a <= 0 score (unless they are
-             * explicitly requested) */
-            b_trash = p_module->i_score <= 0;
 
             for( unsigned i_short = i_shortcuts; i_short > 0; i_short-- )
             {
@@ -468,7 +520,7 @@ module_t * __module_Need( vlc_object_t *p_this, const char *psz_capability,
                         /* Found it */
                         if( c && c[1] )
                             psz_alias = c+1;
-                        i_shortcut_bonus = i_short * 10000;
+                        b_shortcut_bonus = true;
                         goto found_shortcut;
                     }
                 }
@@ -483,117 +535,61 @@ module_t * __module_Need( vlc_object_t *p_this, const char *psz_capability,
             if( b_strict )
                 continue;
         }
-        /* If we didn't require a shortcut, trash <= 0 scored plugins */
-        else if( p_module->i_score <= 0 )
-        {
+
+        /* Trash <= 0 scored plugins (they can only be selected by shortcut) */
+        if( p_module->i_score <= 0 )
             continue;
-        }
 
 found_shortcut:
-
         /* Store this new module */
-        p_list[ i_index ].p_module = p_module;
-        p_list[ i_index ].i_score = p_module->i_score + i_shortcut_bonus;
-        p_list[ i_index ].b_force = i_shortcut_bonus && b_strict;
-
-        /* Add it to the modules-to-probe list */
-        if( i_index == 0 )
-        {
-            p_list[ 0 ].p_next = NULL;
-            p_first = p_list;
-        }
-        else
-        {
-            /* Ok, so at school you learned that quicksort is quick, and
-             * bubble sort sucks raw eggs. But that's when dealing with
-             * thousands of items. Here we have barely 50. */
-            module_list_t *p_newlist = p_first;
-
-            if( p_first->i_score < p_list[ i_index ].i_score )
-            {
-                p_list[ i_index ].p_next = p_first;
-                p_first = &p_list[ i_index ];
-            }
-            else
-            {
-                while( p_newlist->p_next != NULL &&
-                    p_newlist->p_next->i_score >= p_list[ i_index ].i_score )
-                {
-                    p_newlist = p_newlist->p_next;
-                }
-
-                p_list[ i_index ].p_next = p_newlist->p_next;
-                p_newlist->p_next = &p_list[ i_index ];
-            }
-        }
-
-        i_index++;
+        p_list[count].p_module = module_hold (p_module);
+        p_list[count].i_score = p_module->i_score;
+        if( b_shortcut_bonus )
+            p_list[count].i_score += 10000;
+        p_list[count].b_force = b_shortcut_bonus && b_strict;
+        count++;
     }
 
-    msg_Dbg( p_this, "looking for %s module: %i candidate%s", psz_capability,
-                                            i_index, i_index == 1 ? "" : "s" );
+    /* We can release the list, interesting modules are held */
+    module_list_free (p_all);
 
-    /* Lock all candidate modules */
-    p_tmp = p_first;
-    while( p_tmp != NULL )
-    {
-        vlc_object_yield( p_tmp->p_module );
-        p_tmp = p_tmp->p_next;
-    }
-
-    /* We can release the list, interesting modules were yielded */
-    vlc_list_release( p_all );
+    /* Sort candidates by descending score */
+    qsort (p_list, count, sizeof (p_list[0]), modulecmp);
+    msg_Dbg( p_this, "looking for %s module: %zu candidate%s", psz_capability,
+             count, count == 1 ? "" : "s" );
 
     /* Parse the linked list and use the first successful module */
-    p_tmp = p_first;
-    while( p_tmp != NULL )
+    p_module = NULL;
+    for (size_t i = 0; (i < count) && (p_module == NULL); i++)
     {
+        module_t *p_cand = p_list[i].p_module;
 #ifdef HAVE_DYNAMIC_PLUGINS
         /* Make sure the module is loaded in mem */
-        module_t *p_module = p_tmp->p_module;
-        if( p_module->b_submodule )
-            p_module = (module_t *)p_module->p_parent;
+        module_t *p_real = p_cand->b_submodule ? p_cand->parent : p_cand;
 
-        if( !p_module->b_builtin && !p_module->b_loaded )
+        if( !p_real->b_builtin && !p_real->b_loaded )
         {
             module_t *p_new_module =
-                AllocatePlugin( p_this, p_module->psz_filename );
+                AllocatePlugin( p_this, p_real->psz_filename );
             if( p_new_module )
             {
-                CacheMerge( p_this, p_module, p_new_module );
-                vlc_object_attach( p_new_module, p_module );
-                DeleteModule( p_new_module, true );
+                CacheMerge( p_this, p_real, p_new_module );
+                DeleteModule( p_module_bank, p_new_module );
             }
         }
 #endif
 
-        p_this->b_force = p_tmp->b_force;
-        if( p_tmp->p_module->pf_activate
-             && p_tmp->p_module->pf_activate( p_this ) == VLC_SUCCESS )
+        p_this->b_force = p_list[i].b_force;
+        if( p_cand->pf_activate
+         && p_cand->pf_activate( p_this ) == VLC_SUCCESS )
         {
-            break;
+            p_module = p_cand;
+            /* Release the remaining modules */
+            while (++i < count)
+                module_release (p_list[i].p_module);
         }
-
-        vlc_object_release( p_tmp->p_module );
-        p_tmp = p_tmp->p_next;
-    }
-
-    /* Store the locked module value */
-    if( p_tmp != NULL )
-    {
-        p_module = p_tmp->p_module;
-        p_tmp = p_tmp->p_next;
-    }
-    else
-    {
-        p_module = NULL;
-    }
-
-    /* Unlock the remaining modules */
-    while( p_tmp != NULL )
-    {
-        vlc_object_release( p_tmp->p_module );
-        p_tmp = p_tmp->p_next;
+        else
+            module_release( p_cand );
     }
 
     free( p_list );
@@ -603,13 +599,25 @@ found_shortcut:
     {
         msg_Dbg( p_this, "using %s module \"%s\"",
                  psz_capability, p_module->psz_object_name );
-    }
-    else if( p_first == NULL )
-    {
-        if( !strcmp( psz_capability, "access_demux" ) )
+        if( !p_this->psz_object_name )
         {
-            msg_Warn( p_this, "no %s module matched \"%s\"",
-                 psz_capability, (psz_name && *psz_name) ? psz_name : "any" );
+            /* This assumes that p_this is the object which will be using the
+             * module. That's not always the case ... but it is in most cases.
+             */
+            if( psz_alias )
+                p_this->psz_object_name = strdup( psz_alias );
+            else
+                p_this->psz_object_name = strdup( p_module->psz_object_name );
+        }
+    }
+    else if( count == 0 )
+    {
+        if( !strcmp( psz_capability, "access_demux" )
+         || !strcmp( psz_capability, "stream_filter" )
+         || !strcmp( psz_capability, "vout_window" ) )
+        {
+            msg_Dbg( p_this, "no %s module matched \"%s\"",
+                psz_capability, (psz_name && *psz_name) ? psz_name : "any" );
         }
         else
         {
@@ -628,17 +636,6 @@ found_shortcut:
     else
         msg_StackSet( VLC_EGENERIC, "no suitable %s module", psz_capability );
 
-    if( p_module && !p_this->psz_object_name )
-    {
-        /* This assumes that p_this is the object which will be using the
-         * module. That's not always the case ... but it is in most cases.
-         */
-        if( psz_alias )
-            p_this->psz_object_name = strdup( psz_alias );
-        else
-            p_this->psz_object_name = strdup( p_module->psz_object_name );
-    }
-
     free( psz_shortcuts );
     free( psz_var );
 
@@ -653,13 +650,13 @@ found_shortcut:
 /**
  * Module unneed
  *
- * This function must be called by the thread that called module_Need, to
+ * This function must be called by the thread that called module_need, to
  * decrease the reference count and allow for hiding of modules.
  * \param p_this vlc object structure
  * \param p_module the module structure
  * \return nothing
  */
-void __module_Unneed( vlc_object_t * p_this, module_t * p_module )
+void __module_unneed( vlc_object_t * p_this, module_t * p_module )
 {
     /* Use the close method */
     if( p_module->pf_deactivate )
@@ -669,69 +666,84 @@ void __module_Unneed( vlc_object_t * p_this, module_t * p_module )
 
     msg_Dbg( p_this, "removing module \"%s\"", p_module->psz_object_name );
 
-    vlc_object_release( p_module );
+    module_release( p_module );
 }
 
 /**
  * Get a pointer to a module_t given it's name.
  *
- * \param p_this vlc object structure
  * \param psz_name the name of the module
  * \return a pointer to the module or NULL in case of a failure
  */
-module_t *__module_Find( vlc_object_t *p_this, const char * psz_name )
+module_t *module_find( const char * psz_name )
 {
-    vlc_list_t *p_list;
-    int i;
-    p_list = vlc_list_find( p_this, VLC_OBJECT_MODULE, FIND_ANYWHERE );
-    for( i = 0 ; i < p_list->i_count; i++)
+    module_t **list, *module;
+
+    list = module_list_get (NULL);
+    if (!list)
+        return NULL;
+
+    for (size_t i = 0; (module = list[i]) != NULL; i++)
     {
-        module_t *p_module = ((module_t *) p_list->p_values[i].p_object);
-        const char *psz_module_name = p_module->psz_object_name;
+        const char *psz_module_name = module->psz_object_name;
+
         if( psz_module_name && !strcmp( psz_module_name, psz_name ) )
         {
-            /* We can release the list, and return yes */
-            vlc_object_yield( p_module );
-            vlc_list_release( p_list );
-            return p_module;
+            module_hold (module);
+            break;
         }
     }
-    vlc_list_release( p_list );
-    return NULL;
+    module_list_free (list);
+    return module;
 }
-
-
-/**
- * Release a module_t pointer from module_Find().
- *
- * \param module the module to release
- * \return nothing
- */
-void module_Put( module_t *module )
-{
-    vlc_object_release( module );
-}
-
 
 /**
  * Tell if a module exists and release it in thic case
  *
- * \param p_this vlc object structure
  * \param psz_name th name of the module
  * \return TRUE if the module exists
  */
-bool __module_Exists( vlc_object_t *p_this, const char * psz_name )
+bool module_exists (const char * psz_name)
 {
-    module_t *p_module = __module_Find( p_this, psz_name );
+    module_t *p_module = module_find (psz_name);
     if( p_module )
+        module_release (p_module);
+    return p_module != NULL;
+}
+
+/**
+ * Get a pointer to a module_t that matches a shortcut.
+ * This is a temporary hack for SD. Do not re-use (generally multiple modules
+ * can have the same shortcut, so this is *broken* - use module_need()!).
+ *
+ * \param psz_shortcut shortcut of the module
+ * \param psz_cap capability of the module
+ * \return a pointer to the module or NULL in case of a failure
+ */
+module_t *module_find_by_shortcut (const char *psz_shortcut)
+{
+    module_t **list, *module;
+
+    list = module_list_get (NULL);
+    if (!list)
+        return NULL;
+
+    for (size_t i = 0; (module = list[i]) != NULL; i++)
     {
-        module_Put( p_module );
-        return true;
+        for (size_t j = 0;
+             (module->pp_shortcuts[j] != NULL) && (j < MODULE_SHORTCUT_MAX);
+             j++)
+        {
+            if (!strcmp (module->pp_shortcuts[j], psz_shortcut))
+            {
+                module_hold (module);
+                goto out;
+             }
+        }
     }
-    else
-    {
-        return false;
-    }
+out:
+    module_list_free (list);
+    return module;
 }
 
 /**
@@ -740,30 +752,31 @@ bool __module_Exists( vlc_object_t *p_this, const char * psz_name )
  * Return a NULL terminated array with the names of the modules
  * that have a certain capability.
  * Free after uses both the string and the table.
- * \param p_this vlc object structure
  * \param psz_capability the capability asked
  * \param pppsz_longname an pointer to an array of string to contain
     the long names of the modules. If set to NULL the function don't use it.
  * \return the NULL terminated array
  */
-char ** __module_GetModulesNamesForCapability( vlc_object_t *p_this,
-                                               const char *psz_capability,
-                                               char ***pppsz_longname )
+char ** module_GetModulesNamesForCapability( const char *psz_capability,
+                                             char ***pppsz_longname )
 {
-    vlc_list_t *p_list;
-    int i, j, count = 0;
+    size_t count = 0;
     char **psz_ret;
 
-    /* Do it in two passes : count the number of modules before */
-    p_list = vlc_list_find( p_this, VLC_OBJECT_MODULE, FIND_ANYWHERE );
-    for( i = 0 ; i < p_list->i_count; i++)
+    module_t **list = module_list_get (NULL);
+
+    /* Proceed in two passes: count the number of modules first */
+    for (size_t i = 0; list[i]; i++)
     {
-        module_t *p_module = ((module_t *) p_list->p_values[i].p_object);
+        module_t *p_module = list[i];
         const char *psz_module_capability = p_module->psz_capability;
-        if( psz_module_capability && !strcmp( psz_module_capability, psz_capability ) )
+
+        if( psz_module_capability
+         && !strcmp( psz_module_capability, psz_capability ) )
             count++;
     }
 
+    /* Then get the names */
     psz_ret = malloc( sizeof(char*) * (count+1) );
     if( pppsz_longname )
         *pppsz_longname = malloc( sizeof(char*) * (count+1) );
@@ -771,35 +784,38 @@ char ** __module_GetModulesNamesForCapability( vlc_object_t *p_this,
     {
         free( psz_ret );
         if( pppsz_longname )
+        {
             free( *pppsz_longname );
-        *pppsz_longname = NULL;
-        vlc_list_release( p_list );
+            *pppsz_longname = NULL;
+        }
+        module_list_free (list);
         return NULL;
     }
 
-    j = 0;
-    for( i = 0 ; i < p_list->i_count; i++)
+    for (size_t i = 0, j = 0; list[i]; i++)
     {
-        module_t *p_module = ((module_t *) p_list->p_values[i].p_object);
+        module_t *p_module = list[i];
         const char *psz_module_capability = p_module->psz_capability;
-        if( psz_module_capability && !strcmp( psz_module_capability, psz_capability ) )
+
+        if( psz_module_capability
+         && !strcmp( psz_module_capability, psz_capability ) )
         {
-            int k = -1; /* hack to handle submodules properly */
-            if( p_module->b_submodule )
-            {
-                while( p_module->pp_shortcuts[++k] != NULL );
-                k--;
-            }
-            psz_ret[j] = strdup( k>=0?p_module->pp_shortcuts[k]
-                                     :p_module->psz_object_name );
+            /* Explicit hack: Use the last shortcut. It _should_ be
+             * different from the object name, at least if the object
+             * contains multiple submodules with the same capability. */
+            unsigned k = 0;
+            while( p_module->pp_shortcuts[k] != NULL )
+                k++;
+            assert( k > 0); /* pp_shortcuts[0] is always set */
+            psz_ret[j] = strdup( p_module->pp_shortcuts[k - 1] );
             if( pppsz_longname )
-                (*pppsz_longname)[j] = strdup( module_GetName( p_module, true ) );
+                (*pppsz_longname)[j] = strdup( module_get_name( p_module, true ) );
             j++;
         }
     }
     psz_ret[count] = NULL;
 
-    vlc_list_release( p_list );
+    module_list_free (list);
 
     return psz_ret;
 }
@@ -811,7 +827,7 @@ char ** __module_GetModulesNamesForCapability( vlc_object_t *p_this,
  * \param psize the size of the configuration returned
  * \return the configuration as an array
  */
-module_config_t *module_GetConfig( const module_t *module, unsigned *restrict psize )
+module_config_t *module_config_get( const module_t *module, unsigned *restrict psize )
 {
     unsigned i,j;
     unsigned size = module->confsize;
@@ -845,7 +861,7 @@ module_config_t *module_GetConfig( const module_t *module, unsigned *restrict ps
  * \param the configuration
  * \return nothing
  */
-void module_PutConfig( module_config_t *config )
+void module_config_free( module_config_t *config )
 {
     free( config );
 }
@@ -901,13 +917,15 @@ static char * copy_next_paths_token( char * paths, char ** remaining_paths )
     return path;
 }
 
+char *psz_vlcpath = NULL;
+
 /*****************************************************************************
  * AllocateAllPlugins: load all plugin modules we can find.
  *****************************************************************************/
 #ifdef HAVE_DYNAMIC_PLUGINS
-static void AllocateAllPlugins( vlc_object_t *p_this )
+static void AllocateAllPlugins( vlc_object_t *p_this, module_bank_t *p_bank )
 {
-    const char *vlcpath = vlc_global()->psz_vlcpath;
+    const char *vlcpath = psz_vlcpath;
     int count,i;
     char * path;
     vlc_array_t *arraypaths = vlc_array_new();
@@ -944,7 +962,7 @@ static void AllocateAllPlugins( vlc_object_t *p_this )
         msg_Dbg( p_this, "recursively browsing `%s'", path );
 
         /* Don't go deeper than 5 subdirectories */
-        AllocatePluginDir( p_this, path, 5 );
+        AllocatePluginDir( p_this, p_bank, path, 5 );
 
         free( path );
     }
@@ -956,8 +974,8 @@ static void AllocateAllPlugins( vlc_object_t *p_this )
 /*****************************************************************************
  * AllocatePluginDir: recursively parse a directory to look for plugins
  *****************************************************************************/
-static void AllocatePluginDir( vlc_object_t *p_this, const char *psz_dir,
-                               int i_maxdepth )
+static void AllocatePluginDir( vlc_object_t *p_this, module_bank_t *p_bank,
+                               const char *psz_dir, unsigned i_maxdepth )
 {
 /* FIXME: Needs to be ported to wide char on ALL Windows builds */
 #ifdef WIN32
@@ -981,10 +999,8 @@ static void AllocatePluginDir( vlc_object_t *p_this, const char *psz_dir,
 #endif
     char * psz_file;
 
-    if( p_this->p_libvlc->b_die || i_maxdepth < 0 )
-    {
+    if( i_maxdepth == 0 )
         return;
-    }
 
 #if defined( UNDER_CE ) || defined( _MSC_VER )
 #ifdef UNDER_CE
@@ -1040,7 +1056,7 @@ static void AllocatePluginDir( vlc_object_t *p_this, const char *psz_dir,
         if( GetFileAttributes( psz_path ) & FILE_ATTRIBUTE_DIRECTORY )
 #endif
         {
-            AllocatePluginDir( p_this, psz_path, i_maxdepth - 1 );
+            AllocatePluginDir( p_this, p_bank, psz_path, i_maxdepth - 1 );
         }
         else if( i_len > strlen( LIBEXT )
                   /* We only load files ending with LIBEXT */
@@ -1068,7 +1084,7 @@ static void AllocatePluginDir( vlc_object_t *p_this, const char *psz_dir,
             }
             psz_file = psz_path;
 
-            AllocatePluginFile( p_this, psz_file, i_time, i_size );
+            AllocatePluginFile( p_this, p_bank, psz_file, i_time, i_size );
         }
     }
     while( !p_this->p_libvlc->b_die && FindNextFile( handle, &finddata ) );
@@ -1106,7 +1122,7 @@ static void AllocatePluginDir( vlc_object_t *p_this, const char *psz_dir,
         i_stat = stat( psz_file, &statbuf );
         if( !i_stat && statbuf.st_mode & S_IFDIR )
         {
-            AllocatePluginDir( p_this, psz_file, i_maxdepth - 1 );
+            AllocatePluginDir( p_this, p_bank, psz_file, i_maxdepth - 1 );
         }
         else if( i_len > strlen( LIBEXT )
                   /* We only load files ending with LIBEXT */
@@ -1121,7 +1137,7 @@ static void AllocatePluginDir( vlc_object_t *p_this, const char *psz_dir,
                 i_size = statbuf.st_size;
             }
 
-            AllocatePluginFile( p_this, psz_file, i_time, i_size );
+            AllocatePluginFile( p_this, p_bank, psz_file, i_time, i_size );
         }
 
         free( psz_file );
@@ -1137,10 +1153,11 @@ static void AllocatePluginDir( vlc_object_t *p_this, const char *psz_dir,
  * AllocatePluginFile: load a module into memory and initialize it.
  *****************************************************************************
  * This function loads a dynamically loadable module and allocates a structure
- * for its information data. The module can then be handled by module_Need
- * and module_Unneed. It can be removed by DeleteModule.
+ * for its information data. The module can then be handled by module_need
+ * and module_unneed. It can be removed by DeleteModule.
  *****************************************************************************/
-static int AllocatePluginFile( vlc_object_t * p_this, char * psz_file,
+static int AllocatePluginFile( vlc_object_t * p_this, module_bank_t *p_bank,
+                               const char *psz_file,
                                int64_t i_file_time, int64_t i_file_size )
 {
     module_t * p_module = NULL;
@@ -1149,9 +1166,7 @@ static int AllocatePluginFile( vlc_object_t * p_this, char * psz_file,
     /*
      * Check our plugins cache first then load plugin if needed
      */
-    p_cache_entry =
-        CacheFind( psz_file, i_file_time, i_file_size );
-
+    p_cache_entry = CacheFind( p_bank, psz_file, i_file_time, i_file_size );
     if( !p_cache_entry )
     {
         p_module = AllocatePlugin( p_this, psz_file );
@@ -1189,21 +1204,18 @@ static int AllocatePluginFile( vlc_object_t * p_this, char * psz_file,
 
     if( p_module )
     {
-        libvlc_global_data_t *p_libvlc_global = vlc_global();
-
         /* Everything worked fine !
          * The module is ready to be added to the list. */
         p_module->b_builtin = false;
 
         /* msg_Dbg( p_this, "plugin \"%s\", %s",
                     p_module->psz_object_name, p_module->psz_longname ); */
+        p_module->next = p_bank->head;
+        p_bank->head = p_module;
 
-        vlc_object_attach( p_module, p_libvlc_global->p_module_bank );
-
-        if( !p_libvlc_global->p_module_bank->b_cache )
+        if( !p_module_bank->b_cache )
             return 0;
 
-#define p_bank p_libvlc_global->p_module_bank
         /* Add entry to cache */
         p_bank->pp_cache =
             realloc( p_bank->pp_cache, (p_bank->i_cache + 1) * sizeof(void *) );
@@ -1217,7 +1229,6 @@ static int AllocatePluginFile( vlc_object_t * p_this, char * psz_file,
         p_bank->pp_cache[p_bank->i_cache]->b_used = true;
         p_bank->pp_cache[p_bank->i_cache]->p_module = p_module;
         p_bank->i_cache++;
-#undef p_bank
     }
 
     return p_module ? 0 : -1;
@@ -1227,10 +1238,10 @@ static int AllocatePluginFile( vlc_object_t * p_this, char * psz_file,
  * AllocatePlugin: load a module into memory and initialize it.
  *****************************************************************************
  * This function loads a dynamically loadable module and allocates a structure
- * for its information data. The module can then be handled by module_Need
- * and module_Unneed. It can be removed by DeleteModule.
+ * for its information data. The module can then be handled by module_need
+ * and module_unneed. It can be removed by DeleteModule.
  *****************************************************************************/
-static module_t * AllocatePlugin( vlc_object_t * p_this, char * psz_file )
+static module_t * AllocatePlugin( vlc_object_t * p_this, const char *psz_file )
 {
     module_t * p_module = NULL;
     module_handle_t handle;
@@ -1247,22 +1258,21 @@ static module_t * AllocatePlugin( vlc_object_t * p_this, char * psz_file )
         return NULL;
     }
 
-    /* We need to fill these since they may be needed by module_Call() */
-    p_module->psz_filename = psz_file;
+    p_module->psz_filename = strdup( psz_file );
     p_module->handle = handle;
     p_module->b_loaded = true;
 
     /* Initialize the module: fill p_module, default config */
-    if( module_Call( p_module ) != 0 )
+    if( module_Call( p_this, p_module ) != 0 )
     {
         /* We couldn't call module_init() */
-        vlc_object_release( p_module );
+        free( p_module->psz_filename );
+        module_release( p_module );
         module_Unload( handle );
         return NULL;
     }
 
     DupModule( p_module );
-    p_module->psz_filename = strdup( p_module->psz_filename );
 
     /* Everything worked fine ! The module is ready to be added to the list. */
     p_module->b_builtin = false;
@@ -1279,7 +1289,6 @@ static module_t * AllocatePlugin( vlc_object_t * p_this, char * psz_file )
 static void DupModule( module_t *p_module )
 {
     char **pp_shortcut;
-    int i_submodule;
 
     for( pp_shortcut = p_module->pp_shortcuts ; *pp_shortcut ; pp_shortcut++ )
     {
@@ -1295,10 +1304,8 @@ static void DupModule( module_t *p_module )
     p_module->psz_help = p_module->psz_help ? strdup( p_module->psz_help )
                                             : NULL;
 
-    for( i_submodule = 0; i_submodule < vlc_internals( p_module )->i_children; i_submodule++ )
-    {
-        DupModule( (module_t*)vlc_internals( p_module )->pp_children[ i_submodule ] );
-    }
+    for (module_t *subm = p_module->submodule; subm; subm = subm->next)
+        DupModule (subm);
 }
 
 /*****************************************************************************
@@ -1309,23 +1316,19 @@ static void DupModule( module_t *p_module )
 static void UndupModule( module_t *p_module )
 {
     char **pp_shortcut;
-    int i_submodule;
 
-    for( i_submodule = 0; i_submodule < vlc_internals( p_module )->i_children; i_submodule++ )
-    {
-        UndupModule( (module_t*)vlc_internals( p_module )->pp_children[ i_submodule ] );
-    }
+    for (module_t *subm = p_module->submodule; subm; subm = subm->next)
+        UndupModule (subm);
 
     for( pp_shortcut = p_module->pp_shortcuts ; *pp_shortcut ; pp_shortcut++ )
     {
         free( *pp_shortcut );
     }
 
-    FREENULL( p_module->psz_object_name );
     free( p_module->psz_capability );
-    free( p_module->psz_shortname );
+    FREENULL( p_module->psz_shortname );
     free( p_module->psz_longname );
-    free( p_module->psz_help );
+    FREENULL( p_module->psz_help );
 }
 
 #endif /* HAVE_DYNAMIC_PLUGINS */
@@ -1334,8 +1337,8 @@ static void UndupModule( module_t *p_module )
  * AllocateBuiltinModule: initialize a builtin module.
  *****************************************************************************
  * This function registers a builtin module and allocates a structure
- * for its information data. The module can then be handled by module_Need
- * and module_Unneed. It can be removed by DeleteModule.
+ * for its information data. The module can then be handled by module_need
+ * and module_unneed. It can be removed by DeleteModule.
  *****************************************************************************/
 static int AllocateBuiltinModule( vlc_object_t * p_this,
                                   int ( *pf_entry ) ( module_t * ) )
@@ -1354,17 +1357,19 @@ static int AllocateBuiltinModule( vlc_object_t * p_this,
         /* With a well-written module we shouldn't have to print an
          * additional error message here, but just make sure. */
         msg_Err( p_this, "failed calling entry point in builtin module" );
-        vlc_object_release( p_module );
+        module_release( p_module );
         return -1;
     }
 
     /* Everything worked fine ! The module is ready to be added to the list. */
     p_module->b_builtin = true;
+    /* LOCK */
+    p_module->next = p_module_bank->head;
+    p_module_bank->head = p_module;
+    /* UNLOCK */
 
     /* msg_Dbg( p_this, "builtin \"%s\", %s",
                 p_module->psz_object_name, p_module->psz_longname ); */
-
-    vlc_object_attach( p_module, vlc_global()->p_module_bank );
 
     return 0;
 }
@@ -1374,12 +1379,16 @@ static int AllocateBuiltinModule( vlc_object_t * p_this,
  *****************************************************************************
  * This function can only be called if the module isn't being used.
  *****************************************************************************/
-static void DeleteModule( module_t * p_module, bool b_detach )
+static void DeleteModule( module_bank_t *p_bank, module_t * p_module )
 {
     assert( p_module );
 
-    if( b_detach )
-        vlc_object_detach( p_module );
+    /* Unlist the module (if it is in the list) */
+    module_t **pp_self = &p_bank->head;
+    while (*pp_self != NULL && *pp_self != p_module)
+        pp_self = &((*pp_self)->next);
+    if (*pp_self)
+        *pp_self = p_module->next;
 
     /* We free the structures that we strdup()ed in Allocate*Module(). */
 #ifdef HAVE_DYNAMIC_PLUGINS
@@ -1395,13 +1404,13 @@ static void DeleteModule( module_t * p_module, bool b_detach )
 #endif
 
     /* Free and detach the object's children */
-    while( vlc_internals( p_module )->i_children )
+    while (p_module->submodule)
     {
-        vlc_object_t *p_this = vlc_internals( p_module )->pp_children[0];
-        vlc_object_detach( p_this );
-        vlc_object_release( p_this );
+        module_t *submodule = p_module->submodule;
+        p_module->submodule = submodule->next;
+        module_release (submodule);
     }
 
     config_Free( p_module );
-    vlc_object_release( p_module );
+    module_release( p_module );
 }

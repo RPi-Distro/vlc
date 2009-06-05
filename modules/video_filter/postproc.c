@@ -2,7 +2,7 @@
  * postproc.c: video postprocessing using libpostproc
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: e05d773beae374eb468cd71ee225b31c829d298f $
+ * $Id: 9d1dc57b4989ca37a7e1e5e7fdcd7a38a0c9c0b2 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -63,32 +63,33 @@ static int PPNameCallback( vlc_object_t *, char const *,
     "better looking pictures." )
 
 #define NAME_TEXT N_("FFmpeg post processing filter chains")
-/* defined by libpostproc */
-#define NAME_LONGTEXT pp_help
+#define NAME_LONGTEXT NAME_TEXT
 
 #define FILTER_PREFIX "postproc-"
 
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Video post processing filter") );
-    add_shortcut( "postprocess" ); /* name is "postproc" */
-    add_shortcut( "pp" );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
+vlc_module_begin ()
+    set_description( N_("Video post processing filter") )
+    set_shortname( N_("Postproc" ) )
+    add_shortcut( "postprocess" ) /* name is "postproc" */
+    add_shortcut( "pp" )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
 
-    set_capability( "video filter2", 0 );
+    set_capability( "video filter2", 0 )
 
-    set_callbacks( OpenPostproc, ClosePostproc );
+    set_callbacks( OpenPostproc, ClosePostproc )
 
     add_integer_with_range( FILTER_PREFIX "q", PP_QUALITY_MAX, 0,
-                            PP_QUALITY_MAX, NULL, Q_TEXT, Q_LONGTEXT, false );
-        add_deprecated_alias( "ffmpeg-pp-q" );
+                            PP_QUALITY_MAX, NULL, Q_TEXT, Q_LONGTEXT, false )
+        add_deprecated_alias( "ffmpeg-pp-q" )
+        change_safe()
     add_string( FILTER_PREFIX "name", "default", NULL, NAME_TEXT,
-                NAME_LONGTEXT, true );
-        add_deprecated_alias( "ffmpeg-pp-name" );
-vlc_module_end();
+                NAME_LONGTEXT, true )
+        add_deprecated_alias( "ffmpeg-pp-name" )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "q", "name", NULL
@@ -101,6 +102,8 @@ struct filter_sys_t
 {
     pp_context_t *pp_context; /* Never changes after init */
     pp_mode_t    *pp_mode; /* Set to NULL if post processing is disabled */
+
+    bool b_had_matrix; /* Set to true if previous pic had a quant matrix (used to prevent spamming warning messages */
 
     vlc_mutex_t lock; /* Lock when using or changing pp_mode */
 };
@@ -139,6 +142,7 @@ static int OpenPostproc( vlc_object_t *p_this )
     {
         case VLC_FOURCC('I','4','4','4'):
         case VLC_FOURCC('J','4','4','4'):
+        /* case VLC_FOURCC('Y','U','V','A'): FIXME Should work but alpha plane needs to be copied manually and I'm kind of feeling too lazy to write the code to do that ATM (i_pitch vs i_visible_pitch...). */
             i_flags |= PP_FORMAT_444;
             break;
         case VLC_FOURCC('I','4','2','2'):
@@ -152,7 +156,6 @@ static int OpenPostproc( vlc_object_t *p_this )
         case VLC_FOURCC('I','Y','U','V'):
         case VLC_FOURCC('J','4','2','0'):
         case VLC_FOURCC('Y','V','1','2'):
-        /* case VLC_FOURCC('Y','U','V','A'): FIXME Should work but alpha plane needs to be copied manually and I'm kind of feeling too lazy to write the code to do that ATM (i_pitch vs i_visible_pitch...). */
             i_flags |= PP_FORMAT_420;
             break;
         default:
@@ -194,7 +197,8 @@ static int OpenPostproc( vlc_object_t *p_this )
     var_AddCallback( p_filter, FILTER_PREFIX "name", PPNameCallback, NULL );
     if( val_orig.i_int )
     {
-        p_sys->pp_mode = pp_get_mode_by_name_and_quality( val.psz_string?:
+        p_sys->pp_mode = pp_get_mode_by_name_and_quality( val.psz_string ?
+                                                          val.psz_string :
                                                           "default",
                                                           val_orig.i_int );
 
@@ -235,9 +239,10 @@ static int OpenPostproc( vlc_object_t *p_this )
                     &val, text.psz_string?&text:NULL );
     }
 
-    vlc_mutex_init( &p_sys->lock );
+    vlc_mutex_init( &p_sys->lock ); /* FIXME: too late w.r.t. callback */
 
     p_filter->pf_video_filter = PostprocPict;
+    p_sys->b_had_matrix = true;
 
     return VLC_SUCCESS;
 }
@@ -249,6 +254,8 @@ static void ClosePostproc( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
+
+    /* FIXME: delete callbacks before mutex */
     vlc_mutex_destroy( &p_sys->lock );
     pp_free_context( p_sys->pp_context );
     if( p_sys->pp_mode ) pp_free_mode( p_sys->pp_mode );
@@ -293,13 +300,22 @@ static picture_t *PostprocPict( filter_t *p_filter, picture_t *p_pic )
         i_dst_stride[i_plane] = p_outpic->p[i_plane].i_pitch;
     }
 
+    if( !p_pic->p_q && p_sys->b_had_matrix )
+    {
+        msg_Warn( p_filter, "Quantification table was not set by video decoder. Postprocessing won't look good." );
+        p_sys->b_had_matrix = false;
+    }
+    else if( p_pic->p_q )
+    {
+        p_sys->b_had_matrix = true;
+    }
+
     pp_postprocess( src, i_src_stride, dst, i_dst_stride,
                     p_filter->fmt_in.video.i_width,
                     p_filter->fmt_in.video.i_height,
-                    NULL /* FIXME ? works by selecting a default table. But maybe setting our own might help improve post processing quality ... */,
-                    0 /* FIXME */,
+                    p_pic->p_q, p_pic->i_qstride,
                     p_sys->pp_mode, p_sys->pp_context,
-                    PP_PICT_TYPE_QP2 /* FIXME ? This should be set only for mpeg2 type codecs if I understand correctly. */ );
+                    p_pic->i_qtype == QTYPE_MPEG2 ? PP_PICT_TYPE_QP2 : 0 );
     vlc_mutex_unlock( &p_sys->lock );
 
     return CopyInfoAndRelease( p_outpic, p_pic );
@@ -315,7 +331,8 @@ static void PPChangeMode( filter_t *p_filter, const char *psz_name,
     vlc_mutex_lock( &p_sys->lock );
     if( i_quality > 0 )
     {
-        pp_mode_t *pp_mode = pp_get_mode_by_name_and_quality( psz_name?:
+        pp_mode_t *pp_mode = pp_get_mode_by_name_and_quality( psz_name ?
+                                                              psz_name :
                                                               "default",
                                                               i_quality );
         if( pp_mode )

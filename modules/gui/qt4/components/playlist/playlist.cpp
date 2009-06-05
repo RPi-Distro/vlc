@@ -2,7 +2,7 @@
  * playlist.cpp : Custom widgets for the playlist
  ****************************************************************************
  * Copyright © 2007-2008 the VideoLAN team
- * $Id: c17896901168cd4477df1696795a29e3fc8f02ca $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -29,14 +29,9 @@
 #include "components/playlist/panels.hpp"
 #include "components/playlist/selector.hpp"
 #include "components/playlist/playlist.hpp"
-#include "input_manager.hpp" /* art signal */
 
-#include <QSettings>
-#include <QLabel>
-#include <QSpacerItem>
-#include <QCursor>
-#include <QPushButton>
-#include <QVBoxLayout>
+#include "input_manager.hpp" /* art signal */
+#include "main_interface.hpp" /* DropEvent TODO remove this*/
 
 /**********************************************************************
  * Playlist Widget. The embedded playlist
@@ -50,7 +45,7 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i ) : p_intf ( _p_i )
     QSplitter *leftW = new QSplitter( Qt::Vertical, this );
 
     /* Source Selector */
-    selector = new PLSelector( this, p_intf, THEPL );
+    selector = new PLSelector( this, p_intf );
     leftW->addWidget( selector );
 
     /* Create a Container for the Art Label
@@ -62,7 +57,7 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i ) : p_intf ( _p_i )
     artContainer->setMaximumHeight( 128 );
 
     /* Art label */
-    art = new ArtLabel( p_intf );
+    art = new ArtLabel( artContainer, p_intf );
     art->setToolTip( qtr( "Double click to get media information" ) );
 
     artContLay->addWidget( art, 1 );
@@ -93,10 +88,6 @@ PlaylistWidget::PlaylistWidget( intf_thread_t *_p_i ) : p_intf ( _p_i )
              qobject_cast<StandardPLPanel *>( rightPanel ), removeItem( int ) );
 
     emit rootChanged( p_root->i_id );
-
-    /* art */
-    CONNECT( THEMIM->getIM(), artChanged( input_item_t* ) ,
-             art, update( input_item_t* ) );
 
     /* Add the two sides of the QSplitter */
     addWidget( leftW );
@@ -132,13 +123,12 @@ PlaylistWidget::~PlaylistWidget()
     msg_Dbg( p_intf, "Playlist Destroyed" );
 }
 
-#include "main_interface.hpp"
-void PlaylistWidget::dropEvent(QDropEvent *event)
+void PlaylistWidget::dropEvent( QDropEvent *event )
 {
     if( p_intf->p_sys->p_mi )
         p_intf->p_sys->p_mi->dropEventPlay( event, false );
 }
-void PlaylistWidget::dragEnterEvent(QDragEnterEvent *event)
+void PlaylistWidget::dragEnterEvent( QDragEnterEvent *event )
 {
     event->acceptProposedAction();
 }
@@ -147,6 +137,7 @@ void PlaylistWidget::closeEvent( QCloseEvent *event )
 {
     if( THEDP->isDying() )
     {
+        /* FIXME is it needed ? */
         close();
     }
     else
@@ -154,4 +145,5 @@ void PlaylistWidget::closeEvent( QCloseEvent *event )
         if( p_intf->p_sys->p_mi )
             p_intf->p_sys->p_mi->togglePlaylist();
     }
+    event->accept();
 }

@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: a00ad2b43069727aff7a5aefb8ca7ba79016f1fb $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -37,7 +37,8 @@
 #include <vlc_aout.h>
 #include <vlc_sout.h>
 #include <vlc_codec.h>
-#include <vlc_interface.h>
+#include <vlc_dialog.h>
+#include <vlc_avcodec.h>
 
 /* ffmpeg header */
 #define HAVE_MMX 1
@@ -50,8 +51,6 @@
 #endif
 
 #include "avcodec.h"
-#include "chroma.h"
-#include "fourcc.h"
 
 #define HURRY_UP_GUARD1 (450000)
 #define HURRY_UP_GUARD2 (300000)
@@ -72,7 +71,7 @@ struct thread_context_t;
 static void* FfmpegThread( vlc_object_t *p_this );
 static int FfmpegExecute( AVCodecContext *s,
                           int (*pf_func)(AVCodecContext *c2, void *arg2),
-                          void **arg, int *ret, int count );
+                          void *arg, int *ret, int count, int );
 
 /*****************************************************************************
  * thread_context_t : for multithreaded encoding
@@ -225,7 +224,7 @@ int OpenEncoder( vlc_object_t *p_this )
     if( p_enc->fmt_out.i_cat == VIDEO_ES && i_cat != VIDEO_ES )
     {
         msg_Err( p_enc, "\"%s\" is not a video encoder", psz_namecodec );
-        intf_UserFatal( p_enc, false, _("Streaming / Transcoding failed"),
+        dialog_Fatal( p_enc, _("Streaming / Transcoding failed"),
                         _("\"%s\" is no video encoder."), psz_namecodec );
         return VLC_EGENERIC;
     }
@@ -233,7 +232,7 @@ int OpenEncoder( vlc_object_t *p_this )
     if( p_enc->fmt_out.i_cat == AUDIO_ES && i_cat != AUDIO_ES )
     {
         msg_Err( p_enc, "\"%s\" is not an audio encoder", psz_namecodec );
-        intf_UserFatal( p_enc, false, _("Streaming / Transcoding failed"),
+        dialog_Fatal( p_enc, _("Streaming / Transcoding failed"),
                         _("\"%s\" is no audio encoder."), psz_namecodec );
         return VLC_EGENERIC;
     }
@@ -247,9 +246,9 @@ int OpenEncoder( vlc_object_t *p_this )
         msg_Err( p_enc, "cannot find encoder %s\n"
 "*** Your FFMPEG installation is crippled.   ***\n"
 "*** Please check with your FFMPEG packager. ***\n"
-"*** This is NOT a VLC media player issue.   ***\n", psz_namecodec );
+"*** This is NOT a VLC media player issue.   ***", psz_namecodec );
 
-        intf_UserFatal( p_enc, false, _("Streaming / Transcoding failed"), _(
+        dialog_Fatal( p_enc, _("Streaming / Transcoding failed"), _(
 /* I have had enough of all these MPEG-3 transcoding bug reports.
  * Downstream packager, you had better not patch this out, or I will be really
  * annoyed. Think about it - you don't want to fork the VLC translation files,
@@ -265,9 +264,8 @@ int OpenEncoder( vlc_object_t *p_this )
     }
 
     /* Allocate the memory needed to store the encoder's structure */
-    if( ( p_sys = (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
+    if( ( p_sys = calloc( 1, sizeof(encoder_sys_t) ) ) == NULL )
         return VLC_ENOMEM;
-    memset( p_sys, 0, sizeof(encoder_sys_t) );
     p_enc->p_sys = p_sys;
     p_sys->p_codec = p_codec;
 
@@ -430,9 +428,6 @@ int OpenEncoder( vlc_object_t *p_this )
 
         p_context->width = p_enc->fmt_in.video.i_width;
         p_context->height = p_enc->fmt_in.video.i_height;
-        if( p_enc->fmt_out.i_codec == VLC_FOURCC('m', 'p', '2', 'v')
-             && (p_context->width > 720 || p_context->height > 576) )
-            p_context->level = 4; /* High level */
 
         p_context->time_base.num = p_enc->fmt_in.video.i_frame_rate_base;
         p_context->time_base.den = p_enc->fmt_in.video.i_frame_rate;
@@ -620,11 +615,12 @@ int OpenEncoder( vlc_object_t *p_this )
     p_context->extradata = NULL;
     p_context->flags |= CODEC_FLAG_GLOBAL_HEADER;
 
-    vlc_mutex_t *lock = var_AcquireMutex( "avcodec" );
-
-    if( avcodec_open( p_context, p_codec ) )
+    int ret;
+    vlc_avcodec_lock();
+    ret = avcodec_open( p_context, p_codec );
+    vlc_avcodec_unlock();
+    if( ret )
     {
-        vlc_mutex_unlock( lock );
         if( p_enc->fmt_in.i_cat == AUDIO_ES &&
              (p_context->channels > 2 || i_codec_id == CODEC_ID_MP2
                || i_codec_id == CODEC_ID_MP3) )
@@ -674,12 +670,13 @@ int OpenEncoder( vlc_object_t *p_this )
             }
 
             p_context->codec = NULL;
-            vlc_mutex_lock( lock );
-            if( avcodec_open( p_context, p_codec ) )
+            vlc_avcodec_lock();
+            ret = avcodec_open( p_context, p_codec );
+            vlc_avcodec_unlock();
+            if( ret )
             {
-                vlc_mutex_unlock( lock );
                 msg_Err( p_enc, "cannot open encoder" );
-                intf_UserFatal( p_enc, false,
+                dialog_Fatal( p_enc,
                                 _("Streaming / Transcoding failed"),
                                 _("VLC could not open the encoder.") );
                 free( p_sys );
@@ -689,21 +686,46 @@ int OpenEncoder( vlc_object_t *p_this )
         else
         {
             msg_Err( p_enc, "cannot open encoder" );
-            intf_UserFatal( p_enc, false, _("Streaming / Transcoding failed"),
+            dialog_Fatal( p_enc, _("Streaming / Transcoding failed"),
                             _("VLC could not open the encoder.") );
             free( p_sys );
             return VLC_EGENERIC;
         }
     }
-    vlc_mutex_unlock( lock);
 
-    p_enc->fmt_out.i_extra = p_context->extradata_size;
-    if( p_enc->fmt_out.i_extra )
+    if( i_codec_id == CODEC_ID_FLAC )
     {
+        p_enc->fmt_out.i_extra = 4 + 1 + 3 + p_context->extradata_size;
         p_enc->fmt_out.p_extra = malloc( p_enc->fmt_out.i_extra );
-        memcpy( p_enc->fmt_out.p_extra, p_context->extradata,
-                p_enc->fmt_out.i_extra );
+        if( p_enc->fmt_out.p_extra )
+        {
+            uint8_t *p = p_enc->fmt_out.p_extra;
+            p[0] = 0x66;
+            p[1] = 0x4C;
+            p[2] = 0x61;
+            p[3] = 0x43;
+            p[4] = 0x00;
+            p[5] = ( p_context->extradata_size >> 16 ) & 0xff;
+            p[6] = ( p_context->extradata_size >>  8 ) & 0xff;
+            p[7] = ( p_context->extradata_size       ) & 0xff;
+            memcpy( &p[8], p_context->extradata, p_context->extradata_size );
+        }
+        else
+        {
+            p_enc->fmt_out.i_extra = 0;
+        }
     }
+    else
+    {
+        p_enc->fmt_out.i_extra = p_context->extradata_size;
+        if( p_enc->fmt_out.i_extra )
+        {
+            p_enc->fmt_out.p_extra = malloc( p_enc->fmt_out.i_extra );
+            memcpy( p_enc->fmt_out.p_extra, p_context->extradata,
+                    p_enc->fmt_out.i_extra );
+        }
+    }
+
     p_context->flags &= ~CODEC_FLAG_GLOBAL_HEADER;
 
     if( p_enc->fmt_in.i_cat == AUDIO_ES )
@@ -726,6 +748,7 @@ int OpenEncoder( vlc_object_t *p_this )
 static void* FfmpegThread( vlc_object_t *p_this )
 {
     struct thread_context_t *p_context = (struct thread_context_t *)p_this;
+    int canc = vlc_savecancel ();
     while ( vlc_object_alive (p_context) && !p_context->b_error )
     {
         vlc_mutex_lock( &p_context->lock );
@@ -750,30 +773,31 @@ static void* FfmpegThread( vlc_object_t *p_this )
         vlc_mutex_unlock( &p_context->lock );
     }
 
+    vlc_restorecancel (canc);
     return NULL;
 }
 
 static int FfmpegExecute( AVCodecContext *s,
                           int (*pf_func)(AVCodecContext *c2, void *arg2),
-                          void **arg, int *ret, int count )
+                          void *arg, int *ret, int count, int size )
 {
     struct thread_context_t ** pp_contexts =
                          (struct thread_context_t **)s->thread_opaque;
-    int i;
+    void **argv = arg;
 
     /* Note, we can be certain that this is not called with the same
      * AVCodecContext by different threads at the same time */
-    for ( i = 0; i < count; i++ )
+    for ( int i = 0; i < count; i++ )
     {
         vlc_mutex_lock( &pp_contexts[i]->lock );
-        pp_contexts[i]->arg = arg[i];
+        pp_contexts[i]->arg = argv[i];
         pp_contexts[i]->pf_func = pf_func;
         pp_contexts[i]->i_ret = 12345;
         pp_contexts[i]->b_work = 1;
         vlc_cond_signal( &pp_contexts[i]->cond );
         vlc_mutex_unlock( &pp_contexts[i]->lock );
     }
-    for ( i = 0; i < count; i++ )
+    for ( int i = 0; i < count; i++ )
     {
         vlc_mutex_lock( &pp_contexts[i]->lock );
         while ( !pp_contexts[i]->b_done )
@@ -790,6 +814,7 @@ static int FfmpegExecute( AVCodecContext *s,
         }
     }
 
+    (void)size;
     return 0;
 }
 
@@ -818,11 +843,11 @@ static block_t *EncodeVideo( encoder_t *p_enc, picture_t *p_pict )
                                      sizeof(struct thread_context_t) );
             pp_contexts[i]->p_context = p_sys->p_context;
             vlc_mutex_init( &pp_contexts[i]->lock );
-            vlc_cond_init( p_enc, &pp_contexts[i]->cond );
+            vlc_cond_init( &pp_contexts[i]->cond );
             pp_contexts[i]->b_work = 0;
             pp_contexts[i]->b_done = 0;
             if ( vlc_thread_create( pp_contexts[i], "encoder", FfmpegThread,
-                                    VLC_THREAD_PRIORITY_VIDEO, false ) )
+                                    VLC_THREAD_PRIORITY_VIDEO ) )
             {
                 msg_Err( p_enc, "cannot spawn encoder thread, expect to die soon" );
                 return NULL;
@@ -1125,9 +1150,9 @@ void CloseEncoder( vlc_object_t *p_this )
         free( pp_contexts );
     }
 
-    vlc_mutex_t *lock = var_AcquireMutex( "avcodec" );
+    vlc_avcodec_lock();
     avcodec_close( p_sys->p_context );
-    vlc_mutex_unlock( lock );
+    vlc_avcodec_unlock();
     av_free( p_sys->p_context );
 
     free( p_sys->p_buffer );

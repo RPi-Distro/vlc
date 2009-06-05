@@ -2,7 +2,7 @@
  * cdg.c : cdg file demux module for vlc
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: d2fc7899126b5d4acc50a4aabe74f768cb9e717f $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *
@@ -41,15 +41,15 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("CDG demuxer") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_capability( "demux", 3 );
-    set_callbacks( Open, Close );
-    add_shortcut( "cdg" );
-    add_shortcut( "subtitle" );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("CDG demuxer") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_capability( "demux", 3 )
+    set_callbacks( Open, Close )
+    add_shortcut( "cdg" )
+    add_shortcut( "subtitle" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -149,11 +149,14 @@ static void Close ( vlc_object_t * p_this )
  *****************************************************************************/
 static int Control( demux_t *p_demux, int i_query, va_list args )
 {
-    switch( i_query )
-    {
-    default:
-        return demux_vaControlHelper( p_demux->s, 0, -1,
-                                       8*CDG_FRAME_SIZE*CDG_FRAME_RATE, CDG_FRAME_SIZE, i_query, args );
-    }
+    int i_ret = demux_vaControlHelper( p_demux->s, 0, -1,
+                                       8*CDG_FRAME_SIZE*CDG_FRAME_RATE, CDG_FRAME_SIZE,
+                                       i_query, args );
+    if( !i_ret && ( i_query == DEMUX_SET_POSITION || i_query == DEMUX_SET_TIME ) )
+        date_Set( &p_demux->p_sys->pts,
+                  stream_Tell( p_demux->s ) / CDG_FRAME_SIZE *
+                    INT64_C(1000000) / CDG_FRAME_RATE );
+
+    return i_ret;
 }
 

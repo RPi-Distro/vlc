@@ -2,7 +2,7 @@
  * display.c: display stream output module
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: d9dc33a3b2eecc61f1d3e95f4017d5b18dde5ac6 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -50,21 +50,21 @@ static void Close( vlc_object_t * );
 
 #define SOUT_CFG_PREFIX "sout-display-"
 
-vlc_module_begin();
-    set_shortname( N_("Display"));
-    set_description( N_("Display stream output") );
-    set_capability( "sout stream", 50 );
-    add_shortcut( "display" );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_STREAM );
+vlc_module_begin ()
+    set_shortname( N_("Display"))
+    set_description( N_("Display stream output") )
+    set_capability( "sout stream", 50 )
+    add_shortcut( "display" )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_STREAM )
     add_bool( SOUT_CFG_PREFIX "audio", 1, NULL, AUDIO_TEXT,
-              AUDIO_LONGTEXT, true );
+              AUDIO_LONGTEXT, true )
     add_bool( SOUT_CFG_PREFIX "video", 1, NULL, VIDEO_TEXT,
-              VIDEO_LONGTEXT, true );
+              VIDEO_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "delay", 100, NULL, DELAY_TEXT,
-                 DELAY_LONGTEXT, true );
-    set_callbacks( Open, Close );
-vlc_module_end();
+                 DELAY_LONGTEXT, true )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -168,7 +168,7 @@ static sout_stream_id_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
         }
     }
 
-    id->p_dec = input_DecoderNew( p_sys->p_input, p_fmt, true );
+    id->p_dec = input_DecoderNew( p_sys->p_input, p_fmt, NULL, NULL );
     if( id->p_dec == NULL )
     {
         msg_Err( p_stream, "cannot create decoder for fcc=`%4.4s'",
@@ -216,7 +216,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
             else
                 p_buffer->i_pts += p_sys->i_delay;
 
-            input_DecoderDecode( id->p_dec, p_buffer );
+            input_DecoderDecode( id->p_dec, p_buffer, false );
         }
 
         p_buffer = p_next;

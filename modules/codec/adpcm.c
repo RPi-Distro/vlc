@@ -2,7 +2,7 @@
  * adpcm.c : adpcm variant audio decoder
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: c9a9ec2f85cb9fa4176ada714b008bce184da261 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -44,13 +44,13 @@ static void CloseDecoder( vlc_object_t * );
 
 static aout_buffer_t *DecodeBlock( decoder_t *, block_t ** );
 
-vlc_module_begin();
-    set_description( N_("ADPCM audio decoder") );
-    set_capability( "decoder", 50 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
-    set_callbacks( OpenDecoder, CloseDecoder );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("ADPCM audio decoder") )
+    set_capability( "decoder", 50 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
+    set_callbacks( OpenDecoder, CloseDecoder )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -246,6 +246,7 @@ static int OpenDecoder( vlc_object_t *p_this )
              p_dec->fmt_in.audio.i_bitspersample, p_sys->i_block,
              p_sys->i_samplesperblock );
 
+    p_dec->fmt_out.i_cat = AUDIO_ES;
     p_dec->fmt_out.i_codec = AOUT_FMT_S16_NE;
     p_dec->fmt_out.audio.i_rate = p_dec->fmt_in.audio.i_rate;
     p_dec->fmt_out.audio.i_channels = p_dec->fmt_in.audio.i_channels;
@@ -292,7 +293,7 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     {
         aout_buffer_t *p_out;
 
-        p_out = p_dec->pf_aout_buffer_new( p_dec, p_sys->i_samplesperblock );
+        p_out = decoder_NewAudioBuffer( p_dec, p_sys->i_samplesperblock );
         if( p_out == NULL )
         {
             block_Release( p_block );

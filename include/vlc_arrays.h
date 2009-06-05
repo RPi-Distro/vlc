@@ -2,7 +2,7 @@
  * vlc_arrays.h : Arrays and data structures handling
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 79e7722507463c5c4ad8104693381d9b7120f3fc $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -19,7 +19,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA. *****************************************************************************/
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ *****************************************************************************/
 
 #ifndef VLC_ARRAYS_H_
 #define VLC_ARRAYS_H_
@@ -188,33 +189,33 @@
 
 /* Internal functions */
 #define _ARRAY_ALLOC(array, newsize) {                                      \
-    array.i_alloc = newsize;                                                \
-    array.p_elems = VLCCVP realloc( array.p_elems, array.i_alloc *          \
-                                    sizeof(*array.p_elems) );               \
+    (array).i_alloc = newsize;                                              \
+    (array).p_elems = VLCCVP realloc( (array).p_elems, (array).i_alloc *    \
+                                    sizeof(*(array).p_elems) );             \
 }
 
 #define _ARRAY_GROW1(array) {                                               \
-    if( array.i_alloc < 10 )                                                \
+    if( (array).i_alloc < 10 )                                              \
         _ARRAY_ALLOC(array, 10 )                                            \
-    else if( array.i_alloc == array.i_size )                                \
+    else if( (array).i_alloc == (array).i_size )                            \
         _ARRAY_ALLOC(array, (int)(array.i_alloc * 1.5) )                    \
 }
 
 #define _ARRAY_GROW(array,additional) {                                     \
-     int i_first = array.i_alloc;                                           \
-     while( array.i_alloc - i_first < additional )                          \
+     int i_first = (array).i_alloc;                                         \
+     while( (array).i_alloc - i_first < additional )                        \
      {                                                                      \
-         if( array.i_alloc < 10 )                                           \
+         if( (array).i_alloc < 10 )                                         \
             _ARRAY_ALLOC(array, 10 )                                        \
-        else if( array.i_alloc == array.i_size )                            \
-            _ARRAY_ALLOC(array, (int)(array.i_alloc * 1.5) )                \
+        else if( (array).i_alloc == (array).i_size )                        \
+            _ARRAY_ALLOC(array, (int)((array).i_alloc * 1.5) )              \
         else break;                                                         \
      }                                                                      \
 }
 
 #define _ARRAY_SHRINK(array) {                                              \
-    if( array.i_size > 10 && array.i_size < (int)(array.i_alloc / 1.5) ) {  \
-        _ARRAY_ALLOC(array, array.i_size + 5);                              \
+    if( (array).i_size > 10 && (array).i_size < (int)((array).i_alloc / 1.5) ) {  \
+        _ARRAY_ALLOC(array, (array).i_size + 5);                            \
     }                                                                       \
 }
 
@@ -230,51 +231,58 @@
 #define TYPEDEF_ARRAY(type, name) typedef DECL_ARRAY(type) name;
 
 #define ARRAY_INIT(array)                                                   \
-    array.i_alloc = 0;                                                      \
-    array.i_size = 0;                                                       \
-    array.p_elems = NULL;
+  do {                                                                      \
+    (array).i_alloc = 0;                                                    \
+    (array).i_size = 0;                                                     \
+    (array).p_elems = NULL;                                                 \
+  } while(0)
 
 #define ARRAY_RESET(array)                                                  \
-    array.i_alloc = 0;                                                      \
-    array.i_size = 0;                                                       \
-    free( array.p_elems ); array.p_elems = NULL;
+  do {                                                                      \
+    (array).i_alloc = 0;                                                    \
+    (array).i_size = 0;                                                     \
+    free( (array).p_elems ); (array).p_elems = NULL;                        \
+  } while(0)
 
-#define ARRAY_APPEND(array, elem) {                                         \
+#define ARRAY_APPEND(array, elem)                                           \
+  do {                                                                      \
     _ARRAY_GROW1(array);                                                    \
-    array.p_elems[array.i_size] = elem;                                     \
-    array.i_size++;                                                         \
-}
+    (array).p_elems[(array).i_size] = elem;                                 \
+    (array).i_size++;                                                       \
+  } while(0)
 
-#define ARRAY_INSERT(array,elem,pos) {                                      \
+#define ARRAY_INSERT(array,elem,pos)                                        \
+  do {                                                                      \
     _ARRAY_GROW1(array);                                                    \
-    if( array.i_size - pos ) {                                              \
-        memmove( array.p_elems + pos + 1, array.p_elems + pos,              \
-                 (array.i_size-pos) * sizeof(*array.p_elems) );             \
+    if( (array).i_size - pos ) {                                            \
+        memmove( (array).p_elems + pos + 1, (array).p_elems + pos,          \
+                 ((array).i_size-pos) * sizeof(*(array).p_elems) );         \
     }                                                                       \
-    array.p_elems[pos] = elem;                                              \
-    array.i_size++;                                                         \
-}
+    (array).p_elems[pos] = elem;                                            \
+    (array).i_size++;                                                       \
+  } while(0)
 
-#define ARRAY_REMOVE(array,pos) {                                           \
-    if( array.i_size - (pos) - 1 )                                          \
+#define ARRAY_REMOVE(array,pos)                                             \
+  do {                                                                      \
+    if( (array).i_size - (pos) - 1 )                                        \
     {                                                                       \
-        memmove( array.p_elems + pos, array.p_elems + pos + 1,              \
-                 ( array.i_size - pos - 1 ) *sizeof(*array.p_elems) );      \
+        memmove( (array).p_elems + pos, (array).p_elems + pos + 1,          \
+                 ( (array).i_size - pos - 1 ) *sizeof(*(array).p_elems) );  \
     }                                                                       \
-    array.i_size--;                                                         \
+    (array).i_size--;                                                       \
     _ARRAY_SHRINK(array);                                                   \
-}
+  } while(0)
 
 #define ARRAY_VAL(array, pos) array.p_elems[pos]
 
 #define ARRAY_BSEARCH(array, elem, zetype, key, answer) \
-    BSEARCH( array.p_elems, array.i_size, elem, zetype, key, answer)
+    BSEARCH( (array).p_elems, (array).i_size, elem, zetype, key, answer)
 
 #define FOREACH_ARRAY( item, array ) { \
     int fe_idx; \
-    for( fe_idx = 0 ; fe_idx < array.i_size ; fe_idx++ ) \
+    for( fe_idx = 0 ; fe_idx < (array).i_size ; fe_idx++ ) \
     { \
-        item = array.p_elems[fe_idx];
+        item = (array).p_elems[fe_idx];
 
 #define FOREACH_END() } }
 
@@ -397,45 +405,49 @@ static inline uint64_t DictHash( const char *psz_string, int hashsize )
     return i_hash % hashsize;
 }
 
-struct vlc_dictionary_entry_t
+typedef struct vlc_dictionary_entry_t
 {
     char *   psz_key;
     void *   p_value;
     struct vlc_dictionary_entry_t * p_next;
-};
+} vlc_dictionary_entry_t;
 
 typedef struct vlc_dictionary_t
 {
     int i_size;
-    struct vlc_dictionary_entry_t ** p_entries;
+    vlc_dictionary_entry_t ** p_entries;
 } vlc_dictionary_t;
 
 static void * const kVLCDictionaryNotFound = NULL;
 
 static inline void vlc_dictionary_init( vlc_dictionary_t * p_dict, int i_size )
 {
+    p_dict->p_entries = NULL;
+
     if( i_size > 0 )
     {
-        p_dict->p_entries = (struct vlc_dictionary_entry_t **)malloc(sizeof(struct vlc_dictionary_entry_t *) * i_size);
-        memset( p_dict->p_entries, 0, sizeof(struct vlc_dictionary_entry_t *) * i_size );
+        p_dict->p_entries = (vlc_dictionary_entry_t **)calloc( i_size, sizeof(*p_dict->p_entries) );
+        if( !p_dict->p_entries )
+            i_size = 0;
     }
-    else
-        p_dict->p_entries = NULL;
     p_dict->i_size = i_size;
 }
 
-static inline void vlc_dictionary_clear( vlc_dictionary_t * p_dict )
+static inline void vlc_dictionary_clear( vlc_dictionary_t * p_dict,
+                                         void ( * pf_free )( void * p_data, void * p_obj ),
+                                         void * p_obj )
 {
-    int i;
-    struct vlc_dictionary_entry_t * p_current, * p_next;
     if( p_dict->p_entries )
     {
-        for( i = 0; i < p_dict->i_size; i++ )
+        for( int i = 0; i < p_dict->i_size; i++ )
         {
+            vlc_dictionary_entry_t * p_current, * p_next;
             p_current = p_dict->p_entries[i];
             while( p_current )
             {
                 p_next = p_current->p_next;
+                if( pf_free != NULL )
+                    ( * pf_free )( p_current->p_value, p_obj );
                 free( p_current->psz_key );
                 free( p_current );
                 p_current = p_next;
@@ -456,7 +468,7 @@ vlc_dictionary_value_for_key( const vlc_dictionary_t * p_dict, const char * psz_
         return kVLCDictionaryNotFound;
 
     int i_pos = DictHash( psz_key, p_dict->i_size );
-    struct vlc_dictionary_entry_t * p_entry = p_dict->p_entries[i_pos];
+    vlc_dictionary_entry_t * p_entry = p_dict->p_entries[i_pos];
 
     if( !p_entry )
         return kVLCDictionaryNotFound;
@@ -474,7 +486,7 @@ vlc_dictionary_value_for_key( const vlc_dictionary_t * p_dict, const char * psz_
 static inline int
 vlc_dictionary_keys_count( const vlc_dictionary_t * p_dict )
 {
-    struct vlc_dictionary_entry_t * p_entry;
+    vlc_dictionary_entry_t * p_entry;
     int i, count = 0;
 
     if( !p_dict->p_entries )
@@ -490,7 +502,7 @@ vlc_dictionary_keys_count( const vlc_dictionary_t * p_dict )
 static inline char **
 vlc_dictionary_all_keys( const vlc_dictionary_t * p_dict )
 {
-    struct vlc_dictionary_entry_t * p_entry;
+    vlc_dictionary_entry_t * p_entry;
     char ** ppsz_ret;
     int i, count = vlc_dictionary_keys_count( p_dict );
 
@@ -514,9 +526,9 @@ __vlc_dictionary_insert( vlc_dictionary_t * p_dict, const char * psz_key,
         vlc_dictionary_init( p_dict, 1 );
 
     int i_pos = DictHash( psz_key, p_dict->i_size );
-    struct vlc_dictionary_entry_t * p_entry;
+    vlc_dictionary_entry_t * p_entry;
 
-    p_entry = (struct vlc_dictionary_entry_t *)malloc(sizeof(struct vlc_dictionary_entry_t));
+    p_entry = (vlc_dictionary_entry_t *)malloc(sizeof(*p_entry));
     p_entry->psz_key = strdup( psz_key );
     p_entry->p_value = p_value;
     p_entry->p_next = p_dict->p_entries[i_pos];
@@ -525,7 +537,8 @@ __vlc_dictionary_insert( vlc_dictionary_t * p_dict, const char * psz_key,
     {
         /* Count how many items there was */
         int count;
-        for( count = 1; p_entry->p_next; count++ ) p_entry = p_entry->p_next;
+        for( count = 1; p_entry->p_next; count++ )
+            p_entry = p_entry->p_next;
         if( count > 3 ) /* XXX: this need tuning */
         {
             /* Here it starts to be not good, rebuild a bigger dictionary */
@@ -540,12 +553,12 @@ __vlc_dictionary_insert( vlc_dictionary_t * p_dict, const char * psz_key,
                 {
                     __vlc_dictionary_insert( &new_dict, p_entry->psz_key,
                                              p_entry->p_value,
-                                             0 /* To avoid multiple rebuild loop */);
+                                             false /* To avoid multiple rebuild loop */);
                     p_entry = p_entry->p_next;
                 }
             }
 
-            vlc_dictionary_clear( p_dict );
+            vlc_dictionary_clear( p_dict, NULL, NULL );
             p_dict->i_size = new_dict.i_size;
             p_dict->p_entries = new_dict.p_entries;
         }
@@ -555,18 +568,20 @@ __vlc_dictionary_insert( vlc_dictionary_t * p_dict, const char * psz_key,
 static inline void
 vlc_dictionary_insert( vlc_dictionary_t * p_dict, const char * psz_key, void * p_value )
 {
-    __vlc_dictionary_insert( p_dict, psz_key, p_value, 1 );
+    __vlc_dictionary_insert( p_dict, psz_key, p_value, true );
 }
 
 static inline void
-vlc_dictionary_remove_value_for_key( const vlc_dictionary_t * p_dict, const char * psz_key )
+vlc_dictionary_remove_value_for_key( const vlc_dictionary_t * p_dict, const char * psz_key,
+                                     void ( * pf_free )( void * p_data, void * p_obj ),
+                                     void * p_obj )
 {
     if( !p_dict->p_entries )
         return;
 
     int i_pos = DictHash( psz_key, p_dict->i_size );
-    struct vlc_dictionary_entry_t * p_entry = p_dict->p_entries[i_pos];
-    struct vlc_dictionary_entry_t * p_prev;
+    vlc_dictionary_entry_t * p_entry = p_dict->p_entries[i_pos];
+    vlc_dictionary_entry_t * p_prev;
 
     if( !p_entry )
         return; /* Not found, nothing to do */
@@ -576,6 +591,8 @@ vlc_dictionary_remove_value_for_key( const vlc_dictionary_t * p_dict, const char
     do {
         if( !strcmp( psz_key, p_entry->psz_key ) )
         {
+            if( pf_free != NULL )
+                ( * pf_free )( p_entry->p_value, p_obj );
             if( !p_prev )
                 p_dict->p_entries[i_pos] = p_entry->p_next;
             else

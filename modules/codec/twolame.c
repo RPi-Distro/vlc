@@ -3,7 +3,7 @@
  *            (using libtwolame from http://users.tpg.com.au/adslblvi/)
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 0f300efb7273cb010d3e588937544395a59c80be $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -71,24 +71,24 @@ static const char *const ppsz_stereo_descriptions[] =
 { N_("Stereo"), N_("Dual mono"), N_("Joint stereo") };
 
 
-vlc_module_begin();
-    set_shortname( "Twolame");
-    set_description( N_("Libtwolame audio encoder") );
-    set_capability( "encoder", 50 );
-    set_callbacks( OpenEncoder, CloseEncoder );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
+vlc_module_begin ()
+    set_shortname( "Twolame")
+    set_description( N_("Libtwolame audio encoder") )
+    set_capability( "encoder", 50 )
+    set_callbacks( OpenEncoder, CloseEncoder )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
 
     add_float( ENC_CFG_PREFIX "quality", 0.0, NULL, ENC_QUALITY_TEXT,
-               ENC_QUALITY_LONGTEXT, false );
+               ENC_QUALITY_LONGTEXT, false )
     add_integer( ENC_CFG_PREFIX "mode", 0, NULL, ENC_MODE_TEXT,
-                 ENC_MODE_LONGTEXT, false );
+                 ENC_MODE_LONGTEXT, false )
         change_integer_list( pi_stereo_values, ppsz_stereo_descriptions, NULL );
     add_bool( ENC_CFG_PREFIX "vbr", 0, NULL, ENC_VBR_TEXT,
-              ENC_VBR_LONGTEXT, false );
+              ENC_VBR_LONGTEXT, false )
     add_integer( ENC_CFG_PREFIX "psy", 3, NULL, ENC_PSY_TEXT,
-                 ENC_PSY_LONGTEXT, false );
-vlc_module_end();
+                 ENC_PSY_LONGTEXT, false )
+vlc_module_end ()
 
 static const char *const ppsz_enc_options[] = {
     "quality", "mode", "vbr", "psy", NULL
@@ -165,6 +165,8 @@ static int OpenEncoder( vlc_object_t *p_this )
 
     p_enc->pf_encode_audio = Encode;
     p_enc->fmt_in.i_codec = AOUT_FMT_S16_NE;
+
+    p_enc->fmt_out.i_cat = AUDIO_ES;
     p_enc->fmt_out.i_codec = VLC_FOURCC('m','p','g','a');
 
     config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );

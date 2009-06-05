@@ -2,7 +2,7 @@
  * i420_ymga.c : YUV to YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 2859f92425e626471129976833847d0f78cd019e $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -49,17 +49,17 @@ static picture_t *I420_YMGA_Filter( filter_t *, picture_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
+vlc_module_begin ()
 #if defined (MODULE_NAME_IS_i420_ymga)
-    set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) );
-    set_capability( "video filter2", 80 );
+    set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) )
+    set_capability( "video filter2", 80 )
 #elif defined (MODULE_NAME_IS_i420_ymga_mmx)
-    set_description( N_("MMX conversions from " SRC_FOURCC " to " DEST_FOURCC) );
-    set_capability( "video filter2", 100 );
-    add_requirement( MMX );
+    set_description( N_("MMX conversions from " SRC_FOURCC " to " DEST_FOURCC) )
+    set_capability( "video filter2", 100 )
+    add_requirement( MMX )
 #endif
-    set_callbacks( Activate, NULL );
-vlc_module_end();
+    set_callbacks( Activate, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Activate: allocate a chroma function

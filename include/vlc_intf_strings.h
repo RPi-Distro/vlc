@@ -2,7 +2,7 @@
  * vlc_intf_strings.h : Strings for main interfaces
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c709a6619ac654051f7d0f81ddbc2830d52b2f06 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -39,15 +39,14 @@
 
 /******************* Menus *****************/
 
-#define I_MENU_INFO  N_("Media &Information...")
-#define I_MENU_CODECINFO  N_("&Codec Information...")
-#define I_MENU_MSG   N_("&Messages...")
-#define I_MENU_EXT   N_("&Extended Settings...")
-#define I_MENU_GOTOTIME N_("Go to Specific &Time...")
-#define I_MENU_BOOKMARK N_("&Bookmarks...")
-#define I_MENU_VLM N_("&VLM Configuration...")
+#define I_MENU_INFO  N_("Media &Information")
+#define I_MENU_CODECINFO  N_("&Codec Information")
+#define I_MENU_MSG   N_("&Messages")
+#define I_MENU_GOTOTIME N_("Jump to Specific &Time")
+#define I_MENU_BOOKMARK N_("&Bookmarks")
+#define I_MENU_VLM N_("&VLM Configuration")
 
-#define I_MENU_ABOUT N_("&About...")
+#define I_MENU_ABOUT N_("&About")
 
 /* Playlist popup */
 #define I_POP_PLAY N_("Play")
@@ -77,12 +76,12 @@
 #define I_PL_ADDDIR     N_("Add directory...")
 
 #define I_PL_SAVE       N_("Save Playlist to &File...")
-#define I_PL_LOAD       N_("&Load Playlist File...")
+#define I_PL_LOAD       N_("Open Play&list...")
 
 #define I_PL_SEARCH     N_("Search")
 #define I_PL_FILTER     N_("Search Filter")
 
-#define I_PL_SD         N_("Additional &Sources")
+#define I_PL_SD         N_("&Services Discovery" )
 
 /*************** Preferences *************/
 
@@ -127,8 +126,8 @@
             "<p>If you are unsure about terminology, please consult the <a href=\"http://wiki.videolan.org/Knowledge_Base\">knowledge base</a>.</p>" \
             "<p>To understand the main keyboard shortcuts, read the <a href=\"http://wiki.videolan.org/Hotkeys\">shortcuts</a> page.</p>" \
         "<h3>Help</h3>" \
-            "<p>Before asking any question, please refer yourself to the <a href=\"http://wiki.videolan.org/Frequently_Asked_Questions\">FAQ</a>.</p>" \
-            "<p>You might then get (and give) help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC channel ( <a href=\"http://www.videolan.org/webirc/\"><em>#videolan</em></a> on irc.freenode.net ).</p>" \
+            "<p>Before asking any question, please refer yourself to the <a href=\"http://www.videolan.org/support/faq.html\">FAQ</a>.</p>" \
+            "<p>You might then get (and give) help on the <a href=\"http://forum.videolan.org\">Forums</a>, the <a href=\"http://www.videolan.org/vlc/lists.html\">mailing-lists</a> or our IRC channel (<em>#videolan</em> on irc.freenode.net).</p>" \
         "<h3>Contribute to the project</h3>" \
             "<p>You can help the VideoLAN project giving some of your time to help the community, to design skins, to translate the documentation, to test and to code. You can also give funds and material to help us. And of course, you can <b>promote</b> VLC media player.</p>" \
     "</body></html>")

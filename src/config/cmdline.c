@@ -2,7 +2,7 @@
  * cmdline.c: command line parsing
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 961b2a343a2b450dec3a05c36463900423b678c6 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -27,7 +27,8 @@
 
 #include <vlc_common.h>
 #include "../libvlc.h"
-#include "vlc_keys.h"
+#include <vlc_keys.h>
+#include <vlc_charset.h>
 
 #ifdef HAVE_GETOPT_LONG
 #   ifdef HAVE_GETOPT_H
@@ -57,9 +58,7 @@ int __config_LoadCmdLine( vlc_object_t *p_this, int *pi_argc,
 {
     int i_cmd, i_index, i_opts, i_shortopts, flag, i_verbose = 0;
     module_t *p_parser;
-    vlc_list_t *p_list;
     struct option *p_longopts;
-    int i_modules_index;
     const char **argv_copy = NULL;
 
     /* Short options */
@@ -85,29 +84,23 @@ int __config_LoadCmdLine( vlc_object_t *p_this, int *pi_argc,
 #endif
 
     /* List all modules */
-    p_list = vlc_list_find( p_this, VLC_OBJECT_MODULE, FIND_ANYWHERE );
+    module_t **list = module_list_get (NULL);
 
     /*
      * Generate the longopts and shortopts structures used by getopt_long
      */
 
     i_opts = 0;
-    for( i_modules_index = 0; i_modules_index < p_list->i_count;
-         i_modules_index++ )
-    {
-        p_parser = (module_t *)p_list->p_values[i_modules_index].p_object ;
-
+    for (size_t i = 0; (p_parser = list[i]) != NULL; i++)
         /* count the number of exported configuration options (to allocate
          * longopts). We also need to allocate space for two options when
          * dealing with boolean to allow for --foo and --no-foo */
-        i_opts += p_parser->i_config_items
-                     + 2 * p_parser->i_bool_items;
-    }
+        i_opts += p_parser->i_config_items + 2 * p_parser->i_bool_items;
 
     p_longopts = malloc( sizeof(struct option) * (i_opts + 1) );
     if( p_longopts == NULL )
     {
-        vlc_list_release( p_list );
+        module_list_free (list);
         return -1;
     }
 
@@ -115,7 +108,7 @@ int __config_LoadCmdLine( vlc_object_t *p_this, int *pi_argc,
     if( psz_shortopts == NULL )
     {
         free( p_longopts );
-        vlc_list_release( p_list );
+        module_list_free (list);
         return -1;
     }
 
@@ -129,7 +122,7 @@ int __config_LoadCmdLine( vlc_object_t *p_this, int *pi_argc,
         {
             free( psz_shortopts );
             free( p_longopts );
-            vlc_list_release( p_list );
+            module_list_free (list);
             return -1;
         }
         memcpy( argv_copy, ppsz_argv, *pi_argc * sizeof(char *) );
@@ -144,11 +137,9 @@ int __config_LoadCmdLine( vlc_object_t *p_this, int *pi_argc,
 
     /* Fill the p_longopts and psz_shortopts structures */
     i_index = 0;
-    for( i_modules_index = 0; i_modules_index < p_list->i_count;
-         i_modules_index++ )
+    for (size_t i = 0; (p_parser = list[i]) != NULL; i++)
     {
         module_config_t *p_item, *p_end;
-        p_parser = (module_t *)p_list->p_values[i_modules_index].p_object ;
 
         if( !p_parser->i_config_items )
             continue;
@@ -226,7 +217,7 @@ int __config_LoadCmdLine( vlc_object_t *p_this, int *pi_argc,
     }
 
     /* We don't need the module list anymore */
-    vlc_list_release( p_list );
+    module_list_free( list );
 
     /* Close the longopts and shortopts structures */
     memset( &p_longopts[i_index], 0, sizeof(struct option) );
@@ -282,15 +273,14 @@ int __config_LoadCmdLine( vlc_object_t *p_this, int *pi_argc,
 
                     psz_name = p_conf->psz_name;
                 }
-
-               if( p_conf->i_type != CONFIG_ITEM_BOOL && !optarg )
-               {
-                   fprintf( stderr, "Warning: missing argument for option --%s\n", p_conf->psz_name );
-                   fprintf( stderr, "Try specifying options as '--optionname=value' instead of '--optionname value'\n" );
-                   continue;
-               }
-
-
+#ifdef __APPLE__
+                if( p_conf->i_type != CONFIG_ITEM_BOOL && !optarg )
+                {
+                    fprintf( stderr, "Warning: missing argument for option --%s\n", p_conf->psz_name );
+                    fprintf( stderr, "Try specifying options as '--optionname=value' instead of '--optionname value'\n" );
+                    continue;
+                }
+#endif
                 switch( p_conf->i_type )
                 {
                     case CONFIG_ITEM_STRING:
@@ -307,7 +297,7 @@ int __config_LoadCmdLine( vlc_object_t *p_this, int *pi_argc,
                         config_PutInt( p_this, psz_name, strtol(optarg, 0, 0));
                         break;
                     case CONFIG_ITEM_FLOAT:
-                        config_PutFloat( p_this, psz_name, (float)atof(optarg) );
+                        config_PutFloat( p_this, psz_name, us_atof(optarg) );
                         break;
                     case CONFIG_ITEM_KEY:
                         config_PutInt( p_this, psz_name, ConfigStringToKey( optarg ) );

@@ -9,6 +9,9 @@
 /* Maximum supported data alignment */
 #undef ATTRIBUTE_ALIGNED_MAX
 
+/* Define if you're using Maemo interfaces */
+#undef BUILD_MAEMO
+
 /* "Define if struct caca_event is opaque and must not be accessed directly"
    */
 #undef CACA_EVENT_OPAQUE
@@ -51,6 +54,9 @@
 /* Define to 1 if using `alloca.c'. */
 #undef C_ALLOCA
 
+/* Disables runtime check for buggy glibc. */
+#undef DISABLE_BUGGY_GLIBC_CHECK
+
 /* Binary specific version */
 #undef DISTRO_VERSION
 
@@ -83,9 +89,6 @@
    */
 #undef HAVE_ALLOCA_H
 
-/* Define if ALSA is present. */
-#undef HAVE_ALSA
-
 /* Define if ALSA is at least rc4 */
 #undef HAVE_ALSA_NEW_API
 
@@ -99,6 +102,9 @@
 /* Define to 1 if you have the <arpa/inet.h> header file. */
 #undef HAVE_ARPA_INET_H
 
+/* Define to 1 if you have the <asm/arch-omap/omapfb.h> header file. */
+#undef HAVE_ASM_ARCH_OMAP_OMAPFB_H
+
 /* Define to 1 if you have the `asprintf' function. */
 #undef HAVE_ASPRINTF
 
@@ -111,17 +117,11 @@
 /* Support for __attribute__((packed)) for structs */
 #undef HAVE_ATTRIBUTE_PACKED
 
-/* Define if you have avahi-client 0.6 or greater */
-#undef HAVE_AVAHI_06
-
-/* Define if you have the avahi-client library */
+/* Define to 1 if you have libavahi-client */
 #undef HAVE_AVAHI_CLIENT
 
 /* Define to 1 if you have the `backtrace' function. */
 #undef HAVE_BACKTRACE
-
-/* Define to 1 if you have the `bsearch' function. */
-#undef HAVE_BSEARCH
 
 /* Define to 1 if you have the <Carbon/Carbon.h> header file. */
 #undef HAVE_CARBON_CARBON_H
@@ -223,14 +223,11 @@
 /* Define to 1 if you have the <dvdread/dvd_reader.h> header file. */
 #undef HAVE_DVDREAD_DVD_READER_H
 
-/* Define if we have support for dynamic plugins */
+/* Define if dynamic plugins are supported */
 #undef HAVE_DYNAMIC_PLUGINS
 
 /* Define to 1 if you have the <ebml/EbmlVersion.h> header file. */
 #undef HAVE_EBML_EBMLVERSION_H
-
-/* Define to 1 if you have the <errno.h> header file. */
-#undef HAVE_ERRNO_H
 
 /* Define to 1 if you have the <execinfo.h> header file. */
 #undef HAVE_EXECINFO_H
@@ -243,6 +240,9 @@
 
 /* Define to 1 if you have the <fcntl.h> header file. */
 #undef HAVE_FCNTL_H
+
+/* Define to 1 if you have the `fdatasync' function. */
+#undef HAVE_FDATASYNC
 
 /* Define to 1 if you have the <ffmpeg/avcodec.h> header file. */
 #undef HAVE_FFMPEG_AVCODEC_H
@@ -271,11 +271,11 @@
 /* Define to 1 if you have the `getaddrinfo' function. */
 #undef HAVE_GETADDRINFO
 
+/* Define to 1 if you have the `getcwd' function. */
+#undef HAVE_GETCWD
+
 /* Define to 1 if you have the `getenv' function. */
 #undef HAVE_GETENV
-
-/* Define to 1 if you have the `gethostbyname' function. */
-#undef HAVE_GETHOSTBYNAME
 
 /* Define to 1 if you have the `getnameinfo' function. */
 #undef HAVE_GETNAMEINFO
@@ -355,12 +355,6 @@
 /* Define to 1 if you have the <kate/kate.h> header file. */
 #undef HAVE_KATE_KATE_H
 
-/* Define to 1 if you have the <kernel/OS.h> header file. */
-#undef HAVE_KERNEL_OS_H
-
-/* Define to 1 if you have the <kernel/scheduler.h> header file. */
-#undef HAVE_KERNEL_SCHEDULER_H
-
 /* Define if you have <langinfo.h> and nl_langinfo(CODESET). */
 #undef HAVE_LANGINFO_CODESET
 
@@ -411,6 +405,9 @@
 
 /* Define to 1 if you have the <libpostproc/postproc.h> header file. */
 #undef HAVE_LIBPOSTPROC_POSTPROC_H
+
+/* Define if libproxy is available */
+#undef HAVE_LIBPROXY
 
 /* Define to 1 if you have the <libraw1394/raw1394.h> header file. */
 #undef HAVE_LIBRAW1394_RAW1394_H
@@ -484,9 +481,6 @@
 /* Define to 1 if you have the <machine/param.h> header file. */
 #undef HAVE_MACHINE_PARAM_H
 
-/* Define to 1 if you have the <machine/soundcard.h> header file. */
-#undef HAVE_MACHINE_SOUNDCARD_H
-
 /* Define to 1 if you have the <mach-o/dyld.h> header file. */
 #undef HAVE_MACH_O_DYLD_H
 
@@ -541,6 +535,9 @@
 /* Define to 1 if you have the <npapi.h> header file. */
 #undef HAVE_NPAPI_H
 
+/* Define to 1 if you have the <npfunctions.h> header file. */
+#undef HAVE_NPFUNCTIONS_H
+
 /* Define to 1 if you have the <npruntime.h> header file. */
 #undef HAVE_NPRUNTIME_H
 
@@ -583,9 +580,6 @@
 /* Define to 1 if you have the <postproc/postprocess.h> header file. */
 #undef HAVE_POSTPROC_POSTPROCESS_H
 
-/* Define to 1 if you have the <proxy.h> header file. */
-#undef HAVE_PROXY_H
-
 /* Define to 1 if you have the <pthread.h> header file. */
 #undef HAVE_PTHREAD_H
 
@@ -604,8 +598,8 @@
 /* Define to 1 if you have the <QuickTime/QuickTime.h> header file. */
 #undef HAVE_QUICKTIME_QUICKTIME_H
 
-/* Define to 1 if you have the `scandir' function. */
-#undef HAVE_SCANDIR
+/* Define to 1 if you have the `rewind' function. */
+#undef HAVE_REWIND
 
 /* For NetBSD VCD support */
 #undef HAVE_SCSIREQ_IN_SYS_SCSIIO_H
@@ -628,9 +622,6 @@
 /* Define if you have the libshout library */
 #undef HAVE_SHOUT
 
-/* Define to 1 if you have the <signal.h> header file. */
-#undef HAVE_SIGNAL_H
-
 /* Define to 1 if you have the `sigrelse' function. */
 #undef HAVE_SIGRELSE
 
@@ -642,9 +633,6 @@
 
 /* Define to 1 if SSE2 intrinsics are available. */
 #undef HAVE_SSE2_INTRINSICS
-
-/* Define to 1 if you have the <stdbool.h> header file. */
-#undef HAVE_STDBOOL_H
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #undef HAVE_STDINT_H
@@ -670,9 +658,6 @@
 /* Define to 1 if you have the <string.h> header file. */
 #undef HAVE_STRING_H
 
-/* Define to 1 if you have the `stristr' function. */
-#undef HAVE_STRISTR
-
 /* Define to 1 if you have the `strlcpy' function. */
 #undef HAVE_STRLCPY
 
@@ -691,20 +676,11 @@
 /* Define to 1 if you have the `strsep' function. */
 #undef HAVE_STRSEP
 
-/* Define to 1 if you have the `strtod' function. */
-#undef HAVE_STRTOD
-
 /* Define to 1 if you have the `strtof' function. */
 #undef HAVE_STRTOF
 
-/* Define to 1 if you have the `strtol' function. */
-#undef HAVE_STRTOL
-
 /* Define to 1 if you have the `strtoll' function. */
 #undef HAVE_STRTOLL
-
-/* Define to 1 if you have the `strtoull' function. */
-#undef HAVE_STRTOULL
 
 /* Define to 1 if the system has the type `struct addrinfo'. */
 #undef HAVE_STRUCT_ADDRINFO
@@ -724,17 +700,14 @@
 /* Define to 1 if you have the <sys/dl.h> header file. */
 #undef HAVE_SYS_DL_H
 
-/* Define to 1 if you have the <sys/int_types.h> header file. */
-#undef HAVE_SYS_INT_TYPES_H
+/* Define to 1 if you have the <sys/eventfd.h> header file. */
+#undef HAVE_SYS_EVENTFD_H
 
 /* Define to 1 if you have the <sys/ioctl.h> header file. */
 #undef HAVE_SYS_IOCTL_H
 
 /* Define to 1 if you have the <sys/shm.h> header file. */
 #undef HAVE_SYS_SHM_H
-
-/* Define to 1 if you have the <sys/sockio.h> header file. */
-#undef HAVE_SYS_SOCKIO_H
 
 /* Define to 1 if you have the <sys/soundcard.h> header file. */
 #undef HAVE_SYS_SOUNDCARD_H
@@ -757,8 +730,8 @@
 /* Define to 1 if you have the <theora/theora.h> header file. */
 #undef HAVE_THEORA_THEORA_H
 
-/* Define to 1 if you have the <time.h> header file. */
-#undef HAVE_TIME_H
+/* Define if libtiger is available. */
+#undef HAVE_TIGER
 
 /* Define to 1 if you have the <tremor/ivorbiscodec.h> header file. */
 #undef HAVE_TREMOR_IVORBISCODEC_H
@@ -769,8 +742,14 @@
 /* Define to 1 if you have the <unistd.h> header file. */
 #undef HAVE_UNISTD_H
 
+/* Define to 1 if you have the <unzip.h> header file. */
+#undef HAVE_UNZIP_H
+
 /* Define to 1 if you have the `uselocale' function. */
 #undef HAVE_USELOCALE
+
+/* Define to 1 if you have the <valgrind/valgrind.h> header file. */
+#undef HAVE_VALGRIND_VALGRIND_H
 
 /* Define to 1 if you have the `vasprintf' function. */
 #undef HAVE_VASPRINTF
@@ -784,14 +763,14 @@
 /* Define for the VCD plugin using libcdio/libvcdinfo */
 #undef HAVE_VCDX
 
+/* Define to 1 if you have the `vmsplice' function. */
+#undef HAVE_VMSPLICE
+
 /* Define to 1 if you have the <vorbis/codec.h> header file. */
 #undef HAVE_VORBIS_CODEC_H
 
 /* Define to 1 if you have the <vorbis/vorbisenc.h> header file. */
 #undef HAVE_VORBIS_VORBISENC_H
-
-/* Define to 1 if you have the <wchar.h> header file. */
-#undef HAVE_WCHAR_H
 
 /* Define to 1 if you have the <X11/extensions/dpms.h> header file. */
 #undef HAVE_X11_EXTENSIONS_DPMS_H
@@ -823,14 +802,8 @@
 /* Define to 1 if you have the <xlocale.h> header file. */
 #undef HAVE_XLOCALE_H
 
-/* Define if <xosd.h> is pre-1.0.0 */
-#undef HAVE_XOSD_VERSION_0
-
-/* Define if <xosd.h> is 1.0.x */
-#undef HAVE_XOSD_VERSION_1
-
-/* Define if <xosd.h> is 2.0.x */
-#undef HAVE_XOSD_VERSION_2
+/* Define to 1 if you have the <xosd.h> header file. */
+#undef HAVE_XOSD_H
 
 /* Define to 1 if you have the <zlib.h> header file. */
 #undef HAVE_ZLIB_H
@@ -1001,6 +974,9 @@
 
 /* Define to empty if `const' does not conform to ANSI C. */
 #undef const
+
+/* Alias fdatasync() to fsync() if missing. */
+#undef fdatasync
 
 /* Define to `__inline__' or `__inline' if that's what the C compiler
    calls it, or to nothing if 'inline' is not supported under any name.  */

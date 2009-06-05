@@ -2,7 +2,7 @@
  * simple_preferences.hpp : Simple prefs
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: afff9f4bee3ef54269f181c6b6ce21b1573227d5 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -30,16 +30,18 @@
 
 #include <vlc_common.h>
 #include <vlc_interface.h>
-#include <QWidget>
 
 #include "ui/sprefs_input.h"
 #include "ui/sprefs_audio.h"
 #include "ui/sprefs_video.h"
 #include "ui/sprefs_subtitles.h"
 #include "ui/sprefs_interface.h"
+
 #ifdef WIN32
-#include "util/registry.hpp"
+# include "util/registry.hpp"
 #endif
+
+#include <QWidget>
 
 enum {
     SPrefsInterface = 0,
@@ -55,10 +57,10 @@ enum {
 enum {
     CachingCustom = 0,
     CachingLowest = 100,
-    CachingLow = 200,
+    CachingLow    = 200,
     CachingNormal = 300,
-    CachingHigh = 400,
-    CachingHigher = 500
+    CachingHigh   = 750,
+    CachingHigher = 2500
 };
 
 enum {
@@ -71,8 +73,10 @@ enum {
        fileW,
        audioOutCoB,
        normalizerChB,
-       volLW };
-enum { recordChB, dumpChB, bandwidthChB, timeshiftChB, inputLE, cachingCoB };
+       volLW,
+       headphoneB,
+};
+enum { inputLE, cachingCoB };
 enum { skinRB, qtRB };
 
 class ConfigControl;
@@ -90,7 +94,7 @@ class SPrefsCatList : public QWidget
 {
     Q_OBJECT;
 public:
-    SPrefsCatList( intf_thread_t *, QWidget *);
+    SPrefsCatList( intf_thread_t *, QWidget *, bool );
     virtual ~SPrefsCatList() {};
 private:
     intf_thread_t *p_intf;
@@ -104,7 +108,7 @@ class SPrefsPanel : public QWidget
 {
     Q_OBJECT
 public:
-    SPrefsPanel( intf_thread_t *, QWidget *, int );
+    SPrefsPanel( intf_thread_t *, QWidget *, int, bool );
     virtual ~SPrefsPanel();
     void apply();
     void clean();
@@ -115,7 +119,7 @@ private:
     int number;
 
     QList<QWidget *> optionWidgets;
-    QString qs_filter;
+    QStringList qs_filter;
 
 #ifdef WIN32
     QList<QTreeWidgetItem *> listAsso;

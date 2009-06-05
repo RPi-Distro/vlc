@@ -2,7 +2,7 @@
  * subtitles.c
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: 0ad27d3b82238d4d81fc79b9f759d1ed1c0790f6 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  * This is adapted code from the GPL'ed MPlayer (http://mplayerhq.hu)
@@ -251,7 +251,7 @@ static char **paths_to_list( const char *psz_dir, char *psz_path )
 char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
                          const char *psz_name_org )
 {
-    vlc_value_t fuzzy;
+    int i_fuzzy;
     int j, i_result2, i_sub_count, i_fname_len;
     char *f_dir = NULL, *f_fname = NULL, *f_fname_noext = NULL, *f_fname_trim = NULL;
     char *tmp = NULL;
@@ -278,7 +278,7 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
     }
     else
     {
-#ifdef HAVE_UNISTD_H
+#if defined (HAVE_UNISTD_H) && !defined (UNDER_CE)
         /* Get the current working directory */
         char *psz_cwd = getcwd( NULL, 0 );
 #else
@@ -315,7 +315,7 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
     strcpy_strip_ext( f_fname_noext, f_fname );
     strcpy_trim( f_fname_trim, f_fname_noext );
 
-    var_Get( p_this, "sub-autodetect-fuzzy", &fuzzy );
+    i_fuzzy = var_GetInteger( p_this, "sub-autodetect-fuzzy" );
 
     result = calloc( MAX_SUBTITLE_FILES+1, sizeof(vlc_subfn_t) ); /* We check it later (simplify code) */
     subdirs = paths_to_list( f_dir, psz_path );
@@ -345,7 +345,7 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
 
             int i_prio;
 
-            if( psz_name == NULL )
+            if( psz_name == NULL || psz_name[0] == '.' )
                 continue;
 
             /* retrieve various parts of the filename */
@@ -382,7 +382,7 @@ char **subtitles_Detect( input_thread_t *p_this, char *psz_path,
                 /* doesn't contain the movie name, prefer files in f_dir over subdirs */
                 i_prio = SUB_PRIORITY_MATCH_NONE;
             }
-            if( i_prio >= fuzzy.i_int )
+            if( i_prio >= i_fuzzy )
             {
                 char psz_path[strlen( psz_dir ) + strlen( psz_name ) + 1];
                 struct stat st;

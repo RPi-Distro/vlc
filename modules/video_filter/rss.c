@@ -2,7 +2,7 @@
  * rss.c : rss/atom feed display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: c0aeb36cbc4559c9716ef5e496f9446e3becebfa $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -186,43 +186,43 @@ static const char *const ppsz_title_modes[] =
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_capability( "sub filter", 1 );
-    set_shortname( "RSS / Atom" );
-    set_callbacks( CreateFilter, DestroyFilter );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_SUBPIC );
-    add_string( CFG_PREFIX "urls", "rss", NULL, MSG_TEXT, MSG_LONGTEXT, false );
+vlc_module_begin ()
+    set_capability( "sub filter", 1 )
+    set_shortname( "RSS / Atom" )
+    set_callbacks( CreateFilter, DestroyFilter )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_SUBPIC )
+    add_string( CFG_PREFIX "urls", "rss", NULL, MSG_TEXT, MSG_LONGTEXT, false )
 
-    set_section( N_("Position"), NULL );
-    add_integer( CFG_PREFIX "x", 0, NULL, POSX_TEXT, POSX_LONGTEXT, true );
-    add_integer( CFG_PREFIX "y", 0, NULL, POSY_TEXT, POSY_LONGTEXT, true );
-    add_integer( CFG_PREFIX "position", -1, NULL, POS_TEXT, POS_LONGTEXT, false );
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
+    set_section( N_("Position"), NULL )
+    add_integer( CFG_PREFIX "x", 0, NULL, POSX_TEXT, POSX_LONGTEXT, true )
+    add_integer( CFG_PREFIX "y", 0, NULL, POSY_TEXT, POSY_LONGTEXT, true )
+    add_integer( CFG_PREFIX "position", -1, NULL, POS_TEXT, POS_LONGTEXT, false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
 
-    set_section( N_("Font"), NULL );
+    set_section( N_("Font"), NULL )
     /* 5 sets the default to top [1] left [4] */
     add_integer_with_range( CFG_PREFIX "opacity", 255, 0, 255, NULL,
-        OPACITY_TEXT, OPACITY_LONGTEXT, false );
+        OPACITY_TEXT, OPACITY_LONGTEXT, false )
     add_integer( CFG_PREFIX "color", 0xFFFFFF, NULL, COLOR_TEXT, COLOR_LONGTEXT,
-                  false );
-        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL );
-    add_integer( CFG_PREFIX "size", -1, NULL, SIZE_TEXT, SIZE_LONGTEXT, false );
+                  false )
+        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL )
+    add_integer( CFG_PREFIX "size", -1, NULL, SIZE_TEXT, SIZE_LONGTEXT, false )
 
-    set_section( N_("Misc"), NULL );
+    set_section( N_("Misc"), NULL )
     add_integer( CFG_PREFIX "speed", 100000, NULL, SPEED_TEXT, SPEED_LONGTEXT,
-                 false );
+                 false )
     add_integer( CFG_PREFIX "length", 60, NULL, LENGTH_TEXT, LENGTH_LONGTEXT,
-                 false );
-    add_integer( CFG_PREFIX "ttl", 1800, NULL, TTL_TEXT, TTL_LONGTEXT, false );
-    add_bool( CFG_PREFIX "images", 1, NULL, IMAGE_TEXT, IMAGE_LONGTEXT, false );
-    add_integer( CFG_PREFIX "title", default_title, NULL, TITLE_TEXT, TITLE_LONGTEXT, false );
-        change_integer_list( pi_title_modes, ppsz_title_modes, NULL );
+                 false )
+    add_integer( CFG_PREFIX "ttl", 1800, NULL, TTL_TEXT, TTL_LONGTEXT, false )
+    add_bool( CFG_PREFIX "images", 1, NULL, IMAGE_TEXT, IMAGE_LONGTEXT, false )
+    add_integer( CFG_PREFIX "title", default_title, NULL, TITLE_TEXT, TITLE_LONGTEXT, false )
+        change_integer_list( pi_title_modes, ppsz_title_modes, NULL )
 
-    set_description( N_("RSS and Atom feed display") );
-    add_shortcut( "rss" );
-    add_shortcut( "atom" );
-vlc_module_end();
+    set_description( N_("RSS and Atom feed display") )
+    add_shortcut( "rss" )
+    add_shortcut( "atom" )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "urls", "x", "y", "position", "color", "size", "speed", "length",
@@ -443,7 +443,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
 
     fmt.i_chroma = VLC_FOURCC('T','E','X','T');
 
-    p_spu->p_region = p_spu->pf_create_region( VLC_OBJECT(p_filter), &fmt );
+    p_spu->p_region = subpicture_region_New( &fmt );
     if( !p_spu->p_region )
     {
         p_filter->pf_sub_buffer_del( p_filter, p_spu );
@@ -530,10 +530,6 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         p_spu->b_absolute = false;
     }
 
-    p_spu->i_x = p_sys->i_xoff;
-    p_spu->i_y = p_sys->i_yoff;
-
-    p_spu->i_height = 1;
     p_spu->p_region->p_style = p_sys->p_style;
 
     if( p_feed->p_pic )
@@ -552,14 +548,17 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         fmt_out.i_height =
             fmt_out.i_visible_height = p_pic->p[Y_PLANE].i_visible_lines;
 
-        p_region = p_spu->pf_create_region( VLC_OBJECT( p_filter ), &fmt_out );
+        p_region = subpicture_region_New( &fmt_out );
         if( !p_region )
         {
             msg_Err( p_filter, "cannot allocate SPU region" );
         }
         else
         {
-            vout_CopyPicture( p_filter, &p_region->picture, p_pic );
+            p_region->i_x = p_sys->i_xoff;
+            p_region->i_y = p_sys->i_yoff;
+            /* FIXME the copy is probably not needed anymore */
+            picture_Copy( p_region->p_picture, p_pic );
             p_spu->p_region->p_next = p_region;
         }
 

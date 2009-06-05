@@ -2,7 +2,7 @@
 * simple_prefs.h: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008 the VideoLAN team
-* $Id: f5a279afbeef92435075b68cf7193e4c6768eb57 $
+* $Id$
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -64,15 +64,12 @@
     IBOutlet id o_hotkeys_listbox;
     IBOutlet id o_hotkeys_view;
 
-    IBOutlet id o_input_access_box;
     IBOutlet id o_input_avi_pop;
     IBOutlet id o_input_avi_txt;
-    IBOutlet id o_input_bandwidth_ckb;
     IBOutlet id o_input_cachelevel_pop;
     IBOutlet id o_input_cachelevel_txt;
     IBOutlet id o_input_cachelevel_custom_txt;
     IBOutlet id o_input_caching_box;
-    IBOutlet id o_input_dump_ckb;
     IBOutlet id o_input_httpproxy_fld;
     IBOutlet id o_input_httpproxy_txt;
     IBOutlet id o_input_httpproxypwd_sfld;
@@ -81,11 +78,11 @@
     IBOutlet id o_input_net_box;
     IBOutlet id o_input_postproc_fld;
     IBOutlet id o_input_postproc_txt;
-    IBOutlet id o_input_record_ckb;
     IBOutlet id o_input_rtsp_ckb;
+    IBOutlet id o_input_skipLoop_txt;
+    IBOutlet id o_input_skipLoop_pop;
     IBOutlet id o_input_serverport_fld;
     IBOutlet id o_input_serverport_txt;
-    IBOutlet id o_input_timeshift_ckb;
     IBOutlet id o_input_view;
 
     IBOutlet id o_intf_art_pop;

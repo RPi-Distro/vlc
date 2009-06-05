@@ -2,7 +2,7 @@
  * vlc_input.h: Core input structures
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
- * $Id: f97d196061c900d61048b5c98437724b71056d67 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -35,159 +35,9 @@
 #include <vlc_meta.h>
 #include <vlc_epg.h>
 #include <vlc_events.h>
+#include <vlc_input_item.h>
 
-#include <string.h>                                     /* strcasestr() */
-
-struct vlc_meta_t;
-
-/*****************************************************************************
- * input_item_t: Describes an input and is used to spawn input_thread_t objects
- *****************************************************************************/
-struct info_t
-{
-    char *psz_name;            /**< Name of this info */
-    char *psz_value;           /**< Value of the info */
-};
-
-struct info_category_t
-{
-    char   *psz_name;      /**< Name of this category */
-    int    i_infos;        /**< Number of infos in the category */
-    struct info_t **pp_infos;     /**< Pointer to an array of infos */
-};
-
-struct input_item_t
-{
-    VLC_GC_MEMBERS
-    int        i_id;                 /**< Identifier of the item */
-
-    char       *psz_name;            /**< text describing this item */
-    char       *psz_uri;             /**< mrl of this item */
-    bool       b_fixed_name;        /**< Can the interface change the name ?*/
-
-    int        i_options;            /**< Number of input options */
-    char       **ppsz_options;       /**< Array of input options */
-    uint8_t    *optflagv;            /**< Some flags of input options */
-    unsigned   optflagc;
-
-    mtime_t    i_duration;           /**< Duration in milliseconds*/
-
-    uint8_t    i_type;               /**< Type (file, disc, ...) */
-    bool b_prefers_tree;             /**< Do we prefer being displayed as tree*/
-
-    int        i_categories;         /**< Number of info categories */
-    info_category_t **pp_categories; /**< Pointer to the first info category */
-
-    int         i_es;                /**< Number of es format descriptions */
-    es_format_t **es;                /**< Es formats */
-
-    input_stats_t *p_stats;          /**< Statistics */
-    int           i_nb_played;       /**< Number of times played */
-
-    bool          b_error_when_reading;       /**< Error When Reading */
-
-    vlc_meta_t *p_meta;
-
-    vlc_event_manager_t event_manager;
-
-    vlc_mutex_t lock;                 /**< Lock for the item */
-};
-
-#define ITEM_TYPE_UNKNOWN       0
-#define ITEM_TYPE_FILE          1
-#define ITEM_TYPE_DIRECTORY     2
-#define ITEM_TYPE_DISC          3
-#define ITEM_TYPE_CDDA          4
-#define ITEM_TYPE_CARD          5
-#define ITEM_TYPE_NET           6
-#define ITEM_TYPE_PLAYLIST      7
-#define ITEM_TYPE_NODE          8
-#define ITEM_TYPE_NUMBER        9
-
-VLC_EXPORT( void, input_item_CopyOptions, ( input_item_t *p_parent, input_item_t *p_child ) );
-VLC_EXPORT( void, input_item_SetName, ( input_item_t *p_item, const char *psz_name ) );
-
-/* This won't hold the item, but can tell to interested third parties
- * Like the playlist, that there is a new sub item. With this design
- * It is not the input item's responsability to keep all the ref of
- * the input item children. */
-VLC_EXPORT( void, input_item_AddSubItem, ( input_item_t *p_parent, input_item_t *p_child ) );
-
-
-/* Flags handled past input_item_AddOpt() */
-#define VLC_INPUT_OPTION_TRUSTED 0x2
-
-/* Flags handled within input_item_AddOpt() */
-#define VLC_INPUT_OPTION_UNIQUE  0x100
-
-VLC_EXPORT( int, input_item_AddOpt, ( input_item_t *, const char *str, unsigned flags ) );
-VLC_EXPORT( int, input_item_AddOption, (input_item_t *item, const char *str) );
-VLC_EXPORT( int ,input_item_AddOption, (input_item_t *item, const char *str) );
-VLC_EXPORT( bool,input_item_HasErrorWhenReading, (input_item_t *item) );
-VLC_EXPORT( void, input_item_SetMeta, ( input_item_t *p_i, vlc_meta_type_t meta_type, const char *psz_val ));
-
-VLC_EXPORT( bool,input_item_HasErrorWhenReading, (input_item_t *item) );
-
-VLC_EXPORT( bool,input_item_MetaMatch, ( input_item_t *p_i, vlc_meta_type_t meta_type, const char *psz ) );
-VLC_EXPORT( char *, input_item_GetMeta, ( input_item_t *p_i, vlc_meta_type_t meta_type ) );
-VLC_EXPORT( char *, input_item_GetName, ( input_item_t * p_i ) );
-VLC_EXPORT( char *, input_item_GetURI, ( input_item_t * p_i ) );
-VLC_EXPORT( void,   input_item_SetURI, ( input_item_t * p_i, char * psz_uri ));
-VLC_EXPORT(mtime_t, input_item_GetDuration, ( input_item_t * p_i ) );
-VLC_EXPORT( void,   input_item_SetDuration, ( input_item_t * p_i, mtime_t i_duration ));
-VLC_EXPORT( bool,   input_item_IsPreparsed, ( input_item_t *p_i ));
-VLC_EXPORT( bool,   input_item_IsArtFetched, ( input_item_t *p_i ));
-VLC_EXPORT( const vlc_meta_t *, input_item_GetMetaObject, ( input_item_t *p_i ));
-VLC_EXPORT( void,   input_item_MetaMerge, ( input_item_t *p_i, const vlc_meta_t * p_new_meta ));
-
-
-#define input_item_SetTitle( item, b )       input_item_SetMeta( item, vlc_meta_Title, b )
-#define input_item_SetArtist( item, b )      input_item_SetMeta( item, vlc_meta_Artist, b )
-#define input_item_SetGenre( item, b )       input_item_SetMeta( item, vlc_meta_Genre, b )
-#define input_item_SetCopyright( item, b )   input_item_SetMeta( item, vlc_meta_Copyright, b )
-#define input_item_SetAlbum( item, b )       input_item_SetMeta( item, vlc_meta_Album, b )
-#define input_item_SetTrackNum( item, b )    input_item_SetMeta( item, vlc_meta_TrackNumber, b )
-#define input_item_SetDescription( item, b ) input_item_SetMeta( item, vlc_meta_Description, b )
-#define input_item_SetRating( item, b )      input_item_SetMeta( item, vlc_meta_Rating, b )
-#define input_item_SetDate( item, b )        input_item_SetMeta( item, vlc_meta_Date, b )
-#define input_item_SetSetting( item, b )     input_item_SetMeta( item, vlc_meta_Setting, b )
-#define input_item_SetURL( item, b )         input_item_SetMeta( item, vlc_meta_URL, b )
-#define input_item_SetLanguage( item, b )    input_item_SetMeta( item, vlc_meta_Language, b )
-#define input_item_SetNowPlaying( item, b )  input_item_SetMeta( item, vlc_meta_NowPlaying, b )
-#define input_item_SetPublisher( item, b )   input_item_SetMeta( item, vlc_meta_Publisher, b )
-#define input_item_SetEncodedBy( item, b )   input_item_SetMeta( item, vlc_meta_EncodedBy, b )
-#define input_item_SetArtURL( item, b )      input_item_SetMeta( item, vlc_meta_ArtworkURL, b )
-#define input_item_SetTrackID( item, b )     input_item_SetMeta( item, vlc_meta_TrackID, b )
-
-#define input_item_GetTitle( item )          input_item_GetMeta( item, vlc_meta_Title )
-#define input_item_GetArtist( item )         input_item_GetMeta( item, vlc_meta_Artist )
-#define input_item_GetGenre( item )          input_item_GetMeta( item, vlc_meta_Genre )
-#define input_item_GetCopyright( item )      input_item_GetMeta( item, vlc_meta_Copyright )
-#define input_item_GetAlbum( item )          input_item_GetMeta( item, vlc_meta_Album )
-#define input_item_GetTrackNum( item )       input_item_GetMeta( item, vlc_meta_TrackNumber )
-#define input_item_GetDescription( item )    input_item_GetMeta( item, vlc_meta_Description )
-#define input_item_GetRating( item )         input_item_GetMeta( item, vlc_meta_Rating )
-#define input_item_GetDate( item )           input_item_GetMeta( item, vlc_meta_Date )
-#define input_item_GetGetting( item )        input_item_GetMeta( item, vlc_meta_Getting )
-#define input_item_GetURL( item )            input_item_GetMeta( item, vlc_meta_URL )
-#define input_item_GetLanguage( item )       input_item_GetMeta( item, vlc_meta_Language )
-#define input_item_GetNowPlaying( item )     input_item_GetMeta( item, vlc_meta_NowPlaying )
-#define input_item_GetPublisher( item )      input_item_GetMeta( item, vlc_meta_Publisher )
-#define input_item_GetEncodedBy( item )      input_item_GetMeta( item, vlc_meta_EncodedBy )
-#define input_item_GetArtURL( item )         input_item_GetMeta( item, vlc_meta_ArtworkURL )
-#define input_item_GetTrackID( item )        input_item_GetMeta( item, vlc_meta_TrackID )
-#define input_item_GetSetting( item )        input_item_GetMeta( item, vlc_meta_Setting )
-
-VLC_EXPORT( char *, input_item_GetInfo, ( input_item_t *p_i, const char *psz_cat,const char *psz_name ) );
-VLC_EXPORT(int, input_item_AddInfo, ( input_item_t *p_i, const char *psz_cat, const char *psz_name, const char *psz_format, ... ) LIBVLC_FORMAT( 4, 5 ) );
-
-#define input_item_New( a,b,c ) input_item_NewExt( a, b, c, 0, NULL, -1 )
-#define input_item_NewExt(a,b,c,d,e,f) __input_item_NewExt( VLC_OBJECT(a),b,c,d,e,f)
-VLC_EXPORT( input_item_t *, __input_item_NewExt, (vlc_object_t *, const char *, const char*, int, const char *const *, mtime_t i_duration )  );
-VLC_EXPORT( input_item_t *, input_item_NewWithType, ( vlc_object_t *, const char *, const char *e, int, const char *const *, mtime_t i_duration, int ) );
-
-#define input_item_GetById(a,b) __input_item_GetById( VLC_OBJECT(a),b )
-VLC_EXPORT( input_item_t *, __input_item_GetById, (vlc_object_t *, int ) );
+#include <string.h>
 
 /*****************************************************************************
  * Meta data helpers
@@ -390,45 +240,23 @@ static inline void vlc_input_attachment_Delete( input_attachment_t *a )
  * input defines/constants.
  *****************************************************************************/
 
-/* "state" value */
-/* NOTE: you need to update ppsz_input_state in the RC interface
- * if you modify this list. */
-typedef enum input_state_e
-{
-    INIT_S = 0,
-    OPENING_S,
-    BUFFERING_S,
-    PLAYING_S,
-    PAUSE_S,
-    STOP_S,
-    FORWARD_S,
-    BACKWARD_S,
-    END_S,
-    ERROR_S,
-} input_state_e;
-
-/* "rate" default, min/max
- * A rate below 1000 plays the movie faster,
- * A rate above 1000 plays the movie slower.
- */
-#define INPUT_RATE_DEFAULT  1000
-#define INPUT_RATE_MIN       125            /* Up to 8/1 */
-#define INPUT_RATE_MAX     32000            /* Up to 1/32 */
-
 /* i_update field of access_t/demux_t */
 #define INPUT_UPDATE_NONE       0x0000
 #define INPUT_UPDATE_SIZE       0x0001
 #define INPUT_UPDATE_TITLE      0x0010
 #define INPUT_UPDATE_SEEKPOINT  0x0020
 #define INPUT_UPDATE_META       0x0040
+#define INPUT_UPDATE_SIGNAL     0x0080
 
-/* Input control XXX: internal */
-#define INPUT_CONTROL_FIFO_SIZE    100
-
-/** Get the input item for an input thread */
-VLC_EXPORT(input_item_t*, input_GetItem, (input_thread_t*));
-
+/**
+ * This defines private core storage for an input.
+ */
 typedef struct input_thread_private_t input_thread_private_t;
+
+/**
+ * This defines an opaque input resource handler.
+ */
+typedef struct input_resource_t input_resource_t;
 
 /**
  * Main structure representing an input thread. This structure is mostly
@@ -439,37 +267,175 @@ struct input_thread_t
 {
     VLC_COMMON_MEMBERS;
 
-    bool  b_eof;
+    bool b_eof;
     bool b_preparsing;
-
-    int i_state;
-    bool b_can_pace_control;
-    int64_t     i_time;     /* Current time */
-
-    /* Internal caching common to all inputs */
-    mtime_t i_pts_delay;
+    bool b_dead;
 
     /* All other data is input_thread is PRIVATE. You can't access it
      * outside of src/input */
     input_thread_private_t *p;
 };
 
+/**
+ * Record prefix string.
+ * TODO make it configurable.
+ */
+#define INPUT_RECORD_PREFIX "vlc-record-%Y-%m-%d-%Hh%Mm%Ss-$ N-$ p"
+
 /*****************************************************************************
- * Prototypes
+ * Input events and variables
  *****************************************************************************/
 
-/* input_CreateThread
- * Release the returned input_thread_t using vlc_object_release() */
-#define input_CreateThread(a,b) __input_CreateThread(VLC_OBJECT(a),b)
-VLC_EXPORT( input_thread_t *, __input_CreateThread, ( vlc_object_t *, input_item_t * ) );
+/**
+ * \defgroup inputvariable Input variables
+ *
+ * The input provides multiples variable you can write to and/or read from.
+ *
+ * TODO complete the documentation.
+ * The read only variables are:
+ *  - "length"
+ *  - "can-seek" (if you can seek, it doesn't say if 'bar display' has be shown
+ *    or not, for that check position != 0.0)
+ *  - "can-pause"
+ *  - "can-rate"
+ *  - "can-rewind"
+ *  - "can-record" (if a stream can be recorded while playing)
+ *  - "teletext-es" (list of id from the spu tracks (spu-es) that are teletext, the
+ *                   variable value being the one currently selected, -1 if no teletext)
+ *  - "signal-quality"
+ *  - "signal-strength"
+ *  - "program-scrambled" (if the current program is scrambled)
+ *  - "cache" (level of data cached [0 .. 1])
+ *
+ * The read-write variables are:
+ *  - state (\see input_state_e)
+ *  - rate, rate-slower, rate-faster
+ *  - position, position-offset
+ *  - time, time-offset
+ *  - title, next-title, prev-title
+ *  - chapter, next-chapter, next-chapter-prev
+ *  - program, audio-es, video-es, spu-es
+ *  - audio-delay, spu-delay
+ *  - bookmark (bookmark list)
+ *  - record
+ *  - frame-next
+ *  - navigation (list of "title %2i")
+ *  - "title %2i"
+ *
+ * The variable used for event is
+ *  - intf-event (\see input_event_type_e)
+ */
 
-#define input_Preparse(a,b) __input_Preparse(VLC_OBJECT(a),b)
-VLC_EXPORT( int, __input_Preparse, ( vlc_object_t *, input_item_t * ) );
+/**
+ * Input state
+ *
+ * This enum is used by the variable "state"
+ */
+typedef enum input_state_e
+{
+    INIT_S = 0,
+    OPENING_S,
+    PLAYING_S,
+    PAUSE_S,
+    END_S,
+    ERROR_S,
+} input_state_e;
 
-#define input_Read(a,b,c) __input_Read(VLC_OBJECT(a),b, c)
-VLC_EXPORT( int, __input_Read, ( vlc_object_t *, input_item_t *, bool ) );
-VLC_EXPORT( void,             input_StopThread,     ( input_thread_t * ) );
+/**
+ * Input rate.
+ *
+ * It is an integer used by the variable "rate" in the
+ * range [INPUT_RATE_MIN, INPUT_RATE_MAX] the default value
+ * being INPUT_RATE_DEFAULT.
+ *
+ * A value lower than INPUT_RATE_DEFAULT plays faster.
+ * A value higher than INPUT_RATE_DEFAULT plays slower.
+ */
 
+/**
+ * Default rate value
+ */
+#define INPUT_RATE_DEFAULT  1000
+/**
+ * Minimal rate value
+ */
+#define INPUT_RATE_MIN        32            /* Up to 32/1 */
+/**
+ * Maximal rate value
+ */
+#define INPUT_RATE_MAX     32000            /* Up to 1/32 */
+
+/**
+ * Input events
+ *
+ * You can catch input event by adding a callback on the variable "intf-event".
+ * This variable is an integer that will hold a input_event_type_e value.
+ */
+typedef enum input_event_type_e
+{
+    /* "state" has changed */
+    INPUT_EVENT_STATE,
+    /* b_dead is true */
+    INPUT_EVENT_DEAD,
+    /* a *user* abort has been requested */
+    INPUT_EVENT_ABORT,
+
+    /* "rate" has changed */
+    INPUT_EVENT_RATE,
+
+    /* At least one of "position" or "time" or "length" has changed */
+    INPUT_EVENT_TIMES,
+
+    /* A title has been added or removed or selected.
+     * It imply that chapter has changed (not chapter event is sent) */
+    INPUT_EVENT_TITLE,
+    /* A chapter has been added or removed or selected. */
+    INPUT_EVENT_CHAPTER,
+
+    /* A program ("program") has been added or removed or selected,
+     * or "program-scrambled" has changed.*/
+    INPUT_EVENT_PROGRAM,
+    /* A ES has been added or removed or selected */
+    INPUT_EVENT_ES,
+    /* "teletext-es" has changed */
+    INPUT_EVENT_TELETEXT,
+
+    /* "record" has changed */
+    INPUT_EVENT_RECORD,
+
+    /* input_item_t media has changed */
+    INPUT_EVENT_ITEM_META,
+    /* input_item_t info has changed */
+    INPUT_EVENT_ITEM_INFO,
+    /* input_item_t name has changed */
+    INPUT_EVENT_ITEM_NAME,
+
+    /* Input statistics have been updated */
+    INPUT_EVENT_STATISTICS,
+    /* At least one of "signal-quality" or "signal-strength" has changed */
+    INPUT_EVENT_SIGNAL,
+
+    /* "audio-delay" has changed */
+    INPUT_EVENT_AUDIO_DELAY,
+    /* "spu-delay" has changed */
+    INPUT_EVENT_SUBTITLE_DELAY,
+
+    /* "bookmark" has changed */
+    INPUT_EVENT_BOOKMARK,
+
+    /* cache" has changed */
+    INPUT_EVENT_CACHE,
+
+    /* A aout_instance_t object has been created/deleted by *the input* */
+    INPUT_EVENT_AOUT,
+    /* A vout_thread_t object has been created/deleted by *the input* */
+    INPUT_EVENT_VOUT,
+
+} input_event_type_e;
+
+/**
+ * Input queries
+ */
 enum input_query_e
 {
     /* input variable "position" */
@@ -507,11 +473,10 @@ enum input_query_e
     INPUT_ADD_OPTION,      /* arg1= char * arg2= char *  res=can fail*/
 
     /* Input properties */
-    INPUT_GET_BYTE_POSITION,     /* arg1= int64_t *       res=    */
-    INPUT_SET_BYTE_SIZE,         /* arg1= int64_t *       res=    */
     INPUT_GET_VIDEO_FPS,         /* arg1= double *        res=can fail */
 
     /* bookmarks */
+    INPUT_GET_BOOKMARK,    /* arg1= seekpoint_t *               res=can fail */
     INPUT_GET_BOOKMARKS,   /* arg1= seekpoint_t *** arg2= int * res=can fail */
     INPUT_CLEAR_BOOKMARKS, /* res=can fail */
     INPUT_ADD_BOOKMARK,    /* arg1= seekpoint_t *  res=can fail   */
@@ -524,25 +489,112 @@ enum input_query_e
     INPUT_GET_ATTACHMENT,  /* arg1=input_attachment_t**, arg2=char*  res=can fail */
 
     /* On the fly input slave */
-    INPUT_ADD_SLAVE        /* arg1= char * */
+    INPUT_ADD_SLAVE,       /* arg1= const char * */
+    INPUT_ADD_SUBTITLE,    /* arg1= const char *, arg2=bool b_check_extension */
+
+    /* On the fly record while playing */
+    INPUT_SET_RECORD_STATE, /* arg1=bool    res=can fail */
+    INPUT_GET_RECORD_STATE, /* arg1=bool*   res=can fail */
+
+    /* ES */
+    INPUT_RESTART_ES,       /* arg1=int (-AUDIO/VIDEO/SPU_ES for the whole category) */
+
+    /* Input ressources
+     * XXX You must call vlc_object_release as soon as possible */
+    INPUT_GET_AOUT,         /* arg1=aout_instance_t **              res=can fail */
+    INPUT_GET_VOUTS,        /* arg1=vout_thread_t ***, int *        res=can fail */
 };
 
+/** @}*/
+
+/*****************************************************************************
+ * Prototypes
+ *****************************************************************************/
+
+#define input_Create(a,b,c,d) __input_Create(VLC_OBJECT(a),b,c,d)
+VLC_EXPORT( input_thread_t *, __input_Create, ( vlc_object_t *p_parent, input_item_t *, const char *psz_log, input_resource_t * ) );
+
+#define input_CreateAndStart(a,b,c) __input_CreateAndStart(VLC_OBJECT(a),b,c)
+VLC_EXPORT( input_thread_t *, __input_CreateAndStart, ( vlc_object_t *p_parent, input_item_t *, const char *psz_log ) );
+
+VLC_EXPORT( int,  input_Start, ( input_thread_t * ) );
+
+VLC_EXPORT( void, input_Stop, ( input_thread_t *, bool b_abort ) );
+
+#define input_Read(a,b,c) __input_Read(VLC_OBJECT(a),b, c)
+VLC_EXPORT( int, __input_Read, ( vlc_object_t *, input_item_t *, bool ) );
+
 VLC_EXPORT( int, input_vaControl,( input_thread_t *, int i_query, va_list  ) );
+
 VLC_EXPORT( int, input_Control,  ( input_thread_t *, int i_query, ...  ) );
 
+/**
+ * Get the input item for an input thread
+ *
+ * You have to keep a reference to the input or to the input_item_t until
+ * you do not need it anymore.
+ */
+VLC_EXPORT( input_item_t*, input_GetItem, ( input_thread_t * ) );
+
+/**
+ * It will return the current state of the input.
+ * Provided for convenience.
+ */
 static inline input_state_e input_GetState( input_thread_t * p_input )
 {
     input_state_e state = INIT_S;
     input_Control( p_input, INPUT_GET_STATE, &state );
     return state;
 }
-VLC_EXPORT( decoder_t *, input_DecoderNew, ( input_thread_t *, es_format_t *, bool b_force_decoder ) );
+/**
+ * It will add a new subtitle source to the input.
+ * Provided for convenience.
+ */
+static inline int input_AddSubtitle( input_thread_t *p_input, const char *psz_url, bool b_check_extension )
+{
+    return input_Control( p_input, INPUT_ADD_SUBTITLE, psz_url, b_check_extension );
+}
+
+/**
+ * Return one of the video output (if any). If possible, you should use
+ * INPUT_GET_VOUTS directly and process _all_ video outputs instead.
+ * @param p_input an input thread from which to get a video output
+ * @return NULL on error, or a video output thread pointer (which needs to be
+ * released with vlc_object_release()).
+ */
+static inline vout_thread_t *input_GetVout( input_thread_t *p_input )
+{
+     vout_thread_t **pp_vout, *p_vout;
+     unsigned i_vout;
+
+     if( input_Control( p_input, INPUT_GET_VOUTS, &pp_vout, &i_vout ) )
+         return NULL;
+
+     for( unsigned i = 1; i < i_vout; i++ )
+         vlc_object_release( (vlc_object_t *)(pp_vout[i]) );
+
+     p_vout = (i_vout >= 1) ? pp_vout[0] : NULL;
+     free( pp_vout );
+     return p_vout;
+}
+
+/**
+ * Return the audio output (if any) associated with an input.
+ * @param p_input an input thread
+ * @return NULL on error, or the audio output (which needs to be
+ * released with vlc_object_release()).
+ */
+static inline aout_instance_t *input_GetAout( input_thread_t *p_input )
+{
+     aout_instance_t *p_aout;
+     return input_Control( p_input, INPUT_GET_AOUT, &p_aout ) ? NULL : p_aout;
+}
+
+/* */
+typedef struct input_clock_t input_clock_t;
+VLC_EXPORT( decoder_t *, input_DecoderNew, ( input_thread_t *, es_format_t *, input_clock_t *, sout_instance_t * ) );
 VLC_EXPORT( void, input_DecoderDelete, ( decoder_t * ) );
-VLC_EXPORT( void, input_DecoderDecode,( decoder_t *, block_t * ) );
-
-VLC_EXPORT( bool, input_AddSubtitles, ( input_thread_t *, char *, bool ) );
-
-VLC_EXPORT( vlc_event_manager_t *, input_get_event_manager, ( input_thread_t * ) );
+VLC_EXPORT( void, input_DecoderDecode,( decoder_t *, block_t *, bool b_do_pace ) );
 
 /**
  * This function allows to split a MRL into access, demux and path part.
@@ -552,5 +604,10 @@ VLC_EXPORT( vlc_event_manager_t *, input_get_event_manager, ( input_thread_t * )
  *  The buffer provided by psz_dup will be modified.
  */
 VLC_EXPORT( void, input_SplitMRL, ( const char **ppsz_access, const char **ppsz_demux, char **ppsz_path, char *psz_dup ) );
+
+/**
+ * This function creates a sane filename path.
+ */
+VLC_EXPORT( char *, input_CreateFilename, ( vlc_object_t *, const char *psz_path, const char *psz_prefix, const char *psz_extension ) );
 
 #endif

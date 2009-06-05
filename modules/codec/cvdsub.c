@@ -2,7 +2,7 @@
  * cvd.c : CVD Subtitle decoder
  *****************************************************************************
  * Copyright (C) 2003, 2004 the VideoLAN team
- * $Id: 48da421c6c9cd6d0c14b8a660380407d5b747653 $
+ * $Id$
  *
  * Authors: Rocky Bernstein
  *          Gildas Bazin <gbazin@videolan.org>
@@ -47,16 +47,16 @@ static int  DecoderOpen   ( vlc_object_t * );
 static int  PacketizerOpen( vlc_object_t * );
 static void DecoderClose  ( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("CVD subtitle decoder") );
-    set_capability( "decoder", 50 );
-    set_callbacks( DecoderOpen, DecoderClose );
+vlc_module_begin ()
+    set_description( N_("CVD subtitle decoder") )
+    set_capability( "decoder", 50 )
+    set_callbacks( DecoderOpen, DecoderClose )
 
-    add_submodule();
-    set_description( N_("Chaoji VCD subtitle packetizer") );
-    set_capability( "packetizer", 50 );
-    set_callbacks( PacketizerOpen, DecoderClose );
-vlc_module_end();
+    add_submodule ()
+    set_description( N_("Chaoji VCD subtitle packetizer") )
+    set_capability( "packetizer", 50 )
+    set_callbacks( PacketizerOpen, DecoderClose )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -125,10 +125,11 @@ static int DecoderOpen( vlc_object_t *p_this )
     p_sys->i_state = SUBTITLE_BLOCK_EMPTY;
     p_sys->p_spu   = NULL;
 
-    es_format_Init( &p_dec->fmt_out, SPU_ES, VLC_FOURCC( 'c','v','d',' ' ) );
-
     p_dec->pf_decode_sub = Decode;
     p_dec->pf_packetize  = Packetize;
+
+    p_dec->fmt_out.i_cat = SPU_ES;
+    p_dec->fmt_out.i_codec = VLC_FOURCC('Y','U','V','P');
 
     return VLC_SUCCESS;
 }
@@ -498,17 +499,13 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
     subpicture_t  *p_spu;
     subpicture_region_t *p_region;
     video_format_t fmt;
+    video_palette_t palette;
     int i;
 
     /* Allocate the subpicture internal data. */
-    p_spu = p_dec->pf_spu_buffer_new( p_dec );
+    p_spu = decoder_NewSubpicture( p_dec );
     if( !p_spu ) return NULL;
 
-    p_spu->b_pausable = true;
-
-    p_spu->i_x = p_sys->i_x_start;
-    p_spu->i_x = p_spu->i_x * 3 / 4; /* FIXME: use aspect ratio for x? */
-    p_spu->i_y = p_sys->i_y_start;
     p_spu->i_start = p_data->i_pts;
     p_spu->i_stop  = p_data->i_pts + p_sys->i_duration;
     p_spu->b_ephemer = true;
@@ -520,17 +517,7 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
     fmt.i_width = fmt.i_visible_width = p_sys->i_width;
     fmt.i_height = fmt.i_visible_height = p_sys->i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_region = p_spu->pf_create_region( VLC_OBJECT(p_dec), &fmt );
-    if( !p_region )
-    {
-        msg_Err( p_dec, "cannot allocate SPU region" );
-        //goto error;
-    }
-
-    p_spu->p_region = p_region;
-    p_region->i_x = p_region->i_y = 0;
-
-    /* Build palette */
+    fmt.p_palette = &palette;
     fmt.p_palette->i_entries = 4;
     for( i = 0; i < fmt.p_palette->i_entries; i++ )
     {
@@ -539,6 +526,19 @@ static subpicture_t *DecodePacket( decoder_t *p_dec, block_t *p_data )
         fmt.p_palette->palette[i][2] = p_sys->p_palette[i][2];
         fmt.p_palette->palette[i][3] = p_sys->p_palette[i][3];
     }
+
+    p_region = subpicture_region_New( &fmt );
+    if( !p_region )
+    {
+        msg_Err( p_dec, "cannot allocate SPU region" );
+        decoder_DeleteSubpicture( p_dec, p_spu );
+        return NULL;
+    }
+
+    p_spu->p_region = p_region;
+    p_region->i_x = p_sys->i_x_start;
+    p_region->i_x = p_region->i_x * 3 / 4; /* FIXME: use aspect ratio for x? */
+    p_region->i_y = p_sys->i_y_start;
 
     RenderImage( p_dec, p_data, p_region );
 
@@ -572,7 +572,7 @@ static void RenderImage( decoder_t *p_dec, block_t *p_data,
                          subpicture_region_t *p_region )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    uint8_t *p_dest = p_region->picture.Y_PIXELS;
+    uint8_t *p_dest = p_region->p_picture->Y_PIXELS;
     int i_field;            /* The subtitles are interlaced */
     int i_row, i_column;    /* scanline row/column number */
     uint8_t i_color, i_count;
@@ -594,7 +594,7 @@ static void RenderImage( decoder_t *p_dec, block_t *p_data,
                     /* Fill the rest of the line with next color */
                     i_color = bs_read( &bs, 4 );
 
-                    memset( &p_dest[i_row * p_region->picture.Y_PITCH +
+                    memset( &p_dest[i_row * p_region->p_picture->Y_PITCH +
                                     i_column], i_color,
                             p_sys->i_width - i_column );
                     i_column = p_sys->i_width;
@@ -608,7 +608,7 @@ static void RenderImage( decoder_t *p_dec, block_t *p_data,
 
                     i_count = __MIN( i_count, p_sys->i_width - i_column );
 
-                    memset( &p_dest[i_row * p_region->picture.Y_PITCH +
+                    memset( &p_dest[i_row * p_region->p_picture->Y_PITCH +
                                     i_column], i_color, i_count );
                     i_column += i_count - 1;
                     continue;

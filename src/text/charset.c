@@ -91,6 +91,26 @@ double us_strtod( const char *str, char **end )
     return res;
 }
 
+
+/**
+ * us_strtof() has the same prototype as ANSI C strtof() but it uses the
+ * POSIX/C decimal format, regardless of the current numeric locale.
+ */
+float us_strtof( const char *str, char **end )
+{
+    locale_t loc = newlocale (LC_NUMERIC_MASK, "C", NULL);
+    locale_t oldloc = uselocale (loc);
+    float res = strtof (str, end);
+
+    if (loc != (locale_t)0)
+    {
+        uselocale (oldloc);
+        freelocale (loc);
+    }
+    return res;
+}
+
+
 /**
  * us_atof() has the same prototype as ANSI C atof() but it expects a dot
  * as decimal separator, regardless of the system locale.
@@ -100,3 +120,27 @@ double us_atof( const char *str )
     return us_strtod( str, NULL );
 }
 
+
+/**
+ * us_asprintf() has the same prototype as asprintf(), but doesn't use
+ * the system locale.
+ */
+int us_asprintf( char **ret, const char *format, ... )
+{
+    va_list ap;
+    locale_t loc = newlocale( LC_NUMERIC_MASK, "C", NULL );
+    locale_t oldloc = uselocale( loc );
+    int i_rc;
+
+    va_start( ap, format );
+    i_rc = vasprintf( ret, format, ap );
+    va_end( ap );
+
+    if ( loc != (locale_t)0 )
+    {
+        uselocale( oldloc );
+        freelocale( loc );
+    }
+
+    return i_rc;
+}

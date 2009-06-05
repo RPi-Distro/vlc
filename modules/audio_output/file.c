@@ -2,7 +2,7 @@
  * file.c : audio output which writes the samples to a file
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 65b0578b686c140f5492a4cfa2c9e19332dc9471 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -109,27 +109,26 @@ static const int format_int[] = { VLC_FOURCC('u','8',' ',' '),
 #define FILE_TEXT N_("Output file")
 #define FILE_LONGTEXT N_("File to which the audio samples will be written to. (\"-\" for stdout")
 
-vlc_module_begin();
-    set_description( N_("File audio output") );
-    set_shortname( N_("File") );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AOUT );
+vlc_module_begin ()
+    set_description( N_("File audio output") )
+    set_shortname( N_("File") )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AOUT )
 
     add_string( "audiofile-format", "s16", NULL,
-                FORMAT_TEXT, FORMAT_LONGTEXT, true );
-        change_string_list( format_list, 0, 0 );
+                FORMAT_TEXT, FORMAT_LONGTEXT, true )
+        change_string_list( format_list, 0, 0 )
     add_integer( "audiofile-channels", 0, NULL,
-                 CHANNELS_TEXT, CHANNELS_LONGTEXT, true );
+                 CHANNELS_TEXT, CHANNELS_LONGTEXT, true )
     add_file( "audiofile-file", "audiofile.wav", NULL, FILE_TEXT,
-              FILE_LONGTEXT, false );
-        change_unsafe();
-    add_bool( "audiofile-wav", 1, NULL, WAV_TEXT, WAV_LONGTEXT, true );
+              FILE_LONGTEXT, false )
+    add_bool( "audiofile-wav", 1, NULL, WAV_TEXT, WAV_LONGTEXT, true )
 
-    set_capability( "audio output", 0 );
-    add_shortcut( "file" );
-    add_shortcut( "audiofile" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_capability( "audio output", 0 )
+    add_shortcut( "file" )
+    add_shortcut( "audiofile" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: open a dummy audio device
@@ -139,12 +138,9 @@ static int Open( vlc_object_t * p_this )
     aout_instance_t * p_aout = (aout_instance_t *)p_this;
     char * psz_name, * psz_format;
     const char * const * ppsz_compare = format_list;
-    vlc_value_t val;
     int i_channels, i = 0;
 
-    var_Create( p_this, "audiofile-file", VLC_VAR_STRING|VLC_VAR_DOINHERIT );
-    var_Get( p_this, "audiofile-file", &val );
-    psz_name = val.psz_string;
+    psz_name = var_CreateGetString( p_this, "audiofile-file" );
     if( !psz_name || !*psz_name )
     {
         msg_Err( p_aout, "you need to specify an output file name" );
@@ -172,9 +168,7 @@ static int Open( vlc_object_t * p_this )
     p_aout->output.pf_play = Play;
 
     /* Audio format */
-    var_Create( p_this, "audiofile-format", VLC_VAR_STRING|VLC_VAR_DOINHERIT );
-    var_Get( p_this, "audiofile-format", &val );
-    psz_format = val.psz_string;
+    psz_format = var_CreateGetString( p_this, "audiofile-format" );
 
     while ( *ppsz_compare != NULL )
     {
@@ -212,10 +206,7 @@ static int Open( vlc_object_t * p_this )
     }
 
     /* Channels number */
-    var_Create( p_this, "audiofile-channels",
-                VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
-    var_Get( p_this, "audiofile-channels", &val );
-    i_channels = val.i_int;
+    i_channels = var_CreateGetInteger( p_this, "audiofile-channels" );
 
     if( i_channels > 0 && i_channels <= CHANNELS_MAX )
     {
@@ -224,9 +215,8 @@ static int Open( vlc_object_t * p_this )
     }
 
     /* WAV header */
-    var_Create( p_this, "audiofile-wav", VLC_VAR_BOOL|VLC_VAR_DOINHERIT );
-    var_Get( p_this, "audiofile-wav", &val );
-    p_aout->output.p_sys->b_add_wav_header = val.b_bool;
+    p_aout->output.p_sys->b_add_wav_header = var_CreateGetBool( p_this,
+                                                        "audiofile-wav" );
 
     if( p_aout->output.p_sys->b_add_wav_header )
     {

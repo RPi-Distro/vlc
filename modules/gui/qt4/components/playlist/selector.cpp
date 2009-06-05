@@ -2,7 +2,7 @@
  * selector.cpp : Playlist source selector
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: e4b1c8269019166624b897da7fdaf8f8c62861ec $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -32,8 +32,7 @@
 #include <QHeaderView>
 #include <QTreeView>
 
-PLSelector::PLSelector( QWidget *p, intf_thread_t *_p_intf,
-                        playlist_t *p_playlist ) : QWidget( p ), p_intf(_p_intf)
+PLSelector::PLSelector( QWidget *p, intf_thread_t *_p_intf ) : QWidget( p ), p_intf(_p_intf)
 {
     model = new PLModel( THEPL, p_intf, THEPL->p_root_category, 1, this );
     view = new QTreeView( 0 );

@@ -2,7 +2,7 @@
  * voutagl.c: MacOS X agl OpenGL provider (used by webbrowser.plugin)
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: e07880fe2b8024d773d4ad416bcc801ffed92f5d $
+ * $Id$
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -32,9 +32,10 @@
 #include "voutagl.h"
 
 /*****************************************************************************
- * embedded AGL context implementation
+ * embedded AGL context implementation (not 64bit compatible)
  *****************************************************************************/
 
+#ifndef __x86_64__
 static void aglSetViewport( vout_thread_t *p_vout, Rect viewBounds, Rect clipBounds );
 static void aglReshape( vout_thread_t * p_vout );
 static OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, EventRef event, void *userData);
@@ -77,14 +78,15 @@ int aglInit( vout_thread_t * p_vout )
         msg_Err( p_vout, "Cannot create AGL context." );
         return VLC_EGENERIC;
     }
-    else {
+    else
+    {
         // tell opengl not to sync buffer swap with vertical retrace (too inefficient)
         GLint param = 0;
         aglSetInteger(p_vout->p_sys->agl_ctx, AGL_SWAP_INTERVAL, &param);
         aglEnable(p_vout->p_sys->agl_ctx, AGL_SWAP_INTERVAL);
     }
 
-    var_Get( p_vout->p_libvlc, "drawable", &val );
+    var_Get( p_vout->p_libvlc, "drawable-agl", &val );
     p_vout->p_sys->agl_drawable = (AGLDrawable)val.i_int;
     aglSetDrawable(p_vout->p_sys->agl_ctx, p_vout->p_sys->agl_drawable);
 
@@ -123,7 +125,8 @@ int aglInit( vout_thread_t * p_vout )
 void aglEnd( vout_thread_t * p_vout )
 {
     aglSetCurrentContext(NULL);
-    if( p_vout->p_sys->theWindow ) DisposeWindow( p_vout->p_sys->theWindow );
+    if( p_vout->p_sys->theWindow )
+        DisposeWindow( p_vout->p_sys->theWindow );
     aglDestroyContext(p_vout->p_sys->agl_ctx);
 }
 
@@ -205,7 +208,7 @@ int aglManage( vout_thread_t * p_vout )
             Rect viewBounds;
             Rect clipBounds;
 
-            var_Get( p_vout->p_libvlc, "drawable", &val );
+            var_Get( p_vout->p_libvlc, "drawable-agl", &val );
             p_vout->p_sys->agl_drawable = (AGLDrawable)val.i_int;
             aglSetDrawable(p_vout->p_sys->agl_ctx, p_vout->p_sys->agl_drawable);
 
@@ -367,19 +370,8 @@ int aglControl( vout_thread_t *p_vout, int i_query, va_list args )
             return VLC_SUCCESS;
         }
 
-        case VOUT_REPARENT:
-        {
-            AGLDrawable drawable = (AGLDrawable)va_arg( args, int);
-            if( !p_vout->b_fullscreen && drawable != p_vout->p_sys->agl_drawable )
-            {
-                p_vout->p_sys->agl_drawable = drawable;
-                aglSetDrawable(p_vout->p_sys->agl_ctx, drawable);
-            }
-            return VLC_SUCCESS;
-        }
-
         default:
-            return vout_vaControlDefault( p_vout, i_query, args );
+            return VLC_EGENERIC;
     }
 }
 
@@ -542,8 +534,7 @@ static pascal OSStatus WindowEventHandler(EventHandlerCallRef nextHandler, Event
                         {
                             vlc_value_t val;
 
-                            val.b_bool = true;
-                            var_Set( p_vout, "mouse-clicked", val );
+                            var_SetBool( p_vout, "mouse-clicked", true );
 
                             var_Get( p_vout, "mouse-button-down", &val );
                             val.i_int &= ~1;
@@ -682,3 +673,5 @@ void aglUnlock( vout_thread_t * p_vout )
     }
 #endif
 }
+
+#endif

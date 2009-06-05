@@ -2,7 +2,7 @@
  * es.c: Elementary stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 52bb86d7b38642f76529e5c8ed760c4e1cf94b39 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -33,7 +33,7 @@
 #include <vlc_plugin.h>
 #include <vlc_input.h>
 #include <vlc_sout.h>
-#include <vlc_interface.h>
+#include <vlc_dialog.h>
 
 /*****************************************************************************
  * Module descriptor
@@ -74,40 +74,40 @@ static void     Close   ( vlc_object_t * );
 
 #define SOUT_CFG_PREFIX "sout-es-"
 
-vlc_module_begin();
-    set_shortname( "ES" );
-    set_description( N_("Elementary stream output") );
-    set_capability( "sout stream", 50 );
-    add_shortcut( "es" );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_STREAM );
+vlc_module_begin ()
+    set_shortname( "ES" )
+    set_description( N_("Elementary stream output") )
+    set_capability( "sout stream", 50 )
+    add_shortcut( "es" )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_STREAM )
 
+    set_section( N_("Generic"), NULL )
     add_string( SOUT_CFG_PREFIX "access", "", NULL, ACCESS_TEXT,
-                ACCESS_LONGTEXT, true );
-    add_string( SOUT_CFG_PREFIX "access-audio", "", NULL, ACCESSA_TEXT,
-                ACCESSA_LONGTEXT, true );
-    add_string( SOUT_CFG_PREFIX "access-video", "", NULL, ACCESSV_TEXT,
-                ACCESSV_LONGTEXT, true );
-
+                ACCESS_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "mux", "", NULL, MUX_TEXT,
-                MUX_LONGTEXT, true );
-    add_string( SOUT_CFG_PREFIX "mux-audio", "", NULL, MUXA_TEXT,
-                MUXA_LONGTEXT, true );
-    add_string( SOUT_CFG_PREFIX "mux-video", "", NULL, MUXV_TEXT,
-                MUXV_LONGTEXT, true );
-
+                MUX_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "dst", "", NULL, DEST_TEXT,
-                DEST_LONGTEXT, true );
-        change_unsafe();
-    add_string( SOUT_CFG_PREFIX "dst-audio", "", NULL, DESTA_TEXT,
-                DESTA_LONGTEXT, true );
-        change_unsafe();
-    add_string( SOUT_CFG_PREFIX "dst-video", "", NULL, DESTV_TEXT,
-                DESTV_LONGTEXT, true );
-        change_unsafe();
+                DEST_LONGTEXT, true )
 
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_section( N_("Audio"), NULL )
+    add_string( SOUT_CFG_PREFIX "access-audio", "", NULL, ACCESSA_TEXT,
+                ACCESSA_LONGTEXT, true )
+    add_string( SOUT_CFG_PREFIX "mux-audio", "", NULL, MUXA_TEXT,
+                MUXA_LONGTEXT, true )
+    add_string( SOUT_CFG_PREFIX "dst-audio", "", NULL, DESTA_TEXT,
+                DESTA_LONGTEXT, true )
+
+    set_section( N_("Video"), NULL )
+    add_string( SOUT_CFG_PREFIX "access-video", "", NULL, ACCESSV_TEXT,
+                ACCESSV_LONGTEXT, true )
+    add_string( SOUT_CFG_PREFIX "mux-video", "", NULL, MUXV_TEXT,
+                MUXV_LONGTEXT, true )
+    add_string( SOUT_CFG_PREFIX "dst-video", "", NULL, DESTV_TEXT,
+                DESTV_LONGTEXT, true )
+
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Exported prototypes
@@ -369,7 +369,7 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     {
         msg_Err( p_stream, "no suitable sout access module for `%s/%s://%s'",
                  psz_access, psz_mux, psz_dst );
-        intf_UserFatal( p_stream, false,
+        dialog_Fatal( p_stream,
                     _("Streaming / Transcoding failed"),
                     _("There is no suitable stream-output access module for \"%s/%s://%s\"."),
                           psz_access,
@@ -384,7 +384,7 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     {
         msg_Err( p_stream, "no suitable sout mux module for `%s/%s://%s'",
                  psz_access, psz_mux, psz_dst );
-        intf_UserFatal( p_stream, false,
+        dialog_Fatal( p_stream,
                         _("Streaming / Transcoding failed"),
                         _("There is no suitable stream-output access module "\
                           "for \"%s/%s://%s\"."),
@@ -413,6 +413,9 @@ static sout_stream_id_t *Add( sout_stream_t *p_stream, es_format_t *p_fmt )
         return NULL;
     }
 
+    if( !sout_AccessOutCanControlPace( p_access ) )
+        p_sout->i_out_pace_nocontrol++;
+
     return id;
 }
 
@@ -420,8 +423,11 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
 {
     VLC_UNUSED(p_stream);
     sout_access_out_t *p_access = id->p_mux->p_access;
-    sout_MuxDelete( id->p_mux );
+
     sout_MuxDeleteStream( id->p_mux, id->p_input );
+    sout_MuxDelete( id->p_mux );
+    if( !sout_AccessOutCanControlPace( p_access ) )
+        p_stream->p_sout->i_out_pace_nocontrol--;
     sout_AccessOutDelete( p_access );
 
     free( id );

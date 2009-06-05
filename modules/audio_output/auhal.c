@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: d4235a2100e6b0db6a5d715b9a46ceb470ce8b82 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -32,7 +32,7 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_interface.h>
+#include <vlc_dialog.h>
 #include <vlc_aout.h>
 
 #include <CoreAudio/CoreAudio.h>
@@ -133,15 +133,15 @@ static int      AudioDeviceCallback     ( vlc_object_t *, const char *,
     "audio device, as listed in your 'Audio Device' menu. This device will " \
     "then be used by default for audio playback.")
 
-vlc_module_begin();
-    set_shortname( "auhal" );
-    set_description( N_("HAL AudioUnit output") );
-    set_capability( "audio output", 101 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AOUT );
-    set_callbacks( Open, Close );
-    add_integer( "macosx-audio-device", 0, NULL, ADEV_TEXT, ADEV_LONGTEXT, false );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "auhal" )
+    set_description( N_("HAL AudioUnit output") )
+    set_capability( "audio output", 101 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AOUT )
+    set_callbacks( Open, Close )
+    add_integer( "macosx-audio-device", 0, NULL, ADEV_TEXT, ADEV_LONGTEXT, false )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: open macosx audio output
@@ -243,7 +243,7 @@ static int Open( vlc_object_t * p_this )
     if( p_sys->i_hog_pid != -1 && p_sys->i_hog_pid != getpid() )
     {
         msg_Err( p_aout, "Selected audio device is exclusively in use by another program." );
-        intf_UserFatal( p_aout, false, _("Audio output failed"),
+        dialog_Fatal( p_aout, _("Audio output failed"),
                         _("The selected audio output device is exclusively in "
                           "use by another program.") );
         goto error;
@@ -428,7 +428,7 @@ static int OpenAnalog( aout_instance_t *p_aout )
             {
                 p_aout->output.output.i_physical_channels = AOUT_CHAN_LEFT | AOUT_CHAN_RIGHT;
                 msg_Err( p_aout, "You should configure your speaker layout with Audio Midi Setup Utility in /Applications/Utilities. Now using Stereo mode." );
-                intf_UserFatal( p_aout, false, _("Audio device is not configured"),
+                dialog_Fatal( p_aout, _("Audio device is not configured"),
                                 _("You should configure your speaker layout with "
                                   "the \"Audio Midi Setup\" utility in /Applications/"
                                   "Utilities. Stereo mode is being used now.") );
@@ -1181,7 +1181,7 @@ static int AudioStreamChangeFormat( aout_instance_t *p_aout, AudioStreamID i_str
     msg_Dbg( p_aout, STREAM_FORMAT_MSG( "setting stream format: ", change_format ) );
 
     /* Condition because SetProperty is asynchronious */
-    vlc_cond_init( p_aout, &w.cond );
+    vlc_cond_init( &w.cond );
     vlc_mutex_init( &w.lock );
     vlc_mutex_lock( &w.lock );
 
@@ -1411,7 +1411,7 @@ static OSStatus HardwareListener( AudioHardwarePropertyID inPropertyID,
         {
             /* something changed in the list of devices */
             /* We trigger the audio-device's aout_ChannelsRestart callback */
-            var_Change( p_aout, "audio-device", VLC_VAR_TRIGGER_CALLBACKS, NULL, NULL );
+            var_TriggerCallback( p_aout, "audio-device" );
             var_Destroy( p_aout, "audio-device" );
         }
         break;

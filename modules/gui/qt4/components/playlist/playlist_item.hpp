@@ -2,7 +2,7 @@
  * playlist_item.hpp : Item for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 885de1a0ff6f161518f810d0b3f0b7ad7ec5201e $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -28,9 +28,6 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-#include <vlc_input.h>
-#include <vlc_playlist.h>
 #include "components/playlist/playlist_model.hpp"
 
 #include <QString>

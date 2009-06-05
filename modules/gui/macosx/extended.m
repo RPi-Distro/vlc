@@ -2,7 +2,7 @@
  * extended.m: MacOS X Extended interface panel
  *****************************************************************************
  * Copyright (C) 2005-2008 the VideoLAN team
- * $Id: f2ea9b77cd12cc5f04dcf07949d97fee0e80360d $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne@videolan.org>
  *
@@ -113,11 +113,11 @@ static VLCExtended *_o_sharedInstance = nil;
     /* set the video-filter-checkboxes to the correct values */
     if( psz_vfilters )
     {
-        [o_ckb_blur setState: (int)strstr( psz_vfilters, "motionblur")];
-        [o_ckb_imgClone setState: (int)strstr( psz_vfilters, "clone")];
-        [o_ckb_imgCrop setState: (int)strstr( psz_vfilters, "crop")];
-        [o_ckb_trnsform setState: (int)strstr( psz_vfilters, "transform")];
-        [o_ckb_intZoom setState: (int)strstr( psz_vfilters, "magnify")];
+        [o_ckb_blur setState: (NSInteger)strstr( psz_vfilters, "motionblur")];
+        [o_ckb_imgClone setState: (NSInteger)strstr( psz_vfilters, "clone")];
+        [o_ckb_imgCrop setState: (NSInteger)strstr( psz_vfilters, "crop")];
+        [o_ckb_trnsform setState: (NSInteger)strstr( psz_vfilters, "transform")];
+        [o_ckb_intZoom setState: (NSInteger)strstr( psz_vfilters, "magnify")];
 
         free( psz_vfilters );
     }
@@ -147,11 +147,11 @@ static VLCExtended *_o_sharedInstance = nil;
     }
     if( psz_vifilters )
     {
-        [o_ckb_wave setState: (int)strstr( psz_vifilters, "wave")];
-        [o_ckb_psycho setState: (int)strstr( psz_vifilters, "psychedelic")];
-        [o_ckb_ripple setState: (int)strstr( psz_vifilters, "ripple")];
-        [o_ckb_gradient setState: (int)strstr( psz_vifilters, "gradient")];
-        [o_ckb_imgInvers setState: (int)strstr( psz_vifilters, "invert")];
+        [o_ckb_wave setState: (NSInteger)strstr( psz_vifilters, "wave")];
+        [o_ckb_psycho setState: (NSInteger)strstr( psz_vifilters, "psychedelic")];
+        [o_ckb_ripple setState: (NSInteger)strstr( psz_vifilters, "ripple")];
+        [o_ckb_gradient setState: (NSInteger)strstr( psz_vifilters, "gradient")];
+        [o_ckb_imgInvers setState: (NSInteger)strstr( psz_vifilters, "invert")];
 
         free( psz_vifilters );
     }
@@ -161,8 +161,8 @@ static VLCExtended *_o_sharedInstance = nil;
     psz_afilters = config_GetPsz( p_intf, "audio-filter" );
     if( psz_afilters )
     {
-        [o_ckb_hdphnVirt setState: (int)strstr( psz_afilters, "headphone" ) ];
-        [o_ckb_vlme_norm setState: (int)strstr( psz_afilters, "normvol" ) ];
+        [o_ckb_hdphnVirt setState: (NSInteger)strstr( psz_afilters, "headphone" ) ];
+        [o_ckb_vlme_norm setState: (NSInteger)strstr( psz_afilters, "normvol" ) ];
  
         free( psz_afilters );
     }
@@ -180,7 +180,7 @@ static VLCExtended *_o_sharedInstance = nil;
     [self initStrings];
 }
 
-- (BOOL)getConfigChanged
+- (BOOL)configChanged
 {
     return o_config_changed;
 }
@@ -408,7 +408,7 @@ static VLCExtended *_o_sharedInstance = nil;
     id o_window = [NSApp keyWindow];
     NSArray *o_windows = [NSApp orderedWindows];
     NSEnumerator *o_enumerator = [o_windows objectEnumerator];
-    playlist_t * p_playlist = pl_Yield( VLCIntf );
+    playlist_t * p_playlist = pl_Hold( VLCIntf );
     vout_thread_t *p_vout = vlc_object_find( VLCIntf, VLC_OBJECT_VOUT, FIND_ANYWHERE );
     vout_thread_t *p_real_vout;
 
@@ -416,13 +416,13 @@ static VLCExtended *_o_sharedInstance = nil;
 
     if( p_vout != NULL )
     {
-        p_real_vout = [VLCVoutView getRealVout: p_vout];
+        p_real_vout = [VLCVoutView realVout: p_vout];
         var_Set( p_real_vout, "macosx-opaqueness", val );
 
         while ((o_window = [o_enumerator nextObject]))
         {
             if( [[o_window className] isEqualToString: @"VLCVoutWindow"] ||
-                [[[VLCMain sharedInstance] getEmbeddedList]
+                [[[VLCMain sharedInstance] embeddedList]
                                     windowContainsEmbedded: o_window])
             {
                 [o_window setAlphaValue: val.f_float];
@@ -435,7 +435,7 @@ static VLCExtended *_o_sharedInstance = nil;
     /* store to prefs */
     config_PutFloat( p_playlist , "macosx-opaqueness" , val.f_float );
 
-    vlc_object_release( p_playlist );
+    pl_Release( VLCIntf );
 
     o_config_changed = YES;
 }
@@ -706,6 +706,7 @@ static VLCExtended *_o_sharedInstance = nil;
         }
         else
         {
+            if( p_aout ) vlc_object_release( p_aout );
             return;
         }
     }
@@ -725,6 +726,7 @@ static VLCExtended *_o_sharedInstance = nil;
          else
          {
              free( psz_string );
+             if( p_aout ) vlc_object_release( p_aout );
              return;
          }
     }
@@ -753,7 +755,7 @@ static VLCExtended *_o_sharedInstance = nil;
 {
     /* save the preferences to make sure that our module-changes will up on
      * next launch again */
-    playlist_t * p_playlist = pl_Yield( VLCIntf );
+    playlist_t * p_playlist = pl_Hold( VLCIntf );
     int returnedValue;
     NSArray * theModules;
     theModules = [[NSArray alloc] initWithObjects: @"main", 
@@ -782,7 +784,7 @@ static VLCExtended *_o_sharedInstance = nil;
             "extended control attribute '%s' (%i)",
             [[theModules objectAtIndex: x] UTF8String] , returnedValue);
             [theModules release];
-            vlc_object_release( p_playlist );
+            pl_Release( VLCIntf );
  
             return;
         }
@@ -793,6 +795,6 @@ static VLCExtended *_o_sharedInstance = nil;
     msg_Dbg( VLCIntf, "VLCExtended: saved certain preferences successfully" );
  
     [theModules release];
-    vlc_object_release( p_playlist );
+    pl_Release( VLCIntf );
 }
 @end

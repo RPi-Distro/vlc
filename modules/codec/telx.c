@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2007 Vincent Penne
  * Some code converted from ProjectX java dvb decoder (c) 2001-2005 by dvb.matt
- * $Id: ebcd4467376d866111b52c02675d11e74dba1210 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -33,7 +33,6 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_input.h>
 
 #include "vlc_vout.h"
 #include "vlc_bits.h"
@@ -69,22 +68,22 @@ static subpicture_t *Decode( decoder_t *, block_t ** );
         "interpretation mistake. Try using this wrong interpretation if " \
         "your subtitles don't appear.")
 
-vlc_module_begin();
-    set_description( N_("Teletext subtitles decoder") );
-    set_shortname( "Teletext" );
-    set_capability( "decoder", 50 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_SCODEC );
-    set_callbacks( Open, Close );
+vlc_module_begin ()
+    set_description( N_("Teletext subtitles decoder") )
+    set_shortname( "Teletext" )
+    set_capability( "decoder", 50 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_SCODEC )
+    set_callbacks( Open, Close )
 
     add_integer( "telx-override-page", -1, NULL,
-                 OVERRIDE_PAGE_TEXT, OVERRIDE_PAGE_LONGTEXT, true );
+                 OVERRIDE_PAGE_TEXT, OVERRIDE_PAGE_LONGTEXT, true )
     add_bool( "telx-ignore-subtitle-flag", 0, NULL,
-              IGNORE_SUB_FLAG_TEXT, IGNORE_SUB_FLAG_LONGTEXT, true );
+              IGNORE_SUB_FLAG_TEXT, IGNORE_SUB_FLAG_LONGTEXT, true )
     add_bool( "telx-french-workaround", 0, NULL,
-              FRENCH_WORKAROUND_TEXT, FRENCH_WORKAROUND_LONGTEXT, true );
+              FRENCH_WORKAROUND_TEXT, FRENCH_WORKAROUND_LONGTEXT, true )
 
-vlc_module_end();
+vlc_module_end ()
 
 /****************************************************************************
  * Local structures
@@ -182,11 +181,11 @@ static int Open( vlc_object_t *p_this )
     }
 
     p_dec->pf_decode_sub = Decode;
-    p_sys = p_dec->p_sys = malloc( sizeof(decoder_sys_t) );
+    p_sys = p_dec->p_sys = calloc( 1, sizeof(*p_sys) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
-
-    memset( p_sys, 0, sizeof(decoder_sys_t) );
+    p_dec->fmt_out.i_cat = SPU_ES;
+    p_dec->fmt_out.i_codec = 0;
 
     p_sys->i_align = 0;
     for ( i = 0; i < 9; i++ )
@@ -195,13 +194,13 @@ static int Open( vlc_object_t *p_this )
     var_Create( p_dec, "telx-override-page",
                 VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
     var_Get( p_dec, "telx-override-page", &val );
-    if( val.i_int == -1 && p_dec->fmt_in.subs.dvb.i_id != -1 
-          && p_dec->fmt_in.subs.dvb.i_id != (1<<16) ) /* ignore if TS demux wants page 100 (unlikely to be sub) */
+    if( val.i_int == -1 &&
+        p_dec->fmt_in.subs.teletext.i_magazine != -1 &&
+        ( p_dec->fmt_in.subs.teletext.i_magazine != 1 ||
+          p_dec->fmt_in.subs.teletext.i_page != 0 ) ) /* ignore if TS demux wants page 100 (unlikely to be sub) */
     {
-        p_sys->i_wanted_magazine = p_dec->fmt_in.subs.dvb.i_id >> 16;
-        if( p_sys->i_wanted_magazine == 0 )
-            p_sys->i_wanted_magazine = 8;
-        p_sys->i_wanted_page = p_dec->fmt_in.subs.dvb.i_id & 0xff;
+        p_sys->i_wanted_magazine = p_dec->fmt_in.subs.teletext.i_magazine;
+        p_sys->i_wanted_page = p_dec->fmt_in.subs.teletext.i_page;
 
         var_Create( p_dec, "telx-french-workaround",
                     VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
@@ -458,8 +457,6 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     if( pp_block == NULL || *pp_block == NULL )
         return NULL;
     p_block = *pp_block;
-    if( p_block->i_rate != 0 )
-        p_block->i_length = p_block->i_length * p_block->i_rate / INPUT_RATE_DEFAULT;
     *pp_block = NULL;
 
     dbg((p_dec, "start of telx packet with header %2x\n",
@@ -695,7 +692,7 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     strcpy( p_sys->psz_prev_text, psz_text );
 
     /* Create the subpicture unit */
-    p_spu = p_dec->pf_spu_buffer_new( p_dec );
+    p_spu = decoder_NewSubpicture( p_dec );
     if( !p_spu )
     {
         msg_Warn( p_dec, "can't get spu buffer" );
@@ -708,7 +705,7 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     fmt.i_aspect = 0;
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_spu->p_region = p_spu->pf_create_region( VLC_OBJECT(p_dec), &fmt );
+    p_spu->p_region = subpicture_region_New( &fmt );
     if( p_spu->p_region == NULL )
     {
         msg_Err( p_dec, "cannot allocate SPU region" );
@@ -717,15 +714,14 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
 
     /* Normal text subs, easy markup */
     p_spu->p_region->i_align = SUBPICTURE_ALIGN_BOTTOM | p_sys->i_align;
-    p_spu->i_x = p_sys->i_align ? 20 : 0;
-    p_spu->i_y = 10;
-
+    p_spu->p_region->i_x = p_sys->i_align ? 20 : 0;
+    p_spu->p_region->i_y = 10;
     p_spu->p_region->psz_text = strdup(psz_text);
+
     p_spu->i_start = p_block->i_pts;
     p_spu->i_stop = p_block->i_pts + p_block->i_length;
     p_spu->b_ephemer = (p_block->i_length == 0);
     p_spu->b_absolute = false;
-    p_spu->b_pausable = true;
     dbg((p_dec, "%ld --> %ld\n", (long int) p_block->i_pts/100000, (long int)p_block->i_length/100000));
 
     block_Release( p_block );
@@ -734,7 +730,7 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
 error:
     if ( p_spu != NULL )
     {
-        p_dec->pf_spu_buffer_del( p_dec, p_spu );
+        decoder_DeleteSubpicture( p_dec, p_spu );
         p_spu = NULL;
     }
 

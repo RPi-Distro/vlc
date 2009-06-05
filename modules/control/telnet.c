@@ -2,7 +2,7 @@
  * telnet.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: f7ce883c7d1f59fab2dab5414aef8941d240ab47 $
+ * $Id$
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -28,10 +28,6 @@
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
-#endif
-
-#ifdef WIN32
-# include "winsock2.h"
 #endif
 
 #include <vlc_common.h>
@@ -93,21 +89,21 @@ static void Close( vlc_object_t * );
     "to protect this interface. The default value is \"admin\"." )
 #define TELNETPWD_DEFAULT "admin"
 
-vlc_module_begin();
-    set_shortname( "Telnet" );
-    set_category( CAT_INTERFACE );
-    set_subcategory( SUBCAT_INTERFACE_CONTROL );
+vlc_module_begin ()
+    set_shortname( "Telnet" )
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_CONTROL )
     add_string( "telnet-host", "", NULL, TELNETHOST_TEXT,
-                 TELNETHOST_LONGTEXT, true );
+                 TELNETHOST_LONGTEXT, true )
     add_integer( "telnet-port", TELNETPORT_DEFAULT, NULL, TELNETPORT_TEXT,
-                 TELNETPORT_LONGTEXT, true );
+                 TELNETPORT_LONGTEXT, true )
     add_password( "telnet-password", TELNETPWD_DEFAULT, NULL, TELNETPWD_TEXT,
-                TELNETPWD_LONGTEXT, true );
-    set_description( N_("VLM remote control interface") );
-    add_category_hint( "VLM", NULL, false );
-    set_capability( "interface", 0 );
-    set_callbacks( Open , Close );
-vlc_module_end();
+                TELNETPWD_LONGTEXT, true )
+    set_description( N_("VLM remote control interface") )
+    add_category_hint( "VLM", NULL, false )
+    set_capability( "interface", 0 )
+    set_callbacks( Open , Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes.
@@ -250,9 +246,11 @@ static void Run( intf_thread_t *p_intf )
     for (const int *pfd = p_sys->pi_fd; *pfd != -1; pfd++)
         nlisten++; /* How many listening sockets do we have? */
 
+    /* FIXME: make sure config_* is cancel-safe */
     psz_password = config_GetPsz( p_intf, "telnet-password" );
+    vlc_cleanup_push( free, psz_password );
 
-    while( !intf_ShouldDie( p_intf ) )
+    for( ;; )
     {
         unsigned ncli = p_sys->i_clients;
         struct pollfd ufd[ncli + nlisten];
@@ -276,8 +274,7 @@ static void Run( intf_thread_t *p_intf )
             ufd[ncli + i].revents = 0;
         }
 
-        /* FIXME: arbitrary tick */
-        switch (poll (ufd, sizeof (ufd) / sizeof (ufd[0]), 500))
+        switch (poll (ufd, sizeof (ufd) / sizeof (ufd[0]), -1))
         {
             case -1:
                 if (net_errno != EINTR)
@@ -290,6 +287,7 @@ static void Run( intf_thread_t *p_intf )
                 continue;
         }
 
+        int canc = vlc_savecancel ();
         /* check if there is something to do with the socket */
         for (unsigned i = 0; i < ncli; i++)
         {
@@ -378,10 +376,9 @@ static void Run( intf_thread_t *p_intf )
 #ifdef WIN32
                 if( i_recv <= 0 && WSAGetLastError() == WSAEWOULDBLOCK )
                 {
-                    errno=EAGAIN;
+                    errno = EAGAIN;
                 }
 #endif
-
                 if( i_recv == 0 || ( i_recv == -1 && ( end || errno != EAGAIN ) ) )
                     goto drop;
             }
@@ -431,7 +428,7 @@ static void Run( intf_thread_t *p_intf )
                 else if( !strncmp( cl->buffer_read, "shutdown", 8 ) )
                 {
                     msg_Err( p_intf, "shutdown requested" );
-                    vlc_object_kill( p_intf->p_libvlc );
+                    libvlc_Quit( p_intf->p_libvlc );
                 }
                 else if( *cl->buffer_read == '@'
                           && strchr( cl->buffer_read, ' ' ) )
@@ -477,14 +474,13 @@ static void Run( intf_thread_t *p_intf )
                     if( !strncmp( cl->buffer_read, "help", 4 ) )
                     {
                         vlm_message_t *p_my_help =
-                            vlm_MessageNew( "Telnet Specific Commands:", NULL );
+                            vlm_MessageSimpleNew( "Telnet Specific Commands:" );
                         vlm_MessageAdd( p_my_help,
-                            vlm_MessageNew( "logout, quit, exit" , NULL ) );
+                            vlm_MessageSimpleNew( "logout, quit, exit" ) );
                         vlm_MessageAdd( p_my_help,
-                            vlm_MessageNew( "shutdown" , NULL ) );
+                            vlm_MessageSimpleNew( "shutdown" ) );
                         vlm_MessageAdd( p_my_help,
-                            vlm_MessageNew( "@moduleinstance command argument",
-                                             NULL) );
+                            vlm_MessageSimpleNew( "@moduleinstance command argument" ) );
                         vlm_MessageAdd( message, p_my_help );
                     }
                     Write_message( cl, message, NULL, WRITE_MODE_CMD );
@@ -505,14 +501,13 @@ static void Run( intf_thread_t *p_intf )
             if (fd == -1)
                 continue;
 
-            telnet_client_t *cl = malloc( sizeof( telnet_client_t ));
+            telnet_client_t *cl = calloc( 1, sizeof( telnet_client_t ));
             if (cl == NULL)
             {
                 net_Close (fd);
                 continue;
             }
 
-            memset( cl, 0, sizeof(telnet_client_t) );
             cl->i_tel_cmd = 0;
             cl->fd = fd;
             cl->buffer_write = NULL;
@@ -521,8 +516,9 @@ static void Run( intf_thread_t *p_intf )
                            "Password: \xff\xfb\x01" , WRITE_MODE_PWD );
             TAB_APPEND( p_sys->i_clients, p_sys->clients, cl );
         }
+        vlc_restorecancel( canc );
     }
-    free( psz_password );
+    vlc_cleanup_run ();
 }
 
 static void Write_message( telnet_client_t *client, vlm_message_t *message,

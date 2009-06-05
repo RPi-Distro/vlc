@@ -2,7 +2,7 @@
  * svg.c : Put SVG on the video
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 296e7ccafbd13b476d4836a079ceeac0d796ce44 $
+ * $Id$
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *
@@ -71,14 +71,14 @@ static char *svg_GetTemplate( vlc_object_t *p_this );
 #define TEMPLATE_LONGTEXT N_( "Location of a file holding a SVG template "\
         "for automatic string conversion" )
 
-vlc_module_begin();
- set_category( CAT_INPUT);
- set_category( SUBCAT_INPUT_SCODEC );
- set_capability( "text renderer", 99 );
- add_shortcut( "svg" );
- add_string( "svg-template-file", "", NULL, TEMPLATE_TEXT, TEMPLATE_LONGTEXT, true );
- set_callbacks( Create, Destroy );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_category( SUBCAT_INPUT_SCODEC )
+    set_capability( "text renderer", 99 )
+    add_shortcut( "svg" )
+    add_string( "svg-template-file", "", NULL, TEMPLATE_TEXT, TEMPLATE_LONGTEXT, true )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 /**
    Describes a SVG string to be displayed on the video
@@ -115,7 +115,6 @@ struct filter_sys_t
     /* Default size for rendering. Initialized to the output size. */
     int            i_width;
     int            i_height;
-    vlc_mutex_t   *lock;
 };
 
 /*****************************************************************************
@@ -198,7 +197,7 @@ static char *svg_GetTemplate( vlc_object_t *p_this )
                 msg_Dbg( p_this, "reading %ld bytes from template %s",
                          (unsigned long)s.st_size, psz_filename );
 
-                psz_template = malloc( ( s.st_size + 42 ) * sizeof( char ) );
+                psz_template = malloc( s.st_size + 42 );
                 if( !psz_template )
                 {
                     fclose( file );
@@ -257,7 +256,6 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
     int channels_in;
     int alpha;
     picture_t *p_pic;
-    subpicture_region_t *p_region_tmp;
 
     if ( p_filter->p_sys->i_width != i_width ||
          p_filter->p_sys->i_height != i_height )
@@ -284,31 +282,27 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
     fmt.i_width = fmt.i_visible_width = i_width;
     fmt.i_height = fmt.i_visible_height = i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_region_tmp = spu_CreateRegion( p_filter, &fmt );
-    if( !p_region_tmp )
-    {
-        msg_Err( p_filter, "cannot allocate SPU region" );
+
+    p_region->p_picture = picture_New( fmt.i_chroma, fmt.i_width, fmt.i_height, fmt.i_aspect );
+    if( !p_region->p_picture )
         return VLC_EGENERIC;
-    }
-    p_region->fmt = p_region_tmp->fmt;
-    p_region->picture = p_region_tmp->picture;
-    free( p_region_tmp );
+    p_region->fmt = fmt;
 
     p_region->i_x = p_region->i_y = 0;
-    p_y = p_region->picture.Y_PIXELS;
-    p_u = p_region->picture.U_PIXELS;
-    p_v = p_region->picture.V_PIXELS;
-    p_a = p_region->picture.A_PIXELS;
+    p_y = p_region->p_picture->Y_PIXELS;
+    p_u = p_region->p_picture->U_PIXELS;
+    p_v = p_region->p_picture->V_PIXELS;
+    p_a = p_region->p_picture->A_PIXELS;
 
-    i_pitch = p_region->picture.Y_PITCH;
-    i_u_pitch = p_region->picture.U_PITCH;
+    i_pitch = p_region->p_picture->Y_PITCH;
+    i_u_pitch = p_region->p_picture->U_PITCH;
 
     /* Initialize the region pixels (only the alpha will be changed later) */
     memset( p_y, 0x00, i_pitch * p_region->fmt.i_height );
     memset( p_u, 0x80, i_u_pitch * p_region->fmt.i_height );
     memset( p_v, 0x80, i_u_pitch * p_region->fmt.i_height );
 
-    p_pic = &p_region->picture;
+    p_pic = p_region->p_picture;
 
     /* Copy the data */
 
@@ -420,14 +414,14 @@ static void svg_RenderPicture( filter_t *p_filter,
                  ( guchar* )p_svg->psz_text, strlen( p_svg->psz_text ),
                  &error ) )
     {
-        msg_Err( p_filter, "error while rendering SVG: %s\n", error->message );
+        msg_Err( p_filter, "error while rendering SVG: %s", error->message );
         g_object_unref( G_OBJECT( p_handle ) );
         return;
     }
 
     if( ! rsvg_handle_close( p_handle, &error ) )
     {
-        msg_Err( p_filter, "error while rendering SVG (close): %s\n", error->message );
+        msg_Err( p_filter, "error while rendering SVG (close): %s", error->message );
         g_object_unref( G_OBJECT( p_handle ) );
         return;
     }
@@ -450,7 +444,7 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
     psz_string = p_region_in->psz_text;
     if( !psz_string || !*psz_string ) return VLC_EGENERIC;
 
-    p_svg = ( svg_rendition_t * )malloc( sizeof( svg_rendition_t ) );
+    p_svg = malloc( sizeof( svg_rendition_t ) );
     if( !p_svg )
         return VLC_ENOMEM;
 
@@ -476,7 +470,7 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
         int length;
         char* psz_template = p_sys->psz_template;
         length = strlen( psz_string ) + strlen( psz_template ) + 42;
-        p_svg->psz_text = malloc( ( length + 1 ) * sizeof( char ) );
+        p_svg->psz_text = malloc( length + 1 );
         if( !p_svg->psz_text )
         {
             free( p_svg );

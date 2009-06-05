@@ -2,7 +2,7 @@
  * osdmenu.c: osd filter module
  *****************************************************************************
  * Copyright (C) 2004-2007 M2X
- * $Id: 3e8e583530ccba94eafa488aeb4d8fa0e29778f0 $
+ * $Id: 76214056519fe5ddb6ba84223963ea7e98bff044 $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *
@@ -112,34 +112,35 @@ static int MouseEvent( vlc_object_t *, char const *,
 #define OSD_UPDATE_DEFAULT 300
 #define OSD_UPDATE_MAX     1000
 
-vlc_module_begin();
-    add_integer( OSD_CFG "x", -1, NULL, POSX_TEXT, POSX_LONGTEXT, false );
-    add_integer( OSD_CFG "y", -1, NULL, POSY_TEXT, POSY_LONGTEXT, false );
+vlc_module_begin ()
+    set_capability( "sub filter", 100 )
+    set_description( N_("On Screen Display menu") )
+    set_shortname( N_("OSD menu") )
+    add_shortcut( "osdmenu" )
+
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_SUBPIC )
+
+    set_callbacks( CreateFilter, DestroyFilter )
+
+    add_integer( OSD_CFG "x", -1, NULL, POSX_TEXT, POSX_LONGTEXT, false )
+    add_integer( OSD_CFG "y", -1, NULL, POSY_TEXT, POSY_LONGTEXT, false )
     add_integer( OSD_CFG "position", 8, NULL, POS_TEXT, POS_LONGTEXT,
-                 false );
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
+                 false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
     add_string( OSD_CFG "file", OSD_DEFAULT_CFG, NULL, OSD_FILE_TEXT,
-        OSD_FILE_LONGTEXT, false );
+        OSD_FILE_LONGTEXT, false )
     add_string( OSD_CFG "file-path", NULL, NULL, OSD_PATH_TEXT,
-        OSD_PATH_LONGTEXT, false );
+        OSD_PATH_LONGTEXT, false )
     add_integer( OSD_CFG "timeout", 15, NULL, TIMEOUT_TEXT,
-        TIMEOUT_LONGTEXT, false );
+        TIMEOUT_LONGTEXT, false )
     add_integer_with_range( OSD_CFG "update", OSD_UPDATE_DEFAULT,
         OSD_UPDATE_MIN, OSD_UPDATE_MAX, NULL, OSD_UPDATE_TEXT,
-        OSD_UPDATE_LONGTEXT, true );
+        OSD_UPDATE_LONGTEXT, true )
     add_integer_with_range( OSD_CFG "alpha", 255, 0, 255, NULL,
-        OSD_ALPHA_TEXT, OSD_ALPHA_LONGTEXT, true );
+        OSD_ALPHA_TEXT, OSD_ALPHA_LONGTEXT, true )
 
-    set_capability( "sub filter", 100 );
-    set_description( N_("On Screen Display menu") );
-    set_shortname( N_("OSD menu") );
-    add_shortcut( "osdmenu" );
-
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_SUBPIC );
-
-    set_callbacks( CreateFilter, DestroyFilter );
-vlc_module_end();
+vlc_module_end ()
 
 /*****************************************************************************
  * Sub filter code
@@ -218,6 +219,7 @@ static int CreateFilter ( vlc_object_t *p_this )
     if( p_sys->p_menu == NULL )
         goto error;
 
+    /* FIXME: this plugin is not at all thread-safe w.r.t. callbacks */
     p_sys->p_menu->i_position = p_sys->i_position;
 
     /* Check if menu position was overridden */
@@ -289,7 +291,7 @@ static void DestroyFilter( vlc_object_t *p_this )
     var_DelCallback( p_filter, OSD_CFG "update", OSDMenuCallback, p_sys );
     var_DelCallback( p_filter, OSD_CFG "alpha", OSDMenuCallback, p_sys );
 
-    if( p_sys )
+    if( p_sys ) /* FIXME: <-- WTF??? what about the 4 ones above? */
     {
         var_DelCallback( p_sys->p_menu, "osd-menu-update",
                          OSDMenuUpdateEvent, p_filter );
@@ -375,7 +377,7 @@ static subpicture_region_t *create_text_region( filter_t *p_filter, subpicture_t
     fmt.i_width = fmt.i_visible_width = i_width;
     fmt.i_height = fmt.i_visible_height = i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_region = p_spu->pf_create_region( VLC_OBJECT(p_filter), &fmt );
+    p_region = subpicture_region_New( &fmt );
     if( !p_region )
     {
         msg_Err( p_filter, "cannot allocate another SPU region" );
@@ -401,6 +403,7 @@ static subpicture_region_t *create_picture_region( filter_t *p_filter, subpictur
 {
     subpicture_region_t *p_region = NULL;
     video_format_t       fmt;
+    video_palette_t      palette;
 
     if( !p_spu ) return NULL;
 
@@ -412,22 +415,24 @@ static subpicture_region_t *create_picture_region( filter_t *p_filter, subpictur
     fmt.i_width = fmt.i_visible_width = i_width;
     fmt.i_height = fmt.i_visible_height = i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
+    if( fmt.i_chroma == VLC_FOURCC('Y','U','V','P') )
+    {
+        fmt.p_palette = &palette;
+        fmt.p_palette->i_entries = 0;
+        fmt.i_visible_width = 0;
+        fmt.i_visible_height = 0;
+    }
 
-    p_region = p_spu->pf_create_region( VLC_OBJECT(p_filter), &fmt );
+    p_region = subpicture_region_New( &fmt );
     if( !p_region )
     {
         msg_Err( p_filter, "cannot allocate SPU region" );
         p_filter->pf_sub_buffer_del( p_filter, p_spu );
         return NULL;
     }
-    if( !p_pic && ( fmt.i_chroma == VLC_FOURCC('Y','U','V','P') ) )
-    {
-        p_region->fmt.p_palette->i_entries = 0;
-        p_region->fmt.i_width = p_region->fmt.i_visible_width = 0;
-        p_region->fmt.i_height = p_region->fmt.i_visible_height = 0;
-    }
+    /* FIXME the copy is probably not needed anymore */
     if( p_pic )
-        vout_CopyPicture( p_filter, &p_region->picture, p_pic );
+        picture_Copy( p_region->p_picture, p_pic );
 
     p_region->i_x = 0;
     p_region->i_y = 0;
@@ -451,6 +456,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t i_date )
     filter_sys_t *p_sys = p_filter->p_sys;
     subpicture_t *p_spu = NULL;
     subpicture_region_t *p_region = NULL;
+    int i_x, i_y;
 
     if( !p_sys->b_update || (p_sys->i_update <= 0) )
             return NULL;
@@ -472,7 +478,6 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t i_date )
         p_spu->b_absolute = true;
     else
         p_spu->b_absolute = p_sys->b_absolute;
-    p_spu->i_flags = p_sys->i_position;
 
     /* Determine the duration of the subpicture */
     if( p_sys->i_end_date > 0 )
@@ -505,8 +510,11 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t i_date )
             NULL );
 
         /* proper positioning of OSD menu image */
-        p_spu->i_x = p_filter->p_sys->p_menu->p_state->i_x;
-        p_spu->i_y = p_filter->p_sys->p_menu->p_state->i_y;
+        p_region->i_x = p_filter->p_sys->p_menu->p_state->i_x;
+        p_region->i_y = p_filter->p_sys->p_menu->p_state->i_y;
+        /* FIXME is it needed ?
+        p_region->i_align = p_sys->i_position;
+        */
         p_spu->p_region = p_region;
         p_spu->i_alpha = 0xFF; /* Picture is completely non transparent. */
         return p_spu;
@@ -530,21 +538,21 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t i_date )
         return NULL;
     }
 
-    p_spu->i_width = p_region->fmt.i_visible_width;
-    p_spu->i_height = p_region->fmt.i_visible_height;
     p_spu->i_alpha = p_filter->p_sys->i_alpha;
 
     /* proper positioning of OSD menu image */
     if( p_filter->p_sys->p_menu->i_style == OSD_MENU_STYLE_CONCAT )
     {
-        p_spu->i_x = p_filter->p_sys->p_menu->p_button->i_x;
-        p_spu->i_y = p_filter->p_sys->p_menu->p_button->i_y;
+        i_x = p_filter->p_sys->p_menu->p_button->i_x;
+        i_y = p_filter->p_sys->p_menu->p_button->i_y;
     }
     else
     {
-        p_spu->i_x = p_filter->p_sys->p_menu->p_state->i_x;
-        p_spu->i_y = p_filter->p_sys->p_menu->p_state->i_y;
+        i_x = p_filter->p_sys->p_menu->p_state->i_x;
+        i_y = p_filter->p_sys->p_menu->p_state->i_y;
     }
+    p_region->i_x = i_x;
+    p_region->i_y = i_y;
 
     if( p_filter->p_sys->p_menu->i_style == OSD_MENU_STYLE_CONCAT )
     {
@@ -566,19 +574,12 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t i_date )
             if( !p_new )
             {
                 /* Cleanup when bailing out */
-                subpicture_region_t *p_tmp = NULL;
-                while( p_region_list )
-                {
-                    p_tmp = p_region_list->p_next;
-                    p_spu->pf_destroy_region( VLC_OBJECT(p_filter), p_region_list );
-                };
-                p_spu->pf_destroy_region( VLC_OBJECT(p_filter), p_region );
+                subpicture_region_ChainDelete( p_region_list );
+                subpicture_region_Delete( p_region );
+
                 p_filter->pf_sub_buffer_del( p_filter, p_spu );
                 return NULL;
             }
-
-            p_spu->i_width += p_new->fmt.i_visible_width;
-            p_spu->i_height += p_new->fmt.i_visible_height;
 
             if( !p_region_list )
             {
@@ -587,8 +588,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t i_date )
             }
             else
             {
-                p_new->i_x = p_region_tail->fmt.i_visible_width;
-                p_new->i_y = p_button->i_y;
+                p_new->i_x = i_x+p_region_tail->fmt.i_visible_width;
+                p_new->i_y = i_y+p_button->i_y;
                 p_region_tail->p_next = p_new;
                 p_region_tail = p_new;
             }
@@ -708,7 +709,7 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
             osd_ButtonSelect( p_this, p_button );
             p_sys->b_update = p_sys->b_visible ? true : false;
             p_sys->b_clicked = true;
-            msg_Dbg( p_this, "mouse clicked %s (%d,%d)\n", p_button->psz_name, i_x, i_y );
+            msg_Dbg( p_this, "mouse clicked %s (%d,%d)", p_button->psz_name, i_x, i_y );
         }
     }
     return VLC_SUCCESS;

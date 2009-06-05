@@ -3,6 +3,8 @@ usr/bin/nvlc
 usr/bin/rvlc
 usr/bin/vlc
 usr/bin/vlc-wrapper
+usr/lib/vlc/access/libaccess_alsa_plugin.so
+usr/lib/vlc/access/libaccess_bd_plugin.so
 usr/lib/vlc/access/libaccess_directory_plugin.so
 usr/lib/vlc/access/libaccess_fake_plugin.so
 usr/lib/vlc/access/libaccess_file_plugin.so
@@ -10,6 +12,7 @@ usr/lib/vlc/access/libaccess_ftp_plugin.so
 usr/lib/vlc/access/libaccess_http_plugin.so
 usr/lib/vlc/access/libaccess_mmap_plugin.so
 usr/lib/vlc/access/libaccess_mms_plugin.so
+usr/lib/vlc/access/libaccess_oss_plugin.so
 usr/lib/vlc/access/libaccess_realrtsp_plugin.so
 usr/lib/vlc/access/libaccess_rtmp_plugin.so
 usr/lib/vlc/access/libaccess_smb_plugin.so
@@ -20,11 +23,12 @@ usr/lib/vlc/access/libdvb_plugin.so
 usr/lib/vlc/access/libdvdnav_plugin.so
 usr/lib/vlc/access/libdvdread_plugin.so
 usr/lib/vlc/access/libpvr_plugin.so
+usr/lib/vlc/access/librtp_plugin.so
 usr/lib/vlc/access/libv4l2_plugin.so
 usr/lib/vlc/access/libv4l_plugin.so
 usr/lib/vlc/access/libvcd_plugin.so
 usr/lib/vlc/access/libvcdx_plugin.so
-usr/lib/vlc/access_filter
+usr/lib/vlc/access/libzip_plugin.so
 usr/lib/vlc/access_output
 usr/lib/vlc/audio_filter
 usr/lib/vlc/audio_mixer
@@ -33,11 +37,11 @@ usr/lib/vlc/audio_output/libaout_file_plugin.so
 usr/lib/vlc/audio_output/liboss_plugin.so
 usr/lib/vlc/codec/liba52_plugin.so
 usr/lib/vlc/codec/libadpcm_plugin.so
+usr/lib/vlc/codec/libaes3_plugin.so
 usr/lib/vlc/codec/libaraw_plugin.so
 usr/lib/vlc/codec/libavcodec_plugin.so
 usr/lib/vlc/codec/libcc_plugin.so
 usr/lib/vlc/codec/libcdg_plugin.so
-usr/lib/vlc/codec/libcinepak_plugin.so
 usr/lib/vlc/codec/libcmml_plugin.so
 usr/lib/vlc/codec/libcvdsub_plugin.so
 usr/lib/vlc/codec/libdts_plugin.so
@@ -45,6 +49,7 @@ usr/lib/vlc/codec/libdvbsub_plugin.so
 usr/lib/vlc/codec/libfaad_plugin.so
 usr/lib/vlc/codec/libfake_plugin.so
 usr/lib/vlc/codec/libflac_plugin.so
+usr/lib/vlc/codec/libinvmem_plugin.so
 usr/lib/vlc/codec/liblibass_plugin.so
 usr/lib/vlc/codec/liblibmpeg2_plugin.so
 usr/lib/vlc/codec/liblpcm_plugin.so
@@ -85,6 +90,7 @@ usr/lib/vlc/misc/libxtag_plugin.so
 usr/lib/vlc/mux
 usr/lib/vlc/packetizer
 usr/lib/vlc/services_discovery
+usr/lib/vlc/stream_filter
 usr/lib/vlc/stream_out
 usr/lib/vlc/video_chroma
 usr/lib/vlc/video_filter/libadjust_plugin.so
@@ -123,12 +129,14 @@ usr/lib/vlc/video_filter/librotate_plugin.so
 usr/lib/vlc/video_filter/librss_plugin.so
 usr/lib/vlc/video_filter/librv32_plugin.so
 usr/lib/vlc/video_filter/libscale_plugin.so
+usr/lib/vlc/video_filter/libscene_plugin.so
 usr/lib/vlc/video_filter/libsharpen_plugin.so
 usr/lib/vlc/video_filter/libswscale_plugin.so
 usr/lib/vlc/video_filter/libtransform_plugin.so
 usr/lib/vlc/video_filter/libwall_plugin.so
 usr/lib/vlc/video_filter/libwave_plugin.so
+usr/lib/vlc/video_filter/libyuvp_plugin.so
 usr/lib/vlc/video_output/libcaca_plugin.so
-usr/lib/vlc/video_output/libimage_plugin.so
 usr/lib/vlc/video_output/libvmem_plugin.so
+usr/lib/vlc/video_output/libyuv_plugin.so
 usr/lib/vlc/visualization/libvisual_plugin.so

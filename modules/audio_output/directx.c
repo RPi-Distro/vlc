@@ -2,7 +2,7 @@
  * directx.c: Windows DirectX audio output method
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 0b9737ddee227eb9015afc2e69246e11be679fe8 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -24,7 +24,6 @@
 /*****************************************************************************
  * Preamble
  *****************************************************************************/
-
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -174,6 +173,8 @@ struct aout_sys_t
 
     int i_frame_size;                         /* Size in bytes of one frame */
 
+    int i_speaker_setup;                 /* Speaker setup override */
+
     bool b_chan_reorder;              /* do we need channel reordering */
     int pi_chan_table[AOUT_CHAN_MAX];
     uint32_t i_channel_mask;
@@ -214,6 +215,10 @@ static void DestroyDSBuffer   ( aout_instance_t * );
 static void* DirectSoundThread( vlc_object_t * );
 static int  FillBuffer        ( aout_instance_t *, int, aout_buffer_t * );
 
+/* Speaker setup override options list */
+static const char *const speaker_list[] = { "Windows default", "Mono", "Stereo",
+                                            "Quad", "5.1", "7.1" };
+
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
@@ -225,20 +230,27 @@ static int  FillBuffer        ( aout_instance_t *, int, aout_buffer_t * );
 #define FLOAT_LONGTEXT N_( \
     "The option allows you to enable or disable the high-quality float32 " \
     "audio output mode (which is not well supported by some soundcards)." )
+#define SPEAKER_TEXT N_("Select speaker configuration")
+#define SPEAKER_LONGTEXT N_("Select speaker configuration you want to use. " \
+    "This option doesn't upmix! So NO e.g. Stereo -> 5.1 conversion." )
 
-vlc_module_begin();
-    set_description( N_("DirectX audio output") );
-    set_shortname( "DirectX" );
-    set_capability( "audio output", 100 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AOUT );
-    add_shortcut( "directx" );
+vlc_module_begin ()
+    set_description( N_("DirectX audio output") )
+    set_shortname( "DirectX" )
+    set_capability( "audio output", 100 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AOUT )
+    add_shortcut( "directx" )
     add_integer( "directx-audio-device", 0, NULL, DEVICE_TEXT,
-                 DEVICE_LONGTEXT, true );
+                 DEVICE_LONGTEXT, true )
     add_bool( "directx-audio-float32", 0, 0, FLOAT_TEXT,
-              FLOAT_LONGTEXT, true );
-    set_callbacks( OpenAudio, CloseAudio );
-vlc_module_end();
+              FLOAT_LONGTEXT, true )
+    add_string( "directx-audio-speaker", "Windows default", NULL,
+                 SPEAKER_TEXT, SPEAKER_LONGTEXT, true )
+        change_string_list( speaker_list, 0, 0 )
+        change_need_restart ()
+    set_callbacks( OpenAudio, CloseAudio )
+vlc_module_end ()
 
 /*****************************************************************************
  * OpenAudio: open the audio device
@@ -249,6 +261,10 @@ static int OpenAudio( vlc_object_t *p_this )
 {
     aout_instance_t * p_aout = (aout_instance_t *)p_this;
     vlc_value_t val;
+    char * psz_speaker;
+    int i = 0;
+
+    const char * const * ppsz_compare = speaker_list;
 
     msg_Dbg( p_aout, "OpenAudio" );
 
@@ -269,10 +285,29 @@ static int OpenAudio( vlc_object_t *p_this )
     /* Retrieve config values */
     var_Create( p_aout, "directx-audio-float32",
                 VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Create( p_aout, "directx-audio-device",
-                VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
-    var_Get( p_aout, "directx-audio-device", &val );
-    p_aout->output.p_sys->i_device_id = val.i_int;
+    psz_speaker = var_CreateGetString( p_aout, "directx-audio-speaker" );
+
+    while ( *ppsz_compare != NULL )
+    {
+        if ( !strncmp( *ppsz_compare, psz_speaker, strlen(*ppsz_compare) ) )
+        {
+            break;
+        }
+        ppsz_compare++; i++;
+    }
+
+    if ( *ppsz_compare == NULL )
+    {
+        msg_Err( p_aout, "(%s) isn't valid speaker setup option",
+                 psz_speaker );
+        msg_Err( p_aout, "Defaulting to Windows default speaker config");
+        i = 0;
+    }
+    free( psz_speaker );
+    p_aout->output.p_sys->i_speaker_setup = i;
+
+    p_aout->output.p_sys->i_device_id = var_CreateGetInteger( p_aout,
+                                               "directx-audio-device" );
     p_aout->output.p_sys->p_device_guid = 0;
 
     /* Initialise DirectSound */
@@ -389,7 +424,7 @@ static int OpenAudio( vlc_object_t *p_this )
     if( vlc_thread_create( p_aout->output.p_sys->p_notif,
                            "DirectSound Notification Thread",
                            DirectSoundThread,
-                           VLC_THREAD_PRIORITY_HIGHEST, false ) )
+                           VLC_THREAD_PRIORITY_HIGHEST ) )
     {
         msg_Err( p_aout, "cannot create DirectSoundThread" );
         CloseHandle( p_aout->output.p_sys->p_notif->event );
@@ -433,7 +468,7 @@ static void Probe( aout_instance_t * p_aout )
             == VLC_SUCCESS )
         {
             val.i_int = AOUT_VAR_5_1;
-            text.psz_string = "5.1";
+            text.psz_string = (char*) "5.1";
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
             var_Change( p_aout, "audio-device", VLC_VAR_SETDEFAULT, &val, NULL );
@@ -454,7 +489,7 @@ static void Probe( aout_instance_t * p_aout )
                == VLC_SUCCESS )
            {
                val.i_int = AOUT_VAR_7_1;
-               text.psz_string = "7.1";
+               text.psz_string = (char*) "7.1";
                var_Change( p_aout, "audio-device",
                            VLC_VAR_ADDCHOICE, &val, &text );
                var_Change( p_aout, "audio-device", VLC_VAR_SETDEFAULT, &val, NULL );
@@ -474,7 +509,7 @@ static void Probe( aout_instance_t * p_aout )
             == VLC_SUCCESS )
         {
             val.i_int = AOUT_VAR_3F2R;
-            text.psz_string = N_("3 Front 2 Rear");
+            text.psz_string = _("3 Front 2 Rear");
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
             if(!is_default_output_set)
@@ -497,7 +532,7 @@ static void Probe( aout_instance_t * p_aout )
             == VLC_SUCCESS )
         {
             val.i_int = AOUT_VAR_2F2R;
-            text.psz_string = N_("2 Front 2 Rear");
+            text.psz_string = _("2 Front 2 Rear");
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
             if(!is_default_output_set)
@@ -516,7 +551,7 @@ static void Probe( aout_instance_t * p_aout )
         == VLC_SUCCESS )
     {
         val.i_int = AOUT_VAR_STEREO;
-        text.psz_string = N_("Stereo");
+        text.psz_string = _("Stereo");
         var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
         if(!is_default_output_set)
         {
@@ -524,7 +559,7 @@ static void Probe( aout_instance_t * p_aout )
             is_default_output_set = true;
             msg_Dbg( p_aout, "device supports 2 channels (DEFAULT!)" );
         }
-        msg_Dbg( p_aout, "device supports 2 channels" );
+        else msg_Dbg( p_aout, "device supports 2 channels" );
     }
 
     /* Test for mono support */
@@ -534,7 +569,7 @@ static void Probe( aout_instance_t * p_aout )
         == VLC_SUCCESS )
     {
         val.i_int = AOUT_VAR_MONO;
-        text.psz_string = N_("Mono");
+        text.psz_string = _("Mono");
         var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
         msg_Dbg( p_aout, "device supports 1 channel" );
     }
@@ -576,6 +611,37 @@ static void Probe( aout_instance_t * p_aout )
         val.i_int = AOUT_VAR_STEREO;
         break;
     }
+
+    /* Check if we want to override speaker config */
+    switch( p_aout->output.p_sys->i_speaker_setup )
+    {
+    case 0: /* Default value aka Windows default speaker setup */
+        break;
+    case 1: /* Mono */
+        msg_Dbg( p_aout, "SpeakerConfig is forced to Mono" );
+        val.i_int = AOUT_VAR_MONO;
+        break;
+    case 2: /* Stereo */
+        msg_Dbg( p_aout, "SpeakerConfig is forced to Stereo" );
+        val.i_int = AOUT_VAR_STEREO;
+        break;
+    case 3: /* Quad */
+        msg_Dbg( p_aout, "SpeakerConfig is forced to Quad" );
+        val.i_int = AOUT_VAR_2F2R;
+        break;
+    case 4: /* 5.1 */
+        msg_Dbg( p_aout, "SpeakerConfig is forced to 5.1" );
+        val.i_int = AOUT_VAR_5_1;
+        break;
+    case 5: /* 7.1 */
+        msg_Dbg( p_aout, "SpeakerConfig is forced to 7.1" );
+        val.i_int = AOUT_VAR_7_1;
+        break;
+    default:
+        msg_Dbg( p_aout, "SpeakerConfig is forced to non-existing value" );
+        break;
+    }
+
     var_Set( p_aout, "audio-device", val );
 
     /* Test for SPDIF support */
@@ -590,7 +656,7 @@ static void Probe( aout_instance_t * p_aout )
         {
             msg_Dbg( p_aout, "device supports A/52 over S/PDIF" );
             val.i_int = AOUT_VAR_SPDIF;
-            text.psz_string = N_("A/52 over S/PDIF");
+            text.psz_string = _("A/52 over S/PDIF");
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
             if( config_GetInt( p_aout, "spdif" ) )
@@ -607,9 +673,7 @@ static void Probe( aout_instance_t * p_aout )
     }
 
     var_AddCallback( p_aout, "audio-device", aout_ChannelsRestart, NULL );
-
-    val.b_bool = true;
-    var_Set( p_aout, "intf-change", val );
+    var_SetBool( p_aout, "intf-change", true );
 }
 
 /*****************************************************************************
@@ -670,7 +734,7 @@ static void CloseAudio( vlc_object_t *p_this )
 
     /* finally release the DirectSound object */
     if( p_sys->p_dsobject ) IDirectSound_Release( p_sys->p_dsobject );
- 
+
     /* free DSOUND.DLL */
     if( p_sys->hdsound_dll ) FreeLibrary( p_sys->hdsound_dll );
 
@@ -924,13 +988,9 @@ static int CreateDSBufferPCM( aout_instance_t *p_aout, int *i_format,
                               int i_channels, int i_nb_channels, int i_rate,
                               bool b_probe )
 {
-    vlc_value_t val;
-
-    var_Get( p_aout, "directx-audio-float32", &val );
-
     /* Float32 audio samples are not supported for 5.1 output on the emu101k */
-
-    if( !val.b_bool || i_nb_channels > 2 ||
+    if( !var_GetBool( p_aout, "directx-audio-float32" ) ||
+        i_nb_channels > 2 ||
         CreateDSBuffer( p_aout, VLC_FOURCC('f','l','3','2'),
                         i_channels, i_nb_channels, i_rate,
                         FRAME_SIZE * 4 * i_nb_channels, b_probe )
@@ -1054,12 +1114,10 @@ static void* DirectSoundThread( vlc_object_t *p_this )
     mtime_t last_time;
     HRESULT dsresult;
     long l_queued = 0;
+    int canc = vlc_savecancel ();
 
     /* We don't want any resampling when using S/PDIF output */
     b_sleek = p_aout->output.output.i_format == VLC_FOURCC('s','p','d','i');
-
-    /* Tell the main thread that we are ready */
-    vlc_thread_ready( p_notif );
 
     msg_Dbg( p_notif, "DirectSoundThread ready" );
 
@@ -1148,6 +1206,7 @@ static void* DirectSoundThread( vlc_object_t *p_this )
     /* free the event */
     CloseHandle( p_notif->event );
 
+    vlc_restorecancel (canc);
     msg_Dbg( p_notif, "DirectSoundThread exiting" );
     return NULL;
 }

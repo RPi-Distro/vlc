@@ -2,7 +2,7 @@
  * rpn.c : RPN evaluator for the HTTP Interface
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: 712b145d7b8af8c486b249de0be152442221eca1 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -36,30 +36,26 @@ static vlc_object_t *GetVLCObject( intf_thread_t *p_intf,
                                    bool *pb_need_release )
 {
     intf_sys_t    *p_sys = p_intf->p_sys;
-    int i_object_type = 0;
     vlc_object_t *p_object = NULL;
     *pb_need_release = false;
 
     if( !strcmp( psz_object, "VLC_OBJECT_LIBVLC" ) )
         p_object = VLC_OBJECT(p_intf->p_libvlc);
-    else if( !strcmp( psz_object, "VLC_OBJECT_INTF" ) )
-        p_object = VLC_OBJECT(p_intf);
     else if( !strcmp( psz_object, "VLC_OBJECT_PLAYLIST" ) )
         p_object = VLC_OBJECT(p_sys->p_playlist);
     else if( !strcmp( psz_object, "VLC_OBJECT_INPUT" ) )
         p_object = VLC_OBJECT(p_sys->p_input);
-    else if( !strcmp( psz_object, "VLC_OBJECT_VOUT" ) )
-        i_object_type = VLC_OBJECT_VOUT;
-    else if( !strcmp( psz_object, "VLC_OBJECT_AOUT" ) )
-        i_object_type = VLC_OBJECT_AOUT;
+    else if( p_sys->p_input )
+    {
+        if( !strcmp( psz_object, "VLC_OBJECT_VOUT" ) )
+            p_object = VLC_OBJECT( input_GetVout( p_sys->p_input ) );
+        else if( !strcmp( psz_object, "VLC_OBJECT_AOUT" ) )
+            p_object = VLC_OBJECT( input_GetAout( p_sys->p_input ) );
+        if( p_object )
+            *pb_need_release = true;
+    }
     else
         msg_Warn( p_intf, "unknown object type (%s)", psz_object );
-
-    if( p_object == NULL && i_object_type )
-    {
-        *pb_need_release = true;
-        p_object = vlc_object_find( p_intf, i_object_type, FIND_ANYWHERE );
-    }
 
     return p_object;
 }
@@ -100,7 +96,6 @@ char *SSPop( rpn_stack_t *st )
 int SSPopN( rpn_stack_t *st, mvar_t  *vars )
 {
     char *name;
-    char *value;
 
     char *end;
     int  i;
@@ -109,7 +104,7 @@ int SSPopN( rpn_stack_t *st, mvar_t  *vars )
     i = strtol( name, &end, 0 );
     if( end == name )
     {
-        value = mvar_GetValue( vars, name );
+        const char *value = mvar_GetValue( vars, name );
         i = atoi( value );
     }
     free( name );
@@ -348,7 +343,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         }
         else if( !strcmp( s, "url_extract" ) )
         {
-            char *url = mvar_GetValue( vars, "url_value" );
+            const char *url = mvar_GetValue( vars, "url_value" );
             char *name = SSPop( st );
             char *value = ExtractURIString( url, name );
             if( value != NULL )
@@ -370,7 +365,8 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             SSPush( st, value );
             free( value );
         }
-        else if( !strcmp( s, "xml_encode" ) )
+        else if( !strcmp( s, "xml_encode" )
+              || !strcmp( s, "htmlspecialchars" ) )
         {
             char *url = SSPop( st );
             char *value = convert_xml_special_chars( url );
@@ -418,17 +414,6 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
                 *p++ = *str++;
             }
             *p = '\0';
-
-            SSPush( st, psz_dest );
-            free( psz_src );
-            free( psz_dest );
-        }
-        else if( !strcmp( s, "htmlspecialchars" ) )
-        {
-            char *psz_src = SSPop( st );
-            char *psz_dest;
-
-            psz_dest = convert_xml_special_chars( psz_src );
 
             SSPush( st, psz_dest );
             free( psz_src );
@@ -483,7 +468,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         else if( !strcmp( s, "value" ) )
         {
             char *name  = SSPop( st );
-            char *value = mvar_GetValue( vars, name );
+            const char *value = mvar_GetValue( vars, name );
 
             SSPush( st, value );
 
@@ -495,12 +480,12 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             int i_id = SSPopN( st, vars );
             int i_ret;
 
-            vlc_object_lock( p_sys->p_playlist );
+            playlist_Lock( p_sys->p_playlist );
             i_ret = playlist_Control( p_sys->p_playlist, PLAYLIST_VIEWPLAY,
                                       pl_Locked, NULL,
                                       playlist_ItemGetById( p_sys->p_playlist,
-                                      i_id, pl_Locked ) );
-            vlc_object_unlock( p_sys->p_playlist );
+                                      i_id ) );
+            playlist_Unlock( p_sys->p_playlist );
             msg_Dbg( p_intf, "requested playlist item: %i", i_id );
             SSPushN( st, i_ret );
         }
@@ -855,11 +840,20 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
                 i_ret = playlist_AddInput( p_sys->p_playlist, p_input,
                                    PLAYLIST_APPEND, PLAYLIST_END, true,
                                    pl_Unlocked );
-                vlc_gc_decref( p_input );
                 if( i_ret == VLC_SUCCESS )
+                {
+                    playlist_item_t *p_item;
                     msg_Dbg( p_intf, "requested mrl add: %s", mrl );
+                    playlist_Lock( p_sys->p_playlist );
+                    p_item = playlist_ItemGetByInput( p_sys->p_playlist,
+                                                      p_input );
+                    if( p_item )
+                        i_ret = p_item->i_id;
+                    playlist_Unlock( p_sys->p_playlist );
+                }
                 else
                     msg_Warn( p_intf, "adding mrl %s failed", mrl );
+                vlc_gc_decref( p_input );
             }
             free( psz_uri );
             SSPushN( st, i_ret );
@@ -875,12 +869,13 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         else if( !strcmp( s, "playlist_delete" ) )
         {
             int i_id = SSPopN( st, vars );
+            playlist_Lock( p_sys->p_playlist );
             playlist_item_t *p_item = playlist_ItemGetById( p_sys->p_playlist,
-                                                            i_id, pl_Unlocked );
+                                                            i_id );
             if( p_item )
             {
                 playlist_DeleteFromInput( p_sys->p_playlist,
-                                          p_item->p_input->i_id, pl_Unlocked );
+                                          p_item->p_input->i_id, pl_Locked );
                 msg_Dbg( p_intf, "requested playlist delete: %d", i_id );
             }
             else
@@ -888,6 +883,7 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
                 msg_Dbg( p_intf, "couldn't find playlist item to delete (%d)",
                          i_id );
             }
+            playlist_Unlock( p_sys->p_playlist );
         }
         else if( !strcmp( s, "playlist_move" ) )
         {
@@ -1007,6 +1003,54 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
                 {
                     psz_val = input_item_GetGenre( p_item );
                 }
+                else if( !strcmp( psz_meta, "COPYRIGHT" ) )
+                {
+                     psz_val = input_item_GetCopyright( p_item );
+                }
+                else if( !strcmp( psz_meta, "TRACK_NUMBER" ) )
+                {
+                    psz_val = input_item_GetTrackNum( p_item );
+                }
+                else if( !strcmp( psz_meta, "DESCRIPTION" ) )
+                {
+                    psz_val = input_item_GetDescription( p_item );
+                }
+                else if( !strcmp( psz_meta, "RATING" ) )
+                {
+                    psz_val = input_item_GetRating( p_item );
+                }
+                else if( !strcmp( psz_meta, "DATE" ) )
+                {
+                    psz_val = input_item_GetDate( p_item );
+                }
+                else if( !strcmp( psz_meta, "URL" ) )
+                {
+                    psz_val = input_item_GetURL( p_item );
+                }
+                else if( !strcmp( psz_meta, "LANGUAGE" ) )
+                {
+                    psz_val = input_item_GetLanguage( p_item );
+                }
+                else if( !strcmp( psz_meta, "NOW_PLAYING" ) )
+                {
+                    psz_val = input_item_GetNowPlaying( p_item );
+                }
+                else if( !strcmp( psz_meta, "PUBLISHER" ) )
+                {
+                    psz_val = input_item_GetPublisher( p_item );
+                }
+                else if( !strcmp( psz_meta, "ENCODED_BY" ) )
+                {
+                    psz_val = input_item_GetEncodedBy( p_item );
+                }
+                else if( !strcmp( psz_meta, "ART_URL" ) )
+                {
+                    psz_val = input_item_GetEncodedBy( p_item );
+                }
+                else if( !strcmp( psz_meta, "TRACK_ID" ) )
+                {
+                    psz_val = input_item_GetTrackID( p_item );
+                }
 #undef p_item
             }
             if( psz_val == NULL ) psz_val = strdup( "" );
@@ -1032,9 +1076,9 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             while( strcmp( psz_elt = SSPop( st ), "" )
                    && strcmp( psz_elt, ";" ) )
             {
-                char *psz_buf =
-                    (char *)malloc( strlen( psz_cmd ) + strlen( psz_elt ) + 2 );
-                sprintf( psz_buf, "%s %s", psz_cmd, psz_elt );
+                char* psz_buf;
+                if( asprintf( &psz_buf, "%s %s", psz_cmd, psz_elt ) == -1 )
+                    psz_buf = NULL;
                 free( psz_cmd );
                 free( psz_elt );
                 psz_cmd = psz_buf;
@@ -1049,11 +1093,9 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
             }
             else
             {
-                psz_error = malloc( strlen(vlm_answer->psz_name) +
-                                    strlen(vlm_answer->psz_value) +
-                                    strlen( " : ") + 1 );
-                sprintf( psz_error , "%s : %s" , vlm_answer->psz_name,
-                                                 vlm_answer->psz_value );
+                if( asprintf( &psz_error , "%s : %s" , vlm_answer->psz_name,
+                              vlm_answer->psz_value ) == -1 )
+                    psz_error = NULL;
             }
 
             mvar_AppendNewVar( vars, "vlm_error", psz_error );
@@ -1070,13 +1112,10 @@ void EvaluateRPN( intf_thread_t *p_intf, mvar_t  *vars,
         {
             if( p_sys->p_input )
             {
-                vout_thread_t *p_vout;
-                p_vout = vlc_object_find( p_sys->p_input,
-                                          VLC_OBJECT_VOUT, FIND_CHILD );
-
+                vout_thread_t *p_vout = input_GetVout( p_sys->p_input );
                 if( p_vout )
                 {
-                    vout_Control( p_vout, VOUT_SNAPSHOT );
+                    var_TriggerCallback( p_vout, "video-snapshot" );
                     vlc_object_release( p_vout );
                     msg_Dbg( p_intf, "requested snapshot" );
                 }

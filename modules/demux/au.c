@@ -2,7 +2,7 @@
  * au.c : au file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 58da050f6175464eaebb058ac23be30221b76a0f $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -44,14 +44,14 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_description( N_("AU demuxer") );
-    set_capability( "demux", 10 );
-    set_callbacks( Open, Close );
-    add_shortcut( "au" );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_description( N_("AU demuxer") )
+    set_capability( "demux", 10 )
+    set_callbacks( Open, Close )
+    add_shortcut( "au" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -109,12 +109,11 @@ static int Open( vlc_object_t *p_this )
     int          i_cat;
     int          i_samples, i_modulo;
 
-    CHECK_PEEK( p_peek, 4 );
+    if( stream_Peek( p_demux->s , &p_peek, 4 ) < 4 )
+        return VLC_EGENERIC;
 
     if( memcmp( p_peek, ".snd", 4 ) )
-    {
         return VLC_EGENERIC;
-    }
 
     /* skip signature */
     stream_Read( p_demux->s, NULL, 4 );   /* cannot fail */

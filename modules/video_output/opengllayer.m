@@ -3,8 +3,8 @@
  * a layer. The layer will register itself to the drawable object stored in 
  * the "drawable" variable. 
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: aed86020f95703c612c0da1ab5d84059afe960f9 $
+ * Copyright (C) 2004-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -89,15 +89,15 @@ static int  Control      ( vout_thread_t *, int, va_list );
 
 static int InitTextures  ( vout_thread_t * );
 
-vlc_module_begin();
-    set_shortname( "OpenGLLayer" );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_description( N_("Core Animation OpenGL Layer (Mac OS X)") );
-    set_capability( "video output", 20 );
-    add_shortcut( "opengllayer" );
-    set_callbacks( CreateVout, DestroyVout );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "OpenGLLayer" )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VOUT )
+    set_description( N_("Core Animation OpenGL Layer (Mac OS X)") )
+    set_capability( "video output", 20 )
+    add_shortcut( "opengllayer" )
+    set_callbacks( CreateVout, DestroyVout )
+vlc_module_end ()
 
 @interface VLCVoutLayer : CAOpenGLLayer {
     vout_thread_t * p_vout;
@@ -140,12 +140,9 @@ static int CreateVout( vlc_object_t *p_this )
     char * psz;
 
     /* Allocate structure */
-    p_vout->p_sys = p_sys = calloc( sizeof( vout_sys_t ), 1 );
+    p_vout->p_sys = p_sys = calloc( 1, sizeof( vout_sys_t ) );
     if( p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
         return VLC_EGENERIC;
-    }
 
     p_sys->i_tex_width  = p_vout->fmt_in.i_width;
     p_sys->i_tex_height = p_vout->fmt_in.i_height;
@@ -188,8 +185,8 @@ static int Init( vout_thread_t *p_vout )
 
     /* We do need a drawable to work properly */
     vlc_value_t value_drawable;
-    var_Create( p_vout, "drawable", VLC_VAR_DOINHERIT );
-    var_Get( p_vout, "drawable", &value_drawable );
+    var_Create( p_vout, "drawable-gl", VLC_VAR_DOINHERIT );
+    var_Get( p_vout, "drawable-gl", &value_drawable );
 
     p_vout->p_sys->o_cocoa_container = (id) value_drawable.i_int;
     
@@ -204,10 +201,7 @@ static int Init( vout_thread_t *p_vout )
         p_sys->pp_buffer[i] =
             malloc( p_sys->i_tex_width * p_sys->i_tex_height * i_pixel_pitch );
         if( !p_sys->pp_buffer[i] )
-        {
-            msg_Err( p_vout, "out of memory" );
             return VLC_EGENERIC;
-        }
     }
     p_sys->b_frame_available = false;
     p_sys->i_index = 0;
@@ -340,17 +334,9 @@ static int Control( vout_thread_t *p_vout, int i_query, va_list args )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
 
-    switch( i_query )
-    {
-    case VOUT_SNAPSHOT:
-        return vout_vaControlDefault( p_vout, i_query, args );
-
-    default:
-        if( p_sys->p_vout->pf_control )
-            return p_sys->p_vout->pf_control( p_sys->p_vout, i_query, args );
-        else
-            return vout_vaControlDefault( p_vout, i_query, args );
-    }
+    if( p_sys->p_vout->pf_control )
+        return p_sys->p_vout->pf_control( p_sys->p_vout, i_query, args );
+    return VLC_EGENERIC;
 }
 
 /*****************************************************************************

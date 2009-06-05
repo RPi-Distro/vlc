@@ -2,7 +2,7 @@
  * mosaic_bridge.c:
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: a28986ca5608d8f3db91213d7c1aa0fd3db9bddd $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -37,6 +37,7 @@
 #include <vlc_sout.h>
 #include <vlc_block.h>
 #include <vlc_codec.h>
+#include <vlc_meta.h>
 
 #include <vlc_image.h>
 #include <vlc_filter.h>
@@ -79,8 +80,6 @@ static void ReleasePicture( picture_t *p_pic )
 {
     assert( p_pic );
 
-    if( --p_pic->i_refcount > 0 )
-        return;
 
     if( p_pic->p_sys )
     {
@@ -90,8 +89,12 @@ static void ReleasePicture( picture_t *p_pic )
     }
     else
     {
-        free( p_pic->p_data_orig );
-        free( p_pic );
+        if( --p_pic->i_refcount == 0 )
+        {
+            free( p_pic->p_q );
+            free( p_pic->p_data_orig );
+            free( p_pic );
+        }
     }
 }
 
@@ -167,33 +170,33 @@ static int yCallback( vlc_object_t *, char const *,
 
 #define CFG_PREFIX "sout-mosaic-bridge-"
 
-vlc_module_begin();
-    set_shortname( N_( "Mosaic bridge" ) );
-    set_description(N_("Mosaic bridge stream output") );
-    set_capability( "sout stream", 0 );
-    add_shortcut( "mosaic-bridge" );
+vlc_module_begin ()
+    set_shortname( N_( "Mosaic bridge" ) )
+    set_description(N_("Mosaic bridge stream output") )
+    set_capability( "sout stream", 0 )
+    add_shortcut( "mosaic-bridge" )
 
     add_string( CFG_PREFIX "id", "Id", NULL, ID_TEXT, ID_LONGTEXT,
-                false );
+                false )
     add_integer( CFG_PREFIX "width", 0, NULL, WIDTH_TEXT,
-                 WIDTH_LONGTEXT, true );
+                 WIDTH_LONGTEXT, true )
     add_integer( CFG_PREFIX "height", 0, NULL, HEIGHT_TEXT,
-                 HEIGHT_LONGTEXT, true );
+                 HEIGHT_LONGTEXT, true )
     add_string( CFG_PREFIX "sar", "1:1", NULL, RATIO_TEXT,
-                RATIO_LONGTEXT, false );
+                RATIO_LONGTEXT, false )
     add_string( CFG_PREFIX "chroma", 0, NULL, CHROMA_TEXT, CHROMA_LONGTEXT,
-                false );
+                false )
 
     add_module_list( CFG_PREFIX "vfilter", "video filter2",
-                     NULL, NULL, VFILTER_TEXT, VFILTER_LONGTEXT, false );
+                     NULL, NULL, VFILTER_TEXT, VFILTER_LONGTEXT, false )
 
     add_integer_with_range( CFG_PREFIX "alpha", 255, 0, 255, NULL,
-                            ALPHA_TEXT, ALPHA_LONGTEXT, false );
-    add_integer( CFG_PREFIX "x", -1, NULL, X_TEXT, X_LONGTEXT, false );
-    add_integer( CFG_PREFIX "y", -1, NULL, Y_TEXT, Y_LONGTEXT, false );
+                            ALPHA_TEXT, ALPHA_LONGTEXT, false )
+    add_integer( CFG_PREFIX "x", -1, NULL, X_TEXT, X_LONGTEXT, false )
+    add_integer( CFG_PREFIX "y", -1, NULL, Y_TEXT, Y_LONGTEXT, false )
 
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 static const char *const ppsz_sout_options[] = {
     "id", "width", "height", "sar", "vfilter", "chroma", "alpha", "x", "y", NULL
@@ -352,14 +355,14 @@ static sout_stream_id_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
     //p_sys->p_decoder->p_cfg = p_sys->p_video_cfg;
 
     p_sys->p_decoder->p_module =
-        module_Need( p_sys->p_decoder, "decoder", "$codec", 0 );
+        module_need( p_sys->p_decoder, "decoder", "$codec", false );
 
     if( !p_sys->p_decoder->p_module || !p_sys->p_decoder->pf_decode_video )
     {
         if( p_sys->p_decoder->p_module )
         {
             msg_Err( p_stream, "instanciated a non video decoder" );
-            module_Unneed( p_sys->p_decoder, p_sys->p_decoder->p_module );
+            module_unneed( p_sys->p_decoder, p_sys->p_decoder->p_module );
         }
         else
         {
@@ -432,7 +435,7 @@ static sout_stream_id_t * Add( sout_stream_t *p_stream, es_format_t *p_fmt )
 
     /* Create user specified video filters */
     psz_chain = var_GetNonEmptyString( p_stream, CFG_PREFIX "vfilter" );
-    msg_Dbg( p_stream, "psz_chain: %s\n", psz_chain );
+    msg_Dbg( p_stream, "psz_chain: %s", psz_chain );
     if( psz_chain )
     {
         p_sys->p_vf2 = filter_chain_New( p_stream, "video filter2", false,
@@ -471,7 +474,10 @@ static int Del( sout_stream_t *p_stream, sout_stream_id_t *id )
         decoder_owner_sys_t *p_owner = p_sys->p_decoder->p_owner;
 
         if( p_sys->p_decoder->p_module )
-            module_Unneed( p_sys->p_decoder, p_sys->p_decoder->p_module );
+            module_unneed( p_sys->p_decoder, p_sys->p_decoder->p_module );
+        if( p_sys->p_decoder->p_description )
+            vlc_meta_Delete( p_sys->p_decoder->p_description );
+
         vlc_object_detach( p_sys->p_decoder );
         vlc_object_release( p_sys->p_decoder );
 
@@ -638,7 +644,7 @@ static int Send( sout_stream_t *p_stream, sout_stream_id_t *id,
                 continue;
             }
 
-            vout_CopyPicture( p_stream, p_new_pic, p_pic );
+            picture_Copy( p_new_pic, p_pic );
         }
 
         p_new_pic->i_refcount = 1;

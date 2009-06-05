@@ -2,7 +2,7 @@
  * mvar.c : Variables handling for the HTTP Interface
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: e5252fffba260ba728abe4ecaabf3da79cd508b9 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -182,7 +182,7 @@ mvar_t *mvar_GetVar( mvar_t *s, const char *name )
     return NULL;
 }
 
-char *mvar_GetValue( mvar_t *v, char *field )
+const char *mvar_GetValue( mvar_t *v, const char *field )
 {
     if( *field == '\0' )
     {
@@ -287,9 +287,9 @@ mvar_t *mvar_PlaylistSetNew( intf_thread_t *p_intf, char *name,
                                  playlist_t *p_pl )
 {
     mvar_t *s = mvar_New( name, "set" );
-    vlc_object_lock( p_pl );
+    playlist_Lock( p_pl );
     PlaylistListNode( p_intf, p_pl, p_pl->p_root_category , name, s, 0 );
-    vlc_object_unlock( p_pl );
+    playlist_Unlock( p_pl );
     return s;
 }
 
@@ -336,24 +336,23 @@ mvar_t *mvar_ObjectSetNew( intf_thread_t *p_intf, char *psz_name,
                                const char *psz_capability )
 {
     mvar_t *s = mvar_New( psz_name, "set" );
-    int i;
+    size_t i;
 
-    vlc_list_t *p_list = vlc_list_find( p_intf, VLC_OBJECT_MODULE,
-                                        FIND_ANYWHERE );
+    module_t **p_list = module_list_get( NULL );
 
-    for( i = 0; i < p_list->i_count; i++ )
+    for( i = 0; p_list[i]; i++ )
     {
-        module_t *p_parser = (module_t *)p_list->p_values[i].p_object;
-        if( module_IsCapable( p_parser, psz_capability ) )
+        module_t *p_parser = p_list[i];
+        if( module_provides( p_parser, psz_capability ) )
         {
-            mvar_t *sd = mvar_New( "sd", module_GetObjName( p_parser ) );
+            mvar_t *sd = mvar_New( "sd", module_get_object( p_parser ) );
             mvar_AppendNewVar( sd, "name",
-                                   module_GetName( p_parser, true ) );
+                                   module_get_name( p_parser, true ) );
             mvar_AppendVar( s, sd );
         }
     }
 
-    vlc_list_release( p_list );
+    module_list_free( p_list );
 
     return s;
 }
@@ -415,16 +414,14 @@ mvar_t *mvar_InputVarSetNew( intf_thread_t *p_intf, char *name,
 
     for( i = 0; i < val_list.p_list->i_count; i++ )
     {
-        char *psz, psz_int[16];
+        char psz_int[16];
         mvar_t *itm;
 
         switch( i_type & VLC_VAR_TYPE )
         {
         case VLC_VAR_STRING:
             itm = mvar_New( name, "set" );
-            /* FIXME: Memory leak here?? (remove strdup?) */
-            psz = strdup( text_list.p_list->p_values[i].psz_string );
-            mvar_AppendNewVar( itm, "name", psz );
+            mvar_AppendNewVar( itm, "name", text_list.p_list->p_values[i].psz_string );
             mvar_AppendNewVar( itm, "id", val_list.p_list->p_values[i].psz_string );
             snprintf( psz_int, sizeof(psz_int), "%d",
                       ( !strcmp( val.psz_string,
@@ -436,8 +433,7 @@ mvar_t *mvar_InputVarSetNew( intf_thread_t *p_intf, char *name,
 
         case VLC_VAR_INTEGER:
             itm = mvar_New( name, "set" );
-            psz = strdup( text_list.p_list->p_values[i].psz_string );
-            mvar_AppendNewVar( itm, "name", psz );
+            mvar_AppendNewVar( itm, "name", text_list.p_list->p_values[i].psz_string );
             snprintf( psz_int, sizeof(psz_int), "%d",
                       val_list.p_list->p_values[i].i_int );
             mvar_AppendNewVar( itm, "id", psz_int );

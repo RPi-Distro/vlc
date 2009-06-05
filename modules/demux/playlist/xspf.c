@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist import functions
  *******************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: f724a560e7e597b6362086e115e963e94d57f710 $
+ * $Id$
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -69,8 +69,8 @@ void Close_xspf( vlc_object_t *p_this )
         if(p_demux->p_sys->pp_tracklist[i])
             vlc_gc_decref( p_demux->p_sys->pp_tracklist[i] );
     }
-    FREENULL( p_demux->p_sys->pp_tracklist );
-    FREENULL( p_demux->p_sys->psz_base );
+    free( p_demux->p_sys->pp_tracklist );
+    free( p_demux->p_sys->psz_base );
     free( p_demux->p_sys );
 }
 
@@ -416,11 +416,11 @@ static bool parse_track_node COMPLEX_INTERFACE
           {NULL,           UNKNOWN_CONTENT, {NULL} }
         };
 
-    input_item_t *p_new_input = input_item_NewExt( p_demux, NULL, NULL, 0, NULL, -1 );
+    input_item_t *p_new_input = input_item_New( p_demux, NULL, NULL );
 
     if( !p_new_input )
     {
-        /* malloc has failed for input_item_NewExt, so bailout early */
+        /* malloc has failed for input_item_New, so bailout early */
         return false;
     }
 
@@ -510,13 +510,8 @@ static bool parse_track_node COMPLEX_INTERFACE
 
                     if( p_demux->p_sys->i_track_id < 0 )
                     {
-                        char *psz_uri = input_item_GetURI( p_new_input );
-                        if( psz_uri && *psz_uri)
-                        {
-                            input_item_AddSubItem( p_input_item, p_new_input );
-                        }
+                        input_item_AddSubItem( p_input_item, p_new_input );
                         vlc_gc_decref( p_new_input );
-                        free( psz_uri );
                         return true;
                     }
 
@@ -554,33 +549,31 @@ static bool parse_track_node COMPLEX_INTERFACE
                     char *psz_uri = NULL;
                     psz_uri = decode_URI_duplicate( psz_value );
 
-                    if( psz_uri )
-                    {
-                        if( p_demux->p_sys->psz_base &&
-                            !strstr( psz_uri, "://" ) )
-                        {
-                           char* psz_tmp = malloc(
-                                   strlen(p_demux->p_sys->psz_base) +
-                                   strlen(psz_uri) +1 );
-                           if( !psz_tmp )
-                               return false;
-                           sprintf( psz_tmp, "%s%s",
-                                    p_demux->p_sys->psz_base, psz_uri );
-                           free( psz_uri );
-                           psz_uri = psz_tmp;
-                        }
-                        input_item_SetURI( p_new_input, psz_uri );
-                        free( psz_uri );
-                        input_item_CopyOptions( p_input_item, p_new_input );
-                        psz_uri = NULL;
-                        FREE_ATT();
-                        p_handler = NULL;
-                    }
-                    else
+                    if( !psz_uri )
                     {
                         FREE_ATT();
                         return false;
                     }
+
+                    if( p_demux->p_sys->psz_base && !strstr( psz_uri, "://" ) )
+                    {
+                        char* psz_tmp;
+                        if( asprintf( &psz_tmp, "%s%s", p_demux->p_sys->psz_base,
+                                      psz_uri ) == -1 )
+                        {
+                            free( psz_uri );
+                            FREE_ATT();
+                            return NULL;
+                        }
+                        free( psz_uri );
+                        psz_uri = psz_tmp;
+                    }
+                    input_item_SetURI( p_new_input, psz_uri );
+                    free( psz_uri );
+                    input_item_CopyOptions( p_input_item, p_new_input );
+                    psz_uri = NULL;
+                    FREE_ATT();
+                    p_handler = NULL;
                 }
                 else
                 {
@@ -677,9 +670,9 @@ static bool set_option SIMPLE_INTERFACE
 
     /* re-convert xml special characters inside psz_value */
     resolve_xml_special_chars( psz_value );
-    
-    input_item_AddOpt( p_input, psz_value, 0 );
-    
+
+    input_item_AddOption( p_input, psz_value, 0 );
+
     return true;
 }
 
@@ -744,7 +737,7 @@ static bool parse_extension_node COMPLEX_INTERFACE
             return false;
         }
         p_new_input = input_item_NewWithType( VLC_OBJECT( p_demux ),
-                          "vlc://nop", psz_title, 0, NULL, -1,
+                          "vlc://nop", psz_title, 0, NULL, 0, -1,
                           ITEM_TYPE_DIRECTORY );
         if( p_new_input )
         {

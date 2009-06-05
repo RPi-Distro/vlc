@@ -56,8 +56,8 @@ InstType $Name_InstTypeFull
 
 ; MUI Settings
   !define MUI_ABORTWARNING
-  !define MUI_ICON "vlc48x48.ico"
-  !define MUI_UNICON "vlc48x48.ico"
+  !define MUI_ICON "vlc.ico"
+  !define MUI_UNICON "vlc.ico"
   !define MUI_COMPONENTSPAGE_SMALLDESC
 
 ; Installer pages
@@ -105,6 +105,7 @@ InstType $Name_InstTypeFull
   !insertmacro MUI_LANGUAGE "Greek"
   !insertmacro MUI_LANGUAGE "Russian"
   !insertmacro MUI_LANGUAGE "Portuguese"
+  !insertmacro MUI_LANGUAGE "PortugueseBR"
   !insertmacro MUI_LANGUAGE "Arabic"
   !insertmacro MUI_LANGUAGE "Polish"
   !insertmacro MUI_LANGUAGE "Romanian"
@@ -217,6 +218,7 @@ FunctionEnd
   !insertmacro ${_action} ".spx"
   !insertmacro ${_action} ".wav"
   !insertmacro ${_action} ".wma"
+  !insertmacro ${_action} ".wv"
   !insertmacro ${_action} ".xm"
 !macroend
 
@@ -241,10 +243,12 @@ FunctionEnd
   !insertmacro ${_action} ".mpg"
   !insertmacro ${_action} ".mts"
   !insertmacro ${_action} ".mxf"
+  !insertmacro ${_action} ".nuv"
   !insertmacro ${_action} ".ogg"
   !insertmacro ${_action} ".ogm"
   !insertmacro ${_action} ".ogx"
   !insertmacro ${_action} ".ogv"
+  !insertmacro ${_action} ".rmvb"
   !insertmacro ${_action} ".ts"
   !insertmacro ${_action} ".vob"
   !insertmacro ${_action} ".wmv"
@@ -573,10 +577,10 @@ Section $Name_Section05 SEC06
   SectionIn 1 2 3
   WriteRegStr HKCR "AudioCD\shell\PlayWithVLC" "" $ContextMenuEntry_PlayWith
   WriteRegStr HKCR "AudioCD\shell\PlayWithVLC\command" "" \
-    '"$INSTDIR\vlc.exe" --started-from-file cdda://%1'
+    '"$INSTDIR\vlc.exe" --started-from-file "cdda://%1"'
   WriteRegStr HKCR "DVD\shell\PlayWithVLC" "" $ContextMenuEntry_PlayWith
   WriteRegStr HKCR "DVD\shell\PlayWithVLC\command" "" \
-    '"$INSTDIR\vlc.exe" --started-from-file dvd://%1'
+    '"$INSTDIR\vlc.exe" --started-from-file "dvd://%1"'
 
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\EventHandlers\PlayDVDMovieOnArrival" "VLCPlayDVDMovieOnArrival" ""
   WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Explorer\AutoplayHandlers\Handlers\VLCPlayDVDMovieOnArrival" "Action" $Action_OnArrivalDVD
@@ -594,12 +598,12 @@ Section $Name_Section05 SEC06
   WriteRegStr HKCR "VLC.DVDMovie" "" "VLC DVD Movie"
   WriteRegStr HKCR "VLC.DVDMovie\shell" "" "Play"
   WriteRegStr HKCR "VLC.DVDMovie\shell\Play\command" "" \
-    '"$INSTDIR\vlc.exe" --started-from-file dvd://%1'
+    '"$INSTDIR\vlc.exe" --started-from-file "dvd://%1"'
   WriteRegStr HKCR "VLC.DVDMovie\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
   WriteRegStr HKCR "VLC.CDAudio" "" "VLC CD Audio"
   WriteRegStr HKCR "VLC.CDAudio\shell" "" "Play"
   WriteRegStr HKCR "VLC.CDAudio\shell\Play\command" "" \
-    '"$INSTDIR\vlc.exe" --started-from-file cdda://%1'
+    '"$INSTDIR\vlc.exe" --started-from-file "cdda://%1"'
   WriteRegStr HKCR "VLC.CDAudio\DefaultIcon" "" '"$INSTDIR\vlc.exe",0'
 
 SectionEnd
@@ -621,8 +625,8 @@ SectionEnd
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC02b} $Desc_Section02b
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC03} $Desc_Section03
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC04} $Desc_Section04
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} $Desc_Section06
-  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} $Desc_Section05
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC05} $Desc_Section05
+  !insertmacro MUI_DESCRIPTION_TEXT ${SEC06} $Desc_Section06
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC07} $Desc_Section07
   !insertmacro MUI_DESCRIPTION_TEXT ${SEC08} $Desc_Section08
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
@@ -642,8 +646,8 @@ Function .onInit
   StrCmp $LANGUAGE ${LANG_POLISH} Polish 0
   StrCmp $LANGUAGE ${LANG_DUTCH} Dutch 0
   StrCmp $LANGUAGE ${LANG_SIMPCHINESE} SChinese 0
-  StrCmp $LANGUAGE ${LANG_GERMAN} German 0
-  StrCmp $LANGUAGE ${LANG_FINNISH} Finnish EndLanguageCmp
+  StrCmp $LANGUAGE ${LANG_FINNISH} Finnish 0
+  StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
   Goto EndLanguageCmp
@@ -674,11 +678,11 @@ Function .onInit
   Schinese:
   !include "languages\schinese.nsh"
   Goto EndLanguageCmp
-  German:
-  !include "languages\german.nsh"
-  Goto EndLanguageCmp
   Finnish:
   !include "languages\finnish.nsh"
+  Goto EndLanguageCmp
+  Brazilian:
+  !include "languages\brazilian_portuguese.nsh"
   EndLanguageCmp:
 
   ReadRegStr $R0  ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
@@ -890,8 +894,8 @@ Function un.onInit
   StrCmp $LANGUAGE ${LANG_POLISH} Polish 0
   StrCmp $LANGUAGE ${LANG_DUTCH} Dutch 0
   StrCmp $LANGUAGE ${LANG_SIMPCHINESE} SChinese 0
-  StrCmp $LANGUAGE ${LANG_GERMAN} German 0
-  StrCmp $LANGUAGE ${LANG_FINNISH} Finnish EndLanguageCmp
+  StrCmp $LANGUAGE ${LANG_FINNISH} Finnish 0
+  StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
   Goto EndLanguageCmp
@@ -922,11 +926,11 @@ Function un.onInit
   Schinese:
   !include "languages\schinese.nsh"
   Goto EndLanguageCmp
-  German:
-  !include "languages\german.nsh"
-  Goto EndLanguageCmp
   Finnish:
   !include "languages\finnish.nsh"
+  Goto EndLanguageCmp
+  Brazilian:
+  !include "languages\brazilian_portuguese.nsh"
   EndLanguageCmp:
   
 FunctionEnd

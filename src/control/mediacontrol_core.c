@@ -2,7 +2,7 @@
  * core.c: Core functions : init, playlist, stream management
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 9c13dbffa16c31ad156f5a4b6bbc83252c8d10fc $
+ * $Id$
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *
@@ -346,7 +346,15 @@ mediacontrol_get_stream_information( mediacontrol_Instance *self,
     }
 
     p_media = libvlc_media_player_get_media( self->p_media_player, &ex );
-    HANDLE_LIBVLC_EXCEPTION_NULL( &ex );
+    if( libvlc_exception_raised( &ex ) )
+    {
+        free( retval );
+        RAISE( mediacontrol_InternalException,
+               libvlc_exception_get_message( &ex ) );
+        libvlc_exception_clear( &ex );
+        return NULL;
+    }
+
     if( ! p_media )
     {
         /* No p_media defined */
@@ -358,8 +366,17 @@ mediacontrol_get_stream_information( mediacontrol_Instance *self,
     else
     {
         libvlc_state_t state;
+
         state = libvlc_media_player_get_state( self->p_media_player, &ex );
-        HANDLE_LIBVLC_EXCEPTION_NULL( &ex );
+        if( libvlc_exception_raised( &ex ) )
+        {
+            free( retval );
+            RAISE( mediacontrol_InternalException,
+                   libvlc_exception_get_message( &ex ) );
+            libvlc_exception_clear( &ex );
+            return NULL;
+        }
+
         switch( state )
         {
         case libvlc_NothingSpecial:
@@ -379,12 +396,6 @@ mediacontrol_get_stream_information( mediacontrol_Instance *self,
             break;
         case libvlc_Stopped:
             retval->streamstatus = mediacontrol_StopStatus;
-            break;
-        case libvlc_Forward:
-            retval->streamstatus = mediacontrol_ForwardStatus;
-            break;
-        case libvlc_Backward:
-            retval->streamstatus = mediacontrol_BackwardStatus;
             break;
         case libvlc_Ended:
             retval->streamstatus = mediacontrol_EndStatus;

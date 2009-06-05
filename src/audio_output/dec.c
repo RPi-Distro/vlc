@@ -2,7 +2,7 @@
  * dec.c : audio output API towards decoders
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 3ca6da1726b07091686c3484f3454ad34d9e1e7b $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -39,18 +39,15 @@
 
 #include "aout_internal.h"
 
-/** FIXME: Ugly but needed to access the counters */
-#include "input/input_internal.h"
-
 /*****************************************************************************
  * aout_DecNew : create a decoder
  *****************************************************************************/
-static aout_input_t * DecNew( vlc_object_t * p_this, aout_instance_t * p_aout,
+static aout_input_t * DecNew( aout_instance_t * p_aout,
                               audio_sample_format_t *p_format,
-                              audio_replay_gain_t *p_replay_gain )
+                              const audio_replay_gain_t *p_replay_gain,
+                              const aout_request_vout_t *p_request_vout )
 {
     aout_input_t * p_input;
-    input_thread_t * p_input_thread;
 
     /* Sanitize audio format */
     if( p_format->i_channels > 32 )
@@ -62,6 +59,11 @@ static aout_input_t * DecNew( vlc_object_t * p_this, aout_instance_t * p_aout,
     if( p_format->i_channels <= 0 )
     {
         msg_Err( p_aout, "no audio channels" );
+        return NULL;
+    }
+    if( p_format->i_channels != aout_FormatNbChannels( p_format ) )
+    {
+        msg_Err( p_aout, "incompatible audio channels count with layout mask" );
         return NULL;
     }
 
@@ -88,15 +90,16 @@ static aout_input_t * DecNew( vlc_object_t * p_this, aout_instance_t * p_aout,
         goto error;
     }
 
-    p_input = malloc(sizeof(aout_input_t));
-    if ( p_input == NULL )
+    p_input = calloc( 1, sizeof(aout_input_t));
+    if( !p_input )
         goto error;
-    memset( p_input, 0, sizeof(aout_input_t) );
 
     vlc_mutex_init( &p_input->lock );
 
-    p_input->b_changed = 0;
-    p_input->b_error = 1;
+    p_input->b_changed = false;
+    p_input->b_error = true;
+    p_input->b_paused = false;
+    p_input->i_pause_date = 0;
 
     aout_FormatPrepare( p_format );
 
@@ -133,10 +136,12 @@ static aout_input_t * DecNew( vlc_object_t * p_this, aout_instance_t * p_aout,
         /* Create other input streams. */
         for ( i = 0; i < p_aout->i_nb_inputs - 1; i++ )
         {
-            aout_lock_input( p_aout, p_aout->pp_inputs[i] );
-            aout_InputDelete( p_aout, p_aout->pp_inputs[i] );
-            aout_InputNew( p_aout, p_aout->pp_inputs[i] );
-            aout_unlock_input( p_aout, p_aout->pp_inputs[i] );
+            aout_input_t *p_input = p_aout->pp_inputs[i];
+
+            aout_lock_input( p_aout, p_input );
+            aout_InputDelete( p_aout, p_input );
+            aout_InputNew( p_aout, p_input, &p_input->request_vout );
+            aout_unlock_input( p_aout, p_input );
         }
     }
     else
@@ -151,27 +156,10 @@ static aout_input_t * DecNew( vlc_object_t * p_this, aout_instance_t * p_aout,
         goto error;
     }
 
-    aout_InputNew( p_aout, p_input );
+    aout_InputNew( p_aout, p_input, p_request_vout );
     aout_unlock_input_fifos( p_aout );
 
     aout_unlock_mixer( p_aout );
-    p_input->i_desync = var_CreateGetInteger( p_this, "audio-desync" ) * 1000;
-
-    p_input_thread = (input_thread_t *)vlc_object_find( p_this,
-                                           VLC_OBJECT_INPUT, FIND_PARENT );
-    if( p_input_thread )
-    {
-        p_input->i_pts_delay = p_input_thread->i_pts_delay;
-        p_input->i_pts_delay += p_input->i_desync;
-        p_input->p_input_thread = p_input_thread;
-        vlc_object_release( p_input_thread );
-    }
-    else
-    {
-        p_input->i_pts_delay = DEFAULT_PTS_DELAY;
-        p_input->i_pts_delay += p_input->i_desync;
-        p_input->p_input_thread = NULL;
-    }
 
     return p_input;
 
@@ -183,7 +171,8 @@ error:
 aout_input_t * __aout_DecNew( vlc_object_t * p_this,
                               aout_instance_t ** pp_aout,
                               audio_sample_format_t * p_format,
-                              audio_replay_gain_t *p_replay_gain )
+                              const audio_replay_gain_t *p_replay_gain,
+                              const aout_request_vout_t *p_request_video )
 {
     aout_instance_t *p_aout = *pp_aout;
     if ( p_aout == NULL )
@@ -199,7 +188,7 @@ aout_input_t * __aout_DecNew( vlc_object_t * p_this,
         *pp_aout = p_aout;
     }
 
-    return DecNew( p_this, p_aout, p_format, p_replay_gain );
+    return DecNew( p_aout, p_format, p_replay_gain, p_request_video );
 }
 
 /*****************************************************************************
@@ -288,7 +277,7 @@ aout_buffer_t * aout_DecNewBuffer( aout_input_t * p_input,
                                   / p_input->input.i_frame_length;
 
     /* Suppose the decoder doesn't have more than one buffered buffer */
-    p_input->b_changed = 0;
+    p_input->b_changed = false;
 
     aout_unlock_input( NULL, p_input );
 
@@ -316,45 +305,10 @@ void aout_DecDeleteBuffer( aout_instance_t * p_aout, aout_input_t * p_input,
 int aout_DecPlay( aout_instance_t * p_aout, aout_input_t * p_input,
                   aout_buffer_t * p_buffer, int i_input_rate )
 {
-    if ( p_buffer->start_date == 0 )
-    {
-        msg_Warn( p_aout, "non-dated buffer received" );
-        aout_BufferFree( p_buffer );
-        return -1;
-    }
+    assert( i_input_rate >= INPUT_RATE_DEFAULT / AOUT_MAX_INPUT_RATE &&
+            i_input_rate <= INPUT_RATE_DEFAULT * AOUT_MAX_INPUT_RATE );
 
-#ifndef FIXME
-    /* This hack for #transcode{acodec=...}:display to work -- Courmisch */
-    if( i_input_rate == 0 )
-        i_input_rate = INPUT_RATE_DEFAULT;
-#endif
-    if( i_input_rate > INPUT_RATE_DEFAULT * AOUT_MAX_INPUT_RATE ||
-        i_input_rate < INPUT_RATE_DEFAULT / AOUT_MAX_INPUT_RATE )
-    {
-        aout_BufferFree( p_buffer );
-        return 0;
-    }
-
-    /* Apply the desynchronisation requested by the user */
-    p_buffer->start_date += p_input->i_desync;
-    p_buffer->end_date += p_input->i_desync;
-
-    if ( p_buffer->start_date > mdate() + p_input->i_pts_delay +
-         AOUT_MAX_ADVANCE_TIME )
-    {
-        msg_Warn( p_aout, "received buffer in the future (%"PRId64")",
-                  p_buffer->start_date - mdate());
-        if( p_input->p_input_thread )
-        {
-            vlc_mutex_lock( &p_input->p_input_thread->p->counters.counters_lock);
-            stats_UpdateInteger( p_aout,
-                           p_input->p_input_thread->p->counters.p_lost_abuffers,
-                           1, NULL );
-            vlc_mutex_unlock( &p_input->p_input_thread->p->counters.counters_lock);
-        }
-        aout_BufferFree( p_buffer );
-        return -1;
-    }
+    assert( p_buffer->start_date > 0 );
 
     p_buffer->end_date = p_buffer->start_date
                             + (mtime_t)p_buffer->i_nb_samples * 1000000
@@ -362,14 +316,14 @@ int aout_DecPlay( aout_instance_t * p_aout, aout_input_t * p_input,
 
     aout_lock_input( p_aout, p_input );
 
-    if ( p_input->b_error )
+    if( p_input->b_error )
     {
         aout_unlock_input( p_aout, p_input );
         aout_BufferFree( p_buffer );
         return -1;
     }
 
-    if ( p_input->b_changed )
+    if( p_input->b_changed )
     {
         /* Maybe the allocation size has changed. Re-allocate a buffer. */
         aout_buffer_t * p_new_buffer;
@@ -385,30 +339,68 @@ int aout_DecPlay( aout_instance_t * p_aout, aout_input_t * p_input,
         p_new_buffer->end_date = p_buffer->end_date;
         aout_BufferFree( p_buffer );
         p_buffer = p_new_buffer;
-        p_input->b_changed = 0;
+        p_input->b_changed = false;
     }
 
-    /* If the buffer is too early, wait a while. */
-    mwait( p_buffer->start_date - AOUT_MAX_PREPARE_TIME );
-
-    int ret = aout_InputPlay( p_aout, p_input, p_buffer, i_input_rate );
+    int i_ret = aout_InputPlay( p_aout, p_input, p_buffer, i_input_rate );
 
     aout_unlock_input( p_aout, p_input );
 
-    if ( ret == -1 ) return -1;
+    if( i_ret == -1 )
+        return -1;
 
     /* Run the mixer if it is able to run. */
     aout_lock_mixer( p_aout );
+
     aout_MixerRun( p_aout );
-    if( p_input->p_input_thread )
-    {
-        vlc_mutex_lock( &p_input->p_input_thread->p->counters.counters_lock);
-        stats_UpdateInteger( p_aout,
-                             p_input->p_input_thread->p->counters.p_played_abuffers,
-                             1, NULL );
-        vlc_mutex_unlock( &p_input->p_input_thread->p->counters.counters_lock);
-    }
+
     aout_unlock_mixer( p_aout );
 
     return 0;
 }
+
+int aout_DecGetResetLost( aout_instance_t *p_aout, aout_input_t *p_input )
+{
+    aout_lock_input( p_aout, p_input );
+    int i_value = p_input->i_buffer_lost;
+    p_input->i_buffer_lost = 0;
+    aout_unlock_input( p_aout, p_input );
+
+    return i_value;
+}
+
+void aout_DecChangePause( aout_instance_t *p_aout, aout_input_t *p_input, bool b_paused, mtime_t i_date )
+{
+    mtime_t i_duration = 0;
+    aout_lock_input( p_aout, p_input );
+    assert( !p_input->b_paused || !b_paused );
+    if( p_input->b_paused )
+    {
+        i_duration = i_date - p_input->i_pause_date;
+    }
+    p_input->b_paused = b_paused;
+    p_input->i_pause_date = i_date;
+    aout_unlock_input( p_aout, p_input );
+
+    if( i_duration != 0 )
+    {
+        aout_lock_mixer( p_aout );
+        for( aout_buffer_t *p = p_input->fifo.p_first; p != NULL; p = p->p_next )
+        {
+            p->start_date += i_duration;
+            p->end_date += i_duration;
+        }
+        aout_unlock_mixer( p_aout );
+    }
+}
+
+void aout_DecFlush( aout_instance_t *p_aout, aout_input_t *p_input )
+{
+    aout_lock_input_fifos( p_aout );
+
+    aout_FifoSet( p_aout, &p_input->fifo, 0 );
+    p_input->p_first_byte_to_mix = NULL;
+
+    aout_unlock_input_fifos( p_aout );
+}
+

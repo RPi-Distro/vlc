@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
  * Copyright (C) 2004-2005 M2X
- * $Id: a332b61a1b2d4f9983e8a6a49e0eec1dda191a59 $
+ * $Id$
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -54,6 +54,8 @@ extern "C" {
 
 #include <vlc_vout.h>
 
+typedef struct spu_private_t spu_private_t;
+
 /**
  * Subpicture unit descriptor
  */
@@ -61,25 +63,15 @@ struct spu_t
 {
     VLC_COMMON_MEMBERS
 
-    vlc_mutex_t  subpicture_lock;                  /**< subpicture heap lock */
-    subpicture_t p_subpicture[VOUT_MAX_SUBPICTURES];        /**< subpictures */
-    int i_channel;             /**< number of subpicture channels registered */
+    int (*pf_control)( spu_t *, int, va_list );
 
-    filter_t *p_blend;                            /**< alpha blending module */
-    filter_t *p_text;                              /**< text renderer module */
-    filter_t *p_scale_yuvp;                     /**< scaling module for YUVP */
-    filter_t *p_scale;                    /**< scaling module (all but YUVP) */
-    bool b_force_crop;                     /**< force cropping of subpicture */
-    int i_crop_x, i_crop_y, i_crop_width, i_crop_height;       /**< cropping */
+    spu_private_t *p;
+};
 
-    int i_margin;                        /**< force position of a subpicture */
-    bool b_force_palette;             /**< force palette of subpicture */
-    uint8_t palette[4][4];                               /**< forced palette */
-
-    int ( *pf_control ) ( spu_t *, int, va_list );
-
-    /* Supciture filters */
-    filter_chain_t *p_chain;
+enum spu_query_e
+{
+    SPU_CHANNEL_REGISTER,         /* arg1= int *   res=    */
+    SPU_CHANNEL_CLEAR             /* arg1= int     res=    */
 };
 
 static inline int spu_vaControl( spu_t *p_spu, int i_query, va_list args )
@@ -101,30 +93,34 @@ static inline int spu_Control( spu_t *p_spu, int i_query, ... )
     return i_result;
 }
 
-enum spu_query_e
-{
-    SPU_CHANNEL_REGISTER,         /* arg1= int *   res=    */
-    SPU_CHANNEL_CLEAR             /* arg1= int     res=    */
-};
-
 #define spu_Create(a) __spu_Create(VLC_OBJECT(a))
 VLC_EXPORT( spu_t *, __spu_Create, ( vlc_object_t * ) );
 VLC_EXPORT( int, spu_Init, ( spu_t * ) );
 VLC_EXPORT( void, spu_Destroy, ( spu_t * ) );
 void spu_Attach( spu_t *, vlc_object_t *, bool );
 
-VLC_EXPORT( subpicture_t *, spu_CreateSubpicture, ( spu_t * ) );
-VLC_EXPORT( void, spu_DestroySubpicture, ( spu_t *, subpicture_t * ) );
+/**
+ * This function sends a subpicture to the spu_t core.
+ * 
+ * You cannot use the provided subpicture anymore. The spu_t core
+ * will destroy it at its convenience.
+ */
 VLC_EXPORT( void, spu_DisplaySubpicture, ( spu_t *, subpicture_t * ) );
 
-#define spu_CreateRegion(a,b) __spu_CreateRegion(VLC_OBJECT(a),b)
-VLC_EXPORT( subpicture_region_t *,__spu_CreateRegion, ( vlc_object_t *, video_format_t * ) );
-#define spu_MakeRegion(a,b,c) __spu_MakeRegion(VLC_OBJECT(a),b,c)
-VLC_EXPORT( subpicture_region_t *,__spu_MakeRegion, ( vlc_object_t *, video_format_t *, picture_t * ) );
-#define spu_DestroyRegion(a,b) __spu_DestroyRegion(VLC_OBJECT(a),b)
-VLC_EXPORT( void, __spu_DestroyRegion, ( vlc_object_t *, subpicture_region_t * ) );
-VLC_EXPORT( subpicture_t *, spu_SortSubpictures, ( spu_t *, mtime_t, bool ) );
-VLC_EXPORT( void, spu_RenderSubpictures, ( spu_t *,  video_format_t *, picture_t *, picture_t *, subpicture_t *, int, int ) );
+/**
+ * This function asks the spu_t core a list of subpictures to display.
+ *
+ * The returned list can only be used by spu_RenderSubpictures.
+ */
+VLC_EXPORT( subpicture_t *, spu_SortSubpictures, ( spu_t *, mtime_t display_date, bool b_paused, bool b_subtitle_only ) );
+
+/**
+ * This function renders a list of subpicture_t on the provided picture.
+ *
+ * \param p_fmt_dst is the format of the destination picture.
+ * \param p_fmt_src is the format of the original(source) video.
+ */
+VLC_EXPORT( void, spu_RenderSubpictures, ( spu_t *,  picture_t *, const video_format_t *p_fmt_dst, subpicture_t *p_list, const video_format_t *p_fmt_src, bool b_paused ) );
 
 /** @}*/
 
@@ -594,9 +590,9 @@ static inline void osd_SetMenuUpdate( osd_menu_t *p_osd, bool b_value )
  * object. The types are declared in the include file include/vlc_osd.h
  * @see vlc_osd.h
  */
-VLC_EXPORT( int, osd_ShowTextRelative, ( spu_t *, int, char *, text_style_t *, int, int, int, mtime_t ) );
-VLC_EXPORT( int, osd_ShowTextAbsolute, ( spu_t *, int, char *, text_style_t *, int, int, int, mtime_t, mtime_t ) );
-VLC_EXPORT( void,osd_Message, ( spu_t *, int, char *, ... ) LIBVLC_FORMAT( 3, 4 ) );
+VLC_EXPORT( int, osd_ShowTextRelative, ( spu_t *, int, const char *, text_style_t *, int, int, int, mtime_t ) );
+VLC_EXPORT( int, osd_ShowTextAbsolute, ( spu_t *, int, const char *, text_style_t *, int, int, int, mtime_t, mtime_t ) );
+VLC_EXPORT( void, osd_Message, ( spu_t *, int, char *, ... ) LIBVLC_FORMAT( 3, 4 ) );
 
 /**
  * Default feedback images

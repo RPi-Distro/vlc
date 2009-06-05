@@ -4,8 +4,8 @@
 basedir = stream_out
 dir = stream_out/transrate
 mods = stream_out_transrate
-libvlc_LTLIBRARIES =  $(LTLIBstream_out_transrate)
-EXTRA_LTLIBRARIES =  libstream_out_transrate_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,5 +18,5 @@ libstream_out_transrate_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_transrate_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_transrate_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_transrate_plugin_la_DEPENDENCIES =
+libstream_out_transrate_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

@@ -2,7 +2,7 @@
  * stream.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: bb8e632ee6fdfcf366f0603e89c225e34814df6c $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -25,20 +25,28 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-
+#include <dirent.h>
 #include <assert.h>
+
+#include <vlc_common.h>
+#include <vlc_strings.h>
+#include <vlc_osd.h>
+#include <vlc_charset.h>
+
+#include <libvlc.h>
+
+#include "access.h"
+#include "stream.h"
 
 #include "input_internal.h"
 
-#undef STREAM_DEBUG
+// #define STREAM_DEBUG 1
 
 /* TODO:
  *  - tune the 2 methods (block/stream)
  *  - compute cost for seek
  *  - improve stream mode seeking with closest segments
  *  - ...
- *  - Maybe remove (block/stream) in favour of immediate
  */
 
 /* Two methods:
@@ -62,16 +70,15 @@
 #   define STREAM_CACHE_SIZE  (4*STREAM_CACHE_TRACK*1024*1024)
 #endif
 
-/* How many data we try to prebuffer */
-#define STREAM_CACHE_PREBUFFER_SIZE (32767)
-/* Maximum time we take to pre-buffer */
-#define STREAM_CACHE_PREBUFFER_LENGTH (100*1000)
+/* How many data we try to prebuffer
+ * XXX it should be small to avoid useless latency but big enough for
+ * efficient demux probing */
+#define STREAM_CACHE_PREBUFFER_SIZE (128)
 
 /* Method1: Simple, for pf_block.
  *  We get blocks and put them in the linked list.
  *  We release blocks once the total size is bigger than CACHE_BLOCK_SIZE
  */
-#define STREAM_DATA_WAIT 40000       /* Time between before a pf_block retry */
 
 /* Method2: A bit more complex, for pf_read
  *  - We use ring buffers, only one if unseekable, all if seekable
@@ -86,7 +93,7 @@
  *        - compute a good value for i_read_size
  *        - ?
  */
-#define STREAM_READ_ATONCE 32767
+#define STREAM_READ_ATONCE 1024
 #define STREAM_CACHE_TRACK_SIZE (STREAM_CACHE_SIZE/STREAM_CACHE_TRACK)
 
 typedef struct
@@ -107,11 +114,10 @@ typedef struct
 
 } access_entry_t;
 
-typedef enum stream_read_method_t
+typedef enum
 {
-    Immediate,
-    Block,
-    Stream
+    STREAM_METHOD_BLOCK,
+    STREAM_METHOD_STREAM
 } stream_read_method_t;
 
 struct stream_sys_t
@@ -151,13 +157,6 @@ struct stream_sys_t
 
     } stream;
 
-    /* Method 3: for pf_read */
-    struct
-    {
-        int64_t i_end;
-        uint8_t *p_buffer;
-    } immediate;
-
     /* Peek temporary buffer */
     unsigned int i_peek;
     uint8_t *p_peek;
@@ -183,9 +182,6 @@ struct stream_sys_t
     access_entry_t **list;
     int            i_list_index;
     access_t       *p_list_access;
-
-    /* Preparse mode ? */
-    bool      b_quick;
 };
 
 /* Method 1: */
@@ -202,11 +198,6 @@ static int  AStreamSeekStream( stream_t *s, int64_t i_pos );
 static void AStreamPrebufferStream( stream_t *s );
 static int  AReadStream( stream_t *s, void *p_read, unsigned int i_read );
 
-/* Method 3 */
-static int  AStreamReadImmediate( stream_t *s, void *p_read, unsigned int i_read );
-static int  AStreamPeekImmediate( stream_t *s, const uint8_t **pp_peek, unsigned int i_read );
-static int  AStreamSeekImmediate( stream_t *s, int64_t i_pos );
-
 /* Common */
 static int AStreamControl( stream_t *s, int i_query, va_list );
 static void AStreamDestroy( stream_t *s );
@@ -214,34 +205,40 @@ static void UStreamDestroy( stream_t *s );
 static int  ASeek( stream_t *s, int64_t i_pos );
 
 /****************************************************************************
- * Method 3 helpers:
+ * stream_CommonNew: create an empty stream structure
  ****************************************************************************/
-
-static inline int64_t stream_buffered_size( stream_t *s )
+stream_t *stream_CommonNew( vlc_object_t *p_obj )
 {
-    return s->p_sys->immediate.i_end;
-}
+    stream_t *s = (stream_t *)vlc_custom_create( p_obj, sizeof(*s),
+                                                 VLC_OBJECT_GENERIC, "stream" );
 
-static inline void stream_buffer_empty( stream_t *s, int length )
-{
-    length = __MAX( stream_buffered_size( s ), length );
-    if( length )
+    if( !s )
+        return NULL;
+
+    s->p_text = malloc( sizeof(*s->p_text) );
+    if( !s->p_text )
     {
-        memmove( s->p_sys->immediate.p_buffer,
-                 s->p_sys->immediate.p_buffer + length,
-                 stream_buffered_size( s ) - length );
+        vlc_object_release( s );
+        return NULL;
     }
-    s->p_sys->immediate.i_end -= length;
-}
 
-static inline void stream_buffer_fill( stream_t *s, int length )
-{
-    s->p_sys->immediate.i_end += length;
-}
+    /* UTF16 and UTF32 text file conversion */
+    s->p_text->conv = (vlc_iconv_t)(-1);
+    s->p_text->i_char_width = 1;
+    s->p_text->b_little_endian = false;
 
-static inline uint8_t * stream_buffer( stream_t *s )
+    return s;
+}
+void stream_CommonDelete( stream_t *s )
 {
-    return s->p_sys->immediate.p_buffer;
+    if( s->p_text )
+    {
+        if( s->p_text->conv != (vlc_iconv_t)(-1) )
+            vlc_iconv_close( s->p_text->conv );
+        free( s->p_text );
+    }
+    free( s->psz_path );
+    vlc_object_release( s );
 }
 
 /****************************************************************************
@@ -270,7 +267,7 @@ stream_t *__stream_UrlNew( vlc_object_t *p_parent, const char *psz_url )
         return NULL;
     }
 
-    if( !( p_res = stream_AccessNew( p_access, true ) ) )
+    if( !( p_res = stream_AccessNew( p_access, NULL ) ) )
     {
         access_Delete( p_access );
         return NULL;
@@ -280,19 +277,19 @@ stream_t *__stream_UrlNew( vlc_object_t *p_parent, const char *psz_url )
     return p_res;
 }
 
-stream_t *stream_AccessNew( access_t *p_access, bool b_quick )
+stream_t *stream_AccessNew( access_t *p_access, char **ppsz_list )
 {
-    stream_t *s = vlc_stream_create( VLC_OBJECT(p_access) );
+    stream_t *s = stream_CommonNew( VLC_OBJECT(p_access) );
     stream_sys_t *p_sys;
-    char *psz_list = NULL;
 
     if( !s )
         return NULL;
 
-    s->p_sys = p_sys = malloc( sizeof( stream_sys_t ) );
-    if( !p_sys )
+    s->psz_path = strdup( p_access->psz_path );
+    s->p_sys = p_sys = malloc( sizeof( *p_sys ) );
+    if( !s->psz_path || !s->p_sys )
     {
-        vlc_object_release( s );
+        stream_CommonDelete( s );
         return NULL;
     }
 
@@ -304,19 +301,12 @@ stream_t *stream_AccessNew( access_t *p_access, bool b_quick )
     s->pf_control = AStreamControl;
     s->pf_destroy = AStreamDestroy;
 
-    /* UTF16 and UTF32 text file conversion */
-    s->i_char_width = 1;
-    s->b_little_endian = false;
-    s->conv = (vlc_iconv_t)(-1);
-
     /* Common field */
     p_sys->p_access = p_access;
     if( p_access->pf_block )
-        p_sys->method = Block;
-    else if (var_CreateGetBool( s, "use-stream-immediate"))
-        p_sys->method = Immediate;
+        p_sys->method = STREAM_METHOD_BLOCK;
     else
-        p_sys->method = Stream;
+        p_sys->method = STREAM_METHOD_STREAM;
 
     p_sys->i_pos = p_access->info.i_pos;
 
@@ -328,75 +318,60 @@ stream_t *stream_AccessNew( access_t *p_access, bool b_quick )
     p_sys->stat.i_seek_count = 0;
     p_sys->stat.i_seek_time = 0;
 
-    p_sys->i_list = 0;
-    p_sys->list = 0;
+    TAB_INIT( p_sys->i_list, p_sys->list );
     p_sys->i_list_index = 0;
-    p_sys->p_list_access = 0;
-
-    p_sys->b_quick = b_quick;
+    p_sys->p_list_access = NULL;
 
     /* Get the additional list of inputs if any (for concatenation) */
-    if( (psz_list = var_CreateGetString( s, "input-list" )) && *psz_list )
+    if( ppsz_list && ppsz_list[0] )
     {
-        access_entry_t *p_entry = malloc( sizeof(access_entry_t) );
-        if( p_entry == NULL )
+        access_entry_t *p_entry = malloc( sizeof(*p_entry) );
+        if( !p_entry )
             goto error;
-        char *psz_name, *psz_parser = psz_name = psz_list;
 
-        p_sys->p_list_access = p_access;
         p_entry->i_size = p_access->info.i_size;
         p_entry->psz_path = strdup( p_access->psz_path );
-        if( p_entry->psz_path == NULL )
+        if( !p_entry->psz_path )
         {
             free( p_entry );
             goto error;
         }
+        p_sys->p_list_access = p_access;
         TAB_APPEND( p_sys->i_list, p_sys->list, p_entry );
         msg_Dbg( p_access, "adding file `%s', (%"PRId64" bytes)",
                  p_entry->psz_path, p_access->info.i_size );
 
-        while( psz_name && *psz_name )
+        for( int i = 0; ppsz_list[i] != NULL; i++ )
         {
-            psz_parser = strchr( psz_name, ',' );
-            if( psz_parser ) *psz_parser = 0;
+            char *psz_name = strdup( ppsz_list[i] );
 
-            psz_name = strdup( psz_name );
-            if( psz_name )
+            if( !psz_name )
+                break;
+
+            access_t *p_tmp = access_New( p_access,
+                                          p_access->psz_access, "", psz_name );
+            if( !p_tmp )
+                continue;
+
+            msg_Dbg( p_access, "adding file `%s', (%"PRId64" bytes)",
+                     psz_name, p_tmp->info.i_size );
+
+            p_entry = malloc( sizeof(*p_entry) );
+            if( p_entry )
             {
-                access_t *p_tmp = access_New( p_access, p_access->psz_access,
-                                               "", psz_name );
-
-                if( !p_tmp )
-                {
-                    psz_name = psz_parser;
-                    if( psz_name ) psz_name++;
-                    continue;
-                }
-
-                msg_Dbg( p_access, "adding file `%s', (%"PRId64" bytes)",
-                         psz_name, p_tmp->info.i_size );
-
-                p_entry = malloc( sizeof(access_entry_t) );
-                if( p_entry == NULL )
-                    goto error;
                 p_entry->i_size = p_tmp->info.i_size;
                 p_entry->psz_path = psz_name;
                 TAB_APPEND( p_sys->i_list, p_sys->list, p_entry );
-
-                access_Delete( p_tmp );
             }
-
-            psz_name = psz_parser;
-            if( psz_name ) psz_name++;
+            access_Delete( p_tmp );
         }
     }
-    FREENULL( psz_list );
 
     /* Peek */
     p_sys->i_peek = 0;
     p_sys->p_peek = NULL;
 
-    if( p_sys->method == Block )
+    if( p_sys->method == STREAM_METHOD_BLOCK )
     {
         msg_Dbg( s, "Using AStream*Block" );
         s->pf_read = AStreamReadBlock;
@@ -419,30 +394,11 @@ stream_t *stream_AccessNew( access_t *p_access, bool b_quick )
             goto error;
         }
     }
-    else if (p_sys->method == Immediate)
-    {
-        msg_Dbg( s, "Using AStream*Immediate" );
-
-        s->pf_read = AStreamReadImmediate;
-        s->pf_peek = AStreamPeekImmediate;
-
-        /* Allocate/Setup our tracks (useful to peek)*/
-        p_sys->immediate.i_end = 0;
-        p_sys->immediate.p_buffer = malloc( STREAM_CACHE_SIZE );
-
-        msg_Dbg( s, "p_buffer %p-%p", p_sys->immediate.p_buffer,
-                p_sys->immediate.p_buffer + STREAM_CACHE_SIZE );
-
-        if( p_sys->immediate.p_buffer == NULL )
-        {
-            msg_Err( s, "Out of memory when allocating stream cache (%d bytes)",
-                        STREAM_CACHE_SIZE );
-            goto error;
-        }
-    }
-    else /* ( p_sys->method == Stream ) */
+    else
     {
         int i;
+
+        assert( p_sys->method == STREAM_METHOD_STREAM );
 
         msg_Dbg( s, "Using AStream*Stream" );
 
@@ -454,18 +410,12 @@ stream_t *stream_AccessNew( access_t *p_access, bool b_quick )
         p_sys->stream.i_tk     = 0;
         p_sys->stream.p_buffer = malloc( STREAM_CACHE_SIZE );
         if( p_sys->stream.p_buffer == NULL )
-        {
-            msg_Err( s, "Out of memory when allocating stream cache (%d bytes)",
-                        STREAM_CACHE_SIZE );
             goto error;
-        }
         p_sys->stream.i_used   = 0;
-        access_Control( p_access, ACCESS_GET_MTU,
-                         &p_sys->stream.i_read_size );
-        if( p_sys->stream.i_read_size <= 0 )
-            p_sys->stream.i_read_size = STREAM_READ_ATONCE;
-        else if( p_sys->stream.i_read_size <= 256 )
-            p_sys->stream.i_read_size = 256;
+        p_sys->stream.i_read_size = STREAM_READ_ATONCE;
+#if STREAM_READ_ATONCE < 256
+#   error "Invalid STREAM_READ_ATONCE value"
+#endif
 
         for( i = 0; i < STREAM_CACHE_TRACK; i++ )
         {
@@ -489,7 +439,7 @@ stream_t *stream_AccessNew( access_t *p_access, bool b_quick )
     return s;
 
 error:
-    if( p_sys->method == Block )
+    if( p_sys->method == STREAM_METHOD_BLOCK )
     {
         /* Nothing yet */
     }
@@ -500,10 +450,9 @@ error:
     while( p_sys->i_list > 0 )
         free( p_sys->list[--(p_sys->i_list)] );
     free( p_sys->list );
-    free( psz_list );
     free( s->p_sys );
     vlc_object_detach( s );
-    vlc_object_release( s );
+    stream_CommonDelete( s );
     return NULL;
 }
 
@@ -516,9 +465,10 @@ static void AStreamDestroy( stream_t *s )
 
     vlc_object_detach( s );
 
-    if( p_sys->method == Block ) block_ChainRelease( p_sys->block.p_first );
-    else if ( p_sys->method == Immediate ) free( p_sys->immediate.p_buffer );
-    else free( p_sys->stream.p_buffer );
+    if( p_sys->method == STREAM_METHOD_BLOCK )
+        block_ChainRelease( p_sys->block.p_first );
+    else
+        free( p_sys->stream.p_buffer );
 
     free( p_sys->p_peek );
 
@@ -534,7 +484,7 @@ static void AStreamDestroy( stream_t *s )
     free( p_sys->list );
     free( p_sys );
 
-    vlc_object_release( s );
+    stream_CommonDelete( s );
 }
 
 static void UStreamDestroy( stream_t *s )
@@ -545,15 +495,15 @@ static void UStreamDestroy( stream_t *s )
 }
 
 /****************************************************************************
- * stream_AccessReset:
+ * AStreamControlReset:
  ****************************************************************************/
-void stream_AccessReset( stream_t *s )
+static void AStreamControlReset( stream_t *s )
 {
     stream_sys_t *p_sys = s->p_sys;
 
     p_sys->i_pos = p_sys->p_access->info.i_pos;
 
-    if( p_sys->method == Block )
+    if( p_sys->method == STREAM_METHOD_BLOCK )
     {
         block_ChainRelease( p_sys->block.p_first );
 
@@ -568,13 +518,11 @@ void stream_AccessReset( stream_t *s )
         /* Do the prebuffering */
         AStreamPrebufferBlock( s );
     }
-    else if( p_sys->method == Immediate )
-    {
-        stream_buffer_empty( s, stream_buffered_size( s ) );
-    }
-    else /* ( p_sys->method == Stream ) */
+    else
     {
         int i;
+
+        assert( p_sys->method == STREAM_METHOD_STREAM );
 
         /* Setup our tracks */
         p_sys->stream.i_offset = 0;
@@ -594,9 +542,9 @@ void stream_AccessReset( stream_t *s )
 }
 
 /****************************************************************************
- * stream_AccessUpdate:
+ * AStreamControlUpdate:
  ****************************************************************************/
-void stream_AccessUpdate( stream_t *s )
+static void AStreamControlUpdate( stream_t *s )
 {
     stream_sys_t *p_sys = s->p_sys;
 
@@ -620,9 +568,9 @@ static int AStreamControl( stream_t *s, int i_query, va_list args )
     stream_sys_t *p_sys = s->p_sys;
     access_t     *p_access = p_sys->p_access;
 
-    bool *p_bool;
-    int64_t    *pi_64, i_64;
-    int        i_int;
+    bool    *p_bool;
+    int64_t *pi_64, i_64;
+    int     i_int;
 
     switch( i_query )
     {
@@ -656,32 +604,44 @@ static int AStreamControl( stream_t *s, int i_query, va_list args )
 
         case STREAM_SET_POSITION:
             i_64 = (int64_t)va_arg( args, int64_t );
-            if( p_sys->method == Block )
+            switch( p_sys->method )
+            {
+            case STREAM_METHOD_BLOCK:
                 return AStreamSeekBlock( s, i_64 );
-            else if( p_sys->method == Immediate )
-                return AStreamSeekImmediate( s, i_64 );
-            else /* ( p_sys->method == Stream ) */
+            case STREAM_METHOD_STREAM:
                 return AStreamSeekStream( s, i_64 );
-
-        case STREAM_GET_MTU:
-            return VLC_EGENERIC;
+            default:
+                assert(0);
+                return VLC_EGENERIC;
+            }
 
         case STREAM_CONTROL_ACCESS:
+        {
             i_int = (int) va_arg( args, int );
             if( i_int != ACCESS_SET_PRIVATE_ID_STATE &&
                 i_int != ACCESS_SET_PRIVATE_ID_CA &&
-                i_int != ACCESS_GET_PRIVATE_ID_STATE )
+                i_int != ACCESS_GET_PRIVATE_ID_STATE &&
+                i_int != ACCESS_SET_TITLE &&
+                i_int != ACCESS_SET_SEEKPOINT )
             {
                 msg_Err( s, "Hey, what are you thinking ?"
                             "DON'T USE STREAM_CONTROL_ACCESS !!!" );
                 return VLC_EGENERIC;
             }
-            return access_vaControl( p_access, i_int, args );
+            int i_ret = access_vaControl( p_access, i_int, args );
+            if( i_int == ACCESS_SET_TITLE || i_int == ACCESS_SET_SEEKPOINT )
+                AStreamControlReset( s );
+            return i_ret;
+        }
+
+        case STREAM_UPDATE_SIZE:
+            AStreamControlUpdate( s );
+            return VLC_SUCCESS;
 
         case STREAM_GET_CONTENT_TYPE:
             return access_Control( p_access, ACCESS_GET_CONTENT_TYPE,
                                     va_arg( args, char ** ) );
-
+        case STREAM_SET_RECORD_STATE:
         default:
             msg_Err( s, "invalid stream_vaControl query=0x%x", i_query );
             return VLC_EGENERIC;
@@ -689,15 +649,12 @@ static int AStreamControl( stream_t *s, int i_query, va_list args )
     return VLC_SUCCESS;
 }
 
-
-
 /****************************************************************************
  * Method 1:
  ****************************************************************************/
 static void AStreamPrebufferBlock( stream_t *s )
 {
     stream_sys_t *p_sys = s->p_sys;
-    access_t     *p_access = p_sys->p_access;
 
     int64_t i_first = 0;
     int64_t i_start;
@@ -706,12 +663,11 @@ static void AStreamPrebufferBlock( stream_t *s )
     i_start = mdate();
     for( ;; )
     {
-        int64_t i_date = mdate();
+        const int64_t i_date = mdate();
         bool b_eof;
         block_t *b;
 
-        if( s->b_die || p_sys->block.i_size > STREAM_CACHE_PREBUFFER_SIZE ||
-            ( i_first > 0 && i_first + STREAM_CACHE_PREBUFFER_LENGTH < i_date ) )
+        if( s->b_die || p_sys->block.i_size > STREAM_CACHE_PREBUFFER_SIZE )
         {
             int64_t i_byterate;
 
@@ -732,9 +688,8 @@ static void AStreamPrebufferBlock( stream_t *s )
         /* Fetch a block */
         if( ( b = AReadBlock( s, &b_eof ) ) == NULL )
         {
-            if( b_eof ) break;
-
-            msleep( STREAM_DATA_WAIT );
+            if( b_eof )
+                break;
             continue;
         }
 
@@ -749,20 +704,12 @@ static void AStreamPrebufferBlock( stream_t *s )
             b = b->p_next;
         }
 
-        if( p_access->info.b_prebuffered )
-        {
-            /* Access has already prebufferred - update stats and exit */
-            p_sys->stat.i_bytes = p_sys->block.i_size;
-            p_sys->stat.i_read_time = mdate() - i_start;
-            break;
-        }
-
         if( i_first == 0 )
         {
             i_first = mdate();
-            msg_Dbg( s, "received first data for our buffer");
+            msg_Dbg( s, "received first data after %d ms",
+                     (int)((i_first-i_start)/1000) );
         }
-
     }
 
     p_sys->block.p_current = p_sys->block.p_first;
@@ -774,14 +721,14 @@ static int AStreamReadBlock( stream_t *s, void *p_read, unsigned int i_read )
 {
     stream_sys_t *p_sys = s->p_sys;
 
-    uint8_t *p_data= (uint8_t*)p_read;
+    uint8_t *p_data = p_read;
     unsigned int i_data = 0;
 
     /* It means EOF */
     if( p_sys->block.p_current == NULL )
         return 0;
 
-    if( p_read == NULL )
+    if( p_data == NULL )
     {
         /* seek within this stream if possible, else use plain old read and discard */
         stream_sys_t *p_sys = s->p_sys;
@@ -1017,7 +964,7 @@ static int AStreamSeekBlock( stream_t *s, int64_t i_pos )
         }
         while( p_sys->block.i_start + p_sys->block.i_size < i_pos );
 
-        p_sys->block.i_offset = i_pos - p_sys->i_pos;
+        p_sys->block.i_offset += i_pos - p_sys->i_pos;
         p_sys->i_pos = i_pos;
 
         return VLC_SUCCESS;
@@ -1029,7 +976,6 @@ static int AStreamSeekBlock( stream_t *s, int64_t i_pos )
 static int AStreamRefillBlock( stream_t *s )
 {
     stream_sys_t *p_sys = s->p_sys;
-    int64_t      i_start, i_stop;
     block_t      *b;
 
     /* Release data */
@@ -1053,26 +999,24 @@ static int AStreamRefillBlock( stream_t *s )
     }
 
     /* Now read a new block */
-    i_start = mdate();
+    const int64_t i_start = mdate();
     for( ;; )
     {
         bool b_eof;
 
-        if( s->b_die ) return VLC_EGENERIC;
-
+        if( s->b_die )
+            return VLC_EGENERIC;
 
         /* Fetch a block */
-        if( ( b = AReadBlock( s, &b_eof ) ) ) break;
-
-        if( b_eof ) return VLC_EGENERIC;
-
-        msleep( STREAM_DATA_WAIT );
+        if( ( b = AReadBlock( s, &b_eof ) ) )
+            break;
+        if( b_eof )
+            return VLC_EGENERIC;
     }
 
+    p_sys->stat.i_read_time += mdate() - i_start;
     while( b )
     {
-        i_stop = mdate();
-
         /* Append the block */
         p_sys->block.i_size += b->i_buffer;
         *p_sys->block.pp_last = b;
@@ -1084,11 +1028,9 @@ static int AStreamRefillBlock( stream_t *s )
 
         /* Update stat */
         p_sys->stat.i_bytes += b->i_buffer;
-        p_sys->stat.i_read_time += i_stop - i_start;
         p_sys->stat.i_read_count++;
 
         b = b->p_next;
-        i_start = mdate();
     }
     return VLC_SUCCESS;
 }
@@ -1107,21 +1049,27 @@ static int AStreamReadStream( stream_t *s, void *p_read, unsigned int i_read )
     uint8_t *p_data = (uint8_t *)p_read;
     unsigned int i_data = 0;
 
-    if( tk->i_start >= tk->i_end ) return 0; /* EOF */
+    if( tk->i_start >= tk->i_end )
+        return 0; /* EOF */
 
-    if( p_read == NULL )
+    if( p_data == NULL )
     {
         /* seek within this stream if possible, else use plain old read and discard */
         stream_sys_t *p_sys = s->p_sys;
         access_t     *p_access = p_sys->p_access;
 
-        /* seeking after EOF is not what we want */
-        if( !( p_access->info.b_eof ) )
+        bool   b_aseek;
+        access_Control( p_access, ACCESS_CAN_SEEK, &b_aseek );
+        if( b_aseek )
         {
-            bool   b_aseek;
-            access_Control( p_access, ACCESS_CAN_SEEK, &b_aseek );
-            if( b_aseek )
-                return AStreamSeekStream( s, p_sys->i_pos + i_read ) ? 0 : i_read;
+            const int64_t i_pos_wanted = p_sys->i_pos + i_read;
+
+            if( AStreamSeekStream( s, i_pos_wanted ) )
+            {
+                if( p_sys->i_pos != i_pos_wanted )
+                    return 0;
+            }
+            return i_read;
         }
     }
 
@@ -1158,9 +1106,16 @@ static int AStreamReadStream( stream_t *s, void *p_read, unsigned int i_read )
 
         /* */
         p_sys->stream.i_used += i_copy;
-        if( tk->i_start + p_sys->stream.i_offset >= tk->i_end ||
-            p_sys->stream.i_used >= p_sys->stream.i_read_size )
+
+        if( tk->i_end - tk->i_start - p_sys->stream.i_offset <= i_read -i_data )
         {
+            const int i_read_requested = __MAX( __MIN( i_read - i_data,
+                                                       STREAM_READ_ATONCE * 10 ),
+                                                STREAM_READ_ATONCE / 2 );
+
+            if( p_sys->stream.i_used < i_read_requested )
+                p_sys->stream.i_used = i_read_requested;
+
             if( AStreamRefillStream( s ) )
             {
                 /* EOF */
@@ -1312,8 +1267,8 @@ static int AStreamSeekStream( stream_t *s, int64_t i_pos )
             p_sys->stream.i_tk = i;
             p_sys->stream.i_offset = i_pos - tk->i_start;
 
-            if( p_sys->stream.i_used < 1024 )
-                p_sys->stream.i_used = 1024;
+            if( p_sys->stream.i_used < STREAM_READ_ATONCE )
+                p_sys->stream.i_used = STREAM_READ_ATONCE;
 
             if( AStreamRefillStream( s ) && i_pos == tk->i_end )
                 return VLC_EGENERIC;
@@ -1407,12 +1362,12 @@ static int AStreamRefillStream( stream_t *s )
         /* msg_Dbg( s, "AStreamRefillStream: read=%d", i_read ); */
         if( i_read <  0 )
         {
-            msleep( STREAM_DATA_WAIT );
             continue;
         }
         else if( i_read == 0 )
         {
-            if( !b_read ) return VLC_EGENERIC;
+            if( !b_read )
+                return VLC_EGENERIC;
             return VLC_SUCCESS;
         }
         b_read = true;
@@ -1445,15 +1400,11 @@ static int AStreamRefillStream( stream_t *s )
 static void AStreamPrebufferStream( stream_t *s )
 {
     stream_sys_t *p_sys = s->p_sys;
-    access_t     *p_access = p_sys->p_access;
 
     int64_t i_first = 0;
     int64_t i_start;
-    int64_t i_prebuffer = p_sys->b_quick ? STREAM_CACHE_TRACK_SIZE /100 :
-        ( (p_access->info.i_title > 1 || p_access->info.i_seekpoint > 1) ?
-          STREAM_CACHE_PREBUFFER_SIZE : STREAM_CACHE_TRACK_SIZE / 3 );
 
-    msg_Dbg( s, "pre-buffering..." );
+    msg_Dbg( s, "pre buffering" );
     i_start = mdate();
     for( ;; )
     {
@@ -1462,8 +1413,7 @@ static void AStreamPrebufferStream( stream_t *s )
         int64_t i_date = mdate();
         int i_read;
 
-        if( s->b_die || tk->i_end >= i_prebuffer ||
-            (i_first > 0 && i_first + STREAM_CACHE_PREBUFFER_LENGTH < i_date) )
+        if( s->b_die || tk->i_end >= STREAM_CACHE_PREBUFFER_SIZE )
         {
             int64_t i_byterate;
 
@@ -1486,136 +1436,21 @@ static void AStreamPrebufferStream( stream_t *s )
         i_read = __MIN( p_sys->stream.i_read_size, i_read );
         i_read = AReadStream( s, &tk->p_buffer[tk->i_end], i_read );
         if( i_read <  0 )
-        {
-            msleep( STREAM_DATA_WAIT );
             continue;
-        }
         else if( i_read == 0 )
-        {
-            /* EOF */
-            break;
-        }
+            break;  /* EOF */
 
         if( i_first == 0 )
         {
             i_first = mdate();
-            msg_Dbg( s, "received first data for our buffer");
+            msg_Dbg( s, "received first data after %d ms",
+                     (int)((i_first-i_start)/1000) );
         }
 
         tk->i_end += i_read;
 
         p_sys->stat.i_read_count++;
     }
-}
-
-/****************************************************************************
- * Method 3:
- ****************************************************************************/
-
-static int AStreamReadImmediate( stream_t *s, void *p_read, unsigned int i_read )
-{
-    stream_sys_t *p_sys = s->p_sys;
-
-#ifdef STREAM_DEBUG
-    msg_Dbg( s, "AStreamReadImmediate p_read=%p i_read=%d",
-             p_read, i_read );
-#endif
-
-    /* First, check if we already have some data in the buffer,
-     * that we could copy directly */
-    int i_copy = __MIN( stream_buffered_size( s ), i_read );
-    if( i_copy )
-    {
-#ifdef STREAM_DEBUG
-        msg_Dbg( s, "AStreamReadImmediate: copy %d from %p", i_copy, stream_buffer( s ) );
-#endif
-
-        assert( i_copy <= STREAM_CACHE_SIZE );
-
-        if( p_read )
-        {
-            memcpy( p_read, stream_buffer( s ), i_copy );
-            p_read = (uint8_t *)p_read + i_copy;
-        }
-    }
-
-    /* Now that we've read our buffer we don't need its i_copy bytes */
-    stream_buffer_empty( s, i_copy );
-
-    /* Now check if we have still to really read some data */
-    int i_to_read = i_read - i_copy;
-    if( i_to_read )
-    {
-        if( p_read )
-            i_to_read = AReadStream( s, p_read, i_to_read );
-        else
-        {
-            void * dummy = malloc(i_to_read);
-            i_to_read = AReadStream( s, dummy, i_to_read );
-            free(dummy);
-        }
-    }
-
-    p_sys->i_pos += i_to_read;
-
-    return i_to_read + i_copy;
-}
-
-static int AStreamPeekImmediate( stream_t *s, const uint8_t **pp_peek, unsigned int i_read )
-{
-#ifdef STREAM_DEBUG
-    msg_Dbg( s, "AStreamPeekImmediate: %d  size=%"PRId64,
-             i_read, size_buffered_size( s ) );
-#endif
-
-    /* Avoid problem, but that shouldn't happen */
-    if( i_read > STREAM_CACHE_SIZE / 2 )
-        i_read = STREAM_CACHE_SIZE / 2;
-
-    int i_to_read = i_read - stream_buffered_size( s );
-    if( i_to_read > 0 )
-    {
-#ifdef STREAM_DEBUG
-        msg_Dbg( s, "AStreamPeekImmediate: Reading %d",
-             i_to_read );
-#endif
-        i_to_read = AReadStream( s, stream_buffer( s ) + stream_buffered_size( s ),
-                                 i_to_read );
-
-        if( i_to_read > 0 )
-            stream_buffer_fill( s, i_to_read );
-    }
-
-    *pp_peek = stream_buffer( s );
-
-    return __MIN(stream_buffered_size( s ), i_read);
-}
-
-static int AStreamSeekImmediate( stream_t *s, int64_t i_pos )
-{
-    stream_sys_t *p_sys = s->p_sys;
-    access_t     *p_access = p_sys->p_access;
-    bool   b_aseek;
-
-#ifdef STREAM_DEBUG
-    msg_Dbg( s, "AStreamSeekImmediate to %"PRId64" pos=%"PRId64
-             i_pos, p_sys->i_pos );
-#endif
-
-    access_Control( p_access, ACCESS_CAN_SEEK, &b_aseek );
-    if( !b_aseek )
-    {
-        /* We can't do nothing */
-        msg_Dbg( s, "AStreamSeekImmediate: can't seek" );
-        return VLC_EGENERIC;
-    }
-
-    /* Just reset our buffer */
-    stream_buffer_empty( s, stream_buffered_size( s ) );
-
-    if( ASeek( s, i_pos ) ) return VLC_EGENERIC;
-
-    return VLC_SUCCESS;
 }
 
 /****************************************************************************
@@ -1628,7 +1463,7 @@ static int AStreamSeekImmediate( stream_t *s, int64_t i_pos )
  */
 #define STREAM_PROBE_LINE 2048
 #define STREAM_LINE_MAX (2048*100)
-char * stream_ReadLine( stream_t *s )
+char *stream_ReadLine( stream_t *s )
 {
     char *p_line = NULL;
     int i_line = 0, i_read = 0;
@@ -1646,46 +1481,27 @@ char * stream_ReadLine( stream_t *s )
 
         /* BOM detection */
         i_pos = stream_Tell( s );
-        if( i_pos == 0 && i_data > 4 )
+        if( i_pos == 0 && i_data >= 3 )
         {
             int i_bom_size = 0;
-            char *psz_encoding = NULL;
+            const char *psz_encoding = NULL;
 
-            if( p_data[0] == 0xEF && p_data[1] == 0xBB && p_data[2] == 0xBF )
+            if( !memcmp( p_data, "\xEF\xBB\xBF", 3 ) )
             {
-                psz_encoding = strdup( "UTF-8" );
+                psz_encoding = "UTF-8";
                 i_bom_size = 3;
             }
-            else if( p_data[0] == 0x00 && p_data[1] == 0x00 )
+            else if( !memcmp( p_data, "\xFF\xFE", 2 ) )
             {
-                if( p_data[2] == 0xFE && p_data[3] == 0xFF )
-                {
-                    psz_encoding = strdup( "UTF-32BE" );
-                    s->i_char_width = 4;
-                    i_bom_size = 4;
-                }
+                psz_encoding = "UTF-16LE";
+                s->p_text->b_little_endian = true;
+                s->p_text->i_char_width = 2;
+                i_bom_size = 2;
             }
-            else if( p_data[0] == 0xFF && p_data[1] == 0xFE )
+            else if( !memcmp( p_data, "\xFE\xFF", 2 ) )
             {
-                if( p_data[2] == 0x00 && p_data[3] == 0x00 )
-                {
-                    psz_encoding = strdup( "UTF-32LE" );
-                    s->i_char_width = 4;
-                    s->b_little_endian = true;
-                    i_bom_size = 4;
-                }
-                else
-                {
-                    psz_encoding = strdup( "UTF-16LE" );
-                    s->b_little_endian = true;
-                    s->i_char_width = 2;
-                    i_bom_size = 2;
-                }
-            }
-            else if( p_data[0] == 0xFE && p_data[1] == 0xFF )
-            {
-                psz_encoding = strdup( "UTF-16BE" );
-                s->i_char_width = 2;
+                psz_encoding = "UTF-16BE";
+                s->p_text->i_char_width = 2;
                 i_bom_size = 2;
             }
 
@@ -1700,31 +1516,32 @@ char * stream_ReadLine( stream_t *s )
             /* Open the converter if we need it */
             if( psz_encoding != NULL )
             {
-                input_thread_t *p_input;
                 msg_Dbg( s, "%s BOM detected", psz_encoding );
-                p_input = (input_thread_t *)vlc_object_find( s, VLC_OBJECT_INPUT, FIND_PARENT );
-                if( s->i_char_width > 1 )
+                if( s->p_text->i_char_width > 1 )
                 {
-                    s->conv = vlc_iconv_open( "UTF-8", psz_encoding );
-                    if( s->conv == (vlc_iconv_t)-1 )
+                    s->p_text->conv = vlc_iconv_open( "UTF-8", psz_encoding );
+                    if( s->p_text->conv == (vlc_iconv_t)-1 )
                     {
                         msg_Err( s, "iconv_open failed" );
                     }
                 }
+
+                /* FIXME that's UGLY */
+                input_thread_t *p_input;
+                p_input = (input_thread_t *)vlc_object_find( s, VLC_OBJECT_INPUT, FIND_PARENT );
                 if( p_input != NULL)
                 {
                     var_Create( p_input, "subsdec-encoding", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
                     var_SetString( p_input, "subsdec-encoding", "UTF-8" );
                     vlc_object_release( p_input );
                 }
-                free( psz_encoding );
             }
         }
 
-        if( i_data % s->i_char_width )
+        if( i_data % s->p_text->i_char_width )
         {
             /* keep i_char_width boundary */
-            i_data = i_data - ( i_data % s->i_char_width );
+            i_data = i_data - ( i_data % s->p_text->i_char_width );
             msg_Warn( s, "the read is not i_char_width compatible");
         }
 
@@ -1732,7 +1549,7 @@ char * stream_ReadLine( stream_t *s )
             break;
 
         /* Check if there is an EOL */
-        if( s->i_char_width == 1 )
+        if( s->p_text->i_char_width == 1 )
         {
             /* UTF-8: 0A <LF> */
             psz_eol = memchr( p_data, '\n', i_data );
@@ -1740,11 +1557,11 @@ char * stream_ReadLine( stream_t *s )
         else
         {
             const uint8_t *p = p_data;
-            const uint8_t *p_last = p + i_data - s->i_char_width;
+            const uint8_t *p_last = p + i_data - s->p_text->i_char_width;
 
-            if( s->i_char_width == 2 )
+            if( s->p_text->i_char_width == 2 )
             {
-                if( s->b_little_endian == true)
+                if( s->p_text->b_little_endian == true)
                 {
                     /* UTF-16LE: 0A 00 <LF> */
                     while( p <= p_last && ( p[0] != 0x0A || p[1] != 0x00 ) )
@@ -1757,23 +1574,6 @@ char * stream_ReadLine( stream_t *s )
                         p += 2;
                 }
             }
-            else if( s->i_char_width == 4 )
-            {
-                if( s->b_little_endian == true)
-                {
-                    /* UTF-32LE: 0A 00 00 00 <LF> */
-                    while( p <= p_last && ( p[0] != 0x0A || p[1] != 0x00 ||
-                           p[2] != 0x00 || p[3] != 0x00 ) )
-                        p += 4;
-                }
-                else
-                {
-                    /* UTF-32BE: 00 00 00 0A <LF> */
-                    while( p <= p_last && ( p[3] != 0x0A || p[2] != 0x00 ||
-                           p[1] != 0x00 || p[0] != 0x00 ) )
-                        p += 4;
-                }
-            }
 
             if( p > p_last )
             {
@@ -1781,19 +1581,19 @@ char * stream_ReadLine( stream_t *s )
             }
             else
             {
-                psz_eol = (char *)p + ( s->i_char_width - 1 );
+                psz_eol = (char *)p + ( s->p_text->i_char_width - 1 );
             }
         }
 
-        if(psz_eol)
+        if( psz_eol )
         {
             i_data = (psz_eol - (char *)p_data) + 1;
-            p_line = realloc( p_line, i_line + i_data + s->i_char_width ); /* add \0 */
+            p_line = realloc( p_line, i_line + i_data + s->p_text->i_char_width ); /* add \0 */
             if( !p_line )
                 goto error;
             i_data = stream_Read( s, &p_line[i_line], i_data );
             if( i_data <= 0 ) break; /* Hmmm */
-            i_line += i_data - s->i_char_width; /* skip \n */;
+            i_line += i_data - s->p_text->i_char_width; /* skip \n */;
             i_read += i_data;
 
             /* We have our line */
@@ -1801,7 +1601,7 @@ char * stream_ReadLine( stream_t *s )
         }
 
         /* Read data (+1 for easy \0 append) */
-        p_line = realloc( p_line, i_line + STREAM_PROBE_LINE + s->i_char_width );
+        p_line = realloc( p_line, i_line + STREAM_PROBE_LINE + s->p_text->i_char_width );
         if( !p_line )
             goto error;
         i_data = stream_Read( s, &p_line[i_line], STREAM_PROBE_LINE );
@@ -1813,12 +1613,12 @@ char * stream_ReadLine( stream_t *s )
     if( i_read > 0 )
     {
         int j;
-        for( j = 0; j < s->i_char_width; j++ )
+        for( j = 0; j < s->p_text->i_char_width; j++ )
         {
             p_line[i_line + j] = '\0';
         }
-        i_line += s->i_char_width; /* the added \0 */
-        if( s->i_char_width > 1 )
+        i_line += s->p_text->i_char_width; /* the added \0 */
+        if( s->p_text->i_char_width > 1 )
         {
             size_t i_in = 0, i_out = 0;
             const char * p_in = NULL;
@@ -1833,7 +1633,7 @@ char * stream_ReadLine( stream_t *s )
             p_in = p_line;
             p_out = psz_new_line;
 
-            if( vlc_iconv( s->conv, &p_in, &i_in, &p_out, &i_out ) == (size_t)-1 )
+            if( vlc_iconv( s->p_text->conv, &p_in, &i_in, &p_out, &i_out ) == (size_t)-1 )
             {
                 msg_Err( s, "iconv failed" );
                 msg_Dbg( s, "original: %d, in %d, out %d", i_line, (int)i_in, (int)i_out );
@@ -1854,10 +1654,13 @@ char * stream_ReadLine( stream_t *s )
     }
 
 error:
-
     /* We failed to read any data, probably EOF */
     free( p_line );
-    if( s->conv != (vlc_iconv_t)(-1) ) vlc_iconv_close( s->conv );
+
+    /* */
+    if( s->p_text->conv != (vlc_iconv_t)(-1) )
+        vlc_iconv_close( s->p_text->conv );
+    s->p_text->conv = (vlc_iconv_t)(-1);
     return NULL;
 }
 
@@ -1873,7 +1676,7 @@ static int AReadStream( stream_t *s, void *p_read, unsigned int i_read )
     int i_total = 0;
 
     if( s->p_parent && s->p_parent->p_parent &&
-        s->p_parent->p_parent->i_object_type == VLC_OBJECT_INPUT )
+        vlc_internals( s->p_parent->p_parent )->i_object_type == VLC_OBJECT_INPUT )
         p_input = (input_thread_t *)s->p_parent->p_parent;
 
     if( !p_sys->i_list )
@@ -1943,7 +1746,7 @@ static block_t *AReadBlock( stream_t *s, bool *pb_eof )
     int i_total = 0;
 
     if( s->p_parent && s->p_parent->p_parent &&
-        s->p_parent->p_parent->i_object_type == VLC_OBJECT_INPUT )
+        vlc_internals( s->p_parent->p_parent )->i_object_type == VLC_OBJECT_INPUT )
         p_input = (input_thread_t *)s->p_parent->p_parent;
 
     if( !p_sys->i_list )
@@ -2107,7 +1910,7 @@ int stream_Control( stream_t *s, int i_query, ... )
     va_list args;
     int     i_result;
 
-    if ( s == NULL )
+    if( s == NULL )
         return VLC_EGENERIC;
 
     va_start( args, i_query );

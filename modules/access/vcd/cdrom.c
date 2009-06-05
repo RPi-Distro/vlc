@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: 5fa97052ee8b4f440db88fbc6f8a47fd475d50fc $
+ * $Id: a8d0f4dfeae097fdcb0f7c610cfe7c821c2c010d $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -32,6 +32,7 @@
 
 #include <vlc_common.h>
 #include <vlc_access.h>
+#include <limits.h>
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
@@ -57,7 +58,7 @@
 #   include <IOKit/storage/IOCDMedia.h>
 #   include <IOKit/storage/IOCDMediaBSDClient.h>
 #elif defined( HAVE_SCSIREQ_IN_SYS_SCSIIO_H )
-#   include <sys/inttypes.h>
+#   include <inttypes.h>
 #   include <sys/cdio.h>
 #   include <sys/scsiio.h>
 #elif defined( HAVE_IOC_TOC_HEADER_IN_SYS_CDIO_H )
@@ -76,6 +77,7 @@
 #include "cdrom_internals.h"
 #include "cdrom.h"
 #include <vlc_charset.h>
+#include <vlc_meta.h>
 
 /*****************************************************************************
  * ioctl_Open: Opens a VCD device or file and returns an opaque handle
@@ -94,7 +96,7 @@ vcddev_t *ioctl_Open( vlc_object_t *p_this, const char *psz_dev )
     /*
      *  Initialize structure with default values
      */
-    p_vcddev = (vcddev_t *)malloc( sizeof(vcddev_t) );
+    p_vcddev = malloc( sizeof(*p_vcddev) );
     if( p_vcddev == NULL )
         return NULL;
     p_vcddev->i_vcdimage_handle = -1;
@@ -111,7 +113,7 @@ vcddev_t *ioctl_Open( vlc_object_t *p_this, const char *psz_dev )
     }
 
 #else
-    if( utf8_stat( psz_dev, &fileinfo ) < 0 )
+    if( stat( psz_dev, &fileinfo ) < 0 )
     {
         free( p_vcddev );
         return NULL;
@@ -184,6 +186,7 @@ void ioctl_Close( vlc_object_t * p_this, vcddev_t *p_vcddev )
     if( p_vcddev->i_device_handle != -1 )
         close( p_vcddev->i_device_handle );
 #endif
+    free( p_vcddev );
 }
 
 /*****************************************************************************
@@ -206,11 +209,11 @@ int ioctl_GetTracksMap( vlc_object_t *p_this, const vcddev_t *p_vcddev,
 
         if( pp_sectors )
         {
-            *pp_sectors = malloc( (i_tracks + 1) * sizeof(int) );
+            *pp_sectors = calloc( i_tracks + 1, sizeof(**pp_sectors) );
             if( *pp_sectors == NULL )
                 return 0;
             memcpy( *pp_sectors, p_vcddev->p_sectors,
-                    (i_tracks + 1) * sizeof(int) );
+                    (i_tracks + 1) * sizeof(**pp_sectors) );
         }
 
         return i_tracks;
@@ -242,7 +245,7 @@ int ioctl_GetTracksMap( vlc_object_t *p_this, const vcddev_t *p_vcddev,
             CDTOCDescriptor *pTrackDescriptors;
             u_char track;
 
-            *pp_sectors = malloc( (i_tracks + 1) * sizeof(int) );
+            *pp_sectors = calloc( i_tracks + 1, sizeof(**pp_sectors) );
             if( *pp_sectors == NULL )
             {
                 darwin_freeTOC( pTOC );
@@ -347,7 +350,7 @@ int ioctl_GetTracksMap( vlc_object_t *p_this, const vcddev_t *p_vcddev,
                               ((unsigned int)p_tocheader[1] << 8);
 
                 p_fulltoc = malloc( i_toclength );
-                *pp_sectors = malloc( (i_tracks + 1) * sizeof(int) );
+                *pp_sectors = calloc( i_tracks + 1, sizeof(**pp_sectors) );
 
                 if( *pp_sectors == NULL || p_fulltoc == NULL )
                 {
@@ -413,7 +416,7 @@ int ioctl_GetTracksMap( vlc_object_t *p_this, const vcddev_t *p_vcddev,
             {
                 int i;
 
-                *pp_sectors = malloc( (i_tracks + 1) * sizeof(int) );
+                *pp_sectors = calloc( i_tracks + 1, sizeof(**pp_sectors) );
                 if( *pp_sectors == NULL )
                     return 0;
 
@@ -446,7 +449,7 @@ int ioctl_GetTracksMap( vlc_object_t *p_this, const vcddev_t *p_vcddev,
         {
              int i;
 
-             *pp_sectors = malloc( (i_tracks + 1) * sizeof(int) );
+             *pp_sectors = calloc( i_tracks + 1, sizeof(**pp_sectors) );
              if( *pp_sectors == NULL )
                  return 0;
 
@@ -501,7 +504,7 @@ int ioctl_GetTracksMap( vlc_object_t *p_this, const vcddev_t *p_vcddev,
         {
             int i;
 
-            *pp_sectors = malloc( (i_tracks + 1) * sizeof(int) );
+            *pp_sectors = calloc( i_tracks + 1, sizeof(**pp_sectors) );
             if( *pp_sectors == NULL )
                 return 0;
 
@@ -538,8 +541,10 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
     uint8_t *p_block;
     int i;
 
-    if( i_type == VCD_TYPE ) p_block = malloc( VCD_SECTOR_SIZE * i_nb );
-    else p_block = p_buffer;
+    if( i_type == VCD_TYPE )
+        p_block = malloc( VCD_SECTOR_SIZE * i_nb );
+    else
+        p_block = p_buffer;
 
     if( p_vcddev->i_vcdimage_handle != -1 )
     {
@@ -719,7 +724,7 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
         sc.flags = SCCMD_READ;
         sc.timeout = 10000;
 
-        i_ret = ioctl( i_fd, SCIOCCOMMAND, &sc );
+        i_ret = ioctl( p_vcddev->i_device_handle, SCIOCCOMMAND, &sc );
         if( i_ret == -1 )
         {
             msg_Err( p_this, "SCIOCCOMMAND failed" );
@@ -728,7 +733,7 @@ int ioctl_ReadSectors( vlc_object_t *p_this, const vcddev_t *p_vcddev,
         }
         if( sc.retsts || sc.error )
         {
-            msg_Err( p_this, "SCSI command failed: status %d error %d\n",
+            msg_Err( p_this, "SCSI command failed: status %d error %d",
                              sc.retsts, sc.error );
             if( i_type == VCD_TYPE ) free( p_block );
            return -1;
@@ -847,8 +852,8 @@ static int OpenVCDImage( vlc_object_t * p_this, const char *psz_dev,
         }
         else
         {
-            psz_cuefile = malloc( strlen(psz_dev) + 5 /* ".cue" */ );
-            sprintf( psz_cuefile, "%s.cue", psz_dev );
+            if( asprintf( &psz_cuefile, "%s.cue", psz_dev ) == -1 )
+                psz_cuefile = NULL;
         }
         /* If we need to look up the .cue file, then we don't have to look for the vcd */
         psz_vcdfile = strdup( psz_dev );
@@ -910,7 +915,7 @@ static int OpenVCDImage( vlc_object_t * p_this, const char *psz_dev,
      * about the cuefile */
     size_t i_tracks = 0;
 
-    while( fgets( line, 1024, cuefile ) )
+    while( fgets( line, 1024, cuefile ) && i_tracks < INT_MAX-1 )
     {
         /* look for a TRACK line */
         char psz_dummy[9];
@@ -926,27 +931,27 @@ static int OpenVCDImage( vlc_object_t * p_this, const char *psz_dev,
                          &i_min, &i_sec, &i_frame ) != 4) || (i_num != 1) )
                 continue;
 
-            int *buf = realloc (p_sectors, (i_tracks + 1) * sizeof (int));
+            int *buf = realloc (p_sectors, (i_tracks + 1) * sizeof (*buf));
             if (buf == NULL)
                 goto error;
             p_sectors = buf;
             p_sectors[i_tracks] = MSF_TO_LBA(i_min, i_sec, i_frame);
             msg_Dbg( p_this, "vcd track %i begins at sector:%i",
-                     i_tracks, p_sectors[i_tracks] );
+                     (int)i_tracks, (int)p_sectors[i_tracks] );
             i_tracks++;
             break;
         }
     }
 
     /* fill in the last entry */
-    int *buf = realloc (p_sectors, (i_tracks + 1) * sizeof (int));
+    int *buf = realloc (p_sectors, (i_tracks + 1) * sizeof (*buf));
     if (buf == NULL)
         goto error;
     p_sectors = buf;
     p_sectors[i_tracks] = lseek(p_vcddev->i_vcdimage_handle, 0, SEEK_END)
                                  / VCD_SECTOR_SIZE;
     msg_Dbg( p_this, "vcd track %i, begins at sector:%i",
-             i_tracks, p_sectors[i_tracks] );
+             (int)i_tracks, (int)p_sectors[i_tracks] );
     p_vcddev->i_tracks = ++i_tracks;
     p_vcddev->p_sectors = p_sectors;
     i_ret = 0;
@@ -965,6 +970,7 @@ error:
  ****************************************************************************/
 static void CloseVCDImage( vlc_object_t * p_this, vcddev_t *p_vcddev )
 {
+    VLC_UNUSED( p_this );
     if( p_vcddev->i_vcdimage_handle != -1 )
         close( p_vcddev->i_vcdimage_handle );
     else
@@ -1059,7 +1065,7 @@ static CDTOC *darwin_getTOC( vlc_object_t * p_this, const vcddev_t *p_vcddev )
         buf_len = CFDataGetLength( data ) + 1;
         range = CFRangeMake( 0, buf_len );
 
-        if( ( pTOC = (CDTOC *)malloc( buf_len ) ) != NULL )
+        if( ( pTOC = malloc( buf_len ) ) != NULL )
         {
             CFDataGetBytes( data, range, (u_char *)pTOC );
         }
@@ -1239,3 +1245,283 @@ static int win32_vcd_open( vlc_object_t * p_this, const char *psz_dev,
 }
 
 #endif /* WIN32 */
+
+/* */
+static void astrcat( char **ppsz_dst, char *psz_src )
+{
+    char *psz_old = *ppsz_dst;
+
+    if( !psz_old )
+    {
+        *ppsz_dst = strdup( psz_src );
+    }
+    else if( psz_src )
+    {
+        if( asprintf( ppsz_dst, "%s%s", psz_old, psz_src ) < 0 )
+            *ppsz_dst = psz_old;
+        else
+            free( psz_old );
+    }
+}
+
+/* */
+static int CdTextParse( vlc_meta_t ***ppp_tracks, int *pi_tracks,
+                        const uint8_t *p_buffer, int i_buffer )
+{
+    char *pppsz_info[128][0x10];
+    int i_track_last = -1;
+    if( i_buffer < 4 )
+        return -1;
+
+    memset( pppsz_info, 0, sizeof(pppsz_info) );
+
+    for( int i = 0; i < (i_buffer-4)/18; i++ )
+    {
+        const uint8_t *p_block = &p_buffer[4 + 18*i];
+        char psz_text[12+1];
+
+        const int i_pack_type = p_block[0];
+        if( i_pack_type < 0x80 || i_pack_type > 0x8f )
+            continue;
+
+        const int i_track_number = (p_block[1] >> 0)&0x7f;
+        const int i_extension_flag = ( p_block[1] >> 7)& 0x01;
+        if( i_extension_flag )
+            continue;
+
+        //const int i_sequence_number = p_block[2];
+        //const int i_charater_position = (p_block[3] >> 0) &0x0f;
+        //const int i_block_number = (p_block[3] >> 4) &0x07;
+        /* TODO unicode support
+         * I need a sample */
+        //const int i_unicode = ( p_block[3] >> 7)&0x01;
+        //const int i_crc = (p_block[4+12] << 8) | (p_block[4+13] << 0);
+
+        /* */
+        memcpy( psz_text, &p_block[4], 12 );
+        psz_text[12] = '\0';
+
+        /* */
+        int i_track =  i_track_number;
+        char *psz_track = &psz_text[0];
+        while( i_track <= 127 && psz_track < &psz_text[12] )
+        {
+            //fprintf( stderr, "t=%d psz_track=%p end=%p", i_track, psz_track, &psz_text[12] );
+            if( *psz_track )
+            {
+                astrcat( &pppsz_info[i_track][i_pack_type-0x80], psz_track );
+                i_track_last = __MAX( i_track_last, i_track );
+            }
+
+            i_track++;
+            psz_track += 1 + strlen(psz_track);
+        }
+    }
+
+    if( i_track_last < 0 )
+        return -1;
+
+    vlc_meta_t **pp_tracks = calloc( i_track_last+1, sizeof(*pp_tracks) );
+    if( !pp_tracks )
+        goto exit;
+
+    for( int j = 0; j < 0x10; j++ )
+    {
+        for( int i = 0; i <= i_track_last; i++ )
+        {
+            /* */
+            if( pppsz_info[i][j] )
+                EnsureUTF8( pppsz_info[i][j] );
+
+            /* */
+            const char *psz_default = pppsz_info[0][j];
+            const char *psz_value = pppsz_info[i][j];
+
+            if( !psz_value && !psz_default )
+                continue;
+            vlc_meta_t *p_track = pp_tracks[i];
+            if( !p_track )
+            {
+                p_track = pp_tracks[i] = vlc_meta_New();
+                if( !p_track )
+                    continue;
+            }
+            switch( j )
+            {
+            case 0x00: /* Album/Title */
+                if( i == 0 )
+                {
+                    vlc_meta_SetAlbum( p_track, psz_value );
+                }
+                else
+                {
+                    if( psz_value )
+                        vlc_meta_SetTitle( p_track, psz_value );
+                    if( psz_default )
+                        vlc_meta_SetAlbum( p_track, psz_default );
+                }
+                break;
+            case 0x01: /* Performer */
+                vlc_meta_SetArtist( p_track,
+                                    psz_value ? psz_value : psz_default );
+                break;
+            case 0x05: /* Messages */
+                vlc_meta_SetDescription( p_track,
+                                         psz_value ? psz_value : psz_default );
+                break;
+            case 0x07: /* Genre */
+                vlc_meta_SetGenre( p_track,
+                                   psz_value ? psz_value : psz_default );
+                break;
+            /* FIXME unsupported:
+             * 0x02: songwriter
+             * 0x03: composer
+             * 0x04: arrenger
+             * 0x06: disc id */
+            }
+        }
+    }
+    /* */
+exit:
+    for( int j = 0; j < 0x10; j++ )
+        for( int i = 0; i <= i_track_last; i++ )
+            free( pppsz_info[i][j] );
+
+    *ppp_tracks = pp_tracks;
+    *pi_tracks = i_track_last+1;
+    return pp_tracks ? 0 : -1;
+}
+
+#if defined( __APPLE__ ) || \
+    defined( HAVE_IOC_TOC_HEADER_IN_SYS_CDIO_H ) || \
+    defined( HAVE_SCSIREQ_IN_SYS_SCSIIO_H )
+static int CdTextRead( vlc_object_t *p_object, const vcddev_t *p_vcddev,
+                       uint8_t **pp_buffer, int *pi_buffer )
+{
+    VLC_UNUSED( p_object );
+    return -1;
+}
+#elif defined( WIN32 )
+static int CdTextRead( vlc_object_t *p_object, const vcddev_t *p_vcddev,
+                       uint8_t **pp_buffer, int *pi_buffer )
+{
+    if( p_vcddev->hASPI )
+    {
+        msg_Err( p_object, "mode ASPI unsupported for CD-TEXT" );
+        return -1;
+    }
+
+    CDROM_READ_TOC_EX TOCEx;
+    memset(&TOCEx, 0, sizeof(TOCEx));
+    TOCEx.Format = CDROM_READ_TOC_EX_FORMAT_CDTEXT;
+
+    const int i_header_size = __MAX( 4, MINIMUM_CDROM_READ_TOC_EX_SIZE );
+    uint8_t header[i_header_size];
+    DWORD i_read;
+    if( !DeviceIoControl( p_vcddev->h_device_handle, IOCTL_CDROM_READ_TOC_EX,
+                          &TOCEx, sizeof(TOCEx), header, i_header_size, &i_read, 0 ) )
+        return -1;
+
+    const int i_text = 2 + (header[0] << 8) + header[1];
+    if( i_text <= 4 )
+        return -1;
+
+    /* Read complete CD-TEXT */
+    uint8_t *p_text = calloc( 1, i_text );
+    if( !p_text )
+        return VLC_EGENERIC;
+
+    if( !DeviceIoControl( p_vcddev->h_device_handle, IOCTL_CDROM_READ_TOC_EX,
+                          &TOCEx, sizeof(TOCEx), p_text, i_text, &i_read, 0 ) )
+    {
+        free( p_text );
+        return VLC_EGENERIC;
+    }
+
+    /* */
+    *pp_buffer = p_text;
+    *pi_buffer = i_text;
+    return VLC_SUCCESS;
+}
+#else
+static int CdTextRead( vlc_object_t *p_object, const vcddev_t *p_vcddev,
+                       uint8_t **pp_buffer, int *pi_buffer )
+{
+    VLC_UNUSED( p_object );
+
+    if( p_vcddev->i_device_handle == -1 )
+        return -1;
+
+    struct cdrom_generic_command gc;
+    uint8_t header[4];
+
+    /* Read CD-TEXT size */
+    memset( header, 0, sizeof(header) );
+    memset( &gc, 0, sizeof(gc) );
+    gc.cmd[0] = 0x43;   /* Read TOC */
+    gc.cmd[1] = 0x02;   /* MSF */
+    gc.cmd[2] = 5;      /* CD-Text */
+    gc.cmd[7] = ( sizeof(header) >> 8 ) & 0xff;
+    gc.cmd[8] = ( sizeof(header) >> 0 ) & 0xff;
+
+    gc.buflen = sizeof(header);
+    gc.buffer = header;
+    gc.data_direction = CGC_DATA_READ;
+    gc.timeout = 1000;
+
+    if( ioctl( p_vcddev->i_device_handle, CDROM_SEND_PACKET, &gc ) == -1 )
+        return VLC_EGENERIC;
+
+    /* If the size is less than 4 it is an error, if it 4 then
+     * it means no text data */
+    const int i_text = 2 + (header[0] << 8) + header[1];
+    if( i_text <= 4 )
+        return VLC_EGENERIC;
+
+    /* Read complete CD-TEXT */
+    uint8_t *p_text = calloc( 1, i_text );
+    if( !p_text )
+        return VLC_EGENERIC;
+
+    memset( &gc, 0, sizeof(gc) );
+    gc.cmd[0] = 0x43;   /* Read TOC */
+    gc.cmd[1] = 0x02;   /* MSF */
+    gc.cmd[2] = 5;      /* CD-Text */
+    gc.cmd[7] = ( i_text >> 8 ) & 0xff;
+    gc.cmd[8] = ( i_text >> 0 ) & 0xff;
+
+    gc.buflen = i_text;
+    gc.buffer = p_text;
+    gc.data_direction = CGC_DATA_READ;
+    gc.timeout = 1000;
+
+    if( ioctl( p_vcddev->i_device_handle, CDROM_SEND_PACKET, &gc ) == -1 )
+    {
+        free( p_text );
+        return VLC_EGENERIC;
+    }
+
+    /* */
+    *pp_buffer = p_text;
+    *pi_buffer = i_text;
+    return VLC_SUCCESS;
+}
+#endif
+
+int ioctl_GetCdText( vlc_object_t *p_object, const vcddev_t *p_vcddev,
+                     vlc_meta_t ***ppp_tracks, int *pi_tracks )
+{
+    uint8_t *p_text;
+    int i_text;
+
+    if( p_vcddev->i_vcdimage_handle != -1 )
+        return -1;
+
+    if( CdTextRead( p_object, p_vcddev, &p_text, &i_text ) )
+        return -1;
+
+    CdTextParse( ppp_tracks, pi_tracks, p_text, i_text );
+    free( p_text );
+    return 0;
+}
+

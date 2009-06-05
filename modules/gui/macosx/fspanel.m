@@ -1,8 +1,8 @@
 /*****************************************************************************
  * fspanel.m: MacOS X full screen panel
  *****************************************************************************
- * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 4bc7157a1fb032a1d7a8e9dfe757f4256052bffb $
+ * Copyright (C) 2006-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -41,7 +41,7 @@
 @implementation VLCFSPanel
 /* We override this initializer so we can set the NSBorderlessWindowMask styleMask, and set a few other important settings */
 - (id)initWithContentRect:(NSRect)contentRect 
-                styleMask:(unsigned int)aStyle 
+                styleMask:(NSUInteger)aStyle 
                   backing:(NSBackingStoreType)bufferingType 
                     defer:(BOOL)flag
 {
@@ -178,9 +178,9 @@
 
 - (void)setActive:(id)noData
 {
-    if( [[[VLCMain sharedInstance] getControls] getVoutView] != nil )
+    if( [[[VLCMain sharedInstance] controls] voutView] != nil )
     {
-        if( [[[[VLCMain sharedInstance] getControls] getVoutView] isFullscreen] )
+        if( [[[[VLCMain sharedInstance] controls] voutView] isFullscreen] )
         {
             b_nonActive = NO;
             [self fadeIn];
@@ -247,8 +247,8 @@
 - (void)mouseExited:(NSEvent *)theEvent
 {
     /* give up our focus, so the vout may show us again without letting the user clicking it */
-    if( [[[[VLCMain sharedInstance] getControls] getVoutView] isFullscreen] )
-        [[[[[VLCMain sharedInstance] getControls] getVoutView] window] makeKeyWindow];
+    if( [[[[VLCMain sharedInstance] controls] voutView] isFullscreen] )
+        [[[[[VLCMain sharedInstance] controls] voutView] window] makeKeyWindow];
 }
 
 - (void)hideMouse
@@ -524,32 +524,32 @@
 
 - (IBAction)play:(id)sender
 {
-    [[[VLCMain sharedInstance] getControls] play: sender];
+    [[[VLCMain sharedInstance] controls] play: sender];
 }
 
 - (IBAction)forward:(id)sender
 {
-    [[[VLCMain sharedInstance] getControls] forward: sender];
+    [[[VLCMain sharedInstance] controls] forward: sender];
 }
 
 - (IBAction)backward:(id)sender
 {
-    [[[VLCMain sharedInstance] getControls] backward: sender];
+    [[[VLCMain sharedInstance] controls] backward: sender];
 }
 
 - (IBAction)prev:(id)sender
 {
-    [[[VLCMain sharedInstance] getControls] prev: sender];
+    [[[VLCMain sharedInstance] controls] prev: sender];
 }
 
 - (IBAction)next:(id)sender
 {
-    [[[VLCMain sharedInstance] getControls] next: sender];
+    [[[VLCMain sharedInstance] controls] next: sender];
 }
 
 - (IBAction)windowAction:(id)sender
 {
-    [[[VLCMain sharedInstance] getControls] windowAction: sender];
+    [[[VLCMain sharedInstance] controls] windowAction: sender];
 }
 
 - (IBAction)fsTimeSliderUpdate:(id)sender
@@ -559,7 +559,7 @@
 
 - (IBAction)fsVolumeSliderUpdate:(id)sender
 {
-    [[[VLCMain sharedInstance] getControls] volumeSliderUpdated: sender];
+    [[[VLCMain sharedInstance] controls] volumeSliderUpdated: sender];
 }
 
 #define addImage(image, _x, _y, mode, _width)                                               \

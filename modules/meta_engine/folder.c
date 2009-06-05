@@ -2,7 +2,7 @@
  * folder.c
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: e6493e0e2e8d5545a72a26397196d8cba7843f78 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -31,10 +31,7 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_interface.h>
-#include <vlc_meta.h>
 #include <vlc_playlist.h>
-#include <vlc_input.h>
 #include <vlc_charset.h>
 
 #ifdef HAVE_SYS_STAT_H
@@ -54,20 +51,19 @@ static int FindMeta( vlc_object_t * );
  * Module descriptor
  *****************************************************************************/
 
-vlc_module_begin();
-    set_shortname( N_( "Folder" ) );
-    set_description( N_("Folder meta data") );
+vlc_module_begin ()
+    set_shortname( N_( "Folder" ) )
+    set_description( N_("Folder meta data") )
 
-    set_capability( "art finder", 90 );
-    set_callbacks( FindMeta, NULL );
-vlc_module_end();
+    set_capability( "art finder", 90 )
+    set_callbacks( FindMeta, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  *****************************************************************************/
 static int FindMeta( vlc_object_t *p_this )
 {
-    playlist_t *p_playlist = (playlist_t *)p_this;
-    input_item_t *p_item = (input_item_t *)(p_playlist->p_private);
+    input_item_t *p_item = (input_item_t *)p_this->p_private;
     bool b_have_art = false;
 
     int i = 0;

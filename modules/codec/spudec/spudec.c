@@ -2,7 +2,7 @@
  * spudec.c : SPU decoder thread
  *****************************************************************************
  * Copyright (C) 2000-2001, 2006 the VideoLAN team
- * $Id: cc81a5e598d5cbe9679482c472bfca3ddec1f53e $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -42,18 +42,18 @@ static int  DecoderOpen   ( vlc_object_t * );
 static int  PacketizerOpen( vlc_object_t * );
 static void Close         ( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("DVD subtitles decoder") );
-    set_capability( "decoder", 50 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_SCODEC );
-    set_callbacks( DecoderOpen, Close );
+vlc_module_begin ()
+    set_description( N_("DVD subtitles decoder") )
+    set_capability( "decoder", 50 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_SCODEC )
+    set_callbacks( DecoderOpen, Close )
 
-    add_submodule();
-    set_description( N_("DVD subtitles packetizer") );
-    set_capability( "packetizer", 50 );
-    set_callbacks( PacketizerOpen, Close );
-vlc_module_end();
+    add_submodule ()
+    set_description( N_("DVD subtitles packetizer") )
+    set_capability( "packetizer", 50 )
+    set_callbacks( PacketizerOpen, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -151,7 +151,6 @@ static subpicture_t *Decode( decoder_t *p_dec, block_t **pp_block )
     /* FIXME: what the, we shouldn’t need to allocate 64k of buffer --sam. */
     p_sys->i_spu = block_ChainExtract( p_spu_block, p_sys->buffer, 65536 );
     p_sys->i_pts = p_spu_block->i_pts;
-    p_sys->i_rate = p_spu_block->i_rate;
     block_ChainRelease( p_spu_block );
 
     /* Parse and decode */

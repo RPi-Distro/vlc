@@ -2,7 +2,7 @@
  * win32text.c : Text drawing routines using the TextOut win32 API
  *****************************************************************************
  * Copyright (C) 2002 - 2005 the VideoLAN team
- * $Id: 75ad54be301c30fe23babd89b10b4bc122925a80 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -88,32 +88,32 @@ static const char *const ppsz_color_descriptions[] = {
   N_("Red"), N_("Fuchsia"), N_("Yellow"), N_("Olive"), N_("Green"), N_("Teal"),
   N_("Lime"), N_("Purple"), N_("Navy"), N_("Blue"), N_("Aqua") };
 
-vlc_module_begin();
-    set_shortname( N_("Text renderer"));
-    set_description( N_("Win32 font renderer") );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_SUBPIC );
+vlc_module_begin ()
+    set_shortname( N_("Text renderer"))
+    set_description( N_("Win32 font renderer") )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_SUBPIC )
 
     add_integer( "win32text-fontsize", 0, NULL, FONTSIZE_TEXT,
-                 FONTSIZE_LONGTEXT, true );
+                 FONTSIZE_LONGTEXT, true )
 
     /* opacity valid on 0..255, with default 255 = fully opaque */
     add_integer_with_range( "win32-opacity", 255, 0, 255, NULL,
-        OPACITY_TEXT, OPACITY_LONGTEXT, false );
+        OPACITY_TEXT, OPACITY_LONGTEXT, false )
 
     /* hook to the color values list, with default 0x00ffffff = white */
     add_integer( "win32text-color", 0x00FFFFFF, NULL, COLOR_TEXT,
-                 COLOR_LONGTEXT, true );
+                 COLOR_LONGTEXT, true )
         change_integer_list( pi_color_values, ppsz_color_descriptions, NULL );
 
     add_integer( "win32text-rel-fontsize", 16, NULL, FONTSIZER_TEXT,
-                 FONTSIZER_LONGTEXT, false );
+                 FONTSIZER_LONGTEXT, false )
         change_integer_list( pi_sizes, ppsz_sizes_text, NULL );
 
-    set_capability( "text renderer", 50 );
-    add_shortcut( "text" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    set_capability( "text renderer", 50 )
+    add_shortcut( "text" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 /*****************************************************************************
  * filter_sys_t: win32text local data
@@ -217,7 +217,6 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
     uint8_t *p_dst;
     video_format_t fmt;
     int i, i_pitch;
-    subpicture_region_t *p_region_tmp;
     bool b_outline = true;
 
     /* Create a new subpicture region */
@@ -226,12 +225,6 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
     fmt.i_width = fmt.i_visible_width = i_width + (b_outline ? 4 : 0);
     fmt.i_height = fmt.i_visible_height = i_height + (b_outline ? 4 : 0);
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_region_tmp = spu_CreateRegion( p_filter, &fmt );
-    if( !p_region_tmp )
-    {
-        msg_Err( p_filter, "cannot allocate SPU region" );
-        return VLC_EGENERIC;
-    }
 
     /* Build palette */
     fmt.p_palette->i_entries = 16;
@@ -243,17 +236,18 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
         fmt.p_palette->palette[i][3] = pi_gamma[i];
     }
 
-    p_region->fmt = p_region_tmp->fmt;
-    p_region->picture = p_region_tmp->picture;
-    free( p_region_tmp );
+    p_region->p_picture = picture_New( fmt.i_chroma, fmt.i_width, fmt.i_height, fmt.i_aspect );
+    if( !p_region->p_picture )
+        return VLC_EGENERIC;
+    p_region->fmt = fmt;
 
-    p_dst = p_region->picture.Y_PIXELS;
-    i_pitch = p_region->picture.Y_PITCH;
+    p_dst = p_region->p_picture->Y_PIXELS;
+    i_pitch = p_region->p_picture->Y_PITCH;
 
     if( b_outline )
     {
         memset( p_dst, 0, i_pitch * fmt.i_height );
-        p_dst += p_region->picture.Y_PITCH * 2 + 2;
+        p_dst += p_region->p_picture->Y_PITCH * 2 + 2;
     }
 
     for( i = 0; i < i_height; i++ )
@@ -270,7 +264,7 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
         uint8_t left, current;
         int x, y;
 
-        p_dst = p_region->picture.Y_PIXELS;
+        p_dst = p_region->p_picture->Y_PIXELS;
 
         for( y = 1; y < (int)fmt.i_height - 1; y++ )
         {
@@ -307,8 +301,10 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
 
     /* Sanity check */
     if( !p_region_in || !p_region_out ) return VLC_EGENERIC;
-#ifdef UNICODE
     psz_string = malloc( (strlen( p_region_in->psz_text )+1) * sizeof(TCHAR) );
+    if( !psz_string )
+        return VLC_ENOMEM;
+#ifdef UNICODE
     if( mbstowcs( psz_string, p_region_in->psz_text,
                   strlen( p_region_in->psz_text ) * sizeof(TCHAR) ) < 0 )
     {
@@ -316,9 +312,13 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
         return VLC_EGENERIC;
     }
 #else
-    psz_string = strdup( p_region_in->psz_text );
+    strcpy( psz_string, p_region_in->psz_text );
 #endif
-    if( !psz_string || !*psz_string ) return VLC_EGENERIC;
+    if( !*psz_string )
+    {
+        free( psz_string );
+        return VLC_EGENERIC;
+    }
 
     if( p_region_in->p_style )
     {

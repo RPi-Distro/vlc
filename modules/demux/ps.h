@@ -2,7 +2,7 @@
  * ps.h: Program Stream demuxer helper
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: a15daad3cc010dfd970734c5fa79fb746191598d $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -144,6 +144,10 @@ static inline int ps_track_fill( ps_track_t *tk, ps_psm_t *p_psm, int i_id )
             es_format_Init( &tk->fmt, VIDEO_ES, VLC_FOURCC('m','p','g','v') );
         }
         else if( ( i_id&0xe0 ) == 0xc0 && i_type == 0x0f )
+        {
+            es_format_Init( &tk->fmt, AUDIO_ES, VLC_FOURCC('m','p','4','a') );
+        }
+        else if( ( i_id&0xe0 ) == 0xc0 && i_type == 0x11 )
         {
             es_format_Init( &tk->fmt, AUDIO_ES, VLC_FOURCC('m','p','4','a') );
         }
@@ -515,7 +519,7 @@ static inline int ps_psm_fill( ps_psm_t *p_psm, block_t *p_pkt,
 {
     int i_buffer = p_pkt->i_buffer;
     uint8_t *p_buffer = p_pkt->p_buffer;
-    int i_length, i_version, i_info_length, i_esm_length, i_es_base, i;
+    int i_length, i_version, i_info_length, i_esm_length, i_es_base;
 
     if( !p_psm || p_buffer[3] != 0xbc ) return VLC_EGENERIC;
 
@@ -604,7 +608,7 @@ static inline int ps_psm_fill( ps_psm_t *p_psm, block_t *p_pkt,
     p_psm->i_version = i_version;
 
     /* Check/Modify our existing tracks */
-    for( i = 0; i < PS_TK_COUNT; i++ )
+    for( int i = 0; i < PS_TK_COUNT; i++ )
     {
         ps_track_t tk_tmp;
 

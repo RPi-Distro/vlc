@@ -2,7 +2,7 @@
  * sort.c : Playlist sorting functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 9ec10f3c1937497aac1623f626a3637b792ca496 $
+ * $Id: dd477fbdf3a5ff6f0d077565fe335e12ad67db3e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -54,6 +54,34 @@ static int playlist_NodeSort( playlist_t * p_playlist , playlist_item_t *p_node,
 }
 
 /**
+ * Sort a node recursively
+ * \param p_playlist the playlist
+ * \param p_node the node to sort
+ * \param i_mode: SORT_ID, SORT_TITLE, SORT_ARTIST, SORT_ALBUM, SORT_RANDOM
+ * \param i_type: ORDER_NORMAL or ORDER_REVERSE (reversed order)
+ * \return VLC_SUCCESS on success
+ */
+static int recursiveNodeSort( playlist_t *p_playlist, playlist_item_t *p_node,
+                              int i_mode, int i_type )
+{
+    int i;
+    /* Sort the current node */
+    playlist_NodeSort( p_playlist, p_node, i_mode, i_type );
+
+    /* And all the children */
+    for( i = 0 ; i< p_node->i_children; i++ )
+    {
+        if( p_node->pp_children[i]->i_children != -1 )
+        {
+            recursiveNodeSort( p_playlist, p_node->pp_children[i],
+                               i_mode, i_type );
+        }
+    }
+    return VLC_SUCCESS;
+}
+
+
+/**
  * Sort a node recursively.
  *
  * This function must be entered with the playlist lock !
@@ -67,21 +95,16 @@ static int playlist_NodeSort( playlist_t * p_playlist , playlist_item_t *p_node,
 int playlist_RecursiveNodeSort( playlist_t *p_playlist, playlist_item_t *p_node,
                                 int i_mode, int i_type )
 {
-    int i;
-    playlist_NodeSort( p_playlist, p_node, i_mode, i_type );
-    for( i = 0 ; i< p_node->i_children; i++ )
-    {
-        if( p_node->pp_children[i]->i_children != -1 )
-        {
-            playlist_RecursiveNodeSort( p_playlist, p_node->pp_children[i],
-                                        i_mode,i_type );
-        }
-    }
-    return VLC_SUCCESS;
+    /* Ask the playlist to reset as we are changing the order */
+    pl_priv(p_playlist)->b_reset_currently_playing = true;
+
+    /* Do the real job recursively */
+    return recursiveNodeSort( p_playlist, p_node, i_mode, i_type );
 }
 
 static int sort_mode = 0;
 static int sort_type = 0;
+static vlc_mutex_t sort_lock = VLC_STATIC_MUTEX;
 
 static int playlist_ItemArraySort( playlist_t *p_playlist, int i_items,
                                    playlist_item_t **pp_items, int i_mode,
@@ -89,10 +112,6 @@ static int playlist_ItemArraySort( playlist_t *p_playlist, int i_items,
 {
     int i_position;
     playlist_item_t *p_temp;
-    vlc_value_t val;
-    val.b_bool = true;
-    sort_mode = i_mode;
-    sort_type = i_type;
 
     (void)p_playlist; // a bit surprising we don't need p_playlist!
 
@@ -113,7 +132,12 @@ static int playlist_ItemArraySort( playlist_t *p_playlist, int i_items,
 
         return VLC_SUCCESS;
     }
+
+    vlc_mutex_lock( &sort_lock );
+    sort_mode = i_mode;
+    sort_type = i_type;
     qsort(pp_items,i_items,sizeof(pp_items[0]),playlist_cmp);
+    vlc_mutex_unlock( &sort_lock );
     return VLC_SUCCESS;
 }
 
@@ -121,9 +145,12 @@ static int playlist_cmp(const void *first, const void *second)
 {
 
 #define META_STRCASECMP_NAME( ) { \
-    char *psz_i = input_item_GetName( (*(playlist_item_t **)first)->p_input ); \
-    char *psz_ismall = input_item_GetName( (*(playlist_item_t **)second)->p_input ); \
-    i_test = strcasecmp( psz_i, psz_ismall ); \
+    char *psz_i = input_item_GetTitleFbName( (*(playlist_item_t **)first)->p_input ); \
+    char *psz_ismall = input_item_GetTitleFbName( (*(playlist_item_t **)second)->p_input ); \
+    if( psz_i != NULL && psz_ismall != NULL ) i_test = strcasecmp( psz_i, psz_ismall ); \
+    else if ( psz_i == NULL && psz_ismall != NULL ) i_test = 1; \
+    else if ( psz_ismall == NULL && psz_i != NULL ) i_test = -1; \
+    else i_test = 0; \
     free( psz_i ); \
     free( psz_ismall ); \
 }
@@ -167,14 +194,15 @@ static int playlist_cmp(const void *first, const void *second)
     int i_test = 0;
 
     if( sort_mode == SORT_TITLE )
-        {
-            META_STRCASECMP_NAME( );
-        }
+    {
+        META_STRCASECMP_NAME( );
+    }
     else if( sort_mode == SORT_TITLE_NUMERIC )
     {
-        char *psz_i = input_item_GetName( (*(playlist_item_t **)first)->p_input );
-        char *psz_ismall =
-                input_item_GetName( (*(playlist_item_t **)second)->p_input );
+        char *psz_i = input_item_GetTitleFbName(
+                                (*(playlist_item_t **)first)->p_input );
+        char *psz_ismall = input_item_GetTitleFbName(
+                                (*(playlist_item_t **)second)->p_input );
         i_test = atoi( psz_i ) - atoi( psz_ismall );
         free( psz_i );
         free( psz_ismall );
@@ -232,8 +260,7 @@ static int playlist_cmp(const void *first, const void *second)
         }
         else
         {
-            i_test = strcasecmp( (*(playlist_item_t **)first)->p_input->psz_name,
-                                 (*(playlist_item_t **)second)->p_input->psz_name );
+            META_STRCASECMP_NAME();
         }
     }
     else if( sort_mode == SORT_URI )

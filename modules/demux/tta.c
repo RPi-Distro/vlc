@@ -2,7 +2,7 @@
  * tta.c : The Lossless True Audio parser
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: bc7ae25a7045449fa955b638e52cde5a5bf128ef $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -40,16 +40,16 @@
 static int  Open  ( vlc_object_t * );
 static void Close ( vlc_object_t * );
 
-vlc_module_begin();
-    set_shortname( "TTA" );
-    set_description( N_("TTA demuxer") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_capability( "demux", 145 );
+vlc_module_begin ()
+    set_shortname( "TTA" )
+    set_description( N_("TTA demuxer") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_capability( "demux", 145 )
 
-    set_callbacks( Open, Close );
-    add_shortcut( "tta" );
-vlc_module_end();
+    set_callbacks( Open, Close )
+    add_shortcut( "tta" )
+vlc_module_end ()
 
 #define TTA_FRAMETIME 1.04489795918367346939
 
@@ -94,9 +94,10 @@ static int Open( vlc_object_t * p_this )
     if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 )
         return VLC_EGENERIC;
 
-    if( !POKE( p_peek, "TTA1", 4 ) )
+    if( memcmp( p_peek, "TTA1", 4 ) )
     {
-        if( !p_demux->b_force ) return VLC_EGENERIC;
+        if( !p_demux->b_force )
+            return VLC_EGENERIC;
 
         /* User forced */
         msg_Err( p_demux, "this doesn't look like a true-audio stream, "
@@ -236,7 +237,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         case DEMUX_SET_POSITION:
             f = (double)va_arg( args, double );
             i64 = (int64_t)(f * (stream_Size( p_demux->s ) - p_sys->i_start));
-            es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
             if( i64 > 0 )
             {
                 int64_t tmp = 0;

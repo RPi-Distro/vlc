@@ -2,7 +2,7 @@
  * parser.c :  OSD import module
  *****************************************************************************
  * Copyright (C) 2007 M2X
- * $Id: 39918d8e9f4a7717d7562912a843739c4a76b443 $
+ * $Id: 70f01be6f3eef7edaa32a54ab273889635056e12 $
  *
  * Authors: Jean-Paul Saman
  *
@@ -30,13 +30,7 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
-#include <vlc_config.h>
-
-#include <vlc_keys.h>
-#include <vlc_image.h>
 #include <vlc_osd.h>
-#include <vlc_charset.h>
 
 #include "osd_menu.h"
 
@@ -51,24 +45,21 @@ static void osd_parser_Close( vlc_object_t *p_this );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
+vlc_module_begin ()
 
-    set_category( CAT_OSD );
-    set_subcategory( SUBCAT_OSD_IMPORT );
+    add_submodule ()
+        set_description( N_("OSD configuration importer") )
+        add_shortcut( "import-osd" )
+        set_capability( "osd parser", 0)
+        set_callbacks( osd_parser_simpleOpen, osd_parser_Close )
 
-    add_submodule();
-        set_description( N_("OSD configuration importer") );
-        add_shortcut( "import-osd" );
-        set_capability( "osd parser", 0);
-        set_callbacks( osd_parser_simpleOpen, osd_parser_Close );
+    add_submodule ()
+        set_description( N_("XML OSD configuration importer") )
+        add_shortcut( "import-osd-xml" )
+        set_capability( "osd parser", 0)
+        set_callbacks( osd_parser_xmlOpen, osd_parser_Close )
 
-    add_submodule();
-        set_description( N_("XML OSD configuration importer") );
-        add_shortcut( "import-osd-xml" );
-        set_capability( "osd parser", 0);
-        set_callbacks( osd_parser_xmlOpen, osd_parser_Close );
-
-vlc_module_end();
+vlc_module_end ()
 
 /*****************************************************************************
  * osd_parser_Close: Free all osd menu structure resources

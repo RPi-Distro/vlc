@@ -2,7 +2,7 @@
  * libavi.c : LibAVI
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: add60783b4edd5c1a7339f6c50dbe9ffff9745aa $
+ * $Id$
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -398,7 +398,7 @@ static int AVI_ChunkRead_strf( stream_t *s, avi_chunk_t *p_chk )
             {
                 p_chk->strf.vids.p_bih->biSize = p_chk->common.i_chunk_size;
             }
-            if( p_chk->strf.vids.p_bih->biSize - sizeof(BITMAPINFOHEADER) > 0 )
+            if( p_chk->common.i_chunk_size - sizeof(BITMAPINFOHEADER) > 0 )
             {
                 memcpy( &p_chk->strf.vids.p_bih[1],
                         p_buff + 8 + sizeof(BITMAPINFOHEADER), /* 8=fourrc+size */
@@ -513,7 +513,7 @@ static int AVI_ChunkRead_indx( stream_t *s, avi_chunk_t *p_chk )
 
         i_count = __MIN( p_indx->i_entriesinuse, i_read / 8 );
         p_indx->i_entriesinuse = i_count;
-        p_indx->idx.std = calloc( sizeof( indx_std_entry_t ), i_count );
+        p_indx->idx.std = calloc( i_count, sizeof( indx_std_entry_t ) );
 
         for( i = 0; i < i_count; i++ )
         {
@@ -528,7 +528,7 @@ static int AVI_ChunkRead_indx( stream_t *s, avi_chunk_t *p_chk )
 
         i_count = __MIN( p_indx->i_entriesinuse, i_read / 12 );
         p_indx->i_entriesinuse = i_count;
-        p_indx->idx.field = calloc( sizeof( indx_field_entry_t ), i_count );
+        p_indx->idx.field = calloc( i_count, sizeof( indx_field_entry_t ) );
         for( i = 0; i < i_count; i++ )
         {
             AVI_READ4BYTES( p_indx->idx.field[i].i_offset );
@@ -545,7 +545,7 @@ static int AVI_ChunkRead_indx( stream_t *s, avi_chunk_t *p_chk )
 
         i_count = __MIN( p_indx->i_entriesinuse, i_read / 16 );
         p_indx->i_entriesinuse = i_count;
-        p_indx->idx.super = calloc( sizeof( indx_super_entry_t ), i_count );
+        p_indx->idx.super = calloc( i_count, sizeof( indx_super_entry_t ) );
 
         for( i = 0; i < i_count; i++ )
         {

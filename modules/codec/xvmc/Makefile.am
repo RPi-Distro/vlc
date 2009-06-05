@@ -18,5 +18,5 @@ libxvmc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libxvmc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libxvmc_plugin_la_LIBADD = $(AM_LIBADD)
-libxvmc_plugin_la_DEPENDENCIES =
+libxvmc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

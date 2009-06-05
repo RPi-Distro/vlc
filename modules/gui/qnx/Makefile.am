@@ -18,5 +18,5 @@ libqnx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libqnx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libqnx_plugin_la_LIBADD = $(AM_LIBADD)
-libqnx_plugin_la_DEPENDENCIES =
+libqnx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

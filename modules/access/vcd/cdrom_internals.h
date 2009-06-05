@@ -2,7 +2,7 @@
  * cdrom_internals.h: cdrom tools private header
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: eef3df09bb75e7bda094c95ea4960f019c277c7f $
+ * $Id$
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -102,6 +102,14 @@ typedef struct __RAW_READ_INFO {
     ULONG SectorCount;
     TRACK_MODE_TYPE TrackMode;
 } RAW_READ_INFO, *PRAW_READ_INFO;
+typedef struct _CDROM_READ_TOC_EX {
+  UCHAR  Format : 4;
+  UCHAR  Reserved1 : 3;
+  UCHAR  Msf : 1;
+  UCHAR  SessionTrack;
+  UCHAR  Reserved2;
+  UCHAR  Reserved3;
+} CDROM_READ_TOC_EX, *PCDROM_READ_TOC_EX;
 
 #ifndef IOCTL_CDROM_BASE
 #    define IOCTL_CDROM_BASE FILE_DEVICE_CD_ROM
@@ -114,6 +122,12 @@ typedef struct __RAW_READ_INFO {
 #define IOCTL_CDROM_RAW_READ CTL_CODE(IOCTL_CDROM_BASE, 0x000F, \
                                       METHOD_OUT_DIRECT, FILE_READ_ACCESS)
 #endif
+#define IOCTL_CDROM_READ_TOC_EX CTL_CODE(IOCTL_CDROM_BASE, 0x0015, \
+                                         METHOD_BUFFERED, FILE_READ_ACCESS)
+
+
+#define MINIMUM_CDROM_READ_TOC_EX_SIZE    2
+#define CDROM_READ_TOC_EX_FORMAT_CDTEXT   0x05
 
 /* Win32 aspi specific */
 #define WIN_NT               ( GetVersion() < 0x80000000 )
@@ -133,10 +147,6 @@ typedef struct __RAW_READ_INFO {
 #define SRB_EVENT_NOTIFY    0x40
 
 #define READ_CD 0xbe
-#define SECTOR_TYPE_MODE2_FORM2 0x14
-#define SECTOR_TYPE_CDDA 0x04
-#define READ_CD_RAW_MODE2 0xF0
-#define READ_CD_USERDATA 0x10
 
 #define READ_TOC 0x43
 #define READ_TOC_FORMAT_TOC 0x0
@@ -197,6 +207,10 @@ struct SRB_ExecSCSICmd
 #pragma pack()
 #endif /* WIN32 */
 
+#define SECTOR_TYPE_MODE2_FORM2 0x14
+#define SECTOR_TYPE_CDDA 0x04
+#define READ_CD_RAW_MODE2 0xF0
+#define READ_CD_USERDATA 0x10
 
 /*****************************************************************************
  * Local Prototypes

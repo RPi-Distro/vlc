@@ -3,9 +3,9 @@
 
 basedir = services_discovery
 dir = services_discovery
-mods = bonjour hal podcast sap shout upnp_cc upnp_intel
-libvlc_LTLIBRARIES =  $(LTLIBbonjour) $(LTLIBhal) $(LTLIBpodcast) $(LTLIBsap) $(LTLIBshout) $(LTLIBupnp_cc) $(LTLIBupnp_intel)
-EXTRA_LTLIBRARIES =  libbonjour_plugin.la libhal_plugin.la libpodcast_plugin.la libsap_plugin.la libshout_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la
+mods = bonjour hal mtp podcast sap shout upnp_cc upnp_intel
+libvlc_LTLIBRARIES =  $(LTLIBbonjour) $(LTLIBhal) $(LTLIBmtp) $(LTLIBpodcast) $(LTLIBsap) $(LTLIBshout) $(LTLIBupnp_cc) $(LTLIBupnp_intel)
+EXTRA_LTLIBRARIES =  libbonjour_plugin.la libhal_plugin.la libmtp_plugin.la libpodcast_plugin.la libsap_plugin.la libshout_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libbonjour_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libbonjour_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libbonjour_plugin_la_LIBADD = $(AM_LIBADD)
-libbonjour_plugin_la_DEPENDENCIES =
+libbonjour_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The hal plugin
 libhal_plugin_la_SOURCES = $(SOURCES_hal)
@@ -29,7 +29,18 @@ libhal_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libhal_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libhal_plugin_la_LIBADD = $(AM_LIBADD)
-libhal_plugin_la_DEPENDENCIES =
+libhal_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The mtp plugin
+libmtp_plugin_la_SOURCES = $(SOURCES_mtp)
+nodist_libmtp_plugin_la_SOURCES = $(nodist_SOURCES_mtp)
+# Force per-target objects:
+libmtp_plugin_la_CFLAGS = $(AM_CFLAGS)
+libmtp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libmtp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libmtp_plugin_la_LIBADD = $(AM_LIBADD)
+libmtp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The podcast plugin
 libpodcast_plugin_la_SOURCES = $(SOURCES_podcast)
@@ -40,7 +51,7 @@ libpodcast_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libpodcast_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libpodcast_plugin_la_LIBADD = $(AM_LIBADD)
-libpodcast_plugin_la_DEPENDENCIES =
+libpodcast_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The sap plugin
 libsap_plugin_la_SOURCES = $(SOURCES_sap)
@@ -51,7 +62,7 @@ libsap_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsap_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsap_plugin_la_LIBADD = $(AM_LIBADD)
-libsap_plugin_la_DEPENDENCIES =
+libsap_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The shout plugin
 libshout_plugin_la_SOURCES = $(SOURCES_shout)
@@ -62,7 +73,7 @@ libshout_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libshout_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libshout_plugin_la_LIBADD = $(AM_LIBADD)
-libshout_plugin_la_DEPENDENCIES =
+libshout_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The upnp_cc plugin
 libupnp_cc_plugin_la_SOURCES = $(SOURCES_upnp_cc)
@@ -73,7 +84,7 @@ libupnp_cc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libupnp_cc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libupnp_cc_plugin_la_LIBADD = $(AM_LIBADD)
-libupnp_cc_plugin_la_DEPENDENCIES =
+libupnp_cc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The upnp_intel plugin
 libupnp_intel_plugin_la_SOURCES = $(SOURCES_upnp_intel)
@@ -84,5 +95,5 @@ libupnp_intel_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libupnp_intel_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libupnp_intel_plugin_la_LIBADD = $(AM_LIBADD)
-libupnp_intel_plugin_la_DEPENDENCIES =
+libupnp_intel_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

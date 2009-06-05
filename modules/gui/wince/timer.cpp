@@ -2,7 +2,7 @@
  * timer.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2003 the VideoLAN team
- * $Id: 5135609e0e31cc3f10f78f8537cd60b50e7be796 $
+ * $Id$
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -32,6 +32,8 @@
 #include <vlc_common.h>
 #include <vlc_aout.h>
 #include <vlc_interface.h>
+#include <vlc_input.h>
+#include <vlc_playlist.h>
 
 #include "wince.h"
 
@@ -52,7 +54,7 @@ Timer::Timer( intf_thread_t *_p_intf, HWND hwnd, Interface *_p_main_interface)
     i_old_rate = INPUT_RATE_DEFAULT;
 
     /* Register callback for the intf-popupmenu variable */
-    playlist_t *p_playlist = pl_Yield( p_intf );
+    playlist_t *p_playlist = pl_Hold( p_intf );
     if( p_playlist != NULL )
     {
         var_AddCallback( p_playlist, "intf-popupmenu", PopupMenuCB, p_intf );
@@ -65,7 +67,7 @@ Timer::Timer( intf_thread_t *_p_intf, HWND hwnd, Interface *_p_main_interface)
 Timer::~Timer()
 {
     /* Unregister callback */
-    playlist_t *p_playlist = pl_Yield( p_intf );
+    playlist_t *p_playlist = pl_Hold( p_intf );
     if( p_playlist != NULL )
     {
         var_DelCallback( p_playlist, "intf-popupmenu", PopupMenuCB, p_intf );
@@ -88,8 +90,6 @@ void Timer::Notify( void )
     vlc_value_t val;
     char *shortname;
 
-    vlc_mutex_lock( &p_intf->change_lock );
-
     /* Update the input */
     if( p_intf->p_sys->p_input == NULL )
     {
@@ -105,9 +105,10 @@ void Timer::Notify( void )
             ShowWindow( p_main_interface->hwndVol, SW_SHOW );
 
             // only for local file, check if works well with net url
-            shortname = strrchr( p_intf->p_sys->p_input->input.p_item->psz_name, '\\' );
+            input_item_t *p_item =input_GetItem(p_intf->p_sys->p_input);
+            shortname = strrchr( input_item_GetURL(p_item), '\\' );
             if (! shortname)
-                shortname = p_intf->p_sys->p_input->input.p_item->psz_name;
+                shortname = input_item_GetURL(p_item);
             else shortname++;
  
             SendMessage( p_main_interface->hwndSB, SB_SETTEXT,
@@ -207,23 +208,19 @@ void Timer::Notify( void )
             }
         }
     }
-    else if( p_intf->p_sys->b_playing && !intf_ShouldDie( p_intf ) )
+    else if( p_intf->p_sys->b_playing && vlc_object_alive( p_intf ) )
     {
         p_intf->p_sys->b_playing = 0;
         p_main_interface->TogglePlayButton( PAUSE_S );
         i_old_playing_status = PAUSE_S;
     }
 
-    if( intf_ShouldDie( p_intf ) )
+    if( !vlc_object_alive( p_intf ) )
     {
-        vlc_mutex_unlock( &p_intf->change_lock );
-
         /* Prepare to die, young Skywalker */
 /*        p_main_interface->Close(TRUE);*/
         return;
     }
-
-    vlc_mutex_unlock( &p_intf->change_lock );
 }
 
 /*****************************************************************************

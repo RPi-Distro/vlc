@@ -2,7 +2,7 @@
  * wizard.m: MacOS X Streaming Wizard
  *****************************************************************************
  * Copyright (C) 2005-2008 the VideoLAN team
- * $Id: dedb7b70efe568b3f483d6bda6d87c5c22de2a55 $
+ * $Id$
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net>
  *
@@ -348,6 +348,8 @@ static VLCWizard *_o_sharedInstance = nil;
         setStringValue: _NS("Title")];
     [[[o_t2_tbl_plst tableColumnWithIdentifier:@"artist"] headerCell]
         setStringValue: _NS("Author")];
+    [[[o_t2_tbl_plst tableColumnWithIdentifier:@"duration"] headerCell]
+     setStringValue: _NS("Duration")];
     [o_t2_box_prtExtrct setTitle: _NS("Partial Extract")];
     [o_t2_ckb_enblPartExtrct setTitle: _NS("Enable")];
     [o_t2_ckb_enblPartExtrct setToolTip: _NS("This can be used to read only a "
@@ -419,7 +421,7 @@ static VLCWizard *_o_sharedInstance = nil;
     [o_t7_btn_mrInfo_local setTitle: _NS("More Info")];
 
     /* page eight ("Summary") */
-    [o_t8_txt_text setStringValue: _NS("This page lists all the settings."
+    [o_t8_txt_text setStringValue: _NS("This page lists all the settings. "
         "Click \"Finish\" to start streaming or transcoding.")];
     [o_t8_txt_title setStringValue: _NS("Summary")];
     [o_t8_txt_destination setStringValue: [_NS("Destination")
@@ -475,7 +477,7 @@ static VLCWizard *_o_sharedInstance = nil;
     [o_wizard_window close];
 }
 
-- (id)getPlaylistWizard
+- (id)playlistWizard
 {
     return o_playlist_wizard;
 }
@@ -1261,7 +1263,7 @@ static VLCWizard *_o_sharedInstance = nil;
     {
         intf_thread_t * p_intf = VLCIntf;
 
-        playlist_t * p_playlist = pl_Yield( p_intf );
+        playlist_t * p_playlist = pl_Hold( p_intf );
 
         int x = 0;
         int y = [[o_userSelections objectForKey:@"pathToStrm"] count];
@@ -1276,14 +1278,16 @@ static VLCWizard *_o_sharedInstance = nil;
                 objectAtIndex:x] UTF8String],
                 [tempString UTF8String] );
             input_item_AddOption( p_input, [[[o_userSelections
-                objectForKey:@"opts"] objectAtIndex: x] UTF8String]);
+                objectForKey:@"opts"] objectAtIndex: x] UTF8String],
+                VLC_INPUT_OPTION_TRUSTED );
 
             if(! [[o_userSelections objectForKey:@"partExtractFrom"]
                 isEqualToString:@""] )
             {
                 input_item_AddOption( p_input, [[NSString
                     stringWithFormat: @"start-time=%@", [o_userSelections
-                    objectForKey: @"partExtractFrom"]] UTF8String] );
+                    objectForKey: @"partExtractFrom"]] UTF8String],
+					VLC_INPUT_OPTION_TRUSTED );
             }
 
             if(! [[o_userSelections objectForKey:@"partExtractTo"]
@@ -1291,12 +1295,14 @@ static VLCWizard *_o_sharedInstance = nil;
             {
                 input_item_AddOption( p_input, [[NSString
                     stringWithFormat: @"stop-time=%@", [o_userSelections
-                    objectForKey: @"partExtractTo"]] UTF8String] );
+                    objectForKey: @"partExtractTo"]] UTF8String],
+                    VLC_INPUT_OPTION_TRUSTED );
             }
 
             input_item_AddOption( p_input, [[NSString stringWithFormat:
                 @"ttl=%@", [o_userSelections objectForKey:@"ttl"]]
-                UTF8String] );
+                UTF8String],
+                VLC_INPUT_OPTION_TRUSTED );
 
             /* FIXME: playlist_AddInput() can fail */
             playlist_AddInput( p_playlist, p_input, PLAYLIST_STOP,
@@ -1306,7 +1312,7 @@ static VLCWizard *_o_sharedInstance = nil;
             {
                 /* play the first item and add the others afterwards */
                 PL_LOCK;
-                playlist_item_t *p_item = playlist_ItemGetByInput( p_playlist, p_input, pl_Locked );
+                playlist_item_t *p_item = playlist_ItemGetByInput( p_playlist, p_input );
                 playlist_Control( p_playlist, PLAYLIST_VIEWPLAY, pl_Locked, NULL,
                           p_item );
                 PL_UNLOCK;
@@ -1316,7 +1322,7 @@ static VLCWizard *_o_sharedInstance = nil;
             x += 1;
         }
 
-        vlc_object_release( p_playlist );
+        pl_Release( p_intf );
 
         /* close the window, since we are done */
         [o_wizard_window close];
@@ -1659,7 +1665,7 @@ static VLCWizard *_o_sharedInstance = nil;
         @"Input"])
     {
         /* reset the wizard before going backwards. Otherwise, we might get
-         * unwanted behaviours in the Encap-Selection */
+         * unwanted behaviour in the Encap-Selection */
         [self resetWizard];
         /* show "Hello" */
         [o_tab_pageHolder selectTabViewItemAtIndex:0];

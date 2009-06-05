@@ -2,7 +2,7 @@
  * araw.c: Pseudo audio decoder; for raw pcm data
  *****************************************************************************
  * Copyright (C) 2001, 2003 the VideoLAN team
- * $Id: 36d826b5238b9eed6aac32dc95b2a1f73badd46a $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -44,22 +44,22 @@ static int  EncoderOpen ( vlc_object_t * );
 static void EncoderClose( vlc_object_t * );
 #endif
 
-vlc_module_begin();
+vlc_module_begin ()
     /* audio decoder module */
-    set_description( N_("Raw/Log Audio decoder") );
-    set_capability( "decoder", 100 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
-    set_callbacks( DecoderOpen, DecoderClose );
+    set_description( N_("Raw/Log Audio decoder") )
+    set_capability( "decoder", 100 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
+    set_callbacks( DecoderOpen, DecoderClose )
 
 #ifdef ENABLE_SOUT
     /* audio encoder submodule */
-    add_submodule();
-    set_description( N_("Raw audio encoder") );
-    set_capability( "encoder", 150 );
-    set_callbacks( EncoderOpen, EncoderClose );
+    add_submodule ()
+    set_description( N_("Raw audio encoder") )
+    set_capability( "encoder", 150 )
+    set_callbacks( EncoderOpen, EncoderClose )
 #endif
-vlc_module_end();
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -455,7 +455,7 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     /* Create chunks of max 1024 samples */
     i_samples = __MIN( i_samples, 1024 );
 
-    p_out = p_dec->pf_aout_buffer_new( p_dec, i_samples );
+    p_out = decoder_NewAudioBuffer( p_dec, i_samples );
     if( p_out == NULL )
     {
         block_Release( p_block );

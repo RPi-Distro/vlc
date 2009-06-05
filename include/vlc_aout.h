@@ -2,7 +2,7 @@
  * audio_output.h : audio output interface
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: 39e1ca1a6b3d6f93687f9b115b9b0006e55af4aa $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -146,7 +146,7 @@ struct aout_buffer_t
     size_t                  i_size, i_nb_bytes;
     unsigned int            i_nb_samples;
     mtime_t                 start_date, end_date;
-    bool              b_discontinuity; /* Set on discontinuity (for non pcm stream) */
+    bool                    b_discontinuity; /* Set on discontinuity (for non pcm stream) */
 
     struct aout_buffer_t *  p_next;
 
@@ -222,7 +222,17 @@ struct aout_fifo_t
     audio_date_t            end_date;
 };
 
+/* */
+typedef struct
+{
+    vout_thread_t  *(*pf_request_vout)( void *,
+                                        vout_thread_t *, video_format_t *, bool b_recycle );
+    void *p_private;
+} aout_request_vout_t;
+
 /** audio output filter */
+typedef struct aout_filter_owner_sys_t aout_filter_owner_sys_t;
+typedef struct aout_filter_sys_t aout_filter_sys_t;
 struct aout_filter_t
 {
     VLC_COMMON_MEMBERS
@@ -232,13 +242,23 @@ struct aout_filter_t
     aout_alloc_t            output_alloc;
 
     module_t *              p_module;
-    struct aout_filter_sys_t * p_sys;
-    void                 (* pf_do_work)( struct aout_instance_t *,
-                                         struct aout_filter_t *,
-                                         struct aout_buffer_t *,
-                                         struct aout_buffer_t * );
-    bool              b_in_place;
-    bool              b_continuity;
+    aout_filter_sys_t       *p_sys;
+
+    bool                    b_in_place;
+    bool                    b_continuity;
+
+    void                    (*pf_do_work)( aout_instance_t *, aout_filter_t *,
+                                           aout_buffer_t *, aout_buffer_t * );
+
+    /* Owner fieldS
+     * XXX You MUST not use them directly */
+
+    /* Vout callback
+     * XXX use aout_filter_RequestVout */
+    aout_request_vout_t request_vout;
+
+    /* Private structure for the owner of the filter */
+    aout_filter_owner_sys_t *p_owner;
 };
 
 #define AOUT_RESAMPLING_NONE     0
@@ -250,9 +270,6 @@ struct aout_input_t
     /* When this lock is taken, the pipeline cannot be changed by a
      * third-party. */
     vlc_mutex_t             lock;
-
-    /* The input thread that spawned this input */
-    input_thread_t         *p_input_thread;
 
     audio_sample_format_t   input;
     aout_alloc_t            input_alloc;
@@ -287,13 +304,19 @@ struct aout_input_t
     bool              b_changed;
 
     /* last rate from input */
-    int                     i_last_input_rate;
-    /* internal caching delay from input */
-    int                     i_pts_delay;
-    /* desynchronisation delay request by the user */
-    int                     i_desync;
+    int               i_last_input_rate;
 
-};
+    /* */
+    int               i_buffer_lost;
+
+    /* */
+    bool              b_paused;
+    mtime_t           i_pause_date;
+
+    /* */
+    bool                b_recycle_vout;
+    aout_request_vout_t request_vout;
+ };
 
 /** an output stream for the audio output */
 typedef struct aout_output_t
@@ -375,10 +398,10 @@ static const uint32_t pi_vlc_chan_order_wg4[] =
 VLC_EXPORT( void, aout_DateInit, ( audio_date_t *, uint32_t ) );
 VLC_EXPORT( void, aout_DateSet, ( audio_date_t *, mtime_t ) );
 VLC_EXPORT( void, aout_DateMove, ( audio_date_t *, mtime_t ) );
-VLC_EXPORT( mtime_t, aout_DateGet, ( const audio_date_t * ) );
+VLC_EXPORT( mtime_t, aout_DateGet, ( const audio_date_t * ) LIBVLC_USED);
 VLC_EXPORT( mtime_t, aout_DateIncrement, ( audio_date_t *, uint32_t ) );
 
-VLC_EXPORT( aout_buffer_t *, aout_OutputNextBuffer, ( aout_instance_t *, mtime_t, bool ) );
+VLC_EXPORT( aout_buffer_t *, aout_OutputNextBuffer, ( aout_instance_t *, mtime_t, bool ) LIBVLC_USED );
 
 /**
  * This function computes the reordering needed to go from pi_chan_order_in to
@@ -389,14 +412,42 @@ VLC_EXPORT( aout_buffer_t *, aout_OutputNextBuffer, ( aout_instance_t *, mtime_t
 VLC_EXPORT( int, aout_CheckChannelReorder, ( const uint32_t *pi_chan_order_in, const uint32_t *pi_chan_order_out, uint32_t i_channel_mask, int i_channels, int *pi_chan_table ) );
 VLC_EXPORT( void, aout_ChannelReorder, ( uint8_t *, int, int, const int *, int ) );
 
-VLC_EXPORT( unsigned int, aout_FormatNbChannels, ( const audio_sample_format_t * p_format ) );
-VLC_EXPORT( unsigned int, aout_BitsPerSample, ( vlc_fourcc_t i_format ) );
+/**
+ * This fonction will compute the extraction parameter into pi_selection to go
+ * from i_channels with their type given by pi_order_src[] into the order
+ * describe by pi_order_dst.
+ * It will also set :
+ * - *pi_channels as the number of channels that will be extracted which is
+ * lower (in case of non understood channels type) or equal to i_channels.
+ * - the layout of the channels (*pi_layout).
+ *
+ * It will return true if channel extraction is really needed, in which case
+ * aout_ChannelExtract must be used
+ *
+ * XXX It must be used when the source may have channel type not understood
+ * by VLC. In this case the channel type pi_order_src[] must be set to 0.
+ * XXX It must also be used if multiple channels have the same type.
+ */
+VLC_EXPORT( bool, aout_CheckChannelExtraction, ( int *pi_selection, uint32_t *pi_layout, int *pi_channels, const uint32_t pi_order_dst[AOUT_CHAN_MAX], const uint32_t *pi_order_src, int i_channels ) );
+
+/**
+ * Do the actual channels extraction using the parameters created by
+ * aout_CheckChannelExtraction.
+ *
+ * XXX this function does not work in place (p_dst and p_src must not overlap).
+ * XXX Only 8, 16, 24, 32, 64 bits per sample are supported.
+ */
+VLC_EXPORT( void, aout_ChannelExtract, ( void *p_dst, int i_dst_channels, const void *p_src, int i_src_channels, int i_sample_count, const int *pi_selection, int i_bits_per_sample ) );
+
+/* */
+VLC_EXPORT( unsigned int, aout_FormatNbChannels, ( const audio_sample_format_t * p_format ) LIBVLC_USED );
+VLC_EXPORT( unsigned int, aout_BitsPerSample, ( vlc_fourcc_t i_format ) LIBVLC_USED );
 VLC_EXPORT( void, aout_FormatPrepare, ( audio_sample_format_t * p_format ) );
 VLC_EXPORT( void, aout_FormatPrint, ( aout_instance_t * p_aout, const char * psz_text, const audio_sample_format_t * p_format ) );
-VLC_EXPORT( const char *, aout_FormatPrintChannels, ( const audio_sample_format_t * ) );
+VLC_EXPORT( const char *, aout_FormatPrintChannels, ( const audio_sample_format_t * ) LIBVLC_USED );
 
-VLC_EXPORT( mtime_t, aout_FifoFirstDate, ( aout_instance_t *, aout_fifo_t * ) );
-VLC_EXPORT( aout_buffer_t *, aout_FifoPop, ( aout_instance_t * p_aout, aout_fifo_t * p_fifo ) );
+VLC_EXPORT( mtime_t, aout_FifoFirstDate, ( aout_instance_t *, aout_fifo_t * ) LIBVLC_USED );
+VLC_EXPORT( aout_buffer_t *, aout_FifoPop, ( aout_instance_t * p_aout, aout_fifo_t * p_fifo ) LIBVLC_USED );
 
 /* From intf.c : */
 VLC_EXPORT( void, aout_VolumeSoftInit, ( aout_instance_t * ) );
@@ -422,6 +473,9 @@ VLC_EXPORT( void, aout_EnableFilter, (vlc_object_t *, const char *, bool ));
 #define aout_VisualPrev(a) aout_VisualChange( VLC_OBJECT(a),-1 )
 
 VLC_EXPORT( char *, aout_VisualChange, (vlc_object_t *, int ) );
+
+/* */
+VLC_EXPORT( vout_thread_t *, aout_filter_RequestVout, ( aout_filter_t *, vout_thread_t *p_vout, video_format_t *p_fmt ) );
 
 # ifdef __cplusplus
 }

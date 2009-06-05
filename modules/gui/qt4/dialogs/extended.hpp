@@ -2,7 +2,7 @@
  * extended.hpp : Extended controls - Undocked
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: d57aaa27f791815e3d1266b46bddfc66aa9a2de4 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -21,12 +21,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _EXTENDED_DIALOG_H_
-#define _EXTENDED_DIALOG_H_
+#ifndef QVLC_EXTENDED_DIALOG_H_
+#define QVLC_EXTENDED_DIALOG_H_ 1
 
 #include "util/qvlcframe.hpp"
 
 #include "components/extended_panels.hpp"
+
+class QTabWidget;
 
 class ExtendedDialog : public QVLCFrame
 {
@@ -40,16 +42,20 @@ public:
     }
     static void killInstance()
     {
-        if( instance ) delete instance;
+        delete instance;
         instance = NULL;
     }
-    virtual ~ExtendedDialog();
+    void showTab( int i );
 private:
     ExtendedDialog( intf_thread_t * );
+    virtual ~ExtendedDialog();
+
     static ExtendedDialog *instance;
+
     SyncControls *syncW;
     ExtVideo *videoEffect;
     Equalizer *equal;
+    QTabWidget *mainTabW;
 private slots:
     void changedItem( int );
 };

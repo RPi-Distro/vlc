@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 8b4ae0d4307c44d6f610d45f480a757b416ada78 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -47,5 +47,8 @@
 struct intf_sys_t
 {
     int nothing_for_now;
+
+    vlc_mutex_t lock;
+    vlc_cond_t wait;
 };
 

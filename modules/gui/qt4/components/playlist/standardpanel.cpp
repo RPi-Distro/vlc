@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: d0be2e9c8d1641ac05b2752d7d550dc66525eabf $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -27,25 +27,23 @@
 
 #include "qt4.hpp"
 #include "dialogs_provider.hpp"
+
 #include "components/playlist/playlist_model.hpp"
 #include "components/playlist/panels.hpp"
 #include "util/customwidgets.hpp"
 
 #include <vlc_intf_strings.h>
 
-#include <QTreeView>
 #include <QPushButton>
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QKeyEvent>
 #include <QModelIndexList>
-#include <QToolBar>
 #include <QLabel>
 #include <QSpacerItem>
 #include <QMenu>
 #include <QSignalMapper>
-
 #include <assert.h>
 
 #include "sorting.h"
@@ -62,9 +60,9 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
     layout->setSpacing( 0 ); layout->setMargin( 0 );
 
     /* Create and configure the QTreeView */
-    view = new QVLCTreeView( 0 );
+    view = new QVLCTreeView;
+    view->header()->setSortIndicator( 0 , Qt::AscendingOrder );
     view->setSortingEnabled( true );
-    view->sortByColumn( 0 , Qt::AscendingOrder );
     view->setModel( model );
     view->setIconSize( QSize( 20, 20 ) );
     view->setAlternatingRowColors( true );
@@ -77,14 +75,12 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
 
 
     getSettings()->beginGroup("Playlist");
-#if HAS_QT43
     if( getSettings()->contains( "headerState" ) )
     {
         view->header()->restoreState(
                 getSettings()->value( "headerState" ).toByteArray() );
     }
     else
-#endif
     {
         /* Configure the size of the header */
         view->header()->resizeSection( 0, 200 );
@@ -120,35 +116,32 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
 
     /* Random 2-state button */
     randomButton = new QPushButton( this );
-    if( model->hasRandom() )
-    {
-        randomButton->setIcon( QIcon( ":/shuffle_on" ));
-        randomButton->setToolTip( qtr( I_PL_RANDOM ));
-    }
-    else
-    {
-         randomButton->setIcon( QIcon( ":/shuffle_off" ) );
-         randomButton->setToolTip( qtr( I_PL_NORANDOM ));
-    }
+    randomButton->setIcon( QIcon( ":/shuffle_on" ));
+    randomButton->setToolTip( qtr( I_PL_RANDOM ));
+    randomButton->setCheckable( true );
+    randomButton->setChecked( model->hasRandom() );
     BUTTONACT( randomButton, toggleRandom() );
     buttons->addWidget( randomButton );
 
     /* Repeat 3-state button */
     repeatButton = new QPushButton( this );
+    repeatButton->setToolTip( qtr( "Click to toggle between loop one, loop all" ) );
+    repeatButton->setCheckable( true );
+
     if( model->hasRepeat() )
     {
         repeatButton->setIcon( QIcon( ":/repeat_one" ) );
-        repeatButton->setToolTip( qtr( I_PL_REPEAT ));
+        repeatButton->setChecked( true );
     }
     else if( model->hasLoop() )
     {
         repeatButton->setIcon( QIcon( ":/repeat_all" ) );
-        repeatButton->setToolTip( qtr( I_PL_LOOP ));
+        repeatButton->setChecked( true );
     }
     else
     {
-        repeatButton->setIcon( QIcon( ":/repeat_off" ) );
-        repeatButton->setToolTip( qtr( I_PL_NOREPEAT ));
+        repeatButton->setIcon( QIcon( ":/repeat_one" ) );
+        repeatButton->setChecked( false );
     }
     BUTTONACT( repeatButton, toggleRepeat() );
     buttons->addWidget( repeatButton );
@@ -166,15 +159,10 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
     QLabel *filter = new QLabel( qtr(I_PL_SEARCH) + " " );
     buttons->addWidget( filter );
 
-    searchLine = new  ClickLineEdit( qtr(I_PL_FILTER), 0 );
-    searchLine->setMinimumWidth( 80 );
-    CONNECT( searchLine, textChanged(QString), this, search(QString));
-    buttons->addWidget( searchLine ); filter->setBuddy( searchLine );
-
-    QPushButton *clear = new QPushButton;
-    clear->setMaximumWidth( 30 );
-    BUTTON_SET_ACT_I( clear, "", clear, qtr( "Clear" ), clearFilter() );
-    buttons->addWidget( clear );
+    SearchLineEdit *search = new SearchLineEdit( this );
+    buttons->addWidget( search );
+    filter->setBuddy( search );
+    CONNECT( search, textChanged( const QString& ), this, search( const QString& ) );
 
     /* Finish the layout */
     layout->addWidget( view );
@@ -190,19 +178,19 @@ void StandardPLPanel::toggleRepeat()
     {
         model->setRepeat( false ); model->setLoop( true );
         repeatButton->setIcon( QIcon( ":/repeat_all" ) );
-        repeatButton->setToolTip( qtr( I_PL_LOOP ));
+        repeatButton->setChecked( true );
     }
     else if( model->hasLoop() )
     {
         model->setRepeat( false ) ; model->setLoop( false );
-        repeatButton->setIcon( QIcon( ":/repeat_off" ) );
-        repeatButton->setToolTip( qtr( I_PL_NOREPEAT ));
+        repeatButton->setChecked( false );
+        repeatButton->setIcon( QIcon( ":/repeat_one" ) );
     }
     else
     {
-        model->setRepeat( true );
+        model->setRepeat( true ); model->setLoop( false );
+        repeatButton->setChecked( true );
         repeatButton->setIcon( QIcon( ":/repeat_one" ) );
-        repeatButton->setToolTip( qtr( I_PL_REPEAT ));
     }
 }
 
@@ -211,10 +199,6 @@ void StandardPLPanel::toggleRandom()
 {
     bool prev = model->hasRandom();
     model->setRandom( !prev );
-    randomButton->setIcon( prev ?
-                QIcon( ":/shuffle_off" ) :
-                QIcon( ":/shuffle_on" ) );
-    randomButton->setToolTip( prev ? qtr( I_PL_NORANDOM ) : qtr(I_PL_RANDOM ) );
 }
 
 void StandardPLPanel::gotoPlayingItem()
@@ -293,14 +277,8 @@ void StandardPLPanel::popupSelectColumn( QPoint pos )
     selectColMenu.exec( QCursor::pos() );
 }
 
-/* ClearFilter LineEdit */
-void StandardPLPanel::clearFilter()
-{
-    searchLine->setText( "" );
-}
-
 /* Search in the playlist */
-void StandardPLPanel::search( QString searchText )
+void StandardPLPanel::search( const QString& searchText )
 {
     model->search( searchText );
 }
@@ -318,8 +296,7 @@ void StandardPLPanel::doPopup( QModelIndex index, QPoint point )
 void StandardPLPanel::setRoot( int i_root_id )
 {
     QPL_LOCK;
-    playlist_item_t *p_item = playlist_ItemGetById( THEPL, i_root_id,
-                                                    pl_Locked );
+    playlist_item_t *p_item = playlist_ItemGetById( THEPL, i_root_id );
     assert( p_item );
     p_item = playlist_GetPreferredNode( THEPL, p_item );
     assert( p_item );
@@ -355,11 +332,9 @@ void StandardPLPanel::deleteSelection()
 
 StandardPLPanel::~StandardPLPanel()
 {
-#if HAS_QT43
     getSettings()->beginGroup("Playlist");
     getSettings()->setValue( "headerState", view->header()->saveState() );
     getSettings()->endGroup();
-#endif
 }
 
 

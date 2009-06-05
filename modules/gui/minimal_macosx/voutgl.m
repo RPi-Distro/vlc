@@ -2,7 +2,7 @@
  * voutgl.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 7713f53fa8cbb51505291953fd88c92b240452ba $
+ * $Id$
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -36,7 +36,8 @@
 int OpenVideoGL  ( vlc_object_t * p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *) p_this;
-    vlc_value_t value_drawable;
+    int i_drawable_agl;
+    int i_drawable_gl;
 
     if( !CGDisplayUsesOpenGLAcceleration( kCGDirectMainDisplay ) )
     {
@@ -49,16 +50,16 @@ int OpenVideoGL  ( vlc_object_t * p_this )
 
     p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
         return( 1 );
-    }
 
     memset( p_vout->p_sys, 0, sizeof( vout_sys_t ) );
 
-    var_Get( p_vout->p_libvlc, "drawable", &value_drawable );
- 
-    if( 0 /* Are we in the mozilla plugin ? XXX: get that from drawable */ )
+    i_drawable_agl = var_GetInteger( p_vout->p_libvlc, "drawable-agl" );
+    i_drawable_gl = var_GetInteger( p_vout->p_libvlc, "drawable-gl" );
+
+    /* Are we in the mozilla plugin, which isn't 64bit compatible ? */
+#ifndef __x86_64__
+    if( i_drawable_agl > 0 )
     {
         p_vout->pf_init             = aglInit;
         p_vout->pf_end              = aglEnd;
@@ -68,7 +69,7 @@ int OpenVideoGL  ( vlc_object_t * p_this )
         p_vout->pf_lock             = aglLock;
         p_vout->pf_unlock           = aglUnlock;
     }
-    else
+    else /*if( i_drawable_gl > 0 )*/
     {
         /* Let's use the VLCOpenGLVoutView.m class */
         p_vout->pf_init   = cocoaglvoutviewInit;
@@ -79,6 +80,16 @@ int OpenVideoGL  ( vlc_object_t * p_this )
         p_vout->pf_lock   = cocoaglvoutviewLock;
         p_vout->pf_unlock = cocoaglvoutviewUnlock;
     }
+#else
+	/* Let's use the VLCOpenGLVoutView.m class */
+	p_vout->pf_init   = cocoaglvoutviewInit;
+	p_vout->pf_end    = cocoaglvoutviewEnd;
+	p_vout->pf_manage = cocoaglvoutviewManage;
+	p_vout->pf_control= cocoaglvoutviewControl;
+	p_vout->pf_swap   = cocoaglvoutviewSwap;
+	p_vout->pf_lock   = cocoaglvoutviewLock;
+	p_vout->pf_unlock = cocoaglvoutviewUnlock;
+#endif
     p_vout->p_sys->b_got_frame = false;
 
     return VLC_SUCCESS;

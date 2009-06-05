@@ -2,7 +2,7 @@
  * float.c: Floating point audio format conversions
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 7d9c0227b68296b0ad676e3d79aa5a884ed794c3 $
+ * $Id$
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -38,10 +38,6 @@
 
 #ifdef HAVE_UNISTD_H
 #   include <unistd.h>
-#endif
-
-#ifdef HAVE_ALLOCA_H
-#   include <alloca.h>
 #endif
 
 #include <vlc_aout.h>
@@ -98,36 +94,36 @@ static void Do_U8ToFL32( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Floating-point audio format conversions") );
-    add_submodule();
-        set_capability( "audio filter", 10 );
-        set_callbacks( Create_F32ToFL32, NULL );
-    add_submodule();
-        set_capability( "audio filter", 1 );
-        set_callbacks( Create_FL32ToS16, NULL );
-    add_submodule();
-        set_capability( "audio filter", 1 );
-        set_callbacks( Create_FL32ToS8, NULL );
-    add_submodule();
-        set_capability( "audio filter", 1 );
-        set_callbacks( Create_FL32ToU16, NULL );
-    add_submodule();
-        set_capability( "audio filter", 1 );
-        set_callbacks( Create_FL32ToU8, NULL );
-    add_submodule();
-        set_capability( "audio filter", 1 );
-        set_callbacks( Create_S16ToFL32, NULL );
-    add_submodule();
-        set_capability( "audio filter", 1 );
-        set_callbacks( Create_S16ToFL32_SW, NULL ); /* Endianness conversion*/
-    add_submodule();
-        set_capability( "audio filter", 1 );
-        set_callbacks( Create_S8ToFL32, NULL );
-    add_submodule();
-        set_capability( "audio filter", 1 );
-        set_callbacks( Create_U8ToFL32, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Floating-point audio format conversions") )
+    add_submodule ()
+        set_capability( "audio filter", 10 )
+        set_callbacks( Create_F32ToFL32, NULL )
+    add_submodule ()
+        set_capability( "audio filter", 1 )
+        set_callbacks( Create_FL32ToS16, NULL )
+    add_submodule ()
+        set_capability( "audio filter", 1 )
+        set_callbacks( Create_FL32ToS8, NULL )
+    add_submodule ()
+        set_capability( "audio filter", 1 )
+        set_callbacks( Create_FL32ToU16, NULL )
+    add_submodule ()
+        set_capability( "audio filter", 1 )
+        set_callbacks( Create_FL32ToU8, NULL )
+    add_submodule ()
+        set_capability( "audio filter", 1 )
+        set_callbacks( Create_S16ToFL32, NULL )
+    add_submodule ()
+        set_capability( "audio filter", 1 )
+        set_callbacks( Create_S16ToFL32_SW, NULL ) /* Endianness conversion*/
+    add_submodule ()
+        set_capability( "audio filter", 1 )
+        set_callbacks( Create_S8ToFL32, NULL )
+    add_submodule ()
+        set_capability( "audio filter", 1 )
+        set_callbacks( Create_U8ToFL32, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Fixed 32 to Float 32 and backwards
@@ -555,38 +551,14 @@ static void Do_S16ToFL32_SW( aout_instance_t * p_aout, aout_filter_t * p_filter,
     int16_t * p_in;
     float * p_out = (float *)p_out_buf->p_buffer + i - 1;
 
-#ifdef HAVE_SWAB
-#   ifdef HAVE_ALLOCA
-    int16_t * p_swabbed = alloca( i * sizeof(int16_t) );
-#   else
-    int16_t * p_swabbed = malloc( i * sizeof(int16_t) );
-#   endif
+    int16_t p_swabbed[i];
 
-    swab( p_in_buf->p_buffer, (void *)p_swabbed, i * sizeof(int16_t) );
+    swab( p_in_buf->p_buffer, p_swabbed, i * sizeof(int16_t) );
     p_in = p_swabbed + i - 1;
 
-#else
-    uint8_t p_tmp[2];
-    p_in = (int16_t *)p_in_buf->p_buffer + i - 1;
-#endif
 
     while( i-- )
-    {
-#ifndef HAVE_SWAB
-        p_tmp[0] = ((uint8_t *)p_in)[1];
-        p_tmp[1] = ((uint8_t *)p_in)[0];
-        *p_out = (float)( *(int16_t *)p_tmp ) / 32768.0;
-#else
-        *p_out = (float)*p_in / 32768.0;
-#endif
-        p_in--; p_out--;
-    }
-
-#ifdef HAVE_SWAB
-#   ifndef HAVE_ALLOCA
-    free( p_swabbed );
-#   endif
-#endif
+        *p_out-- = (float)*p_in-- / 32768.0;
 
     p_out_buf->i_nb_samples = p_in_buf->i_nb_samples;
     p_out_buf->i_nb_bytes = p_in_buf->i_nb_bytes * 4 / 2;

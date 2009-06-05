@@ -2,7 +2,7 @@
  * osd_widgets.c : OSD widgets manipulation functions
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 5d8fafd988c75c5ae827aca0cbaa7a5a3992e744 $
+ * $Id$
  *
  * Author: Yoann Peronneau <yoann@videolan.org>
  *
@@ -52,8 +52,8 @@ static void DrawRect( subpicture_t *p_subpic, int i_x1, int i_y1,
                       int i_x2, int i_y2, short fill )
 {
     int x, y;
-    uint8_t *p_a = p_subpic->p_region->picture.A_PIXELS;
-    int i_pitch = p_subpic->p_region->picture.Y_PITCH;
+    uint8_t *p_a = p_subpic->p_region->p_picture->A_PIXELS;
+    int i_pitch = p_subpic->p_region->p_picture->Y_PITCH;
 
     if( fill == STYLE_FILLED )
     {
@@ -88,8 +88,8 @@ static void DrawTriangle( subpicture_t *p_subpic, int i_x1, int i_y1,
                           int i_x2, int i_y2, short fill )
 {
     int x, y, i_mid, h;
-    uint8_t *p_a = p_subpic->p_region->picture.A_PIXELS;
-    int i_pitch = p_subpic->p_region->picture.Y_PITCH;
+    uint8_t *p_a = p_subpic->p_region->p_picture->A_PIXELS;
+    int i_pitch = p_subpic->p_region->p_picture->Y_PITCH;
 
     i_mid = i_y1 + ( ( i_y2 - i_y1 ) >> 1 );
 
@@ -164,7 +164,7 @@ static int CreatePicture( spu_t *p_spu, subpicture_t *p_subpic,
     fmt.i_width = fmt.i_visible_width = i_width;
     fmt.i_height = fmt.i_visible_height = i_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_subpic->p_region = p_subpic->pf_create_region( VLC_OBJECT(p_spu), &fmt );
+    p_subpic->p_region = subpicture_region_New( &fmt );
     if( !p_subpic->p_region )
     {
         msg_Err( p_spu, "cannot allocate SPU region" );
@@ -173,11 +173,11 @@ static int CreatePicture( spu_t *p_spu, subpicture_t *p_subpic,
 
     p_subpic->p_region->i_x = i_x;
     p_subpic->p_region->i_y = i_y;
-    p_y = p_subpic->p_region->picture.Y_PIXELS;
-    p_u = p_subpic->p_region->picture.U_PIXELS;
-    p_v = p_subpic->p_region->picture.V_PIXELS;
-    p_a = p_subpic->p_region->picture.A_PIXELS;
-    i_pitch = p_subpic->p_region->picture.Y_PITCH;
+    p_y = p_subpic->p_region->p_picture->Y_PIXELS;
+    p_u = p_subpic->p_region->p_picture->U_PIXELS;
+    p_v = p_subpic->p_region->p_picture->V_PIXELS;
+    p_a = p_subpic->p_region->p_picture->A_PIXELS;
+    i_pitch = p_subpic->p_region->p_picture->Y_PITCH;
 
     /* Initialize the region pixels (only the alpha will be changed later) */
     memset( p_y, 0xff, i_pitch * p_subpic->p_region->fmt.i_height );
@@ -196,8 +196,10 @@ subpicture_t *osd_CreateWidget( spu_t *p_spu, int i_channel )
     subpicture_t *p_subpic;
     mtime_t i_now = mdate();
 
+    VLC_UNUSED(p_spu);
+
     /* Create and initialize a subpicture */
-    p_subpic = spu_CreateSubpicture( p_spu );
+    p_subpic = subpicture_New();
     if( p_subpic == NULL ) return NULL;
 
     p_subpic->i_channel = i_channel;
@@ -328,8 +330,8 @@ int osd_Icon( vlc_object_t *p_this, spu_t *p_spu,
                       STYLE_FILLED );
         if( i_type == OSD_MUTE_ICON )
         {
-            uint8_t *p_a = p_subpic->p_region->picture.A_PIXELS;
-            int i_pitch = p_subpic->p_region->picture.Y_PITCH;
+            uint8_t *p_a = p_subpic->p_region->p_picture->A_PIXELS;
+            int i_pitch = p_subpic->p_region->p_picture->Y_PITCH;
             int i;
             for( i = 1; i < i_pitch; i++ )
             {

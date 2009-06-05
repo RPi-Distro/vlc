@@ -2,7 +2,7 @@
  * mpeg_audio.c: parse MPEG audio sync info and packetize the stream
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id: 9333b30a5682ed1213163e24b50f644c81641181 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -35,7 +35,6 @@
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
 #include <vlc_aout.h>
-#include <vlc_input.h>
 
 #include <vlc_block_helper.h>
 
@@ -68,8 +67,6 @@ struct decoder_sys_t
     unsigned int i_layer, i_bit_rate;
 
     bool   b_discontinuity;
-
-    int i_input_rate;
 };
 
 enum {
@@ -112,39 +109,32 @@ static int SyncInfo( uint32_t i_header, unsigned int * pi_channels,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("MPEG audio layer I/II/III decoder") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
+vlc_module_begin ()
+    set_description( N_("MPEG audio layer I/II/III decoder") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
 #if defined(UNDER_CE)
-   set_capability( "decoder", 5 );
+   set_capability( "decoder", 5 )
 #else
-    set_capability( "decoder", 100 );
+    set_capability( "decoder", 100 )
 #endif
-    set_callbacks( OpenDecoder, CloseDecoder );
+    set_callbacks( OpenDecoder, CloseDecoder )
 
-    add_submodule();
-    set_description( N_("MPEG audio layer I/II/III packetizer") );
-    set_capability( "packetizer", 10 );
-    set_callbacks( OpenPacketizer, CloseDecoder );
-vlc_module_end();
+    add_submodule ()
+    set_description( N_("MPEG audio layer I/II/III packetizer") )
+    set_capability( "packetizer", 10 )
+    set_callbacks( OpenPacketizer, CloseDecoder )
+vlc_module_end ()
 
 /*****************************************************************************
- * OpenDecoder: probe the decoder and return score
+ * Open: probe the decoder and return score
  *****************************************************************************/
-static int OpenDecoder( vlc_object_t *p_this )
+static int Open( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
     if( p_dec->fmt_in.i_codec != VLC_FOURCC('m','p','g','a') )
-    {
-        return VLC_EGENERIC;
-    }
-
-    /* HACK: Don't use this codec if we don't have an mpga audio filter */
-    if( p_dec->i_object_type == VLC_OBJECT_DECODER &&
-        !module_Exists( p_this, "mpgatofixed32" ) )
     {
         return VLC_EGENERIC;
     }
@@ -160,7 +150,6 @@ static int OpenDecoder( vlc_object_t *p_this )
     aout_DateSet( &p_sys->end_date, 0 );
     p_sys->bytestream = block_BytestreamInit();
     p_sys->b_discontinuity = false;
-    p_sys->i_input_rate = INPUT_RATE_DEFAULT;
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
@@ -179,11 +168,20 @@ static int OpenDecoder( vlc_object_t *p_this )
     return VLC_SUCCESS;
 }
 
+static int OpenDecoder( vlc_object_t *p_this )
+{
+    /* HACK: Don't use this codec if we don't have an mpga audio filter */
+    if( !module_exists( "mpgatofixed32" ) )
+        return VLC_EGENERIC;
+
+    return Open( p_this );
+}
+
 static int OpenPacketizer( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
 
-    int i_ret = OpenDecoder( p_this );
+    int i_ret = Open( p_this );
 
     if( i_ret == VLC_SUCCESS ) p_dec->p_sys->b_packetizer = true;
 
@@ -210,9 +208,9 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         if( (*pp_block)->i_flags&BLOCK_FLAG_CORRUPTED )
         {
             p_sys->i_state = STATE_NOSYNC;
-            block_BytestreamFlush( &p_sys->bytestream );
+            block_BytestreamEmpty( &p_sys->bytestream );
         }
-//        aout_DateSet( &p_sys->end_date, 0 );
+        aout_DateSet( &p_sys->end_date, 0 );
         block_Release( *pp_block );
         p_sys->b_discontinuity = true;
         return NULL;
@@ -225,9 +223,6 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         block_Release( *pp_block );
         return NULL;
     }
-
-    if( (*pp_block)->i_rate > 0 )
-        p_sys->i_input_rate = (*pp_block)->i_rate;
 
     block_BytestreamPush( &p_sys->bytestream, *pp_block );
 
@@ -540,13 +535,12 @@ static aout_buffer_t *GetAoutBuffer( decoder_t *p_dec )
     decoder_sys_t *p_sys = p_dec->p_sys;
     aout_buffer_t *p_buf;
 
-    p_buf = p_dec->pf_aout_buffer_new( p_dec, p_sys->i_frame_length );
+    p_buf = decoder_NewAudioBuffer( p_dec, p_sys->i_frame_length );
     if( p_buf == NULL ) return NULL;
 
     p_buf->start_date = aout_DateGet( &p_sys->end_date );
     p_buf->end_date =
-        aout_DateIncrement( &p_sys->end_date,
-                            p_sys->i_frame_length * p_sys->i_input_rate / INPUT_RATE_DEFAULT );
+        aout_DateIncrement( &p_sys->end_date, p_sys->i_frame_length );
     p_buf->b_discontinuity = p_sys->b_discontinuity;
     p_sys->b_discontinuity = false;
 
@@ -570,9 +564,7 @@ static block_t *GetSoutBuffer( decoder_t *p_dec )
     p_block->i_pts = p_block->i_dts = aout_DateGet( &p_sys->end_date );
 
     p_block->i_length =
-        aout_DateIncrement( &p_sys->end_date,
-                            p_sys->i_frame_length * p_sys->i_input_rate / INPUT_RATE_DEFAULT ) -
-                                p_block->i_pts;
+        aout_DateIncrement( &p_sys->end_date, p_sys->i_frame_length ) - p_block->i_pts;
 
     return p_block;
 }

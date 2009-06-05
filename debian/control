@@ -30,7 +30,6 @@ Build-Depends: debhelper (>= 7),
                libdvbpsi4-dev,
                libdvdnav-dev,
                libdvdread-dev (>= 0.9.5),
-               libesd0-dev,
                libfaad-dev,
                libflac-dev (>= 1.1.2-3),
                libfreetype6-dev,
@@ -91,15 +90,14 @@ Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/heads/sid
 
 Package: vlc
-Section: video
 Architecture: any
-Depends: vlc-nox (= ${binary:Version}), 
-         ${shlibs:Depends}, 
+Depends: vlc-nox (= ${binary:Version}),
+         ${shlibs:Depends},
          ${misc:Depends},
          ttf-dejavu-core
 Suggests: mozilla-plugin-vlc,
           videolan-doc
-Replaces:  vlc-nox (<< 0.9.2-1)
+Replaces: vlc-nox (<< 0.9.2-1)
 Conflicts: vlc-nox (<< 0.9.2-1)
 Provides: mp3-decoder
 Description: multimedia player and streamer
@@ -114,9 +112,9 @@ Description: multimedia player and streamer
  VLC has support for on-the-fly transcoding of audio and video formats, either
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added
- by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl) or
- video plugins (vlc-plugin-sdl, vlc-plugin-ggi, vlc-plugin-svgalib). There is
- also a web browser plugin in the mozilla-plugin-vlc package.
+ by installing additional audio plugins (vlc-plugin-pulse, vlc-plugin-sdl)
+ or video plugins (vlc-plugin-sdl, vlc-plugin-ggi, vlc-plugin-svgalib). There
+ is also a web browser plugin in the mozilla-plugin-vlc package.
 
 Package: vlc-dbg
 Section: debug
@@ -133,7 +131,6 @@ Description: debugging symbols for vlc
  This package contains the debugging symbols for vlc.
 
 Package: vlc-nox
-Section: video
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
@@ -152,18 +149,18 @@ Description: multimedia player and streamer (without X support)
  VLC has support for on-the-fly transcoding of audio and video formats, either
  for broadcasting purposes or for movie format transformations. Support for
  most output methods is provided by this package, but features can be added
- by installing additional audio plugins (vlc-plugin-esd, vlc-plugin-sdl,
- vlc-plugin-arts, vlc-plugin-jack) or video plugins (vlc-plugin-sdl, 
- vlc-plugin-ggi, vlc-plugin-svgalib). There is also a web browser plugin in 
- the mozilla-plugin-vlc package.
+ by installing additional audio plugins (vlc-plugin-pulse, vlc-plugin-sdl,
+ vlc-plugin-jack) or video plugins (vlc-plugin-sdl, vlc-plugin-ggi,
+ vlc-plugin-svgalib). There is also a web browser plugin in  the
+ mozilla-plugin-vlc package.
  .
  This package contains a version of VLC that does not require X and that is
  thus suitable for headless servers.
 
-Package: libvlccore0
+Package: libvlccore2
 Section: libs
 Architecture: any
-Depends: vlc-data,
+Depends: vlc-data (= ${source:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
 Description: base library for VLC and its modules
@@ -191,7 +188,7 @@ Description: multimedia player and streamer library
 Package: libvlccore-dev
 Section: libdevel
 Architecture: any
-Depends: libvlccore0 (= ${binary:Version}), pkg-config, 
+Depends: libvlccore2 (= ${binary:Version}), pkg-config,
          ${shlibs:Depends}, ${misc:Depends}
 Description: development files for libvlccore
  This package contains headers and a static library required to build plugins
@@ -204,25 +201,13 @@ Description: development files for libvlccore
 Package: libvlc-dev
 Section: libdevel
 Architecture: any
-Depends: libvlc2 (= ${binary:Version}), libvlccore-dev, pkg-config, 
+Depends: libvlc2 (= ${binary:Version}), libvlccore-dev, pkg-config,
          ${shlibs:Depends}, ${misc:Depends}
 Replaces: libvlc0-dev
 Conflicts: libvlc0-dev
 Description: development files for libvlc
  This package contains headers and a static library required to build 
  standalone applications that use VLC features.
- .
- VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
- DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
- streams from various network sources.
-
-Package: vlc-plugin-esd
-Architecture: any
-Depends: vlc-nox, ${shlibs:Depends}, ${misc:Depends}
-Description: Esound audio output plugin for VLC
- This plugin adds support for the Enlightened Sound Daemon to the VLC
- media player. To activate it, use the `--aout esd' flag or select the
- `esd' audio output plugin from the preferences menu.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia

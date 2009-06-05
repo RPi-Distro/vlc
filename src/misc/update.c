@@ -2,7 +2,7 @@
  * update.c: VLC update checking and downloading
  *****************************************************************************
  * Copyright © 2005-2008 the VideoLAN team
- * $Id: b0bd103b4754133fd9c5a08af46a5ef9bd892af7 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire at via.ecp.fr>
@@ -35,6 +35,9 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+#ifdef HAVE_SYS_STAT_H
+#   include <sys/stat.h>
+#endif
 
 #include <vlc_common.h>
 #include <vlc_update.h>
@@ -47,7 +50,7 @@
 #include <vlc_stream.h>
 #include <vlc_strings.h>
 #include <vlc_charset.h>
-#include <vlc_interface.h>
+#include <vlc_dialog.h>
 
 #include <gcrypt.h>
 #include <vlc_gcrypt.h>
@@ -1084,6 +1087,7 @@ void update_Delete( update_t *p_update )
         assert( !p_update->p_download );
         vlc_object_kill( p_update->p_check );
         vlc_thread_join( p_update->p_check );
+        vlc_object_release( p_update->p_check );
     }
     else if( p_update->p_download )
     {
@@ -1377,6 +1381,14 @@ void update_Check( update_t *p_update, void (*pf_callback)( void*, bool ), void 
 {
     assert( p_update );
 
+    // If the object already exist, destroy it
+    if( p_update->p_check )
+    {
+        vlc_object_kill( p_update->p_check );
+        vlc_thread_join( p_update->p_check );
+        vlc_object_release( p_update->p_check );
+    }
+
     update_check_thread_t *p_uct =
         vlc_custom_create( p_update->p_libvlc, sizeof( *p_uct ),
                            VLC_OBJECT_GENERIC, "update check" );
@@ -1388,13 +1400,16 @@ void update_Check( update_t *p_update, void (*pf_callback)( void*, bool ), void 
     p_uct->p_data = p_data;
 
     vlc_thread_create( p_uct, "check for update", update_CheckReal,
-                       VLC_THREAD_PRIORITY_LOW, false );
+                       VLC_THREAD_PRIORITY_LOW );
 }
 
 void* update_CheckReal( vlc_object_t* p_this )
 {
     update_check_thread_t *p_uct = (update_check_thread_t *)p_this;
     bool b_ret;
+    int canc;
+
+    canc = vlc_savecancel ();
     vlc_mutex_lock( &p_uct->p_update->lock );
 
     EmptyRelease( p_uct->p_update );
@@ -1404,9 +1419,7 @@ void* update_CheckReal( vlc_object_t* p_this )
     if( p_uct->pf_callback )
         (p_uct->pf_callback)( p_uct->p_data, b_ret );
 
-    p_uct->p_update->p_check = NULL;
-
-    vlc_object_release( p_uct );
+    vlc_restorecancel (canc);
     return NULL;
 }
 
@@ -1468,10 +1481,12 @@ static char *size_str( long int l_size )
 
 void update_WaitDownload( update_t *p_update )
 {
-    if(p_update->p_download)
+    if( p_update->p_download )
+    {
         vlc_thread_join( p_update->p_download );
-    vlc_object_release( p_update->p_download );
-    p_update->p_download = NULL;
+        vlc_object_release( p_update->p_download );
+        p_update->p_download = NULL;
+    }
 }
 
 static void* update_DownloadReal( vlc_object_t *p_this );
@@ -1480,12 +1495,22 @@ static void* update_DownloadReal( vlc_object_t *p_this );
  * Download the file given in the update_t
  *
  * \param p_update structure
- * \param dir to store the download file
+ * \param destination to store the download file
+ *        This can be an existing dir, a (non)existing target fullpath filename or
+ *        NULL for the current working dir.
  * \return nothing
  */
-void update_Download( update_t *p_update, const char *psz_destdir )
+void update_Download( update_t *p_update, const char *destination )
 {
     assert( p_update );
+
+    // If the object already exist, destroy it
+    if( p_update->p_download )
+    {
+        vlc_object_kill( p_update->p_download );
+        vlc_thread_join( p_update->p_download );
+        vlc_object_release( p_update->p_download );
+    }
 
     update_download_thread_t *p_udt =
         vlc_custom_create( p_update->p_libvlc, sizeof( *p_udt ),
@@ -1495,16 +1520,16 @@ void update_Download( update_t *p_update, const char *psz_destdir )
 
     p_udt->p_update = p_update;
     p_update->p_download = p_udt;
-    p_udt->psz_destdir = psz_destdir ? strdup( psz_destdir ) : NULL;
+    p_udt->psz_destination = destination ? strdup( destination ) : NULL;
 
     vlc_thread_create( p_udt, "download update", update_DownloadReal,
-                       VLC_THREAD_PRIORITY_LOW, false );
+                       VLC_THREAD_PRIORITY_LOW );
 }
 
 static void* update_DownloadReal( vlc_object_t *p_this )
 {
     update_download_thread_t *p_udt = (update_download_thread_t *)p_this;
-    int i_progress = 0;
+    dialog_progress_bar_t *p_progress = NULL;
     long int l_size;
     long int l_downloaded = 0;
     float f_progress;
@@ -1515,14 +1540,17 @@ static void* update_DownloadReal( vlc_object_t *p_this )
     char *psz_tmpdestfile = NULL;
 
     FILE *p_file = NULL;
+    struct stat p_stat;
     stream_t *p_stream = NULL;
     void* p_buffer = NULL;
     int i_read;
+    int canc;
 
     update_t *p_update = p_udt->p_update;
-    char *psz_destdir = p_udt->psz_destdir;
+    char *psz_destination = p_udt->psz_destination;
 
     msg_Dbg( p_udt, "Opening Stream '%s'", p_update->release.psz_url );
+    canc = vlc_savecancel ();
 
     /* Open the stream */
     p_stream = stream_UrlNew( p_udt, p_update->release.psz_url );
@@ -1544,13 +1572,24 @@ static void* update_DownloadReal( vlc_object_t *p_this )
         goto end;
     }
     psz_tmpdestfile++;
-    if( asprintf( &psz_destfile, "%s%s", psz_destdir, psz_tmpdestfile ) == -1 )
-        goto end;
+
+    if( utf8_stat( psz_destination, &p_stat) == 0 && (p_stat.st_mode & S_IFDIR) )
+    {
+        if( asprintf( &psz_destfile, "%s%c%s", psz_destination, DIR_SEP_CHAR, psz_tmpdestfile ) == -1 )
+            goto end;
+    }
+    else if( psz_destination )
+        psz_destfile = strdup( psz_destination );
+    else
+        psz_destfile = strdup( psz_tmpdestfile );
 
     p_file = utf8_fopen( psz_destfile, "w" );
     if( !p_file )
     {
         msg_Err( p_udt, "Failed to open %s for writing", psz_destfile );
+        dialog_FatalWait( p_udt, _("Saving file failed"),
+            _("Failed to open \"%s\" for writing"),
+             psz_destfile );
         goto end;
     }
 
@@ -1568,17 +1607,15 @@ static void* update_DownloadReal( vlc_object_t *p_this )
     if( asprintf( &psz_status, _("%s\nDownloading... %s/%s %.1f%% done"),
         p_update->release.psz_url, "0.0", psz_size, 0.0 ) != -1 )
     {
-        i_progress = intf_UserProgress( p_udt, _( "Downloading ..."),
-                                        psz_status, 0.0, 0 );
+        p_progress = dialog_ProgressCreate( p_udt, _( "Downloading ..."),
+                                            psz_status, _("Cancel") );
         free( psz_status );
     }
 
-    vlc_object_lock( p_udt );
     while( vlc_object_alive( p_udt ) &&
            ( i_read = stream_Read( p_stream, p_buffer, 1 << 10 ) ) &&
-           !intf_ProgressIsCancelled( p_udt, i_progress ) )
+           !dialog_ProgressCancelled( p_progress ) )
     {
-        vlc_object_unlock( p_udt );
         if( fwrite( p_buffer, i_read, 1, p_file ) < 1 )
         {
             msg_Err( p_udt, "Failed to write into %s", psz_destfile );
@@ -1587,17 +1624,16 @@ static void* update_DownloadReal( vlc_object_t *p_this )
 
         l_downloaded += i_read;
         psz_downloaded = size_str( l_downloaded );
-        f_progress = 100.0*(float)l_downloaded/(float)l_size;
+        f_progress = (float)l_downloaded/(float)l_size;
 
         if( asprintf( &psz_status, _( "%s\nDownloading... %s/%s %.1f%% done" ),
                       p_update->release.psz_url, psz_downloaded, psz_size,
                       f_progress ) != -1 )
         {
-            intf_ProgressUpdate( p_udt, i_progress, psz_status, f_progress, 0 );
+            dialog_ProgressSet( p_progress, psz_status, f_progress );
             free( psz_status );
         }
         free( psz_downloaded );
-        vlc_object_lock( p_udt );
     }
 
     /* Finish the progress bar or delete the file if the user had canceled */
@@ -1605,20 +1641,18 @@ static void* update_DownloadReal( vlc_object_t *p_this )
     p_file = NULL;
 
     if( vlc_object_alive( p_udt ) &&
-        !intf_ProgressIsCancelled( p_udt, i_progress ) )
+        !dialog_ProgressCancelled( p_progress ) )
     {
-        vlc_object_unlock( p_udt );
         if( asprintf( &psz_status, _("%s\nDone %s (100.0%%)"),
             p_update->release.psz_url, psz_size ) != -1 )
         {
-            intf_ProgressUpdate( p_udt, i_progress, psz_status, 100.0, 0 );
-            i_progress = 0;
+            dialog_ProgressDestroy( p_progress );
+            p_progress = NULL;
             free( psz_status );
         }
     }
     else
     {
-        vlc_object_unlock( p_udt );
         utf8_unlink( psz_destfile );
         goto end;
     }
@@ -1629,7 +1663,7 @@ static void* update_DownloadReal( vlc_object_t *p_this )
     {
         utf8_unlink( psz_destfile );
 
-        intf_UserFatal( p_udt, true, _("File could not be verified"),
+        dialog_FatalWait( p_udt, _("File could not be verified"),
             _("It was not possible to download a cryptographic signature for "
               "the downloaded file \"%s\". Thus, it was deleted."),
             psz_destfile );
@@ -1641,7 +1675,7 @@ static void* update_DownloadReal( vlc_object_t *p_this )
     {
         utf8_unlink( psz_destfile );
         msg_Err( p_udt, "Invalid signature issuer" );
-        intf_UserFatal( p_udt, true, _("Invalid signature"),
+        dialog_FatalWait( p_udt, _("Invalid signature"),
             _("The cryptographic signature for the downloaded file \"%s\" was "
               "invalid and could not be used to securely verify it. Thus, the "
               "file was deleted."),
@@ -1653,7 +1687,7 @@ static void* update_DownloadReal( vlc_object_t *p_this )
     {
         utf8_unlink( psz_destfile );
         msg_Err( p_udt, "Invalid signature type" );
-        intf_UserFatal( p_udt, true, _("Invalid signature"),
+        dialog_FatalWait( p_udt, _("Invalid signature"),
             _("The cryptographic signature for the downloaded file \"%s\" was "
               "invalid and could not be used to securely verify it. Thus, the "
               "file was deleted."),
@@ -1666,9 +1700,9 @@ static void* update_DownloadReal( vlc_object_t *p_this )
     {
         msg_Err( p_udt, "Unable to hash %s", psz_destfile );
         utf8_unlink( psz_destfile );
-        intf_UserFatal( p_udt, true, _("File not verifiable"),
+        dialog_FatalWait( p_udt, _("File not verifiable"),
             _("It was not possible to securely verify the downloaded file"
-              " \"%s\". Thus, it was VLC deleted."),
+              " \"%s\". Thus, it was deleted."),
             psz_destfile );
 
         goto end;
@@ -1678,7 +1712,7 @@ static void* update_DownloadReal( vlc_object_t *p_this )
         p_hash[1] != sign.hash_verification[1] )
     {
         utf8_unlink( psz_destfile );
-        intf_UserFatal( p_udt, true, _("File corrupted"),
+        dialog_FatalWait( p_udt, _("File corrupted"),
             _("Downloaded file \"%s\" was corrupted. Thus, it was deleted."),
              psz_destfile );
         msg_Err( p_udt, "Bad SHA1 hash for %s", psz_destfile );
@@ -1690,7 +1724,7 @@ static void* update_DownloadReal( vlc_object_t *p_this )
             != VLC_SUCCESS )
     {
         utf8_unlink( psz_destfile );
-        intf_UserFatal( p_udt, true, _("File corrupted"),
+        dialog_FatalWait( p_udt, _("File corrupted"),
             _("Downloaded file \"%s\" was corrupted. Thus, it was deleted."),
              psz_destfile );
         msg_Err( p_udt, "BAD SIGNATURE for %s", psz_destfile );
@@ -1702,19 +1736,21 @@ static void* update_DownloadReal( vlc_object_t *p_this )
     free( p_hash );
 
 end:
-    if( i_progress )
-    {
-        intf_ProgressUpdate( p_udt, i_progress, _("Cancelled"), 100.0, 0 );
-    }
+    if( p_progress )
+        dialog_ProgressDestroy( p_progress );
     if( p_stream )
         stream_Delete( p_stream );
     if( p_file )
         fclose( p_file );
-    free( psz_destdir );
     free( psz_destfile );
     free( p_buffer );
     free( psz_size );
 
+    free( p_udt->psz_destination );
+    p_udt->p_update->p_download = NULL;
+
+    vlc_object_release( p_udt );
+    vlc_restorecancel( canc );
     return NULL;
 }
 

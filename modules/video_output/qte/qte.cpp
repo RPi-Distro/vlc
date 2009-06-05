@@ -2,7 +2,7 @@
  * qte.cpp : QT Embedded plugin for vlc
  *****************************************************************************
  * Copyright (C) 1998-2003 the VideoLAN team
- * $Id: 2968e073d9ccc7330e6c369e93c87397de8aa87f $
+ * $Id$
  *
  * Authors: Gerald Hansink <gerald.hansink@ordina.nl>
  *          Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
@@ -112,16 +112,16 @@ static void* RunQtThread( vlc_object_t *p_this );
 extern "C"
 {
 
-vlc_module_begin();
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VOUT );
-//    add_category_hint( N_("QT Embedded"), NULL );
-//    add_string( "qte-display", "landscape", NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT);
-    set_description( N_("QT Embedded video output") );
-    set_capability( "video output", 70 );
-    add_shortcut( "qte" );
-    set_callbacks( Open, Close);
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VOUT )
+//    add_category_hint( N_("QT Embedded"), NULL )
+//    add_string( "qte-display", "landscape", NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT)
+    set_description( N_("QT Embedded video output") )
+    set_capability( "video output", 70 )
+    add_shortcut( "qte" )
+    set_callbacks( Open, Close)
+vlc_module_end ()
 
 } /* extern "C" */
 
@@ -153,7 +153,7 @@ static int Open( vlc_object_t *p_this )
 
 #ifdef NEED_QTE_MAIN
     p_vout->p_sys->p_qte_main =
-        module_Need( p_this, "gui-helper", "qte", true );
+        module_need( p_this, "gui-helper", "qte", true );
     if( p_vout->p_sys->p_qte_main == NULL )
     {
         free( p_vout->p_sys );
@@ -194,7 +194,7 @@ static void Close ( vlc_object_t *p_this )
 
 #ifdef NEED_QTE_MAIN
     msg_Dbg( p_vout, "releasing gui-helper" );
-    module_Unneed( p_vout, p_vout->p_sys->p_qte_main );
+    module_unneed( p_vout, p_vout->p_sys->p_qte_main );
 #endif
 
     if( p_vout->p_sys )
@@ -591,6 +591,7 @@ static void CloseDisplay( vout_thread_t *p_vout )
 static void* RunQtThread( vlc_object_t *p_this )
 {
     event_thread_t *p_event = (event_thread_t *)p_this;
+    int canc = vlc_savecancel ();
     msg_Dbg( p_event->p_vout, "RunQtThread starting" );
 
 #ifdef NEED_QTE_MAIN
@@ -669,6 +670,7 @@ static void* RunQtThread( vlc_object_t *p_this )
 #endif
 
     msg_Dbg( p_event->p_vout, "RunQtThread terminating" );
+    vlc_restorecancel (canc);
     return NULL;
 }
 

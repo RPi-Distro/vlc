@@ -2,7 +2,7 @@
  * registry.hpp: Windows Registry Manipulation
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 34188b72d683289e7f21807e6df71a23bfaab2fb $
+ * $Id$
  *
  * Authors: Andre Weber <WeberAndre # gmx - de>
  *
@@ -44,8 +44,8 @@ public:
 
     bool RegistryKeyExists( const char *path);
     bool RegistryValueExists( const char *path, const char *valueName);
-    int DeleteValue( char *path, char *valueName );
-    long DeleteKey( char *path, char *keyName );
+    int DeleteValue( const char *path, const char *valueName );
+    long DeleteKey( const char *path, const char *keyName );
 };
 
 #endif

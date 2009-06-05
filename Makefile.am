@@ -7,18 +7,23 @@
 # which have makefiles with distribution information.
 #  - src (libvlc) is nedeed by modules, mozilla and bindings
 #  - libs/* are needed by modules
-BASE_SUBDIRS = po src bin modules share doc test
+BASE_SUBDIRS = po compat src bin modules share doc test
 EXTRA_SUBDIRS = m4 extras/package/ipkg \
-	libs/loader libs/srtp \
+	libs/loader libs/srtp libs/unzip \
 	projects/mozilla projects/activex
 DIST_SUBDIRS = $(BASE_SUBDIRS) $(EXTRA_SUBDIRS)
 
-SUBDIRS = po src
+SUBDIRS = po compat src
 if LOADER
 SUBDIRS += libs/loader
 endif
 if HAVE_LIBGCRYPT
 SUBDIRS += libs/srtp
+endif
+if HAVE_ZLIB
+if !HAVE_MINIZIP
+SUBDIRS += libs/unzip
+endif
 endif
 if BUILD_VLC
 SUBDIRS += bin
@@ -41,7 +46,6 @@ EXTRA_DIST = \
 	extras/package/macosx/README.MacOSX.rtf \
 	vlc-config.in.in \
 	extras/package/rpm/vlc.fedora.spec \
-	extras/package/rpm/vlc.mandriva.spec \
 	extras/package/rpm/vlc.altlinux.spec \
 	extras/package/win32/vlc.win32.nsi.in \
 	extras/package/win32/languages/declaration.nsh \
@@ -82,7 +86,7 @@ AUTOMAKE_OPTIONS = \
 ChangeLog: Makefile.am
 	rm -f -- "$@"
 	cd doc && $(MAKE) $(AM_MAKEFLAGS) changelogs
-	ln -sf doc/ChangeLog-2008 "$@"
+	ln -sf doc/ChangeLog-2009 "$@"
 
 ###############################################################################
 # MacOS X project
@@ -116,12 +120,12 @@ EXTRA_DIST += \
 	extras/package/macosx/Resources/English.lproj/Update.nib/classes.nib \
 	extras/package/macosx/Resources/English.lproj/Update.nib/info.nib \
 	extras/package/macosx/Resources/English.lproj/Update.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/Interaction.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/Interaction.nib/info.nib \
-	extras/package/macosx/Resources/English.lproj/Interaction.nib/keyedobjects.nib \
-	extras/package/macosx/Resources/English.lproj/InteractionErrorPanel.nib/classes.nib \
-	extras/package/macosx/Resources/English.lproj/InteractionErrorPanel.nib/info.nib \
-	extras/package/macosx/Resources/English.lproj/InteractionErrorPanel.nib/keyedobjects.nib \
+	extras/package/macosx/Resources/English.lproj/CoreDialogs.nib/classes.nib \
+	extras/package/macosx/Resources/English.lproj/CoreDialogs.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/CoreDialogs.nib/keyedobjects.nib \
+	extras/package/macosx/Resources/English.lproj/ErrorPanel.nib/classes.nib \
+	extras/package/macosx/Resources/English.lproj/ErrorPanel.nib/info.nib \
+	extras/package/macosx/Resources/English.lproj/ErrorPanel.nib/keyedobjects.nib \
 	extras/package/macosx/Resources/English.lproj/InfoPlist.strings.in \
 	extras/package/macosx/Resources/a52.icns \
 	extras/package/macosx/Resources/aac.icns \
@@ -268,7 +272,6 @@ EXTRA_DIST += \
 	extras/package/macosx/plugin/InstallerInfo.plist.in \
 	extras/package/macosx/plugin/InstallerDescription.plist \
 	extras/package/macosx/plugin/pbdevelopment.plist \
-	extras/package/macosx/plugin/English.lproj/InfoPlist.strings.in \
 	extras/package/macosx/eyetvplugin/EyeTVPluginDefs.h \
 	extras/package/macosx/eyetvplugin/Info.plist \
 	extras/package/macosx/eyetvplugin/eyetvplugin.c \
@@ -310,7 +313,8 @@ vlc-config.in: vlc-config.in.in
 	touch $@
 
 CLEANFILES = $(BUILT_SOURCES_clean)
-DISTCLEANFILES = $(BUILT_SOURCES_distclean) vlc-config.in compile ChangeLog
+DISTCLEANFILES = $(BUILT_SOURCES_distclean) vlc-config.in compile
+MAINTAINERCLEANFILES = ChangeLog
 
 # Shortcut for developpers to rebuild the core (libvlc + vlc)
 # Don't use it if you don't know what it is about.
@@ -360,7 +364,7 @@ endif
 # Building aliases
 ###############################################################################
 
-ALL_ALIASES = cvlc rvlc svlc wxvlc qvlc nvlc
+ALL_ALIASES = cvlc rvlc svlc wxvlc qvlc nvlc mvlc
 bin_SCRIPTS = $(ALIASES)
 CLEANFILES += $(ALIASES) $(noinst_SCRIPTS)
 EXTRA_SCRIPTS = $(ALL_ALIASES)
@@ -369,34 +373,33 @@ dist_noinst_SCRIPTS += make-alias
 
 MKALIAS = bindir="$(bindir)" transform="$(transform)" program_prefix="$(program_prefix)" program_suffix="$(program_suffix)" $(top_srcdir)/make-alias $@
 
-cvlc: make-alias
+cvlc: make-alias Makefile
 	$(MKALIAS) dummy
 
-rvlc: make-alias
+rvlc: make-alias Makefile
 	$(MKALIAS) rc
 
-svlc: make-alias
+svlc: make-alias Makefile
 	$(MKALIAS) skins2
 
-wxvlc: make-alias
+wxvlc: make-alias Makefile
 	$(MKALIAS) wx
 
-qvlc: make-alias
+qvlc: make-alias Makefile
 	$(MKALIAS) qt4
 
-nvlc: make-alias
+nvlc: make-alias Makefile
 	$(MKALIAS) ncurses
+
+mvlc: make-alias Makefile
+	$(MKALIAS) maemo
 
 if BUILD_VLC
 noinst_SCRIPTS += vlc$(EXEEXT)
 endif
 
-vlc$(EXEEXT): Makefile.am
-	rm -f -- vlc vlc.tmp
-	echo '#! /bin/sh' > vlc.tmp
-	echo 'exec "$$(dirname "$$0")/bin/vlc$(EXEEXT)" "--plugin-path=$$(dirname "$$0")/modules" "$$@"' >> vlc.tmp
-	chmod +x vlc.tmp
-	mv -f -- vlc.tmp vlc
+vlc$(EXEEXT):
+	ln -sf bin/vlc-static$(EXEEXT) vlc$(EXEEXT)
 
 if HAVE_DARWIN
 if BUILD_VLC
@@ -415,7 +418,7 @@ VLC-release.app: vlc
 	for i in vlc.xcodeproj Resources README.MacOSX.rtf ; do \
 	  cp -R $(srcdir)/extras/package/macosx/$$i $(top_builddir)/tmp/extras/package/macosx/; \
 	done
-	REVISION=`git describe` && \
+	REVISION=`git describe --always` && \
 	cat $(top_builddir)/extras/package/macosx/Info.plist | \
 	sed "s/#REVISION#/$$REVISION/g" > $(top_builddir)/tmp/extras/package/macosx/Info.plist
 	cp -R $(top_builddir)/extras/package/macosx/Resources $(top_builddir)/tmp/extras/package/macosx/
@@ -464,8 +467,8 @@ VLC-release.app: vlc
 	    bookmarks.m \
 	    update.h \
 	    update.m \
-	    interaction.h \
-	    interaction.m \
+	    coredialogs.h \
+	    coredialogs.m \
 	    embeddedwindow.h \
 	    embeddedwindow.m \
 	    fspanel.h \
@@ -573,7 +576,7 @@ VLC-release.app: vlc
 	find $(top_builddir)/VLC-release.app -type f -exec chmod ugo+r '{}' \;
 
 # This is just for development purposes. 
-# The resulting VLC.app will only in this tree.
+# The resulting VLC.app will only run in this tree.
 VLC.app: vlc $(top_builddir)/src/.libs/libvlccore.dylib $(top_builddir)/src/.libs/libvlc.dylib
 	(cd src && make install)
 	rm -Rf $(top_builddir)/tmp
@@ -582,7 +585,7 @@ VLC.app: vlc $(top_builddir)/src/.libs/libvlccore.dylib $(top_builddir)/src/.lib
 	for i in vlc.xcodeproj Resources README.MacOSX.rtf; do \
 	  cp -R $(srcdir)/extras/package/macosx/$$i $(top_builddir)/tmp/extras/package/macosx/; \
 	done
-	REVISION=`git describe` && \
+	REVISION=`git describe --always` && \
 	cat $(top_builddir)/extras/package/macosx/Info.plist | \
 	sed "s/#REVISION#/$$REVISION/g" > $(top_builddir)/tmp/extras/package/macosx/Info.plist
 	cp -R $(top_builddir)/extras/package/macosx/Resources $(top_builddir)/tmp/extras/package/macosx/
@@ -631,8 +634,8 @@ VLC.app: vlc $(top_builddir)/src/.libs/libvlccore.dylib $(top_builddir)/src/.lib
 	    bookmarks.m \
 	    update.h \
 	    update.m \
-	    interaction.h \
-	    interaction.m \
+	    coredialogs.h \
+	    coredialogs.m \
 	    embeddedwindow.h \
 	    embeddedwindow.m \
 	    fspanel.h \
@@ -674,7 +677,13 @@ VLC.app: vlc $(top_builddir)/src/.libs/libvlccore.dylib $(top_builddir)/src/.lib
 # the same setup as the maintaner(s).
 #
 
+############################################################################
+## Win                                                                    ##
+############################################################################
 win32_destdir=$(top_builddir)/vlc-$(VERSION)
+win32_debugdir=$(top_builddir)/symbols-$(VERSION)
+npvlc=vlc-$(VERSION)/mozilla/npvlc$(LIBEXT)
+axvlc=vlc-$(VERSION)/activex/axvlc$(LIBEXT)
 win32_lua_destdir=$(win32_destdir)/lua
 win32_http_destdir=$(win32_destdir)/http
 
@@ -701,10 +710,10 @@ package-win-common:
 	  do sed 's/@/_AT_/' < "$(srcdir)/$$file" > "$(win32_destdir)/$${file}.txt" ; done;
 	for file in NEWS COPYING README; \
 	  do cp "$(srcdir)/$$file" "$(win32_destdir)/$${file}.txt"; done
-	unix2dos "$(win32_destdir)/"*.txt
+	unix2dos "$(win32_destdir)/"*.txt || echo "WARNING: this shouldn't happen"
 
 # Necessary icons
-	cp $(srcdir)/share/vlc48x48.ico $(win32_destdir)/
+	cp $(srcdir)/share/vlc.ico $(win32_destdir)/
 
 # Copy the locales
 	mkdir -p $(win32_destdir)/locale
@@ -755,7 +764,7 @@ package-win32-base-debug: package-win-common
 	  fi ; done
 
 # Contrib *.dll's
-	cp $(srcdir)/extras/contrib/lib/*.dll "vlc-$(VERSION)/" || true 
+	cp $(srcdir)/extras/contrib/lib/*.dll "vlc-$(VERSION)/" || true
 
 # Copy the lua scripts (HTTP)
 if BUILD_LUA
@@ -853,20 +862,20 @@ if BUILD_SKINS
 	for i in $(srcdir)/share/skins2/fonts/*.*; do \
 	  cp -- "$$i" $(win32_destdir)/skins/fonts/ || true ; \
 	done
-	for i in $(srcdir)/share/skins2/*.*; do \
+	for i in $(top_builddir)/share/skins2/*.*; do \
 	  cp -- "$$i" $(win32_destdir)/skins/ || true ; \
 	done
-	cp -v share/skins2/default.vlt $(win32_destdir)/skins/ || true ;
-
+	cp -- $(srcdir)/share/skins2/skin.catalog $(win32_destdir)/skins/ || true ;
+	cp -- $(srcdir)/share/skins2/skin.dtd $(win32_destdir)/skins/ || true ;
 endif
 
 if BUILD_OSDMENU
 #OSD Menu
 	mkdir -p "$(win32_destdir)/osdmenu"
 	cp $(srcdir)/share/osdmenu/*.* "$(win32_destdir)/osdmenu"
-	for dir in dvd dvd/selected dvd/unselect dvd/selection dvd/volume default default/selected default/selection default/volume minimal;do \
+	for dir in default default/selected default/selection default/volume ;do \
 		mkdir -p "$(win32_destdir)/osdmenu/$$dir"; \
-		for file in $(srcdir)/share/osdmenu/$${dir}/*.png ;do \
+		for file in $(srcdir)/share/osdmenu/$${dir}/*.png;do \
 			 cp -- "$$file" "$(win32_destdir)/osdmenu/$$dir"; \
 		done; \
 	done
@@ -890,19 +899,42 @@ endif
 
 #strip exe and main dll
 package-win-common-strip: package-win32-base-debug
+	@if test -e "$(win32_debugdir)"; then \
+	  echo "Error: please remove $(win32_debugdir), it is in the way"; \
+	  false; \
+	else \
+	  echo "OK."; mkdir -p "$(win32_debugdir)"; \
+	fi
 	for i in "" vlc-$(VERSION)/*$(LIBEXT) ; \
-	  do if test -n "$$i" ; then $(STRIP) "$$i" ; fi; done
+      do if test -n "$$i" ; then \
+      $(OBJCOPY) --only-keep-debug "$$i" "$$i.dbg"; \
+      $(OBJCOPY) --strip-debug "$$i" ; \
+      $(OBJCOPY) --add-gnu-debuglink="$$i.dbg" "$$i" ; \
+	  mv "$$i.dbg" "$(win32_debugdir)"; \
+    fi; done
+
 if BUILD_MOZILLA
-	$(STRIP) "vlc-$(VERSION)/mozilla/npvlc$(LIBEXT)"
+	$(OBJCOPY) --only-keep-debug "$(npvlc)" "$(npvlc).dbg"
+	$(OBJCOPY) --strip-debug "$(npvlc)"
+	$(OBJCOPY) --add-gnu-debuglink="$(npvlc).dbg" "$(npvlc)"
+	mv "$(npvlc).dbg" "$(win32_debugdir)"
 endif
 if BUILD_ACTIVEX
-	$(STRIP) "vlc-$(VERSION)/activex/axvlc$(LIBEXT)"
+	$(OBJCOPY) --only-keep-debug "$(axvlc)" "$(axvlc).dbg"
+	$(OBJCOPY) --strip-debug "$(axvlc)"
+	$(OBJCOPY) --add-gnu-debuglink="$(axvlc).dbg" "$(axvlc)"
+	mv "$(axvlc).dbg" "$(win32_debugdir)"
 endif
 
 #strip all plugins dll
 package-win32-base: package-win-common-strip
 	for i in "" $(win32_destdir)/plugins/*$(LIBEXT) ; \
-	  do if test -n "$$i" ; then $(STRIP) "$$i" ; fi ; done
+	  do if test -n "$$i" ; then \
+	  $(OBJCOPY) --only-keep-debug "$$i" "$$i.dbg"; \
+	  $(OBJCOPY) --strip-debug "$$i" ; \
+	  $(OBJCOPY) --add-gnu-debuglink="$$i.dbg" "$$i" ; \
+	  mv "$$i.dbg" "$(win32_debugdir)"; \
+	fi ; done
 
 package-win32-base-exe: package-win32-base
 # Create package
@@ -925,9 +957,18 @@ package-win32-base-zip: package-win32-base
 	rm -f -- vlc-$(VERSION)-win32.zip
 	zip -r -9 vlc-$(VERSION)-win32.zip vlc-$(VERSION)
 
+package-win32-base-debug-zip: package-win32-base-debug
+# Create package
+	rm -f -- vlc-$(VERSION)-win32-debug.zip
+	zip -r -9 vlc-$(VERSION)-win32-debug.zip vlc-$(VERSION)
+
 package-win32-base-7zip: package-win32-base
 # Create package 
 	7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on vlc-$(VERSION)-win32.7z vlc-$(VERSION)
+
+package-win32-base-debug-7zip: package-win32-base-debug
+# Create package
+	7z a -t7z -m0=lzma -mx=9 -mfb=64 -md=32m -ms=on vlc-$(VERSION)-win32-debug.7z vlc-$(VERSION)
 
 package-win32-exe: package-win32-base package-win32-base-exe
 # Clean up
@@ -937,13 +978,25 @@ package-win32-zip: package-win32-base-zip
 # Clean up
 	rm -Rf $(win32_destdir)
 
+package-win32-debug-zip: package-win32-base-debug-zip
+# Clean up
+	rm -Rf $(win32_destdir)
+
 package-win32-7zip: package-win32-base-7zip
+# Clean up
+	rm -Rf $(win32_destdir)
+
+package-win32-debug-7zip: package-win32-base-debug-7zip
 # Clean up
 	rm -Rf $(win32_destdir)
 
 package-win32-no-clean: package-win32-base-zip package-win32-base-7zip package-win32-base-exe 
 
 package-win32: package-win32-no-clean
+# Clean up
+	rm -Rf $(win32_destdir)
+
+package-win32-debug: package-win32-base-debug-zip package-win32-base-debug-7zip
 # Clean up
 	rm -Rf $(win32_destdir)
 
@@ -958,6 +1011,9 @@ package-wince: package-wince-base  package-wince-base-zip
 	rm -Rf $(win32_destdir)
 
 
+#####################################################################
+##   BeOS                                                          ##
+#####################################################################
 package-beos:
 # Check that tmp isn't in the way
 	@if test -e $(srcdir)/tmp; then \
@@ -993,6 +1049,9 @@ package-beos:
 # Clean up
 	rm -Rf $(srcdir)/tmp
 
+#########################################################################
+## MacOS X                                                             ##
+#########################################################################
 package-macosx: VLC-release.app ChangeLog
 # Check that the temporary location isn't in the way
 	@if test -e "$(top_builddir)/vlc-$(VERSION)/"; then \
@@ -1150,37 +1209,12 @@ package-translations:
 
 ###############################################################################
 # PO translation files update
-# Generate po/POTFILES.in which lists all the files containing translatable
-# strings. Find all source files and remove the generated files
 ###############################################################################
 .PHONY: update-po
 
 update-po:
-	rm -f $(top_srcdir)/po/POTFILES.in
-	{ \
-	  cd $(top_srcdir) && \
-	  echo "# automatically created by make update-po" ; \
-	  echo "" ; \
-	  echo "# main sources" ; \
-	  find include src -name '*.[chm]' -o -name '*.[ch]pp' \
-	    | grep -v '\(misc/modules_\|src/misc/revision.c\|modules/builtin.h\|include/vlc_about.h\)' \
-	    | sort ; \
-	  echo "" ; \
-	  echo "# modules" ; \
-	  find modules -name '*.[chm]' -o -name '*.[ch]pp' -o -name '*.ui' \
-	    | grep -v '\(\.moc\.\|gui/gtk2/\)' \
-	    | grep -vE 'qt4/ui/.*.h' \
-	    | grep -v 'qt4/resources.cpp\|qt4/dialogs/about.hpp' \
-	    | grep -v 'gui/opie' \
-	    | grep -v 'wxwidgets' \
-	    | grep -v 'mux/rtp/' \
-	    | grep -v 'demux/rtpxiph.c' \
-	    | sort ; \
-	} > $(top_srcdir)/po/POTFILES.in
-	rm -f $(top_srcdir)/po/vlc.pot
 	cd po && $(MAKE) POTFILES vlc.pot update-po
 
-#cd po && $(MAKE) update-po
 
 ###############################################################################
 # Enforce Mac OS X deployment target environment variable

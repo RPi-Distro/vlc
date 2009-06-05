@@ -2,7 +2,7 @@
  * marq.c : marquee display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: e454ca907c5a24913e1799effd6bab0f4fa2a331 $
+ * $Id: ce627d124410fad85571c6e84cc2e97097ad3173 $
  *
  * Authors: Mark Moriarty
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -69,6 +69,8 @@ static const char *const ppsz_color_descriptions[] = {
  *****************************************************************************/
 struct filter_sys_t
 {
+    vlc_mutex_t lock;
+
     int i_xoff, i_yoff;  /* offsets for the display string in the video window */
     int i_pos; /* permit relative positioning (top, bottom, left, right, center) */
     int i_timeout;
@@ -141,47 +143,47 @@ static const char *const ppsz_pos_descriptions[] =
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_capability( "sub filter", 0 );
-    set_shortname( N_("Marquee" ));
-    set_callbacks( CreateFilter, DestroyFilter );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_SUBPIC );
+vlc_module_begin ()
+    set_capability( "sub filter", 0 )
+    set_shortname( N_("Marquee" ))
+    set_callbacks( CreateFilter, DestroyFilter )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_SUBPIC )
     add_string( CFG_PREFIX "marquee", "VLC", NULL, MSG_TEXT, MSG_LONGTEXT,
-                false );
+                false )
 
-    set_section( N_("Position"), NULL );
-    add_integer( CFG_PREFIX "x", 0, NULL, POSX_TEXT, POSX_LONGTEXT, true );
-    add_integer( CFG_PREFIX "y", 0, NULL, POSY_TEXT, POSY_LONGTEXT, true );
-    add_integer( CFG_PREFIX "position", -1, NULL, POS_TEXT, POS_LONGTEXT, false );
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
+    set_section( N_("Position"), NULL )
+    add_integer( CFG_PREFIX "x", 0, NULL, POSX_TEXT, POSX_LONGTEXT, true )
+    add_integer( CFG_PREFIX "y", 0, NULL, POSY_TEXT, POSY_LONGTEXT, true )
+    add_integer( CFG_PREFIX "position", -1, NULL, POS_TEXT, POS_LONGTEXT, false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
 
-    set_section( N_("Font"), NULL );
+    set_section( N_("Font"), NULL )
     /* 5 sets the default to top [1] left [4] */
     add_integer_with_range( CFG_PREFIX "opacity", 255, 0, 255, NULL,
-        OPACITY_TEXT, OPACITY_LONGTEXT, false );
+        OPACITY_TEXT, OPACITY_LONGTEXT, false )
     add_integer( CFG_PREFIX "color", 0xFFFFFF, NULL, COLOR_TEXT, COLOR_LONGTEXT,
-                 false );
-        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL );
+                 false )
+        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL )
     add_integer( CFG_PREFIX "size", -1, NULL, SIZE_TEXT, SIZE_LONGTEXT,
-                 false );
+                 false )
 
-    set_section( N_("Misc"), NULL );
+    set_section( N_("Misc"), NULL )
     add_integer( CFG_PREFIX "timeout", 0, NULL, TIMEOUT_TEXT, TIMEOUT_LONGTEXT,
-                 false );
+                 false )
     add_integer( CFG_PREFIX "refresh", 1000, NULL, REFRESH_TEXT,
-                 REFRESH_LONGTEXT, false );
+                 REFRESH_LONGTEXT, false )
 
-    set_description( N_("Marquee display") );
-    add_shortcut( "time" );
-    add_obsolete_string( "time-format" );
-    add_obsolete_string( "time-x" );
-    add_obsolete_string( "time-y" );
-    add_obsolete_string( "time-position" );
-    add_obsolete_string( "time-opacity" );
-    add_obsolete_string( "time-color" );
-    add_obsolete_string( "time-size" );
-vlc_module_end();
+    set_description( N_("Marquee display") )
+    add_shortcut( "time" )
+    add_obsolete_string( "time-format" )
+    add_obsolete_string( "time-x" )
+    add_obsolete_string( "time-y" )
+    add_obsolete_string( "time-position" )
+    add_obsolete_string( "time-opacity" )
+    add_obsolete_string( "time-color" )
+    add_obsolete_string( "time-size" )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "marquee", "x", "y", "position", "color", "size", "timeout", "refresh",
@@ -201,33 +203,37 @@ static int CreateFilter( vlc_object_t *p_this )
     if( p_sys == NULL )
         return VLC_ENOMEM;
 
+    vlc_mutex_init( &p_sys->lock );
     p_sys->p_style = malloc( sizeof( text_style_t ) );
     memcpy( p_sys->p_style, &default_text_style, sizeof( text_style_t ) );
 
     config_ChainParse( p_filter, CFG_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
 
+
 #define CREATE_VAR( stor, type, var ) \
     p_sys->stor = var_CreateGet##type##Command( p_filter, var ); \
     var_AddCallback( p_filter, var, MarqueeCallback, p_sys );
 
+    p_sys->b_need_update = true;
     CREATE_VAR( i_xoff, Integer, "marq-x" );
     CREATE_VAR( i_yoff, Integer, "marq-y" );
     CREATE_VAR( i_timeout,Integer, "marq-timeout" );
-    CREATE_VAR( i_refresh,Integer, "marq-refresh" );
-    p_sys->i_refresh *= 1000;
+    p_sys->i_refresh = 1000 * var_CreateGetIntegerCommand( p_filter,
+                                                           "marq-refresh" );
+    var_AddCallback( p_filter, "marq-refresh", MarqueeCallback, p_sys );
     CREATE_VAR( i_pos, Integer, "marq-position" );
     CREATE_VAR( psz_marquee, String, "marq-marquee" );
     CREATE_VAR( p_style->i_font_alpha, Integer, "marq-opacity" );
+    p_sys->p_style->i_font_alpha =
+         255 - var_CreateGetIntegerCommand( p_filter, "marq-opacity" );
+    var_AddCallback( p_filter, "marq-opacity", MarqueeCallback, p_sys );
     CREATE_VAR( p_style->i_font_color, Integer, "marq-color" );
     CREATE_VAR( p_style->i_font_size, Integer, "marq-size" );
-
-    p_sys->p_style->i_font_alpha = 255 - p_sys->p_style->i_font_alpha ;
 
     /* Misc init */
     p_filter->pf_sub_filter = Filter;
     p_sys->last_time = 0;
-    p_sys->b_need_update = true;
 
     return VLC_SUCCESS;
 }
@@ -238,9 +244,6 @@ static void DestroyFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
-
-    free( p_sys->p_style );
-    free( p_sys->psz_marquee );
 
     /* Delete the marquee variables */
 #define DEL_VAR(var) \
@@ -255,6 +258,9 @@ static void DestroyFilter( vlc_object_t *p_this )
     DEL_VAR( "marq-opacity" );
     DEL_VAR( "marq-size" );
 
+    vlc_mutex_destroy( &p_sys->lock );
+    free( p_sys->p_style );
+    free( p_sys->psz_marquee );
     free( p_sys );
 }
 
@@ -269,10 +275,9 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     subpicture_t *p_spu = NULL;
     video_format_t fmt;
 
+    vlc_mutex_lock( &p_sys->lock );
     if( p_sys->last_time + p_sys->i_refresh > date )
-        return NULL;
-
-    vlc_object_lock( p_filter );
+        goto out;
     if( p_sys->b_need_update == false )
         goto out;
 
@@ -286,7 +291,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = 0;
     fmt.i_y_offset = 0;
-    p_spu->p_region = p_spu->pf_create_region( VLC_OBJECT(p_filter), &fmt );
+    p_spu->p_region = subpicture_region_New( &fmt );
     if( !p_spu->p_region )
     {
         p_filter->pf_sub_buffer_del( p_filter, p_spu );
@@ -317,13 +322,13 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         p_spu->b_absolute = false;
     }
 
-    p_spu->i_x = p_sys->i_xoff;
-    p_spu->i_y = p_sys->i_yoff;
+    p_spu->p_region->i_x = p_sys->i_xoff;
+    p_spu->p_region->i_y = p_sys->i_yoff;
 
     p_spu->p_region->p_style = p_sys->p_style;
 
 out:
-    vlc_object_unlock( p_filter );
+    vlc_mutex_unlock( &p_sys->lock );
     return p_spu;
 }
 
@@ -334,10 +339,12 @@ static int MarqueeCallback( vlc_object_t *p_this, char const *psz_var,
                             vlc_value_t oldval, vlc_value_t newval,
                             void *p_data )
 {
-    VLC_UNUSED(oldval);
     filter_sys_t *p_sys = (filter_sys_t *) p_data;
 
-    vlc_object_lock( p_this );
+    VLC_UNUSED(oldval);
+    VLC_UNUSED(p_this);
+
+    vlc_mutex_lock( &p_sys->lock );
     if( !strncmp( psz_var, "marq-marquee", 7 ) )
     {
         free( p_sys->psz_marquee );
@@ -378,6 +385,6 @@ static int MarqueeCallback( vlc_object_t *p_this, char const *psz_var,
         p_sys->i_xoff = -1;       /* force to relative positioning */
     }
     p_sys->b_need_update = true;
-    vlc_object_unlock( p_this );
+    vlc_mutex_unlock( &p_sys->lock );
     return VLC_SUCCESS;
 }

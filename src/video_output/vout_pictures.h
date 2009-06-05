@@ -2,7 +2,7 @@
  * vout_pictures.h : picture management definitions
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 456f3102a8942cae356890473350a19608d89279 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -103,6 +103,10 @@
 
 /* Palettized YUV with palette element Y:U:V:A */
 #define FOURCC_YUVP         VLC_FOURCC('Y','U','V','P')
+
+/* Palettized RGB with palette element R:G:B */
+#define FOURCC_RGBP         VLC_FOURCC('R','G','B','P')
+
 
 /* Planar 8-bit grayscale */
 #define FOURCC_GREY         VLC_FOURCC('G','R','E','Y')

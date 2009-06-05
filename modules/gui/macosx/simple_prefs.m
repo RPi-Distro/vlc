@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008 the VideoLAN team
-* $Id: e63e7f847f007a85a10b1e40fef069f30c6868ea $
+* $Id: debf9efd70d9d216449fef365715fba317d0e373 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -25,6 +25,7 @@
 #import "prefs.h"
 #import <vlc_keys.h>
 #import <vlc_interface.h>
+#import <vlc_dialog.h>
 #import "misc.h"
 
 static NSString* VLCSPrefsToolbarIdentifier = @"Our Simple Preferences Toolbar Identifier";
@@ -242,22 +243,18 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [[[o_hotkeys_listbox tableColumnWithIdentifier: @"shortcut"] headerCell] setStringValue: _NS("Shortcut")];
 
     /* input */
-    [o_input_access_box setTitle: _NS("Access Filter")];
     [o_input_avi_txt setStringValue: _NS("Repair AVI Files")];
-    [o_input_bandwidth_ckb setTitle: _NS("Bandwidth limiter")];
     [o_input_cachelevel_txt setStringValue: _NS("Default Caching Level")];
     [o_input_caching_box setTitle: _NS("Caching")];
     [o_input_cachelevel_custom_txt setStringValue: _NS("Use the complete preferences to configure custom caching values for each access module.")];
-    [o_input_dump_ckb setTitle: _NS("Dump")];
     [o_input_httpproxy_txt setStringValue: _NS("HTTP Proxy")];
     [o_input_httpproxypwd_txt setStringValue: _NS("Password for HTTP Proxy")];
     [o_input_mux_box setTitle: _NS("Codecs / Muxers")];
     [o_input_net_box setTitle: _NS("Network")];
     [o_input_postproc_txt setStringValue: _NS("Post-Processing Quality")];
-    [o_input_record_ckb setTitle: _NS("Record")];
     [o_input_rtsp_ckb setTitle: _NS("Use RTP over RTSP (TCP)")];
+    [o_input_skipLoop_txt setStringValue: _NS("Skip the loop filter for H.264 decoding")];
     [o_input_serverport_txt setStringValue: _NS("Default Server Port")];
-    [o_input_timeshift_ckb setTitle: _NS("Timeshift")];
 
     /* interface */
     [o_intf_art_txt setStringValue: _NS("Album art download policy")];
@@ -318,7 +315,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
         NSMenuItem *mi;
         if( p_item->ppsz_list_text != NULL )
             mi = [[NSMenuItem alloc] initWithTitle: _NS( p_item->ppsz_list_text[i] ) action:NULL keyEquivalent: @""];
-        else if( p_item->ppsz_list[i] && p_item->ppsz_list[i] == "" )
+        else if( p_item->ppsz_list[i] && strcmp(p_item->ppsz_list[i],"") == 0 )
         {
             [[object menu] addItem: [NSMenuItem separatorItem]];
             continue;
@@ -363,33 +360,32 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
 - (void)setupButton: (NSPopUpButton *)object forModuleList: (const char *)name
 {
     module_config_t *p_item;
-    vlc_list_t *p_list;
-    module_t *p_parser;
+    module_t *p_parser, **p_list;
     int y = 0;
     
     [object removeAllItems];
     
     p_item = config_FindConfig( VLC_OBJECT(p_intf), name );
-    p_list = vlc_list_find( p_intf, VLC_OBJECT_MODULE, FIND_ANYWHERE );
+    p_list = module_list_get( NULL );
     if( !p_item ||!p_list )
     {
-        if( p_list ) vlc_list_release(p_list);
+        if( p_list ) module_list_free(p_list);
         NSLog( @"serious problem, item or list not found" );
         return;
     }
 
     [object addItemWithTitle: _NS("Default")];
-    for( int i_index = 0; i_index < p_list->i_count; i_index++ )
+    for( size_t i_index = 0; p_list[i_index]; i_index++ )
     {
-        p_parser = (module_t *)p_list->p_values[i_index].p_object;
-        if( p_parser && module_IsCapable( p_parser, p_item->psz_type ) )
+        p_parser = p_list[i_index];
+        if( module_provides( p_parser, p_item->psz_type ) )
         {
             [object addItemWithTitle: [NSString stringWithUTF8String: module_GetLongName( p_parser ) ?: ""]];
-            if( p_item->value.psz && !strcmp( p_item->value.psz, module_GetObjName( p_parser ) ) )
+            if( p_item->value.psz && !strcmp( p_item->value.psz, module_get_object( p_parser ) ) )
                 [object selectItem: [object lastItem]];
         }
     }
-    vlc_list_release( p_list );
+    module_list_free( p_list );
     [object setToolTip: _NS(p_item->psz_longtext)];
 }
 
@@ -429,7 +425,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     psz_tmp = config_GetPsz( p_intf, "audio-filter" );
     if( psz_tmp )
     {
-        [o_audio_norm_ckb setState: (int)strstr( psz_tmp, "volnorm" )];
+        [o_audio_norm_ckb setState: (NSInteger)strstr( psz_tmp, "volnorm" )];
         [o_audio_norm_fld setEnabled: [o_audio_norm_ckb state]];
         [o_audio_norm_stepper setEnabled: [o_audio_norm_ckb state]];
     }
@@ -438,7 +434,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [self setupButton: o_audio_visual_pop forModuleList: "audio-visual"];
 
     /* Last.FM is optional */
-    if( module_Exists( p_intf, "audioscrobbler" ) )
+    if( module_exists( "audioscrobbler" ) )
     {
         [o_audio_lastuser_fld setStringValue: [NSString stringWithUTF8String: config_GetPsz( p_intf, "lastfm-username" ) ?: ""]];
         [o_audio_lastpwd_sfld setStringValue: [NSString stringWithUTF8String: config_GetPsz( p_intf, "lastfm-password" ) ?: ""]];
@@ -500,20 +496,12 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
         [o_input_httpproxy_fld setStringValue: [NSString stringWithUTF8String: config_GetPsz( p_intf, "http-proxy" ) ?: ""]];
     if( config_GetPsz( p_intf, "http-proxy" ) != NULL )
         [o_input_httpproxypwd_sfld setStringValue: [NSString stringWithUTF8String: config_GetPsz( p_intf, "http-proxy-pwd" ) ?: ""]];
-    [o_input_postproc_fld setIntValue: config_GetInt( p_intf, "ffmpeg-pp-q" )];
+    [o_input_postproc_fld setIntValue: config_GetInt( p_intf, "postproc-q" )];
 
     [self setupButton: o_input_avi_pop forIntList: "avi-index"];
 
     [o_input_rtsp_ckb setState: config_GetInt( p_intf, "rtsp-tcp" )];
-
-    psz_tmp = config_GetPsz( p_intf, "access-filter" );
-    if( psz_tmp )
-    {
-        [o_input_record_ckb setState: (int)strstr( psz_tmp, "record" )];
-        [o_input_dump_ckb setState: (int)strstr( psz_tmp, "dump" )];
-        [o_input_bandwidth_ckb setState: (int)strstr( psz_tmp, "bandwidth" )];
-        [o_input_timeshift_ckb setState: (int)strstr( psz_tmp, "timeshift" )];
-    }
+    [self setupButton: o_input_skipLoop_pop forIntList: "ffmpeg-skiploopfilter"];
 
     [o_input_cachelevel_pop removeAllItems];
     [o_input_cachelevel_pop addItemsWithTitles: 
@@ -539,9 +527,9 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     int i_cache = config_GetInt( p_intf, "file-caching");
     
     TestCaC( "udp-caching" );
-    if( module_Exists (p_intf, "dvdread") )
+    if( module_exists ("dvdread") )
         TestCaC( "dvdread-caching" );
-    if( module_Exists (p_intf, "dvdnav") )
+    if( module_exists ("dvdnav") )
         TestCaC( "dvdnav-caching" );
     TestCaC( "tcp-caching" );
     TestCaC( "fake-caching" );
@@ -551,7 +539,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     TestCaCi( "rtsp-caching", 4 );
     TestCaCi( "ftp-caching", 2 );
     TestCaCi( "http-caching", 4 );
-    if(module_Exists (p_intf, "access_realrtsp"))
+    if(module_exists ("access_realrtsp"))
         TestCaCi( "realrtsp-caching", 10 );
     TestCaCi( "mms-caching", 19 );
     if( b_cache_equal )
@@ -582,7 +570,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     /********************
      * hotkeys settings *
      ********************/
-    struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
+    const struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
     o_hotkeySettings = [[NSMutableArray alloc] init];
     NSMutableArray *o_tempArray_desc = [[NSMutableArray alloc] init];
     i = 1;
@@ -638,7 +626,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
         [o_sprefs_win orderOut: self];
         [[o_sprefs_basicFull_matrix cellAtRow:0 column:0] setState: NSOffState];
         [[o_sprefs_basicFull_matrix cellAtRow:0 column:1] setState: NSOnState];
-        [[[VLCMain sharedInstance] getPreferences] showPrefs];
+        [[[VLCMain sharedInstance] preferences] showPrefs];
     }
     else
         msg_Warn( p_intf, "unknown buttonAction sender" );
@@ -673,32 +661,35 @@ static inline void save_string_list( intf_thread_t * p_intf, id object, const ch
     p_item = config_FindConfig( VLC_OBJECT(p_intf), name );
     p_stringobject = (NSString *)[[object selectedItem] representedObject];
     assert([p_stringobject isKindOfClass:[NSString class]]);
-    if( p_stringobject ) config_PutPsz( p_intf, name, [p_stringobject UTF8String] );
+    if( p_stringobject )
+    {
+        config_PutPsz( p_intf, name, [p_stringobject UTF8String] );
+        [p_stringobject release];
+    }
 }
 
 static inline void save_module_list( intf_thread_t * p_intf, id object, const char * name )
 {
     module_config_t *p_item;
-    module_t *p_parser;
-    vlc_list_t *p_list;
+    module_t *p_parser, **p_list;
 
     p_item = config_FindConfig( VLC_OBJECT(p_intf), name );
 
-    p_list = vlc_list_find( VLCIntf, VLC_OBJECT_MODULE, FIND_ANYWHERE );
-    for( int i_module_index = 0; i_module_index < p_list->i_count; i_module_index++ )
+    p_list = module_list_get( NULL );
+    for( size_t i_module_index = 0; p_list[i_module_index]; i_module_index++ )
     {
-        p_parser = (module_t *)p_list->p_values[i_module_index].p_object;
+        p_parser = p_list[i_module_index];
 
-        if( p_item->i_type == CONFIG_ITEM_MODULE && module_IsCapable( p_parser, p_item->psz_type ) )
+        if( p_item->i_type == CONFIG_ITEM_MODULE && module_provides( p_parser, p_item->psz_type ) )
         {
             if( [[[object selectedItem] title] isEqualToString: _NS( module_GetLongName( p_parser ) )] )
             {
-                config_PutPsz( p_intf, name, strdup( module_GetObjName( p_parser )));
+                config_PutPsz( p_intf, name, strdup( module_get_object( p_parser )));
                 break;
             }
         }
     }
-    vlc_list_release( p_list );
+    module_list_free( p_list );
     if( [[[object selectedItem] title] isEqualToString: _NS( "Default" )] )
         config_PutPsz( p_intf, name, "" );
 }
@@ -707,7 +698,6 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 {
     char *psz_tmp;
     int i;
-    NSString *p_stringobject;
     
 #define SaveIntList( object, name ) save_int_list( p_intf, object, name )
                     
@@ -733,7 +723,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         if( i != 0 )
         {
             msg_Err( p_intf, "An error occurred while saving the Interface settings using SimplePrefs (%i)", i );
-            intf_UserFatal( p_intf, false, _("Interface Settings not saved"),
+            dialog_Fatal( p_intf, _("Interface Settings not saved"),
                         _("An error occured while saving your settings via SimplePrefs (%i)."), i );
             i = 0;
         }
@@ -760,7 +750,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
             psz_tmp = config_GetPsz( p_intf, "audio-filter" );
             if(! psz_tmp)
                 config_PutPsz( p_intf, "audio-filter", "volnorm" );
-            else if( (int)strstr( psz_tmp, "normvol" ) == NO )
+            else if( (NSInteger)strstr( psz_tmp, "normvol" ) == NO )
             {
                 /* work-around a GCC 4.0.1 bug */
                 psz_tmp = (char *)[[NSString stringWithFormat: @"%s:volnorm", psz_tmp] UTF8String];
@@ -783,7 +773,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         SaveModuleList( o_audio_visual_pop, "audio-visual" );
 
         /* Last.FM is optional */
-        if( module_Exists( p_intf, "audioscrobbler" ) )
+        if( module_exists( "audioscrobbler" ) )
         {   
             [o_audio_last_ckb setEnabled: YES];
             if( [o_audio_last_ckb state] == NSOnState )
@@ -805,7 +795,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         if( i != 0 )
         {
             msg_Err( p_intf, "An error occurred while saving the Audio settings using SimplePrefs (%i)", i );
-            intf_UserFatal( p_intf, false, _("Audio Settings not saved"),
+            dialog_Fatal( p_intf, _("Audio Settings not saved"),
                         _("An error occured while saving your settings via SimplePrefs (%i)."), i );
             
             i = 0;
@@ -838,7 +828,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         if( i != 0 )
         {
             msg_Err( p_intf, "An error occurred while saving the Video settings using SimplePrefs (%i)", i );
-            intf_UserFatal( p_intf, false, _("Video Settings not saved"),
+            dialog_Fatal( p_intf, _("Video Settings not saved"),
                         _("An error occured while saving your settings via SimplePrefs (%i)."), i );
             i = 0;
         }
@@ -853,22 +843,23 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         config_PutInt( p_intf, "server-port", [o_input_serverport_fld intValue] );
         config_PutPsz( p_intf, "http-proxy", [[o_input_httpproxy_fld stringValue] UTF8String] );
         config_PutPsz( p_intf, "http-proxy-pwd", [[o_input_httpproxypwd_sfld stringValue] UTF8String] );
-        config_PutInt( p_intf, "ffmpeg-pp-q", [o_input_postproc_fld intValue] );
+        config_PutInt( p_intf, "postproc-q", [o_input_postproc_fld intValue] );
 
         SaveIntList( o_input_avi_pop, "avi-index" );
 
         config_PutInt( p_intf, "rtsp-tcp", [o_input_rtsp_ckb state] );
+        SaveIntList( o_input_skipLoop_pop, "ffmpeg-skiploopfilter" );
 
         #define CaCi( name, int ) config_PutInt( p_intf, name, int * [[o_input_cachelevel_pop selectedItem] tag] )
         #define CaC( name ) CaCi( name, 1 )
-        msg_Dbg( p_intf, "Adjusting all cache values to: %i", [[o_input_cachelevel_pop selectedItem] tag] );
+        msg_Dbg( p_intf, "Adjusting all cache values to: %i", (int)[[o_input_cachelevel_pop selectedItem] tag] );
         CaC( "udp-caching" );
-        if( module_Exists (p_intf, "dvdread" ) )
+        if( module_exists ( "dvdread" ) )
         {
             CaC( "dvdread-caching" );
             i = i + config_SaveConfigFile( p_intf, "dvdread" );
         }
-        if( module_Exists (p_intf, "dvdnav" ) )
+        if( module_exists ( "dvdnav" ) )
         {
             CaC( "dvdnav-caching" );
             i = i + config_SaveConfigFile( p_intf, "dvdnav" );
@@ -878,36 +869,16 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         CaC( "screen-caching" );
         CaCi( "rtsp-caching", 4 ); CaCi( "ftp-caching", 2 );
         CaCi( "http-caching", 4 );
-        if( module_Exists (p_intf, "access_realrtsp" ) )
+        if( module_exists ( "access_realrtsp" ) )
         {
             CaCi( "realrtsp-caching", 10 );
             i = i + config_SaveConfigFile( p_intf, "access_realrtsp" );
         }
         CaCi( "mms-caching", 19 );
 
-        #define SaveAccessFilter( object, name ) \
-        if( [object state] == NSOnState ) \
-        { \
-            if( b_first ) \
-            { \
-                [o_temp appendString: name]; \
-                b_first = NO; \
-            } \
-            else \
-                [o_temp appendFormat: @":%@", name]; \
-        }
-
-        BOOL b_first = YES;
-        NSMutableString *o_temp = [[NSMutableString alloc] init];
-        SaveAccessFilter( o_input_record_ckb, @"record" );
-        SaveAccessFilter( o_input_dump_ckb, @"dump" );
-        SaveAccessFilter( o_input_bandwidth_ckb, @"bandwidth" );
-        SaveAccessFilter( o_input_timeshift_ckb, @"timeshift" );
-        config_PutPsz( p_intf, "access-filter", [o_temp UTF8String] );
-        [o_temp release];
-
         i = config_SaveConfigFile( p_intf, "main" );
-        i = i + config_SaveConfigFile( p_intf, "ffmpeg" );
+        i = i + config_SaveConfigFile( p_intf, "avcodec" );
+        i = i + config_SaveConfigFile( p_intf, "postproc" );
         i = i + config_SaveConfigFile( p_intf, "access_http" );
         i = i + config_SaveConfigFile( p_intf, "access_file" );
         i = i + config_SaveConfigFile( p_intf, "access_tcp" );
@@ -923,7 +894,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         if( i != 0 )
         {
             msg_Err( p_intf, "An error occurred while saving the Input settings using SimplePrefs (%i)", i );
-            intf_UserFatal( p_intf, false, _("Input Settings not saved"),
+            dialog_Fatal( p_intf, _("Input Settings not saved"),
                         _("An error occured while saving your settings via SimplePrefs (%i)."), i );
             i = 0;
         }
@@ -951,7 +922,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         if( i != 0 )
         {
             msg_Err( p_intf, "An error occurred while saving the OSD/Subtitle settings using SimplePrefs (%i)", i );
-            intf_UserFatal( p_intf, false, _("On Screen Display/Subtitle Settings not saved"),
+            dialog_Fatal( p_intf, _("On Screen Display/Subtitle Settings not saved"),
                         _("An error occured while saving your settings via SimplePrefs (%i)."), i );
             i = 0;
         }
@@ -963,7 +934,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
      ********************/
     if( b_hotkeyChanged )
     {
-        struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
+        const struct hotkey *p_hotkeys = p_intf->p_libvlc->p_hotkeys;
         i = 1;
         while( i < [o_hotkeySettings count] )
         {
@@ -976,7 +947,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         if( i != 0 )
         {
             msg_Err( p_intf, "An error occurred while saving the Hotkey settings using SimplePrefs (%i)", i );
-            intf_UserFatal( p_intf, false, _("Hotkeys not saved"),
+            dialog_Fatal( p_intf, _("Hotkeys not saved"),
                         _("An error occured while saving your settings via SimplePrefs (%i)."), i );
             i = 0;
         }
@@ -1042,8 +1013,8 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
     {
         [o_audio_norm_stepper setEnabled: [o_audio_norm_ckb state]];
         [o_audio_norm_fld setEnabled: [o_audio_norm_ckb state]];
-    }
-
+    }    
+    
     if( sender == o_audio_last_ckb )
     {
         if( [o_audio_last_ckb state] == NSOnState )
@@ -1096,11 +1067,6 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
             [o_video_snap_folder_fld setStringValue: [o_selectFolderPanel filename]];
             b_videoSettingChanged = YES;
         }
-        else if( contextInfo == o_osd_font_btn )
-        {
-            [o_osd_font_fld setStringValue: [o_selectFolderPanel filename]];
-            b_osdSettingChanged = YES;
-        }
     }
 
     [o_selectFolderPanel release];
@@ -1132,8 +1098,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
         NSFont * font = [NSFont fontWithDescriptor:[fd fontDescriptorWithFamily:fontFamilyName] textTransform:nil];
         [[NSFontManager sharedFontManager] setSelectedFont:font isMultiple:NO];
     }
-    [[NSFontManager sharedFontManager] setDelegate: self];
-    [o_sprefs_win makeFirstResponder: o_sprefs_win];
+    [[NSFontManager sharedFontManager] setTarget: self];
     [[NSFontPanel sharedFontPanel] orderFront:self];
 }
 
@@ -1181,7 +1146,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
     }
     else if( sender == o_hotkeys_change_ok_btn )
     {
-        int i_returnValue;
+        NSInteger i_returnValue;
         if(! o_keyInTransition )
         {
             [NSApp stopModal];
@@ -1236,7 +1201,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 
 - (BOOL)changeHotkeyTo: (int)i_theNewKey
 {
-    int i_returnValue;
+    NSInteger i_returnValue;
     i_returnValue = [o_hotkeysNonUseableKeys indexOfObject: [NSNumber numberWithInt: i_theNewKey]];
     if( i_returnValue != NSNotFound || i_theNewKey == 0 )
     {
@@ -1314,7 +1279,7 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
     if( key )
     {
         i_key |= CocoaKeyToVLC( key );
-        return [[[VLCMain sharedInstance] getSimplePreferences] changeHotkeyTo: i_key];
+        return [[[VLCMain sharedInstance] simplePreferences] changeHotkeyTo: i_key];
     }
     return FALSE;
 }
@@ -1330,6 +1295,6 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 
 - (void)changeFont:(id)sender
 {
-    [[[VLCMain sharedInstance] getSimplePreferences] changeFont: sender];
+    [[[VLCMain sharedInstance] simplePreferences] changeFont: sender];
 }
 @end

@@ -2,7 +2,7 @@
  * rv32.c: conversion plugin to RV32 format.
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 10c56995086892accff9fb7002a38283e3452a74 $
+ * $Id$
  *
  * Author: Cyril Deguet <asmax@videolan.org>
  *
@@ -53,11 +53,11 @@ static picture_t *Filter( filter_t *, picture_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("RV32 conversion filter") );
-    set_capability( "video filter2", 1 );
-    set_callbacks( OpenFilter, CloseFilter );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("RV32 conversion filter") )
+    set_capability( "video filter2", 1 )
+    set_callbacks( OpenFilter, CloseFilter )
+vlc_module_end ()
 
 /*****************************************************************************
  * OpenFilter: probe the filter and return score
@@ -69,10 +69,15 @@ static int OpenFilter( vlc_object_t *p_this )
 
     /* XXX Only support RV24 -> RV32 conversion */
     if( p_filter->fmt_in.video.i_chroma != VLC_FOURCC('R','V','2','4') ||
-        p_filter->fmt_out.video.i_chroma != VLC_FOURCC('R', 'V', '3', '2') )
+        (p_filter->fmt_out.video.i_chroma != VLC_FOURCC('R', 'V', '3', '2') &&
+        p_filter->fmt_out.video.i_chroma != VLC_FOURCC('R', 'G', 'B', 'A')) )
     {
         return VLC_EGENERIC;
     }
+
+    if( p_filter->fmt_in.video.i_width != p_filter->fmt_out.video.i_width
+     || p_filter->fmt_in.video.i_height != p_filter->fmt_out.video.i_height )
+        return -1;
 
     /* Allocate the memory needed to store the decoder's structure */
     if( ( p_filter->p_sys = p_sys =

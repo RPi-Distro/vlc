@@ -3,9 +3,9 @@
 
 basedir = video_output
 dir = video_output
-mods = aa caca directfb fb ggi hd1000v image mga opengl opengllayer snapshot svgalib vmem vout_sdl
-libvlc_LTLIBRARIES =  $(LTLIBaa) $(LTLIBcaca) $(LTLIBdirectfb) $(LTLIBfb) $(LTLIBggi) $(LTLIBhd1000v) $(LTLIBimage) $(LTLIBmga) $(LTLIBopengl) $(LTLIBopengllayer) $(LTLIBsnapshot) $(LTLIBsvgalib) $(LTLIBvmem) $(LTLIBvout_sdl)
-EXTRA_LTLIBRARIES =  libaa_plugin.la libcaca_plugin.la libdirectfb_plugin.la libfb_plugin.la libggi_plugin.la libhd1000v_plugin.la libimage_plugin.la libmga_plugin.la libopengl_plugin.la libopengllayer_plugin.la libsnapshot_plugin.la libsvgalib_plugin.la libvmem_plugin.la libvout_sdl_plugin.la
+mods = aa caca directfb fb ggi hd1000v mga omapfb opengl opengllayer snapshot svgalib vmem vout_sdl yuv
+libvlc_LTLIBRARIES =  $(LTLIBaa) $(LTLIBcaca) $(LTLIBdirectfb) $(LTLIBfb) $(LTLIBggi) $(LTLIBhd1000v) $(LTLIBmga) $(LTLIBomapfb) $(LTLIBopengl) $(LTLIBopengllayer) $(LTLIBsnapshot) $(LTLIBsvgalib) $(LTLIBvmem) $(LTLIBvout_sdl) $(LTLIByuv)
+EXTRA_LTLIBRARIES =  libaa_plugin.la libcaca_plugin.la libdirectfb_plugin.la libfb_plugin.la libggi_plugin.la libhd1000v_plugin.la libmga_plugin.la libomapfb_plugin.la libopengl_plugin.la libopengllayer_plugin.la libsnapshot_plugin.la libsvgalib_plugin.la libvmem_plugin.la libvout_sdl_plugin.la libyuv_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libaa_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaa_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaa_plugin_la_LIBADD = $(AM_LIBADD)
-libaa_plugin_la_DEPENDENCIES =
+libaa_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The caca plugin
 libcaca_plugin_la_SOURCES = $(SOURCES_caca)
@@ -29,7 +29,7 @@ libcaca_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libcaca_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcaca_plugin_la_LIBADD = $(AM_LIBADD)
-libcaca_plugin_la_DEPENDENCIES =
+libcaca_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The directfb plugin
 libdirectfb_plugin_la_SOURCES = $(SOURCES_directfb)
@@ -40,7 +40,7 @@ libdirectfb_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdirectfb_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdirectfb_plugin_la_LIBADD = $(AM_LIBADD)
-libdirectfb_plugin_la_DEPENDENCIES =
+libdirectfb_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The fb plugin
 libfb_plugin_la_SOURCES = $(SOURCES_fb)
@@ -51,7 +51,7 @@ libfb_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libfb_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libfb_plugin_la_LIBADD = $(AM_LIBADD)
-libfb_plugin_la_DEPENDENCIES =
+libfb_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The ggi plugin
 libggi_plugin_la_SOURCES = $(SOURCES_ggi)
@@ -62,7 +62,7 @@ libggi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libggi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libggi_plugin_la_LIBADD = $(AM_LIBADD)
-libggi_plugin_la_DEPENDENCIES =
+libggi_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The hd1000v plugin
 libhd1000v_plugin_la_SOURCES = $(SOURCES_hd1000v)
@@ -73,18 +73,7 @@ libhd1000v_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libhd1000v_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libhd1000v_plugin_la_LIBADD = $(AM_LIBADD)
-libhd1000v_plugin_la_DEPENDENCIES =
-
-# The image plugin
-libimage_plugin_la_SOURCES = $(SOURCES_image)
-nodist_libimage_plugin_la_SOURCES = $(nodist_SOURCES_image)
-# Force per-target objects:
-libimage_plugin_la_CFLAGS = $(AM_CFLAGS)
-libimage_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libimage_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libimage_plugin_la_LIBADD = $(AM_LIBADD)
-libimage_plugin_la_DEPENDENCIES =
+libhd1000v_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mga plugin
 libmga_plugin_la_SOURCES = $(SOURCES_mga)
@@ -95,7 +84,18 @@ libmga_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmga_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmga_plugin_la_LIBADD = $(AM_LIBADD)
-libmga_plugin_la_DEPENDENCIES =
+libmga_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The omapfb plugin
+libomapfb_plugin_la_SOURCES = $(SOURCES_omapfb)
+nodist_libomapfb_plugin_la_SOURCES = $(nodist_SOURCES_omapfb)
+# Force per-target objects:
+libomapfb_plugin_la_CFLAGS = $(AM_CFLAGS)
+libomapfb_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libomapfb_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libomapfb_plugin_la_LIBADD = $(AM_LIBADD)
+libomapfb_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The opengl plugin
 libopengl_plugin_la_SOURCES = $(SOURCES_opengl)
@@ -106,7 +106,7 @@ libopengl_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libopengl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libopengl_plugin_la_LIBADD = $(AM_LIBADD)
-libopengl_plugin_la_DEPENDENCIES =
+libopengl_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The opengllayer plugin
 libopengllayer_plugin_la_SOURCES = $(SOURCES_opengllayer)
@@ -117,7 +117,7 @@ libopengllayer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libopengllayer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libopengllayer_plugin_la_LIBADD = $(AM_LIBADD)
-libopengllayer_plugin_la_DEPENDENCIES =
+libopengllayer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The snapshot plugin
 libsnapshot_plugin_la_SOURCES = $(SOURCES_snapshot)
@@ -128,7 +128,7 @@ libsnapshot_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsnapshot_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsnapshot_plugin_la_LIBADD = $(AM_LIBADD)
-libsnapshot_plugin_la_DEPENDENCIES =
+libsnapshot_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The svgalib plugin
 libsvgalib_plugin_la_SOURCES = $(SOURCES_svgalib)
@@ -139,7 +139,7 @@ libsvgalib_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsvgalib_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsvgalib_plugin_la_LIBADD = $(AM_LIBADD)
-libsvgalib_plugin_la_DEPENDENCIES =
+libsvgalib_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The vmem plugin
 libvmem_plugin_la_SOURCES = $(SOURCES_vmem)
@@ -150,7 +150,7 @@ libvmem_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libvmem_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libvmem_plugin_la_LIBADD = $(AM_LIBADD)
-libvmem_plugin_la_DEPENDENCIES =
+libvmem_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The vout_sdl plugin
 libvout_sdl_plugin_la_SOURCES = $(SOURCES_vout_sdl)
@@ -161,5 +161,16 @@ libvout_sdl_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libvout_sdl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libvout_sdl_plugin_la_LIBADD = $(AM_LIBADD)
-libvout_sdl_plugin_la_DEPENDENCIES =
+libvout_sdl_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The yuv plugin
+libyuv_plugin_la_SOURCES = $(SOURCES_yuv)
+nodist_libyuv_plugin_la_SOURCES = $(nodist_SOURCES_yuv)
+# Force per-target objects:
+libyuv_plugin_la_CFLAGS = $(AM_CFLAGS)
+libyuv_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libyuv_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libyuv_plugin_la_LIBADD = $(AM_LIBADD)
+libyuv_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

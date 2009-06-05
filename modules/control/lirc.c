@@ -2,7 +2,7 @@
  * lirc.c : lirc module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id: de500e10972c8e68254c0c43df98e9aa58de7c20 $
+ * $Id$
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -36,6 +36,10 @@
 #include <vlc_interface.h>
 #include <vlc_osd.h>
 
+#ifdef HAVE_POLL
+# include <poll.h>
+#endif
+
 #include <lirc/lirc_client.h>
 
 #define LIRC_TEXT N_("Change the lirc configuration file.")
@@ -44,35 +48,40 @@
     "searches in the users home directory." )
 
 /*****************************************************************************
+ * Module descriptor
+ *****************************************************************************/
+static int  Open    ( vlc_object_t * );
+static void Close   ( vlc_object_t * );
+
+vlc_module_begin ()
+    set_shortname( N_("Infrared") )
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_CONTROL )
+    set_description( N_("Infrared remote control interface") )
+    set_capability( "interface", 0 )
+    set_callbacks( Open, Close )
+
+    add_string( "lirc-file", NULL, NULL,
+                LIRC_TEXT, LIRC_LONGTEXT, true )
+vlc_module_end ()
+
+/*****************************************************************************
  * intf_sys_t: description and status of FB interface
  *****************************************************************************/
 struct intf_sys_t
 {
     char *psz_file;
     struct lirc_config *config;
+
+    int i_fd;
 };
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-static int  Open    ( vlc_object_t * );
-static void Close   ( vlc_object_t * );
-static void Run     ( intf_thread_t * );
+static void Run( intf_thread_t * );
 
-/*****************************************************************************
- * Module descriptor
- *****************************************************************************/
-vlc_module_begin();
-    set_shortname( N_("Infrared") );
-    set_category( CAT_INTERFACE );
-    set_subcategory( SUBCAT_INTERFACE_CONTROL );
-    set_description( N_("Infrared remote control interface") );
-    set_capability( "interface", 0 );
-    set_callbacks( Open, Close );
-
-    add_string( "lirc-file", NULL, NULL,
-                LIRC_TEXT, LIRC_LONGTEXT, true );
-vlc_module_end();
+static int  Process( intf_thread_t * );
 
 /*****************************************************************************
  * Open: initialize interface
@@ -80,42 +89,41 @@ vlc_module_end();
 static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
-    int i_fd;
+    intf_sys_t *p_sys;
 
     /* Allocate instance and initialize some members */
-    p_intf->p_sys = malloc( sizeof( intf_sys_t ) );
-    if( p_intf->p_sys == NULL )
-    {
-        msg_Err( p_intf, "out of memory" );
-        return 1;
-    }
+    p_intf->p_sys = p_sys = malloc( sizeof( intf_sys_t ) );
+    if( p_sys == NULL )
+        return VLC_ENOMEM;
 
     p_intf->pf_run = Run;
 
-    p_intf->p_sys->psz_file = var_CreateGetNonEmptyString( p_intf, "lirc-file" );
-
-    i_fd = lirc_init( "vlc", 1 );
-    if( i_fd == -1 )
+    p_sys->psz_file = var_CreateGetNonEmptyString( p_intf, "lirc-file" );
+    p_sys->i_fd = lirc_init( "vlc", 1 );
+    if( p_sys->i_fd == -1 )
     {
         msg_Err( p_intf, "lirc initialisation failed" );
-        free( p_intf->p_sys->psz_file );
-        free( p_intf->p_sys );
-        return 1;
+        goto exit;
     }
 
     /* We want polling */
-    fcntl( i_fd, F_SETFL, fcntl( i_fd, F_GETFL ) | O_NONBLOCK );
+    fcntl( p_sys->i_fd, F_SETFL, fcntl( p_sys->i_fd, F_GETFL ) | O_NONBLOCK );
 
-    if( lirc_readconfig( p_intf->p_sys->psz_file, &p_intf->p_sys->config, NULL ) != 0 )
+    /* */
+    if( lirc_readconfig( p_sys->psz_file, &p_sys->config, NULL ) != 0 )
     {
         msg_Err( p_intf, "failure while reading lirc config" );
-        lirc_deinit();
-        free( p_intf->p_sys->psz_file );
-        free( p_intf->p_sys );
-        return 1;
+        goto exit;
     }
 
-    return 0;
+    return VLC_SUCCESS;
+
+exit:
+    if( p_sys->i_fd != -1 )
+        lirc_deinit();
+    free( p_sys->psz_file );
+    free( p_sys );
+    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -124,12 +132,13 @@ static int Open( vlc_object_t *p_this )
 static void Close( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
+    intf_sys_t *p_sys = p_intf->p_sys;
 
     /* Destroy structure */
-    free( p_intf->p_sys->psz_file );
-    lirc_freeconfig( p_intf->p_sys->config );
+    lirc_freeconfig( p_sys->config );
     lirc_deinit();
-    free( p_intf->p_sys );
+    free( p_sys->psz_file );
+    free( p_sys );
 }
 
 /*****************************************************************************
@@ -137,25 +146,36 @@ static void Close( vlc_object_t *p_this )
  *****************************************************************************/
 static void Run( intf_thread_t *p_intf )
 {
-    char *code, *c;
+    intf_sys_t *p_sys = p_intf->p_sys;
 
-    while( !intf_ShouldDie( p_intf ) )
+    for( ;; )
     {
-        /* Sleep a bit */
-        msleep( INTF_IDLE_SLEEP );
-
-        /* We poll the lircsocket */
-        if( lirc_nextcode(&code) != 0 )
-        {
+        /* Wait for data */
+        struct pollfd ufd = { .fd = p_sys->i_fd, .events = POLLIN, .revents = 0 };
+        if( poll( &ufd, 1, -1 ) == -1 )
             break;
-        }
+
+        /* Process */
+        int canc = vlc_savecancel();
+        Process( p_intf );
+        vlc_restorecancel(canc);
+    }
+}
+
+static int Process( intf_thread_t *p_intf )
+{
+    for( ;; )
+    {
+        char *code, *c;
+        int i_ret = lirc_nextcode( &code );
+
+        if( i_ret )
+            return i_ret;
 
         if( code == NULL )
-        {
-            continue;
-        }
+            return 0;
 
-        while( !intf_ShouldDie( p_intf )
+        while( vlc_object_alive( p_intf )
                 && (lirc_code2char( p_intf->p_sys->config, code, &c ) == 0)
                 && (c != NULL) )
         {

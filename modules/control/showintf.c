@@ -2,7 +2,7 @@
  * showintf.c: control the display of the interface in fullscreen mode
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: bebf0679b1f8b559b07dd466ab61ffcfe5dcfe85 $
+ * $Id: 2f1149b5f4db8361ccfa73a53e1eea326b752500 $
  *
  * Authors: Olivier Teuliere <ipkiss@via.ecp.fr>
  *
@@ -44,10 +44,11 @@
  *****************************************************************************/
 struct intf_sys_t
 {
-    vlc_object_t * p_vout;
-    bool     b_button_pressed;
-    bool     b_triggered;
-    int            i_threshold;
+    vlc_mutex_t   lock;
+    vlc_object_t *p_vout;
+    bool          b_button_pressed;
+    bool          b_triggered;
+    int           i_threshold;
 };
 
 /*****************************************************************************
@@ -56,7 +57,6 @@ struct intf_sys_t
 int  Open ( vlc_object_t * );
 void Close( vlc_object_t * );
 static void RunIntf( intf_thread_t *p_intf );
-static int  InitThread( intf_thread_t *p_intf );
 static int  MouseEvent( vlc_object_t *, char const *,
                         vlc_value_t, vlc_value_t, void * );
 
@@ -66,14 +66,18 @@ static int  MouseEvent( vlc_object_t *, char const *,
 #define THRESHOLD_TEXT N_( "Threshold" )
 #define THRESHOLD_LONGTEXT N_( "Height of the zone triggering the interface." )
 
-vlc_module_begin();
-    set_shortname( "Showintf" );
-    add_integer( "showintf-threshold", 10, NULL, THRESHOLD_TEXT, THRESHOLD_LONGTEXT, true );
-    set_description( N_("Show interface with mouse") );
+vlc_module_begin ()
+    set_shortname( "Showintf" )
+    set_description( N_("Show interface with mouse") )
 
-    set_capability( "interface", 0 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_capability( "interface", 0 )
+    set_callbacks( Open, Close )
+
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_CONTROL )
+
+    add_integer( "showintf-threshold", 10, NULL, THRESHOLD_TEXT, THRESHOLD_LONGTEXT, true )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: initialize interface
@@ -83,15 +87,19 @@ int Open( vlc_object_t *p_this )
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
 
     /* Allocate instance and initialize some members */
-    p_intf->p_sys = malloc( sizeof( intf_sys_t ) );
-    if( p_intf->p_sys == NULL )
-    {
-        return( 1 );
-    };
+    intf_sys_t *p_sys = p_intf->p_sys = malloc( sizeof( intf_sys_t ) );
+    if( p_sys == NULL )
+        return VLC_ENOMEM;
+
+    vlc_mutex_init( &p_sys->lock );
+    p_sys->p_vout = NULL;
+    p_sys->b_button_pressed = false;
+    p_sys->b_triggered = false;
+    p_sys->i_threshold = config_GetInt( p_intf, "showintf-threshold" );
 
     p_intf->pf_run = RunIntf;
 
-    return( 0 );
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -102,6 +110,7 @@ void Close( vlc_object_t *p_this )
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
 
     /* Destroy structure */
+    vlc_mutex_destroy( &p_intf->p_sys->lock );
     free( p_intf->p_sys );
 }
 
@@ -111,18 +120,12 @@ void Close( vlc_object_t *p_this )
  *****************************************************************************/
 static void RunIntf( intf_thread_t *p_intf )
 {
-    p_intf->p_sys->p_vout = NULL;
-
-    if( InitThread( p_intf ) < 0 )
-    {
-        msg_Err( p_intf, "cannot initialize interface" );
-        return;
-    }
+    int canc = vlc_savecancel( );
 
     /* Main loop */
-    while( !intf_ShouldDie( p_intf ) )
+    while( vlc_object_alive( p_intf ) )
     {
-        vlc_mutex_lock( &p_intf->change_lock );
+        vlc_mutex_lock( &p_intf->p_sys->lock );
 
         /* Notify the interfaces */
         if( p_intf->p_sys->b_triggered )
@@ -131,7 +134,7 @@ static void RunIntf( intf_thread_t *p_intf )
             p_intf->p_sys->b_triggered = false;
         }
 
-        vlc_mutex_unlock( &p_intf->change_lock );
+        vlc_mutex_unlock( &p_intf->p_sys->lock );
 
 
         /* Take care of the video output */
@@ -170,30 +173,7 @@ static void RunIntf( intf_thread_t *p_intf )
                          MouseEvent, p_intf );
         vlc_object_release( p_intf->p_sys->p_vout );
     }
-}
-
-/*****************************************************************************
- * InitThread:
- *****************************************************************************/
-static int InitThread( intf_thread_t * p_intf )
-{
-    if( !intf_ShouldDie( p_intf ) )
-    {
-        vlc_mutex_lock( &p_intf->change_lock );
-
-        p_intf->p_sys->b_triggered = false;
-        p_intf->p_sys->b_button_pressed = false;
-        p_intf->p_sys->i_threshold =
-            config_GetInt( p_intf, "showintf-threshold" );
-
-        vlc_mutex_unlock( &p_intf->change_lock );
-
-        return 0;
-    }
-    else
-    {
-        return -1;
-    }
+    vlc_restorecancel( canc );
 }
 
 /*****************************************************************************
@@ -203,7 +183,6 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
     VLC_UNUSED(p_this); VLC_UNUSED(oldval); VLC_UNUSED(newval);
-    vlc_value_t val;
 
     int i_mouse_x, i_mouse_y;
     intf_thread_t *p_intf = (intf_thread_t *)p_data;
@@ -213,17 +192,14 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
         return VLC_SUCCESS;
 
     /* Nothing to do when not in fullscreen mode */
-    var_Get( p_intf->p_sys->p_vout, "fullscreen", &val );
-    if( !val.i_int )
+    if( !var_GetBool( p_intf->p_sys->p_vout, "fullscreen" ) )
         return VLC_SUCCESS;
 
-    vlc_mutex_lock( &p_intf->change_lock );
+    vlc_mutex_lock( &p_intf->p_sys->lock );
     if( !strcmp( psz_var, "mouse-moved" ) && !p_intf->p_sys->b_button_pressed )
     {
-        var_Get( p_intf->p_sys->p_vout, "mouse-x", &val );
-        i_mouse_x = val.i_int;
-        var_Get( p_intf->p_sys->p_vout, "mouse-y", &val );
-        i_mouse_y = val.i_int;
+        i_mouse_x = var_GetInteger( p_intf->p_sys->p_vout, "mouse-x" );
+        i_mouse_y = var_GetInteger( p_intf->p_sys->p_vout, "mouse-y" );
 
         /* Very basic test, we even ignore the x value :) */
         if ( i_mouse_y < p_intf->p_sys->i_threshold )
@@ -246,7 +222,7 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
         p_intf->p_sys->b_button_pressed = false;
     }
 
-    vlc_mutex_unlock( &p_intf->change_lock );
+    vlc_mutex_unlock( &p_intf->p_sys->lock );
 
     return VLC_SUCCESS;
 }

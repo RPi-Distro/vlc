@@ -4,8 +4,8 @@
 basedir = audio_filter
 dir = audio_filter/channel_mixer
 mods = dolby_surround_decoder headphone_channel_mixer mono simple_channel_mixer trivial_channel_mixer
-libvlc_LTLIBRARIES =  $(LTLIBdolby_surround_decoder) $(LTLIBheadphone_channel_mixer) $(LTLIBmono) $(LTLIBsimple_channel_mixer) $(LTLIBtrivial_channel_mixer)
-EXTRA_LTLIBRARIES =  libdolby_surround_decoder_plugin.la libheadphone_channel_mixer_plugin.la libmono_plugin.la libsimple_channel_mixer_plugin.la libtrivial_channel_mixer_plugin.la
+libvlc_LTLIBRARIES =  $(LTLIBdolby_surround_decoder) $(LTLIBheadphone_channel_mixer) $(LTLIBsimple_channel_mixer)
+EXTRA_LTLIBRARIES =  libdolby_surround_decoder_plugin.la libheadphone_channel_mixer_plugin.la libsimple_channel_mixer_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libdolby_surround_decoder_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdolby_surround_decoder_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdolby_surround_decoder_plugin_la_LIBADD = $(AM_LIBADD)
-libdolby_surround_decoder_plugin_la_DEPENDENCIES =
+libdolby_surround_decoder_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The headphone_channel_mixer plugin
 libheadphone_channel_mixer_plugin_la_SOURCES = $(SOURCES_headphone_channel_mixer)
@@ -29,7 +29,7 @@ libheadphone_channel_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libheadphone_channel_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libheadphone_channel_mixer_plugin_la_LIBADD = $(AM_LIBADD)
-libheadphone_channel_mixer_plugin_la_DEPENDENCIES =
+libheadphone_channel_mixer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mono plugin
 libmono_plugin_la_SOURCES = $(SOURCES_mono)
@@ -40,7 +40,7 @@ libmono_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmono_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmono_plugin_la_LIBADD = $(AM_LIBADD)
-libmono_plugin_la_DEPENDENCIES =
+libmono_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The simple_channel_mixer plugin
 libsimple_channel_mixer_plugin_la_SOURCES = $(SOURCES_simple_channel_mixer)
@@ -51,7 +51,7 @@ libsimple_channel_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsimple_channel_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsimple_channel_mixer_plugin_la_LIBADD = $(AM_LIBADD)
-libsimple_channel_mixer_plugin_la_DEPENDENCIES =
+libsimple_channel_mixer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The trivial_channel_mixer plugin
 libtrivial_channel_mixer_plugin_la_SOURCES = $(SOURCES_trivial_channel_mixer)
@@ -62,5 +62,5 @@ libtrivial_channel_mixer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtrivial_channel_mixer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtrivial_channel_mixer_plugin_la_LIBADD = $(AM_LIBADD)
-libtrivial_channel_mixer_plugin_la_DEPENDENCIES =
+libtrivial_channel_mixer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

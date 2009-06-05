@@ -2,7 +2,7 @@
  * xcommon.h: Defines common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: 240cb6387db824c66913da2d6d09b7a6a12262cf $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -55,6 +55,7 @@
 #include <libosso.h>
 #endif
 
+struct vout_window_t;
 
 /*****************************************************************************
  * x11_window_t: X11 window descriptor
@@ -63,7 +64,7 @@
  *****************************************************************************/
 typedef struct x11_window_t
 {
-    Window              owner_window;               /* owner window (if any) */
+    struct vout_window_t*owner_window;               /* owner window (if any) */
     Window              base_window;                          /* base window */
     Window              video_window;     /* sub-window for displaying video */
     GC                  gc;              /* graphic context instance handler */
@@ -213,14 +214,15 @@ struct vout_sys_t
     Visual *            p_visual;                          /* visual pointer */
     int                 i_screen;                           /* screen number */
 
-    vlc_mutex_t         lock;
-
     /* Our current window */
     x11_window_t *      p_win;
 
     /* Our two windows */
     x11_window_t        original_window;
     x11_window_t        fullscreen_window;
+
+    /* key and mouse event handling */
+    int                 i_vout_event;  /* 1(Fullsupport), 2(FullscreenOnly), 3(none) */
 
     /* X11 generic properties */
     bool          b_altfullscreen;          /* which fullscreen method */
@@ -386,11 +388,19 @@ typedef struct mwmhints_t
  * Chroma defines
  *****************************************************************************/
 #ifdef MODULE_NAME_IS_xvideo
-#   define MAX_DIRECTBUFFERS 10
+#   define MAX_DIRECTBUFFERS (VOUT_MAX_PICTURES)
 #elif defined(MODULE_NAME_IS_xvmc)
-#   define MAX_DIRECTBUFFERS 12
+#   define MAX_DIRECTBUFFERS (VOUT_MAX_PICTURES+2)
 #else
 #   define MAX_DIRECTBUFFERS 2
 #endif
 
+#ifndef MODULE_NAME_IS_glx
+static IMAGE_TYPE *CreateImage    ( vout_thread_t *,
+                                    Display *, EXTRA_ARGS, int, int );
+#ifdef HAVE_SYS_SHM_H
+IMAGE_TYPE *CreateShmImage ( vout_thread_t *,
+                                    Display *, EXTRA_ARGS_SHM, int, int );
+#endif
+#endif
 
