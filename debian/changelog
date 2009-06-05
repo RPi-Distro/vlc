@@ -1,3 +1,9 @@
+vlc (0.9.9a-2ubuntu2) karmic; urgency=low
+
+  * Rebuild for libass1 -> libass3 transistion.
+
+ -- Steve Kowalik <stevenk@ubuntu.com>  Mon, 25 May 2009 23:29:31 +1000
+
 vlc (0.9.9a-2ubuntu1) jaunty; urgency=low
 
   * Merge from debian which includes a small security fix.
