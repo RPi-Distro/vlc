@@ -1,3 +1,14 @@
+vlc (1.0.0~rc2-1ubuntu1) karmic; urgency=low
+
+  * New upstream version.
+  * tighten build-dependencies on libschroedinger-dev, fixes FTBFS.
+  * Following bugs have an associated and now closed upstream ticket in
+    Launchpad: LP: #281295, #73449, #282567, #117640, #172938, #260918,
+    #273685, #275043, #277834, #282394, #290753, #294136, #298925, #304265,
+    #309728, #311742, #314038
+  
+ -- Reinhard Tartler <siretart@tauware.de>  Fri, 05 Jun 2009 12:28:15 +0200
+
 vlc (1.0.0~rc2-1) experimental; urgency=low
 
   * New Upstream Release Candidate
