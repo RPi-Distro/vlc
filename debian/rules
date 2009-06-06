@@ -141,8 +141,7 @@ endif
 endif
 	touch $@
 
-clean: clean-real unpatch
-clean-real:
+clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
@@ -159,6 +158,7 @@ clean-real:
 	# Remove spurious autotools stuff
 	rm -f config.log confdefs.h
 	# Unpatch package
+	$(MAKE) -f debian/rules unpatch
 	dh_clean
 
 install: build
