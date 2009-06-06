@@ -16,8 +16,12 @@ vlc (0.9.9a-3) unstable; urgency=medium
    (Closes: #526603) - thanks to Matt Kraai
   * Disable the logging facility in the javascript of moz plugin
     This was a privacy hole. (urgency=medium)(Closes: #529633)
+  * Patch to support libmpc new API (Closes: #476375) - thanks to Yavor
+    Doganov
+  * Disable-maintener mode
+  * Make sure unpatch is last in the clean target
 
- -- Christophe Mutricy <xtophe@videolan.org>  Wed, 27 May 2009 14:51:49 +0200
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 06 Jun 2009 16:56:16 +0200
 
 vlc (0.9.9a-2) unstable; urgency=medium
 
