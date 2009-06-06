@@ -87,7 +87,7 @@ Build-Depends: debhelper (>= 7),
 Standards-Version: 3.8.1
 Homepage: http://www.videolan.org/vlc
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
-Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/heads/sid
+Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/heads/karmic
 
 Package: vlc
 Architecture: any
