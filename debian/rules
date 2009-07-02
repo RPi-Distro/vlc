@@ -164,8 +164,8 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_prep
-	sed -e '/lib\(alsa\|dvb\|v4l\|pvr\)_/d' debian/vlc-nox.install \
-	 >debian/vlc-nox.install.kfreebsd-i386
+	sed -e '/\(lib\|libaccess_\)\(alsa\|dvb\|v4l\|pvr\)_/d' \
+	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd-i386
 	cp debian/vlc-nox.install.kfreebsd-i386 \
 	 debian/vlc-nox.install.kfreebsd-amd64
 	dh_installdirs
