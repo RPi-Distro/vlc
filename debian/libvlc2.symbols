@@ -120,7 +120,6 @@ libvlc.so.2 libvlc2 #MINVER#
  libvlc_media_new_as_node@Base 1.0.0~rc
  libvlc_media_new_from_input_item@Base 1.0.0~rc
  libvlc_media_player_can_pause@Base 1.0.0~rc
- libvlc_media_player_destroy@Base 1.0.0~rc
  libvlc_media_player_event_manager@Base 1.0.0~rc
  libvlc_media_player_get_agl@Base 1.0.0~rc1
  libvlc_media_player_get_chapter@Base 1.0.0~rc
