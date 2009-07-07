@@ -1,3 +1,17 @@
+vlc (1.0.0-1~1.gbp943c44) UNRELEASED; urgency=low
+
+  ** SNAPSHOT build @943c448744b0e9e703450d83ef4a32381b9144be **
+
+  * New Upstream Release
+    + Closes: #536081
+  * Don't install the alsa and OSS access module on kfreeBSD (Closes:
+    #535101) - thanks to Javier Mendez Gomez
+  * Force at least libvlc 1.0.0 becasue of tha soname change of
+    libvlccore
+  * Delete a symbols who was present by mistake.
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 08 Jul 2009 00:11:32 +0200
+
 vlc (1.0.0~rc2-1) experimental; urgency=low
 
   * New Upstream Release Candidate
