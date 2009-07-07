@@ -3,7 +3,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id$
+ * $Id: aa15ea7c5cd86013629bab11011c57528f24813e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -160,7 +160,9 @@ matroska_stream_c *demux_sys_t::AnalyseAllSegmentsFound( demux_t *p_demux, EbmlS
             p_l0 = p_estream->FindNextID(KaxSegment::ClassInfos, 0xFFFFFFFFL);
         }
         else
-            p_l0 = p_l0->SkipData(*p_estream, KaxSegment_Context);
+        {
+            p_l0 = NULL;
+        }
     }
 
     if ( !b_keep_stream )

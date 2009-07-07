@@ -2,7 +2,7 @@
  * vlc_url.h: URL related macros
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: 448c685435182eee1e5e59ffca78a5712afc9eff $
+ * $Id: e5b29eba2364921cd6491800d40fea7115431a46 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -45,8 +45,6 @@ struct vlc_url_t
     char *psz_buffer; /* to be freed */
 };
 
-VLC_EXPORT( char *, unescape_URI_duplicate, ( const char *psz ) );
-VLC_EXPORT( void, unescape_URI, ( char *psz ) );
 VLC_EXPORT( char *, decode_URI_duplicate, ( const char *psz ) );
 VLC_EXPORT( char *, decode_URI, ( char *psz ) );
 VLC_EXPORT( char *, encode_URI_component, ( const char *psz ) );

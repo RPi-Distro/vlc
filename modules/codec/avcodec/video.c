@@ -2,7 +2,7 @@
  * video.c: video decoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id$
+ * $Id: 7940405b0d9f089039bc7aef0f2a8fee5a30b90f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -331,6 +331,7 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
     p_sys->p_buffer_orig = p_sys->p_buffer = malloc( p_sys->i_buffer_orig );
     if( !p_sys->p_buffer_orig )
     {
+        av_free( p_sys->p_ff_pic );
         free( p_sys );
         return VLC_ENOMEM;
     }
@@ -381,6 +382,7 @@ int InitVideoDec( decoder_t *p_dec, AVCodecContext *p_context,
     if( ffmpeg_OpenCodec( p_dec ) < 0 )
     {
         msg_Err( p_dec, "cannot open codec (%s)", p_sys->psz_namecodec );
+        av_free( p_sys->p_ff_pic );
         free( p_sys->p_buffer_orig );
         free( p_sys );
         return VLC_EGENERIC;
@@ -1044,9 +1046,17 @@ static void ffmpeg_NextPts( decoder_t *p_dec )
     }
     else if( p_sys->p_context->time_base.den > 0 )
     {
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT(52,20,0)
+        int i_tick = p_sys->p_context->ticks_per_frame;
+        if( i_tick <= 0 )
+            i_tick = 1;
+#else
+        int i_tick = 1;
+#endif
+
         p_sys->i_pts += INT64_C(1000000) *
             (2 + p_sys->p_ff_pic->repeat_pict) *
-            p_sys->p_context->time_base.num /
+            i_tick * p_sys->p_context->time_base.num /
             (2 * p_sys->p_context->time_base.den);
     }
 }

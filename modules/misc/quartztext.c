@@ -2,7 +2,7 @@
  * quartztext.c : Put text on the video, using Mac OS X Quartz Engine
  *****************************************************************************
  * Copyright (C) 2007, 2009 the VideoLAN team
- * $Id$
+ * $Id: 9f731382ac40010541e73de19c3892af8ae070d5 $
  *
  * Authors: Bernie Purcell <bitmap@videolan.org>
  *
@@ -20,6 +20,13 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+#ifdef __x86_64__
+
+#warning "No text renderer build! Quartztext isn't 64bit compatible!"
+#warning "RE-WRITE ME!"
+
+#else
 
 //////////////////////////////////////////////////////////////////////////////
 // Preamble
@@ -416,6 +423,15 @@ static int RenderText( filter_t *p_filter, subpicture_region_t *p_region_out,
 
     if( !i_font_alpha ) i_font_alpha = 255 - p_sys->i_font_opacity;
 
+    if( i_font_size <= 0 )
+    {
+        msg_Warn( p_filter, "invalid fontsize, using 12" );
+        if( VLC_SUCCESS == var_Get( p_filter, "scale", &val ))
+            i_font_size = 12 * val.i_int / 1000;
+        else
+            i_font_size = 12;
+    }
+
     ConvertToUTF16( EliminateCRLF( psz_string ), &i_string_length, &psz_utf16_str );
 
     p_region_out->i_x = p_region_in->i_x;
@@ -749,7 +765,9 @@ static offscreen_bitmap_t *Compose( int i_text_align, UniChar *psz_utf16_str, ui
             CGContextSetTextDrawingMode( p_context, kCGTextFillStroke );
             CGContextSetShadow( p_context, CGSizeMake( 0, 0 ), 5 );
             float black_components[4] = {0, 0, 0, 1};
-            CGContextSetShadowWithColor (p_context, CGSizeMake( 0, 0 ), 5, CGColorCreate( CGColorSpaceCreateWithName( kCGColorSpaceGenericRGB ), black_components ));
+            CGColorRef outlinecolor = CGColorCreate( CGColorSpaceCreateWithName( kCGColorSpaceGenericRGB ), black_components );
+            CGContextSetShadowWithColor (p_context, CGSizeMake( 0, 0 ), 5, outlinecolor);
+            CGColorRelease( outlinecolor );
             do
             {
                 // ATSUBreakLine will automatically pick up any manual '\n's also
@@ -841,7 +859,7 @@ static int RenderYUVA( filter_t *p_filter, subpicture_region_t *p_region, UniCha
     fmt.i_chroma = VLC_FOURCC('Y','U','V','A');
     fmt.i_aspect = 0;
     fmt.i_width = fmt.i_visible_width = i_width;
-    fmt.i_height = fmt.i_visible_height = i_textblock_height + VERTICAL_MARGIN * 2;
+    fmt.i_height = fmt.i_visible_height = __MIN( i_height, i_textblock_height + VERTICAL_MARGIN * 2);
     fmt.i_x_offset = fmt.i_y_offset = 0;
 
     p_region->p_picture = picture_New( fmt.i_chroma, fmt.i_width, fmt.i_height, fmt.i_aspect );
@@ -855,10 +873,10 @@ static int RenderYUVA( filter_t *p_filter, subpicture_region_t *p_region, UniCha
     p_dst_a = p_region->p_picture->A_PIXELS;
     i_pitch = p_region->p_picture->A_PITCH;
 
-    i_offset = VERTICAL_MARGIN *i_pitch;
-    for( y=0; y<i_textblock_height; y++)
+    i_offset = (i_height+VERTICAL_MARGIN < fmt.i_height) ? VERTICAL_MARGIN *i_pitch : 0 ;
+    for( y=0; y<fmt.i_height; y++)
     {
-        for( x=0; x<i_width; x++)
+        for( x=0; x<fmt.i_width; x++)
         {
             int i_alpha = p_offScreen->p_data[ y * p_offScreen->i_bytesPerRow + x * p_offScreen->i_bytesPerPixel     ];
             int i_red   = p_offScreen->p_data[ y * p_offScreen->i_bytesPerRow + x * p_offScreen->i_bytesPerPixel + 1 ];
@@ -885,3 +903,5 @@ static int RenderYUVA( filter_t *p_filter, subpicture_region_t *p_region, UniCha
 
     return VLC_SUCCESS;
 }
+
+#endif

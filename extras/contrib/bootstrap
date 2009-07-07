@@ -77,6 +77,9 @@ case $HOST in
     *darwin10*)
          echo "ARCH=x86_64" >> config.mak
      ;;
+    *86_64*)
+          echo "ARCH=x86_64" >> config.mak
+     ;;
     *86*)
           echo "ARCH=i386" >> config.mak
      ;;
@@ -129,10 +132,10 @@ case $HOST in
         HAVE_DARWIN_9=1
         CFLAGS_TUNING=" -arch ppc -mtune=G4"
         EXTRA_CFLAGS=" -D\${ENVP} -isysroot \${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
-        EXTRA_LDFLAGS=" -arch ppc -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK}"
-        CC="/Developer/usr/llvm-gcc-4.2/bin/llvm-gcc-4.2"
-        CXX="/Developer/usr/llvm-gcc-4.2/bin/llvm-g++-4.2"
-        LD="ld -arch ppc -syslibroot \${MACOSX_SDK}"
+        EXTRA_LDFLAGS=" -arch ppc -isysroot \${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET} -Wl,-syslibroot,\${MACOSX_SDK}"
+        CC="/Developer/usr/bin/gcc-4.2"
+        CXX="/Developer/usr/bin/g++-4.2"
+        LD="ld -arch ppc -syslibroot \${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
         echo "PATH = /bin:/usr/bin:/usr/local/bin:" >> config.mak
         cat src/Distributions/darwin.mak >> distro.mak
         if test -e /Developer/SDKs; then
@@ -157,9 +160,9 @@ case $HOST in
         echo "MACOSX_SDK = /Developer/SDKs/MacOSX10.5.sdk" >> config.mak
         CFLAGS_TUNING=" -march=pentium-m -mtune=prescott -arch i386"
         EXTRA_CFLAGS=" -D\${ENVP} -isysroot \${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
-        EXTRA_LDFLAGS=" -arch i386 -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK}"
-        CC="/Developer/usr/llvm-gcc-4.2/bin/llvm-gcc-4.2"
-        CXX="/Developer/usr/llvm-gcc-4.2/bin/llvm-g++-4.2"
+        EXTRA_LDFLAGS=" -arch i386 -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
+        CC="/Developer/usr/bin/gcc-4.2"
+        CXX="/Developer/usr/bin/g++-4.2"
         echo "PATH = /bin:/usr/bin:/usr/local/bin" >> config.mak
         cat src/Distributions/darwin.mak >> distro.mak
         if test -e /Developer/SDKs; then
@@ -180,7 +183,7 @@ case $HOST in
         echo "MACOSX_SDK = /Developer/SDKs/MacOSX${SDK_TARGET}.sdk" >> config.mak
         CFLAGS_TUNING=" -march=core2"
         EXTRA_CFLAGS=" -D\${ENVP} -isysroot \${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
-        EXTRA_LDFLAGS=" -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK}"
+        EXTRA_LDFLAGS=" -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
         echo "PATH = /bin:/usr/bin:/usr/local/bin" >> config.mak
         CC="gcc"
         CXX="g++"
@@ -253,6 +256,15 @@ case $HOST in
         else
             cat src/Distributions/unix.mak >> distro.mak
         fi
+    ;;
+    *86_64*linux*)
+        EXTRA_CFLAGS=" -fPIC"
+        EXTRA_CPPFLAGS=" -fPIC"
+        EXTRA_LDFLAGS=" -L/usr/lib64"
+        echo "LIBRARY_PATH = /usr/lib64" >> config.mak
+        echo "PKG_CONFIG_PATH = /usr/lib64/pkgconfig" >> config.mak
+        echo "PKG_CONFIG_LIBDIR = /usr/lib64/pkgconfig" >> config.mak
+        cat src/Distributions/unix.mak >> distro.mak
     ;;
     *)
         if test "$HOST" = "$BUILD"; then
@@ -335,8 +347,8 @@ if test $HAVE_DARWIN_9; then
     set +x
     echo
     echo "*****************************************************************"
-    echo "* We are using the llvm-gcc-4.2 compiler on OS X by default,    *"
-    echo "* so compilation will fail if it isn't installed.               *"
+    echo "* We are using GCC-4.2 on OS X, so compilation WILL FAIL if it  *"
+    echo "* is NOT installed. *"
     echo "*****************************************************************"
 fi
 
@@ -345,10 +357,8 @@ if test $HAVE_DARWIN_10; then
     echo
     echo "*****************************************************************"
     echo "* You are running Darwin 10.                                    *"
-    echo "* For testing purposes, VLC will be compiled in 64bit mode.     *"
-    echo "* While doing so, for time being, the 10.5 SDK is used.         *"
-    echo "* Note that in contrast to our Darwin 9 builds, we are not      *"
-    echo "* using the llvm compiler, but plain GCC 4.2.                   *"
+    echo "* For testing purposes, VLC will be compiled in 64bit mode      *"
+    echo "* using the 10.5 SDK for backward-compatibility.                *"
     echo "*****************************************************************"
     set -x
 fi

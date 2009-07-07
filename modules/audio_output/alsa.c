@@ -2,7 +2,7 @@
  * alsa.c : alsa plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id$
+ * $Id: 9a91ae0b9db6ccb9228f231b0edc7347902be624 $
  *
  * Authors: Henri Fallon <henri@videolan.org> - Original Author
  *          Jeffrey Baker <jwbaker@acm.org> - Port to ALSA 1.0 API
@@ -323,7 +323,7 @@ static int Open( vlc_object_t *p_this )
     if( (psz_device = config_GetPsz( p_aout, "alsa-audio-device" )) == NULL )
     {
         msg_Err( p_aout, "no audio device given (maybe \"default\" ?)" );
-        dialog_Fatal( p_aout, _("No Audio Device"),
+        dialog_Fatal( p_aout, _("No Audio Device"), "%s",
                         _("No audio device name was given. You might want to " \
                           "enter \"default\".") );
         free( p_sys );

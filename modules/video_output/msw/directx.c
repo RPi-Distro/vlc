@@ -2,7 +2,7 @@
  * vout.c: Windows DirectX video output display method
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id$
+ * $Id: cbb7eafca17135ba238cbd2fa744770c630eb6a0 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -514,6 +514,7 @@ static void CloseVideo( vlc_object_t *p_this )
     vlc_mutex_destroy( &p_vout->p_sys->lock );
 
     /* Make sure the wallpaper is restored */
+    var_DelCallback( p_vout, "directx-wallpaper", WallpaperCallback, NULL );
     SwitchWallpaperMode( p_vout, false );
 
     /* restore screensaver system settings */

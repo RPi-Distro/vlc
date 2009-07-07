@@ -2,7 +2,7 @@
  * crop.c : Crop video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: b7a63ad4ea7851980b761ca021fe07f9f7eef177 $
+ * $Id: d8a258a42a2bb0be765adb0b742acda7fa85b793 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          mod by Cedric Cocquebert <Cedric.Cocquebert@supelec.fr>
@@ -371,13 +371,13 @@ static int Init( vout_thread_t *p_vout )
     if( p_vout->p_sys->p_vout == NULL )
     {
         msg_Err( p_vout, "failed to create vout" );
-        dialog_Fatal( p_vout, _("Cropping failed"),
+        dialog_Fatal( p_vout, _("Cropping failed"), "%s",
                         _("VLC could not open the video output module.") );
         return VLC_EGENERIC;
     }
 
-#ifdef BEST_AUTOCROP
     vlc_mutex_init( &p_vout->p_sys->lock );
+#ifdef BEST_AUTOCROP
     var_AddCallback( p_vout, "ratio-crop", FilterCallback, NULL );
 #endif
 
@@ -463,7 +463,7 @@ static int Manage( vout_thread_t *p_vout )
     if( p_vout->p_sys->p_vout == NULL )
     {
         msg_Err( p_vout, "failed to create vout" );
-        dialog_Fatal( p_vout, _("Cropping failed"),
+        dialog_Fatal( p_vout, _("Cropping failed"), "%s",
                         _("VLC could not open the video output module.") );
         return VLC_EGENERIC;
     }

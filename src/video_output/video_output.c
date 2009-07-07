@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 the VideoLAN team
- * $Id: 825e1d6f25ac2e92877e12460fd713f1696b754c $
+ * $Id: eb1588e2ac81fddee1b2aed75f51807a72695da7 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1745,8 +1745,12 @@ static int PostProcessCallback( vlc_object_t *p_this, char const *psz_cmd,
 }
 static void PostProcessEnable( vout_thread_t *p_vout )
 {
+    vlc_value_t text;
     msg_Dbg( p_vout, "Post-processing available" );
     var_Create( p_vout, "postprocess", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE );
+    text.psz_string = _("Post processing");
+    var_Change( p_vout, "postprocess", VLC_VAR_SETTEXT, &text, NULL );
+
     for( int i = 0; i <= 6; i++ )
     {
         vlc_value_t val;
@@ -1795,7 +1799,7 @@ static void DisplayTitleOnOSD( vout_thread_t *p_vout )
     const mtime_t i_stop = i_start + INT64_C(1000) * p_vout->p->i_title_timeout;
 
     if( i_stop <= i_start )
-        return
+        return;
 
     vlc_assert_locked( &p_vout->change_lock );
 

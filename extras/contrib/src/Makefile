@@ -152,6 +152,7 @@ FFMPEGCONF += --arch=$(ARCH)
 FFMPEGCONF += --disable-libfaac
 ifdef HAVE_DARWIN_10
 FFMPEGCONF += --cpu=core2
+X264CONF+=--host=x86_64-apple-darwin10
 endif
 ifdef HAVE_DARWIN_OS_ON_INTEL
 FFMPEG_CFLAGS += -DHAVE_LRINTF
@@ -160,6 +161,10 @@ endif
 
 ifdef HAVE_AMR
 FFMPEGCONF+= --enable-libamr-nb --enable-libamr-wb --enable-nonfree
+endif
+
+ifdef HAVE_LINUX
+X264CONF += --enable-pic
 endif
 
 DATE=`date +%Y-%m-%d`
@@ -831,7 +836,6 @@ libshout: libshout-$(SHOUT_VERSION).tar.gz
 	$(EXTRACT_GZ)
 ifdef HAVE_WIN32
 	patch -p0 < Patches/libshout-win32.patch
-	(cd $@; autoreconf && automake)
 endif
 
 .shout: libshout .theora .ogg .speex .vorbis
@@ -1288,6 +1292,7 @@ ifdef HAVE_BIGENDIAN
 	(cd $<; ./genMakefiles armeb-uclibc && make $(HOSTCC))
 endif
 else
+	(cd $<; sed -e 's%-D_FILE_OFFSET_BITS=64%-D_FILE_OFFSET_BITS=64\ -fPIC\ -DPIC%' -i.orig config.linux)
 	(cd $<; ./genMakefiles linux && make $(HOSTCC))
 endif
 endif
@@ -1332,7 +1337,7 @@ endif
 
 .goom2k4: goom
 ifdef HAVE_DARWIN_OS
-	(cd $<; ./configure --prefix=$(PREFIX) --disable-shared --enable-static && make && make install)
+	(cd $<; $(HOSTCC) ./configure --prefix=$(PREFIX) --disable-shared --enable-static && make && make install)
 else
 	(cd $< && rm -f configure; aclocal -I m4/ && automake --add-missing && autoconf configure.in > configure && $(HOSTCC) sh ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-shared --enable-static --disable-glibtest --disable-gtktest && make && make install)
 endif
@@ -1909,7 +1914,7 @@ CIPHDIG= --enable-ciphers=aes,des,rfc2268,arcfour --enable-digests=sha1,md5,rmd1
 ifdef HAVE_WIN32
 	(cd $<; ./autogen.sh && $(HOSTCC) ./configure $(HOSTCONF) --target=i586-mingw32msvc --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" $(CIPHDIG) --disable-shared --enable-static --disable-nls && make && make install)
 else
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" $(CIPHDIG) && make && make install)
+	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS) -lgpg-error" $(CIPHDIG) && make && make install)
 endif
 	$(INSTALL_NAME)
 	touch $@
@@ -2540,7 +2545,7 @@ libass-$(ASS_VERSION).tar.bz2:
 # mplayer patches up to August 8, 2008 are included
 libass: libass-$(ASS_VERSION).tar.bz2
 	$(EXTRACT_BZ2)
-	patch -p0 < Patches/libass_mplayer_updates.patch
+	(cd $@; patch -p1 < ../Patches/libass_mplayer_updates.patch)
 ifneq ($(HOST),$(BUILD))
 	patch -p0 < Patches/libass-cross.patch
 	(cd $@; autoreconf; automake)

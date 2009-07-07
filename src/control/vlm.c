@@ -2,7 +2,7 @@
  * vlm.c: libvlc new API VLM handling functions
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 6393cfbc26c7083fb5c1fd5f7b47dad9b4106b27 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -21,12 +21,13 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "libvlc_internal.h"
-
 #include <vlc/libvlc.h>
+#include <vlc/libvlc_vlm.h>
 #include <vlc_es.h>
 #include <vlc_input.h>
 #include <vlc_vlm.h>
+
+#include "libvlc_internal.h"
 
 #if 0
 /* local function to be used in libvlc_vlm_show_media only */
@@ -167,6 +168,7 @@ void libvlc_vlm_release( libvlc_instance_t *p_instance,
     VLM(p_vlm);
 
     vlm_Delete( p_vlm );
+    p_instance->p_vlm = NULL;
 }
 
 void libvlc_vlm_add_broadcast( libvlc_instance_t *p_instance,

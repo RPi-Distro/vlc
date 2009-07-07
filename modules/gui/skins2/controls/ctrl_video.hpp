@@ -2,7 +2,7 @@
  * ctrl_video.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: c152664e2a8b261f95d51fe9a64eae1d2531058f $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -63,7 +63,8 @@ class CtrlVideo: public CtrlGeneric, public Observer<VarBox>
         virtual void onUpdate( Subject<VarBool> &rVariable , void* );
 
         // Attach a voutWindow to a Video Control
-        void attachVoutWindow( VoutWindow* pVoutWindow );
+        void attachVoutWindow( VoutWindow* pVoutWindow,
+                               int width = -1, int height = -1 );
 
         // Detach a voutWindow from a Video Control
         void detachVoutWindow( );

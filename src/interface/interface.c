@@ -4,7 +4,7 @@
  * interface, such as command line.
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
- * $Id$
+ * $Id: 9b99c1b62538963816b90f72f0457b2661c05458 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -140,14 +140,9 @@ int intf_RunThread( intf_thread_t *p_intf )
         }
         RunInterface( VLC_OBJECT(p_intf) );
 
-        /* Make sure our MonitorLibVLCDeath thread exit */
-        vlc_object_kill( p_intf );
         /* It is monitoring libvlc, not the p_intf */
         vlc_object_kill( p_intf->p_libvlc );
-        vlc_thread_join( p_intf );
 
-        vlc_object_detach( p_intf );
-        vlc_object_release( p_intf );
         return VLC_SUCCESS;
     }
 #endif

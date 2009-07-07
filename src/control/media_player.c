@@ -2,7 +2,7 @@
  * media_player.c: Libvlc API Media Instance management functions
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 51a4739eab78b4e0cbbe2c0bdd1f453e7aa43656 $
+ * $Id: d8918c20ac6fe30fe6874fd2f4db8d934434382f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -21,14 +21,25 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "libvlc_internal.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
+#include <assert.h>
 
 #include <vlc/libvlc.h>
+#include <vlc/libvlc_media.h>
+#include <vlc/libvlc_events.h>
+
 #include <vlc_demux.h>
 #include <vlc_input.h>
 #include <vlc_vout.h>
+
 #include "libvlc.h"
-#include <assert.h>
+
+#include "libvlc_internal.h"
+#include "media_internal.h" // libvlc_media_set_state()
+#include "media_player_internal.h"
 
 static int
 input_seekable_changed( vlc_object_t * p_this, char const * psz_cmd,
@@ -63,6 +74,8 @@ static inline libvlc_state_t vlc_to_libvlc_state( int vlc_state )
 
     return vlc_to_libvlc_state_array[vlc_state];
 }
+
+static void libvlc_media_player_destroy( libvlc_media_player_t *p_mi );
 
 /*
  * Release the associated input thread.
@@ -403,7 +416,7 @@ libvlc_media_player_t * libvlc_media_player_new_from_input_thread(
  *
  * Warning: No lock held here, but hey, this is internal. Caller must lock.
  **************************************************************************/
-void libvlc_media_player_destroy( libvlc_media_player_t *p_mi )
+static void libvlc_media_player_destroy( libvlc_media_player_t *p_mi )
 {
     input_thread_t *p_input_thread;
     libvlc_exception_t p_e;
@@ -749,7 +762,7 @@ void libvlc_media_player_set_nsobject( libvlc_media_player_t *p_mi,
 /**************************************************************************
  * get_nsobject
  **************************************************************************/
-uint32_t libvlc_media_player_get_nsobject( libvlc_media_player_t *p_mi )
+void * libvlc_media_player_get_nsobject( libvlc_media_player_t *p_mi )
 {
     return p_mi->drawable.nsobject;
 }

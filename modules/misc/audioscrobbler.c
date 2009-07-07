@@ -2,7 +2,7 @@
  * audioscrobbler.c : audioscrobbler submission plugin
  *****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id$
+ * $Id: 04e112964eaf916e197767934d2c86508d6f4384 $
  *
  * Author: Rafaël Carré <funman at videolanorg>
  *         Ilkka Ollakka <ileoo at videolan org>
@@ -295,7 +295,7 @@ static void Run( intf_thread_t *p_intf )
                     /* username not set */
                     dialog_Fatal( p_intf,
                         _("Last.fm username not set"),
-                        _("Please set a username or disable the "
+                        "%s", _("Please set a username or disable the "
                         "audioscrobbler plugin, and restart VLC.\n"
                         "Visit http://www.last.fm/join/ to get an account.")
                     );
@@ -832,7 +832,7 @@ static int Handshake( intf_thread_t *p_this )
         /* authentication failed, bad username/password combination */
         dialog_Fatal( p_this,
             _("last.fm: Authentication failed"),
-            _("last.fm username or password is incorrect. "
+            "%s", _("last.fm username or password is incorrect. "
               "Please verify your settings and relaunch VLC." ) );
         return VLC_AUDIOSCROBBLER_EFATAL;
     }

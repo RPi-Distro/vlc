@@ -2,7 +2,7 @@
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id$
+ * $Id: cf4d0cc28ce925a97a3d3ef7a27bb2a3bef801aa $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -1340,7 +1340,7 @@ SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
 
     QLabel *subSpeedLabel = new QLabel;
     subSpeedLabel->setText( qtr( "Speed of the subtitles:" ) );
-    subsLayout->addWidget( subSpeedLabel, 1, 0, 1, 3 );
+    subsLayout->addWidget( subSpeedLabel, 1, 0, 1, 1 );
 
     subSpeedSpin = new QDoubleSpinBox;
     subSpeedSpin->setAlignment( Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter );

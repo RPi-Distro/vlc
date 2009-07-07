@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist import functions
  *******************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: 007b966928a8924d9647b492dab59ce92c0d8704 $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -210,7 +210,7 @@ static bool parse_playlist_node COMPLEX_INTERFACE
             ;
         else if( !strcmp( psz_name, "xml:base" ) )
         {
-            p_demux->p_sys->psz_base = decode_URI_duplicate( psz_value );
+            p_demux->p_sys->psz_base = strdup( psz_value );
         }
         /* unknown attribute */
         else
@@ -503,10 +503,19 @@ static bool parse_track_node COMPLEX_INTERFACE
                     FREE_ATT();
                     return false;
                 }
+
                 /* leave if the current parent node <track> is terminated */
                 if( !strcmp( psz_name, psz_element ) )
                 {
                     FREE_ATT();
+
+                    /* Make sure we have a URI */
+                    char *psz_uri = input_item_GetURI( p_new_input );
+                    if( !psz_uri )
+                    {
+                        input_item_SetURI( p_new_input, "vlc://nop" );
+                    }
+                    free( psz_uri );
 
                     if( p_demux->p_sys->i_track_id < 0 )
                     {
@@ -546,32 +555,28 @@ static bool parse_track_node COMPLEX_INTERFACE
                 /* special case: location */
                 if( !strcmp( p_handler->name, "location" ) )
                 {
-                    char *psz_uri = NULL;
-                    psz_uri = decode_URI_duplicate( psz_value );
-
-                    if( !psz_uri )
-                    {
-                        FREE_ATT();
-                        return false;
-                    }
-
-                    if( p_demux->p_sys->psz_base && !strstr( psz_uri, "://" ) )
+                    /* FIXME: This is broken. Scheme-relative (//...) locations
+                     * and anchors (#...) are not resolved correctly. Also,
+                     * host-relative (/...) and directory-relative locations
+                     * ("relative path" in vernacular) should be resolved.
+                     * Last, psz_base should default to the XSPF resource
+                     * location if missing (not the current working directory).
+                     * -- Courmisch */
+                    if( p_demux->p_sys->psz_base && !strstr( psz_value, "://" ) )
                     {
                         char* psz_tmp;
                         if( asprintf( &psz_tmp, "%s%s", p_demux->p_sys->psz_base,
-                                      psz_uri ) == -1 )
+                                      psz_value ) == -1 )
                         {
-                            free( psz_uri );
                             FREE_ATT();
                             return NULL;
                         }
-                        free( psz_uri );
-                        psz_uri = psz_tmp;
+                        input_item_SetURI( p_new_input, psz_tmp );
+                        free( psz_tmp );
                     }
-                    input_item_SetURI( p_new_input, psz_uri );
-                    free( psz_uri );
+                    else
+                        input_item_SetURI( p_new_input, psz_value );
                     input_item_CopyOptions( p_input_item, p_new_input );
-                    psz_uri = NULL;
                     FREE_ATT();
                     p_handler = NULL;
                 }
@@ -652,9 +657,7 @@ static bool set_item_info SIMPLE_INTERFACE
     }
     else if( !strcmp( psz_name, "image" ) )
     {
-        char *psz_uri = decode_URI_duplicate( psz_value );
-        input_item_SetArtURL( p_input, psz_uri );
-        free( psz_uri );
+        input_item_SetArtURL( p_input, psz_value );
     }
     return true;
 }

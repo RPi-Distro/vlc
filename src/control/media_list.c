@@ -2,7 +2,7 @@
  * media_list.c: libvlc new API media list functions
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: 6b9bbb900d765db8a633de1a594940897b4e7da3 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -21,10 +21,19 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "libvlc_internal.h"
-#include <vlc/libvlc.h>
 #include <assert.h>
-#include "vlc_arrays.h"
+
+#include <vlc/libvlc.h>
+#include <vlc/libvlc_media.h>
+#include <vlc/libvlc_media_list.h>
+#include <vlc/libvlc_events.h>
+
+#include <vlc_common.h>
+#include <vlc_input.h>
+
+#include "libvlc_internal.h"
+#include "media_internal.h" // libvlc_media_new_from_input_item()
+#include "media_list_internal.h"
 
 typedef enum EventPlaceInTime {
     EventWillHappen,
@@ -170,6 +179,7 @@ libvlc_media_list_new( libvlc_instance_t * p_inst,
     }
 
     vlc_mutex_init( &p_mlist->object_lock );
+    vlc_mutex_init( &p_mlist->refcount_lock ); // FIXME: spinlock?
 
     vlc_array_init( &p_mlist->items );
     p_mlist->i_refcount = 1;
@@ -188,14 +198,14 @@ void libvlc_media_list_release( libvlc_media_list_t * p_mlist )
     libvlc_media_t * p_md;
     int i;
 
-    vlc_mutex_lock( &p_mlist->object_lock );
+    vlc_mutex_lock( &p_mlist->refcount_lock );
     p_mlist->i_refcount--;
     if( p_mlist->i_refcount > 0 )
     {
-        vlc_mutex_unlock( &p_mlist->object_lock );
+        vlc_mutex_unlock( &p_mlist->refcount_lock );
         return;
     }
-    vlc_mutex_unlock( &p_mlist->object_lock );
+    vlc_mutex_unlock( &p_mlist->refcount_lock );
 
     /* Refcount null, time to free */
 
@@ -223,9 +233,9 @@ void libvlc_media_list_release( libvlc_media_list_t * p_mlist )
  **************************************************************************/
 void libvlc_media_list_retain( libvlc_media_list_t * p_mlist )
 {
-    vlc_mutex_lock( &p_mlist->object_lock );
+    vlc_mutex_lock( &p_mlist->refcount_lock );
     p_mlist->i_refcount++;
-    vlc_mutex_unlock( &p_mlist->object_lock );
+    vlc_mutex_unlock( &p_mlist->refcount_lock );
 }
 
 

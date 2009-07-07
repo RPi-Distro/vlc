@@ -3,7 +3,7 @@
  *****************************************************************************
  *
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id$
+ * $Id: 7cbcd100cceebeafe4ccece94206a738198832ce $
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -143,7 +143,7 @@ static const char *FindFallbackEncoding (const char *locale)
 
     // Korean
     if (!locale_match ("ko", locale))
-        return "EUC-KR";
+        return "CP949"; // Microsoft non-standard superset of EUC-KR
 
     // Thai
     if (!locale_match ("th", locale))

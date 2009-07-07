@@ -2,7 +2,7 @@
  * marq.c : marquee display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: ce627d124410fad85571c6e84cc2e97097ad3173 $
+ * $Id: b98b824c9c3d3d584721675cd5d8db019a0f9b4a $
  *
  * Authors: Mark Moriarty
  *          Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -224,9 +224,8 @@ static int CreateFilter( vlc_object_t *p_this )
     var_AddCallback( p_filter, "marq-refresh", MarqueeCallback, p_sys );
     CREATE_VAR( i_pos, Integer, "marq-position" );
     CREATE_VAR( psz_marquee, String, "marq-marquee" );
-    CREATE_VAR( p_style->i_font_alpha, Integer, "marq-opacity" );
-    p_sys->p_style->i_font_alpha =
-         255 - var_CreateGetIntegerCommand( p_filter, "marq-opacity" );
+    p_sys->p_style->i_font_alpha = 255 - var_CreateGetIntegerCommand( p_filter,
+                                                            "marq-opacity" );
     var_AddCallback( p_filter, "marq-opacity", MarqueeCallback, p_sys );
     CREATE_VAR( p_style->i_font_color, Integer, "marq-color" );
     CREATE_VAR( p_style->i_font_size, Integer, "marq-size" );
@@ -251,11 +250,12 @@ static void DestroyFilter( vlc_object_t *p_this )
     var_Destroy( p_filter, var );
     DEL_VAR( "marq-x" );
     DEL_VAR( "marq-y" );
-    DEL_VAR( "marq-marquee" );
     DEL_VAR( "marq-timeout" );
+    DEL_VAR( "marq-refresh" );
     DEL_VAR( "marq-position" );
-    DEL_VAR( "marq-color" );
+    DEL_VAR( "marq-marquee" );
     DEL_VAR( "marq-opacity" );
+    DEL_VAR( "marq-color" );
     DEL_VAR( "marq-size" );
 
     vlc_mutex_destroy( &p_sys->lock );

@@ -3,7 +3,7 @@
  * view functs.
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: fed48995bca17c45ce350cbe467f88d7a0d1ea1d $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -22,10 +22,14 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "libvlc_internal.h"
 #include <vlc/libvlc.h>
-#include <assert.h>
-#include "vlc_arrays.h"
+#include <vlc/libvlc_media.h>
+#include <vlc/libvlc_media_list.h>
+#include <vlc/libvlc_media_list_view.h>
+
+#include "media_internal.h" // Abuse, could ans should be removed
+#include "media_list_internal.h" // Abuse, could ans should be removed
+#include "media_list_view_internal.h"
 
 /* FIXME: This version is probably a bit overheaded, and we may want to store
  * the items in a vlc_array_t to speed everything up */

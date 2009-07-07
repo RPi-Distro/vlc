@@ -2,7 +2,7 @@
  * voutgl.m: MacOS X OpenGL provider
  *****************************************************************************
  * Copyright (C) 2001-2004, 2007-2009 the VideoLAN team
- * $Id: 7f88fe2b34ae0d012ab6672ed296b5fb8179e28e $
+ * $Id: a6e751d8bd07c838a11aaeab5f3c294951657261 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -211,47 +211,32 @@ void CloseVideoGL ( vlc_object_t * p_this )
     msg_Dbg( p_this, "Closing" );
 
 #ifndef __x86_64__
-    /* If the fullscreen window is still open, close it */
-    if( p_vout->b_fullscreen )
+    if( p_vout->p_sys->b_embedded )
     {
-        p_vout->i_changes |= VOUT_FULLSCREEN_CHANGE;
-        if( p_vout->p_sys->b_embedded )
+        /* If the fullscreen window is still open, close it */
+        if( p_vout->b_fullscreen )
         {
+            p_vout->i_changes |= VOUT_FULLSCREEN_CHANGE;
             aglManage( p_vout );
             var_SetBool( p_vout->p_parent, "fullscreen", false );
         }
-        else
-            Manage( p_vout );
-    }
-
-    if( p_vout->p_sys->b_embedded )
-    {
         if( p_vout->p_sys->agl_ctx )
         {
             aglEnd( p_vout );
             aglDestroyContext(p_vout->p_sys->agl_ctx);
         }
     }
-    else if(VLCIntf && vlc_object_alive (VLCIntf))
-    {
-        NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
-
-        /* Close the window */
-        [p_vout->p_sys->o_vout_view performSelectorOnMainThread:@selector(closeVout) withObject:NULL waitUntilDone:YES];
-
-        [o_pool release];
-    }
-#else
-	if(VLCIntf && vlc_object_alive (VLCIntf))
-    {
-        NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
-
-        /* Close the window */
-        [p_vout->p_sys->o_vout_view performSelectorOnMainThread:@selector(closeVout) withObject:NULL waitUntilDone:YES];
-
-        [o_pool release];
-    }
+    else
 #endif
+    if(VLCIntf && vlc_object_alive (VLCIntf))
+    {
+        NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
+
+        /* Close the window */
+        [p_vout->p_sys->o_vout_view performSelectorOnMainThread:@selector(closeVout) withObject:NULL waitUntilDone:YES];
+
+        [o_pool release];
+    }
     /* Clean up */
     free( p_vout->p_sys );
 }

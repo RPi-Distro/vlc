@@ -1,10 +1,10 @@
 /*****************************************************************************
  * dynamicoverlay_list.h : dynamic overlay list
  *****************************************************************************
- * Copyright (C) 2008 the VideoLAN team
- * $Id$
+ * Copyright (C) 2008-2009 the VideoLAN team
+ * $Id: 985d3c415fedf04141b9333574e976c069d12b05 $
  *
- * Author: SÃ¸ren BÃ¸g <avacore@videolan.org>
+ * Author: Søren Bøg <avacore@videolan.org>
  *         Jean-Paul Saman <jpsaman@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify

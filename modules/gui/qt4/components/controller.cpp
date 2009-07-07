@@ -2,7 +2,7 @@
  * Controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id$
+ * $Id: 26bb8289f930994e63f18998268165a6b07629e1 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -656,8 +656,8 @@ InputControlsWidget::InputControlsWidget( intf_thread_t *_p_i, QWidget *_parent 
 /**********************************************************************
  * Fullscrenn control widget
  **********************************************************************/
-FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i )
-                           : AbstractController( _p_i )
+FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i, QWidget *_parent )
+                           : AbstractController( _p_i, _parent )
 {
     i_mouse_last_x      = -1;
     i_mouse_last_y      = -1;
@@ -704,15 +704,6 @@ FullscreenControllerWidget::FullscreenControllerWidget( intf_thread_t *_p_i )
     CONNECT( p_slowHideTimer, timeout(), this, slowHideFSC() );
 #endif
 
-    adjustSize ();  /* need to get real width and height for moving */
-
-#ifdef WIN32TRICK
-    setWindowOpacity( 0.0 );
-    b_fscHidden = true;
-    adjustSize();
-    show();
-#endif
-
     vlc_mutex_init_recursive( &lock );
 
     CONNECT( THEMIM->getIM(), voutListChanged( vout_thread_t **, int ),
@@ -744,10 +735,12 @@ FullscreenControllerWidget::~FullscreenControllerWidget()
 void FullscreenControllerWidget::centerFSC( int number )
 {
     screenRes = QApplication::desktop()->screenGeometry(number);
+
     /* screen has changed, calculate new position */
-    QPoint pos = QPoint( screenRes.x() + (screenRes.width() / 2) - (width() / 2),
-            screenRes.y() + screenRes.height() - height());
+    QPoint pos = QPoint( screenRes.x() + (screenRes.width() / 2) - (sizeHint().width() / 2),
+            screenRes.y() + screenRes.height() - sizeHint().height());
     move( pos );
+
     i_screennumber = number;
 }
 
@@ -764,38 +757,14 @@ void FullscreenControllerWidget::showFSC()
         screenRes != QApplication::desktop()->screenGeometry(number) )
     {
         centerFSC( number );
+        msg_Dbg( p_intf, "Recentering the Fullscreen Controller" );
     }
-#ifdef WIN32TRICK
-    // after quiting and going to fs, we need to call show()
-    if( isHidden() )
-        show();
-    if( b_fscHidden )
-    {
-        b_fscHidden = false;
-        setWindowOpacity( 1.0 );
-    }
-#else
-    show();
-#endif
 
 #if HAVE_TRANSPARENCY
     setWindowOpacity( DEFAULT_OPACITY );
 #endif
-}
 
-/**
- * Hide fullscreen controller
- * FIXME: under windows it have to be done by moving out of screen
- *        because hide() doesnt work
- */
-void FullscreenControllerWidget::hideFSC()
-{
-#ifdef WIN32TRICK
-    b_fscHidden = true;
-    setWindowOpacity( 0.0 );    // simulate hidding
-#else
-    hide();
-#endif
+    show();
 }
 
 /**
@@ -835,11 +804,7 @@ void FullscreenControllerWidget::slowHideFSC()
     }
     else
     {
-#ifdef WIN32TRICK
-         if ( windowOpacity() > 0.0 && !b_fscHidden )
-#else
          if ( windowOpacity() > 0.0 )
-#endif
          {
              /* we should use 0.01 because of 100 pieces ^^^
                 but than it cannt be done in time */
@@ -862,17 +827,15 @@ void FullscreenControllerWidget::customEvent( QEvent *event )
 
     switch( event->type() )
     {
+        /* This is used when the 'i' hotkey is used, to force quick toggle */
         case FullscreenControlToggle_Type:
             vlc_mutex_lock( &lock );
             b_fs = b_fullscreen;
             vlc_mutex_unlock( &lock );
+
             if( b_fs )
             {
-#ifdef WIN32TRICK
-                if( b_fscHidden )
-#else
                 if( isHidden() )
-#endif
                 {
                     p_hideTimer->stop();
                     showFSC();
@@ -881,24 +844,24 @@ void FullscreenControllerWidget::customEvent( QEvent *event )
                     hideFSC();
             }
             break;
+        /* Event called to Show the FSC on mouseChanged() */
         case FullscreenControlShow_Type:
             vlc_mutex_lock( &lock );
             b_fs = b_fullscreen;
             vlc_mutex_unlock( &lock );
 
-#ifdef WIN32TRICK
-            if( b_fs && b_fscHidden )
-#else
-            if( b_fs && !isVisible() )
-#endif
+            if( b_fs )
                 showFSC();
+
             break;
-        case FullscreenControlHide_Type:
-            hideFSC();
-            break;
+        /* Start the timer to hide later, called usually with above case */
         case FullscreenControlPlanHide_Type:
             if( !b_mouse_over ) // Only if the mouse is not over FSC
                 planHideFSC();
+            break;
+        /* Hide */
+        case FullscreenControlHide_Type:
+            hideFSC();
             break;
         default:
             break;
@@ -934,12 +897,14 @@ void FullscreenControllerWidget::mousePressEvent( QMouseEvent *event )
 {
     i_mouse_last_x = event->globalX();
     i_mouse_last_y = event->globalY();
+    event->accept();
 }
 
 void FullscreenControllerWidget::mouseReleaseEvent( QMouseEvent *event )
 {
     i_mouse_last_x = -1;
     i_mouse_last_y = -1;
+    event->accept();
 }
 
 /**
@@ -952,6 +917,7 @@ void FullscreenControllerWidget::enterEvent( QEvent *event )
     p_hideTimer->stop();
 #if HAVE_TRANSPARENCY
     p_slowHideTimer->stop();
+    setWindowOpacity( DEFAULT_OPACITY );
 #endif
     event->accept();
 }

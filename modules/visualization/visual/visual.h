@@ -2,7 +2,7 @@
  * visual.h : Header for the visualisation system
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id$
+ * $Id: 532abc184023dd49a344588ec11835d00889830e $
  *
  * Authors: Clément Stenac <zorglub@via.ecp.fr>
  *
@@ -32,6 +32,10 @@ typedef struct visual_effect_t
     int        i_height;
     char *     psz_args;
     int        i_nb_chans;
+
+    /* Channels index */
+    int        i_idx_left;
+    int        i_idx_right;
 } visual_effect_t ;
 
 typedef struct spectrum_data

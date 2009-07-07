@@ -2,7 +2,7 @@
  * audio_video.c: Audio/Video management : volume, snapshot, OSD
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: cb28ccfacbe8fae680e1282d0cae041ce7e3b37b $
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *
@@ -26,11 +26,13 @@
 #endif
 #include "mediacontrol_internal.h"
 #include "libvlc_internal.h"
+#include "media_player_internal.h"
 
 #include <vlc/mediacontrol.h>
 #include <vlc/libvlc.h>
 
 #include <vlc_vout.h>
+#include <vlc_input.h>
 #include <vlc_osd.h>
 #include <vlc_block.h>
 

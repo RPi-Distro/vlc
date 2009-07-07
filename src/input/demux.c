@@ -2,7 +2,7 @@
  * demux.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 4d983212f84ebcb8731dd693ad5c06e975a7122a $
+ * $Id: a6fe6d0169d354408f19aaf6176b84f75b072f4b $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -102,7 +102,6 @@ demux_t *__demux_New( vlc_object_t *p_obj,
             { "m3u",  "playlist" },
             { "mkv",  "mkv" }, { "mka",  "mkv" }, { "mks",  "mkv" },
             { "mp4",  "mp4" }, { "m4a",  "mp4" }, { "mov",  "mp4" }, { "moov", "mp4" },
-            { "mod",  "mod" }, { "it",  "mod" }, { "s3m",  "mod" }, { "xm",   "mod" },
             { "nsv",  "nsv" },
             { "ogg",  "ogg" }, { "ogm",  "ogg" }, /* legacy Ogg */
             { "oga",  "ogg" }, { "spx",  "ogg" }, { "ogv", "ogg" },

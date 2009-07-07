@@ -2,7 +2,7 @@
  * transcode.c: transcoding stream output module
  *****************************************************************************
  * Copyright (C) 2003-2008 the VideoLAN team
- * $Id: b4bf89136ab1126212cc4a0286783aac5d89a22c $
+ * $Id: 818d28c8b251242988cd884689c4f9bd910d72b1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -2158,7 +2158,7 @@ static picture_t *video_new_buffer( vlc_object_t *p_this, picture_t **pp_ring,
         {
             /* Encoder still has stuff to encode, wait to clear-up the list */
             while( p_sys->i_first_pic == i_first_pic )
-                msleep( 100000 );
+                msleep( 5000 );
         }
 
         /* Find an empty space in the picture ring buffer */

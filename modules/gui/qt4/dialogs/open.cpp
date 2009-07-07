@@ -2,7 +2,7 @@
  * open.cpp : Advanced open dialog
  *****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id$
+ * $Id: ec4fe8e37ed2f87f13e5ebbb490c7cc961e3581a $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -51,14 +51,11 @@ OpenDialog* OpenDialog::getInstance( QWidget *parent, intf_thread_t *p_intf,
     else if( !b_rawInstance )
     {
         /* Request the instance but change small details:
-           - Button menu
-           - Modality on top of the parent dialog */
+           - Button menu */
         if( b_selectMode )
-        {
-            instance->setWindowModality( Qt::WindowModal );
             _action_flag = SELECT; /* This should be useless, but we never know
                                       if the call is correct */
-        }
+        instance->setWindowModality( Qt::WindowModal );
         instance->i_action_flag = _action_flag;
         instance->b_pl = _b_pl;
         instance->setMenuAction();
@@ -75,20 +72,13 @@ OpenDialog::OpenDialog( QWidget *parent,
     i_action_flag = _action_flag;
     b_pl =_b_pl;
 
-    /* Workaround the Win32 Vout that put the video on top at regular times */
-#ifdef WIN32
-    setWindowFlags( Qt::WindowStaysOnTopHint | Qt::Dialog );
-#endif
-
     if( b_selectMode ) /* Select mode */
-    {
         i_action_flag = SELECT;
-        setWindowModality( Qt::WindowModal );
-    }
 
     /* Basic Creation of the Window */
     ui.setupUi( this );
     setWindowTitle( qtr( "Open Media" ) );
+    setWindowModality( Qt::WindowModal );
 
     /* Tab definition and creation */
     fileOpenPanel    = new FileOpenPanel( this, p_intf );
@@ -97,10 +87,13 @@ OpenDialog::OpenDialog( QWidget *parent,
     captureOpenPanel = new CaptureOpenPanel( this, p_intf );
 
     /* Insert the tabs */
-    ui.Tab->insertTab( OPEN_FILE_TAB, fileOpenPanel, qtr( "&File" ) );
-    ui.Tab->insertTab( OPEN_DISC_TAB, discOpenPanel, qtr( "&Disc" ) );
-    ui.Tab->insertTab( OPEN_NETWORK_TAB, netOpenPanel, qtr( "&Network" ) );
-    ui.Tab->insertTab( OPEN_CAPTURE_TAB, captureOpenPanel,
+    ui.Tab->insertTab( OPEN_FILE_TAB, fileOpenPanel, QIcon( ":/folder-grey" ),
+                       qtr( "&File" ) );
+    ui.Tab->insertTab( OPEN_DISC_TAB, discOpenPanel, QIcon( ":/disc" ),
+                       qtr( "&Disc" ) );
+    ui.Tab->insertTab( OPEN_NETWORK_TAB, netOpenPanel, QIcon( ":/network" ),
+                       qtr( "&Network" ) );
+    ui.Tab->insertTab( OPEN_CAPTURE_TAB, captureOpenPanel, QIcon( ":/capture-card" ),
                        qtr( "Capture &Device" ) );
 
     /* Hide the Slave input widgets */

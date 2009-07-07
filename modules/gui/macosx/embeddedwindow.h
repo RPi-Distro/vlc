@@ -2,7 +2,7 @@
  * embeddedwindow.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2005-2007 the VideoLAN team
- * $Id$
+ * $Id: 5c20d1b02b63beba68ffdbebc784069fb3515835 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *
@@ -45,6 +45,7 @@
     VLCWindow       * o_fullscreen_window;
     NSViewAnimation * o_fullscreen_anim1;
     NSViewAnimation * o_fullscreen_anim2;
+    NSViewAnimation * o_makekey_anim;
     NSView          * o_temp_view;
     /* set to yes if we are fullscreen and all animations are over */
     BOOL              b_fullscreen;

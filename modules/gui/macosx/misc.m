@@ -2,7 +2,7 @@
  * misc.m: code not specific to vlc
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id: fe7b5077568c3e14fbabb8b369514997837e6291 $
+ * $Id: a7ca58f3b818bd58d2285920b6e4b72f8a486998 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -130,12 +130,6 @@ static NSMutableArray *blackoutWindows = nil;
 {
     /* init our fake object attribute */
     blackoutWindows = [[NSMutableArray alloc] initWithCapacity:1];
-}
-
-- (void)dealloc
-{
-    [blackoutWindows release];
-    [super dealloc];
 }
 
 + (NSScreen *)screenWithDisplayID: (CGDirectDisplayID)displayID

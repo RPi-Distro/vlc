@@ -2,7 +2,7 @@
  * dv.c: Digital video/Firewire input (file: access plug-in)
  *****************************************************************************
  * Copyright (C) 2005 M2X
- * $Id$
+ * $Id: 665f83335ce3f919de4471b9a019131a5e6bf000 $
  *
  * Authors: Jean-Paul Saman <jpsaman at m2x dot nl>
  *
@@ -99,7 +99,11 @@ typedef struct
 } event_thread_t;
 
 static void* Raw1394EventThread( vlc_object_t * );
-static int Raw1394Handler( raw1394handle_t, int, size_t, quadlet_t * );
+static enum raw1394_iso_disposition
+Raw1394Handler(raw1394handle_t, unsigned char *,
+        unsigned int, unsigned char,
+        unsigned char, unsigned char, unsigned int,
+        unsigned int);
 
 static int Raw1394GetNumPorts( access_t *p_access );
 static raw1394handle_t Raw1394Open( access_t *, int );
@@ -131,6 +135,9 @@ struct access_sys_t
     block_t *p_frame;
 };
 
+#define ISOCHRONOUS_QUEUE_LENGTH 1000
+#define ISOCHRONOUS_MAX_PACKET_SIZE 4096
+
 /*****************************************************************************
  * Open: open the file
  *****************************************************************************/
@@ -141,7 +148,6 @@ static int Open( vlc_object_t *p_this )
     char *psz_name = strdup( p_access->psz_path );
 
     struct raw1394_portinfo port_inf[ 16 ];
-    iso_handler_t oldhandler;
 
     msg_Dbg( p_access, "opening device %s", psz_name );
 
@@ -212,10 +218,18 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    oldhandler = raw1394_set_iso_handler( p_sys->p_raw1394,
-                                          p_sys->i_channel, Raw1394Handler );
+    if ( raw1394_iso_recv_init( p_sys->p_raw1394, Raw1394Handler,
+                ISOCHRONOUS_QUEUE_LENGTH, ISOCHRONOUS_MAX_PACKET_SIZE,
+                p_sys->i_channel, RAW1394_DMA_PACKET_PER_BUFFER, -1 ) < 0 )
+    {
+        msg_Err( p_access, "failed to init isochronous recv for %s", psz_name );
+        Close( p_this );
+        free( psz_name );
+        return VLC_EGENERIC;
+    }
+
     raw1394_set_userdata( p_sys->p_raw1394, p_access );
-    raw1394_start_iso_rcv( p_sys->p_raw1394, p_sys->i_channel );
+    raw1394_iso_recv_start( p_sys->p_raw1394, -1, -1, 0 );
 
     p_sys->raw1394_poll.fd = raw1394_get_fd( p_sys->p_raw1394 );
     p_sys->raw1394_poll.events = POLLIN | POLLPRI;
@@ -258,19 +272,17 @@ static void Close( vlc_object_t *p_this )
         vlc_object_kill( p_sys->p_ev );
 
         if( p_sys->p_raw1394 )
-            raw1394_stop_iso_rcv( p_sys->p_raw1394, p_sys->i_channel );
+            raw1394_iso_shutdown( p_sys->p_raw1394 );
 
-        vlc_mutex_destroy( &p_sys->p_ev->lock );
         vlc_thread_join( p_sys->p_ev );
+        vlc_mutex_destroy( &p_sys->p_ev->lock );
 
         /* Cleanup frame data */
         if( p_sys->p_ev->p_frame )
         {
-            vlc_mutex_lock( &p_sys->p_ev->lock );
             block_ChainRelease( p_sys->p_ev->p_frame );
             p_sys->p_ev->p_frame = NULL;
             p_sys->p_ev->pp_last = &p_sys->p_frame;
-            vlc_mutex_unlock( &p_sys->p_ev->lock );
         }
         vlc_object_release( p_sys->p_ev );
     }
@@ -389,11 +401,17 @@ static void* Raw1394EventThread( vlc_object_t *p_this )
     return NULL;
 }
 
-static int Raw1394Handler( raw1394handle_t handle, int channel, size_t length, quadlet_t *data )
+static enum raw1394_iso_disposition
+Raw1394Handler(raw1394handle_t handle, unsigned char *data,
+        unsigned int length, unsigned char channel,
+        unsigned char tag, unsigned char sy, unsigned int cycle,
+        unsigned int dropped)
 {
     access_t *p_access = NULL;
     access_sys_t *p_sys = NULL;
     block_t *p_block = NULL;
+    VLC_UNUSED(channel); VLC_UNUSED(tag);
+    VLC_UNUSED(sy); VLC_UNUSED(cycle); VLC_UNUSED(dropped);
 
     p_access = (access_t *) raw1394_get_userdata( handle );
     if( !p_access ) return 0;
@@ -403,7 +421,7 @@ static int Raw1394Handler( raw1394handle_t handle, int channel, size_t length, q
     /* skip empty packets */
     if ( length > 16 )
     {
-        unsigned char * p = ( unsigned char* ) &data[ 3 ];
+        unsigned char * p = data + 8;
         int section_type = p[ 0 ] >> 5;           /* section type is in bits 5 - 7 */
         int dif_sequence = p[ 1 ] >> 4;           /* dif sequence number is in bits 4 - 7 */
         int dif_block = p[ 2 ];
@@ -459,6 +477,7 @@ static int Raw1394Handler( raw1394handle_t handle, int channel, size_t length, q
                 break;
             }
         }
+
         vlc_mutex_unlock( &p_sys->p_ev->lock );
     }
     return 0;

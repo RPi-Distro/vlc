@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id$
+ * $Id: d0cca4d94405ae709de91969ce4259044fa8ba73 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -67,6 +67,7 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
     view->setIconSize( QSize( 20, 20 ) );
     view->setAlternatingRowColors( true );
     view->setAnimated( true );
+    view->setSelectionBehavior( QAbstractItemView::SelectRows );
     view->setSelectionMode( QAbstractItemView::ExtendedSelection );
     view->setDragEnabled( true );
     view->setAcceptDrops( true );
@@ -240,16 +241,18 @@ void StandardPLPanel::popupAdd()
     if( currentRootId == THEPL->p_local_category->i_id ||
         currentRootId == THEPL->p_local_onelevel->i_id )
     {
-        popup.addAction( qtr(I_PL_ADDF), THEDP, SLOT(PLAppendDialog()) );
+        popup.addAction( qtr(I_PL_ADDF), THEDP, SLOT( simplePLAppendDialog()) );
         popup.addAction( qtr(I_PL_ADDDIR), THEDP, SLOT( PLAppendDir()) );
+        popup.addAction( qtr(I_OP_ADVOP), THEDP, SLOT( PLAppendDialog()) );
     }
     else if( ( THEPL->p_ml_category &&
                 currentRootId == THEPL->p_ml_category->i_id ) ||
              ( THEPL->p_ml_onelevel &&
                 currentRootId == THEPL->p_ml_onelevel->i_id ) )
     {
-        popup.addAction( qtr(I_PL_ADDF), THEDP, SLOT( MLAppendDialog() ) );
+        popup.addAction( qtr(I_PL_ADDF), THEDP, SLOT( simpleMLAppendDialog()) );
         popup.addAction( qtr(I_PL_ADDDIR), THEDP, SLOT( MLAppendDir() ) );
+        popup.addAction( qtr(I_OP_ADVOP), THEDP, SLOT( MLAppendDialog() ) );
     }
     popup.exec( QCursor::pos() - addButton->mapFromGlobal( QCursor::pos() )
                         + QPoint( 0, addButton->height() ) );

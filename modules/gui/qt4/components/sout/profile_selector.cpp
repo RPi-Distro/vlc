@@ -2,7 +2,7 @@
  * profile_selector.cpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id$
+ * $Id: 064cd8db32080d18d7aa1655e3191c3bbf9eb799 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -285,7 +285,7 @@ inline void VLCProfileEditor::registerCodecs()
     ADD_ACODEC( "Flac", "flac" )
     ADD_ACODEC( "Speex", "spx" )
     ADD_ACODEC( "WAV", "s16l" )
-    ADD_ACODEC( "WMA", "wma" )
+    ADD_ACODEC( "WMA2", "wma2" )
 #undef ADD_ACODEC
 
 #define ADD_SCALING( factor ) ui.vScaleBox->addItem( factor );
@@ -331,7 +331,7 @@ void VLCProfileEditor::fillProfile( const QString& qs )
     CHECKMUX( FLVMux, "flv" )
     CHECKMUX( MKVMux, "mkv" )
     CHECKMUX( AVIMux, "avi" )
-    CHECKMUX( MJPEGMux, "mjpg" ){}
+    CHECKMUX( MJPEGMux, "mpjpeg" ){}
 #undef CHECKMUX
 
     ui.keepVideo->setChecked( !options[1].toInt() );
@@ -420,7 +420,7 @@ QString VLCProfileEditor::transcodeValue()
     SMUX( FLVMux, "flv" )
     SMUX( MKVMux, "mkv" )
     SMUX( AVIMux, "avi" )
-    SMUX( MJPEGMux, "mjpg" ){}
+    SMUX( MJPEGMux, "mpjpeg" ){}
 #undef SMUX
 
 #define currentData( box ) box->itemData( box->currentIndex() )

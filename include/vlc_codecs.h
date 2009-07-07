@@ -208,6 +208,7 @@ ATTR_PACKED
 #define WAVE_FORMAT_DTS_MS              0x0008 /* Microsoft Corporation */
 #define WAVE_FORMAT_WMAS                0x000a /* WMA 9 Speech */
 #define WAVE_FORMAT_IMA_ADPCM           0x0011 /* Intel Corporation */
+#define WAVE_FORMAT_TRUESPEECH          0x0022 /* TrueSpeech */
 #define WAVE_FORMAT_GSM610              0x0031 /* Microsoft Corporation */
 #define WAVE_FORMAT_MSNAUDIO            0x0032 /* Microsoft Corporation */
 #define WAVE_FORMAT_G726                0x0045 /* ITU-T standard  */
@@ -305,6 +306,7 @@ wave_format_tag_to_fourcc[] =
     { WAVE_FORMAT_ALAW,       VLC_FOURCC( 'a', 'l', 'a', 'w' ), "A-Law" },
     { WAVE_FORMAT_MULAW,      VLC_FOURCC( 'm', 'l', 'a', 'w' ), "Mu-Law" },
     { WAVE_FORMAT_IMA_ADPCM,  VLC_FOURCC( 'm', 's', 0x00,0x11), "Ima-ADPCM" },
+    { WAVE_FORMAT_TRUESPEECH, VLC_FOURCC(0x22, 0x0, 0x0, 0x0 ), "Truespeech" },
     { WAVE_FORMAT_GSM610,     VLC_FOURCC( 'a', 'g', 's', 'm' ), "Microsoft WAV GSM" },
     { WAVE_FORMAT_G726,       VLC_FOURCC( 'g', '7', '2', '6' ), "G.726 ADPCM" },
     { WAVE_FORMAT_MPEGLAYER3, VLC_FOURCC( 'm', 'p', 'g', 'a' ), "Mpeg Audio" },

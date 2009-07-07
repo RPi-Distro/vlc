@@ -2,7 +2,7 @@
  * cdrom.c: cdrom tools
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: a8d0f4dfeae097fdcb0f7c610cfe7c821c2c010d $
+ * $Id: ab00b346cdf32dd0a12b7d0560b9870a9479b0c1 $
  *
  * Authors: Johan Bilien <jobi@via.ecp.fr>
  *          Gildas Bazin <gbazin@netcourrier.com>
@@ -47,6 +47,9 @@
 #endif
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>
+#endif
+#ifdef HAVE_ARPA_INET_H
+#   include <arpa/inet.h>
 #endif
 
 #if defined( SYS_BSDI )

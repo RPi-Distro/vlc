@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id$
+ * $Id: 4fe88b49639ca894fddbf0ab6ec7b0f3cbd53c13 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -112,7 +112,8 @@ typedef struct
 
 typedef struct
 {
-    bool      b_activated;
+    bool            b_activated;
+    bool            b_eof;
 
     unsigned int    i_cat; /* AUDIO_ES, VIDEO_ES */
     vlc_fourcc_t    i_codec;
@@ -361,7 +362,9 @@ static int Open( vlc_object_t * p_this )
         avi_chunk_strf_vids_t *p_vids = NULL;
         es_format_t fmt;
 
-        memset( tk, 0, sizeof( avi_track_t ) );
+        memset( tk, 0, sizeof(*tk) );
+        tk->b_eof = false;
+        tk->b_activated = true;
 
         p_vids = (avi_chunk_strf_vids_t*)AVI_ChunkFind( p_strl, AVIFOURCC_strf, 0 );
         p_auds = (avi_chunk_strf_auds_t*)AVI_ChunkFind( p_strl, AVIFOURCC_strf, 0 );
@@ -673,6 +676,9 @@ aviindex:
                           (mtime_t)p_avih->i_microsecperframe /
                           (mtime_t)1000000 )
     {
+        if( !vlc_object_alive( p_demux) )
+            goto error;
+
         msg_Warn( p_demux, "broken or missing index, 'seek' will be "
                            "approximative or will exhibit strange behavior" );
         if( i_do_index == 0 && !b_index )
@@ -875,7 +881,7 @@ static int Demux_Seekable( demux_t *p_demux )
         avi_track_t *tk = p_sys->track[i_track];
         mtime_t i_dpts;
 
-        toread[i_track].b_ok = tk->b_activated;
+        toread[i_track].b_ok = tk->b_activated && !tk->b_eof;
         if( tk->i_idxposc < tk->i_idxnb )
         {
             toread[i_track].i_posf = tk->p_index[tk->i_idxposc].i_pos;
@@ -1080,7 +1086,7 @@ static int Demux_Seekable( demux_t *p_demux )
         if( ( p_frame = stream_Block( p_demux->s, __EVEN( i_size ) ) )==NULL )
         {
             msg_Warn( p_demux, "failed reading data" );
-            tk->b_activated = false;
+            tk->b_eof = false;
             toread[i_track].b_ok = false;
             continue;
         }
@@ -1338,15 +1344,15 @@ static int Seek( demux_t *p_demux, mtime_t i_date, int i_percent )
             /* try to find chunk that is at i_percent or the file */
             i_pos = __MAX( i_percent * stream_Size( p_demux->s ) / 100,
                            p_sys->i_movi_begin );
-            /* search first selected stream */
+            /* search first selected stream (and prefer non eof ones) */
             for( i_stream = 0, p_stream = NULL;
                         i_stream < p_sys->i_track; i_stream++ )
             {
-                p_stream = p_sys->track[i_stream];
-                if( p_stream->b_activated )
-                {
+                if( !p_stream || p_stream->b_eof )
+                    p_stream = p_sys->track[i_stream];
+
+                if( p_stream->b_activated && !p_stream->b_eof )
                     break;
-                }
             }
             if( !p_stream || !p_stream->b_activated )
             {
@@ -1386,7 +1392,7 @@ static int Seek( demux_t *p_demux, mtime_t i_date, int i_percent )
             if( !p_stream->b_activated )
                 continue;
 
-            AVI_TrackSeek( p_demux, i_stream, i_date );
+            p_stream->b_eof = AVI_TrackSeek( p_demux, i_stream, i_date ) != 0;
         }
         es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, i_date );
         p_sys->i_time = i_date;
@@ -2510,8 +2516,7 @@ static int AVI_TrackStopFinishedStreams( demux_t *p_demux )
         avi_track_t *tk = p_sys->track[i];
         if( tk->i_idxposc >= tk->i_idxnb )
         {
-            tk->b_activated = false;
-            if( tk->p_es ) es_out_Control( p_demux->out, ES_OUT_SET_ES_STATE, tk->p_es, false );
+            tk->b_eof = true;
         }
         else
         {

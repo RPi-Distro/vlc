@@ -2,7 +2,7 @@
  * skin_common.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: c893207325ba1856b323f38c68e9486a4d929ef8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -112,6 +112,12 @@ struct intf_sys_t
 
     /// The playlist thread
     playlist_t *p_playlist;
+
+#ifdef WIN32
+    /// flags in order to terminate properly
+    bool b_exitRequested;
+    bool b_exitOK;
+#endif
 
     /// Message bank subscription
     msg_subscription_t *p_sub;

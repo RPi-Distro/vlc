@@ -2,7 +2,7 @@
  * errors.cpp : Errors
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id$
+ * $Id: a2bd94f73d44c7e92b93bcf86005c70a3967a7cb $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -41,8 +41,6 @@ ErrorsDialog::ErrorsDialog( QWidget *parent, intf_thread_t *_p_intf )
 {
     setWindowTitle( qtr( "Errors" ) );
     resize( 500 , 300 );
-
-    setWindowModality( Qt::ApplicationModal );
 
     QGridLayout *layout = new QGridLayout( this );
 

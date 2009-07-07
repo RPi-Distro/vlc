@@ -2,7 +2,7 @@
  * extended.cpp : Extended controls - Undocked
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id$
+ * $Id: ffc34f0e1abf36ffb2ebf8d97735e3646b3cba18 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -111,6 +111,11 @@ void ExtendedDialog::showTab( int i )
 {
     mainTabW->setCurrentIndex( i );
     show();
+}
+
+int ExtendedDialog::currentTab()
+{
+    return mainTabW->currentIndex();
 }
 
 void ExtendedDialog::changedItem( int i_status )

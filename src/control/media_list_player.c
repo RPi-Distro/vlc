@@ -2,7 +2,7 @@
  * media_list_player.c: libvlc new API media_list player functions
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 6df015fa918293c89c9a8c37dd8c96b6645f4482 $
+ * $Id: ee9a8e0a3663d0993f3891607f96252b7d9cd0f7 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -20,8 +20,17 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
-#include "libvlc_internal.h"
+
 #include <vlc/libvlc.h>
+#include <vlc/libvlc_media.h>
+#include <vlc/libvlc_media_list.h>
+#include <vlc/libvlc_media_player.h>
+#include <vlc/libvlc_media_list_player.h>
+#include <vlc/libvlc_events.h>
+
+#include "libvlc_internal.h"
+
+#include "media_internal.h" // Abuse, could and should be removed
 #include "media_list_path.h"
 
 
@@ -77,7 +86,7 @@ get_next_path( libvlc_media_list_player_t * p_mlp )
                             p_mlp->p_mlist,
                             p_mlp->current_playing_item_path );
 
-    int deepness = libvlc_media_list_path_deepness( p_mlp->current_playing_item_path );
+    int deepness = libvlc_media_list_path_depth( p_mlp->current_playing_item_path );
     if( deepness < 1 || !p_parent_of_playing_item )
         return NULL;
 
@@ -356,6 +365,13 @@ void libvlc_media_list_player_set_media_list(
                                      libvlc_exception_t * p_e )
 {
     vlc_mutex_lock( &p_mlp->object_lock );
+
+    if(!p_mlist)
+    {
+        libvlc_exception_raise( p_e, "No media list provided");
+        vlc_mutex_unlock( &p_mlp->object_lock );
+        return;
+    }
 
     if( libvlc_media_list_player_is_playing( p_mlp, p_e ) )
     {
