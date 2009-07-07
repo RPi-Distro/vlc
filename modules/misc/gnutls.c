@@ -2,7 +2,7 @@
  * gnutls.c
  *****************************************************************************
  * Copyright (C) 2004-2006 Rémi Denis-Courmont
- * $Id$
+ * $Id: a718278cb742a675042461c613c95b9ca5e1447e $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -563,7 +563,10 @@ gnutls_Addx509Directory( vlc_object_t *p_this,
             break;
 
         if ((strcmp (ent, ".") == 0) || (strcmp (ent, "..") == 0))
+        {
+            free( ent );
             continue;
+        }
 
         char path[strlen (psz_dirname) + strlen (ent) + 2];
         sprintf (path, "%s"DIR_SEP"%s", psz_dirname, ent);

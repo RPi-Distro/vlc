@@ -33,7 +33,7 @@ PRE_UNINSTALL = :
 POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
-@BUILD_SKINS_TRUE@am__append_1 = $(DIST_skins2)
+@BUILD_SKINS_TRUE@am__append_1 = skins2/default.vlt $(DIST_skins2)
 @BUILD_PDA_TRUE@am__append_2 = $(DIST_pda)
 @BUILD_HTTPD_TRUE@am__append_3 = $(DIST_http)
 @BUILD_OSDMENU_TRUE@am__append_4 = \
@@ -43,10 +43,9 @@ host_triplet = @host@
 @BUILD_HTTPD_TRUE@@BUILD_LUA_TRUE@am__append_6 = $(DIST_http_lua)
 # TODO: move to the mozilla directory
 @BUILD_MOZILLA_TRUE@am__append_7 = $(DIST_mozilla)
-@BUILD_MAEMO_TRUE@am__append_8 = $(DIST_maemo)
+@BUILD_MAEMO_TRUE@am__append_8 = $(DIST_maemo) $(maemo_FILES)
 subdir = share
-DIST_COMMON = $(am__nobase_dist_vlcdata_DATA_DIST) \
-	$(dist_vlcdata_DATA) $(nobase_dist_data_DATA) \
+DIST_COMMON = $(dist_vlcdata_DATA) $(nobase_dist_data_DATA) \
 	$(nobase_dist_vlcdata_SCRIPTS) $(srcdir)/Makefile.am \
 	$(srcdir)/Makefile.in $(srcdir)/libvlc_win32_rc.rc.in \
 	$(srcdir)/vlc_win32_rc.rc.in
@@ -55,11 +54,9 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vlc.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -72,139 +69,16 @@ am__vpath_adj = case $$p in \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
 am__installdirs = "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(vlcdatadir)" \
-	"$(DESTDIR)$(datadir)" "$(DESTDIR)$(vlcdatadir)" \
-	"$(DESTDIR)$(vlcdatadir)"
+	"$(DESTDIR)$(datadir)" "$(DESTDIR)$(vlcdatadir)"
 nobase_dist_vlcdataSCRIPT_INSTALL = $(install_sh_SCRIPT)
 SCRIPTS = $(nobase_dist_vlcdata_SCRIPTS)
 SOURCES =
 DIST_SOURCES =
 dist_vlcdataDATA_INSTALL = $(INSTALL_DATA)
 nobase_dist_dataDATA_INSTALL = $(install_sh_DATA)
-am__nobase_dist_vlcdata_DATA_DIST = skins2/fonts/FreeSans.ttf \
-	skins2/fonts/FreeSansBold.ttf skins2/skin.dtd \
-	skins2/skin.catalog skins2/winamp2.xml pda-forwardb16x16.xpm \
-	pda-openb16x16.xpm pda-pauseb16x16.xpm pda-playb16x16.xpm \
-	pda-playlistb16x16.xpm pda-preferencesb16x16.xpm \
-	pda-rewindb16x16.xpm pda-stopb16x16.xpm http/.hosts \
-	http/dialogs/.hosts http/dialogs/browse http/dialogs/footer \
-	http/dialogs/input http/dialogs/main http/dialogs/mosaic \
-	http/dialogs/playlist http/dialogs/sout http/dialogs/vlm \
-	http/favicon.ico http/images/delete.png \
-	http/images/delete_small.png http/images/eject.png \
-	http/images/empty.png http/images/fullscreen.png \
-	http/images/help.png http/images/info.png http/images/loop.png \
-	http/images/minus.png http/images/next.png \
-	http/images/pause.png http/images/play.png \
-	http/images/playlist.png http/images/playlist_small.png \
-	http/images/plus.png http/images/prev.png \
-	http/images/refresh.png http/images/repeat.png \
-	http/images/sd.png http/images/shuffle.png \
-	http/images/slider_bar.png http/images/slider_left.png \
-	http/images/slider_point.png http/images/slider_right.png \
-	http/images/snapshot.png http/images/slow.png \
-	http/images/sort.png http/images/sout.png \
-	http/images/speaker.png http/images/speaker_mute.png \
-	http/images/stop.png http/images/vlc16x16.png \
-	http/images/volume_down.png http/images/volume_up.png \
-	http/images/white.png http/images/white_cross_small.png \
-	http/index.html http/js/functions.js http/js/mosaic.js \
-	http/js/vlm.js http/mosaic.html http/old/.hosts \
-	http/old/admin/.access http/old/admin/browse.html \
-	http/old/admin/dboxfiles.html http/old/admin/index.html \
-	http/old/cone_minus.png http/old/cone_plus.png \
-	http/old/index.html http/old/info.html http/old/style.css \
-	http/old/vlm/edit.html http/old/vlm/index.html \
-	http/old/vlm/new.html http/old/vlm/show.html \
-	http/old/webcam.html http/requests/browse.xml \
-	http/requests/playlist.xml http/requests/status.xml \
-	http/requests/vlm.xml http/requests/vlm_cmd.xml \
-	http/requests/readme http/style.css http/iehacks.css \
-	http/vlm.html http/vlm_export.html http/flash.html \
-	osdmenu/default.cfg osdmenu/default/unselected.png \
-	osdmenu/default/selection/bw.png \
-	osdmenu/default/selection/esc.png \
-	osdmenu/default/selection/fw.png \
-	osdmenu/default/selection/volume.png \
-	osdmenu/default/selection/next.png \
-	osdmenu/default/selection/play_pause.png \
-	osdmenu/default/selection/previous.png \
-	osdmenu/default/selection/stop.png \
-	osdmenu/default/selected/bw.png \
-	osdmenu/default/selected/next.png \
-	osdmenu/default/selected/play_pause.png \
-	osdmenu/default/selected/fw.png \
-	osdmenu/default/selected/stop.png \
-	osdmenu/default/selected/previous.png \
-	osdmenu/default/selected/esc.png \
-	osdmenu/default/selected/volume.png \
-	osdmenu/default/volume/volume_00.png \
-	osdmenu/default/volume/volume_01.png \
-	osdmenu/default/volume/volume_02.png \
-	osdmenu/default/volume/volume_03.png \
-	osdmenu/default/volume/volume_04.png \
-	osdmenu/default/volume/volume_05.png \
-	osdmenu/default/volume/volume_06.png \
-	osdmenu/default/volume/volume_07.png \
-	osdmenu/default/volume/volume_08.png \
-	osdmenu/default/volume/volume_09.png \
-	osdmenu/default/volume/volume_10.png lua/README.txt \
-	lua/meta/README.txt lua/meta/01_musicbrainz.lua \
-	lua/meta/10_googleimage.lua lua/playlist/README.txt \
-	lua/playlist/anevia_streams.lua lua/playlist/appletrailers.lua \
-	lua/playlist/break.lua lua/playlist/dailymotion.lua \
-	lua/playlist/france2.lua lua/playlist/joox.lua \
-	lua/playlist/lelombrik.lua lua/playlist/youtube.lua \
-	lua/playlist/youtube_homepage.lua lua/playlist/megavideo.lua \
-	lua/playlist/metacafe.lua lua/playlist/googlevideo.lua \
-	lua/intf/README.txt lua/intf/http.lua lua/intf/rc.lua \
-	lua/intf/hotkeys.lua lua/intf/modules/common.lua \
-	lua/intf/modules/host.lua lua/intf/modules/sandbox.lua \
-	lua/intf/telnet.lua lua/intf/dummy.lua lua/http/.hosts \
-	lua/http/custom.lua lua/http/dialogs/.hosts \
-	lua/http/dialogs/browse lua/http/dialogs/footer \
-	lua/http/dialogs/input lua/http/dialogs/main \
-	lua/http/dialogs/mosaic lua/http/dialogs/playlist \
-	lua/http/dialogs/sout lua/http/dialogs/vlm \
-	lua/http/favicon.ico lua/http/images/delete.png \
-	lua/http/images/delete_small.png lua/http/images/eject.png \
-	lua/http/images/empty.png lua/http/images/fullscreen.png \
-	lua/http/images/help.png lua/http/images/info.png \
-	lua/http/images/loop.png lua/http/images/minus.png \
-	lua/http/images/next.png lua/http/images/pause.png \
-	lua/http/images/play.png lua/http/images/playlist.png \
-	lua/http/images/playlist_small.png lua/http/images/plus.png \
-	lua/http/images/prev.png lua/http/images/refresh.png \
-	lua/http/images/repeat.png lua/http/images/reset.png \
-	lua/http/images/sd.png lua/http/images/shuffle.png \
-	lua/http/images/slider_bar.png lua/http/images/slider_left.png \
-	lua/http/images/slider_point.png \
-	lua/http/images/slider_right.png lua/http/images/snapshot.png \
-	lua/http/images/slow.png lua/http/images/sort.png \
-	lua/http/images/sout.png lua/http/images/speaker.png \
-	lua/http/images/speaker_mute.png lua/http/images/stop.png \
-	lua/http/images/vlc16x16.png lua/http/images/volume_down.png \
-	lua/http/images/volume_up.png lua/http/images/white.png \
-	lua/http/images/white_cross_small.png lua/http/index.html \
-	lua/http/js/functions.js lua/http/js/mosaic.js \
-	lua/http/js/vlm.js lua/http/mosaic.html \
-	lua/http/requests/browse.xml lua/http/requests/playlist.xml \
-	lua/http/requests/status.xml lua/http/requests/vlm.xml \
-	lua/http/requests/vlm_cmd.xml lua/http/requests/readme \
-	lua/http/style.css lua/http/iehacks.css lua/http/vlm.html \
-	lua/http/vlm_export.html lua/http/flash.html \
-	mozilla/fullscreen.xpm mozilla/pause.xpm mozilla/play.xpm \
-	mozilla/skip_next.xpm mozilla/skip_previous.xpm \
-	mozilla/stop.xpm mozilla/time_icon.xpm mozilla/time_line.xpm \
-	mozilla/volume_knob.xpm mozilla/volume_max.xpm \
-	mozilla/volume_mute.xpm mozilla/volume_slider_bar.xpm \
-	maemo/vlc_intf.rc maemo/vlc_left_tab_active.png \
-	maemo/vlc_left_tab_passive.png maemo/playlist.png \
-	maemo/play.png maemo/pause.png maemo/stop.png \
-	maemo/previous.png maemo/next.png maemo/vlc32x32.png
-nobase_dist_vlcdataDATA_INSTALL = $(install_sh_DATA)
 nobase_vlcdataDATA_INSTALL = $(install_sh_DATA)
 DATA = $(dist_vlcdata_DATA) $(nobase_dist_data_DATA) \
-	$(nobase_dist_vlcdata_DATA) $(nobase_vlcdata_DATA)
+	$(nobase_vlcdata_DATA)
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 ACLOCAL = @ACLOCAL@
 ALIASES = @ALIASES@
@@ -259,14 +133,13 @@ DIRECTFB_CONFIG = @DIRECTFB_CONFIG@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
-DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
+ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
@@ -325,7 +198,6 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
-LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
@@ -607,7 +479,6 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
-NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
 NOTIFY_LIBS = @NOTIFY_LIBS@
@@ -619,8 +490,6 @@ OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
-OTOOL = @OTOOL@
-OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -710,7 +579,6 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 ac_ct_OBJC = @ac_ct_OBJC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -742,7 +610,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -775,7 +642,7 @@ nobase_dist_vlcdata_SCRIPTS = \
 	utils/video-vlc-default.sh \
 	$(NULL)
 
-nobase_dist_vlcdata_DATA = $(NULL) $(am__append_1) $(am__append_2) \
+nobase_vlcdata_DATA = $(NULL) $(am__append_1) $(am__append_2) \
 	$(am__append_3) $(am__append_4) $(am__append_5) \
 	$(am__append_6) $(am__append_7) $(am__append_8)
 EXTRA_DIST = \
@@ -790,7 +657,6 @@ EXTRA_DIST = \
 	$(DIST_mozilla) \
 	$(DIST_maemo)
 
-@BUILD_SKINS_TRUE@nobase_vlcdata_DATA = skins2/default.vlt
 DIST_rsrc = \
 	newres.h \
 	resource.h \
@@ -822,34 +688,16 @@ DIST_skins2 = \
 	skins2/winamp2.xml
 
 skins2_default_vlt_FILES = \
-	skins2/default/main/pause_over.png \
-	skins2/default/main/main_up.png \
-	skins2/default/main/timeslider.png \
-	skins2/default/main/main_down.png \
-	skins2/default/main/main.png \
-	skins2/default/main/dvd_prevtitle.png \
-	skins2/default/main/dvd_nexttitle.png \
-	skins2/default/main/dvd_nextchapter.png \
-	skins2/default/main/pause_up.png \
-	skins2/default/main/main_over.png \
-	skins2/default/main/pause_down.png \
-	skins2/default/main/dvd_prevchapter.png \
-	skins2/default/main/vol_bg.png \
-	skins2/default/main/vol_mask.png \
-	skins2/default/main/vol_slider.png \
-	skins2/default/main/dvd_menu.png \
-	skins2/default/switch.png \
-	skins2/default/font.otf \
-	skins2/default/credits.png \
-	skins2/default/theme.xml \
-	skins2/default/playlist/plscroller.png \
-	skins2/default/playlist/playlist_down.png \
-	skins2/default/playlist/playtreeglyphs.png \
-	skins2/default/playlist/playlist_up.png \
-	skins2/default/playlist/playlist_over.png \
-	skins2/default/playlist/playlist.png \
-	skins2/default/minimal.png \
-	skins2/default/equalizer.png
+        skins2/default/theme.xml \
+	skins2/default/subX/about.png \
+	skins2/default/subX/eq.png \
+	skins2/default/subX/font.otf \
+	skins2/default/subX/main.png \
+	skins2/default/subX/playtreeglyphs.png \
+	skins2/default/subX/pl.png \
+	skins2/default/subX/sysbuttons.png \
+	skins2/default/subX/vol_anim.png \
+	skins2/default/subX/vol_slider.png
 
 DIST_http = \
 	http/.hosts \
@@ -904,21 +752,6 @@ DIST_http = \
 	http/js/mosaic.js \
 	http/js/vlm.js \
 	http/mosaic.html \
-	http/old/.hosts \
-	http/old/admin/.access \
-	http/old/admin/browse.html \
-	http/old/admin/dboxfiles.html \
-	http/old/admin/index.html \
-	http/old/cone_minus.png \
-	http/old/cone_plus.png \
-	http/old/index.html \
-	http/old/info.html \
-	http/old/style.css \
-	http/old/vlm/edit.html \
-	http/old/vlm/index.html \
-	http/old/vlm/new.html \
-	http/old/vlm/show.html \
-	http/old/webcam.html \
 	http/requests/browse.xml \
 	http/requests/playlist.xml \
 	http/requests/status.xml \
@@ -1075,13 +908,7 @@ DIST_maemo = \
 	maemo/vlc_intf.rc \
 	maemo/vlc_left_tab_active.png \
 	maemo/vlc_left_tab_passive.png \
-	maemo/playlist.png \
-	maemo/play.png \
-	maemo/pause.png \
-	maemo/stop.png \
-	maemo/previous.png \
-	maemo/next.png \
-	maemo/vlc32x32.png
+	maemo/playlist.png
 
 maemo_FILES = \
 	../modules/gui/qt4/pixmaps/play.png \
@@ -1194,25 +1021,6 @@ uninstall-nobase_dist_dataDATA:
 	  echo " rm -f '$(DESTDIR)$(datadir)/$$f'"; \
 	  rm -f "$(DESTDIR)$(datadir)/$$f"; \
 	done
-install-nobase_dist_vlcdataDATA: $(nobase_dist_vlcdata_DATA)
-	@$(NORMAL_INSTALL)
-	test -z "$(vlcdatadir)" || $(MKDIR_P) "$(DESTDIR)$(vlcdatadir)"
-	@$(am__vpath_adj_setup) \
-	list='$(nobase_dist_vlcdata_DATA)'; for p in $$list; do \
-	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
-	  $(am__vpath_adj) \
-	  echo " $(nobase_dist_vlcdataDATA_INSTALL) '$$d$$p' '$(DESTDIR)$(vlcdatadir)/$$f'"; \
-	  $(nobase_dist_vlcdataDATA_INSTALL) "$$d$$p" "$(DESTDIR)$(vlcdatadir)/$$f"; \
-	done
-
-uninstall-nobase_dist_vlcdataDATA:
-	@$(NORMAL_UNINSTALL)
-	@$(am__vpath_adj_setup) \
-	list='$(nobase_dist_vlcdata_DATA)'; for p in $$list; do \
-	  $(am__vpath_adj) \
-	  echo " rm -f '$(DESTDIR)$(vlcdatadir)/$$f'"; \
-	  rm -f "$(DESTDIR)$(vlcdatadir)/$$f"; \
-	done
 install-nobase_vlcdataDATA: $(nobase_vlcdata_DATA)
 	@$(NORMAL_INSTALL)
 	test -z "$(vlcdatadir)" || $(MKDIR_P) "$(DESTDIR)$(vlcdatadir)"
@@ -1269,7 +1077,7 @@ check-am: all-am
 check: check-am
 all-am: Makefile $(SCRIPTS) $(DATA)
 installdirs:
-	for dir in "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(datadir)" "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(vlcdatadir)"; do \
+	for dir in "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(vlcdatadir)" "$(DESTDIR)$(datadir)" "$(DESTDIR)$(vlcdatadir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -1316,7 +1124,6 @@ info: info-am
 info-am:
 
 install-data-am: install-dist_vlcdataDATA install-nobase_dist_dataDATA \
-	install-nobase_dist_vlcdataDATA \
 	install-nobase_dist_vlcdataSCRIPTS install-nobase_vlcdataDATA
 
 install-dvi: install-dvi-am
@@ -1353,7 +1160,6 @@ ps-am:
 
 uninstall-am: uninstall-dist_vlcdataDATA \
 	uninstall-nobase_dist_dataDATA \
-	uninstall-nobase_dist_vlcdataDATA \
 	uninstall-nobase_dist_vlcdataSCRIPTS \
 	uninstall-nobase_vlcdataDATA
 
@@ -1366,7 +1172,6 @@ uninstall-am: uninstall-dist_vlcdataDATA \
 	install-dvi install-dvi-am install-exec install-exec-am \
 	install-html install-html-am install-info install-info-am \
 	install-man install-nobase_dist_dataDATA \
-	install-nobase_dist_vlcdataDATA \
 	install-nobase_dist_vlcdataSCRIPTS install-nobase_vlcdataDATA \
 	install-pdf install-pdf-am install-ps install-ps-am \
 	install-strip installcheck installcheck-am installdirs \
@@ -1374,7 +1179,6 @@ uninstall-am: uninstall-dist_vlcdataDATA \
 	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
 	uninstall uninstall-am uninstall-dist_vlcdataDATA \
 	uninstall-nobase_dist_dataDATA \
-	uninstall-nobase_dist_vlcdataDATA \
 	uninstall-nobase_dist_vlcdataSCRIPTS \
 	uninstall-nobase_vlcdataDATA
 
@@ -1382,10 +1186,6 @@ uninstall-am: uninstall-dist_vlcdataDATA \
 skins2/default.vlt: $(skins2_default_vlt_FILES)
 	mkdir -p skins2
 	tar cvvzf skins2/default.vlt --exclude .svn -C $(srcdir)/skins2 default/
-
-$(DIST_maemo): $(maemo_FILES)
-	mkdir -p maemo
-	cp -r $+ maemo
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
 .NOEXPORT:

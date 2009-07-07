@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id$
+ * $Id: aa88eab9804ef81f146163fe8d68b70ecca56d9f $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -58,7 +58,7 @@ int OpenIntf ( vlc_object_t *p_this )
     p_intf->p_sys = malloc( sizeof( intf_sys_t ) );
     if( p_intf->p_sys == NULL )
     {
-        return( 1 );
+        return VLC_ENOMEM;
     }
 
     memset( p_intf->p_sys, 0, sizeof( *p_intf->p_sys ) );

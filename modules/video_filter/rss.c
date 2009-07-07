@@ -2,7 +2,7 @@
  * rss.c : rss/atom feed display video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id$
+ * $Id: bb5a330c682a4df693c01c8cf76405e8e3b7e609 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -47,7 +47,7 @@
 #include "vlc_xml.h"
 #include <vlc_charset.h>
 
-#include "vlc_image.h"
+#include <vlc_image.h>
 
 #include <time.h>
 
@@ -632,12 +632,12 @@ static picture_t *LoadImage( filter_t *p_filter, const char *psz_url )
  * remove all ' ' '\t' '\n' '\r' characters from the begining and end of the
  * string.
  ***************************************************************************/
-static char *removeWhiteChars( char *psz_src )
+static char *removeWhiteChars( const char *psz_src )
 {
-    char *psz_src2 = strdup( psz_src );
-    char *psz_clean = strdup( psz_src2 );
-    char *psz_clean2;
+    char *psz_src2,*psz_clean, *psz_clean2;
+    psz_src2 = psz_clean = strdup( psz_src );
     int i;
+
     while( ( *psz_clean == ' ' || *psz_clean == '\t'
            || *psz_clean == '\n' || *psz_clean == '\r' )
            && *psz_clean != '\0' )
@@ -719,6 +719,7 @@ static int FetchRSS( filter_t *p_filter)
         if( !p_stream )
         {
             msg_Err( p_filter, "Failed to open %s for reading", psz_feed );
+            xml_Delete( p_xml );
             return 1;
         }
 
@@ -726,6 +727,7 @@ static int FetchRSS( filter_t *p_filter)
         if( !p_xml_reader )
         {
             msg_Err( p_filter, "Failed to open %s for parsing", psz_feed );
+            xml_Delete( p_xml );
             return 1;
         }
 

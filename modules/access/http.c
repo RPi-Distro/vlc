@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: d6cb6334a8c2048fd85a47ddfc4a058608b669f0 $
+ * $Id: e21a4b1c1c0ca7cb11968b6828e4f4040bc52af8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -452,14 +452,7 @@ connect:
                       p_sys->auth.psz_realm );
         if( psz_login != NULL && psz_password != NULL )
         {
-            msg_Dbg( p_access, "retrying with user=%s, pwd=%s",
-                     psz_login,
-#if 1
-                     "yeah right, like we're going to print a password."
-#else
-                     psz_password
-#endif
-                );
+            msg_Dbg( p_access, "retrying with user=%s", psz_login );
             p_sys->url.psz_username = psz_login;
             p_sys->url.psz_password = psz_password;
             Disconnect( p_access );
@@ -502,6 +495,9 @@ connect:
 
         Disconnect( p_access );
         cookies = p_sys->cookies;
+#ifdef HAVE_ZLIB_H
+        inflateEnd( &p_sys->inflate.stream );
+#endif
         free( p_sys );
 
         /* Do new Open() run with new data */
@@ -819,7 +815,10 @@ static int ReadICYMeta( access_t *p_access )
     psz_meta = malloc( i_read + 1 );
     if( net_Read( p_access, p_sys->fd, p_sys->p_vs,
                   (uint8_t *)psz_meta, i_read, true ) != i_read )
+    {
+        free( psz_meta );
         return VLC_EGENERIC;
+    }
 
     psz_meta[i_read] = '\0'; /* Just in case */
 
@@ -1113,7 +1112,7 @@ static int Connect( access_t *p_access, int64_t i_tell )
 
         /* TLS/SSL handshake */
         p_sys->p_tls = tls_ClientCreate( VLC_OBJECT(p_access), p_sys->fd,
-                                         srv.psz_host );
+                                         p_sys->url.psz_host );
         if( p_sys->p_tls == NULL )
         {
             msg_Err( p_access, "cannot establish HTTP/TLS session" );

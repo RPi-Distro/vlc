@@ -2,7 +2,7 @@
  * demux.c :  Lua playlist demux module
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id$
+ * $Id: d7f4445bf0ced0fdaf02b7567cdd43de7a4c8449 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -27,6 +27,8 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <assert.h>
 
 #include <vlc_common.h>
 #include <vlc_demux.h>
@@ -72,10 +74,12 @@ static int vlclua_demux_peek( lua_State *L )
 static int vlclua_demux_read( lua_State *L )
 {
     demux_t *p_demux = (demux_t *)vlclua_get_this( L );
-    uint8_t *p_read;
+    const uint8_t *p_read;
     int n = luaL_checkint( L, 1 );
-    int i_read = stream_Read( p_demux->s, &p_read, n );
+    int i_read = stream_Peek( p_demux->s, &p_read, n );
     lua_pushlstring( L, (const char *)p_read, i_read );
+    int i_seek = stream_Read( p_demux->s, NULL, i_read );
+    assert(i_read==i_seek);
     return 1;
 }
 

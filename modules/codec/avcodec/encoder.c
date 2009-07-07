@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id$
+ * $Id: 1eb037f278130656c71d4e289bfca9d95ed55a31 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -678,7 +678,7 @@ int OpenEncoder( vlc_object_t *p_this )
                 msg_Err( p_enc, "cannot open encoder" );
                 dialog_Fatal( p_enc,
                                 _("Streaming / Transcoding failed"),
-                                _("VLC could not open the encoder.") );
+                                "%s", _("VLC could not open the encoder.") );
                 free( p_sys );
                 return VLC_EGENERIC;
             }
@@ -687,7 +687,7 @@ int OpenEncoder( vlc_object_t *p_this )
         {
             msg_Err( p_enc, "cannot open encoder" );
             dialog_Fatal( p_enc, _("Streaming / Transcoding failed"),
-                            _("VLC could not open the encoder.") );
+                            "%s", _("VLC could not open the encoder.") );
             free( p_sys );
             return VLC_EGENERIC;
         }

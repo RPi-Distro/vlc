@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: f0e87d246489be4ccfc6b104ec4f0a2e665c01e1 $
+ * $Id: a550ccac2dd2fd8590ac43a516442be6b702f453 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -59,8 +59,6 @@ unsigned int CocoaKeyToVLC( unichar i_key );
  *****************************************************************************/
 struct intf_sys_t
 {
-    NSAutoreleasePool * o_pool;
-
     /* special actions */
     bool b_mute;
     int i_play_status;

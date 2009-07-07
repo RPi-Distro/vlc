@@ -2,7 +2,7 @@
  * macro.c : Custom <vlc> macro handling
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id$
+ * $Id: 22e323177a4ac9e3ab9db8d0f4a946040e24f916 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -235,7 +235,7 @@ static void MacroDo( httpd_file_sys_t *p_args,
                         p_vout = input_GetVout( p_sys->p_input );
                         if( p_vout )
                         {
-                            p_vout->i_changes |= VOUT_FULLSCREEN_CHANGE;
+                            var_SetBool( p_vout, "fullscreen", !var_GetBool( p_vout, "fullscreen" ) );
                             vlc_object_release( p_vout );
                             msg_Dbg( p_intf, "requested fullscreen toggle" );
                         }

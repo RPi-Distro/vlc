@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
  *
- * $Id: 939ed5941783135e87d7189cc77e598edf4c2c09 $
+ * $Id: 9de23606c067a678eb12a250120f4408176ed46c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Filippo Carone <littlejohn@videolan.org>
@@ -25,11 +25,16 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "libvlc_internal.h"
-
 #include <vlc/libvlc.h>
+#include <vlc/libvlc_media.h>
+#include <vlc/libvlc_media_player.h>
+
+#include <vlc_common.h>
 #include <vlc_input.h>
 #include <vlc_vout.h>
+
+#include "media_player_internal.h"
+#include "libvlc_internal.h"
 
 /*
  * Remember to release the returned vout_thread_t.
@@ -730,7 +735,7 @@ void libvlc_video_set_track( libvlc_media_player_t *p_mi, int i_track,
         vlc_value_t val = val_list.p_list->p_values[i];
         if( i_track == val.i_int )
         {
-            i_ret = var_Set( p_input_thread, "audio-es", val );
+            i_ret = var_Set( p_input_thread, "video-es", val );
             if( i_ret < 0 )
                 libvlc_exception_raise( p_e, "Setting video track failed" );
             goto end;

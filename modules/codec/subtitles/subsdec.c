@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: aa5ca570d66a0dcc1690dd4ec60ba2f80e658ce8 $
+ * $Id: 0830dbf20de452911a7d8bc8d5623ac489abc70b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -84,8 +84,8 @@ static const char *const ppsz_encodings[] = {
     "ISO-2022-JP-2",
     "EUC-JP",
     "Shift_JIS",
+    "CP949",
     "ISO-2022-KR",
-    "EUC-KR",
     "Big5",
     "ISO-2022-TW",
     "Big5-HKSCS",
@@ -147,8 +147,8 @@ static const char *const ppsz_encoding_names[] = {
     N_("Japanese (7-bits JIS/ISO-2022-JP-2)"),
     N_("Japanese Unix (EUC-JP)"),
     N_("Japanese (Shift JIS)"),
+    N_("Korean (EUC-KR/CP949)"),
     N_("Korean (ISO-2022-KR)"),
-    N_("Korean Unix (EUC-KR)"),
     N_("Traditional Chinese (Big5)"),
     N_("Traditional Chinese Unix (EUC-TW)"),
     N_("Hong-Kong Supplementary (HKSCS)"),

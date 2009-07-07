@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id$
+ * $Id: e5101880fa115e40139e107211f377624257cc40 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -985,10 +985,30 @@ bool matroska_segment_c::Select( mtime_t i_start_time )
         }
         else if( !strcmp( tracks[i_track]->psz_codec, "A_TTA1" ) )
         {
-            tracks[i_track]->fmt.i_codec = VLC_FOURCC( 'T', 'T', 'A', '1' );
-            tracks[i_track]->fmt.i_extra = tracks[i_track]->i_extra_data;
-            tracks[i_track]->fmt.p_extra = malloc( tracks[i_track]->i_extra_data );
-            memcpy( tracks[i_track]->fmt.p_extra, tracks[i_track]->p_extra_data, tracks[i_track]->i_extra_data );
+            p_fmt->i_codec = VLC_FOURCC( 'T', 'T', 'A', '1' );
+            p_fmt->i_extra = p_tk->i_extra_data;
+            if( p_fmt->i_extra > 0 )
+            {
+                p_fmt->p_extra = malloc( p_tk->i_extra_data );
+                if( !p_fmt->p_extra )
+                    abort();
+                memcpy( p_fmt->p_extra, p_tk->p_extra_data, p_tk->i_extra_data );
+            }
+            else
+            {
+                p_fmt->i_extra = 30;
+                p_fmt->p_extra = malloc( p_fmt->i_extra );
+                if( !p_fmt->p_extra )
+                    abort();
+                uint8_t *p_extra = (uint8_t*)p_fmt->p_extra;
+                memcpy( &p_extra[ 0], "TTA1", 4 );
+                SetWLE( &p_extra[ 4], 1 );
+                SetWLE( &p_extra[ 6], p_fmt->audio.i_channels );
+                SetWLE( &p_extra[ 8], p_fmt->audio.i_bitspersample );
+                SetDWLE( &p_extra[10], p_fmt->audio.i_rate );
+                SetDWLE( &p_extra[14], 0xffffffff );
+                memset( &p_extra[18], 0, 30  - 18 );
+            }
         }
         else if( !strcmp( tracks[i_track]->psz_codec, "A_PCM/INT/BIG" ) ||
                  !strcmp( tracks[i_track]->psz_codec, "A_PCM/INT/LIT" ) ||

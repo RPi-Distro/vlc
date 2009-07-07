@@ -2,7 +2,7 @@
  * cmd_fullscreen.cpp
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id$
+ * $Id: b3bae4fcf0a2ebe9387e40a4720280424c30e137 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -37,7 +37,7 @@ void CmdFullscreen::execute()
     if( pVout )
     {
         // Switch to fullscreen
-        pVout->i_changes |= VOUT_FULLSCREEN_CHANGE;
+        var_SetBool( pVout, "fullscreen", !var_GetBool( pVout, "fullscreen" ) );
         vlc_object_release( pVout );
     }
 }

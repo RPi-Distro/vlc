@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id$
+ * $Id: 71263b1ac5426ff5e46bf98bdf23d3145c319592 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont
@@ -221,27 +221,6 @@ static void Close( vlc_object_t * p_this )
     free (p_sys);
 }
 
-/**
- * URI-encodes a file path. The only reserved characters is slash.
- */
-static char *encode_path (const char *path)
-{
-    static const char sep[]= "%2F";
-    char *enc = encode_URI_component (path), *ptr = enc;
-
-    if (enc == NULL)
-        return NULL;
-
-    /* Replace '%2F' with '/'. TODO: extend encode_URI*() */
-    /* (On Windows, both ':' and '\\' will be encoded) */
-    while ((ptr = strstr (ptr, sep)) != NULL)
-    {
-        *ptr++ = '/';
-        memmove (ptr, ptr + 2, strlen (ptr) - 1);
-    }
-    return enc;
-}
-
 /* Detect directories that recurse into themselves. */
 static bool has_inode_loop (const directory_t *dir)
 {
@@ -287,7 +266,7 @@ static block_t *Block (access_t *p_access)
         current->parent = NULL;
         current->handle = p_sys->handle;
         strcpy (current->path, p_access->psz_path);
-        current->uri = encode_path (current->path);
+        current->uri = make_URI (current->path);
         if ((current->uri == NULL)
          || fstat (dirfd (current->handle), &current->st))
         {
@@ -307,6 +286,7 @@ static block_t *Block (access_t *p_access)
     {   /* End of directory, go back to parent */
         closedir (current->handle);
         p_sys->current = current->parent;
+        free (current->uri);
         free (current);
 
         if (p_sys->current == NULL)
@@ -346,14 +326,20 @@ static block_t *Block (access_t *p_access)
 
     /* Skip current, parent and hidden directories */
     if (entry[0] == '.')
+    {
+        free (entry);
         return NULL;
+    }
     /* Handle recursion */
     if (p_sys->mode != MODE_COLLAPSE)
     {
         directory_t *sub = malloc (sizeof (*sub) + strlen (current->path) + 1
                                                  + strlen (entry));
         if (sub == NULL)
+        {
+            free (entry);
             return NULL;
+        }
         sprintf (sub->path, "%s/%s", current->path, entry);
 
         DIR *handle = utf8_opendir (sub->path);
@@ -373,7 +359,9 @@ static block_t *Block (access_t *p_access)
              || has_inode_loop (sub)
              || (sub->uri == NULL))
             {
+                free (entry);
                 closedir (handle);
+                free (sub->uri);
                 free (sub);
                 return NULL;
             }
@@ -382,9 +370,13 @@ static block_t *Block (access_t *p_access)
             /* Add node to xspf extension */
             char *old_xspf_extension = p_sys->psz_xspf_extension;
             if (old_xspf_extension == NULL)
+            {
+                free (entry);
                 goto fatal;
+            }
 
             char *title = convert_xml_special_chars (entry);
+            free (entry);
             if (title == NULL
              || asprintf (&p_sys->psz_xspf_extension, "%s"
                           "  <vlc:node title=\"%s\">\n", old_xspf_extension,
@@ -417,7 +409,10 @@ static block_t *Block (access_t *p_access)
 
                 if (type + extlen == end
                  && !strncasecmp (ext, type, extlen))
+                {
+                    free (entry);
                     return NULL;
+                }
 
                 if (*end == '\0')
                     break;
@@ -430,7 +425,7 @@ static block_t *Block (access_t *p_access)
     if (encoded == NULL)
         goto fatal;
     int len = asprintf (&entry,
-                        "  <track><location>file://%s/%s</location>\n" \
+                        "  <track><location>%s/%s</location>\n" \
                         "   <extension application=\"http://www.videolan.org/vlc/playlist/0\">\n" \
                         "    <vlc:id>%d</vlc:id>\n" \
                         "   </extension>\n" \

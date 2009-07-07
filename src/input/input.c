@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
- * $Id: 01bc04ffe2a60aa5d529abcab51441bde8bff783 $
+ * $Id: b18914b8c78b6d369f7b2ec8f8093d20471a407a $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -592,14 +592,14 @@ exit:
  * MainLoopDemux
  * It asks the demuxer to demux some data
  */
-static void MainLoopDemux( input_thread_t *p_input, bool *pb_changed, mtime_t *pi_start_mdate )
+static void MainLoopDemux( input_thread_t *p_input, bool *pb_changed, mtime_t i_start_mdate )
 {
     int i_ret;
 
     *pb_changed = false;
 
     if( ( p_input->p->i_stop > 0 && p_input->p->i_time >= p_input->p->i_stop ) ||
-        ( p_input->p->i_run > 0 && *pi_start_mdate+p_input->p->i_run < mdate() ) )
+        ( p_input->p->i_run > 0 && i_start_mdate+p_input->p->i_run < mdate() ) )
         i_ret = 0; /* EOF */
     else
         i_ret = demux_Demux( p_input->p->input.p_demux );
@@ -629,56 +629,8 @@ static void MainLoopDemux( input_thread_t *p_input, bool *pb_changed, mtime_t *p
 
     if( i_ret == 0 )    /* EOF */
     {
-        int i_repeat = var_GetInteger( p_input, "input-repeat" );
-        if( i_repeat == 0 )
-        {
-            /* End of file - we do not set b_die because only the
-             * playlist is allowed to do so. */
-            msg_Dbg( p_input, "EOF reached" );
-            p_input->p->input.b_eof = true;
-        }
-        else
-        {
-            vlc_value_t val;
-
-            msg_Dbg( p_input, "repeating the same input (%d)", i_repeat );
-            if( i_repeat > 0 )
-            {
-                i_repeat--;
-                var_SetInteger( p_input, "input-repeat", i_repeat );
-            }
-
-            /* Seek to start title/seekpoint */
-            val.i_int = p_input->p->input.i_title_start -
-                p_input->p->input.i_title_offset;
-            if( val.i_int < 0 || val.i_int >= p_input->p->input.i_title )
-                val.i_int = 0;
-            input_ControlPush( p_input,
-                               INPUT_CONTROL_SET_TITLE, &val );
-
-            val.i_int = p_input->p->input.i_seekpoint_start -
-                p_input->p->input.i_seekpoint_offset;
-            if( val.i_int > 0 /* TODO: check upper boundary */ )
-                input_ControlPush( p_input,
-                                   INPUT_CONTROL_SET_SEEKPOINT, &val );
-
-            /* Seek to start position */
-            if( p_input->p->i_start > 0 )
-            {
-                val.i_time = p_input->p->i_start;
-                input_ControlPush( p_input, INPUT_CONTROL_SET_TIME,
-                                   &val );
-            }
-            else
-            {
-                val.f_float = 0.0;
-                input_ControlPush( p_input, INPUT_CONTROL_SET_POSITION,
-                                   &val );
-            }
-
-            /* */
-            *pi_start_mdate = mdate();
-        }
+        msg_Dbg( p_input, "EOF reached" );
+        p_input->p->input.b_eof = true;
     }
     else if( i_ret < 0 )
     {
@@ -689,6 +641,52 @@ static void MainLoopDemux( input_thread_t *p_input, bool *pb_changed, mtime_t *p
     {
         SlaveDemux( p_input );
     }
+}
+
+static int MainLoopTryRepeat( input_thread_t *p_input, mtime_t *pi_start_mdate )
+{
+    int i_repeat = var_GetInteger( p_input, "input-repeat" );
+    if( i_repeat == 0 )
+        return VLC_EGENERIC;
+
+    vlc_value_t val;
+
+    msg_Dbg( p_input, "repeating the same input (%d)", i_repeat );
+    if( i_repeat > 0 )
+    {
+        i_repeat--;
+        var_SetInteger( p_input, "input-repeat", i_repeat );
+    }
+
+    /* Seek to start title/seekpoint */
+    val.i_int = p_input->p->input.i_title_start -
+        p_input->p->input.i_title_offset;
+    if( val.i_int < 0 || val.i_int >= p_input->p->input.i_title )
+        val.i_int = 0;
+    input_ControlPush( p_input,
+                       INPUT_CONTROL_SET_TITLE, &val );
+
+    val.i_int = p_input->p->input.i_seekpoint_start -
+        p_input->p->input.i_seekpoint_offset;
+    if( val.i_int > 0 /* TODO: check upper boundary */ )
+        input_ControlPush( p_input,
+                           INPUT_CONTROL_SET_SEEKPOINT, &val );
+
+    /* Seek to start position */
+    if( p_input->p->i_start > 0 )
+    {
+        val.i_time = p_input->p->i_start;
+        input_ControlPush( p_input, INPUT_CONTROL_SET_TIME, &val );
+    }
+    else
+    {
+        val.f_float = 0.0;
+        input_ControlPush( p_input, INPUT_CONTROL_SET_POSITION, &val );
+    }
+
+    /* */
+    *pi_start_mdate = mdate();
+    return VLC_SUCCESS;
 }
 
 /**
@@ -771,7 +769,7 @@ static void MainLoop( input_thread_t *p_input )
         {
             if( !p_input->p->input.b_eof )
             {
-                MainLoopDemux( p_input, &b_force_update, &i_start_mdate );
+                MainLoopDemux( p_input, &b_force_update, i_start_mdate );
 
                 i_wakeup = es_out_GetWakeup( p_input->p->p_es_out );
             }
@@ -782,7 +780,8 @@ static void MainLoop( input_thread_t *p_input )
             }
             else
             {
-                break;
+                if( MainLoopTryRepeat( p_input, &i_start_mdate ) )
+                    break;
             }
         }
 
@@ -2344,6 +2343,47 @@ static int InputSourceInit( input_thread_t *p_input,
     /* Split uri */
     input_SplitMRL( &psz_access, &psz_demux, &psz_path, psz_dup );
 
+    /* FIXME: file:// handling plugins do not support URIs properly...
+     * So we pre-decoded the URI to a path for them. Note that we do not do it
+     * for non-standard VLC-specific schemes. */
+    if( !strcmp( psz_access, "file" ) )
+    {
+        if( psz_path[0] != '/'
+#if (DIR_SEP_CHAR != '/')
+            /* We accept invalid URIs too. */
+            && psz_path[0] != DIR_SEP_CHAR
+#endif
+          )
+        {   /* host specified -> only localhost is supported */
+            static const unsigned localhostLen = 9; /* strlen("localhost") */
+            if (!strncmp( psz_path, "localhost" DIR_SEP, localhostLen + 1))
+                psz_path += localhostLen;
+            else
+            {
+                msg_Err( p_input, "cannot open remote file `%s://%s'",
+                        psz_access, psz_path );
+                msg_Info( p_input, "Did you mean `%s:///%s'?",
+                         psz_access, psz_path );
+                goto error;
+            }
+        }
+        /* Remove HTML anchor if present (not supported). */
+        char *p = strchr( psz_path, '#' );
+        if( p )
+            *p = '\0';
+        /* Then URI-decode the path. */
+        decode_URI( psz_path );
+#if defined( WIN32 ) && !defined( UNDER_CE )
+        /* Strip leading slash in front of the drive letter */
+        psz_path++;
+#endif
+#if (DIR_SEP_CHAR != '/')
+        /* Turn slashes into anti-slashes */
+        for( char *s = strchr( psz_path, '/' ); s; s = strchr( s + 1, '/' ) )
+            *s = DIR_SEP_CHAR;
+#endif
+    }
+
     msg_Dbg( p_input, "`%s' gives access `%s' demux `%s' path `%s'",
              psz_mrl, psz_access, psz_demux, psz_path );
     if( !p_input->b_preparsing )
@@ -2443,25 +2483,16 @@ static int InputSourceInit( input_thread_t *p_input,
     {
         /* Now try a real access */
         in->p_access = access_New( p_input, psz_access, psz_demux, psz_path );
-
-        /* Access failed, URL encoded ? */
-        if( in->p_access == NULL && strchr( psz_path, '%' ) )
-        {
-            decode_URI( psz_path );
-
-            msg_Dbg( p_input, "retrying with access `%s' demux `%s' path `%s'",
-                     psz_access, psz_demux, psz_path );
-
-            in->p_access = access_New( p_input,
-                                        psz_access, psz_demux, psz_path );
-        }
         if( in->p_access == NULL )
         {
-            msg_Err( p_input, "open of `%s' failed: %s", psz_mrl,
-                                                         msg_StackMsg() );
-            dialog_Fatal( p_input, _("Your input can't be opened"),
-                          _("VLC is unable to open the MRL '%s'."
-                            " Check the log for details."), psz_mrl );
+            if( vlc_object_alive( p_input ) )
+            {
+                msg_Err( p_input, "open of `%s' failed: %s", psz_mrl,
+                                                             msg_StackMsg() );
+                dialog_Fatal( p_input, _("Your input can't be opened"),
+                              _("VLC is unable to open the MRL '%s'."
+                                " Check the log for details."), psz_mrl );
+            }
             goto error;
         }
 
@@ -2588,12 +2619,15 @@ static int InputSourceInit( input_thread_t *p_input,
 
         if( in->p_demux == NULL )
         {
-            msg_Err( p_input, "no suitable demux module for `%s/%s://%s'",
-                     psz_access, psz_demux, psz_path );
-            dialog_Fatal( VLC_OBJECT( p_input ),
-                          _("VLC can't recognize the input's format"),
-                          _("The format of '%s' cannot be detected. "
-                            "Have a look at the log for details."), psz_mrl );
+            if( vlc_object_alive( p_input ) )
+            {
+                msg_Err( p_input, "no suitable demux module for `%s/%s://%s'",
+                         psz_access, psz_demux, psz_path );
+                dialog_Fatal( VLC_OBJECT( p_input ),
+                              _("VLC can't recognize the input's format"),
+                              _("The format of '%s' cannot be detected. "
+                                "Have a look at the log for details."), psz_mrl );
+            }
             goto error;
         }
 
@@ -2990,7 +3024,7 @@ static void InputGetExtraFiles( input_thread_t *p_input,
         { ".part1.rar",   "%s.part%.1d.rar",2, 9 },
         { ".part01.rar",  "%s.part%.2d.rar",2, 99, },
         { ".part001.rar", "%s.part%.3d.rar",2, 999 },
-        { ".rar",         "%s.r%.2d",       1, 99 },
+        { ".rar",         "%s.r%.2d",       0, 99 },
         { NULL, NULL, 0, 0 }
     };
 

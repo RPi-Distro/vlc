@@ -538,9 +538,32 @@ LibvlcInputNPObject::setProperty(int index, const NPVariant &value)
 const NPUTF8 * const LibvlcInputNPObject::methodNames[] =
 {
     /* no methods */
+    "none",
+};
+COUNTNAMES(LibvlcInputNPObject,methodCount,methodNames);
+
+enum LibvlcInputNPObjectMethodIds
+{
+    ID_none,
 };
 
-COUNTNAMES(LibvlcInputNPObject,methodCount,methodNames);
+RuntimeNPObject::InvokeResult
+LibvlcInputNPObject::invoke(int index, const NPVariant *args,
+                                    uint32_t argCount, NPVariant &result)
+{
+    /* is plugin still running */
+    if( isPluginRunning() )
+    {
+        switch( index )
+        {
+            case ID_none:
+                return INVOKERESULT_NO_SUCH_METHOD;
+            default:
+                ;
+        }
+    }
+    return INVOKERESULT_GENERIC_ERROR;
+}
 
 /*
 ** implementation of libvlc playlist items object
@@ -754,6 +777,9 @@ LibvlcPlaylistNPObject::invoke(int index, const NPVariant *args,
                 char *url = NULL;
 
                 // grab URL
+                if( NPVARIANT_IS_NULL(args[0]) )
+                    return INVOKERESULT_NO_SUCH_METHOD;
+
                 if( NPVARIANT_IS_STRING(args[0]) )
                 {
                     char *s = stringValue(NPVARIANT_TO_STRING(args[0]));
@@ -966,7 +992,7 @@ void LibvlcPlaylistNPObject::parseOptions(const NPString &nps,
                             if( ! moreOptions )
                             {
                                 /* failed to allocate more memory */
-			        free(s);
+                                free(s);
                                 /* return what we got so far */
                                 *i_options = nOptions;
                                 *ppsz_options = options;
@@ -1043,6 +1069,7 @@ void LibvlcPlaylistNPObject::parseOptions(NPObject *obj, int *i_options,
                     }
 
                     options[nOptions++] = stringValue(value);
+                    NPN_ReleaseVariantValue(&value);
                 }
                 *i_options = nOptions;
                 *ppsz_options = options;

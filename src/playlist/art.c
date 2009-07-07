@@ -2,7 +2,7 @@
  * art.c : Art metadata handling
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id$
+ * $Id: 8b65121b48f777ff5c081875bd6bc5531931342b $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org
@@ -32,6 +32,8 @@
 #include <vlc_charset.h>
 #include <vlc_strings.h>
 #include <vlc_stream.h>
+#include <vlc_url.h>
+
 #include <limits.h>                                             /* PATH_MAX */
 
 #ifdef HAVE_SYS_STAT_H
@@ -132,7 +134,7 @@ static char *ArtCacheName( input_item_t *p_item, const char *psz_type )
 
     char *psz_ext = filename_sanitize( psz_type ? psz_type : "" );
     char *psz_filename;
-    if( asprintf( &psz_filename, "file://%s" DIR_SEP "art%s", psz_path, psz_ext ) < 0 )
+    if( asprintf( &psz_filename, "%s" DIR_SEP "art%s", psz_path, psz_ext ) < 0 )
         psz_filename = NULL;
 
     free( psz_ext );
@@ -164,12 +166,19 @@ int playlist_FindArtInCache( input_item_t *p_item )
         if( !strncmp( psz_filename, "art", 3 ) )
         {
             char *psz_file;
-            if( asprintf( &psz_file, "file://%s" DIR_SEP "%s",
+            if( asprintf( &psz_file, "%s" DIR_SEP "%s",
                           psz_path, psz_filename ) < 0 )
                 psz_file = NULL;
             if( psz_file )
-                input_item_SetArtURL( p_item, psz_file );
-            free( psz_file );
+            {
+                char *psz_uri = make_URI( psz_file );
+                if( psz_uri )
+                {
+                    input_item_SetArtURL( p_item, psz_uri );
+                    free( psz_uri );
+                }
+                free( psz_file );
+            }
 
             b_found = true;
         }
@@ -192,17 +201,25 @@ int playlist_SaveArt( playlist_t *p_playlist, input_item_t *p_item,
     if( !psz_filename )
         return VLC_EGENERIC;
 
+    char *psz_uri = make_URI( psz_filename );
+    if( !psz_uri )
+    {
+        free( psz_filename );
+        return VLC_EGENERIC;
+    }
+
     /* Check if we already dumped it */
     struct stat s;
-    if( !utf8_stat( psz_filename+7, &s ) )
+    if( !utf8_stat( psz_filename, &s ) )
     {
-        input_item_SetArtURL( p_item, psz_filename );
+        input_item_SetArtURL( p_item, psz_uri );
         free( psz_filename );
+        free( psz_uri );
         return VLC_SUCCESS;
     }
 
     /* Dump it otherwise */
-    FILE *f = utf8_fopen( psz_filename+7, "wb" );
+    FILE *f = utf8_fopen( psz_filename, "wb" );
     if( f )
     {
         if( fwrite( p_buffer, i_buffer, 1, f ) != 1 )
@@ -212,11 +229,12 @@ int playlist_SaveArt( playlist_t *p_playlist, input_item_t *p_item,
         else
         {
             msg_Dbg( p_playlist, "album art saved to %s", psz_filename );
-            input_item_SetArtURL( p_item, psz_filename );
+            input_item_SetArtURL( p_item, psz_uri );
         }
         fclose( f );
     }
     free( psz_filename );
+    free( psz_uri );
     return VLC_SUCCESS;
 }
 

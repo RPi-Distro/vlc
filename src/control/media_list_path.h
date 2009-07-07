@@ -25,6 +25,25 @@
 #ifndef _LIBVLC_MEDIA_LIST_PATH_H
 #define _LIBVLC_MEDIA_LIST_PATH_H 1
 
+typedef int * libvlc_media_list_path_t; /* (Media List Player Internal) */
+
+/**************************************************************************
+ *       path_dump (Media List Player Internal)
+ **************************************************************************/
+static inline void libvlc_media_list_path_dump( const libvlc_media_list_path_t path )
+{
+    if(!path)
+    {
+        printf("NULL path\n");
+        return;
+    }
+
+    int i;
+    for(i = 0; path[i] != -1; i++)
+        printf("%s%d", i > 0 ? "/" : "", path[i]);
+    printf("\n");
+}
+
 /**************************************************************************
  *       path_empty (Media List Player Internal)
  **************************************************************************/
@@ -47,9 +66,9 @@ static inline libvlc_media_list_path_t libvlc_media_list_path_with_root_index( i
 }
 
 /**************************************************************************
- *       path_deepness (Media List Player Internal)
+ *       path_deepth (Media List Player Internal)
  **************************************************************************/
-static inline int libvlc_media_list_path_deepness( libvlc_media_list_path_t path )
+static inline int libvlc_media_list_path_depth( const libvlc_media_list_path_t path )
 {
     int i;
     for( i = 0; path[i] != -1; i++ );
@@ -61,35 +80,35 @@ static inline int libvlc_media_list_path_deepness( libvlc_media_list_path_t path
  **************************************************************************/
 static inline void libvlc_media_list_path_append( libvlc_media_list_path_t * p_path, int index )
 {
-    int old_deepness = libvlc_media_list_path_deepness( *p_path );
-    *p_path = realloc( *p_path, sizeof(int)*(old_deepness+2));
-    *p_path[old_deepness] = index;
-    *p_path[old_deepness+1] = -1;
+    int old_deepth = libvlc_media_list_path_depth( *p_path );
+    *p_path = realloc( *p_path, sizeof(int)*(old_deepth+2));
+    *p_path[old_deepth] = index;
+    *p_path[old_deepth+1] = -1;
 }
 
 /**************************************************************************
  *       path_copy_by_appending (Media List Player Internal)
  **************************************************************************/
-static inline libvlc_media_list_path_t libvlc_media_list_path_copy_by_appending( libvlc_media_list_path_t path, int index )
+static inline libvlc_media_list_path_t libvlc_media_list_path_copy_by_appending( const libvlc_media_list_path_t path, int index )
 {
     libvlc_media_list_path_t ret;
-    int old_deepness = libvlc_media_list_path_deepness( path );
-    ret = malloc( sizeof(int)*(old_deepness+2) );
-    memcpy( ret, path, sizeof(int)*(old_deepness+2) );
-    ret[old_deepness] = index;
-    ret[old_deepness+1] = -1;
+    int old_depth = libvlc_media_list_path_depth( path );
+    ret = malloc( sizeof(int) * (old_depth + 2) );
+    memcpy( ret, path, sizeof(int) * old_depth );
+    ret[old_depth] = index;
+    ret[old_depth+1] = -1;
     return ret;
 }
 
 /**************************************************************************
  *       path_copy (Media List Player Internal)
  **************************************************************************/
-static inline libvlc_media_list_path_t libvlc_media_list_path_copy( libvlc_media_list_path_t path )
+static inline libvlc_media_list_path_t libvlc_media_list_path_copy( const libvlc_media_list_path_t path )
 {
     libvlc_media_list_path_t ret;
-    int deepness = libvlc_media_list_path_deepness( path );
-    ret = malloc( sizeof(int)*(deepness+1) );
-    memcpy( ret, path, sizeof(int)*(deepness+1) );
+    int depth = libvlc_media_list_path_depth( path );
+    ret = malloc( sizeof(int)*(depth+1) );
+    memcpy( ret, path, sizeof(int)*(depth+1) );
     return ret;
 }
 
@@ -97,7 +116,7 @@ static inline libvlc_media_list_path_t libvlc_media_list_path_copy( libvlc_media
  *       get_path_rec (Media List Player Internal)
  **************************************************************************/
 static libvlc_media_list_path_t
-get_path_rec( libvlc_media_list_path_t path, libvlc_media_list_t * p_current_mlist, libvlc_media_t * p_searched_md )
+get_path_rec( const libvlc_media_list_path_t path, libvlc_media_list_t * p_current_mlist, libvlc_media_t * p_searched_md )
 {
     int i, count;
     count = libvlc_media_list_count( p_current_mlist, NULL );
@@ -141,7 +160,7 @@ static inline libvlc_media_list_path_t libvlc_media_list_path_of_item( libvlc_me
  *       item_at_path (Media List Player Internal)
  **************************************************************************/
 static libvlc_media_t *
-libvlc_media_list_item_at_path( libvlc_media_list_t * p_mlist, libvlc_media_list_path_t path )
+libvlc_media_list_item_at_path( libvlc_media_list_t * p_mlist, const libvlc_media_list_path_t path )
 {
     libvlc_media_list_t * p_current_mlist = p_mlist;
     libvlc_media_t * p_md = NULL;
@@ -174,7 +193,7 @@ libvlc_media_list_item_at_path( libvlc_media_list_t * p_mlist, libvlc_media_list
  *       parentlist_at_path (Media List Player Internal)
  **************************************************************************/
 static libvlc_media_list_t *
-libvlc_media_list_parentlist_at_path( libvlc_media_list_t * p_mlist, libvlc_media_list_path_t path )
+libvlc_media_list_parentlist_at_path( libvlc_media_list_t * p_mlist, const libvlc_media_list_path_t path )
 {
     libvlc_media_list_t * p_current_mlist = p_mlist;
     libvlc_media_t * p_md = NULL;
@@ -207,7 +226,7 @@ libvlc_media_list_parentlist_at_path( libvlc_media_list_t * p_mlist, libvlc_medi
  *       sublist_at_path (Media List Player Internal)
  **************************************************************************/
 static libvlc_media_list_t *
-libvlc_media_list_sublist_at_path( libvlc_media_list_t * p_mlist, libvlc_media_list_path_t path )
+libvlc_media_list_sublist_at_path( libvlc_media_list_t * p_mlist, const libvlc_media_list_path_t path )
 {
     libvlc_media_list_t * ret;
     libvlc_media_t * p_md = libvlc_media_list_item_at_path( p_mlist, path );

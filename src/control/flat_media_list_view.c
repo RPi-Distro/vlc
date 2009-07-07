@@ -2,7 +2,7 @@
  * flat_media_list_view.c: libvlc flat media list view functions.
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: e5f51401d62cb2f3e00b4977a1793ed208674524 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -21,10 +21,15 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "libvlc_internal.h"
-#include <vlc/libvlc.h>
 #include <assert.h>
-#include "vlc_arrays.h"
+
+#include <vlc/libvlc.h>
+#include <vlc/libvlc_media.h>
+#include <vlc/libvlc_media_list.h>
+#include <vlc/libvlc_media_list_view.h>
+
+#include "media_list_view_internal.h"
+
 
 //#define DEBUG_FLAT_VIEW
 

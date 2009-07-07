@@ -2,7 +2,7 @@
  * puzzle.c : Puzzle game
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: 3f5e682cb579cc61400873ae3f6811b0fa40b2a8 $
+ * $Id: a9520c47709783eb1d5779463237b1b1ab167487 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -279,6 +279,13 @@ static int Init( vout_thread_t *p_vout )
 static void End( vout_thread_t *p_vout )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
+
+    var_DelCallback( p_vout, CFG_PREFIX "rows",
+                     PuzzleCallback, p_vout->p_sys );
+    var_DelCallback( p_vout, CFG_PREFIX "cols",
+                     PuzzleCallback, p_vout->p_sys );
+    var_DelCallback( p_vout, CFG_PREFIX "black-slot",
+                     PuzzleCallback, p_vout->p_sys );
 
     vout_filter_DelChild( p_vout, p_sys->p_vout, MouseEvent );
     vout_CloseAndRelease( p_sys->p_vout );

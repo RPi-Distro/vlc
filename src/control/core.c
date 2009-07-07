@@ -2,7 +2,7 @@
  * core.c: Core libvlc new API functions : initialization, exceptions handling
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: e52a1a0023b93ca4d08052571436b9fa3d6694dc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -25,6 +25,7 @@
 #include <vlc/libvlc.h>
 
 #include <vlc_interface.h>
+#include <vlc_vlm.h>
 
 #include <stdarg.h>
 #include <limits.h>
@@ -173,6 +174,8 @@ void libvlc_release( libvlc_instance_t *p_instance )
     {
         vlc_mutex_destroy( lock );
         vlc_mutex_destroy( &p_instance->event_callback_lock );
+        if( p_instance->p_vlm )
+            vlm_Delete( p_instance->p_vlm );
         libvlc_InternalCleanup( p_instance->p_libvlc_int );
         libvlc_InternalDestroy( p_instance->p_libvlc_int );
         free( p_instance );

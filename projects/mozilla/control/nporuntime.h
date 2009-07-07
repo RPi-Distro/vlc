@@ -3,7 +3,7 @@
  *              FYI: http://www.mozilla.org/projects/plugins/npruntime.html
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id$
+ * $Id: 2ac525d39de922ee692ee3ffd4beae75126fd42a $
  *
  * Authors: Damien Fouilleul <damien.fouilleul@laposte.net>
  *
@@ -129,7 +129,7 @@ protected:
 
     bool isPluginRunning()
     {
-        return _instance->pdata;
+        return (_instance->pdata != NULL);
     }
     template<class T> T *getPrivate()
     {

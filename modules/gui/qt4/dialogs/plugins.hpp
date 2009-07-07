@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id$
+ * $Id: 1a243a8913e5ab058a066a506ce48234f33f0650 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -34,11 +34,23 @@ class PluginDialog : public QVLCFrame
 {
     Q_OBJECT;
 public:
-    PluginDialog( intf_thread_t * );
+    static PluginDialog * getInstance( intf_thread_t *p_intf )
+    {
+        if( !instance)
+            instance = new PluginDialog( p_intf );
+        return instance;
+    }
+    static void killInstance()
+    {
+        delete instance;
+        instance = NULL;
+    }
 private:
-    void FillTree();
+    PluginDialog( intf_thread_t * );
     virtual ~PluginDialog();
+    static PluginDialog *instance;
 
+    void FillTree();
     QTreeWidget *treePlugins;
     SearchLineEdit *edit;
 private slots:

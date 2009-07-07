@@ -2,7 +2,7 @@
  * access.c : CD digital audio input module for vlc using libcdio
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: 90f67358fe1a5f2d94a1930092e937d102dbdf2b $
+ * $Id: db3ed3efcc74e8ab33484334e940213da2ef7f29 $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -318,16 +318,13 @@ static block_t * CDDAReadBlocks( access_t * p_access )
             }
         }
         else
-        {
             rc = cdio_read_audio_sectors( p_cdda->p_cdio, p_block->p_buffer,
                                           p_cdda->i_lsn, i_blocks );
 #else
 #define DRIVER_OP_SUCCESS 0
-            int rc;
-            rc = cdio_read_audio_sectors( p_cdda->p_cdio, p_block->p_buffer,
+        int rc = cdio_read_audio_sectors( p_cdda->p_cdio, p_block->p_buffer,
                                           p_cdda->i_lsn, i_blocks);
 #endif
-        }
         if( rc != DRIVER_OP_SUCCESS )
         {
             msg_Err( p_access, "could not read %d sectors starting from %lu",

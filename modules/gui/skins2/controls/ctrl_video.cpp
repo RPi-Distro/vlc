@@ -2,7 +2,7 @@
  * ctrl_video.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: ee7b883fefe869f842f721df522eb9e8e473d906 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -45,10 +45,6 @@ CtrlVideo::CtrlVideo( intf_thread_t *pIntf, GenericLayout &rLayout,
         VarBox &rVoutSize = VlcProc::instance( pIntf )->getVoutSizeVar();
         rVoutSize.addObserver( this );
     }
-
-    // observe visibility variable
-    if( m_pVisible )
-        m_pVisible->addObserver( this );
 }
 
 
@@ -58,9 +54,6 @@ CtrlVideo::~CtrlVideo()
     rVoutSize.delObserver( this );
 
     //m_pLayout->getActiveVar().delObserver( this );
-
-    if( m_pVisible )
-        m_pVisible->delObserver( this );
 }
 
 
@@ -187,10 +180,10 @@ void CtrlVideo::onUpdate( Subject<VarBool> &rVariable, void *arg  )
     }
 }
 
-void CtrlVideo::attachVoutWindow( VoutWindow* pVoutWindow )
+void CtrlVideo::attachVoutWindow( VoutWindow* pVoutWindow, int width, int height )
 {
-    int width = pVoutWindow->getOriginalWidth();
-    int height = pVoutWindow->getOriginalHeight();
+    width = ( width < 0 ) ? pVoutWindow->getOriginalWidth() : width;
+    height = ( height < 0 ) ? pVoutWindow->getOriginalHeight() : height;
 
     WindowManager &rWindowManager =
         getIntf()->p_sys->p_theme->getWindowManager();
@@ -222,16 +215,19 @@ void CtrlVideo::detachVoutWindow( )
 
 void CtrlVideo::resizeInnerVout( )
 {
-    WindowManager &rWindowManager =
-         getIntf()->p_sys->p_theme->getWindowManager();
-    TopWindow* pWin = getWindow();
+    if( m_pVoutWindow )
+    {
+        WindowManager &rWindowManager =
+             getIntf()->p_sys->p_theme->getWindowManager();
+        TopWindow* pWin = getWindow();
 
-    const Position *pPos = getPosition();
+        const Position *pPos = getPosition();
 
-    m_pVoutWindow->resize( pPos->getWidth(), pPos->getHeight() );
-    m_pVoutWindow->move( pPos->getLeft(), pPos->getTop() );
+        m_pVoutWindow->resize( pPos->getWidth(), pPos->getHeight() );
+        m_pVoutWindow->move( pPos->getLeft(), pPos->getTop() );
 
-    rWindowManager.show( *pWin );
-    m_pVoutWindow->show();
+        rWindowManager.show( *pWin );
+        m_pVoutWindow->show();
+    }
 }
 

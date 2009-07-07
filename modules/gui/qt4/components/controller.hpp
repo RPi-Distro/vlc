@@ -2,7 +2,7 @@
  * Controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id$
+ * $Id: 3113666640e5cd1d19d60b286b0e3fc2b748ddd1 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -204,23 +204,14 @@ signals:
     void advancedControlsToggled( bool );
 };
 
-/* on WIN32 hide() for fullscreen controller doesnt work, so it have to be
-   done by trick with setting the opacity of window */
-#ifdef WIN32
-    #define WIN32TRICK
-#endif
 
 /* to trying transparency with fullscreen controller on windows enable that */
 /* it can be enabled on-non windows systems,
    but it will be transparent only with composite manager */
-#ifndef WIN32
-    #define HAVE_TRANSPARENCY 1
-#else
-    #define HAVE_TRANSPARENCY 0
-#endif
+#define HAVE_TRANSPARENCY 1
 
 /* Default value of opacity for FS controller */
-#define DEFAULT_OPACITY 0.75
+#define DEFAULT_OPACITY 0.70
 
 /***********************************
  * Fullscreen controller
@@ -229,7 +220,7 @@ class FullscreenControllerWidget : public AbstractController
 {
     Q_OBJECT
 public:
-    FullscreenControllerWidget( intf_thread_t * );
+    FullscreenControllerWidget( intf_thread_t *, QWidget *_parent = 0  );
     virtual ~FullscreenControllerWidget();
 
     /* Vout */
@@ -252,7 +243,7 @@ protected:
 private slots:
     void showFSC();
     void planHideFSC();
-    void hideFSC();
+    void hideFSC() { hide(); }
     void slowHideFSC();
     void centerFSC( int );
 
@@ -270,10 +261,6 @@ private:
     bool b_mouse_over;
     int i_screennumber;
     QRect screenRes;
-
-#ifdef WIN32TRICK
-    bool b_fscHidden;
-#endif
 
     /* List of vouts currently tracked */
     QList<vout_thread_t *> vout;

@@ -2,7 +2,7 @@
  * voutagl.c: MacOS X agl OpenGL provider (used by webbrowser.plugin)
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id$
+ * $Id: 80425c2bd606099e48d2a6177ca2f31e507dae75 $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -233,7 +233,8 @@ int aglManage( vout_thread_t * p_vout )
             aglSetViewport(p_vout, viewBounds, clipBounds);
 
             /* Most Carbon APIs are not thread-safe, therefore delagate some GUI visibilty update to the main thread */
-            sendEventToMainThread(GetWindowEventTarget(p_vout->p_sys->theWindow), kEventClassVLCPlugin, kEventVLCPluginHideFullscreen);
+            if( p_vout->p_sys->theWindow )
+                sendEventToMainThread(GetWindowEventTarget(p_vout->p_sys->theWindow), kEventClassVLCPlugin, kEventVLCPluginHideFullscreen);
         }
         else
         {

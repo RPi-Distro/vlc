@@ -62,11 +62,9 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
-	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
-	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
-	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
-	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
+	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vlc.m4 \
+	$(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -160,14 +158,13 @@ DIRECTFB_CONFIG = @DIRECTFB_CONFIG@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
-DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
+ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
-FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
@@ -226,7 +223,6 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
-LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
@@ -508,7 +504,6 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
-NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
 NOTIFY_LIBS = @NOTIFY_LIBS@
@@ -520,8 +515,6 @@ OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
-OTOOL = @OTOOL@
-OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -611,7 +604,6 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
-ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 ac_ct_OBJC = @ac_ct_OBJC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -643,7 +635,6 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
-lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -691,9 +682,27 @@ EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
 	extras/package/rpm/vlc.fedora.spec \
 	extras/package/rpm/vlc.altlinux.spec \
 	extras/package/win32/vlc.win32.nsi.in \
+	extras/package/win32/languages/bengali.nsh \
+	extras/package/win32/languages/brazilian_portuguese.nsh \
+	extras/package/win32/languages/bulgarian.nsh \
+	extras/package/win32/languages/catalan.nsh \
 	extras/package/win32/languages/declaration.nsh \
+	extras/package/win32/languages/dutch.nsh \
 	extras/package/win32/languages/english.nsh \
+	extras/package/win32/languages/finnish.nsh \
 	extras/package/win32/languages/french.nsh \
+	extras/package/win32/languages/german.nsh \
+	extras/package/win32/languages/hungarian.nsh \
+	extras/package/win32/languages/italian.nsh \
+	extras/package/win32/languages/occitan.nsh \
+	extras/package/win32/languages/polish.nsh \
+	extras/package/win32/languages/punjabi.nsh \
+	extras/package/win32/languages/romanian.nsh \
+	extras/package/win32/languages/schinese.nsh \
+	extras/package/win32/languages/slovak.nsh \
+	extras/package/win32/languages/slovenian.nsh \
+	extras/package/win32/languages/sorani.nsh \
+	extras/package/win32/languages/spanish.nsh \
 	extras/package/macosx/Resources/English.lproj/MainMenu.nib/classes.nib \
 	extras/package/macosx/Resources/English.lproj/MainMenu.nib/info.nib \
 	extras/package/macosx/Resources/English.lproj/MainMenu.nib/keyedobjects.nib \
@@ -728,33 +737,25 @@ EXTRA_DIST = HACKING INSTALL.win32 INSTALL.wince \
 	extras/package/macosx/Resources/English.lproj/ErrorPanel.nib/info.nib \
 	extras/package/macosx/Resources/English.lproj/ErrorPanel.nib/keyedobjects.nib \
 	extras/package/macosx/Resources/English.lproj/InfoPlist.strings.in \
-	extras/package/macosx/Resources/a52.icns \
-	extras/package/macosx/Resources/aac.icns \
-	extras/package/macosx/Resources/asf.icns \
-	extras/package/macosx/Resources/asx.icns \
+	extras/package/macosx/Resources/aiff.icns \
+	extras/package/macosx/Resources/audio.icns \
 	extras/package/macosx/Resources/avi.icns \
-	extras/package/macosx/Resources/bin.icns \
-	extras/package/macosx/Resources/cue.icns \
-	extras/package/macosx/Resources/dat.icns \
-	extras/package/macosx/Resources/divx.icns \
-	extras/package/macosx/Resources/dv.icns \
+	extras/package/macosx/Resources/flv.icns \
 	extras/package/macosx/Resources/generic.icns \
-	extras/package/macosx/Resources/m3u.icns \
+	extras/package/macosx/Resources/m4a.icns \
+	extras/package/macosx/Resources/m4v.icns \
+	extras/package/macosx/Resources/mkv.icns \
 	extras/package/macosx/Resources/mov.icns \
+	extras/package/macosx/Resources/movie.icns \
 	extras/package/macosx/Resources/mp3.icns \
-	extras/package/macosx/Resources/mp4.icns \
 	extras/package/macosx/Resources/mpeg.icns \
-	extras/package/macosx/Resources/mpeg1.icns \
-	extras/package/macosx/Resources/mpeg2.icns \
-	extras/package/macosx/Resources/mpeg4.icns \
-	extras/package/macosx/Resources/mpg.icns \
 	extras/package/macosx/Resources/ogg.icns \
-	extras/package/macosx/Resources/ogm.icns \
-	extras/package/macosx/Resources/pls.icns \
-	extras/package/macosx/Resources/srt.icns \
-	extras/package/macosx/Resources/sub.icns \
-	extras/package/macosx/Resources/vlc.icns \
+	extras/package/macosx/Resources/playlist.icns \
+	extras/package/macosx/Resources/rm.icns \
+	extras/package/macosx/Resources/subtitle.icns \
 	extras/package/macosx/Resources/vob.icns \
+	extras/package/macosx/Resources/wav.icns \
+	extras/package/macosx/Resources/vlc.icns \
 	extras/package/macosx/Resources/wma.icns \
 	extras/package/macosx/Resources/wmv.icns \
 	extras/package/macosx/Resources/pause.png \
@@ -1643,13 +1644,9 @@ VLC-release.app: vlc
 	$(INSTALL) -m 644 $(srcdir)/share/lua/http/requests/readme $(top_builddir)/VLC-release.app/Contents/MacOS/share/lua/http/requests/readme.txt
 	$(INSTALL) -d $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/dialogs
 	$(INSTALL) -d $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/js
-	$(INSTALL) -d $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/old
-	$(INSTALL) -d $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/old/admin
-	$(INSTALL) -d $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/old/vlm
 	$(INSTALL) -d $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/images
 	$(INSTALL) -d $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/requests
 	$(INSTALL) -m 644 $(srcdir)/share/http/.hosts $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/.hosts
-	$(INSTALL) -m 644 $(srcdir)/share/http/old/.hosts $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/old/.hosts
 	for i in $(srcdir)/share/http/*.* ; do \
 	  $(INSTALL) -m 644 $${i} $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/`basename $${i}` ; \
 	done
@@ -1658,15 +1655,6 @@ VLC-release.app: vlc
 	done
 	for i in $(srcdir)/share/http/js/*.* ; do \
 	  $(INSTALL) -m 644 $${i} $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/js/`basename $${i}` ; \
-	done
-	for i in $(srcdir)/share/http/old/*.* ; do \
-	  $(INSTALL) -m 644 $${i} $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/old/`basename $${i}` ; \
-	done
-	for i in $(srcdir)/share/http/old/admin/*.* ; do \
-	  $(INSTALL) -m 644 $${i} $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/old/admin/`basename $${i}` ; \
-	done
-	for i in $(srcdir)/share/http/old/vlm/*.* ; do \
-	  $(INSTALL) -m 644 $${i} $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/old/vlm/`basename $${i}` ; \
 	done
 	for i in $(srcdir)/share/http/images/*.* ; do \
 	  $(INSTALL) -m 644 $${i} $(top_builddir)/VLC-release.app/Contents/MacOS/share/http/images/`basename $${i}` ; \
@@ -1911,9 +1899,6 @@ package-win32-base-debug: package-win-common
 @BUILD_HTTPD_TRUE@	mkdir -p "$(win32_http_destdir)/requests"
 @BUILD_HTTPD_TRUE@	mkdir -p "$(win32_http_destdir)/js"
 @BUILD_HTTPD_TRUE@	mkdir -p "$(win32_http_destdir)/dialogs"
-@BUILD_HTTPD_TRUE@	mkdir -p "$(win32_http_destdir)/old"
-@BUILD_HTTPD_TRUE@	mkdir -p "$(win32_http_destdir)/old/vlm"
-@BUILD_HTTPD_TRUE@	mkdir -p "$(win32_http_destdir)/old/admin"
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/*.html $(win32_http_destdir)/
 @BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/*.html
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/.hosts $(win32_http_destdir)/
@@ -1932,17 +1917,6 @@ package-win32-base-debug: package-win-common
 @BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/requests/*.xml
 @BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/requests/readme $(win32_http_destdir)/requests/readme.txt
 @BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/requests/readme.txt
-
-@BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/old/*.html $(win32_http_destdir)/old/
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/old/*.html
-@BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/old/*.css $(win32_http_destdir)/old/
-@BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/old/.hosts $(win32_http_destdir)/old/
-@BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/old/*.png $(win32_http_destdir)/old/
-@BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/old/vlm/*.html $(win32_http_destdir)/old/vlm/
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/old/vlm/*.html
-@BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/old/admin/*.html $(win32_http_destdir)/old/admin/
-@BUILD_HTTPD_TRUE@	unix2dos $(win32_http_destdir)/old/admin/*.html
-@BUILD_HTTPD_TRUE@	cp $(srcdir)/share/http/old/admin/.access $(win32_http_destdir)/old/admin/
 
 # Skins
 @BUILD_SKINS_TRUE@	mkdir -p $(win32_destdir)/skins/fonts
@@ -2144,12 +2118,13 @@ package-macosx: VLC-release.app ChangeLog
 	else \
 	  cp -R "$(top_builddir)/VLC.app" "$(top_builddir)/vlc-$(VERSION)/VLC.app"; \
 	fi
-	cd "$(srcdir)" && mkdir -p $(top_builddir)/vlc-$(VERSION)/Goodies/ && \
+	mkdir -p $(top_builddir)/vlc-$(VERSION)/Goodies/ && \
           mkdir -p $(top_builddir)/vlc-$(VERSION)/.background/ && \
-          cp AUTHORS COPYING ChangeLog README THANKS NEWS $(top_builddir)/vlc-$(VERSION)/Goodies/ && \
-          cp -R  extras/package/macosx/Delete_Preferences.app $(top_builddir)/vlc-$(VERSION)/Goodies/Delete\ VLC\ Preferences.app && \
-	  cp extras/package/macosx/README.MacOSX.rtf $(top_builddir)/vlc-$(VERSION)/Read\ Me.rtf && \
-	  cp extras/package/macosx/Resources/about_bg.png $(top_builddir)/vlc-$(VERSION)/.background/background.png
+          cp $(srcdir)/AUTHORS $(srcdir)/COPYING $(srcdir)/README $(srcdir)/THANKS $(srcdir)/NEWS $(top_builddir)/vlc-$(VERSION)/Goodies/ && \
+          cp -R  $(srcdir)/extras/package/macosx/Delete_Preferences.app $(top_builddir)/vlc-$(VERSION)/Goodies/Delete\ VLC\ Preferences.app && \
+	  cp $(srcdir)/extras/package/macosx/README.MacOSX.rtf $(top_builddir)/vlc-$(VERSION)/Read\ Me.rtf && \
+	  cp $(srcdir)/extras/package/macosx/Resources/about_bg.png $(top_builddir)/vlc-$(VERSION)/.background/background.png
+	cp -L $(top_builddir)/ChangeLog $(top_builddir)/vlc-$(VERSION)/Goodies/
 
 # Place a link to the application folder
 	ln -s /Applications $(top_builddir)/vlc-$(VERSION)/Applications
@@ -2187,7 +2162,7 @@ package-macosx: VLC-release.app ChangeLog
 # Note: We can't directly create a read only dmg as we do the bless stuff
 	echo "Make the disk image read-only"
 	mv "$(top_builddir)/vlc-$(VERSION).dmg" "$(top_builddir)/vlc-$(VERSION)-rw.dmg"
-	hdiutil convert "$(top_builddir)/vlc-$(VERSION)-rw.dmg" -format UDZO -o "$(top_builddir)/vlc-$(VERSION).dmg"
+	hdiutil convert "$(top_builddir)/vlc-$(VERSION)-rw.dmg" -format UDBZ -o "$(top_builddir)/vlc-$(VERSION).dmg"
 	rm "$(top_builddir)/vlc-$(VERSION)-rw.dmg"
 
 # We are done
@@ -2239,8 +2214,8 @@ package-macosx-plugin:
 @BUILD_MOZILLA_TRUE@	fi; \
 @BUILD_MOZILLA_TRUE@	$${PACKAGEMAKER} -build -ds -p "$(top_builddir)/VLC Internet Plug-In.pkg" \
 @BUILD_MOZILLA_TRUE@	-f "$(top_builddir)/macosx-plugin-instdata" \
-@BUILD_MOZILLA_TRUE@	-i "$(srcdir)/extras/package/macosx/plugin/InstallerInfo.plist" \
-@BUILD_MOZILLA_TRUE@	-d "$(srcdir)/extras/package/macosx/plugin/InstallerDescription.plist"; true
+@BUILD_MOZILLA_TRUE@	-i "$(top_builddir)/extras/package/macosx/plugin/InstallerInfo.plist" \
+@BUILD_MOZILLA_TRUE@	-d "$(top_srcdir)/extras/package/macosx/plugin/InstallerDescription.plist"; true
 @BUILD_MOZILLA_TRUE@	rm -rf "$(top_builddir)/macosx-plugin-instdata/"
 
 # Create disk image 
@@ -2249,7 +2224,7 @@ package-macosx-plugin:
 @BUILD_MOZILLA_TRUE@	mkdir -p "$(top_builddir)/vlc-plugin-$(VERSION)/"
 @BUILD_MOZILLA_TRUE@	mv "$(top_builddir)/VLC Internet Plug-In.pkg" "$(top_builddir)/vlc-plugin-$(VERSION)/"
 @BUILD_MOZILLA_TRUE@	hdiutil create -srcfolder "$(top_builddir)/vlc-plugin-$(VERSION)" \
-@BUILD_MOZILLA_TRUE@	  "$(top_builddir)/vlc-plugin-$(VERSION).dmg" -format UDZO \
+@BUILD_MOZILLA_TRUE@	  "$(top_builddir)/vlc-plugin-$(VERSION).dmg" -format UDBZ \
 @BUILD_MOZILLA_TRUE@	  -scrub -imagekey zlib-level=9
 @BUILD_MOZILLA_TRUE@	echo "Disk image creation completed:"
 @BUILD_MOZILLA_TRUE@	rm -rf "$(top_builddir)/vlc-plugin-$(VERSION)"

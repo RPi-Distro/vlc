@@ -128,8 +128,7 @@ static int Open( vlc_object_t *p_this )
 
     if( p_sys->p_thread->url.psz_username && *p_sys->p_thread->url.psz_username )
     {
-        msg_Dbg( p_access, "      user='%s', pwd='%s'",
-                 p_sys->p_thread->url.psz_username, p_sys->p_thread->url.psz_password );
+        msg_Dbg( p_access, "      user='%s'", p_sys->p_thread->url.psz_username );
     }
 
     /* Initialize thread variables */
@@ -223,6 +222,10 @@ static int Open( vlc_object_t *p_this )
         if( rtmp_connect_active( p_sys->p_thread ) < 0 )
         {
             msg_Err( p_access, "connect active failed");
+            /* Kill the running thread */
+            vlc_object_kill( p_sys->p_thread );
+            block_FifoWake( p_sys->p_thread->p_fifo_input );
+            vlc_thread_join( p_sys->p_thread );
             goto error2;
         }
     }
@@ -239,6 +242,9 @@ static int Open( vlc_object_t *p_this )
 error2:
     vlc_cond_destroy( &p_sys->p_thread->wait );
     vlc_mutex_destroy( &p_sys->p_thread->lock );
+
+    block_FifoRelease( p_sys->p_thread->p_fifo_input );
+    block_FifoRelease( p_sys->p_thread->p_empty_blocks );
 
     free( p_sys->p_thread->psz_application );
     free( p_sys->p_thread->psz_media );

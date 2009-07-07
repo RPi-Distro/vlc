@@ -2,7 +2,7 @@
  * vlcproc.cpp
  *****************************************************************************
  * Copyright (C) 2003-2009 the VideoLAN team
- * $Id$
+ * $Id: 3b985cf970a1af9cbd96659c175b9c3bda62d59e $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -34,8 +34,10 @@
 
 #include "vlcproc.hpp"
 #include "os_factory.hpp"
+#include "os_loop.hpp"
 #include "os_timer.hpp"
 #include "var_manager.hpp"
+#include "vout_manager.hpp"
 #include "theme.hpp"
 #include "window_manager.hpp"
 #include "../commands/async_queue.hpp"
@@ -195,22 +197,53 @@ VlcProc::~VlcProc()
     var_DelCallback( getIntf()->p_sys->p_playlist, "item-change",
                      onItemChange, this );
     var_DelCallback( getIntf(), "skin-to-load", onSkinToLoad, this );
+    var_DelCallback( getIntf(), "interaction", onInteraction, this );
 }
 
 void VlcProc::manage()
 {
+#ifdef WIN32
+    if( !vlc_object_alive( getIntf() ) &&
+        !getIntf()->p_sys->b_exitRequested )
+    {
+        getIntf()->p_sys->b_exitRequested = true;
+
+        // explicitly stop the playlist
+        playlist_Stop( getIntf()->p_sys->p_playlist );
+
+        if( !VoutManager::instance( getIntf() )->hasVout() )
+            getIntf()->p_sys->b_exitOK = true;
+    }
+
+    if( getIntf()->p_sys->b_exitOK )
+    {
+        // Get the instance of OSFactory
+        OSFactory *pOsFactory = OSFactory::instance( getIntf() );
+
+        // Exit the main OS loop
+        pOsFactory->getOSLoop()->exit();
+
+        return;
+    }
+#else
     // Did the user request to quit vlc ?
     if( !vlc_object_alive( getIntf() ) )
     {
-        CmdQuit *pCmd = new CmdQuit( getIntf() );
-        AsyncQueue *pQueue = AsyncQueue::instance( getIntf() );
-        pQueue->push( CmdGenericPtr( pCmd ) );
+        // Get the instance of OSFactory
+        OSFactory *pOsFactory = OSFactory::instance( getIntf() );
+
+        // Exit the main OS loop
+        pOsFactory->getOSLoop()->exit();
+
+        return;
     }
+#endif
 
     refreshPlaylist();
     refreshAudio();
     refreshInput();
 }
+
 void VlcProc::CmdManage::execute()
 {
     // Just forward to VlcProc
@@ -344,7 +377,7 @@ void VlcProc::refreshInput()
         pVarHasVout->set( pVout != NULL );
         if( pVout )
         {
-            pVarFullscreen->set( pVout->b_fullscreen );
+            pVarFullscreen->set( var_GetBool( pVout, "fullscreen" ) );
             vlc_object_release( pVout );
         }
 

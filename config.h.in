@@ -511,6 +511,9 @@
 /* Define to 1 if you have the <mpcdec/mpcdec.h> header file. */
 #undef HAVE_MPCDEC_MPCDEC_H
 
+/* Define to 1 if you have the <mpc/mpcdec.h> header file. */
+#undef HAVE_MPC_MPCDEC_H
+
 /* Define if nanosleep is available. */
 #undef HAVE_NANOSLEEP
 
@@ -819,10 +822,6 @@
 
 /* Dynamic object extension */
 #undef LIBEXT
-
-/* Define to the sub-directory in which libtool stores uninstalled libraries.
-   */
-#undef LT_OBJDIR
 
 /* Define to 1 if debug code should NOT be compiled */
 #undef NDEBUG

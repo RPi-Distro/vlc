@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id$
+ * $Id: 90c5e7eab59a32678c488cfa46f2628547e4930c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -187,6 +187,11 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
         p_sys->i_output_max = 8 * sizeof(int32_t) * 131072;
         break;
 #endif
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 51, 4, 0 )
+    case CODEC_ID_TTA:
+        p_sys->i_output_max = p_sys->p_context->channels * sizeof(int32_t) * p_sys->p_context->sample_rate * 2;
+        break;
+#endif
     case CODEC_ID_FLAC:
         p_sys->i_output_max = 8 * sizeof(int32_t) * 65535;
         break;
@@ -197,7 +202,7 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
     if( p_sys->i_output_max < AVCODEC_MAX_AUDIO_FRAME_SIZE )
         p_sys->i_output_max = AVCODEC_MAX_AUDIO_FRAME_SIZE;
     msg_Dbg( p_dec, "Using %d bytes output buffer", p_sys->i_output_max );
-    p_sys->p_output = malloc( p_sys->i_output_max );
+    p_sys->p_output = av_malloc( p_sys->i_output_max );
 
     p_sys->p_samples = NULL;
     p_sys->i_samples = 0;
@@ -243,7 +248,7 @@ static aout_buffer_t *SplitBuffer( decoder_t *p_dec )
     else
         memcpy( p_buffer->p_buffer, p_sys->p_samples, p_buffer->i_nb_bytes );
 
-    p_sys->p_samples += p_buffer->i_nb_bytes;
+    p_sys->p_samples += i_samples * p_sys->p_context->channels * ( p_dec->fmt_out.audio.i_bitspersample / 8 );
     p_sys->i_samples -= i_samples;
 
     return p_buffer;
@@ -300,7 +305,7 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
     if( i_output > p_sys->i_output_max )
     {
         /* Grow output buffer if necessary (eg. for PCM data) */
-        p_sys->p_output = realloc( p_sys->p_output, i_output );
+        p_sys->p_output = av_realloc( p_sys->p_output, i_output );
     }
 
     *pp_block = p_block = block_Realloc( p_block, 0, p_block->i_buffer + FF_INPUT_BUFFER_PADDING_SIZE );
@@ -384,7 +389,7 @@ void EndAudioDec( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
 
-    free( p_sys->p_output );
+    av_free( p_sys->p_output );
 }
 
 /*****************************************************************************
@@ -481,7 +486,6 @@ static void SetupOutputFormat( decoder_t *p_dec, bool b_trust )
     p_dec->fmt_out.audio.i_bitspersample = 16;
 #endif
     p_dec->fmt_out.audio.i_rate     = p_sys->p_context->sample_rate;
-    p_dec->fmt_out.audio.i_channels = p_sys->p_context->channels;
 
     /* */
 #if defined(LIBAVCODEC_AUDIO_LAYOUT)

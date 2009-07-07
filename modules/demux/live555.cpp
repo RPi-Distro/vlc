@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id$
+ * $Id: a918ec5cdb69a6778503bcf8041c63b804b998f6 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -486,23 +486,28 @@ static int Connect( demux_t *p_demux )
     int  i_http_port  = 0;
     int  i_ret        = VLC_SUCCESS;
 
-    if( p_sys->url.i_port == 0 ) p_sys->url.i_port = 554;
-    if( p_sys->url.psz_username || p_sys->url.psz_password )
+    /* Create the url using the port number if available */
+    if( p_sys->url.i_port == 0 )
     {
-        int err;
-        err = asprintf( &psz_url, "rtsp://%s:%d%s", p_sys->url.psz_host,
-                        p_sys->url.i_port, p_sys->url.psz_path );
-        if( err == -1 ) return VLC_ENOMEM;
-
-        psz_user = strdup( p_sys->url.psz_username );
-        psz_pwd  = strdup( p_sys->url.psz_password );
+        p_sys->url.i_port = 554;
+        if( asprintf( &psz_url, "rtsp://%s", p_sys->psz_path ) == -1 )
+            return VLC_ENOMEM;
     }
     else
     {
-        int err;
-        err = asprintf( &psz_url, "rtsp://%s", p_sys->psz_path );
-        if( err == -1 ) return VLC_ENOMEM;
+        if( asprintf( &psz_url, "rtsp://%s:%d%s", p_sys->url.psz_host,
+                      p_sys->url.i_port, p_sys->url.psz_path ) == -1 )
+            return VLC_ENOMEM;
+    }
 
+    /* Get the user name and password */
+    if( p_sys->url.psz_username || p_sys->url.psz_password )
+    {
+        psz_user = strdup( p_sys->url.psz_username ? p_sys->url.psz_username : "" );
+        psz_pwd  = strdup( p_sys->url.psz_password ? p_sys->url.psz_password : "");
+    }
+    else
+    {
         psz_user = var_CreateGetString( p_demux, "rtsp-user" );
         psz_pwd  = var_CreateGetString( p_demux, "rtsp-pwd" );
     }
@@ -614,12 +619,11 @@ describe:
             free( psz_user );
             free( psz_pwd );
             dialog_Login( p_demux, &psz_user, &psz_pwd,
-                          _("RTSP authentication"),
+                          _("RTSP authentication"), "%s",
                         _("Please enter a valid login name and a password.") );
             if( psz_user != NULL && psz_pwd != NULL )
             {
-                msg_Dbg( p_demux, "retrying with user=%s, pwd=%s",
-                         psz_user, psz_pwd );
+                msg_Dbg( p_demux, "retrying with user=%s", psz_user );
                 goto describe;
             }
         }

@@ -2,7 +2,7 @@
  * hotkeys.c: Hotkey handling for vlc
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 706db0c149ac8ca4298c50cda07dfb13e534c581 $
+ * $Id: a7fdc618027eafd546b8a1f5dc31937843b76ea1 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -59,8 +59,6 @@ struct intf_sys_t
     int                 i_size;        /* number of events in buffer */
     int                 p_channels[ CHANNELS_NUMBER ]; /* contains registered
                                                         * channel IDs */
-    input_thread_t *    p_input;       /* pointer to input */
-    vout_thread_t *     p_vout;        /* pointer to vout object */
     vlc_mutex_t         lock; /* callback lock */
     vlc_cond_t          wait; /* callback event */
     int                 i_mousewheel_mode;
@@ -208,7 +206,7 @@ static void Run( intf_thread_t *p_intf )
             libvlc_Quit( p_intf->p_libvlc );
 
             ClearChannels( p_intf, p_vout );
-            vout_OSDMessage( p_intf, DEFAULT_CHAN, _( "Quit" ) );
+            vout_OSDMessage( p_intf, DEFAULT_CHAN, "%s", _( "Quit" ) );
             goto cleanup_and_continue;
         }
         /* Volume and audio actions */
@@ -584,7 +582,7 @@ static void Run( intf_thread_t *p_intf )
                 {
                     var_SetFloat( p_vout, "scale", 1.0 );
                     vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
-                                         _("Zooming reset") );
+                                         "%s", _("Zooming reset") );
                 }
                 else
                 {
@@ -592,10 +590,10 @@ static void Run( intf_thread_t *p_intf )
                     var_SetBool( p_vout, "autoscale", b_autoscale );
                     if( b_autoscale )
                         vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
-                                         _("Scaled to screen") );
+                                         "%s", _("Scaled to screen") );
                     else
                         vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
-                                         _("Original Size") );
+                                         "%s", _("Original Size") );
                 }
             }
             else if( i_action == ACTIONID_SCALE_UP && p_vout )
@@ -694,12 +692,12 @@ static void Run( intf_thread_t *p_intf )
 
             else if( i_action == ACTIONID_NEXT )
             {
-                vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN, _("Next") );
+                vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN, "%s", _("Next") );
                 playlist_Next( p_playlist );
             }
             else if( i_action == ACTIONID_PREV )
             {
-                vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
+                vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN, "%s",
                                  _("Previous") );
                 playlist_Prev( p_playlist );
             }
@@ -711,25 +709,25 @@ static void Run( intf_thread_t *p_intf )
             {
                 var_SetVoid( p_input, "frame-next" );
                 vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
-                                 _("Next frame") );
+                                 "%s", _("Next frame") );
             }
             else if( i_action == ACTIONID_FASTER )
             {
                 var_SetVoid( p_input, "rate-faster" );
                 vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
-                                 _("Faster") );
+                                 "%s", _("Faster") );
             }
             else if( i_action == ACTIONID_SLOWER )
             {
                 var_SetVoid( p_input, "rate-slower" );
                 vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
-                                 _("Slower") );
+                                 "%s", _("Slower") );
             }
             else if( i_action == ACTIONID_RATE_NORMAL )
             {
                 var_SetInteger( p_input, "rate", INPUT_RATE_DEFAULT );
                 vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN,
-                                 _("1.00x") );
+                                 "%s", _("1.00x") );
             }
             else if( i_action == ACTIONID_RATE_FASTER_FINE ||
                      i_action == ACTIONID_RATE_SLOWER_FINE )
@@ -756,7 +754,7 @@ static void Run( intf_thread_t *p_intf )
 
                 char psz_msg[7+1];
                 snprintf( psz_msg, sizeof(psz_msg), _("%.2fx"), (double)INPUT_RATE_DEFAULT / i_rate );
-                vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN, psz_msg );
+                vout_OSDMessage( VLC_OBJECT(p_input), DEFAULT_CHAN, "%s", psz_msg );
             }
             else if( i_action == ACTIONID_POSITION && b_seekable )
             {
@@ -872,9 +870,9 @@ static void Run( intf_thread_t *p_intf )
                     const bool b_record = !var_GetBool( p_input, "record" );
 
                     if( b_record )
-                        vout_OSDMessage( p_intf, DEFAULT_CHAN, _("Recording") );
+                        vout_OSDMessage( p_intf, DEFAULT_CHAN, "%s", _("Recording") );
                     else
-                        vout_OSDMessage( p_intf, DEFAULT_CHAN, _("Recording done") );
+                        vout_OSDMessage( p_intf, DEFAULT_CHAN, "%s", _("Recording done") );
                     var_SetBool( p_input, "record", b_record );
                 }
             }
@@ -1074,7 +1072,7 @@ static void DisplayPosition( intf_thread_t *p_intf, vout_thread_t *p_vout,
         vout_OSDMessage( p_input, POSITION_TEXT_CHAN, "%s", psz_time );
     }
 
-    if( p_vout->b_fullscreen )
+    if( var_GetBool( p_vout, "fullscreen" ) )
     {
         var_Get( p_input, "position", &pos );
         vout_OSDSlider( VLC_OBJECT( p_input ), POSITION_WIDGET_CHAN,
@@ -1091,7 +1089,7 @@ static void DisplayVolume( intf_thread_t *p_intf, vout_thread_t *p_vout,
     }
     ClearChannels( p_intf, p_vout );
 
-    if( p_vout->b_fullscreen )
+    if( var_GetBool( p_vout, "fullscreen" ) )
     {
         vout_OSDSlider( VLC_OBJECT( p_vout ), VOLUME_WIDGET_CHAN,
             i_vol*100/AOUT_VOLUME_MAX, OSD_VERT_SLIDER );

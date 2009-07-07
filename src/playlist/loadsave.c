@@ -2,7 +2,7 @@
  * loadsave.c : Playlist loading / saving functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id$
+ * $Id: 34378730761e03e6e9bf0046f938d27a3f89b2df $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -30,6 +30,7 @@
 #include "playlist_internal.h"
 #include "config/configuration.h"
 #include <vlc_charset.h>
+#include <vlc_url.h>
 
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -82,10 +83,10 @@ int playlist_Export( playlist_t * p_playlist, const char *psz_filename ,
 int playlist_Import( playlist_t *p_playlist, const char *psz_file )
 {
     input_item_t *p_input;
-    char *psz_uri;
     const char *const psz_option = "meta-file";
+    char *psz_uri = make_URI( psz_file );
 
-    if( asprintf( &psz_uri, "file/://%s", psz_file ) < 0 )
+    if( psz_uri == NULL )
         return VLC_EGENERIC;
 
     p_input = input_item_NewExt( p_playlist, psz_uri, psz_file,
@@ -129,34 +130,40 @@ int playlist_MLLoad( playlist_t *p_playlist )
         return VLC_EGENERIC;
     }
 
-    if( asprintf( &psz_uri, "%s" DIR_SEP "ml.xspf", psz_datadir ) == -1 )
-    {
-        psz_uri = NULL;
-        goto error;
+    if( asprintf( &psz_uri, "%s" DIR_SEP "ml.xspf", psz_datadir ) != -1 )
+    {   /* loosy check for media library file */
+        struct stat st;
+        int ret = utf8_stat( psz_uri , &st );
+        free( psz_uri );
+        if( ret )
+        {
+            free( psz_datadir );
+            return VLC_EGENERIC;
+        }
     }
-    struct stat p_stat;
-    /* checks if media library file is present */
-    if( utf8_stat( psz_uri , &p_stat ) )
-        goto error;
-    free( psz_uri );
 
-    /* FIXME: WTF? stat() should never be used right before open()! */
-    if( asprintf( &psz_uri, "file/xspf-open://%s" DIR_SEP "ml.xspf",
-                  psz_datadir ) == -1 )
-    {
+    psz_uri = make_URI( psz_datadir );
+    free( psz_datadir );
+    psz_datadir = psz_uri;
+    if( psz_datadir == NULL )
+        return VLC_EGENERIC;
+
+    /* Force XSPF demux (psz_datadir was a path, now it is a file URI) */
+    if( asprintf( &psz_uri, "file/xspf-open%s/ml.xspf", psz_datadir+4 ) == -1 )
         psz_uri = NULL;
-        goto error;
-    }
     free( psz_datadir );
     psz_datadir = NULL;
+    if( psz_uri == NULL )
+        return VLC_ENOMEM;
 
-    const char *const psz_option = "meta-file";
+    const char *const options[1] = { "meta-file", };
     /* that option has to be cleaned in input_item_subitem_added() */
     /* vlc_gc_decref() in the same function */
     p_input = input_item_NewExt( p_playlist, psz_uri, _("Media Library"),
-                                 1, &psz_option, VLC_INPUT_OPTION_TRUSTED, -1 );
+                                 1, options, VLC_INPUT_OPTION_TRUSTED, -1 );
+    free( psz_uri );
     if( p_input == NULL )
-        goto error;
+        return VLC_EGENERIC;
 
     PL_LOCK;
     if( p_playlist->p_ml_onelevel->p_input )
@@ -188,13 +195,7 @@ int playlist_MLLoad( playlist_t *p_playlist )
                         input_item_subitem_added, p_playlist );
 
     vlc_gc_decref( p_input );
-    free( psz_uri );
     return VLC_SUCCESS;
-
-error:
-    free( psz_uri );
-    free( psz_datadir );
-    return VLC_ENOMEM;
 }
 
 int playlist_MLDump( playlist_t *p_playlist )

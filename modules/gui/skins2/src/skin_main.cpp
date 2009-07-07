@@ -2,7 +2,7 @@
  * skin_main.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 44a195dfbcfe39398084d55f3443650fa2ac4710 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -49,6 +49,7 @@
 #include "../commands/cmd_quit.hpp"
 #include "../commands/cmd_dialogs.hpp"
 #include "../commands/cmd_minimize.hpp"
+#include "../commands/cmd_playlist.hpp"
 
 //---------------------------------------------------------------------------
 // Exported interface functions.
@@ -120,6 +121,11 @@ static int Open( vlc_object_t *p_this )
     p_intf->p_sys->p_voutManager = NULL;
     p_intf->p_sys->p_vlcProc = NULL;
     p_intf->p_sys->p_repository = NULL;
+
+#ifdef WIN32
+    p_intf->p_sys->b_exitRequested = false;
+    p_intf->p_sys->b_exitOK = false;
+#endif
 
     // No theme yet
     p_intf->p_sys->p_theme = NULL;
@@ -233,7 +239,14 @@ static int Open( vlc_object_t *p_this )
     free( skin_last );
 
 #ifdef WIN32
+
     p_intf->b_should_run_on_first_thread = true;
+
+    // enqueue a command to automatically start the first playlist item
+    AsyncQueue *pQueue = AsyncQueue::instance( p_intf );
+    CmdPlaylistFirst *pCmd = new CmdPlaylistFirst( p_intf );
+    pQueue->push( CmdGenericPtr( pCmd ) );
+
 #endif
 
     return( VLC_SUCCESS );
@@ -306,6 +319,9 @@ static void Run( intf_thread_t *p_intf )
 
     // cannot be called in "Close", because it refcounts skins2
     Dialogs::destroy( p_intf );
+
+    // save config file
+    config_SaveConfigFile( p_intf, NULL );
 
     vlc_restorecancel(canc);
 }

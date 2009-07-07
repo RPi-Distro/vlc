@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id: ea5b3309a1b84470b51e15899a33581ca98245fd $
+ * $Id: 3037efa6488421389fcda04deeeb40f183670411 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -101,8 +101,10 @@ public:
     {
         if( e->button() & Qt::RightButton )
         {
-            emit rightClicked( indexAt( QPoint( e->x(), e->y() ) ),
-                               QCursor::pos() );
+            QModelIndex index = indexAt( QPoint( e->x(), e->y() ) );
+            if( index.isValid() )
+                setSelection( visualRect( index ), QItemSelectionModel::ClearAndSelect );
+            emit rightClicked( index, QCursor::pos() );
             return;
         }
         if( e->button() & Qt::LeftButton )

@@ -2,7 +2,7 @@
  * control.c : Handle control of the playlist & running through it
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id$
+ * $Id: 4aed8889a5f90ca2f4cf4374e73a0cb462eab6c0 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -104,7 +104,7 @@ static int PlaylistVAControl( playlist_t * p_playlist, int i_query, va_list args
     if( !vlc_object_alive( p_playlist ) )
         return VLC_EGENERIC;
 
-    if( playlist_IsEmpty( p_playlist ) )
+    if( playlist_IsEmpty( p_playlist ) && i_query != PLAYLIST_STOP )
         return VLC_EGENERIC;
 
     switch( i_query )

@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id$
+ * $Id: e804027a2d0b49e3aebe24e7a2401eb0850e6f93 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -899,10 +899,16 @@ static int DeleteInner( playlist_t * p_playlist, playlist_item_t *p_item,
         ARRAY_REMOVE( p_playlist->items, i );
 
     /* Check if it is the current item */
-    if( get_current_status_item( p_playlist ) == p_item && b_stop )
+    if( get_current_status_item( p_playlist ) == p_item )
     {
-        playlist_Control( p_playlist, PLAYLIST_STOP, pl_Locked );
-        msg_Info( p_playlist, "stopping playback" );
+        /* Stop it if we have to */
+        if( b_stop )
+        {
+            playlist_Control( p_playlist, PLAYLIST_STOP, pl_Locked );
+            msg_Info( p_playlist, "stopping playback" );
+        }
+        /* In any case, this item can't be the next one to be played ! */
+        set_current_status_item( p_playlist, NULL );
     }
 
     PL_DEBUG( "deleting item `%s'", p_item->p_input->psz_name );

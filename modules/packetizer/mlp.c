@@ -2,7 +2,7 @@
  * mlp.c: packetize MLP/TrueHD audio
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id$
+ * $Id: 85a7b6bee61dc29a69e9a2eab428363fa241146a $
  *
  * Authors: Laurent Aimar < fenrir _AT videolan _DOT_ org >
  *
@@ -120,7 +120,8 @@ static int Open( vlc_object_t *p_this )
     decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys;
 
-    if( p_dec->fmt_in.i_codec != VLC_FOURCC('m','l','p',' ') )
+    if( p_dec->fmt_in.i_codec != VLC_FOURCC('m','l','p',' ') &&
+        p_dec->fmt_in.i_codec != VLC_FOURCC('t','r','h','d') )
         return VLC_EGENERIC;
 
     /* */
@@ -137,7 +138,7 @@ static int Open( vlc_object_t *p_this )
 
     /* Set output properties */
     p_dec->fmt_out.i_cat = AUDIO_ES;
-    p_dec->fmt_out.i_codec = VLC_FOURCC('m','l','p',' ');
+    p_dec->fmt_out.i_codec = p_dec->fmt_in.i_codec;
     p_dec->fmt_out.audio.i_rate = 0;
 
     /* Set callback */

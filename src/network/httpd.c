@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: 7bfc071f04a2e7ad0bdd0a3fb1e7a1a81b03e65d $
+ * $Id: 8f4b0f83e3df6422ffa04704cdde32665a0d2482 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -1150,15 +1150,19 @@ void httpd_HostDelete( httpd_host_t *host )
 {
     httpd_t *httpd = host->httpd;
     int i;
+    bool delete = false;
 
     vlc_mutex_lock( &httpd_mutex );
 
     vlc_mutex_lock( &host->lock );
     host->i_ref--;
     if( host->i_ref == 0 )
+    {
         vlc_cond_signal( &host->wait );
+        delete = true;
+    }
     vlc_mutex_unlock( &host->lock );
-    if( host->i_ref > 0 )
+    if( !delete )
     {
         /* still used */
         vlc_mutex_unlock( &httpd_mutex );

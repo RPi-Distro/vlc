@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 62fcebe479a7501714d7a421cc8562fc3ad707fb $
+ * $Id: 23008632f9550dd8d6e803a2acbdb424354627bb $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -90,8 +90,6 @@ int OpenIntf ( vlc_object_t *p_this )
 
     memset( p_intf->p_sys, 0, sizeof( *p_intf->p_sys ) );
 
-    p_intf->p_sys->o_pool = [[NSAutoreleasePool alloc] init];
-
     /* subscribe to LibVLCCore's messages */
     p_intf->p_sys->p_sub = msg_Subscribe( p_intf->p_libvlc, MsgCallback, NULL );
     p_intf->pf_run = Run;
@@ -106,8 +104,6 @@ int OpenIntf ( vlc_object_t *p_this )
 void CloseIntf ( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t*) p_this;
-
-    [p_intf->p_sys->o_pool release];
 
     free( p_intf->p_sys );
 }
@@ -314,6 +310,8 @@ static VLCMain *_o_sharedMainInstance = nil;
     else
         _o_sharedMainInstance = [super init];
 
+    p_intf = NULL;
+
     o_msg_lock = [[NSLock alloc] init];
     o_msg_arr = [[NSMutableArray arrayWithCapacity: 200] retain];
     /* subscribe to LibVLC's debug messages as early as possible (for us) */
@@ -334,11 +332,9 @@ static VLCMain *_o_sharedMainInstance = nil;
 
     i_lastShownVolume = -1;
 
-#ifndef __x86_64__
     o_remote = [[AppleRemote alloc] init];
     [o_remote setClickCountEnabledButtons: kRemoteButtonPlay];
     [o_remote setDelegate: _o_sharedMainInstance];
-#endif
 
     o_eyetv = [[VLCEyeTVController alloc] init];
 
@@ -365,7 +361,10 @@ static VLCMain *_o_sharedMainInstance = nil;
     playlist_t *p_playlist;
     vlc_value_t val;
 
-    /* Check if we already did this once. Opening the other nibs calls it too, because VLCMain is the owner */
+    if( !p_intf ) return;
+
+    /* Check if we already did this once. Opening the other nibs calls it too,
+       because VLCMain is the owner */
     if( nib_main_loaded ) return;
 
     /* check whether the user runs a valid version of OS X */
@@ -510,8 +509,10 @@ static VLCMain *_o_sharedMainInstance = nil;
     nib_coredialogs_loaded = [NSBundle loadNibNamed:@"CoreDialogs" owner: NSApp];
     
     /* subscribe to various interactive dialogues */
-    var_Create( p_intf, "dialog-fatal", VLC_VAR_ADDRESS );
-    var_AddCallback( p_intf, "dialog-fatal", DialogCallback, self );
+    var_Create( p_intf, "dialog-error", VLC_VAR_ADDRESS );
+    var_AddCallback( p_intf, "dialog-error", DialogCallback, self );
+    var_Create( p_intf, "dialog-critical", VLC_VAR_ADDRESS );
+    var_AddCallback( p_intf, "dialog-critical", DialogCallback, self );
     var_Create( p_intf, "dialog-login", VLC_VAR_ADDRESS );
     var_AddCallback( p_intf, "dialog-login", DialogCallback, self );
     var_Create( p_intf, "dialog-question", VLC_VAR_ADDRESS );
@@ -543,6 +544,8 @@ static VLCMain *_o_sharedMainInstance = nil;
 
 - (void)applicationWillFinishLaunching:(NSNotification *)o_notification
 {
+    if( !p_intf ) return;
+
     /* FIXME: don't poll */
     interfaceTimer = [[NSTimer scheduledTimerWithTimeInterval: 0.5
                                      target: self selector: @selector(manageIntf:)
@@ -559,6 +562,8 @@ static VLCMain *_o_sharedMainInstance = nil;
 
 - (void)applicationDidFinishLaunching:(NSNotification *)aNotification
 {
+    if( !p_intf ) return;
+
     [self _removeOldPreferences];
 
 #ifdef UPDATE_CHECK
@@ -579,6 +584,8 @@ static VLCMain *_o_sharedMainInstance = nil;
 
 - (void)initStrings
 {
+    if( !p_intf ) return;
+
     [o_window setTitle: _NS("VLC media player")];
     [self setScrollField:_NS("VLC media player") stopAfter:-1];
 
@@ -749,6 +756,8 @@ static VLCMain *_o_sharedMainInstance = nil;
 
 - (void)releaseRepresentedObjects:(NSMenu *)the_menu
 {
+    if( !p_intf ) return;
+
     NSArray *menuitems_array = [the_menu itemArray];
     for( int i=0; i<[menuitems_array count]; i++ )
     {
@@ -766,6 +775,8 @@ static VLCMain *_o_sharedMainInstance = nil;
     vout_thread_t * p_vout;
     int returnedValue = 0;
  
+    if( !p_intf ) return;
+
     msg_Dbg( p_intf, "Terminating" );
 
     /* Make sure the manage_thread won't call -terminate: again */
@@ -793,7 +804,8 @@ static VLCMain *_o_sharedMainInstance = nil;
 
     /* unsubscribe from the interactive dialogues */
     dialog_Unregister( p_intf );
-    var_DelCallback( p_intf, "dialog-fatal", DialogCallback, self );
+    var_DelCallback( p_intf, "dialog-error", DialogCallback, self );
+    var_DelCallback( p_intf, "dialog-critical", DialogCallback, self );
     var_DelCallback( p_intf, "dialog-login", DialogCallback, self );
     var_DelCallback( p_intf, "dialog-question", DialogCallback, self );
     var_DelCallback( p_intf, "dialog-progress-bar", DialogCallback, self );
@@ -906,7 +918,6 @@ static NSString * VLCToolbarMediaControl     = @"VLCToolbarMediaControl";
 {
     NSToolbarItem *toolbarItem = [[[NSToolbarItem alloc] initWithItemIdentifier: itemIdentifier] autorelease];
 
- 
     if( [itemIdentifier isEqual: VLCToolbarMediaControl] )
     {
         [toolbarItem setLabel:@"Media Controls"];
@@ -988,22 +999,20 @@ static NSString * VLCToolbarMediaControl     = @"VLCToolbarMediaControl";
    application */
 - (void)applicationDidBecomeActive:(NSNotification *)aNotification
 {
-#ifndef __x86_64__
+    if( !p_intf ) return;
     [o_remote startListening: self];
-#endif
 }
 - (void)applicationDidResignActive:(NSNotification *)aNotification
 {
-#ifndef __x86_64__
+    if( !p_intf ) return;
     [o_remote stopListening: self];
-#endif
 }
 
 /* Triggered when the computer goes to sleep */
 - (void)computerWillSleep: (NSNotification *)notification
 {
     /* Pause */
-    if( p_intf->p_sys->i_play_status == PLAYING_S )
+    if( p_intf && p_intf->p_sys->i_play_status == PLAYING_S )
     {
         vlc_value_t val;
         val.i_int = config_GetInt( p_intf, "key-play-pause" );
@@ -1500,11 +1509,11 @@ static void manage_cleanup( void * args )
     id self = manage_cleanup_stack->self;
     playlist_t * p_playlist = manage_cleanup_stack->p_playlist;
 
-    var_AddCallback( p_playlist, "item-current", PlaylistChanged, self );
-    var_AddCallback( p_playlist, "intf-change", PlaylistChanged, self );
-    var_AddCallback( p_playlist, "item-change", PlaylistChanged, self );
-    var_AddCallback( p_playlist, "playlist-item-append", PlaylistChanged, self );
-    var_AddCallback( p_playlist, "playlist-item-deleted", PlaylistChanged, self );
+    var_DelCallback( p_playlist, "item-current", PlaylistChanged, self );
+    var_DelCallback( p_playlist, "intf-change", PlaylistChanged, self );
+    var_DelCallback( p_playlist, "item-change", PlaylistChanged, self );
+    var_DelCallback( p_playlist, "playlist-item-append", PlaylistChanged, self );
+    var_DelCallback( p_playlist, "playlist-item-deleted", PlaylistChanged, self );
 
     pl_Release( p_intf );
 
@@ -1881,20 +1890,11 @@ end:
             [o_controls setupVarMenuItem: o_mi_deinterlace target: (vlc_object_t *)p_vout
                 var: "deinterlace" selector: @selector(toggleVar:)];
 
-#if 0
-/* FIXME Post processing. */
-            p_dec_obj = (vlc_object_t *)vlc_object_find(
-                                                 (vlc_object_t *)p_vout,
-                                                 VLC_OBJECT_DECODER,
-                                                 FIND_PARENT );
-            if( p_dec_obj != NULL )
-            {
-               [o_controls setupVarMenuItem: o_mi_ffmpeg_pp target:
-                    (vlc_object_t *)p_dec_obj var:"ffmpeg-pp-q" selector:
+#if 1
+           [o_controls setupVarMenuItem: o_mi_ffmpeg_pp target:
+                    (vlc_object_t *)p_vout var:"postprocess" selector:
                     @selector(toggleVar:)];
 
-                vlc_object_release(p_dec_obj);
-            }
 #endif
             vlc_object_release( (vlc_object_t *)p_vout );
         }
@@ -2539,9 +2539,9 @@ end:
 
     if( [o_msg_arr count] + 2 > 600 )
     {
-		[o_msg_arr removeObjectAtIndex: 0];
+        [o_msg_arr removeObjectAtIndex: 0];
         [o_msg_arr removeObjectAtIndex: 1];
-   }
+    }
 
     o_attr = [NSDictionary dictionaryWithObject: o_gray
                                          forKey: NSForegroundColorAttributeName];

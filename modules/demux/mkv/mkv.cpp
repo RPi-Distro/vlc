@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id$
+ * $Id: a66d090732372b12fe2982e6dc554125d1c89bd8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -42,7 +42,7 @@ static void Close( vlc_object_t * );
 vlc_module_begin ()
     set_shortname( "Matroska" )
     set_description( N_("Matroska stream demuxer" ) )
-    set_capability( "demux", 0 )
+    set_capability( "demux", 50 )
     set_callbacks( Open, Close )
     set_category( CAT_INPUT )
     set_subcategory( SUBCAT_INPUT_DEMUX )

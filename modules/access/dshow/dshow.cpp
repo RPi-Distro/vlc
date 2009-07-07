@@ -2,7 +2,7 @@
  * dshow.cpp : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id$
+ * $Id: 3119bbc9ae528a83fd2adedf79b5108e174323bb $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *         Damien Fouilleul <damienf@videolan.org>
@@ -2008,20 +2008,30 @@ static int ConfigDevicesCallback( vlc_object_t *p_this, char const *psz_name,
 {
     module_config_t *p_item;
     bool b_audio = false;
+    char *psz_device = NULL;
+
+    if( !EMPTY_STR( newval.psz_string ) )
+        psz_device = strdup( newval.psz_string );
 
     /* Initialize OLE/COM */
     CoInitialize( 0 );
 
     p_item = config_FindConfig( p_this, psz_name );
-    if( !p_item ) return VLC_SUCCESS;
+
+    if( !p_item )
+    {
+        free( psz_device );
+        CoUninitialize();
+        return VLC_SUCCESS;
+    }
 
     if( !strcmp( psz_name, "dshow-adev" ) ) b_audio = true;
 
     string devicename;
 
-    if( newval.psz_string && *newval.psz_string )
+    if( psz_device )
     {
-        devicename = newval.psz_string;
+        devicename = psz_device ;
     }
     else
     {
@@ -2030,7 +2040,11 @@ static int ConfigDevicesCallback( vlc_object_t *p_this, char const *psz_name,
 
         /* Enumerate devices */
         FindCaptureDevice( p_this, NULL, &list_devices, b_audio );
-        if( !list_devices.size() ) return VLC_EGENERIC;
+        if( !list_devices.size() )
+        {
+            CoUninitialize();
+            return VLC_EGENERIC;
+        }
         devicename = *list_devices.begin();
     }
 
@@ -2047,12 +2061,14 @@ static int ConfigDevicesCallback( vlc_object_t *p_this, char const *psz_name,
         CoUninitialize();
 
         msg_Err( p_this, "didn't find device: %s", devicename.c_str() );
+        free( psz_device );
         return VLC_EGENERIC;
     }
 
     /* Uninitialize OLE/COM */
     CoUninitialize();
 
+    free( psz_device );
     return VLC_SUCCESS;
 }
 

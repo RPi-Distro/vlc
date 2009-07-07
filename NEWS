@@ -1,10 +1,11 @@
-Changes between 0.9.9a and 1.0.0-rc2:
-------------------------------------
+Changes between 0.9.9a and 1.0.0:
+---------------------------------
 
 Important notes:
 ----------------
  * Alsa and OSS audio capture has been removed from the v4l and v4l2 accesses.
    See 'Access:' for more info.
+ * Support for Mac OS X 10.4.x was dropped due to its technical limitations
 
 Playback:
  * Instantaneous pausing
@@ -23,7 +24,7 @@ Decoders:
  * New QCELP (Qualcomm PureVoice) decoder
  * Improved Real Video 3.0 & 4.0 decoder
  * New WMA v1/2 fixed point integer decoder
- * Close Caption under SCTE-20 standard are now correctly decoded
+ * Closed Captions using the SCTE-20 standard are now correctly decoded
  * Improvement of WavPack decoder to support all integer modes and float mode
  * Corrections on 5.1 and 7.1 channel decoding and ordering
 
@@ -34,7 +35,7 @@ Demuxers:
  * Metadata for mod files are supported
  * GSM codecs in Wav files are supported
  * New raw audio demuxer supporting raw PCM streams
- * New dirac demuxer for raw dirac streams
+ * New Dirac demuxer for raw Dirac streams
 
 Encoders:
  * Dirac encoding using libdirac (supported in Ogg and in TS)
@@ -49,7 +50,9 @@ Access:
    OSS or Alsa audio input. Use --input-slave alsa:// or oss:// if needed.
  * DVB scanning on linux
  * EXPERIMENTAL Blu-Ray Disc and AVCHD Folders support
- * On-the-fly zip file decompression and browsing (MRL of the form zip://file.zip!/file.avi to specify the file - the development form of zip://file.zip|file.avi is not supported anymore)
+ * On-the-fly zip file decompression and browsing (MRL of the form
+   zip://file.zip!/file.avi to specify the file - the development form of
+   zip://file.zip|file.avi is not supported anymore)
  * Opening of any file descriptor using 'fd://'
  * MTP device access on Unix
  * CD-Text support on the cdda module (CD-Audio)
@@ -58,7 +61,7 @@ Access:
 Inputs:
  * Mouse cursor support in x11 and win32 screen modules
  * Screen module now features partial screen capture and mouse following on
-   Windows.
+   Windows and Mac OS X.
 
 Playlist:
  * Export the playlist in HTML
@@ -76,13 +79,13 @@ Linux/Windows interface:
     - Improvements on many dialogs
     - New dialog for plugins listing
     - Fixed-size mode for videos
-    - Better teletext, trickplay and encrypted streams control
+    - Better Teletext, trickplay and encrypted streams control
  * Better integration in GTK environments
 
 Mac OS X Interface:
  * Controllable by the Media Keys on modern Apple keyboards (brushed Aluminium)
  * Reveal-in-Finder functionality for locally stored items.
- * Easy addition of Subtitles through the Video menu
+ * Easy addition of subtitles through the Video menu
  * Additional usability improvements
 
 Stream output:
@@ -101,8 +104,10 @@ Windows CE Port:
  EXPERIMENTAL work for the winCE port has been done.
 
 Mac OS X Port:
- * Support for Mac OS X 10.4.x was dropped due to its technical limitations
+ * EXPERIMENTAL 64bit support
  * Speed improvements by using llvm-gcc
+ * New document icons by Dominic Spitaler
+ * Support for latest iSight models
 
 Audio output:
  * Removed obsolete Esound and aRts plugins
@@ -117,9 +122,13 @@ Video output:
  * Support for scaling and converting video chromas with FFMPEG imgresample was
    withdrawn due to bugs. Please use the newer FFMPEG swscale instead.
 
-Miscellanous:
+Miscellaneous:
  * Invmem, a fake codec to display images from external applications
 
+New Localization:
+ * Khmer
+ * Mongolian
+ * Sorani
 
 Changes between 0.9.9 and 0.9.9a:
 ---------------------------------

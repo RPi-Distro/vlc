@@ -2,7 +2,7 @@
  * media.c: Libvlc API media descripor management
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: d1a45d4d60591f3c108812d9b0ee708604f5f87f $
  *
  * Authors: Pierre d'Herbemont <pdherbemont@videolan.org>
  *
@@ -21,14 +21,24 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "libvlc_internal.h"
-#include "libvlc.h"
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
+
 #include <vlc/libvlc.h>
+#include <vlc/libvlc_media.h>
+#include <vlc/libvlc_media_list.h> // For the subitems, here for convenience
+#include <vlc/libvlc_events.h>
+
+#include <vlc_common.h>
 #include <vlc_input.h>
 #include <vlc_meta.h>
+#include <vlc_playlist.h> /* For the preparser */
 
-/* For the preparser */
-#include <vlc_playlist.h>
+#include "libvlc.h"
+
+#include "libvlc_internal.h"
+#include "media_internal.h"
 
 static const vlc_meta_type_t libvlc_to_vlc_meta[] =
 {
