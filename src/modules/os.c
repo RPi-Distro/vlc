@@ -2,7 +2,7 @@
  * os.c : Low-level dynamic library handling
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: a449ad7b2c51fc4a69ae011ac2059fa7a578364d $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -65,12 +65,15 @@
 #       include <dl.h>
 #   endif
 #endif
+#ifdef HAVE_VALGRIND_VALGRIND_H
+# include <valgrind/valgrind.h>
+#endif
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
 #ifdef HAVE_DYNAMIC_PLUGINS
-static void * GetSymbol        ( module_handle_t, const char * );
+static void *module_Lookup( module_handle_t, const char * );
 
 #if defined(HAVE_DL_WINDOWS)
 static char * GetWindowsError  ( void );
@@ -84,30 +87,31 @@ static char * GetWindowsError  ( void );
  * \param p_module the modules
  * \return 0 if it pass and -1 in case of a failure
  */
-int module_Call( module_t *p_module )
+int module_Call( vlc_object_t *obj, module_t *p_module )
 {
     static const char psz_name[] = "vlc_entry" MODULE_SUFFIX;
     int (* pf_symbol) ( module_t * p_module );
 
     /* Try to resolve the symbol */
-    pf_symbol = (int (*)(module_t *)) GetSymbol( p_module->handle, psz_name );
+    pf_symbol = (int (*)(module_t *)) module_Lookup( p_module->handle,
+                                                     psz_name );
 
     if( pf_symbol == NULL )
     {
 #if defined(HAVE_DL_DYLD) || defined(HAVE_DL_BEOS)
-        msg_Warn( p_module, "cannot find symbol \"%s\" in file `%s'",
-                            psz_name, p_module->psz_filename );
+        msg_Warn( obj, "cannot find symbol \"%s\" in file `%s'",
+                  psz_name, p_module->psz_filename );
 #elif defined(HAVE_DL_WINDOWS)
         char *psz_error = GetWindowsError();
-        msg_Warn( p_module, "cannot find symbol \"%s\" in file `%s' (%s)",
-                            psz_name, p_module->psz_filename, psz_error );
+        msg_Warn( obj, "cannot find symbol \"%s\" in file `%s' (%s)",
+                  psz_name, p_module->psz_filename, psz_error );
         free( psz_error );
 #elif defined(HAVE_DL_DLOPEN)
-        msg_Warn( p_module, "cannot find symbol \"%s\" in file `%s' (%s)",
-                            psz_name, p_module->psz_filename, dlerror() );
+        msg_Warn( obj, "cannot find symbol \"%s\" in file `%s' (%s)",
+                  psz_name, p_module->psz_filename, dlerror() );
 #elif defined(HAVE_DL_SHL_LOAD)
-        msg_Warn( p_module, "cannot find symbol \"%s\" in file `%s' (%m)",
-                            psz_name, p_module->psz_filename );
+        msg_Warn( obj, "cannot find symbol \"%s\" in file `%s' (%m)",
+                  psz_name, p_module->psz_filename );
 #else
 #   error "Something is wrong in modules.c"
 #endif
@@ -119,8 +123,8 @@ int module_Call( module_t *p_module )
     {
         /* With a well-written module we shouldn't have to print an
          * additional error message here, but just make sure. */
-        msg_Err( p_module, "Failed to call symbol \"%s\" in file `%s'",
-                           psz_name, p_module->psz_filename );
+        msg_Err( obj, "Failed to call symbol \"%s\" in file `%s'",
+                 psz_name, p_module->psz_filename );
         return -1;
     }
 
@@ -183,16 +187,17 @@ int module_Load( vlc_object_t *p_this, const char *psz_file,
     wchar_t psz_wfile[MAX_PATH];
     MultiByteToWideChar( CP_ACP, 0, psz_file, -1, psz_wfile, MAX_PATH );
 
+#ifndef UNDER_CE
     /* FIXME: this is not thread-safe -- Courmisch */
     UINT mode = SetErrorMode (SEM_FAILCRITICALERRORS);
     SetErrorMode (mode|SEM_FAILCRITICALERRORS);
-
-#ifdef UNDER_CE
-    handle = LoadLibrary( psz_wfile );
-#else
-    handle = LoadLibraryW( psz_wfile );
 #endif
+
+    handle = LoadLibraryW( psz_wfile );
+
+#ifndef UNDER_CE
     SetErrorMode (mode);
+#endif
 
     if( handle == NULL )
     {
@@ -202,22 +207,17 @@ int module_Load( vlc_object_t *p_this, const char *psz_file,
         return -1;
     }
 
-#elif defined(HAVE_DL_DLOPEN) && defined(RTLD_NOW)
-    /* static is OK, we are called atomically */
-    handle = dlopen( psz_file, RTLD_NOW );
-    if( handle == NULL )
-    {
-        msg_Warn( p_this, "cannot load module `%s' (%s)",
-                          psz_file, dlerror() );
-        return -1;
-    }
-
 #elif defined(HAVE_DL_DLOPEN)
-#   if defined(DL_LAZY)
-    handle = dlopen( psz_file, DL_LAZY );
-#   else
-    handle = dlopen( psz_file, 0 );
-#   endif
+
+# if defined (RTLD_NOW)
+    const int flags = RTLD_NOW;
+# elif defined (DL_LAZY)
+    const int flags = DL_LAZY;
+# else
+    const int flags = 0;
+# endif
+
+    handle = dlopen( psz_file, flags );
     if( handle == NULL )
     {
         msg_Warn( p_this, "cannot load module `%s' (%s)",
@@ -263,11 +263,11 @@ void module_Unload( module_handle_t handle )
     FreeLibrary( handle );
 
 #elif defined(HAVE_DL_DLOPEN)
-# ifdef NDEBUG
-    dlclose( handle );
-# else
-    (void)handle;
+# ifdef HAVE_VALGRIND_VALGRIND_H
+    if( RUNNING_ON_VALGRIND > 0 )
+        return; /* do not dlclose() so that we get proper stack traces */
 # endif
+    dlclose( handle );
 
 #elif defined(HAVE_DL_SHL_LOAD)
     shl_unload( handle );
@@ -277,41 +277,24 @@ void module_Unload( module_handle_t handle )
 }
 
 /**
- * GetSymbol: get a symbol from a dynamic library
+ * Looks up a symbol from a dynamically loaded library
  *
  * This function queries a loaded library for a symbol specified in a
  * string, and returns a pointer to it. We don't check for dlerror() or
  * similar functions, since we want a non-NULL symbol anyway.
- * \param handle handle to the module
- * \param psz_function function name
- * \return nothing
+ *
+ * @param handle handle to the module
+ * @param psz_function function name
+ * @return NULL on error, or the address of the symbol
  */
-static void * _module_getsymbol( module_handle_t, const char * );
-
-static void * GetSymbol( module_handle_t handle, const char * psz_function )
-{
-    void * p_symbol = _module_getsymbol( handle, psz_function );
-
-    /* MacOS X dl library expects symbols to begin with "_". So do
-     * some other operating systems. That's really lame, but hey, what
-     * can we do ? */
-    if( p_symbol == NULL )
-    {
-        char psz_call[strlen( psz_function ) + 2];
-
-        psz_call[ 0 ] = '_';
-        memcpy( psz_call + 1, psz_function, sizeof (psz_call) - 1 );
-        p_symbol = _module_getsymbol( handle, psz_call );
-    }
-
-    return p_symbol;
-}
-
-static void * _module_getsymbol( module_handle_t handle,
-                                 const char * psz_function )
+static void *module_Lookup( module_handle_t handle, const char *psz_function )
 {
 #if defined(HAVE_DL_DYLD)
-    NSSymbol sym = NSLookupSymbolInModule( handle, psz_function );
+    char psz_call[strlen( psz_function ) + 2];
+    psz_call[0] = '_';
+    memcpy( psz_call + 1, psz_function, sizeof( psz_call ) - 1 );
+
+    NSSymbol sym = NSLookupSymbolInModule( handle, psz_call );
     return NSAddressOfSymbol( sym );
 
 #elif defined(HAVE_DL_BEOS)
@@ -327,10 +310,13 @@ static void * _module_getsymbol( module_handle_t handle,
     }
 
 #elif defined(HAVE_DL_WINDOWS) && defined(UNDER_CE)
-    wchar_t psz_real[256];
-    MultiByteToWideChar( CP_ACP, 0, psz_function, -1, psz_real, 256 );
+    wchar_t wide[strlen( psz_function ) + 1];
+    size_t i = 0;
+    do
+        wide[i] = psz_function[i]; /* UTF-16 <- ASCII */
+    while( psz_function[i++] );
 
-    return (void *)GetProcAddress( handle, psz_real );
+    return (void *)GetProcAddress( handle, wide );
 
 #elif defined(HAVE_DL_WINDOWS) && defined(WIN32)
     return (void *)GetProcAddress( handle, (char *)psz_function );

@@ -2,7 +2,7 @@
  * ts.c: MPEG-II TS Muxer
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: c4c64ad2dc0e6bd9b64b3878a932a8afdf4fd681 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -31,6 +31,8 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <limits.h>
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
@@ -181,75 +183,71 @@ static void    Close  ( vlc_object_t * );
     "encrypting." )
 
 #define SOUT_CFG_PREFIX "sout-ts-"
-#ifdef HAVE_BSEARCH
-#   define MAX_PMT 64       /* Maximum number of programs. FIXME: I just chose an arbitary number. Where is the maximum in the spec? */
-#else
-#   define MAX_PMT 1
-#endif
+#define MAX_PMT 64       /* Maximum number of programs. FIXME: I just chose an arbitary number. Where is the maximum in the spec? */
 #define MAX_PMT_PID 64       /* Maximum pids in each pmt.  FIXME: I just chose an arbitary number. Where is the maximum in the spec? */
 
-vlc_module_begin();
-    set_description( N_("TS muxer (libdvbpsi)") );
-    set_shortname( "MPEG-TS");
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_MUX );
-    set_capability( "sout mux", 120 );
-    add_shortcut( "ts" );
+vlc_module_begin ()
+    set_description( N_("TS muxer (libdvbpsi)") )
+    set_shortname( "MPEG-TS")
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_MUX )
+    set_capability( "sout mux", 120 )
+    add_shortcut( "ts" )
 
     add_integer( SOUT_CFG_PREFIX "pid-video", 0, NULL,VPID_TEXT, VPID_LONGTEXT,
-                                  true );
+                                  true )
     add_integer( SOUT_CFG_PREFIX "pid-audio", 0, NULL, APID_TEXT,
-                 APID_LONGTEXT, true );
+                 APID_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "pid-spu", 0, NULL, SPUPID_TEXT,
-                 SPUPID_LONGTEXT, true );
+                 SPUPID_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "pid-pmt", 0, NULL, PMTPID_TEXT,
-                 PMTPID_LONGTEXT, true );
+                 PMTPID_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "tsid", 0, NULL, TSID_TEXT,
-                 TSID_LONGTEXT, true );
+                 TSID_LONGTEXT, true )
 #ifdef HAVE_DVBPSI_SDT
     add_integer( SOUT_CFG_PREFIX "netid", 0, NULL, NETID_TEXT,
-                 NETID_LONGTEXT, true );
+                 NETID_LONGTEXT, true )
 #endif
     add_string( SOUT_CFG_PREFIX "program-pmt", NULL, NULL, PMTPROG_TEXT,
-                PMTPROG_LONGTEXT, true );
+                PMTPROG_LONGTEXT, true )
     add_bool( SOUT_CFG_PREFIX "es-id-pid", 0, NULL, PID_TEXT, PID_LONGTEXT,
-              true );
-    add_string( SOUT_CFG_PREFIX "muxpmt", NULL, NULL, MUXPMT_TEXT, MUXPMT_LONGTEXT, true );
+              true )
+    add_string( SOUT_CFG_PREFIX "muxpmt", NULL, NULL, MUXPMT_TEXT, MUXPMT_LONGTEXT, true )
 #ifdef HAVE_DVBPSI_SDT
-    add_string( SOUT_CFG_PREFIX "sdtdesc", NULL, NULL, SDTDESC_TEXT, SDTDESC_LONGTEXT, true );
+    add_string( SOUT_CFG_PREFIX "sdtdesc", NULL, NULL, SDTDESC_TEXT, SDTDESC_LONGTEXT, true )
 #endif
     add_bool( SOUT_CFG_PREFIX "alignment", true, NULL, ALIGNMENT_TEXT,
-              ALIGNMENT_LONGTEXT, true );
+              ALIGNMENT_LONGTEXT, true )
 
     add_integer( SOUT_CFG_PREFIX "shaping", 200, NULL, SHAPING_TEXT,
-                 SHAPING_LONGTEXT, true );
+                 SHAPING_LONGTEXT, true )
     add_bool( SOUT_CFG_PREFIX "use-key-frames", false, NULL, KEYF_TEXT,
-              KEYF_LONGTEXT, true );
+              KEYF_LONGTEXT, true )
 
     add_integer( SOUT_CFG_PREFIX "pcr", 70, NULL, PCR_TEXT, PCR_LONGTEXT,
-                 true );
+                 true )
     add_integer( SOUT_CFG_PREFIX "bmin", 0, NULL, BMIN_TEXT, BMIN_LONGTEXT,
-                 true );
+                 true )
     add_integer( SOUT_CFG_PREFIX "bmax", 0, NULL, BMAX_TEXT, BMAX_LONGTEXT,
-                 true );
+                 true )
     add_integer( SOUT_CFG_PREFIX "dts-delay", 400, NULL, DTS_TEXT,
-                 DTS_LONGTEXT, true );
+                 DTS_LONGTEXT, true )
 
     add_bool( SOUT_CFG_PREFIX "crypt-audio", true, NULL, ACRYPT_TEXT,
-              ACRYPT_LONGTEXT, true );
+              ACRYPT_LONGTEXT, true )
     add_bool( SOUT_CFG_PREFIX "crypt-video", true, NULL, VCRYPT_TEXT,
-              VCRYPT_LONGTEXT, true );
+              VCRYPT_LONGTEXT, true )
 
     add_string( SOUT_CFG_PREFIX "csa-ck", NULL, NULL, CK_TEXT, CK_LONGTEXT,
-                true );
+                true )
     add_string( SOUT_CFG_PREFIX "csa2-ck", NULL, NULL, CK2_TEXT, CK2_LONGTEXT,
-                true );
+                true )
     add_string( SOUT_CFG_PREFIX "csa-use", "1", NULL, CU_TEXT, CU_LONGTEXT,
-                true );
-    add_integer( SOUT_CFG_PREFIX "csa-pkt", 188, NULL, CPKT_TEXT, CPKT_LONGTEXT, true );
+                true )
+    add_integer( SOUT_CFG_PREFIX "csa-pkt", 188, NULL, CPKT_TEXT, CPKT_LONGTEXT, true )
 
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local data structures
@@ -1032,6 +1030,11 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                     p_stream->i_bih_width  = p_input->p_fmt->video.i_width;
                     p_stream->i_bih_height = p_input->p_fmt->video.i_height;
                     break;
+                case VLC_FOURCC( 'd', 'r', 'a', 'c' ):
+                    /* stream_id makes use of stream_id_extension */
+                    p_stream->i_stream_id = (PES_EXTENDED_STREAM_ID << 8) | 0x60;
+                    p_stream->i_stream_type = 0xd1;
+                    break;
                 default:
                     free( p_stream );
                     return VLC_EGENERIC;
@@ -1538,6 +1541,7 @@ static int Mux( sout_mux_t *p_mux )
                     else
                     {
                         int i_header_size = 0;
+                        int i_max_pes_size = 0;
                         int b_data_alignment = 0;
                         if( p_input->p_fmt->i_cat == SPU_ES )
                         {
@@ -1617,9 +1621,19 @@ static int Mux( sout_mux_t *p_mux )
                             p_data->i_pts = p_data->i_dts;
                         }
 
+                        if( p_input->p_fmt->i_codec ==
+                                   VLC_FOURCC('d','r','a','c') )
+                        {
+                            b_data_alignment = 1;
+                            /* dirac pes packets should be unbounded in
+                             * length, specify a suitibly large max size */
+                            i_max_pes_size = INT_MAX;
+                        }
+
                          EStoPES ( p_mux->p_sout, &p_data, p_data,
                                        p_input->p_fmt, p_stream->i_stream_id,
-                                       1, b_data_alignment, i_header_size, 0 );
+                                       1, b_data_alignment, i_header_size,
+                                       i_max_pes_size );
 
                         BufferChainAppend( &p_stream->chain_pes, p_data );
 
@@ -2592,7 +2606,7 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
                     GetDescriptorLength24b( bits.i_data -
                                             bits_fix_IOD.i_data - 3 ) );
 
-#if 0//def HAVE_BSEARCH /* FIXME!!! This can't possibly work */
+#if 0 /* FIXME!!! This can't possibly work */
         i_pidinput = p_mux->pp_inputs[i]->p_fmt->i_id;
         p_usepid = bsearch( &i_pidinput, p_sys->pmtmap, p_sys->i_pmtslots,
                             sizeof(pmt_map_t), intcompare );
@@ -2616,7 +2630,6 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
 
         p_stream = (ts_stream_t *)p_mux->pp_inputs[i_stream]->p_sys;
 
-#ifdef HAVE_BSEARCH
         i_pidinput = p_mux->pp_inputs[i_stream]->p_fmt->i_id;
         p_usepid = bsearch( &i_pidinput, p_sys->pmtmap, p_sys->i_pmtslots,
                             sizeof(pmt_map_t), intcompare );
@@ -2627,7 +2640,6 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
                     p_stream->i_stream_type, p_stream->i_pid );
         else
             /* If there's an error somewhere, dump it to the first pmt */
-#endif
             p_es = dvbpsi_PMTAddES( &p_sys->dvbpmt[0], p_stream->i_stream_type,
                                     p_stream->i_pid );
 
@@ -2667,6 +2679,13 @@ static void GetPMT( sout_mux_t *p_mux, sout_buffer_chain_t *c )
 
             /* "registration" descriptor : "AC-3" */
             dvbpsi_PMTESAddDescriptor( p_es, 0x05, 4, format );
+        }
+        else if( p_stream->i_codec == VLC_FOURCC('d','r','a','c') )
+        {
+            /* Dirac registration descriptor */
+
+            uint8_t data[4] = { 'd', 'r', 'a', 'c' };
+            dvbpsi_PMTESAddDescriptor( p_es, 0x05, 4, data );
         }
         else if( p_stream->i_codec == VLC_FOURCC('d','t','s',' ') )
         {

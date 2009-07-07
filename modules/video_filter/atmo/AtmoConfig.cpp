@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 9c22d8e7aa323d3c50b11fc59ffddb5b777ff9a4 $
+ * $Id$
  */
 
 #include <stdio.h>
@@ -128,7 +128,7 @@ void CAtmoConfig::LoadDefaults() {
 
     clearAllChannelMappings();
     m_CurrentChannelAssignment = 0;
-    tChannelAssignment *temp = temp = new tChannelAssignment;
+    tChannelAssignment* temp = new tChannelAssignment;
     temp->system = true;
     for(int i=0;i<ATMO_NUM_CHANNELS;i++)
         temp->mappings[i] = i;

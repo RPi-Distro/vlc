@@ -2,7 +2,7 @@
  * prefs_widgets.m: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 518029c7830982a9ef5c3e6c69383f0cb90b9063 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *          Jérôme Decoodt <djc at videolan.org>
@@ -467,9 +467,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         case CONFIG_ITEM_BOOL:
             i_margin = 7;
             break;
-        case CONFIG_ITEM_KEY_BEFORE_10_3:
-            i_margin = 7;
-            break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
             i_margin = 6;
             break;
@@ -504,9 +501,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 5;
             break;
         case CONFIG_ITEM_BOOL:
-            i_margin = 7;
-            break;
-        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 7;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -545,9 +539,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         case CONFIG_ITEM_BOOL:
             i_margin = 10;
             break;
-        case CONFIG_ITEM_KEY_BEFORE_10_3:
-            i_margin = 10;
-            break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
             i_margin = 9;
             break;
@@ -582,9 +573,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 6;
             break;
         case CONFIG_ITEM_BOOL:
-            i_margin = 8;
-            break;
-        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 8;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -623,9 +611,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         case CONFIG_ITEM_BOOL:
             i_margin = 7;
             break;
-        case CONFIG_ITEM_KEY_BEFORE_10_3:
-            i_margin = 7;
-            break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
             i_margin = 6;
             break;
@@ -660,9 +645,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 5;
             break;
         case CONFIG_ITEM_BOOL:
-            i_margin = 7;
-            break;
-        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 7;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -701,9 +683,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         case CONFIG_ITEM_BOOL:
             i_margin = 7;
             break;
-        case CONFIG_ITEM_KEY_BEFORE_10_3:
-            i_margin = 7;
-            break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
             i_margin = 5;
             break;
@@ -712,45 +691,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             break;
         default:
             i_margin = 20;
-            break;
-        }
-        break;
-    case CONFIG_ITEM_KEY_BEFORE_10_3:
-        switch( i_lastItem )
-        {
-        case CONFIG_ITEM_STRING:
-        case CONFIG_ITEM_PASSWORD:
-            i_margin = 6;
-            break;
-        case CONFIG_ITEM_STRING_LIST:
-            i_margin = 5;
-            break;
-        case CONFIG_ITEM_FILE:
-            i_margin = 4;
-            break;
-        case CONFIG_ITEM_MODULE:
-            i_margin = 2;
-            break;
-        case CONFIG_ITEM_INTEGER:
-            i_margin = 5;
-            break;
-        case CONFIG_ITEM_RANGED_INTEGER:
-            i_margin = 3;
-            break;
-        case CONFIG_ITEM_BOOL:
-            i_margin = 3;
-            break;
-        case CONFIG_ITEM_KEY_BEFORE_10_3:
-            i_margin = 10;
-            break;
-        case CONFIG_ITEM_KEY_AFTER_10_3:
-            i_margin = 6;
-            break;
-        case CONFIG_ITEM_MODULE_LIST:
-            i_margin = 6;
-            break;
-        default:
-            i_margin = 18;
             break;
         }
         break;
@@ -777,9 +717,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 5;
             break;
         case CONFIG_ITEM_BOOL:
-            i_margin = 7;
-            break;
-        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 7;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -816,9 +753,6 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             i_margin = 5;
             break;
         case CONFIG_ITEM_BOOL:
-            i_margin = 7;
-            break;
-        case CONFIG_ITEM_KEY_BEFORE_10_3:
             i_margin = 7;
             break;
         case CONFIG_ITEM_KEY_AFTER_10_3:
@@ -929,17 +863,17 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     return p_control;
 }
 
-- (NSString *)getName
+- (NSString *)name
 {
     return [[VLCMain sharedInstance] localizedString: psz_name];
 }
 
-- (int)getType
+- (int)type
 {
     return i_type;
 }
 
-- (int)getViewType
+- (int)viewType
 {
     return i_view_type;
 }
@@ -992,7 +926,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
     }
 }
 
-- (int)getLabelSize
+- (int)labelSize
 {
     return [o_label frame].size.width;
 }
@@ -1162,12 +1096,12 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 @end
 
 @implementation StringListConfigControl (NSComboBoxDataSource)
-- (int)numberOfItemsInComboBox:(NSComboBox *)aComboBox
+- (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
         return p_item->i_list;
 }
 
-- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)i_index
+- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(NSInteger)i_index
 {
     if( p_item->ppsz_list_text && p_item->ppsz_list_text[i_index] )
     {
@@ -1198,7 +1132,7 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
                                         localizedString: (char *)p_item->psz_longtext ] toWidth: PREFS_WRAP];
 
         /* is it a directory */
-        b_directory = ( [self getType] == CONFIG_ITEM_DIRECTORY ) ? YES : NO;
+        b_directory = ( [self type] == CONFIG_ITEM_DIRECTORY ) ? YES : NO;
 
         /* add the label */
         if( p_item->psz_text )
@@ -1295,9 +1229,8 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 
     if( [super initWithFrame: mainFrame item: _p_item] != nil )
     {
-        int i_index;
-        vlc_list_t *p_list;
-        module_t *p_parser;
+        size_t i_index;
+        module_t *p_parser, **p_list;
         i_view_type = CONFIG_ITEM_MODULE;
 
         o_popupTooltip = [[VLCMain sharedInstance] wrapString:
@@ -1323,21 +1256,21 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         [o_popup selectItem: [o_popup lastItem]];
 
         /* build a list of available modules */
-        p_list = vlc_list_find( VLCIntf, VLC_OBJECT_MODULE, FIND_ANYWHERE );
-        for( i_index = 0; i_index < p_list->i_count; i_index++ )
+        p_list = module_list_get( NULL );
+        for( i_index = 0; p_list[i_index]; i_index++ )
         {
-            p_parser = (module_t *)p_list->p_values[i_index].p_object;
+            p_parser = p_list[i_index];
 
             if( p_item->i_type == CONFIG_ITEM_MODULE )
             {
-                if( module_IsCapable( p_parser, p_item->psz_type ) )
+                if( module_provides( p_parser, p_item->psz_type ) )
                 {
                     NSString *o_description = [[VLCMain sharedInstance]
                         localizedString: module_GetLongName( p_parser )];
                     [o_popup addItemWithTitle: o_description];
 
                     if( p_item->value.psz &&
-                !strcmp( p_item->value.psz, module_GetObjName( p_parser ) ) )
+                !strcmp( p_item->value.psz, module_get_object( p_parser ) ) )
                         [o_popup selectItem:[o_popup lastItem]];
                 }
             }
@@ -1345,14 +1278,14 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
             {
                 int i;
 
-                if( !strcmp( module_GetObjName( p_parser ), "main" ) )
+                if( module_is_main( p_parser ) )
                     continue;
                 unsigned int confsize;
                 unsigned int unused;
-                module_GetConfig( p_parser, &confsize );
+                module_config_get( p_parser, &confsize );
                 for ( i = 0; i < confsize; i++ )
                 {
-                    module_config_t *p_config = module_GetConfig( p_parser, &unused ) + i;
+                    module_config_t *p_config = module_config_get( p_parser, &unused ) + i;
                     /* Hack: required subcategory is stored in i_min */
                     if( p_config->i_type == CONFIG_SUBCATEGORY &&
                         p_config->value.i == p_item->min.i )
@@ -1362,13 +1295,13 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
                         [o_popup addItemWithTitle: o_description];
 
                         if( p_item->value.psz && !strcmp(p_item->value.psz,
-                                                module_GetObjName( p_parser )) )
+                                                module_get_object( p_parser )) )
                             [o_popup selectItem:[o_popup lastItem]];
                     }
                 }
             }
         }
-        vlc_list_release( p_list );
+        module_list_free( p_list );
         [self addSubview: o_popup];
     }
     return self;
@@ -1398,24 +1331,23 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 {
     NSString *newval = [o_popup titleOfSelectedItem];
     char *returnval = NULL;
-    int i_module_index;
-    vlc_list_t *p_list;
-    module_t *p_parser;
+    size_t i_module_index;
+    module_t *p_parser, **p_list;
 
-    p_list = vlc_list_find( VLCIntf, VLC_OBJECT_MODULE, FIND_ANYWHERE );
-    for( i_module_index = 0; i_module_index < p_list->i_count; i_module_index++ )
+    p_list = module_list_get( NULL );
+    for( i_module_index = 0; p_list[i_module_index]; i_module_index++ )
     {
-        p_parser = (module_t *)p_list->p_values[i_module_index].p_object;
+        p_parser = p_list[i_module_index];
 
         if( p_item->i_type == CONFIG_ITEM_MODULE )
         {
-            if( module_IsCapable( p_parser, p_item->psz_type ) )
+            if( module_provides( p_parser, p_item->psz_type ) )
             {
                 NSString *o_description = [[VLCMain sharedInstance]
                     localizedString: module_GetLongName( p_parser )];
                 if( [newval isEqualToString: o_description] )
                 {
-                    returnval = strdup( module_GetObjName( p_parser ));
+                    returnval = strdup( module_get_object( p_parser ));
                     break;
                 }
             }
@@ -1424,13 +1356,13 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
         {
             int i;
 
-            if( !strcmp( module_GetObjName( p_parser ), "main" ) )
+            if( module_is_main( p_parser) )
                 continue;
             unsigned int confsize, unused;
-            module_GetConfig( p_parser, &confsize );
+            module_config_get( p_parser, &confsize );
             for ( i = 0; i < confsize; i++ )
             {
-                module_config_t *p_config = module_GetConfig( p_parser, &unused ) + i;
+                module_config_t *p_config = module_config_get( p_parser, &unused ) + i;
                 /* Hack: required subcategory is stored in i_min */
                 if( p_config->i_type == CONFIG_SUBCATEGORY &&
                     p_config->value.i == p_item->min.i )
@@ -1439,14 +1371,14 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
                         localizedString: module_GetLongName( p_parser )];
                     if( [newval isEqualToString: o_description] )
                     {
-                        returnval = strdup(module_GetObjName( p_parser ));
+                        returnval = strdup(module_get_object( p_parser ));
                         break;
                     }
                 }
             }
         }
     }
-    vlc_list_release( p_list );
+    module_list_free( p_list );
     return returnval;
 }
 @end
@@ -1618,12 +1550,12 @@ o_textfield = [[[NSSecureTextField alloc] initWithFrame: s_rc] retain];       \
 @end
 
 @implementation IntegerListConfigControl (NSComboBoxDataSource)
-- (int)numberOfItemsInComboBox:(NSComboBox *)aComboBox
+- (NSInteger)numberOfItemsInComboBox:(NSComboBox *)aComboBox
 {
     return p_item->i_list;
 }
 
-- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(int)i_index
+- (id)comboBox:(NSComboBox *)aComboBox objectValueForItemAtIndex:(NSInteger)i_index
 {
     if( p_item->ppsz_list_text && p_item->ppsz_list_text[i_index] )
         return [[VLCMain sharedInstance]
@@ -2084,30 +2016,29 @@ if( _p_item->i_type == CONFIG_ITEM_MODULE_LIST )
         return nil;
 
 //Fill our array to know how may items we have...
-    vlc_list_t *p_list;
-    module_t *p_parser;
-    int i_module_index;
+    module_t *p_parser, **p_list;
+    size_t i_module_index;
     NSRect mainFrame = [o_parent_view frame];
     NSString *o_labelString, *o_textfieldString, *o_tooltip;
 
     o_modulearray = [[NSMutableArray alloc] initWithCapacity:10];
     /* build a list of available modules */
-    p_list = vlc_list_find( VLCIntf, VLC_OBJECT_MODULE, FIND_ANYWHERE );
-    for( i_module_index = 0; i_module_index < p_list->i_count; i_module_index++ )
+    p_list = module_list_get( NULL );
+    for( i_module_index = 0; p_list[i_module_index]; i_module_index++ )
     {
         int i;
-        p_parser = (module_t *)p_list->p_values[i_module_index].p_object;
+        p_parser = p_list[i_module_index];
 
-        if( !strcmp( module_GetObjName( p_parser ), "main" ) )
+        if( module_is_main( p_parser ) )
             continue;
 
         unsigned int confsize;
-        module_GetConfig( p_parser, &confsize );
+        module_config_get( p_parser, &confsize );
 
         for ( i = 0; i < confsize; i++ )
         {
             unsigned int unused;
-            module_config_t *p_config = module_GetConfig( p_parser, &unused ) + i;
+            module_config_t *p_config = module_config_get( p_parser, &unused ) + i;
             NSString *o_modulelongname, *o_modulename;
             NSNumber *o_moduleenabled = nil;
 
@@ -2118,10 +2049,10 @@ if( _p_item->i_type == CONFIG_ITEM_MODULE_LIST )
                 o_modulelongname = [NSString stringWithUTF8String:
                                         module_GetLongName( p_parser )];
                 o_modulename = [NSString stringWithUTF8String:
-                                        module_GetObjName( p_parser )];
+                                        module_get_object( p_parser )];
 
                 if( _p_item->value.psz &&
-                    strstr( _p_item->value.psz, module_GetObjName( p_parser ) ) )
+                    strstr( _p_item->value.psz, module_get_object( p_parser ) ) )
                     o_moduleenabled = [NSNumber numberWithBool:YES];
                 else
                     o_moduleenabled = [NSNumber numberWithBool:NO];
@@ -2132,7 +2063,7 @@ if( _p_item->i_type == CONFIG_ITEM_MODULE_LIST )
             }
         }
     }
-    vlc_list_release( p_list );
+    module_list_free( p_list );
 
     mainFrame.size.height = 30 + 18 * [o_modulearray count];
     mainFrame.size.width = mainFrame.size.width - LEFTMARGIN - RIGHTMARGIN;
@@ -2284,7 +2215,7 @@ if( _p_item->i_type == CONFIG_ITEM_MODULE_LIST )
 }
 
 - (NSDragOperation)tableView:(NSTableView*)table
-    validateDrop:(id <NSDraggingInfo>)info proposedRow:(int)row
+    validateDrop:(id <NSDraggingInfo>)info proposedRow:(NSInteger)row
     proposedDropOperation:(NSTableViewDropOperation)op
 {
     // Make drops at the end of the table go to the end.
@@ -2302,7 +2233,7 @@ if( _p_item->i_type == CONFIG_ITEM_MODULE_LIST )
 }
 
 - (BOOL)tableView:(NSTableView*)table acceptDrop:(id <NSDraggingInfo>)info
-    row:(int)dropRow dropOperation:(NSTableViewDropOperation)op;
+    row:(NSInteger)dropRow dropOperation:(NSTableViewDropOperation)op;
 {
     NSPasteboard    *pb = [info draggingPasteboard];
     NSDragOperation srcMask = [info draggingSourceOperationMask];
@@ -2356,13 +2287,13 @@ if( _p_item->i_type == CONFIG_ITEM_MODULE_LIST )
     return accepted;
 }
 
-- (int)numberOfRowsInTableView:(NSTableView *)aTableView
+- (NSInteger)numberOfRowsInTableView:(NSTableView *)aTableView
 {
     return [o_modulearray count];
 }
 
 - (id)tableView:(NSTableView *)aTableView
-    objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+    objectValueForTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
     if( [[aTableColumn identifier] isEqualToString: @"Enabled"] )
         return [[o_modulearray objectAtIndex:rowIndex] objectAtIndex:2];
@@ -2373,7 +2304,7 @@ if( _p_item->i_type == CONFIG_ITEM_MODULE_LIST )
 }
 
 - (void)tableView:(NSTableView *)aTableView setObjectValue:(id)anObject
-    forTableColumn:(NSTableColumn *)aTableColumn row:(int)rowIndex
+    forTableColumn:(NSTableColumn *)aTableColumn row:(NSInteger)rowIndex
 {
     [[o_modulearray objectAtIndex:rowIndex] replaceObjectAtIndex:2
         withObject: anObject];

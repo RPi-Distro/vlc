@@ -2,7 +2,7 @@
  * id3tag.c: id3/ape tag parser/skipper based on libid3tag
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 45d33fc0482ee94c0f33e4ecc04698bb0c5f18b7 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -53,11 +53,11 @@ static int  ParseTags ( vlc_object_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("ID3v1/2 and APEv1/2 tags parser" ) );
-    set_capability( "meta reader", 70 );
-    set_callbacks( ParseTags, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("ID3v1/2 and APEv1/2 tags parser" ) )
+    set_capability( "meta reader", 70 )
+    set_callbacks( ParseTags, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * ParseID3Tag : parse an id3tag into the info structures
@@ -215,7 +215,7 @@ static void ParseID3Tag( demux_t *p_demux, const uint8_t *p_data, int i_size )
             }
             else if( DESCR_IS( "Track number/position in set" ) )
             {
-                vlc_meta_SetTracknum( p_meta, psz_temp );
+                vlc_meta_SetTrackNum( p_meta, psz_temp );
             }
             else if( DESCR_IS( "Album/movie/show title" ) )
             {
@@ -345,7 +345,7 @@ static void ParseAPEvXTag( demux_t *p_demux, const uint8_t *p_data, int i_data )
                 char *p = strchr( psz_value, '/' );
                 if( p )
                     *p++ = '\0';
-                vlc_meta_SetTracknum( p_meta, psz_value );
+                vlc_meta_SetTrackNum( p_meta, psz_value );
             }
             else  if( IS( "Comment" ) )
                 vlc_meta_SetDescription( p_meta, psz_value );

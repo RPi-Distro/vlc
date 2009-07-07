@@ -1,3 +1,8 @@
 /usr/share/bug/vlc-nox /usr/share/bug/vlc
 /usr/share/man/man1/vlc.1.gz /usr/share/man/man1/svlc.1.gz
 /usr/share/man/man1/vlc.1.gz /usr/share/man/man1/qvlc.1.gz
+/usr/share/doc/vlc-nox/AUTHORS.gz /usr/share/doc/vlc/AUTHORS.gz
+/usr/share/doc/vlc-nox/MAINTAINERS /usr/share/doc/vlc/MAINTAINERS
+/usr/share/doc/vlc-nox/NEWS.gz /usr/share/doc/vlc/NEWS.gz
+/usr/share/doc/vlc-nox/README /usr/share/doc/vlc/README
+/usr/share/doc/vlc-nox/THANKS.gz /usr/share/doc/vlc/THANKS.gz

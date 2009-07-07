@@ -2,7 +2,7 @@
  * trivial.c : trivial resampler (skips samples or pads with zeroes)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 859ec5c6ee16d43d154297e4203748f3cb56ead1 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -44,13 +44,13 @@ static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Audio filter for trivial resampling") );
-    set_capability( "audio filter", 1 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_MISC );
-    set_callbacks( Create, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Audio filter for trivial resampling") )
+    set_capability( "audio filter", 1 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_callbacks( Create, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Create: allocate trivial resampler

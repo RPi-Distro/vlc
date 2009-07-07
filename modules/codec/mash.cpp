@@ -2,7 +2,7 @@
  * mash.c: Video decoder using openmash codec implementations
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 244ee101fd446a6cc2fb8f8aef37cfa9932ef774 $
+ * $Id$
  *
  * Authors: Sigmund Augdal <sigmunau@idi.ntnu.no>
  *
@@ -67,13 +67,13 @@ static block_t   *SendFrame  ( decoder_t *, block_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Video decoder using openmash") );
-    set_capability( "decoder", 50 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_callbacks( OpenDecoder, CloseDecoder );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Video decoder using openmash") )
+    set_capability( "decoder", 50 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_callbacks( OpenDecoder, CloseDecoder )
+vlc_module_end ()
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -202,7 +202,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
 //    p_sys->p_decoder->sync();
     if( p_block->i_flags & BLOCK_FLAG_END_OF_FRAME )
     {
-        p_pic = p_dec->pf_vout_buffer_new( p_dec );
+        p_pic = decoder_NewPicture( p_dec );
         if( !p_pic )
         {
             block_Release( p_block );

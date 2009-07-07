@@ -2,7 +2,7 @@
  * interface_widgets.hpp : Playlist Widgets
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: fbe83a52a8d63f0921897244d18315aeb17027d8 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -30,9 +30,9 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
 #include "qt4.hpp"
-#include "dialogs_provider.hpp"
+
+#include "dialogs_provider.hpp" /* Media Info from ArtLabel */
 #include "components/interface_widgets.hpp"
 
 #include <QSplitter>
@@ -69,11 +69,12 @@ class ArtLabel : public CoverArtLabel
 {
     Q_OBJECT
 public:
-    ArtLabel( intf_thread_t *intf ) : CoverArtLabel( VLC_OBJECT( intf ) ) {};
-    virtual ~ArtLabel() {};
-    void mouseDoubleClickEvent( QMouseEvent *event )
+    ArtLabel( QWidget *parent, intf_thread_t *intf )
+            : CoverArtLabel( parent, intf ) {};
+    virtual void mouseDoubleClickEvent( QMouseEvent *event )
     {
         THEDP->mediaInfoDialog();
+        event->accept();
     }
 };
 

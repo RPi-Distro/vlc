@@ -1,13 +1,14 @@
 /*****************************************************************************
  * stream_output.h : stream output module
  *****************************************************************************
- * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 811146f72baef197e8d5936c8183f4e35d476a61 $
+ * Copyright (C) 2002-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
+ *          Rémi Denis-Courmont
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -96,18 +97,32 @@ struct sout_access_out_t
     int                     (*pf_seek)( sout_access_out_t *, off_t );
     ssize_t                 (*pf_read)( sout_access_out_t *, block_t * );
     ssize_t                 (*pf_write)( sout_access_out_t *, block_t * );
-    int                     (*pf_control)( sout_access_out_t *, int, va_list);
+    int                     (*pf_control)( sout_access_out_t *, int, va_list );
 
-    config_chain_t              *p_cfg;
-    sout_instance_t         *p_sout;
+    config_chain_t          *p_cfg;
 };
 
-VLC_EXPORT( sout_access_out_t *,sout_AccessOutNew, ( sout_instance_t *, const char *psz_access, const char *psz_name ) );
-VLC_EXPORT( void,               sout_AccessOutDelete, ( sout_access_out_t * ) );
-VLC_EXPORT( int,                sout_AccessOutSeek,   ( sout_access_out_t *, off_t ) );
-VLC_EXPORT( ssize_t,            sout_AccessOutRead,   ( sout_access_out_t *, block_t * ) );
-VLC_EXPORT( ssize_t,            sout_AccessOutWrite,  ( sout_access_out_t *, block_t * ) );
-VLC_EXPORT( int,                sout_AccessOutControl,( sout_access_out_t *, int, va_list ) );
+enum access_out_query_e
+{
+    ACCESS_OUT_CONTROLS_PACE, /* arg1=bool *, can fail (assume true) */
+};
+
+VLC_EXPORT( sout_access_out_t *,sout_AccessOutNew, ( vlc_object_t *, const char *psz_access, const char *psz_name ) );
+#define sout_AccessOutNew( obj, access, name ) \
+        sout_AccessOutNew( VLC_OBJECT(obj), access, name )
+VLC_EXPORT( void, sout_AccessOutDelete, ( sout_access_out_t * ) );
+VLC_EXPORT( int, sout_AccessOutSeek, ( sout_access_out_t *, off_t ) );
+VLC_EXPORT( ssize_t, sout_AccessOutRead, ( sout_access_out_t *, block_t * ) );
+VLC_EXPORT( ssize_t, sout_AccessOutWrite, ( sout_access_out_t *, block_t * ) );
+VLC_EXPORT( int, sout_AccessOutControl, ( sout_access_out_t *, int, ... ) );
+
+static inline bool sout_AccessOutCanControlPace( sout_access_out_t *p_ao )
+{
+    bool b;
+    if( sout_AccessOutControl( p_ao, ACCESS_OUT_CONTROLS_PACE, &b ) )
+        return true;
+    return b;
+}
 
 /** Muxer structure */
 struct  sout_mux_t
@@ -224,10 +239,21 @@ static inline int sout_StreamIdSend( sout_stream_t *s, sout_stream_id_t *id, blo
 }
 
 /****************************************************************************
+ * Encoder
+ ****************************************************************************/
+
+VLC_EXPORT( encoder_t *, sout_EncoderCreate, ( vlc_object_t *obj ) );
+#define sout_EncoderCreate(o) sout_EncoderCreate(VLC_OBJECT(o))
+
+/****************************************************************************
  * Announce handler
  ****************************************************************************/
-VLC_EXPORT(session_descriptor_t*,sout_AnnounceRegisterSDP, ( sout_instance_t *, const char *, const char *, announce_method_t* ) );
-VLC_EXPORT( int,                sout_AnnounceUnRegister, (sout_instance_t *,session_descriptor_t* ) );
+VLC_EXPORT(session_descriptor_t*,sout_AnnounceRegisterSDP, ( vlc_object_t *, const char *, const char *, announce_method_t* ) );
+VLC_EXPORT( int,                sout_AnnounceUnRegister, (vlc_object_t *,session_descriptor_t* ) );
+#define sout_AnnounceRegisterSDP(o, sdp, addr, m) \
+        sout_AnnounceRegisterSDP(VLC_OBJECT (o), sdp, addr, m)
+#define sout_AnnounceUnRegister(o, a) \
+        sout_AnnounceUnRegister(VLC_OBJECT (o), a)
 
 VLC_EXPORT(announce_method_t*,   sout_SAPMethod, (void) );
 VLC_EXPORT(void,                 sout_MethodRelease, (announce_method_t *) );

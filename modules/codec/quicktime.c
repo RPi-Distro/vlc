@@ -1,8 +1,8 @@
 /*****************************************************************************
  * quicktime.c: a quicktime decoder that uses the QT library/dll
  *****************************************************************************
- * Copyright (C) 2003 the VideoLAN team
- * $Id: abea71a564ac5212d1b624d69bf9e43cb9e3353f $
+ * Copyright (C) 2003, 2008 - 2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir at via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan.org>>
@@ -64,14 +64,14 @@ int       WINAPI FreeLibrary(HMODULE);
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("QuickTime library decoder") );
-    set_capability( "decoder", 0 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_callbacks( Open, Close );
+vlc_module_begin ()
+    set_description( N_("QuickTime library decoder") )
+    set_capability( "decoder", 0 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_callbacks( Open, Close )
 
-vlc_module_end();
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -234,9 +234,13 @@ static int Open( vlc_object_t *p_this )
     err = Gestalt(gestaltQuickTimeVersion, &qtVersion);
     err = Gestalt(gestaltSystemVersion, &macosversion);
 #ifndef NDEBUG
-    msg_Dbg( p_this, "mac os version is %#lx", macosversion );
-    msg_Dbg( p_this, "quicktime version is %#lx", qtVersion );
+    msg_Dbg( p_this, "Mac OS version is %#lx", macosversion );
+    msg_Dbg( p_this, "Quicktime version is %#lx", qtVersion );
 #endif
+
+    /* bail out. This plugin is soo Carbon, that it can't be used on 10.5 at all */
+    msg_Info( p_dec, "Your Mac OS version is to new to use this plugin for anything." );
+    return VLC_EGENERIC;
 #endif
 
     switch( p_dec->fmt_in.i_codec )
@@ -265,6 +269,7 @@ static int Open( vlc_object_t *p_this )
 #ifdef LOADER
         p_dec->p_sys = NULL;
         p_dec->pf_decode_video = DecodeVideo;
+        p_dec->fmt_out.i_cat = VIDEO_ES;
         return VLC_SUCCESS;
 #else
         return OpenVideo( p_dec );
@@ -303,21 +308,9 @@ static int Open( vlc_object_t *p_this )
 #ifdef LOADER
         p_dec->p_sys = NULL;
         p_dec->pf_decode_audio = DecodeAudio;
+        p_dec->fmt_out.i_cat = AUDIO_ES;
         return VLC_SUCCESS;
 #else
-
-#ifdef __APPLE__
-        /* FIXME: right now, we don't support audio decoding on 10.5 and later
-         because we are still using the hardcore-outdated SoundManager API,
-         which was removed after 10.4 */
-
-        if( macosversion >= 0x1050 || err != noErr )
-        {
-            msg_Warn( p_dec, "Your Mac OS version doesn't have SoundManager anymore. "
-                     "You can't use this plugin for audio." );
-            return VLC_EGENERIC;
-        }
-#endif
         return OpenAudio( p_dec );
 #endif
 
@@ -326,6 +319,8 @@ static int Open( vlc_object_t *p_this )
     }
 }
 
+static vlc_mutex_t qt_mutex = VLC_STATIC_MUTEX;
+
 /*****************************************************************************
  * Close:
  *****************************************************************************/
@@ -333,10 +328,9 @@ static void Close( vlc_object_t *p_this )
 {
     decoder_t     *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys = p_dec->p_sys;
-    vlc_mutex_t   *lock;
 
     /* get lock, avoid segfault */
-    lock = var_AcquireMutex( "qt_mutex" );
+    vlc_mutex_lock( &qt_mutex );
 
     if( p_dec->fmt_out.i_cat == AUDIO_ES )
     {
@@ -375,7 +369,7 @@ static void Close( vlc_object_t *p_this )
 #endif
 #endif
 
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &qt_mutex );
 
     free( p_sys );
 }
@@ -394,11 +388,9 @@ static int OpenAudio( decoder_t *p_dec )
     unsigned long   OutputBufferSize = 0;
 
     /* get lock, avoid segfault */
-    vlc_mutex_t    *lock = var_AcquireMutex( "qt_mutex" );
-    if( lock == NULL )
-        return VLC_EGENERIC;
+    vlc_mutex_lock( &qt_mutex );
 
-    p_sys = calloc( sizeof( decoder_sys_t ), 1 );
+    p_sys = calloc( 1, sizeof( decoder_sys_t ) );
     p_dec->p_sys = p_sys;
     p_dec->pf_decode_audio = DecodeAudio;
 
@@ -515,7 +507,7 @@ static int OpenAudio( decoder_t *p_dec )
     p_sys->i_out = 0;
     p_sys->i_out_frames = 0;
 
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &qt_mutex );
     return VLC_SUCCESS;
 
 exit_error:
@@ -523,7 +515,7 @@ exit_error:
 #ifdef LOADER
     Restore_LDT_Keeper( p_sys->ldt_fs );
 #endif
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &qt_mutex );
 
     free( p_sys );
     return VLC_EGENERIC;
@@ -574,7 +566,12 @@ static aout_buffer_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
     if( p_sys->i_out_frames <= 0 )
     {
         p_sys->pts = p_block->i_pts;
-        if( decoder_GetDisplayDate( p_dec, p_block->i_pts ) < mdate() )
+
+        mtime_t i_display_date = 0;
+        if( !(p_block->i_flags & BLOCK_FLAG_PREROLL) )
+            i_display_date = decoder_GetDisplayDate( p_dec, p_block->i_pts );
+
+        if( i_display_date > 0 && i_display_date < mdate() )
         {
             block_Release( p_block );
             *pp_block = NULL;
@@ -595,7 +592,7 @@ static aout_buffer_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
         {
             int i_frames = p_sys->i_buffer / p_sys->InFrameSize;
             unsigned long i_out_frames, i_out_bytes;
-            vlc_mutex_t *lock = var_AcquireMutex( "qt_mutex ");
+            vlc_mutex_lock( &qt_mutex );
 
             i_error = p_sys->SoundConverterConvertBuffer( p_sys->myConverter,
                                                           p_sys->p_buffer,
@@ -603,7 +600,7 @@ static aout_buffer_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
                                                           p_sys->out_buffer,
                                                           &i_out_frames,
                                                           &i_out_bytes );
-            vlc_mutex_unlock( lock );
+            vlc_mutex_unlock( &qt_mutex );
 
             /*
             msg_Dbg( p_dec, "decoded %d frames -> %ld frames (error=%d)",
@@ -645,7 +642,7 @@ static aout_buffer_t *DecodeAudio( decoder_t *p_dec, block_t **pp_block )
         aout_buffer_t *p_out;
         int  i_frames = __MIN( p_sys->i_out_frames - p_sys->i_out, 1000 );
 
-        p_out = p_dec->pf_aout_buffer_new( p_dec, i_frames );
+        p_out = decoder_NewAudioBuffer( p_dec, i_frames );
 
         if( p_out )
         {
@@ -674,7 +671,6 @@ static int OpenVideo( decoder_t *p_dec )
     if( !p_sys )
         return VLC_ENOMEM;
 
-    vlc_mutex_t                        *lock;
     long                                i_result;
     ComponentDescription                desc;
     Component                           prev;
@@ -703,7 +699,7 @@ static int OpenVideo( decoder_t *p_dec )
              fcc, p_dec->fmt_in.video.i_width, p_dec->fmt_in.video.i_height );
 
     /* get lock, avoid segfault */
-    lock = var_AcquireMutex( "qt_mutex" );
+    vlc_mutex_lock( &qt_mutex );
 
 #ifdef __APPLE__
     EnterMovies();
@@ -743,17 +739,17 @@ static int OpenVideo( decoder_t *p_dec )
 
     memset( &icap, 0, sizeof( ImageSubCodecDecompressCapabilities ) );
     cres =  p_sys->ImageCodecInitialize( p_sys->ci, &icap );
-    msg_Dbg( p_dec, "ImageCodecInitialize->0x%X size=%d (%d)\n",
+    msg_Dbg( p_dec, "ImageCodecInitialize->0x%X size=%d (%d)",
              (int)cres, (int)icap.recordSize, (int)icap.decompressRecordSize);
 
     memset( &cinfo, 0, sizeof( CodecInfo ) );
     cres =  p_sys->ImageCodecGetCodecInfo( p_sys->ci, &cinfo );
     msg_Dbg( p_dec,
-             "Flags: compr: 0x%x decomp: 0x%x format: 0x%x\n",
+             "Flags: compr: 0x%x decomp: 0x%x format: 0x%x",
              (unsigned int)cinfo.compressFlags,
              (unsigned int)cinfo.decompressFlags,
              (unsigned int)cinfo.formatFlags );
-    msg_Dbg( p_dec, "quicktime_video: Codec name: %.*s\n",
+    msg_Dbg( p_dec, "quicktime_video: Codec name: %.*s",
              ((unsigned char*)&cinfo.typeName)[0],
              ((unsigned char*)&cinfo.typeName)+1 );
 
@@ -819,7 +815,7 @@ static int OpenVideo( decoder_t *p_dec )
                                           p_sys->plane,
                                           p_dec->fmt_in.video.i_width * 2 );
 
-    msg_Dbg( p_dec, "NewGWorldFromPtr returned:%ld\n",
+    msg_Dbg( p_dec, "NewGWorldFromPtr returned:%ld",
              65536 - ( i_result&0xffff ) );
 
     memset( &p_sys->decpar, 0, sizeof( CodecDecompressParams ) );
@@ -837,7 +833,7 @@ static int OpenVideo( decoder_t *p_dec )
     p_sys->decpar.dstPixMap        = **p_sys->GetGWorldPixMap( p_sys->OutBufferGWorld );/*destPixmap;  */
 
     cres =  p_sys->ImageCodecPreDecompress( p_sys->ci, &p_sys->decpar );
-    msg_Dbg( p_dec, "quicktime_video: ImageCodecPreDecompress cres=0x%X\n",
+    msg_Dbg( p_dec, "quicktime_video: ImageCodecPreDecompress cres=0x%X",
              (int)cres );
 
     es_format_Init( &p_dec->fmt_out, VIDEO_ES, VLC_FOURCC( 'Y', 'U', 'Y', '2' ));
@@ -845,14 +841,14 @@ static int OpenVideo( decoder_t *p_dec )
     p_dec->fmt_out.video.i_height= p_dec->fmt_in.video.i_height;
     p_dec->fmt_out.video.i_aspect = VOUT_ASPECT_FACTOR * p_dec->fmt_in.video.i_width / p_dec->fmt_in.video.i_height;
  
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &qt_mutex );
     return VLC_SUCCESS;
 
 exit_error:
 #ifdef LOADER
     Restore_LDT_Keeper( p_sys->ldt_fs );
 #endif
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &qt_mutex );
 
 #endif /* !WIN32 */
 
@@ -866,7 +862,6 @@ exit_error:
 static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
-    vlc_mutex_t   *lock;
     block_t       *p_block;
     picture_t     *p_pic;
     mtime_t       i_pts;
@@ -897,7 +892,11 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
  
     i_pts = p_block->i_pts ? p_block->i_pts : p_block->i_dts;
 
-    if( decoder_GetDisplayDate( p_dec, i_pts ) < mdate() )
+    mtime_t i_display_date = 0;
+    if( !(p_block->i_flags & BLOCK_FLAG_PREROLL) )
+        i_display_date = decoder_GetDisplayDate( p_dec, i_pts );
+
+    if( i_display_date > 0 && i_display_date < mdate() )
     {
         p_sys->i_late++;
     }
@@ -916,9 +915,9 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         return NULL;
     }
  
-    lock = var_AcquireMutex( "qt_mutex" );
+    vlc_mutex_lock( &qt_mutex );
 
-    if( ( p_pic = p_dec->pf_vout_buffer_new( p_dec ) ) )
+    if( ( p_pic = decoder_NewPicture( p_dec ) ) )
     {
         p_sys->decpar.data                  = (Ptr)p_block->p_buffer;
         p_sys->decpar.bufferSize            = p_block->i_buffer;
@@ -931,7 +930,7 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         if( cres &0xFFFF )
         {
             msg_Dbg( p_dec, "quicktime_video: ImageCodecBandDecompress"
-                     " cres=0x%X (-0x%X) %d :(\n",
+                     " cres=0x%X (-0x%X) %d :(",
                      (int)cres,(int)-cres, (int)cres );
         }
 
@@ -940,7 +939,7 @@ static picture_t *DecodeVideo( decoder_t *p_dec, block_t **pp_block )
         p_pic->date = i_pts;
     }
  
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &qt_mutex );
 
     block_Release( p_block );
     return p_pic;

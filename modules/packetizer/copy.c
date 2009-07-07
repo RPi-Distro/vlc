@@ -2,7 +2,7 @@
  * copy.c
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: e62ce1bdd250eba1a4f165cb16694d27002d9068 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -41,13 +41,13 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_PACKETIZER );
-    set_description( N_("Copy packetizer") );
-    set_capability( "packetizer", 1 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_PACKETIZER )
+    set_description( N_("Copy packetizer") )
+    set_capability( "packetizer", 1 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes

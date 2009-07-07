@@ -2,7 +2,7 @@
  * libc.c: Extra libc function for some systems.
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: f58f05fe77899f3a59d67608bdb0a739a575fd55 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Samuel Hocevar <sam@zoy.org>
@@ -47,9 +47,7 @@
 #   include <dirent.h>
 #endif
 
-#ifdef HAVE_SIGNAL_H
-#   include <signal.h>
-#endif
+#include <signal.h>
 
 #ifdef HAVE_FORK
 #   include <sys/time.h>
@@ -70,149 +68,11 @@
 #   include <windows.h>
 #endif
 
-/******************************************************************************
- * strcasestr: find a substring (little) in another substring (big)
- * Case sensitive. Return NULL if not found, return big if little == null
- *****************************************************************************/
-char * vlc_strcasestr( const char *psz_big, const char *psz_little )
-{
-#if defined (HAVE_STRCASESTR) || defined (HAVE_STRISTR)
-    return strcasestr (psz_big, psz_little);
-#else
-    char *p_pos = (char *)psz_big;
-
-    if( !psz_big || !psz_little || !*psz_little ) return p_pos;
- 
-    while( *p_pos )
-    {
-        if( toupper( *p_pos ) == toupper( *psz_little ) )
-        {
-            char * psz_cur1 = p_pos + 1;
-            char * psz_cur2 = (char *)psz_little + 1;
-            while( *psz_cur1 && *psz_cur2 &&
-                   toupper( *psz_cur1 ) == toupper( *psz_cur2 ) )
-            {
-                psz_cur1++;
-                psz_cur2++;
-            }
-            if( !*psz_cur2 ) return p_pos;
-        }
-        p_pos++;
-    }
-    return NULL;
-#endif
-}
-
-/*****************************************************************************
- * strtoll: convert a string to a 64 bits int.
- *****************************************************************************/
-long long vlc_strtoll( const char *nptr, char **endptr, int base )
-{
-#if defined( HAVE_STRTOLL )
-    return strtoll( nptr, endptr, base );
-#else
-    long long i_value = 0;
-    int sign = 1, newbase = base ? base : 10;
-
-    while( isspace(*nptr) ) nptr++;
-
-    if( *nptr == '-' )
-    {
-        sign = -1;
-        nptr++;
-    }
-
-    /* Try to detect base */
-    if( *nptr == '0' )
-    {
-        newbase = 8;
-        nptr++;
-
-        if( *nptr == 'x' )
-        {
-            newbase = 16;
-            nptr++;
-        }
-    }
-
-    if( base && newbase != base )
-    {
-        if( endptr ) *endptr = (char *)nptr;
-        return i_value;
-    }
-
-    switch( newbase )
-    {
-        case 10:
-            while( *nptr >= '0' && *nptr <= '9' )
-            {
-                i_value *= 10;
-                i_value += ( *nptr++ - '0' );
-            }
-            if( endptr ) *endptr = (char *)nptr;
-            break;
-
-        case 16:
-            while( (*nptr >= '0' && *nptr <= '9') ||
-                   (*nptr >= 'a' && *nptr <= 'f') ||
-                   (*nptr >= 'A' && *nptr <= 'F') )
-            {
-                int i_valc = 0;
-                if(*nptr >= '0' && *nptr <= '9') i_valc = *nptr - '0';
-                else if(*nptr >= 'a' && *nptr <= 'f') i_valc = *nptr - 'a' +10;
-                else if(*nptr >= 'A' && *nptr <= 'F') i_valc = *nptr - 'A' +10;
-                i_value *= 16;
-                i_value += i_valc;
-                nptr++;
-            }
-            if( endptr ) *endptr = (char *)nptr;
-            break;
-
-        default:
-            i_value = strtol( nptr, endptr, newbase );
-            break;
-    }
-
-    return i_value * sign;
-#endif
-}
-
-/**
- * Copy a string to a sized buffer. The result is always nul-terminated
- * (contrary to strncpy()).
- *
- * @param dest destination buffer
- * @param src string to be copied
- * @param len maximum number of characters to be copied plus one for the
- * terminating nul.
- *
- * @return strlen(src)
- */
-extern size_t vlc_strlcpy (char *tgt, const char *src, size_t bufsize)
-{
-#ifdef HAVE_STRLCPY
-    return strlcpy (tgt, src, bufsize);
-#else
-    size_t length;
-
-    for (length = 1; (length < bufsize) && *src; length++)
-        *tgt++ = *src++;
-
-    if (bufsize)
-        *tgt = '\0';
-
-    while (*src++)
-        length++;
-
-    return length - 1;
-#endif
-}
-
 /*****************************************************************************
  * vlc_*dir_wrapper: wrapper under Windows to return the list of drive letters
  * when called with an empty argument or just '\'
  *****************************************************************************/
-#if defined(WIN32) && !defined(UNDER_CE)
+#if defined(WIN32)
 #   include <assert.h>
 
 typedef struct vlc_DIR
@@ -236,7 +96,11 @@ void *vlc_wopendir( const wchar_t *wpath )
         if( !p_dir )
             return NULL;
         p_dir->p_real_dir = NULL;
+#if defined(UNDER_CE)
+        p_dir->i_drives = NULL;
+#else
         p_dir->i_drives = GetLogicalDrives();
+#endif
         return (void *)p_dir;
     }
 
@@ -260,7 +124,6 @@ void *vlc_wopendir( const wchar_t *wpath )
 struct _wdirent *vlc_wreaddir( void *_p_dir )
 {
     vlc_DIR *p_dir = (vlc_DIR *)_p_dir;
-    unsigned int i;
     DWORD i_drives;
 
     if ( p_dir->p_real_dir != NULL )
@@ -281,6 +144,11 @@ struct _wdirent *vlc_wreaddir( void *_p_dir )
 
     /* Drive letters mode */
     i_drives = p_dir->i_drives;
+#ifdef UNDER_CE
+    swprintf( p_dir->dd_dir.d_name, L"\\");
+    p_dir->dd_dir.d_namlen = wcslen(p_dir->dd_dir.d_name);
+#else
+    unsigned int i;
     if ( !i_drives )
         return NULL; /* end */
 
@@ -293,6 +161,7 @@ struct _wdirent *vlc_wreaddir( void *_p_dir )
     swprintf( p_dir->dd_dir.d_name, L"%c:\\", 'A' + i );
     p_dir->dd_dir.d_namlen = wcslen(p_dir->dd_dir.d_name);
     p_dir->i_drives &= ~(1UL << i);
+#endif
     return &p_dir->dd_dir;
 }
 
@@ -308,7 +177,7 @@ void vlc_rewinddir( void *_p_dir )
 /* This one is in the libvlccore exported symbol list */
 int vlc_wclosedir( void *_p_dir )
 {
-#if defined(WIN32) && !defined(UNDER_CE)
+#if defined(WIN32)
     vlc_DIR *p_dir = (vlc_DIR *)_p_dir;
     int i_ret = 0;
 
@@ -322,6 +191,10 @@ int vlc_wclosedir( void *_p_dir )
 #endif
 }
 
+#ifdef ENABLE_NLS
+# include <libintl.h>
+#endif
+
 /**
  * In-tree plugins share their gettext domain with LibVLC.
  */
@@ -332,81 +205,6 @@ char *vlc_gettext( const char *msgid )
 #else
     return (char *)msgid;
 #endif
-}
-
-/*****************************************************************************
- * count_utf8_string: returns the number of characters in the string.
- *****************************************************************************/
-static int count_utf8_string( const char *psz_string )
-{
-    int i = 0, i_count = 0;
-    while( psz_string[ i ] != 0 )
-    {
-        if( ((unsigned char *)psz_string)[ i ] <  0x80UL ) i_count++;
-        i++;
-    }
-    return i_count;
-}
-
-/*****************************************************************************
- * wraptext: inserts \n at convenient places to wrap the text.
- *           Returns the modified string in a new buffer.
- *****************************************************************************/
-char *vlc_wraptext( const char *psz_text, int i_line )
-{
-    int i_len;
-    char *psz_line, *psz_new_text;
-
-    psz_line = psz_new_text = strdup( psz_text );
-
-    i_len = count_utf8_string( psz_text );
-
-    while( i_len > i_line )
-    {
-        /* Look if there is a newline somewhere. */
-        char *psz_parser = psz_line;
-        int i_count = 0;
-        while( i_count <= i_line && *psz_parser != '\n' )
-        {
-            while( *((unsigned char *)psz_parser) >= 0x80UL ) psz_parser++;
-            psz_parser++;
-            i_count++;
-        }
-        if( *psz_parser == '\n' )
-        {
-            i_len -= (i_count + 1);
-            psz_line = psz_parser + 1;
-            continue;
-        }
-
-        /* Find the furthest space. */
-        while( psz_parser > psz_line && *psz_parser != ' ' )
-        {
-            while( *((unsigned char *)psz_parser) >= 0x80UL ) psz_parser--;
-            psz_parser--;
-            i_count--;
-        }
-        if( *psz_parser == ' ' )
-        {
-            *psz_parser = '\n';
-            i_len -= (i_count + 1);
-            psz_line = psz_parser + 1;
-            continue;
-        }
-
-        /* Wrapping has failed. Find the first space or newline */
-        while( i_count < i_len && *psz_parser != ' ' && *psz_parser != '\n' )
-        {
-            while( *((unsigned char *)psz_parser) >= 0x80UL ) psz_parser++;
-            psz_parser++;
-            i_count++;
-        }
-        if( i_count < i_len ) *psz_parser = '\n';
-        i_len -= (i_count + 1);
-        psz_line = psz_parser + 1;
-    }
-
-    return psz_new_text;
 }
 
 /*****************************************************************************

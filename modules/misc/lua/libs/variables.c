@@ -2,7 +2,7 @@
  * variables.c: Generic lua<->vlc variables interface
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 8b8d0450ac1e02e662f9ec544adf0242a6c77fc9 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -211,11 +211,12 @@ static int vlclua_command( lua_State *L )
     const char *psz_cmd;
     const char *psz_arg;
     char *psz_msg;
+    int ret;
     psz_name = luaL_checkstring( L, 1 );
     psz_cmd = luaL_checkstring( L, 2 );
     psz_arg = luaL_checkstring( L, 3 );
     lua_pop( L, 3 );
-    var_Command( p_this, psz_name, psz_cmd, psz_arg, &psz_msg );
+    ret = var_Command( p_this, psz_name, psz_cmd, psz_arg, &psz_msg );
     if( psz_msg )
     {
         lua_pushstring( L, psz_msg );
@@ -225,7 +226,7 @@ static int vlclua_command( lua_State *L )
     {
         lua_pushstring( L, "" );
     }
-    return 1;
+    return vlclua_push_ret( L, ret ) + 1;
 }
 
 static int vlclua_libvlc_command( lua_State *L )

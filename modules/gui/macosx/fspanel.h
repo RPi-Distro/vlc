@@ -2,7 +2,7 @@
  * fspanel.h: MacOS X full screen panel
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 1a38d89b6fee174674548dec711914e8326a3052 $
+ * $Id$
  *
  * Authors: Jérôme Decoodt <djc at videolan dot org>
  *          Felix Kühne <fkuehne at videolan dot org>
@@ -37,7 +37,7 @@
     int i_device;
 }
 - (id)initWithContentRect: (NSRect)contentRect
-                styleMask: (unsigned int)aStyle
+                styleMask: (NSUInteger)aStyle
                   backing: (NSBackingStoreType)bufferingType
                     defer: (BOOL)flag;
 - (void)awakeFromNib;

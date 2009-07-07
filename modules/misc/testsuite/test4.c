@@ -2,7 +2,7 @@
  * test4.c : Miscellaneous stress tests module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 170992ee72ce20537844ba0301ee5762156a7c54 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -63,8 +63,8 @@ static int    Signal    ( vlc_object_t *, char const *,
 /*****************************************************************************
  * Module descriptor.
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Miscellaneous stress tests") );
+vlc_module_begin ()
+    set_description( N_("Miscellaneous stress tests") )
     var_Create( p_module->p_libvlc, "foo-test",
                 VLC_VAR_VOID | VLC_VAR_ISCOMMAND );
     var_AddCallback( p_module->p_libvlc, "foo-test", Foo, NULL );
@@ -77,7 +77,7 @@ vlc_module_begin();
     var_Create( p_module->p_libvlc, "signal",
                 VLC_VAR_STRING | VLC_VAR_ISCOMMAND );
     var_AddCallback( p_module->p_libvlc, "signal", Signal, NULL );
-vlc_module_end();
+vlc_module_end ()
 
 /*****************************************************************************
  * Foo: put anything here
@@ -242,10 +242,13 @@ static void * MyThread( vlc_object_t *p_this )
     while( vlc_object_alive (p_this) )
     {
         int i = (int) (100.0 * rand() / (RAND_MAX));
+        /* FIXME: not thread-safe */
 
         sprintf( psz_var, "blork-%i", i );
         val.i_int = i + 200;
+        int canc = vlc_savecancel ();
         var_Set( p_parent, psz_var, val );
+        vlc_restorecancel (canc);
 
         /* This is quite heavy, but we only have 10 threads. Keep cool. */
         msleep( 1000 );
@@ -286,7 +289,7 @@ static int Stress( vlc_object_t *p_this, char const *psz_cmd,
 
     /* Allocate required data */
     ppsz_name = malloc( MAXVAR * i_level * sizeof(char*) );
-    psz_blob = malloc( 20 * MAXVAR * i_level * sizeof(char) );
+    psz_blob = malloc( 20 * MAXVAR * i_level );
     for( i = 0; i < MAXVAR * i_level; i++ )
     {
         ppsz_name[i] = psz_blob + 20 * i;

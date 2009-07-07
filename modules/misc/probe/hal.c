@@ -2,7 +2,7 @@
  * hal.c :  HAL probing module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: b131b73c660ae6fead5b8347c7366b834c61e774 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -54,11 +54,11 @@ static device_t * ParseDisc( device_probe_t *p_probe,  char *psz_device );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("HAL devices detection") );
-    set_capability( "devices probe", 0 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("HAL devices detection") )
+    set_capability( "devices probe", 0 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -67,11 +67,11 @@ vlc_module_end();
 static int Open( vlc_object_t *p_this )
 {
     device_probe_t *p_probe = (device_probe_t *)p_this;
-    DBusError           dbus_error;
-    DBusConnection      *p_connection;
-    probe_sys_t          *p_sys;
+    DBusError       dbus_error;
+    DBusConnection *p_connection;
+    probe_sys_t    *p_sys;
 
-    p_probe->p_sys = p_sys = (probe_sys_t*)malloc( sizeof( probe_sys_t ) );
+    p_probe->p_sys = p_sys = malloc( sizeof( probe_sys_t ) );
     p_probe->p_sys->i_devices = 0;
     p_probe->p_sys->pp_devices = NULL;
 
@@ -83,28 +83,29 @@ static int Open( vlc_object_t *p_this )
     if( !p_sys->p_ctx )
     {
         msg_Err( p_probe, "unable to create HAL context") ;
-        free( p_probe->p_sys );
+        free( p_sys );
         return VLC_EGENERIC;
     }
     p_connection = dbus_bus_get( DBUS_BUS_SYSTEM, &dbus_error );
     if( dbus_error_is_set( &dbus_error ) )
     {
         msg_Err( p_probe, "unable to connect to DBUS: %s", dbus_error.message );
-        dbus_error_free( &dbus_error );
-        free( p_probe->p_sys );
-        return VLC_EGENERIC;
+        goto error;
     }
     p_sys->p_connection = p_connection;
-    libhal_ctx_set_dbus_connection( p_probe->p_sys->p_ctx, p_connection );
-    if( !libhal_ctx_init( p_probe->p_sys->p_ctx, &dbus_error ) )
+    libhal_ctx_set_dbus_connection( p_sys->p_ctx, p_connection );
+    if( !libhal_ctx_init( p_sys->p_ctx, &dbus_error ) )
     {
         msg_Err( p_probe, "hal not available : %s", dbus_error.message );
         dbus_connection_unref( p_connection );
-        dbus_error_free( &dbus_error );
-        free( p_sys );
-        return VLC_EGENERIC;
+        goto error;
     }
     return VLC_SUCCESS;
+error:
+    dbus_error_free( &dbus_error );
+    libhal_ctx_free( p_sys->p_ctx );
+    free( p_sys );
+    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -115,6 +116,7 @@ static void Close( vlc_object_t *p_this )
     device_probe_t *p_probe = (device_probe_t *) p_this;
     probe_sys_t *p_sys = p_probe->p_sys;
     dbus_connection_unref( p_sys->p_connection );
+    libhal_ctx_free( p_sys->p_ctx );
     free( p_sys );
 }
 #if 0
@@ -130,6 +132,7 @@ static void Update( device_probe_t * p_probe )
     int i, i_devices, j;
     char **devices;
     bool b_exists;
+    int canc = vlc_savecancel();
 
     for ( j = 0 ; j < p_sys->i_devices; j++ )
         p_sys->pp_devices[j]->b_seen = false;
@@ -160,6 +163,7 @@ static void Update( device_probe_t * p_probe )
         }
     }
     /// \todo Remove unseen devices
+    vlc_restorecancel( canc );
 }
 
 

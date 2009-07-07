@@ -2,7 +2,7 @@
  * dictionary.c: Tests for vlc_dictionary_t
  *****************************************************************************
  * Copyright (C) 2007 Pierre d'Herbemont
- * $Id: b0d9644b7b0135f7bc17ed317dda30cf9616da95 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -85,11 +85,11 @@ int main (void)
 
     test_dictionary_validity( &dict, our_keys, size );
 
-    vlc_dictionary_remove_value_for_key( &dict, our_keys[size-1] );
+    vlc_dictionary_remove_value_for_key( &dict, our_keys[size-1], NULL, NULL );
 
     test_dictionary_validity( &dict, our_keys, size-1 );
-    
-    vlc_dictionary_clear( &dict );
+
+    vlc_dictionary_clear( &dict, NULL, NULL );
 
     assert( vlc_dictionary_keys_count( &dict ) == 0 );
     return 0;

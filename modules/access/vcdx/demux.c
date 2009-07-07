@@ -2,7 +2,7 @@
  * demux.c: demux functions for dvdplay.
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: 5f534c191ca4724a0ad98f0190ecbe295569eb19 $
+ * $Id$
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *
@@ -95,7 +95,7 @@ int VCDInit ( vlc_object_t *p_this )
     }
 
     p_input->p_private = (void*)&p_demux->mpeg;
-    p_demux->p_module = module_Need( p_input, "mpeg-system", NULL, 0 );
+    p_demux->p_module = module_need( p_input, "mpeg-system", NULL, false );
     if( p_demux->p_module == NULL )
     {
         free( p_input->p_demux_data );
@@ -121,6 +121,7 @@ void VCDEnd ( vlc_object_t *p_this )
 {
     input_thread_t *p_input = (input_thread_t *)p_this;
     vcd_data_t *    p_vcd = p_input->p_demux_data->p_vcd;
+#if FIXED
     intf_thread_t * p_intf = NULL;
 
     p_intf = vlc_object_find( p_input, VLC_OBJECT_INTF, FIND_CHILD );
@@ -133,8 +134,8 @@ void VCDEnd ( vlc_object_t *p_this )
     }
 
     p_vcd->p_intf = NULL;
-
-    module_Unneed( p_input, p_input->p_demux_data->p_module );
+#endif
+    module_unneed( p_input, p_input->p_demux_data->p_module );
     free( p_input->p_demux_data );
 }
 

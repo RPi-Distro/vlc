@@ -48,6 +48,8 @@
 #   include <dvbpsi/pmt.h>
 #   include <dvbpsi/dr.h>
 #   include <dvbpsi/psi.h>
+#   include <dvbpsi/demux.h>
+#   include <dvbpsi/sdt.h>
 #else
 #   include "dvbpsi.h"
 #   include "descriptor.h"
@@ -55,6 +57,8 @@
 #   include "tables/pmt.h"
 #   include "descriptors/dr.h"
 #   include "psi.h"
+#   include "demux.h"
+#   include "tables/sdt.h"
 #endif
 
 #ifdef ENABLE_HTTPD
@@ -91,7 +95,7 @@ int HTTPOpen( access_t *p_access )
     httpd_file_sys_t *f;
 
     vlc_mutex_init( &p_sys->httpd_mutex );
-    vlc_cond_init( p_access, &p_sys->httpd_cond );
+    vlc_cond_init( &p_sys->httpd_cond );
     p_sys->b_request_frontend_info = p_sys->b_request_mmi_info = false;
     p_sys->i_httpd_timeout = 0;
 

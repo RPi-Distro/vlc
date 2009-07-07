@@ -2,7 +2,7 @@
  * format.c : PCM format converter
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
- * $Id: b90f109f2d2ed49ee74a5790147c78410d728d8f $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -201,13 +201,13 @@ static const struct
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Audio filter for PCM format conversion") );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_MISC );
-    set_capability( "audio filter2", 1 );
-    set_callbacks( Open, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Audio filter for PCM format conversion") )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_capability( "audio filter2", 1 )
+    set_callbacks( Open, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open:

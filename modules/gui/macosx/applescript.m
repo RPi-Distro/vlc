@@ -1,8 +1,8 @@
 /*****************************************************************************
  * applescript.m: MacOS X AppleScript support
  *****************************************************************************
- * Copyright (C) 2002-2003, 2005, 2007-2008 the VideoLAN team
- * $Id: b7032344e9a6977f32370b30201de52186252d95 $
+ * Copyright (C) 2002-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *
@@ -41,7 +41,7 @@
     if ( [o_command isEqualToString:@"GetURL"] || [o_command isEqualToString:@"OpenURL"] )
     {
         intf_thread_t * p_intf = VLCIntf;
-        playlist_t * p_playlist = pl_Yield( p_intf );
+        playlist_t * p_playlist = pl_Hold( p_intf );
         if( p_playlist == NULL )
         {
             return nil;
@@ -69,7 +69,7 @@
                     noteNewRecentDocumentURL: o_url];
             }
         }
-        vlc_object_release( p_playlist );
+        pl_Release( p_intf );
     }
     return nil;
 }
@@ -90,58 +90,50 @@
     NSString *o_command = [[self commandDescription] commandName];
 
     intf_thread_t * p_intf = VLCIntf;
-    playlist_t * p_playlist = pl_Yield( p_intf );
+    playlist_t * p_playlist = pl_Hold( p_intf );
     if( p_playlist == NULL )
     {
         return nil;
     }
  
-    VLCControls * o_controls = (VLCControls *)[[NSApp delegate] getControls];
+    VLCControls * o_controls = (VLCControls *)[[NSApp delegate] controls];
  
     if ( o_controls )
     {
         if ( [o_command isEqualToString:@"play"] )
         {
             [o_controls play:self];
-            return nil;
         }
         else if ( [o_command isEqualToString:@"stop"] )
         {
             [o_controls stop:self];
-            return nil;
         }
         else if ( [o_command isEqualToString:@"previous"] )
         {
             [o_controls prev:self];
-            return nil;
         }
         else if ( [o_command isEqualToString:@"next"] )
         {
             [o_controls next:self];
-            return nil;
         }
         else if ( [o_command isEqualToString:@"fullscreen"] )
         {
             [o_controls toogleFullscreen: self];
-            return nil;
         }
         else if ( [o_command isEqualToString:@"mute"] )
         {
             [o_controls mute:self];
-            return nil;
         }
         else if ( [o_command isEqualToString:@"volumeUp"] )
         {
             [o_controls volumeUp:self];
-            return nil;
         }
         else if ( [o_command isEqualToString:@"volumeDown"] )
         {
             [o_controls volumeDown:self];
-            return nil;
         }
     }
-    vlc_object_release( p_playlist );
+    pl_Release( p_intf );
     return nil;
 }
 
@@ -153,12 +145,12 @@
 @implementation NSApplication(ScriptSupport)
 
 - (BOOL) scriptFullscreenMode {    
-    VLCControls * o_controls = (VLCControls *)[[self delegate] getControls];
+    VLCControls * o_controls = (VLCControls *)[[self delegate] controls];
 
     return [o_controls isFullscreen];
 }
 - (void) setScriptFullscreenMode: (BOOL) mode {
-    VLCControls * o_controls = (VLCControls *)[[self delegate] getControls];
+    VLCControls * o_controls = (VLCControls *)[[self delegate] controls];
     if (mode == [o_controls isFullscreen]) return;
     [o_controls toogleFullscreen: self];
 }

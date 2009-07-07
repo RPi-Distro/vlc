@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: aada47ab5f3ab16c2e4d4d4e7426e4404e0901b8 $
+ * $Id: bdc988d3b8f96adbf92ee45cdbf49f56994d5838 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>
@@ -33,6 +33,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_vout.h>
+#include <assert.h>
 
 #include "vlc_filter.h"
 #include "filter_common.h"
@@ -53,8 +54,6 @@ static int  Init      ( vout_thread_t * );
 static void End       ( vout_thread_t * );
 static void Render    ( vout_thread_t *, picture_t * );
 
-static int  SendEvents( vlc_object_t *, char const *,
-                        vlc_value_t, vlc_value_t, void * );
 static int  MouseEvent( vlc_object_t *, char const *,
                         vlc_value_t , vlc_value_t , void * );
 static int  Control   ( vout_thread_t *, int, va_list );
@@ -100,32 +99,33 @@ static const char *const ppsz_pos_descriptions[] =
 { N_("Center"), N_("Left"), N_("Right"), N_("Top"), N_("Bottom"),
   N_("Top-Left"), N_("Top-Right"), N_("Bottom-Left"), N_("Bottom-Right") };
 
-vlc_module_begin();
-    set_capability( "sub filter", 0 );
-    set_callbacks( CreateFilter, DestroyFilter );
-    set_description( N_("Logo sub filter") );
-    set_shortname( N_("Logo overlay") );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_SUBPIC );
-    add_shortcut( "logo" );
+vlc_module_begin ()
+    set_capability( "sub filter", 0 )
+    set_callbacks( CreateFilter, DestroyFilter )
+    set_description( N_("Logo sub filter") )
+    set_shortname( N_("Logo overlay") )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_SUBPIC )
+    add_shortcut( "logo" )
 
-    add_file( CFG_PREFIX "file", NULL, NULL, FILE_TEXT, FILE_LONGTEXT, false );
-    add_integer( CFG_PREFIX "x", 0, NULL, POSX_TEXT, POSX_LONGTEXT, true );
-    add_integer( CFG_PREFIX "y", 0, NULL, POSY_TEXT, POSY_LONGTEXT, true );
+    add_file( CFG_PREFIX "file", NULL, NULL, FILE_TEXT, FILE_LONGTEXT, false )
+    add_integer( CFG_PREFIX "x", 0, NULL, POSX_TEXT, POSX_LONGTEXT, true )
+    add_integer( CFG_PREFIX "y", 0, NULL, POSY_TEXT, POSY_LONGTEXT, true )
     /* default to 1000 ms per image, continuously cycle through them */
-    add_integer( CFG_PREFIX "delay", 1000, NULL, DELAY_TEXT, DELAY_LONGTEXT, true );
-    add_integer( CFG_PREFIX "repeat", -1, NULL, REPEAT_TEXT, REPEAT_LONGTEXT, true );
+    add_integer( CFG_PREFIX "delay", 1000, NULL, DELAY_TEXT, DELAY_LONGTEXT, true )
+    add_integer( CFG_PREFIX "repeat", -1, NULL, REPEAT_TEXT, REPEAT_LONGTEXT, true )
     add_integer_with_range( CFG_PREFIX "transparency", 255, 0, 255, NULL,
-        TRANS_TEXT, TRANS_LONGTEXT, false );
-    add_integer( CFG_PREFIX "position", -1, NULL, POS_TEXT, POS_LONGTEXT, false );
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
+        TRANS_TEXT, TRANS_LONGTEXT, false )
+    add_integer( CFG_PREFIX "position", -1, NULL, POS_TEXT, POS_LONGTEXT, false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
 
     /* video output filter submodule */
-    add_submodule();
-    set_capability( "video filter", 0 );
-    set_callbacks( Create, Destroy );
-    set_description( N_("Logo video filter") );
-vlc_module_end();
+    add_submodule ()
+    set_capability( "video filter", 0 )
+    set_callbacks( Create, Destroy )
+    set_description( N_("Logo video filter") )
+    add_shortcut( "logo" )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "file", "x", "y", "delay", "repeat", "transparency", "position", NULL
@@ -346,11 +346,12 @@ static int Create( vlc_object_t *p_this )
     p_sys->pos = var_CreateGetIntegerCommand( p_vout, "logo-position" );
     p_sys->posx = var_CreateGetIntegerCommand( p_vout, "logo-x" );
     p_sys->posy = var_CreateGetIntegerCommand( p_vout, "logo-y" );
-    p_logo_list->i_delay = __MAX( __MIN(
-        var_CreateGetIntegerCommand( p_vout, "logo-delay" ) , 60000 ), 0 );
+    p_logo_list->i_delay = var_CreateGetIntegerCommand( p_vout, "logo-delay" );
+    p_logo_list->i_delay = __MAX( __MIN( p_logo_list->i_delay, 60000 ), 0 );
     p_logo_list->i_repeat = var_CreateGetIntegerCommand( p_vout, "logo-repeat");
-    p_logo_list->i_alpha = __MAX( __MIN(
-        var_CreateGetIntegerCommand( p_vout, "logo-transparency" ), 255 ), 0 );
+    p_logo_list->i_alpha = var_CreateGetIntegerCommand( p_vout,
+                                                        "logo-transparency" );
+    p_logo_list->i_alpha = __MAX( __MIN( p_logo_list->i_alpha, 255 ), 0 );
 
     LoadLogoList( p_vout, p_logo_list );
 
@@ -364,7 +365,6 @@ static int Init( vout_thread_t *p_vout )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
     picture_t *p_pic;
-    int i_index;
     video_format_t fmt;
     logo_list_t *p_logo_list = p_sys->p_logo_list;
 
@@ -411,7 +411,7 @@ static int Init( vout_thread_t *p_vout )
             p_vout->output.i_height;
 
     p_sys->p_blend->p_module =
-        module_Need( p_sys->p_blend, "video blending", 0, 0 );
+        module_need( p_sys->p_blend, "video blending", NULL, false );
     if( !p_sys->p_blend->p_module )
     {
         msg_Err( p_vout, "can't open blending filter, aborting" );
@@ -459,12 +459,9 @@ static int Init( vout_thread_t *p_vout )
         return VLC_EGENERIC;
     }
 
-    var_AddCallback( p_sys->p_vout, "mouse-x", MouseEvent, p_vout);
-    var_AddCallback( p_sys->p_vout, "mouse-y", MouseEvent, p_vout);
+    vout_filter_AllocateDirectBuffers( p_vout, VOUT_MAX_PICTURES );
 
-    ALLOCATE_DIRECTBUFFERS( VOUT_MAX_PICTURES );
-    ADD_CALLBACKS( p_sys->p_vout, SendEvents );
-    ADD_PARENT_CALLBACKS( SendEventsToChild );
+    vout_filter_AddChild( p_vout, p_sys->p_vout, MouseEvent );
 
     return VLC_SUCCESS;
 }
@@ -475,26 +472,14 @@ static int Init( vout_thread_t *p_vout )
 static void End( vout_thread_t *p_vout )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
-    int i_index;
 
-    DEL_PARENT_CALLBACKS( SendEventsToChild );
-
-    DEL_CALLBACKS( p_sys->p_vout, SendEvents );
-
-    /* Free the fake output buffers we allocated */
-    for( i_index = I_OUTPUTPICTURES ; i_index ; )
-    {
-        i_index--;
-        free( PP_OUTPUTPICTURE[ i_index ]->p_data_orig );
-    }
-
-    var_DelCallback( p_sys->p_vout, "mouse-x", MouseEvent, p_vout);
-    var_DelCallback( p_sys->p_vout, "mouse-y", MouseEvent, p_vout);
-
+    vout_filter_DelChild( p_vout, p_sys->p_vout, MouseEvent );
     vout_CloseAndRelease( p_sys->p_vout );
 
+    vout_filter_ReleaseDirectBuffers( p_vout );
+
     if( p_sys->p_blend->p_module )
-        module_Unneed( p_sys->p_blend, p_sys->p_blend->p_module );
+        module_unneed( p_sys->p_blend, p_sys->p_blend->p_module );
     vlc_object_detach( p_sys->p_blend );
     vlc_object_release( p_sys->p_blend );
 }
@@ -583,27 +568,15 @@ static void Render( vout_thread_t *p_vout, picture_t *p_inpic )
         msleep( VOUT_OUTMEM_SLEEP );
     }
 
-    vout_CopyPicture( p_vout, p_outpic, p_inpic );
-    vout_DatePicture( p_sys->p_vout, p_outpic, p_inpic->date );
+    picture_Copy( p_outpic, p_inpic );
 
     if( p_pic )
-    p_sys->p_blend->pf_video_blend( p_sys->p_blend, p_outpic, p_outpic,
-                                    p_pic, p_sys->posx, p_sys->posy,
-                                    p_logo->i_alpha != -1 ? p_logo->i_alpha
-                                    : p_logo_list->i_alpha );
+        p_sys->p_blend->pf_video_blend( p_sys->p_blend, p_outpic,
+                                        p_pic, p_sys->posx, p_sys->posy,
+                                        p_logo->i_alpha != -1 ? p_logo->i_alpha
+                                        : p_logo_list->i_alpha );
 
     vout_DisplayPicture( p_sys->p_vout, p_outpic );
-}
-
-/*****************************************************************************
- * SendEvents: forward mouse and keyboard events to the parent p_vout
- *****************************************************************************/
-static int SendEvents( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    VLC_UNUSED(p_this); VLC_UNUSED(oldval);
-    var_Set( (vlc_object_t *)p_data, psz_var, newval );
-    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -612,49 +585,52 @@ static int SendEvents( vlc_object_t *p_this, char const *psz_var,
 static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
-    VLC_UNUSED(p_this); VLC_UNUSED(oldval);
-    vout_thread_t *p_vout = (vout_thread_t*)p_data;
+    vout_thread_t *p_vout = p_data;
+    assert( p_this == VLC_OBJECT(p_vout->p_sys->p_vout) );
+    VLC_UNUSED(oldval);
+
     vout_sys_t *p_sys = p_vout->p_sys;
-    vlc_value_t valb;
-    int i_delta;
+    const int i_delta = newval.i_int - oldval.i_int;
+    const int i_bdown = var_GetInteger( p_sys->p_vout, "mouse-button-down" );
 
-    var_Get( p_vout->p_sys->p_vout, "mouse-button-down", &valb );
+    if( (i_bdown & 0x1) == 0 )
+        goto forward;
 
-    i_delta = newval.i_int - oldval.i_int;
-
-    if( (valb.i_int & 0x1) == 0 )
-    {
-        return VLC_SUCCESS;
-    }
-
+    int i_x, i_y;
+    int i_dx = 0;
+    int i_dy = 0;
     if( psz_var[6] == 'x' )
     {
-        vlc_value_t valy;
-        var_Get( p_vout->p_sys->p_vout, "mouse-y", &valy );
-        if( newval.i_int >= (int)p_sys->posx &&
-            valy.i_int >= (int)p_sys->posy &&
-            newval.i_int <= (int)(p_sys->posx + p_sys->i_width) &&
-            valy.i_int <= (int)(p_sys->posy + p_sys->i_height) )
-        {
-            p_sys->posx = __MIN( __MAX( p_sys->posx + i_delta, 0 ),
-                          p_vout->output.i_width - p_sys->i_width );
-        }
+        i_y = var_GetInteger( p_sys->p_vout, "mouse-y" );
+        i_x = newval.i_int;
+        i_dx = i_delta;
     }
     else if( psz_var[6] == 'y' )
     {
-        vlc_value_t valx;
-        var_Get( p_vout->p_sys->p_vout, "mouse-x", &valx );
-        if( valx.i_int >= (int)p_sys->posx &&
-            newval.i_int >= (int)p_sys->posy &&
-            valx.i_int <= (int)(p_sys->posx + p_sys->i_width) &&
-            newval.i_int <= (int)(p_sys->posy + p_sys->i_height) )
-        {
-            p_sys->posy = __MIN( __MAX( p_sys->posy + i_delta, 0 ),
-                          p_vout->output.i_height - p_sys->i_height );
-        }
+        i_y = newval.i_int;
+        i_x = var_GetInteger( p_sys->p_vout, "mouse-x" );
+        i_dy = i_delta;
+    }
+    else
+    {
+        goto forward;
     }
 
+    /* FIXME missing lock */
+    if( i_x < (int)p_sys->posx ||
+        i_y < (int)p_sys->posy ||
+        i_x > (int)(p_sys->posx + p_sys->i_width) ||
+        i_y > (int)(p_sys->posy + p_sys->i_height) )
+        goto forward;
+
+    p_sys->posx = __MIN( __MAX( p_sys->posx + i_dx, 0 ),
+                         p_vout->output.i_width - p_sys->i_width );
+    p_sys->posy = __MIN( __MAX( p_sys->posy + i_dy, 0 ),
+                         p_vout->output.i_height - p_sys->i_height );
     return VLC_SUCCESS;
+
+forward:
+    return var_Set( p_vout, psz_var, newval );
 }
 
 /*****************************************************************************
@@ -663,18 +639,6 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
 static int Control( vout_thread_t *p_vout, int i_query, va_list args )
 {
     return vout_vaControl( p_vout->p_sys->p_vout, i_query, args );
-}
-
-/*****************************************************************************
- * SendEventsToChild: forward events to the child/children vout
- *****************************************************************************/
-static int SendEventsToChild( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    VLC_UNUSED(p_data); VLC_UNUSED(oldval);
-    vout_thread_t *p_vout = (vout_thread_t *)p_this;
-    var_Set( p_vout->p_sys->p_vout, psz_var, newval );
-    return VLC_SUCCESS;
 }
 
 /*****************************************************************************
@@ -732,12 +696,16 @@ static int CreateFilter( vlc_object_t *p_this )
     p_sys->posx = var_CreateGetIntegerCommand( p_filter, "logo-x" );
     p_sys->posy = var_CreateGetIntegerCommand( p_filter, "logo-y" );
     p_sys->pos = var_CreateGetIntegerCommand( p_filter, "logo-position" );
-    p_logo_list->i_alpha = __MAX( __MIN( var_CreateGetIntegerCommand(
-                           p_filter, "logo-transparency"), 255 ), 0 );
+    p_logo_list->i_alpha = var_CreateGetIntegerCommand( p_filter,
+                                                        "logo-transparency");
+    p_logo_list->i_alpha = __MAX( __MIN( p_logo_list->i_alpha, 255 ), 0 );
     p_logo_list->i_delay =
         var_CreateGetIntegerCommand( p_filter, "logo-delay" );
     p_logo_list->i_repeat =
         var_CreateGetIntegerCommand( p_filter, "logo-repeat" );
+
+    vlc_mutex_init( &p_logo_list->lock );
+    LoadLogoList( p_this, p_logo_list );
 
     var_AddCallback( p_filter, "logo-file", LogoCallback, p_sys );
     var_AddCallback( p_filter, "logo-x", LogoCallback, p_sys );
@@ -745,13 +713,6 @@ static int CreateFilter( vlc_object_t *p_this )
     var_AddCallback( p_filter, "logo-position", LogoCallback, p_sys );
     var_AddCallback( p_filter, "logo-transparency", LogoCallback, p_sys );
     var_AddCallback( p_filter, "logo-repeat", LogoCallback, p_sys );
-
-    vlc_mutex_init( &p_logo_list->lock );
-    vlc_mutex_lock( &p_logo_list->lock );
-
-    LoadLogoList( p_this, p_logo_list );
-
-    vlc_mutex_unlock( &p_logo_list->lock );
 
     /* Misc init */
     p_filter->pf_sub_filter = Filter;
@@ -770,11 +731,6 @@ static void DestroyFilter( vlc_object_t *p_this )
     filter_t *p_filter = (filter_t *)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    vlc_mutex_destroy( &p_sys->p_logo_list->lock );
-    FreeLogoList( p_sys->p_logo_list );
-    free( p_sys->p_logo_list );
-    free( p_sys );
-
     /* Delete the logo variables from INPUT */
     var_Destroy( p_filter->p_libvlc, "logo-file" );
     var_Destroy( p_filter->p_libvlc, "logo-x" );
@@ -783,6 +739,11 @@ static void DestroyFilter( vlc_object_t *p_this )
     var_Destroy( p_filter->p_libvlc, "logo-repeat" );
     var_Destroy( p_filter->p_libvlc, "logo-position" );
     var_Destroy( p_filter->p_libvlc, "logo-transparency" );
+
+    vlc_mutex_destroy( &p_sys->p_logo_list->lock );
+    FreeLogoList( p_sys->p_logo_list );
+    free( p_sys->p_logo_list );
+    free( p_sys );
 }
 
 /*****************************************************************************
@@ -864,7 +825,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     fmt.i_width = fmt.i_visible_width = p_pic->p[Y_PLANE].i_visible_pitch;
     fmt.i_height = fmt.i_visible_height = p_pic->p[Y_PLANE].i_visible_lines;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_region = p_spu->pf_create_region( VLC_OBJECT(p_filter), &fmt );
+    p_region = subpicture_region_New( &fmt );
     if( !p_region )
     {
         msg_Err( p_filter, "cannot allocate SPU region" );
@@ -873,7 +834,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         return NULL;
     }
 
-    vout_CopyPicture( p_filter, &p_region->picture, p_pic );
+    /* FIXME the copy is probably not needed anymore */
+    picture_Copy( p_region->p_picture, p_pic );
     vlc_mutex_unlock( &p_logo_list->lock );
 
     /*  where to locate the logo: */
@@ -888,8 +850,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         p_spu->b_absolute = false;
     }
 
-    p_spu->i_x = p_sys->posx;
-    p_spu->i_y = p_sys->posy;
+    p_region->i_x = p_sys->posx;
+    p_region->i_y = p_sys->posy;
 
     p_spu->p_region = p_region;
 
@@ -909,34 +871,33 @@ static int LogoCallback( vlc_object_t *p_this, char const *psz_var,
     filter_sys_t *p_sys = (filter_sys_t *)p_data;
     logo_list_t *p_logo_list = p_sys->p_logo_list;
 
-    if( !strncmp( psz_var, "logo-file", 6 ) )
+    if( !strcmp( psz_var, "logo-file" ) )
     {
         vlc_mutex_lock( &p_logo_list->lock );
         FreeLogoList( p_logo_list );
         p_logo_list->psz_filename = strdup( newval.psz_string );
         LoadLogoList( p_this, p_logo_list );
         vlc_mutex_unlock( &p_logo_list->lock );
-        p_sys->b_need_update = true;
     }
-    else if ( !strncmp( psz_var, "logo-x", 6 ) )
+    else if ( !strcmp( psz_var, "logo-x" ) )
     {
         p_sys->posx = newval.i_int;
     }
-    else if ( !strncmp( psz_var, "logo-y", 6 ) )
+    else if ( !strcmp( psz_var, "logo-y" ) )
     {
         p_sys->posy = newval.i_int;
     }
-    else if ( !strncmp( psz_var, "logo-position", 12 ) )
+    else if ( !strcmp( psz_var, "logo-position" ) )
     {
         p_sys->pos = newval.i_int;
     }
-    else if ( !strncmp( psz_var, "logo-transparency", 9 ) )
+    else if ( !strcmp( psz_var, "logo-transparency" ) )
     {
         vlc_mutex_lock( &p_logo_list->lock );
         p_logo_list->i_alpha = __MAX( __MIN( newval.i_int, 255 ), 0 );
         vlc_mutex_unlock( &p_logo_list->lock );
     }
-    else if ( !strncmp( psz_var, "logo-repeat", 11 ) )
+    else if ( !strcmp( psz_var, "logo-repeat" ) )
     {
         vlc_mutex_lock( &p_logo_list->lock );
         p_logo_list->i_repeat = newval.i_int;

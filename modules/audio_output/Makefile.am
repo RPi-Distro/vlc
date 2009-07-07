@@ -3,9 +3,9 @@
 
 basedir = audio_output
 dir = audio_output
-mods = alsa aout_directx aout_file aout_sdl arts auhal esd hd1000a jack oss portaudio pulse waveout
-libvlc_LTLIBRARIES =  $(LTLIBalsa) $(LTLIBaout_directx) $(LTLIBaout_file) $(LTLIBaout_sdl) $(LTLIBarts) $(LTLIBauhal) $(LTLIBesd) $(LTLIBhd1000a) $(LTLIBjack) $(LTLIBoss) $(LTLIBportaudio) $(LTLIBpulse) $(LTLIBwaveout)
-EXTRA_LTLIBRARIES =  libalsa_plugin.la libaout_directx_plugin.la libaout_file_plugin.la libaout_sdl_plugin.la libarts_plugin.la libauhal_plugin.la libesd_plugin.la libhd1000a_plugin.la libjack_plugin.la liboss_plugin.la libportaudio_plugin.la libpulse_plugin.la libwaveout_plugin.la
+mods = alsa aout_directx aout_file aout_sdl auhal hd1000a jack oss portaudio pulse waveout
+libvlc_LTLIBRARIES =  $(LTLIBalsa) $(LTLIBaout_directx) $(LTLIBaout_file) $(LTLIBaout_sdl) $(LTLIBauhal) $(LTLIBhd1000a) $(LTLIBjack) $(LTLIBoss) $(LTLIBportaudio) $(LTLIBpulse) $(LTLIBwaveout)
+EXTRA_LTLIBRARIES =  libalsa_plugin.la libaout_directx_plugin.la libaout_file_plugin.la libaout_sdl_plugin.la libauhal_plugin.la libhd1000a_plugin.la libjack_plugin.la liboss_plugin.la libportaudio_plugin.la libpulse_plugin.la libwaveout_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libalsa_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libalsa_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libalsa_plugin_la_LIBADD = $(AM_LIBADD)
-libalsa_plugin_la_DEPENDENCIES =
+libalsa_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The aout_directx plugin
 libaout_directx_plugin_la_SOURCES = $(SOURCES_aout_directx)
@@ -29,7 +29,7 @@ libaout_directx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaout_directx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaout_directx_plugin_la_LIBADD = $(AM_LIBADD)
-libaout_directx_plugin_la_DEPENDENCIES =
+libaout_directx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The aout_file plugin
 libaout_file_plugin_la_SOURCES = $(SOURCES_aout_file)
@@ -40,7 +40,7 @@ libaout_file_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaout_file_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaout_file_plugin_la_LIBADD = $(AM_LIBADD)
-libaout_file_plugin_la_DEPENDENCIES =
+libaout_file_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The aout_sdl plugin
 libaout_sdl_plugin_la_SOURCES = $(SOURCES_aout_sdl)
@@ -51,18 +51,7 @@ libaout_sdl_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaout_sdl_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaout_sdl_plugin_la_LIBADD = $(AM_LIBADD)
-libaout_sdl_plugin_la_DEPENDENCIES =
-
-# The arts plugin
-libarts_plugin_la_SOURCES = $(SOURCES_arts)
-nodist_libarts_plugin_la_SOURCES = $(nodist_SOURCES_arts)
-# Force per-target objects:
-libarts_plugin_la_CFLAGS = $(AM_CFLAGS)
-libarts_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libarts_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libarts_plugin_la_LIBADD = $(AM_LIBADD)
-libarts_plugin_la_DEPENDENCIES =
+libaout_sdl_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The auhal plugin
 libauhal_plugin_la_SOURCES = $(SOURCES_auhal)
@@ -73,18 +62,7 @@ libauhal_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libauhal_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libauhal_plugin_la_LIBADD = $(AM_LIBADD)
-libauhal_plugin_la_DEPENDENCIES =
-
-# The esd plugin
-libesd_plugin_la_SOURCES = $(SOURCES_esd)
-nodist_libesd_plugin_la_SOURCES = $(nodist_SOURCES_esd)
-# Force per-target objects:
-libesd_plugin_la_CFLAGS = $(AM_CFLAGS)
-libesd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libesd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libesd_plugin_la_LIBADD = $(AM_LIBADD)
-libesd_plugin_la_DEPENDENCIES =
+libauhal_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The hd1000a plugin
 libhd1000a_plugin_la_SOURCES = $(SOURCES_hd1000a)
@@ -95,7 +73,7 @@ libhd1000a_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libhd1000a_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libhd1000a_plugin_la_LIBADD = $(AM_LIBADD)
-libhd1000a_plugin_la_DEPENDENCIES =
+libhd1000a_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The jack plugin
 libjack_plugin_la_SOURCES = $(SOURCES_jack)
@@ -106,7 +84,7 @@ libjack_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libjack_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libjack_plugin_la_LIBADD = $(AM_LIBADD)
-libjack_plugin_la_DEPENDENCIES =
+libjack_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The oss plugin
 liboss_plugin_la_SOURCES = $(SOURCES_oss)
@@ -117,7 +95,7 @@ liboss_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liboss_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liboss_plugin_la_LIBADD = $(AM_LIBADD)
-liboss_plugin_la_DEPENDENCIES =
+liboss_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The portaudio plugin
 libportaudio_plugin_la_SOURCES = $(SOURCES_portaudio)
@@ -128,7 +106,7 @@ libportaudio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libportaudio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libportaudio_plugin_la_LIBADD = $(AM_LIBADD)
-libportaudio_plugin_la_DEPENDENCIES =
+libportaudio_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The pulse plugin
 libpulse_plugin_la_SOURCES = $(SOURCES_pulse)
@@ -139,7 +117,7 @@ libpulse_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libpulse_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libpulse_plugin_la_LIBADD = $(AM_LIBADD)
-libpulse_plugin_la_DEPENDENCIES =
+libpulse_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The waveout plugin
 libwaveout_plugin_la_SOURCES = $(SOURCES_waveout)
@@ -150,5 +128,5 @@ libwaveout_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libwaveout_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libwaveout_plugin_la_LIBADD = $(AM_LIBADD)
-libwaveout_plugin_la_DEPENDENCIES =
+libwaveout_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

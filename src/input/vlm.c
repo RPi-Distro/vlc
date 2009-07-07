@@ -2,7 +2,7 @@
  * vlm.c: VLM interface plugin
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: 4a92e60baa6b967ac9a94e2ca71fcda5db430226 $
+ * $Id$
  *
  * Authors: Simon Latapie <garf@videolan.org>
  *          Laurent Aimar <fenrir@videolan.org>
@@ -42,15 +42,19 @@
 #   include <sys/time.h>                                   /* gettimeofday() */
 #endif
 
-#ifdef HAVE_TIME_H
-#   include <time.h>                                              /* ctime() */
-#   include <sys/timeb.h>                                         /* ftime() */
+#ifdef UNDER_CE
+#include <sys/time.h>                                      /* gettimeofday() */
+#endif
+
+#include <time.h>                                                 /* ctime() */
+#if defined (WIN32) && !defined (UNDER_CE)
+#include <sys/timeb.h>                                            /* ftime() */
 #endif
 
 #include <vlc_input.h>
-#include "input_internal.h"
 #include <vlc_stream.h>
 #include "vlm_internal.h"
+#include "vlm_event.h"
 #include <vlc_vod.h>
 #include <vlc_charset.h>
 #include <vlc_sout.h>
@@ -62,7 +66,7 @@
  *****************************************************************************/
 
 static void vlm_Destructor( vlm_t *p_vlm );
-static void* Manage( vlc_object_t * );
+static void* Manage( void * );
 static int vlm_MediaVodControl( void *, vod_media_t *, const char *, int, va_list );
 
 /*****************************************************************************
@@ -85,7 +89,7 @@ vlm_t *__vlm_New ( vlc_object_t *p_this )
     p_vlm = *pp_vlm;
     if( p_vlm )
     {   /* VLM already exists */
-        vlc_object_yield( p_vlm );
+        vlc_object_hold( p_vlm );
         vlc_mutex_unlock( lockval.p_address );
         return p_vlm;
     }
@@ -106,10 +110,10 @@ vlm_t *__vlm_New ( vlc_object_t *p_this )
     TAB_INIT( p_vlm->i_schedule, p_vlm->schedule );
     p_vlm->i_vod = 0;
     p_vlm->p_vod = NULL;
+    var_Create( p_vlm, "intf-event", VLC_VAR_ADDRESS );
     vlc_object_attach( p_vlm, p_this->p_libvlc );
 
-    if( vlc_thread_create( p_vlm, "vlm thread",
-                           Manage, VLC_THREAD_PRIORITY_LOW, false ) )
+    if( vlc_clone( &p_vlm->thread, Manage, p_vlm, VLC_THREAD_PRIORITY_LOW ) )
     {
         vlc_mutex_destroy( &p_vlm->lock );
         vlc_object_release( p_vlm );
@@ -155,11 +159,6 @@ void vlm_Delete( vlm_t *p_vlm )
      * is serialized against setting libvlc_priv->p_vlm from vlm_New(). */
     var_Get( p_vlm->p_libvlc, "vlm_mutex", &lockval );
     vlc_mutex_lock( lockval.p_address );
-    /* Parental advisory: terrific humongous horrible follows...
-     * This is so that vlc_object_destroy() (from vlc_object_release()) will
-     * NOT join our thread. See also vlm_Destructor().
-     * -- Courmisch, 24/08/2008 */
-    vlc_internals( p_vlm )->b_thread = false;
     vlc_object_release( p_vlm );
     vlc_mutex_unlock( lockval.p_address );
 }
@@ -178,9 +177,8 @@ static void vlm_Destructor( vlm_t *p_vlm )
     TAB_CLEAN( p_vlm->schedule, p_vlm->schedule );
 
     vlc_object_kill( p_vlm );
-    /* Continuation of the vlm_Delete() hack. -- Courmisch */
-    vlc_internals( p_vlm )->b_thread = true;
-    vlc_thread_join( p_vlm );
+    /*vlc_cancel( p_vlm->thread ); */
+    vlc_join( p_vlm->thread, NULL );
     vlc_mutex_destroy( &p_vlm->lock );
 }
 
@@ -202,7 +200,7 @@ int vlm_ExecuteCommand( vlm_t *p_vlm, const char *psz_command,
 
 int64_t vlm_Date(void)
 {
-#ifdef WIN32
+#if defined (WIN32) && !defined (UNDER_CE)
     struct timeb tm;
     ftime( &tm );
     return ((int64_t)tm.time) * 1000000 + ((int64_t)tm.millitm) * 1000;
@@ -309,13 +307,14 @@ static int vlm_MediaVodControl( void *p_private, vod_media_t *p_vod_media,
 /*****************************************************************************
  * Manage:
  *****************************************************************************/
-static void* Manage( vlc_object_t* p_object )
+static void* Manage( void* p_object )
 {
     vlm_t *vlm = (vlm_t*)p_object;
     int i, j;
     mtime_t i_lastcheck;
     mtime_t i_time;
 
+    int canc = vlc_savecancel ();
     i_lastcheck = vlm_Date();
 
     while( !vlm->b_die )
@@ -419,6 +418,7 @@ static void* Manage( vlc_object_t* p_object )
         msleep( 100000 );
     }
 
+    vlc_restorecancel (canc);
     return NULL;
 }
 
@@ -519,24 +519,25 @@ static int vlm_OnMediaUpdate( vlm_t *p_vlm, vlm_media_sys_t *p_media )
 
             if( psz_output && asprintf( &psz_dup, "sout=%s", psz_output ) != -1 )
             {
-                input_item_AddOption( p_media->vod.p_item, psz_dup );
+                input_item_AddOption( p_media->vod.p_item, psz_dup, VLC_INPUT_OPTION_TRUSTED );
                 free( psz_dup );
             }
             free( psz_output );
 
             for( i = 0; i < p_cfg->i_option; i++ )
                 input_item_AddOption( p_media->vod.p_item,
-                                     p_cfg->ppsz_option[i] );
+                                      p_cfg->ppsz_option[i], VLC_INPUT_OPTION_TRUSTED );
 
             if( asprintf( &psz_header, _("Media: %s"), p_cfg->psz_name ) == -1 )
                 psz_header = NULL;
 
-            if( (p_input = input_CreateThreadExtended( p_vlm, p_media->vod.p_item, psz_header, NULL ) ) )
+            if( (p_input = input_CreateAndStart( p_vlm->p_libvlc, p_media->vod.p_item, psz_header ) ) )
             {
                 while( !p_input->b_eof && !p_input->b_error )
                     msleep( 100000 );
 
-                input_StopThread( p_input );
+                input_Stop( p_input, false );
+                vlc_thread_join( p_input );
                 vlc_object_release( p_input );
             }
             free( psz_header );
@@ -574,6 +575,7 @@ static int vlm_OnMediaUpdate( vlm_t *p_vlm, vlm_media_sys_t *p_media )
 
     /* TODO add support of var vlm_media_broadcast/vlm_media_vod */
 
+    vlm_SendEventMediaChanged( p_vlm, p_cfg->id, p_cfg->psz_name );
     return VLC_SUCCESS;
 }
 static int vlm_ControlMediaChange( vlm_t *p_vlm, vlm_media_t *p_cfg )
@@ -611,14 +613,14 @@ static int vlm_ControlMediaAdd( vlm_t *p_vlm, vlm_media_t *p_cfg, int64_t *p_id 
     {
         p_vlm->p_vod = vlc_custom_create( VLC_OBJECT(p_vlm), sizeof( vod_t ),
                                           VLC_OBJECT_GENERIC, "vod server" );
-        vlc_object_attach( p_vlm->p_vod, p_vlm );
-        p_vlm->p_vod->p_module = module_Need( p_vlm->p_vod, "vod server", 0, 0 );
+        vlc_object_attach( p_vlm->p_vod, p_vlm->p_libvlc );
+        p_vlm->p_vod->p_module = module_need( p_vlm->p_vod, "vod server", NULL, false );
         if( !p_vlm->p_vod->p_module )
         {
             msg_Err( p_vlm, "cannot find vod server" );
             vlc_object_detach( p_vlm->p_vod );
             vlc_object_release( p_vlm->p_vod );
-            p_vlm->p_vod = 0;
+            p_vlm->p_vod = NULL;
             return VLC_EGENERIC;
         }
 
@@ -626,10 +628,9 @@ static int vlm_ControlMediaAdd( vlm_t *p_vlm, vlm_media_t *p_cfg, int64_t *p_id 
         p_vlm->p_vod->pf_media_control = vlm_MediaVodControl;
     }
 
-    p_media = malloc( sizeof( vlm_media_sys_t ) );
+    p_media = calloc( 1, sizeof( vlm_media_sys_t ) );
     if( !p_media )
         return VLC_ENOMEM;
-    memset( p_media, 0, sizeof(vlm_media_sys_t) );
 
     if( p_cfg->b_vod )
         p_vlm->i_vod++;
@@ -649,6 +650,8 @@ static int vlm_ControlMediaAdd( vlm_t *p_vlm, vlm_media_t *p_cfg, int64_t *p_id 
     if( p_id )
         *p_id = p_media->cfg.id;
 
+    /* */
+    vlm_SendEventMediaAdded( p_vlm, p_media->cfg.id, p_media->cfg.psz_name );
     return vlm_OnMediaUpdate( p_vlm, p_media );
 }
 
@@ -669,6 +672,9 @@ static int vlm_ControlMediaDel( vlm_t *p_vlm, int64_t id )
         p_vlm->i_vod--;
     }
 
+    /* */
+    vlm_SendEventMediaRemoved( p_vlm, id, p_media->cfg.psz_name );
+
     vlm_media_Clean( &p_media->cfg );
 
     vlc_gc_decref( p_media->vod.p_item );
@@ -680,11 +686,12 @@ static int vlm_ControlMediaDel( vlm_t *p_vlm, int64_t id )
     /* Check if we need to unload the VOD server */
     if( p_vlm->p_vod && p_vlm->i_vod <= 0 )
     {
-        module_Unneed( p_vlm->p_vod, p_vlm->p_vod->p_module );
+        module_unneed( p_vlm->p_vod, p_vlm->p_vod->p_module );
         vlc_object_detach( p_vlm->p_vod );
         vlc_object_release( p_vlm->p_vod );
         p_vlm->p_vod = NULL;
     }
+
     return VLC_SUCCESS;
 }
 
@@ -747,11 +754,9 @@ static vlm_media_instance_sys_t *vlm_ControlMediaInstanceGetByName( vlm_media_sy
 }
 static vlm_media_instance_sys_t *vlm_MediaInstanceNew( vlm_t *p_vlm, const char *psz_name )
 {
-    vlm_media_instance_sys_t *p_instance = malloc( sizeof(vlm_media_instance_sys_t) );
+    vlm_media_instance_sys_t *p_instance = calloc( 1, sizeof(vlm_media_instance_sys_t) );
     if( !p_instance )
         return NULL;
-
-    memset( p_instance, 0, sizeof(vlm_media_instance_sys_t) );
 
     p_instance->psz_name = NULL;
     if( psz_name )
@@ -762,22 +767,29 @@ static vlm_media_instance_sys_t *vlm_MediaInstanceNew( vlm_t *p_vlm, const char 
     p_instance->i_index = 0;
     p_instance->b_sout_keep = false;
     p_instance->p_input = NULL;
-    p_instance->p_sout = NULL;
+    p_instance->p_input_resource = NULL;
 
     return p_instance;
 }
-static void vlm_MediaInstanceDelete( vlm_media_instance_sys_t *p_instance )
+static void vlm_MediaInstanceDelete( vlm_t *p_vlm, int64_t id, vlm_media_instance_sys_t *p_instance, const char *psz_name )
 {
     input_thread_t *p_input = p_instance->p_input;
     if( p_input )
     {
-        input_StopThread( p_input );
-        p_instance->p_sout = input_DetachSout( p_input );
+        input_resource_t *p_resource;
+
+        input_Stop( p_input, true );
         vlc_thread_join( p_input );
+
+        p_resource = input_DetachResource( p_input );
+        input_resource_Delete( p_resource );
+
         vlc_object_release( p_input );
+
+        vlm_SendEventMediaInstanceStopped( p_vlm, id, psz_name );
     }
-    if( p_instance->p_sout )
-        sout_DeleteInstance( p_instance->p_sout );
+    if( p_instance->p_input_resource )
+        input_resource_Delete( p_instance->p_input_resource );
 
     vlc_gc_decref( p_instance->p_item );
     free( p_instance->psz_name );
@@ -820,7 +832,7 @@ static int vlm_ControlMediaInstanceStart( vlm_t *p_vlm, int64_t id, const char *
                       (p_cfg->psz_output && psz_vod_output) ? ":" : psz_vod_output ? "#" : "",
                       psz_vod_output ? psz_vod_output : "" ) != -1 )
             {
-                input_item_AddOption( p_instance->p_item, psz_buffer );
+                input_item_AddOption( p_instance->p_item, psz_buffer, VLC_INPUT_OPTION_TRUSTED );
                 free( psz_buffer );
             }
         }
@@ -832,7 +844,7 @@ static int vlm_ControlMediaInstanceStart( vlm_t *p_vlm, int64_t id, const char *
             else if( !strcmp( p_cfg->ppsz_option[i], "nosout-keep" ) || !strcmp( p_cfg->ppsz_option[i], "no-sout-keep" ) )
                 p_instance->b_sout_keep = false;
             else
-                input_item_AddOption( p_instance->p_item, p_cfg->ppsz_option[i] );
+                input_item_AddOption( p_instance->p_item, p_cfg->ppsz_option[i], VLC_INPUT_OPTION_TRUSTED );
         }
         TAB_APPEND( p_media->i_instance, p_media->instance, p_instance );
     }
@@ -849,15 +861,18 @@ static int vlm_ControlMediaInstanceStart( vlm_t *p_vlm, int64_t id, const char *
             return VLC_SUCCESS;
         }
 
-        input_StopThread( p_input );
-        p_instance->p_sout = input_DetachSout( p_input );
+        input_Stop( p_input, !p_input->b_eof && !p_input->b_error );
         vlc_thread_join( p_input );
+
+        p_instance->p_input_resource = input_DetachResource( p_input );
+
         vlc_object_release( p_input );
-        if( !p_instance->b_sout_keep && p_instance->p_sout )
-        {
-            sout_DeleteInstance( p_instance->p_sout );
-            p_instance->p_sout = NULL;
-        }
+
+        if( !p_instance->b_sout_keep )
+            input_resource_TerminateSout( p_instance->p_input_resource );
+        input_resource_TerminateVout( p_instance->p_input_resource );
+
+        vlm_SendEventMediaInstanceStopped( p_vlm, id, p_media->cfg.psz_name );
     }
 
     /* Start new one */
@@ -866,11 +881,23 @@ static int vlm_ControlMediaInstanceStart( vlm_t *p_vlm, int64_t id, const char *
 
     if( asprintf( &psz_log, _("Media: %s"), p_media->cfg.psz_name ) != -1 )
     {
-        p_instance->p_input = input_CreateThreadExtended( p_vlm, p_instance->p_item, psz_log, p_instance->p_sout );
+        p_instance->p_input = input_Create( p_vlm->p_libvlc, p_instance->p_item,
+                                            psz_log, p_instance->p_input_resource );
+        if( p_instance->p_input && input_Start( p_instance->p_input ) )
+        {
+            vlc_object_release( p_instance->p_input );
+            p_instance->p_input = NULL;
+        }
+        p_instance->p_input_resource = NULL;
+
         if( !p_instance->p_input )
         {
             TAB_REMOVE( p_media->i_instance, p_media->instance, p_instance );
-            vlm_MediaInstanceDelete( p_instance );
+            vlm_MediaInstanceDelete( p_vlm, id, p_instance, p_media->cfg.psz_name );
+        }
+        else
+        {
+            vlm_SendEventMediaInstanceStarted( p_vlm, id, p_media->cfg.psz_name );
         }
         free( psz_log );
     }
@@ -892,7 +919,7 @@ static int vlm_ControlMediaInstanceStop( vlm_t *p_vlm, int64_t id, const char *p
 
     TAB_REMOVE( p_media->i_instance, p_media->instance, p_instance );
 
-    vlm_MediaInstanceDelete( p_instance );
+    vlm_MediaInstanceDelete( p_vlm, id, p_instance, p_media->cfg.psz_name );
 
     return VLC_SUCCESS;
 }
@@ -1158,3 +1185,4 @@ int vlm_Control( vlm_t *p_vlm, int i_query, ... )
 
     return i_result;
 }
+

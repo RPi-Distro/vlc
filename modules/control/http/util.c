@@ -2,7 +2,7 @@
  * util.c : Utility functions for HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: 5ee140087b6fe0edf250a059513e3170237a063f $
+ * $Id: 69de4a65aaca76bdd93c52eccb70bc9f376e534a $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -120,14 +120,6 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
 
     int           i_dirlen;
 
-    char sep;
-
-#if defined( WIN32 )
-    sep = '\\';
-#else
-    sep = '/';
-#endif
-
     if( ( p_dir = utf8_opendir( psz_dir ) ) == NULL )
     {
         if( errno != ENOENT && errno != ENOTDIR )
@@ -145,7 +137,7 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
 
     msg_Dbg( p_intf, "dir=%s", psz_dir );
 
-    snprintf( dir, sizeof( dir ), "%s%c.access", psz_dir, sep );
+    snprintf( dir, sizeof( dir ), "%s"DIR_SEP".access", psz_dir );
     if( ( file = utf8_fopen( dir, "r" ) ) != NULL )
     {
         char line[1024];
@@ -179,14 +171,14 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
         fclose( file );
     }
 
-    snprintf( dir, sizeof( dir ), "%s%c.hosts", psz_dir, sep );
+    snprintf( dir, sizeof( dir ), "%s"DIR_SEP".hosts", psz_dir );
     p_acl = ACL_Create( p_intf, false );
     if( ACL_LoadFile( p_acl, dir ) )
     {
         ACL_Destroy( p_acl );
 
         struct stat st;
-        if( utf8_stat( dir, &st ) == 0 )
+        if( stat( dir, &st ) == 0 )
         {
             closedir( p_dir );
             return VLC_EGENERIC;
@@ -210,7 +202,7 @@ int ParseDirectory( intf_thread_t *p_intf, char *psz_root,
             continue;
         }
 
-        snprintf( dir, sizeof( dir ), "%s%c%s", psz_dir, sep, psz_filename );
+        snprintf( dir, sizeof( dir ), "%s"DIR_SEP"%s", psz_dir, psz_filename );
         free( psz_filename );
 
         if( ParseDirectory( p_intf, psz_root, dir ) )
@@ -345,95 +337,131 @@ void PlaylistListNode( intf_thread_t *p_intf, playlist_t *p_pl,
                            playlist_item_t *p_node, char *name, mvar_t *s,
                            int i_depth )
 {
-    if( p_node != NULL )
+    if( !p_node || !p_node->p_input )
+        return;
+
+    if( p_node->i_children == -1 )
     {
-        if( p_node->i_children == -1 )
-        {
-            char value[512];
-            char *psz;
-            mvar_t *itm = mvar_New( name, "set" );
+        char value[512];
+        char *psz;
+        playlist_item_t * p_item = playlist_CurrentPlayingItem( p_pl );
+        if( !p_item || !p_item->p_input )
+            return;
 
-            if( p_pl->status.p_item && p_node &&
-                p_pl->status.p_item->p_input && p_node->p_input &&
-                p_pl->status.p_item->p_input->i_id == p_node->p_input->i_id )
-            {
-                mvar_AppendNewVar( itm, "current", "1" );
-            }
-            else
-            {
-                mvar_AppendNewVar( itm, "current", "0" );
-            }
-
-            sprintf( value, "%d", p_node->i_id );
-            mvar_AppendNewVar( itm, "index", value );
-
-            psz = input_item_GetName( p_node->p_input );
-            mvar_AppendNewVar( itm, "name", psz );
-            free( psz );
-
-            psz = input_item_GetURI( p_node->p_input );
-            mvar_AppendNewVar( itm, "uri", psz );
-            free( psz );
-
-            sprintf( value, "Item");
-            mvar_AppendNewVar( itm, "type", value );
-
-            sprintf( value, "%d", i_depth );
-            mvar_AppendNewVar( itm, "depth", value );
-
-            if( p_node->i_flags & PLAYLIST_RO_FLAG )
-            {
-                mvar_AppendNewVar( itm, "ro", "ro" );
-            }
-            else
-            {
-                mvar_AppendNewVar( itm, "ro", "rw" );
-            }
-
-            sprintf( value, "%ld",
-                    (long) input_item_GetDuration( p_node->p_input ) );
-            mvar_AppendNewVar( itm, "duration", value );
-
-            mvar_AppendVar( s, itm );
-        }
+        mvar_t *itm = mvar_New( name, "set" );
+        if( p_item->p_input->i_id == p_node->p_input->i_id )
+            mvar_AppendNewVar( itm, "current", "1" );
         else
-        {
-            char value[512];
-            int i_child;
-            mvar_t *itm = mvar_New( name, "set" );
+            mvar_AppendNewVar( itm, "current", "0" );
 
-            mvar_AppendNewVar( itm, "name", p_node->p_input->psz_name );
-            mvar_AppendNewVar( itm, "uri", p_node->p_input->psz_name );
+        sprintf( value, "%d", p_node->i_id );
+        mvar_AppendNewVar( itm, "index", value );
 
-            sprintf( value, "Node" );
-            mvar_AppendNewVar( itm, "type", value );
+        psz = input_item_GetName( p_node->p_input );
+        mvar_AppendNewVar( itm, "name", psz );
+        free( psz );
 
-            sprintf( value, "%d", p_node->i_id );
-            mvar_AppendNewVar( itm, "index", value );
+        psz = input_item_GetURI( p_node->p_input );
+        mvar_AppendNewVar( itm, "uri", psz );
+        free( psz );
 
-            sprintf( value, "%d", p_node->i_children);
-            mvar_AppendNewVar( itm, "i_children", value );
+        sprintf( value, "Item");
+        mvar_AppendNewVar( itm, "type", value );
 
-            sprintf( value, "%d", i_depth );
-            mvar_AppendNewVar( itm, "depth", value );
+        sprintf( value, "%d", i_depth );
+        mvar_AppendNewVar( itm, "depth", value );
 
-            if( p_node->i_flags & PLAYLIST_RO_FLAG )
-            {
-                mvar_AppendNewVar( itm, "ro", "ro" );
-            }
-            else
-            {
-                mvar_AppendNewVar( itm, "ro", "rw" );
-            }
+        if( p_node->i_flags & PLAYLIST_RO_FLAG )
+            mvar_AppendNewVar( itm, "ro", "ro" );
+        else
+            mvar_AppendNewVar( itm, "ro", "rw" );
 
-            mvar_AppendVar( s, itm );
+        sprintf( value, "%"PRId64, input_item_GetDuration( p_node->p_input ) );
+        mvar_AppendNewVar( itm, "duration", value );
 
-            for (i_child = 0 ; i_child < p_node->i_children ; i_child++)
-                PlaylistListNode( p_intf, p_pl,
-                                      p_node->pp_children[i_child],
-                                      name, s, i_depth + 1);
+        //Adding extra meta-information to each playlist item
 
-        }
+        psz = input_item_GetTitle( p_node->p_input );
+        mvar_AppendNewVar( itm, "title", psz );
+
+        psz = input_item_GetArtist( p_node->p_input );
+        mvar_AppendNewVar( itm, "artist", psz );
+
+        psz = input_item_GetGenre( p_node->p_input );
+        mvar_AppendNewVar( itm, "genre", psz );
+
+        psz = input_item_GetCopyright( p_node->p_input );
+        mvar_AppendNewVar( itm, "copyright", psz );
+
+        psz = input_item_GetAlbum( p_node->p_input );
+        mvar_AppendNewVar( itm, "album", psz );
+
+        psz = input_item_GetTrackNum( p_node->p_input );
+        mvar_AppendNewVar( itm, "track", psz );
+
+        psz = input_item_GetDescription( p_node->p_input );
+        mvar_AppendNewVar( itm, "description", psz );
+
+        psz = input_item_GetRating( p_node->p_input );
+        mvar_AppendNewVar( itm, "rating", psz );
+
+        psz = input_item_GetDate( p_node->p_input );
+        mvar_AppendNewVar( itm, "date", psz );
+
+        psz = input_item_GetURL( p_node->p_input );
+        mvar_AppendNewVar( itm, "url", psz );
+
+        psz = input_item_GetLanguage( p_node->p_input );
+        mvar_AppendNewVar( itm, "language", psz );
+
+        psz = input_item_GetNowPlaying( p_node->p_input );
+        mvar_AppendNewVar( itm, "now_playing", psz );
+
+        psz = input_item_GetPublisher( p_node->p_input );
+        mvar_AppendNewVar( itm, "publisher", psz );
+
+        psz = input_item_GetEncodedBy( p_node->p_input );
+        mvar_AppendNewVar( itm, "encoded_by", psz );
+
+        psz = input_item_GetArtURL( p_node->p_input );
+        mvar_AppendNewVar( itm, "art_url", psz );
+
+        psz = input_item_GetTrackID( p_node->p_input );
+        mvar_AppendNewVar( itm, "track_id", psz );
+
+        mvar_AppendVar( s, itm );
+    }
+    else
+    {
+        char value[512];
+        int i_child;
+        mvar_t *itm = mvar_New( name, "set" );
+
+        mvar_AppendNewVar( itm, "name", p_node->p_input->psz_name );
+        mvar_AppendNewVar( itm, "uri", p_node->p_input->psz_name );
+
+        sprintf( value, "Node" );
+        mvar_AppendNewVar( itm, "type", value );
+
+        sprintf( value, "%d", p_node->i_id );
+        mvar_AppendNewVar( itm, "index", value );
+
+        sprintf( value, "%d", p_node->i_children);
+        mvar_AppendNewVar( itm, "i_children", value );
+
+        sprintf( value, "%d", i_depth );
+        mvar_AppendNewVar( itm, "depth", value );
+
+        if( p_node->i_flags & PLAYLIST_RO_FLAG )
+            mvar_AppendNewVar( itm, "ro", "ro" );
+        else
+            mvar_AppendNewVar( itm, "ro", "rw" );
+
+        mvar_AppendVar( s, itm );
+
+        for( i_child = 0 ; i_child < p_node->i_children ; i_child++ )
+             PlaylistListNode( p_intf, p_pl, p_node->pp_children[i_child],
+                               name, s, i_depth + 1);
     }
 }
 
@@ -650,10 +678,10 @@ int TestURIParam( char *psz_uri, const char *psz_name )
     return false;
 }
 
-static char *FindURIValue( char *psz_uri, const char *restrict psz_name,
+static const char *FindURIValue( const char *psz_uri, const char *restrict psz_name,
                            size_t *restrict p_len )
 {
-    char *p = psz_uri, *end;
+    const char *p = psz_uri, *end;
     size_t len;
 
     while( (p = strstr( p, psz_name )) )
@@ -695,13 +723,13 @@ static char *FindURIValue( char *psz_uri, const char *restrict psz_name,
     return p;
 }
 
-char *ExtractURIValue( char *restrict psz_uri,
+const char *ExtractURIValue( const char *restrict psz_uri,
                            const char *restrict psz_name,
                            char *restrict psz_buf, size_t bufsize )
 {
     size_t len;
-    char *psz_value = FindURIValue( psz_uri, psz_name, &len );
-    char *psz_next;
+    const char *psz_value = FindURIValue( psz_uri, psz_name, &len );
+    const char *psz_next;
 
     if( psz_value == NULL )
     {
@@ -723,11 +751,11 @@ char *ExtractURIValue( char *restrict psz_uri,
     return psz_next;
 }
 
-char *ExtractURIString( char *restrict psz_uri,
+char *ExtractURIString( const char *restrict psz_uri,
                             const char *restrict psz_name )
 {
     size_t len;
-    char *psz_value = FindURIValue( psz_uri, psz_name, &len );
+    const char *psz_value = FindURIValue( psz_uri, psz_name, &len );
 
     if( psz_value == NULL )
         return NULL;
@@ -861,7 +889,7 @@ input_item_t *MRLParse( intf_thread_t *p_intf, const char *mrl,
         {
             s_temp = s_mrl + strlen( s_mrl );
         }
-        input_item_AddOption( p_input, s_mrl );
+        input_item_AddOption( p_input, s_mrl, VLC_INPUT_OPTION_TRUSTED );
         s_mrl = s_temp;
     }
 
@@ -876,13 +904,12 @@ char *RealPath( const char *psz_src )
     char *psz_dir;
     char *p;
     int i_len = strlen(psz_src);
-    const char sep = DIR_SEP_CHAR;
 
     psz_dir = malloc( i_len + 2 );
     strcpy( psz_dir, psz_src );
 
     /* Add a trailing sep to ease the .. step */
-    psz_dir[i_len] = sep;
+    psz_dir[i_len] = DIR_SEP_CHAR;
     psz_dir[i_len + 1] = '\0';
 
 #if (DIR_SEP_CHAR != '/')
@@ -890,18 +917,18 @@ char *RealPath( const char *psz_src )
     p = psz_dir;
     while( (p = strchr( p, '/' )) != NULL )
     {
-        *p = sep;
+        *p = DIR_SEP_CHAR;
     }
 #endif
 
     /* FIXME: this could be O(N) rather than O(N²)... */
     /* Remove multiple separators and /./ */
     p = psz_dir;
-    while( (p = strchr( p, sep )) != NULL )
+    while( (p = strchr( p, DIR_SEP_CHAR )) != NULL )
     {
-        if( p[1] == sep )
+        if( p[1] == DIR_SEP_CHAR )
             memmove( &p[1], &p[2], strlen(&p[2]) + 1 );
-        else if( p[1] == '.' && p[2] == sep )
+        else if( p[1] == '.' && p[2] == DIR_SEP_CHAR )
             memmove( &p[1], &p[3], strlen(&p[3]) + 1 );
         else
             p++;
@@ -919,13 +946,13 @@ char *RealPath( const char *psz_src )
     {
         /* Fix all .. dir */
         p = psz_dir + 3;
-        while( (p = strchr( p, sep )) != NULL )
+        while( (p = strchr( p, DIR_SEP_CHAR )) != NULL )
         {
-            if( p[-1] == '.' && p[-2] == '.' && p[-3] == sep )
+            if( p[-1] == '.' && p[-2] == '.' && p[-3] == DIR_SEP_CHAR )
             {
                 char *q;
                 p[-3] = '\0';
-                if( (q = strrchr( psz_dir, sep )) != NULL )
+                if( (q = strrchr( psz_dir, DIR_SEP_CHAR )) != NULL )
                 {
                     memmove( q + 1, p + 1, strlen(p + 1) + 1 );
                     p = q + 1;
@@ -943,8 +970,8 @@ char *RealPath( const char *psz_src )
 
     /* Remove trailing sep if there are at least 2 sep in the string
      * (handles the C:\ stuff) */
-    p = strrchr( psz_dir, sep );
-    if( p != NULL && p[1] == '\0' && p != strchr( psz_dir, sep ) )
+    p = strrchr( psz_dir, DIR_SEP_CHAR );
+    if( p != NULL && p[1] == '\0' && p != strchr( psz_dir, DIR_SEP_CHAR ) )
         *p = '\0';
 
     return psz_dir;

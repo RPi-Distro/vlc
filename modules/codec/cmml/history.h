@@ -5,7 +5,7 @@
  *                    Organisation (CSIRO) Australia
  * Copyright (C) 2004 the VideoLAN team
  *
- * $Id: 4de38dc0884371bdb4156530ed382661a1998e04 $
+ * $Id$
  *
  * Authors: Andre Pang <Andre.Pang@csiro.au>
  *
@@ -27,7 +27,6 @@
 #ifndef __VLC_HISTORY_H__
 #define __VLC_HISTORY_H__
 
-#define XARRAY_EMBED_IN_HOST_C_FILE
 #include "xarray.h"
 
 struct history_item_t

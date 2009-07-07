@@ -2,7 +2,7 @@
  * cmd_resize.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ea3e4bc66fbd7ebccd914bc4bd85ef959bc52b88 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -26,6 +26,9 @@
 #include "../src/generic_layout.hpp"
 #include "../src/window_manager.hpp"
 #include "../src/vlcproc.hpp"
+#include "../src/vout_window.hpp"
+#include "../controls/ctrl_video.hpp"
+#include <vlc_vout.h>
 
 
 CmdResize::CmdResize( intf_thread_t *pIntf, const WindowManager &rWindowManager,
@@ -55,5 +58,18 @@ void CmdResizeVout::execute()
 {
     VarBox &rVoutSize = VlcProc::instance( getIntf() )->getVoutSizeVar();
     rVoutSize.setSize( m_width, m_height );
+}
+
+
+CmdResizeInnerVout::CmdResizeInnerVout( intf_thread_t *pIntf,
+                    CtrlVideo* pCtrlVideo )
+         : CmdGeneric( pIntf ), m_pCtrlVideo( pCtrlVideo )
+{
+}
+
+
+void CmdResizeInnerVout::execute()
+{
+    m_pCtrlVideo->resizeInnerVout();
 }
 

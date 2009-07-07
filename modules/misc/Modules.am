@@ -14,15 +14,18 @@ SOURCES_gtk2_main = gtk_main.c
 SOURCES_gnome2_main = gtk_main.c
 SOURCES_screensaver = screensaver.c
 SOURCES_qte_main = qte_main.cpp
-SOURCES_freetype = freetype.c
+SOURCES_freetype = freetype.c text_renderer.h
 SOURCES_win32text = win32text.c
-SOURCES_quartztext = quartztext.c
+SOURCES_quartztext = quartztext.c text_renderer.h
 SOURCES_logger = logger.c
 SOURCES_vod_rtsp = rtsp.c
 SOURCES_gnutls = gnutls.c dhparams.h
 SOURCES_svg = svg.c
 SOURCES_audioscrobbler = audioscrobbler.c
 SOURCES_inhibit = inhibit.c
+
+libvlc_LTLIBRARIES += \
+	liblogger_plugin.la
 
 if ENABLE_SOUT
 libvlc_LTLIBRARIES += \

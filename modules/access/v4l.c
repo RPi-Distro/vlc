@@ -2,7 +2,7 @@
  * v4l.c : Video4Linux input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: eaa73b0f3631710b05dd622b346109a1825b8ee1 $
+ * $Id$
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *         Paul Forgey <paulf at aphrodite dot com>
@@ -38,15 +38,11 @@
 #include <vlc_demux.h>
 #include <vlc_access.h>
 #include <vlc_vout.h>
-#include <vlc_codecs.h>
 
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/ioctl.h>
-#include <unistd.h>
 #include <sys/mman.h>
-#include <errno.h>
 #include <fcntl.h>
+#include <arpa/inet.h>
 
 /* From GStreamer's v4l plugin:
  * Because of some really cool feature in video4linux1, also known as
@@ -66,8 +62,6 @@
 #include <linux/videodev.h>
 #include "videodev_mjpeg.h"
 
-#include <sys/soundcard.h>
-
 /*****************************************************************************
  * Module descriptior
  *****************************************************************************/
@@ -82,10 +76,6 @@ static void Close( vlc_object_t * );
 #define VDEV_LONGTEXT N_( \
     "Name of the video device to use. " \
     "If you don't specify anything, no video device will be used.")
-#define ADEV_TEXT N_("Audio device name")
-#define ADEV_LONGTEXT N_( \
-    "Name of the audio device to use. " \
-    "If you don't specify anything, no audio device will be used.")
 #define CHROMA_TEXT N_("Video input chroma format")
 #define CHROMA_LONGTEXT N_( \
     "Force the Video4Linux video device to use a specific chroma format " \
@@ -123,12 +113,6 @@ static void Close( vlc_object_t * );
     "Contrast of the video input." )
 #define TUNER_TEXT N_( "Tuner" )
 #define TUNER_LONGTEXT N_( "Tuner to use, if there are several ones." )
-#define SAMPLERATE_TEXT N_( "Samplerate" )
-#define SAMPLERATE_LONGTEXT N_( \
-    "Samplerate of the captured audio stream, in Hz (eg: 11025, 22050, 44100)" )
-#define STEREO_TEXT N_( "Stereo" )
-#define STEREO_LONGTEXT N_( \
-    "Capture the audio stream in stereo." )
 #define MJPEG_TEXT N_( "MJPEG" )
 #define MJPEG_LONGTEXT N_(  \
     "Set this option if the capture device outputs MJPEG" )
@@ -141,60 +125,63 @@ static void Close( vlc_object_t * );
 #define FPS_LONGTEXT N_( "Framerate to capture, if applicable " \
     "(-1 for autodetect)." )
 
+#define AUDIO_DEPRECATED_ERROR N_( \
+    "Alsa or OSS audio capture in the v4l access is deprecated. " \
+    "please use 'v4l:/""/ :input-slave=alsa:/""/' or " \
+    "'v4l:/""/ :input-slave=oss:/""/' instead." )
+
 static const int i_norm_list[] =
     { VIDEO_MODE_AUTO, VIDEO_MODE_SECAM, VIDEO_MODE_PAL, VIDEO_MODE_NTSC };
 static const char *const psz_norm_list_text[] =
     { N_("Automatic"), N_("SECAM"), N_("PAL"),  N_("NTSC") };
 
-vlc_module_begin();
-    set_shortname( N_("Video4Linux") );
-    set_description( N_("Video4Linux input") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
+#define V4L_DEFAULT "/dev/video"
+
+vlc_module_begin ()
+    set_shortname( N_("Video4Linux") )
+    set_description( N_("Video4Linux input") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
 
     add_integer( "v4l-caching", DEFAULT_PTS_DELAY / 1000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, true );
-    add_string( "v4l-vdev", "/dev/video", 0, VDEV_TEXT, VDEV_LONGTEXT,
-                false );
-    add_string( "v4l-adev", "/dev/dsp", 0, ADEV_TEXT, ADEV_LONGTEXT,
-                false );
+                 CACHING_TEXT, CACHING_LONGTEXT, true )
+    add_obsolete_string( "v4l-vdev" );
+    add_obsolete_string( "v4l-adev" );
     add_string( "v4l-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT,
-                true );
-    add_float( "v4l-fps", -1.0, NULL, FPS_TEXT, FPS_LONGTEXT, true );
-    add_integer( "v4l-samplerate", 44100, NULL, SAMPLERATE_TEXT,
-                SAMPLERATE_LONGTEXT, true );
+                true )
+    add_float( "v4l-fps", -1.0, NULL, FPS_TEXT, FPS_LONGTEXT, true )
+    add_obsolete_integer( "v4l-samplerate" );
     add_integer( "v4l-channel", 0, NULL, CHANNEL_TEXT, CHANNEL_LONGTEXT,
-                true );
-    add_integer( "v4l-tuner", -1, NULL, TUNER_TEXT, TUNER_LONGTEXT, true );
+                true )
+    add_integer( "v4l-tuner", -1, NULL, TUNER_TEXT, TUNER_LONGTEXT, true )
     add_integer( "v4l-norm", VIDEO_MODE_AUTO, NULL, NORM_TEXT, NORM_LONGTEXT,
-                false );
+                false )
         change_integer_list( i_norm_list, psz_norm_list_text, NULL );
     add_integer( "v4l-frequency", -1, NULL, FREQUENCY_TEXT, FREQUENCY_LONGTEXT,
-                false );
-    add_integer( "v4l-audio", -1, NULL, AUDIO_TEXT, AUDIO_LONGTEXT, true );
-    add_bool( "v4l-stereo", true, NULL, STEREO_TEXT, STEREO_LONGTEXT,
-            true );
-    add_integer( "v4l-width", 0, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, true );
+                false )
+    add_integer( "v4l-audio", -1, NULL, AUDIO_TEXT, AUDIO_LONGTEXT, true )
+    add_obsolete_bool( "v4l-stereo" );
+    add_integer( "v4l-width", 0, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, true )
     add_integer( "v4l-height", 0, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT,
-                true );
+                true )
     add_integer( "v4l-brightness", -1, NULL, BRIGHTNESS_TEXT,
-                BRIGHTNESS_LONGTEXT, true );
+                BRIGHTNESS_LONGTEXT, true )
     add_integer( "v4l-colour", -1, NULL, COLOUR_TEXT, COLOUR_LONGTEXT,
-                true );
-    add_integer( "v4l-hue", -1, NULL, HUE_TEXT, HUE_LONGTEXT, true );
+                true )
+    add_integer( "v4l-hue", -1, NULL, HUE_TEXT, HUE_LONGTEXT, true )
     add_integer( "v4l-contrast", -1, NULL, CONTRAST_TEXT, CONTRAST_LONGTEXT,
-                true );
+                true )
     add_bool( "v4l-mjpeg", false, NULL, MJPEG_TEXT, MJPEG_LONGTEXT,
-            true );
+            true )
     add_integer( "v4l-decimation", 1, NULL, DECIMATION_TEXT,
-            DECIMATION_LONGTEXT, true );
+            DECIMATION_LONGTEXT, true )
     add_integer( "v4l-quality", 100, NULL, QUALITY_TEXT, QUALITY_LONGTEXT,
-            true );
+            true )
 
-    add_shortcut( "v4l" );
-    set_capability( "access_demux", 10 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+    add_shortcut( "v4l" )
+    set_capability( "access_demux", 10 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Access: local prototypes
@@ -204,9 +191,6 @@ static int Control( demux_t *, int, va_list );
 
 static void ParseMRL    ( demux_t * );
 static int  OpenVideoDev( demux_t *, char * );
-static int  OpenAudioDev( demux_t *, char * );
-
-static block_t *GrabAudio( demux_t * );
 static block_t *GrabVideo( demux_t * );
 
 #define MJPEG_BUFFER_SIZE (256*1024)
@@ -255,13 +239,8 @@ static const struct
 struct demux_sys_t
 {
     /* Devices */
-    char *psz_device;         /* Main device from MRL, can be video or audio */
-
-    char *psz_vdev;
-    int  fd_video;
-
-    char *psz_adev;
-    int  fd_audio;
+    char *psz_device;         /* Main device from MRL */
+    int  i_fd;
 
     /* Video properties */
     picture_t pic;
@@ -298,15 +277,7 @@ struct demux_sys_t
     struct video_picture vid_picture;
 
     int          i_video_frame_size;
-    es_out_id_t  *p_es_video;
-
-    /* Audio properties */
-    vlc_fourcc_t i_acodec_raw;
-    int          i_sample_rate;
-    bool   b_stereo;
-    int          i_audio_max_frame_size;
-    block_t      *p_block_audio;
-    es_out_id_t  *p_es_audio;
+    es_out_id_t  *p_es;
 };
 
 /*****************************************************************************
@@ -320,7 +291,6 @@ static int Open( vlc_object_t *p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
-    vlc_value_t val;
 
     /* Only when selected */
     if( *p_demux->psz_access == '\0' )
@@ -332,220 +302,79 @@ static int Open( vlc_object_t *p_this )
     p_demux->info.i_update = 0;
     p_demux->info.i_title = 0;
     p_demux->info.i_seekpoint = 0;
-    p_demux->p_sys = p_sys = malloc( sizeof( demux_sys_t ) );
-    memset( p_sys, 0, sizeof( demux_sys_t ) );
+    p_demux->p_sys = p_sys = calloc( 1, sizeof( demux_sys_t ) );
+    if( !p_sys )
+        return VLC_ENOMEM;
 
-    var_Create( p_demux, "v4l-audio", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-audio", &val );
-    p_sys->i_audio          = val.i_int;
+    p_sys->i_audio      = var_CreateGetInteger( p_demux, "v4l-audio" );
+    p_sys->i_channel    = var_CreateGetInteger( p_demux, "v4l-channel" );
+    p_sys->i_norm       = var_CreateGetInteger( p_demux, "v4l-norm" );
+    p_sys->i_tuner      = var_CreateGetInteger( p_demux, "v4l-tuner" );
+    p_sys->i_frequency  = var_CreateGetInteger( p_demux, "v4l-frequency" );
 
-    var_Create( p_demux, "v4l-channel", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-channel", &val );
-    p_sys->i_channel        = val.i_int;
+    p_sys->f_fps        = var_CreateGetFloat( p_demux, "v4l-fps" );
+    p_sys->i_width      = var_CreateGetInteger( p_demux, "v4l-width" );
+    p_sys->i_height     = var_CreateGetInteger( p_demux, "v4l-height" );
+    p_sys->i_video_pts  = -1;
+    p_sys->i_brightness = var_CreateGetInteger( p_demux, "v4l-brightness" );
 
-    var_Create( p_demux, "v4l-norm", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-norm", &val );
-    p_sys->i_norm           = val.i_int;
+    p_sys->i_hue        = var_CreateGetInteger( p_demux, "v4l-hue" );
+    p_sys->i_colour     = var_CreateGetInteger( p_demux, "v4l-colour" );
+    p_sys->i_contrast   = var_CreateGetInteger( p_demux, "v4l-contrast" );
 
-    var_Create( p_demux, "v4l-tuner", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-tuner", &val );
-    p_sys->i_tuner          = val.i_int;
+    p_sys->b_mjpeg      = var_CreateGetBool( p_demux, "v4l-mjpeg" );
+    p_sys->i_decimation = var_CreateGetInteger( p_demux, "v4l-decimation" );
+    p_sys->i_quality    = var_CreateGetInteger( p_demux, "v4l-quality" );
 
-    var_Create( p_demux, "v4l-frequency",
-                                    VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-frequency", &val );
-    p_sys->i_frequency      = val.i_int;
+    p_sys->psz_device = NULL;
+    p_sys->i_fd = -1;
 
-    var_Create( p_demux, "v4l-fps", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-fps", &val );
-    p_sys->f_fps            = val.f_float;
-
-    var_Create( p_demux, "v4l-width", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-width", &val );
-    p_sys->i_width          = val.i_int;
-
-    var_Create( p_demux, "v4l-height", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-height", &val );
-    p_sys->i_height         = val.i_int;
-
-    p_sys->i_video_pts      = -1;
-
-    var_Create( p_demux, "v4l-brightness", VLC_VAR_INTEGER |
-                                                        VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-brightness", &val );
-    p_sys->i_brightness     = val.i_int;
-
-    var_Create( p_demux, "v4l-hue", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-hue", &val );
-    p_sys->i_hue            = -1;
-
-    var_Create( p_demux, "v4l-colour", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-colour", &val );
-    p_sys->i_colour         = val.i_int;
-
-    var_Create( p_demux, "v4l-contrast", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-contrast", &val );
-    p_sys->i_contrast       = val.i_int;
-
-    var_Create( p_demux, "v4l-mjpeg", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-mjpeg", &val );
-    p_sys->b_mjpeg     = val.b_bool;
-
-    var_Create( p_demux, "v4l-decimation", VLC_VAR_INTEGER |
-                                                            VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-decimation", &val );
-    p_sys->i_decimation = val.i_int;
-
-    var_Create( p_demux, "v4l-quality", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-quality", &val );
-    p_sys->i_quality = val.i_int;
-
-    var_Create( p_demux, "v4l-samplerate",
-                                    VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-samplerate", &val );
-    p_sys->i_sample_rate  = val.i_int;
-
-    var_Create( p_demux, "v4l-stereo", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "v4l-stereo", &val );
-    p_sys->b_stereo       = val.b_bool;
-
-    p_sys->psz_device = p_sys->psz_vdev = p_sys->psz_adev = NULL;
-    p_sys->fd_video = -1;
-    p_sys->fd_audio = -1;
-
-    p_sys->p_es_video = p_sys->p_es_audio = 0;
-    p_sys->p_block_audio = 0;
+    p_sys->p_es = NULL;
 
     ParseMRL( p_demux );
 
-    /* Find main device (video or audio) */
-    if( p_sys->psz_device && *p_sys->psz_device )
-    {
-        msg_Dbg( p_demux, "main device=`%s'", p_sys->psz_device );
-
-        /* Try to open as video device */
-        p_sys->fd_video = OpenVideoDev( p_demux, p_sys->psz_device );
-
-        if( p_sys->fd_video < 0 )
-        {
-            /* Try to open as audio device */
-            p_sys->fd_audio = OpenAudioDev( p_demux, p_sys->psz_device );
-            if( p_sys->fd_audio >= 0 )
-            {
-                free( p_sys->psz_adev );
-                p_sys->psz_adev = p_sys->psz_device;
-                p_sys->psz_device = NULL;
-            }
-        }
-        else
-        {
-            free( p_sys->psz_vdev );
-            p_sys->psz_vdev = p_sys->psz_device;
-            p_sys->psz_device = NULL;
-        }
-    }
-
-    /* If no device opened, only continue if the access was forced */
-    if( p_sys->fd_video < 0 && p_sys->fd_audio < 0 )
-    {
-        if( strcmp( p_demux->psz_access, "v4l" ) )
-        {
-            Close( p_this );
-            return VLC_EGENERIC;
-        }
-    }
-
-    /* Find video device */
-    if( p_sys->fd_video < 0 )
-    {
-        if( !p_sys->psz_vdev || !*p_sys->psz_vdev )
-        {
-            free( p_sys->psz_vdev );
-            p_sys->psz_vdev = var_CreateGetString( p_demux, "v4l-vdev" );;
-        }
-
-        if( p_sys->psz_vdev && *p_sys->psz_vdev )
-        {
-            p_sys->fd_video = OpenVideoDev( p_demux, p_sys->psz_vdev );
-        }
-    }
-
-    /* Find audio device */
-    if( p_sys->fd_audio < 0 )
-    {
-        if( !p_sys->psz_adev || !*p_sys->psz_adev )
-        {
-            free( p_sys->psz_adev );
-            p_sys->psz_adev = var_CreateGetString( p_demux, "v4l-adev" );;
-        }
-
-        if( p_sys->psz_adev && *p_sys->psz_adev )
-        {
-            p_sys->fd_audio = OpenAudioDev( p_demux, p_sys->psz_adev );
-        }
-    }
-
-    if( p_sys->fd_video < 0 && p_sys->fd_audio < 0 )
+    msg_Dbg( p_this, "opening device '%s'", p_sys->psz_device );
+    p_sys->i_fd = OpenVideoDev( p_demux, p_sys->psz_device );
+    if( p_sys->i_fd < 0 )
     {
         Close( p_this );
         return VLC_EGENERIC;
     }
 
+
     msg_Dbg( p_demux, "v4l grabbing started" );
 
     /* Declare elementary streams */
-    if( p_sys->fd_video >= 0 )
+    es_format_t fmt;
+    es_format_Init( &fmt, VIDEO_ES, p_sys->i_fourcc );
+    fmt.video.i_width  = p_sys->i_width;
+    fmt.video.i_height = p_sys->i_height;
+    fmt.video.i_aspect = 4 * VOUT_ASPECT_FACTOR / 3;
+
+    /* Setup rgb mask for RGB formats */
+    switch( p_sys->i_fourcc )
     {
-        es_format_t fmt;
-        es_format_Init( &fmt, VIDEO_ES, p_sys->i_fourcc );
-        fmt.video.i_width  = p_sys->i_width;
-        fmt.video.i_height = p_sys->i_height;
-        fmt.video.i_aspect = 4 * VOUT_ASPECT_FACTOR / 3;
-
-        /* Setup rgb mask for RGB formats */
-        switch( p_sys->i_fourcc )
-        {
-            case VLC_FOURCC('R','V','1','5'):
-                fmt.video.i_rmask = 0x001f;
-                fmt.video.i_gmask = 0x03e0;
-                fmt.video.i_bmask = 0x7c00;
-                break;
-            case VLC_FOURCC('R','V','1','6'):
-                fmt.video.i_rmask = 0x001f;
-                fmt.video.i_gmask = 0x07e0;
-                fmt.video.i_bmask = 0xf800;
-                break;
-            case VLC_FOURCC('R','V','2','4'):
-            case VLC_FOURCC('R','V','3','2'):
-                fmt.video.i_rmask = 0x00ff0000;
-                fmt.video.i_gmask = 0x0000ff00;
-                fmt.video.i_bmask = 0x000000ff;
-                break;
-        }
-
-        msg_Dbg( p_demux, "added new video es %4.4s %dx%d",
-                 (char*)&fmt.i_codec, fmt.video.i_width, fmt.video.i_height );
-        p_sys->p_es_video = es_out_Add( p_demux->out, &fmt );
+        case VLC_FOURCC('R','V','1','5'):
+            fmt.video.i_rmask = 0x001f;
+            fmt.video.i_gmask = 0x03e0;
+            fmt.video.i_bmask = 0x7c00;
+            break;
+        case VLC_FOURCC('R','V','1','6'):
+            fmt.video.i_rmask = 0x001f;
+            fmt.video.i_gmask = 0x07e0;
+            fmt.video.i_bmask = 0xf800;
+            break;
+        case VLC_FOURCC('R','V','2','4'):
+        case VLC_FOURCC('R','V','3','2'):
+            fmt.video.i_rmask = 0x00ff0000;
+            fmt.video.i_gmask = 0x0000ff00;
+            fmt.video.i_bmask = 0x000000ff;
+            break;
     }
 
-    if( p_sys->fd_audio >= 0 )
-    {
-        es_format_t fmt;
-        es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC('a','r','a','w') );
-
-        fmt.audio.i_channels = p_sys->b_stereo ? 2 : 1;
-        fmt.audio.i_rate = p_sys->i_sample_rate;
-        fmt.audio.i_bitspersample = 16; // FIXME ?
-        fmt.audio.i_blockalign = fmt.audio.i_channels *
-            fmt.audio.i_bitspersample / 8;
-        fmt.i_bitrate = fmt.audio.i_channels * fmt.audio.i_rate *
-            fmt.audio.i_bitspersample;
-
-        msg_Dbg( p_demux, "new audio es %d channels %dHz",
-                 fmt.audio.i_channels, fmt.audio.i_rate );
-
-        p_sys->p_es_audio = es_out_Add( p_demux->out, &fmt );
-    }
+    msg_Dbg( p_demux, "added new video es %4.4s %dx%d",
+             (char*)&fmt.i_codec, fmt.video.i_width, fmt.video.i_height );
+    p_sys->p_es = es_out_Add( p_demux->out, &fmt );
 
     /* Update default_pts to a suitable value for access */
     var_Create( p_demux, "v4l-caching", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
@@ -562,16 +391,12 @@ static void Close( vlc_object_t *p_this )
     demux_sys_t *p_sys   = p_demux->p_sys;
 
     free( p_sys->psz_device );
-    free( p_sys->psz_vdev );
-    free( p_sys->psz_adev );
-    if( p_sys->fd_video >= 0 ) close( p_sys->fd_video );
-    if( p_sys->fd_audio >= 0 ) close( p_sys->fd_audio );
-    if( p_sys->p_block_audio ) block_Release( p_sys->p_block_audio );
+    if( p_sys->i_fd >= 0 ) close( p_sys->i_fd );
 
     if( p_sys->b_mjpeg )
     {
         int i_noframe = -1;
-        ioctl( p_sys->fd_video, MJPIOC_QBUF_CAPT, &i_noframe );
+        ioctl( p_sys->i_fd, MJPIOC_QBUF_CAPT, &i_noframe );
     }
 
     if( p_sys->p_video_mmap && p_sys->p_video_mmap != MAP_FAILED )
@@ -629,27 +454,17 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 static int Demux( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    es_out_id_t  *p_es = p_sys->p_es_audio;
-    block_t *p_block = NULL;
 
-    /* Try grabbing audio frames first */
-    if( p_sys->fd_audio < 0 || !( p_block = GrabAudio( p_demux ) ) )
-    {
-        /* Try grabbing video frame */
-        p_es = p_sys->p_es_video;
-        if( p_sys->fd_video > 0 ) p_block = GrabVideo( p_demux );
-    }
+    block_t *p_block = GrabVideo( p_demux );
 
     if( !p_block )
     {
-        /* Sleep so we do not consume all the cpu, 10ms seems
-         * like a good value (100fps) */
-        msleep( 10000 );
+        msleep( 10000 ); /* Unfortunately v4l doesn't allow polling */
         return 1;
     }
 
     es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block->i_pts );
-    es_out_Send( p_demux->out, p_es, p_block );
+    es_out_Send( p_demux->out, p_sys->p_es, p_block );
 
     return 1;
 }
@@ -796,43 +611,6 @@ static void ParseMRL( demux_t *p_demux )
                 p_sys->i_tuner = strtol( psz_parser + strlen( "tuner=" ),
                                          &psz_parser, 0 );
             }
-            else if( !strncmp( psz_parser, "adev=", strlen( "adev=" ) ) )
-            {
-                int  i_len;
-
-                psz_parser += strlen( "adev=" );
-                if( strchr( psz_parser, ':' ) )
-                {
-                    i_len = strchr( psz_parser, ':' ) - psz_parser;
-                }
-                else
-                {
-                    i_len = strlen( psz_parser );
-                }
-
-                p_sys->psz_adev = strndup( psz_parser, i_len );
-
-                psz_parser += i_len;
-            }
-            else if( !strncmp( psz_parser, "samplerate=",
-                               strlen( "samplerate=" ) ) )
-            {
-                p_sys->i_sample_rate =
-                    strtol( psz_parser + strlen( "samplerate=" ),
-                            &psz_parser, 0 );
-            }
-            else if( !strncmp( psz_parser, "stereo", strlen( "stereo" ) ) )
-            {
-                psz_parser += strlen( "stereo" );
-
-                p_sys->b_stereo = true;
-            }
-            else if( !strncmp( psz_parser, "mono", strlen( "mono" ) ) )
-            {
-                psz_parser += strlen( "mono" );
-
-                p_sys->b_stereo = false;
-            }
             else if( !strncmp( psz_parser, "mjpeg", strlen( "mjpeg" ) ) )
             {
                 psz_parser += strlen( "mjpeg" );
@@ -858,6 +636,17 @@ static void ParseMRL( demux_t *p_demux )
                 p_sys->f_fps = strtof( psz_parser + strlen( "fps=" ),
                                        &psz_parser );
             }
+            else if( !strncmp( psz_parser, "adev=", strlen( "adev=" ) )
+             || !strncmp( psz_parser, "samplerate=", strlen( "samplerate=" ) )
+             || !strncmp( psz_parser, "stereo", strlen( "stereo" ) )
+             || !strncmp( psz_parser, "mono", strlen( "mono" ) ) )
+            {
+                if( strchr( psz_parser, ':' ) )
+                    psz_parser = strchr( psz_parser, ':' );
+                else
+                    psz_parser += strlen( psz_parser );
+                msg_Err( p_demux, AUDIO_DEPRECATED_ERROR );
+            }
             else
             {
                 msg_Warn( p_demux, "unknown option" );
@@ -876,9 +665,9 @@ static void ParseMRL( demux_t *p_demux )
     }
 
     if( *psz_dup )
-    {
         p_sys->psz_device = strdup( psz_dup );
-    }
+    else
+        p_sys->psz_device = strdup( V4L_DEFAULT );
     free( psz_dup );
 }
 
@@ -1341,100 +1130,6 @@ vdev_failed:
 }
 
 /*****************************************************************************
- * OpenAudioDev:
- *****************************************************************************/
-static int OpenAudioDev( demux_t *p_demux, char *psz_device )
-{
-    demux_sys_t *p_sys = p_demux->p_sys;
-    int i_fd, i_format;
-
-    if( (i_fd = open( psz_device, O_RDONLY | O_NONBLOCK )) < 0 )
-    {
-        msg_Err( p_demux, "cannot open audio device (%m)" );
-        goto adev_fail;
-    }
-
-    i_format = AFMT_S16_LE;
-    if( ioctl( i_fd, SNDCTL_DSP_SETFMT, &i_format ) < 0
-        || i_format != AFMT_S16_LE )
-    {
-        msg_Err( p_demux, "cannot set audio format (16b little endian) "
-                 "(%m)" );
-        goto adev_fail;
-    }
-
-    if( ioctl( i_fd, SNDCTL_DSP_STEREO,
-               &p_sys->b_stereo ) < 0 )
-    {
-        msg_Err( p_demux, "cannot set audio channels count (%m)" );
-        goto adev_fail;
-    }
-
-    if( ioctl( i_fd, SNDCTL_DSP_SPEED,
-               &p_sys->i_sample_rate ) < 0 )
-    {
-        msg_Err( p_demux, "cannot set audio sample rate (%m)" );
-        goto adev_fail;
-    }
-
-    msg_Dbg( p_demux, "opened adev=`%s' %s %dHz",
-             psz_device, p_sys->b_stereo ? "stereo" : "mono",
-             p_sys->i_sample_rate );
-
-    p_sys->i_audio_max_frame_size = 6 * 1024;
-
-    return i_fd;
-
- adev_fail:
-
-    if( i_fd >= 0 ) close( i_fd );
-    return -1;
-}
-
-/*****************************************************************************
- * GrabAudio: grab audio
- *****************************************************************************/
-static block_t *GrabAudio( demux_t *p_demux )
-{
-    demux_sys_t *p_sys = p_demux->p_sys;
-    struct audio_buf_info buf_info;
-    int i_read, i_correct;
-    block_t *p_block;
-
-    if( p_sys->p_block_audio ) p_block = p_sys->p_block_audio;
-    else p_block = block_New( p_demux, p_sys->i_audio_max_frame_size );
-
-    if( !p_block )
-    {
-        msg_Warn( p_demux, "cannot get block" );
-        return 0;
-    }
-
-    p_sys->p_block_audio = p_block;
-
-    i_read = read( p_sys->fd_audio, p_block->p_buffer,
-                   p_sys->i_audio_max_frame_size );
-
-    if( i_read <= 0 ) return 0;
-
-    p_block->i_buffer = i_read;
-    p_sys->p_block_audio = 0;
-
-    /* Correct the date because of kernel buffering */
-    i_correct = i_read;
-    if( ioctl( p_sys->fd_audio, SNDCTL_DSP_GETISPACE, &buf_info ) == 0 )
-    {
-        i_correct += buf_info.bytes;
-    }
-
-    p_block->i_pts = p_block->i_dts =
-        mdate() - INT64_C(1000000) * (mtime_t)i_correct /
-        2 / ( p_sys->b_stereo ? 2 : 1) / p_sys->i_sample_rate;
-
-    return p_block;
-}
-
-/*****************************************************************************
  * GrabVideo:
  *****************************************************************************/
 static uint8_t *GrabCapture( demux_t *p_demux )
@@ -1444,7 +1139,7 @@ static uint8_t *GrabCapture( demux_t *p_demux )
 
     p_sys->vid_mmap.frame = (p_sys->i_frame_pos + 1) % p_sys->vid_mbuf.frames;
 
-    while( ioctl( p_sys->fd_video, VIDIOCMCAPTURE, &p_sys->vid_mmap ) < 0 )
+    while( ioctl( p_sys->i_fd, VIDIOCMCAPTURE, &p_sys->vid_mmap ) < 0 )
     {
         if( errno != EAGAIN )
         {
@@ -1460,7 +1155,7 @@ static uint8_t *GrabCapture( demux_t *p_demux )
         msg_Dbg( p_demux, "grab failed, trying again" );
     }
 
-    while( ioctl(p_sys->fd_video, VIDIOCSYNC, &p_sys->i_frame_pos) < 0 )
+    while( ioctl(p_sys->i_fd, VIDIOCSYNC, &p_sys->i_frame_pos) < 0 )
     {
         if( errno != EAGAIN && errno != EINTR )
         {
@@ -1486,7 +1181,7 @@ static uint8_t *GrabMJPEG( demux_t *p_demux )
     /* re-queue the last frame we sync'd */
     if( p_sys->i_frame_pos != -1 )
     {
-        while( ioctl( p_sys->fd_video, MJPIOC_QBUF_CAPT,
+        while( ioctl( p_sys->i_fd, MJPIOC_QBUF_CAPT,
                                        &p_sys->i_frame_pos ) < 0 )
         {
             if( errno != EAGAIN && errno != EINTR )
@@ -1498,7 +1193,7 @@ static uint8_t *GrabMJPEG( demux_t *p_demux )
     }
 
     /* sync on the next frame */
-    while( ioctl( p_sys->fd_video, MJPIOC_SYNC, &sync ) < 0 )
+    while( ioctl( p_sys->i_fd, MJPIOC_SYNC, &sync ) < 0 )
     {
         if( errno != EAGAIN && errno != EINTR )
         {

@@ -38,8 +38,11 @@
  * General configuration
  *****************************************************************************/
 
-#define CLOCK_FREQ 1000000
+/* All timestamp below or equal to this define are invalid/unset
+ * XXX the numerical value is 0 because of historical reason and will change.*/
+#define VLC_TS_INVALID (0)
 
+#define CLOCK_FREQ 1000000
 
 /* When creating or destroying threads in blocking mode, delay to poll thread
  * status */
@@ -148,14 +151,7 @@
 
 /* Video heap size - remember that a decompressed picture is big
  * (~1 Mbyte) before using huge values */
-#define VOUT_MAX_PICTURES               8
-
-/* Minimum number of direct pictures the video output will accept without
- * creating additional pictures in system memory */
-#define VOUT_MIN_DIRECT_PICTURES        6
-
-/* Number of simultaneous subpictures */
-#define VOUT_MAX_SUBPICTURES            8
+#define VOUT_MAX_PICTURES              16
 
 /* Statistics are displayed every n loops (=~ pictures) */
 #define VOUT_STATS_NB_LOOPS             100
@@ -163,30 +159,6 @@
 /*
  * Time settings
  */
-
-/* Time during which the thread will sleep if it has nothing to
- * display (in micro-seconds) */
-#define VOUT_IDLE_SLEEP                 ((int)(0.020*CLOCK_FREQ))
-
-/* Maximum lap of time allowed between the beginning of rendering and
- * display. If, compared to the current date, the next image is too
- * late, the thread will perform an idle loop. This time should be
- * at least VOUT_IDLE_SLEEP plus the time required to render a few
- * images, to avoid trashing of decoded images */
-#define VOUT_DISPLAY_DELAY              ((int)(0.200*CLOCK_FREQ))
-
-/* Pictures which are VOUT_BOGUS_DELAY or more in advance probably have
- * a bogus PTS and won't be displayed */
-#define VOUT_BOGUS_DELAY                ((mtime_t)(DEFAULT_PTS_DELAY * 30))
-
-/* Delay (in microseconds) before an idle screen is displayed */
-#define VOUT_IDLE_DELAY                 (5*CLOCK_FREQ)
-
-/* Number of pictures required to computes the FPS rate */
-#define VOUT_FPS_SAMPLES                20
-
-/* Better be in advance when awakening than late... */
-#define VOUT_MWAIT_TOLERANCE            ((mtime_t)(0.020*CLOCK_FREQ))
 
 /* Time to sleep when waiting for a buffer (from vout or the video fifo).
  * It should be approximately the time needed to perform a complete picture

@@ -2,7 +2,7 @@
  * blendbench.c : blending benchmark plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 0c93a9f23114d4e318f48de089702ea7db543d8c $
+ * $Id$
  *
  * Author: SÃ¸ren BÃ¸g <avacore@videolan.org>
  *
@@ -70,33 +70,33 @@ static picture_t *Filter( filter_t *, picture_t * );
 
 #define CFG_PREFIX "blendbench-"
 
-vlc_module_begin();
-    set_description( N_("Blending benchmark filter") );
-    set_shortname( N_("blendbench" ));
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_capability( "video filter2", 0 );
+vlc_module_begin ()
+    set_description( N_("Blending benchmark filter") )
+    set_shortname( N_("Blendbench" ))
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_capability( "video filter2", 0 )
 
-    set_section( N_("Benchmarking"), NULL );
+    set_section( N_("Benchmarking"), NULL )
     add_integer( CFG_PREFIX "loops", 1000, NULL, LOOPS_TEXT,
-              LOOPS_LONGTEXT, false );
+              LOOPS_LONGTEXT, false )
     add_integer_with_range( CFG_PREFIX "alpha", 128, 0, 255, NULL, ALPHA_TEXT,
-              ALPHA_LONGTEXT, false );
+              ALPHA_LONGTEXT, false )
 
-    set_section( N_("Base image"), NULL );
+    set_section( N_("Base image"), NULL )
     add_file( CFG_PREFIX "base-image", NULL, NULL, BASE_IMAGE_TEXT,
-              BASE_IMAGE_LONGTEXT, false );
+              BASE_IMAGE_LONGTEXT, false )
     add_string( CFG_PREFIX "base-chroma", "I420", NULL, BASE_CHROMA_TEXT,
-              BASE_CHROMA_LONGTEXT, false );
+              BASE_CHROMA_LONGTEXT, false )
 
-    set_section( N_("Blend image"), NULL );
+    set_section( N_("Blend image"), NULL )
     add_file( CFG_PREFIX "blend-image", NULL, NULL, BLEND_IMAGE_TEXT,
-              BLEND_IMAGE_LONGTEXT, false );
+              BLEND_IMAGE_LONGTEXT, false )
     add_string( CFG_PREFIX "blend-chroma", "YUVA", NULL, BLEND_CHROMA_TEXT,
-              BLEND_CHROMA_LONGTEXT, false );
+              BLEND_CHROMA_LONGTEXT, false )
 
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "loops", "alpha", "base-image", "base-chroma", "blend-image",
@@ -228,7 +228,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     vlc_object_attach( p_blend, p_filter );
     p_blend->fmt_out.video = p_sys->p_base_image->format;
     p_blend->fmt_in.video = p_sys->p_blend_image->format;
-    p_blend->p_module = module_Need( p_blend, "video blending", 0, 0 );
+    p_blend->p_module = module_need( p_blend, "video blending", NULL, false );
     if( !p_blend->p_module )
     {
         picture_Release( p_pic );
@@ -240,7 +240,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     mtime_t time = mdate();
     for( int i_iter = 0; i_iter < p_sys->i_loops; ++i_iter )
     {
-        p_blend->pf_video_blend( p_blend, p_sys->p_base_image,
+        p_blend->pf_video_blend( p_blend,
                                  p_sys->p_base_image, p_sys->p_blend_image,
                                  0, 0, p_sys->i_alpha );
     }
@@ -254,7 +254,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
                   p_sys->p_blend_image->p[Y_PLANE].i_visible_pitch *
                   p_sys->p_blend_image->p[Y_PLANE].i_visible_lines );
 
-    module_Unneed( p_blend, p_blend->p_module );
+    module_unneed( p_blend, p_blend->p_module );
 
     vlc_object_detach( p_blend );
     vlc_object_release( p_blend );

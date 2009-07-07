@@ -2,7 +2,7 @@
  * vout.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 314fba02de4bcdeafc22c5d3529c96cbf7000226 $
+ * $Id$
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Florian G. Pflug <fgp@phlo.org>
@@ -34,11 +34,11 @@
     NSMutableArray * o_embedded_array;
 }
 
-- (id)getEmbeddedVout;
+- (id)embeddedVout;
 - (void)releaseEmbeddedVout: (id)o_vout_view;
 - (void)addEmbeddedVout: (id)o_vout_view;
 - (BOOL)windowContainsEmbedded: (id)o_window;
-- (id)getViewForWindow: (id)o_window;
+- (id)viewForWindow: (id)o_window;
 
 @end
 
@@ -70,11 +70,11 @@
 - (void)toggleFullscreen;
 - (BOOL)isFullscreen;
 - (void)snapshot;
-- (id)getWindow;
+- (id)voutWindow;
 
-+ (id)getVoutView: (vout_thread_t *)p_vout subView: (NSView *) view
-            frame: (NSRect *) s_frame;
-+ (vout_thread_t *)getRealVout: (vout_thread_t *)p_vout;
++ (id)voutView: (vout_thread_t *)p_vout subView: (NSView *) view
+         frame: (NSRect *) s_frame;
++ (vout_thread_t *)realVout: (vout_thread_t *)p_vout;
 
 - (void)enterFullscreen;
 - (void)leaveFullscreen;
@@ -127,5 +127,5 @@
 - (id)initMainThread: (id) sender;
 - (void)leaveFullscreen;
 - (void)enterFullscreen;
-- (id)getVoutView;
+- (id)voutView;
 @end

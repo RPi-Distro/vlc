@@ -2,7 +2,7 @@
  * vlc_keys.h: keycode defines
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: a3fca5788fd4a430d4235158b0fc2d4c4a8e1a94 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -178,21 +178,34 @@ static const struct key_descriptor_s vlc_keys[] =
     { "x", 'x' },
     { "y", 'y' },
     { "z", 'z' },
-    { "+", '+' },
-    { "=", '=' },
-    { "-", '-' },
-    { ",", ',' },
-    { ".", '.' },
-    { "<", '<' },
-    { ">", '>' },
-    { "`", '`' },
-    { "/", '/' },
-    { ";", ';' },
+    { "!", '!' },
+    { "\"", '\"' },
+    { "#", '#' },
+    { "$", '$' },
+    { "%", '%' },
+    { "&", '&' },
     { "'", '\'' },
-    { "\\", '\\' },
-    { "[", '[' },
-    { "]", ']' },
+    { "(", ')' },
+    { ")", ')' },
     { "*", '*' },
+    { "+", '+' },
+    { ",", ',' },
+    { "-", '-' },
+    { ".", '.' },
+    { "/", '/' },
+    { ":", ':' },
+    { ";", ';' },
+    { "<", '<' },
+    { "=", '=' },
+    { ">", '>' },
+    { "?", '?' },
+    { "@", '@' },
+    { "[", '[' },
+    { "\\", '\\' },
+    { "]", ']' },
+    { "^", '^' },
+    { "_", '_' },
+    { "`", '`' },
     { "Browser Back", KEY_BROWSER_BACK },
     { "Browser Forward", KEY_BROWSER_FORWARD },
     { "Browser Refresh", KEY_BROWSER_REFRESH },
@@ -261,6 +274,7 @@ typedef enum vlc_key {
     ACTIONID_JUMP_FORWARD_MEDIUM,
     ACTIONID_JUMP_BACKWARD_LONG,
     ACTIONID_JUMP_FORWARD_LONG,
+    ACTIONID_FRAME_NEXT,
     ACTIONID_POSITION,
     ACTIONID_VOL_MUTE,
 /* let ACTIONID_SET_BOOMARK* and ACTIONID_PLAY_BOOKMARK* be contiguous */
@@ -337,6 +351,15 @@ typedef enum vlc_key {
     ACTIONID_ZOOM_ORIGINAL,
     ACTIONID_ZOOM_DOUBLE,
     /* Cycle Through Audio Devices */
-    ACTIONID_AUDIODEVICE_CYCLE
+    ACTIONID_AUDIODEVICE_CYCLE,
+    /* scaling */
+    ACTIONID_TOGGLE_AUTOSCALE,
+    ACTIONID_SCALE_UP,
+    ACTIONID_SCALE_DOWN,
+    /* */
+    ACTIONID_RATE_NORMAL,
+    ACTIONID_RATE_SLOWER_FINE,
+    ACTIONID_RATE_FASTER_FINE,
+
 } vlc_key_t;
 #endif

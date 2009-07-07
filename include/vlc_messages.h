@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
- * $Id: c0b8ee5e178ee6bd185bb20f83e0c3da4ea03316 $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -48,13 +48,14 @@
 typedef struct
 {
     int     i_type;                             /**< message type, see below */
-    int     i_object_id;
+    uintptr_t   i_object_id;
     const char *psz_object_type;
     char *  psz_module;
     char *  psz_msg;                            /**< the message itself */
     char *  psz_header;                         /**< Additional header */
 
     mtime_t date;                               /**< Message date */
+    gc_object_t vlc_gc_data;
 } msg_item_t;
 
 /* Message types */
@@ -67,17 +68,21 @@ typedef struct
 /** debug messages */
 #define VLC_MSG_DBG   3
 
+static inline msg_item_t *msg_Hold (msg_item_t *msg)
+{
+    vlc_hold (&msg->vlc_gc_data);
+    return msg;
+}
+
+static inline void msg_Release (msg_item_t *msg)
+{
+    vlc_release (&msg->vlc_gc_data);
+}
+
 /**
  * Used by interface plugins which subscribe to the message bank.
  */
-struct msg_subscription_t
-{
-    int   i_start;
-    int*  pi_stop;
-
-    msg_item_t*  p_msg;
-    vlc_mutex_t* p_lock;
-};
+typedef struct msg_subscription_t msg_subscription_t;
 
 /*****************************************************************************
  * Prototypes
@@ -85,10 +90,6 @@ struct msg_subscription_t
 VLC_EXPORT( void, __msg_Generic, ( vlc_object_t *, int, const char *, const char *, ... ) LIBVLC_FORMAT( 4, 5 ) );
 VLC_EXPORT( void, __msg_GenericVa, ( vlc_object_t *, int, const char *, const char *, va_list args ) );
 #define msg_GenericVa(a, b, c, d, e) __msg_GenericVa(VLC_OBJECT(a), b, c, d, e)
-VLC_EXPORT( void, __msg_Info,    ( vlc_object_t *, const char *, ... ) LIBVLC_FORMAT( 2, 3 ) );
-VLC_EXPORT( void, __msg_Err,     ( vlc_object_t *, const char *, ... ) LIBVLC_FORMAT( 2, 3 ) );
-VLC_EXPORT( void, __msg_Warn,    ( vlc_object_t *, const char *, ... ) LIBVLC_FORMAT( 2, 3 ) );
-VLC_EXPORT( void, __msg_Dbg,    ( vlc_object_t *, const char *, ... ) LIBVLC_FORMAT( 2, 3 ) );
 
 #define msg_Info( p_this, ... ) \
       __msg_Generic( VLC_OBJECT(p_this), VLC_MSG_INFO, \
@@ -103,10 +104,22 @@ VLC_EXPORT( void, __msg_Dbg,    ( vlc_object_t *, const char *, ... ) LIBVLC_FOR
       __msg_Generic( VLC_OBJECT(p_this), VLC_MSG_DBG, \
                      MODULE_STRING, __VA_ARGS__ )
 
-#define msg_Subscribe(a) __msg_Subscribe(VLC_OBJECT(a))
-#define msg_Unsubscribe(a,b) __msg_Unsubscribe(VLC_OBJECT(a),b)
-VLC_EXPORT( msg_subscription_t*, __msg_Subscribe, ( vlc_object_t * ) );
-VLC_EXPORT( void, __msg_Unsubscribe, ( vlc_object_t *, msg_subscription_t * ) );
+typedef struct msg_cb_data_t msg_cb_data_t;
+
+/**
+ * Message logging callback signature.
+ * Accepts one private data pointer, the message, and an overrun counter.
+ */
+typedef void (*msg_callback_t) (msg_cb_data_t *, msg_item_t *, unsigned);
+
+VLC_EXPORT( msg_subscription_t*, msg_Subscribe, ( libvlc_int_t *, msg_callback_t, msg_cb_data_t * ) );
+VLC_EXPORT( void, msg_Unsubscribe, ( msg_subscription_t * ) );
+
+/* Enable or disable a certain object debug messages */
+#define msg_EnableObjectPrinting(a,b) __msg_EnableObjectPrinting(VLC_OBJECT(a),b)
+#define msg_DisableObjectPrinting(a,b) __msg_DisableObjectPrinting(VLC_OBJECT(a),b)
+VLC_EXPORT( void, __msg_EnableObjectPrinting, ( vlc_object_t *, char * psz_object ) );
+VLC_EXPORT( void, __msg_DisableObjectPrinting, ( vlc_object_t *, char * psz_object ) );
 
 /**
  * @}
@@ -158,6 +171,8 @@ enum
     STATS_READ_PACKETS,
     STATS_DEMUX_READ,
     STATS_DEMUX_BITRATE,
+    STATS_DEMUX_CORRUPTED,
+    STATS_DEMUX_DISCONTINUITY,
     STATS_PLAYED_ABUFFERS,
     STATS_LOST_ABUFFERS,
     STATS_DECODED_AUDIO,
@@ -183,126 +198,6 @@ enum
 
     STATS_TIMER_SKINS_PLAYTREE_IMAGE,
 };
-
-#define stats_Update(a,b,c) __stats_Update( VLC_OBJECT(a), b, c )
-VLC_EXPORT( int, __stats_Update, (vlc_object_t*, counter_t *, vlc_value_t, vlc_value_t *) );
-#define stats_CounterCreate(a,b,c) __stats_CounterCreate( VLC_OBJECT(a), b, c )
-VLC_EXPORT( counter_t *, __stats_CounterCreate, (vlc_object_t*, int, int) );
-#define stats_Get(a,b,c) __stats_Get( VLC_OBJECT(a), b, c)
-VLC_EXPORT( int, __stats_Get, (vlc_object_t*, counter_t *, vlc_value_t*) );
-
-VLC_EXPORT (void, stats_CounterClean, (counter_t * ) );
-
-#define stats_GetInteger(a,b,c) __stats_GetInteger( VLC_OBJECT(a), b, c )
-static inline int __stats_GetInteger( vlc_object_t *p_obj, counter_t *p_counter,
-                                      int *value )
-{
-    int i_ret;
-    vlc_value_t val; val.i_int = 0;
-    if( !p_counter ) return VLC_EGENERIC;
-    i_ret = __stats_Get( p_obj, p_counter, &val );
-    *value = val.i_int;
-    return i_ret;
-}
-
-#define stats_GetFloat(a,b,c) __stats_GetFloat( VLC_OBJECT(a), b, c )
-static inline int __stats_GetFloat( vlc_object_t *p_obj, counter_t *p_counter,
-                                    float *value )
-{
-    int i_ret;
-    vlc_value_t val; val.f_float = 0.0;
-    if( !p_counter ) return VLC_EGENERIC;
-    i_ret = __stats_Get( p_obj, p_counter, &val );
-    *value = val.f_float;
-    return i_ret;
-}
-#define stats_UpdateInteger(a,b,c,d) __stats_UpdateInteger( VLC_OBJECT(a),b,c,d )
-static inline int __stats_UpdateInteger( vlc_object_t *p_obj,counter_t *p_co,
-                                         int i, int *pi_new )
-{
-    int i_ret;
-    vlc_value_t val;
-    vlc_value_t new_val; new_val.i_int = 0;
-    if( !p_co ) return VLC_EGENERIC;
-    val.i_int = i;
-    i_ret = __stats_Update( p_obj, p_co, val, &new_val );
-    if( pi_new )
-        *pi_new = new_val.i_int;
-    return i_ret;
-}
-#define stats_UpdateFloat(a,b,c,d) __stats_UpdateFloat( VLC_OBJECT(a),b,c,d )
-static inline int __stats_UpdateFloat( vlc_object_t *p_obj, counter_t *p_co,
-                                       float f, float *pf_new )
-{
-    vlc_value_t val;
-    int i_ret;
-    vlc_value_t new_val;new_val.f_float = 0.0;
-    if( !p_co ) return VLC_EGENERIC;
-    val.f_float = f;
-    i_ret =  __stats_Update( p_obj, p_co, val, &new_val );
-    if( pf_new )
-        *pf_new = new_val.f_float;
-    return i_ret;
-}
-
-/******************
- * Input stats
- ******************/
-struct input_stats_t
-{
-    vlc_mutex_t         lock;
-
-    /* Input */
-    int i_read_packets;
-    int i_read_bytes;
-    float f_input_bitrate;
-    float f_average_input_bitrate;
-
-    /* Demux */
-    int i_demux_read_packets;
-    int i_demux_read_bytes;
-    float f_demux_bitrate;
-    float f_average_demux_bitrate;
-
-    /* Decoders */
-    int i_decoded_audio;
-    int i_decoded_video;
-
-    /* Vout */
-    int i_displayed_pictures;
-    int i_lost_pictures;
-
-    /* Sout */
-    int i_sent_packets;
-    int i_sent_bytes;
-    float f_send_bitrate;
-
-    /* Aout */
-    int i_played_abuffers;
-    int i_lost_abuffers;
-};
-
-VLC_EXPORT( void, stats_ComputeInputStats, (input_thread_t*, input_stats_t*) );
-VLC_EXPORT( void, stats_ReinitInputStats, (input_stats_t *) );
-VLC_EXPORT( void, stats_DumpInputStats, (input_stats_t *) );
-
-/********************
- * Global stats
- *******************/
-struct global_stats_t
-{
-    vlc_mutex_t lock;
-
-    float f_input_bitrate;
-    float f_demux_bitrate;
-    float f_output_bitrate;
-
-    int i_http_clients;
-};
-
-#define stats_ComputeGlobalStats(a,b) __stats_ComputeGlobalStats( VLC_OBJECT(a),b)
-VLC_EXPORT( void, __stats_ComputeGlobalStats, (vlc_object_t*,global_stats_t*));
-
 
 /*********
  * Timing

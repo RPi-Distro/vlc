@@ -2,7 +2,7 @@
  * xmlparser.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 793affb2647faae1aaca5c3cbf0c8833c5d2319d $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -45,12 +45,14 @@ XMLParser::XMLParser( intf_thread_t *pIntf, const string &rFileName,
         return;
     }
 
-    // Avoid duplicate initialization (mutex needed ?)
-    if( !m_initialized )
-    {
-        LoadCatalog();
-        m_initialized = true;
-    }
+    // Avoid duplicate initialization (mutex needed ?) -> doesn't work
+    // Reinitialization required for a new XMLParser
+    // if( !m_initialized )
+    // {
+    //    LoadCatalog();
+    //    m_initialized = true;
+    // }
+    LoadCatalog();
 
     m_pStream = stream_UrlNew( pIntf, rFileName.c_str() );
     if( !m_pStream )
@@ -67,8 +69,7 @@ XMLParser::XMLParser( intf_thread_t *pIntf, const string &rFileName,
         return;
     }
 
-    xml_ReaderUseDTD( m_pReader, useDTD ? true : false );
-
+    xml_ReaderUseDTD( m_pReader, useDTD );
 }
 
 

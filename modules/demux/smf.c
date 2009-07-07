@@ -2,7 +2,7 @@
  * smf.c : Standard MIDI File (.mid) demux module for vlc
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 2785cec366009b88920f2e9ecb83b33ef7d2ef29 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,13 +39,13 @@
 static int  Open  (vlc_object_t *);
 static void Close (vlc_object_t *);
 
-vlc_module_begin ();
-    set_description (N_("SMF demuxer"));
-    set_category (CAT_INPUT);
-    set_subcategory (SUBCAT_INPUT_DEMUX);
-    set_capability ("demux", 20);
-    set_callbacks (Open, Close);
-vlc_module_end ();
+vlc_module_begin ()
+    set_description (N_("SMF demuxer"))
+    set_category (CAT_INPUT)
+    set_subcategory (SUBCAT_INPUT_DEMUX)
+    set_capability ("demux", 20)
+    set_callbacks (Open, Close)
+vlc_module_end ()
 
 static int Demux   (demux_t *);
 static int Control (demux_t *, int i_query, va_list args);

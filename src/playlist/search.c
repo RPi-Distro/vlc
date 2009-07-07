@@ -2,7 +2,7 @@
  * search.c : Search functions
  *****************************************************************************
  * Copyright (C) 1999-2009 the VideoLAN team
- * $Id: 1e6a56659d9eec50aee23d16a0fd85d5c8f4aeb1 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -34,61 +34,51 @@
  ***************************************************************************/
 
 /**
- * Search a playlist item by its playlist_item id
- *
- * \param p_playlist the playlist
- * \param i_id the id to find
- * \return the item or NULL on failure
+ * Search a playlist item by its playlist_item id.
+ * The playlist have to be locked
+ * @param p_playlist: the playlist
+ * @param i_id: the id to find
+ * @return the item or NULL on failure
  */
-playlist_item_t * playlist_ItemGetById( playlist_t * p_playlist , int i_id,
-                                        bool b_locked )
+playlist_item_t* playlist_ItemGetById( playlist_t * p_playlist , int i_id )
 {
     int i;
-    PL_LOCK_IF( !b_locked );
+    PL_ASSERT_LOCKED;
     ARRAY_BSEARCH( p_playlist->all_items,->i_id, int, i_id, i );
     if( i != -1 )
-    {
-        PL_UNLOCK_IF( !b_locked );
         return ARRAY_VAL( p_playlist->all_items, i );
-    }
-    PL_UNLOCK_IF( !b_locked );
-    return NULL;
+    else
+        return NULL;
 }
 
 /**
  * Search an item by its input_item_t
- *
- * \param p_playlist the playlist
- * \param p_item the input_item_t to find
- * \return the item, or NULL on failure
+ * The playlist have to be locked
+ * @param p_playlist: the playlist
+ * @param p_item: the input_item_t to find
+ * @return the item, or NULL on failure
  */
-playlist_item_t * playlist_ItemGetByInput( playlist_t * p_playlist ,
-                                           input_item_t *p_item,
-                                           bool b_locked )
+playlist_item_t* playlist_ItemGetByInput( playlist_t * p_playlist,
+                                          input_item_t *p_item )
 {
     int i;
-    PL_LOCK_IF( !b_locked );
+    PL_ASSERT_LOCKED;
     if( get_current_status_item( p_playlist ) &&
         get_current_status_item( p_playlist )->p_input == p_item )
     {
-        /* FIXME: this is potentially dangerous, we could destroy
-         * p_ret any time soon */
-        playlist_item_t *p_ret = get_current_status_item( p_playlist );
-        PL_UNLOCK_IF( !b_locked );
-        return p_ret;
+        return get_current_status_item( p_playlist );
     }
     /** \todo Check if this is always incremental and whether we can bsearch */
     for( i =  0 ; i < p_playlist->all_items.i_size; i++ )
     {
         if( ARRAY_VAL(p_playlist->all_items, i)->p_input->i_id == p_item->i_id )
         {
-            PL_UNLOCK_IF( !b_locked );
             return ARRAY_VAL(p_playlist->all_items, i);
         }
     }
-    PL_UNLOCK_IF( !b_locked );
     return NULL;
 }
+
 
 /**
  * Get input by item id
@@ -151,52 +141,69 @@ static void playlist_LiveSearchClean( playlist_item_t *p_root )
 static bool playlist_LiveSearchUpdateInternal( playlist_item_t *p_root,
                                                const char *psz_string )
 {
-   int i;
-   bool b_match = false;
-   for( i = 0 ; i < p_root->i_children ; i ++ )
-   {
+    int i;
+    bool b_match = false;
+    for( i = 0 ; i < p_root->i_children ; i ++ )
+    {
+        bool b_enable = false;
         playlist_item_t *p_item = p_root->pp_children[i];
-        if( p_item->i_children > -1 )
+        // Go recurssively if their is some children
+        if( p_item->i_children >= 0 &&
+            playlist_LiveSearchUpdateInternal( p_item, psz_string ) )
         {
-            if( playlist_LiveSearchUpdateInternal( p_item, psz_string ) ||
-                strcasestr( p_item->p_input->psz_name, psz_string ) )
+            b_enable = true;
+        }
+
+        if( !b_enable )
+        {
+            vlc_mutex_lock( &p_item->p_input->lock );
+            // Do we have some meta ?
+            if( p_item->p_input->p_meta )
             {
-                p_item->i_flags &= ~PLAYLIST_DBL_FLAG;
-                b_match = true;
+                // Use Title or fall back to psz_name
+                const char *psz_title = vlc_meta_Get( p_item->p_input->p_meta, vlc_meta_Title );
+                if( !psz_title )
+                    psz_title = p_item->p_input->psz_name;
+                const char *psz_album = vlc_meta_Get( p_item->p_input->p_meta, vlc_meta_Album );
+                const char *psz_artist = vlc_meta_Get( p_item->p_input->p_meta, vlc_meta_Artist );
+                b_enable = ( psz_title && strcasestr( psz_title, psz_string ) ) ||
+                           ( psz_album && strcasestr( psz_album, psz_string ) ) ||
+                           ( psz_artist && strcasestr( psz_artist, psz_string ) );
             }
             else
-            {
-                p_item->i_flags |= PLAYLIST_DBL_FLAG;
-            }
+                b_enable = p_item->p_input->psz_name && strcasestr( p_item->p_input->psz_name, psz_string );
+            vlc_mutex_unlock( &p_item->p_input->lock );
         }
+
+        if( b_enable )
+            p_item->i_flags &= ~PLAYLIST_DBL_FLAG;
         else
-        {
-            if( strcasestr( p_item->p_input->psz_name, psz_string ) || /* Soon to be replaced by vlc_meta_Title */
-                input_item_MetaMatch( p_item->p_input, vlc_meta_Album, psz_string ) ||
-                input_item_MetaMatch( p_item->p_input, vlc_meta_Artist, psz_string ) )
-            {
-                p_item->i_flags &= ~PLAYLIST_DBL_FLAG;
-                b_match = true;
-            }
-            else
-            {
-                p_item->i_flags |= PLAYLIST_DBL_FLAG;
-            }
-        }
+            p_item->i_flags |= PLAYLIST_DBL_FLAG;
+
+        b_match |= b_enable;
    }
    return b_match;
 }
 
+
+
+/**
+ * Launch the recursive search in the playlist
+ * @param p_playlist: the playlist
+ * @param p_root: the current root item
+ * @param psz_string: the string to find
+ * @return VLC_SUCCESS
+ */
 int playlist_LiveSearchUpdate( playlist_t *p_playlist, playlist_item_t *p_root,
                                const char *psz_string )
 {
     PL_ASSERT_LOCKED;
-    p_playlist->b_reset_currently_playing = true;
+    pl_priv(p_playlist)->b_reset_currently_playing = true;
     if( *psz_string )
         playlist_LiveSearchUpdateInternal( p_root, psz_string );
     else
         playlist_LiveSearchClean( p_root );
-    vlc_object_signal_unlocked( p_playlist );
+    vlc_cond_signal( &pl_priv(p_playlist)->signal );
     return VLC_SUCCESS;
 }
 

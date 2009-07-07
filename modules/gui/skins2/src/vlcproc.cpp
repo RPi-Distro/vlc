@@ -1,8 +1,8 @@
 /*****************************************************************************
  * vlcproc.cpp
  *****************************************************************************
- * Copyright (C) 2003 the VideoLAN team
- * $Id: 9dddff289e9ef664aea64c14c7e2db85a99140d2 $
+ * Copyright (C) 2003-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -45,6 +45,7 @@
 #include "../commands/cmd_resize.hpp"
 #include "../commands/cmd_vars.hpp"
 #include "../commands/cmd_dialogs.hpp"
+#include "../commands/cmd_update_item.hpp"
 #include "../utils/var_bool.hpp"
 #include <sstream>
 
@@ -142,17 +143,17 @@ VlcProc::VlcProc( intf_thread_t *pIntf ): SkinObject( pIntf ),
     var_AddCallback( pIntf->p_sys->p_playlist, "intf-change",
                      onIntfChange, this );
     // Called when a playlist item is added
-    var_AddCallback( pIntf->p_sys->p_playlist, "item-append",
+    var_AddCallback( pIntf->p_sys->p_playlist, "playlist-item-append",
                      onItemAppend, this );
     // Called when a playlist item is deleted
     // TODO: properly handle item-deleted
-    var_AddCallback( pIntf->p_sys->p_playlist, "item-deleted",
+    var_AddCallback( pIntf->p_sys->p_playlist, "playlist-item-deleted",
                      onItemDelete, this );
     // Called when the "interface shower" wants us to show the skin
     var_AddCallback( pIntf->p_libvlc, "intf-show",
                      onIntfShow, this );
     // Called when the current played item changes
-    var_AddCallback( pIntf->p_sys->p_playlist, "playlist-current",
+    var_AddCallback( pIntf->p_sys->p_playlist, "item-current",
                      onPlaylistChange, this );
     // Called when a playlist item changed
     var_AddCallback( pIntf->p_sys->p_playlist, "item-change",
@@ -163,7 +164,7 @@ VlcProc::VlcProc( intf_thread_t *pIntf ): SkinObject( pIntf ),
     // Called when we have an interaction dialog to display
     var_Create( pIntf, "interaction", VLC_VAR_ADDRESS );
     var_AddCallback( pIntf, "interaction", onInteraction, this );
-    pIntf->b_interaction = true;
+    interaction_Register( pIntf );
 
     getIntf()->p_sys->p_input = NULL;
 }
@@ -176,57 +177,30 @@ VlcProc::~VlcProc()
     if( getIntf()->p_sys->p_input )
     {
         vlc_object_release( getIntf()->p_sys->p_input );
+        getIntf()->p_sys->p_input = NULL;
     }
+
+    interaction_Unregister( getIntf() );
 
     var_DelCallback( getIntf()->p_sys->p_playlist, "intf-change",
                      onIntfChange, this );
-    var_DelCallback( getIntf()->p_sys->p_playlist, "item-append",
+    var_DelCallback( getIntf()->p_sys->p_playlist, "playlist-item-append",
                      onItemAppend, this );
-    var_DelCallback( getIntf()->p_sys->p_playlist, "item-deleted",
+    var_DelCallback( getIntf()->p_sys->p_playlist, "playlist-item-deleted",
                      onItemDelete, this );
     var_DelCallback( getIntf()->p_libvlc, "intf-show",
                      onIntfShow, this );
-    var_DelCallback( getIntf()->p_sys->p_playlist, "playlist-current",
+    var_DelCallback( getIntf()->p_sys->p_playlist, "item-current",
                      onPlaylistChange, this );
     var_DelCallback( getIntf()->p_sys->p_playlist, "item-change",
                      onItemChange, this );
     var_DelCallback( getIntf(), "skin-to-load", onSkinToLoad, this );
 }
 
-
-void VlcProc::registerVoutWindow( void *pVoutWindow )
-{
-    m_handleSet.insert( pVoutWindow );
-    // Reparent the vout window
-    if( m_pVout )
-    {
-        if( vout_Control( m_pVout, VOUT_REPARENT, 0 ) != VLC_SUCCESS )
-            vout_Control( m_pVout, VOUT_CLOSE );
-    }
-}
-
-
-void VlcProc::unregisterVoutWindow( void *pVoutWindow )
-{
-    m_handleSet.erase( pVoutWindow );
-}
-
-
-void VlcProc::dropVout()
-{
-    if( m_pVout )
-    {
-        if( vout_Control( m_pVout, VOUT_REPARENT, 0 ) != VLC_SUCCESS )
-            vout_Control( m_pVout, VOUT_CLOSE );
-        m_pVout = NULL;
-    }
-}
-
-
 void VlcProc::manage()
 {
     // Did the user request to quit vlc ?
-    if( intf_ShouldDie( getIntf() ) )
+    if( !vlc_object_alive( getIntf() ) )
     {
         CmdQuit *pCmd = new CmdQuit( getIntf() );
         AsyncQueue *pQueue = AsyncQueue::instance( getIntf() );
@@ -323,14 +297,11 @@ void VlcProc::refreshInput()
     VarBoolImpl *pVarStopped = (VarBoolImpl*)m_cVarStopped.get();
     VarBoolImpl *pVarPaused = (VarBoolImpl*)m_cVarPaused.get();
 
-    input_thread_t *pInput = getIntf()->p_sys->p_input;
-
     // Update the input
     if( getIntf()->p_sys->p_input == NULL )
     {
-        getIntf()->p_sys->p_input = getIntf()->p_sys->p_playlist->p_input;
-        if( getIntf()->p_sys->p_input )
-            vlc_object_yield( getIntf()->p_sys->p_input );
+        getIntf()->p_sys->p_input =
+            playlist_CurrentInput( getIntf()->p_sys->p_playlist );
     }
     else if( getIntf()->p_sys->p_input->b_dead )
     {
@@ -338,6 +309,7 @@ void VlcProc::refreshInput()
         getIntf()->p_sys->p_input = NULL;
     }
 
+    input_thread_t *pInput = getIntf()->p_sys->p_input;
 
     if( pInput && vlc_object_alive (pInput) )
     {
@@ -368,8 +340,7 @@ void VlcProc::refreshInput()
         pVarHasAudio->set( audio_es.i_int > 0 );
 
         // Refresh fullscreen status
-        vout_thread_t *pVout = (vout_thread_t *)vlc_object_find( pInput,
-                                     VLC_OBJECT_VOUT, FIND_CHILD );
+        vout_thread_t *pVout = input_GetVout( pInput );
         pVarHasVout->set( pVout != NULL );
         if( pVout )
         {
@@ -404,8 +375,7 @@ int VlcProc::onIntfChange( vlc_object_t *pObj, const char *pVariable,
     VlcProc *pThis = (VlcProc*)pParam;
 
     // Update the stream variable
-    playlist_t *p_playlist = (playlist_t*)pObj;
-    pThis->updateStreamName(p_playlist);
+    pThis->updateStreamName();
 
     // Create a playtree notify command (for new style playtree)
     CmdPlaytreeChanged *pCmdTree = new CmdPlaytreeChanged( pThis->getIntf() );
@@ -422,7 +392,7 @@ int VlcProc::onIntfShow( vlc_object_t *pObj, const char *pVariable,
                          vlc_value_t oldVal, vlc_value_t newVal,
                          void *pParam )
 {
-    if (newVal.i_int)
+    if (newVal.b_bool)
     {
         VlcProc *pThis = (VlcProc*)pParam;
 
@@ -446,8 +416,7 @@ int VlcProc::onItemChange( vlc_object_t *pObj, const char *pVariable,
     VlcProc *pThis = (VlcProc*)pParam;
 
     // Update the stream variable
-    playlist_t *p_playlist = (playlist_t*)pObj;
-    pThis->updateStreamName(p_playlist);
+    pThis->updateStreamName();
 
     // Create a playtree notify command
     CmdPlaytreeUpdate *pCmdTree = new CmdPlaytreeUpdate( pThis->getIntf(),
@@ -513,8 +482,7 @@ int VlcProc::onPlaylistChange( vlc_object_t *pObj, const char *pVariable,
     AsyncQueue *pQueue = AsyncQueue::instance( pThis->getIntf() );
 
     // Update the stream variable
-    playlist_t *p_playlist = (playlist_t*)pObj;
-    pThis->updateStreamName(p_playlist);
+    pThis->updateStreamName();
 
     // Create two playtree notify commands: one for old item, one for new
     CmdPlaytreeUpdate *pCmdTree = new CmdPlaytreeUpdate( pThis->getIntf(),
@@ -558,106 +526,15 @@ int VlcProc::onInteraction( vlc_object_t *pObj, const char *pVariable,
 }
 
 
-void VlcProc::updateStreamName( playlist_t *p_playlist )
+void VlcProc::updateStreamName()
 {
-    if( p_playlist && p_playlist->p_input )
-    {
-        // Get playlist item information
-        input_item_t *pItem = input_GetItem(p_playlist->p_input);
+    // Create a update item command
+    CmdUpdateItem *pCmdItem = new CmdUpdateItem( getIntf(), getStreamNameVar(), getStreamURIVar() );
 
-        VarText &rStreamName = getStreamNameVar();
-        VarText &rStreamURI = getStreamURIVar();
-        // XXX: we should not need to access p_input->psz_source directly, a
-        // getter should be provided by VLC core
-        string name = pItem->psz_name;
-        // XXX: This should be done in VLC core, not here...
-        // Remove path information if any
-        OSFactory *pFactory = OSFactory::instance( getIntf() );
-        string::size_type pos = name.rfind( pFactory->getDirSeparator() );
-        if( pos != string::npos )
-        {
-            name = name.substr( pos + 1, name.size() - pos + 1 );
-        }
-        UString srcName( getIntf(), name.c_str() );
-        UString srcURI( getIntf(), pItem->psz_uri );
-
-       // Create commands to update the stream variables
-        CmdSetText *pCmd1 = new CmdSetText( getIntf(), rStreamName, srcName );
-        CmdSetText *pCmd2 = new CmdSetText( getIntf(), rStreamURI, srcURI );
-        // Push the commands in the asynchronous command queue
-        AsyncQueue *pQueue = AsyncQueue::instance( getIntf() );
-        pQueue->push( CmdGenericPtr( pCmd1 ), false );
-        pQueue->push( CmdGenericPtr( pCmd2 ), false );
-    }
+    // Push the command in the asynchronous command queue
+    AsyncQueue *pQueue = AsyncQueue::instance( getIntf() );
+    pQueue->push( CmdGenericPtr( pCmdItem ) );
 }
-
-
-void *VlcProc::getWindow( intf_thread_t *pIntf, vout_thread_t *pVout,
-                          int *pXHint, int *pYHint,
-                          unsigned int *pWidthHint,
-                          unsigned int *pHeightHint )
-{
-    VlcProc *pThis = pIntf->p_sys->p_vlcProc;
-    if( pThis->m_handleSet.empty() )
-    {
-        return NULL;
-    }
-    else
-    {
-        pThis->m_pVout = pVout;
-        // Get the window handle
-        void *pWindow = *pThis->m_handleSet.begin();
-        // Post a resize vout command
-        CmdResizeVout *pCmd = new CmdResizeVout( pThis->getIntf(), pWindow,
-                                                 *pWidthHint, *pHeightHint );
-        AsyncQueue *pQueue = AsyncQueue::instance( pThis->getIntf() );
-        pQueue->push( CmdGenericPtr( pCmd ) );
-        return pWindow;
-    }
-}
-
-
-void VlcProc::releaseWindow( intf_thread_t *pIntf, void *pWindow )
-{
-    VlcProc *pThis = pIntf->p_sys->p_vlcProc;
-    pThis->m_pVout = NULL;
-}
-
-
-int VlcProc::controlWindow( struct vout_window_t *pWnd,
-                            int query, va_list args )
-{
-    intf_thread_t *pIntf = (intf_thread_t *)pWnd->p_private;
-    VlcProc *pThis = pIntf->p_sys->p_vlcProc;
-
-    switch( query )
-    {
-        case VOUT_SET_SIZE:
-        {
-            if( pThis->m_pVout )
-            {
-                unsigned int i_width  = va_arg( args, unsigned int );
-                unsigned int i_height = va_arg( args, unsigned int );
-                if( !i_width ) i_width = pThis->m_pVout->i_window_width;
-                if( !i_height ) i_height = pThis->m_pVout->i_window_height;
-
-                // Post a resize vout command
-                CmdResizeVout *pCmd =
-                    new CmdResizeVout( pThis->getIntf(), pWnd->handle,
-                                       i_width, i_height );
-                AsyncQueue *pQueue = AsyncQueue::instance( pThis->getIntf() );
-                pQueue->push( CmdGenericPtr( pCmd ) );
-            }
-        }
-
-        default:
-            msg_Dbg( pWnd, "control query not supported" );
-            break;
-    }
-
-    return VLC_SUCCESS;
-}
-
 
 int VlcProc::onEqBandsChange( vlc_object_t *pObj, const char *pVariable,
                               vlc_value_t oldVal, vlc_value_t newVal,

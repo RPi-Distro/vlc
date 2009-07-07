@@ -3,9 +3,9 @@
 
 basedir = stream_out
 dir = stream_out
-mods = stream_out_autodel stream_out_bridge stream_out_description stream_out_display stream_out_dummy stream_out_duplicate stream_out_es stream_out_gather stream_out_mosaic_bridge stream_out_standard stream_out_switcher stream_out_transcode
-libvlc_LTLIBRARIES =  $(LTLIBstream_out_switcher)
-EXTRA_LTLIBRARIES =  libstream_out_switcher_plugin.la
+mods = stream_out_autodel stream_out_bridge stream_out_description stream_out_display stream_out_dummy stream_out_duplicate stream_out_es stream_out_gather stream_out_mosaic_bridge stream_out_raop stream_out_record stream_out_standard stream_out_switcher stream_out_transcode
+libvlc_LTLIBRARIES =  $(LTLIBstream_out_raop) $(LTLIBstream_out_switcher)
+EXTRA_LTLIBRARIES =  libstream_out_raop_plugin.la libstream_out_switcher_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libstream_out_autodel_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_autodel_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_autodel_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_autodel_plugin_la_DEPENDENCIES =
+libstream_out_autodel_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_bridge plugin
 libstream_out_bridge_plugin_la_SOURCES = $(SOURCES_stream_out_bridge)
@@ -29,7 +29,7 @@ libstream_out_bridge_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_bridge_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_bridge_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_bridge_plugin_la_DEPENDENCIES =
+libstream_out_bridge_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_description plugin
 libstream_out_description_plugin_la_SOURCES = $(SOURCES_stream_out_description)
@@ -40,7 +40,7 @@ libstream_out_description_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_description_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_description_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_description_plugin_la_DEPENDENCIES =
+libstream_out_description_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_display plugin
 libstream_out_display_plugin_la_SOURCES = $(SOURCES_stream_out_display)
@@ -51,7 +51,7 @@ libstream_out_display_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_display_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_display_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_display_plugin_la_DEPENDENCIES =
+libstream_out_display_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_dummy plugin
 libstream_out_dummy_plugin_la_SOURCES = $(SOURCES_stream_out_dummy)
@@ -62,7 +62,7 @@ libstream_out_dummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_dummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_dummy_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_dummy_plugin_la_DEPENDENCIES =
+libstream_out_dummy_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_duplicate plugin
 libstream_out_duplicate_plugin_la_SOURCES = $(SOURCES_stream_out_duplicate)
@@ -73,7 +73,7 @@ libstream_out_duplicate_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_duplicate_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_duplicate_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_duplicate_plugin_la_DEPENDENCIES =
+libstream_out_duplicate_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_es plugin
 libstream_out_es_plugin_la_SOURCES = $(SOURCES_stream_out_es)
@@ -84,7 +84,7 @@ libstream_out_es_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_es_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_es_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_es_plugin_la_DEPENDENCIES =
+libstream_out_es_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_gather plugin
 libstream_out_gather_plugin_la_SOURCES = $(SOURCES_stream_out_gather)
@@ -95,7 +95,7 @@ libstream_out_gather_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_gather_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_gather_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_gather_plugin_la_DEPENDENCIES =
+libstream_out_gather_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_mosaic_bridge plugin
 libstream_out_mosaic_bridge_plugin_la_SOURCES = $(SOURCES_stream_out_mosaic_bridge)
@@ -106,7 +106,29 @@ libstream_out_mosaic_bridge_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_mosaic_bridge_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_mosaic_bridge_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_mosaic_bridge_plugin_la_DEPENDENCIES =
+libstream_out_mosaic_bridge_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The stream_out_raop plugin
+libstream_out_raop_plugin_la_SOURCES = $(SOURCES_stream_out_raop)
+nodist_libstream_out_raop_plugin_la_SOURCES = $(nodist_SOURCES_stream_out_raop)
+# Force per-target objects:
+libstream_out_raop_plugin_la_CFLAGS = $(AM_CFLAGS)
+libstream_out_raop_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libstream_out_raop_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libstream_out_raop_plugin_la_LIBADD = $(AM_LIBADD)
+libstream_out_raop_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The stream_out_record plugin
+libstream_out_record_plugin_la_SOURCES = $(SOURCES_stream_out_record)
+nodist_libstream_out_record_plugin_la_SOURCES = $(nodist_SOURCES_stream_out_record)
+# Force per-target objects:
+libstream_out_record_plugin_la_CFLAGS = $(AM_CFLAGS)
+libstream_out_record_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libstream_out_record_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libstream_out_record_plugin_la_LIBADD = $(AM_LIBADD)
+libstream_out_record_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_standard plugin
 libstream_out_standard_plugin_la_SOURCES = $(SOURCES_stream_out_standard)
@@ -117,7 +139,7 @@ libstream_out_standard_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_standard_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_standard_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_standard_plugin_la_DEPENDENCIES =
+libstream_out_standard_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_switcher plugin
 libstream_out_switcher_plugin_la_SOURCES = $(SOURCES_stream_out_switcher)
@@ -128,7 +150,7 @@ libstream_out_switcher_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_switcher_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_switcher_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_switcher_plugin_la_DEPENDENCIES =
+libstream_out_switcher_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The stream_out_transcode plugin
 libstream_out_transcode_plugin_la_SOURCES = $(SOURCES_stream_out_transcode)
@@ -139,5 +161,5 @@ libstream_out_transcode_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libstream_out_transcode_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libstream_out_transcode_plugin_la_LIBADD = $(AM_LIBADD)
-libstream_out_transcode_plugin_la_DEPENDENCIES =
+libstream_out_transcode_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

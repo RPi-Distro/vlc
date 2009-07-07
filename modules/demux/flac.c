@@ -2,7 +2,7 @@
  * flac.c : FLAC demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 2459c9501895a536d2885edd7dc5869c7101f85b $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -37,6 +37,7 @@
 #include <vlc_codec.h>
 #include <assert.h>
 #include <vlc_charset.h>
+#include "vorbis.h"
 
 /*****************************************************************************
  * Module descriptor
@@ -44,14 +45,14 @@
 static int  Open  ( vlc_object_t * );
 static void Close ( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("FLAC demuxer") );
-    set_capability( "demux", 155 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_callbacks( Open, Close );
-    add_shortcut( "flac" );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("FLAC demuxer") )
+    set_capability( "demux", 155 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_callbacks( Open, Close )
+    add_shortcut( "flac" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -103,6 +104,7 @@ static int Open( vlc_object_t * p_this )
     const uint8_t *p_peek;
     uint8_t     *p_streaminfo;
     int         i_streaminfo;
+    es_format_t fmt;
 
     /* Have a peep at the show. */
     if( stream_Peek( p_demux->s, &p_peek, 4 ) < 4 ) return VLC_EGENERIC;
@@ -140,21 +142,16 @@ static int Open( vlc_object_t * p_this )
     }
 
     /* Load the FLAC packetizer */
-    INIT_APACKETIZER( p_sys->p_packetizer, 'f', 'l', 'a', 'c' );
-
     /* Store STREAMINFO for the decoder and packetizer */
     p_streaminfo[4] |= 0x80; /* Fake this as the last metadata block */
-    p_sys->p_packetizer->fmt_in.i_extra = i_streaminfo;
-    p_sys->p_packetizer->fmt_in.p_extra = p_streaminfo;
+    es_format_Init( &fmt, AUDIO_ES, VLC_FOURCC( 'f', 'l', 'a', 'c' ) );
+    fmt.i_extra = i_streaminfo;
+    fmt.p_extra = p_streaminfo;
 
-    p_sys->p_packetizer->p_module =
-        module_Need( p_sys->p_packetizer, "packetizer", NULL, 0 );
-    if( !p_sys->p_packetizer->p_module )
+    p_sys->p_packetizer = demux_PacketizerNew( p_demux, &fmt, "flac" );
+    if( !p_sys->p_packetizer )
     {
-        free( p_sys->p_packetizer->fmt_in.p_extra );
-        vlc_object_release( p_sys->p_packetizer );
-
-        msg_Err( p_demux, "cannot find flac packetizer" );
+        free( p_sys );
         return VLC_EGENERIC;
     }
 
@@ -186,13 +183,9 @@ static void Close( vlc_object_t * p_this )
         free( p_sys->attachments[i] );
     TAB_CLEAN( p_sys->i_attachments, p_sys->attachments);
 
-    /* Unneed module */
-    module_Unneed( p_sys->p_packetizer, p_sys->p_packetizer->p_module );
-
-    free( p_sys->p_packetizer->fmt_in.p_extra );
-
     /* Delete the decoder */
-    vlc_object_release( p_sys->p_packetizer );
+    demux_PacketizerDestroy( p_sys->p_packetizer );
+
     if( p_sys->p_meta )
         vlc_meta_Delete( p_sys->p_meta );
     free( p_sys );
@@ -237,10 +230,7 @@ static int Demux( demux_t *p_demux )
             p_block_out->i_dts += p_sys->i_time_offset;
 
             /* set PCR */
-            if( p_block_out->i_dts >= p_sys->i_pts_start + p_sys->i_time_offset )
-                es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block_out->i_dts );
-            else
-                es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
+            es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_block_out->i_dts );
 
             es_out_Send( p_demux->out, p_sys->p_es, p_block_out );
 
@@ -314,7 +304,7 @@ static int ControlSetTime( demux_t *p_demux, int64_t i_time )
 
         p_sys->i_time_offset = p_sys->seekpoint[i]->i_time_offset - p_sys->i_pts;
         p_sys->i_pts_start = p_sys->i_pts+i_delta_time;
-        es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, p_sys->p_es, p_sys->i_pts_start + p_sys->i_time_offset );
+        es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, p_sys->i_pts_start + p_sys->i_time_offset );
     }
     else
     {
@@ -578,88 +568,12 @@ static void ParseSeekTable( demux_t *p_demux, const uint8_t *p_data, int i_data,
 static void ParseComment( demux_t *p_demux, const uint8_t *p_data, int i_data )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    int n;
-    int i_comment;
-
-    if( i_data < 8 )
-        return;
-
-    RM(4);
-
-    n = GetDWLE(p_data); RM(4);
-    if( n < 0 || n > i_data )
-        return;
-#if 0
-    if( n > 0 )
-    {
-        /* TODO report vendor string ? */
-        char *psz_vendor = psz_vendor = strndup( p_data, n );
-        msg_Dbg( p_demux, "FLAC: COMMENT vendor length=%d vendor=%s\n", n, psz_vendor );
-        free( psz_vendor );
-    }
-#endif
-    RM(n);
 
     if( i_data < 4 )
         return;
 
-    i_comment = GetDWLE(p_data); RM(4);
-    if( i_comment <= 0 )
-        return;
+    vorbis_ParseComment( &p_sys->p_meta, &p_data[4], i_data - 4 );
 
-    p_sys->p_meta = vlc_meta_New();
-
-    for( ; i_comment > 0; i_comment-- )
-    {
-        char *psz;
-        if( i_data < 4 )
-            break;
-        n = GetDWLE(p_data); RM(4);
-        if( n > i_data )
-            break;
-        if( n <= 0 )
-            continue;
-
-        psz = strndup( (const char*)p_data, n );
-        RM(n);
-
-        EnsureUTF8( psz );
-
-#define IF_EXTRACT(txt,var) \
-    if( !strncasecmp(psz, txt, strlen(txt)) ) \
-    { \
-        const char *oldval = vlc_meta_Get( p_sys->p_meta, vlc_meta_ ## var ); \
-        if( oldval ) \
-        { \
-            char * newval; \
-            if( asprintf( &newval, "%s,%s", oldval, &psz[strlen(txt)] ) == -1 ) \
-                newval = NULL; \
-            vlc_meta_Set( p_sys->p_meta, vlc_meta_ ## var, newval ); \
-            free( newval ); \
-        } \
-        else \
-            vlc_meta_Set( p_sys->p_meta, vlc_meta_ ## var, &psz[strlen(txt)] ); \
-    }
-        IF_EXTRACT("TITLE=", Title )
-        else IF_EXTRACT("ALBUM=", Album )
-        else IF_EXTRACT("TRACKNUMBER=", TrackNumber )
-        else IF_EXTRACT("ARTIST=", Artist )
-        else IF_EXTRACT("COPYRIGHT=", Copyright )
-        else IF_EXTRACT("DESCRIPTION=", Description )
-        else IF_EXTRACT("GENRE=", Genre )
-        else IF_EXTRACT("DATE=", Date )
-        else if( strchr( psz, '=' ) )
-        {
-            /* generic (PERFORMER/LICENSE/ORGANIZATION/LOCATION/CONTACT/ISRC,
-             * undocumented tags and replay gain ) */
-            char *p = strchr( psz, '=' );
-            *p++ = '\0';
-            vlc_meta_AddExtra( p_sys->p_meta, psz, p );
-        }
-#undef IF_EXTRACT
-        free( psz );
-    }
-#undef RM
 }
 
 static void ParsePicture( demux_t *p_demux, const uint8_t *p_data, int i_data )

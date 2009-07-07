@@ -2,7 +2,7 @@
  * dtstospdif.c : encapsulates DTS frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2003, 2006 the VideoLAN team
- * $Id: 4fce3130b8ca9badbba27d35da8e1705178a9e53 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -66,13 +66,13 @@ static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_MISC );
-    set_description( N_("Audio filter for DTS->S/PDIF encapsulation") );
-    set_capability( "audio filter", 10 );
-    set_callbacks( Create, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_description( N_("Audio filter for DTS->S/PDIF encapsulation") )
+    set_capability( "audio filter", 10 )
+    set_callbacks( Create, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Create:
@@ -89,11 +89,9 @@ static int Create( vlc_object_t *p_this )
     }
 
     /* Allocate the memory needed to store the module's structure */
-    p_filter->p_sys = malloc( sizeof(struct aout_filter_sys_t) );
-    if( p_filter->p_sys == NULL )
+    p_filter->p_sys = calloc( 1, sizeof(struct aout_filter_sys_t) );
+    if( !p_filter->p_sys )
         return VLC_ENOMEM;
-    memset( p_filter->p_sys, 0, sizeof(struct aout_filter_sys_t) );
-    p_filter->p_sys->p_buf = 0;
 
     p_filter->pf_do_work = DoWork;
     p_filter->b_in_place = 1;
@@ -193,20 +191,8 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
             /* We are dealing with a big endian bitstream and a little endian output
              * or a little endian bitstream and a big endian output.
              * Byteswap the stream */
-#ifdef HAVE_SWAB
             swab( p_in, p_out + 8, i_length );
-#else
-            uint16_t i;
-            uint8_t * p_tmp, tmp;
-            p_tmp = p_out + 8;
-            for( i = i_length / 2 ; i-- ; )
-            {
-                tmp = p_in[0]; /* in-place filter */
-                p_tmp[0] = p_in[1];
-                p_tmp[1] = tmp;
-                p_tmp += 2; p_in += 2;
-            }
-#endif
+
             /* If i_length is odd, we have to adjust swapping a bit.. */
             if( i_length & 1 )
             {

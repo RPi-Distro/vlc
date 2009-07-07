@@ -2,7 +2,7 @@
  * errors.hpp : Errors
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: afa14acba9fab9f889524fb187f701a565922d99 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _ERRORS_DIALOG_H_
-#define _ERRORS_DIALOG_H_
+#ifndef QVLC_ERRORS_DIALOG_H_
+#define QVLC_ERRORS_DIALOG_H_ 1
 
 #include "util/qvlcframe.hpp"
 
@@ -43,12 +43,12 @@ public:
     }
     virtual ~ErrorsDialog() {};
 
-    void addError( QString, QString );
-    void addWarning( QString, QString );
+    void addError( const QString&, const QString& );
+    /*void addWarning( QString, QString );*/
 private:
     ErrorsDialog( QWidget *parent, intf_thread_t * );
     static ErrorsDialog *instance;
-    void add( bool, QString, QString );
+    void add( bool, const QString&, const QString& );
 
     QCheckBox *stopShowing;
     QTextEdit *messages;

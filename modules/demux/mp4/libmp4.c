@@ -2,7 +2,7 @@
  * libmp4.c : LibMP4 library for mp4 module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: cbd9858e65bd88be7eddde1d90d4c63d9949644c $
+ * $Id$
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1111,6 +1111,31 @@ error:
     MP4_READBOX_EXIT( 0 );
 }
 
+static int MP4_ReadBox_dac3( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_Box_data_dac3_t *p_dac3;
+    MP4_READBOX_ENTER( MP4_Box_data_dac3_t );
+
+    p_dac3 = p_box->data.p_dac3;
+
+    unsigned i_header;
+    MP4_GET3BYTES( i_header );
+
+    p_dac3->i_fscod = ( i_header >> 22 ) & 0x03;
+    p_dac3->i_bsid  = ( i_header >> 17 ) & 0x01f;
+    p_dac3->i_bsmod = ( i_header >> 14 ) & 0x07;
+    p_dac3->i_acmod = ( i_header >> 11 ) & 0x07;
+    p_dac3->i_lfeon = ( i_header >> 10 ) & 0x01;
+    p_dac3->i_bitrate_code = ( i_header >> 5) & 0x1f;
+
+#ifdef MP4_VERBOSE
+    msg_Dbg( p_stream,
+             "read box: \"dac3\" fscod=0x%x bsid=0x%x bsmod=0x%x acmod=0x%x lfeon=0x%x bitrate_code=0x%x",
+             p_dac3->i_fscod, p_dac3->i_bsid, p_dac3->i_bsmod, p_dac3->i_acmod, p_dac3->i_lfeon, p_dac3->i_bitrate_code );
+#endif
+    MP4_READBOX_EXIT( 1 );
+}
+
 static int MP4_ReadBox_sample_soun( stream_t *p_stream, MP4_Box_t *p_box )
 {
     unsigned int i;
@@ -1316,6 +1341,18 @@ int MP4_ReadBox_sample_vide( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_GET2BYTES( p_box->data.p_sample_vide->i_qt_color_table );
 
     stream_Seek( p_stream, p_box->i_pos + MP4_BOX_HEADERSIZE( p_box ) + 78);
+
+    if( p_box->i_type == FOURCC_drmi )
+    {
+        p_box->data.p_sample_vide->p_drms =
+            drms_alloc( config_GetHomeDir() );
+
+        if( p_box->data.p_sample_vide->p_drms == NULL )
+        {
+            msg_Err( p_stream, "drms_alloc() failed" );
+        }
+    }
+
     MP4_ReadBoxContainerRaw( p_stream, p_box );
 
 #ifdef MP4_VERBOSE
@@ -1332,6 +1369,14 @@ int MP4_ReadBox_sample_vide( stream_t *p_stream, MP4_Box_t *p_box )
 void MP4_FreeBox_sample_vide( MP4_Box_t *p_box )
 {
     FREENULL( p_box->data.p_sample_vide->p_qt_image_description );
+
+    if( p_box->i_type == FOURCC_drmi )
+    {
+        if( p_box->data.p_sample_vide->p_drms )
+        {
+            drms_free( p_box->data.p_sample_vide->p_drms );
+        }
+    }
 }
 
 static int MP4_ReadBox_sample_mp4s( stream_t *p_stream, MP4_Box_t *p_box )
@@ -1418,7 +1463,7 @@ static int MP4_ReadBox_sample_tx3g( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_GET2BYTES( p_box->data.p_sample_text->i_text_box_right );
 
 #ifdef MP4_VERBOSE
-    msg_Dbg( p_stream, "read box: \"text\" in stsd text" );
+    msg_Dbg( p_stream, "read box: \"tx3g\" in stsd text" );
 #endif
     MP4_READBOX_EXIT( 1 );
 }
@@ -1872,10 +1917,7 @@ static int MP4_ReadBox_cmvd( stream_t *p_stream, MP4_Box_t *p_box )
     p_box->data.p_cmvd->i_compressed_size = i_read;
 
     if( !( p_box->data.p_cmvd->p_data = malloc( i_read ) ) )
-    {
-        msg_Dbg( p_stream, "read box: \"cmvd\" not enough memory to load data" );
         return( 1 );
-    }
 
     /* now copy compressed data */
     memcpy( p_box->data.p_cmvd->p_data,
@@ -1910,10 +1952,7 @@ static int MP4_ReadBox_cmov( stream_t *p_stream, MP4_Box_t *p_box )
 #endif
 
     if( !( p_box->data.p_cmov = malloc( sizeof( MP4_Box_data_cmov_t ) ) ) )
-    {
-        msg_Err( p_stream, "out of memory" );
         return 0;
-    }
     memset( p_box->data.p_cmov, 0, sizeof( MP4_Box_data_cmov_t ) );
 
     if( !p_box->p_father ||
@@ -1934,29 +1973,25 @@ static int MP4_ReadBox_cmov( stream_t *p_stream, MP4_Box_t *p_box )
         p_cmvd->data.p_cmvd->p_data == NULL )
     {
         msg_Warn( p_stream, "read box: \"cmov\" incomplete" );
-        return 1;
+        return 0;
     }
 
     if( p_dcom->data.p_dcom->i_algorithm != FOURCC_zlib )
     {
         msg_Dbg( p_stream, "read box: \"cmov\" compression algorithm : %4.4s "
                  "not supported", (char*)&p_dcom->data.p_dcom->i_algorithm );
-        return 1;
+        return 0;
     }
 
 #ifndef HAVE_ZLIB_H
     msg_Dbg( p_stream, "read box: \"cmov\" zlib unsupported" );
-    return 1;
+    return 0;
 
 #else
     /* decompress data */
     /* allocate a new buffer */
     if( !( p_data = malloc( p_cmvd->data.p_cmvd->i_uncompressed_size ) ) )
-    {
-        msg_Err( p_stream, "read box: \"cmov\" not enough memory to "
-                 "uncompress data" );
-        return 1;
-    }
+        return 0;
     /* init default structures */
     z_data.next_in   = p_cmvd->data.p_cmvd->p_data;
     z_data.avail_in  = p_cmvd->data.p_cmvd->i_compressed_size;
@@ -1971,7 +2006,7 @@ static int MP4_ReadBox_cmov( stream_t *p_stream, MP4_Box_t *p_box )
     {
         msg_Err( p_stream, "read box: \"cmov\" error while uncompressing" );
         free( p_data );
-        return 1;
+        return 0;
     }
 
     /* uncompress */
@@ -1980,7 +2015,7 @@ static int MP4_ReadBox_cmov( stream_t *p_stream, MP4_Box_t *p_box )
     {
         msg_Err( p_stream, "read box: \"cmov\" error while uncompressing" );
         free( p_data );
-        return 1;
+        return 0;
     }
 
     if( p_cmvd->data.p_cmvd->i_uncompressed_size != z_data.total_out )
@@ -2116,21 +2151,59 @@ static int MP4_ReadBox_rmvc( stream_t *p_stream, MP4_Box_t *p_box )
     MP4_READBOX_EXIT( 1 );
 }
 
+static int MP4_ReadBox_frma( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_READBOX_ENTER( MP4_Box_data_frma_t );
+
+    MP4_GETFOURCC( p_box->data.p_frma->i_type );
+
+#ifdef MP4_VERBOSE
+    msg_Dbg( p_stream, "read box: \"frma\" i_type:%4.4s",
+             (char *)&p_box->data.p_frma->i_type );
+#endif
+
+    MP4_READBOX_EXIT( 1 );
+}
+
+static int MP4_ReadBox_skcr( stream_t *p_stream, MP4_Box_t *p_box )
+{
+    MP4_READBOX_ENTER( MP4_Box_data_frma_t );
+
+    MP4_GET4BYTES( p_box->data.p_skcr->i_init );
+    MP4_GET4BYTES( p_box->data.p_skcr->i_encr );
+    MP4_GET4BYTES( p_box->data.p_skcr->i_decr );
+
+#ifdef MP4_VERBOSE
+    msg_Dbg( p_stream, "read box: \"skcr\" i_init:%d i_encr:%d i_decr:%d",
+             p_box->data.p_skcr->i_init,
+             p_box->data.p_skcr->i_encr,
+             p_box->data.p_skcr->i_decr );
+#endif
+
+    MP4_READBOX_EXIT( 1 );
+}
+
 static int MP4_ReadBox_drms( stream_t *p_stream, MP4_Box_t *p_box )
 {
     MP4_Box_t *p_drms_box = p_box;
+    void *p_drms = NULL;
 
     MP4_READBOX_ENTER( uint8_t );
 
     do
     {
         p_drms_box = p_drms_box->p_father;
-    } while( p_drms_box && p_drms_box->i_type != FOURCC_drms );
+    } while( p_drms_box && p_drms_box->i_type != FOURCC_drms
+                        && p_drms_box->i_type != FOURCC_drmi );
 
-    if( p_drms_box && p_drms_box->data.p_sample_soun->p_drms )
+    if( p_drms_box && p_drms_box->i_type == FOURCC_drms )
+        p_drms = p_drms_box->data.p_sample_soun->p_drms;
+    else if( p_drms_box && p_drms_box->i_type == FOURCC_drmi )
+        p_drms = p_drms_box->data.p_sample_vide->p_drms;
+
+    if( p_drms_box && p_drms )
     {
-        int i_ret = drms_init( p_drms_box->data.p_sample_soun->p_drms,
-                               p_box->i_type, p_peek, i_read );
+        int i_ret = drms_init( p_drms, p_box->i_type, p_peek, i_read );
         if( i_ret )
         {
             const char *psz_error;
@@ -2152,8 +2225,12 @@ static int MP4_ReadBox_drms( stream_t *p_stream, MP4_Box_t *p_box )
                 msg_Err( p_stream, "drms_init(c%3.3s) failed (%s)",
                         (char *)&p_box->i_type+1, psz_error );
 
-            drms_free( p_drms_box->data.p_sample_soun->p_drms );
-            p_drms_box->data.p_sample_soun->p_drms = NULL;
+            drms_free( p_drms );
+
+            if( p_drms_box->i_type == FOURCC_drms )
+                p_drms_box->data.p_sample_soun->p_drms = NULL;
+            else if( p_drms_box->i_type == FOURCC_drmi )
+                p_drms_box->data.p_sample_vide->p_drms = NULL;
         }
     }
 
@@ -2394,6 +2471,7 @@ static int MP4_ReadBox_default( stream_t *p_stream, MP4_Box_t *p_box )
             case FOURCC_text:
                 return MP4_ReadBox_sample_text( p_stream, p_box );
             case FOURCC_tx3g:
+            case FOURCC_sbtl:
                 return MP4_ReadBox_sample_tx3g( p_stream, p_box );
             default:
                 msg_Warn( p_stream,
@@ -2475,6 +2553,7 @@ static const struct
     { FOURCC_dcom,  MP4_ReadBox_dcom,       MP4_FreeBox_Common },
     { FOURCC_cmvd,  MP4_ReadBox_cmvd,       MP4_FreeBox_cmvd },
     { FOURCC_avcC,  MP4_ReadBox_avcC,       MP4_FreeBox_avcC },
+    { FOURCC_dac3,  MP4_ReadBox_dac3,       MP4_FreeBox_Common },
 
     /* Nothing to do with this box */
     { FOURCC_mdat,  MP4_ReadBoxSkip,        MP4_FreeBox_Common },
@@ -2507,6 +2586,7 @@ static const struct
     { FOURCC_OggS,  MP4_ReadBox_sample_soun,    MP4_FreeBox_sample_soun },
     { FOURCC_alac,  MP4_ReadBox_sample_soun,    MP4_FreeBox_sample_soun },
 
+    { FOURCC_drmi,  MP4_ReadBox_sample_vide,    MP4_FreeBox_sample_vide },
     { FOURCC_vide,  MP4_ReadBox_sample_vide,    MP4_FreeBox_sample_vide },
     { FOURCC_mp4v,  MP4_ReadBox_sample_vide,    MP4_FreeBox_sample_vide },
     { FOURCC_SVQ1,  MP4_ReadBox_sample_vide,    MP4_FreeBox_sample_vide },
@@ -2576,6 +2656,8 @@ static const struct
     { FOURCC_iviv,  MP4_ReadBox_drms,           MP4_FreeBox_Common },
     { FOURCC_name,  MP4_ReadBox_drms,           MP4_FreeBox_Common },
     { FOURCC_priv,  MP4_ReadBox_drms,           MP4_FreeBox_Common },
+    { FOURCC_frma,  MP4_ReadBox_frma,           MP4_FreeBox_Common },
+    { FOURCC_skcr,  MP4_ReadBox_skcr,           MP4_FreeBox_Common },
 
     /* found in udta */
     { FOURCC_0xa9nam,MP4_ReadBox_0xa9xxx,       MP4_FreeBox_0xa9xxx },
@@ -2885,7 +2967,7 @@ static void __MP4_BoxGet( MP4_Box_t **pp_result,
                           MP4_Box_t *p_box, const char *psz_fmt, va_list args)
 {
     char *psz_dup;
-    char    *psz_path;
+    char *psz_path;
 
     if( !p_box )
     {
@@ -2898,7 +2980,7 @@ static void __MP4_BoxGet( MP4_Box_t **pp_result,
 
     if( !psz_path || !psz_path[0] )
     {
-        FREENULL( psz_path );
+        free( psz_path );
         *pp_result = NULL;
         return;
     }
@@ -2915,7 +2997,6 @@ static void __MP4_BoxGet( MP4_Box_t **pp_result,
 //                 psz_path,psz_token,i_number );
         if( !psz_token )
         {
-            FREENULL( psz_token );
             free( psz_dup );
             *pp_result = p_box;
             return;

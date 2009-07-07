@@ -2,7 +2,7 @@
  * vlc_filter.h: filter related structures and functions
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 88e7c94a5c293077ec9985d67e60ca9eec5b6b29 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -59,7 +59,7 @@ struct filter_t
 
     picture_t *         ( * pf_video_filter ) ( filter_t *, picture_t * );
     block_t *           ( * pf_audio_filter ) ( filter_t *, block_t * );
-    void                ( * pf_video_blend )  ( filter_t *, picture_t *,
+    void                ( * pf_video_blend )  ( filter_t *,
                                                 picture_t *, picture_t *,
                                                 int, int, int );
 
@@ -177,17 +177,12 @@ static inline block_t *filter_NewAudioBuffer( filter_t *p_filter, int i_size )
                                         picture_t *p_pic )              \
     {                                                                   \
         picture_t *p_outpic = filter_NewPicture( p_filter );            \
-        if( !p_outpic )                                                 \
+        if( p_outpic )                                                  \
         {                                                               \
-            picture_Release( p_pic );                                   \
-            return NULL;                                                \
+            name( p_filter, p_pic, p_outpic );                          \
+            picture_CopyProperties( p_outpic, p_pic );                  \
         }                                                               \
-                                                                        \
-        name( p_filter, p_pic, p_outpic );                              \
-                                                                        \
-        picture_CopyProperties( p_outpic, p_pic );                      \
         picture_Release( p_pic );                                       \
-                                                                        \
         return p_outpic;                                                \
     }
 

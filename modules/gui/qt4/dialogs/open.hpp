@@ -2,7 +2,7 @@
  * open.hpp : advanced open dialog
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: ba4bb26e149ec539204bb0d317c74c78ccb6bd05 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  ******************************************************************************/
 
-#ifndef _OPEN_DIALOG_H_
-#define _OPEN_DIALOG_H_
+#ifndef QVLC_OPEN_DIALOG_H_
+#define QVLC_OPEN_DIALOG_H_ 1
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
@@ -31,7 +31,6 @@
 #include <vlc_common.h>
 
 #include "util/qvlcframe.hpp"
-#include "dialogs_provider.hpp"
 #include "ui/open.h"
 #include "components/open_panels.hpp"
 
@@ -57,8 +56,6 @@ class QTabWidget;
 
 class OpenDialog : public QVLCDialog
 {
-    friend class FileOpenBox;
-
     Q_OBJECT;
 public:
     static OpenDialog * getInstance( QWidget *parent, intf_thread_t *p_intf,
@@ -67,13 +64,12 @@ public:
 
     static void killInstance()
     {
-        if( instance ) delete instance;
+        delete instance;
         instance = NULL;
     }
-    virtual ~OpenDialog();
 
     void showTab( int = OPEN_FILE_TAB );
-    QString getMRL(){ return mrl; }
+    QString getMRL( bool b = true );
 
 public slots:
     void selectSlots();
@@ -85,13 +81,14 @@ public slots:
 private:
     OpenDialog( QWidget *parent, intf_thread_t *, bool b_selectMode,
                 int _action_flag = 0, bool b_pl = true );
+    virtual ~OpenDialog();
 
     static OpenDialog *instance;
     input_thread_t *p_input;
 
-    QString mrl;
-    QString mainMRL;
+    QString optionsMRL;
     QString storedMethod;
+    QStringList itemsMRL;
 
     Ui::Open ui;
     FileOpenPanel *fileOpenPanel;
@@ -101,7 +98,7 @@ private:
 
     int i_action_flag;
     bool b_pl;
-    QStringList SeparateEntries( QString );
+    QStringList SeparateEntries( const QString& );
 
     QPushButton *cancelButton, *selectButton;
     QPushButton *playButton;
@@ -113,9 +110,9 @@ private slots:
     void cancel();
     void close();
     void toggleAdvancedPanel();
-    void updateMRL( QString );
+    void updateMRL( const QStringList&, const QString& );
     void updateMRL();
-    void newCachingMethod( QString );
+    void newCachingMethod( const QString& );
     void signalCurrent( int );
     void browseInputSlave();
 };

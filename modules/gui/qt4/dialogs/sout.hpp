@@ -2,7 +2,7 @@
  * sout.hpp : Stream output dialog ( old-style, ala WX )
  ****************************************************************************
  * Copyright ( C ) 2006 the VideoLAN team
- * $Id: 6b0872441f4daa0aca49ba0676da3ac3c93aae93 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -21,54 +21,109 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _SOUT_DIALOG_H_
-#define _SOUT_DIALOG_H_
+#ifndef QVLC_SOUT_DIALOG_H_
+#define QVLC_SOUT_DIALOG_H_ 1
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
+#include <vlc_common.h> /* Gettext functions */
 
 #include "ui/sout.h"
 #include "util/qvlcframe.hpp"
 
 class QPushButton;
+class QToolButton;
 class QCheckBox;
 class QGridLayout;
 class QTextEdit;
+
+class SoutMrl
+{
+public:
+    SoutMrl( const QString& head = "")
+    {
+        mrl = head;
+        b_first = true;
+        b_has_bracket = false;
+    }
+
+    QString getMrl()
+    {
+        return mrl;
+    }
+
+    void begin( const QString& module )
+    {
+        if( !b_first )
+            mrl += ":";
+        b_first = false;
+
+        mrl += module;
+        b_has_bracket = false;
+    }
+    void end()
+    {
+        if( b_has_bracket )
+            mrl += "}";
+    }
+    void option( const QString& option, const QString& value = "" )
+    {
+        if( !b_has_bracket )
+            mrl += "{";
+        else
+            mrl += ",";
+        b_has_bracket = true;
+
+        mrl += option;
+
+        if( !value.isEmpty() )
+        {
+            char *psz = config_StringEscape( qtu(value) );
+            if( psz )
+            {
+                mrl += "=" + qfu( psz );
+                free( psz );
+            }
+        }
+    }
+    void option( const QString& name, const int i_value, const int i_precision = 10 )
+    {
+        option( name, QString::number( i_value, i_precision ) );
+    }
+    void option( const QString& name, const double f_value )
+    {
+        option( name, QString::number( f_value ) );
+    }
+
+    void option( const QString& name, const QString& base, const int i_value, const int i_precision = 10 )
+    {
+        option( name, base + ":" + QString::number( i_value, i_precision ) );
+    }
+
+private:
+    QString mrl;
+    bool b_has_bracket;
+    bool b_first;
+};
+
 
 class SoutDialog : public QVLCDialog
 {
     Q_OBJECT;
 public:
-    static SoutDialog* getInstance( QWidget *parent, intf_thread_t *p_intf,
-                                    bool transcode_only )
-    {
-        if( !instance )
-            instance = new SoutDialog( parent, p_intf, transcode_only );
-        else
-        {
-            /* Recenter the dialog on the parent */
-            instance->setParent( parent, Qt::Dialog );
-            instance->b_transcode_only = transcode_only;
-            instance->toggleSout();
-        }
-        return instance;
-    }
-
+    SoutDialog( QWidget* parent, intf_thread_t *, const QString& mrl = "");
     virtual ~SoutDialog(){}
 
     QString getMrl(){ return mrl; }
 
 private:
     Ui::Sout ui;
-    static SoutDialog *instance;
-    SoutDialog( QWidget* parent, intf_thread_t *,
-                bool _transcode_only = false );
-    QPushButton *okButton;
+
     QString mrl;
-    bool b_transcode_only;
+    QPushButton *okButton;
+    QToolButton *closeTabButton;
 
 public slots:
     void updateMRL();
@@ -76,15 +131,11 @@ public slots:
 private slots:
     void ok();
     void cancel();
-    void toggleSout();
-    void setOptions();
-    void fileBrowse();
-    void setVTranscodeOptions( bool );
-    void setATranscodeOptions( bool );
-    void setSTranscodeOptions( bool );
-    void setRawOptions( bool );
-    void changeUDPandRTPmess( bool );
-    void RTPtoggled( bool );
+    void next();
+    void prev();
+    void closeTab();
+    void tabChanged( int );
+    void addDest();
 };
 
 #endif

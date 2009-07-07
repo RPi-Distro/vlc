@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
  * Copyright (C) 2007 Remi Denis-Courmont
- * $Id: 7f9f88fab8237ef4dfabac20201a15bbf45a9305 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Tristan Leteurtre <tooney@via.ecp.fr>
@@ -54,25 +54,26 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_shortname( N_("UDP" ) );
-    set_description( N_("UDP input") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
+vlc_module_begin ()
+    set_shortname( N_("UDP" ) )
+    set_description( N_("UDP input") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
 
     add_integer( "udp-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, true );
-    add_obsolete_integer( "rtp-late" );
-    add_obsolete_bool( "udp-auto-mtu" );
+                 CACHING_LONGTEXT, true )
+        change_safe()
+    add_obsolete_integer( "rtp-late" )
+    add_obsolete_bool( "udp-auto-mtu" )
 
-    set_capability( "access", 0 );
-    add_shortcut( "udp" );
-    add_shortcut( "udpstream" );
-    add_shortcut( "udp4" );
-    add_shortcut( "udp6" );
+    set_capability( "access", 0 )
+    add_shortcut( "udp" )
+    add_shortcut( "udpstream" )
+    add_shortcut( "udp4" )
+    add_shortcut( "udp6" )
 
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -99,7 +100,6 @@ static int Open( vlc_object_t *p_this )
     /* Set up p_access */
     access_InitFields( p_access );
     ACCESS_SET_CALLBACKS( NULL, BlockUDP, Control, NULL );
-    p_access->info.b_prebuffered = true;
 
     if (strlen (p_access->psz_access) > 0)
     {
@@ -189,9 +189,8 @@ static void Close( vlc_object_t *p_this )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    bool   *pb_bool;
-    int          *pi_int;
-    int64_t      *pi_64;
+    bool    *pb_bool;
+    int64_t *pi_64;
 
     switch( i_query )
     {
@@ -204,11 +203,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
             *pb_bool = false;
             break;
         /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = MTU;
-            break;
-
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = var_GetInteger( p_access, "udp-caching" ) * 1000;
@@ -253,5 +247,5 @@ static block_t *BlockUDP( access_t *p_access )
         return NULL;
     }
 
-    return block_Realloc( p_block, 0, p_block->i_buffer = len );
+    return block_Realloc( p_block, 0, len );
 }

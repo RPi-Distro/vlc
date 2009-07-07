@@ -2,7 +2,7 @@
  * decoder.c: AAC decoder using libfaad2
  *****************************************************************************
  * Copyright (C) 2001, 2003 the VideoLAN team
- * $Id: 7af61bc7f092c271e143a51843a31c37f69a72ce $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -28,9 +28,9 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
+#include <vlc_input.h>
 #include <vlc_aout.h>
 #include <vlc_codec.h>
-#include <vlc_input.h>
 
 #include <faad.h>
 
@@ -40,13 +40,13 @@
 static int  Open( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("AAC audio decoder (using libfaad2)") );
-    set_capability( "decoder", 100 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("AAC audio decoder (using libfaad2)") )
+    set_capability( "decoder", 100 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /****************************************************************************
  * Local prototypes
@@ -73,8 +73,6 @@ struct decoder_sys_t
     uint32_t pi_channel_positions[MAX_CHANNEL_POSITIONS];
 
     bool b_sbr, b_ps;
-
-    int i_input_rate;
 };
 
 static const uint32_t pi_channels_in[MAX_CHANNEL_POSITIONS] =
@@ -125,8 +123,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_dec->p_sys = p_sys =
-          (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
+    if( ( p_dec->p_sys = p_sys = malloc( sizeof(*p_sys) ) ) == NULL )
         return VLC_ENOMEM;
 
     /* Open a faad context */
@@ -159,6 +156,7 @@ static int Open( vlc_object_t *p_this )
                           p_dec->fmt_in.i_extra,
                           &i_rate, &i_channels ) < 0 )
         {
+            msg_Err( p_dec, "Failed to initialize faad using extra data" );
             return VLC_EGENERIC;
         }
 
@@ -188,8 +186,6 @@ static int Open( vlc_object_t *p_this )
     p_sys->i_buffer = p_sys->i_buffer_size = 0;
     p_sys->p_buffer = NULL;
 
-    p_sys->i_input_rate = INPUT_RATE_DEFAULT;
-
     /* Faad2 can't deal with truncated data (eg. from MPEG TS) */
     p_dec->b_need_packetized = true;
 
@@ -214,9 +210,6 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         block_Release( p_block );
         return NULL;
     }
-
-    if( p_block->i_rate > 0 )
-        p_sys->i_input_rate = p_block->i_rate;
 
     /* Remove ADTS header if we have decoder specific config */
     if( p_dec->fmt_in.i_extra && p_block->i_buffer > 7 )
@@ -372,27 +365,19 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             = pi_channels_guessed[frame.channels];
 
         /* Adjust stream info when dealing with SBR/PS */
-        if( (p_sys->b_sbr != frame.sbr || p_sys->b_ps != frame.ps) &&
-            p_dec->p_parent->i_object_type == VLC_OBJECT_INPUT )
+        if( p_sys->b_sbr != frame.sbr || p_sys->b_ps != frame.ps )
         {
-            input_thread_t *p_input = (input_thread_t *)p_dec->p_parent;
-            char *psz_cat;
             const char *psz_ext = (frame.sbr && frame.ps) ? "SBR+PS" :
                                     frame.sbr ? "SBR" : "PS";
 
             msg_Dbg( p_dec, "AAC %s (channels: %u, samplerate: %lu)",
                     psz_ext, frame.channels, frame.samplerate );
 
-            if( asprintf( &psz_cat, _("Stream %d"), p_dec->fmt_in.i_id ) != -1 )
-            {
-                input_Control( p_input, INPUT_ADD_INFO, psz_cat,
-                            _("AAC extension"), "%s", psz_ext );
-                input_Control( p_input, INPUT_ADD_INFO, psz_cat,
-                            _("Channels"), "%d", frame.channels );
-                input_Control( p_input, INPUT_ADD_INFO, psz_cat,
-                            _("Sample rate"), _("%d Hz"), frame.samplerate );
-                free( psz_cat );
-            }
+            if( !p_dec->p_description )
+                p_dec->p_description = vlc_meta_New();
+            if( p_dec->p_description )
+                vlc_meta_AddExtra( p_dec->p_description, _("AAC extension"), psz_ext );
+
             p_sys->b_sbr = frame.sbr; p_sys->b_ps = frame.ps;
         }
 
@@ -422,7 +407,7 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         p_dec->fmt_out.audio.i_original_channels =
             p_dec->fmt_out.audio.i_physical_channels;
 
-        p_out = p_dec->pf_aout_buffer_new(p_dec, frame.samples/frame.channels);
+        p_out = decoder_NewAudioBuffer(p_dec, frame.samples/frame.channels);
         if( p_out == NULL )
         {
             p_sys->i_buffer = 0;
@@ -431,8 +416,7 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         }
 
         p_out->start_date = aout_DateGet( &p_sys->date );
-        p_out->end_date = aout_DateIncrement( &p_sys->date,
-            (frame.samples / frame.channels) * p_sys->i_input_rate / INPUT_RATE_DEFAULT );
+        p_out->end_date = aout_DateIncrement( &p_sys->date, frame.samples / frame.channels );
 
         DoReordering( (uint32_t *)p_out->p_buffer, samples,
                       frame.samples / frame.channels, frame.channels,

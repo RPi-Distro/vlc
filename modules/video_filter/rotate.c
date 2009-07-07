@@ -2,7 +2,7 @@
  * rotate.c : video rotation filter
  *****************************************************************************
  * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: 55b7c9fbb88f805cd1d85427e0996dfa742f2b07 $
+ * $Id: d41ea992d24206c30a487cb9f1416357b6fe003e $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -63,19 +63,19 @@ static int PreciseRotateCallback( vlc_object_t *p_this, char const *psz_var,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Rotate video filter") );
-    set_shortname( N_( "Rotate" ));
-    set_capability( "video filter2", 0 );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
+vlc_module_begin ()
+    set_description( N_("Rotate video filter") )
+    set_shortname( N_( "Rotate" ))
+    set_capability( "video filter2", 0 )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
 
     add_integer_with_range( FILTER_PREFIX "angle", 30, 0, 359, NULL,
-        ANGLE_TEXT, ANGLE_LONGTEXT, false );
+        ANGLE_TEXT, ANGLE_LONGTEXT, false )
 
-    add_shortcut( "rotate" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    add_shortcut( "rotate" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "angle", NULL
@@ -86,9 +86,9 @@ static const char *const ppsz_filter_options[] = {
  *****************************************************************************/
 struct filter_sys_t
 {
-    int     i_angle;
-    int     i_cos;
-    int     i_sin;
+    vlc_spinlock_t lock;
+    int            i_cos;
+    int            i_sin;
 };
 
 static inline void cache_trigo( int i_angle, int *i_sin, int *i_cos )
@@ -137,15 +137,16 @@ static int Create( vlc_object_t *p_this )
     config_ChainParse( p_filter, FILTER_PREFIX, ppsz_filter_options,
                        p_filter->p_cfg );
 
-    p_sys->i_angle = var_CreateGetIntegerCommand( p_filter,
-                                                  FILTER_PREFIX "angle" ) * 10;
+    int i_angle = var_CreateGetIntegerCommand( p_filter,
+                                               FILTER_PREFIX "angle" ) * 10;
+    cache_trigo( i_angle, &p_sys->i_sin, &p_sys->i_cos );
     var_Create( p_filter, FILTER_PREFIX "deciangle",
                 VLC_VAR_INTEGER|VLC_VAR_ISCOMMAND );
+    vlc_spin_init( &p_sys->lock );
     var_AddCallback( p_filter, FILTER_PREFIX "angle", RotateCallback, p_sys );
     var_AddCallback( p_filter, FILTER_PREFIX "deciangle",
                      PreciseRotateCallback, p_sys );
 
-    cache_trigo( p_sys->i_angle, &p_sys->i_sin, &p_sys->i_cos );
 
     return VLC_SUCCESS;
 }
@@ -157,6 +158,10 @@ static void Destroy( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
 
+    var_DelCallback( p_filter, FILTER_PREFIX "angle", RotateCallback, p_filter->p_sys );
+    var_DelCallback( p_filter, FILTER_PREFIX "deciangle",
+                     PreciseRotateCallback, p_filter->p_sys );
+    vlc_spin_destroy( &p_filter->p_sys->lock );
     free( p_filter->p_sys );
 }
 
@@ -167,8 +172,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
 {
     picture_t *p_outpic;
     filter_sys_t *p_sys = p_filter->p_sys;
-    int i_plane;
-    const int i_sin = p_sys->i_sin, i_cos = p_sys->i_cos;
+    int i_sin, i_cos;
 
     if( !p_pic ) return NULL;
 
@@ -179,7 +183,12 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         return NULL;
     }
 
-    for( i_plane = 0 ; i_plane < p_pic->i_planes ; i_plane++ )
+    vlc_spin_lock( &p_sys->lock );
+    i_sin = p_sys->i_sin;
+    i_cos = p_sys->i_cos;
+    vlc_spin_unlock( &p_sys->lock );
+
+    for( int i_plane = 0 ; i_plane < p_pic->i_planes ; i_plane++ )
     {
         const int i_visible_lines = p_pic->p[i_plane].i_visible_lines;
         const int i_visible_pitch = p_pic->p[i_plane].i_visible_pitch;
@@ -387,11 +396,9 @@ static int RotateCallback( vlc_object_t *p_this, char const *psz_var,
                            vlc_value_t oldval, vlc_value_t newval,
                            void *p_data )
 {
-    VLC_UNUSED(p_this); VLC_UNUSED(psz_var); VLC_UNUSED(oldval);
-    filter_sys_t *p_sys = (filter_sys_t *)p_data;
-    p_sys->i_angle = newval.i_int*10;
-    cache_trigo( p_sys->i_angle, &p_sys->i_sin, &p_sys->i_cos );
-    return VLC_SUCCESS;
+    oldval.i_int *= 10;
+    newval.i_int *= 10;
+    return PreciseRotateCallback( p_this, psz_var, oldval, newval, p_data );
 }
 
 static int PreciseRotateCallback( vlc_object_t *p_this, char const *psz_var,
@@ -400,7 +407,12 @@ static int PreciseRotateCallback( vlc_object_t *p_this, char const *psz_var,
 {
     VLC_UNUSED(p_this); VLC_UNUSED(psz_var); VLC_UNUSED(oldval);
     filter_sys_t *p_sys = (filter_sys_t *)p_data;
-    p_sys->i_angle = newval.i_int;
-    cache_trigo( p_sys->i_angle, &p_sys->i_sin, &p_sys->i_cos );
+    int i_sin, i_cos;
+
+    cache_trigo( newval.i_int, &i_sin, &i_cos );
+    vlc_spin_lock( &p_sys->lock );
+    p_sys->i_sin = i_sin;
+    p_sys->i_cos = i_cos;
+    vlc_spin_unlock( &p_sys->lock );
     return VLC_SUCCESS;
 }

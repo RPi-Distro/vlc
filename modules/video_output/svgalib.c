@@ -2,7 +2,7 @@
  * svgalib.c : SVGAlib plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 0563758344657347ef2041ab5ecdf1878acc0746 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -32,6 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_vout.h>
+#include <vlc_interface.h>
 
 #include <vga.h>
 #include <vgagl.h>
@@ -53,15 +54,15 @@ static void SetPalette( vout_thread_t *, uint16_t *, uint16_t *, uint16_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_shortname( "SVGAlib" );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_description( N_("SVGAlib video output") );
-    set_capability( "video output", 0 );
-    set_callbacks( Create, Destroy );
-    linked_with_a_crap_library_which_uses_atexit();
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "SVGAlib" )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VOUT )
+    set_description( N_("SVGAlib video output") )
+    set_capability( "video output", 0 )
+    set_callbacks( Create, Destroy )
+    linked_with_a_crap_library_which_uses_atexit ()
+vlc_module_end ()
 
 /*****************************************************************************
  * vout_sys_t: video output descriptor
@@ -235,7 +236,7 @@ static int Manage( vout_thread_t *p_vout )
     if( keyboard_keypressed(SCANCODE_ESCAPE)
          || keyboard_keypressed(SCANCODE_Q ) )
     {
-        vlc_object_kill( p_vout->p_libvlc );
+        libvlc_Quit( p_vout->p_libvlc );
     }
 
     return VLC_SUCCESS;

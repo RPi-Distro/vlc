@@ -2,7 +2,7 @@
  * avcodec.h: decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 591d1258db8b6aa8b2f82c39439cb84afa8fa779 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -20,6 +20,16 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
+/* VLC <-> avcodec tables */
+int GetFfmpegCodec( vlc_fourcc_t i_fourcc, int *pi_cat,
+                    int *pi_ffmpeg_codec, const char **ppsz_name );
+int GetVlcFourcc( int i_ffmpeg_codec, int *pi_cat,
+                  vlc_fourcc_t *pi_fourcc, const char **ppsz_name );
+int TestFfmpegChroma( const int i_ffmpeg_id, const vlc_fourcc_t i_vlc_fourcc );
+int GetFfmpegChroma( int *i_ffmpeg_chroma, const video_format_t fmt );
+int GetVlcChroma( video_format_t *fmt, const int i_ffmpeg_chroma );
+
 
 picture_t * DecodeVideo    ( decoder_t *, block_t ** );
 aout_buffer_t * DecodeAudio( decoder_t *, block_t ** );
@@ -80,6 +90,10 @@ void EndAudioDec( decoder_t *p_dec );
     "The decoder can partially decode or skip frame(s) " \
     "when there is not enough time. It's useful with low CPU power " \
     "but it can produce distorted pictures.")
+
+#define FAST_TEXT N_("Allow speed tricks")
+#define FAST_LONGTEXT N_( \
+    "Allow non specification compliant speedup tricks. Faster but error-prone.")
 
 #define SKIP_FRAME_TEXT N_("Skip frame (default=0)")
 #define SKIP_FRAME_LONGTEXT N_( \
@@ -236,5 +250,10 @@ void EndAudioDec( decoder_t *p_dec );
     int i_codec_id;             \
     const char *psz_namecodec;  \
     AVCodecContext *p_context;  \
-    AVCodec        *p_codec;
+    AVCodec        *p_codec;    \
+    bool b_delayed_open;
+
+#ifndef AV_VERSION_INT
+#   define AV_VERSION_INT(a, b, c) ((a)<<16 | (b)<<8 | (c))
+#endif
 

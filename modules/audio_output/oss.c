@@ -2,7 +2,7 @@
  * oss.c : OSS /dev/dsp module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2002 the VideoLAN team
- * $Id: 0f1377ea7b4c6a28428a74ba9024a0a633d98e8f $
+ * $Id$
  *
  * Authors: Michel Kaempf <maxx@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -51,8 +51,6 @@
 #   include <soundcard.h>
 #elif defined( HAVE_SYS_SOUNDCARD_H )
 #   include <sys/soundcard.h>
-#elif defined( HAVE_MACHINE_SOUNDCARD_H )
-#   include <machine/soundcard.h>
 #endif
 
 /* Patches for ignorant OSS versions */
@@ -106,20 +104,21 @@ static mtime_t BufferDuration( aout_instance_t * p_aout );
     "are completely filled (the sound gets heavily hashed). If you have one " \
     "of these drivers, then you need to enable this option." )
 
-vlc_module_begin();
-    set_shortname( "OSS" );
-    set_description( N_("UNIX OSS audio output") );
+vlc_module_begin ()
+    set_shortname( "OSS" )
+    set_description( N_("UNIX OSS audio output") )
 
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AOUT );
-    add_file( "dspdev", "/dev/dsp", aout_FindAndRestart,
-              N_("OSS DSP device"), NULL, false );
-    add_bool( "oss-buggy", 0, NULL, BUGGY_TEXT, BUGGY_LONGTEXT, true );
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AOUT )
+    add_file( "oss-audio-device", "/dev/dsp", aout_FindAndRestart,
+              N_("OSS DSP device"), NULL, false )
+        add_deprecated_alias( "dspdev" )   /* deprecated since 0.9.3 */
+    add_bool( "oss-buggy", 0, NULL, BUGGY_TEXT, BUGGY_LONGTEXT, true )
 
-    set_capability( "audio output", 100 );
-    add_shortcut( "oss" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_capability( "audio output", 100 )
+    add_shortcut( "oss" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Probe: probe the audio device for available formats and channels
@@ -169,7 +168,7 @@ static void Probe( aout_instance_t * p_aout )
                          | AOUT_CHAN_LFE)) )
             {
                 val.i_int = AOUT_VAR_5_1;
-                text.psz_string = "5.1";
+                text.psz_string = (char*) "5.1";
                 var_Change( p_aout, "audio-device",
                             VLC_VAR_ADDCHOICE, &val, &text );
             }
@@ -180,7 +179,7 @@ static void Probe( aout_instance_t * p_aout )
                          | AOUT_CHAN_REARLEFT | AOUT_CHAN_REARRIGHT)) )
             {
                 val.i_int = AOUT_VAR_2F2R;
-                text.psz_string = N_("2 Front 2 Rear");
+                text.psz_string = _("2 Front 2 Rear");
                 var_Change( p_aout, "audio-device",
                             VLC_VAR_ADDCHOICE, &val, &text );
             }
@@ -204,7 +203,7 @@ static void Probe( aout_instance_t * p_aout )
          && i_nb_channels == 2 )
     {
         val.i_int = AOUT_VAR_STEREO;
-        text.psz_string = N_("Stereo");
+        text.psz_string = _("Stereo");
         var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
     }
 
@@ -224,7 +223,7 @@ static void Probe( aout_instance_t * p_aout )
          && i_nb_channels == 1 )
     {
         val.i_int = AOUT_VAR_MONO;
-        text.psz_string = N_("Mono");
+        text.psz_string = _("Mono");
         var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
         if ( p_aout->output.output.i_physical_channels == AOUT_CHAN_CENTER )
         {
@@ -248,7 +247,7 @@ static void Probe( aout_instance_t * p_aout )
              && i_format == AFMT_AC3 )
         {
             val.i_int = AOUT_VAR_SPDIF;
-            text.psz_string = N_("A/52 over S/PDIF");
+            text.psz_string = _("A/52 over S/PDIF");
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
             if( config_GetInt( p_aout, "spdif" ) )
@@ -283,7 +282,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_ENOMEM;
 
     /* Get device name */
-    if( (psz_device = config_GetPsz( p_aout, "dspdev" )) == NULL )
+    if( (psz_device = config_GetPsz( p_aout, "oss-audio-device" )) == NULL )
     {
         msg_Err( p_aout, "no audio device specified (maybe /dev/dsp?)" );
         free( p_sys );
@@ -320,6 +319,7 @@ static int Open( vlc_object_t *p_this )
     if ( var_Get( p_aout, "audio-device", &val ) < 0 )
     {
         /* Probe() has failed. */
+        close( p_sys->i_fd );
         free( p_sys );
         return VLC_EGENERIC;
     }
@@ -358,12 +358,12 @@ static int Open( vlc_object_t *p_this )
     {
         /* This should not happen ! */
         msg_Err( p_aout, "internal: can't find audio-device (%i)", val.i_int );
+        close( p_sys->i_fd );
         free( p_sys );
         return VLC_EGENERIC;
     }
 
-    val.b_bool = true;
-    var_Set( p_aout, "intf-change", val );
+    var_SetBool( p_aout, "intf-change", true );
 
     /* Reset the DSP device */
     if( ioctl( p_sys->i_fd, SNDCTL_DSP_RESET, NULL ) < 0 )
@@ -517,7 +517,7 @@ static int Open( vlc_object_t *p_this )
 
     /* Create OSS thread and wait for its readiness. */
     if( vlc_thread_create( p_aout, "aout", OSSThread,
-                           VLC_THREAD_PRIORITY_OUTPUT, false ) )
+                           VLC_THREAD_PRIORITY_OUTPUT ) )
     {
         msg_Err( p_aout, "cannot create OSS thread (%m)" );
         close( p_sys->i_fd );
@@ -590,6 +590,7 @@ static void* OSSThread( vlc_object_t *p_this )
     aout_instance_t * p_aout = (aout_instance_t*)p_this;
     struct aout_sys_t * p_sys = p_aout->output.p_sys;
     mtime_t next_date = 0;
+    int canc = vlc_savecancel ();
 
     while ( vlc_object_alive (p_aout) )
     {
@@ -690,5 +691,6 @@ static void* OSSThread( vlc_object_t *p_this )
         }
     }
 
+    vlc_restorecancel (canc);
     return NULL;
 }

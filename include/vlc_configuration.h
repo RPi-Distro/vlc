@@ -4,7 +4,7 @@
  * It includes functions allowing to declare, get or set configuration options.
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
- * $Id: 36d46cb28a799b5e2f0e2bd687d281e90562db9c $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -98,11 +98,11 @@ extern "C" {
 #define CAT_INPUT 4
    #define SUBCAT_INPUT_GENERAL 401
    #define SUBCAT_INPUT_ACCESS 402
-   #define SUBCAT_INPUT_ACCESS_FILTER 403
-   #define SUBCAT_INPUT_DEMUX 404
-   #define SUBCAT_INPUT_VCODEC 405
-   #define SUBCAT_INPUT_ACODEC 406
-   #define SUBCAT_INPUT_SCODEC 407
+   #define SUBCAT_INPUT_DEMUX 403
+   #define SUBCAT_INPUT_VCODEC 404
+   #define SUBCAT_INPUT_ACODEC 405
+   #define SUBCAT_INPUT_SCODEC 406
+   #define SUBCAT_INPUT_STREAM_FILTER 407
 
 #define CAT_SOUT 5
    #define SUBCAT_SOUT_GENERAL 501
@@ -200,12 +200,12 @@ struct module_config_t
  * Prototypes - these methods are used to get, set or manipulate configuration
  * data.
  *****************************************************************************/
-VLC_EXPORT( int,    __config_GetType,  (vlc_object_t *, const char *) );
-VLC_EXPORT( int,    __config_GetInt,   (vlc_object_t *, const char *) );
+VLC_EXPORT( int,    __config_GetType,  (vlc_object_t *, const char *) LIBVLC_USED );
+VLC_EXPORT( int,    __config_GetInt,   (vlc_object_t *, const char *) LIBVLC_USED );
 VLC_EXPORT( void,   __config_PutInt,   (vlc_object_t *, const char *, int) );
-VLC_EXPORT( float,  __config_GetFloat, (vlc_object_t *, const char *) );
+VLC_EXPORT( float,  __config_GetFloat, (vlc_object_t *, const char *) LIBVLC_USED );
 VLC_EXPORT( void,   __config_PutFloat, (vlc_object_t *, const char *, float) );
-VLC_EXPORT( char *, __config_GetPsz,   (vlc_object_t *, const char *) );
+VLC_EXPORT( char *, __config_GetPsz,   (vlc_object_t *, const char *) LIBVLC_USED );
 VLC_EXPORT( void,   __config_PutPsz,   (vlc_object_t *, const char *, const char *) );
 
 #define config_SaveConfigFile(a,b) __config_SaveConfigFile(VLC_OBJECT(a),b)
@@ -213,18 +213,18 @@ VLC_EXPORT( int,    __config_SaveConfigFile, ( vlc_object_t *, const char * ) );
 #define config_ResetAll(a) __config_ResetAll(VLC_OBJECT(a))
 VLC_EXPORT( void,   __config_ResetAll, ( vlc_object_t * ) );
 
-VLC_EXPORT( module_config_t *, config_FindConfig,( vlc_object_t *, const char * ) );
+VLC_EXPORT( module_config_t *, config_FindConfig,( vlc_object_t *, const char * ) LIBVLC_USED );
 
-VLC_EXPORT(const char *, config_GetDataDir, ( void ));
-VLC_EXPORT(const char *, config_GetConfDir, ( void ) );
-VLC_EXPORT(const char *, config_GetHomeDir, ( void ));
-VLC_EXPORT(char *, config_GetUserConfDir, ( void ) );
-VLC_EXPORT(char *, config_GetUserDataDir, ( void ) );
-VLC_EXPORT(char *, config_GetCacheDir, ( void ) );
+VLC_EXPORT(const char *, config_GetDataDir, ( void ) LIBVLC_USED);
+VLC_EXPORT(const char *, config_GetConfDir, ( void ) LIBVLC_USED);
+VLC_EXPORT(const char *, config_GetHomeDir, ( void ) LIBVLC_USED);
+VLC_EXPORT(char *, config_GetUserConfDir, ( void ) LIBVLC_USED);
+VLC_EXPORT(char *, config_GetUserDataDir, ( void ) LIBVLC_USED);
+VLC_EXPORT(char *, config_GetCacheDir, ( void ) LIBVLC_USED);
 
 VLC_EXPORT( void,       __config_AddIntf,    ( vlc_object_t *, const char * ) );
 VLC_EXPORT( void,       __config_RemoveIntf, ( vlc_object_t *, const char * ) );
-VLC_EXPORT( bool, __config_ExistIntf,  ( vlc_object_t *, const char * ) );
+VLC_EXPORT( bool, __config_ExistIntf,  ( vlc_object_t *, const char * ) LIBVLC_USED);
 
 #define config_GetType(a,b) __config_GetType(VLC_OBJECT(a),b)
 #define config_GetInt(a,b) __config_GetInt(VLC_OBJECT(a),b)
@@ -243,16 +243,62 @@ VLC_EXPORT( bool, __config_ExistIntf,  ( vlc_object_t *, const char * ) );
  ****************************************************************************/
 struct config_chain_t
 {
-    config_chain_t *p_next;
+    config_chain_t *p_next;     /**< Pointer on the next config_chain_t element */
 
-    char        *psz_name;
-    char        *psz_value;
+    char        *psz_name;      /**< Option name */
+    char        *psz_value;     /**< Option value */
 };
 
+/**
+ * This function will
+ * - create all options in the array ppsz_options (var_Create).
+ * - parse the given linked list of config_chain_t and set the value (var_Set).
+ *
+ * The option names will be created by adding the psz_prefix prefix.
+ */
 #define config_ChainParse( a, b, c, d ) __config_ChainParse( VLC_OBJECT(a), b, c, d )
 VLC_EXPORT( void,   __config_ChainParse, ( vlc_object_t *, const char *psz_prefix, const char *const *ppsz_options, config_chain_t * ) );
-VLC_EXPORT( char *, config_ChainCreate, ( char **, config_chain_t **, const char * ) );
+
+/**
+ * This function will parse a configuration string (psz_string) and
+ * - set the module name (*ppsz_name)
+ * - set all options for this module in a chained list (*pp_cfg)
+ * - returns a pointer on the next module if any.
+ *
+ * The string format is
+ *   module{option=*,option=*}[:modulenext{option=*,...}]
+ *
+ * The options values are unescaped using config_StringUnescape.
+ */
+VLC_EXPORT( char *, config_ChainCreate, ( char **ppsz_name, config_chain_t **pp_cfg, const char *psz_string ) );
+
+/**
+ * This function will release a linked list of config_chain_t
+ * (Including the head)
+ */
 VLC_EXPORT( void, config_ChainDestroy, ( config_chain_t * ) );
+
+/**
+ * This function will unescape a string in place and will return a pointer on
+ * the given string.
+ * No memory is allocated by it (unlike config_StringEscape).
+ * If NULL is given as parameter nothing will be done (NULL will be returned).
+ *
+ * The following sequences will be unescaped (only one time):
+ * \\ \' and \"
+ */
+VLC_EXPORT( char *, config_StringUnescape, ( char *psz_string ) );
+
+/**
+ * This function will escape a string that can be unescaped by
+ * config_StringUnescape.
+ * The returned value is allocated by it. You have to free it once you
+ * do not need it anymore (unlike config_StringUnescape).
+ * If NULL is given as parameter nothing will be done (NULL will be returned).
+ *
+ * The escaped characters are ' " and \
+ */
+VLC_EXPORT( char *, config_StringEscape, ( const char *psz_string ) LIBVLC_USED);
 
 # ifdef __cplusplus
 }

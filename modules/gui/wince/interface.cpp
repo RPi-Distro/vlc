@@ -2,7 +2,7 @@
  * interface.cpp: WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d9c1463f221aa79b387df38c7a50875cbe6fe6e3 $
+ * $Id$
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -37,8 +37,11 @@
 #include <vlc_aout.h>
 #include <vlc_vout.h>
 #include <vlc_interface.h>
+#include <vlc_input.h>
+#include <vlc_playlist.h>
 
 #include "wince.h"
+#define INT64_C(val) val##LL
 
 #include <windowsx.h>
 #include <commctrl.h>
@@ -501,11 +504,10 @@ LRESULT Interface::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
         {
             string about = (string)"VLC media player " PACKAGE_VERSION +
                 _("\n(WinCE interface)\n\n") +
-                _("(c) 1996-2006 - the VideoLAN Team\n\n") +
+                _("(c) 1996-2008 - the VideoLAN Team\n\n") +
                 _("Compiled by ") + VLC_CompileBy() + "@" +
                 VLC_CompileHost() + "." + VLC_CompileDomain() + ".\n" +
-                _("Compiler: ") + VLC_Compiler() + ".\n" +
-                _("Based on Git commit: ") + VLC_Changeset() + ".\n\n" +
+                _("Compiler: ") + VLC_Compiler() + ".\n\n" +
                 _("The VideoLAN team <videolan@videolan.org>\n"
                   "http://www.videolan.org/");
 
@@ -637,10 +639,10 @@ void Interface::OnShowDialog( int i_dialog_event )
 
 void Interface::OnPlayStream( void )
 {
-    playlist_t *p_playlist = pl_Yield( p_intf );
+    playlist_t *p_playlist = pl_Hold( p_intf );
     if( p_playlist == NULL ) return;
 
-    if( p_playlist->i_size )
+    if( !playlist_IsEmpty(p_playlist) )
     {
         vlc_value_t state;
 
@@ -731,7 +733,6 @@ void Interface::OnVideoOnTop( void )
 
 void Interface::OnSliderUpdate( int wp )
 {
-    vlc_mutex_lock( &p_intf->change_lock );
     input_thread_t *p_input = p_intf->p_sys->p_input;
 
     int dwPos = SendMessage( hwndSlider, TBM_GETPOS, 0, 0 );
@@ -768,8 +769,6 @@ void Interface::OnSliderUpdate( int wp )
                          (LPARAM)_FROMMB(psz_time) );
         }
     }
-
-    vlc_mutex_unlock( &p_intf->change_lock );
 }
 
 void Interface::OnChange( int wp )
@@ -810,7 +809,7 @@ void Interface::VolumeUpdate()
 
 void Interface::OnStopStream( void )
 {
-    playlist_t * p_playlist = pl_Yield( p_intf );
+    playlist_t * p_playlist = pl_Hold( p_intf );
     if( p_playlist == NULL ) return;
 
     playlist_Stop( p_playlist );
@@ -820,7 +819,7 @@ void Interface::OnStopStream( void )
 
 void Interface::OnPrevStream( void )
 {
-    playlist_t * p_playlist = pl_Yield( p_intf );
+    playlist_t * p_playlist = pl_Hold( p_intf );
     if( p_playlist == NULL ) return;
 
     playlist_Prev( p_playlist );
@@ -829,7 +828,7 @@ void Interface::OnPrevStream( void )
 
 void Interface::OnNextStream( void )
 {
-    playlist_t * p_playlist = pl_Yield( p_intf );
+    playlist_t * p_playlist = pl_Hold( p_intf );
     if( p_playlist == NULL ) return;
 
     playlist_Next( p_playlist );

@@ -4,8 +4,8 @@
 basedir = demux
 dir = demux/avi
 mods = avi
-libvlc_LTLIBRARIES =  $(LTLIBavi)
-EXTRA_LTLIBRARIES =  libavi_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,5 +18,5 @@ libavi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libavi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libavi_plugin_la_LIBADD = $(AM_LIBADD)
-libavi_plugin_la_DEPENDENCIES =
+libavi_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

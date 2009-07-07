@@ -1,14 +1,14 @@
 /*****************************************************************************
- * open.m: MacOS X module for vlc
+ * open.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
- * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 321738ec31aa0804e4aef53bcd040e74e9ac4a45 $
+ * Copyright (C) 2002-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *          Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Benjamin Pracht <bigben at videolan dot org>
- *          Felix Kühne <fkuehne at videolan dot org>
+ *          Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -152,6 +152,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
         [self dealloc];
     } else {
         _o_sharedMainInstance = [super init];
+        p_intf = VLCIntf;
     }
  
     return _o_sharedMainInstance;
@@ -159,12 +160,10 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (void)awakeFromNib
 {
-    intf_thread_t * p_intf = VLCIntf;
-
     [o_panel setTitle: _NS("Open Source")];
-    [o_mrl_lbl setTitle: _NS("Media Resource Locator (MRL)")];
+    [o_mrl_lbl setStringValue: _NS("Media Resource Locator (MRL)")];
 
-    [o_btn_ok setTitle: _NS("OK")];
+    [o_btn_ok setTitle: _NS("Open")];
     [o_btn_cancel setTitle: _NS("Cancel")];
 
     [[o_tabview tabViewItemAtIndex: 0] setLabel: _NS("File")];
@@ -181,20 +180,26 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [o_disc_videots_btn_browse setTitle: _NS("Browse...")];
     [o_disc_dvd_menus setTitle: _NS("No DVD menus")];
 
-    [[o_disc_type cellAtRow:0 column:0] setTitle: _NS("VIDEO_TS directory")];
+    [[o_disc_type cellAtRow:0 column:0] setTitle: _NS("VIDEO_TS folder")];
     [[o_disc_type cellAtRow:1 column:0] setTitle: _NS("DVD")];
     [[o_disc_type cellAtRow:2 column:0] setTitle: _NS("VCD")];
     [[o_disc_type cellAtRow:3 column:0] setTitle: _NS("Audio CD")];
 
     [o_net_udp_port_lbl setStringValue: _NS("Port")];
-    [o_net_udpm_addr_lbl setStringValue: _NS("Address")];
+    [o_net_udpm_addr_lbl setStringValue: _NS("IP Address")];
     [o_net_udpm_port_lbl setStringValue: _NS("Port")];
     [o_net_http_url_lbl setStringValue: _NS("URL")];
+    [o_net_help_lbl setStringValue: _NS("To Open a usual network stream (HTTP, RTSP, MMS, FTP, etc.), just enter the URL in the field above. If you want to open a RTP or UDP stream, press the button below.")];
+    [o_net_help_udp_lbl setStringValue: _NS("If you want to open a multicast stream, enter the respective IP address given by the stream provider. In unicast mode, VLC will use your machine's IP automatically.\n\nTo open a stream using a different protocol, just press Cancel to close this sheet.")];
+    [o_net_udp_cancel_btn setTitle: _NS("Cancel")];
+    [o_net_udp_ok_btn setTitle: _NS("Open")];
+    [o_net_openUDP_btn setTitle: _NS("Open RTP/UDP Stream")];
+    [o_net_udp_mode_lbl setStringValue: _NS("Mode")];
+    [o_net_udp_protocol_lbl setStringValue: _NS("Protocol")];
+    [o_net_udp_address_lbl setStringValue: _NS("Address")];
 
-    [[o_net_mode cellAtRow:0 column:0] setTitle: _NS("UDP/RTP")];
-    [[o_net_mode cellAtRow:1 column:0] setTitle: _NS("UDP/RTP Multicast")];
-    [[o_net_mode cellAtRow:2 column:0] setTitle: _NS("HTTP/FTP/MMS/RTSP")];
-    [o_net_timeshift_ckbox setTitle: _NS("Allow timeshifting")];
+    [[o_net_mode cellAtRow:0 column:0] setTitle: _NS("Unicast")];
+    [[o_net_mode cellAtRow:1 column:0] setTitle: _NS("Multicast")];
 
     [o_net_udp_port setIntValue: config_GetInt( p_intf, "server-port" )];
     [o_net_udp_port_stp setIntValue: config_GetInt( p_intf, "server-port" )];
@@ -202,13 +207,16 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [o_eyetv_chn_bgbar setUsesThreadedAnimation: YES];
 
     [o_capture_mode_pop removeAllItems];
-    if( MACOS_VERSION > 10.4f )
-        [o_capture_mode_pop addItemWithTitle: @"iSight"];
+    [o_capture_mode_pop addItemWithTitle: @"iSight"];
     [o_capture_mode_pop addItemWithTitle: _NS("Screen")];
     [o_capture_mode_pop addItemWithTitle: @"EyeTV"];
     [o_screen_lbl setStringValue: _NS("Screen Capture Input")];
     [o_screen_long_lbl setStringValue: _NS("This facility allows you to process your screen's output.")];
     [o_screen_fps_lbl setStringValue: _NS("Frames per Second:")];
+    [o_screen_left_lbl setStringValue: _NS("Subscreen left:")];
+    [o_screen_top_lbl setStringValue: _NS("Subscreen top:")];
+    [o_screen_width_lbl setStringValue: _NS("Subscreen width:")];
+    [o_screen_height_lbl setStringValue: _NS("Subscreen height:")];
     [o_eyetv_currentChannel_lbl setStringValue: _NS("Current channel:")];
     [o_eyetv_previousProgram_btn setTitle: _NS("Previous Channel")];
     [o_eyetv_nextProgram_btn setTitle: _NS("Next Channel")];
@@ -279,7 +287,6 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (void)setSubPanel
 {
-    intf_thread_t * p_intf = VLCIntf;
     int i_index;
     module_config_t * p_item;
 
@@ -348,7 +355,6 @@ static VLCOpen *_o_sharedMainInstance = nil;
 - (void)openTarget:(int)i_type
 {
     int i_result;
-    intf_thread_t * p_intf = VLCIntf;
 
     b_autoplay = config_GetInt( VLCIntf, "macosx-autoplay" );
 
@@ -394,21 +400,24 @@ static VLCOpen *_o_sharedMainInstance = nil;
         }
         if( [o_output_ckbox state] == NSOnState )
         {
-            for (i = 0 ; i < [[o_sout_options getMRL] count] ; i++)
+            for (i = 0 ; i < [[o_sout_options mrl] count] ; i++)
             {
                 [o_options addObject: [NSString stringWithString:
-                      [[(VLCOutput *)o_sout_options getMRL] objectAtIndex: i]]];
+                      [[(VLCOutput *)o_sout_options mrl] objectAtIndex: i]]];
             }
-        }
-        if( [o_net_timeshift_ckbox state] == NSOnState )
-        {
-            [o_options addObject: [NSString stringWithString:
-                                                @"access-filter=timeshift"]];
         }
         if( [[[o_tabview selectedTabViewItem] label] isEqualToString: _NS("Capture")] )
         {
             if( [[[o_capture_mode_pop selectedItem] title] isEqualToString: _NS("Screen")] )
-                [o_options addObject: [NSString stringWithFormat: @"screen-fps=%i", [o_screen_fps_fld intValue]]];
+                [o_options addObject: [NSString stringWithFormat: @"screen-fps=%f", [o_screen_fps_fld floatValue]]];
+                [o_options addObject: [NSString stringWithFormat: @"screen-left=%i", [o_screen_left_fld intValue]]];
+                [o_options addObject: [NSString stringWithFormat: @"screen-top=%i", [o_screen_top_fld intValue]]];
+                [o_options addObject: [NSString stringWithFormat: @"screen-width=%i", [o_screen_width_fld intValue]]];
+                [o_options addObject: [NSString stringWithFormat: @"screen-height=%i", [o_screen_height_fld intValue]]];
+                if( [o_screen_follow_mouse_ckb intValue] == YES )
+                    [o_options addObject: @"screen-follow-mouse"];
+                else
+                    [o_options addObject: @"no-screen-follow-mouse"];
         }
 
         /* apply the options to our item(s) */
@@ -440,6 +449,38 @@ static VLCOpen *_o_sharedMainInstance = nil;
     {
         [self openCaptureModeChanged: nil];
     }
+}
+
+- (IBAction)expandMRLfieldAction:(id)sender
+{
+    NSRect o_win_rect, o_view_rect;
+    o_win_rect = [o_panel frame];
+    o_view_rect = [o_mrl_view frame];
+
+    if( [o_mrl_btn state] == NSOffState )
+    {
+        /* we need to collaps, restore the panel size */
+        o_win_rect.size.height = o_win_rect.size.height - o_view_rect.size.height;
+        o_win_rect.origin.y = ( o_win_rect.origin.y + o_view_rect.size.height ) - o_view_rect.size.height;
+
+        /* remove the MRL view */
+        [o_mrl_view removeFromSuperviewWithoutNeedingDisplay];
+    } else {
+        /* we need to expand */
+        [o_mrl_view setFrame: NSMakeRect( 0,
+                                         [o_mrl_btn frame].origin.y,
+                                         o_view_rect.size.width,
+                                         o_view_rect.size.height )];
+        [o_mrl_view setNeedsDisplay: YES];
+        [o_mrl_view setAutoresizesSubviews: YES];
+
+        /* add the MRL view */
+        [[o_panel contentView] addSubview: o_mrl_view];
+        o_win_rect.size.height = o_win_rect.size.height + o_view_rect.size.height;
+    }
+
+    [o_panel setFrame: o_win_rect display:YES animate: YES];
+    [o_panel displayIfNeeded];
 }
 
 - (void)openFileGeneric
@@ -479,7 +520,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
     if( b_dir )
     {
-        o_mrl_string = [NSString stringWithFormat: @"directory://%@", o_filename];
+        o_mrl_string = [NSString stringWithFormat: @"directory://%@/", o_filename];
     }
     else if( [o_ext isEqualToString: @"bin"] ||
         [o_ext isEqualToString: @"cue"] ||
@@ -721,12 +762,15 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (IBAction)openNetModeChanged:(id)sender
 {
-    if( [[sender selectedCell] tag] == 0 )
-        [o_panel makeFirstResponder: o_net_udp_port];
-    else if ( [[sender selectedCell] tag] == 1 )
-        [o_panel makeFirstResponder: o_net_udpm_addr];
-    else
-        [o_panel makeFirstResponder: o_net_http_url];
+    if( sender == o_net_mode )
+    {
+        if( [[sender selectedCell] tag] == 0 )
+            [o_panel makeFirstResponder: o_net_udp_port];
+        else if ( [[sender selectedCell] tag] == 1 )
+            [o_panel makeFirstResponder: o_net_udpm_addr];
+        else
+            msg_Warn( p_intf, "Unknown sender tried to change UDP/RTP mode" );
+    }
 
     [self openNetInfoChanged: nil];
 }
@@ -755,38 +799,46 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (void)openNetInfoChanged:(NSNotification *)o_notification
 {
-    NSString *o_mode;
     NSString *o_mrl_string = [NSString string];
-    intf_thread_t * p_intf = VLCIntf;
 
-    o_mode = [[o_net_mode selectedCell] title];
-
-    if( [o_mode isEqualToString: _NS("UDP/RTP")] )
+    if( [o_net_udp_panel isVisible] )
     {
-        int i_port = [o_net_udp_port intValue];
+        NSString *o_mode;
+        o_mode = [[o_net_mode selectedCell] title];
 
-        o_mrl_string = [NSString stringWithString: @"udp://"];
-
-        if( i_port != config_GetInt( p_intf, "server-port" ) )
+        if( [o_mode isEqualToString: _NS("Unicast")] )
         {
-            o_mrl_string =
-                [o_mrl_string stringByAppendingFormat: @"@:%i", i_port];
+            int i_port = [o_net_udp_port intValue];
+
+            if( [[o_net_udp_protocol_mat selectedCell] tag] == 0 )
+                o_mrl_string = [NSString stringWithString: @"udp://"];
+            else
+                o_mrl_string = [NSString stringWithString: @"rtp://"];
+
+            if( i_port != config_GetInt( p_intf, "server-port" ) )
+            {
+                o_mrl_string =
+                    [o_mrl_string stringByAppendingFormat: @"@:%i", i_port];
+            }
+        }
+        else if( [o_mode isEqualToString: _NS("Multicast")] )
+        {
+            NSString *o_addr = [o_net_udpm_addr stringValue];
+            int i_port = [o_net_udpm_port intValue];
+
+            if( [[o_net_udp_protocol_mat selectedCell] tag] == 0 )
+                o_mrl_string = [NSString stringWithFormat: @"udp://@%@", o_addr];
+            else
+                o_mrl_string = [NSString stringWithFormat: @"rtp://@%@", o_addr];
+
+            if( i_port != config_GetInt( p_intf, "server-port" ) )
+            {
+                o_mrl_string =
+                    [o_mrl_string stringByAppendingFormat: @":%i", i_port];
+            }
         }
     }
-    else if( [o_mode isEqualToString: _NS("UDP/RTP Multicast")] )
-    {
-        NSString *o_addr = [o_net_udpm_addr stringValue];
-        int i_port = [o_net_udpm_port intValue];
-
-        o_mrl_string = [NSString stringWithFormat: @"udp://@%@", o_addr];
-
-        if( i_port != config_GetInt( p_intf, "server-port" ) )
-        {
-            o_mrl_string =
-                [o_mrl_string stringByAppendingFormat: @":%i", i_port];
-        }
-    }
-    else if( [o_mode isEqualToString: _NS("HTTP/FTP/MMS/RTSP")] )
+    else
     {
         NSString *o_url = [o_net_http_url stringValue];
 
@@ -799,6 +851,63 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [o_mrl setStringValue: o_mrl_string];
 }
 
+- (IBAction)openNetUDPButtonAction:(id)sender
+{
+    if( sender == o_net_openUDP_btn )
+    {
+        [NSApp beginSheet: o_net_udp_panel
+           modalForWindow: o_panel
+            modalDelegate: self
+           didEndSelector: NULL
+              contextInfo: nil];
+        [self openNetInfoChanged: nil];
+    }
+    else if( sender == o_net_udp_cancel_btn )
+    {
+        [o_net_udp_panel orderOut: sender];
+        [NSApp endSheet: o_net_udp_panel];
+    }
+    else if( sender == o_net_udp_ok_btn )
+    {
+        NSString *o_mrl_string = [NSString string];
+        if( [[[o_net_mode selectedCell] title] isEqualToString: _NS("Unicast")] )
+        {
+            int i_port = [o_net_udp_port intValue];
+            
+            if( [[o_net_udp_protocol_mat selectedCell] tag] == 0 )
+                o_mrl_string = [NSString stringWithString: @"udp://"];
+            else
+                o_mrl_string = [NSString stringWithString: @"rtp://"];
+
+            if( i_port != config_GetInt( p_intf, "server-port" ) )
+            {
+                o_mrl_string =
+                [o_mrl_string stringByAppendingFormat: @"@:%i", i_port];
+            }
+        }
+        else if( [[[o_net_mode selectedCell] title] isEqualToString: _NS("Multicast")] )
+        {
+            NSString *o_addr = [o_net_udpm_addr stringValue];
+            int i_port = [o_net_udpm_port intValue];
+            
+            if( [[o_net_udp_protocol_mat selectedCell] tag] == 0 )
+                o_mrl_string = [NSString stringWithFormat: @"udp://@%@", o_addr];
+            else
+                o_mrl_string = [NSString stringWithFormat: @"rtp://@%@", o_addr];
+
+            if( i_port != config_GetInt( p_intf, "server-port" ) )
+            {
+                o_mrl_string =
+                [o_mrl_string stringByAppendingFormat: @":%i", i_port];
+            }
+        }
+        [o_mrl setStringValue: o_mrl_string];
+        [o_net_http_url setStringValue: o_mrl_string];
+        [o_net_udp_panel orderOut: sender];
+        [NSApp endSheet: o_net_udp_panel];
+    }
+}
+    
 - (void)openFile
 {
     NSOpenPanel *o_open_panel = [NSOpenPanel openPanel];
@@ -839,7 +948,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
         [o_currentCaptureView removeFromSuperviewWithoutNeedingDisplay];
         [o_currentCaptureView release];
     }
-    [theView setFrame: NSMakeRect( 0, 10, o_view_rect.size.width, o_view_rect.size.height)];
+    [theView setFrame: NSMakeRect( 0, -10, o_view_rect.size.width, o_view_rect.size.height)];
     [theView setNeedsDisplay: YES];
     [theView setAutoresizesSubviews: YES];
     [[[o_tabview tabViewItemAtIndex: 3] view] addSubview: theView];
@@ -852,9 +961,9 @@ static VLCOpen *_o_sharedMainInstance = nil;
 {
     if( [[[o_capture_mode_pop selectedItem] title] isEqualToString: @"EyeTV"] )
     {
-        if( [[[VLCMain sharedInstance] getEyeTVController] isEyeTVrunning] == YES )
+        if( [[[VLCMain sharedInstance] eyeTVController] isEyeTVrunning] == YES )
         {
-            if( [[[VLCMain sharedInstance] getEyeTVController] isDeviceConnected] == YES )
+            if( [[[VLCMain sharedInstance] eyeTVController] isDeviceConnected] == YES )
             {
                 [self showCaptureView: o_eyetv_running_view];
                 [self setupChannelInfo];
@@ -872,6 +981,12 @@ static VLCOpen *_o_sharedMainInstance = nil;
     {
         [self showCaptureView: o_screen_view];
         [o_mrl setStringValue: @"screen://"];
+        [o_screen_height_fld setIntValue: config_GetInt( p_intf, "screen-height" )];
+        [o_screen_width_fld setIntValue: config_GetInt( p_intf, "screen-width" )];
+        [o_screen_fps_fld setFloatValue: config_GetFloat( p_intf, "screen-fps" )];
+        [o_screen_left_fld setIntValue: config_GetInt( p_intf, "screen-left" )];
+        [o_screen_top_fld setIntValue: config_GetInt( p_intf, "screen-top" )];
+        [o_screen_follow_mouse_ckb setIntValue: config_GetInt( p_intf, "screen-follow-mouse" )];
     }
     else if( [[[o_capture_mode_pop selectedItem] title] isEqualToString: @"iSight"] )
     {
@@ -887,16 +1002,16 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (IBAction)screenStepperChanged:(id)sender
 {
-    [o_screen_fps_fld setIntValue: [o_screen_fps_stp intValue]];
+    [o_screen_fps_fld setFloatValue: [o_screen_fps_stp floatValue]];
     [o_panel makeFirstResponder: o_screen_fps_fld];
     [o_mrl setStringValue: @"screen://"];
 }
 
 - (void)screenFPSfieldChanged:(NSNotification *)o_notification
 {
-    [o_screen_fps_stp setIntValue: [o_screen_fps_fld intValue]];
+    [o_screen_fps_stp setFloatValue: [o_screen_fps_fld floatValue]];
     if( [[o_screen_fps_fld stringValue] isEqualToString: @""] )
-        [o_screen_fps_fld setIntValue: 1];
+        [o_screen_fps_fld setFloatValue: 1.0];
     [o_mrl setStringValue: @"screen://"];
 }
 
@@ -904,20 +1019,20 @@ static VLCOpen *_o_sharedMainInstance = nil;
 {
     if( sender == o_eyetv_nextProgram_btn )
     {
-        int chanNum = [[[VLCMain sharedInstance] getEyeTVController] switchChannelUp: YES];
+        int chanNum = [[[VLCMain sharedInstance] eyeTVController] switchChannelUp: YES];
         [o_eyetv_channels_pop selectItemWithTag:chanNum];
         [o_mrl setStringValue: [NSString stringWithFormat:@"eyetv:// :eyetv-channel=%d", chanNum]];
     }
     else if( sender == o_eyetv_previousProgram_btn )
     {
-        int chanNum = [[[VLCMain sharedInstance] getEyeTVController] switchChannelUp: NO];
+        int chanNum = [[[VLCMain sharedInstance] eyeTVController] switchChannelUp: NO];
         [o_eyetv_channels_pop selectItemWithTag:chanNum];
         [o_mrl setStringValue: [NSString stringWithFormat:@"eyetv:// :eyetv-channel=%d", chanNum]];
     }
     else if( sender == o_eyetv_channels_pop )
     {
         int chanNum = [[sender selectedItem] tag];
-        [[[VLCMain sharedInstance] getEyeTVController] selectChannel:chanNum];
+        [[[VLCMain sharedInstance] eyeTVController] selectChannel:chanNum];
         [o_mrl setStringValue: [NSString stringWithFormat:@"eyetv:// :eyetv-channel=%d", chanNum]];
     }
     else
@@ -926,7 +1041,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (IBAction)eyetvLaunch:(id)sender
 {
-    [[[VLCMain sharedInstance] getEyeTVController] launchEyeTV];
+    [[[VLCMain sharedInstance] eyeTVController] launchEyeTV];
 }
 
 - (IBAction)eyetvGetPlugin:(id)sender
@@ -976,7 +1091,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [o_eyetv_chn_status_txt setHidden: NO];
  
     /* retrieve info */
-    NSEnumerator *channels = [[[VLCMain sharedInstance] getEyeTVController] allChannels];
+    NSEnumerator *channels = [[[VLCMain sharedInstance] eyeTVController] allChannels];
     int x = -2;
     [[[o_eyetv_channels_pop menu] addItemWithTitle: _NS("Composite input")
                                                action: nil
@@ -997,7 +1112,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
                                             keyEquivalent: @""] setTag:++x];
         }
         /* make Tuner the default */
-        [o_eyetv_channels_pop selectItemWithTag:[[[VLCMain sharedInstance] getEyeTVController] currentChannel]];
+        [o_eyetv_channels_pop selectItemWithTag:[[[VLCMain sharedInstance] eyeTVController] currentChannel]];
     }
  
     /* clean up GUI */
@@ -1026,6 +1141,12 @@ static VLCOpen *_o_sharedMainInstance = nil;
         contextInfo: nil];
 }
 
+- (IBAction)subCloseSheet:(id)sender
+{
+    [o_file_sub_sheet orderOut:sender];
+    [NSApp endSheet: o_file_sub_sheet];
+}
+    
 - (IBAction)subFileBrowse:(id)sender
 {
     NSOpenPanel *o_open_panel = [NSOpenPanel openPanel];
@@ -1059,12 +1180,6 @@ static VLCOpen *_o_sharedMainInstance = nil;
 - (IBAction)subFpsStepperChanged:(id)sender;
 {
     [o_file_sub_fps setFloatValue: [o_file_sub_fps_stp floatValue]];
-}
-
-- (IBAction)subCloseSheet:(id)sender
-{
-    [o_file_sub_sheet orderOut:sender];
-    [NSApp endSheet: o_file_sub_sheet];
 }
 
 - (IBAction)panelCancel:(id)sender

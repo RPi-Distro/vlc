@@ -3,7 +3,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: cdf22a5dd512620b0dd683cbca1846b1c8a70f55 $
+ * $Id$
  */
 #include "AtmoThread.h"
 
@@ -22,7 +22,7 @@ CThread::CThread(vlc_object_t *pOwner)
         vlc_object_attach( m_pAtmoThread, m_pOwner);
 
         vlc_mutex_init( &m_TerminateLock );
-        err = vlc_cond_init( m_pAtmoThread, &m_TerminateCond );
+        err = vlc_cond_init( &m_TerminateCond );
         if(err) {
            msg_Err( m_pAtmoThread, "vlc_cond_init failed %d",err);
         }
@@ -72,11 +72,11 @@ void *CThread::ThreadProc(vlc_object_t *obj)
       atmo_thread_t *pAtmoThread = (atmo_thread_t *)obj;
       CThread *pThread = (CThread *)pAtmoThread->p_thread;
       if(pThread) {
-         // give feedback I'am running?
-         vlc_thread_ready( pThread->m_pAtmoThread );
+         int canc;
 
-	     pThread->Execute();
-
+         canc = vlc_savecancel ();
+         pThread->Execute();
+         vlc_restorecancel (canc);
       }
       return NULL;
 }
@@ -138,8 +138,7 @@ void CThread::Run()
    if(vlc_thread_create( m_pAtmoThread,
                          "Atmo-CThread-Class",
                          CThread::ThreadProc,
-                         VLC_THREAD_PRIORITY_LOW,
-                         false ))
+                         VLC_THREAD_PRIORITY_LOW ))
    {
       msg_Err( m_pOwner, "cannot launch one of the AtmoLight threads");
    }

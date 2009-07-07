@@ -2,7 +2,7 @@
  * float32.c : precise float32 audio mixer implementation
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 943bc5dcfb6c8433f9a95e1bae54075364051ab4 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -44,13 +44,13 @@ static void DoWork    ( aout_instance_t *, aout_buffer_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_MISC );
-    set_description( N_("Float32 audio mixer") );
-    set_capability( "audio mixer", 10 );
-    set_callbacks( Create, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_description( N_("Float32 audio mixer") )
+    set_capability( "audio mixer", 10 )
+    set_callbacks( Create, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Create: allocate mixer
@@ -133,7 +133,8 @@ static void DoWork( aout_instance_t * p_aout, aout_buffer_t * p_buffer )
         float * p_out = (float *)p_buffer->p_buffer;
         float * p_in = (float *)p_input->p_first_byte_to_mix;
 
-        if ( p_input->b_error ) continue;
+        if ( p_input->b_error || p_input->b_paused )
+            continue;
 
         for ( ; ; )
         {

@@ -2,7 +2,7 @@
  * ft2_font.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: ab6c7345750016ff93b4b7b4958c41b457e747e6 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -87,11 +87,7 @@ bool FT2Font::init()
     // Allocate the buffer
     m_buffer = malloc( size );
     if( !m_buffer )
-    {
-        msg_Err( getIntf(), "not enough memory for the font %s",
-                 m_name.c_str() );
         return false;
-    }
     // Read the font data
     fread( m_buffer, size, 1, file );
     fclose( file );

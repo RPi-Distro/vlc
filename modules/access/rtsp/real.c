@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id: 1c1a5903d94a2dbd11c358adc84795cc801d46db $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -33,7 +33,8 @@
 #include "real.h"
 #include "real_sdpplin.h"
 
-const unsigned char xor_table[] = {
+#define XOR_TABLE_LEN 37
+static const unsigned char xor_table[] = {
     0x05, 0x18, 0x74, 0xd0, 0x0d, 0x09, 0x02, 0x53,
     0xc0, 0x01, 0x05, 0x05, 0x67, 0x03, 0x19, 0x70,
     0x08, 0x27, 0x66, 0x10, 0x10, 0x72, 0x08, 0x09,
@@ -207,8 +208,7 @@ static void hash(char *field, char *param)
   LE_32C(field+12, d);
 }
 
-static void call_hash (char *key, char *challenge, int len) {
-
+static void call_hash (char *key, char *challenge, unsigned int len) {
   uint8_t *ptr1, *ptr2;
   uint32_t a, b, c, d, tmp;
 
@@ -220,7 +220,7 @@ static void call_hash (char *key, char *challenge, int len) {
   a += len * 8;
   LE_32C(ptr1, a);
 
-  if (a < (uint32_t)(len << 3))
+  if (a < (len << 3))
   {
     lprintf("not verified: (len << 3) > a true\n");
     ptr2 += 4;
@@ -230,14 +230,14 @@ static void call_hash (char *key, char *challenge, int len) {
   LE_32C(ptr2, tmp);
   a = 64 - b;
   c = 0;
-  if (a <= (uint32_t)len)
+  if (a <= len)
   {
     memcpy(key+b+24, challenge, a);
     hash(key, key+24);
     c = a;
     d = c + 0x3f;
 
-    while ( d < (uint32_t)len ) {
+    while ( d < len ) {
       lprintf("not verified:  while ( d < len )\n");
       hash(key, challenge+d-0x3f);
       d += 64;
@@ -275,17 +275,15 @@ static void calc_response (char *result, char *field) {
 }
 
 static void calc_response_string (char *result, char *challenge) {
-  char field[128];
+
+  char field[128] = {
+    0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF,
+    0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+  };
   char zres[20];
   int  i;
-
-  /* initialize our field */
-  BE_32C (field,      0x01234567);
-  BE_32C ((field+4),  0x89ABCDEF);
-  BE_32C ((field+8),  0xFEDCBA98);
-  BE_32C ((field+12), 0x76543210);
-  BE_32C ((field+16), 0x00000000);
-  BE_32C ((field+20), 0x00000000);
 
   /* calculate response */
   call_hash(field, challenge, 64);
@@ -305,7 +303,7 @@ static void calc_response_string (char *result, char *challenge) {
 
 void real_calc_response_and_checksum (char *response, char *chksum, char *challenge) {
 
-  int   ch_len, table_len, resp_len;
+  int   ch_len, resp_len;
   int   i;
   char *ptr;
   char  buf[128];
@@ -338,16 +336,9 @@ void real_calc_response_and_checksum (char *response, char *chksum, char *challe
     memcpy(ptr, challenge, ch_len);
   }
 
-  if (xor_table != NULL)
-  {
-    table_len = strlen((char *)xor_table);
-
-    if (table_len > 56) table_len=56;
-
-    /* xor challenge bytewise with xor_table */
-    for (i=0; i<table_len; i++)
-      ptr[i] = ptr[i] ^ xor_table[i];
-  }
+  /* xor challenge bytewise with xor_table */
+  for (i=0; i<XOR_TABLE_LEN; i++)
+    ptr[i] = ptr[i] ^ xor_table[i];
 
   calc_response_string (response, buf);
 
@@ -439,7 +430,7 @@ rmff_header_t *real_parse_sdp(char *data, char **stream_rules, uint32_t bandwidt
   desc=sdpplin_parse(data);
   if( !desc ) return NULL;
 
-  buf= (char *)malloc(sizeof(char)*2048);
+  buf= (char *)malloc(2048);
   if( !buf ) goto error;
 
   header = calloc( 1, sizeof(rmff_header_t) );
@@ -550,15 +541,18 @@ int real_get_rdt_chunk_header(rtsp_client_t *rtsp_session, rmff_pheader_t *ph) {
 
   n=rtsp_read_data(rtsp_session, header, 8);
   if (n<8) return 0;
-  if (header[0] != 0x24) {
+  if (header[0] != 0x24)
+  {
     lprintf("rdt chunk not recognized: got 0x%02x\n", header[0]);
     return 0;
   }
   size=(header[1]<<16)+(header[2]<<8)+(header[3]);
   flags1=header[4];
-  if ((flags1!=0x40)&&(flags1!=0x42)) {
+  if ((flags1!=0x40)&&(flags1!=0x42))
+  {
     lprintf("got flags1: 0x%02x\n",flags1);
-    if (header[6]==0x06) {
+    if (header[6]==0x06)
+    {
       lprintf("got end of stream packet\n");
       return 0;
     }
@@ -613,7 +607,9 @@ rmff_header_t  *real_setup_and_get_header(rtsp_client_t *rtsp_session, int bandw
   char challenge2[64];
   char checksum[34];
   char *subscribe=NULL;
-  char *buf=(char*)malloc(sizeof(char)*256);
+  char *buf = malloc(256);
+  if( !buf )
+    return NULL;
   char *mrl=rtsp_get_mrl(rtsp_session);
   unsigned int size;
   int status;
@@ -666,7 +662,7 @@ rmff_header_t  *real_setup_and_get_header(rtsp_client_t *rtsp_session, int bandw
 
   lprintf("Stream description size: %i\n", size);
 
-  description = (char*)malloc(sizeof(char)*(size+1));
+  description = malloc(size+1);
   if( !description )
     goto error;
   if( rtsp_read_data(rtsp_session, (uint8_t*)description, size) <= 0)
@@ -675,7 +671,7 @@ rmff_header_t  *real_setup_and_get_header(rtsp_client_t *rtsp_session, int bandw
   //fprintf(stderr, "%s", description);
 
   /* parse sdp (sdpplin) and create a header and a subscribe string */
-  subscribe = (char *) malloc(sizeof(char)*256);
+  subscribe = malloc(256);
   if( !subscribe )
     goto error;
 

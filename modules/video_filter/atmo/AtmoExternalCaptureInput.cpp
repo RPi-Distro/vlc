@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 8d8cec6cebb7d75ca9227102f27c2133d6038f58 $
+ * $Id$
 */
 
 #include "AtmoExternalCaptureInput.h"
@@ -22,7 +22,7 @@ CAtmoExternalCaptureInput::CAtmoExternalCaptureInput(CAtmoDynData *pAtmoDynData)
                            CThread(pAtmoDynData->getAtmoFilter())
 {
     m_pCurrentFramePixels = NULL;
-    vlc_cond_init( this->m_pAtmoThread, &m_WakeupCond );
+    vlc_cond_init( &m_WakeupCond );
     vlc_mutex_init( &m_WakeupLock );
     msg_Dbg( m_pAtmoThread, "CAtmoExternalCaptureInput created.");
 
@@ -146,7 +146,7 @@ DWORD CAtmoExternalCaptureInput::Execute(void)
 */
 #ifdef _ATMO_KLUDGE_
              vlc_cond_destroy( &m_WakeupCond );
-             vlc_cond_init( m_pAtmoThread, &m_WakeupCond );
+             vlc_cond_init( &m_WakeupCond );
 #endif
 #endif
           }

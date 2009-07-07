@@ -2,7 +2,7 @@
  * sdl.c : SDL audio output plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2002 the VideoLAN team
- * $Id: 7dc215f1e4d4cb23a159d5fde676d6d7fd2335b6 $
+ * $Id$
  *
  * Authors: Michel Kaempf <maxx@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -64,15 +64,15 @@ static void SDLCallback ( void *, uint8_t *, int );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_shortname( "SDL" );
-    set_description( N_("Simple DirectMedia Layer audio output") );
-    set_capability( "audio output", 40 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AOUT );
-    add_shortcut( "sdl" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "SDL" )
+    set_description( N_("Simple DirectMedia Layer audio output") )
+    set_capability( "audio output", 40 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AOUT )
+    add_shortcut( "sdl" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: open the audio device
@@ -181,8 +181,8 @@ static int Open ( vlc_object_t *p_this )
 
             val.i_int = (obtained.channels == 2) ? AOUT_VAR_STEREO :
                         AOUT_VAR_MONO;
-            text.psz_string = (obtained.channels == 2) ? N_("Stereo") :
-                              N_("Mono");
+            text.psz_string = (obtained.channels == 2) ? _("Stereo") :
+                              _("Mono");
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
             var_AddCallback( p_aout, "audio-device", aout_ChannelsRestart,
@@ -198,10 +198,10 @@ static int Open ( vlc_object_t *p_this )
         var_Change( p_aout, "audio-device", VLC_VAR_SETTEXT, &text, NULL );
 
         val.i_int = AOUT_VAR_STEREO;
-        text.psz_string = N_("Stereo");
+        text.psz_string = _("Stereo");
         var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
         val.i_int = AOUT_VAR_MONO;
-        text.psz_string = N_("Mono");
+        text.psz_string = _("Mono");
         var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE, &val, &text );
         if ( i_nb_channels == 2 )
         {
@@ -215,8 +215,7 @@ static int Open ( vlc_object_t *p_this )
         var_AddCallback( p_aout, "audio-device", aout_ChannelsRestart, NULL );
     }
 
-    val.b_bool = true;
-    var_Set( p_aout, "intf-change", val );
+    var_SetBool( p_aout, "intf-change", true );
 
     p_aout->output.output.i_rate = obtained.freq;
     p_aout->output.i_nb_samples = obtained.samples;

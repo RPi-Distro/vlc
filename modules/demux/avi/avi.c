@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 2d8975cd286cc6850615b639ad862f2cf4a66970 $
+ * $Id$
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -32,7 +32,7 @@
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
 
-#include <vlc_interface.h>
+#include <vlc_dialog.h>
 
 #include <vlc_meta.h>
 #include <vlc_codecs.h>
@@ -60,21 +60,21 @@ static const int pi_index[] = {0,1,2};
 static const char *const ppsz_indexes[] = { N_("Ask"), N_("Always fix"),
                                 N_("Never fix") };
 
-vlc_module_begin();
-    set_shortname( "AVI" );
-    set_description( N_("AVI demuxer") );
-    set_capability( "demux", 212 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
+vlc_module_begin ()
+    set_shortname( "AVI" )
+    set_description( N_("AVI demuxer") )
+    set_capability( "demux", 212 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
 
     add_bool( "avi-interleaved", 0, NULL,
-              INTERLEAVE_TEXT, INTERLEAVE_LONGTEXT, true );
+              INTERLEAVE_TEXT, INTERLEAVE_LONGTEXT, true )
     add_integer( "avi-index", 0, NULL,
-              INDEX_TEXT, INDEX_LONGTEXT, false );
-        change_integer_list( pi_index, ppsz_indexes, NULL );
+              INDEX_TEXT, INDEX_LONGTEXT, false )
+        change_integer_list( pi_index, ppsz_indexes, NULL )
 
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -106,7 +106,7 @@ typedef struct
     uint32_t     i_flags;
     off_t        i_pos;
     uint32_t     i_length;
-    uint32_t     i_lengthtotal;
+    int64_t      i_lengthtotal;
 
 } avi_entry_t;
 
@@ -339,11 +339,11 @@ static int Open( vlc_object_t * p_this )
     if( ( p_sys->meta = vlc_meta_New() ) )
     {
         char buffer[200];
-        sprintf( buffer, "%s%s%s%s",
-                 p_avih->i_flags&AVIF_HASINDEX?" HAS_INDEX":"",
-                 p_avih->i_flags&AVIF_MUSTUSEINDEX?" MUST_USE_INDEX":"",
-                 p_avih->i_flags&AVIF_ISINTERLEAVED?" IS_INTERLEAVED":"",
-                 p_avih->i_flags&AVIF_TRUSTCKTYPE?" TRUST_CKTYPE":"" );
+        snprintf( buffer, sizeof(buffer), "%s%s%s%s",
+                  p_avih->i_flags&AVIF_HASINDEX?" HAS_INDEX":"",
+                  p_avih->i_flags&AVIF_MUSTUSEINDEX?" MUST_USE_INDEX":"",
+                  p_avih->i_flags&AVIF_ISINTERLEAVED?" IS_INTERLEAVED":"",
+                  p_avih->i_flags&AVIF_TRUSTCKTYPE?" TRUST_CKTYPE":"" );
         vlc_meta_SetSetting( p_sys->meta, buffer );
     }
 
@@ -369,6 +369,7 @@ static int Open( vlc_object_t * p_this )
         if( p_strl == NULL || p_strh == NULL || p_auds == NULL || p_vids == NULL )
         {
             msg_Warn( p_demux, "stream[%d] incomplete", i );
+            free( tk );
             continue;
         }
 
@@ -499,7 +500,13 @@ static int Open( vlc_object_t * p_this )
                 tk->i_cat   = VIDEO_ES;
                 tk->i_codec = AVI_FourccGetCodec( VIDEO_ES,
                                                   p_vids->p_bih->biCompression );
-                if( p_vids->p_bih->biCompression == 0x00 )
+                if( p_vids->p_bih->biCompression == VLC_FOURCC( 'D', 'X', 'S', 'B' ) )
+                {
+                   msg_Dbg( p_demux, "stream[%d] subtitles", i );
+                   es_format_Init( &fmt, SPU_ES, p_vids->p_bih->biCompression );
+                   break;
+                }
+                else if( p_vids->p_bih->biCompression == 0x00 )
                 {
                     switch( p_vids->p_bih->biBitCount )
                     {
@@ -509,27 +516,34 @@ static int Open( vlc_object_t * p_this )
                         case 24:
                             tk->i_codec = VLC_FOURCC('R','V','2','4');
                             break;
-                        case 16:
-                            /* tk->i_codec = VLC_FOURCC('R','V','1','6');*/
-                            /* break;*/
+                        case 16: /* Yes it is RV15 */
                         case 15:
                             tk->i_codec = VLC_FOURCC('R','V','1','5');
                             break;
-                        case 9:
-                            tk->i_codec = VLC_FOURCC( 'Y', 'V', 'U', '9' ); /* <- TODO check that */
+                        case 9: /* <- TODO check that */
+                            tk->i_codec = VLC_FOURCC( 'Y', 'V', 'U', '9' );
                             break;
-                        case 8:
+                        case 8: /* <- TODO check that */
                             tk->i_codec = VLC_FOURCC('Y','8','0','0');
                             break;
                     }
                     es_format_Init( &fmt, VIDEO_ES, tk->i_codec );
 
-                    if( p_vids->p_bih->biBitCount == 24 )
+                    switch( tk->i_codec )
                     {
-                        /* This is in BGR format */
-                        fmt.video.i_bmask = 0x00ff0000;
+                    case VLC_FOURCC('R','V','2','4'):
+                    case VLC_FOURCC('R','V','3','2'):
+                        fmt.video.i_rmask = 0x00ff0000;
                         fmt.video.i_gmask = 0x0000ff00;
-                        fmt.video.i_rmask = 0x000000ff;
+                        fmt.video.i_bmask = 0x000000ff;
+                        break;
+                    case VLC_FOURCC('R','V','1','5'):
+                        fmt.video.i_rmask = 0x7c00;
+                        fmt.video.i_gmask = 0x03e0;
+                        fmt.video.i_bmask = 0x001f;
+                        break;
+                    default:
+                        break;
                     }
                 }
                 else
@@ -568,21 +582,22 @@ static int Open( vlc_object_t * p_this )
                 /* Extract palette from extradata if bpp <= 8
                  * (assumes that extradata contains only palette but appears
                  *  to be true for all palettized codecs we support) */
-                if( fmt.i_extra && fmt.video.i_bits_per_pixel <= 8 &&
-                    fmt.video.i_bits_per_pixel > 0 )
+                if( fmt.video.i_bits_per_pixel > 0 && fmt.video.i_bits_per_pixel <= 8 )
                 {
-                    int i;
-
-                    fmt.video.p_palette = calloc( sizeof(video_palette_t), 1 );
-                    fmt.video.p_palette->i_entries = 1;
-
-                    /* Apparently this is necessary. But why ? */
-                    fmt.i_extra =
-                        p_vids->i_chunk_size - sizeof(BITMAPINFOHEADER);
-                    for( i = 0; i < __MIN(fmt.i_extra/4, 256); i++ )
+                    /* The palette is not always included in biSize */
+                    fmt.i_extra = p_vids->i_chunk_size - sizeof(BITMAPINFOHEADER);
+                    if( fmt.i_extra > 0 )
                     {
-                        ((uint32_t *)&fmt.video.p_palette->palette[0][0])[i] =
-                            GetDWLE((uint32_t*)fmt.p_extra + i);
+                        const uint8_t *p_pal = fmt.p_extra;
+
+                        fmt.video.p_palette = calloc( 1, sizeof(video_palette_t) );
+                        fmt.video.p_palette->i_entries = __MIN(fmt.i_extra/4, 256);
+
+                        for( int i = 0; i < fmt.video.p_palette->i_entries; i++ )
+                        {
+                            for( int j = 0; j < 4; j++ )
+                                fmt.video.p_palette->palette[i][j] = p_pal[4*i+j];
+                        }
                     }
                 }
                 break;
@@ -621,11 +636,7 @@ static int Open( vlc_object_t * p_this )
                 continue;
         }
         if( p_strn )
-        {
-            /* The charset of p_strn is undefined */
-            EnsureUTF8( p_strn->p_str );
-            fmt.psz_description = strdup( p_strn->p_str );
-        }
+            fmt.psz_description = FromLatin1( p_strn->p_str );
         if( tk->p_out_muxed == NULL )
             tk->p_es = es_out_Add( p_demux->out, &fmt );
         TAB_APPEND( p_sys->i_track, p_sys->track, tk );
@@ -670,23 +681,20 @@ aviindex:
                 b_index = true;
                 goto aviindex;
             }
-            int i_create;
-            i_create = intf_UserYesNo( p_demux, _("AVI Index") ,
-                        _( "This AVI file is broken. Seeking will not "
-                        "work correctly.\nDo you want to "
-                        "try to repair it?\n\nThis might take a long time." ),
-                        _( "Repair" ), _( "Don't repair" ), _( "Cancel") );
-            if( i_create == DIALOG_OK_YES )
+            switch( dialog_Question( p_demux, _("AVI Index") ,
+               _( "This AVI file is broken. Seeking will not work correctly.\n"
+                  "Do you want to try to fix it?\n\n"
+                  "This might take a long time." ),
+                  _( "Repair" ), _( "Don't repair" ), _( "Cancel") ) )
             {
-                b_index = true;
-                msg_Dbg( p_demux, "Fixing AVI index" );
-                goto aviindex;
-            }
-            else if( i_create == DIALOG_CANCELLED )
-            {
-                /* Kill input */
-                vlc_object_kill( p_demux->p_parent );
-                goto error;
+                case 1:
+                    b_index = true;
+                    msg_Dbg( p_demux, "Fixing AVI index" );
+                    goto aviindex;
+                case 3:
+                    /* Kill input */
+                    vlc_object_kill( p_demux->p_parent );
+                    goto error;
             }
         }
     }
@@ -768,7 +776,7 @@ static void Close ( vlc_object_t * p_this )
         if( p_sys->track[i] )
         {
             if( p_sys->track[i]->p_out_muxed )
-                stream_DemuxDelete( p_sys->track[i]->p_out_muxed );
+                stream_Delete( p_sys->track[i]->p_out_muxed );
             free( p_sys->track[i]->p_index );
             free( p_sys->track[i]->p_extra );
             free( p_sys->track[i] );
@@ -935,7 +943,13 @@ static int Demux_Seekable( demux_t *p_demux )
 
         if( b_done )
         {
-            return( 1 );
+            for( i = 0; i < p_sys->i_track; i++ )
+            {
+                if( toread[i].b_ok )
+                    return 1;
+            }
+            msg_Warn( p_demux, "all tracks have failed, exiting..." );
+            return 0;
         }
 
         if( i_pos == -1 )
@@ -1374,6 +1388,7 @@ static int Seek( demux_t *p_demux, mtime_t i_date, int i_percent )
 
             AVI_TrackSeek( p_demux, i_stream, i_date );
         }
+        es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, i_date );
         p_sys->i_time = i_date;
         msg_Dbg( p_demux, "seek: %"PRId64" seconds", p_sys->i_time /1000000 );
         return VLC_SUCCESS;
@@ -1804,8 +1819,6 @@ static int AVI_TrackSeek( demux_t *p_demux,
                         return VLC_EGENERIC;
                     }
                 }
-                if( p_stream->p_es )
-                    es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, p_stream->p_es, i_date );
             }
 #if 0
             else
@@ -1975,6 +1988,7 @@ static void AVI_ParseStreamHeader( vlc_fourcc_t i_id,
                 break;
             case AVITWOCC_dc:
             case AVITWOCC_db:
+            case AVITWOCC_AC:
                 SET_PTR( pi_type, VIDEO_ES );
                 break;
             default:
@@ -2364,7 +2378,7 @@ static void AVI_IndexCreate( demux_t *p_demux )
     off_t i_movi_end;
 
     mtime_t i_dialog_update;
-    int     i_dialog_id;
+    dialog_progress_bar_t *p_dialog = NULL;
 
     p_riff = AVI_ChunkFind( &p_sys->ck_root, AVIFOURCC_RIFF, 0);
     p_movi = AVI_ChunkFind( p_riff, AVIFOURCC_movi, 0);
@@ -2389,10 +2403,10 @@ static void AVI_IndexCreate( demux_t *p_demux )
 
 
     /* Only show dialog if AVI is > 10MB */
-    i_dialog_id = -1;
     i_dialog_update = mdate();
     if( stream_Size( p_demux->s ) > 10000000 )
-        i_dialog_id = intf_IntfProgress( p_demux, _("Fixing AVI Index..."), 0.0 );
+        p_dialog = dialog_ProgressCreate( p_demux, _("Fixing AVI Index..."),
+                                       NULL, _("Cancel") );
 
     for( ;; )
     {
@@ -2402,15 +2416,14 @@ static void AVI_IndexCreate( demux_t *p_demux )
             break;
 
         /* Don't update/check dialog too often */
-        if( i_dialog_id > 0 && mdate() - i_dialog_update > 100000 )
+        if( p_dialog && mdate() - i_dialog_update > 100000 )
         {
-            if( intf_ProgressIsCancelled( p_demux, i_dialog_id ) )
+            if( dialog_ProgressCancelled( p_dialog ) )
                 break;
 
-            double f_pos = 100.0 * stream_Tell( p_demux->s ) /
-                           stream_Size( p_demux->s );
-            intf_ProgressUpdate( p_demux, i_dialog_id,
-                                 _( "Fixing AVI Index..." ), f_pos, -1 );
+            float f_pos = (float)stream_Tell( p_demux->s ) /
+                          (float)stream_Size( p_demux->s );
+            dialog_ProgressSet( p_dialog, NULL, f_pos );
 
             i_dialog_update = mdate();
         }
@@ -2473,8 +2486,8 @@ static void AVI_IndexCreate( demux_t *p_demux )
     }
 
 print_stat:
-    if( i_dialog_id > 0 )
-        intf_UserHide( p_demux, i_dialog_id );
+    if( p_dialog != NULL )
+        dialog_ProgressDestroy( p_dialog );
 
     for( i_stream = 0; i_stream < p_sys->i_track; i_stream++ )
     {

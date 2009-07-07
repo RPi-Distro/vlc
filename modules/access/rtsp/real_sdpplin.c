@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: 4a043182ec1e7d1b51818128c42d13c843a5d725 $
+ * $Id$
  *
  * sdp/sdpplin parser.
  *
@@ -200,7 +200,7 @@ static sdpplin_stream_t *sdpplin_parse_stream(char **data) {
     if(filter(*data,"a=OpaqueData:buffer;",&buf, BUFLEN)) {
       decoded = b64_decode(buf, decoded, &(desc->mlti_data_size));
       if ( decoded != NULL ) {
-          desc->mlti_data = malloc(sizeof(char)*desc->mlti_data_size);
+          desc->mlti_data = malloc(desc->mlti_data_size);
           memcpy(desc->mlti_data, decoded, desc->mlti_data_size);
           handled=1;
           *data=nl(*data);

@@ -4,10 +4,3 @@
 104_notify.diff
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
-401_detect_xinerama_fullscreen.diff
-402_fortune_pruning.diff
-403_http_hosts.diff
-404_duplicate_extended.diff
-405_javascript_log.diff
-406-libmpc6-api.diff
-406b-rebootstrap.diff

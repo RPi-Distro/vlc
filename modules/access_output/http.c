@@ -1,8 +1,8 @@
 /*****************************************************************************
  * http.c
  *****************************************************************************
- * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: 8b194fce95801ea6e0b6d19c3bf5cfd21e6dd8e9 $
+ * Copyright (C) 2001-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jon Lech Johansen <jon@nanocrew.net>
@@ -39,7 +39,7 @@
 #include <vlc_input.h>
 #include <vlc_playlist.h>
 
-#ifdef HAVE_AVAHI_CLIENT
+#if 0 //def HAVE_AVAHI_CLIENT
     #include "bonjour.h"
 
     #if defined( WIN32 )
@@ -91,33 +91,35 @@ static void Close( vlc_object_t * );
 #define BONJOUR_LONGTEXT N_( "Advertise the stream with the Bonjour protocol." )
 
 
-vlc_module_begin();
-    set_description( N_("HTTP stream output") );
-    set_capability( "sout access", 0 );
-    set_shortname( "HTTP" );
-    add_shortcut( "http" );
-    add_shortcut( "https" );
-    add_shortcut( "mmsh" );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_ACO );
+vlc_module_begin ()
+    set_description( N_("HTTP stream output") )
+    set_capability( "sout access", 0 )
+    set_shortname( "HTTP" )
+    add_shortcut( "http" )
+    add_shortcut( "https" )
+    add_shortcut( "mmsh" )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_ACO )
     add_string( SOUT_CFG_PREFIX "user", "", NULL,
-                USER_TEXT, USER_LONGTEXT, true );
+                USER_TEXT, USER_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "pwd", "", NULL,
-                PASS_TEXT, PASS_LONGTEXT, true );
+                PASS_TEXT, PASS_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "mime", "", NULL,
-                MIME_TEXT, MIME_LONGTEXT, true );
+                MIME_TEXT, MIME_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "cert", "vlc.pem", NULL,
-                CERT_TEXT, CERT_LONGTEXT, true );
+                CERT_TEXT, CERT_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "key", NULL, NULL,
-                KEY_TEXT, KEY_LONGTEXT, true );
+                KEY_TEXT, KEY_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "ca", NULL, NULL,
-                CA_TEXT, CA_LONGTEXT, true );
+                CA_TEXT, CA_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "crl", NULL, NULL,
-                CRL_TEXT, CRL_LONGTEXT, true );
+                CRL_TEXT, CRL_LONGTEXT, true )
+#if 0 //def HAVE_AVAHI_CLIENT
     add_bool( SOUT_CFG_PREFIX "bonjour", false, NULL,
               BONJOUR_TEXT, BONJOUR_LONGTEXT, true);
-    set_callbacks( Open, Close );
-vlc_module_end();
+#endif
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -129,6 +131,7 @@ static const char *const ppsz_sout_options[] = {
 
 static ssize_t Write( sout_access_out_t *, block_t * );
 static int Seek ( sout_access_out_t *, off_t  );
+static int Control( sout_access_out_t *, int, va_list );
 
 struct sout_access_out_sys_t
 {
@@ -144,7 +147,7 @@ struct sout_access_out_sys_t
     uint8_t             *p_header;
     bool          b_header_complete;
 
-#ifdef HAVE_AVAHI_CLIENT
+#if 0 //def HAVE_AVAHI_CLIENT
     void                *p_bonjour;
 #endif
 };
@@ -290,11 +293,11 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-#ifdef HAVE_AVAHI_CLIENT
+#if 0 //def HAVE_AVAHI_CLIENT
     if( config_GetInt(p_this, SOUT_CFG_PREFIX "bonjour") )
     {
         char                *psz_txt, *psz_name;
-        playlist_t          *p_playlist = pl_Yield( p_access );
+        playlist_t          *p_playlist = pl_Hold( p_access );
 
         char *psz_uri = input_item_GetURI( p_playlist->status.p_item->p_input );
         char *psz_newuri = psz_uri;
@@ -334,10 +337,7 @@ static int Open( vlc_object_t *p_this )
 
     p_access->pf_write       = Write;
     p_access->pf_seek        = Seek;
-
-
-    /* update p_sout->i_out_pace_nocontrol */
-    p_access->p_sout->i_out_pace_nocontrol++;
+    p_access->pf_control     = Control;
 
     return VLC_SUCCESS;
 }
@@ -350,13 +350,10 @@ static void Close( vlc_object_t * p_this )
     sout_access_out_t       *p_access = (sout_access_out_t*)p_this;
     sout_access_out_sys_t   *p_sys = p_access->p_sys;
 
-#ifdef HAVE_AVAHI_CLIENT
+#if 0 //def HAVE_AVAHI_CLIENT
     if( p_sys->p_bonjour != NULL )
         bonjour_stop_service( p_sys->p_bonjour );
 #endif
-
-    /* update p_sout->i_out_pace_nocontrol */
-    p_access->p_sout->i_out_pace_nocontrol--;
 
     httpd_StreamDelete( p_sys->p_httpd_stream );
     httpd_HostDelete( p_sys->p_httpd_host );
@@ -366,6 +363,22 @@ static void Close( vlc_object_t * p_this )
     msg_Dbg( p_access, "Close" );
 
     free( p_sys );
+}
+
+static int Control( sout_access_out_t *p_access, int i_query, va_list args )
+{
+    (void)p_access;
+
+    switch( i_query )
+    {
+        case ACCESS_OUT_CONTROLS_PACE:
+            *va_arg( args, bool * ) = false;
+            break;
+
+        default:
+            return VLC_EGENERIC;
+    }
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************

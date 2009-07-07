@@ -2,7 +2,7 @@
  * qvlcframe.hpp : A few helpers
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: b5f8e4851d51b3a4f983e9f38be735e4260999e3 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -36,8 +36,6 @@
 #include <QSettings>
 
 #include "qt4.hpp"
-#include <vlc_common.h>
-#include <vlc_charset.h>
 
 class QVLCTools
 {
@@ -53,7 +51,7 @@ class QVLCTools
          settings->setValue("geometry", widget->saveGeometry());
        }
        static void saveWidgetPosition( intf_thread_t *p_intf,
-                                       QString configName,
+                                       const QString& configName,
                                        QWidget *widget)
        {
          getSettings()->beginGroup( configName );
@@ -85,7 +83,7 @@ class QVLCTools
        }
 
        static bool restoreWidgetPosition( intf_thread_t *p_intf,
-                                           QString configName,
+                                           const QString& configName,
                                            QWidget *widget,
                                            QSize defSize = QSize( 0, 0 ),
                                            QPoint defPos = QPoint( 0, 0 ) )
@@ -133,14 +131,14 @@ public:
 protected:
     intf_thread_t *p_intf;
 
-    void readSettings( QString name,
+    void readSettings( const QString& name,
                        QSize defSize = QSize( 1, 1 ),
                        QPoint defPos = QPoint( 0, 0 ) )
     {
         QVLCTools::restoreWidgetPosition(p_intf, name, this, defSize, defPos);
     }
 
-    void writeSettings( QString name )
+    void writeSettings( const QString& name )
     {
         QVLCTools::saveWidgetPosition( p_intf, name, this);
     }
@@ -157,14 +155,13 @@ protected:
     {
         if( keyEvent->key() == Qt::Key_Escape )
         {
-            msg_Dbg( p_intf, "Escp Key pressed" );
-            cancel();
+            this->cancel();
         }
-        else if( keyEvent->key() == Qt::Key_Return )
+        else if( keyEvent->key() == Qt::Key_Return
+              || keyEvent->key() == Qt::Key_Enter )
         {
-             msg_Dbg( p_intf, "Enter Key pressed" );
-             close();
-         }
+             this->close();
+        }
     }
 };
 
@@ -196,13 +193,12 @@ protected:
     {
         if( keyEvent->key() == Qt::Key_Escape )
         {
-            msg_Dbg( p_intf, "Escp Key pressed" );
-            cancel();
+            this->cancel();
         }
-        else if( keyEvent->key() == Qt::Key_Return )
+        else if( keyEvent->key() == Qt::Key_Return
+              || keyEvent->key() == Qt::Key_Enter )
         {
-             msg_Dbg( p_intf, "Enter Key pressed" );
-             close();
+            this->close();
         }
     }
 };
@@ -222,12 +218,12 @@ protected:
     intf_thread_t *p_intf;
     QSize mainSize;
 
-    void readSettings( QString name, QSize defSize )
+    void readSettings( const QString& name, QSize defSize )
     {
         QVLCTools::restoreWidgetPosition( p_intf, name, this, defSize);
     }
 
-    void readSettings( QString name )
+    void readSettings( const QString& name )
     {
         QVLCTools::restoreWidgetPosition( p_intf, name, this);
     }
@@ -241,7 +237,7 @@ protected:
         QVLCTools::restoreWidgetPosition(settings, this, defSize);
     }
 
-    void writeSettings(QString name )
+    void writeSettings( const QString& name )
     {
         QVLCTools::saveWidgetPosition( p_intf, name, this);
     }

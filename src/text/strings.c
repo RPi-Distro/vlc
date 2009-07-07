@@ -2,7 +2,8 @@
  * strings.c: String related functions
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 5d1395782375435cf10a18dedb84537c235b7578 $
+ * Copyright (C) 2008-2009 Rémi Denis-Courmont
+ * $Id: 9c6d9315e107c8912cd06ce99bbb701d9319313d $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>
@@ -35,6 +36,7 @@
 
 /* Needed by str_format_time */
 #include <time.h>
+#include <limits.h>
 
 /* Needed by str_format_meta */
 #include <vlc_input.h>
@@ -130,7 +132,7 @@ void unescape_URI( char *psz )
 }
 
 /**
- * Decode encoded URI string
+ * Decode encoded URI component. See also decode_URI().
  * \return decoded duplicated string
  */
 char *decode_URI_duplicate( const char *psz )
@@ -141,14 +143,23 @@ char *decode_URI_duplicate( const char *psz )
 }
 
 /**
- * Decode encoded URI string in place
- * \return nothing
+ * Decode an encoded URI component in place.
+ * <b>This function does NOT decode entire URIs.</b>
+ * It decodes components (e.g. host name, directory, file name).
+ * Decoded URIs do not exist in the real world (see RFC3986 §2.4).
+ * Complete URIs are always "encoded" (or they are syntaxically invalid).
+ *
+ * Note that URI encoding is different from Javascript escaping. Especially,
+ * white spaces and Unicode non-ASCII code points are encoded differently.
+ *
+ * \return psz on success, NULL if it was not properly encoded
  */
-void decode_URI( char *psz )
+char *decode_URI( char *psz )
 {
     unsigned char *in = (unsigned char *)psz, *out = in, c;
+
     if( psz == NULL )
-        return;
+        return NULL;
 
     while( ( c = *in++ ) != '\0' )
     {
@@ -160,14 +171,14 @@ void decode_URI( char *psz )
 
                 if( ( ( hex[0] = *in++ ) == 0 )
                  || ( ( hex[1] = *in++ ) == 0 ) )
-                    return;
+                    return NULL;
 
                 hex[2] = '\0';
                 *out++ = (unsigned char)strtoul( hex, NULL, 0x10 );
                 break;
             }
 
-            case '+':
+            case '+': /* This is HTTP forms, not URI decoding... */
                 *out++ = ' ';
                 break;
 
@@ -182,59 +193,200 @@ void decode_URI( char *psz )
     }
     *out = '\0';
     EnsureUTF8( psz );
+    return psz;
 }
 
-static inline int isurlsafe( int c )
+static inline bool isurisafe( int c )
 {
+    /* These are the _unreserved_ URI characters (RFC3986 §2.3) */
     return ( (unsigned char)( c - 'a' ) < 26 )
             || ( (unsigned char)( c - 'A' ) < 26 )
             || ( (unsigned char)( c - '0' ) < 10 )
-        /* Hmm, we should not encode character that are allowed in URLs
-         * (even if they are not URL-safe), nor URL-safe characters.
-         * We still encode some of them because of Microsoft's crap browser.
-         */
-            || ( strchr( "-_.", c ) != NULL );
+            || ( strchr( "-._~", c ) != NULL );
 }
 
-static inline char url_hexchar( int c )
+static char *encode_URI_bytes (const char *psz_uri, size_t len)
 {
-    return ( c < 10 ) ? c + '0' : c + 'A' - 10;
-}
+    char *psz_enc = malloc (3 * len + 1), *out = psz_enc;
+    if (psz_enc == NULL)
+        return NULL;
 
-/**
- * encode_URI_component
- * Encodes an URI component.
- *
- * @param psz_url nul-terminated UTF-8 representation of the component.
- * Obviously, you can't pass an URI containing a nul character, but you don't
- * want to do that, do you?
- *
- * @return encoded string (must be free()'d)
- */
-char *encode_URI_component( const char *psz_url )
-{
-    char psz_enc[3 * strlen( psz_url ) + 1], *out = psz_enc;
-    const uint8_t *in;
-
-    for( in = (const uint8_t *)psz_url; *in; in++ )
+    for (size_t i = 0; i < len; i++)
     {
-        uint8_t c = *in;
+        static const char hex[16] = "0123456789ABCDEF";
+        uint8_t c = *psz_uri;
 
-        if( isurlsafe( c ) )
-            *out++ = (char)c;
-        else
-        if ( c == ' ')
-            *out++ = '+';
+        if( isurisafe( c ) )
+            *out++ = c;
+        /* This is URI encoding, not HTTP forms:
+         * Space is encoded as '%20', not '+'. */
         else
         {
             *out++ = '%';
-            *out++ = url_hexchar( c >> 4 );
-            *out++ = url_hexchar( c & 0xf );
+            *out++ = hex[c >> 4];
+            *out++ = hex[c & 0xf];
         }
+        psz_uri++;
     }
     *out++ = '\0';
 
-    return strdup( psz_enc );
+    out = realloc (psz_enc, out - psz_enc);
+    return out ? out : psz_enc; /* realloc() can fail (safe) */
+}
+
+/**
+ * Encodes an URI component (RFC3986 §2).
+ *
+ * @param psz_uri nul-terminated UTF-8 representation of the component.
+ * Obviously, you can't pass an URI containing a nul character, but you don't
+ * want to do that, do you?
+ *
+ * @return encoded string (must be free()'d), or NULL for ENOMEM.
+ */
+char *encode_URI_component( const char *psz_uri )
+{
+    return encode_URI_bytes (psz_uri, strlen (psz_uri));
+}
+
+
+static const struct xml_entity_s
+{
+    char    psz_entity[8];
+    char    psz_char[4];
+} xml_entities[] = {
+    /* Important: this list has to be in alphabetical order (psz_entity-wise) */
+    { "AElig;",  "Æ" },
+    { "Aacute;", "Á" },
+    { "Acirc;",  "Â" },
+    { "Agrave;", "À" },
+    { "Aring;",  "Å" },
+    { "Atilde;", "Ã" },
+    { "Auml;",   "Ä" },
+    { "Ccedil;", "Ç" },
+    { "Dagger;", "‡" },
+    { "ETH;",    "Ð" },
+    { "Eacute;", "É" },
+    { "Ecirc;",  "Ê" },
+    { "Egrave;", "È" },
+    { "Euml;",   "Ë" },
+    { "Iacute;", "Í" },
+    { "Icirc;",  "Î" },
+    { "Igrave;", "Ì" },
+    { "Iuml;",   "Ï" },
+    { "Ntilde;", "Ñ" },
+    { "OElig;",  "Œ" },
+    { "Oacute;", "Ó" },
+    { "Ocirc;",  "Ô" },
+    { "Ograve;", "Ò" },
+    { "Oslash;", "Ø" },
+    { "Otilde;", "Õ" },
+    { "Ouml;",   "Ö" },
+    { "Scaron;", "Š" },
+    { "THORN;",  "Þ" },
+    { "Uacute;", "Ú" },
+    { "Ucirc;",  "Û" },
+    { "Ugrave;", "Ù" },
+    { "Uuml;",   "Ü" },
+    { "Yacute;", "Ý" },
+    { "Yuml;",   "Ÿ" },
+    { "aacute;", "á" },
+    { "acirc;",  "â" },
+    { "acute;",  "´" },
+    { "aelig;",  "æ" },
+    { "agrave;", "à" },
+    { "amp;",    "&" },
+    { "apos;",   "'" },
+    { "aring;",  "å" },
+    { "atilde;", "ã" },
+    { "auml;",   "ä" },
+    { "bdquo;",  "„" },
+    { "brvbar;", "¦" },
+    { "ccedil;", "ç" },
+    { "cedil;",  "¸" },
+    { "cent;",   "¢" },
+    { "circ;",   "ˆ" },
+    { "copy;",   "©" },
+    { "curren;", "¤" },
+    { "dagger;", "†" },
+    { "deg;",    "°" },
+    { "divide;", "÷" },
+    { "eacute;", "é" },
+    { "ecirc;",  "ê" },
+    { "egrave;", "è" },
+    { "eth;",    "ð" },
+    { "euml;",   "ë" },
+    { "euro;",   "€" },
+    { "frac12;", "½" },
+    { "frac14;", "¼" },
+    { "frac34;", "¾" },
+    { "gt;",     ">" },
+    { "hellip;", "…" },
+    { "iacute;", "í" },
+    { "icirc;",  "î" },
+    { "iexcl;",  "¡" },
+    { "igrave;", "ì" },
+    { "iquest;", "¿" },
+    { "iuml;",   "ï" },
+    { "laquo;",  "«" },
+    { "ldquo;",  "“" },
+    { "lsaquo;", "‹" },
+    { "lsquo;",  "‘" },
+    { "lt;",     "<" },
+    { "macr;",   "¯" },
+    { "mdash;",  "—" },
+    { "micro;",  "µ" },
+    { "middot;", "·" },
+    { "nbsp;",   "\xc2\xa0" },
+    { "ndash;",  "–" },
+    { "not;",    "¬" },
+    { "ntilde;", "ñ" },
+    { "oacute;", "ó" },
+    { "ocirc;",  "ô" },
+    { "oelig;",  "œ" },
+    { "ograve;", "ò" },
+    { "ordf;",   "ª" },
+    { "ordm;",   "º" },
+    { "oslash;", "ø" },
+    { "otilde;", "õ" },
+    { "ouml;",   "ö" },
+    { "para;",   "¶" },
+    { "permil;", "‰" },
+    { "plusmn;", "±" },
+    { "pound;",  "£" },
+    { "quot;",   "\"" },
+    { "raquo;",  "»" },
+    { "rdquo;",  "”" },
+    { "reg;",    "®" },
+    { "rsaquo;", "›" },
+    { "rsquo;",  "’" },
+    { "sbquo;",  "‚" },
+    { "scaron;", "š" },
+    { "sect;",   "§" },
+    { "shy;",    "­" },
+    { "sup1;",   "¹" },
+    { "sup2;",   "²" },
+    { "sup3;",   "³" },
+    { "szlig;",  "ß" },
+    { "thorn;",  "þ" },
+    { "tilde;",  "˜" },
+    { "times;",  "×" },
+    { "trade;",  "™" },
+    { "uacute;", "ú" },
+    { "ucirc;",  "û" },
+    { "ugrave;", "ù" },
+    { "uml;",    "¨" },
+    { "uuml;",   "ü" },
+    { "yacute;", "ý" },
+    { "yen;",    "¥" },
+    { "yuml;",   "ÿ" },
+};
+
+static int cmp_entity (const void *key, const void *elem)
+{
+    const struct xml_entity_s *ent = elem;
+    const char *name = key;
+
+    return strncmp (name, ent->psz_entity, strlen (ent->psz_entity));
 }
 
 /**
@@ -249,40 +401,42 @@ void resolve_xml_special_chars( char *psz_value )
     {
         if( *psz_value == '&' )
         {
-#define TRY_CHAR( src, len, dst )                   \
-            if( !strncmp( psz_value, src, len ) )   \
-            {                                       \
-                *p_pos = dst;                       \
-                psz_value += len;                   \
-            }
-#define TRY_LONGCHAR( src, len, dst )                   \
-            if( !strncmp( psz_value, src, len ) )       \
-            {                                           \
-                strncpy( p_pos, dst, strlen( dst ) );   \
-                p_pos += strlen( dst ) - 1;             \
-                psz_value += len;                       \
-            }
-            TRY_CHAR( "&lt;", 4, '<' )
-            else TRY_CHAR( "&gt;", 4, '>' )
-            else TRY_CHAR( "&amp;", 5, '&' )
-            else TRY_CHAR( "&quot;", 6, '"' )
-            else TRY_CHAR( "&apos;", 6, '\'' )
-            else if( psz_value[1] == '#' )
-            {
+            if( psz_value[1] == '#' )
+            {   /* &#xxx; Unicode code point */
                 char *psz_end;
-                int i = strtol( psz_value+2, &psz_end, 10 );
+                unsigned long cp = strtoul( psz_value+2, &psz_end, 10 );
                 if( *psz_end == ';' )
                 {
-                    if( i >= 32 && i <= 126 )
+                    psz_value = psz_end + 1;
+                    if( cp == 0 )
+                        (void)0; /* skip nuls */
+                    else
+                    if( cp <= 0x7F )
                     {
-                        *p_pos = (char)i;
-                        psz_value = psz_end+1;
+                        *p_pos =            cp;
                     }
                     else
+                    /* Unicode code point outside ASCII.
+                     * &#xxx; representation is longer than UTF-8 :) */
+                    if( cp <= 0x7FF )
                     {
-                        /* Unhandled code, FIXME */
-                        *p_pos = *psz_value;
-                        psz_value++;
+                        *p_pos++ = 0xC0 |  (cp >>  6);
+                        *p_pos   = 0x80 |  (cp        & 0x3F);
+                    }
+                    else
+                    if( cp <= 0xFFFF )
+                    {
+                        *p_pos++ = 0xE0 |  (cp >> 12);
+                        *p_pos++ = 0x80 | ((cp >>  6) & 0x3F);
+                        *p_pos   = 0x80 |  (cp        & 0x3F);
+                    }
+                    else
+                    if( cp <= 0x1FFFFF ) /* Outside the BMP */
+                    {   /* Unicode stops at 10FFFF, but who cares? */
+                        *p_pos++ = 0xF0 |  (cp >> 18);
+                        *p_pos++ = 0x80 | ((cp >> 12) & 0x3F);
+                        *p_pos++ = 0x80 | ((cp >>  6) & 0x3F);
+                        *p_pos   = 0x80 |  (cp        & 0x3F);
                     }
                 }
                 else
@@ -292,128 +446,25 @@ void resolve_xml_special_chars( char *psz_value )
                     psz_value++;
                 }
             }
-            else TRY_LONGCHAR( "&Agrave;", 8, "À" )
-            else TRY_LONGCHAR( "&Aacute;", 8, "Á" )
-            else TRY_LONGCHAR( "&Acirc;", 7, "Â" )
-            else TRY_LONGCHAR( "&Atilde;", 8, "Ã" )
-            else TRY_LONGCHAR( "&Auml;", 6, "Ä" )
-            else TRY_LONGCHAR( "&Aring;", 7, "Å" )
-            else TRY_LONGCHAR( "&AElig;", 7, "Æ" )
-            else TRY_LONGCHAR( "&Ccedil;", 8, "Ç" )
-            else TRY_LONGCHAR( "&Egrave;", 8, "È" )
-            else TRY_LONGCHAR( "&Eacute;", 8, "É" )
-            else TRY_LONGCHAR( "&Ecirc;", 7, "Ê" )
-            else TRY_LONGCHAR( "&Euml;", 6, "Ë" )
-            else TRY_LONGCHAR( "&Igrave;", 8, "Ì" )
-            else TRY_LONGCHAR( "&Iacute;", 8, "Í" )
-            else TRY_LONGCHAR( "&Icirc;", 7, "Î" )
-            else TRY_LONGCHAR( "&Iuml;", 6, "Ï" )
-            else TRY_LONGCHAR( "&ETH;", 5, "Ð" )
-            else TRY_LONGCHAR( "&Ntilde;", 8, "Ñ" )
-            else TRY_LONGCHAR( "&Ograve;", 8, "Ò" )
-            else TRY_LONGCHAR( "&Oacute;", 8, "Ó" )
-            else TRY_LONGCHAR( "&Ocirc;", 7, "Ô" )
-            else TRY_LONGCHAR( "&Otilde;", 8, "Õ" )
-            else TRY_LONGCHAR( "&Ouml;", 6, "Ö" )
-            else TRY_LONGCHAR( "&Oslash;", 8, "Ø" )
-            else TRY_LONGCHAR( "&Ugrave;", 8, "Ù" )
-            else TRY_LONGCHAR( "&Uacute;", 8, "Ú" )
-            else TRY_LONGCHAR( "&Ucirc;", 7, "Û" )
-            else TRY_LONGCHAR( "&Uuml;", 6, "Ü" )
-            else TRY_LONGCHAR( "&Yacute;", 8, "Ý" )
-            else TRY_LONGCHAR( "&THORN;", 7, "Þ" )
-            else TRY_LONGCHAR( "&szlig;", 7, "ß" )
-            else TRY_LONGCHAR( "&agrave;", 8, "à" )
-            else TRY_LONGCHAR( "&aacute;", 8, "á" )
-            else TRY_LONGCHAR( "&acirc;", 7, "â" )
-            else TRY_LONGCHAR( "&atilde;", 8, "ã" )
-            else TRY_LONGCHAR( "&auml;", 6, "ä" )
-            else TRY_LONGCHAR( "&aring;", 7, "å" )
-            else TRY_LONGCHAR( "&aelig;", 7, "æ" )
-            else TRY_LONGCHAR( "&ccedil;", 8, "ç" )
-            else TRY_LONGCHAR( "&egrave;", 8, "è" )
-            else TRY_LONGCHAR( "&eacute;", 8, "é" )
-            else TRY_LONGCHAR( "&ecirc;", 7, "ê" )
-            else TRY_LONGCHAR( "&euml;", 6, "ë" )
-            else TRY_LONGCHAR( "&igrave;", 8, "ì" )
-            else TRY_LONGCHAR( "&iacute;", 8, "í" )
-            else TRY_LONGCHAR( "&icirc;", 7, "î" )
-            else TRY_LONGCHAR( "&iuml;", 6, "ï" )
-            else TRY_LONGCHAR( "&eth;", 5, "ð" )
-            else TRY_LONGCHAR( "&ntilde;", 8, "ñ" )
-            else TRY_LONGCHAR( "&ograve;", 8, "ò" )
-            else TRY_LONGCHAR( "&oacute;", 8, "ó" )
-            else TRY_LONGCHAR( "&ocirc;", 7, "ô" )
-            else TRY_LONGCHAR( "&otilde;", 8, "õ" )
-            else TRY_LONGCHAR( "&ouml;", 6, "ö" )
-            else TRY_LONGCHAR( "&oslash;", 8, "ø" )
-            else TRY_LONGCHAR( "&ugrave;", 8, "ù" )
-            else TRY_LONGCHAR( "&uacute;", 8, "ú" )
-            else TRY_LONGCHAR( "&ucirc;", 7, "û" )
-            else TRY_LONGCHAR( "&uuml;", 6, "ü" )
-            else TRY_LONGCHAR( "&yacute;", 8, "ý" )
-            else TRY_LONGCHAR( "&thorn;", 7, "þ" )
-            else TRY_LONGCHAR( "&yuml;", 6, "ÿ" )
-            else TRY_LONGCHAR( "&iexcl;", 7, "¡" )
-            else TRY_LONGCHAR( "&curren;", 8, "¤" )
-            else TRY_LONGCHAR( "&cent;", 6, "¢" )
-            else TRY_LONGCHAR( "&pound;", 7, "£" )
-            else TRY_LONGCHAR( "&yen;", 5, "¥" )
-            else TRY_LONGCHAR( "&brvbar;", 8, "¦" )
-            else TRY_LONGCHAR( "&sect;", 6, "§" )
-            else TRY_LONGCHAR( "&uml;", 5, "¨" )
-            else TRY_LONGCHAR( "&copy;", 6, "©" )
-            else TRY_LONGCHAR( "&ordf;", 6, "ª" )
-            else TRY_LONGCHAR( "&laquo;", 7, "«" )
-            else TRY_LONGCHAR( "&not;", 5, "¬" )
-            else TRY_LONGCHAR( "&shy;", 5, "­" )
-            else TRY_LONGCHAR( "&reg;", 5, "®" )
-            else TRY_LONGCHAR( "&trade;", 7, "™" )
-            else TRY_LONGCHAR( "&macr;", 6, "¯" )
-            else TRY_LONGCHAR( "&deg;", 5, "°" )
-            else TRY_LONGCHAR( "&plusmn;", 8, "±" )
-            else TRY_LONGCHAR( "&sup2;", 6, "²" )
-            else TRY_LONGCHAR( "&sup3;", 6, "³" )
-            else TRY_LONGCHAR( "&acute;", 7, "´" )
-            else TRY_LONGCHAR( "&micro;", 7, "µ" )
-            else TRY_LONGCHAR( "&para;", 6, "¶" )
-            else TRY_LONGCHAR( "&middot;", 8, "·" )
-            else TRY_LONGCHAR( "&cedil;", 7, "¸" )
-            else TRY_LONGCHAR( "&sup1;", 6, "¹" )
-            else TRY_LONGCHAR( "&ordm;", 6, "º" )
-            else TRY_LONGCHAR( "&raquo;", 7, "»" )
-            else TRY_LONGCHAR( "&frac14;", 8, "¼" )
-            else TRY_LONGCHAR( "&frac12;", 8, "½" )
-            else TRY_LONGCHAR( "&frac34;", 8, "¾" )
-            else TRY_LONGCHAR( "&iquest;", 8, "¿" )
-            else TRY_LONGCHAR( "&times;", 7, "×" )
-            else TRY_LONGCHAR( "&divide;", 8, "÷" )
-            else TRY_LONGCHAR( "&OElig;", 7, "Œ" )
-            else TRY_LONGCHAR( "&oelig;", 7, "œ" )
-            else TRY_LONGCHAR( "&Scaron;", 8, "Š" )
-            else TRY_LONGCHAR( "&scaron;", 8, "š" )
-            else TRY_LONGCHAR( "&Yuml;", 6, "Ÿ" )
-            else TRY_LONGCHAR( "&circ;", 6, "ˆ" )
-            else TRY_LONGCHAR( "&tilde;", 7, "˜" )
-            else TRY_LONGCHAR( "&ndash;", 7, "–" )
-            else TRY_LONGCHAR( "&mdash;", 7, "—" )
-            else TRY_LONGCHAR( "&lsquo;", 7, "‘" )
-            else TRY_LONGCHAR( "&rsquo;", 7, "’" )
-            else TRY_LONGCHAR( "&sbquo;", 7, "‚" )
-            else TRY_LONGCHAR( "&ldquo;", 7, "“" )
-            else TRY_LONGCHAR( "&rdquo;", 7, "”" )
-            else TRY_LONGCHAR( "&bdquo;", 7, "„" )
-            else TRY_LONGCHAR( "&dagger;", 8, "†" )
-            else TRY_LONGCHAR( "&Dagger;", 8, "‡" )
-            else TRY_LONGCHAR( "&hellip;", 8, "…" )
-            else TRY_LONGCHAR( "&permil;", 8, "‰" )
-            else TRY_LONGCHAR( "&lsaquo;", 8, "‹" )
-            else TRY_LONGCHAR( "&rsaquo;", 8, "›" )
-            else TRY_LONGCHAR( "&euro;", 6, "€" )
             else
-            {
-                *p_pos = *psz_value;
-                psz_value++;
+            {   /* Well-known XML entity */
+                const struct xml_entity_s *ent;
+
+                ent = bsearch (psz_value + 1, xml_entities,
+                               sizeof (xml_entities) / sizeof (*ent),
+                               sizeof (*ent), cmp_entity);
+                if (ent != NULL)
+                {
+                    size_t olen = strlen (ent->psz_char);
+                    memcpy (p_pos, ent->psz_char, olen);
+                    p_pos += olen - 1;
+                    psz_value += strlen (ent->psz_entity) + 1;
+                }
+                else
+                {   /* No match */
+                    *p_pos = *psz_value;
+                    psz_value++;
+                }
             }
         }
         else
@@ -611,22 +662,38 @@ char *vlc_b64_decode( const char *psz_src )
     return p_dst;
 }
 
-/****************************************************************************
- * String formating functions
- ****************************************************************************/
+/**
+ * Formats current time into a heap-allocated string.
+ * @param tformat time format (as with C strftime())
+ * @return an allocated string (must be free()'d), or NULL on memory error.
+ */
 char *str_format_time( const char *tformat )
 {
-    char buffer[255];
     time_t curtime;
     struct tm loctime;
 
+    if (strcmp (tformat, "") == 0)
+        return strdup (""); /* corner case w.r.t. strftime() return value */
+
     /* Get the current time.  */
-    curtime = time( NULL );
+    time( &curtime );
 
     /* Convert it to local time representation.  */
     localtime_r( &curtime, &loctime );
-    strftime( buffer, 255, tformat, &loctime );
-    return strdup( buffer );
+    for (size_t buflen = strlen (tformat) + 32;; buflen += 32)
+    {
+        char *str = malloc (buflen);
+        if (str == NULL)
+            return NULL;
+
+        size_t len = strftime (str, buflen, tformat, &loctime);
+        if (len > 0)
+        {
+            char *ret = realloc (str, len + 1);
+            return ret ? ret : str; /* <- this cannot fail */
+        }
+    }
+    assert (0);
 }
 
 #define INSERT_STRING( string )                                     \
@@ -638,7 +705,7 @@ char *str_format_time( const char *tformat )
                         d += len;                                   \
                         free( string );                             \
                     }                                               \
-                    else                                            \
+                    else if( !b_empty_if_na )                       \
                     {                                               \
                         *(dst+d) = '-';                             \
                         d++;                                        \
@@ -655,15 +722,15 @@ char *str_format_time( const char *tformat )
 char *__str_format_meta( vlc_object_t *p_object, const char *string )
 {
     const char *s = string;
-    int b_is_format = 0;
-    int b_empty_if_na = 0;
+    bool b_is_format = false;
+    bool b_empty_if_na = false;
     char buf[10];
     int i_size = strlen( string ) + 1; /* +1 to store '\0' */
     char *dst = strdup( string );
     if( !dst ) return NULL;
     int d = 0;
 
-    playlist_t *p_playlist = pl_Yield( p_object );
+    playlist_t *p_playlist = pl_Hold( p_object );
     input_thread_t *p_input = playlist_CurrentInput( p_playlist );
     input_item_t *p_item = NULL;
     pl_Release( p_object );
@@ -711,8 +778,10 @@ char *__str_format_meta( vlc_object_t *p_object, const char *string )
                 case 'f':
                     if( p_item && p_item->p_stats )
                     {
+                        vlc_mutex_lock( &p_item->p_stats->lock );
                         snprintf( buf, 10, "%d",
                                   p_item->p_stats->i_displayed_pictures );
+                        vlc_mutex_unlock( &p_item->p_stats->lock );
                     }
                     else
                     {
@@ -839,7 +908,7 @@ char *__str_format_meta( vlc_object_t *p_object, const char *string )
                     if( p_item && p_input )
                     {
                         mtime_t i_duration = input_item_GetDuration( p_item );
-                        int64_t i_time = p_input->i_time;
+                        int64_t i_time = var_GetInteger( p_input, "time" );
                         sprintf( buf, "%02d:%02d:%02d",
                      (int)( ( i_duration - i_time ) / 3600000000 ),
                      (int)( ( ( i_duration - i_time ) / 60000000 ) % 60 ),
@@ -907,10 +976,11 @@ char *__str_format_meta( vlc_object_t *p_object, const char *string )
                 case 'T':
                     if( p_input )
                     {
+                        int64_t i_time = var_GetInteger( p_input, "time" );
                         sprintf( buf, "%02d:%02d:%02d",
-                            (int)( p_input->i_time / ( 3600000000 ) ),
-                            (int)( ( p_input->i_time / ( 60000000 ) ) % 60 ),
-                            (int)( ( p_input->i_time / 1000000 ) % 60 ) );
+                            (int)( i_time / ( 3600000000 ) ),
+                            (int)( ( i_time / ( 60000000 ) ) % 60 ),
+                            (int)( ( i_time / 1000000 ) % 60 ) );
                     }
                     else
                     {
@@ -938,7 +1008,7 @@ char *__str_format_meta( vlc_object_t *p_object, const char *string )
                     break;
 
                 case ' ':
-                    b_empty_if_na = 1;
+                    b_empty_if_na = true;
                     break;
 
                 default:
@@ -947,12 +1017,12 @@ char *__str_format_meta( vlc_object_t *p_object, const char *string )
                     break;
             }
             if( *s != ' ' )
-                b_is_format = 0;
+                b_is_format = false;
         }
         else if( *s == '$' )
         {
-            b_is_format = 1;
-            b_empty_if_na = 0;
+            b_is_format = true;
+            b_empty_if_na = false;
         }
         else
         {
@@ -968,6 +1038,8 @@ char *__str_format_meta( vlc_object_t *p_object, const char *string )
 
     return dst;
 }
+#undef INSERT_STRING
+#undef INSERT_STRING_NO_FREE
 
 /**
  * Apply str format time and str format meta
@@ -984,8 +1056,10 @@ char *__str_format( vlc_object_t *p_this, const char *psz_src )
 /**
  * Remove forbidden characters from filenames (including slashes)
  */
-void filename_sanitize( char *str )
+char* filename_sanitize( const char *str_origin )
 {
+    char *str = strdup( str_origin );
+    char *str_base = str;
     if( *str == '.' && (str[1] == '\0' || (str[1] == '.' && str[2] == '\0' ) ) )
     {
         while( *str )
@@ -993,8 +1067,14 @@ void filename_sanitize( char *str )
             *str = '_';
             str++;
         }
-        return;
+        return str_base;
     }
+
+#if defined( WIN32 )
+    // Change leading spaces into underscores
+    while( *str && *str == ' ' )
+        *str++ = '_';
+#endif
 
     while( *str )
     {
@@ -1017,6 +1097,19 @@ void filename_sanitize( char *str )
         }
         str++;
     }
+
+#if defined( WIN32 )
+    // Change trailing spaces into underscores
+    str--;
+    while( str != str_base )
+    {
+        if( *str != ' ' )
+            break;
+        *str-- = '_';
+    }
+#endif
+
+    return str_base;
 }
 
 /**
@@ -1024,16 +1117,10 @@ void filename_sanitize( char *str )
  */
 void path_sanitize( char *str )
 {
-#if 0
-    /*
-     * Uncomment the two blocks to prevent /../ or /./, i'm not sure that we
-     * want to.
-     */
-    char *prev = str - 1;
-#endif
 #ifdef WIN32
     /* check drive prefix if path is absolute */
-    if( isalpha(*str) && (':' == *(str+1)) )
+    if( (((unsigned char)(str[0] - 'A') < 26)
+      || ((unsigned char)(str[0] - 'a') < 26)) && (':' == str[1]) )
         str += 2;
 #endif
     while( *str )
@@ -1042,37 +1129,86 @@ void path_sanitize( char *str )
         if( *str == ':' )
             *str = '_';
 #elif defined( WIN32 )
-        switch( *str )
-        {
-            case '*':
-            case '"':
-            case '?':
-            case ':':
-            case '|':
-            case '<':
-            case '>':
-                *str = '_';
-        }
-#endif
-#if 0
-        if( *str == '/'
-#ifdef WIN32
-            || *str == '\\'
-#endif
-            )
-        {
-            if( str - prev == 2 && prev[1] == '.' )
-            {
-                prev[1] = '.';
-            }
-            else if( str - prev == 3 && prev[1] == '.' && prev[2] == '.' )
-            {
-                prev[1] = '_';
-                prev[2] = '_';
-            }
-            prev = str;
-        }
+        if( strchr( "*\"?:|<>", *str ) )
+            *str = '_';
+        if( *str == '/' )
+            *str = DIR_SEP_CHAR;
 #endif
         str++;
+    }
+}
+
+#include <vlc_url.h>
+
+/**
+ * Convert a file path to an URI. If already an URI, do nothing.
+ */
+char *make_URI (const char *path)
+{
+    if (path == NULL)
+        return NULL;
+    if (strstr (path, "://") != NULL)
+        return strdup (path); /* Already an URI */
+    /* Note: VLC cannot handle URI schemes without double slash after the
+     * scheme name (such as mailto: or news:). */
+
+    char *buf;
+#ifdef WIN32
+    if (isalpha (path[0]) && (path[1] == ':'))
+    {
+        if (asprintf (&buf, "file:///%c:", path[0]) == -1)
+            buf = NULL;
+        path += 2;
+    }
+    else
+#endif
+#if 0
+    /* Windows UNC paths (file://host/share/path instead of file:///path) */
+    if (!strncmp (path, "\\\\", 2))
+    {
+        path += 2;
+        buf = strdup ("file://");
+    }
+    else
+#endif
+    if (path[0] != DIR_SEP_CHAR)
+    {   /* Relative path: prepend the current working directory */
+        char cwd[PATH_MAX];
+
+        if (getcwd (cwd, sizeof (cwd)) == NULL) /* FIXME: UTF8? */
+            return NULL;
+        if (asprintf (&buf, "%s/%s", cwd, path) == -1)
+            return NULL;
+        char *ret = make_URI (buf);
+        free (buf);
+        return ret;
+    }
+    else
+        buf = strdup ("file://");
+    if (buf == NULL)
+        return NULL;
+
+    assert (path[0] == DIR_SEP_CHAR);
+
+    /* Absolute file path */
+    for (const char *ptr = path + 1;; ptr++)
+    {
+        size_t len = strcspn (ptr, DIR_SEP);
+        char *component = encode_URI_bytes (ptr, len);
+        if (component == NULL)
+        {
+            free (buf);
+            return NULL;
+        }
+        char *uri;
+        int val = asprintf (&uri, "%s/%s", buf, component);
+        free (component);
+        free (buf);
+        if (val == -1)
+            return NULL;
+        buf = uri;
+        ptr += len;
+        if (*ptr == '\0')
+            return buf;
     }
 }

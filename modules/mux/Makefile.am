@@ -18,7 +18,7 @@ libmux_asf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmux_asf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmux_asf_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_asf_plugin_la_DEPENDENCIES =
+libmux_asf_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mux_avi plugin
 libmux_avi_plugin_la_SOURCES = $(SOURCES_mux_avi)
@@ -29,7 +29,7 @@ libmux_avi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmux_avi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmux_avi_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_avi_plugin_la_DEPENDENCIES =
+libmux_avi_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mux_dummy plugin
 libmux_dummy_plugin_la_SOURCES = $(SOURCES_mux_dummy)
@@ -40,7 +40,7 @@ libmux_dummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmux_dummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmux_dummy_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_dummy_plugin_la_DEPENDENCIES =
+libmux_dummy_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mux_mp4 plugin
 libmux_mp4_plugin_la_SOURCES = $(SOURCES_mux_mp4)
@@ -51,7 +51,7 @@ libmux_mp4_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmux_mp4_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmux_mp4_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_mp4_plugin_la_DEPENDENCIES =
+libmux_mp4_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mux_mpjpeg plugin
 libmux_mpjpeg_plugin_la_SOURCES = $(SOURCES_mux_mpjpeg)
@@ -62,7 +62,7 @@ libmux_mpjpeg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmux_mpjpeg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmux_mpjpeg_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_mpjpeg_plugin_la_DEPENDENCIES =
+libmux_mpjpeg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mux_ogg plugin
 libmux_ogg_plugin_la_SOURCES = $(SOURCES_mux_ogg)
@@ -73,7 +73,7 @@ libmux_ogg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmux_ogg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmux_ogg_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_ogg_plugin_la_DEPENDENCIES =
+libmux_ogg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mux_wav plugin
 libmux_wav_plugin_la_SOURCES = $(SOURCES_mux_wav)
@@ -84,5 +84,5 @@ libmux_wav_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmux_wav_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmux_wav_plugin_la_LIBADD = $(AM_LIBADD)
-libmux_wav_plugin_la_DEPENDENCIES =
+libmux_wav_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

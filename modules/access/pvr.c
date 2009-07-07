@@ -2,7 +2,7 @@
  * pvr.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 1bd54473d4ff2cf41c3c106a5601ddeedc0560c0 $
+ * $Id$
  *
  * Authors: Eric Petit <titer@videolan.org>
  *          Paul Corke <paulc@datatote.co.uk>
@@ -124,49 +124,49 @@ static const char *const psz_bitrates_list_text[] = { N_("vbr"), N_("cbr") };
 
 static const int pi_radio_range[2] = { 65000, 108000 };
 
-vlc_module_begin();
-    set_shortname( N_("PVR") );
-    set_description( N_("IVTV MPEG Encoding cards input") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
-    set_capability( "access", 0 );
-    add_shortcut( "pvr" );
+vlc_module_begin ()
+    set_shortname( N_("PVR") )
+    set_description( N_("IVTV MPEG Encoding cards input") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
+    set_capability( "access", 0 )
+    add_shortcut( "pvr" )
 
     add_integer( "pvr-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, true );
+                 CACHING_LONGTEXT, true )
     add_string( "pvr-device", "/dev/video0", NULL, DEVICE_TEXT,
-                 DEVICE_LONGTEXT, false );
+                 DEVICE_LONGTEXT, false )
     add_string( "pvr-radio-device", "/dev/radio0", NULL, RADIO_DEVICE_TEXT,
-                 RADIO_DEVICE_LONGTEXT, false );
+                 RADIO_DEVICE_LONGTEXT, false )
     add_integer( "pvr-norm", V4L2_STD_UNKNOWN , NULL, NORM_TEXT,
-                 NORM_LONGTEXT, false );
-       change_integer_list( i_norm_list, psz_norm_list_text, NULL );
-    add_integer( "pvr-width", -1, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, true );
+                 NORM_LONGTEXT, false )
+       change_integer_list( i_norm_list, psz_norm_list_text, NULL )
+    add_integer( "pvr-width", -1, NULL, WIDTH_TEXT, WIDTH_LONGTEXT, true )
     add_integer( "pvr-height", -1, NULL, HEIGHT_TEXT, HEIGHT_LONGTEXT,
-                 true );
+                 true )
     add_integer( "pvr-frequency", -1, NULL, FREQUENCY_TEXT, FREQUENCY_LONGTEXT,
-                 false );
+                 false )
     add_integer( "pvr-framerate", -1, NULL, FRAMERATE_TEXT, FRAMERATE_LONGTEXT,
-                 true );
+                 true )
     add_integer( "pvr-keyint", -1, NULL, KEYINT_TEXT, KEYINT_LONGTEXT,
-                 true );
+                 true )
     add_integer( "pvr-bframes", -1, NULL, FRAMERATE_TEXT, FRAMERATE_LONGTEXT,
-                 true );
+                 true )
     add_integer( "pvr-bitrate", -1, NULL, BITRATE_TEXT, BITRATE_LONGTEXT,
-                 false );
+                 false )
     add_integer( "pvr-bitrate-peak", -1, NULL, BITRATE_PEAK_TEXT,
-                 BITRATE_PEAK_LONGTEXT, true );
+                 BITRATE_PEAK_LONGTEXT, true )
     add_integer( "pvr-bitrate-mode", -1, NULL, BITRATE_MODE_TEXT,
-                 BITRATE_MODE_LONGTEXT, true );
-        change_integer_list( i_bitrates, psz_bitrates_list_text, NULL );
+                 BITRATE_MODE_LONGTEXT, true )
+        change_integer_list( i_bitrates, psz_bitrates_list_text, NULL )
     add_integer( "pvr-audio-bitmask", -1, NULL, BITMASK_TEXT,
-                 BITMASK_LONGTEXT, true );
+                 BITMASK_LONGTEXT, true )
     add_integer( "pvr-audio-volume", -1, NULL, VOLUME_TEXT,
-                 VOLUME_LONGTEXT, true );
-    add_integer( "pvr-channel", -1, NULL, CHAN_TEXT, CHAN_LONGTEXT, true );
+                 VOLUME_LONGTEXT, true )
+    add_integer( "pvr-channel", -1, NULL, CHAN_TEXT, CHAN_LONGTEXT, true )
 
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Prototypes
@@ -433,8 +433,8 @@ static int ConfigureV4L2( access_t * p_access )
     controls.reserved[0] = 0;
     controls.reserved[1] = 0;
     controls.count       = 0;
-    controls.controls    = calloc( sizeof( struct v4l2_ext_control ),
-                                   MAX_V4L2_CTRLS );
+    controls.controls    = calloc( MAX_V4L2_CTRLS,
+                                   sizeof( struct v4l2_ext_control ) );
 
     if( controls.controls == NULL )
         return VLC_ENOMEM;
@@ -547,295 +547,128 @@ static int Open( vlc_object_t * p_this )
     access_sys_t * p_sys;
     char * psz_tofree;
     char * psz_parser;
-    char * psz_device = NULL;
-    vlc_value_t val;
     struct v4l2_capability device_capability;
     int result;
 
     memset( &device_capability, 0, sizeof(struct v4l2_capability) );
 
-    p_access->pf_read = Read;
-    p_access->pf_block = NULL;
-    p_access->pf_seek = NULL;
-    p_access->pf_control = Control;
-    p_access->info.i_update = 0;
-    p_access->info.i_size = 0;
-    p_access->info.i_pos = 0;
-    p_access->info.b_eof = false;
-    p_access->info.i_title = 0;
-    p_access->info.i_seekpoint = 0;
-
-    /* create private access data */
-    p_sys = calloc( sizeof( access_sys_t ), 1 );
-    if( !p_sys )
-        return VLC_ENOMEM;
-
-    p_access->p_sys = p_sys;
+    access_InitFields( p_access );
+    ACCESS_SET_CALLBACKS( Read, NULL, Control, NULL );
+    p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ));
+    if( !p_sys ) return VLC_ENOMEM;
 
     /* defaults values */
     var_Create( p_access, "pvr-caching", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
 
-    var_Create( p_access, "pvr-device", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-device" , &val);
-    p_sys->psz_videodev = val.psz_string;
-
-    var_Create( p_access, "pvr-radio-device", VLC_VAR_STRING |
-                                              VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-radio-device" , &val);
-    p_sys->psz_radiodev = val.psz_string;
-
-    var_Create( p_access, "pvr-norm", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-norm" , &val);
-    p_sys->i_standard = val.i_int;
-
-    var_Create( p_access, "pvr-width", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-width" , &val);
-    p_sys->i_width = val.i_int;
-
-    var_Create( p_access, "pvr-height", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-height" , &val);
-    p_sys->i_height = val.i_int;
-
-    var_Create( p_access, "pvr-frequency", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-frequency" , &val);
-    p_sys->i_frequency = val.i_int;
-
-    var_Create( p_access, "pvr-framerate", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-framerate" , &val);
-    p_sys->i_framerate = val.i_int;
-
-    var_Create( p_access, "pvr-keyint", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-keyint" , &val);
-    p_sys->i_keyint = val.i_int;
-
-    var_Create( p_access, "pvr-bframes", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-bframes" , &val);
-    p_sys->i_bframes = val.b_bool;
-
-    var_Create( p_access, "pvr-bitrate", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-bitrate" , &val);
-    p_sys->i_bitrate = val.i_int;
-
-    var_Create( p_access, "pvr-bitrate-peak", VLC_VAR_INTEGER |
-                                              VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-bitrate-peak" , &val);
-    p_sys->i_bitrate_peak = val.i_int;
-
-    var_Create( p_access, "pvr-bitrate-mode", VLC_VAR_INTEGER |
-                                              VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-bitrate-mode" , &val);
-    p_sys->i_bitrate_mode = val.i_int;
-
-    var_Create( p_access, "pvr-audio-bitmask", VLC_VAR_INTEGER |
-                                              VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-audio-bitmask" , &val);
-    p_sys->i_audio_bitmask = val.i_int;
-
-    var_Create( p_access, "pvr-audio-volume", VLC_VAR_INTEGER |
-                                              VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-audio-volume" , &val);
-    p_sys->i_volume = val.i_int;
-
-    var_Create( p_access, "pvr-channel", VLC_VAR_INTEGER |
-                                              VLC_VAR_DOINHERIT );
-    var_Get( p_access, "pvr-channel" , &val);
-    p_sys->i_input = val.i_int;
+    p_sys->psz_videodev = var_CreateGetString( p_access, "pvr-device" );
+    p_sys->psz_radiodev = var_CreateGetString( p_access, "pvr-radio-device" );
+    p_sys->i_standard   = var_CreateGetInteger( p_access, "pvr-norm" );
+    p_sys->i_width      = var_CreateGetInteger( p_access, "pvr-width" );
+    p_sys->i_height     = var_CreateGetInteger( p_access, "pvr-height" );
+    p_sys->i_frequency  = var_CreateGetInteger( p_access, "pvr-frequency" );
+    p_sys->i_framerate  = var_CreateGetInteger( p_access, "pvr-framerate" );
+    p_sys->i_keyint     = var_CreateGetInteger( p_access, "pvr-keyint" );
+    p_sys->i_bframes    = var_CreateGetInteger( p_access, "pvr-bframes" );
+    p_sys->i_bitrate    = var_CreateGetInteger( p_access, "pvr-bitrate" );
+    p_sys->i_bitrate_peak  = var_CreateGetInteger( p_access, "pvr-bitrate-peak" );
+    p_sys->i_bitrate_mode  = var_CreateGetInteger( p_access, "pvr-bitrate-mode" );
+    p_sys->i_audio_bitmask = var_CreateGetInteger( p_access, "pvr-audio-bitmask" );
+    p_sys->i_volume     = var_CreateGetInteger( p_access, "pvr-audio-volume" );
+    p_sys->i_input      = var_CreateGetInteger( p_access, "pvr-channel" );
 
     /* parse command line options */
     psz_tofree = strdup( p_access->psz_path );
     if( !psz_tofree )
+    {
+        free( p_sys->psz_radiodev );
+        free( p_sys->psz_videodev );
+        free( p_sys );
         return VLC_ENOMEM;
+    }
 
     psz_parser = psz_tofree;
-    if( *psz_parser )
+    while( *psz_parser )
     {
-        for( ;; )
+        /* Leading slash -> device path */
+        if( *psz_parser == '/' )
         {
-            if ( !strncmp( psz_parser, "norm=", strlen( "norm=" ) ) )
-            {
-                char *psz_parser_init;
-                psz_parser += strlen( "norm=" );
-                psz_parser_init = psz_parser;
-                while ( (*psz_parser != ':')
-                        && (*psz_parser != ',')
-                        && (*psz_parser != '\0') )
-                {
-                    psz_parser++;
-                }
+            free( p_sys->psz_videodev );
+            p_sys->psz_videodev = strdup( psz_parser );
+            break;
+        }
 
-                if ( !strncmp( psz_parser_init, "secam" ,
-                               psz_parser - psz_parser_init ) )
-                {
-                    p_sys->i_standard = V4L2_STD_SECAM;
-                }
-                else if ( !strncmp( psz_parser_init, "pal" ,
-                                    psz_parser - psz_parser_init ) )
-                {
-                    p_sys->i_standard = V4L2_STD_PAL;
-                }
-                else if ( !strncmp( psz_parser_init, "ntsc" ,
-                                    psz_parser - psz_parser_init ) )
-                {
-                    p_sys->i_standard = V4L2_STD_NTSC;
-                }
-                else
-                {
-                    p_sys->i_standard = strtol( psz_parser_init ,
-                                                &psz_parser, 0 );
-                }
-            }
-            else if( !strncmp( psz_parser, "channel=",
-                               strlen( "channel=" ) ) )
-            {
-                p_sys->i_input =
-                    strtol( psz_parser + strlen( "channel=" ),
-                            &psz_parser, 0 );
-            }
-            else if( !strncmp( psz_parser, "device=", strlen( "device=" ) ) )
-            {
-                int i_len = strlen( "/dev/videox" );
-                psz_device = calloc( i_len  + 1, 1 );
-                if( !psz_device )
-                    return VLC_ENOMEM;
+        /* Extract option name */
+        const char *optname = psz_parser;
+        psz_parser = strchr( psz_parser, '=' );
+        if( psz_parser == NULL )
+            break;
+        *psz_parser++ = '\0';
 
-                snprintf( psz_device, i_len, "/dev/video%ld",
-                            strtol( psz_parser + strlen( "device=" ),
-                            &psz_parser, 0 ) );
-            }
-            else if( !strncmp( psz_parser, "frequency=",
-                               strlen( "frequency=" ) ) )
-            {
-                p_sys->i_frequency =
-                    strtol( psz_parser + strlen( "frequency=" ),
-                            &psz_parser, 0 );
-            }
-            else if( !strncmp( psz_parser, "framerate=",
-                               strlen( "framerate=" ) ) )
-            {
-                p_sys->i_framerate =
-                    strtol( psz_parser + strlen( "framerate=" ),
-                            &psz_parser, 0 );
-            }
-            else if( !strncmp( psz_parser, "keyint=",
-                               strlen( "keyint=" ) ) )
-            {
-                p_sys->i_keyint =
-                    strtol( psz_parser + strlen( "keyint=" ),
-                            &psz_parser, 0 );
-            }
-            else if( !strncmp( psz_parser, "bframes=",
-                               strlen( "bframes=" ) ) )
-            {
-                p_sys->i_bframes =
-                    strtol( psz_parser + strlen( "bframes=" ),
-                            &psz_parser, 0 );
-            }
+        /* Extract option value */
+        char *optval = psz_parser;
+        while( memchr( ":,", *psz_parser, 3 /* includes \0 */ ) == NULL )
+            psz_parser++;
+        if( *psz_parser ) /* more options to come */
+            *psz_parser++ = '\0'; /* skip , or : */
 
-            else if( !strncmp( psz_parser, "width=",
-                               strlen( "width=" ) ) )
-            {
-                p_sys->i_width =
-                    strtol( psz_parser + strlen( "width=" ),
-                            &psz_parser, 0 );
-            }
-            else if( !strncmp( psz_parser, "height=",
-                               strlen( "height=" ) ) )
-            {
-                p_sys->i_height =
-                    strtol( psz_parser + strlen( "height=" ),
-                            &psz_parser, 0 );
-            }
-            else if( !strncmp( psz_parser, "audio=",
-                               strlen( "audio=" ) ) )
-            {
-                p_sys->i_audio_bitmask =
-                    strtol( psz_parser + strlen( "audio=" ),
-                            &psz_parser, 0 );
-            }
-            else if( !strncmp( psz_parser, "bitrate=",
-                               strlen( "bitrate=" ) ) )
-            {
-                p_sys->i_bitrate =
-                    strtol( psz_parser + strlen( "bitrate=" ),
-                            &psz_parser, 0 );
-            }
-            else if( !strncmp( psz_parser, "maxbitrate=",
-                               strlen( "maxbitrate=" ) ) )
-            {
-                p_sys->i_bitrate_peak =
-                    strtol( psz_parser + strlen( "maxbitrate=" ),
-                            &psz_parser, 0 );
-            }
-            else if( !strncmp( psz_parser, "bitratemode=",
-                               strlen( "bitratemode=" ) ) )
-            {
-                char *psz_parser_init;
-                psz_parser += strlen( "bitratemode=" );
-                psz_parser_init = psz_parser;
-                while ( (*psz_parser != ':')
-                        && (*psz_parser != ',')
-                        && (*psz_parser != '\0') )
-                {
-                    psz_parser++;
-                }
-
-                if ( !strncmp( psz_parser_init, "vbr" ,
-                               psz_parser - psz_parser_init ) )
-                {
-                     p_sys->i_bitrate_mode = 0;
-                }
-                else if ( !strncmp( psz_parser_init, "cbr" ,
-                                    psz_parser - psz_parser_init ) )
-                {
-                    p_sys->i_bitrate_mode = 1;
-                }
-            }
-            else if( !strncmp( psz_parser, "size=",
-                               strlen( "size=" ) ) )
-            {
-                p_sys->i_width =
-                    strtol( psz_parser + strlen( "size=" ),
-                            &psz_parser, 0 );
-                p_sys->i_height =
-                    strtol( psz_parser + 1 ,
-                            &psz_parser, 0 );
-            }
+        if ( !strcmp( optname, "norm" ) )
+        {
+            if ( !strcmp( optval, "secam" ) )
+                p_sys->i_standard = V4L2_STD_SECAM;
+            else if ( !strcmp( optval, "pal" ) )
+                p_sys->i_standard = V4L2_STD_PAL;
+            else if ( !strcmp( optval, "ntsc" ) )
+                p_sys->i_standard = V4L2_STD_NTSC;
             else
-            {
-                char *psz_parser_init;
-                psz_parser_init = psz_parser;
-                while ( (*psz_parser != ':') &&
-                        (*psz_parser != ',') &&
-                        (*psz_parser != '\0') )
-                {
-                    psz_parser++;
-                }
-                psz_device = calloc( psz_parser - psz_parser_init + 1, 1 );
-                if( !psz_device )
-                    return VLC_ENOMEM;
-
-                strncpy( psz_device, psz_parser_init,
-                         psz_parser - psz_parser_init );
-            }
-            if( *psz_parser )
-                psz_parser++;
-            else
-                break;
+                p_sys->i_standard = atoi( optval );
+        }
+        else if( !strcmp( optname, "channel" ) )
+            p_sys->i_input = atoi( optval );
+        else if( !strcmp( optname, "device" ) )
+        {
+            free( p_sys->psz_videodev );
+            if( asprintf( &p_sys->psz_videodev, "/dev/video%s", optval ) == -1)
+                p_sys->psz_videodev = NULL;
+        }
+        else if( !strcmp( optname, "frequency" ) )
+            p_sys->i_frequency = atoi( optval );
+        else if( !strcmp( optname, "framerate" ) )
+            p_sys->i_framerate = atoi( optval );
+        else if( !strcmp( optname, "keyint" ) )
+            p_sys->i_keyint = atoi( optval );
+        else if( !strcmp( optname, "bframes" ) )
+            p_sys->i_bframes = atoi( optval );
+        else if( !strcmp( optname, "width" ) )
+            p_sys->i_width = atoi( optval );
+        else if( !strcmp( optname, "height" ) )
+            p_sys->i_height = atoi( optval );
+        else if( !strcmp( optname, "audio" ) )
+            p_sys->i_audio_bitmask = atoi( optval );
+        else if( !strcmp( optname, "bitrate" ) )
+            p_sys->i_bitrate = atoi( optval );
+        else if( !strcmp( optname, "maxbitrate" ) )
+            p_sys->i_bitrate_peak = atoi( optval );
+        else if( !strcmp( optname, "bitratemode" ) )
+        {
+            if( !strcmp( optval, "vbr" ) )
+                p_sys->i_bitrate_mode = 0;
+            else if( !strcmp( optval, "cbr" ) )
+                p_sys->i_bitrate_mode = 1;
+        }
+        else if( !strcmp( optname, "size" ) )
+        {
+            p_sys->i_width = strtol( optval, &optval, 0 );
+            p_sys->i_height = atoi( optval );
         }
     }
     free( psz_tofree );
-
-    if( psz_device )
-    {
-        free( p_sys->psz_videodev );
-        p_sys->psz_videodev = psz_device;
-    }
 
     /* open the device */
     p_sys->i_fd = open( p_sys->psz_videodev, O_RDWR );
     if( p_sys->i_fd < 0 )
     {
-        msg_Err( p_access, "Cannot open device (%m)." );
+        msg_Err( p_access, "Cannot open device %s (%m).",
+                 p_sys->psz_videodev );
         Close( VLC_OBJECT(p_access) );
         return VLC_EGENERIC;
     }
@@ -1115,7 +948,6 @@ static ssize_t Read( access_t * p_access, uint8_t * p_buffer, size_t i_len )
 static int Control( access_t *p_access, int i_query, va_list args )
 {
     bool   *pb_bool;
-    int          *pi_int;
     int64_t      *pi_64;
 
     switch( i_query )
@@ -1136,11 +968,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = 0;
-            break;
-
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = (int64_t)var_GetInteger( p_access, "pvr-caching" ) * 1000;

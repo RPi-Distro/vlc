@@ -2,7 +2,7 @@
  * drms.h : DRMS
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 0635f40d00cb5b5b2d3c0b08e1964b8a144525f2 $
+ * $Id$
  *
  * Author: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -29,6 +29,7 @@ extern void drms_free( void *p_drms );
 extern int drms_init( void *p_drms, uint32_t i_type,
                       uint8_t *p_info, uint32_t i_len );
 extern void drms_decrypt( void *p_drms, uint32_t *p_buffer,
-                          uint32_t i_len );
+                          uint32_t i_len, uint32_t *p_key );
+extern void drms_get_p_key( void *p_drms, uint32_t *p_key );
 
 #endif

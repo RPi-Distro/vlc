@@ -1,8 +1,8 @@
 /*****************************************************************************
  * bonjour.c: Bonjour services discovery module
  *****************************************************************************
- * Copyright (C) 2005 the VideoLAN team
- * $Id: fa9d408191169045b51623a5feb3b3330e71230b $
+ * Copyright (C) 2005-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *
@@ -31,15 +31,12 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_playlist.h>
-#include <vlc_arrays.h>
+#include <vlc_services_discovery.h>
 
 #include <avahi-client/client.h>
-#ifdef HAVE_AVAHI_06
-# include <avahi-client/publish.h>
-# include <avahi-client/lookup.h>
-#endif
-#include <avahi-common/simple-watch.h>
+#include <avahi-client/publish.h>
+#include <avahi-client/lookup.h>
+#include <avahi-common/thread-watch.h>
 #include <avahi-common/malloc.h>
 #include <avahi-common/error.h>
 
@@ -51,14 +48,14 @@
     static int  Open ( vlc_object_t * );
     static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_shortname( "Bonjour" );
-    set_description( N_("Bonjour services") );
-    set_category( CAT_PLAYLIST );
-    set_subcategory( SUBCAT_PLAYLIST_SD );
-    set_capability( "services_discovery", 0 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "Bonjour" )
+    set_description( N_("Bonjour services") )
+    set_category( CAT_PLAYLIST )
+    set_subcategory( SUBCAT_PLAYLIST_SD )
+    set_capability( "services_discovery", 0 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local structures
@@ -66,7 +63,7 @@ vlc_module_end();
 
 struct services_discovery_sys_t
 {
-    AvahiSimplePoll     *simple_poll;
+    AvahiThreadedPoll   *poll;
     AvahiClient         *client;
     AvahiServiceBrowser *sb;
     vlc_dictionary_t    services_name_to_input_item;
@@ -75,9 +72,6 @@ struct services_discovery_sys_t
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-
-/* Main functions */
-    static void Run    ( services_discovery_t *p_intf );
 
 /*****************************************************************************
  * client_callback
@@ -88,15 +82,11 @@ static void client_callback( AvahiClient *c, AvahiClientState state,
     services_discovery_t *p_sd = ( services_discovery_t* )userdata;
     services_discovery_sys_t *p_sys = p_sd->p_sys;
 
-#ifdef HAVE_AVAHI_06
     if( state == AVAHI_CLIENT_FAILURE &&
         (avahi_client_errno(c) == AVAHI_ERR_DISCONNECTED) )
-#else
-    if( state == AVAHI_CLIENT_DISCONNECTED )
-#endif
     {
         msg_Err( p_sd, "avahi client disconnected" );
-        avahi_simple_poll_quit( p_sys->simple_poll );
+        avahi_threaded_poll_quit( p_sys->poll );
     }
 }
 
@@ -115,24 +105,16 @@ static void resolve_callback(
     const AvahiAddress *address,
     uint16_t port,
     AvahiStringList *txt,
-#ifdef HAVE_AVAHI_06
     AvahiLookupResultFlags flags,
-#endif
     void* userdata )
 {
     services_discovery_t *p_sd = ( services_discovery_t* )userdata;
     services_discovery_sys_t *p_sys = p_sd->p_sys;
     
     VLC_UNUSED(interface); VLC_UNUSED(host_name);
-#ifdef HAVE_AVAHI_06
     VLC_UNUSED(flags);
-#endif
 
-#ifdef HAVE_AVAHI_06
     if( event == AVAHI_RESOLVER_FAILURE )
-#else
-    if( event == AVAHI_RESOLVER_TIMEOUT )
-#endif
     {
         msg_Err( p_sd,
                  "failed to resolve service '%s' of type '%s' in domain '%s'",
@@ -186,13 +168,12 @@ static void resolve_callback(
             }
         }
 
-        if( psz_addr != NULL )
-            free( (void *)psz_addr );
+        free( psz_addr );
 
         if( psz_uri != NULL )
         {
-            p_input = input_item_NewExt( p_sd, psz_uri, name, 0, NULL, -1 );
-            free( (void *)psz_uri );
+            p_input = input_item_New( p_sd, psz_uri, name );
+            free( psz_uri );
         }
         if( p_input != NULL )
         {
@@ -217,24 +198,18 @@ static void browse_callback(
     const char *name,
     const char *type,
     const char *domain,
-#ifdef HAVE_AVAHI_06
     AvahiLookupResultFlags flags,
-#endif
     void* userdata )
 {
     VLC_UNUSED(b);
-#ifdef HAVE_AVAHI_06
     VLC_UNUSED(flags);
-#endif
     services_discovery_t *p_sd = ( services_discovery_t* )userdata;
     services_discovery_sys_t *p_sys = p_sd->p_sys;
     if( event == AVAHI_BROWSER_NEW )
     {
         if( avahi_service_resolver_new( p_sys->client, interface, protocol,
                                         name, type, domain, AVAHI_PROTO_UNSPEC,
-#ifdef HAVE_AVAHI_06
                                         0,
-#endif
                                         resolve_callback, userdata ) == NULL )
         {
             msg_Err( p_sd, "failed to resolve service '%s': %s", name,
@@ -255,7 +230,7 @@ static void browse_callback(
             services_discovery_RemoveItem( p_sd, p_item );
             vlc_dictionary_remove_value_for_key(
                         &p_sys->services_name_to_input_item,
-                        name );
+                        name, NULL, NULL );
         }
     }
 }
@@ -269,28 +244,21 @@ static int Open( vlc_object_t *p_this )
     services_discovery_sys_t *p_sys;
     int err;
 
-    p_sd->p_sys = p_sys = (services_discovery_sys_t *)malloc(
-        sizeof( services_discovery_sys_t ) );
-
+    p_sd->p_sys = p_sys = calloc( 1, sizeof( services_discovery_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
 
-    memset( p_sys, 0, sizeof(*p_sys) );
-
     vlc_dictionary_init( &p_sys->services_name_to_input_item, 1 );
 
-    p_sys->simple_poll = avahi_simple_poll_new();
-    if( p_sys->simple_poll == NULL )
+    p_sys->poll = avahi_threaded_poll_new();
+    if( p_sys->poll == NULL )
     {
-        msg_Err( p_sd, "failed to create avahi simple poll" );
+        msg_Err( p_sd, "failed to create Avahi threaded poll" );
         goto error;
     }
 
-    p_sys->client = avahi_client_new( avahi_simple_poll_get(p_sys->simple_poll),
-#ifdef HAVE_AVAHI_06
-                                      0,
-#endif
-                                      client_callback, p_sd, &err );
+    p_sys->client = avahi_client_new( avahi_threaded_poll_get(p_sys->poll),
+                                      0, client_callback, p_sd, &err );
     if( p_sys->client == NULL )
     {
         msg_Err( p_sd, "failed to create avahi client: %s",
@@ -301,19 +269,12 @@ static int Open( vlc_object_t *p_this )
     p_sys->sb = avahi_service_browser_new( p_sys->client, AVAHI_IF_UNSPEC,
                                            AVAHI_PROTO_UNSPEC,
                                            "_vlc-http._tcp", NULL,
-#ifdef HAVE_AVAHI_06
-                                           0,
-#endif
-                                           browse_callback, p_sd );
+                                           0, browse_callback, p_sd );
     if( p_sys->sb == NULL )
     {
         msg_Err( p_sd, "failed to create avahi service browser" );
         goto error;
     }
-
-    services_discovery_SetLocalizedName( p_sd, _("Bonjour") );
-
-    p_sd->pf_run = Run;
 
     return VLC_SUCCESS;
 
@@ -322,10 +283,10 @@ error:
         avahi_service_browser_free( p_sys->sb );
     if( p_sys->client != NULL )
         avahi_client_free( p_sys->client );
-    if( p_sys->simple_poll != NULL )
-        avahi_simple_poll_free( p_sys->simple_poll );
+    if( p_sys->poll != NULL )
+        avahi_threaded_poll_free( p_sys->poll );
 
-    vlc_dictionary_clear( &p_sys->services_name_to_input_item );
+    vlc_dictionary_clear( &p_sys->services_name_to_input_item, NULL, NULL );
     free( p_sys );
 
     return VLC_EGENERIC;
@@ -341,25 +302,8 @@ static void Close( vlc_object_t *p_this )
 
     avahi_service_browser_free( p_sys->sb );
     avahi_client_free( p_sys->client );
-    avahi_simple_poll_free( p_sys->simple_poll );
+    avahi_threaded_poll_free( p_sys->poll );
 
-    vlc_dictionary_clear( &p_sys->services_name_to_input_item );
+    vlc_dictionary_clear( &p_sys->services_name_to_input_item, NULL, NULL );
     free( p_sys );
-}
-
-/*****************************************************************************
- * Run: main thread
- *****************************************************************************/
-static void Run( services_discovery_t *p_sd )
-{
-    services_discovery_sys_t *p_sys = p_sd->p_sys;
-
-    while( vlc_object_alive (p_sd) )
-    {
-        if( avahi_simple_poll_iterate( p_sys->simple_poll, 100 ) != 0 )
-        {
-            msg_Err( p_sd, "poll iterate failed" );
-            break;
-        }
-    }
 }

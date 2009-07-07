@@ -2,7 +2,7 @@
  * mmap.c: memory-mapped file input
  *****************************************************************************
  * Copyright © 2007-2008 Rémi Denis-Courmont
- * $Id: 32eea02d00097675b32f45d98caf16972ece76e2 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -28,7 +28,7 @@
 #include <vlc_access.h>
 #include <vlc_input.h>
 #include <vlc_charset.h>
-#include <vlc_interface.h>
+#include <vlc_dialog.h>
 
 #include <assert.h>
 
@@ -50,17 +50,17 @@
 static int Open (vlc_object_t *);
 static void Close (vlc_object_t *);
 
-vlc_module_begin();
-    set_shortname (N_("MMap"));
-    set_description (N_("Memory-mapped file input"));
-    set_category (CAT_INPUT);
-    set_subcategory (SUBCAT_INPUT_ACCESS);
-    set_capability ("access", 52);
-    add_shortcut ("file");
-    set_callbacks (Open, Close);
+vlc_module_begin ()
+    set_shortname (N_("MMap"))
+    set_description (N_("Memory-mapped file input"))
+    set_category (CAT_INPUT)
+    set_subcategory (SUBCAT_INPUT_ACCESS)
+    set_capability ("access", 52)
+    add_shortcut ("file")
+    set_callbacks (Open, Close)
     add_bool ("file-mmap", false, NULL,
-              FILE_MMAP_TEXT, FILE_MMAP_LONGTEXT, true);
-vlc_module_end();
+              FILE_MMAP_TEXT, FILE_MMAP_LONGTEXT, true)
+vlc_module_end ()
 
 static block_t *Block (access_t *);
 static int Seek (access_t *, int64_t);
@@ -102,7 +102,6 @@ static int Open (vlc_object_t *p_this)
         msg_Warn (p_access, "cannot open %s: %m", path);
         goto error;
     }
-    fcntl (fd, F_SETFD, fcntl (fd, F_GETFD) | FD_CLOEXEC);
 
     /* mmap() is only safe for regular and block special files.
      * For other types, it may be some idiosyncrasic interface (e.g. packet
@@ -117,16 +116,20 @@ static int Open (vlc_object_t *p_this)
 
     if (!S_ISREG (st.st_mode) && !S_ISBLK (st.st_mode))
     {
-        msg_Dbg (p_access, "skipping non regular file %s", path);
+        msg_Dbg (p_access, "skipping non-regular file %s", path);
         goto error;
     }
 
-# if defined(HAVE_FCNTL_H) && defined(F_FDAHEAD) && defined(F_NOCACHE)
+#if defined(HAVE_FCNTL_H)
     /* We'd rather use any available memory for reading ahead
      * than for caching what we've already mmap'ed */
+# if defined(F_RDAHEAD)
     fcntl (fd, F_RDAHEAD, 1);
+# endif
+# if defined(F_NOCACHE)
     fcntl (fd, F_NOCACHE, 1);
 # endif
+#endif
 
     /* Autodetect mmap() support */
     if (st.st_size > 0)
@@ -215,12 +218,15 @@ static block_t *Block (access_t *p_access)
     /* NOTE: We use PROT_WRITE and MAP_PRIVATE so that the block can be
      * modified down the chain, without messing up with the underlying
      * original file. This does NOT need open write permission. */
-    void *addr = mmap (NULL, length, PROT_READ|PROT_WRITE, MAP_PRIVATE,
-                       p_sys->fd, outer_offset);
+    void *addr = mmap (NULL, length, PROT_READ|PROT_WRITE, MAP_PRIVATE
+#ifdef MAP_NO_CACHE
+                       | MAP_NOCACHE
+#endif
+                       , p_sys->fd, outer_offset);
     if (addr == MAP_FAILED)
     {
         msg_Err (p_access, "memory mapping failed (%m)");
-        intf_UserFatal (p_access, false, _("File reading failed"),
+        dialog_Fatal (p_access, _("File reading failed"), "%s",
                         _("VLC could not read the file."));
         goto fatal;
     }
@@ -274,8 +280,6 @@ static int Seek (access_t *p_access, int64_t i_pos)
 
 static int Control (access_t *p_access, int query, va_list args)
 {
-    access_sys_t *p_sys = p_access->p_sys;
-
     switch (query)
     {
         case ACCESS_CAN_SEEK:
@@ -283,10 +287,6 @@ static int Control (access_t *p_access, int query, va_list args)
         case ACCESS_CAN_PAUSE:
         case ACCESS_CAN_CONTROL_PACE:
             *((bool *)va_arg (args, bool *)) = true;
-            return VLC_SUCCESS;
-
-        case ACCESS_GET_MTU:
-            *((int *)va_arg (args, int *)) = p_sys->mtu;
             return VLC_SUCCESS;
 
         case ACCESS_GET_PTS_DELAY:

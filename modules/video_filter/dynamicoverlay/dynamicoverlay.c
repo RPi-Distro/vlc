@@ -2,7 +2,7 @@
  * dynamicoverlay.c : dynamic overlay plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 02e9a56cd3dbc7a9b5691a81260185462c5b0a8f $
+ * $Id$
  *
  * Author: Soren Bog <avacore@videolan.org>
  *
@@ -61,21 +61,21 @@ static int AdjustCallback( vlc_object_t *p_this, char const *psz_var,
 #define OUTPUT_TEXT N_("Output FIFO")
 #define OUTPUT_LONGTEXT N_("FIFO which will be written to for responses")
 
-vlc_module_begin();
-    set_description( N_("Dynamic video overlay") );
-    set_shortname( N_("Overlay" ));
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_capability( "sub filter", 0 );
+vlc_module_begin ()
+    set_description( N_("Dynamic video overlay") )
+    set_shortname( N_("Overlay" ))
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_capability( "sub filter", 0 )
 
     add_file( "overlay-input", NULL, NULL, INPUT_TEXT, INPUT_LONGTEXT,
-              false );
+              false )
     add_file( "overlay-output", NULL, NULL, OUTPUT_TEXT, OUTPUT_LONGTEXT,
-              false );
+              false )
 
-    add_shortcut( "overlay" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    add_shortcut( "overlay" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "input", "output", NULL
@@ -337,9 +337,6 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         return NULL;
     }
 
-    p_spu->i_flags = OSD_ALIGN_LEFT | OSD_ALIGN_TOP;
-    p_spu->i_x = 0;
-    p_spu->i_y = 0;
     p_spu->b_absolute = true;
     p_spu->i_start = date;
     p_spu->i_stop = 0;
@@ -348,54 +345,33 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     subpicture_region_t **pp_region = &p_spu->p_region;
     while( (p_overlay = ListWalk( &p_sys->overlays )) )
     {
+        subpicture_region_t *p_region;
+
+        *pp_region = p_region = subpicture_region_New( &p_overlay->format );
+        if( !p_region )
+            break;
+
         msg_Dbg( p_filter, "Displaying overlay: %4.4s, %d, %d, %d",
                  (char*)&p_overlay->format.i_chroma, p_overlay->i_x, p_overlay->i_y,
                  p_overlay->i_alpha );
 
         if( p_overlay->format.i_chroma == VLC_FOURCC('T','E','X','T') )
         {
-            *pp_region = p_spu->pf_create_region( VLC_OBJECT(p_filter),
-                                                  &p_overlay->format );
-            if( !*pp_region )
-                break;
-            (*pp_region)->psz_text = strdup( p_overlay->data.p_text );
-            (*pp_region)->p_style = malloc( sizeof(struct text_style_t) );
-            if( !(*pp_region)->p_style )
-            {
-                p_spu->pf_destroy_region( VLC_OBJECT(p_filter), (*pp_region) );
-                *pp_region = NULL;
-                break;
-            }
-            vlc_memcpy( (*pp_region)->p_style, &p_overlay->fontstyle,
-                        sizeof(struct text_style_t) );
+            p_region->psz_text = strdup( p_overlay->data.p_text );
+            p_region->p_style = malloc( sizeof(struct text_style_t) );
+            if( p_region->p_style )
+                *p_region->p_style = p_overlay->fontstyle;
         }
         else
         {
-            picture_t clone;
-            if( vout_AllocatePicture( p_filter, &clone,
-                                      p_overlay->format.i_chroma,
-                                      p_overlay->format.i_width,
-                                      p_overlay->format.i_height,
-                                      p_overlay->format.i_aspect ) )
-            {
-                msg_Err( p_filter, "cannot allocate picture" );
-                continue;
-            }
-            vout_CopyPicture( p_filter, &clone, p_overlay->data.p_pic );
-            *pp_region = p_spu->pf_make_region( VLC_OBJECT(p_filter),
-                                                &p_overlay->format,
-                                                &clone );
-            if( !*pp_region )
-            {
-                msg_Err( p_filter, "cannot allocate subpicture region" );
-                continue;
-            }
+            /* FIXME the copy is probably not needed anymore */
+            picture_Copy( p_region->p_picture, p_overlay->data.p_pic );
         }
-        (*pp_region)->i_x = p_overlay->i_x;
-        (*pp_region)->i_y = p_overlay->i_y;
-        (*pp_region)->i_align = OSD_ALIGN_LEFT | OSD_ALIGN_TOP;
-        (*pp_region)->i_alpha = p_overlay->i_alpha;
-        pp_region = &(*pp_region)->p_next;
+        p_region->i_x = p_overlay->i_x;
+        p_region->i_y = p_overlay->i_y;
+        p_region->i_align = OSD_ALIGN_LEFT | OSD_ALIGN_TOP;
+        p_region->i_alpha = p_overlay->i_alpha;
+        pp_region = &p_region->p_next;
     }
 
     p_sys->b_updated = false;

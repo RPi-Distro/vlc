@@ -2,7 +2,7 @@
  * sd.c: Services discovery related functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: ca855599adf16646a8e4044ac355d2fecd2626f7 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -49,9 +49,8 @@
  *****************************************************************************/
 static int vlclua_sd_get_services_names( lua_State *L )
 {
-    vlc_object_t *p_this = vlclua_get_this( L );
     char **ppsz_longnames;
-    char **ppsz_names = services_discovery_GetServicesNames( p_this, &ppsz_longnames );
+    char **ppsz_names = vlc_sd_GetNames( &ppsz_longnames );
     if( !ppsz_names )
         return 0;
 

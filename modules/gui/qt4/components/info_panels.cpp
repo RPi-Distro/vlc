@@ -2,7 +2,7 @@
  * infopanels.cpp : Panels for the information dialogs
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 191c993ec7294ddade15b26b641aadd597dfd554 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -22,6 +22,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
+
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -30,9 +31,9 @@
 #include "components/info_panels.hpp"
 #include "components/interface_widgets.hpp"
 
+#include <assert.h>
+
 #include <QTreeWidget>
-#include <QListView>
-#include <QPushButton>
 #include <QHeaderView>
 #include <QList>
 #include <QStringList>
@@ -40,7 +41,6 @@
 #include <QLineEdit>
 #include <QLabel>
 #include <QSpinBox>
-#include <QTabWidget>
 
 /************************************************************************
  * Single panels
@@ -106,7 +106,7 @@ MetaPanel::MetaPanel( QWidget *parent,
     line++;
 
     /* ART_URL */
-    art_cover = new CoverArtLabel( VLC_OBJECT( p_intf ) );
+    art_cover = new CoverArtLabel( this, p_intf );
     metaLayout->addWidget( art_cover, line, 8, 4, 2, Qt::AlignRight );
 
 /* Settings is unused */
@@ -153,13 +153,17 @@ MetaPanel::MetaPanel( QWidget *parent,
     b_inEditMode = false;
 }
 
-MetaPanel::~MetaPanel(){}
-
 /**
  * Update all the MetaData and art on an "item-changed" event
  **/
 void MetaPanel::update( input_item_t *p_item )
 {
+    if( !p_item )
+    {
+        clear();
+        return;
+    }
+
     /* Don't update if you are in edit mode */
     if( b_inEditMode ) return;
     else p_input = p_item;
@@ -180,26 +184,25 @@ void MetaPanel::update( input_item_t *p_item )
     free( psz_meta );
 
     /* Name / Title */
-    psz_meta = input_item_GetTitle( p_item );
-    char *psz_name = input_item_GetName( p_item );
-    if( !EMPTY_STR( psz_meta ) )
+    psz_meta = input_item_GetTitleFbName( p_item );
+    if( psz_meta )
+    {
         title_text->setText( qfu( psz_meta ) );
-    else if( !EMPTY_STR( psz_name ) )
-        title_text->setText( qfu( psz_name ) );
-    else title_text->setText( "" );
-    free( psz_meta );
-    free( psz_name );
+        free( psz_meta );
+    }
+    else
+        title_text->setText( "" );
 
     /* URL / URI */
     psz_meta = input_item_GetURL( p_item );
     if( !EMPTY_STR( psz_meta ) )
-        emit uriSet( QString( psz_meta ) );
+        emit uriSet( qfu( psz_meta ) );
     else
     {
         free( psz_meta );
         psz_meta = input_item_GetURI( p_item );
         if( !EMPTY_STR( psz_meta ) )
-            emit uriSet( QString( psz_meta ) );
+            emit uriSet( qfu( psz_meta ) );
     }
     free( psz_meta );
 
@@ -213,7 +216,8 @@ void MetaPanel::update( input_item_t *p_item )
     UPDATE_META( NowPlaying, nowplaying_text );
     UPDATE_META( Publisher, publisher_text );
 //    UPDATE_META( Setting, setting_text );
-//    UPDATE_META( EncodedBy, encodedby_text );
+//FIXME this is wrong if has Publisher and EncodedBy fields
+    UPDATE_META( EncodedBy, publisher_text );
 
     UPDATE_META( Date, date_text );
     UPDATE_META( TrackNum, seqnum_text );
@@ -222,8 +226,6 @@ void MetaPanel::update( input_item_t *p_item )
 #undef UPDATE_META_INT
 #undef UPDATE_META
 
-    /* Update Art */
-    art_cover->update( p_item );
 }
 
 /**
@@ -268,13 +270,13 @@ void MetaPanel::saveMeta()
     input_item_SetPublisher( p_input, qtu( publisher_text->text() ) );
     input_item_SetDescription( p_input, qtu( description_text->text() ) );
 
-    p_playlist = pl_Yield( p_intf );
+    p_playlist = pl_Hold( p_intf );
     PL_LOCK;
     p_playlist->p_private = &p_export;
 
-    module_t *p_mod = module_Need( p_playlist, "meta writer", NULL, 0 );
+    module_t *p_mod = module_need( p_playlist, "meta writer", NULL, false );
     if( p_mod )
-        module_Unneed( p_playlist, p_mod );
+        module_unneed( p_playlist, p_mod );
     PL_UNLOCK;
     pl_Release( p_intf );
 
@@ -317,9 +319,9 @@ void MetaPanel::clear()
     language_text->clear();
     nowplaying_text->clear();
     publisher_text->clear();
-    art_cover->update( NULL );
 
     setEditMode( false );
+    emit uriSet( "" );
 }
 
 /**
@@ -354,7 +356,12 @@ ExtraMetaPanel::ExtraMetaPanel( QWidget *parent,
  **/
 void ExtraMetaPanel::update( input_item_t *p_item )
 {
-    QStringList tempItem;
+    if( !p_item )
+    {
+        clear();
+        return;
+    }
+
     QList<QTreeWidgetItem *> items;
 
     extraMetaTree->clear();
@@ -374,6 +381,7 @@ void ExtraMetaPanel::update( input_item_t *p_item )
     {
         const char * psz_value = (const char *)vlc_dictionary_value_for_key(
                 p_dict, ppsz_allkey[i] );
+        QStringList tempItem;
         tempItem.append( qfu( ppsz_allkey[i] ) + " : ");
         tempItem.append( qfu( psz_value ) );
         items.append( new QTreeWidgetItem ( extraMetaTree, tempItem ) );
@@ -418,15 +426,17 @@ InfoPanel::InfoPanel( QWidget *parent,
      layout->addWidget(InfoTree, 1, 0 );
 }
 
-InfoPanel::~InfoPanel()
-{
-}
-
 /**
  * Update the Codecs information on parent->update()
  **/
 void InfoPanel::update( input_item_t *p_item)
 {
+    if( !p_item )
+    {
+        clear();
+        return;
+    }
+
     InfoTree->clear();
     QTreeWidgetItem *current_item = NULL;
     QTreeWidgetItem *child_item = NULL;
@@ -516,6 +526,10 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
     CREATE_AND_ADD_TO_CAT( demuxed_stat, qtr("Demuxed"), "0", input, "kB") ;
     CREATE_AND_ADD_TO_CAT( stream_bitrate_stat, qtr("Stream bitrate"),
                            "0", input, "kb/s" );
+    CREATE_AND_ADD_TO_CAT( corrupted_stat, qtr("Corrupted"),
+                           "0", input, "" );
+    CREATE_AND_ADD_TO_CAT( discontinuity_stat, qtr("Discontinuities"),
+                           "0", input, "" );
 
     CREATE_AND_ADD_TO_CAT( vdecoded_stat, qtr("Decoded blocks"),
                            "0", video, "" );
@@ -523,7 +537,6 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
                            "0", video, "" );
     CREATE_AND_ADD_TO_CAT( vlost_frames_stat, qtr("Lost frames"),
                            "0", video, "" );
-//    CREATE_AND_ADD_TO_CAT( vfps_stat, qtr("FPS"), "0", video, "" );
 
     CREATE_AND_ADD_TO_CAT( send_stat, qtr("Sent packets"), "0", streaming, "" );
     CREATE_AND_ADD_TO_CAT( send_bytes_stat, qtr("Sent bytes"),
@@ -537,6 +550,10 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
                            "0", audio, "" );
     CREATE_AND_ADD_TO_CAT( alost_stat, qtr("Lost buffers"), "0", audio, "" );
 
+#undef CREATE_AND_ADD_TO_CAT
+#undef CREATE_CATEGORY
+#undef CREATE_TREE_ITEM
+
     input->setExpanded( true );
     video->setExpanded( true );
     streaming->setExpanded( true );
@@ -548,15 +565,12 @@ InputStatsPanel::InputStatsPanel( QWidget *parent,
     layout->addWidget(StatsTree, 1, 0 );
 }
 
-InputStatsPanel::~InputStatsPanel()
-{
-}
-
 /**
  * Update the Statistics
  **/
 void InputStatsPanel::update( input_item_t *p_item )
 {
+    assert( p_item );
     vlc_mutex_lock( &p_item->p_stats->lock );
 
 #define UPDATE( widget, format, calc... ) \
@@ -570,13 +584,13 @@ void InputStatsPanel::update( input_item_t *p_item )
                     (float)(p_item->p_stats->i_demux_read_bytes)/1000 );
     UPDATE( stream_bitrate_stat, "%6.0f",
                     (float)(p_item->p_stats->f_demux_bitrate * 8000 ));
+    UPDATE( corrupted_stat, "%5i", p_item->p_stats->i_demux_corrupted );
+    UPDATE( discontinuity_stat, "%5i", p_item->p_stats->i_demux_discontinuity );
 
     /* Video */
     UPDATE( vdecoded_stat, "%5i", p_item->p_stats->i_decoded_video );
     UPDATE( vdisplayed_stat, "%5i", p_item->p_stats->i_displayed_pictures );
     UPDATE( vlost_frames_stat, "%5i", p_item->p_stats->i_lost_pictures );
-/*  UPDATE( vfps_stat, "%5f", p_item->p_stats->i_lost_pictures );
-input_Control( p_input_thread, INPUT_GET_VIDEO_FPS, &f_fps */
 
     /* Sout */
     UPDATE( send_stat, "%5i", p_item->p_stats->i_sent_packets );
@@ -590,9 +604,12 @@ input_Control( p_input_thread, INPUT_GET_VIDEO_FPS, &f_fps */
     UPDATE( aplayed_stat, "%5i", p_item->p_stats->i_played_abuffers );
     UPDATE( alost_stat, "%5i", p_item->p_stats->i_lost_abuffers );
 
+#undef UPDATE
+
     vlc_mutex_unlock(& p_item->p_stats->lock );
 }
 
 void InputStatsPanel::clear()
 {
 }
+

@@ -2,7 +2,7 @@
  * vcd.c : VCD input module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 575ff326686a9b0343a577442561414b1196f725 $
+ * $Id$
  *
  * Author: Johan Bilien <jobi@via.ecp.fr>
  *
@@ -48,20 +48,20 @@ static void Close( vlc_object_t * );
     "Caching value for VCDs. This " \
     "value should be set in milliseconds." )
 
-vlc_module_begin();
-    set_shortname( N_("VCD"));
-    set_description( N_("VCD input") );
-    set_capability( "access", 60 );
-    set_callbacks( Open, Close );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
+vlc_module_begin ()
+    set_shortname( N_("VCD"))
+    set_description( N_("VCD input") )
+    set_capability( "access", 60 )
+    set_callbacks( Open, Close )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
 
-    add_usage_hint( N_("[vcd:][device][@[title][,[chapter]]]") );
+    add_usage_hint( N_("[vcd:][device][@[title][,[chapter]]]") )
     add_integer( "vcd-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, true );
-    add_shortcut( "vcd" );
-    add_shortcut( "svcd" );
-vlc_module_end();
+                 CACHING_LONGTEXT, true )
+    add_shortcut( "vcd" )
+    add_shortcut( "svcd" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -154,8 +154,9 @@ static int Open( vlc_object_t *p_this )
     p_access->info.b_eof = false;
     p_access->info.i_title = 0;
     p_access->info.i_seekpoint = 0;
-    p_access->p_sys = p_sys = malloc( sizeof( access_sys_t ) );
-    memset( p_sys, 0, sizeof( access_sys_t ) );
+    p_access->p_sys = p_sys = calloc( 1, sizeof( access_sys_t ) );
+    if( !p_sys )
+        goto error;
     p_sys->vcddev = vcddev;
 
     /* We read the Table Of Content information */
@@ -179,8 +180,8 @@ static int Open( vlc_object_t *p_this )
     {
         input_title_t *t = p_sys->title[i] = vlc_input_title_New();
 
-        msg_Dbg( p_access, "title[%d] start=%d\n", i, p_sys->p_sectors[1+i] );
-        msg_Dbg( p_access, "title[%d] end=%d\n", i, p_sys->p_sectors[i+2] );
+        msg_Dbg( p_access, "title[%d] start=%d", i, p_sys->p_sectors[1+i] );
+        msg_Dbg( p_access, "title[%d] end=%d", i, p_sys->p_sectors[i+2] );
 
         t->i_size = ( p_sys->p_sectors[i+2] - p_sys->p_sectors[i+1] ) *
                     (int64_t)VCD_DATA_SIZE;
@@ -258,11 +259,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = VCD_DATA_ONCE;
-            break;
-
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = var_GetInteger( p_access, "vcd-caching" ) * 1000;
@@ -494,7 +490,7 @@ static int EntryPoints( access_t *p_access )
         if( i_title < 0 ) continue;   /* Should not occur */
         if( i_title >= p_sys->i_titles ) continue;
 
-        msg_Dbg( p_access, "Entry[%d] title=%d sector=%d\n",
+        msg_Dbg( p_access, "Entry[%d] title=%d sector=%d",
                  i, i_title, i_sector );
 
         s = vlc_seekpoint_New();

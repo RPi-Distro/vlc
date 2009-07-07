@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 1c2b0b80cf6f4d1ac61cad42f94998cb1951def6 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -32,6 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_codec.h>
+#include <vlc_avcodec.h>
 
 /* ffmpeg header */
 #define HAVE_MMX 1
@@ -48,7 +49,6 @@
 #endif
 
 #include "avcodec.h"
-#include "fourcc.h"
 #include "avutil.h"
 
 /*****************************************************************************
@@ -83,124 +83,127 @@ static const char *const enc_hq_list_text[] = {
         "delivered by the FFmpeg library. This includes (MS)MPEG4, DivX, SV1,"\
         "H261, H263, H264, WMV, WMA, AAC, AMR, DV, MJPEG and other codecs")
 
-vlc_module_begin();
-    set_shortname( "FFmpeg");
-    add_shortcut( "ffmpeg" );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_SCODEC );
+vlc_module_begin ()
+    set_shortname( "FFmpeg")
+    add_shortcut( "ffmpeg" )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_SCODEC )
     /* decoder main module */
 #if defined(MODULE_NAME_is_ffmpegaltivec) \
      || (defined(CAN_COMPILE_ALTIVEC) && !defined(NO_ALTIVEC_IN_FFMPEG))
-    set_description( N_("AltiVec FFmpeg audio/video decoder ((MS)MPEG4,SVQ1,H263,WMV,WMA)") );
-    /*add_requirement( ALTIVEC );*/
-    set_capability( "decoder", 71 );
+    set_description( N_("AltiVec FFmpeg audio/video decoder ((MS)MPEG4,SVQ1,H263,WMV,WMA)") )
+    /*add_requirement( ALTIVEC )*/
+    set_capability( "decoder", 71 )
 #else
-    set_description( N_("FFmpeg audio/video decoder") );
-    set_help( MODULE_DESCRIPTION );
-    set_capability( "decoder", 70 );
+    set_description( N_("FFmpeg audio/video decoder") )
+    set_help( MODULE_DESCRIPTION )
+    set_capability( "decoder", 70 )
 #endif
-    set_section( N_("Decoding") , NULL );
-    set_callbacks( OpenDecoder, CloseDecoder );
+    set_section( N_("Decoding") , NULL )
+    set_callbacks( OpenDecoder, CloseDecoder )
 
 
-    add_bool( "ffmpeg-dr", 1, NULL, DR_TEXT, DR_TEXT, true );
+    add_bool( "ffmpeg-dr", 1, NULL, DR_TEXT, DR_TEXT, true )
     add_integer ( "ffmpeg-error-resilience", 1, NULL, ERROR_TEXT,
-        ERROR_LONGTEXT, true );
+        ERROR_LONGTEXT, true )
     add_integer ( "ffmpeg-workaround-bugs", 1, NULL, BUGS_TEXT, BUGS_LONGTEXT,
-        false );
+        false )
     add_bool( "ffmpeg-hurry-up", 1, NULL, HURRYUP_TEXT, HURRYUP_LONGTEXT,
-        false );
+        false )
     add_integer( "ffmpeg-skip-frame", 0, NULL, SKIP_FRAME_TEXT,
-        SKIP_FRAME_LONGTEXT, true );
-        change_integer_range( -1, 4 );
+        SKIP_FRAME_LONGTEXT, true )
+        change_integer_range( -1, 4 )
     add_integer( "ffmpeg-skip-idct", 0, NULL, SKIP_IDCT_TEXT,
-        SKIP_IDCT_LONGTEXT, true );
-        change_integer_range( -1, 4 );
+        SKIP_IDCT_LONGTEXT, true )
+        change_integer_range( -1, 4 )
     add_integer ( "ffmpeg-vismv", 0, NULL, VISMV_TEXT, VISMV_LONGTEXT,
-        true );
+        true )
     add_integer ( "ffmpeg-lowres", 0, NULL, LOWRES_TEXT, LOWRES_LONGTEXT,
-        true );
-        change_integer_range( 0, 2 );
+        true )
+        change_integer_range( 0, 2 )
+    add_bool( "ffmpeg-fast", 0, NULL, FAST_TEXT, FAST_LONGTEXT, true )
     add_integer ( "ffmpeg-skiploopfilter", 0, NULL, SKIPLOOPF_TEXT,
-                  SKIPLOOPF_LONGTEXT, true );
-        change_integer_list( nloopf_list, nloopf_list_text, NULL );
+                  SKIPLOOPF_LONGTEXT, true )
+        change_safe ()
+        change_integer_list( nloopf_list, nloopf_list_text, NULL )
 
     add_integer( "ffmpeg-debug", 0, NULL, DEBUG_TEXT, DEBUG_LONGTEXT,
-                 true );
+                 true )
 
 #ifdef ENABLE_SOUT
     /* encoder submodule */
-    add_submodule();
-    set_section( N_("Encoding") , NULL );
-    set_description( N_("FFmpeg audio/video encoder") );
-    set_capability( "encoder", 100 );
-    set_callbacks( OpenEncoder, CloseEncoder );
+    add_submodule ()
+    add_shortcut( "ffmpeg" )
+    set_section( N_("Encoding") , NULL )
+    set_description( N_("FFmpeg audio/video encoder") )
+    set_capability( "encoder", 100 )
+    set_callbacks( OpenEncoder, CloseEncoder )
 
     add_string( ENC_CFG_PREFIX "hq", "simple", NULL, ENC_HQ_TEXT,
-                ENC_HQ_LONGTEXT, false );
-        change_string_list( enc_hq_list, enc_hq_list_text, 0 );
+                ENC_HQ_LONGTEXT, false )
+        change_string_list( enc_hq_list, enc_hq_list_text, 0 )
     add_integer( ENC_CFG_PREFIX "keyint", 0, NULL, ENC_KEYINT_TEXT,
-                 ENC_KEYINT_LONGTEXT, false );
+                 ENC_KEYINT_LONGTEXT, false )
     add_integer( ENC_CFG_PREFIX "bframes", 0, NULL, ENC_BFRAMES_TEXT,
-                 ENC_BFRAMES_LONGTEXT, false );
+                 ENC_BFRAMES_LONGTEXT, false )
     add_bool( ENC_CFG_PREFIX "hurry-up", 0, NULL, ENC_HURRYUP_TEXT,
-              ENC_HURRYUP_LONGTEXT, false );
+              ENC_HURRYUP_LONGTEXT, false )
     add_bool( ENC_CFG_PREFIX "interlace", 0, NULL, ENC_INTERLACE_TEXT,
-              ENC_INTERLACE_LONGTEXT, true );
+              ENC_INTERLACE_LONGTEXT, true )
     add_bool( ENC_CFG_PREFIX "interlace-me", 1, NULL, ENC_INTERLACE_ME_TEXT,
-              ENC_INTERLACE_ME_LONGTEXT, true );
+              ENC_INTERLACE_ME_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "vt", 0, NULL, ENC_VT_TEXT,
-                 ENC_VT_LONGTEXT, true );
+                 ENC_VT_LONGTEXT, true )
     add_bool( ENC_CFG_PREFIX "pre-me", 0, NULL, ENC_PRE_ME_TEXT,
-              ENC_PRE_ME_LONGTEXT, true );
+              ENC_PRE_ME_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "rc-buffer-size", 224*1024*8, NULL,
-                 ENC_RC_BUF_TEXT, ENC_RC_BUF_LONGTEXT, true );
+                 ENC_RC_BUF_TEXT, ENC_RC_BUF_LONGTEXT, true )
     add_float( ENC_CFG_PREFIX "rc-buffer-aggressivity", 1.0, NULL,
-               ENC_RC_BUF_AGGR_TEXT, ENC_RC_BUF_AGGR_LONGTEXT, true );
+               ENC_RC_BUF_AGGR_TEXT, ENC_RC_BUF_AGGR_LONGTEXT, true )
     add_float( ENC_CFG_PREFIX "i-quant-factor", 0, NULL,
-               ENC_IQUANT_FACTOR_TEXT, ENC_IQUANT_FACTOR_LONGTEXT, true );
+               ENC_IQUANT_FACTOR_TEXT, ENC_IQUANT_FACTOR_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "noise-reduction", 0, NULL,
-                 ENC_NOISE_RED_TEXT, ENC_NOISE_RED_LONGTEXT, true );
+                 ENC_NOISE_RED_TEXT, ENC_NOISE_RED_LONGTEXT, true )
     add_bool( ENC_CFG_PREFIX "mpeg4-matrix", 0, NULL,
-              ENC_MPEG4_MATRIX_TEXT, ENC_MPEG4_MATRIX_LONGTEXT, true );
+              ENC_MPEG4_MATRIX_TEXT, ENC_MPEG4_MATRIX_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "qmin", 0, NULL,
-                 ENC_QMIN_TEXT, ENC_QMIN_LONGTEXT, true );
+                 ENC_QMIN_TEXT, ENC_QMIN_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "qmax", 0, NULL,
-                 ENC_QMAX_TEXT, ENC_QMAX_LONGTEXT, true );
+                 ENC_QMAX_TEXT, ENC_QMAX_LONGTEXT, true )
     add_bool( ENC_CFG_PREFIX "trellis", 0, NULL,
-              ENC_TRELLIS_TEXT, ENC_TRELLIS_LONGTEXT, true );
+              ENC_TRELLIS_TEXT, ENC_TRELLIS_LONGTEXT, true )
     add_float( ENC_CFG_PREFIX "qscale", 0, NULL,
-               ENC_QSCALE_TEXT, ENC_QSCALE_LONGTEXT, true );
+               ENC_QSCALE_TEXT, ENC_QSCALE_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "strict", 0, NULL,
-                 ENC_STRICT_TEXT, ENC_STRICT_LONGTEXT, true );
+                 ENC_STRICT_TEXT, ENC_STRICT_LONGTEXT, true )
     add_float( ENC_CFG_PREFIX "lumi-masking", 0.0, NULL,
-               ENC_LUMI_MASKING_TEXT, ENC_LUMI_MASKING_LONGTEXT, true );
+               ENC_LUMI_MASKING_TEXT, ENC_LUMI_MASKING_LONGTEXT, true )
     add_float( ENC_CFG_PREFIX "dark-masking", 0.0, NULL,
-               ENC_DARK_MASKING_TEXT, ENC_DARK_MASKING_LONGTEXT, true );
+               ENC_DARK_MASKING_TEXT, ENC_DARK_MASKING_LONGTEXT, true )
     add_float( ENC_CFG_PREFIX "p-masking", 0.0, NULL,
-               ENC_P_MASKING_TEXT, ENC_P_MASKING_LONGTEXT, true );
+               ENC_P_MASKING_TEXT, ENC_P_MASKING_LONGTEXT, true )
     add_float( ENC_CFG_PREFIX "border-masking", 0.0, NULL,
-               ENC_BORDER_MASKING_TEXT, ENC_BORDER_MASKING_LONGTEXT, true );
+               ENC_BORDER_MASKING_TEXT, ENC_BORDER_MASKING_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "luma-elim-threshold", 0, NULL,
-                 ENC_LUMA_ELIM_TEXT, ENC_LUMA_ELIM_LONGTEXT, true );
+                 ENC_LUMA_ELIM_TEXT, ENC_LUMA_ELIM_LONGTEXT, true )
     add_integer( ENC_CFG_PREFIX "chroma-elim-threshold", 0, NULL,
-                 ENC_CHROMA_ELIM_TEXT, ENC_CHROMA_ELIM_LONGTEXT, true );
+                 ENC_CHROMA_ELIM_TEXT, ENC_CHROMA_ELIM_LONGTEXT, true )
 
 #if LIBAVCODEC_VERSION_INT >= ((51<<16)+(40<<8)+4)
     /* Audio AAC encoder profile */
     add_string( ENC_CFG_PREFIX "aac-profile", "low", NULL,
-                ENC_PROFILE_TEXT, ENC_PROFILE_LONGTEXT, true );
+                ENC_PROFILE_TEXT, ENC_PROFILE_LONGTEXT, true )
 #endif
 #endif /* ENABLE_SOUT */
 
     /* video filter submodule */
-    add_submodule();
-    set_capability( "video filter2", 0 );
-    set_callbacks( OpenDeinterlace, CloseDeinterlace );
-    set_description( N_("FFmpeg deinterlace video filter") );
-    add_shortcut( "ffmpeg-deinterlace" );
+    add_submodule ()
+    set_capability( "video filter2", 0 )
+    set_callbacks( OpenDeinterlace, CloseDeinterlace )
+    set_description( N_("FFmpeg deinterlace video filter") )
+    add_shortcut( "ffmpeg-deinterlace" )
 
-vlc_module_end();
+vlc_module_end ()
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -218,14 +221,6 @@ static int OpenDecoder( vlc_object_t *p_this )
     if( !GetFfmpegCodec( p_dec->fmt_in.i_codec, &i_cat, &i_codec_id,
                              &psz_namecodec ) )
     {
-        return VLC_EGENERIC;
-    }
-
-    /* Bail out if buggy decoder */
-    if( i_codec_id == CODEC_ID_AAC )
-    {
-        msg_Dbg( p_dec, "refusing to use ffmpeg's (%s) decoder which is buggy",
-                 psz_namecodec );
         return VLC_EGENERIC;
     }
 
@@ -313,15 +308,15 @@ static void CloseDecoder( vlc_object_t *p_this )
 
     if( p_sys->p_context )
     {
-        vlc_mutex_t *lock;
-
-        if( p_sys->p_context->extradata )
-            free( p_sys->p_context->extradata );
+        free( p_sys->p_context->extradata );
         p_sys->p_context->extradata = NULL;
 
-        lock = var_AcquireMutex( "avcodec" );
-        avcodec_close( p_sys->p_context );
-        vlc_mutex_unlock( lock );
+        if( !p_sys->b_delayed_open )
+        {
+            vlc_avcodec_lock();
+            avcodec_close( p_sys->p_context );
+            vlc_avcodec_unlock();
+        }
         msg_Dbg( p_dec, "ffmpeg codec (%s) stopped", p_sys->psz_namecodec );
         av_free( p_sys->p_context );
     }
@@ -331,8 +326,9 @@ static void CloseDecoder( vlc_object_t *p_this )
 
 void InitLibavcodec( vlc_object_t *p_object )
 {
-    static int b_ffmpeginit = 0;
-    vlc_mutex_t *lock = var_AcquireMutex( "avcodec" );
+    static bool b_ffmpeginit = false;
+
+    vlc_avcodec_lock();
 
     /* *** init ffmpeg library (libavcodec) *** */
     if( !b_ffmpeginit )
@@ -340,9 +336,9 @@ void InitLibavcodec( vlc_object_t *p_object )
         avcodec_init();
         avcodec_register_all();
         av_log_set_callback( LibavutilCallback );
-        b_ffmpeginit = 1;
+        b_ffmpeginit = true;
 
-        msg_Dbg( p_object, "libavcodec initialized (interface %d )",
+        msg_Dbg( p_object, "libavcodec initialized (interface 0x%x)",
                  LIBAVCODEC_VERSION_INT );
     }
     else
@@ -350,5 +346,5 @@ void InitLibavcodec( vlc_object_t *p_object )
         msg_Dbg( p_object, "libavcodec already initialized" );
     }
 
-    vlc_mutex_unlock( lock );
+    vlc_avcodec_unlock();
 }

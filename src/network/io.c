@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005, 2007 the VideoLAN team
  * Copyright © 2005-2006 Rémi Denis-Courmont
- * $Id: 5fda12293c7153da9390a75fbc0fc72722689bf5 $
+ * $Id: 313e0e8a9494ce83aa46d4ca5ba638d060e0832c $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -73,6 +73,8 @@
 # include <linux/dccp.h>
 # define SOL_DCCP 269
 #endif
+
+#include "libvlc.h" /* vlc_object_waitpipe */
 
 extern int rootwrap_bind (int family, int socktype, int protocol,
                           const struct sockaddr *addr, size_t alen);
@@ -217,8 +219,8 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
             net_Close (fd);
 #if !defined(WIN32) && !defined(UNDER_CE)
             fd = rootwrap_bind (ptr->ai_family, socktype,
-                                protocol ?: ptr->ai_protocol, ptr->ai_addr,
-                                ptr->ai_addrlen);
+                                protocol ? protocol : ptr->ai_protocol,
+                                ptr->ai_addr, ptr->ai_addrlen);
             if (fd != -1)
             {
                 msg_Dbg (p_this, "got socket %d from rootwrap", fd);
@@ -279,14 +281,14 @@ int *net_Listen (vlc_object_t *p_this, const char *psz_host,
 /*****************************************************************************
  * __net_Read:
  *****************************************************************************
- * Reads from a network socket.
+ * Reads from a network socket. Cancellation point.
  * If waitall is true, then we repeat until we have read the right amount of
  * data; in that case, a short count means EOF has been reached or the VLC
  * object has been signaled.
  *****************************************************************************/
 ssize_t
 __net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
-            uint8_t *restrict p_buf, size_t i_buflen, bool waitall)
+            void *restrict p_buf, size_t i_buflen, bool waitall)
 {
     size_t i_total = 0;
     struct pollfd ufd[2] = {
@@ -341,7 +343,9 @@ __net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
         ssize_t n;
         if (vs != NULL)
         {
+            int canc = vlc_savecancel ();
             n = vs->pf_recv (vs->p_sys, p_buf, i_buflen);
+            vlc_restorecancel (canc);
         }
         else
         {
@@ -395,7 +399,7 @@ __net_Read (vlc_object_t *restrict p_this, int fd, const v_socket_t *vs,
             break; // EOF
 
         i_total += n;
-        p_buf += n;
+        p_buf = (char *)p_buf + n;
         i_buflen -= n;
 
         if (!waitall)
@@ -413,7 +417,7 @@ silent:
 
 /* Write exact amount requested */
 ssize_t __net_Write( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
-                     const uint8_t *p_data, size_t i_data )
+                     const void *restrict p_data, size_t i_data )
 {
     size_t i_total = 0;
     struct pollfd ufd[2] = {
@@ -474,7 +478,7 @@ ssize_t __net_Write( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
             break;
         }
 
-        p_data += val;
+        p_data = (const char *)p_data + val;
         i_data -= val;
         i_total += val;
     }
@@ -486,6 +490,13 @@ error:
     return -1;
 }
 
+/**
+ * Reads a line from a file descriptor.
+ * This function is not thread-safe; the same file descriptor cI/O annot be read
+ * by another thread at the same time (although it can be written to).
+ *
+ * @return nul-terminated heap-allocated string, or NULL on I/O error.
+ */
 char *__net_Gets( vlc_object_t *p_this, int fd, const v_socket_t *p_vs )
 {
     char *psz_line = NULL, *ptr = NULL;
@@ -501,7 +512,7 @@ char *__net_Gets( vlc_object_t *p_this, int fd, const v_socket_t *p_vs )
             ptr = psz_line + i_line;
         }
 
-        if( net_Read( p_this, fd, p_vs, (uint8_t *)ptr, 1, true ) != 1 )
+        if( net_Read( p_this, fd, p_vs, ptr, 1, true ) != 1 )
         {
             if( i_line == 0 )
             {
@@ -547,24 +558,9 @@ ssize_t __net_vaPrintf( vlc_object_t *p_this, int fd, const v_socket_t *p_vs,
     int i_size = vasprintf( &psz, psz_fmt, args );
     if( i_size == -1 )
         return -1;
-    i_ret = __net_Write( p_this, fd, p_vs, (uint8_t *)psz, i_size ) < i_size
+    i_ret = __net_Write( p_this, fd, p_vs, psz, i_size ) < i_size
         ? -1 : i_size;
     free( psz );
 
     return i_ret;
 }
-
-#ifdef WIN32
-    /* vlc_sendmsg, vlc_recvmsg Defined in winsock.c */
-#else /* !WIN32 */
-ssize_t vlc_sendmsg (int s, struct msghdr *hdr, int flags)
-{
-    return sendmsg (s, hdr, flags);
-}
-
-ssize_t vlc_recvmsg (int s, struct msghdr *hdr, int flags)
-{
-    return recvmsg (s, hdr, flags);
-}
-#endif /* WIN32 */
-

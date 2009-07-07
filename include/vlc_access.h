@@ -2,7 +2,7 @@
  * vlc_access.h: Access descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
- * $Id: 9ddc64a3168aa0d380e6bba2b18dfb8b705fdfe0 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -45,15 +45,20 @@ enum access_query_e
     ACCESS_CAN_CONTROL_PACE,/* arg1= bool*    cannot fail */
 
     /* */
-    ACCESS_GET_MTU,         /* arg1= int*           cannot fail(0 if no sense)*/
-    ACCESS_GET_PTS_DELAY,   /* arg1= int64_t*       cannot fail */
+    ACCESS_GET_PTS_DELAY = 0x101,/* arg1= int64_t*       cannot fail */
     /* */
-    ACCESS_GET_TITLE_INFO,  /* arg1=input_title_t*** arg2=int* can fail */
+    ACCESS_GET_TITLE_INFO,  /* arg1=input_title_t*** arg2=int*      res=can fail */
     /* Meta data */
-    ACCESS_GET_META,        /* arg1= vlc_meta_t **  res=can fail    */
+    ACCESS_GET_META,        /* arg1= vlc_meta_t **                  res=can fail */
 
     /* */
-    ACCESS_SET_PAUSE_STATE, /* arg1= bool     can fail */
+    ACCESS_GET_CONTENT_TYPE,/* arg1=char **ppsz_content_type                       res=can fail */
+
+    /* */
+    ACCESS_GET_SIGNAL,      /* arg1=double *pf_quality, arg2=double *pf_strength   res=can fail */
+
+    /* */
+    ACCESS_SET_PAUSE_STATE = 0x200, /* arg1= bool           can fail */
 
     /* */
     ACCESS_SET_TITLE,       /* arg1= int            can fail */
@@ -61,11 +66,9 @@ enum access_query_e
 
     /* Special mode for access/demux communication
      * XXX: avoid to use it unless you can't */
-    ACCESS_SET_PRIVATE_ID_STATE,    /* arg1= int i_private_data, bool b_selected can fail */
-    ACCESS_SET_PRIVATE_ID_CA,    /* arg1= int i_program_number, uint16_t i_vpid, uint16_t i_apid1, uint16_t i_apid2, uint16_t i_apid3, uint8_t i_length, uint8_t *p_data */
-    ACCESS_GET_PRIVATE_ID_STATE,    /* arg1=int i_private_data arg2=bool *  res=can fail */
-
-    ACCESS_GET_CONTENT_TYPE, /* arg1=char **ppsz_content_type */
+    ACCESS_SET_PRIVATE_ID_STATE = 0x1000, /* arg1= int i_private_data, bool b_selected    res=can fail */
+    ACCESS_SET_PRIVATE_ID_CA,             /* arg1= int i_program_number, uint16_t i_vpid, uint16_t i_apid1, uint16_t i_apid2, uint16_t i_apid3, uint8_t i_length, uint8_t *p_data */
+    ACCESS_GET_PRIVATE_ID_STATE,          /* arg1=int i_private_data arg2=bool *          res=can fail */
 };
 
 struct access_t
@@ -79,8 +82,6 @@ struct access_t
     char        *psz_access;
     /* Access path/url/filename/.... */
     char        *psz_path;
-    /* Access source for access_filter (NULL for regular access) */
-    access_t    *p_source;
 
     /* Access can fill this entry to force a demuxer
      * XXX: fill it once you know for sure you will succeed
@@ -108,12 +109,10 @@ struct access_t
 
         int64_t      i_size;    /* Write only for access, read only for input */
         int64_t      i_pos;     /* idem */
-        bool   b_eof;     /* idem */
+        bool         b_eof;     /* idem */
 
         int          i_title;    /* idem, start from 0 (could be menu) */
         int          i_seekpoint;/* idem, start from 0 */
-
-        bool   b_prebuffered; /* Read only for input */
     } info;
     access_sys_t *p_sys;
 };
@@ -135,14 +134,6 @@ static inline int access_Control( access_t *p_access, int i_query, ... )
     return i_result;
 }
 
-static inline char *access_GetContentType( access_t *p_access )
-{
-    char *res;
-    if( access_Control( p_access, ACCESS_GET_CONTENT_TYPE, &res ) )
-        return NULL;
-    return res;
-}
-
 static inline void access_InitFields( access_t *p_a )
 {
     p_a->info.i_update = 0;
@@ -153,22 +144,22 @@ static inline void access_InitFields( access_t *p_a )
     p_a->info.i_seekpoint = 0;
 }
 
-#define ACCESS_SET_CALLBACKS( read, block, control, seek ) \
-    p_access->pf_read = read;  \
-    p_access->pf_block = block; \
-    p_access->pf_control = control; \
-    p_access->pf_seek = seek; \
+#define ACCESS_SET_CALLBACKS( read, block, control, seek )              \
+    p_access->pf_read = read;                                           \
+    p_access->pf_block = block;                                         \
+    p_access->pf_control = control;                                     \
+    p_access->pf_seek = seek;
 
-#define STANDARD_READ_ACCESS_INIT \
-    access_InitFields( p_access ); \
-    ACCESS_SET_CALLBACKS( Read, NULL, Control, Seek ); \
-    MALLOC_ERR( p_access->p_sys, access_sys_t ); \
-    p_sys = p_access->p_sys; memset( p_sys, 0, sizeof( access_sys_t ) );
+#define STANDARD_READ_ACCESS_INIT                                       \
+    access_InitFields( p_access );                                      \
+    ACCESS_SET_CALLBACKS( Read, NULL, Control, Seek );                  \
+    p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ));       \
+    if( !p_sys ) return VLC_ENOMEM;
 
-#define STANDARD_BLOCK_ACCESS_INIT \
-    access_InitFields( p_access ); \
-    ACCESS_SET_CALLBACKS( NULL, Block, Control, Seek ); \
-    MALLOC_ERR( p_access->p_sys, access_sys_t ); \
-    p_sys = p_access->p_sys; memset( p_sys, 0, sizeof( access_sys_t ) );
+#define STANDARD_BLOCK_ACCESS_INIT                                      \
+    access_InitFields( p_access );                                      \
+    ACCESS_SET_CALLBACKS( NULL, Block, Control, Seek );                 \
+    p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ) );      \
+    if( !p_sys ) return VLC_ENOMEM;
 
 #endif

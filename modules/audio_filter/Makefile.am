@@ -18,7 +18,7 @@ libaudio_format_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaudio_format_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaudio_format_plugin_la_LIBADD = $(AM_LIBADD)
-libaudio_format_plugin_la_DEPENDENCIES =
+libaudio_format_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The equalizer plugin
 libequalizer_plugin_la_SOURCES = $(SOURCES_equalizer)
@@ -29,7 +29,7 @@ libequalizer_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libequalizer_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libequalizer_plugin_la_LIBADD = $(AM_LIBADD)
-libequalizer_plugin_la_DEPENDENCIES =
+libequalizer_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The normvol plugin
 libnormvol_plugin_la_SOURCES = $(SOURCES_normvol)
@@ -40,7 +40,7 @@ libnormvol_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libnormvol_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libnormvol_plugin_la_LIBADD = $(AM_LIBADD)
-libnormvol_plugin_la_DEPENDENCIES =
+libnormvol_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The param_eq plugin
 libparam_eq_plugin_la_SOURCES = $(SOURCES_param_eq)
@@ -51,7 +51,7 @@ libparam_eq_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libparam_eq_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libparam_eq_plugin_la_LIBADD = $(AM_LIBADD)
-libparam_eq_plugin_la_DEPENDENCIES =
+libparam_eq_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The scaletempo plugin
 libscaletempo_plugin_la_SOURCES = $(SOURCES_scaletempo)
@@ -62,5 +62,5 @@ libscaletempo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libscaletempo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libscaletempo_plugin_la_LIBADD = $(AM_LIBADD)
-libscaletempo_plugin_la_DEPENDENCIES =
+libscaletempo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

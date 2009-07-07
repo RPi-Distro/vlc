@@ -2,7 +2,7 @@
  * vlc_block_helper.h: Helper functions for data blocks management.
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 679d0e5152a9b335cd2bff18b8ea875187e5bc9c $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *
@@ -60,6 +60,19 @@ static inline void block_BytestreamRelease( block_bytestream_t *p_bytestream )
     p_bytestream->p_chain = p_bytestream->p_block = NULL;
 }
 
+/**
+ * It flush all data (read and unread) from a block_bytestream_t.
+ */
+static inline void block_BytestreamEmpty( block_bytestream_t *p_bytestream )
+{
+    block_BytestreamRelease( p_bytestream );
+
+    *p_bytestream = block_BytestreamInit();
+}
+
+/**
+ * It flushes all already read data from a block_bytestream_t.
+ */
 static inline void block_BytestreamFlush( block_bytestream_t *p_bytestream )
 {
     while( p_bytestream->p_chain != p_bytestream->p_block )
@@ -87,6 +100,7 @@ static inline void block_BytestreamPush( block_bytestream_t *p_bytestream,
     if( !p_bytestream->p_block ) p_bytestream->p_block = p_block;
 }
 
+LIBVLC_USED
 static inline block_t *block_BytestreamPop( block_bytestream_t *p_bytestream )
 {
     block_t *p_block;
@@ -438,7 +452,7 @@ static inline int block_PeekOffsetBytes( block_bytestream_t *p_bytestream,
 
 static inline int block_FindStartcodeFromOffset(
     block_bytestream_t *p_bytestream, size_t *pi_offset,
-    uint8_t *p_startcode, int i_startcode_length )
+    const uint8_t *p_startcode, int i_startcode_length )
 {
     block_t *p_block, *p_block_backup = 0;
     int i_size = 0;

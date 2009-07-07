@@ -2,7 +2,7 @@
  * intf_beos.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: 859c618e8a1d26374dd886338545c0f4e14e5b31 $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -68,10 +68,7 @@ int OpenIntf ( vlc_object_t *p_this )
     /* Allocate instance and initialize some members */
     p_intf->p_sys = (intf_sys_t*) malloc( sizeof( intf_sys_t ) );
     if( !p_intf->p_sys )
-    {
-        msg_Err( p_intf, "out of memory" );
         return VLC_EGENERIC;
-    }
  
     p_intf->pf_run = Run;
 
@@ -120,7 +117,7 @@ void CloseIntf ( vlc_object_t *p_this )
  *****************************************************************************/
 static void Run( intf_thread_t *p_intf )
 {
-    while( !intf_ShouldDie( p_intf ) )
+    while( vlc_object_alive( p_intf ) )
     {
         p_intf->p_sys->p_window->UpdateInterface();
         msleep( INTF_IDLE_SLEEP );

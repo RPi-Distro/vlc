@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: a9d0aee6df0b1b9c78afc8a731fed57b9df2cc96 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -55,11 +55,9 @@ int rtp_packetize_mpa( sout_stream_id_t *id,
         /* rtp common header */
         rtp_packetize_common( id, out, (i == i_count - 1)?1:0, in->i_pts );
         /* mbz set to 0 */
-        out->p_buffer[12] = 0;
-        out->p_buffer[13] = 0;
+        SetWBE( out->p_buffer + 12, 0 );
         /* fragment offset in the current frame */
-        out->p_buffer[14] = ( (i*i_max) >> 8 )&0xff;
-        out->p_buffer[15] = ( (i*i_max)      )&0xff;
+        SetWBE( out->p_buffer + 14, i * i_max );
         memcpy( &out->p_buffer[16], p_data, i_payload );
 
         out->i_buffer   = 16 + i_payload;
@@ -145,6 +143,7 @@ int rtp_packetize_mpv( sout_stream_id_t *id, block_t *in )
     {
         int           i_payload = __MIN( i_max, i_data );
         block_t *out = block_Alloc( 16 + i_payload );
+        /* MBZ:5 T:1 TR:10 AN:1 N:1 S:1 B:1 E:1 P:3 FBV:1 BFC:3 FFV:1 FFC:3 */
         uint32_t      h = ( i_temporal_ref << 16 )|
                           ( b_sequence_start << 13 )|
                           ( b_start_slice << 12 )|
@@ -156,11 +155,7 @@ int rtp_packetize_mpv( sout_stream_id_t *id, block_t *in )
         rtp_packetize_common( id, out, (i == i_count - 1)?1:0,
                               in->i_pts > 0 ? in->i_pts : in->i_dts );
 
-        /* MBZ:5 T:1 TR:10 AN:1 N:1 S:1 B:1 E:1 P:3 FBV:1 BFC:3 FFV:1 FFC:3 */
-        out->p_buffer[12] = ( h >> 24 )&0xff;
-        out->p_buffer[13] = ( h >> 16 )&0xff;
-        out->p_buffer[14] = ( h >>  8 )&0xff;
-        out->p_buffer[15] = ( h       )&0xff;
+        SetDWBE( out->p_buffer + 12, h );
 
         memcpy( &out->p_buffer[16], p_data, i_payload );
 
@@ -320,8 +315,7 @@ int rtp_packetize_mp4a( sout_stream_id_t *id, block_t *in )
         out->p_buffer[12] = 0;
         out->p_buffer[13] = 2*8;
         /* for each AU length 13 bits + idx 3bits, */
-        out->p_buffer[14] = ( in->i_buffer >> 5 )&0xff;
-        out->p_buffer[15] = ( (in->i_buffer&0xff)<<3 )|0;
+        SetWBE( out->p_buffer + 14, (in->i_buffer << 3) | 0 );
 
         memcpy( &out->p_buffer[16], p_data, i_payload );
 
@@ -384,8 +378,7 @@ int rtp_packetize_h263( sout_stream_id_t *id, block_t *in )
                               in->i_pts > 0 ? in->i_pts : in->i_dts );
 
         /* h263 header */
-        out->p_buffer[12] = ( h >>  8 )&0xff;
-        out->p_buffer[13] = ( h       )&0xff;
+        SetWBE( out->p_buffer + 12, h );
         memcpy( &out->p_buffer[RTP_H263_PAYLOAD_START], p_data, i_payload );
 
         out->i_buffer = RTP_H263_PAYLOAD_START + i_payload;
@@ -667,4 +660,56 @@ int rtp_packetize_spx( sout_stream_id_t *id, block_t *in )
     /* Queue the buffer for actual transmission. */
     rtp_packetize_send( id, p_out );
     return VLC_SUCCESS;
+}
+
+static int rtp_packetize_g726( sout_stream_id_t *id, block_t *in, int i_pad )
+{
+    int     i_max   = (rtp_mtu( id )- 12 + i_pad - 1) & ~i_pad;
+    int     i_count = ( in->i_buffer + i_max - 1 ) / i_max;
+
+    uint8_t *p_data = in->p_buffer;
+    int     i_data  = in->i_buffer;
+    int     i_packet = 0;
+
+    while( i_data > 0 )
+    {
+        int           i_payload = __MIN( i_max, i_data );
+        block_t *out = block_New( p_stream, 12 + i_payload );
+
+        /* rtp common header */
+        rtp_packetize_common( id, out, 0,
+                              (in->i_pts > 0 ? in->i_pts : in->i_dts) );
+
+        memcpy( &out->p_buffer[12], p_data, i_payload );
+
+        out->i_buffer   = 12 + i_payload;
+        out->i_dts    = in->i_dts + i_packet++ * in->i_length / i_count;
+        out->i_length = in->i_length / i_count;
+
+        rtp_packetize_send( id, out );
+
+        p_data += i_payload;
+        i_data -= i_payload;
+    }
+    return VLC_SUCCESS;
+}
+
+int rtp_packetize_g726_16( sout_stream_id_t *id, block_t *in )
+{
+    return rtp_packetize_g726( id, in, 4 );
+}
+
+int rtp_packetize_g726_24( sout_stream_id_t *id, block_t *in )
+{
+    return rtp_packetize_g726( id, in, 8 );
+}
+
+int rtp_packetize_g726_32( sout_stream_id_t *id, block_t *in )
+{
+    return rtp_packetize_g726( id, in, 2 );
+}
+
+int rtp_packetize_g726_40( sout_stream_id_t *id, block_t *in )
+{
+    return rtp_packetize_g726( id, in, 8 );
 }

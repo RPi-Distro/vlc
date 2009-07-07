@@ -1,7 +1,7 @@
 /*
  * test.h - libvlc smoke test common definitions
  *
- * $Id: 947caa919592efa97e987bf687e0d4c31b7771c2 $
+ * $Id$
  */
 
 /**********************************************************************
@@ -62,7 +62,8 @@ static const char * test_defaults_args[] = {
 static const int test_defaults_nargs =
     sizeof (test_defaults_args) / sizeof (test_defaults_args[0]);
 
-static const char * test_default_sample = "samples/test.sample";
+/*static const char test_default_sample[] = "samples/test.sample";*/
+static const char test_default_sample[] = SRCDIR"/samples/empty.voc";
 
 
 /*********************************************************************

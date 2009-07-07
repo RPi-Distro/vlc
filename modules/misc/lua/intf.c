@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 3a8d0c89f90656fe84d84c6f6e05da30db6aa065 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -50,13 +50,9 @@
 /*****************************************************************************
  * Prototypes
  *****************************************************************************/
-struct intf_sys_t
-{
-    char *psz_filename;
-    lua_State *L;
-};
+static void *Run( void * );
 
-static void Run( intf_thread_t *p_intf );
+static const char * const ppsz_intf_options[] = { "intf", "config", NULL };
 
 /*****************************************************************************
  *
@@ -132,9 +128,9 @@ static char *GetModuleName( intf_thread_t *p_intf )
 {
     int i;
     const char *psz_intf;
-    if( *p_intf->psz_intf == '$' )
+    /*if( *p_intf->psz_intf == '$' )
         psz_intf = var_GetString( p_intf, p_intf->psz_intf+1 );
-    else
+    else*/
         psz_intf = p_intf->psz_intf;
     for( i = 0; pp_shortcuts[i].psz_name; i++ )
     {
@@ -142,7 +138,7 @@ static char *GetModuleName( intf_thread_t *p_intf )
             return strdup( pp_shortcuts[i].psz_name );
     }
 
-    return config_GetPsz( p_intf, "lua-intf" );
+    return var_CreateGetString( p_intf, "lua-intf" );
 }
 
 static const luaL_Reg p_reg[] = { { NULL, NULL } };
@@ -153,6 +149,7 @@ int Open_LuaIntf( vlc_object_t *p_this )
     intf_sys_t *p_sys;
     lua_State *L;
 
+    config_ChainParse( p_intf, "lua-", ppsz_intf_options, p_intf->p_cfg );
     char *psz_name = GetModuleName( p_intf );
     const char *psz_config;
     bool b_config_set = false;
@@ -234,7 +231,7 @@ int Open_LuaIntf( vlc_object_t *p_this )
     }
     /* </gruik> */
 
-    psz_config = config_GetPsz( p_intf, "lua-config" );
+    psz_config = var_CreateGetString( p_intf, "lua-config" );
     if( psz_config && *psz_config )
     {
         char *psz_buffer;
@@ -264,33 +261,54 @@ int Open_LuaIntf( vlc_object_t *p_this )
 
     p_sys->L = L;
 
-    p_intf->pf_run = Run;
-    p_intf->psz_header = strdup( psz_name ); /* Do I need to clean that up myself in Close_LuaIntf? */
+    p_intf->psz_header = psz_name;
+    /* ^^ Do I need to clean that up myself in Close_LuaIntf? */
 
-    free( psz_name );
+    vlc_mutex_init( &p_sys->lock );
+    vlc_cond_init( &p_sys->wait );
+    p_sys->exiting = false;
+
+    if( vlc_clone( &p_sys->thread, Run, p_intf, VLC_THREAD_PRIORITY_LOW ) )
+    {
+        p_sys->exiting = true;
+        Close_LuaIntf( p_this );
+        return VLC_ENOMEM;
+    }
+
     return VLC_SUCCESS;
 }
 
 void Close_LuaIntf( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t*)p_this;
+    intf_sys_t *p_sys = p_intf->p_sys;
 
-    lua_close( p_intf->p_sys->L );
-    free( p_intf->p_sys );
+    if( !p_sys->exiting ) /* <- Read-only here and in thread: no locking */
+    {
+        vlc_mutex_lock( &p_sys->lock );
+        p_sys->exiting = true;
+        vlc_cond_signal( &p_sys->wait );
+        vlc_mutex_unlock( &p_sys->lock );
+        vlc_join( p_sys->thread, NULL );
+    }
+    vlc_cond_destroy( &p_sys->wait );
+    vlc_mutex_destroy( &p_sys->lock );
+
+    lua_close( p_sys->L );
+    free( p_sys );
 }
 
-static void Run( intf_thread_t *p_intf )
+static void *Run( void *data )
 {
-    lua_State *L = p_intf->p_sys->L;
+    intf_thread_t *p_intf = data;
+    intf_sys_t *p_sys = p_intf->p_sys;
+    lua_State *L = p_sys->L;
 
-    if( luaL_dofile( L, p_intf->p_sys->psz_filename ) )
+    if( luaL_dofile( L, p_sys->psz_filename ) )
     {
-        msg_Err( p_intf, "Error loading script %s: %s",
-                 p_intf->p_sys->psz_filename,
+        msg_Err( p_intf, "Error loading script %s: %s", p_sys->psz_filename,
                  lua_tostring( L, lua_gettop( L ) ) );
         lua_pop( L, 1 );
-        p_intf->b_die = true;
-        return;
     }
-    p_intf->b_die = true;
+    return NULL;
 }

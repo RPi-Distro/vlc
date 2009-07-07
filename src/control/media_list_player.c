@@ -2,7 +2,7 @@
  * media_list_player.c: libvlc new API media_list player functions
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: c5f04511cdfbdca0ec95ff72be555a8502945a50 $
+ * $Id: 6df015fa918293c89c9a8c37dd8c96b6645f4482 $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -23,6 +23,19 @@
 #include "libvlc_internal.h"
 #include <vlc/libvlc.h>
 #include "media_list_path.h"
+
+
+struct libvlc_media_list_player_t
+{
+    libvlc_event_manager_t *    p_event_manager;
+    libvlc_instance_t *         p_libvlc_instance;
+    int                         i_refcount;
+    vlc_mutex_t                 object_lock;
+    libvlc_media_list_path_t    current_playing_item_path;
+    libvlc_media_t *            p_current_playing_item;
+    libvlc_media_list_t *       p_mlist;
+    libvlc_media_player_t *     p_mi;
+};
 
 /*
  * Private functions
@@ -282,7 +295,31 @@ libvlc_media_list_player_new( libvlc_instance_t * p_instance,
  **************************************************************************/
 void libvlc_media_list_player_release( libvlc_media_list_player_t * p_mlp )
 {
-    free(p_mlp);
+    if( !p_mlp )
+        return;
+
+    vlc_mutex_lock( &p_mlp->object_lock );
+
+    p_mlp->i_refcount--;
+    if( p_mlp->i_refcount > 0 )
+    {
+        vlc_mutex_unlock( &p_mlp->object_lock );
+        return;
+    }
+    vlc_mutex_unlock( &p_mlp->object_lock );
+    vlc_mutex_destroy( &p_mlp->object_lock );
+
+    libvlc_event_manager_release( p_mlp->p_event_manager );
+    libvlc_media_player_release( p_mlp->p_mi );
+
+    if( p_mlp->p_mlist )
+    {
+        uninstall_playlist_observer( p_mlp );
+        libvlc_media_list_release( p_mlp->p_mlist );
+    }
+
+    free( p_mlp->current_playing_item_path );
+    free( p_mlp );
 }
 
 /**************************************************************************
@@ -376,7 +413,6 @@ libvlc_media_list_player_is_playing( libvlc_media_list_player_t * p_mlp,
 {
     libvlc_state_t state = libvlc_media_player_get_state( p_mlp->p_mi, p_e );
     return (state == libvlc_Opening) || (state == libvlc_Buffering) ||
-           (state == libvlc_Forward) || (state == libvlc_Backward) ||
            (state == libvlc_Playing);
 }
 

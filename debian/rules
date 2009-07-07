@@ -45,9 +45,7 @@ confflags += \
 	--disable-fb \
 	--enable-ggi \
 	--enable-sdl \
-	--enable-esd \
 	--enable-mad \
-	--enable-arts \
 	--enable-jack \
 	--enable-pulse \
 	--enable-lirc \
@@ -116,6 +114,7 @@ build-stamp: $(QUILT_STAMPFN)
 	# We need to build the static library apart
 	# Else it's a mess when we build the modules
 	./configure --enable-static $(confflags)
+	$(MAKE) -C compat
 	$(MAKE) -C src libvlccore.la libvlc.la
 	mkdir -p tmp
 	cp src/.libs/libvlccore.a tmp/libvlccore.a
@@ -185,6 +184,7 @@ endif
 	rm -f debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSans.ttf
 	ln -s /usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf debian/tmp/usr/share/vlc/skins2/fonts/FreeSansBold.ttf
+	rm -rf debian/tmp/usr/share/man/man1
 	# Move stuff around
 	mkdir -p debian/tmp/$(PIXDIR)
 	mv debian/tmp/$(VIDDIR)/vlc48x48.png debian/tmp/$(PIXDIR)/vlc.png
@@ -218,7 +218,7 @@ binary-indep: build install
 	dh_testdir
 	dh_testroot
 	dh_link -i
-	dh_installdocs -p vlc-data 
+	dh_installdocs -p vlc-data
 	dh_installchangelogs ChangeLog -p vlc-data
 	dh_compress -i
 	dh_fixperms -i
@@ -238,7 +238,7 @@ binary-arch: build install
 	dh_installmenu -s
 	dh_installmime -s
 	dh_installman doc/vlc.1 -p vlc-nox
-	dh_installman debian/vlc-wrapper.1 -p vlc-nox
+	dh_installman doc/vlc-wrapper.1 -p vlc-nox
 	dh_installchangelogs ChangeLog -p vlc
 	dh_installchangelogs ChangeLog -p vlc-nox
 	dh_desktop
@@ -247,9 +247,9 @@ binary-arch: build install
 	dh_compress -s
 	dh_fixperms -s
 	dh_makeshlibs -plibvlc2 -V # -V is nasty, but I mean it
-	dh_makeshlibs -plibvlccore0 -V # -V is nasty, but I mean it
+	dh_makeshlibs -plibvlccore2 -V # -V is nasty, but I mean it
 	dh_installdeb -s
-	dh_shlibdeps -s -ldebian/libvlc2/usr/lib:debian/libvlccore0/usr/lib 
+	dh_shlibdeps -s -ldebian/libvlc2/usr/lib:debian/libvlccore2/usr/lib
 	dh_gencontrol -s
 	dh_md5sums -s
 	dh_builddeb -s

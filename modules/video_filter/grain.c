@@ -2,7 +2,7 @@
  * noise.c : "add grain to image" video filter
  *****************************************************************************
  * Copyright (C) 2000-2007 the VideoLAN team
- * $Id: e28b210c8803886212603a0d7c7115663c7468e6 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -49,15 +49,15 @@ static picture_t *Filter( filter_t *, picture_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Grain video filter") );
-    set_shortname( N_( "Grain" ));
-    set_capability( "video filter2", 0 );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
+vlc_module_begin ()
+    set_description( N_("Grain video filter") )
+    set_shortname( N_( "Grain" ))
+    set_capability( "video filter2", 0 )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
 
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 struct filter_sys_t
 {

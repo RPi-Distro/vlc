@@ -2,7 +2,7 @@
  * vlc.h: VLC specific lua library functions.
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: c4cb9a4abdb232fd4895c3a6dbbb400aecfc424a $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -122,6 +122,19 @@ int __vlclua_playlist_add_internal( vlc_object_t *, lua_State *, playlist_t *,
                                     input_item_t *, bool );
 #define vlclua_playlist_add_internal(a,b,c,d,e) __vlclua_playlist_add_internal(VLC_OBJECT(a),b,c,d,e)
 
+/**
+ * Per-interface private state
+ */
+struct intf_sys_t
+{
+    char *psz_filename;
+    lua_State *L;
+
+    vlc_thread_t thread;
+    vlc_mutex_t lock;
+    vlc_cond_t wait;
+    bool exiting;
+};
 
 #endif /* VLC_LUA_H */
 

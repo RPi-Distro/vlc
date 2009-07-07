@@ -2,7 +2,7 @@
  * GotoTime.cpp : GotoTime and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 2e7b802696218814f751aae4bd4b30d671f55541 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -26,8 +26,6 @@
 
 #include "dialogs/gototime.hpp"
 
-#include "dialogs_provider.hpp"
-#include "main_interface.hpp"
 #include "input_manager.hpp"
 
 #include <QTabWidget>

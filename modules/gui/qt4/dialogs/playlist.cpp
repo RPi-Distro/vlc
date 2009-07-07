@@ -2,7 +2,7 @@
  * playlist.cpp : Playlist dialog
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: f15e584e9ae1473f12f7410796bdbc7af3046546 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -26,17 +26,12 @@
 
 #include "dialogs/playlist.hpp"
 
-#include "main_interface.hpp"
 #include "components/playlist/playlist.hpp"
-#include "dialogs_provider.hpp"
-#include "menus.hpp"
+
+#include "util/qt_dirs.hpp"
 
 #include <QUrl>
 #include <QHBoxLayout>
-#include <QSignalMapper>
-#include <QMenu>
-#include <QAction>
-#include <QMenuBar>
 
 PlaylistDialog *PlaylistDialog::instance = NULL;
 
@@ -70,7 +65,7 @@ PlaylistDialog::~PlaylistDialog()
 void PlaylistDialog::dropEvent( QDropEvent *event )
 {
      const QMimeData *mimeData = event->mimeData();
-     foreach( QUrl url, mimeData->urls() ) {
+     foreach( const QUrl &url, mimeData->urls() ) {
         QString s = toNativeSeparators( url.toString() );
         if( s.length() > 0 ) {
             playlist_Add( THEPL, qtu(s), NULL,

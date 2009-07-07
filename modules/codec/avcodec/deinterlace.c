@@ -3,7 +3,7 @@
  *               using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: fbc553d7016433a6d8eb597b13cccfd0e357b91f $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -44,7 +44,6 @@
 #endif
 
 #include "avcodec.h"
-#include "chroma.h"
 
 static picture_t *Deinterlace( filter_t *p_filter, picture_t *p_pic );
 

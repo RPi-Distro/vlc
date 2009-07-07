@@ -3,7 +3,7 @@
  *       multiplexer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 6459c07d4dc48e7f87b4d3a02c3a938718d027b5 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -61,22 +61,22 @@ static void    Close  ( vlc_object_t * );
 
 #define SOUT_CFG_PREFIX "sout-ps-"
 
-vlc_module_begin();
-    set_description( N_("PS muxer") );
-    set_shortname( "MPEG-PS" );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_MUX );
-    set_capability( "sout mux", 50 );
-    add_shortcut( "ps" );
-    add_shortcut( "mpeg1" );
-    add_shortcut( "dvd" );
-    set_callbacks( Open, Close );
+vlc_module_begin ()
+    set_description( N_("PS muxer") )
+    set_shortname( "MPEG-PS" )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_MUX )
+    set_capability( "sout mux", 50 )
+    add_shortcut( "ps" )
+    add_shortcut( "mpeg1" )
+    add_shortcut( "dvd" )
+    set_callbacks( Open, Close )
 
     add_integer( SOUT_CFG_PREFIX "dts-delay", 200, NULL, DTS_TEXT,
-                 DTS_LONGTEXT, true );
+                 DTS_LONGTEXT, true )
     add_integer( SOUT_CFG_PREFIX "pes-max-size", PES_PAYLOAD_SIZE_MAX, NULL,
-                 PES_SIZE_TEXT, PES_SIZE_LONGTEXT, true );
-vlc_module_end();
+                 PES_SIZE_TEXT, PES_SIZE_LONGTEXT, true )
+vlc_module_end ()
 
 /*****************************************************************************
  * Exported prototypes

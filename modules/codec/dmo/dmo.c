@@ -2,7 +2,7 @@
  * dmo.c : DirectMedia Object decoder module for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 91d88d6cee470e3924ad6bf5a6c58854586e908c $
+ * $Id: 2e51be23f589e8159819e91cd22fe854a98615b5 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -85,34 +85,35 @@ static const int pi_channels_maps[7] =
  * Module descriptor
  *****************************************************************************/
 static int  DecoderOpen  ( vlc_object_t * );
-static int  DecOpen      ( vlc_object_t * );
 static void DecoderClose ( vlc_object_t * );
 static void *DecodeBlock ( decoder_t *, block_t ** );
-
+static void *DecoderThread( void * );
 static int  EncoderOpen  ( vlc_object_t * );
-static int  EncOpen      ( vlc_object_t * );
 static void EncoderClose ( vlc_object_t * );
 static block_t *EncodeBlock( encoder_t *, void * );
 
+static int  EncOpen  ( vlc_object_t * );
+
 static int LoadDMO( vlc_object_t *, HINSTANCE *, IMediaObject **,
                     es_format_t *, bool );
-static void CopyPicture( decoder_t *, picture_t *, uint8_t * );
+static void CopyPicture( picture_t *, uint8_t * );
 
-vlc_module_begin();
-    set_description( N_("DirectMedia Object decoder") );
-    add_shortcut( "dmo" );
-    set_capability( "decoder", 1 );
-    set_callbacks( DecoderOpen, DecoderClose );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_SCODEC );
+vlc_module_begin ()
+    set_description( N_("DirectMedia Object decoder") )
+    add_shortcut( "dmo" )
+    set_capability( "decoder", 1 )
+    set_callbacks( DecoderOpen, DecoderClose )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_SCODEC )
 
 #   define ENC_CFG_PREFIX "sout-dmo-"
-    add_submodule();
-    set_description( N_("DirectMedia Object encoder") );
-    set_capability( "encoder", 10 );
-    set_callbacks( EncoderOpen, EncoderClose );
+    add_submodule ()
+    set_description( N_("DirectMedia Object encoder") )
+    add_shortcut( "dmo" )
+    set_capability( "encoder", 10 )
+    set_callbacks( EncoderOpen, EncoderClose )
 
-vlc_module_end();
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -134,6 +135,15 @@ struct decoder_sys_t
 #ifdef LOADER
     ldt_fs_t    *ldt_fs;
 #endif
+
+    vlc_thread_t thread;
+    vlc_mutex_t  lock;
+    vlc_cond_t   wait_input, wait_output;
+    bool         b_ready, b_works;
+    block_t    **pp_input;
+
+    int          i_output;
+    void       **pp_output;
 };
 
 const GUID IID_IWMCodecPrivateData = {0x73f0be8e, 0x57f7, 0x4f01, {0xaa, 0x66, 0x9f, 0x57, 0x34, 0xc, 0xfe, 0xe}};
@@ -205,6 +215,8 @@ static const codec_dll decoders_table[] =
     { VLC_FOURCC('w','m','a','3'), "wma9dmod.dll", &guid_wma9 },
     { VLC_FOURCC('W','M','A','P'), "wma9dmod.dll", &guid_wma9 },
     { VLC_FOURCC('w','m','a','p'), "wma9dmod.dll", &guid_wma9 },
+    { VLC_FOURCC('W','M','A','L'), "wma9dmod.dll", &guid_wma9 },
+    { VLC_FOURCC('w','m','a','l'), "wma9dmod.dll", &guid_wma9 },
     /* WMA 2 */
     { VLC_FOURCC('W','M','A','2'), "wma9dmod.dll", &guid_wma9 },
     { VLC_FOURCC('w','m','a','2'), "wma9dmod.dll", &guid_wma9 },
@@ -255,34 +267,28 @@ static void WINAPI DMOFreeMediaType( DMO_MEDIA_TYPE *mt )
 static int DecoderOpen( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t*)p_this;
+    decoder_sys_t *p_sys;
 
-#ifndef LOADER
-    int i_ret = DecOpen( p_this );
-    if( i_ret != VLC_SUCCESS ) return i_ret;
-
-
-#else
     /* We can't open it now, because of ldt_keeper or something
      * Open/Decode/Close has to be done in the same thread */
-    int i;
-
-    p_dec->p_sys = NULL;
 
     /* Probe if we support it */
-    for( i = 0; decoders_table[i].i_fourcc != 0; i++ )
+    for( unsigned i = 0; decoders_table[i].i_fourcc != 0; i++ )
     {
         if( decoders_table[i].i_fourcc == p_dec->fmt_in.i_codec )
         {
             msg_Dbg( p_dec, "DMO codec for %4.4s may work with dll=%s",
                      (char*)&p_dec->fmt_in.i_codec,
                      decoders_table[i].psz_dll );
-            break;
+            goto found;
         }
     }
+    return VLC_EGENERIC;
 
-    p_dec->p_sys = NULL;
-    if( !decoders_table[i].i_fourcc ) return VLC_EGENERIC;
-#endif /* LOADER */
+found:
+    p_sys = p_dec->p_sys = malloc(sizeof(*p_sys));
+    if( !p_sys )
+        return VLC_ENOMEM;
 
     /* Set callbacks */
     p_dec->pf_decode_video = (picture_t *(*)(decoder_t *, block_t **))
@@ -290,16 +296,89 @@ static int DecoderOpen( vlc_object_t *p_this )
     p_dec->pf_decode_audio = (aout_buffer_t *(*)(decoder_t *, block_t **))
         DecodeBlock;
 
-    return VLC_SUCCESS;
+    vlc_mutex_init( &p_sys->lock );
+    vlc_cond_init( &p_sys->wait_input );
+    vlc_cond_init( &p_sys->wait_output );
+    p_sys->b_works =
+    p_sys->b_ready = false;
+    p_sys->pp_input = NULL;
+    TAB_INIT( p_sys->i_output, p_sys->pp_output );
+
+    if( vlc_clone( &p_sys->thread, DecoderThread, p_dec,
+                   VLC_THREAD_PRIORITY_INPUT ) )
+        goto error;
+
+    vlc_mutex_lock( &p_sys->lock );
+    while( !p_sys->b_ready )
+        vlc_cond_wait( &p_sys->wait_output, &p_sys->lock );
+    vlc_mutex_unlock( &p_sys->lock );
+
+    if( p_sys->b_works )
+        return VLC_SUCCESS;
+
+    vlc_join( p_sys->thread, NULL );
+error:
+    vlc_cond_destroy( &p_sys->wait_input );
+    vlc_cond_destroy( &p_sys->wait_output );
+    vlc_mutex_destroy( &p_sys->lock );
+    free( p_sys );
+    return VLC_ENOMEM;
+}
+
+/*****************************************************************************
+ * DecoderClose: close codec
+ *****************************************************************************/
+static void DecoderClose( vlc_object_t *p_this )
+{
+    decoder_t *p_dec = (decoder_t*)p_this;
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    vlc_mutex_lock( &p_sys->lock );
+    p_sys->b_ready = false;
+    vlc_cond_signal( &p_sys->wait_input );
+    vlc_mutex_unlock( &p_sys->lock );
+
+    vlc_join( p_sys->thread, NULL );
+    TAB_CLEAN( p_sys->i_output, p_sys->pp_output );
+    vlc_cond_destroy( &p_sys->wait_input );
+    vlc_cond_destroy( &p_sys->wait_output );
+    vlc_mutex_destroy( &p_sys->lock );
+    free( p_sys );
+}
+
+static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+{
+    decoder_sys_t *p_sys = p_dec->p_sys;
+    void *p_ret;
+
+    vlc_mutex_lock( &p_sys->lock );
+    if( p_sys->i_output <= 0 )
+    {
+        p_sys->pp_input = pp_block;
+        vlc_cond_signal( &p_sys->wait_input );
+
+        while( p_sys->pp_input )
+            vlc_cond_wait( &p_sys->wait_output, &p_sys->lock );
+    }
+
+    p_ret = NULL;
+    if( p_sys->i_output > 0 )
+    {
+        p_ret = p_sys->pp_output[0];
+        TAB_REMOVE( p_sys->i_output, p_sys->pp_output, p_ret );
+    }
+
+    vlc_mutex_unlock( &p_sys->lock );
+
+    return p_ret;
 }
 
 /*****************************************************************************
  * DecOpen: open dmo codec
  *****************************************************************************/
-static int DecOpen( vlc_object_t *p_this )
+static int DecOpen( decoder_t *p_dec )
 {
-    decoder_t *p_dec = (decoder_t*)p_this;
-    decoder_sys_t *p_sys = NULL;
+    decoder_sys_t *p_sys = p_dec->p_sys;
 
     DMO_MEDIA_TYPE dmo_input_type, dmo_output_type;
     IMediaObject *p_dmo = NULL;
@@ -315,7 +394,7 @@ static int DecOpen( vlc_object_t *p_this )
     CoInitialize( 0 );
 #endif /* LOADER */
 
-    if( LoadDMO( p_this, &hmsdmo_dll, &p_dmo, &p_dec->fmt_in, false )
+    if( LoadDMO( VLC_OBJECT(p_dec), &hmsdmo_dll, &p_dmo, &p_dec->fmt_in, false )
         != VLC_SUCCESS )
     {
         hmsdmo_dll = 0;
@@ -517,12 +596,6 @@ static int DecOpen( vlc_object_t *p_this )
     msg_Dbg( p_dec, "DMO output type set" );
 
     /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_dec->p_sys = p_sys =
-          (decoder_sys_t *)malloc(sizeof(decoder_sys_t)) ) == NULL )
-    {
-        goto error;
-    }
-
     p_sys->hmsdmo_dll = hmsdmo_dll;
     p_sys->p_dmo = p_dmo;
 #ifdef LOADER
@@ -559,6 +632,12 @@ static int DecOpen( vlc_object_t *p_this )
     free( p_vih );
     free( p_wf );
 
+    vlc_mutex_lock( &p_sys->lock );
+    p_sys->b_ready =
+    p_sys->b_works = true;
+    vlc_cond_signal( &p_sys->wait_output );
+    vlc_mutex_unlock( &p_sys->lock );
+
     return VLC_SUCCESS;
 
  error:
@@ -575,8 +654,11 @@ static int DecOpen( vlc_object_t *p_this )
 
     free( p_vih );
     free( p_wf );
-    free( p_sys );
 
+    vlc_mutex_lock( &p_sys->lock );
+    p_sys->b_ready = true;
+    vlc_cond_signal( &p_sys->wait_output );
+    vlc_mutex_unlock( &p_sys->lock );
     return VLC_EGENERIC;
 }
 
@@ -749,15 +831,9 @@ loader:
     return VLC_SUCCESS;
 }
 
-/*****************************************************************************
- * DecoderClose: close codec
- *****************************************************************************/
-void DecoderClose( vlc_object_t *p_this )
+static void DecClose( decoder_t *p_dec )
 {
-    decoder_t *p_dec = (decoder_t*)p_this;
     decoder_sys_t *p_sys = p_dec->p_sys;
-
-    if( !p_sys ) return;
 
     if( p_sys->p_dmo ) p_sys->p_dmo->vt->Release( (IUnknown *)p_sys->p_dmo );
     FreeLibrary( p_sys->hmsdmo_dll );
@@ -772,15 +848,14 @@ void DecoderClose( vlc_object_t *p_this )
 #endif
 
     free( p_sys->p_buffer );
-    free( p_sys );
 }
 
 /****************************************************************************
  * DecodeBlock: the whole thing
  ****************************************************************************
- * This function must be fed with ogg packets.
+ * This function must be fed with packets.
  ****************************************************************************/
-static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
+static void *DecBlock( decoder_t *p_dec, block_t **pp_block )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
     block_t *p_block;
@@ -790,16 +865,6 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     CMediaBuffer *p_out;
     block_t block_out;
     uint32_t i_status;
-
-    if( p_sys == NULL )
-    {
-        if( DecOpen( VLC_OBJECT(p_dec) ) )
-        {
-            msg_Err( p_dec, "DecOpen failed" );
-            return NULL;
-        }
-        p_sys = p_dec->p_sys;
-    }
 
     if( !pp_block ) return NULL;
 
@@ -857,14 +922,16 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         }
         else
         {
-            //msg_Dbg( p_dec, "ProcessInput(): successful" );
-            *pp_block = 0;
+#ifdef DMO_DEBUG
+            msg_Dbg( p_dec, "ProcessInput(): successful" );
+#endif
+            *pp_block = NULL;
         }
     }
     else if( p_block && !p_block->i_buffer )
     {
         block_Release( p_block );
-        *pp_block = 0;
+        *pp_block = NULL;
     }
 
     /* Get output from the DMO */
@@ -908,10 +975,10 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     if( p_dec->fmt_out.i_cat == VIDEO_ES )
     {
         /* Get a new picture */
-        picture_t *p_pic = p_dec->pf_vout_buffer_new( p_dec );
+        picture_t *p_pic = decoder_NewPicture( p_dec );
         if( !p_pic ) return NULL;
 
-        CopyPicture( p_dec, p_pic, block_out.p_buffer );
+        CopyPicture( p_pic, block_out.p_buffer );
 
         /* Date management */
         p_pic->date = date_Get( &p_sys->end_date );
@@ -928,15 +995,16 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             ( p_dec->fmt_out.audio.i_bitspersample *
               p_dec->fmt_out.audio.i_channels / 8 );
 
-        p_aout_buffer = p_dec->pf_aout_buffer_new( p_dec, i_samples );
-        memcpy( p_aout_buffer->p_buffer,
-                block_out.p_buffer, block_out.i_buffer );
-
-        /* Date management */
-        p_aout_buffer->start_date = date_Get( &p_sys->end_date );
-        p_aout_buffer->end_date =
-            date_Increment( &p_sys->end_date, i_samples );
-
+        p_aout_buffer = decoder_NewAudioBuffer( p_dec, i_samples );
+        if( p_aout_buffer )
+        {
+            memcpy( p_aout_buffer->p_buffer,
+                    block_out.p_buffer, block_out.i_buffer );
+            /* Date management */
+            p_aout_buffer->start_date = date_Get( &p_sys->end_date );
+            p_aout_buffer->end_date =
+                date_Increment( &p_sys->end_date, i_samples );
+        }
         p_out->vt->Release( (IUnknown *)p_out );
 
         return p_aout_buffer;
@@ -945,7 +1013,7 @@ static void *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     return NULL;
 }
 
-static void CopyPicture( decoder_t *p_dec, picture_t *p_pic, uint8_t *p_in )
+static void CopyPicture( picture_t *p_pic, uint8_t *p_in )
 {
     int i_plane, i_line, i_width, i_dst_stride;
     uint8_t *p_dst, *p_src = p_in;
@@ -972,6 +1040,39 @@ static void CopyPicture( decoder_t *p_dec, picture_t *p_pic, uint8_t *p_in )
     p_pic->p[1].p_pixels = p_pic->p[2].p_pixels;
     p_pic->p[2].p_pixels = p_dst;
 }
+
+static void *DecoderThread( void *data )
+{
+    decoder_t *p_dec = data;
+    decoder_sys_t *p_sys = p_dec->p_sys;
+
+    if( DecOpen( p_dec ) )
+        return NULL; /* failed */
+
+    vlc_mutex_lock( &p_sys->lock );
+    for( ;; )
+    {
+        while( p_sys->b_ready && !p_sys->pp_input )
+            vlc_cond_wait( &p_sys->wait_input, &p_sys->lock );
+        if( !p_sys->b_ready )
+            break;
+
+        for( ;; )
+        {
+            void *p_output = DecBlock( p_dec, p_sys->pp_input );
+            if( !p_output )
+                break;
+            TAB_APPEND( p_sys->i_output, p_sys->pp_output, p_output );
+        }
+        p_sys->pp_input = NULL;
+        vlc_cond_signal( &p_sys->wait_output );
+    }
+    vlc_mutex_unlock( &p_sys->lock );
+
+    DecClose( p_dec );
+    return NULL;
+}
+
 
 /****************************************************************************
  * Encoder descriptor declaration
@@ -1207,7 +1308,7 @@ static int EncoderSetAudioType( encoder_t *p_enc, IMediaObject *p_dmo )
             p_wf->nChannels == p_enc->fmt_in.audio.i_channels &&
             p_wf->wBitsPerSample == p_enc->fmt_in.audio.i_bitspersample )
         {
-            if( (int)p_wf->nAvgBytesPerSec <
+            if( p_wf->nAvgBytesPerSec <
                 p_enc->fmt_out.i_bitrate * 110 / 800 /* + 10% */ &&
                 p_wf->nAvgBytesPerSec > i_last_byterate )
             {
@@ -1337,8 +1438,7 @@ static int EncOpen( vlc_object_t *p_this )
     }
 
     /* Allocate the memory needed to store the decoder's structure */
-    if( ( p_enc->p_sys = p_sys =
-          (encoder_sys_t *)malloc(sizeof(encoder_sys_t)) ) == NULL )
+    if( ( p_enc->p_sys = p_sys = malloc(sizeof(*p_sys)) ) == NULL )
     {
         goto error;
     }

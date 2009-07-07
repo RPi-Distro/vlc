@@ -2,7 +2,7 @@
  * panels.hpp : Panels for the playlist
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: f19e34424d4d476a215c39aac10eab1ac98479ba $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -28,8 +28,6 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-
 #include "qt4.hpp"
 #include "components/playlist/playlist.hpp"
 
@@ -42,7 +40,6 @@ class QTreeView;
 class PLModel;
 class QPushButton;
 class QKeyEvent;
-class ClickLineEdit;
 
 class PLPanel: public QWidget
 {
@@ -77,7 +74,6 @@ protected:
 private:
     QTreeView *view;
     QPushButton *repeatButton, *randomButton, *addButton, *gotoPlayingButton;
-    ClickLineEdit *searchLine;
     int currentRootId;
     QSignalMapper *ContextUpdateMapper;
 public slots:
@@ -90,8 +86,7 @@ private slots:
     void toggleRepeat();
     void gotoPlayingItem();
     void doPopup( QModelIndex index, QPoint point );
-    void search( QString search );
-    void clearFilter();
+    void search( const QString& searchText );
     void setCurrentRootId( int );
     void popupAdd();
     void popupSelectColumn( QPoint );

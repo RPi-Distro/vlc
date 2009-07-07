@@ -1,8 +1,8 @@
 /*****************************************************************************
- * m3u.c :  M3U playlist export module
+ * m3u.c : M3U playlist export module
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: 4cc4a1d405631a70a4cb121e90635c2e2e2fc40a $
+ * Copyright (C) 2004-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -30,12 +30,9 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_interface.h>
 #include <vlc_playlist.h>
 #include <vlc_input.h>
 #include <vlc_meta.h>
-
-#include <errno.h>                                                 /* ENOMEM */
 
 #include <assert.h>
 

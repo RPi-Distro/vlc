@@ -4,8 +4,8 @@
 basedir = codec
 dir = codec/spudec
 mods = spudec
-libvlc_LTLIBRARIES =  $(LTLIBspudec)
-EXTRA_LTLIBRARIES =  libspudec_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,5 +18,5 @@ libspudec_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libspudec_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libspudec_plugin_la_LIBADD = $(AM_LIBADD)
-libspudec_plugin_la_DEPENDENCIES =
+libspudec_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

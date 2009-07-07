@@ -2,7 +2,7 @@
  * pes.c: PES packetizer used by the MPEG multiplexers
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: c4b6ca5ce8c4eb1c29a61debf4f4abb8e9b8d937 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -30,42 +30,56 @@
 # include "config.h"
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <errno.h>
-#include <fcntl.h>
-
 #include <vlc_common.h>
 #include <vlc_sout.h>
 #include <vlc_block.h>
-
-#ifdef HAVE_UNISTD_H
-#   include <unistd.h>
-#endif
+#include <assert.h>
 
 #include <vlc_codecs.h>
 #include "pes.h"
 #include "bits.h"
 
+/** PESHeader, write a pes header
+ * \param i_es_size length of payload data. (Must be < PES_PAYLOAD_SIZE_MAX
+ *                  unless the conditions for unbounded PES packets are met)
+ * \param i_stream_id stream id as follows:
+ *                     - 0x00   - 0xff   : normal stream_id as per Table 2-18
+ *                     - 0xfd00 - 0xfd7f : stream_id_extension = low 7 bits
+ *                                         (stream_id = PES_EXTENDED_STREAM_ID)
+ *                     - 0xbd00 - 0xbdff : private_id = low 8 bits
+ *                                         (stream_id = PES_PRIVATE_STREAM)
+ * \param i_header_size length of padding data to insert into PES packet
+ *                      header in bytes.
+ */
 static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
                              int i_es_size, es_format_t *p_fmt,
-                             int i_stream_id, int i_private_id,
-                             bool b_mpeg2, bool b_data_alignment,
-                             int i_header_size )
+                             int i_stream_id, bool b_mpeg2,
+                             bool b_data_alignment, int i_header_size )
 {
     bits_buffer_t bits;
     int     i_extra = 0;
+    int i_private_id = -1;
+    int i_stream_id_extension = 0;
 
-    /* For PES_PRIVATE_STREAM_1 there is an extra header after the
-       pes header */
-    /* i_private_id != -1 because TS use 0xbd without private_id */
-    if( i_stream_id == PES_PRIVATE_STREAM_1 && i_private_id != -1 )
+    /* HACK for private stream 1 in ps */
+    if( ( i_stream_id >> 8 ) == PES_PRIVATE_STREAM_1 )
     {
+        i_private_id = i_stream_id & 0xff;
+        i_stream_id = PES_PRIVATE_STREAM_1;
+        /* For PES_PRIVATE_STREAM_1 there is an extra header after the
+           pes header */
+        /* i_private_id != -1 because TS use 0xbd without private_id */
         i_extra = 1;
         if( ( i_private_id & 0xf0 ) == 0x80 )
-        {
             i_extra += 3;
-        }
+    }
+    else if( ( i_stream_id >> 8 ) == PES_EXTENDED_STREAM_ID )
+    {
+        /* Enable support for extended_stream_id as defined in
+         * ISO/IEC 13818-1:2000/Amd.2:2003 */
+        /* NB, i_extended_stream_id is limited to 7 bits */
+        i_stream_id_extension = i_stream_id & 0x7f;
+        i_stream_id = PES_EXTENDED_STREAM_ID;
     }
 
     bits_initwrite( &bits, 50, p_hdr );
@@ -93,6 +107,7 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
             if( b_mpeg2 )
             {
                 int i_pts_dts;
+                bool b_pes_extension_flag = false;
 
                 if( i_pts > 0 && i_dts > 0 &&
                     ( i_pts != i_dts || ( p_fmt->i_cat == VIDEO_ES &&
@@ -112,8 +127,24 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
                     if ( !i_header_size ) i_header_size = 0x0;
                 }
 
-                bits_write( &bits, 16, i_es_size + i_extra + 3
-                             + i_header_size ); // size
+                if( i_stream_id == PES_EXTENDED_STREAM_ID )
+                {
+                    b_pes_extension_flag = true;
+                    i_header_size += 1 + 1;
+                }
+
+                if( b_pes_extension_flag )
+                {
+                    i_header_size += 1;
+                }
+
+                /* Unbounded streams are only allowed in TS (not PS) and only
+                 * for some ES, eg. MPEG* Video ES or Dirac ES. */
+                if( i_es_size > PES_PAYLOAD_SIZE_MAX )
+                    bits_write( &bits, 16, 0 ); // size unbounded
+                else
+                    bits_write( &bits, 16, i_es_size + i_extra + 3
+                                 + i_header_size ); // size
                 bits_write( &bits, 2, 0x02 ); // mpeg2 id
                 bits_write( &bits, 2, 0x00 ); // pes scrambling control
                 bits_write( &bits, 1, 0x00 ); // pes priority
@@ -127,8 +158,8 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
                 bits_write( &bits, 1, 0x00 ); // dsm trick mode flag
                 bits_write( &bits, 1, 0x00 ); // additional copy info flag
                 bits_write( &bits, 1, 0x00 ); // pes crc flag
-                bits_write( &bits, 1, 0x00 ); // pes extension flags
-                bits_write( &bits, 8, i_header_size ); // header size -> pts and dts
+                bits_write( &bits, 1, b_pes_extension_flag );
+                bits_write( &bits, 8, i_header_size );
 
                 /* write pts */
                 if( i_pts_dts & 0x02 )
@@ -153,6 +184,30 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
                     bits_write( &bits, 15, i_dts );
                     bits_write( &bits, 1, 0x01 ); // marker
                     i_header_size -= 0x5;
+                }
+                if( b_pes_extension_flag )
+                {
+                    bits_write( &bits, 1, 0x00 ); // PES_private_data_flag
+                    bits_write( &bits, 1, 0x00 ); // pack_header_field_flag
+                    bits_write( &bits, 1, 0x00 ); // program_packet_sequence_counter_flag
+                    bits_write( &bits, 1, 0x00 ); // P-STD_buffer_flag
+                    bits_write( &bits, 3, 0x07 ); // reserved
+                    bits_write( &bits, 1, 0x01 ); // PES_extension_flag_2
+                    /* skipping unsupported parts: */
+                    /*   PES_private_data */
+                    /*   pack_header */
+                    /*   program_packet_sequence_counter */
+                    /*   P-STD_buffer_flag */
+                    if( i_stream_id == PES_EXTENDED_STREAM_ID )
+                    {
+                        /* PES_extension_2 */
+                        bits_write( &bits, 1, 0x01 ); // marker
+                        bits_write( &bits, 7, 0x01 ); // PES_extension_field_length
+                        bits_write( &bits, 1, 0x01 ); // stream_id_extension_flag
+                        bits_write( &bits, 7, i_stream_id_extension );
+                        i_header_size -= 0x2;
+                    }
+                    i_header_size -= 0x1;
                 }
                 while ( i_header_size )
                 {
@@ -231,6 +286,34 @@ static inline int PESHeader( uint8_t *p_hdr, mtime_t i_pts, mtime_t i_dts,
     }
 }
 
+/** EStoPES, encapsulate an elementary stream block into PES packet(s)
+ * each with a maximal payload size of @i_max_pes_size@.
+ *
+ * In some circumstances, unbounded PES packets are allowed:
+ *  - Transport streams only (NOT programme streams)
+ *  - Only some types of elementary streams (eg MPEG2 video)
+ * It is the responsibility of the caller to enforce these constraints.
+ *
+ * EStoPES will only produce an unbounded PES packet if:
+ *  - ES is VIDEO_ES
+ *  - i_max_pes_size > PES_PAYLOAD_SIZE_MAX
+ *  - length of p_es > PES_PAYLOAD_SIZE_MAX
+ * If the last condition is not met, a single PES packet is produced
+ * which is not unbounded in length.
+ *
+ * \param i_stream_id stream id as follows:
+ *                     - 0x00   - 0xff   : normal stream_id as per Table 2-18
+ *                     - 0xfd00 - 0xfd7f : stream_id_extension = low 7 bits
+ *                                         (stream_id = PES_EXTENDED_STREAM_ID)
+ *                     - 0xbd00 - 0xbdff : private_id = low 8 bits
+ *                                         (stream_id = PES_PRIVATE_STREAM)
+ * \param i_header_size length of padding data to insert into PES packet
+ *                      header in bytes.
+ * \param i_max_pes_size maximum length of each pes packet payload.
+ *                       if zero, uses default maximum.
+ *                       To allow unbounded PES packets in transport stream
+ *                       VIDEO_ES, set to INT_MAX.
+ */
 int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
                    es_format_t *p_fmt, int i_stream_id,
                    int b_mpeg2, int b_data_alignment, int i_header_size,
@@ -242,19 +325,20 @@ int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
     uint8_t *p_data;
     int     i_size;
 
-    int     i_private_id = -1;
-
     uint8_t header[50];     // PES header + extra < 50 (more like 17)
     int     i_pes_payload;
     int     i_pes_header;
 
     int     i_pes_count = 1;
 
-    /* HACK for private stream 1 in ps */
-    if( ( i_stream_id >> 8 ) == PES_PRIVATE_STREAM_1 )
+    assert( i_max_pes_size >= 0 );
+    assert( i_header_size >= 0 );
+
+    /* NB, Only video ES may have unbounded length */
+    if( !i_max_pes_size ||
+        ( p_fmt->i_cat != VIDEO_ES && i_max_pes_size > PES_PAYLOAD_SIZE_MAX ) )
     {
-        i_private_id = i_stream_id & 0xff;
-        i_stream_id  = PES_PRIVATE_STREAM_1;
+        i_max_pes_size = PES_PAYLOAD_SIZE_MAX;
     }
 
     if( p_fmt->i_codec == VLC_FOURCC( 'm', 'p','4', 'v' ) &&
@@ -280,10 +364,9 @@ int  EStoPES ( sout_instance_t *p_sout, block_t **pp_pes, block_t *p_es,
 
     do
     {
-        i_pes_payload = __MIN( i_size, (i_max_pes_size ?
-                               i_max_pes_size : PES_PAYLOAD_SIZE_MAX) );
+        i_pes_payload = __MIN( i_size, i_max_pes_size );
         i_pes_header  = PESHeader( header, i_pts, i_dts, i_pes_payload,
-                                   p_fmt, i_stream_id, i_private_id, b_mpeg2,
+                                   p_fmt, i_stream_id, b_mpeg2,
                                    b_data_alignment, i_header_size );
         i_dts = 0; // only first PES has a dts/pts
         i_pts = 0;

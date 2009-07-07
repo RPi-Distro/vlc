@@ -2,7 +2,7 @@
  * prefs_widgets.h: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: d18688766c983cc2b43006c4245d5e81658295e0 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *
@@ -23,10 +23,11 @@
 
 #define CONFIG_ITEM_STRING_LIST (CONFIG_ITEM_STRING + 1)
 #define CONFIG_ITEM_RANGED_INTEGER (CONFIG_ITEM_INTEGER + 1)
-#define CONFIG_ITEM_KEY_BEFORE_10_3 (CONFIG_ITEM_KEY + 1)
 #define CONFIG_ITEM_KEY_AFTER_10_3 (CONFIG_ITEM_KEY + 2)
 #define LEFTMARGIN  18
 #define RIGHTMARGIN 18
+
+static NSMenu   *o_keys_menu = nil;
 
 @interface VLCConfigControl : NSView
 {
@@ -41,18 +42,17 @@
 + (VLCConfigControl *)newControl: (module_config_t *)_p_item
         withView: (NSView *)o_parent_view;
 - (id)initWithFrame: (NSRect)frame item: (module_config_t *)p_item;
-- (NSString *)getName;
-- (int)getType;
-- (int)getViewType;
+- (NSString *)name;
+- (int)type;
+- (int)viewType;
 - (BOOL)isAdvanced;
 - (void)setYPos:(int)i_yPos;
 - (int)intValue;
 - (float)floatValue;
 - (char *)stringValue;
 - (void)applyChanges;
-- (int)getLabelSize;
+- (int)labelSize;
 - (void) alignWithXPosition:(int)i_xPos;
-static NSMenu   *o_keys_menu = nil;
 
 + (int)calcVerticalMargin: (int)i_curItem lastItem:(int)i_lastItem;
 
@@ -207,6 +207,5 @@ static NSMenu   *o_keys_menu = nil;
 
 //#undef CONFIG_ITEM_LIST_STRING
 //#undef CONFIG_ITEM_RANGED_INTEGER
-//#undef CONFIG_ITEM_KEY_BEFORE_10_3
 //#undef CONFIG_ITEM_KEY_AFTER_10_3
 

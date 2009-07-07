@@ -2,7 +2,7 @@
  * a52tospdif.c : encapsulates A/52 frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 3f08c85a34b26d4204031ce7b4d162506ae7ab10 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Stéphane Borel <stef@via.ecp.fr>
@@ -49,13 +49,13 @@ static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_MISC );
-    set_description( N_("Audio filter for A/52->S/PDIF encapsulation") );
-    set_capability( "audio filter", 10 );
-    set_callbacks( Create, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_description( N_("Audio filter for A/52->S/PDIF encapsulation") )
+    set_capability( "audio filter", 10 )
+    set_callbacks( Create, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Create:
@@ -90,10 +90,6 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
      */
     static const uint8_t p_sync_le[6] = { 0x72, 0xF8, 0x1F, 0x4E, 0x01, 0x00 };
     static const uint8_t p_sync_be[6] = { 0xF8, 0x72, 0x4E, 0x1F, 0x00, 0x01 };
-#ifndef HAVE_SWAB
-    uint8_t * p_tmp;
-    uint16_t i;
-#endif
     uint16_t i_frame_size = p_in_buf->i_nb_bytes / 2;
     uint8_t * p_in = p_in_buf->p_buffer;
     uint8_t * p_out = p_out_buf->p_buffer;
@@ -113,17 +109,7 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
         p_out[5] = p_in[5] & 0x7; /* bsmod */
         p_out[6] = (i_frame_size << 4) & 0xff;
         p_out[7] = (i_frame_size >> 4) & 0xff;
-#ifdef HAVE_SWAB
         swab( p_in, &p_out[8], i_frame_size * 2 );
-#else
-        p_tmp = &p_out[8];
-        for( i = i_frame_size; i-- ; )
-        {
-            p_tmp[0] = p_in[1];
-            p_tmp[1] = p_in[0];
-            p_tmp += 2; p_in += 2;
-        }
-#endif
     }
     vlc_memset( p_out + 8 + i_frame_size * 2, 0,
                 AOUT_SPDIF_SIZE - i_frame_size * 2 - 8 );

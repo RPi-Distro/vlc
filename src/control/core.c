@@ -2,7 +2,7 @@
  * core.c: Core libvlc new API functions : initialization, exceptions handling
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: a4a62f80618376a8ed9c334ab5722c12988c51c7 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -43,6 +43,8 @@ void libvlc_exception_init( libvlc_exception_t *p_exception )
 
 void libvlc_exception_clear( libvlc_exception_t *p_exception )
 {
+    if( NULL == p_exception )
+        return;
     if( p_exception->psz_message != nomemstr )
         free( p_exception->psz_message );
     p_exception->psz_message = NULL;
@@ -87,6 +89,8 @@ void libvlc_exception_raise( libvlc_exception_t *p_exception,
         /* Print something, so that lazy third-parties can easily
          * notice that something may have gone unnoticedly wrong */
         libvlc_exception_not_handled( psz );
+        if( psz != nomemstr )
+            free( psz );
         return;
     }
 
@@ -122,21 +126,21 @@ libvlc_instance_t * libvlc_new( int argc, const char *const *argv,
     /* Because we probably don't want a GUI by default */
 
     i_ret = libvlc_InternalInit( p_libvlc_int, argc + 1, my_argv );
-    if( i_ret == VLC_EEXITSUCCESS )
+    if( i_ret )
     {
+        libvlc_InternalDestroy( p_libvlc_int );
         free( p_new );
-        return NULL;
-    }
-    else if( i_ret != 0 )
-    {
-        free( p_new );
-        RAISENULL( "VLC initialization failed" );
+        if( i_ret == VLC_EEXITSUCCESS )
+            return NULL;
+        else
+            RAISENULL( "VLC initialization failed" );
     }
 
     p_new->p_libvlc_int = p_libvlc_int;
     p_new->p_vlm = NULL;
     p_new->b_playlist_locked = 0;
     p_new->ref_count = 1;
+    p_new->verbosity = 1;
     p_new->p_callback_list = NULL;
     vlc_mutex_init(&p_new->instance_lock);
     vlc_mutex_init(&p_new->event_callback_lock);
@@ -185,15 +189,13 @@ void libvlc_add_intf( libvlc_instance_t *p_i, const char *name,
 void libvlc_wait( libvlc_instance_t *p_i )
 {
     libvlc_int_t *p_libvlc = p_i->p_libvlc_int;
-    vlc_object_lock( p_libvlc );
-    while( vlc_object_alive( p_libvlc ) )
-        vlc_object_wait( p_libvlc );
-    vlc_object_unlock( p_libvlc );
+    libvlc_InternalWait( p_libvlc );
 }
 
 int libvlc_get_vlc_id( libvlc_instance_t *p_instance )
 {
-    return p_instance->p_libvlc_int->i_object_id;
+    assert( p_instance );
+    return 1;
 }
 
 const char * libvlc_get_version(void)
@@ -208,5 +210,17 @@ const char * libvlc_get_compiler(void)
 
 const char * libvlc_get_changeset(void)
 {
-    return VLC_Changeset();
+    return "exported";
+}
+
+/* export internal libvlc_instance for ugly hacks with libvlccore */
+vlc_object_t *libvlc_get_vlc_instance( libvlc_instance_t* p_instance )
+{
+    vlc_object_hold( p_instance->p_libvlc_int ) ;
+    return (vlc_object_t*) p_instance->p_libvlc_int ;
+}
+
+void libvlc_free( void *ptr )
+{
+    free( ptr );
 }

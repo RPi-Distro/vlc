@@ -2,7 +2,7 @@
  * vlc_strings.h: String functions
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: eab608e09063b3cd8d14842f4861abb50008cbc6 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -50,7 +50,7 @@ VLC_EXPORT( char *, __str_format_meta, ( vlc_object_t *, const char * ) );
 #define str_format( a, b ) __str_format( VLC_OBJECT( a ), b )
 VLC_EXPORT( char *, __str_format, ( vlc_object_t *, const char * ) );
 
-VLC_EXPORT( void, filename_sanitize, ( char * ) );
+VLC_EXPORT( char *, filename_sanitize, ( const char * ) ) LIBVLC_USED;
 VLC_EXPORT( void, path_sanitize, ( char * ) );
 
 /**

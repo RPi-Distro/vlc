@@ -2,7 +2,7 @@
  * VLCMinimalVoutWindow.m: MacOS X Minimal interface window
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: f3357e0adc43d90c602cd45d74481a054a9a2f8c $
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -29,10 +29,10 @@
 #include "VLCOpenGLVoutView.h"
 #include "VLCMinimalVoutWindow.h"
 
-/* SetSystemUIMode, ... */
-#import <QuickTime/QuickTime.h>
-
 #import <Cocoa/Cocoa.h>
+
+/* SetSystemUIMode, ... */
+#import <Carbon/Carbon.h>
 
 @implementation VLCMinimalVoutWindow
 - (id)initWithContentRect:(NSRect)contentRect

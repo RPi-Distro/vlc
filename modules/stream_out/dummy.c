@@ -2,7 +2,7 @@
  * dummy.c: dummy stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: a1e457430ec26599c9c57b1fdf65c97c4ccf38f3 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -47,12 +47,13 @@ static int               Send( sout_stream_t *, sout_stream_id_t *, block_t* );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Dummy stream output") );
-    set_capability( "sout stream", 50 );
-    add_shortcut( "dummy" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Dummy stream output") )
+    set_capability( "sout stream", 50 )
+    add_shortcut( "dummy" )
+    add_shortcut( "drop" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open:

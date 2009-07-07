@@ -18,5 +18,5 @@ libminimal_macosx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libminimal_macosx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libminimal_macosx_plugin_la_LIBADD = $(AM_LIBADD)
-libminimal_macosx_plugin_la_DEPENDENCIES =
+libminimal_macosx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

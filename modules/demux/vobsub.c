@@ -2,7 +2,7 @@
  * subtitle.c: Demux vobsub files.
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 88a84e56007013e88dacd988c9640661548570ea $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -34,6 +34,7 @@
 
 #include <errno.h>
 #include <sys/types.h>
+#include <limits.h>
 
 #include <vlc_demux.h>
 #include <vlc_charset.h>
@@ -48,17 +49,17 @@
 static int  Open ( vlc_object_t *p_this );
 static void Close( vlc_object_t *p_this );
 
-vlc_module_begin();
-    set_description( N_("Vobsub subtitles parser") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_capability( "demux", 1 );
+vlc_module_begin ()
+    set_description( N_("Vobsub subtitles parser") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_capability( "demux", 1 )
 
-    set_callbacks( Open, Close );
+    set_callbacks( Open, Close )
 
-    add_shortcut( "vobsub" );
-    add_shortcut( "subtitle" );
-vlc_module_end();
+    add_shortcut( "vobsub" )
+    add_shortcut( "subtitle" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Prototypes:
@@ -325,10 +326,13 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         case DEMUX_GET_FPS:
         case DEMUX_GET_META:
         case DEMUX_GET_TITLE_INFO:
+        case DEMUX_HAS_UNSUPPORTED_META:
+        case DEMUX_GET_ATTACHMENTS:
+        case DEMUX_CAN_RECORD:
             return VLC_EGENERIC;
 
         default:
-            msg_Err( p_demux, "unknown query in subtitle control" );
+            msg_Warn( p_demux, "unknown query in subtitle control" );
             return VLC_EGENERIC;
     }
 }
@@ -414,47 +418,35 @@ static int Demux( demux_t *p_demux )
 
 static int TextLoad( text_t *txt, stream_t *s )
 {
-    int   i_line_max;
-
-    /* init txt */
-    i_line_max          = 500;
-    txt->i_line_count   = 0;
-    txt->i_line         = 0;
-    txt->line           = calloc( i_line_max, sizeof( char * ) );
-    if( !txt->line )
-        return VLC_EGENERIC;
+    char **lines = NULL;
+    size_t n = 0;
 
     /* load the complete file */
     for( ;; )
     {
         char *psz = stream_ReadLine( s );
+        char **ppsz_new;
 
-        if( psz == NULL )
+        if( psz == NULL || (n >= INT_MAX/sizeof(char *)) )
             break;
 
-        txt->line[txt->i_line_count++] = psz;
-        if( txt->i_line_count >= i_line_max )
+        ppsz_new = realloc( lines, (n + 1) * sizeof (char *) );
+        if( ppsz_new == NULL )
         {
-            char **ppsz_old = txt->line;
-
-            i_line_max += 100;
-            txt->line = realloc( txt->line, i_line_max * sizeof( char*) );
-            if( !txt->line )
-            {
-                free( ppsz_old );
-                break;
-            }
+            free( psz );
+            break;
         }
+        lines = ppsz_new;
+        lines[n++] = psz;
     }
 
-    if( txt->i_line_count <= 0 )
-    {
-        free( txt->line );
-        return VLC_EGENERIC;
-    }
+    txt->i_line_count = n;
+    txt->i_line       = 0;
+    txt->line         = lines;
 
     return VLC_SUCCESS;
 }
+
 static void TextUnload( text_t *txt )
 {
     int i;
@@ -726,10 +718,10 @@ static int DemuxVobSub( demux_t *p_demux, block_t *p_bk )
                 p_bk->i_pts = 0;     /*only first packet has a pts */
                 break;
             }
-            else if( i == p_sys->i_tracks - 1 )
-            {
-                block_Release( p_pkt );
-            }
+        }
+        if( i >= p_sys->i_tracks )
+        {
+            block_Release( p_pkt );
         }
     }
 

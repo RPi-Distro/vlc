@@ -1,12 +1,12 @@
 Patch originally taken from the BTS #347650 and then adapted for 
 later libtool version
 
-Index: vlc-0.9.1/autotools/ltmain.sh
+Index: vlc-debian/autotools/ltmain.sh
 ===================================================================
---- vlc-0.9.1.orig/autotools/ltmain.sh	2008-04-29 22:21:21.000000000 +0200
-+++ vlc-0.9.1/autotools/ltmain.sh	2008-09-04 00:46:24.000000000 +0200
-@@ -1807,6 +1807,11 @@
- 	arg=`$echo "X$arg" | $Xsed -e "s/^ //"`
+--- vlc-debian.orig/autotools/ltmain.sh	2009-05-12 13:55:42.000000000 +0200
++++ vlc-debian/autotools/ltmain.sh	2009-05-12 14:36:22.000000000 +0200
+@@ -4716,6 +4716,11 @@
+ 	arg=$func_stripname_result
  	;;
  
 +      -Wl,--as-needed)
@@ -15,9 +15,9 @@ Index: vlc-0.9.1/autotools/ltmain.sh
 +	;;
 +      
        -Wl,*)
- 	args=`$echo "X$arg" | $Xsed -e "$sed_quote_subst" -e 's/^-Wl,//'`
- 	arg=
-@@ -2150,6 +2155,15 @@
+ 	func_stripname '-Wl,' '' "$arg"
+ 	args=$func_stripname_result
+@@ -5070,6 +5075,15 @@
  	lib=
  	found=no
  	case $deplib in

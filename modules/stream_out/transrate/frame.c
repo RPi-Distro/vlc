@@ -5,7 +5,7 @@
  * Copyright (C) 2003 Antoine Missout <antoine.missout@metakine.com>
  * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
- * $Id: 5d7a02e3ffdc8380cea90fcacbabe818a213c823 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -32,12 +32,12 @@
  * Preamble
  *****************************************************************************/
 #define NDEBUG 1
-#include <assert.h>
-#include <math.h>
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+
+#include <assert.h>
+#include <math.h>
 
 #include <vlc_common.h>
 #include <vlc_sout.h>

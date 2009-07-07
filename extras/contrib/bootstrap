@@ -2,12 +2,12 @@
 # ***************************************************************************
 # bootstrap : Set up config.mak
 # ***************************************************************************
-# Copyright (C) 2003-2007 the VideoLAN team
+# Copyright (C) 2003-2009 the VideoLAN team
 # $Id$
 #
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>
-#          Felix Kühne <fkuehne@users.sourceforge.net>
+#          Felix Paul Kühne <fkuehne at videolan dot org>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -74,6 +74,9 @@ case $HOST in
     *powerpc*|*ppc*)
          echo "ARCH=ppc" >> config.mak
      ;;
+    *darwin10*)
+         echo "ARCH=x86_64" >> config.mak
+     ;;
     *86*)
           echo "ARCH=i386" >> config.mak
      ;;
@@ -101,50 +104,34 @@ esac
 
 case $HOST in
     ppc-darwin)
-# Mac OS X < 10.4
+        # Mac OS X < 10.4
         echo "Your version of Mac OS X is too old!" >&2
-        echo "Compiling VLC requires 10.4.x or later" >&2
+        echo "Compiling VLC requires 10.5.x or later" >&2
         exit 1
     ;;
     powerpc-apple-darwin8)
-# Mac OS X 10.4 or 10.5 with Xcode 2.5
-# Makefile cross compiling is only supported with gcc-4.0
-# ENVP defines the oldest environment on which the program will be able to run
-        SDK_TARGET=10.4
-        echo "SDK_TARGET = ${SDK_TARGET}" >> config.mak
-        echo "ENVP = MACOSX_DEPLOYMENT_TARGET=${SDK_TARGET}" >> config.mak
-        echo "MACOSX_SDK = /Developer/SDKs/MacOSX10.4u.sdk" >> config.mak
-        CFLAGS_TUNING=" -arch ppc -mtune=G4"
-        EXTRA_CFLAGS=" -D\${ENVP} -mmacosx-version-min=\${SDK_TARGET}"
-        CC="gcc -isysroot \${MACOSX_SDK}"
-        CXX="g++ -isysroot \${MACOSX_SDK}"
-        LD="ld -arch ppc -syslibroot \${MACOSX_SDK}"
-        echo "PATH = /bin:/usr/bin:/usr/local/bin" >> config.mak
-        cat src/Distributions/darwin.mak >> distro.mak
+        echo "Your version of Mac OS X is too old!" >&2
+        echo "Compiling and running VLC requires 10.5.x or later" >&2
+        exit 1
     ;;
     i686-apple-darwin8)
-        SDK_TARGET=10.4
-        echo "SDK_TARGET = ${SDK_TARGET}" >> config.mak
-        echo "HAVE_DARWIN_OS_ON_INTEL = 1" >> config.mak
-        echo "ENVP = MACOSX_DEPLOYMENT_TARGET=${SDK_TARGET}" >> config.mak
-        echo "MACOSX_SDK = /Developer/SDKs/MacOSX10.4u.sdk" >> config.mak
-        CFLAGS_TUNING=" -march=pentium-m -mtune=prescott"
-        EXTRA_CFLAGS=" -D\${ENVP} -isysroot \${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
-        EXTRA_LDFLAGS=" -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK}"
-        echo "PATH = /bin:/usr/bin:/usr/local/bin" >> config.mak
-        cat src/Distributions/darwin.mak >> distro.mak
+        echo "Your version of Mac OS X is too old!" >&2
+        echo "Compiling and running VLC requires 10.5.x or later" >&2
+        exit 1
     ;;
     powerpc-apple-darwin9)
 # Mac OS X 10.5 with Xcode 3, specific rules apply
-        SDK_TARGET=10.4
+        SDK_TARGET=10.5
         echo "SDK_TARGET = ${SDK_TARGET}" >> config.mak
         echo "ENVP = MACOSX_DEPLOYMENT_TARGET=${SDK_TARGET}" >> config.mak
-        echo "MACOSX_SDK = /Developer/SDKs/MacOSX10.4u.sdk" >> config.mak
+        echo "MACOSX_SDK = /Developer/SDKs/MacOSX10.5.sdk" >> config.mak
         echo "HAVE_DARWIN_9 = 1" >> config.mak
+        HAVE_DARWIN_9=1
         CFLAGS_TUNING=" -arch ppc -mtune=G4"
-        EXTRA_CFLAGS=" -D\${ENVP} -mmacosx-version-min=\${SDK_TARGET}"
-        CC="gcc -isysroot \${MACOSX_SDK}"
-        CXX="g++ -isysroot \${MACOSX_SDK}"
+        EXTRA_CFLAGS=" -D\${ENVP} -isysroot \${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
+        EXTRA_LDFLAGS=" -arch ppc -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK}"
+        CC="/Developer/usr/llvm-gcc-4.2/bin/llvm-gcc-4.2"
+        CXX="/Developer/usr/llvm-gcc-4.2/bin/llvm-g++-4.2"
         LD="ld -arch ppc -syslibroot \${MACOSX_SDK}"
         echo "PATH = /bin:/usr/bin:/usr/local/bin:" >> config.mak
         cat src/Distributions/darwin.mak >> distro.mak
@@ -156,19 +143,23 @@ case $HOST in
         fi
     ;;
     i686-apple-darwin9)
-        SDK_TARGET=10.4
+        SDK_TARGET=10.5
         MIN_LD_VERSION_WITH_TEXT_RELOCATION=81
         echo "SDK_TARGET = ${SDK_TARGET}" >> config.mak
         echo "HAVE_DARWIN_OS_ON_INTEL = 1" >> config.mak
         echo "HAVE_DARWIN_9 = 1" >> config.mak
+        HAVE_DARWIN_9=1
         if test `ld -v 2> /dev/stdout | sed -E 's/.*ld64-([0-9]+).*/\1/'` -lt ${MIN_LD_VERSION_WITH_TEXT_RELOCATION}; then
-            echo "NO_TEXT_RELOCATION = 1" >> config.mak
+            echo "ERROR: Your ld version is unable to compile VLC.\nUpdate to Xcode 3.1 or higher." >&2
+            exit 1
         fi
         echo "ENVP = MACOSX_DEPLOYMENT_TARGET=${SDK_TARGET}" >> config.mak
-        echo "MACOSX_SDK = /Developer/SDKs/MacOSX10.4u.sdk" >> config.mak
-        CFLAGS_TUNING=" -march=pentium-m -mtune=prescott"
+        echo "MACOSX_SDK = /Developer/SDKs/MacOSX10.5.sdk" >> config.mak
+        CFLAGS_TUNING=" -march=pentium-m -mtune=prescott -arch i386"
         EXTRA_CFLAGS=" -D\${ENVP} -isysroot \${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
-        EXTRA_LDFLAGS=" -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK}"
+        EXTRA_LDFLAGS=" -arch i386 -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK}"
+        CC="/Developer/usr/llvm-gcc-4.2/bin/llvm-gcc-4.2"
+        CXX="/Developer/usr/llvm-gcc-4.2/bin/llvm-g++-4.2"
         echo "PATH = /bin:/usr/bin:/usr/local/bin" >> config.mak
         cat src/Distributions/darwin.mak >> distro.mak
         if test -e /Developer/SDKs; then
@@ -178,18 +169,21 @@ case $HOST in
             exit 1
         fi
     ;;
-    i686-apple-darwin10d1)
-        SDK_TARGET=10.6
+    *-apple-darwin10)
+        SDK_TARGET=10.5
         echo "SDK_TARGET = ${SDK_TARGET}" >> config.mak
         echo "HAVE_DARWIN_OS_ON_INTEL = 1" >> config.mak
         echo "HAVE_DARWIN_9 = 1" >> config.mak
         echo "HAVE_DARWIN_10 = 1" >> config.mak
+        HAVE_DARWIN_10=1
         echo "ENVP = MACOSX_DEPLOYMENT_TARGET=${SDK_TARGET}" >> config.mak
-        echo "MACOSX_SDK = /Developer/SDKs/MacOSX10.6.sdk" >> config.mak
-        CFLAGS_TUNING=" -march=pentium-m -mtune=prescott"
+        echo "MACOSX_SDK = /Developer/SDKs/MacOSX${SDK_TARGET}.sdk" >> config.mak
+        CFLAGS_TUNING=" -march=core2"
         EXTRA_CFLAGS=" -D\${ENVP} -isysroot \${MACOSX_SDK} -mmacosx-version-min=\${SDK_TARGET}"
         EXTRA_LDFLAGS=" -isysroot \${MACOSX_SDK} -Wl,-syslibroot,\${MACOSX_SDK}"
         echo "PATH = /bin:/usr/bin:/usr/local/bin" >> config.mak
+        CC="gcc"
+        CXX="g++"
         cat src/Distributions/darwin.mak >> distro.mak
         if test -e /Developer/SDKs; then
             echo "SDKs found. Everything is fine." >&2
@@ -221,6 +215,11 @@ case $HOST in
             echo "PATH = ${PATH}" >> config.mak
         fi
         cat src/Distributions/beos.mak >> distro.mak
+    ;;
+    *mingw32ce)
+        echo "HAVE_WINCE = 1" >> config.mak
+        echo "PKG_CONFIG_PATH = \$(PREFIX)/lib/pkgconfig" >> config.mak
+        cat src/Distributions/wince.mak >> distro.mak
     ;;
     *mingw32*)
         echo "HAVE_WIN32 = 1" >> config.mak
@@ -268,6 +267,8 @@ case $HOST in
             # Try to match distribution
             if test -f /etc/fedora-release; then
                 cat src/Distributions/fedora.mak >> distro.mak
+            elif test -f /etc/maemo_version; then
+                cat src/Distributions/maemo.mak >> distro.mak
             else
                 # Default Unix-like systems
                 cat src/Distributions/unix.mak >> distro.mak
@@ -320,12 +321,34 @@ else
 fi
 
 if test -z "$CONTRIBS_RELEASE"; then
+    echo "EXTRA_CFLAGS += -DNDEBUG" >> config.mak
     set +x
     echo
-    echo "***********************************************************"
-    echo "* If you are building contribs for a release build of VLC *"
-    echo "* Please run CONTRIBS_RELEASE=sexy ./bootstrap            *"
-    echo "***********************************************************"
-else
-    echo "EXTRA_CFLAGS += -DNDEBUG" >> config.mak
+    echo "*****************************************************************"
+    echo "* If you need contribs with all debug information, run this     *"
+    echo "* line and compile the libraries on your own.                   *"
+    echo "* CONTRIBS_RELEASE=no ./bootstrap                               *"
+    echo "*****************************************************************"
+fi
+
+if test $HAVE_DARWIN_9; then
+    set +x
+    echo
+    echo "*****************************************************************"
+    echo "* We are using the llvm-gcc-4.2 compiler on OS X by default,    *"
+    echo "* so compilation will fail if it isn't installed.               *"
+    echo "*****************************************************************"
+fi
+
+if test $HAVE_DARWIN_10; then
+    set +x
+    echo
+    echo "*****************************************************************"
+    echo "* You are running Darwin 10.                                    *"
+    echo "* For testing purposes, VLC will be compiled in 64bit mode.     *"
+    echo "* While doing so, for time being, the 10.5 SDK is used.         *"
+    echo "* Note that in contrast to our Darwin 9 builds, we are not      *"
+    echo "* using the llvm compiler, but plain GCC 4.2.                   *"
+    echo "*****************************************************************"
+    set -x
 fi

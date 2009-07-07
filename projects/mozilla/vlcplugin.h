@@ -1,12 +1,12 @@
 /*****************************************************************************
  * vlcplugin.h: a VLC plugin for Mozilla
  *****************************************************************************
- * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 3d62d309793a08141d2ea32d43728c6853921cce $
+ * Copyright (C) 2002-2009 the VideoLAN team
+ * $Id: 97a9dea61726e6ac1e9860f3d284fa8d0ccb3663 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
- *         Jean-Paul Saman <jpsaman@videolan.org>
+ *          Jean-Paul Saman <jpsaman@videolan.org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -88,6 +88,14 @@ public:
     NPError             init(int argc, char* const argn[], char* const argv[]);
     libvlc_instance_t*  getVLC()
                             { return libvlc_instance; };
+    libvlc_media_player_t* getMD(libvlc_exception_t *ex)
+    {
+        if( !libvlc_media_player )
+        {
+             libvlc_exception_raise(ex,"no mediaplayer");
+        }
+        return libvlc_media_player;
+    }
     NPP                 getBrowser()
                             { return p_browser; };
     char*               getAbsoluteURL(const char *url);
@@ -99,10 +107,6 @@ public:
     NPClass*            getScriptClass()
                             { return p_scriptClass; };
 
-    void                setLog(libvlc_log_t *log)
-                            { libvlc_log = log; };
-    libvlc_log_t*       getLog()
-                            { return libvlc_log; };
 #if XP_WIN
     WNDPROC             getWindowProc()
                             { return pf_wndproc; };
@@ -139,10 +143,67 @@ public:
     int      b_toolbar;
     char *   psz_target;
 
+    void playlist_play(libvlc_exception_t *ex)
+    {
+        if( libvlc_media_player||playlist_select(0,ex) )
+            libvlc_media_player_play(libvlc_media_player,ex);
+    }
+    void playlist_play_item(int idx,libvlc_exception_t *ex)
+    {
+        if( playlist_select(idx,ex) )
+            libvlc_media_player_play(libvlc_media_player,ex);
+    }
+    void playlist_stop(libvlc_exception_t *ex)
+    {
+        if( libvlc_media_player )
+            libvlc_media_player_stop(libvlc_media_player,ex);
+    }
+    void playlist_next(libvlc_exception_t *ex)
+    {
+        if( playlist_select(playlist_index+1,ex) )
+            libvlc_media_player_play(libvlc_media_player,ex);
+    }
+    void playlist_prev(libvlc_exception_t *ex)
+    {
+        if( playlist_select(playlist_index-1,ex) )
+            libvlc_media_player_play(libvlc_media_player,ex);
+    }
+    void playlist_pause(libvlc_exception_t *ex)
+    {
+        if( libvlc_media_player )
+            libvlc_media_player_pause(libvlc_media_player,ex);
+    }
+    int playlist_isplaying(libvlc_exception_t *ex)
+    {
+        int is_playing = 0;
+        if( libvlc_media_player )
+            is_playing = libvlc_media_player_is_playing(
+                                libvlc_media_player, ex );
+        return is_playing;
+    }
+
+    int playlist_add( const char *, libvlc_exception_t * );
+    int playlist_add_extended_untrusted( const char *, const char *, int,
+                                const char **, libvlc_exception_t * );
+    void playlist_delete_item( int, libvlc_exception_t * );
+    void playlist_clear( libvlc_exception_t * );
+    int  playlist_count( libvlc_exception_t * );
+
+    void toggle_fullscreen( libvlc_exception_t * );
+    void set_fullscreen( int, libvlc_exception_t * );
+    int  get_fullscreen( libvlc_exception_t * );
+
+    int  player_has_vout( libvlc_exception_t * );
+
 private:
+    bool playlist_select(int,libvlc_exception_t *);
+    void set_player_window( libvlc_exception_t * );
+
     /* VLC reference */
+    int                 playlist_index;
     libvlc_instance_t   *libvlc_instance;
-    libvlc_log_t        *libvlc_log;
+    libvlc_media_list_t *libvlc_media_list;
+    libvlc_media_player_t *libvlc_media_player;
     NPClass             *p_scriptClass;
 
     /* browser reference */
@@ -233,7 +294,5 @@ private:
     "audio/x-matroska:mka:Matroska audio;" \
     /* XSPF */ \
     "application/xspf+xml:xspf:Playlist xspf;"
-
-
 
 #endif

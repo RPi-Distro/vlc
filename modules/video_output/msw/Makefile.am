@@ -18,7 +18,7 @@ libdirect3d_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdirect3d_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdirect3d_plugin_la_LIBADD = $(AM_LIBADD)
-libdirect3d_plugin_la_DEPENDENCIES =
+libdirect3d_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The glwin32 plugin
 libglwin32_plugin_la_SOURCES = $(SOURCES_glwin32)
@@ -29,7 +29,7 @@ libglwin32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libglwin32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libglwin32_plugin_la_LIBADD = $(AM_LIBADD)
-libglwin32_plugin_la_DEPENDENCIES =
+libglwin32_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The vout_directx plugin
 libvout_directx_plugin_la_SOURCES = $(SOURCES_vout_directx)
@@ -40,7 +40,7 @@ libvout_directx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libvout_directx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libvout_directx_plugin_la_LIBADD = $(AM_LIBADD)
-libvout_directx_plugin_la_DEPENDENCIES =
+libvout_directx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The wingapi plugin
 libwingapi_plugin_la_SOURCES = $(SOURCES_wingapi)
@@ -51,7 +51,7 @@ libwingapi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libwingapi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libwingapi_plugin_la_LIBADD = $(AM_LIBADD)
-libwingapi_plugin_la_DEPENDENCIES =
+libwingapi_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The wingdi plugin
 libwingdi_plugin_la_SOURCES = $(SOURCES_wingdi)
@@ -62,5 +62,5 @@ libwingdi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libwingdi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libwingdi_plugin_la_LIBADD = $(AM_LIBADD)
-libwingdi_plugin_la_DEPENDENCIES =
+libwingdi_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

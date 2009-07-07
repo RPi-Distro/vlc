@@ -2,7 +2,7 @@
  * pda_callbacks.c : Callbacks for the pda Linux Gtk+ plugin.
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 936060489a2f56443927e9ce0783b2f701f5697a $
+ * $Id: e1abc08bb1c0422bdcbabd31024c5db980da7fc1 $
  *
  * Authors: Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>
  *
@@ -94,7 +94,7 @@ static void PlaylistAddItem(GtkWidget *widget, gchar *name, char **ppsz_options,
     int           i_id , i_pos=0;
     GtkTreeView   *p_tvplaylist = NULL;
 
-    p_playlist = pl_Yield( p_intf );
+    p_playlist = pl_Hold( p_intf );
 
     if( p_playlist ==  NULL)
     {   /* Bail out when VLC's playlist object is not found. */
@@ -136,7 +136,7 @@ static void PlaylistAddItem(GtkWidget *widget, gchar *name, char **ppsz_options,
                               (const char*)name,
                               PLAYLIST_APPEND, PLAYLIST_END,
                               (mtime_t) 0,
-                              (const char **) ppsz_options, i_pos,
+                              i_size, (const char **) ppsz_options, VLC_INPUT_OPTION_TRUSTED,
                               true, pl_Unlocked );
             }
 
@@ -161,10 +161,10 @@ void PlaylistRebuildListStore( intf_thread_t *p_intf,
     red.blue    = 0;
     red.green   = 0;
 #endif
-    vlc_object_lock( p_playlist );
+    PL_LOCK;
     for( i_dummy = 0; i_dummy < playlist_CurrentSize(p_playlist) ; i_dummy++ )
     {
-        playlist_item_t *p_item = playlist_ItemGetById( p_playlist, i_dummy, pl_Locked );
+        playlist_item_t *p_item = playlist_ItemGetById( p_playlist, i_dummy );
         if( p_item )
         {
             ppsz_text[0] = p_item->p_input->psz_name;
@@ -177,7 +177,7 @@ void PlaylistRebuildListStore( intf_thread_t *p_intf,
                                 -1);
         }
     }
-    vlc_object_unlock( p_playlist );
+    PL_UNLOCK;
 }
 
 /*****************************************************************
@@ -270,7 +270,7 @@ static char *get_file_perms(const struct stat st)
 {
     char  *psz_perm;
 
-    psz_perm = (char *) malloc(sizeof(char)*10);
+    psz_perm = (char *) malloc(10);
     strncpy( psz_perm, "----------", sizeof("----------"));
 
     /* determine permission modes */
@@ -346,9 +346,7 @@ gboolean onPDADeleteEvent(GtkWidget *widget, GdkEvent *event, gpointer user_data
 {
     intf_thread_t *p_intf = GtkGetIntf( widget );
 
-    vlc_mutex_lock( &p_intf->change_lock );
-    vlc_object_kill( p_intf->p_libvlc );
-    vlc_mutex_unlock( &p_intf->change_lock );
+    libvlc_Quit( p_intf->p_libvlc );
     msg_Dbg( p_intf, "about to exit vlc ... signaled" );
 
     return TRUE;
@@ -378,20 +376,20 @@ void onPause(GtkButton *button, gpointer user_data)
 void onPlay(GtkButton *button, gpointer user_data)
 {
     intf_thread_t *p_intf = GtkGetIntf( GTK_WIDGET( button ) );
-    playlist_t *p_playlist = pl_Yield( p_intf );
+    playlist_t *p_playlist = pl_Hold( p_intf );
 
     if (p_playlist)
     {
-        vlc_object_lock( p_playlist );
-        if (playlist_CurrentSize(p_playlist))
+        int s;
+
+        PL_LOCK;
+        s = playlist_CurrentSize(p_playlist);
+        PL_UNLOCK;
+        /* FIXME: This is racy... */
+        if (s)
         {
-            vlc_object_unlock( p_playlist );
             playlist_Play( p_playlist );
             gdk_window_lower( p_intf->p_sys->p_window->window );
-        }
-        else
-        {
-            vlc_object_unlock( p_playlist );
         }
         pl_Release( p_intf );
     }
@@ -400,7 +398,7 @@ void onPlay(GtkButton *button, gpointer user_data)
 void onStop(GtkButton *button, gpointer user_data)
 {
     intf_thread_t *p_intf = GtkGetIntf( GTK_WIDGET( button ) );
-    playlist_t *p_playlist = pl_Yield( p_intf );
+    playlist_t *p_playlist = pl_Hold( p_intf );
     if (p_playlist)
     {
         playlist_Stop( p_playlist );
@@ -437,9 +435,7 @@ gboolean SliderRelease(GtkWidget *widget, GdkEventButton *event, gpointer user_d
     intf_thread_t *p_intf = GtkGetIntf( widget );
 
     msg_Dbg( p_intf, "SliderButton Release" );
-    vlc_mutex_lock( &p_intf->change_lock );
     p_intf->p_sys->b_slider_free = 1;
-    vlc_mutex_unlock( &p_intf->change_lock );
 
     return TRUE;
 }
@@ -449,9 +445,7 @@ gboolean SliderPress(GtkWidget *widget, GdkEventButton *event, gpointer user_dat
     intf_thread_t *p_intf = GtkGetIntf( widget );
 
     msg_Dbg( p_intf, "SliderButton Press" );
-    vlc_mutex_lock( &p_intf->change_lock );
     p_intf->p_sys->b_slider_free = 0;
-    vlc_mutex_unlock( &p_intf->change_lock );
 
     return FALSE;
 }
@@ -490,7 +484,7 @@ void onFileListRow(GtkTreeView *treeview, GtkTreePath *path,
         p_model = gtk_tree_view_get_model(treeview);
         if (!p_model)
         {
-            msg_Err(p_intf, "PDA: Filelist model contains a NULL pointer\n" );
+            msg_Err(p_intf, "PDA: Filelist model contains a NULL pointer" );
             return;
         }
         if (!gtk_tree_model_get_iter(p_model, &iter, path))
@@ -655,16 +649,12 @@ void onAddCameraToPlaylist(GtkButton *button, gpointer user_data)
 
     ppsz_options = (char **) malloc(11 *sizeof(char*));
     if (ppsz_options == NULL)
-    {
-        msg_Err(p_intf, "No memory to allocate for v4l options.");
         return;
-    }
     for (i=0; i<11; i++)
     {
-        ppsz_options[i] = (char *) malloc(VLC_MAX_MRL * sizeof(char));
+        ppsz_options[i] = (char *) malloc(VLC_MAX_MRL);
         if (ppsz_options[i] == NULL)
         {
-            msg_Err(p_intf, "No memory to allocate for v4l options string %i.", i);
             for (i-=1; i>=0; i--)
                 free(ppsz_options[i]);
             free(ppsz_options);
@@ -771,7 +761,7 @@ void onPlaylistRow(GtkTreeView *treeview, GtkTreePath *path,
 {
     intf_thread_t *p_intf = GtkGetIntf( GTK_WIDGET(treeview) );
     GtkTreeSelection *p_selection = gtk_tree_view_get_selection(treeview);
-    playlist_t * p_playlist = pl_Yield( p_intf );
+    playlist_t * p_playlist = pl_Hold( p_intf );
 
     if( p_playlist == NULL )
     {
@@ -789,12 +779,14 @@ void onPlaylistRow(GtkTreeView *treeview, GtkTreePath *path,
         p_model = gtk_tree_view_get_model(treeview);
         if (!p_model)
         {
-            msg_Err(p_intf, "PDA: Playlist model contains a NULL pointer\n" );
+            msg_Err(p_intf, "PDA: Playlist model contains a NULL pointer" );
+            pl_Release( p_intf );
             return;
         }
         if (!gtk_tree_model_get_iter(p_model, &iter, path))
         {
             msg_Err( p_intf, "PDA: Playlist could not get iter from model" );
+            pl_Release( p_intf );
             return;
         }
 
@@ -809,7 +801,7 @@ void onPlaylistRow(GtkTreeView *treeview, GtkTreePath *path,
 void onUpdatePlaylist(GtkButton *button, gpointer user_data)
 {
     intf_thread_t *  p_intf = GtkGetIntf( button );
-    playlist_t * p_playlist = pl_Yield( p_intf );
+    playlist_t * p_playlist = pl_Hold( p_intf );
     GtkTreeView *p_tvplaylist = NULL;
 
     if( p_playlist == NULL )
@@ -845,7 +837,7 @@ static void deleteItemFromPlaylist(gpointer data, gpointer user_data)
 void onDeletePlaylist(GtkButton *button, gpointer user_data)
 {
     intf_thread_t *p_intf = GtkGetIntf( button );
-    playlist_t * p_playlist = pl_Yield( p_intf );
+    playlist_t * p_playlist = pl_Hold( p_intf );
     GtkTreeView    *p_tvplaylist;
 
     /* Delete an arbitrary item from the playlist */
@@ -914,7 +906,7 @@ void onDeletePlaylist(GtkButton *button, gpointer user_data)
 void onClearPlaylist(GtkButton *button, gpointer user_data)
 {
     intf_thread_t *p_intf = GtkGetIntf( button );
-    playlist_t * p_playlist = pl_Yield( p_intf );
+    playlist_t * p_playlist = pl_Hold( p_intf );
     GtkTreeView    *p_tvplaylist;
     int item;
 
@@ -1021,16 +1013,12 @@ void onAddTranscodeToPlaylist(GtkButton *button, gpointer user_data)
 
     ppsz_options = (char **) malloc(3 *sizeof(char*));
     if (ppsz_options == NULL)
-    {
-        msg_Err(p_intf, "No memory to allocate for v4l options.");
         return;
-    }
     for (i=0; i<3; i++)
     {
-        ppsz_options[i] = (char *) malloc(VLC_MAX_MRL * sizeof(char));
+        ppsz_options[i] = (char *) malloc(VLC_MAX_MRL);
         if (ppsz_options[i] == NULL)
         {
-            msg_Err(p_intf, "No memory to allocate for v4l options string %i.", i);
             for (i-=1; i>=0; i--)
                 free(ppsz_options[i]);
             free(ppsz_options);
@@ -1039,8 +1027,9 @@ void onAddTranscodeToPlaylist(GtkButton *button, gpointer user_data)
     }
 
     /* Update the playlist */
-    playlist_t *p_playlist = pl_Yield( p_intf );
+    playlist_t *p_playlist = pl_Hold( p_intf );
     if( p_playlist == NULL ) return;
+    pl_Release( p_intf );
 
     /* Get all the options. */
     i_pos = snprintf( &mrl[0], VLC_MAX_MRL, "sout");

@@ -1,8 +1,8 @@
 /*****************************************************************************
  * qt4.hpp : QT4 interface
  ****************************************************************************
- * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: f9a46636caed4c609cb662f9136fd7e29cc7f85c $
+ * Copyright (C) 2006-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -22,78 +22,78 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _QVLC_H_
-#define _QVLC_H_
+#ifndef QVLC_H_
+#define QVLC_H_
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-#include <vlc_interface.h>
-#include <vlc_playlist.h>
+#include <vlc_common.h>    /* VLC_COMMON_MEMBERS for vlc_interface.h */
+#include <vlc_interface.h> /* intf_thread_t */
+#include <vlc_playlist.h>  /* playlist_t */
 
 #include <QEvent>
+#include <QString>
 
-#define HAS_QT43 ( QT_VERSION >= 0x040300 )
+#if ( QT_VERSION < 0x040300 )
+# error Update your Qt version
+#endif
+#if QT_VERSION == 0x040500
+# warning Please update Qt version to 4.5.1. This warning will become an error.
+#endif
 
-#define QT_NORMAL_MODE 0
-#define QT_ALWAYS_VIDEO_MODE 1
-#define QT_MINIMAL_MODE 2
+enum {
+    QT_NORMAL_MODE = 0,
+    QT_ALWAYS_VIDEO_MODE,
+    QT_MINIMAL_MODE
+};
 
-class QApplication;
+enum {
+    DialogEventType = 0,
+    IMEventType     = 100,
+    PLEventType     = 200,
+    MsgEventType    = 300,
+};
+
+class QVLCApp;
 class QMenu;
 class MainInterface;
-class DialogsProvider;
-class VideoWidget;
 class QSettings;
-
-#if defined(Q_WS_WIN)
-#include <QApplication>
-
-class WinQtApp : public QApplication
-{
-public:
-    WinQtApp ( int & argc, char ** argv, bool GUIenabled ) : QApplication( argc, argv, GUIenabled ) {}
-    ~WinQtApp() {}
-protected:
-    bool winEventFilter(MSG *msg, long *result);
-};
-#endif /* Q_WS_WIN */
 
 struct intf_sys_t
 {
-    QApplication *p_app;
-    MainInterface *p_mi;
+    vlc_thread_t thread;
 
-    QSettings *mainSettings;
+    QVLCApp *p_app;          /* Main Qt Application */
+    MainInterface *p_mi;     /* Main Interface, NULL if DialogProvider Mode */
 
-    bool b_isDialogProvider;
+    QSettings *mainSettings; /* Qt State settings not messing main VLC ones */
 
-    playlist_t *p_playlist;
-    msg_subscription_t *p_sub; ///< Subscription to the message bank
+    bool b_isDialogProvider; /* Qt mode or Skins mode */
 
-    VideoWidget *p_video;
+    int  i_screenHeight;     /* Detection of Small screens */
 
-    const char *psz_filepath;
-    QMenu * p_popup_menu;
+    playlist_t *p_playlist;  /* Core Playlist discussion */
+
+    QString filepath;        /* Last path used in dialogs */
+
+    QMenu * p_popup_menu;    /* The right click menu */
 };
 
 #define THEPL p_intf->p_sys->p_playlist
-#define QPL_LOCK vlc_object_lock( THEPL );
-#define QPL_UNLOCK vlc_object_unlock( THEPL );
+#define QPL_LOCK playlist_Lock( THEPL );
+#define QPL_UNLOCK playlist_Unlock( THEPL );
 
 #define THEDP DialogsProvider::getInstance()
 #define THEMIM MainInputManager::getInstance( p_intf )
 
 #define qfu( i ) QString::fromUtf8( i )
-#define qtr( i ) QString::fromUtf8( _(i) )
-#define qtu( i ) (i).toUtf8().data()
-#define qta( i ) (i).toAscii().data()
+#define qtr( i ) QString::fromUtf8( vlc_gettext(i) )
+#define qtu( i ) ((i).toUtf8().constData())
 
 #define CONNECT( a, b, c, d ) connect( a, SIGNAL( b ), c, SLOT(d) )
 #define BUTTONACT( b, a ) connect( b, SIGNAL( clicked() ), this, SLOT(a) )
-#define ON_TIMEOUT( act ) CONNECT( THEDP->fixed_timer, timeout(), this, act )
 
 #define BUTTON_SET( button, text, tooltip )  \
     button->setText( text );                 \
@@ -116,63 +116,9 @@ struct intf_sys_t
 #define TOGGLEV( x ) { if( x->isVisible() ) x->hide();          \
             else  x->show(); }
 
-#if HAS_QT43
-    #define setLayoutMargins( a, b, c, d, e) setContentsMargins( a, b, c, d )
-#else
-    #define setLayoutMargins( a, b, c, d, e) setMargin( e )
-#endif
+#define setLayoutMargins( a, b, c, d, e) setContentsMargins( a, b, c, d )
 
 #define getSettings() p_intf->p_sys->mainSettings
 
-enum {
-    DialogEventType = 0,
-    IMEventType     = 100,
-    PLEventType     = 200
-};
-
-
-#include <QString>
-/* Replace separators on Windows because Qt is always using / */
-static inline QString toNativeSeparators( QString s )
-{
-#ifdef WIN32
-    for (int i=0; i<(int)s.length(); i++)
-    {
-        if (s[i] == QLatin1Char('/'))
-            s[i] = QLatin1Char('\\');
-    }
-#endif
-    return s;
-}
-
-static inline QString removeTrailingSlash( QString s )
-{
-    if( ( s.length() > 1 ) && ( s[s.length()-1] == QLatin1Char( '/' ) ) )
-        s.remove( s.length() - 1, 1 );
-    return s;
-}
-
-#define toNativeSepNoSlash( a ) toNativeSeparators( removeTrailingSlash( a ) )
-
-static const int DialogEvent_Type = QEvent::User + DialogEventType + 1;
-//static const int PLUndockEvent_Type = QEvent::User + DialogEventType + 2;
-//static const int PLDockEvent_Type = QEvent::User + DialogEventType + 3;
-static const int SetVideoOnTopEvent_Type = QEvent::User + DialogEventType + 4;
-
-class DialogEvent : public QEvent
-{
-public:
-    DialogEvent( int _i_dialog, int _i_arg, intf_dialog_args_t *_p_arg ) :
-                 QEvent( (QEvent::Type)(DialogEvent_Type) )
-    {
-        i_dialog = _i_dialog;
-        i_arg = _i_arg;
-        p_arg = _p_arg;
-    };
-    virtual ~DialogEvent() {};
-
-    int i_arg, i_dialog;
-    intf_dialog_args_t *p_arg;
-};
 
 #endif

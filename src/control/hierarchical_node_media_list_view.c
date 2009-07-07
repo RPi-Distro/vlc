@@ -3,7 +3,7 @@
  * view functs.
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: 505ce8feddfa81191975da6c60bd0dfc38366a15 $
+ * $Id$
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -37,11 +37,6 @@
 #else
 # define trace( ... ) {}
 #endif
-
-struct libvlc_media_list_view_private_t
-{
-    vlc_array_t array;
-};
 
 /*
  * Private functions

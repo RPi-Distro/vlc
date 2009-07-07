@@ -2,7 +2,7 @@
  * sdl_image.c: sdl decoder module making use of libsdl_image.
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 82022e8873ebecde84bfd913f6e2901ebe3b4684 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -54,15 +54,15 @@ static picture_t *DecodeBlock  ( decoder_t *, block_t ** );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_shortname( N_("SDL Image decoder"));
-    set_description( N_("SDL_image video decoder") );
-    set_capability( "decoder", 60 );
-    set_callbacks( OpenDecoder, CloseDecoder );
-    add_shortcut( "sdl_image" );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_shortname( N_("SDL Image decoder"))
+    set_description( N_("SDL_image video decoder") )
+    set_capability( "decoder", 60 )
+    set_callbacks( OpenDecoder, CloseDecoder )
+    add_shortcut( "sdl_image" )
+vlc_module_end ()
 
 static const struct supported_fmt_t
 {
@@ -137,6 +137,12 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     if( pp_block == NULL || *pp_block == NULL ) return NULL;
     p_block = *pp_block;
 
+    if( p_block->i_flags & BLOCK_FLAG_DISCONTINUITY )
+    {
+        block_Release( p_block ); *pp_block = NULL;
+        return NULL;
+    }
+
     p_rw = SDL_RWFromConstMem( p_block->p_buffer, p_block->i_buffer );
 
     /* Decode picture. */
@@ -171,7 +177,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                                      / p_surface->h;
 
     /* Get a new picture. */
-    p_pic = p_dec->pf_vout_buffer_new( p_dec );
+    p_pic = decoder_NewPicture( p_dec );
     if ( p_pic == NULL ) goto error;
 
     switch ( p_surface->format->BitsPerPixel )
@@ -256,6 +262,8 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             break;
         }
     }
+
+    p_pic->date = p_block->i_pts > 0 ? p_block->i_pts : p_block->i_dts;
 
     SDL_FreeSurface( p_surface );
     block_Release( p_block ); *pp_block = NULL;

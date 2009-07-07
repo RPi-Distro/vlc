@@ -2,7 +2,7 @@
  * dialogs.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 60d961cac94d2e8544a7b02b606337c4e0fef135 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -115,12 +115,12 @@ Dialogs::~Dialogs()
         // Detach the dialogs provider from its parent interface
         vlc_object_detach( m_pProvider );
 
-        module_Unneed( m_pProvider, m_pModule );
+        module_unneed( m_pProvider, m_pModule );
         vlc_object_release( m_pProvider );
     }
 
     /* Unregister callbacks */
-    var_DelCallback( getIntf()->p_sys->p_playlist, "intf-popupmenu",
+    var_DelCallback( getIntf()->p_libvlc, "intf-popupmenu",
                      PopupMenuCB, this );
 }
 
@@ -161,12 +161,9 @@ bool Dialogs::init()
     m_pProvider = (intf_thread_t *)vlc_object_create( getIntf(),
                                                     sizeof( intf_thread_t ) );
     if( m_pProvider == NULL )
-    {
-        msg_Err( getIntf(), "out of memory" );
         return false;
-    }
 
-    m_pModule = module_Need( m_pProvider, "dialogs provider", NULL, 0 );
+    m_pModule = module_need( m_pProvider, "dialogs provider", NULL, false );
     if( m_pModule == NULL )
     {
         msg_Err( getIntf(), "no suitable dialogs provider found (hint: compile the qt4 plugin, and make sure it is loaded properly)" );
@@ -186,7 +183,7 @@ bool Dialogs::init()
     }
 
     /* Register callback for the intf-popupmenu variable */
-    var_AddCallback( getIntf()->p_sys->p_playlist, "intf-popupmenu",
+    var_AddCallback( getIntf()->p_libvlc, "intf-popupmenu",
                      PopupMenuCB, this );
 
     return true;
@@ -198,9 +195,8 @@ void Dialogs::showFileGeneric( const string &rTitle, const string &rExtensions,
 {
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
-        intf_dialog_args_t *p_arg =
-            (intf_dialog_args_t *)malloc( sizeof(intf_dialog_args_t) );
-        memset( p_arg, 0, sizeof(intf_dialog_args_t) );
+        intf_dialog_args_t *p_arg = (intf_dialog_args_t*)
+                                    calloc( 1, sizeof( intf_dialog_args_t ) );
 
         p_arg->psz_title = strdup( rTitle.c_str() );
         p_arg->psz_extensions = strdup( rExtensions.c_str() );
@@ -220,7 +216,7 @@ void Dialogs::showFileGeneric( const string &rTitle, const string &rExtensions,
 void Dialogs::showChangeSkin()
 {
     showFileGeneric( _("Open a skin file"),
-                     _("Skin files (*.vlt;*.wsz)|*.vlt;*.wsz|Skin files (*.xml)|*.xml"),
+                     _("Skin files |*.vlt;*.wsz;*.xml"),
                      showChangeSkinCB, kOPEN );
 }
 
@@ -228,16 +224,17 @@ void Dialogs::showChangeSkin()
 void Dialogs::showPlaylistLoad()
 {
     showFileGeneric( _("Open playlist"),
-                     _("All playlists|*.pls;*.m3u;*.asx;*.b4s;*.xspf|"
-                       "M3U files|*.m3u|"
-                       "XSPF playlist|*.xspf"),
+                     _("Playlist Files|"EXTENSIONS_PLAYLIST"|"
+                       "All Files|*"),
                      showPlaylistLoadCB, kOPEN );
 }
 
 
 void Dialogs::showPlaylistSave()
 {
-    showFileGeneric( _("Save playlist"), _("XSPF playlist|*.xspf|M3U file|*.m3u"),
+    showFileGeneric( _("Save playlist"), _("XSPF playlist|*.xspf|"
+                                           "M3U file|*.m3u|"
+                                           "HTML playlist|*.html"),
                      showPlaylistSaveCB, kSAVE );
 }
 
@@ -246,7 +243,7 @@ void Dialogs::showPlaylist()
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
         m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_PLAYLIST,
-                                     0, 0 );
+                                     0, NULL );
     }
 }
 
@@ -255,7 +252,7 @@ void Dialogs::showFileSimple( bool play )
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
         m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_FILE_SIMPLE,
-                                     (int)play, 0 );
+                                     (int)play, NULL );
     }
 }
 
@@ -265,7 +262,7 @@ void Dialogs::showFile( bool play )
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
         m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_FILE,
-                                     (int)play, 0 );
+                                     (int)play, NULL );
     }
 }
 
@@ -275,7 +272,7 @@ void Dialogs::showDirectory( bool play )
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
         m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_DIRECTORY,
-                                     (int)play, 0 );
+                                     (int)play, NULL );
     }
 }
 
@@ -285,7 +282,7 @@ void Dialogs::showDisc( bool play )
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
         m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_DISC,
-                                     (int)play, 0 );
+                                     (int)play, NULL );
     }
 }
 
@@ -295,7 +292,7 @@ void Dialogs::showNet( bool play )
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
         m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_NET,
-                                     (int)play, 0 );
+                                     (int)play, NULL );
     }
 }
 
@@ -304,7 +301,7 @@ void Dialogs::showMessages()
 {
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
-        m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_MESSAGES, 0, 0 );
+        m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_MESSAGES, 0, NULL );
     }
 }
 
@@ -313,7 +310,7 @@ void Dialogs::showPrefs()
 {
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
-        m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_PREFS, 0, 0 );
+        m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_PREFS, 0, NULL );
     }
 }
 
@@ -322,7 +319,7 @@ void Dialogs::showFileInfo()
 {
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
-        m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_FILEINFO, 0, 0 );
+        m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_FILEINFO, 0, NULL );
     }
 }
 
@@ -331,7 +328,7 @@ void Dialogs::showStreamingWizard()
 {
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
-        m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_WIZARD, 0, 0 );
+        m_pProvider->pf_show_dialog( m_pProvider, INTF_DIALOG_WIZARD, 0, NULL );
     }
 }
 
@@ -341,15 +338,14 @@ void Dialogs::showPopupMenu( bool bShow, int popupType = INTF_DIALOG_POPUPMENU )
     if( m_pProvider && m_pProvider->pf_show_dialog )
     {
         m_pProvider->pf_show_dialog( m_pProvider, popupType,
-                                     (int)bShow, 0 );
+                                     (int)bShow, NULL );
     }
 }
 
 void Dialogs::showInteraction( interaction_dialog_t *p_dialog )
 {
-    intf_dialog_args_t *p_arg =
-            (intf_dialog_args_t *)malloc( sizeof(intf_dialog_args_t) );
-    memset( p_arg, 0, sizeof(intf_dialog_args_t) );
+    intf_dialog_args_t *p_arg = (intf_dialog_args_t *)
+                                calloc( 1, sizeof(intf_dialog_args_t) );
 
     p_arg->p_dialog = p_dialog;
     p_arg->p_intf = getIntf();

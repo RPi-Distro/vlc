@@ -2,7 +2,7 @@
  * swscale.c: scaling and chroma conversion using libswscale
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: cf45e2dac26740934465b82761cf01d6f5fb8bf6 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -36,12 +36,17 @@
 
 #ifdef HAVE_LIBSWSCALE_SWSCALE_H
 #   include <libswscale/swscale.h>
+#   include <libavcodec/avcodec.h>
 #elif defined(HAVE_FFMPEG_SWSCALE_H)
 #   include <ffmpeg/swscale.h>
+#   include <ffmpeg/avcodec.h>
 #endif
 
 /* Gruikkkkkkkkkk!!!!! */
-#include "../codec/avcodec/chroma.h"
+#include "../codec/avcodec/avcodec.h"
+#undef AVPALETTE_SIZE
+
+#define AVPALETTE_SIZE (256 * sizeof(uint32_t))
 
 /*****************************************************************************
  * Module descriptor
@@ -59,15 +64,16 @@ const char *const ppsz_mode_descriptions[] =
   N_("Area"), N_("Luma bicubic / chroma bilinear"), N_("Gauss"),
   N_("SincR"), N_("Lanczos"), N_("Bicubic spline") };
 
-vlc_module_begin();
-    set_description( N_("Video scaling filter") );
-    set_capability( "video filter2", 150 );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_callbacks( OpenScaler, CloseScaler );
-    add_integer( "swscale-mode", 2, NULL, SCALEMODE_TEXT, SCALEMODE_LONGTEXT, true );
-        change_integer_list( pi_mode_values, ppsz_mode_descriptions, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Video scaling filter") )
+    set_shortname( N_("Swscale" ) )
+    set_capability( "video filter2", 150 )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_callbacks( OpenScaler, CloseScaler )
+    add_integer( "swscale-mode", 2, NULL, SCALEMODE_TEXT, SCALEMODE_LONGTEXT, true )
+        change_integer_list( pi_mode_values, ppsz_mode_descriptions, NULL )
+vlc_module_end ()
 
 /* Version checking */
 #if LIBSWSCALE_VERSION_INT >= ((0<<16)+(5<<8)+0)
@@ -97,6 +103,7 @@ struct filter_sys_t
     picture_t *p_src_e;
     picture_t *p_dst_e;
     bool b_add_a;
+    bool b_copy;
 };
 
 static picture_t *Filter( filter_t *, picture_t * );
@@ -110,6 +117,7 @@ typedef struct
     bool b_has_a;
     bool b_add_a;
     int  i_sws_flags;
+    bool b_copy;
 } ScalerConfiguration;
 
 static int GetParameters( ScalerConfiguration *,
@@ -123,7 +131,7 @@ static int GetSwsCpuMask(void);
  * (change it to true to try) */
 #define ALLOW_YUVP (false)
 /* SwScaler does not like too small picture */
-#define MINIMUM_WIDTH (16)
+#define MINIMUM_WIDTH (32)
 
 /* XXX is it always 3 even for BIG_ENDIAN (blend.c seems to think so) ? */
 #define OFFSET_A (3)
@@ -137,10 +145,6 @@ static int OpenScaler( vlc_object_t *p_this )
     filter_sys_t *p_sys;
 
     int i_sws_mode;
-
-    float sws_lum_gblur = 0.0, sws_chr_gblur = 0.0;
-    int sws_chr_vshift = 0, sws_chr_hshift = 0;
-    float sws_chr_sharpen = 0.0, sws_lum_sharpen = 0.0;
 
     if( GetParameters( NULL,
                        &p_filter->fmt_in.video,
@@ -297,12 +301,24 @@ static int GetParameters( ScalerConfiguration *p_cfg,
         b_has_ao = true;
     }
 
+    /* FIXME TODO removed when ffmpeg is fixed
+     * Without SWS_ACCURATE_RND the quality is really bad for some conversions */
+    switch( i_fmto )
+    {
+    case PIX_FMT_ARGB:
+    case PIX_FMT_RGBA:
+    case PIX_FMT_ABGR:
+        i_sws_flags |= SWS_ACCURATE_RND;
+        break;
+    }
+
     if( p_cfg )
     {
         p_cfg->i_fmti = i_fmti;
         p_cfg->i_fmto = i_fmto;
         p_cfg->b_has_a = b_has_ai && b_has_ao;
         p_cfg->b_add_a = (!b_has_ai) && b_has_ao;
+        p_cfg->b_copy = i_fmti == i_fmto && p_fmti->i_width == p_fmto->i_width && p_fmti->i_height == p_fmto->i_height;
         p_cfg->i_sws_flags = i_sws_flags;
     }
 
@@ -385,6 +401,7 @@ static int Init( filter_t *p_filter )
     }
 
     p_sys->b_add_a = cfg.b_add_a;
+    p_sys->b_copy = cfg.b_copy;
     p_sys->fmt_in  = *p_fmti;
     p_sys->fmt_out = *p_fmto;
 
@@ -483,13 +500,25 @@ static void CopyPad( picture_t *p_dst, const picture_t *p_src )
     }
 }
 
-static void Convert( struct SwsContext *ctx,
+static void Convert( filter_t *p_filter, struct SwsContext *ctx,
                      picture_t *p_dst, picture_t *p_src, int i_height, int i_plane_start, int i_plane_count )
 {
+    uint8_t palette[AVPALETTE_SIZE];
+
     uint8_t *src[3]; int src_stride[3];
     uint8_t *dst[3]; int dst_stride[3];
 
     GetPixels( src, src_stride, p_src, i_plane_start, i_plane_count );
+    if( p_filter->fmt_in.video.i_chroma == VLC_FOURCC( 'R', 'G', 'B', 'P' ) )
+    {
+        memset( palette, 0, sizeof(palette) );
+        if( p_filter->fmt_in.video.p_palette )
+            memcpy( palette, p_filter->fmt_in.video.p_palette->palette,
+                    __MIN( sizeof(video_palette_t), AVPALETTE_SIZE ) );
+        src[1] = palette;
+        src_stride[1] = 4;
+    }
+
     GetPixels( dst, dst_stride, p_dst, i_plane_start, i_plane_count );
 
 #if LIBSWSCALE_VERSION_INT  >= ((0<<16)+(5<<8)+0)
@@ -539,7 +568,10 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         CopyPad( p_src, p_pic );
     }
 
-    Convert( p_sys->ctx, p_dst, p_src, p_fmti->i_height, 0, 3 );
+    if( p_sys->b_copy )
+        picture_CopyPixels( p_dst, p_src );
+    else
+        Convert( p_filter, p_sys->ctx, p_dst, p_src, p_fmti->i_height, 0, 3 );
     if( p_sys->ctxA )
     {
         /* We extract the A plane to rescale it, and then we reinject it. */
@@ -548,7 +580,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         else
             plane_CopyPixels( p_sys->p_src_a->p, p_src->p+A_PLANE );
 
-        Convert( p_sys->ctxA, p_sys->p_dst_a, p_sys->p_src_a, p_fmti->i_height, 0, 1 );
+        Convert( p_filter, p_sys->ctxA, p_sys->p_dst_a, p_sys->p_src_a, p_fmti->i_height, 0, 1 );
         if( p_fmto->i_chroma == VLC_FOURCC( 'R', 'G', 'B', 'A' ) )
             InjectA( p_dst, p_sys->p_dst_a, p_fmto->i_width * p_sys->i_extend_factor, p_fmto->i_height );
         else

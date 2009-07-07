@@ -2,7 +2,7 @@
  * avformat.c: demuxer and muxer using libavformat library
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 59a5862fd279aef65b2ee41f62fd8fbc434a3f4a $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -45,21 +45,23 @@
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    add_shortcut( "ffmpeg" );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_SCODEC );
-    set_description( N_("FFmpeg demuxer" ) );
-    set_capability( "demux", 2 );
-    set_callbacks( OpenDemux, CloseDemux );
+vlc_module_begin ()
+    add_shortcut( "ffmpeg" )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_description( N_("FFmpeg demuxer" ) )
+    set_shortname( N_("Avformat") )
+    set_capability( "demux", 2 )
+    set_callbacks( OpenDemux, CloseDemux )
 
 #ifdef ENABLE_SOUT
     /* mux submodule */
-    add_submodule();
-    set_description( N_("FFmpeg muxer" ) );
-    set_capability( "sout mux", 2 );
+    add_submodule ()
+    add_shortcut( "ffmpeg" )
+    set_description( N_("FFmpeg muxer" ) )
+    set_capability( "sout mux", 2 )
     add_string( "ffmpeg-mux", NULL, NULL, MUX_TEXT,
-                MUX_LONGTEXT, true );
-    set_callbacks( OpenMux, CloseMux );
+                MUX_LONGTEXT, true )
+    set_callbacks( OpenMux, CloseMux )
 #endif
-vlc_module_end();
+vlc_module_end ()

@@ -2,7 +2,7 @@
  * modules.h : Module management functions.
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: cc2207bbb9325ff7d3c8777b6c0e689ed8e28eca $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -39,23 +39,21 @@
  *****************************************************************************/
 struct module_bank_t
 {
-    VLC_COMMON_MEMBERS
+    unsigned         i_usage;
 
-    int              i_usage;
-
-    bool             b_builtins;
     bool             b_plugins;
 
     /* Plugins cache */
     bool             b_cache;
     bool             b_cache_dirty;
-    bool             b_cache_delete;
 
     int            i_cache;
     module_cache_t **pp_cache;
 
     int            i_loaded_cache;
     module_cache_t **pp_loaded_cache;
+
+    module_t       *head;
 };
 
 /*****************************************************************************
@@ -98,7 +96,13 @@ typedef shl_t module_handle_t;
  */
 struct module_t
 {
-    VLC_COMMON_MEMBERS
+    char       *psz_object_name;
+    module_t   *next;
+    module_t   *submodule;
+    module_t   *parent;
+    unsigned    submodule_count;
+    gc_object_t vlc_gc_data;
+    vlc_mutex_t lock;
 
     /*
      * Variables set by the module to identify itself
@@ -141,27 +145,25 @@ struct module_t
     bool          b_loaded;        /* Set to true if the dll is loaded */
 };
 
+module_t *vlc_module_create (vlc_object_t *);
+module_t *vlc_submodule_create (module_t *module);
 
 #define module_InitBank(a)     __module_InitBank(VLC_OBJECT(a))
 void  __module_InitBank        ( vlc_object_t * );
-#define module_LoadBuiltins(a) __module_LoadBuiltins(VLC_OBJECT(a))
-void  __module_LoadBuiltins    ( vlc_object_t * );
-#define module_LoadPlugins(a)  __module_LoadPlugins(VLC_OBJECT(a))
-void  __module_LoadPlugins     ( vlc_object_t * );
-#define module_EndBank(a)      __module_EndBank(VLC_OBJECT(a))
-void  __module_EndBank         ( vlc_object_t * );
-#define module_ResetBank(a)    __module_ResetBank(VLC_OBJECT(a))
-void  __module_ResetBank       ( vlc_object_t * );
+void module_LoadPlugins( vlc_object_t *, bool );
+#define module_LoadPlugins(a,b) module_LoadPlugins(VLC_OBJECT(a),b)
+void module_EndBank( vlc_object_t *, bool );
+#define module_EndBank(a,b) module_EndBank(VLC_OBJECT(a), b)
 
 /* Low-level OS-dependent handler */
-int  module_Call   (module_t *);
 int  module_Load   (vlc_object_t *, const char *, module_handle_t *);
+int  module_Call   (vlc_object_t *obj, module_t *);
 void module_Unload (module_handle_t);
 
 /* Plugins cache */
 void   CacheMerge (vlc_object_t *, module_t *, module_t *);
-void   CacheLoad  (vlc_object_t * );
-void   CacheSave  (vlc_object_t * );
-module_cache_t * CacheFind (const char *, int64_t, int64_t);
+void   CacheLoad  (vlc_object_t *, module_bank_t *, bool);
+void   CacheSave  (vlc_object_t *, module_bank_t *);
+module_cache_t * CacheFind (module_bank_t *, const char *, int64_t, int64_t);
 
 #endif /* !__LIBVLC_MODULES_H */

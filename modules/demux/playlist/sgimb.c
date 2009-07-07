@@ -2,7 +2,7 @@
  * sgimb.c: a meta demux to parse sgimb referrer files
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 772b763a6926b8715c5262887a91e233f6bf3701 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -337,15 +337,23 @@ static int Demux ( demux_t *p_demux )
         /* Definetly schedules multicast session */
         /* We don't care if it's live or not */
         free( p_sys->psz_uri );
-        asprintf( &p_sys->psz_uri, "udp://@" "%s:%i", p_sys->psz_mcast_ip, p_sys->i_mcast_port );
+        if( asprintf( &p_sys->psz_uri, "udp://@" "%s:%i", p_sys->psz_mcast_ip, p_sys->i_mcast_port ) == -1 )
+        {
+            p_sys->psz_uri = NULL;
+            return -1;
+        }
     }
 
     if( p_sys->psz_uri == NULL )
     {
         if( p_sys->psz_server && p_sys->psz_location )
         {
-            asprintf( &p_sys->psz_uri, "rtsp://" "%s:%i%s",
-                     p_sys->psz_server, p_sys->i_port > 0 ? p_sys->i_port : 554, p_sys->psz_location );
+            if( asprintf( &p_sys->psz_uri, "rtsp://" "%s:%i%s",
+                     p_sys->psz_server, p_sys->i_port > 0 ? p_sys->i_port : 554, p_sys->psz_location ) == -1 )
+            {
+                p_sys->psz_uri = NULL;
+                return -1;
+            }
         }
     }
 
@@ -360,13 +368,17 @@ static int Demux ( demux_t *p_demux )
         }
 
         free( p_sys->psz_uri );
-        asprintf( &p_sys->psz_uri, "%s%%3FMeDiAbAsEshowingId=%d%%26MeDiAbAsEconcert%%3FMeDiAbAsE",
-                p_sys->psz_uri, p_sys->i_sid );
+        if( asprintf( &p_sys->psz_uri, "%s%%3FMeDiAbAsEshowingId=%d%%26MeDiAbAsEconcert%%3FMeDiAbAsE",
+                p_sys->psz_uri, p_sys->i_sid ) == -1 )
+        {
+            p_sys->psz_uri = NULL;
+            return -1;
+        }
     }
 
     p_child = input_item_NewWithType( VLC_OBJECT(p_demux), p_sys->psz_uri,
                       p_sys->psz_name ? p_sys->psz_name : p_sys->psz_uri,
-                      0, NULL, p_sys->i_duration, ITEM_TYPE_NET );
+                      0, NULL, 0, p_sys->i_duration, ITEM_TYPE_NET );
  
     if( !p_child )
     {
@@ -379,24 +391,16 @@ static int Demux ( demux_t *p_demux )
     {
         char *psz_option;
         p_sys->i_packet_size += 1000;
-        asprintf( &psz_option, "mtu=%i", p_sys->i_packet_size );
-        input_item_AddOption( p_child, psz_option );
-        free( psz_option );
+        if( asprintf( &psz_option, "mtu=%i", p_sys->i_packet_size ) != -1 )
+        {
+            input_item_AddOption( p_child, psz_option, VLC_INPUT_OPTION_TRUSTED );
+            free( psz_option );
+        }
     }
     if( !p_sys->psz_mcast_ip )
-    {
-        char *psz_option;
-        asprintf( &psz_option, "rtsp-caching=5000" );
-        input_item_AddOption( p_child, psz_option );
-        free( psz_option );
-    }
+        input_item_AddOption( p_child, "rtsp-caching=5000", VLC_INPUT_OPTION_TRUSTED );
     if( !p_sys->psz_mcast_ip && p_sys->b_rtsp_kasenna )
-    {
-        char *psz_option;
-        asprintf( &psz_option, "rtsp-kasenna" );
-        input_item_AddOption( p_child, psz_option );
-        free( psz_option );
-    }
+        input_item_AddOption( p_child, "rtsp-kasenna", VLC_INPUT_OPTION_TRUSTED );
 
     input_item_AddSubItem( p_current_input, p_child );
     vlc_gc_decref( p_child );

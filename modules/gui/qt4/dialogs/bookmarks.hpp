@@ -2,7 +2,7 @@
  * bookmarks.hpp : bookmarks
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: cbe2426cb1209ff9af8b31683d5888a69620330a $
+ * $Id$
  *
  * Authors: Antoine Lejeune <phytos@via.ecp.fr>
  *
@@ -22,8 +22,8 @@
  *****************************************************************************/
 
 
-#ifndef _BOOKMARKS_H_
-#define _BOOKMARKS_H
+#ifndef QVLC_BOOKMARKS_H_
+#define QVLC_BOOKMARKS_H_ 1
 
 #include "util/qvlcframe.hpp"
 #include <QStandardItemModel>
@@ -42,16 +42,18 @@ public:
     }
     static void killInstance()
     {
-        if( instance ) delete instance;
+        delete instance;
         instance = NULL;
     }
-    virtual ~BookmarksDialog();
 private:
     BookmarksDialog( intf_thread_t * );
+    virtual ~BookmarksDialog();
+
     static BookmarksDialog *instance;
-    void update();
     QTreeWidget *bookmarksList;
+
 private slots:
+    void update();
     void add();
     void del();
     void clear();

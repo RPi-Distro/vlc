@@ -3,7 +3,7 @@
  *         vlc-specific things tend to go here.
  *****************************************************************************
  * Copyright (C) 2000, 2003, 2004, 2005 the VideoLAN team
- * $Id: 279c34a1fdc98beb17b1783c4cb25b6ee9685add $
+ * $Id$
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *   Some code is based on the non-libcdio VCD plugin (as there really
@@ -107,8 +107,8 @@ cdio_log_handler (cdio_log_level_t level, const char message[])
     break;
   default:
     msg_Warn( p_vcd_access, "%s\n%s %d", message,
-            _("The above message had unknown log level"),
-            level);
+              "The above message had unknown log level",
+              level);
   }
   return;
 }
@@ -133,8 +133,8 @@ vcd_log_handler (vcd_log_level_t level, const char message[])
     break;
   default:
     msg_Warn( p_vcd_access, "%s\n%s %d", message,
-            _("The above message had unknown vcdimager log level"),
-            level);
+              "The above message had unknown vcdimager log level",
+              level);
   }
   return;
 }
@@ -512,7 +512,7 @@ VCDLIDs( access_t * p_access )
 
       vcdinfo_visit_lot (p_vcdplayer->vcd, false);
 
-#if FIXED
+#ifdef FIXED
     /*
        We need to change libvcdinfo to be more robust when there are
        problems reading the extended PSD. Given that area-highlighting and
@@ -544,7 +544,7 @@ VCDLIDs( access_t * p_access )
         TAB_APPEND( t->i_seekpoint, t->seekpoint, s );
     }
 
-#if DYNAMICALLY_ALLOCATED
+#ifdef DYNAMICALLY_ALLOCATED
     TAB_APPEND( p_vcdplayer->i_titles, p_vcdplayer->p_title, t );
 #else
     p_vcdplayer->p_title[p_vcdplayer->i_titles] = t;
@@ -874,10 +874,7 @@ VCDOpen ( vlc_object_t *p_this )
     p_vcdplayer = malloc( sizeof(vcdplayer_t) );
 
     if( p_vcdplayer == NULL )
-    {
-        LOG_ERR ("out of memory" );
         return VLC_ENOMEM;
-    }
 
     p_vcdplayer->i_debug = config_GetInt( p_this, MODULE_STRING "-debug" );
     p_access->p_sys = (access_sys_t *) p_vcdplayer;
@@ -961,13 +958,13 @@ VCDOpen ( vlc_object_t *p_this )
     free( p_access->psz_demux );
     p_access->psz_demux = strdup( "ps" );
 
-#if FIXED
+#ifdef FIXED
     if (play_single_item)
       VCDFixupPlayList( p_access, p_vcd, psz_source, &itemid,
                         play_single_item );
 #endif
 
-#if FIXED
+#ifdef FIXED
     p_vcdplayer->p_intf = intf_Create( p_access, "vcdx" );
     p_vcdplayer->p_intf->b_block = false;
 #endif
@@ -983,6 +980,7 @@ VCDOpen ( vlc_object_t *p_this )
  err_exit:
     if( p_vcdplayer->p_input ) vlc_object_release( p_vcdplayer->p_input );
     free( psz_source );
+    free( p_vcdplayer->psz_source );
     free( p_vcdplayer );
     return VLC_EGENERIC;
 }
@@ -1073,12 +1071,6 @@ static int VCDControl( access_t *p_access, int i_query, va_list args )
           }
 
         /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = (p_vcdplayer->i_blocks_per_read * M2F2_SECTOR_SIZE);
-            dbg_print( INPUT_DBG_EVENT, "GET MTU: %d", *pi_int );
-            break;
-
         case ACCESS_GET_PTS_DELAY:
         {
             int64_t *pi_64 = (int64_t*)va_arg( args, int64_t * );
@@ -1109,9 +1101,8 @@ static int VCDControl( access_t *p_access, int i_query, va_list args )
             dbg_print( INPUT_DBG_EVENT, "GET TITLE: i_titles %d",
                        p_vcdplayer->i_titles );
 
-            if( psz_mrl == NULL ) {
-               msg_Warn( p_access, "out of memory" );
-            } else {
+            if( psz_mrl  )
+            {
                snprintf(psz_mrl, psz_mrl_max, "%s%s",
                         VCD_MRL_PREFIX, p_vcdplayer->psz_source);
                VCDMetaInfo( p_access, psz_mrl );

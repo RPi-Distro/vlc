@@ -2,7 +2,7 @@
  * nsc.c: NSC file demux and encoding decoder
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: c889af9a8e3f321e2a127ec9fd2e043c24649e17 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -42,13 +42,13 @@
 static int  DemuxOpen  ( vlc_object_t * );
 static void DemuxClose ( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("Windows Media NSC metademux") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_capability( "demux", 3 );
-    set_callbacks( DemuxOpen, DemuxClose );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Windows Media NSC metademux") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_capability( "demux", 3 )
+    set_callbacks( DemuxOpen, DemuxClose )
+vlc_module_end ()
 
 static int Demux ( demux_t *p_demux );
 static int Control( demux_t *p_demux, int i_query, va_list args );

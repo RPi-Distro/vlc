@@ -2,7 +2,7 @@
  * vlc_meta.h: Stream meta-data
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: a2abee0bbdb1298370f0ecd939c8dee809ec5478 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -80,7 +80,7 @@ struct vlc_meta_t
 #define vlc_meta_SetGenre( meta, b )       vlc_meta_Set( meta, vlc_meta_Genre, b )
 #define vlc_meta_SetCopyright( meta, b )   vlc_meta_Set( meta, vlc_meta_Copyright, b )
 #define vlc_meta_SetAlbum( meta, b )       vlc_meta_Set( meta, vlc_meta_Album, b )
-#define vlc_meta_SetTracknum( meta, b )    vlc_meta_Set( meta, vlc_meta_TrackNumber, b )
+#define vlc_meta_SetTrackNum( meta, b )    vlc_meta_Set( meta, vlc_meta_TrackNumber, b )
 #define vlc_meta_SetDescription( meta, b ) vlc_meta_Set( meta, vlc_meta_Description, b )
 #define vlc_meta_SetRating( meta, b )      vlc_meta_Set( meta, vlc_meta_Rating, b )
 #define vlc_meta_SetDate( meta, b )        vlc_meta_Set( meta, vlc_meta_Date, b )
@@ -93,21 +93,29 @@ struct vlc_meta_t
 #define vlc_meta_SetArtURL( meta, b )      vlc_meta_Set( meta, vlc_meta_ArtworkURL, b )
 #define vlc_meta_SetTrackID( meta, b )     vlc_meta_Set( meta, vlc_meta_TrackID, b )
 
-static inline void vlc_meta_Set( vlc_meta_t * p_meta, vlc_meta_type_t meta_type, const char * psz_val )
+/* Free a dictonary key allocated by strdup() in vlc_meta_AddExtra() */
+static inline void vlc_meta_FreeExtraKey( void *p_data, void *p_obj )
+{
+    VLC_UNUSED( p_obj );
+    free( p_data );
+}
+
+static inline void vlc_meta_Set( vlc_meta_t *p_meta, vlc_meta_type_t meta_type, const char *psz_val )
 {
     free( p_meta->ppsz_meta[meta_type] );
     p_meta->ppsz_meta[meta_type] = psz_val ? strdup( psz_val ) : NULL;
 }
 
-static inline const char * vlc_meta_Get( const vlc_meta_t * p_meta, vlc_meta_type_t meta_type )
+static inline const char *vlc_meta_Get( const vlc_meta_t *p_meta, vlc_meta_type_t meta_type )
 {
     return p_meta->ppsz_meta[meta_type];
 }
 
 static inline vlc_meta_t *vlc_meta_New( void )
 {
-    vlc_meta_t *m = (vlc_meta_t*)malloc( sizeof( vlc_meta_t ) );
-    if( !m ) return NULL;
+    vlc_meta_t *m = (vlc_meta_t*)malloc( sizeof(*m) );
+    if( !m )
+        return NULL;
     memset( m->ppsz_meta, 0, sizeof(m->ppsz_meta) );
     m->i_status = 0;
     vlc_dictionary_init( &m->extra_tags, 0 );
@@ -119,27 +127,26 @@ static inline void vlc_meta_Delete( vlc_meta_t *m )
     int i;
     for( i = 0; i < VLC_META_TYPE_COUNT ; i++ )
         free( m->ppsz_meta[i] );
-    vlc_dictionary_clear( &m->extra_tags );
+    vlc_dictionary_clear( &m->extra_tags, vlc_meta_FreeExtraKey, NULL );
     free( m );
 }
 
 static inline void vlc_meta_AddExtra( vlc_meta_t *m, const char *psz_name, const char *psz_value )
 {
-    char * psz_oldvalue = (char *)vlc_dictionary_value_for_key( &m->extra_tags, psz_name );
+    char *psz_oldvalue = (char *)vlc_dictionary_value_for_key( &m->extra_tags, psz_name );
     if( psz_oldvalue != kVLCDictionaryNotFound )
-    {
-        free( psz_oldvalue );
-        vlc_dictionary_remove_value_for_key( &m->extra_tags, psz_name );
-    }
+        vlc_dictionary_remove_value_for_key( &m->extra_tags, psz_name,
+                                             vlc_meta_FreeExtraKey, NULL );
     vlc_dictionary_insert( &m->extra_tags, psz_name, strdup(psz_value) );
 }
 
 static inline void vlc_meta_Merge( vlc_meta_t *dst, const vlc_meta_t *src )
 {
-    char ** ppsz_all_keys;
+    char **ppsz_all_keys;
     int i;
 
-    if( !dst || !src ) return;
+    if( !dst || !src )
+        return;
 
     for( i = 0; i < VLC_META_TYPE_COUNT; i++ )
     {
@@ -152,12 +159,13 @@ static inline void vlc_meta_Merge( vlc_meta_t *dst, const vlc_meta_t *src )
 
     /* XXX: If speed up are needed, it is possible */
     ppsz_all_keys = vlc_dictionary_all_keys( &src->extra_tags );
-    for( i = 0; ppsz_all_keys[i]; i++ )
+    for( i = 0; ppsz_all_keys && ppsz_all_keys[i]; i++ )
     {
         /* Always try to remove the previous value */
-        vlc_dictionary_remove_value_for_key( &dst->extra_tags, ppsz_all_keys[i] );
-        void * p_value = vlc_dictionary_value_for_key( &src->extra_tags, ppsz_all_keys[i] );
-        vlc_dictionary_insert( &dst->extra_tags, ppsz_all_keys[i], p_value );
+        vlc_dictionary_remove_value_for_key( &dst->extra_tags, ppsz_all_keys[i], vlc_meta_FreeExtraKey, NULL );
+
+        void *p_value = vlc_dictionary_value_for_key( &src->extra_tags, ppsz_all_keys[i] );
+        vlc_dictionary_insert( &dst->extra_tags, ppsz_all_keys[i], strdup( (const char*)p_value ) );
         free( ppsz_all_keys[i] );
     }
     free( ppsz_all_keys );

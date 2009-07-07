@@ -1,13 +1,13 @@
 /*****************************************************************************
- * open.h: MacOS X module for vlc
+ * open.h: Open dialogues for VLC's MacOS X port
  *****************************************************************************
- * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 53b7440cd6668755ab4d5ef89c6c47cd46b9cf31 $
+ * Copyright (C) 2002-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
  *          Derk-Jan Hartman <thedj@users.sourceforge.net>
- *          Felix Kühne <fkuehne at videolan dot org>
+ *          Felix Paul Kühne <fkuehne at videolan dot org>
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -37,6 +37,8 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
 
     IBOutlet id o_mrl;
     IBOutlet id o_mrl_lbl;
+    IBOutlet id o_mrl_view;
+    IBOutlet id o_mrl_btn;
     IBOutlet id o_tabview;
 
     IBOutlet id o_btn_ok;
@@ -65,7 +67,21 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
     IBOutlet id o_disc_dvd_menus;
 
     /* open network */
+    IBOutlet id o_net_http_url;
+    IBOutlet id o_net_http_url_lbl;
+    IBOutlet id o_net_help_lbl;
+
+    /* open UDP stuff panel */
+    IBOutlet id o_net_help_udp_lbl;
+    IBOutlet id o_net_udp_protocol_mat;
+    IBOutlet id o_net_udp_protocol_lbl;
+    IBOutlet id o_net_udp_address_lbl;
+    IBOutlet id o_net_udp_mode_lbl;
     IBOutlet id o_net_mode;
+    IBOutlet id o_net_openUDP_btn;
+    IBOutlet id o_net_udp_cancel_btn;
+    IBOutlet id o_net_udp_ok_btn;
+    IBOutlet id o_net_udp_panel;
     IBOutlet id o_net_udp_port;
     IBOutlet id o_net_udp_port_lbl;
     IBOutlet id o_net_udp_port_stp;
@@ -74,9 +90,6 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
     IBOutlet id o_net_udpm_port;
     IBOutlet id o_net_udpm_port_lbl;
     IBOutlet id o_net_udpm_port_stp;
-    IBOutlet id o_net_http_url;
-    IBOutlet id o_net_http_url_lbl;
-    IBOutlet id o_net_timeshift_ckbox;
 
     /* open subtitle file */
     IBOutlet id o_file_sub_ckbox;
@@ -123,14 +136,28 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
 
     /* screen support */
     IBOutlet id o_screen_view;
-    IBOutlet id o_screen_fps_fld;
     IBOutlet id o_screen_lbl;
     IBOutlet id o_screen_long_lbl;
-    IBOutlet id o_screen_fps_stp;
+    IBOutlet id o_screen_fps_fld;
     IBOutlet id o_screen_fps_lbl;
+    IBOutlet id o_screen_fps_stp;
+    IBOutlet id o_screen_left_fld;
+    IBOutlet id o_screen_left_lbl;
+    IBOutlet id o_screen_left_stp;
+    IBOutlet id o_screen_top_fld;
+    IBOutlet id o_screen_top_lbl;
+    IBOutlet id o_screen_top_stp;
+    IBOutlet id o_screen_width_fld;
+    IBOutlet id o_screen_width_lbl;
+    IBOutlet id o_screen_width_stp;
+    IBOutlet id o_screen_height_fld;
+    IBOutlet id o_screen_height_lbl;
+    IBOutlet id o_screen_height_stp;
+    IBOutlet id o_screen_follow_mouse_ckb;
 
     BOOL b_autoplay;
     id o_currentCaptureView;
+    intf_thread_t * p_intf;
 }
 
 + (VLCOpen *)sharedInstance;
@@ -139,6 +166,7 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
 - (void)openTarget:(int)i_type;
 - (void)tabView:(NSTabView *)o_tv didSelectTabViewItem:(NSTabViewItem *)o_tvi;
 - (void)textFieldWasClicked:(NSNotification *)o_notification;
+- (IBAction)expandMRLfieldAction:(id)sender;
 
 - (void)openFileGeneric;
 - (void)openFilePathChanged:(NSNotification *)o_notification;
@@ -157,6 +185,7 @@ NSArray *GetEjectableMediaOfClass( const char *psz_class );
 - (IBAction)openNetModeChanged:(id)sender;
 - (IBAction)openNetStepperChanged:(id)sender;
 - (void)openNetInfoChanged:(NSNotification *)o_notification;
+- (IBAction)openNetUDPButtonAction:(id)sender;
 
 - (void)openCapture;
 - (void)showCaptureView: theView;

@@ -2,7 +2,7 @@
  * xml.c - The OSD Menu XML parser code.
  *****************************************************************************
  * Copyright (C) 2005-2007 M2X
- * $Id: 0b24500e2a5c65b0a79ac595e00ccdea1928dae1 $
+ * $Id$
  *
  * Authors: Jean-Paul Saman
  *
@@ -30,13 +30,6 @@
 #endif
 
 #include <vlc_common.h>
-#include <vlc_vout.h>
-#include <vlc_config.h>
-
-#include <vlc_keys.h>
-#include <vlc_image.h>
-#include <vlc_osd.h>
-#include <vlc_charset.h>
 
 #include "osd_menu.h"
 

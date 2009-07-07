@@ -95,14 +95,13 @@ misc.homedir(): Get the user's home directory.
 misc.configdir(): Get the user's VLC config directory.
 misc.cachedir(): Get the user's VLC cache directory.
 
-misc.datadir_list( name ): FIXME: write description ... or ditch function if it isn't usefull anymore, we have datadir and userdatadir :)
+misc.datadir_list( name ): FIXME: write description ... or ditch function
+  if it isn't usefull anymore, we have datadir and userdatadir :)
 
-misc.mdate(): Get the current date (in miliseconds).
 misc.mdate(): Get the current date (in milliseconds).
 misc.mwait(): Wait for the given date (in milliseconds).
 
 misc.lock_and_wait(): Lock our object thread and wait for a wake up signal.
-misc.signal(): Wake up our object thread.
 
 misc.should_die(): Returns true if the interface should quit.
 misc.quit(): Quit VLC.
@@ -114,7 +113,7 @@ net.url_parse( url, [option delimiter] ): Parse URL. Returns a table with
   "option".
 net.listen_tcp( host, port ): Listen to TCP connections. This returns an
   object with an accept method. This method takes an optional timeout
-  argument (in miliseconds). For example:
+  argument (in milliseconds). For example:
 local l = vlc.net.listen_tcp( "localhost", 1234 )
 while true do
   local fd = l:accept( 500 )
@@ -126,7 +125,9 @@ end
 net.close( fd ): Close file descriptor.
 net.send( fd, string, [length] ): Send data on fd.
 net.recv( fd, [max length] ): Receive data from fd.
-net.select( nfds, fds_read, fds_write, timeout ): Monitor a bunch of file descriptors. Returns number of fds to handle and the amount of time not slept. See "man select".
+net.select( nfds, fds_read, fds_write, timeout ): Monitor a bunch of file
+  descriptors. Returns number of fds to handle and the amount of time not
+  slept. See "man select".
 net.fd_set_new(): Create a new fd_set.
 local fds = vlc.net.fd_set_new()
 fds:clr( fd ) -- remove fd from set
@@ -157,10 +158,9 @@ object.find( object, type, mode ): Find an object of given type. mode can
   look in "object"'s parent objects. If set to "child" it will look in
   "object"'s children. If set to "anywhere", it will look in all the
   objects. If object is unset, the current module's object will be used.
-  Type can be: "libvlc", "module", "intf", "playlist", "input", "decoder",
-  "vout", "aout", "packetizer", "encoder", "dialogs", "announce", "demux",
-  "access", "stream", "opengl", "filter", "osdmenu", "httpd_host",
-  "interaction", "generic". This function is slow and should be avoided.
+  Type can be: "libvlc", "playlist", "input", "decoder",
+  "vout", "aout", "packetizer", "generic".
+  This function is deprecated and slow and should be avoided.
 object.find_name( object, name, mode ): Same as above except that it matches
   on the object's name and not type. This function is also slow and should
   be avoided if possible.
@@ -318,6 +318,7 @@ a reference to it, all VLM items will be deleted.
 Volume
 ------
 volume.set( level ): Set volume to an absolute level between 0 and 1024.
+  256 is 100%.
 volume.get(): Get volume.
 volume.up( [n] ): Increment volume by n steps of 32. n defaults to 1.
 volume.down( [n] ): Decrement volume by n steps of 32. n defaults to 1.

@@ -2,7 +2,7 @@
  * vout_pictures.c : picture management functions
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 6c2e8079abf23b77e38450551ef610282555d574 $
+ * $Id: 0f408f864187ca89dcded5e2eada7a9134fd5c01 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -29,70 +29,40 @@
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
+#include <assert.h>
 
 #include <vlc_common.h>
+#include <libvlc.h>
 #include <vlc_vout.h>
 #include <vlc_osd.h>
 #include <vlc_filter.h>
-#include "vout_pictures.h"
+#include <vlc_image.h>
+#include <vlc_block.h>
 
-#include <assert.h>
+#include "vout_pictures.h"
+#include "vout_internal.h"
 
 /**
  * Display a picture
  *
  * Remove the reservation flag of a picture, which will cause it to be ready
- * for display. The picture won't be displayed until vout_DatePicture has been
- * called.
+ * for display.
  */
 void vout_DisplayPicture( vout_thread_t *p_vout, picture_t *p_pic )
 {
     vlc_mutex_lock( &p_vout->picture_lock );
-    switch( p_pic->i_status )
+
+    if( p_pic->i_status == RESERVED_PICTURE )
     {
-    case RESERVED_PICTURE:
-        p_pic->i_status = RESERVED_DISP_PICTURE;
-        break;
-    case RESERVED_DATED_PICTURE:
         p_pic->i_status = READY_PICTURE;
-        break;
-    default:
+        vlc_cond_signal( &p_vout->p->picture_wait );
+    }
+    else
+    {
         msg_Err( p_vout, "picture to display %p has invalid status %d",
                          p_pic, p_pic->i_status );
-        break;
     }
-
-    vlc_mutex_unlock( &p_vout->picture_lock );
-}
-
-/**
- * Date a picture
- *
- * Remove the reservation flag of a picture, which will cause it to be ready
- * for display. The picture won't be displayed until vout_DisplayPicture has
- * been called.
- * \param p_vout The vout in question
- * \param p_pic The picture to date
- * \param date The date to display the picture
- */
-void vout_DatePicture( vout_thread_t *p_vout,
-                       picture_t *p_pic, mtime_t date )
-{
-    vlc_mutex_lock( &p_vout->picture_lock );
-    p_pic->date = date;
-    switch( p_pic->i_status )
-    {
-    case RESERVED_PICTURE:
-        p_pic->i_status = RESERVED_DATED_PICTURE;
-        break;
-    case RESERVED_DISP_PICTURE:
-        p_pic->i_status = READY_PICTURE;
-        break;
-    default:
-        msg_Err( p_vout, "picture to date %p has invalid status %d",
-                         p_pic, p_pic->i_status );
-        break;
-    }
+    p_vout->p->i_picture_qtype = p_pic->i_qtype;
 
     vlc_mutex_unlock( &p_vout->picture_lock );
 }
@@ -213,8 +183,6 @@ picture_t *vout_CreatePicture( vout_thread_t *p_vout,
             p_freepic->i_nb_fields          = i_nb_fields;
             p_freepic->b_top_field_first    = b_top_field_first;
 
-            p_freepic->i_matrix_coefficients = 1;
-
             p_vout->i_heap_size++;
         }
         else
@@ -238,30 +206,75 @@ picture_t *vout_CreatePicture( vout_thread_t *p_vout,
     return( NULL );
 }
 
+/* */
+static void DestroyPicture( vout_thread_t *p_vout, picture_t *p_picture )
+{
+    vlc_assert_locked( &p_vout->picture_lock );
+
+    p_picture->i_status = DESTROYED_PICTURE;
+    p_vout->i_heap_size--;
+    picture_CleanupQuant( p_picture );
+
+    vlc_cond_signal( &p_vout->p->picture_wait );
+}
+
 /**
  * Remove a permanent or reserved picture from the heap
  *
  * This function frees a previously reserved picture or a permanent
  * picture. It is meant to be used when the construction of a picture aborted.
  * Note that the picture will be destroyed even if it is linked !
+ *
+ * TODO remove it, vout_DropPicture should be used instead
  */
 void vout_DestroyPicture( vout_thread_t *p_vout, picture_t *p_pic )
 {
-    vlc_mutex_lock( &p_vout->picture_lock );
-
 #ifndef NDEBUG
     /* Check if picture status is valid */
-    if( (p_pic->i_status != RESERVED_PICTURE) &&
-        (p_pic->i_status != RESERVED_DATED_PICTURE) &&
-        (p_pic->i_status != RESERVED_DISP_PICTURE) )
+    vlc_mutex_lock( &p_vout->picture_lock );
+    if( p_pic->i_status != RESERVED_PICTURE )
     {
         msg_Err( p_vout, "picture to destroy %p has invalid status %d",
                          p_pic, p_pic->i_status );
     }
+    vlc_mutex_unlock( &p_vout->picture_lock );
 #endif
 
-    p_pic->i_status = DESTROYED_PICTURE;
-    p_vout->i_heap_size--;
+    vout_DropPicture( p_vout, p_pic );
+}
+
+/* */
+void vout_UsePictureLocked( vout_thread_t *p_vout, picture_t *p_picture )
+{
+    vlc_assert_locked( &p_vout->picture_lock );
+    if( p_picture->i_refcount > 0 )
+    {
+        /* Pretend we displayed the picture, but don't destroy
+         * it since the decoder might still need it. */
+        p_picture->i_status = DISPLAYED_PICTURE;
+    }
+    else
+    {
+        /* Destroy the picture without displaying it */
+        DestroyPicture( p_vout, p_picture );
+    }
+}
+
+/* */
+void vout_DropPicture( vout_thread_t *p_vout, picture_t *p_pic  )
+{
+    vlc_mutex_lock( &p_vout->picture_lock );
+
+    if( p_pic->i_status == READY_PICTURE )
+    {
+        /* Grr cannot destroy ready picture by myself so be sure vout won't like it */
+        p_pic->date = 1;
+        vlc_cond_signal( &p_vout->p->picture_wait );
+    }
+    else
+    {
+        vout_UsePictureLocked( p_vout, p_pic );
+    }
 
     vlc_mutex_unlock( &p_vout->picture_lock );
 }
@@ -287,16 +300,29 @@ void vout_LinkPicture( vout_thread_t *p_vout, picture_t *p_pic )
 void vout_UnlinkPicture( vout_thread_t *p_vout, picture_t *p_pic )
 {
     vlc_mutex_lock( &p_vout->picture_lock );
-    p_pic->i_refcount--;
 
-    if( ( p_pic->i_refcount == 0 ) &&
-        ( p_pic->i_status == DISPLAYED_PICTURE ) )
-    {
-        p_pic->i_status = DESTROYED_PICTURE;
-        p_vout->i_heap_size--;
-    }
+    if( p_pic->i_refcount > 0 )
+        p_pic->i_refcount--;
+    else
+        msg_Err( p_vout, "Invalid picture reference count (%p, %d)",
+                 p_pic, p_pic->i_refcount );
+
+    if( p_pic->i_refcount == 0 && p_pic->i_status == DISPLAYED_PICTURE )
+        DestroyPicture( p_vout, p_pic );
 
     vlc_mutex_unlock( &p_vout->picture_lock );
+}
+
+static int vout_LockPicture( vout_thread_t *p_vout, picture_t *p_picture )
+{
+    if( p_picture->pf_lock )
+        return p_picture->pf_lock( p_vout, p_picture );
+    return VLC_SUCCESS;
+}
+static void vout_UnlockPicture( vout_thread_t *p_vout, picture_t *p_picture )
+{
+    if( p_picture->pf_unlock )
+        p_picture->pf_unlock( p_vout, p_picture );
 }
 
 /**
@@ -306,78 +332,58 @@ void vout_UnlinkPicture( vout_thread_t *p_vout, picture_t *p_pic )
  * before rendering, does the subpicture magic, and tells the video output
  * thread which direct buffer needs to be displayed.
  */
-picture_t * vout_RenderPicture( vout_thread_t *p_vout, picture_t *p_pic,
-                                                       subpicture_t *p_subpic )
+picture_t *vout_RenderPicture( vout_thread_t *p_vout, picture_t *p_pic,
+                               subpicture_t *p_subpic, bool b_paused )
 {
-    int i_scale_width, i_scale_height;
-
     if( p_pic == NULL )
-    {
-        /* XXX: subtitles */
         return NULL;
-    }
-
-    i_scale_width = p_vout->fmt_out.i_visible_width * 1000 /
-        p_vout->fmt_in.i_visible_width;
-    i_scale_height = p_vout->fmt_out.i_visible_height * 1000 /
-        p_vout->fmt_in.i_visible_height;
 
     if( p_pic->i_type == DIRECT_PICTURE )
     {
-        if( !p_vout->render.b_allow_modify_pics || p_pic->i_refcount ||
-            p_pic->b_force )
+        /* Picture is in a direct buffer. */
+
+        if( p_subpic != NULL )
         {
-            /* Picture is in a direct buffer and is still in use,
-             * we need to copy it to another direct buffer before
-             * displaying it if there are subtitles. */
-            if( p_subpic != NULL )
-            {
-                /* We have subtitles. First copy the picture to
-                 * the spare direct buffer, then render the
-                 * subtitles. */
-                vout_CopyPicture( p_vout, PP_OUTPUTPICTURE[0], p_pic );
+            /* We have subtitles. First copy the picture to
+             * the spare direct buffer, then render the
+             * subtitles. */
+            if( vout_LockPicture( p_vout, PP_OUTPUTPICTURE[0] ) )
+                return NULL;
 
-                spu_RenderSubpictures( p_vout->p_spu, &p_vout->fmt_out,
-                                       PP_OUTPUTPICTURE[0], p_pic, p_subpic,
-                                       i_scale_width, i_scale_height );
+            picture_Copy( PP_OUTPUTPICTURE[0], p_pic );
 
-                return PP_OUTPUTPICTURE[0];
-            }
+            spu_RenderSubpictures( p_vout->p_spu,
+                                   PP_OUTPUTPICTURE[0], &p_vout->fmt_out,
+                                   p_subpic, &p_vout->fmt_in, b_paused );
 
-            /* No subtitles, picture is in a directbuffer so
-             * we can display it directly even if it is still
-             * in use. */
-            return p_pic;
+            vout_UnlockPicture( p_vout, PP_OUTPUTPICTURE[0] );
+
+            return PP_OUTPUTPICTURE[0];
         }
 
-        /* Picture is in a direct buffer but isn't used by the
-         * decoder. We can safely render subtitles on it and
-         * display it. */
-        spu_RenderSubpictures( p_vout->p_spu, &p_vout->fmt_out, p_pic, p_pic,
-                               p_subpic, i_scale_width, i_scale_height );
-
+        /* No subtitles, picture is in a directbuffer so
+         * we can display it directly (even if it is still
+         * in use or not). */
         return p_pic;
     }
 
     /* Not a direct buffer. We either need to copy it to a direct buffer,
      * or render it if the chroma isn't the same. */
-    if( p_vout->b_direct )
+    if( p_vout->p->b_direct )
     {
         /* Picture is not in a direct buffer, but is exactly the
          * same size as the direct buffers. A memcpy() is enough,
          * then render the subtitles. */
 
-        if( PP_OUTPUTPICTURE[0]->pf_lock )
-            if( PP_OUTPUTPICTURE[0]->pf_lock( p_vout, PP_OUTPUTPICTURE[0] ) )
-                return NULL;
+        if( vout_LockPicture( p_vout, PP_OUTPUTPICTURE[0] ) )
+            return NULL;
 
-        vout_CopyPicture( p_vout, PP_OUTPUTPICTURE[0], p_pic );
-        spu_RenderSubpictures( p_vout->p_spu, &p_vout->fmt_out,
-                               PP_OUTPUTPICTURE[0], p_pic,
-                               p_subpic, i_scale_width, i_scale_height );
+        picture_Copy( PP_OUTPUTPICTURE[0], p_pic );
+        spu_RenderSubpictures( p_vout->p_spu,
+                               PP_OUTPUTPICTURE[0], &p_vout->fmt_out,
+                               p_subpic, &p_vout->fmt_in, b_paused );
 
-        if( PP_OUTPUTPICTURE[0]->pf_unlock )
-            PP_OUTPUTPICTURE[0]->pf_unlock( p_vout, PP_OUTPUTPICTURE[0] );
+        vout_UnlockPicture( p_vout, PP_OUTPUTPICTURE[0] );
 
         return PP_OUTPUTPICTURE[0];
     }
@@ -407,38 +413,35 @@ picture_t * vout_RenderPicture( vout_thread_t *p_vout, picture_t *p_pic,
         }
 
         /* Convert image to the first direct buffer */
-        p_vout->p_chroma->p_owner = (filter_owner_sys_t *)p_tmp_pic;
-        p_vout->p_chroma->pf_video_filter( p_vout->p_chroma, p_pic );
+        p_vout->p->p_chroma->p_owner = (filter_owner_sys_t *)p_tmp_pic;
+        p_vout->p->p_chroma->pf_video_filter( p_vout->p->p_chroma, p_pic );
 
         /* Render subpictures on the first direct buffer */
-        spu_RenderSubpictures( p_vout->p_spu, &p_vout->fmt_out, p_tmp_pic,
-                               p_tmp_pic, p_subpic,
-                               i_scale_width, i_scale_height );
+        spu_RenderSubpictures( p_vout->p_spu,
+                               p_tmp_pic, &p_vout->fmt_out,
+                               p_subpic, &p_vout->fmt_in, b_paused );
 
-        if( p_vout->p_picture[0].pf_lock )
-            if( p_vout->p_picture[0].pf_lock( p_vout, &p_vout->p_picture[0] ) )
-                return NULL;
+        if( vout_LockPicture( p_vout, &p_vout->p_picture[0] ) )
+            return NULL;
 
-        vout_CopyPicture( p_vout, &p_vout->p_picture[0], p_tmp_pic );
+        picture_Copy( &p_vout->p_picture[0], p_tmp_pic );
     }
     else
     {
-        if( p_vout->p_picture[0].pf_lock )
-            if( p_vout->p_picture[0].pf_lock( p_vout, &p_vout->p_picture[0] ) )
-                return NULL;
+        if( vout_LockPicture( p_vout, &p_vout->p_picture[0] ) )
+            return NULL;
 
         /* Convert image to the first direct buffer */
-        p_vout->p_chroma->p_owner = (filter_owner_sys_t *)&p_vout->p_picture[0];
-        p_vout->p_chroma->pf_video_filter( p_vout->p_chroma, p_pic );
+        p_vout->p->p_chroma->p_owner = (filter_owner_sys_t *)&p_vout->p_picture[0];
+        p_vout->p->p_chroma->pf_video_filter( p_vout->p->p_chroma, p_pic );
 
         /* Render subpictures on the first direct buffer */
-        spu_RenderSubpictures( p_vout->p_spu, &p_vout->fmt_out,
-                               &p_vout->p_picture[0], &p_vout->p_picture[0],
-                               p_subpic, i_scale_width, i_scale_height );
+        spu_RenderSubpictures( p_vout->p_spu,
+                               &p_vout->p_picture[0], &p_vout->fmt_out,
+                               p_subpic, &p_vout->fmt_in, b_paused );
     }
 
-    if( p_vout->p_picture[0].pf_unlock )
-        p_vout->p_picture[0].pf_unlock( p_vout, &p_vout->p_picture[0] );
+    vout_UnlockPicture( p_vout, &p_vout->p_picture[0] );
 
     return &p_vout->p_picture[0];
 }
@@ -449,31 +452,58 @@ picture_t * vout_RenderPicture( vout_thread_t *p_vout, picture_t *p_pic,
  * This function will be accessed by plugins. It calculates the relative
  * position of the output window and the image window.
  */
-void vout_PlacePicture( vout_thread_t *p_vout,
+void vout_PlacePicture( const vout_thread_t *p_vout,
                         unsigned int i_width, unsigned int i_height,
-                        unsigned int *pi_x, unsigned int *pi_y,
-                        unsigned int *pi_width, unsigned int *pi_height )
+                        unsigned int *restrict pi_x,
+                        unsigned int *restrict pi_y,
+                        unsigned int *restrict pi_width,
+                        unsigned int *restrict pi_height )
 {
-    if( (i_width <= 0) || (i_height <=0) )
+    if( i_width <= 0 || i_height <= 0 )
     {
         *pi_width = *pi_height = *pi_x = *pi_y = 0;
         return;
     }
 
-    if( p_vout->b_scale )
+    if( p_vout->b_autoscale )
     {
         *pi_width = i_width;
         *pi_height = i_height;
     }
     else
     {
-        *pi_width = __MIN( i_width, p_vout->fmt_in.i_visible_width );
-        *pi_height = __MIN( i_height, p_vout->fmt_in.i_visible_height );
+        int i_zoom = p_vout->i_zoom;
+        /* be realistic, scaling factor confined between .2 and 10. */
+        if( i_zoom > 10 * ZOOM_FP_FACTOR )      i_zoom = 10 * ZOOM_FP_FACTOR;
+        else if( i_zoom <  ZOOM_FP_FACTOR / 5 ) i_zoom = ZOOM_FP_FACTOR / 5;
+
+        unsigned int i_original_width, i_original_height;
+
+        if( p_vout->fmt_in.i_sar_num >= p_vout->fmt_in.i_sar_den )
+        {
+            i_original_width = p_vout->fmt_in.i_visible_width *
+                               p_vout->fmt_in.i_sar_num / p_vout->fmt_in.i_sar_den;
+            i_original_height =  p_vout->fmt_in.i_visible_height;
+        }
+        else
+        {
+            i_original_width =  p_vout->fmt_in.i_visible_width;
+            i_original_height = p_vout->fmt_in.i_visible_height *
+                                p_vout->fmt_in.i_sar_den / p_vout->fmt_in.i_sar_num;
+        }
+#ifdef WIN32
+        /* On windows, inner video window exceeding container leads to black screen */
+        *pi_width = __MIN( i_width, i_original_width * i_zoom / ZOOM_FP_FACTOR );
+        *pi_height = __MIN( i_height, i_original_height * i_zoom / ZOOM_FP_FACTOR );
+#else
+        *pi_width = i_original_width * i_zoom / ZOOM_FP_FACTOR ;
+        *pi_height = i_original_height * i_zoom / ZOOM_FP_FACTOR ;
+#endif
     }
 
-     int64_t i_scaled_width = p_vout->fmt_in.i_visible_width * (int64_t)p_vout->fmt_in.i_sar_num *
+    int64_t i_scaled_width = p_vout->fmt_in.i_visible_width * (int64_t)p_vout->fmt_in.i_sar_num *
                               *pi_height / p_vout->fmt_in.i_visible_height / p_vout->fmt_in.i_sar_den;
-     int64_t i_scaled_height = p_vout->fmt_in.i_visible_height * (int64_t)p_vout->fmt_in.i_sar_den *
+    int64_t i_scaled_height = p_vout->fmt_in.i_visible_height * (int64_t)p_vout->fmt_in.i_sar_den *
                                *pi_width / p_vout->fmt_in.i_visible_width / p_vout->fmt_in.i_sar_num;
 
     if( i_scaled_width <= 0 || i_scaled_height <= 0 )
@@ -644,6 +674,7 @@ void vout_InitFormat( video_frame_format_t *p_format, vlc_fourcc_t i_chroma,
         case FOURCC_GREY:
         case FOURCC_Y800:
         case FOURCC_Y8:
+        case FOURCC_RGBP:
             p_format->i_bits_per_pixel = 8;
             break;
 
@@ -678,10 +709,14 @@ int __vout_InitPicture( vlc_object_t *p_this, picture_t *p_pic,
         p_pic->p[i_index].i_pixel_pitch = 1;
     }
 
-    p_pic->pf_release = 0;
-    p_pic->pf_lock = 0;
-    p_pic->pf_unlock = 0;
+    p_pic->pf_release = NULL;
+    p_pic->pf_lock = NULL;
+    p_pic->pf_unlock = NULL;
     p_pic->i_refcount = 0;
+
+    p_pic->i_qtype = QTYPE_NONE;
+    p_pic->i_qstride = 0;
+    p_pic->p_q = NULL;
 
     vout_InitFormat( &p_pic->format, i_chroma, i_width, i_height, i_aspect );
 
@@ -892,6 +927,7 @@ int __vout_InitPicture( vlc_object_t *p_this, picture_t *p_pic,
         case FOURCC_GREY:
         case FOURCC_Y800:
         case FOURCC_Y8:
+        case FOURCC_RGBP:
             p_pic->p->i_lines = i_height_aligned;
             p_pic->p->i_visible_lines = i_height;
             p_pic->p->i_pitch = i_width_aligned;
@@ -919,86 +955,51 @@ int __vout_InitPicture( vlc_object_t *p_this, picture_t *p_pic,
  */
 int vout_ChromaCmp( vlc_fourcc_t i_chroma, vlc_fourcc_t i_amorhc )
 {
+    static const vlc_fourcc_t p_I420[] = {
+        FOURCC_I420, FOURCC_IYUV, FOURCC_YV12, FOURCC_J420, 0
+    };
+    static const vlc_fourcc_t p_I422[] = {
+        FOURCC_I422, FOURCC_J422, 0
+    };
+    static const vlc_fourcc_t p_I440[] = {
+        FOURCC_I440, FOURCC_J440, 0
+    };
+    static const vlc_fourcc_t p_I444[] = {
+        FOURCC_I444, FOURCC_J444, 0
+    };
+    static const vlc_fourcc_t p_UYVY[] = {
+        FOURCC_UYVY, FOURCC_UYNV, FOURCC_Y422, 0
+    };
+    static const vlc_fourcc_t p_YUYV[] = {
+        FOURCC_YUY2, FOURCC_YUNV, 0
+    };
+    static const vlc_fourcc_t p_GREY[] = {
+        FOURCC_GREY, FOURCC_Y800, FOURCC_Y8, 0
+    };
+    static const vlc_fourcc_t *pp_fcc[] = {
+        p_I420, p_I422, p_I440, p_I444, p_UYVY, p_YUYV, p_GREY, NULL
+    };
+
     /* If they are the same, they are the same ! */
     if( i_chroma == i_amorhc )
-    {
         return 1;
-    }
 
     /* Check for equivalence classes */
-    switch( i_chroma )
+    for( int i = 0; pp_fcc[i] != NULL; i++ )
     {
-        case FOURCC_I420:
-        case FOURCC_IYUV:
-        case FOURCC_YV12:
-            switch( i_amorhc )
-            {
-                case FOURCC_I420:
-                case FOURCC_IYUV:
-                case FOURCC_YV12:
-                    return 1;
-
-                default:
-                    return 0;
-            }
-
-        case FOURCC_UYVY:
-        case FOURCC_UYNV:
-        case FOURCC_Y422:
-            switch( i_amorhc )
-            {
-                case FOURCC_UYVY:
-                case FOURCC_UYNV:
-                case FOURCC_Y422:
-                    return 1;
-
-                default:
-                    return 0;
-            }
-
-        case FOURCC_YUY2:
-        case FOURCC_YUNV:
-            switch( i_amorhc )
-            {
-                case FOURCC_YUY2:
-                case FOURCC_YUNV:
-                    return 1;
-
-                default:
-                    return 0;
-            }
-
-        case FOURCC_GREY:
-        case FOURCC_Y800:
-        case FOURCC_Y8:
-            switch( i_amorhc )
-            {
-                case FOURCC_GREY:
-                case FOURCC_Y800:
-                case FOURCC_Y8:
-                    return 1;
-
-                default:
-                    return 0;
-            }
-
-        default:
-            return 0;
+        bool b_fcc1 = false;
+        bool b_fcc2 = false;
+        for( int j = 0; pp_fcc[i][j] != 0; j++ )
+        {
+            if( i_chroma == pp_fcc[i][j] )
+                b_fcc1 = true;
+            if( i_amorhc == pp_fcc[i][j] )
+                b_fcc2 = true;
+        }
+        if( b_fcc1 && b_fcc2 )
+            return 1;
     }
-}
-
-/*****************************************************************************
- * vout_CopyPicture: copy a picture to another one
- *****************************************************************************
- * This function takes advantage of the image format, and reduces the
- * number of calls to memcpy() to the minimum. Source and destination
- * images must have same width (hence i_visible_pitch), height, and chroma.
- *****************************************************************************/
-void __vout_CopyPicture( vlc_object_t *p_this,
-                         picture_t *p_dest, picture_t *p_src )
-{
-    VLC_UNUSED(p_this);
-    picture_Copy( p_dest, p_src );
+    return 0;
 }
 
 /*****************************************************************************
@@ -1015,12 +1016,10 @@ static void PictureReleaseCallback( picture_t *p_picture )
  *****************************************************************************/
 picture_t *picture_New( vlc_fourcc_t i_chroma, int i_width, int i_height, int i_aspect )
 {
-    picture_t *p_picture = malloc( sizeof(*p_picture) );
-
+    picture_t *p_picture = calloc( 1, sizeof(*p_picture) );
     if( !p_picture )
         return NULL;
 
-    memset( p_picture, 0, sizeof(*p_picture) );
     if( __vout_AllocatePicture( NULL, p_picture,
                                 i_chroma, i_width, i_height, i_aspect ) )
     {
@@ -1042,6 +1041,7 @@ void picture_Delete( picture_t *p_picture )
 {
     assert( p_picture && p_picture->i_refcount == 0 );
 
+    free( p_picture->p_q );
     free( p_picture->p_data_orig );
     free( p_picture->p_sys );
     free( p_picture );
@@ -1093,5 +1093,80 @@ void plane_CopyPixels( plane_t *p_dst, const plane_t *p_src )
 /*****************************************************************************
  *
  *****************************************************************************/
+int picture_Export( vlc_object_t *p_obj,
+                    block_t **pp_image,
+                    video_format_t *p_fmt,
+                    picture_t *p_picture,
+                    vlc_fourcc_t i_format,
+                    int i_override_width, int i_override_height )
+{
+    /* */
+    video_format_t fmt_in = p_picture->format;
+    if( fmt_in.i_sar_num <= 0 || fmt_in.i_sar_den <= 0 )
+    {
+        fmt_in.i_sar_num =
+        fmt_in.i_sar_den = 1;
+    }
 
+    /* */
+    video_format_t fmt_out;
+    memset( &fmt_out, 0, sizeof(fmt_out) );
+    fmt_out.i_sar_num =
+    fmt_out.i_sar_den = 1;
+    fmt_out.i_chroma  = i_format;
+
+    /* compute original width/height */
+    unsigned int i_original_width;
+    unsigned int i_original_height;
+    if( fmt_in.i_sar_num >= fmt_in.i_sar_den )
+    {
+        i_original_width = fmt_in.i_width * fmt_in.i_sar_num / fmt_in.i_sar_den;
+        i_original_height = fmt_in.i_height;
+    }
+    else
+    {
+        i_original_width =  fmt_in.i_width;
+        i_original_height = fmt_in.i_height * fmt_in.i_sar_den / fmt_in.i_sar_num;
+    }
+
+    /* */
+    fmt_out.i_width  = ( i_override_width < 0 ) ?
+                       i_original_width : i_override_width;
+    fmt_out.i_height = ( i_override_height < 0 ) ?
+                       i_original_height : i_override_height;
+
+    /* scale if only one direction is provided */
+    if( fmt_out.i_height == 0 && fmt_out.i_width > 0 )
+    {
+        fmt_out.i_height = fmt_in.i_height * fmt_out.i_width
+                     * fmt_in.i_sar_den / fmt_in.i_width / fmt_in.i_sar_num;
+    }
+    else if( fmt_out.i_width == 0 && fmt_out.i_height > 0 )
+    {
+        fmt_out.i_width  = fmt_in.i_width * fmt_out.i_height
+                     * fmt_in.i_sar_num / fmt_in.i_height / fmt_in.i_sar_den;
+    }
+
+    image_handler_t *p_image = image_HandlerCreate( p_obj );
+
+    block_t *p_block = image_Write( p_image, p_picture, &fmt_in, &fmt_out );
+
+    image_HandlerDelete( p_image );
+
+    if( !p_block )
+        return VLC_EGENERIC;
+
+    p_block->i_pts =
+    p_block->i_dts = p_picture->date;
+
+    if( p_fmt )
+        *p_fmt = fmt_out;
+    *pp_image = p_block;
+
+    return VLC_SUCCESS;
+}
+
+/*****************************************************************************
+ *
+ *****************************************************************************/
 

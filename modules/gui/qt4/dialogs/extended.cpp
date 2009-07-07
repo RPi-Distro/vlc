@@ -1,8 +1,8 @@
 /*****************************************************************************
  * extended.cpp : Extended controls - Undocked
  ****************************************************************************
- * Copyright (C) 2006 the VideoLAN team
- * $Id: d771f45a8e47ebdcfeaa11c521c1e85f45455208 $
+ * Copyright (C) 2006-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -26,9 +26,8 @@
 #endif
 
 #include "dialogs/extended.hpp"
-#include "dialogs_provider.hpp"
 
-#include "main_interface.hpp"
+#include "main_interface.hpp" /* Needed for external MI size */
 #include "input_manager.hpp"
 
 #include <QTabWidget>
@@ -46,7 +45,7 @@ ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
     layout->setLayoutMargins( 0, 2, 0, 1, 1 );
     layout->setSpacing( 3 );
 
-    QTabWidget *mainTabW = new QTabWidget( this );
+    mainTabW = new QTabWidget( this );
 
     /* AUDIO effects */
     QWidget *audioWidget = new QWidget;
@@ -76,7 +75,7 @@ ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
     syncW = new SyncControls( p_intf, videoTab );
     mainTabW->addTab( syncW, qtr( "Synchronization" ) );
 
-    if( module_Exists( p_intf, "v4l2" ) )
+    if( module_exists( "v4l2" ) )
     {
         ExtV4l2 *v4l2 = new ExtV4l2( p_intf, mainTabW );
         mainTabW->addTab( v4l2, qtr( "v4l2 controls" ) );
@@ -88,22 +87,30 @@ ExtendedDialog::ExtendedDialog( intf_thread_t *_p_intf ): QVLCFrame( _p_intf )
     layout->addWidget( closeButton, 1, 4, 1, 1 );
     CONNECT( closeButton, clicked(), this, close() );
 
-    QPoint startPoint( 450, 0 );
-    MainInterface *p_mi = p_intf->p_sys->p_mi;
-    if( p_mi )
+    /* Restore geometry or move this dialog on the left pane of the MI */
+    if( !restoreGeometry(getSettings()->value("EPanel/geometry").toByteArray()))
     {
-        startPoint.setX( p_mi->x() );
-        startPoint.setY( p_mi->y() + p_mi->frameGeometry().height() );
+        resize( QSize( 400, 280 ) );
+
+        MainInterface *p_mi = p_intf->p_sys->p_mi;
+        if( p_mi )
+            move( ( p_mi->x() - frameGeometry().width() - 10 ), p_mi->y() );
+        else
+            move ( 450 , 0 );
     }
-    readSettings( "EPanel", QSize( 400, 280 ), startPoint );
 
     CONNECT( THEMIM->getIM(), statusChanged( int ), this, changedItem( int ) );
-
 }
 
 ExtendedDialog::~ExtendedDialog()
 {
     writeSettings( "EPanel" );
+}
+
+void ExtendedDialog::showTab( int i )
+{
+    mainTabW->setCurrentIndex( i );
+    show();
 }
 
 void ExtendedDialog::changedItem( int i_status )

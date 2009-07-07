@@ -2,7 +2,7 @@
  * param_eq.c:
  *****************************************************************************
  * Copyright © 2006 the VideoLAN team
- * $Id: 53c000f0e739162ef0f43e7db13c07b2bdcc4729 $
+ * $Id$
  *
  * Authors: Antti Huovilainen
  *          Sigmund A. Helberg <dnumgis@videolan.org>
@@ -47,42 +47,42 @@ static void ProcessEQ( float *, float *, float *, unsigned, unsigned, float *, u
 static void DoWork( aout_instance_t *, aout_filter_t *,
                     aout_buffer_t *, aout_buffer_t * );
 
-vlc_module_begin();
-    set_description( N_("Parametric Equalizer") );
-    set_shortname( N_("Parametric Equalizer" ) );
-    set_capability( "audio filter", 0 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AFILTER );
+vlc_module_begin ()
+    set_description( N_("Parametric Equalizer") )
+    set_shortname( N_("Parametric Equalizer" ) )
+    set_capability( "audio filter", 0 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AFILTER )
 
-    add_float( "param-eq-lowf", 100, NULL, N_("Low freq (Hz)"),"", false );
+    add_float( "param-eq-lowf", 100, NULL, N_("Low freq (Hz)"),"", false )
     add_float_with_range( "param-eq-lowgain", 0, -20.0, 20.0, NULL,
-                          N_("Low freq gain (dB)"), "",false );
-    add_float( "param-eq-highf", 10000, NULL, N_("High freq (Hz)"),"", false );
+                          N_("Low freq gain (dB)"), "",false )
+    add_float( "param-eq-highf", 10000, NULL, N_("High freq (Hz)"),"", false )
     add_float_with_range( "param-eq-highgain", 0, -20.0, 20.0, NULL,
-                          N_("High freq gain (dB)"),"",false );
-    add_float( "param-eq-f1", 300, NULL, N_("Freq 1 (Hz)"),"", false );
+                          N_("High freq gain (dB)"),"",false )
+    add_float( "param-eq-f1", 300, NULL, N_("Freq 1 (Hz)"),"", false )
     add_float_with_range( "param-eq-gain1", 0, -20.0, 20.0, NULL,
-                          N_("Freq 1 gain (dB)"), "",false );
+                          N_("Freq 1 gain (dB)"), "",false )
     add_float_with_range( "param-eq-q1", 3, 0.1, 100.0, NULL,
-                          N_("Freq 1 Q"), "",false );
-    add_float( "param-eq-f2", 1000, NULL, N_("Freq 2 (Hz)"),"", false );
+                          N_("Freq 1 Q"), "",false )
+    add_float( "param-eq-f2", 1000, NULL, N_("Freq 2 (Hz)"),"", false )
     add_float_with_range( "param-eq-gain2", 0, -20.0, 20.0, NULL,
-                          N_("Freq 2 gain (dB)"),"",false );
+                          N_("Freq 2 gain (dB)"),"",false )
     add_float_with_range( "param-eq-q2", 3, 0.1, 100.0, NULL,
-                          N_("Freq 2 Q"),"",false );
-    add_float( "param-eq-f3", 3000, NULL, N_("Freq 3 (Hz)"),"", false );
+                          N_("Freq 2 Q"),"",false )
+    add_float( "param-eq-f3", 3000, NULL, N_("Freq 3 (Hz)"),"", false )
     add_float_with_range( "param-eq-gain3", 0, -20.0, 20.0, NULL,
-                          N_("Freq 3 gain (dB)"),"",false );
+                          N_("Freq 3 gain (dB)"),"",false )
     add_float_with_range( "param-eq-q3", 3, 0.1, 100.0, NULL,
-                          N_("Freq 3 Q"),"",false );
+                          N_("Freq 3 Q"),"",false )
 
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-typedef struct aout_filter_sys_t
+struct aout_filter_sys_t
 {
     /* Filter static config */
     float   f_lowf, f_lowgain;
@@ -95,7 +95,7 @@ typedef struct aout_filter_sys_t
     /* State */
     float  *p_state;
  
-} aout_filter_sys_t;
+};
 
 
 

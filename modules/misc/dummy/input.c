@@ -2,7 +2,7 @@
  * input_dummy.c: dummy input plugin, to manage "vlc://" special options
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 86169fce482c4e4ffccb68b0e679ce1439f90bbc $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -47,9 +47,8 @@ static ssize_t AccessRead( access_t *p_access, uint8_t *p, size_t i_size )
 }
 static int AccessControl( access_t *p_access, int i_query, va_list args )
 {
-    bool   *pb_bool;
-    int          *pi_int;
-    int64_t      *pi_64;
+    bool        *pb_bool;
+    int64_t     *pi_64;
 
     switch( i_query )
     {
@@ -63,11 +62,6 @@ static int AccessControl( access_t *p_access, int i_query, va_list args )
             break;
 
         /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = 0;
-            break;
-
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = DEFAULT_PTS_DELAY * 1000;
@@ -123,9 +117,6 @@ struct demux_sys_t
 
     /* Used for the pause command */
     mtime_t expiration;
- 
-    /* The command to run */
-    char* psz_command;
 };
 enum
 {
@@ -208,7 +199,7 @@ static int Demux( demux_t *p_demux )
     {
         case COMMAND_QUIT:
             b_eof = true;
-            vlc_object_kill( p_demux->p_libvlc );
+            libvlc_Quit( p_demux->p_libvlc );
             break;
 
         case COMMAND_PAUSE:

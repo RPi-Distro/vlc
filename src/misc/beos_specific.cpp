@@ -2,7 +2,7 @@
  * beos_init.cpp: Initialization for BeOS specific features
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 226725b42b39412db04807f50ea37d57e5a96db1 $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *
@@ -112,7 +112,7 @@ void system_End( libvlc_int_t *p_this )
     vlc_thread_join( p_appthread );
     vlc_object_release( p_appthread );
 
-    free( vlc_global()->psz_vlcpath );
+    free( psz_vlcpath );
 }
 
 /* following functions are local */
@@ -122,6 +122,7 @@ void system_End( libvlc_int_t *p_this )
  *****************************************************************************/
 static void* AppThread( vlc_object_t * p_this )
 {
+    int canc = vlc_savecancel ();
     VlcApplication * BeApp =
         new VlcApplication("application/x-vnd.videolan-vlc");
     vlc_object_attach( p_this, p_this->p_libvlc );
@@ -129,6 +130,7 @@ static void* AppThread( vlc_object_t * p_this )
     BeApp->Run();
     vlc_object_detach( p_this );
     delete BeApp;
+    vlc_restorecancel (canc);
     return NULL;
 }
 
@@ -180,7 +182,7 @@ void VlcApplication::ReadyToRun( )
     BEntry entry( &info.ref );
     entry.GetPath( &path );
     path.GetParent( &path );
-    vlc_global()->psz_vlcpath = strdup( path.Path() );
+    psz_vlcpath = strdup( path.Path() );
 
     /* Tell the main thread we are finished initializing the BApplication */
     vlc_thread_ready( p_this );
@@ -241,7 +243,7 @@ bool VlcApplication::QuitRequested()
 {
     if( !fReadyToQuit )
     {
-        vlc_object_kill( p_this->p_libvlc );
+        libvlc_Quit( p_this->p_libvlc );
         return false;
     }
 

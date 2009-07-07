@@ -2,7 +2,7 @@
  * GotoTime.hpp : GotoTime dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: da94bae18f625ed3ce8268169192a4c7b3b546c9 $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -21,8 +21,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _GOTOTIME_DIALOG_H_
-#define _GOTOTIME_DIALOG_H_
+#ifndef QVLC_GOTOTIME_DIALOG_H_
+#define QVLC_GOTOTIME_DIALOG_H_ 1
 
 #include "util/qvlcframe.hpp"
 

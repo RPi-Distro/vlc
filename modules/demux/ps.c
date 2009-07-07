@@ -2,7 +2,7 @@
  * ps.c: Program Stream demux module for VLC.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 837a8ce31c3efa8ed7b8b006e180968b5df07969 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -52,22 +52,24 @@ static int  OpenForce( vlc_object_t * );
 static int  Open   ( vlc_object_t * );
 static void Close  ( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("MPEG-PS demuxer") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_capability( "demux", 1 );
-    set_callbacks( OpenForce, Close );
-    add_shortcut( "ps" );
+vlc_module_begin ()
+    set_description( N_("MPEG-PS demuxer") )
+    set_shortname( N_("PS") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_capability( "demux", 1 )
+    set_callbacks( OpenForce, Close )
+    add_shortcut( "ps" )
 
     add_bool( "ps-trust-timestamps", true, NULL, TIME_TEXT,
-                 TIME_LONGTEXT, true );
+                 TIME_LONGTEXT, true )
 
-    add_submodule();
-    set_description( N_("MPEG-PS demuxer") );
-    set_capability( "demux", 8 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+    add_submodule ()
+    set_description( N_("MPEG-PS demuxer") )
+    set_capability( "demux", 8 )
+    set_callbacks( Open, Close )
+    add_shortcut( "ps" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -449,7 +451,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             f = (double) va_arg( args, double );
             i64 = stream_Size( p_demux->s );
             p_sys->i_current_pts = 0;
-            es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
 
             return stream_Seek( p_demux->s, (int64_t)(i64 * f) );
 
@@ -491,10 +492,12 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             {
                 int64_t i_now = p_sys->i_current_pts - p_sys->tk[p_sys->i_time_track].i_first_pts;
                 int64_t i_pos = stream_Tell( p_demux->s );
-                int64_t i_offset = i_pos / (i_now / 1000000) * ((i64 - i_now) / 1000000);
-                stream_Seek( p_demux->s, i_pos + i_offset);
 
-                es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
+                if( !i_now )
+                    return i64 ? VLC_EGENERIC : VLC_SUCCESS;
+
+                i_pos *= (float)i64 / (float)i_now;
+                stream_Seek( p_demux->s, i_pos );
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;

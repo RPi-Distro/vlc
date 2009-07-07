@@ -2,7 +2,7 @@
  * vlc.c: the VLC player
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 7bc6cb33259bfcee1f40a7d76af3aadec7538b7c $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -56,7 +56,7 @@ int main( int i_argc, const char *ppsz_argv[] )
     {
         fprintf (stderr, "VLC is not supposed to be run as root. Sorry.\n"
         "If you need to use real-time priorities and/or privileged TCP ports\n"
-        "you can use %s-wrapper (make sure it is Set-UID root first and\n"
+        "you can use %s-wrapper (make sure it is Set-UID root and\n"
         "cannot be run by non-trusted users first).\n", ppsz_argv[0]);
         return 1;
     }
@@ -82,10 +82,6 @@ int main( int i_argc, const char *ppsz_argv[] )
 #   endif
 #endif
 
-#if defined (HAVE_GETEUID) && !defined (SYS_BEOS)
-    /* FIXME: rootwrap (); */
-#endif
-
     /* Synchronously intercepted POSIX signals.
      *
      * In a threaded program such as VLC, the only sane way to handle signals
@@ -106,8 +102,8 @@ int main( int i_argc, const char *ppsz_argv[] )
         SIGINT, SIGHUP, SIGQUIT, SIGTERM,
     /* Signals that cause a no-op:
      * - SIGPIPE might happen with sockets and would crash VLC. It MUST be
-     *   blocked by any LibVLC-dependent application, in addition to VLC.
-     * - SIGCHLD is comes after exec*() (such as httpd CGI support) and must
+     *   blocked by any LibVLC-dependent application, not just VLC.
+     * - SIGCHLD comes after exec*() (such as httpd CGI support) and must
      *   be dequeued to cleanup zombie processes.
      */
         SIGPIPE, SIGCHLD
@@ -120,10 +116,24 @@ int main( int i_argc, const char *ppsz_argv[] )
 
     /* Block all these signals */
     pthread_sigmask (SIG_BLOCK, &set, NULL);
+    sigdelset (&set, SIGPIPE);
+    sigdelset (&set, SIGCHLD);
 
     /* Note that FromLocale() can be used before libvlc is initialized */
-    for (int i = 0; i < i_argc; i++)
-        if ((ppsz_argv[i] = FromLocale (ppsz_argv[i])) == NULL)
+    const char *argv[i_argc + 3];
+    int argc = 0;
+
+#ifdef TOP_BUILDDIR
+    argv[argc++] = FromLocale ("--plugin-path="TOP_BUILDDIR"/modules");
+#endif
+#ifdef TOP_SRCDIR
+# ifdef ENABLE_HTTPD
+    argv[argc++] = FromLocale ("--http-src="TOP_SRCDIR"/share/http");
+# endif
+#endif
+
+    for (int i = 1; i < i_argc; i++)
+        if ((argv[argc++] = FromLocale (ppsz_argv[i])) == NULL)
             return 1; // BOOM!
 
     libvlc_exception_t ex, dummy;
@@ -131,13 +141,17 @@ int main( int i_argc, const char *ppsz_argv[] )
     libvlc_exception_init (&dummy);
 
     /* Initialize libvlc */
-    int i_argc_real = i_argc ? i_argc - 1 : 0;
-    const char **ppsz_argv_real = i_argc ? &ppsz_argv[1] : ppsz_argv;
-    libvlc_instance_t *vlc = libvlc_new (i_argc_real, ppsz_argv_real, &ex);
+    libvlc_instance_t *vlc = libvlc_new (argc, argv, &ex);
 
     if (vlc != NULL)
     {
-        libvlc_add_intf (vlc, "signals", &dummy);
+        libvlc_add_intf (vlc, "signals", &ex);
+        if (libvlc_exception_raised (&ex))
+        {
+            libvlc_exception_clear (&ex);
+            pthread_sigmask (SIG_UNBLOCK, &set, NULL);
+        }
+        libvlc_add_intf (vlc, "globalhotkeys,none", &ex);
         libvlc_add_intf (vlc, NULL, &ex);
         libvlc_playlist_play (vlc, -1, 0, NULL, &dummy);
         libvlc_wait (vlc);
@@ -150,8 +164,8 @@ int main( int i_argc, const char *ppsz_argv[] )
     libvlc_exception_clear (&ex);
     libvlc_exception_clear (&dummy);
 
-    for (int i = 0; i < i_argc; i++)
-        LocaleFree (ppsz_argv[i]);
+    for (int i = 0; i < argc; i++)
+        LocaleFree (argv[i]);
 
     return i_ret;
 }

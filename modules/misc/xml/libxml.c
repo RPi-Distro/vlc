@@ -2,7 +2,7 @@
  * libxml.c: XML parser using libxml2
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 6712dcb748434f7f6dc2ff90d0a392e51999d5a8 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -41,11 +41,11 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("XML Parser (using libxml2)") );
-    set_capability( "xml", 10 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("XML Parser (using libxml2)") )
+    set_capability( "xml", 10 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 struct xml_reader_sys_t
 {
@@ -67,6 +67,8 @@ static void CatalogLoad( xml_t *, const char * );
 static void CatalogAdd( xml_t *, const char *, const char *, const char * );
 static int StreamRead( void *p_context, char *p_buffer, int i_buffer );
 
+static vlc_mutex_t lock = VLC_STATIC_MUTEX;
+
 /*****************************************************************************
  * Module initialization
  *****************************************************************************/
@@ -77,7 +79,9 @@ static int Open( vlc_object_t *p_this )
     if( !xmlHasFeature( XML_WITH_THREAD ) )
         return VLC_EGENERIC;
 
+    vlc_mutex_lock( &lock );
     xmlInitParser();
+    vlc_mutex_unlock( &lock );
 
     p_xml->pf_reader_create = ReaderCreate;
     p_xml->pf_reader_delete = ReaderDelete;
@@ -93,6 +97,11 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
+#ifdef LIBXML_GETS_A_CLUE_ABOUT_REENTRANCY_AND_MEMORY_LEAKS
+    vlc_mutex_lock( &lock );
+    xmlCleanupParser();
+    vlc_mutex_unlock( &lock );
+#endif
     VLC_UNUSED(p_this);
     return;
 }

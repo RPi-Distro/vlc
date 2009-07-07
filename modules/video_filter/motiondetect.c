@@ -2,7 +2,7 @@
  * motiondetec.c : Second version of a motion detection plugin.
  *****************************************************************************
  * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: 34b6ed72eaeda69cf9867141a2e4a2fced03f199 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -45,16 +45,16 @@ static void Destroy   ( vlc_object_t * );
 
 #define FILTER_PREFIX "motiondetect-"
 
-vlc_module_begin();
-    set_description( N_("Motion detect video filter") );
-    set_shortname( N_( "Motion Detect" ));
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_capability( "video filter2", 0 );
+vlc_module_begin ()
+    set_description( N_("Motion detect video filter") )
+    set_shortname( N_( "Motion Detect" ))
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_capability( "video filter2", 0 )
 
-    add_shortcut( "motion" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    add_shortcut( "motion" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -157,9 +157,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_inpic )
 
     picture_t *p_outpic;
 
-    const uint8_t *p_inpix = p_inpic->p[Y_PLANE].p_pixels;
-    const int i_src_pitch = p_inpic->p[Y_PLANE].i_pitch;
-
     uint8_t *p_oldpix   = p_sys->p_old->p[Y_PLANE].p_pixels;
     const int i_old_pitch = p_sys->p_old->p[Y_PLANE].i_pitch;
     uint32_t *p_buf = p_sys->p_buf;
@@ -169,6 +166,9 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_inpic )
 
     if( !p_inpic )
         return NULL;
+
+    const uint8_t *p_inpix = p_inpic->p[Y_PLANE].p_pixels;
+    const int i_src_pitch = p_inpic->p[Y_PLANE].i_pitch;
 
     if( !p_sys->b_old )
     {

@@ -2,7 +2,7 @@
  * loadsave.c : Playlist loading / saving functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 3bb3b2abee92f8065db92c1285308266b4a10aca $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -40,7 +40,7 @@ int playlist_Export( playlist_t * p_playlist, const char *psz_filename ,
                      playlist_item_t *p_export_root,const char *psz_type )
 {
     module_t *p_module;
-    playlist_export_t *p_export;
+    playlist_export_t export;
 
     if( p_export_root == NULL ) return VLC_EGENERIC;
 
@@ -48,48 +48,53 @@ int playlist_Export( playlist_t * p_playlist, const char *psz_filename ,
                     p_export_root->p_input->psz_name, psz_filename );
 
     /* Prepare the playlist_export_t structure */
-    p_export = (playlist_export_t *)malloc( sizeof(playlist_export_t) );
-    if( !p_export)
-        return VLC_ENOMEM;
-    p_export->psz_filename = psz_filename ? strdup( psz_filename ) : NULL;
-    p_export->p_file = utf8_fopen( psz_filename, "wt" );
-    if( !p_export->p_file )
+    export.psz_filename = psz_filename ? strdup( psz_filename ) : NULL;
+    export.p_file = utf8_fopen( psz_filename, "wt" );
+    if( export.p_file == NULL )
     {
         msg_Err( p_playlist , "could not create playlist file %s (%m)",
                  psz_filename );
-        free( p_export->psz_filename );
-        free( p_export );
+        free( export.psz_filename );
         return VLC_EGENERIC;
     }
 
-    p_export->p_root = p_export_root;
+    export.p_root = p_export_root;
 
-    /* Lock the playlist */
-    vlc_object_lock( p_playlist );
-    p_playlist->p_private = (void *)p_export;
+    playlist_Lock( p_playlist );
+    p_playlist->p_private = (void *)&export;
 
     /* And call the module ! All work is done now */
-    int i_ret;
-    p_module = module_Need( p_playlist, "playlist export", psz_type, true);
+    p_module = module_need( p_playlist, "playlist export", psz_type, true);
     if( !p_module )
-    {
         msg_Warn( p_playlist, "exporting playlist failed" );
-        i_ret = VLC_ENOOBJ;
-    }
     else
-    {
-        module_Unneed( p_playlist , p_module );
-        i_ret = VLC_SUCCESS;
-    }
+        module_unneed( p_playlist , p_module );
+    p_playlist->p_private = NULL;
+    playlist_Unlock( p_playlist );
 
     /* Clean up */
-    fclose( p_export->p_file );
-    free( p_export->psz_filename );
-    free( p_export );
-    p_playlist->p_private = NULL;
-    vlc_object_unlock( p_playlist );
+    fclose( export.p_file );
+    free( export.psz_filename );
 
-    return i_ret;
+    return p_module ? VLC_SUCCESS : VLC_ENOOBJ;
+}
+
+int playlist_Import( playlist_t *p_playlist, const char *psz_file )
+{
+    input_item_t *p_input;
+    char *psz_uri;
+    const char *const psz_option = "meta-file";
+
+    if( asprintf( &psz_uri, "file/://%s", psz_file ) < 0 )
+        return VLC_EGENERIC;
+
+    p_input = input_item_NewExt( p_playlist, psz_uri, psz_file,
+                                 1, &psz_option, VLC_INPUT_OPTION_TRUSTED, -1 );
+    free( psz_uri );
+
+    playlist_AddInput( p_playlist, p_input, PLAYLIST_APPEND, PLAYLIST_END,
+                       true, false );
+    return input_Read( p_playlist, p_input, true );
 }
 
 /*****************************************************************************
@@ -109,11 +114,15 @@ static void input_item_subitem_added( const vlc_event_t * p_event,
 
 int playlist_MLLoad( playlist_t *p_playlist )
 {
-    char *psz_datadir = config_GetUserDataDir();
+    char *psz_datadir;
     char *psz_uri = NULL;
     input_item_t *p_input;
 
-    if( !config_GetInt( p_playlist, "media-library") ) return VLC_SUCCESS;
+    if( !config_GetInt( p_playlist, "media-library") )
+        return VLC_SUCCESS;
+
+    psz_datadir = config_GetUserDataDir();
+
     if( !psz_datadir ) /* XXX: This should never happen */
     {
         msg_Err( p_playlist, "no data directory, cannot load media library") ;
@@ -144,8 +153,8 @@ int playlist_MLLoad( playlist_t *p_playlist )
     const char *const psz_option = "meta-file";
     /* that option has to be cleaned in input_item_subitem_added() */
     /* vlc_gc_decref() in the same function */
-    p_input = input_item_NewExt( p_playlist, psz_uri,
-                                _("Media Library"), 1, &psz_option, -1 );
+    p_input = input_item_NewExt( p_playlist, psz_uri, _("Media Library"),
+                                 1, &psz_option, VLC_INPUT_OPTION_TRUSTED, -1 );
     if( p_input == NULL )
         goto error;
 
@@ -164,7 +173,7 @@ int playlist_MLLoad( playlist_t *p_playlist )
     vlc_event_attach( &p_input->event_manager, vlc_InputItemSubItemAdded,
                         input_item_subitem_added, p_playlist );
 
-    p_playlist->b_doing_ml = true;
+    pl_priv(p_playlist)->b_doing_ml = true;
     PL_UNLOCK;
 
     stats_TimerStart( p_playlist, "ML Load", STATS_TIMER_ML_LOAD );
@@ -172,7 +181,7 @@ int playlist_MLLoad( playlist_t *p_playlist )
     stats_TimerStop( p_playlist,STATS_TIMER_ML_LOAD );
 
     PL_LOCK;
-    p_playlist->b_doing_ml = false;
+    pl_priv(p_playlist)->b_doing_ml = false;
     PL_UNLOCK;
 
     vlc_event_detach( &p_input->event_manager, vlc_InputItemSubItemAdded,
@@ -190,8 +199,13 @@ error:
 
 int playlist_MLDump( playlist_t *p_playlist )
 {
-    char *psz_datadir = config_GetUserDataDir();
-    if( !config_GetInt( p_playlist, "media-library") ) return VLC_SUCCESS;
+    char *psz_datadir;
+
+    if( !config_GetInt( p_playlist, "media-library") )
+        return VLC_SUCCESS;
+
+    psz_datadir = config_GetUserDataDir();
+
     if( !psz_datadir ) /* XXX: This should never happen */
     {
         msg_Err( p_playlist, "no data directory, cannot save media library") ;

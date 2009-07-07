@@ -2,7 +2,7 @@
  * playlist.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: d8be0421b78c75cbf1b4688bdd4a328fa34a6ae9 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -80,6 +80,8 @@
     IBOutlet id o_mi_delete;
     IBOutlet id o_mi_info;
     IBOutlet id o_mi_preparse;
+    IBOutlet id o_mi_revealInFinder;
+    IBOutlet id o_mm_mi_revealInFinder;
     IBOutlet id o_mi_dl_cover_art;
     IBOutlet id o_mi_selectall;
     IBOutlet id o_mi_sort_name;
@@ -128,6 +130,7 @@
 
 - (IBAction)servicesChange:(id)sender;
 - (IBAction)playItem:(id)sender;
+- (IBAction)revealItemInFinder:(id)sender;
 - (IBAction)preparseItem:(id)sender;
 - (IBAction)downloadCoverArt:(id)sender;
 - (IBAction)savePlaylist:(id)sender;
@@ -138,7 +141,6 @@
 - (IBAction)recursiveExpandNode:(id)sender;
 
 - (IBAction)addNode:(id)sender;
-- (void)addNodeThreadedly;
 
 - (void)appendArray:(NSArray*)o_array atPos:(int)i_position enqueue:(BOOL)b_enqueue;
 - (void)appendNodeArray:(NSArray*)o_array inNode:(playlist_item_t *)p_node atPos:(int)i_position enqueue:(BOOL)b_enqueue;

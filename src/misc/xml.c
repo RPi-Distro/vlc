@@ -2,7 +2,7 @@
  * xml.c: XML parser wrapper for XML modules
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: af32ceeb4b774df72fe044e13ae18e4f3ae39eb1 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -43,7 +43,7 @@ xml_t *__xml_Create( vlc_object_t *p_this )
                                "xml" );
     vlc_object_attach( p_xml, p_this );
 
-    p_xml->p_module = module_Need( p_xml, "xml", 0, 0 );
+    p_xml->p_module = module_need( p_xml, "xml", NULL, false );
     if( !p_xml->p_module )
     {
         vlc_object_detach( p_xml );
@@ -60,7 +60,7 @@ xml_t *__xml_Create( vlc_object_t *p_this )
  *****************************************************************************/
 void xml_Delete( xml_t *p_xml )
 {
-    module_Unneed( p_xml, p_xml->p_module );
+    module_unneed( p_xml, p_xml->p_module );
     vlc_object_detach( p_xml );
     vlc_object_release( p_xml );
 }

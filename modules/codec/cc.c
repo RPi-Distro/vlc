@@ -2,7 +2,7 @@
  * cc608.c : CC 608/708 subtitles decoder
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: f753ff026f0dbcbe9abee9935e44cb59f9a38dd0 $
+ * $Id$
  *
  * Authors: Laurent Aimar < fenrir # via.ecp.fr>
  *
@@ -60,12 +60,12 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_shortname( N_("CC 608/708"));
-    set_description( N_("Closed Captions decoder") );
-    set_capability( "decoder", 50 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( N_("CC 608/708"))
+    set_description( N_("Closed Captions decoder") )
+    set_capability( "decoder", 50 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -199,18 +199,18 @@ static int Open( vlc_object_t *p_this )
     p_dec->pf_decode_sub = Decode;
 
     /* Allocate the memory needed to store the decoder's structure */
-    p_dec->p_sys = p_sys = malloc( sizeof( *p_sys ) );
+    p_dec->p_sys = p_sys = calloc( 1, sizeof( *p_sys ) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
 
     /* init of p_sys */
-    memset( p_sys, 0, sizeof( *p_sys ) );
-    p_sys->i_block = 0;
-
     p_sys->i_field = i_field;
     p_sys->i_channel = i_channel;
 
     Eia608Init( &p_sys->eia608 );
+
+    p_dec->fmt_out.i_cat = SPU_ES;
+    p_dec->fmt_out.i_codec = VLC_FOURCC('T','E','X','T');
 
     return VLC_SUCCESS;
 }
@@ -329,7 +329,7 @@ static subpicture_t *Subtitle( decoder_t *p_dec, char *psz_subtitle, char *psz_h
         EnsureUTF8( psz_html );
 
     /* Create the subpicture unit */
-    p_spu = p_dec->pf_spu_buffer_new( p_dec );
+    p_spu = decoder_NewSubpicture( p_dec );
     if( !p_spu )
     {
         msg_Warn( p_dec, "can't get spu buffer" );
@@ -338,29 +338,27 @@ static subpicture_t *Subtitle( decoder_t *p_dec, char *psz_subtitle, char *psz_h
         return NULL;
     }
 
-    p_spu->b_pausable = true;
-
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
     fmt.i_chroma = VLC_FOURCC('T','E','X','T');
     fmt.i_aspect = 0;
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_spu->p_region = p_spu->pf_create_region( VLC_OBJECT(p_dec), &fmt );
+    p_spu->p_region = subpicture_region_New( &fmt );
     if( !p_spu->p_region )
     {
         msg_Err( p_dec, "cannot allocate SPU region" );
         free( psz_subtitle );
         free( psz_html );
-        p_dec->pf_spu_buffer_del( p_dec, p_spu );
+        decoder_DeleteSubpicture( p_dec, p_spu );
         return NULL;
     }
 
     /* Decode and format the subpicture unit */
     /* Normal text subs, easy markup */
     p_spu->p_region->i_align = SUBPICTURE_ALIGN_BOTTOM;// | SUBPICTURE_ALIGN_LEFT;// | p_sys->i_align;
-    p_spu->i_x = 0; //p_sys->i_align ? 20 : 0;
-    p_spu->i_y = 10;
+    p_spu->p_region->i_x = 0; //p_sys->i_align ? 20 : 0;
+    p_spu->p_region->i_y = 10;
 
     p_spu->p_region->psz_text = psz_subtitle;
     p_spu->p_region->psz_html = psz_html;
@@ -375,6 +373,8 @@ static subpicture_t *Subtitle( decoder_t *p_dec, char *psz_subtitle, char *psz_h
 
 static subpicture_t *Convert( decoder_t *p_dec, block_t *p_block )
 {
+    assert( p_block );
+
     decoder_sys_t *p_sys = p_dec->p_sys;
     const int64_t i_pts = p_block->i_pts;
     bool b_changed = false;
@@ -604,13 +604,27 @@ static void Eia608RollUp( eia608_t *h )
     /* Reset current row */
     Eia608ClearScreenRow( h, i_screen, h->cursor.i_row );
 }
-static void Eia608ParseChannel( eia608_t *h, uint8_t d1 )
+static void Eia608ParseChannel( eia608_t *h, uint8_t d[2] )
 {
+    /* Check odd parity */
+    static const int p4[16] = {
+        0, 1, 1, 0, 1, 0, 0, 1, 1, 0, 0, 1, 0, 1, 1, 0
+    };
+    if( p4[d[0] & 0xf] == p4[d[0] >> 4] ||
+        p4[d[1] & 0xf] == p4[ d[1] >> 4] )
+    {
+        h->i_channel = -1;
+        return;
+    }
+
+    /* */
+    const int d1 = d[0] & 0x7f;
+    const int d2 = d[1] & 0x7f;
     if( d1 == 0x14 )
         h->i_channel = 1;
     else if( d1 == 0x1c )
         h->i_channel = 2;
-    else if( ( d1 >= 0x01 && d1 <= 0x0f ) || d1 == 0x15 )
+    else if( d1 == 0x15 )
         h->i_channel = 3;
     else if( d1 == 0x1d )
         h->i_channel = 4;
@@ -1069,14 +1083,14 @@ static void Eia608Init( eia608_t *h )
 }
 static bool Eia608Parse( eia608_t *h, int i_channel_selected, const uint8_t data[2] )
 {
-    const uint8_t d1 = data[0] & 0x7f; /* Removed parity bit TODO we might want to check them */
+    const uint8_t d1 = data[0] & 0x7f; /* Removed parity bit */
     const uint8_t d2 = data[1] & 0x7f;
     bool b_screen_changed = false;
 
     if( d1 == 0 && d2 == 0 )
-        return false;   /* Ignore padding */
+        return false;   /* Ignore padding (parity check are sometimes invalid on them) */
 
-    Eia608ParseChannel( h, d1 );
+    Eia608ParseChannel( h, data );
     if( h->i_channel != i_channel_selected )
         return false;
     //fprintf( stderr, "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC %x %x\n", data[0], data[1] );

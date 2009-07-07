@@ -2,7 +2,7 @@
  * equalizer.c:
  *****************************************************************************
  * Copyright (C) 2004, 2006 the VideoLAN team
- * $Id: a0a3bf48307e752370be3ee655322ddd2ad4aaf0 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -33,6 +33,7 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
+#include <vlc_charset.h>
 
 #include "vlc_aout.h"
 
@@ -69,30 +70,30 @@ static void Close( vlc_object_t * );
 #define PREAMP_TEXT N_("Global gain" )
 #define PREAMP_LONGTEXT N_("Set the global gain in dB (-20 ... 20)." )
 
-vlc_module_begin();
-    set_description( N_("Equalizer with 10 bands") );
-    set_shortname( N_("Equalizer" ) );
-    set_capability( "audio filter", 0 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AFILTER );
+vlc_module_begin ()
+    set_description( N_("Equalizer with 10 bands") )
+    set_shortname( N_("Equalizer" ) )
+    set_capability( "audio filter", 0 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AFILTER )
 
     add_string( "equalizer-preset", "flat", NULL, PRESET_TEXT,
-                PRESET_LONGTEXT, false );
-        change_string_list( preset_list, preset_list_text, 0 );
+                PRESET_LONGTEXT, false )
+        change_string_list( preset_list, preset_list_text, 0 )
     add_string( "equalizer-bands", NULL, NULL, BANDS_TEXT,
-                BANDS_LONGTEXT, true );
+                BANDS_LONGTEXT, true )
     add_bool( "equalizer-2pass", 0, NULL, TWOPASS_TEXT,
-              TWOPASS_LONGTEXT, true );
+              TWOPASS_LONGTEXT, true )
     add_float( "equalizer-preamp", 12.0, NULL, PREAMP_TEXT,
-               PREAMP_LONGTEXT, true );
-    set_callbacks( Open, Close );
-    add_shortcut( "equalizer" );
-vlc_module_end();
+               PREAMP_LONGTEXT, true )
+    set_callbacks( Open, Close )
+    add_shortcut( "equalizer" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
  *****************************************************************************/
-typedef struct aout_filter_sys_t
+struct aout_filter_sys_t
 {
     /* Filter static config */
     int i_band;
@@ -117,7 +118,7 @@ typedef struct aout_filter_sys_t
     float x2[32][2];
     float y2[32][128][2];
 
-} aout_filter_sys_t;
+};
 
 static void DoWork( aout_instance_t *, aout_filter_t *,
                     aout_buffer_t *, aout_buffer_t * );
@@ -363,7 +364,7 @@ static int EqzInit( aout_filter_t *p_filter, int i_rate )
 
     p_sys->b_2eqz = var_CreateGetBool( p_aout, "equalizer-2pass" );
 
-    var_CreateGetFloat( p_aout, "equalizer-preamp" );
+    var_Create( p_aout, "equalizer-preamp", VLC_VAR_FLOAT | VLC_VAR_DOINHERIT );
 
     /* Get initial values */
     var_Get( p_aout, "equalizer-preset", &val1 );
@@ -588,11 +589,8 @@ static int BandsCallback( vlc_object_t *p_this, char const *psz_cmd,
             break;
 
         /* Read dB -20/20 */
-#ifdef HAVE_STRTOF
-        f = strtof( p, &psz_next );
-#else
-        f = (float)strtod( p, &psz_next );
-#endif
+        f = us_strtof( p, &psz_next );
+
         if( psz_next == p )
             break; /* no conversion */
 

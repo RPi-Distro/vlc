@@ -2,7 +2,7 @@
  * test2.cpp : Empty C++ module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id: 63fb6ae0f7ad99422b90a6ea25891c5ee1fe0cc7 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -36,10 +36,10 @@
 /*****************************************************************************
  * Module descriptor.
  *****************************************************************************/
-vlc_module_begin();
+vlc_module_begin ()
     /* Minimal C++ usage */
     std::string description = "C++ module that does nothing";
-    set_description( (char*)_( description.c_str() ) );
-vlc_module_end();
+    set_description( (char*)_( description.c_str() ) )
+vlc_module_end ()
 
 

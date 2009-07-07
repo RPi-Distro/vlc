@@ -2,7 +2,7 @@
  * extended_panels.hpp : Exentended Panels
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: aaffd02ec838419e2b6237b902cb23e58eb90c02 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea at videolan dot org>
@@ -31,16 +31,14 @@
 
 #include <vlc_common.h>
 #include <vlc_aout.h>
-#include "../../audio_filter/equalizer_presets.h"
 
 #include "ui/equalizer.h"
 #include "ui/video_effects.h"
 #include "ui/v4l2.h"
 
-
 #include <QTabWidget>
 
-#define BANDS EQZ_BANDS_MAX
+#define BANDS 10
 #define NUM_SP_CTRL 5
 
 class QSignalMapper;
@@ -60,7 +58,7 @@ private:
     vout_thread_t *p_vout;
     void initComboBoxItems( QObject* );
     void setWidgetValue( QObject* );
-    void ChangeVFiltersString( char *psz_name, bool b_add );
+    void ChangeVFiltersString( const char *psz_name, bool b_add );
     void clean();
 private slots:
     void updateFilters();
@@ -157,6 +155,9 @@ private:
     QDoubleSpinBox *AVSpin;
     QDoubleSpinBox *subsSpin;
     QDoubleSpinBox *subSpeedSpin;
+
+    bool b_userAction;
+
     void clean();
 public slots:
     void update();

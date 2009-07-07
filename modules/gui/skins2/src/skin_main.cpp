@@ -2,7 +2,7 @@
  * skin_main.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 84651abea3404018cb9d02ea58e5d24be5d71594 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -31,6 +31,7 @@
 #include <vlc_input.h>
 #include <vlc_demux.h>
 #include <vlc_playlist.h>
+#include <vlc_threads.h>
 #include <vlc_window.h>
 
 #include "dialogs.hpp"
@@ -41,6 +42,8 @@
 #include "theme_loader.hpp"
 #include "theme.hpp"
 #include "theme_repository.hpp"
+#include "vout_window.hpp"
+#include "vout_manager.hpp"
 #include "../parser/interpreter.hpp"
 #include "../commands/async_queue.hpp"
 #include "../commands/cmd_quit.hpp"
@@ -78,6 +81,12 @@ static int onTaskBarChange( vlc_object_t *pObj, const char *pVariable,
                             void *pParam );
 
 
+static struct
+{
+    intf_thread_t *intf;
+    vlc_mutex_t mutex;
+} skin_load = { NULL, VLC_STATIC_MUTEX };
+
 //---------------------------------------------------------------------------
 // Open: initialize interface
 //---------------------------------------------------------------------------
@@ -88,18 +97,17 @@ static int Open( vlc_object_t *p_this )
     // Allocate instance and initialize some members
     p_intf->p_sys = (intf_sys_t *) malloc( sizeof( intf_sys_t ) );
     if( p_intf->p_sys == NULL )
-    {
-        msg_Err( p_intf, "out of memory" );
         return( VLC_ENOMEM );
-    };
 
     p_intf->pf_run = Run;
 
     // Suscribe to messages bank
+#if 0
     p_intf->p_sys->p_sub = msg_Subscribe( p_intf );
+#endif
 
     p_intf->p_sys->p_input = NULL;
-    p_intf->p_sys->p_playlist = pl_Yield( p_intf );
+    p_intf->p_sys->p_playlist = pl_Hold( p_intf );
 
     // Initialize "singleton" objects
     p_intf->p_sys->p_logger = NULL;
@@ -109,6 +117,7 @@ static int Open( vlc_object_t *p_this )
     p_intf->p_sys->p_osFactory = NULL;
     p_intf->p_sys->p_osLoop = NULL;
     p_intf->p_sys->p_varManager = NULL;
+    p_intf->p_sys->p_voutManager = NULL;
     p_intf->p_sys->p_vlcProc = NULL;
     p_intf->p_sys->p_repository = NULL;
 
@@ -123,85 +132,64 @@ static int Open( vlc_object_t *p_this )
     {
         msg_Err( p_intf, "cannot initialize OSFactory" );
         vlc_object_release( p_intf->p_sys->p_playlist );
+#if 0
         msg_Unsubscribe( p_intf, p_intf->p_sys->p_sub );
+#endif
         return VLC_EGENERIC;
     }
     if( AsyncQueue::instance( p_intf ) == NULL )
     {
         msg_Err( p_intf, "cannot initialize AsyncQueue" );
         vlc_object_release( p_intf->p_sys->p_playlist );
+#if 0
         msg_Unsubscribe( p_intf, p_intf->p_sys->p_sub );
+#endif
         return VLC_EGENERIC;
     }
     if( Interpreter::instance( p_intf ) == NULL )
     {
         msg_Err( p_intf, "cannot instanciate Interpreter" );
         vlc_object_release( p_intf->p_sys->p_playlist );
+#if 0
         msg_Unsubscribe( p_intf, p_intf->p_sys->p_sub );
+#endif
         return VLC_EGENERIC;
     }
     if( VarManager::instance( p_intf ) == NULL )
     {
         msg_Err( p_intf, "cannot instanciate VarManager" );
         vlc_object_release( p_intf->p_sys->p_playlist );
+#if 0
         msg_Unsubscribe( p_intf, p_intf->p_sys->p_sub );
+#endif
         return VLC_EGENERIC;
     }
     if( VlcProc::instance( p_intf ) == NULL )
     {
         msg_Err( p_intf, "cannot initialize VLCProc" );
         vlc_object_release( p_intf->p_sys->p_playlist );
+#if 0
         msg_Unsubscribe( p_intf, p_intf->p_sys->p_sub );
+#endif
         return VLC_EGENERIC;
     }
+    if( VoutManager::instance( p_intf ) == NULL )
+    {
+        msg_Err( p_intf, "cannot instanciate VoutManager" );
+        vlc_object_release( p_intf->p_sys->p_playlist );
+        return VLC_EGENERIC;
+    }
+    vlc_mutex_lock( &skin_load.mutex );
+    skin_load.intf = p_intf;
+    vlc_mutex_unlock( &skin_load.mutex );
+
     Dialogs::instance( p_intf );
     ThemeRepository::instance( p_intf );
 
-#ifdef WIN32
-    p_intf->b_should_run_on_first_thread = true;
-#endif
-
-    return( VLC_SUCCESS );
-}
-
-//---------------------------------------------------------------------------
-// Close: destroy interface
-//---------------------------------------------------------------------------
-static void Close( vlc_object_t *p_this )
-{
-    intf_thread_t *p_intf = (intf_thread_t *)p_this;
-
-    // Destroy "singleton" objects
-    OSFactory::instance( p_intf )->destroyOSLoop();
-    ThemeRepository::destroy( p_intf );
-    Dialogs::destroy( p_intf );
-    Interpreter::destroy( p_intf );
-    AsyncQueue::destroy( p_intf );
-    VarManager::destroy( p_intf );
-    VlcProc::destroy( p_intf );
-    OSFactory::destroy( p_intf );
-
-    if( p_intf->p_sys->p_playlist )
-    {
-        vlc_object_release( p_intf->p_sys->p_playlist );
-    }
-
-    // Unsubscribe from messages bank
-    msg_Unsubscribe( p_intf, p_intf->p_sys->p_sub );
-
-    // Destroy structure
-    free( p_intf->p_sys );
-}
-
-
-//---------------------------------------------------------------------------
-// Run: main loop
-//---------------------------------------------------------------------------
-static void Run( intf_thread_t *p_intf )
-{
     // Load a theme
-    ThemeLoader *pLoader = new ThemeLoader( p_intf );
     char *skin_last = config_GetPsz( p_intf, "skins2-last" );
+
+    ThemeLoader *pLoader = new ThemeLoader( p_intf );
 
     if( !skin_last || !*skin_last || !pLoader->load( skin_last ) )
     {
@@ -244,6 +232,66 @@ static void Run( intf_thread_t *p_intf )
 
     free( skin_last );
 
+#ifdef WIN32
+    p_intf->b_should_run_on_first_thread = true;
+#endif
+
+    return( VLC_SUCCESS );
+}
+
+//---------------------------------------------------------------------------
+// Close: destroy interface
+//---------------------------------------------------------------------------
+static void Close( vlc_object_t *p_this )
+{
+    intf_thread_t *p_intf = (intf_thread_t *)p_this;
+
+    msg_Dbg( p_intf, "closing skins2 module" );
+
+    vlc_mutex_lock( &skin_load.mutex );
+    skin_load.intf = NULL;
+    vlc_mutex_unlock( &skin_load.mutex);
+
+    if( p_intf->p_sys->p_theme )
+    {
+        delete p_intf->p_sys->p_theme;
+        p_intf->p_sys->p_theme = NULL;
+        msg_Dbg( p_intf, "current theme deleted" );
+    }
+
+    // Destroy "singleton" objects
+    OSFactory::instance( p_intf )->destroyOSLoop();
+    ThemeRepository::destroy( p_intf );
+    VoutManager::destroy( p_intf );
+    //Dialogs::destroy( p_intf );
+    Interpreter::destroy( p_intf );
+    AsyncQueue::destroy( p_intf );
+    VarManager::destroy( p_intf );
+    VlcProc::destroy( p_intf );
+    OSFactory::destroy( p_intf );
+
+    if( p_intf->p_sys->p_playlist )
+    {
+        vlc_object_release( p_intf->p_sys->p_playlist );
+    }
+
+    // Unsubscribe from messages bank
+#if 0
+    msg_Unsubscribe( p_intf, p_intf->p_sys->p_sub );
+#endif
+
+    // Destroy structure
+    free( p_intf->p_sys );
+}
+
+
+//---------------------------------------------------------------------------
+// Run: main loop
+//---------------------------------------------------------------------------
+static void Run( intf_thread_t *p_intf )
+{
+    int canc = vlc_savecancel();
+
     // Get the instance of OSLoop
     OSLoop *loop = OSFactory::instance( p_intf )->getOSLoop();
 
@@ -254,9 +302,12 @@ static void Run( intf_thread_t *p_intf )
     if( p_intf->p_sys->p_theme )
     {
         p_intf->p_sys->p_theme->saveConfig();
-        delete p_intf->p_sys->p_theme;
-        p_intf->p_sys->p_theme = NULL;
     }
+
+    // cannot be called in "Close", because it refcounts skins2
+    Dialogs::destroy( p_intf );
+
+    vlc_restorecancel(canc);
 }
 
 
@@ -270,23 +321,28 @@ static int WindowOpen( vlc_object_t *p_this )
     if( pIntf == NULL )
         return VLC_EGENERIC;
 
-    /* FIXME: most probably not thread-safe,
-     * albeit no worse than ever before */
-    pWnd->handle = VlcProc::getWindow( pIntf, pWnd->vout,
-                                       &pWnd->pos_x, &pWnd->pos_y,
-                                       &pWnd->width, &pWnd->height );
-    pWnd->p_private = pIntf;
-    pWnd->control = &VlcProc::controlWindow;
-    return VLC_SUCCESS;
-}
+    vlc_object_release( pIntf );
 
+    pWnd->handle.hwnd = VoutManager::getWindow( pIntf, pWnd );
+
+    if( pWnd->handle.hwnd )
+    {
+        pWnd->p_private = pIntf;
+        pWnd->control = &VoutManager::controlWindow;
+        return VLC_SUCCESS;
+    }
+    else
+    {
+        return VLC_EGENERIC;
+    }
+}
 
 static void WindowClose( vlc_object_t *p_this )
 {
     vout_window_t *pWnd = (vout_window_t *)p_this;
     intf_thread_t *pIntf = (intf_thread_t *)p_this->p_private;
 
-    VlcProc::releaseWindow( pIntf, pWnd->handle );
+    VoutManager::releaseWindow( pIntf, pWnd );
 }
 
 //---------------------------------------------------------------------------
@@ -310,30 +366,27 @@ static int DemuxOpen( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    p_intf = (intf_thread_t *)vlc_object_find( p_this, VLC_OBJECT_INTF,
-                                               FIND_ANYWHERE );
+    vlc_mutex_lock( &skin_load.mutex );
+    p_intf = skin_load.intf;
+    if( p_intf )
+        vlc_object_hold( p_intf );
+    vlc_mutex_unlock( &skin_load.mutex );
+
     if( p_intf != NULL )
     {
-        // Do nothing is skins2 is not the main interface
-        if( var_Type( p_intf, "skin-to-load" ) == VLC_VAR_STRING )
-        {
-            playlist_t *p_playlist = pl_Yield( p_this );
-            // Make sure the item is deleted afterwards
-            /// \bug does not always work
-            p_playlist->status.p_item->i_flags |= PLAYLIST_REMOVE_FLAG;
-            vlc_object_release( p_playlist );
+        playlist_t *p_playlist = pl_Hold( p_this );
+        // Make sure the item is deleted afterwards
+        /// \bug does not always work
+        playlist_CurrentPlayingItem( p_playlist )->i_flags |= PLAYLIST_REMOVE_FLAG;
+        vlc_object_release( p_playlist );
 
-            vlc_value_t val;
-            val.psz_string = p_demux->psz_path;
-            var_Set( p_intf, "skin-to-load", val );
-        }
-        else
-        {
-            msg_Warn( p_this,
-                      "skin could not be loaded (not using skins2 intf)" );
-        }
-
+        var_SetString( p_intf, "skin-to-load", p_demux->psz_path );
         vlc_object_release( p_intf );
+    }
+    else
+    {
+        msg_Warn( p_this,
+                  "skin could not be loaded (not using skins2 intf)" );
     }
 
     return VLC_SUCCESS;
@@ -367,28 +420,29 @@ static int onSystrayChange( vlc_object_t *pObj, const char *pVariable,
                             vlc_value_t oldVal, vlc_value_t newVal,
                             void *pParam )
 {
-    intf_thread_t *pIntf =
-        (intf_thread_t*)vlc_object_find( pObj, VLC_OBJECT_INTF, FIND_ANYWHERE );
+    intf_thread_t *pIntf;
+
+    vlc_mutex_lock( &skin_load.mutex );
+    pIntf = skin_load.intf;
+    if( pIntf )
+        vlc_object_hold( pIntf );
+    vlc_mutex_unlock( &skin_load.mutex );
 
     if( pIntf == NULL )
     {
         return VLC_EGENERIC;
     }
 
-    // Check that we found the correct interface (same check as for the demux)
-    if( var_Type( pIntf, "skin-to-load" ) == VLC_VAR_STRING )
+    AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
+    if( newVal.b_bool )
     {
-        AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
-        if( newVal.b_bool )
-        {
-            CmdAddInTray *pCmd = new CmdAddInTray( pIntf );
-            pQueue->push( CmdGenericPtr( pCmd ) );
-        }
-        else
-        {
-            CmdRemoveFromTray *pCmd = new CmdRemoveFromTray( pIntf );
-            pQueue->push( CmdGenericPtr( pCmd ) );
-        }
+        CmdAddInTray *pCmd = new CmdAddInTray( pIntf );
+        pQueue->push( CmdGenericPtr( pCmd ) );
+    }
+    else
+    {
+        CmdRemoveFromTray *pCmd = new CmdRemoveFromTray( pIntf );
+        pQueue->push( CmdGenericPtr( pCmd ) );
     }
 
     vlc_object_release( pIntf );
@@ -401,28 +455,29 @@ static int onTaskBarChange( vlc_object_t *pObj, const char *pVariable,
                             vlc_value_t oldVal, vlc_value_t newVal,
                             void *pParam )
 {
-    intf_thread_t *pIntf =
-        (intf_thread_t*)vlc_object_find( pObj, VLC_OBJECT_INTF, FIND_ANYWHERE );
+    intf_thread_t *pIntf;
+
+    vlc_mutex_lock( &skin_load.mutex );
+    pIntf = skin_load.intf;
+    if( pIntf )
+        vlc_object_hold( pIntf );
+    vlc_mutex_unlock( &skin_load.mutex );
 
     if( pIntf == NULL )
     {
         return VLC_EGENERIC;
     }
 
-    // Check that we found the correct interface (same check as for the demux)
-    if( var_Type( pIntf, "skin-to-load" ) == VLC_VAR_STRING )
+    AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
+    if( newVal.b_bool )
     {
-        AsyncQueue *pQueue = AsyncQueue::instance( pIntf );
-        if( newVal.b_bool )
-        {
-            CmdAddInTaskBar *pCmd = new CmdAddInTaskBar( pIntf );
-            pQueue->push( CmdGenericPtr( pCmd ) );
-        }
-        else
-        {
-            CmdRemoveFromTaskBar *pCmd = new CmdRemoveFromTaskBar( pIntf );
-            pQueue->push( CmdGenericPtr( pCmd ) );
-        }
+        CmdAddInTaskBar *pCmd = new CmdAddInTaskBar( pIntf );
+        pQueue->push( CmdGenericPtr( pCmd ) );
+    }
+    else
+    {
+        CmdRemoveFromTaskBar *pCmd = new CmdRemoveFromTaskBar( pIntf );
+        pQueue->push( CmdGenericPtr( pCmd ) );
     }
 
     vlc_object_release( pIntf );
@@ -449,16 +504,16 @@ static int onTaskBarChange( vlc_object_t *pObj, const char *pVariable,
 #define SKINS2_PLAYLIST N_("Use a skinned playlist")
 #define SKINS2_PLAYLIST_LONG N_("Use a skinned playlist")
 
-vlc_module_begin();
-    set_category( CAT_INTERFACE );
-    set_subcategory( SUBCAT_INTERFACE_MAIN );
+vlc_module_begin ()
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_MAIN )
     add_file( "skins2-last", "", NULL, SKINS2_LAST, SKINS2_LAST_LONG,
-              true );
-        change_autosave();
+              true )
+        change_autosave ()
     add_string( "skins2-config", "", NULL, SKINS2_CONFIG, SKINS2_CONFIG_LONG,
-                true );
-        change_autosave();
-        change_internal();
+                true )
+        change_autosave ()
+        change_internal ()
 #ifdef WIN32
     add_bool( "skins2-systray", false, onSystrayChange, SKINS2_SYSTRAY,
               SKINS2_SYSTRAY_LONG, false );
@@ -470,19 +525,24 @@ vlc_module_begin();
 
     add_bool( "skinned-playlist", true, NULL, SKINS2_PLAYLIST,
               SKINS2_PLAYLIST_LONG, false );
-    set_shortname( N_("Skins"));
-    set_description( N_("Skinnable Interface") );
-    set_capability( "interface", 30 );
-    set_callbacks( Open, Close );
-    add_shortcut( "skins" );
+    set_shortname( N_("Skins"))
+    set_description( N_("Skinnable Interface") )
+    set_capability( "interface", 30 )
+    set_callbacks( Open, Close )
+    add_shortcut( "skins" )
 
-    add_submodule();
-        set_capability( "vout window", 51 );
-        set_callbacks( WindowOpen, WindowClose );
+    add_submodule ()
+#ifndef WIN32
+        set_capability( "xwindow", 51 )
+#else
+        set_capability( "hwnd", 51 )
+#endif
+        set_callbacks( WindowOpen, WindowClose )
 
-    add_submodule();
-        set_description( N_("Skins loader demux") );
-        set_capability( "demux", 5 );
-        set_callbacks( DemuxOpen, NULL );
+    add_submodule ()
+        set_description( N_("Skins loader demux") )
+        set_capability( "demux", 5 )
+        set_callbacks( DemuxOpen, NULL )
+        add_shortcut( "skins" )
 
-vlc_module_end();
+vlc_module_end ()

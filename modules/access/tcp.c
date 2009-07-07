@@ -2,7 +2,7 @@
  * tcp.c: TCP input module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 6b3a0a7111345dee316b82ad97f8c1eb6d46736b $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -46,19 +46,20 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_shortname( N_("TCP") );
-    set_description( N_("TCP input") );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
+vlc_module_begin ()
+    set_shortname( N_("TCP") )
+    set_description( N_("TCP input") )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
 
     add_integer( "tcp-caching", DEFAULT_PTS_DELAY / 1000, NULL, CACHING_TEXT,
-                 CACHING_LONGTEXT, true );
+                 CACHING_LONGTEXT, true )
+        change_safe()
 
-    set_capability( "access", 0 );
-    add_shortcut( "tcp" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_capability( "access", 0 )
+    add_shortcut( "tcp" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -102,10 +103,14 @@ static int Open( vlc_object_t *p_this )
     *psz_parser++ = '\0';
 
     /* Init p_access */
-    access_InitFields( p_access ); \
-    ACCESS_SET_CALLBACKS( Read, NULL, Control, NULL ); \
-    MALLOC_ERR( p_access->p_sys, access_sys_t ); \
-    p_sys = p_access->p_sys; memset( p_sys, 0, sizeof( access_sys_t ) );
+    access_InitFields( p_access );
+    ACCESS_SET_CALLBACKS( Read, NULL, Control, NULL );
+    p_sys = p_access->p_sys = calloc( 1, sizeof( access_sys_t ) );
+    if( !p_sys )
+    {
+        free( psz_dup );
+        return VLC_ENOMEM;
+    }
 
     p_sys->fd = net_ConnectTCP( p_access, psz_dup, atoi( psz_parser ) );
     free( psz_dup );
@@ -160,9 +165,8 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
  *****************************************************************************/
 static int Control( access_t *p_access, int i_query, va_list args )
 {
-    bool   *pb_bool;
-    int          *pi_int;
-    int64_t      *pi_64;
+    bool    *pb_bool;
+    int64_t *pi_64;
 
     switch( i_query )
     {
@@ -179,12 +183,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
         case ACCESS_CAN_CONTROL_PACE:
             pb_bool = (bool*)va_arg( args, bool* );
             *pb_bool = true;    /* FIXME */
-            break;
-
-        /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = 0;
             break;
 
         case ACCESS_GET_PTS_DELAY:

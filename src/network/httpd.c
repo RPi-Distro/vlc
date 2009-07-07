@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: b729ccb5c524b3a26be25447e0ef9898d50ddcfa $
+ * $Id: 7bfc071f04a2e7ad0bdd0a3fb1e7a1a81b03e65d $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -29,8 +29,6 @@
 
 #include <vlc_common.h>
 #include <vlc_httpd.h>
-
-#ifdef ENABLE_HTTPD
 
 #include <assert.h>
 
@@ -89,7 +87,7 @@ struct httpd_host_t
     httpd_t     *httpd;
 
     /* ref count */
-    int         i_ref;
+    unsigned    i_ref;
 
     /* address/port and socket for listening at connections */
     char        *psz_hostname;
@@ -97,7 +95,9 @@ struct httpd_host_t
     int         *fds;
     unsigned     nfd;
 
+    vlc_thread_t thread;
     vlc_mutex_t lock;
+    vlc_cond_t  wait;
 
     /* all registered url (becarefull that 2 httpd_url_t could point at the same url)
      * This will slow down the url research but make my live easier
@@ -227,8 +227,12 @@ static const struct
     { ".mpe",   "video/mpeg" },
     { ".mov",   "video/quicktime" },
     { ".moov",  "video/quicktime" },
+    { ".oga",   "audio/ogg" },
     { ".ogg",   "application/ogg" },
     { ".ogm",   "application/ogg" },
+    { ".ogv",   "video/ogg" },
+    { ".ogx",   "application/ogg" },
+    { ".spx",   "audio/ogg" },
     { ".wav",   "audio/wav" },
     { ".wma",   "audio/x-ms-wma" },
     { ".wmv",   "video/x-ms-wmv" },
@@ -362,7 +366,7 @@ static size_t httpd_HtmlError (char **body, int code, const char *url)
         "<a href=\"http://www.videolan.org\">VideoLAN</a>\n"
         "</body>\n"
         "</html>\n", errname, code, errname,
-        (url ? " (" : ""), (url ?: ""), (url ? ")" : ""));
+        (url ? " (" : ""), (url ? url : ""), (url ? ")" : ""));
 
     if (res == -1)
     {
@@ -960,7 +964,7 @@ void httpd_StreamDelete( httpd_stream_t *stream )
 /*****************************************************************************
  * Low level
  *****************************************************************************/
-static void* httpd_HostThread( vlc_object_t * );
+static void* httpd_HostThread( void * );
 
 /* create a new host */
 httpd_host_t *httpd_HostNew( vlc_object_t *p_this, const char *psz_host,
@@ -971,6 +975,7 @@ httpd_host_t *httpd_HostNew( vlc_object_t *p_this, const char *psz_host,
 }
 
 static const char psz_object_type[] = "http server";
+static vlc_mutex_t httpd_mutex = VLC_STATIC_MUTEX;
 
 httpd_host_t *httpd_TLSHostNew( vlc_object_t *p_this, const char *psz_hostname,
                                 int i_port,
@@ -981,7 +986,7 @@ httpd_host_t *httpd_TLSHostNew( vlc_object_t *p_this, const char *psz_hostname,
     httpd_host_t *host;
     tls_server_t *p_tls;
     char *psz_host;
-    vlc_value_t  lockval, ptrval;
+    vlc_value_t  ptrval;
     int i;
 
     if( psz_hostname == NULL )
@@ -992,9 +997,7 @@ httpd_host_t *httpd_TLSHostNew( vlc_object_t *p_this, const char *psz_hostname,
         return NULL;
 
     /* to be sure to avoid multiple creation */
-    var_Create( p_this->p_libvlc, "httpd_mutex", VLC_VAR_MUTEX );
-    var_Get( p_this->p_libvlc, "httpd_mutex", &lockval );
-    vlc_mutex_lock( lockval.p_address );
+    vlc_mutex_lock( &httpd_mutex );
     httpd = libvlc_priv (p_this->p_libvlc)->p_httpd;
 
     if( httpd == NULL )
@@ -1005,7 +1008,7 @@ httpd_host_t *httpd_TLSHostNew( vlc_object_t *p_this, const char *psz_hostname,
                                               psz_object_type );
         if( httpd == NULL )
         {
-            vlc_mutex_unlock( lockval.p_address );
+            vlc_mutex_unlock( &httpd_mutex );
             free( psz_host );
             return NULL;
         }
@@ -1015,7 +1018,6 @@ httpd_host_t *httpd_TLSHostNew( vlc_object_t *p_this, const char *psz_hostname,
 
         ptrval.p_address = httpd;
         libvlc_priv (p_this->p_libvlc)->p_httpd = httpd;
-        vlc_object_yield( httpd );
         vlc_object_attach( httpd, p_this->p_libvlc );
     }
 
@@ -1030,10 +1032,15 @@ httpd_host_t *httpd_TLSHostNew( vlc_object_t *p_this, const char *psz_hostname,
          || strcmp( host->psz_hostname, psz_hostname ) )
             continue;
 
-        /* yep found */
+        /* Increase existing matching host reference count.
+         * The reference count is written under both the global httpd and the
+         * host lock. It is read with either or both locks held. The global
+         * lock is always acquired first. */
+        vlc_mutex_lock( &host->lock );
         host->i_ref++;
+        vlc_mutex_unlock( &host->lock );
 
-        vlc_mutex_unlock( lockval.p_address );
+        vlc_mutex_unlock( &httpd_mutex );
         return host;
     }
 
@@ -1071,17 +1078,9 @@ httpd_host_t *httpd_TLSHostNew( vlc_object_t *p_this, const char *psz_hostname,
     if (host == NULL)
         goto error;
 
-    vlc_object_lock( host );
-    if( vlc_object_waitpipe( VLC_OBJECT( host ) ) == -1 )
-    {
-        msg_Err( host, "signaling pipe error: %m" );
-        vlc_object_unlock( host );
-        goto error;
-    }
-    vlc_object_unlock( host );
-
     host->httpd = httpd;
     vlc_mutex_init( &host->lock );
+    vlc_cond_init( &host->wait );
     host->i_ref = 1;
 
     host->fds = net_ListenTCP( p_this, psz_host, i_port );
@@ -1091,6 +1090,12 @@ httpd_host_t *httpd_TLSHostNew( vlc_object_t *p_this, const char *psz_hostname,
         goto error;
     }
     for (host->nfd = 0; host->fds[host->nfd] != -1; host->nfd++);
+
+    if( vlc_object_waitpipe( VLC_OBJECT( host ) ) == -1 )
+    {
+        msg_Err( host, "signaling pipe error: %m" );
+        goto error;
+    }
 
     host->i_port = i_port;
     host->psz_hostname = psz_host;
@@ -1103,8 +1108,8 @@ httpd_host_t *httpd_TLSHostNew( vlc_object_t *p_this, const char *psz_hostname,
     host->p_tls = p_tls;
 
     /* create the thread */
-    if( vlc_thread_create( host, "httpd host thread", httpd_HostThread,
-                           VLC_THREAD_PRIORITY_LOW, false ) )
+    if( vlc_clone( &host->thread, httpd_HostThread, host,
+                   VLC_THREAD_PRIORITY_LOW ) )
     {
         msg_Err( p_this, "cannot spawn http host thread" );
         goto error;
@@ -1112,7 +1117,7 @@ httpd_host_t *httpd_TLSHostNew( vlc_object_t *p_this, const char *psz_hostname,
 
     /* now add it to httpd */
     TAB_APPEND( httpd->i_host, httpd->host, host );
-    vlc_mutex_unlock( lockval.p_address );
+    vlc_mutex_unlock( &httpd_mutex );
 
     return host;
 
@@ -1121,15 +1126,15 @@ error:
     if( httpd->i_host <= 0 )
     {
         libvlc_priv (httpd->p_libvlc)->p_httpd = NULL;
-        vlc_object_release( httpd );
         vlc_object_detach( httpd );
         vlc_object_release( httpd );
     }
-    vlc_mutex_unlock( lockval.p_address );
+    vlc_mutex_unlock( &httpd_mutex );
 
     if( host != NULL )
     {
         net_ListenClose( host->fds );
+        vlc_cond_destroy( &host->wait );
         vlc_mutex_destroy( &host->lock );
         vlc_object_release( host );
     }
@@ -1144,24 +1149,26 @@ error:
 void httpd_HostDelete( httpd_host_t *host )
 {
     httpd_t *httpd = host->httpd;
-    vlc_value_t lockval;
     int i;
 
-    var_Get( httpd->p_libvlc, "httpd_mutex", &lockval );
-    vlc_mutex_lock( lockval.p_address );
+    vlc_mutex_lock( &httpd_mutex );
 
+    vlc_mutex_lock( &host->lock );
     host->i_ref--;
+    if( host->i_ref == 0 )
+        vlc_cond_signal( &host->wait );
+    vlc_mutex_unlock( &host->lock );
     if( host->i_ref > 0 )
     {
         /* still used */
-        vlc_mutex_unlock( lockval.p_address );
-        msg_Dbg( host, "httpd_HostDelete: host still used" );
+        vlc_mutex_unlock( &httpd_mutex );
+        msg_Dbg( host, "httpd_HostDelete: host still in use" );
         return;
     }
     TAB_REMOVE( httpd->i_host, httpd->host, host );
 
     vlc_object_kill( host );
-    vlc_thread_join( host );
+    vlc_join( host->thread, NULL );
 
     msg_Dbg( host, "HTTP host removed" );
 
@@ -1186,20 +1193,19 @@ void httpd_HostDelete( httpd_host_t *host )
     net_ListenClose( host->fds );
     free( host->psz_hostname );
 
+    vlc_cond_destroy( &host->wait );
     vlc_mutex_destroy( &host->lock );
     vlc_object_release( host );
 
-    vlc_object_release( httpd );
     if( httpd->i_host <= 0 )
     {
-        msg_Dbg( httpd, "no host left, stopping httpd" );
+        msg_Dbg( httpd, "no hosts left, stopping httpd" );
 
         libvlc_priv (httpd->p_libvlc)->p_httpd = NULL;
         vlc_object_detach( httpd );
         vlc_object_release( httpd );
-
     }
-    vlc_mutex_unlock( lockval.p_address );
+    vlc_mutex_unlock( &httpd_mutex );
 }
 
 /* register a new url */
@@ -1242,6 +1248,7 @@ static httpd_url_t *httpd_UrlNewPrivate( httpd_host_t *host, const char *psz_url
     }
 
     TAB_APPEND( host->i_url, host->url, url );
+    vlc_cond_signal( &host->wait );
     vlc_mutex_unlock( &host->lock );
 
     return url;
@@ -1308,7 +1315,7 @@ void httpd_UrlDelete( httpd_url_t *url )
     vlc_mutex_unlock( &host->lock );
 }
 
-void httpd_MsgInit( httpd_message_t *msg )
+static void httpd_MsgInit( httpd_message_t *msg )
 {
     msg->cl         = NULL;
     msg->i_type     = HTTPD_MSG_NONE;
@@ -1332,7 +1339,7 @@ void httpd_MsgInit( httpd_message_t *msg )
     msg->p_body        = NULL;
 }
 
-void httpd_MsgClean( httpd_message_t *msg )
+static void httpd_MsgClean( httpd_message_t *msg )
 {
     int i;
 
@@ -2024,30 +2031,16 @@ static void httpd_ClientTlsHsOut( httpd_client_t *cl )
     }
 }
 
-static void* httpd_HostThread( vlc_object_t *p_this )
+static void* httpd_HostThread( void *data )
 {
-    httpd_host_t *host = (httpd_host_t *)p_this;
+    httpd_host_t *host = data;
     tls_session_t *p_tls = NULL;
     counter_t *p_total_counter = stats_CounterCreate( host, VLC_VAR_INTEGER, STATS_COUNTER );
     counter_t *p_active_counter = stats_CounterCreate( host, VLC_VAR_INTEGER, STATS_COUNTER );
-    int evfd;
-    bool b_die;
+    int evfd = vlc_object_waitpipe( VLC_OBJECT( host ) );
 
-retry:
-    vlc_object_lock( host );
-    evfd = vlc_object_waitpipe( VLC_OBJECT( host ) );
-    b_die = !vlc_object_alive( host );
-    vlc_object_unlock( host );
-
-    while( !b_die )
+    for( ;; )
     {
-        if( host->i_url <= 0 )
-        {
-            /* 0.2s (FIXME: use a condition variable) */
-            msleep( 200000 );
-            goto retry;
-        }
-
         /* prepare a new TLS session */
         if( ( p_tls == NULL ) && ( host->p_tls != NULL ) )
             p_tls = tls_ServerSessionPrepare( host->p_tls );
@@ -2063,6 +2056,9 @@ retry:
 
         /* add all socket that should be read/write and close dead connection */
         vlc_mutex_lock( &host->lock );
+        while( host->i_url <= 0 && host->i_ref > 0 )
+            vlc_cond_wait( &host->wait, &host->lock );
+
         mtime_t now = mdate();
         bool b_low_delay = false;
 
@@ -2457,14 +2453,8 @@ retry:
                 continue;
         }
 
-        vlc_object_lock( host );
         if( ufd[nfd - 1].revents )
-        {
-            b_die = !vlc_object_alive( host );
-            if( !b_die )
-                vlc_object_wait( host );
-        }
-        vlc_object_unlock( host );
+            break;
 
         /* Handle client sockets */
         vlc_mutex_lock( &host->lock );
@@ -2577,148 +2567,3 @@ retry:
         stats_CounterClean( p_active_counter );
     return NULL;
 }
-
-#else /* ENABLE_HTTPD */
-
-/* We just define an empty wrapper */
-httpd_host_t *httpd_TLSHostNew( vlc_object_t *a, const char *b, 
-                                int c,
-                                const char *e, const char *f,
-                                const char *g, const char* h)
-{
-    msg_Err( a, "HTTP daemon support is disabled" );
-    return NULL;
-}
-
-httpd_host_t *httpd_HostNew( vlc_object_t *a, const char *b,
-                             int c )
-{
-    msg_Err( a, "HTTP daemon support is disabled" );
-    return NULL;
-}
-
-void httpd_HostDelete( httpd_host_t *a )
-{
-}
-
-httpd_url_t *httpd_UrlNew( httpd_host_t *host, const char *psz_url,
-                           const char *psz_user, const char *psz_password,
-                           const vlc_acl_t *p_acl )
-{
-    return NULL;
-}
-
-httpd_url_t *httpd_UrlNewUnique( httpd_host_t *host, const char *psz_url,
-                                 const char *psz_user, const char *psz_password,
-                                 const vlc_acl_t *p_acl )
-{
-    return NULL;
-}
-
-int httpd_UrlCatch( httpd_url_t *a, int b, httpd_callback_t c,
-                    httpd_callback_sys_t *d )
-{
-    return 0;
-}
-
-void httpd_UrlDelete( httpd_url_t *a )
-{
-}
-
-char* httpd_ClientIP( const httpd_client_t *cl, char *psz_ip )
-{
-    return NULL;
-}
-
-char* httpd_ServerIP( const httpd_client_t *cl, char *psz_ip )
-{
-    return NULL;
-}
-
-void httpd_ClientModeStream( httpd_client_t *a )
-{
-}
-
-void httpd_ClientModeBidir( httpd_client_t *a )
-{
-}
-
-httpd_file_sys_t *httpd_FileDelete( httpd_file_t *file )
-{
-        return NULL;
-}
-
-httpd_file_t *httpd_FileNew( httpd_host_t *host,
-                             const char *psz_url, const char *psz_mime,
-                             const char *psz_user, const char *psz_password,
-                             const vlc_acl_t *p_acl, httpd_file_callback_t pf_fill,
-                             httpd_file_sys_t *p_sys )
-{
-    return NULL;
-}
-
-httpd_handler_t *httpd_HandlerNew( httpd_host_t *host, const char *psz_url,
-                                   const char *psz_user,
-                                   const char *psz_password,
-                                   const vlc_acl_t *p_acl,
-                                   httpd_handler_callback_t pf_fill,
-                                   httpd_handler_sys_t *p_sys )
-{
-    return NULL;
-}
-
-httpd_handler_sys_t *httpd_HandlerDelete( httpd_handler_t *handler )
-{
-        return NULL;
-}
-
-void httpd_RedirectDelete( httpd_redirect_t *a )
-{
-}
-
-httpd_redirect_t *httpd_RedirectNew( httpd_host_t *host, const char *psz_url_dst,
-                                     const char *psz_url_src )
-{
-    return NULL;
-}
-
-void httpd_StreamDelete( httpd_stream_t *a )
-{
-}
-
-int httpd_StreamHeader( httpd_stream_t *a, uint8_t *b, int c )
-{
-    return 0;
-}
-
-int httpd_StreamSend ( httpd_stream_t *a, uint8_t *b, int c )
-{
-    return 0;
-}
-
-httpd_stream_t *httpd_StreamNew( httpd_host_t *host,
-                                 const char *psz_url, const char *psz_mime,
-                                 const char *psz_user, const char *psz_password,
-                                 const vlc_acl_t *p_acl )
-{
-    return NULL;
-}
-
-void httpd_MsgInit ( httpd_message_t *a )
-{
-}
-
-void httpd_MsgAdd  ( httpd_message_t *a, const char *b, const char *c, ... )
-{
-}
-
-const char *httpd_MsgGet( const httpd_message_t *msg, const char *name )
-{
-    return "";
-}
-
-void httpd_MsgClean( httpd_message_t *a )
-{
-}
-
-#endif /* ENABLE_HTTPD */

@@ -2,7 +2,7 @@
  * ctrl_generic.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 7ab7ea459392575c93f9dd7edadb4c294189b983 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -125,18 +125,21 @@ class CtrlGeneric: public SkinObject, public Observer<VarBool>
         /// Overload this method to get notified of bool variable changes
         virtual void onVarBoolUpdate( VarBool &rVar ) {}
 
-    private:
+        /// Method called when an observed bool variable is changed
+        virtual void onUpdate( Subject<VarBool> &rVariable , void* );
+
         /// Associated layout
         GenericLayout *m_pLayout;
+
+        /// Visibility variable
+        VarBool *m_pVisible;
+
+    private:
         /// Position in the layout
         Position *m_pPosition;
         /// Help text
         UString m_help;
-        /// Visibilty variable
-        VarBool *m_pVisible;
 
-        /// Method called when an observed bool variable is changed
-        virtual void onUpdate( Subject<VarBool> &rVariable , void* );
 };
 
 typedef CountedPtr<CtrlGeneric> CtrlGenericPtr;

@@ -2,7 +2,7 @@
  * filter.h : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id: 85951f09a76aa018ab309977fc28fc343257f6fb $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -131,6 +131,8 @@ class CapturePin: public IPin, public IMemInputPin
 
     /* Custom methods */
     HRESULT CustomGetSample( VLCMediaSample * );
+    HRESULT CustomGetSamples( deque<VLCMediaSample> &external_queue );
+
     AM_MEDIA_TYPE &CustomGetMediaType();
 };
 

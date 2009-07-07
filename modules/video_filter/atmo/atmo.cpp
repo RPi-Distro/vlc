@@ -2,7 +2,7 @@
 * atmo.cpp : "Atmo Light" video filter
 *****************************************************************************
 * Copyright (C) 2000-2006 the VideoLAN team
-* $Id: 7c7e980bd5ccae5f64f08f3f5b54aac925b302e1 $
+* $Id$
 *
 * Authors: André Weber (WeberAndre@gmx.de)
 *
@@ -283,69 +283,69 @@ static const char *const ppsz_channel_assignment_descriptions[] = {
 /*****************************************************************************
 * Module descriptor
 *****************************************************************************/
-vlc_module_begin();
-set_description( N_("AtmoLight Filter") );
-set_help( MODULE_DESCRIPTION );
-set_shortname( N_( "AtmoLight" ));
-set_capability( "video filter2", 0 );
+vlc_module_begin ()
+set_description( N_("AtmoLight Filter") )
+set_help( MODULE_DESCRIPTION )
+set_shortname( N_( "AtmoLight" ))
+set_capability( "video filter2", 0 )
 
-set_category( CAT_VIDEO );
-set_subcategory( SUBCAT_VIDEO_VFILTER );
+set_category( CAT_VIDEO )
+set_subcategory( SUBCAT_VIDEO_VFILTER )
 
 #if defined(WIN32)
 set_section( N_("Choose between the built-in AtmoLight "\
-                 "driver or the external" ), 0 );
+                 "driver or the external" ), 0 )
 
 /*
     only on win32 exists the option to use the buildin driver or
     the more flexible external driver application
 */
 add_bool(CFG_PREFIX "usebuildin", true, NULL,
-         USEBUILDIN_TEXT, USEBUILDIN_LONGTEXT, false);
+         USEBUILDIN_TEXT, USEBUILDIN_LONGTEXT, false)
 add_string(CFG_PREFIX "serialdev", "COM1", NULL,
-           SERIALDEV_TEXT, SERIALDEV_LONGTEXT, false );
+           SERIALDEV_TEXT, SERIALDEV_LONGTEXT, false )
 
 /*
     on win32 the executeable external driver application
     for automatic start if needed
 */
 add_file(CFG_PREFIX "atmowinexe", NULL, NULL,
-         ATMOWINEXE_TEXT, ATMOWINEXE_LONGTEXT, false );
+         ATMOWINEXE_TEXT, ATMOWINEXE_LONGTEXT, false )
 #else
-set_section( N_("Enter the connection of your AtmoLight hardware" ), 0 );
+set_section( N_("Enter the connection of your AtmoLight hardware" ), 0 )
 add_string(CFG_PREFIX "serialdev", "/dev/ttyS01", NULL,
-           SERIALDEV_TEXT, SERIALDEV_LONGTEXT, false );
+           SERIALDEV_TEXT, SERIALDEV_LONGTEXT, false )
 #endif
 
 /*
     color which is showed if you want durring pausing
     your movie ... used for both buildin / external
 */
-set_section( N_("Illuminate the room with this color on pause" ), 0 );
+set_section( N_("Illuminate the room with this color on pause" ), 0 )
 add_bool(CFG_PREFIX "usepausecolor", false, NULL,
-         PCOLOR_TEXT, PCOLOR_LONGTEXT, false);
+         PCOLOR_TEXT, PCOLOR_LONGTEXT, false)
 add_integer_with_range(CFG_PREFIX "pcolor-red",   0, 0, 255, NULL,
-                       PCOLOR_RED_TEXT, PCOLOR_RED_LONGTEXT, false);
+                       PCOLOR_RED_TEXT, PCOLOR_RED_LONGTEXT, false)
 add_integer_with_range(CFG_PREFIX "pcolor-green", 0, 0, 255, NULL,
-                       PCOLOR_GREEN_TEXT, PCOLOR_GREEN_LONGTEXT, false);
+                       PCOLOR_GREEN_TEXT, PCOLOR_GREEN_LONGTEXT, false)
 add_integer_with_range(CFG_PREFIX "pcolor-blue",  192, 0, 255, NULL,
-                       PCOLOR_BLUE_TEXT, PCOLOR_BLUE_LONGTEXT, false);
+                       PCOLOR_BLUE_TEXT, PCOLOR_BLUE_LONGTEXT, false)
 add_integer_with_range(CFG_PREFIX "fadesteps", 50, 1, 250, NULL,
-                       FADESTEPS_TEXT, FADESTEPS_LONGTEXT, false);
+                       FADESTEPS_TEXT, FADESTEPS_LONGTEXT, false)
 
 /*
     color which is showed if you finished watching your movie ...
     used for both buildin / external
 */
-set_section( N_("Illuminate the room with this color on shutdown" ), 0 );
+set_section( N_("Illuminate the room with this color on shutdown" ), 0 )
 add_integer_with_range(CFG_PREFIX "ecolor-red",   192, 0, 255, NULL,
-                       ECOLOR_RED_TEXT,   ECOLOR_RED_LONGTEXT,   false);
+                       ECOLOR_RED_TEXT,   ECOLOR_RED_LONGTEXT,   false)
 add_integer_with_range(CFG_PREFIX "ecolor-green", 192, 0, 255, NULL,
-                       ECOLOR_GREEN_TEXT, ECOLOR_GREEN_LONGTEXT, false);
+                       ECOLOR_GREEN_TEXT, ECOLOR_GREEN_LONGTEXT, false)
 add_integer_with_range(CFG_PREFIX "ecolor-blue",  192, 0, 255, NULL,
-                       ECOLOR_BLUE_TEXT,  ECOLOR_BLUE_LONGTEXT,  false);
+                       ECOLOR_BLUE_TEXT,  ECOLOR_BLUE_LONGTEXT,  false)
 add_integer_with_range(CFG_PREFIX "efadesteps",    50, 1, 250, NULL,
-                       EFADESTEPS_TEXT,   EFADESTEPS_LONGTEXT,    false);
+                       EFADESTEPS_TEXT,   EFADESTEPS_LONGTEXT,    false)
 
 /*
  settings only for the buildin driver (if external driver app is used
@@ -353,83 +353,83 @@ add_integer_with_range(CFG_PREFIX "efadesteps",    50, 1, 250, NULL,
 
  definition of parameters for the buildin filter ...
 */
-set_section( N_("Settings for the built-in Live Video Processor only" ), 0 );
+set_section( N_("Settings for the built-in Live Video Processor only" ), 0 )
 
 add_integer_with_range(CFG_PREFIX "EdgeWeightning",   8, 1, 30, NULL,
-                       EDGE_TEXT, EDGE_LONGTEXT, false);
+                       EDGE_TEXT, EDGE_LONGTEXT, false)
 
 add_integer_with_range(CFG_PREFIX "Brightness",   100, 50, 300, NULL,
-                       BRIGHTNESS_TEXT, BRIGHTNESS_LONGTEXT, false);
+                       BRIGHTNESS_TEXT, BRIGHTNESS_LONGTEXT, false)
 
 add_integer_with_range(CFG_PREFIX "DarknessLimit",   5, 0, 10, NULL,
-                       DARKNESS_TEXT, DARKNESS_LONGTEXT, false);
+                       DARKNESS_TEXT, DARKNESS_LONGTEXT, false)
 
 add_integer_with_range(CFG_PREFIX "HueWinSize",   3, 0, 5, NULL,
-                       HUEWINSIZE_TEXT, HUEWINSIZE_LONGTEXT, false);
+                       HUEWINSIZE_TEXT, HUEWINSIZE_LONGTEXT, false)
 
 add_integer_with_range(CFG_PREFIX "SatWinSize",   3, 0, 5, NULL,
-                       SATWINSIZE_TEXT, SATWINSIZE_LONGTEXT, false);
+                       SATWINSIZE_TEXT, SATWINSIZE_LONGTEXT, false)
 
 add_integer(CFG_PREFIX "filtermode", (int)afmCombined, NULL,
-            FILTERMODE_TEXT, FILTERMODE_LONGTEXT, false );
+            FILTERMODE_TEXT, FILTERMODE_LONGTEXT, false )
 
-change_integer_list(pi_filtermode_values, ppsz_filtermode_descriptions, NULL );
+change_integer_list(pi_filtermode_values, ppsz_filtermode_descriptions, NULL )
 
 add_integer_with_range(CFG_PREFIX "MeanLength",    300, 300, 5000, NULL,
-                       MEANLENGTH_TEXT, MEANLENGTH_LONGTEXT, false);
+                       MEANLENGTH_TEXT, MEANLENGTH_LONGTEXT, false)
 
 add_integer_with_range(CFG_PREFIX "MeanThreshold",  40, 1, 100, NULL,
-                       MEANTHRESHOLD_TEXT, MEANTHRESHOLD_LONGTEXT, false);
+                       MEANTHRESHOLD_TEXT, MEANTHRESHOLD_LONGTEXT, false)
 
 add_integer_with_range(CFG_PREFIX "PercentNew", 50, 1, 100, NULL,
-                      MEANPERCENTNEW_TEXT, MEANPERCENTNEW_LONGTEXT, false);
+                      MEANPERCENTNEW_TEXT, MEANPERCENTNEW_LONGTEXT, false)
 
 add_integer_with_range(CFG_PREFIX "FrameDelay", 18, 0, 35, NULL,
-                       FRAMEDELAY_TEXT, FRAMEDELAY_LONGTEXT, false);
+                       FRAMEDELAY_TEXT, FRAMEDELAY_LONGTEXT, false)
 
 /*
   output channel reordering
 */
-set_section( N_("Change channel assignment (fixes wrong wiring)" ), 0 );
+set_section( N_("Change channel assignment (fixes wrong wiring)" ), 0 )
 add_integer( CFG_PREFIX "channel_0", 0, NULL,
-            CHANNEL_0_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false );
+            CHANNEL_0_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false )
 change_integer_list( pi_channel_assignment_values,
-                     ppsz_channel_assignment_descriptions, 0 );
+                     ppsz_channel_assignment_descriptions, 0 )
 
 add_integer( CFG_PREFIX "channel_1", 1, NULL,
-            CHANNEL_1_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false );
+            CHANNEL_1_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false )
 change_integer_list( pi_channel_assignment_values,
-                     ppsz_channel_assignment_descriptions, 0 );
+                     ppsz_channel_assignment_descriptions, 0 )
 
 add_integer( CFG_PREFIX "channel_2", 2, NULL,
-            CHANNEL_2_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false );
+            CHANNEL_2_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false )
 change_integer_list( pi_channel_assignment_values,
-                     ppsz_channel_assignment_descriptions, 0 );
+                     ppsz_channel_assignment_descriptions, 0 )
 
 add_integer( CFG_PREFIX "channel_3", 3, NULL,
-            CHANNEL_3_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false );
+            CHANNEL_3_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false )
 change_integer_list( pi_channel_assignment_values,
-                     ppsz_channel_assignment_descriptions, 0 );
+                     ppsz_channel_assignment_descriptions, 0 )
 
 add_integer( CFG_PREFIX "channel_4", 4, NULL,
-            CHANNEL_4_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false );
+            CHANNEL_4_ASSIGN_TEXT, CHANNELASSIGN_LONGTEXT, false )
 change_integer_list( pi_channel_assignment_values,
-                     ppsz_channel_assignment_descriptions, 0 );
+                     ppsz_channel_assignment_descriptions, 0 )
 
 /*
   LED color white calibration
 */
-set_section( N_("Adjust the white light to your LED stripes" ), 0 );
+set_section( N_("Adjust the white light to your LED stripes" ), 0 )
 add_bool(CFG_PREFIX "whiteadj", true, NULL,
-         USEWHITEADJ_TEXT, USEWHITEADJ_LONGTEXT, false);
+         USEWHITEADJ_TEXT, USEWHITEADJ_LONGTEXT, false)
 add_integer_with_range(CFG_PREFIX "white-red",   255, 0, 255, NULL,
-                       WHITE_RED_TEXT,   WHITE_RED_LONGTEXT,   false);
+                       WHITE_RED_TEXT,   WHITE_RED_LONGTEXT,   false)
 
 add_integer_with_range(CFG_PREFIX "white-green", 255, 0, 255, NULL,
-                       WHITE_GREEN_TEXT, WHITE_GREEN_LONGTEXT, false);
+                       WHITE_GREEN_TEXT, WHITE_GREEN_LONGTEXT, false)
 
 add_integer_with_range(CFG_PREFIX "white-blue",  255, 0, 255, NULL,
-                       WHITE_BLUE_TEXT,  WHITE_BLUE_LONGTEXT,  false);
+                       WHITE_BLUE_TEXT,  WHITE_BLUE_LONGTEXT,  false)
 /* end of definition of parameter for the buildin filter ... part 1 */
 
 
@@ -441,37 +441,37 @@ Pixel BMP files - which contain your own grayscale... (you can produce funny
 effects with this...) the images MUST not compressed, should have 24-bit per
 pixel, or a simple 256 color grayscale palette
 */
-set_section( N_("Change gradients" ), 0 );
+set_section( N_("Change gradients" ), 0 )
 add_file(CFG_PREFIX "gradient_zone_0", NULL, NULL,
-         ZONE_0_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true );
+         ZONE_0_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
 add_file(CFG_PREFIX "gradient_zone_1", NULL, NULL,
-         ZONE_1_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true );
+         ZONE_1_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
 add_file(CFG_PREFIX "gradient_zone_2", NULL, NULL,
-         ZONE_2_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true );
+         ZONE_2_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
 add_file(CFG_PREFIX "gradient_zone_3", NULL, NULL,
-         ZONE_3_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true );
+         ZONE_3_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
 add_file(CFG_PREFIX "gradient_zone_4", NULL, NULL,
-         ZONE_4_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true );
+         ZONE_4_GRADIENT_TEXT, ZONE_X_GRADIENT_LONG_TEXT, true )
 
 
 #if defined(__ATMO_DEBUG__)
 add_bool(CFG_PREFIX "saveframes", false, NULL,
-         SAVEFRAMES_TEXT, SAVEFRAMES_LONGTEXT, false);
+         SAVEFRAMES_TEXT, SAVEFRAMES_LONGTEXT, false)
 add_string(CFG_PREFIX "framepath", "", NULL,
-           FRAMEPATH_TEXT, FRAMEPATH_LONGTEXT, false );
+           FRAMEPATH_TEXT, FRAMEPATH_LONGTEXT, false )
 #endif
 /*
    may be later if computers gets more power ;-) than now we increase
    the samplesize from which we do the stats for output color calculation
 */
 add_integer_with_range(CFG_PREFIX "width",  64, 64, 512, NULL,
-                       WIDTH_TEXT,  WIDTH_LONGTEXT, true);
+                       WIDTH_TEXT,  WIDTH_LONGTEXT, true)
 add_integer_with_range(CFG_PREFIX "height", 48, 48, 384, NULL,
-                       HEIGHT_TEXT,  HEIGHT_LONGTEXT, true);
+                       HEIGHT_TEXT,  HEIGHT_LONGTEXT, true)
 
-add_shortcut( "atmo" );
-set_callbacks( CreateFilter, DestroyFilter  );
-vlc_module_end();
+add_shortcut( "atmo" )
+set_callbacks( CreateFilter, DestroyFilter  )
+vlc_module_end ()
 
 
 static const char *const ppsz_filter_options[] = {
@@ -944,8 +944,7 @@ static void Atmo_Shutdown(filter_t *p_filter)
             if( vlc_thread_create( p_sys->p_fadethread,
                 "AtmoLight fadeing",
                 FadeToColorThread,
-                VLC_THREAD_PRIORITY_LOW,
-                false ) )
+                VLC_THREAD_PRIORITY_LOW ) )
             {
                 msg_Err( p_filter, "cannot create FadeToColorThread" );
                 vlc_object_release( p_sys->p_fadethread );
@@ -1737,10 +1736,9 @@ static void *FadeToColorThread(vlc_object_t *obj)
     int i_src_green;
     int i_src_blue;
 
-    vlc_thread_ready( p_fadethread );
-
     uint8_t *p_source = NULL;
 
+    int canc = vlc_savecancel ();
     /* initialize AtmoWin for this thread! */
     AtmoInitialize(p_fadethread->p_filter , true);
 
@@ -1825,6 +1823,8 @@ static void *FadeToColorThread(vlc_object_t *obj)
     }
     /* call indirect to OleUnitialize() for this thread */
     AtmoFinalize(p_fadethread->p_filter, 0);
+    vlc_restorecancel (canc);
+    return NULL;
 }
 
 /*****************************************************************************
@@ -1897,8 +1897,7 @@ static int StateCallback( vlc_object_t *p_this, char const *psz_cmd,
                 if( vlc_thread_create( p_sys->p_fadethread,
                     "AtmoLight fadeing",
                     FadeToColorThread,
-                    VLC_THREAD_PRIORITY_LOW,
-                    false) )
+                    VLC_THREAD_PRIORITY_LOW ) )
                 {
                     msg_Err( p_filter, "cannot create FadeToColorThread" );
                     vlc_object_release( p_sys->p_fadethread );
@@ -1929,13 +1928,14 @@ static int StateCallback( vlc_object_t *p_this, char const *psz_cmd,
 *****************************************************************************/
 static void AddStateVariableCallback(filter_t *p_filter)
 {
-    playlist_t *p_playlist = pl_Yield( p_filter );
-    input_thread_t *p_input = p_playlist->p_input;
+    playlist_t *p_playlist = pl_Hold( p_filter );
+    input_thread_t *p_input = playlist_CurrentInput( p_playlist );
     if(p_input)
     {
         var_AddCallback( p_input, "state", StateCallback, p_filter );
+        vlc_object_release( p_input );
     }
-    vlc_object_release( p_playlist );
+    pl_Release( p_filter );
 }
 
 /*****************************************************************************
@@ -1947,13 +1947,14 @@ static void AddStateVariableCallback(filter_t *p_filter)
 *****************************************************************************/
 static void DelStateVariableCallback( filter_t *p_filter )
 {
-    playlist_t *p_playlist = pl_Yield( p_filter );
-    input_thread_t *p_input = p_playlist->p_input;
+    playlist_t *p_playlist = pl_Hold( p_filter );
+    input_thread_t *p_input = playlist_CurrentInput( p_playlist );
     if(p_input)
     {
         var_DelCallback( p_input, "state", StateCallback, p_filter );
+        vlc_object_release( p_input );
     }
-    vlc_object_release( p_playlist );
+    pl_Release( p_filter );
 }
 
 

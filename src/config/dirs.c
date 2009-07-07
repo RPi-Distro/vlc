@@ -30,7 +30,9 @@
 #if defined( WIN32 )
 # define _WIN32_IE IE5
 # include <w32api.h>
+#ifndef UNDER_CE
 # include <direct.h>
+#endif
 # include <shlobj.h>
 #else
 # include <unistd.h>
@@ -64,8 +66,7 @@ const char *config_GetDataDir( void )
 
     if( *path == '\0' )
     {
-        snprintf( path, sizeof( path ), "%s" DIR_SEP DIR_SHARE,
-                  vlc_global()->psz_vlcpath );
+        snprintf( path, sizeof( path ), "%s" DIR_SEP DIR_SHARE, psz_vlcpath );
         path[sizeof( path ) - 1] = '\0';
     }
     return path;
@@ -83,6 +84,9 @@ static const char *GetDir( bool b_appdata, bool b_common_appdata )
     wchar_t wdir[MAX_PATH];
 
 # if defined (UNDER_CE)
+    /*There are some errors in cegcc headers*/
+#undef SHGetSpecialFolderPath
+    BOOL WINAPI SHGetSpecialFolderPath(HWND,LPWSTR,int,BOOL);
     if( SHGetSpecialFolderPath( NULL, wdir, CSIDL_APPDATA, 1 ) )
 # else
     /* Get the "Application Data" folder for the current user */
@@ -155,7 +159,7 @@ const char *config_GetConfDir( void )
     if( *path == '\0' )
     {
         snprintf( path, sizeof( path ), "%s"DIR_SEP DIR_SHARE, /* FIXME: Duh? */
-                  vlc_global()->psz_vlcpath );
+                  psz_vlcpath );
         path[sizeof( path ) - 1] = '\0';
     }
     return path;

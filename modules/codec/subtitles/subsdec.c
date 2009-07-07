@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: fa2118054895545a3903f3acacc06aeafc08ff91 $
+ * $Id: aa5ca570d66a0dcc1690dd4ec60ba2f80e658ce8 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -43,34 +43,119 @@ static void CloseDecoder  ( vlc_object_t * );
 static subpicture_t   *DecodeBlock   ( decoder_t *, block_t ** );
 static subpicture_t   *ParseText     ( decoder_t *, block_t * );
 static char           *StripTags      ( char * );
-static char           *CreateHtmlSubtitle ( char * );
+static char           *CreateHtmlSubtitle( int *pi_align, char * );
 
 
 /*****************************************************************************
  * Module descriptor.
  *****************************************************************************/
 static const char *const ppsz_encodings[] = {
-    DEFAULT_NAME, "ASCII", "UTF-8", "",
-    "ISO-8859-1", "CP1252", "MacRoman", "MacIceland","ISO-8859-15", "",
-    "ISO-8859-2", "CP1250", "MacCentralEurope", "MacCroatian", "MacRomania", "",
-    "ISO-8859-5", "CP1251", "MacCyrillic", "MacUkraine", "KOI8-R", "KOI8-U", "KOI8-RU", "",
-    "ISO-8859-6", "CP1256", "MacArabic", "",
-    "ISO-8859-7", "CP1253", "MacGreek", "",
-    "ISO-8859-8", "CP1255", "MacHebrew", "",
-    "ISO-8859-9", "CP1254", "MacTurkish", "",
-    "ISO-8859-13", "CP1257", "",
-    "ISO-2022-JP", "ISO-2022-JP-1", "ISO-2022-JP-2", "EUC-JP", "SHIFT_JIS", "",
-    "ISO-2022-CN", "ISO-2022-CN-EXT", "EUC-CN", "EUC-TW", "BIG5", "BIG5-HKSCS", "",
-    "ISO-2022-KR", "EUC-KR", "",
-    "MacThai", "KOI8-T", "",
-    "ISO-8859-3", "ISO-8859-4", "ISO-8859-10", "ISO-8859-14", "ISO-8859-16", "",
-    "CP850", "CP862", "CP866", "CP874", "CP932", "CP949", "CP950", "CP1133", "CP1258", "",
-    "Macintosh", "",
-    "UTF-7", "UTF-16", "UTF-16BE", "UTF-16LE", "UTF-32", "UTF-32BE", "UTF-32LE",
-    "C99", "JAVA", "UCS-2", "UCS-2BE", "UCS-2LE", "UCS-4", "UCS-4BE", "UCS-4LE", "",
-    "HZ", "GBK", "GB18030", "JOHAB", "ARMSCII-8",
-    "Georgian-Academy", "Georgian-PS", "TIS-620", "MuleLao-1", "VISCII", "TCVN",
-    "HPROMAN8", "NEXTSTEP" };
+    "",
+    "UTF-8",
+    "UTF-16",
+    "UTF-16BE",
+    "UTF-16LE",
+    "GB18030",
+    "ISO-8859-15",
+    "Windows-1252",
+    "ISO-8859-2",
+    "Windows-1250",
+    "ISO-8859-3",
+    "ISO-8859-10",
+    "Windows-1251",
+    "KOI8-R",
+    "KOI8-U",
+    "ISO-8859-6",
+    "Windows-1256",
+    "ISO-8859-7",
+    "Windows-1256",
+    "ISO-8859-8",
+    "Windows-1255",
+    "ISO-8859-9",
+    "Windows-1254",
+    "ISO-8859-11",
+    "Windows-874",
+    "ISO-8859-13",
+    "Windows-1257",
+    "ISO-8859-14",
+    "ISO-8859-16",
+    "ISO-2022-CN-EXT",
+    "EUC-CN",
+    "ISO-2022-JP-2",
+    "EUC-JP",
+    "Shift_JIS",
+    "ISO-2022-KR",
+    "EUC-KR",
+    "Big5",
+    "ISO-2022-TW",
+    "Big5-HKSCS",
+    "VISCII",
+    "Windows-1258",
+};
+
+static const char *const ppsz_encoding_names[] = {
+    N_("Auto"),
+    N_("Universal (UTF-8)"),
+    N_("Universal (UTF-16)"),
+    N_("Universal (big endian UTF-16)"),
+    N_("Universal (little endian UTF-16)"),
+    N_("Universal, Chinese (GB18030)"),
+
+  /* ISO 8859 and the likes */
+    /* 1 */
+    N_("Western European (Latin-9)"), /* mostly superset of Latin-1 */
+    N_("Western European (Windows-1252)"),
+    /* 2 */
+    N_("Eastern European (Latin-2)"),
+    N_("Eastern European (Windows-1250)"),
+    /* 3 */
+    N_("Esperanto (Latin-3)"),
+    /* 4 */
+    N_("Nordic (Latin-6)"), /* Latin 6 supersedes Latin 4 */
+    /* 5 */
+    N_("Cyrillic (Windows-1251)"), /* ISO 8859-5 is not practically used */
+    N_("Russian (KOI8-R)"),
+    N_("Ukrainian (KOI8-U)"),
+    /* 6 */
+    N_("Arabic (ISO 8859-6)"),
+    N_("Arabic (Windows-1256)"),
+    /* 7 */
+    N_("Greek (ISO 8859-7)"),
+    N_("Greek (Windows-1256)"),
+    /* 8 */
+    N_("Hebrew (ISO 8859-8)"),
+    N_("Hebrew (Windows-1255)"),
+    /* 9 */
+    N_("Turkish (ISO 8859-9)"),
+    N_("Turkish (Windows-1254)"),
+    /* 10 -> 4 */
+    /* 11 */
+    N_("Thai (TIS 620-2533/ISO 8859-11)"),
+    N_("Thai (Windows-874)"),
+    /* 13 */
+    N_("Baltic (Latin-7)"),
+    N_("Baltic (Windows-1257)"),
+    /* 12 -> /dev/null */
+    /* 14 */
+    N_("Celtic (Latin-8)"),
+    /* 15 -> 1 */
+    /* 16 */
+    N_("South-Eastern European (Latin-10)"),
+  /* CJK families */
+    N_("Simplified Chinese (ISO-2022-CN-EXT)"),
+    N_("Simplified Chinese Unix (EUC-CN)"),
+    N_("Japanese (7-bits JIS/ISO-2022-JP-2)"),
+    N_("Japanese Unix (EUC-JP)"),
+    N_("Japanese (Shift JIS)"),
+    N_("Korean (ISO-2022-KR)"),
+    N_("Korean Unix (EUC-KR)"),
+    N_("Traditional Chinese (Big5)"),
+    N_("Traditional Chinese Unix (EUC-TW)"),
+    N_("Hong-Kong Supplementary (HKSCS)"),
+  /* Other */
+    N_("Vietnamese (VISCII)"),
+    N_("Vietnamese (Windows-1258)"),
+};
 /*
 SSA supports charset selection.
 The following known charsets are used:
@@ -113,25 +198,25 @@ static const char *const ppsz_justification_text[] = {
  "VLC partly implements this, but you can choose to disable all formatting.")
 
 
-vlc_module_begin();
-    set_shortname( N_("Subtitles"));
-    set_description( N_("Text subtitles decoder") );
-    set_capability( "decoder", 50 );
-    set_callbacks( OpenDecoder, CloseDecoder );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_SCODEC );
+vlc_module_begin ()
+    set_shortname( N_("Subtitles"))
+    set_description( N_("Text subtitles decoder") )
+    set_capability( "decoder", 50 )
+    set_callbacks( OpenDecoder, CloseDecoder )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_SCODEC )
 
     add_integer( "subsdec-align", 0, NULL, ALIGN_TEXT, ALIGN_LONGTEXT,
-                 false );
-        change_integer_list( pi_justification, ppsz_justification_text, NULL );
-    add_string( "subsdec-encoding", DEFAULT_NAME, NULL,
-                ENCODING_TEXT, ENCODING_LONGTEXT, false );
-        change_string_list( ppsz_encodings, 0, 0 );
+                 false )
+        change_integer_list( pi_justification, ppsz_justification_text, NULL )
+    add_string( "subsdec-encoding", "", NULL,
+                ENCODING_TEXT, ENCODING_LONGTEXT, false )
+        change_string_list( ppsz_encodings, ppsz_encoding_names, 0 )
     add_bool( "subsdec-autodetect-utf8", true, NULL,
-              AUTODETECT_UTF8_TEXT, AUTODETECT_UTF8_LONGTEXT, false );
+              AUTODETECT_UTF8_TEXT, AUTODETECT_UTF8_LONGTEXT, false )
     add_bool( "subsdec-formatted", true, NULL, FORMAT_TEXT, FORMAT_LONGTEXT,
-                 false );
-vlc_module_end();
+                 false )
+vlc_module_end ()
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -156,14 +241,15 @@ static int OpenDecoder( vlc_object_t *p_this )
     }
 
     p_dec->pf_decode_sub = DecodeBlock;
+    p_dec->fmt_out.i_cat = SPU_ES;
+    p_dec->fmt_out.i_codec = 0;
 
     /* Allocate the memory needed to store the decoder's structure */
-    p_dec->p_sys = p_sys = malloc( sizeof( *p_sys ) );
+    p_dec->p_sys = p_sys = calloc( 1, sizeof( *p_sys ) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
 
     /* init of p_sys */
-    memset( p_sys, 0, sizeof( *p_sys ) );
     p_sys->i_align = 0;
     p_sys->iconv_handle = (vlc_iconv_t)-1;
     p_sys->b_autodetect_utf8 = false;
@@ -183,21 +269,16 @@ static int OpenDecoder( vlc_object_t *p_this )
     {
         psz_charset = strdup (p_dec->fmt_in.subs.psz_encoding);
         msg_Dbg (p_dec, "trying demuxer-specified character encoding: %s",
-                 p_dec->fmt_in.subs.psz_encoding ?: "not specified");
+                 p_dec->fmt_in.subs.psz_encoding ?
+                 p_dec->fmt_in.subs.psz_encoding : "not specified");
     }
 
     /* Second, try configured encoding */
     if (psz_charset == NULL)
     {
         psz_charset = var_CreateGetNonEmptyString (p_dec, "subsdec-encoding");
-        if ((psz_charset != NULL) && !strcasecmp (psz_charset, DEFAULT_NAME))
-        {
-            free (psz_charset);
-            psz_charset = NULL;
-        }
-
         msg_Dbg (p_dec, "trying configured character encoding: %s",
-                 psz_charset ?: "not specified");
+                 psz_charset ? psz_charset : "not specified");
     }
 
     /* Third, try "local" encoding with optional UTF-8 autodetection */
@@ -205,7 +286,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     {
         psz_charset = strdup (GetFallbackEncoding ());
         msg_Dbg (p_dec, "trying default character encoding: %s",
-                 psz_charset ?: "not specified");
+                 psz_charset ? psz_charset : "not specified");
 
         if (var_CreateGetBool (p_dec, "subsdec-autodetect-utf8"))
         {
@@ -264,8 +345,6 @@ static subpicture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         block_Release( p_block );
         return NULL;
     }
-    if( p_block->i_rate != 0 )
-        p_block->i_length = p_block->i_length * p_block->i_rate / INPUT_RATE_DEFAULT;
 
     p_spu = ParseText( p_dec, p_block );
 
@@ -404,7 +483,7 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
     }
 
     /* Create the subpicture unit */
-    p_spu = p_dec->pf_spu_buffer_new( p_dec );
+    p_spu = decoder_NewSubpicture( p_dec );
     if( !p_spu )
     {
         msg_Warn( p_dec, "can't get spu buffer" );
@@ -412,20 +491,18 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
         return NULL;
     }
 
-    p_spu->b_pausable = true;
-
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
     fmt.i_chroma = VLC_FOURCC('T','E','X','T');
     fmt.i_aspect = 0;
     fmt.i_width = fmt.i_height = 0;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_spu->p_region = p_spu->pf_create_region( VLC_OBJECT(p_dec), &fmt );
+    p_spu->p_region = subpicture_region_New( &fmt );
     if( !p_spu->p_region )
     {
         msg_Err( p_dec, "cannot allocate SPU region" );
         free( psz_subtitle );
-        p_dec->pf_spu_buffer_del( p_dec, p_spu );
+        decoder_DeleteSubpicture( p_dec, p_spu );
         return NULL;
     }
 
@@ -434,15 +511,15 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
     {
         /* Normal text subs, easy markup */
         p_spu->p_region->i_align = SUBPICTURE_ALIGN_BOTTOM | p_sys->i_align;
-        p_spu->i_x = p_sys->i_align ? 20 : 0;
-        p_spu->i_y = 10;
+        p_spu->p_region->i_x = p_sys->i_align ? 20 : 0;
+        p_spu->p_region->i_y = 10;
 
         /* Remove formatting from string */
 
         p_spu->p_region->psz_text = StripTags( psz_subtitle );
         if( var_CreateGetBool( p_dec, "subsdec-formatted" ) )
         {
-            p_spu->p_region->psz_html = CreateHtmlSubtitle( psz_subtitle );
+            p_spu->p_region->psz_html = CreateHtmlSubtitle( &p_spu->p_region->i_align, psz_subtitle );
         }
 
         p_spu->i_start = p_block->i_pts;
@@ -453,8 +530,7 @@ static subpicture_t *ParseText( decoder_t *p_dec, block_t *p_block )
     else
     {
         /* Decode SSA/USF strings */
-        if( p_dec->fmt_in.i_codec == VLC_FOURCC('s','s','a',' ') )
-            ParseSSAString( p_dec, psz_subtitle, p_spu );
+        ParseSSAString( p_dec, psz_subtitle, p_spu );
 
         p_spu->i_start = p_block->i_pts;
         p_spu->i_stop = p_block->i_pts + p_block->i_length;
@@ -600,26 +676,30 @@ static void HtmlCopy( char **ppsz_html, char **ppsz_subtitle, const char *psz_te
     *ppsz_subtitle += strlen(psz_text);
 }
 
-static char *CreateHtmlSubtitle( char *psz_subtitle )
+static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
 {
-    char   *psz_tag = malloc( ( strlen( psz_subtitle ) / 3 ) + 1 );
-    if( !psz_tag ) return NULL;
-    size_t  i_buf_size     = strlen( psz_subtitle ) + 100;
-    char   *psz_html_start = malloc( i_buf_size );
-
+    /* */
+    char *psz_tag = malloc( ( strlen( psz_subtitle ) / 3 ) + 1 );
+    if( !psz_tag )
+        return NULL;
     psz_tag[ 0 ] = '\0';
 
+    /* */
+    size_t i_buf_size = strlen( psz_subtitle ) + 100;
+    char   *psz_html_start = malloc( i_buf_size );
+    char   *psz_html = psz_html_start;
     if( psz_html_start == NULL )
     {
         free( psz_tag );
         return NULL;
     }
-    
-    char *psz_html = psz_html_start;
+    psz_html[0] = '\0';
 
-    strcpy( psz_html, "<text>" );
-    psz_html += 6;
+    bool b_has_align = false;
 
+    HtmlPut( &psz_html, "<text>" );
+
+    /* */
     while( *psz_subtitle )
     {
         if( *psz_subtitle == '\n' )
@@ -710,6 +790,7 @@ static char *CreateHtmlSubtitle( char *psz_subtitle )
             else if( !strncmp( psz_subtitle, "</", 2 ))
             {
                 bool   b_match     = false;
+                bool   b_ignore    = false;
                 int    i_len       = strlen( psz_tag ) - 1;
                 char  *psz_lastTag = NULL;
 
@@ -736,9 +817,16 @@ static char *CreateHtmlSubtitle( char *psz_subtitle )
                         b_match = !strncasecmp( psz_subtitle, "</font>", 7 );
                         i_len   = 7;
                         break;
+                    case 'I':
+                        i_len = strcspn( psz_subtitle, ">" );
+                        b_match = psz_subtitle[i_len] == '>';
+                        b_ignore = true;
+                        if( b_match )
+                            i_len++;
+                        break;
                     }
                 }
-                if( ! b_match )
+                if( !b_match )
                 {
                     /* Not well formed -- kill everything */
                     free( psz_html_start );
@@ -746,13 +834,66 @@ static char *CreateHtmlSubtitle( char *psz_subtitle )
                     break;
                 }
                 *psz_lastTag = '\0';
-                strncpy( psz_html, psz_subtitle, i_len );
-                psz_html += i_len;
+                if( !b_ignore )
+                    HtmlNPut( &psz_html, psz_subtitle, i_len );
+
                 psz_subtitle += i_len;
+            }
+            else if( ( psz_subtitle[1] < 'a' || psz_subtitle[1] > 'z' ) &&
+                     ( psz_subtitle[1] < 'A' || psz_subtitle[1] > 'Z' ) )
+            {
+                /* We have a single < */
+                HtmlPut( &psz_html, "&lt;" );
+                psz_subtitle++;
             }
             else
             {
-                psz_subtitle += strcspn( psz_subtitle, ">" );
+                /* We have an unknown tag or a single < */
+
+                /* Search for the next tag or end of tag or end of string */
+                char *psz_stop = psz_subtitle + 1 + strcspn( &psz_subtitle[1], "<>" );
+                char *psz_closing = strstr( psz_subtitle, "/>" );
+
+                if( psz_closing && psz_closing < psz_stop )
+                {
+                    /* We have a self closed tag, remove it */
+                    psz_subtitle = &psz_closing[2];
+                }
+                else if( *psz_stop == '>' )
+                {
+                    char psz_match[256];
+
+                    snprintf( psz_match, sizeof(psz_match), "</%s", &psz_subtitle[1] );
+                    psz_match[strcspn( psz_match, " \t>" )] = '\0';
+
+                    if( strstr( psz_subtitle, psz_match ) )
+                    {
+                        /* We have the closing tag, ignore it TODO */
+                        psz_subtitle = &psz_stop[1];
+                        strcat( psz_tag, "I" );
+                    }
+                    else
+                    {
+                        int i_len = psz_stop + 1 - psz_subtitle;
+
+                        /* Copy the whole data */
+                        for( ; i_len > 0; i_len--, psz_subtitle++ )
+                        {
+                            if( *psz_subtitle == '<' )
+                                HtmlPut( &psz_html, "&lt;" );
+                            else if( *psz_subtitle == '>' )
+                                HtmlPut( &psz_html, "&gt;" );
+                            else
+                                *psz_html++ = *psz_subtitle;
+                        }
+                    }
+                }
+                else
+                {
+                    /* We have a single < */
+                    HtmlPut( &psz_html, "&lt;" );
+                    psz_subtitle++;
+                }
             }
         }
         else if( *psz_subtitle == '&' )
@@ -775,6 +916,30 @@ static char *CreateHtmlSubtitle( char *psz_subtitle )
                 psz_subtitle++;
             }
         }
+        else if( *psz_subtitle == '>' )
+        {
+            HtmlPut( &psz_html, "&gt;" );
+            psz_subtitle++;
+        }
+        else if( psz_subtitle[0] == '{' && psz_subtitle[1] == '\\' &&
+                 strchr( psz_subtitle, '}' ) )
+        {
+            /* Check for forced alignment */
+            if( !b_has_align &&
+                !strncmp( psz_subtitle, "{\\an", 4 ) && psz_subtitle[4] >= '1' && psz_subtitle[4] <= '9' && psz_subtitle[5] == '}' )
+            {
+                static const int pi_vertical[3] = { SUBPICTURE_ALIGN_BOTTOM, 0, SUBPICTURE_ALIGN_TOP };
+                static const int pi_horizontal[3] = { SUBPICTURE_ALIGN_LEFT, 0, SUBPICTURE_ALIGN_RIGHT };
+                const int i_id = psz_subtitle[4] - '1';
+
+                b_has_align = true;
+                *pi_align = pi_vertical[i_id/3] | pi_horizontal[i_id%3];
+            }
+            /* TODO fr -> rotation */
+
+            /* Hide {\stupidity} */
+            psz_subtitle = strchr( psz_subtitle, '}' ) + 1;
+        }
         else
         {
             *psz_html = *psz_subtitle;
@@ -794,27 +959,58 @@ static char *CreateHtmlSubtitle( char *psz_subtitle )
 
         if( ( size_t )( psz_html - psz_html_start ) > i_buf_size - 50 )
         {
-            int i_len = psz_html - psz_html_start;
+            const int i_len = psz_html - psz_html_start;
 
             i_buf_size += 200;
-            psz_html_start = realloc( psz_html_start, i_buf_size );
-            psz_html = psz_html_start + i_len;
-            *psz_html = '\0';
+            char *psz_new = realloc( psz_html_start, i_buf_size );
+            if( !psz_new )
+                break;
+            psz_html_start = psz_new;
+            psz_html = &psz_new[i_len];
         }
     }
-    strcpy( psz_html, "</text>" );
-    psz_html += 7;
+    if( psz_html_start )
+    {
+        static const char *psz_text_close = "</text>";
+        static const char *psz_tag_long = "/font>";
 
-    if( psz_tag[ 0 ] != '\0' )
-    {
-        /* Not well formed -- kill everything */
-        free( psz_html_start );
-        psz_html_start = NULL;
-    }
-    else if( psz_html_start )
-    {
-        /* Shrink the memory requirements */
-        psz_html_start = realloc( psz_html_start,  psz_html - psz_html_start + 1 );
+        /* Realloc for closing tags and shrink memory */
+        const size_t i_length = (size_t)( psz_html - psz_html_start );
+
+        const size_t i_size = i_length + strlen(psz_tag_long) * strlen(psz_tag) + strlen(psz_text_close) + 1;
+        char *psz_new = realloc( psz_html_start, i_size );
+        if( psz_new )
+        {
+            psz_html_start = psz_new;
+            psz_html = &psz_new[i_length];
+
+            /* Close not well formed subtitle */
+            while( *psz_tag )
+            {
+                /* */
+                char *psz_last = &psz_tag[strlen(psz_tag)-1];
+                switch( *psz_last )
+                {
+                case 'b':
+                    HtmlPut( &psz_html, "</b>" );
+                    break;
+                case 'i':
+                    HtmlPut( &psz_html, "</i>" );
+                    break;
+                case 'u':
+                    HtmlPut( &psz_html, "</u>" );
+                    break;
+                case 'f':
+                    HtmlPut( &psz_html, "/font>" );
+                    break;
+                case 'I':
+                    break;
+                }
+
+                *psz_last = '\0';
+            }
+            HtmlPut( &psz_html, psz_text_close );
+        }
     }
     free( psz_tag );
 

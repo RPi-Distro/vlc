@@ -2,7 +2,7 @@
  * grey_yuv.c : grayscale to others conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2007, 2008 the VideoLAN team
- * $Id: d8a805cfcfff8ded1146ce89d1deb0897196b1cd $
+ * $Id$
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *
@@ -51,11 +51,11 @@ static picture_t *GREY_YUY2_Filter( filter_t *, picture_t * );
 /*****************************************************************************
  * Module descriptor.
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) );
-    set_capability( "video filter2", 80 );
-    set_callbacks( Activate, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) )
+    set_capability( "video filter2", 80 )
+    set_callbacks( Activate, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Activate: allocate a chroma function

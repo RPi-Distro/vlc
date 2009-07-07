@@ -2,7 +2,7 @@
  * intf.h: send info to intf.
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 5a2f9499717e816ce01f4413e6dbba94a67a4994 $
+ * $Id$
  *
  * Author: Stéphane Borel <stef@via.ecp.fr>
  *
@@ -38,12 +38,13 @@ struct intf_sys_t
   mtime_t         m_still_time;      /* Time in microseconds remaining
                                          to wait in still frame.
                      */
-#if FINISHED
+#ifdef FINISHED
   vcdplay_ctrl_t      control;
 #else
   int                 control;
 #endif
   bool          b_click, b_move, b_key_pressed;
+  vlc_mutex_t lock;
 };
 
 int vcdIntfStillTime( struct intf_thread_t * p_intf, uint8_t wait_time);

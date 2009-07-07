@@ -2,7 +2,7 @@
  * Messages.cpp : Information about an item
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 59e8fbad0c530a0528120325fa7fa81af175b0be $
+ * $Id$
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -25,9 +25,7 @@
 #endif
 
 #include "dialogs/messages.hpp"
-#include "dialogs_provider.hpp"
 
-#include <QSpacerItem>
 #include <QSpinBox>
 #include <QLabel>
 #include <QTextEdit>
@@ -39,8 +37,37 @@
 #include <QTreeWidget>
 #include <QTreeWidgetItem>
 #include <QHeaderView>
+#include <QMutex>
+
+#include <assert.h>
 
 MessagesDialog *MessagesDialog::instance = NULL;
+
+enum {
+    MsgEvent_Type = QEvent::User + MsgEventType + 1,
+};
+
+class MsgEvent : public QEvent
+{
+public:
+    MsgEvent( msg_item_t *msg )
+        : QEvent( (QEvent::Type)MsgEvent_Type ), msg(msg)
+    {
+        msg_Hold( msg );
+    }
+    virtual ~MsgEvent()
+    {
+        msg_Release( msg );
+    }
+
+    msg_item_t *msg;
+};
+
+struct msg_cb_data_t
+{
+    MessagesDialog *self;
+};
+static void MsgCallback( msg_cb_data_t *, msg_item_t *, unsigned );
 
 MessagesDialog::MessagesDialog( intf_thread_t *_p_intf)
                : QVLCFrame( _p_intf )
@@ -61,10 +88,10 @@ MessagesDialog::MessagesDialog( intf_thread_t *_p_intf)
     messages->setReadOnly( true );
     messages->setGeometry( 0, 0, 440, 600 );
     messages->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    messages->setTextInteractionFlags( Qt::TextSelectableByMouse );
 
     msgLayout->addWidget( messages, 0, 0, 1, 0 );
     mainTab->addTab( msgWidget, qtr( "Messages" ) );
-    ON_TIMEOUT( updateLog() );
 
 
     /* Modules tree */
@@ -81,9 +108,9 @@ MessagesDialog::MessagesDialog( intf_thread_t *_p_intf)
     /* Buttons and general layout */
     QPushButton *closeButton = new QPushButton( qtr( "&Close" ) );
     closeButton->setDefault( true );
-    clearUpdateButton = new QPushButton( qtr( "&Clear" ) );
+    clearUpdateButton = new QPushButton( qtr( "C&lear" ) );
     saveLogButton = new QPushButton( qtr( "&Save as..." ) );
-    saveLogButton->setToolTip( qtr( "Save all the displayed logs to a file" ) );
+    saveLogButton->setToolTip( qtr( "Saves all the displayed logs to a file" ) );
 
     verbosityBox = new QSpinBox();
     verbosityBox->setRange( 0, 2 );
@@ -109,7 +136,20 @@ MessagesDialog::MessagesDialog( intf_thread_t *_p_intf)
 
     /* General action */
     readSettings( "Messages", QSize( 600, 450 ) );
+
+
+    /* Hook up to LibVLC messaging */
+    cbData = new msg_cb_data_t;
+    cbData->self = this;
+    sub = msg_Subscribe( p_intf->p_libvlc, MsgCallback, cbData );
 }
+
+MessagesDialog::~MessagesDialog()
+{
+    writeSettings( "Messages" );
+    msg_Unsubscribe( sub );
+    delete cbData;
+};
 
 void MessagesDialog::updateTab( int index )
 {
@@ -132,70 +172,99 @@ void MessagesDialog::updateTab( int index )
     }
 }
 
-void MessagesDialog::updateLog()
+void MessagesDialog::sinkMessage( msg_item_t *item )
 {
-    msg_subscription_t *p_sub = p_intf->p_sys->p_sub;
-    int i_start;
+    if ((item->i_type == VLC_MSG_WARN && verbosityBox->value() < 1)
+     || (item->i_type == VLC_MSG_DBG && verbosityBox->value() < 2 ))
+        return;
 
-    vlc_mutex_lock( p_sub->p_lock );
-    int i_stop = *p_sub->pi_stop;
-    vlc_mutex_unlock( p_sub->p_lock );
+    /* Copy selected text to the clipboard */
+    if( messages->textCursor().hasSelection() )
+        messages->copy();
 
-    if( p_sub->i_start != i_stop )
+    /* Fix selected text bug */
+    if( !messages->textCursor().atEnd() ||
+         messages->textCursor().anchor() != messages->textCursor().position() )
+         messages->moveCursor( QTextCursor::End );
+
+    messages->setFontItalic( true );
+    messages->setTextColor( "darkBlue" );
+    messages->insertPlainText( qfu( item->psz_module ) );
+
+    switch (item->i_type)
     {
-        messages->textCursor().movePosition( QTextCursor::End );
-
-        for( i_start = p_sub->i_start;
-                i_start != i_stop;
-                i_start = (i_start+1) % VLC_MSG_QSIZE )
-        {
-            if( p_sub->p_msg[i_start].i_type == VLC_MSG_INFO ||
-                p_sub->p_msg[i_start].i_type == VLC_MSG_ERR ||
-                p_sub->p_msg[i_start].i_type == VLC_MSG_WARN &&
-                    verbosityBox->value() >= 1 ||
-                p_sub->p_msg[i_start].i_type == VLC_MSG_DBG &&
-                    verbosityBox->value() >= 2 )
-            {
-                messages->setFontItalic( true );
-                messages->setTextColor( "darkBlue" );
-                messages->insertPlainText( qfu( p_sub->p_msg[i_start].psz_module ) );
-            }
-            else
-                continue;
-
-            switch( p_sub->p_msg[i_start].i_type )
-            {
-                case VLC_MSG_INFO:
-                    messages->setTextColor( "blue" );
-                    messages->insertPlainText( " info: " );
-                    break;
-                case VLC_MSG_ERR:
-                    messages->setTextColor( "red" );
-                    messages->insertPlainText( " error: " );
-                    break;
-                case VLC_MSG_WARN:
-                    messages->setTextColor( "green" );
-                    messages->insertPlainText( " warning: " );
-                    break;
-                case VLC_MSG_DBG:
-                default:
-                    messages->setTextColor( "grey" );
-                    messages->insertPlainText( " debug: " );
-                    break;
-            }
-
-            /* Add message Regular black Font */
-            messages->setFontItalic( false );
-            messages->setTextColor( "black" );
-            messages->insertPlainText( qfu(p_sub->p_msg[i_start].psz_msg) );
-            messages->insertPlainText( "\n" );
-        }
-        messages->ensureCursorVisible();
-
-        vlc_mutex_lock( p_sub->p_lock );
-        p_sub->i_start = i_start;
-        vlc_mutex_unlock( p_sub->p_lock );
+        case VLC_MSG_INFO:
+            messages->setTextColor( "blue" );
+            messages->insertPlainText( " info: " );
+            break;
+        case VLC_MSG_ERR:
+            messages->setTextColor( "red" );
+            messages->insertPlainText( " error: " );
+            break;
+        case VLC_MSG_WARN:
+            messages->setTextColor( "green" );
+            messages->insertPlainText( " warning: " );
+            break;
+        case VLC_MSG_DBG:
+        default:
+            messages->setTextColor( "grey" );
+            messages->insertPlainText( " debug: " );
+            break;
     }
+
+    /* Add message Regular black Font */
+    messages->setFontItalic( false );
+    messages->setTextColor( "black" );
+    messages->insertPlainText( qfu(item->psz_msg) );
+    messages->insertPlainText( "\n" );
+    messages->ensureCursorVisible();
+}
+
+void MessagesDialog::customEvent( QEvent *event )
+{
+    MsgEvent *msge = static_cast<MsgEvent *>(event);
+
+    assert( msge );
+    sinkMessage( msge->msg );
+}
+
+void MessagesDialog::clearOrUpdate()
+{
+    if( mainTab->currentIndex() )
+        updateTree();
+    else
+        clear();
+}
+
+void MessagesDialog::clear()
+{
+    messages->clear();
+}
+
+bool MessagesDialog::save()
+{
+    QString saveLogFileName = QFileDialog::getSaveFileName(
+            this, qtr( "Save log file as..." ),
+            qfu( config_GetHomeDir() ),
+            qtr( "Texts / Logs (*.log *.txt);; All (*.*) ") );
+
+    if( !saveLogFileName.isNull() )
+    {
+        QFile file( saveLogFileName );
+        if ( !file.open( QFile::WriteOnly | QFile::Text ) ) {
+            QMessageBox::warning( this, qtr( "Application" ),
+                    qtr( "Cannot write to file %1:\n%2." )
+                    .arg( saveLogFileName )
+                    .arg( file.errorString() ) );
+            return false;
+        }
+
+        QTextStream out( &file );
+        out << messages->toPlainText() << "\n";
+
+        return true;
+    }
+    return false;
 }
 
 void MessagesDialog::buildTree( QTreeWidgetItem *parentItem,
@@ -211,10 +280,10 @@ void MessagesDialog::buildTree( QTreeWidgetItem *parentItem,
     if( p_obj->psz_object_name )
         item->setText( 0, qfu( p_obj->psz_object_type ) + " \"" +
                        qfu( p_obj->psz_object_name ) + "\" (" +
-                       QString::number(p_obj->i_object_id) + ")" );
+                       QString::number((uintptr_t)p_obj) + ")" );
     else
         item->setText( 0, qfu( p_obj->psz_object_type ) + " (" +
-                       QString::number(p_obj->i_object_id) + ")" );
+                       QString::number((uintptr_t)p_obj) + ")" );
 
     item->setExpanded( true );
 
@@ -224,47 +293,18 @@ void MessagesDialog::buildTree( QTreeWidgetItem *parentItem,
     vlc_list_release( l );
 }
 
-void MessagesDialog::clearOrUpdate()
-{
-    if( mainTab->currentIndex() )
-        updateTree();
-    else
-        clear();
-}
-
 void MessagesDialog::updateTree()
 {
     modulesTree->clear();
     buildTree( NULL, VLC_OBJECT( p_intf->p_libvlc ) );
 }
 
-void MessagesDialog::clear()
+static void MsgCallback( msg_cb_data_t *data, msg_item_t *item, unsigned )
 {
-    messages->clear();
+    int canc = vlc_savecancel();
+
+    QApplication::postEvent( data->self, new MsgEvent( item ) );
+
+    vlc_restorecancel( canc );
 }
 
-bool MessagesDialog::save()
-{
-    QString saveLogFileName = QFileDialog::getSaveFileName(
-            this, qtr( "Select a name for the logs file" ),
-            qfu( config_GetHomeDir() ),
-            qtr( "Texts / Logs (*.log *.txt);; All (*.*) ") );
-
-    if( !saveLogFileName.isNull() )
-    {
-        QFile file( saveLogFileName );
-        if ( !file.open( QFile::WriteOnly | QFile::Text ) ) {
-            QMessageBox::warning( this, qtr( "Application" ),
-                    qtr( "Cannot write file %1:\n%2." )
-                    .arg( saveLogFileName )
-                    .arg( file.errorString() ) );
-            return false;
-        }
-
-        QTextStream out( &file );
-        out << messages->toPlainText() << "\n";
-
-        return true;
-    }
-    return false;
-}

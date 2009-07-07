@@ -1,13 +1,14 @@
 # ***************************************************************************
 # Makefile : Build vlc-contrib files
 # ***************************************************************************
-# Copyright (C) 2003-2006 the VideoLAN team
+# Copyright (C) 2003-2009 the VideoLAN team
 # $Id$
 # 
 # Authors: Christophe Massiot <massiot@via.ecp.fr>
 #          Derk-Jan Hartman <hartman at videolan dot org>
 #          Christophe Mutricy <xtophe at videolan dot org>
-# 
+#          Felix Paul Kühne <fkuehne at videolan dot org>
+#
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
 # the Free Software Foundation; either version 2 of the License, or    
@@ -43,12 +44,11 @@ src: using-src
 
 ifdef HAVE_DARWIN_OS
 
-CONTRIBREV=0.9.9
-DARWIN_COMPILER=GCC
-contrib-macosx-$(ARCH)-$(CONTRIBREV)-$(DARWIN_COMPILER).tar.bz2:
+CONTRIBREV=1.0
+contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2:
 	$(WGET) ftp://ftp.videolan.org/pub/videolan/testing/contrib/$@
 
-using-bin: contrib-macosx-$(ARCH)-$(CONTRIBREV)-$(DARWIN_COMPILER).tar.bz2
+using-bin: contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2
 	@if test -d tmp; then \
 		echo "Move away ./tmp, it's in the way" ; \
 		exit 1 ; \
@@ -72,6 +72,8 @@ clean-bin:
 clean:
 	$(MAKE) clean-src
 	rm -rf config.mak distro.mak
+
+bin: using-bin
 
 package-macosx:
 	@if test -d tmp; then \

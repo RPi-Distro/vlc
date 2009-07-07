@@ -2,7 +2,7 @@
  * ogg.c: ogg muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 8a63fdee88a49900f52fdecd533c69ceade568a5 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -26,10 +26,6 @@
  * Preamble
  *****************************************************************************/
 
-#ifdef HAVE_TIME_H
-#   include <time.h>
-#endif
-
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
@@ -48,15 +44,15 @@
 static int  Open   ( vlc_object_t * );
 static void Close  ( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("Ogg/OGM muxer") );
-    set_capability( "sout mux", 10 );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_MUX );
-    add_shortcut( "ogg" );
-    add_shortcut( "ogm" );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Ogg/OGM muxer") )
+    set_capability( "sout mux", 10 )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_MUX )
+    add_shortcut( "ogg" )
+    add_shortcut( "ogm" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -183,6 +179,8 @@ typedef struct
     int     i_packet_no;
     int     i_serial_no;
     int     i_keyframe_granule_shift; /* Theora only */
+    int     i_last_keyframe; /* dirac and eventually theora */
+    uint64_t u_last_granulepos; /* Used for correct EOS page */
     ogg_stream_state os;
 
     oggds_header_t *p_oggds_header;
@@ -320,7 +318,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
 
     msg_Dbg( p_mux, "adding input" );
 
-    p_input->p_sys = p_stream = malloc( sizeof( ogg_stream_t ) );
+    p_input->p_sys = p_stream = calloc( 1, sizeof( ogg_stream_t ) );
     if( !p_stream )
         return VLC_ENOMEM;
 
@@ -352,14 +350,12 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         case VLC_FOURCC( 'W', 'M', 'V', '2' ):
         case VLC_FOURCC( 'W', 'M', 'V', '3' ):
         case VLC_FOURCC( 'S', 'N', 'O', 'W' ):
-        case VLC_FOURCC( 'd', 'r', 'a', 'c' ):
-            p_stream->p_oggds_header = malloc( sizeof(oggds_header_t) );
+            p_stream->p_oggds_header = calloc( 1, sizeof(oggds_header_t) );
             if( !p_stream->p_oggds_header )
             {
                 free( p_stream );
                 return VLC_ENOMEM;
             }
-            memset( p_stream->p_oggds_header, 0, sizeof(oggds_header_t) );
             p_stream->p_oggds_header->i_packet_type = PACKET_TYPE_HEADER;
 
             memcpy( p_stream->p_oggds_header->stream_type, "video", 5 );
@@ -390,6 +386,10 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
             SetDWLE( &p_stream->p_oggds_header->header.video.i_height,
                      p_input->p_fmt->video.i_height );
             msg_Dbg( p_mux, "%4.4s stream", (char *)&p_stream->i_fourcc );
+            break;
+
+        case VLC_FOURCC( 'd', 'r', 'a', 'c' ):
+            msg_Dbg( p_mux, "dirac stream" );
             break;
 
         case VLC_FOURCC( 't', 'h', 'e', 'o' ):
@@ -471,13 +471,12 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         switch( p_stream->i_fourcc )
         {
         case VLC_FOURCC( 's', 'u','b', 't' ):
-            p_stream->p_oggds_header = malloc( sizeof(oggds_header_t) );
+            p_stream->p_oggds_header = calloc( 1, sizeof(oggds_header_t) );
             if( !p_stream->p_oggds_header )
             {
                 free( p_stream );
                 return VLC_ENOMEM;
             }
-            memset( p_stream->p_oggds_header, 0, sizeof(oggds_header_t) );
             p_stream->p_oggds_header->i_packet_type = PACKET_TYPE_HEADER;
 
             memcpy( p_stream->p_oggds_header->stream_type, "text", 4 );
@@ -668,6 +667,17 @@ static block_t *OggCreateHeader( sout_mux_t *p_mux )
                 }
             }
         }
+        else if( p_stream->i_fourcc == VLC_FOURCC( 'd', 'r', 'a', 'c' ) )
+        {
+            op.packet = p_input->p_fmt->p_extra;
+            op.bytes  = p_input->p_fmt->i_extra;
+            op.b_o_s  = 1;
+            op.e_o_s  = 0;
+            op.granulepos = ~0;
+            op.packetno = p_stream->i_packet_no++;
+            ogg_stream_packetin( &p_stream->os, &op );
+            p_og = OggStreamFlush( p_mux, &p_stream->os, 0 );
+        }
         else if( p_stream->i_fourcc == VLC_FOURCC( 'f', 'l', 'a', 'c' ) )
         {
             /* flac stream marker (yeah, only that in the 1st packet) */
@@ -745,7 +755,8 @@ static block_t *OggCreateHeader( sout_mux_t *p_mux )
                 block_ChainAppend( &p_hdr, p_og );
             }
         }
-        else if( p_stream->i_fourcc != VLC_FOURCC( 'f', 'l', 'a', 'c' ) )
+        else if( p_stream->i_fourcc != VLC_FOURCC( 'f', 'l', 'a', 'c' ) &&
+                 p_stream->i_fourcc != VLC_FOURCC( 'd', 'r', 'a', 'c' ) )
         {
             uint8_t com[128];
             int     i_com;
@@ -835,7 +846,7 @@ static block_t *OggCreateFooter( sout_mux_t *p_mux )
         op.bytes  = 0;
         op.b_o_s  = 0;
         op.e_o_s  = 1;
-        op.granulepos = -1;
+        op.granulepos = p_stream->u_last_granulepos;
         op.packetno = p_stream->i_packet_no++;
         ogg_stream_packetin( &p_stream->os, &op );
 
@@ -850,7 +861,7 @@ static block_t *OggCreateFooter( sout_mux_t *p_mux )
         op.bytes  = 0;
         op.b_o_s  = 0;
         op.e_o_s  = 1;
-        op.granulepos = -1;
+        op.granulepos = p_sys->pp_del_streams[i]->u_last_granulepos;
         op.packetno = p_sys->pp_del_streams[i]->i_packet_no++;
         ogg_stream_packetin( &p_sys->pp_del_streams[i]->os, &op );
 
@@ -956,7 +967,8 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
     if( p_stream->i_fourcc != VLC_FOURCC( 'v', 'o', 'r', 'b' ) &&
         p_stream->i_fourcc != VLC_FOURCC( 'f', 'l', 'a', 'c' ) &&
         p_stream->i_fourcc != VLC_FOURCC( 's', 'p', 'x', ' ' ) &&
-        p_stream->i_fourcc != VLC_FOURCC( 't', 'h', 'e', 'o' ) )
+        p_stream->i_fourcc != VLC_FOURCC( 't', 'h', 'e', 'o' ) &&
+        p_stream->i_fourcc != VLC_FOURCC( 'd', 'r', 'a', 'c' ) )
     {
         p_data = block_Realloc( p_data, 1, p_data->i_buffer );
         p_data->p_buffer[0] = PACKET_IS_SYNCPOINT;      // FIXME
@@ -996,23 +1008,44 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
                 p_input->p_fmt->video.i_frame_rate_base /
                 INT64_C(1000000) ) << p_stream->i_keyframe_granule_shift;
         }
+        else if( p_stream->i_fourcc == VLC_FOURCC( 'd', 'r', 'a', 'c' ) )
+        {
+            mtime_t dt = (p_data->i_dts - p_sys->i_start_dts + 1)
+                       * p_input->p_fmt->video.i_frame_rate *2
+                       / p_input->p_fmt->video.i_frame_rate_base
+                       / INT64_C(1000000);
+            mtime_t delay = (p_data->i_pts - p_data->i_dts + 1)
+                          * p_input->p_fmt->video.i_frame_rate *2
+                          / p_input->p_fmt->video.i_frame_rate_base
+                          / INT64_C(1000000);
+            if( p_data->i_flags & BLOCK_FLAG_TYPE_I )
+                p_stream->i_last_keyframe = dt;
+            mtime_t dist = dt - p_stream->i_last_keyframe;
+            op.granulepos = dt << 31 | (dist&0xff00) << 14
+                          | (delay&0x1fff) << 9 | (dist&0xff);
+        }
         else if( p_stream->p_oggds_header )
             op.granulepos = ( p_data->i_dts - p_sys->i_start_dts ) * INT64_C(10) /
                 p_stream->p_oggds_header->i_time_unit;
     }
     else if( p_stream->i_cat == SPU_ES )
     {
-        /* granulepos is in milisec */
+        /* granulepos is in millisec */
         op.granulepos = ( p_data->i_dts - p_sys->i_start_dts ) / 1000;
     }
 
+    p_stream->u_last_granulepos = op.granulepos;
     ogg_stream_packetin( &p_stream->os, &op );
 
     if( p_stream->i_cat == SPU_ES ||
-        p_stream->i_fourcc == VLC_FOURCC( 's', 'p', 'x', ' ' ) )
+        p_stream->i_fourcc == VLC_FOURCC( 's', 'p', 'x', ' ' ) ||
+        p_stream->i_fourcc == VLC_FOURCC( 'd', 'r', 'a', 'c' ) )
     {
         /* Subtitles or Speex packets are quite small so they
          * need to be flushed to be sent on time */
+        /* The OggDirac mapping suggests ever so strongly that a
+         * page flush occurs after each OggDirac packet, so to make
+         * the timestamps unambiguous */
         p_og = OggStreamFlush( p_mux, &p_stream->os, p_data->i_dts );
     }
     else

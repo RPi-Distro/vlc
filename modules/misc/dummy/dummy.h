@@ -2,7 +2,7 @@
  * dummy.h : dummy plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002 the VideoLAN team
- * $Id: a31c872b699e55e7be5d3d5b9de16181a3ec42eb $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -31,8 +31,9 @@ int  OpenAccess   ( vlc_object_t * );
 int  OpenDemux    ( vlc_object_t * );
 void CloseDemux   ( vlc_object_t * );
 
-int  OpenDecoder  ( vlc_object_t * );
-void CloseDecoder ( vlc_object_t * );
+int  OpenDecoder    ( vlc_object_t * );
+int  OpenDecoderDump( vlc_object_t * );
+void CloseDecoder   ( vlc_object_t * );
 
 int  OpenEncoder  ( vlc_object_t * );
 void CloseEncoder ( vlc_object_t * );

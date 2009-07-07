@@ -2,7 +2,7 @@
  * t140.c : trivial T.140 text encoder
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 01b31629c641c5a282ac73677497abb68afc3d62 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,12 +32,12 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    add_submodule();
-    set_description( N_("T.140 text encoder") );
-    set_capability( "encoder", 100 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    add_submodule ()
+    set_description( N_("T.140 text encoder") )
+    set_capability( "encoder", 100 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 
 static block_t *Encode ( encoder_t *, subpicture_t * );
@@ -70,6 +70,7 @@ static int Open( vlc_object_t *p_this )
     p_enc->p_sys = NULL;
 
     p_enc->pf_encode_sub = Encode;
+    p_enc->fmt_out.i_cat = SPU_ES;
     return VLC_SUCCESS;
 }
 

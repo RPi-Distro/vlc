@@ -2,7 +2,7 @@
  * InterfaceWindow.cpp: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: 03b304651f32d60cbdb157e14c227b0f50114885 $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -203,13 +203,13 @@ InterfaceWindow::InterfaceWindow( intf_thread_t * _p_intf, BRect frame,
       fLastUpdateTime( system_time() ),
       fSettings( new BMessage( 'sett' ) )
 {
-    p_playlist = pl_Yield( p_intf );
+    p_playlist = pl_Hold( p_intf );
 
     var_AddCallback( p_playlist, "intf-change", PlaylistChanged, this );
     var_AddCallback( p_playlist, "item-change", PlaylistChanged, this );
-    var_AddCallback( p_playlist, "item-append", PlaylistChanged, this );
-    var_AddCallback( p_playlist, "item-deleted", PlaylistChanged, this );
-    var_AddCallback( p_playlist, "playlist-current", PlaylistChanged, this );
+    var_AddCallback( p_playlist, "playlist-item-append", PlaylistChanged, this );
+    var_AddCallback( p_playlist, "playlist-item-deleted", PlaylistChanged, this );
+    var_AddCallback( p_playlist, "item-current", PlaylistChanged, this );
 
     char psz_tmp[1024];
 #define ADD_ELLIPSIS( a ) \
@@ -1112,7 +1112,6 @@ InterfaceWindow::_StoreSettings()
 {
     /* Save the volume */
     config_PutInt( p_intf, "volume", p_mediaControl->GetVolume() );
-    config_SaveConfigFile( p_intf, "main" );
 
     /* Save the windows positions */
     if ( fSettings->ReplaceRect( "main frame", Frame() ) != B_OK )

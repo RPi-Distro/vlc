@@ -1,10 +1,12 @@
 /*****************************************************************************
- * input_clock.c: Clock/System date convertions, stream management
+ * clock.c: Clock/System date convertions, stream management
  *****************************************************************************
- * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 27ab13ae76cbac1caa7d830edc87b1567279380b $
+ * Copyright (C) 1999-2008 the VideoLAN team
+ * Copyright (C) 2008 Laurent Aimar
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
+ *          Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,8 +31,14 @@
 #endif
 
 #include <vlc_common.h>
+#include <vlc_input.h>
+#include "clock.h"
+#include <assert.h>
 
-#include "input_internal.h"
+/* TODO:
+ * - clean up locking once clock code is stable
+ *
+ */
 
 /*
  * DISCUSSION : SYNCHRONIZATION METHOD
@@ -60,15 +68,12 @@
  * in all the FIFOs, but it may be not enough.
  */
 
-/* p_input->p->i_cr_average : Maximum number of samples used to compute the
+/* i_cr_average : Maximum number of samples used to compute the
  * dynamic average value.
  * We use the following formula :
  * new_average = (old_average * c_average + new_sample_value) / (c_average +1)
  */
 
-
-static void ClockNewRef( input_clock_t * p_pgrm,
-                         mtime_t i_clock, mtime_t i_sysdate );
 
 /*****************************************************************************
  * Constants
@@ -79,169 +84,432 @@ static void ClockNewRef( input_clock_t * p_pgrm,
 
 /* Latency introduced on DVDs with CR == 0 on chapter change - this is from
  * my dice --Meuuh */
-#define CR_MEAN_PTS_GAP 300000
+#define CR_MEAN_PTS_GAP (300000)
 
 /*****************************************************************************
- * ClockToSysdate: converts a movie clock to system date
+ * Structures
  *****************************************************************************/
-static mtime_t ClockToSysdate( input_clock_t *cl, mtime_t i_clock )
-{
-    if( cl->i_synchro_state != SYNCHRO_OK )
-        return 0;
 
-    return (i_clock - cl->cr_ref) * cl->i_rate / INPUT_RATE_DEFAULT +
-           cl->sysdate_ref;
+/**
+ * This structure holds long term average
+ */
+typedef struct
+{
+    mtime_t i_value;
+    int     i_residue;
+
+    int     i_count;
+    int     i_divider;
+} average_t;
+static void    AvgInit( average_t *, int i_divider );
+static void    AvgClean( average_t * );
+
+static void    AvgReset( average_t * );
+static void    AvgUpdate( average_t *, mtime_t i_value );
+static mtime_t AvgGet( average_t * );
+static void    AvgRescale( average_t *, int i_divider );
+
+/* */
+typedef struct
+{
+    mtime_t i_stream;
+    mtime_t i_system;
+} clock_point_t;
+
+static inline clock_point_t clock_point_Create( mtime_t i_stream, mtime_t i_system )
+{
+    clock_point_t p = { .i_stream = i_stream, .i_system = i_system };
+    return p;
 }
 
-/*****************************************************************************
- * ClockCurrent: converts current system date to clock units
- *****************************************************************************
- * Caution : the synchro state must be SYNCHRO_OK for this to operate.
- *****************************************************************************/
-static mtime_t ClockCurrent( input_clock_t *cl )
+/* */
+struct input_clock_t
 {
-    return (mdate() - cl->sysdate_ref) * INPUT_RATE_DEFAULT / cl->i_rate +
-           cl->cr_ref;
-}
+    /* */
+    vlc_mutex_t lock;
+
+    /* Reference point */
+    bool          b_has_reference;
+    clock_point_t ref;
+
+    /* Last point
+     * It is used to detect unexpected stream discontinuities */
+    clock_point_t last;
+
+    /* Maximal timestamp returned by input_clock_ConvertTS (in system unit) */
+    mtime_t i_ts_max;
+
+    /* Clock drift */
+    mtime_t i_next_drift_update;
+    average_t drift;
+
+    /* Current modifiers */
+    int     i_rate;
+    mtime_t i_pts_delay;
+    bool    b_paused;
+    mtime_t i_pause_date;
+};
+
+static mtime_t ClockStreamToSystem( input_clock_t *, mtime_t i_stream );
+static mtime_t ClockSystemToStream( input_clock_t *, mtime_t i_system );
 
 /*****************************************************************************
- * ClockNewRef: writes a new clock reference
+ * input_clock_New: create a new clock
  *****************************************************************************/
-static void ClockNewRef( input_clock_t *cl,
-                         mtime_t i_clock, mtime_t i_sysdate )
+input_clock_t *input_clock_New( int i_rate )
 {
-    cl->cr_ref = i_clock;
-    cl->sysdate_ref = i_sysdate ;
-}
+    input_clock_t *cl = malloc( sizeof(*cl) );
+    if( !cl )
+        return NULL;
 
-/*****************************************************************************
- * input_ClockInit: reinitializes the clock reference after a stream
- *                  discontinuity
- *****************************************************************************/
-void input_ClockInit( input_clock_t *cl, bool b_master, int i_cr_average, int i_rate )
-{
-    cl->i_synchro_state = SYNCHRO_START;
+    vlc_mutex_init( &cl->lock );
+    cl->b_has_reference = false;
+    cl->ref = clock_point_Create( VLC_TS_INVALID, VLC_TS_INVALID );
 
-    cl->last_cr = 0;
-    cl->last_pts = 0;
-    cl->last_sysdate = 0;
-    cl->cr_ref = 0;
-    cl->sysdate_ref = 0;
-    cl->delta_cr = 0;
-    cl->i_delta_cr_residue = 0;
+    cl->last = clock_point_Create( VLC_TS_INVALID, VLC_TS_INVALID );
+
+    cl->i_ts_max = VLC_TS_INVALID;
+
+    cl->i_next_drift_update = VLC_TS_INVALID;
+    AvgInit( &cl->drift, 10 );
+
     cl->i_rate = i_rate;
+    cl->i_pts_delay = 0;
+    cl->b_paused = false;
+    cl->i_pause_date = VLC_TS_INVALID;
 
-    cl->i_cr_average = i_cr_average;
-
-    cl->b_master = b_master;
+    return cl;
 }
 
 /*****************************************************************************
- * input_ClockSetPCR: manages a clock reference
+ * input_clock_Delete: destroy a new clock
  *****************************************************************************/
-void input_ClockSetPCR( input_thread_t *p_input,
-                        input_clock_t *cl, mtime_t i_clock )
+void input_clock_Delete( input_clock_t *cl )
 {
-    const bool b_synchronize = p_input->b_can_pace_control && cl->b_master;
-    const mtime_t i_mdate = mdate();
+    AvgClean( &cl->drift );
+    vlc_mutex_destroy( &cl->lock );
+    free( cl );
+}
 
-    if( ( cl->i_synchro_state != SYNCHRO_OK ) ||
-        ( i_clock == 0 && cl->last_cr != 0 ) )
+/*****************************************************************************
+ * input_clock_Update: manages a clock reference
+ *
+ *  i_ck_stream: date in stream clock
+ *  i_ck_system: date in system clock
+ *****************************************************************************/
+void input_clock_Update( input_clock_t *cl,
+                         vlc_object_t *p_log, bool b_can_pace_control,
+                         mtime_t i_ck_stream, mtime_t i_ck_system )
+{
+    bool b_reset_reference = false;
+
+    assert( i_ck_stream > VLC_TS_INVALID && i_ck_system > VLC_TS_INVALID );
+
+    vlc_mutex_lock( &cl->lock );
+
+    if( !cl->b_has_reference )
     {
-        /* Feed synchro with a new reference point. */
-        ClockNewRef( cl, i_clock,
-                         __MAX( cl->last_pts + CR_MEAN_PTS_GAP, i_mdate ) );
-        cl->i_synchro_state = SYNCHRO_OK;
-
-        if( !b_synchronize )
-        {
-            cl->delta_cr = 0;
-            cl->i_delta_cr_residue = 0;
-            cl->last_update = 0;
-        }
+        /* */
+        b_reset_reference= true;
     }
-    else if ( cl->last_cr != 0 &&
-              ( (cl->last_cr - i_clock) > CR_MAX_GAP ||
-                (cl->last_cr - i_clock) < - CR_MAX_GAP ) )
+    else if( cl->last.i_stream > VLC_TS_INVALID &&
+             ( (cl->last.i_stream - i_ck_stream) > CR_MAX_GAP ||
+               (cl->last.i_stream - i_ck_stream) < -CR_MAX_GAP ) )
     {
         /* Stream discontinuity, for which we haven't received a
          * warning from the stream control facilities (dd-edited
          * stream ?). */
-        msg_Warn( p_input, "clock gap, unexpected stream discontinuity" );
-        input_ClockInit( cl, cl->b_master, cl->i_cr_average, cl->i_rate );
+        msg_Warn( p_log, "clock gap, unexpected stream discontinuity" );
+        cl->i_ts_max = VLC_TS_INVALID;
+
+        /* */
+        msg_Warn( p_log, "feeding synchro with a new reference point trying to recover from clock gap" );
+        b_reset_reference= true;
+    }
+    if( b_reset_reference )
+    {
+        cl->i_next_drift_update = VLC_TS_INVALID;
+        AvgReset( &cl->drift );
+
         /* Feed synchro with a new reference point. */
-        msg_Warn( p_input, "feeding synchro with a new reference point trying to recover from clock gap" );
-        ClockNewRef( cl, i_clock,
-                         __MAX( cl->last_pts + CR_MEAN_PTS_GAP, i_mdate ) );
-        cl->i_synchro_state = SYNCHRO_OK;
+        cl->b_has_reference = true;
+        cl->ref = clock_point_Create( i_ck_stream,
+                                      __MAX( cl->i_ts_max + CR_MEAN_PTS_GAP, i_ck_system ) );
     }
 
-    cl->last_cr = i_clock;
-    cl->last_sysdate = i_mdate;
-
-    if( b_synchronize )
+    if( !b_can_pace_control && cl->i_next_drift_update < i_ck_system )
     {
-        /* Wait a while before delivering the packets to the decoder.
-         * In case of multiple programs, we arbitrarily follow the
-         * clock of the selected program. */
-        if( !p_input->p->b_out_pace_control )
-        {
-            mtime_t i_wakeup = ClockToSysdate( cl, i_clock );
-            while( (i_wakeup - mdate()) / CLOCK_FREQ > 1 )
-            {
-                msleep( CLOCK_FREQ );
-                if( p_input->b_die ) i_wakeup = mdate();
-            }
-            mwait( i_wakeup );
-        }
+        const mtime_t i_converted = ClockSystemToStream( cl, i_ck_system );
+
+        AvgUpdate( &cl->drift, i_converted - i_ck_stream );
+
+        cl->i_next_drift_update = i_ck_system + CLOCK_FREQ/5; /* FIXME why that */
     }
-    else if ( i_mdate - cl->last_update > 200000 )
-    {
-        /* Smooth clock reference variations. */
-        const mtime_t i_extrapoled_clock = ClockCurrent( cl );
-        /* Bresenham algorithm to smooth variations. */
-        const mtime_t i_tmp = cl->delta_cr * (cl->i_cr_average - 1) +
-                              ( i_extrapoled_clock - i_clock ) * 1  +
-                              cl->i_delta_cr_residue;
+    cl->last = clock_point_Create( i_ck_stream, i_ck_system );
 
-        cl->i_delta_cr_residue = i_tmp % cl->i_cr_average;
-        cl->delta_cr           = i_tmp / cl->i_cr_average;
-
-        cl->last_update = i_mdate;
-    }
+    vlc_mutex_unlock( &cl->lock );
 }
 
 /*****************************************************************************
- * input_ClockResetPCR:
+ * input_clock_Reset:
  *****************************************************************************/
-void input_ClockResetPCR( input_clock_t *cl )
+void input_clock_Reset( input_clock_t *cl )
 {
-    cl->i_synchro_state =  SYNCHRO_REINIT;
-    cl->last_pts = 0;
+    vlc_mutex_lock( &cl->lock );
+
+    cl->b_has_reference = false;
+    cl->ref = clock_point_Create( VLC_TS_INVALID, VLC_TS_INVALID );
+    cl->i_ts_max = VLC_TS_INVALID;
+
+    vlc_mutex_unlock( &cl->lock );
 }
 
 /*****************************************************************************
- * input_ClockGetTS: manages a PTS or DTS
+ * input_clock_ChangeRate:
  *****************************************************************************/
-mtime_t input_ClockGetTS( input_thread_t * p_input,
-                          input_clock_t *cl, mtime_t i_ts )
+void input_clock_ChangeRate( input_clock_t *cl, int i_rate )
 {
-    if( cl->i_synchro_state != SYNCHRO_OK )
-        return 0;
+    vlc_mutex_lock( &cl->lock );
 
-    cl->last_pts = ClockToSysdate( cl, i_ts + cl->delta_cr );
-    return cl->last_pts + p_input->i_pts_delay;
-}
-
-/*****************************************************************************
- * input_ClockSetRate:
- *****************************************************************************/
-void input_ClockSetRate( input_clock_t *cl, int i_rate )
-{
     /* Move the reference point */
-    if( cl->i_synchro_state == SYNCHRO_OK )
-        ClockNewRef( cl, cl->last_cr, cl->last_sysdate );
+    if( cl->b_has_reference )
+    {
+        cl->last.i_system = ClockStreamToSystem( cl, cl->last.i_stream );
+        cl->ref = cl->last;
+    }
 
     cl->i_rate = i_rate;
+
+    vlc_mutex_unlock( &cl->lock );
 }
 
+/*****************************************************************************
+ * input_clock_ChangePause:
+ *****************************************************************************/
+void input_clock_ChangePause( input_clock_t *cl, bool b_paused, mtime_t i_date )
+{
+    vlc_mutex_lock( &cl->lock );
+    assert( (!cl->b_paused) != (!b_paused) );
+
+    if( cl->b_paused )
+    {
+        const mtime_t i_duration = i_date - cl->i_pause_date;
+
+        if( cl->b_has_reference && i_duration > 0 )
+        {
+            cl->ref.i_system += i_duration;
+            cl->last.i_system += i_duration;
+        }
+    }
+    cl->i_pause_date = i_date;
+    cl->b_paused = b_paused;
+
+    vlc_mutex_unlock( &cl->lock );
+}
+
+/*****************************************************************************
+ * input_clock_GetWakeup
+ *****************************************************************************/
+mtime_t input_clock_GetWakeup( input_clock_t *cl )
+{
+    mtime_t i_wakeup = 0;
+
+    vlc_mutex_lock( &cl->lock );
+
+    /* Synchronized, we can wait */
+    if( cl->b_has_reference )
+        i_wakeup = ClockStreamToSystem( cl, cl->last.i_stream );
+
+    vlc_mutex_unlock( &cl->lock );
+
+    return i_wakeup;
+}
+
+/*****************************************************************************
+ * input_clock_ConvertTS
+ *****************************************************************************/
+int input_clock_ConvertTS( input_clock_t *cl,
+                           int *pi_rate, mtime_t *pi_ts0, mtime_t *pi_ts1,
+                           mtime_t i_ts_bound )
+{
+    mtime_t i_pts_delay;
+
+    assert( pi_ts0 );
+    vlc_mutex_lock( &cl->lock );
+
+    if( pi_rate )
+        *pi_rate = cl->i_rate;
+
+    if( !cl->b_has_reference )
+    {
+        vlc_mutex_unlock( &cl->lock );
+        *pi_ts0 = VLC_TS_INVALID;
+        if( pi_ts1 )
+            *pi_ts1 = VLC_TS_INVALID;
+        return VLC_EGENERIC;
+    }
+
+    /* */
+    if( *pi_ts0 > VLC_TS_INVALID )
+    {
+        *pi_ts0 = ClockStreamToSystem( cl, *pi_ts0 + AvgGet( &cl->drift ) );
+        if( *pi_ts0 > cl->i_ts_max )
+            cl->i_ts_max = *pi_ts0;
+        *pi_ts0 += cl->i_pts_delay;
+    }
+
+    /* XXX we do not ipdate i_ts_max on purpose */
+    if( pi_ts1 && *pi_ts1 > VLC_TS_INVALID )
+    {
+        *pi_ts1 = ClockStreamToSystem( cl, *pi_ts1 + AvgGet( &cl->drift ) ) +
+                  cl->i_pts_delay;
+    }
+
+    i_pts_delay = cl->i_pts_delay;
+    vlc_mutex_unlock( &cl->lock );
+
+    /* Check ts validity */
+    if( i_ts_bound != INT64_MAX &&
+        *pi_ts0 > VLC_TS_INVALID && *pi_ts0 >= mdate() + cl->i_pts_delay + i_ts_bound )
+        return VLC_EGENERIC;
+
+    return VLC_SUCCESS;
+}
+/*****************************************************************************
+ * input_clock_GetRate: Return current rate
+ *****************************************************************************/
+int input_clock_GetRate( input_clock_t *cl )
+{
+    int i_rate;
+
+    vlc_mutex_lock( &cl->lock );
+    i_rate = cl->i_rate;
+    vlc_mutex_unlock( &cl->lock );
+
+    return i_rate;
+}
+
+int input_clock_GetState( input_clock_t *cl,
+                          mtime_t *pi_stream_start, mtime_t *pi_system_start,
+                          mtime_t *pi_stream_duration, mtime_t *pi_system_duration )
+{
+    vlc_mutex_lock( &cl->lock );
+
+    if( !cl->b_has_reference )
+    {
+        vlc_mutex_unlock( &cl->lock );
+        return VLC_EGENERIC;
+    }
+
+    *pi_stream_start = cl->ref.i_stream;
+    *pi_system_start = cl->ref.i_system;
+
+    *pi_stream_duration = cl->last.i_stream - cl->ref.i_stream;
+    *pi_system_duration = cl->last.i_system - cl->ref.i_system;
+
+    vlc_mutex_unlock( &cl->lock );
+
+    return VLC_SUCCESS;
+}
+
+void input_clock_ChangeSystemOrigin( input_clock_t *cl, mtime_t i_system )
+{
+    vlc_mutex_lock( &cl->lock );
+
+    assert( cl->b_has_reference );
+    const mtime_t i_offset = i_system - cl->ref.i_system;
+
+    cl->ref.i_system += i_offset;
+    cl->last.i_system += i_offset;
+
+    vlc_mutex_unlock( &cl->lock );
+}
+
+#warning "input_clock_SetJitter needs more work"
+void input_clock_SetJitter( input_clock_t *cl,
+                            mtime_t i_pts_delay, int i_cr_average )
+{
+    vlc_mutex_lock( &cl->lock );
+
+    /* TODO always save the value, and when rebuffering use the new one if smaller
+     * TODO when increasing -> force rebuffering
+     */
+    if( cl->i_pts_delay < i_pts_delay )
+        cl->i_pts_delay = i_pts_delay;
+
+    /* */
+    if( i_cr_average < 10 )
+        i_cr_average = 10;
+
+    if( cl->drift.i_divider != i_cr_average )
+        AvgRescale( &cl->drift, i_cr_average );
+
+    vlc_mutex_unlock( &cl->lock );
+}
+
+/*****************************************************************************
+ * ClockStreamToSystem: converts a movie clock to system date
+ *****************************************************************************/
+static mtime_t ClockStreamToSystem( input_clock_t *cl, mtime_t i_stream )
+{
+    if( !cl->b_has_reference )
+        return VLC_TS_INVALID;
+
+    return ( i_stream - cl->ref.i_stream ) * cl->i_rate / INPUT_RATE_DEFAULT +
+           cl->ref.i_system;
+}
+
+/*****************************************************************************
+ * ClockSystemToStream: converts a system date to movie clock
+ *****************************************************************************
+ * Caution : a valid reference point is needed for this to operate.
+ *****************************************************************************/
+static mtime_t ClockSystemToStream( input_clock_t *cl, mtime_t i_system )
+{
+    assert( cl->b_has_reference );
+    return ( i_system - cl->ref.i_system ) * INPUT_RATE_DEFAULT / cl->i_rate +
+            cl->ref.i_stream;
+}
+
+/*****************************************************************************
+ * Long term average helpers
+ *****************************************************************************/
+static void AvgInit( average_t *p_avg, int i_divider )
+{
+    p_avg->i_divider = i_divider;
+    AvgReset( p_avg );
+}
+static void AvgClean( average_t *p_avg )
+{
+    VLC_UNUSED(p_avg);
+}
+static void AvgReset( average_t *p_avg )
+{
+    p_avg->i_value = 0;
+    p_avg->i_residue = 0;
+    p_avg->i_count = 0;
+}
+static void AvgUpdate( average_t *p_avg, mtime_t i_value )
+{
+    const int i_f0 = __MIN( p_avg->i_divider - 1, p_avg->i_count );
+    const int i_f1 = p_avg->i_divider - i_f0;
+
+    const mtime_t i_tmp = i_f0 * p_avg->i_value + i_f1 * i_value + p_avg->i_residue;
+
+    p_avg->i_value   = i_tmp / p_avg->i_divider;
+    p_avg->i_residue = i_tmp % p_avg->i_divider;
+
+    p_avg->i_count++;
+}
+static mtime_t AvgGet( average_t *p_avg )
+{
+    return p_avg->i_value;
+}
+static void AvgRescale( average_t *p_avg, int i_divider )
+{
+    const mtime_t i_tmp = p_avg->i_value * p_avg->i_divider + p_avg->i_residue;
+
+    p_avg->i_divider = i_divider;
+    p_avg->i_value   = i_tmp / p_avg->i_divider;
+    p_avg->i_residue = i_tmp % p_avg->i_divider;
+}

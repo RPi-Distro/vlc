@@ -1,8 +1,8 @@
 /*****************************************************************************
  * extended_panels.cpp : Extended controls panels
  ****************************************************************************
- * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: ff4d763ae06c23942215af27355f216ca19bfa0a $
+ * Copyright (C) 2006-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea .t videolan d@t org>
@@ -36,15 +36,16 @@
 
 #include "components/extended_panels.hpp"
 #include "dialogs/preferences.hpp"
-#include "dialogs_provider.hpp"
 #include "qt4.hpp"
 #include "input_manager.hpp"
 
+#include "../../audio_filter/equalizer_presets.h"
 #include <vlc_aout.h>
 #include <vlc_intf_strings.h>
 #include <vlc_vout.h>
 #include <vlc_osd.h>
 
+#include <vlc_charset.h> /* us_strtod */
 
 #if 0
 class ConfClickHandler : public QObject
@@ -92,7 +93,7 @@ QString OptionFromWidgetName( QObject *obj )
 }
 
 ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
-                           p_intf( _p_intf )
+            QObject( _parent ), p_intf( _p_intf )
 {
     ui.setupUi( _parent );
     p_vout = NULL;
@@ -132,10 +133,10 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
     SETUP_VFILTER_OPTION( brightnessThresholdCheck, stateChanged( int ) )
 
     SETUP_VFILTER( extract )
-    SETUP_VFILTER_OPTION( extractComponentText, textChanged( QString ) )
+    SETUP_VFILTER_OPTION( extractComponentText, textChanged( const QString& ) )
 
     SETUP_VFILTER( colorthres )
-    SETUP_VFILTER_OPTION( colorthresColorText, textChanged( QString ) )
+    SETUP_VFILTER_OPTION( colorthresColorText, textChanged( const QString& ) )
     SETUP_VFILTER_OPTION( colorthresSaturationthresSlider, valueChanged( int ) )
     SETUP_VFILTER_OPTION( colorthresSimilaritythresSlider, valueChanged( int ) )
 
@@ -195,7 +196,7 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
     SETUP_VFILTER_OPTION( eraseXSpin, valueChanged( int ) )
 
     SETUP_VFILTER( marq )
-    SETUP_VFILTER_OPTION( marqMarqueeText, textChanged( QString ) )
+    SETUP_VFILTER_OPTION( marqMarqueeText, textChanged( const QString& ) )
     SETUP_VFILTER_OPTION( marqPositionCombo, currentIndexChanged( QString ) )
 
     SETUP_VFILTER( logo )
@@ -211,6 +212,8 @@ ExtVideo::ExtVideo( intf_thread_t *_p_intf, QTabWidget *_parent ) :
     CONNECT( ui.cropBotPx, valueChanged( int ), this, cropChange() );
     CONNECT( ui.cropLeftPx, valueChanged( int ), this, cropChange() );
     CONNECT( ui.cropRightPx, valueChanged( int ), this, cropChange() );
+    CONNECT( ui.leftRightCropSync, toggled ( bool ), this, cropChange() );
+    CONNECT( ui.topBotCropSync, toggled ( bool ), this, cropChange() );
     CONNECT( ui.topBotCropSync, toggled( bool ),
              ui.cropBotPx, setDisabled( bool ) );
     CONNECT( ui.leftRightCropSync, toggled( bool ),
@@ -223,17 +226,18 @@ ExtVideo::~ExtVideo()
 
 void ExtVideo::cropChange()
 {
-    if( THEMIM->getInput() )
+    if( ui.topBotCropSync->isChecked() )
+        ui.cropBotPx->setValue( ui.cropTopPx->value() );
+    if( ui.leftRightCropSync->isChecked() )
+        ui.cropRightPx->setValue( ui.cropLeftPx->value() );
+
+    p_vout = THEMIM->getVout();
+    if( p_vout )
     {
-        p_vout = ( vout_thread_t * )vlc_object_find( THEMIM->getInput(),
-                VLC_OBJECT_VOUT, FIND_CHILD );
-        if( p_vout )
-        {
-            var_SetInteger( p_vout, "crop-top", ui.cropTopPx->value() );
-            var_SetInteger( p_vout, "crop-bottom", ui.cropBotPx->value() );
-            var_SetInteger( p_vout, "crop-left", ui.cropLeftPx->value() );
-            var_SetInteger( p_vout, "crop-right", ui.cropRightPx->value() );
-        }
+        var_SetInteger( p_vout, "crop-top", ui.cropTopPx->value() );
+        var_SetInteger( p_vout, "crop-bottom", ui.cropBotPx->value() );
+        var_SetInteger( p_vout, "crop-left", ui.cropLeftPx->value() );
+        var_SetInteger( p_vout, "crop-right", ui.cropRightPx->value() );
         vlc_object_release( p_vout );
     }
 }
@@ -246,37 +250,37 @@ void ExtVideo::clean()
     ui.cropRightPx->setValue( 0 );
 }
 
-void ExtVideo::ChangeVFiltersString( char *psz_name, bool b_add )
+void ExtVideo::ChangeVFiltersString( const char *psz_name, bool b_add )
 {
     char *psz_parser, *psz_string;
     const char *psz_filter_type;
 
-    module_t *p_obj = module_Find( p_intf, psz_name );
+    module_t *p_obj = module_find( psz_name );
     if( !p_obj )
     {
-        msg_Err( p_intf, "Unable to find filter module \"%s\n.", psz_name );
+        msg_Err( p_intf, "Unable to find filter module \"%s\".", psz_name );
         return;
     }
 
-    if( module_IsCapable( p_obj, "video filter2" ) )
+    if( module_provides( p_obj, "video filter2" ) )
     {
         psz_filter_type = "video-filter";
     }
-    else if( module_IsCapable( p_obj, "video filter" ) )
+    else if( module_provides( p_obj, "video filter" ) )
     {
         psz_filter_type = "vout-filter";
     }
-    else if( module_IsCapable( p_obj, "sub filter" ) )
+    else if( module_provides( p_obj, "sub filter" ) )
     {
         psz_filter_type = "sub-filter";
     }
     else
     {
-        module_Put( p_obj );
+        module_release (p_obj);
         msg_Err( p_intf, "Unknown video filter type." );
         return;
     }
-    module_Put( p_obj );
+    module_release (p_obj);
 
     psz_string = config_GetPsz( p_intf, psz_filter_type );
 
@@ -339,13 +343,7 @@ void ExtVideo::ChangeVFiltersString( char *psz_name, bool b_add )
         ui.subpictureFilterText->setText( psz_string );
 
     /* Try to set on the fly */
-    if( THEMIM->getInput() )
-        p_vout = ( vout_thread_t * )vlc_object_find( THEMIM->getInput(),
-                VLC_OBJECT_VOUT, FIND_CHILD );
-    /* If you have stopped the video, p_vout is still at its old value */
-    else
-        p_vout = NULL;
-
+    p_vout = THEMIM->getVout();
     if( p_vout )
     {
         if( !strcmp( psz_filter_type, "sub-filter" ) )
@@ -453,7 +451,6 @@ void ExtVideo::setWidgetValue( QObject *widget )
 
     if( i_type == VLC_VAR_INTEGER || i_type == VLC_VAR_BOOL )
     {
-        int i_int = 0;
         if( slider )        slider->setValue( val.i_int );
         else if( checkbox ) checkbox->setCheckState( val.i_int? Qt::Checked
                                                               : Qt::Unchecked );
@@ -471,7 +468,6 @@ void ExtVideo::setWidgetValue( QObject *widget )
     }
     else if( i_type == VLC_VAR_FLOAT )
     {
-        double f_float = 0;
         if( slider ) slider->setValue( ( int )( val.f_float*( double )slider->tickInterval() ) ); /* hack alert! */
         else if( doublespinbox ) doublespinbox->setValue( val.f_float );
         else msg_Warn( p_intf, "Oops %s %s %d", __FILE__, __func__, __LINE__ );
@@ -626,8 +622,7 @@ ExtV4l2::ExtV4l2( intf_thread_t *_p_intf, QWidget *_parent )
 
 ExtV4l2::~ExtV4l2()
 {
-    if( box )
-        delete box;
+    delete box;
 }
 
 void ExtV4l2::showEvent( QShowEvent *event )
@@ -882,30 +877,29 @@ void Equalizer::clean()
 /* Write down initial values */
 void Equalizer::updateUIFromCore()
 {
-    char *psz_af;
+    char *psz_af, *psz_pres;
     float f_preamp;
     int i_preset;
 
-    aout_instance_t *p_aout = ( aout_instance_t * )vlc_object_find( p_intf,
-                                    VLC_OBJECT_AOUT, FIND_ANYWHERE );
+    aout_instance_t *p_aout = THEMIM->getAout();
     if( p_aout )
     {
         psz_af = var_GetNonEmptyString( p_aout, "audio-filter" );
+        psz_pres = var_GetString( p_aout, "equalizer-preset" );
         if( var_GetBool( p_aout, "equalizer-2pass" ) )
             ui.eq2PassCheck->setChecked( true );
         f_preamp = var_GetFloat( p_aout, "equalizer-preamp" );
-        i_preset = presetsComboBox->findData( QVariant(
-                    var_GetString( p_aout, "equalizer-preset" ) ) );
+        i_preset = presetsComboBox->findData( QVariant( psz_pres ) );
         vlc_object_release( p_aout );
     }
     else
     {
         psz_af = config_GetPsz( p_intf, "audio-filter" );
+        psz_pres = config_GetPsz( p_intf, "equalizer-preset" );
         if( config_GetInt( p_intf, "equalizer-2pass" ) )
             ui.eq2PassCheck->setChecked( true );
         f_preamp = config_GetFloat( p_intf, "equalizer-preamp" );
-        i_preset = presetsComboBox->findData( QVariant(
-                    config_GetPsz( p_intf, "equalizer-preset" ) ) );
+        i_preset = presetsComboBox->findData( QVariant( psz_pres ) );
     }
     if( psz_af && strstr( psz_af, "equalizer" ) != NULL )
         ui.enableCheck->setChecked( true );
@@ -914,6 +908,7 @@ void Equalizer::updateUIFromCore()
     presetsComboBox->setCurrentIndex( i_preset );
 
     free( psz_af );
+    free( psz_pres );
 }
 
 /* Functin called when enableButton is toggled */
@@ -949,8 +944,7 @@ void Equalizer::enable( bool en )
 /* Function called when the set2Pass button is activated */
 void Equalizer::set2Pass()
 {
-    aout_instance_t *p_aout= ( aout_instance_t * )vlc_object_find( p_intf,
-                                 VLC_OBJECT_AOUT, FIND_ANYWHERE );
+    aout_instance_t *p_aout= THEMIM->getAout();
     bool b_2p = ui.eq2PassCheck->isChecked();
 
     if( p_aout == NULL )
@@ -971,8 +965,7 @@ void Equalizer::set2Pass()
 void Equalizer::setPreamp()
 {
     const float f = ( float )(  ui.preampSlider->value() ) /10 - 20;
-    aout_instance_t *p_aout= ( aout_instance_t * )vlc_object_find( p_intf,
-                                       VLC_OBJECT_AOUT, FIND_ANYWHERE );
+    aout_instance_t *p_aout = THEMIM->getAout();
 
     ui.preampLabel->setText( qtr( "Preamp\n" ) + QString::number( f, 'f', 1 )
                                                + qtr( "dB" ) );
@@ -1001,8 +994,7 @@ void Equalizer::setCoreBands()
     }
     const char *psz_values = values.toAscii().constData();
 
-    aout_instance_t *p_aout= ( aout_instance_t * )vlc_object_find( p_intf,
-                                          VLC_OBJECT_AOUT, FIND_ANYWHERE );
+    aout_instance_t *p_aout = THEMIM->getAout();
     if( p_aout )
     {
         //delCallbacks( p_aout );
@@ -1064,8 +1056,7 @@ void Equalizer::setCorePreset( int i_preset )
     char *psz_values = createValuesFromPreset( i_preset );
     if( !psz_values ) return ;
 
-    aout_instance_t *p_aout= ( aout_instance_t * )vlc_object_find( p_intf,
-                                               VLC_OBJECT_AOUT, FIND_ANYWHERE );
+    aout_instance_t *p_aout= THEMIM->getAout();
     if( p_aout )
     {
         delCallbacks( p_aout );
@@ -1081,6 +1072,7 @@ void Equalizer::setCorePreset( int i_preset )
     config_PutPsz( p_intf, "equalizer-preset", preset_list[i_preset] );
     config_PutFloat( p_intf, "equalizer-preamp",
                     eqz_preset_10b[i_preset]->f_preamp );
+    free( psz_values );
 }
 
 static int PresetCallback( vlc_object_t *p_this, char const *psz_cmd,
@@ -1116,7 +1108,8 @@ void Equalizer::addCallbacks( aout_instance_t *p_aout )
  **********************************************************************/
 static const char *psz_control_names[] =
 {
-    "Roomsize", "Width" , "Wet", "Dry", "Damp"
+    "spatializer-roomsize", "spatializer-width",
+    "spatializer-wet", "spatializer-dry", "spatializer-damp"
 };
 
 Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent ) :
@@ -1159,8 +1152,7 @@ Spatializer::Spatializer( intf_thread_t *_p_intf, QWidget *_parent ) :
     BUTTONACT( enableCheck, enable() );
 
     /* Write down initial values */
-    aout_instance_t *p_aout = ( aout_instance_t * )
-        vlc_object_find( p_intf, VLC_OBJECT_AOUT, FIND_ANYWHERE );
+    aout_instance_t *p_aout = THEMIM->getAout();
     char *psz_af;
 
     if( p_aout )
@@ -1215,8 +1207,7 @@ void Spatializer::setInitValues()
 
 void Spatializer::setValues( float *controlVars )
 {
-    aout_instance_t *p_aout= ( aout_instance_t * )
-        vlc_object_find( p_intf, VLC_OBJECT_AOUT, FIND_ANYWHERE );
+    aout_instance_t *p_aout = THEMIM->getAout();
 
     for( int i = 0 ; i < NUM_SP_CTRL ; i++ )
     {
@@ -1266,6 +1257,8 @@ SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
 
     QToolButton *updateButton;
 
+    b_userAction = true;
+
     QGridLayout *mainLayout = new QGridLayout( this );
 
     /* AV sync */
@@ -1296,7 +1289,7 @@ SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
     AVSpin->setSingleStep( 0.1 );
     AVSpin->setToolTip( qtr( "A positive value means that\n"
                              "the audio is ahead of the video" ) );
-    AVSpin->setSuffix( "s" );
+    AVSpin->setSuffix( " s" );
     AVLayout->addWidget( AVSpin, 0, 2, 1, 1 );
     mainLayout->addWidget( AVBox, 1, 0, 1, 5 );
 
@@ -1329,7 +1322,7 @@ SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
     subsSpin->setSingleStep( 0.1 );
     subsSpin->setToolTip( qtr( "A positive value means that\n"
                              "the subtitles are ahead of the video" ) );
-    subsSpin->setSuffix( "s" );
+    subsSpin->setSuffix( " s" );
     subsLayout->addWidget( subsSpin, 0, 2, 1, 1 );
 
 
@@ -1355,6 +1348,7 @@ SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
     subSpeedSpin->setMinimum( 1 );
     subSpeedSpin->setMaximum( 100 );
     subSpeedSpin->setSingleStep( 0.2 );
+    subSpeedSpin->setSuffix( " fps" );
     subsLayout->addWidget( subSpeedSpin, 1, 2, 1, 1 );
 
     mainLayout->addWidget( subsBox, 2, 0, 2, 5 );
@@ -1375,6 +1369,8 @@ SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
     CONNECT( subsSpin, valueChanged ( double ), this, advanceSubs( double ) ) ;
     CONNECT( subSpeedSpin, valueChanged ( double ),
              this, adjustSubsSpeed( double ) );
+
+    CONNECT( THEMIM->getIM(), synchroChanged(), this, update() );
     BUTTON_SET_ACT_I( updateButton, "", update,
             qtr( "Force update of this dialog's values" ), update() );
 
@@ -1384,48 +1380,50 @@ SyncControls::SyncControls( intf_thread_t *_p_intf, QWidget *_parent ) :
 
 void SyncControls::clean()
 {
+    b_userAction = false;
     AVSpin->setValue( 0.0 );
     subsSpin->setValue( 0.0 );
     subSpeedSpin->setValue( 1.0 );
+    b_userAction = true;
 }
 
 void SyncControls::update()
 {
+    b_userAction = false;
+
     int64_t i_delay;
     if( THEMIM->getInput() )
     {
-        i_delay = var_GetTime( THEMIM->getInput(), "spu-delay" );
-        AVSpin->setValue( ( (double)i_delay ) / 1000000 );
         i_delay = var_GetTime( THEMIM->getInput(), "audio-delay" );
+        AVSpin->setValue( ( (double)i_delay ) / 1000000 );
+        i_delay = var_GetTime( THEMIM->getInput(), "spu-delay" );
         subsSpin->setValue( ( (double)i_delay ) / 1000000 );
         subSpeedSpin->setValue( var_GetFloat( THEMIM->getInput(), "sub-fps" ) );
     }
+    b_userAction = true;
 }
 
 void SyncControls::advanceAudio( double f_advance )
 {
-    if( THEMIM->getInput() )
+    if( THEMIM->getInput() && b_userAction )
     {
-        int64_t i_delay = var_GetTime( THEMIM->getInput(), "audio-delay" );
-        i_delay = f_advance * 1000000;
+        int64_t i_delay = f_advance * 1000000;
         var_SetTime( THEMIM->getInput(), "audio-delay", i_delay );
     }
 }
 
 void SyncControls::advanceSubs( double f_advance )
 {
-    if( THEMIM->getInput() )
+    if( THEMIM->getInput() && b_userAction )
     {
-        int64_t i_delay = var_GetTime( THEMIM->getInput(), "spu-delay" );
-        i_delay = f_advance * 1000000;
+        int64_t i_delay = f_advance * 1000000;
         var_SetTime( THEMIM->getInput(), "spu-delay", i_delay );
-        msg_Dbg( p_intf, "I am advancing subtitles %d", f_advance );
     }
 }
 
 void SyncControls::adjustSubsSpeed( double f_fps )
 {
-    if( THEMIM->getInput() )
+    if( THEMIM->getInput() && b_userAction )
     {
         var_SetFloat( THEMIM->getInput(), "sub-fps", f_fps );
     }

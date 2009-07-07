@@ -1,8 +1,8 @@
 /*****************************************************************************
  * dialogs_provider.hpp : Dialogs provider
  ****************************************************************************
- * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: fe7d02b0df8694f88a8a4a992d59e2ebec4dd7e6 $
+ * Copyright (C) 2006-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -22,24 +22,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#ifndef _DIALOGS_PROVIDER_H_
-#define _DIALOGS_PROVIDER_H_
+#ifndef QVLC_DIALOGS_PROVIDER_H_
+#define QVLC_DIALOGS_PROVIDER_H_
 
 #ifdef HAVE_CONFIG_H
 # include "config.h"
 #endif
 
 #include <assert.h>
-#include <vlc_common.h>
-#include <vlc_interface.h>
 
 #include "qt4.hpp"
-#include "dialogs/interaction.hpp"
-#include "dialogs/open.hpp"
 
 #include <QObject>
-#include <QTimer>
-#include <QApplication>
 
 #define ADD_FILTER_MEDIA( string )     \
     string += qtr( "Media Files" );    \
@@ -78,9 +72,17 @@ enum {
     EXT_FILTER_SUBTITLE  =  0x10,
 };
 
+enum {
+    DialogEvent_Type = QEvent::User + DialogEventType + 1,
+    //PLUndockEvent_Type = QEvent::User + DialogEventType + 2;
+    //PLDockEvent_Type = QEvent::User + DialogEventType + 3;
+    SetVideoOnTopEvent_Type = QEvent::User + DialogEventType + 4,
+};
+
 class QEvent;
 class QSignalMapper;
 class QVLCMenu;
+#include <QStringList>
 
 class DialogsProvider : public QObject
 {
@@ -101,15 +103,13 @@ public:
     }
     static void killInstance()
     {
-        if( instance ) delete instance;
+        delete instance;
         instance = NULL;
     }
     static bool isAlive()
     {
         return ( instance != NULL );
     }
-    virtual ~DialogsProvider();
-    QTimer *fixed_timer;
 
     QStringList showSimpleOpen( QString help = QString(),
                                 int filters = EXT_FILTER_MEDIA |
@@ -125,16 +125,17 @@ protected:
 
 private:
     DialogsProvider( intf_thread_t *);
-    intf_thread_t *p_intf;
+    virtual ~DialogsProvider();
     static DialogsProvider *instance;
-    void addFromSimple( bool, bool );
+
+    intf_thread_t *p_intf;
     bool b_isDying;
 
+    void openDialog( int );
+    void addFromSimple( bool, bool );
+
 public slots:
-    void doInteraction( intf_dialog_args_t * );
-    void menuAction( QObject *);
-    void menuUpdateAction( QObject * );
-    void SDMenuAction( QString );
+    void playMRL( const QString & );
 
     void playlistDialog();
     void bookmarksDialog();
@@ -142,6 +143,7 @@ public slots:
     void mediaCodecDialog();
     void prefsDialog();
     void extendedDialog();
+    void synchroDialog();
     void messagesDialog();
 #ifdef ENABLE_VLM
     void vlmDialog();
@@ -153,29 +155,33 @@ public slots:
     void aboutDialog();
     void gotoTimeDialog();
     void podcastConfigureDialog();
+    void toolbarDialog();
+    void pluginDialog();
+
+    void openFileGenericDialog( intf_dialog_args_t * );
 
     void simpleOpenDialog();
     void simplePLAppendDialog();
     void simpleMLAppendDialog();
 
     void openDialog();
-    void openDialog( int );
-    void openFileGenericDialog( intf_dialog_args_t * );
     void openDiscDialog();
     void openFileDialog();
+    void openUrlDialog();
     void openNetDialog();
     void openCaptureDialog();
 
     void PLAppendDialog();
     void MLAppendDialog();
+
     void PLOpenDir();
     void PLAppendDir();
     void MLAppendDir();
 
-    void streamingDialog( QWidget *parent, QString mrl = "",
-            bool b_stream = true );
-    void openThenStreamingDialogs();
-    void openThenTranscodingDialogs();
+    void streamingDialog( QWidget *parent, QString mrl, bool b_stream = true,
+                          QStringList options = QStringList("") );
+    void openAndStreamingDialogs();
+    void openAndTranscodingDialogs();
 
     void openAPlaylist();
     void saveAPlaylist();
@@ -183,6 +189,29 @@ public slots:
     void loadSubtitlesFile();
 
     void quit();
+private slots:
+    void menuAction( QObject *);
+    void menuUpdateAction( QObject * );
+    void SDMenuAction( QString );
+signals:
+    void  toolBarConfUpdated();
 };
+
+class DialogEvent : public QEvent
+{
+public:
+    DialogEvent( int _i_dialog, int _i_arg, intf_dialog_args_t *_p_arg ) :
+                 QEvent( (QEvent::Type)(DialogEvent_Type) )
+    {
+        i_dialog = _i_dialog;
+        i_arg = _i_arg;
+        p_arg = _p_arg;
+    };
+    virtual ~DialogEvent() { };
+
+    int i_arg, i_dialog;
+    intf_dialog_args_t *p_arg;
+};
+
 
 #endif

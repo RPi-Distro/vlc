@@ -2,7 +2,7 @@
  * xcommon.c: Functions common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: d239137bdb3e8065953e8e97851a15b56689ce12 $
+ * $Id: 9cd132c91c71b4c8178b8ea1b02ee602c42928f0 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -35,6 +35,7 @@
 #include <vlc_interface.h>
 #include <vlc_playlist.h>
 #include <vlc_vout.h>
+#include <vlc_window.h>
 #include <vlc_keys.h>
 
 #include <errno.h>                                                 /* ENOMEM */
@@ -115,16 +116,7 @@ static void DestroyWindow  ( vout_thread_t *, x11_window_t * );
 static int  NewPicture     ( vout_thread_t *, picture_t * );
 static void FreePicture    ( vout_thread_t *, picture_t * );
 
-#ifndef MODULE_NAME_IS_glx
-static IMAGE_TYPE *CreateImage    ( vout_thread_t *,
-                                    Display *, EXTRA_ARGS, int, int );
-#endif
-
 #ifdef HAVE_SYS_SHM_H
-#ifndef MODULE_NAME_IS_glx
-IMAGE_TYPE *CreateShmImage ( vout_thread_t *,
-                                    Display *, EXTRA_ARGS_SHM, int, int );
-#endif
 static int i_shm_major = 0;
 #endif
 
@@ -208,7 +200,8 @@ int Activate ( vlc_object_t *p_this )
     if( p_vout->p_sys == NULL )
         return VLC_ENOMEM;
 
-    vlc_mutex_init( &p_vout->p_sys->lock );
+    /* key and mouse event handling */
+    p_vout->p_sys->i_vout_event = var_CreateGetInteger( p_vout, "vout-event" );
 
     /* Open display, using the "display" config variable or the DISPLAY
      * environment variable */
@@ -426,7 +419,7 @@ int Activate ( vlc_object_t *p_this )
     if( checkXvMCCap( p_vout ) == VLC_EGENERIC )
     {
         msg_Err( p_vout, "no XVMC capability found" );
-        Deactivate( p_vout );
+        Deactivate( p_this );
         return VLC_EGENERIC;
     }
     subpicture_t sub_pic;
@@ -515,7 +508,6 @@ void Deactivate ( vlc_object_t *p_this )
     XCloseDisplay( p_vout->p_sys->p_display );
 
     /* Destroy structure */
-    vlc_mutex_destroy( &p_vout->p_sys->lock );
 #ifdef MODULE_NAME_IS_xvmc
     free_context_lock( &p_vout->p_sys->xvmc_lock );
 #endif
@@ -585,14 +577,12 @@ static void RenderVideo( vout_thread_t *p_vout, picture_t *p_pic )
 {
     vlc_xxmc_t *xxmc = NULL;
 
-    vlc_mutex_lock( &p_vout->p_sys->lock );
     xvmc_context_reader_lock( &p_vout->p_sys->xvmc_lock );
 
     xxmc = &p_pic->p_sys->xxmc_data;
     if( (!xxmc->decoded ||
         !xxmc_xvmc_surface_valid( p_vout, p_pic->p_sys->xvmc_surf )) )
     {
-        vlc_mutex_unlock( &p_vout->p_sys->lock );
         xvmc_context_reader_unlock( &p_vout->p_sys->xvmc_lock );
         return;
     }
@@ -757,8 +747,6 @@ static void RenderVideo( vout_thread_t *p_vout, picture_t *p_pic )
     vlc_mutex_unlock( &p_vout->lastsubtitle_lock );
 #endif
     xvmc_context_reader_unlock( &p_vout->p_sys->xvmc_lock );
-
-    vlc_mutex_unlock( &p_vout->p_sys->lock );
 }
 #endif
 
@@ -963,8 +951,6 @@ static void DisplayVideo( vout_thread_t *p_vout, picture_t *p_pic )
                        p_vout->p_sys->p_win->i_height,
                        &i_x, &i_y, &i_width, &i_height );
 
-    vlc_mutex_lock( &p_vout->p_sys->lock );
-
 #ifdef MODULE_NAME_IS_xvmc
     xvmc_context_reader_lock( &p_vout->p_sys->xvmc_lock );
 
@@ -975,7 +961,6 @@ static void DisplayVideo( vout_thread_t *p_vout, picture_t *p_pic )
       msg_Dbg( p_vout, "DisplayVideo decoded=%d\tsurfacevalid=%d",
                xxmc->decoded,
                xxmc_xvmc_surface_valid( p_vout, p_pic->p_sys->xvmc_surf ) );
-      vlc_mutex_unlock( &p_vout->p_sys->lock );
       xvmc_context_reader_unlock( &p_vout->p_sys->xvmc_lock );
       return;
     }
@@ -1082,7 +1067,7 @@ static void DisplayVideo( vout_thread_t *p_vout, picture_t *p_pic )
     if( p_vout->p_sys->i_shm_opcode )
     {
         /* Display rendered image using shared memory extension */
-#   if defined(MODULE_NAME_IS_xvideo) || defined(MODULE_NAME_IS_xvmc)
+#if defined(MODULE_NAME_IS_xvideo) || defined(MODULE_NAME_IS_xvmc)
         XvShmPutImage( p_vout->p_sys->p_display, p_vout->p_sys->i_xvport,
                        p_vout->p_sys->p_win->video_window,
                        p_vout->p_sys->p_win->gc, p_pic->p_sys->p_image,
@@ -1092,7 +1077,7 @@ static void DisplayVideo( vout_thread_t *p_vout, picture_t *p_pic )
                        p_vout->fmt_out.i_visible_height,
                        0 /*dest_x*/, 0 /*dest_y*/, i_width, i_height,
                        False /* Don't put True here or you'll waste your CPU */ );
-#   else
+#else
         XShmPutImage( p_vout->p_sys->p_display,
                       p_vout->p_sys->p_win->video_window,
                       p_vout->p_sys->p_win->gc, p_pic->p_sys->p_image,
@@ -1102,7 +1087,7 @@ static void DisplayVideo( vout_thread_t *p_vout, picture_t *p_pic )
                       p_vout->fmt_out.i_visible_width,
                       p_vout->fmt_out.i_visible_height,
                       False /* Don't put True here ! */ );
-#   endif
+#endif
     }
     else
 #endif /* HAVE_SYS_SHM_H */
@@ -1131,8 +1116,6 @@ static void DisplayVideo( vout_thread_t *p_vout, picture_t *p_pic )
 
     /* Make sure the command is sent now - do NOT use XFlush !*/
     XSync( p_vout->p_sys->p_display, False );
-
-    vlc_mutex_unlock( &p_vout->p_sys->lock );
 }
 
 /*****************************************************************************
@@ -1147,8 +1130,6 @@ static int ManageVideo( vout_thread_t *p_vout )
     XEvent      xevent;                                         /* X11 event */
     vlc_value_t val;
 
-    vlc_mutex_lock( &p_vout->p_sys->lock );
-
 #ifdef MODULE_NAME_IS_xvmc
     xvmc_context_reader_lock( &p_vout->p_sys->xvmc_lock );
 #endif
@@ -1157,7 +1138,7 @@ static int ManageVideo( vout_thread_t *p_vout )
     if( p_vout->p_sys->p_win->owner_window )
     {
         while( XCheckWindowEvent( p_vout->p_sys->p_display,
-                                  p_vout->p_sys->p_win->owner_window,
+                                p_vout->p_sys->p_win->owner_window->handle.xid,
                                   StructureNotifyMask, &xevent ) == True )
         {
             /* ConfigureNotify event: prepare  */
@@ -1251,6 +1232,8 @@ static int ManageVideo( vout_thread_t *p_vout )
                     val.i_int |= 1;
                     var_Set( p_vout, "mouse-button-down", val );
 
+                    var_SetBool( p_vout->p_libvlc, "intf-popupmenu", false );
+
                     /* detect double-clicks */
                     if( ( ((XButtonEvent *)&xevent)->time -
                           p_vout->p_sys->i_time_button_last_pressed ) < 300 )
@@ -1271,6 +1254,7 @@ static int ManageVideo( vout_thread_t *p_vout )
                     var_Get( p_vout, "mouse-button-down", &val );
                     val.i_int |= 4;
                     var_Set( p_vout, "mouse-button-down", val );
+                    var_SetBool( p_vout->p_libvlc, "intf-popupmenu", true );
                     break;
 
                 case Button4:
@@ -1297,11 +1281,7 @@ static int ManageVideo( vout_thread_t *p_vout )
                         val.i_int &= ~1;
                         var_Set( p_vout, "mouse-button-down", val );
 
-                        val.b_bool = true;
-                        var_Set( p_vout, "mouse-clicked", val );
-
-                        vlc_value_t val; val.b_bool = false;
-                        var_Set( p_vout->p_libvlc, "intf-popupmenu", val );
+                        var_SetBool( p_vout, "mouse-clicked", true );
                     }
                     break;
 
@@ -1319,21 +1299,10 @@ static int ManageVideo( vout_thread_t *p_vout )
 
                 case Button3:
                     {
-                        intf_thread_t *p_intf;
-
                         var_Get( p_vout, "mouse-button-down", &val );
                         val.i_int &= ~4;
                         var_Set( p_vout, "mouse-button-down", val );
-                        p_intf = vlc_object_find( p_vout, VLC_OBJECT_INTF,
-                                                          FIND_ANYWHERE );
-                        if( p_intf )
-                        {
-                            p_intf->b_menu_change = 1;
-                            vlc_object_release( p_intf );
-                        }
 
-                        vlc_value_t val; val.b_bool = true;
-                        var_Set( p_vout->p_libvlc, "intf-popupmenu", val );
                     }
                     break;
 
@@ -1355,7 +1324,6 @@ static int ManageVideo( vout_thread_t *p_vout )
         else if( xevent.type == MotionNotify )
         {
             unsigned int i_width, i_height, i_x, i_y;
-            vlc_value_t val;
 
             /* somewhat different use for vout_PlacePicture:
              * here the values are needed to give to mouse coordinates
@@ -1390,8 +1358,7 @@ static int ManageVideo( vout_thread_t *p_vout )
 
             var_Set( p_vout, "mouse-y", val );
 
-            val.b_bool = true;
-            var_Set( p_vout, "mouse-moved", val );
+            var_SetBool( p_vout, "mouse-moved", true );
 
             p_vout->p_sys->i_time_mouse_last_moved = mdate();
             if( ! p_vout->p_sys->b_mouse_pointer_visible )
@@ -1463,7 +1430,7 @@ static int ManageVideo( vout_thread_t *p_vout )
                      == p_vout->p_sys->p_win->wm_delete_window ) )
         {
             /* the user wants to close the window */
-            playlist_t * p_playlist = pl_Yield( p_vout );
+            playlist_t * p_playlist = pl_Hold( p_vout );
             if( p_playlist != NULL )
             {
                 playlist_Stop( p_playlist );
@@ -1482,6 +1449,29 @@ static int ManageVideo( vout_thread_t *p_vout )
 
         ToggleFullScreen( p_vout );
         p_vout->i_changes &= ~VOUT_FULLSCREEN_CHANGE;
+    }
+
+    /* autoscale toggle */
+    if( p_vout->i_changes & VOUT_SCALE_CHANGE )
+    {
+        p_vout->i_changes &= ~VOUT_SCALE_CHANGE;
+
+        p_vout->b_autoscale = var_GetBool( p_vout, "autoscale" );
+        p_vout->i_zoom = ZOOM_FP_FACTOR;
+
+        p_vout->i_changes |= VOUT_SIZE_CHANGE;
+    }
+
+    /* scaling factor */
+    if( p_vout->i_changes & VOUT_ZOOM_CHANGE )
+    {
+        p_vout->i_changes &= ~VOUT_ZOOM_CHANGE;
+
+        p_vout->b_autoscale = false;
+        p_vout->i_zoom =
+            (int)( ZOOM_FP_FACTOR * var_GetFloat( p_vout, "scale" ) );
+
+        p_vout->i_changes |= VOUT_SIZE_CHANGE;
     }
 
     if( p_vout->i_changes & VOUT_CROP_CHANGE ||
@@ -1512,12 +1502,11 @@ static int ManageVideo( vout_thread_t *p_vout )
     {
         unsigned int i_width, i_height, i_x, i_y;
 
-        p_vout->i_changes &= ~VOUT_SIZE_CHANGE;
-
 #ifdef MODULE_NAME_IS_x11
         /* We need to signal the vout thread about the size change because it
          * is doing the rescaling */
-        p_vout->i_changes |= VOUT_SIZE_CHANGE;
+#else
+        p_vout->i_changes &= ~VOUT_SIZE_CHANGE;
 #endif
 
         vout_PlacePicture( p_vout, p_vout->p_sys->p_win->i_width,
@@ -1529,12 +1518,21 @@ static int ManageVideo( vout_thread_t *p_vout )
                            i_x, i_y, i_width, i_height );
     }
 
+    /* cursor hiding depending on --vout-event option
+     *      activated if:
+     *            value = 1 (Fullsupport) (default value)
+     *         or value = 2 (Fullscreen-Only) and condition met
+     */
+    bool b_vout_event = (   ( p_vout->p_sys->i_vout_event == 1 )
+                         || ( p_vout->p_sys->i_vout_event == 2 && p_vout->b_fullscreen )
+                        );
+
     /* Autohide Cursour */
     if( mdate() - p_vout->p_sys->i_time_mouse_last_moved >
         p_vout->p_sys->i_mouse_hide_timeout )
     {
         /* Hide the mouse automatically */
-        if( p_vout->p_sys->b_mouse_pointer_visible )
+        if( b_vout_event && p_vout->p_sys->b_mouse_pointer_visible )
         {
             ToggleCursor( p_vout );
         }
@@ -1558,8 +1556,6 @@ static int ManageVideo( vout_thread_t *p_vout )
         }
     }
 #endif
-
-    vlc_mutex_unlock( &p_vout->p_sys->lock );
     return 0;
 }
 
@@ -1593,8 +1589,6 @@ static int CreateWindow( vout_thread_t *p_vout, x11_window_t *p_win )
     XGCValues               xgcvalues;
     XEvent                  xevent;
 
-    bool              b_expose = false;
-    bool              b_configure_notify = false;
     bool              b_map_notify = false;
     vlc_value_t             val;
 
@@ -1616,9 +1610,8 @@ static int CreateWindow( vout_thread_t *p_vout, x11_window_t *p_win )
 
     if( !p_vout->b_fullscreen )
     {
-        void *ptr = vout_RequestWindow( p_vout, &p_win->i_x, &p_win->i_y,
-                                        &p_win->i_width, &p_win->i_height );
-        p_win->owner_window = (uintptr_t)ptr;
+        p_win->owner_window = vout_RequestXWindow( p_vout, &p_win->i_x,
+                              &p_win->i_y, &p_win->i_width, &p_win->i_height );
         xsize_hints.base_width  = xsize_hints.width = p_win->i_width;
         xsize_hints.base_height = xsize_hints.height = p_win->i_height;
         xsize_hints.flags       = PSize | PMinSize;
@@ -1633,7 +1626,7 @@ static int CreateWindow( vout_thread_t *p_vout, x11_window_t *p_win )
     else
     {
         /* Fullscreen window size and position */
-        p_win->owner_window = 0;
+        p_win->owner_window = NULL;
         p_win->i_x = p_win->i_y = 0;
         p_win->i_width =
             DisplayWidth( p_vout->p_sys->p_display, p_vout->p_sys->i_screen );
@@ -1714,24 +1707,22 @@ static int CreateWindow( vout_thread_t *p_vout, x11_window_t *p_win )
         unsigned int dummy4, dummy5;
 
         /* Select events we are interested in. */
-        XSelectInput( p_vout->p_sys->p_display, p_win->owner_window,
-                      StructureNotifyMask );
+        XSelectInput( p_vout->p_sys->p_display,
+                      p_win->owner_window->handle.xid, StructureNotifyMask );
 
         /* Get the parent window's geometry information */
-        XGetGeometry( p_vout->p_sys->p_display, p_win->owner_window,
+        XGetGeometry( p_vout->p_sys->p_display,
+                      p_win->owner_window->handle.xid,
                       &dummy1, &dummy2, &dummy3,
                       &p_win->i_width,
                       &p_win->i_height,
                       &dummy4, &dummy5 );
 
-        /* We are already configured */
-        b_configure_notify = true;
-
         /* From man XSelectInput: only one client at a time can select a
          * ButtonPress event, so we need to open a new window anyway. */
         p_win->base_window =
             XCreateWindow( p_vout->p_sys->p_display,
-                           p_win->owner_window,
+                           p_win->owner_window->handle.xid,
                            0, 0,
                            p_win->i_width, p_win->i_height,
                            0,
@@ -1756,27 +1747,13 @@ static int CreateWindow( vout_thread_t *p_vout, x11_window_t *p_win )
                            p_win->base_window,
                            GCGraphicsExposures, &xgcvalues );
 
-    /* Send orders to server, and wait until window is displayed - three
-     * events must be received: a MapNotify event, an Expose event allowing
-     * drawing in the window, and a ConfigureNotify to get the window
-     * dimensions. Once those events have been received, only
-     * ConfigureNotify events need to be received. */
+    /* Wait till the window is mapped */
     XMapWindow( p_vout->p_sys->p_display, p_win->base_window );
     do
     {
         XWindowEvent( p_vout->p_sys->p_display, p_win->base_window,
-                      SubstructureNotifyMask | StructureNotifyMask |
-                      ExposureMask, &xevent);
-        if( (xevent.type == Expose)
-            && (xevent.xexpose.window == p_win->base_window) )
-        {
-            b_expose = true;
-            /* ConfigureNotify isn't sent if there isn't a window manager.
-             * Expose should be the last event to be received so it should
-             * be fine to assume we won't receive it anymore. */
-            b_configure_notify = true;
-        }
-        else if( (xevent.type == MapNotify)
+                      SubstructureNotifyMask | StructureNotifyMask, &xevent);
+        if( (xevent.type == MapNotify)
                  && (xevent.xmap.window == p_win->base_window) )
         {
             b_map_notify = true;
@@ -1784,16 +1761,24 @@ static int CreateWindow( vout_thread_t *p_vout, x11_window_t *p_win )
         else if( (xevent.type == ConfigureNotify)
                  && (xevent.xconfigure.window == p_win->base_window) )
         {
-            b_configure_notify = true;
             p_win->i_width = xevent.xconfigure.width;
             p_win->i_height = xevent.xconfigure.height;
         }
-    } while( !( b_expose && b_configure_notify && b_map_notify ) );
+    } while( !b_map_notify );
 
-    XSelectInput( p_vout->p_sys->p_display, p_win->base_window,
-                  StructureNotifyMask | KeyPressMask |
-                  ButtonPressMask | ButtonReleaseMask |
-                  PointerMotionMask );
+    /* key and mouse events handling depending on --vout-event option
+     *      activated if:
+     *            value = 1 (Fullsupport) (default value)
+     *         or value = 2 (Fullscreen-Only) and condition met
+     */
+    bool b_vout_event = (   ( p_vout->p_sys->i_vout_event == 1 )
+                         || ( p_vout->p_sys->i_vout_event == 2 && p_vout->b_fullscreen )
+                        );
+    if ( b_vout_event )
+        XSelectInput( p_vout->p_sys->p_display, p_win->base_window,
+                      StructureNotifyMask | KeyPressMask |
+                      ButtonPressMask | ButtonReleaseMask |
+                      PointerMotionMask );
 
 #ifdef MODULE_NAME_IS_x11
     if( XDefaultDepth(p_vout->p_sys->p_display, p_vout->p_sys->i_screen) == 8 )
@@ -1869,8 +1854,21 @@ static void DestroyWindow( vout_thread_t *p_vout, x11_window_t *p_win )
     XUnmapWindow( p_vout->p_sys->p_display, p_win->base_window );
     XDestroyWindow( p_vout->p_sys->p_display, p_win->base_window );
 
-    if( p_win->owner_window )
-        vout_ReleaseWindow( p_vout, (void *)p_win->owner_window );
+    /* make sure base window is destroyed before proceeding further */
+    bool b_destroy_notify = false;
+    do
+    {
+        XEvent      xevent;
+        XWindowEvent( p_vout->p_sys->p_display, p_win->base_window,
+                      SubstructureNotifyMask | StructureNotifyMask, &xevent);
+        if( (xevent.type == DestroyNotify)
+                 && (xevent.xmap.window == p_win->base_window) )
+        {
+            b_destroy_notify = true;
+        }
+    } while( !b_destroy_notify );
+
+    vout_ReleaseWindow( p_win->owner_window );
 }
 
 /*****************************************************************************
@@ -1915,13 +1913,13 @@ static int NewPicture( vout_thread_t *p_vout, picture_t *p_pic )
         /* Create image using XShm extension */
         p_pic->p_sys->p_image =
             CreateShmImage( p_vout, p_vout->p_sys->p_display,
-#   if defined(MODULE_NAME_IS_xvideo) || defined(MODULE_NAME_IS_xvmc)
+#if defined(MODULE_NAME_IS_xvideo) || defined(MODULE_NAME_IS_xvmc)
                             p_vout->p_sys->i_xvport,
                             VLC2X11_FOURCC(p_vout->output.i_chroma),
-#   else
+#else
                             p_vout->p_sys->p_visual,
                             p_vout->p_sys->i_screen_depth,
-#   endif
+#endif
                             &p_pic->p_sys->shminfo,
                             p_vout->output.i_width, p_vout->output.i_height );
     }
@@ -2080,7 +2078,6 @@ static void FreePicture( vout_thread_t *p_vout, picture_t *p_pic )
 static void ToggleFullScreen ( vout_thread_t *p_vout )
 {
     Atom prop;
-    XEvent xevent;
     mwmhints_t mwmhints;
     XSetWindowAttributes attributes;
 
@@ -2093,6 +2090,39 @@ static void ToggleFullScreen ( vout_thread_t *p_vout )
     if( p_vout->b_fullscreen )
     {
         msg_Dbg( p_vout, "entering fullscreen mode" );
+
+        /* Getting current window position */
+        Window root_win;
+        Window* child_windows;
+        unsigned int num_child_windows;
+        Window parent_win;
+        Window child_win;
+        XWindowAttributes win_attr;
+        int screen_x,screen_y;
+
+        XGetWindowAttributes(
+                p_vout->p_sys->p_display,
+                p_vout->p_sys->p_win->video_window,
+                &win_attr);
+
+        XQueryTree(
+                p_vout->p_sys->p_display,
+                p_vout->p_sys->p_win->video_window,
+                &root_win,
+                &parent_win,
+                &child_windows,
+                &num_child_windows);
+        XFree(child_windows);
+
+        XTranslateCoordinates(
+                p_vout->p_sys->p_display,
+                parent_win, win_attr.root,
+                win_attr.x,win_attr.y,
+                &screen_x,&screen_y,
+                &child_win);
+
+        msg_Dbg( p_vout, "X %d/%d Y %d/%d", win_attr.x,screen_x,win_attr.y,screen_y);
+        /* screen_x and screen_y are current position */
 
         p_vout->p_sys->b_altfullscreen =
             config_GetInt( p_vout, MODULE_STRING "-altfullscreen" );
@@ -2182,12 +2212,10 @@ static void ToggleFullScreen ( vout_thread_t *p_vout )
  * the focus should go there or not, so let the wm decided */
 #define APPFOCUS 0
         /* Make sure the change is effective */
-#if BADFS // RASTER: why do this? you already mapped the window in CreateWindow?
         XReparentWindow( p_vout->p_sys->p_display,
                          p_vout->p_sys->p_win->base_window,
                          DefaultRootWindow( p_vout->p_sys->p_display ),
-                         -2, -2 );
-#endif
+                         0, 0 );
 
 #ifdef HAVE_XINERAMA
         if( XineramaQueryExtension( p_vout->p_sys->p_display, &i_d1, &i_d2 ) &&
@@ -2207,11 +2235,26 @@ static void ToggleFullScreen ( vout_thread_t *p_vout )
             SCREEN = config_GetInt( p_vout,
                                         MODULE_STRING "-xineramascreen" );
 
-            /* just check that user has entered a good value */
+            /* just check that user has entered a good value,
+             * otherwise use that screen where window is */
             if( SCREEN >= i_num_screens || SCREEN < 0 )
             {
                 msg_Dbg( p_vout, "requested screen number invalid (%d/%d)", SCREEN, i_num_screens );
-                SCREEN = 0;
+#define left screens[SCREEN].x_org
+#define right left + screens[SCREEN].width
+#define top screens[SCREEN].y_org
+#define bottom top + screens[SCREEN].height
+
+                 for( SCREEN = i_num_screens-1; SCREEN > 0; SCREEN--)
+                 {
+                     if( left <= screen_x && screen_x <= right &&
+                             top <= screen_y && screen_y <= bottom )
+                         break;
+                 }
+#undef bottom
+#undef top
+#undef right
+#undef left
             }
 
             /* Get the X/Y upper left corner coordinate of the above screen */
@@ -2328,6 +2371,7 @@ static void ToggleFullScreen ( vout_thread_t *p_vout )
      * the call is first redirected to the window manager) */
 
 #if BADFS // RASTER: this is silly... if we have already mapped before
+    XEvent xevent;
     do
     {
         XWindowEvent( p_vout->p_sys->p_display,
@@ -2704,7 +2748,7 @@ static int InitDisplay( vout_thread_t *p_vout )
 #ifdef HAVE_SYS_SHM_H
     p_vout->p_sys->i_shm_opcode = 0;
 
-    if( config_GetInt( p_vout, MODULE_STRING "-shm" ) )
+    if( config_GetInt( p_vout, MODULE_STRING "-shm" ) > 0 )
     {
         int major, evt, err;
 
@@ -2715,7 +2759,7 @@ static int InitDisplay( vout_thread_t *p_vout )
 
         if( p_vout->p_sys->i_shm_opcode )
         {
-            int major, minor;
+            int minor;
             Bool pixmaps;
 
             XShmQueryVersion( p_vout->p_sys->p_display, &major, &minor,
@@ -2866,6 +2910,20 @@ IMAGE_TYPE * CreateShmImage( vout_thread_t *p_vout,
     if( p_image == NULL )
     {
         msg_Err( p_vout, "image creation failed" );
+        return NULL;
+    }
+
+    /* For too big image, the buffer returned is sometimes too small, prevent
+     * VLC to segfault because of it
+     * FIXME is it normal ? Is there a way to detect it
+     * before (XvQueryBestSize did not) ? */
+    if( p_image->width < i_width || p_image->height < i_height )
+    {
+        msg_Err( p_vout, "cannot allocate shared image data with the right size "
+                         "(%dx%d instead of %dx%d)",
+                         p_image->width, p_image->height,
+                         i_width, i_height );
+        IMAGE_FREE( p_image );
         return NULL;
     }
 
@@ -3064,31 +3122,13 @@ static int Control( vout_thread_t *p_vout, int i_query, va_list args )
 {
     bool b_arg;
     unsigned int i_width, i_height;
-    unsigned int *pi_width, *pi_height;
-    Drawable d = 0;
 
     switch( i_query )
     {
-        case VOUT_GET_SIZE:
-            if( p_vout->p_sys->p_win->owner_window )
-                return vout_ControlWindow( p_vout,
-                    (void *)p_vout->p_sys->p_win->owner_window, i_query, args);
-
-            pi_width  = va_arg( args, unsigned int * );
-            pi_height = va_arg( args, unsigned int * );
-
-            vlc_mutex_lock( &p_vout->p_sys->lock );
-            *pi_width  = p_vout->p_sys->p_win->i_width;
-            *pi_height = p_vout->p_sys->p_win->i_height;
-            vlc_mutex_unlock( &p_vout->p_sys->lock );
-            return VLC_SUCCESS;
-
         case VOUT_SET_SIZE:
             if( p_vout->p_sys->p_win->owner_window )
-                return vout_ControlWindow( p_vout,
-                    (void *)p_vout->p_sys->p_win->owner_window, i_query, args);
-
-            vlc_mutex_lock( &p_vout->p_sys->lock );
+                return vout_ControlWindow( p_vout->p_sys->p_win->owner_window,
+                                           i_query, args);
 
             i_width  = va_arg( args, unsigned int );
             i_height = va_arg( args, unsigned int );
@@ -3105,48 +3145,14 @@ static int Control( vout_thread_t *p_vout, int i_query, va_list args )
 #ifdef MODULE_NAME_IS_xvmc
             xvmc_context_reader_unlock( &p_vout->p_sys->xvmc_lock );
 #endif
-            vlc_mutex_unlock( &p_vout->p_sys->lock );
             return VLC_SUCCESS;
-
-       case VOUT_CLOSE:
-            vlc_mutex_lock( &p_vout->p_sys->lock );
-            XUnmapWindow( p_vout->p_sys->p_display,
-                          p_vout->p_sys->original_window.base_window );
-            vlc_mutex_unlock( &p_vout->p_sys->lock );
-            /* Fall through */
-
-       case VOUT_REPARENT:
-            vlc_mutex_lock( &p_vout->p_sys->lock );
-            if( i_query == VOUT_REPARENT ) d = (Drawable)va_arg( args, int );
-            if( !d )
-            {
-#ifdef MODULE_NAME_IS_xvmc
-            xvmc_context_reader_lock( &p_vout->p_sys->xvmc_lock );
-#endif
-            XReparentWindow( p_vout->p_sys->p_display,
-                             p_vout->p_sys->original_window.base_window,
-                             DefaultRootWindow( p_vout->p_sys->p_display ),
-                             0, 0 );
-            }
-            else
-            XReparentWindow( p_vout->p_sys->p_display,
-                             p_vout->p_sys->original_window.base_window,
-                             d, 0, 0);
-            XSync( p_vout->p_sys->p_display, False );
-            p_vout->p_sys->original_window.owner_window = 0;
-#ifdef MODULE_NAME_IS_xvmc
-            xvmc_context_reader_unlock( &p_vout->p_sys->xvmc_lock );
-#endif
-            vlc_mutex_unlock( &p_vout->p_sys->lock );
-            return vout_vaControlDefault( p_vout, i_query, args );
 
         case VOUT_SET_STAY_ON_TOP:
             if( p_vout->p_sys->p_win->owner_window )
-                return vout_ControlWindow( p_vout,
-                    (void *)p_vout->p_sys->p_win->owner_window, i_query, args);
+                return vout_ControlWindow( p_vout->p_sys->p_win->owner_window,
+                                           i_query, args);
 
             b_arg = (bool) va_arg( args, int );
-            vlc_mutex_lock( &p_vout->p_sys->lock );
 #ifdef MODULE_NAME_IS_xvmc
             xvmc_context_reader_lock( &p_vout->p_sys->xvmc_lock );
 #endif
@@ -3154,11 +3160,10 @@ static int Control( vout_thread_t *p_vout, int i_query, va_list args )
 #ifdef MODULE_NAME_IS_xvmc
             xvmc_context_reader_unlock( &p_vout->p_sys->xvmc_lock );
 #endif
-            vlc_mutex_unlock( &p_vout->p_sys->lock );
             return VLC_SUCCESS;
 
        default:
-            return vout_vaControlDefault( p_vout, i_query, args );
+            return VLC_EGENERIC;
     }
 }
 
@@ -3301,47 +3306,28 @@ static int ConvertKey( int i_key )
  *****************************************************************************/
 static int WindowOnTop( vout_thread_t *p_vout, bool b_on_top )
 {
+    XClientMessageEvent event;
+
+    memset( &event, 0, sizeof( XClientMessageEvent ) );
+    event.type = ClientMessage;
+    event.message_type = p_vout->p_sys->net_wm_state;
+    event.display = p_vout->p_sys->p_display;
+    event.window = p_vout->p_sys->p_win->base_window;
+    event.format = 32;
+    event.data.l[ 0 ] = b_on_top; /* set property */
+
     if( p_vout->p_sys->b_net_wm_state_stays_on_top )
-    {
-        XClientMessageEvent event;
-
-        memset( &event, 0, sizeof( XClientMessageEvent ) );
-
-        event.type = ClientMessage;
-        event.message_type = p_vout->p_sys->net_wm_state;
-        event.display = p_vout->p_sys->p_display;
-        event.window = p_vout->p_sys->p_win->base_window;
-        event.format = 32;
-        event.data.l[ 0 ] = b_on_top; /* set property */
         event.data.l[ 1 ] = p_vout->p_sys->net_wm_state_stays_on_top;
-
-        XSendEvent( p_vout->p_sys->p_display,
-                    DefaultRootWindow( p_vout->p_sys->p_display ),
-                    False, SubstructureRedirectMask,
-                    (XEvent*)&event );
-    }
-
-    /* use _NET_WM_STATE_ABOVE if window manager
-     * doesn't handle _NET_WM_STATE_STAYS_ON_TOP */
     else if( p_vout->p_sys->b_net_wm_state_above )
-    {
-        XClientMessageEvent event;
-
-        memset( &event, 0, sizeof( XClientMessageEvent ) );
-
-        event.type = ClientMessage;
-        event.message_type = p_vout->p_sys->net_wm_state;
-        event.display = p_vout->p_sys->p_display;
-        event.window = p_vout->p_sys->p_win->base_window;
-        event.format = 32;
-        event.data.l[ 0 ] = b_on_top; /* set property */
+        /* use _NET_WM_STATE_ABOVE if window manager
+         * doesn't handle _NET_WM_STATE_STAYS_ON_TOP */
         event.data.l[ 1 ] = p_vout->p_sys->net_wm_state_above;
+    else
+        return VLC_EGENERIC;
 
-        XSendEvent( p_vout->p_sys->p_display,
-                    DefaultRootWindow( p_vout->p_sys->p_display ),
-                    False, SubstructureRedirectMask,
-                    (XEvent*)&event );
-    }
-
+    XSendEvent( p_vout->p_sys->p_display,
+                DefaultRootWindow( p_vout->p_sys->p_display ),
+                False, SubstructureRedirectMask,
+                (XEvent*)&event );
     return VLC_SUCCESS;
 }

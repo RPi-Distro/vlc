@@ -2,7 +2,7 @@
  * objects.c: Generic lua<->vlc object wrapper
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 72638f9a9d123fe0706b9df35bc738f3a4d6442e $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -89,18 +89,10 @@ static int vlc_object_type_from_string( const char *psz_name )
         int i_type;
         const char *psz_name;
     } pp_objects[] =
-        { { VLC_OBJECT_LIBVLC, "libvlc" },
-          { VLC_OBJECT_MODULE, "module" },
-          { VLC_OBJECT_INTF, "intf" },
-          { VLC_OBJECT_INPUT, "input" },
+        { { VLC_OBJECT_INPUT, "input" },
           { VLC_OBJECT_DECODER, "decoder" },
           { VLC_OBJECT_VOUT, "vout" },
           { VLC_OBJECT_AOUT, "aout" },
-          { VLC_OBJECT_PACKETIZER, "packetizer" },
-          { VLC_OBJECT_ENCODER, "encoder" },
-          { VLC_OBJECT_ANNOUNCE, "announce" },
-          { VLC_OBJECT_OPENGL, "opengl" },
-          { VLC_OBJECT_OSDMENU, "osdmenu" },
           { VLC_OBJECT_GENERIC, "generic" },
           { 0, "" } };
     int i;

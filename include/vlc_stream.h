@@ -2,7 +2,7 @@
  * vlc_stream.h: Stream (between access and demux) descriptor and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: eba91cf7e9197ecd180bc4f9e0da775d1b7c3091 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -42,6 +42,41 @@ extern "C" {
  * @{
  */
 
+/* Opaque definition for text reader context */
+typedef struct stream_text_t stream_text_t;
+
+/**
+ * stream_t definition
+ */
+
+struct stream_t
+{
+    VLC_COMMON_MEMBERS
+
+    /* Module properties for stream filter */
+    module_t    *p_module;
+
+    /* Real or virtual path (it can only be changed during stream_t opening) */
+    char        *psz_path;
+
+    /* Stream source for stream filter */
+    stream_t *p_source;
+
+    /* */
+    int      (*pf_read)   ( stream_t *, void *p_read, unsigned int i_read );
+    int      (*pf_peek)   ( stream_t *, const uint8_t **pp_peek, unsigned int i_peek );
+    int      (*pf_control)( stream_t *, int i_query, va_list );
+
+    /* */
+    void     (*pf_destroy)( stream_t *);
+
+    /* Private data for module */
+    stream_sys_t *p_sys;
+
+    /* Text reader state */
+    stream_text_t *p_text;
+};
+
 /**
  * Possible commands to send to stream_Control() and stream_vaControl()
  */
@@ -57,14 +92,20 @@ enum stream_query_e
 
     STREAM_GET_SIZE,            /**< arg1= int64_t *      res=cannot fail (0 if no sense)*/
 
-    STREAM_GET_MTU,             /**< arg1= int *          res=cannot fail (0 if no sense)*/
-
     /* Special for direct access control from demuxer.
      * XXX: avoid using it by all means */
     STREAM_CONTROL_ACCESS,  /* arg1= int i_access_query, args   res: can fail
                              if access unreachable or access control answer */
 
-    STREAM_GET_CONTENT_TYPE,   /**< arg1= char **         res=can file */
+    /* You should update size of source if any and then update size 
+     * FIXME find a way to avoid it */
+    STREAM_UPDATE_SIZE,
+
+    /* */
+    STREAM_GET_CONTENT_TYPE,    /**< arg1= char **         res=can fail */
+
+    /* XXX only data read through stream_Read/Block will be recorded */
+    STREAM_SET_RECORD_STATE,     /**< arg1=bool, arg2=const char *psz_ext (if arg1 is true)  res=can fail */
 };
 
 VLC_EXPORT( int, stream_Read, ( stream_t *s, void *p_read, int i_read ) );
@@ -95,13 +136,6 @@ static inline int64_t stream_Size( stream_t *s )
     return i_pos;
 }
 
-static inline int stream_MTU( stream_t *s )
-{
-    int i_mtu;
-    stream_Control( s, STREAM_GET_MTU, &i_mtu );
-    return i_mtu;
-}
-
 static inline int stream_Seek( stream_t *s, int64_t i_pos )
 {
     return stream_Control( s, STREAM_SET_POSITION, i_pos );
@@ -121,14 +155,26 @@ static inline char *stream_ContentType( stream_t *s )
 
 /**
  * Create a special stream and a demuxer, this allows chaining demuxers
+ * You must delete it using stream_Delete.
  */
 #define stream_DemuxNew( a, b, c ) __stream_DemuxNew( VLC_OBJECT(a), b, c)
 VLC_EXPORT( stream_t *,__stream_DemuxNew, ( vlc_object_t *p_obj, const char *psz_demux, es_out_t *out ) );
+/**
+ * Send data to a stream_t handle created by stream_DemuxNew.
+ */
 VLC_EXPORT( void,      stream_DemuxSend,  ( stream_t *s, block_t *p_block ) );
-VLC_EXPORT( void,      stream_DemuxDelete,( stream_t *s ) );
 
+/**
+ * Create a stream_t reading from memory.
+ * You must delete it using stream_Delete.
+ */
 #define stream_MemoryNew( a, b, c, d ) __stream_MemoryNew( VLC_OBJECT(a), b, c, d )
-VLC_EXPORT( stream_t *,__stream_MemoryNew, (vlc_object_t *p_obj, uint8_t *p_buffer, int64_t i_size, bool i_preserve_memory ) );
+VLC_EXPORT( stream_t *,__stream_MemoryNew, (vlc_object_t *p_obj, uint8_t *p_buffer, int64_t i_size, bool b_preserve_memory ) );
+
+/**
+ * Create a stream_t reading from an URL.
+ * You must delete it using stream_Delete.
+ */
 #define stream_UrlNew( a, b ) __stream_UrlNew( VLC_OBJECT(a), b )
 VLC_EXPORT( stream_t *,__stream_UrlNew, (vlc_object_t *p_this, const char *psz_url ) );
 
@@ -138,15 +184,6 @@ VLC_EXPORT( stream_t *,__stream_UrlNew, (vlc_object_t *p_this, const char *psz_u
 
 # ifdef __cplusplus
 }
-# endif
-
-# if defined (__PLUGIN__) || defined (__BUILTIN__)
-   /* FIXME UGLY HACK to keep VLC_OBJECT working */
-   /* Maybe we should make VLC_OBJECT a simple cast noawadays... */
-struct stream_t
-{
-    VLC_COMMON_MEMBERS
-};
 # endif
 
 #endif

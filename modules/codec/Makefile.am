@@ -3,9 +3,9 @@
 
 basedir = codec
 dir = codec
-mods = a52 adpcm araw cc cdg cinepak csri cvdsub dirac dts dvbsub faad fake flac fluidsynth kate libass libmpeg2 lpcm mash mpeg_audio png quicktime rawvideo realaudio realvideo schroedinger sdl_image speex svcdsub tarkin telx theora tremor twolame vorbis x264 zvbi
-libvlc_LTLIBRARIES =  $(LTLIBa52) $(LTLIBadpcm) $(LTLIBaraw) $(LTLIBcc) $(LTLIBcdg) $(LTLIBcinepak) $(LTLIBcsri) $(LTLIBcvdsub) $(LTLIBdirac) $(LTLIBdts) $(LTLIBdvbsub) $(LTLIBfaad) $(LTLIBfake) $(LTLIBflac) $(LTLIBfluidsynth) $(LTLIBkate) $(LTLIBlibass) $(LTLIBlibmpeg2) $(LTLIBlpcm) $(LTLIBmash) $(LTLIBmpeg_audio) $(LTLIBpng) $(LTLIBquicktime) $(LTLIBrawvideo) $(LTLIBrealaudio) $(LTLIBrealvideo) $(LTLIBschroedinger) $(LTLIBsdl_image) $(LTLIBspeex) $(LTLIBsvcdsub) $(LTLIBtarkin) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBx264) $(LTLIBzvbi)
-EXTRA_LTLIBRARIES =  liba52_plugin.la libadpcm_plugin.la libaraw_plugin.la libcc_plugin.la libcdg_plugin.la libcinepak_plugin.la libcsri_plugin.la libcvdsub_plugin.la libdirac_plugin.la libdts_plugin.la libdvbsub_plugin.la libfaad_plugin.la libfake_plugin.la libflac_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la liblpcm_plugin.la libmash_plugin.la libmpeg_audio_plugin.la libpng_plugin.la libquicktime_plugin.la librawvideo_plugin.la librealaudio_plugin.la librealvideo_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libspeex_plugin.la libsvcdsub_plugin.la libtarkin_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libx264_plugin.la libzvbi_plugin.la
+mods = a52 adpcm aes3 araw cc cdg csri cvdsub dirac dts dvbsub faad fake flac fluidsynth invmem kate libass libmpeg2 lpcm mash mpeg_audio png quicktime rawvideo realaudio realvideo schroedinger sdl_image speex svcdsub tarkin telx theora tremor twolame vorbis x264 zvbi
+libvlc_LTLIBRARIES =  $(LTLIBcsri) $(LTLIBdirac) $(LTLIBfaad) $(LTLIBfake) $(LTLIBfluidsynth) $(LTLIBkate) $(LTLIBlibass) $(LTLIBlibmpeg2) $(LTLIBmash) $(LTLIBpng) $(LTLIBquicktime) $(LTLIBrealaudio) $(LTLIBrealvideo) $(LTLIBschroedinger) $(LTLIBsdl_image) $(LTLIBspeex) $(LTLIBtarkin) $(LTLIBtelx) $(LTLIBtheora) $(LTLIBtremor) $(LTLIBtwolame) $(LTLIBvorbis) $(LTLIBx264) $(LTLIBzvbi)
+EXTRA_LTLIBRARIES =  libcsri_plugin.la libdirac_plugin.la libfaad_plugin.la libfake_plugin.la libfluidsynth_plugin.la libkate_plugin.la liblibass_plugin.la liblibmpeg2_plugin.la libmash_plugin.la libpng_plugin.la libquicktime_plugin.la librealaudio_plugin.la librealvideo_plugin.la libschroedinger_plugin.la libsdl_image_plugin.la libspeex_plugin.la libtarkin_plugin.la libtelx_plugin.la libtheora_plugin.la libtremor_plugin.la libtwolame_plugin.la libvorbis_plugin.la libx264_plugin.la libzvbi_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ liba52_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liba52_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liba52_plugin_la_LIBADD = $(AM_LIBADD)
-liba52_plugin_la_DEPENDENCIES =
+liba52_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The adpcm plugin
 libadpcm_plugin_la_SOURCES = $(SOURCES_adpcm)
@@ -29,7 +29,18 @@ libadpcm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libadpcm_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libadpcm_plugin_la_LIBADD = $(AM_LIBADD)
-libadpcm_plugin_la_DEPENDENCIES =
+libadpcm_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The aes3 plugin
+libaes3_plugin_la_SOURCES = $(SOURCES_aes3)
+nodist_libaes3_plugin_la_SOURCES = $(nodist_SOURCES_aes3)
+# Force per-target objects:
+libaes3_plugin_la_CFLAGS = $(AM_CFLAGS)
+libaes3_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libaes3_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libaes3_plugin_la_LIBADD = $(AM_LIBADD)
+libaes3_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The araw plugin
 libaraw_plugin_la_SOURCES = $(SOURCES_araw)
@@ -40,7 +51,7 @@ libaraw_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaraw_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaraw_plugin_la_LIBADD = $(AM_LIBADD)
-libaraw_plugin_la_DEPENDENCIES =
+libaraw_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The cc plugin
 libcc_plugin_la_SOURCES = $(SOURCES_cc)
@@ -51,7 +62,7 @@ libcc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libcc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcc_plugin_la_LIBADD = $(AM_LIBADD)
-libcc_plugin_la_DEPENDENCIES =
+libcc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The cdg plugin
 libcdg_plugin_la_SOURCES = $(SOURCES_cdg)
@@ -62,18 +73,7 @@ libcdg_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libcdg_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcdg_plugin_la_LIBADD = $(AM_LIBADD)
-libcdg_plugin_la_DEPENDENCIES =
-
-# The cinepak plugin
-libcinepak_plugin_la_SOURCES = $(SOURCES_cinepak)
-nodist_libcinepak_plugin_la_SOURCES = $(nodist_SOURCES_cinepak)
-# Force per-target objects:
-libcinepak_plugin_la_CFLAGS = $(AM_CFLAGS)
-libcinepak_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libcinepak_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libcinepak_plugin_la_LIBADD = $(AM_LIBADD)
-libcinepak_plugin_la_DEPENDENCIES =
+libcdg_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The csri plugin
 libcsri_plugin_la_SOURCES = $(SOURCES_csri)
@@ -84,7 +84,7 @@ libcsri_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libcsri_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcsri_plugin_la_LIBADD = $(AM_LIBADD)
-libcsri_plugin_la_DEPENDENCIES =
+libcsri_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The cvdsub plugin
 libcvdsub_plugin_la_SOURCES = $(SOURCES_cvdsub)
@@ -95,7 +95,7 @@ libcvdsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libcvdsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcvdsub_plugin_la_LIBADD = $(AM_LIBADD)
-libcvdsub_plugin_la_DEPENDENCIES =
+libcvdsub_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The dirac plugin
 libdirac_plugin_la_SOURCES = $(SOURCES_dirac)
@@ -106,7 +106,7 @@ libdirac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdirac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdirac_plugin_la_LIBADD = $(AM_LIBADD)
-libdirac_plugin_la_DEPENDENCIES =
+libdirac_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The dts plugin
 libdts_plugin_la_SOURCES = $(SOURCES_dts)
@@ -117,7 +117,7 @@ libdts_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdts_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdts_plugin_la_LIBADD = $(AM_LIBADD)
-libdts_plugin_la_DEPENDENCIES =
+libdts_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The dvbsub plugin
 libdvbsub_plugin_la_SOURCES = $(SOURCES_dvbsub)
@@ -128,7 +128,7 @@ libdvbsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdvbsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdvbsub_plugin_la_LIBADD = $(AM_LIBADD)
-libdvbsub_plugin_la_DEPENDENCIES =
+libdvbsub_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The faad plugin
 libfaad_plugin_la_SOURCES = $(SOURCES_faad)
@@ -139,7 +139,7 @@ libfaad_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libfaad_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libfaad_plugin_la_LIBADD = $(AM_LIBADD)
-libfaad_plugin_la_DEPENDENCIES =
+libfaad_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The fake plugin
 libfake_plugin_la_SOURCES = $(SOURCES_fake)
@@ -150,7 +150,7 @@ libfake_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libfake_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libfake_plugin_la_LIBADD = $(AM_LIBADD)
-libfake_plugin_la_DEPENDENCIES =
+libfake_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The flac plugin
 libflac_plugin_la_SOURCES = $(SOURCES_flac)
@@ -161,7 +161,7 @@ libflac_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libflac_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libflac_plugin_la_LIBADD = $(AM_LIBADD)
-libflac_plugin_la_DEPENDENCIES =
+libflac_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The fluidsynth plugin
 libfluidsynth_plugin_la_SOURCES = $(SOURCES_fluidsynth)
@@ -172,7 +172,18 @@ libfluidsynth_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libfluidsynth_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libfluidsynth_plugin_la_LIBADD = $(AM_LIBADD)
-libfluidsynth_plugin_la_DEPENDENCIES =
+libfluidsynth_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The invmem plugin
+libinvmem_plugin_la_SOURCES = $(SOURCES_invmem)
+nodist_libinvmem_plugin_la_SOURCES = $(nodist_SOURCES_invmem)
+# Force per-target objects:
+libinvmem_plugin_la_CFLAGS = $(AM_CFLAGS)
+libinvmem_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libinvmem_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libinvmem_plugin_la_LIBADD = $(AM_LIBADD)
+libinvmem_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The kate plugin
 libkate_plugin_la_SOURCES = $(SOURCES_kate)
@@ -183,7 +194,7 @@ libkate_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libkate_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libkate_plugin_la_LIBADD = $(AM_LIBADD)
-libkate_plugin_la_DEPENDENCIES =
+libkate_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The libass plugin
 liblibass_plugin_la_SOURCES = $(SOURCES_libass)
@@ -194,7 +205,7 @@ liblibass_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liblibass_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liblibass_plugin_la_LIBADD = $(AM_LIBADD)
-liblibass_plugin_la_DEPENDENCIES =
+liblibass_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The libmpeg2 plugin
 liblibmpeg2_plugin_la_SOURCES = $(SOURCES_libmpeg2)
@@ -205,7 +216,7 @@ liblibmpeg2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liblibmpeg2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liblibmpeg2_plugin_la_LIBADD = $(AM_LIBADD)
-liblibmpeg2_plugin_la_DEPENDENCIES =
+liblibmpeg2_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The lpcm plugin
 liblpcm_plugin_la_SOURCES = $(SOURCES_lpcm)
@@ -216,7 +227,7 @@ liblpcm_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liblpcm_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liblpcm_plugin_la_LIBADD = $(AM_LIBADD)
-liblpcm_plugin_la_DEPENDENCIES =
+liblpcm_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mash plugin
 libmash_plugin_la_SOURCES = $(SOURCES_mash)
@@ -227,7 +238,7 @@ libmash_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmash_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmash_plugin_la_LIBADD = $(AM_LIBADD)
-libmash_plugin_la_DEPENDENCIES =
+libmash_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mpeg_audio plugin
 libmpeg_audio_plugin_la_SOURCES = $(SOURCES_mpeg_audio)
@@ -238,7 +249,7 @@ libmpeg_audio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmpeg_audio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmpeg_audio_plugin_la_LIBADD = $(AM_LIBADD)
-libmpeg_audio_plugin_la_DEPENDENCIES =
+libmpeg_audio_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The png plugin
 libpng_plugin_la_SOURCES = $(SOURCES_png)
@@ -249,7 +260,7 @@ libpng_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libpng_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libpng_plugin_la_LIBADD = $(AM_LIBADD)
-libpng_plugin_la_DEPENDENCIES =
+libpng_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The quicktime plugin
 libquicktime_plugin_la_SOURCES = $(SOURCES_quicktime)
@@ -260,7 +271,7 @@ libquicktime_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libquicktime_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libquicktime_plugin_la_LIBADD = $(AM_LIBADD)
-libquicktime_plugin_la_DEPENDENCIES =
+libquicktime_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The rawvideo plugin
 librawvideo_plugin_la_SOURCES = $(SOURCES_rawvideo)
@@ -271,7 +282,7 @@ librawvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 librawvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 librawvideo_plugin_la_LIBADD = $(AM_LIBADD)
-librawvideo_plugin_la_DEPENDENCIES =
+librawvideo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The realaudio plugin
 librealaudio_plugin_la_SOURCES = $(SOURCES_realaudio)
@@ -282,7 +293,7 @@ librealaudio_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 librealaudio_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 librealaudio_plugin_la_LIBADD = $(AM_LIBADD)
-librealaudio_plugin_la_DEPENDENCIES =
+librealaudio_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The realvideo plugin
 librealvideo_plugin_la_SOURCES = $(SOURCES_realvideo)
@@ -293,7 +304,7 @@ librealvideo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 librealvideo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 librealvideo_plugin_la_LIBADD = $(AM_LIBADD)
-librealvideo_plugin_la_DEPENDENCIES =
+librealvideo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The schroedinger plugin
 libschroedinger_plugin_la_SOURCES = $(SOURCES_schroedinger)
@@ -304,7 +315,7 @@ libschroedinger_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libschroedinger_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libschroedinger_plugin_la_LIBADD = $(AM_LIBADD)
-libschroedinger_plugin_la_DEPENDENCIES =
+libschroedinger_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The sdl_image plugin
 libsdl_image_plugin_la_SOURCES = $(SOURCES_sdl_image)
@@ -315,7 +326,7 @@ libsdl_image_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsdl_image_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsdl_image_plugin_la_LIBADD = $(AM_LIBADD)
-libsdl_image_plugin_la_DEPENDENCIES =
+libsdl_image_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The speex plugin
 libspeex_plugin_la_SOURCES = $(SOURCES_speex)
@@ -326,7 +337,7 @@ libspeex_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libspeex_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libspeex_plugin_la_LIBADD = $(AM_LIBADD)
-libspeex_plugin_la_DEPENDENCIES =
+libspeex_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The svcdsub plugin
 libsvcdsub_plugin_la_SOURCES = $(SOURCES_svcdsub)
@@ -337,7 +348,7 @@ libsvcdsub_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsvcdsub_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsvcdsub_plugin_la_LIBADD = $(AM_LIBADD)
-libsvcdsub_plugin_la_DEPENDENCIES =
+libsvcdsub_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The tarkin plugin
 libtarkin_plugin_la_SOURCES = $(SOURCES_tarkin)
@@ -348,7 +359,7 @@ libtarkin_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtarkin_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtarkin_plugin_la_LIBADD = $(AM_LIBADD)
-libtarkin_plugin_la_DEPENDENCIES =
+libtarkin_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The telx plugin
 libtelx_plugin_la_SOURCES = $(SOURCES_telx)
@@ -359,7 +370,7 @@ libtelx_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtelx_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtelx_plugin_la_LIBADD = $(AM_LIBADD)
-libtelx_plugin_la_DEPENDENCIES =
+libtelx_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The theora plugin
 libtheora_plugin_la_SOURCES = $(SOURCES_theora)
@@ -370,7 +381,7 @@ libtheora_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtheora_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtheora_plugin_la_LIBADD = $(AM_LIBADD)
-libtheora_plugin_la_DEPENDENCIES =
+libtheora_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The tremor plugin
 libtremor_plugin_la_SOURCES = $(SOURCES_tremor)
@@ -381,7 +392,7 @@ libtremor_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtremor_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtremor_plugin_la_LIBADD = $(AM_LIBADD)
-libtremor_plugin_la_DEPENDENCIES =
+libtremor_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The twolame plugin
 libtwolame_plugin_la_SOURCES = $(SOURCES_twolame)
@@ -392,7 +403,7 @@ libtwolame_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtwolame_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtwolame_plugin_la_LIBADD = $(AM_LIBADD)
-libtwolame_plugin_la_DEPENDENCIES =
+libtwolame_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The vorbis plugin
 libvorbis_plugin_la_SOURCES = $(SOURCES_vorbis)
@@ -403,7 +414,7 @@ libvorbis_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libvorbis_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libvorbis_plugin_la_LIBADD = $(AM_LIBADD)
-libvorbis_plugin_la_DEPENDENCIES =
+libvorbis_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The x264 plugin
 libx264_plugin_la_SOURCES = $(SOURCES_x264)
@@ -414,7 +425,7 @@ libx264_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libx264_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libx264_plugin_la_LIBADD = $(AM_LIBADD)
-libx264_plugin_la_DEPENDENCIES =
+libx264_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The zvbi plugin
 libzvbi_plugin_la_SOURCES = $(SOURCES_zvbi)
@@ -425,5 +436,5 @@ libzvbi_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libzvbi_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libzvbi_plugin_la_LIBADD = $(AM_LIBADD)
-libzvbi_plugin_la_DEPENDENCIES =
+libzvbi_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

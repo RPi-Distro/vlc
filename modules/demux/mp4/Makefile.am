@@ -4,8 +4,8 @@
 basedir = demux
 dir = demux/mp4
 mods = mp4
-libvlc_LTLIBRARIES =  $(LTLIBmp4)
-EXTRA_LTLIBRARIES =  libmp4_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,5 +18,5 @@ libmp4_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmp4_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmp4_plugin_la_LIBADD = $(AM_LIBADD)
-libmp4_plugin_la_DEPENDENCIES =
+libmp4_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

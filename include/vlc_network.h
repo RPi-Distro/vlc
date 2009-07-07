@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2005 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: 5c4b1dcf780f119694c8b8556c5120777bdf4d3a $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -60,9 +60,6 @@ struct msghdr
     int           msg_flags;
 };
 
-#define sendmsg vlc_sendmsg
-#define recvmsg vlc_recvmsg
-
 #   ifndef IPV6_V6ONLY
 #       define IPV6_V6ONLY 27
 #   endif
@@ -79,9 +76,6 @@ struct msghdr
 #   include <netdb.h>
 #   define net_errno errno
 #endif
-
-VLC_EXPORT( ssize_t, vlc_sendmsg, ( int, struct msghdr *, int ) );
-VLC_EXPORT( ssize_t, vlc_recvmsg, ( int, struct msghdr *, int ) );
 
 # ifdef __cplusplus
 extern "C" {
@@ -107,8 +101,9 @@ static inline int __net_ConnectTCP (vlc_object_t *obj, const char *host, int por
 
 VLC_EXPORT( int, net_AcceptSingle, (vlc_object_t *obj, int lfd) );
 
-#define net_Accept(a, b, c) __net_Accept(VLC_OBJECT(a), b, c)
 VLC_EXPORT( int, __net_Accept, ( vlc_object_t *, int *, mtime_t ) );
+#define net_Accept(a, b, c) \
+      __net_Accept(VLC_OBJECT(a), b, (c == -1) ? -1 : (c ? check_delay(c) : 0))
 
 #define net_ConnectDgram(a, b, c, d, e ) __net_ConnectDgram(VLC_OBJECT(a), b, c, d, e)
 VLC_EXPORT( int, __net_ConnectDgram, ( vlc_object_t *p_this, const char *psz_host, int i_port, int hlim, int proto ) );
@@ -142,10 +137,10 @@ struct virtual_socket_t
 };
 
 #define net_Read(a,b,c,d,e,f) __net_Read(VLC_OBJECT(a),b,c,d,e,f)
-VLC_EXPORT( ssize_t, __net_Read, ( vlc_object_t *p_this, int fd, const v_socket_t *, uint8_t *p_data, size_t i_data, bool b_retry ) );
+VLC_EXPORT( ssize_t, __net_Read, ( vlc_object_t *p_this, int fd, const v_socket_t *, void *p_data, size_t i_data, bool b_retry ) );
 
 #define net_Write(a,b,c,d,e) __net_Write(VLC_OBJECT(a),b,c,d,e)
-VLC_EXPORT( ssize_t, __net_Write, ( vlc_object_t *p_this, int fd, const v_socket_t *, const uint8_t *p_data, size_t i_data ) );
+VLC_EXPORT( ssize_t, __net_Write, ( vlc_object_t *p_this, int fd, const v_socket_t *, const void *p_data, size_t i_data ) );
 
 #define net_Gets(a,b,c) __net_Gets(VLC_OBJECT(a),b,c)
 VLC_EXPORT( char *, __net_Gets, ( vlc_object_t *p_this, int fd, const v_socket_t * ) );

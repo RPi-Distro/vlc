@@ -2,7 +2,7 @@
  * var.c: object variables for input thread
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: d3d1c0c47eb1b1405198639003cac489cc76f5ee $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -61,11 +61,19 @@ static int EsDelayCallback ( vlc_object_t *p_this, char const *psz_cmd,
 static int BookmarkCallback( vlc_object_t *p_this, char const *psz_cmd,
                              vlc_value_t oldval, vlc_value_t newval, void * );
 
+static int RecordCallback( vlc_object_t *p_this, char const *psz_cmd,
+                           vlc_value_t oldval, vlc_value_t newval,
+                           void *p_data );
+static int FrameNextCallback( vlc_object_t *p_this, char const *psz_cmd,
+                              vlc_value_t oldval, vlc_value_t newval,
+                              void *p_data );
+
 typedef struct
 {
     const char *psz_name;
     vlc_callback_t callback;
 } vlc_input_callback_t;
+
 static void InputAddCallbacks( input_thread_t *, const vlc_input_callback_t * );
 static void InputDelCallbacks( input_thread_t *, const vlc_input_callback_t * );
 
@@ -93,6 +101,8 @@ static const vlc_input_callback_t p_input_callbacks[] =
     CALLBACK( "video-es", ESCallback ),
     CALLBACK( "audio-es", ESCallback ),
     CALLBACK( "spu-es", ESCallback ),
+    CALLBACK( "record", RecordCallback ),
+    CALLBACK( "frame-next", FrameNextCallback ),
 
     CALLBACK( NULL, NULL )
 };
@@ -122,7 +132,7 @@ void input_ControlVarInit ( input_thread_t *p_input )
 
     /* State */
     var_Create( p_input, "state", VLC_VAR_INTEGER );
-    val.i_int = p_input->i_state;
+    val.i_int = p_input->p->i_state;
     var_Change( p_input, "state", VLC_VAR_SETVALUE, &val, NULL );
 
     /* Rate */
@@ -133,6 +143,8 @@ void input_ControlVarInit ( input_thread_t *p_input )
     var_Create( p_input, "rate-slower", VLC_VAR_VOID );
 
     var_Create( p_input, "rate-faster", VLC_VAR_VOID );
+
+    var_Create( p_input, "frame-next", VLC_VAR_VOID );
 
     /* Position */
     var_Create( p_input, "position",  VLC_VAR_FLOAT );
@@ -183,14 +195,11 @@ void input_ControlVarInit ( input_thread_t *p_input )
 
     /* Delay */
     var_Create( p_input, "audio-delay", VLC_VAR_TIME );
-    val.i_time = 0;
+    val.i_time = INT64_C(1000) * var_GetInteger( p_input, "audio-desync" );
     var_Change( p_input, "audio-delay", VLC_VAR_SETVALUE, &val, NULL );
     var_Create( p_input, "spu-delay", VLC_VAR_TIME );
     val.i_time = 0;
     var_Change( p_input, "spu-delay", VLC_VAR_SETVALUE, &val, NULL );
-
-    p_input->p->pts_adjust.auto_adjust = var_CreateGetBool(
-            p_input, "auto-adjust-pts-delay" );
 
     /* Video ES */
     var_Create( p_input, "video-es", VLC_VAR_INTEGER | VLC_VAR_HASCHOICE );
@@ -216,19 +225,8 @@ void input_ControlVarInit ( input_thread_t *p_input )
 
     if( !p_input->b_preparsing )
     {
-        /* Special "intf-change" variable, it allows intf to set up a callback
-         * to be notified of some changes.
-         *
-         * Add rate-change to inform about rate changin
-         *
-         * TODO list all changes warn by this callbacks */
-        var_Create( p_input, "intf-change", VLC_VAR_BOOL );
-        var_SetBool( p_input, "intf-change", true );
-        var_Create( p_input, "rate-change", VLC_VAR_BOOL );
-        var_SetBool( p_input, "rate-change", true );
-
-        var_Create( p_input, "intf-change-vout", VLC_VAR_BOOL );
-        var_SetBool( p_input, "intf-change-vout", true );
+        /* Special "intf-event" variable. */
+        var_Create( p_input, "intf-event", VLC_VAR_INTEGER );
     }
 
     /* Add all callbacks
@@ -407,8 +405,6 @@ void input_ControlVarTitle( input_thread_t *p_input, int i_title )
  *****************************************************************************/
 void input_ConfigVarInit ( input_thread_t *p_input )
 {
-    vlc_value_t val;
-
     /* Create Object Variables for private use only */
 
     if( !p_input->b_preparsing )
@@ -447,15 +443,13 @@ void input_ConfigVarInit ( input_thread_t *p_input )
 
         var_Create( p_input, "input-repeat",
                     VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
-        var_Create( p_input, "start-time", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
-        var_Create( p_input, "stop-time", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
-        var_Create( p_input, "run-time", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "start-time", VLC_VAR_FLOAT|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "stop-time", VLC_VAR_FLOAT|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "run-time", VLC_VAR_FLOAT|VLC_VAR_DOINHERIT );
+        var_Create( p_input, "input-fast-seek", VLC_VAR_BOOL|VLC_VAR_DOINHERIT );
 
         var_Create( p_input, "input-slave",
                     VLC_VAR_STRING | VLC_VAR_DOINHERIT );
-
-        var_Create( p_input, "minimize-threads",
-                    VLC_VAR_BOOL|VLC_VAR_DOINHERIT );
 
         var_Create( p_input, "audio-desync",
                     VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
@@ -465,19 +459,46 @@ void input_ConfigVarInit ( input_thread_t *p_input )
                     VLC_VAR_INTEGER | VLC_VAR_DOINHERIT);
     }
 
-    var_Create( p_input, "seekable", VLC_VAR_BOOL );
-    val.b_bool = true; /* Fixed later*/
-    var_Change( p_input, "seekable", VLC_VAR_SETVALUE, &val, NULL );
+    var_Create( p_input, "can-seek", VLC_VAR_BOOL );
+    var_SetBool( p_input, "can-seek", true ); /* Fixed later*/
+
     var_Create( p_input, "can-pause", VLC_VAR_BOOL );
-    val.b_bool = true; /* Fixed later*/
-    var_Change( p_input, "can-pause", VLC_VAR_SETVALUE, &val, NULL );
+    var_SetBool( p_input, "can-pause", true ); /* Fixed later*/
+
+    var_Create( p_input, "can-rate", VLC_VAR_BOOL );
+    var_SetBool( p_input, "can-rate", false );
+
+    var_Create( p_input, "can-rewind", VLC_VAR_BOOL );
+    var_SetBool( p_input, "can-rewind", false );
+
+    var_Create( p_input, "can-record", VLC_VAR_BOOL );
+    var_SetBool( p_input, "can-record", false ); /* Fixed later*/
+
+    var_Create( p_input, "record", VLC_VAR_BOOL );
+    var_SetBool( p_input, "record", false );
+
     var_Create( p_input, "teletext-es", VLC_VAR_INTEGER );
     var_SetInteger( p_input, "teletext-es", -1 );
 
+    var_Create( p_input, "signal-quality", VLC_VAR_FLOAT );
+    var_SetFloat( p_input, "signal-quality", -1 );
+
+    var_Create( p_input, "signal-strength", VLC_VAR_FLOAT );
+    var_SetFloat( p_input, "signal-strength", -1 );
+
+    var_Create( p_input, "program-scrambled", VLC_VAR_BOOL );
+    var_SetBool( p_input, "program-scrambled", false );
+
+    var_Create( p_input, "cache", VLC_VAR_FLOAT );
+    var_SetFloat( p_input, "cache", 0.0 );
+
     /* */
-    var_Create( p_input, "access-filter", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
+    var_Create( p_input, "input-record-native", VLC_VAR_BOOL | VLC_VAR_DOINHERIT );
+
+    /* */
     var_Create( p_input, "access", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
     var_Create( p_input, "demux", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
+    var_Create( p_input, "stream-filter", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
 
     /* Meta */
     var_Create( p_input, "meta-title", VLC_VAR_STRING | VLC_VAR_DOINHERIT );
@@ -502,6 +523,7 @@ static void InputAddCallbacks( input_thread_t *p_input,
                          p_callbacks[i].psz_name,
                          p_callbacks[i].callback, NULL );
 }
+
 static void InputDelCallbacks( input_thread_t *p_input,
                                const vlc_input_callback_t *p_callbacks )
 {
@@ -511,6 +533,7 @@ static void InputDelCallbacks( input_thread_t *p_input,
                          p_callbacks[i].psz_name,
                          p_callbacks[i].callback, NULL );
 }
+
 /*****************************************************************************
  * All Callbacks:
  *****************************************************************************/
@@ -549,7 +572,6 @@ static int RateCallback( vlc_object_t *p_this, char const *psz_cmd,
     {
         input_ControlPush( p_input, INPUT_CONTROL_SET_RATE, &newval );
     }
-
     return VLC_SUCCESS;
 }
 
@@ -756,15 +778,12 @@ static int EsDelayCallback ( vlc_object_t *p_this, char const *psz_cmd,
 
     if( !strcmp( psz_cmd, "audio-delay" ) )
     {
-        /*Change i_pts_delay to make sure es are decoded in time*/
-        if (newval.i_int < 0 || oldval.i_int < 0 )
-        {
-            p_input->i_pts_delay -= newval.i_int - oldval.i_int;
-        }
         input_ControlPush( p_input, INPUT_CONTROL_SET_AUDIO_DELAY, &newval );
     }
     else if( !strcmp( psz_cmd, "spu-delay" ) )
+    {
         input_ControlPush( p_input, INPUT_CONTROL_SET_SPU_DELAY, &newval );
+    }
     return VLC_SUCCESS;
 }
 
@@ -779,3 +798,29 @@ static int BookmarkCallback( vlc_object_t *p_this, char const *psz_cmd,
 
     return VLC_SUCCESS;
 }
+
+static int RecordCallback( vlc_object_t *p_this, char const *psz_cmd,
+                           vlc_value_t oldval, vlc_value_t newval,
+                           void *p_data )
+{
+    input_thread_t *p_input = (input_thread_t*)p_this;
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval); VLC_UNUSED(p_data);
+
+    input_ControlPush( p_input, INPUT_CONTROL_SET_RECORD_STATE, &newval );
+
+    return VLC_SUCCESS;
+}
+
+static int FrameNextCallback( vlc_object_t *p_this, char const *psz_cmd,
+                              vlc_value_t oldval, vlc_value_t newval,
+                              void *p_data )
+{
+    input_thread_t *p_input = (input_thread_t*)p_this;
+    VLC_UNUSED(psz_cmd); VLC_UNUSED(oldval); VLC_UNUSED(p_data);
+    VLC_UNUSED(newval);
+
+    input_ControlPush( p_input, INPUT_CONTROL_SET_FRAME_NEXT, NULL );
+
+    return VLC_SUCCESS;
+}
+

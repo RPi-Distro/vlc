@@ -2,7 +2,7 @@
  * block.c: Data blocks management functions
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: b05e5ffb3a73bc782f8f909bf6b4b9c5e957009e $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -32,10 +32,13 @@
 #include <sys/stat.h>
 #include "vlc_block.h"
 
-/*****************************************************************************
- * Block functions.
- *****************************************************************************/
-/* private */
+/**
+ * @section Block handling functions.
+ */
+
+/**
+ * Internal state for heap block.
+  */
 struct block_sys_t
 {
     block_t     self;
@@ -54,9 +57,11 @@ static void BlockNoRelease( block_t *b )
 void block_Init( block_t *restrict b, void *buf, size_t size )
 {
     /* Fill all fields to their default */
-    b->p_next = b->p_prev = NULL;
+    b->p_next = NULL;
     b->i_flags = 0;
-    b->i_pts = b->i_dts = b->i_length = 0;
+    b->i_pts =
+    b->i_dts = VLC_TS_INVALID;
+    b->i_length = 0;
     b->i_rate = 0;
     b->p_buffer = buf;
     b->i_buffer = size;
@@ -244,6 +249,10 @@ block_t *block_mmap_Alloc (void *addr, size_t length)
 
 
 #ifdef WIN32
+#ifdef UNDER_CE
+#define _get_osfhandle(a) ((long) (a))
+#endif
+
 static
 ssize_t pread (int fd, void *buf, size_t count, off_t offset)
 {
@@ -266,7 +275,7 @@ ssize_t pread (int fd, void *buf, size_t count, off_t offset)
  * Loads a file into a block of memory. If possible a private file mapping is
  * created. Otherwise, the file is read normally. On 32-bits platforms, this
  * function will not work for very large files, due to memory space
- * constraints.
+ * constraints. Cancellation point.
  *
  * @param fd file descriptor to load from
  * @return a new block with the file content at p_buffer, and file length at
@@ -321,6 +330,7 @@ block_t *block_File (int fd)
     block_t *block = block_Alloc (length);
     if (block == NULL)
         return NULL;
+    block_cleanup_push (block);
 
     for (size_t i = 0; i < length;)
     {
@@ -328,20 +338,27 @@ block_t *block_File (int fd)
         if (len == -1)
         {
             block_Release (block);
-            return NULL;
+            block = NULL;
+            break;
         }
         i += len;
     }
+    vlc_cleanup_pop ();
     return block;
 }
 
-/*****************************************************************************
- * block_fifo_t management
- *****************************************************************************/
+/**
+ * @section Thread-safe block queue functions
+ */
+
+/**
+ * Internal state for block queues
+ */
 struct block_fifo_t
 {
     vlc_mutex_t         lock;                         /* fifo data lock */
-    vlc_cond_t          wait;         /* fifo data conditional variable */
+    vlc_cond_t          wait;      /**< Wait for data */
+    vlc_cond_t          wait_room; /**< Wait for queue depth to shrink */
 
     block_t             *p_first;
     block_t             **pp_last;
@@ -357,7 +374,8 @@ block_fifo_t *block_FifoNew( void )
         return NULL;
 
     vlc_mutex_init( &p_fifo->lock );
-    vlc_cond_init( NULL, &p_fifo->wait );
+    vlc_cond_init( &p_fifo->wait );
+    vlc_cond_init( &p_fifo->wait_room );
     p_fifo->p_first = NULL;
     p_fifo->pp_last = &p_fifo->p_first;
     p_fifo->i_depth = p_fifo->i_size = 0;
@@ -369,6 +387,7 @@ block_fifo_t *block_FifoNew( void )
 void block_FifoRelease( block_fifo_t *p_fifo )
 {
     block_FifoEmpty( p_fifo );
+    vlc_cond_destroy( &p_fifo->wait_room );
     vlc_cond_destroy( &p_fifo->wait );
     vlc_mutex_destroy( &p_fifo->lock );
     free( p_fifo );
@@ -391,15 +410,52 @@ void block_FifoEmpty( block_fifo_t *p_fifo )
     p_fifo->i_depth = p_fifo->i_size = 0;
     p_fifo->p_first = NULL;
     p_fifo->pp_last = &p_fifo->p_first;
+    vlc_cond_broadcast( &p_fifo->wait_room );
     vlc_mutex_unlock( &p_fifo->lock );
 }
 
+/**
+ * Wait until the FIFO gets below a certain size (if needed).
+ *
+ * Note that if more than one thread writes to the FIFO, you cannot assume that
+ * the FIFO is actually below the requested size upon return (since another
+ * thread could have refilled it already). This is typically not an issue, as
+ * this function is meant for (relaxed) congestion control.
+ *
+ * This function may be a cancellation point and it is cancel-safe.
+ *
+ * @param fifo queue to wait on
+ * @param max_depth wait until the queue has no more than this many blocks
+ *                  (use SIZE_MAX to ignore this constraint)
+ * @param max_size wait until the queue has no more than this many bytes
+ *                  (use SIZE_MAX to ignore this constraint)
+ * @return nothing.
+ */
+void block_FifoPace (block_fifo_t *fifo, size_t max_depth, size_t max_size)
+{
+    vlc_testcancel ();
+
+    vlc_mutex_lock (&fifo->lock);
+    while ((fifo->i_depth > max_depth) || (fifo->i_size > max_size))
+    {
+         mutex_cleanup_push (&fifo->lock);
+         vlc_cond_wait (&fifo->wait_room, &fifo->lock);
+         vlc_cleanup_pop ();
+    }
+    vlc_mutex_unlock (&fifo->lock);
+}
+
+/**
+ * Immediately queue one block at the end of a FIFO.
+ * @param fifo queue
+ * @param block head of a block list to queue (may be NULL)
+ */
 size_t block_FifoPut( block_fifo_t *p_fifo, block_t *p_block )
 {
     size_t i_size = 0;
     vlc_mutex_lock( &p_fifo->lock );
 
-    do
+    while (p_block != NULL)
     {
         i_size += p_block->i_buffer;
 
@@ -409,10 +465,9 @@ size_t block_FifoPut( block_fifo_t *p_fifo, block_t *p_block )
         p_fifo->i_size += p_block->i_buffer;
 
         p_block = p_block->p_next;
+    }
 
-    } while( p_block );
-
-    /* warn there is data in this fifo */
+    /* We queued one block: wake up one read-waiting thread */
     vlc_cond_signal( &p_fifo->wait );
     vlc_mutex_unlock( &p_fifo->lock );
 
@@ -424,7 +479,7 @@ void block_FifoWake( block_fifo_t *p_fifo )
     vlc_mutex_lock( &p_fifo->lock );
     if( p_fifo->p_first == NULL )
         p_fifo->b_force_wake = true;
-    vlc_cond_signal( &p_fifo->wait );
+    vlc_cond_broadcast( &p_fifo->wait );
     vlc_mutex_unlock( &p_fifo->lock );
 }
 
@@ -432,15 +487,17 @@ block_t *block_FifoGet( block_fifo_t *p_fifo )
 {
     block_t *b;
 
+    vlc_testcancel( );
+
     vlc_mutex_lock( &p_fifo->lock );
+    mutex_cleanup_push( &p_fifo->lock );
 
     /* Remember vlc_cond_wait() may cause spurious wakeups
      * (on both Win32 and POSIX) */
     while( ( p_fifo->p_first == NULL ) && !p_fifo->b_force_wake )
-    {
         vlc_cond_wait( &p_fifo->wait, &p_fifo->lock );
-    }
 
+    vlc_cleanup_pop();
     b = p_fifo->p_first;
 
     p_fifo->b_force_wake = false;
@@ -460,6 +517,8 @@ block_t *block_FifoGet( block_fifo_t *p_fifo )
         p_fifo->pp_last = &p_fifo->p_first;
     }
 
+    /* We don't know how many threads can queue new packets now. */
+    vlc_cond_broadcast( &p_fifo->wait_room );
     vlc_mutex_unlock( &p_fifo->lock );
 
     b->p_next = NULL;
@@ -470,25 +529,27 @@ block_t *block_FifoShow( block_fifo_t *p_fifo )
 {
     block_t *b;
 
-    vlc_mutex_lock( &p_fifo->lock );
+    vlc_testcancel( );
 
-    if( p_fifo->p_first == NULL )
-    {
+    vlc_mutex_lock( &p_fifo->lock );
+    mutex_cleanup_push( &p_fifo->lock );
+
+    while( p_fifo->p_first == NULL )
         vlc_cond_wait( &p_fifo->wait, &p_fifo->lock );
-    }
 
     b = p_fifo->p_first;
 
-    vlc_mutex_unlock( &p_fifo->lock );
-
-    return( b );
+    vlc_cleanup_run ();
+    return b;
 }
 
+/* FIXME: not thread-safe */
 size_t block_FifoSize( const block_fifo_t *p_fifo )
 {
     return p_fifo->i_size;
 }
 
+/* FIXME: not thread-safe */
 size_t block_FifoCount( const block_fifo_t *p_fifo )
 {
     return p_fifo->i_depth;

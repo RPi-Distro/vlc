@@ -2,7 +2,7 @@
  * drms.c: DRMS
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: aa0b561f5f6b594f9194a2e4451d0b8d125f3169 $
+ * $Id$
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Sam Hocevar <sam@zoy.org>
@@ -41,9 +41,7 @@
 #   include <stdio.h>
 #endif
 
-#ifdef HAVE_ERRNO_H
-#   include <errno.h>
-#endif
+#include <errno.h>
 
 #ifdef WIN32
 #   if !defined( UNDER_CE )
@@ -217,14 +215,9 @@ void *drms_alloc( const char *psz_homedir )
 {
     struct drms_s *p_drms;
 
-    p_drms = malloc( sizeof(struct drms_s) );
-
-    if( p_drms == NULL )
-    {
+    p_drms = calloc( 1, sizeof(struct drms_s) );
+    if( !p_drms )
         return NULL;
-    }
-
-    memset( p_drms, 0, sizeof(struct drms_s) );
 
     strncpy( p_drms->psz_homedir, psz_homedir, PATH_MAX );
     p_drms->psz_homedir[ PATH_MAX - 1 ] = '\0';
@@ -239,21 +232,17 @@ void drms_free( void *_p_drms )
 {
     struct drms_s *p_drms = (struct drms_s *)_p_drms;
 
-    if( p_drms->p_name != NULL )
-    {
-        free( (void *)p_drms->p_name );
-    }
-
+    free( (void *)p_drms->p_name );
     free( p_drms );
 }
 
 /*****************************************************************************
  * drms_decrypt: unscramble a chunk of data
  *****************************************************************************/
-void drms_decrypt( void *_p_drms, uint32_t *p_buffer, uint32_t i_bytes )
+void drms_decrypt( void *_p_drms, uint32_t *p_buffer, uint32_t i_bytes, uint32_t *p_key )
 {
     struct drms_s *p_drms = (struct drms_s *)_p_drms;
-    uint32_t p_key[ 4 ];
+    uint32_t p_key_buf[ 4 ];
     unsigned int i_blocks;
 
     /* AES is a block cypher, round down the byte count */
@@ -261,7 +250,11 @@ void drms_decrypt( void *_p_drms, uint32_t *p_buffer, uint32_t i_bytes )
     i_bytes = i_blocks * 16;
 
     /* Initialise the key */
-    memcpy( p_key, p_drms->p_key, 16 );
+    if( !p_key )
+    {
+        p_key = p_key_buf;
+        memcpy( p_key, p_drms->p_key, 16 );
+    }
 
     /* Unscramble */
     while( i_blocks-- )
@@ -281,6 +274,16 @@ void drms_decrypt( void *_p_drms, uint32_t *p_buffer, uint32_t i_bytes )
 
         p_buffer += 4;
     }
+}
+
+/*****************************************************************************
+ * drms_get_p_key: copy the p_key into user buffer
+ ****************************************************************************/
+void drms_get_p_key( void *_p_drms, uint32_t *p_key )
+{
+    struct drms_s *p_drms = (struct drms_s *)_p_drms;
+
+    memcpy( p_key, p_drms->p_key, 16 );
 }
 
 /*****************************************************************************
@@ -377,7 +380,7 @@ int drms_init( void *_p_drms, uint32_t i_type,
 
             memcpy( p_priv, p_info, 64 );
             memcpy( p_drms->p_key, md5.p_digest, 16 );
-            drms_decrypt( p_drms, p_priv, 64 );
+            drms_decrypt( p_drms, p_priv, 64, NULL );
             REVERSE( p_priv, 64 );
 
             if( p_priv[ 0 ] != 0x6e757469 ) /* itun */
@@ -1568,14 +1571,10 @@ static int WriteUserKey( void *_p_drms, uint32_t *p_user_key )
     snprintf( psz_path, PATH_MAX - 1,
               "%s/" DRMS_DIRNAME, p_drms->psz_homedir );
 
-#if defined( HAVE_ERRNO_H )
-#   if defined( WIN32 )
+#if defined( WIN32 )
     if( !mkdir( psz_path ) || errno == EEXIST )
-#   else
-    if( !mkdir( psz_path, 0755 ) || errno == EEXIST )
-#   endif
 #else
-    if( !mkdir( psz_path ) )
+    if( !mkdir( psz_path, 0755 ) || errno == EEXIST )
 #endif
     {
         snprintf( psz_path, PATH_MAX - 1, "%s/" DRMS_DIRNAME "/%08X.%03d",
@@ -2083,9 +2082,10 @@ static int GetiPodID( int64_t *p_ipod_id )
 
 #else /* !defined( UNDER_CE ) */
 
-void *drms_alloc( char *psz_homedir ){ return 0; }
+void *drms_alloc( const char *psz_homedir ){ return NULL; }
 void drms_free( void *a ){}
-void drms_decrypt( void *a, uint32_t *b, uint32_t c  ){}
+void drms_decrypt( void *a, uint32_t *b, uint32_t c, uint32_t *k  ){}
+void drms_get_p_key( void *p_drms, uint32_t *p_key ){}
 int drms_init( void *a, uint32_t b, uint8_t *c, uint32_t d ){ return -1; }
 
 #endif /* defined( UNDER_CE ) */

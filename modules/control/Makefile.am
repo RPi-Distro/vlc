@@ -18,7 +18,7 @@ libdbus_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdbus_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdbus_plugin_la_LIBADD = $(AM_LIBADD)
-libdbus_plugin_la_DEPENDENCIES =
+libdbus_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The gestures plugin
 libgestures_plugin_la_SOURCES = $(SOURCES_gestures)
@@ -29,7 +29,7 @@ libgestures_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgestures_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgestures_plugin_la_LIBADD = $(AM_LIBADD)
-libgestures_plugin_la_DEPENDENCIES =
+libgestures_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The hotkeys plugin
 libhotkeys_plugin_la_SOURCES = $(SOURCES_hotkeys)
@@ -40,7 +40,7 @@ libhotkeys_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libhotkeys_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libhotkeys_plugin_la_LIBADD = $(AM_LIBADD)
-libhotkeys_plugin_la_DEPENDENCIES =
+libhotkeys_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The lirc plugin
 liblirc_plugin_la_SOURCES = $(SOURCES_lirc)
@@ -51,7 +51,7 @@ liblirc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liblirc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liblirc_plugin_la_LIBADD = $(AM_LIBADD)
-liblirc_plugin_la_DEPENDENCIES =
+liblirc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The motion plugin
 libmotion_plugin_la_SOURCES = $(SOURCES_motion)
@@ -62,7 +62,7 @@ libmotion_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmotion_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmotion_plugin_la_LIBADD = $(AM_LIBADD)
-libmotion_plugin_la_DEPENDENCIES =
+libmotion_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The netsync plugin
 libnetsync_plugin_la_SOURCES = $(SOURCES_netsync)
@@ -73,7 +73,7 @@ libnetsync_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libnetsync_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libnetsync_plugin_la_LIBADD = $(AM_LIBADD)
-libnetsync_plugin_la_DEPENDENCIES =
+libnetsync_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The ntservice plugin
 libntservice_plugin_la_SOURCES = $(SOURCES_ntservice)
@@ -84,7 +84,7 @@ libntservice_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libntservice_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libntservice_plugin_la_LIBADD = $(AM_LIBADD)
-libntservice_plugin_la_DEPENDENCIES =
+libntservice_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The rc plugin
 librc_plugin_la_SOURCES = $(SOURCES_rc)
@@ -95,7 +95,7 @@ librc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 librc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 librc_plugin_la_LIBADD = $(AM_LIBADD)
-librc_plugin_la_DEPENDENCIES =
+librc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The showintf plugin
 libshowintf_plugin_la_SOURCES = $(SOURCES_showintf)
@@ -106,7 +106,7 @@ libshowintf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libshowintf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libshowintf_plugin_la_LIBADD = $(AM_LIBADD)
-libshowintf_plugin_la_DEPENDENCIES =
+libshowintf_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The signals plugin
 libsignals_plugin_la_SOURCES = $(SOURCES_signals)
@@ -117,7 +117,7 @@ libsignals_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsignals_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsignals_plugin_la_LIBADD = $(AM_LIBADD)
-libsignals_plugin_la_DEPENDENCIES =
+libsignals_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The telnet plugin
 libtelnet_plugin_la_SOURCES = $(SOURCES_telnet)
@@ -128,5 +128,5 @@ libtelnet_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtelnet_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtelnet_plugin_la_LIBADD = $(AM_LIBADD)
-libtelnet_plugin_la_DEPENDENCIES =
+libtelnet_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

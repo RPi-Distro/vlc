@@ -2,7 +2,7 @@
  * codecs.h: codec related structures needed by the demuxers and decoders
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 46047116c7d286a918163a796d5fb6c10e4bf9ba $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -305,6 +305,7 @@ wave_format_tag_to_fourcc[] =
     { WAVE_FORMAT_ALAW,       VLC_FOURCC( 'a', 'l', 'a', 'w' ), "A-Law" },
     { WAVE_FORMAT_MULAW,      VLC_FOURCC( 'm', 'l', 'a', 'w' ), "Mu-Law" },
     { WAVE_FORMAT_IMA_ADPCM,  VLC_FOURCC( 'm', 's', 0x00,0x11), "Ima-ADPCM" },
+    { WAVE_FORMAT_GSM610,     VLC_FOURCC( 'a', 'g', 's', 'm' ), "Microsoft WAV GSM" },
     { WAVE_FORMAT_G726,       VLC_FOURCC( 'g', '7', '2', '6' ), "G.726 ADPCM" },
     { WAVE_FORMAT_MPEGLAYER3, VLC_FOURCC( 'm', 'p', 'g', 'a' ), "Mpeg Audio" },
     { WAVE_FORMAT_MPEG,       VLC_FOURCC( 'm', 'p', 'g', 'a' ), "Mpeg Audio" },

@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2000-2004 the VideoLAN team
  *
- * $Id: a7e3b97633f1fe41d9dcb14487c292bbe14a63c0 $
+ * $Id$
  *
  * Authors: Conrad Parker <Conrad.Parker@csiro.au>
  *          Andre Pang <Andre.Pang@csiro.au>
@@ -28,23 +28,19 @@
 # include "config.h"
 #endif
 
+#include <vlc_common.h>
+
 #include <ctype.h>
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <xlist.h>
+#include "xlist.h"
 
 #include <assert.h>
 
 #undef XTAG_DEBUG
-
-#undef FALSE
-#undef TRUE
-
-#define FALSE (0)
-#define TRUE (!FALSE)
 
 #undef MIN
 #define MIN(a,b) ((a)<(b)?(a):(b))
@@ -83,12 +79,12 @@ struct _XTagParser {
   char * end;
 };
 
-XTag * xtag_free (XTag * xtag);
+void   xtag_free (XTag * xtag);
 XTag * xtag_new_parse (const char * s, int n);
 char * xtag_get_name (XTag * xtag);
 char * xtag_get_pcdata (XTag * xtag);
-char * xtag_get_attribute (XTag * xtag, char * attribute);
-XTag * xtag_first_child (XTag * xtag, char * name);
+char * xtag_get_attribute (XTag * xtag, const char* attribute);
+XTag * xtag_first_child (XTag * xtag, const char * name);
 XTag * xtag_next_child (XTag * xtag, char * name);
 int    xtag_snprint (char * buf, int n, XTag * xtag);
 
@@ -106,27 +102,27 @@ static int
 xtag_cin (char c, int char_class)
 {
   if (char_class & X_WHITESPACE)
-    if (isspace(c)) return TRUE;
+    if (isspace(c)) return true;
 
   if (char_class & X_OPENTAG)
-    if (c == '<') return TRUE;
+    if (c == '<') return true;
 
   if (char_class & X_CLOSETAG)
-    if (c == '>') return TRUE;
+    if (c == '>') return true;
 
   if (char_class & X_DQUOTE)
-    if (c == '"') return TRUE;
+    if (c == '"') return true;
 
   if (char_class & X_SQUOTE)
-    if (c == '\'') return TRUE;
+    if (c == '\'') return true;
 
   if (char_class & X_EQUAL)
-    if (c == '=') return TRUE;
+    if (c == '=') return true;
 
   if (char_class & X_SLASH)
-    if (c == '/') return TRUE;
+    if (c == '/') return true;
 
-  return FALSE;
+  return false;
 }
 
 static int
@@ -205,7 +201,7 @@ xtag_slurp_to (XTagParser * parser, int good_end, int bad_end)
   xi = xtag_index (parser, good_end | bad_end);
 
   if (xi > 0 && xtag_cin (s[xi], good_end)) {
-    ret = malloc ((xi+1) * sizeof(char));
+    ret = malloc (xi+1);
     strncpy (ret, s, xi);
     ret[xi] = '\0';
     parser->start = &s[xi];
@@ -220,18 +216,18 @@ xtag_assert_and_pass (XTagParser * parser, int char_class)
 {
   char * s;
 
-  if (!parser->valid) return FALSE;
+  if (!parser->valid) return false;
 
   s = parser->start;
 
   if (!xtag_cin (s[0], char_class)) {
-    parser->valid = FALSE;
-    return FALSE;
+    parser->valid = false;
+    return false;
   }
 
   parser->start = &s[1];
 
-  return TRUE;
+  return true;
 }
 
 static char *
@@ -259,12 +255,16 @@ xtag_slurp_quoted (XTagParser * parser)
     }
   }
 
-  ret = malloc ((xi+1) * sizeof(char));
+  ret = malloc (xi+1);
   strncpy (ret, s, xi);
   ret[xi] = '\0';
   parser->start = &s[xi];
 
-  if (!xtag_assert_and_pass (parser, quote)) return NULL;
+  if (!xtag_assert_and_pass (parser, quote))
+  {
+     free( ret );
+     return NULL;
+  }
 
   return ret;
 }
@@ -314,7 +314,7 @@ xtag_parse_attribute (XTagParser * parser)
  err_free_name:
   free (name);
 
-  parser->valid = FALSE;
+  parser->valid = false;
 
   return NULL;
 }
@@ -397,7 +397,7 @@ xtag_parse_tag (XTagParser * parser)
 #ifdef XTAG_DEBUG
         printf ("got %s expected %s\n", name, tag->name);
 #endif
-        parser->valid = FALSE;
+        parser->valid = false;
       }
       free (name);
     }
@@ -414,20 +414,20 @@ xtag_parse_tag (XTagParser * parser)
   return tag;
 }
 
-XTag *
-xtag_free (XTag * xtag)
+void xtag_free (XTag * xtag)
 {
   XList * l;
   XAttribute * attr;
   XTag * child;
 
-  if (xtag == NULL) return NULL;
+  if( !xtag )
+    return;
 
   free( xtag->name );
   free( xtag->pcdata );
 
-  for (l = xtag->attributes; l; l = l->next) {
-    if ((attr = (XAttribute *)l->data) != NULL) {
+  for( l = xtag->attributes; l; l = l->next) {
+    if((attr = (XAttribute *)l->data) != NULL) {
       free( attr->name );
       free( attr->value );
       free( attr );
@@ -437,13 +437,11 @@ xtag_free (XTag * xtag)
 
   for (l = xtag->children; l; l = l->next) {
     child = (XTag *)l->data;
-    xtag_free (child);
+    xtag_free( child );
   }
   xlist_free (xtag->children);
 
-  free (xtag);
-
-  return NULL;
+  free( xtag );
 }
 
 XTag *
@@ -452,7 +450,7 @@ xtag_new_parse (const char * s, int n)
   XTagParser parser;
   XTag * tag, * ttag, * wrapper;
 
-  parser.valid = TRUE;
+  parser.valid = true;
   parser.current_tag = NULL;
   parser.start = (char *)s;
 
@@ -527,51 +525,55 @@ xtag_get_pcdata (XTag * xtag)
   return NULL;
 }
 
-char *
-xtag_get_attribute (XTag * xtag, char * attribute)
+char* xtag_get_attribute (XTag * xtag, const char * attribute)
 {
-  XList * l;
-  XAttribute * attr;
+    XList * l;
+    XAttribute * attr;
 
-  if (xtag == NULL) return NULL;
+    if( !xtag )
+        return NULL;
 
-  for (l = xtag->attributes; l; l = l->next) {
-    if ((attr = (XAttribute *)l->data) != NULL) {
-      if (attr->name && attribute && !strcmp (attr->name, attribute))
-        return attr->value;
+    for( l = xtag->attributes; l; l = l->next )
+    {
+        if( ( attr = (XAttribute *)l->data ) != NULL )
+        {
+            if( attr->name && attribute && !strcmp( attr->name, attribute ) )
+                return attr->value;
+        }
     }
-  }
-
-  return NULL;
+    return NULL;
 }
 
-XTag *
-xtag_first_child (XTag * xtag, char * name)
+XTag* xtag_first_child (XTag * xtag, const char * name)
 {
-  XList * l;
-  XTag * child;
+    XList * l;
+    XTag * child;
 
-  if (xtag == NULL) return NULL;
+    if( !xtag )
+        return NULL;
 
-  if ((l = xtag->children) == NULL) return NULL;
+    if( ( l = xtag->children ) == NULL )
+        return NULL;
 
-  if (name == NULL) {
-    xtag->current_child = l;
-    return (XTag *)l->data;
-  }
-
-  for (; l; l = l->next) {
-    child = (XTag *)l->data;
-
-    if (child->name && name && !strcmp(child->name, name)) {
-      xtag->current_child = l;
-      return child;
+    if( !name )
+    {
+        xtag->current_child = l;
+        return (XTag *)l->data;
     }
-  }
 
-  xtag->current_child = NULL;
+    for( ; l; l = l->next )
+    {
+        child = (XTag *)l->data;
 
-  return NULL;
+        if( child->name && name && !strcmp( child->name, name ) )
+        {
+            xtag->current_child = l;
+            return child;
+        }
+    }
+
+    xtag->current_child = NULL;
+    return NULL;
 }
 
 XTag *

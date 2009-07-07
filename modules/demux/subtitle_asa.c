@@ -2,7 +2,7 @@
  * subtitle_asa.c: Demux for subtitle text files using the asa engine.
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 53899e1dd0189c7ec52399acaeb6072d27aa4daa $
+ * $Id$
  *
  * Authors: David Lamparter <equinox at videolan dot org>
  *
@@ -60,24 +60,24 @@ static void Close( vlc_object_t *p_this );
 #define SUB_TYPE_LONGTEXT \
     N_("Force the subtiles format. Use \"auto\", the set of supported values varies.")
 
-vlc_module_begin();
-    set_shortname( N_("Subtitles (asa demuxer)"));
-    set_description( N_("Text subtitles parser") );
-    set_capability( "demux", 50 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
+vlc_module_begin ()
+    set_shortname( N_("Subtitles (asa demuxer)"))
+    set_description( N_("Text subtitles parser") )
+    set_capability( "demux", 50 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
     add_float( "sub-fps", 0.0, NULL,
                N_("Frames per second"),
-               SUB_FPS_LONGTEXT, true );
+               SUB_FPS_LONGTEXT, true )
     add_integer( "sub-delay", 0, NULL,
                N_("Subtitles delay"),
-               SUB_DELAY_LONGTEXT, true );
+               SUB_DELAY_LONGTEXT, true )
     add_string( "sub-type", "auto", NULL, N_("Subtitles format"),
-                SUB_TYPE_LONGTEXT, true );
-    set_callbacks( Open, Close );
+                SUB_TYPE_LONGTEXT, true )
+    set_callbacks( Open, Close )
 
-    add_shortcut( "asademux" );
-vlc_module_end();
+    add_shortcut( "asademux" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Prototypes:

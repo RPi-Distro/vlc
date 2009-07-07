@@ -2,7 +2,7 @@
  * Help.cpp : Help and About dialogs
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: dd5204231393131431a9c43b11bcc2b1eb19d678 $
+ * $Id: f3b40779f323d4eb0d3624f0723502c5c20c59c9 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *          Rémi Duraffort <ivoire (at) via.ecp.fr>
@@ -26,18 +26,15 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-
 #include "dialogs/help.hpp"
+#include "util/qt_dirs.hpp"
+
 #include <vlc_about.h>
+#include <vlc_intf_strings.h>
 
 #ifdef UPDATE_CHECK
-#include <vlc_update.h>
+# include <vlc_update.h>
 #endif
-
-#include "dialogs_provider.hpp"
-
-#include <vlc_intf_strings.h>
 
 #include <QTextBrowser>
 #include <QTabWidget>
@@ -48,6 +45,7 @@
 #include <QFileDialog>
 #include <QDate>
 
+#include <assert.h>
 
 HelpDialog *HelpDialog::instance = NULL;
 
@@ -55,7 +53,7 @@ HelpDialog::HelpDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 
 {
     setWindowTitle( qtr( "Help" ) );
-    setMinimumSize( 250, 300 );
+    setMinimumSize( 350, 300 );
 
     QGridLayout *layout = new QGridLayout( this );
     QTextBrowser *helpBrowser = new QTextBrowser( this );
@@ -68,7 +66,7 @@ HelpDialog::HelpDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
     layout->addWidget( closeButton, 1, 3 );
 
     BUTTONACT( closeButton, close() );
-    readSettings( "Help", QSize( 400, 450 ) );
+    readSettings( "Help", QSize( 500, 450 ) );
 }
 
 HelpDialog::~HelpDialog()
@@ -98,7 +96,7 @@ AboutDialog::AboutDialog( QWidget *parent, intf_thread_t *_p_intf)
     closeButton->setDefault( true );
 
     QLabel *introduction = new QLabel(
-            qtr( "VLC media player" " " VERSION_MESSAGE ) );
+            qtr( "VLC media player" ) + qfu( " " VERSION_MESSAGE ) );
     QLabel *iconVLC = new QLabel;
     if( QDate::currentDate().dayOfYear() >= 354 )
         iconVLC->setPixmap( QPixmap( ":/vlc48-christmas.png" ) );
@@ -122,7 +120,6 @@ AboutDialog::AboutDialog( QWidget *parent, intf_thread_t *_p_intf)
             + qfu( VLC_CompileBy() )+ "@" + qfu( VLC_CompileHost() ) + "."
             + qfu( VLC_CompileDomain() ) + ".\n"
             + qtr( "Compiler: " ) + qfu( VLC_Compiler() ) + ".\n"
-            + qtr( "Based on Git commit: " ) + qfu( VLC_Changeset() ) + ".\n"
             + qtr( "You are using the Qt4 Interface.\n\n" )
             + qtr( "Copyright (C) " ) + COPYRIGHT_YEARS
             + qtr( " by the VideoLAN Team.\n" )
@@ -223,7 +220,7 @@ UpdateDialog::UpdateDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
     updateLabelDown->setWordWrap( true );
     updateLabelDown->hide();
 
-    updateText = new QTextEdit;
+    updateText = new QTextEdit( this );
     updateText->setAcceptRichText(false);
     updateText->setTextInteractionFlags( Qt::TextSelectableByKeyboard|
                                          Qt::TextSelectableByMouse);

@@ -2,7 +2,7 @@
  * test1.c : Empty C module for vlc
  *****************************************************************************
  * Copyright (C) 2000-2001 the VideoLAN team
- * $Id: 6c54cfae3ef28a69e8d7567929d52275ae75bcf1 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -34,7 +34,7 @@
 /*****************************************************************************
  * Module descriptor.
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("C module that does nothing") );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("C module that does nothing") )
+vlc_module_end ()
 

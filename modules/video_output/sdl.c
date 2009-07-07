@@ -2,7 +2,7 @@
  * sdl.c: SDL video output display method
  *****************************************************************************
  * Copyright (C) 1998-2001 the VideoLAN team
- * $Id: da5e1d52f6154b687754659741906e56d21c59b8 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Pierre Baillet <oct@zoy.org>
@@ -120,20 +120,22 @@ static int ConvertKey( SDLKey );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_shortname( "SDL" );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VOUT );
-    set_description( N_("Simple DirectMedia Layer video output") );
-    set_capability( "video output", 60 );
-    add_shortcut( "sdl" );
-    add_string( "sdl-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true );
-    set_callbacks( Open, Close );
+vlc_module_begin ()
+    set_shortname( "SDL" )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VOUT )
+    set_description( N_("Simple DirectMedia Layer video output") )
+    set_capability( "video output", 60 )
+    add_shortcut( "sdl" )
+    add_string( "sdl-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT, true )
+    set_callbacks( Open, Close )
 #if defined( __i386__ ) || defined( __x86_64__ )
     /* On i386, SDL is linked against svgalib */
-    linked_with_a_crap_library_which_uses_atexit();
+    linked_with_a_crap_library_which_uses_atexit ()
 #endif
-vlc_module_end();
+vlc_module_end ()
+
+static vlc_mutex_t sdl_lock = VLC_STATIC_MUTEX;
 
 /*****************************************************************************
  * OpenVideo: allocate SDL video thread output method
@@ -146,19 +148,16 @@ static int Open ( vlc_object_t *p_this )
 {
     vout_thread_t * p_vout = (vout_thread_t *)p_this;
     /* XXX: check for conflicts with the SDL audio output */
-    vlc_mutex_t *lock = var_AcquireMutex( "sdl" );
+    vlc_mutex_lock( &sdl_lock );
 
 #ifdef HAVE_SETENV
     char *psz_method;
 #endif
 
-    if( lock == NULL )
-        return VLC_ENOMEM;
-
     p_vout->p_sys = malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
     {
-        vlc_mutex_unlock( lock );
+        vlc_mutex_unlock( &sdl_lock );
         return VLC_ENOMEM;
     }
 
@@ -167,7 +166,7 @@ static int Open ( vlc_object_t *p_this )
     /* Check if SDL video module has been initialized */
     if( SDL_WasInit( SDL_INIT_VIDEO ) != 0 )
     {
-        vlc_mutex_unlock( lock );
+        vlc_mutex_unlock( &sdl_lock );
         free( p_vout->p_sys );
         return VLC_EGENERIC;
     }
@@ -212,11 +211,11 @@ static int Open ( vlc_object_t *p_this )
     {
         msg_Err( p_vout, "cannot initialize SDL (%s)", SDL_GetError() );
         free( p_vout->p_sys );
-        vlc_mutex_unlock( lock );
+        vlc_mutex_unlock( &sdl_lock );
         return VLC_EGENERIC;
     }
 
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &sdl_lock );
 
     /* Translate keys into unicode */
     SDL_EnableUNICODE(1);
@@ -409,9 +408,7 @@ static int Manage( vout_thread_t *p_vout )
                 val.i_int = p_vout->fmt_in.i_visible_height;
 
             var_Set( p_vout, "mouse-y", val );
-
-            val.b_bool = true;
-            var_Set( p_vout, "mouse-moved", val );
+            var_SetBool( p_vout, "mouse-moved", true );
 
             if( p_vout->p_sys->b_cursor )
             {
@@ -437,11 +434,8 @@ static int Manage( vout_thread_t *p_vout )
                     val.i_int &= ~1;
                     var_Set( p_vout, "mouse-button-down", val );
 
-                    val.b_bool = true;
-                    var_Set( p_vout, "mouse-clicked", val );
-
-                    val.b_bool = false;
-                    var_Set( p_vout->p_libvlc, "intf-popupmenu", val );
+                    var_SetBool( p_vout, "mouse-clicked", true );
+                    var_SetBool( p_vout->p_libvlc, "intf-popupmenu", false );
                 }
                 break;
 
@@ -451,7 +445,6 @@ static int Manage( vout_thread_t *p_vout )
                     val.i_int &= ~2;
                     var_Set( p_vout, "mouse-button-down", val );
 
-                    vlc_value_t val;
                     var_Get( p_vout->p_libvlc, "intf-show", &val );
                     val.b_bool = !val.b_bool;
                     var_Set( p_vout->p_libvlc, "intf-show", val );
@@ -460,21 +453,11 @@ static int Manage( vout_thread_t *p_vout )
 
             case SDL_BUTTON_RIGHT:
                 {
-                    intf_thread_t *p_intf;
-
                     var_Get( p_vout, "mouse-button-down", &val );
                     val.i_int &= ~4;
                     var_Set( p_vout, "mouse-button-down", val );
-                    p_intf = vlc_object_find( p_vout, VLC_OBJECT_INTF,
-                                                      FIND_ANYWHERE );
-                    if( p_intf )
-                    {
-                        p_intf->b_menu_change = 1;
-                        vlc_object_release( p_intf );
-                    }
 
-                    val.b_bool = true;
-                    var_Set( p_vout->p_libvlc, "intf-popupmenu", val );
+                    var_SetBool( p_vout->p_libvlc, "intf-popupmenu", true );
                 }
                 break;
             }
@@ -514,7 +497,7 @@ static int Manage( vout_thread_t *p_vout )
         case SDL_QUIT:
             {
 #if 0
-                playlist_t *p_playlist = pl_Yield( p_vout );
+                playlist_t *p_playlist = pl_Hold( p_vout );
                 if( p_playlist != NULL )
                 {
                     playlist_Stop( p_playlist );
@@ -585,6 +568,28 @@ static int Manage( vout_thread_t *p_vout )
                         ! p_vout->p_sys->b_cursor_autohidden );
 
         p_vout->i_changes &= ~VOUT_FULLSCREEN_CHANGE;
+        p_vout->i_changes |= VOUT_SIZE_CHANGE;
+    }
+
+    /* autoscale toggle */
+    if( p_vout->i_changes & VOUT_SCALE_CHANGE )
+    {
+        p_vout->i_changes &= ~VOUT_SCALE_CHANGE;
+
+        p_vout->b_autoscale = var_GetBool( p_vout, "autoscale" );
+        p_vout->i_zoom = (int) ZOOM_FP_FACTOR;
+
+        p_vout->i_changes |= VOUT_SIZE_CHANGE;
+    }
+
+    /* scaling factor (if no-autoscale) */
+    if( p_vout->i_changes & VOUT_ZOOM_CHANGE )
+    {
+        p_vout->i_changes &= ~VOUT_ZOOM_CHANGE;
+
+        p_vout->b_autoscale = false;
+        p_vout->i_zoom = (int)( ZOOM_FP_FACTOR * var_GetFloat( p_vout, "scale" ) );
+
         p_vout->i_changes |= VOUT_SIZE_CHANGE;
     }
 

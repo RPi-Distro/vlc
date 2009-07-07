@@ -2,7 +2,7 @@
  * preferences_widgets.hpp : Widgets for preferences panels
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: d9fa03c3bd3ce0635aaa1c1258bb82b4850370c0 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -30,8 +30,6 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-
 #include "qt4.hpp"
 #include <assert.h>
 
@@ -47,7 +45,6 @@
 #include <QPushButton>
 #include <QVector>
 #include <QDialog>
-
 
 class QTreeWidget;
 class QTreeWidgetItem;
@@ -286,9 +283,9 @@ class FileConfigControl : public VStringConfigControl
     Q_OBJECT;
 public:
     FileConfigControl( vlc_object_t *, module_config_t *, QWidget *,
-                       QGridLayout *, int&, bool pwd );
+                       QGridLayout *, int& );
     FileConfigControl( vlc_object_t *, module_config_t *, QLabel *,
-                       QLineEdit *, QPushButton *, bool pwd );
+                       QLineEdit *, QPushButton * );
     virtual ~FileConfigControl() {};
     virtual QString getValue() { return text->text(); };
     virtual void show() { text->show(); if( label ) label->show(); browse->show(); }
@@ -307,9 +304,9 @@ class DirectoryConfigControl : public FileConfigControl
     Q_OBJECT;
 public:
     DirectoryConfigControl( vlc_object_t *, module_config_t *, QWidget *,
-                            QGridLayout *, int&, bool pwd );
+                            QGridLayout *, int& );
     DirectoryConfigControl( vlc_object_t *, module_config_t *, QLabel *,
-                            QLineEdit *, QPushButton *, bool pwd );
+                            QLineEdit *, QPushButton * );
     virtual ~DirectoryConfigControl() {};
 public slots:
     virtual void updateField();
@@ -366,7 +363,7 @@ public:
     virtual void hide();
     virtual void show();
 public slots:
-    void onUpdate( int value );
+    void onUpdate();
 private:
     void finish( bool );
     QVector<checkBoxListItem*> modules;
@@ -386,7 +383,7 @@ public:
     virtual QString getValue();
     virtual void hide() { combo->hide(); if( label ) label->hide(); }
     virtual void show() { combo->show(); if( label ) label->show(); }
-	QComboBox *combo;
+    QComboBox *combo;
 private:
     void finish(module_config_t *, bool );
     QLabel *label;
@@ -396,7 +393,7 @@ private slots:
 };
 
 void setfillVLCConfigCombo(const char *configname, intf_thread_t *p_intf,
-                        QComboBox *combo, QWidget *parent = 0 );
+                        QComboBox *combo );
 
 #if 0
 struct ModuleCheckBox {
@@ -424,19 +421,24 @@ private slot:
  **********************************************************************/
 class KeyShortcutEdit: public QLineEdit
 {
-    Q_OBJECT
+    Q_OBJECT;
 public:
     void setValue( int _value ){ value = _value; }
     int getValue() const { return value; }
+
+    void setGlobal( bool _value ) { b_global = _value; }
+    bool getGlobal()  const { return b_global; }
 public slots:
-    virtual void clear(void) { value = 0; QLineEdit::clear(); }
+    virtual void clear(void) { value = 0; QLineEdit::clear(); b_global = false;}
 private:
     int value;
+    bool b_global;
     virtual void mousePressEvent( QMouseEvent *event );
 signals:
     void pressed();
 };
 
+class SearchLineEdit;
 class KeySelectorControl : public ConfigControl
 {
     Q_OBJECT;
@@ -454,16 +456,18 @@ private:
     QTreeWidget *table;
     KeyShortcutEdit *shortcutValue;
     QList<module_config_t *> values;
+    SearchLineEdit *actionSearch;
 private slots:
     void setTheKey();
-    void selectKey( QTreeWidgetItem * = NULL );
+    void selectKey( QTreeWidgetItem * = NULL, int column = 1 );
     void select1Key();
+    void filter( const QString & );
 };
 
 class KeyInputDialog : public QDialog
 {
 public:
-    KeyInputDialog( QTreeWidget *, QString, QWidget * );
+    KeyInputDialog( QTreeWidget *, const QString&, QWidget *, bool b_global = false);
     int keyValue;
     bool conflicts;
 private:
@@ -471,8 +475,9 @@ private:
     void checkForConflicts( int i_vlckey );
     void keyPressEvent( QKeyEvent *);
     void wheelEvent( QWheelEvent *);
-    QLabel *selected;
+    QLabel *selected, *warning;
     QVBoxLayout *vLayout;
     QDialogButtonBox *buttonBox;
+    bool b_global;
 };
 #endif

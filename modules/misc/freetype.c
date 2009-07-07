@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2007 the VideoLAN team
- * $Id: b99760b30ff800e14b9ecf97076df0aea843ba5b $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -33,13 +33,12 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-#include <vlc_vout.h>
 #include <vlc_osd.h>
-#include <vlc_block.h>
 #include <vlc_filter.h>
 #include <vlc_stream.h>
 #include <vlc_xml.h>
 #include <vlc_input.h>
+#include <vlc_strings.h>
 
 #include <math.h>
 #include <errno.h>
@@ -129,40 +128,40 @@ static const char *const ppsz_color_descriptions[] = {
   N_("Red"), N_("Fuchsia"), N_("Yellow"), N_("Olive"), N_("Green"), N_("Teal"),
   N_("Lime"), N_("Purple"), N_("Navy"), N_("Blue"), N_("Aqua") };
 
-vlc_module_begin();
-    set_shortname( N_("Text renderer"));
-    set_description( N_("Freetype2 font renderer") );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_SUBPIC );
+vlc_module_begin ()
+    set_shortname( N_("Text renderer"))
+    set_description( N_("Freetype2 font renderer") )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_SUBPIC )
 
     add_file( "freetype-font", DEFAULT_FONT, NULL, FONT_TEXT, FONT_LONGTEXT,
-              false );
+              false )
 
     add_integer( "freetype-fontsize", 0, NULL, FONTSIZE_TEXT,
-                 FONTSIZE_LONGTEXT, true );
+                 FONTSIZE_LONGTEXT, true )
 
     /* opacity valid on 0..255, with default 255 = fully opaque */
     add_integer_with_range( "freetype-opacity", 255, 0, 255, NULL,
-        OPACITY_TEXT, OPACITY_LONGTEXT, true );
+        OPACITY_TEXT, OPACITY_LONGTEXT, true )
 
     /* hook to the color values list, with default 0x00ffffff = white */
     add_integer( "freetype-color", 0x00FFFFFF, NULL, COLOR_TEXT,
-                 COLOR_LONGTEXT, false );
-        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL );
+                 COLOR_LONGTEXT, false )
+        change_integer_list( pi_color_values, ppsz_color_descriptions, NULL )
 
     add_integer( "freetype-rel-fontsize", 16, NULL, FONTSIZER_TEXT,
-                 FONTSIZER_LONGTEXT, false );
-        change_integer_list( pi_sizes, ppsz_sizes_text, NULL );
+                 FONTSIZER_LONGTEXT, false )
+        change_integer_list( pi_sizes, ppsz_sizes_text, NULL )
     add_integer( "freetype-effect", 2, NULL, EFFECT_TEXT,
-                 EFFECT_LONGTEXT, false );
-        change_integer_list( pi_effects, ppsz_effects_text, NULL );
+                 EFFECT_LONGTEXT, false )
+        change_integer_list( pi_effects, ppsz_effects_text, NULL )
 
     add_bool( "freetype-yuvp", 0, NULL, YUVP_TEXT,
-              YUVP_LONGTEXT, true );
-    set_capability( "text renderer", 100 );
-    add_shortcut( "text" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+              YUVP_LONGTEXT, true )
+    set_capability( "text renderer", 100 )
+    add_shortcut( "text" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 
 
@@ -216,17 +215,6 @@ struct line_desc_t
 };
 static line_desc_t *NewLine( int );
 
-typedef struct font_stack_t font_stack_t;
-struct font_stack_t
-{
-    char          *psz_name;
-    int            i_size;
-    uint32_t       i_color;            /* ARGB */
-    uint32_t       i_karaoke_bg_color; /* ARGB */
-
-    font_stack_t  *p_next;
-};
-
 typedef struct
 {
     int         i_font_size;
@@ -243,7 +231,7 @@ static void FreeLines( line_desc_t * );
 static void FreeLine( line_desc_t * );
 
 #ifdef HAVE_FONTCONFIG
-static vlc_object_t *FontBuilderAttach( filter_t *p_filter, vlc_mutex_t **pp_lock  );
+static vlc_object_t *FontBuilderAttach( filter_t *p_filter );
 static void  FontBuilderDetach( filter_t *p_filter, vlc_object_t *p_fontbuilder );
 static void* FontBuilderThread( vlc_object_t *p_this);
 static void  FontBuilderDestructor( vlc_object_t *p_this );
@@ -271,7 +259,6 @@ struct filter_sys_t
     int            i_default_font_size;
     int            i_display_height;
 #ifdef HAVE_FONTCONFIG
-    vlc_mutex_t   *p_fontconfig_lock;
     bool           b_fontconfig_ok;
     FcConfig      *p_fontconfig;
 #endif
@@ -281,6 +268,12 @@ struct filter_sys_t
 
     vlc_object_t  *p_fontbuilder;
 };
+
+#define UCHAR uint32_t
+#define TR_DEFAULT_FONT FC_DEFAULT_FONT
+#define TR_FONT_STYLE_PTR ft_style_t *
+
+#include "text_renderer.h"
 
 /*****************************************************************************
  * Create: allocates osd-text video thread output method
@@ -371,7 +364,7 @@ static int Create( vlc_object_t *p_this )
 #ifdef HAVE_FONTCONFIG
     p_sys->b_fontconfig_ok = false;
     p_sys->p_fontconfig    = NULL;
-    p_sys->p_fontbuilder   = FontBuilderAttach( p_filter, &p_sys->p_fontconfig_lock );
+    p_sys->p_fontbuilder   = FontBuilderAttach( p_filter );
 #endif
 
     p_sys->i_use_kerning = FT_HAS_KERNING( p_sys->p_face );
@@ -438,10 +431,12 @@ static void Destroy( vlc_object_t *p_this )
 }
 
 #ifdef HAVE_FONTCONFIG
-static vlc_object_t *FontBuilderAttach( filter_t *p_filter, vlc_mutex_t **pp_lock )
+static vlc_mutex_t fb_lock = VLC_STATIC_MUTEX;
+
+static vlc_object_t *FontBuilderAttach( filter_t *p_filter )
 {
     /* Check for an existing Fontbuilder thread */
-    vlc_mutex_t *p_lock = var_AcquireMutex( "fontbuilder" );
+    vlc_mutex_lock( &fb_lock );
     vlc_object_t *p_fontbuilder =
         vlc_object_find_name( p_filter->p_libvlc,
                               "fontlist builder", FIND_CHILD );
@@ -469,62 +464,58 @@ static vlc_object_t *FontBuilderAttach( filter_t *p_filter, vlc_mutex_t **pp_loc
 
             var_Create( p_fontbuilder, "build-done", VLC_VAR_BOOL );
             var_SetBool( p_fontbuilder, "build-done", false );
+            var_Create( p_fontbuilder, "build-joined", VLC_VAR_BOOL );
+            var_SetBool( p_fontbuilder, "build-joined", false );
 
             if( vlc_thread_create( p_fontbuilder,
                                    "fontlist builder",
                                    FontBuilderThread,
-                                   VLC_THREAD_PRIORITY_LOW,
-                                   false ) )
+                                   VLC_THREAD_PRIORITY_LOW ) )
             {
                 msg_Warn( p_filter, "fontconfig database builder thread can't "
                         "be launched. Font styling support will be limited." );
             }
         }
     }
+
     if( p_fontbuilder )
     {
         var_AddCallback( p_fontbuilder, "build-done", FontBuilderDone, p_filter );
         FontBuilderGetFcConfig( p_filter, p_fontbuilder );
     }
-    vlc_mutex_unlock( p_lock );
-    *pp_lock = p_lock;
+    vlc_mutex_unlock( &fb_lock );
     return p_fontbuilder;
 }
 static void FontBuilderDetach( filter_t *p_filter, vlc_object_t *p_fontbuilder )
 {
-    vlc_mutex_t *lock = var_AcquireMutex( "fontbuilder" );
+    vlc_mutex_lock( &fb_lock );
     if( p_fontbuilder )
     {
-        const bool b_alive = vlc_object_alive( p_fontbuilder );
-
         var_DelCallback( p_fontbuilder, "build-done", FontBuilderDone, p_filter );
 
         /* We wait for the thread on the first FontBuilderDetach */
-        if( b_alive )
+        if( !var_GetBool( p_fontbuilder, "build-joined" ) )
         {
-            vlc_object_kill( p_fontbuilder );
-            vlc_mutex_unlock( lock );
-
+            var_SetBool( p_fontbuilder, "build-joined", true );
+            vlc_mutex_unlock( &fb_lock );
             /* We need to unlock otherwise we may not join (the thread waiting
              * for the lock). It is safe to unlock as no one else will try a
              * join and we have a reference on the object) */
             vlc_thread_join( p_fontbuilder );
-
-            vlc_mutex_lock( lock );
+            vlc_mutex_lock( &fb_lock );
         }
         vlc_object_release( p_fontbuilder );
     }
-    vlc_mutex_unlock( lock );
+    vlc_mutex_unlock( &fb_lock );
 }
 static void* FontBuilderThread( vlc_object_t *p_this )
 {
     FcConfig      *p_fontconfig = FcInitLoadConfig();
 
-    vlc_thread_ready( p_this );
-
     if( p_fontconfig )
     {
         mtime_t    t1, t2;
+        int canc = vlc_savecancel ();
 
         //msg_Dbg( p_this, "Building font database..." );
         msg_Dbg( p_this, "Building font database..." );
@@ -541,13 +532,14 @@ static void* FontBuilderThread( vlc_object_t *p_this )
         t2 = mdate();
 
         msg_Dbg( p_this, "Finished building font database." );
-        msg_Dbg( p_this, "Took %ld seconds", (long)((t2 - t1)/1000000) );
+        msg_Dbg( p_this, "Took %ld microseconds", (long)((t2 - t1)) );
 
-        vlc_mutex_t *p_lock = var_AcquireMutex( "fontbuilder" );
+        vlc_mutex_lock( &fb_lock );
         p_this->p_private = p_fontconfig;
-        vlc_mutex_unlock( p_lock );
+        vlc_mutex_unlock( &fb_lock );
 
         var_SetBool( p_this, "build-done", true );
+        vlc_restorecancel (canc);
     }
     return NULL;
 }
@@ -572,11 +564,11 @@ static int FontBuilderDone( vlc_object_t *p_this, const char *psz_var,
 
     if( newval.b_bool )
     {
-        vlc_mutex_t *p_lock = var_AcquireMutex( "fontbuilder" );
+        vlc_mutex_lock( &fb_lock );
 
         FontBuilderGetFcConfig( p_filter, p_this );
 
-        vlc_mutex_unlock( p_lock );
+        vlc_mutex_unlock( &fb_lock );
     }
 
     VLC_UNUSED(psz_var);
@@ -660,7 +652,6 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
     int i, x, y, i_pitch;
     uint8_t i_y; /* YUV values, derived from incoming RGB */
     int8_t i_u, i_v;
-    subpicture_region_t *p_region_tmp;
 
     /* Create a new subpicture region */
     memset( &fmt, 0, sizeof(video_format_t) );
@@ -673,16 +664,12 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
     if( p_region->fmt.i_visible_height > 0 )
         fmt.i_visible_height = p_region->fmt.i_visible_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_region_tmp = spu_CreateRegion( p_filter, &fmt );
-    if( !p_region_tmp )
-    {
-        msg_Err( p_filter, "cannot allocate SPU region" );
-        return VLC_EGENERIC;
-    }
 
-    p_region->fmt = p_region_tmp->fmt;
-    p_region->picture = p_region_tmp->picture;
-    free( p_region_tmp );
+    assert( !p_region->p_picture );
+    p_region->p_picture = picture_New( fmt.i_chroma, fmt.i_width, fmt.i_height, fmt.i_aspect );
+    if( !p_region->p_picture )
+        return VLC_EGENERIC;
+    p_region->fmt = fmt;
 
     /* Calculate text color components */
     i_y = (uint8_t)(( 66 * p_line->i_red  + 129 * p_line->i_green +
@@ -713,8 +700,8 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
             (int)fmt.p_palette->palette[i][3] * (255 - p_line->i_alpha) / 255;
     }
 
-    p_dst = p_region->picture.Y_PIXELS;
-    i_pitch = p_region->picture.Y_PITCH;
+    p_dst = p_region->p_picture->Y_PIXELS;
+    i_pitch = p_region->p_picture->Y_PITCH;
 
     /* Initialize the region pixels */
     memset( p_dst, 0, i_pitch * p_region->fmt.i_height );
@@ -766,21 +753,21 @@ static int Render( filter_t *p_filter, subpicture_region_t *p_region,
     /* Outlining (find something better than nearest neighbour filtering ?) */
     if( 1 )
     {
-        uint8_t *p_dst = p_region->picture.Y_PIXELS;
+        uint8_t *p_dst = p_region->p_picture->Y_PIXELS;
         uint8_t *p_top = p_dst; /* Use 1st line as a cache */
         uint8_t left, current;
 
         for( y = 1; y < (int)fmt.i_height - 1; y++ )
         {
             if( y > 1 ) memcpy( p_top, p_dst, fmt.i_width );
-            p_dst += p_region->picture.Y_PITCH;
+            p_dst += p_region->p_picture->Y_PITCH;
             left = 0;
 
             for( x = 1; x < (int)fmt.i_width - 1; x++ )
             {
                 current = p_dst[x];
                 p_dst[x] = ( 8 * (int)p_dst[x] + left + p_dst[x+1] + p_top[x -1]+ p_top[x] + p_top[x+1] +
-                             p_dst[x -1 + p_region->picture.Y_PITCH ] + p_dst[x + p_region->picture.Y_PITCH] + p_dst[x + 1 + p_region->picture.Y_PITCH]) / 16;
+                             p_dst[x -1 + p_region->p_picture->Y_PITCH ] + p_dst[x + p_region->p_picture->Y_PITCH] + p_dst[x + 1 + p_region->p_picture->Y_PITCH]) / 16;
                 left = current;
             }
         }
@@ -801,11 +788,11 @@ static void UnderlineGlyphYUVA( int i_line_thickness, int i_line_offset, bool b_
     int i_pitch;
     uint8_t *p_dst_y,*p_dst_u,*p_dst_v,*p_dst_a;
 
-    p_dst_y = p_region->picture.Y_PIXELS;
-    p_dst_u = p_region->picture.U_PIXELS;
-    p_dst_v = p_region->picture.V_PIXELS;
-    p_dst_a = p_region->picture.A_PIXELS;
-    i_pitch = p_region->picture.A_PITCH;
+    p_dst_y = p_region->p_picture->Y_PIXELS;
+    p_dst_u = p_region->p_picture->U_PIXELS;
+    p_dst_v = p_region->p_picture->V_PIXELS;
+    p_dst_a = p_region->p_picture->A_PIXELS;
+    i_pitch = p_region->p_picture->A_PITCH;
 
     int i_offset = ( p_this_glyph_pos->y + i_glyph_tmax + i_line_offset + 3 ) * i_pitch +
                      p_this_glyph_pos->x + p_this_glyph->left + 3 + i_align_offset;
@@ -864,8 +851,8 @@ static void UnderlineGlyphYUVA( int i_line_thickness, int i_line_offset, bool b_
 
 static void DrawBlack( line_desc_t *p_line, int i_width, subpicture_region_t *p_region, int xoffset, int yoffset )
 {
-    uint8_t *p_dst = p_region->picture.A_PIXELS;
-    int i_pitch = p_region->picture.A_PITCH;
+    uint8_t *p_dst = p_region->p_picture->A_PIXELS;
+    int i_pitch = p_region->p_picture->A_PITCH;
     int x,y;
 
     for( ; p_line != NULL; p_line = p_line->p_next )
@@ -928,7 +915,6 @@ static int RenderYUVA( filter_t *p_filter, subpicture_region_t *p_region,
     video_format_t fmt;
     int i, x, y, i_pitch, i_alpha;
     uint8_t i_y, i_u, i_v; /* YUV values, derived from incoming RGB */
-    subpicture_region_t *p_region_tmp;
 
     if( i_width == 0 || i_height == 0 )
         return VLC_SUCCESS;
@@ -944,16 +930,11 @@ static int RenderYUVA( filter_t *p_filter, subpicture_region_t *p_region,
     if( p_region->fmt.i_visible_height > 0 )
         fmt.i_visible_height = p_region->fmt.i_visible_height;
     fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_region_tmp = spu_CreateRegion( p_filter, &fmt );
-    if( !p_region_tmp )
-    {
-        msg_Err( p_filter, "cannot allocate SPU region" );
-        return VLC_EGENERIC;
-    }
 
-    p_region->fmt = p_region_tmp->fmt;
-    p_region->picture = p_region_tmp->picture;
-    free( p_region_tmp );
+    p_region->p_picture = picture_New( fmt.i_chroma, fmt.i_width, fmt.i_height, fmt.i_aspect );
+    if( !p_region->p_picture )
+        return VLC_EGENERIC;
+    p_region->fmt = fmt;
 
     /* Calculate text color components */
     YUVFromRGB( (p_line->i_red   << 16) |
@@ -962,11 +943,11 @@ static int RenderYUVA( filter_t *p_filter, subpicture_region_t *p_region,
                 &i_y, &i_u, &i_v);
     i_alpha = p_line->i_alpha;
 
-    p_dst_y = p_region->picture.Y_PIXELS;
-    p_dst_u = p_region->picture.U_PIXELS;
-    p_dst_v = p_region->picture.V_PIXELS;
-    p_dst_a = p_region->picture.A_PIXELS;
-    i_pitch = p_region->picture.A_PITCH;
+    p_dst_y = p_region->p_picture->Y_PIXELS;
+    p_dst_u = p_region->p_picture->U_PIXELS;
+    p_dst_v = p_region->p_picture->V_PIXELS;
+    p_dst_a = p_region->p_picture->A_PIXELS;
+    i_pitch = p_region->p_picture->A_PITCH;
 
     /* Initialize the region pixels */
     if( p_filter->p_sys->i_effect != EFFECT_BACKGROUND )
@@ -1462,94 +1443,6 @@ static bool StyleEquals( ft_style_t *s1, ft_style_t *s2 )
     return false;
 }
 
-static int PushFont( font_stack_t **p_font, const char *psz_name, int i_size,
-                     uint32_t i_color, uint32_t i_karaoke_bg_color )
-{
-    font_stack_t *p_new;
-
-    if( !p_font )
-        return VLC_EGENERIC;
-
-    p_new = malloc( sizeof( font_stack_t ) );
-    if( ! p_new )
-        return VLC_ENOMEM;
-
-    p_new->p_next = NULL;
-
-    if( psz_name )
-        p_new->psz_name = strdup( psz_name );
-    else
-        p_new->psz_name = NULL;
-
-    p_new->i_size              = i_size;
-    p_new->i_color             = i_color;
-    p_new->i_karaoke_bg_color  = i_karaoke_bg_color;
-
-    if( !*p_font )
-    {
-        *p_font = p_new;
-    }
-    else
-    {
-        font_stack_t *p_last;
-
-        for( p_last = *p_font;
-             p_last->p_next;
-             p_last = p_last->p_next )
-        ;
-
-        p_last->p_next = p_new;
-    }
-    return VLC_SUCCESS;
-}
-
-static int PopFont( font_stack_t **p_font )
-{
-    font_stack_t *p_last, *p_next_to_last;
-
-    if( !p_font || !*p_font )
-        return VLC_EGENERIC;
-
-    p_next_to_last = NULL;
-    for( p_last = *p_font;
-         p_last->p_next;
-         p_last = p_last->p_next )
-    {
-        p_next_to_last = p_last;
-    }
-
-    if( p_next_to_last )
-        p_next_to_last->p_next = NULL;
-    else
-        *p_font = NULL;
-
-    free( p_last->psz_name );
-    free( p_last );
-
-    return VLC_SUCCESS;
-}
-
-static int PeekFont( font_stack_t **p_font, char **psz_name, int *i_size,
-                     uint32_t *i_color, uint32_t *i_karaoke_bg_color )
-{
-    font_stack_t *p_last;
-
-    if( !p_font || !*p_font )
-        return VLC_EGENERIC;
-
-    for( p_last=*p_font;
-         p_last->p_next;
-         p_last=p_last->p_next )
-    ;
-
-    *psz_name            = p_last->psz_name;
-    *i_size              = p_last->i_size;
-    *i_color             = p_last->i_color;
-    *i_karaoke_bg_color  = p_last->i_karaoke_bg_color;
-
-    return VLC_SUCCESS;
-}
-
 static void IconvText( filter_t *p_filter, const char *psz_string,
                        uint32_t *i_string_length, uint32_t **ppsz_unicode )
 {
@@ -1800,86 +1693,6 @@ static int RenderTag( filter_t *p_filter, FT_Face p_face, int i_font_color,
     return VLC_SUCCESS;
 }
 
-static int HandleFontAttributes( xml_reader_t *p_xml_reader,
-                                  font_stack_t **p_fonts, int i_scale )
-{
-    int        rv;
-    char      *psz_fontname = NULL;
-    uint32_t   i_font_color = 0xffffff;
-    int        i_font_alpha = 0;
-    uint32_t   i_karaoke_bg_color = 0x00ffffff;
-    int        i_font_size  = 24;
-
-    /* Default all attributes to the top font in the stack -- in case not
-     * all attributes are specified in the sub-font
-     */
-    if( VLC_SUCCESS == PeekFont( p_fonts,
-                                 &psz_fontname,
-                                 &i_font_size,
-                                 &i_font_color,
-                                 &i_karaoke_bg_color ))
-    {
-        psz_fontname = strdup( psz_fontname );
-        i_font_size = i_font_size * 1000 / i_scale;
-    }
-    i_font_alpha = (i_font_color >> 24) & 0xff;
-    i_font_color &= 0x00ffffff;
-
-    while ( xml_ReaderNextAttr( p_xml_reader ) == VLC_SUCCESS )
-    {
-        char *psz_name = xml_ReaderName( p_xml_reader );
-        char *psz_value = xml_ReaderValue( p_xml_reader );
-
-        if( psz_name && psz_value )
-        {
-            if( !strcasecmp( "face", psz_name ) )
-            {
-                free( psz_fontname );
-                psz_fontname = strdup( psz_value );
-            }
-            else if( !strcasecmp( "size", psz_name ) )
-            {
-                if( ( *psz_value == '+' ) || ( *psz_value == '-' ) )
-                {
-                    int i_value = atoi( psz_value );
-
-                    if( ( i_value >= -5 ) && ( i_value <= 5 ) )
-                        i_font_size += ( i_value * i_font_size ) / 10;
-                    else if( i_value < -5 )
-                        i_font_size = - i_value;
-                    else if( i_value > 5 )
-                        i_font_size = i_value;
-                }
-                else
-                    i_font_size = atoi( psz_value );
-            }
-            else if( !strcasecmp( "color", psz_name )  &&
-                     ( psz_value[0] == '#' ) )
-            {
-                i_font_color = strtol( psz_value + 1, NULL, 16 );
-                i_font_color &= 0x00ffffff;
-            }
-            else if( !strcasecmp( "alpha", psz_name ) &&
-                     ( psz_value[0] == '#' ) )
-            {
-                i_font_alpha = strtol( psz_value + 1, NULL, 16 );
-                i_font_alpha &= 0xff;
-            }
-        }
-        free( psz_name );
-        free( psz_value );
-    }
-    rv = PushFont( p_fonts,
-                   psz_fontname,
-                   i_font_size * i_scale / 1000,
-                   (i_font_color & 0xffffff) | ((i_font_alpha & 0xff) << 24),
-                   i_karaoke_bg_color );
-
-    free( psz_fontname );
-
-    return rv;
-}
-
 static void SetupLine( filter_t *p_filter, const char *psz_text_in,
                        uint32_t **psz_text_out, uint32_t *pi_runs,
                        uint32_t **ppi_run_lengths, ft_style_t ***ppp_styles,
@@ -1934,255 +1747,6 @@ static void SetupLine( filter_t *p_filter, const char *psz_text_in,
      * problems above, release it here.
      */
     if( p_style ) DeleteStyle( p_style );
-}
-
-static void SetKaraokeLen( uint32_t i_runs, uint32_t *pi_run_lengths,
-                           uint32_t i_k_runs, uint32_t *pi_k_run_lengths )
-{
-    /* Karaoke tags _PRECEDE_ the text they specify a duration
-     * for, therefore we are working out the length for the
-     * previous tag, and first time through we have nothing
-     */
-    if( pi_k_run_lengths )
-    {
-        int i_chars = 0;
-        uint32_t i;
-
-        /* Work out how many characters are presently in the string
-         */
-        for( i = 0; i < i_runs; i++ )
-            i_chars += pi_run_lengths[ i ];
-
-        /* Subtract away those we've already allocated to other
-         * karaoke tags
-         */
-        for( i = 0; i < i_k_runs; i++ )
-            i_chars -= pi_k_run_lengths[ i ];
-
-        pi_k_run_lengths[ i_k_runs - 1 ] = i_chars;
-    }
-}
-
-static void SetupKaraoke( xml_reader_t *p_xml_reader, uint32_t *pi_k_runs,
-                          uint32_t **ppi_k_run_lengths,
-                          uint32_t **ppi_k_durations )
-{
-    while ( xml_ReaderNextAttr( p_xml_reader ) == VLC_SUCCESS )
-    {
-        char *psz_name = xml_ReaderName( p_xml_reader );
-        char *psz_value = xml_ReaderValue( p_xml_reader );
-
-        if( psz_name && psz_value &&
-            !strcasecmp( "t", psz_name ) )
-        {
-            if( ppi_k_durations && ppi_k_run_lengths )
-            {
-                (*pi_k_runs)++;
-
-                if( *ppi_k_durations )
-                {
-                    *ppi_k_durations = (uint32_t *)
-                        realloc( *ppi_k_durations,
-                                 *pi_k_runs * sizeof( uint32_t ) );
-                }
-                else if( *pi_k_runs == 1 )
-                {
-                    *ppi_k_durations = (uint32_t *)
-                        malloc( *pi_k_runs * sizeof( uint32_t ) );
-                }
-
-                if( *ppi_k_run_lengths )
-                {
-                    *ppi_k_run_lengths = (uint32_t *)
-                        realloc( *ppi_k_run_lengths,
-                                 *pi_k_runs * sizeof( uint32_t ) );
-                }
-                else if( *pi_k_runs == 1 )
-                {
-                    *ppi_k_run_lengths = (uint32_t *)
-                        malloc( *pi_k_runs * sizeof( uint32_t ) );
-                }
-                if( *ppi_k_durations )
-                    (*ppi_k_durations)[ *pi_k_runs - 1 ] = atoi( psz_value );
-
-                if( *ppi_k_run_lengths )
-                    (*ppi_k_run_lengths)[ *pi_k_runs - 1 ] = 0;
-            }
-        }
-        free( psz_name );
-        free( psz_value );
-    }
-}
-
-static int ProcessNodes( filter_t *p_filter,
-                         xml_reader_t *p_xml_reader,
-                         text_style_t *p_font_style,
-                         uint32_t *psz_text,
-                         int *pi_len,
-
-                         uint32_t *pi_runs,
-                         uint32_t **ppi_run_lengths,
-                         ft_style_t ***ppp_styles,
-
-                         bool b_karaoke,
-                         uint32_t *pi_k_runs,
-                         uint32_t **ppi_k_run_lengths,
-                         uint32_t **ppi_k_durations )
-{
-    int           rv             = VLC_SUCCESS;
-    filter_sys_t *p_sys          = p_filter->p_sys;
-    uint32_t     *psz_text_orig  = psz_text;
-    font_stack_t *p_fonts        = NULL;
-    vlc_value_t   val;
-    int           i_scale        = 1000;
-
-    char *psz_node  = NULL;
-
-    bool b_italic = false;
-    bool b_bold   = false;
-    bool b_uline  = false;
-
-    if( VLC_SUCCESS == var_Get( p_filter, "scale", &val ))
-        i_scale = val.i_int;
-
-    if( p_font_style )
-    {
-        rv = PushFont( &p_fonts,
-               p_font_style->psz_fontname,
-               p_font_style->i_font_size * i_scale / 1000,
-               (p_font_style->i_font_color & 0xffffff) |
-                   ((p_font_style->i_font_alpha & 0xff) << 24),
-               (p_font_style->i_karaoke_background_color & 0xffffff) |
-                   ((p_font_style->i_karaoke_background_alpha & 0xff) << 24));
-
-        if( p_font_style->i_style_flags & STYLE_BOLD )
-            b_bold = true;
-        if( p_font_style->i_style_flags & STYLE_ITALIC )
-            b_italic = true;
-        if( p_font_style->i_style_flags & STYLE_UNDERLINE )
-            b_uline = true;
-    }
-    else
-    {
-        rv = PushFont( &p_fonts,
-                       FC_DEFAULT_FONT,
-                       p_sys->i_font_size,
-                       (p_sys->i_font_color & 0xffffff) |
-                          (((255-p_sys->i_font_opacity) & 0xff) << 24),
-                       0x00ffffff );
-    }
-    if( rv != VLC_SUCCESS )
-        return rv;
-
-    while ( ( xml_ReaderRead( p_xml_reader ) == 1 ) )
-    {
-        switch ( xml_ReaderNodeType( p_xml_reader ) )
-        {
-            case XML_READER_NONE:
-                break;
-            case XML_READER_ENDELEM:
-                psz_node = xml_ReaderName( p_xml_reader );
-
-                if( psz_node )
-                {
-                    if( !strcasecmp( "font", psz_node ) )
-                        PopFont( &p_fonts );
-                    else if( !strcasecmp( "b", psz_node ) )
-                        b_bold   = false;
-                    else if( !strcasecmp( "i", psz_node ) )
-                        b_italic = false;
-                    else if( !strcasecmp( "u", psz_node ) )
-                        b_uline  = false;
-
-                    free( psz_node );
-                }
-                break;
-            case XML_READER_STARTELEM:
-                psz_node = xml_ReaderName( p_xml_reader );
-                if( psz_node )
-                {
-                    if( !strcasecmp( "font", psz_node ) )
-                        rv = HandleFontAttributes( p_xml_reader, &p_fonts, i_scale );
-                    else if( !strcasecmp( "b", psz_node ) )
-                        b_bold = true;
-                    else if( !strcasecmp( "i", psz_node ) )
-                        b_italic = true;
-                    else if( !strcasecmp( "u", psz_node ) )
-                        b_uline = true;
-                    else if( !strcasecmp( "br", psz_node ) )
-                    {
-                        SetupLine( p_filter, "\n", &psz_text,
-                                   pi_runs, ppi_run_lengths, ppp_styles,
-                                   GetStyleFromFontStack( p_sys,
-                                                          &p_fonts,
-                                                          b_bold,
-                                                          b_italic,
-                                                          b_uline ) );
-                    }
-                    else if( !strcasecmp( "k", psz_node ) )
-                    {
-                        /* Only valid in karaoke */
-                        if( b_karaoke )
-                        {
-                            if( *pi_k_runs > 0 )
-                            {
-                                SetKaraokeLen( *pi_runs, *ppi_run_lengths,
-                                               *pi_k_runs, *ppi_k_run_lengths );
-                            }
-                            SetupKaraoke( p_xml_reader, pi_k_runs,
-                                          ppi_k_run_lengths, ppi_k_durations );
-                        }
-                    }
-
-                    free( psz_node );
-                }
-                break;
-            case XML_READER_TEXT:
-                psz_node = xml_ReaderValue( p_xml_reader );
-                if( psz_node )
-                {
-                    /* Turn any multiple-whitespaces into single spaces */
-                    char *s = strpbrk( psz_node, "\t\r\n " );
-                    while( s )
-                    {
-                        int i_whitespace = strspn( s, "\t\r\n " );
-
-                        if( i_whitespace > 1 )
-                            memmove( &s[1],
-                                     &s[i_whitespace],
-                                     strlen( s ) - i_whitespace + 1 );
-                        *s++ = ' ';
-
-                        s = strpbrk( s, "\t\r\n " );
-                    }
-                    SetupLine( p_filter, psz_node, &psz_text,
-                               pi_runs, ppi_run_lengths, ppp_styles,
-                               GetStyleFromFontStack( p_sys,
-                                                      &p_fonts,
-                                                      b_bold,
-                                                      b_italic,
-                                                      b_uline ) );
-                    free( psz_node );
-                }
-                break;
-        }
-        if( rv != VLC_SUCCESS )
-        {
-            psz_text = psz_text_orig;
-            break;
-        }
-    }
-    if( b_karaoke )
-    {
-        SetKaraokeLen( *pi_runs, *ppi_run_lengths,
-                       *pi_k_runs, *ppi_k_run_lengths );
-    }
-
-    *pi_len = psz_text - psz_text_orig;
-
-    while( VLC_SUCCESS == PopFont( &p_fonts ) );
-
-    return rv;
 }
 
 static int CheckForEmbeddedFont( filter_sys_t *p_sys, FT_Face *pp_face, ft_style_t *p_style )
@@ -2449,7 +2013,7 @@ static int ProcessLines( filter_t *p_filter,
             {
                 char *psz_fontfile = NULL;
 
-                vlc_mutex_lock( p_sys->p_fontconfig_lock );
+                vlc_mutex_lock( &fb_lock );
                 if( p_sys->b_fontconfig_ok )
                 {
                     /* FIXME Is there really a race condition between FontConfig_Select with default fontconfig(NULL)
@@ -2460,7 +2024,7 @@ static int ProcessLines( filter_t *p_filter,
                                                       p_style->b_italic,
                                                       &i_idx );
                 }
-                vlc_mutex_unlock( p_sys->p_fontconfig_lock );
+                vlc_mutex_unlock( &fb_lock );
 
                 if( psz_fontfile && ! *psz_fontfile )
                 {
@@ -2739,6 +2303,7 @@ static int RenderHtml( filter_t *p_filter, subpicture_region_t *p_region_out,
                     rv = ProcessNodes( p_filter, p_xml_reader,
                                   p_region_in->p_style, psz_text, &i_len,
                                   &i_runs, &pi_run_lengths, &pp_styles,
+
                                   b_karaoke, &i_k_runs, &pi_k_run_lengths,
                                   &pi_k_durations );
 

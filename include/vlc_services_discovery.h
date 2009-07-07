@@ -2,7 +2,7 @@
  * vlc_services_discovery.h : Services Discover functions
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 75834212b3d14bed300bb1ee57acd79e17dd2b4e $
+ * $Id$
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org>
  *
@@ -43,16 +43,12 @@ extern "C" {
 struct services_discovery_t
 {
     VLC_COMMON_MEMBERS
-    char *              psz_module;
     module_t *          p_module;
 
-    char *              psz_localized_name; /* Accessed through Setters for non class function */
     vlc_event_manager_t event_manager;      /* Accessed through Setters for non class function */
 
     services_discovery_sys_t *p_sys;
-    void (*pf_run) ( services_discovery_t *);
 };
-
 
 /***********************************************************************
  * Service Discovery
@@ -60,15 +56,23 @@ struct services_discovery_t
 
 /* Get the services discovery modules names to use in Create(), in a null
  * terminated string array. Array and string must be freed after use. */
-VLC_EXPORT( char **, __services_discovery_GetServicesNames, ( vlc_object_t * p_super, char ***pppsz_longnames ) );
-#define services_discovery_GetServicesNames(a,b) \
-        __services_discovery_GetServicesNames(VLC_OBJECT(a),b)
+VLC_EXPORT( char **, vlc_sd_GetNames, ( char ***pppsz_longnames ) );
 
 /* Creation of a service_discovery object */
-VLC_EXPORT( services_discovery_t *, services_discovery_Create, ( vlc_object_t * p_super, const char * psz_service_name ) );
-VLC_EXPORT( void,                   services_discovery_Destroy, ( services_discovery_t * p_this ) );
-VLC_EXPORT( int,                    services_discovery_Start, ( services_discovery_t * p_this ) );
-VLC_EXPORT( void,                   services_discovery_Stop, ( services_discovery_t * p_this ) );
+VLC_EXPORT( services_discovery_t *, vlc_sd_Create, ( vlc_object_t * ) );
+VLC_EXPORT( bool, vlc_sd_Start, ( services_discovery_t *, const char * ) );
+VLC_EXPORT( void, vlc_sd_Stop, ( services_discovery_t * ) );
+
+static inline void vlc_sd_Destroy( services_discovery_t *p_sd )
+{
+    vlc_object_release( VLC_OBJECT(p_sd) );
+}
+
+static inline void vlc_sd_StopAndDestroy( services_discovery_t * p_this )
+{
+    vlc_sd_Stop( p_this );
+    vlc_sd_Destroy( p_this );
+}
 
 /* Read info from discovery object */
 VLC_EXPORT( char *,                 services_discovery_GetLocalizedName, ( services_discovery_t * p_this ) );
@@ -77,7 +81,6 @@ VLC_EXPORT( char *,                 services_discovery_GetLocalizedName, ( servi
 VLC_EXPORT( vlc_event_manager_t *,  services_discovery_EventManager, ( services_discovery_t * p_this ) );
 
 /* Used by services_discovery to post update about their items */
-VLC_EXPORT( void,                   services_discovery_SetLocalizedName, ( services_discovery_t * p_this, const char * ) );
     /* About the psz_category, it is a legacy way to add info to the item,
      * for more options, directly set the (meta) data on the input item */
 VLC_EXPORT( void,                   services_discovery_AddItem, ( services_discovery_t * p_this, input_item_t * p_item, const char * psz_category ) );

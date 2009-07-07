@@ -1,7 +1,7 @@
 /*****************************************************************************
  * jack.c: JACK audio input module
  *****************************************************************************
- * Copyright (C) 2007 the VideoLAN team
+ * Copyright (C) 2007-2008 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
@@ -61,7 +61,7 @@ static void Close( vlc_object_t * );
 
 #define CACHING_TEXT N_("Caching value in ms")
 #define CACHING_LONGTEXT N_( \
-    "Make VLC buffer audio data capturer from jack for the specified " \
+    "Make VLC buffer audio data captured from jack for the specified " \
     "length in milliseconds." )
 #define PACE_TEXT N_( "Pace" )
 #define PACE_LONGTEXT N_( \
@@ -70,23 +70,23 @@ static void Close( vlc_object_t * );
 #define AUTO_CONNECT_LONGTEXT N_( \
     "Automatically connect VLC input ports to available output ports." )
 
-vlc_module_begin();
-     set_description( N_("JACK audio input") );
-     set_capability( "access_demux", 0 );
-     set_shortname( N_( "JACK Input" ) );
-     set_category( CAT_INPUT );
-     set_subcategory( SUBCAT_INPUT_ACCESS );
+vlc_module_begin ()
+     set_description( N_("JACK audio input") )
+     set_capability( "access_demux", 0 )
+     set_shortname( N_( "JACK Input" ) )
+     set_category( CAT_INPUT )
+     set_subcategory( SUBCAT_INPUT_ACCESS )
 
      add_integer( "jack-input-caching", DEFAULT_PTS_DELAY / 1000, NULL,
-         CACHING_TEXT, CACHING_LONGTEXT, true );
+         CACHING_TEXT, CACHING_LONGTEXT, true )
      add_bool( "jack-input-use-vlc-pace", false, NULL,
-         PACE_TEXT, PACE_LONGTEXT, true );
+         PACE_TEXT, PACE_LONGTEXT, true )
      add_bool( "jack-input-auto-connect", false, NULL,
-         AUTO_CONNECT_TEXT, AUTO_CONNECT_LONGTEXT, true );
+         AUTO_CONNECT_TEXT, AUTO_CONNECT_LONGTEXT, true )
 
-     add_shortcut( "jack" );
-     set_callbacks( Open, Close );
-vlc_module_end();
+     add_shortcut( "jack" )
+     set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -142,9 +142,8 @@ static int Open( vlc_object_t *p_this )
 
     /* Allocate structure */
     p_demux->p_sys = p_sys = calloc( 1, sizeof( demux_sys_t ) );
-    if( p_sys == NULL )
+    if( !p_sys )
         return VLC_ENOMEM;
-    memset( p_sys, 0, sizeof( demux_sys_t ) );
 
     /* Parse MRL */
     Parse( p_demux );
@@ -170,7 +169,7 @@ static int Open( vlc_object_t *p_this )
     }
 
     /* find some specifics ports if user entered a regexp */
-    if( p_sys->psz_ports)
+    if( p_sys->psz_ports )
     {
         Port_finder( p_demux );
         if( p_sys->i_channels == 0 )

@@ -1,13 +1,14 @@
 /*****************************************************************************
  * threads.c : threads implementation for the VideoLAN client
  *****************************************************************************
- * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: 3218f5eb6efb1cf86c00a1c08f8f4d2a100d17f0 $
+ * Copyright (C) 1999-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
  *          Gildas Bazin <gbazin@netcourrier.com>
  *          Clément Sténac
+ *          Rémi Denis-Courmont
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -31,84 +32,89 @@
 #include <vlc_common.h>
 
 #include "libvlc.h"
+#include <stdarg.h>
 #include <assert.h>
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif
 #include <signal.h>
 
-#define VLC_THREADS_UNINITIALIZED  0
-#define VLC_THREADS_PENDING        1
-#define VLC_THREADS_ERROR          2
-#define VLC_THREADS_READY          3
-
-/*****************************************************************************
- * Global mutex for lazy initialization of the threads system
- *****************************************************************************/
-static volatile unsigned i_initializations = 0;
-
 #if defined( LIBVLC_USE_PTHREAD )
 # include <sched.h>
-
-static pthread_mutex_t once_mutex = PTHREAD_MUTEX_INITIALIZER;
+# ifdef __linux__
+#  include <sys/syscall.h> /* SYS_gettid */
+# endif
+#else
+static vlc_threadvar_t cancel_key;
 #endif
 
-/**
- * Global process-wide VLC object.
- * Contains inter-instance data, such as the module cache and global mutexes.
- */
-static libvlc_global_data_t *p_root;
-
-libvlc_global_data_t *vlc_global( void )
-{
-    assert( i_initializations > 0 );
-    return p_root;
-}
-
-#ifndef NDEBUG
-/**
- * Object running the current thread
- */
-static vlc_threadvar_t thread_object_key;
-
-vlc_object_t *vlc_threadobj (void)
-{
-    return vlc_threadvar_get (&thread_object_key);
-}
-#endif
-
-vlc_threadvar_t msg_context_global_key;
-
-#if defined(LIBVLC_USE_PTHREAD)
-static inline unsigned long vlc_threadid (void)
-{
-     union { pthread_t th; unsigned long int i; } v = { };
-     v.th = pthread_self ();
-     return v.i;
-}
-
-#if defined(HAVE_EXECINFO_H) && defined(HAVE_BACKTRACE)
+#ifdef HAVE_EXECINFO_H
 # include <execinfo.h>
 #endif
 
+#ifdef __APPLE__
+# include <sys/time.h> /* gettimeofday in vlc_cond_timedwait */
+#endif
+
+/**
+ * Print a backtrace to the standard error for debugging purpose.
+ */
+void vlc_trace (const char *fn, const char *file, unsigned line)
+{
+     fprintf (stderr, "at %s:%u in %s\n", file, line, fn);
+     fflush (stderr); /* needed before switch to low-level I/O */
+#ifdef HAVE_BACKTRACE
+     void *stack[20];
+     int len = backtrace (stack, sizeof (stack) / sizeof (stack[0]));
+     backtrace_symbols_fd (stack, len, 2);
+#endif
+#ifndef WIN32
+     fsync (2);
+#endif
+}
+
+static inline unsigned long vlc_threadid (void)
+{
+#if defined (LIBVLC_USE_PTHREAD)
+# if defined (__linux__)
+     return syscall (SYS_gettid);
+
+# else
+     union { pthread_t th; unsigned long int i; } v = { };
+     v.th = pthread_self ();
+     return v.i;
+
+#endif
+#elif defined (WIN32)
+     return GetCurrentThreadId ();
+
+#else
+     return 0;
+
+#endif
+}
+
+#ifndef NDEBUG
 /*****************************************************************************
  * vlc_thread_fatal: Report an error from the threading layer
  *****************************************************************************
  * This is mostly meant for debugging.
  *****************************************************************************/
-void vlc_pthread_fatal (const char *action, int error,
-                        const char *file, unsigned line)
+static void
+vlc_thread_fatal (const char *action, int error,
+                  const char *function, const char *file, unsigned line)
 {
-    fprintf (stderr, "LibVLC fatal error %s in thread %lu at %s:%u: %d\n",
-             action, vlc_threadid (), file, line, error);
+    fprintf (stderr, "LibVLC fatal error %s (%d) in thread %lu ",
+             action, error, vlc_threadid ());
+    vlc_trace (function, file, line);
 
     /* Sometimes strerror_r() crashes too, so make sure we print an error
      * message before we invoke it */
 #ifdef __GLIBC__
     /* Avoid the strerror_r() prototype brain damage in glibc */
     errno = error;
-    fprintf (stderr, " Error message: %m at:\n");
-#else
+    fprintf (stderr, " Error message: %m\n");
+#elif !defined (WIN32)
     char buf[1000];
     const char *msg;
 
@@ -128,95 +134,138 @@ void vlc_pthread_fatal (const char *action, int error,
 #endif
     fflush (stderr);
 
-#ifdef HAVE_BACKTRACE
-    void *stack[20];
-    int len = backtrace (stack, sizeof (stack) / sizeof (stack[0]));
-    backtrace_symbols_fd (stack, len, 2);
-#endif
-
     abort ();
 }
+
+# define VLC_THREAD_ASSERT( action ) \
+    if (val) vlc_thread_fatal (action, val, __func__, __FILE__, __LINE__)
 #else
-void vlc_pthread_fatal (const char *action, int error,
-                        const char *file, unsigned line)
-{
-    (void)action; (void)error; (void)file; (void)line;
-    abort();
-}
+# define VLC_THREAD_ASSERT( action ) ((void)val)
 #endif
 
-/*****************************************************************************
- * vlc_threads_init: initialize threads system
- *****************************************************************************
- * This function requires lazy initialization of a global lock in order to
- * keep the library really thread-safe. Some architectures don't support this
- * and thus do not guarantee the complete reentrancy.
- *****************************************************************************/
-int vlc_threads_init( void )
+/**
+ * Per-thread cancellation data
+ */
+#ifndef LIBVLC_USE_PTHREAD_CANCEL
+typedef struct vlc_cancel_t
 {
-    int i_ret = VLC_SUCCESS;
+    vlc_cleanup_t *cleaners;
+    bool           killable;
+    bool           killed;
+# ifdef UNDER_CE
+    HANDLE         cancel_event;
+# endif
+} vlc_cancel_t;
 
-    /* If we have lazy mutex initialization, use it. Otherwise, we just
-     * hope nothing wrong happens. */
-#if defined( LIBVLC_USE_PTHREAD )
-    pthread_mutex_lock( &once_mutex );
+# ifndef UNDER_CE
+#  define VLC_CANCEL_INIT { NULL, true, false }
+# else
+#  define VLC_CANCEL_INIT { NULL, true, false, NULL }
+# endif
 #endif
 
-    if( i_initializations == 0 )
+#ifdef UNDER_CE
+static void CALLBACK vlc_cancel_self (ULONG_PTR dummy);
+
+static DWORD vlc_cancelable_wait (DWORD count, const HANDLE *handles,
+                                  DWORD delay)
+{
+    vlc_cancel_t *nfo = vlc_threadvar_get (cancel_key);
+    if (nfo == NULL)
     {
-        p_root = vlc_custom_create( (vlc_object_t *)NULL, sizeof( *p_root ),
-                                    VLC_OBJECT_GENERIC, "root" );
-        if( p_root == NULL )
-        {
-            i_ret = VLC_ENOMEM;
-            goto out;
-        }
-
-        /* We should be safe now. Do all the initialization stuff we want. */
-#ifndef NDEBUG
-        vlc_threadvar_create( &thread_object_key, NULL );
-#endif
-        vlc_threadvar_create( &msg_context_global_key, msg_StackDestroy );
+        /* Main thread - cannot be cancelled anyway */
+        return WaitForMultipleObjects (count, handles, FALSE, delay);
     }
-    i_initializations++;
-
-out:
-    /* If we have lazy mutex initialization support, unlock the mutex.
-     * Otherwize, we are screwed. */
-#if defined( LIBVLC_USE_PTHREAD )
-    pthread_mutex_unlock( &once_mutex );
-#endif
-
-    return i_ret;
-}
-
-/*****************************************************************************
- * vlc_threads_end: stop threads system
- *****************************************************************************
- * FIXME: This function is far from being threadsafe.
- *****************************************************************************/
-void vlc_threads_end( void )
-{
-#if defined( LIBVLC_USE_PTHREAD )
-    pthread_mutex_lock( &once_mutex );
-#endif
-
-    assert( i_initializations > 0 );
-
-    if( i_initializations == 1 )
+    HANDLE new_handles[count + 1];
+    memcpy(new_handles, handles, count * sizeof(HANDLE));
+    new_handles[count] = nfo->cancel_event;
+    DWORD result = WaitForMultipleObjects (count + 1, new_handles, FALSE,
+                                           delay);
+    if (result == WAIT_OBJECT_0 + count)
     {
-        vlc_object_release( p_root );
-        vlc_threadvar_delete( &msg_context_global_key );
-#ifndef NDEBUG
-        vlc_threadvar_delete( &thread_object_key );
-#endif
+        vlc_cancel_self (NULL);
+        return WAIT_IO_COMPLETION;
     }
-    i_initializations--;
-
-#if defined( LIBVLC_USE_PTHREAD )
-    pthread_mutex_unlock( &once_mutex );
-#endif
+    else
+    {
+        return result;
+    }
 }
+
+DWORD SleepEx (DWORD dwMilliseconds, BOOL bAlertable)
+{
+    if (bAlertable)
+    {
+        DWORD result = vlc_cancelable_wait (0, NULL, dwMilliseconds);
+        return (result == WAIT_TIMEOUT) ? 0 : WAIT_IO_COMPLETION;
+    }
+    else
+    {
+        Sleep(dwMilliseconds);
+        return 0;
+    }
+}
+
+DWORD WaitForSingleObjectEx (HANDLE hHandle, DWORD dwMilliseconds,
+                             BOOL bAlertable)
+{
+    if (bAlertable)
+    {
+        /* The MSDN documentation specifies different return codes,
+         * but in practice they are the same. We just check that it
+         * remains so. */
+#if WAIT_ABANDONED != WAIT_ABANDONED_0
+# error Windows headers changed, code needs to be rewritten!
+#endif
+        return vlc_cancelable_wait (1, &hHandle, dwMilliseconds);
+    }
+    else
+    {
+        return WaitForSingleObject (hHandle, dwMilliseconds);
+    }
+}
+
+DWORD WaitForMultipleObjectsEx (DWORD nCount, const HANDLE *lpHandles,
+                                BOOL bWaitAll, DWORD dwMilliseconds,
+                                BOOL bAlertable)
+{
+    if (bAlertable)
+    {
+        /* We do not support the bWaitAll case */
+        assert (! bWaitAll);
+        return vlc_cancelable_wait (nCount, lpHandles, dwMilliseconds);
+    }
+    else
+    {
+        return WaitForMultipleObjects (nCount, lpHandles, bWaitAll,
+                                       dwMilliseconds);
+    }
+}
+#endif
+
+#ifdef WIN32
+static vlc_mutex_t super_mutex;
+
+BOOL WINAPI DllMain (HINSTANCE hinstDll, DWORD fdwReason, LPVOID lpvReserved)
+{
+    (void) hinstDll;
+    (void) lpvReserved;
+
+    switch (fdwReason)
+    {
+        case DLL_PROCESS_ATTACH:
+            vlc_mutex_init (&super_mutex);
+            vlc_threadvar_create (&cancel_key, free);
+            break;
+
+        case DLL_PROCESS_DETACH:
+            vlc_threadvar_delete( &cancel_key );
+            vlc_mutex_destroy (&super_mutex);
+            break;
+    }
+    return TRUE;
+}
+#endif
 
 #if defined (__GLIBC__) && (__GLIBC_MINOR__ < 6)
 /* This is not prototyped under glibc, though it exists. */
@@ -245,34 +294,13 @@ int vlc_mutex_init( vlc_mutex_t *p_mutex )
     i_result = pthread_mutex_init( p_mutex, &attr );
     pthread_mutexattr_destroy( &attr );
     return i_result;
-#elif defined( UNDER_CE )
-    InitializeCriticalSection( &p_mutex->csection );
-    return 0;
 
 #elif defined( WIN32 )
-    *p_mutex = CreateMutex( NULL, FALSE, NULL );
-    return (*p_mutex != NULL) ? 0 : ENOMEM;
-
-#elif defined( HAVE_KERNEL_SCHEDULER_H )
-    /* check the arguments and whether it's already been initialized */
-    if( p_mutex == NULL )
-    {
-        return B_BAD_VALUE;
-    }
-
-    if( p_mutex->init == 9999 )
-    {
-        return EALREADY;
-    }
-
-    p_mutex->lock = create_sem( 1, "BeMutex" );
-    if( p_mutex->lock < B_NO_ERROR )
-    {
-        return( -1 );
-    }
-
-    p_mutex->init = 9999;
-    return B_OK;
+    /* This creates a recursive mutex. This is OK as fast mutexes have
+     * no defined behavior in case of recursive locking. */
+    InitializeCriticalSection (&p_mutex->mutex);
+    p_mutex->initialized = 1;
+    return 0;
 
 #endif
 }
@@ -295,48 +323,144 @@ int vlc_mutex_init_recursive( vlc_mutex_t *p_mutex )
     i_result = pthread_mutex_init( p_mutex, &attr );
     pthread_mutexattr_destroy( &attr );
     return( i_result );
+
 #elif defined( WIN32 )
-    /* Create mutex returns a recursive mutex */
-    *p_mutex = CreateMutex( 0, FALSE, 0 );
-    return (*p_mutex != NULL) ? 0 : ENOMEM;
-#else
-# error Unimplemented!
+    InitializeCriticalSection( &p_mutex->mutex );
+    p_mutex->initialized = 1;
+    return 0;
+
 #endif
 }
 
 
-/*****************************************************************************
- * vlc_mutex_destroy: destroy a mutex, inner version
- *****************************************************************************/
-void __vlc_mutex_destroy( const char * psz_file, int i_line, vlc_mutex_t *p_mutex )
+/**
+ * Destroys a mutex. The mutex must not be locked.
+ *
+ * @param p_mutex mutex to destroy
+ * @return always succeeds
+ */
+void vlc_mutex_destroy (vlc_mutex_t *p_mutex)
 {
 #if defined( LIBVLC_USE_PTHREAD )
     int val = pthread_mutex_destroy( p_mutex );
     VLC_THREAD_ASSERT ("destroying mutex");
 
-#elif defined( UNDER_CE )
-    VLC_UNUSED( psz_file); VLC_UNUSED( i_line );
+#elif defined( WIN32 )
+    assert (InterlockedExchange (&p_mutex->initialized, -1) == 1);
+    DeleteCriticalSection (&p_mutex->mutex);
 
-    DeleteCriticalSection( &p_mutex->csection );
+#endif
+}
+
+#if defined(LIBVLC_USE_PTHREAD) && !defined(NDEBUG)
+# ifdef HAVE_VALGRIND_VALGRIND_H
+#  include <valgrind/valgrind.h>
+# else
+#  define RUNNING_ON_VALGRIND (0)
+# endif
+
+void vlc_assert_locked (vlc_mutex_t *p_mutex)
+{
+    if (RUNNING_ON_VALGRIND > 0)
+        return;
+    assert (pthread_mutex_lock (p_mutex) == EDEADLK);
+}
+#endif
+
+/**
+ * Acquires a mutex. If needed, waits for any other thread to release it.
+ * Beware of deadlocks when locking multiple mutexes at the same time,
+ * or when using mutexes from callbacks.
+ * This function is not a cancellation-point.
+ *
+ * @param p_mutex mutex initialized with vlc_mutex_init() or
+ *                vlc_mutex_init_recursive()
+ */
+void vlc_mutex_lock (vlc_mutex_t *p_mutex)
+{
+#if defined(LIBVLC_USE_PTHREAD)
+    int val = pthread_mutex_lock( p_mutex );
+    VLC_THREAD_ASSERT ("locking mutex");
 
 #elif defined( WIN32 )
-    VLC_UNUSED( psz_file); VLC_UNUSED( i_line );
+    if (InterlockedCompareExchange (&p_mutex->initialized, 0, 0) == 0)
+    { /* ^^ We could also lock super_mutex all the time... sluggish */
+        assert (p_mutex != &super_mutex); /* this one cannot be static */
 
-    CloseHandle( *p_mutex );
+        vlc_mutex_lock (&super_mutex);
+        if (InterlockedCompareExchange (&p_mutex->initialized, 0, 0) == 0)
+            vlc_mutex_init (p_mutex);
+        /* FIXME: destroy the mutex some time... */
+        vlc_mutex_unlock (&super_mutex);
+    }
+    assert (InterlockedExchange (&p_mutex->initialized, 1) == 1);
+    EnterCriticalSection (&p_mutex->mutex);
 
-#elif defined( HAVE_KERNEL_SCHEDULER_H )
-    if( p_mutex->init == 9999 )
-        delete_sem( p_mutex->lock );
+#endif
+}
 
-    p_mutex->init = 0;
+/**
+ * Acquires a mutex if and only if it is not currently held by another thread.
+ * This function never sleeps and can be used in delay-critical code paths.
+ * This function is not a cancellation-point.
+ *
+ * <b>Beware</b>: If this function fails, then the mutex is held... by another
+ * thread. The calling thread must deal with the error appropriately. That
+ * typically implies postponing the operations that would have required the
+ * mutex. If the thread cannot defer those operations, then it must use
+ * vlc_mutex_lock(). If in doubt, use vlc_mutex_lock() instead.
+ *
+ * @param p_mutex mutex initialized with vlc_mutex_init() or
+ *                vlc_mutex_init_recursive()
+ * @return 0 if the mutex could be acquired, an error code otherwise.
+ */
+int vlc_mutex_trylock (vlc_mutex_t *p_mutex)
+{
+#if defined(LIBVLC_USE_PTHREAD)
+    int val = pthread_mutex_trylock( p_mutex );
+
+    if (val != EBUSY)
+        VLC_THREAD_ASSERT ("locking mutex");
+    return val;
+
+#elif defined( WIN32 )
+    if (InterlockedCompareExchange (&p_mutex->initialized, 0, 0) == 0)
+    { /* ^^ We could also lock super_mutex all the time... sluggish */
+        assert (p_mutex != &super_mutex); /* this one cannot be static */
+
+        vlc_mutex_lock (&super_mutex);
+        if (InterlockedCompareExchange (&p_mutex->initialized, 0, 0) == 0)
+            vlc_mutex_init (p_mutex);
+        /* FIXME: destroy the mutex some time... */
+        vlc_mutex_unlock (&super_mutex);
+    }
+    assert (InterlockedExchange (&p_mutex->initialized, 1) == 1);
+    return TryEnterCriticalSection (&p_mutex->mutex) ? 0 : EBUSY;
+
+#endif
+}
+
+/**
+ * Releases a mutex (or crashes if the mutex is not locked by the caller).
+ * @param p_mutex mutex locked with vlc_mutex_lock().
+ */
+void vlc_mutex_unlock (vlc_mutex_t *p_mutex)
+{
+#if defined(LIBVLC_USE_PTHREAD)
+    int val = pthread_mutex_unlock( p_mutex );
+    VLC_THREAD_ASSERT ("unlocking mutex");
+
+#elif defined( WIN32 )
+    assert (InterlockedExchange (&p_mutex->initialized, 1) == 1);
+    LeaveCriticalSection (&p_mutex->mutex);
 
 #endif
 }
 
 /*****************************************************************************
- * vlc_cond_init: initialize a condition
+ * vlc_cond_init: initialize a condition variable
  *****************************************************************************/
-int __vlc_cond_init( vlc_cond_t *p_condvar )
+int vlc_cond_init( vlc_cond_t *p_condvar )
 {
 #if defined( LIBVLC_USE_PTHREAD )
     pthread_condattr_t attr;
@@ -359,48 +483,182 @@ int __vlc_cond_init( vlc_cond_t *p_condvar )
     pthread_condattr_destroy (&attr);
     return ret;
 
-#elif defined( UNDER_CE ) || defined( WIN32 )
-    /* Create an auto-reset event. */
-    *p_condvar = CreateEvent( NULL,   /* no security */
-                              FALSE,  /* auto-reset event */
-                              FALSE,  /* start non-signaled */
-                              NULL ); /* unnamed */
+#elif defined( WIN32 )
+    /* Create a manual-reset event (manual reset is needed for broadcast). */
+    *p_condvar = CreateEvent( NULL, TRUE, FALSE, NULL );
     return *p_condvar ? 0 : ENOMEM;
-
-#elif defined( HAVE_KERNEL_SCHEDULER_H )
-    if( !p_condvar )
-    {
-        return B_BAD_VALUE;
-    }
-
-    if( p_condvar->init == 9999 )
-    {
-        return EALREADY;
-    }
-
-    p_condvar->thread = -1;
-    p_condvar->init = 9999;
-    return 0;
 
 #endif
 }
 
-/*****************************************************************************
- * vlc_cond_destroy: destroy a condition, inner version
- *****************************************************************************/
-void __vlc_cond_destroy( const char * psz_file, int i_line, vlc_cond_t *p_condvar )
+/**
+ * Destroys a condition variable. No threads shall be waiting or signaling the
+ * condition.
+ * @param p_condvar condition variable to destroy
+ */
+void vlc_cond_destroy (vlc_cond_t *p_condvar)
 {
 #if defined( LIBVLC_USE_PTHREAD )
     int val = pthread_cond_destroy( p_condvar );
     VLC_THREAD_ASSERT ("destroying condition");
 
-#elif defined( UNDER_CE ) || defined( WIN32 )
-    VLC_UNUSED( psz_file); VLC_UNUSED( i_line );
-
+#elif defined( WIN32 )
     CloseHandle( *p_condvar );
 
-#elif defined( HAVE_KERNEL_SCHEDULER_H )
-    p_condvar->init = 0;
+#endif
+}
+
+/**
+ * Wakes up one thread waiting on a condition variable, if any.
+ * @param p_condvar condition variable
+ */
+void vlc_cond_signal (vlc_cond_t *p_condvar)
+{
+#if defined(LIBVLC_USE_PTHREAD)
+    int val = pthread_cond_signal( p_condvar );
+    VLC_THREAD_ASSERT ("signaling condition variable");
+
+#elif defined( WIN32 )
+    /* NOTE: This will cause a broadcast, that is wrong.
+     * This will also wake up the next waiting thread if no thread are yet
+     * waiting, which is also wrong. However both of these issues are allowed
+     * by the provision for spurious wakeups. Better have too many wakeups
+     * than too few (= deadlocks). */
+    SetEvent (*p_condvar);
+
+#endif
+}
+
+/**
+ * Wakes up all threads (if any) waiting on a condition variable.
+ * @param p_cond condition variable
+ */
+void vlc_cond_broadcast (vlc_cond_t *p_condvar)
+{
+#if defined (LIBVLC_USE_PTHREAD)
+    pthread_cond_broadcast (p_condvar);
+
+#elif defined (WIN32)
+    SetEvent (*p_condvar);
+
+#endif
+}
+
+/**
+ * Waits for a condition variable. The calling thread will be suspended until
+ * another thread calls vlc_cond_signal() or vlc_cond_broadcast() on the same
+ * condition variable, the thread is cancelled with vlc_cancel(), or the
+ * system causes a "spurious" unsolicited wake-up.
+ *
+ * A mutex is needed to wait on a condition variable. It must <b>not</b> be
+ * a recursive mutex. Although it is possible to use the same mutex for
+ * multiple condition, it is not valid to use different mutexes for the same
+ * condition variable at the same time from different threads.
+ *
+ * In case of thread cancellation, the mutex is always locked before
+ * cancellation proceeds.
+ *
+ * The canonical way to use a condition variable to wait for event foobar is:
+ @code
+   vlc_mutex_lock (&lock);
+   mutex_cleanup_push (&lock); // release the mutex in case of cancellation
+
+   while (!foobar)
+       vlc_cond_wait (&wait, &lock);
+
+   --- foobar is now true, do something about it here --
+
+   vlc_cleanup_run (); // release the mutex
+  @endcode
+ *
+ * @param p_condvar condition variable to wait on
+ * @param p_mutex mutex which is unlocked while waiting,
+ *                then locked again when waking up.
+ * @param deadline <b>absolute</b> timeout
+ *
+ * @return 0 if the condition was signaled, an error code in case of timeout.
+ */
+void vlc_cond_wait (vlc_cond_t *p_condvar, vlc_mutex_t *p_mutex)
+{
+#if defined(LIBVLC_USE_PTHREAD)
+    int val = pthread_cond_wait( p_condvar, p_mutex );
+    VLC_THREAD_ASSERT ("waiting on condition");
+
+#elif defined( WIN32 )
+    DWORD result;
+
+    do
+    {
+        vlc_testcancel ();
+        LeaveCriticalSection (&p_mutex->mutex);
+        result = WaitForSingleObjectEx (*p_condvar, INFINITE, TRUE);
+        EnterCriticalSection (&p_mutex->mutex);
+    }
+    while (result == WAIT_IO_COMPLETION);
+
+    assert (result != WAIT_ABANDONED); /* another thread failed to cleanup! */
+    assert (result != WAIT_FAILED);
+    ResetEvent (*p_condvar);
+
+#endif
+}
+
+/**
+ * Waits for a condition variable up to a certain date.
+ * This works like vlc_cond_wait(), except for the additional timeout.
+ *
+ * @param p_condvar condition variable to wait on
+ * @param p_mutex mutex which is unlocked while waiting,
+ *                then locked again when waking up.
+ * @param deadline <b>absolute</b> timeout
+ *
+ * @return 0 if the condition was signaled, an error code in case of timeout.
+ */
+int vlc_cond_timedwait (vlc_cond_t *p_condvar, vlc_mutex_t *p_mutex,
+                        mtime_t deadline)
+{
+#if defined(LIBVLC_USE_PTHREAD)
+#ifdef __APPLE__
+    /* mdate() is mac_absolute_time on osx, which we must convert to do
+     * the same base than gettimeofday() on which pthread_cond_timedwait
+     * counts on. */
+    mtime_t oldbase = mdate();
+    struct timeval tv;
+    gettimeofday(&tv, NULL);
+    mtime_t newbase = (mtime_t)tv.tv_sec * 1000000 + (mtime_t) tv.tv_usec;
+    deadline = deadline - oldbase + newbase;
+#endif
+    lldiv_t d = lldiv( deadline, CLOCK_FREQ );
+    struct timespec ts = { d.quot, d.rem * (1000000000 / CLOCK_FREQ) };
+
+    int val = pthread_cond_timedwait (p_condvar, p_mutex, &ts);
+    if (val != ETIMEDOUT)
+        VLC_THREAD_ASSERT ("timed-waiting on condition");
+    return val;
+
+#elif defined( WIN32 )
+    DWORD result;
+
+    do
+    {
+        vlc_testcancel ();
+
+        mtime_t total = (deadline - mdate ())/1000;
+        if( total < 0 )
+            total = 0;
+
+        DWORD delay = (total > 0x7fffffff) ? 0x7fffffff : total;
+        LeaveCriticalSection (&p_mutex->mutex);
+        result = WaitForSingleObjectEx (*p_condvar, delay, TRUE);
+        EnterCriticalSection (&p_mutex->mutex);
+    }
+    while (result == WAIT_IO_COMPLETION);
+
+    assert (result != WAIT_ABANDONED);
+    assert (result != WAIT_FAILED);
+    ResetEvent (*p_condvar);
+
+    return (result == WAIT_OBJECT_0) ? 0 : ETIMEDOUT;
 
 #endif
 }
@@ -414,8 +672,6 @@ int vlc_threadvar_create( vlc_threadvar_t *p_tls, void (*destr) (void *) )
 
 #if defined( LIBVLC_USE_PTHREAD )
     i_ret =  pthread_key_create( p_tls, destr );
-#elif defined( UNDER_CE )
-    i_ret = ENOSYS;
 #elif defined( WIN32 )
     /* FIXME: remember/use the destr() callback and stop leaking whatever */
     *p_tls = TlsAlloc();
@@ -430,7 +686,6 @@ void vlc_threadvar_delete (vlc_threadvar_t *p_tls)
 {
 #if defined( LIBVLC_USE_PTHREAD )
     pthread_key_delete (*p_tls);
-#elif defined( UNDER_CE )
 #elif defined( WIN32 )
     TlsFree (*p_tls);
 #else
@@ -438,59 +693,69 @@ void vlc_threadvar_delete (vlc_threadvar_t *p_tls)
 #endif
 }
 
-struct vlc_thread_boot
+/**
+ * Sets a thread-local variable.
+ * @param key thread-local variable key (created with vlc_threadvar_create())
+ * @param value new value for the variable for the calling thread
+ * @return 0 on success, a system error code otherwise.
+ */
+int vlc_threadvar_set (vlc_threadvar_t key, void *value)
 {
-    void * (*entry) (vlc_object_t *);
-    vlc_object_t *object;
-};
-
-#if defined (LIBVLC_USE_PTHREAD)
-# define THREAD_RTYPE void *
-# define THREAD_RVAL  NULL
-#elif defined (WIN32)
-# define THREAD_RTYPE __stdcall unsigned
-# define THREAD_RVAL 0
+#if defined(LIBVLC_USE_PTHREAD)
+    return pthread_setspecific (key, value);
+#elif defined( UNDER_CE ) || defined( WIN32 )
+    return TlsSetValue (key, value) ? ENOMEM : 0;
+#else
+# error Unimplemented!
 #endif
-
-static THREAD_RTYPE thread_entry (void *data)
-{
-    vlc_object_t *obj = ((struct vlc_thread_boot *)data)->object;
-    void *(*func) (vlc_object_t *) = ((struct vlc_thread_boot *)data)->entry;
-
-    free (data);
-#ifndef NDEBUG
-    vlc_threadvar_set (&thread_object_key, obj);
-#endif
-    msg_Dbg (obj, "thread started");
-    func (obj);
-    msg_Dbg (obj, "thread ended");
-
-    return THREAD_RVAL;
 }
 
-/*****************************************************************************
- * vlc_thread_create: create a thread, inner version
- *****************************************************************************
- * Note that i_priority is only taken into account on platforms supporting
- * userland real-time priority threads.
- *****************************************************************************/
-int __vlc_thread_create( vlc_object_t *p_this, const char * psz_file, int i_line,
-                         const char *psz_name, void * ( *func ) ( vlc_object_t * ),
-                         int i_priority, bool b_wait )
+/**
+ * Gets the value of a thread-local variable for the calling thread.
+ * This function cannot fail.
+ * @return the value associated with the given variable for the calling
+ * or NULL if there is no value.
+ */
+void *vlc_threadvar_get (vlc_threadvar_t key)
 {
-    int i_ret;
-    vlc_object_internals_t *p_priv = vlc_internals( p_this );
+#if defined(LIBVLC_USE_PTHREAD)
+    return pthread_getspecific (key);
+#elif defined( UNDER_CE ) || defined( WIN32 )
+    return TlsGetValue (key);
+#else
+# error Unimplemented!
+#endif
+}
 
-    struct vlc_thread_boot *boot = malloc (sizeof (*boot));
-    if (boot == NULL)
-        return errno;
-    boot->entry = func;
-    boot->object = p_this;
+#if defined (LIBVLC_USE_PTHREAD)
+#elif defined (WIN32)
+static unsigned __stdcall vlc_entry (void *data)
+{
+    vlc_cancel_t cancel_data = VLC_CANCEL_INIT;
+    vlc_thread_t self = data;
+#ifdef UNDER_CE
+    cancel_data.cancel_event = self->cancel_event;
+#endif
 
-    vlc_object_lock( p_this );
+    vlc_threadvar_set (cancel_key, &cancel_data);
+    self->data = self->entry (self->data);
+    return 0;
+}
+#endif
 
-    /* Make sure we don't re-create a thread if the object has already one */
-    assert( !p_priv->b_thread );
+/**
+ * Creates and starts new thread.
+ *
+ * @param p_handle [OUT] pointer to write the handle of the created thread to
+ * @param entry entry point for the thread
+ * @param data data parameter given to the entry point
+ * @param priority thread priority value
+ * @return 0 on success, a standard error code on error.
+ */
+int vlc_clone (vlc_thread_t *p_handle, void * (*entry) (void *), void *data,
+               int priority)
+{
+    int ret;
 
 #if defined( LIBVLC_USE_PTHREAD )
     pthread_attr_t attr;
@@ -506,36 +771,58 @@ int __vlc_thread_create( vlc_object_t *p_this, const char * psz_file, int i_line
      * where it fails to handle EINTR (bug reports welcome). Some underlying
      * libraries might also not handle EINTR properly.
      */
-    sigset_t set, oldset;
-    sigemptyset (&set);
-    sigdelset (&set, SIGHUP);
-    sigaddset (&set, SIGINT);
-    sigaddset (&set, SIGQUIT);
-    sigaddset (&set, SIGTERM);
-
-    sigaddset (&set, SIGPIPE); /* We don't want this one, really! */
-    pthread_sigmask (SIG_BLOCK, &set, &oldset);
-
-#ifndef __APPLE__
-    if( config_GetInt( p_this, "rt-priority" ) > 0 )
-#endif
+    sigset_t oldset;
     {
-        struct sched_param p = { .sched_priority = i_priority, };
-        int policy;
+        sigset_t set;
+        sigemptyset (&set);
+        sigdelset (&set, SIGHUP);
+        sigaddset (&set, SIGINT);
+        sigaddset (&set, SIGQUIT);
+        sigaddset (&set, SIGTERM);
 
-        /* Hack to avoid error msg */
-        if( config_GetType( p_this, "rt-offset" ) )
-            p.sched_priority += config_GetInt( p_this, "rt-offset" );
-        if( p.sched_priority <= 0 )
-            p.sched_priority += sched_get_priority_max (policy = SCHED_OTHER);
-        else
-            p.sched_priority += sched_get_priority_min (policy = SCHED_RR);
-
-        pthread_attr_setschedpolicy (&attr, policy);
-        pthread_attr_setschedparam (&attr, &p);
+        sigaddset (&set, SIGPIPE); /* We don't want this one, really! */
+        pthread_sigmask (SIG_BLOCK, &set, &oldset);
     }
 
-    i_ret = pthread_create( &p_priv->thread_id, &attr, thread_entry, boot );
+#if defined (_POSIX_PRIORITY_SCHEDULING) && (_POSIX_PRIORITY_SCHEDULING >= 0) \
+ && defined (_POSIX_THREAD_PRIORITY_SCHEDULING) \
+ && (_POSIX_THREAD_PRIORITY_SCHEDULING >= 0)
+    {
+        struct sched_param sp = { .sched_priority = priority, };
+        int policy;
+
+        if (sp.sched_priority <= 0)
+            sp.sched_priority += sched_get_priority_max (policy = SCHED_OTHER);
+        else
+            sp.sched_priority += sched_get_priority_min (policy = SCHED_RR);
+
+        pthread_attr_setschedpolicy (&attr, policy);
+        pthread_attr_setschedparam (&attr, &sp);
+    }
+#else
+    (void) priority;
+#endif
+
+    /* The thread stack size.
+     * The lower the value, the less address space per thread, the highest
+     * maximum simultaneous threads per process. Too low values will cause
+     * stack overflows and weird crashes. Set with caution. Also keep in mind
+     * that 64-bits platforms consume more stack than 32-bits one.
+     *
+     * Thanks to on-demand paging, thread stack size only affects address space
+     * consumption. In terms of memory, threads only use what they need
+     * (rounded up to the page boundary).
+     *
+     * For example, on Linux i386, the default is 2 mega-bytes, which supports
+     * about 320 threads per processes. */
+#define VLC_STACKSIZE (128 * sizeof (void *) * 1024)
+
+#ifdef VLC_STACKSIZE
+    ret = pthread_attr_setstacksize (&attr, VLC_STACKSIZE);
+    assert (ret == 0); /* fails iif VLC_STACKSIZE is invalid */
+#endif
+
+    ret = pthread_create (p_handle, &attr, entry, data);
     pthread_sigmask (SIG_SETMASK, &oldset, NULL);
     pthread_attr_destroy (&attr);
 
@@ -544,55 +831,286 @@ int __vlc_thread_create( vlc_object_t *p_this, const char * psz_file, int i_line
      * function instead of CreateThread, otherwise you'll end up with
      * memory leaks and the signal functions not working (see Microsoft
      * Knowledge Base, article 104641) */
+    HANDLE hThread;
+    vlc_thread_t th = malloc (sizeof (*th));
+
+    if (th == NULL)
+        return ENOMEM;
+
+    th->data = data;
+    th->entry = entry;
 #if defined( UNDER_CE )
-    HANDLE hThread = CreateThread( NULL, 0, thread_entry,
-                                  (LPVOID)boot, CREATE_SUSPENDED, NULL );
+    th->cancel_event = CreateEvent (NULL, FALSE, FALSE, NULL);
+    if (th->cancel_event == NULL)
+    {
+        free(th);
+        return errno;
+    }
+    hThread = CreateThread (NULL, 128*1024, vlc_entry, th, CREATE_SUSPENDED, NULL);
 #else
-    HANDLE hThread = (HANDLE)(uintptr_t)
-        _beginthreadex( NULL, 0, thread_entry, boot, CREATE_SUSPENDED, NULL );
+    hThread = (HANDLE)(uintptr_t)
+        _beginthreadex (NULL, 0, vlc_entry, th, CREATE_SUSPENDED, NULL);
 #endif
-    if( hThread )
+
+    if (hThread)
     {
-        p_priv->thread_id = hThread;
+#ifndef UNDER_CE
+        /* Thread closes the handle when exiting, duplicate it here
+         * to be on the safe side when joining. */
+        if (!DuplicateHandle (GetCurrentProcess (), hThread,
+                              GetCurrentProcess (), &th->handle, 0, FALSE,
+                              DUPLICATE_SAME_ACCESS))
+        {
+            CloseHandle (hThread);
+            free (th);
+            return ENOMEM;
+        }
+#else
+        th->handle = hThread;
+#endif
+
         ResumeThread (hThread);
-        i_ret = 0;
-        if( i_priority && !SetThreadPriority (hThread, i_priority) )
-        {
-            msg_Warn( p_this, "couldn't set a faster priority" );
-            i_priority = 0;
-        }
+        if (priority)
+            SetThreadPriority (hThread, priority);
+
+        ret = 0;
+        *p_handle = th;
     }
     else
-        i_ret = errno;
-
-#elif defined( HAVE_KERNEL_SCHEDULER_H )
-    p_priv->thread_id = spawn_thread( (thread_func)thread_entry, psz_name,
-                                      i_priority, p_data );
-    i_ret = resume_thread( p_priv->thread_id );
+    {
+        ret = errno;
+        free (th);
+    }
 
 #endif
+    return ret;
+}
 
-    if( i_ret == 0 )
+#if defined (WIN32)
+/* APC procedure for thread cancellation */
+static void CALLBACK vlc_cancel_self (ULONG_PTR dummy)
+{
+    (void)dummy;
+    vlc_control_cancel (VLC_DO_CANCEL);
+}
+#endif
+
+/**
+ * Marks a thread as cancelled. Next time the target thread reaches a
+ * cancellation point (while not having disabled cancellation), it will
+ * run its cancellation cleanup handler, the thread variable destructors, and
+ * terminate. vlc_join() must be used afterward regardless of a thread being
+ * cancelled or not.
+ */
+void vlc_cancel (vlc_thread_t thread_id)
+{
+#if defined (LIBVLC_USE_PTHREAD_CANCEL)
+    pthread_cancel (thread_id);
+#elif defined (UNDER_CE)
+    SetEvent (thread_id->cancel_event);
+#elif defined (WIN32)
+    QueueUserAPC (vlc_cancel_self, thread_id->handle, 0);
+#else
+#   warning vlc_cancel is not implemented!
+#endif
+}
+
+/**
+ * Waits for a thread to complete (if needed), and destroys it.
+ * This is a cancellation point; in case of cancellation, the join does _not_
+ * occur.
+ *
+ * @param handle thread handle
+ * @param p_result [OUT] pointer to write the thread return value or NULL
+ * @return 0 on success, a standard error code otherwise.
+ */
+void vlc_join (vlc_thread_t handle, void **result)
+{
+#if defined( LIBVLC_USE_PTHREAD )
+    int val = pthread_join (handle, result);
+    VLC_THREAD_ASSERT ("joining thread");
+
+#elif defined( UNDER_CE ) || defined( WIN32 )
+    do
+        vlc_testcancel ();
+    while (WaitForSingleObjectEx (handle->handle, INFINITE, TRUE)
+                                                        == WAIT_IO_COMPLETION);
+
+    CloseHandle (handle->handle);
+    if (result)
+        *result = handle->data;
+#if defined( UNDER_CE )
+    CloseHandle (handle->cancel_event);
+#endif
+    free (handle);
+
+#endif
+}
+
+/**
+ * Save the current cancellation state (enabled or disabled), then disable
+ * cancellation for the calling thread.
+ * This function must be called before entering a piece of code that is not
+ * cancellation-safe, unless it can be proven that the calling thread will not
+ * be cancelled.
+ * @return Previous cancellation state (opaque value for vlc_restorecancel()).
+ */
+int vlc_savecancel (void)
+{
+    int state;
+
+#if defined (LIBVLC_USE_PTHREAD_CANCEL)
+    int val = pthread_setcancelstate (PTHREAD_CANCEL_DISABLE, &state);
+    VLC_THREAD_ASSERT ("saving cancellation");
+
+#else
+    vlc_cancel_t *nfo = vlc_threadvar_get (cancel_key);
+    if (nfo == NULL)
+        return false; /* Main thread - cannot be cancelled anyway */
+
+     state = nfo->killable;
+     nfo->killable = false;
+
+#endif
+    return state;
+}
+
+/**
+ * Restore the cancellation state for the calling thread.
+ * @param state previous state as returned by vlc_savecancel().
+ * @return Nothing, always succeeds.
+ */
+void vlc_restorecancel (int state)
+{
+#if defined (LIBVLC_USE_PTHREAD_CANCEL)
+# ifndef NDEBUG
+    int oldstate, val;
+
+    val = pthread_setcancelstate (state, &oldstate);
+    /* This should fail if an invalid value for given for state */
+    VLC_THREAD_ASSERT ("restoring cancellation");
+
+    if (oldstate != PTHREAD_CANCEL_DISABLE)
+         vlc_thread_fatal ("restoring cancellation while not disabled", EINVAL,
+                           __func__, __FILE__, __LINE__);
+# else
+    pthread_setcancelstate (state, NULL);
+# endif
+
+#else
+    vlc_cancel_t *nfo = vlc_threadvar_get (cancel_key);
+    assert (state == false || state == true);
+
+    if (nfo == NULL)
+        return; /* Main thread - cannot be cancelled anyway */
+
+    assert (!nfo->killable);
+    nfo->killable = state != 0;
+
+#endif
+}
+
+/**
+ * Issues an explicit deferred cancellation point.
+ * This has no effect if thread cancellation is disabled.
+ * This can be called when there is a rather slow non-sleeping operation.
+ * This is also used to force a cancellation point in a function that would
+ * otherwise "not always" be a one (block_FifoGet() is an example).
+ */
+void vlc_testcancel (void)
+{
+#if defined (LIBVLC_USE_PTHREAD_CANCEL)
+    pthread_testcancel ();
+
+#else
+    vlc_cancel_t *nfo = vlc_threadvar_get (cancel_key);
+    if (nfo == NULL)
+        return; /* Main thread - cannot be cancelled anyway */
+
+    if (nfo->killable && nfo->killed)
     {
-        if( b_wait )
-        {
-            msg_Dbg( p_this, "waiting for thread initialization" );
-            vlc_object_wait( p_this );
-        }
-
-        p_priv->b_thread = true;
-        msg_Dbg( p_this, "thread %lu (%s) created at priority %d (%s:%d)",
-                 (unsigned long)p_priv->thread_id, psz_name, i_priority,
-                 psz_file, i_line );
+        for (vlc_cleanup_t *p = nfo->cleaners; p != NULL; p = p->next)
+             p->proc (p->data);
+# if defined (LIBVLC_USE_PTHREAD)
+        pthread_exit (PTHREAD_CANCELLED);
+# elif defined (UNDER_CE)
+        ExitThread(0);
+# elif defined (WIN32)
+        _endthread ();
+# else
+#  error Not implemented!
+# endif
     }
+#endif
+}
+
+
+struct vlc_thread_boot
+{
+    void * (*entry) (vlc_object_t *);
+    vlc_object_t *object;
+};
+
+static void *thread_entry (void *data)
+{
+    vlc_object_t *obj = ((struct vlc_thread_boot *)data)->object;
+    void *(*func) (vlc_object_t *) = ((struct vlc_thread_boot *)data)->entry;
+
+    free (data);
+    msg_Dbg (obj, "thread started");
+    func (obj);
+    msg_Dbg (obj, "thread ended");
+
+    return NULL;
+}
+
+#undef vlc_thread_create
+/*****************************************************************************
+ * vlc_thread_create: create a thread
+ *****************************************************************************
+ * Note that i_priority is only taken into account on platforms supporting
+ * userland real-time priority threads.
+ *****************************************************************************/
+int vlc_thread_create( vlc_object_t *p_this, const char * psz_file, int i_line,
+                       const char *psz_name, void *(*func) ( vlc_object_t * ),
+                       int i_priority )
+{
+    int i_ret;
+    vlc_object_internals_t *p_priv = vlc_internals( p_this );
+
+    struct vlc_thread_boot *boot = malloc (sizeof (*boot));
+    if (boot == NULL)
+        return errno;
+    boot->entry = func;
+    boot->object = p_this;
+
+    /* Make sure we don't re-create a thread if the object has already one */
+    assert( !p_priv->b_thread );
+
+#if defined( LIBVLC_USE_PTHREAD )
+#ifndef __APPLE__
+    if( config_GetInt( p_this, "rt-priority" ) > 0 )
+#endif
+    {
+        /* Hack to avoid error msg */
+        if( config_GetType( p_this, "rt-offset" ) )
+            i_priority += config_GetInt( p_this, "rt-offset" );
+    }
+#endif
+
+    p_priv->b_thread = true;
+    i_ret = vlc_clone( &p_priv->thread_id, thread_entry, boot, i_priority );
+    if( i_ret == 0 )
+        msg_Dbg( p_this, "thread (%s) created at priority %d (%s:%d)",
+                 psz_name, i_priority, psz_file, i_line );
     else
     {
+        p_priv->b_thread = false;
         errno = i_ret;
         msg_Err( p_this, "%s thread could not be created at %s:%d (%m)",
                          psz_name, psz_file, i_line );
     }
 
-    vlc_object_unlock( p_this );
     return i_ret;
 }
 
@@ -645,7 +1163,7 @@ int __vlc_thread_set_priority( vlc_object_t *p_this, const char * psz_file,
 #elif defined( WIN32 ) || defined( UNDER_CE )
     VLC_UNUSED( psz_file); VLC_UNUSED( i_line );
 
-    if( !SetThreadPriority(p_priv->thread_id, i_priority) )
+    if( !SetThreadPriority(p_priv->thread_id->handle, i_priority) )
     {
         msg_Warn( p_this, "couldn't set a faster priority" );
         return 1;
@@ -659,36 +1177,21 @@ int __vlc_thread_set_priority( vlc_object_t *p_this, const char * psz_file,
 /*****************************************************************************
  * vlc_thread_join: wait until a thread exits, inner version
  *****************************************************************************/
-void __vlc_thread_join( vlc_object_t *p_this, const char * psz_file, int i_line )
+void __vlc_thread_join( vlc_object_t *p_this )
 {
     vlc_object_internals_t *p_priv = vlc_internals( p_this );
-    int i_ret = 0;
 
 #if defined( LIBVLC_USE_PTHREAD )
-    /* Make sure we do return if we are calling vlc_thread_join()
-     * from the joined thread */
-    if (pthread_equal (pthread_self (), p_priv->thread_id))
-    {
-        msg_Warn (p_this, "joining the active thread (VLC might crash)");
-        i_ret = pthread_detach (p_priv->thread_id);
-    }
-    else
-        i_ret = pthread_join (p_priv->thread_id, NULL);
+    vlc_join (p_priv->thread_id, NULL);
 
 #elif defined( UNDER_CE ) || defined( WIN32 )
-    HMODULE hmodule;
-    BOOL (WINAPI *OurGetThreadTimes)( HANDLE, FILETIME*, FILETIME*,
-                                      FILETIME*, FILETIME* );
+    HANDLE hThread;
     FILETIME create_ft, exit_ft, kernel_ft, user_ft;
     int64_t real_time, kernel_time, user_time;
-    HANDLE hThread;
 
-    /*
-    ** object will close its thread handle when destroyed, duplicate it here
-    ** to be on the safe side
-    */
+#ifndef UNDER_CE
     if( ! DuplicateHandle(GetCurrentProcess(),
-            p_priv->thread_id,
+            p_priv->thread_id->handle,
             GetCurrentProcess(),
             &hThread,
             0,
@@ -696,24 +1199,15 @@ void __vlc_thread_join( vlc_object_t *p_this, const char * psz_file, int i_line 
             DUPLICATE_SAME_ACCESS) )
     {
         p_priv->b_thread = false;
-        i_ret = GetLastError();
-        goto error;
+        return; /* We have a problem! */
     }
-
-    WaitForSingleObject( hThread, INFINITE );
-
-#if defined( UNDER_CE )
-    hmodule = GetModuleHandle( _T("COREDLL") );
 #else
-    hmodule = GetModuleHandle( _T("KERNEL32") );
+    hThread = p_priv->thread_id->handle;
 #endif
-    OurGetThreadTimes = (BOOL (WINAPI*)( HANDLE, FILETIME*, FILETIME*,
-                                         FILETIME*, FILETIME* ))
-        GetProcAddress( hmodule, _T("GetThreadTimes") );
 
-    if( OurGetThreadTimes &&
-        OurGetThreadTimes( hThread,
-                           &create_ft, &exit_ft, &kernel_ft, &user_ft ) )
+    vlc_join( p_priv->thread_id, NULL );
+
+    if( GetThreadTimes( hThread, &create_ft, &exit_ft, &kernel_ft, &user_ft ) )
     {
         real_time =
           ((((int64_t)exit_ft.dwHighDateTime)<<32)| exit_ft.dwLowDateTime) -
@@ -738,23 +1232,71 @@ void __vlc_thread_join( vlc_object_t *p_this, const char * psz_file, int i_line 
                  (double)((user_time%(60*1000000))/1000000.0) );
     }
     CloseHandle( hThread );
-error:
 
-#elif defined( HAVE_KERNEL_SCHEDULER_H )
-    int32_t exit_value;
-    i_ret = (B_OK == wait_for_thread( p_priv->thread_id, &exit_value ));
+#else
+    vlc_join( p_priv->thread_id, NULL );
 
 #endif
 
-    if( i_ret )
-    {
-        errno = i_ret;
-        msg_Err( p_this, "thread_join(%lu) failed at %s:%d (%m)",
-                         (unsigned long)p_priv->thread_id, psz_file, i_line );
-    }
-    else
-        msg_Dbg( p_this, "thread %lu joined (%s:%d)",
-                         (unsigned long)p_priv->thread_id, psz_file, i_line );
-
     p_priv->b_thread = false;
+}
+
+void vlc_thread_cancel (vlc_object_t *obj)
+{
+    vlc_object_internals_t *priv = vlc_internals (obj);
+
+    if (priv->b_thread)
+        vlc_cancel (priv->thread_id);
+}
+
+void vlc_control_cancel (int cmd, ...)
+{
+    /* NOTE: This function only modifies thread-specific data, so there is no
+     * need to lock anything. */
+#ifdef LIBVLC_USE_PTHREAD_CANCEL
+    (void) cmd;
+    assert (0);
+#else
+    va_list ap;
+
+    vlc_cancel_t *nfo = vlc_threadvar_get (cancel_key);
+    if (nfo == NULL)
+    {
+#ifdef WIN32
+        /* Main thread - cannot be cancelled anyway */
+        return;
+#else
+        nfo = malloc (sizeof (*nfo));
+        if (nfo == NULL)
+            return; /* Uho! Expect problems! */
+        *nfo = VLC_CANCEL_INIT;
+        vlc_threadvar_set (cancel_key, nfo);
+#endif
+    }
+
+    va_start (ap, cmd);
+    switch (cmd)
+    {
+        case VLC_DO_CANCEL:
+            nfo->killed = true;
+            break;
+
+        case VLC_CLEANUP_PUSH:
+        {
+            /* cleaner is a pointer to the caller stack, no need to allocate
+             * and copy anything. As a nice side effect, this cannot fail. */
+            vlc_cleanup_t *cleaner = va_arg (ap, vlc_cleanup_t *);
+            cleaner->next = nfo->cleaners;
+            nfo->cleaners = cleaner;
+            break;
+        }
+
+        case VLC_CLEANUP_POP:
+        {
+            nfo->cleaners = nfo->cleaners->next;
+            break;
+        }
+    }
+    va_end (ap);
+#endif
 }

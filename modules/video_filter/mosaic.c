@@ -2,7 +2,7 @@
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: 8c6ac46f684cacbb0c27256e854d4a87b5ed9a3a $
+ * $Id: a8d60f0c5a13191c08b96cd2d6b9ebf44d5df7a0 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -174,60 +174,60 @@ static const char *const ppsz_align_descriptions[] =
 
 #define CFG_PREFIX "mosaic-"
 
-vlc_module_begin();
-    set_description( N_("Mosaic video sub filter") );
-    set_shortname( N_("Mosaic") );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_SUBPIC);
-    set_capability( "sub filter", 0 );
-    set_callbacks( CreateFilter, DestroyFilter );
+vlc_module_begin ()
+    set_description( N_("Mosaic video sub filter") )
+    set_shortname( N_("Mosaic") )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_SUBPIC)
+    set_capability( "sub filter", 0 )
+    set_callbacks( CreateFilter, DestroyFilter )
 
     add_integer_with_range( CFG_PREFIX "alpha", 255, 0, 255, NULL,
-                            ALPHA_TEXT, ALPHA_LONGTEXT, false );
+                            ALPHA_TEXT, ALPHA_LONGTEXT, false )
 
     add_integer( CFG_PREFIX "height", 100, NULL,
-                 HEIGHT_TEXT, HEIGHT_LONGTEXT, false );
+                 HEIGHT_TEXT, HEIGHT_LONGTEXT, false )
     add_integer( CFG_PREFIX "width", 100, NULL,
-                 WIDTH_TEXT, WIDTH_LONGTEXT, false );
+                 WIDTH_TEXT, WIDTH_LONGTEXT, false )
 
     add_integer( CFG_PREFIX "align", 5, NULL,
-                 ALIGN_TEXT, ALIGN_LONGTEXT, true);
-        change_integer_list( pi_align_values, ppsz_align_descriptions, NULL );
+                 ALIGN_TEXT, ALIGN_LONGTEXT, true)
+        change_integer_list( pi_align_values, ppsz_align_descriptions, NULL )
 
     add_integer( CFG_PREFIX "xoffset", 0, NULL,
-                 XOFFSET_TEXT, XOFFSET_LONGTEXT, true );
+                 XOFFSET_TEXT, XOFFSET_LONGTEXT, true )
     add_integer( CFG_PREFIX "yoffset", 0, NULL,
-                 YOFFSET_TEXT, YOFFSET_LONGTEXT, true );
+                 YOFFSET_TEXT, YOFFSET_LONGTEXT, true )
 
     add_integer( CFG_PREFIX "borderw", 0, NULL,
-                 BORDERW_TEXT, BORDERW_LONGTEXT, true );
-        add_deprecated_alias( CFG_PREFIX "vborder" );
+                 BORDERW_TEXT, BORDERW_LONGTEXT, true )
+        add_deprecated_alias( CFG_PREFIX "vborder" )
     add_integer( CFG_PREFIX "borderh", 0, NULL,
-                 BORDERH_TEXT, BORDERH_LONGTEXT, true );
-        add_deprecated_alias( CFG_PREFIX "hborder" );
+                 BORDERH_TEXT, BORDERH_LONGTEXT, true )
+        add_deprecated_alias( CFG_PREFIX "hborder" )
 
     add_integer( CFG_PREFIX "position", 0, NULL,
-                 POS_TEXT, POS_LONGTEXT, false );
-        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL );
+                 POS_TEXT, POS_LONGTEXT, false )
+        change_integer_list( pi_pos_values, ppsz_pos_descriptions, NULL )
     add_integer( CFG_PREFIX "rows", 2, NULL,
-                 ROWS_TEXT, ROWS_LONGTEXT, false );
+                 ROWS_TEXT, ROWS_LONGTEXT, false )
     add_integer( CFG_PREFIX "cols", 2, NULL,
-                 COLS_TEXT, COLS_LONGTEXT, false );
+                 COLS_TEXT, COLS_LONGTEXT, false )
 
     add_bool( CFG_PREFIX "keep-aspect-ratio", 0, NULL,
-              AR_TEXT, AR_LONGTEXT, false );
+              AR_TEXT, AR_LONGTEXT, false )
     add_bool( CFG_PREFIX "keep-picture", 0, NULL,
-              KEEP_TEXT, KEEP_LONGTEXT, false );
+              KEEP_TEXT, KEEP_LONGTEXT, false )
 
     add_string( CFG_PREFIX "order", "", NULL,
-                ORDER_TEXT, ORDER_LONGTEXT, false );
+                ORDER_TEXT, ORDER_LONGTEXT, false )
 
     add_string( CFG_PREFIX "offsets", "", NULL,
-                OFFSETS_TEXT, OFFSETS_LONGTEXT, false );
+                OFFSETS_TEXT, OFFSETS_LONGTEXT, false )
 
     add_integer( CFG_PREFIX "delay", 0, NULL, DELAY_TEXT, DELAY_LONGTEXT,
-                 false );
-vlc_module_end();
+                 false )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "alpha", "height", "width", "align", "xoffset", "yoffset",
@@ -288,6 +288,7 @@ static int CreateFilter( vlc_object_t *p_this )
     char *psz_offsets;
     int i_index;
     vlc_value_t val;
+    int i_command;
 
     /* The mosaic thread is more important than the decoder threads */
     vlc_thread_set_priority( p_this, VLC_THREAD_PRIORITY_OUTPUT );
@@ -310,8 +311,8 @@ static int CreateFilter( vlc_object_t *p_this )
                        p_filter->p_cfg );
 
 #define GET_VAR( name, min, max )                                           \
-    p_sys->i_##name = __MIN( max, __MAX( min,                               \
-        var_CreateGetIntegerCommand( p_filter, CFG_PREFIX #name ) ) );      \
+    i_command = var_CreateGetIntegerCommand( p_filter, CFG_PREFIX #name );  \
+    p_sys->i_##name = __MIN( max, __MAX( min, i_command ) );                \
     var_AddCallback( p_filter, CFG_PREFIX #name, MosaicCallback, p_sys );
 
     GET_VAR( width, 0, INT_MAX );
@@ -321,7 +322,7 @@ static int CreateFilter( vlc_object_t *p_this )
 
     GET_VAR( align, 0, 10 );
     if( p_sys->i_align == 3 || p_sys->i_align == 7 )
-        p_sys->i_align = 5;
+        p_sys->i_align = 5; /* FIXME: NOT THREAD SAFE w.r.t. callback */
 
     GET_VAR( borderw, 0, INT_MAX );
     GET_VAR( borderh, 0, INT_MAX );
@@ -330,7 +331,8 @@ static int CreateFilter( vlc_object_t *p_this )
     GET_VAR( alpha, 0, 255 );
     GET_VAR( position, 0, 2 );
     GET_VAR( delay, 100, INT_MAX );
-    p_sys->i_delay *= 1000;
+#undef GET_VAR
+    p_sys->i_delay *= 1000; /* FIXME: NOT THREAD SAFE w.r.t. callback */
 
     p_sys->b_ar = var_CreateGetBoolCommand( p_filter,
                                             CFG_PREFIX "keep-aspect-ratio" );
@@ -390,9 +392,8 @@ static void DestroyFilter( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t*)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
-    int i_index;
 
-    vlc_mutex_lock( &p_sys->lock );
+    /* FIXME: destroy callbacks first! */
 
     if( !p_sys->b_keep )
     {
@@ -401,7 +402,7 @@ static void DestroyFilter( vlc_object_t *p_this )
 
     if( p_sys->i_order_length )
     {
-        for( i_index = 0; i_index < p_sys->i_order_length; i_index++ )
+        for( int i_index = 0; i_index < p_sys->i_order_length; i_index++ )
         {
             free( p_sys->ppsz_order[i_index] );
         }
@@ -414,7 +415,6 @@ static void DestroyFilter( vlc_object_t *p_this )
         p_sys->i_offsets_length = 0;
     }
 
-    vlc_mutex_unlock( &p_sys->lock );
     vlc_mutex_destroy( &p_sys->lock );
     free( p_sys );
 }
@@ -458,7 +458,6 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
     p_spu->i_stop = 0;
     p_spu->b_ephemer = true;
     p_spu->i_alpha = p_sys->i_alpha;
-    p_spu->i_flags = p_sys->i_align;
     p_spu->b_absolute = false;
 
     vlc_mutex_lock( &p_sys->lock );
@@ -496,7 +495,7 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             if ( !p_es->b_empty )
             {
                 i_numpics ++;
-                if( p_sys->i_order_length && p_es->psz_id != 0 )
+                if( p_sys->i_order_length && p_es->psz_id != NULL )
                 {
                     /* We also want to leave slots for images given in
                      * mosaic-order that are not available in p_vout_picture */
@@ -635,7 +634,6 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         else
         {
             p_converted = p_es->p_picture;
-            picture_Yield( p_converted );
             fmt_in.i_width = fmt_out.i_width = p_converted->format.i_width;
             fmt_in.i_height = fmt_out.i_height = p_converted->format.i_height;
             fmt_in.i_chroma = fmt_out.i_chroma = p_converted->format.i_chroma;
@@ -643,8 +641,13 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             fmt_out.i_visible_height = fmt_out.i_height;
         }
 
-        p_region = p_spu->pf_make_region( VLC_OBJECT(p_filter), &fmt_out,
-                                          p_converted );
+        p_region = subpicture_region_New( &fmt_out );
+        /* FIXME the copy is probably not needed anymore */
+        if( p_region )
+            picture_Copy( p_region->p_picture, p_converted );
+        if( !p_sys->b_keep )
+            picture_Release( p_converted );
+
         if( !p_region )
         {
             msg_Err( p_filter, "cannot allocate SPU region" );
@@ -652,20 +655,6 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
             vlc_mutex_unlock( &p_sys->lock );
             vlc_mutex_unlock( p_sys->p_lock );
             return p_spu;
-        }
-
-        /* HACK ALERT: let's fix the pointers to avoid picture duplication.
-         * This is necessary because p_region->picture is not a pointer
-         * as it ought to be. */
-        if( !p_sys->b_keep )
-        {
-            free( p_converted );
-        }
-        else
-        {
-            /* Keep a pointer to the original picture (and its refcount...). */
-            p_region->picture.p_sys = (picture_sys_t *)p_converted;
-            p_region->picture.pf_release = MosaicReleasePicture;
         }
 
         if( p_es->i_x >= 0 && p_es->i_y >= 0 )

@@ -2,7 +2,7 @@
  * cache.c: Plugins cache
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: f1a6a6206d7e41d3a21f8a460f215d5fc90dc06b $
+ * $Id: 89d1a99a6d51f0a798c25fc33b2133097c058f5e $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -84,7 +84,7 @@ static int    CacheSaveConfig  ( module_t *, FILE * );
 
 /* Sub-version number
  * (only used to avoid breakage in dev version when cache structure changes) */
-#define CACHE_SUBVERSION_NUM 3
+#define CACHE_SUBVERSION_NUM 4
 
 /* Format string for the cache filename */
 #define CACHENAME_FORMAT \
@@ -102,7 +102,7 @@ static int    CacheSaveConfig  ( module_t *, FILE * );
  * actually load the dynamically loadable module.
  * This allows us to only fully load plugins when they are actually used.
  *****************************************************************************/
-void CacheLoad( vlc_object_t *p_this )
+void CacheLoad( vlc_object_t *p_this, module_bank_t *p_bank, bool b_delete )
 {
     char *psz_filename, *psz_cachedir = config_GetCacheDir();
     FILE *file;
@@ -112,7 +112,6 @@ void CacheLoad( vlc_object_t *p_this )
     int i_cache;
     module_cache_t **pp_cache = 0;
     int32_t i_file_size, i_marker;
-    libvlc_global_data_t *p_libvlc_global = vlc_global();
 
     if( !psz_cachedir ) /* XXX: this should never happen */
     {
@@ -128,7 +127,7 @@ void CacheLoad( vlc_object_t *p_this )
     }
     free( psz_cachedir );
 
-    if( p_libvlc_global->p_module_bank->b_cache_delete )
+    if( b_delete )
     {
 #if !defined( UNDER_CE )
         unlink( psz_filename );
@@ -231,7 +230,7 @@ void CacheLoad( vlc_object_t *p_this )
         return;
     }
 
-    p_libvlc_global->p_module_bank->i_loaded_cache = 0;
+    p_bank->i_loaded_cache = 0;
     if (fread( &i_cache, 1, sizeof(i_cache), file ) != sizeof(i_cache) )
     {
         msg_Warn( p_this, "This doesn't look like a valid plugins cache "
@@ -241,7 +240,7 @@ void CacheLoad( vlc_object_t *p_this )
     }
 
     if( i_cache )
-        pp_cache = p_libvlc_global->p_module_bank->pp_loaded_cache =
+        pp_cache = p_bank->pp_loaded_cache =
                    malloc( i_cache * sizeof(void *) );
 
 #define LOAD_IMMEDIATE(a) \
@@ -272,7 +271,7 @@ void CacheLoad( vlc_object_t *p_this )
         int i_submodules;
 
         pp_cache[i] = malloc( sizeof(module_cache_t) );
-        p_libvlc_global->p_module_bank->i_loaded_cache++;
+        p_bank->i_loaded_cache++;
 
         /* Load common info */
         LOAD_STRING( pp_cache[i]->psz_file );
@@ -338,7 +337,7 @@ void CacheLoad( vlc_object_t *p_this )
     msg_Warn( p_this, "plugins cache not loaded (corrupted)" );
 
     /* TODO: cleanup */
-    p_libvlc_global->p_module_bank->i_loaded_cache = 0;
+    p_bank->i_loaded_cache = 0;
 
     fclose( file );
     return;
@@ -399,7 +398,7 @@ static int CacheLoadConfig( module_t *p_module, FILE *file )
 
         p_module->p_config[i].b_dirty = false;
 
-        p_module->p_config[i].p_lock = &(vlc_internals(p_module)->lock);
+        p_module->p_config[i].p_lock = &p_module->lock;
 
         if( p_module->p_config[i].i_list )
         {
@@ -463,10 +462,12 @@ static int CacheLoadConfig( module_t *p_module, FILE *file )
     return VLC_EGENERIC;
 }
 
+static int CacheSaveSubmodule( FILE *file, module_t *p_module );
+
 /*****************************************************************************
  * SavePluginsCache: saves the plugins cache to a file
  *****************************************************************************/
-void CacheSave( vlc_object_t *p_this )
+void CacheSave( vlc_object_t *p_this, module_bank_t *p_bank )
 {
     static char const psz_tag[] =
         "Signature: 8a477f597d28d172789f06886806bc55\r\n"
@@ -479,7 +480,6 @@ void CacheSave( vlc_object_t *p_this )
     int i, j, i_cache;
     module_cache_t **pp_cache;
     uint32_t i_file_size = 0;
-    libvlc_global_data_t *p_libvlc_global = vlc_global();
 
     if( !psz_cachedir ) /* XXX: this should never happen */
     {
@@ -506,7 +506,15 @@ void CacheSave( vlc_object_t *p_this )
     free( psz_cachedir );
     msg_Dbg( p_this, "writing plugins cache %s", psz_filename );
 
-    file = utf8_fopen( psz_filename, "wb" );
+    char psz_tmpname[sizeof (psz_filename) + 12];
+    snprintf (psz_tmpname, sizeof (psz_tmpname), "%s.%"PRIu32, psz_filename,
+#ifdef UNDER_CE
+              (uint32_t)GetCurrentProcessId ()
+#else
+              (uint32_t)getpid ()
+#endif
+             );
+    file = utf8_fopen( psz_tmpname, "wb" );
     if (file == NULL)
         goto error;
 
@@ -537,8 +545,8 @@ void CacheSave( vlc_object_t *p_this )
     if (fwrite (&i_file_size, sizeof (i_file_size), 1, file) != 1)
         goto error;
 
-    i_cache = p_libvlc_global->p_module_bank->i_cache;
-    pp_cache = p_libvlc_global->p_module_bank->pp_cache;
+    i_cache = p_bank->i_cache;
+    pp_cache = p_bank->pp_cache;
 
     if (fwrite( &i_cache, sizeof (i_cache), 1, file) != 1)
         goto error;
@@ -588,41 +596,29 @@ void CacheSave( vlc_object_t *p_this )
 
         SAVE_STRING( pp_cache[i]->p_module->psz_filename );
 
-        i_submodule = vlc_internals( pp_cache[i]->p_module )->i_children;
+        i_submodule = pp_cache[i]->p_module->submodule_count;
         SAVE_IMMEDIATE( i_submodule );
-        for( i_submodule = 0;
-             i_submodule < (unsigned)vlc_internals( pp_cache[i]->p_module)->i_children;
-             i_submodule++ )
-        {
-            module_t *p_module =
-                (module_t *)vlc_internals( pp_cache[i]->p_module )->pp_children[i_submodule];
-
-            SAVE_STRING( p_module->psz_object_name );
-            SAVE_STRING( p_module->psz_shortname );
-            SAVE_STRING( p_module->psz_longname );
-            SAVE_STRING( p_module->psz_help );
-            for( j = 0; j < MODULE_SHORTCUT_MAX; j++ )
-            {
-                SAVE_STRING( p_module->pp_shortcuts[j] ); // FIX
-            }
-            SAVE_STRING( p_module->psz_capability );
-            SAVE_IMMEDIATE( p_module->i_score );
-            SAVE_IMMEDIATE( p_module->i_cpu );
-            SAVE_IMMEDIATE( p_module->b_unloadable );
-            SAVE_IMMEDIATE( p_module->b_reentrant );
-        }
+        if( CacheSaveSubmodule( file, pp_cache[i]->p_module->submodule ) )
+            goto error;
     }
 
     /* Fill-up file size */
     i_file_size = ftell( file );
     fseek( file, 0, SEEK_SET );
-    if (fwrite (&i_file_size, sizeof (i_file_size), 1, file) != 1)
+    if (fwrite (&i_file_size, sizeof (i_file_size), 1, file) != 1
+     || fflush (file)) /* flush libc buffers */
         goto error;
 
-    if (fclose (file) == 0)
-        return; /* success! */
+#ifndef WIN32
+    utf8_rename (psz_tmpname, psz_filename); /* atomically replace old cache */
+    fclose (file);
+#else
+    utf8_unlink (psz_filename);
+    fclose (file);
+    utf8_rename (psz_tmpname, psz_filename);
+#endif
+    return; /* success! */
 
-    file = NULL;
 error:
     msg_Warn (p_this, "could not write plugins cache %s (%m)",
               psz_filename);
@@ -632,6 +628,32 @@ error:
         fclose (file);
     }
 }
+
+static int CacheSaveSubmodule( FILE *file, module_t *p_module )
+{
+    if( !p_module )
+        return 0;
+    if( CacheSaveSubmodule( file, p_module->next ) )
+        goto error;
+
+    SAVE_STRING( p_module->psz_object_name );
+    SAVE_STRING( p_module->psz_shortname );
+    SAVE_STRING( p_module->psz_longname );
+    SAVE_STRING( p_module->psz_help );
+    for( unsigned j = 0; j < MODULE_SHORTCUT_MAX; j++ )
+         SAVE_STRING( p_module->pp_shortcuts[j] ); // FIXME
+
+    SAVE_STRING( p_module->psz_capability );
+    SAVE_IMMEDIATE( p_module->i_score );
+    SAVE_IMMEDIATE( p_module->i_cpu );
+    SAVE_IMMEDIATE( p_module->b_unloadable );
+    SAVE_IMMEDIATE( p_module->b_reentrant );
+    return 0;
+
+error:
+    return -1;
+}
+
 
 static int CacheSaveConfig( module_t *p_module, FILE *file )
 {
@@ -691,19 +713,23 @@ error:
  *****************************************************************************/
 void CacheMerge( vlc_object_t *p_this, module_t *p_cache, module_t *p_module )
 {
-    int i_submodule;
     (void)p_this;
 
     p_cache->pf_activate = p_module->pf_activate;
     p_cache->pf_deactivate = p_module->pf_deactivate;
     p_cache->handle = p_module->handle;
 
-    for( i_submodule = 0; i_submodule < vlc_internals( p_module )->i_children; i_submodule++ )
+    /* FIXME: This looks too simplistic an algorithm to me. What if the module
+     * file was altered such that the number of order of submodules was
+     * altered... after VLC started -- Courmisch, 09/2008 */
+    module_t *p_child = p_module->submodule,
+             *p_cchild = p_cache->submodule;
+    while( p_child && p_cchild )
     {
-        module_t *p_child = (module_t*)vlc_internals( p_module )->pp_children[i_submodule];
-        module_t *p_cchild = (module_t*)vlc_internals( p_cache )->pp_children[i_submodule];
         p_cchild->pf_activate = p_child->pf_activate;
         p_cchild->pf_deactivate = p_child->pf_deactivate;
+        p_child = p_child->next;
+        p_cchild = p_cchild->next;
     }
 
     p_cache->b_loaded = true;
@@ -713,15 +739,14 @@ void CacheMerge( vlc_object_t *p_this, module_t *p_cache, module_t *p_module )
 /*****************************************************************************
  * CacheFind: finds the cache entry corresponding to a file
  *****************************************************************************/
-module_cache_t *CacheFind( const char *psz_file,
+module_cache_t *CacheFind( module_bank_t *p_bank, const char *psz_file,
                            int64_t i_time, int64_t i_size )
 {
     module_cache_t **pp_cache;
     int i_cache, i;
-    libvlc_global_data_t *p_libvlc_global = vlc_global();
 
-    pp_cache = p_libvlc_global->p_module_bank->pp_loaded_cache;
-    i_cache = p_libvlc_global->p_module_bank->i_loaded_cache;
+    pp_cache = p_bank->pp_loaded_cache;
+    i_cache = p_bank->i_loaded_cache;
 
     for( i = 0; i < i_cache; i++ )
     {

@@ -2,7 +2,7 @@
  * gradient.c : Gradient and edge detection video effects plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: fcfd058b1c298debcaf4753b2fac57c0c1073781 $
+ * $Id: 948cb4a04d318256b720203ed6ea0e8b54698f02 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Antoine Cellerier <dionoea -at- videolan -dot- org>
@@ -76,38 +76,39 @@ static const char *const mode_list_text[] = { N_("Gradient"), N_("Edge"), N_("Ho
 
 #define FILTER_PREFIX "gradient-"
 
-vlc_module_begin();
-    set_description( N_("Gradient video filter") );
-    set_shortname( N_( "Gradient" ));
-    set_capability( "video filter2", 0 );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
+vlc_module_begin ()
+    set_description( N_("Gradient video filter") )
+    set_shortname( N_( "Gradient" ))
+    set_capability( "video filter2", 0 )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
 
     add_string( FILTER_PREFIX "mode", "gradient", NULL,
-                MODE_TEXT, MODE_LONGTEXT, false );
-        change_string_list( mode_list, mode_list_text, 0 );
+                MODE_TEXT, MODE_LONGTEXT, false )
+        change_string_list( mode_list, mode_list_text, 0 )
 
     add_integer_with_range( FILTER_PREFIX "type", 0, 0, 1, NULL,
-                GRADIENT_TEXT, GRADIENT_LONGTEXT, false );
+                GRADIENT_TEXT, GRADIENT_LONGTEXT, false )
     add_bool( FILTER_PREFIX "cartoon", 1, NULL,
-                CARTOON_TEXT, CARTOON_LONGTEXT, false );
+                CARTOON_TEXT, CARTOON_LONGTEXT, false )
 
-    add_shortcut( "gradient" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    add_shortcut( "gradient" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "mode", "type", "cartoon", NULL
 };
 
 /*****************************************************************************
- * vout_sys_t: Distort video output method descriptor
+ * filter_sys_t: Distort video output method descriptor
  *****************************************************************************
  * This structure is part of the video output thread descriptor.
  * It describes the Distort specific properties of an output thread.
  *****************************************************************************/
 struct filter_sys_t
 {
+    vlc_mutex_t lock;
     int i_mode;
 
     /* For the gradient mode */
@@ -189,6 +190,7 @@ static int Create( vlc_object_t *p_this )
     p_filter->p_sys->b_cartoon =
         var_CreateGetBoolCommand( p_filter, FILTER_PREFIX "cartoon" );
 
+    vlc_mutex_init( &p_filter->p_sys->lock );
     var_AddCallback( p_filter, FILTER_PREFIX "mode",
                      GradientCallback, p_filter->p_sys );
     var_AddCallback( p_filter, FILTER_PREFIX "type",
@@ -211,13 +213,22 @@ static int Create( vlc_object_t *p_this )
 static void Destroy( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
+    filter_sys_t *p_sys = p_filter->p_sys;
 
-    free( p_filter->p_sys->p_buf32 );
-    free( p_filter->p_sys->p_buf32_bis );
-    free( p_filter->p_sys->p_buf8 );
-    free( p_filter->p_sys->p_pre_hough );
+    var_DelCallback( p_filter, FILTER_PREFIX "mode",
+                     GradientCallback, p_sys );
+    var_DelCallback( p_filter, FILTER_PREFIX "type",
+                     GradientCallback, p_sys );
+    var_DelCallback( p_filter, FILTER_PREFIX "cartoon",
+                     GradientCallback, p_sys );
+    vlc_mutex_destroy( &p_sys->lock );
 
-    free( p_filter->p_sys );
+    free( p_sys->p_buf32 );
+    free( p_sys->p_buf32_bis );
+    free( p_sys->p_buf8 );
+    free( p_sys->p_pre_hough );
+
+    free( p_sys );
 }
 
 /*****************************************************************************
@@ -240,6 +251,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         return NULL;
     }
 
+    vlc_mutex_lock( &p_filter->p_sys->lock );
     switch( p_filter->p_sys->i_mode )
     {
         case EDGE:
@@ -257,6 +269,7 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
         default:
             break;
     }
+    vlc_mutex_unlock( &p_filter->p_sys->lock );
 
     return CopyInfoAndRelease( p_outpic, p_pic );
 }
@@ -757,6 +770,8 @@ static int GradientCallback( vlc_object_t *p_this, char const *psz_var,
 {
     VLC_UNUSED(oldval);
     filter_sys_t *p_sys = (filter_sys_t *)p_data;
+
+    vlc_mutex_lock( &p_sys->lock );
     if( !strcmp( psz_var, FILTER_PREFIX "mode" ) )
     {
         if( !strcmp( newval.psz_string, "gradient" ) )
@@ -785,5 +800,7 @@ static int GradientCallback( vlc_object_t *p_this, char const *psz_var,
     {
         p_sys->b_cartoon = newval.b_bool;
     }
+    vlc_mutex_unlock( &p_sys->lock );
+
     return VLC_SUCCESS;
 }

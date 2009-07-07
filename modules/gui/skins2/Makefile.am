@@ -18,5 +18,5 @@ libskins2_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libskins2_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libskins2_plugin_la_LIBADD = $(AM_LIBADD)
-libskins2_plugin_la_DEPENDENCIES =
+libskins2_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
  * Copyright (C) 2005-2006 Rémi Denis-Courmont
- * $Id: 3ef84ab320dfdd29b311aa2cc6ae22740392cba6 $
+ * $Id: 0fabdd0afab905728d421f5905e4c07657242b84 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -59,6 +59,8 @@
 #   undef ETIMEDOUT
 #   define ETIMEDOUT WSAETIMEDOUT
 #endif
+
+#include "libvlc.h" /* vlc_object_waitpipe */
 
 static int SocksNegotiate( vlc_object_t *, int fd, int i_socks_version,
                            const char *psz_user, const char *psz_passwd );
@@ -151,8 +153,9 @@ int __net_Connect( vlc_object_t *p_this, const char *psz_host, int i_port,
 
     for( ptr = res; ptr != NULL; ptr = ptr->ai_next )
     {
-        int fd = net_Socket( p_this, ptr->ai_family, type ?: ptr->ai_socktype,
-                             proto ?: ptr->ai_protocol );
+        int fd = net_Socket( p_this, ptr->ai_family,
+                             type ? type : ptr->ai_socktype,
+                             proto ? proto : ptr->ai_protocol );
         if( fd == -1 )
         {
             msg_Dbg( p_this, "socket error: %m" );
@@ -278,9 +281,6 @@ int __net_Accept( vlc_object_t *p_this, int *pi_fd, mtime_t i_wait )
 {
     int timeout = (i_wait < 0) ? -1 : i_wait / 1000;
     int evfd = vlc_object_waitpipe (p_this);
-
-    if (evfd == -1)
-        return -1;
 
     assert( pi_fd != NULL );
 
@@ -512,7 +512,7 @@ static int SocksHandshakeTCP( vlc_object_t *p_obj,
 
         if( buffer[1] != 0x00 )
         {
-            msg_Err( p_obj, "socks: CONNECT request failed\n" );
+            msg_Err( p_obj, "socks: CONNECT request failed" );
             return VLC_EGENERIC;
         }
 

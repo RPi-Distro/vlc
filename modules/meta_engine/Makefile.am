@@ -18,7 +18,7 @@ libfolder_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libfolder_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libfolder_plugin_la_LIBADD = $(AM_LIBADD)
-libfolder_plugin_la_DEPENDENCIES =
+libfolder_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The id3tag plugin
 libid3tag_plugin_la_SOURCES = $(SOURCES_id3tag)
@@ -29,7 +29,7 @@ libid3tag_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libid3tag_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libid3tag_plugin_la_LIBADD = $(AM_LIBADD)
-libid3tag_plugin_la_DEPENDENCIES =
+libid3tag_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The taglib plugin
 libtaglib_plugin_la_SOURCES = $(SOURCES_taglib)
@@ -40,5 +40,5 @@ libtaglib_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtaglib_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtaglib_plugin_la_LIBADD = $(AM_LIBADD)
-libtaglib_plugin_la_DEPENDENCIES =
+libtaglib_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

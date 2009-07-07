@@ -2,7 +2,7 @@
  * wince.cpp: WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 91e3b6c24f0fa3f22734cdc03a70ee5fb16ee58a $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -32,6 +32,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_interface.h>
+#include <vlc_input.h>
 
 #if defined( UNDER_CE ) && defined(__MINGW32__)
 /* This is a gross hack for the wince gcc cross-compiler */
@@ -51,7 +52,7 @@ static void Run    ( intf_thread_t * );
 
 static int  OpenDialogs( vlc_object_t * );
 
-static void* MainLoop  ( intf_thread_t * );
+static void* MainLoop  ( vlc_object_t * );
 static void ShowDialog( intf_thread_t *, int, int, intf_dialog_args_t * );
 
 /*****************************************************************************
@@ -61,20 +62,23 @@ static void ShowDialog( intf_thread_t *, int, int, intf_dialog_args_t * );
 #define EMBED_LONGTEXT N_("Embed the video inside the interface instead " \
     "of having it in a separate window.")
 
-vlc_module_begin();
-    set_description( (char *) _("WinCE interface module") );
-    set_capability( "interface", 100 );
-    set_callbacks( Open, Close );
-    add_shortcut( "wince" );
+vlc_module_begin ()
+    set_shortname( "WinCE" )
+    set_description( (char *) _("WinCE interface") )
+    set_capability( "interface", 100 )
+    set_callbacks( Open, Close )
+    add_shortcut( "wince" )
 
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_MAIN )
     add_bool( "wince-embed", 1, NULL,
-              EMBED_TEXT, EMBED_LONGTEXT, false );
+              EMBED_TEXT, EMBED_LONGTEXT, false )
 
-    add_submodule();
-    set_description( N_("WinCE dialogs provider") );
-    set_capability( "dialogs provider", 10 );
-    set_callbacks( OpenDialogs, Close );
-vlc_module_end();
+    add_submodule ()
+    set_description( N_("WinCE dialogs provider") )
+    set_capability( "dialogs provider", 10 )
+    set_callbacks( OpenDialogs, Close )
+vlc_module_end ()
 
 HINSTANCE hInstance = 0;
 
@@ -110,13 +114,8 @@ static int Open( vlc_object_t *p_this )
     // Allocate instance and initialize some members
     p_intf->p_sys = (intf_sys_t *)malloc( sizeof( intf_sys_t ) );
     if( p_intf->p_sys == NULL )
-    {
-        msg_Err( p_intf, "out of memory" );
-        return VLC_EGENERIC;
-    }
+        return VLC_ENOMEM;
 
-    // Suscribe to messages bank
-    p_intf->p_sys->p_sub = msg_Subscribe( p_intf );
 
     // Misc init
     p_intf->p_sys->p_audio_menu = NULL;
@@ -152,10 +151,11 @@ static int OpenDialogs( vlc_object_t *p_this )
 static void Close( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
+    intf_sys_t    *p_sys = p_intf->p_sys;
 
-    if( p_intf->p_sys->p_input )
+    if( p_sys->p_input )
     {
-        vlc_object_release( p_intf->p_sys->p_input );
+        vlc_object_release( p_sys->p_input );
     }
 
     MenuItemExt::ClearList( p_intf->p_sys->p_video_menu );
@@ -177,9 +177,6 @@ static void Close( vlc_object_t *p_this )
         vlc_thread_join( p_intf );
     }
 
-    // Unsuscribe to messages bank
-    msg_Unsubscribe( p_intf, p_intf->p_sys->p_sub );
-
     // Destroy structure
     free( p_intf->p_sys );
 }
@@ -194,17 +191,22 @@ static void Run( intf_thread_t *p_intf )
         /* The module is used in dialog provider mode */
 
         /* Create a new thread for the dialogs provider */
-        if( vlc_thread_create( p_intf, "Skins Dialogs Thread",
-                               MainLoop, 0, true ) )
+        p_intf->p_sys->thread_ready = CreateEvent (NULL, TRUE, FALSE, NULL);
+        if( vlc_thread_create( p_intf, "WinCE Dialogs Thread", MainLoop, 0 ) )
         {
-            msg_Err( p_intf, "cannot create Skins Dialogs Thread" );
+            msg_Err( p_intf, "cannot create WinCE Dialogs Thread" );
             p_intf->pf_show_dialog = NULL;
         }
+        else
+            WaitForSingleObject (p_intf->p_sys->thread_ready, INFINITE);
+        CloseHandle (p_intf->p_sys->thread_ready);
     }
     else
     {
+        int canc = vlc_savecancel();
         /* The module is used in interface mode */
-        MainLoop( p_intf );
+        MainLoop( VLC_OBJECT(p_intf) );
+        vlc_restorecancel( canc );
     }
 }
 
@@ -213,6 +215,7 @@ static void* MainLoop( vlc_object_t * p_this )
     intf_thread_t *p_intf = (intf_thread_t*)p_this;
     MSG msg;
     Interface *intf = 0;
+    int canc = vlc_savecancel ();
 
     if( !hInstance ) hInstance = GetModuleHandle(NULL);
 
@@ -252,7 +255,7 @@ static void* MainLoop( vlc_object_t * p_this )
     p_intf->p_sys->pf_show_dialog = ShowDialog;
 
     /* OK, initialization is over */
-    vlc_thread_ready( p_intf );
+    SetEvent( p_intf->p_sys->thread_ready );
 
     // Main message loop
     while( GetMessage( &msg, NULL, 0, 0 ) > 0 )
@@ -268,6 +271,7 @@ static void* MainLoop( vlc_object_t * p_this )
     /* Uninitialize OLE/COM */
     CoUninitialize();
 #endif
+    vlc_restorecancel (canc);
     return NULL;
 }
 

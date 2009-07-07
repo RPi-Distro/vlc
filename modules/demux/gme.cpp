@@ -2,7 +2,7 @@
  * gme.cpp: Game Music files demuxer (using Game_Music_Emu)
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: de1c285d0f6c8a1bf230d2fbaed9f49810601f63 $
+ * $Id$
  *
  * Authors: Jean Sreng <fox@videolan.org>
  *
@@ -50,15 +50,15 @@ using namespace std;
 static int  Open    ( vlc_object_t * );
 static void Close  ( vlc_object_t * );
 
-vlc_module_begin();
-    set_shortname( "GME");
-    set_description( N_("GME demuxer (Game_Music_Emu)" ) );
-    set_capability( "demux", 10 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_callbacks( Open, Close );
-    add_shortcut( "gme" );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "GME")
+    set_description( N_("GME demuxer (Game_Music_Emu)" ) )
+    set_capability( "demux", 10 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_callbacks( Open, Close )
+    add_shortcut( "gme" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -420,7 +420,6 @@ switch( i_query )
             {
                 ModPlug_Seek( p_sys->f, i64 / 1000 );
                 p_sys->i_time = i64 + 1;
-                es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
 
                 return VLC_SUCCESS;
             }
@@ -443,7 +442,6 @@ switch( i_query )
             {
                 ModPlug_Seek( p_sys->f, i64 / 1000 );
                 p_sys->i_time = i64 + 1;
-                es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
 
                 return VLC_SUCCESS;
             }

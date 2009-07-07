@@ -2,7 +2,7 @@
  * stream_output.c : stream output module
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 8f205c8d1fc49adba484a94c6a67a6521eca0da8 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -42,8 +42,10 @@
 #include "stream_output.h"
 
 #include <vlc_meta.h>
+#include <vlc_block.h>
+#include <vlc_codec.h>
 
-#include "input/input_internal.h"
+#include "input/input_interface.h"
 
 #undef DEBUG_BUFFER
 /*****************************************************************************
@@ -73,7 +75,7 @@ static void mrl_Clean( mrl_t *p_mrl );
 /*****************************************************************************
  * sout_NewInstance: creates a new stream output instance
  *****************************************************************************/
-sout_instance_t *__sout_NewInstance( vlc_object_t *p_parent, char * psz_dest )
+sout_instance_t *__sout_NewInstance( vlc_object_t *p_parent, const char *psz_dest )
 {
     static const char typename[] = "stream output";
     sout_instance_t *p_sout;
@@ -154,52 +156,43 @@ void sout_DeleteInstance( sout_instance_t * p_sout )
  *****************************************************************************/
 void sout_UpdateStatistic( sout_instance_t *p_sout, sout_statistic_t i_type, int i_delta )
 {
-    input_thread_t *p_input;
-    int i_bytes; /* That's pretty stupid to define it as an integer, it will overflow
-                    really fast ... */
-
-    if( !libvlc_stats (p_sout) )
+    if( !libvlc_stats( p_sout ) )
         return;
 
-    /* FIXME that's ugly
-     * TODO add a private (ie not VLC_EXPORTed) input_UpdateStatistic for that */
-    p_input = vlc_object_find( p_sout, VLC_OBJECT_INPUT, FIND_PARENT );
-    if( !p_input || p_input->i_state == INIT_S || p_input->i_state == ERROR_S )
+    /* */
+    input_thread_t *p_input = vlc_object_find( p_sout, VLC_OBJECT_INPUT, FIND_PARENT );
+    if( !p_input )
         return;
 
+    int i_input_type;
     switch( i_type )
     {
-#define I(c) stats_UpdateInteger( p_input, p_input->p->counters.c, i_delta, NULL )
     case SOUT_STATISTIC_DECODED_VIDEO:
-        I(p_decoded_video);
+        i_input_type = SOUT_STATISTIC_DECODED_VIDEO;
         break;
     case SOUT_STATISTIC_DECODED_AUDIO:
-        I(p_decoded_audio);
+        i_input_type = SOUT_STATISTIC_DECODED_AUDIO;
         break;
     case SOUT_STATISTIC_DECODED_SUBTITLE:
-        I(p_decoded_sub);
+        i_input_type = SOUT_STATISTIC_DECODED_SUBTITLE;
         break;
-#if 0
-    case SOUT_STATISTIC_ENCODED_VIDEO:
-    case SOUT_STATISTIC_ENCODED_AUDIO:
-    case SOUT_STATISTIC_ENCODED_SUBTITLE:
-        msg_Warn( p_sout, "Not yet supported statistic type %d", i_type );
-        break;
-#endif
 
     case SOUT_STATISTIC_SENT_PACKET:
-        I(p_sout_sent_packets);
+        i_input_type = SOUT_STATISTIC_SENT_PACKET;
         break;
-#undef I
+
     case SOUT_STATISTIC_SENT_BYTE:
-        if( !stats_UpdateInteger( p_input, p_input->p->counters.p_sout_sent_bytes, i_delta, &i_bytes ) )
-            stats_UpdateFloat( p_input, p_input->p->counters.p_sout_send_bitrate, i_bytes, NULL );
+        i_input_type = SOUT_STATISTIC_SENT_BYTE;
         break;
 
     default:
-        msg_Err( p_sout, "Invalid statistic type %d (internal error)", i_type );
-        break;
+        msg_Err( p_sout, "Not yet supported statistic type %d", i_type );
+        vlc_object_release( p_input );
+        return;
     }
+
+    input_UpdateStatistic( p_input, i_input_type, i_delta );
+
     vlc_object_release( p_input );
 }
 /*****************************************************************************
@@ -288,10 +281,11 @@ int sout_InputSendBuffer( sout_packetizer_input_t *p_input,
     return i_ret;
 }
 
+#undef sout_AccessOutNew
 /*****************************************************************************
  * sout_AccessOutNew: allocate a new access out
  *****************************************************************************/
-sout_access_out_t *sout_AccessOutNew( sout_instance_t *p_sout,
+sout_access_out_t *sout_AccessOutNew( vlc_object_t *p_sout,
                                       const char *psz_access, const char *psz_name )
 {
     static const char typename[] = "access out";
@@ -307,7 +301,6 @@ sout_access_out_t *sout_AccessOutNew( sout_instance_t *p_sout,
                                    psz_access );
     free( psz_next );
     p_access->psz_path   = strdup( psz_name ? psz_name : "" );
-    p_access->p_sout     = p_sout;
     p_access->p_sys      = NULL;
     p_access->pf_seek    = NULL;
     p_access->pf_read    = NULL;
@@ -321,7 +314,7 @@ sout_access_out_t *sout_AccessOutNew( sout_instance_t *p_sout,
     vlc_object_attach( p_access, p_sout );
 
     p_access->p_module   =
-        module_Need( p_access, "sout access", p_access->psz_access, true );
+        module_need( p_access, "sout access", p_access->psz_access, true );
 
     if( !p_access->p_module )
     {
@@ -342,7 +335,7 @@ void sout_AccessOutDelete( sout_access_out_t *p_access )
     vlc_object_detach( p_access );
     if( p_access->p_module )
     {
-        module_Unneed( p_access, p_access->p_module );
+        module_unneed( p_access, p_access->p_module );
     }
     free( p_access->psz_access );
 
@@ -375,6 +368,7 @@ ssize_t sout_AccessOutRead( sout_access_out_t *p_access, block_t *p_buffer )
  *****************************************************************************/
 ssize_t sout_AccessOutWrite( sout_access_out_t *p_access, block_t *p_buffer )
 {
+#if 0
     const unsigned i_packets_gather = 30;
     p_access->i_writes++;
     p_access->i_sent_bytes += p_buffer->i_buffer;
@@ -384,16 +378,25 @@ ssize_t sout_AccessOutWrite( sout_access_out_t *p_access, block_t *p_buffer )
         sout_UpdateStatistic( p_access->p_sout, SOUT_STATISTIC_SENT_BYTE, p_access->i_sent_bytes );
         p_access->i_sent_bytes = 0;
     }
+#endif
     return p_access->pf_write( p_access, p_buffer );
 }
 
 /**
  * sout_AccessOutControl
  */
-int sout_AccessOutControl (sout_access_out_t *access, int query, va_list args)
+int sout_AccessOutControl (sout_access_out_t *access, int query, ...)
 {
-    return (access->pf_control) ? access->pf_control (access, query, args)
-                                : VLC_EGENERIC;
+    va_list ap;
+    int ret;
+
+    va_start (ap, query);
+    if (access->pf_control)
+        ret = access->pf_control (access, query, ap);
+    else
+        ret = VLC_EGENERIC;
+    va_end (ap);
+    return ret;
 }
 
 /*****************************************************************************
@@ -433,7 +436,7 @@ sout_mux_t * sout_MuxNew( sout_instance_t *p_sout, char *psz_mux,
     vlc_object_attach( p_mux, p_sout );
 
     p_mux->p_module =
-        module_Need( p_mux, "sout mux", p_mux->psz_mux, true );
+        module_need( p_mux, "sout mux", p_mux->psz_mux, true );
 
     if( p_mux->p_module == NULL )
     {
@@ -493,7 +496,7 @@ void sout_MuxDelete( sout_mux_t *p_mux )
     vlc_object_detach( p_mux );
     if( p_mux->p_module )
     {
-        module_Unneed( p_mux, p_mux->p_module );
+        module_unneed( p_mux, p_mux->p_module );
     }
     free( p_mux->psz_mux );
 
@@ -786,7 +789,7 @@ sout_stream_t *sout_StreamNew( sout_instance_t *p_sout, char *psz_chain )
     vlc_object_attach( p_stream, p_sout );
 
     p_stream->p_module =
-        module_Need( p_stream, "sout stream", p_stream->psz_name, true );
+        module_need( p_stream, "sout stream", p_stream->psz_name, true );
 
     if( !p_stream->p_module )
     {
@@ -802,7 +805,7 @@ void sout_StreamDelete( sout_stream_t *p_stream )
     msg_Dbg( p_stream, "destroying chain... (name=%s)", p_stream->psz_name );
 
     vlc_object_detach( p_stream );
-    if( p_stream->p_module ) module_Unneed( p_stream, p_stream->p_module );
+    if( p_stream->p_module ) module_unneed( p_stream, p_stream->p_module );
 
     FREENULL( p_stream->psz_name );
     FREENULL( p_stream->psz_next );
@@ -871,4 +874,12 @@ rtp:
 
     mrl_Clean( &mrl );
     return psz_chain;
+}
+
+#undef sout_EncoderCreate
+encoder_t *sout_EncoderCreate( vlc_object_t *p_this )
+{
+    static const char type[] = "encoder";
+    return vlc_custom_create( p_this, sizeof( encoder_t ), VLC_OBJECT_GENERIC,
+                              type );
 }

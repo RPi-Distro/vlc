@@ -1,10 +1,10 @@
 /*****************************************************************************
  * open.hpp : Panels for the open dialogs
  ****************************************************************************
- * Copyright (C) 2006-2007 the VideoLAN team
+ * Copyright (C) 2006-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: fb59a965d112720a424c993e59f964ea58ae8a69 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -32,16 +32,14 @@
 # include "config.h"
 #endif
 
-#include <vlc_common.h>
-
-#include <QFileDialog>
+#include "components/preferences_widgets.hpp"
 
 #include "ui/open_file.h"
 #include "ui/open_disk.h"
 #include "ui/open_net.h"
 #include "ui/open_capture.h"
 
-#include "components/preferences_widgets.hpp"
+#include <QFileDialog>
 
 #include <limits.h>
 
@@ -61,7 +59,6 @@ enum
     RTMP_PROTO
 };
 
-
 enum
 {
     V4L_DEVICE,
@@ -74,13 +71,10 @@ enum
     JACK_DEVICE
 };
 
-static const char *psz_devModule[] = { "v4l", "v4l2", "pvr", "dvb", "bda",
-                                       "dshow", "screen", "jack" };
-
-
 class QWidget;
 class QLineEdit;
 class QString;
+class QStringListModel;
 
 class OpenPanel: public QWidget
 {
@@ -97,8 +91,8 @@ protected:
 public slots:
     virtual void updateMRL() = 0;
 signals:
-    void mrlUpdated( QString );
-    void methodChanged( QString method );
+    void mrlUpdated( const QStringList&, const QString& );
+    void methodChanged( const QString& method );
 };
 
 class FileOpenBox: public QFileDialog
@@ -106,12 +100,13 @@ class FileOpenBox: public QFileDialog
     Q_OBJECT;
 public:
     FileOpenBox( QWidget *parent, const QString &caption,
-        const QString &directory, const QString &filter ):
-        QFileDialog( parent, caption, directory, filter ) {}
+                 const QString &directory, const QString &filter ):
+                QFileDialog( parent, caption, directory, filter ) {}
 public slots:
-    void accept();
-    void reject();
+    void accept(){}
+    void reject(){}
 };
+
 
 class FileOpenPanel: public OpenPanel
 {
@@ -121,17 +116,29 @@ public:
     virtual ~FileOpenPanel();
     virtual void clear() ;
     virtual void accept() ;
+protected:
+    bool eventFilter(QObject *obj, QEvent *event)
+    {
+        if( event->type() == QEvent::Hide ||
+            event->type() == QEvent::HideToParent )
+        {
+            msg_Warn( p_intf, "here" );
+            event->accept();
+            return true;
+        }
+        return false;
+    }
 private:
     Ui::OpenFile ui;
-    QStringList browse( QString );
     FileOpenBox *dialogBox;
-    QLineEdit *lineFileEdit;
-    QStringList fileCompleteList ;
+    void BuildOldPanel();
 public slots:
     virtual void updateMRL();
 private slots:
     void browseFileSub();
-    void toggleSubtitleFrame();
+    void browseFile();
+    void deleteFile();
+    void toggleSubtitleFrame( bool );
 };
 
 class NetOpenPanel: public OpenPanel
@@ -143,10 +150,12 @@ public:
     virtual void clear() ;
 private:
     Ui::OpenNetwork ui;
+    QStringListModel *mrlList;
 public slots:
     virtual void updateMRL();
 private slots:
     void updateProtocol( int );
+    void updateCompleter();
 };
 
 class DiscOpenPanel: public OpenPanel
@@ -184,7 +193,7 @@ private:
     QString advMRL;
     QDialog *adv;
 #ifdef WIN32
-    QRadioButton *bdas, *bdat, *bdac;
+    QRadioButton *bdas, *bdat, *bdac, *bdaa;
     QSpinBox *bdaCard, *bdaFreq, *bdaSrate;
     QLabel *bdaSrateLabel, *bdaBandLabel;
     QComboBox *bdaBandBox;
@@ -192,11 +201,12 @@ private:
     QLineEdit *dshowVSizeLine;
 #else
     QRadioButton *dvbs, *dvbt, *dvbc;
+    QLabel *dvbBandLabel, *dvbSrateLabel;
     QSpinBox  *v4lFreq, *pvrFreq, *pvrBitr;
     QLineEdit *v4lVideoDevice, *v4lAudioDevice;
     QLineEdit *v4l2VideoDevice, *v4l2AudioDevice;
     QLineEdit *pvrDevice, *pvrRadioDevice;
-    QComboBox *v4lNormBox, *v4l2StdBox, *pvrNormBox;
+    QComboBox *v4lNormBox, *v4l2StdBox, *pvrNormBox, *dvbBandBox;
     QSpinBox *dvbCard, *dvbFreq, *dvbSrate;
     QSpinBox *jackChannels, *jackCaching;
     QCheckBox *jackPace, *jackConnect;

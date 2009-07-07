@@ -2,7 +2,7 @@
  * mp4.c : MP4 file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 5ad73492e5b0dc312bfb66ac40373fbf965b553c $
+ * $Id$
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -52,13 +52,14 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_description( N_("MP4 stream demuxer") );
-    set_capability( "demux", 242 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_description( N_("MP4 stream demuxer") )
+    set_shortname( N_("MP4") )
+    set_capability( "demux", 242 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -76,8 +77,8 @@ typedef struct
     uint32_t     i_sample_count; /* how many samples in this chunk */
     uint32_t     i_sample_first; /* index of the first sample in this chunk */
 
-    /* now provide way to calculate pts, dts, and offset without to
-        much memory and with fast acces */
+    /* now provide way to calculate pts, dts, and offset without too
+        much memory and with fast access */
 
     /* with this we can calculate dts/pts without waste memory */
     uint64_t     i_first_dts;
@@ -141,6 +142,7 @@ typedef struct
 
     bool b_drms;
     void      *p_drms;
+    MP4_Box_t *p_skcr;
 
 } mp4_track_t;
 
@@ -368,9 +370,8 @@ static int Open( vlc_object_t * p_this )
 
         msg_Dbg( p_demux, "detected playlist mov file (%d ref)", i_count );
 
-        input_thread_t * p_input = vlc_object_find( p_demux, VLC_OBJECT_INPUT, FIND_PARENT );
-        input_item_t * p_current = input_GetItem( p_input );
-        p_current->i_type = ITEM_TYPE_PLAYLIST;
+        input_thread_t *p_input = vlc_object_find( p_demux, VLC_OBJECT_INPUT, FIND_PARENT );
+        input_item_t *p_current = input_GetItem( p_input );
 
         for( i = 0; i < i_count; i++ )
         {
@@ -415,10 +416,8 @@ static int Open( vlc_object_t * p_this )
                     psz_ref = psz_absolute;
                     free( psz_path );
                 }
-                input_item_t *p_input;
                 msg_Dbg( p_demux, "adding ref = `%s'", psz_ref );
-                p_input = input_item_NewExt( p_demux, psz_ref, NULL,
-                                    0, NULL, -1 );
+                input_item_t *p_input = input_item_New( p_demux, psz_ref, NULL );
                 input_item_CopyOptions( p_current, p_input );
                 input_item_AddSubItem( p_current, p_input );
                 vlc_gc_decref( p_input );
@@ -663,8 +662,24 @@ static int Demux( demux_t *p_demux )
 
                 if( tk->b_drms && tk->p_drms )
                 {
-                    drms_decrypt( tk->p_drms, (uint32_t*)p_block->p_buffer,
-                                  p_block->i_buffer );
+                    if( tk->p_skcr )
+                    {
+                        uint32_t p_key[4];
+                        drms_get_p_key( tk->p_drms, p_key );
+
+                        for( int i_pos = tk->p_skcr->data.p_skcr->i_init; i_pos < p_block->i_buffer; )
+                        {
+                            int n = __MIN( tk->p_skcr->data.p_skcr->i_encr, p_block->i_buffer - i_pos );
+                            drms_decrypt( tk->p_drms, (uint32_t*)&p_block->p_buffer[i_pos], n, p_key );
+                            i_pos += n;
+                            i_pos += __MIN( tk->p_skcr->data.p_skcr->i_decr, p_block->i_buffer - i_pos );
+                        }
+                    }
+                    else
+                    {
+                        drms_decrypt( tk->p_drms, (uint32_t*)p_block->p_buffer,
+                                      p_block->i_buffer, NULL );
+                    }
                 }
                 else if( tk->fmt.i_cat == SPU_ES )
                 {
@@ -741,7 +756,7 @@ static void MP4_UpdateSeekpoint( demux_t *p_demux )
     }
 }
 /*****************************************************************************
- * Seek: Got to i_date
+ * Seek: Go to i_date
 ******************************************************************************/
 static int Seek( demux_t *p_demux, mtime_t i_date )
 {
@@ -759,6 +774,9 @@ static int Seek( demux_t *p_demux, mtime_t i_date )
         MP4_TrackSeek( p_demux, tk, i_date );
     }
     MP4_UpdateSeekpoint( p_demux );
+
+    es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME, i_date );
+
     return VLC_SUCCESS;
 }
 
@@ -885,7 +903,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                     break;
 
                 case FOURCC_0xa9trk: /* Track */
-                    SET( vlc_meta_SetTracknum );
+                    SET( vlc_meta_SetTrackNum );
                     break;
 
                 case FOURCC_0xa9cmt: /* Commment */
@@ -1383,6 +1401,7 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
     MP4_Box_t   *p_sample;
     MP4_Box_t   *p_esds;
     MP4_Box_t   *p_box;
+    MP4_Box_t   *p_frma;
 
     if( pp_es )
         *pp_es = NULL;
@@ -1406,6 +1425,13 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
     }
 
     p_track->p_sample = p_sample;
+
+    if( ( p_frma = MP4_BoxGet( p_track->p_sample, "sinf/frma" ) ) )
+    {
+        msg_Warn( p_demux, "Original Format Box: %4.4s", (char *)&p_frma->data.p_frma->i_type );
+
+        p_sample->i_type = p_frma->data.p_frma->i_type;
+    }
 
     if( p_track->fmt.i_cat == AUDIO_ES && ( p_track->i_sample_size == 1 || p_track->i_sample_size == 2 ) )
     {
@@ -1460,6 +1486,70 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
         }
     }
 
+    /* */
+    switch( p_track->fmt.i_cat )
+    {
+    case VIDEO_ES:
+        p_track->fmt.video.i_width = p_sample->data.p_sample_vide->i_width;
+        p_track->fmt.video.i_height = p_sample->data.p_sample_vide->i_height;
+        p_track->fmt.video.i_bits_per_pixel =
+            p_sample->data.p_sample_vide->i_depth;
+
+        /* fall on display size */
+        if( p_track->fmt.video.i_width <= 0 )
+            p_track->fmt.video.i_width = p_track->i_width;
+        if( p_track->fmt.video.i_height <= 0 )
+            p_track->fmt.video.i_height = p_track->i_height;
+
+        /* Find out apect ratio from display size */
+        if( p_track->i_width > 0 && p_track->i_height > 0 &&
+            /* Work-around buggy muxed files */
+            p_sample->data.p_sample_vide->i_width != p_track->i_width )
+            p_track->fmt.video.i_aspect =
+                VOUT_ASPECT_FACTOR * p_track->i_width / p_track->i_height;
+
+        /* Support for cropping (eg. in H263 files) */
+        p_track->fmt.video.i_visible_width = p_track->fmt.video.i_width;
+        p_track->fmt.video.i_visible_height = p_track->fmt.video.i_height;
+
+        /* Frame rate */
+        p_track->fmt.video.i_frame_rate = p_track->i_timescale;
+        p_track->fmt.video.i_frame_rate_base = 1;
+
+        if( p_track->fmt.video.i_frame_rate &&
+            (p_box = MP4_BoxGet( p_track->p_stbl, "stts" )) &&
+            p_box->data.p_stts->i_entry_count >= 1 )
+        {
+            p_track->fmt.video.i_frame_rate_base =
+                p_box->data.p_stts->i_sample_delta[0];
+        }
+
+        break;
+
+    case AUDIO_ES:
+        p_track->fmt.audio.i_channels =
+            p_sample->data.p_sample_soun->i_channelcount;
+        p_track->fmt.audio.i_rate =
+            p_sample->data.p_sample_soun->i_sampleratehi;
+        p_track->fmt.i_bitrate = p_sample->data.p_sample_soun->i_channelcount *
+            p_sample->data.p_sample_soun->i_sampleratehi *
+                p_sample->data.p_sample_soun->i_samplesize;
+        p_track->fmt.audio.i_bitspersample =
+            p_sample->data.p_sample_soun->i_samplesize;
+
+        if( p_track->i_sample_size != 0 &&
+            p_sample->data.p_sample_soun->i_qt_version == 1 && p_sample->data.p_sample_soun->i_sample_per_packet <= 0 )
+        {
+            msg_Err( p_demux, "Invalid sample per packet value for qt_version 1" );
+            return VLC_EGENERIC;
+        }
+        break;
+
+    default:
+        break;
+    }
+
+
     /* It's a little ugly but .. there are special cases */
     switch( p_sample->i_type )
     {
@@ -1470,6 +1560,34 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
             p_track->fmt.i_codec = VLC_FOURCC( 'm', 'p', 'g', 'a' );
             if( p_track->i_sample_size > 1 )
                 p_soun->i_qt_version = 0;
+            break;
+        }
+        case( VLC_FOURCC( 'a', 'c', '-', '3' ) ):
+        {
+            MP4_Box_t *p_dac3_box = MP4_BoxGet(  p_sample, "dac3", 0 );
+
+            p_track->fmt.i_codec = VLC_FOURCC( 'a', '5', '2', ' ' );
+            if( p_dac3_box )
+            {
+                static const int pi_bitrate[] = {
+                     32,  40,  48,  56,
+                     64,  80,  96, 112,
+                    128, 160, 192, 224,
+                    256, 320, 384, 448,
+                    512, 576, 640,
+                };
+                MP4_Box_data_dac3_t *p_dac3 = p_dac3_box->data.p_dac3;
+                p_track->fmt.audio.i_channels = 0;
+                p_track->fmt.i_bitrate = 0;
+                if( p_dac3->i_bitrate_code < sizeof(pi_bitrate)/sizeof(*pi_bitrate) )
+                    p_track->fmt.i_bitrate = pi_bitrate[p_dac3->i_bitrate_code] * 1000;
+                p_track->fmt.audio.i_bitspersample = 0;
+            }
+            break;
+        }
+        case( VLC_FOURCC( 'e', 'c', '-', '3' ) ):
+        {
+            p_track->fmt.i_codec = VLC_FOURCC( 'e', 'a', 'c', '3' );
             break;
         }
 
@@ -1666,7 +1784,6 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
                 break;
             case VLC_FOURCC( 'Q', 'D', 'M', 'C' ):
             case VLC_FOURCC( 'Q', 'D', 'M', '2' ):
-            case VLC_FOURCC( 'Q', 'c', 'l', 'p' ):
             case VLC_FOURCC( 's', 'a', 'm', 'r' ):
             case VLC_FOURCC( 'a', 'l', 'a', 'c' ):
                 p_track->fmt.i_extra =
@@ -1704,6 +1821,7 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
 
             case VLC_FOURCC('m','s',0x00,0x02):
             case VLC_FOURCC('m','s',0x00,0x11):
+            case VLC_FOURCC('Q','c','l','p'):
                 p_track->fmt.audio.i_blockalign = p_sample->data.p_sample_soun->i_bytes_per_frame;
                 break;
 
@@ -1713,69 +1831,6 @@ static int TrackCreateES( demux_t *p_demux, mp4_track_t *p_track,
     }
 
 #undef p_decconfig
-
-    /* some last initialisation */
-    switch( p_track->fmt.i_cat )
-    {
-    case VIDEO_ES:
-        p_track->fmt.video.i_width = p_sample->data.p_sample_vide->i_width;
-        p_track->fmt.video.i_height = p_sample->data.p_sample_vide->i_height;
-        p_track->fmt.video.i_bits_per_pixel =
-            p_sample->data.p_sample_vide->i_depth;
-
-        /* fall on display size */
-        if( p_track->fmt.video.i_width <= 0 )
-            p_track->fmt.video.i_width = p_track->i_width;
-        if( p_track->fmt.video.i_height <= 0 )
-            p_track->fmt.video.i_height = p_track->i_height;
-
-        /* Find out apect ratio from display size */
-        if( p_track->i_width > 0 && p_track->i_height > 0 &&
-            /* Work-around buggy muxed files */
-            p_sample->data.p_sample_vide->i_width != p_track->i_width )
-            p_track->fmt.video.i_aspect =
-                VOUT_ASPECT_FACTOR * p_track->i_width / p_track->i_height;
-
-        /* Support for cropping (eg. in H263 files) */
-        p_track->fmt.video.i_visible_width = p_track->fmt.video.i_width;
-        p_track->fmt.video.i_visible_height = p_track->fmt.video.i_height;
-
-        /* Frame rate */
-        p_track->fmt.video.i_frame_rate = p_track->i_timescale;
-        p_track->fmt.video.i_frame_rate_base = 1;
-
-        if( p_track->fmt.video.i_frame_rate &&
-            (p_box = MP4_BoxGet( p_track->p_stbl, "stts" )) &&
-            p_box->data.p_stts->i_entry_count >= 1 )
-        {
-            p_track->fmt.video.i_frame_rate_base =
-                p_box->data.p_stts->i_sample_delta[0];
-        }
-
-        break;
-
-    case AUDIO_ES:
-        p_track->fmt.audio.i_channels =
-            p_sample->data.p_sample_soun->i_channelcount;
-        p_track->fmt.audio.i_rate =
-            p_sample->data.p_sample_soun->i_sampleratehi;
-        p_track->fmt.i_bitrate = p_sample->data.p_sample_soun->i_channelcount *
-            p_sample->data.p_sample_soun->i_sampleratehi *
-                p_sample->data.p_sample_soun->i_samplesize;
-        p_track->fmt.audio.i_bitspersample =
-            p_sample->data.p_sample_soun->i_samplesize;
-
-        if( p_track->i_sample_size != 0 &&
-            p_sample->data.p_sample_soun->i_qt_version == 1 && p_sample->data.p_sample_soun->i_sample_per_packet <= 0 )
-        {
-            msg_Err( p_demux, "Invalid sample per packet value for qt_version 1" );
-            return VLC_EGENERIC;
-        }
-        break;
-
-    default:
-        break;
-    }
 
     if( pp_es )
         *pp_es = es_out_Add( p_demux->out, &p_track->fmt );
@@ -1955,9 +2010,9 @@ static int TrackGotoChunkSample( demux_t *p_demux, mp4_track_t *p_track,
     bool b_reselect = false;
 
     /* now see if actual es is ok */
-    if( (p_track->i_chunk >= p_track->i_chunk_count - 1) ||
-        (p_track->chunk[p_track->i_chunk].i_sample_description_index !=
-            p_track->chunk[i_chunk].i_sample_description_index) )
+    if( p_track->i_chunk >= p_track->i_chunk_count ||
+        p_track->chunk[p_track->i_chunk].i_sample_description_index !=
+            p_track->chunk[i_chunk].i_sample_description_index )
     {
         msg_Warn( p_demux, "recreate ES for track[Id 0x%x]",
                   p_track->i_track_ID );
@@ -2098,6 +2153,7 @@ static void MP4_TrackCreate( demux_t *p_demux, mp4_track_t *p_track,
         case( FOURCC_text ):
         case( FOURCC_subp ):
         case( FOURCC_tx3g ):
+        case( FOURCC_sbtl ):
             p_track->fmt.i_cat = SPU_ES;
             break;
 
@@ -2141,6 +2197,17 @@ static void MP4_TrackCreate( demux_t *p_demux, mp4_track_t *p_track,
     p_track->b_drms = p_drms != NULL;
     p_track->p_drms = p_track->b_drms ?
         p_drms->data.p_sample_soun->p_drms : NULL;
+
+    if ( !p_drms )
+    {
+        p_drms = MP4_BoxGet( p_track->p_stsd, "drmi" );
+        p_track->b_drms = p_drms != NULL;
+        p_track->p_drms = p_track->b_drms ?
+            p_drms->data.p_sample_vide->p_drms : NULL;
+    }
+
+    if( p_drms )
+        p_track->p_skcr = MP4_BoxGet( p_drms, "sinf/skcr" );
 
     /* Set language */
     if( *language && strcmp( language, "```" ) && strcmp( language, "und" ) )
@@ -2321,14 +2388,8 @@ static int MP4_TrackSeek( demux_t *p_demux, mp4_track_t *p_track,
 
     p_track->b_selected = true;
 
-    if( TrackGotoChunkSample( p_demux, p_track, i_chunk, i_sample ) ==
-        VLC_SUCCESS )
-    {
+    if( !TrackGotoChunkSample( p_demux, p_track, i_chunk, i_sample ) )
         p_track->b_selected = true;
-
-        es_out_Control( p_demux->out, ES_OUT_SET_NEXT_DISPLAY_TIME,
-                        p_track->p_es, i_start );
-    }
 
     return p_track->b_selected ? VLC_SUCCESS : VLC_EGENERIC;
 }
@@ -2358,8 +2419,11 @@ static int MP4_TrackSampleSize( mp4_track_t *p_track )
 
     if( p_soun->i_qt_version == 1 )
     {
-        i_size = p_track->chunk[p_track->i_chunk].i_sample_count /
-            p_soun->i_sample_per_packet * p_soun->i_bytes_per_frame;
+        int i_samples = p_track->chunk[p_track->i_chunk].i_sample_count;
+        if( p_track->fmt.audio.i_blockalign > 1 )
+            i_samples = p_soun->i_sample_per_packet;
+
+        i_size = i_samples / p_soun->i_sample_per_packet * p_soun->i_bytes_per_frame;
     }
     else if( p_track->i_sample_size > 256 )
     {
@@ -2402,8 +2466,10 @@ static uint64_t MP4_TrackGetPos( mp4_track_t *p_track )
         }
         else
         {
-            /* we read chunk by chunk */
-            i_pos += 0;
+            /* we read chunk by chunk unless a blockalign is requested */
+            if( p_track->fmt.audio.i_blockalign > 1 )
+                i_pos += ( p_track->i_sample - p_track->chunk[p_track->i_chunk].i_sample_first ) /
+                                p_soun->i_sample_per_packet * p_soun->i_bytes_per_frame;
         }
     }
     else
@@ -2428,10 +2494,11 @@ static int MP4_TrackNextSample( demux_t *p_demux, mp4_track_t *p_track )
 
         if( p_soun->i_qt_version == 1 )
         {
-            /* chunk by chunk */
-            p_track->i_sample =
-                p_track->chunk[p_track->i_chunk].i_sample_first +
-                p_track->chunk[p_track->i_chunk].i_sample_count;
+            /* we read chunk by chunk unless a blockalign is requested */
+            if( p_track->fmt.audio.i_blockalign > 1 )
+                p_track->i_sample += p_soun->i_sample_per_packet;
+            else
+                p_track->i_sample += p_track->chunk[p_track->i_chunk].i_sample_count;
         }
         else if( p_track->i_sample_size > 256 )
         {

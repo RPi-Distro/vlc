@@ -2,7 +2,7 @@
  * wince.h: private WinCE interface descriptor
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: b472e10bffe0227087af6c15a0916524acf16eae $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Marodon Cedric <cedric_marodon@yahoo.fr>
@@ -40,6 +40,7 @@
 #endif
 
 #include "vlc_keys.h"
+#include <vlc_messages.h>
 
 #include <stdio.h>
 #include <string>
@@ -69,8 +70,7 @@ struct intf_sys_t
     int                 i_slider_oldpos;                /* previous position */
     bool          b_slider_free;                      /* slider status */
 
-    /* The messages window */
-    msg_subscription_t* p_sub;                  /* message bank subscription */
+
 
     /* Playlist management */
     int                 i_playing;                 /* playlist selected item */
@@ -86,6 +86,8 @@ struct intf_sys_t
     vector<MenuItemExt*> *p_settings_menu;
 
     VideoWindow          *p_video_window;
+
+    HANDLE   thread_ready;
 };
 
 /*****************************************************************************
@@ -212,20 +214,29 @@ protected:
     BOOL CreateTreeView( HWND );
 };
 
+struct msg_cb_data_t
+{
+    Messages *self;
+};
+
 /* Messages */
 class Messages : public CBaseWindow
 {
 public:
     /* Constructor */
     Messages( intf_thread_t *, CBaseWindow *, HINSTANCE );
-    virtual ~Messages(){};
+     ~Messages();
 
-    void UpdateLog(void);
+    static void sinkMessage (msg_cb_data_t *, msg_item_t *, unsigned);
+    void sinkMessage (msg_item_t *item, unsigned);
 
 protected:
 
     virtual LRESULT WndProc( HWND, UINT, WPARAM, LPARAM );
 
+    /* The messages window */
+    msg_subscription_t* sub;                  /* message bank subscription */
+    msg_cb_data_t *cb_data;
     HWND hListView;
     bool b_verbose;
 };
@@ -448,7 +459,7 @@ void RefreshAudioMenu( intf_thread_t *_p_intf, HMENU hMenu );
 void RefreshVideoMenu( intf_thread_t *_p_intf, HMENU hMenu );
 void RefreshNavigMenu( intf_thread_t *_p_intf, HMENU hMenu );
 void RefreshMenu( intf_thread_t *, vector<MenuItemExt*> *, HMENU, int,
-                  char **, int *, int );
+                  char **, vlc_object_t **, int );
 int wce_GetMenuItemCount( HMENU );
 void CreateMenuItem( intf_thread_t *, vector<MenuItemExt*> *, HMENU, char *,
                      vlc_object_t *, int * );
@@ -465,7 +476,7 @@ class MenuItemExt
 public:
     /* Constructor */
     MenuItemExt( intf_thread_t *_p_intf, int _id, char *_psz_var,
-                 int _i_object_id, vlc_value_t _val, int _i_val_type );
+                 vlc_object_t * p_object, vlc_value_t _val, int _i_val_type );
 
     virtual ~MenuItemExt();
 
@@ -475,7 +486,7 @@ public:
     intf_thread_t *p_intf;
     char *psz_var;
     int  i_val_type;
-    int  i_object_id;
+    vlc_object_t * p_object;
     vlc_value_t val;
 
 private:

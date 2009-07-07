@@ -2,7 +2,7 @@
  * ugly.c : ugly resampler (changes pitch)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 7d9053b044cce2daccd28b6f30a4bf4b113275a5 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -44,13 +44,13 @@ static void DoWork    ( aout_instance_t *, aout_filter_t *, aout_buffer_t *,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Audio filter for ugly resampling") );
-    set_capability( "audio filter", 2 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_MISC );
-    set_callbacks( Create, NULL );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("Audio filter for ugly resampling") )
+    set_capability( "audio filter", 2 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_MISC )
+    set_callbacks( Create, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Create: allocate ugly resampler
@@ -86,10 +86,7 @@ static int Create( vlc_object_t *p_this )
 static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
                     aout_buffer_t * p_in_buf, aout_buffer_t * p_out_buf )
 {
-    int32_t *p_in, *p_out = (int32_t*)p_out_buf->p_buffer;
-#ifndef HAVE_ALLOCA
-    int32_t *p_in_orig;
-#endif
+    int32_t *p_out = (int32_t*)p_out_buf->p_buffer;
 
     unsigned int i_nb_channels = aout_FormatNbChannels( &p_filter->input );
     unsigned int i_in_nb = p_in_buf->i_nb_samples;
@@ -104,15 +101,8 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
         return;
     }
 
-#ifdef HAVE_ALLOCA
-    p_in = (int32_t *)alloca( p_in_buf->i_nb_bytes );
-#else
-    p_in_orig = p_in = (int32_t *)malloc( p_in_buf->i_nb_bytes );
-#endif
-    if( p_in == NULL )
-    {
-        return;
-    }
+    int32_t p_in_orig[p_in_buf->i_nb_bytes / sizeof(int32_t)],
+           *p_in = p_in_orig;
 
     vlc_memcpy( p_in, p_in_buf->p_buffer, p_in_buf->i_nb_bytes );
 
@@ -138,9 +128,4 @@ static void DoWork( aout_instance_t * p_aout, aout_filter_t * p_filter,
     p_out_buf->start_date = p_in_buf->start_date;
     p_out_buf->end_date = p_out_buf->start_date + p_out_buf->i_nb_samples *
         1000000 / p_filter->output.i_rate;
-
-#ifndef HAVE_ALLOCA
-    free( p_in_orig );
-#endif
-
 }

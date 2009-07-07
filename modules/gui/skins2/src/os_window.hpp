@@ -2,7 +2,7 @@
  * os_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 439f206498163251212f2fbe19c6aa24be6a7d1a $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -55,6 +55,12 @@ class OSWindow: public SkinObject
 
         /// Toggle the window on top
         virtual void toggleOnTop( bool onTop ) const = 0;
+
+        /// getter for handler
+        virtual void* getOSHandle( ) const = 0;
+
+        /// reparent the window
+        virtual void reparent( void* OSHandle, int x, int y, int w, int h ) = 0;
 
     protected:
         OSWindow( intf_thread_t *pIntf ): SkinObject( pIntf ) {}

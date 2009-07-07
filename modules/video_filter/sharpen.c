@@ -2,7 +2,7 @@
  * sharpen.c: Sharpen video filter
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: c95e69b83567cb29d3d216ffb002711aafbd813a $
+ * $Id: 135f21b49ceff5558de68c10a849d636c5f49dac $
  *
  * Author: Jérémy DEMEULE <dj_mulder at djduron dot no-ip dot org>
  *         Jean-Baptiste Kempf <jb at videolan dot org>
@@ -62,17 +62,17 @@ static int SharpenCallback( vlc_object_t *, char const *,
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("Augment contrast between contours.") );
-    set_shortname( N_("Sharpen video filter") );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_capability( "video filter2", 0 );
+vlc_module_begin ()
+    set_description( N_("Augment contrast between contours.") )
+    set_shortname( N_("Sharpen video filter") )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_capability( "video filter2", 0 )
     add_float_with_range( "sharpen-sigma", 0.05, 0.0, 2.0, NULL,
-        SIG_TEXT, SIG_LONGTEXT, false );
-    add_shortcut( "sharpen" );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+        SIG_TEXT, SIG_LONGTEXT, false )
+    add_shortcut( "sharpen" )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "sigma", NULL
@@ -87,7 +87,7 @@ static const char *const ppsz_filter_options[] = {
 
 struct filter_sys_t
 {
-    float f_sigma;
+    vlc_mutex_t lock;
     int tab_precalc[512];
 };
 
@@ -99,10 +99,8 @@ inline static int32_t clip( int32_t a )
     return (a > 255) ? 255 : (a < 0) ? 0 : a;
 }
 
-static void init_precalc_table(filter_sys_t *p_filter)
+static void init_precalc_table(filter_sys_t *p_filter, float sigma)
 {
-    float sigma = p_filter->f_sigma;
-
     for(int i = 0; i < 512; ++i)
     {
         p_filter->tab_precalc[i] = (i - 256) * sigma;
@@ -128,12 +126,12 @@ static int Create( vlc_object_t *p_this )
     config_ChainParse( p_filter, FILTER_PREFIX, ppsz_filter_options,
                    p_filter->p_cfg );
 
-    p_filter->p_sys->f_sigma =
-        var_CreateGetFloatCommand( p_filter, FILTER_PREFIX "sigma" );
+    float sigma = var_CreateGetFloatCommand( p_filter, FILTER_PREFIX "sigma" );
+    init_precalc_table(p_filter->p_sys, sigma);
+
+    vlc_mutex_init( &p_filter->p_sys->lock );
     var_AddCallback( p_filter, FILTER_PREFIX "sigma",
                      SharpenCallback, p_filter->p_sys );
-
-    init_precalc_table(p_filter->p_sys);
 
     return VLC_SUCCESS;
 }
@@ -147,7 +145,11 @@ static int Create( vlc_object_t *p_this )
 static void Destroy( vlc_object_t *p_this )
 {
     filter_t *p_filter = (filter_t *)p_this;
-    free( p_filter->p_sys );
+    filter_sys_t *p_sys = p_filter->p_sys;
+
+    var_DelCallback( p_filter, FILTER_PREFIX "sigma", SharpenCallback, p_sys );
+    vlc_mutex_destroy( &p_sys->lock );
+    free( p_sys );
 }
 
 /*****************************************************************************
@@ -169,8 +171,6 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     const int v2 = 3; /* 2^3 = 8 */
 
     if( !p_pic ) return NULL;
-    if( !p_filter ) return NULL;
-    if( !p_filter->p_sys ) return NULL;
 
     p_outpic = filter_NewPicture( p_filter );
     if( !p_outpic )
@@ -182,16 +182,10 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
     /* process the Y plane */
     p_src = p_pic->p[Y_PLANE].p_pixels;
     p_out = p_outpic->p[Y_PLANE].p_pixels;
-    if( !p_src || !p_out )
-    {
-        msg_Warn( p_filter, "can't get Y plane" );
-        picture_Release( p_pic );
-        return NULL;
-    }
-
     i_src_pitch = p_pic->p[Y_PLANE].i_visible_pitch;
 
     /* perform convolution only on Y plane. Avoid border line. */
+    vlc_mutex_lock( &p_filter->p_sys->lock );
     for( i = 0; i < p_pic->p[Y_PLANE].i_visible_lines; i++ )
     {
         if( (i == 0) || (i == p_pic->p[Y_PLANE].i_visible_lines - 1) )
@@ -218,12 +212,12 @@ static picture_t *Filter( filter_t *p_filter, picture_t *p_pic )
                   (p_src[(i + 1) * i_src_pitch + j    ] * v1) +
                   (p_src[(i + 1) * i_src_pitch + j + 1] * v1);
 
-        pix = pix >= 0 ? clip(pix) : -clip(pix * -1);
-        p_out[i * i_src_pitch + j] = clip( p_src[i * i_src_pitch + j] +
-            p_filter->p_sys->tab_precalc[pix + 256] );
+           pix = pix >= 0 ? clip(pix) : -clip(pix * -1);
+           p_out[i * i_src_pitch + j] = clip( p_src[i * i_src_pitch + j] +
+               p_filter->p_sys->tab_precalc[pix + 256] );
         }
     }
-
+    vlc_mutex_unlock( &p_filter->p_sys->lock );
 
     vlc_memcpy( p_outpic->p[U_PLANE].p_pixels, p_pic->p[U_PLANE].p_pixels,
                 p_outpic->p[U_PLANE].i_lines * p_outpic->p[U_PLANE].i_pitch );
@@ -239,10 +233,11 @@ static int SharpenCallback( vlc_object_t *p_this, char const *psz_var,
                             vlc_value_t oldval, vlc_value_t newval,
                             void *p_data )
 {
-    VLC_UNUSED(p_this); VLC_UNUSED(oldval);
+    VLC_UNUSED(p_this); VLC_UNUSED(oldval); VLC_UNUSED(psz_var);
     filter_sys_t *p_sys = (filter_sys_t *)p_data;
-    if( !strcmp( psz_var, FILTER_PREFIX "sigma" ) )
-        p_sys->f_sigma = __MIN( 2., __MAX( 0., newval.f_float ) );
-    init_precalc_table(p_sys);
+
+    vlc_mutex_lock( &p_sys->lock );
+    init_precalc_table(p_sys,  __MIN( 2., __MAX( 0., newval.f_float ) ));
+    vlc_mutex_unlock( &p_sys->lock );
     return VLC_SUCCESS;
 }

@@ -2,7 +2,7 @@
  * about.m: MacOS X About Panel
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 9ad77b9ad77fa0bc757d5897dd103669ef3841d6 $
+ * $Id$
  *
  * Authors: Derk-Jan Hartman <thedj@users.sourceforge.net>
  *          Felix Paul Kühne <fkuehne -at- videolan.org>
@@ -31,11 +31,11 @@
 #import <vlc_about.h>
 
 #ifdef __x86_64__
-#define PLATFORM "Intel"
+#define PLATFORM "Intel 64bit"
 #elif __i386__
-#define PLATFORM "Intel"
+#define PLATFORM "Intel 32bit"
 #else
-#define PLATFORM "PowerPC"
+#define PLATFORM "PowerPC 32bit"
 #endif
 
 /*****************************************************************************
@@ -86,13 +86,8 @@ static VLAboutBox *_o_sharedInstance = nil;
         [o_about_window setTitle: _NS("About VLC media player")];
 
         /* setup the creator / revision field */
-        if( VLC_Changeset() != "exported" )
-            [o_revision_field setStringValue:
-                [NSString stringWithFormat: _NS("Compiled by %s, based on Git commit %s"),
-                    VLC_CompileBy(), VLC_Changeset()]];
-        else
-            [o_revision_field setStringValue: 
-                [NSString stringWithFormat: _NS("Compiled by %s"), VLC_CompileBy()]];
+        [o_revision_field setStringValue: 
+            [NSString stringWithFormat: _NS("Compiled by %s"), VLC_CompileBy()]];
  
         /* Setup the nameversion field */
         [o_name_version_field setStringValue: [NSString stringWithFormat:@"Version %s (%s)", VLC_Version(), PLATFORM]];

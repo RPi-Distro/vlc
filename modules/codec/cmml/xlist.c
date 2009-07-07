@@ -5,7 +5,7 @@
  *                         Organisation (CSIRO) Australia
  * Copyright (C) 2000-2004 the VideoLAN team
  *
- * $Id: ab5b67ad4fd8a037ce4a05f441416f948a304897 $
+ * $Id$
  *
  * Authors: Conrad Parker <Conrad.Parker@csiro.au>
  *          Andre Pang <Andre.Pang@csiro.au>
@@ -116,7 +116,7 @@ xlist_append (XList * list, void * data)
   if (list == NULL) return l;
 
   last = xlist_tail (list);
-  if (last) last->next = l;
+  last->next = l;
   l->prev = last;
   return list;
 }

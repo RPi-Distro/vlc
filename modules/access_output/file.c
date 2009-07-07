@@ -2,7 +2,7 @@
  * file.c
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id: 9abce9b8848255546f0d77b7674f7640bf19aa3e $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -65,18 +65,18 @@ static void Close( vlc_object_t * );
 #define APPEND_LONGTEXT N_( "Append to file if it exists instead " \
                             "of replacing it.")
 
-vlc_module_begin();
-    set_description( N_("File stream output") );
-    set_shortname( N_("File" ));
-    set_capability( "sout access", 50 );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_ACO );
-    add_shortcut( "file" );
-    add_shortcut( "stream" );
+vlc_module_begin ()
+    set_description( N_("File stream output") )
+    set_shortname( N_("File" ))
+    set_capability( "sout access", 50 )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_ACO )
+    add_shortcut( "file" )
+    add_shortcut( "stream" )
     add_bool( SOUT_CFG_PREFIX "append", 0, NULL, APPEND_TEXT,APPEND_LONGTEXT,
-              true );
-    set_callbacks( Open, Close );
-vlc_module_end();
+              true )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -89,6 +89,7 @@ static const char *const ppsz_sout_options[] = {
 static ssize_t Write( sout_access_out_t *, block_t * );
 static int Seek ( sout_access_out_t *, off_t  );
 static ssize_t Read ( sout_access_out_t *, block_t * );
+static int Control( sout_access_out_t *, int, va_list );
 
 struct sout_access_out_sys_t
 {
@@ -115,11 +116,16 @@ static int Open( vlc_object_t *p_this )
 
     if( !strcmp( p_access->psz_path, "-" ) )
     {
+#ifndef UNDER_CE
 #ifdef WIN32
         setmode (fileno (stdout), O_BINARY);
 #endif
         fd = dup (fileno (stdout));
         msg_Dbg( p_access, "using stdout" );
+#else
+#warning stdout is not supported on Windows Mobile, but may be used on Windows CE
+        fd = -1;
+#endif
     }
     else
     {
@@ -140,15 +146,12 @@ static int Open( vlc_object_t *p_this )
     p_access->pf_write = Write;
     p_access->pf_read  = Read;
     p_access->pf_seek  = Seek;
+    p_access->pf_control = Control;
     p_access->p_sys    = (void *)(intptr_t)fd;
 
     msg_Dbg( p_access, "file access output opened (%s)", p_access->psz_path );
     if (append)
         lseek (fd, 0, SEEK_END);
-
-    /* Update pace control flag */
-    if( p_access->psz_access && !strcmp( p_access->psz_access, "stream" ) )
-        p_access->p_sout->i_out_pace_nocontrol++;
 
     return VLC_SUCCESS;
 }
@@ -162,11 +165,24 @@ static void Close( vlc_object_t * p_this )
 
     close( (intptr_t)p_access->p_sys );
 
-    /* Update pace control flag */
-    if( p_access->psz_access && !strcmp( p_access->psz_access, "stream" ) )
-        p_access->p_sout->i_out_pace_nocontrol--;
-
     msg_Dbg( p_access, "file access output closed" );
+}
+
+static int Control( sout_access_out_t *p_access, int i_query, va_list args )
+{
+    switch( i_query )
+    {
+        case ACCESS_OUT_CONTROLS_PACE:
+        {
+            bool *pb = va_arg( args, bool * );
+            *pb = strcmp( p_access->psz_access, "stream" );
+            break;
+        }
+
+        default:
+            return VLC_EGENERIC;
+    }
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************

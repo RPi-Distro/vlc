@@ -2,7 +2,7 @@
  * audio_video.c: Audio/Video management : volume, snapshot, OSD
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: e139553c4168bfc51afbf1a56418f1e6258799d1 $
+ * $Id$
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *
@@ -32,6 +32,7 @@
 
 #include <vlc_vout.h>
 #include <vlc_osd.h>
+#include <vlc_block.h>
 
 #include <stdlib.h>                                      /* malloc(), free() */
 #include <string.h>
@@ -56,12 +57,9 @@ mediacontrol_snapshot( mediacontrol_Instance *self,
                        mediacontrol_Exception *exception )
 {
     (void)a_position;
-    vlc_object_t* p_cache;
     vout_thread_t* p_vout;
     input_thread_t *p_input;
-    mediacontrol_RGBPicture *p_pic = NULL;
-    char path[256];
-    snapshot_t *p_snapshot;
+    mediacontrol_RGBPicture *p_pic;
     libvlc_exception_t ex;
 
     libvlc_exception_init( &ex );
@@ -72,98 +70,56 @@ mediacontrol_snapshot( mediacontrol_Instance *self,
     {
         RAISE_NULL( mediacontrol_InternalException, "No input" );
     }
-    p_vout = vlc_object_find( p_input, VLC_OBJECT_VOUT, FIND_CHILD );
+
+    p_vout = input_GetVout( p_input );
+    vlc_object_release( p_input );
     if( ! p_vout )
     {
         RAISE_NULL( mediacontrol_InternalException, "No video output" );
     }
-    p_cache = vlc_object_create( p_input, sizeof( vlc_object_t ) );
-    if( p_cache == NULL )
+
+    block_t *p_image;
+    video_format_t fmt;
+
+    if( vout_GetSnapshot( p_vout, &p_image, NULL, &fmt, "png", 500*1000 ) )
     {
-        vlc_object_release( p_vout );
-        vlc_object_release( p_input );
-        RAISE_NULL( mediacontrol_InternalException, "Out of memory" );
+        RAISE_NULL( mediacontrol_InternalException, "Snapshot exception" );
+        return NULL;
     }
-    snprintf( path, 255, "object:%d", p_cache->i_object_id );
-    var_SetString( p_vout, "snapshot-path", path );
-    var_SetString( p_vout, "snapshot-format", "png" );
 
-    vlc_object_lock( p_cache );
-    vout_Control( p_vout, VOUT_SNAPSHOT );
-    vlc_object_wait( p_cache );
-    vlc_object_release( p_vout );
-
-    p_snapshot = ( snapshot_t* ) p_cache->p_private;
-    vlc_object_unlock( p_cache );
-    vlc_object_release( p_cache );
-    vlc_object_release( p_input );
-
-    if( p_snapshot )
+    /* */
+    char *p_data = malloc( p_image->i_buffer );
+    if( p_data )
     {
-        p_pic = private_mediacontrol_createRGBPicture( p_snapshot->i_width,
-                               p_snapshot->i_height,
-                               VLC_FOURCC( 'p','n','g',' ' ),
-                               p_snapshot->date,
-                               p_snapshot->p_data,
-                               p_snapshot->i_datasize );
-        if( !p_pic )
-        {
-            free( p_snapshot->p_data );
-            free( p_snapshot );
-            RAISE_NULL( mediacontrol_InternalException, "Out of memory" );
-        }
+        memcpy( p_data, p_image->p_buffer, p_image->i_buffer );
+        p_pic = private_mediacontrol_createRGBPicture( fmt.i_width,
+                                                       fmt.i_height,
+                                                       fmt.i_chroma,
+                                                       p_image->i_pts,
+                                                       p_data,
+                                                       p_image->i_buffer );
     }
     else
     {
-        RAISE_NULL( mediacontrol_InternalException, "Snapshot exception" );
+        p_pic = NULL;
     }
+    block_Release( p_image );
+
+    if( !p_pic )
+        RAISE_NULL( mediacontrol_InternalException, "Out of memory" );
     return p_pic;
 }
 
 static
 int mediacontrol_showtext( vout_thread_t *p_vout, int i_channel,
-                           char *psz_string, text_style_t *p_style,
+                           const char *psz_string, text_style_t *p_style,
                            int i_flags, int i_hmargin, int i_vmargin,
                            mtime_t i_start, mtime_t i_stop )
 {
-    subpicture_t *p_spu;
-    video_format_t fmt;
-
-    if( !psz_string ) return VLC_EGENERIC;
-
-    p_spu = spu_CreateSubpicture( p_vout->p_spu );
-    if( !p_spu ) return VLC_EGENERIC;
-
-    /* Create a new subpicture region */
-    memset( &fmt, 0, sizeof(video_format_t) );
-    fmt.i_chroma = VLC_FOURCC('T','E','X','T');
-    fmt.i_aspect = 0;
-    fmt.i_width = fmt.i_height = 0;
-    fmt.i_x_offset = fmt.i_y_offset = 0;
-    p_spu->p_region = p_spu->pf_create_region( VLC_OBJECT(p_vout), &fmt );
-    if( !p_spu->p_region )
-    {
-        msg_Err( p_vout, "cannot allocate SPU region" );
-        spu_DestroySubpicture( p_vout->p_spu, p_spu );
-        return VLC_EGENERIC;
-    }
-
-    p_spu->p_region->psz_text = strdup( psz_string );
-    p_spu->p_region->i_align = i_flags & SUBPICTURE_ALIGN_MASK;
-    p_spu->p_region->p_style = p_style;
-    p_spu->i_start = i_start;
-    p_spu->i_stop = i_stop;
-    p_spu->b_ephemer = false;
-    p_spu->b_absolute = false;
-
-    p_spu->i_x = i_hmargin;
-    p_spu->i_y = i_vmargin;
-    p_spu->i_flags = i_flags & ~SUBPICTURE_ALIGN_MASK;
-    p_spu->i_channel = i_channel;
-
-    spu_DisplaySubpicture( p_vout->p_spu, p_spu );
-
-    return VLC_SUCCESS;
+    return osd_ShowTextAbsolute( p_vout->p_spu, i_channel,
+                                 psz_string, p_style,
+                                 i_flags, i_hmargin, i_vmargin,
+                                 i_start, i_stop );
 }
 
 
@@ -175,28 +131,26 @@ mediacontrol_display_text( mediacontrol_Instance *self,
                            mediacontrol_Exception *exception )
 {
     vout_thread_t *p_vout = NULL;
-    char* psz_message;
     input_thread_t *p_input;
     libvlc_exception_t ex;
 
     libvlc_exception_init( &ex );
     mediacontrol_exception_init( exception );
 
+    if( !message )
+    {
+        RAISE_VOID( mediacontrol_InternalException, "Empty text" );
+    }
+
     p_input = libvlc_get_input_thread( self->p_media_player, &ex );
     if( ! p_input )
     {
         RAISE_VOID( mediacontrol_InternalException, "No input" );
     }
-    p_vout = vlc_object_find( p_input, VLC_OBJECT_VOUT, FIND_CHILD );
+    p_vout = input_GetVout( p_input );
     if( ! p_vout )
     {
         RAISE_VOID( mediacontrol_InternalException, "No video output" );
-    }
-
-    psz_message = strdup( message );
-    if( !psz_message )
-    {
-        RAISE_VOID( mediacontrol_InternalException, "no more memory" );
     }
 
     if( begin->origin == mediacontrol_RelativePosition &&
@@ -212,7 +166,7 @@ mediacontrol_display_text( mediacontrol_Instance *self,
                                                               mediacontrol_MediaTime,
                                                               end->value );
 
-        mediacontrol_showtext( p_vout, DEFAULT_CHAN, psz_message, NULL,
+        mediacontrol_showtext( p_vout, DEFAULT_CHAN, message, NULL,
                                OSD_ALIGN_BOTTOM | OSD_ALIGN_LEFT, 0, 0,
                                i_now, i_now + i_duration );
     }
@@ -232,7 +186,7 @@ mediacontrol_display_text( mediacontrol_Instance *self,
                                           ( mediacontrol_Position * ) end );
         i_fin += i_now;
 
-        vout_ShowTextAbsolute( p_vout, DEFAULT_CHAN, psz_message, NULL,
+        vout_ShowTextAbsolute( p_vout, DEFAULT_CHAN, message, NULL,
                                OSD_ALIGN_BOTTOM | OSD_ALIGN_LEFT, 0, 0,
                                i_debut, i_fin );
     }

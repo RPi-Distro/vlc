@@ -2,7 +2,7 @@
  * info.h : CD digital audio input information routine headers
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 0da55e72c4234d8a4118ed175c24ba6d6a3b9e78 $
+ * $Id$
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *
@@ -33,14 +33,6 @@ int      CDDAFixupPlaylist( access_t *p_access, cdda_data_t *p_cdda,
  saved here.
  */
 void     CDDAMetaInfo( access_t *p_access, track_t i_track );
-
-/*
- Saves Meta Information about the CD-DA.
-
- Saves information that CDDAMetaInfo uses. Should be called before
- CDDAMetaInfo is called.
- */
-void     CDDAMetaInfoInit( access_t *p_access );
 
 char *CDDAFormatTitle( const access_t *p_access, track_t i_track );
 

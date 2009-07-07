@@ -2,7 +2,7 @@
  * rtp.h: rtp stream output module header
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 8788dc8d07c0a7266f2fdc54d80cab23e7d1998d $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont
@@ -58,6 +58,10 @@ int rtp_packetize_h264 (sout_stream_id_t *, block_t *);
 int rtp_packetize_amr  (sout_stream_id_t *, block_t *);
 int rtp_packetize_spx  (sout_stream_id_t *, block_t *);
 int rtp_packetize_t140 (sout_stream_id_t *, block_t *);
+int rtp_packetize_g726_16 (sout_stream_id_t *, block_t *);
+int rtp_packetize_g726_24 (sout_stream_id_t *, block_t *);
+int rtp_packetize_g726_32 (sout_stream_id_t *, block_t *);
+int rtp_packetize_g726_40 (sout_stream_id_t *, block_t *);
 
 /* RTCP */
 typedef struct rtcp_sender_t rtcp_sender_t;

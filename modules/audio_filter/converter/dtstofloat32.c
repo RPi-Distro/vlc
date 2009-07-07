@@ -4,7 +4,7 @@
  *   (http://developers.videolan.org/libdca.html).
  *****************************************************************************
  * Copyright (C) 2001, 2002libdca the VideoLAN team
- * $Id: 4041cb7cff8dfee93dbebf2417e0487b1a2a022a $
+ * $Id$
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *
@@ -88,20 +88,20 @@ struct filter_sys_t
     "compression the playback will be more adapted to a movie theater or a " \
     "listening room.")
 
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
-    set_shortname( "DCA" );
-    set_description( N_("DTS Coherent Acoustics audio decoder") );
-    add_bool( "dts-dynrng", 1, NULL, DYNRNG_TEXT, DYNRNG_LONGTEXT, false );
-    set_capability( "audio filter", 100 );
-    set_callbacks( Create, Destroy );
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
+    set_shortname( "DCA" )
+    set_description( N_("DTS Coherent Acoustics audio decoder") )
+    add_bool( "dts-dynrng", 1, NULL, DYNRNG_TEXT, DYNRNG_LONGTEXT, false )
+    set_capability( "audio filter", 100 )
+    set_callbacks( Create, Destroy )
 
-    add_submodule();
-    set_description( N_("DTS Coherent Acoustics audio decoder") );
-    set_capability( "audio filter2", 100 );
-    set_callbacks( OpenFilter, CloseFilter );
-vlc_module_end();
+    add_submodule ()
+    set_description( N_("DTS Coherent Acoustics audio decoder") )
+    set_capability( "audio filter2", 100 )
+    set_callbacks( OpenFilter, CloseFilter )
+vlc_module_end ()
 
 /*****************************************************************************
  * Create:

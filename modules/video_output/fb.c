@@ -1,8 +1,8 @@
 /*****************************************************************************
  * fb.c : framebuffer plugin for vlc
  *****************************************************************************
- * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 95ea2fe1a317b5df5284080e885488a52eb07b65 $
+ * Copyright (C) 2000-2009 the VideoLAN team
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Jean-Paul Saman
@@ -46,6 +46,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_vout.h>
+#include <vlc_interface.h>
 
 /*****************************************************************************
  * Local prototypes
@@ -103,25 +104,25 @@ static void GfxMode        ( int i_tty );
     "in hardware then you must disable this option. It then does double buffering " \
     "in software." )
 
-vlc_module_begin();
-    set_shortname( "Framebuffer" );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VOUT );
+vlc_module_begin ()
+    set_shortname( "Framebuffer" )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VOUT )
     add_file( FB_DEV_VAR, "/dev/fb0", NULL, DEVICE_TEXT, DEVICE_LONGTEXT,
-              false );
-    add_bool( "fb-tty", 1, NULL, TTY_TEXT, TTY_LONGTEXT, true );
+              false )
+    add_bool( "fb-tty", 1, NULL, TTY_TEXT, TTY_LONGTEXT, true )
     add_string( "fb-chroma", NULL, NULL, CHROMA_TEXT, CHROMA_LONGTEXT,
-                true );
+                true )
     add_string( "fb-aspect-ratio", NULL, NULL, ASPECT_RATIO_TEXT,
-                ASPECT_RATIO_LONGTEXT, true );
+                ASPECT_RATIO_LONGTEXT, true )
     add_integer( "fb-mode", 4, NULL, FB_MODE_TEXT, FB_MODE_LONGTEXT,
-                 true );
+                 true )
     add_bool( "fb-hw-accel", true, NULL, HW_ACCEL_TEXT, HW_ACCEL_LONGTEXT,
-              true );
-    set_description( N_("GNU/Linux console framebuffer video output") );
-    set_capability( "video output", 30 );
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+              true )
+    set_description( N_("GNU/Linux framebuffer video output") )
+    set_capability( "video output", 30 )
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 /*****************************************************************************
  * vout_sys_t: video output framebuffer method descriptor
@@ -185,10 +186,11 @@ static int Create( vlc_object_t *p_this )
     struct termios      new_termios;
 
     /* Allocate instance and initialize some members */
-    p_vout->p_sys = p_sys = malloc( sizeof( vout_sys_t ) );
+    p_vout->p_sys = p_sys = calloc( 1, sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
         return VLC_ENOMEM;
-    memset( p_sys, 0, sizeof(vout_sys_t) );
+
+    p_sys->p_video = MAP_FAILED;
 
     p_vout->pf_init = Init;
     p_vout->pf_end = End;
@@ -209,6 +211,7 @@ static int Create( vlc_object_t *p_this )
     if( p_sys->b_tty && !isatty( 0 ) )
     {
         msg_Warn( p_vout, "fd 0 is not a TTY" );
+        free( p_sys );
         return VLC_EGENERIC;
     }
     else
@@ -236,7 +239,6 @@ static int Create( vlc_object_t *p_this )
                       psz_chroma );
         }
         free( psz_chroma );
-        psz_chroma = NULL;
     }
 
     p_sys->i_aspect = -1;
@@ -255,7 +257,6 @@ static int Create( vlc_object_t *p_this )
                   atoi( psz_aspect ), atoi( psz_parser ) );
 
         free( psz_aspect );
-        psz_aspect = NULL;
     }
 
     p_sys->b_auto = false;
@@ -281,7 +282,6 @@ static int Create( vlc_object_t *p_this )
         case 4:
         default:
             p_sys->b_auto = true;
-            break;
      }
 
     /* tty handling */
@@ -360,15 +360,7 @@ static int Create( vlc_object_t *p_this )
 
     if( OpenDisplay( p_vout ) )
     {
-        if( p_sys->b_tty )
-        {
-            ioctl( p_sys->i_tty, VT_SETMODE, &p_vout->p_sys->vt_mode );
-            sigaction( SIGUSR1, &p_vout->p_sys->sig_usr1, NULL );
-            sigaction( SIGUSR2, &p_vout->p_sys->sig_usr2, NULL );
-            tcsetattr(0, 0, &p_vout->p_sys->old_termios);
-            TextMode( p_sys->i_tty );
-        }
-        free( p_vout->p_sys );
+        Destroy( VLC_OBJECT(p_vout) );
         return VLC_EGENERIC;
     }
 
@@ -466,6 +458,7 @@ static int NewPicture( vout_thread_t *p_vout, picture_t *p_pic )
  *****************************************************************************/
 static void FreePicture( vout_thread_t *p_vout, picture_t *p_pic )
 {
+    VLC_UNUSED(p_vout);
     free( p_pic->p_sys->p_data );
     free( p_pic->p_sys );
     p_pic->p_sys = NULL;
@@ -557,7 +550,7 @@ static int Init( vout_thread_t *p_vout )
             /* Find an empty picture slot */
             for( i_index = 0 ; i_index < VOUT_MAX_PICTURES ; i_index++ )
             {
-            if( p_vout->p_picture[ i_index ].i_status == FREE_PICTURE )
+                if( p_vout->p_picture[ i_index ].i_status == FREE_PICTURE )
                 {
                     p_pic = p_vout->p_picture + i_index;
                     break;
@@ -657,11 +650,8 @@ static void End( vout_thread_t *p_vout )
  *****************************************************************************/
 static int Control( vout_thread_t *p_vout, int i_query, va_list args )
 {
-    switch( i_query )
-    {
-       default:
-            return vout_vaControlDefault( p_vout, i_query, args );
-    }
+    (void) p_vout; (void) i_query; (void) args;
+    return VLC_EGENERIC;
 }
 
 /*****************************************************************************
@@ -680,7 +670,7 @@ static int Manage( vout_thread_t *p_vout )
         switch( buf )
         {
         case 'q':
-            vlc_object_kill( p_vout->p_libvlc );
+            libvlc_Quit( p_vout->p_libvlc );
             break;
 
         default:
@@ -790,7 +780,6 @@ static int OpenDisplay( vout_thread_t *p_vout )
         return VLC_EGENERIC;
     }
     free( psz_device );
-    psz_device = NULL;
 
     /* Get framebuffer device information */
     if( ioctl( p_sys->i_fd, FBIOGET_VSCREENINFO, &p_sys->var_info ) )
@@ -918,11 +907,11 @@ static int OpenDisplay( vout_thread_t *p_vout )
                          p_sys->i_bytes_per_pixel;
 
     /* Map a framebuffer at the beginning */
-    p_sys->p_video = mmap( 0, p_sys->i_page_size,
+    p_sys->p_video = mmap( NULL, p_sys->i_page_size,
                               PROT_READ | PROT_WRITE, MAP_SHARED,
                               p_sys->i_fd, 0 );
 
-    if( p_sys->p_video == ((void*)-1) )
+    if( p_sys->p_video == MAP_FAILED )
     {
         msg_Err( p_vout, "cannot map video memory (%m)" );
 
@@ -950,24 +939,31 @@ static int OpenDisplay( vout_thread_t *p_vout )
  *****************************************************************************/
 static void CloseDisplay( vout_thread_t *p_vout )
 {
-    /* Clear display */
-    memset( p_vout->p_sys->p_video, 0, p_vout->p_sys->i_page_size );
-
-    /* Restore palette */
-    if( p_vout->p_sys->var_info.bits_per_pixel == 8 )
+    if( p_vout->p_sys->p_video != MAP_FAILED )
     {
-        ioctl( p_vout->p_sys->i_fd,
-               FBIOPUTCMAP, &p_vout->p_sys->fb_cmap );
-        free( p_vout->p_sys->p_palette );
-        p_vout->p_sys->p_palette = NULL;
+        /* Clear display */
+        memset( p_vout->p_sys->p_video, 0, p_vout->p_sys->i_page_size );
+        munmap( p_vout->p_sys->p_video, p_vout->p_sys->i_page_size );
     }
 
-    /* Restore fb config */
-    ioctl( p_vout->p_sys->i_fd,
-           FBIOPUT_VSCREENINFO, &p_vout->p_sys->old_info );
+    if( p_vout->p_sys->i_fd >= 0 )
+    {
+        /* Restore palette */
+        if( p_vout->p_sys->var_info.bits_per_pixel == 8 )
+        {
+            ioctl( p_vout->p_sys->i_fd,
+                   FBIOPUTCMAP, &p_vout->p_sys->fb_cmap );
+            free( p_vout->p_sys->p_palette );
+            p_vout->p_sys->p_palette = NULL;
+        }
 
-    /* Close fb */
-    close( p_vout->p_sys->i_fd );
+        /* Restore fb config */
+        ioctl( p_vout->p_sys->i_fd,
+               FBIOPUT_VSCREENINFO, &p_vout->p_sys->old_info );
+
+        /* Close fb */
+        close( p_vout->p_sys->i_fd );
+    }
 }
 
 /*****************************************************************************
@@ -978,6 +974,7 @@ static void CloseDisplay( vout_thread_t *p_vout )
  *****************************************************************************/
 static void SwitchDisplay( int i_signal )
 {
+    VLC_UNUSED( i_signal );
 #if 0
     vout_thread_t *p_vout;
 

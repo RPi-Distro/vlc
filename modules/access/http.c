@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 66e32ffac17e8cd717aca74bfc2aa4c929809bf4 $
+ * $Id: d6cb6334a8c2048fd85a47ddfc4a058608b669f0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -37,7 +37,7 @@
 
 #include <vlc_access.h>
 
-#include <vlc_interface.h>
+#include <vlc_dialog.h>
 #include <vlc_meta.h>
 #include <vlc_network.h>
 #include <vlc_url.h>
@@ -53,8 +53,8 @@
 
 #include <assert.h>
 
-#ifdef HAVE_PROXY_H
-#    include "proxy.h"
+#ifdef HAVE_LIBPROXY
+#    include <proxy.h>
 #endif
 /*****************************************************************************
  * Module descriptor
@@ -93,37 +93,40 @@ static void Close( vlc_object_t * );
     "types of HTTP streams." )
 
 #define FORWARD_COOKIES_TEXT N_("Forward Cookies")
-#define FORWARD_COOKIES_LONGTEXT N_("Forward Cookies Across http redirections ")
+#define FORWARD_COOKIES_LONGTEXT N_("Forward Cookies across http redirections ")
 
-vlc_module_begin();
-    set_description( N_("HTTP input") );
-    set_capability( "access", 0 );
-    set_shortname( N_( "HTTP(S)" ) );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACCESS );
+vlc_module_begin ()
+    set_description( N_("HTTP input") )
+    set_capability( "access", 0 )
+    set_shortname( N_( "HTTP(S)" ) )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACCESS )
 
     add_string( "http-proxy", NULL, NULL, PROXY_TEXT, PROXY_LONGTEXT,
-                false );
+                false )
     add_password( "http-proxy-pwd", NULL, NULL,
-                  PROXY_PASS_TEXT, PROXY_PASS_LONGTEXT, false );
+                  PROXY_PASS_TEXT, PROXY_PASS_LONGTEXT, false )
     add_integer( "http-caching", 4 * DEFAULT_PTS_DELAY / 1000, NULL,
-                 CACHING_TEXT, CACHING_LONGTEXT, true );
+                 CACHING_TEXT, CACHING_LONGTEXT, true )
+        change_safe()
     add_string( "http-user-agent", COPYRIGHT_MESSAGE , NULL, AGENT_TEXT,
-                AGENT_LONGTEXT, true );
+                AGENT_LONGTEXT, true )
     add_bool( "http-reconnect", 0, NULL, RECONNECT_TEXT,
-              RECONNECT_LONGTEXT, true );
+              RECONNECT_LONGTEXT, true )
     add_bool( "http-continuous", 0, NULL, CONTINUOUS_TEXT,
-              CONTINUOUS_LONGTEXT, true );
-    add_bool( "http-forward-cookies", 0, NULL, FORWARD_COOKIES_TEXT,
-              FORWARD_COOKIES_LONGTEXT, true );
-    add_obsolete_string("http-user");
-    add_obsolete_string("http-pwd");
-    add_shortcut( "http" );
-    add_shortcut( "https" );
-    add_shortcut( "unsv" );
-    add_shortcut( "itpc" ); /* iTunes Podcast */
-    set_callbacks( Open, Close );
-vlc_module_end();
+              CONTINUOUS_LONGTEXT, true )
+        change_safe()
+    add_bool( "http-forward-cookies", true, NULL, FORWARD_COOKIES_TEXT,
+              FORWARD_COOKIES_LONGTEXT, true )
+    add_obsolete_string("http-user")
+    add_obsolete_string("http-pwd")
+    add_shortcut( "http" )
+    add_shortcut( "https" )
+    add_shortcut( "unsv" )
+    add_shortcut( "itpc" ) /* iTunes Podcast */
+    add_shortcut( "icyx" )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -245,7 +248,7 @@ static int OpenWithCookies( vlc_object_t *p_this, vlc_array_t *cookies )
     char         *psz, *p;
     /* Only forward an store cookies if the corresponding option is activated */
     bool   b_forward_cookies = var_CreateGetBool( p_access, "http-forward-cookies" );
-    vlc_array_t * saved_cookies = b_forward_cookies ? (cookies ?: vlc_array_new()) : NULL;
+    vlc_array_t * saved_cookies = b_forward_cookies ? (cookies ? cookies : vlc_array_new()) : NULL;
 
     /* Set up p_access */
     STANDARD_READ_ACCESS_INIT;
@@ -326,7 +329,7 @@ static int OpenWithCookies( vlc_object_t *p_this, vlc_array_t *cookies )
         vlc_UrlParse( &p_sys->proxy, psz, 0 );
         free( psz );
     }
-#ifdef HAVE_PROXY_H
+#ifdef HAVE_LIBPROXY
     else
     {
         pxProxyFactory *pf = px_proxy_factory_new();
@@ -433,30 +436,33 @@ connect:
 
     if( p_sys->i_code == 401 )
     {
-        char *psz_login = NULL, *psz_password = NULL;
-        char psz_msg[250];
-        int i_ret;
+        char *psz_login, *psz_password;
         /* FIXME ? */
         if( p_sys->url.psz_username && p_sys->url.psz_password &&
             p_sys->auth.psz_nonce && p_sys->auth.i_nonce == 0 )
         {
+            Disconnect( p_access );
             goto connect;
         }
-        snprintf( psz_msg, 250,
-            _("Please enter a valid login name and a password for realm %s."),
-            p_sys->auth.psz_realm );
         msg_Dbg( p_access, "authentication failed for realm %s",
-            p_sys->auth.psz_realm );
-        i_ret = intf_UserLoginPassword( p_access, _("HTTP authentication"),
-                                        psz_msg, &psz_login, &psz_password );
-        if( i_ret == DIALOG_OK_YES )
+                 p_sys->auth.psz_realm );
+        dialog_Login( p_access, &psz_login, &psz_password,
+                      _("HTTP authentication"),
+             _("Please enter a valid login name and a password for realm %s."),
+                      p_sys->auth.psz_realm );
+        if( psz_login != NULL && psz_password != NULL )
         {
             msg_Dbg( p_access, "retrying with user=%s, pwd=%s",
-                        psz_login, psz_password );
-            if( psz_login ) p_sys->url.psz_username = strdup( psz_login );
-            if( psz_password ) p_sys->url.psz_password = strdup( psz_password );
-            free( psz_login );
-            free( psz_password );
+                     psz_login,
+#if 1
+                     "yeah right, like we're going to print a password."
+#else
+                     psz_password
+#endif
+                );
+            p_sys->url.psz_username = psz_login;
+            p_sys->url.psz_password = psz_password;
+            Disconnect( p_access );
             goto connect;
         }
         else
@@ -585,6 +591,18 @@ error:
     free( p_sys->psz_user_agent );
 
     Disconnect( p_access );
+
+    if( p_sys->cookies )
+    {
+        int i;
+        for( i = 0; i < vlc_array_count( p_sys->cookies ); i++ )
+            free(vlc_array_item_at_index( p_sys->cookies, i ));
+        vlc_array_destroy( p_sys->cookies );
+    }
+
+#ifdef HAVE_ZLIB_H
+    inflateEnd( &p_sys->inflate.stream );
+#endif
     free( p_sys );
     return VLC_EGENERIC;
 }
@@ -640,7 +658,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
     access_sys_t *p_sys = p_access->p_sys;
     int i_read;
 
-    if( p_sys->fd < 0 )
+    if( p_sys->fd == -1 )
     {
         p_access->info.b_eof = true;
         return 0;
@@ -734,7 +752,7 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
             }
         }
     }
-    else if( i_read == 0 )
+    else if( i_read <= 0 )
     {
         /*
          * I very much doubt that this will work.
@@ -765,7 +783,10 @@ static ssize_t Read( access_t *p_access, uint8_t *p_buffer, size_t i_len )
             }
         }
 
-        if( i_read == 0 ) p_access->info.b_eof = true;
+        if( i_read == 0 )
+            p_access->info.b_eof = true;
+        else if( i_read < 0 )
+            p_access->b_error = true;
     }
 
     if( p_access->info.i_size != -1 )
@@ -829,7 +850,10 @@ static int ReadICYMeta( access_t *p_access )
             strcmp( p_sys->psz_icy_title, &p[1] ) )
         {
             free( p_sys->psz_icy_title );
-            p_sys->psz_icy_title = EnsureUTF8( strdup( &p[1] ));
+            char *psz_tmp = strdup( &p[1] );
+            p_sys->psz_icy_title = EnsureUTF8( psz_tmp );
+            if( !p_sys->psz_icy_title )
+                free( psz_tmp );
             p_access->info.i_update |= INPUT_UPDATE_META;
 
             msg_Dbg( p_access, "New Title=%s", p_sys->psz_icy_title );
@@ -911,10 +935,9 @@ static int Seek( access_t *p_access, int64_t i_pos )
 static int Control( access_t *p_access, int i_query, va_list args )
 {
     access_sys_t *p_sys = p_access->p_sys;
-    bool   *pb_bool;
-    int          *pi_int;
-    int64_t      *pi_64;
-    vlc_meta_t   *p_meta;
+    bool       *pb_bool;
+    int64_t    *pi_64;
+    vlc_meta_t *p_meta;
 
     switch( i_query )
     {
@@ -939,11 +962,6 @@ static int Control( access_t *p_access, int i_query, va_list args )
             break;
 
         /* */
-        case ACCESS_GET_MTU:
-            pi_int = (int*)va_arg( args, int * );
-            *pi_int = 0;
-            break;
-
         case ACCESS_GET_PTS_DELAY:
             pi_64 = (int64_t*)va_arg( args, int64_t * );
             *pi_64 = (int64_t)var_GetInteger( p_access, "http-caching" ) * 1000;
@@ -1019,14 +1037,15 @@ static int Connect( access_t *p_access, int64_t i_tell )
     p_access->info.i_pos  = i_tell;
     p_access->info.b_eof  = false;
 
-
     /* Open connection */
+    assert( p_sys->fd == -1 ); /* No open sockets (leaking fds is BAD) */
     p_sys->fd = net_ConnectTCP( p_access, srv.psz_host, srv.i_port );
     if( p_sys->fd == -1 )
     {
         msg_Err( p_access, "cannot connect to %s:%d", srv.psz_host, srv.i_port );
         return -1;
     }
+    setsockopt (p_sys->fd, SOL_SOCKET, SO_KEEPALIVE, &(int){ 1 }, sizeof (int));
 
     /* Initialize TLS/SSL session */
     if( p_sys->b_ssl == true )
@@ -1416,7 +1435,10 @@ static int Request( access_t *p_access, int64_t i_tell )
         else if( !strcasecmp( psz, "Icy-Name" ) )
         {
             free( p_sys->psz_icy_name );
-            p_sys->psz_icy_name = EnsureUTF8( strdup( p ));
+            char *psz_tmp = strdup( p );
+            p_sys->psz_icy_name = EnsureUTF8( psz_tmp );
+            if( !p_sys->psz_icy_name )
+                free( psz_tmp );
             msg_Dbg( p_access, "Icy-Name: %s", p_sys->psz_icy_name );
 
             p_sys->b_icecast = true; /* be on the safeside. set it here as well. */
@@ -1426,7 +1448,10 @@ static int Request( access_t *p_access, int64_t i_tell )
         else if( !strcasecmp( psz, "Icy-Genre" ) )
         {
             free( p_sys->psz_icy_genre );
-            p_sys->psz_icy_genre = EnsureUTF8( strdup( p ));
+            char *psz_tmp = strdup( p );
+            p_sys->psz_icy_genre = EnsureUTF8( psz_tmp );
+            if( !p_sys->psz_icy_genre )
+                free( psz_tmp );
             msg_Dbg( p_access, "Icy-Genre: %s", p_sys->psz_icy_genre );
         }
         else if( !strncasecmp( psz, "Icy-Notice", 10 ) )
@@ -1708,7 +1733,7 @@ static void AuthParseHeader( access_t *p_access, const char *psz_header,
         const char *psz_end = strchr( psz_header, ' ' );
         if( psz_end )
             msg_Warn( p_access, "Unknown authentication scheme: '%*s'",
-                      psz_end - psz_header, psz_header );
+                      (int)(psz_end - psz_header), psz_header );
         else
             msg_Warn( p_access, "Unknown authentication scheme: '%s'",
                       psz_header );
@@ -1719,8 +1744,8 @@ static char *AuthDigest( access_t *p_access, vlc_url_t *p_url,
                          http_auth_t *p_auth, const char *psz_method )
 {
     (void)p_access;
-    const char *psz_username = p_url->psz_username ?: "";
-    const char *psz_password = p_url->psz_password ?: "";
+    const char *psz_username = p_url->psz_username ? p_url->psz_username : "";
+    const char *psz_password = p_url->psz_password ? p_url->psz_password : "";
 
     char *psz_HA1 = NULL;
     char *psz_HA2 = NULL;
@@ -1827,8 +1852,8 @@ static void AuthReply( access_t *p_access, const char *psz_prefix,
     access_sys_t *p_sys = p_access->p_sys;
     v_socket_t     *pvs = p_sys->p_vs;
 
-    const char *psz_username = p_url->psz_username ?: "";
-    const char *psz_password = p_url->psz_password ?: "";
+    const char *psz_username = p_url->psz_username ? p_url->psz_username : "";
+    const char *psz_password = p_url->psz_password ? p_url->psz_password : "";
 
     if( p_auth->psz_nonce )
     {
@@ -1876,20 +1901,20 @@ static void AuthReply( access_t *p_access, const char *psz_prefix,
                     psz_username,
                     p_auth->psz_realm,
                     p_auth->psz_nonce,
-                    p_url->psz_path ?: "/",
+                    p_url->psz_path ? p_url->psz_path : "/",
                     psz_response,
                     /* Optional parameters */
                     p_auth->psz_algorithm ? "algorithm=\"" : "",
-                    p_auth->psz_algorithm ?: "",
+                    p_auth->psz_algorithm ? p_auth->psz_algorithm : "",
                     p_auth->psz_algorithm ? "\", " : "",
                     p_auth->psz_cnonce ? "cnonce=\"" : "",
-                    p_auth->psz_cnonce ?: "",
+                    p_auth->psz_cnonce ? p_auth->psz_cnonce : "",
                     p_auth->psz_cnonce ? "\", " : "",
                     p_auth->psz_opaque ? "opaque=\"" : "",
-                    p_auth->psz_opaque ?: "",
+                    p_auth->psz_opaque ? p_auth->psz_opaque : "",
                     p_auth->psz_opaque ? "\", " : "",
                     p_auth->psz_qop ? "qop=\"" : "",
-                    p_auth->psz_qop ?: "",
+                    p_auth->psz_qop ? p_auth->psz_qop : "",
                     p_auth->psz_qop ? "\", " : "",
                     p_auth->i_nonce ? "nc=\"" : "uglyhack=\"", /* Will be parsed as an unhandled extension */
                     p_auth->i_nonce,

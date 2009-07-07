@@ -2,7 +2,7 @@
  * x11_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 815a169a47e91e29543a4e38f89b3ef519e432ea $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -55,6 +55,10 @@ X11Factory::~X11Factory()
 
 bool X11Factory::init()
 {
+    // make sure xlib is safe-thread
+    if( !XInitThreads() )
+        msg_Err( getIntf(), "initializing xlib for multi-threading failed" );
+
     // Create the X11 display
     m_pDisplay = new X11Display( getIntf() );
 

@@ -2,7 +2,7 @@
  * cdg.c: CDG decoder module
  *****************************************************************************
  * Copyright (C) 2007 Laurent Aimar
- * $Id: af912284ef4be3e4db7d6a55ba35137fb467eec1 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir # via.ecp.fr>
  *
@@ -58,6 +58,8 @@ struct decoder_sys_t
     int     i_offsetv;
     uint8_t screen[CDG_SCREEN_PITCH*CDG_SCREEN_HEIGHT];
     uint8_t *p_screen;
+
+    int     i_packet;
 };
 
 #define CDG_PACKET_SIZE (24)
@@ -80,14 +82,14 @@ static int Render( decoder_sys_t *p_cdg, picture_t *p_picture );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_description( N_("CDG video decoder") );
-    set_capability( "decoder", 1000 );
-    set_callbacks( Open, Close );
-    add_shortcut( "cdg" );
-vlc_module_end();
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_description( N_("CDG video decoder") )
+    set_capability( "decoder", 1000 )
+    set_callbacks( Open, Close )
+    add_shortcut( "cdg" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: probe the decoder and return score
@@ -101,15 +103,13 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
 
     /* Allocate the memory needed to store the decoder's structure */
-    p_dec->p_sys = p_sys = malloc(sizeof(decoder_sys_t));
+    p_dec->p_sys = p_sys = calloc( 1, sizeof(decoder_sys_t) );
     if( !p_sys )
         return VLC_ENOMEM;
 
     /* Init */
-    memset( p_sys, 0, sizeof(*p_sys) );
-    p_sys->i_offseth = 0;
-    p_sys->i_offsetv = 0;
     p_sys->p_screen = p_sys->screen;
+    p_sys->i_packet = 0;
 
     /* Set output properties
      * TODO maybe it would be better to use RV16 or RV24 ? */
@@ -144,6 +144,12 @@ static picture_t *Decode( decoder_t *p_dec, block_t **pp_block )
         return NULL;
     p_block = *pp_block;
 
+    if( p_block->i_flags & (BLOCK_FLAG_DISCONTINUITY|BLOCK_FLAG_CORRUPTED) )
+    {
+        p_sys->i_packet = 0;
+        goto exit;
+    }
+
     /* Decode packet */
     while( p_block->i_buffer >= CDG_PACKET_SIZE )
     {
@@ -152,20 +158,21 @@ static picture_t *Decode( decoder_t *p_dec, block_t **pp_block )
         p_block->p_buffer += CDG_PACKET_SIZE;
     }
 
-    /* Get a new picture */
-    p_pic = p_dec->pf_vout_buffer_new( p_dec );
-    if( !p_pic )
-        goto error;
+    /* Only display 25 frame per second (there is 75 packets per second) */
+    if( (p_sys->i_packet%3) == 1 )
+    {
+        /* Get a new picture */
+        p_pic = decoder_NewPicture( p_dec );
+        if( !p_pic )
+            goto exit;
 
-    Render( p_sys, p_pic );
-    p_pic->date = p_block->i_pts > 0 ? p_block->i_pts : p_block->i_dts;
+        Render( p_sys, p_pic );
+        p_pic->date = p_block->i_pts > 0 ? p_block->i_pts : p_block->i_dts;
+    }
 
+exit:
     block_Release( p_block ); *pp_block = NULL;
     return p_pic;
-
-error:
-    block_Release( p_block ); *pp_block = NULL;
-    return NULL;
 }
 
 /*****************************************************************************
@@ -338,6 +345,8 @@ static int DecodePacket( decoder_sys_t *p_cdg, uint8_t *p_buffer, int i_buffer )
 
     if( i_buffer != CDG_PACKET_SIZE )
         return -1;
+
+    p_cdg->i_packet++;
 
     /* Handle CDG command only */
     if( i_cmd != 0x09 )

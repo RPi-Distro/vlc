@@ -1,8 +1,8 @@
 /*****************************************************************************
  * win32.c: Screen capture module.
  *****************************************************************************
- * Copyright (C) 2004 the VideoLAN team
- * $Id: f267b08b49ab8e04af429f9827bfc5b2c56913bb $
+ * Copyright (C) 2004-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -54,15 +54,17 @@ int screen_InitCapture( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
     screen_data_t *p_data;
     int i_chroma, i_bits_per_pixel;
-    vlc_value_t val;
 
-    p_sys->p_data = p_data = malloc( sizeof( screen_data_t ) );
+    p_sys->p_data = p_data = calloc( 1, sizeof( screen_data_t ) );
+    if( !p_data )
+        return VLC_ENOMEM;
 
     /* Get the device context for the whole screen */
     p_data->hdc_src = CreateDC( "DISPLAY", NULL, NULL, NULL );
     if( !p_data->hdc_src )
     {
         msg_Err( p_demux, "cannot get device context" );
+        free( p_data );
         return VLC_EGENERIC;
     }
 
@@ -70,6 +72,7 @@ int screen_InitCapture( demux_t *p_demux )
     if( !p_data->hdc_dst )
     {
         msg_Err( p_demux, "cannot get compat device context" );
+        free( p_data );
         ReleaseDC( 0, p_data->hdc_src );
         return VLC_EGENERIC;
     }
@@ -80,9 +83,8 @@ int screen_InitCapture( demux_t *p_demux )
     case 8: /* FIXME: set the palette */
         i_chroma = VLC_FOURCC('R','G','B','2'); break;
     case 15:
+    case 16:    /* Yes it is really 15 bits (when using BI_RGB) */
         i_chroma = VLC_FOURCC('R','V','1','5'); break;
-    case 16:
-        i_chroma = VLC_FOURCC('R','V','1','6'); break;
     case 24:
         i_chroma = VLC_FOURCC('R','V','2','4'); break;
     case 32:
@@ -90,26 +92,25 @@ int screen_InitCapture( demux_t *p_demux )
     default:
         msg_Err( p_demux, "unknown screen depth %i",
                  p_sys->fmt.video.i_bits_per_pixel );
+        DeleteDC( p_data->hdc_dst );
         ReleaseDC( 0, p_data->hdc_src );
-        ReleaseDC( 0, p_data->hdc_dst );
+        free( p_data );
         return VLC_EGENERIC;
     }
 
     es_format_Init( &p_sys->fmt, VIDEO_ES, i_chroma );
+    p_sys->fmt.video.i_visible_width =
     p_sys->fmt.video.i_width  = GetDeviceCaps( p_data->hdc_src, HORZRES );
+    p_sys->fmt.video.i_visible_height =
     p_sys->fmt.video.i_height = GetDeviceCaps( p_data->hdc_src, VERTRES );
     p_sys->fmt.video.i_bits_per_pixel = i_bits_per_pixel;
+    p_sys->fmt.video.i_chroma = i_chroma;
 
     switch( i_chroma )
     {
     case VLC_FOURCC('R','V','1','5'):
         p_sys->fmt.video.i_rmask = 0x7c00;
         p_sys->fmt.video.i_gmask = 0x03e0;
-        p_sys->fmt.video.i_bmask = 0x001f;
-        break;
-    case VLC_FOURCC('R','V','1','6'):
-        p_sys->fmt.video.i_rmask = 0xf800;
-        p_sys->fmt.video.i_gmask = 0x07e0;
         p_sys->fmt.video.i_bmask = 0x001f;
         break;
     case VLC_FOURCC('R','V','2','4'):
@@ -127,32 +128,6 @@ int screen_InitCapture( demux_t *p_demux )
         break;
     }
 
-
-    /* Create the bitmap info header */
-    p_data->bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
-    p_data->bmi.bmiHeader.biWidth = p_sys->fmt.video.i_width;
-    p_data->bmi.bmiHeader.biHeight = - p_sys->fmt.video.i_height;
-    p_data->bmi.bmiHeader.biPlanes = 1;
-    p_data->bmi.bmiHeader.biBitCount = p_sys->fmt.video.i_bits_per_pixel;
-    p_data->bmi.bmiHeader.biCompression = BI_RGB;
-    p_data->bmi.bmiHeader.biSizeImage = 0;
-    p_data->bmi.bmiHeader.biXPelsPerMeter =
-        p_data->bmi.bmiHeader.biYPelsPerMeter = 0;
-    p_data->bmi.bmiHeader.biClrUsed = 0;
-    p_data->bmi.bmiHeader.biClrImportant = 0;
-
-    var_Create( p_demux, "screen-fragment-size",
-                VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
-    var_Get( p_demux, "screen-fragment-size", &val );
-    p_data->i_fragment_size =
-        val.i_int > 0 ? val.i_int : p_sys->fmt.video.i_height;
-    p_data->i_fragment_size =
-        val.i_int > p_sys->fmt.video.i_height ? p_sys->fmt.video.i_height :
-        p_data->i_fragment_size;
-    p_sys->f_fps *= (p_sys->fmt.video.i_height/p_data->i_fragment_size);
-    p_sys->i_incr = 1000000 / p_sys->f_fps;
-    p_data->i_fragment = 0;
-    p_data->p_block = 0;
 
     return VLC_SUCCESS;
 }
@@ -194,6 +169,34 @@ static block_t *CaptureBlockNew( demux_t *p_demux )
     void *p_buffer;
     int i_buffer;
     HBITMAP hbmp;
+
+    if( p_data->bmi.bmiHeader.biSize == 0 )
+    {
+        int i_val;
+        /* Create the bitmap info header */
+        p_data->bmi.bmiHeader.biSize = sizeof(BITMAPINFOHEADER);
+        p_data->bmi.bmiHeader.biWidth = p_sys->fmt.video.i_width;
+        p_data->bmi.bmiHeader.biHeight = - p_sys->fmt.video.i_height;
+        p_data->bmi.bmiHeader.biPlanes = 1;
+        p_data->bmi.bmiHeader.biBitCount = p_sys->fmt.video.i_bits_per_pixel;
+        p_data->bmi.bmiHeader.biCompression = BI_RGB;
+        p_data->bmi.bmiHeader.biSizeImage = 0;
+        p_data->bmi.bmiHeader.biXPelsPerMeter =
+            p_data->bmi.bmiHeader.biYPelsPerMeter = 0;
+        p_data->bmi.bmiHeader.biClrUsed = 0;
+        p_data->bmi.bmiHeader.biClrImportant = 0;
+
+        i_val = var_CreateGetInteger( p_demux, "screen-fragment-size" );
+        p_data->i_fragment_size = i_val > 0 ? i_val : p_sys->fmt.video.i_height;
+        p_data->i_fragment_size = i_val > p_sys->fmt.video.i_height ?
+                                            p_sys->fmt.video.i_height :
+                                            p_data->i_fragment_size;
+        p_sys->f_fps *= (p_sys->fmt.video.i_height/p_data->i_fragment_size);
+        p_sys->i_incr = 1000000 / p_sys->f_fps;
+        p_data->i_fragment = 0;
+        p_data->p_block = 0;
+    }
+
 
     /* Create the bitmap storage space */
     hbmp = CreateDIBSection( p_data->hdc_dst, &p_data->bmi, DIB_RGB_COLORS,
@@ -244,16 +247,23 @@ block_t *screen_Capture( demux_t *p_demux )
         if( !( p_data->p_block = CaptureBlockNew( p_demux ) ) )
         {
             msg_Warn( p_demux, "cannot get block" );
-            return 0;
+            return NULL;
         }
     }
 
-    if( !BitBlt( p_data->hdc_dst, 0, p_data->i_fragment *
-                 p_data->i_fragment_size,
+    if( p_sys->b_follow_mouse )
+    {
+        POINT pos;
+        GetCursorPos( &pos );
+        FollowMouse( p_sys, pos.x, pos.y );
+    }
+
+    if( !BitBlt( p_data->hdc_dst, 0,
+                 p_data->i_fragment * p_data->i_fragment_size,
                  p_sys->fmt.video.i_width, p_data->i_fragment_size,
-                 p_data->hdc_src, 0, p_data->i_fragment *
-                 p_data->i_fragment_size,
-                 IS_WINNT ? SRCCOPY | CAPTUREBLT : SRCCOPY ) )
+                 p_data->hdc_src, p_sys->i_left, p_sys->i_top +
+                 p_data->i_fragment * p_data->i_fragment_size,
+                 SRCCOPY | CAPTUREBLT ) )
     {
         msg_Err( p_demux, "error during BitBlt()" );
         return NULL;
@@ -267,6 +277,15 @@ block_t *screen_Capture( demux_t *p_demux )
         block_t *p_block = p_data->p_block;
         p_data->i_fragment = 0;
         p_data->p_block = 0;
+
+        if( p_sys->p_mouse )
+        {
+            POINT pos;
+            GetCursorPos( &pos );
+            RenderCursor( p_demux, pos.x, pos.y,
+                          p_block->p_buffer );
+        }
+
         return p_block;
     }
 

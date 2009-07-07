@@ -2,7 +2,7 @@
  * vout_beos.cpp: beos video output display method
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 62a4ec676d6ae8467fbdb6fb2b45213878d0dfd3 $
+ * $Id$
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -1123,9 +1123,7 @@ VLCView::MouseDown(BPoint where)
 void
 VLCView::MouseUp( BPoint where )
 {
-    vlc_value_t val;
-    val.b_bool = true;
-    var_Set( p_vout, "mouse-clicked", val );
+    var_SetBool( p_vout, "mouse-clicked", true );
 }
 
 /*****************************************************************************
@@ -1228,10 +1226,7 @@ int OpenVideo ( vlc_object_t *p_this )
     /* Allocate structure */
     p_vout->p_sys = (vout_sys_t*) malloc( sizeof( vout_sys_t ) );
     if( p_vout->p_sys == NULL )
-    {
-        msg_Err( p_vout, "out of memory" );
-        return( 1 );
-    }
+        return 1;
     p_vout->p_sys->i_width = p_vout->render.i_width;
     p_vout->p_sys->i_height = p_vout->render.i_height;
     p_vout->p_sys->source_chroma = p_vout->render.i_chroma;
@@ -1270,8 +1265,6 @@ int Init( vout_thread_t *p_vout )
                                * VOUT_ASPECT_FACTOR / p_vout->p_sys->i_height;
     p_vout->output.i_chroma = colspace[p_vout->p_sys->p_window->colspace_index].chroma;
     p_vout->p_sys->i_index = 0;
-
-    p_vout->b_direct = 1;
 
     p_vout->output.i_rmask  = 0x00ff0000;
     p_vout->output.i_gmask  = 0x0000ff00;
@@ -1374,7 +1367,7 @@ void Display( vout_thread_t *p_vout, picture_t *p_pic )
 
 static int Control( vout_thread_t * p_vout, int i_query, va_list args )
 {
-    return vout_vaControlDefault( p_vout, i_query, args );
+    return VLC_EGENERIC;
 }
 
 /* following functions are local */

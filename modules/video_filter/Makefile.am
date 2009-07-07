@@ -3,9 +3,9 @@
 
 basedir = video_filter
 dir = video_filter
-mods = adjust alphamask blend blendbench bluescreen canvas chain clone colorthres crop croppadd deinterlace erase extract gaussianblur gradient grain imgresample invert logo magnify marq mosaic motionblur motiondetect noise opencv_example opencv_wrapper osdmenu panoramix postproc psychedelic puzzle remoteosd ripple rotate rss rv32 scale sharpen swscale transform wall wave
-libvlc_LTLIBRARIES =  $(LTLIBadjust) $(LTLIBalphamask) $(LTLIBblend) $(LTLIBblendbench) $(LTLIBbluescreen) $(LTLIBcanvas) $(LTLIBchain) $(LTLIBclone) $(LTLIBcolorthres) $(LTLIBcrop) $(LTLIBcroppadd) $(LTLIBdeinterlace) $(LTLIBerase) $(LTLIBextract) $(LTLIBgaussianblur) $(LTLIBgradient) $(LTLIBgrain) $(LTLIBimgresample) $(LTLIBinvert) $(LTLIBlogo) $(LTLIBmagnify) $(LTLIBmarq) $(LTLIBmosaic) $(LTLIBmotionblur) $(LTLIBmotiondetect) $(LTLIBnoise) $(LTLIBopencv_example) $(LTLIBopencv_wrapper) $(LTLIBosdmenu) $(LTLIBpanoramix) $(LTLIBpostproc) $(LTLIBpsychedelic) $(LTLIBpuzzle) $(LTLIBremoteosd) $(LTLIBripple) $(LTLIBrotate) $(LTLIBrss) $(LTLIBrv32) $(LTLIBscale) $(LTLIBsharpen) $(LTLIBswscale) $(LTLIBtransform) $(LTLIBwall) $(LTLIBwave)
-EXTRA_LTLIBRARIES =  libadjust_plugin.la libalphamask_plugin.la libblend_plugin.la libblendbench_plugin.la libbluescreen_plugin.la libcanvas_plugin.la libchain_plugin.la libclone_plugin.la libcolorthres_plugin.la libcrop_plugin.la libcroppadd_plugin.la libdeinterlace_plugin.la liberase_plugin.la libextract_plugin.la libgaussianblur_plugin.la libgradient_plugin.la libgrain_plugin.la libimgresample_plugin.la libinvert_plugin.la liblogo_plugin.la libmagnify_plugin.la libmarq_plugin.la libmosaic_plugin.la libmotionblur_plugin.la libmotiondetect_plugin.la libnoise_plugin.la libopencv_example_plugin.la libopencv_wrapper_plugin.la libosdmenu_plugin.la libpanoramix_plugin.la libpostproc_plugin.la libpsychedelic_plugin.la libpuzzle_plugin.la libremoteosd_plugin.la libripple_plugin.la librotate_plugin.la librss_plugin.la librv32_plugin.la libscale_plugin.la libsharpen_plugin.la libswscale_plugin.la libtransform_plugin.la libwall_plugin.la libwave_plugin.la
+mods = adjust alphamask blend blendbench bluescreen canvas chain clone colorthres crop croppadd deinterlace erase extract gaussianblur gradient grain invert logo magnify marq mosaic motionblur motiondetect noise opencv_example opencv_wrapper osdmenu panoramix postproc psychedelic puzzle remoteosd ripple rotate rss rv32 scale scene sharpen swscale swscale_maemo transform wall wave yuvp
+libvlc_LTLIBRARIES =  $(LTLIBadjust) $(LTLIBalphamask) $(LTLIBblend) $(LTLIBblendbench) $(LTLIBbluescreen) $(LTLIBcanvas) $(LTLIBchain) $(LTLIBclone) $(LTLIBcolorthres) $(LTLIBcrop) $(LTLIBcroppadd) $(LTLIBdeinterlace) $(LTLIBerase) $(LTLIBextract) $(LTLIBgaussianblur) $(LTLIBgradient) $(LTLIBgrain) $(LTLIBinvert) $(LTLIBlogo) $(LTLIBmagnify) $(LTLIBmarq) $(LTLIBmosaic) $(LTLIBmotionblur) $(LTLIBmotiondetect) $(LTLIBnoise) $(LTLIBopencv_example) $(LTLIBopencv_wrapper) $(LTLIBosdmenu) $(LTLIBpanoramix) $(LTLIBpostproc) $(LTLIBpsychedelic) $(LTLIBpuzzle) $(LTLIBremoteosd) $(LTLIBripple) $(LTLIBrotate) $(LTLIBrss) $(LTLIBrv32) $(LTLIBscale) $(LTLIBscene) $(LTLIBsharpen) $(LTLIBswscale) $(LTLIBswscale_maemo) $(LTLIBtransform) $(LTLIBwall) $(LTLIBwave) $(LTLIByuvp)
+EXTRA_LTLIBRARIES =  libadjust_plugin.la libalphamask_plugin.la libblend_plugin.la libblendbench_plugin.la libbluescreen_plugin.la libcanvas_plugin.la libchain_plugin.la libclone_plugin.la libcolorthres_plugin.la libcrop_plugin.la libcroppadd_plugin.la libdeinterlace_plugin.la liberase_plugin.la libextract_plugin.la libgaussianblur_plugin.la libgradient_plugin.la libgrain_plugin.la libinvert_plugin.la liblogo_plugin.la libmagnify_plugin.la libmarq_plugin.la libmosaic_plugin.la libmotionblur_plugin.la libmotiondetect_plugin.la libnoise_plugin.la libopencv_example_plugin.la libopencv_wrapper_plugin.la libosdmenu_plugin.la libpanoramix_plugin.la libpostproc_plugin.la libpsychedelic_plugin.la libpuzzle_plugin.la libremoteosd_plugin.la libripple_plugin.la librotate_plugin.la librss_plugin.la librv32_plugin.la libscale_plugin.la libscene_plugin.la libsharpen_plugin.la libswscale_plugin.la libswscale_maemo_plugin.la libtransform_plugin.la libwall_plugin.la libwave_plugin.la libyuvp_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libadjust_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libadjust_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libadjust_plugin_la_LIBADD = $(AM_LIBADD)
-libadjust_plugin_la_DEPENDENCIES =
+libadjust_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The alphamask plugin
 libalphamask_plugin_la_SOURCES = $(SOURCES_alphamask)
@@ -29,7 +29,7 @@ libalphamask_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libalphamask_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libalphamask_plugin_la_LIBADD = $(AM_LIBADD)
-libalphamask_plugin_la_DEPENDENCIES =
+libalphamask_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The blend plugin
 libblend_plugin_la_SOURCES = $(SOURCES_blend)
@@ -40,7 +40,7 @@ libblend_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libblend_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libblend_plugin_la_LIBADD = $(AM_LIBADD)
-libblend_plugin_la_DEPENDENCIES =
+libblend_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The blendbench plugin
 libblendbench_plugin_la_SOURCES = $(SOURCES_blendbench)
@@ -51,7 +51,7 @@ libblendbench_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libblendbench_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libblendbench_plugin_la_LIBADD = $(AM_LIBADD)
-libblendbench_plugin_la_DEPENDENCIES =
+libblendbench_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The bluescreen plugin
 libbluescreen_plugin_la_SOURCES = $(SOURCES_bluescreen)
@@ -62,7 +62,7 @@ libbluescreen_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libbluescreen_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libbluescreen_plugin_la_LIBADD = $(AM_LIBADD)
-libbluescreen_plugin_la_DEPENDENCIES =
+libbluescreen_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The canvas plugin
 libcanvas_plugin_la_SOURCES = $(SOURCES_canvas)
@@ -73,7 +73,7 @@ libcanvas_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libcanvas_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcanvas_plugin_la_LIBADD = $(AM_LIBADD)
-libcanvas_plugin_la_DEPENDENCIES =
+libcanvas_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The chain plugin
 libchain_plugin_la_SOURCES = $(SOURCES_chain)
@@ -84,7 +84,7 @@ libchain_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libchain_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libchain_plugin_la_LIBADD = $(AM_LIBADD)
-libchain_plugin_la_DEPENDENCIES =
+libchain_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The clone plugin
 libclone_plugin_la_SOURCES = $(SOURCES_clone)
@@ -95,7 +95,7 @@ libclone_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libclone_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libclone_plugin_la_LIBADD = $(AM_LIBADD)
-libclone_plugin_la_DEPENDENCIES =
+libclone_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The colorthres plugin
 libcolorthres_plugin_la_SOURCES = $(SOURCES_colorthres)
@@ -106,7 +106,7 @@ libcolorthres_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libcolorthres_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcolorthres_plugin_la_LIBADD = $(AM_LIBADD)
-libcolorthres_plugin_la_DEPENDENCIES =
+libcolorthres_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The crop plugin
 libcrop_plugin_la_SOURCES = $(SOURCES_crop)
@@ -117,7 +117,7 @@ libcrop_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libcrop_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcrop_plugin_la_LIBADD = $(AM_LIBADD)
-libcrop_plugin_la_DEPENDENCIES =
+libcrop_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The croppadd plugin
 libcroppadd_plugin_la_SOURCES = $(SOURCES_croppadd)
@@ -128,7 +128,7 @@ libcroppadd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libcroppadd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libcroppadd_plugin_la_LIBADD = $(AM_LIBADD)
-libcroppadd_plugin_la_DEPENDENCIES =
+libcroppadd_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The deinterlace plugin
 libdeinterlace_plugin_la_SOURCES = $(SOURCES_deinterlace)
@@ -139,7 +139,7 @@ libdeinterlace_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libdeinterlace_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libdeinterlace_plugin_la_LIBADD = $(AM_LIBADD)
-libdeinterlace_plugin_la_DEPENDENCIES =
+libdeinterlace_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The erase plugin
 liberase_plugin_la_SOURCES = $(SOURCES_erase)
@@ -150,7 +150,7 @@ liberase_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liberase_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liberase_plugin_la_LIBADD = $(AM_LIBADD)
-liberase_plugin_la_DEPENDENCIES =
+liberase_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The extract plugin
 libextract_plugin_la_SOURCES = $(SOURCES_extract)
@@ -161,7 +161,7 @@ libextract_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libextract_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libextract_plugin_la_LIBADD = $(AM_LIBADD)
-libextract_plugin_la_DEPENDENCIES =
+libextract_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The gaussianblur plugin
 libgaussianblur_plugin_la_SOURCES = $(SOURCES_gaussianblur)
@@ -172,7 +172,7 @@ libgaussianblur_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgaussianblur_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgaussianblur_plugin_la_LIBADD = $(AM_LIBADD)
-libgaussianblur_plugin_la_DEPENDENCIES =
+libgaussianblur_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The gradient plugin
 libgradient_plugin_la_SOURCES = $(SOURCES_gradient)
@@ -183,7 +183,7 @@ libgradient_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgradient_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgradient_plugin_la_LIBADD = $(AM_LIBADD)
-libgradient_plugin_la_DEPENDENCIES =
+libgradient_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The grain plugin
 libgrain_plugin_la_SOURCES = $(SOURCES_grain)
@@ -194,18 +194,7 @@ libgrain_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libgrain_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libgrain_plugin_la_LIBADD = $(AM_LIBADD)
-libgrain_plugin_la_DEPENDENCIES =
-
-# The imgresample plugin
-libimgresample_plugin_la_SOURCES = $(SOURCES_imgresample)
-nodist_libimgresample_plugin_la_SOURCES = $(nodist_SOURCES_imgresample)
-# Force per-target objects:
-libimgresample_plugin_la_CFLAGS = $(AM_CFLAGS)
-libimgresample_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libimgresample_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libimgresample_plugin_la_LIBADD = $(AM_LIBADD)
-libimgresample_plugin_la_DEPENDENCIES =
+libgrain_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The invert plugin
 libinvert_plugin_la_SOURCES = $(SOURCES_invert)
@@ -216,7 +205,7 @@ libinvert_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libinvert_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libinvert_plugin_la_LIBADD = $(AM_LIBADD)
-libinvert_plugin_la_DEPENDENCIES =
+libinvert_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The logo plugin
 liblogo_plugin_la_SOURCES = $(SOURCES_logo)
@@ -227,7 +216,7 @@ liblogo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liblogo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liblogo_plugin_la_LIBADD = $(AM_LIBADD)
-liblogo_plugin_la_DEPENDENCIES =
+liblogo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The magnify plugin
 libmagnify_plugin_la_SOURCES = $(SOURCES_magnify)
@@ -238,7 +227,7 @@ libmagnify_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmagnify_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmagnify_plugin_la_LIBADD = $(AM_LIBADD)
-libmagnify_plugin_la_DEPENDENCIES =
+libmagnify_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The marq plugin
 libmarq_plugin_la_SOURCES = $(SOURCES_marq)
@@ -249,7 +238,7 @@ libmarq_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmarq_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmarq_plugin_la_LIBADD = $(AM_LIBADD)
-libmarq_plugin_la_DEPENDENCIES =
+libmarq_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The mosaic plugin
 libmosaic_plugin_la_SOURCES = $(SOURCES_mosaic)
@@ -260,7 +249,7 @@ libmosaic_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmosaic_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmosaic_plugin_la_LIBADD = $(AM_LIBADD)
-libmosaic_plugin_la_DEPENDENCIES =
+libmosaic_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The motionblur plugin
 libmotionblur_plugin_la_SOURCES = $(SOURCES_motionblur)
@@ -271,7 +260,7 @@ libmotionblur_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmotionblur_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmotionblur_plugin_la_LIBADD = $(AM_LIBADD)
-libmotionblur_plugin_la_DEPENDENCIES =
+libmotionblur_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The motiondetect plugin
 libmotiondetect_plugin_la_SOURCES = $(SOURCES_motiondetect)
@@ -282,7 +271,7 @@ libmotiondetect_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libmotiondetect_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libmotiondetect_plugin_la_LIBADD = $(AM_LIBADD)
-libmotiondetect_plugin_la_DEPENDENCIES =
+libmotiondetect_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The noise plugin
 libnoise_plugin_la_SOURCES = $(SOURCES_noise)
@@ -293,7 +282,7 @@ libnoise_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libnoise_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libnoise_plugin_la_LIBADD = $(AM_LIBADD)
-libnoise_plugin_la_DEPENDENCIES =
+libnoise_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The opencv_example plugin
 libopencv_example_plugin_la_SOURCES = $(SOURCES_opencv_example)
@@ -304,7 +293,7 @@ libopencv_example_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libopencv_example_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libopencv_example_plugin_la_LIBADD = $(AM_LIBADD)
-libopencv_example_plugin_la_DEPENDENCIES =
+libopencv_example_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The opencv_wrapper plugin
 libopencv_wrapper_plugin_la_SOURCES = $(SOURCES_opencv_wrapper)
@@ -315,7 +304,7 @@ libopencv_wrapper_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libopencv_wrapper_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libopencv_wrapper_plugin_la_LIBADD = $(AM_LIBADD)
-libopencv_wrapper_plugin_la_DEPENDENCIES =
+libopencv_wrapper_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The osdmenu plugin
 libosdmenu_plugin_la_SOURCES = $(SOURCES_osdmenu)
@@ -326,7 +315,7 @@ libosdmenu_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libosdmenu_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libosdmenu_plugin_la_LIBADD = $(AM_LIBADD)
-libosdmenu_plugin_la_DEPENDENCIES =
+libosdmenu_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The panoramix plugin
 libpanoramix_plugin_la_SOURCES = $(SOURCES_panoramix)
@@ -337,7 +326,7 @@ libpanoramix_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libpanoramix_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libpanoramix_plugin_la_LIBADD = $(AM_LIBADD)
-libpanoramix_plugin_la_DEPENDENCIES =
+libpanoramix_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The postproc plugin
 libpostproc_plugin_la_SOURCES = $(SOURCES_postproc)
@@ -348,7 +337,7 @@ libpostproc_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libpostproc_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libpostproc_plugin_la_LIBADD = $(AM_LIBADD)
-libpostproc_plugin_la_DEPENDENCIES =
+libpostproc_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The psychedelic plugin
 libpsychedelic_plugin_la_SOURCES = $(SOURCES_psychedelic)
@@ -359,7 +348,7 @@ libpsychedelic_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libpsychedelic_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libpsychedelic_plugin_la_LIBADD = $(AM_LIBADD)
-libpsychedelic_plugin_la_DEPENDENCIES =
+libpsychedelic_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The puzzle plugin
 libpuzzle_plugin_la_SOURCES = $(SOURCES_puzzle)
@@ -370,7 +359,7 @@ libpuzzle_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libpuzzle_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libpuzzle_plugin_la_LIBADD = $(AM_LIBADD)
-libpuzzle_plugin_la_DEPENDENCIES =
+libpuzzle_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The remoteosd plugin
 libremoteosd_plugin_la_SOURCES = $(SOURCES_remoteosd)
@@ -381,7 +370,7 @@ libremoteosd_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libremoteosd_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libremoteosd_plugin_la_LIBADD = $(AM_LIBADD)
-libremoteosd_plugin_la_DEPENDENCIES =
+libremoteosd_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The ripple plugin
 libripple_plugin_la_SOURCES = $(SOURCES_ripple)
@@ -392,7 +381,7 @@ libripple_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libripple_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libripple_plugin_la_LIBADD = $(AM_LIBADD)
-libripple_plugin_la_DEPENDENCIES =
+libripple_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The rotate plugin
 librotate_plugin_la_SOURCES = $(SOURCES_rotate)
@@ -403,7 +392,7 @@ librotate_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 librotate_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 librotate_plugin_la_LIBADD = $(AM_LIBADD)
-librotate_plugin_la_DEPENDENCIES =
+librotate_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The rss plugin
 librss_plugin_la_SOURCES = $(SOURCES_rss)
@@ -414,7 +403,7 @@ librss_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 librss_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 librss_plugin_la_LIBADD = $(AM_LIBADD)
-librss_plugin_la_DEPENDENCIES =
+librss_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The rv32 plugin
 librv32_plugin_la_SOURCES = $(SOURCES_rv32)
@@ -425,7 +414,7 @@ librv32_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 librv32_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 librv32_plugin_la_LIBADD = $(AM_LIBADD)
-librv32_plugin_la_DEPENDENCIES =
+librv32_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The scale plugin
 libscale_plugin_la_SOURCES = $(SOURCES_scale)
@@ -436,7 +425,18 @@ libscale_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libscale_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libscale_plugin_la_LIBADD = $(AM_LIBADD)
-libscale_plugin_la_DEPENDENCIES =
+libscale_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The scene plugin
+libscene_plugin_la_SOURCES = $(SOURCES_scene)
+nodist_libscene_plugin_la_SOURCES = $(nodist_SOURCES_scene)
+# Force per-target objects:
+libscene_plugin_la_CFLAGS = $(AM_CFLAGS)
+libscene_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libscene_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libscene_plugin_la_LIBADD = $(AM_LIBADD)
+libscene_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The sharpen plugin
 libsharpen_plugin_la_SOURCES = $(SOURCES_sharpen)
@@ -447,7 +447,7 @@ libsharpen_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libsharpen_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libsharpen_plugin_la_LIBADD = $(AM_LIBADD)
-libsharpen_plugin_la_DEPENDENCIES =
+libsharpen_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The swscale plugin
 libswscale_plugin_la_SOURCES = $(SOURCES_swscale)
@@ -458,7 +458,18 @@ libswscale_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libswscale_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libswscale_plugin_la_LIBADD = $(AM_LIBADD)
-libswscale_plugin_la_DEPENDENCIES =
+libswscale_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The swscale_maemo plugin
+libswscale_maemo_plugin_la_SOURCES = $(SOURCES_swscale_maemo)
+nodist_libswscale_maemo_plugin_la_SOURCES = $(nodist_SOURCES_swscale_maemo)
+# Force per-target objects:
+libswscale_maemo_plugin_la_CFLAGS = $(AM_CFLAGS)
+libswscale_maemo_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libswscale_maemo_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libswscale_maemo_plugin_la_LIBADD = $(AM_LIBADD)
+libswscale_maemo_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The transform plugin
 libtransform_plugin_la_SOURCES = $(SOURCES_transform)
@@ -469,7 +480,7 @@ libtransform_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtransform_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtransform_plugin_la_LIBADD = $(AM_LIBADD)
-libtransform_plugin_la_DEPENDENCIES =
+libtransform_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The wall plugin
 libwall_plugin_la_SOURCES = $(SOURCES_wall)
@@ -480,7 +491,7 @@ libwall_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libwall_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libwall_plugin_la_LIBADD = $(AM_LIBADD)
-libwall_plugin_la_DEPENDENCIES =
+libwall_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The wave plugin
 libwave_plugin_la_SOURCES = $(SOURCES_wave)
@@ -491,5 +502,16 @@ libwave_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libwave_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libwave_plugin_la_LIBADD = $(AM_LIBADD)
-libwave_plugin_la_DEPENDENCIES =
+libwave_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The yuvp plugin
+libyuvp_plugin_la_SOURCES = $(SOURCES_yuvp)
+nodist_libyuvp_plugin_la_SOURCES = $(nodist_SOURCES_yuvp)
+# Force per-target objects:
+libyuvp_plugin_la_CFLAGS = $(AM_CFLAGS)
+libyuvp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libyuvp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libyuvp_plugin_la_LIBADD = $(AM_LIBADD)
+libyuvp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

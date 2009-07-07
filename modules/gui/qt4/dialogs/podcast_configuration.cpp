@@ -2,7 +2,7 @@
  * podcast_configuration.cpp: Podcast configuration dialog
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id: de509a3951dc521ff50f81d6f0bb3e89e59c713b $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *
@@ -34,7 +34,7 @@ PodcastConfigDialog::PodcastConfigDialog( QWidget *parent, intf_thread_t *_p_int
 {
     ui.setupUi( this );
 
-    ui.podcastDelete->setToolTip( qtr( "Delete the selected item" ) );
+    ui.podcastDelete->setToolTip( qtr( "Deletes the selected item" ) );
     QPushButton *okButton = new QPushButton( qtr( "&Close" ), this );
     QPushButton *cancelButton = new QPushButton( qtr( "&Cancel" ), this );
     ui.okCancel->addButton( okButton, QDialogButtonBox::AcceptRole );

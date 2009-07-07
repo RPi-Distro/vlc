@@ -2,7 +2,7 @@
  * win32_window.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 22e1cbe4e63dfbc8299b7b23b13d947559649525 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -62,9 +62,17 @@ class Win32Window: public OSWindow
         /// Getter for the window handle
         HWND getHandle() const { return m_hWnd; }
 
+        /// Getter for the window handle
+        void* getOSHandle() const { return (void*) m_hWnd; }
+
+        /// reparent the window
+        void reparent( void* OSHandle, int x, int y, int w, int h );
+
     private:
         /// Window handle
         HWND m_hWnd;
+        /// Window parent's handle
+        HWND m_hWnd_parent;
         /// Indicates whether the window handles drag&drop events
         bool m_dragDrop;
         /// Drop target

@@ -2,7 +2,7 @@
  * macro.c : Custom <vlc> macro handling
  *****************************************************************************
  * Copyright (C) 2001-2005 the VideoLAN team
- * $Id: b98d42400809829ce3e9a568103acafb164327ef $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -199,10 +199,11 @@ static void MacroDo( httpd_file_sys_t *p_args,
                         msg_Dbg( p_intf, "requested playlist play" );
                         break;
                     }
+                    //TODO: really locked here ?
                     playlist_Control( p_sys->p_playlist, PLAYLIST_VIEWPLAY,
                                       true, NULL,
                                       playlist_ItemGetById( p_sys->p_playlist,
-                                      i_item, true ) );
+                                      i_item ) );
                     msg_Dbg( p_intf, "requested playlist item: %i", i_item );
                     break;
                 }
@@ -230,9 +231,8 @@ static void MacroDo( httpd_file_sys_t *p_args,
                     if( p_sys->p_input )
                     {
                         vout_thread_t *p_vout;
-                        p_vout = vlc_object_find( p_sys->p_input,
-                                                  VLC_OBJECT_VOUT, FIND_CHILD );
 
+                        p_vout = input_GetVout( p_sys->p_input );
                         if( p_vout )
                         {
                             p_vout->i_changes |= VOUT_FULLSCREEN_CHANGE;
@@ -354,7 +354,8 @@ static void MacroDo( httpd_file_sys_t *p_args,
                 case MVLC_DEL:
                 {
                     int i_item, *p_items = NULL, i_nb_items = 0;
-                    char item[512], *p_parser = p_request;
+                    char item[512];
+                    const char *p_parser = p_request;
 
                     /* Get the list of items to delete */
                     while( (p_parser =
@@ -388,7 +389,8 @@ static void MacroDo( httpd_file_sys_t *p_args,
                 case MVLC_KEEP:
                 {
                     int i_item, *p_items = NULL, i_nb_items = 0;
-                    char item[512], *p_parser = p_request;
+                    char item[512];
+                    const char *p_parser = p_request;
                     int i,j;
 
                     /* Get the list of items to keep */
@@ -519,7 +521,7 @@ static void MacroDo( httpd_file_sys_t *p_args,
                 case MVLC_SHUTDOWN:
                 {
                     msg_Dbg( p_intf, "requested shutdown" );
-                    vlc_object_kill( p_intf->p_libvlc );
+                    libvlc_Quit( p_intf->p_libvlc );
                     break;
                 }
 #ifdef ENABLE_VLM
@@ -545,7 +547,11 @@ static void MacroDo( httpd_file_sys_t *p_args,
                     if( p_intf->p_sys->p_vlm == NULL )
                         p_intf->p_sys->p_vlm = vlm_New( p_intf );
 
-                    if( p_intf->p_sys->p_vlm == NULL ) break;
+                    if( p_intf->p_sys->p_vlm == NULL )
+                    {
+                        free( psz );
+                        break;
+                    }
 
                     ExtractURIValue( p_request, "name", name, 512 );
                     if( StrToMacroType( control ) == MVLC_VLM_NEW )
@@ -581,11 +587,10 @@ static void MacroDo( httpd_file_sys_t *p_args,
                     }
                     else
                     {
-                        vlm_error = malloc( strlen(vlm_answer->psz_name) +
-                                            strlen(vlm_answer->psz_value) +
-                                            strlen( " : ") + 1 );
-                        sprintf( vlm_error , "%s : %s" , vlm_answer->psz_name,
-                                                         vlm_answer->psz_value );
+                        if( asprintf( &vlm_error , "%s : %s" ,
+                                      vlm_answer->psz_name,
+                                      vlm_answer->psz_value ) == -1 )
+                            vlm_error = NULL;
                     }
 
                     mvar_AppendNewVar( p_args->vars, "vlm_error", vlm_error );
@@ -761,7 +766,8 @@ static void MacroDo( httpd_file_sys_t *p_args,
         }
         case MVLC_VALUE:
         {
-            char *s, *v;
+            char *s;
+            const char *v;
 
             if( m->param1 )
             {

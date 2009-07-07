@@ -2,7 +2,7 @@
  * upnp_cc.cpp :  UPnP discovery module
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 7dfe82d0ebbcb130e433fc027f4134c7f17c5064 $
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *
@@ -39,6 +39,7 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include <vlc_playlist.h>
+#include <vlc_services_discovery.h>
 
 /* FIXME: thread-safety ?? */
 /* FIXME: playlist locking */
@@ -57,45 +58,16 @@ using namespace CyberLink;
     static int  Open ( vlc_object_t * );
     static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_shortname( "UPnP");
-    set_description( N_("Universal Plug'n'Play discovery") );
-    set_category( CAT_PLAYLIST );
-    set_subcategory( SUBCAT_PLAYLIST_SD );
+vlc_module_begin ()
+    set_shortname( "UPnP")
+    set_description( N_("Universal Plug'n'Play discovery") )
+    set_category( CAT_PLAYLIST )
+    set_subcategory( SUBCAT_PLAYLIST_SD )
 
-    set_capability( "services_discovery", 0 );
-    set_callbacks( Open, Close );
+    set_capability( "services_discovery", 0 )
+    set_callbacks( Open, Close )
 
-vlc_module_end();
-
-/*****************************************************************************
- * Local prototypes
- *****************************************************************************/
-
-/* Main functions */
-    static void Run    ( services_discovery_t *p_sd );
-
-/*****************************************************************************
- * Open: initialize and create stuff
- *****************************************************************************/
-static int Open( vlc_object_t *p_this )
-{
-    services_discovery_t *p_sd = ( services_discovery_t* )p_this;
-
-    p_sd->pf_run = Run;
-
-    services_discovery_SetLocalizedName( p_sd, _("Devices") );
-
-    return VLC_SUCCESS;
-}
-
-
-/*****************************************************************************
- * Close:
- *****************************************************************************/
-static void Close( vlc_object_t *p_this )
-{
-}
+vlc_module_end ()
 
 /*****************************************************************************
  * Run: main UPnP thread
@@ -145,24 +117,33 @@ class UPnPHandler : public MediaPlayer, public DeviceChangeListener,
             addSearchResponseListener( this );
             //addEventListener( this );
         }
-
 };
 
-static void Run( services_discovery_t *p_sd )
+/*****************************************************************************
+ * Open: initialize and create stuff
+ *****************************************************************************/
+static int Open( vlc_object_t *p_this )
 {
-    UPnPHandler u( p_sd );
+    services_discovery_t *p_sd = ( services_discovery_t* )p_this;
 
-    u.start();
+    UPnPHandler *u = new UPnPHandler( p_sd );
+    u->start( );
+    msg_Dbg( p_sd, "upnp discovery started" );
+    p_sd->p_private = u;
 
-    msg_Dbg( p_sd, "UPnP discovery started" );
-    /* read SAP packets */
-    while( vlc_object_alive (p_sd) )
-    {
-        msleep( 500 );
-    }
+    return VLC_SUCCESS;
+}
 
-    u.stop();
-    msg_Dbg( p_sd, "UPnP discovery stopped" );
+
+/*****************************************************************************
+ * Close:
+ *****************************************************************************/
+static void Close( vlc_object_t *p_this )
+{
+    UPnPHandler *u = (UPnPHandler *)p_this->p_private;
+    u->stop( );
+
+    msg_Dbg( p_this, "upnp discovery started" );
 }
 
 

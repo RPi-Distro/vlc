@@ -2,7 +2,7 @@
  * portaudio.c : portaudio (v19) audio output plugin
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id: 3a8764063d76ff4a2d99377b69fa764dc0fd998d $
+ * $Id$
  *
  * Authors: Frederic Ruget <frederic.ruget@free.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -105,16 +105,17 @@ static int PAOpenStream( aout_instance_t * );
 #define DEVICE_TEXT N_("Output device")
 #define DEVICE_LONGTEXT N_("Portaudio identifier for the output device")
 
-vlc_module_begin();
-    set_shortname( "PortAudio" );
-    set_description( N_("PORTAUDIO audio output") );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AOUT );
-    add_integer( "portaudio-device", 0, NULL,
-                 DEVICE_TEXT, DEVICE_LONGTEXT, false );
-    set_capability( "audio output", 0 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "PortAudio" )
+    set_description( N_("PORTAUDIO audio output") )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AOUT )
+    add_integer( "portaudio-audio-device", 0, NULL,
+                 DEVICE_TEXT, DEVICE_LONGTEXT, false )
+        add_deprecated_alias( "portaudio-device" )   /* deprecated since 0.9.3 */
+    set_capability( "audio output", 0 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /* This routine will be called by the PortAudio engine when audio is needed.
  * It may called at interrupt level on some machines so don't do anything
@@ -168,13 +169,12 @@ static int Open( vlc_object_t * p_this )
 {
     aout_instance_t *p_aout = (aout_instance_t *)p_this;
     struct aout_sys_t * p_sys;
-    vlc_value_t val;
     int i_err;
 
     msg_Dbg( p_aout, "entering Open()");
 
     /* Allocate p_sys structure */
-    p_sys = (aout_sys_t *)malloc( sizeof(aout_sys_t) );
+    p_sys = malloc( sizeof(aout_sys_t) );
     if( p_sys == NULL )
         return VLC_ENOMEM;
     p_sys->p_aout = p_aout;
@@ -183,9 +183,7 @@ static int Open( vlc_object_t * p_this )
     p_aout->output.pf_play = Play;
 
     /* Retrieve output device id from config */
-    var_Create( p_aout, "portaudio-device", VLC_VAR_INTEGER|VLC_VAR_DOINHERIT);
-    var_Get( p_aout, "portaudio-device", &val );
-    p_sys->i_device_id = val.i_int;
+    p_sys->i_device_id = var_CreateGetInteger( p_aout, "portaudio-audio-device" );
 
 #ifdef PORTAUDIO_IS_SERIOUSLY_BROKEN
     if( !b_init )
@@ -211,15 +209,15 @@ static int Open( vlc_object_t * p_this )
         pa_thread->p_aout = p_aout;
         pa_thread->b_error = false;
         vlc_mutex_init( &pa_thread->lock_wait );
-        vlc_cond_init( p_aout, &pa_thread->wait );
+        vlc_cond_init( &pa_thread->wait );
         pa_thread->b_wait = false;
         vlc_mutex_init( &pa_thread->lock_signal );
-        vlc_cond_init( p_aout, &pa_thread->signal );
+        vlc_cond_init( &pa_thread->signal );
         pa_thread->b_signal = false;
 
         /* Create PORTAUDIOThread */
         if( vlc_thread_create( pa_thread, "aout", PORTAUDIOThread,
-                               VLC_THREAD_PRIORITY_OUTPUT, false ) )
+                               VLC_THREAD_PRIORITY_OUTPUT ) )
         {
             msg_Err( p_aout, "cannot create PORTAUDIO thread" );
             return VLC_EGENERIC;
@@ -281,7 +279,6 @@ static void Close ( vlc_object_t *p_this )
 {
     aout_instance_t *p_aout = (aout_instance_t *)p_this;
     aout_sys_t *p_sys = p_aout->output.p_sys;
-    int i_err;
 
     msg_Dbg( p_aout, "closing portaudio");
 
@@ -302,7 +299,7 @@ static void Close ( vlc_object_t *p_this )
 
 #else
 
-    i_err = Pa_StopStream( p_sys->p_stream );
+    int i_err = Pa_StopStream( p_sys->p_stream );
     if( i_err != paNoError )
     {
         msg_Err( p_aout, "Pa_StopStream: %d (%s)", i_err,
@@ -391,7 +388,7 @@ static int PAOpenDevice( aout_instance_t *p_aout )
         if( p_sys->deviceInfo->maxOutputChannels >= 1 )
         {
             val.i_int = AOUT_VAR_MONO;
-            text.psz_string = N_("Mono");
+            text.psz_string = _("Mono");
             var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE,
                         &val, &text );
             msg_Dbg( p_aout, "device supports 1 channel" );
@@ -399,7 +396,7 @@ static int PAOpenDevice( aout_instance_t *p_aout )
         if( p_sys->deviceInfo->maxOutputChannels >= 2 )
         {
             val.i_int = AOUT_VAR_STEREO;
-            text.psz_string = N_("Stereo");
+            text.psz_string = _("Stereo");
             var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE,
                         &val, &text );
             var_Change( p_aout, "audio-device", VLC_VAR_SETDEFAULT,
@@ -410,7 +407,7 @@ static int PAOpenDevice( aout_instance_t *p_aout )
         if( p_sys->deviceInfo->maxOutputChannels >= 4 )
         {
             val.i_int = AOUT_VAR_2F2R;
-            text.psz_string = N_("2 Front 2 Rear");
+            text.psz_string = _("2 Front 2 Rear");
             var_Change( p_aout, "audio-device", VLC_VAR_ADDCHOICE,
                         &val, &text );
             msg_Dbg( p_aout, "device supports 4 channels" );
@@ -418,7 +415,7 @@ static int PAOpenDevice( aout_instance_t *p_aout )
         if( p_sys->deviceInfo->maxOutputChannels >= 5 )
         {
             val.i_int = AOUT_VAR_3F2R;
-            text.psz_string = N_("3 Front 2 Rear");
+            text.psz_string = _("3 Front 2 Rear");
             var_Change( p_aout, "audio-device",
                         VLC_VAR_ADDCHOICE, &val, &text );
             msg_Dbg( p_aout, "device supports 5 channels" );
@@ -433,9 +430,7 @@ static int PAOpenDevice( aout_instance_t *p_aout )
         }
 
         var_AddCallback( p_aout, "audio-device", aout_ChannelsRestart, NULL );
-
-        val.b_bool = true;
-        var_Set( p_aout, "intf-change", val );
+        var_SetBool( p_aout, "intf-change", true );
     }
 
     /* Audio format is paFloat32 (always supported by portaudio v19) */
@@ -560,6 +555,7 @@ static int PAOpenStream( aout_instance_t *p_aout )
  *****************************************************************************/
 static void Play( aout_instance_t * p_aout )
 {
+    VLC_UNUSED( p_aout );
 }
 
 #ifdef PORTAUDIO_IS_SERIOUSLY_BROKEN
@@ -573,6 +569,7 @@ static void* PORTAUDIOThread( vlc_object_t *p_this )
     aout_instance_t *p_aout;
     aout_sys_t *p_sys;
     int i_err;
+    int canc = vlc_savecancel ();
 
     while( vlc_object_alive (pa_thread) )
     {
@@ -645,6 +642,7 @@ static void* PORTAUDIOThread( vlc_object_t *p_this )
         vlc_cond_signal( &pa_thread->wait );
         vlc_mutex_unlock( &pa_thread->lock_wait );
     }
+    vlc_restorecancel (canc);
     return NULL;
 }
 #endif

@@ -2,7 +2,7 @@
  * hd1000a.cpp : Roku HD1000 audio output
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 3604c6ea017394289044a28e04e5e52ae7062d67 $
+ * $Id$
  *
  * Author: Jon Lech Johansen <jon-vl@nanocrew.net>
  *
@@ -74,14 +74,14 @@ static void    InterleaveS16( int16_t *, int16_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_shortname( "Roku HD1000" );
-    set_description( N_("Roku HD1000 audio output") );
-    set_capability( "audio output", 100 );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AOUT );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "Roku HD1000" )
+    set_description( N_("Roku HD1000 audio output") )
+    set_capability( "audio output", 100 )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AOUT )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: open a dummy audio device
@@ -168,7 +168,7 @@ static int Open( vlc_object_t * p_this )
 
     /* Create thread and wait for its readiness. */
     if( vlc_thread_create( p_aout, "aout", Thread,
-                           VLC_THREAD_PRIORITY_OUTPUT, false ) )
+                           VLC_THREAD_PRIORITY_OUTPUT ) )
     {
         msg_Err( p_aout, "cannot create OSS thread (%m)" );
         pPlayer->Close();
@@ -222,6 +222,7 @@ static void* Thread( vlc_object_t *p_this )
     aout_buffer_t * p_buffer;
     struct aout_sys_t * p_sys = p_aout->output.p_sys;
     PCMAudioPlayer * pPlayer = p_sys->pPlayer;
+    int canc = vlc_savecancel ();
 
     while( vlc_object_alive (p_aout) )
     {
@@ -254,6 +255,7 @@ static void* Thread( vlc_object_t *p_this )
 #undef i
     }
 
+    vlc_restorecancel (canc);
     return NULL;
 }
 

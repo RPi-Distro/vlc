@@ -2,7 +2,7 @@
  * fake.c: decoder reading from a fake stream, outputting a fixed image
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: bd4c1cddc8a9575299cd985dd4c3a6ae4dc0d68e $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman at m2x dot nl>
@@ -83,36 +83,36 @@ static const char *const ppsz_deinterlace_type[] =
     "deinterlace", "ffmpeg-deinterlace"
 };
 
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_shortname( N_("Fake") );
-    set_description( N_("Fake video decoder") );
-    set_capability( "decoder", 1000 );
-    set_callbacks( OpenDecoder, CloseDecoder );
-    add_shortcut( "fake" );
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_shortname( N_("Fake") )
+    set_description( N_("Fake video decoder") )
+    set_capability( "decoder", 1000 )
+    set_callbacks( OpenDecoder, CloseDecoder )
+    add_shortcut( "fake" )
 
     add_file( "fake-file", "", NULL, FILE_TEXT,
-                FILE_LONGTEXT, false );
+                FILE_LONGTEXT, false )
     add_integer( "fake-file-reload", 0, NULL, RELOAD_TEXT,
-                RELOAD_LONGTEXT, false );
+                RELOAD_LONGTEXT, false )
     add_integer( "fake-width", 0, NULL, WIDTH_TEXT,
-                 WIDTH_LONGTEXT, true );
+                 WIDTH_LONGTEXT, true )
     add_integer( "fake-height", 0, NULL, HEIGHT_TEXT,
-                 HEIGHT_LONGTEXT, true );
+                 HEIGHT_LONGTEXT, true )
     add_bool( "fake-keep-ar", 0, NULL, KEEP_AR_TEXT, KEEP_AR_LONGTEXT,
-              true );
+              true )
     add_string( "fake-aspect-ratio", "", NULL,
-                ASPECT_RATIO_TEXT, ASPECT_RATIO_LONGTEXT, true );
+                ASPECT_RATIO_TEXT, ASPECT_RATIO_LONGTEXT, true )
     add_bool( "fake-deinterlace", 0, NULL, DEINTERLACE_TEXT,
-              DEINTERLACE_LONGTEXT, false );
+              DEINTERLACE_LONGTEXT, false )
     add_string( "fake-deinterlace-module", "deinterlace", NULL,
                 DEINTERLACE_MODULE_TEXT, DEINTERLACE_MODULE_LONGTEXT,
-                false );
-        change_string_list( ppsz_deinterlace_type, 0, 0 );
+                false )
+        change_string_list( ppsz_deinterlace_type, 0, 0 )
     add_string( "fake-chroma", "I420", NULL, CHROMA_TEXT, CHROMA_LONGTEXT,
-                true );
-vlc_module_end();
+                true )
+vlc_module_end ()
 
 struct decoder_sys_t
 {
@@ -143,12 +143,9 @@ static int OpenDecoder( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    p_dec->p_sys = (decoder_sys_t *)malloc( sizeof( decoder_sys_t ) );
+    p_dec->p_sys = calloc( 1, sizeof( *p_dec->p_sys ) );
     if( !p_dec->p_sys )
-    {
         return VLC_ENOMEM;
-    }
-    memset( p_dec->p_sys, 0, sizeof( decoder_sys_t ) );
 
     psz_file = var_CreateGetNonEmptyStringCommand( p_dec, "fake-file" );
     if( !psz_file )
@@ -169,6 +166,7 @@ static int OpenDecoder( vlc_object_t *p_this )
         p_dec->p_sys->i_reload = (mtime_t)(val.i_int * 1000000);
         p_dec->p_sys->i_next   = (mtime_t)(p_dec->p_sys->i_reload + mdate());
     }
+    var_AddCallback( p_dec, "fake-file-reload", FakeCallback , p_dec );
 
     psz_chroma = var_CreateGetString( p_dec, "fake-chroma" );
     if( strlen( psz_chroma ) != 4 )
@@ -344,7 +342,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     picture_t *p_pic;
 
     if( pp_block == NULL || !*pp_block ) return NULL;
-    p_pic = p_dec->pf_vout_buffer_new( p_dec );
+    p_pic = decoder_NewPicture( p_dec );
     if( p_pic == NULL )
     {
         msg_Err( p_dec, "cannot get picture" );
@@ -358,7 +356,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
         p_sys->i_next = (mtime_t)(p_sys->i_reload + mdate());
     }
     vlc_mutex_lock( &p_dec->p_sys->lock );
-    vout_CopyPicture( p_dec, p_pic, p_dec->p_sys->p_image );
+    picture_Copy( p_pic, p_dec->p_sys->p_image );
     vlc_mutex_unlock( &p_dec->p_sys->lock );
 
     p_pic->date = (*pp_block)->i_pts;

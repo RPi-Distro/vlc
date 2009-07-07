@@ -2,7 +2,7 @@
  * video.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004, 2003 the VideoLAN team
- * $Id: 6e307bae3ce777830b37fb58989f9ef7a15f0007 $
+ * $Id$
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -100,9 +100,10 @@ VideoWindow::VideoWindow( intf_thread_t *_p_intf, HWND _p_parent )
 
     p_vout = NULL;
 
-    p_intf->pf_request_window = ::GetWindow;
-    p_intf->pf_release_window = ::ReleaseWindow;
-    p_intf->pf_control_window = ::ControlWindow;
+    // Changeset 138da19...
+    //p_intf->pf_request_window = ::GetWindow;
+    //p_intf->pf_release_window = ::ReleaseWindow;
+    //p_intf->pf_control_window = ::ControlWindow;
 
     p_intf->p_sys->p_video_window = this;
 
@@ -201,13 +202,9 @@ LRESULT VideoWindow::WndProc( HWND hwnd, UINT msg, WPARAM wp, LPARAM lp )
     switch( msg )
     {
     case WM_KILLFOCUS:
-        if( p_vout )
-            vout_Control( p_vout, VOUT_SET_FOCUS, (bool)false );
         return TRUE;
 
     case WM_SETFOCUS:
-        if( p_vout )
-            vout_Control( p_vout, VOUT_SET_FOCUS, (bool)true );
         return TRUE;
 
     default:

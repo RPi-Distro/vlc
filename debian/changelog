@@ -1,3 +1,24 @@
+vlc (1.0.0~rc2-1) experimental; urgency=low
+
+  * New Upstream Release Candidate
+    + Closes: #527010, #491441, #508618, #522824
+  * Delete patches which were picked from upstream
+  * Refresh patches
+  * Remove vlc-plugin-esd and vlc-plugin-arts as they have been removed
+    by upstream
+  * SONAME change for libvlccore
+  * Add new symbols for libvlc2
+  * Fix static libs compile
+  * Use vlc-wrapper manpage from upstream
+  * vlc.install: add drawable and screen was renamed x11_screen
+  * vlc-nox.install: Add and remove modules added/removed upstream
+  * Point out in NEWS the modules renamed or splited
+  * Add links to upstream NEWS and co in vlc-nox
+  * Version the depedency of libvlcore2 on vlc-data
+  * Remove unnecessary "Section:" in debian/control
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 03 Jun 2009 17:55:10 +0200
+
 vlc (0.9.9a-3) unstable; urgency=medium
 
   * Correct typo in 0.9.9a-2 changelog entry

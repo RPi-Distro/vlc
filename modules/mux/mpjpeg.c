@@ -2,7 +2,7 @@
  * mpjpeg.c: mime multipart jpeg  muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: 0d53522a5977fde31a1cc9553b116f0e4e86b526 $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *
@@ -42,16 +42,16 @@ static void Close  ( vlc_object_t * );
 
 #define SOUT_CFG_PREFIX "sout-mpjpeg-"
 
-vlc_module_begin();
-    set_shortname( "MPJPEG" );
-    set_description( N_("Multipart JPEG muxer") );
-    set_capability( "sout mux", 5 );
-    add_obsolete_string( SOUT_CFG_PREFIX "separator" );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_MUX );
-    set_callbacks( Open, Close );
-    add_shortcut( "mpjpeg" );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "MPJPEG" )
+    set_description( N_("Multipart JPEG muxer") )
+    set_capability( "sout mux", 5 )
+    add_obsolete_string( SOUT_CFG_PREFIX "separator" )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_MUX )
+    set_callbacks( Open, Close )
+    add_shortcut( "mpjpeg" )
+vlc_module_end ()
 
 /*****************************************************************************
  * Exported prototypes

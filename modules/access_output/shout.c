@@ -2,7 +2,7 @@
  * shout.c: This module forwards vorbis streams to an icecast server
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: c51704a6eaecc14b1f382a30f8fa54ecc77157b0 $
+ * $Id$
  *
  * Authors: Daniel Fischer <dan at subsignal dot org>
  *          Derk-Jan Hartman <hartman at videolan dot org>
@@ -106,36 +106,36 @@ static void Close( vlc_object_t * );
                            "website. Requires the bitrate information specified for " \
                            "shoutcast. Requires Ogg streaming for icecast." )
 
-vlc_module_begin();
-    set_description( N_("IceCAST output") );
-    set_shortname( "Shoutcast" );
-    set_capability( "sout access", 50 );
-    set_category( CAT_SOUT );
-    set_subcategory( SUBCAT_SOUT_ACO );
-    add_shortcut( "shout" );
+vlc_module_begin ()
+    set_description( N_("IceCAST output") )
+    set_shortname( "Shoutcast" )
+    set_capability( "sout access", 0 )
+    set_category( CAT_SOUT )
+    set_subcategory( SUBCAT_SOUT_ACO )
+    add_shortcut( "shout" )
     add_string( SOUT_CFG_PREFIX "name", "VLC media player - Live stream", NULL,
-                NAME_TEXT, NAME_LONGTEXT, false );
+                NAME_TEXT, NAME_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "description",
                  "Live stream from VLC media player", NULL,
-                DESCRIPTION_TEXT, DESCRIPTION_LONGTEXT, false );
+                DESCRIPTION_TEXT, DESCRIPTION_LONGTEXT, false )
     add_bool(   SOUT_CFG_PREFIX "mp3", false, NULL,
-                MP3_TEXT, MP3_LONGTEXT, true );
+                MP3_TEXT, MP3_LONGTEXT, true )
     add_string( SOUT_CFG_PREFIX "genre", "Alternative", NULL,
-                GENRE_TEXT, GENRE_LONGTEXT, false );
+                GENRE_TEXT, GENRE_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "url", "http://www.videolan.org/vlc", NULL,
-                URL_TEXT, URL_LONGTEXT, false );
+                URL_TEXT, URL_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "bitrate", "", NULL,
-                BITRATE_TEXT, BITRATE_LONGTEXT, false );
+                BITRATE_TEXT, BITRATE_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "samplerate", "", NULL,
-                SAMPLERATE_TEXT, SAMPLERATE_LONGTEXT, false );
+                SAMPLERATE_TEXT, SAMPLERATE_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "channels", "", NULL,
-                CHANNELS_TEXT, CHANNELS_LONGTEXT, false );
+                CHANNELS_TEXT, CHANNELS_LONGTEXT, false )
     add_string( SOUT_CFG_PREFIX "quality", "", NULL,
-                QUALITY_TEXT, QUALITY_LONGTEXT, false );
+                QUALITY_TEXT, QUALITY_LONGTEXT, false )
     add_bool(   SOUT_CFG_PREFIX "public", false, NULL,
-                PUBLIC_TEXT, PUBLIC_LONGTEXT, true );
-    set_callbacks( Open, Close );
-vlc_module_end();
+                PUBLIC_TEXT, PUBLIC_LONGTEXT, true )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Exported prototypes
@@ -151,6 +151,7 @@ static const char *const ppsz_sout_options[] = {
  *****************************************************************************/
 static ssize_t Write( sout_access_out_t *, block_t * );
 static int Seek ( sout_access_out_t *, off_t  );
+static int Control( sout_access_out_t *, int, va_list );
 
 struct sout_access_out_sys_t
 {
@@ -459,16 +460,10 @@ static int Open( vlc_object_t *p_this )
 
     p_access->pf_write = Write;
     p_access->pf_seek  = Seek;
+    p_access->pf_control = Control;
 
     msg_Dbg( p_access, "shout access output opened (%s@%s:%i/%s)",
              psz_user, psz_host, i_port, psz_mount );
-
-    /* Update pace control flag */
-    if( p_access->psz_access && !strcmp( p_access->psz_access, "stream" ) )
-    {
-        p_access->p_sout->i_out_pace_nocontrol++;
-    }
-
     free( psz_accessname );
 
     return VLC_SUCCESS;
@@ -487,14 +482,24 @@ static void Close( vlc_object_t * p_this )
         shout_shutdown();
     }
     free( p_access->p_sys );
-
-    /* Update pace control flag */
-    if( p_access->psz_access && !strcmp( p_access->psz_access, "stream" ) )
-    {
-        p_access->p_sout->i_out_pace_nocontrol--;
-    }
-
     msg_Dbg( p_access, "shout access output closed" );
+}
+
+static int Control( sout_access_out_t *p_access, int i_query, va_list args )
+{
+    switch( i_query )
+    {
+        case ACCESS_OUT_CONTROLS_PACE:
+        {
+            bool *pb = va_arg( args, bool * );
+            *pb = strcmp( p_access->psz_access, "stream" );
+            break;
+        }
+
+        default:
+            return VLC_EGENERIC;
+    }
+    return VLC_SUCCESS;
 }
 
 /*****************************************************************************

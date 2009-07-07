@@ -57,8 +57,6 @@ static int  Init      ( vout_thread_t * );
 static void End       ( vout_thread_t * );
 static void Render    ( vout_thread_t *, picture_t * );
 
-static int  SendEvents( vlc_object_t *, char const *,
-                        vlc_value_t, vlc_value_t, void * );
 static void ReleaseImages( vout_thread_t *p_vout );
 static void VlcPictureToIplImage( vout_thread_t *p_vout, picture_t *p_in );
 
@@ -78,18 +76,18 @@ static const char *const verbosity_list[] = { "error", "warning", "debug"};
 static const char *const verbosity_list_text[] = { N_("Show only errors"),
   N_("Show errors and warnings"), N_("Show everything including debug messages")};
 
-vlc_module_begin();
-    set_description( N_("OpenCV video filter wrapper") );
-    set_shortname( N_("OpenCV" ));
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
-    set_capability( "video filter", 0 );
-    add_shortcut( "opencv_wrapper" );
-    set_callbacks( Create, Destroy );
+vlc_module_begin ()
+    set_description( N_("OpenCV video filter wrapper") )
+    set_shortname( N_("OpenCV" ))
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
+    set_capability( "video filter", 0 )
+    add_shortcut( "opencv_wrapper" )
+    set_callbacks( Create, Destroy )
     add_float_with_range( "opencv-scale", 1.0, 0.1, 2.0, NULL,
                           N_("Scale factor (0.1-2.0)"),
                           N_("Ammount by which to scale the picture before sending it to the internal OpenCV filter"),
-                          false );
+                          false )
     add_string( "opencv-chroma", "input", NULL,
                           N_("OpenCV filter chroma"),
                           N_("Chroma to convert picture to before sending it to the internal OpenCV filter"), false);
@@ -105,7 +103,7 @@ vlc_module_begin();
     add_string( "opencv-filter-name", "none", NULL,
                           N_("OpenCV internal filter name"),
                           N_("Name of internal OpenCV plugin filter to use"), false);
-vlc_module_end();
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -297,8 +295,6 @@ static int Create( vlc_object_t *p_this )
  *****************************************************************************/
 static int Init( vout_thread_t *p_vout )
 {
-    int i_index;
-    picture_t *p_pic;
     video_format_t fmt;
     vout_sys_t *p_sys = p_vout->p_sys;
     I_OUTPUTPICTURES = 0;
@@ -334,7 +330,7 @@ static int Init( vout_thread_t *p_vout )
 
     if (p_vout->p_sys->psz_inner_name)
         p_sys->p_opencv->p_module =
-            module_Need( p_sys->p_opencv, p_sys->psz_inner_name, 0, 0 );
+            module_need( p_sys->p_opencv, p_sys->psz_inner_name, NULL, false );
 
     if( !p_sys->p_opencv->p_module )
     {
@@ -358,11 +354,9 @@ static int Init( vout_thread_t *p_vout )
         return VLC_EGENERIC;
     }
 
-    ALLOCATE_DIRECTBUFFERS( VOUT_MAX_PICTURES );
+    vout_filter_AllocateDirectBuffers( p_vout, VOUT_MAX_PICTURES );
 
-    ADD_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
-
-    ADD_PARENT_CALLBACKS( SendEventsToChild );
+    vout_filter_AddChild( p_vout, p_vout->p_sys->p_vout, NULL );
 
     return VLC_SUCCESS;
 }
@@ -372,30 +366,22 @@ static int Init( vout_thread_t *p_vout )
  *****************************************************************************/
 static void End( vout_thread_t *p_vout )
 {
-    int i_index;
+    vout_sys_t *p_sys = p_vout->p_sys;
 
-    DEL_PARENT_CALLBACKS( SendEventsToChild );
+    vout_filter_DelChild( p_vout, p_sys->p_vout, NULL );
+    vout_CloseAndRelease( p_sys->p_vout );
 
-    DEL_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
+    vout_filter_ReleaseDirectBuffers( p_vout );
 
-    /* Free the fake output buffers we allocated */
-    for( i_index = I_OUTPUTPICTURES ; i_index ; )
-    {
-        i_index--;
-        free( PP_OUTPUTPICTURE[ i_index ]->p_data_orig );
-    }
-
-    if ( p_vout->p_sys->p_opencv )
+    if( p_sys->p_opencv )
     {
         //release the internal opencv filter
-        if( p_vout->p_sys->p_opencv->p_module )
-            module_Unneed( p_vout->p_sys->p_opencv, p_vout->p_sys->p_opencv->p_module );
-        vlc_object_detach( p_vout->p_sys->p_opencv );
-        vlc_object_release( p_vout->p_sys->p_opencv );
-        p_vout->p_sys->p_opencv = NULL;
+        if( p_sys->p_opencv->p_module )
+            module_unneed( p_sys->p_opencv, p_sys->p_opencv->p_module );
+        vlc_object_detach( p_sys->p_opencv );
+        vlc_object_release( p_sys->p_opencv );
+        p_sys->p_opencv = NULL;
     }
-
-    vout_CloseAndRelease( p_vout->p_sys->p_vout );
 }
 
 /*****************************************************************************
@@ -533,7 +519,7 @@ static void VlcPictureToIplImage( vout_thread_t *p_vout, picture_t *p_in )
     finish = clock();
     duration = (double)(finish - start) / CLOCKS_PER_SEC;
     if (p_sys->i_verbosity > VERB_WARN)
-        msg_Dbg( p_vout, "VlcPictureToIplImageRgb took %2.4f seconds\n", duration );
+        msg_Dbg( p_vout, "VlcPictureToIplImageRgb took %2.4f seconds", duration );
 }
 
 /*****************************************************************************
@@ -565,7 +551,7 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
         //This copy is a bit unfortunate but image_Convert can't write into an existing image so it is better to copy the
         //(say) 16bit YUV image here than a 32bit RGB image somehwere else.
         //It is also not that expensive in time.
-        vout_CopyPicture( p_vout, p_outpic, p_pic );
+        picture_Copy( p_outpic, p_pic );
         VlcPictureToIplImage( p_vout, p_pic);
         //pass the image to the internal opencv filter for processing
         if ((p_vout->p_sys->p_opencv) && (p_vout->p_sys->p_opencv->p_module))
@@ -579,40 +565,19 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
             p_vout->p_sys->p_opencv->pf_video_filter( p_vout->p_sys->p_opencv, &(p_vout->p_sys->hacked_pic));
         //copy the processed image into the output image
         if ((p_vout->p_sys->p_proc_image) && (p_vout->p_sys->p_proc_image->p_data))
-            vout_CopyPicture( p_vout, p_outpic, p_vout->p_sys->p_proc_image );
+            picture_Copy( p_outpic, p_vout->p_sys->p_proc_image );
     }
 
     //calculate duration
     finish = clock();
     duration = (double)(finish - start) / CLOCKS_PER_SEC;
     if (p_vout->p_sys->i_verbosity > VERB_WARN)
-        msg_Dbg( p_vout, "Render took %2.4f seconds\n", duration );
+        msg_Dbg( p_vout, "Render took %2.4f seconds", duration );
 
     ReleaseImages(p_vout);
-    vout_DatePicture( p_vout->p_sys->p_vout, p_outpic, p_pic->date );
+    p_outpic->date  = p_pic->date;
     
     vout_UnlinkPicture( p_vout->p_sys->p_vout, p_outpic );
     vout_DisplayPicture( p_vout->p_sys->p_vout, p_outpic );
 }
 
-/*****************************************************************************
- * SendEvents: forward mouse and keyboard events to the parent p_vout
- *****************************************************************************/
-static int SendEvents( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    var_Set( (vlc_object_t *)p_data, psz_var, newval );
-
-    return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * SendEventsToChild: forward events to the child/children vout
- *****************************************************************************/
-static int SendEventsToChild( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    vout_thread_t *p_vout = (vout_thread_t *)p_this;
-    var_Set( p_vout->p_sys->p_vout, psz_var, newval );
-    return VLC_SUCCESS;
-}

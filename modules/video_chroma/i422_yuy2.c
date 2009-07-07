@@ -2,7 +2,7 @@
  * i422_yuy2.c : Planar YUV 4:2:2 to Packed YUV conversion module for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001 the VideoLAN team
- * $Id: 528ec6893f95e1e8739ec6a475b6d408d4be295d $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -67,21 +67,21 @@ static picture_t *I422_Y211_Filter  ( filter_t *, picture_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
+vlc_module_begin ()
 #if defined (MODULE_NAME_IS_i422_yuy2)
-    set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) );
-    set_capability( "video filter2", 80 );
+    set_description( N_("Conversions from " SRC_FOURCC " to " DEST_FOURCC) )
+    set_capability( "video filter2", 80 )
 #elif defined (MODULE_NAME_IS_i422_yuy2_mmx)
-    set_description( N_("MMX conversions from " SRC_FOURCC " to " DEST_FOURCC) );
-    set_capability( "video filter2", 100 );
-    add_requirement( MMX );
+    set_description( N_("MMX conversions from " SRC_FOURCC " to " DEST_FOURCC) )
+    set_capability( "video filter2", 100 )
+    add_requirement( MMX )
 #elif defined (MODULE_NAME_IS_i422_yuy2_sse2)
-    set_description( N_("SSE2 conversions from " SRC_FOURCC " to " DEST_FOURCC) );
-    set_capability( "video filter2", 120 );
-    add_requirement( SSE2 );
+    set_description( N_("SSE2 conversions from " SRC_FOURCC " to " DEST_FOURCC) )
+    set_capability( "video filter2", 120 )
+    add_requirement( SSE2 )
 #endif
-    set_callbacks( Activate, NULL );
-vlc_module_end();
+    set_callbacks( Activate, NULL )
+vlc_module_end ()
 
 /*****************************************************************************
  * Activate: allocate a chroma function

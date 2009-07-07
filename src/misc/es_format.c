@@ -2,7 +2,7 @@
  * es_format.c : es_format_t helpers.
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: ec3a90c90398e1378739e12a20949119b315680e $
+ * $Id$
  *
  * Author: Laurent Aimar <fenrir@videolan.org>
  *
@@ -60,7 +60,7 @@ static int BinaryLog( uint32_t i )
  */
 static void MaskToShift( int *pi_left, int *pi_right, uint32_t i_mask )
 {
-    uint32_t i_low, i_high;            /* lower hand higher bits of the mask */
+    uint32_t i_low, i_high;            /* lower and higher bits of the mask */
 
     if( !i_mask )
     {

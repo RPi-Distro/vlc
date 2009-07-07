@@ -2,7 +2,7 @@
  * msn.c : msn title plugin
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 45553ff49b5534ee4ed202d695d6e86034ca9ca3 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -68,18 +68,18 @@ static int SendToMSN( const char * psz_msg );
 #define FORMAT_LONGTEXT N_("Format of the string to send to MSN " \
 "{0} Artist, {1} Title, {2} Album. Defaults to \"Artist - Title\" ({0} - {1}).")
 
-vlc_module_begin();
-    set_category( CAT_INTERFACE );
-    set_subcategory( SUBCAT_INTERFACE_CONTROL );
-    set_shortname( "MSN" );
-    set_description( N_("MSN Now-Playing") );
+vlc_module_begin ()
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_CONTROL )
+    set_shortname( "MSN" )
+    set_description( N_("MSN Now-Playing") )
 
     add_string( "msn-format", FORMAT_DEFAULT, NULL,
-                FORMAT_TEXT, FORMAT_LONGTEXT, false );
+                FORMAT_TEXT, FORMAT_LONGTEXT, false )
 
-    set_capability( "interface", 0 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_capability( "interface", 0 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: initialize and create stuff
@@ -89,7 +89,9 @@ static int Open( vlc_object_t *p_this )
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
     playlist_t *p_playlist;
 
-    MALLOC_ERR( p_intf->p_sys, intf_sys_t );
+    p_intf->p_sys = malloc( sizeof( intf_sys_t ) );
+    if( !p_intf->p_sys )
+        return VLC_ENOMEM;
 
     p_intf->p_sys->psz_format = config_GetPsz( p_intf, "msn-format" );
     if( !p_intf->p_sys->psz_format )
@@ -99,9 +101,9 @@ static int Open( vlc_object_t *p_this )
     }
     msg_Dbg( p_intf, "using format: %s", p_intf->p_sys->psz_format );
 
-    p_playlist = pl_Yield( p_intf );
+    p_playlist = pl_Hold( p_intf );
     var_AddCallback( p_playlist, "item-change", ItemChange, p_intf );
-    var_AddCallback( p_playlist, "playlist-current", ItemChange, p_intf );
+    var_AddCallback( p_playlist, "item-current", ItemChange, p_intf );
     pl_Release( p_intf );
 
     return VLC_SUCCESS;
@@ -113,14 +115,14 @@ static int Open( vlc_object_t *p_this )
 static void Close( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
-    playlist_t *p_playlist = pl_Yield( p_this );
+    playlist_t *p_playlist = pl_Hold( p_this );
 
     /* clear the MSN stuff ... else it looks like we're still playing
      * something although VLC (or the MSN plugin) is closed */
     SendToMSN( "\\0Music\\01\\0\\0\\0\\0\\0\\0\\0" );
 
     var_DelCallback( p_playlist, "item-change", ItemChange, p_intf );
-    var_DelCallback( p_playlist, "playlist-current", ItemChange, p_intf );
+    var_DelCallback( p_playlist, "item-current", ItemChange, p_intf );
     pl_Release( p_this );
 
     /* Destroy structure */
@@ -141,14 +143,9 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     char *psz_artist = NULL;
     char *psz_album = NULL;
     char *psz_buf = NULL;
-    input_thread_t *p_input;
-    playlist_t *p_playlist = pl_Yield( p_this );
-
-    p_input = p_playlist->p_input;
-    pl_Release( p_this );
+    input_thread_t *p_input =  playlist_CurrentInput( (playlist_t *) p_this );
 
     if( !p_input ) return VLC_SUCCESS;
-    vlc_object_yield( p_input );
 
     if( p_input->b_dead || !input_GetItem(p_input)->psz_name )
     {
@@ -161,11 +158,9 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     /* Playing something ... */
     psz_artist = input_item_GetArtist( input_GetItem( p_input ) );
     psz_album = input_item_GetAlbum( input_GetItem( p_input ) );
-    psz_title = input_item_GetTitle( input_GetItem( p_input ) );
+    psz_title = input_item_GetTitleFbName( input_GetItem( p_input ) );
     if( !psz_artist ) psz_artist = strdup( "" );
-    if( !psz_album ) psz_artist = strdup( "" );
-    if( !psz_title )
-        psz_title = input_item_GetName( input_GetItem( p_input ) );
+    if( !psz_album ) psz_album = strdup( "" );
 
     psz_buf = str_format_meta( p_this, p_intf->p_sys->psz_format );
 
@@ -197,7 +192,9 @@ static int SendToMSN( const char *psz_msg )
 
     wchar_t buffer[MSN_MAX_LENGTH];
 
-    mbstowcs( buffer, psz_msg, MSN_MAX_LENGTH );
+    //mbstowcs( buffer, psz_msg, MSN_MAX_LENGTH );
+    int nLen = MultiByteToWideChar(CP_ACP, 0, psz_msg, -1, NULL, NULL);
+    MultiByteToWideChar(CP_ACP, 0, psz_msg, -1, &buffer, nLen);
 
     msndata.dwData = 0x547;
     msndata.lpData = &buffer;

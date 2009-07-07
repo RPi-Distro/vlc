@@ -2,7 +2,7 @@
  * stats.c: Statistics handling
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: d6302bd887cc9ca058b0c813834e940486e51a7a $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -143,12 +143,10 @@ int __stats_Get( vlc_object_t *p_this, counter_t *p_counter, vlc_value_t *val )
 input_stats_t *stats_NewInputStats( input_thread_t *p_input )
 {
     (void)p_input;
-    input_stats_t *p_stats = malloc( sizeof(input_stats_t) );
-
+    input_stats_t *p_stats = calloc( 1, sizeof(input_stats_t) );
     if( !p_stats )
         return NULL;
 
-    memset( p_stats, 0, sizeof(*p_stats) );
     vlc_mutex_init( &p_stats->lock );
     stats_ReinitInputStats( p_stats );
 
@@ -173,6 +171,10 @@ void stats_ComputeInputStats( input_thread_t *p_input, input_stats_t *p_stats )
                       &p_stats->i_demux_read_bytes );
     stats_GetFloat( p_input, p_input->p->counters.p_demux_bitrate,
                     &p_stats->f_demux_bitrate );
+    stats_GetInteger( p_input, p_input->p->counters.p_demux_corrupted,
+                      &p_stats->i_demux_corrupted );
+    stats_GetInteger( p_input, p_input->p->counters.p_demux_discontinuity,
+                      &p_stats->i_demux_discontinuity );
 
     /* Decoders */
     stats_GetInteger( p_input, p_input->p->counters.p_decoded_video,
@@ -214,6 +216,7 @@ void stats_ReinitInputStats( input_stats_t *p_stats )
     p_stats->f_input_bitrate = p_stats->f_average_input_bitrate =
     p_stats->i_demux_read_packets = p_stats->i_demux_read_bytes =
     p_stats->f_demux_bitrate = p_stats->f_average_demux_bitrate =
+    p_stats->i_demux_corrupted = p_stats->i_demux_discontinuity =
     p_stats->i_displayed_pictures = p_stats->i_lost_pictures =
     p_stats->i_played_abuffers = p_stats->i_lost_abuffers =
     p_stats->i_decoded_video = p_stats->i_decoded_audio =
@@ -237,43 +240,6 @@ void stats_DumpInputStats( input_stats_t *p_stats  )
                     p_stats->i_displayed_pictures, p_stats->i_lost_pictures,
                     p_stats->i_played_abuffers, p_stats->i_lost_abuffers,
                     p_stats->f_send_bitrate );
-    vlc_mutex_unlock( &p_stats->lock );
-}
-
-void __stats_ComputeGlobalStats( vlc_object_t *p_obj, global_stats_t *p_stats )
-{
-    vlc_list_t *p_list;
-    int i_index;
-
-    if( !libvlc_stats (p_obj) ) return;
-
-    vlc_mutex_lock( &p_stats->lock );
-
-    p_list = vlc_list_find( p_obj, VLC_OBJECT_INPUT, FIND_ANYWHERE );
-    if( p_list )
-    {
-        float f_total_in = 0, f_total_out = 0,f_total_demux = 0;
-        for( i_index = 0; i_index < p_list->i_count ; i_index ++ )
-        {
-            float f_in = 0, f_out = 0, f_demux = 0;
-            input_thread_t *p_input = (input_thread_t *)
-                             p_list->p_values[i_index].p_object;
-            vlc_mutex_lock( &p_input->p->counters.counters_lock );
-            stats_GetFloat( p_obj, p_input->p->counters.p_input_bitrate, &f_in );
-            if( p_input->p->counters.p_sout_send_bitrate )
-                stats_GetFloat( p_obj, p_input->p->counters.p_sout_send_bitrate,
-                                    &f_out );
-            stats_GetFloat( p_obj, p_input->p->counters.p_demux_bitrate,
-                                &f_demux );
-            vlc_mutex_unlock( &p_input->p->counters.counters_lock );
-            f_total_in += f_in; f_total_out += f_out;f_total_demux += f_demux;
-        }
-        p_stats->f_input_bitrate = f_total_in;
-        p_stats->f_output_bitrate = f_total_out;
-        p_stats->f_demux_bitrate = f_total_demux;
-        vlc_list_release( p_list );
-    }
-
     vlc_mutex_unlock( &p_stats->lock );
 }
 

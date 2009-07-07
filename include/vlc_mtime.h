@@ -10,7 +10,7 @@
  * Functions prototyped are implemented in interface/mtime.c.
  *****************************************************************************
  * Copyright (C) 1996, 1997, 1998, 1999, 2000 the VideoLAN team
- * $Id: 079f791dec08be8fa0631eac6e4fbbd160dede1f $
+ * $Id$
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -68,6 +68,57 @@ VLC_EXPORT( void,    mwait,    ( mtime_t date ) );
 VLC_EXPORT( void,    msleep,   ( mtime_t delay ) );
 VLC_EXPORT( char *,  secstotimestr, ( char *psz_buffer, int secs ) );
 
+#if defined (__GNUC__) && defined (__linux__)
+# define VLC_HARD_MIN_SLEEP 1000 /* Linux has 100, 250, 300 or 1000Hz */
+# define VLC_SOFT_MIN_SLEEP 9000000
+
+static
+__attribute__((unused))
+__attribute__((noinline))
+__attribute__((error("sorry, cannot sleep for such short a time")))
+mtime_t impossible_delay( mtime_t delay )
+{
+    (void) delay;
+    return VLC_HARD_MIN_SLEEP;
+}
+
+static
+__attribute__((unused))
+__attribute__((noinline))
+__attribute__((warning("use proper event handling instead of short delay")))
+mtime_t harmful_delay( mtime_t delay )
+{
+    return delay;
+}
+
+# define check_delay( d ) \
+    ((__builtin_constant_p(d < VLC_HARD_MIN_SLEEP) \
+   && (d < VLC_HARD_MIN_SLEEP)) \
+       ? impossible_delay(d) \
+       : ((__builtin_constant_p(d < VLC_SOFT_MIN_SLEEP) \
+       && (d < VLC_SOFT_MIN_SLEEP)) \
+           ? harmful_delay(d) \
+           : d))
+
+static
+__attribute__((unused))
+__attribute__((noinline))
+__attribute__((error("deadlines can not be constant")))
+mtime_t impossible_deadline( mtime_t deadline )
+{
+    return deadline;
+}
+
+# define check_deadline( d ) \
+    (__builtin_constant_p(d) ? impossible_deadline(d) : d)
+#else
+# define check_delay(d) (d)
+# define check_deadline(d) (d)
+#endif
+
+#define msleep(d) msleep(check_delay(d))
+#define mwait(d) mwait(check_deadline(d))
+
 /*****************************************************************************
  * date_t: date incrementation without long-term rounding errors
  *****************************************************************************/
@@ -85,5 +136,6 @@ VLC_EXPORT( void,    date_Set,       ( date_t *, mtime_t ) );
 VLC_EXPORT( mtime_t, date_Get,       ( const date_t * ) );
 VLC_EXPORT( void,    date_Move,      ( date_t *, mtime_t ) );
 VLC_EXPORT( mtime_t, date_Increment, ( date_t *, uint32_t ) );
+VLC_EXPORT( mtime_t, date_Decrement, ( date_t *, uint32_t ) );
 VLC_EXPORT( uint64_t, NTPtime64,     ( void ) );
 #endif /* !__VLC_MTIME_ */

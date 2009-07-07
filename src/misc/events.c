@@ -4,7 +4,7 @@
  * It is more lightweight than variable based callback.
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: a0a44980250cb310aca95a357f3c96513bcf7dfe $
+ * $Id$
  *
  * Authors: Pierre d'Herbemont <pdherbemont # videolan.org >
  *
@@ -70,7 +70,7 @@ typedef struct vlc_event_listeners_group_t
 } vlc_event_listeners_group_t;
 
 #ifdef DEBUG_EVENT
-static const char ppsz_event_type_to_name[][33] =
+static const char ppsz_event_type_to_name[][40] =
 {
     [vlc_InputStateChanged]             = "vlc_InputStateChanged",
     [vlc_InputSelectedStreamChanged]    = "vlc_InputSelectedStreamChanged",
@@ -84,8 +84,8 @@ static const char ppsz_event_type_to_name[][33] =
     [vlc_InputItemErrorWhenReadingChanged] = "vlc_InputItemErrorWhenReadingChanged",
 
     [vlc_ServicesDiscoveryItemAdded]    = "vlc_ServicesDiscoveryItemAdded",
-    [vlc_ServicesDiscoveryItemRemoved]  = "vlc_ServicesDiscoveryItemRemoved"
-    [vlc_ServicesDiscoveryStarted]      = "vlc_ServicesDiscoveryStarted"
+    [vlc_ServicesDiscoveryItemRemoved]  = "vlc_ServicesDiscoveryItemRemoved",
+    [vlc_ServicesDiscoveryStarted]      = "vlc_ServicesDiscoveryStarted",
     [vlc_ServicesDiscoveryEnded]        = "vlc_ServicesDiscoveryEnded"
 };
 #endif
@@ -319,7 +319,7 @@ int __vlc_event_attach( vlc_event_manager_t * p_em,
     FOREACH_END()
     vlc_mutex_unlock( &p_em->object_lock );
 
-    msg_Err( p_em->p_parent_object, "Can't attach to an object event manager event" );
+    msg_Err( p_em->p_parent_object, "cannot attach to an object event" );
     free(listener);
     return VLC_EGENERIC;
 }
@@ -373,7 +373,7 @@ int vlc_event_detach( vlc_event_manager_t *p_em,
     vlc_mutex_unlock( &p_em->event_sending_lock );
     vlc_mutex_unlock( &p_em->object_lock );
 
-    msg_Warn( p_em->p_parent_object, "Can't detach to an object event manager event" );
+    msg_Warn( p_em->p_parent_object, "cannot detach from an object event" );
 
     return VLC_EGENERIC;
 }

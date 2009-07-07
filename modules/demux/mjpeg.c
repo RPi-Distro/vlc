@@ -2,7 +2,7 @@
  * mjpeg.c : demuxes mjpeg webcam http streams
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 7f76650255d283bd67a3d5ee43a63473f651012a $
+ * $Id$
  *
  * Authors: Henry Jen (slowhog) <henryjen@ztune.net>
  *          Derk-Jan Hartman (thedj)
@@ -49,15 +49,15 @@ static void Close( vlc_object_t * );
     "playing MJPEG from a file. Use 0 (this is the default value) for a " \
     "live stream (from a camera).")
 
-vlc_module_begin();
-    set_shortname( "MJPEG");
-    set_description( N_("M-JPEG camera demuxer") );
-    set_capability( "demux", 5 );
-    set_callbacks( Open, Close );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    add_float( "mjpeg-fps", 0.0, NULL, FPS_TEXT, FPS_LONGTEXT, false );
-vlc_module_end();
+vlc_module_begin ()
+    set_shortname( "MJPEG")
+    set_description( N_("M-JPEG camera demuxer") )
+    set_capability( "demux", 5 )
+    set_callbacks( Open, Close )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    add_float( "mjpeg-fps", 0.0, NULL, FPS_TEXT, FPS_LONGTEXT, false )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -147,9 +147,9 @@ static char* GetLine( demux_t *p_demux, int *p_pos )
             {
                 return NULL;
             }
+            p_buf = p_sys->p_peek + *p_pos;
+            i_size = p_sys->i_data_peeked - *p_pos;
         }
-        p_buf = p_sys->p_peek + *p_pos;
-        i_size = p_sys->i_data_peeked - *p_pos;
     }
     *p_pos += ( i + 1 );
     if( i > 0 && '\r' == p_buf[i - 1] )
@@ -185,18 +185,19 @@ static bool CheckMimeHeader( demux_t *p_demux, int *p_header_size )
         *p_header_size = -1;
         return false;
     }
-    if( p_sys->i_data_peeked < 3)
+    if( p_sys->i_data_peeked < 5)
     {
         msg_Err( p_demux, "data shortage" );
         *p_header_size = -2;
         return false;
     }
-    if( strncmp( (char *)p_sys->p_peek, "--", 2 ) )
+    if( strncmp( (char *)p_sys->p_peek, "--", 2 ) != 0
+        && strncmp( (char *)p_sys->p_peek, "\r\n--", 4 ) != 0 )
     {
         *p_header_size = 0;
         return false;
     }
-    i_pos = 2;
+    i_pos = *p_sys->p_peek == '-' ? 2 : 4;
     psz_line = GetLine( p_demux, &i_pos );
     if( NULL == psz_line )
     {
@@ -301,7 +302,7 @@ static int Open( vlc_object_t * p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys;
     int         i_size;
-    int         b_matched = false;
+    bool        b_matched = false;
     vlc_value_t val;
 
     p_demux->pf_control = Control;
@@ -386,14 +387,11 @@ static int MjpgDemux( demux_t *p_demux )
     demux_sys_t *p_sys = p_demux->p_sys;
     int i;
 
-    if( p_sys->b_still && p_sys->i_still_end && p_sys->i_still_end < mdate() )
+    if( p_sys->b_still && p_sys->i_still_end )
     {
         /* Still frame, wait until the pause delay is gone */
+        mwait( p_sys->i_still_end );
         p_sys->i_still_end = 0;
-    }
-    else if( p_sys->b_still && p_sys->i_still_end )
-    {
-        msleep( 400 );
         return 1;
     }
 

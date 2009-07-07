@@ -2,7 +2,7 @@
  * realaudio.c: a realaudio decoder that uses the realaudio library/dll
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 69308279f48bb63d61d19be4e5e0d517e493c642 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -61,13 +61,13 @@ int WINAPI FreeLibrary( void *handle );
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_description( N_("RealAudio library decoder") );
-    set_capability( "decoder", 10 );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_VCODEC );
-    set_callbacks( Open, Close );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("RealAudio library decoder") )
+    set_capability( "decoder", 10 )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_VCODEC )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -200,10 +200,9 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    p_dec->p_sys = p_sys = malloc( sizeof( decoder_sys_t ) );
+    p_dec->p_sys = p_sys = calloc( 1, sizeof( *p_sys ) );
     if( !p_sys )
         return VLC_ENOMEM;
-    memset( p_sys, 0, sizeof(decoder_sys_t) );
 
     /* Flavor for SIPR codecs */
     p_sys->i_codec_flavor = -1;
@@ -706,7 +705,7 @@ static aout_buffer_t *Decode( decoder_t *p_dec, block_t **pp_block )
         p_dec->fmt_out.audio.i_bitspersample /p_dec->fmt_out.audio.i_channels;
 
     p_aout_buffer =
-        p_dec->pf_aout_buffer_new( p_dec, i_samples );
+        decoder_NewAudioBuffer( p_dec, i_samples );
     if( p_aout_buffer )
     {
         memcpy( p_aout_buffer->p_buffer, p_sys->p_out, p_sys->i_out );

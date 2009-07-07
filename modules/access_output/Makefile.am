@@ -18,7 +18,7 @@ libaccess_output_dummy_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaccess_output_dummy_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaccess_output_dummy_plugin_la_LIBADD = $(AM_LIBADD)
-libaccess_output_dummy_plugin_la_DEPENDENCIES =
+libaccess_output_dummy_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The access_output_file plugin
 libaccess_output_file_plugin_la_SOURCES = $(SOURCES_access_output_file)
@@ -29,7 +29,7 @@ libaccess_output_file_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaccess_output_file_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaccess_output_file_plugin_la_LIBADD = $(AM_LIBADD)
-libaccess_output_file_plugin_la_DEPENDENCIES =
+libaccess_output_file_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The access_output_http plugin
 libaccess_output_http_plugin_la_SOURCES = $(SOURCES_access_output_http)
@@ -40,7 +40,7 @@ libaccess_output_http_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaccess_output_http_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaccess_output_http_plugin_la_LIBADD = $(AM_LIBADD)
-libaccess_output_http_plugin_la_DEPENDENCIES =
+libaccess_output_http_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The access_output_rtmp plugin
 libaccess_output_rtmp_plugin_la_SOURCES = $(SOURCES_access_output_rtmp)
@@ -51,7 +51,7 @@ libaccess_output_rtmp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaccess_output_rtmp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaccess_output_rtmp_plugin_la_LIBADD = $(AM_LIBADD)
-libaccess_output_rtmp_plugin_la_DEPENDENCIES =
+libaccess_output_rtmp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The access_output_shout plugin
 libaccess_output_shout_plugin_la_SOURCES = $(SOURCES_access_output_shout)
@@ -62,7 +62,7 @@ libaccess_output_shout_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaccess_output_shout_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaccess_output_shout_plugin_la_LIBADD = $(AM_LIBADD)
-libaccess_output_shout_plugin_la_DEPENDENCIES =
+libaccess_output_shout_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The access_output_udp plugin
 libaccess_output_udp_plugin_la_SOURCES = $(SOURCES_access_output_udp)
@@ -73,5 +73,5 @@ libaccess_output_udp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libaccess_output_udp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaccess_output_udp_plugin_la_LIBADD = $(AM_LIBADD)
-libaccess_output_udp_plugin_la_DEPENDENCIES =
+libaccess_output_udp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

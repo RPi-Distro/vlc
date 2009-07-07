@@ -3,7 +3,7 @@
  *               -> gives the feeling of a real room with a simple headphone
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: f854d8dadba6339b988aa45006edb0e54d7888b0 $
+ * $Id$
  *
  * Authors: Boris Dorès <babal@via.ecp.fr>
  *
@@ -78,30 +78,31 @@ static block_t *Convert( filter_t *, block_t * );
      "Dolby Surround encoded streams won't be decoded before being " \
      "processed by this filter. Enabling this setting is not recommended.")
 
-vlc_module_begin();
-    set_description( N_("Headphone virtual spatialization effect") );
-    set_shortname( N_("Headphone effect") );
-    set_help( MODULE_DESCRIPTION );
-    set_category( CAT_AUDIO );
-    set_subcategory( SUBCAT_AUDIO_AFILTER );
+vlc_module_begin ()
+    set_description( N_("Headphone virtual spatialization effect") )
+    set_shortname( N_("Headphone effect") )
+    set_help( MODULE_DESCRIPTION )
+    set_category( CAT_AUDIO )
+    set_subcategory( SUBCAT_AUDIO_AFILTER )
 
     add_integer( "headphone-dim", 10, NULL, HEADPHONE_DIM_TEXT,
-                 HEADPHONE_DIM_LONGTEXT, false );
+                 HEADPHONE_DIM_LONGTEXT, false )
     add_bool( "headphone-compensate", 0, NULL, HEADPHONE_COMPENSATE_TEXT,
-              HEADPHONE_COMPENSATE_LONGTEXT, true );
+              HEADPHONE_COMPENSATE_LONGTEXT, true )
     add_bool( "headphone-dolby", 0, NULL, HEADPHONE_DOLBY_TEXT,
-              HEADPHONE_DOLBY_LONGTEXT, true );
+              HEADPHONE_DOLBY_LONGTEXT, true )
 
-    set_capability( "audio filter", 0 );
-    set_callbacks( Create, Destroy );
-    add_shortcut( "headphone" );
+    set_capability( "audio filter", 0 )
+    set_callbacks( Create, Destroy )
+    add_shortcut( "headphone" )
 
     /* Audio filter 2 */
-    add_submodule();
-    set_description( N_("Headphone virtual spatialization effect") );
-    set_capability( "audio filter2", 0 );
-    set_callbacks( OpenFilter, CloseFilter );
-vlc_module_end();
+    add_submodule ()
+    set_description( N_("Headphone virtual spatialization effect") )
+    set_capability( "audio filter2", 0 )
+    set_callbacks( OpenFilter, CloseFilter )
+    add_shortcut( "headphone" )
+vlc_module_end ()
 
 
 /*****************************************************************************

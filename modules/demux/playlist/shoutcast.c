@@ -2,7 +2,7 @@
  * shoutcast.c: Winamp >=5.2 shoutcast demuxer
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: b97219911f59a28b204a4249b8bd805cc6d9f51c $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea -@t- videolan -Dot- org>
  *          based on b4s.c by Sigmund Augdal Helberg <dnumgis@videolan.org>
@@ -228,8 +228,7 @@ static int DemuxGenre( demux_t *p_demux )
                     if( asprintf( &psz_mrl, SHOUTCAST_BASE_URL "?genre=%s",
                              psz_name ) != -1 )
                     {
-                        p_input = input_item_NewExt( p_demux, psz_mrl,
-                                                    psz_name, 0, NULL, -1 );
+                        p_input = input_item_New( p_demux, psz_mrl, psz_name );
                         input_item_CopyOptions( p_sys->p_current_input, p_input );
                         free( psz_mrl );
                         input_item_AddSubItem( p_sys->p_current_input, p_input );
@@ -388,33 +387,29 @@ static int DemuxStation( demux_t *p_demux )
                     if( psz_rt || psz_load )
                     {
                         /* tv */
-                        psz_mrl = malloc( strlen( SHOUTCAST_TV_TUNEIN_URL )
-                                          + strlen( psz_id ) + 1 );
-                        sprintf( psz_mrl, SHOUTCAST_TV_TUNEIN_URL "%s",
-                                 psz_id );
+                        if( asprintf( &psz_mrl, SHOUTCAST_TV_TUNEIN_URL "%s",
+                                 psz_id ) == -1)
+                            psz_mrl = NULL;
                     }
                     else
                     {
                         /* radio */
-                        psz_mrl = malloc( strlen( SHOUTCAST_TUNEIN_BASE_URL )
-                            + strlen( psz_base ) + strlen( "?id=" )
-                            + strlen( psz_id ) + 1 );
-                        sprintf( psz_mrl, SHOUTCAST_TUNEIN_BASE_URL "%s?id=%s",
-                             psz_base, psz_id );
+                        if( asprintf( &psz_mrl, SHOUTCAST_TUNEIN_BASE_URL "%s?id=%s",
+                             psz_base, psz_id ) == -1 )
+                            psz_mrl = NULL;
                     }
-                    p_input = input_item_NewExt( p_demux, psz_mrl,
-                                                psz_name , 0, NULL, -1 );
+                    p_input = input_item_New( p_demux, psz_mrl, psz_name );
+                    input_item_CopyOptions( p_sys->p_current_input, p_input );
                     free( psz_mrl );
 
-                    input_item_CopyOptions( p_sys->p_current_input,
-                                                p_input );
-
-#define SADD_INFO( type, field ) if( field ) { input_item_AddInfo( \
-                    p_input, _("Shoutcast"), _(type), "%s", field ) ; }
-                    SADD_INFO( "Mime type", psz_mt );
-                    SADD_INFO( "Bitrate", psz_br );
-                    SADD_INFO( "Listeners", psz_lc );
-                    SADD_INFO( "Load", psz_load );
+#define SADD_INFO( type, field ) \
+                    if( field ) \
+                        input_item_AddInfo( p_input, _("Shoutcast"), \
+                                            vlc_gettext(type), "%s", field )
+                    SADD_INFO( N_("Mime"), psz_mt );
+                    SADD_INFO( N_("Bitrate"), psz_br );
+                    SADD_INFO( N_("Listeners"), psz_lc );
+                    SADD_INFO( N_("Load"), psz_load );
                     if( psz_genre )
                         input_item_SetGenre( p_input, psz_genre );
                     if( psz_ct )

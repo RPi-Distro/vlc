@@ -2,7 +2,7 @@
  * growl_udp.c : growl UDP notification plugin
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 17ec991555a10684606aebe64cb05412870dfab3 $
+ * $Id$
  *
  * Authors: Jérôme Decoodt <djc -at- videolan -dot- org>
  *
@@ -66,22 +66,22 @@ static int CheckAndSend( vlc_object_t *p_this, uint8_t* p_data, int i_offset );
 #define PORT_TEXT N_("UDP port")
 #define PORT_LONGTEXT N_("Growl UDP port on the Growl server.")
 
-vlc_module_begin();
-    set_category( CAT_INTERFACE );
-    set_subcategory( SUBCAT_INTERFACE_CONTROL );
-    set_shortname( "Growl-UDP" );
-    set_description( N_("Growl UDP Notification Plugin") );
+vlc_module_begin ()
+    set_category( CAT_INTERFACE )
+    set_subcategory( SUBCAT_INTERFACE_CONTROL )
+    set_shortname( "Growl-UDP" )
+    set_description( N_("Growl UDP Notification Plugin") )
 
     add_string( "growl-server", SERVER_DEFAULT, NULL,
-                SERVER_TEXT, SERVER_LONGTEXT, false );
+                SERVER_TEXT, SERVER_LONGTEXT, false )
     add_password( "growl-password", PASS_DEFAULT, NULL,
-                PASS_TEXT, PASS_LONGTEXT, false );
+                PASS_TEXT, PASS_LONGTEXT, false )
     add_integer( "growl-port", 9887, NULL,
-                PORT_TEXT, PORT_LONGTEXT, true );
+                PORT_TEXT, PORT_LONGTEXT, true )
 
-    set_capability( "interface", 0 );
-    set_callbacks( Open, Close );
-vlc_module_end();
+    set_capability( "interface", 0 )
+    set_callbacks( Open, Close )
+vlc_module_end ()
 
 /*****************************************************************************
  * Open: initialize and create stuff
@@ -90,8 +90,8 @@ static int Open( vlc_object_t *p_this )
 {
     intf_thread_t *p_intf = (intf_thread_t *)p_this;
 
-    playlist_t *p_playlist = pl_Yield( p_intf );
-    var_AddCallback( p_playlist, "playlist-current", ItemChange, p_intf );
+    playlist_t *p_playlist = pl_Hold( p_intf );
+    var_AddCallback( p_playlist, "item-current", ItemChange, p_intf );
     pl_Release( p_intf );
 
     RegisterToGrowl( p_this );
@@ -103,8 +103,8 @@ static int Open( vlc_object_t *p_this )
  *****************************************************************************/
 static void Close( vlc_object_t *p_this )
 {
-    playlist_t *p_playlist = pl_Yield( p_this );
-    var_DelCallback( p_playlist, "playlist-current", ItemChange, p_this );
+    playlist_t *p_playlist = pl_Hold( p_this );
+    var_DelCallback( p_playlist, "item-current", ItemChange, p_this );
     pl_Release( p_this );
 }
 
@@ -121,13 +121,9 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     char *psz_artist = NULL;
     char *psz_album = NULL;
     input_thread_t *p_input;
-    playlist_t *p_playlist = pl_Yield( p_this );
-
-    p_input = p_playlist->p_input;
-    pl_Release( p_this );
+    p_input = playlist_CurrentInput( (playlist_t*)p_this );
 
     if( !p_input ) return VLC_SUCCESS;
-    vlc_object_yield( p_input );
 
     char *psz_name = input_item_GetName( input_GetItem( p_input ) );
     if( p_input->b_dead || !psz_name )
@@ -142,17 +138,12 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     /* Playing something ... */
     input_item_t *p_item = input_GetItem( p_input );
 
-    psz_title = input_item_GetTitle( p_item );
-    if( psz_title == NULL || EMPTY_STR( psz_title ) )
+    psz_title = input_item_GetTitleFbName( p_item );
+    if( EMPTY_STR( psz_title ) )
     {
         free( psz_title );
-        psz_title = input_item_GetName( input_GetItem( p_input ) );
-        if( psz_title == NULL || EMPTY_STR( psz_title ) )
-        {
-            free( psz_title );
-            vlc_object_release( p_input );
-            return VLC_SUCCESS;
-        }
+        vlc_object_release( p_input );
+        return VLC_SUCCESS;
     }
 
     psz_artist = input_item_GetArtist( p_item );
@@ -289,7 +280,7 @@ static int CheckAndSend( vlc_object_t *p_this, uint8_t* p_data, int i_offset )
         p_data[i_offset++] = (md5.p_digest[i]>>24)&0xFF;
     }
 
-    i_handle = net_ConnectUDP( p_this, psz_server, i_port, 0 );
+    i_handle = net_ConnectUDP( p_this, psz_server, i_port, -1 );
     if( i_handle == -1 )
     {
          msg_Err( p_this, "failed to open a connection (udp)" );

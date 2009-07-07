@@ -2,7 +2,7 @@
  * ctrl_tree.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 0c27d34d6312fde6cac0a071c2191558aef67df3 $
+ * $Id$
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -81,10 +81,7 @@ CtrlTree::~CtrlTree()
 {
     m_rTree.getPositionVar().delObserver( this );
     m_rTree.delObserver( this );
-    if( m_pImage )
-    {
-        delete m_pImage;
-    }
+    delete m_pImage;
 }
 
 int CtrlTree::itemHeight()
@@ -729,10 +726,7 @@ void CtrlTree::makeImage()
 {
     stats_TimerStart( getIntf(), "[Skins] Playlist image",
                       STATS_TIMER_SKINS_PLAYTREE_IMAGE );
-    if( m_pImage )
-    {
-        delete m_pImage;
-    }
+    delete m_pImage;
 
     // Get the size of the control
     const Position *pPos = getPosition();

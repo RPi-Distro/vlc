@@ -1,8 +1,8 @@
 /*****************************************************************************
  * speex.c: speex decoder/packetizer/encoder module making use of libspeex.
  *****************************************************************************
- * Copyright (C) 2003 the VideoLAN team
- * $Id: a5ccbbe358bde89b80c59bd2791d36efbc24d04c $
+ * Copyright (C) 2003-2008 the VideoLAN team
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -41,6 +41,103 @@
 #include <speex/speex_callbacks.h>
 
 #include <assert.h>
+
+/*****************************************************************************
+ * Module descriptor
+ *****************************************************************************/
+static int  OpenDecoder   ( vlc_object_t * );
+static int  OpenPacketizer( vlc_object_t * );
+static void CloseDecoder  ( vlc_object_t * );
+static int OpenEncoder   ( vlc_object_t * );
+static void CloseEncoder ( vlc_object_t * );
+
+#define ENC_CFG_PREFIX "sout-speex-"
+
+#define ENC_MODE_TEXT N_("Mode" )
+#define ENC_MODE_LONGTEXT N_( \
+    "Enforce the mode of the encoder." )
+
+#define ENC_QUALITY_TEXT N_("Encoding quality")
+#define ENC_QUALITY_LONGTEXT N_( \
+    "Enforce a quality between 0 (low) and 10 (high)." )
+
+#define ENC_COMPLEXITY_TEXT N_("Encoding complexity" )
+#define ENC_COMPLEXITY_LONGTEXT N_( \
+    "Enforce the complexity of the encoder." )
+
+#define ENC_MAXBITRATE_TEXT N_( "Maximal bitrate" )
+#define ENC_MAXBITRATE_LONGTEXT N_( \
+    "Enforce the maximal VBR bitrate" )
+
+#define ENC_CBR_TEXT N_( "CBR encoding" )
+#define ENC_CBR_LONGTEXT N_( \
+    "Enforce a constant bitrate encoding (CBR) instead of default " \
+    "variable bitrate encoding (VBR)." )
+
+#define ENC_VAD_TEXT N_( "Voice activity detection" )
+#define ENC_VAD_LONGTEXT N_( \
+    "Enable voice activity detection (VAD). It is automatically " \
+    "activated in VBR mode." )
+
+#define ENC_DTX_TEXT N_( "Discontinuous Transmission" )
+#define ENC_DTX_LONGTEXT N_( \
+    "Enable discontinuous transmission (DTX)." )
+
+static const int pi_enc_mode_values[] = { 0, 1, 2 };
+static const char * const ppsz_enc_mode_descriptions[] = {
+    N_("Narrow-band (8kHz)"), N_("Wide-band (16kHz)"), N_("Ultra-wideband (32kHz)"), NULL
+};
+
+vlc_module_begin ()
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_ACODEC )
+
+    set_description( N_("Speex audio decoder") )
+    set_capability( "decoder", 100 )
+    set_shortname( N_("Speex") )
+    set_callbacks( OpenDecoder, CloseDecoder )
+
+    add_submodule ()
+    set_description( N_("Speex audio packetizer") )
+    set_capability( "packetizer", 100 )
+    set_callbacks( OpenPacketizer, CloseDecoder )
+
+    add_submodule ()
+    set_description( N_("Speex audio encoder") )
+    set_capability( "encoder", 100 )
+    set_callbacks( OpenEncoder, CloseEncoder )
+
+    add_integer( ENC_CFG_PREFIX "mode", 0, NULL, ENC_MODE_TEXT,
+                 ENC_MODE_LONGTEXT, false )
+        change_integer_list( pi_enc_mode_values, ppsz_enc_mode_descriptions, NULL )
+
+    add_integer( ENC_CFG_PREFIX "complexity", 3, NULL, ENC_COMPLEXITY_TEXT,
+                 ENC_COMPLEXITY_LONGTEXT, false )
+        change_integer_range( 1, 10 )
+
+    add_bool( ENC_CFG_PREFIX "cbr", false, NULL, ENC_CBR_TEXT,
+                 ENC_CBR_LONGTEXT, false )
+
+    add_float( ENC_CFG_PREFIX "quality", 8.0, NULL, ENC_QUALITY_TEXT,
+               ENC_QUALITY_LONGTEXT, false )
+        change_float_range( 0.0, 10.0 )
+
+    add_integer( ENC_CFG_PREFIX "max-bitrate", 0, NULL, ENC_MAXBITRATE_TEXT,
+                 ENC_MAXBITRATE_LONGTEXT, false )
+
+    add_bool( ENC_CFG_PREFIX "vad", true, NULL, ENC_VAD_TEXT,
+                 ENC_VAD_LONGTEXT, false )
+
+    add_bool( ENC_CFG_PREFIX "dtx", false, NULL, ENC_DTX_TEXT,
+                 ENC_DTX_LONGTEXT, false )
+
+    /* TODO agc, noise suppression, */
+
+vlc_module_end ()
+
+static const char *const ppsz_enc_options[] = {
+    "mode", "complexity", "cbr", "quality", "max-bitrate", "vad", "dtx", NULL
+};
 
 /*****************************************************************************
  * decoder_sys_t : speex decoder descriptor
@@ -86,9 +183,6 @@ static const int pi_channels_maps[6] =
 /****************************************************************************
  * Local prototypes
  ****************************************************************************/
-static int  OpenDecoder   ( vlc_object_t * );
-static int  OpenPacketizer( vlc_object_t * );
-static void CloseDecoder  ( vlc_object_t * );
 
 static void *DecodeBlock  ( decoder_t *, block_t ** );
 static aout_buffer_t *DecodeRtpSpeexPacket( decoder_t *, block_t **);
@@ -101,31 +195,7 @@ static block_t *SendPacket( decoder_t *, block_t * );
 
 static void ParseSpeexComments( decoder_t *, ogg_packet * );
 
-static int OpenEncoder   ( vlc_object_t * );
-static void CloseEncoder ( vlc_object_t * );
 static block_t *Encode   ( encoder_t *, aout_buffer_t * );
-
-/*****************************************************************************
- * Module descriptor
- *****************************************************************************/
-vlc_module_begin();
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_ACODEC );
-
-    set_description( N_("Speex audio decoder") );
-    set_capability( "decoder", 100 );
-    set_callbacks( OpenDecoder, CloseDecoder );
-
-    add_submodule();
-    set_description( N_("Speex audio packetizer") );
-    set_capability( "packetizer", 100 );
-    set_callbacks( OpenPacketizer, CloseDecoder );
-
-    add_submodule();
-    set_description( N_("Speex audio encoder") );
-    set_capability( "encoder", 100 );
-    set_callbacks( OpenEncoder, CloseEncoder );
-vlc_module_end();
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -615,7 +685,7 @@ static aout_buffer_t *DecodeRtpSpeexPacket( decoder_t *p_dec, block_t **pp_block
       Ask for a new audio output buffer and make sure
       we get one. 
     */
-    p_aout_buffer = p_dec->pf_aout_buffer_new( p_dec, 
+    p_aout_buffer = decoder_NewAudioBuffer( p_dec, 
         p_sys->p_header->frame_size );
     if ( !p_aout_buffer || p_aout_buffer->i_nb_bytes == 0 )
     {
@@ -679,7 +749,7 @@ static aout_buffer_t *DecodePacket( decoder_t *p_dec, ogg_packet *p_oggpacket )
             return NULL;
 
         p_aout_buffer =
-            p_dec->pf_aout_buffer_new( p_dec, p_sys->p_header->frame_size );
+            decoder_NewAudioBuffer( p_dec, p_sys->p_header->frame_size );
         if( !p_aout_buffer )
         {
             return NULL;
@@ -743,7 +813,7 @@ static block_t *SendPacket( decoder_t *p_dec, block_t *p_block )
 }
 
 /*****************************************************************************
- * ParseSpeexComments: FIXME should be done in demuxer
+ * ParseSpeexComments:
  *****************************************************************************/
 #define readint(buf, base) (((buf[base+3]<<24)&0xff000000)| \
                            ((buf[base+2]<<16)&0xff0000)| \
@@ -752,40 +822,31 @@ static block_t *SendPacket( decoder_t *p_dec, block_t *p_block )
 
 static void ParseSpeexComments( decoder_t *p_dec, ogg_packet *p_oggpacket )
 {
-    input_thread_t *p_input = (input_thread_t *)p_dec->p_parent;
     decoder_sys_t *p_sys = p_dec->p_sys;
-
-    char *p_buf = (char *)p_oggpacket->packet;
     const SpeexMode *p_mode;
-    int i_len;
-
-    if( p_input->i_object_type != VLC_OBJECT_INPUT ) return;
 
     assert( p_sys->p_header->mode < SPEEX_NB_MODES );
 
     p_mode = speex_mode_list[p_sys->p_header->mode];
     assert( p_mode != NULL );
 
-    input_Control( p_input, INPUT_ADD_INFO, _("Speex comment"), _("Mode"),
-                   "%s%s", p_mode->modeName,
-                   p_sys->p_header->vbr ? " VBR" : "" );
-
-    if( p_oggpacket->bytes < 8 )
+    if( !p_dec->p_description )
     {
-        msg_Err( p_dec, "invalid/corrupted comments" );
-        return;
+        p_dec->p_description = vlc_meta_New();
+        if( !p_dec->p_description )
+            return;
     }
 
-    i_len = readint( p_buf, 0 ); p_buf += 4;
-    if( i_len > p_oggpacket->bytes - 4 )
+    /* */
+    char *psz_mode;
+    if( asprintf( &psz_mode, "%s%s", p_mode->modeName, p_sys->p_header->vbr ? " VBR" : "" ) >= 0 )
     {
-        msg_Err( p_dec, "invalid/corrupted comments" );
-        return;
+        vlc_meta_AddExtra( p_dec->p_description, _("Mode"), psz_mode );
+        free( psz_mode );
     }
-
-    input_Control( p_input, INPUT_ADD_INFO, _("Speex comment"), p_buf, "" );
 
     /* TODO: finish comments parsing */
+    VLC_UNUSED( p_oggpacket );
 }
 
 /*****************************************************************************
@@ -849,7 +910,7 @@ static int OpenEncoder( vlc_object_t *p_this )
     encoder_t *p_enc = (encoder_t *)p_this;
     encoder_sys_t *p_sys;
     const SpeexMode *p_speex_mode = &speex_nb_mode;
-    int i_quality, i;
+    int i_tmp, i;
     const char *pp_header[2];
     int pi_header[2];
     uint8_t *p_extra;
@@ -858,6 +919,23 @@ static int OpenEncoder( vlc_object_t *p_this )
         !p_enc->b_force )
     {
         return VLC_EGENERIC;
+    }
+
+    config_ChainParse( p_enc, ENC_CFG_PREFIX, ppsz_enc_options, p_enc->p_cfg );
+    switch( var_GetInteger( p_enc, ENC_CFG_PREFIX "mode" ) )
+    {
+    case 1:
+        msg_Dbg( p_enc, "Using wideband" );
+        p_speex_mode = &speex_wb_mode;
+        break;
+    case 2:
+        msg_Dbg( p_enc, "Using ultra-wideband" );
+        p_speex_mode = &speex_uwb_mode;
+        break;
+    default:
+        msg_Dbg( p_enc, "Using narrowband" );
+        p_speex_mode = &speex_nb_mode;
+        break;
     }
 
     /* Allocate the memory needed to store the decoder's structure */
@@ -872,15 +950,46 @@ static int OpenEncoder( vlc_object_t *p_this )
                        1, p_speex_mode );
 
     p_sys->header.frames_per_packet = 1;
-    p_sys->header.vbr = 1;
+    p_sys->header.vbr = var_GetBool( p_enc, ENC_CFG_PREFIX "cbr" ) ? 0 : 1;
     p_sys->header.nb_channels = p_enc->fmt_in.audio.i_channels;
 
     /* Create a new encoder state in narrowband mode */
     p_sys->p_state = speex_encoder_init( p_speex_mode );
 
-    /* Set the quality to 8 (15 kbps) */
-    i_quality = 8;
-    speex_encoder_ctl( p_sys->p_state, SPEEX_SET_QUALITY, &i_quality );
+    /* Parameters */
+    i_tmp = var_GetInteger( p_enc, ENC_CFG_PREFIX "complexity" );
+    speex_encoder_ctl( p_sys->p_state, SPEEX_SET_COMPLEXITY, &i_tmp );
+
+    i_tmp = var_GetBool( p_enc, ENC_CFG_PREFIX "cbr" ) ? 0 : 1;
+    speex_encoder_ctl( p_sys->p_state, SPEEX_SET_VBR, &i_tmp );
+
+    if( i_tmp == 0 ) /* CBR */
+    {
+        i_tmp = var_GetFloat( p_enc, ENC_CFG_PREFIX "quality" );
+        speex_encoder_ctl( p_sys->p_state, SPEEX_SET_QUALITY, &i_tmp );
+
+        i_tmp = var_GetBool( p_enc, ENC_CFG_PREFIX "vad" ) ? 1 : 0;
+        speex_encoder_ctl( p_sys->p_state, SPEEX_SET_VAD, &i_tmp );
+    }
+    else
+    {
+        float f_tmp;
+
+        f_tmp = var_GetFloat( p_enc, ENC_CFG_PREFIX "quality" );
+        speex_encoder_ctl( p_sys->p_state, SPEEX_SET_VBR_QUALITY, &f_tmp );
+
+        i_tmp = var_GetInteger( p_enc, ENC_CFG_PREFIX "max-bitrate" );
+        if( i_tmp > 0 )
+#ifdef SPEEX_SET_VBR_MAX_BITRATE
+            speex_encoder_ctl( p_sys->p_state, SPEEX_SET_VBR_MAX_BITRATE, &i_tmp );
+#else
+            msg_Dbg( p_enc, "max-bitrate cannot be set in this version of libspeex");
+#endif
+    }
+
+    i_tmp = var_GetBool( p_enc, ENC_CFG_PREFIX "dtx" ) ? 1 : 0;
+    speex_encoder_ctl( p_sys->p_state, SPEEX_SET_DTX, &i_tmp );
+
 
     /*Initialization of the structure that holds the bits*/
     speex_bits_init( &p_sys->bits );

@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: f986baf876997c6031e7af1d59ce281e8193de03 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -40,14 +40,15 @@
 
 #include <vlc_common.h>
 #include <vlc_plugin.h>
-
+#include <vlc_input.h>
 #include <vlc_demux.h>
-#include <vlc_interface.h>
+#include <vlc_dialog.h>
 #include <vlc_network.h>
 #include <vlc_url.h>
 
 #include <iostream>
 #include <limits.h>
+#include <assert.h>
 
 
 #if defined( WIN32 )
@@ -88,47 +89,53 @@ static void Close( vlc_object_t * );
 #define PASS_LONGTEXT N_("Allows you to modify the password that will be " \
     "used for the connection.")
 
-vlc_module_begin();
-    set_description( N_("RTP/RTSP/SDP demuxer (using Live555)" ) );
-    set_capability( "demux", 50 );
-    set_shortname( "RTP/RTSP");
-    set_callbacks( Open, Close );
-    add_shortcut( "live" );
-    add_shortcut( "livedotcom" );
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
+vlc_module_begin ()
+    set_description( N_("RTP/RTSP/SDP demuxer (using Live555)" ) )
+    set_capability( "demux", 50 )
+    set_shortname( "RTP/RTSP")
+    set_callbacks( Open, Close )
+    add_shortcut( "live" )
+    add_shortcut( "livedotcom" )
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
 
-    add_submodule();
-        set_description( N_("RTSP/RTP access and demux") );
-        add_shortcut( "rtsp" );
-        add_shortcut( "sdp" );
-        set_capability( "access_demux", 0 );
-        set_callbacks( Open, Close );
+    add_submodule ()
+        set_description( N_("RTSP/RTP access and demux") )
+        add_shortcut( "rtsp" )
+        add_shortcut( "sdp" )
+        add_shortcut( "live" )
+        add_shortcut( "livedotcom" )
+        set_capability( "access_demux", 0 )
+        set_callbacks( Open, Close )
         add_bool( "rtsp-tcp", 0, NULL,
                   N_("Use RTP over RTSP (TCP)"),
-                  N_("Use RTP over RTSP (TCP)"), true );
+                  N_("Use RTP over RTSP (TCP)"), true )
+            change_safe()
         add_integer( "rtp-client-port", -1, NULL,
                   N_("Client port"),
-                  N_("Port to use for the RTP source of the session"), true );
+                  N_("Port to use for the RTP source of the session"), true )
         add_bool( "rtsp-mcast", false, NULL,
                   N_("Force multicast RTP via RTSP"),
-                  N_("Force multicast RTP via RTSP"), true );
+                  N_("Force multicast RTP via RTSP"), true )
+            change_safe()
         add_bool( "rtsp-http", 0, NULL,
                   N_("Tunnel RTSP and RTP over HTTP"),
-                  N_("Tunnel RTSP and RTP over HTTP"), true );
+                  N_("Tunnel RTSP and RTP over HTTP"), true )
+            change_safe()
         add_integer( "rtsp-http-port", 80, NULL,
                   N_("HTTP tunnel port"),
                   N_("Port to use for tunneling the RTSP/RTP over HTTP."),
-                  true );
+                  true )
         add_integer("rtsp-caching", 4 * DEFAULT_PTS_DELAY / 1000, NULL,
-                    CACHING_TEXT, CACHING_LONGTEXT, true );
+                    CACHING_TEXT, CACHING_LONGTEXT, true )
+            change_safe()
         add_bool(   "rtsp-kasenna", false, NULL, KASENNA_TEXT,
-                    KASENNA_LONGTEXT, true );
+                    KASENNA_LONGTEXT, true )
         add_string( "rtsp-user", NULL, NULL, USER_TEXT,
-                    USER_LONGTEXT, true );
+                    USER_LONGTEXT, true )
         add_string( "rtsp-pwd", NULL, NULL, PASS_TEXT,
-                    PASS_LONGTEXT, true );
-vlc_module_end();
+                    PASS_LONGTEXT, true )
+vlc_module_end ()
 
 
 /*****************************************************************************
@@ -154,17 +161,15 @@ typedef struct
     bool            b_rtcp_sync;
     char            waiting;
     int64_t         i_pts;
-    int64_t         i_npt;
+    float           i_npt;
 
 } live_track_t;
 
 struct timeout_thread_t
 {
-    VLC_COMMON_MEMBERS
-
-    int64_t      i_remain;
-    bool         b_handle_keep_alive;
     demux_sys_t  *p_sys;
+    vlc_thread_t handle;
+    bool         b_handle_keep_alive;
 };
 
 struct demux_sys_t
@@ -189,9 +194,9 @@ struct demux_sys_t
 
     /* */
     int64_t          i_pcr; /* The clock */
-    int64_t          i_npt;
-    int64_t          i_npt_length;
-    int64_t          i_npt_start;
+    float            i_npt;
+    float            i_npt_length;
+    float            i_npt_start;
 
     /* timeout thread information */
     int              i_timeout;     /* session timeout value in seconds */
@@ -223,7 +228,7 @@ static void StreamRead  ( void *, unsigned int, unsigned int,
 static void StreamClose ( void * );
 static void TaskInterrupt( void * );
 
-static void* TimeoutPrevention( vlc_object_t * );
+static void* TimeoutPrevention( void * );
 
 static unsigned char* parseH264ConfigStr( char const* configStr,
                                           unsigned int& configSize );
@@ -236,8 +241,6 @@ static int  Open ( vlc_object_t *p_this )
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys = NULL;
 
-    MediaSubsessionIterator *iter   = NULL;
-    MediaSubsession         *sub    = NULL;
     int i, i_return;
     int i_error = VLC_EGENERIC;
 
@@ -273,9 +276,9 @@ static int  Open ( vlc_object_t *p_this )
     p_sys->i_track = 0;
     p_sys->track   = NULL;
     p_sys->i_pcr = 0;
-    p_sys->i_npt = 0;
-    p_sys->i_npt_start = 0;
-    p_sys->i_npt_length = 0;
+    p_sys->i_npt = 0.;
+    p_sys->i_npt_start = 0.;
+    p_sys->i_npt_length = 0.;
     p_sys->p_out_asf = NULL;
     p_sys->b_no_data = true;
     p_sys->i_no_data_ti = 0;
@@ -399,25 +402,24 @@ error:
     {
         live_track_t *tk = p_sys->track[i];
 
-        if( tk->b_muxed ) stream_DemuxDelete( tk->p_out_muxed );
+        if( tk->b_muxed ) stream_Delete( tk->p_out_muxed );
         es_format_Clean( &tk->fmt );
         free( tk->p_buffer );
         free( tk );
     }
 
     if( p_sys->i_track ) free( p_sys->track );
-    if( p_sys->p_out_asf ) stream_DemuxDelete( p_sys->p_out_asf );
+    if( p_sys->p_out_asf ) stream_Delete( p_sys->p_out_asf );
     if( p_sys->rtsp && p_sys->ms ) p_sys->rtsp->teardownMediaSession( *p_sys->ms );
+    if( p_sys->p_timeout )
+    {
+        vlc_cancel( p_sys->p_timeout->handle );
+        vlc_join( p_sys->p_timeout->handle, NULL );
+        free( p_sys->p_timeout );
+    }
     if( p_sys->ms ) Medium::close( p_sys->ms );
     if( p_sys->rtsp ) RTSPClient::close( p_sys->rtsp );
     if( p_sys->env ) p_sys->env->reclaim();
-    if( p_sys->p_timeout )
-    {
-        vlc_object_kill( p_sys->p_timeout );
-        vlc_thread_join( p_sys->p_timeout );
-        vlc_object_detach( p_sys->p_timeout );
-        vlc_object_release( p_sys->p_timeout );
-    }
     delete p_sys->scheduler;
     free( p_sys->p_sdp );
     free( p_sys->psz_path );
@@ -441,25 +443,24 @@ static void Close( vlc_object_t *p_this )
     {
         live_track_t *tk = p_sys->track[i];
 
-        if( tk->b_muxed ) stream_DemuxDelete( tk->p_out_muxed );
+        if( tk->b_muxed ) stream_Delete( tk->p_out_muxed );
         es_format_Clean( &tk->fmt );
         free( tk->p_buffer );
         free( tk );
     }
 
     if( p_sys->i_track ) free( p_sys->track );
-    if( p_sys->p_out_asf ) stream_DemuxDelete( p_sys->p_out_asf );
+    if( p_sys->p_out_asf ) stream_Delete( p_sys->p_out_asf );
     if( p_sys->rtsp && p_sys->ms ) p_sys->rtsp->teardownMediaSession( *p_sys->ms );
+    if( p_sys->p_timeout )
+    {
+        vlc_cancel( p_sys->p_timeout->handle );
+        vlc_join( p_sys->p_timeout->handle, NULL );
+        free( p_sys->p_timeout );
+    }
     if( p_sys->ms ) Medium::close( p_sys->ms );
     if( p_sys->rtsp ) RTSPClient::close( p_sys->rtsp );
     if( p_sys->env ) p_sys->env->reclaim();
-    if( p_sys->p_timeout )
-    {
-        vlc_object_kill( p_sys->p_timeout );
-        vlc_thread_join( p_sys->p_timeout );
-        vlc_object_detach( p_sys->p_timeout );
-        vlc_object_release( p_sys->p_timeout );
-    }
     delete p_sys->scheduler;
     free( p_sys->p_sdp );
     free( p_sys->psz_path );
@@ -484,7 +485,6 @@ static int Connect( demux_t *p_demux )
     char *p_sdp       = NULL;
     int  i_http_port  = 0;
     int  i_ret        = VLC_SUCCESS;
-    int i_lefttries;
 
     if( p_sys->url.i_port == 0 ) p_sys->url.i_port = 554;
     if( p_sys->url.psz_username || p_sys->url.psz_password )
@@ -507,9 +507,7 @@ static int Connect( demux_t *p_demux )
         psz_pwd  = var_CreateGetString( p_demux, "rtsp-pwd" );
     }
 
-    i_lefttries = 3;
 createnew:
-    i_lefttries--;
     if( !vlc_object_alive (p_demux) || p_demux->b_error )
     {
         free( psz_user );
@@ -533,10 +531,10 @@ createnew:
         return VLC_EGENERIC;
     }
 
-    /* Kasenna enables KeepAlive by analysing the User-Agent string. 
-     * Appending _KA to the string should be enough to enable this feature, 
-     * however, there is a bug where the _KA doesn't get parsed from the 
-     * default User-Agent as created by VLC/Live555 code. This is probably due 
+    /* Kasenna enables KeepAlive by analysing the User-Agent string.
+     * Appending _KA to the string should be enough to enable this feature,
+     * however, there is a bug where the _KA doesn't get parsed from the
+     * default User-Agent as created by VLC/Live555 code. This is probably due
      * to spaces in the string or the string being too long. Here we override
      * the default string with a more compact version.
      */
@@ -549,14 +547,39 @@ describe:
     authenticator.setUsernameAndPassword( (const char*)psz_user,
                                           (const char*)psz_pwd );
 
+    /* */
+    const int i_timeout = var_CreateGetInteger(p_demux, "ipv4-timeout") / 1000;
+
+#if LIVEMEDIA_LIBRARY_VERSION_INT >= 1223337600
+    psz_options = p_sys->rtsp->sendOptionsCmd( psz_url, psz_user, psz_pwd,
+                                               &authenticator, i_timeout );
+#else
     psz_options = p_sys->rtsp->sendOptionsCmd( psz_url, psz_user, psz_pwd,
                                                &authenticator );
+#endif
+    if( psz_options == NULL && authenticator.realm() != NULL )
+    {
+        // try again, with the realm set this time
+#if LIVEMEDIA_LIBRARY_VERSION_INT >= 1223337600
+        psz_options = p_sys->rtsp->sendOptionsCmd( psz_url, psz_user, psz_pwd,
+                                               &authenticator, i_timeout );
+#else
+        psz_options = p_sys->rtsp->sendOptionsCmd( psz_url, psz_user, psz_pwd,
+                                               &authenticator );
+#endif
+    }
     if( psz_options )
         p_sys->b_get_param = strstr( psz_options, "GET_PARAMETER" ) ? true : false ;
     delete [] psz_options;
 
+#if LIVEMEDIA_LIBRARY_VERSION_INT >= 1223337600
     p_sdp = p_sys->rtsp->describeWithPassword( psz_url, (const char*)psz_user, (const char*)psz_pwd,
-                         var_GetBool( p_demux, "rtsp-kasenna" ) );
+                                          var_GetBool( p_demux, "rtsp-kasenna" ), i_timeout );
+#else
+    p_sdp = p_sys->rtsp->describeWithPassword( psz_url, (const char*)psz_user, (const char*)psz_pwd,
+                                          var_GetBool( p_demux, "rtsp-kasenna" ) );
+#endif
+
     if( p_sdp == NULL )
     {
         /* failure occurred */
@@ -586,17 +609,14 @@ describe:
 
         if( i_code == 401 )
         {
-            int i_result;
             msg_Dbg( p_demux, "authentication failed" );
 
             free( psz_user );
             free( psz_pwd );
-            psz_user = psz_pwd = NULL;
-
-            i_result = intf_UserLoginPassword( p_demux, _("RTSP authentication"),
-                           _("Please enter a valid login name and a password."),
-                                                   &psz_user, &psz_pwd );
-            if( i_result == DIALOG_OK_YES )
+            dialog_Login( p_demux, &psz_user, &psz_pwd,
+                          _("RTSP authentication"),
+                        _("Please enter a valid login name and a password.") );
+            if( psz_user != NULL && psz_pwd != NULL )
             {
                 msg_Dbg( p_demux, "retrying with user=%s, pwd=%s",
                          psz_user, psz_pwd );
@@ -616,11 +636,9 @@ describe:
         }
         else
         {
-            msg_Dbg( p_demux, "connection timeout, retrying" );
+            msg_Dbg( p_demux, "connection timeout" );
             if( p_sys->rtsp ) RTSPClient::close( p_sys->rtsp );
             p_sys->rtsp = NULL;
-            if( i_lefttries > 0 )
-                goto createnew;
         }
         i_ret = VLC_EGENERIC;
     }
@@ -769,7 +787,7 @@ static int SessionsSetup( demux_t *p_demux )
             tk->waiting     = 0;
             tk->b_rtcp_sync = false;
             tk->i_pts       = 0;
-            tk->i_npt       = 0;
+            tk->i_npt       = 0.;
             tk->i_buffer    = 65536;
             tk->p_buffer    = (uint8_t *)malloc( 65536 );
             if( !tk->p_buffer )
@@ -1010,16 +1028,18 @@ static int SessionsSetup( demux_t *p_demux )
     if( p_sys->i_track <= 0 ) i_return = VLC_EGENERIC;
 
     /* Retrieve the starttime if possible */
-    p_sys->i_npt_start = (int64_t)( p_sys->ms->playStartTime() * (double)1000000.0 );
-    if( p_sys->i_npt_start < 0 )
-        p_sys->i_npt_start = -1;
+    p_sys->i_npt_start = p_sys->ms->playStartTime();
 
     /* Retrieve the duration if possible */
-    p_sys->i_npt_length = (int64_t)( p_sys->ms->playEndTime() * (double)1000000.0 );
-    if( p_sys->i_npt_length < 0 )
-        p_sys->i_npt_length = -1;
+    p_sys->i_npt_length = p_sys->ms->playEndTime();
 
-    msg_Dbg( p_demux, "setup start: %lld stop:%lld", p_sys->i_npt_start, p_sys->i_npt_length );
+    /* */
+    msg_Dbg( p_demux, "setup start: %f stop:%f", p_sys->i_npt_start, p_sys->i_npt_length );
+
+    /* */
+    p_sys->b_no_data = true;
+    p_sys->i_no_data_ti = 0;
+
     return i_return;
 }
 
@@ -1029,12 +1049,11 @@ static int SessionsSetup( demux_t *p_demux )
 static int Play( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
-    int i;
 
     if( p_sys->rtsp )
     {
         /* The PLAY */
-        if( !p_sys->rtsp->playMediaSession( *p_sys->ms, p_sys->i_npt_start / (double)1000000.0 , -1, 1 ) )
+        if( !p_sys->rtsp->playMediaSession( *p_sys->ms, p_sys->i_npt_start, -1, 1 ) )
         {
             msg_Err( p_demux, "RTSP PLAY failed %s", p_sys->env->getResultMsg() );
             return VLC_EGENERIC;
@@ -1049,30 +1068,32 @@ static int Play( demux_t *p_demux )
         if( !p_sys->p_timeout && p_sys->b_get_param )
         {
             msg_Dbg( p_demux, "We have a timeout of %d seconds",  p_sys->i_timeout );
-            p_sys->p_timeout = (timeout_thread_t *)vlc_object_create( p_demux, sizeof(timeout_thread_t) );
-            p_sys->p_timeout->p_sys = p_demux->p_sys; /* lol, object recursion :D */
-            if( vlc_thread_create( p_sys->p_timeout, "liveMedia-timeout", TimeoutPrevention,
-                                   VLC_THREAD_PRIORITY_LOW, true ) )
+            p_sys->p_timeout = (timeout_thread_t *)malloc( sizeof(timeout_thread_t) );
+            if( p_sys->p_timeout )
             {
-                msg_Err( p_demux, "cannot spawn liveMedia timeout thread" );
-                vlc_object_release( p_sys->p_timeout );
+                memset( p_sys->p_timeout, 0, sizeof(timeout_thread_t) );
+                p_sys->p_timeout->p_sys = p_demux->p_sys; /* lol, object recursion :D */
+                if( vlc_clone( &p_sys->p_timeout->handle,  TimeoutPrevention,
+                               p_sys->p_timeout, VLC_THREAD_PRIORITY_LOW ) )
+                {
+                    msg_Err( p_demux, "cannot spawn liveMedia timeout thread" );
+                    free( p_sys->p_timeout );
+                    p_sys->p_timeout = NULL;
+                }
+                else
+                    msg_Dbg( p_demux, "spawned timeout thread" );
             }
-            msg_Dbg( p_demux, "spawned timeout thread" );
-            vlc_object_attach( p_sys->p_timeout, p_demux );
+            else
+                msg_Err( p_demux, "cannot spawn liveMedia timeout thread" );
         }
     }
     p_sys->i_pcr = 0;
 
     /* Retrieve the starttime if possible */
-    p_sys->i_npt_start = (int64_t)( p_sys->ms->playStartTime() * (double)1000000.0 );
-    if( p_sys->i_npt_start < 0 )
-        p_sys->i_npt_start = -1;
+    p_sys->i_npt_start = p_sys->ms->playStartTime();
+    p_sys->i_npt_length = p_sys->ms->playEndTime();
 
-    p_sys->i_npt_length = (int64_t)( p_sys->ms->playEndTime() * (double)1000000.0 );
-    if( p_sys->i_npt_length < 0 )
-        p_sys->i_npt_length = -1;
-
-    msg_Dbg( p_demux, "play start: %lld stop:%lld", p_sys->i_npt_start, p_sys->i_npt_length );
+    msg_Dbg( p_demux, "play start: %f stop:%f", p_sys->i_npt_start, p_sys->i_npt_length );
     return VLC_SUCCESS;
 }
 
@@ -1156,9 +1177,9 @@ static int Demux( demux_t *p_demux )
             tk->b_rtcp_sync = true;
             /* reset PCR */
             tk->i_pts = 0;
-            tk->i_npt = 0;
+            tk->i_npt = 0.;
             p_sys->i_pcr = 0;
-            p_sys->i_npt = 0;
+            p_sys->i_npt = 0.;
             i_pcr = 0;
         }
     }
@@ -1216,7 +1237,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             pi64 = (int64_t*)va_arg( args, int64_t * );
             if( p_sys->i_npt > 0 )
             {
-                *pi64 = p_sys->i_npt;
+                *pi64 = (int64_t)(p_sys->i_npt * 1000000.);
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;
@@ -1225,14 +1246,14 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             pi64 = (int64_t*)va_arg( args, int64_t * );
             if( p_sys->i_npt_length > 0 )
             {
-                *pi64 = p_sys->i_npt_length;
+                *pi64 = (int64_t)((double)p_sys->i_npt_length * 1000000.0);
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;
 
         case DEMUX_GET_POSITION:
             pf = (double*)va_arg( args, double* );
-            if( p_sys->i_npt_length > 0 && p_sys->i_npt > 0)
+            if( (p_sys->i_npt_length > 0) && (p_sys->i_npt > 0) )
             {
                 *pf = ( (double)p_sys->i_npt / (double)p_sys->i_npt_length );
                 return VLC_SUCCESS;
@@ -1241,12 +1262,12 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_SET_POSITION:
         case DEMUX_SET_TIME:
-            if( p_sys->rtsp && p_sys->i_npt_length > 0 )
+            if( p_sys->rtsp && (p_sys->i_npt_length > 0) )
             {
                 int i;
                 float time;
 
-                if( i_query == DEMUX_SET_TIME && p_sys->i_npt )
+                if( (i_query == DEMUX_SET_TIME) && (p_sys->i_npt > 0) )
                 {
                     i64 = (int64_t)va_arg( args, int64_t );
                     time = (float)((double)i64 / (double)1000000.0); /* in second */
@@ -1256,7 +1277,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 else
                 {
                     f = (double)va_arg( args, double );
-                    time = f * (double)p_sys->i_npt_length / (double)1000000.0;   /* in second */
+                    time = f * (double)p_sys->i_npt_length;   /* in second */
                 }
 
                 if( !p_sys->rtsp->playMediaSession( *p_sys->ms, time, -1, 1 ) )
@@ -1265,7 +1286,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                         p_sys->env->getResultMsg() );
                     return VLC_EGENERIC;
                 }
-                es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
                 p_sys->i_pcr = 0;
 
                 /* Retrieve RTP-Info values */
@@ -1276,17 +1296,12 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
                 }
 
                 /* Retrieve the starttime if possible */
-                p_sys->i_npt_start = (int64_t)( p_sys->ms->playStartTime() * (double)1000000.0 );
-                if( p_sys->i_npt_start < 0 )
-                    p_sys->i_npt_start = -1;
-                else p_sys->i_npt = p_sys->i_npt_start;
+                p_sys->i_npt = p_sys->i_npt_start = p_sys->ms->playStartTime();
 
                 /* Retrieve the duration if possible */
-                p_sys->i_npt_length = (int64_t)( p_sys->ms->playEndTime() * (double)1000000.0 );
-                if( p_sys->i_npt_length < 0 )
-                    p_sys->i_npt_length = -1;
+                p_sys->i_npt_length = p_sys->ms->playEndTime();
 
-                msg_Dbg( p_demux, "seek start: %lld stop:%lld", p_sys->i_npt_start, p_sys->i_npt_length );
+                msg_Dbg( p_demux, "seek start: %f stop:%f", p_sys->i_npt_start, p_sys->i_npt_length );
                 return VLC_SUCCESS;
             }
             return VLC_EGENERIC;
@@ -1295,7 +1310,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
         case DEMUX_CAN_PAUSE:
         case DEMUX_CAN_SEEK:
             pb = (bool*)va_arg( args, bool * );
-            if( p_sys->rtsp && p_sys->i_npt_length )
+            if( p_sys->rtsp && p_sys->i_npt_length > 0 )
                 /* Not always true, but will be handled in SET_PAUSE_STATE */
                 *pb = true;
             else
@@ -1313,55 +1328,67 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 #endif
             return VLC_SUCCESS;
 
-#if 0
         case DEMUX_CAN_CONTROL_RATE:
             pb = (bool*)va_arg( args, bool * );
             pb2 = (bool*)va_arg( args, bool * );
 
-            *pb = p_sys->rtsp != NULL && p_sys->i_npt_length > 0 && !var_GetBool( p_demux, "rtsp-kasenna" );
+            *pb = (p_sys->rtsp != NULL) &&
+                    (p_sys->i_npt_length > 0) &&
+                    !var_GetBool( p_demux, "rtsp-kasenna" );
             *pb2 = false;
             return VLC_SUCCESS;
 
         case DEMUX_SET_RATE:
         {
-            double f_scale;
+            double f_scale, f_old_scale;
 
-            if( !p_sys->rtsp || p_sys->i_npt_length <= 0 || var_GetBool( p_demux, "rtsp-kasenna" ) )
+            if( !p_sys->rtsp || (p_sys->i_npt_length <= 0) ||
+                var_GetBool( p_demux, "rtsp-kasenna" ) )
                 return VLC_EGENERIC;
 
-            /* TODO we might want to ensure that the new rate is different from
-             * old rate after playMediaSession...
-             * I have no idea how the server map the requested rate to the
-             * ones it supports.
-             * ex:
-             *  current is x2 we request x1.5 if the server return x2 we will
-             *  never succeed to return to x1.
-             *  In this case we should retry with a lower rate until we have
-             *  one (even x1).
+            /* According to RFC 2326 p56 chapter 12.35 a RTSP server that
+             * supports Scale should:
+             *
+             * "The server should try to approximate the viewing rate, but may
+             *  restrict the range of scale values that it supports. The response
+             *  MUST contain the actual scale value chosen by the server."
+             *
+             * Scale = 1 indicates normal play
+             * Scale > 1 indicates fast forward
+             * Scale < 1 && Scale > 0 indicates slow motion
+             * Scale < 0 value indicates rewind
              */
 
             pi_int = (int*)va_arg( args, int * );
-            f_scale = (double)INPUT_RATE_DEFAULT / (*p_int);
+            f_scale = (double)INPUT_RATE_DEFAULT / (*pi_int);
+            f_old_scale = p_sys->ms->scale();
 
             /* Passing -1 for the start and end time will mean liveMedia won't
-            * create a Range: section for the RTSP message. The server should
-            * pick up from the current position */
+             * create a Range: section for the RTSP message. The server should
+             * pick up from the current position */
             if( !p_sys->rtsp->playMediaSession( *p_sys->ms, -1, -1, f_scale ) )
             {
                 msg_Err( p_demux, "PLAY with Scale %0.2f failed %s", f_scale,
                         p_sys->env->getResultMsg() );
                 return VLC_EGENERIC;
             }
+
+            if( p_sys->ms->scale() == f_old_scale )
+            {
+                msg_Err( p_demux, "no scale change using old Scale %0.2f",
+                          p_sys->ms->scale() );
+                return VLC_EGENERIC;
+            }
+
             /* ReSync the stream */
             p_sys->i_npt_start = 0;
             p_sys->i_pcr = 0;
-            p_sys->i_npt = 0;
-            es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
+            p_sys->i_npt = 0.0;
 
-            *pi_int = (int)( INPUT_RATE_DEFAULT / p_sys->ms->scale() + 0.5 );
+            *pi_int = (int)( INPUT_RATE_DEFAULT / p_sys->ms->scale() );
+            msg_Dbg( p_demux, "PLAY with new Scale %0.2f (%d)", p_sys->ms->scale(), (*pi_int) );
             return VLC_SUCCESS;
         }
-#endif
 
         case DEMUX_SET_PAUSE_STATE:
         {
@@ -1381,8 +1408,8 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             }
 
             /* When we Pause, we'll need the TimeoutPrevention thread to
-             * handle sending the "Keep Alive" message to the server. 
-             * Unfortunately Live555 isn't thread safe and so can't 
+             * handle sending the "Keep Alive" message to the server.
+             * Unfortunately Live555 isn't thread safe and so can't
              * do this normally while the main Demux thread is handling
              * a live stream. We end up with the Timeout thread blocking
              * waiting for a response from the server. So when we PAUSE
@@ -1390,7 +1417,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
              * and if it's set, it will trigger the GET_PARAMETER message */
             if( b_bool && p_sys->p_timeout != NULL )
                 p_sys->p_timeout->b_handle_keep_alive = true;
-            else if( !b_bool && p_sys->p_timeout != NULL ) 
+            else if( !b_bool && p_sys->p_timeout != NULL )
                 p_sys->p_timeout->b_handle_keep_alive = false;
 
             for( i = 0; !b_bool && i < p_sys->i_track; i++ )
@@ -1403,17 +1430,12 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             }
 
             /* Retrieve the starttime if possible */
-            p_sys->i_npt_start = (int64_t)( p_sys->ms->playStartTime() * (double)1000000.0 );
-            if( p_sys->i_npt_start < 0 )
-                p_sys->i_npt_start = -1;
-            else p_sys->i_npt = p_sys->i_npt_start;
+            p_sys->i_npt_start = p_sys->ms->playStartTime();
 
             /* Retrieve the duration if possible */
-            p_sys->i_npt_length = (int64_t)( p_sys->ms->playEndTime() * (double)1000000.0 );
-            if( p_sys->i_npt_length < 0 )
-                p_sys->i_npt_length = -1;
+            p_sys->i_npt_length = p_sys->ms->playEndTime();
 
-            msg_Dbg( p_demux, "pause start: %lld stop:%lld", p_sys->i_npt_start, p_sys->i_npt_length );
+            msg_Dbg( p_demux, "pause start: %f stop:%f", p_sys->i_npt_start, p_sys->i_npt_length );
             return VLC_SUCCESS;
         }
         case DEMUX_GET_TITLE_INFO:
@@ -1448,14 +1470,14 @@ static int RollOverTcp( demux_t *p_demux )
     {
         live_track_t *tk = p_sys->track[i];
 
-        if( tk->b_muxed ) stream_DemuxDelete( tk->p_out_muxed );
+        if( tk->b_muxed ) stream_Delete( tk->p_out_muxed );
         if( tk->p_es ) es_out_Del( p_demux->out, tk->p_es );
         es_format_Clean( &tk->fmt );
         free( tk->p_buffer );
         free( tk );
     }
     if( p_sys->i_track ) free( p_sys->track );
-    if( p_sys->p_out_asf ) stream_DemuxDelete( p_sys->p_out_asf );
+    if( p_sys->p_out_asf ) stream_Delete( p_sys->p_out_asf );
 
     p_sys->rtsp->teardownMediaSession( *p_sys->ms );
     Medium::close( p_sys->ms );
@@ -1465,6 +1487,8 @@ static int RollOverTcp( demux_t *p_demux )
     p_sys->rtsp = NULL;
     p_sys->track = NULL;
     p_sys->i_track = 0;
+    p_sys->b_no_data = true;
+    p_sys->i_no_data_ti = 0;
 
     /* Reopen rtsp client */
     if( ( i_return = Connect( p_demux ) ) != VLC_SUCCESS )
@@ -1517,7 +1541,7 @@ static void StreamRead( void *p_private, unsigned int i_size,
     i_pts &= INT64_C(0x00ffffffffffffff);
 
     /* Retrieve NPT for this pts */
-    tk->i_npt = (int64_t) INT64_C(1000000) * tk->sub->getNormalPlayTime(pts);
+    tk->i_npt = tk->sub->getNormalPlayTime(pts);
 
     if( tk->b_quicktime && tk->p_es == NULL )
     {
@@ -1665,7 +1689,7 @@ static void StreamRead( void *p_private, unsigned int i_size,
 
     /* Update our global npt value */
     if( tk->i_npt > 0 && tk->i_npt > p_sys->i_npt && tk->i_npt < p_sys->i_npt_length)
-        p_sys->i_npt = tk->i_npt; 
+        p_sys->i_npt = tk->i_npt;
 
     if( !tk->b_muxed )
     {
@@ -1732,37 +1756,26 @@ static void TaskInterrupt( void *p_private )
 /*****************************************************************************
  *
  *****************************************************************************/
-static void* TimeoutPrevention( vlc_object_t * p_this )
+static void* TimeoutPrevention( void *p_data )
 {
-    timeout_thread_t *p_timeout = (timeout_thread_t *)p_this;
-    p_timeout->b_die = false;
-    p_timeout->i_remain = (int64_t)p_timeout->p_sys->i_timeout -2;
-    p_timeout->i_remain *= 1000000;
+    timeout_thread_t *p_timeout = (timeout_thread_t *)p_data;
 
-    vlc_thread_ready( p_timeout );
-
-    /* Avoid lock */
-    while( vlc_object_alive (p_timeout) )
+    for( ;; )
     {
-        if( p_timeout->i_remain <= 0 )
+        /* Voodoo (= no) thread safety here! *Ahem* */
+        if( p_timeout->b_handle_keep_alive )
         {
             char *psz_bye = NULL;
-            p_timeout->i_remain = (int64_t)p_timeout->p_sys->i_timeout -2;
-            p_timeout->i_remain *= 1000000;
-            msg_Dbg( p_timeout, "reset the timeout timer" );
-            if( p_timeout->b_handle_keep_alive == true )
-            {
-                p_timeout->p_sys->rtsp->getMediaSessionParameter( *p_timeout->p_sys->ms, NULL, psz_bye );
-                p_timeout->p_sys->b_timeout_call = false;
-            }
-            else
-            {
-                p_timeout->p_sys->b_timeout_call = true;
-            }
+            int canc = vlc_savecancel ();
+
+            p_timeout->p_sys->rtsp->getMediaSessionParameter( *p_timeout->p_sys->ms, NULL, psz_bye );
+            vlc_restorecancel (canc);
         }
-        p_timeout->i_remain -= 200000;
-        msleep( 200000 ); /* 200 ms */
+        p_timeout->p_sys->b_timeout_call = !p_timeout->b_handle_keep_alive;
+
+        msleep (((int64_t)p_timeout->p_sys->i_timeout - 2) * CLOCK_FREQ);
     }
+    assert(0); /* dead code */
 }
 
 /*****************************************************************************

@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: db1a42e5e54e18a5e4093f35b5ac7ac537bfb119 $
+ * $Id$
  */
 #include "AtmoDefs.h"
 #include "AtmoLiveView.h"
@@ -180,7 +180,7 @@ DWORD CAtmoLiveView::Execute(void)
 #ifdef _ATMO_KLUDGE_
                    vlc_mutex_lock( &m_TerminateLock );
                    vlc_cond_destroy( &m_TerminateCond );
-                   vlc_cond_init( m_pAtmoThread, &m_TerminateCond );
+                   vlc_cond_init( &m_TerminateCond );
                    vlc_mutex_unlock( &m_TerminateLock );
 #endif
 #endif

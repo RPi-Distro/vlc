@@ -6,7 +6,7 @@
  * based on code by Christopher Wingert for tivo-mplayer
  * tivo(at)wingert.org, February 2003
  *
- * $Id: a86e400f61da50bc82dbb15a5cb006c07ed58781 $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -55,20 +55,20 @@
 static int  Open ( vlc_object_t * );
 static void Close( vlc_object_t * );
 
-vlc_module_begin();
-    set_shortname( N_("TY") );
-    set_description(N_("TY Stream audio/video demux"));
-    set_category( CAT_INPUT );
-    set_subcategory( SUBCAT_INPUT_DEMUX );
-    set_capability("demux", 6);
+vlc_module_begin ()
+    set_shortname( N_("TY") )
+    set_description(N_("TY Stream audio/video demux"))
+    set_category( CAT_INPUT )
+    set_subcategory( SUBCAT_INPUT_DEMUX )
+    set_capability("demux", 6)
     /* FIXME: there seems to be a segfault when using PVR access
      * and TY demux has a bigger priority than PS
      * Something must be wrong.
      */
-    set_callbacks( Open, Close );
-    add_shortcut("ty");
-    add_shortcut("tivo");
-vlc_module_end();
+    set_callbacks( Open, Close )
+    add_shortcut("ty")
+    add_shortcut("tivo")
+vlc_module_end ()
 
 /*****************************************************************************
  * Local prototypes
@@ -116,7 +116,7 @@ static const uint8_t ty_AC3AudioPacket[] = { 0x00, 0x00, 0x01, 0xbd };
 typedef struct
 {
   long l_rec_size;
-  uint8_t ex1, ex2;
+  uint8_t ex[2];
   uint8_t rec_type;
   uint8_t subrec_type;
   bool b_ext;
@@ -505,7 +505,7 @@ static int Control(demux_t *p_demux, int i_query, va_list args)
         if( ( i64 = p_sys->i_stream_size ) > 0 )
         {
             pf = (double*) va_arg( args, double* );
-            *pf = (double)stream_Tell( p_demux->s ) / (double) i64;
+            *pf = ((double)1.0) * stream_Tell( p_demux->s ) / (double) i64;
             return VLC_SUCCESS;
         }
         return VLC_EGENERIC;
@@ -780,7 +780,7 @@ static int DemuxRecVideo( demux_t *p_demux, ty_rec_hdr_t *rec_hdr, block_t *p_bl
             continue;
 
         es_format_Init( &fmt, SPU_ES, fcc[i] );
-        fmt.psz_description = strdup( _(ppsz_description[i]) );
+        fmt.psz_description = strdup( vlc_gettext(ppsz_description[i]) );
         fmt.i_group = TY_ES_GROUP;
         p_sys->p_cc[i] = es_out_Add( p_demux->out, &fmt );
         es_format_Clean( &fmt );
@@ -789,24 +789,17 @@ static int DemuxRecVideo( demux_t *p_demux, ty_rec_hdr_t *rec_hdr, block_t *p_bl
     /* Send the CC data */
     if( p_block_in->i_pts > 0 && p_sys->cc.i_data > 0 )
     {
-        int i_cc_count;
-
-        block_t *p_cc = block_New( p_demux, p_sys->cc.i_data );
-        p_cc->i_flags |= BLOCK_FLAG_TYPE_I;
-        p_cc->i_pts = p_block_in->i_pts;
-        memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
-
-        for( i = 0, i_cc_count = 0; i < 4; i++ )
-            i_cc_count += p_sys->p_cc[i] ? 1 : 0;
-
         for( i = 0; i < 4; i++ )
         {
-            if( !p_sys->p_cc[i] )
-                continue;
-            if( i_cc_count > 1 )
-                es_out_Send( p_demux->out, p_sys->p_cc[i], block_Duplicate( p_cc ) );
-            else
+            if( p_sys->p_cc[i] )
+            {
+                block_t *p_cc = block_New( p_demux, p_sys->cc.i_data );
+                p_cc->i_flags |= BLOCK_FLAG_TYPE_I;
+                p_cc->i_pts = p_block_in->i_pts;
+                memcpy( p_cc->p_buffer, p_sys->cc.p_data, p_sys->cc.i_data );
+
                 es_out_Send( p_demux->out, p_sys->p_cc[i], p_cc );
+            }
         }
         cc_Flush( &p_sys->cc );
     }
@@ -1023,7 +1016,6 @@ static int DemuxRecCc( demux_t *p_demux, ty_rec_hdr_t *rec_hdr, block_t *p_block
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     int i_field;
-    int i_channel;
 
     if( p_block_in )
         block_Release(p_block_in);
@@ -1037,19 +1029,12 @@ static int DemuxRecCc( demux_t *p_demux, ty_rec_hdr_t *rec_hdr, block_t *p_block
 
     /* XDS data (extract programs infos) transmitted on field 2 only */
     if( i_field == 1 )
-        DemuxDecodeXds( p_demux, rec_hdr->ex1, rec_hdr->ex2 );
+        DemuxDecodeXds( p_demux, rec_hdr->ex[0], rec_hdr->ex[1] );
 
     if( p_sys->cc.i_data + 3 > CC_MAX_DATA_SIZE )
         return 0;
 
-    p_sys->cc.p_data[p_sys->cc.i_data+0] = i_field;
-    p_sys->cc.p_data[p_sys->cc.i_data+1] = rec_hdr->ex1;
-    p_sys->cc.p_data[p_sys->cc.i_data+2] = rec_hdr->ex2;
-    p_sys->cc.i_data += 3;
-
-    i_channel = cc_Channel( i_field, &p_sys->cc.p_data[p_sys->cc.i_data-3 + 1] );
-    if( i_channel >= 0 && i_channel < 4 )
-        p_sys->cc.pb_present[i_channel] = true;
+    cc_AppendData( &p_sys->cc, i_field, rec_hdr->ex );
     return 0;
 }
 
@@ -1105,7 +1090,6 @@ static int ty_stream_seek_pct(demux_t *p_demux, double seek_pct)
 
     /* to hell with syncing any audio or video, just start reading records... :) */
     /*p_sys->lastAudioPTS = p_sys->lastVideoPTS = 0;*/
-    es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
     return VLC_SUCCESS;
 }
 
@@ -1950,13 +1934,11 @@ static ty_rec_hdr_t *parse_chunk_headers( const uint8_t *p_buf,
             /* marker bit 2 set, so read extended data */
             b1 = ( ( ( record_header[ 0 ] & 0x0f ) << 4 ) | 
                    ( ( record_header[ 1 ] & 0xf0 ) >> 4 ) );
-            b1 &= 0x7f;
             b2 = ( ( ( record_header[ 1 ] & 0x0f ) << 4 ) | 
                    ( ( record_header[ 2 ] & 0xf0 ) >> 4 ) );
-            b2 &= 0x7f;
 
-            p_rec_hdr->ex1 = b1;
-            p_rec_hdr->ex2 = b2;
+            p_rec_hdr->ex[0] = b1;
+            p_rec_hdr->ex[1] = b2;
             p_rec_hdr->l_rec_size = 0;
             p_rec_hdr->l_ty_pts = 0;
             p_rec_hdr->b_ext = true;

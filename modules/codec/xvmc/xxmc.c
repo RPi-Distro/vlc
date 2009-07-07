@@ -2,7 +2,7 @@
  * xxmc.c : HW MPEG decoder thread
  *****************************************************************************
  * Copyright (C) 2000-2001 VideoLAN
- * $Id: 47adf0cd2be0ee5ec474b1815c675651cf07c4da $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -41,9 +41,9 @@
 #endif
 
 #include "mpeg2.h"
-#include "attributes.h"
+//#include "attributes.h"
 #include "mpeg2_internal.h"
-#include "xvmc_vld.h"
+//#include "xvmc_vld.h"
 
 /* Aspect ratio (ISO/IEC 13818-2 section 6.3.3, table 6-3) */
 #define AR_SQUARE_PICTURE       1                           /* square pixels */
@@ -100,12 +100,12 @@ static picture_t *GetNewPicture( decoder_t *, uint8_t ** );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-vlc_module_begin();
-    set_description( N_("MPEG I/II hw video decoder (using libmpeg2)") );
-    set_capability( "decoder", 140 );
-    set_callbacks( OpenDecoder, CloseDecoder );
-    add_shortcut( "xxmc" );
-vlc_module_end();
+vlc_module_begin ()
+    set_description( N_("MPEG I/II hw video decoder (using libmpeg2)") )
+    set_capability( "decoder", 140 )
+    set_callbacks( OpenDecoder, CloseDecoder )
+    add_shortcut( "xxmc" )
+vlc_module_end ()
 
 /*****************************************************************************
  * OpenDecoder: probe the decoder and return score
@@ -137,12 +137,11 @@ static int OpenDecoder( vlc_object_t *p_this )
     msg_Dbg(p_dec, "OpenDecoder Entering");
 
     /* Allocate the memory needed to store the decoder's structure */
-    p_dec->p_sys = p_sys = (decoder_sys_t *)malloc(sizeof(decoder_sys_t));
+    p_dec->p_sys = p_sys = calloc( 1, sizeof(*p_sys) );
     if( !p_sys )
         return VLC_ENOMEM;
 
     /* Initialize the thread properties */
-    memset( p_sys, 0, sizeof(decoder_sys_t) );
     p_sys->p_mpeg2dec = NULL;
     p_sys->p_synchro  = NULL;
     p_sys->p_info     = NULL;
@@ -199,6 +198,8 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->p_info = mpeg2_info( p_sys->p_mpeg2dec );
 
     p_dec->pf_decode_video = DecodeBlock;
+    p_dec->fmt_out.i_cat = VIDEO_ES;
+    p_dec->fmt_out.i_codec = 0;
 
     f_wd_dec = fopen("/vlc/dec_pid", "w");
     if (f_wd_dec != NULL)
@@ -276,7 +277,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                     if ( p_sys->b_slice_i )
                     {
                         decoder_SynchroNewPicture( p_sys->p_synchro,
-                            I_CODING_TYPE, 2, 0, 0, p_sys->i_current_rate,
+                            I_CODING_TYPE, 2, 0, 0,
                             p_sys->p_info->sequence->flags & SEQ_FLAG_LOW_DELAY );
                         decoder_SynchroDecode( p_sys->p_synchro );
                         decoder_SynchroEnd( p_sys->p_synchro, I_CODING_TYPE, 0 );
@@ -378,7 +379,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 mpeg2_set_buf( p_sys->p_mpeg2dec, buf, p_pic );
 
                 p_pic->date = 0;
-                p_dec->pf_picture_link( p_dec, p_pic );
+                decoder_LinkPicture( p_dec, p_pic );
 
                 if( p_sys->p_synchro )
                 {
@@ -395,7 +396,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 decoder_SynchroNewPicture( p_sys->p_synchro,
                         p_sys->p_info->current_picture->flags & PIC_MASK_CODING_TYPE,
                         p_sys->p_info->current_picture->nb_fields,
-                        0, 0, p_sys->i_current_rate,
+                        0, 0,
                         p_sys->p_info->sequence->flags & SEQ_FLAG_LOW_DELAY );
 
                 if( p_sys->b_skip )
@@ -421,7 +422,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                     /* Intra-slice refresh. Simulate a blank I picture. */
                     msg_Dbg( p_dec, "intra-slice refresh stream" );
                     decoder_SynchroNewPicture( p_sys->p_synchro,
-                        I_CODING_TYPE, 2, 0, 0, p_sys->i_current_rate,
+                        I_CODING_TYPE, 2, 0, 0,
                         p_sys->p_info->sequence->flags & SEQ_FLAG_LOW_DELAY );
                     decoder_SynchroDecode( p_sys->p_synchro );
                     decoder_SynchroEnd( p_sys->p_synchro, I_CODING_TYPE, 0 );
@@ -456,7 +457,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 decoder_SynchroNewPicture( p_sys->p_synchro,
                     p_sys->p_info->current_picture->flags & PIC_MASK_CODING_TYPE,
                     p_sys->p_info->current_picture->nb_fields, i_pts,
-                    0, p_sys->i_current_rate,
+                    0,
                     p_sys->p_info->sequence->flags & SEQ_FLAG_LOW_DELAY );
 
                 if ( !(p_sys->b_slice_i
@@ -485,8 +486,8 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                         return NULL;
                     }
 
-                    p_sys->p_mpeg2dec->ptr_forward_ref_picture = p_sys->p_mpeg2dec->fbuf[2]->id;
-                    p_sys->p_mpeg2dec->ptr_backward_ref_picture = p_sys->p_mpeg2dec->fbuf[1]->id;
+                    //p_sys->p_mpeg2dec->ptr_forward_ref_picture = p_sys->p_mpeg2dec->fbuf[2]->id;
+                    //p_sys->p_mpeg2dec->ptr_backward_ref_picture = p_sys->p_mpeg2dec->fbuf[1]->id;
 
                     if ((p_sys->p_info->current_picture->flags & PIC_MASK_CODING_TYPE) != B_CODING_TYPE)
                     {
@@ -494,9 +495,9 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                         //    p_sys->p_mpeg2dec->ptr_forward_ref_picture != picture->backward_reference_frame)
                         //    p_pic->forward_reference_frame->free (p_pic->forward_reference_frame);
 
-                        p_sys->p_mpeg2dec->ptr_forward_ref_picture =
-                                    p_sys->p_mpeg2dec->ptr_backward_ref_picture;
-                        p_sys->p_mpeg2dec->ptr_backward_ref_picture = (void *)p_pic;
+                        //p_sys->p_mpeg2dec->ptr_forward_ref_picture =
+                        //            p_sys->p_mpeg2dec->ptr_backward_ref_picture;
+                        //p_sys->p_mpeg2dec->ptr_backward_ref_picture = (void *)p_pic;
                     }
                     mpeg2_set_buf( p_sys->p_mpeg2dec, buf, p_pic );
                 }
@@ -531,7 +532,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 if( p_sys->p_info->discard_fbuf &&
                     p_sys->p_info->discard_fbuf->id )
                 {
-                    p_dec->pf_picture_unlink( p_dec, p_sys->p_info->discard_fbuf->id );
+                    decoder_UnlinkPicture( p_dec, p_sys->p_info->discard_fbuf->id );
                 }
                 /* For still frames */
                 //if( state == STATE_END && p_pic ) p_pic->b_force = true;
@@ -594,7 +595,7 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 if( p_sys->b_slice_i )
                 {
                     decoder_SynchroNewPicture( p_sys->p_synchro,
-                        I_CODING_TYPE, 2, 0, 0, p_sys->i_current_rate,
+                        I_CODING_TYPE, 2, 0, 0,
                         p_sys->p_info->sequence->flags & SEQ_FLAG_LOW_DELAY );
                     decoder_SynchroDecode( p_sys->p_synchro );
                     decoder_SynchroEnd( p_sys->p_synchro, I_CODING_TYPE, 0 );
@@ -643,7 +644,7 @@ static double get_aspect_ratio( decoder_t *p_dec )
     {
         /* these hardcoded values are defined on mpeg2 standard for
         * aspect ratio. other values are reserved or forbidden.  */
-        switch( p_sys->p_mpeg2dec->decoder.aspect_ratio_information )
+        /*switch( p_sys->p_mpeg2dec->decoder.aspect_ratio_information )
         {
             case 2:
                 ratio = 4.0/3.0;
@@ -655,16 +656,16 @@ static double get_aspect_ratio( decoder_t *p_dec )
                 ratio = 2.11/1.0;
                 break;
             case 1:
-                default:
+                default:*/
                 ratio = (double)p_sys->p_mpeg2dec->decoder.width/(double)p_sys->p_mpeg2dec->decoder.height;
-            break;
-        }
+        /*    break;
+        }*/
     }
     else
     {
         /* mpeg1 constants refer to pixel aspect ratio */
         ratio = (double)p_sys->p_mpeg2dec->decoder.width/(double)p_sys->p_mpeg2dec->decoder.height;
-        ratio /= mpeg1_pel_ratio[p_sys->p_mpeg2dec->decoder.aspect_ratio_information];
+        /* ratio /= mpeg1_pel_ratio[p_sys->p_mpeg2dec->decoder.aspect_ratio_information]; */
     }
     return ratio;
 }
@@ -703,7 +704,7 @@ static picture_t *GetNewPicture( decoder_t *p_dec, uint8_t **pp_buf )
         fflush(p_sys->f_wd_nb);
     }
 #endif
-    p_pic = p_dec->pf_vout_buffer_new( p_dec );
+    p_pic = decoder_NewPicture( p_dec );
 
     if( p_pic == NULL ) return NULL;
 
@@ -716,7 +717,7 @@ static picture_t *GetNewPicture( decoder_t *p_dec, uint8_t **pp_buf )
     p_pic->format.i_frame_rate = p_dec->fmt_out.video.i_frame_rate;
     p_pic->format.i_frame_rate_base = p_dec->fmt_out.video.i_frame_rate_base;
 
-    p_dec->pf_picture_link( p_dec, p_pic );
+    decoder_LinkPicture( p_dec, p_pic );
 
     pp_buf[0] = p_pic->p[0].p_pixels;
     pp_buf[1] = p_pic->p[1].p_pixels;
@@ -729,8 +730,8 @@ static picture_t *GetNewPicture( decoder_t *p_dec, uint8_t **pp_buf )
                                        p_dec->fmt_out.video.i_height,
                                        p_dec->fmt_out.video.i_aspect,
                                        format, flags);
-#endif
     mpeg2_xxmc_choose_coding( p_dec, &p_sys->p_mpeg2dec->decoder, p_pic,
                               get_aspect_ratio(p_dec), 0 );
+#endif
     return p_pic;
 }

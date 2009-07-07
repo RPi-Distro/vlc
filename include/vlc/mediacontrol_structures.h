@@ -2,7 +2,7 @@
  * mediacontrol_structures.h: global header for mediacontrol
  *****************************************************************************
  * Copyright (C) 2005-2008 the VideoLAN team
- * $Id: 30dea59e0d2b7385875a8a76a0723e42f91feced $
+ * $Id$
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *
@@ -75,7 +75,6 @@ typedef enum {
     mediacontrol_UndefinedStatus=0, mediacontrol_InitStatus,
     mediacontrol_BufferingStatus, mediacontrol_PlayingStatus,
     mediacontrol_PauseStatus,     mediacontrol_StopStatus,
-    mediacontrol_ForwardStatus,   mediacontrol_BackwardStatus,
     mediacontrol_EndStatus,       mediacontrol_ErrorStatus,
 } mediacontrol_PlayerStatus;
 

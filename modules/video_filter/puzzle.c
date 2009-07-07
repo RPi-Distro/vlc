@@ -2,7 +2,7 @@
  * puzzle.c : Puzzle game
  *****************************************************************************
  * Copyright (C) 2005-2006 the VideoLAN team
- * $Id: 9d0455c55767913590ca6462fbe6794aa8860acf $
+ * $Id: 3f5e682cb579cc61400873ae3f6811b0fa40b2a8 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *
@@ -50,8 +50,6 @@ static int  Init      ( vout_thread_t * );
 static void End       ( vout_thread_t * );
 static void Render    ( vout_thread_t *, picture_t * );
 
-static int  SendEvents   ( vlc_object_t *, char const *,
-                           vlc_value_t, vlc_value_t, void * );
 static int  MouseEvent   ( vlc_object_t *, char const *,
                            vlc_value_t, vlc_value_t, void * );
 
@@ -71,22 +69,22 @@ static int PuzzleCallback( vlc_object_t *, char const *,
 
 #define CFG_PREFIX "puzzle-"
 
-vlc_module_begin();
-    set_description( N_("Puzzle interactive game video filter") );
-    set_shortname( N_( "Puzzle" ));
-    set_capability( "video filter", 0 );
-    set_category( CAT_VIDEO );
-    set_subcategory( SUBCAT_VIDEO_VFILTER );
+vlc_module_begin ()
+    set_description( N_("Puzzle interactive game video filter") )
+    set_shortname( N_( "Puzzle" ))
+    set_capability( "video filter", 0 )
+    set_category( CAT_VIDEO )
+    set_subcategory( SUBCAT_VIDEO_VFILTER )
 
     add_integer_with_range( CFG_PREFIX "rows", 4, 1, 128, NULL,
-                            ROWS_TEXT, ROWS_LONGTEXT, false );
+                            ROWS_TEXT, ROWS_LONGTEXT, false )
     add_integer_with_range( CFG_PREFIX "cols", 4, 1, 128, NULL,
-                            COLS_TEXT, COLS_LONGTEXT, false );
+                            COLS_TEXT, COLS_LONGTEXT, false )
     add_bool( CFG_PREFIX "black-slot", 0, NULL,
-              BLACKSLOT_TEXT, BLACKSLOT_LONGTEXT, false );
+              BLACKSLOT_TEXT, BLACKSLOT_LONGTEXT, false )
 
-    set_callbacks( Create, Destroy );
-vlc_module_end();
+    set_callbacks( Create, Destroy )
+vlc_module_end ()
 
 static const char *const ppsz_filter_options[] = {
     "rows", "cols", "black-slot", NULL
@@ -242,8 +240,6 @@ static int Create( vlc_object_t *p_this )
  *****************************************************************************/
 static int Init( vout_thread_t *p_vout )
 {
-    int i_index;
-    picture_t *p_pic;
     video_format_t fmt;
     memset( &fmt, 0, sizeof( video_format_t ) );
 
@@ -270,14 +266,9 @@ static int Init( vout_thread_t *p_vout )
         return VLC_EGENERIC;
     }
 
-    var_AddCallback( p_vout->p_sys->p_vout, "mouse-x", MouseEvent, p_vout );
-    var_AddCallback( p_vout->p_sys->p_vout, "mouse-y", MouseEvent, p_vout );
-    var_AddCallback( p_vout->p_sys->p_vout, "mouse-clicked",
-                     MouseEvent, p_vout);
+    vout_filter_AllocateDirectBuffers( p_vout, VOUT_MAX_PICTURES );
 
-    ALLOCATE_DIRECTBUFFERS( VOUT_MAX_PICTURES );
-    ADD_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
-    ADD_PARENT_CALLBACKS( SendEventsToChild );
+    vout_filter_AddChild( p_vout, p_vout->p_sys->p_vout, MouseEvent );
 
     return VLC_SUCCESS;
 }
@@ -287,24 +278,12 @@ static int Init( vout_thread_t *p_vout )
  *****************************************************************************/
 static void End( vout_thread_t *p_vout )
 {
-    int i_index;
+    vout_sys_t *p_sys = p_vout->p_sys;
 
-    DEL_PARENT_CALLBACKS( SendEventsToChild );
+    vout_filter_DelChild( p_vout, p_sys->p_vout, MouseEvent );
+    vout_CloseAndRelease( p_sys->p_vout );
 
-    DEL_CALLBACKS( p_vout->p_sys->p_vout, SendEvents );
-
-    /* Free the fake output buffers we allocated */
-    for( i_index = I_OUTPUTPICTURES ; i_index ; )
-    {
-        i_index--;
-        free( PP_OUTPUTPICTURE[ i_index ]->p_data_orig );
-    }
-
-    var_DelCallback( p_vout->p_sys->p_vout, "mouse-x", MouseEvent, p_vout);
-    var_DelCallback( p_vout->p_sys->p_vout, "mouse-y", MouseEvent, p_vout);
-    var_DelCallback( p_vout->p_sys->p_vout, "mouse-clicked", MouseEvent, p_vout);
-
-    vout_CloseAndRelease( p_vout->p_sys->p_vout );
+    vout_filter_ReleaseDirectBuffers( p_vout );
 }
 
 #define SHUFFLE_WIDTH 81
@@ -366,7 +345,7 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
         msleep( VOUT_OUTMEM_SLEEP );
     }
 
-    vout_DatePicture( p_vout->p_sys->p_vout, p_outpic, p_pic->date );
+    p_outpic->date = p_pic->date;
 
     for( i_plane = 0; i_plane < p_outpic->i_planes; i_plane++ )
     {
@@ -458,41 +437,17 @@ static void Render( vout_thread_t *p_vout, picture_t *p_pic )
 }
 
 /*****************************************************************************
- * SendEvents: forward mouse and keyboard events to the parent p_vout
- *****************************************************************************/
-static int SendEvents( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    VLC_UNUSED(p_this); VLC_UNUSED(oldval);
-
-    var_Set( (vlc_object_t *)p_data, psz_var, newval );
-
-    return VLC_SUCCESS;
-}
-
-/*****************************************************************************
- * SendEventsToChild: forward events to the child/children vout
- *****************************************************************************/
-static int SendEventsToChild( vlc_object_t *p_this, char const *psz_var,
-                       vlc_value_t oldval, vlc_value_t newval, void *p_data )
-{
-    VLC_UNUSED(p_data); VLC_UNUSED(oldval);
-    vout_thread_t *p_vout = (vout_thread_t *)p_this;
-    var_Set( p_vout->p_sys->p_vout, psz_var, newval );
-    return VLC_SUCCESS;
-}
-
-/*****************************************************************************
  * MouseEvent: callback for mouse events
  *****************************************************************************/
 static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
                        vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
-    VLC_UNUSED(p_this); VLC_UNUSED(oldval); VLC_UNUSED(newval);
-    vout_thread_t *p_vout = (vout_thread_t*)p_data;
+    vout_thread_t *p_vout = p_data;
+    VLC_UNUSED(p_this); VLC_UNUSED(oldval);
     int i_x, i_y;
     int i_v;
 
+    /* FIXME missing lock */
 #define MOUSE_DOWN    1
 #define MOUSE_CLICKED 2
 #define MOUSE_MOVE_X  4
@@ -552,6 +507,8 @@ static int MouseEvent( vlc_object_t *p_this, char const *psz_var,
             p_vout->p_sys->b_finished = finished( p_vout->p_sys );
         }
     }
+    /* FIXME do we want to forward it or not ? */
+    var_Set( p_vout, psz_var, newval );
     return VLC_SUCCESS;
 }
 
@@ -561,6 +518,8 @@ static int PuzzleCallback( vlc_object_t *p_this, char const *psz_var,
 {
     VLC_UNUSED(p_this); VLC_UNUSED(oldval);
     vout_sys_t *p_sys = (vout_sys_t *)p_data;
+
+    /* FIXME: thread safety */
     if( !strcmp( psz_var, CFG_PREFIX "rows" ) )
     {
         p_sys->i_rows = __MAX( 1, newval.i_int );

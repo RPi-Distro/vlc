@@ -4,8 +4,8 @@
 basedir = audio_filter
 dir = audio_filter/resampler
 mods = bandlimited_resampler linear_resampler trivial_resampler ugly_resampler
-libvlc_LTLIBRARIES =  $(LTLIBbandlimited_resampler) $(LTLIBlinear_resampler) $(LTLIBtrivial_resampler) $(LTLIBugly_resampler)
-EXTRA_LTLIBRARIES =  libbandlimited_resampler_plugin.la liblinear_resampler_plugin.la libtrivial_resampler_plugin.la libugly_resampler_plugin.la
+libvlc_LTLIBRARIES =  $(LTLIBbandlimited_resampler) $(LTLIBlinear_resampler)
+EXTRA_LTLIBRARIES =  libbandlimited_resampler_plugin.la liblinear_resampler_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,7 +18,7 @@ libbandlimited_resampler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libbandlimited_resampler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libbandlimited_resampler_plugin_la_LIBADD = $(AM_LIBADD)
-libbandlimited_resampler_plugin_la_DEPENDENCIES =
+libbandlimited_resampler_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The linear_resampler plugin
 liblinear_resampler_plugin_la_SOURCES = $(SOURCES_linear_resampler)
@@ -29,7 +29,7 @@ liblinear_resampler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 liblinear_resampler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 liblinear_resampler_plugin_la_LIBADD = $(AM_LIBADD)
-liblinear_resampler_plugin_la_DEPENDENCIES =
+liblinear_resampler_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The trivial_resampler plugin
 libtrivial_resampler_plugin_la_SOURCES = $(SOURCES_trivial_resampler)
@@ -40,7 +40,7 @@ libtrivial_resampler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libtrivial_resampler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libtrivial_resampler_plugin_la_LIBADD = $(AM_LIBADD)
-libtrivial_resampler_plugin_la_DEPENDENCIES =
+libtrivial_resampler_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The ugly_resampler plugin
 libugly_resampler_plugin_la_SOURCES = $(SOURCES_ugly_resampler)
@@ -51,5 +51,5 @@ libugly_resampler_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libugly_resampler_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libugly_resampler_plugin_la_LIBADD = $(AM_LIBADD)
-libugly_resampler_plugin_la_DEPENDENCIES =
+libugly_resampler_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

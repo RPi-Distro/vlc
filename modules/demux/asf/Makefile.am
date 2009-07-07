@@ -4,8 +4,8 @@
 basedir = demux
 dir = demux/asf
 mods = asf
-libvlc_LTLIBRARIES =  $(LTLIBasf)
-EXTRA_LTLIBRARIES =  libasf_plugin.la
+libvlc_LTLIBRARIES = 
+EXTRA_LTLIBRARIES = 
 
 include $(top_srcdir)/modules/common.am
 
@@ -18,5 +18,5 @@ libasf_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
 libasf_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libasf_plugin_la_LIBADD = $(AM_LIBADD)
-libasf_plugin_la_DEPENDENCIES =
+libasf_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 

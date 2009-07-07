@@ -2,7 +2,7 @@
  * http.h: Headers for the HTTP interface
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 014c8143c1aeb6949a2e84824292d9b3dcba596a $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -48,9 +48,7 @@
 #ifdef HAVE_SYS_STAT_H
 #   include <sys/stat.h>
 #endif
-#ifdef HAVE_ERRNO_H
-#   include <errno.h>
-#endif
+#include <errno.h>
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>
 #endif
@@ -118,10 +116,10 @@ void HandleSeek( intf_thread_t *p_intf, char *p_value );
 
 /** This function extracts the value for a given argument name
  * from an HTTP request */
-char *ExtractURIValue( char *restrict psz_uri,
+const char *ExtractURIValue( const char *restrict psz_uri,
                            const char *restrict psz_name,
                            char *restrict psz_value, size_t i_value_max );
-char *ExtractURIString( char *restrict psz_uri,
+char *ExtractURIString( const char *restrict psz_uri,
                             const char *restrict psz_name );
 /** \todo Describe this function */
 int TestURIParam( char *psz_uri, const char *psz_name );
@@ -177,7 +175,7 @@ void     mvar_RemoveVar( mvar_t *v, mvar_t *f );
 /** This function retrieves the child variable named "name" */
 mvar_t  *mvar_GetVar( mvar_t *s, const char *name );
 /** This function retrieves the value of the child variable named "field" */
-char    *mvar_GetValue( mvar_t *v, char *field );
+const char *mvar_GetValue( mvar_t *v, const char *field );
 /** This function creates a variable with the given name and value and
  * adds it as first child of vars */
 void     mvar_PushNewVar( mvar_t *vars, const char *name,
