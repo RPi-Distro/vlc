@@ -241,7 +241,6 @@ binary-arch: build install
 	dh_installman doc/vlc-wrapper.1 -p vlc-nox
 	dh_installchangelogs ChangeLog -p vlc
 	dh_installchangelogs ChangeLog -p vlc-nox
-	dh_desktop
 	dh_lintian 
 	dh_strip -s --dbg-package=vlc-dbg
 	dh_compress -s
