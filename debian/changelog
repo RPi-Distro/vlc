@@ -1,8 +1,11 @@
 vlc (1.0.0-1) unstable; urgency=low
 
   * New Upstream Release
-    + Closes: #536081
+    + Closes: #536081, LP: #396548
     + Refresh patches
+  * no longer closes when pausing from the notification area, LP: #371515
+  * fix encoding bug when opening subtitles with non-latin characters,
+    LP: #394449
   * Don't install the alsa and OSS access module on kfreeBSD (Closes:
     #535101) - thanks to Javier Mendez Gomez
   * Force at least libvlc 1.0.0 becasue of tha soname change of
