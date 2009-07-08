@@ -3,10 +3,10 @@ Patch from upstream trac ticket #1383. Thanks to Gentoo and Alexis Ballier
 
 
 
-Index: vlc/modules/video_chroma/i420_rgb_mmx.h
+Index: vlc-debian/modules/video_chroma/i420_rgb_mmx.h
 ===================================================================
---- vlc/modules/video_chroma/i420_rgb_mmx.h	(revision 23401)
-+++ vlc/modules/video_chroma/i420_rgb_mmx.h	(working copy)
+--- vlc-debian.orig/modules/video_chroma/i420_rgb_mmx.h	2009-07-09 00:20:12.000000000 +0200
++++ vlc-debian/modules/video_chroma/i420_rgb_mmx.h	2009-07-09 00:23:16.000000000 +0200
 @@ -34,18 +34,18 @@
  #define USED_U64(foo) \
      static const uint64_t foo __asm__ (#foo) __attribute__((unused))
@@ -15,15 +15,16 @@ Index: vlc/modules/video_chroma/i420_rgb_mmx.h
 -USED_U64(mmx_10w)     = 0x1010101010101010ULL;
 -USED_U64(mmx_00ffw)   = 0x00ff00ff00ff00ffULL;
 -USED_U64(mmx_Y_coeff) = 0x253f253f253f253fULL;
-+USED_U64(mmx_80w)     = 0x0080008000800080ULL; /* Will be referenced as %4 in inline asm */
-+USED_U64(mmx_10w)     = 0x1010101010101010ULL; /* -- as %5 */
-+USED_U64(mmx_00ffw)   = 0x00ff00ff00ff00ffULL; /* -- as %6 */
-+USED_U64(mmx_Y_coeff) = 0x253f253f253f253fULL; /* -- as %7 */
- 
+-
 -USED_U64(mmx_U_green) = 0xf37df37df37df37dULL;
 -USED_U64(mmx_U_blue)  = 0x4093409340934093ULL;
 -USED_U64(mmx_V_red)   = 0x3312331233123312ULL;
 -USED_U64(mmx_V_green) = 0xe5fce5fce5fce5fcULL;
++USED_U64(mmx_80w)     = 0x0080008000800080ULL; /* Will be referenced as %4 in inline asm */
++USED_U64(mmx_10w)     = 0x1010101010101010ULL; /* -- as %5 */
++USED_U64(mmx_00ffw)   = 0x00ff00ff00ff00ffULL; /* -- as %6 */
++USED_U64(mmx_Y_coeff) = 0x253f253f253f253fULL; /* -- as %7 */
++
 +USED_U64(mmx_U_green) = 0xf37df37df37df37dULL; /* -- as %8 */
 +USED_U64(mmx_U_blue)  = 0x4093409340934093ULL; /* -- as %9 */
 +USED_U64(mmx_V_red)   = 0x3312331233123312ULL; /* -- as %10 */

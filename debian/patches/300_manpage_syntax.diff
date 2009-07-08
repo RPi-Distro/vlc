@@ -2,8 +2,8 @@ Add a note about the videolan-doc package (even if it's not really up-to-date)
 
 Index: vlc-debian/doc/vlc.1
 ===================================================================
---- vlc-debian.orig/doc/vlc.1	2008-01-20 00:13:51.000000000 +0000
-+++ vlc-debian/doc/vlc.1	2008-01-20 00:16:31.000000000 +0000
+--- vlc-debian.orig/doc/vlc.1	2009-07-09 00:20:12.000000000 +0200
++++ vlc-debian/doc/vlc.1	2009-07-09 00:23:16.000000000 +0200
 @@ -70,6 +70,11 @@
  (close VLC).
  
