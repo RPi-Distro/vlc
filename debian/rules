@@ -145,9 +145,7 @@ clean:
 	dh_testroot
 	rm -f build-stamp
 	# Clean VLC
-	cp -vf ChangeLog debian/Changelog.upstream
 	[ ! -f Makefile ] || $(MAKE) distclean
-	mv -vf debian/Changelog.upstream ChangeLog 
 	rm -rf tmp/
 	# Clean zsh completion stuff
 	rm -f extras/zsh
