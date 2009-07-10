@@ -84,13 +84,13 @@ confflags += \
 	--enable-faad \
 	--disable-zvbi \
 	--enable-telx \
+	--enable-x264 \
 	--disable-atmo \
 	--enable-taglib \
 	--enable-libass \
 	--enable-dca \
 	--enable-realrtsp \
 	--disable-dv \
-	--enable-x264 \
 	$(NULL)
 
 
