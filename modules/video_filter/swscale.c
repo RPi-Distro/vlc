@@ -2,7 +2,7 @@
  * swscale.c: scaling and chroma conversion using libswscale
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id$
+ * $Id: 432fe8a8020f2458264bf6a244e512021a32994c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -442,7 +442,7 @@ static void Clean( filter_t *p_filter )
     p_sys->p_dst_e = NULL;
 }
 
-static void GetPixels( uint8_t *pp_pixel[3], int pi_pitch[3],
+static void GetPixels( uint8_t *pp_pixel[4], int pi_pitch[4],
                        const picture_t *p_picture,
                        int i_plane_start, int i_plane_count )
 {
@@ -452,7 +452,7 @@ static void GetPixels( uint8_t *pp_pixel[3], int pi_pitch[3],
         pp_pixel[n] = p_picture->p[i_plane_start+n].p_pixels;
         pi_pitch[n] = p_picture->p[i_plane_start+n].i_pitch;
     }
-    for( ; n < 3; n++ )
+    for( ; n < 4; n++ )
     {
         pp_pixel[n] = NULL;
         pi_pitch[n] = 0;
@@ -505,8 +505,8 @@ static void Convert( filter_t *p_filter, struct SwsContext *ctx,
 {
     uint8_t palette[AVPALETTE_SIZE];
 
-    uint8_t *src[3]; int src_stride[3];
-    uint8_t *dst[3]; int dst_stride[3];
+    uint8_t *src[4]; int src_stride[4];
+    uint8_t *dst[4]; int dst_stride[4];
 
     GetPixels( src, src_stride, p_src, i_plane_start, i_plane_count );
     if( p_filter->fmt_in.video.i_chroma == VLC_FOURCC( 'R', 'G', 'B', 'P' ) )

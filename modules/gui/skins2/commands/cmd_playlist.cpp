@@ -2,7 +2,7 @@
  * cmd_playlist.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 34f50f9ec3999d68619b7b47f8296eb987a04e4d $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -119,4 +119,13 @@ void CmdPlaylistSave::execute()
 
         playlist_Export( pPlaylist, m_file.c_str(), pPlaylist->p_local_category, psz_module );
     }
+}
+
+void CmdPlaylistFirst::execute()
+{
+    playlist_t *pPlaylist = getIntf()->p_sys->p_playlist;
+
+    playlist_Lock( pPlaylist );
+    playlist_Control( pPlaylist, PLAYLIST_PLAY, pl_Locked );
+    playlist_Unlock( pPlaylist );
 }

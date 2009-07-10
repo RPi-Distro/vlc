@@ -2,8 +2,8 @@ Change the default font to one very likely to be present on a Debian box
 
 Index: vlc-debian/modules/misc/freetype.c
 ===================================================================
---- vlc-debian.orig/modules/misc/freetype.c	2009-05-12 13:55:44.000000000 +0200
-+++ vlc-debian/modules/misc/freetype.c	2009-05-12 14:36:22.000000000 +0200
+--- vlc-debian.orig/modules/misc/freetype.c	2009-07-09 00:21:18.000000000 +0200
++++ vlc-debian/modules/misc/freetype.c	2009-07-09 00:23:16.000000000 +0200
 @@ -60,7 +60,7 @@
  #define DEFAULT_FONT "" /* Default font found at run-time */
  #define FC_DEFAULT_FONT "Arial"

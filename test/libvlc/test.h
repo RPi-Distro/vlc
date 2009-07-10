@@ -1,7 +1,7 @@
 /*
  * test.h - libvlc smoke test common definitions
  *
- * $Id$
+ * $Id: 1015d25376fbb02b0a105b2142506d0c94119b99 $
  */
 
 /**********************************************************************
@@ -100,7 +100,7 @@ static inline void catch (void)
 static inline void test_init (void)
 {
     (void)test_default_sample; /* This one may not be used */
-    alarm (50); /* Make sure "make check" does not get stuck */
+    alarm (10); /* Make sure "make check" does not get stuck */
 }
 
 #endif /* TEST_H */

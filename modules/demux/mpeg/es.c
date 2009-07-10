@@ -2,7 +2,7 @@
  * es.c : Generic audio ES input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id$
+ * $Id: f7e6176234614b163257d5faee478699df9531e1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -34,6 +34,7 @@
 #include <vlc_plugin.h>
 #include <vlc_demux.h>
 #include <vlc_codec.h>
+#include <vlc_codecs.h>
 #include <vlc_input.h>
 
 #include "../../codec/a52.h"
@@ -66,6 +67,7 @@ vlc_module_begin ()
     add_shortcut( "dts" )
 
     add_shortcut( "mlp" )
+    add_shortcut( "thd" )
 vlc_module_end ()
 
 /*****************************************************************************
@@ -138,7 +140,7 @@ static const codec_t p_codec[] = {
     { VLC_FOURCC( 'a', '5', '2', ' ' ), true,  "a52 audio",  A52Probe,  A52Init },
     { VLC_FOURCC( 'e', 'a', 'c', '3' ), true,  "eac3 audio", EA52Probe, A52Init },
     { VLC_FOURCC( 'd', 't', 's', ' ' ), false, "dts audio",  DtsProbe,  DtsInit },
-    { VLC_FOURCC( 'm', 'l', 'p', ' ' ), false, "mlp audio",  MlpProbe,  MlpInit },
+    { VLC_FOURCC( 't', 'r', 'h', 'd' ), false, "mlp audio",  MlpProbe,  MlpInit },
 
     { 0, false, NULL, NULL, NULL }
 };
@@ -615,8 +617,10 @@ static int WavSkipHeader( demux_t *p_demux, int *pi_skip )
     i_peek += i_len + 8;
     if( stream_Peek( p_demux->s, &p_peek, i_peek ) != i_peek )
         return VLC_EGENERIC;
-    if( GetWLE( p_peek + i_peek - i_len - 8 /* wFormatTag */ ) !=
-        1 /* WAVE_FORMAT_PCM */ )
+    int i_format = GetWLE( p_peek + i_peek - i_len - 8 /* wFormatTag */ );
+    if( i_format != WAVE_FORMAT_PCM &&
+        i_format != WAVE_FORMAT_A52 &&
+        i_format != WAVE_FORMAT_DTS )
         return VLC_EGENERIC;
     if( GetWLE( p_peek + i_peek - i_len - 6 /* nChannels */ ) != 2 )
         return VLC_EGENERIC;
@@ -835,7 +839,7 @@ static int MlpCheckSync( const uint8_t *p_peek )
 }
 static int MlpProbe( demux_t *p_demux, int64_t *pi_offset )
 {
-    const char *ppsz_name[] = { "mlp", NULL };
+    const char *ppsz_name[] = { "mlp", "thd", NULL };
 
     return GenericProbe( p_demux, pi_offset, ppsz_name, MlpCheckSync, 4+28+16*4 );
 }

@@ -2,7 +2,7 @@
  * prefs_widgets.h: Preferences controls
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id$
+ * $Id: 8d44a7733481de855f405c96669bb57c8b1f248d $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan.org>
  *
@@ -51,6 +51,7 @@ static NSMenu   *o_keys_menu = nil;
 - (float)floatValue;
 - (char *)stringValue;
 - (void)applyChanges;
+- (void)resetValues;
 - (int)labelSize;
 - (void) alignWithXPosition:(int)i_xPos;
 

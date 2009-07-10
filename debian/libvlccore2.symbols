@@ -418,8 +418,6 @@ libvlccore.so.2 libvlccore2 #MINVER#
  subpicture_region_New@Base 1.0.0~rc1
  tls_ClientCreate@Base 1.0.0~rc1
  tls_ClientDelete@Base 1.0.0~rc1
- unescape_URI@Base 1.0.0~rc1
- unescape_URI_duplicate@Base 1.0.0~rc1
  update_Check@Base 1.0.0~rc1
  update_Delete@Base 1.0.0~rc1
  update_Download@Base 1.0.0~rc1

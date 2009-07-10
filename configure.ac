@@ -2,11 +2,11 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2009 the VideoLAN team])
 
-AC_INIT(vlc, 1.0.0-rc2)
+AC_INIT(vlc, 1.0.0)
 VERSION_MAJOR="1"
 VERSION_MINOR="0"
 VERSION_REVISION="0"
-VERSION_EXTRA="-rc2"
+VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
@@ -282,20 +282,6 @@ case "${host_os}" in
         OBJC="${OBJC} -isysroot ${with_macosx_sdk}"
         LD="${LD} -syslibroot ${with_macosx_sdk}"
     fi
-    if test "${host_cpu}" = "powerpc"; then
-        CPP="${CPP} -arch ppc"
-        CC="${CC} -arch ppc"
-        CXX="${CXX} -arch ppc"
-        OBJC="${OBJC} -arch ppc"
-        LD="${LD} -arch ppc"
-    fi    
-    if test "${host_cpu}" = "i386"; then
-        CPP="${CPP} -arch i386"
-        CC="${CC} -arch i386"
-        CXX="${CXX} -arch i386"
-        OBJC="${OBJC} -arch i386"
-        LD="${LD} -arch i386"
-    fi
     AC_ARG_WITH(macosx-version-min,
        [  --with-macosx-version-min=VERSION  compile for MacOSX VERSION and above])
     if test "${with_macosx_version_min}" != "" ; then
@@ -333,12 +319,12 @@ case "${host_os}" in
         fi
     fi
     ;;
-  *mingw32* | *cygwin* | *wince* | *mingwce* | *pe*)
+  *mingw32* | *cygwin* | *wince* | *mingwce*)
     AC_CHECK_TOOL(WINDRES, windres, :)
     AC_CHECK_TOOL(OBJCOPY, objcopy, :)
 
     case "${host_os}" in
-      *wince* | *mingwce* | *mingw32ce* | *pe*)
+      *wince* | *mingwce* | *mingw32ce*)
         SYS=mingwce
         dnl Sadly CeGCC still needs non-wince macros
         AC_DEFINE([_WIN32_WINNT], 0x0501, [Define to '0x0500' for Windows 2000 APIs.])
@@ -369,7 +355,7 @@ case "${host_os}" in
     fi
     if test "${SYS}" = "mingwce"; then
         # add ws2 for closesocket, select, recv
-        VLC_ADD_LIBS([libvlccore access_http access_mms access_udp access_tcp access_ftp access_rtmp access_output_udp sap http netsync audioscrobbler growl rtp stream_out_rtp remoteosd],[-lws2])
+        VLC_ADD_LIBS([libvlccore access_http access_mms access_udp access_tcp access_ftp access_rtmp access_output_udp access_output_rtmp sap http netsync audioscrobbler growl rtp stream_out_rtp remoteosd],[-lws2])
         VLC_ADD_LIBS([libvlccore],[-lmmtimer])
    fi
     ;;
@@ -2950,9 +2936,12 @@ AC_ARG_ENABLE(mpc,
   [  --enable-mpc            Mpc demux support (default enabled)])
 if test "${enable_mpc}" != "no"
 then
-  AC_CHECK_HEADERS(mpcdec/mpcdec.h, [
+  AC_CHECK_HEADERS([mpc/mpcdec.h], [
     VLC_ADD_PLUGIN([mpc])
-    VLC_ADD_LIBS([mpc],[-lmpcdec])])
+    VLC_ADD_LIBS([mpc],[-lmpcdec])],
+    [AC_CHECK_HEADERS([mpcdec/mpcdec.h], [
+    VLC_ADD_PLUGIN([mpc])
+    VLC_ADD_LIBS([mpc],[-lmpcdec])])])
 fi
 
 dnl
@@ -5650,8 +5639,8 @@ then
           [
             AC_PATH_PROGS(MOZILLA_CONFIG,
 	    [mozilla-config seamonkey-config xulrunner-config],
-            AC_MSG_ERROR([Please install the Mozilla development tools. mozilla-config was not found.])
-		  )
+        [no])
+            test "${MOZILLA_CONFIG}" = "no" && AC_MSG_ERROR([Please install the Mozilla development tools. mozilla-config was not found.])
           ]
         )
     dnl pkg-config failed but we might have found a mozilla-config

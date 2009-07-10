@@ -2,7 +2,7 @@
  * main_interface.cpp : Main interface
  ****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 0bde8ff48183de77858407a11509becbe32228ca $
+ * $Id: 97aca1a6977f79728360fa741b3feedbdf5bd812 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -411,7 +411,7 @@ void MainInterface::createMainWidget( QSettings *settings )
     /* Create the FULLSCREEN CONTROLS Widget */
     if( config_GetInt( p_intf, "qt-fs-controller" ) )
     {
-        fullscreenControls = new FullscreenControllerWidget( p_intf );
+        fullscreenControls = new FullscreenControllerWidget( p_intf, this );
     }
 }
 

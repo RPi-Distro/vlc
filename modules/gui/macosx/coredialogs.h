@@ -2,7 +2,7 @@
  * coredialogs.h: Mac OS X Core Dialogs
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 8fecec162a98cac925045458428b2675ee163217 $
+ * $Id: 66b2f8ba8404082c039d21c84b822657f6432a6f $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -40,7 +40,7 @@
     NSMutableArray * o_errors;
     NSMutableArray * o_icons;
     
-    BOOL nib_loaded;
+    BOOL b_nib_loaded;
 }
 - (IBAction)cleanupTable:(id)sender;
 - (IBAction)showMessages:(id)sender;
@@ -81,6 +81,7 @@
 -(void)performDialogEvent: (NSNotification *)o_notification;
 
 -(void)showFatalDialog: (NSValue *)o_value;
+-(void)showFatalWaitDialog: (NSValue *)o_value;
 -(void)showQuestionDialog: (NSValue *)o_value;
 
 -(void)showLoginDialog: (NSValue *)o_value;

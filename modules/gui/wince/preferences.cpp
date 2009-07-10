@@ -2,7 +2,7 @@
  * preferences.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 554a37ac5c1814b738fb6fdffba3afd6ee2be0ed $
+ * $Id: 012dab91d425bdfa31f6cb59c79c471c917e780c $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -403,7 +403,7 @@ PrefsTreeCtrl::PrefsTreeCtrl( intf_thread_t *_p_intf,
                     psz_help = config_CategoryHelpGet( p_item->value.i );
                     if( psz_help )
                     {
-                        config_data->psz_help = wraptext( strdup( psz_help ), 72 );
+                        config_data->psz_help = strdup( psz_help );
                     }
                     else
                     {
@@ -447,7 +447,7 @@ PrefsTreeCtrl::PrefsTreeCtrl( intf_thread_t *_p_intf,
                         const char *psz_help = config_CategoryHelpGet( p_item->value.i );
                         if( psz_help )
                         {
-                            config_data->psz_help = wraptext( strdup( psz_help ), 72 );
+                            config_data->psz_help = strdup( psz_help );
                         }
                         else
                         {
@@ -462,7 +462,7 @@ PrefsTreeCtrl::PrefsTreeCtrl( intf_thread_t *_p_intf,
                     psz_help = config_CategoryHelpGet( p_item->value.i );
                     if( psz_help )
                     {
-                        config_data->psz_help = wraptext( strdup( psz_help ), 72 );
+                        config_data->psz_help = strdup( psz_help );
                     }
                     else
                     {

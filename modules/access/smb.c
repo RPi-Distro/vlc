@@ -2,7 +2,7 @@
  * smb.c: SMB input module
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id$
+ * $Id: fcfa9fe0760580c3c72e9e4fe9504325e38864b6 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -31,6 +31,7 @@
 #endif
 
 #include <vlc_common.h>
+#include <vlc_charset.h>
 #include <vlc_plugin.h>
 #include <vlc_access.h>
 
@@ -42,7 +43,7 @@
 #       include <sys/stat.h>
 #   endif
 #   include <io.h>
-#   define smbc_open(a,b,c) open(a,b,c)
+#   define smbc_open(a,b,c) utf8_open(a,b,c)
 #   define stat _stati64
 #   define smbc_fstat(a,b) _fstati64(a,b)
 #   define smbc_read read
@@ -473,7 +474,7 @@ static void Win32AddConnection( access_t *p_access, char *psz_path,
             strlcpy( psz_share, psz_parser, sizeof( psz_share ) );
    }
 
-    sprintf( psz_remote, "\\\\%s\\%s", psz_server, psz_share );
+    snprintf( psz_remote, sizeof( psz_remote ), "\\\\%s\\%s", psz_server, psz_share );
     net_resource.lpRemoteName = psz_remote;
 
     i_result = OurWNetAddConnection2( &net_resource, psz_pwd, psz_user, 0 );

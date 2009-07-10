@@ -2,7 +2,7 @@
  * equalizer.c:
  *****************************************************************************
  * Copyright (C) 2004, 2006 the VideoLAN team
- * $Id$
+ * $Id: ed9df4d5cbdc83e5a51ca910963eca4c786b6e8c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -531,6 +531,7 @@ static int PresetCallback( vlc_object_t *p_this, char const *psz_cmd,
                     free( psz_newbands );
                     return VLC_ENOMEM;
                 }
+                free( psz_newbands );
                 psz_newbands = psz;
             }
             if( p_sys->b_first == false )

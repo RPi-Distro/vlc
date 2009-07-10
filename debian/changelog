@@ -1,3 +1,23 @@
+vlc (1.0.0-1) unstable; urgency=low
+
+  * New Upstream Release
+    + Closes: #536081, LP: #396548
+    + Refresh patches
+  * no longer closes when pausing from the notification area, LP: #371515
+  * fix encoding bug when opening subtitles with non-latin characters,
+    LP: #394449
+  * Don't install the alsa and OSS access module on kfreeBSD (Closes:
+    #535101) - thanks to Javier Mendez Gomez
+  * Force at least libvlc 1.0.0 becasue of tha soname change of
+    libvlccore
+  * Delete a symbols who was present by mistake.
+  * No need for dh_desktop. It's a no-op
+  * New standard version. No change needed
+  * Fix make distclean. New patch taken from upstream
+  * Upstream make distcheck has been fixed. No need to save Changelog
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 09 Jul 2009 13:04:20 +0000
+
 vlc (1.0.0~rc2-1ubuntu1) karmic; urgency=low
 
   * New upstream version.
@@ -30,7 +50,7 @@ vlc (1.0.0~rc2-1) experimental; urgency=low
 
  -- Christophe Mutricy <xtophe@videolan.org>  Wed, 03 Jun 2009 17:55:10 +0200
 
-vlc (0.9.9a-3) unstable; urgency=low
+vlc (0.9.9a-3) unstable; urgency=medium
 
   * Correct typo in 0.9.9a-2 changelog entry
   * Disable more optimization with DEB_BUILD_OPTIONS=noopt
@@ -46,8 +66,14 @@ vlc (0.9.9a-3) unstable; urgency=low
   * Reword the command line to get full logs in bug/presubj (Closes: #527012)
   * Remove duplicate "extended Settings" entry in context menu
    (Closes: #526603) - thanks to Matt Kraai
+  * Disable the logging facility in the javascript of moz plugin
+    This was a privacy hole. (urgency=medium)(Closes: #529633)
+  * Patch to support libmpc new API (Closes: #476375) - thanks to Yavor
+    Doganov
+  * Disable-maintener mode
+  * Make sure unpatch is last in the clean target
 
- -- Christophe Mutricy <xtophe@videolan.org>  Thu, 14 May 2009 19:19:27 +0200
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 06 Jun 2009 16:56:16 +0200
 
 vlc (0.9.9a-2ubuntu2) karmic; urgency=low
 

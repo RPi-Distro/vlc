@@ -2,7 +2,7 @@
  * vlcplugin.h: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 97a9dea61726e6ac1e9860f3d284fa8d0ccb3663 $
+ * $Id: 99058f42815eab792931ef32e63cfa227f836ac0 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -193,7 +193,7 @@ public:
     void set_fullscreen( int, libvlc_exception_t * );
     int  get_fullscreen( libvlc_exception_t * );
 
-    int  player_has_vout( libvlc_exception_t * );
+    bool  player_has_vout( libvlc_exception_t * );
 
 private:
     bool playlist_select(int,libvlc_exception_t *);

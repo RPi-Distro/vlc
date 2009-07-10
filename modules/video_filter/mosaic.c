@@ -2,7 +2,7 @@
  * mosaic.c : Mosaic video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: a8d60f0c5a13191c08b96cd2d6b9ebf44d5df7a0 $
+ * $Id: 57bbff925d834928d508fb8846b911937368846a $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -36,8 +36,8 @@
 #include <math.h>
 #include <limits.h> /* INT_MAX */
 
-#include "vlc_filter.h"
-#include "vlc_image.h"
+#include <vlc_filter.h>
+#include <vlc_image.h>
 
 #include "mosaic.h"
 
@@ -393,7 +393,26 @@ static void DestroyFilter( vlc_object_t *p_this )
     filter_t *p_filter = (filter_t*)p_this;
     filter_sys_t *p_sys = p_filter->p_sys;
 
-    /* FIXME: destroy callbacks first! */
+#define DEL_CB( name ) \
+    var_DelCallback( p_filter, CFG_PREFIX #name, MosaicCallback, p_sys )
+    DEL_CB( width );
+    DEL_CB( height );
+    DEL_CB( xoffset );
+    DEL_CB( yoffset );
+
+    DEL_CB( align );
+
+    DEL_CB( borderw );
+    DEL_CB( borderh );
+    DEL_CB( rows );
+    DEL_CB( cols );
+    DEL_CB( alpha );
+    DEL_CB( position );
+    DEL_CB( delay );
+
+    DEL_CB( keep-aspect-ratio );
+    DEL_CB( order );
+#undef DEL_CB
 
     if( !p_sys->b_keep )
     {
@@ -652,8 +671,8 @@ static subpicture_t *Filter( filter_t *p_filter, mtime_t date )
         {
             msg_Err( p_filter, "cannot allocate SPU region" );
             p_filter->pf_sub_buffer_del( p_filter, p_spu );
-            vlc_mutex_unlock( &p_sys->lock );
             vlc_mutex_unlock( p_sys->p_lock );
+            vlc_mutex_unlock( &p_sys->lock );
             return p_spu;
         }
 

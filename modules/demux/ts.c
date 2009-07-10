@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: b80031b68a845ba780f01a18b70ee466c353d7b5 $
+ * $Id: 97de799e24e87bd0853bb5ab1974b5bb79fef47f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -3492,10 +3492,12 @@ static void PMTSetupEs0x06( demux_t *p_demux, ts_pid_t *pid,
                 case 0x11: /*                 ...   on 4:3 AR monitor */
                 case 0x12: /*                 ...   on 16:9 AR monitor */
                 case 0x13: /*                 ...   on 2.21:1 AR monitor */
+                case 0x14: /*                 ...   for display on a high definition monitor */
                 case 0x20: /* DVB Subtitle (impaired) with no monitor AR critical */
                 case 0x21: /*                 ...   on 4:3 AR monitor */
                 case 0x22: /*                 ...   on 16:9 AR monitor */
                 case 0x23: /*                 ...   on 2.21:1 AR monitor */
+                case 0x24: /*                 ...   for display on a high definition monitor */
                     PMTSetupEsDvbSubtitle( p_demux, pid, p_es );
                     break;
                 default:
@@ -3627,7 +3629,7 @@ static void PMTSetupEsHDMV( demux_t *p_demux, ts_pid_t *pid,
 
     case 0x83: /* TrueHD AC3 */
         p_fmt->i_cat = AUDIO_ES;
-        p_fmt->i_codec = VLC_FOURCC( 'm', 'l', 'p', ' ' );
+        p_fmt->i_codec = VLC_FOURCC( 't', 'r', 'h', 'd' );
         break;
 
     case 0x84: /* E-AC3 */

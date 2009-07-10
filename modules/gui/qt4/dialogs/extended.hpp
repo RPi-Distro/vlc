@@ -2,7 +2,7 @@
  * extended.hpp : Extended controls - Undocked
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: 04977abce122bedc7dda0ba9089327ec5240e9fd $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -46,6 +46,7 @@ public:
         instance = NULL;
     }
     void showTab( int i );
+    int currentTab();
 private:
     ExtendedDialog( intf_thread_t * );
     virtual ~ExtendedDialog();

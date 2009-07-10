@@ -2,7 +2,7 @@
  * dialogs_provider.cpp : Dialog Provider
  *****************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: bcd3bad24d63d73219149c3c0f68f60dc7b3b76f $
+ * $Id: f624f145dcba0d0add1d2616c8b290156b067fbe $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -180,12 +180,20 @@ void DialogsProvider::prefsDialog()
 
 void DialogsProvider::extendedDialog()
 {
-    ExtendedDialog::getInstance( p_intf )->showTab( 0 );
+    if( !ExtendedDialog::getInstance( p_intf )->isVisible() || /* Hidden */
+        ExtendedDialog::getInstance( p_intf )->currentTab() != 0 )  /* wrong tab */
+        ExtendedDialog::getInstance( p_intf )->showTab( 0 );
+    else
+        ExtendedDialog::getInstance( p_intf )->hide();
 }
 
 void DialogsProvider::synchroDialog()
 {
-    ExtendedDialog::getInstance( p_intf )->showTab( 2 );
+    if( !ExtendedDialog::getInstance( p_intf )->isVisible() || /* Hidden */
+        ExtendedDialog::getInstance( p_intf )->currentTab() != 2 )  /* wrong tab */
+        ExtendedDialog::getInstance( p_intf )->showTab( 2 );
+    else
+        ExtendedDialog::getInstance( p_intf )->hide();
 }
 
 void DialogsProvider::messagesDialog()
@@ -251,8 +259,7 @@ void DialogsProvider::toolbarDialog()
 
 void DialogsProvider::pluginDialog()
 {
-    PluginDialog *diag = new PluginDialog( p_intf );
-    diag->show();
+    PluginDialog::getInstance( p_intf )->toggleVisible();
 }
 
 /* Generic open file */
@@ -301,6 +308,7 @@ void DialogsProvider::openFileGenericDialog( intf_dialog_args_t *p_arg )
         i = 0;
         foreach( const QString &file, files )
             p_arg->psz_results[i++] = strdup( qtu( toNativeSepNoSlash( file ) ) );
+        p_intf->p_sys->filepath = qfu( p_arg->psz_results[i] );
     }
 
     /* Callback */
@@ -388,10 +396,14 @@ QStringList DialogsProvider::showSimpleOpen( QString help,
     ADD_FILTER_ALL( fileTypes );
     fileTypes.replace(QString(";*"), QString(" *"));
 
-    return QFileDialog::getOpenFileNames( NULL,
+    QStringList files = QFileDialog::getOpenFileNames( NULL,
         help.isEmpty() ? qtr(I_OP_SEL_FILES ) : help,
         path.isEmpty() ? p_intf->p_sys->filepath : path,
         fileTypes );
+
+    if( !files.isEmpty() ) savedirpathFromFile( files.last() );
+
+    return files;
 }
 
 /**
@@ -465,7 +477,7 @@ void DialogsProvider::openUrlDialog()
  **/
 static void openDirectory( intf_thread_t *p_intf, bool pl, bool go )
 {
-    QString dir = QFileDialog::getExistingDirectory( NULL, qtr("Open Directory") );
+    QString dir = QFileDialog::getExistingDirectory( NULL, qtr("Open Directory"), p_intf->p_sys->filepath );
 
     if (!dir.isEmpty() )
     {
@@ -514,58 +526,37 @@ void DialogsProvider::openAPlaylist()
 
 void DialogsProvider::saveAPlaylist()
 {
-    QFileDialog *qfd = new QFileDialog( NULL,
-                                   qtr( "Save playlist as..." ),
-                                   p_intf->p_sys->filepath,
-                                   qtr( "XSPF playlist (*.xspf);; " ) +
-                                   qtr( "M3U playlist (*.m3u);; " ) +
-                                   qtr( "HTML playlist (*.html)" ) );
-    qfd->setFileMode( QFileDialog::AnyFile );
-    qfd->setAcceptMode( QFileDialog::AcceptSave );
-    qfd->setConfirmOverwrite( true );
+    QString file = QFileDialog::getSaveFileName( NULL,
+                                  qtr( "Save playlist as..." ),
+                                  p_intf->p_sys->filepath,
+                                  qtr( "XSPF playlist (*.xspf);; " ) +
+                                  qtr( "M3U playlist (*.m3u);; " ) +
+                                  qtr( "HTML playlist (*.html)" ) );
 
-    if( qfd->exec() == QDialog::Accepted )
+    if( !file.isEmpty() )
     {
-        if( qfd->selectedFiles().count() > 0 )
+        static const char psz_xspf[] = "export-xspf",
+                          psz_m3u[] = "export-m3u",
+                          psz_html[] = "export-html";
+        const char *psz_module;
+
+        if( file.contains( ".xsp" ) )
+            psz_module = psz_xspf;
+        else if( file.contains( ".m3u" ) )
+            psz_module = psz_m3u;
+        else if( file.contains(".html" ) )
+            psz_module = psz_html;
+        else
         {
-            static const char psz_xspf[] = "export-xspf",
-                              psz_m3u[] = "export-m3u",
-                              psz_html[] = "export-html";
-            const char *psz_module;
-
-            QString file = qfd->selectedFiles().first();
-            QString filter = qfd->selectedFilter();
-
-            if( file.contains( ".xsp" ) || filter.contains( "XSPF" ) )
-            {
-                psz_module = psz_xspf;
-                if( !file.contains( ".xsp" ) )
-                    file.append( ".xspf" );
-            }
-            else if( file.contains( ".m3u" )  || filter.contains( "M3U" ) )
-            {
-                psz_module = psz_m3u;
-                if( !file.contains( ".m3u" ) )
-                    file.append( ".m3u" );
-            }
-            else if( file.contains(".html" ) || filter.contains( "HTML" ) )
-            {
-                psz_module = psz_html;
-                if( !file.contains( "html" ) )
-                    file.append( ".html" );
-            }
-            else
-            {
-                msg_Err( p_intf, "Impossible to recognise the file type" );
-                delete qfd;
-                return;
-            }
-
-            playlist_Export( THEPL, qtu( toNativeSeparators( file ) ),
-                        THEPL->p_local_category, psz_module);
+            msg_Warn( p_intf, "Impossible to recognise the file type. "
+                    "Defaulting to XSPF" );
+            psz_module = psz_xspf;
+            file.append( ".xpsf" );
         }
+
+        playlist_Export( THEPL, qtu( toNativeSeparators( file ) ),
+                THEPL->p_local_category, psz_module);
     }
-    delete qfd;
 }
 
 /****************************************************************************
@@ -666,7 +657,7 @@ void DialogsProvider::loadSubtitlesFile()
 
     QStringList qsl = showSimpleOpen( qtr( "Open subtitles..." ),
                                       EXT_FILTER_SUBTITLE,
-                                      path );
+                                      qfu( path ) );
     free( path );
     foreach( const QString &qsFile, qsl )
     {

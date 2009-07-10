@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 0b456ad086193ae58c4b1e8c2a962ddf2a3bc139 $
+ * $Id: 30c170ea3855178dc74eb014c289f44a49798224 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -29,6 +29,7 @@
 
 #include "input_manager.hpp"
 #include <vlc_keys.h>
+#include <vlc_url.h>
 
 #include <QApplication>
 
@@ -589,12 +590,16 @@ void InputManager::UpdateArt()
     if( hasInput() )
     {
         char *psz_art = input_item_GetArtURL( input_GetItem( p_input ) );
-        url = qfu( psz_art );
+        if( psz_art && !strncmp( psz_art, "file://", 7 ) &&
+                decode_URI( psz_art + 7 ) )
+#ifdef WIN32
+            url = qfu( psz_art + 8 ); // Remove extra / starting on Win32.
+#else
+            url = qfu( psz_art + 7 );
+#endif
         free( psz_art );
     }
-    url = url.replace( "file://", QString("" ) );
-    /* Taglib seems to define a attachment://, It won't work yet */
-    url = url.replace( "attachment://", QString("" ) );
+
     /* Update Art meta */
     emit artChanged( url );
 }

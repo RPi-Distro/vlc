@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id$
+ * $Id: 722ea0fd9539191ac3b4fbddce70f9e5a887f7bd $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -37,6 +37,8 @@
 #include <QDialogButtonBox>
 #include <QLineEdit>
 #include <QLabel>
+
+PluginDialog *PluginDialog::instance = NULL;
 
 PluginDialog::PluginDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 {

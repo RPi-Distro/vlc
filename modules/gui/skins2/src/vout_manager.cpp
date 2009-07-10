@@ -2,7 +2,7 @@
  * vout_manager.cpp
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id$
+ * $Id: f164d8d7022cdeb5178ead67133fd91585cf6910 $
  *
  * Authors: Erwan Tulou <brezhoneg1 at yahoo.fr>
  *
@@ -154,7 +154,8 @@ void VoutManager::requestVout( CtrlVideo* pCtrlVideo )
     {
         if( (*it).pCtrlVideo == NULL )
         {
-            pCtrlVideo->attachVoutWindow( (*it).pVoutWindow );
+            pCtrlVideo->attachVoutWindow( (*it).pVoutWindow,
+                                          (*it).width, (*it).height );
             (*it).pCtrlVideo = pCtrlVideo;
             break;
         }
@@ -211,6 +212,12 @@ void* VoutManager::acceptVout( vout_thread_t* pVout, int width, int height )
 
 void *VoutManager::getWindow( intf_thread_t *pIntf, vout_window_t *pWnd )
 {
+
+#ifdef WIN32
+    if( pIntf->p_sys->b_exitRequested )
+        return NULL;
+#endif
+
     // Theme may have been destroyed
     if( !pIntf->p_sys->p_theme )
         return NULL;
@@ -265,6 +272,12 @@ void VoutManager::releaseWindow( intf_thread_t *pIntf, vout_window_t *pWnd )
         }
     }
 
+#ifdef WIN32
+    if( pIntf->p_sys->b_exitRequested )
+        pIntf->p_sys->b_exitOK = ( pThis->m_SavedVoutVec.size() == 0 );
+#endif
+
+
     pThis->unlockVout();
 }
 
@@ -274,6 +287,7 @@ int VoutManager::controlWindow( struct vout_window_t *pWnd,
 {
     intf_thread_t *pIntf = (intf_thread_t *)pWnd->p_private;
     VoutManager *pThis = pIntf->p_sys->p_voutManager;
+    vout_thread_t* pVout = pWnd->vout;
 
     switch( query )
     {
@@ -284,12 +298,27 @@ int VoutManager::controlWindow( struct vout_window_t *pWnd,
 
             if( i_width && i_height )
             {
-                // Post a resize vout command
-                CmdResizeVout *pCmd =
-                    new CmdResizeVout( pThis->getIntf(), pWnd->handle.hwnd,
-                                       i_width, i_height );
-                AsyncQueue *pQueue = AsyncQueue::instance( pThis->getIntf() );
-                pQueue->push( CmdGenericPtr( pCmd ) );
+                pThis->lockVout();
+
+                vector<SavedVout>::iterator it;
+                for( it = pThis->m_SavedVoutVec.begin();
+                     it != pThis->m_SavedVoutVec.end(); it++ )
+                {
+                    if( (*it).pVout == pVout )
+                    {
+                        // Post a vout resize command
+                        CmdResizeVout *pCmd =
+                            new CmdResizeVout( pThis->getIntf(),
+                                               (*it).pVoutWindow,
+                                               (int)i_width, (int)i_height );
+                        AsyncQueue *pQueue =
+                            AsyncQueue::instance( pThis->getIntf() );
+                        pQueue->push( CmdGenericPtr( pCmd ) );
+                        break;
+                    }
+                }
+
+                pThis->unlockVout();
             }
         }
 

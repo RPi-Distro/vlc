@@ -2,7 +2,7 @@
  * open.m: Open dialogues for VLC's MacOS X port
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id$
+ * $Id: ea01ab83d382363cc7575443ba4fb9b179b6fd60 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -44,6 +44,8 @@
 #import "open.h"
 #import "output.h"
 #import "eyetv.h"
+
+#include <vlc_url.h>
 
 #define setEyeTVUnconnected \
 [o_capture_lbl setStringValue: _NS("No device connected")]; \
@@ -217,6 +219,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
     [o_screen_top_lbl setStringValue: _NS("Subscreen top:")];
     [o_screen_width_lbl setStringValue: _NS("Subscreen width:")];
     [o_screen_height_lbl setStringValue: _NS("Subscreen height:")];
+    [o_screen_follow_mouse_ckb setTitle: _NS("Follow the mouse")];
     [o_eyetv_currentChannel_lbl setStringValue: _NS("Current channel:")];
     [o_eyetv_previousProgram_btn setTitle: _NS("Previous Channel")];
     [o_eyetv_nextProgram_btn setTitle: _NS("Next Channel")];
@@ -510,30 +513,26 @@ static VLCOpen *_o_sharedMainInstance = nil;
 
 - (void)openFilePathChanged:(NSNotification *)o_notification
 {
-    NSString *o_mrl_string;
     NSString *o_filename = [o_file_path stringValue];
-    NSString *o_ext = [o_filename pathExtension];
     bool b_stream = [o_file_stream state];
     BOOL b_dir = NO;
- 
+
     [[NSFileManager defaultManager] fileExistsAtPath:o_filename isDirectory:&b_dir];
+
+    char *psz_uri = make_URI([o_filename UTF8String]);
+    if( !psz_uri ) return;
+
+    NSMutableString *o_mrl_string = [NSMutableString stringWithUTF8String: psz_uri ];
+    NSRange offile = [o_mrl_string rangeOfString:@"file"];
+    free( psz_uri );
 
     if( b_dir )
     {
-        o_mrl_string = [NSString stringWithFormat: @"directory://%@/", o_filename];
+        [o_mrl_string replaceCharactersInRange:offile withString: @"directory"];
     }
-    else if( [o_ext isEqualToString: @"bin"] ||
-        [o_ext isEqualToString: @"cue"] ||
-        [o_ext isEqualToString: @"vob"] ||
-        [o_ext isEqualToString: @"iso"] )
+    else if( b_stream )
     {
-        o_mrl_string = o_filename;
-    }
-    else
-    {
-        o_mrl_string = [NSString stringWithFormat: @"%s://%@",
-                        b_stream ? "stream" : "file",
-                        o_filename];
+        [o_mrl_string replaceCharactersInRange:offile withString: @"stream"];
     }
     [o_mrl setStringValue: o_mrl_string];
 }
@@ -583,7 +582,7 @@ static VLCOpen *_o_sharedMainInstance = nil;
  
     o_type = [[o_disc_type selectedCell] title];
 
-    if ( [o_type isEqualToString: _NS("VIDEO_TS directory")] )
+    if ( [o_type isEqualToString: _NS("VIDEO_TS folder")] )
     {
         b_device = NO; b_no_menus = YES;
     }

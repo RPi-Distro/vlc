@@ -1,10 +1,10 @@
-{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf270
+{\rtf1\ansi\ansicpg1252\cocoartf949\cocoasubrtf540
 {\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fmodern\fcharset0 Courier;}
 {\colortbl;\red255\green255\blue255;}
 \vieww16720\viewh13620\viewkind0
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qc
 
-\f0\fs48 \cf0 VLC media player, version 0.9\
+\f0\fs48 \cf0 VLC media player, version 1.0\
 Mac OS X-specific information
 \fs24 \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\ql\qnatural
@@ -34,26 +34,29 @@ The following frequently asked questions are answered below :\
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
 \b \cf0 \ul \ulc0 13. I have a problem or a feature request \
-14. VLC does not start anymore or does strange things \
+14. VLC does not start anymore or does strange things aka HOW TO remove VLC's preferences \
+15. VLC does not work on Mac OS X 10.6 Snow Leopard or behaves incorrectly\
+16. VLC's 64bit version is unreliable or lacks features\
+17. Which version of Mac OS X is required by VLC?\
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
 \b0 \cf0 \ulnone \
 \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
-\b \cf0 \ul 1. How do I install ?
+\b \cf0 \ul 1. How do I install?
 \b0 \ulnone \
-When you download VLC media player, you will end up with a VLC-0.9.x.dmg file. Double-click to open this file. An icon will now appear on your Desktop, right beside your drive(s). Open it and drag the VLC application from the resulting window to the place where you want to install it. Most often this is the directory Applications on your main harddrive.\
+When you download VLC media player, you will end up with a VLC-1.0.x.dmg file. Double-click to open this file. An icon will now appear on your Desktop, right beside your drive(s). Open it and drag the VLC application from the resulting window to the place where you want to install it. Most often this is the directory Applications on your main harddrive. It is linked on the disk-image.\
 \
 \
 
-\b \ul 2. How do I use VLC media player ?
+\b \ul 2. How do I use VLC media player?
 \b0 \ulnone \
 To use VLC media player, you will need to open the application first and then from the "File" menu open the file or disk, you would like to view. Double-clicking a file will result in QuickTime Player trying to open it. If you prefer, you can change this by selecting your file and choosing "Get Info" from the "File" menu of the Finder. In the "Open With" section you can select VLC and if you check the checkbox, then all files of the type you have selected will be opened in VLC media player if you double-click them from that moment on.\
 
 \b \ul \
 \
-3. How do I read a CD/(S)VCD/DVD ?
+3. How do I read a CD/(S)VCD/DVD?
 \b0 \ulnone \
 To view a (S)VCD, DVD or Audio CD, you will need to choose "Open Disc" from the "File" menu. Choose your disk type and then choose the drive in which you inserted the disk. In most cases, VLC already detected the correct drive. VLC media player is currently unable to read SVCD directly from the drive. Some SVCDs can be read if you tell VLC they're VCDs, in the "Open Disc" dialog.\
 \
@@ -67,25 +70,29 @@ To view a (S)VCD, DVD or Audio CD, you will need to choose "Open Disc" from the 
 If you experience problems playing DivX/Xvid then you can try the following:\
 \pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\ql\qnatural
 \cf0 - Open the preferences.\
-- Now go to the Modules part of the preferences.\
-- Select decoder and then 'ffmpeg'\
-- Enable 'hurry up' -> click 'Save'\
+- Click on "All" at the bottom of the window\
+- Now go to Input / Codecs -> Other codecs -> FFmpeg\
+- Enable 'hurry up' and click 'Save'\
+- Restart VLC.\
+\
+If your H.264 encoded videos are played choppy, try this option:\
+- Preferences -> Input & Codecs -> Skip the loop filter for H.264 decoding\
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 \cf0 \
-If VLC media player is slow on your G4 or Intel system, try to quit or hide all running applications. See with 
+If VLC media player is slow on your G5 or Intel system, try to quit or hide all running applications. See with 
 \f1 top -u
 \f0  in a terminal window which applications take the CPU. Be aware of bouncing icons in the dock. Bounces seriously effect the performance of VLC. The same goes for any time interval process (Checking mail every 2 minutes).\
 \
 \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
-\b \cf0 \ul 5. How do I remove VLC media player ?
+\b \cf0 \ul 5. How do I remove VLC media player?
 \b0 \ulnone \
 Simply drag VLC from the place where you had installed it, to the Trash. If you want, you can delete the preferences as well (see 14.), but keeping them won't have a negative effect either.\
 \
 \
 
-\b \ul 6. Where can I find an older version for Mac OS 9 ?\
+\b \ul 6. Where can I find an older version for Mac OS 9?\
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
 \b0 \cf0 \ulnone There is no version for Mac OS 9. VLC is originally a UNIX application and has never been ported to Mac OS 9. Considering the amount of differences between Mac OS 9 and modern systems, it would require a tremendous effort to port VLC. We do not plan to do it, because we prefer to focus on creating a very good Mac OS X application. So please don't ask.\
@@ -93,18 +100,18 @@ Simply drag VLC from the place where you had installed it, to the Trash. If you 
 \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
-\b \cf0 \ul 7. How do I change the size of the video window ?\
+\b \cf0 \ul 7. How do I change the size of the video window?\
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
-\b0 \cf0 \ulnone Grab the bottom-right corner of the video window and drag the window to its desired size. You can also set half, normal and double sizes from the Video menu.\
+\b0 \cf0 \ulnone Grab the bottom-right corner of the video window and drag the window to its desired size. You can also set half, normal and double sizes from the Video menu. By default, the window's aspect ratio is locked. To disable this, have a look at the "Aspect Ratio" submenu of the Video menu.\
 \
 \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
-\b \cf0 \ul 8. I think I found a bug. What should I do ?\
+\b \cf0 \ul 8. I think I found a bug. What should I do?\
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
-\b0 \cf0 \ulnone First try resetting your preferences by clicking "Reset All" in the preferences dialog. If this doesn't work then you can report the exact conditions under which the bug/crash occurred back to the VLC team. For more information on bugreporting please read \ul http://www.videolan.org/support/bug-reporting.html\ulnone \
+\b0 \cf0 \ulnone First try resetting your preferences by clicking "Reset All" in the preferences dialog. See question 14 for details. If this doesn't work then you can report the exact conditions under which the bug/crash occurred back to the VLC team. For more information on bug-reporting please read \ul http://www.videolan.org/support/bug-reporting.html\ulnone \
 \
 \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
@@ -112,35 +119,35 @@ Simply drag VLC from the place where you had installed it, to the Trash. If you 
 \b \cf0 \ul 9. Support for files with subtitles.\
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
-\b0 \cf0 \ulnone - VLC will autodetect subtitle files when they are in the same directory as your movie and contain the movie's filename.\
-- DVD and autodetected subtitles  can be enabled trough the Video -> Subtitles Track menu-item.\
-- Only Vobsub, MicroDVD, SubRIP, SSA1-4. SAMI and vplayer subtitle files are supported at the moment.\
+\b0 \cf0 \ulnone - VLC will auto-detect subtitle files when they are in the same directory as your movie and contain the movie's filename.\
+- DVD and auto-detected subtitles  can be enabled trough the Video -> Subtitles Track menu-item.\
 - You cannot change anything about DVD and Vobsub subtitles.\
-- You can add any subtitle files to a video file via the Open.. dialog.\
-- A text-encoding and fontsize is automatically chosen, but for some people this can be incorrect. You can change these by using the Open File menu entry and setting the subtitle settngs when you open a movie.\
-- For Arabic, Hebrew and Japanese etc, you need to select a font compatible with these languages. You can change the default font in Preferences -> Modules ->  text-renderer -> quartztext\
-- You cannot change the font color or the thickness of the outlines.\
+- You can add any subtitle files to a video file via the Advanced Open File... dialog and on-the-fly through the "Subtitles" submenu of "Video".\
+- A text-encoding and font-size is automatically chosen, but for some people this can be incorrect. You can change these by using the Open File menu entry and setting the subtitle settings when you open a movie. Permanently, this can be set in the Preferences dialog.\
+- For Arabic, Hebrew and Japanese etc, you need to select a font compatible with these languages. You can change the default font in Preferences -> Subtitles & OSD.\
+- You cannot change the thickness of the outlines.\
+- Your subtitles will look different in VLC's 64bit builds compared to the usual 32bit versions. There is nothing you can do about this.\
 \
 \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
-\b \cf0 \ul 10. What do all the options in the preferences do ?
+\b \cf0 \ul 10. What do all the options in the preferences do?
 \b0 \ulnone \
-Hold your mouse still on top of an option for just over a second and a ToolTip will come up explaining what the option does. Be very careful with the Advanced options. Changing an option in the wrong value (usually selecting a module by hand instead of letting it be selected automatically) can cause VLC to no longer start. In this case you will need to remove the preference files located in your HOME -> Library -> Preferences -> VLC or follow paragraph 14.\
+Hold your mouse still on top of an option for just over a second and a ToolTip will come up explaining what the option does. Be very careful with the Advanced options. Changing an option in the wrong value (usually selecting a module by hand instead of letting it be selected automatically) can cause VLC to no longer start. In this case you will need to remove the preference files located in your $HOME -> Library -> Preferences -> VLC or follow paragraph 14.\
 \
 \
 
-\b \ul 11. How do I get fullscreen video on my other monitor ? 
+\b \ul 11. How do I get fullscreen video on my other monitor? 
 \b0 \ulnone \
-If you want to use your second screen for fullscreen playback, then look at the Video->Video Device menuitem. You can set this option permanently by going into the Preferences and choosing Interface -> Main Interface -> macosx -> video device.\
+If you want to use your second screen for fullscreen playback, then look at the Video->Fullscreen Video Device menu item. You can set this option permanently by going into the Preferences and choosing Video -> Fullscreen Video Device.\
 \
 \
 
 \b \ul 12. Multiple sound-devices and multi-channel sound? \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
-\b0 \cf0 \ulnone Look at the Audio->Audio Device menuitem.\
-- You should change your speakerlayout in the Audio Midi Setup utility. The program is located in /Applications/Utilities.\
+\b0 \cf0 \ulnone Look at the Audio->Audio Device menu item.\
+- You should change your speaker layout in the Audio Midi Setup utility. The program is located in /Applications/Utilities.\
 Select your audio device in "Properties For:", then click the "Configure Speakers" button. Choose "Multichannel". Even if these settings are correct, you should change them and click "Apply", then change them back and again click "Apply". This is important, otherwise VLC cannot reliably detect which speakers are connected.\
 - Make sure your device surround configuration is not set to emulate surround output. M-Audio for instance defaults to using SRS surround sound emulation in multichannel setups. You should change this to "None/OpenAL".\
 \
@@ -151,15 +158,41 @@ Select your audio device in "Properties For:", then click the "Configure Speaker
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
 \b0 \cf0 \ulnone Your first stop is \ul http://www.videolan.org/doc\ulnone . The documentation on this page can usually help you with your problems.\
-If you cannot find an answer there then please visit \ul http://forum.videolan.org\ulnone. Use the Search function there and see if someone else might have already answered your question or run into your problem. Feature requests can also be made in the Request forum.\
+If you cannot find an answer there then please visit \ul http://forum.videolan.org\ulnone . Use the Search function there and see if someone else might have already answered your question or run into your problem. Feature requests can also be made in the Request forum.\
 An editable wiki is available at \ul http://wiki.videolan.org\ulnone .\
+\
 \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
-\b \cf0 \ul 14. VLC does not start anymore or does strange things \
+\b \cf0 \ul 14. VLC does not start anymore or does strange things aka HOW TO remove VLC's preferences \
 \pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
 
 \b0 \cf0 \ulnone Delete your preferences and try again. You can use the script "Delete Preferences.app" on the disk-image to do that. If you want to do it by hand, delete "org.videolan.vlc.plist" and a folder called "VLC" in ~/Library/Preferences (your personal preferences-folder inside the library of your HOME). If this does not help, see 13.\
+\
+\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
+
+\b \cf0 \ul 15. VLC does not work on Mac OS X 10.6 Snow Leopard or behaves incorrectly\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
+
+\b0 \cf0 \ulnone We do not support operating systems which are not publicly released. From what we've heard, VLC should work as expected on this future release of Mac OS X, but it could break anytime.\
+\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
+
+\b \cf0 \ul \ulc0 \
+16. VLC's 64bit version is unreliable or lacks features
+\b0 \ulnone \
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
+\cf0 This special version of VLC is considered as EXPERIMENTAL. It does not include a number of features (most importantly: goom visualization, SDL video support) or may behave differently (have a look at the Subtitles rendering for example). This is version is only intended for early adopters and people interested in testing beta software. We do not recommend you to use it as a drop-in replacement for the usual 32bit versions.\
+\
+\
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
+
+\b \cf0 \ul 17. Which version of Mac OS X is required by VLC?
+\b0 \ulnone \
+\pard\tx1440\tx2880\tx4320\tx5760\tx7200\qj
+\cf0 VLC media player 1.0 requires Mac OS X 10.5 or later. Earlier versions are not supported anymore. The last version for Mac OS X 10.4.11 is VLC 0.9.9a, for 10.3.9 it is 0.8.6i. Note that the latter is known to be prone against certain security issues. Note that you will need QuickTime 7 or later on every Mac OS X release listed here.\
+\
 \
 \
 For additional information and support, please see: \ul http://www.videolan.org/support\ulnone \

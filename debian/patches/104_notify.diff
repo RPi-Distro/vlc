@@ -4,8 +4,8 @@ so modify the code where needed.
 
 Index: vlc-debian/modules/misc/notify/notify.c
 ===================================================================
---- vlc-debian.orig/modules/misc/notify/notify.c	2009-05-12 15:43:35.000000000 +0200
-+++ vlc-debian/modules/misc/notify/notify.c	2009-05-12 15:50:17.000000000 +0200
+--- vlc-debian.orig/modules/misc/notify/notify.c	2009-07-09 00:21:18.000000000 +0200
++++ vlc-debian/modules/misc/notify/notify.c	2009-07-09 00:23:16.000000000 +0200
 @@ -231,12 +231,7 @@
      else /* else we show state-of-the art logo */
      {
@@ -19,4 +19,4 @@ Index: vlc-debian/modules/misc/notify/notify.c
 +        pix = gdk_pixbuf_new_from_file( "/usr/share/pixmaps/vlc.png", &p_error );
      }
  
-     /* we need to replace '&' with '&amp;' because '&' is a keyword of
+     free( psz_arturl );

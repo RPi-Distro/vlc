@@ -2,7 +2,7 @@
  * rtsp.c: rtsp VoD server module
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: 864d665397143f5251e51d0a0ab45b517d81a428 $
+ * $Id: 34ed0586d7e22ae2932f582068fa5cab75ca4482 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1424,6 +1424,13 @@ static int RtspCallbackES( httpd_callback_sys_t *p_args, httpd_client_t *cl,
                     psz_session = psz_new;
 
                     p_rtsp = RtspClientNew( p_media, psz_new );
+                    if( !p_rtsp )
+                    {
+                        answer->i_status = 454;
+                        answer->i_body = 0;
+                        answer->p_body = NULL;
+                        break;
+                    }
                 }
                 else
                 {

@@ -2,7 +2,7 @@
  * auhal.c: AUHAL and Coreaudio output plugin
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id$
+ * $Id: 58b25f04b985e89e446ca57f1f5b114b66483ce7 $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *
@@ -993,6 +993,7 @@ static void Probe( aout_instance_t * p_aout )
         if( !AudioDeviceHasOutput( p_devices[i]) )
         {
             msg_Dbg( p_aout, "this device is INPUT only. skipping..." );
+            free( psz_name );
             continue;
         }
 

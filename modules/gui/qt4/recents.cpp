@@ -2,7 +2,7 @@
  * recents.cpp : Recents MRL (menu)
  *****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id$
+ * $Id: 83317afd9532bbc4f86e293bce4454fe6deed013 $
  *
  * Authors: Ludovic Fauvet <etix@l0cal.com>
  *
@@ -32,6 +32,10 @@
 #include <QSettings>
 #include <QRegExp>
 #include <QSignalMapper>
+
+#ifdef WIN32
+#include <shlobj.h>
+#endif
 
 RecentsMRL* RecentsMRL::instance = NULL;
 
@@ -68,6 +72,12 @@ void RecentsMRL::addRecent( const QString &mrl )
         return;
 
     msg_Dbg( p_intf, "Adding a new MRL to recent ones: %s", qtu( mrl ) );
+
+#ifdef WIN32
+    /* Add to the Windows 7 default list in taskbar */
+    SHAddToRecentDocs( 0x00000002 , qtu( mrl ) );
+#endif
+
     int i_index = stack->indexOf( mrl );
     if( 0 <= i_index )
     {

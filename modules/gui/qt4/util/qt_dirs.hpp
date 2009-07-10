@@ -2,7 +2,7 @@
  * dirs.hpp : String Directory helpers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id$
+ * $Id: 5abb7d02e9e3f89a721f2e1b6201cc21868795a5 $
  *
  * Authors:       Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -45,6 +45,7 @@ static inline QString removeTrailingSlash( QString s )
     return s;
 }
 
+#define savedirpathFromFile( a ) p_intf->p_sys->filepath = toNativeSeparators( QFileInfo( a ).path() )
 #define toNativeSepNoSlash( a ) toNativeSeparators( removeTrailingSlash( a ) )
 
 static inline QString colon_escape( QString s )

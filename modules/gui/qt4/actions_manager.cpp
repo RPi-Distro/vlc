@@ -2,7 +2,7 @@
  * Controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id$
+ * $Id: ed5cd71cd8eafde3c6e5dd24f520fe871d073aae $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -80,11 +80,11 @@ void ActionsManager::doAction( int id_action )
         case REVERSE_ACTION:
             THEMIM->getIM()->reverse(); break;
         case SKIP_BACK_ACTION:
-            var_SetInteger( p_intf->p_libvlc, "key-pressed",
+            var_SetInteger( p_intf->p_libvlc, "key-action",
                     ACTIONID_JUMP_BACKWARD_SHORT );
             break;
         case SKIP_FW_ACTION:
-            var_SetInteger( p_intf->p_libvlc, "key-pressed",
+            var_SetInteger( p_intf->p_libvlc, "key-action",
                     ACTIONID_JUMP_FORWARD_SHORT );
             break;
         case QUIT_ACTION:

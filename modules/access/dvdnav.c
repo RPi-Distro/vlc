@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id$
+ * $Id: a8512e1275901f02b388d061ce850a3e38b79358 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -314,7 +314,7 @@ static int Open( vlc_object_t *p_this )
         if( dvdnav_title_play( p_sys->dvdnav, 1 ) != DVDNAV_STATUS_OK )
         {
             msg_Err( p_demux, "cannot set title (can't decrypt DVD?)" );
-            dialog_Fatal( p_demux, _("Playback failure"),
+            dialog_Fatal( p_demux, _("Playback failure"), "%s",
                             _("VLC cannot set the DVD's title. It possibly "
                               "cannot decrypt the entire disc.") );
             dvdnav_close( p_sys->dvdnav );

@@ -4,7 +4,7 @@
  * Copyright (C) 2006-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id$
+ * $Id: e7a2a36ba447705aebd53c8c0527a2bc63dad40b $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -122,7 +122,6 @@ protected:
         if( event->type() == QEvent::Hide ||
             event->type() == QEvent::HideToParent )
         {
-            msg_Warn( p_intf, "here" );
             event->accept();
             return true;
         }

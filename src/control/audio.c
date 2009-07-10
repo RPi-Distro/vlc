@@ -2,7 +2,7 @@
  * libvlc_audio.c: New libvlc audio control API
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 59b02c9b299986d3995ba1883f5381f099674416 $
+ * $Id: c5dd42f23db02bb3cb3df5cfab1c6a21c6aedc3e $
  *
  * Authors: Filippo Carone <filippo@carone.org>
  *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>
@@ -22,12 +22,20 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
-#include "libvlc_internal.h"
-#include <vlc/libvlc.h>
+#ifdef HAVE_CONFIG_H
+# include <config.h>
+#endif
 
+#include <vlc/libvlc.h>
+#include <vlc/libvlc_media.h>
+#include <vlc/libvlc_media_player.h>
+
+#include <vlc_common.h>
 #include <vlc_input.h>
 #include <vlc_aout.h>
 
+#include "libvlc_internal.h"
+#include "media_player_internal.h"
 
 /*
  * Remember to release the returned aout_instance_t since it is locked at

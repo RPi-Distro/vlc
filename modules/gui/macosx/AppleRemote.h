@@ -1,7 +1,7 @@
 /*****************************************************************************
  * AppleRemote.h
  * AppleRemote
- * $Id$
+ * $Id: 8a34b9539a8723c72d9a16068b56be570c287dca $
  *
  * Created by Martin Kahr on 11.03.06 under a MIT-style license.
  * Copyright (c) 2006 martinkahr.com. All rights reserved.
@@ -86,6 +86,7 @@ The class is not thread safe
     IOHIDQueueInterface**  queue;
     NSMutableArray*        allCookies;
     NSMutableDictionary*   cookieToButtonMapping;
+    CFRunLoopSourceRef     eventSource;
 
     BOOL openInExclusiveMode;
     BOOL simulatePlusMinusHold;

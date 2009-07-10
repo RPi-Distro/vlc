@@ -2,7 +2,7 @@
  * invmem_decoder.c: memory video driver for vlc
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: d672ecb5ff33113503e483fcbf7d091264dad381 $
+ * $Id: ee9d293d4f3c70106c7da5ae316b6d2607a1a069 $
  *
  * Authors: Robert Paciorek <robert@opcode.eu.org> <http://opcode.eu.org/bercik>
  * based on:
@@ -83,8 +83,8 @@ vlc_module_begin()
     set_callbacks( OpenDecoder, CloseDecoder )
     add_shortcut( "invmem" )
 
-    add_integer( "invmem-width", "0", NULL, T_WIDTH, LT_WIDTH, false )
-    add_integer( "invmem-height", "0", NULL, T_HEIGHT, LT_HEIGHT, false )
+    add_integer( "invmem-width", 0, NULL, T_WIDTH, LT_WIDTH, false )
+    add_integer( "invmem-height", 0, NULL, T_HEIGHT, LT_HEIGHT, false )
     add_string( "invmem-lock", "0", NULL, T_LOCK, LT_LOCK, true )
     add_string( "invmem-unlock", "0", NULL, T_UNLOCK, LT_UNLOCK, true )
     add_string( "invmem-data", "0", NULL, T_DATA, LT_DATA, true )
@@ -191,7 +191,6 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     if( p_sys->p_pic != NULL )
         picture_Release( p_sys->p_pic );
     p_sys->p_pic = decoder_NewPicture( p_dec );
-    p_sys->p_pic = p_dec->pf_vout_buffer_new( p_dec );
     p_sys->p_pic->b_force = true;
     p_sys->p_pic->p->i_pitch = p_dec->p_sys->i_pitch;
     p_sys->p_pic->date = p_block->i_pts > 0 ? p_block->i_pts : p_block->i_dts;

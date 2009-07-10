@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2004 Daniel Molkentin <molkentin@kde.org>
- * $Id$
+ * $Id: 66583435b7eceb68577189ad187f895655407a45 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  * The "ClickLineEdit" control is based on code by  Daniel Molkentin
@@ -241,6 +241,6 @@ QString VLCKeyToString( int val )
     if( val & KEY_MODIFIER_SHIFT )
         r+= "Shift+";
 
-    return r + (base ? base : "Unset");
+    return r + (base ? base : qtr( "Unset" ) );
 }
 

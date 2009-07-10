@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: ec2efbe96c6fc0e27393c56d10dff48d6570cab1 $
+ * $Id: 90a5ae40a1b5407822814f0c4d4d8504ed0c8746 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -94,8 +94,6 @@ static void ShowDialog   ( intf_thread_t *, int, int, intf_dialog_args_t * );
 #define TITLE_TEXT N_( "Show playing item name in window title" )
 #define TITLE_LONGTEXT N_( "Show the name of the song or video in the " \
                            "controler window title." )
-
-#define FILEDIALOG_PATH_TEXT N_( "Path to use in openfile dialog" )
 
 #define NOTIFICATION_TEXT N_( "Show notification popup on track change" )
 #define NOTIFICATION_LONGTEXT N_( \
@@ -198,10 +196,6 @@ vlc_module_begin ()
               COMPLETEVOL_LONGTEXT, true )
     add_bool( "qt-autosave-volume", false, NULL, SAVEVOL_TEXT,
               SAVEVOL_TEXT, true )
-    add_string( "qt-filedialog-path", NULL, NULL, FILEDIALOG_PATH_TEXT,
-                FILEDIALOG_PATH_TEXT, true )
-        change_autosave ()
-        change_internal ()
 
     add_bool( "qt-embedded-open", false, NULL, QT_NATIVEOPEN_TEXT,
                QT_NATIVEOPEN_TEXT, false )
@@ -337,9 +331,6 @@ static void Close( vlc_object_t *p_this )
     delete p_sys;
 }
 
-static QMutex windowLock;
-static QWaitCondition windowWait;
-
 static void *Thread( void *obj )
 {
     intf_thread_t *p_intf = (intf_thread_t *)obj;
@@ -460,12 +451,8 @@ static void *Thread( void *obj )
     app.setQuitOnLastWindowClosed( false );
 
     /* Retrieve last known path used in file browsing */
-    {
-        char *psz_path = config_GetPsz( p_intf, "qt-filedialog-path" );
-        p_intf->p_sys->filepath =
-            EMPTY_STR(psz_path) ? config_GetHomeDir() : qfu(psz_path);
-        free( psz_path );
-    }
+    p_intf->p_sys->filepath =
+         getSettings()->value( "filedialog-path", config_GetHomeDir() ).toString();
 
     /* Launch */
     app.exec();
@@ -496,6 +483,9 @@ static void *Thread( void *obj )
     /* Delete the recentsMRL object before the configuration */
     RecentsMRL::killInstance();
 
+    /* Save the path */
+    getSettings()->setValue( "filedialog-path", p_intf->p_sys->filepath );
+
     /* Delete the configuration. Application has to be deleted after that. */
     delete p_intf->p_sys->mainSettings;
 
@@ -503,9 +493,6 @@ static void *Thread( void *obj )
     MainInputManager::killInstance();
 
 
-    /* Save the path */
-    config_PutPsz( p_intf, "qt-filedialog-path",
-                   qtu(p_intf->p_sys->filepath) );
 
     /* Delete the application automatically */
 #ifdef Q_WS_X11

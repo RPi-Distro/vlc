@@ -2,7 +2,7 @@
  * glx.c: GLX OpenGL provider
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 14ac5ed03ff4a8f00df1eda2aadfc1f75ccc2694 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -234,7 +234,7 @@ int InitGLX13( vout_thread_t *p_vout )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
     int i_nb, ret = VLC_EGENERIC;
-    GLXFBConfig *p_fbconfs = NULL, fbconf;
+    GLXFBConfig *p_fbconfs = NULL, fbconf = NULL;
     XWindowAttributes att;
     static const int p_attr[] = {
         GLX_RED_SIZE, 5, GLX_GREEN_SIZE, 5, GLX_BLUE_SIZE, 5,

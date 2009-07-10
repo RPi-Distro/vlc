@@ -2,7 +2,7 @@
  * var.c: object variables for input thread
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id$
+ * $Id: fcad8118d8ae7eade55d8418b008cf5a90e257fa $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -580,32 +580,32 @@ static int PositionCallback( vlc_object_t *p_this, char const *psz_cmd,
                              void *p_data )
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
-    vlc_value_t val, length;
     VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     if( !strcmp( psz_cmd, "position-offset" ) )
     {
-        input_ControlPush( p_input, INPUT_CONTROL_SET_POSITION_OFFSET, &newval );
-
-        val.f_float = var_GetFloat( p_input, "position" ) + newval.f_float;
-        if( val.f_float < 0.0 ) val.f_float = 0.0;
-        if( val.f_float > 1.0 ) val.f_float = 1.0;
-        var_Change( p_input, "position", VLC_VAR_SETVALUE, &val, NULL );
+        float f_position = var_GetFloat( p_input, "position" ) + newval.f_float;
+        if( f_position < 0.0 )
+            f_position = 0.0;
+        else if( f_position > 1.0 )
+            f_position = 1.0;
+        var_SetFloat( p_this, "position", f_position );
     }
     else
     {
-        val.f_float = newval.f_float;
+        /* Update "length" for better intf behavour */
+        const mtime_t i_length = var_GetTime( p_input, "length" );
+        if( i_length > 0 && newval.f_float >= 0.0 && newval.f_float <= 1.0 )
+        {
+            vlc_value_t val;
+
+            val.i_time = i_length * newval.f_float;
+            var_Change( p_input, "time", VLC_VAR_SETVALUE, &val, NULL );
+        }
+
+        /* */
         input_ControlPush( p_input, INPUT_CONTROL_SET_POSITION, &newval );
     }
-
-    /* Update "position" for better intf behavour */
-    var_Get( p_input, "length", &length );
-    if( length.i_time > 0 && val.f_float >= 0.0 && val.f_float <= 1.0 )
-    {
-        val.i_time = length.i_time * val.f_float;
-        var_Change( p_input, "time", VLC_VAR_SETVALUE, &val, NULL );
-    }
-
     return VLC_SUCCESS;
 }
 
@@ -613,31 +613,30 @@ static int TimeCallback( vlc_object_t *p_this, char const *psz_cmd,
                          vlc_value_t oldval, vlc_value_t newval, void *p_data )
 {
     input_thread_t *p_input = (input_thread_t*)p_this;
-    vlc_value_t val, length;
     VLC_UNUSED(oldval); VLC_UNUSED(p_data);
 
     if( !strcmp( psz_cmd, "time-offset" ) )
     {
-        input_ControlPush( p_input, INPUT_CONTROL_SET_TIME_OFFSET, &newval );
-        val.i_time = var_GetTime( p_input, "time" ) + newval.i_time;
-        if( val.i_time < 0 ) val.i_time = 0;
-        /* TODO maybe test against i_length ? */
-        var_Change( p_input, "time", VLC_VAR_SETVALUE, &val, NULL );
+        mtime_t i_time = var_GetTime( p_input, "time" ) + newval.i_time;
+        if( i_time < 0 )
+            i_time = 0;
+        var_SetTime( p_this, "time", i_time );
     }
     else
     {
-        val.i_time = newval.i_time;
+        /* Update "position" for better intf behavour */
+        const mtime_t i_length = var_GetTime( p_input, "length" );
+        if( i_length > 0 && newval.i_time >= 0 && newval.i_time <= i_length )
+        {
+            vlc_value_t val;
+
+            val.f_float = (double)newval.i_time/(double)i_length;
+            var_Change( p_input, "position", VLC_VAR_SETVALUE, &val, NULL );
+        }
+
+        /* */
         input_ControlPush( p_input, INPUT_CONTROL_SET_TIME, &newval );
     }
-
-    /* Update "position" for better intf behavour */
-    var_Get( p_input, "length", &length );
-    if( length.i_time > 0 && val.i_time >= 0 && val.i_time <= length.i_time )
-    {
-        val.f_float = (double)val.i_time/(double)length.i_time;
-        var_Change( p_input, "position", VLC_VAR_SETVALUE, &val, NULL );
-    }
-
     return VLC_SUCCESS;
 }
 
@@ -714,6 +713,16 @@ static int SeekpointCallback( vlc_object_t *p_this, char const *psz_cmd,
     else
     {
         input_ControlPush( p_input, INPUT_CONTROL_SET_SEEKPOINT, &newval );
+        val.i_int = newval.i_int;
+    }
+
+    /* Actualize "title %2i" variable */
+    if( val.i_int >= 0 && val.i_int < count.i_int )
+    {
+        int i_title = var_GetInteger( p_input, "title" );
+        char psz_titlevar[10] = {0};
+        snprintf( psz_titlevar, 10, "title %2i", i_title );
+        var_Change( p_input, psz_titlevar, VLC_VAR_SETVALUE, &val, NULL );
     }
 
     return VLC_SUCCESS;

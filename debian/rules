@@ -36,7 +36,7 @@ include /usr/share/quilt/quilt.make
 LDFLAGS = -Wl,--as-needed
 
 # configure flags
-confflags += --enable-maintainer-mode --enable-release --prefix=/usr
+confflags += --disable-maintainer-mode --enable-release --prefix=/usr
 confflags += \
 	--config-cache \
 	--enable-fast-install \
@@ -140,15 +140,12 @@ endif
 endif
 	touch $@
 
-clean: clean-real unpatch
-clean-real:
+clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
 	# Clean VLC
-	cp -vf ChangeLog debian/Changelog.upstream
 	[ ! -f Makefile ] || $(MAKE) distclean
-	mv -vf debian/Changelog.upstream ChangeLog 
 	rm -rf tmp/
 	# Clean zsh completion stuff
 	rm -f extras/zsh
@@ -158,14 +155,15 @@ clean-real:
 	# Remove spurious autotools stuff
 	rm -f config.log confdefs.h
 	# Unpatch package
+	$(MAKE) -f debian/rules unpatch
 	dh_clean
 
 install: build
 	dh_testdir
 	dh_testroot
 	dh_prep
-	sed -e '/lib\(alsa\|dvb\|v4l\|pvr\)_/d' debian/vlc-nox.install \
-	 >debian/vlc-nox.install.kfreebsd-i386
+	sed -e '/\(lib\|libaccess_\)\(alsa\|dvb\|v4l\|pvr\)_/d' \
+	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd-i386
 	cp debian/vlc-nox.install.kfreebsd-i386 \
 	 debian/vlc-nox.install.kfreebsd-amd64
 	dh_installdirs
@@ -241,7 +239,6 @@ binary-arch: build install
 	dh_installman doc/vlc-wrapper.1 -p vlc-nox
 	dh_installchangelogs ChangeLog -p vlc
 	dh_installchangelogs ChangeLog -p vlc-nox
-	dh_desktop
 	dh_lintian 
 	dh_strip -s --dbg-package=vlc-dbg
 	dh_compress -s

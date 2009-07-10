@@ -2,7 +2,7 @@
  * cmd_playlist.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 4ea393ff5a90c08f9d62d422f5017c4d8d74a206 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -57,6 +57,9 @@ DEFINE_COMMAND( PlaylistNext, "playlist next" )
 
 /// Command to jump to the previous item
 DEFINE_COMMAND( PlaylistPrevious, "playlist previous" )
+
+/// Command to start the playlist
+DEFINE_COMMAND( PlaylistFirst, "playlist first" )
 
 
 /// Command to set the random state

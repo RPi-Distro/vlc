@@ -2,7 +2,7 @@
  * deinterlace.c : deinterlacer plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000, 2001, 2002, 2003 the VideoLAN team
- * $Id$
+ * $Id: 3b86b7df18f43f6a9683c3a066550fee455e5dd5 $
  *
  * Author: Sam Hocevar <sam@zoy.org>
  *
@@ -389,11 +389,11 @@ static int Init( vout_thread_t *p_vout )
         return VLC_EGENERIC;
     }
 
-    var_AddCallback( p_vout, "deinterlace-mode", FilterCallback, NULL );
-
     vout_filter_AllocateDirectBuffers( p_vout, VOUT_MAX_PICTURES );
 
     vout_filter_AddChild( p_vout, p_vout->p_sys->p_vout, MouseEvent );
+
+    var_AddCallback( p_vout, "deinterlace-mode", FilterCallback, NULL );
 
     return VLC_SUCCESS;
 }
@@ -417,6 +417,8 @@ static vout_thread_t *SpawnRealVout( vout_thread_t *p_vout )
 static void End( vout_thread_t *p_vout )
 {
     vout_sys_t *p_sys = p_vout->p_sys;
+
+    var_DelCallback( p_vout, "deinterlace-mode", FilterCallback, NULL );
 
     if( p_sys->p_vout )
     {

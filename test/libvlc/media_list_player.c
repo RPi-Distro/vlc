@@ -1,7 +1,7 @@
 /*
  * media_list_player.c - libvlc smoke test
  *
- * $Id$
+ * $Id: 49a144355128338f9b77e1340fca0a0df1178795 $
  */
 
 /**********************************************************************
@@ -92,8 +92,11 @@ static void test_media_list_player_play_item_at_index(const char** argv, int arg
 
     mlp = libvlc_media_list_player_new (vlc, &ex);
 
-    libvlc_media_list_add_media( ml, md, &ex );
-    catch ();
+    for (unsigned i = 0; i < 5; i++)
+    {
+        libvlc_media_list_add_media( ml, md, &ex );
+        catch ();
+    }
 
     libvlc_media_list_player_set_media_list( mlp, ml, &ex );
 
