@@ -5,5 +5,3 @@
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
 401_i420_mmx_pic.diff
-402_share_makefile.diff
-402b_rebootstrap.diff
