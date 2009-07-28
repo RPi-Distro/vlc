@@ -122,6 +122,8 @@ build-stamp: $(QUILT_STAMPFN)
 	# build an altivec free version on powerpc for the G3
 ifneq ($(filter $(DEB_HOST_ARCH), powerpc),)
 	./configure --disable-altivec $(confflags)
+	$(MAKE) -C compat
+	$(MAKE) -C src libvlccore.la 
 	cp -vd src/.libs/libvlccore.so.* tmp/
 endif
 	./configure $(confflags)
