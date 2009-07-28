@@ -2,7 +2,7 @@
  * a52tospdif.c : encapsulates A/52 frames into S/PDIF packets
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id$
+ * $Id: f43855135934775fb62bfe36ae13ba7a1e202755 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Stéphane Borel <stef@via.ecp.fr>

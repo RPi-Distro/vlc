@@ -2,7 +2,7 @@
  * dialogs.cpp : WinCE plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id$
+ * $Id: 5c127168a5c339a6fb7503c5903717985619cff0 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

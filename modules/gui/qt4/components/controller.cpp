@@ -2,7 +2,7 @@
  * Controller.cpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 26bb8289f930994e63f18998268165a6b07629e1 $
+ * $Id: 080eb764a78096f8af2278be519d3c4d2c7014f7 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Ilkka Ollakka <ileoo@videolan.org>
@@ -761,7 +761,7 @@ void FullscreenControllerWidget::showFSC()
     }
 
 #if HAVE_TRANSPARENCY
-    setWindowOpacity( DEFAULT_OPACITY );
+    setWindowOpacity( config_GetFloat( p_intf, "qt-fs-opacity" )  );
 #endif
 
     show();

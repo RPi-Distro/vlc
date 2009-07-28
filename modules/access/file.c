@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id$
+ * $Id: f6af2bfca2b437efd89a9f692e0ef4222b3e0228 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -47,10 +47,19 @@
 #ifdef HAVE_FCNTL_H
 #   include <fcntl.h>
 #endif
+#if defined (__linux__)
+#   include <sys/vfs.h>
+#   include <linux/magic.h>
+#   define HAVE_FSTATFS 1
+#elif defined (HAVE_SYS_MOUNT_H)
+#   include <sys/mount.h>
+#   define HAVE_FSTATFS 1
+#endif
 
 #if defined( WIN32 )
 #   include <io.h>
 #   include <ctype.h>
+#   include <shlwapi.h>
 #else
 #   include <unistd.h>
 #   include <poll.h>
@@ -115,6 +124,38 @@ struct access_sys_t
     bool b_pace_control;
 };
 
+static bool IsRemote (int fd)
+{
+#ifdef HAVE_FSTATFS
+    struct statfs stf;
+
+    if (fstatfs (fd, &stf))
+        return false;
+
+#if defined(MNT_LOCAL)
+    return !(stf.f_flags & MNT_LOCAL);
+
+#elif defined (__linux__)
+    switch (stf.f_type)
+    {
+        case AFS_SUPER_MAGIC:
+        case CODA_SUPER_MAGIC:
+        case NCP_SUPER_MAGIC:
+        case NFS_SUPER_MAGIC:
+        case SMB_SUPER_MAGIC:
+        case 0xFF534D42 /*CIFS_MAGIC_NUMBER*/:
+            return true;
+    }
+    return false;
+
+#endif
+#else /* !HAVE_FSTATFS */
+    return false;
+
+#endif
+}
+
+
 /*****************************************************************************
  * Open: open the file
  *****************************************************************************/
@@ -122,6 +163,10 @@ static int Open( vlc_object_t *p_this )
 {
     access_t     *p_access = (access_t*)p_this;
     access_sys_t *p_sys;
+#ifdef WIN32
+    wchar_t wpath[MAX_PATH+1];
+    bool is_remote = false;
+#endif
 
     /* Update default_pts to a suitable value for file access */
     var_Create( p_access, "file-caching", VLC_VAR_INTEGER | VLC_VAR_DOINHERIT );
@@ -141,6 +186,13 @@ static int Open( vlc_object_t *p_this )
     {
         msg_Dbg (p_access, "opening file `%s'", p_access->psz_path);
         fd = open_file (p_access, p_access->psz_path);
+#ifdef WIN32
+        if (MultiByteToWideChar (CP_UTF8, 0, p_access->psz_path, -1,
+                                 wpath, MAX_PATH)
+         && PathIsNetworkPathW (wpath))
+            is_remote = true;
+# define IsRemote( fd ) ((void)fd, is_remote)
+#endif
     }
     if (fd == -1)
         goto error;
@@ -170,6 +222,14 @@ static int Open( vlc_object_t *p_this )
 #else
 # warning File size not known!
 #endif
+
+    if (IsRemote(fd))
+    {
+        int i_cache = var_GetInteger (p_access, "file-caching") + 700;
+        var_SetInteger (p_access, "file-caching", i_cache);
+        msg_Warn (p_access, "Opening remote file, increasing cache: %d",
+                  i_cache);
+    }
 
     p_sys->fd = fd;
     return VLC_SUCCESS;

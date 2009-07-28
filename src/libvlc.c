@@ -2,7 +2,7 @@
  * libvlc.c: libvlc instances creation and deletion, interfaces handling
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id$
+ * $Id: b9be376e212c7bb5fb95a22d4cbb14ffeabc73c9 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -195,7 +195,7 @@ void vlc_release (gc_object_t *p_gc)
     assert (refs != (uintptr_t)(-1)); /* reference underflow?! */
     if (refs == 0)
     {
-#ifdef USE_SYNC
+#if defined (__GCC_HAVE_SYNC_COMPARE_AND_SWAP_4)
 #elif defined (WIN32) && defined (__GNUC__)
 #elif defined(__APPLE__)
 #else
@@ -733,6 +733,7 @@ int libvlc_InternalInit( libvlc_int_t *p_libvlc, int i_argc,
         var_SetInteger( p_libvlc, "verbose", -1 );
         priv->i_verbose = -1;
     }
+    vlc_threads_setup( p_libvlc );
 
     if( priv->b_color )
         priv->b_color = config_GetInt( p_libvlc, "color" ) > 0;
@@ -1176,7 +1177,7 @@ int libvlc_InternalAddIntf( libvlc_int_t *p_libvlc, char const *psz_module )
     if( p_intf == NULL )
     {
         msg_Err( p_libvlc, "interface \"%s\" initialization failed",
-                 psz_module );
+                 psz_module ? psz_module : "default" );
         return VLC_EGENERIC;
     }
 

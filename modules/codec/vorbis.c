@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id$
+ * $Id: 5d25be9d51b09abfd8c74d80738499710c0c7a2b $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

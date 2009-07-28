@@ -2,7 +2,7 @@
  * stream_demux.c
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id$
+ * $Id: b2b76043784a1dfd87d4ee3e01988f93c0828eba $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

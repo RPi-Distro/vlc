@@ -668,6 +668,7 @@ static void SDPHandleUrl( sout_stream_t *p_stream, const char *psz_url )
         if( psz_url[0] == '/' && psz_url[1] == '/' )
             psz_url += 2;
         p_sys->psz_sdp_file = strdup( psz_url );
+        decode_URI( p_sys->psz_sdp_file ); /* FIXME? */
         FileSetup( p_stream );
     }
     else
@@ -1399,6 +1400,9 @@ static int FileSetup( sout_stream_t *p_stream )
 {
     sout_stream_sys_t *p_sys = p_stream->p_sys;
     FILE            *f;
+
+    if( p_sys->psz_sdp == NULL )
+        return VLC_EGENERIC; /* too early */
 
     if( ( f = utf8_fopen( p_sys->psz_sdp_file, "wt" ) ) == NULL )
     {

@@ -2,7 +2,7 @@
  * file.c: configuration file handling
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 6c411f23ed9308c07c889b69aac826845a45c6b9 $
+ * $Id: b3852bd7df7856e705cf2545ea750b0fcc611ba5 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -430,12 +430,18 @@ static int SaveConfigFile( vlc_object_t *p_this, const char *psz_module_name,
     file = config_OpenConfigFile( p_this );
     if( file != NULL )
     {
-        /* look for file size */
-        fseek( file, 0L, SEEK_END );
-        i_sizebuf = ftell( file );
-        fseek( file, 0L, SEEK_SET );
-        if( i_sizebuf >= LONG_MAX )
-            i_sizebuf = 0;
+        struct stat st;
+
+        /* Some users make vlcrc read-only to prevent changes.
+         * The atomic replacement scheme breaks this "feature",
+         * so we check for read-only by hand. */
+        if (fstat (fileno (file), &st)
+         || !(st.st_mode & S_IWUSR))
+        {
+            msg_Err (p_this, "configuration file is read-only");
+            goto error;
+        }
+        i_sizebuf = ( st.st_size < LONG_MAX ) ? st.st_size : 0;
     }
 
     p_bigbuffer = p_index = malloc( i_sizebuf+1 );
@@ -680,7 +686,8 @@ static int SaveConfigFile( vlc_object_t *p_this, const char *psz_module_name,
 #ifndef WIN32
     fdatasync (fd); /* Flush from OS */
     /* Atomically replace the file... */
-    utf8_rename (temporary, permanent);
+    if (utf8_rename (temporary, permanent))
+        utf8_unlink (temporary);
     /* (...then synchronize the directory, err, TODO...) */
     /* ...and finally close the file */
     vlc_mutex_unlock (&lock);
@@ -689,7 +696,8 @@ static int SaveConfigFile( vlc_object_t *p_this, const char *psz_module_name,
 #ifdef WIN32
     /* Windows cannot remove open files nor overwrite existing ones */
     utf8_unlink (permanent);
-    utf8_rename (temporary, permanent);
+    if (utf8_rename (temporary, permanent))
+        utf8_unlink (temporary);
     vlc_mutex_unlock (&lock);
 #endif
 

@@ -2,7 +2,7 @@
  * qtl.c: QuickTime Media Link Importer
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: b667b69704735341e1325560f6ec5cb772d5c4a0 $
  *
  * Authors: Antoine Cellerier <dionoea -@t- videolan -Dot- org>
  *

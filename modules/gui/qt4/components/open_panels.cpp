@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: b143a7538cdde4bc105867bc4b38172a5e96e28a $
+ * $Id: 6e42e43a01a56a3a86b749296b72ef0c619deacc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -1146,8 +1146,7 @@ void CaptureOpenPanel::updateMRL()
         mrl += " :v4l-frequency=" + QString::number( v4lFreq->value() );
         break;
     case V4L2_DEVICE:
-        fileList << "v4l2://";
-        mrl += " :v4l2-dev=" + v4l2VideoDevice->text();
+        fileList << "v4l2://" + v4l2VideoDevice->text();
         mrl += " :input-slave=alsa://" + v4l2AudioDevice->text();
         mrl += " :v4l2-standard=" + QString::number( v4l2StdBox->currentIndex() );
         break;

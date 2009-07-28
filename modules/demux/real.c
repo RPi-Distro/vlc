@@ -2,7 +2,7 @@
  * real.c: Real demuxer.
  *****************************************************************************
  * Copyright (C) 2004, 2006-2007 the VideoLAN team
- * $Id$
+ * $Id: c58d9ae71536b9b81a8315b850b36fbe0ebb7ff1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

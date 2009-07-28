@@ -2,7 +2,7 @@
  * playlist_model.hpp : Model for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: a28c3a8dbb45a07e113b41352eb2a9ce07ce70c8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -167,6 +167,8 @@ private:
     int i_cached_input_id;
 signals:
     void shouldRemove( int );
+    void currentChanged( const QModelIndex& );
+
 
 public slots:
     void activateItem( const QModelIndex &index );

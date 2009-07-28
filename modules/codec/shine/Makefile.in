@@ -50,9 +50,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vlc.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 mkinstalldirs = $(install_sh) -d
@@ -69,7 +71,8 @@ libvlcLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(libvlc_LTLIBRARIES)
 am__DEPENDENCIES_1 = `$(VLC_CONFIG) plugin $@` $(LTLIBVLCCORE) \
 	$(top_builddir)/compat/libcompat.la
-am__objects_1 = libshine_plugin_la-shine_mod.lo
+am__objects_1 = libshine_plugin_la-shine_mod.lo \
+	libshine_plugin_la-shine.lo
 am_libshine_plugin_la_OBJECTS = $(am__objects_1)
 nodist_libshine_plugin_la_OBJECTS =
 libshine_plugin_la_OBJECTS = $(am_libshine_plugin_la_OBJECTS) \
@@ -149,13 +152,14 @@ DIRECTFB_CONFIG = @DIRECTFB_CONFIG@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
+DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
-ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
@@ -214,6 +218,7 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
+LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
@@ -495,6 +500,7 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
+NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
 NOTIFY_LIBS = @NOTIFY_LIBS@
@@ -506,6 +512,8 @@ OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -595,6 +603,7 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 ac_ct_OBJC = @ac_ct_OBJC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -626,6 +635,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -668,7 +678,7 @@ AM_LDFLAGS = -rpath '$(libvlcdir)' \
 AM_LIBADD = `$(VLC_CONFIG) -libs plugin $@` \
 	$(LTLIBVLCCORE) $(top_builddir)/compat/libcompat.la
 
-SOURCES_shine = shine_mod.c
+SOURCES_shine = shine_mod.c enc_base.h shine.c
 
 # The shine plugin
 libshine_plugin_la_SOURCES = $(SOURCES_shine)
@@ -750,6 +760,7 @@ mostlyclean-compile:
 distclean-compile:
 	-rm -f *.tab.c
 
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshine_plugin_la-shine.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshine_plugin_la-shine_mod.Plo@am__quote@
 
 .c.o:
@@ -779,6 +790,13 @@ libshine_plugin_la-shine_mod.lo: shine_mod.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shine_mod.c' object='libshine_plugin_la-shine_mod.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libshine_plugin_la_CFLAGS) $(CFLAGS) -c -o libshine_plugin_la-shine_mod.lo `test -f 'shine_mod.c' || echo '$(srcdir)/'`shine_mod.c
+
+libshine_plugin_la-shine.lo: shine.c
+@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libshine_plugin_la_CFLAGS) $(CFLAGS) -MT libshine_plugin_la-shine.lo -MD -MP -MF $(DEPDIR)/libshine_plugin_la-shine.Tpo -c -o libshine_plugin_la-shine.lo `test -f 'shine.c' || echo '$(srcdir)/'`shine.c
+@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/libshine_plugin_la-shine.Tpo $(DEPDIR)/libshine_plugin_la-shine.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shine.c' object='libshine_plugin_la-shine.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libshine_plugin_la_CFLAGS) $(CFLAGS) -c -o libshine_plugin_la-shine.lo `test -f 'shine.c' || echo '$(srcdir)/'`shine.c
 
 mostlyclean-libtool:
 	-rm -f *.lo

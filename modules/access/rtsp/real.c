@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2002-2004 the xine project
  * Copyright (C) 2005 VideoLAN
- * $Id$
+ * $Id: c74bdf427858c70216e4fc089aa793286f2a13c4 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Adapted from xine which itself adapted it from joschkas real tools.
@@ -592,6 +592,7 @@ int real_get_rdt_chunk(rtsp_client_t *rtsp_session, rmff_pheader_t *ph,
 
   int n;
   rmff_dump_pheader(ph, (char*)*buffer);
+  if (ph->length<12) return 0;
   n=rtsp_read_data(rtsp_session, (uint8_t*)(*buffer + 12), ph->length - 12);
   return (n <= 0) ? 0 : n+12;
 }

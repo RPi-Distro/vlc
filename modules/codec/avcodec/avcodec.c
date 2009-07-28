@@ -2,7 +2,7 @@
  * avcodec.c: video and audio decoder and encoder using libavcodec
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id$
+ * $Id: 0d4026e275fb4cc9ae49a0dae44f61818d4cbce0 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>

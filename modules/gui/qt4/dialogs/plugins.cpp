@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 722ea0fd9539191ac3b4fbddce70f9e5a887f7bd $
+ * $Id: 1575ca007700e175b8dc3552c2b9738d94b197c9 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -42,8 +42,6 @@ PluginDialog *PluginDialog::instance = NULL;
 
 PluginDialog::PluginDialog( intf_thread_t *_p_intf ) : QVLCFrame( _p_intf )
 {
-    setAttribute( Qt::WA_DeleteOnClose );
-
     setWindowTitle( qtr( "Plugins and extensions" ) );
     QGridLayout *layout = new QGridLayout( this );
 

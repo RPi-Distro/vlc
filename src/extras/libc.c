@@ -2,7 +2,7 @@
  * libc.c: Extra libc function for some systems.
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id$
+ * $Id: 6473497124a5b4fa258ab7981ef850f149fb9915 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Samuel Hocevar <sam@zoy.org>

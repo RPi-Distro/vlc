@@ -2,7 +2,7 @@
  * vmem.c: memory video driver for vlc
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id$
+ * $Id: f132021a2d8e5ef690a9d37753e8bfbafc0b080e $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *

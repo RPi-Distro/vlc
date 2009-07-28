@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 30c170ea3855178dc74eb014c289f44a49798224 $
+ * $Id: d032f55b19d2e55dbf8a58fc3d9d70e9470c861e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Ilkka Ollakka  <ileoo@videolan.org>
@@ -150,6 +150,9 @@ void InputManager::customEvent( QEvent *event )
     int i_type = event->type();
     IMEvent *ple = static_cast<IMEvent *>(event);
 
+    if( i_type == ItemChanged_Type )
+        UpdateMeta( ple->i_id );
+
     if( !hasInput() )
         return;
 
@@ -178,7 +181,6 @@ void InputManager::customEvent( QEvent *event )
             UpdateArt();
             /* Update duration of file */
         }
-        UpdateMeta( ple->i_id );
         break;
     case ItemStateChanged_Type:
         // TODO: Fusion with above state

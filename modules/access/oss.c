@@ -2,7 +2,7 @@
  * oss.c : OSS input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id$
+ * $Id: eb0d6246d296a97e01508e02f073579ee2244e02 $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Richard Hosking <richard at hovis dot net>
@@ -273,7 +273,7 @@ static int Demux( demux_t *p_demux )
         }
 
         /* Wait for data */
-        if( poll( &fd, 1, 500 ) ) /* Timeout after 0.5 seconds since I don't know if pf_demux can be blocking. */
+        if( poll( &fd, 1, 10 ) ) /* Timeout after 0.01 seconds. Bigger delays are an issue when used with/as an input-slave since all the inputs run in the same thread. */
         {
             if( fd.revents & (POLLIN|POLLPRI) )
             {

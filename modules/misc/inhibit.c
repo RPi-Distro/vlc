@@ -2,7 +2,7 @@
  * inhibit.c : prevents the computer from suspending when VLC is playing
  *****************************************************************************
  * Copyright © 2007 Rafaël Carré
- * $Id$
+ * $Id: 5e880bdd9452b87f9b3f3f346822f5fe77f2998d $
  *
  * Author: Rafaël Carré <funman@videolanorg>
  *

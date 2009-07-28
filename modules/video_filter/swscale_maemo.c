@@ -2,7 +2,7 @@
  * swscale_maemo.c: scaling and chroma conversion using libswscale_nokia770
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id$
+ * $Id: 6afd21000c4d61aeab287062885c6ca3525f70f4 $
  *
  * Authors: Antoine Lejeune <phytos@videolan.org>
  *

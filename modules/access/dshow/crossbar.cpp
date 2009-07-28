@@ -2,7 +2,7 @@
  * crossbar.c : DirectShow access module for vlc
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id$
+ * $Id: c34b2902859926db148d870f363c4ff6a6771c30 $
  *
  * Author: Damien Fouilleul <damien dot fouilleul at laposte dot net>
  *

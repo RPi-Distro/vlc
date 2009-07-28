@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc git-master\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2009-07-06 02:14+0200\n"
+"POT-Creation-Date: 2009-07-27 23:32+0100\n"
 "PO-Revision-Date: 2009-01-04 22:54+0900\n"
 "Last-Translator: Tadashi Jokagi <elf@elf.no-ip.org>\n"
 "Language-Team: Japanese <elf@elf.no-ip.org>\n"
@@ -37,7 +37,7 @@ msgstr "VLC 設定"
 msgid "Select \"Advanced Options\" to see all options."
 msgstr "すべてのオプションを見るには「高度なオプション」を選択します。"
 
-#: include/vlc_config_cat.h:37 modules/gui/macosx/simple_prefs.m:174
+#: include/vlc_config_cat.h:37 modules/gui/macosx/simple_prefs.m:175
 #: modules/gui/qt4/components/simple_preferences.cpp:77
 #: modules/gui/qt4/menus.cpp:967 modules/misc/dummy/dummy.c:67
 msgid "Interface"
@@ -69,14 +69,14 @@ msgid "Settings for VLC's control interfaces"
 msgstr "VLC の制御インターフェース設定"
 
 #: include/vlc_config_cat.h:48 include/vlc_config_cat.h:49
-#: modules/gui/macosx/simple_prefs.m:194
+#: modules/gui/macosx/simple_prefs.m:195
 msgid "Hotkeys settings"
 msgstr "ホットキー設定"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2657 src/input/es_out.c:2691
 #: src/libvlc-module.c:1508 modules/gui/beos/InterfaceWindow.cpp:283
 #: modules/gui/macosx/intf.m:659 modules/gui/macosx/output.m:170
-#: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:178
+#: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:179
 #: modules/gui/macosx/wizard.m:380
 #: modules/gui/qt4/components/info_panels.cpp:517
 #: modules/gui/qt4/components/simple_preferences.cpp:79
@@ -133,7 +133,7 @@ msgstr "その他のオーディオとモジュールの設定です。"
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2660 src/input/es_out.c:2740
 #: src/libvlc-module.c:1561 modules/gui/macosx/intf.m:672
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:103
-#: modules/gui/macosx/simple_prefs.m:182 modules/gui/macosx/wizard.m:381
+#: modules/gui/macosx/simple_prefs.m:183 modules/gui/macosx/wizard.m:381
 #: modules/gui/qt4/components/info_panels.cpp:518
 #: modules/gui/qt4/components/simple_preferences.cpp:80
 #: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:291
@@ -383,7 +383,7 @@ msgid "Advanced settings"
 msgstr "高度な設定"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:173
-#: modules/gui/macosx/open.m:447 modules/gui/macosx/simple_prefs.m:253
+#: modules/gui/macosx/open.m:447 modules/gui/macosx/simple_prefs.m:254
 #: modules/gui/pda/pda_interface.c:546 modules/gui/qt4/ui/sprefs_input.h:240
 msgid "Network"
 msgstr "ネットワーク"
@@ -504,9 +504,9 @@ msgstr "VideoLAN について"
 #: modules/gui/macosx/embeddedwindow.m:67
 #: modules/gui/macosx/embeddedwindow.m:157 modules/gui/macosx/intf.m:595
 #: modules/gui/macosx/intf.m:640 modules/gui/macosx/intf.m:727
-#: modules/gui/macosx/intf.m:734 modules/gui/macosx/intf.m:1985
-#: modules/gui/macosx/intf.m:1986 modules/gui/macosx/intf.m:1987
-#: modules/gui/macosx/intf.m:1988 modules/gui/macosx/playlist.m:438
+#: modules/gui/macosx/intf.m:734 modules/gui/macosx/intf.m:1990
+#: modules/gui/macosx/intf.m:1991 modules/gui/macosx/intf.m:1992
+#: modules/gui/macosx/intf.m:1993 modules/gui/macosx/playlist.m:438
 #: modules/gui/pda/pda_interface.c:260 modules/gui/pda/pda_interface.c:261
 #: modules/gui/qt4/components/controller.hpp:101 modules/gui/qt4/menus.cpp:730
 #: modules/gui/qt4/ui/open.h:275
@@ -804,23 +804,23 @@ msgstr "ドルビーサラウンド"
 msgid "Reverse stereo"
 msgstr "リバースステレオ"
 
-#: src/config/file.c:599
+#: src/config/file.c:605
 msgid "key"
 msgstr "キー"
 
-#: src/config/file.c:608
+#: src/config/file.c:614
 msgid "boolean"
 msgstr "真偽値"
 
-#: src/config/file.c:608 src/libvlc.c:1649
+#: src/config/file.c:614 src/libvlc.c:1650
 msgid "integer"
 msgstr "整数"
 
-#: src/config/file.c:617 src/libvlc.c:1678
+#: src/config/file.c:623 src/libvlc.c:1679
 msgid "float"
 msgstr "浮動小数点"
 
-#: src/config/file.c:640 src/libvlc.c:1628
+#: src/config/file.c:646 src/libvlc.c:1629
 msgid "string"
 msgstr "文字列"
 
@@ -971,7 +971,7 @@ msgstr "コーデック"
 
 #: src/input/es_out.c:2681 src/input/meta.c:50 src/libvlc-module.c:201
 #: modules/gui/beos/InterfaceWindow.cpp:279
-#: modules/gui/macosx/simple_prefs.m:263
+#: modules/gui/macosx/simple_prefs.m:264
 #: modules/gui/qt4/ui/sprefs_interface.h:314
 msgid "Language"
 msgstr "言語"
@@ -1220,7 +1220,7 @@ msgstr "マウスジェスチャー"
 msgid "C"
 msgstr "ja"
 
-#: src/libvlc.c:1168
+#: src/libvlc.c:1169
 msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
@@ -1228,34 +1228,34 @@ msgstr ""
 "vlc は標準のインターフェースで実行しています。インターフェースをはずした vlc "
 "を使用するには「cvlc」を使用してください。"
 
-#: src/libvlc.c:1345
+#: src/libvlc.c:1346
 msgid "To get exhaustive help, use '-H'."
 msgstr ""
 
-#: src/libvlc.c:1693
+#: src/libvlc.c:1694
 msgid " (default enabled)"
 msgstr " (標準で有効)"
 
-#: src/libvlc.c:1694
+#: src/libvlc.c:1695
 msgid " (default disabled)"
 msgstr " (標準で無効)"
 
-#: src/libvlc.c:1853 src/libvlc.c:1856 src/libvlc.c:1864 src/libvlc.c:1869
+#: src/libvlc.c:1854 src/libvlc.c:1857 src/libvlc.c:1865 src/libvlc.c:1870
 msgid "Note:"
 msgstr "注釈:"
 
-#: src/libvlc.c:1854 src/libvlc.c:1857
+#: src/libvlc.c:1855 src/libvlc.c:1858
 msgid "add --advanced to your command line to see advanced options."
 msgstr ""
 
-#: src/libvlc.c:1865 src/libvlc.c:1870
+#: src/libvlc.c:1866 src/libvlc.c:1871
 #, c-format
 msgid ""
 "%d module(s) were not displayed because they only have advanced options.\n"
 msgstr ""
 "%d 個のモジュールは、高度なオプションのみのため、表示されませんでした。\n"
 
-#: src/libvlc.c:1877 src/libvlc.c:1881
+#: src/libvlc.c:1878 src/libvlc.c:1882
 msgid ""
 "No matching module found. Use --list or--list-verbose to list available "
 "modules."
@@ -1263,22 +1263,22 @@ msgstr ""
 "一致するモジュールが見つかりません。--list か --list-verbose を使うと、利用で"
 "きるモジュールを一覧表示します。"
 
-#: src/libvlc.c:1981
+#: src/libvlc.c:1982
 #, c-format
 msgid "VLC version %s\n"
 msgstr "VLC バージョン %s\n"
 
-#: src/libvlc.c:1982
+#: src/libvlc.c:1983
 #, c-format
 msgid "Compiled by %s@%s.%s\n"
 msgstr "%s@%s.%s によって作成されました\n"
 
-#: src/libvlc.c:1984
+#: src/libvlc.c:1985
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "コンパイラー: %s\n"
 
-#: src/libvlc.c:2019
+#: src/libvlc.c:2020
 msgid ""
 "\n"
 "Dumped content to vlc-help.txt file.\n"
@@ -1286,7 +1286,7 @@ msgstr ""
 "\n"
 "vlc-help.txt ファイルに内容を出力しました。\n"
 
-#: src/libvlc.c:2039
+#: src/libvlc.c:2040
 msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
@@ -1294,24 +1294,24 @@ msgstr ""
 "\n"
 "継続するには ENTER キーを押してください。\n"
 
-#: src/libvlc.h:186 src/libvlc-module.c:1402 src/libvlc-module.c:1403
+#: src/libvlc.h:188 src/libvlc-module.c:1402 src/libvlc-module.c:1403
 #: src/libvlc-module.c:2535 src/video_output/vout_intf.c:278
 msgid "Zoom"
 msgstr "拡大"
 
-#: src/libvlc.h:187 src/libvlc-module.c:1322 src/video_output/vout_intf.c:172
+#: src/libvlc.h:189 src/libvlc-module.c:1322 src/video_output/vout_intf.c:172
 msgid "1:4 Quarter"
 msgstr "1:4 1/4"
 
-#: src/libvlc.h:188 src/libvlc-module.c:1323 src/video_output/vout_intf.c:173
+#: src/libvlc.h:190 src/libvlc-module.c:1323 src/video_output/vout_intf.c:173
 msgid "1:2 Half"
 msgstr "1:2 半分"
 
-#: src/libvlc.h:189 src/libvlc-module.c:1324 src/video_output/vout_intf.c:174
+#: src/libvlc.h:191 src/libvlc-module.c:1324 src/video_output/vout_intf.c:174
 msgid "1:1 Original"
 msgstr "1:1 オリジナル"
 
-#: src/libvlc.h:190 src/libvlc-module.c:1325 src/video_output/vout_intf.c:175
+#: src/libvlc.h:192 src/libvlc-module.c:1325 src/video_output/vout_intf.c:175
 msgid "2:1 Double"
 msgstr "2:1 二倍"
 
@@ -1579,7 +1579,7 @@ msgid ""
 msgstr ""
 "オーディオ出力方法が選択可能です。標準で自動的に最適な方法が選択されます。"
 
-#: src/libvlc-module.c:295 modules/gui/macosx/simple_prefs.m:231
+#: src/libvlc-module.c:295 modules/gui/macosx/simple_prefs.m:232
 #: modules/gui/qt4/ui/sprefs_audio.h:340
 msgid "Use S/PDIF when available"
 msgstr "利用できるなら S/PDIF オーディオを使う"
@@ -1592,7 +1592,7 @@ msgid ""
 msgstr ""
 "オーディオ出力方法が選択可能です。標準で自動的に最適な方法が選択されます。"
 
-#: src/libvlc-module.c:300 modules/gui/macosx/simple_prefs.m:221
+#: src/libvlc-module.c:300 modules/gui/macosx/simple_prefs.m:222
 #: modules/gui/qt4/ui/sprefs_audio.h:342
 msgid "Force detection of Dolby Surround"
 msgstr "ドルビーサラウンドを強制検出する"
@@ -1892,7 +1892,7 @@ msgid ""
 msgstr ""
 
 #: src/libvlc-module.c:431 src/video_output/vout_intf.c:421
-#: modules/gui/macosx/simple_prefs.m:284 modules/gui/qt4/ui/sprefs_video.h:283
+#: modules/gui/macosx/simple_prefs.m:288 modules/gui/qt4/ui/sprefs_video.h:283
 msgid "Always on top"
 msgstr "常に最前面"
 
@@ -2146,7 +2146,7 @@ msgid ""
 "order to keep proportions."
 msgstr ""
 
-#: src/libvlc-module.c:559 modules/gui/macosx/simple_prefs.m:286
+#: src/libvlc-module.c:559 modules/gui/macosx/simple_prefs.m:290
 #: modules/gui/qt4/ui/sprefs_video.h:286
 msgid "Skip frames"
 msgstr "フレームを飛ばす"
@@ -2241,8 +2241,8 @@ msgstr ""
 #: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:215
 #: modules/audio_output/alsa.c:105 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1297
-#: modules/gui/macosx/simple_prefs.m:377 modules/gui/macosx/simple_prefs.m:480
-#: modules/gui/macosx/simple_prefs.m:710 modules/gui/macosx/vout.m:215
+#: modules/gui/macosx/simple_prefs.m:407 modules/gui/macosx/simple_prefs.m:524
+#: modules/gui/macosx/simple_prefs.m:758 modules/gui/macosx/vout.m:215
 #: modules/gui/qt4/components/preferences_widgets.cpp:568
 #: modules/video_filter/marq.c:61 modules/video_filter/rss.c:70
 #: modules/video_filter/rss.c:182 modules/video_output/msw/directx.c:162
@@ -2529,7 +2529,7 @@ msgid "You can completely disable the sub-picture processing."
 msgstr ""
 
 #: src/libvlc-module.c:760 src/libvlc-module.c:1675
-#: modules/gui/macosx/simple_prefs.m:275
+#: modules/gui/macosx/simple_prefs.m:279
 #: modules/gui/qt4/ui/sprefs_subtitles.h:208
 #: modules/stream_out/transcode.c:228
 msgid "On Screen Display"
@@ -3380,7 +3380,7 @@ msgstr ""
 #: modules/gui/macosx/controls.m:515 modules/gui/macosx/controls.m:1083
 #: modules/gui/macosx/controls.m:1114 modules/gui/macosx/embeddedwindow.m:66
 #: modules/gui/macosx/intf.m:599 modules/gui/macosx/intf.m:677
-#: modules/gui/macosx/intf.m:741 modules/gui/macosx/simple_prefs.m:283
+#: modules/gui/macosx/intf.m:741 modules/gui/macosx/simple_prefs.m:287
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/ui/sprefs_video.h:282
 msgid "Fullscreen"
@@ -4416,9 +4416,9 @@ msgstr "ダウンロードしています..."
 #: modules/gui/macosx/coredialogs.m:68 modules/gui/macosx/coredialogs.m:186
 #: modules/gui/macosx/open.m:169 modules/gui/macosx/open.m:196
 #: modules/gui/macosx/prefs.m:204 modules/gui/macosx/prefs.m:225
-#: modules/gui/macosx/simple_prefs.m:238 modules/gui/macosx/simple_prefs.m:297
-#: modules/gui/macosx/simple_prefs.m:636 modules/gui/macosx/wizard.m:320
-#: modules/gui/qt4/components/open_panels.cpp:1316
+#: modules/gui/macosx/simple_prefs.m:239 modules/gui/macosx/simple_prefs.m:301
+#: modules/gui/macosx/simple_prefs.m:684 modules/gui/macosx/wizard.m:320
+#: modules/gui/qt4/components/open_panels.cpp:1315
 #: modules/gui/qt4/components/preferences_widgets.cpp:1367
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
@@ -4536,7 +4536,7 @@ msgstr ""
 #: modules/access/dshow/dshow.cpp:99 modules/access/dv.c:71
 #: modules/access/dvb/access.c:84 modules/access/dvdnav.c:73
 #: modules/access/dvdread.c:76 modules/access/eyetv.m:61
-#: modules/access/fake.c:44 modules/access/file.c:77 modules/access/ftp.c:57
+#: modules/access/fake.c:44 modules/access/file.c:86 modules/access/ftp.c:57
 #: modules/access/gnomevfs.c:47 modules/access/http.c:75
 #: modules/access/jack.c:62 modules/access/mms/mms.c:49
 #: modules/access/mtp.c:65 modules/access/oss.c:72 modules/access/pvr.c:60
@@ -5903,17 +5903,17 @@ msgstr "疑似"
 msgid "Fake input"
 msgstr "擬似入力"
 
-#: modules/access/file.c:79 modules/access/mtp.c:67
+#: modules/access/file.c:88 modules/access/mtp.c:67
 msgid "Caching value for files. This value should be set in milliseconds."
 msgstr ""
 "ファイルのキャッシュ値です。この値はミリ秒を単位として設定しなければなりませ"
 "ん。"
 
-#: modules/access/file.c:83
+#: modules/access/file.c:92
 msgid "File input"
 msgstr "ファイル入力"
 
-#: modules/access/file.c:84 modules/access_output/file.c:70
+#: modules/access/file.c:93 modules/access_output/file.c:70
 #: modules/audio_output/file.c:114 modules/gui/beos/InterfaceWindow.cpp:264
 #: modules/gui/beos/MediaControlView.cpp:1235
 #: modules/gui/beos/PlayListWindow.cpp:88 modules/gui/macosx/open.m:171
@@ -5924,17 +5924,17 @@ msgstr "ファイル入力"
 msgid "File"
 msgstr "ファイル"
 
-#: modules/access/file.c:225 modules/access/file.c:345
+#: modules/access/file.c:285 modules/access/file.c:405
 #: modules/access/mmap.c:229 modules/access/mtp.c:218 modules/access/mtp.c:306
 msgid "File reading failed"
 msgstr "ファイルの読み込みに失敗しました"
 
-#: modules/access/file.c:226 modules/access/mmap.c:230
+#: modules/access/file.c:286 modules/access/mmap.c:230
 #: modules/access/mtp.c:219
 msgid "VLC could not read the file."
 msgstr "VLC はファイルを読むことができません。"
 
-#: modules/access/file.c:346 modules/access/mtp.c:307
+#: modules/access/file.c:406 modules/access/mtp.c:307
 #, c-format
 msgid "VLC could not open the file \"%s\"."
 msgstr "VLC はファイル「%s」を開くことができません。"
@@ -6092,11 +6092,11 @@ msgstr "HTTP 入力"
 msgid "HTTP(S)"
 msgstr "HTTP(S)"
 
-#: modules/access/http.c:450
+#: modules/access/http.c:461
 msgid "HTTP authentication"
 msgstr "HTTP 認証"
 
-#: modules/access/http.c:451
+#: modules/access/http.c:462
 #, c-format
 msgid "Please enter a valid login name and a password for realm %s."
 msgstr "認証領域 %s の正しいユーザー名とパスワードを入力してください。"
@@ -6616,7 +6616,7 @@ msgstr "画面入力"
 
 #: modules/access/screen/screen.c:95 modules/gui/macosx/open.m:213
 #: modules/gui/macosx/open.m:414 modules/gui/macosx/open.m:979
-#: modules/gui/macosx/simple_prefs.m:486 modules/gui/macosx/vout.m:226
+#: modules/gui/macosx/simple_prefs.m:530 modules/gui/macosx/vout.m:226
 msgid "Screen"
 msgstr "スクリーン"
 
@@ -7361,7 +7361,7 @@ msgid "User name that will be requested to access the stream."
 msgstr ""
 
 #: modules/access_output/http.c:68 modules/control/telnet.c:87
-#: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/simple_prefs.m:228
+#: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/simple_prefs.m:229
 #: modules/gui/qt4/dialogs/external.cpp:145
 #: modules/gui/qt4/ui/sprefs_audio.h:356 modules/misc/audioscrobbler.c:135
 #: modules/misc/notify/growl_udp.c:64
@@ -7873,7 +7873,7 @@ msgid ""
 msgstr ""
 
 #: modules/audio_filter/normvol.c:83 modules/audio_filter/normvol.c:84
-#: modules/gui/macosx/simple_prefs.m:230 modules/gui/qt4/ui/sprefs_audio.h:350
+#: modules/gui/macosx/simple_prefs.m:231 modules/gui/qt4/ui/sprefs_audio.h:350
 msgid "Volume normalizer"
 msgstr "音量ノーマライザー"
 
@@ -8056,7 +8056,7 @@ msgid "ALSA Device Name"
 msgstr "ALSA デバイス名"
 
 #: modules/audio_output/alsa.c:133 modules/audio_output/auhal.c:131
-#: modules/audio_output/auhal.c:968 modules/audio_output/directx.c:457
+#: modules/audio_output/auhal.c:969 modules/audio_output/directx.c:457
 #: modules/audio_output/oss.c:133 modules/audio_output/portaudio.c:385
 #: modules/audio_output/sdl.c:179 modules/audio_output/sdl.c:197
 #: modules/audio_output/waveout.c:462 modules/gui/macosx/intf.m:667
@@ -8128,7 +8128,7 @@ msgid ""
 "utility in /Applications/Utilities. Stereo mode is being used now."
 msgstr ""
 
-#: modules/audio_output/auhal.c:1015
+#: modules/audio_output/auhal.c:1016
 #, c-format
 msgid "%s (Encoded Output)"
 msgstr "%s (エンコード済み出力)"
@@ -8273,7 +8273,7 @@ msgid "PORTAUDIO audio output"
 msgstr "PORTAUDIO オーディオ出力"
 
 #: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:589
-#: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1965
+#: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1970
 #: modules/gui/pda/pda_interface.c:210 modules/gui/pda/pda_interface.c:1353
 #: modules/gui/qt4/dialogs/help.cpp:99 modules/gui/qt4/main_interface.cpp:930
 #: modules/gui/qt4/main_interface.cpp:934
@@ -8367,7 +8367,7 @@ msgid "Non-key"
 msgstr "なし"
 
 #: modules/codec/avcodec/avcodec.c:71 modules/gui/macosx/prefs.m:207
-#: modules/gui/macosx/simple_prefs.m:296
+#: modules/gui/macosx/simple_prefs.m:300
 #: modules/gui/qt4/dialogs/preferences.cpp:68
 msgid "All"
 msgstr "すべて"
@@ -8524,7 +8524,7 @@ msgid ""
 "processing power"
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.h:125 modules/gui/macosx/simple_prefs.m:256
+#: modules/codec/avcodec/avcodec.h:125 modules/gui/macosx/simple_prefs.m:257
 #: modules/gui/qt4/ui/sprefs_input.h:250
 msgid "Skip the loop filter for H.264 decoding"
 msgstr "H.264 デコードのループフィルターを飛ばす"
@@ -9559,11 +9559,11 @@ msgstr "字幕・デコーダー・モジュール"
 msgid "Subtitle renderers using libass"
 msgstr "字幕の分離設定"
 
-#: modules/codec/libass.c:692
+#: modules/codec/libass.c:703
 msgid "Building font cache"
 msgstr ""
 
-#: modules/codec/libass.c:693
+#: modules/codec/libass.c:704
 msgid ""
 "Please wait while your font cache is rebuild.\n"
 "This should take less than a minute."
@@ -10947,11 +10947,11 @@ msgstr "時間制御"
 msgid "Position Control"
 msgstr "位置"
 
-#: modules/control/hotkeys.c:98 modules/gui/macosx/intf.m:2441
+#: modules/control/hotkeys.c:98 modules/gui/macosx/intf.m:2446
 msgid "Ignore"
 msgstr "無視"
 
-#: modules/control/hotkeys.c:101 modules/gui/macosx/simple_prefs.m:194
+#: modules/control/hotkeys.c:101 modules/gui/macosx/simple_prefs.m:195
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 msgid "Hotkeys"
 msgstr "ホットキー"
@@ -11247,8 +11247,8 @@ msgid "Opening"
 msgstr "開いています"
 
 #: modules/control/rc.c:77 modules/gui/macosx/embeddedwindow.m:151
-#: modules/gui/macosx/intf.m:1975 modules/gui/macosx/intf.m:1976
-#: modules/gui/macosx/intf.m:1977 modules/gui/macosx/intf.m:1978
+#: modules/gui/macosx/intf.m:1980 modules/gui/macosx/intf.m:1981
+#: modules/gui/macosx/intf.m:1982 modules/gui/macosx/intf.m:1983
 #: modules/gui/pda/pda_interface.c:248 modules/gui/pda/pda_interface.c:249
 #: modules/gui/qt4/menus.cpp:736 modules/misc/notify/xosd.c:238
 msgid "Pause"
@@ -12093,7 +12093,7 @@ msgid "RTSP/RTP access and demux"
 msgstr "RTSP/RTP アクセスと分離機能"
 
 #: modules/demux/live555.cpp:111 modules/demux/live555.cpp:112
-#: modules/gui/macosx/simple_prefs.m:255 modules/gui/qt4/ui/sprefs_input.h:249
+#: modules/gui/macosx/simple_prefs.m:256 modules/gui/qt4/ui/sprefs_input.h:249
 msgid "Use RTP over RTSP (TCP)"
 msgstr "RTP オーバー RTSP (TCP)を使う"
 
@@ -12121,11 +12121,11 @@ msgstr "HTTP トンネルポート"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "HTTP オーバー RTSP/RTP トンネルで使用するポート番号です。"
 
-#: modules/demux/live555.cpp:622
+#: modules/demux/live555.cpp:624
 msgid "RTSP authentication"
 msgstr "RTSP 認証"
 
-#: modules/demux/live555.cpp:623
+#: modules/demux/live555.cpp:625
 msgid "Please enter a valid login name and a password."
 msgstr "正しいログイン名とパスワードを入力してください。"
 
@@ -12821,7 +12821,7 @@ msgstr "開く"
 
 #: modules/gui/beos/InterfaceWindow.cpp:226
 #: modules/gui/beos/InterfaceWindow.cpp:331 modules/gui/macosx/prefs.m:202
-#: modules/gui/macosx/simple_prefs.m:300
+#: modules/gui/macosx/simple_prefs.m:304
 #: modules/gui/qt4/dialogs/preferences.cpp:46
 msgid "Preferences"
 msgstr "設定"
@@ -12885,16 +12885,16 @@ msgstr "ウィンドウ"
 #: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/bookmarks.m:279
 #: modules/gui/macosx/controls.m:85 modules/gui/macosx/coredialogs.m:67
 #: modules/gui/macosx/coredialogs.m:105 modules/gui/macosx/coredialogs.m:163
-#: modules/gui/macosx/extended.m:519 modules/gui/macosx/intf.m:2314
+#: modules/gui/macosx/extended.m:519 modules/gui/macosx/intf.m:2319
 #: modules/gui/macosx/open.m:310 modules/gui/macosx/output.m:138
-#: modules/gui/macosx/playlistinfo.m:430 modules/gui/macosx/simple_prefs.m:239
-#: modules/gui/macosx/update.m:65 modules/gui/macosx/wizard.m:600
+#: modules/gui/macosx/playlistinfo.m:430 modules/gui/macosx/simple_prefs.m:240
+#: modules/gui/macosx/update.m:76 modules/gui/macosx/wizard.m:600
 #: modules/gui/macosx/wizard.m:664 modules/gui/macosx/wizard.m:1063
 #: modules/gui/macosx/wizard.m:1148 modules/gui/macosx/wizard.m:1155
 #: modules/gui/macosx/wizard.m:1681 modules/gui/macosx/wizard.m:1689
 #: modules/gui/macosx/wizard.m:1870 modules/gui/macosx/wizard.m:1881
 #: modules/gui/macosx/wizard.m:1894
-#: modules/gui/qt4/components/open_panels.cpp:1315
+#: modules/gui/qt4/components/open_panels.cpp:1314
 #: modules/gui/qt4/components/preferences_widgets.cpp:1366
 #: modules/gui/qt4/main_interface.cpp:553
 msgid "OK"
@@ -12967,7 +12967,7 @@ msgid "Path"
 msgstr "パス"
 
 #: modules/gui/beos/PlayListWindow.cpp:150 modules/gui/macosx/bookmarks.m:103
-#: modules/gui/macosx/playlist.m:128 modules/gui/qt4/dialogs/plugins.cpp:62
+#: modules/gui/macosx/playlist.m:128 modules/gui/qt4/dialogs/plugins.cpp:60
 msgid "Name"
 msgstr "名前"
 
@@ -12977,7 +12977,7 @@ msgstr "適用"
 
 #: modules/gui/beos/PreferencesWindow.cpp:257 modules/gui/macosx/output.m:526
 #: modules/gui/macosx/playlist.m:711 modules/gui/macosx/prefs.m:203
-#: modules/gui/macosx/simple_prefs.m:299
+#: modules/gui/macosx/simple_prefs.m:303
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
 #: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
@@ -13146,7 +13146,7 @@ msgid ""
 "All rendered images and text will be displayed on the overlay framebuffer."
 msgstr ""
 
-#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:272
+#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:276
 #: modules/gui/qt4/ui/sprefs_subtitles.h:219 modules/misc/freetype.c:83
 #: modules/misc/notify/xosd.c:80 modules/misc/quartztext.c:92
 #: modules/misc/win32text.c:57 modules/video_filter/marq.c:161
@@ -13200,7 +13200,7 @@ msgid "Add"
 msgstr "追加する"
 
 #: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/intf.m:636
-#: modules/gui/macosx/simple_prefs.m:240
+#: modules/gui/macosx/simple_prefs.m:241
 #: modules/gui/qt4/components/preferences_widgets.cpp:1154
 #: modules/gui/qt4/dialogs/bookmarks.cpp:48 modules/gui/qt4/ui/vlm.h:301
 #: modules/gui/qt4/util/customwidgets.cpp:136
@@ -13337,7 +13337,7 @@ msgstr "転送"
 msgid "Step Backward"
 msgstr "逆転再生"
 
-#: modules/gui/macosx/coredialogs.m:64 modules/gui/macosx/simple_prefs.m:229
+#: modules/gui/macosx/coredialogs.m:64 modules/gui/macosx/simple_prefs.m:230
 #: modules/gui/qt4/dialogs/external.cpp:140
 msgid "User name"
 msgstr "ユーザー名"
@@ -13612,7 +13612,7 @@ msgstr "キャプチャーデバイスを開く..."
 msgid "Open Recent"
 msgstr "最近使った項目を開く"
 
-#: modules/gui/macosx/intf.m:629 modules/gui/macosx/intf.m:2730
+#: modules/gui/macosx/intf.m:629 modules/gui/macosx/intf.m:2735
 msgid "Clear Menu"
 msgstr "メニューの消去"
 
@@ -13647,7 +13647,7 @@ msgid "Decrease Volume"
 msgstr "標準音量"
 
 #: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:687
-#: modules/gui/macosx/simple_prefs.m:280 modules/gui/macosx/vout.m:209
+#: modules/gui/macosx/simple_prefs.m:284 modules/gui/macosx/vout.m:209
 msgid "Fullscreen Video Device"
 msgstr "フルスクリーンのビデオ出力"
 
@@ -13767,57 +13767,57 @@ msgid ""
 "information."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1806
+#: modules/gui/macosx/intf.m:1811
 #, c-format
 msgid "Volume: %d%%"
 msgstr "音量: %d%%"
 
-#: modules/gui/macosx/intf.m:2205
+#: modules/gui/macosx/intf.m:2210
 msgid "Update check failed"
 msgstr "更新の確認に失敗しました"
 
-#: modules/gui/macosx/intf.m:2205
+#: modules/gui/macosx/intf.m:2210
 msgid "Checking for updates was not enabled in this build."
 msgstr "このビルドは更新の確認が有効になっていません。"
 
-#: modules/gui/macosx/intf.m:2312
+#: modules/gui/macosx/intf.m:2317
 msgid "Crash Report successfully sent"
 msgstr "クラッシュ報告の送信に成功しました"
 
-#: modules/gui/macosx/intf.m:2313
+#: modules/gui/macosx/intf.m:2318
 msgid "Thanks for your report!"
 msgstr "報告ありがとうございます"
 
-#: modules/gui/macosx/intf.m:2321
+#: modules/gui/macosx/intf.m:2326
 msgid "Error when sending the Crash Report"
 msgstr "クラッシュ報告の送信中にエラー"
 
-#: modules/gui/macosx/intf.m:2412
+#: modules/gui/macosx/intf.m:2417
 msgid "No CrashLog found"
 msgstr "クラッシュの記録が見つかりません"
 
-#: modules/gui/macosx/intf.m:2412 modules/gui/macosx/prefs.m:226
-#: modules/gui/macosx/simple_prefs.m:637
+#: modules/gui/macosx/intf.m:2417 modules/gui/macosx/prefs.m:226
+#: modules/gui/macosx/simple_prefs.m:685
 msgid "Continue"
 msgstr "続ける"
 
-#: modules/gui/macosx/intf.m:2412
+#: modules/gui/macosx/intf.m:2417
 msgid "Couldn't find any trace of a previous crash."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2439
+#: modules/gui/macosx/intf.m:2444
 msgid "Remove old preferences?"
 msgstr "古い設定を削除しますか?"
 
-#: modules/gui/macosx/intf.m:2440
+#: modules/gui/macosx/intf.m:2445
 msgid "We just found an older version of VLC's preferences files."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2441
+#: modules/gui/macosx/intf.m:2446
 msgid "Move To Trash and Relaunch VLC"
 msgstr "ゴミ箱に移動して VLC の再起動"
 
-#: modules/gui/macosx/intf.m:2575
+#: modules/gui/macosx/intf.m:2580
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr ""
@@ -13903,7 +13903,34 @@ msgid ""
 "feature can be disabled here."
 msgstr ""
 
+#: modules/gui/macosx/macosx.m:90 modules/gui/macosx/simple_prefs.m:266
+msgid "Control playback with the Apple Remote"
+msgstr ""
+
 #: modules/gui/macosx/macosx.m:91
+msgid "By default, VLC can be remotely controlled with the Apple Remote."
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:93 modules/gui/macosx/simple_prefs.m:267
+msgid "Control playback with media keys"
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:94
+msgid ""
+"By default, VLC can be controlled using the media keys on modern Apple "
+"keyboards."
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:97
+msgid "Use media key control when VLC is in background"
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:98
+msgid ""
+"By default, VLC will accept media key events also when being in background."
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:102
 msgid "Mac OS X interface"
 msgstr "Mac OS X インターフェース"
 
@@ -13935,7 +13962,7 @@ msgstr "キャプチャー"
 #: modules/gui/macosx/open.m:176 modules/gui/macosx/open.m:182
 #: modules/gui/macosx/open.m:298 modules/gui/macosx/output.m:145
 #: modules/gui/macosx/prefs_widgets.m:1181
-#: modules/gui/macosx/simple_prefs.m:288
+#: modules/gui/macosx/simple_prefs.m:292
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
 #: modules/gui/qt4/components/simple_preferences.cpp:245
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:98
@@ -14382,7 +14409,7 @@ msgstr "紛失したフレーム数"
 
 #: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:363
 #: modules/gui/qt4/components/info_panels.cpp:520
-#: modules/gui/qt4/dialogs_provider.cpp:607
+#: modules/gui/qt4/dialogs_provider.cpp:608
 #: modules/video_filter/deinterlace.c:143
 msgid "Streaming"
 msgstr "ストリーミング"
@@ -14423,21 +14450,21 @@ msgstr "VLC はメタデータの保存に失敗しました。"
 msgid "Information"
 msgstr "情報"
 
-#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:298
+#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:302
 msgid "Reset All"
 msgstr "すべてリセット"
 
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:295
+#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:299
 #: modules/gui/qt4/ui/video_effects.h:882
 msgid "Basic"
 msgstr "基本"
 
-#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:636
+#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:684
 #: modules/gui/qt4/dialogs/preferences.cpp:309
 msgid "Reset Preferences"
 msgstr "設定をリセットする"
 
-#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:639
+#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:687
 msgid ""
 "Beware this will reset the VLC media player preferences.\n"
 "Are you sure you want to continue?"
@@ -14455,296 +14482,301 @@ msgstr "ファイルを瀬何託する"
 msgid "Select"
 msgstr "選択"
 
-#: modules/gui/macosx/simple_prefs.m:90
+#: modules/gui/macosx/simple_prefs.m:91
 msgid "Not Set"
 msgstr "設定しない"
 
-#: modules/gui/macosx/simple_prefs.m:174
+#: modules/gui/macosx/simple_prefs.m:175
 #: modules/gui/qt4/components/simple_preferences.cpp:465
 msgid "Interface Settings"
 msgstr "インターフェース設定"
 
-#: modules/gui/macosx/simple_prefs.m:178
+#: modules/gui/macosx/simple_prefs.m:179
 msgid "General Audio Settings"
 msgstr "一般的なオーディオ設定"
 
-#: modules/gui/macosx/simple_prefs.m:182
+#: modules/gui/macosx/simple_prefs.m:183
 msgid "General Video Settings"
 msgstr "一般的なビデオ設定"
 
-#: modules/gui/macosx/simple_prefs.m:186
+#: modules/gui/macosx/simple_prefs.m:187
 msgid "Subtitles & OSD"
 msgstr "字幕と OSD"
 
-#: modules/gui/macosx/simple_prefs.m:186
+#: modules/gui/macosx/simple_prefs.m:187
 #: modules/gui/qt4/components/simple_preferences.cpp:538
 msgid "Subtitles & On Screen Display Settings"
 msgstr "字幕と OSD の設定"
 
-#: modules/gui/macosx/simple_prefs.m:190
+#: modules/gui/macosx/simple_prefs.m:191
 msgid "Input & Codecs"
 msgstr "入力とコーデック"
 
-#: modules/gui/macosx/simple_prefs.m:190
+#: modules/gui/macosx/simple_prefs.m:191
 msgid "Input & Codec settings"
 msgstr "入力とコーデックの設定"
 
-#: modules/gui/macosx/simple_prefs.m:222 modules/gui/qt4/ui/sprefs_audio.h:348
+#: modules/gui/macosx/simple_prefs.m:223 modules/gui/qt4/ui/sprefs_audio.h:348
 msgid "Effects"
 msgstr "エフェクト"
 
-#: modules/gui/macosx/simple_prefs.m:223
+#: modules/gui/macosx/simple_prefs.m:224
 msgid "Enable Audio"
 msgstr "オーディオを有効にする"
 
-#: modules/gui/macosx/simple_prefs.m:224 modules/gui/qt4/ui/sprefs_audio.h:334
+#: modules/gui/macosx/simple_prefs.m:225 modules/gui/qt4/ui/sprefs_audio.h:334
 msgid "General Audio"
 msgstr "一般的なオーディオ"
 
-#: modules/gui/macosx/simple_prefs.m:225 modules/gui/qt4/ui/sprefs_audio.h:349
+#: modules/gui/macosx/simple_prefs.m:226 modules/gui/qt4/ui/sprefs_audio.h:349
 msgid "Headphone surround effect"
 msgstr "ヘッドフォンのサラウンドエフェクト"
 
-#: modules/gui/macosx/simple_prefs.m:226
+#: modules/gui/macosx/simple_prefs.m:227
 msgid "Preferred Audio language"
 msgstr "適切なオーディオ言語"
 
-#: modules/gui/macosx/simple_prefs.m:227
+#: modules/gui/macosx/simple_prefs.m:228
 msgid "Enable Last.fm submissions"
 msgstr "Last.fm 送信を有効にする"
 
-#: modules/gui/macosx/simple_prefs.m:232 modules/gui/qt4/ui/sprefs_audio.h:351
+#: modules/gui/macosx/simple_prefs.m:233 modules/gui/qt4/ui/sprefs_audio.h:351
 msgid "Visualization"
 msgstr "ビジュアル化"
 
-#: modules/gui/macosx/simple_prefs.m:233
+#: modules/gui/macosx/simple_prefs.m:234
 msgid "Default Volume"
 msgstr "標準音量"
 
-#: modules/gui/macosx/simple_prefs.m:236
+#: modules/gui/macosx/simple_prefs.m:237
 msgid "Change"
 msgstr "変更"
 
-#: modules/gui/macosx/simple_prefs.m:237
+#: modules/gui/macosx/simple_prefs.m:238
 msgid "Change Hotkey"
 msgstr "ホットキーの変更"
 
-#: modules/gui/macosx/simple_prefs.m:241
+#: modules/gui/macosx/simple_prefs.m:242
 msgid "Select an action to change the associated hotkey:"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:242
+#: modules/gui/macosx/simple_prefs.m:243
 #: modules/gui/qt4/components/preferences_widgets.cpp:1146
 msgid "Action"
 msgstr "操作"
 
-#: modules/gui/macosx/simple_prefs.m:243
+#: modules/gui/macosx/simple_prefs.m:244
 msgid "Shortcut"
 msgstr "ショートカット"
 
-#: modules/gui/macosx/simple_prefs.m:246
+#: modules/gui/macosx/simple_prefs.m:247
 msgid "Repair AVI Files"
 msgstr "AVI ファイルの修復"
 
-#: modules/gui/macosx/simple_prefs.m:247
+#: modules/gui/macosx/simple_prefs.m:248
 msgid "Default Caching Level"
 msgstr "標準のキャッシュレベル"
 
-#: modules/gui/macosx/simple_prefs.m:248 modules/gui/qt4/ui/open.h:251
+#: modules/gui/macosx/simple_prefs.m:249 modules/gui/qt4/ui/open.h:251
 #: modules/gui/qt4/ui/sprefs_input.h:243
 msgid "Caching"
 msgstr "キャッシュ機能"
 
-#: modules/gui/macosx/simple_prefs.m:249
+#: modules/gui/macosx/simple_prefs.m:250
 msgid ""
 "Use the complete preferences to configure custom caching values for each "
 "access module."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:250
+#: modules/gui/macosx/simple_prefs.m:251
 msgid "HTTP Proxy"
 msgstr "HTTP プロキシー"
 
-#: modules/gui/macosx/simple_prefs.m:251
+#: modules/gui/macosx/simple_prefs.m:252
 msgid "Password for HTTP Proxy"
 msgstr "HTTP プロキシーのパスワード"
 
-#: modules/gui/macosx/simple_prefs.m:252 modules/gui/qt4/ui/sprefs_input.h:245
+#: modules/gui/macosx/simple_prefs.m:253 modules/gui/qt4/ui/sprefs_input.h:245
 msgid "Codecs / Muxers"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:254
+#: modules/gui/macosx/simple_prefs.m:255
 msgid "Post-Processing Quality"
 msgstr "後処理の品質"
 
-#: modules/gui/macosx/simple_prefs.m:257
+#: modules/gui/macosx/simple_prefs.m:258
 msgid "Default Server Port"
 msgstr "標準のサーバーポート"
 
-#: modules/gui/macosx/simple_prefs.m:260
+#: modules/gui/macosx/simple_prefs.m:261
 #: modules/gui/qt4/ui/sprefs_interface.h:321
 msgid "Album art download policy"
 msgstr "アルバムアートのダウンロードポリシー"
 
-#: modules/gui/macosx/simple_prefs.m:261
+#: modules/gui/macosx/simple_prefs.m:262
 msgid "Add controls to the video window"
 msgstr "ビデオウィンドウに制御の追加"
 
-#: modules/gui/macosx/simple_prefs.m:262
+#: modules/gui/macosx/simple_prefs.m:263
 msgid "Show Fullscreen Controller"
 msgstr "全画面コントローラーの表示"
 
-#: modules/gui/macosx/simple_prefs.m:264
+#: modules/gui/macosx/simple_prefs.m:265
 #: modules/gui/qt4/ui/sprefs_interface.h:320
 msgid "Privacy / Network Interaction"
 msgstr "プライバシー / ネットワークのインタラクション"
 
-#: modules/gui/macosx/simple_prefs.m:267
+#: modules/gui/macosx/simple_prefs.m:268
+msgid "...when VLC is in background"
+msgstr ""
+
+#: modules/gui/macosx/simple_prefs.m:271
 msgid "Default Encoding"
 msgstr "標準のエンコーディング"
 
-#: modules/gui/macosx/simple_prefs.m:268
+#: modules/gui/macosx/simple_prefs.m:272
 #: modules/gui/qt4/ui/sprefs_subtitles.h:214
 msgid "Display Settings"
 msgstr "ディスプレイ設定"
 
-#: modules/gui/macosx/simple_prefs.m:269 modules/gui/macosx/wizard.m:346
+#: modules/gui/macosx/simple_prefs.m:273 modules/gui/macosx/wizard.m:346
 #: modules/gui/macosx/wizard.m:414
 msgid "Choose..."
 msgstr "選択..."
 
-#: modules/gui/macosx/simple_prefs.m:270
+#: modules/gui/macosx/simple_prefs.m:274
 msgid "Font Color"
 msgstr "フォントの色"
 
-#: modules/gui/macosx/simple_prefs.m:271
+#: modules/gui/macosx/simple_prefs.m:275
 msgid "Font Size"
 msgstr "フォントの大きさ"
 
-#: modules/gui/macosx/simple_prefs.m:273
+#: modules/gui/macosx/simple_prefs.m:277
 msgid "Subtitle Languages"
 msgstr "字幕の言語"
 
-#: modules/gui/macosx/simple_prefs.m:274
+#: modules/gui/macosx/simple_prefs.m:278
 msgid "Preferred Subtitle Language"
 msgstr "適した字幕の言語"
 
-#: modules/gui/macosx/simple_prefs.m:276
+#: modules/gui/macosx/simple_prefs.m:280
 #: modules/gui/qt4/ui/sprefs_subtitles.h:209
 msgid "Enable OSD"
 msgstr "OSD を有効にする"
 
-#: modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/macosx/simple_prefs.m:283
 #, fuzzy
 msgid "Black screens in Fullscreen mode"
 msgstr "全画面表示の切替え"
 
-#: modules/gui/macosx/simple_prefs.m:281 modules/gui/qt4/ui/sprefs_video.h:280
+#: modules/gui/macosx/simple_prefs.m:285 modules/gui/qt4/ui/sprefs_video.h:280
 #: modules/stream_out/display.c:54 modules/video_filter/deinterlace.c:132
 msgid "Display"
 msgstr "表示"
 
-#: modules/gui/macosx/simple_prefs.m:282
+#: modules/gui/macosx/simple_prefs.m:286
 msgid "Enable Video"
 msgstr "ビデオを有効にする"
 
-#: modules/gui/macosx/simple_prefs.m:285
+#: modules/gui/macosx/simple_prefs.m:289
 msgid "Output module"
 msgstr "出力モジュール"
 
-#: modules/gui/macosx/simple_prefs.m:287 modules/gui/qt4/ui/sprefs_video.h:294
+#: modules/gui/macosx/simple_prefs.m:291 modules/gui/qt4/ui/sprefs_video.h:294
 msgid "Video snapshots"
 msgstr "ビデオスナップショット"
 
-#: modules/gui/macosx/simple_prefs.m:289 modules/meta_engine/folder.c:56
+#: modules/gui/macosx/simple_prefs.m:293 modules/meta_engine/folder.c:56
 msgid "Folder"
 msgstr "フォルダー"
 
-#: modules/gui/macosx/simple_prefs.m:290 modules/gui/qt4/ui/sprefs_video.h:299
+#: modules/gui/macosx/simple_prefs.m:294 modules/gui/qt4/ui/sprefs_video.h:299
 msgid "Format"
 msgstr "形式"
 
-#: modules/gui/macosx/simple_prefs.m:291 modules/gui/qt4/ui/sprefs_video.h:297
+#: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:297
 msgid "Prefix"
 msgstr "接頭語"
 
-#: modules/gui/macosx/simple_prefs.m:292 modules/gui/qt4/ui/sprefs_video.h:300
+#: modules/gui/macosx/simple_prefs.m:296 modules/gui/qt4/ui/sprefs_video.h:300
 msgid "Sequential numbering"
 msgstr "数値で連番付け"
 
-#: modules/gui/macosx/simple_prefs.m:514 modules/gui/macosx/simple_prefs.m:558
-#: modules/gui/macosx/simple_prefs.m:1153
+#: modules/gui/macosx/simple_prefs.m:560 modules/gui/macosx/simple_prefs.m:604
+#: modules/gui/macosx/simple_prefs.m:1216
 #: modules/gui/qt4/components/simple_preferences.cpp:412
 msgid "Custom"
 msgstr "カスタム"
 
-#: modules/gui/macosx/simple_prefs.m:514
+#: modules/gui/macosx/simple_prefs.m:560
 #: modules/gui/qt4/components/simple_preferences.cpp:413
 msgid "Lowest latency"
 msgstr "より遅延が少ない"
 
-#: modules/gui/macosx/simple_prefs.m:514
+#: modules/gui/macosx/simple_prefs.m:560
 #: modules/gui/qt4/components/simple_preferences.cpp:414
 msgid "Low latency"
 msgstr "遅延が少ない"
 
-#: modules/gui/macosx/simple_prefs.m:514
+#: modules/gui/macosx/simple_prefs.m:560
 #: modules/gui/qt4/components/simple_preferences.cpp:415
 #: modules/misc/freetype.c:106 modules/misc/quartztext.c:116
 #: modules/misc/win32text.c:80
 msgid "Normal"
 msgstr "通常"
 
-#: modules/gui/macosx/simple_prefs.m:515
+#: modules/gui/macosx/simple_prefs.m:561
 #: modules/gui/qt4/components/simple_preferences.cpp:416
 msgid "High latency"
 msgstr "遅延が大きい"
 
-#: modules/gui/macosx/simple_prefs.m:515
+#: modules/gui/macosx/simple_prefs.m:561
 #: modules/gui/qt4/components/simple_preferences.cpp:417
 msgid "Higher latency"
 msgstr "より遅延が大きい"
 
-#: modules/gui/macosx/simple_prefs.m:743
+#: modules/gui/macosx/simple_prefs.m:803
 msgid "Interface Settings not saved"
 msgstr "インターフェース設定を保存しませんでした"
 
-#: modules/gui/macosx/simple_prefs.m:744 modules/gui/macosx/simple_prefs.m:819
-#: modules/gui/macosx/simple_prefs.m:852 modules/gui/macosx/simple_prefs.m:918
-#: modules/gui/macosx/simple_prefs.m:956 modules/gui/macosx/simple_prefs.m:981
+#: modules/gui/macosx/simple_prefs.m:804 modules/gui/macosx/simple_prefs.m:879
+#: modules/gui/macosx/simple_prefs.m:912 modules/gui/macosx/simple_prefs.m:978
+#: modules/gui/macosx/simple_prefs.m:1017
+#: modules/gui/macosx/simple_prefs.m:1042
 #, fuzzy, c-format
 msgid "An error occured while saving your settings via SimplePrefs (%i)."
 msgstr "自動的に更新を確認する"
 
-#: modules/gui/macosx/simple_prefs.m:818
+#: modules/gui/macosx/simple_prefs.m:878
 msgid "Audio Settings not saved"
 msgstr "オーディオ設定を保存しませんでした"
 
-#: modules/gui/macosx/simple_prefs.m:851
+#: modules/gui/macosx/simple_prefs.m:911
 msgid "Video Settings not saved"
 msgstr "ビデオ設定を保存しませんでした"
 
-#: modules/gui/macosx/simple_prefs.m:917
+#: modules/gui/macosx/simple_prefs.m:977
 msgid "Input Settings not saved"
 msgstr "入力設定を保存しませんでした"
 
-#: modules/gui/macosx/simple_prefs.m:955
+#: modules/gui/macosx/simple_prefs.m:1016
 msgid "On Screen Display/Subtitle Settings not saved"
 msgstr "OSD(On Screen Display)/字幕の設定を保存しませんでした"
 
-#: modules/gui/macosx/simple_prefs.m:980
+#: modules/gui/macosx/simple_prefs.m:1041
 msgid "Hotkeys not saved"
 msgstr "ホットキーを保存しませんでした"
 
-#: modules/gui/macosx/simple_prefs.m:1079
+#: modules/gui/macosx/simple_prefs.m:1142
 msgid "Choose the folder to save your video snapshots to."
 msgstr "スナップショットを取り込んだビデオの保存をするフォルダーを選びます。"
 
-#: modules/gui/macosx/simple_prefs.m:1081
+#: modules/gui/macosx/simple_prefs.m:1144
 msgid "Choose"
 msgstr "選択..."
 
-#: modules/gui/macosx/simple_prefs.m:1171
+#: modules/gui/macosx/simple_prefs.m:1234
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -14752,27 +14784,27 @@ msgstr ""
 "新しいキーを入力してください\n"
 "「%@」"
 
-#: modules/gui/macosx/simple_prefs.m:1245
+#: modules/gui/macosx/simple_prefs.m:1308
 msgid "Invalid combination"
 msgstr "無効な組み合わせ"
 
-#: modules/gui/macosx/simple_prefs.m:1246
+#: modules/gui/macosx/simple_prefs.m:1309
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1264
+#: modules/gui/macosx/simple_prefs.m:1327
 msgid "This combination is already taken by \"%@\"."
 msgstr "「%@」がすでにこの組み合わせを使用しています。"
 
-#: modules/gui/macosx/update.m:63
+#: modules/gui/macosx/update.m:74
 msgid "Check for Updates"
 msgstr "更新を確認する"
 
-#: modules/gui/macosx/update.m:64
+#: modules/gui/macosx/update.m:75
 msgid "Download now"
 msgstr "今すぐダウンロード"
 
-#: modules/gui/macosx/update.m:66
+#: modules/gui/macosx/update.m:77
 msgid "Automatically check for updates"
 msgstr "自動的に更新を確認する"
 
@@ -14870,10 +14902,6 @@ msgstr ""
 #: modules/gui/macosx/wizard.m:184
 msgid ""
 "MPEG Audio Layer 3 (useable with MPEG PS, MPEG TS, MPEG1, ASF, OGG and RAW)"
-msgstr ""
-
-#: modules/gui/macosx/wizard.m:188
-msgid "Audio format for MPEG4 (useable with MPEG TS and MPEG4)"
 msgstr ""
 
 #: modules/gui/macosx/wizard.m:191
@@ -16450,7 +16478,7 @@ msgstr "ラジオデバイス名"
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:1289
+#: modules/gui/qt4/components/open_panels.cpp:1288
 msgid "Advanced Options"
 msgstr "高度なオプション"
 
@@ -16462,11 +16490,11 @@ msgstr ""
 msgid "URI"
 msgstr "URI"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:129
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:128
 msgid "Click to toggle between loop one, loop all"
 msgstr ""
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:153
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:152
 msgid "Show the current item"
 msgstr "現在の項目の表示"
 
@@ -16723,7 +16751,7 @@ msgstr "すべてのブックマークを削除する"
 #: modules/gui/qt4/dialogs/help.cpp:94
 #: modules/gui/qt4/dialogs/mediainfo.cpp:72
 #: modules/gui/qt4/dialogs/messages.cpp:109
-#: modules/gui/qt4/dialogs/plugins.cpp:85
+#: modules/gui/qt4/dialogs/plugins.cpp:83
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:38
 #: modules/gui/qt4/dialogs/vlm.cpp:139
 msgid "&Close"
@@ -17052,21 +17080,21 @@ msgid ""
 "it will be automatically selected."
 msgstr ""
 
-#: modules/gui/qt4/dialogs/plugins.cpp:47
+#: modules/gui/qt4/dialogs/plugins.cpp:45
 #, fuzzy
 msgid "Plugins and extensions"
 msgstr "無効な拡張"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:62
+#: modules/gui/qt4/dialogs/plugins.cpp:60
 msgid "Capability"
 msgstr ""
 
-#: modules/gui/qt4/dialogs/plugins.cpp:62
+#: modules/gui/qt4/dialogs/plugins.cpp:60
 #, fuzzy
 msgid "Score"
 msgstr "スコープ"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:75
+#: modules/gui/qt4/dialogs/plugins.cpp:73
 #, fuzzy
 msgid "&Search:"
 msgstr "検索"
@@ -17294,29 +17322,29 @@ msgstr "インポート (&I)"
 msgid "E&xport"
 msgstr "エクスポート (&X)"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:268
+#: modules/gui/qt4/dialogs/vlm.cpp:269
 #, fuzzy
 msgid "Save VLM configuration as..."
 msgstr "VLM 設定 (&V)..."
 
-#: modules/gui/qt4/dialogs/vlm.cpp:270 modules/gui/qt4/dialogs/vlm.cpp:357
+#: modules/gui/qt4/dialogs/vlm.cpp:271 modules/gui/qt4/dialogs/vlm.cpp:343
 #, fuzzy
 msgid "VLM conf (*.vlm);;All (*)"
 msgstr "VLM 設定 (*.vlm) ;; すべてえ (*.*)"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:355
+#: modules/gui/qt4/dialogs/vlm.cpp:341
 msgid "Open VLM configuration..."
 msgstr "VLM 設定を開く ..."
 
-#: modules/gui/qt4/dialogs/vlm.cpp:549
+#: modules/gui/qt4/dialogs/vlm.cpp:535
 msgid "Broadcast: "
 msgstr "ブロードキャスト: "
 
-#: modules/gui/qt4/dialogs/vlm.cpp:617
+#: modules/gui/qt4/dialogs/vlm.cpp:603
 msgid "Schedule: "
 msgstr "スケジュール: "
 
-#: modules/gui/qt4/dialogs/vlm.cpp:639
+#: modules/gui/qt4/dialogs/vlm.cpp:625
 msgid "VOD: "
 msgstr "VOD: "
 
@@ -17324,29 +17352,29 @@ msgstr "VOD: "
 msgid "Open Directory"
 msgstr "ディレクトリーを開く"
 
-#: modules/gui/qt4/dialogs_provider.cpp:519
+#: modules/gui/qt4/dialogs_provider.cpp:520
 msgid "Open playlist..."
 msgstr "プレイリストを開く..."
 
-#: modules/gui/qt4/dialogs_provider.cpp:530
+#: modules/gui/qt4/dialogs_provider.cpp:531
 msgid "Save playlist as..."
 msgstr "別名でプレイリストの保存..."
 
-#: modules/gui/qt4/dialogs_provider.cpp:532
+#: modules/gui/qt4/dialogs_provider.cpp:533
 msgid "XSPF playlist (*.xspf);; "
 msgstr "XSPF プレイリスト (*.xspf);; "
 
-#: modules/gui/qt4/dialogs_provider.cpp:533
+#: modules/gui/qt4/dialogs_provider.cpp:534
 #, fuzzy
 msgid "M3U playlist (*.m3u);; "
 msgstr "M3U プレイリスト (*.m3u);; すべて (*.*) "
 
-#: modules/gui/qt4/dialogs_provider.cpp:534
+#: modules/gui/qt4/dialogs_provider.cpp:535
 #, fuzzy
 msgid "HTML playlist (*.html)"
 msgstr "XSPF プレイリスト (*.xspf);; "
 
-#: modules/gui/qt4/dialogs_provider.cpp:658
+#: modules/gui/qt4/dialogs_provider.cpp:659
 msgid "Open subtitles..."
 msgstr "字幕を開く..."
 
@@ -17772,58 +17800,70 @@ msgid ""
 msgstr ""
 
 #: modules/gui/qt4/qt4.cpp:113
+#, fuzzy
+msgid "Fullscreen controller opacity opacity between 0.1 and 1."
+msgstr "Windows の透過を 0.1 から 1 で指定します。"
+
+#: modules/gui/qt4/qt4.cpp:114
+msgid ""
+"Sets the fullscreen controller opacity between 0.1 and 1 for main interface, "
+"playlist and extended panel. This option only works with Windows and X11 "
+"with composite extensions."
+msgstr ""
+
+#: modules/gui/qt4/qt4.cpp:120
 msgid "Show unimportant error and warnings dialogs"
 msgstr ""
 
-#: modules/gui/qt4/qt4.cpp:115
+#: modules/gui/qt4/qt4.cpp:122
 msgid "Activate the updates availability notification"
 msgstr ""
 
-#: modules/gui/qt4/qt4.cpp:116
+#: modules/gui/qt4/qt4.cpp:123
 msgid ""
 "Activate the automatic notification of new versions of the software. It runs "
 "once every two weeks."
 msgstr ""
 
-#: modules/gui/qt4/qt4.cpp:119
+#: modules/gui/qt4/qt4.cpp:126
 msgid "Number of days between two update checks"
 msgstr ""
 
-#: modules/gui/qt4/qt4.cpp:121
+#: modules/gui/qt4/qt4.cpp:128
 msgid "Allow the volume to be set to 400%"
 msgstr "400% までの音量の設定を許可する"
 
-#: modules/gui/qt4/qt4.cpp:122
+#: modules/gui/qt4/qt4.cpp:129
 msgid ""
 "Allow the volume to have range from 0% to 400%, instead of 0% to 200%. This "
 "option can distort the audio, since it uses software amplification."
 msgstr ""
 
-#: modules/gui/qt4/qt4.cpp:127
+#: modules/gui/qt4/qt4.cpp:134
 msgid "Automatically save the volume on exit"
 msgstr "音量を自動的に保存して終了する"
 
-#: modules/gui/qt4/qt4.cpp:129
+#: modules/gui/qt4/qt4.cpp:136
 msgid "Ask for network policy at start"
 msgstr "起動時にネットワークポリシーを回答する"
 
-#: modules/gui/qt4/qt4.cpp:131
+#: modules/gui/qt4/qt4.cpp:138
 msgid "Save the recently played items in the menu"
 msgstr "メニューに最近再生した項目を保存する"
 
-#: modules/gui/qt4/qt4.cpp:133
+#: modules/gui/qt4/qt4.cpp:140
 msgid "List of words separated by | to filter"
 msgstr ""
 
-#: modules/gui/qt4/qt4.cpp:134
+#: modules/gui/qt4/qt4.cpp:141
 msgid "Regular expression used to filter the recent items played in the player"
 msgstr ""
 
-#: modules/gui/qt4/qt4.cpp:137
+#: modules/gui/qt4/qt4.cpp:144
 msgid "Define the colors of the volume slider "
 msgstr "ボリュームスライダーの色の定義"
 
-#: modules/gui/qt4/qt4.cpp:138
+#: modules/gui/qt4/qt4.cpp:145
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
@@ -17835,11 +17875,11 @@ msgstr ""
 "標準は「255;255;255;20;226;20;255;176;15;235;30;20」です。\n"
 "「30;30;50;40;40;100;50;50;160;150;150;255」も代換できます。"
 
-#: modules/gui/qt4/qt4.cpp:143
+#: modules/gui/qt4/qt4.cpp:150
 msgid "Selection of the starting mode and look "
 msgstr ""
 
-#: modules/gui/qt4/qt4.cpp:144
+#: modules/gui/qt4/qt4.cpp:151
 msgid ""
 "Start VLC with:\n"
 " - normal mode\n"
@@ -17847,27 +17887,27 @@ msgid ""
 " - minimal mode with limited controls"
 msgstr ""
 
-#: modules/gui/qt4/qt4.cpp:150
+#: modules/gui/qt4/qt4.cpp:157
 msgid "Classic look"
 msgstr "クラッシックな概観"
 
-#: modules/gui/qt4/qt4.cpp:151
+#: modules/gui/qt4/qt4.cpp:158
 msgid "Complete look with information area"
 msgstr "情報エリアと完全な概観"
 
-#: modules/gui/qt4/qt4.cpp:152
+#: modules/gui/qt4/qt4.cpp:159
 msgid "Minimal look with no menus"
 msgstr "メニューがない小さな外観"
 
-#: modules/gui/qt4/qt4.cpp:154
+#: modules/gui/qt4/qt4.cpp:161
 msgid "Show a controller in fullscreen mode"
 msgstr "全画面モードでコントローラーを表示する"
 
-#: modules/gui/qt4/qt4.cpp:155
+#: modules/gui/qt4/qt4.cpp:162
 msgid "Embed the file browser in open dialog"
 msgstr ""
 
-#: modules/gui/qt4/qt4.cpp:167
+#: modules/gui/qt4/qt4.cpp:174
 msgid "Qt interface"
 msgstr "Qt インターフェース"
 
@@ -19528,7 +19568,7 @@ msgstr "AltiVec memcpy"
 msgid "Growl Notification Plugin"
 msgstr "Growl 通知プラグイン"
 
-#: modules/misc/notify/growl.m:272
+#: modules/misc/notify/growl.m:273
 msgid "Now playing"
 msgstr "再生中"
 
@@ -19870,7 +19910,7 @@ msgstr ""
 msgid "ASF muxer"
 msgstr "MPEG 1/2レイヤ1/2オーディオ・デコーダー"
 
-#: modules/mux/asf.c:575
+#: modules/mux/asf.c:576
 msgid "Unknown Video"
 msgstr "不明のビデオ"
 
@@ -25532,13 +25572,6 @@ msgstr "スペクトラム解析"
 #~ msgid "Preference&s...\tCtrl-S"
 #~ msgstr "設定(&S)...\tCtrl-S"
 
-#~ msgid ""
-#~ " (wxWidgets interface)\n"
-#~ "\n"
-#~ msgstr ""
-#~ "(wxWidgets インターフェース)\n"
-#~ "\n"
-
 #~ msgid "(c) "
 #~ msgstr "(c) "
 
@@ -25609,12 +25642,6 @@ msgstr "スペクトラム解析"
 
 #~ msgid "Both"
 #~ msgstr "両方"
-
-#~ msgid "wxWidgets interface module"
-#~ msgstr "wxWidgets インターフェースモジュール"
-
-#~ msgid "wxWidgets dialogs provider"
-#~ msgstr "wxWidgets ダイアログ提供"
 
 #, fuzzy
 #~ msgid "Distortion"
@@ -27280,10 +27307,6 @@ msgstr "スペクトラム解析"
 
 #~ msgid "PLS file"
 #~ msgstr "PLS ファイル"
-
-#, fuzzy
-#~ msgid "wxWindows"
-#~ msgstr "ウィンドウ"
 
 #, fuzzy
 #~ msgid "Picture"

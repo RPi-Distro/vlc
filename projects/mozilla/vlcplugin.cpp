@@ -2,7 +2,7 @@
  * vlcplugin.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 79b7ed458180230865d6fe71c4af6e157ef73cf2 $
+ * $Id: 199832c78a8126d6177748466b1a0d9ad299416d $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf.fouilleul@laposte.net>
@@ -98,7 +98,7 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
     /* locate VLC module path */
 #ifdef XP_MACOSX
     ppsz_argv[ppsz_argc++] = "--plugin-path=/Library/Internet\\ Plug-Ins/VLC\\ Plugin.plugin/Contents/MacOS/modules";
-    ppsz_argv[ppsz_argc++] = "--vout=macosx";
+    ppsz_argv[ppsz_argc++] = "--vout=minimal_macosx";
 #elif defined(XP_WIN)
     HKEY h_key;
     DWORD i_type, i_data = MAX_PATH + 1;

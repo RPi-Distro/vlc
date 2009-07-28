@@ -2,7 +2,7 @@
  * ctrl_text.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: e32da13683a8a0cfff3190cf1cd0a5f9ab1a5952 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

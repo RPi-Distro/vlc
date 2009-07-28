@@ -3,7 +3,7 @@
  *       multiplexer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002 the VideoLAN team
- * $Id$
+ * $Id: f2ec618a204dc27af8763fd969c2f37ef9495506 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Eric Petit <titer@videolan.org>
@@ -310,6 +310,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                 0xbd00 | StreamIdGet( p_sys->stream_id_a52, 0x80, 0x87 );
             break;
         case VLC_FOURCC( 'm', 'p', 'g', 'a' ):
+        case VLC_FOURCC( 'm', 'p', '3', ' ' ):
             p_stream->i_stream_id =
                 StreamIdGet( p_sys->stream_id_mpga, 0xc0, 0xcf );
             p_stream->i_stream_type = 0x03; /* ISO/IEC 11172 Audio */

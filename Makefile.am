@@ -88,7 +88,7 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-fast-install \
 	--disable-dbus \
 	--disable-dvd --disable-mad --disable-libmpeg2 \
-	--disable-ffmpeg --disable-faad --disable-wxwidgets --disable-skins2 \
+	--disable-ffmpeg --disable-faad --disable-skins2 \
 	--disable-live555 \
 	--disable-fribidi --disable-glx
 
@@ -326,7 +326,7 @@ CLEANFILES = $(BUILT_SOURCES_clean)
 DISTCLEANFILES = $(BUILT_SOURCES_distclean) vlc-config.in compile
 MAINTAINERCLEANFILES = ChangeLog
 
-# Shortcut for developpers to rebuild the core (libvlc + vlc)
+# Shortcut for developers to rebuild the core (libvlc + vlc)
 # Don't use it if you don't know what it is about.
 # Don't complain if it doesn't work. -- Courmisch
 libvlc:
@@ -374,7 +374,7 @@ endif
 # Building aliases
 ###############################################################################
 
-ALL_ALIASES = cvlc rvlc svlc wxvlc qvlc nvlc mvlc
+ALL_ALIASES = cvlc rvlc svlc qvlc nvlc mvlc
 bin_SCRIPTS = $(ALIASES)
 CLEANFILES += $(ALIASES) $(noinst_SCRIPTS)
 EXTRA_SCRIPTS = $(ALL_ALIASES)
@@ -391,9 +391,6 @@ rvlc: make-alias Makefile
 
 svlc: make-alias Makefile
 	$(MKALIAS) skins2
-
-wxvlc: make-alias Makefile
-	$(MKALIAS) wx
 
 qvlc: make-alias Makefile
 	$(MKALIAS) qt4
@@ -892,30 +889,17 @@ package-win-common-strip: package-win32-base-debug
 	for i in "" vlc-$(VERSION)/*$(LIBEXT) ; \
       do if test -n "$$i" ; then \
       $(OBJCOPY) --only-keep-debug "$$i" "$$i.dbg"; \
-      $(OBJCOPY) --strip-debug "$$i" ; \
+      $(OBJCOPY) --strip-all "$$i" ; \
       $(OBJCOPY) --add-gnu-debuglink="$$i.dbg" "$$i" ; \
 	  mv "$$i.dbg" "$(win32_debugdir)"; \
     fi; done
-
-if BUILD_MOZILLA
-	$(OBJCOPY) --only-keep-debug "$(npvlc)" "$(npvlc).dbg"
-	$(OBJCOPY) --strip-debug "$(npvlc)"
-	$(OBJCOPY) --add-gnu-debuglink="$(npvlc).dbg" "$(npvlc)"
-	mv "$(npvlc).dbg" "$(win32_debugdir)"
-endif
-if BUILD_ACTIVEX
-	$(OBJCOPY) --only-keep-debug "$(axvlc)" "$(axvlc).dbg"
-	$(OBJCOPY) --strip-debug "$(axvlc)"
-	$(OBJCOPY) --add-gnu-debuglink="$(axvlc).dbg" "$(axvlc)"
-	mv "$(axvlc).dbg" "$(win32_debugdir)"
-endif
 
 #strip all plugins dll
 package-win32-base: package-win-common-strip
 	for i in "" $(win32_destdir)/plugins/*$(LIBEXT) ; \
 	  do if test -n "$$i" ; then \
 	  $(OBJCOPY) --only-keep-debug "$$i" "$$i.dbg"; \
-	  $(OBJCOPY) --strip-debug "$$i" ; \
+	  $(OBJCOPY) --strip-all "$$i" ; \
 	  $(OBJCOPY) --add-gnu-debuglink="$$i.dbg" "$$i" ; \
 	  mv "$$i.dbg" "$(win32_debugdir)"; \
 	fi ; done
@@ -1137,6 +1121,7 @@ if BUILD_MOZILLA
 # Create Installer
 	rm -rf "$(top_builddir)/macosx-plugin-instdata/"; true
 	mkdir -p "$(top_builddir)/macosx-plugin-instdata"
+	rm -f "$(top_builddir)/projects/mozilla/VLC Plugin.plugin/Contents/MacOS/modules/libmacosx_plugin.dylib" 
 	cp -R "$(top_builddir)/projects/mozilla/VLC Plugin.plugin" "$(top_builddir)/macosx-plugin-instdata"
 	rm -rf "$(top_builddir)/VLC Internet Plug-In.pkg"
 	export PACKAGEMAKER=
