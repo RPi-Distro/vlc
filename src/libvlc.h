@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001, 2002 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id$
+ * $Id: 16f9aee12a3db37a606e2d48107dcd7c69fc845b $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -63,6 +63,8 @@ vlc_list_t *vlc_list_find( vlc_object_t *, int, int );
 /* Hopefully, no need to export this. There is a new thread API instead. */
 void vlc_thread_cancel (vlc_object_t *);
 int vlc_object_waitpipe (vlc_object_t *obj);
+
+void vlc_threads_setup (libvlc_int_t *);
 
 void vlc_trace (const char *fn, const char *file, unsigned line);
 #define vlc_backtrace() vlc_trace(__func__, __FILE__, __LINE__)

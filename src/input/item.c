@@ -2,7 +2,7 @@
  * item.c: input_item management
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: 35ec0866ab31af7d1fc921d72013c1e5a55ffa2e $
+ * $Id: c8158afdaf2c89714c01fa8fde7de2ec6de86c8e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -16,9 +16,9 @@
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
+ * You should have received a copy of the GNU General Public License along
+ * with this program; if not, write to the Free Software Foundation, Inc.,
+ * 51 Franklin Street, Fifth Floor, Boston MA 02110-1301, USA.
  *****************************************************************************/
 
 #ifdef HAVE_CONFIG_H
@@ -379,33 +379,32 @@ void input_item_SetURI( input_item_t *p_i, const char *psz_uri )
     /* The name is NULL: fill it with everything except login and password */
     if( !p_i->psz_name )
     {
+        int r;
         vlc_url_t url;
         vlc_UrlParse( &url, psz_uri, 0 );
         if( url.psz_protocol )
         {
             if( url.i_port > 0 )
-                asprintf( &p_i->psz_name, "%s://%s:%d%s", url.psz_protocol,
+                r=asprintf( &p_i->psz_name, "%s://%s:%d%s", url.psz_protocol,
                           url.psz_host, url.i_port,
                           url.psz_path ? url.psz_path : "" );
             else
-                asprintf( &p_i->psz_name, "%s://%s%s", url.psz_protocol,
+                r=asprintf( &p_i->psz_name, "%s://%s%s", url.psz_protocol,
                           url.psz_host ? url.psz_host : "",
                           url.psz_path ? url.psz_path : "" );
         }
         else
         {
             if( url.i_port > 0 )
-                asprintf( &p_i->psz_name, "%s:%d%s", url.psz_host, url.i_port,
+                r=asprintf( &p_i->psz_name, "%s:%d%s", url.psz_host, url.i_port,
                           url.psz_path ? url.psz_path : "" );
             else
-                asprintf( &p_i->psz_name, "%s%s", url.psz_host,
+                r=asprintf( &p_i->psz_name, "%s%s", url.psz_host,
                           url.psz_path ? url.psz_path : "" );
         }
         vlc_UrlClean( &url );
-
-        /* Make the name more readable */
-        if( p_i->psz_name )
-            decode_URI( p_i->psz_name );
+        if( -1==r )
+            p_i->psz_name=NULL; /* recover from undefined value */
     }
 
     vlc_mutex_unlock( &p_i->lock );

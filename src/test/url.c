@@ -2,7 +2,7 @@
  * url.c: Test for url encoding/decoding stuff
  *****************************************************************************
  * Copyright (C) 2006 Rémi Denis-Courmont
- * $Id: d03e48ca6d8953c7ff0c05bb7a692ade263715d3 $
+ * $Id: f68a0018106104c58b055c4cec769c2f05f56a5c $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -108,7 +108,8 @@ int main (void)
     test_path ("/", "file:///");
     test_path ("/home/john/", "file:///home/john/");
     test_path ("/home/john/music.ogg", "file:///home/john/music.ogg");
-    //test_path ("\\\\server/pub/music.ogg", "file://server/pub/music.ogg");
+    test_path ("\\\\server/pub/music.ogg", "smb://server/pub/music.ogg");
+    test_path ("\\\\server\\pub\\music.ogg", "smb://server/pub/music.ogg");
 
     /*int fd = open (".", O_RDONLY);
     assert (fd != -1);*/

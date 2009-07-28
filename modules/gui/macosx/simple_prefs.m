@@ -1,8 +1,8 @@
 /*****************************************************************************
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
-* Copyright (C) 2008 the VideoLAN team
-* $Id: add1242dca868f100d53ba45977e3cf0840d21f9 $
+* Copyright (C) 2008-2009 the VideoLAN team
+* $Id: e5f16fbc2ab483caa654f8505e968952299df64b $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -27,6 +27,7 @@
 #import <vlc_interface.h>
 #import <vlc_dialog.h>
 #import "misc.h"
+#import "AppleRemote.h"
 
 static NSString* VLCSPrefsToolbarIdentifier = @"Our Simple Preferences Toolbar Identifier";
 static NSString* VLCIntfSettingToolbarIdentifier = @"Intf Settings Item Identifier";
@@ -262,7 +263,10 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [o_intf_fspanel_ckb setTitle: _NS("Show Fullscreen Controller")];
     [o_intf_lang_txt setStringValue: _NS("Language")];
     [o_intf_network_box setTitle: _NS("Privacy / Network Interaction")];
-    
+	[o_intf_appleremote_ckb setTitle: _NS("Control playback with the Apple Remote")];
+	[o_intf_mediakeys_ckb setTitle: _NS("Control playback with media keys")];
+    [o_intf_mediakeys_bg_ckb setTitle: _NS("...when VLC is in background")];
+
     /* Subtitles and OSD */
     [o_osd_encoding_txt setStringValue: _NS("Default Encoding")];
     [o_osd_font_box setTitle: _NS("Display Settings")];
@@ -300,6 +304,31 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [o_sprefs_win setTitle: _NS("Preferences")];
 }
 
+/* TODO: move this part to core */
+#define config_GetLabel(a,b) __config_GetLabel(VLC_OBJECT(a),b)
+static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_name )
+{
+    module_config_t *p_config;
+
+    p_config = config_FindConfig( p_this, psz_name );
+
+    /* sanity checks */
+    if( !p_config )
+    {
+        msg_Err( p_this, "option %s does not exist", psz_name );
+        return NULL;
+    }
+
+    if ( p_config->psz_longtext )
+        return p_config->psz_longtext;
+    else if( p_config->psz_text )
+        return p_config->psz_text;
+    else
+        msg_Warn( p_this, "option %s does not include any help" );
+
+    return NULL;
+}
+
 - (void)setupButton: (NSPopUpButton *)object forStringList: (const char *)name
 {
     module_config_t *p_item;
@@ -322,9 +351,10 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
         }
         else if( p_item->ppsz_list[i] )
             mi = [[NSMenuItem alloc] initWithTitle: [NSString stringWithUTF8String: p_item->ppsz_list[i]] action:NULL keyEquivalent: @""];
-        else NSLog( @"item %d of pref %s failed to be created", i, name);
+        else 
+            msg_Err( VLCIntf, "item %d of pref %s failed to be created", i, name);
         [mi setRepresentedObject:[NSString stringWithUTF8String: p_item->ppsz_list[i]]];
-        [[object menu] addItem: [mi autorelease]];
+        [[object menu] addItem: mi];
         if( p_item->value.psz && !strcmp( p_item->value.psz, p_item->ppsz_list[i] ) )
             [object selectItem:[object lastItem]];
     }
@@ -389,10 +419,17 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [object setToolTip: _NS(p_item->psz_longtext)];
 }
 
+- (void)setupButton: (NSButton *)object forBoolValue: (const char *)name
+{
+    [object setState: config_GetInt( p_intf, name )];
+    [object setToolTip: [NSString stringWithUTF8String: config_GetLabel( p_intf, name )]];
+}
+
 - (void)setupField:(NSTextField *)o_object forOption:(const char *)psz_option
 {
     char *psz_tmp = config_GetPsz( p_intf, psz_option );
     [o_object setStringValue: [NSString stringWithUTF8String: psz_tmp ?: ""]];
+    [o_object setToolTip: [NSString stringWithUTF8String: config_GetLabel( p_intf, psz_option )]];
     free( psz_tmp );
 }
 
@@ -411,24 +448,30 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [self setupButton: o_intf_lang_pop forStringList: "language"];
     [self setupButton: o_intf_art_pop forIntList: "album-art"];
 
-    [o_intf_fspanel_ckb setState: config_GetInt( p_intf, "macosx-fspanel" )];
-    [o_intf_embedded_ckb setState: config_GetInt( p_intf, "embedded-video" )];
+    [self setupButton: o_intf_fspanel_ckb forBoolValue: "macosx-fspanel"];
+    [self setupButton: o_intf_embedded_ckb forBoolValue: "embedded-video"];
+	[self setupButton: o_intf_appleremote_ckb forBoolValue: "macosx-appleremote"];
+	[self setupButton: o_intf_mediakeys_ckb forBoolValue: "macosx-mediakeys"];
+    [self setupButton: o_intf_mediakeys_bg_ckb forBoolValue: "macosx-mediakeys-background"];
+    [o_intf_mediakeys_bg_ckb setEnabled: [o_intf_mediakeys_ckb state]];
 
     /******************
      * audio settings *
      ******************/
-    [o_audio_enable_ckb setState: config_GetInt( p_intf, "audio" )];
+    [self setupButton: o_audio_enable_ckb forBoolValue: "audio"];
     i = (config_GetInt( p_intf, "volume" ) * 0.390625);
+    [o_audio_vol_fld setToolTip: [NSString stringWithUTF8String: config_GetLabel( p_intf, "volume")]];
     [o_audio_vol_fld setIntValue: i];
+    [o_audio_vol_sld setToolTip: [o_audio_vol_fld toolTip]];
     [o_audio_vol_sld setIntValue: i];
 
-    [o_audio_spdif_ckb setState: config_GetInt( p_intf, "spdif" )];
+    [self setupButton: o_audio_spdif_ckb forBoolValue: "spdif"];
 
     [self setupButton: o_audio_dolby_pop forIntList: "force-dolby-surround"];
     [self setupField: o_audio_lang_fld forOption: "audio-language"];
 
-    [o_audio_headphone_ckb setState: config_GetInt( p_intf, "headphone-dolby" )];
-    
+    [self setupButton: o_audio_headphone_ckb forBoolValue: "headphone-dolby"];
+
     psz_tmp = config_GetPsz( p_intf, "audio-filter" );
     if( psz_tmp )
     {
@@ -438,6 +481,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
         free( psz_tmp );
     }
     [o_audio_norm_fld setFloatValue: config_GetFloat( p_intf, "norm-max-level" )];
+    [o_audio_norm_fld setToolTip: [NSString stringWithUTF8String: config_GetLabel( p_intf, "norm-max-level")]];
 
     [self setupButton: o_audio_visual_pop forModuleList: "audio-visual"];
 
@@ -466,11 +510,11 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     /******************
      * video settings *
      ******************/
-    [o_video_enable_ckb setState: config_GetInt( p_intf, "video" )];
-    [o_video_fullscreen_ckb setState: config_GetInt( p_intf, "fullscreen" )];
-    [o_video_onTop_ckb setState: config_GetInt( p_intf, "video-on-top" )];
-    [o_video_skipFrames_ckb setState: config_GetInt( p_intf, "skip-frames" )];
-    [o_video_black_ckb setState: config_GetInt( p_intf, "macosx-black" )];
+    [self setupButton: o_video_enable_ckb forBoolValue: "video"];
+    [self setupButton: o_video_fullscreen_ckb forBoolValue: "fullscreen"];
+    [self setupButton: o_video_onTop_ckb forBoolValue: "video-on-top"];
+    [self setupButton: o_video_skipFrames_ckb forBoolValue: "skip-frames"];
+    [self setupButton: o_video_black_ckb forBoolValue: "macosx-black"];
 
     [self setupButton: o_video_output_pop forModuleList: "vout"];
 
@@ -491,22 +535,24 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     [o_video_device_pop selectItemAtIndex: 0];
     [o_video_device_pop selectItemWithTag: config_GetInt( p_intf, "macosx-vdev" )];
 
-    [self setupField:o_video_snap_folder_fld forOption:"snapshot-path"];
-    [self setupField:o_video_snap_prefix_fld forOption:"snapshot-prefix"];
-    [o_video_snap_seqnum_ckb setState: config_GetInt( p_intf, "snapshot-sequential" )];
+    [self setupField: o_video_snap_folder_fld forOption:"snapshot-path"];
+    [self setupField: o_video_snap_prefix_fld forOption:"snapshot-prefix"];
+    [self setupButton: o_video_snap_seqnum_ckb forBoolValue: "snapshot-sequential"];
     [self setupButton: o_video_snap_format_pop forStringList: "snapshot-format"];
 
     /***************************
      * input & codecs settings *
      ***************************/
-    [o_input_serverport_fld setIntValue: config_GetInt( p_intf, "server-port" )];
-    [self setupField:o_input_httpproxy_fld forOption:"http-proxy"];
-    [self setupField:o_input_httpproxypwd_sfld forOption:"http-proxy-pwd"];
-    [o_input_postproc_fld setIntValue: config_GetInt( p_intf, "postproc-q" )];
+    [o_input_serverport_fld setIntValue: config_GetInt( p_intf, "server-port")];
+    [o_input_serverport_fld setToolTip: [NSString stringWithUTF8String: config_GetLabel( p_intf, "server-port")]];
+    [self setupField: o_input_httpproxy_fld forOption:"http-proxy"];
+    [self setupField: o_input_httpproxypwd_sfld forOption:"http-proxy-pwd"];
+    [o_input_postproc_fld setIntValue: config_GetInt( p_intf, "postproc-q")];
+    [o_input_postproc_fld setToolTip: [NSString stringWithUTF8String: config_GetLabel( p_intf, "postproc-q")]];
 
     [self setupButton: o_input_avi_pop forIntList: "avi-index"];
 
-    [o_input_rtsp_ckb setState: config_GetInt( p_intf, "rtsp-tcp" )];
+    [self setupButton: o_input_rtsp_ckb forBoolValue: "rtsp-tcp"];
     [self setupButton: o_input_skipLoop_pop forIntList: "ffmpeg-skiploopfilter"];
 
     [o_input_cachelevel_pop removeAllItems];
@@ -562,7 +608,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
     /*********************
      * subtitle settings *
      *********************/
-    [o_osd_osd_ckb setState: config_GetInt( p_intf, "osd" )];
+    [self setupButton: o_osd_osd_ckb forBoolValue: "osd"];
     
     [self setupButton: o_osd_encoding_pop forStringList: "subsdec-encoding"];
     [self setupField: o_osd_lang_fld forOption: "sub-language" ];
@@ -610,6 +656,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
 
 - (void)showSimplePrefs
 {
+    NSAutoreleasePool *o_pool = [[NSAutoreleasePool alloc] init];
     /* we want to show the interface settings, if no category was chosen */
     if( [[o_sprefs_win toolbar] selectedItemIdentifier] == nil )
     {
@@ -621,6 +668,7 @@ create_toolbar_item( NSString * o_itemIdent, NSString * o_name, NSString * o_des
 
     [o_sprefs_win center];
     [o_sprefs_win makeKeyAndOrderFront: self];
+    [o_pool release];
 }
 
 - (IBAction)buttonAction:(id)sender
@@ -732,6 +780,18 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 
         config_PutInt( p_intf, "macosx-fspanel", [o_intf_fspanel_ckb state] );
         config_PutInt( p_intf, "embedded-video", [o_intf_embedded_ckb state] );
+        config_PutInt( p_intf, "macosx-appleremote", [o_intf_appleremote_ckb state] );
+		config_PutInt( p_intf, "macosx-mediakeys", [o_intf_mediakeys_ckb state] );
+        config_PutInt( p_intf, "macosx-mediakeys-background", [o_intf_mediakeys_bg_ckb state] );
+
+		/* activate stuff without restart */
+		if( [o_intf_appleremote_ckb state] == YES )
+			[[[VLCMain sharedInstance] appleRemoteController] startListening: [VLCMain sharedInstance]];
+		else
+			[[[VLCMain sharedInstance] appleRemoteController] stopListening: [VLCMain sharedInstance]];
+        [[NSNotificationCenter defaultCenter] postNotificationName: @"VLCMediaKeySupportSettingChanged" 
+                                                            object: nil
+                                                          userInfo: nil];
 
         /* okay, let's save our changes to vlcrc */
         i = config_SaveConfigFile( p_intf, "main" );
@@ -927,9 +987,10 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
     if( b_osdSettingChanged )
     {
         config_PutInt( p_intf, "osd", [o_osd_osd_ckb state] );
-
         if( [o_osd_encoding_pop indexOfSelectedItem] >= 0 )
-            config_PutPsz( p_intf, "subsdec-encoding", [[[o_osd_encoding_pop selectedItem] title] UTF8String] );
+            SaveStringList( o_osd_encoding_pop, "subsdec-encoding" );
+        else
+            config_PutPsz( p_intf, "subsdec-encoding", "" );
 
         config_PutPsz( p_intf, "sub-language", [[o_osd_lang_fld stringValue] UTF8String] );
         
@@ -1023,6 +1084,8 @@ static inline void save_module_list( intf_thread_t * p_intf, id object, const ch
 
 - (IBAction)interfaceSettingChanged:(id)sender
 {
+    if( sender == o_intf_mediakeys_ckb )
+        [o_intf_mediakeys_bg_ckb setEnabled: [o_intf_mediakeys_ckb state]];
     b_intfSettingChanged = YES;
 }
 

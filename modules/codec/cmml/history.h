@@ -5,7 +5,7 @@
  *                    Organisation (CSIRO) Australia
  * Copyright (C) 2004 the VideoLAN team
  *
- * $Id$
+ * $Id: bfa8e92b4b46891676057b77ee7afb5a426842af $
  *
  * Authors: Andre Pang <Andre.Pang@csiro.au>
  *

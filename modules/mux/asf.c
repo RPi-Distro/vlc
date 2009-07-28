@@ -2,7 +2,7 @@
  * asf.c: asf muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2003-2004, 2006 the VideoLAN team
- * $Id$
+ * $Id: 5c9c4bffc22e9a4685594d486b9d1af3258754ff $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -385,6 +385,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
                     i_bitspersample = 0;
                     break;
                 case VLC_FOURCC( 'm', 'p', 'g', 'a' ):
+                case VLC_FOURCC( 'm', 'p', '3', ' ' ):
 #if 1
                     tk->psz_name = "MPEG Audio Layer 3";
                     tk->i_tag = WAVE_FORMAT_MPEGLAYER3;

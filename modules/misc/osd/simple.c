@@ -2,7 +2,7 @@
  * simple.c - The OSD Menu simple parser code.
  *****************************************************************************
  * Copyright (C) 2005-2008 M2X
- * $Id$
+ * $Id: 992efe90fb94b534a7019567fd713cd105d7a1a8 $
  *
  * Authors: Jean-Paul Saman
  *

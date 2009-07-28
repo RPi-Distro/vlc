@@ -2,7 +2,7 @@
  * events.c: Windows DirectX video output events handler
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id$
+ * $Id: a35bdee45c66803412be17bb1d508e6cd4e17f31 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

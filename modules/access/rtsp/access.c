@@ -2,7 +2,7 @@
  * access.c: Real rtsp input
  *****************************************************************************
  * Copyright (C) 2005 VideoLAN
- * $Id$
+ * $Id: 0115d30ad77641c7427bf22afed52e14b3e6ee6a $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

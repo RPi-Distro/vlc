@@ -2,7 +2,7 @@
  * theme_loader.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: d02fa718e1a777bb7c07b658631bd97ea93ba080 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -204,12 +204,16 @@ bool ThemeLoader::extractFileInZip( unzFile file, const string &rootDir )
         return false;
     }
 
+#ifdef WIN32
+
     // Convert the file name to lower case, because some winamp skins
     // use the wrong case...
     for( size_t i=0; i< strlen( filenameInZip ); i++)
     {
         filenameInZip[i] = tolower( filenameInZip[i] );
     }
+
+#endif
 
     // Allocate the buffer
     void *pBuffer = malloc( ZIP_BUFFER_SIZE );

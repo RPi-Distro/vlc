@@ -2,7 +2,7 @@
  * yuv.c : yuv video output
  *****************************************************************************
  * Copyright (C) 2008, M2X BV
- * $Id$
+ * $Id: cd73fb8645b595e3db0945e9f215b3decb07fd34 $
  *
  * Authors: Jean-Paul Saman <jpsaman@videolan.org>
  *

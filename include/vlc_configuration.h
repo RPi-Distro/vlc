@@ -4,7 +4,7 @@
  * It includes functions allowing to declare, get or set configuration options.
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
- * $Id$
+ * $Id: 5ccb29e3c6a9650f2ef106761e7fd1a9bc74b337 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

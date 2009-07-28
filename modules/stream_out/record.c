@@ -2,7 +2,7 @@
  * record.c: record stream output module
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id$
+ * $Id: ca68231161afbea957c120df47ba0d8277837bcd $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -267,7 +267,7 @@ typedef struct
  * Do not do non native and non standard association !
  * Muxer will be probe if no entry found */
 static const muxer_properties_t p_muxers[] = {
-    M( "raw", "mp3", 1,         VLC_FOURCC('m','p','g','a') ),
+    M( "raw", "mp3", 1,         VLC_FOURCC('m','p','g','a'), VLC_FOURCC('m','p','3',' ') ),
     M( "raw", "a52", 1,         VLC_FOURCC('a','5','2',' ') ),
     M( "raw", "dts", 1,         VLC_FOURCC('d','t','s',' ') ),
     M( "raw", "mpc", 1,         VLC_FOURCC('m','p','c',' ') ),
@@ -290,13 +290,13 @@ static const muxer_properties_t p_muxers[] = {
                                 VLC_FOURCC('s','u','b','t') ),
 
     M( "ps", "mpg", 16/* FIXME*/,VLC_FOURCC('m','p','g','v'), VLC_FOURCC('m','p','1','v'), VLC_FOURCC('m','p','2','v'),
-                                VLC_FOURCC('m','p','g','a'), VLC_FOURCC('l','p','c','m'), VLC_FOURCC('a','5','2',' '),
+                                VLC_FOURCC('m','p','g','a'), VLC_FOURCC('m','p','3',' '), VLC_FOURCC('l','p','c','m'), VLC_FOURCC('a','5','2',' '),
                                 VLC_FOURCC('d','t','s',' '),
                                 VLC_FOURCC('s','p','u',' ') ),
 
     M( "ts", "ts", 8000,        VLC_FOURCC('m','p','g','v'), VLC_FOURCC('m','p','1','v'), VLC_FOURCC('m','p','2','v'),
                                 VLC_FOURCC('h','2','6','4'),
-                                VLC_FOURCC('m','p','g','a'), VLC_FOURCC('l','p','c','m'), VLC_FOURCC('a','5','2',' '),
+                                VLC_FOURCC('m','p','g','a'), VLC_FOURCC('m','p','3',' '), VLC_FOURCC('l','p','c','m'), VLC_FOURCC('a','5','2',' '),
                                 VLC_FOURCC('d','t','s',' '), VLC_FOURCC('m','p','4','a'),
                                 VLC_FOURCC('d','v','b','s'), VLC_FOURCC('t','e','l','x') ),
 

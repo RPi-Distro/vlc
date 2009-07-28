@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
  * Copyright (C) 2008-2009 Rémi Denis-Courmont
- * $Id: 736bb872592cc1877e6d90f39a669fdf9c39ade0 $
+ * $Id: 283b9b60437aba75f93a97329d8d165117e7b253 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *          Daniel Stranger <vlc at schmaller dot de>
@@ -825,7 +825,7 @@ char *__str_format_meta( vlc_object_t *p_object, const char *string )
                     if( p_item && p_input )
                     {
                         mtime_t i_duration = input_item_GetDuration( p_item );
-                        int64_t i_time = var_GetInteger( p_input, "time" );
+                        int64_t i_time = var_GetTime( p_input, "time" );
                         sprintf( buf, "%02d:%02d:%02d",
                      (int)( ( i_duration - i_time ) / 3600000000 ),
                      (int)( ( ( i_duration - i_time ) / 60000000 ) % 60 ),
@@ -893,7 +893,7 @@ char *__str_format_meta( vlc_object_t *p_object, const char *string )
                 case 'T':
                     if( p_input )
                     {
-                        int64_t i_time = var_GetInteger( p_input, "time" );
+                        int64_t i_time = var_GetTime( p_input, "time" );
                         sprintf( buf, "%02d:%02d:%02d",
                             (int)( i_time / ( 3600000000 ) ),
                             (int)( ( i_time / ( 60000000 ) ) % 60 ),
@@ -1079,15 +1079,37 @@ char *make_URI (const char *path)
     }
     else
 #endif
-#if 0
-    /* Windows UNC paths (file://host/share/path instead of file:///path) */
     if (!strncmp (path, "\\\\", 2))
-    {
-        path += 2;
-        buf = strdup ("file://");
+    {   /* Windows UNC paths */
+#ifndef WIN32
+        /* \\host\share\path -> smb://host/share/path */
+        if (strchr (path + 2, '\\') != NULL)
+        {   /* Convert antislashes to slashes */
+            char *dup = strdup (path);
+            if (dup == NULL)
+                return NULL;
+            for (size_t i = 2; dup[i]; i++)
+                if (dup[i] == '\\')
+                    dup[i] = DIR_SEP_CHAR;
+
+            char *ret = make_URI (dup);
+            free (dup);
+            return ret;
+        }
+# define SMB_SCHEME "smb"
+#else
+        /* \\host\share\path -> file://host/share/path */
+# define SMB_SCHEME "file"
+#endif
+        size_t hostlen = strcspn (path + 2, DIR_SEP);
+
+        buf = malloc (sizeof (SMB_SCHEME) + 3 + hostlen);
+        if (buf != NULL)
+            snprintf (buf, sizeof (SMB_SCHEME) + 3 + hostlen,
+                      SMB_SCHEME"://%s", path + 2);
+        path += 2 + hostlen;
     }
     else
-#endif
     if (path[0] != DIR_SEP_CHAR)
     {   /* Relative path: prepend the current working directory */
         char cwd[PATH_MAX];

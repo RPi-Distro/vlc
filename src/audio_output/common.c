@@ -2,7 +2,7 @@
  * common.c : audio output management of common data structures
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id$
+ * $Id: 0b19748e351d4671c62e0ed77d0ae645e5a0ae7b $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -197,6 +197,8 @@ const char * aout_FormatPrintChannels( const audio_sample_format_t * p_format )
 {
     switch ( p_format->i_physical_channels & AOUT_CHAN_PHYSMASK )
     {
+    case AOUT_CHAN_LEFT:
+    case AOUT_CHAN_RIGHT:
     case AOUT_CHAN_CENTER:
         if ( (p_format->i_original_channels & AOUT_CHAN_CENTER)
               || (p_format->i_original_channels

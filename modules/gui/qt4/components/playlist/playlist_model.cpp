@@ -2,7 +2,7 @@
  * playlist_model.cpp : Manage playlist model
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id$
+ * $Id: 1f756fc71aef11f67ab728341a86afb434a9910c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -104,7 +104,8 @@ PLModel::PLModel( playlist_t *_p_playlist,  /* THEPL */
 
 PLModel::~PLModel()
 {
-    getSettings()->setValue( "qt-pl-showflags", rootItem->i_showflags );
+    if(i_depth == -1)
+        getSettings()->setValue( "qt-pl-showflags", rootItem->i_showflags );
     delCallbacks();
     delete rootItem;
 }
@@ -532,6 +533,11 @@ void PLModel::ProcessInputItemUpdate( input_thread_t *p_input )
 {
     if( !p_input ) return;
     ProcessInputItemUpdate( input_GetItem( p_input )->i_id );
+    if( p_input && !( p_input->b_dead || !vlc_object_alive( p_input ) ) )
+    {
+        PLItem *item = FindByInput( rootItem, input_GetItem( p_input )->i_id );
+        emit currentChanged( index( item, 0 ) );
+    }
 }
 void PLModel::ProcessInputItemUpdate( int i_input_id )
 {

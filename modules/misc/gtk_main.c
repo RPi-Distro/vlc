@@ -2,7 +2,7 @@
  * gtk_main.c : Gtk+ wrapper for gtk_main
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id$
+ * $Id: b127e5a8f69c0e08adefb645f867b7c7a42bdc14 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

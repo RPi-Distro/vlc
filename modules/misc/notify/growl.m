@@ -4,7 +4,7 @@
  * VLC specific code:
  * 
  * Copyright © 2008 the VideoLAN team
- * $Id: 95ad2052353cf209a0a24c02fadb214710bd745c $
+ * $Id: 68e27541b2039fe216f988254571ff47047bf76f $
  *
  * Authors: Rafaël Carré <funman@videolanorg>
  *
@@ -222,6 +222,7 @@ static int ItemChange( vlc_object_t *p_this, const char *psz_var,
     NotifyToGrowl( p_intf, psz_tmp, art );
 
     if( art ) CFRelease( art );
+    free( psz_tmp );
 
     vlc_object_release( p_input );
     return VLC_SUCCESS;

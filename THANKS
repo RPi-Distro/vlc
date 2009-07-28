@@ -163,6 +163,7 @@ Johen Michael Zorko <zorko at att.net> - fix for delay issues in udp sout
 Johnathan Rosser - Dirac video codec
 John Dalgliesh <johnd at defyne.org> - macosx interface playlist fix
 John Paul Lorenti <jpl31 at columbia.edu> - ALSA device selection patch
+Jon Stødle <jonstodle at gmail.com> - Norwegian Nynorsk translation
 Jonas Larsen <jonas at vrt.dk> - Danish translation
 Jörg <vlc-ml at aab.noctis dot de> - VLM seek/show media functions
 Joseph Tulou <brezhoneg1 at yahoo.fr> - small dc1394 patch, image demuxer
@@ -186,6 +187,7 @@ Laurent Mutricy <laurent.mutricy at ecl2005 dot ec-lyon dot fr> - HTTP interface
 Leo Spalteholz <leo dot spalteholz at gmail dot com> - Qt interface design
 Loox Thefuture <loox.thefuture at gmail dot com> - Media key in X11 vout
 Lorena Gomes - Catalan translation
+Luca Barbato <lu_zero -at- gentOo | org> - RTSP client fix
 Ludovic Fauvet <etix # l0cal dot com> - Qt4 patch
 Lukas Durfina <lukas.durfina at gmail.com> - Qt4: full screen controller. Teletext button fix. Various fixes.
 Luqman Hakim <ovdl qt rocketmail dot com> - Indonesian translation
@@ -210,6 +212,7 @@ Matthieu Lochegnies <prof at tocard dot org> - MPEG audio emphasis fix
 Max Rudberg <max_08 at mac.com> - Mac OS X controller art (v0.7.0)
 Md. Rezwan Shahid <rezwan at ankur . org . bd> - Bengali translation
 Meelad Zakaria <meelad at farsiweb dot info> - Persian localisation
+Michael Hanselmann <public at hansmi dot ch> - AirTunes streaming
 Michael Mondragon <mammon at lokmail.net> - ncurses compilation fix
 Michael Ploujnikov <ploujj at gmail dot com> - Spelling fix
 Michał Trzebiatowski <hippie_1968 at hotmail dot com> - Polish translation
