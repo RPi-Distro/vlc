@@ -1,7 +1,7 @@
 vlc (1.0.1-1) unstable; urgency=low
 
   * New upstream bugfix version
-    + Fix interger underflow in Real RTSP (DZC-2009-001, CVE pending)
+    + Fix integer underflow in Real RTSP (DZC-2009-001, CVE pending)
     + Fix crashes in xspf files handler (LP: #365638)
 
   [ Reinhard Tartler ]
