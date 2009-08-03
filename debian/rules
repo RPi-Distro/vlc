@@ -53,7 +53,7 @@ confflags += \
 	--enable-aa \
 	--enable-dvbpsi \
 	--enable-mozilla \
-	--with-mozilla-pkg=libxul-plugin \
+	--with-mozilla-pkg=xulrunner-plugin \
 	--enable-dvb \
 	--enable-ogg \
 	--enable-vorbis \
