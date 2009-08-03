@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: 5bc802ff84d51169df6508f41d2df50d7efef27f $
  *
  * Copyright (C) 1999 Alexandre Julliard
  *

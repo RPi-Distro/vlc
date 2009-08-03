@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
- * $Id: b18914b8c78b6d369f7b2ec8f8093d20471a407a $
+ * $Id: 8c38dba39e8317fc16aebb5e62efeb6c3d39b10b $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -2356,7 +2356,7 @@ static int InputSourceInit( input_thread_t *p_input,
           )
         {   /* host specified -> only localhost is supported */
             static const unsigned localhostLen = 9; /* strlen("localhost") */
-            if (!strncmp( psz_path, "localhost" DIR_SEP, localhostLen + 1))
+            if (!strncmp( psz_path, "localhost/", localhostLen + 1))
                 psz_path += localhostLen;
             else
             {

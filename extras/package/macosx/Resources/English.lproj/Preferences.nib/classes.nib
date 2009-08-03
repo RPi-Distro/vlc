@@ -49,6 +49,7 @@
             ACTIONS =             {
                 audioSettingChanged = id;
                 buttonAction = id;
+                changeFont = id;
                 hotkeySettingChanged = id;
                 inputSettingChanged = id;
                 interfaceSettingChanged = id;
@@ -83,6 +84,7 @@
                 "o_audio_vol_fld" = id;
                 "o_audio_vol_sld" = id;
                 "o_audio_vol_txt" = id;
+                "o_currentlyShownCategoryView" = id;
                 "o_hotkeys_change_btn" = id;
                 "o_hotkeys_change_cancel_btn" = id;
                 "o_hotkeys_change_keys_lbl" = id;
@@ -114,12 +116,15 @@
                 "o_input_skipLoop_pop" = id;
                 "o_input_skipLoop_txt" = id;
                 "o_input_view" = id;
+                "o_intf_appleremote_ckb" = id;
                 "o_intf_art_pop" = id;
                 "o_intf_art_txt" = id;
                 "o_intf_embedded_ckb" = id;
                 "o_intf_fspanel_ckb" = id;
                 "o_intf_lang_pop" = id;
                 "o_intf_lang_txt" = id;
+                "o_intf_mediakeys_bg_ckb" = id;
+                "o_intf_mediakeys_ckb" = id;
                 "o_intf_network_box" = id;
                 "o_intf_view" = id;
                 "o_osd_encoding_pop" = id;

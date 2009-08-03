@@ -2,7 +2,7 @@
  * bookmarks.hpp : bookmarks
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: 223d28177188204863d057e7d675526dd45c024a $
  *
  * Authors: Antoine Lejeune <phytos@via.ecp.fr>
  *

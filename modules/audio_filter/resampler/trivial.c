@@ -2,7 +2,7 @@
  * trivial.c : trivial resampler (skips samples or pads with zeroes)
  *****************************************************************************
  * Copyright (C) 2002, 2006 the VideoLAN team
- * $Id$
+ * $Id: 75586041e7d12fe361eeab406bada93ecb21d993 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * vlm_internal.h: Internal vlm structures
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id$
+ * $Id: a8c72fc714cf289a02ed56ed9e8e0836cb7c772a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

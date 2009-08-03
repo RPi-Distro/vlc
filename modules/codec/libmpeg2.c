@@ -2,7 +2,7 @@
  * libmpeg2.c: mpeg2 video decoder module making use of libmpeg2.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: ad41575e9793ed3771b1388bf1b0cc47b317fc0e $
+ * $Id: 135e0db8f219dbac04623e38aaa8394de0cd0157 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -389,8 +389,14 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
                 if( !p_pic )
                 {
                     Reset( p_dec );
-                    block_Release( p_block );
-                    return NULL;
+
+                    p_pic = DpbNewPicture( p_dec );
+                    if( !p_pic )
+                    {
+                        mpeg2_reset( p_sys->p_mpeg2dec, 1 );
+                        block_Release( p_block );
+                        return NULL;
+                    }
                 }
             }
 
@@ -608,7 +614,7 @@ static void Reset( decoder_t *p_dec )
     decoder_sys_t *p_sys = p_dec->p_sys;
 
     cc_Flush( &p_sys->cc );
-    mpeg2_reset( p_sys->p_mpeg2dec, p_sys->p_info->sequence != NULL );
+    mpeg2_reset( p_sys->p_mpeg2dec, 0 );
     DpbClean( p_dec );
 }
 

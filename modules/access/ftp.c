@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006 Rémi Denis-Courmont
- * $Id: b3dc2c911bb1a7aa9a1438c121d03c7ac9641a84 $
+ * $Id: dffea0dd7a0cad40ab772d5cbb55146d72aefe40 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr> - original code
  *          Rémi Denis-Courmont <rem # videolan.org> - EPSV support
@@ -302,12 +302,20 @@ static int parseURL( vlc_url_t *url, const char *path )
     if( url->i_port <= 0 )
         url->i_port = IPPORT_FTP; /* default port */
 
-    /* FTP URLs are relative to user's default directory (RFC1738)
+    /* FTP URLs are relative to user's default directory (RFC1738 §3.2)
     For absolute path use ftp://foo.bar//usr/local/etc/filename */
-
+    /* FIXME: we should issue a series of CWD, one per slash */
     if( url->psz_path && *url->psz_path == '/' )
         url->psz_path++;
 
+    char *type = strstr( url->psz_path, ";type=" );
+    if( type )
+    {
+        *type = '\0';
+        if( strchr( "iI", type[6] ) == NULL )
+            return VLC_EGENERIC; /* ASCII and directory not supported */
+    }
+    decode_URI( url->psz_path );
     return VLC_SUCCESS;
 }
 

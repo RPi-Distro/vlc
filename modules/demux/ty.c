@@ -6,7 +6,7 @@
  * based on code by Christopher Wingert for tivo-mplayer
  * tivo(at)wingert.org, February 2003
  *
- * $Id$
+ * $Id: 8ead0bf3fa4aab9ab568edc54086657f4cc4bc44 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -607,7 +607,7 @@ static int check_sync_pes( demux_t *p_demux, block_t *p_block,
         if( offset < 0 )
         {
             /* no header found, fake some 00's (this works, believe me) */
-            memset( p_sys->pes_buffer, 4, 0 );
+            memset( p_sys->pes_buffer, 0, 4 );
             p_sys->i_pes_buf_cnt = 4;
             if( rec_len > 4 )
                 msg_Err( p_demux, "PES header not found in record of %d bytes!",

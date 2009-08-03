@@ -62,9 +62,11 @@ am__aclocal_m4_deps = $(top_srcdir)/m4/flags.m4 \
 	$(top_srcdir)/m4/gettext.m4 $(top_srcdir)/m4/iconv.m4 \
 	$(top_srcdir)/m4/intlmacosx.m4 $(top_srcdir)/m4/lib-ld.m4 \
 	$(top_srcdir)/m4/lib-link.m4 $(top_srcdir)/m4/lib-prefix.m4 \
-	$(top_srcdir)/m4/nls.m4 $(top_srcdir)/m4/po.m4 \
-	$(top_srcdir)/m4/progtest.m4 $(top_srcdir)/m4/vlc.m4 \
-	$(top_srcdir)/configure.ac
+	$(top_srcdir)/m4/libtool.m4 $(top_srcdir)/m4/ltoptions.m4 \
+	$(top_srcdir)/m4/ltsugar.m4 $(top_srcdir)/m4/ltversion.m4 \
+	$(top_srcdir)/m4/lt~obsolete.m4 $(top_srcdir)/m4/nls.m4 \
+	$(top_srcdir)/m4/po.m4 $(top_srcdir)/m4/progtest.m4 \
+	$(top_srcdir)/m4/vlc.m4 $(top_srcdir)/configure.ac
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
 	$(ACLOCAL_M4)
 am__CONFIG_DISTCLEAN_FILES = config.status config.cache config.log \
@@ -158,13 +160,14 @@ DIRECTFB_CONFIG = @DIRECTFB_CONFIG@
 DIRECTFB_LIBS = @DIRECTFB_LIBS@
 DLLTOOL = @DLLTOOL@
 DSYMUTIL = @DSYMUTIL@
+DUMPBIN = @DUMPBIN@
 DVDNAV_CONFIG = @DVDNAV_CONFIG@
-ECHO = @ECHO@
 ECHO_C = @ECHO_C@
 ECHO_N = @ECHO_N@
 ECHO_T = @ECHO_T@
 EGREP = @EGREP@
 EXEEXT = @EXEEXT@
+FGREP = @FGREP@
 FILE_LIBVLCCORE_DLL = @FILE_LIBVLCCORE_DLL@
 FILE_LIBVLC_DLL = @FILE_LIBVLC_DLL@
 FLUIDSYNTH_CFLAGS = @FLUIDSYNTH_CFLAGS@
@@ -223,6 +226,7 @@ LIBS = @LIBS@
 LIBTOOL = @LIBTOOL@
 LIBV4L2_CFLAGS = @LIBV4L2_CFLAGS@
 LIBV4L2_LIBS = @LIBV4L2_LIBS@
+LIPO = @LIPO@
 LN_S = @LN_S@
 LTLIBICONV = @LTLIBICONV@
 LTLIBINTL = @LTLIBINTL@
@@ -504,6 +508,7 @@ MSGFMT_015 = @MSGFMT_015@
 MSGMERGE = @MSGMERGE@
 MTP_CFLAGS = @MTP_CFLAGS@
 MTP_LIBS = @MTP_LIBS@
+NM = @NM@
 NMEDIT = @NMEDIT@
 NOTIFY_CFLAGS = @NOTIFY_CFLAGS@
 NOTIFY_LIBS = @NOTIFY_LIBS@
@@ -515,6 +520,8 @@ OBJDUMP = @OBJDUMP@
 OBJEXT = @OBJEXT@
 OPENCV_CFLAGS = @OPENCV_CFLAGS@
 OPENCV_LIBS = @OPENCV_LIBS@
+OTOOL = @OTOOL@
+OTOOL64 = @OTOOL64@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -604,6 +611,7 @@ abs_top_builddir = @abs_top_builddir@
 abs_top_srcdir = @abs_top_srcdir@
 ac_ct_CC = @ac_ct_CC@
 ac_ct_CXX = @ac_ct_CXX@
+ac_ct_DUMPBIN = @ac_ct_DUMPBIN@
 ac_ct_OBJC = @ac_ct_OBJC@
 am__include = @am__include@
 am__leading_dot = @am__leading_dot@
@@ -635,6 +643,7 @@ libdir = @libdir@
 libexecdir = @libexecdir@
 localedir = @localedir@
 localstatedir = @localstatedir@
+lt_ECHO = @lt_ECHO@
 mandir = @mandir@
 mkdir_p = @mkdir_p@
 oldincludedir = @oldincludedir@
@@ -898,7 +907,7 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--enable-fast-install \
 	--disable-dbus \
 	--disable-dvd --disable-mad --disable-libmpeg2 \
-	--disable-ffmpeg --disable-faad --disable-wxwidgets --disable-skins2 \
+	--disable-ffmpeg --disable-faad --disable-skins2 \
 	--disable-live555 \
 	--disable-fribidi --disable-glx
 
@@ -926,7 +935,7 @@ MAINTAINERCLEANFILES = ChangeLog
 ###############################################################################
 # Building aliases
 ###############################################################################
-ALL_ALIASES = cvlc rvlc svlc wxvlc qvlc nvlc mvlc
+ALL_ALIASES = cvlc rvlc svlc qvlc nvlc mvlc
 bin_SCRIPTS = $(ALIASES)
 EXTRA_SCRIPTS = $(ALL_ALIASES)
 MKALIAS = bindir="$(bindir)" transform="$(transform)" program_prefix="$(program_prefix)" program_suffix="$(program_suffix)" $(top_srcdir)/make-alias $@
@@ -1461,7 +1470,7 @@ vlc-config.in: vlc-config.in.in
 	./config.status --recheck
 	touch $@
 
-# Shortcut for developpers to rebuild the core (libvlc + vlc)
+# Shortcut for developers to rebuild the core (libvlc + vlc)
 # Don't use it if you don't know what it is about.
 # Don't complain if it doesn't work. -- Courmisch
 libvlc:
@@ -1509,9 +1518,6 @@ rvlc: make-alias Makefile
 
 svlc: make-alias Makefile
 	$(MKALIAS) skins2
-
-wxvlc: make-alias Makefile
-	$(MKALIAS) wx
 
 qvlc: make-alias Makefile
 	$(MKALIAS) qt4
@@ -1966,26 +1972,17 @@ package-win-common-strip: package-win32-base-debug
 	for i in "" vlc-$(VERSION)/*$(LIBEXT) ; \
       do if test -n "$$i" ; then \
       $(OBJCOPY) --only-keep-debug "$$i" "$$i.dbg"; \
-      $(OBJCOPY) --strip-debug "$$i" ; \
+      $(OBJCOPY) --strip-all "$$i" ; \
       $(OBJCOPY) --add-gnu-debuglink="$$i.dbg" "$$i" ; \
 	  mv "$$i.dbg" "$(win32_debugdir)"; \
     fi; done
-
-@BUILD_MOZILLA_TRUE@	$(OBJCOPY) --only-keep-debug "$(npvlc)" "$(npvlc).dbg"
-@BUILD_MOZILLA_TRUE@	$(OBJCOPY) --strip-debug "$(npvlc)"
-@BUILD_MOZILLA_TRUE@	$(OBJCOPY) --add-gnu-debuglink="$(npvlc).dbg" "$(npvlc)"
-@BUILD_MOZILLA_TRUE@	mv "$(npvlc).dbg" "$(win32_debugdir)"
-@BUILD_ACTIVEX_TRUE@	$(OBJCOPY) --only-keep-debug "$(axvlc)" "$(axvlc).dbg"
-@BUILD_ACTIVEX_TRUE@	$(OBJCOPY) --strip-debug "$(axvlc)"
-@BUILD_ACTIVEX_TRUE@	$(OBJCOPY) --add-gnu-debuglink="$(axvlc).dbg" "$(axvlc)"
-@BUILD_ACTIVEX_TRUE@	mv "$(axvlc).dbg" "$(win32_debugdir)"
 
 #strip all plugins dll
 package-win32-base: package-win-common-strip
 	for i in "" $(win32_destdir)/plugins/*$(LIBEXT) ; \
 	  do if test -n "$$i" ; then \
 	  $(OBJCOPY) --only-keep-debug "$$i" "$$i.dbg"; \
-	  $(OBJCOPY) --strip-debug "$$i" ; \
+	  $(OBJCOPY) --strip-all "$$i" ; \
 	  $(OBJCOPY) --add-gnu-debuglink="$$i.dbg" "$$i" ; \
 	  mv "$$i.dbg" "$(win32_debugdir)"; \
 	fi ; done
@@ -2203,6 +2200,7 @@ package-macosx-plugin:
 # Create Installer
 @BUILD_MOZILLA_TRUE@	rm -rf "$(top_builddir)/macosx-plugin-instdata/"; true
 @BUILD_MOZILLA_TRUE@	mkdir -p "$(top_builddir)/macosx-plugin-instdata"
+@BUILD_MOZILLA_TRUE@	rm -f "$(top_builddir)/projects/mozilla/VLC Plugin.plugin/Contents/MacOS/modules/libmacosx_plugin.dylib" 
 @BUILD_MOZILLA_TRUE@	cp -R "$(top_builddir)/projects/mozilla/VLC Plugin.plugin" "$(top_builddir)/macosx-plugin-instdata"
 @BUILD_MOZILLA_TRUE@	rm -rf "$(top_builddir)/VLC Internet Plug-In.pkg"
 @BUILD_MOZILLA_TRUE@	export PACKAGEMAKER=

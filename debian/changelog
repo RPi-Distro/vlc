@@ -1,3 +1,20 @@
+vlc (1.0.1-1) unstable; urgency=low
+
+  * New upstream bugfix version
+    + Fix interger underflow in Real RTSP (DZC-2009-001, CVE pending)
+    + Fix crashes in xspf files handler (LP: #365638)
+
+  [ Reinhard Tartler ]
+  * Add versioned build dependency on libschroedinger-dev
+
+  [ Christophe Mutricy ]
+  * Really build altivec-free libvlccore (Closes: #523035)
+  * Depends on libdvbpsi5-dev and protect against future renaming of 
+    libdvbpsi development package
+  * Remove patches applied upstream
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 29 Jul 2009 00:21:39 +0200
+
 vlc (1.0.0-1ubuntu1) karmic; urgency=low
 
   * Remaining changes to debian:

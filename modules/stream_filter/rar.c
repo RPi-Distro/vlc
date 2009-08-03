@@ -2,7 +2,7 @@
  * rar.c: uncompressed RAR stream filter (only the biggest file is extracted)
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id$
+ * $Id: a5fd8291f8bc2b4597fce9359dbf24b4fd2c68b2 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

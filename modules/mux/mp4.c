@@ -2,7 +2,7 @@
  * mp4.c: mp4/mov muxer
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2003, 2006 the VideoLAN team
- * $Id$
+ * $Id: 3001fbd8659bab3e7ec1b551b91cb5e314ebcdef $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin at videolan dot org>
@@ -400,6 +400,7 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
         case VLC_FOURCC( 'm', 'p', '4', 'a' ):
         case VLC_FOURCC( 'm', 'p', '4', 'v' ):
         case VLC_FOURCC( 'm', 'p', 'g', 'a' ):
+        case VLC_FOURCC( 'm', 'p', '3', ' ' ):
         case VLC_FOURCC( 'm', 'p', 'g', 'v' ):
         case VLC_FOURCC( 'M', 'J', 'P', 'G' ):
         case VLC_FOURCC( 'm', 'j', 'p', 'b' ):
@@ -793,6 +794,7 @@ static bo_t *GetESDS( mp4_stream_t *p_stream )
             i_object_type_indication = 0x40;
             break;
         case VLC_FOURCC( 'm', 'p', 'g', 'a' ):
+        case VLC_FOURCC( 'm', 'p', '3', ' ' ):
             i_object_type_indication =
                 p_stream->fmt.audio.i_rate < 32000 ? 0x69 : 0x6b;
             break;
@@ -1105,6 +1107,7 @@ static bo_t *GetSounBox( sout_mux_t *p_mux, mp4_stream_t *p_stream )
         break;
 
     case VLC_FOURCC('m','p','g','a'):
+    case VLC_FOURCC('m','p','3',' '):
         if( p_sys->b_mov )
             memcpy( fcc, ".mp3", 4 );
         else

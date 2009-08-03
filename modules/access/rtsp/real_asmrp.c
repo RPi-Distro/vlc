@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id$
+ * $Id: 057e230e7823400e3b022b1621aa8384a4e4671f $
  *
  * a parser for real's asm rules
  *

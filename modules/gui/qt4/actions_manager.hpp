@@ -2,7 +2,7 @@
  * Controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id$
+ * $Id: d42519e1726776e8d460280251e45df242006918 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *

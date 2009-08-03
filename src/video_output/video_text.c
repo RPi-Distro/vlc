@@ -2,7 +2,7 @@
  * video_text.c : text manipulation functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id$
+ * $Id: d0e7a0ac3c7ca4e8faea8c94bf2f1891c5a2aa94 $
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

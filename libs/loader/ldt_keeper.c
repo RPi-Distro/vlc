@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: 4bf5d04bd26ae2f0135df397c2545d6d4e5db8ed $
  *
  * Copyright 1993 Robert J. Amstadt
  * Copyright 1995 Alexandre Julliard

@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: a550ccac2dd2fd8590ac43a516442be6b702f453 $
+ * $Id: 826dbe140d051b4a11371f1d370788274cf8bc3a $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -353,6 +353,7 @@ struct intf_sys_t
 - (id)controllerWindow;
 - (id)voutMenu;
 - (id)eyeTVController;
+- (id)appleRemoteController;
 - (void)applicationWillTerminate:(NSNotification *)notification;
 - (NSString *)localizedString:(const char *)psz;
 - (char *)delocalizeString:(NSString *)psz;
@@ -424,9 +425,13 @@ struct intf_sys_t
 @interface VLCApplication : NSApplication
 {
     BOOL b_justJumped;
+    BOOL b_mediaKeySupport;
+    BOOL b_activeInBackground;
+    BOOL b_active;
 }
 
-- (void)sendEvent: (NSEvent*)event;
+- (void)coreChangedMediaKeySupportSetting: (NSNotification *)o_notification;
+//- (void)sendEvent: (NSEvent*)event;
 - (void)resetJump;
 
 @end

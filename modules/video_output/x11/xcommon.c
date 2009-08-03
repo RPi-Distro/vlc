@@ -2,7 +2,7 @@
  * xcommon.c: Functions common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: de1c3bfcfe58ff5c68a870cd669dab31adb0d21e $
+ * $Id: 61ef9791067836781c239aa8ba35f2860718fbce $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -174,7 +174,6 @@ int Activate ( vlc_object_t *p_this )
 {
     vout_thread_t *p_vout = (vout_thread_t *)p_this;
     char *        psz_display;
-    vlc_value_t   val;
 #if defined(MODULE_NAME_IS_xvmc)
     char *psz_value;
 #endif
@@ -443,8 +442,7 @@ int Activate ( vlc_object_t *p_this )
 
     /* Variable to indicate if the window should be on top of others */
     /* Trigger a callback right now */
-    var_Get( p_vout, "video-on-top", &val );
-    var_Set( p_vout, "video-on-top", val );
+    var_TriggerCallback( p_vout, "video-on-top" );
 
     return VLC_SUCCESS;
 }
@@ -2956,9 +2954,8 @@ IMAGE_TYPE * CreateShmImage( vout_thread_t *p_vout,
         return NULL;
     }
 
-    /* Allocate shared memory segment - 0776 set the access permission
-     * rights (like umask), they are not yet supported by all X servers */
-    p_shm->shmid = shmget( IPC_PRIVATE, DATA_SIZE(p_image), IPC_CREAT | 0776 );
+    /* Allocate shared memory segment. */
+    p_shm->shmid = shmget( IPC_PRIVATE, DATA_SIZE(p_image), IPC_CREAT | 0600 );
     if( p_shm->shmid < 0 )
     {
         msg_Err( p_vout, "cannot allocate shared image data (%m)" );

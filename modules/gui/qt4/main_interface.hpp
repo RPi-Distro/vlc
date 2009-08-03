@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: d522a8b7ae7719e85745307e42e66c9a31cf7fce $
+ * $Id: 292a18c015f19f45c2cd7589358b29b8c77289ce $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

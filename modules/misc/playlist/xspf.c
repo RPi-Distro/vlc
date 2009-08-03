@@ -2,7 +2,7 @@
  * xspf.c : XSPF playlist export functions
  ******************************************************************************
  * Copyright (C) 2006-2009 the VideoLAN team
- * $Id: 6765adbd9d1d4b1fc14156736870ce6286b61a4a $
+ * $Id: 923d57b5ac42bdc778839f7b627e4b94fb0e2ac1 $
  *
  * Authors: Daniel Stränger <vlc at schmaller dot de>
  *          Yoann Peronneau <yoann@videolan.org>
@@ -263,10 +263,11 @@ static void xspf_extension_item( playlist_item_t *p_item, FILE *p_file,
     if( p_item->i_children >= 0 )
     {
         int i;
-        char *psz_temp;
-        psz_temp = convert_xml_special_chars( p_item->p_input->psz_name );
+        char *psz_temp = NULL;
+        if( p_item->p_input->psz_name )
+            psz_temp = convert_xml_special_chars( p_item->p_input->psz_name );
         fprintf( p_file, "\t\t<vlc:node title=\"%s\">\n",
-                 *psz_temp ? psz_temp : "" );
+                 psz_temp ? psz_temp : "" );
         free( psz_temp );
 
         for( i = 0; i < p_item->i_children; i++ )

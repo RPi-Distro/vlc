@@ -2,7 +2,7 @@
  * vlc_es_out.h: es_out (demuxer output) descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id$
+ * $Id: 043e5579d86e61b3c9be1eae090cd894f4b0cc0c $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

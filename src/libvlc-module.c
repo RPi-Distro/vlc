@@ -2,7 +2,7 @@
  * libvlc.h: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: dd1fc6ec069060b9b8f93183258099717b672af9 $
+ * $Id: ffa9dc7eccccd9c32ad8b72c7252312915d0f543 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>

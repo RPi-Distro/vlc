@@ -2,7 +2,7 @@
  * podcast_configuration.hpp: Podcast configuration dialog
  ****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: 2779c564ea97b052fdc4806ad7a579b635de9fe6 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan dot org>
  *

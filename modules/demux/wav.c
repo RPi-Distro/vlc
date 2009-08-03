@@ -2,7 +2,7 @@
  * wav.c : wav file input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 6106347e1a87b069fa269d0006018b3736d56f89 $
+ * $Id: 988b305e7d2ab8de948453807dbba6bef2c55615 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

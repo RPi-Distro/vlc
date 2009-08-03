@@ -2,7 +2,7 @@
  * dolby.c : simple decoder for dolby surround encoded streams
  *****************************************************************************
  * Copyright (C) 2005, 2006 the VideoLAN team
- * $Id$
+ * $Id: 3b54cae2c2105a372943cfe7ce5b3b98f599b306 $
  *
  * Authors: Boris Dorès <babal@via.ecp.fr>
  *

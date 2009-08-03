@@ -2,7 +2,7 @@
  * block.c: Data blocks management functions
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id$
+ * $Id: 099c31e226f403a3fe1dd552c37a44d56427b696 $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *

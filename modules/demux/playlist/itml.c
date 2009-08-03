@@ -2,7 +2,7 @@
  * itml.c : iTunes Music Library import functions
  *******************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: 9022c568a02cf1de2120ef4c0a92bd21c86dedb5 $
  *
  * Authors: Yoann Peronneau <yoann@videolan.org>
  *
@@ -276,6 +276,7 @@ static bool parse_dict COMPLEX_INTERFACE
                 /* special case: key */
                 if( !strcmp( p_handler->name, "key" ) )
                 {
+                    free( psz_key );
                     psz_key = strdup( psz_value );
                 }
                 /* call the simple handler */

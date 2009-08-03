@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 23008632f9550dd8d6e803a2acbdb424354627bb $
+ * $Id: 224537476d948dfd414bcf77d640c011692fc971 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -313,7 +313,7 @@ static VLCMain *_o_sharedMainInstance = nil;
     p_intf = NULL;
 
     o_msg_lock = [[NSLock alloc] init];
-    o_msg_arr = [[NSMutableArray arrayWithCapacity: 200] retain];
+    o_msg_arr = [[NSMutableArray arrayWithCapacity: 600] retain];
     /* subscribe to LibVLC's debug messages as early as possible (for us) */
     [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(libvlcMessageReceived:) name: @"VLCCoreMessageReceived" object: nil];
     
@@ -1477,6 +1477,11 @@ static unsigned int VLCModifiersToCocoa( unsigned int i_key )
         return o_eyetv;
 
     return nil;
+}
+
+- (id)appleRemoteController
+{
+	return o_remote;
 }
 
 #pragma mark -
@@ -2818,50 +2823,83 @@ end:
 
 @implementation VLCApplication
 
+- (void)awakeFromNib
+{
+	b_active = b_mediaKeySupport = config_GetInt( VLCIntf, "macosx-mediakeys" );
+    b_activeInBackground = config_GetInt( VLCIntf, "macosx-mediakeys-background" );
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(coreChangedMediaKeySupportSetting:) name: @"VLCMediaKeySupportSettingChanged" object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(appGotActiveOrInactive:) name: @"NSApplicationDidBecomeActiveNotification" object: nil];
+    [[NSNotificationCenter defaultCenter] addObserver: self selector: @selector(appGotActiveOrInactive:) name: @"NSApplicationWillResignActiveNotification" object: nil];
+}
+
+- (void)dealloc
+{
+    [[NSNotificationCenter defaultCenter] removeObserver: self];
+    [super dealloc];
+}
+
+- (void)appGotActiveOrInactive: (NSNotification *)o_notification
+{
+    if(( [[o_notification name] isEqualToString: @"NSApplicationWillResignActiveNotification"] && !b_activeInBackground ) || !b_mediaKeySupport)
+        b_active = NO;
+    else
+        b_active = YES;
+}
+
+- (void)coreChangedMediaKeySupportSetting: (NSNotification *)o_notification
+{
+    b_active = b_mediaKeySupport = config_GetInt( VLCIntf, "macosx-mediakeys" );
+    b_activeInBackground = config_GetInt( VLCIntf, "macosx-mediakeys-background" );
+}
+
+
 - (void)sendEvent: (NSEvent*)event
 {
-    if( [event type] == NSSystemDefined && [event subtype] == 8 )
+    if( b_active )
 	{
-		int keyCode = (([event data1] & 0xFFFF0000) >> 16);
-		int keyFlags = ([event data1] & 0x0000FFFF);
-		int keyState = (((keyFlags & 0xFF00) >> 8)) == 0xA;
-        int keyRepeat = (keyFlags & 0x1);
-
-        if( keyCode == NX_KEYTYPE_PLAY && keyState == 0 )
-            var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_PLAY_PAUSE );
-
-        if( keyCode == NX_KEYTYPE_FAST && !b_justJumped )
+        if( [event type] == NSSystemDefined && [event subtype] == 8 )
         {
-            if( keyState == 0 && keyRepeat == 0 )
+            int keyCode = (([event data1] & 0xFFFF0000) >> 16);
+            int keyFlags = ([event data1] & 0x0000FFFF);
+            int keyState = (((keyFlags & 0xFF00) >> 8)) == 0xA;
+            int keyRepeat = (keyFlags & 0x1);
+
+            if( keyCode == NX_KEYTYPE_PLAY && keyState == 0 )
+                var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_PLAY_PAUSE );
+
+            if( keyCode == NX_KEYTYPE_FAST && !b_justJumped )
             {
-                    var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_NEXT );
+                if( keyState == 0 && keyRepeat == 0 )
+                {
+                        var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_NEXT );
+                }
+                else if( keyRepeat == 1 )
+                {
+                    var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_JUMP_FORWARD_SHORT );
+                    b_justJumped = YES;
+                    [self performSelector:@selector(resetJump)
+                               withObject: NULL
+                               afterDelay:0.25];
+                }
             }
-            else if( keyRepeat == 1 )
+
+            if( keyCode == NX_KEYTYPE_REWIND && !b_justJumped )
             {
-                var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_JUMP_FORWARD_SHORT );
-                b_justJumped = YES;
-                [self performSelector:@selector(resetJump)
-                           withObject: NULL
-                           afterDelay:0.25];
+                if( keyState == 0 && keyRepeat == 0 )
+                {
+                    var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_PREV );
+                }
+                else if( keyRepeat == 1 )
+                {
+                    var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_JUMP_BACKWARD_SHORT );
+                    b_justJumped = YES;
+                    [self performSelector:@selector(resetJump)
+                               withObject: NULL
+                               afterDelay:0.25];
+                }
             }
         }
-
-        if( keyCode == NX_KEYTYPE_REWIND && !b_justJumped )
-        {
-            if( keyState == 0 && keyRepeat == 0 )
-            {
-                var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_PREV );
-            }
-            else if( keyRepeat == 1 )
-            {
-                var_SetInteger( VLCIntf->p_libvlc, "key-action", ACTIONID_JUMP_BACKWARD_SHORT );
-                b_justJumped = YES;
-                [self performSelector:@selector(resetJump)
-                           withObject: NULL
-                           afterDelay:0.25];
-            }
-        }
-	}
+    }
 	[super sendEvent: event];
 }
 

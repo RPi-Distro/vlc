@@ -1,4 +1,4 @@
-MOSTLYCLEANFILES = $(nobase_vlcdata_DATA)
+CLEANFILES = skins2/default.vlt
 
 nobase_dist_data_DATA = applications/vlc.desktop
 
@@ -14,12 +14,10 @@ nobase_dist_vlcdata_SCRIPTS = \
 	utils/video-vlc-default.sh \
 	$(NULL)
 
-nobase_vlcdata_DATA = $(NULL)
-
 EXTRA_DIST = \
+	$(skins2_default_vlt_FILES) \
 	$(DIST_rsrc) \
 	$(DIST_pda) \
-	$(skins2_default_vlt_FILES) \
 	$(DIST_skins2) \
 	$(DIST_http) \
 	$(DIST_http_lua) \
@@ -28,6 +26,7 @@ EXTRA_DIST = \
 	$(DIST_mozilla) \
 	$(DIST_maemo)
 
+nobase_vlcdata_DATA =
 if BUILD_SKINS
 nobase_vlcdata_DATA += skins2/default.vlt
 nobase_vlcdata_DATA += $(DIST_skins2)

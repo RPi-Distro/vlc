@@ -2,7 +2,7 @@
  * media_player.c: Libvlc API Media Instance management functions
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: d8918c20ac6fe30fe6874fd2f4db8d934434382f $
+ * $Id: 477b77c0204e310f0742f4b77e54d27ad780d424 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -552,12 +552,14 @@ libvlc_media_player_get_media(
                             libvlc_media_player_t *p_mi,
                             libvlc_exception_t *p_e )
 {
+    libvlc_media_t *p_m;
     VLC_UNUSED(p_e);
 
-    if( !p_mi->p_md )
-        return NULL;
-
-    libvlc_media_retain( p_mi->p_md );
+    vlc_mutex_lock( &p_mi->object_lock );
+    p_m = p_mi->p_md;
+    if( p_m )
+        libvlc_media_retain( p_mi->p_md );
+    vlc_mutex_unlock( &p_mi->object_lock );
     return p_mi->p_md;
 }
 

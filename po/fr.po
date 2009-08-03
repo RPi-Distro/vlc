@@ -3,7 +3,7 @@
 # $Id$
 #
 # Translation updated by
-#  Éric Lassauge <lassauge {AT} users {dot} sourceforge {dot} net> - June 2009
+#  Éric Lassauge <lassauge {AT} users {dot} sourceforge {dot} net> - July 2009
 # Previous Translators
 #  Samuel Hocevar <sam@zoy.org>
 #  Jean-Pierre Kuypers <Kuypers@sri.ucl.ac.be>
@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: fr\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2009-07-06 02:14+0200\n"
-"PO-Revision-Date: 2009-06-18 17:19+0100\n"
+"POT-Creation-Date: 2009-07-27 23:32+0100\n"
+"PO-Revision-Date: 2009-07-07 14:30+0100\n"
 "Last-Translator: Éric lassauge <<lassauge {AT} users {dot} sourceforge {dot} "
 "net>>\n"
 "Language-Team: French <fr@li.org>\n"
@@ -44,7 +44,7 @@ msgstr "Préférences de VLC"
 msgid "Select \"Advanced Options\" to see all options."
 msgstr "Cliquez sur « Options avancées » pour voir toutes les options."
 
-#: include/vlc_config_cat.h:37 modules/gui/macosx/simple_prefs.m:174
+#: include/vlc_config_cat.h:37 modules/gui/macosx/simple_prefs.m:175
 #: modules/gui/qt4/components/simple_preferences.cpp:77
 #: modules/gui/qt4/menus.cpp:967 modules/misc/dummy/dummy.c:67
 msgid "Interface"
@@ -75,14 +75,14 @@ msgid "Settings for VLC's control interfaces"
 msgstr "Paramètres des interfaces de contrôle"
 
 #: include/vlc_config_cat.h:48 include/vlc_config_cat.h:49
-#: modules/gui/macosx/simple_prefs.m:194
+#: modules/gui/macosx/simple_prefs.m:195
 msgid "Hotkeys settings"
 msgstr "Paramètres des raccourcis"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2657 src/input/es_out.c:2691
 #: src/libvlc-module.c:1508 modules/gui/beos/InterfaceWindow.cpp:283
 #: modules/gui/macosx/intf.m:659 modules/gui/macosx/output.m:170
-#: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:178
+#: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:179
 #: modules/gui/macosx/wizard.m:380
 #: modules/gui/qt4/components/info_panels.cpp:517
 #: modules/gui/qt4/components/simple_preferences.cpp:79
@@ -137,7 +137,7 @@ msgstr "Paramètres et modules audio divers."
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2660 src/input/es_out.c:2740
 #: src/libvlc-module.c:1561 modules/gui/macosx/intf.m:672
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:103
-#: modules/gui/macosx/simple_prefs.m:182 modules/gui/macosx/wizard.m:381
+#: modules/gui/macosx/simple_prefs.m:183 modules/gui/macosx/wizard.m:381
 #: modules/gui/qt4/components/info_panels.cpp:518
 #: modules/gui/qt4/components/simple_preferences.cpp:80
 #: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:291
@@ -247,7 +247,7 @@ msgstr "Général lecture"
 
 #: include/vlc_config_cat.h:121
 msgid "General input settings. Use with care..."
-msgstr "Réglages de lecture. À utiliser avec précaution."
+msgstr "Réglages de lecture. À utiliser avec précaution…"
 
 #: include/vlc_config_cat.h:124 src/libvlc-module.c:1870
 msgid "Stream output"
@@ -424,7 +424,7 @@ msgid "Advanced settings"
 msgstr "Options avancées"
 
 #: include/vlc_config_cat.h:198 modules/gui/macosx/open.m:173
-#: modules/gui/macosx/open.m:447 modules/gui/macosx/simple_prefs.m:253
+#: modules/gui/macosx/open.m:447 modules/gui/macosx/simple_prefs.m:254
 #: modules/gui/pda/pda_interface.c:546 modules/gui/qt4/ui/sprefs_input.h:240
 msgid "Network"
 msgstr "Réseau"
@@ -543,9 +543,9 @@ msgstr "À &propos"
 #: modules/gui/macosx/embeddedwindow.m:67
 #: modules/gui/macosx/embeddedwindow.m:157 modules/gui/macosx/intf.m:595
 #: modules/gui/macosx/intf.m:640 modules/gui/macosx/intf.m:727
-#: modules/gui/macosx/intf.m:734 modules/gui/macosx/intf.m:1985
-#: modules/gui/macosx/intf.m:1986 modules/gui/macosx/intf.m:1987
-#: modules/gui/macosx/intf.m:1988 modules/gui/macosx/playlist.m:438
+#: modules/gui/macosx/intf.m:734 modules/gui/macosx/intf.m:1990
+#: modules/gui/macosx/intf.m:1991 modules/gui/macosx/intf.m:1992
+#: modules/gui/macosx/intf.m:1993 modules/gui/macosx/playlist.m:438
 #: modules/gui/pda/pda_interface.c:260 modules/gui/pda/pda_interface.c:261
 #: modules/gui/qt4/components/controller.hpp:101 modules/gui/qt4/menus.cpp:730
 #: modules/gui/qt4/ui/open.h:275
@@ -874,23 +874,23 @@ msgstr "Dolby Surround"
 msgid "Reverse stereo"
 msgstr "Stéréo inversée"
 
-#: src/config/file.c:599
+#: src/config/file.c:605
 msgid "key"
 msgstr "Touche"
 
-#: src/config/file.c:608
+#: src/config/file.c:614
 msgid "boolean"
 msgstr "Booléen"
 
-#: src/config/file.c:608 src/libvlc.c:1649
+#: src/config/file.c:614 src/libvlc.c:1650
 msgid "integer"
 msgstr "Entier"
 
-#: src/config/file.c:617 src/libvlc.c:1678
+#: src/config/file.c:623 src/libvlc.c:1679
 msgid "float"
 msgstr "Flottant"
 
-#: src/config/file.c:640 src/libvlc.c:1628
+#: src/config/file.c:646 src/libvlc.c:1629
 msgid "string"
 msgstr "Chaîne"
 
@@ -907,12 +907,12 @@ msgstr "%s : l’option « %s » est ambiguë\n"
 #: src/extras/getopt.c:659
 #, c-format
 msgid "%s: option `--%s' doesn't allow an argument\n"
-msgstr "%s : l’option « --%s » n’accepte pas d’arguments\n"
+msgstr "%s : l’option « --%s » n’accepte pas d’argument\n"
 
 #: src/extras/getopt.c:664
 #, c-format
 msgid "%s: option `%c%s' doesn't allow an argument\n"
-msgstr "%s : l’option « %c%s » n’accepte pas d’arguments\n"
+msgstr "%s : l’option « %c%s » n’accepte pas d’argument\n"
 
 #: src/extras/getopt.c:682 src/extras/getopt.c:858
 #, c-format
@@ -1040,7 +1040,7 @@ msgstr "Codec "
 
 #: src/input/es_out.c:2681 src/input/meta.c:50 src/libvlc-module.c:201
 #: modules/gui/beos/InterfaceWindow.cpp:279
-#: modules/gui/macosx/simple_prefs.m:263
+#: modules/gui/macosx/simple_prefs.m:264
 #: modules/gui/qt4/ui/sprefs_interface.h:314
 msgid "Language"
 msgstr "Langue "
@@ -1292,7 +1292,7 @@ msgstr "Mouvements de la souris"
 msgid "C"
 msgstr "FR"
 
-#: src/libvlc.c:1168
+#: src/libvlc.c:1169
 msgid ""
 "Running vlc with the default interface. Use 'cvlc' to use vlc without "
 "interface."
@@ -1300,36 +1300,36 @@ msgstr ""
 "Lancement de vlc avec l'interface par défaut. Utilisez « cvlc » pour démarrer "
 "VLC sans interface."
 
-#: src/libvlc.c:1345
+#: src/libvlc.c:1346
 msgid "To get exhaustive help, use '-H'."
-msgstr "Pour une aide exhaustive, utiliser « -H »."
+msgstr "Pour une aide exhaustive, utilisez « -H »."
 
-#: src/libvlc.c:1693
+#: src/libvlc.c:1694
 msgid " (default enabled)"
 msgstr " (activé par défaut)"
 
-#: src/libvlc.c:1694
+#: src/libvlc.c:1695
 msgid " (default disabled)"
 msgstr " (désactivé par défaut)"
 
-#: src/libvlc.c:1853 src/libvlc.c:1856 src/libvlc.c:1864 src/libvlc.c:1869
+#: src/libvlc.c:1854 src/libvlc.c:1857 src/libvlc.c:1865 src/libvlc.c:1870
 msgid "Note:"
 msgstr "Note :"
 
-#: src/libvlc.c:1854 src/libvlc.c:1857
+#: src/libvlc.c:1855 src/libvlc.c:1858
 msgid "add --advanced to your command line to see advanced options."
 msgstr ""
 "Ajoutez « --advanced » à votre ligne de commande pour voir les options "
 "avancées."
 
-#: src/libvlc.c:1865 src/libvlc.c:1870
+#: src/libvlc.c:1866 src/libvlc.c:1871
 #, c-format
 msgid ""
 "%d module(s) were not displayed because they only have advanced options.\n"
 msgstr ""
 "%d module(s) ne sont pas affichés car ils n'ont que des options avancées.\n"
 
-#: src/libvlc.c:1877 src/libvlc.c:1881
+#: src/libvlc.c:1878 src/libvlc.c:1882
 msgid ""
 "No matching module found. Use --list or--list-verbose to list available "
 "modules."
@@ -1337,22 +1337,22 @@ msgstr ""
 "Pas de module correspondant. Utiliser « --list » ou « --list-verbose » pour "
 "avoir la liste des modules disponibles."
 
-#: src/libvlc.c:1981
+#: src/libvlc.c:1982
 #, c-format
 msgid "VLC version %s\n"
 msgstr "VLC %s\n"
 
-#: src/libvlc.c:1982
+#: src/libvlc.c:1983
 #, c-format
 msgid "Compiled by %s@%s.%s\n"
 msgstr "Compilé par %s@%s.%s\n"
 
-#: src/libvlc.c:1984
+#: src/libvlc.c:1985
 #, c-format
 msgid "Compiler: %s\n"
 msgstr "Compilateur : %s\n"
 
-#: src/libvlc.c:2019
+#: src/libvlc.c:2020
 msgid ""
 "\n"
 "Dumped content to vlc-help.txt file.\n"
@@ -1360,7 +1360,7 @@ msgstr ""
 "\n"
 "Contenu transféré dans le fichier vlc-help.txt\n"
 
-#: src/libvlc.c:2039
+#: src/libvlc.c:2040
 msgid ""
 "\n"
 "Press the RETURN key to continue...\n"
@@ -1368,24 +1368,24 @@ msgstr ""
 "\n"
 "Appuyez sur [Entrée] pour continuer…\n"
 
-#: src/libvlc.h:186 src/libvlc-module.c:1402 src/libvlc-module.c:1403
+#: src/libvlc.h:188 src/libvlc-module.c:1402 src/libvlc-module.c:1403
 #: src/libvlc-module.c:2535 src/video_output/vout_intf.c:278
 msgid "Zoom"
 msgstr "Zoom"
 
-#: src/libvlc.h:187 src/libvlc-module.c:1322 src/video_output/vout_intf.c:172
+#: src/libvlc.h:189 src/libvlc-module.c:1322 src/video_output/vout_intf.c:172
 msgid "1:4 Quarter"
 msgstr "¼"
 
-#: src/libvlc.h:188 src/libvlc-module.c:1323 src/video_output/vout_intf.c:173
+#: src/libvlc.h:190 src/libvlc-module.c:1323 src/video_output/vout_intf.c:173
 msgid "1:2 Half"
 msgstr "½"
 
-#: src/libvlc.h:189 src/libvlc-module.c:1324 src/video_output/vout_intf.c:174
+#: src/libvlc.h:191 src/libvlc-module.c:1324 src/video_output/vout_intf.c:174
 msgid "1:1 Original"
 msgstr "Taille normale"
 
-#: src/libvlc.h:190 src/libvlc-module.c:1325 src/video_output/vout_intf.c:175
+#: src/libvlc.h:192 src/libvlc-module.c:1325 src/video_output/vout_intf.c:175
 msgid "2:1 Double"
 msgstr "Taille double"
 
@@ -1451,7 +1451,7 @@ msgstr ""
 
 #: src/libvlc-module.c:183
 msgid "Choose which objects should print debug message"
-msgstr "Choisissez les éléments qui peuvent affichers des messages"
+msgstr "Choisissez les éléments qui peuvent afficher des messages"
 
 #: src/libvlc-module.c:186
 msgid ""
@@ -1672,7 +1672,7 @@ msgstr ""
 "est possible (c.à.d. si le matériel en est capable, de même que le flux "
 "audio à jouer)."
 
-#: src/libvlc-module.c:295 modules/gui/macosx/simple_prefs.m:231
+#: src/libvlc-module.c:295 modules/gui/macosx/simple_prefs.m:232
 #: modules/gui/qt4/ui/sprefs_audio.h:340
 msgid "Use S/PDIF when available"
 msgstr "Utiliser S/PDIF si possible"
@@ -1685,7 +1685,7 @@ msgstr ""
 "Utiliser par défaut la sortie audio S/PDIF lorsque le matériel la reconnaît, "
 "de même que le flux audio en train d’être joué."
 
-#: src/libvlc-module.c:300 modules/gui/macosx/simple_prefs.m:221
+#: src/libvlc-module.c:300 modules/gui/macosx/simple_prefs.m:222
 #: modules/gui/qt4/ui/sprefs_audio.h:342
 msgid "Force detection of Dolby Surround"
 msgstr "Forcer la détection Dolby Surround"
@@ -1701,7 +1701,7 @@ msgstr ""
 "mais n’est pas détecté comme tel. Même si le flux n’est pas effectivement "
 "encodé avec Dolby Surround, l’usage de cette option peut améliorer les "
 "performances, particulièrement si elle est combinée avec le filtre d’effet "
-"\"casque\"."
+"« casque »."
 
 #: src/libvlc-module.c:309 modules/access/bda/bda.c:69
 msgid "On"
@@ -1726,7 +1726,7 @@ msgstr ""
 
 #: src/libvlc-module.c:323 modules/gui/qt4/ui/sprefs_audio.h:352
 msgid "Replay gain mode"
-msgstr "Mode Replay gain"
+msgstr "Mode ReplayGain"
 
 #: src/libvlc-module.c:325
 msgid "Select the replay gain mode"
@@ -2005,31 +2005,31 @@ msgstr ""
 "défaut."
 
 #: src/libvlc-module.c:431 src/video_output/vout_intf.c:421
-#: modules/gui/macosx/simple_prefs.m:284 modules/gui/qt4/ui/sprefs_video.h:283
+#: modules/gui/macosx/simple_prefs.m:288 modules/gui/qt4/ui/sprefs_video.h:283
 msgid "Always on top"
 msgstr "Toujours au-dessus"
 
 #: src/libvlc-module.c:433
 msgid "Always place the video window on top of other windows."
-msgstr "Toujours placer la fenêtre vidéo au-dessus des autres fenêtres"
+msgstr "Toujours placer la fenêtre vidéo au-dessus des autres fenêtres."
 
 #: src/libvlc-module.c:435 modules/gui/qt4/ui/sprefs_subtitles.h:210
 msgid "Show media title on video"
-msgstr "Incruster le titre dans la vidéo."
+msgstr "Incruster le titre dans la vidéo"
 
 #: src/libvlc-module.c:437
 msgid "Display the title of the video on top of the movie."
-msgstr "Afficher le titre au sommet de la vidéo."
+msgstr "Afficher le titre en avant plan de la vidéo."
 
 #: src/libvlc-module.c:439
 msgid "Show video title for x milliseconds"
-msgstr "Montrer le titre de la vidéo pendant x millisecondes."
+msgstr "Montrer le titre de la vidéo pendant x millisecondes"
 
 #: src/libvlc-module.c:441
 msgid "Show the video title for n milliseconds, default is 5000 ms (5 sec.)"
 msgstr ""
 "Montrer le titre de la vidéo pendant n millisecondes, le défaut est 5000 ms "
-"(5 secs)."
+"(5 secs)"
 
 #: src/libvlc-module.c:443
 msgid "Position of video title"
@@ -2050,7 +2050,7 @@ msgid ""
 "3000 ms (3 sec.)"
 msgstr ""
 "Cacher le curseur de la souris et le contrôleur plein écran après x "
-"millisecondes, le défaut est 3000 ms (3 secs)."
+"millisecondes, le défaut est 3000 ms (3 secs)"
 
 #: src/libvlc-module.c:458
 msgid "Disable screensaver"
@@ -2082,7 +2082,7 @@ msgid ""
 "giving a \"minimal\" window."
 msgstr ""
 "Ne pas créer de cadre autour de la fenêtre, si possible. Ceci permet d’avoir "
-"une fenêtre \"minimale\"."
+"une fenêtre « minimale »."
 
 #: src/libvlc-module.c:470
 msgid "Video output filter module"
@@ -2123,7 +2123,7 @@ msgstr "Format des captures d’écran"
 
 #: src/libvlc-module.c:490
 msgid "Image format which will be used to store the video snapshots"
-msgstr "Format d’image à utiliser pour stocker les captures d’écran."
+msgstr "Format d’image à utiliser pour stocker les captures d’écran"
 
 #: src/libvlc-module.c:492
 msgid "Display video snapshot preview"
@@ -2131,7 +2131,7 @@ msgstr "Prévisualisation de la capture"
 
 #: src/libvlc-module.c:494
 msgid "Display the snapshot preview in the screen's top-left corner."
-msgstr "Afficher une pré-visualisation de la capture d’écran sur la vidéo."
+msgstr "Afficher une pré-visualisation de la capture d’écran."
 
 #: src/libvlc-module.c:496
 msgid "Use sequential numbers instead of timestamps"
@@ -2273,7 +2273,7 @@ msgstr ""
 "carrés (1:1). Si vous avez un écran 16:9, vous devrez peut-être utiliser 4:3 "
 "afin de préserver les proportions."
 
-#: src/libvlc-module.c:559 modules/gui/macosx/simple_prefs.m:286
+#: src/libvlc-module.c:559 modules/gui/macosx/simple_prefs.m:290
 #: modules/gui/qt4/ui/sprefs_video.h:286
 msgid "Skip frames"
 msgstr "Sauter des images"
@@ -2385,8 +2385,8 @@ msgstr ""
 #: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:215
 #: modules/audio_output/alsa.c:105 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1297
-#: modules/gui/macosx/simple_prefs.m:377 modules/gui/macosx/simple_prefs.m:480
-#: modules/gui/macosx/simple_prefs.m:710 modules/gui/macosx/vout.m:215
+#: modules/gui/macosx/simple_prefs.m:407 modules/gui/macosx/simple_prefs.m:524
+#: modules/gui/macosx/simple_prefs.m:758 modules/gui/macosx/vout.m:215
 #: modules/gui/qt4/components/preferences_widgets.cpp:568
 #: modules/video_filter/marq.c:61 modules/video_filter/rss.c:70
 #: modules/video_filter/rss.c:182 modules/video_output/msw/directx.c:162
@@ -2698,7 +2698,7 @@ msgstr ""
 "incrustations."
 
 #: src/libvlc-module.c:760 src/libvlc-module.c:1675
-#: modules/gui/macosx/simple_prefs.m:275
+#: modules/gui/macosx/simple_prefs.m:279
 #: modules/gui/qt4/ui/sprefs_subtitles.h:208
 #: modules/stream_out/transcode.c:228
 msgid "On Screen Display"
@@ -3586,7 +3586,7 @@ msgstr "Quitter si il n’y a plus d’élements dans la liste de lecture"
 
 #: src/libvlc-module.c:1199
 msgid "Use media library"
-msgstr "Utilier la bibliothèque"
+msgstr "Utiliser la bibliothèque"
 
 #: src/libvlc-module.c:1201
 msgid ""
@@ -3617,7 +3617,7 @@ msgstr "Réglages des raccourcis clavier (« hotkeys »)."
 #: modules/gui/macosx/controls.m:515 modules/gui/macosx/controls.m:1083
 #: modules/gui/macosx/controls.m:1114 modules/gui/macosx/embeddedwindow.m:66
 #: modules/gui/macosx/intf.m:599 modules/gui/macosx/intf.m:677
-#: modules/gui/macosx/intf.m:741 modules/gui/macosx/simple_prefs.m:283
+#: modules/gui/macosx/intf.m:741 modules/gui/macosx/simple_prefs.m:287
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/ui/sprefs_video.h:282
 msgid "Fullscreen"
@@ -4362,7 +4362,7 @@ msgstr "Enlève un pixel de rognage à gauche de la vidéo."
 
 #: src/libvlc-module.c:1418 src/libvlc-module.c:1419
 msgid "Crop one pixel from the bottom of the video"
-msgstr "Rogner un pixels en bas de la vidéo."
+msgstr "Rogner un pixel en bas de la vidéo."
 
 #: src/libvlc-module.c:1420 src/libvlc-module.c:1421
 msgid "Uncrop one pixel from the bottom of the video"
@@ -4385,8 +4385,8 @@ msgid ""
 "Toggle wallpaper mode in video output. Only works with the directx video "
 "output for the time being."
 msgstr ""
-"Basculer le mode papier peint dans le module de sortie vidéo. Marche "
-"seulement avec le module de sortie vidéo directx pour l’instant."
+"Basculer le mode papier peint dans le module de sortie vidéo. Fonctionne "
+"uniquement avec le module de sortie vidéo directx pour l’instant."
 
 #: src/libvlc-module.c:1433 src/libvlc-module.c:1434
 msgid "Display OSD menu on top of video output"
@@ -4726,9 +4726,9 @@ msgstr "Téléchargement…"
 #: modules/gui/macosx/coredialogs.m:68 modules/gui/macosx/coredialogs.m:186
 #: modules/gui/macosx/open.m:169 modules/gui/macosx/open.m:196
 #: modules/gui/macosx/prefs.m:204 modules/gui/macosx/prefs.m:225
-#: modules/gui/macosx/simple_prefs.m:238 modules/gui/macosx/simple_prefs.m:297
-#: modules/gui/macosx/simple_prefs.m:636 modules/gui/macosx/wizard.m:320
-#: modules/gui/qt4/components/open_panels.cpp:1316
+#: modules/gui/macosx/simple_prefs.m:239 modules/gui/macosx/simple_prefs.m:301
+#: modules/gui/macosx/simple_prefs.m:684 modules/gui/macosx/wizard.m:320
+#: modules/gui/qt4/components/open_panels.cpp:1315
 #: modules/gui/qt4/components/preferences_widgets.cpp:1367
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
@@ -4854,7 +4854,7 @@ msgstr ""
 #: modules/access/dshow/dshow.cpp:99 modules/access/dv.c:71
 #: modules/access/dvb/access.c:84 modules/access/dvdnav.c:73
 #: modules/access/dvdread.c:76 modules/access/eyetv.m:61
-#: modules/access/fake.c:44 modules/access/file.c:77 modules/access/ftp.c:57
+#: modules/access/fake.c:44 modules/access/file.c:86 modules/access/ftp.c:57
 #: modules/access/gnomevfs.c:47 modules/access/http.c:75
 #: modules/access/jack.c:62 modules/access/mms/mms.c:49
 #: modules/access/mtp.c:65 modules/access/oss.c:72 modules/access/pvr.c:60
@@ -6201,12 +6201,12 @@ msgstr "DVDRead : impossible d’ouvrir le disque « %s »."
 #: modules/access/dvdread.c:512
 #, c-format
 msgid "DVDRead could not read block %d."
-msgstr "DVDRead : impossible de lire le block %d."
+msgstr "DVDRead : impossible de lire le bloc %d."
 
 #: modules/access/dvdread.c:574
 #, c-format
 msgid "DVDRead could not read %d/%d blocks at 0x%02x."
-msgstr "DVDRead : impossible de lire les blocks %d/%d à 0x%02x."
+msgstr "DVDRead : impossible de lire les blocs %d/%d à 0x%02x."
 
 #: modules/access/eyetv.m:56
 msgid "Channel number"
@@ -6277,15 +6277,15 @@ msgstr "Factice"
 msgid "Fake input"
 msgstr "Entrée factice"
 
-#: modules/access/file.c:79 modules/access/mtp.c:67
+#: modules/access/file.c:88 modules/access/mtp.c:67
 msgid "Caching value for files. This value should be set in milliseconds."
 msgstr "Taille du cache pour les fichiers, en millisecondes."
 
-#: modules/access/file.c:83
+#: modules/access/file.c:92
 msgid "File input"
 msgstr "Lecture de fichiers"
 
-#: modules/access/file.c:84 modules/access_output/file.c:70
+#: modules/access/file.c:93 modules/access_output/file.c:70
 #: modules/audio_output/file.c:114 modules/gui/beos/InterfaceWindow.cpp:264
 #: modules/gui/beos/MediaControlView.cpp:1235
 #: modules/gui/beos/PlayListWindow.cpp:88 modules/gui/macosx/open.m:171
@@ -6296,17 +6296,17 @@ msgstr "Lecture de fichiers"
 msgid "File"
 msgstr "Fichier"
 
-#: modules/access/file.c:225 modules/access/file.c:345
+#: modules/access/file.c:285 modules/access/file.c:405
 #: modules/access/mmap.c:229 modules/access/mtp.c:218 modules/access/mtp.c:306
 msgid "File reading failed"
 msgstr "La lecture du fichier a échoué "
 
-#: modules/access/file.c:226 modules/access/mmap.c:230
+#: modules/access/file.c:286 modules/access/mmap.c:230
 #: modules/access/mtp.c:219
 msgid "VLC could not read the file."
 msgstr "VLC n’a pas pu lire le fichier."
 
-#: modules/access/file.c:346 modules/access/mtp.c:307
+#: modules/access/file.c:406 modules/access/mtp.c:307
 #, c-format
 msgid "VLC could not open the file \"%s\"."
 msgstr "VLC n’a pas pu ouvrir le fichier « %s »."
@@ -6359,7 +6359,7 @@ msgstr "VLC n’a pas pu se connecter au serveur spécifié."
 
 #: modules/access/ftp.c:149
 msgid "VLC's connection to the given server was rejected."
-msgstr "La connection de VLC au serveur spécifié à été rejetée."
+msgstr "La connexion de VLC au serveur spécifié a été rejetée."
 
 #: modules/access/ftp.c:214
 msgid "Your account was rejected."
@@ -6371,7 +6371,7 @@ msgstr "Votre mot de passe a été rejeté."
 
 #: modules/access/ftp.c:230
 msgid "Your connection attempt to the server was rejected."
-msgstr "Votre tentative de connection au serveur a été rejetée."
+msgstr "Votre tentative de connexion au serveur a été rejetée."
 
 #: modules/access/gnomevfs.c:49
 msgid ""
@@ -6411,7 +6411,7 @@ msgstr "Taille du cache pour les flux HTTP, en millisecondes."
 
 #: modules/access/http.c:80
 msgid "HTTP user agent"
-msgstr "Agent Utilisateur HTTP"
+msgstr "Agent utilisateur HTTP"
 
 #: modules/access/http.c:81
 msgid "User agent that will be used for the connection."
@@ -6456,11 +6456,11 @@ msgstr "Entrée HTTP"
 msgid "HTTP(S)"
 msgstr "HTTP(S)"
 
-#: modules/access/http.c:450
+#: modules/access/http.c:461
 msgid "HTTP authentication"
 msgstr "Authentification HTTP"
 
-#: modules/access/http.c:451
+#: modules/access/http.c:462
 #, c-format
 msgid "Please enter a valid login name and a password for realm %s."
 msgstr ""
@@ -6481,7 +6481,7 @@ msgstr "Rythme"
 
 #: modules/access/jack.c:68
 msgid "Read the audio stream at VLC pace rather than Jack pace."
-msgstr "Lire le flux audio au ryhtme VLC plutôt que « Jack »."
+msgstr "Lire le flux audio au rythme VLC plutôt que « Jack »."
 
 #: modules/access/jack.c:69
 msgid "Auto Connection"
@@ -6978,7 +6978,7 @@ msgstr "Module de capture d’écran"
 
 #: modules/access/screen/screen.c:95 modules/gui/macosx/open.m:213
 #: modules/gui/macosx/open.m:414 modules/gui/macosx/open.m:979
-#: modules/gui/macosx/simple_prefs.m:486 modules/gui/macosx/vout.m:226
+#: modules/gui/macosx/simple_prefs.m:530 modules/gui/macosx/vout.m:226
 msgid "Screen"
 msgstr "Écran"
 
@@ -7740,7 +7740,7 @@ msgid "User name that will be requested to access the stream."
 msgstr "Nom d’utilisateur qui sera demandé pour accéder au flux."
 
 #: modules/access_output/http.c:68 modules/control/telnet.c:87
-#: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/simple_prefs.m:228
+#: modules/gui/macosx/coredialogs.m:65 modules/gui/macosx/simple_prefs.m:229
 #: modules/gui/qt4/dialogs/external.cpp:145
 #: modules/gui/qt4/ui/sprefs_audio.h:356 modules/misc/audioscrobbler.c:135
 #: modules/misc/notify/growl_udp.c:64
@@ -8265,7 +8265,7 @@ msgstr ""
 "Une valeur entre 0,5 et 10 semble correcte."
 
 #: modules/audio_filter/normvol.c:83 modules/audio_filter/normvol.c:84
-#: modules/gui/macosx/simple_prefs.m:230 modules/gui/qt4/ui/sprefs_audio.h:350
+#: modules/gui/macosx/simple_prefs.m:231 modules/gui/qt4/ui/sprefs_audio.h:350
 msgid "Volume normalizer"
 msgstr "Normaliseur de volume"
 
@@ -8439,7 +8439,7 @@ msgid "ALSA Device Name"
 msgstr "Nom du périphérique ALSA"
 
 #: modules/audio_output/alsa.c:133 modules/audio_output/auhal.c:131
-#: modules/audio_output/auhal.c:968 modules/audio_output/directx.c:457
+#: modules/audio_output/auhal.c:969 modules/audio_output/directx.c:457
 #: modules/audio_output/oss.c:133 modules/audio_output/portaudio.c:385
 #: modules/audio_output/sdl.c:179 modules/audio_output/sdl.c:197
 #: modules/audio_output/waveout.c:462 modules/gui/macosx/intf.m:667
@@ -8519,7 +8519,7 @@ msgstr ""
 "« Audio Midi Setup » du menu « /Applications/Utilitaire ». Le mode stéréo est "
 "actuellement utilisé."
 
-#: modules/audio_output/auhal.c:1015
+#: modules/audio_output/auhal.c:1016
 #, c-format
 msgid "%s (Encoded Output)"
 msgstr "%s (sortie encodée)"
@@ -8682,7 +8682,7 @@ msgid "PORTAUDIO audio output"
 msgstr "Sortie audio Portaudio"
 
 #: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:589
-#: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1965
+#: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1970
 #: modules/gui/pda/pda_interface.c:210 modules/gui/pda/pda_interface.c:1353
 #: modules/gui/qt4/dialogs/help.cpp:99 modules/gui/qt4/main_interface.cpp:930
 #: modules/gui/qt4/main_interface.cpp:934
@@ -8773,7 +8773,7 @@ msgid "Non-key"
 msgstr "Non-key"
 
 #: modules/codec/avcodec/avcodec.c:71 modules/gui/macosx/prefs.m:207
-#: modules/gui/macosx/simple_prefs.m:296
+#: modules/gui/macosx/simple_prefs.m:300
 #: modules/gui/qt4/dialogs/preferences.cpp:68
 msgid "All"
 msgstr "Tous"
@@ -8962,7 +8962,7 @@ msgid ""
 msgstr ""
 "Décoder la vidéo en basse résolution, afin d’économoiser de la puissance."
 
-#: modules/codec/avcodec/avcodec.h:125 modules/gui/macosx/simple_prefs.m:256
+#: modules/codec/avcodec/avcodec.h:125 modules/gui/macosx/simple_prefs.m:257
 #: modules/gui/qt4/ui/sprefs_input.h:250
 msgid "Skip the loop filter for H.264 decoding"
 msgstr "Pas de filtre de boucle pour H264"
@@ -9499,9 +9499,8 @@ msgid "Enable multiple quantizers per subband (one per codeblock)"
 msgstr ""
 
 #: modules/codec/dirac.c:175
-#, fuzzy
 msgid "Enable spatial partitioning"
-msgstr "Rayon du _filtre spatial :"
+msgstr ""
 
 #: modules/codec/dirac.c:179
 msgid "Disable arithmetic coding"
@@ -10016,15 +10015,18 @@ msgstr "Empaqueteur de sous-titres Kate"
 msgid "Subtitle renderers using libass"
 msgstr "Paramètres de sous-titres avec libass"
 
-#: modules/codec/libass.c:692
+#: modules/codec/libass.c:703
 msgid "Building font cache"
-msgstr ""
+msgstr "Mise à jour du cache pour les polices de caractère"
 
-#: modules/codec/libass.c:693
+#: modules/codec/libass.c:704
 msgid ""
 "Please wait while your font cache is rebuild.\n"
 "This should take less than a minute."
 msgstr ""
+"Veuillez attendre pendant la mise à jour du cache pour les polices de "
+"caractère.\n"
+"Ceci devrait prendre moins d'une minute."
 
 #: modules/codec/libmpeg2.c:127
 msgid "MPEG I/II video decoder (using libmpeg2)"
@@ -10338,7 +10340,7 @@ msgstr "Chinois traditionel Unix (EUC-TW)"
 
 #: modules/codec/subtitles/subsdec.c:154
 msgid "Hong-Kong Supplementary (HKSCS)"
-msgstr "Hong-Kong Supplementaire (HKSCS)"
+msgstr "Hong-Kong Supplémentaire (HKSCS)"
 
 #: modules/codec/subtitles/subsdec.c:156
 msgid "Vietnamese (VISCII)"
@@ -11479,11 +11481,11 @@ msgstr "Contrôle du volume"
 msgid "Position Control"
 msgstr "Contrôle de la position"
 
-#: modules/control/hotkeys.c:98 modules/gui/macosx/intf.m:2441
+#: modules/control/hotkeys.c:98 modules/gui/macosx/intf.m:2446
 msgid "Ignore"
 msgstr "Ignorer"
 
-#: modules/control/hotkeys.c:101 modules/gui/macosx/simple_prefs.m:194
+#: modules/control/hotkeys.c:101 modules/gui/macosx/simple_prefs.m:195
 #: modules/gui/qt4/components/simple_preferences.cpp:85
 msgid "Hotkeys"
 msgstr "Raccourcis"
@@ -11553,7 +11555,7 @@ msgstr "Désentrelacement : %s"
 #: modules/control/hotkeys.c:670
 #, c-format
 msgid "Zoom mode: %s"
-msgstr "Mode de Zoom : %s"
+msgstr "Mode de zoom : %s"
 
 #: modules/control/hotkeys.c:730
 msgid "1.00x"
@@ -11781,8 +11783,8 @@ msgid "Opening"
 msgstr "Ouverture"
 
 #: modules/control/rc.c:77 modules/gui/macosx/embeddedwindow.m:151
-#: modules/gui/macosx/intf.m:1975 modules/gui/macosx/intf.m:1976
-#: modules/gui/macosx/intf.m:1977 modules/gui/macosx/intf.m:1978
+#: modules/gui/macosx/intf.m:1980 modules/gui/macosx/intf.m:1981
+#: modules/gui/macosx/intf.m:1982 modules/gui/macosx/intf.m:1983
 #: modules/gui/pda/pda_interface.c:248 modules/gui/pda/pda_interface.c:249
 #: modules/gui/qt4/menus.cpp:736 modules/misc/notify/xosd.c:238
 msgid "Pause"
@@ -12220,22 +12222,22 @@ msgstr "+-[Entrée]"
 #: modules/control/rc.c:2006 modules/gui/ncurses.c:2001
 #, c-format
 msgid "| input bytes read : %8.0f kB"
-msgstr "| octets lus en entrée : %8.0f kO"
+msgstr "| octets lus en entrée : %8.0f ko"
 
 #: modules/control/rc.c:2008 modules/gui/ncurses.c:2004
 #, c-format
 msgid "| input bitrate    :   %6.0f kb/s"
-msgstr "| débit en entrée      : %6.0f kO/s"
+msgstr "| débit en entrée      : %6.0f kb/s"
 
 #: modules/control/rc.c:2010 modules/gui/ncurses.c:2006
 #, c-format
 msgid "| demux bytes read : %8.0f kB"
-msgstr "| octets lus en demux  : %8.0f kO"
+msgstr "| octets lus en demux  : %8.0f ko"
 
 #: modules/control/rc.c:2012 modules/gui/ncurses.c:2009
 #, c-format
 msgid "| demux bitrate    :   %6.0f kb/s"
-msgstr "| debit en demux       : %6.0f kO/s"
+msgstr "| debit en demux       : %6.0f kb/s"
 
 #: modules/control/rc.c:2016 modules/gui/ncurses.c:2019
 msgid "+-[Video Decoding]"
@@ -12287,12 +12289,12 @@ msgstr "| paquets envoyés      : %5i"
 #: modules/control/rc.c:2036 modules/gui/ncurses.c:2060
 #, c-format
 msgid "| bytes sent       : %8.0f kB"
-msgstr "| octets envoyés       : %8.0f kO"
+msgstr "| octets envoyés       : %8.0f ko"
 
 #: modules/control/rc.c:2038
 #, c-format
 msgid "| sending bitrate  :   %6.0f kb/s"
-msgstr "| débit émission       : %6.0f kO/s"
+msgstr "| débit émission       : %6.0f kb/s"
 
 #: modules/control/showintf.c:66
 msgid "Threshold"
@@ -12598,7 +12600,7 @@ msgid "RTSP/RTP access and demux"
 msgstr "Access/Démultiplexeur RTSP/RTP"
 
 #: modules/demux/live555.cpp:111 modules/demux/live555.cpp:112
-#: modules/gui/macosx/simple_prefs.m:255 modules/gui/qt4/ui/sprefs_input.h:249
+#: modules/gui/macosx/simple_prefs.m:256 modules/gui/qt4/ui/sprefs_input.h:249
 msgid "Use RTP over RTSP (TCP)"
 msgstr "Utilise le RTP sur RTSP (TCP)"
 
@@ -12626,11 +12628,11 @@ msgstr "Port du tunnel HTTP"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "Port à utiliser pour la tunnelisation du RTSP/RTP par HTTP."
 
-#: modules/demux/live555.cpp:622
+#: modules/demux/live555.cpp:624
 msgid "RTSP authentication"
 msgstr "Authentification RTSP"
 
-#: modules/demux/live555.cpp:623
+#: modules/demux/live555.cpp:625
 msgid "Please enter a valid login name and a password."
 msgstr "S’il vous plait entrez un identifiant et un mot de passe valides."
 
@@ -13126,7 +13128,7 @@ msgid ""
 "value as the PID in the TS stream, instead of 1, 2, 3, etc. Useful to do "
 "'#duplicate{..., select=\"es=<pid>\"}'."
 msgstr ""
-"Règle l’identifiant interne de chaque flux élémentaire à la valeur du PID "
+"Règle l'identifiant interne de chaque flux élémentaire à la valeur du PID "
 "dans le flux TS, au lieu de 1,2,3. Ceci est utile pour repérer les flux, "
 "dans duplicate par exemple ('#duplicate{…,select=\"es=<pid>\"}')."
 
@@ -13146,7 +13148,7 @@ msgstr "MTU pour le mode de sortie"
 
 #: modules/demux/ts.c:113
 msgid "MTU for out mode."
-msgstr "MTU pour le mode de sortie"
+msgstr "MTU pour le mode de sortie."
 
 #: modules/demux/ts.c:115
 msgid "CSA ck"
@@ -13154,7 +13156,7 @@ msgstr "Clé CSA"
 
 #: modules/demux/ts.c:116
 msgid "Control word for the CSA encryption algorithm"
-msgstr "Mot de contrôle pour lCSA"
+msgstr "Mot de contrôle pour CSA"
 
 #: modules/demux/ts.c:118 modules/mux/mpeg/ts.c:172
 msgid "Second CSA Key"
@@ -13344,7 +13346,7 @@ msgstr "Ouvrir"
 
 #: modules/gui/beos/InterfaceWindow.cpp:226
 #: modules/gui/beos/InterfaceWindow.cpp:331 modules/gui/macosx/prefs.m:202
-#: modules/gui/macosx/simple_prefs.m:300
+#: modules/gui/macosx/simple_prefs.m:304
 #: modules/gui/qt4/dialogs/preferences.cpp:46
 msgid "Preferences"
 msgstr "Préférences"
@@ -13408,16 +13410,16 @@ msgstr "Fenêtre"
 #: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/bookmarks.m:279
 #: modules/gui/macosx/controls.m:85 modules/gui/macosx/coredialogs.m:67
 #: modules/gui/macosx/coredialogs.m:105 modules/gui/macosx/coredialogs.m:163
-#: modules/gui/macosx/extended.m:519 modules/gui/macosx/intf.m:2314
+#: modules/gui/macosx/extended.m:519 modules/gui/macosx/intf.m:2319
 #: modules/gui/macosx/open.m:310 modules/gui/macosx/output.m:138
-#: modules/gui/macosx/playlistinfo.m:430 modules/gui/macosx/simple_prefs.m:239
-#: modules/gui/macosx/update.m:65 modules/gui/macosx/wizard.m:600
+#: modules/gui/macosx/playlistinfo.m:430 modules/gui/macosx/simple_prefs.m:240
+#: modules/gui/macosx/update.m:76 modules/gui/macosx/wizard.m:600
 #: modules/gui/macosx/wizard.m:664 modules/gui/macosx/wizard.m:1063
 #: modules/gui/macosx/wizard.m:1148 modules/gui/macosx/wizard.m:1155
 #: modules/gui/macosx/wizard.m:1681 modules/gui/macosx/wizard.m:1689
 #: modules/gui/macosx/wizard.m:1870 modules/gui/macosx/wizard.m:1881
 #: modules/gui/macosx/wizard.m:1894
-#: modules/gui/qt4/components/open_panels.cpp:1315
+#: modules/gui/qt4/components/open_panels.cpp:1314
 #: modules/gui/qt4/components/preferences_widgets.cpp:1366
 #: modules/gui/qt4/main_interface.cpp:553
 msgid "OK"
@@ -13490,7 +13492,7 @@ msgid "Path"
 msgstr "Chemin d’accès"
 
 #: modules/gui/beos/PlayListWindow.cpp:150 modules/gui/macosx/bookmarks.m:103
-#: modules/gui/macosx/playlist.m:128 modules/gui/qt4/dialogs/plugins.cpp:62
+#: modules/gui/macosx/playlist.m:128 modules/gui/qt4/dialogs/plugins.cpp:60
 msgid "Name"
 msgstr "Nom"
 
@@ -13500,7 +13502,7 @@ msgstr "Appliquer"
 
 #: modules/gui/beos/PreferencesWindow.cpp:257 modules/gui/macosx/output.m:526
 #: modules/gui/macosx/playlist.m:711 modules/gui/macosx/prefs.m:203
-#: modules/gui/macosx/simple_prefs.m:299
+#: modules/gui/macosx/simple_prefs.m:303
 #: modules/gui/qt4/components/sout/profile_selector.cpp:250
 #: modules/gui/qt4/ui/vlm.h:302
 msgid "Save"
@@ -13678,7 +13680,7 @@ msgid ""
 "All rendered images and text will be displayed on the overlay framebuffer."
 msgstr ""
 
-#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:272
+#: modules/gui/fbosd.c:203 modules/gui/macosx/simple_prefs.m:276
 #: modules/gui/qt4/ui/sprefs_subtitles.h:219 modules/misc/freetype.c:83
 #: modules/misc/notify/xosd.c:80 modules/misc/quartztext.c:92
 #: modules/misc/win32text.c:57 modules/video_filter/marq.c:161
@@ -13705,7 +13707,7 @@ msgstr "Compilé par  %s"
 
 #: modules/gui/macosx/about.m:98
 msgid "VLC was brought to you by:"
-msgstr "VLC vous a été amené par :"
+msgstr "VLC vous a été apporté par :"
 
 #: modules/gui/macosx/about.m:108 modules/gui/macosx/about.m:171
 #: modules/gui/macosx/intf.m:720 modules/gui/qt4/dialogs/help.cpp:166
@@ -13732,7 +13734,7 @@ msgid "Add"
 msgstr "Ajouter"
 
 #: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/intf.m:636
-#: modules/gui/macosx/simple_prefs.m:240
+#: modules/gui/macosx/simple_prefs.m:241
 #: modules/gui/qt4/components/preferences_widgets.cpp:1154
 #: modules/gui/qt4/dialogs/bookmarks.cpp:48 modules/gui/qt4/ui/vlm.h:301
 #: modules/gui/qt4/util/customwidgets.cpp:136
@@ -13872,7 +13874,7 @@ msgstr "Avancer"
 msgid "Step Backward"
 msgstr "Reculer"
 
-#: modules/gui/macosx/coredialogs.m:64 modules/gui/macosx/simple_prefs.m:229
+#: modules/gui/macosx/coredialogs.m:64 modules/gui/macosx/simple_prefs.m:230
 #: modules/gui/qt4/dialogs/external.cpp:140
 msgid "User name"
 msgstr "Nom d’utilisateur"
@@ -14011,7 +14013,7 @@ msgstr "Spatialisation pour casque stéréo"
 
 #: modules/gui/macosx/extended.m:92
 msgid "Imitates the effect of surround sound when using headphones."
-msgstr "Ce filtre donne l’effet d’un kit 5.1 avec un casque."
+msgstr "Ce filtre donne l’effet d’un son surround avec un casque."
 
 #: modules/gui/macosx/extended.m:94
 msgid "Maximum level"
@@ -14156,7 +14158,7 @@ msgstr "Ouvrir un périphérique de capture…"
 msgid "Open Recent"
 msgstr "Ouvrir un flux récent"
 
-#: modules/gui/macosx/intf.m:629 modules/gui/macosx/intf.m:2730
+#: modules/gui/macosx/intf.m:629 modules/gui/macosx/intf.m:2735
 msgid "Clear Menu"
 msgstr "Tout effacer"
 
@@ -14189,7 +14191,7 @@ msgid "Decrease Volume"
 msgstr "Réduire le volume"
 
 #: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:687
-#: modules/gui/macosx/simple_prefs.m:280 modules/gui/macosx/vout.m:209
+#: modules/gui/macosx/simple_prefs.m:284 modules/gui/macosx/vout.m:209
 msgid "Fullscreen Video Device"
 msgstr "Sortie vidéo en plein écran"
 
@@ -14316,59 +14318,59 @@ msgid ""
 "information."
 msgstr "Aucune autre information que votre couriel ne sera transférée."
 
-#: modules/gui/macosx/intf.m:1806
+#: modules/gui/macosx/intf.m:1811
 #, c-format
 msgid "Volume: %d%%"
 msgstr "Volume : %d%%"
 
-#: modules/gui/macosx/intf.m:2205
+#: modules/gui/macosx/intf.m:2210
 msgid "Update check failed"
 msgstr "Impossible de vérifier les mises à jour"
 
-#: modules/gui/macosx/intf.m:2205
+#: modules/gui/macosx/intf.m:2210
 msgid "Checking for updates was not enabled in this build."
 msgstr ""
 "La vérification des mises à jour n'est pas possible dans cette version de "
 "VLC."
 
-#: modules/gui/macosx/intf.m:2312
+#: modules/gui/macosx/intf.m:2317
 msgid "Crash Report successfully sent"
 msgstr "Émission réussi du rapport de plantage"
 
-#: modules/gui/macosx/intf.m:2313
+#: modules/gui/macosx/intf.m:2318
 msgid "Thanks for your report!"
 msgstr "Merci pour votre rapport !"
 
-#: modules/gui/macosx/intf.m:2321
+#: modules/gui/macosx/intf.m:2326
 msgid "Error when sending the Crash Report"
 msgstr "Erreur à l'émisiion du rapport de plantage"
 
-#: modules/gui/macosx/intf.m:2412
+#: modules/gui/macosx/intf.m:2417
 msgid "No CrashLog found"
 msgstr "Aucun fichier CrashLog trouvé"
 
-#: modules/gui/macosx/intf.m:2412 modules/gui/macosx/prefs.m:226
-#: modules/gui/macosx/simple_prefs.m:637
+#: modules/gui/macosx/intf.m:2417 modules/gui/macosx/prefs.m:226
+#: modules/gui/macosx/simple_prefs.m:685
 msgid "Continue"
 msgstr "Continuer"
 
-#: modules/gui/macosx/intf.m:2412
+#: modules/gui/macosx/intf.m:2417
 msgid "Couldn't find any trace of a previous crash."
 msgstr "Impossible de trouver un plantage précédent."
 
-#: modules/gui/macosx/intf.m:2439
+#: modules/gui/macosx/intf.m:2444
 msgid "Remove old preferences?"
 msgstr "Effacer les anciennes préférences ?"
 
-#: modules/gui/macosx/intf.m:2440
+#: modules/gui/macosx/intf.m:2445
 msgid "We just found an older version of VLC's preferences files."
 msgstr "Un ancien fichier de préférences de VLC a été trouvé."
 
-#: modules/gui/macosx/intf.m:2441
+#: modules/gui/macosx/intf.m:2446
 msgid "Move To Trash and Relaunch VLC"
 msgstr "Déplacer le dans la corbeille et relancez VLC"
 
-#: modules/gui/macosx/intf.m:2575
+#: modules/gui/macosx/intf.m:2580
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr "VLC Debug Log (%s).rtfd"
@@ -14468,7 +14470,34 @@ msgstr ""
 "Par défaut, VLC garde les paramètres de l'égaliseur. Cette possibilité peut "
 "être inhibée ici."
 
+#: modules/gui/macosx/macosx.m:90 modules/gui/macosx/simple_prefs.m:266
+msgid "Control playback with the Apple Remote"
+msgstr ""
+
 #: modules/gui/macosx/macosx.m:91
+msgid "By default, VLC can be remotely controlled with the Apple Remote."
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:93 modules/gui/macosx/simple_prefs.m:267
+msgid "Control playback with media keys"
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:94
+msgid ""
+"By default, VLC can be controlled using the media keys on modern Apple "
+"keyboards."
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:97
+msgid "Use media key control when VLC is in background"
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:98
+msgid ""
+"By default, VLC will accept media key events also when being in background."
+msgstr ""
+
+#: modules/gui/macosx/macosx.m:102
 msgid "Mac OS X interface"
 msgstr "Interface Mac OS X"
 
@@ -14504,7 +14533,7 @@ msgstr "Capture"
 #: modules/gui/macosx/open.m:176 modules/gui/macosx/open.m:182
 #: modules/gui/macosx/open.m:298 modules/gui/macosx/output.m:145
 #: modules/gui/macosx/prefs_widgets.m:1181
-#: modules/gui/macosx/simple_prefs.m:288
+#: modules/gui/macosx/simple_prefs.m:292
 #: modules/gui/qt4/components/preferences_widgets.cpp:264
 #: modules/gui/qt4/components/simple_preferences.cpp:245
 #: modules/gui/qt4/components/sout/sout_widgets.cpp:98
@@ -14940,7 +14969,7 @@ msgstr "Images perdues"
 
 #: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:363
 #: modules/gui/qt4/components/info_panels.cpp:520
-#: modules/gui/qt4/dialogs_provider.cpp:607
+#: modules/gui/qt4/dialogs_provider.cpp:608
 #: modules/video_filter/deinterlace.c:143
 msgid "Streaming"
 msgstr "Diffusion"
@@ -14981,21 +15010,21 @@ msgstr "VLC est incapable d'enregistrer les méta-données."
 msgid "Information"
 msgstr "Informations"
 
-#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:298
+#: modules/gui/macosx/prefs.m:205 modules/gui/macosx/simple_prefs.m:302
 msgid "Reset All"
 msgstr "Tout rétablir"
 
-#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:295
+#: modules/gui/macosx/prefs.m:206 modules/gui/macosx/simple_prefs.m:299
 #: modules/gui/qt4/ui/video_effects.h:882
 msgid "Basic"
 msgstr "Basique"
 
-#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:636
+#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:684
 #: modules/gui/qt4/dialogs/preferences.cpp:309
 msgid "Reset Preferences"
 msgstr "Rétablir"
 
-#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:639
+#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:687
 msgid ""
 "Beware this will reset the VLC media player preferences.\n"
 "Are you sure you want to continue?"
@@ -15015,107 +15044,107 @@ msgstr "Sélectionner un fichier"
 msgid "Select"
 msgstr "Sélectionner"
 
-#: modules/gui/macosx/simple_prefs.m:90
+#: modules/gui/macosx/simple_prefs.m:91
 msgid "Not Set"
 msgstr "non défini"
 
-#: modules/gui/macosx/simple_prefs.m:174
+#: modules/gui/macosx/simple_prefs.m:175
 #: modules/gui/qt4/components/simple_preferences.cpp:465
 msgid "Interface Settings"
 msgstr "Réglages de l’interface"
 
-#: modules/gui/macosx/simple_prefs.m:178
+#: modules/gui/macosx/simple_prefs.m:179
 msgid "General Audio Settings"
 msgstr "Paramètres audio généraux"
 
-#: modules/gui/macosx/simple_prefs.m:182
+#: modules/gui/macosx/simple_prefs.m:183
 msgid "General Video Settings"
 msgstr "Paramètres vidéo généraux"
 
-#: modules/gui/macosx/simple_prefs.m:186
+#: modules/gui/macosx/simple_prefs.m:187
 msgid "Subtitles & OSD"
 msgstr "Sous-titres & OSD"
 
-#: modules/gui/macosx/simple_prefs.m:186
+#: modules/gui/macosx/simple_prefs.m:187
 #: modules/gui/qt4/components/simple_preferences.cpp:538
 msgid "Subtitles & On Screen Display Settings"
 msgstr "Paramètres de sous-titres et d’incrustation vidéo"
 
-#: modules/gui/macosx/simple_prefs.m:190
+#: modules/gui/macosx/simple_prefs.m:191
 msgid "Input & Codecs"
 msgstr "Lecture / Codecs"
 
-#: modules/gui/macosx/simple_prefs.m:190
+#: modules/gui/macosx/simple_prefs.m:191
 msgid "Input & Codec settings"
 msgstr "Réglages de lecture / codecs"
 
-#: modules/gui/macosx/simple_prefs.m:222 modules/gui/qt4/ui/sprefs_audio.h:348
+#: modules/gui/macosx/simple_prefs.m:223 modules/gui/qt4/ui/sprefs_audio.h:348
 msgid "Effects"
 msgstr "Effets"
 
-#: modules/gui/macosx/simple_prefs.m:223
+#: modules/gui/macosx/simple_prefs.m:224
 msgid "Enable Audio"
 msgstr "Activer l’audio"
 
-#: modules/gui/macosx/simple_prefs.m:224 modules/gui/qt4/ui/sprefs_audio.h:334
+#: modules/gui/macosx/simple_prefs.m:225 modules/gui/qt4/ui/sprefs_audio.h:334
 msgid "General Audio"
 msgstr "Général Audio"
 
-#: modules/gui/macosx/simple_prefs.m:225 modules/gui/qt4/ui/sprefs_audio.h:349
+#: modules/gui/macosx/simple_prefs.m:226 modules/gui/qt4/ui/sprefs_audio.h:349
 msgid "Headphone surround effect"
 msgstr "Effet surround pour casque"
 
-#: modules/gui/macosx/simple_prefs.m:226
+#: modules/gui/macosx/simple_prefs.m:227
 msgid "Preferred Audio language"
 msgstr "Langue audio préférée"
 
-#: modules/gui/macosx/simple_prefs.m:227
+#: modules/gui/macosx/simple_prefs.m:228
 msgid "Enable Last.fm submissions"
 msgstr "Activer la soumission à last.fm"
 
-#: modules/gui/macosx/simple_prefs.m:232 modules/gui/qt4/ui/sprefs_audio.h:351
+#: modules/gui/macosx/simple_prefs.m:233 modules/gui/qt4/ui/sprefs_audio.h:351
 msgid "Visualization"
 msgstr "Visualisations"
 
-#: modules/gui/macosx/simple_prefs.m:233
+#: modules/gui/macosx/simple_prefs.m:234
 msgid "Default Volume"
 msgstr "Volume par défaut"
 
-#: modules/gui/macosx/simple_prefs.m:236
+#: modules/gui/macosx/simple_prefs.m:237
 msgid "Change"
 msgstr "Change"
 
-#: modules/gui/macosx/simple_prefs.m:237
+#: modules/gui/macosx/simple_prefs.m:238
 msgid "Change Hotkey"
 msgstr "Configurer les raccourcis claviers"
 
-#: modules/gui/macosx/simple_prefs.m:241
+#: modules/gui/macosx/simple_prefs.m:242
 msgid "Select an action to change the associated hotkey:"
 msgstr "Sélectionnez une action pour changer la touche associée :"
 
-#: modules/gui/macosx/simple_prefs.m:242
+#: modules/gui/macosx/simple_prefs.m:243
 #: modules/gui/qt4/components/preferences_widgets.cpp:1146
 msgid "Action"
 msgstr "Action"
 
-#: modules/gui/macosx/simple_prefs.m:243
+#: modules/gui/macosx/simple_prefs.m:244
 msgid "Shortcut"
 msgstr "Raccourci"
 
-#: modules/gui/macosx/simple_prefs.m:246
+#: modules/gui/macosx/simple_prefs.m:247
 msgid "Repair AVI Files"
 msgstr "Réparer les fichiers AVI"
 
-#: modules/gui/macosx/simple_prefs.m:247
+#: modules/gui/macosx/simple_prefs.m:248
 msgid "Default Caching Level"
 msgstr "Niveau de cache par défaut"
 
-#: modules/gui/macosx/simple_prefs.m:248 modules/gui/qt4/ui/open.h:251
+#: modules/gui/macosx/simple_prefs.m:249 modules/gui/qt4/ui/open.h:251
 #: modules/gui/qt4/ui/sprefs_input.h:243
 msgid "Caching"
 msgstr "Mise en cache"
 
-#: modules/gui/macosx/simple_prefs.m:249
+#: modules/gui/macosx/simple_prefs.m:250
 msgid ""
 "Use the complete preferences to configure custom caching values for each "
 "access module."
@@ -15123,191 +15152,196 @@ msgstr ""
 "Utilisez les préférences étendues pour configurer des valeurs de cache "
 "personnalisées pour tous les modules d'accès."
 
-#: modules/gui/macosx/simple_prefs.m:250
+#: modules/gui/macosx/simple_prefs.m:251
 msgid "HTTP Proxy"
 msgstr "Serveur proxy HTTP"
 
-#: modules/gui/macosx/simple_prefs.m:251
+#: modules/gui/macosx/simple_prefs.m:252
 msgid "Password for HTTP Proxy"
 msgstr "Mot de passe du serveur proxy HTTP"
 
-#: modules/gui/macosx/simple_prefs.m:252 modules/gui/qt4/ui/sprefs_input.h:245
+#: modules/gui/macosx/simple_prefs.m:253 modules/gui/qt4/ui/sprefs_input.h:245
 msgid "Codecs / Muxers"
 msgstr "Codecs / Multiplexeurs"
 
-#: modules/gui/macosx/simple_prefs.m:254
+#: modules/gui/macosx/simple_prefs.m:255
 msgid "Post-Processing Quality"
 msgstr "Qualité de post-traitement"
 
-#: modules/gui/macosx/simple_prefs.m:257
+#: modules/gui/macosx/simple_prefs.m:258
 msgid "Default Server Port"
 msgstr "Port du serveur par défaut"
 
-#: modules/gui/macosx/simple_prefs.m:260
+#: modules/gui/macosx/simple_prefs.m:261
 #: modules/gui/qt4/ui/sprefs_interface.h:321
 msgid "Album art download policy"
 msgstr "Politique de téléchargement des jaquettes"
 
-#: modules/gui/macosx/simple_prefs.m:261
+#: modules/gui/macosx/simple_prefs.m:262
 msgid "Add controls to the video window"
 msgstr "Ajouter des contrôles à la fenêtre vidéo"
 
-#: modules/gui/macosx/simple_prefs.m:262
+#: modules/gui/macosx/simple_prefs.m:263
 msgid "Show Fullscreen Controller"
 msgstr "Afficher le contrôleur plein écran"
 
-#: modules/gui/macosx/simple_prefs.m:264
+#: modules/gui/macosx/simple_prefs.m:265
 #: modules/gui/qt4/ui/sprefs_interface.h:320
 msgid "Privacy / Network Interaction"
 msgstr "Vie privée / Réseau"
 
-#: modules/gui/macosx/simple_prefs.m:267
+#: modules/gui/macosx/simple_prefs.m:268
+msgid "...when VLC is in background"
+msgstr ""
+
+#: modules/gui/macosx/simple_prefs.m:271
 msgid "Default Encoding"
 msgstr "Encodage par défaut"
 
-#: modules/gui/macosx/simple_prefs.m:268
+#: modules/gui/macosx/simple_prefs.m:272
 #: modules/gui/qt4/ui/sprefs_subtitles.h:214
 msgid "Display Settings"
 msgstr "Préférences d’affichage"
 
-#: modules/gui/macosx/simple_prefs.m:269 modules/gui/macosx/wizard.m:346
+#: modules/gui/macosx/simple_prefs.m:273 modules/gui/macosx/wizard.m:346
 #: modules/gui/macosx/wizard.m:414
 msgid "Choose..."
 msgstr "Choisir…"
 
-#: modules/gui/macosx/simple_prefs.m:270
+#: modules/gui/macosx/simple_prefs.m:274
 msgid "Font Color"
 msgstr "Couleur de la police"
 
-#: modules/gui/macosx/simple_prefs.m:271
+#: modules/gui/macosx/simple_prefs.m:275
 msgid "Font Size"
 msgstr "Taille de la police"
 
-#: modules/gui/macosx/simple_prefs.m:273
+#: modules/gui/macosx/simple_prefs.m:277
 msgid "Subtitle Languages"
 msgstr "Langue des sous-titres"
 
-#: modules/gui/macosx/simple_prefs.m:274
+#: modules/gui/macosx/simple_prefs.m:278
 msgid "Preferred Subtitle Language"
 msgstr "Langue sous-titres préférée"
 
-#: modules/gui/macosx/simple_prefs.m:276
+#: modules/gui/macosx/simple_prefs.m:280
 #: modules/gui/qt4/ui/sprefs_subtitles.h:209
 msgid "Enable OSD"
 msgstr "Activer OSD"
 
-#: modules/gui/macosx/simple_prefs.m:279
+#: modules/gui/macosx/simple_prefs.m:283
 msgid "Black screens in Fullscreen mode"
 msgstr "Passer au noir en plein écran"
 
-#: modules/gui/macosx/simple_prefs.m:281 modules/gui/qt4/ui/sprefs_video.h:280
+#: modules/gui/macosx/simple_prefs.m:285 modules/gui/qt4/ui/sprefs_video.h:280
 #: modules/stream_out/display.c:54 modules/video_filter/deinterlace.c:132
 msgid "Display"
 msgstr "Affichage"
 
-#: modules/gui/macosx/simple_prefs.m:282
+#: modules/gui/macosx/simple_prefs.m:286
 msgid "Enable Video"
 msgstr "Activer la vidéo"
 
-#: modules/gui/macosx/simple_prefs.m:285
+#: modules/gui/macosx/simple_prefs.m:289
 msgid "Output module"
 msgstr "Modules de sortie"
 
-#: modules/gui/macosx/simple_prefs.m:287 modules/gui/qt4/ui/sprefs_video.h:294
+#: modules/gui/macosx/simple_prefs.m:291 modules/gui/qt4/ui/sprefs_video.h:294
 msgid "Video snapshots"
 msgstr "Captures d’écran"
 
-#: modules/gui/macosx/simple_prefs.m:289 modules/meta_engine/folder.c:56
+#: modules/gui/macosx/simple_prefs.m:293 modules/meta_engine/folder.c:56
 msgid "Folder"
 msgstr "Dossier"
 
-#: modules/gui/macosx/simple_prefs.m:290 modules/gui/qt4/ui/sprefs_video.h:299
+#: modules/gui/macosx/simple_prefs.m:294 modules/gui/qt4/ui/sprefs_video.h:299
 msgid "Format"
 msgstr "Format"
 
-#: modules/gui/macosx/simple_prefs.m:291 modules/gui/qt4/ui/sprefs_video.h:297
+#: modules/gui/macosx/simple_prefs.m:295 modules/gui/qt4/ui/sprefs_video.h:297
 msgid "Prefix"
 msgstr "Préfixe"
 
-#: modules/gui/macosx/simple_prefs.m:292 modules/gui/qt4/ui/sprefs_video.h:300
+#: modules/gui/macosx/simple_prefs.m:296 modules/gui/qt4/ui/sprefs_video.h:300
 msgid "Sequential numbering"
 msgstr "Numérotation séquentielle"
 
-#: modules/gui/macosx/simple_prefs.m:514 modules/gui/macosx/simple_prefs.m:558
-#: modules/gui/macosx/simple_prefs.m:1153
+#: modules/gui/macosx/simple_prefs.m:560 modules/gui/macosx/simple_prefs.m:604
+#: modules/gui/macosx/simple_prefs.m:1216
 #: modules/gui/qt4/components/simple_preferences.cpp:412
 msgid "Custom"
 msgstr "Personnalisé"
 
-#: modules/gui/macosx/simple_prefs.m:514
+#: modules/gui/macosx/simple_prefs.m:560
 #: modules/gui/qt4/components/simple_preferences.cpp:413
 msgid "Lowest latency"
 msgstr "Plus failble latence"
 
-#: modules/gui/macosx/simple_prefs.m:514
+#: modules/gui/macosx/simple_prefs.m:560
 #: modules/gui/qt4/components/simple_preferences.cpp:414
 msgid "Low latency"
 msgstr "Faible latence"
 
-#: modules/gui/macosx/simple_prefs.m:514
+#: modules/gui/macosx/simple_prefs.m:560
 #: modules/gui/qt4/components/simple_preferences.cpp:415
 #: modules/misc/freetype.c:106 modules/misc/quartztext.c:116
 #: modules/misc/win32text.c:80
 msgid "Normal"
 msgstr "Normal"
 
-#: modules/gui/macosx/simple_prefs.m:515
+#: modules/gui/macosx/simple_prefs.m:561
 #: modules/gui/qt4/components/simple_preferences.cpp:416
 msgid "High latency"
 msgstr "Haute latence"
 
-#: modules/gui/macosx/simple_prefs.m:515
+#: modules/gui/macosx/simple_prefs.m:561
 #: modules/gui/qt4/components/simple_preferences.cpp:417
 msgid "Higher latency"
 msgstr "Très haute latence"
 
-#: modules/gui/macosx/simple_prefs.m:743
+#: modules/gui/macosx/simple_prefs.m:803
 msgid "Interface Settings not saved"
 msgstr "Réglages de l’interface non enregistrés"
 
-#: modules/gui/macosx/simple_prefs.m:744 modules/gui/macosx/simple_prefs.m:819
-#: modules/gui/macosx/simple_prefs.m:852 modules/gui/macosx/simple_prefs.m:918
-#: modules/gui/macosx/simple_prefs.m:956 modules/gui/macosx/simple_prefs.m:981
+#: modules/gui/macosx/simple_prefs.m:804 modules/gui/macosx/simple_prefs.m:879
+#: modules/gui/macosx/simple_prefs.m:912 modules/gui/macosx/simple_prefs.m:978
+#: modules/gui/macosx/simple_prefs.m:1017
+#: modules/gui/macosx/simple_prefs.m:1042
 #, c-format
 msgid "An error occured while saving your settings via SimplePrefs (%i)."
 msgstr ""
 "Une erreur est survenue lors de l'enregistrement des paramètres via "
 "« SimplePrefs » (%i)."
 
-#: modules/gui/macosx/simple_prefs.m:818
+#: modules/gui/macosx/simple_prefs.m:878
 msgid "Audio Settings not saved"
 msgstr "Paramètres audio nopn enregistrés"
 
-#: modules/gui/macosx/simple_prefs.m:851
+#: modules/gui/macosx/simple_prefs.m:911
 msgid "Video Settings not saved"
 msgstr "Paramètres vidéo non enregsitrés"
 
-#: modules/gui/macosx/simple_prefs.m:917
+#: modules/gui/macosx/simple_prefs.m:977
 msgid "Input Settings not saved"
 msgstr "Paramètres d'entrée non enregistrés"
 
-#: modules/gui/macosx/simple_prefs.m:955
+#: modules/gui/macosx/simple_prefs.m:1016
 msgid "On Screen Display/Subtitle Settings not saved"
 msgstr "Paramètres OSD/sous-titres non enregistrés"
 
-#: modules/gui/macosx/simple_prefs.m:980
+#: modules/gui/macosx/simple_prefs.m:1041
 msgid "Hotkeys not saved"
 msgstr "Raccourcis clavier non enregistrés"
 
-#: modules/gui/macosx/simple_prefs.m:1079
+#: modules/gui/macosx/simple_prefs.m:1142
 msgid "Choose the folder to save your video snapshots to."
 msgstr "Choisissez le dossier pour enregister les captures d'écran."
 
-#: modules/gui/macosx/simple_prefs.m:1081
+#: modules/gui/macosx/simple_prefs.m:1144
 msgid "Choose"
 msgstr "Choisir"
 
-#: modules/gui/macosx/simple_prefs.m:1171
+#: modules/gui/macosx/simple_prefs.m:1234
 msgid ""
 "Press new keys for\n"
 "\"%@\""
@@ -15315,27 +15349,27 @@ msgstr ""
 "Appuyez sur la nouvelle combinaison pour\n"
 "« %@ »"
 
-#: modules/gui/macosx/simple_prefs.m:1245
+#: modules/gui/macosx/simple_prefs.m:1308
 msgid "Invalid combination"
 msgstr "Combinaison invalide"
 
-#: modules/gui/macosx/simple_prefs.m:1246
+#: modules/gui/macosx/simple_prefs.m:1309
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr "Désolé, mais cette combinaison de touches ne peut pas être utilisée."
 
-#: modules/gui/macosx/simple_prefs.m:1264
+#: modules/gui/macosx/simple_prefs.m:1327
 msgid "This combination is already taken by \"%@\"."
 msgstr "Cette combinaison est déjà utilisée par « %@ »."
 
-#: modules/gui/macosx/update.m:63
+#: modules/gui/macosx/update.m:74
 msgid "Check for Updates"
 msgstr "Chercher des mises à jour"
 
-#: modules/gui/macosx/update.m:64
+#: modules/gui/macosx/update.m:75
 msgid "Download now"
 msgstr "Télécharger"
 
-#: modules/gui/macosx/update.m:66
+#: modules/gui/macosx/update.m:77
 msgid "Automatically check for updates"
 msgstr "Chercher automatiquement des mises à jour"
 
@@ -15447,10 +15481,6 @@ msgid ""
 msgstr ""
 "MPEG Audio Couche 3 (MP3) (utilisable avec MPEG-PS, MPEG-TS, MPEG1, ASF, OGG "
 "et RAW)"
-
-#: modules/gui/macosx/wizard.m:188
-msgid "Audio format for MPEG4 (useable with MPEG TS and MPEG4)"
-msgstr "Format MPEG-4 audio (utilisable avec MPEG-TS et MPEG4)"
 
 #: modules/gui/macosx/wizard.m:191
 msgid ""
@@ -16156,17 +16186,17 @@ msgstr "     [, ]        Titre Suivant/Précédent"
 
 #: modules/gui/ncurses.c:1637
 msgid "     <, >        Next/Previous chapter"
-msgstr "     <, >        Chapitre Suivant/Précédent"
+msgstr "     <, >       Chapitre Suivant/Précédent"
 
 #: modules/gui/ncurses.c:1638
 #, c-format
 msgid "     <right>     Seek +1%%"
-msgstr "     →           Sauter +1%%"
+msgstr "     <Droite>     Sauter +1%%"
 
 #: modules/gui/ncurses.c:1639
 #, c-format
 msgid "     <left>      Seek -1%%"
-msgstr "     ←           Sauter -1%%"
+msgstr "     <Gauche>   Sauter -1%%"
 
 #: modules/gui/ncurses.c:1640
 msgid "     a           Volume Up"
@@ -16248,7 +16278,7 @@ msgstr "[Boites]"
 
 #: modules/gui/ncurses.c:1677
 msgid "     <up>,<down>     Navigate through the box line by line"
-msgstr "     ↑,↓         Naviguer ligne par ligne"
+msgstr "     <Haut>,<Bas>  Naviguer ligne par ligne"
 
 #: modules/gui/ncurses.c:1678
 msgid "     <pgup>,<pgdown> Navigate through the box page by page"
@@ -16261,7 +16291,7 @@ msgstr "[Lecteur]"
 #: modules/gui/ncurses.c:1686
 #, c-format
 msgid "     <up>,<down>     Seek +/-5%%"
-msgstr "     ↑,↓         Sauter +/-5%%"
+msgstr "     <Haut>,<bas>   Sauter +/-5%%"
 
 #: modules/gui/ncurses.c:1691
 msgid "[Miscellaneous]"
@@ -17081,7 +17111,7 @@ msgstr "Nom du périphérique radio"
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr "Votre écran sera utilisé pour diffuser ou enregistrer son contenu."
 
-#: modules/gui/qt4/components/open_panels.cpp:1289
+#: modules/gui/qt4/components/open_panels.cpp:1288
 msgid "Advanced Options"
 msgstr "Options avancées"
 
@@ -17093,11 +17123,11 @@ msgstr "Double-cliquez pour avoir les informations sur le média"
 msgid "URI"
 msgstr "URI"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:129
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:128
 msgid "Click to toggle between loop one, loop all"
 msgstr "Basculer entre répéter un média, répéter tout"
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:153
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:152
 msgid "Show the current item"
 msgstr "Montrer l'élément actuel"
 
@@ -17343,7 +17373,7 @@ msgstr "Effacer tous les signets"
 #: modules/gui/qt4/dialogs/help.cpp:94
 #: modules/gui/qt4/dialogs/mediainfo.cpp:72
 #: modules/gui/qt4/dialogs/messages.cpp:109
-#: modules/gui/qt4/dialogs/plugins.cpp:85
+#: modules/gui/qt4/dialogs/plugins.cpp:83
 #: modules/gui/qt4/dialogs/podcast_configuration.cpp:38
 #: modules/gui/qt4/dialogs/vlm.cpp:139
 msgid "&Close"
@@ -17675,19 +17705,19 @@ msgstr ""
 "ou le chemin d'un fichier sur votre ordinateur,\n"
 "il sera automatiquement sélectionné."
 
-#: modules/gui/qt4/dialogs/plugins.cpp:47
+#: modules/gui/qt4/dialogs/plugins.cpp:45
 msgid "Plugins and extensions"
 msgstr "Greffons et extensions"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:62
+#: modules/gui/qt4/dialogs/plugins.cpp:60
 msgid "Capability"
 msgstr "Type"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:62
+#: modules/gui/qt4/dialogs/plugins.cpp:60
 msgid "Score"
 msgstr "Score"
 
-#: modules/gui/qt4/dialogs/plugins.cpp:75
+#: modules/gui/qt4/dialogs/plugins.cpp:73
 msgid "&Search:"
 msgstr "&Chercher :"
 
@@ -17897,27 +17927,27 @@ msgstr "I&mporter"
 msgid "E&xport"
 msgstr "E&xporter"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:268
+#: modules/gui/qt4/dialogs/vlm.cpp:269
 msgid "Save VLM configuration as..."
 msgstr "Enregistrer la configuration de VLM sous…"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:270 modules/gui/qt4/dialogs/vlm.cpp:357
+#: modules/gui/qt4/dialogs/vlm.cpp:271 modules/gui/qt4/dialogs/vlm.cpp:343
 msgid "VLM conf (*.vlm);;All (*)"
 msgstr "conf VLM (*.vlm) ;; Tous (*.*)"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:355
+#: modules/gui/qt4/dialogs/vlm.cpp:341
 msgid "Open VLM configuration..."
 msgstr "Ouvrir une configuration de VLM…"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:549
+#: modules/gui/qt4/dialogs/vlm.cpp:535
 msgid "Broadcast: "
 msgstr "Diffusion :"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:617
+#: modules/gui/qt4/dialogs/vlm.cpp:603
 msgid "Schedule: "
 msgstr "Planification :"
 
-#: modules/gui/qt4/dialogs/vlm.cpp:639
+#: modules/gui/qt4/dialogs/vlm.cpp:625
 msgid "VOD: "
 msgstr "VOD :"
 
@@ -17925,27 +17955,27 @@ msgstr "VOD :"
 msgid "Open Directory"
 msgstr "Ouvrir un dossier"
 
-#: modules/gui/qt4/dialogs_provider.cpp:519
+#: modules/gui/qt4/dialogs_provider.cpp:520
 msgid "Open playlist..."
 msgstr "Ouvre la liste de lecture…"
 
-#: modules/gui/qt4/dialogs_provider.cpp:530
+#: modules/gui/qt4/dialogs_provider.cpp:531
 msgid "Save playlist as..."
 msgstr "Enregistrer la liste de lecture sous…"
 
-#: modules/gui/qt4/dialogs_provider.cpp:532
+#: modules/gui/qt4/dialogs_provider.cpp:533
 msgid "XSPF playlist (*.xspf);; "
 msgstr "Liste de lecture XSPF (*.xspf);; "
 
-#: modules/gui/qt4/dialogs_provider.cpp:533
+#: modules/gui/qt4/dialogs_provider.cpp:534
 msgid "M3U playlist (*.m3u);; "
 msgstr "Liste de lecture M3U (*.m3u);; "
 
-#: modules/gui/qt4/dialogs_provider.cpp:534
+#: modules/gui/qt4/dialogs_provider.cpp:535
 msgid "HTML playlist (*.html)"
 msgstr "Liste de lecture HTML (*.html)"
 
-#: modules/gui/qt4/dialogs_provider.cpp:658
+#: modules/gui/qt4/dialogs_provider.cpp:659
 msgid "Open subtitles..."
 msgstr "Ouvrir sous-titres…"
 
@@ -17986,7 +18016,7 @@ msgstr ""
 "sur Internet, en particulier pour obtenir des jaquettes de CD et des "
 "informations sur les chansons, ou encore pour savoir si des mises à jour "
 "sont disponibles.</p>\n"
-"<p>Le <i>Lecteur multimédia VLC</i> <b>N’ENVOIE PAS</b> ni ne collecte "
+"<p>Le <i>Lecteur multimédia VLC</i> <b>N’ENVOIE</b> ni ne collecte "
 "<b>AUCUNE</b> information, même anonyme, à propos de votre utilisation.</p>\n"
 "<p>Veuillez donc vérifier les options suivantes, le défaut étant de ne pas "
 "accèder à Internet.</p>\n"
@@ -18374,14 +18404,29 @@ msgstr ""
 "sous Windows et X11 avec le composite activé."
 
 #: modules/gui/qt4/qt4.cpp:113
+#, fuzzy
+msgid "Fullscreen controller opacity opacity between 0.1 and 1."
+msgstr "Facteur d’opacité entre 0,1 et 1."
+
+#: modules/gui/qt4/qt4.cpp:114
+#, fuzzy
+msgid ""
+"Sets the fullscreen controller opacity between 0.1 and 1 for main interface, "
+"playlist and extended panel. This option only works with Windows and X11 "
+"with composite extensions."
+msgstr ""
+"Définis l'opacité de la fenêtre principale. Cette option ne fonctionne que "
+"sous Windows et X11 avec le composite activé."
+
+#: modules/gui/qt4/qt4.cpp:120
 msgid "Show unimportant error and warnings dialogs"
 msgstr "Afficher les erreurs non importantes et les avertissements"
 
-#: modules/gui/qt4/qt4.cpp:115
+#: modules/gui/qt4/qt4.cpp:122
 msgid "Activate the updates availability notification"
 msgstr "Activer la notification en cas de mises à jour disponible"
 
-#: modules/gui/qt4/qt4.cpp:116
+#: modules/gui/qt4/qt4.cpp:123
 msgid ""
 "Activate the automatic notification of new versions of the software. It runs "
 "once every two weeks."
@@ -18389,15 +18434,15 @@ msgstr ""
 "Activez les notification automatiques de nouvelles version. Il se lance "
 "toutes les deux semaines."
 
-#: modules/gui/qt4/qt4.cpp:119
+#: modules/gui/qt4/qt4.cpp:126
 msgid "Number of days between two update checks"
 msgstr "Nombre de jours entre deux vérifications de mises à jour"
 
-#: modules/gui/qt4/qt4.cpp:121
+#: modules/gui/qt4/qt4.cpp:128
 msgid "Allow the volume to be set to 400%"
 msgstr "Permettre au volume de montez jusque 400%"
 
-#: modules/gui/qt4/qt4.cpp:122
+#: modules/gui/qt4/qt4.cpp:129
 msgid ""
 "Allow the volume to have range from 0% to 400%, instead of 0% to 200%. This "
 "option can distort the audio, since it uses software amplification."
@@ -18405,33 +18450,33 @@ msgstr ""
 "Permettre au volume d'aller de 0% à 400%, au lieu de 0% à 200%. Cette option "
 "peut déformer la sortie audio."
 
-#: modules/gui/qt4/qt4.cpp:127
+#: modules/gui/qt4/qt4.cpp:134
 msgid "Automatically save the volume on exit"
 msgstr "Sauvez automatiquement le volume en sortie."
 
-#: modules/gui/qt4/qt4.cpp:129
+#: modules/gui/qt4/qt4.cpp:136
 msgid "Ask for network policy at start"
 msgstr "Demande sur les politiques réseaux au démarrage"
 
-#: modules/gui/qt4/qt4.cpp:131
+#: modules/gui/qt4/qt4.cpp:138
 msgid "Save the recently played items in the menu"
 msgstr "Enregistre les derniers médias joués dans le menu"
 
-#: modules/gui/qt4/qt4.cpp:133
+#: modules/gui/qt4/qt4.cpp:140
 msgid "List of words separated by | to filter"
 msgstr "Liste de mots à filtrer, séparés par des « | »."
 
-#: modules/gui/qt4/qt4.cpp:134
+#: modules/gui/qt4/qt4.cpp:141
 msgid "Regular expression used to filter the recent items played in the player"
 msgstr ""
 "Expression régulière pour filtrer les éléments récemments joués dans le "
 "lecteur"
 
-#: modules/gui/qt4/qt4.cpp:137
+#: modules/gui/qt4/qt4.cpp:144
 msgid "Define the colors of the volume slider "
 msgstr "Définir les couleurs du curseur de volume"
 
-#: modules/gui/qt4/qt4.cpp:138
+#: modules/gui/qt4/qt4.cpp:145
 msgid ""
 "Define the colors of the volume slider\n"
 "By specifying the 12 numbers separated by a ';'\n"
@@ -18443,11 +18488,11 @@ msgstr ""
 " Par défault on a '255;255;255;20;226;20;255;176;15;235;30;20'\n"
 " Une alternative peut être '30;30;50;40;40;100;50;50;160;150;150;255' "
 
-#: modules/gui/qt4/qt4.cpp:143
+#: modules/gui/qt4/qt4.cpp:150
 msgid "Selection of the starting mode and look "
 msgstr "Sélection du mode et du look de démarrage"
 
-#: modules/gui/qt4/qt4.cpp:144
+#: modules/gui/qt4/qt4.cpp:151
 msgid ""
 "Start VLC with:\n"
 " - normal mode\n"
@@ -18460,27 +18505,27 @@ msgstr ""
 "jaquettes des albums…\n"
 " - un mode très minimal avec des contrôles limités"
 
-#: modules/gui/qt4/qt4.cpp:150
+#: modules/gui/qt4/qt4.cpp:157
 msgid "Classic look"
 msgstr "Look classique"
 
-#: modules/gui/qt4/qt4.cpp:151
+#: modules/gui/qt4/qt4.cpp:158
 msgid "Complete look with information area"
 msgstr "Look complet avec une zone d'information"
 
-#: modules/gui/qt4/qt4.cpp:152
+#: modules/gui/qt4/qt4.cpp:159
 msgid "Minimal look with no menus"
 msgstr "Look minimal sans menus"
 
-#: modules/gui/qt4/qt4.cpp:154
+#: modules/gui/qt4/qt4.cpp:161
 msgid "Show a controller in fullscreen mode"
 msgstr "Affiche un contrôleur en mode plein écran"
 
-#: modules/gui/qt4/qt4.cpp:155
+#: modules/gui/qt4/qt4.cpp:162
 msgid "Embed the file browser in open dialog"
 msgstr "Embed the file browser in open dialog"
 
-#: modules/gui/qt4/qt4.cpp:167
+#: modules/gui/qt4/qt4.cpp:174
 msgid "Qt interface"
 msgstr "Interface Qt"
 
@@ -20111,7 +20156,7 @@ msgstr "Module de memcpy optimisé AltiVec"
 msgid "Growl Notification Plugin"
 msgstr "Plugin d’annonce Growl"
 
-#: modules/misc/notify/growl.m:272
+#: modules/misc/notify/growl.m:273
 msgid "Now playing"
 msgstr "Joue actuellement"
 
@@ -20456,7 +20501,7 @@ msgstr ""
 msgid "ASF muxer"
 msgstr "Multiplexeur ASF"
 
-#: modules/mux/asf.c:575
+#: modules/mux/asf.c:576
 msgid "Unknown Video"
 msgstr "Vidéo inconnue"
 
@@ -22001,9 +22046,8 @@ msgid "Blue component of the pause color"
 msgstr "Quantité de bleu dans la couleur de pause"
 
 #: modules/video_filter/atmo/atmo.cpp:159
-#, fuzzy
 msgid "Pause-Fadesteps"
-msgstr "Arrêter le temps"
+msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:160
 msgid ""
@@ -22035,9 +22079,8 @@ msgid "Blue component of the shutdown color"
 msgstr "Quantité de bleu dans la couleur d'arrêt"
 
 #: modules/video_filter/atmo/atmo.cpp:169
-#, fuzzy
 msgid "End-Fadesteps"
-msgstr "Fin d'index"
+msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:170
 msgid ""
@@ -22089,9 +22132,8 @@ msgid ""
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:193
-#, fuzzy
 msgid "Edge Weightning"
-msgstr "Coté d'attachement :"
+msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:194
 msgid ""
@@ -22114,9 +22156,8 @@ msgid ""
 msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:202
-#, fuzzy
 msgid "Hue windowing"
-msgstr "Ajustement de teinte"
+msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:203
 #: modules/video_filter/atmo/atmo.cpp:205
@@ -22124,9 +22165,8 @@ msgid "Used for statistics."
 msgstr "Collecter des statistiques"
 
 #: modules/video_filter/atmo/atmo.cpp:204
-#, fuzzy
 msgid "Sat windowing"
-msgstr "Moins de saturation :"
+msgstr ""
 
 #: modules/video_filter/atmo/atmo.cpp:207
 msgid "Filter length (ms)"
@@ -22322,19 +22362,16 @@ msgid "Video pictures blending"
 msgstr "Mélange d’images"
 
 #: modules/video_filter/blendbench.c:52
-#, fuzzy
 msgid "Number of time to blend"
-msgstr "Régler l'heure à l'heure courante"
+msgstr ""
 
 #: modules/video_filter/blendbench.c:53
-#, fuzzy
 msgid "The number of time the blend will be performed"
-msgstr "Nombre de fois où la même entrée sera répétée"
+msgstr ""
 
 #: modules/video_filter/blendbench.c:55
-#, fuzzy
 msgid "Alpha of the blended image"
-msgstr "Capture d'&image...\tF10"
+msgstr ""
 
 #: modules/video_filter/blendbench.c:56
 msgid "Alpha with which the blend image is blended"
@@ -22345,9 +22382,8 @@ msgid "Image to be blended onto"
 msgstr ""
 
 #: modules/video_filter/blendbench.c:59
-#, fuzzy
 msgid "The image which will be used to blend onto"
-msgstr "Format d’image à utiliser pour stocker les captures d’écran."
+msgstr ""
 
 #: modules/video_filter/blendbench.c:61
 msgid "Chroma for the base image"
@@ -22362,25 +22398,20 @@ msgid "Image which will be blended."
 msgstr ""
 
 #: modules/video_filter/blendbench.c:65
-#, fuzzy
 msgid "The image blended onto the base image"
-msgstr "   --image-base <base>    spécifier une adresse de l'image de base\n"
+msgstr "   "
 
 #: modules/video_filter/blendbench.c:67
-#, fuzzy
 msgid "Chroma for the blend image"
 msgstr ""
-"\n"
-"Table de symbole de l'image:\n"
 
 #: modules/video_filter/blendbench.c:68
 msgid "Chroma which the blend image will be loadedin"
 msgstr ""
 
 #: modules/video_filter/blendbench.c:74
-#, fuzzy
 msgid "Blending benchmark filter"
-msgstr "Matrice de filtre de couleur"
+msgstr ""
 
 #: modules/video_filter/blendbench.c:75
 msgid "Blendbench"
@@ -22395,9 +22426,8 @@ msgid "Base image"
 msgstr "Image de base"
 
 #: modules/video_filter/blendbench.c:92
-#, fuzzy
 msgid "Blend image"
-msgstr "Capture d'image"
+msgstr ""
 
 #: modules/video_filter/bluescreen.c:39
 msgid ""
@@ -22482,9 +22512,8 @@ msgid "Set aspect (like 4:3) of the video canvas"
 msgstr "Régler l’aspect (comme 4:3) du canevas vidéo."
 
 #: modules/video_filter/canvas.c:56
-#, fuzzy
 msgid "Padd video"
-msgstr "Acquisition Vidéo"
+msgstr ""
 
 #: modules/video_filter/canvas.c:58
 msgid ""
@@ -22831,9 +22860,8 @@ msgid "video-filter-event"
 msgstr "video-filter-event"
 
 #: modules/video_filter/gaussianblur.c:47
-#, fuzzy
 msgid "Gaussian's std deviation"
-msgstr "Appliquer un flou gaussien"
+msgstr "Déviation standard gaussienne"
 
 #: modules/video_filter/gaussianblur.c:49
 msgid ""
@@ -23199,9 +23227,8 @@ msgstr ""
 "sont assignés dans le module \"mosaic-bridge\"."
 
 #: modules/video_filter/mosaic.c:150
-#, fuzzy
 msgid "Offsets in order"
-msgstr "nombre trop grand dans le quantificateur {}"
+msgstr ""
 
 #: modules/video_filter/mosaic.c:152
 msgid ""
@@ -23269,9 +23296,8 @@ msgid "OpenCV example"
 msgstr "Example OpenCV"
 
 #: modules/video_filter/opencv_example.cpp:78
-#, fuzzy
 msgid "Haar cascade filename"
-msgstr "#%s attend \"NOM_DE_FICHIER\" ou <NOM_DE_FICHIER>"
+msgstr "Nom du fichier cascade Haar"
 
 #: modules/video_filter/opencv_example.cpp:79
 msgid "Name of XML file containing Haar cascade description"
@@ -23314,9 +23340,8 @@ msgid "Show everything including debug messages"
 msgstr "Montrer tout y-compris les messages de debug"
 
 #: modules/video_filter/opencv_wrapper.c:80
-#, fuzzy
 msgid "OpenCV video filter wrapper"
-msgstr "Contrôles avancés des filtres vidéo"
+msgstr "Encapsuleur de filtre vidéo OpenCV"
 
 #: modules/video_filter/opencv_wrapper.c:81
 msgid "OpenCV"
@@ -23342,18 +23367,16 @@ msgid ""
 msgstr ""
 
 #: modules/video_filter/opencv_wrapper.c:96
-#, fuzzy
 msgid "Wrapper filter output"
-msgstr "Module de filtre de sortie vidéo"
+msgstr ""
 
 #: modules/video_filter/opencv_wrapper.c:97
 msgid "Determines what (if any) video is displayed by the wrapper filter"
 msgstr ""
 
 #: modules/video_filter/opencv_wrapper.c:100
-#, fuzzy
 msgid "Wrapper filter verbosity"
-msgstr "Matrice de filtre de couleur"
+msgstr ""
 
 #: modules/video_filter/opencv_wrapper.c:101
 msgid "Determines wrapper filter verbosity level"
@@ -23479,9 +23502,8 @@ msgid "Panoramix: wall with overlap video filter"
 msgstr ""
 
 #: modules/video_filter/panoramix.c:113
-#, fuzzy
 msgid "Offset X offset (automatic compensation)"
-msgstr "Valeur de compensation d'exposition"
+msgstr ""
 
 #: modules/video_filter/panoramix.c:114
 msgid ""
@@ -23577,54 +23599,48 @@ msgid ""
 msgstr ""
 
 #: modules/video_filter/panoramix.c:157
-#, fuzzy
 msgid "Black Crush for Red"
-msgstr "Sensibilité pour la composante rouge/vert"
+msgstr ""
 
 #: modules/video_filter/panoramix.c:158
 msgid "Select the Black Crush of blended zone (Red or Y component)"
 msgstr ""
 
 #: modules/video_filter/panoramix.c:159
-#, fuzzy
 msgid "Black Crush for Green"
-msgstr "Sensibilité pour la composante rouge/vert"
+msgstr ""
 
 #: modules/video_filter/panoramix.c:160
 msgid "Select the Black Crush of blended zone (Green or U component)"
 msgstr ""
 
 #: modules/video_filter/panoramix.c:161
-#, fuzzy
 msgid "Black Crush for Blue"
-msgstr "Sensibilité pour la composante bleu/jaune"
+msgstr ""
 
 #: modules/video_filter/panoramix.c:162
 msgid "Select the Black Crush of blended zone (Blue or V component)"
 msgstr ""
 
 #: modules/video_filter/panoramix.c:164
-#, fuzzy
 msgid "White Crush for Red"
-msgstr "|red|magenta|yellow|white ]\n"
+msgstr ""
 
 #: modules/video_filter/panoramix.c:165
 msgid "Select the White Crush of blended zone (Red or Y component)"
 msgstr ""
 
 #: modules/video_filter/panoramix.c:166
-#, fuzzy
 msgid "White Crush for Green"
-msgstr "Sensibilité pour la composante rouge/vert"
+msgstr ""
 
 #: modules/video_filter/panoramix.c:167
 msgid "Select the White Crush of blended zone (Green or U component)"
 msgstr ""
 
 #: modules/video_filter/panoramix.c:168
-#, fuzzy
 msgid "White Crush for Blue"
-msgstr "Sensibilité pour la composante bleu/jaune"
+msgstr ""
 
 #: modules/video_filter/panoramix.c:169
 msgid "Select the White Crush of blended zone (Blue or V component)"
@@ -23740,6 +23756,8 @@ msgstr "Créer un emplacement vide (mode taquin)"
 msgid ""
 "Make one slot black. Other tiles can only be swapped with the black slot."
 msgstr ""
+"Avoir un emplacement noir. Les autres éléments pouvant être échangés avec "
+"cet emplacement noir."
 
 #: modules/video_filter/puzzle.c:73
 msgid "Puzzle interactive game video filter"
@@ -23780,7 +23798,7 @@ msgstr "Intervalle d'interrogation VNC"
 #: modules/video_filter/remoteosd.c:88
 msgid ""
 "In this interval an update from VNC is requested, default every 300 ms. "
-msgstr ""
+msgstr "Intervalle de mise à jour depuis VNC, par défaut toutes les 300 ms."
 
 #: modules/video_filter/remoteosd.c:90
 msgid "VNC polling"
@@ -23995,6 +24013,8 @@ msgid ""
 "Directory path where images files should be saved.If not set, then images "
 "will be automatically saved in users homedir."
 msgstr ""
+"Dossier pour les enregistrements des images. Si ceci n'est pas renseigné, "
+"les images seront enregistrées dans le répertoire personnel des utilisateurs."
 
 #: modules/video_filter/scene.c:84
 msgid "Always write to the same file"
@@ -24183,6 +24203,8 @@ msgid ""
 "VLC can embed its video output in an existing X11 window. This is the X "
 "identifier of that window (0 means none)."
 msgstr ""
+"VLC peut utiliser une fenêtre X11 existante pour afficher la sortie vidéo. "
+"Ceci est l'identificant X de cette fenêtre (0 pour aucune)."
 
 #: modules/video_output/drawable.c:48
 msgid "Drawable"
@@ -24883,6 +24905,9 @@ msgstr "Filtre de visualisation"
 #: modules/visualization/visual/visual.c:123
 msgid "Spectrum analyser"
 msgstr "Analyseur de spectre"
+
+#~ msgid "Audio format for MPEG4 (useable with MPEG TS and MPEG4)"
+#~ msgstr "Format MPEG-4 audio (utilisable avec MPEG-TS et MPEG4)"
 
 #~ msgid "Path to use in openfile dialog"
 #~ msgstr "Chemin à utiliser dans le dialogue d’ouverture de fichiers"

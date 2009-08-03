@@ -2,7 +2,7 @@
  * mpls.h: BluRay Disc MPLS
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id$
+ * $Id: dfeb3f7f04c350dd130f5017404f2b0252d2cee2 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
