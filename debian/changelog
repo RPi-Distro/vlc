@@ -1,3 +1,13 @@
+vlc (1.0.1-1ubuntu1) karmic; urgency=low
+
+  * Merge from Debian unstable (LP: #406602, #407570), remaining changes:
+    - build against xulrunner-dev instead of iceape-dev
+    - build against libass-dev and libx264-dev
+    - build against and install libx264 plugin
+    - add Xb-Npp header to vlc package
+
+ -- أحمد المحمودي (Ahmed El-Mahmoudy) <aelmahmoudy@users.sourceforge.net>  Sat, 01 Aug 2009 05:54:24 +0300
+
 vlc (1.0.1-1) unstable; urgency=low
 
   * New upstream bugfix version
