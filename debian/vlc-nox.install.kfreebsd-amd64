@@ -21,7 +21,6 @@ usr/lib/vlc/access/libcdda_plugin.so
 usr/lib/vlc/access/libdvdnav_plugin.so
 usr/lib/vlc/access/libdvdread_plugin.so
 usr/lib/vlc/access/librtp_plugin.so
-usr/lib/vlc/access/libv4l2_plugin.so
 usr/lib/vlc/access/libvcd_plugin.so
 usr/lib/vlc/access/libvcdx_plugin.so
 usr/lib/vlc/access/libzip_plugin.so

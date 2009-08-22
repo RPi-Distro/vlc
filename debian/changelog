@@ -1,3 +1,12 @@
+vlc (1.0.1-2~1.gbp80905b) unstable; urgency=low
+
+  ** SNAPSHOT build @80905b1685b004f6e428c91498d4674e098b6245 **
+
+  * Allow building against libass 0.9.7
+  * Don't try to install v4l2 modules on kfreebsd
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 22 Aug 2009 13:49:19 +0200
+
 vlc (1.0.1-1) unstable; urgency=low
 
   * New upstream bugfix version

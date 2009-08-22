@@ -105,7 +105,7 @@ static int MouseEvent( vlc_object_t *, char const *,
 #if defined( WIN32 ) || defined( UNDER_CE )
 #define OSD_DEFAULT_CFG "osdmenu/default.cfg"
 #else
-#define OSD_DEFAULT_CFG "share/osdmenu/default.cfg"
+#define OSD_DEFAULT_CFG "/usr/share/vlc/osdmenu/default.cfg"
 #endif
 
 #define OSD_UPDATE_MIN     0

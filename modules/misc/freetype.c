@@ -60,7 +60,7 @@
 #define DEFAULT_FONT "" /* Default font found at run-time */
 #define FC_DEFAULT_FONT "Arial"
 #else
-#define DEFAULT_FONT "/usr/share/fonts/truetype/freefont/FreeSerifBold.ttf"
+#define DEFAULT_FONT "/usr/share/fonts/truetype/ttf-dejavu/DejaVuSans-Bold.ttf"
 #define FC_DEFAULT_FONT "Serif Bold"
 #endif
 
