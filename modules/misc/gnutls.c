@@ -698,10 +698,6 @@ static int OpenClient (vlc_object_t *obj)
         sprintf (path, "%s/ssl/certs/ca-certificates.crt", confdir);
         gnutls_Addx509File (VLC_OBJECT (p_session),
                             p_sys->x509_cred, path, false);
-    gnutls_Addx509File( VLC_OBJECT(p_session),
-                        p_sys->x509_cred,
-                        "/etc/ssl/certs/ca-certificates.crt",false );
-
     }
     p_session->pf_handshake = gnutls_HandshakeAndValidate;
     /*p_session->pf_handshake = gnutls_ContinueHandshake;*/

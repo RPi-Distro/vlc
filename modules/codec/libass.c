@@ -48,14 +48,6 @@
 #   include <vlc_charset.h>
 #endif
 
-/* Compatibility with old libass */
-#if !defined(LIBASS_VERSION) || LIBASS_VERSION < 0x00907010
-#   define ASS_Renderer    ass_renderer_t
-#   define ASS_Library     ass_library_t
-#   define ASS_Track       ass_track_t
-#   define ASS_Image       ass_image_t
-#endif
-
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
@@ -81,13 +73,13 @@ static void UpdateRegions( spu_t *,
                            subpicture_t *, const video_format_t *, mtime_t );
 
 /* Yes libass sux with threads */
-typedef struct
+typedef struct 
 {
     vlc_object_t   *p_libvlc;
 
     int             i_refcount;
-    ASS_Library     *p_library;
-    ASS_Renderer    *p_renderer;
+    ass_library_t   *p_library;
+    ass_renderer_t  *p_renderer;
     video_format_t  fmt;
 } ass_handle_t;
 static ass_handle_t *AssHandleHold( decoder_t *p_dec );
@@ -106,7 +98,7 @@ struct decoder_sys_t
     ass_handle_t *p_ass;
 
     /* */
-    ASS_Track    *p_track;
+    ass_track_t  *p_track;
 
     /* */
     subpicture_t *p_spu_final;
@@ -130,9 +122,9 @@ typedef struct
     int y1;
 } rectangle_t;
 
-static int BuildRegions( spu_t *p_spu, rectangle_t *p_region, int i_max_region, ASS_Image *p_img_list, int i_width, int i_height );
+static int BuildRegions( spu_t *p_spu, rectangle_t *p_region, int i_max_region, ass_image_t *p_img_list, int i_width, int i_height );
 static void SubpictureReleaseRegions( spu_t *p_spu, subpicture_t *p_subpic );
-static void RegionDraw( subpicture_region_t *p_region, ASS_Image *p_img );
+static void RegionDraw( subpicture_region_t *p_region, ass_image_t *p_img );
 
 static vlc_mutex_t libass_lock = VLC_STATIC_MUTEX;
 
@@ -145,7 +137,7 @@ static int Create( vlc_object_t *p_this )
 {
     decoder_t *p_dec = (decoder_t *)p_this;
     decoder_sys_t *p_sys;
-    ASS_Track *p_track;
+    ass_track_t *p_track;
 
     if( p_dec->fmt_in.i_codec != VLC_FOURCC('s','s','a',' ') )
         return VLC_EGENERIC;
@@ -369,8 +361,8 @@ static void UpdateRegions( spu_t *p_spu, subpicture_t *p_subpic,
     /* */
     const mtime_t i_stream_date = p_subpic->p_sys->i_pts + (i_ts - p_subpic->i_start);
     int i_changed;
-    ASS_Image *p_img = ass_render_frame( p_ass->p_renderer, p_sys->p_track,
-                                         i_stream_date/1000, &i_changed );
+    ass_image_t *p_img = ass_render_frame( p_ass->p_renderer, p_sys->p_track,
+                                           i_stream_date/1000, &i_changed );
 
     if( !i_changed && !b_fmt_changed &&
         (p_img != NULL) == (p_subpic->p_region != NULL) )
@@ -438,7 +430,7 @@ static rectangle_t r_create( int x0, int y0, int x1, int y1 )
     rectangle_t r = { x0, y0, x1, y1 };
     return r;
 }
-static rectangle_t r_img( const ASS_Image *p_img )
+static rectangle_t r_img( const ass_image_t *p_img )
 {
     return r_create( p_img->dst_x, p_img->dst_y, p_img->dst_x+p_img->w, p_img->dst_y+p_img->h );
 }
@@ -459,9 +451,9 @@ static bool r_overlap( const rectangle_t *a, const rectangle_t *b, int i_dx, int
             __MAX(a->y0-i_dy, b->y0) < __MIN( a->y1+i_dy, b->y1 );
 }
 
-static int BuildRegions( spu_t *p_spu, rectangle_t *p_region, int i_max_region, ASS_Image *p_img_list, int i_width, int i_height )
+static int BuildRegions( spu_t *p_spu, rectangle_t *p_region, int i_max_region, ass_image_t *p_img_list, int i_width, int i_height )
 {
-    ASS_Image *p_tmp;
+    ass_image_t *p_tmp;
     int i_count;
 
     VLC_UNUSED(p_spu);
@@ -475,7 +467,7 @@ static int BuildRegions( spu_t *p_spu, rectangle_t *p_region, int i_max_region, 
     if( i_count <= 0 )
         return 0;
 
-    ASS_Image **pp_img = calloc( i_count, sizeof(*pp_img) );
+    ass_image_t **pp_img = calloc( i_count, sizeof(*pp_img) );
     if( !pp_img )
         return 0;
 
@@ -508,7 +500,7 @@ static int BuildRegions( spu_t *p_spu, rectangle_t *p_region, int i_max_region, 
             b_ok = false;
             for( n = 0; n < i_count; n++ )
             {
-                ASS_Image *p_img = pp_img[n];
+                ass_image_t *p_img = pp_img[n];
                 if( !p_img )
                     continue;
                 rectangle_t r = r_img( p_img );
@@ -584,7 +576,7 @@ static int BuildRegions( spu_t *p_spu, rectangle_t *p_region, int i_max_region, 
     return i_region;
 }
 
-static void RegionDraw( subpicture_region_t *p_region, ASS_Image *p_img )
+static void RegionDraw( subpicture_region_t *p_region, ass_image_t *p_img )
 {
     const plane_t *p = &p_region->p_picture->p[0];
     const int i_x = p_region->i_x;
@@ -599,41 +591,26 @@ static void RegionDraw( subpicture_region_t *p_region, ASS_Image *p_img )
             p_img->dst_y < i_y || p_img->dst_y + p_img->h > i_y + i_height )
             continue;
 
-        const unsigned r = (p_img->color >> 24)&0xff;
-        const unsigned g = (p_img->color >> 16)&0xff;
-        const unsigned b = (p_img->color >>  8)&0xff;
-        const unsigned a = (p_img->color      )&0xff;
+        const int r = (p_img->color >> 24)&0xff;
+        const int g = (p_img->color >> 16)&0xff;
+        const int b = (p_img->color >>  8)&0xff;
+        const int a = (p_img->color      )&0xff;
         int x, y;
 
         for( y = 0; y < p_img->h; y++ )
         {
             for( x = 0; x < p_img->w; x++ )
             {
-                const unsigned alpha = p_img->bitmap[y*p_img->stride+x];
-                const unsigned an = (255 - a) * alpha / 255;
+                const int alpha = p_img->bitmap[y*p_img->stride+x];
+                const int an = (255 - a) * alpha / 255;
 
                 uint8_t *p_rgba = &p->p_pixels[(y+p_img->dst_y-i_y) * p->i_pitch + 4 * (x+p_img->dst_x-i_x)];
-                const unsigned ao = p_rgba[3];
 
                 /* Native endianness, but RGBA ordering */
-                if( ao == 0 )
-                {
-                    /* Optimized but the else{} will produce the same result */
-                    p_rgba[0] = r;
-                    p_rgba[1] = g;
-                    p_rgba[2] = b;
-                    p_rgba[3] = an;
-                }
-                else
-                {
-                    p_rgba[3] = 255 - ( 255 - p_rgba[3] ) * ( 255 - an ) / 255;
-                    if( p_rgba[3] != 0 )
-                    {
-                        p_rgba[0] = ( p_rgba[0] * ao * (255-an) / 255 + r * an ) / p_rgba[3];
-                        p_rgba[1] = ( p_rgba[1] * ao * (255-an) / 255 + g * an ) / p_rgba[3];
-                        p_rgba[2] = ( p_rgba[2] * ao * (255-an) / 255 + b * an ) / p_rgba[3];
-                    }
-                }
+                p_rgba[0] = ( p_rgba[0] * (255-an) + r * an ) / 255;
+                p_rgba[1] = ( p_rgba[1] * (255-an) + g * an ) / 255;
+                p_rgba[2] = ( p_rgba[2] * (255-an) + b * an ) / 255;
+                p_rgba[3] = 255 - ( 255 - p_rgba[3] ) * ( 255 - an ) / 255;
             }
         }
     }
@@ -663,8 +640,8 @@ static ass_handle_t *AssHandleHold( decoder_t *p_dec )
     vlc_mutex_lock( &libass_lock );
 
     ass_handle_t *p_ass = NULL;
-    ASS_Library *p_library = NULL;
-    ASS_Renderer *p_renderer = NULL;
+    ass_library_t *p_library = NULL;
+    ass_renderer_t *p_renderer = NULL;
     vlc_value_t val;
 
     var_Create( p_dec->p_libvlc, "libass-handle", VLC_VAR_ADDRESS );
@@ -754,8 +731,7 @@ static ass_handle_t *AssHandleHold( decoder_t *p_dec )
     ass_set_fonts_dir( p_library, psz_font_dir );
     free( psz_font_dir );
 #ifdef WIN32
-    if( p_dialog )
-        dialog_ProgressSet( p_dialog, NULL, 0.1 );
+    dialog_ProgressSet( p_dialog, NULL, 0.1 );
 #endif
 
     ass_set_extract_fonts( p_library, true );
@@ -778,8 +754,7 @@ static ass_handle_t *AssHandleHold( decoder_t *p_dec )
 
 #ifdef HAVE_FONTCONFIG
 #ifdef WIN32
-    if( p_dialog )
-        dialog_ProgressSet( p_dialog, NULL, 0.2 );
+    dialog_ProgressSet( p_dialog, NULL, 0.2 );
 #endif
 #if defined( LIBASS_VERSION ) && LIBASS_VERSION >= 0x00907000
     ass_set_fonts( p_renderer, psz_font, psz_family, true, NULL, 1 );  // setup default font/family
@@ -787,8 +762,7 @@ static ass_handle_t *AssHandleHold( decoder_t *p_dec )
     ass_set_fonts( p_renderer, psz_font, psz_family );  // setup default font/family
 #endif
 #ifdef WIN32
-    if( p_dialog )
-        dialog_ProgressSet( p_dialog, NULL, 1.0 );
+    dialog_ProgressSet( p_dialog, NULL, 1.0 );
 #endif
 #else
     /* FIXME you HAVE to give him a font if no fontconfig */
@@ -807,8 +781,7 @@ static ass_handle_t *AssHandleHold( decoder_t *p_dec )
     /* */
     vlc_mutex_unlock( &libass_lock );
 #ifdef WIN32
-    if( p_dialog )
-        dialog_ProgressDestroy( p_dialog );
+    dialog_ProgressDestroy( p_dialog );
 #endif
     return p_ass;
 
@@ -844,3 +817,4 @@ static void AssHandleRelease( ass_handle_t *p_ass )
     vlc_mutex_unlock( &libass_lock );
     free( p_ass );
 }
+
