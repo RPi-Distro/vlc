@@ -79,7 +79,6 @@ Build-Depends: debhelper (>= 7),
                libxt-dev,
                libxv-dev,
                pkg-config,
-               qt4-dev-tools,
                zlib1g-dev
 Standards-Version: 3.8.3
 Homepage: http://www.videolan.org/vlc
