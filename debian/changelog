@@ -1,3 +1,13 @@
+vlc (1.0.1-2) unstable; urgency=low
+
+  * Fix typo in debian/changelog
+  * Allow building against libass 0.9.7
+  * Don't try to install v4l2 modules on kfreebsd
+  * Set policy to 3.8.3 (no change needed)
+  * No need of qt4-dev-tools
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 27 Aug 2009 22:53:17 +0200
+
 vlc (1.0.1-1) unstable; urgency=low
 
   * New upstream bugfix version
