@@ -1,0 +1,15 @@
+This package uses quilt to manage all modifications to the upstream
+source.  Changes are stored in the source package as diffs in
+debian/patches and applied during the build.
+
+For more information about quilt, see /usr/share/doc/quilt/README.source
+
+Permanent patches
+0??-*.diff: Buildsystem
+1??-*.diff: Code
+2??-*.diff: Other
+3??-*.diff: "
+
+Temporary patches
+4??-*.diff: Bugs fix most likely taken from upstream Git
+CVE-*-*.diff: Security fix
