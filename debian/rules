@@ -91,6 +91,9 @@ confflags += \
 	--enable-dca \
 	--enable-realrtsp \
 	--disable-dv \
+	--disable-fluidsynth \
+	--disable-kate \
+	--disable-mtp \
 	$(NULL)
 
 
@@ -164,7 +167,7 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_prep
-	sed -e '/\(lib\|libaccess_\)\(alsa\|dvb\|v4l\|pvr\)_/d' \
+	sed -e '/\(lib\|libaccess_\)\(alsa\|dvb\|v4l\|v4l2\|pvr\)_/d' \
 	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd-i386
 	cp debian/vlc-nox.install.kfreebsd-i386 \
 	 debian/vlc-nox.install.kfreebsd-amd64

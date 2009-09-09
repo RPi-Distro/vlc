@@ -1,3 +1,22 @@
+vlc (1.0.1-2) unstable; urgency=low
+
+  * Fix typo in debian/changelog
+  * Allow building against libass 0.9.7
+  * Don't try to install v4l2 modules on kfreebsd
+  * Set policy to 3.8.3 (no change needed)
+  * No need of qt4-dev-tools
+  * Add a README.source about quilt
+  * Disable some modules (kate, mtp, fluidsynth)
+  * Don't distribute the *.install-kfreebsd* files as they are generated 
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sun, 06 Sep 2009 19:07:24 +0200
+
+vlc (1.0.1-1ubuntu2) karmic; urgency=low
+
+  * No-change rebuild to pick up new ffmpeg shlibs file.
+
+ -- Stefan Potyra <sistpoty@ubuntu.com>  Fri, 28 Aug 2009 22:02:06 +0200
+
 vlc (1.0.1-1ubuntu1) karmic; urgency=low
 
   * Merge from Debian unstable (LP: #406602, #407570), remaining changes:
@@ -11,7 +30,7 @@ vlc (1.0.1-1ubuntu1) karmic; urgency=low
 vlc (1.0.1-1) unstable; urgency=low
 
   * New upstream bugfix version
-    + Fix interger underflow in Real RTSP (DZC-2009-001, CVE pending)
+    + Fix integer underflow in Real RTSP (DZC-2009-001, CVE pending)
     + Fix crashes in xspf files handler (LP: #365638)
 
   [ Reinhard Tartler ]
