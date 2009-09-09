@@ -1,3 +1,14 @@
+vlc (1.0.1-2ubuntu1) karmic; urgency=low
+
+  * Merge from Debian unstable (LP: #426693), remaining changes:
+    - build against xulrunner-dev instead of iceape-dev
+    - build against libx264-dev and install libx264 plugin
+    - add Xb-Npp header to vlc package
+  * Recommend vlc-plugin-pulse for vlc, so that pulse can be used as default
+    output.
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Wed, 09 Sep 2009 10:24:09 +0200
+
 vlc (1.0.1-2) unstable; urgency=low
 
   * Fix typo in debian/changelog
