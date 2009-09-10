@@ -1,3 +1,13 @@
+vlc (1.0.1-3~1.gbpf080a3) UNRELEASED; urgency=low
+
+  ** SNAPSHOT build @f080a36b82a83d99dd020147029ee3dcf74a420a **
+
+  * Fix kfreebsd FTBFS and simplify (Closes: #545863) 
+    Thanks to Petr Salinger
+  * Fix Hurd install
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 10 Sep 2009 14:37:26 +0200
+
 vlc (1.0.1-2) unstable; urgency=low
 
   * Fix typo in debian/changelog
