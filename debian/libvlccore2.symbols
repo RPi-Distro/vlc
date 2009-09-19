@@ -401,7 +401,9 @@ libvlccore.so.2 libvlccore2 #MINVER#
  spu_DisplaySubpicture@Base 1.0.0~rc1
  spu_Init@Base 1.0.0~rc1
  spu_RenderSubpictures@Base 1.0.0~rc1
+ spu_RenderSubpicturesNew@Base 1.0.2
  spu_SortSubpictures@Base 1.0.0~rc1
+ spu_SortSubpicturesNew@Base 1.0.2
  str_format_time@Base 1.0.0~rc1
  stream_Block@Base 1.0.0~rc1
  stream_Control@Base 1.0.0~rc1
