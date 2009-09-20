@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2007 the VideoLAN team
- * $Id: 7e458663d77eb3f342480ac2cdc31684f5a88afe $
+ * $Id: 901497f1da42286c108c046ae9e7b66cbe5c4cf6 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -51,8 +51,12 @@
 #define FT_MulFix(v, s) (((v)*(s))>>16)
 
 #ifdef __APPLE__
-#define DEFAULT_FONT "/System/Library/Fonts/LucidaGrande.dfont"
-#define FC_DEFAULT_FONT "Lucida Grande"
+#import <Carbon/Carbon.h>
+#endif
+
+#ifdef __APPLE__
+#define DEFAULT_FONT "/Library/Fonts/Arial Black.ttf"
+#define FC_DEFAULT_FONT "Arial Black"
 #elif defined( SYS_BEOS )
 #define DEFAULT_FONT "/boot/beos/etc/fonts/ttfonts/Swiss721.ttf"
 #define FC_DEFAULT_FONT "Swiss"
@@ -327,8 +331,6 @@ static int Create( vlc_object_t *p_this )
 #ifdef WIN32
         GetWindowsDirectory( psz_fontfile, PATH_MAX + 1 );
         strcat( psz_fontfile, "\\fonts\\arial.ttf" );
-#elif defined(__APPLE__)
-        strcpy( psz_fontfile, DEFAULT_FONT );
 #else
         msg_Err( p_filter, "user didn't specify a font" );
         goto error;

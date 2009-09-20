@@ -2,7 +2,7 @@
  * menus.hpp : Menus handling
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 46eaab6b4dbbd1b3900d12b8f30bd0bd25946c3b $
+ * $Id: 19c9c46e536ceb375650076c96de40ac8c412ff9 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -166,8 +166,8 @@ public:
         }
     }
 private:
-    int id;
     QMenu *menu;
+    int id;
 };
 
 #endif

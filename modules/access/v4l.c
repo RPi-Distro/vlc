@@ -2,7 +2,7 @@
  * v4l.c : Video4Linux input module for vlc
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 11261e7c30e395f81f8bd0df39ca3101146c3536 $
+ * $Id: c15e4de49bc3863892100fb5ec1710a5fdc43df7 $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *         Paul Forgey <paulf at aphrodite dot com>
@@ -38,6 +38,7 @@
 #include <vlc_demux.h>
 #include <vlc_access.h>
 #include <vlc_vout.h>
+#include <vlc_charset.h>
 
 #include <sys/ioctl.h>
 #include <sys/mman.h>
@@ -633,8 +634,8 @@ static void ParseMRL( demux_t *p_demux )
             }
             else if( !strncmp( psz_parser, "fps=", strlen( "fps=" ) ) )
             {
-                p_sys->f_fps = strtof( psz_parser + strlen( "fps=" ),
-                                       &psz_parser );
+                p_sys->f_fps = us_strtof( psz_parser + strlen( "fps=" ),
+                                          &psz_parser );
             }
             else if( !strncmp( psz_parser, "adev=", strlen( "adev=" ) )
              || !strncmp( psz_parser, "samplerate=", strlen( "samplerate=" ) )

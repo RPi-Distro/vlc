@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 6b35a3609744cf4c80845c5c42f9c67ba75ae7d4 $
+ * $Id: 895d5286fcd7c4b26c8f4a4551f50bf541692957 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -45,6 +45,15 @@
 #ifdef Q_WS_X11
 # include <X11/Xlib.h>
 # include <qx11info_x11.h>
+static void videoSync( void )
+{
+    /* Make sure the X server has processed all requests.
+     * This protects other threads using distinct connections from getting
+     * the video widget window in an inconsistent states. */
+    XSync( QX11Info::display(), False );
+}
+#else
+# define videoSync() (void)0
 #endif
 
 #include <math.h>
@@ -113,6 +122,8 @@ WId VideoWidget::request( vout_thread_t *p_nvout, int *pi_x, int *pi_y,
         return NULL;
     }
     p_vout = p_nvout;
+
+    videoSync();
 #ifndef NDEBUG
     msg_Dbg( p_intf, "embedded video ready (handle %p)", (void *)winId() );
 #endif
@@ -129,6 +140,7 @@ void VideoWidget::SetSizing( unsigned int w, unsigned int h )
     videoSize.rheight() = h;
     if( !isVisible() ) show();
     updateGeometry(); // Needed for deinterlace
+    videoSync();
 }
 
 void VideoWidget::release( void )

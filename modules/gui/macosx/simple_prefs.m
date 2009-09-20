@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2009 the VideoLAN team
-* $Id: e5f16fbc2ab483caa654f8505e968952299df64b $
+* $Id: 9742752348053ef735d2668618ad1dbdb81d1dbc $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -324,7 +324,7 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
     else if( p_config->psz_text )
         return p_config->psz_text;
     else
-        msg_Warn( p_this, "option %s does not include any help" );
+        msg_Warn( p_this, "option %s does not include any help", psz_name );
 
     return NULL;
 }

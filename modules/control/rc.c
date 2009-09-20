@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: 88401e89119d88937d455ae1243816f7e422bb6f $
+ * $Id: f34a85c7b667aeec986a605a8167fc1d3a2220b2 $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -58,8 +58,8 @@
 
 #include <vlc_charset.h>
 
-#if defined(AF_UNIX) && !defined(AF_LOCAL)
-#    define AF_LOCAL AF_UNIX
+#if defined(PF_UNIX) && !defined(PF_LOCAL)
+#    define PF_LOCAL PF_UNIX
 #endif
 
 #if defined(AF_LOCAL) && ! defined(WIN32)
@@ -244,7 +244,7 @@ static int Activate( vlc_object_t *p_this )
 
         msg_Dbg( p_intf, "trying UNIX socket" );
 
-        if( (i_socket = socket( AF_LOCAL, SOCK_STREAM, 0 ) ) < 0 )
+        if( (i_socket = socket( PF_LOCAL, SOCK_STREAM, 0 ) ) < 0 )
         {
             msg_Warn( p_intf, "can't open socket: %m" );
             free( psz_unix_path );

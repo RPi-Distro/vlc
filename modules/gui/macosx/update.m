@@ -1,10 +1,10 @@
 /*****************************************************************************
  * update.m: MacOS X Check-For-Update window
  *****************************************************************************
- * Copyright © 2005-2008 the VideoLAN team
- * $Id: 766e59bd623b85c567f4bbd1c72ed26777510c8c $
+ * Copyright (C) 2005-2009 the VideoLAN team
+ * $Id: b35b85a487f8c3c6b1fadf2e04fee1ec24984e44 $
  *
- * Authors: Felix Kühne <fkuehne@users.sf.net>
+ * Authors: Felix Paul Kühne <fkuehne@users.sf.net>
  *          Rafaël Carré <funman@videolanorg>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -60,9 +60,10 @@ static VLCUpdate *_o_sharedInstance = nil;
     return _o_sharedInstance;
 }
 
-- (void)end
+- (void)dealloc
 {
-    if( p_u ) update_Delete( p_u );
+    if( p_update ) update_Delete( p_update );
+    [super dealloc];
 }
 
 - (void)awakeFromNib
@@ -142,7 +143,7 @@ static VLCUpdate *_o_sharedInstance = nil;
     [saveFilePanel setRequiredFileType: @"dmg"];
     [saveFilePanel setCanSelectHiddenExtension: YES];
     [saveFilePanel setCanCreateDirectories: YES];
-    update_release_t *p_release = update_GetRelease( p_u );
+    update_release_t *p_release = update_GetRelease( p_update );
     assert( p_release );
     [saveFilePanel beginSheetForDirectory:@"~/Downloads" file:
         [[[NSString stringWithUTF8String: p_release->psz_url] componentsSeparatedByString:@"/"] lastObject]
@@ -186,7 +187,7 @@ static VLCUpdate *_o_sharedInstance = nil;
     }
     else
     {
-        update_release_t *p_release = update_GetRelease( p_u );
+        update_release_t *p_release = update_GetRelease( p_update );
         [o_fld_releaseNote setString: [NSString stringWithUTF8String: (p_release->psz_desc ? p_release->psz_desc : "" )]];
         [o_fld_status setStringValue: _NS("This version of VLC is outdated.")];
         [o_fld_currentVersion setStringValue: [NSString stringWithFormat:
@@ -204,17 +205,17 @@ static void updateCallback( void * p_data, bool b_success )
 {
     VLCUpdate * update = p_data;
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    NSNumber * state = [NSNumber numberWithBool:!b_success || !update_NeedUpgrade( update->p_u )];
+    NSNumber * state = [NSNumber numberWithBool:!b_success || !update_NeedUpgrade( update->p_update )];
     [update performSelectorOnMainThread:@selector(setUpToDate:) withObject:state waitUntilDone:YES];
     [pool release];
 }
 
 - (void)checkForUpdate
 {
-    p_u = update_New( VLCIntf );
-    if( !p_u )
+    p_update = update_New( VLCIntf );
+    if( !p_update )
         return;
-    update_Check( p_u, updateCallback, self );
+    update_Check( p_update, updateCallback, self );
 
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
     [[NSUserDefaults standardUserDefaults] setObject: [NSDate date] forKey: kPrefUpdateLastTimeChecked];
@@ -224,12 +225,9 @@ static void updateCallback( void * p_data, bool b_success )
 - (void)performDownload:(NSString *)path
 {
     NSAutoreleasePool * pool = [[NSAutoreleasePool alloc] init];
-    update_Download( p_u, [path UTF8String] );
-    [o_btn_DownloadNow setEnabled: NO];
     [o_update_window orderOut: self];
-    update_WaitDownload( p_u );
-    update_Delete( p_u );
-    p_u = nil;
+    update_Download( p_update, [path UTF8String] );
+    [o_btn_DownloadNow setEnabled: NO];
     [pool release];
 }
 

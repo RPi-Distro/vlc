@@ -2,7 +2,7 @@
  * vlcplugin.cpp: a VLC plugin for Mozilla
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 199832c78a8126d6177748466b1a0d9ad299416d $
+ * $Id: 6fe41a232852e85dae57aaf0efa5fe28afc595a4 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Damien Fouilleul <damienf.fouilleul@laposte.net>
@@ -133,7 +133,7 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
     const char *progid = NULL;
 
     /* parse plugin arguments */
-    for( int i = 0; i < argc ; i++ )
+    for( int i = 0; (i < argc) && (ppsz_argc < 32); i++ )
     {
        /* fprintf(stderr, "argn=%s, argv=%s\n", argn[i], argv[i]); */
 

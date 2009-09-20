@@ -2,7 +2,7 @@
  * sdp.c : SDP creation helpers
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id$
+ * $Id: d2c0610655df1ac88588dc4120ba48bdf1fcebca $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by

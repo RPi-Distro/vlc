@@ -2,7 +2,7 @@
  * Controller.hpp : Controller for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 3113666640e5cd1d19d60b286b0e3fc2b748ddd1 $
+ * $Id: 9e0aa9a9235e4b7a16490435ff65ee6ea2769e8d $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -98,12 +98,12 @@ typedef enum buttonType_e
 } buttonType_e;
 
 
-static const char* nameL[BUTTON_MAX] = { N_("Play"), N_("Stop"), N_("Open"),
+static const char* const nameL[BUTTON_MAX] = { N_("Play"), N_("Stop"), N_("Open"),
     N_("Previous"), N_("Next"), N_("Slower"), N_("Faster"), N_("Fullscreen"),
    N_("De-Fullscreen"), N_("Extended panel"), N_("Playlist"), N_("Snapshot"),
    N_("Record"), N_("A->B Loop"), N_("Frame By Frame"), N_("Trickplay Reverse"),
    N_("Step backward" ), N_("Step forward"), N_("Quit") };
-static const char* tooltipL[BUTTON_MAX] = { I_PLAY_TOOLTIP,
+static const char* const tooltipL[BUTTON_MAX] = { I_PLAY_TOOLTIP,
     N_("Stop playback"), N_("Open a medium"),
     N_("Previous media in the playlist"),
     N_("Next media in the playlist"), N_("Slower"), N_("Faster"),

@@ -2,7 +2,7 @@
  * macosx_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 2e035df47a5ee5aa9b86d7c1ca77c97cf84f39f1 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * ogg.c: ogg muxer module for vlc
  *****************************************************************************
  * Copyright (C) 2001, 2002, 2006 the VideoLAN team
- * $Id: fcdfb8a617ce421bc1393155ac3ce6a729bad170 $
+ * $Id: c8145e7412110677fe8012f8b968b9c27733b69a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -179,8 +179,10 @@ typedef struct
     int     i_packet_no;
     int     i_serial_no;
     int     i_keyframe_granule_shift; /* Theora only */
-    int     i_last_keyframe; /* dirac and eventually theora */
+    int     i_last_keyframe; /* dirac and theora */
+    int     i_num_frames; /* Theora only */
     uint64_t u_last_granulepos; /* Used for correct EOS page */
+    int64_t i_num_keyframes;
     ogg_stream_state os;
 
     oggds_header_t *p_oggds_header;
@@ -326,6 +328,9 @@ static int AddStream( sout_mux_t *p_mux, sout_input_t *p_input )
     p_stream->i_fourcc    = p_input->p_fmt->i_codec;
     p_stream->i_serial_no = p_sys->i_next_serial_no++;
     p_stream->i_packet_no = 0;
+    p_stream->i_last_keyframe = 0;
+    p_stream->i_num_keyframes = 0;
+    p_stream->i_num_frames = 0;
 
     p_stream->p_oggds_header = 0;
 
@@ -654,17 +659,8 @@ static block_t *OggCreateHeader( sout_mux_t *p_mux )
             /* Get keyframe_granule_shift for theora granulepos calculation */
             if( p_stream->i_fourcc == VLC_FOURCC( 't', 'h', 'e', 'o' ) )
             {
-                int i_keyframe_frequency_force =
-                      1 << ((op.packet[40] << 6 >> 3) | (op.packet[41] >> 5));
-
-                /* granule_shift = i_log( frequency_force -1 ) */
-                p_stream->i_keyframe_granule_shift = 0;
-                i_keyframe_frequency_force--;
-                while( i_keyframe_frequency_force )
-                {
-                    p_stream->i_keyframe_granule_shift++;
-                    i_keyframe_frequency_force >>= 1;
-                }
+                p_stream->i_keyframe_granule_shift =
+                    ( (op.packet[40] & 0x03) << 3 ) | ( (op.packet[41] & 0xe0) >> 5 );
             }
         }
         else if( p_stream->i_fourcc == VLC_FOURCC( 'd', 'r', 'a', 'c' ) )
@@ -751,8 +747,12 @@ static block_t *OggCreateHeader( sout_mux_t *p_mux )
                 op.packetno = p_stream->i_packet_no++;
                 ogg_stream_packetin( &p_stream->os, &op );
 
-                p_og = OggStreamFlush( p_mux, &p_stream->os, 0 );
-                block_ChainAppend( &p_hdr, p_og );
+                if( j == 0 )
+                    p_og = OggStreamFlush( p_mux, &p_stream->os, 0 );
+                else
+                    p_og = OggStreamPageOut( p_mux, &p_stream->os, 0 );
+                if( p_og )
+                    block_ChainAppend( &p_hdr, p_og );
             }
         }
         else if( p_stream->i_fourcc != VLC_FOURCC( 'f', 'l', 'a', 'c' ) &&
@@ -1002,11 +1002,15 @@ static int MuxBlock( sout_mux_t *p_mux, sout_input_t *p_input )
     {
         if( p_stream->i_fourcc == VLC_FOURCC( 't', 'h', 'e', 'o' ) )
         {
-            /* FIXME, we assume only keyframes */
-            op.granulepos = ( ( p_data->i_dts - p_sys->i_start_dts ) *
-                p_input->p_fmt->video.i_frame_rate /
-                p_input->p_fmt->video.i_frame_rate_base /
-                INT64_C(1000000) ) << p_stream->i_keyframe_granule_shift;
+            p_stream->i_num_frames++;
+            if( p_data->i_flags & BLOCK_FLAG_TYPE_I )
+            {
+                p_stream->i_num_keyframes++;
+                p_stream->i_last_keyframe = p_stream->i_num_frames;
+            }
+
+            op.granulepos = (p_stream->i_last_keyframe << p_stream->i_keyframe_granule_shift )
+                          | (p_stream->i_num_frames-p_stream->i_last_keyframe);
         }
         else if( p_stream->i_fourcc == VLC_FOURCC( 'd', 'r', 'a', 'c' ) )
         {

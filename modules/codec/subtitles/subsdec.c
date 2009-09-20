@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: 0830dbf20de452911a7d8bc8d5623ac489abc70b $
+ * $Id: ad384d0f5c49aa254ab234cfa388d42701d9d914 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -68,7 +68,7 @@ static const char *const ppsz_encodings[] = {
     "ISO-8859-6",
     "Windows-1256",
     "ISO-8859-7",
-    "Windows-1256",
+    "Windows-1253",
     "ISO-8859-8",
     "Windows-1255",
     "ISO-8859-9",
@@ -121,7 +121,7 @@ static const char *const ppsz_encoding_names[] = {
     N_("Arabic (Windows-1256)"),
     /* 7 */
     N_("Greek (ISO 8859-7)"),
-    N_("Greek (Windows-1256)"),
+    N_("Greek (Windows-1253)"),
     /* 8 */
     N_("Hebrew (ISO 8859-8)"),
     N_("Hebrew (Windows-1255)"),

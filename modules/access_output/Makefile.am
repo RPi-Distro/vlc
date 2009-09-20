@@ -3,7 +3,7 @@
 
 basedir = access_output
 dir = access_output
-mods = access_output_dummy access_output_file access_output_http access_output_rtmp access_output_shout access_output_udp
+mods = access_output_dummy access_output_file access_output_http access_output_shout access_output_udp
 libvlc_LTLIBRARIES =  $(LTLIBaccess_output_shout)
 EXTRA_LTLIBRARIES =  libaccess_output_shout_plugin.la
 
@@ -41,17 +41,6 @@ libaccess_output_http_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libaccess_output_http_plugin_la_LIBADD = $(AM_LIBADD)
 libaccess_output_http_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
-
-# The access_output_rtmp plugin
-libaccess_output_rtmp_plugin_la_SOURCES = $(SOURCES_access_output_rtmp)
-nodist_libaccess_output_rtmp_plugin_la_SOURCES = $(nodist_SOURCES_access_output_rtmp)
-# Force per-target objects:
-libaccess_output_rtmp_plugin_la_CFLAGS = $(AM_CFLAGS)
-libaccess_output_rtmp_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
-libaccess_output_rtmp_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
-# Set LIBADD and DEPENDENCIES manually:
-libaccess_output_rtmp_plugin_la_LIBADD = $(AM_LIBADD)
-libaccess_output_rtmp_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The access_output_shout plugin
 libaccess_output_shout_plugin_la_SOURCES = $(SOURCES_access_output_shout)

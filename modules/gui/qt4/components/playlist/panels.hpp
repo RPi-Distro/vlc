@@ -2,7 +2,7 @@
  * panels.hpp : Panels for the playlist
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: 18915649393a3c8f8e81a471736b385c9e19508c $
+ * $Id: 6876f0c03598b09e4e4686d77292d7f68aaaecd0 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -90,6 +90,7 @@ private slots:
     void setCurrentRootId( int );
     void popupAdd();
     void popupSelectColumn( QPoint );
+    void checkSortingIndicator( int );
 };
 
 #endif

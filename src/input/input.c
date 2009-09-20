@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
- * $Id: 8c38dba39e8317fc16aebb5e62efeb6c3d39b10b $
+ * $Id: be4eb7b5a91cc76f7e4394fe4bcba08af841bdb9 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -958,20 +958,13 @@ static void StartTitle( input_thread_t * p_input )
     const mtime_t i_length = var_GetTime( p_input, "length" );
     if( p_input->p->i_start > 0 )
     {
-        if( p_input->p->i_start >= i_length )
-        {
-            msg_Warn( p_input, "invalid start-time ignored" );
-        }
-        else
-        {
-            vlc_value_t s;
+        vlc_value_t s;
 
-            msg_Dbg( p_input, "starting at time: %ds",
-                              (int)( p_input->p->i_start / INT64_C(1000000) ) );
+        msg_Dbg( p_input, "starting at time: %ds",
+                 (int)( p_input->p->i_start / INT64_C(1000000) ) );
 
-            s.i_time = p_input->p->i_start;
-            input_ControlPush( p_input, INPUT_CONTROL_SET_TIME, &s );
-        }
+        s.i_time = p_input->p->i_start;
+        input_ControlPush( p_input, INPUT_CONTROL_SET_TIME, &s );
     }
     if( p_input->p->i_stop > 0 && p_input->p->i_stop <= p_input->p->i_start )
     {

@@ -2,7 +2,7 @@
  * theora.c: theora decoder module making use of libtheora.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 17bf9a7cf06b32e24bea3750636add750f38deec $
+ * $Id: 207a13f8251ebeeaf33290193268044988b352bd $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -699,7 +699,6 @@ static int OpenEncoder( vlc_object_t *p_this )
     p_sys->ti.noise_sensitivity = 1;
 
     theora_encode_init( &p_sys->td, &p_sys->ti );
-    theora_info_clear( &p_sys->ti );
     theora_comment_init( &p_sys->tc );
 
     /* Create and store headers */
@@ -819,6 +818,11 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict )
     p_block = block_New( p_enc, oggpacket.bytes );
     memcpy( p_block->p_buffer, oggpacket.packet, oggpacket.bytes );
     p_block->i_dts = p_block->i_pts = p_pict->date;
+
+    if( theora_packet_iskeyframe( &oggpacket ) )
+    {
+        p_block->i_flags |= BLOCK_FLAG_TYPE_I;
+    }
 
     return p_block;
 }

@@ -1,3 +1,60 @@
+Changes between 1.0.1 and 1.0.2:
+--------------------------------
+
+Decoders:
+ * Native support for WMA Professional, without the use of the Win32 dlls
+ * Fix issues in subtitles, especially SSA ones
+ * Various fixes on theora and ogg
+
+Demuxers:
+ * Various fixes for EPG support in MPEG-TS demuxer
+ * Fixes for potential stack overflow in .avi, .mp4 and .asf demuxers
+
+Access:
+ * Fixes for v4l2 devices
+ * Fixes for dvb-c channels-scanning
+
+Qt Interface:
+ * Fix some playlist sorting issues
+
+Mac OS X Interface:
+ * Fixed a crash when updating VLC
+ * Fixed a crash related to QTKit when opening video files (10.6 only)
+ * Added the ability to play 2nd media in sync to the primary item (input-slave)
+ * Added the "Quit after Playback" feature
+
+Mac OS X Port:
+ * The "Delete Preferences" script is now delivered as a Universal Binary
+   with native code for PowerPC, Intel and Intel 64bit
+ * Full 64bit runtime compatibility on both Mac OS X 10.5 and 10.6
+   - no support for Goom and SDL
+   - limited text rendering support
+   - This port is still considered as EXPERIMENTAL despite its binary release.
+
+Encoders:
+ * MPEG2 transrate stream output removed
+ * x264 default-values closer to x264.exe defaults.
+ * x264 rc-behaviour fixes:
+   - if user defines qp-value, CQP-mode is used
+   - otherwise if user defines vb=0, CRF-mode is used
+   - otherwise ABR-mode is used
+ * x264 set vbv-bufsize/vbv-maxsize better if user hasn't defined these:
+   - ABR mode set vbv-max-bitrate=bitrate
+   - vbv-bufsize is bitrate * seconds between keyframes (keyint/fps)
+
+
+Playlist:
+ * Lua scripts for Mpora and Vimeo playback
+
+Unix builds:
+ * Various fixes to enable 1.0 to build on Solaris and OpenBSD
+
+Translations:
+ * New Kazakh and Croatian translations
+ * Lithunanian translation is available on Windows
+ * Galician, Korean, Nepali, Vietnamese, Ukrainian, Brazilian, Arabic and French translation updates
+
+
 Changes between 1.0.0 and 1.0.1:
 --------------------------------
 
@@ -37,6 +94,33 @@ Windows port:
  * The ZVBI module is now available for Windows, for complete teletext support
 
 Translations updates for Brazillian, French, German, Korean, Norwegian Nynorsk, Lithuanian
+
+
+Changes between 0.9.9a and 0.9.10:
+--------------------------------------
+
+HTTP Interface:
+ * Fixed default ACL
+
+Mac OS X:
+ * Fixed crashes on multi-screen setups
+ * Corrected volume and subtitle encoding options in the Preferences
+ * Improved Information panel behavior, when playlist is not displayed
+ * Fixed QTCapture input support for the latest iSight models
+ * Added a menu-item to unlock the video window's aspect ratio
+ * Fixed redraw issues when autosizing the video window
+ * Updated libpng, libgpg-error, libgcrypt, fribidi
+
+Various fixes to the following modules:
+ * access:
+   - HTTP, SMB
+   - updated and additional access scripts (BBC radio, dailymotion, ...)
+   - Prevent integer underflow in Real pseudo-RTSP module, discovered by tixxDZ,
+     DZCORE Labs, Algeria
+ * stream out:
+   - RTP, RTSP VoD, Mosaic Bridge
+ * decoder:
+   - TSCC
 
 
 Changes between 0.9.9a and 1.0.0:

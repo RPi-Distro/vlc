@@ -2,7 +2,7 @@
  * directory.c: expands a directory (directory: access plug-in)
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id: 71263b1ac5426ff5e46bf98bdf23d3145c319592 $
+ * $Id: dd238e510d2b5b2db3c29cdc85502ce28e65d47b $
  *
  * Authors: Derk-Jan Hartman <hartman at videolan dot org>
  *          Rémi Denis-Courmont
@@ -49,6 +49,12 @@
 
 #ifdef HAVE_DIRENT_H
 #   include <dirent.h>
+#endif
+#ifdef __sun__
+static inline int dirfd (DIR *dir)
+{
+    return dir->dd_fd;
+}
 #endif
 
 #include <vlc_charset.h>

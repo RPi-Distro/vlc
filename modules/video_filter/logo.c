@@ -2,7 +2,7 @@
  * logo.c : logo video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2003-2006 the VideoLAN team
- * $Id: bdc988d3b8f96adbf92ee45cdbf49f56994d5838 $
+ * $Id: 92dd9c2ca8f08c4954cfcbb42c6d519c1afc8073 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Simon Latapie <garf@videolan.org>
@@ -393,6 +393,18 @@ static int Init( vout_thread_t *p_vout )
         p_sys->p_blend->fmt_in.video.i_y_offset = 0;
     p_sys->p_blend->fmt_out.video.i_aspect = p_vout->render.i_aspect;
     p_sys->p_blend->fmt_out.video.i_chroma = p_vout->output.i_chroma;
+
+    p_sys->p_blend->fmt_out.video.i_chroma = p_vout->output.i_chroma;
+    p_sys->p_blend->fmt_out.video.i_rmask  = p_vout->output.i_rmask;
+    p_sys->p_blend->fmt_out.video.i_gmask  = p_vout->output.i_gmask;
+    p_sys->p_blend->fmt_out.video.i_bmask  = p_vout->output.i_bmask;
+    p_sys->p_blend->fmt_out.video.i_rrshift= p_vout->output.i_rrshift;
+    p_sys->p_blend->fmt_out.video.i_rgshift= p_vout->output.i_rgshift;
+    p_sys->p_blend->fmt_out.video.i_rbshift= p_vout->output.i_rbshift;
+    p_sys->p_blend->fmt_out.video.i_lrshift= p_vout->output.i_lrshift;
+    p_sys->p_blend->fmt_out.video.i_lgshift= p_vout->output.i_lgshift;
+    p_sys->p_blend->fmt_out.video.i_lbshift= p_vout->output.i_lbshift;
+
     p_sys->p_blend->fmt_in.video.i_chroma = VLC_FOURCC('Y','U','V','A');
     p_sys->p_blend->fmt_in.video.i_aspect = VOUT_ASPECT_FACTOR;
     p_sys->i_width =

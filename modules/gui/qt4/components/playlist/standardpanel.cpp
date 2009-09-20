@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: 8db504ffa9337c4bb705f969a92685ef59a25366 $
+ * $Id: c9e5550cef2158c615c1c69e1f37e950eeae69f5 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -61,8 +61,7 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
 
     /* Create and configure the QTreeView */
     view = new QVLCTreeView;
-    view->header()->setSortIndicator( 0 , Qt::AscendingOrder );
-    view->setSortingEnabled( true );
+
     view->setModel( model );
     view->setIconSize( QSize( 20, 20 ) );
     view->setAlternatingRowColors( true );
@@ -72,6 +71,8 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
     view->setDragEnabled( true );
     view->setAcceptDrops( true );
     view->setDropIndicatorShown( true );
+    view->header()->setSortIndicator( -1 , Qt::AscendingOrder );
+    view->setSortingEnabled( true );
 
 
     getSettings()->beginGroup("Playlist");
@@ -86,11 +87,15 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
         view->header()->resizeSection( 0, 200 );
         view->header()->resizeSection( 1, 80 );
     }
-    view->header()->setSortIndicatorShown( true );
     view->header()->setClickable( true );
     view->header()->setContextMenuPolicy( Qt::CustomContextMenu );
     getSettings()->endGroup();
 
+    /* Set sorting enable by hand, so it doesn't run sort on start */
+    view->header()->setSortIndicator( -1, Qt::AscendingOrder );
+    view->header()->setSortIndicatorShown( true );
+    CONNECT( view->header(), sortIndicatorChanged( int, Qt::SortOrder ),
+             view, sortByColumn( int ) );
     /* Connections for the TreeView */
     CONNECT( view, activated( const QModelIndex& ) ,
              model,activateItem( const QModelIndex& ) );
@@ -100,6 +105,8 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
              this, popupSelectColumn( QPoint ) );
     CONNECT( model, currentChanged( const QModelIndex& ),
              this, handleExpansion( const QModelIndex& ) );
+    CONNECT( model, columnsChanged( int ),
+            this, checkSortingIndicator( int ) );
 
     currentRootId = -1;
     CONNECT( parent, rootChanged( int ), this, setCurrentRootId( int ) );
@@ -256,13 +263,57 @@ void StandardPLPanel::popupAdd()
                         + QPoint( 0, addButton->height() ) );
 }
 
+/* Set sortingindicator to -1 if it's on column thats removed,
+ * else check that it's still showing on correct column
+ */
+void StandardPLPanel::checkSortingIndicator( int meta )
+{
+    int index=0;
+
+    if( view->header()->isSortIndicatorShown() == false )
+        return;
+
+    int sortIndex = view->header()->sortIndicatorSection();
+    if( sortIndex < 0 || sortIndex > view->header()->count() || meta == 0 )
+        return;
+
+    int _meta = meta;
+
+    while( _meta )
+    {
+        if( _meta & model->shownFlags() )
+            index++;
+        _meta >>= 1;
+    }
+
+    /* Adding column */
+    if( model->shownFlags() & meta )
+    {
+        /* If column is added before sortIndex, move it one to right*/
+        if( sortIndex >= index )
+        {
+            sortIndex += 1;
+        }
+    } else {
+        /* Column removed */
+        if( sortIndex == index )
+        {
+            sortIndex = -1;
+        } else if( sortIndex > index )
+        {
+            /* Move indicator left one step*/
+            sortIndex -= 1;
+        }
+    }
+    view->header()->setSortIndicator( sortIndex  ,
+                view->header()->sortIndicatorOrder() );
+}
+
 void StandardPLPanel::popupSelectColumn( QPoint pos )
 {
     ContextUpdateMapper = new QSignalMapper(this);
 
     QMenu selectColMenu;
-
-    CONNECT( ContextUpdateMapper, mapped( int ),  model, viewchanged( int ) );
 
     int i_column = 1;
     for( i_column = 1; i_column != COLUMN_END; i_column<<=1 )
@@ -274,6 +325,8 @@ void StandardPLPanel::popupSelectColumn( QPoint pos )
         ContextUpdateMapper->setMapping( option, i_column );
         CONNECT( option, triggered(), ContextUpdateMapper, map() );
     }
+
+    CONNECT( ContextUpdateMapper, mapped( int ),  model, viewchanged( int ) );
 
     selectColMenu.exec( QCursor::pos() );
 }

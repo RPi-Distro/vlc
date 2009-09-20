@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 962992191f58631c8fb18dffcd16c35e460f9ada $
+ * $Id: 49e77329083d5b6bd7b4cf94c7fe8e28abb1bb2e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -550,14 +550,14 @@ static int WindowOpen (vlc_object_t *obj)
     msg_Dbg (obj, "requesting video...");
 
 #if defined (Q_WS_X11)
-    wnd->handle.xid = p_mi->requestVideo (wnd->vout, &wnd->pos_x, &wnd->pos_y,
-                                          &wnd->width, &wnd->height);
+    wnd->handle.xid = p_mi->getVideo (wnd->vout, &wnd->pos_x, &wnd->pos_y,
+                                      &wnd->width, &wnd->height);
     if (!wnd->handle.xid)
         return VLC_EGENERIC;
 
 #elif defined (WIN32)
-    wnd->handle.hwnd = p_mi->requestVideo (wnd->vout, &wnd->pos_x, &wnd->pos_y,
-                                           &wnd->width, &wnd->height);
+    wnd->handle.hwnd = p_mi->getVideo (wnd->vout, &wnd->pos_x, &wnd->pos_y,
+                                       &wnd->width, &wnd->height);
     if (!wnd->handle.hwnd)
         return VLC_EGENERIC;
 

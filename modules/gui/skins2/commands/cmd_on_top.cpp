@@ -2,7 +2,7 @@
  * cmd_on_top.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 7783426a5c17c569d88a19aafd14f90bc1e5c21c $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

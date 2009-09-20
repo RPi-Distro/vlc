@@ -2,7 +2,7 @@
  * modules.h : Module management functions.
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 00836dde077124bc8c537967396cab7afe549868 $
+ * $Id: 252abe5b491faf8834a81bb569bf89a0f9d0a1cb $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *
@@ -76,7 +76,7 @@ struct module_cache_t
 #define MODULE_SHORTCUT_MAX 50
 
 /* The module handle type. */
-#if defined(HAVE_DL_DYLD)
+#if defined(HAVE_DL_DYLD) && !defined(__x86_64__)
 #   if defined (HAVE_MACH_O_DYLD_H)
 #       include <mach-o/dyld.h>
 #   endif

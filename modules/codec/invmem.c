@@ -2,7 +2,7 @@
  * invmem_decoder.c: memory video driver for vlc
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: ee9d293d4f3c70106c7da5ae316b6d2607a1a069 $
+ * $Id: c1371b749368a1478c3244ffc02512887832fbe2 $
  *
  * Authors: Robert Paciorek <robert@opcode.eu.org> <http://opcode.eu.org/bercik>
  * based on:
@@ -128,7 +128,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->i_height = var_CreateGetInteger( p_this, "invmem-height" );
     if( p_sys->i_width == 0 || p_sys->i_height == 0 )
     {
-        msg_Err( p_dec, "--vmem-width and --vmem-height must be > 0" );
+        msg_Err( p_dec, "--invmem-width and --invmem-height must be > 0" );
         free( p_sys );
         return VLC_EGENERIC;
     }

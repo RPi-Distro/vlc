@@ -2,7 +2,7 @@
  * Controller_widget.cpp : Controller Widget for the controllers
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 449e1972ee2af8ce0fccbd525ae98c659d024d61 $
+ * $Id: dc2983df34b291da27e33815f78a43ce3db480e7 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *
@@ -42,8 +42,8 @@
 
 SoundWidget::SoundWidget( QWidget *_parent, intf_thread_t * _p_intf,
                           bool b_shiny, bool b_special )
-                         : QWidget( _parent ), b_my_volume( false ),
-                           p_intf( _p_intf)
+                         : QWidget( _parent ), p_intf( _p_intf),
+                           b_my_volume( false )
 {
     /* We need a layout for this widget */
     QHBoxLayout *layout = new QHBoxLayout( this );

@@ -2,7 +2,7 @@
  * chain.c : configuration module chain parsing stuff
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 3122c48702cae487a6f4ce2fd66aebf5f8d47453 $
+ * $Id: 8e0c067e3b426a4208d17a59a419a64c7de18c9d $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -33,6 +33,7 @@
 
 #include <vlc_common.h>
 #include "libvlc.h"
+#include <vlc_charset.h>
 
 #include "vlc_interface.h"
 
@@ -382,7 +383,7 @@ void __config_ChainParse( vlc_object_t *p_this, const char *psz_prefix,
                                     NULL, 0 );
                 break;
             case VLC_VAR_FLOAT:
-                val.f_float = atof( cfg->psz_value ? cfg->psz_value : "0" );
+                val.f_float = us_atof( cfg->psz_value ? cfg->psz_value : "0" );
                 break;
             case VLC_VAR_STRING:
             case VLC_VAR_MODULE:

@@ -2,7 +2,7 @@
  * controls.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 3708813f47af30ff616afb5dd2cd5281359a7f9e $
+ * $Id: 6099eb0edec235b3528980e6388cb91b38db7ae8 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -71,6 +71,7 @@
 - (IBAction)repeat:(id)sender;
 - (IBAction)loop:(id)sender;
 - (IBAction)repeatButtonAction:(id)sender;
+- (IBAction)quitAfterPlayback:(id)sender;
 
 /* the three ugly helpers again */
 - (void)repeatOne;

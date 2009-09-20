@@ -2,7 +2,7 @@
  * ps.c: Program Stream demux module for VLC.
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: aad1e52971ad3b4434e0e235c17e253bbecb17c4 $
+ * $Id: cee838bda7e8e6dc32ee19d522be270327216226 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -63,6 +63,7 @@ vlc_module_begin ()
 
     add_bool( "ps-trust-timestamps", true, NULL, TIME_TEXT,
                  TIME_LONGTEXT, true )
+        change_safe ()
 
     add_submodule ()
     set_description( N_("MPEG-PS demuxer") )

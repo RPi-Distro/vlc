@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
  * Copyright © 2004-2007 Rémi Denis-Courmont
- * $Id: 8f4b0f83e3df6422ffa04704cdde32665a0d2482 $
+ * $Id: c01666155ebfa2d1759a0a7d9fec88f10ca66786 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan.org>
@@ -2265,8 +2265,7 @@ static void* httpd_HostThread( void *data )
                                     {
                                         httpd_MsgAdd( answer,
                                                       "WWW-Authenticate",
-                                                      "Basic realm=\"%s\"",
-                                                      url->psz_user );
+                                                      "Basic realm=\"VLC stream\"" );
                                         /* We fail for all url */
                                         b_auth_failed = true;
                                         free( user );
