@@ -2,7 +2,7 @@
  * libmpeg2.c: mpeg2 video decoder module making use of libmpeg2.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id: 135e0db8f219dbac04623e38aaa8394de0cd0157 $
+ * $Id: c55a243c27fb75f94936373dbf8bc773c3263cd8 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -164,6 +164,7 @@ static int OpenDecoder( vlc_object_t *p_this )
     p_sys->i_previous_pts = 0;
     p_sys->i_current_dts  = 0;
     p_sys->i_previous_dts = 0;
+    p_sys->i_aspect = 0;
     p_sys->b_garbage_pic = false;
     p_sys->b_slice_i  = false;
     p_sys->b_second_field = false;
@@ -263,13 +264,14 @@ static picture_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
             mpeg2_custom_fbuf( p_sys->p_mpeg2dec, 1 );
 
             /* Set the first 2 reference frames */
+            p_sys->i_aspect = 0;
             GetAR( p_dec );
             for( int i = 0; i < 2; i++ )
             {
                 picture_t *p_picture = DpbNewPicture( p_dec );
                 if( !p_picture )
                 {
-                    /* Is it ok ? or do we need a reset ? */
+                    Reset( p_dec );
                     block_Release( p_block );
                     return NULL;
                 }
@@ -698,6 +700,7 @@ static block_t *GetCc( decoder_t *p_dec, bool pb_present[4] )
 static void GetAR( decoder_t *p_dec )
 {
     decoder_sys_t *p_sys = p_dec->p_sys;
+    int i_old_aspect = p_sys->i_aspect;
 
     /* Check whether the input gave a particular aspect ratio */
     if( p_dec->fmt_in.video.i_aspect )
@@ -728,6 +731,9 @@ static void GetAR( decoder_t *p_dec )
             p_sys->i_sar_den = p_sys->p_info->sequence->picture_width * 3;
         }
     }
+
+    if( p_sys->i_aspect == i_old_aspect )
+        return;
 
     if( p_sys->p_info->sequence->frame_period > 0 )
         msg_Dbg( p_dec,

@@ -2,7 +2,7 @@
  * vout_window.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 830e06ffed2ae438ac5b361d107d70251af22bbc $
+ * $Id: 88413604d797e369803b72f0a12dcfa254cd9aa5 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *
@@ -35,7 +35,7 @@ VoutWindow::VoutWindow( intf_thread_t *pIntf, vout_thread_t* pVout,
                         int width, int height, GenericWindow* pParent ) :
       GenericWindow( pIntf, 0, 0, false, false, pParent ),
       m_pVout( pVout ), original_width( width ), original_height( height ),
-      m_pParentWindow( pParent ), m_pImage( NULL )
+      m_pParentWindow( pParent ), m_pCtrlVideo( NULL ), m_pImage( NULL )
 {
     // counter for debug
     count++;

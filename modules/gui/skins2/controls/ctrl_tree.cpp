@@ -2,7 +2,7 @@
  * ctrl_tree.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: c2c5cdb06788a495c12c4300e900e399b0b6dfdc $
+ * $Id: 50b46750269edb20e16d5690d87f073f8a3fe3dd $
  *
  * Authors: Antoine Cellerier <dionoea@videolan.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -36,9 +36,6 @@
 #include "../events/evt_mouse.hpp"
 #include "../events/evt_scroll.hpp"
 #include "vlc_keys.h"
-#ifdef sun
-#   include "solaris_specific.h" // for lrint
-#endif
 
 #define SCROLL_STEP 0.05
 #define LINE_INTERVAL 1  // Number of pixels inserted between 2 lines

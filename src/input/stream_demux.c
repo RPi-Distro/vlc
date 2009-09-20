@@ -2,7 +2,7 @@
  * stream_demux.c
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: b2b76043784a1dfd87d4ee3e01988f93c0828eba $
+ * $Id: 7200ac17ce86ea07183c1c27c9a8c47786b7ccf7 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -92,9 +92,12 @@ stream_t *__stream_DemuxNew( vlc_object_t *p_obj, const char *psz_demux,
         return NULL;
     }
 
+    vlc_object_attach( s, p_obj );
+
     if( vlc_thread_create( s, "stream out", DStreamThread,
                            VLC_THREAD_PRIORITY_INPUT ) )
     {
+        vlc_object_detach( s );
         stream_CommonDelete( s );
         free( p_sys->psz_name );
         free( p_sys );
@@ -131,7 +134,7 @@ static void DStreamDelete( stream_t *s )
     block_FifoRelease( p_sys->p_fifo );
     free( p_sys->psz_name );
     free( p_sys );
-
+    vlc_object_detach( s );
     stream_CommonDelete( s );
 }
 
@@ -161,6 +164,7 @@ static int DStreamRead( stream_t *s, void *p_read, unsigned int i_read )
             i_copy = __MIN( i_read, p_block->i_buffer );
             if( p_out && i_copy ) memcpy( p_out, p_block->p_buffer, i_copy );
             i_read -= i_copy;
+            p_out += i_copy;
             i_out += i_copy;
             p_block->i_buffer -= i_copy;
             p_block->p_buffer += i_copy;
@@ -284,6 +288,9 @@ static void* DStreamThread( vlc_object_t* p_this )
         return NULL;
     }
 
+    /* stream_Demux cannot apply DVB filters.
+     * Get all programs and let the E/S output sort them out. */
+    demux_Control( p_demux, DEMUX_SET_GROUP, -1, NULL );
     p_sys->p_demux = p_demux;
 
     /* Main loop */

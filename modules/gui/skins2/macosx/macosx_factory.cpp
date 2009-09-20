@@ -2,7 +2,7 @@
  * macosx_factory.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 3efac86e7b69037ca9f108a60d9b23ade1738bd8 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

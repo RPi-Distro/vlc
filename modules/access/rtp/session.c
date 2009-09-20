@@ -146,6 +146,7 @@ struct rtp_source_t
 
     uint16_t last_seq; /* sequence of the next dequeued packet */
     block_t *blocks; /* re-ordered blocks queue */
+    mtime_t  ref_ts; /* reference timestamp for reordering */
     void    *opaque[0]; /* Per-source private payload data */
 };
 
@@ -164,6 +165,7 @@ rtp_source_create (demux_t *demux, const rtp_session_t *session,
 
     source->ssrc = ssrc;
     source->jitter = 0;
+    source->ref_ts = 0;
     source->max_seq = source->bad_seq = init_seq;
     source->last_seq = init_seq - 1;
     source->blocks = NULL;
@@ -348,7 +350,7 @@ rtp_queue (demux_t *demux, rtp_session_t *session, block_t *block)
     block_t **pp = &src->blocks;
     for (block_t *prev = *pp; prev != NULL; prev = *pp)
     {
-        int delta_seq = seq - rtp_seq (prev);
+        int16_t delta_seq = seq - rtp_seq (prev);
         if (delta_seq < 0)
             break;
         if (delta_seq == 0)
@@ -383,11 +385,12 @@ rtp_decode (demux_t *demux, const rtp_session_t *session, rtp_source_t *src)
     if (delta_seq != 0)
     {
         if (delta_seq >= 0x8000)
-        {   /* Unrecoverable if later packets have already been dequeued */
-            msg_Warn (demux, "ignoring late packet (sequence: %"PRIu16")",
+        {   /* Trash too late packets (and PIM Assert duplicates) */
+            msg_Dbg (demux, "ignoring late packet (sequence: %"PRIu16")",
                       rtp_seq (block));
             goto drop;
         }
+        msg_Warn (demux, "%"PRIu16" packet(s) lost", delta_seq);
         block->i_flags |= BLOCK_FLAG_DISCONTINUITY;
     }
     src->last_seq = rtp_seq (block);
@@ -409,7 +412,8 @@ rtp_decode (demux_t *demux, const rtp_session_t *session, rtp_source_t *src)
     /* FIXME: handle timestamp wrap properly */
     /* TODO: inter-medias/sessions sync (using RTCP-SR) */
     const uint32_t timestamp = rtp_timestamp (block);
-    block->i_pts = UINT64_C(1) * CLOCK_FREQ * timestamp / pt->frequency;
+    src->ref_ts = 0;
+    block->i_pts = CLOCK_FREQ * timestamp / pt->frequency;
 
     /* CSRC count */
     size_t skip = 12u + (block->p_buffer[0] & 0x0F) * 4;
@@ -486,11 +490,16 @@ bool rtp_dequeue (demux_t *demux, const rtp_session_t *session,
              * match for random gaussian jitter). Additionnaly, we implicitly
              * wait for misordering times the packetization time.
              */
-            mtime_t deadline = src->last_rx;
+            mtime_t deadline = src->ref_ts;
             const rtp_pt_t *pt = rtp_find_ptype (session, src, block, NULL);
+            if (!deadline)
+                deadline = src->ref_ts = now;
             if (pt)
                 deadline += UINT64_C(3) * CLOCK_FREQ * src->jitter
                             / pt->frequency;
+
+            /* Make sure we wait at least for 25 msec */
+            deadline = __MAX(deadline, src->ref_ts + CLOCK_FREQ / 40);
 
             if (now >= deadline)
             {

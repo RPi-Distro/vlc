@@ -2,7 +2,7 @@
  * misc.h
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id$
+ * $Id: 67a386e171be6bab3fa9bbedd883ff1f653266d0 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>

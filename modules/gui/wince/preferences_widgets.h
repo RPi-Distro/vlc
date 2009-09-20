@@ -2,7 +2,7 @@
  * preferences_widgets.h : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2003 the VideoLAN team
- * $Id$
+ * $Id: 37cd1c2d9342a9e0e544b04ffa4b707c49c551bf $
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>

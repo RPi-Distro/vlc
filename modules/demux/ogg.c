@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 2580c6aba6ac416986d965305ac8f06688da223e $
+ * $Id: f73e0435aa6b8fc6561f2ac42d33b1725fd734a4 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -806,7 +806,13 @@ static void Ogg_DecodePacket( demux_t *p_demux,
         p_block->i_length = 0;
     }
     else if( p_stream->fmt.i_codec == VLC_FOURCC( 't','h','e','o' ) )
+    {
         p_block->i_dts = p_block->i_pts = i_pts;
+        if( (p_oggpacket->granulepos & ((1<<p_stream->i_granule_shift)-1)) == 0 )
+        {
+            p_block->i_flags |= BLOCK_FLAG_TYPE_I;
+        }
+    }
     else if( p_stream->fmt.i_codec == VLC_FOURCC( 'd','r','a','c' ) )
     {
         ogg_int64_t dts = p_oggpacket->granulepos >> 31;

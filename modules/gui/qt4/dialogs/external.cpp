@@ -60,7 +60,7 @@ int QVLCVariable::callback (vlc_object_t *object, const char *,
 
 
 DialogHandler::DialogHandler (intf_thread_t *intf, QObject *_parent)
-    : intf (intf), QObject( _parent ),
+    : QObject( _parent ), intf (intf),
       critical (VLC_OBJECT(intf), "dialog-critical", VLC_VAR_ADDRESS),
       login (VLC_OBJECT(intf), "dialog-login", VLC_VAR_ADDRESS),
       question (VLC_OBJECT(intf), "dialog-question", VLC_VAR_ADDRESS),
@@ -180,9 +180,8 @@ void DialogHandler::requestAnswer (vlc_object_t *, void *value)
         ? box->addButton ("&" + qfu(data->yes), QMessageBox::YesRole) : NULL;
     QAbstractButton *no = (data->no != NULL)
         ? box->addButton ("&" + qfu(data->no), QMessageBox::NoRole) : NULL;
-    QAbstractButton *cancel = (data->cancel != NULL)
-        ? box->addButton ("&" + qfu(data->cancel), QMessageBox::RejectRole)
-        : NULL;
+    if (data->cancel != NULL)
+        box->addButton ("&" + qfu(data->cancel), QMessageBox::RejectRole);
 
     box->exec ();
 
@@ -204,8 +203,8 @@ QVLCProgressDialog::QVLCProgressDialog (DialogHandler *parent,
                                         struct dialog_progress_bar_t *data)
     : QProgressDialog (qfu(data->message),
                        data->cancel ? ("&" + qfu(data->cancel)) : 0, 0, 1000),
-      cancelled (false),
-      handler (parent)
+      handler (parent),
+      cancelled (false)
 {
     if (data->title != NULL)
         setWindowTitle (qfu(data->title));

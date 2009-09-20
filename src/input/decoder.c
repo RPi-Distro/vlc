@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 514ef7384ad24898623c312e42bc93d255c31b8b $
+ * $Id: b110a1e88571146b75f320548bca6b576c0937da $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1084,6 +1084,35 @@ static void DecoderFixTs( decoder_t *p_dec, mtime_t *pi_ts0, mtime_t *pi_ts1,
     }
 }
 
+/**
+ * If *pb_reject, it does nothing, otherwise it waits for the given
+ * deadline or a flush request (in which case it set *pi_reject to true.
+ */
+static void DecoderWaitDate( decoder_t *p_dec,
+                             bool *pb_reject, mtime_t i_deadline )
+{
+    decoder_owner_sys_t *p_owner = p_dec->p_owner;
+
+    if( *pb_reject || i_deadline < 0 )
+        return;
+
+    for( ;; )
+    {
+        vlc_mutex_lock( &p_owner->lock );
+        if( p_owner->b_flushing || p_dec->b_die )
+        {
+            *pb_reject = true;
+            vlc_mutex_unlock( &p_owner->lock );
+            break;
+        }
+        int i_ret = vlc_cond_timedwait( &p_owner->wait_request, &p_owner->lock,
+                                        i_deadline );
+        vlc_mutex_unlock( &p_owner->lock );
+        if( i_ret )
+            break;
+    }
+}
+
 static void DecoderPlayAudio( decoder_t *p_dec, aout_buffer_t *p_audio,
                               int *pi_played_sum, int *pi_lost_sum )
 {
@@ -1159,20 +1188,8 @@ static void DecoderPlayAudio( decoder_t *p_dec, aout_buffer_t *p_audio,
             i_rate > INPUT_RATE_DEFAULT*AOUT_MAX_INPUT_RATE )
             b_reject = true;
 
-        /* Do not wait against unprotected date */
-        const mtime_t i_deadline = p_audio->start_date - AOUT_MAX_PREPARE_TIME;
-        while( !b_reject && i_deadline > mdate() )
-        {
-            vlc_mutex_lock( &p_owner->lock );
-            if( p_owner->b_flushing || p_dec->b_die )
-            {
-                b_reject = true;
-                vlc_mutex_unlock( &p_owner->lock );
-                break;
-            }
-            vlc_cond_timedwait( &p_owner->wait_request, &p_owner->lock, i_deadline );
-            vlc_mutex_unlock( &p_owner->lock );
-        }
+        DecoderWaitDate( p_dec, &b_reject,
+                         p_audio->start_date - AOUT_MAX_PREPARE_TIME );
 
         if( !b_reject )
         {
@@ -1552,6 +1569,12 @@ static void DecoderPlaySpu( decoder_t *p_dec, subpicture_t *p_subpic,
                       NULL, INT64_MAX, b_telx );
 
         vlc_mutex_unlock( &p_owner->lock );
+
+        if( p_subpic->i_start <= VLC_TS_INVALID )
+            b_reject = true;
+
+        DecoderWaitDate( p_dec, &b_reject,
+                         p_subpic->i_start - SPU_MAX_PREPARE_TIME );
 
         if( !b_reject )
             spu_DisplaySubpicture( p_vout->p_spu, p_subpic );
@@ -2268,8 +2291,11 @@ static picture_t *vout_new_buffer( decoder_t *p_dec )
             var_CreateGetBool( p_dec, "hdtv-fix" ) )
         {
             p_dec->fmt_out.video.i_visible_height = 1080;
-            p_dec->fmt_out.video.i_sar_num *= 135;
-            p_dec->fmt_out.video.i_sar_den *= 136;
+            if( !(p_dec->fmt_out.video.i_sar_num % 136))
+            {
+                p_dec->fmt_out.video.i_sar_num *= 135;
+                p_dec->fmt_out.video.i_sar_den *= 136;
+            }
             msg_Warn( p_dec, "Fixing broken HDTV stream (display_height=1088)");
         }
 

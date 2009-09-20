@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: dc90fe3784d040344ab359c9543e3b4ef7624496 $
+ * $Id: 210636d30ed19e3d015b2723af4f8a21a5271c99 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -133,8 +133,10 @@ vlc_module_begin ()
                     KASENNA_LONGTEXT, true )
         add_string( "rtsp-user", NULL, NULL, USER_TEXT,
                     USER_LONGTEXT, true )
+            change_safe()
         add_string( "rtsp-pwd", NULL, NULL, PASS_TEXT,
                     PASS_LONGTEXT, true )
+            change_safe()
 vlc_module_end ()
 
 
@@ -1235,7 +1237,7 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
     demux_sys_t *p_sys = p_demux->p_sys;
     int64_t *pi64, i64;
     double  *pf, f;
-    bool *pb, *pb2, b_bool;
+    bool *pb, *pb2;
     int *pi_int;
 
     switch( i_query )
@@ -1400,8 +1402,6 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
 
         case DEMUX_SET_PAUSE_STATE:
         {
-            int i;
-
             p_sys->b_paused = (bool)va_arg( args, int );
             if( p_sys->rtsp == NULL )
                 return VLC_EGENERIC;
@@ -1428,13 +1428,16 @@ static int Control( demux_t *p_demux, int i_query, va_list args )
             else if( !p_sys->b_paused && p_sys->p_timeout != NULL )
                 p_sys->p_timeout->b_handle_keep_alive = false;
 
-            for( i = 0; !b_bool && i < p_sys->i_track; i++ )
+            if( !p_sys->b_paused )
             {
-                live_track_t *tk = p_sys->track[i];
-                tk->b_rtcp_sync = false;
-                tk->i_pts = 0;
-                p_sys->i_pcr = 0;
-                es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
+                for( int i = 0; i < p_sys->i_track; i++ )
+                {
+                    live_track_t *tk = p_sys->track[i];
+                    tk->b_rtcp_sync = false;
+                    tk->i_pts = 0;
+                    p_sys->i_pcr = 0;
+                    es_out_Control( p_demux->out, ES_OUT_RESET_PCR );
+                }
             }
 
             /* Reset data received counter */

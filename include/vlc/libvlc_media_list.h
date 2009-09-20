@@ -2,7 +2,7 @@
  * libvlc_media_list.h:  libvlc_media_list API
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 102a23dd0c951914eb0a272903f759a1955475f7 $
+ * $Id: b9cc188e1e627e9cee7fd0fe708487b7220254a7 $
  *
  * Authors: Pierre d'Herbemont
  *
@@ -230,8 +230,8 @@ VLC_PUBLIC_API libvlc_media_list_view_t *
                                          libvlc_exception_t * );
 
 VLC_PUBLIC_API libvlc_media_list_view_t *
-    libvlc_media_list_hierarchical_node_view( libvlc_media_list_t *,
-                                              libvlc_exception_t * );
+    libvlc_media_list_hierarchical_node_view( libvlc_media_list_t * p_ml,
+                                              libvlc_exception_t * p_ex);
 
 /**
  * Get libvlc_event_manager from this media list instance.

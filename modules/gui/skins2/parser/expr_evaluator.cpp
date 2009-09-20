@@ -2,7 +2,7 @@
  * expr_evaluator.cpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 14f4359f64d36288a65b813fd2099f56726d2367 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

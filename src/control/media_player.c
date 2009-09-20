@@ -2,7 +2,7 @@
  * media_player.c: Libvlc API Media Instance management functions
  *****************************************************************************
  * Copyright (C) 2005-2009 the VideoLAN team
- * $Id: 477b77c0204e310f0742f4b77e54d27ad780d424 $
+ * $Id: f69f621ceba3d14024633b152d32039aede79102 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -1187,6 +1187,7 @@ float libvlc_media_player_get_rate(
     b_can_rewind = var_GetBool( p_input_thread, "can-rewind" );
     if( (val.i_int < 0) && !b_can_rewind )
     {
+        vlc_object_release( p_input_thread );
         libvlc_exception_raise( p_e, "invalid rate" );
         return 0.0;
     }

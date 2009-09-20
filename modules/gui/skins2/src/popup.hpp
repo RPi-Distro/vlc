@@ -2,7 +2,7 @@
  * popup.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 7573976f419f914a32443709b75091e2e1ecb1d6 $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: 040365d21d835555e67d5513d2119fca2bd00920 $
+ * $Id: b67aa36788dd65c6644e5f4b6243ca8651e3509f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -329,6 +329,7 @@ es_out_t *input_EsOutNew( input_thread_t *p_input, int i_rate )
 static void EsOutDelete( es_out_t *out )
 {
     es_out_sys_t *p_sys = out->p_sys;
+    input_thread_t *p_input = p_sys->p_input;
     int i;
 
     if( p_sys->p_sout_record )
@@ -364,6 +365,18 @@ static void EsOutDelete( es_out_t *out )
     {
         es_out_pgrm_t *p_pgrm = p_sys->pgrm[i];
         input_clock_Delete( p_pgrm->p_clock );
+
+        /* Remove SDT and EPG entries */
+        char *psz_cat = EsOutProgramGetMetaName( p_pgrm );
+        input_Control( p_input, INPUT_DEL_INFO, psz_cat, NULL );
+        char *psz_epg;
+        if( asprintf( &psz_epg, "EPG %s", psz_cat ) >= 0 )
+        {
+            input_Control( p_input, INPUT_DEL_INFO, psz_epg, NULL );
+            free( psz_epg );
+        }
+        free( psz_cat );
+
         free( p_pgrm->psz_now_playing );
         free( p_pgrm->psz_publisher );
         free( p_pgrm->psz_name );

@@ -2,7 +2,7 @@
  * playlist_model.hpp : Model for a playlist tree
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: a28c3a8dbb45a07e113b41352eb2a9ce07ce70c8 $
+ * $Id: d4c2e4e9004a3aab08ad54bf42b024eaf959ba33 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -168,6 +168,7 @@ private:
 signals:
     void shouldRemove( int );
     void currentChanged( const QModelIndex& );
+    void columnsChanged( int );
 
 
 public slots:

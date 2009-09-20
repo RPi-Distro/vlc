@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
  * Copyright (C) 2008 Laurent Aimar
- * $Id: eb9fd1729e85413cee40f5d3a507318c8f071966 $
+ * $Id: 773008ee9e98b903e407a5ad7c6cfda91885175f $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -107,7 +107,8 @@ struct vout_thread_sys_t
 
 /* DO NOT use vout_RenderPicture unless you are in src/video_ouput */
 picture_t *vout_RenderPicture( vout_thread_t *, picture_t *,
-                               subpicture_t *, bool b_paused );
+                               subpicture_t *,
+                               mtime_t render_date );
 
 /* DO NOT use vout_UsePictureLocked unless you are in src/video_ouput
  *

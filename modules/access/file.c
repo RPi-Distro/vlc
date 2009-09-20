@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
  * Copyright © 2006-2007 Rémi Denis-Courmont
- * $Id: f6af2bfca2b437efd89a9f692e0ef4222b3e0228 $
+ * $Id: ad111cb458c35af33a8accb6c172dc4ae7ffad13 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Rémi Denis-Courmont <rem # videolan # org>
@@ -50,10 +50,9 @@
 #if defined (__linux__)
 #   include <sys/vfs.h>
 #   include <linux/magic.h>
-#   define HAVE_FSTATFS 1
 #elif defined (HAVE_SYS_MOUNT_H)
+#   include <sys/param.h>
 #   include <sys/mount.h>
-#   define HAVE_FSTATFS 1
 #endif
 
 #if defined( WIN32 )
@@ -73,6 +72,7 @@
 #elif defined( UNDER_CE )
 /* FIXME the commandline on wince is a mess */
 # define dup(a) -1
+# define PathIsNetworkPathW(wpath) (! wcsncmp(wpath, L"\\\\", 2))
 #endif
 
 #include <vlc_charset.h>

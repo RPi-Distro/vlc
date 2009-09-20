@@ -2,7 +2,7 @@
  * fourcc.c: libavcodec <-> libvlc conversion routines
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 79f993d76dc9257c34c35a3102701c21e72268ce $
+ * $Id: 263b89c4bfdf1a6b3004cbdeed8469762b4f4842 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -893,6 +893,13 @@ static const struct
       AUDIO_ES, "Windows Media Audio 2" },
     { VLC_FOURCC('w','m','a','2'), CODEC_ID_WMAV2,
       AUDIO_ES, "Windows Media Audio 2" },
+
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 35, 0 )
+    { VLC_FOURCC('W','M','A','P'), CODEC_ID_WMAPRO,
+      AUDIO_ES, "Windows Media Audio Professional" },
+    { VLC_FOURCC('w','m','a','p'), CODEC_ID_WMAPRO,
+      AUDIO_ES, "Windows Media Audio Professional" },
+#endif
 
     /* DV Audio */
     { VLC_FOURCC('d','v','a','u'), CODEC_ID_DVAUDIO,

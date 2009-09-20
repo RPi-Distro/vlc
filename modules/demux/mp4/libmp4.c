@@ -2,7 +2,7 @@
  * libmp4.c : LibMP4 library for mp4 module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: c4e9db15d871fbda98f66af4568fce503d2a07fb $
+ * $Id: 9bf1a9dde4ba2434003c761eba28411d5af9a4e5 $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -2876,18 +2876,24 @@ static void __MP4_BoxDumpStructure( stream_t *s,
     }
     else
     {
-        char str[512];
         unsigned int i;
-        memset( str, (uint8_t)' ', 512 );
+
+        char str[512];
+        if( i_level * 5 + 1 >= sizeof(str) )
+            return;
+
+        memset( str, ' ', sizeof(str) );
         for( i = 0; i < i_level; i++ )
         {
             str[i*5] = '|';
         }
-        if MP4_BOX_TYPE_ASCII()
-            sprintf( str + i_level * 5, "+ %4.4s size %d",
+        if( MP4_BOX_TYPE_ASCII() )
+            snprintf( &str[i_level * 5], sizeof(str) - 5*i_level,
+                      "+ %4.4s size %d",
                         (char*)&p_box->i_type, (uint32_t)p_box->i_size );
         else
-            sprintf( str + i_level * 5, "+ c%3.3s size %d",
+            snprintf( &str[i_level * 5], sizeof(str) - 5*i_level,
+                      "+ c%3.3s size %d",
                         (char*)&p_box->i_type+1, (uint32_t)p_box->i_size );
         msg_Dbg( s, "%s", str );
     }

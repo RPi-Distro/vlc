@@ -2,7 +2,7 @@
  * Copyright (C) lavrec (see http://mjpeg.sourceforge.net)
  * ( XXX This file was get from the driver-zoran package and it is under GPL)
  *
- * $Id$
+ * $Id: 116a0c068b11d174317b11e880e8e507609e9cd8 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

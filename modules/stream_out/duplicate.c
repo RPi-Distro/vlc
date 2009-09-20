@@ -2,7 +2,7 @@
  * duplicate.c: duplicate stream output module
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: d1939fcb7f86e87ce6ecdb3fce8385075e8dd249 $
+ * $Id: 6a50fdc9a4b76c2a631616a2087f430ae9855cc6 $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -310,7 +310,7 @@ static bool NumInRange( char *psz_range, int i_num )
         i_start = strtol( psz_range, &end, 0 );
         if( end == psz_range ) i_start = i_num;
 
-        i_stop  = strtol( psz,       &end, 0 );
+        i_stop  = strtol( psz+1,       &end, 0 );
         if( end == psz_range ) i_stop = i_num;
     }
     else

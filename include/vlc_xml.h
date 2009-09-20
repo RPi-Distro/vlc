@@ -2,7 +2,7 @@
  * xml.h: XML abstraction layer
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 20b097059adb5334912b2591fca3460161e75a58 $
  *
  * Author: Gildas Bazin <gbazin@videolan.org>
  *

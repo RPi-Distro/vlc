@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id$
+ * $Id: f8878456c3f8f90e740e01c639efa9f68c86f227 $
  */
 #include "AtmoConnection.h"
 

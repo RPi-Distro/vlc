@@ -2,7 +2,7 @@
  * eyetv.c : Access module to connect to our plugin running within EyeTV
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: b835ce1f8fe18c218a4c088452dbbd02b28b71ed $
+ * $Id: 6933e233bb1b27dbbfc1dee5590bfc2bf6081061 $
  *
  * Author: Felix Kühne <fkuehne at videolan dot org>
  *
@@ -187,7 +187,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
 
-    publicSock = socket(AF_UNIX, SOCK_STREAM, 0);
+    publicSock = socket(PF_UNIX, SOCK_STREAM, 0);
     if( publicSock == -1 )
     {
         msg_Err( p_access, "create local socket failed (errno=%d)", errno );

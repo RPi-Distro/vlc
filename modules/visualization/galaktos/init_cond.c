@@ -2,7 +2,7 @@
  * init_cond.:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 1162d4013fdcf9bbe3af05b775b998777fb5cc34 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

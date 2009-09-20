@@ -3,7 +3,7 @@
  * Interface used to send events.
  *****************************************************************************
  * Copyright (C) 2007 the VideoLAN team
- * $Id$
+ * $Id: cba7fb9e2b182645aeaa3d1ecd79da0ac771c857 $
  *
  * Authors: Pierre d'Herbemont
  *

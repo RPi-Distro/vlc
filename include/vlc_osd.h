@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999-2006 the VideoLAN team
  * Copyright (C) 2004-2005 M2X
- * $Id: df855f662e4fb643c955b753099255a3a68c609b $
+ * $Id: 229e3056d09784b848d8f0d37a7e1538c447ab38 $
  *
  * Authors: Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -113,6 +113,7 @@ VLC_EXPORT( void, spu_DisplaySubpicture, ( spu_t *, subpicture_t * ) );
  * The returned list can only be used by spu_RenderSubpictures.
  */
 VLC_EXPORT( subpicture_t *, spu_SortSubpictures, ( spu_t *, mtime_t display_date, bool b_paused, bool b_subtitle_only ) );
+VLC_EXPORT( subpicture_t *, spu_SortSubpicturesNew, ( spu_t *, mtime_t render_subtitle_date, bool b_subtitle_only ) );
 
 /**
  * This function renders a list of subpicture_t on the provided picture.
@@ -121,6 +122,7 @@ VLC_EXPORT( subpicture_t *, spu_SortSubpictures, ( spu_t *, mtime_t display_date
  * \param p_fmt_src is the format of the original(source) video.
  */
 VLC_EXPORT( void, spu_RenderSubpictures, ( spu_t *,  picture_t *, const video_format_t *p_fmt_dst, subpicture_t *p_list, const video_format_t *p_fmt_src, bool b_paused ) );
+VLC_EXPORT( void, spu_RenderSubpicturesNew, ( spu_t *,  picture_t *, const video_format_t *p_fmt_dst, subpicture_t *p_list, const video_format_t *p_fmt_src, mtime_t render_subtitle_date ) );
 
 /** @}*/
 

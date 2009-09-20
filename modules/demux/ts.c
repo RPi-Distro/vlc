@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 97de799e24e87bd0853bb5ab1974b5bb79fef47f $
+ * $Id: 514096befa2e29e2baa09d7c2968b7f507bc9f0e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -373,6 +373,8 @@ struct demux_sys_t
     /* */
     bool        b_start_record;
 };
+
+static int i_broken_epg;
 
 static int Demux    ( demux_t *p_demux );
 static int DemuxFile( demux_t *p_demux );
@@ -2574,174 +2576,6 @@ static void ValidateDVBMeta( demux_t *p_demux, int i_pid )
 
 
 #ifdef TS_USE_DVB_SI
-static void SDTCallBack( demux_t *p_demux, dvbpsi_sdt_t *p_sdt )
-{
-    demux_sys_t          *p_sys = p_demux->p_sys;
-    ts_pid_t             *sdt = &p_sys->pid[0x11];
-    dvbpsi_sdt_service_t *p_srv;
-
-    msg_Dbg( p_demux, "SDTCallBack called" );
-
-    if( sdt->psi->i_sdt_version != -1 &&
-        ( !p_sdt->b_current_next ||
-          p_sdt->i_version == sdt->psi->i_sdt_version ) )
-    {
-        dvbpsi_DeleteSDT( p_sdt );
-        return;
-    }
-
-    msg_Dbg( p_demux, "new SDT ts_id=%d version=%d current_next=%d "
-             "network_id=%d",
-             p_sdt->i_ts_id, p_sdt->i_version, p_sdt->b_current_next,
-             p_sdt->i_network_id );
-
-    for( p_srv = p_sdt->p_first_service; p_srv; p_srv = p_srv->p_next )
-    {
-        vlc_meta_t          *p_meta;
-        dvbpsi_descriptor_t *p_dr;
-
-        const char *psz_type = NULL;
-        const char *psz_status = NULL;
-
-        msg_Dbg( p_demux, "  * service id=%d eit schedule=%d present=%d "
-                 "running=%d free_ca=%d",
-                 p_srv->i_service_id, p_srv->b_eit_schedule,
-                 p_srv->b_eit_present, p_srv->i_running_status,
-                 p_srv->b_free_ca );
-
-        if( p_sys->i_current_program != -1 && p_sys->i_current_program != p_srv->i_service_id )
-            continue;
-
-        p_meta = vlc_meta_New();
-        for( p_dr = p_srv->p_first_descriptor; p_dr; p_dr = p_dr->p_next )
-        {
-            if( p_dr->i_tag == 0x48 )
-            {
-                static const char *ppsz_type[17] = {
-                    "Reserved",
-                    "Digital television service",
-                    "Digital radio sound service",
-                    "Teletext service",
-                    "NVOD reference service",
-                    "NVOD time-shifted service",
-                    "Mosaic service",
-                    "PAL coded signal",
-                    "SECAM coded signal",
-                    "D/D2-MAC",
-                    "FM Radio",
-                    "NTSC coded signal",
-                    "Data broadcast service",
-                    "Reserved for Common Interface Usage",
-                    "RCS Map (see EN 301 790 [35])",
-                    "RCS FLS (see EN 301 790 [35])",
-                    "DVB MHP service"
-                };
-                dvbpsi_service_dr_t *pD = dvbpsi_DecodeServiceDr( p_dr );
-                char str1[257];
-                char str2[257];
-
-                memcpy( str1, pD->i_service_provider_name,
-                        pD->i_service_provider_name_length );
-                str1[pD->i_service_provider_name_length] = '\0';
-                memcpy( str2, pD->i_service_name, pD->i_service_name_length );
-                str2[pD->i_service_name_length] = '\0';
-
-                msg_Dbg( p_demux, "    - type=%d provider=%s name=%s",
-                         pD->i_service_type, str1, str2 );
-
-                vlc_meta_SetTitle( p_meta, str2 );
-                vlc_meta_SetPublisher( p_meta, str1 );
-                if( pD->i_service_type >= 0x01 && pD->i_service_type <= 0x10 )
-                    psz_type = ppsz_type[pD->i_service_type];
-            }
-        }
-
-        if( p_srv->i_running_status >= 0x01 && p_srv->i_running_status <= 0x04 )
-        {
-            static const char *ppsz_status[5] = {
-                "Unknown",
-                "Not running",
-                "Starts in a few seconds",
-                "Pausing",
-                "Running"
-            };
-            psz_status = ppsz_status[p_srv->i_running_status];
-        }
-
-        if( psz_type )
-            vlc_meta_AddExtra( p_meta, "Type", psz_type );
-        if( psz_status )
-            vlc_meta_AddExtra( p_meta, "Status", psz_status );
-
-        es_out_Control( p_demux->out, ES_OUT_SET_GROUP_META,
-                        p_srv->i_service_id, p_meta );
-        vlc_meta_Delete( p_meta );
-    }
-
-    sdt->psi->i_sdt_version = p_sdt->i_version;
-    dvbpsi_DeleteSDT( p_sdt );
-}
-
-/* i_year: year - 1900  i_month: 0-11  i_mday: 1-31 i_hour: 0-23 i_minute: 0-59 i_second: 0-59 */
-static int64_t vlc_timegm( int i_year, int i_month, int i_mday, int i_hour, int i_minute, int i_second )
-{
-    static const int pn_day[12+1] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
-    int64_t i_day;
-    int i;
-
-    if( i_year < 70 ||
-        i_month < 0 || i_month > 11 || i_mday < 1 || i_mday > 31 ||
-        i_hour < 0 || i_hour > 23 || i_minute < 0 || i_minute > 59 || i_second < 0 || i_second > 59 )
-        return -1;
-
-    /* Count the number of days */
-    i_day = 365 * (i_year-70) + pn_day[i_month] + i_mday - 1;
-#define LEAP(y) ( ((y)%4) == 0 && (((y)%100) != 0 || ((y)%400) == 0) ? 1 : 0)
-    for( i = 70; i < i_year; i++ )
-        i_day += LEAP(1900+i);
-    if( i_month > 1 )
-        i_day += LEAP(1900+i_year);
-#undef LEAP
-    /**/
-    return ((24*i_day + i_hour)*60 + i_minute)*60 + i_second;
-}
-
-static void EITDecodeMjd( int i_mjd, int *p_y, int *p_m, int *p_d )
-{
-    const int yp = (int)( ( (double)i_mjd - 15078.2)/365.25 );
-    const int mp = (int)( ((double)i_mjd - 14956.1 - (int)(yp * 365.25)) / 30.6001 );
-    const int c = ( mp == 14 || mp == 15 ) ? 1 : 0;
-
-    *p_y = 1900 + yp + c*1;
-    *p_m = mp - 1 - c*12;
-    *p_d = i_mjd - 14956 - (int)(yp*365.25) - (int)(mp*30.6001);
-}
-#define CVT_FROM_BCD(v) ((((v) >> 4)&0xf)*10 + ((v)&0xf))
-static int64_t EITConvertStartTime( uint64_t i_date )
-{
-    const int i_mjd = i_date >> 24;
-    const int i_hour   = CVT_FROM_BCD(i_date >> 16);
-    const int i_minute = CVT_FROM_BCD(i_date >>  8);
-    const int i_second = CVT_FROM_BCD(i_date      );
-    int i_year;
-    int i_month;
-    int i_day;
-
-    /* if all 40 bits are 1, the start is unknown */
-    if( i_date == UINT64_C(0xffffffffff) )
-        return -1;
-
-    EITDecodeMjd( i_mjd, &i_year, &i_month, &i_day );
-    return vlc_timegm( i_year - 1900, i_month - 1, i_day, i_hour, i_minute, i_second );
-}
-static int EITConvertDuration( uint32_t i_duration )
-{
-    return CVT_FROM_BCD(i_duration >> 16) * 3600 +
-           CVT_FROM_BCD(i_duration >> 8 ) * 60 +
-           CVT_FROM_BCD(i_duration      );
-}
-#undef CVT_FROM_BCD
-
 /* FIXME same than dvbsi_to_utf8 from dvb access */
 static char *EITConvertToUTF8( const unsigned char *psz_instring,
                                size_t i_length )
@@ -2755,9 +2589,17 @@ static char *EITConvertToUTF8( const unsigned char *psz_instring,
     if( i_length < 1 ) return NULL;
     if( psz_instring[0] >= 0x20 )
     {
-        psz_encoding = "ISO_8859-1";
-        /* According to the specification, this should be ISO6937,
-         * but it seems Latin-1 is used instead. */
+        /* According to ETSI EN 300 468 Annex A, this should be ISO6937,
+         * but some broadcasters use different charset... */
+        if ( i_broken_epg == 1 )
+        {
+           psz_encoding = "ISO_8859-1";
+        }
+        else
+        {
+           psz_encoding = "ISO_6937";
+        }
+
         offset = 0;
     }
     else switch( psz_instring[0] )
@@ -2870,7 +2712,191 @@ static char *EITConvertToUTF8( const unsigned char *psz_instring,
     return psz_outstring;
 }
 
-static void EITCallBack( demux_t *p_demux, dvbpsi_eit_t *p_eit )
+static void SDTCallBack( demux_t *p_demux, dvbpsi_sdt_t *p_sdt )
+{
+    demux_sys_t          *p_sys = p_demux->p_sys;
+    ts_pid_t             *sdt = &p_sys->pid[0x11];
+    dvbpsi_sdt_service_t *p_srv;
+
+    msg_Dbg( p_demux, "SDTCallBack called" );
+
+    if( sdt->psi->i_sdt_version != -1 &&
+        ( !p_sdt->b_current_next ||
+          p_sdt->i_version == sdt->psi->i_sdt_version ) )
+    {
+        dvbpsi_DeleteSDT( p_sdt );
+        return;
+    }
+
+    msg_Dbg( p_demux, "new SDT ts_id=%d version=%d current_next=%d "
+             "network_id=%d",
+             p_sdt->i_ts_id, p_sdt->i_version, p_sdt->b_current_next,
+             p_sdt->i_network_id );
+
+    i_broken_epg = 0;
+
+    for( p_srv = p_sdt->p_first_service; p_srv; p_srv = p_srv->p_next )
+    {
+        vlc_meta_t          *p_meta;
+        dvbpsi_descriptor_t *p_dr;
+
+        const char *psz_type = NULL;
+        const char *psz_status = NULL;
+
+        msg_Dbg( p_demux, "  * service id=%d eit schedule=%d present=%d "
+                 "running=%d free_ca=%d",
+                 p_srv->i_service_id, p_srv->b_eit_schedule,
+                 p_srv->b_eit_present, p_srv->i_running_status,
+                 p_srv->b_free_ca );
+
+        if( p_sys->i_current_program != -1 && p_sys->i_current_program != p_srv->i_service_id )
+            continue;
+
+        p_meta = vlc_meta_New();
+        for( p_dr = p_srv->p_first_descriptor; p_dr; p_dr = p_dr->p_next )
+        {
+            if( p_dr->i_tag == 0x48 )
+            {
+                static const char *ppsz_type[17] = {
+                    "Reserved",
+                    "Digital television service",
+                    "Digital radio sound service",
+                    "Teletext service",
+                    "NVOD reference service",
+                    "NVOD time-shifted service",
+                    "Mosaic service",
+                    "PAL coded signal",
+                    "SECAM coded signal",
+                    "D/D2-MAC",
+                    "FM Radio",
+                    "NTSC coded signal",
+                    "Data broadcast service",
+                    "Reserved for Common Interface Usage",
+                    "RCS Map (see EN 301 790 [35])",
+                    "RCS FLS (see EN 301 790 [35])",
+                    "DVB MHP service"
+                };
+                dvbpsi_service_dr_t *pD = dvbpsi_DecodeServiceDr( p_dr );
+                char *str1 = NULL;
+                char *str2 = NULL;
+
+                /* Workarounds for broadcasters with broken EPG */
+
+                if ( p_sdt->i_network_id == 133 )
+                   i_broken_epg = 1;  /* SKY DE & BetaDigital use ISO8859-1 */
+
+                if ( (pD->i_service_provider_name_length == 4) &&
+                     !strncmp(pD->i_service_provider_name, "CSAT", 4) )
+                   i_broken_epg = 1;  /* CanalSat FR uses ISO8859-1 */
+
+                /* FIXME: Digital+ ES also uses ISO8859-1 */
+
+                str1 = EITConvertToUTF8(pD->i_service_provider_name,
+                                        pD->i_service_provider_name_length);
+                str2 = EITConvertToUTF8(pD->i_service_name,
+                                        pD->i_service_name_length);
+
+                msg_Dbg( p_demux, "    - type=%d provider=%s name=%s",
+                         pD->i_service_type, str1, str2 );
+
+                vlc_meta_SetTitle( p_meta, str2 );
+                vlc_meta_SetPublisher( p_meta, str1 );
+                if( pD->i_service_type >= 0x01 && pD->i_service_type <= 0x10 )
+                    psz_type = ppsz_type[pD->i_service_type];
+                free( str1 );
+                free( str2 );
+            }
+        }
+
+        if( p_srv->i_running_status >= 0x01 && p_srv->i_running_status <= 0x04 )
+        {
+            static const char *ppsz_status[5] = {
+                "Unknown",
+                "Not running",
+                "Starts in a few seconds",
+                "Pausing",
+                "Running"
+            };
+            psz_status = ppsz_status[p_srv->i_running_status];
+        }
+
+        if( psz_type )
+            vlc_meta_AddExtra( p_meta, "Type", psz_type );
+        if( psz_status )
+            vlc_meta_AddExtra( p_meta, "Status", psz_status );
+
+        es_out_Control( p_demux->out, ES_OUT_SET_GROUP_META,
+                        p_srv->i_service_id, p_meta );
+        vlc_meta_Delete( p_meta );
+    }
+
+    sdt->psi->i_sdt_version = p_sdt->i_version;
+    dvbpsi_DeleteSDT( p_sdt );
+}
+
+/* i_year: year - 1900  i_month: 0-11  i_mday: 1-31 i_hour: 0-23 i_minute: 0-59 i_second: 0-59 */
+static int64_t vlc_timegm( int i_year, int i_month, int i_mday, int i_hour, int i_minute, int i_second )
+{
+    static const int pn_day[12+1] = { 0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334 };
+    int64_t i_day;
+    int i;
+
+    if( i_year < 70 ||
+        i_month < 0 || i_month > 11 || i_mday < 1 || i_mday > 31 ||
+        i_hour < 0 || i_hour > 23 || i_minute < 0 || i_minute > 59 || i_second < 0 || i_second > 59 )
+        return -1;
+
+    /* Count the number of days */
+    i_day = 365 * (i_year-70) + pn_day[i_month] + i_mday - 1;
+#define LEAP(y) ( ((y)%4) == 0 && (((y)%100) != 0 || ((y)%400) == 0) ? 1 : 0)
+    for( i = 70; i < i_year; i++ )
+        i_day += LEAP(1900+i);
+    if( i_month > 1 )
+        i_day += LEAP(1900+i_year);
+#undef LEAP
+    /**/
+    return ((24*i_day + i_hour)*60 + i_minute)*60 + i_second;
+}
+
+static void EITDecodeMjd( int i_mjd, int *p_y, int *p_m, int *p_d )
+{
+    const int yp = (int)( ( (double)i_mjd - 15078.2)/365.25 );
+    const int mp = (int)( ((double)i_mjd - 14956.1 - (int)(yp * 365.25)) / 30.6001 );
+    const int c = ( mp == 14 || mp == 15 ) ? 1 : 0;
+
+    *p_y = 1900 + yp + c*1;
+    *p_m = mp - 1 - c*12;
+    *p_d = i_mjd - 14956 - (int)(yp*365.25) - (int)(mp*30.6001);
+}
+#define CVT_FROM_BCD(v) ((((v) >> 4)&0xf)*10 + ((v)&0xf))
+static int64_t EITConvertStartTime( uint64_t i_date )
+{
+    const int i_mjd = i_date >> 24;
+    const int i_hour   = CVT_FROM_BCD(i_date >> 16);
+    const int i_minute = CVT_FROM_BCD(i_date >>  8);
+    const int i_second = CVT_FROM_BCD(i_date      );
+    int i_year;
+    int i_month;
+    int i_day;
+
+    /* if all 40 bits are 1, the start is unknown */
+    if( i_date == UINT64_C(0xffffffffff) )
+        return -1;
+
+    EITDecodeMjd( i_mjd, &i_year, &i_month, &i_day );
+    return vlc_timegm( i_year - 1900, i_month - 1, i_day, i_hour, i_minute, i_second );
+}
+static int EITConvertDuration( uint32_t i_duration )
+{
+    return CVT_FROM_BCD(i_duration >> 16) * 3600 +
+           CVT_FROM_BCD(i_duration >> 8 ) * 60 +
+           CVT_FROM_BCD(i_duration      );
+}
+#undef CVT_FROM_BCD
+
+
+static void EITCallBack( demux_t *p_demux,
+                         dvbpsi_eit_t *p_eit, bool b_current_following )
 {
     demux_sys_t        *p_sys = p_demux->p_sys;
     dvbpsi_eit_event_t *p_evt;
@@ -2953,13 +2979,14 @@ static void EITCallBack( demux_t *p_demux, dvbpsi_eit_t *p_eit )
                         if( psz_dsc && psz_itm )
                         {
                             msg_Dbg( p_demux, "       - desc='%s' item='%s'", psz_dsc, psz_itm );
-
+#if 0
                             psz_extra = realloc( psz_extra, strlen(psz_extra) + strlen(psz_dsc) + strlen(psz_itm) + 3 + 1 );
                             strcat( psz_extra, "(" );
                             strcat( psz_extra, psz_dsc );
                             strcat( psz_extra, " " );
                             strcat( psz_extra, psz_itm );
                             strcat( psz_extra, ")" );
+#endif
                         }
                         free( psz_dsc );
                         free( psz_itm );
@@ -2974,7 +3001,8 @@ static void EITCallBack( demux_t *p_demux, dvbpsi_eit_t *p_eit )
 
         /* */
         if( i_start > 0 )
-            vlc_epg_AddEvent( p_epg, i_start, i_duration, psz_name, psz_text, psz_extra );
+            vlc_epg_AddEvent( p_epg, i_start, i_duration, psz_name, psz_text,
+                              *psz_extra ? psz_extra : NULL );
 
         /* Update "now playing" field */
         if( p_evt->i_running_status == 0x04 && i_start > 0 )
@@ -2987,7 +3015,7 @@ static void EITCallBack( demux_t *p_demux, dvbpsi_eit_t *p_eit )
     }
     if( p_epg->i_event > 0 )
     {
-        if( p_eit->i_service_id == p_sys->i_current_program )
+        if( p_eit->i_service_id == p_sys->i_current_program && b_current_following )
         {
             p_sys->i_dvb_length = 0;
             p_sys->i_dvb_start = 0;
@@ -3003,6 +3031,14 @@ static void EITCallBack( demux_t *p_demux, dvbpsi_eit_t *p_eit )
     vlc_epg_Delete( p_epg );
 
     dvbpsi_DeleteEIT( p_eit );
+}
+static void EITCallBackCurrentFollowing( demux_t *p_demux, dvbpsi_eit_t *p_eit )
+{
+    EITCallBack( p_demux, p_eit, true );
+}
+static void EITCallBackSchedule( demux_t *p_demux, dvbpsi_eit_t *p_eit )
+{
+    EITCallBack( p_demux, p_eit, false );
 }
 
 static void PSINewTableCallBack( demux_t *p_demux, dvbpsi_handle h,
@@ -3027,8 +3063,10 @@ static void PSINewTableCallBack( demux_t *p_demux, dvbpsi_handle h,
         msg_Dbg( p_demux, "PSINewTableCallBack: table 0x%x(%d) ext=0x%x(%d)",
                  i_table_id, i_table_id, i_extension, i_extension );
 
-        dvbpsi_AttachEIT( h, i_table_id, i_extension,
-                          (dvbpsi_eit_callback)EITCallBack, p_demux );
+        dvbpsi_eit_callback cb = i_table_id == 0x4e ?
+                                    (dvbpsi_eit_callback)EITCallBackCurrentFollowing :
+                                    (dvbpsi_eit_callback)EITCallBackSchedule;
+        dvbpsi_AttachEIT( h, i_table_id, i_extension, cb, p_demux );
     }
 }
 #endif

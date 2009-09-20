@@ -2,7 +2,7 @@
  * intf.h: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 826dbe140d051b4a11371f1d370788274cf8bc3a $
+ * $Id: 3d1f899191869397ee288755eb63da8d7b0a8d30 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -209,6 +209,7 @@ struct intf_sys_t
     IBOutlet NSMenuItem * o_mi_random;
     IBOutlet NSMenuItem * o_mi_repeat;
     IBOutlet NSMenuItem * o_mi_loop;
+    IBOutlet NSMenuItem * o_mi_quitAfterPB;
     IBOutlet NSMenuItem * o_mi_fwd;
     IBOutlet NSMenuItem * o_mi_bwd;
     IBOutlet NSMenuItem * o_mi_fwd1m;

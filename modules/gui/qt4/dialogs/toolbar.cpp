@@ -2,7 +2,7 @@
  * ToolbarEdit.cpp : ToolbarEdit and About dialogs
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: f08926b1d08822f74b9da88cc9706dde55a4b205 $
+ * $Id: 78aab015c460794e1a194cb64ef2dd066f181a0b $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -480,7 +480,6 @@ void DroppingController::resetLine( const QString& line )
 {
     hide();
     QLayoutItem *child;
-    int i =0;
     while( (child = controlLayout->takeAt( 0 ) ) != 0 )
     {
         child->widget()->hide();
@@ -545,7 +544,7 @@ void DroppingController::createAndAddWidget( QBoxLayout *controlLayout,
             foreach( child, children )
             {
                 QWidget *childWidg;
-                if( childWidg = qobject_cast<QWidget *>( child ) )
+                if( ( childWidg = qobject_cast<QWidget *>( child ) ) )
                 {
                     child->installEventFilter( this );
                     childWidg->setEnabled( true );

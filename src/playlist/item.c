@@ -2,7 +2,7 @@
  * item.c : Playlist item creation/deletion/add/removal functions
  *****************************************************************************
  * Copyright (C) 1999-2007 the VideoLAN team
- * $Id: e804027a2d0b49e3aebe24e7a2401eb0850e6f93 $
+ * $Id: d12f57a17fa90816fe98441bb7017fd1ae07d9a9 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>
@@ -690,7 +690,7 @@ static int TreeMove( playlist_t *p_playlist, playlist_item_t *p_item,
      * down of the playlist. So when removing the element we have
      * to change the position as we loose one element
      */
-    if( j < i_newpos )
+    if( p_detach == p_node && j < i_newpos )
         i_newpos--;
 
     /* Attach to new parent */

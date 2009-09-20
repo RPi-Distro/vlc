@@ -2,7 +2,7 @@
  * wizard.m: MacOS X Streaming Wizard
  *****************************************************************************
  * Copyright (C) 2005-2008 the VideoLAN team
- * $Id: dc49497e5a82587c3c77a2ba2788567efe8679a3 $
+ * $Id: 1bc23fca9340514826da44764b44d33db96d6db8 $
  *
  * Authors: Felix Kühne <fkuehne@users.sf.net>
  *
@@ -1177,11 +1177,8 @@ static VLCWizard *_o_sharedInstance = nil;
                 {
                     NSString * fileNameToUse;
                     /* check whether the extension is hidden or not.
-                     * if not, remove it
-                     * we need the casting to make GCC4 happy */
-                    if( [[[NSFileManager defaultManager] fileAttributesAtPath:
-                        [[o_userSelections objectForKey:@"pathToStrm"]
-                        objectAtIndex: x] traverseLink: NO] objectForKey:
+                     * if not, remove it */
+                    if( [[[NSFileManager defaultManager] attributesOfItemAtPath: [[o_userSelections objectForKey:@"pathToStrm"] objectAtIndex: x] error: nil] objectForKey:
                         NSFileExtensionHidden] )
                         fileNameToUse = [NSString stringWithString:
                             [[NSFileManager defaultManager] displayNameAtPath:

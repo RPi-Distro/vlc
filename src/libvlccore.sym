@@ -350,7 +350,9 @@ spu_Destroy
 spu_DisplaySubpicture
 spu_Init
 spu_RenderSubpictures
+spu_RenderSubpicturesNew
 spu_SortSubpictures
+spu_SortSubpicturesNew
 __stats_TimerClean
 __stats_TimerDump
 __stats_TimersCleanAll

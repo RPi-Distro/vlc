@@ -2,7 +2,7 @@
  * libvlc.h:  libvlc external API
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: 18fcd216d4e5e2bc0319f7082848d18d456b468a $
+ * $Id: e9156223f97c813be0a28879517e0fad856f5e97 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -199,7 +199,7 @@ VLC_PUBLIC_API libvlc_media_t * libvlc_media_duplicate( libvlc_media_t * );
  * Read the meta of the media.
  *
  * \param p_meta_desc the media to read
- * \param e_meta_desc the meta to read
+ * \param e_meta the meta to read
  * \param p_e an initialized exception pointer
  * \return the media's meta
  */

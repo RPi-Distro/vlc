@@ -1,6 +1,6 @@
 /*
  * Resources
- * $Id$
+ * $Id: 3560dd07309919256f4b6e24a74ef27822cb0b61 $
  *
  * Copyright 1993 Robert J. Amstadt
  * Copyright 1995 Alexandre Julliard

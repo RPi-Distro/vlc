@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: 5602962677a2d8be093d42e95eaac19bfe60224b $
+ * $Id: e76ac3b305513337bcf974edaa462da8fb030fa8 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -33,6 +33,7 @@
 #include <vlc_vout.h>
 #include <vlc_sout.h>
 #include <vlc_codec.h>
+#include <vlc_charset.h>
 
 #ifdef PTW32_STATIC_LIB
 #include <pthread.h>
@@ -174,10 +175,10 @@ static void Close( vlc_object_t * );
 
 #if X264_BUILD >= 59
 #define AQ_MODE_TEXT N_("How AQ distributes bits")
-#define AQ_MODE_LONGTEXT N_("Defines bitdistribution mode for AQ, default 2\n" \
+#define AQ_MODE_LONGTEXT N_("Defines bitdistribution mode for AQ, default 1\n" \
         " - 0: Disabled\n"\
-        " - 1: Avoid moving bits between frames\n"\
-        " - 2: Move bits between frames")
+        " - 1: Current x264 default mode\n"\
+        " - 2: uses log(var)^2 instead of log(var) and attempts to adapt strength per frame")
 
 #define AQ_STRENGTH_TEXT N_("Strength of AQ")
 #define AQ_STRENGTH_LONGTEXT N_("Strength to reduce blocking and blurring in flat\n"\
@@ -443,7 +444,7 @@ vlc_module_begin ()
 #  endif
 #endif
 
-    add_integer( SOUT_CFG_PREFIX "bframes", 0, NULL, BFRAMES_TEXT,
+    add_integer( SOUT_CFG_PREFIX "bframes", 3, NULL, BFRAMES_TEXT,
                  BFRAMES_LONGTEXT, false )
         change_integer_range( 0, 16 )
 
@@ -468,7 +469,7 @@ vlc_module_begin ()
     add_bool( SOUT_CFG_PREFIX "cabac", 1, NULL, CABAC_TEXT, CABAC_LONGTEXT,
               false )
 
-    add_integer( SOUT_CFG_PREFIX "ref", 1, NULL, REF_TEXT,
+    add_integer( SOUT_CFG_PREFIX "ref", 3, NULL, REF_TEXT,
                  REF_LONGTEXT, false )
         change_integer_range( 1, 16 )
         add_deprecated_alias( SOUT_CFG_PREFIX "frameref" ) /* Deprecated since 0.8.5 */
@@ -491,12 +492,12 @@ vlc_module_begin ()
 
 /* Ratecontrol */
 
-    add_integer( SOUT_CFG_PREFIX "qp", 26, NULL, QP_TEXT, QP_LONGTEXT,
+    add_integer( SOUT_CFG_PREFIX "qp", -1, NULL, QP_TEXT, QP_LONGTEXT,
                  false )
-        change_integer_range( 0, 51 ) /* QP 0 -> lossless encoding */
+        change_integer_range( -1, 51 ) /* QP 0 -> lossless encoding */
 
 #if X264_BUILD >= 37 /* r334 */
-    add_integer( SOUT_CFG_PREFIX "crf", 0, NULL, CRF_TEXT,
+    add_integer( SOUT_CFG_PREFIX "crf", 23, NULL, CRF_TEXT,
                  CRF_LONGTEXT, false )
         change_integer_range( 0, 51 )
 #endif
@@ -557,7 +558,7 @@ vlc_module_begin ()
     add_float( SOUT_CFG_PREFIX "qblur", 0.5, NULL, QBLUR_TEXT,
                QBLUR_LONGTEXT, false )
 #if X264_BUILD >= 59
-    add_integer( SOUT_CFG_PREFIX "aq-mode", 2, NULL, AQ_MODE_TEXT,
+    add_integer( SOUT_CFG_PREFIX "aq-mode", X264_AQ_VARIANCE, NULL, AQ_MODE_TEXT,
                  AQ_MODE_LONGTEXT, false )
          change_integer_range( 0, 2 )
     add_float( SOUT_CFG_PREFIX "aq-strength", 1.0, NULL, AQ_STRENGTH_TEXT,
@@ -577,13 +578,13 @@ vlc_module_begin ()
         change_string_list( direct_pred_list, direct_pred_list_text, 0 );
 
 #if X264_BUILD >= 52 /* r573 */
-    add_integer( SOUT_CFG_PREFIX "direct-8x8", -1, NULL, DIRECT_PRED_SIZE_TEXT,
+    add_integer( SOUT_CFG_PREFIX "direct-8x8", 1, NULL, DIRECT_PRED_SIZE_TEXT,
                  DIRECT_PRED_SIZE_LONGTEXT, false )
         change_integer_range( -1, 1 )
 #endif
 
 #if X264_BUILD >= 0x0012 /* r134 */
-    add_bool( SOUT_CFG_PREFIX "weightb", 0, NULL, WEIGHTB_TEXT,
+    add_bool( SOUT_CFG_PREFIX "weightb", 1, NULL, WEIGHTB_TEXT,
               WEIGHTB_LONGTEXT, false )
 #endif
 
@@ -620,7 +621,7 @@ vlc_module_begin ()
 #endif
 
 #if X264_BUILD >= 36 /* r318 */
-    add_bool( SOUT_CFG_PREFIX "mixed-refs", 0, NULL, MIXED_REFS_TEXT,
+    add_bool( SOUT_CFG_PREFIX "mixed-refs", 1, NULL, MIXED_REFS_TEXT,
               MIXED_REFS_LONGTEXT, false )
 #endif
 
@@ -644,7 +645,7 @@ vlc_module_begin ()
 #endif
 
 #if X264_BUILD >= 39 /* r360 */
-    add_integer( SOUT_CFG_PREFIX "trellis", 0, NULL, TRELLIS_TEXT,
+    add_integer( SOUT_CFG_PREFIX "trellis", 1, NULL, TRELLIS_TEXT,
                  TRELLIS_LONGTEXT, false )
         change_integer_range( 0, 2 )
 #endif
@@ -813,8 +814,9 @@ static int  Open ( vlc_object_t *p_this )
     p_sys->param.i_height = p_sys->param.i_height >> 4 << 4;
 #endif
 
-    /* average bitrate specified by transcode vb */
-    p_sys->param.rc.i_bitrate = p_enc->fmt_out.i_bitrate / 1000;
+
+    var_Get( p_enc, SOUT_CFG_PREFIX "qcomp", &val );
+    p_sys->param.rc.f_qcompress = val.f_float;
 
     var_Get( p_enc, SOUT_CFG_PREFIX "qpstep", &val );
     if( val.i_int >= 0 && val.i_int <= 51 ) p_sys->param.rc.i_qp_step = val.i_int;
@@ -845,15 +847,35 @@ static int  Open ( vlc_object_t *p_this )
 #else
         p_sys->param.i_qp_constant = val.i_int;
 #endif
-    }
-
+    } else if( p_enc->fmt_out.i_bitrate > 0 )
+    {
+        /* set more to ABR if user specifies bitrate, but qp ain't defined */
+        p_sys->param.rc.i_bitrate = p_enc->fmt_out.i_bitrate / 1000;
 #if X264_BUILD < 48
     /* cbr = 1 overrides qp or crf and sets an average bitrate
        but maxrate = average bitrate is needed for "real" CBR */
-    if( p_sys->param.rc.i_bitrate > 0 ) p_sys->param.rc.b_cbr = 1;
-#else
-    if( p_sys->param.rc.i_bitrate > 0 ) p_sys->param.rc.i_rc_method = X264_RC_ABR;
+        p_sys->param.rc.b_cbr=1;
 #endif
+        p_sys->param.rc.i_rc_method = X264_RC_ABR;
+    }
+    else /* Set default to CRF */
+    {
+#if X264_BUILD >= 37
+        var_Get( p_enc, SOUT_CFG_PREFIX "crf", &val );
+#   if X264_BUILD >= 48
+        p_sys->param.rc.i_rc_method = X264_RC_CRF;
+#   endif
+        if( val.i_int > 0 && val.i_int <= 51 )
+        {
+#   if X264_BUILD >= 54
+            p_sys->param.rc.f_rf_constant = val.i_int;
+#   else
+            p_sys->param.rc.i_rf_constant = val.i_int;
+#   endif
+        }
+#endif
+    }
+
 
 #if X264_BUILD >= 24
     var_Get( p_enc, SOUT_CFG_PREFIX "ratetol", &val );
@@ -865,15 +887,14 @@ static int  Open ( vlc_object_t *p_this )
     var_Get( p_enc, SOUT_CFG_PREFIX "vbv-bufsize", &val );
     p_sys->param.rc.i_vbv_buffer_size = val.i_int;
 
-    /* x264 vbv-bufsize = 0 (default). if not provided set period
-       in seconds for local maximum bitrate (cache/bufsize) based
-       on average bitrate. */
-    if( !val.i_int )
-        p_sys->param.rc.i_vbv_buffer_size = p_sys->param.rc.i_bitrate * 2;
-
     /* max bitrate = average bitrate -> CBR */
     var_Get( p_enc, SOUT_CFG_PREFIX "vbv-maxrate", &val );
-    p_sys->param.rc.i_vbv_max_bitrate = val.i_int;
+#if X264_BUILD >= 48
+    if( !val.i_int && p_sys->param.rc.i_rc_method == X264_RC_ABR )
+        p_sys->param.rc.i_vbv_max_bitrate = p_sys->param.rc.i_bitrate;
+    else
+#endif
+        p_sys->param.rc.i_vbv_max_bitrate = val.i_int;
 
 #else
     p_sys->param.rc.i_rc_buffer_size = p_sys->param.rc.i_bitrate;
@@ -899,8 +920,9 @@ static int  Open ( vlc_object_t *p_this )
     var_Get( p_enc, SOUT_CFG_PREFIX "level", &val );
     if( val.psz_string )
     {
-        if( atof (val.psz_string) < 6 )
-            p_sys->param.i_level_idc = (int) ( 10 * atof (val.psz_string) + .5);
+        if( us_atof (val.psz_string) < 6 )
+            p_sys->param.i_level_idc = (int) (10 * us_atof (val.psz_string)
+                                              + .5);
         else
             p_sys->param.i_level_idc = atoi (val.psz_string);
         free( val.psz_string );
@@ -1095,21 +1117,6 @@ static int  Open ( vlc_object_t *p_this )
     p_sys->param.analyse.b_mixed_references = val.b_bool;
 #endif
 
-#if X264_BUILD >= 37
-    var_Get( p_enc, SOUT_CFG_PREFIX "crf", &val );
-    if( val.i_int > 0 && val.i_int <= 51 )
-    {
-#   if X264_BUILD >= 54
-        p_sys->param.rc.f_rf_constant = val.i_int;
-#   else
-        p_sys->param.rc.i_rf_constant = val.i_int;
-#   endif
-#   if X264_BUILD >= 48
-        p_sys->param.rc.i_rc_method = X264_RC_CRF;
-#   endif
-    }
-#endif
-
 #if X264_BUILD >= 39
     var_Get( p_enc, SOUT_CFG_PREFIX "trellis", &val );
     if( val.i_int >= 0 && val.i_int <= 2 )
@@ -1230,6 +1237,25 @@ static int  Open ( vlc_object_t *p_this )
         p_sys->param.i_fps_den = p_enc->fmt_in.video.i_frame_rate_base;
     }
 
+    /* x264 vbv-bufsize = 0 (default). if not provided set period
+       in seconds for local maximum bitrate (cache/bufsize) based
+       on average bitrate when use has told bitrate.
+       vbv-buffer size is set to bitrate * secods between keyframes */
+    if( !p_sys->param.rc.i_vbv_buffer_size &&
+         p_sys->param.rc.i_rc_method == X264_RC_ABR &&
+         p_sys->param.i_fps_num )
+    {
+        p_sys->param.rc.i_vbv_buffer_size = p_sys->param.rc.i_bitrate *
+            p_sys->param.i_fps_den;
+#if X264_BUILD >= 0x000e
+        p_sys->param.rc.i_vbv_buffer_size *= p_sys->param.i_keyint_max;
+#else
+        p_sys->param.rc.i_vbv_buffer_size *= p_sys->param.i_idrframe;
+#endif
+        p_sys->param.rc.i_vbv_buffer_size /= p_sys->param.i_fps_num;
+    }
+
+
     unsigned i_cpu = vlc_CPU();
     if( !(i_cpu & CPU_CAPABILITY_MMX) )
     {
@@ -1300,6 +1326,13 @@ static int  Open ( vlc_object_t *p_this )
     var_Set( p_enc->p_libvlc, "pthread_win32_count", count );
     vlc_mutex_unlock( lock.p_address );
 
+#endif
+
+#if X264_BUILD >= 69
+    /* Set lookahead value to lower than default,
+     * as rtp-output without mux doesn't handle
+     * difference that well yet*/
+    p_sys->param.rc.i_lookahead=5;
 #endif
 
     /* Open the encoder */

@@ -2,7 +2,7 @@
  * main_interface.hpp : Main Interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 292a18c015f19f45c2cd7589358b29b8c77289ce $
+ * $Id: d352fae9edaa0175ea7dba57fb9b8bc1beb7a52c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -74,9 +74,8 @@ public:
     virtual ~MainInterface();
 
     /* Video requests from core */
-    WId requestVideo( vout_thread_t *p_nvout, int *pi_x,
-                      int *pi_y, unsigned int *pi_width,
-                      unsigned int *pi_height );
+    WId getVideo( vout_thread_t *p_nvout, int *pi_x, int *pi_y,
+                  unsigned int *pi_width, unsigned int *pi_height );
     void releaseVideo( void  );
     int controlVideo( int i_query, va_list args );
 
@@ -160,6 +159,8 @@ public slots:
     void popupMenu( const QPoint& );
 
     /* Manage the Video Functions from the vout threads */
+    void getVideoSlot( WId *p_id, vout_thread_t *, int *pi_x, int *pi_y,
+                       unsigned *pi_width, unsigned *pi_height );
     void releaseVideoSlot( void );
 
 private slots:
@@ -178,11 +179,10 @@ private slots:
 
     void showCryptedLabel( bool );
 signals:
+    void askGetVideo( WId *p_id, vout_thread_t *, int *pi_x, int *pi_y,
+                      unsigned int *pi_width, unsigned int *pi_height );
     void askReleaseVideo( );
     void askVideoToResize( unsigned int, unsigned int );
-    void askVideoToShow( unsigned int, unsigned int );
-    void askVideoToToggle();
-    void askBgWidgetToToggle();
     void askUpdate();
     void minimalViewToggled( bool );
     void fullscreenInterfaceToggled( bool );

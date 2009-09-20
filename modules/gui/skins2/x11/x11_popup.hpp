@@ -2,7 +2,7 @@
  * x11_popup.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 350d253061c85a53871a7bfedbb06882a378d2af $
  *
  * Authors: Olivier Teulière <ipkiss@via.ecp.fr>
  *

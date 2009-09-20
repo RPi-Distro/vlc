@@ -2,7 +2,7 @@
  * vlc.c: the VLC player
  *****************************************************************************
  * Copyright (C) 1998-2008 the VideoLAN team
- * $Id: 55f7c5f70fe1a9bf403ab3f3d14a6c4a346d8987 $
+ * $Id: 8917ff4f5284ca86d006dccf885a8be44f56aabe $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -73,9 +73,6 @@ int main( int i_argc, const char *ppsz_argv[] )
 #   ifndef NDEBUG
     /* Activate malloc checking routines to detect heap corruptions. */
     putenv( (char*)"MALLOC_CHECK_=2" );
-#       ifdef __APPLE__
-    putenv( (char*)"MallocErrorAbort=crash_my_baby_crash" );
-#       endif
 
     /* Disable the ugly Gnome crash dialog so that we properly segfault */
     putenv( (char *)"GNOME_DISABLE_CRASH_DIALOG=1" );
@@ -152,6 +149,7 @@ int main( int i_argc, const char *ppsz_argv[] )
             pthread_sigmask (SIG_UNBLOCK, &set, NULL);
         }
         libvlc_add_intf (vlc, "globalhotkeys,none", &ex);
+        libvlc_exception_clear (&ex);
         libvlc_add_intf (vlc, NULL, &ex);
         libvlc_playlist_play (vlc, -1, 0, NULL, &dummy);
         libvlc_wait (vlc);

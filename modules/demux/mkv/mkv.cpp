@@ -2,7 +2,7 @@
  * mkv.cpp : matroska demuxer
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: a66d090732372b12fe2982e6dc554125d1c89bd8 $
+ * $Id: 102a807476bf03ef2a8836475b691aad191db9db $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Steve Lhomme <steve.lhomme@free.fr>
@@ -603,6 +603,12 @@ msg_Dbg( p_demux, "block i_dts: %"PRId64" / i_pts: %"PRId64, p_block->i_dts, p_b
             p_block->i_length = i_duration * 1000;
         }
 
+        /* FIXME remove when VLC_TS_INVALID work is done */
+        if( i == 0 || p_block->i_dts > 0 )
+            p_block->i_dts++;
+        if( !tk->b_dts_only && ( i == 0 || p_block->i_pts ) )
+            p_block->i_pts++;
+
         es_out_Send( p_demux->out, tk->p_es, p_block );
 
         /* use time stamp only for first block */
@@ -859,7 +865,8 @@ static int Demux( demux_t *p_demux)
         else
             p_sys->i_pts = (p_sys->i_chapter_time + block->GlobalTimecode()) / (mtime_t) 1000;
 
-        es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_pts );
+        /* FIXME remove the +1 when VLC_TS_INVALID work is done */
+        es_out_Control( p_demux->out, ES_OUT_SET_PCR, p_sys->i_pts+1 );
 
         if( p_sys->i_pts >= p_sys->i_start_pts  )
         {
