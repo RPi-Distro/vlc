@@ -646,6 +646,7 @@ Function .onInit
 
   !include "languages\english.nsh"
   StrCmp $LANGUAGE ${LANG_FRENCH} French 0
+  StrCmp $LANGUAGE ${LANG_GERMAN} German 0
   StrCmp $LANGUAGE ${LANG_ITALIAN} Italian 0
   StrCmp $LANGUAGE ${LANG_HUNGARIAN} Hungarian 0
   StrCmp $LANGUAGE ${LANG_ROMANIAN} Romanian 0
@@ -663,6 +664,9 @@ Function .onInit
   StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
+  Goto EndLanguageCmp
+  German:
+  !include "languages\german.nsh"
   Goto EndLanguageCmp
   Italian:
   !include "languages\italian.nsh"
@@ -736,6 +740,8 @@ Section -Post
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
     "UninstallString" "$INSTDIR\uninstall.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
+    "InstallLocation" "$INSTDIR"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
     "DisplayIcon" "$INSTDIR\vlc.exe"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
     "DisplayVersion" "${PRODUCT_VERSION}"
@@ -743,6 +749,10 @@ Section -Post
     "URLInfoAbout" "${PRODUCT_WEB_SITE}"
   WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
     "Publisher" "${PRODUCT_PUBLISHER}"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
+    "VersionMajor"  "@VERSION_MAJOR@"
+  WriteRegStr ${PRODUCT_UNINST_ROOT_KEY} "${PRODUCT_UNINST_KEY}" \
+    "VersionMinor" "@VERSION_MINOR@"
 SectionEnd
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
@@ -910,6 +920,7 @@ Function un.onInit
   
   !include "languages\english.nsh"
   StrCmp $LANGUAGE ${LANG_FRENCH} French 0
+  StrCmp $LANGUAGE ${LANG_GERMAN} German 0
   StrCmp $LANGUAGE ${LANG_ITALIAN} Italian 0
   StrCmp $LANGUAGE ${LANG_HUNGARIAN} Hungarian 0
   StrCmp $LANGUAGE ${LANG_ROMANIAN} Romanian 0
@@ -927,6 +938,9 @@ Function un.onInit
   StrCmp $LANGUAGE ${LANG_PORTUGUESEBR} Brazilian EndLanguageCmp
   French:
   !include "languages\french.nsh"
+  Goto EndLanguageCmp
+  German:
+  !include "languages\german.nsh"
   Goto EndLanguageCmp
   Italian:
   !include "languages\italian.nsh"

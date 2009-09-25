@@ -5,7 +5,7 @@
  *
  * Modified for use with MPlayer, detailed CVS changelog at
  * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
- * $Id$
+ * $Id: a84cf0e98e012f437bb6deb1c4210b4cd75181e8 $
  *
  */
 

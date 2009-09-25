@@ -2,7 +2,7 @@
  * modules.c : Builtin and plugin modules management functions
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: c69cf70d01c96beb796cb7aa70fe7ce110ad5e82 $
+ * $Id: 65ba9480b34e0297791582940f5f9b29e78225eb $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Ethan C. Baldridge <BaldridgeE@cadmus.com>
@@ -31,12 +31,6 @@
 #include <vlc_common.h>
 #include <vlc_plugin.h>
 #include "libvlc.h"
-
-/* Some faulty libcs have a broken struct dirent when _FILE_OFFSET_BITS
- * is set to 64. Don't try to be cleverer. */
-#ifdef _FILE_OFFSET_BITS
-#undef _FILE_OFFSET_BITS
-#endif
 
 #include <stdlib.h>                                      /* free(), strtol() */
 #include <stdio.h>                                              /* sprintf() */
@@ -571,11 +565,14 @@ found_shortcut:
         {
             module_t *p_new_module =
                 AllocatePlugin( p_this, p_real->psz_filename );
-            if( p_new_module )
-            {
-                CacheMerge( p_this, p_real, p_new_module );
-                DeleteModule( p_module_bank, p_new_module );
+            if( p_new_module == NULL )
+            {   /* Corrupted module */
+                msg_Err( p_this, "possibly corrupt module cache" );
+                module_release( p_cand );
+                continue;
             }
+            CacheMerge( p_this, p_real, p_new_module );
+            DeleteModule( p_module_bank, p_new_module );
         }
 #endif
 

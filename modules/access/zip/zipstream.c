@@ -2,7 +2,7 @@
  * zipstream.c: stream_filter that creates a XSPF playlist from a Zip archive
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 0250312cbee0bdc247d5ff8043233ef884d77b40 $
+ * $Id: 03a7dfdd023d1ee5013a7bd101f2e41e21692f1a $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *
@@ -205,8 +205,8 @@ int StreamOpen( vlc_object_t *p_this )
     if( !p_sys->zipFile )
     {
         msg_Warn( s, "unable to open file" );
-        free( p_sys );
         free( p_sys->fileFunctions );
+        free( p_sys );
         return VLC_EGENERIC;
     }
 
@@ -214,8 +214,8 @@ int StreamOpen( vlc_object_t *p_this )
     char *psz_tmp;
     if( asprintf( &psz_tmp, "%s.xspf", s->psz_path ) == -1 )
     {
-        free( p_sys );
         free( p_sys->fileFunctions );
+        free( p_sys );
         return VLC_ENOMEM;
     }
     p_sys->psz_path = s->psz_path;
@@ -310,7 +310,7 @@ static int Control( stream_t *s, int i_query, va_list args )
                 return VLC_EGENERIC;
             else
             {
-                p_sys->i_len = (size_t) i_position;
+                p_sys->i_pos = (size_t) i_position;
                 return VLC_SUCCESS;
             }
         }

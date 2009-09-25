@@ -2,7 +2,7 @@
  * macosx.m: Mac OS X module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2006 the VideoLAN team
- * $Id: e9556ad91a183d1cf28f39f1d86653c5d7f65dc1 $
+ * $Id: 9c72c30bd6261e56b191966d5501ab83a32b042b $
  *
  * Authors: Colin Delacroix <colin@zoy.org>
  *          Eugenio Jarosiewicz <ej0@cise.ufl.edu>
@@ -104,6 +104,7 @@ vlc_module_begin ()
     set_callbacks( OpenIntf, CloseIntf )
     set_category( CAT_INTERFACE )
     set_subcategory( SUBCAT_INTERFACE_MAIN )
+    linked_with_a_crap_library_which_uses_atexit( )
     add_bool( "macosx-autoplay", 1, NULL, AUTOPLAY_OSX_TEST, AUTOPLAY_OSX_LONGTEXT,
               false )
     add_bool( "macosx-recentitems", 1, NULL, RECENT_ITEMS_TEXT, RECENT_ITEMS_LONGTEXT,

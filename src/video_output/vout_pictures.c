@@ -2,7 +2,7 @@
  * vout_pictures.c : picture management functions
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: 0f408f864187ca89dcded5e2eada7a9134fd5c01 $
+ * $Id: ba384c04d69caaa0da5b8182f448ec86f4f23388 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -333,7 +333,7 @@ static void vout_UnlockPicture( vout_thread_t *p_vout, picture_t *p_picture )
  * thread which direct buffer needs to be displayed.
  */
 picture_t *vout_RenderPicture( vout_thread_t *p_vout, picture_t *p_pic,
-                               subpicture_t *p_subpic, bool b_paused )
+                               subpicture_t *p_subpic, mtime_t render_date )
 {
     if( p_pic == NULL )
         return NULL;
@@ -352,9 +352,9 @@ picture_t *vout_RenderPicture( vout_thread_t *p_vout, picture_t *p_pic,
 
             picture_Copy( PP_OUTPUTPICTURE[0], p_pic );
 
-            spu_RenderSubpictures( p_vout->p_spu,
-                                   PP_OUTPUTPICTURE[0], &p_vout->fmt_out,
-                                   p_subpic, &p_vout->fmt_in, b_paused );
+            spu_RenderSubpicturesNew( p_vout->p_spu,
+                                      PP_OUTPUTPICTURE[0], &p_vout->fmt_out,
+                                      p_subpic, &p_vout->fmt_in, render_date );
 
             vout_UnlockPicture( p_vout, PP_OUTPUTPICTURE[0] );
 
@@ -379,9 +379,9 @@ picture_t *vout_RenderPicture( vout_thread_t *p_vout, picture_t *p_pic,
             return NULL;
 
         picture_Copy( PP_OUTPUTPICTURE[0], p_pic );
-        spu_RenderSubpictures( p_vout->p_spu,
-                               PP_OUTPUTPICTURE[0], &p_vout->fmt_out,
-                               p_subpic, &p_vout->fmt_in, b_paused );
+        spu_RenderSubpicturesNew( p_vout->p_spu,
+                                  PP_OUTPUTPICTURE[0], &p_vout->fmt_out,
+                                  p_subpic, &p_vout->fmt_in, render_date );
 
         vout_UnlockPicture( p_vout, PP_OUTPUTPICTURE[0] );
 
@@ -417,9 +417,9 @@ picture_t *vout_RenderPicture( vout_thread_t *p_vout, picture_t *p_pic,
         p_vout->p->p_chroma->pf_video_filter( p_vout->p->p_chroma, p_pic );
 
         /* Render subpictures on the first direct buffer */
-        spu_RenderSubpictures( p_vout->p_spu,
-                               p_tmp_pic, &p_vout->fmt_out,
-                               p_subpic, &p_vout->fmt_in, b_paused );
+        spu_RenderSubpicturesNew( p_vout->p_spu,
+                                  p_tmp_pic, &p_vout->fmt_out,
+                                  p_subpic, &p_vout->fmt_in, render_date );
 
         if( vout_LockPicture( p_vout, &p_vout->p_picture[0] ) )
             return NULL;
@@ -436,9 +436,9 @@ picture_t *vout_RenderPicture( vout_thread_t *p_vout, picture_t *p_pic,
         p_vout->p->p_chroma->pf_video_filter( p_vout->p->p_chroma, p_pic );
 
         /* Render subpictures on the first direct buffer */
-        spu_RenderSubpictures( p_vout->p_spu,
-                               &p_vout->p_picture[0], &p_vout->fmt_out,
-                               p_subpic, &p_vout->fmt_in, b_paused );
+        spu_RenderSubpicturesNew( p_vout->p_spu,
+                                  &p_vout->p_picture[0], &p_vout->fmt_out,
+                                  p_subpic, &p_vout->fmt_in, render_date );
     }
 
     vout_UnlockPicture( p_vout, &p_vout->p_picture[0] );

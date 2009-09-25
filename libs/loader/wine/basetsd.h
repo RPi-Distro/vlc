@@ -6,7 +6,7 @@
 /*
  * Modified for use with MPlayer, detailed CVS changelog at
  * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
- * $Id$
+ * $Id: 9f14971897fad2f4be501b40547b2034dd915b11 $
  */
 
 #ifndef __WINE_BASETSD_H

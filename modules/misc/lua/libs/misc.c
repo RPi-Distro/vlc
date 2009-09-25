@@ -2,7 +2,7 @@
  * misc.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id: 7aab9ec9d223921843ac8fc965a9adc3ac6e7491 $
+ * $Id: 3a390af031efeb20b3345343b89029ca03d5525d $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -120,7 +120,9 @@ static int vlclua_datadir( lua_State *L )
 
 static int vlclua_userdatadir( lua_State *L )
 {
-    lua_pushstring( L, config_GetUserDataDir() );
+    char *data = config_GetUserDataDir();
+    lua_pushstring( L, data );
+    free( data );
     return 1;
 }
 

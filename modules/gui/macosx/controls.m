@@ -2,7 +2,7 @@
  * controls.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 47e718c41010031279001a793e89b843001290ae $
+ * $Id: 8a2c6a29cf51e53f1d5e2f6928b4d842b21df847 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -394,6 +394,16 @@
     p_intf->p_sys->b_playmode_update = true;
     p_intf->p_sys->b_intf_update = true;
     pl_Release( p_intf );
+}
+
+- (IBAction)quitAfterPlayback:(id)sender
+{
+    vlc_value_t val;
+    playlist_t * p_playlist = pl_Hold( VLCIntf );
+    var_Get( p_playlist, "play-and-exit", &val );
+    val.b_bool = !val.b_bool;
+    var_Set( p_playlist, "play-and-exit", val );
+    pl_Release( VLCIntf );
 }
 
 - (IBAction)forward:(id)sender
@@ -1056,6 +1066,13 @@
     {
         int i_state;
         var_Get( p_playlist, "loop", &val );
+        i_state = val.b_bool ? NSOnState : NSOffState;
+        [o_mi setState: i_state];
+    }
+    else if( [[o_mi title] isEqualToString: _NS("Quit after Playback")] )
+    {
+        int i_state;
+        var_Get( p_playlist, "play-and-exit", &val );
         i_state = val.b_bool ? NSOnState : NSOffState;
         [o_mi setState: i_state];
     }

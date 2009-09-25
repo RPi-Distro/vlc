@@ -2,7 +2,7 @@
  * intf.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 224537476d948dfd414bcf77d640c011692fc971 $
+ * $Id: b4eab05580144e79fbb16e7b711343cb7ba92c78 $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -34,7 +34,6 @@
 #include <vlc_keys.h>
 #include <vlc_dialog.h>
 #include <unistd.h> /* execl() */
-#import <vlc_dialog.h>
 
 #import "intf.h"
 #import "fspanel.h"
@@ -646,6 +645,7 @@ static VLCMain *_o_sharedMainInstance = nil;
     [o_mi_random setTitle: _NS("Random")];
     [o_mi_repeat setTitle: _NS("Repeat One")];
     [o_mi_loop setTitle: _NS("Repeat All")];
+    [o_mi_quitAfterPB setTitle: _NS("Quit after Playback")];
     [o_mi_fwd setTitle: _NS("Step Forward")];
     [o_mi_bwd setTitle: _NS("Step Backward")];
 
@@ -813,10 +813,6 @@ static VLCMain *_o_sharedMainInstance = nil;
     /* remove global observer watching for vout device changes correctly */
     [[NSNotificationCenter defaultCenter] removeObserver: self];
 
-#ifdef UPDATE_CHECK
-    [o_update end];
-#endif
-
     /* release some other objects here, because it isn't sure whether dealloc
      * will be called later on */
     if( nib_about_loaded )
@@ -847,6 +843,10 @@ static VLCMain *_o_sharedMainInstance = nil;
 
     if( nib_wizard_loaded )
         [o_wizard release];
+
+#ifdef UPDATE_CHECK
+    [o_update release]; 
+#endif
 
     [crashLogURLConnection cancel];
     [crashLogURLConnection release];
@@ -1317,7 +1317,7 @@ static unsigned int VLCModifiersToCocoa( unsigned int i_key )
     unichar key = 0;
     vlc_value_t val;
     unsigned int i_pressed_modifiers = 0;
-    struct hotkey *p_hotkeys;
+    const struct hotkey *p_hotkeys;
     int i;
 
     val.i_int = 0;
@@ -2314,9 +2314,6 @@ end:
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection
 {
-    NSRunInformationalAlertPanel(_NS("Crash Report successfully sent"),
-                _NS("Thanks for your report!"),
-                _NS("OK"), nil, nil, nil);
     [crashLogURLConnection release];
     crashLogURLConnection = nil;
 }

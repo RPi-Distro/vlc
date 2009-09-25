@@ -49,7 +49,7 @@ for file in $files; do
  if test ".`file $file | grep Mach-O`" != "." ; then
     echo "Changing prefixes of '$file'"
     islib=n
-    if test ".`file $file | grep 'Mach-O dynamically'`" != "." ; then
+    if test ".`file $file | grep 'dynamically linked shared library'`" != "." ; then
       islib=y
     fi
     libs=`otool -L $file 2>/dev/null | grep $prefix | cut -d\  -f 1`
@@ -58,10 +58,13 @@ for file in $files; do
       if ! test -z $i; then
         if test $islib = y -a $first = y; then
             install_name_tool -id `echo $i | sed -e "s,$prefix,$new_prefix,"` $file
+            command="install_name_tool -id `echo $i | sed -e "s,$prefix,$new_prefix,"` $file"
             first=n
         else
             install_name_tool -change $i `echo $i | sed -e "s,$prefix,$new_prefix,"` $file
+            command="install_name_tool -change $i `echo $i | sed -e "s,$prefix,$new_prefix,"` $file"
         fi
+        echo "executing '$command'"
       fi
     done
   elif test ".`file $file | grep \"text\|shell\"`" != "." ; then

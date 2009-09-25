@@ -1,5 +1,5 @@
 /*
- * $Id$
+ * $Id: 7f4acf121296f902d385b21ad02325ddfe536df4 $
  *
  * Originally distributed under LPGL 2.1 (or later) by the Wine project.
  *

@@ -4,7 +4,7 @@
  * the non-licensed parts of this header file. 
  * Ideally, VideoLAN-related changes should only go to eyetvplugin.h.
  * 
- * $Id$
+ * $Id: 0343e8b6a65523968eb0f917f3c14ab002cb4965 $
  */
 
 

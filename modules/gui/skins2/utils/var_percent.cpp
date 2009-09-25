@@ -2,7 +2,7 @@
  * var_percent.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: b09a0517c1fd57d71d26e795e5f9d1d2d223cc76 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

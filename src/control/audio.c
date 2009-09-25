@@ -2,7 +2,7 @@
  * libvlc_audio.c: New libvlc audio control API
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: c5dd42f23db02bb3cb3df5cfab1c6a21c6aedc3e $
+ * $Id: 4a590726e072c6cf85deaa76a69f0ec73cab8eaa $
  *
  * Authors: Filippo Carone <filippo@carone.org>
  *          Jean-Paul Saman <jpsaman _at_ m2x _dot_ nl>
@@ -475,7 +475,7 @@ void libvlc_audio_set_track( libvlc_media_player_t *p_mi, int i_track,
         return;
 
     var_Change( p_input_thread, "audio-es", VLC_VAR_GETCHOICES, &val_list, NULL );
-    if( (i_track < 0) && (i_track > val_list.p_list->i_count) )
+    if( (i_track < 0) || (i_track > val_list.p_list->i_count) )
     {
         libvlc_exception_raise( p_e, "Audio track out of range" );
         goto end;

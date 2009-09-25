@@ -2,7 +2,7 @@
  * ncurses.c : NCurses interface for vlc
  *****************************************************************************
  * Copyright © 2001-2007 the VideoLAN team
- * $Id: 709171597c9cf4da596c970070d40a9e0eacfc05 $
+ * $Id: 2e815993932f817dc805a0316d87c210b7ba66ea $
  *
  * Authors: Sam Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -764,8 +764,15 @@ static int HandleKey( intf_thread_t *p_intf, int i_key )
                 if( p_sys->pp_dir_entries[p_sys->i_box_bidx]->b_file || i_key == ' ' )
                 {
                     char* psz_uri;
-                    if( asprintf( &psz_uri, "directory://%s/%s", p_sys->psz_current_dir, p_sys->pp_dir_entries[p_sys->i_box_bidx]->psz_path ) == -1 )
+                    if( asprintf( &psz_uri, "%s://%s/%s",
+                        p_sys->pp_dir_entries[p_sys->i_box_bidx]->b_file ?
+                            "file" : "directory",
+                        p_sys->psz_current_dir,
+                        p_sys->pp_dir_entries[p_sys->i_box_bidx]->psz_path
+                        ) == -1 )
+                    {
                         psz_uri = NULL;
+                    }
 
                     playlist_item_t *p_parent = p_sys->p_node;
                     if( !p_parent )

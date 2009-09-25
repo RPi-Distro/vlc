@@ -2,7 +2,7 @@
  * playlist_model.cpp : Manage playlist model
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 1f756fc71aef11f67ab728341a86afb434a9910c $
+ * $Id: 9a28d424e04da80d1e9b92374fe0a164b265a993 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -119,9 +119,16 @@ Qt::ItemFlags PLModel::flags( const QModelIndex &index ) const
 {
     Qt::ItemFlags defaultFlags = QAbstractItemModel::flags( index );
     if( index.isValid() )
-        return Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled | defaultFlags;
-    else
-        return Qt::ItemIsDropEnabled | defaultFlags;
+    {
+        PLItem *item = static_cast<PLItem*>( index.internalPointer() );
+        if ( item->b_is_node )
+            defaultFlags |= Qt::ItemIsDragEnabled | Qt::ItemIsDropEnabled;
+        else defaultFlags |= Qt::ItemIsDragEnabled;
+    }
+    else if ( rootItem->i_id != p_playlist->p_root_onelevel->i_id
+          && rootItem->i_id != p_playlist->p_root_category->i_id )
+              defaultFlags |= Qt::ItemIsDropEnabled;
+    return defaultFlags;
 }
 
 /* A list of model indexes are a playlist */
@@ -854,6 +861,7 @@ void PLModel::viewchanged( int meta )
             rootItem->updateColumnHeaders();
             endInsertColumns();
         }
+        emit columnsChanged( meta );
         rebuild();
     }
 }

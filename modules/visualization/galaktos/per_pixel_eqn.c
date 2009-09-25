@@ -2,7 +2,7 @@
  * per_pixel_eqn.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 3cd0c016aacfeb09ab5d7bdfcca84c0a12654012 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

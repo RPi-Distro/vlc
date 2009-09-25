@@ -2,7 +2,7 @@
  * libvlc.h: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: ffa9dc7eccccd9c32ad8b72c7252312915d0f543 $
+ * $Id: c43f814f27eb8299331054de3239a1ae40209d14 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -63,13 +63,16 @@ static const char *const ppsz_language[] =
     "ka",
     "de",
     "he",
+    "hr",
     "hu",
     "id",
     "it",
     "ja",
     "ko",
+    "lt",
     "mn",
     "ms",
+    "kk",
     "km",
     "oc",
     "fa",
@@ -110,13 +113,16 @@ static const char *const ppsz_language_text[] =
     "ქართული",
     "Deutsch",
     "עברית",
+    "hrvatski",
     "Magyar",
     "Bahasa Indonesia",
     "Italiano",
     "日本語",
     "한국어",
+    "lietuvių",
     "Монгол хэл",
     "Melayu",
+    "Қазақ тілі",
     "ភាសាខ្មែរ",
     "Occitan",
     "ﻑﺍﺮﺳی",
@@ -1581,6 +1587,7 @@ vlc_module_begin ()
     add_bool( "quiet-synchro", 0, NULL, QUIET_SYNCHRO_TEXT,
               QUIET_SYNCHRO_LONGTEXT, true )
     add_integer( "vout-event", 1, NULL, VOUT_EVENT_TEXT, VOUT_EVENT_LONGTEXT, true )
+        change_safe()
         change_integer_list( pi_vout_event_values, ppsz_vout_event_descriptions, NULL )
         add_deprecated_alias( "x11-event" ) /* renamed since 1.0.0 */
 #ifndef __APPLE__

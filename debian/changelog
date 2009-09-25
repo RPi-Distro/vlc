@@ -1,3 +1,28 @@
+vlc (1.0.2-1ubuntu1) karmic; urgency=low
+
+  * Merge from Debian unstable (LP: #435524), remaining changes:
+    - build against xulrunner-dev instead of iceape-dev
+    - build against libx264-dev and install libx264 plugin
+    - add Xb-Npp header to vlc package
+    - recommend vlc-plugin-pulse for vlc
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Fri, 25 Sep 2009 14:44:17 +0200
+
+vlc (1.0.2-1) unstable; urgency=high
+
+  * New upstream release
+    + Fix some stack overflows in MP4, ASF and AVI demuxers
+      (VideoLAN-SA-0902, CVE pending)(urgency=high)
+    + Closes: #540145, #542108
+  * Fix kfreebsd FTBFS and simplify (Closes: #545863) 
+    Thanks to Petr Salinger
+  * Fix Hurd install
+  * Update libvlccore symbol file
+  * Remove libass API patch
+  * Remove uneeded build-deps
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sun, 20 Sep 2009 01:08:41 +0200
+
 vlc (1.0.1-2ubuntu1) karmic; urgency=low
 
   * Merge from Debian unstable (LP: #426693), remaining changes:

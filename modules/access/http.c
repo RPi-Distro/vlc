@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 258431a3f7d9f618bdcb20ba6122a21ddb5b4f72 $
+ * $Id: 94f36a5d778eabd0b6db8304bc18586dda98f88a $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -111,6 +111,7 @@ vlc_module_begin ()
         change_safe()
     add_string( "http-user-agent", COPYRIGHT_MESSAGE , NULL, AGENT_TEXT,
                 AGENT_LONGTEXT, true )
+        change_safe()
     add_bool( "http-reconnect", 0, NULL, RECONNECT_TEXT,
               RECONNECT_LONGTEXT, true )
     add_bool( "http-continuous", 0, NULL, CONTINUOUS_TEXT,

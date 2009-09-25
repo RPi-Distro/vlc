@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2009 the VideoLAN team])
 
-AC_INIT(vlc, 1.0.1)
+AC_INIT(vlc, 1.0.2)
 VERSION_MAJOR="1"
 VERSION_MINOR="0"
-VERSION_REVISION="1"
+VERSION_REVISION="2"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -356,7 +356,7 @@ case "${host_os}" in
     fi
     if test "${SYS}" = "mingwce"; then
         # add ws2 for closesocket, select, recv
-        VLC_ADD_LIBS([libvlccore access_http access_mms access_udp access_tcp access_ftp access_rtmp access_output_udp access_output_rtmp sap http netsync audioscrobbler growl rtp stream_out_rtp remoteosd],[-lws2])
+        VLC_ADD_LIBS([libvlccore access_http access_mms access_udp access_tcp access_ftp access_rtmp access_output_udp access_output_rtmp sap http netsync audioscrobbler growl rtp stream_out_rtp remoteosd ts],[-lws2])
         VLC_ADD_LIBS([libvlccore],[-lmmtimer])
    fi
     ;;
@@ -571,8 +571,8 @@ AC_CHECK_FUNCS(fdatasync,,
   [AC_DEFINE(fdatasync, fsync, [Alias fdatasync() to fsync() if missing.])
 ])
 
-dnl Check for Linux system calls
-AC_CHECK_FUNCS([vmsplice])
+dnl Check for non-standard system calls
+AC_CHECK_FUNCS([vmsplice eventfd fstatfs])
 
 AH_BOTTOM([#include <vlc_fixups.h>])
 
@@ -594,12 +594,14 @@ if test ${ac_cv_langinfo_codeset} = yes; then
     [Define if you have <langinfo.h> and nl_langinfo(CODESET).])
 fi
 
+SOCKET_LIBS=""
 AC_CHECK_FUNCS(connect,,[
   AC_CHECK_LIB(socket,connect,[
     VLC_ADD_LIBS([libvlccore cdda cddax],-lsocket)
-    LIBS_socket="-lsocket"
+    SOCKET_LIBS="-lsocket"
   ])
 ])
+AC_SUBST(SOCKET_LIBS)
 
 AC_CHECK_FUNCS(send,,[
   AC_CHECK_LIB(socket,send,[
@@ -650,7 +652,7 @@ dnl  -lnsl and -lsocket are needed on Solaris;
 dnl  we purposedly make the test fail on Windows
 LIBS_save="${LIBS}"
 AH_TEMPLATE(HAVE_GETADDRINFO, [Define to 1 if you have the `getaddrinfo' function.])
-AC_SEARCH_LIBS([getaddrinfo], [nsl], [AC_DEFINE(HAVE_GETADDRINFO)],, [${LIBS_socket}])
+AC_SEARCH_LIBS([getaddrinfo], [nsl], [AC_DEFINE(HAVE_GETADDRINFO)],, [${SOCKET_LIBS}])
 
 dnl NOTE: we assume getaddrinfo will be present if getnameinfo or gai_strerro
 dnl are
@@ -714,10 +716,10 @@ AM_CONDITIONAL(BUILD_GETOPT, ${need_getopt})
 if test "${SYS}" != "mingw32" -a "${SYS}" != "mingwce"; then
 AC_TYPE_SIGNAL
 AC_CHECK_LIB(m,cos,[
-  VLC_ADD_LIBS([adjust wave ripple psychedelic gradient a52tofloat32 dtstofloat32 x264 goom visual panoramix rotate noise grain scene],[-lm])
+  VLC_ADD_LIBS([adjust wave ripple psychedelic gradient a52tofloat32 dtstofloat32 x264 goom visual panoramix rotate noise grain scene kate flac lua],[-lm])
 ])
 AC_CHECK_LIB(m,pow,[
-  VLC_ADD_LIBS([avcodec avformat swscale postproc ffmpegaltivec stream_out_transrate i420_rgb faad twolame equalizer spatializer param_eq libvlccore vorbis freetype mod mpc dmo quicktime realaudio realvideo galaktos opengl],[-lm])
+  VLC_ADD_LIBS([avcodec avformat swscale postproc ffmpegaltivec i420_rgb faad twolame equalizer spatializer param_eq libvlccore vorbis freetype mod mpc dmo quicktime realaudio realvideo galaktos opengl],[-lm])
 ])
 AC_CHECK_LIB(m,sqrt,[
   VLC_ADD_LIBS([headphone_channel_mixer normvol speex mono colorthres extract],[-lm])
@@ -731,10 +733,15 @@ AC_CHECK_LIB(m,exp,[
 AC_CHECK_LIB(m,round,[
   VLC_ADD_LIBS([dbus],[-lm])
 ])
-AC_CHECK_LIB(mx,sqrtf,[
-  VLC_ADD_LIBS([x264],[-lmx])
+AC_CHECK_LIB(m,sqrtf,[
+  VLC_ADD_LIBS([x264],[-lm])
 ])
 fi # end "${SYS}" != "mingw32" -a "${SYS}" != "mingwce"
+
+AC_CHECK_LIB(m,lrintf, [
+  AC_DEFINE(HAVE_LRINTF, 1, [Define to 1 if you have the lrintf function])
+  VLC_ADD_LIBS([skins2],[-lm])
+])
 
 dnl Check for dynamic plugins
 ac_cv_have_plugins=no
@@ -795,14 +802,14 @@ if test "${ac_cv_have_plugins}" = "no"; then
 fi
 
 # Only test for dlopen() if the others didn't work
-if test "${ac_cv_have_plugins}" = "no"; then
+if test "${ac_cv_have_plugins}" = "no" -o "${SYS}" = "darwin"; then
   AC_CHECK_HEADERS(dlfcn.h sys/dl.h)
   ac_cv_my_have_dlopen=no
   AC_CHECK_FUNC(dlopen,
     ac_cv_my_have_dlopen=yes,
     AC_CHECK_LIB(dl, dlopen,
       ac_cv_my_have_dlopen=yes
-      VLC_ADD_LIBS([libvlccore realaudio realvideo],[-ldl]),
+      VLC_ADD_LIBS([libvlccore realaudio realvideo lua],[-ldl]),
       AC_CHECK_LIB(svld, dlopen,
         ac_cv_my_have_dlopen=yes
         VLC_ADD_LIBS([libvlccore],[-lsvld]))))
@@ -1752,7 +1759,7 @@ then
               [LUA_LIBS="-llua"],
               [ have_lua=no
                 AC_MSG_WARN([lua >= 5.1 not found!])
-              ])
+              ],[-lm])
           )
         )
       ])
@@ -4310,11 +4317,11 @@ then
       VLC_ADD_PLUGIN([freetype])
       have_freetype=yes
       VLC_ADD_CPPFLAGS([freetype skins2],[${FREETYPE_CFLAGS}])
-      VLC_ADD_LIBS([freetype skins2],[${FREETYPE_LIBS}])
       if test "${SYS}" = "mingw32"; then
         VLC_ADD_LIBS([freetype skins2],[-lxml2])
-        VLC_ADD_LIBS([freetype],[-liconv])
+        VLC_ADD_LIBS([freetype],[-liconv -lz])
       fi
+      VLC_ADD_LIBS([freetype skins2],[${FREETYPE_LIBS}])
       if test "${enable_fontconfig}" != "no"
       then
         AC_CHECK_HEADERS(fontconfig/fontconfig.h,
@@ -4323,6 +4330,16 @@ then
         AC_CHECK_HEADERS(Carbon/Carbon.h,
           [VLC_ADD_LDFLAGS([freetype],[-Wl,-framework,Carbon])])
       fi
+
+     dnl fribidi support
+      if test "${enable_fribidi}" != "no"
+      then
+        PKG_CHECK_MODULES(FRIBIDI, fribidi, [
+          VLC_ADD_CPPFLAGS([freetype skins2], [${FRIBIDI_CFLAGS} -DHAVE_FRIBIDI])
+          VLC_ADD_LIBS([freetype skins2], [${FRIBIDI_LIBS}])
+        ])
+      fi
+
   ],[
   have_freetype=no
   AS_IF([ test "${enable_freetype}" =  "yes"],[
@@ -4332,14 +4349,6 @@ from http://www.freetype.org/, or configure with --disable-freetype. Have a nice
     ])
   ])
 
-  dnl fribidi support
-  if test "${enable_fribidi}" != "no"
-  then
-    PKG_CHECK_MODULES(FRIBIDI, fribidi, [
-      VLC_ADD_CPPFLAGS([freetype skins2], [${FRIBIDI_CFLAGS} -DHAVE_FRIBIDI])
-      VLC_ADD_LIBS([freetype skins2], [${FRIBIDI_LIBS}])
-    ])
-    fi
 fi
 
 dnl
@@ -5139,7 +5148,7 @@ then
   VLC_ADD_LDFLAGS([macosx],                           [-Wl,-framework,IOKit])
   dnl For bug report
   VLC_ADD_LDFLAGS([macosx],                           [-Wl,-framework,AddressBook])
-  VLC_ADD_LDFLAGS([macosx qtcapture],                 [-Wl,-framework,QTKit])
+  VLC_ADD_LDFLAGS([qtcapture],                        [-Wl,-framework,QTKit])
   VLC_ADD_LDFLAGS([qtcapture],                        [-Wl,-framework,CoreAudio])
   VLC_ADD_LDFLAGS([macosx],                           [-Wl,-framework,WebKit])
   VLC_ADD_LDFLAGS([opengllayer qtcapture],            [-Wl,-framework,QuartzCore])
@@ -5419,7 +5428,7 @@ AS_IF([test "${enable_gnutls}" != "no"], [
     VLC_ADD_LIBS([gnutls], [$GNUTLS_LIBS])
   ], [
     AS_IF([test "${enable_gnutls}" = "yes"], [
-      AC_MSG_ERROR([gnutls not present or too old (version 1.2.9 required)])
+      AC_MSG_ERROR([gnutls not present or too old (version 1.7.4 required)])
     ])
   ])
 ])
@@ -5956,7 +5965,6 @@ AC_CONFIG_FILES([
   modules/access/cdda/Makefile
   modules/access/rtp/Makefile
   modules/access/rtsp/Makefile
-  modules/access/rtmp/Makefile
   modules/access/vcd/Makefile
   modules/access/vcdx/Makefile
   modules/access/screen/Makefile
@@ -6017,7 +6025,6 @@ AC_CONFIG_FILES([
   modules/services_discovery/Makefile
   modules/stream_filter/Makefile
   modules/stream_out/Makefile
-  modules/stream_out/transrate/Makefile
   modules/video_chroma/Makefile
   modules/video_filter/Makefile
   modules/video_filter/atmo/Makefile

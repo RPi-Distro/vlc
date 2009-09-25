@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 the VideoLAN team
- * $Id: eb1588e2ac81fddee1b2aed75f51807a72695da7 $
+ * $Id: 9fab848823be8ffbd264fe4f5906576d21a78bc6 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1183,17 +1183,24 @@ static void* RunThread( void *p_this )
         /*
          * Check for subpictures to display
          */
-        subpicture_t *p_subpic = NULL;
-        if( display_date > 0 )
-            p_subpic = spu_SortSubpictures( p_vout->p_spu, display_date,
-                                            p_vout->p->b_paused, b_snapshot );
+        mtime_t spu_render_time;
+        if( p_vout->p->b_paused )
+            spu_render_time = p_vout->p->i_pause_date;
+        else if( p_picture )
+            spu_render_time = p_picture->date > 1 ? p_picture->date : mdate();
+        else
+            spu_render_time = 0;
 
+        subpicture_t *p_subpic = spu_SortSubpicturesNew( p_vout->p_spu,
+                                                         spu_render_time,
+                                                         b_snapshot );
         /*
          * Perform rendering
          */
         p_vout->p->i_picture_displayed++;
-        p_directbuffer = vout_RenderPicture( p_vout, p_filtered_picture,
-                                             p_subpic, p_vout->p->b_paused );
+        p_directbuffer = vout_RenderPicture( p_vout,
+                                             p_filtered_picture, p_subpic,
+                                             spu_render_time );
 
         /*
          * Take a snapshot if requested

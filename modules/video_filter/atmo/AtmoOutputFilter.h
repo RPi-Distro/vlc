@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id$
+ * $Id: e6397ac2b346dbab829c03dc63ed37162180cd86 $
  */
 #ifndef _AtmoOutputFilter_h_
 #define _AtmoOutputFilter_h_

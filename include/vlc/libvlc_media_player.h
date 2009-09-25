@@ -2,7 +2,7 @@
  * libvlc_media_player.h:  libvlc_media_player external API
  *****************************************************************************
  * Copyright (C) 1998-2009 the VideoLAN team
- * $Id: 4694698088d030f953363baeb4a6465e114e4d26 $
+ * $Id: 30b2ddbbe373969b564789172ee8ae49ae0ba8a8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Paul Saman <jpsaman@videolan.org>
@@ -205,6 +205,7 @@ VLC_PUBLIC_API void libvlc_media_player_set_agl ( libvlc_media_player_t *p_mi, u
 /**
  * Get the agl handler previously set with libvlc_media_player_set_agl().
  *
+ * \param p_mi the Media Player
  * \return the agl handler or 0 if none where set
  */
 VLC_PUBLIC_API uint32_t libvlc_media_player_get_agl ( libvlc_media_player_t *p_mi );
@@ -302,8 +303,8 @@ VLC_PUBLIC_API float libvlc_media_player_get_position( libvlc_media_player_t *, 
  * Set movie position.
  *
  * \param p_mi the Media Player
+ * \param f_pos the position
  * \param p_e an initialized exception pointer
- * \return movie position
  */
 VLC_PUBLIC_API void libvlc_media_player_set_position( libvlc_media_player_t *, float, libvlc_exception_t *);
 
@@ -333,6 +334,14 @@ VLC_PUBLIC_API int libvlc_media_player_get_chapter( libvlc_media_player_t *, lib
  * \return number of chapters in movie
  */
 VLC_PUBLIC_API int libvlc_media_player_get_chapter_count( libvlc_media_player_t *, libvlc_exception_t *);
+
+/**
+ * Will the player play
+ *
+ * \param p_mi the Media Player
+ * \param p_e an initialized exception pointer
+ * \return boolean
+ */
 VLC_PUBLIC_API int libvlc_media_player_will_play        ( libvlc_media_player_t *, libvlc_exception_t *);
 
 /**
@@ -513,6 +522,7 @@ VLC_PUBLIC_API int libvlc_video_get_width( libvlc_media_player_t *, libvlc_excep
  * See also libvlc_video_set_scale().
  *
  * \param p_mediaplayer the media player
+ * \param p_e an initialized exception pointer
  * \return the currently configured zoom factor, or 0. if the video is set
  * to fit to the output window/drawable automatically.
  */
@@ -529,6 +539,7 @@ VLC_PUBLIC_API float libvlc_video_get_scale( libvlc_media_player_t *,
  *
  * \param p_mediaplayer the media player
  * \param i_factor the scaling factor, or zero
+ * \param p_e an initialized exception pointer
  */
 VLC_PUBLIC_API void libvlc_video_set_scale( libvlc_media_player_t *, float,
                                             libvlc_exception_t *p_e );
@@ -904,7 +915,7 @@ VLC_PUBLIC_API void libvlc_audio_set_volume( libvlc_instance_t *, int, libvlc_ex
  */
 VLC_PUBLIC_API int libvlc_audio_get_track_count( libvlc_media_player_t *,  libvlc_exception_t * );
 
- /**
+/**
  * Get the description of available audio tracks.
  *
  * \param p_mi media player

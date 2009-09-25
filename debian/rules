@@ -149,6 +149,8 @@ clean:
 	dh_testdir
 	dh_testroot
 	rm -f build-stamp
+	rm -f debian/vlc-nox.install.kfreebsd
+	rm -f debian/vlc-nox.install.hurd
 	# Clean VLC
 	[ ! -f Makefile ] || $(MAKE) distclean
 	rm -rf tmp/
@@ -168,9 +170,9 @@ install: build
 	dh_testroot
 	dh_prep
 	sed -e '/\(lib\|libaccess_\)\(alsa\|dvb\|v4l\|v4l2\|pvr\)_/d' \
-	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd-i386
-	cp debian/vlc-nox.install.kfreebsd-i386 \
-	 debian/vlc-nox.install.kfreebsd-amd64
+	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd
+	sed -e '/\(lib\|libaccess_\)\(probe_hal\)_/d' \
+	 debian/vlc-nox.install.kfreebsd > debian/vlc-nox.install.hurd
 	dh_installdirs
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/
 	cp tmp/libvlc.a debian/tmp/usr/lib

@@ -2,7 +2,7 @@
  * encoder.c: video and audio encoder using the ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 1eb037f278130656c71d4e289bfca9d95ed55a31 $
+ * $Id: 275c352ae9c860055e59d11d933d3cf7db28e321 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -234,6 +234,12 @@ int OpenEncoder( vlc_object_t *p_this )
         msg_Err( p_enc, "\"%s\" is not an audio encoder", psz_namecodec );
         dialog_Fatal( p_enc, _("Streaming / Transcoding failed"),
                         _("\"%s\" is no audio encoder."), psz_namecodec );
+        return VLC_EGENERIC;
+    }
+
+    if( p_enc->fmt_out.i_cat == SPU_ES )
+    {
+        /* We don't support subtitle encoding */
         return VLC_EGENERIC;
     }
 

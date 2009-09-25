@@ -2,7 +2,7 @@
  * libasf.h :
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id$
+ * $Id: ebd16604913c109438204c9be174201a805b8fba $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify

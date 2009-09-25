@@ -2,7 +2,7 @@
  r playlistinfo.m: MacOS X interface module
  *****************************************************************************
  * Copyright (C) 2002-2009 the VideoLAN team
- * $Id: 972f1a66a783d53dcd01fc65260f8d9545df086c $
+ * $Id: 151bda9f0d8d4de88422a584785bcf73a292b80c $
  *
  * Authors: Benjamin Pracht <bigben at videolan dot org>
  *          Felix Paul Kühne <fkuehne at videolan dot org>
@@ -592,11 +592,11 @@ error:
     o_children = nil;
 }
 
-- (VLCInfoTreeItem *)childAtIndex:(int)i_index {
+- (VLCInfoTreeItem *)childAtIndex:(NSUInteger)i_index {
     return [[self children] objectAtIndex:i_index];
 }
 
-- (int)numberOfChildren {
+- (NSInteger)numberOfChildren {
 
     id i_tmp = [self children];
     return ( i_tmp == IsALeafNode ) ? (-1) : (int)[i_tmp count];

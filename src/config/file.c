@@ -2,7 +2,7 @@
  * file.c: configuration file handling
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: b3852bd7df7856e705cf2545ea750b0fcc611ba5 $
+ * $Id: 01c0332a2952d641de99fe5d690915e4b9ae9f42 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -354,7 +354,7 @@ int config_CreateDir( vlc_object_t *p_this, const char *psz_dirname )
 }
 
 static int
-config_Write (FILE *file, const char *type, const char *desc,
+config_Write (FILE *file, const char *desc, const char *type,
               bool comment, const char *name, const char *fmt, ...)
 {
     va_list ap;

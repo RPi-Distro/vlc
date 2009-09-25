@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: 72759a8b83fa87d33e79f213273a44e3170f1c50 $
+ * $Id: a72a4c5a9869deea3ea1e7f378bcdf04eadd43fc $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -34,6 +34,7 @@
 #include <QString>
 #include <QFileDialog>
 #include <QToolButton>
+#include <assert.h>
 
 SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& inputMRL )
            : QVLCDialog( parent,  _p_intf )
@@ -182,6 +183,9 @@ void SoutDialog::addDest( )
                 index = ui.destTab->addTab( idb, "Icecast" );
                 CONNECT( idb, mrlUpdated(), this, updateMRL() );
             }
+            break;
+        default:
+            assert(0);
     }
 
     ui.destTab->setCurrentIndex( index );

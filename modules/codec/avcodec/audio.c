@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: 90c5e7eab59a32678c488cfa46f2628547e4930c $
+ * $Id: ae640e3fc29e32efeade8fd8c26ddf3fe6c615d3 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -195,6 +195,11 @@ int InitAudioDec( decoder_t *p_dec, AVCodecContext *p_context,
     case CODEC_ID_FLAC:
         p_sys->i_output_max = 8 * sizeof(int32_t) * 65535;
         break;
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 35, 0 )
+    case CODEC_ID_WMAPRO:
+        p_sys->i_output_max = 8 * sizeof(float) * 6144; /* (1 << 12) * 3/2 */
+        break;
+#endif
     default:
         p_sys->i_output_max = 0;
         break;
