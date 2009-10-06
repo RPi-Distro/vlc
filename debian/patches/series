@@ -5,3 +5,4 @@
 200_osdmenu_paths.diff
 300_manpage_syntax.diff
 401_i420_mmx_pic.diff
+501_decrease_alsa_buffer.diff
