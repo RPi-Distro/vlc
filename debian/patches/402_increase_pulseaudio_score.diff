@@ -1,0 +1,27 @@
+From: Rémi Denis-Courmont <remi@remlab.net>
+Date: Wed, 2 Sep 2009 16:44:55 +0000 (+0300)
+Subject: PulseAudio: higher priority than ALSA
+X-Git-Url: http://git.videolan.org/?p=vlc.git;a=commitdiff_plain;h=7c4ca246a6be1d76bca3482893d5e1b35c5c7fb9
+
+PulseAudio: higher priority than ALSA
+
+Without this, the PulseAudio output is completely useless. PulseAudio
+provides ALSA emulation, so VLC would always use ALSA. Now, it will use
+ALSA if PulseAudio is not available, but avoid the PulseAudio ALSA
+emulation which makes more sense. Either way, if your PulseAudio setup
+is broken, you are screwed - this change makes no difference.
+---
+
+diff --git a/modules/audio_output/pulse.c b/modules/audio_output/pulse.c
+index 2fc17a4..f915a6b 100644
+--- a/modules/audio_output/pulse.c
++++ b/modules/audio_output/pulse.c
+@@ -97,7 +97,7 @@ static void uninit(aout_instance_t *p_aout);
+ vlc_module_begin ()
+     set_shortname( "Pulse Audio" )
+     set_description( N_("Pulseaudio audio output") )
+-    set_capability( "audio output", 40 )
++    set_capability( "audio output", 160 )
+     set_category( CAT_AUDIO )
+     set_subcategory( SUBCAT_AUDIO_AOUT )
+     add_shortcut( "pulseaudio" )
