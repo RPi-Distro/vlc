@@ -2,7 +2,7 @@
  * shout.c:  Shoutcast services discovery module
  *****************************************************************************
  * Copyright (C) 2005-2007 the VideoLAN team
- * $Id: b12dfbd9afb2337ba2c218e7696ed2fc1692e3bd $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Antoine Cellerier <dionoea -@T- videolan -d.t- org>

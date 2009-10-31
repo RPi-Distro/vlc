@@ -171,6 +171,7 @@ void *rtp_thread (void *data)
     {
         block_t *block = rtp_recv (demux);
 
+        int canc = vlc_savecancel ();
         vlc_mutex_lock (&p_sys->lock);
         if (block == NULL)
             p_sys->dead = true; /* Fatal error: abort */
@@ -190,6 +191,7 @@ void *rtp_thread (void *data)
         }
         vlc_cond_signal (&p_sys->wait);
         vlc_mutex_unlock (&p_sys->lock);
+        vlc_restorecancel (canc);
     }
     while (!p_sys->dead);
 

@@ -2,7 +2,7 @@
  * bd.c: BluRay Disc support (uncrypted)
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id: 232b10fe491b656bf5637436b8a43c68cd097e88 $
+ * $Id$
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

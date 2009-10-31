@@ -2,7 +2,7 @@
  * interface_widgets.cpp : Custom widgets for the main interface
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 895d5286fcd7c4b26c8f4a4551f50bf541692957 $
+ * $Id: 5c38426b96b7907ebcb9cf39178f7d6f76005d0f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -506,7 +506,6 @@ void TimeLabel::setCaching( float f_cache )
 {
     QString amount;
     amount.setNum( (int)(100 * f_cache) );
-    msg_Dbg( p_intf, "New caching: %d", (int)(100*f_cache));
     setText( "Buff: " + amount + "%" );
 }
 

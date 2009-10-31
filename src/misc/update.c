@@ -2,7 +2,7 @@
  * update.c: VLC update checking and downloading
  *****************************************************************************
  * Copyright © 2005-2008 the VideoLAN team
- * $Id: a0f43346363549d4faf3fbf643d5e0d69597b5e0 $
+ * $Id: d7e617926cd638562055edf7acd8a17eee32779a $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire at via.ecp.fr>
@@ -1081,12 +1081,12 @@ void update_Delete( update_t *p_update )
 
     if( p_update->p_check )
     {
-        assert( !p_update->p_download );
         vlc_object_kill( p_update->p_check );
         vlc_thread_join( p_update->p_check );
         vlc_object_release( p_update->p_check );
     }
-    else if( p_update->p_download )
+
+    if( p_update->p_download )
     {
         vlc_object_kill( p_update->p_download );
         vlc_thread_join( p_update->p_download );
@@ -1613,9 +1613,9 @@ static void* update_DownloadReal( vlc_object_t *p_this )
         psz_downloaded = size_str( l_downloaded );
         f_progress = (float)l_downloaded/(float)l_size;
 
-        if( asprintf( &psz_status, _( "%s\nDownloading... %s/%s %.1f%% done" ),
+        if( asprintf( &psz_status, _( "%s\nDownloading... %s/%s - %.1f%% done" ),
                       p_update->release.psz_url, psz_downloaded, psz_size,
-                      f_progress ) != -1 )
+                      f_progress*100 ) != -1 )
         {
             dialog_ProgressSet( p_progress, psz_status, f_progress );
             free( psz_status );
@@ -1735,9 +1735,6 @@ end:
     free( p_buffer );
     free( psz_size );
 
-    p_udt->p_update->p_download = NULL;
-
-    vlc_object_release( p_udt );
     vlc_restorecancel( canc );
     return NULL;
 }

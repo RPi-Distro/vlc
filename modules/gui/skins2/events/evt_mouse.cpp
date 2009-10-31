@@ -2,7 +2,7 @@
  * evt_mouse.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 2bac8baf0ba8ee5420f43ac487d60b37f91fc40c $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

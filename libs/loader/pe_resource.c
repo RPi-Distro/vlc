@@ -1,6 +1,6 @@
 /*
  * PE (Portable Execute) File Resources
- * $Id: 5e54e5e711d7f287e860ad24e494238679ca244e $
+ * $Id$
  *
  * Copyright 1995 Thomas Sandford
  * Copyright 1996 Martin von Loewis

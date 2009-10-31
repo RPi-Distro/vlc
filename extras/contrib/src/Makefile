@@ -149,7 +149,7 @@ ifdef HAVE_DARWIN_OS
 X264CONF += --enable-pic
 FFMPEGCONF += --cc=$(CC)
 FFMPEGCONF += --arch=$(ARCH)
-ifdef HAVE_DARWIN_10
+ifdef HAVE_DARWIN_64
 FFMPEGCONF += --cpu=core2
 X264CONF+=--host=x86_64-apple-darwin10
 endif
@@ -669,6 +669,9 @@ lua-$(LUA_VERSION).tar.gz:
 
 lua: lua-$(LUA_VERSION).tar.gz
 	$(EXTRACT_GZ)
+ifdef HAVE_DARWIN_OS
+	(cd $@; sed -e 's%gcc%$(CC)%' -e 's%LDFLAGS=%LDFLAGS=$(EXTRA_CFLAGS) $(EXTRA_LDFLAGS)%' -i.orig  src/Makefile)
+endif
 
 .lua: lua
 ifdef HAVE_WIN32
@@ -695,7 +698,7 @@ libmad-$(LIBMAD_VERSION).tar.gz:
 libmad: libmad-$(LIBMAD_VERSION).tar.gz
 	$(EXTRACT_GZ)
 ifdef HAVE_DARWIN_OS
-	( cd $@; sed -e 's%-march=i486%$(EXTRA_CFLAGS) $(EXTRA_LDFLAGS)%' -i.orig  configure )
+	( cd $@; sed -e 's%-march=i486%$(EXTRA_CFLAGS) $(EXTRA_LDFLAGS)%' -e 's%-dynamiclib%-dynamiclib -arch $(ARCH)%' -i.orig  configure )
 endif
 
 .mad: libmad
@@ -804,6 +807,11 @@ libtheora: libtheora-$(THEORA_VERSION).tar.bz2
 ifdef HAVE_WIN32
 	patch -p0 < Patches/theora-doc.patch
 endif
+ifdef HAVE_DARWIN_OS
+ifndef HAVE_DARWIN_10
+	patch -p0 < Patches/libtheora-xcode31.patch
+endif
+endif
 	(cd $@; autoconf)
 
 THEORACONF = --disable-sdltest --disable-oggtest --disable-vorbistest --disable-examples
@@ -811,7 +819,7 @@ ifdef HAVE_WIN32
 THEORACONF += --disable-docs
 endif
 
-ifdef HAVE_DARWIN_10
+ifdef HAVE_DARWIN_64
 THEORACONF += --disable-asm
 endif
 
@@ -819,7 +827,7 @@ endif
 ifdef HAVE_BEOS
 	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) $(THEORACONF) --disable-asm && make && make install)
 else
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) $(THEORACONF)&& make && make install)
+	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) $(THEORACONF) && make && make install)
 endif
 	$(INSTALL_NAME)
 	touch $@
@@ -1047,7 +1055,7 @@ DISTCLEAN_PKG += amrwb-$(LIBAMR_WB_VERSION).tar.bz2
 
 ifdef SVN
 ffmpeg:
-	$(SVN) co $(FFMPEG_SVN) ffmpeg
+	$(SVN) co $(FFMPEG_SVN) ffmpeg -r 20342
 ifeq ($(HOST),i586-pc-beos)
 	(cd $@; patch -p0 < ../Patches/ffmpeg-svn-beos.patch)
 endif
@@ -1061,10 +1069,8 @@ ifdef HAVE_BEOS
 	(cd $@; patch -p0 < ../Patches/ffmpeg-alignment.patch)
 endif
 ifdef HAVE_DARWIN_OS
-ifdef HAVE_DARWIN_OS_ON_INTEL
-	(cd $@; patch -p0 < ../Patches/ffmpeg-macosx-intel-mmx.patch)
-else
-	(cd $@; patch -p0 < ../Patches/ffmpeg-darwin-ppc-mdynamic.patch) 
+ifndef HAVE_DARWIN_OS_ON_INTEL
+	(cd $@; patch -p0 < ../Patches/ffmpeg-darwin-ppc-mdynamic.patch)
 endif
 endif
 ifdef HAVE_UCLIBC
@@ -1307,9 +1313,7 @@ ifdef HAVE_WIN32
 	(cd $@; dos2unix configure.in)
 	patch -p0 < Patches/goom2k4-0-win32.patch
 else
-ifndef HAVE_DARWIN_OS
 	patch -p0 < Patches/goom2k4-0-mmx.patch
-endif
 endif
 	patch -p0 < Patches/goom2k4-0-memleaks.patch
 
@@ -1335,9 +1339,6 @@ libcaca-$(LIBCACA_VERSION).tar.gz:
 libcaca: libcaca-$(LIBCACA_VERSION).tar.gz
 	$(EXTRACT_GZ)
 ifdef HAVE_DARWIN_OS
-	#remove me at next libcaca upgrade
-	patch -p0 < Patches/libcaca_driver_cocoa.diff
-	patch -p0 < Patches/libcaca_macosx.diff
 	patch -p0 < Patches/libcaca-osx-sdkofourchoice.patch
 	(cd $@; sed -e 's%/Developer/SDKs/MacOSX10.4u.sdk%$(MACOSX_SDK)%' -i.orig  configure)
 endif
@@ -1389,9 +1390,6 @@ x264:
 	patch -p0 < Patches/x264-svn-info-threads.patch
 ifdef HAVE_WIN32
 	(cd x264; patch -p0 < ../Patches/x264-svn-win32.patch )
-endif
-ifdef HAVE_DARWIN_OS
-	(cd $@; patch -p0 < ../Patches/x264-svn-darwin.patch )
 endif
 
 else
@@ -1839,11 +1837,8 @@ libgpg-error: libgpg-error-$(GPGERROR_VERSION).tar.bz2
 	$(EXTRACT_BZ2)
 
 .gpg-error: libgpg-error
-ifdef HAVE_DARWIN_OS_ON_INTEL
-	(cd $<; ./autogen.sh)
-endif
 	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --disable-nls --disable-shared --disable-languages && make && make install)
-#	$(INSTALL_NAME)
+	$(INSTALL_NAME)
 	touch $@
 
 CLEAN_FILE += .gpg-error
@@ -2494,17 +2489,12 @@ DISTCLEAN_PKG += schroedinger-$(SCHROED_VERSION).tar.gz
 libass-$(ASS_VERSION).tar.bz2:
 	$(WGET) $(ASS_URL)
 
-# mplayer patches up to August 8, 2008 are included
-libass: libass-$(ASS_VERSION).tar.bz2
-	$(EXTRACT_BZ2)
-	(cd $@; patch -p1 < ../Patches/libass_mplayer_updates.patch)
-ifneq ($(HOST),$(BUILD))
-	patch -p0 < Patches/libass-cross.patch
+libass:
+	$(GIT) clone $(ASS_GIT)
 	(cd $@; autoreconf -ivf)
-endif
 
-.libass: libass .png
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS) -O3" && make && make install)
+.libass: libass .freetype
+	(cd $<; $(HOSTCC) ./configure --disable-png $(HOSTCONF) --prefix=$(PREFIX) CFLAGS="$(CFLAGS) -O3" && make && make install)
 	touch $@
 
 CLEAN_FILE += .libass
@@ -2541,6 +2531,9 @@ gsm: gsm-$(GSM_VERSION).tar.gz
 	mv gsm-1.0-* gsm || true
 ifneq ($(HOST),$(BUILD))
 	(patch -p0 < Patches/gsm-cross.patch)
+endif
+ifdef HAVE_DARWIN_OS
+	(cd $@; sed -e 's%-O2%-O2\ $(EXTRA_CFLAGS)\ $(EXTRA_LDFLAGS)%' -e 's%# LDFLAGS 	=%LDFLAGS 	= $(EXTRA_LDFLAGS)%' -e 's%gcc%$(CC)%' -i.orig  Makefile)
 endif
 
 .gsm: gsm

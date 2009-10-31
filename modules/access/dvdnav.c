@@ -2,7 +2,7 @@
  * dvdnav.c: DVD module using the dvdnav library.
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: a8512e1275901f02b388d061ce850a3e38b79358 $
+ * $Id: b38852cf44c3fa2a2ef1fd0fdd1b116e3957b733 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -202,8 +202,11 @@ static int Open( vlc_object_t *p_this )
         psz_name = ToLocaleDup( p_demux->psz_path );
 
 #ifdef WIN32
-    if( psz_name[0] && psz_name[1] == ':' &&
-        psz_name[2] == '\\' && psz_name[3] == '\0' ) psz_name[2] = '\0';
+    /* Remove trailing backslash, otherwise dvdnav_open will fail */
+    if( *psz_name && *(psz_name + strlen(psz_name) - 1) == '\\' )
+    {
+        *(psz_name + strlen(psz_name) - 1) = '\0';
+    }
 #endif
 
     /* Try some simple probing to avoid going through dvdnav_open too often */

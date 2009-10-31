@@ -2,7 +2,7 @@
  * es_out.c: Es Out handler for input.
  *****************************************************************************
  * Copyright (C) 2003-2004 the VideoLAN team
- * $Id: b67aa36788dd65c6644e5f4b6243ca8651e3509f $
+ * $Id: 6f12b1877aafbdf799a9ce18684a11b998b7ec95 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x dot nl>
@@ -186,6 +186,7 @@ static void EsOutDecodersChangePause( es_out_t *out, bool b_paused, mtime_t i_da
 static void EsOutProgramChangePause( es_out_t *out, bool b_paused, mtime_t i_date );
 static void EsOutProgramsChangeRate( es_out_t *out );
 static void EsOutDecodersStopBuffering( es_out_t *out, bool b_forced );
+
 static char *LanguageGetName( const char *psz_code );
 static char *LanguageGetCode( const char *psz_lang );
 static char **LanguageSplit( const char *psz_langs );
@@ -585,9 +586,7 @@ static void EsOutChangeRate( es_out_t *out, int i_rate )
     es_out_sys_t      *p_sys = out->p_sys;
 
     p_sys->i_rate = i_rate;
-
-    if( !p_sys->b_paused )
-        EsOutProgramsChangeRate( out );
+    EsOutProgramsChangeRate( out );
 }
 
 static void EsOutChangePosition( es_out_t *out )
@@ -719,6 +718,32 @@ static void EsOutDecodersChangePause( es_out_t *out, bool b_paused, mtime_t i_da
         }
     }
 }
+
+static bool EsOutIsExtraBufferingAllowed( es_out_t *out )
+{
+    es_out_sys_t *p_sys = out->p_sys;
+
+    size_t i_size = 0;
+    for( int i = 0; i < p_sys->i_es; i++ )
+    {
+        es_out_id_t *p_es = p_sys->es[i];
+
+        if( p_es->p_dec )
+            i_size += input_DecoderGetFifoSize( p_es->p_dec );
+        if( p_es->p_dec_record )
+            i_size += input_DecoderGetFifoSize( p_es->p_dec_record );
+    }
+    //fprintf( stderr, "----- EsOutIsExtraBufferingAllowed =% 5d kbytes -- ", i_size / 1024 );
+
+    /* TODO maybe we want to be able to tune it ? */
+#if defined(OPTIMIZE_MEMORY)
+    const size_t i_level_high = 500000;  /* 0.5 Mbytes */
+#else
+    const size_t i_level_high = 10000000; /* 10 Mbytes */
+#endif
+    return i_size < i_level_high;
+}
+
 static void EsOutProgramChangePause( es_out_t *out, bool b_paused, mtime_t i_date )
 {
     es_out_sys_t *p_sys = out->p_sys;
@@ -1358,6 +1383,58 @@ static void EsOutProgramUpdateScrambled( es_out_t *p_out, es_out_pgrm_t *p_pgrm 
         input_Control( p_input, INPUT_DEL_INFO, psz_cat, _("Scrambled") );
 
     input_SendEventProgramScrambled( p_input, p_pgrm->i_id, b_scrambled );
+}
+
+static void EsOutMeta( es_out_t *p_out, const vlc_meta_t *p_meta )
+{
+    es_out_sys_t    *p_sys = p_out->p_sys;
+    input_thread_t  *p_input = p_sys->p_input;
+
+    input_item_t *p_item = input_GetItem( p_input );
+
+    char *psz_title = NULL;
+    char *psz_arturl = input_item_GetArtURL( p_item );
+
+    vlc_mutex_lock( &p_item->lock );
+
+    if( vlc_meta_Get( p_meta, vlc_meta_Title ) && !p_item->b_fixed_name )
+        psz_title = strdup( vlc_meta_Get( p_meta, vlc_meta_Title ) );
+
+    vlc_meta_Merge( p_item->p_meta, p_meta );
+
+    if( !psz_arturl || *psz_arturl == '\0' )
+    {
+        const char *psz_tmp = vlc_meta_Get( p_item->p_meta, vlc_meta_ArtworkURL );
+        if( psz_tmp )
+            psz_arturl = strdup( psz_tmp );
+    }
+    vlc_mutex_unlock( &p_item->lock );
+
+    if( psz_arturl && *psz_arturl )
+    {
+        input_item_SetArtURL( p_item, psz_arturl );
+
+        if( !strncmp( psz_arturl, "attachment://", strlen("attachment") ) )
+        {
+            /* Don't look for art cover if sout
+             * XXX It can change when sout has meta data support */
+            if( p_out->b_sout && !p_input->b_preparsing )
+                input_item_SetArtURL( p_item, "" );
+            else
+                input_ExtractAttachmentAndCacheArt( p_input );
+        }
+    }
+    free( psz_arturl );
+
+    if( psz_title )
+    {
+        input_item_SetName( p_item, psz_title );
+        free( psz_title );
+    }
+    input_item_SetPreparsed( p_item, true );
+
+    input_SendEventMeta( p_input );
+    /* TODO handle sout meta ? */
 }
 
 /* EsOutAdd:
@@ -2226,6 +2303,7 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
             int            i_group = 0;
             int64_t        i_pcr;
 
+            /* Search program */
             if( i_query == ES_OUT_SET_PCR )
             {
                 p_pgrm = p_sys->p_pgrm;
@@ -2247,14 +2325,42 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
                 return VLC_EGENERIC;
             }
 
-            /* search program
-             * TODO do not use mdate() but proper stream acquisition date */
+            /* TODO do not use mdate() but proper stream acquisition date */
+            bool b_late;
             input_clock_Update( p_pgrm->p_clock, VLC_OBJECT(p_sys->p_input),
-                                p_sys->p_input->p->b_can_pace_control || p_sys->b_buffering, i_pcr, mdate() );
-            /* Check buffering state on master clock update */
-            if( p_sys->b_buffering && p_pgrm == p_sys->p_pgrm )
-                EsOutDecodersStopBuffering( out, false );
+                                &b_late,
+                                p_sys->p_input->p->b_can_pace_control || p_sys->b_buffering,
+                                EsOutIsExtraBufferingAllowed( out ),
+                                i_pcr, mdate() );
 
+            if( p_pgrm == p_sys->p_pgrm )
+            {
+                if( p_sys->b_buffering )
+                {
+                    /* Check buffering state on master clock update */
+                    EsOutDecodersStopBuffering( out, false );
+                }
+                else if( b_late )
+                {
+                    mtime_t i_pts_delay = input_clock_GetJitter( p_pgrm->p_clock );
+
+                    /* Avoid dangerously high value */
+                    const mtime_t i_pts_delay_max = 30000000;
+                    if( i_pts_delay > i_pts_delay_max )
+                        i_pts_delay = __MAX( i_pts_delay_max, p_sys->i_pts_delay );
+
+                    /* Force a rebufferization when we are too late */
+                    msg_Err( p_sys->p_input,
+                             "ES_OUT_SET_(GROUP_)PCR  is called too late, increasing pts_delay to %d ms",
+                             (int)(i_pts_delay/1000) );
+
+                    /* It is not really good, as we throw away already buffered data
+                     * TODO have a mean to correctly reenter bufferization */
+                    es_out_Control( out, ES_OUT_RESET_PCR );
+
+                    es_out_Control( out, ES_OUT_SET_JITTER, i_pts_delay, p_sys->i_cr_average );
+                }
+            }
             return VLC_SUCCESS;
         }
 
@@ -2359,6 +2465,14 @@ static int EsOutControlLocked( es_out_t *out, int i_query, va_list args )
             int i_group = (int)va_arg( args, int );
 
             return EsOutProgramDel( out, i_group );
+        }
+
+        case ES_OUT_SET_META:
+        {
+            const vlc_meta_t *p_meta = va_arg( args, const vlc_meta_t * );
+
+            EsOutMeta( out, p_meta );
+            return VLC_SUCCESS;
         }
 
         case ES_OUT_GET_WAKE_UP:

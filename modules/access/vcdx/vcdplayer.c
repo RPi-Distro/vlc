@@ -3,7 +3,7 @@
  *               using libcdio, libvcd and libvcdinfo
  *****************************************************************************
  * Copyright (C) 2003, 2004 Rocky Bernstein <rocky@panix.com>
- * $Id: 02358d25b1c6af53d784c8f9ba96f1d04337fa7b $
+ * $Id$
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by

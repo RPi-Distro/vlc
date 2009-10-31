@@ -2,7 +2,7 @@
  * beat_detect.c: basic beat detection algorithm
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 583d307cd631735c4d7ef510694070abaa85c88b $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

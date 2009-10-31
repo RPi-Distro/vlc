@@ -2,7 +2,7 @@
  * util.c: Utility functions and exceptions management
  *****************************************************************************
  * Copyright (C) 2005 the VideoLAN team
- * $Id: 09e5b7423f2879f861e48373aaa46b4ae10c0bd7 $
+ * $Id$
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *

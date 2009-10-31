@@ -2,7 +2,7 @@
  * logger.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: b0b0b2210e56efbabc0429e30fc64ce762107f8d $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -4,7 +4,7 @@
  * the "drawable" variable. 
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: fe7518f052d7d132e1cf74caac9145d42720d036 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>

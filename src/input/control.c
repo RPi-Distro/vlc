@@ -2,7 +2,7 @@
  * control.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 8cf6addf5fee5f334718bcb2502bd55f1e10038d $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

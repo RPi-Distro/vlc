@@ -2,7 +2,7 @@
  * standardpanel.cpp : The "standard" playlist panel : just a treeview
  ****************************************************************************
  * Copyright (C) 2000-2005 the VideoLAN team
- * $Id: c9e5550cef2158c615c1c69e1f37e950eeae69f5 $
+ * $Id: ca421c61e252d3c35340a1936c814095c341685c $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -87,15 +87,11 @@ StandardPLPanel::StandardPLPanel( PlaylistWidget *_parent,
         view->header()->resizeSection( 0, 200 );
         view->header()->resizeSection( 1, 80 );
     }
+    view->header()->setSortIndicatorShown( true );
     view->header()->setClickable( true );
     view->header()->setContextMenuPolicy( Qt::CustomContextMenu );
     getSettings()->endGroup();
 
-    /* Set sorting enable by hand, so it doesn't run sort on start */
-    view->header()->setSortIndicator( -1, Qt::AscendingOrder );
-    view->header()->setSortIndicatorShown( true );
-    CONNECT( view->header(), sortIndicatorChanged( int, Qt::SortOrder ),
-             view, sortByColumn( int ) );
     /* Connections for the TreeView */
     CONNECT( view, activated( const QModelIndex& ) ,
              model,activateItem( const QModelIndex& ) );

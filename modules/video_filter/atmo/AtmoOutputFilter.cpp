@@ -6,7 +6,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 3cefa0033c5aee8bf19329c1fc064368c7f50c6c $
+ * $Id$
  */
 
 #include <string.h>

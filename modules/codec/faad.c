@@ -2,7 +2,7 @@
  * decoder.c: AAC decoder using libfaad2
  *****************************************************************************
  * Copyright (C) 2001, 2003 the VideoLAN team
- * $Id: e050a94bc0e15293f45ca1502f5998f249bd1437 $
+ * $Id: ae446753da0db1a4346fa5aca8af277aff98edde $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -233,8 +233,17 @@ static aout_buffer_t *DecodeBlock( decoder_t *p_dec, block_t **pp_block )
     /* Append the block to the temporary buffer */
     if( p_sys->i_buffer_size < p_sys->i_buffer + p_block->i_buffer )
     {
-        p_sys->i_buffer_size = p_sys->i_buffer + p_block->i_buffer;
-        p_sys->p_buffer = realloc( p_sys->p_buffer, p_sys->i_buffer_size );
+        size_t  i_buffer_size = p_sys->i_buffer + p_block->i_buffer;
+        uint8_t *p_buffer     = realloc( p_sys->p_buffer, i_buffer_size );
+        if( p_buffer )
+        {
+            p_sys->i_buffer_size = i_buffer_size;
+            p_sys->p_buffer      = p_buffer;
+        }
+        else
+        {
+            p_block->i_buffer = 0;
+        }
     }
 
     if( p_block->i_buffer > 0 )

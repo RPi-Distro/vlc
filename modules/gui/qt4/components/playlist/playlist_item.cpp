@@ -2,7 +2,7 @@
  * playlist_item.cpp : Manage playlist item
  ****************************************************************************
  * Copyright © 2006-2008 the VideoLAN team
- * $Id: b0436f0e1e2e6d783bdac00e82a76d423b65b4db $
+ * $Id: 0edde6a5f91c338b4de5c1333dd0fb0bfc70b3e1 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -48,7 +48,7 @@
 */
 
 
-void PLItem::init( int _i_id, int _i_input_id, bool _is_node, PLItem *parent, PLModel *m, QSettings *settings )
+void PLItem::init( int _i_id, int _i_input_id, PLItem *parent, PLModel *m, QSettings *settings )
 {
     parentItem = parent;          /* Can be NULL, but only for the rootItem */
     i_id       = _i_id;           /* Playlist item specific id */
@@ -56,7 +56,6 @@ void PLItem::init( int _i_id, int _i_input_id, bool _is_node, PLItem *parent, PL
     model      = m;               /* PLModel (QAbsmodel) */
     i_type     = -1;              /* Item type - Avoid segfault */
     b_current  = false;           /* Is the item the current Item or not */
-    b_is_node = _is_node;
 
     assert( model );              /* We need a model */
 
@@ -92,21 +91,19 @@ void PLItem::init( int _i_id, int _i_input_id, bool _is_node, PLItem *parent, PL
    Call the above function init
    So far the first constructor isn't used...
    */
-PLItem::PLItem( int _i_id, int _i_input_id, bool _is_node, PLItem *parent, PLModel *m )
+PLItem::PLItem( int _i_id, int _i_input_id, PLItem *parent, PLModel *m )
 {
-    init( _i_id, _i_input_id, _is_node, parent, m, NULL );
+    init( _i_id, _i_input_id, parent, m, NULL );
 }
 
 PLItem::PLItem( playlist_item_t * p_item, PLItem *parent, PLModel *m )
 {
-    init( p_item->i_id, p_item->p_input->i_id, p_item->i_children > -1,
-        parent, m, NULL );
+    init( p_item->i_id, p_item->p_input->i_id, parent, m, NULL );
 }
 
 PLItem::PLItem( playlist_item_t * p_item, QSettings *settings, PLModel *m )
 {
-    init( p_item->i_id, p_item->p_input->i_id, p_item->i_children > -1,
-        NULL, m, settings );
+    init( p_item->i_id, p_item->p_input->i_id, NULL, m, settings );
 }
 
 PLItem::~PLItem()
@@ -177,7 +174,6 @@ void PLItem::update( playlist_item_t *p_item, bool iscurrent )
     /* Useful for the model */
     i_type = p_item->p_input->i_type;
     b_current = iscurrent;
-    b_is_node = p_item->i_children > -1;
 
     item_col_strings.clear();
 

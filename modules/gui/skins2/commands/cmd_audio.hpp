@@ -2,7 +2,7 @@
  * cmd_audio.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: f3fba5bd5d3aa04f8c56645a8fc9ed1f345c1529 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

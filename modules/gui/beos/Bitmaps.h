@@ -2,7 +2,7 @@
  * Bitmaps.h
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 553309dad22164da4c23b28a3c8be44a2864ac9c $
+ * $Id$
  *
  * Authors: Tony Castley <tcastley@mail.powerup.com.au>
  *          Stephan Aßmus <stippi@yellowbites.com>

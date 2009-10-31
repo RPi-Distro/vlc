@@ -2,7 +2,7 @@
  * vout.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: b2b1f82bf9ec9fc0537c11d57bdc13f5ac0a70b7 $
+ * $Id: 0bf8b6e91b6b4d9c511ea03b9079c302b64c53e9 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -172,7 +172,7 @@ struct vout_sys_t
     HINSTANCE               hd3d9_dll;       /* handle of the opened d3d9 dll */
     LPDIRECT3D9             p_d3dobj;
     LPDIRECT3DDEVICE9       p_d3ddev;
-    D3DFORMAT               bbFormat;
+    D3DPRESENT_PARAMETERS   d3dpp;
     // scene objects
     LPDIRECT3DTEXTURE9      p_d3dtex;
     LPDIRECT3DVERTEXBUFFER9 p_d3dvtc;

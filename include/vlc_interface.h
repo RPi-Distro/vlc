@@ -4,7 +4,7 @@
  * interface, such as message output.
  *****************************************************************************
  * Copyright (C) 1999, 2000 the VideoLAN team
- * $Id: a135be33acf952566b02a2dc6b1bed4a18d9fedc $
+ * $Id: 3b61d0ae326be50db827a89121fc2da4efaa68c5 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *
@@ -177,7 +177,7 @@ typedef enum vlc_dialog {
                          "*.ogg;*.ogm;*.ogv;*.ogx;*.ps;" \
                          "*.rec;*.rm;*.rmvb;*.tod;*.ts;*.vob;*.wmv"
 
-#define EXTENSIONS_PLAYLIST "*.asx;*.b4s;*.m3u;*.pls;*.ram;*.vlc;*.xspf"
+#define EXTENSIONS_PLAYLIST "*.asx;*.b4s;*.ifo;*.m3u;*.pls;*.ram;*.vlc;*.xspf"
 
 #define EXTENSIONS_MEDIA EXTENSIONS_VIDEO ";" EXTENSIONS_AUDIO ";" \
                           EXTENSIONS_PLAYLIST
