@@ -2,7 +2,7 @@
 * eyetv.m: small class to control the notification parts of the EyeTV plugin
 *****************************************************************************
 * Copyright (C) 2006-2007 the VideoLAN team
-* $Id: 8220a7159ab489e7a1412d83fb4c3907aeed8f95 $
+* $Id$
 *
 * Authors: Felix Kühne <fkuehne at videolan dot org>
 *                Damien Fouilleul <damienf at videolan dot org>

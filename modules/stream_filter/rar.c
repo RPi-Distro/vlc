@@ -2,7 +2,7 @@
  * rar.c: uncompressed RAR stream filter (only the biggest file is extracted)
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: a5fd8291f8bc2b4597fce9359dbf24b4fd2c68b2 $
+ * $Id: f8280587ce4c89d54bff2fd933e85d77cb98b391 $
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *
@@ -525,7 +525,7 @@ static int SkipFile( stream_t *s,const rar_block_t *p_hdr )
             rar_file_chunk_t *p_chunk = malloc( sizeof( *p_chunk ) );
             if( p_chunk )
             {
-                p_chunk->i_offset = stream_Tell( s->p_source );
+                p_chunk->i_offset = stream_Tell( s->p_source ) + p_hdr->i_size;
                 p_chunk->i_size = p_hdr->i_add_size;
                 p_chunk->i_cummulated_size = 0;
                 if( p_current->i_chunk > 0 )

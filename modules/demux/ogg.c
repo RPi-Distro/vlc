@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: f73e0435aa6b8fc6561f2ac42d33b1725fd734a4 $
+ * $Id: 2b62be732d43aaeb9a975e2576082de68156e5bc $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)

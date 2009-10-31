@@ -6,7 +6,7 @@
  * thread, and destroy a previously oppened video output thread.
  *****************************************************************************
  * Copyright (C) 2000-2007 the VideoLAN team
- * $Id: 9fab848823be8ffbd264fe4f5906576d21a78bc6 $
+ * $Id: 79791f17e60279d89ced02831c36ee8067a9a523 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -1846,6 +1846,8 @@ static const deinterlace_mode_t p_deinterlace_mode[] = {
     { "bob",        "Bob",      true },
     { "linear",     "Linear",   true },
     { "x",          "X",        false },
+    { "yadif",      "Yadif",    true },
+    { "yadif2x",    "Yadif (2x)", true },
     { NULL, NULL, true }
 };
 

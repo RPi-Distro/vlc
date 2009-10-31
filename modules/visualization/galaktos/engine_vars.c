@@ -2,7 +2,7 @@
  * engine_vars.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: ca0de20f464db2624970723fa3e422e5b22ec8fe $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

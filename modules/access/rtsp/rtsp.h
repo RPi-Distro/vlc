@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id: fc73642ca2d3f9939ef1e233aa00b8ac64ac46d1 $
+ * $Id$
  *
  * a minimalistic implementation of rtsp protocol,
  * *not* RFC 2326 compilant yet.

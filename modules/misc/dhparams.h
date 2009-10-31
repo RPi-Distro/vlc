@@ -1,6 +1,6 @@
 /**
  * Pre-computed Diffie-Hellman-Merkel parameters.
- * $Id: d7e97c5d69c997e810f76f195bed590b12d707d9 $
+ * $Id$
  * Numbers are not copyrightable.
  *
  * If you feel like it, generate new ones:

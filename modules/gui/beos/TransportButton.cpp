@@ -2,7 +2,7 @@
  * TransportButton.cpp
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: 23f214fe5d6c45ba4e324a0a1a376bda4e2216e3 $
+ * $Id$
  *
  * Authors: Tony Castley <tcastley@mail.powerup.com.au>
  *          Stephan Aßmus <stippi@yellowbites.com>

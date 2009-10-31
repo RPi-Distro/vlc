@@ -1,7 +1,7 @@
 /*
  * Modified for use with MPlayer, detailed CVS changelog at
  * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
- * $Id: 668219f5bce8a5906d145d12f93969383f568580 $
+ * $Id$
  */
 
 #ifndef loader_ext_h

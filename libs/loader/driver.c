@@ -1,5 +1,5 @@
 /*
- * $Id: dde6a1d6ee387a4519d18f03c2e6fa1b73a54ad0 $
+ * $Id$
  *
  * Copyright 1993, 1994 Martin Ayotte
  * Copyright 1998 Marcus Meissner

@@ -2,7 +2,7 @@
  * macosx_graphics.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 23aea45431919ae0c5f3a4c991646ab8048705f4 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

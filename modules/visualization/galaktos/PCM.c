@@ -2,7 +2,7 @@
  * PCM.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 82162f3f332ed30671d10d3a2b2a2147b49fe2ef $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

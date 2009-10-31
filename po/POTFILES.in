@@ -310,6 +310,7 @@ modules/access/vcdx/vcdplayer.c
 modules/access/vcdx/vcdplayer.h
 modules/access/videodev2.h
 modules/access/videodev_mjpeg.h
+modules/access/zip/zipstream.c
 modules/access_output/bonjour.c
 modules/access_output/bonjour.h
 modules/access_output/dummy.c

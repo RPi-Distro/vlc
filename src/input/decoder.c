@@ -2,7 +2,7 @@
  * decoder.c: Functions for the management of decoders
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: b110a1e88571146b75f320548bca6b576c0937da $
+ * $Id: c0e9fb5744bc21f8acab17d6bbbbbece890b019f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -386,7 +386,11 @@ void input_DecoderDecode( decoder_t *p_dec, block_t *p_block, bool b_do_pace )
         if( !p_owner->b_buffering )
             block_FifoPace( p_owner->p_fifo, 10, SIZE_MAX );
     }
+#ifdef __arm__
     else if( block_FifoSize( p_owner->p_fifo ) > 50000000 /* 50 MB */ )
+#else
+    else if( block_FifoSize( p_owner->p_fifo ) > 400000000 /* 400 MB, ie ~ 50mb/s for 60s */ )
+#endif
     {
         /* FIXME: ideally we would check the time amount of data
          * in the FIFO instead of its size. */
@@ -631,6 +635,13 @@ bool input_DecoderHasFormatChanged( decoder_t *p_dec, es_format_t *p_fmt, vlc_me
     }
     vlc_mutex_unlock( &p_owner->lock );
     return b_changed;
+}
+
+size_t input_DecoderGetFifoSize( decoder_t *p_dec )
+{
+    decoder_owner_sys_t *p_owner = p_dec->p_owner;
+
+    return block_FifoSize( p_owner->p_fifo );
 }
 
 /*****************************************************************************

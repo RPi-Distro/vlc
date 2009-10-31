@@ -2,7 +2,7 @@
 * simple_prefs.m: Simple Preferences for Mac OS X
 *****************************************************************************
 * Copyright (C) 2008-2009 the VideoLAN team
-* $Id: 9742752348053ef735d2668618ad1dbdb81d1dbc $
+* $Id: 785541932e71546287e5e71df29be7b218ba85d1 $
 *
 * Authors: Felix Paul Kühne <fkuehne at videolan dot org>
 *
@@ -622,6 +622,7 @@ static inline char * __config_GetLabel( vlc_object_t *p_this, const char *psz_na
 	else 
 	{
         /* fallback on freetype */
+        [o_osd_font_fld setEditable: YES];
 		[self setupField: o_osd_font_fld forOption: "freetype-font"];
 		[self setupButton: o_osd_font_color_pop forIntList: "freetype-color"];
 		[self setupButton: o_osd_font_size_pop forIntList: "freetype-rel-fontsize"];

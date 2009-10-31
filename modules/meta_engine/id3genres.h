@@ -2,7 +2,7 @@
  * id3genres.h: list of genres for id3 genre tags
  *****************************************************************************
  * Copyright (C) 2002-2003 the VideoLAN team
- * $Id: 4f9d648e060333c9b7e9b1f6cc900db6af92d3b9 $
+ * $Id$
  *
  * Author: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *         list found at http://www.id3.org/id3v2.4.0-frames.txt

@@ -2,7 +2,7 @@
  * kate.c : a decoder for the kate bitstream format
  *****************************************************************************
  * Copyright (C) 2000-2008 the VideoLAN team
- * $Id: a6d8ef4156f315111baeccd42811453277dfa0b8 $
+ * $Id: 9fe0af9851d4d3cf71513595c5c03f5bd1258c8e $
  *
  * Authors: Vincent Penquerc'h <ogg.k.ogg.k@googlemail.com>
  *
@@ -864,7 +864,7 @@ static void PostprocessTigerImage( plane_t *p_plane, unsigned int i_width )
             if( a )
             {
 #ifdef WORDS_BIGENDIAN
-                uint8_t tmp = pixel[2];
+                uint8_t tmp = p_pixel[2];
                 p_pixel[0] = p_pixel[3] * 255 / a;
                 p_pixel[3] = a;
                 p_pixel[2] = p_pixel[1] * 255 / a;

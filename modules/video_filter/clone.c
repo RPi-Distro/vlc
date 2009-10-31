@@ -2,7 +2,7 @@
  * clone.c : Clone video plugin for vlc
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: d2db3697f16b3f9a40fa8482831de5315f65511d $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

@@ -2,7 +2,7 @@
  * vlc_es_out.h: es_out (demuxer output) descriptor, queries and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 043e5579d86e61b3c9be1eae090cd894f4b0cc0c $
+ * $Id: fdde1c935f298af2d0ad27782438109e66ba0ca5 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -90,6 +90,9 @@ enum es_out_query_e
      * XXX You SHALL call ES_OUT_RESET_PCR before any other es_out_Control/Send calls. */
     ES_OUT_GET_EMPTY,       /* arg1=bool*   res=cannot fail */
 
+    /* Set global meta data (The vlc_meta_t is not modified nor released) */
+    ES_OUT_SET_META, /* arg1=const vlc_meta_t * */
+
     /* First value usable for private control */
     ES_OUT_PRIVATE_START = 0x10000,
 };
@@ -143,6 +146,11 @@ static inline int es_out_Control( es_out_t *out, int i_query, ... )
 static inline void es_out_Delete( es_out_t *p_out )
 {
     p_out->pf_destroy( p_out );
+}
+
+static inline int es_out_ControlSetMeta( es_out_t *out, const vlc_meta_t *p_meta )
+{
+    return es_out_Control( out, ES_OUT_SET_META, p_meta );
 }
 
 /**

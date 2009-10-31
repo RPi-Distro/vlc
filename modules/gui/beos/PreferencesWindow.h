@@ -2,7 +2,7 @@
  * PreferencesWindow.h
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: 85823db761d8358e01668e66fd79424262b8ed15 $
+ * $Id$
  *
  * Authors: Eric Petit <titer@m0k.org>
  *

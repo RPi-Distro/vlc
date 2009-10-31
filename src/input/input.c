@@ -2,7 +2,7 @@
  * input.c: input thread
  *****************************************************************************
  * Copyright (C) 1998-2007 the VideoLAN team
- * $Id: be4eb7b5a91cc76f7e4394fe4bcba08af841bdb9 $
+ * $Id: d003625bb4d74dff60b1e572447d26907630974f $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar <fenrir@via.ecp.fr>
@@ -763,7 +763,7 @@ static void MainLoop( input_thread_t *p_input )
          * is paused -> this may cause problem with some of them
          * The same problem can be seen when seeking while paused */
         b_paused = p_input->p->i_state == PAUSE_S &&
-                   !es_out_GetBuffering( p_input->p->p_es_out );
+                   ( !es_out_GetBuffering( p_input->p->p_es_out ) || p_input->p->input.b_eof );
 
         if( !b_paused )
         {
@@ -773,7 +773,7 @@ static void MainLoop( input_thread_t *p_input )
 
                 i_wakeup = es_out_GetWakeup( p_input->p->p_es_out );
             }
-            else if( !p_input->b_eof && !es_out_GetEmpty( p_input->p->p_es_out ) )
+            else if( !es_out_GetEmpty( p_input->p->p_es_out ) )
             {
                 msg_Dbg( p_input, "waiting decoder fifos to empty" );
                 i_wakeup = mdate() + INPUT_IDLE_SLEEP;
@@ -816,13 +816,9 @@ static void MainLoop( input_thread_t *p_input )
                 i_statistic_update = i_current + INT64_C(1000000);
             }
 
-            /* Check if i_wakeup is still valid */
+            /* Update the wakeup time */
             if( i_wakeup != 0 )
-            {
-                mtime_t i_new_wakeup = es_out_GetWakeup( p_input->p->p_es_out );
-                if( !i_new_wakeup )
-                    i_wakeup = 0;
-            }
+                i_wakeup = es_out_GetWakeup( p_input->p->p_es_out );
         } while( i_current < i_wakeup );
     }
 
@@ -1668,9 +1664,8 @@ static bool Control( input_thread_t *p_input,
                 int64_t i_length;
 
                 /* Emulate it with a SET_POS */
-                demux_Control( p_input->p->input.p_demux,
-                                DEMUX_GET_LENGTH, &i_length );
-                if( i_length > 0 )
+                if( !demux_Control( p_input->p->input.p_demux,
+                                    DEMUX_GET_LENGTH, &i_length ) && i_length > 0 )
                 {
                     double f_pos = (double)i_time / (double)i_length;
                     i_ret = demux_Control( p_input->p->input.p_demux,
@@ -2430,8 +2425,9 @@ static int InputSourceInit( input_thread_t *p_input,
     if( in->p_demux )
     {
         /* Get infos from access_demux */
-        demux_Control( in->p_demux,
-                        DEMUX_GET_PTS_DELAY, &in->i_pts_delay );
+        int i_ret = demux_Control( in->p_demux,
+                                   DEMUX_GET_PTS_DELAY, &in->i_pts_delay );
+        assert( !i_ret );
         in->i_pts_delay = __MAX( 0, __MIN( in->i_pts_delay, INPUT_PTS_DELAY_MAX ) );
 
 
@@ -2885,54 +2881,8 @@ static void InputMetaUser( input_thread_t *p_input, vlc_meta_t *p_meta )
  *****************************************************************************/
 static void InputUpdateMeta( input_thread_t *p_input, vlc_meta_t *p_meta )
 {
-    input_item_t *p_item = p_input->p->p_item;
-
-    char *psz_title = NULL;
-    char *psz_arturl = input_item_GetArtURL( p_item );
-
-    vlc_mutex_lock( &p_item->lock );
-
-    if( vlc_meta_Get( p_meta, vlc_meta_Title ) && !p_item->b_fixed_name )
-        psz_title = strdup( vlc_meta_Get( p_meta, vlc_meta_Title ) );
-
-    vlc_meta_Merge( p_item->p_meta, p_meta );
-
+    es_out_ControlSetMeta( p_input->p->p_es_out, p_meta );
     vlc_meta_Delete( p_meta );
-
-    if( !psz_arturl || *psz_arturl == '\0' )
-    {
-        const char *psz_tmp = vlc_meta_Get( p_item->p_meta, vlc_meta_ArtworkURL );
-        if( psz_tmp )
-            psz_arturl = strdup( psz_tmp );
-    }
-    vlc_mutex_unlock( &p_item->lock );
-
-    if( psz_arturl && *psz_arturl )
-    {
-        input_item_SetArtURL( p_item, psz_arturl );
-
-        if( !strncmp( psz_arturl, "attachment://", strlen("attachment") ) )
-        {
-            /* Don't look for art cover if sout
-             * XXX It can change when sout has meta data support */
-            if( p_input->p->p_sout && !p_input->b_preparsing )
-                input_item_SetArtURL( p_item, "" );
-            else
-                input_ExtractAttachmentAndCacheArt( p_input );
-        }
-    }
-    free( psz_arturl );
-
-    if( psz_title )
-    {
-        input_item_SetName( p_item, psz_title );
-        free( psz_title );
-    }
-    input_item_SetPreparsed( p_item, true );
-
-    input_SendEventMeta( p_input );
-
-    /** \todo handle sout meta */
 }
 
 static void AppendAttachment( int *pi_attachment, input_attachment_t ***ppp_attachment,

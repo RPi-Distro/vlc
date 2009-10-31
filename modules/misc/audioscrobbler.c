@@ -2,7 +2,7 @@
  * audioscrobbler.c : audioscrobbler submission plugin
  *****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 04e112964eaf916e197767934d2c86508d6f4384 $
+ * $Id: d287188505babf079035745fee26090bb5256766 $
  *
  * Author: Rafaël Carré <funman at videolanorg>
  *         Ilkka Ollakka <ileoo at videolan org>
@@ -491,7 +491,10 @@ static int PlayingChange( vlc_object_t *p_this, const char *psz_var,
     else if( state_value.i_int == PAUSE_S )
         p_sys->time_pause = mdate();
     else if( p_sys->time_pause > 0 && state_value.i_int == PLAYING_S )
+    {
         p_sys->time_total_pauses += ( mdate() - p_sys->time_pause );
+        p_sys->time_pause = 0;
+    }
 
     return VLC_SUCCESS;
 }

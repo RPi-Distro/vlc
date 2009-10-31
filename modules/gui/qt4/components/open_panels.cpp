@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: 6e42e43a01a56a3a86b749296b72ef0c619deacc $
+ * $Id: f65d310b69234cc5b9a720acf972a4b5ef07c253 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -592,7 +592,8 @@ void NetOpenPanel::updateMRL() {
                 mrl += addr;
             else
             {
-                mrl += qfu( "@" );
+                if( !addr.contains( "@" ) )
+                    mrl += qfu( "@" );
                 switch( addr.count( ":" ) )
                 {
                     case 0: /* DNS or IPv4 literal, no port number */

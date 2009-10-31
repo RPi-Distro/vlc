@@ -47,11 +47,8 @@ src: using-src
 
 ifdef HAVE_DARWIN_OS
 
-ifdef HAVE_DARWIN_OS_ON_INTEL
-CONTRIBREV=19
-else
-CONTRIBREV=18
-endif
+CONTRIBREV=1.0.3
+
 contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2:
 	$(WGET) http://downloads.videolan.org/pub/videolan/testing/contrib/$@
 
@@ -70,6 +67,7 @@ using-bin: contrib-macosx-$(ARCH)-$(CONTRIBREV).tar.bz2
     # result in linking issues
 ifdef HAVE_DARWIN_10
 	(cd $(PREFIX)/lib && sed -e 's%/usr/lib/libiconv.la%$(PREFIX)/lib/libiconv.la%g' -i.orig *.la && rm -f *.la.orig)
+	(cd $(PREFIX)/src && $(MAKE) .iconv)
 endif
 endif
 

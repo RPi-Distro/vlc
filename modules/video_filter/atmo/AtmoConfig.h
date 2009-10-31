@@ -3,7 +3,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 52c57f3fd9e346cb5917e9b8c3f8e53f1aed05ff $
+ * $Id$
  */
 
 #ifndef _AtmoConfig_h_

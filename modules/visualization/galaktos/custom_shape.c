@@ -2,7 +2,7 @@
  * custom_shape.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: c2f16fca48f0c4014487b5654159cff670a0f122 $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

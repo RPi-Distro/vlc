@@ -2,7 +2,7 @@
  * croppadd.c: Crop/Padd image filter
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 63b534188b497a35011f69776c28dc430ca2ab4a $
+ * $Id: 887e6e5a62201f967888d4537164dd0420191615 $
  *
  * Authors: Antoine Cellerier <dionoea @t videolan dot org>
  *
@@ -76,6 +76,7 @@ static picture_t *Filter( filter_t *, picture_t * );
  * Module descriptor
  *****************************************************************************/
 vlc_module_begin ()
+    set_shortname( N_("Cropadd") )
     set_description( N_("Video scaling filter") )
     set_capability( "video filter2", 0 )
     set_callbacks( OpenFilter, CloseFilter )

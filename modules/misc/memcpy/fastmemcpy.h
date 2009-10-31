@@ -1,7 +1,7 @@
 /*****************************************************************************
  * fastmemcpy.h : fast memcpy routines
  *****************************************************************************
- * $Id: f4546e5752678153d5cda5ac9c0ddeb164e09b6e $
+ * $Id$
  *
  * Authors: various Linux kernel hackers
  *          various MPlayer hackers

@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 3cf6ef1c0fe36f5a37bdaf3f198732bf0c9e328c $
+ * $Id$
  */
 
 #include "AtmoInput.h"

@@ -1,6 +1,6 @@
 /*****************************************************************************
  * Copyright (C) 2003, 2004 Rocky Bernstein (for the VideoLAN team)
- * $Id: 21f77e62784a273def4b77e4ac1914307603982a $
+ * $Id$
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *

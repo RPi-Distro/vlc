@@ -2,7 +2,7 @@
  * audio.c: audio decoder using ffmpeg library
  *****************************************************************************
  * Copyright (C) 1999-2003 the VideoLAN team
- * $Id: ae640e3fc29e32efeade8fd8c26ddf3fe6c615d3 $
+ * $Id: 819157c8d83ac86c0eb7fe542aa9ad265a7ef509 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -77,6 +77,8 @@ struct decoder_sys_t
     int     i_previous_channels;
     int64_t i_previous_layout;
 };
+
+#define BLOCK_FLAG_PRIVATE_REALLOCATED (1 << BLOCK_FLAG_PRIVATE_SHIFT)
 
 static void SetupOutputFormat( decoder_t *p_dec, bool b_trust );
 
@@ -306,45 +308,54 @@ aout_buffer_t * DecodeAudio ( decoder_t *p_dec, block_t **pp_block )
         return NULL;
     }
 
-    i_output = __MAX( p_block->i_buffer, p_sys->i_output_max );
-    if( i_output > p_sys->i_output_max )
+    if( (p_block->i_flags & BLOCK_FLAG_PRIVATE_REALLOCATED) == 0 )
     {
-        /* Grow output buffer if necessary (eg. for PCM data) */
-        p_sys->p_output = av_realloc( p_sys->p_output, i_output );
+        *pp_block = p_block = block_Realloc( p_block, 0, p_block->i_buffer + FF_INPUT_BUFFER_PADDING_SIZE );
+        if( !p_block )
+            return NULL;
+        p_block->i_buffer -= FF_INPUT_BUFFER_PADDING_SIZE;
+        memset( &p_block->p_buffer[p_block->i_buffer], 0, FF_INPUT_BUFFER_PADDING_SIZE );
+
+        p_block->i_flags |= BLOCK_FLAG_PRIVATE_REALLOCATED;
     }
 
-    *pp_block = p_block = block_Realloc( p_block, 0, p_block->i_buffer + FF_INPUT_BUFFER_PADDING_SIZE );
-    if( !p_block )
-        return NULL;
-    p_block->i_buffer -= FF_INPUT_BUFFER_PADDING_SIZE;
-    memset( &p_block->p_buffer[p_block->i_buffer], 0, FF_INPUT_BUFFER_PADDING_SIZE );
+    do
+    {
+        i_output = __MAX( p_block->i_buffer, p_sys->i_output_max );
+        if( i_output > p_sys->i_output_max )
+        {
+            /* Grow output buffer if necessary (eg. for PCM data) */
+            p_sys->p_output = av_realloc( p_sys->p_output, i_output );
+        }
 
-#if LIBAVCODEC_VERSION_INT >= ((52<<16)+(0<<8)+0)
-    i_used = avcodec_decode_audio2( p_sys->p_context,
-                                   (int16_t*)p_sys->p_output, &i_output,
-                                   p_block->p_buffer, p_block->i_buffer );
+#if LIBAVCODEC_VERSION_INT >= AV_VERSION_INT( 52, 0, 0 )
+        i_used = avcodec_decode_audio2( p_sys->p_context,
+                                       (int16_t*)p_sys->p_output, &i_output,
+                                       p_block->p_buffer, p_block->i_buffer );
 #else
-    i_used = avcodec_decode_audio( p_sys->p_context,
-                                   (int16_t*)p_sys->p_output, &i_output,
-                                   p_block->p_buffer, p_block->i_buffer );
+        i_used = avcodec_decode_audio( p_sys->p_context,
+                                       (int16_t*)p_sys->p_output, &i_output,
+                                       p_block->p_buffer, p_block->i_buffer );
 #endif
 
-    if( i_used < 0 || i_output < 0 )
-    {
-        if( i_used < 0 )
-            msg_Warn( p_dec, "cannot decode one frame (%zu bytes)",
-                      p_block->i_buffer );
+        if( i_used < 0 || i_output < 0 )
+        {
+            if( i_used < 0 )
+                msg_Warn( p_dec, "cannot decode one frame (%zu bytes)",
+                          p_block->i_buffer );
 
-        block_Release( p_block );
-        return NULL;
-    }
-    else if( (size_t)i_used > p_block->i_buffer )
-    {
-        i_used = p_block->i_buffer;
-    }
+            block_Release( p_block );
+            return NULL;
+        }
+        else if( (size_t)i_used > p_block->i_buffer )
+        {
+            i_used = p_block->i_buffer;
+        }
 
-    p_block->i_buffer -= i_used;
-    p_block->p_buffer += i_used;
+        p_block->i_buffer -= i_used;
+        p_block->p_buffer += i_used;
+
+    } while( p_block->i_buffer > 0 && i_output <= 0 );
 
     if( p_sys->p_context->channels <= 0 || p_sys->p_context->channels > 8 ||
         p_sys->p_context->sample_rate <= 0 )

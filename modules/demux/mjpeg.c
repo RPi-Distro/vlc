@@ -2,7 +2,7 @@
  * mjpeg.c : demuxes mjpeg webcam http streams
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 69d54db80d6fdb36e22bfb185d6186a3f1f8ec68 $
+ * $Id: 9459e91a528dc284347b1346473750f84e3edd1b $
  *
  * Authors: Henry Jen (slowhog) <henryjen@ztune.net>
  *          Derk-Jan Hartman (thedj)
@@ -128,7 +128,7 @@ static char* GetLine( demux_t *p_demux, int *p_pos )
     int         i;
     char        *p_line;
 
-    while( *p_pos > p_sys->i_data_peeked )
+    while( *p_pos >= p_sys->i_data_peeked )
     {
         if( ! Peek( p_demux, false ) )
         {

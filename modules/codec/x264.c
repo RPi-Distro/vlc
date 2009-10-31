@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: e76ac3b305513337bcf974edaa462da8fb030fa8 $
+ * $Id: 6514d2dad4d2ccc1d5e6da601407dd7778ab5cd1 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -100,10 +100,21 @@ static void Close( vlc_object_t * );
 #define B_BIAS_LONGTEXT N_( "Bias the choice to use B-frames. Positive values " \
     "cause more B-frames, negative values cause less B-frames." )
 
+
 #define BPYRAMID_TEXT N_("Keep some B-frames as references")
+#if X264_BUILD >= 78
+#define BPYRAMID_LONGTEXT N_( "Allows B-frames to be used as references for " \
+    "predicting other frames. Keeps the middle of 2+ consecutive B-frames " \
+    "as a reference, and reorders frame appropriately.\n" \
+    " - none: Disabled\n" \
+    " - strict: Strictly hierarchical pyramid\n" \
+    " - normal: Non-strict (not Blu-ray compatible)\n"\
+    )
+#else
 #define BPYRAMID_LONGTEXT N_( "Allows B-frames to be used as references for " \
     "predicting other frames. Keeps the middle of 2+ consecutive B-frames " \
     "as a reference, and reorders frame appropriately." )
+#endif
 
 #define CABAC_TEXT N_("CABAC")
 #define CABAC_LONGTEXT N_( "CABAC (Context-Adaptive Binary Arithmetic "\
@@ -129,6 +140,10 @@ static void Close( vlc_object_t * );
     "of the standard). Levels are not enforced; it's up to the user to select " \
     "a level compatible with the rest of the encoding options. Range 1 to 5.1 " \
     "(10 to 51 is also allowed).")
+
+#define PROFILE_TEXT N_("H.264 profile")
+#define PROFILE_LONGTEXT N_("Specify H.264 profile which limits are enforced over" \
+        "other settings" )
 
 /* In order to play an interlaced output stream encoded by x264, a decoder needs
    mbaff support. r570 is using the 'mb' part and not 'aff' yet; so it's really
@@ -398,6 +413,14 @@ static const char *const enc_me_list_text[] =
   { N_("dia"), N_("hex"), N_("umh"), N_("esa"), N_("tesa") };
 #endif
 
+static const char *const profile_list[] =
+  { "baseline", "main", "high" };
+
+#if X264_BUILD >= 78
+static const char *const bpyramid_list[] =
+  { "none", "strict", "normal" };
+#endif
+
 static const char *const enc_analyse_list[] =
   { "none", "fast", "normal", "slow", "all" };
 static const char *const enc_analyse_list_text[] =
@@ -463,8 +486,14 @@ vlc_module_begin ()
         change_integer_range( -100, 100 )
 #endif
 
-    add_bool( SOUT_CFG_PREFIX "bpyramid", 0, NULL, BPYRAMID_TEXT,
+#if X264_BUILD >= 78
+    add_string( SOUT_CFG_PREFIX "bpyramid", "none", NULL, BPYRAMID_TEXT,
               BPYRAMID_LONGTEXT, false )
+        change_string_list( bpyramid_list, bpyramid_list, 0 );
+#else
+    add_bool( SOUT_CFG_PREFIX "bpyramid", false, NULL, BPYRAMID_TEXT,
+              BPYRAMID_LONGTEXT, false )
+#endif
 
     add_bool( SOUT_CFG_PREFIX "cabac", 1, NULL, CABAC_TEXT, CABAC_LONGTEXT,
               false )
@@ -484,6 +513,10 @@ vlc_module_begin ()
 
     add_string( SOUT_CFG_PREFIX "level", "5.1", NULL, LEVEL_TEXT,
                LEVEL_LONGTEXT, false )
+
+    add_string( SOUT_CFG_PREFIX "profile", "high", NULL, PROFILE_TEXT,
+               PROFILE_LONGTEXT, false )
+        change_string_list( profile_list, profile_list, 0 );
 
 #if X264_BUILD >= 51 /* r570 */
     add_bool( SOUT_CFG_PREFIX "interlaced", 0, NULL, INTERLACED_TEXT, INTERLACED_LONGTEXT,
@@ -732,7 +765,7 @@ static const char *const ppsz_sout_options[] = {
     "qpmin", "qp-max", "qp-min", "quiet", "ratetol", "ref", "scenecut",
     "sps-id", "ssim", "stats", "subme", "subpel", "tolerance", "trellis",
     "verbose", "vbv-bufsize", "vbv-init", "vbv-maxrate", "weightb", "aq-mode",
-    "aq-strength",NULL
+    "aq-strength", "profile", NULL
 };
 
 static block_t *Encode( encoder_t *, picture_t * );
@@ -990,7 +1023,21 @@ static int  Open ( vlc_object_t *p_this )
     if( val.i_int >= 0 && val.i_int <= 16 )
         p_sys->param.i_bframe = val.i_int;
 
-#if X264_BUILD >= 22
+#if X264_BUILD >= 78
+    var_Get( p_enc, SOUT_CFG_PREFIX "bpyramid", &val );
+    p_sys->param.i_bframe_pyramid = X264_B_PYRAMID_NONE;
+    if( !strcmp( val.psz_string, "none" ) )
+    {
+       p_sys->param.i_bframe_pyramid = X264_B_PYRAMID_NONE;
+    } else if ( !strcmp( val.psz_string, "strict" ) )
+    {
+       p_sys->param.i_bframe_pyramid = X264_B_PYRAMID_STRICT;
+    } else if ( !strcmp( val.psz_string, "normal" ) )
+    {
+       p_sys->param.i_bframe_pyramid = X264_B_PYRAMID_NORMAL;
+    }
+    free( val.psz_string );
+#elif X264_BUILD >= 22
     var_Get( p_enc, SOUT_CFG_PREFIX "bpyramid", &val );
     p_sys->param.b_bframe_pyramid = val.b_bool;
 #endif
@@ -1255,6 +1302,27 @@ static int  Open ( vlc_object_t *p_this )
         p_sys->param.rc.i_vbv_buffer_size /= p_sys->param.i_fps_num;
     }
 
+    /* Check if user has given some profile (baseline,main,high) to limit
+     * settings, and apply those*/
+    var_Get( p_enc, SOUT_CFG_PREFIX "profile", &val );
+    if( val.psz_string )
+    {
+        if( !strcasecmp( val.psz_string, "baseline" ) )
+        {
+            msg_Dbg( p_enc, "Limiting to baseline profile");
+            p_sys->param.analyse.b_transform_8x8 = 0;
+            p_sys->param.b_cabac = 0;
+            p_sys->param.i_bframe = 0;
+        }
+        else if (!strcasecmp( val.psz_string, "main" ) )
+        {
+            msg_Dbg( p_enc, "Limiting to main-profile");
+            p_sys->param.analyse.b_transform_8x8 = 0;
+        }
+        /* high profile don't restrict stuff*/
+    }
+    free( val.psz_string );
+
 
     unsigned i_cpu = vlc_CPU();
     if( !(i_cpu & CPU_CAPABILITY_MMX) )
@@ -1359,6 +1427,21 @@ static int  Open ( vlc_object_t *p_this )
     p_enc->fmt_out.i_extra = 0;
     p_enc->fmt_out.p_extra = NULL;
 
+#if X264_BUILD >= 76
+    p_enc->fmt_out.i_extra = x264_encoder_headers( p_sys->h, &nal, &i_nal );
+    p_enc->fmt_out.p_extra = malloc( p_enc->fmt_out.i_extra );
+    if( !p_enc->fmt_out.p_extra )
+    {
+        Close( VLC_OBJECT(p_enc) );
+        return VLC_ENOMEM;
+    }
+    void *p_tmp = p_enc->fmt_out.p_extra;
+    for( i = 0; i < i_nal; i++ )
+    {
+        memcpy( p_tmp, nal[i].p_payload, nal[i].i_payload );
+        p_tmp += nal[i].i_payload;
+    }
+#else
     x264_encoder_headers( p_sys->h, &nal, &i_nal );
     for( i = 0; i < i_nal; i++ )
     {
@@ -1380,6 +1463,7 @@ static int  Open ( vlc_object_t *p_this )
 
         p_enc->fmt_out.i_extra += i_size;
     }
+#endif
 
     return VLC_SUCCESS;
 }
@@ -1416,10 +1500,15 @@ static block_t *Encode( encoder_t *p_enc, picture_t *p_pict )
 
     for( i = 0, i_out = 0; i < i_nal; i++ )
     {
+#if X264_BUILD >= 76
+        memcpy( p_sys->p_buffer + i_out, nal[i].p_payload, nal[i].i_payload );
+        i_out += nal[i].i_payload;
+#else
         int i_size = p_sys->i_buffer - i_out;
         x264_nal_encode( p_sys->p_buffer + i_out, &i_size, 1, &nal[i] );
 
         i_out += i_size;
+#endif
     }
 
     p_block = block_New( p_enc, i_out );

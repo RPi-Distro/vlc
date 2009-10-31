@@ -2,7 +2,7 @@
  * extended.h: MacOS X Extended interface panel
  *****************************************************************************
  * Copyright (C) 2005-2007 the VideoLAN team
- * $Id: ca38b23476615ded641b21e842a69d3f8dd45154 $
+ * $Id$
  *
  * Authors: Felix Paul Kühne <fkuehne@videolan.org>
  *
