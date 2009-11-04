@@ -1,19 +1,20 @@
-vlc (1.0.3-1~1.gbp4432cd) UNRELEASED; urgency=low
+vlc (1.0.3-1~2.gbp2f8778) UNRELEASED; urgency=low
 
-  [ Christophe Mutricy ]
-  ** SNAPSHOT build @4432cdbb85417cc11fb2c7f55f214c1db6bb4b1f **
+  ** SNAPSHOT build @2f87783333fbe9b65a97fe4afbe882d2b3466213 **
 
   * New upstream release
-
-  [ Christophe Mutricy ]
-  * No longer need to build an extra libvlccore without altivec
 
   [ Reinhard Tartler ]
   * Decrease alsa buffer size. That improves the behaviour of the alsa output
     module on pulseaudio system. But note that vlc-plugin-pulse provides a
     native pulseaudio output module (Closes: #472811, LP#243152)
 
- -- Christophe Mutricy <xtophe@videolan.org>  Sun, 01 Nov 2009 00:31:06 +0100
+  [ Christophe Mutricy ]
+  * No longer need to build an extra libvlccore without altivec
+  * Add the upnp access module (Closes: LP#172938)
+  * Activate the new udev SD module
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 04 Nov 2009 00:30:32 +0100
 
 vlc (1.0.2-1) unstable; urgency=high
 
