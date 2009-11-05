@@ -1,6 +1,4 @@
-vlc (1.0.3-1~2.gbp2f8778) UNRELEASED; urgency=low
-
-  ** SNAPSHOT build @2f87783333fbe9b65a97fe4afbe882d2b3466213 **
+vlc (1.0.3-1) unstable; urgency=low
 
   * New upstream release
 
@@ -12,9 +10,9 @@ vlc (1.0.3-1~2.gbp2f8778) UNRELEASED; urgency=low
   [ Christophe Mutricy ]
   * No longer need to build an extra libvlccore without altivec
   * Add the upnp access module (LP: #172938)
-  * Activate the new udev SD module
+  * Activate the new udev SD module on linux archs
 
- -- Christophe Mutricy <xtophe@videolan.org>  Wed, 04 Nov 2009 00:30:32 +0100
+ -- Christophe Mutricy <xtophe@videolan.org>  Thu, 05 Nov 2009 12:39:35 +0100
 
 vlc (1.0.2-1) unstable; urgency=high
 
