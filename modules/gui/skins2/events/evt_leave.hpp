@@ -2,7 +2,7 @@
  * evt_leave.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 79dd25a22e6243d76bd5d6052d98d350bef4d730 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

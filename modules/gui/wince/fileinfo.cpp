@@ -2,7 +2,7 @@
  * fileinfo.cpp : WinCE gui plugin for vlc
  *****************************************************************************
  * Copyright (C) 2000-2004 the VideoLAN team
- * $Id: e75cc5a50ed635ff31417a75b1c054a2e5a37e9a $
+ * $Id$
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>

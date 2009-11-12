@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id: 701e80757d85ab975ed216802e59dddbeecf15bb $
+ * $Id$
  */
 
 #include "AtmoDynData.h"

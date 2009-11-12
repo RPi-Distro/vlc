@@ -2,7 +2,7 @@
 * maemo_input.c : Input handling for the maemo plugin
 *****************************************************************************
 * Copyright (C) 2008 the VideoLAN team
-* $Id: de7ba9800d2b966133a546ac6ceb8eabeb3cce13 $
+* $Id$
 *
 * Authors: Antoine Lejeune <phytos@videolan.org>
 *

@@ -2,7 +2,7 @@
  * fbosd.c : framebuffer osd plugin for vlc
  *****************************************************************************
  * Copyright (C) 2007-2008, the VideoLAN team
- * $Id: 9af2a75873aeed672c3bc0508633a66fe3debeb3 $
+ * $Id$
  *
  * Authors: Jean-Paul Saman
  * Copied from modules/video_output/fb.c by Samuel Hocevar <sam@zoy.org>

@@ -2,7 +2,7 @@
  * avi.c : AVI file Stream input module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id: 4fe88b49639ca894fddbf0ab6ec7b0f3cbd53c13 $
+ * $Id: 47a97e4c57c9c35a2115f09e1dbebd326902a788 $
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
  * This program is free software; you can redistribute it and/or modify
@@ -672,7 +672,18 @@ aviindex:
 
     /* *** movie length in sec *** */
     p_sys->i_length = AVI_MovieGetLength( p_demux );
-    if( p_sys->i_length < (mtime_t)p_avih->i_totalframes *
+
+    /* Check the index completeness */
+    unsigned int i_idx_totalframes = 0;
+    for( unsigned int i = 0; i < p_sys->i_track; i++ )
+    {
+        const avi_track_t *tk = p_sys->track[i];
+        if( tk->i_cat == VIDEO_ES && tk->p_index )
+            i_idx_totalframes = __MAX(i_idx_totalframes, tk->i_idxnb);
+            continue;
+    }
+    if( i_idx_totalframes != p_avih->i_totalframes &&
+        p_sys->i_length < (mtime_t)p_avih->i_totalframes *
                           (mtime_t)p_avih->i_microsecperframe /
                           (mtime_t)1000000 )
     {

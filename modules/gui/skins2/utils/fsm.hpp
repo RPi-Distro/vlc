@@ -2,7 +2,7 @@
  * fsm.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e2d7608995dbe8718e90694a34ed9f1ed3f0e92e $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

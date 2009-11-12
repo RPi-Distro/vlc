@@ -2,7 +2,7 @@
  * info.h : VCD information routine headers
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 2c18f6c79a8d8873082dc3b66d7d668e37d693a9 $
+ * $Id$
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *

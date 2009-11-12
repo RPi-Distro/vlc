@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc-translate\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2009-09-19 21:38+0200\n"
+"POT-Creation-Date: 2009-10-30 12:10+0100\n"
 "PO-Revision-Date: 2009-04-12 10:26-0800\n"
 "Last-Translator: Zabeeh Khan <zabeehkhan @ gmail.com>\n"
 "Language-Team: Pashto\n"
@@ -71,12 +71,12 @@ msgstr ""
 msgid "Hotkeys settings"
 msgstr ""
 
-#: include/vlc_config_cat.h:52 src/input/es_out.c:2670 src/input/es_out.c:2704
+#: include/vlc_config_cat.h:52 src/input/es_out.c:2784 src/input/es_out.c:2818
 #: src/libvlc-module.c:1514 modules/gui/beos/InterfaceWindow.cpp:283
-#: modules/gui/macosx/intf.m:659 modules/gui/macosx/output.m:170
+#: modules/gui/macosx/intf.m:660 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:179
 #: modules/gui/macosx/wizard.m:380
-#: modules/gui/qt4/components/info_panels.cpp:519
+#: modules/gui/qt4/components/info_panels.cpp:520
 #: modules/gui/qt4/components/simple_preferences.cpp:79
 #: modules/gui/qt4/ui/profiles.h:487 modules/stream_out/es.c:93
 #: modules/stream_out/transcode.c:200
@@ -101,7 +101,7 @@ msgid "Audio filters are used to process the audio stream."
 msgstr ""
 
 #: include/vlc_config_cat.h:60 src/audio_output/input.c:112
-#: modules/gui/macosx/intf.m:669 modules/gui/macosx/intf.m:670
+#: modules/gui/macosx/intf.m:670 modules/gui/macosx/intf.m:671
 msgid "Visualizations"
 msgstr "ليديزونې"
 
@@ -126,11 +126,11 @@ msgstr "ګډوډ"
 msgid "Miscellaneous audio settings and modules."
 msgstr ""
 
-#: include/vlc_config_cat.h:70 src/input/es_out.c:2673 src/input/es_out.c:2753
-#: src/libvlc-module.c:1567 modules/gui/macosx/intf.m:672
+#: include/vlc_config_cat.h:70 src/input/es_out.c:2787 src/input/es_out.c:2867
+#: src/libvlc-module.c:1567 modules/gui/macosx/intf.m:673
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:103
 #: modules/gui/macosx/simple_prefs.m:183 modules/gui/macosx/wizard.m:381
-#: modules/gui/qt4/components/info_panels.cpp:520
+#: modules/gui/qt4/components/info_panels.cpp:521
 #: modules/gui/qt4/components/simple_preferences.cpp:80
 #: modules/gui/qt4/ui/profiles.h:469 modules/gui/qt4/ui/sprefs_video.h:291
 #: modules/misc/dummy/dummy.c:109 modules/stream_out/es.c:101
@@ -319,7 +319,7 @@ msgstr ""
 #: src/playlist/engine.c:119 modules/demux/playlist/playlist.c:66
 #: modules/demux/playlist/playlist.c:67
 #: modules/gui/beos/InterfaceWindow.cpp:232
-#: modules/gui/beos/InterfaceWindow.cpp:326 modules/gui/macosx/intf.m:601
+#: modules/gui/beos/InterfaceWindow.cpp:326 modules/gui/macosx/intf.m:602
 #: modules/gui/pda/pda_interface.c:1262
 #: modules/gui/qt4/components/controller.hpp:103
 #: modules/gui/qt4/components/playlist/playlist.cpp:114
@@ -479,11 +479,11 @@ msgstr "په اړه&"
 
 #: include/vlc_intf_strings.h:52 modules/control/rc.c:76
 #: modules/gui/macosx/embeddedwindow.m:67
-#: modules/gui/macosx/embeddedwindow.m:157 modules/gui/macosx/intf.m:594
-#: modules/gui/macosx/intf.m:639 modules/gui/macosx/intf.m:727
-#: modules/gui/macosx/intf.m:734 modules/gui/macosx/intf.m:1990
-#: modules/gui/macosx/intf.m:1991 modules/gui/macosx/intf.m:1992
-#: modules/gui/macosx/intf.m:1993 modules/gui/macosx/playlist.m:438
+#: modules/gui/macosx/embeddedwindow.m:157 modules/gui/macosx/intf.m:595
+#: modules/gui/macosx/intf.m:640 modules/gui/macosx/intf.m:728
+#: modules/gui/macosx/intf.m:735 modules/gui/macosx/intf.m:1991
+#: modules/gui/macosx/intf.m:1992 modules/gui/macosx/intf.m:1993
+#: modules/gui/macosx/intf.m:1994 modules/gui/macosx/playlist.m:438
 #: modules/gui/pda/pda_interface.c:260 modules/gui/pda/pda_interface.c:261
 #: modules/gui/qt4/components/controller.hpp:101 modules/gui/qt4/menus.cpp:730
 #: modules/gui/qt4/ui/open.h:275
@@ -539,7 +539,7 @@ msgid "No repeat"
 msgstr "نه تکرارول"
 
 #: include/vlc_intf_strings.h:68 src/libvlc-module.c:1405
-#: modules/gui/macosx/controls.m:1051 modules/gui/macosx/intf.m:645
+#: modules/gui/macosx/controls.m:1051 modules/gui/macosx/intf.m:646
 msgid "Random"
 msgstr "ناټاکلی"
 
@@ -692,7 +692,7 @@ msgid "The maximum number of filters (%d) was reached."
 msgstr ""
 
 #: src/audio_output/input.c:114 src/audio_output/input.c:160
-#: src/input/es_out.c:903 src/libvlc-module.c:618
+#: src/input/es_out.c:928 src/libvlc-module.c:618
 #: src/video_output/video_output.c:1770 modules/video_filter/postproc.c:236
 msgid "Disable"
 msgstr "ناتوانول"
@@ -727,13 +727,13 @@ msgid "Replay gain"
 msgstr ""
 
 #: src/audio_output/output.c:102 src/audio_output/output.c:129
-#: modules/access/vcdx/info.c:121 modules/gui/macosx/intf.m:665
-#: modules/gui/macosx/intf.m:666
+#: modules/access/vcdx/info.c:121 modules/gui/macosx/intf.m:666
+#: modules/gui/macosx/intf.m:667
 msgid "Audio Channels"
 msgstr "غږيز چېنلونه"
 
 #: src/audio_output/output.c:105 src/audio_output/output.c:140
-#: modules/access/alsa.c:70 modules/access/oss.c:65 modules/access/v4l2.c:229
+#: modules/access/alsa.c:70 modules/access/oss.c:65 modules/access/v4l2.c:233
 #: modules/audio_output/alsa.c:196 modules/audio_output/alsa.c:227
 #: modules/audio_output/directx.c:554 modules/audio_output/oss.c:206
 #: modules/audio_output/portaudio.c:399 modules/audio_output/sdl.c:184
@@ -774,23 +774,23 @@ msgstr ""
 msgid "Reverse stereo"
 msgstr ""
 
-#: src/config/file.c:605
+#: src/config/file.c:608
 msgid "key"
 msgstr "کيلۍ"
 
-#: src/config/file.c:614
+#: src/config/file.c:617
 msgid "boolean"
 msgstr "هو-نه"
 
-#: src/config/file.c:614 src/libvlc.c:1650
+#: src/config/file.c:617 src/libvlc.c:1650
 msgid "integer"
 msgstr ""
 
-#: src/config/file.c:623 src/libvlc.c:1679
+#: src/config/file.c:626 src/libvlc.c:1679
 msgid "float"
 msgstr ""
 
-#: src/config/file.c:646 src/libvlc.c:1629
+#: src/config/file.c:649 src/libvlc.c:1629
 msgid "string"
 msgstr "مزی"
 
@@ -854,7 +854,7 @@ msgstr ""
 msgid "Bookmark %i"
 msgstr "ليکنښه %i"
 
-#: src/input/decoder.c:278 src/input/decoder.c:291 src/input/decoder.c:444
+#: src/input/decoder.c:278 src/input/decoder.c:291 src/input/decoder.c:448
 #: modules/codec/avcodec/encoder.c:227 modules/codec/avcodec/encoder.c:235
 #: modules/codec/avcodec/encoder.c:257 modules/codec/avcodec/encoder.c:686
 #: modules/codec/avcodec/encoder.c:695 modules/stream_out/es.c:373
@@ -866,166 +866,166 @@ msgstr ""
 msgid "VLC could not open the packetizer module."
 msgstr ""
 
-#: src/input/decoder.c:292 src/input/decoder.c:445
+#: src/input/decoder.c:292 src/input/decoder.c:449
 msgid "VLC could not open the decoder module."
 msgstr ""
 
-#: src/input/decoder.c:678
+#: src/input/decoder.c:689
 msgid "No suitable decoder module"
 msgstr ""
 
-#: src/input/decoder.c:679
+#: src/input/decoder.c:690
 #, c-format
 msgid ""
 "VLC does not support the audio or video format \"%4.4s\". Unfortunately "
 "there is no way for you to fix this."
 msgstr ""
 
-#: src/input/es_out.c:924 src/input/es_out.c:929 src/libvlc-module.c:356
+#: src/input/es_out.c:949 src/input/es_out.c:954 src/libvlc-module.c:356
 #: modules/access/cdda/info.c:391 modules/access/vcdx/access.c:477
 #: modules/access/vcdx/info.c:290 modules/access/vcdx/info.c:291
 #: modules/gui/qt4/components/open_panels.cpp:383
 msgid "Track"
 msgstr "پلنيوی"
 
-#: src/input/es_out.c:1132
+#: src/input/es_out.c:1157
 #, c-format
 msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
-#: src/input/es_out.c:1132 src/input/es_out.c:1137 src/input/var.c:173
-#: src/libvlc-module.c:651 modules/gui/macosx/intf.m:652
-#: modules/gui/macosx/intf.m:653
+#: src/input/es_out.c:1157 src/input/es_out.c:1162 src/input/var.c:173
+#: src/libvlc-module.c:651 modules/gui/macosx/intf.m:653
+#: modules/gui/macosx/intf.m:654
 msgid "Program"
 msgstr "کاريال"
 
-#: src/input/es_out.c:1356 src/input/es_out.c:1358
+#: src/input/es_out.c:1381 src/input/es_out.c:1383
 msgid "Scrambled"
 msgstr ""
 
-#: src/input/es_out.c:1356 modules/gui/macosx/update.m:103
+#: src/input/es_out.c:1381 modules/gui/macosx/update.m:103
 msgid "Yes"
 msgstr "هو"
 
-#: src/input/es_out.c:1952
+#: src/input/es_out.c:2029
 #, c-format
 msgid "Closed captions %u"
 msgstr ""
 
-#: src/input/es_out.c:2659
+#: src/input/es_out.c:2773
 #, c-format
 msgid "Stream %d"
 msgstr ""
 
-#: src/input/es_out.c:2676 src/input/es_out.c:2784
+#: src/input/es_out.c:2790 src/input/es_out.c:2898
 msgid "Subtitle"
 msgstr "څېرمه سرليک"
 
-#: src/input/es_out.c:2684 src/input/es_out.c:2704 src/input/es_out.c:2753
-#: src/input/es_out.c:2784 modules/gui/macosx/output.m:153
+#: src/input/es_out.c:2798 src/input/es_out.c:2818 src/input/es_out.c:2867
+#: src/input/es_out.c:2898 modules/gui/macosx/output.m:153
 #: modules/gui/qt4/ui/sprefs_audio.h:345
 msgid "Type"
 msgstr "ډول"
 
-#: src/input/es_out.c:2687
+#: src/input/es_out.c:2801
 msgid "Original ID"
 msgstr "ار پېژند"
 
-#: src/input/es_out.c:2690 modules/gui/macosx/wizard.m:385
+#: src/input/es_out.c:2804 modules/gui/macosx/wizard.m:385
 #: modules/gui/qt4/ui/profiles.h:470 modules/gui/qt4/ui/profiles.h:489
 msgid "Codec"
 msgstr "کوډېک"
 
-#: src/input/es_out.c:2694 src/input/meta.c:50 src/libvlc-module.c:207
+#: src/input/es_out.c:2808 src/input/meta.c:50 src/libvlc-module.c:207
 #: modules/gui/beos/InterfaceWindow.cpp:279
 #: modules/gui/macosx/simple_prefs.m:264
 #: modules/gui/qt4/ui/sprefs_interface.h:314
 msgid "Language"
 msgstr "ژبه"
 
-#: src/input/es_out.c:2697 src/input/meta.c:45
+#: src/input/es_out.c:2811 src/input/meta.c:45
 #: modules/gui/macosx/bookmarks.m:94 modules/gui/qt4/dialogs/bookmarks.cpp:66
 msgid "Description"
 msgstr "سپړاوی"
 
-#: src/input/es_out.c:2707 src/input/es_out.c:2710
+#: src/input/es_out.c:2821 src/input/es_out.c:2824
 #: modules/gui/macosx/output.m:176 modules/gui/qt4/ui/profiles.h:492
 msgid "Channels"
 msgstr "چېنلونه"
 
-#: src/input/es_out.c:2715
+#: src/input/es_out.c:2829
 msgid "Sample rate"
 msgstr ""
 
-#: src/input/es_out.c:2716
+#: src/input/es_out.c:2830
 #, c-format
 msgid "%u Hz"
 msgstr "%u Hz"
 
-#: src/input/es_out.c:2726
+#: src/input/es_out.c:2840
 msgid "Bits per sample"
 msgstr ""
 
-#: src/input/es_out.c:2731 modules/access/pvr.c:97
+#: src/input/es_out.c:2845 modules/access/pvr.c:97
 #: modules/access_output/shout.c:91 modules/demux/playlist/shoutcast.c:410
-#: modules/gui/qt4/components/open_panels.cpp:957
+#: modules/gui/qt4/components/open_panels.cpp:958
 #: modules/gui/qt4/ui/profiles.h:471 modules/gui/qt4/ui/profiles.h:490
 msgid "Bitrate"
 msgstr ""
 
-#: src/input/es_out.c:2732
+#: src/input/es_out.c:2846
 #, c-format
 msgid "%u kb/s"
 msgstr "kb/s %u"
 
-#: src/input/es_out.c:2743
+#: src/input/es_out.c:2857
 msgid "Track replay gain"
 msgstr ""
 
-#: src/input/es_out.c:2745
+#: src/input/es_out.c:2859
 msgid "Album replay gain"
 msgstr ""
 
-#: src/input/es_out.c:2747
+#: src/input/es_out.c:2861
 #, c-format
 msgid "%.2f dB"
 msgstr "%.2f dB"
 
-#: src/input/es_out.c:2757 modules/gui/qt4/ui/profiles.h:476
+#: src/input/es_out.c:2871 modules/gui/qt4/ui/profiles.h:476
 msgid "Resolution"
 msgstr "ژورکوت"
 
-#: src/input/es_out.c:2763
+#: src/input/es_out.c:2877
 msgid "Display resolution"
 msgstr "ښوون ژورکوت"
 
-#: src/input/es_out.c:2774 src/input/es_out.c:2778
+#: src/input/es_out.c:2888 src/input/es_out.c:2892
 #: modules/access/screen/screen.c:44
 msgid "Frame rate"
 msgstr "چوکاټ چټکتيا"
 
-#: src/input/input.c:2485
+#: src/input/input.c:2481
 msgid "Your input can't be opened"
 msgstr ""
 
-#: src/input/input.c:2486
+#: src/input/input.c:2482
 #, c-format
 msgid "VLC is unable to open the MRL '%s'. Check the log for details."
 msgstr ""
 
-#: src/input/input.c:2620
+#: src/input/input.c:2616
 msgid "VLC can't recognize the input's format"
 msgstr ""
 
-#: src/input/input.c:2621
+#: src/input/input.c:2617
 #, c-format
 msgid ""
 "The format of '%s' cannot be detected. Have a look at the log for details."
 msgstr ""
 
 #: src/input/meta.c:39 src/input/var.c:183
-#: modules/gui/beos/MediaControlView.cpp:1236 modules/gui/macosx/intf.m:654
-#: modules/gui/macosx/intf.m:655 modules/gui/macosx/open.m:190
+#: modules/gui/beos/MediaControlView.cpp:1236 modules/gui/macosx/intf.m:655
+#: modules/gui/macosx/intf.m:656 modules/gui/macosx/open.m:190
 #: modules/gui/macosx/playlistinfo.m:76 modules/gui/macosx/wizard.m:348
 #: modules/gui/qt4/components/open_panels.cpp:357
 #: modules/gui/qt4/ui/open_disk.h:302 modules/mux/asf.c:52
@@ -1099,7 +1099,7 @@ msgid "Programs"
 msgstr "کاريالونه"
 
 #: src/input/var.c:188 modules/gui/beos/MediaControlView.cpp:1237
-#: modules/gui/macosx/intf.m:656 modules/gui/macosx/intf.m:657
+#: modules/gui/macosx/intf.m:657 modules/gui/macosx/intf.m:658
 #: modules/gui/macosx/open.m:191 modules/gui/qt4/ui/open_disk.h:303
 msgid "Chapter"
 msgstr "څپرکی"
@@ -1109,19 +1109,19 @@ msgstr "څپرکی"
 msgid "Navigation"
 msgstr "چلونه"
 
-#: src/input/var.c:206 modules/gui/macosx/intf.m:680
-#: modules/gui/macosx/intf.m:681
+#: src/input/var.c:206 modules/gui/macosx/intf.m:681
+#: modules/gui/macosx/intf.m:682
 msgid "Video Track"
 msgstr "ويډيو پلنيوی"
 
-#: src/input/var.c:211 modules/gui/macosx/intf.m:663
-#: modules/gui/macosx/intf.m:664
+#: src/input/var.c:211 modules/gui/macosx/intf.m:664
+#: modules/gui/macosx/intf.m:665
 msgid "Audio Track"
 msgstr "غږيز پلنيوی"
 
 #: src/input/var.c:216 modules/gui/macosx/controls.m:835
-#: modules/gui/macosx/controls.m:893 modules/gui/macosx/intf.m:688
-#: modules/gui/macosx/intf.m:689
+#: modules/gui/macosx/controls.m:893 modules/gui/macosx/intf.m:689
+#: modules/gui/macosx/intf.m:690
 msgid "Subtitles Track"
 msgstr ""
 
@@ -1156,8 +1156,8 @@ msgstr "مخکنی څپرکی"
 msgid "Media: %s"
 msgstr "%s رسنۍ:"
 
-#: src/interface/interface.c:194 modules/gui/macosx/intf.m:613
-#: modules/gui/macosx/intf.m:614
+#: src/interface/interface.c:194 modules/gui/macosx/intf.m:614
+#: modules/gui/macosx/intf.m:615
 msgid "Add Interface"
 msgstr "برسېر ډېرول"
 
@@ -1275,7 +1275,7 @@ msgstr ""
 
 #: src/libvlc-module.c:98 src/libvlc-module.c:315 modules/access/bda/bda.c:69
 #: modules/codec/subtitles/subsdec.c:97
-#: modules/gui/qt4/components/open_panels.cpp:1033
+#: modules/gui/qt4/components/open_panels.cpp:1034
 msgid "Auto"
 msgstr "پخپله"
 
@@ -2119,11 +2119,11 @@ msgstr ""
 #: src/libvlc-module.c:618 src/video_output/vout_intf.c:183
 #: src/video_output/vout_intf.c:201 modules/access/dshow/dshow.cpp:82
 #: modules/access/dshow/dshow.cpp:84 modules/access/dshow/dshow.cpp:87
-#: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:216
+#: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:220
 #: modules/audio_output/alsa.c:105 modules/gui/fbosd.c:171
 #: modules/gui/macosx/prefs_widgets.m:1297
 #: modules/gui/macosx/simple_prefs.m:407 modules/gui/macosx/simple_prefs.m:524
-#: modules/gui/macosx/simple_prefs.m:758 modules/gui/macosx/vout.m:215
+#: modules/gui/macosx/simple_prefs.m:759 modules/gui/macosx/vout.m:215
 #: modules/gui/qt4/components/preferences_widgets.cpp:568
 #: modules/video_filter/marq.c:61 modules/video_filter/rss.c:70
 #: modules/video_filter/rss.c:182 modules/video_output/msw/directx.c:162
@@ -3186,8 +3186,8 @@ msgstr ""
 #: modules/gui/beos/VideoOutput.cpp:1058 modules/gui/macosx/controls.m:471
 #: modules/gui/macosx/controls.m:525 modules/gui/macosx/controls.m:1100
 #: modules/gui/macosx/controls.m:1131 modules/gui/macosx/embeddedwindow.m:66
-#: modules/gui/macosx/intf.m:598 modules/gui/macosx/intf.m:677
-#: modules/gui/macosx/intf.m:741 modules/gui/macosx/simple_prefs.m:287
+#: modules/gui/macosx/intf.m:599 modules/gui/macosx/intf.m:678
+#: modules/gui/macosx/intf.m:742 modules/gui/macosx/simple_prefs.m:287
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/ui/sprefs_video.h:282
 msgid "Fullscreen"
@@ -3230,7 +3230,7 @@ msgid "Select the hotkey to use to play."
 msgstr ""
 
 #: src/libvlc-module.c:1234 modules/control/hotkeys.c:718
-#: modules/gui/macosx/controls.m:1023 modules/gui/macosx/intf.m:641
+#: modules/gui/macosx/controls.m:1023 modules/gui/macosx/intf.m:642
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/components/controller.hpp:109
 msgid "Faster"
@@ -3241,7 +3241,7 @@ msgid "Select the hotkey to use for fast forward playback."
 msgstr ""
 
 #: src/libvlc-module.c:1236 modules/control/hotkeys.c:724
-#: modules/gui/macosx/controls.m:1024 modules/gui/macosx/intf.m:642
+#: modules/gui/macosx/controls.m:1024 modules/gui/macosx/intf.m:643
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/components/controller.hpp:109
 msgid "Slower"
@@ -3269,10 +3269,10 @@ msgstr "ورو (سم)"
 
 #: src/libvlc-module.c:1244 modules/control/hotkeys.c:695
 #: modules/gui/macosx/about.m:185 modules/gui/macosx/controls.m:1044
-#: modules/gui/macosx/intf.m:597 modules/gui/macosx/intf.m:644
-#: modules/gui/macosx/intf.m:729 modules/gui/macosx/intf.m:737
+#: modules/gui/macosx/intf.m:598 modules/gui/macosx/intf.m:645
+#: modules/gui/macosx/intf.m:730 modules/gui/macosx/intf.m:738
 #: modules/gui/macosx/wizard.m:309 modules/gui/macosx/wizard.m:321
-#: modules/gui/macosx/wizard.m:1623
+#: modules/gui/macosx/wizard.m:1622
 #: modules/gui/qt4/components/controller.hpp:102 modules/gui/qt4/ui/sout.h:333
 #: modules/gui/qt4/ui/sout.h:344 modules/gui/qt4/ui/streampanel.h:182
 #: modules/misc/notify/notify.c:327
@@ -3285,8 +3285,8 @@ msgstr ""
 
 #: src/libvlc-module.c:1246 modules/control/hotkeys.c:701
 #: modules/gui/macosx/about.m:186 modules/gui/macosx/controls.m:1043
-#: modules/gui/macosx/intf.m:592 modules/gui/macosx/intf.m:643
-#: modules/gui/macosx/intf.m:730 modules/gui/macosx/intf.m:736
+#: modules/gui/macosx/intf.m:593 modules/gui/macosx/intf.m:644
+#: modules/gui/macosx/intf.m:731 modules/gui/macosx/intf.m:737
 #: modules/gui/qt4/components/controller.hpp:102 modules/gui/qt4/ui/sout.h:343
 #: modules/gui/qt4/ui/sout.h:353 modules/misc/notify/notify.c:325
 msgid "Previous"
@@ -3297,8 +3297,8 @@ msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr ""
 
 #: src/libvlc-module.c:1248 modules/gui/macosx/controls.m:1035
-#: modules/gui/macosx/intf.m:595 modules/gui/macosx/intf.m:640
-#: modules/gui/macosx/intf.m:728 modules/gui/macosx/intf.m:735
+#: modules/gui/macosx/intf.m:596 modules/gui/macosx/intf.m:641
+#: modules/gui/macosx/intf.m:729 modules/gui/macosx/intf.m:736
 #: modules/gui/pda/pda_interface.c:272 modules/gui/pda/pda_interface.c:273
 #: modules/gui/qt4/components/controller.hpp:101
 #: modules/gui/qt4/ui/streampanel.h:181 modules/misc/notify/xosd.c:234
@@ -3311,7 +3311,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1250 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
-#: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:600
+#: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:601
 #: modules/gui/qt4/ui/video_effects.h:928 modules/video_filter/marq.c:155
 #: modules/video_filter/rss.c:197
 msgid "Position"
@@ -3426,7 +3426,7 @@ msgid "Long jump length, in seconds."
 msgstr ""
 
 #: src/libvlc-module.c:1291 modules/control/hotkeys.c:209
-#: modules/gui/beos/InterfaceWindow.cpp:277 modules/gui/macosx/intf.m:383
+#: modules/gui/beos/InterfaceWindow.cpp:277 modules/gui/macosx/intf.m:379
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:114 modules/gui/qt4/menus.cpp:826
 #: modules/gui/skins2/commands/cmd_quit.cpp:40
@@ -3534,8 +3534,8 @@ msgid "Select the key to decrease audio volume."
 msgstr ""
 
 #: src/libvlc-module.c:1317 modules/access/v4l2.c:167
-#: modules/gui/macosx/controls.m:1090 modules/gui/macosx/intf.m:662
-#: modules/gui/macosx/intf.m:731 modules/gui/macosx/intf.m:740
+#: modules/gui/macosx/controls.m:1090 modules/gui/macosx/intf.m:663
+#: modules/gui/macosx/intf.m:732 modules/gui/macosx/intf.m:741
 #: modules/gui/qt4/components/controller_widget.cpp:150
 #: modules/gui/qt4/menus.cpp:511
 msgid "Mute"
@@ -3992,7 +3992,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1614 src/video_output/vout_intf.c:440
 #: modules/gui/macosx/controls.m:509 modules/gui/macosx/controls.m:1099
-#: modules/gui/macosx/intf.m:679 modules/gui/macosx/intf.m:742
+#: modules/gui/macosx/intf.m:680 modules/gui/macosx/intf.m:743
 #: modules/gui/qt4/components/controller.hpp:103
 #: modules/video_output/snapshot.c:81
 msgid "Snapshot"
@@ -4047,7 +4047,7 @@ msgstr ""
 
 #: src/libvlc-module.c:1856 modules/access/v4l2.c:78
 #: modules/gui/macosx/playlistinfo.m:97
-#: modules/gui/qt4/components/info_panels.cpp:521
+#: modules/gui/qt4/components/info_panels.cpp:522
 msgid "Input"
 msgstr "ننوتۍ"
 
@@ -4168,7 +4168,7 @@ msgstr "د دوتنې ساتل پاتې راغلل"
 msgid "Failed to open \"%s\" for writing"
 msgstr ""
 
-#: src/misc/update.c:1594 src/misc/update.c:1616
+#: src/misc/update.c:1594
 #, c-format
 msgid ""
 "%s\n"
@@ -4180,19 +4180,26 @@ msgid "Downloading ..."
 msgstr "رالېښل کيږي ..."
 
 #: src/misc/update.c:1598 modules/access/dvb/scan.c:330
-#: modules/demux/avi/avi.c:694 modules/demux/avi/avi.c:2415
+#: modules/demux/avi/avi.c:705 modules/demux/avi/avi.c:2426
 #: modules/gui/beos/InterfaceWindow.cpp:161 modules/gui/macosx/bookmarks.m:102
 #: modules/gui/macosx/controls.m:84 modules/gui/macosx/coredialogs.m:66
 #: modules/gui/macosx/coredialogs.m:68 modules/gui/macosx/coredialogs.m:186
 #: modules/gui/macosx/open.m:176 modules/gui/macosx/open.m:206
 #: modules/gui/macosx/prefs.m:204 modules/gui/macosx/prefs.m:225
 #: modules/gui/macosx/simple_prefs.m:239 modules/gui/macosx/simple_prefs.m:301
-#: modules/gui/macosx/simple_prefs.m:684 modules/gui/macosx/wizard.m:320
-#: modules/gui/qt4/components/open_panels.cpp:1315
+#: modules/gui/macosx/simple_prefs.m:685 modules/gui/macosx/wizard.m:320
+#: modules/gui/qt4/components/open_panels.cpp:1316
 #: modules/gui/qt4/components/preferences_widgets.cpp:1367
 #: modules/gui/qt4/components/sout/profile_selector.cpp:253
 msgid "Cancel"
 msgstr "بندول"
+
+#: src/misc/update.c:1616
+#, c-format
+msgid ""
+"%s\n"
+"Downloading... %s/%s - %.1f%% done"
+msgstr ""
 
 #: src/misc/update.c:1633
 #, c-format
@@ -4251,26 +4258,26 @@ msgstr ""
 msgid "Undefined"
 msgstr ""
 
-#: src/video_output/video_output.c:1758 modules/gui/macosx/intf.m:693
-#: modules/gui/macosx/intf.m:694 modules/video_filter/postproc.c:200
+#: src/video_output/video_output.c:1758 modules/gui/macosx/intf.m:694
+#: modules/gui/macosx/intf.m:695 modules/video_filter/postproc.c:200
 msgid "Post processing"
 msgstr ""
 
-#: src/video_output/video_output.c:2018 modules/gui/macosx/intf.m:691
-#: modules/gui/macosx/intf.m:692 modules/gui/qt4/dialogs/convert.cpp:85
-#: modules/video_filter/deinterlace.c:127
+#: src/video_output/video_output.c:2020 modules/gui/macosx/intf.m:692
+#: modules/gui/macosx/intf.m:693 modules/gui/qt4/dialogs/convert.cpp:85
+#: modules/video_filter/deinterlace.c:131
 msgid "Deinterlace"
 msgstr ""
 
-#: src/video_output/vout_intf.c:311 modules/gui/macosx/intf.m:684
-#: modules/gui/macosx/intf.m:685 modules/gui/qt4/ui/video_effects.h:893
-#: modules/video_filter/crop.c:105 modules/video_filter/croppadd.c:86
+#: src/video_output/vout_intf.c:311 modules/gui/macosx/intf.m:685
+#: modules/gui/macosx/intf.m:686 modules/gui/qt4/ui/video_effects.h:893
+#: modules/video_filter/crop.c:105 modules/video_filter/croppadd.c:87
 #: modules/video_output/x11/xvmc.c:133
 msgid "Crop"
 msgstr "سکڼل"
 
 #: src/video_output/vout_intf.c:375 modules/gui/macosx/controls.m:823
-#: modules/gui/macosx/intf.m:682 modules/gui/macosx/intf.m:683
+#: modules/gui/macosx/intf.m:683 modules/gui/macosx/intf.m:684
 msgid "Aspect-ratio"
 msgstr ""
 
@@ -4344,7 +4351,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/bda/bda.c:51 modules/access/dvb/access.c:89
-#: modules/gui/qt4/components/open_panels.cpp:984
+#: modules/gui/qt4/components/open_panels.cpp:985
 msgid "Adapter card to tune"
 msgstr ""
 
@@ -4359,8 +4366,8 @@ msgid "Device number to use on adapter"
 msgstr ""
 
 #: modules/access/bda/bda.c:58 modules/access/dvb/access.c:95
-#: modules/gui/qt4/components/open_panels.cpp:741
-#: modules/gui/qt4/components/open_panels.cpp:1006
+#: modules/gui/qt4/components/open_panels.cpp:742
+#: modules/gui/qt4/components/open_panels.cpp:1007
 msgid "Transponder/multiplex frequency"
 msgstr ""
 
@@ -4573,17 +4580,17 @@ msgid "Terrestrial bandwidth [0=auto,6,7,8 in MHz]"
 msgstr ""
 
 #: modules/access/bda/bda.c:151
-#: modules/gui/qt4/components/open_panels.cpp:1034
+#: modules/gui/qt4/components/open_panels.cpp:1035
 msgid "6 MHz"
 msgstr "۶ MHz"
 
 #: modules/access/bda/bda.c:151
-#: modules/gui/qt4/components/open_panels.cpp:1035
+#: modules/gui/qt4/components/open_panels.cpp:1036
 msgid "7 MHz"
 msgstr "۷ MHz"
 
 #: modules/access/bda/bda.c:151
-#: modules/gui/qt4/components/open_panels.cpp:1036
+#: modules/gui/qt4/components/open_panels.cpp:1037
 msgid "8 MHz"
 msgstr "۸ MHz"
 
@@ -4778,8 +4785,8 @@ msgid "VLC could not get a new block of size: %i."
 msgstr ""
 
 #: modules/access/cdda/cdda.c:46 modules/access/directory.c:79
-#: modules/codec/dirac.c:80 modules/codec/x264.c:404 modules/codec/x264.c:410
-#: modules/codec/x264.c:415
+#: modules/codec/dirac.c:80 modules/codec/x264.c:427 modules/codec/x264.c:433
+#: modules/codec/x264.c:438
 msgid "none"
 msgstr "هېڅ"
 
@@ -5098,8 +5105,8 @@ msgid ""
 msgstr ""
 
 #: modules/access/dshow/dshow.cpp:103 modules/access/v4l.c:76
-#: modules/gui/qt4/components/open_panels.cpp:794
-#: modules/gui/qt4/components/open_panels.cpp:829
+#: modules/gui/qt4/components/open_panels.cpp:795
+#: modules/gui/qt4/components/open_panels.cpp:830
 msgid "Video device name"
 msgstr "د ويډيو وزلې نوم"
 
@@ -5110,8 +5117,8 @@ msgid ""
 msgstr ""
 
 #: modules/access/dshow/dshow.cpp:108
-#: modules/gui/qt4/components/open_panels.cpp:800
-#: modules/gui/qt4/components/open_panels.cpp:835
+#: modules/gui/qt4/components/open_panels.cpp:801
+#: modules/gui/qt4/components/open_panels.cpp:836
 msgid "Audio device name"
 msgstr "د غږيزې وزلې نوم"
 
@@ -5122,7 +5129,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/dshow/dshow.cpp:113
-#: modules/gui/qt4/components/open_panels.cpp:704
+#: modules/gui/qt4/components/open_panels.cpp:705
 msgid "Video size"
 msgstr "د ويډيو کچ"
 
@@ -5409,21 +5416,21 @@ msgstr ""
 msgid "HTTP server"
 msgstr "پالنګر HTTP"
 
-#: modules/access/dvb/access.c:940
+#: modules/access/dvb/access.c:942
 msgid "Input syntax is deprecated"
 msgstr ""
 
-#: modules/access/dvb/access.c:941
+#: modules/access/dvb/access.c:943
 msgid ""
 "The given syntax is deprecated. Run \"vlc -p dvb\" to see an explanation of "
 "the new syntax."
 msgstr ""
 
-#: modules/access/dvb/access.c:987
+#: modules/access/dvb/access.c:989
 msgid "Invalid polarization"
 msgstr ""
 
-#: modules/access/dvb/access.c:988
+#: modules/access/dvb/access.c:990
 #, c-format
 msgid "The provided polarization \"%c\" is not valid."
 msgstr ""
@@ -5467,12 +5474,12 @@ msgstr "ډي وي ډي د غورنېو سره"
 msgid "DVDnav Input"
 msgstr "ننوتۍ DVDnav"
 
-#: modules/access/dvdnav.c:317 modules/access/dvdread.c:251
+#: modules/access/dvdnav.c:320 modules/access/dvdread.c:251
 #: modules/access/dvdread.c:511 modules/access/dvdread.c:573
 msgid "Playback failure"
 msgstr ""
 
-#: modules/access/dvdnav.c:318
+#: modules/access/dvdnav.c:321
 msgid ""
 "VLC cannot set the DVD's title. It possibly cannot decrypt the entire disc."
 msgstr ""
@@ -5907,8 +5914,8 @@ msgid "PVR radio device"
 msgstr "رېډيو وزله PVR"
 
 #: modules/access/pvr.c:71 modules/access/v4l.c:91
-#: modules/gui/qt4/components/open_panels.cpp:842
-#: modules/gui/qt4/components/open_panels.cpp:941
+#: modules/gui/qt4/components/open_panels.cpp:843
+#: modules/gui/qt4/components/open_panels.cpp:942
 msgid "Norm"
 msgstr ""
 
@@ -5939,8 +5946,8 @@ msgid "Height of the stream to capture (-1 for autodetection)."
 msgstr ""
 
 #: modules/access/pvr.c:83 modules/access/v4l.c:84 modules/access/v4l2.c:195
-#: modules/gui/qt4/components/open_panels.cpp:849
-#: modules/gui/qt4/components/open_panels.cpp:948
+#: modules/gui/qt4/components/open_panels.cpp:850
+#: modules/gui/qt4/components/open_panels.cpp:949
 msgid "Frequency"
 msgstr ""
 
@@ -5999,7 +6006,7 @@ msgid "Bitmask that will get used by the audio part of the card."
 msgstr ""
 
 #: modules/access/pvr.c:110 modules/access/v4l2.c:161
-#: modules/access/vcdx/info.c:100 modules/gui/macosx/intf.m:599
+#: modules/access/vcdx/info.c:100 modules/gui/macosx/intf.m:600
 #: modules/gui/qt4/dialogs/toolbar.cpp:343 modules/stream_out/raop.c:143
 msgid "Volume"
 msgstr "غږ"
@@ -6021,15 +6028,15 @@ msgstr ""
 msgid "Automatic"
 msgstr "خپلکاری"
 
-#: modules/access/pvr.c:120 modules/access/v4l.c:137 modules/access/v4l2.c:216
+#: modules/access/pvr.c:120 modules/access/v4l.c:137 modules/access/v4l2.c:220
 msgid "SECAM"
 msgstr "SECAM"
 
-#: modules/access/pvr.c:120 modules/access/v4l.c:137 modules/access/v4l2.c:216
+#: modules/access/pvr.c:120 modules/access/v4l.c:137 modules/access/v4l2.c:220
 msgid "PAL"
 msgstr "PAL"
 
-#: modules/access/pvr.c:120 modules/access/v4l.c:137 modules/access/v4l2.c:216
+#: modules/access/pvr.c:120 modules/access/v4l.c:137 modules/access/v4l2.c:220
 msgid "NTSC"
 msgstr "NTSC"
 
@@ -6193,7 +6200,7 @@ msgid ""
 msgstr ""
 
 #: modules/access/screen/screen.c:46
-#: modules/gui/qt4/components/open_panels.cpp:1072
+#: modules/gui/qt4/components/open_panels.cpp:1073
 msgid "Desired frame rate for the capture."
 msgstr ""
 
@@ -6384,7 +6391,7 @@ msgstr ""
 msgid "Contrast of the video input."
 msgstr ""
 
-#: modules/access/v4l.c:115 modules/access/v4l2.c:268
+#: modules/access/v4l.c:115 modules/access/v4l2.c:274
 msgid "Tuner"
 msgstr ""
 
@@ -6430,7 +6437,7 @@ msgstr "Video4Linux"
 msgid "Video4Linux input"
 msgstr "ننوتۍ Video4Linux"
 
-#: modules/access/v4l2.c:69 modules/gui/qt4/components/open_panels.cpp:807
+#: modules/access/v4l2.c:69 modules/gui/qt4/components/open_panels.cpp:808
 #: modules/stream_out/standard.c:100
 msgid "Standard"
 msgstr "ار"
@@ -6711,66 +6718,78 @@ msgid ""
 "'v4l2:// :input-slave=alsa://' or 'v4l2:// :input-slave=oss://' instead."
 msgstr ""
 
-#: modules/access/v4l2.c:221
+#: modules/access/v4l2.c:207
+msgid "Picture aspect-ratio n:m"
+msgstr ""
+
+#: modules/access/v4l2.c:208
+msgid "Define input picture aspect-ratio to use. Default is 4:3"
+msgstr ""
+
+#: modules/access/v4l2.c:225
+msgid "AUTO"
+msgstr ""
+
+#: modules/access/v4l2.c:225
 msgid "READ"
 msgstr "READ"
 
-#: modules/access/v4l2.c:221
+#: modules/access/v4l2.c:225
 msgid "MMAP"
 msgstr "MMAP"
 
-#: modules/access/v4l2.c:221
+#: modules/access/v4l2.c:225
 msgid "USERPTR"
 msgstr "USERPTR"
 
-#: modules/access/v4l2.c:228 modules/audio_output/alsa.c:190
+#: modules/access/v4l2.c:232 modules/audio_output/alsa.c:190
 #: modules/audio_output/directx.c:572 modules/audio_output/oss.c:226
 #: modules/audio_output/portaudio.c:391 modules/audio_output/sdl.c:185
 #: modules/audio_output/sdl.c:204 modules/audio_output/waveout.c:532
 msgid "Mono"
 msgstr ""
 
-#: modules/access/v4l2.c:230
+#: modules/access/v4l2.c:234
 msgid "Primary language (Analog TV tuners only)"
 msgstr ""
 
-#: modules/access/v4l2.c:231
+#: modules/access/v4l2.c:235
 msgid "Secondary language (Analog TV tuners only)"
 msgstr ""
 
-#: modules/access/v4l2.c:232
+#: modules/access/v4l2.c:236
 msgid "Second audio program (Analog TV tuners only)"
 msgstr ""
 
-#: modules/access/v4l2.c:233
+#: modules/access/v4l2.c:237
 msgid "Primary language left, Secondary language right"
 msgstr ""
 
-#: modules/access/v4l2.c:239
+#: modules/access/v4l2.c:243
 msgid "Video4Linux2"
 msgstr "Video4Linux2"
 
-#: modules/access/v4l2.c:240
+#: modules/access/v4l2.c:244
 msgid "Video4Linux2 input"
 msgstr "ننوتۍ Video4Linux2"
 
-#: modules/access/v4l2.c:244
+#: modules/access/v4l2.c:248
 msgid "Video input"
 msgstr "ويډيو ننوتۍ"
 
-#: modules/access/v4l2.c:278
+#: modules/access/v4l2.c:284
 msgid "Controls"
 msgstr "مهارونه"
 
-#: modules/access/v4l2.c:279
+#: modules/access/v4l2.c:285
 msgid "v4l2 driver controls, if supported by your v4l2 driver."
 msgstr ""
 
-#: modules/access/v4l2.c:345
+#: modules/access/v4l2.c:351
 msgid "Video4Linux2 Compressed A/V"
 msgstr ""
 
-#: modules/access/v4l2.c:2777
+#: modules/access/v4l2.c:2932
 msgid "Reset controls to default"
 msgstr ""
 
@@ -6942,6 +6961,24 @@ msgstr ""
 
 #: modules/access/vcdx/vcd.c:149
 msgid "Format to use in the playlist's \"title\" field."
+msgstr ""
+
+#: modules/access/zip/zipstream.c:38
+#, fuzzy
+msgid "Media in Zip"
+msgstr "رسنۍ دوتنې"
+
+#: modules/access/zip/zipstream.c:39
+msgid "Path to the media in the Zip archive"
+msgstr ""
+
+#: modules/access/zip/zipstream.c:48
+#, fuzzy
+msgid "Zip files filter"
+msgstr "د دوتنې ساتل پاتې راغلل"
+
+#: modules/access/zip/zipstream.c:53
+msgid "Zip access"
 msgstr ""
 
 #: modules/access_output/dummy.c:45 modules/stream_out/dummy.c:51
@@ -7626,8 +7663,8 @@ msgstr "السا وزلې نوم"
 #: modules/audio_output/auhal.c:969 modules/audio_output/directx.c:457
 #: modules/audio_output/oss.c:133 modules/audio_output/portaudio.c:385
 #: modules/audio_output/sdl.c:179 modules/audio_output/sdl.c:197
-#: modules/audio_output/waveout.c:462 modules/gui/macosx/intf.m:667
-#: modules/gui/macosx/intf.m:668
+#: modules/audio_output/waveout.c:462 modules/gui/macosx/intf.m:668
+#: modules/gui/macosx/intf.m:669
 msgid "Audio Device"
 msgstr "د غږيز وزله"
 
@@ -7833,8 +7870,8 @@ msgstr ""
 msgid "PORTAUDIO audio output"
 msgstr ""
 
-#: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:588
-#: modules/gui/macosx/intf.m:589 modules/gui/macosx/intf.m:1970
+#: modules/audio_output/pulse.c:61 modules/gui/macosx/intf.m:589
+#: modules/gui/macosx/intf.m:590 modules/gui/macosx/intf.m:1971
 #: modules/gui/pda/pda_interface.c:210 modules/gui/pda/pda_interface.c:1353
 #: modules/gui/qt4/dialogs/help.cpp:99 modules/gui/qt4/main_interface.cpp:943
 #: modules/gui/qt4/main_interface.cpp:947
@@ -8164,7 +8201,7 @@ msgid ""
 "same qscale for I and P frames)."
 msgstr ""
 
-#: modules/codec/avcodec/avcodec.h:172 modules/codec/x264.c:336
+#: modules/codec/avcodec/avcodec.h:172 modules/codec/x264.c:351
 #: modules/demux/mod.c:78
 msgid "Noise reduction"
 msgstr ""
@@ -8641,7 +8678,7 @@ msgstr ""
 msgid "DVB subtitles decoder"
 msgstr ""
 
-#: modules/codec/dvbsub.c:92 modules/demux/ts.c:3399 modules/demux/ts.c:3456
+#: modules/codec/dvbsub.c:92 modules/demux/ts.c:3402 modules/demux/ts.c:3459
 msgid "DVB subtitles"
 msgstr "څېرمه سرليکونه DVB"
 
@@ -8653,7 +8690,7 @@ msgstr ""
 msgid "AAC audio decoder (using libfaad2)"
 msgstr ""
 
-#: modules/codec/faad.c:379
+#: modules/codec/faad.c:388
 msgid "AAC extension"
 msgstr ""
 
@@ -8859,7 +8896,7 @@ msgid "Maroon"
 msgstr ""
 
 #: modules/codec/kate.c:213 modules/gui/fbosd.c:172
-#: modules/gui/macosx/controls.m:560 modules/gui/macosx/intf.m:698
+#: modules/gui/macosx/controls.m:560 modules/gui/macosx/intf.m:699
 #: modules/misc/freetype.c:132 modules/misc/quartztext.c:111
 #: modules/misc/win32text.c:89 modules/video_filter/colorthres.c:63
 #: modules/video_filter/marq.c:62 modules/video_filter/rss.c:71
@@ -8874,7 +8911,7 @@ msgid "Fuchsia"
 msgstr ""
 
 #: modules/codec/kate.c:213 modules/gui/fbosd.c:173
-#: modules/gui/macosx/controls.m:564 modules/gui/macosx/intf.m:700
+#: modules/gui/macosx/controls.m:564 modules/gui/macosx/intf.m:701
 #: modules/misc/freetype.c:132 modules/misc/quartztext.c:111
 #: modules/misc/win32text.c:89 modules/video_filter/colorthres.c:63
 #: modules/video_filter/marq.c:63 modules/video_filter/rss.c:72
@@ -8889,7 +8926,7 @@ msgid "Olive"
 msgstr ""
 
 #: modules/codec/kate.c:213 modules/gui/fbosd.c:173
-#: modules/gui/macosx/controls.m:562 modules/gui/macosx/intf.m:699
+#: modules/gui/macosx/controls.m:562 modules/gui/macosx/intf.m:700
 #: modules/misc/freetype.c:132 modules/misc/quartztext.c:111
 #: modules/misc/win32text.c:89 modules/video_filter/marq.c:63
 #: modules/video_filter/rss.c:72
@@ -8925,7 +8962,7 @@ msgid "Navy"
 msgstr ""
 
 #: modules/codec/kate.c:214 modules/gui/fbosd.c:174
-#: modules/gui/macosx/controls.m:566 modules/gui/macosx/intf.m:701
+#: modules/gui/macosx/controls.m:566 modules/gui/macosx/intf.m:702
 #: modules/misc/freetype.c:133 modules/misc/quartztext.c:112
 #: modules/misc/win32text.c:90 modules/video_filter/colorthres.c:63
 #: modules/video_filter/marq.c:64 modules/video_filter/rss.c:73
@@ -9683,156 +9720,174 @@ msgid ""
 "negative values cause less B-frames."
 msgstr ""
 
-#: modules/codec/x264.c:103
+#: modules/codec/x264.c:104
 msgid "Keep some B-frames as references"
 msgstr ""
 
-#: modules/codec/x264.c:104
+#: modules/codec/x264.c:106
+msgid ""
+"Allows B-frames to be used as references for predicting other frames. Keeps "
+"the middle of 2+ consecutive B-frames as a reference, and reorders frame "
+"appropriately.\n"
+" - none: Disabled\n"
+" - strict: Strictly hierarchical pyramid\n"
+" - normal: Non-strict (not Blu-ray compatible)\n"
+msgstr ""
+
+#: modules/codec/x264.c:114
 msgid ""
 "Allows B-frames to be used as references for predicting other frames. Keeps "
 "the middle of 2+ consecutive B-frames as a reference, and reorders frame "
 "appropriately."
 msgstr ""
 
-#: modules/codec/x264.c:108
+#: modules/codec/x264.c:119
 msgid "CABAC"
 msgstr ""
 
-#: modules/codec/x264.c:109
+#: modules/codec/x264.c:120
 msgid ""
 "CABAC (Context-Adaptive Binary Arithmetic Coding). Slightly slows down "
 "encoding and decoding, but should save 10 to 15% bitrate."
 msgstr ""
 
-#: modules/codec/x264.c:113
+#: modules/codec/x264.c:124
 msgid "Number of reference frames"
 msgstr ""
 
-#: modules/codec/x264.c:114
+#: modules/codec/x264.c:125
 msgid ""
 "Number of previous frames used as predictors. This is effective in Anime, "
 "but seems to make little difference in live-action source material. Some "
 "decoders are unable to deal with large frameref values. Range 1 to 16."
 msgstr ""
 
-#: modules/codec/x264.c:119
+#: modules/codec/x264.c:130
 msgid "Skip loop filter"
 msgstr ""
 
-#: modules/codec/x264.c:120
+#: modules/codec/x264.c:131
 msgid "Deactivate the deblocking loop filter (decreases quality)."
 msgstr ""
 
-#: modules/codec/x264.c:122
+#: modules/codec/x264.c:133
 msgid "Loop filter AlphaC0 and Beta parameters alpha:beta"
 msgstr ""
 
-#: modules/codec/x264.c:123
+#: modules/codec/x264.c:134
 msgid ""
 "Loop filter AlphaC0 and Beta parameters. Range -6 to 6 for both alpha and "
 "beta parameters. -6 means light filter, 6 means strong."
 msgstr ""
 
-#: modules/codec/x264.c:127
+#: modules/codec/x264.c:138
 msgid "H.264 level"
 msgstr ""
 
-#: modules/codec/x264.c:128
+#: modules/codec/x264.c:139
 msgid ""
 "Specify H.264 level (as defined by Annex A of the standard). Levels are not "
 "enforced; it's up to the user to select a level compatible with the rest of "
 "the encoding options. Range 1 to 5.1 (10 to 51 is also allowed)."
 msgstr ""
 
-#: modules/codec/x264.c:137
+#: modules/codec/x264.c:144
+msgid "H.264 profile"
+msgstr ""
+
+#: modules/codec/x264.c:145
+msgid "Specify H.264 profile which limits are enforced overother settings"
+msgstr ""
+
+#: modules/codec/x264.c:152
 msgid "Interlaced mode"
 msgstr ""
 
-#: modules/codec/x264.c:138
+#: modules/codec/x264.c:153
 msgid "Pure-interlaced mode."
 msgstr ""
 
-#: modules/codec/x264.c:143
+#: modules/codec/x264.c:158
 msgid "Set QP"
 msgstr ""
 
-#: modules/codec/x264.c:144
+#: modules/codec/x264.c:159
 msgid ""
 "This selects the quantizer to use. Lower values result in better fidelity, "
 "but higher bitrates. 26 is a good default value. Range 0 (lossless) to 51."
 msgstr ""
 
-#: modules/codec/x264.c:148
+#: modules/codec/x264.c:163
 msgid "Quality-based VBR"
 msgstr ""
 
-#: modules/codec/x264.c:149
+#: modules/codec/x264.c:164
 msgid "1-pass Quality-based VBR. Range 0 to 51."
 msgstr ""
 
-#: modules/codec/x264.c:151
+#: modules/codec/x264.c:166
 msgid "Min QP"
 msgstr ""
 
-#: modules/codec/x264.c:152
+#: modules/codec/x264.c:167
 msgid "Minimum quantizer parameter. 15 to 35 seems to be a useful range."
 msgstr ""
 
-#: modules/codec/x264.c:155
+#: modules/codec/x264.c:170
 msgid "Max QP"
 msgstr ""
 
-#: modules/codec/x264.c:156
+#: modules/codec/x264.c:171
 msgid "Maximum quantizer parameter."
 msgstr ""
 
-#: modules/codec/x264.c:158
+#: modules/codec/x264.c:173
 msgid "Max QP step"
 msgstr ""
 
-#: modules/codec/x264.c:159
+#: modules/codec/x264.c:174
 msgid "Max QP step between frames."
 msgstr ""
 
-#: modules/codec/x264.c:161
+#: modules/codec/x264.c:176
 msgid "Average bitrate tolerance"
 msgstr ""
 
-#: modules/codec/x264.c:162
+#: modules/codec/x264.c:177
 msgid "Allowed variance in average bitrate (in kbits/s)."
 msgstr ""
 
-#: modules/codec/x264.c:165
+#: modules/codec/x264.c:180
 msgid "Max local bitrate"
 msgstr ""
 
-#: modules/codec/x264.c:166
+#: modules/codec/x264.c:181
 msgid "Sets a maximum local bitrate (in kbits/s)."
 msgstr ""
 
-#: modules/codec/x264.c:168
+#: modules/codec/x264.c:183
 msgid "VBV buffer"
 msgstr ""
 
-#: modules/codec/x264.c:169
+#: modules/codec/x264.c:184
 msgid "Averaging period for the maximum local bitrate (in kbits)."
 msgstr ""
 
-#: modules/codec/x264.c:172
+#: modules/codec/x264.c:187
 msgid "Initial VBV buffer occupancy"
 msgstr ""
 
-#: modules/codec/x264.c:173
+#: modules/codec/x264.c:188
 msgid ""
 "Sets the initial buffer occupancy as a fraction of the buffer size. Range "
 "0.0 to 1.0."
 msgstr ""
 
-#: modules/codec/x264.c:177
+#: modules/codec/x264.c:192
 msgid "How AQ distributes bits"
 msgstr ""
 
-#: modules/codec/x264.c:178
+#: modules/codec/x264.c:193
 msgid ""
 "Defines bitdistribution mode for AQ, default 1\n"
 " - 0: Disabled\n"
@@ -9841,11 +9896,11 @@ msgid ""
 "frame"
 msgstr ""
 
-#: modules/codec/x264.c:183
+#: modules/codec/x264.c:198
 msgid "Strength of AQ"
 msgstr ""
 
-#: modules/codec/x264.c:184
+#: modules/codec/x264.c:199
 msgid ""
 "Strength to reduce blocking and blurring in flat\n"
 "and textured areas, default 1.0 recommented to be between 0..2\n"
@@ -9853,35 +9908,35 @@ msgid ""
 " - 1.5: strong AQ"
 msgstr ""
 
-#: modules/codec/x264.c:191
+#: modules/codec/x264.c:206
 msgid "QP factor between I and P"
 msgstr ""
 
-#: modules/codec/x264.c:192
+#: modules/codec/x264.c:207
 msgid "QP factor between I and P. Range 1.0 to 2.0."
 msgstr ""
 
-#: modules/codec/x264.c:195
+#: modules/codec/x264.c:210
 msgid "QP factor between P and B"
 msgstr ""
 
-#: modules/codec/x264.c:196
+#: modules/codec/x264.c:211
 msgid "QP factor between P and B. Range 1.0 to 2.0."
 msgstr ""
 
-#: modules/codec/x264.c:198
+#: modules/codec/x264.c:213
 msgid "QP difference between chroma and luma"
 msgstr ""
 
-#: modules/codec/x264.c:199
+#: modules/codec/x264.c:214
 msgid "QP difference between chroma and luma."
 msgstr ""
 
-#: modules/codec/x264.c:201
+#: modules/codec/x264.c:216
 msgid "Multipass ratecontrol"
 msgstr ""
 
-#: modules/codec/x264.c:202
+#: modules/codec/x264.c:217
 msgid ""
 "Multipass ratecontrol:\n"
 " - 1: First pass, creates stats file\n"
@@ -9889,35 +9944,35 @@ msgid ""
 " - 3: Nth pass, overwrites stats file\n"
 msgstr ""
 
-#: modules/codec/x264.c:207
+#: modules/codec/x264.c:222
 msgid "QP curve compression"
 msgstr ""
 
-#: modules/codec/x264.c:208
+#: modules/codec/x264.c:223
 msgid "QP curve compression. Range 0.0 (CBR) to 1.0 (QCP)."
 msgstr ""
 
-#: modules/codec/x264.c:210 modules/codec/x264.c:214
+#: modules/codec/x264.c:225 modules/codec/x264.c:229
 msgid "Reduce fluctuations in QP"
 msgstr ""
 
-#: modules/codec/x264.c:211
+#: modules/codec/x264.c:226
 msgid ""
 "This reduces the fluctuations in QP before curve compression. Temporally "
 "blurs complexity."
 msgstr ""
 
-#: modules/codec/x264.c:215
+#: modules/codec/x264.c:230
 msgid ""
 "This reduces the fluctations in QP after curve compression. Temporally blurs "
 "quants."
 msgstr ""
 
-#: modules/codec/x264.c:220
+#: modules/codec/x264.c:235
 msgid "Partitions to consider"
 msgstr ""
 
-#: modules/codec/x264.c:221
+#: modules/codec/x264.c:236
 msgid ""
 "Partitions to consider in analyse mode: \n"
 " - none  : \n"
@@ -9928,38 +9983,38 @@ msgid ""
 "(p4x4 requires p8x8. i8x8 requires 8x8dct)."
 msgstr ""
 
-#: modules/codec/x264.c:229
+#: modules/codec/x264.c:244
 msgid "Direct MV prediction mode"
 msgstr ""
 
-#: modules/codec/x264.c:230
+#: modules/codec/x264.c:245
 msgid "Direct MV prediction mode."
 msgstr ""
 
-#: modules/codec/x264.c:233
+#: modules/codec/x264.c:248
 msgid "Direct prediction size"
 msgstr ""
 
-#: modules/codec/x264.c:234
+#: modules/codec/x264.c:249
 msgid ""
 "Direct prediction size:  -  0: 4x4\n"
 " -  1: 8x8\n"
 " - -1: smallest possible according to level\n"
 msgstr ""
 
-#: modules/codec/x264.c:240
+#: modules/codec/x264.c:255
 msgid "Weighted prediction for B-frames"
 msgstr ""
 
-#: modules/codec/x264.c:241
+#: modules/codec/x264.c:256
 msgid "Weighted prediction for B-frames."
 msgstr ""
 
-#: modules/codec/x264.c:243
+#: modules/codec/x264.c:258
 msgid "Integer pixel motion estimation method"
 msgstr ""
 
-#: modules/codec/x264.c:245
+#: modules/codec/x264.c:260
 msgid ""
 "Selects the motion estimation algorithm:  - dia: diamond search, radius 1 "
 "(fast)\n"
@@ -9969,7 +10024,7 @@ msgid ""
 " - tesa: hadamard exhaustive search (extremely slow, primarily for testing)\n"
 msgstr ""
 
-#: modules/codec/x264.c:252
+#: modules/codec/x264.c:267
 msgid ""
 "Selects the motion estimation algorithm:  - dia: diamond search, radius 1 "
 "(fast)\n"
@@ -9978,115 +10033,115 @@ msgid ""
 " - esa: exhaustive search (extremely slow, primarily for testing)\n"
 msgstr ""
 
-#: modules/codec/x264.c:260
+#: modules/codec/x264.c:275
 msgid "Maximum motion vector search range"
 msgstr ""
 
-#: modules/codec/x264.c:261
+#: modules/codec/x264.c:276
 msgid ""
 "Maximum distance to search for motion estimation, measured from predicted "
 "position(s). Default of 16 is good for most footage, high motion sequences "
 "may benefit from settings between 24 and 32. Range 0 to 64."
 msgstr ""
 
-#: modules/codec/x264.c:266
+#: modules/codec/x264.c:281
 msgid "Maximum motion vector length"
 msgstr ""
 
-#: modules/codec/x264.c:267
+#: modules/codec/x264.c:282
 msgid ""
 "Maximum motion vector length in pixels. -1 is automatic, based on level."
 msgstr ""
 
-#: modules/codec/x264.c:272
+#: modules/codec/x264.c:287
 msgid "Minimum buffer space between threads"
 msgstr ""
 
-#: modules/codec/x264.c:273
+#: modules/codec/x264.c:288
 msgid ""
 "Minimum buffer space between threads. -1 is automatic, based on number of "
 "threads."
 msgstr ""
 
-#: modules/codec/x264.c:277
+#: modules/codec/x264.c:292
 msgid "Subpixel motion estimation and partition decision quality"
-msgstr ""
-
-#: modules/codec/x264.c:281
-msgid ""
-"This parameter controls quality versus speed tradeoffs involved in the "
-"motion estimation decision process (lower = quicker and higher = better "
-"quality). Range 1 to 9."
-msgstr ""
-
-#: modules/codec/x264.c:286
-msgid ""
-"This parameter controls quality versus speed tradeoffs involved in the "
-"motion estimation decision process (lower = quicker and higher = better "
-"quality). Range 1 to 7."
-msgstr ""
-
-#: modules/codec/x264.c:291
-msgid ""
-"This parameter controls quality versus speed tradeoffs involved in the "
-"motion estimation decision process (lower = quicker and higher = better "
-"quality). Range 1 to 6."
 msgstr ""
 
 #: modules/codec/x264.c:296
 msgid ""
 "This parameter controls quality versus speed tradeoffs involved in the "
 "motion estimation decision process (lower = quicker and higher = better "
-"quality). Range 1 to 5."
+"quality). Range 1 to 9."
 msgstr ""
 
 #: modules/codec/x264.c:301
-msgid "RD based mode decision for B-frames"
-msgstr ""
-
-#: modules/codec/x264.c:302
-msgid "RD based mode decision for B-frames. This requires subme 6 (or higher)."
-msgstr ""
-
-#: modules/codec/x264.c:305
-msgid "Decide references on a per partition basis"
+msgid ""
+"This parameter controls quality versus speed tradeoffs involved in the "
+"motion estimation decision process (lower = quicker and higher = better "
+"quality). Range 1 to 7."
 msgstr ""
 
 #: modules/codec/x264.c:306
+msgid ""
+"This parameter controls quality versus speed tradeoffs involved in the "
+"motion estimation decision process (lower = quicker and higher = better "
+"quality). Range 1 to 6."
+msgstr ""
+
+#: modules/codec/x264.c:311
+msgid ""
+"This parameter controls quality versus speed tradeoffs involved in the "
+"motion estimation decision process (lower = quicker and higher = better "
+"quality). Range 1 to 5."
+msgstr ""
+
+#: modules/codec/x264.c:316
+msgid "RD based mode decision for B-frames"
+msgstr ""
+
+#: modules/codec/x264.c:317
+msgid "RD based mode decision for B-frames. This requires subme 6 (or higher)."
+msgstr ""
+
+#: modules/codec/x264.c:320
+msgid "Decide references on a per partition basis"
+msgstr ""
+
+#: modules/codec/x264.c:321
 msgid ""
 "Allows each 8x8 or 16x8 partition to independently select a reference frame, "
 "as opposed to only one ref per macroblock."
 msgstr ""
 
-#: modules/codec/x264.c:310
+#: modules/codec/x264.c:325
 msgid "Chroma in motion estimation"
 msgstr ""
 
-#: modules/codec/x264.c:311
+#: modules/codec/x264.c:326
 msgid "Chroma ME for subpel and mode decision in P-frames."
 msgstr ""
 
-#: modules/codec/x264.c:314
+#: modules/codec/x264.c:329
 msgid "Jointly optimize both MVs in B-frames"
 msgstr ""
 
-#: modules/codec/x264.c:315
+#: modules/codec/x264.c:330
 msgid "Joint bidirectional motion refinement."
 msgstr ""
 
-#: modules/codec/x264.c:317
+#: modules/codec/x264.c:332
 msgid "Adaptive spatial transform size"
 msgstr ""
 
-#: modules/codec/x264.c:319
+#: modules/codec/x264.c:334
 msgid "SATD-based decision for 8x8 transform in inter-MBs."
 msgstr ""
 
-#: modules/codec/x264.c:321
+#: modules/codec/x264.c:336
 msgid "Trellis RD quantization"
 msgstr ""
 
-#: modules/codec/x264.c:322
+#: modules/codec/x264.c:337
 msgid ""
 "Trellis RD quantization: \n"
 " - 0: disabled\n"
@@ -10095,175 +10150,175 @@ msgid ""
 "This requires CABAC."
 msgstr ""
 
-#: modules/codec/x264.c:328
+#: modules/codec/x264.c:343
 msgid "Early SKIP detection on P-frames"
 msgstr ""
 
-#: modules/codec/x264.c:329
+#: modules/codec/x264.c:344
 msgid "Early SKIP detection on P-frames."
 msgstr ""
 
-#: modules/codec/x264.c:331
+#: modules/codec/x264.c:346
 msgid "Coefficient thresholding on P-frames"
 msgstr ""
 
-#: modules/codec/x264.c:332
+#: modules/codec/x264.c:347
 msgid ""
 "Coefficient thresholding on P-frames.Eliminate dct blocks containing only a "
 "small single coefficient."
 msgstr ""
 
-#: modules/codec/x264.c:337
+#: modules/codec/x264.c:352
 msgid ""
 "Dct-domain noise reduction. Adaptive pseudo-deadzone. 10 to 1000 seems to be "
 "a useful range."
 msgstr ""
 
-#: modules/codec/x264.c:341
+#: modules/codec/x264.c:356
 msgid "Inter luma quantization deadzone"
 msgstr ""
 
-#: modules/codec/x264.c:342
+#: modules/codec/x264.c:357
 msgid "Set the size of the inter luma quantization deadzone. Range 0 to 32."
 msgstr ""
 
-#: modules/codec/x264.c:345
+#: modules/codec/x264.c:360
 msgid "Intra luma quantization deadzone"
 msgstr ""
 
-#: modules/codec/x264.c:346
+#: modules/codec/x264.c:361
 msgid "Set the size of the intra luma quantization deadzone. Range 0 to 32."
 msgstr ""
 
-#: modules/codec/x264.c:353
+#: modules/codec/x264.c:368
 msgid "Non-deterministic optimizations when threaded"
 msgstr ""
 
-#: modules/codec/x264.c:354
+#: modules/codec/x264.c:369
 msgid "Slightly improve quality of SMP, at the cost of repeatability."
 msgstr ""
 
-#: modules/codec/x264.c:358
+#: modules/codec/x264.c:373
 msgid "CPU optimizations"
 msgstr ""
 
-#: modules/codec/x264.c:359
+#: modules/codec/x264.c:374
 msgid "Use assembler CPU optimizations."
 msgstr ""
 
-#: modules/codec/x264.c:361
+#: modules/codec/x264.c:376
 msgid "Filename for 2 pass stats file"
 msgstr ""
 
-#: modules/codec/x264.c:362
+#: modules/codec/x264.c:377
 msgid "Filename for 2 pass stats file for multi-pass encoding."
 msgstr ""
 
-#: modules/codec/x264.c:364
+#: modules/codec/x264.c:379
 msgid "PSNR computation"
 msgstr ""
 
-#: modules/codec/x264.c:365
+#: modules/codec/x264.c:380
 msgid ""
 "Compute and print PSNR stats. This has no effect on the actual encoding "
 "quality."
 msgstr ""
 
-#: modules/codec/x264.c:368
+#: modules/codec/x264.c:383
 msgid "SSIM computation"
 msgstr ""
 
-#: modules/codec/x264.c:369
+#: modules/codec/x264.c:384
 msgid ""
 "Compute and print SSIM stats. This has no effect on the actual encoding "
 "quality."
 msgstr ""
 
-#: modules/codec/x264.c:372
+#: modules/codec/x264.c:387
 msgid "Quiet mode"
 msgstr ""
 
-#: modules/codec/x264.c:373
+#: modules/codec/x264.c:388
 msgid "Quiet mode."
 msgstr ""
 
-#: modules/codec/x264.c:375 modules/gui/macosx/playlistinfo.m:82
+#: modules/codec/x264.c:390 modules/gui/macosx/playlistinfo.m:82
 #: modules/gui/qt4/ui/streampanel.h:171
 msgid "Statistics"
 msgstr ""
 
-#: modules/codec/x264.c:376
+#: modules/codec/x264.c:391
 msgid "Print stats for each frame."
 msgstr ""
 
-#: modules/codec/x264.c:379
+#: modules/codec/x264.c:394
 msgid "SPS and PPS id numbers"
 msgstr ""
 
-#: modules/codec/x264.c:380
+#: modules/codec/x264.c:395
 msgid ""
 "Set SPS and PPS id numbers to allow concatenating streams with different "
 "settings."
 msgstr ""
 
-#: modules/codec/x264.c:384
+#: modules/codec/x264.c:399
 msgid "Access unit delimiters"
 msgstr ""
 
-#: modules/codec/x264.c:385
+#: modules/codec/x264.c:400
 msgid "Generate access unit delimiter NAL units."
 msgstr ""
 
-#: modules/codec/x264.c:391 modules/codec/x264.c:398
+#: modules/codec/x264.c:406 modules/codec/x264.c:413
 msgid "dia"
 msgstr "dia"
 
-#: modules/codec/x264.c:391 modules/codec/x264.c:398
+#: modules/codec/x264.c:406 modules/codec/x264.c:413
 msgid "hex"
 msgstr "hex"
 
-#: modules/codec/x264.c:391 modules/codec/x264.c:398
+#: modules/codec/x264.c:406 modules/codec/x264.c:413
 msgid "umh"
 msgstr "umh"
 
-#: modules/codec/x264.c:391 modules/codec/x264.c:398
+#: modules/codec/x264.c:406 modules/codec/x264.c:413
 msgid "esa"
 msgstr "esa"
 
-#: modules/codec/x264.c:398
+#: modules/codec/x264.c:413
 msgid "tesa"
 msgstr "tesa"
 
-#: modules/codec/x264.c:404
+#: modules/codec/x264.c:427
 msgid "fast"
 msgstr "ګړندی"
 
-#: modules/codec/x264.c:404
+#: modules/codec/x264.c:427
 msgid "normal"
 msgstr "لېوی"
 
-#: modules/codec/x264.c:404
+#: modules/codec/x264.c:427
 msgid "slow"
 msgstr "ورو"
 
-#: modules/codec/x264.c:404
+#: modules/codec/x264.c:427
 msgid "all"
 msgstr "ټول"
 
-#: modules/codec/x264.c:410 modules/codec/x264.c:415
+#: modules/codec/x264.c:433 modules/codec/x264.c:438
 msgid "spatial"
 msgstr ""
 
-#: modules/codec/x264.c:410 modules/codec/x264.c:415
+#: modules/codec/x264.c:433 modules/codec/x264.c:438
 msgid "temporal"
 msgstr ""
 
-#: modules/codec/x264.c:410 modules/gui/pda/pda_interface.c:741
+#: modules/codec/x264.c:433 modules/gui/pda/pda_interface.c:741
 #: modules/video_filter/mosaic.c:168
 msgid "auto"
 msgstr "پخپله"
 
-#: modules/codec/x264.c:419
+#: modules/codec/x264.c:442
 msgid "H.264/MPEG4 AVC encoder (x264)"
 msgstr ""
 
@@ -10376,7 +10431,7 @@ msgstr "غږ مهار"
 msgid "Position Control"
 msgstr "ځای مهار"
 
-#: modules/control/hotkeys.c:98 modules/gui/macosx/intf.m:2443
+#: modules/control/hotkeys.c:98 modules/gui/macosx/intf.m:2444
 msgid "Ignore"
 msgstr "پرېښودل"
 
@@ -10659,8 +10714,8 @@ msgid "Opening"
 msgstr "پرانيستل کيږي"
 
 #: modules/control/rc.c:77 modules/gui/macosx/embeddedwindow.m:151
-#: modules/gui/macosx/intf.m:1980 modules/gui/macosx/intf.m:1981
-#: modules/gui/macosx/intf.m:1982 modules/gui/macosx/intf.m:1983
+#: modules/gui/macosx/intf.m:1981 modules/gui/macosx/intf.m:1982
+#: modules/gui/macosx/intf.m:1983 modules/gui/macosx/intf.m:1984
 #: modules/gui/pda/pda_interface.c:248 modules/gui/pda/pda_interface.c:249
 #: modules/gui/qt4/menus.cpp:736 modules/misc/notify/xosd.c:238
 msgid "Pause"
@@ -11293,11 +11348,11 @@ msgstr ""
 msgid "AVI demuxer"
 msgstr ""
 
-#: modules/demux/avi/avi.c:690
+#: modules/demux/avi/avi.c:701
 msgid "AVI Index"
 msgstr ""
 
-#: modules/demux/avi/avi.c:691
+#: modules/demux/avi/avi.c:702
 msgid ""
 "This AVI file is broken. Seeking will not work correctly.\n"
 "Do you want to try to fix it?\n"
@@ -11305,15 +11360,15 @@ msgid ""
 "This might take a long time."
 msgstr ""
 
-#: modules/demux/avi/avi.c:694
+#: modules/demux/avi/avi.c:705
 msgid "Repair"
 msgstr ""
 
-#: modules/demux/avi/avi.c:694
+#: modules/demux/avi/avi.c:705
 msgid "Don't repair"
 msgstr ""
 
-#: modules/demux/avi/avi.c:2414
+#: modules/demux/avi/avi.c:2425
 msgid "Fixing AVI Index..."
 msgstr ""
 
@@ -12047,7 +12102,7 @@ msgid "MPEG Transport Stream demuxer"
 msgstr ""
 
 #: modules/demux/ts.c:177 modules/gui/macosx/controls.m:1143
-#: modules/gui/macosx/intf.m:695 modules/gui/qt4/dialogs/toolbar.cpp:403
+#: modules/gui/macosx/intf.m:696 modules/gui/qt4/dialogs/toolbar.cpp:403
 msgid "Teletext"
 msgstr ""
 
@@ -12067,19 +12122,19 @@ msgstr ""
 msgid "Teletext subtitles: hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3462
+#: modules/demux/ts.c:3465
 msgid "DVB subtitles: hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3718 modules/demux/ts.c:3760
+#: modules/demux/ts.c:3720 modules/demux/ts.c:3762
 msgid "clean effects"
 msgstr "رڼې اغېزې"
 
-#: modules/demux/ts.c:3722 modules/demux/ts.c:3764
+#: modules/demux/ts.c:3724 modules/demux/ts.c:3766
 msgid "hearing impaired"
 msgstr ""
 
-#: modules/demux/ts.c:3726 modules/demux/ts.c:3768
+#: modules/demux/ts.c:3728 modules/demux/ts.c:3770
 msgid "visual impaired commentary"
 msgstr ""
 
@@ -12163,7 +12218,7 @@ msgid "Preferences"
 msgstr "غوراوي"
 
 #: modules/gui/beos/InterfaceWindow.cpp:238
-#: modules/gui/beos/InterfaceWindow.cpp:329 modules/gui/macosx/intf.m:604
+#: modules/gui/beos/InterfaceWindow.cpp:329 modules/gui/macosx/intf.m:605
 #: modules/gui/qt4/dialogs/messages.cpp:75
 #: modules/gui/qt4/dialogs/messages.cpp:94
 msgid "Messages"
@@ -12212,7 +12267,7 @@ msgstr "څپرکي ته تلل"
 msgid "Speed"
 msgstr "چټکتيا"
 
-#: modules/gui/beos/InterfaceWindow.cpp:324 modules/gui/macosx/intf.m:703
+#: modules/gui/beos/InterfaceWindow.cpp:324 modules/gui/macosx/intf.m:704
 msgid "Window"
 msgstr "کړکۍ"
 
@@ -12224,12 +12279,12 @@ msgstr "کړکۍ"
 #: modules/gui/macosx/extended.m:519 modules/gui/macosx/open.m:320
 #: modules/gui/macosx/output.m:138 modules/gui/macosx/playlistinfo.m:430
 #: modules/gui/macosx/simple_prefs.m:240 modules/gui/macosx/update.m:77
-#: modules/gui/macosx/wizard.m:600 modules/gui/macosx/wizard.m:664
-#: modules/gui/macosx/wizard.m:1063 modules/gui/macosx/wizard.m:1148
-#: modules/gui/macosx/wizard.m:1155 modules/gui/macosx/wizard.m:1678
-#: modules/gui/macosx/wizard.m:1686 modules/gui/macosx/wizard.m:1867
-#: modules/gui/macosx/wizard.m:1878 modules/gui/macosx/wizard.m:1891
-#: modules/gui/qt4/components/open_panels.cpp:1314
+#: modules/gui/macosx/wizard.m:600 modules/gui/macosx/wizard.m:663
+#: modules/gui/macosx/wizard.m:1062 modules/gui/macosx/wizard.m:1147
+#: modules/gui/macosx/wizard.m:1154 modules/gui/macosx/wizard.m:1677
+#: modules/gui/macosx/wizard.m:1685 modules/gui/macosx/wizard.m:1866
+#: modules/gui/macosx/wizard.m:1877 modules/gui/macosx/wizard.m:1890
+#: modules/gui/qt4/components/open_panels.cpp:1315
 #: modules/gui/qt4/components/preferences_widgets.cpp:1366
 #: modules/gui/qt4/main_interface.cpp:552
 msgid "OK"
@@ -12256,11 +12311,11 @@ msgid "Close"
 msgstr "بندول"
 
 #: modules/gui/beos/PlayListWindow.cpp:104 modules/gui/macosx/bookmarks.m:90
-#: modules/gui/macosx/intf.m:631
+#: modules/gui/macosx/intf.m:632
 msgid "Edit"
 msgstr "سمول"
 
-#: modules/gui/beos/PlayListWindow.cpp:106 modules/gui/macosx/intf.m:636
+#: modules/gui/beos/PlayListWindow.cpp:106 modules/gui/macosx/intf.m:637
 #: modules/gui/macosx/playlist.m:441
 msgid "Select All"
 msgstr "ټول ټاکل"
@@ -12493,7 +12548,7 @@ msgstr "بولۍ"
 msgid "GNU/Linux osd/overlay framebuffer interface"
 msgstr ""
 
-#: modules/gui/macosx/about.m:86 modules/gui/macosx/intf.m:609
+#: modules/gui/macosx/about.m:86 modules/gui/macosx/intf.m:610
 msgid "About VLC media player"
 msgstr ""
 
@@ -12507,7 +12562,7 @@ msgid "VLC was brought to you by:"
 msgstr ""
 
 #: modules/gui/macosx/about.m:108 modules/gui/macosx/about.m:171
-#: modules/gui/macosx/intf.m:720 modules/gui/qt4/dialogs/help.cpp:166
+#: modules/gui/macosx/intf.m:721 modules/gui/qt4/dialogs/help.cpp:166
 msgid "License"
 msgstr "منښتليک"
 
@@ -12516,7 +12571,7 @@ msgid "VLC media player Help"
 msgstr ""
 
 #: modules/gui/macosx/about.m:187 modules/gui/macosx/controls.m:558
-#: modules/gui/macosx/intf.m:697 modules/gui/pda/pda.c:281
+#: modules/gui/macosx/intf.m:698 modules/gui/pda/pda.c:281
 msgid "Index"
 msgstr "لړيال"
 
@@ -12530,7 +12585,7 @@ msgstr "ليکنښې"
 msgid "Add"
 msgstr "ډېرول"
 
-#: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/intf.m:635
+#: modules/gui/macosx/bookmarks.m:89 modules/gui/macosx/intf.m:636
 #: modules/gui/macosx/simple_prefs.m:241
 #: modules/gui/qt4/components/preferences_widgets.cpp:1154
 #: modules/gui/qt4/dialogs/bookmarks.cpp:48 modules/gui/qt4/ui/vlm.h:301
@@ -12572,7 +12627,7 @@ msgid ""
 "\" while editing bookmarks to ensure to keep the same input."
 msgstr ""
 
-#: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/wizard.m:1063
+#: modules/gui/macosx/bookmarks.m:271 modules/gui/macosx/wizard.m:1062
 msgid "Invalid selection"
 msgstr "ناسمه ټاکنه"
 
@@ -12609,12 +12664,12 @@ msgid "Random Off"
 msgstr ""
 
 #: modules/gui/macosx/controls.m:296 modules/gui/macosx/controls.m:356
-#: modules/gui/macosx/controls.m:1058 modules/gui/macosx/intf.m:646
+#: modules/gui/macosx/controls.m:1058 modules/gui/macosx/intf.m:647
 msgid "Repeat One"
 msgstr ""
 
 #: modules/gui/macosx/controls.m:312 modules/gui/macosx/controls.m:385
-#: modules/gui/macosx/controls.m:1065 modules/gui/macosx/intf.m:647
+#: modules/gui/macosx/controls.m:1065 modules/gui/macosx/intf.m:648
 msgid "Repeat All"
 msgstr "ټول تکرارول"
 
@@ -12624,27 +12679,27 @@ msgid "Repeat Off"
 msgstr ""
 
 #: modules/gui/macosx/controls.m:495 modules/gui/macosx/controls.m:1095
-#: modules/gui/macosx/intf.m:673
+#: modules/gui/macosx/intf.m:674
 msgid "Half Size"
 msgstr ""
 
 #: modules/gui/macosx/controls.m:497 modules/gui/macosx/controls.m:1096
-#: modules/gui/macosx/controls.m:1141 modules/gui/macosx/intf.m:674
+#: modules/gui/macosx/controls.m:1141 modules/gui/macosx/intf.m:675
 msgid "Normal Size"
 msgstr "لېوی کچ"
 
 #: modules/gui/macosx/controls.m:499 modules/gui/macosx/controls.m:1097
-#: modules/gui/macosx/intf.m:675
+#: modules/gui/macosx/intf.m:676
 msgid "Double Size"
 msgstr ""
 
 #: modules/gui/macosx/controls.m:501 modules/gui/macosx/controls.m:1101
-#: modules/gui/macosx/controls.m:1112 modules/gui/macosx/intf.m:678
+#: modules/gui/macosx/controls.m:1112 modules/gui/macosx/intf.m:679
 msgid "Float on Top"
 msgstr ""
 
 #: modules/gui/macosx/controls.m:503 modules/gui/macosx/controls.m:1098
-#: modules/gui/macosx/intf.m:676
+#: modules/gui/macosx/intf.m:677
 msgid "Fit to Screen"
 msgstr "پردې سره برابرول"
 
@@ -12653,21 +12708,21 @@ msgstr "پردې سره برابرول"
 msgid "Lock Aspect Ratio"
 msgstr "د بروكرام به هكله"
 
-#: modules/gui/macosx/controls.m:838 modules/gui/macosx/intf.m:623
-#: modules/gui/macosx/intf.m:690 modules/gui/qt4/menus.cpp:552
+#: modules/gui/macosx/controls.m:838 modules/gui/macosx/intf.m:624
+#: modules/gui/macosx/intf.m:691 modules/gui/qt4/menus.cpp:552
 msgid "Open File..."
 msgstr "دوتنه پرانيستل..."
 
-#: modules/gui/macosx/controls.m:1072 modules/gui/macosx/intf.m:648
+#: modules/gui/macosx/controls.m:1072 modules/gui/macosx/intf.m:649
 #: modules/gui/qt4/menus.cpp:452
 msgid "Quit after Playback"
 msgstr ""
 
-#: modules/gui/macosx/controls.m:1079 modules/gui/macosx/intf.m:649
+#: modules/gui/macosx/controls.m:1079 modules/gui/macosx/intf.m:650
 msgid "Step Forward"
 msgstr ""
 
-#: modules/gui/macosx/controls.m:1080 modules/gui/macosx/intf.m:650
+#: modules/gui/macosx/controls.m:1080 modules/gui/macosx/intf.m:651
 msgid "Step Backward"
 msgstr ""
 
@@ -12688,12 +12743,12 @@ msgstr "پاکول"
 msgid "Show Details"
 msgstr "سپړاوي ښودل"
 
-#: modules/gui/macosx/embeddedwindow.m:64 modules/gui/macosx/intf.m:593
+#: modules/gui/macosx/embeddedwindow.m:64 modules/gui/macosx/intf.m:594
 #: modules/gui/pda/pda_interface.c:236 modules/gui/pda/pda_interface.c:237
 msgid "Rewind"
 msgstr ""
 
-#: modules/gui/macosx/embeddedwindow.m:65 modules/gui/macosx/intf.m:596
+#: modules/gui/macosx/embeddedwindow.m:65 modules/gui/macosx/intf.m:597
 msgid "Fast Forward"
 msgstr ""
 
@@ -12848,229 +12903,229 @@ msgstr ""
 msgid "(no item is being played)"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:376
+#: modules/gui/macosx/intf.m:372
 msgid "VLC's last release for your OS is the 0.9 series."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:378
+#: modules/gui/macosx/intf.m:374
 msgid ""
 "VLC's last release for your OS is VLC 0.8.6i, which is prone to known "
 "security issues."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:380
+#: modules/gui/macosx/intf.m:376
 msgid ""
 "VLC's last release for your OS is VLC 0.7.2, which is highly out of date and "
 "prone to known security issues. We recommend you to update your Mac to a "
 "modern version of Mac OS X."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:382
+#: modules/gui/macosx/intf.m:378
 msgid "Your version of Mac OS X is no longer supported"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:386
+#: modules/gui/macosx/intf.m:382
 msgid ""
 "VLC media player %s requires Mac OS X 10.5 or higher.\n"
 "\n"
 "%@"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:605
+#: modules/gui/macosx/intf.m:606
 msgid "Open CrashLog..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:606
+#: modules/gui/macosx/intf.m:607
 msgid "Save this Log..."
 msgstr "...دا خبرال ساتل"
 
-#: modules/gui/macosx/intf.m:611
+#: modules/gui/macosx/intf.m:612
 msgid "Check for Update..."
 msgstr "اوسمهالونې کتل..."
 
-#: modules/gui/macosx/intf.m:612
+#: modules/gui/macosx/intf.m:613
 msgid "Preferences..."
 msgstr "غوراوي..."
 
-#: modules/gui/macosx/intf.m:615
+#: modules/gui/macosx/intf.m:616
 msgid "Services"
 msgstr "پالنې"
 
-#: modules/gui/macosx/intf.m:616
+#: modules/gui/macosx/intf.m:617
 msgid "Hide VLC"
 msgstr "پټول VLC"
 
-#: modules/gui/macosx/intf.m:617
+#: modules/gui/macosx/intf.m:618
 msgid "Hide Others"
 msgstr "نور پټول"
 
-#: modules/gui/macosx/intf.m:618
+#: modules/gui/macosx/intf.m:619
 msgid "Show All"
 msgstr "ټول ښودل"
 
-#: modules/gui/macosx/intf.m:619
+#: modules/gui/macosx/intf.m:620
 msgid "Quit VLC"
 msgstr "بندول VLC"
 
-#: modules/gui/macosx/intf.m:621
+#: modules/gui/macosx/intf.m:622
 msgid "1:File"
 msgstr "۱:دوتنه"
 
-#: modules/gui/macosx/intf.m:622 modules/gui/qt4/menus.cpp:308
+#: modules/gui/macosx/intf.m:623 modules/gui/qt4/menus.cpp:308
 msgid "Advanced Open File..."
 msgstr "بريونلې دوتنه پرانيستل..."
 
-#: modules/gui/macosx/intf.m:624
+#: modules/gui/macosx/intf.m:625
 msgid "Open Disc..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:625
+#: modules/gui/macosx/intf.m:626
 msgid "Open Network..."
 msgstr "ځال پرانيستل..."
 
-#: modules/gui/macosx/intf.m:626
+#: modules/gui/macosx/intf.m:627
 msgid "Open Capture Device..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:627
+#: modules/gui/macosx/intf.m:628
 msgid "Open Recent"
 msgstr "اوسنی پرانيستل"
 
-#: modules/gui/macosx/intf.m:628 modules/gui/macosx/intf.m:2732
+#: modules/gui/macosx/intf.m:629 modules/gui/macosx/intf.m:2733
 msgid "Clear Menu"
 msgstr "غورنۍ پاکول"
 
-#: modules/gui/macosx/intf.m:629
+#: modules/gui/macosx/intf.m:630
 msgid "Streaming/Exporting Wizard..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:632
+#: modules/gui/macosx/intf.m:633
 msgid "Cut"
 msgstr "سکڼل"
 
-#: modules/gui/macosx/intf.m:633
+#: modules/gui/macosx/intf.m:634
 msgid "Copy"
 msgstr "لمېسل"
 
-#: modules/gui/macosx/intf.m:634
+#: modules/gui/macosx/intf.m:635
 msgid "Paste"
 msgstr "سرېښل"
 
-#: modules/gui/macosx/intf.m:638
+#: modules/gui/macosx/intf.m:639
 msgid "Playback"
 msgstr "بيا غږول"
 
-#: modules/gui/macosx/intf.m:660 modules/gui/qt4/menus.cpp:505
+#: modules/gui/macosx/intf.m:661 modules/gui/qt4/menus.cpp:505
 msgid "Increase Volume"
 msgstr "غږ لوړول"
 
-#: modules/gui/macosx/intf.m:661 modules/gui/qt4/menus.cpp:508
+#: modules/gui/macosx/intf.m:662 modules/gui/qt4/menus.cpp:508
 msgid "Decrease Volume"
 msgstr "غږ ټيټول"
 
-#: modules/gui/macosx/intf.m:686 modules/gui/macosx/intf.m:687
+#: modules/gui/macosx/intf.m:687 modules/gui/macosx/intf.m:688
 #: modules/gui/macosx/simple_prefs.m:284 modules/gui/macosx/vout.m:209
 msgid "Fullscreen Video Device"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:696
+#: modules/gui/macosx/intf.m:697
 msgid "Transparent"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:704
+#: modules/gui/macosx/intf.m:705
 msgid "Minimize Window"
 msgstr "کړکۍ ووړول"
 
-#: modules/gui/macosx/intf.m:705
+#: modules/gui/macosx/intf.m:706
 msgid "Close Window"
 msgstr "کړکۍ بندول"
 
-#: modules/gui/macosx/intf.m:706
+#: modules/gui/macosx/intf.m:707
 msgid "Controller..."
 msgstr "مهاروونکی..."
 
-#: modules/gui/macosx/intf.m:707
+#: modules/gui/macosx/intf.m:708
 msgid "Equalizer..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:708
+#: modules/gui/macosx/intf.m:709
 msgid "Extended Controls..."
 msgstr "ژور مهارونه..."
 
-#: modules/gui/macosx/intf.m:709
+#: modules/gui/macosx/intf.m:710
 msgid "Bookmarks..."
 msgstr "ليکنښې..."
 
-#: modules/gui/macosx/intf.m:710
+#: modules/gui/macosx/intf.m:711
 msgid "Playlist..."
 msgstr "غږون لړ..."
 
-#: modules/gui/macosx/intf.m:711 modules/gui/macosx/playlist.m:442
+#: modules/gui/macosx/intf.m:712 modules/gui/macosx/playlist.m:442
 msgid "Media Information..."
 msgstr "رسنۍ خبرتياوې..."
 
-#: modules/gui/macosx/intf.m:712
+#: modules/gui/macosx/intf.m:713
 msgid "Messages..."
 msgstr "استوزې..."
 
-#: modules/gui/macosx/intf.m:713
+#: modules/gui/macosx/intf.m:714
 msgid "Errors and Warnings..."
 msgstr "تېروتنې او خبرتياوې..."
 
-#: modules/gui/macosx/intf.m:715
+#: modules/gui/macosx/intf.m:716
 msgid "Bring All to Front"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:717 modules/gui/qt4/dialogs/help.cpp:55
+#: modules/gui/macosx/intf.m:718 modules/gui/qt4/dialogs/help.cpp:55
 #: modules/gui/qt4/menus.cpp:822
 msgid "Help"
 msgstr "مرسته"
 
-#: modules/gui/macosx/intf.m:718
+#: modules/gui/macosx/intf.m:719
 msgid "VLC media player Help..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:719
+#: modules/gui/macosx/intf.m:720
 msgid "ReadMe / FAQ..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:721
+#: modules/gui/macosx/intf.m:722
 msgid "Online Documentation..."
 msgstr "پرليکه لاسوندونه..."
 
-#: modules/gui/macosx/intf.m:722
+#: modules/gui/macosx/intf.m:723
 msgid "VideoLAN Website..."
 msgstr "...ګورتپاڼه VideoLAN د"
 
-#: modules/gui/macosx/intf.m:723
+#: modules/gui/macosx/intf.m:724
 msgid "Make a donation..."
 msgstr "مرسته کول..."
 
-#: modules/gui/macosx/intf.m:724
+#: modules/gui/macosx/intf.m:725
 msgid "Online Forum..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:738
+#: modules/gui/macosx/intf.m:739
 msgid "Volume Up"
 msgstr "غږ لوړول"
 
-#: modules/gui/macosx/intf.m:739
+#: modules/gui/macosx/intf.m:740
 msgid "Volume Down"
 msgstr "غږ ټيټول"
 
-#: modules/gui/macosx/intf.m:745
+#: modules/gui/macosx/intf.m:746
 msgid "Send"
 msgstr "لېږل"
 
-#: modules/gui/macosx/intf.m:746
+#: modules/gui/macosx/intf.m:747
 msgid "Don't Send"
 msgstr "نه لېږل"
 
-#: modules/gui/macosx/intf.m:747 modules/gui/macosx/intf.m:748
+#: modules/gui/macosx/intf.m:748 modules/gui/macosx/intf.m:749
 msgid "VLC crashed previously"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:749
+#: modules/gui/macosx/intf.m:750
 msgid ""
 "Do you want to send details on the crash to VLC's development team?\n"
 "\n"
@@ -13079,59 +13134,59 @@ msgid ""
 "URL of a network stream, ..."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:750
+#: modules/gui/macosx/intf.m:751
 msgid "I agree to be possibly contacted about this bugreport."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:751
+#: modules/gui/macosx/intf.m:752
 msgid ""
 "Only your default E-Mail address will be submitted, including no further "
 "information."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:1811
+#: modules/gui/macosx/intf.m:1812
 #, c-format
 msgid "Volume: %d%%"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2210
+#: modules/gui/macosx/intf.m:2211
 msgid "Update check failed"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2210
+#: modules/gui/macosx/intf.m:2211
 msgid "Checking for updates was not enabled in this build."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2323
+#: modules/gui/macosx/intf.m:2324
 msgid "Error when sending the Crash Report"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2414
+#: modules/gui/macosx/intf.m:2415
 msgid "No CrashLog found"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2414 modules/gui/macosx/prefs.m:226
-#: modules/gui/macosx/simple_prefs.m:685
+#: modules/gui/macosx/intf.m:2415 modules/gui/macosx/prefs.m:226
+#: modules/gui/macosx/simple_prefs.m:686
 msgid "Continue"
 msgstr "پرمختلل"
 
-#: modules/gui/macosx/intf.m:2414
+#: modules/gui/macosx/intf.m:2415
 msgid "Couldn't find any trace of a previous crash."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2441
+#: modules/gui/macosx/intf.m:2442
 msgid "Remove old preferences?"
 msgstr "زاړه غوراوي ړنګول غواړﺉ؟"
 
-#: modules/gui/macosx/intf.m:2442
+#: modules/gui/macosx/intf.m:2443
 msgid "We just found an older version of VLC's preferences files."
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2443
+#: modules/gui/macosx/intf.m:2444
 msgid "Move To Trash and Relaunch VLC"
 msgstr ""
 
-#: modules/gui/macosx/intf.m:2577
+#: modules/gui/macosx/intf.m:2578
 #, c-format
 msgid "VLC Debug Log (%s).rtfd"
 msgstr ""
@@ -13304,7 +13359,7 @@ msgid "Choose..."
 msgstr "ټاکل..."
 
 #: modules/gui/macosx/open.m:189
-#: modules/gui/qt4/components/open_panels.cpp:928
+#: modules/gui/qt4/components/open_panels.cpp:929
 msgid "Device name"
 msgstr "د وزلې نوم"
 
@@ -13639,7 +13694,7 @@ msgid "HTML Playlist"
 msgstr "غږون لړ Lua"
 
 #: modules/gui/macosx/playlist.m:486 modules/gui/macosx/playlist.m:1487
-#: modules/gui/macosx/wizard.m:1365
+#: modules/gui/macosx/wizard.m:1364
 #, c-format
 msgid "%i items"
 msgstr "توکي %i"
@@ -13683,55 +13738,55 @@ msgid "Codec Details"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:98
-#: modules/gui/qt4/components/info_panels.cpp:524
+#: modules/gui/qt4/components/info_panels.cpp:525
 msgid "Read at media"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:99
-#: modules/gui/qt4/components/info_panels.cpp:526
+#: modules/gui/qt4/components/info_panels.cpp:527
 msgid "Input bitrate"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:100
-#: modules/gui/qt4/components/info_panels.cpp:528
+#: modules/gui/qt4/components/info_panels.cpp:529
 msgid "Demuxed"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:101
-#: modules/gui/qt4/components/info_panels.cpp:529
+#: modules/gui/qt4/components/info_panels.cpp:530
 msgid "Stream bitrate"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:104 modules/gui/macosx/playlistinfo.m:115
-#: modules/gui/qt4/components/info_panels.cpp:536
-#: modules/gui/qt4/components/info_panels.cpp:549
+#: modules/gui/qt4/components/info_panels.cpp:537
+#: modules/gui/qt4/components/info_panels.cpp:550
 msgid "Decoded blocks"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:105
-#: modules/gui/qt4/components/info_panels.cpp:538
+#: modules/gui/qt4/components/info_panels.cpp:539
 msgid "Displayed frames"
 msgstr "ښودل شوي چوکاټونه"
 
 #: modules/gui/macosx/playlistinfo.m:106
-#: modules/gui/qt4/components/info_panels.cpp:540
+#: modules/gui/qt4/components/info_panels.cpp:541
 msgid "Lost frames"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:109 modules/gui/macosx/wizard.m:363
-#: modules/gui/qt4/components/info_panels.cpp:522
+#: modules/gui/qt4/components/info_panels.cpp:523
 #: modules/gui/qt4/dialogs_provider.cpp:608
-#: modules/video_filter/deinterlace.c:143
+#: modules/video_filter/deinterlace.c:147
 msgid "Streaming"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:110
-#: modules/gui/qt4/components/info_panels.cpp:543
+#: modules/gui/qt4/components/info_panels.cpp:544
 msgid "Sent packets"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:111
-#: modules/gui/qt4/components/info_panels.cpp:544
+#: modules/gui/qt4/components/info_panels.cpp:545
 msgid "Sent bytes"
 msgstr ""
 
@@ -13740,12 +13795,12 @@ msgid "Send rate"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:116
-#: modules/gui/qt4/components/info_panels.cpp:551
+#: modules/gui/qt4/components/info_panels.cpp:552
 msgid "Played buffers"
 msgstr ""
 
 #: modules/gui/macosx/playlistinfo.m:117
-#: modules/gui/qt4/components/info_panels.cpp:553
+#: modules/gui/qt4/components/info_panels.cpp:554
 msgid "Lost buffers"
 msgstr ""
 
@@ -13770,12 +13825,12 @@ msgstr "ټول پاکول"
 msgid "Basic"
 msgstr "بنسټيز"
 
-#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:684
+#: modules/gui/macosx/prefs.m:225 modules/gui/macosx/simple_prefs.m:685
 #: modules/gui/qt4/dialogs/preferences.cpp:309
 msgid "Reset Preferences"
 msgstr "غوراوي پاکول"
 
-#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:687
+#: modules/gui/macosx/prefs.m:228 modules/gui/macosx/simple_prefs.m:688
 msgid ""
 "Beware this will reset the VLC media player preferences.\n"
 "Are you sure you want to continue?"
@@ -13976,7 +14031,7 @@ msgid "Black screens in Fullscreen mode"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:285 modules/gui/qt4/ui/sprefs_video.h:280
-#: modules/stream_out/display.c:54 modules/video_filter/deinterlace.c:132
+#: modules/stream_out/display.c:54 modules/video_filter/deinterlace.c:136
 msgid "Display"
 msgstr "ښوون"
 
@@ -14009,7 +14064,7 @@ msgid "Sequential numbering"
 msgstr ""
 
 #: modules/gui/macosx/simple_prefs.m:560 modules/gui/macosx/simple_prefs.m:604
-#: modules/gui/macosx/simple_prefs.m:1216
+#: modules/gui/macosx/simple_prefs.m:1217
 #: modules/gui/qt4/components/simple_preferences.cpp:412
 msgid "Custom"
 msgstr "دوديز"
@@ -14041,61 +14096,61 @@ msgstr ""
 msgid "Higher latency"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:803
+#: modules/gui/macosx/simple_prefs.m:804
 msgid "Interface Settings not saved"
 msgstr "د برسېر امستنې ونه ساتل شوې"
 
-#: modules/gui/macosx/simple_prefs.m:804 modules/gui/macosx/simple_prefs.m:879
-#: modules/gui/macosx/simple_prefs.m:912 modules/gui/macosx/simple_prefs.m:978
-#: modules/gui/macosx/simple_prefs.m:1017
-#: modules/gui/macosx/simple_prefs.m:1042
+#: modules/gui/macosx/simple_prefs.m:805 modules/gui/macosx/simple_prefs.m:880
+#: modules/gui/macosx/simple_prefs.m:913 modules/gui/macosx/simple_prefs.m:979
+#: modules/gui/macosx/simple_prefs.m:1018
+#: modules/gui/macosx/simple_prefs.m:1043
 #, c-format
 msgid "An error occured while saving your settings via SimplePrefs (%i)."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:878
+#: modules/gui/macosx/simple_prefs.m:879
 msgid "Audio Settings not saved"
 msgstr "د غږيز امستنې ونه ساتل شوې"
 
-#: modules/gui/macosx/simple_prefs.m:911
+#: modules/gui/macosx/simple_prefs.m:912
 msgid "Video Settings not saved"
 msgstr "د ويډيو امستنې ونه ساتل شوې"
 
-#: modules/gui/macosx/simple_prefs.m:977
+#: modules/gui/macosx/simple_prefs.m:978
 msgid "Input Settings not saved"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1016
+#: modules/gui/macosx/simple_prefs.m:1017
 msgid "On Screen Display/Subtitle Settings not saved"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1041
+#: modules/gui/macosx/simple_prefs.m:1042
 msgid "Hotkeys not saved"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1142
+#: modules/gui/macosx/simple_prefs.m:1143
 msgid "Choose the folder to save your video snapshots to."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1144
+#: modules/gui/macosx/simple_prefs.m:1145
 msgid "Choose"
 msgstr "ټاکل"
 
-#: modules/gui/macosx/simple_prefs.m:1234
+#: modules/gui/macosx/simple_prefs.m:1235
 msgid ""
 "Press new keys for\n"
 "\"%@\""
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1308
+#: modules/gui/macosx/simple_prefs.m:1309
 msgid "Invalid combination"
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1309
+#: modules/gui/macosx/simple_prefs.m:1310
 msgid "Regrettably, these keys cannot be assigned as hotkey shortcuts."
 msgstr ""
 
-#: modules/gui/macosx/simple_prefs.m:1327
+#: modules/gui/macosx/simple_prefs.m:1328
 msgid "This combination is already taken by \"%@\"."
 msgstr ""
 
@@ -14309,7 +14364,7 @@ msgid "Back"
 msgstr "شاته"
 
 #: modules/gui/macosx/wizard.m:322 modules/gui/macosx/wizard.m:325
-#: modules/gui/macosx/wizard.m:1271
+#: modules/gui/macosx/wizard.m:1270
 msgid "Streaming/Transcoding Wizard"
 msgstr ""
 
@@ -14331,11 +14386,11 @@ msgid ""
 msgstr ""
 
 #: modules/gui/macosx/wizard.m:335 modules/gui/macosx/wizard.m:493
-#: modules/gui/macosx/wizard.m:1677
+#: modules/gui/macosx/wizard.m:1676
 msgid "Stream to network"
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:337 modules/gui/macosx/wizard.m:1685
+#: modules/gui/macosx/wizard.m:337 modules/gui/macosx/wizard.m:1684
 msgid "Transcode/Save to file"
 msgstr ""
 
@@ -14348,7 +14403,7 @@ msgid "Choose here your input stream."
 msgstr ""
 
 #: modules/gui/macosx/wizard.m:343 modules/gui/macosx/wizard.m:531
-#: modules/gui/macosx/wizard.m:1719
+#: modules/gui/macosx/wizard.m:1718
 msgid "Select a stream"
 msgstr ""
 
@@ -14419,13 +14474,13 @@ msgstr ""
 msgid "Transcode video"
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:386 modules/gui/macosx/wizard.m:1821
+#: modules/gui/macosx/wizard.m:386 modules/gui/macosx/wizard.m:1820
 msgid ""
 "Enabling this allows to transcode the audio track if one is present in the "
 "stream."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:388 modules/gui/macosx/wizard.m:1838
+#: modules/gui/macosx/wizard.m:388 modules/gui/macosx/wizard.m:1837
 msgid ""
 "Enabling this allows to transcode the video track if one is present in the "
 "stream."
@@ -14449,18 +14504,18 @@ msgstr ""
 msgid "In this page, a few additional streaming parameters can be set."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:1866
+#: modules/gui/macosx/wizard.m:401 modules/gui/macosx/wizard.m:1865
 #: modules/gui/qt4/ui/sout.h:351
 msgid "Time-To-Live (TTL)"
 msgstr ""
 
 #: modules/gui/macosx/wizard.m:403 modules/gui/macosx/wizard.m:435
-#: modules/gui/macosx/wizard.m:1877
+#: modules/gui/macosx/wizard.m:1876
 msgid "SAP Announce"
 msgstr ""
 
 #: modules/gui/macosx/wizard.m:405 modules/gui/macosx/wizard.m:415
-#: modules/gui/macosx/wizard.m:447 modules/gui/macosx/wizard.m:1890
+#: modules/gui/macosx/wizard.m:447 modules/gui/macosx/wizard.m:1889
 msgid "Local playback"
 msgstr ""
 
@@ -14476,7 +14531,7 @@ msgstr ""
 msgid "In this page, a few additional transcoding parameters can be set."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:413 modules/gui/macosx/wizard.m:1096
+#: modules/gui/macosx/wizard.m:413 modules/gui/macosx/wizard.m:1095
 msgid "Select the file to save to"
 msgstr "هغه دوتنه وټاکئ چې ساتل يې په کې غواړﺉ"
 
@@ -14523,11 +14578,11 @@ msgid ""
 "Choose one before going to the next page."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:663
+#: modules/gui/macosx/wizard.m:662
 msgid "No valid destination"
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:665
+#: modules/gui/macosx/wizard.m:664
 msgid ""
 "A valid destination has to be selected Enter either a Unicast-IP or a "
 "Multicast-IP.\n"
@@ -14536,7 +14591,7 @@ msgid ""
 "and the help texts in this window."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1064
+#: modules/gui/macosx/wizard.m:1063
 msgid ""
 "The chosen codecs are not compatible with each other. For example: It is "
 "impossibleto  mix uncompressed audio with any video codec.\n"
@@ -14544,65 +14599,65 @@ msgid ""
 "Correct your selection and try again."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1091
+#: modules/gui/macosx/wizard.m:1090
 msgid "Select the directory to save to"
 msgstr "هغه پوښۍ وټاکئ چې ساتل يې په کې غواړﺉ"
 
-#: modules/gui/macosx/wizard.m:1147
+#: modules/gui/macosx/wizard.m:1146
 msgid "No folder selected"
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1149
+#: modules/gui/macosx/wizard.m:1148
 msgid "A directory where to save the files has to be selected."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1151
+#: modules/gui/macosx/wizard.m:1150
 msgid ""
 "Enter either a valid path or use the \"Choose...\" button to select a "
 "location."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1154
+#: modules/gui/macosx/wizard.m:1153
 msgid "No file selected"
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1156
+#: modules/gui/macosx/wizard.m:1155
 msgid "A file where to save the stream has to be selected."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1158
+#: modules/gui/macosx/wizard.m:1157
 msgid ""
 "Enter either a valid path or use the \"Choose\" button to select a location."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1360
+#: modules/gui/macosx/wizard.m:1359
 msgid "Finish"
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1373 modules/gui/macosx/wizard.m:1402
-#: modules/gui/macosx/wizard.m:1432
+#: modules/gui/macosx/wizard.m:1372 modules/gui/macosx/wizard.m:1401
+#: modules/gui/macosx/wizard.m:1431
 msgid "yes"
 msgstr "هو"
 
-#: modules/gui/macosx/wizard.m:1375 modules/gui/macosx/wizard.m:1385
-#: modules/gui/macosx/wizard.m:1398 modules/gui/macosx/wizard.m:1404
-#: modules/gui/macosx/wizard.m:1416 modules/gui/macosx/wizard.m:1435
+#: modules/gui/macosx/wizard.m:1374 modules/gui/macosx/wizard.m:1384
+#: modules/gui/macosx/wizard.m:1397 modules/gui/macosx/wizard.m:1403
+#: modules/gui/macosx/wizard.m:1415 modules/gui/macosx/wizard.m:1434
 msgid "no"
 msgstr "نه"
 
-#: modules/gui/macosx/wizard.m:1381
+#: modules/gui/macosx/wizard.m:1380
 msgid "yes: from %@ to %@ secs"
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1391 modules/gui/macosx/wizard.m:1409
+#: modules/gui/macosx/wizard.m:1390 modules/gui/macosx/wizard.m:1408
 msgid "yes: %@ @ %@ kb/s"
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1679
+#: modules/gui/macosx/wizard.m:1678
 msgid "This allows to stream on a network."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1687
+#: modules/gui/macosx/wizard.m:1686
 msgid ""
 "This allows to save a stream to a file. The can be reencoded on the fly. "
 "Whatever VLC can read can be saved.\n"
@@ -14610,15 +14665,15 @@ msgid ""
 "transcoding features are however useful to save network streams, for example."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1816
+#: modules/gui/macosx/wizard.m:1815
 msgid "Select your audio codec. Click one to get more information."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1833
+#: modules/gui/macosx/wizard.m:1832
 msgid "Select your video codec. Click one to get more information."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1868
+#: modules/gui/macosx/wizard.m:1867
 msgid ""
 "This allows to define the TTL (Time-To-Live) of the stream. This parameter "
 "is the maximum number of routers your stream can go through. If you don't "
@@ -14626,7 +14681,7 @@ msgid ""
 "leave this setting to 1."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1879
+#: modules/gui/macosx/wizard.m:1878
 msgid ""
 "When streaming using UDP, the streams can be announced using the SAP/SDP "
 "announcing protocol. This way, the clients won't have to type in the "
@@ -14636,7 +14691,7 @@ msgid ""
 "name will be used."
 msgstr ""
 
-#: modules/gui/macosx/wizard.m:1892
+#: modules/gui/macosx/wizard.m:1891
 msgid ""
 "When this option is enabled, the stream will be both played and transcoded/"
 "streamed.\n"
@@ -15608,19 +15663,19 @@ msgid ""
 "Muxer, Audio and Video Codecs, Subtitles are shown."
 msgstr ""
 
-#: modules/gui/qt4/components/info_panels.cpp:495
+#: modules/gui/qt4/components/info_panels.cpp:496
 msgid "Statistics about the currently playing media or stream."
 msgstr ""
 
-#: modules/gui/qt4/components/info_panels.cpp:531
+#: modules/gui/qt4/components/info_panels.cpp:532
 msgid "Corrupted"
 msgstr ""
 
-#: modules/gui/qt4/components/info_panels.cpp:533
+#: modules/gui/qt4/components/info_panels.cpp:534
 msgid "Discontinuities"
 msgstr ""
 
-#: modules/gui/qt4/components/info_panels.cpp:546
+#: modules/gui/qt4/components/info_panels.cpp:547
 msgid "Sent bitrate"
 msgstr ""
 
@@ -15671,54 +15726,54 @@ msgstr "څېرمه سرليک دوتنه پرانيستل"
 msgid "Eject the disc"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:725
-#: modules/gui/qt4/components/open_panels.cpp:985
+#: modules/gui/qt4/components/open_panels.cpp:726
+#: modules/gui/qt4/components/open_panels.cpp:986
 msgid "DVB Type:"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:751
-#: modules/gui/qt4/components/open_panels.cpp:1016
+#: modules/gui/qt4/components/open_panels.cpp:752
+#: modules/gui/qt4/components/open_panels.cpp:1017
 msgid "Transponder symbol rate"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:760
-#: modules/gui/qt4/components/open_panels.cpp:1025
+#: modules/gui/qt4/components/open_panels.cpp:761
+#: modules/gui/qt4/components/open_panels.cpp:1026
 msgid "Bandwidth"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:875
+#: modules/gui/qt4/components/open_panels.cpp:876
 msgid "Channels:"
 msgstr "چېنلونه:"
 
-#: modules/gui/qt4/components/open_panels.cpp:886
+#: modules/gui/qt4/components/open_panels.cpp:887
 msgid "Selected ports:"
 msgstr "ټاکل شوي درشلونه:"
 
-#: modules/gui/qt4/components/open_panels.cpp:889
+#: modules/gui/qt4/components/open_panels.cpp:890
 msgid ".*"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:896
+#: modules/gui/qt4/components/open_panels.cpp:897
 msgid "Input caching:"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:906
+#: modules/gui/qt4/components/open_panels.cpp:907
 msgid "Use VLC pace"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:910
+#: modules/gui/qt4/components/open_panels.cpp:911
 msgid "Auto connnection"
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:934
+#: modules/gui/qt4/components/open_panels.cpp:935
 msgid "Radio device name"
 msgstr "د رېډيو وزلې نوم"
 
-#: modules/gui/qt4/components/open_panels.cpp:1066
+#: modules/gui/qt4/components/open_panels.cpp:1067
 msgid "Your display will be opened and played in order to stream or save it."
 msgstr ""
 
-#: modules/gui/qt4/components/open_panels.cpp:1288
+#: modules/gui/qt4/components/open_panels.cpp:1289
 msgid "Advanced Options"
 msgstr "بريونلي غوراوي"
 
@@ -15730,11 +15785,11 @@ msgstr ""
 msgid "URI"
 msgstr ""
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:135
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:131
 msgid "Click to toggle between loop one, loop all"
 msgstr ""
 
-#: modules/gui/qt4/components/playlist/standardpanel.cpp:159
+#: modules/gui/qt4/components/playlist/standardpanel.cpp:155
 msgid "Show the current item"
 msgstr "اوسنی توکی ښودل"
 
@@ -16559,7 +16614,7 @@ msgstr "غږون لړ پرانيستل..."
 
 #: modules/gui/qt4/dialogs_provider.cpp:535
 #, fuzzy
-msgid "XSPF playlist (*.xpsf)"
+msgid "XSPF playlist (*.xspf)"
 msgstr "_فايل"
 
 #: modules/gui/qt4/dialogs_provider.cpp:536
@@ -16575,7 +16630,7 @@ msgstr ""
 msgid "Save playlist as..."
 msgstr "غږون لړ ساتل په..."
 
-#: modules/gui/qt4/dialogs_provider.cpp:659
+#: modules/gui/qt4/dialogs_provider.cpp:658
 msgid "Open subtitles..."
 msgstr "څېرمه سرليکونه پرانيستل..."
 
@@ -18393,11 +18448,11 @@ msgid ""
 "Visit http://www.last.fm/join/ to get an account."
 msgstr ""
 
-#: modules/misc/audioscrobbler.c:834
+#: modules/misc/audioscrobbler.c:837
 msgid "last.fm: Authentication failed"
 msgstr ""
 
-#: modules/misc/audioscrobbler.c:835
+#: modules/misc/audioscrobbler.c:838
 msgid ""
 "last.fm username or password is incorrect. Please verify your settings and "
 "relaunch VLC."
@@ -19443,15 +19498,15 @@ msgstr ""
 msgid "SDP Descriptions parser"
 msgstr ""
 
-#: modules/services_discovery/sap.c:895 modules/services_discovery/sap.c:899
+#: modules/services_discovery/sap.c:896 modules/services_discovery/sap.c:900
 msgid "Session"
 msgstr "ناسته"
 
-#: modules/services_discovery/sap.c:895
+#: modules/services_discovery/sap.c:896
 msgid "Tool"
 msgstr "توکی"
 
-#: modules/services_discovery/sap.c:899
+#: modules/services_discovery/sap.c:900
 msgid "User"
 msgstr "کاروونکی"
 
@@ -20930,6 +20985,10 @@ msgid ""
 msgstr ""
 
 #: modules/video_filter/canvas.c:105
+msgid "Canvas"
+msgstr ""
+
+#: modules/video_filter/canvas.c:106
 msgid "Automatically resize and pad a video"
 msgstr ""
 
@@ -21136,52 +21195,57 @@ msgstr ""
 msgid "Number of pixels to padd to the right of the image after cropping."
 msgstr ""
 
-#: modules/video_filter/croppadd.c:79 modules/video_filter/scale.c:59
+#: modules/video_filter/croppadd.c:79
+#, fuzzy
+msgid "Cropadd"
+msgstr "سکڼل"
+
+#: modules/video_filter/croppadd.c:80 modules/video_filter/scale.c:59
 #: modules/video_filter/swscale.c:68 modules/video_filter/swscale_maemo.c:52
 msgid "Video scaling filter"
 msgstr ""
 
-#: modules/video_filter/croppadd.c:96
+#: modules/video_filter/croppadd.c:97
 msgid "Padd"
 msgstr ""
 
-#: modules/video_filter/deinterlace.c:112 modules/video_output/x11/xvmc.c:130
+#: modules/video_filter/deinterlace.c:116 modules/video_output/x11/xvmc.c:130
 msgid "Deinterlace mode"
 msgstr ""
 
-#: modules/video_filter/deinterlace.c:113
+#: modules/video_filter/deinterlace.c:117
 msgid "Deinterlace method to use for local playback."
 msgstr ""
 
-#: modules/video_filter/deinterlace.c:115
+#: modules/video_filter/deinterlace.c:119
 msgid "Streaming deinterlace mode"
 msgstr ""
 
-#: modules/video_filter/deinterlace.c:116
+#: modules/video_filter/deinterlace.c:120
 msgid "Deinterlace method to use for streaming."
 msgstr ""
 
-#: modules/video_filter/deinterlace.c:123
+#: modules/video_filter/deinterlace.c:127
 msgid "Discard"
 msgstr ""
 
-#: modules/video_filter/deinterlace.c:123
+#: modules/video_filter/deinterlace.c:127
 msgid "Blend"
 msgstr ""
 
-#: modules/video_filter/deinterlace.c:123
+#: modules/video_filter/deinterlace.c:127
 msgid "Mean"
 msgstr ""
 
-#: modules/video_filter/deinterlace.c:123
+#: modules/video_filter/deinterlace.c:127
 msgid "Bob"
 msgstr ""
 
-#: modules/video_filter/deinterlace.c:123
+#: modules/video_filter/deinterlace.c:127
 msgid "Linear"
 msgstr ""
 
-#: modules/video_filter/deinterlace.c:126
+#: modules/video_filter/deinterlace.c:130
 msgid "Deinterlacing video filter"
 msgstr ""
 

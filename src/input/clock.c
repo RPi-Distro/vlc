@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
  * Copyright (C) 2008 Laurent Aimar
- * $Id: dc010e531288a447a7aa1f14eb39ad6acf66bd9d $
+ * $Id: a26b9c4bb0b325a7eabe2914e02a5a7c187caaaf $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *          Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
@@ -86,6 +86,19 @@
  * my dice --Meuuh */
 #define CR_MEAN_PTS_GAP (300000)
 
+/* Rate (in 1/256) at which we will read faster to try to increase our
+ * internal buffer (if we control the pace of the source).
+ */
+#define CR_BUFFERING_RATE (48)
+
+/* Extra internal buffer value (in CLOCK_FREQ)
+ * It is 60s max, remember as it is limited by the size it takes by es_out.c
+ * it can be really large.
+ */
+//#define CR_BUFFERING_TARGET (60000000)
+/* Due to some problems in es_out, we cannot use a large value yet */
+#define CR_BUFFERING_TARGET (100000)
+
 /*****************************************************************************
  * Structures
  *****************************************************************************/
@@ -123,6 +136,9 @@ static inline clock_point_t clock_point_Create( mtime_t i_stream, mtime_t i_syst
 }
 
 /* */
+#define INPUT_CLOCK_LATE_COUNT (3)
+
+/* */
 struct input_clock_t
 {
     /* */
@@ -139,9 +155,19 @@ struct input_clock_t
     /* Maximal timestamp returned by input_clock_ConvertTS (in system unit) */
     mtime_t i_ts_max;
 
+    /* Amount of extra buffering expressed in stream clock */
+    mtime_t i_buffering_duration;
+
     /* Clock drift */
     mtime_t i_next_drift_update;
     average_t drift;
+
+    /* Late statistics */
+    struct
+    {
+        mtime_t  pi_value[INPUT_CLOCK_LATE_COUNT];
+        unsigned i_index;
+    } late;
 
     /* Current modifiers */
     int     i_rate;
@@ -152,6 +178,8 @@ struct input_clock_t
 
 static mtime_t ClockStreamToSystem( input_clock_t *, mtime_t i_stream );
 static mtime_t ClockSystemToStream( input_clock_t *, mtime_t i_system );
+
+static mtime_t ClockGetTsOffset( input_clock_t * );
 
 /*****************************************************************************
  * input_clock_New: create a new clock
@@ -170,8 +198,14 @@ input_clock_t *input_clock_New( int i_rate )
 
     cl->i_ts_max = VLC_TS_INVALID;
 
+    cl->i_buffering_duration = 0;
+
     cl->i_next_drift_update = VLC_TS_INVALID;
     AvgInit( &cl->drift, 10 );
+
+    cl->late.i_index = 0;
+    for( int i = 0; i < INPUT_CLOCK_LATE_COUNT; i++ )
+        cl->late.pi_value[i] = 0;
 
     cl->i_rate = i_rate;
     cl->i_pts_delay = 0;
@@ -197,8 +231,9 @@ void input_clock_Delete( input_clock_t *cl )
  *  i_ck_stream: date in stream clock
  *  i_ck_system: date in system clock
  *****************************************************************************/
-void input_clock_Update( input_clock_t *cl,
-                         vlc_object_t *p_log, bool b_can_pace_control,
+void input_clock_Update( input_clock_t *cl, vlc_object_t *p_log,
+                         bool *pb_late,
+                         bool b_can_pace_control, bool b_buffering_allowed,
                          mtime_t i_ck_stream, mtime_t i_ck_system )
 {
     bool b_reset_reference = false;
@@ -226,6 +261,8 @@ void input_clock_Update( input_clock_t *cl,
         msg_Warn( p_log, "feeding synchro with a new reference point trying to recover from clock gap" );
         b_reset_reference= true;
     }
+
+    /* */
     if( b_reset_reference )
     {
         cl->i_next_drift_update = VLC_TS_INVALID;
@@ -237,6 +274,8 @@ void input_clock_Update( input_clock_t *cl,
                                       __MAX( cl->i_ts_max + CR_MEAN_PTS_GAP, i_ck_system ) );
     }
 
+    /* Compute the drift between the stream clock and the system clock
+     * when we don't control the source pace */
     if( !b_can_pace_control && cl->i_next_drift_update < i_ck_system )
     {
         const mtime_t i_converted = ClockSystemToStream( cl, i_ck_system );
@@ -245,7 +284,38 @@ void input_clock_Update( input_clock_t *cl,
 
         cl->i_next_drift_update = i_ck_system + CLOCK_FREQ/5; /* FIXME why that */
     }
+
+    /* Update the extra buffering value */
+    if( !b_can_pace_control || b_reset_reference )
+    {
+        cl->i_buffering_duration = 0;
+    }
+    else if( b_buffering_allowed )
+    {
+        /* Try to bufferize more than necessary by reading
+         * CR_BUFFERING_RATE/256 faster until we have CR_BUFFERING_TARGET.
+         */
+        const mtime_t i_duration = __MAX( i_ck_stream - cl->last.i_stream, 0 );
+
+        cl->i_buffering_duration += ( i_duration * CR_BUFFERING_RATE + 255 ) / 256;
+        if( cl->i_buffering_duration > CR_BUFFERING_TARGET )
+            cl->i_buffering_duration = CR_BUFFERING_TARGET;
+    }
+    //fprintf( stderr, "input_clock_Update: %d :: %lld\n", b_buffering_allowed, cl->i_buffering_duration/1000 );
+
+    /* */
     cl->last = clock_point_Create( i_ck_stream, i_ck_system );
+
+    /* It does not take the decoder latency into account but it is not really
+     * the goal of the clock here */
+    const mtime_t i_system_expected = ClockStreamToSystem( cl, i_ck_stream + AvgGet( &cl->drift ) );
+    const mtime_t i_late = ( i_ck_system - cl->i_pts_delay ) - i_system_expected;
+    *pb_late = i_late > 0;
+    if( i_late > 0 )
+    {
+        cl->late.pi_value[cl->late.i_index] = i_late;
+        cl->late.i_index = ( cl->late.i_index + 1 ) % INPUT_CLOCK_LATE_COUNT;
+    }
 
     vlc_mutex_unlock( &cl->lock );
 }
@@ -271,13 +341,12 @@ void input_clock_ChangeRate( input_clock_t *cl, int i_rate )
 {
     vlc_mutex_lock( &cl->lock );
 
-    /* Move the reference point */
     if( cl->b_has_reference )
     {
-        cl->last.i_system = ClockStreamToSystem( cl, cl->last.i_stream );
-        cl->ref = cl->last;
+        /* Move the reference point (as if we were playing at the new rate
+         * from the start */
+        cl->ref.i_system = cl->last.i_system - (cl->last.i_system - cl->ref.i_system) * i_rate / cl->i_rate;
     }
-
     cl->i_rate = i_rate;
 
     vlc_mutex_unlock( &cl->lock );
@@ -318,7 +387,7 @@ mtime_t input_clock_GetWakeup( input_clock_t *cl )
 
     /* Synchronized, we can wait */
     if( cl->b_has_reference )
-        i_wakeup = ClockStreamToSystem( cl, cl->last.i_stream );
+        i_wakeup = ClockStreamToSystem( cl, cl->last.i_stream + AvgGet( &cl->drift ) - cl->i_buffering_duration );
 
     vlc_mutex_unlock( &cl->lock );
 
@@ -332,8 +401,6 @@ int input_clock_ConvertTS( input_clock_t *cl,
                            int *pi_rate, mtime_t *pi_ts0, mtime_t *pi_ts1,
                            mtime_t i_ts_bound )
 {
-    mtime_t i_pts_delay;
-
     assert( pi_ts0 );
     vlc_mutex_lock( &cl->lock );
 
@@ -350,27 +417,30 @@ int input_clock_ConvertTS( input_clock_t *cl,
     }
 
     /* */
+    const mtime_t i_ts_buffering = cl->i_buffering_duration * cl->i_rate / INPUT_RATE_DEFAULT;
+    const mtime_t i_ts_delay = cl->i_pts_delay + ClockGetTsOffset( cl );
+
+    /* */
     if( *pi_ts0 > VLC_TS_INVALID )
     {
         *pi_ts0 = ClockStreamToSystem( cl, *pi_ts0 + AvgGet( &cl->drift ) );
         if( *pi_ts0 > cl->i_ts_max )
             cl->i_ts_max = *pi_ts0;
-        *pi_ts0 += cl->i_pts_delay;
+        *pi_ts0 += i_ts_delay;
     }
 
     /* XXX we do not ipdate i_ts_max on purpose */
     if( pi_ts1 && *pi_ts1 > VLC_TS_INVALID )
     {
         *pi_ts1 = ClockStreamToSystem( cl, *pi_ts1 + AvgGet( &cl->drift ) ) +
-                  cl->i_pts_delay;
+                  i_ts_delay;
     }
 
-    i_pts_delay = cl->i_pts_delay;
     vlc_mutex_unlock( &cl->lock );
 
     /* Check ts validity */
     if( i_ts_bound != INT64_MAX &&
-        *pi_ts0 > VLC_TS_INVALID && *pi_ts0 >= mdate() + cl->i_pts_delay + i_ts_bound )
+        *pi_ts0 > VLC_TS_INVALID && *pi_ts0 >= mdate() + i_ts_delay + i_ts_buffering + i_ts_bound )
         return VLC_EGENERIC;
 
     return VLC_SUCCESS;
@@ -417,7 +487,7 @@ void input_clock_ChangeSystemOrigin( input_clock_t *cl, mtime_t i_system )
     vlc_mutex_lock( &cl->lock );
 
     assert( cl->b_has_reference );
-    const mtime_t i_offset = i_system - cl->ref.i_system;
+    const mtime_t i_offset = i_system - cl->ref.i_system - ClockGetTsOffset( cl );
 
     cl->ref.i_system += i_offset;
     cl->last.i_system += i_offset;
@@ -430,6 +500,24 @@ void input_clock_SetJitter( input_clock_t *cl,
                             mtime_t i_pts_delay, int i_cr_average )
 {
     vlc_mutex_lock( &cl->lock );
+
+    /* Update late observations */
+    const mtime_t i_delay_delta = i_pts_delay - cl->i_pts_delay;
+    mtime_t pi_late[INPUT_CLOCK_LATE_COUNT];
+    for( int i = 0; i < INPUT_CLOCK_LATE_COUNT; i++ )
+        pi_late[i] = __MAX( cl->late.pi_value[(cl->late.i_index + 1 + i)%INPUT_CLOCK_LATE_COUNT] - i_delay_delta, 0 );
+
+    for( int i = 0; i < INPUT_CLOCK_LATE_COUNT; i++ )
+        cl->late.pi_value[i] = 0;
+    cl->late.i_index = 0;
+
+    for( int i = 0; i < INPUT_CLOCK_LATE_COUNT; i++ )
+    {
+        if( pi_late[i] <= 0 )
+            continue;
+        cl->late.pi_value[cl->late.i_index] = pi_late[i];
+        cl->late.i_index = ( cl->late.i_index + 1 ) % INPUT_CLOCK_LATE_COUNT;
+    }
 
     /* TODO always save the value, and when rebuffering use the new one if smaller
      * TODO when increasing -> force rebuffering
@@ -445,6 +533,28 @@ void input_clock_SetJitter( input_clock_t *cl,
         AvgRescale( &cl->drift, i_cr_average );
 
     vlc_mutex_unlock( &cl->lock );
+}
+
+mtime_t input_clock_GetJitter( input_clock_t *cl )
+{
+    vlc_mutex_lock( &cl->lock );
+
+#if INPUT_CLOCK_LATE_COUNT != 3
+#   error "unsupported INPUT_CLOCK_LATE_COUNT"
+#endif
+    /* Find the median of the last late values
+     * It works pretty well at rejecting bad values
+     *
+     * XXX we only increase pts_delay over time, decreasing it is
+     * not that easy if we want to be robust.
+     */
+    const mtime_t *p = cl->late.pi_value;
+    mtime_t i_late_median = p[0] + p[1] + p[2] - __MIN(__MIN(p[0],p[1]),p[2]) - __MAX(__MAX(p[0],p[1]),p[2]);
+    mtime_t i_pts_delay = cl->i_pts_delay ;
+
+    vlc_mutex_unlock( &cl->lock );
+
+    return i_pts_delay + i_late_median;
 }
 
 /*****************************************************************************
@@ -469,6 +579,15 @@ static mtime_t ClockSystemToStream( input_clock_t *cl, mtime_t i_system )
     assert( cl->b_has_reference );
     return ( i_system - cl->ref.i_system ) * INPUT_RATE_DEFAULT / cl->i_rate +
             cl->ref.i_stream;
+}
+
+/**
+ * It returns timestamp display offset due to ref/last modfied on rate changes
+ * It ensures that currently converted dates are not changed.
+ */
+static mtime_t ClockGetTsOffset( input_clock_t *cl )
+{
+    return cl->i_pts_delay * ( cl->i_rate - INPUT_RATE_DEFAULT ) / INPUT_RATE_DEFAULT;
 }
 
 /*****************************************************************************

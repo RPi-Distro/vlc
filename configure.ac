@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2009 the VideoLAN team])
 
-AC_INIT(vlc, 1.0.2)
+AC_INIT(vlc, 1.0.3)
 VERSION_MAJOR="1"
 VERSION_MINOR="0"
-VERSION_REVISION="2"
+VERSION_REVISION="3"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -356,7 +356,7 @@ case "${host_os}" in
     fi
     if test "${SYS}" = "mingwce"; then
         # add ws2 for closesocket, select, recv
-        VLC_ADD_LIBS([libvlccore access_http access_mms access_udp access_tcp access_ftp access_rtmp access_output_udp access_output_rtmp sap http netsync audioscrobbler growl rtp stream_out_rtp remoteosd ts],[-lws2])
+        VLC_ADD_LIBS([libvlccore access_http access_mms access_udp access_tcp access_ftp access_rtmp access_output_udp access_output_rtmp sap http netsync audioscrobbler growl rtp stream_out_rtp remoteosd ts telnet],[-lws2])
         VLC_ADD_LIBS([libvlccore],[-lmmtimer])
    fi
     ;;
@@ -979,6 +979,19 @@ then
     [AC_MSG_WARN([libhal >= 0.5.0 was not found. Install libhal-dev ?])]
   )
 fi
+
+dnl Check for libudev
+AC_ARG_ENABLE(udev,
+  [  --enable-udev           Linux udev services discovery (default auto)])
+AS_IF([test "$enable_udev" != "no"], [
+  PKG_CHECK_MODULES(UDEV, [libudev >= 142], [
+    VLC_ADD_PLUGIN([udev])
+    VLC_ADD_LIBS([udev],[$UDEV_LIBS])
+    VLC_ADD_CFLAGS([udev],[$UDEV_CFLAGS])
+  ], [
+    true
+  ])
+])
 
 dnl Check for mtp
 AC_ARG_ENABLE(mtp,

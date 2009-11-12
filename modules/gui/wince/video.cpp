@@ -2,7 +2,7 @@
  * video.cpp : WinCE gui plugin for VLC
  *****************************************************************************
  * Copyright (C) 2000-2004, 2003 the VideoLAN team
- * $Id: 09501f253ee2bcd0342089dec72976352ed1396b $
+ * $Id$
  *
  * Authors: Marodon Cedric <cedric_marodon@yahoo.fr>
  *          Gildas Bazin <gbazin@videolan.org>

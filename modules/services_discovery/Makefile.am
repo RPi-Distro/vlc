@@ -3,9 +3,9 @@
 
 basedir = services_discovery
 dir = services_discovery
-mods = bonjour hal mtp podcast sap shout upnp_cc upnp_intel
-libvlc_LTLIBRARIES =  $(LTLIBbonjour) $(LTLIBhal) $(LTLIBmtp) $(LTLIBpodcast) $(LTLIBsap) $(LTLIBshout) $(LTLIBupnp_cc) $(LTLIBupnp_intel)
-EXTRA_LTLIBRARIES =  libbonjour_plugin.la libhal_plugin.la libmtp_plugin.la libpodcast_plugin.la libsap_plugin.la libshout_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la
+mods = bonjour hal mtp podcast sap shout udev upnp_cc upnp_intel
+libvlc_LTLIBRARIES =  $(LTLIBbonjour) $(LTLIBhal) $(LTLIBmtp) $(LTLIBpodcast) $(LTLIBsap) $(LTLIBshout) $(LTLIBudev) $(LTLIBupnp_cc) $(LTLIBupnp_intel)
+EXTRA_LTLIBRARIES =  libbonjour_plugin.la libhal_plugin.la libmtp_plugin.la libpodcast_plugin.la libsap_plugin.la libshout_plugin.la libudev_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la
 
 include $(top_srcdir)/modules/common.am
 
@@ -74,6 +74,17 @@ libshout_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libshout_plugin_la_LIBADD = $(AM_LIBADD)
 libshout_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The udev plugin
+libudev_plugin_la_SOURCES = $(SOURCES_udev)
+nodist_libudev_plugin_la_SOURCES = $(nodist_SOURCES_udev)
+# Force per-target objects:
+libudev_plugin_la_CFLAGS = $(AM_CFLAGS)
+libudev_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libudev_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libudev_plugin_la_LIBADD = $(AM_LIBADD)
+libudev_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The upnp_cc plugin
 libupnp_cc_plugin_la_SOURCES = $(SOURCES_upnp_cc)

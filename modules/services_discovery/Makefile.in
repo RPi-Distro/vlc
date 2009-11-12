@@ -139,8 +139,17 @@ libshout_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
 	$(libshout_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_7 = libupnp_cc_plugin_la-upnp_cc.lo
-am_libupnp_cc_plugin_la_OBJECTS = $(am__objects_7)
+am__objects_7 = libudev_plugin_la-udev.lo
+am_libudev_plugin_la_OBJECTS = $(am__objects_7)
+nodist_libudev_plugin_la_OBJECTS =
+libudev_plugin_la_OBJECTS = $(am_libudev_plugin_la_OBJECTS) \
+	$(nodist_libudev_plugin_la_OBJECTS)
+libudev_plugin_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
+	$(LIBTOOLFLAGS) --mode=link $(CCLD) \
+	$(libudev_plugin_la_CFLAGS) $(CFLAGS) $(AM_LDFLAGS) $(LDFLAGS) \
+	-o $@
+am__objects_8 = libupnp_cc_plugin_la-upnp_cc.lo
+am_libupnp_cc_plugin_la_OBJECTS = $(am__objects_8)
 nodist_libupnp_cc_plugin_la_OBJECTS =
 libupnp_cc_plugin_la_OBJECTS = $(am_libupnp_cc_plugin_la_OBJECTS) \
 	$(nodist_libupnp_cc_plugin_la_OBJECTS)
@@ -148,8 +157,8 @@ libupnp_cc_plugin_la_LINK = $(LIBTOOL) --tag=CXX $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CXXLD) \
 	$(libupnp_cc_plugin_la_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
-am__objects_8 = libupnp_intel_plugin_la-upnp_intel.lo
-am_libupnp_intel_plugin_la_OBJECTS = $(am__objects_8)
+am__objects_9 = libupnp_intel_plugin_la-upnp_intel.lo
+am_libupnp_intel_plugin_la_OBJECTS = $(am__objects_9)
 nodist_libupnp_intel_plugin_la_OBJECTS =
 libupnp_intel_plugin_la_OBJECTS =  \
 	$(am_libupnp_intel_plugin_la_OBJECTS) \
@@ -189,6 +198,8 @@ SOURCES = $(libbonjour_plugin_la_SOURCES) \
 	$(libsap_plugin_la_SOURCES) $(nodist_libsap_plugin_la_SOURCES) \
 	$(libshout_plugin_la_SOURCES) \
 	$(nodist_libshout_plugin_la_SOURCES) \
+	$(libudev_plugin_la_SOURCES) \
+	$(nodist_libudev_plugin_la_SOURCES) \
 	$(libupnp_cc_plugin_la_SOURCES) \
 	$(nodist_libupnp_cc_plugin_la_SOURCES) \
 	$(libupnp_intel_plugin_la_SOURCES) \
@@ -196,7 +207,8 @@ SOURCES = $(libbonjour_plugin_la_SOURCES) \
 DIST_SOURCES = $(libbonjour_plugin_la_SOURCES) \
 	$(libhal_plugin_la_SOURCES) $(libmtp_plugin_la_SOURCES) \
 	$(libpodcast_plugin_la_SOURCES) $(libsap_plugin_la_SOURCES) \
-	$(libshout_plugin_la_SOURCES) $(libupnp_cc_plugin_la_SOURCES) \
+	$(libshout_plugin_la_SOURCES) $(libudev_plugin_la_SOURCES) \
+	$(libupnp_cc_plugin_la_SOURCES) \
 	$(libupnp_intel_plugin_la_SOURCES)
 ETAGS = etags
 CTAGS = ctags
@@ -547,6 +559,7 @@ LTLIBtransform = @LTLIBtransform@
 LTLIBtremor = @LTLIBtremor@
 LTLIBts = @LTLIBts@
 LTLIBtwolame = @LTLIBtwolame@
+LTLIBudev = @LTLIBudev@
 LTLIBunzip = @LTLIBunzip@
 LTLIBupnp_cc = @LTLIBupnp_cc@
 LTLIBupnp_intel = @LTLIBupnp_intel@
@@ -660,6 +673,8 @@ TAGLIB_CFLAGS = @TAGLIB_CFLAGS@
 TAGLIB_LIBS = @TAGLIB_LIBS@
 TIGER_CFLAGS = @TIGER_CFLAGS@
 TIGER_LIBS = @TIGER_LIBS@
+UDEV_CFLAGS = @UDEV_CFLAGS@
+UDEV_LIBS = @UDEV_LIBS@
 UIC = @UIC@
 USE_NLS = @USE_NLS@
 VCDINFO_CFLAGS = @VCDINFO_CFLAGS@
@@ -759,9 +774,9 @@ vlcdatadir = @vlcdatadir@
 vlclibdir = @vlclibdir@
 basedir = services_discovery
 dir = services_discovery
-mods = bonjour hal mtp podcast sap shout upnp_cc upnp_intel
-libvlc_LTLIBRARIES = $(LTLIBbonjour) $(LTLIBhal) $(LTLIBmtp) $(LTLIBpodcast) $(LTLIBsap) $(LTLIBshout) $(LTLIBupnp_cc) $(LTLIBupnp_intel)
-EXTRA_LTLIBRARIES = libbonjour_plugin.la libhal_plugin.la libmtp_plugin.la libpodcast_plugin.la libsap_plugin.la libshout_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la
+mods = bonjour hal mtp podcast sap shout udev upnp_cc upnp_intel
+libvlc_LTLIBRARIES = $(LTLIBbonjour) $(LTLIBhal) $(LTLIBmtp) $(LTLIBpodcast) $(LTLIBsap) $(LTLIBshout) $(LTLIBudev) $(LTLIBupnp_cc) $(LTLIBupnp_intel)
+EXTRA_LTLIBRARIES = libbonjour_plugin.la libhal_plugin.la libmtp_plugin.la libpodcast_plugin.la libsap_plugin.la libshout_plugin.la libudev_plugin.la libupnp_cc_plugin.la libupnp_intel_plugin.la
 NULL = 
 SUFFIXES = 
 libvlcdir = $(vlclibdir)/$(basedir)
@@ -790,6 +805,7 @@ SOURCES_upnp_intel = upnp_intel.cpp upnp_intel.hpp
 SOURCES_bonjour = bonjour.c
 SOURCES_podcast = podcast.c
 SOURCES_mtp = mtp.c
+SOURCES_udev = udev.c
 
 # The bonjour plugin
 libbonjour_plugin_la_SOURCES = $(SOURCES_bonjour)
@@ -856,6 +872,17 @@ libshout_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
 # Set LIBADD and DEPENDENCIES manually:
 libshout_plugin_la_LIBADD = $(AM_LIBADD)
 libshout_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
+
+# The udev plugin
+libudev_plugin_la_SOURCES = $(SOURCES_udev)
+nodist_libudev_plugin_la_SOURCES = $(nodist_SOURCES_udev)
+# Force per-target objects:
+libudev_plugin_la_CFLAGS = $(AM_CFLAGS)
+libudev_plugin_la_CXXFLAGS = $(AM_CXXFLAGS)
+libudev_plugin_la_OBJCFLAGS = $(AM_OBJCFLAGS)
+# Set LIBADD and DEPENDENCIES manually:
+libudev_plugin_la_LIBADD = $(AM_LIBADD)
+libudev_plugin_la_DEPENDENCIES = $(top_srcdir)/src/libvlccore.sym
 
 # The upnp_cc plugin
 libupnp_cc_plugin_la_SOURCES = $(SOURCES_upnp_cc)
@@ -956,6 +983,8 @@ libsap_plugin.la: $(libsap_plugin_la_OBJECTS) $(libsap_plugin_la_DEPENDENCIES)
 	$(libsap_plugin_la_LINK)  $(libsap_plugin_la_OBJECTS) $(libsap_plugin_la_LIBADD) $(LIBS)
 libshout_plugin.la: $(libshout_plugin_la_OBJECTS) $(libshout_plugin_la_DEPENDENCIES) 
 	$(libshout_plugin_la_LINK)  $(libshout_plugin_la_OBJECTS) $(libshout_plugin_la_LIBADD) $(LIBS)
+libudev_plugin.la: $(libudev_plugin_la_OBJECTS) $(libudev_plugin_la_DEPENDENCIES) 
+	$(libudev_plugin_la_LINK)  $(libudev_plugin_la_OBJECTS) $(libudev_plugin_la_LIBADD) $(LIBS)
 libupnp_cc_plugin.la: $(libupnp_cc_plugin_la_OBJECTS) $(libupnp_cc_plugin_la_DEPENDENCIES) 
 	$(libupnp_cc_plugin_la_LINK)  $(libupnp_cc_plugin_la_OBJECTS) $(libupnp_cc_plugin_la_LIBADD) $(LIBS)
 libupnp_intel_plugin.la: $(libupnp_intel_plugin_la_OBJECTS) $(libupnp_intel_plugin_la_DEPENDENCIES) 
@@ -973,6 +1002,7 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libpodcast_plugin_la-podcast.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libsap_plugin_la-sap.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libshout_plugin_la-shout.Plo@am__quote@
+@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libudev_plugin_la-udev.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libupnp_cc_plugin_la-upnp_cc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/libupnp_intel_plugin_la-upnp_intel.Plo@am__quote@
 
@@ -1038,6 +1068,13 @@ libshout_plugin_la-shout.lo: shout.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='shout.c' object='libshout_plugin_la-shout.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libshout_plugin_la_CFLAGS) $(CFLAGS) -c -o libshout_plugin_la-shout.lo `test -f 'shout.c' || echo '$(srcdir)/'`shout.c
+
+libudev_plugin_la-udev.lo: udev.c
+@am__fastdepCC_TRUE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libudev_plugin_la_CFLAGS) $(CFLAGS) -MT libudev_plugin_la-udev.lo -MD -MP -MF $(DEPDIR)/libudev_plugin_la-udev.Tpo -c -o libudev_plugin_la-udev.lo `test -f 'udev.c' || echo '$(srcdir)/'`udev.c
+@am__fastdepCC_TRUE@	$(am__mv) $(DEPDIR)/libudev_plugin_la-udev.Tpo $(DEPDIR)/libudev_plugin_la-udev.Plo
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='udev.c' object='libudev_plugin_la-udev.lo' libtool=yes @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCC_FALSE@	$(LIBTOOL)  --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(libudev_plugin_la_CFLAGS) $(CFLAGS) -c -o libudev_plugin_la-udev.lo `test -f 'udev.c' || echo '$(srcdir)/'`udev.c
 
 .cpp.o:
 @am__fastdepCXX_TRUE@	$(CXXCOMPILE) -MT $@ -MD -MP -MF $(DEPDIR)/$*.Tpo -c -o $@ $<

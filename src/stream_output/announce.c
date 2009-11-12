@@ -2,7 +2,7 @@
  * announce.c : announce handler
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id: 261b69dd31f929f6dfd7d24b68a6802b7a1089a6 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

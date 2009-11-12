@@ -2,7 +2,7 @@
  * cmd_fullscreen.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: d74a2b83ba6cd89dceaa7734592bb04c9b1f1bcc $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

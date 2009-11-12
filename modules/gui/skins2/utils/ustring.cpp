@@ -2,7 +2,7 @@
  * ustring.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 76fb03cfd7acf52cfea348212f0f9942da9a9922 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

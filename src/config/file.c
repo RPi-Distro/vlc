@@ -2,7 +2,7 @@
  * file.c: configuration file handling
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 01c0332a2952d641de99fe5d690915e4b9ae9f42 $
+ * $Id: e2c92ecb790af69e298750c4b79f1562ed1d9206 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -117,6 +117,9 @@ static FILE *config_OpenConfigFile( vlc_object_t *p_obj )
                     }
                     free( psz_readme );
                 }
+                /* Remove the old configuration file so that --reset-config
+                 * can work properly. */
+                unlink( psz_old );
             }
             free( psz_old );
         }

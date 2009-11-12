@@ -2,7 +2,7 @@
  * switcher.c: MPEG2 video switcher module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 9faf03eff2a2f97518feb9d561f1148c43da6558 $
+ * $Id$
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

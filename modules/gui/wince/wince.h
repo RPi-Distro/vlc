@@ -2,7 +2,7 @@
  * wince.h: private WinCE interface descriptor
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: e7ccf3b8f8014a2e7cebbe9b99ff2d041408baee $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Marodon Cedric <cedric_marodon@yahoo.fr>

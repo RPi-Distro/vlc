@@ -2,7 +2,7 @@
  * MessagesWindow.h
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: 577baaace4de3c24aeb539855d79b32939e3476c $
+ * $Id$
  *
  * Authors: Eric Petit <titer@videolan.org>
  *

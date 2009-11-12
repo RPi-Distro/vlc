@@ -2,7 +2,7 @@
  * memcpy.c : classic memcpy module
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: cae7f2fb7e511e2a7954e4af7c3d9578d4675539 $
+ * $Id$
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

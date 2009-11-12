@@ -2,7 +2,7 @@
  * id3tag.c: id3/ape tag parser/skipper based on libid3tag
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id: 78a85cebc18066b33083ffb1271a84ddfe87659e $
+ * $Id$
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *

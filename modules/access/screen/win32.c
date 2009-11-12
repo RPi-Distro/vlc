@@ -2,7 +2,7 @@
  * win32.c: Screen capture module.
  *****************************************************************************
  * Copyright (C) 2004-2008 the VideoLAN team
- * $Id: e0cfd7abfb53add3df95916eb02c6d91a0e9aacb $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

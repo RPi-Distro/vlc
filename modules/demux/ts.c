@@ -2,7 +2,7 @@
  * ts.c: Transport Stream input module for VLC.
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id: 514096befa2e29e2baa09d7c2968b7f507bc9f0e $
+ * $Id: b36dc4f95c879180c1d0893655b12ff7590b9f81 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Jean-Paul Saman <jpsaman #_at_# m2x.nl>
@@ -2083,6 +2083,9 @@ static int PIDFillFormat( ts_pid_t *pid, int i_stream_type )
     case 0x85:  /* DTS (audio) */
         es_format_Init( fmt, AUDIO_ES, VLC_FOURCC( 'd', 't', 's', ' ' ) );
         break;
+    case 0x87: /* E-AC3 */
+        es_format_Init( fmt, AUDIO_ES, VLC_FOURCC( 'e', 'a', 'c', '3' ) );
+        break;
 
     case 0x91:  /* A52 vls (audio) */
         es_format_Init( fmt, AUDIO_ES, VLC_FOURCC( 'a', '5', '2', 'b' ) );
@@ -3671,7 +3674,6 @@ static void PMTSetupEsHDMV( demux_t *p_demux, ts_pid_t *pid,
         break;
 
     case 0x84: /* E-AC3 */
-    case 0x87: /* E-AC3 */
     case 0xA1: /* Secondary E-AC3 */
         p_fmt->i_cat = AUDIO_ES;
         p_fmt->i_codec = VLC_FOURCC( 'e', 'a', 'c', '3' );

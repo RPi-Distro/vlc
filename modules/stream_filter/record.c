@@ -2,7 +2,7 @@
  * record.c
  *****************************************************************************
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 2ab138fd452b81f52ffb4bc8a26c515c69b5e905 $
+ * $Id$
  *
  * Author: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

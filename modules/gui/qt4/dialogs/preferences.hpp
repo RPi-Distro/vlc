@@ -2,7 +2,7 @@
  * preferences.hpp : Preferences
  *****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: ef50b5201b63447983cb37bef35222a73de2bcda $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

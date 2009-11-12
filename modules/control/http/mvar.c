@@ -2,7 +2,7 @@
  * mvar.c : Variables handling for the HTTP Interface
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: c25dd34d29cd6b2c9ae17b55d7003ffdcafd4a27 $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Laurent Aimar <fenrir@via.ecp.fr>

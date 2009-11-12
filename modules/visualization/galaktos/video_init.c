@@ -2,7 +2,7 @@
  * video_init.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 2cdef5d94ed95304be113cf3197dd4534b3960cc $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

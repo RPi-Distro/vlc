@@ -2,7 +2,7 @@
  * main.h:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: c7d01b392538a4082a860e4e6780e33d45c690ec $
+ * $Id$
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *

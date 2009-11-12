@@ -2,7 +2,7 @@
  * anchor.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 24e80516c0c9a35badedc17484955d8d3a619cde $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

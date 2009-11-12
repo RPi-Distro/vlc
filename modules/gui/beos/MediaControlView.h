@@ -2,7 +2,7 @@
  * MediaControlView.h: beos interface
  *****************************************************************************
  * Copyright (C) 1999, 2000, 2001 the VideoLAN team
- * $Id: 27c416178534cca1c92fa19cd2e22f1b14163ca2 $
+ * $Id$
  *
  * Authors: Tony Castley <tony@castley.net>
  *          Stephan Aßmus <stippi@yellowbites.com>

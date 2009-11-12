@@ -2,7 +2,7 @@
  * t140.c : trivial T.140 text encoder
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id: 5e0c25a0a8bce8704f2e2f486e5b808a40407014 $
+ * $Id: 2b891998941200ac70844ee0a03007eea56157c8 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,6 +100,10 @@ static block_t *Encode( encoder_t *p_enc, subpicture_t *p_spu )
     len = strlen( p_region->psz_text );
     p_block = block_New( p_enc, len );
     memcpy( p_block->p_buffer, p_region->psz_text, len );
+
+    p_block->i_pts = p_block->i_dts = p_spu->i_start;
+    if( !p_spu->b_ephemer && ( p_spu->i_stop > p_spu->i_start ) )
+        p_block->i_length = p_spu->i_stop - p_spu->i_start;
 
     return p_block;
 }

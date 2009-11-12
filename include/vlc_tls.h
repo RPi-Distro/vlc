@@ -2,7 +2,7 @@
  * tls.c: Transport Layer Security API
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 84d59538b615b50667463da4978f50f58b165588 $
+ * $Id$
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

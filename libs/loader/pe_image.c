@@ -1,5 +1,5 @@
 /*
- * $Id: e6cb36bb78e268c6795f68deddf94be469b564ef $
+ * $Id$
  *
  *  Copyright	1994	Eric Youndale & Erik Bos
  *  Copyright	1995	Martin von Löwis

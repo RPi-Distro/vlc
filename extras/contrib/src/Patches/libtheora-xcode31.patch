@@ -1,0 +1,20 @@
+--- libtheora-1.0/lib/enc/x86_32/dct_decode_mmx.c	2008-10-21 05:36:19.000000000 +0200
++++ libtheora/lib/enc/x86_32/dct_decode_mmx.c	2009-10-27 18:10:51.000000000 +0100
+@@ -30,7 +30,7 @@
+                           const ogg_int16_t *_ll){
+   long esi;
+   _pix-=_ystride*2;
+-  __asm__ __volatile__(
++  __asm__(
+     /*mm0=0*/
+     "pxor %%mm0,%%mm0\n\t"
+     /*esi=_ystride*3*/
+@@ -213,7 +213,7 @@
+                            const ogg_int16_t *_ll){
+   long esi;
+   long edi;
+-  __asm__ __volatile__(
++  __asm__(
+     /*x x x x 3 2 1 0*/
+     "movd (%[pix]),%%mm0\n\t"
+     /*esi=_ystride*3*/

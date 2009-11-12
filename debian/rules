@@ -122,13 +122,6 @@ build-stamp: $(QUILT_STAMPFN)
 	mkdir -p tmp
 	cp src/.libs/libvlccore.a tmp/libvlccore.a
 	cp src/.libs/libvlc.a tmp/libvlc.a
-	# build an altivec free version on powerpc for the G3
-ifneq ($(filter $(DEB_HOST_ARCH), powerpc),)
-	./configure --disable-altivec $(confflags)
-	$(MAKE) -C compat
-	$(MAKE) -C src libvlccore.la 
-	cp -vd src/.libs/libvlccore.so.* tmp/
-endif
 	./configure $(confflags)
 	$(MAKE)
 ifeq ($(filter nocheck,$(DEB_BUILD_OPTIONS)),)
@@ -177,11 +170,6 @@ install: build
 	$(MAKE) install DESTDIR=$(CURDIR)/debian/tmp/
 	cp tmp/libvlc.a debian/tmp/usr/lib
 	cp tmp/libvlccore.a debian/tmp/usr/lib
-ifneq ($(filter $(DEB_HOST_ARCH), powerpc),)
-	mkdir -p debian/tmp/usr/lib/altivec/
-	mv -v debian/tmp/usr/lib/libvlccore.so.* debian/tmp/usr/lib/altivec/
-	cp -vd tmp/libvlccore.so.* debian/tmp/usr/lib/
-endif
 	# Clean up libtool crap
 	find debian/tmp -name '*.la' -exec rm '{}' ';'
 	# Remove useless stuff

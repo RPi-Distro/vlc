@@ -2,7 +2,7 @@
  * scaled_bitmap.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: dff4f1a8e1f93482e98c9f8d3a7ff06f52a57ebf $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

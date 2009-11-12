@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 4a3b369b16bb3628a7428e551288b33e207d2b62 $
+ * $Id: 7e7cd39e6f9b6fb64e62ed8e8f493c1b4f9a1e34 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -830,7 +830,7 @@ void SPrefsPanel::assoDialog()
                             : Qt::Unchecked );
 
     i_temp = 0;
-    aTo( ".asx" ); aTo( ".b4s" ); aTo( ".m3u" ); aTo( ".pls" ); aTo( ".vlc" );
+    aTo( ".asx" ); aTo( ".b4s" ); aTo( ".ifo" ); aTo( ".m3u" ); aTo( ".pls" ); aTo( ".vlc" );
     aTo( ".xspf" );
     otherType->setCheckState( 0, ( i_temp > 0 ) ?
                               ( ( i_temp == audioType->childCount() ) ?

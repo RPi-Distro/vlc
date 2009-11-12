@@ -3,7 +3,7 @@
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
  * Copyright (C) 2008 Laurent Aimar
- * $Id: 13847931d072f7b98ed372ae0a1d4029e1be0a00 $
+ * $Id: ff50c8233d223db6f1a201d60f266c74ba8b38c4 $
  *
  * Authors: Laurent Aimar < fenrir _AT_ videolan _DOT_ org >
  *
@@ -52,9 +52,15 @@ void           input_clock_Delete( input_clock_t * );
 
 /**
  * This function will update a input_clock_t with a new clock reference point.
+ * It will also tell if the clock point is late regarding our buffering.
+ *
+ * \param b_buffering_allowed tells if we are allowed to bufferize more data in
+ * advanced (if possible).
  */
 void    input_clock_Update( input_clock_t *, vlc_object_t *p_log,
-                            bool b_can_pace_control, mtime_t i_clock, mtime_t i_system );
+                            bool *pb_late,
+                            bool b_can_pace_control, bool b_buffering_allowed,
+                            mtime_t i_clock, mtime_t i_system );
 /**
  * This function will reset the drift of a input_clock_t.
  *
@@ -118,6 +124,12 @@ int input_clock_GetState( input_clock_t *,
  */
 void input_clock_SetJitter( input_clock_t *,
                             mtime_t i_pts_delay, int i_cr_average );
+
+/**
+ * This function returns an estimation of the pts_delay needed to avoid rebufferization.
+ * XXX in the current implementation, the pts_delay will never be decreased.
+ */
+mtime_t input_clock_GetJitter( input_clock_t * );
 
 #endif
 

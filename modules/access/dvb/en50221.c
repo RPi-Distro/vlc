@@ -79,6 +79,7 @@
 #undef DEBUG_TPDU
 #define HLCI_WAIT_CAM_READY 0
 #define CAM_PROG_MAX MAX_PROGRAMS
+//#define CAPMT_WAIT 100             /* uncomment this for slow CAMs */
 
 static void ResourceManagerOpen( access_t * p_access, int i_session_id );
 static void ApplicationInformationOpen( access_t * p_access, int i_session_id );
@@ -151,7 +152,7 @@ static uint8_t *SetLength( uint8_t *p_data, int i_length )
  * Transport layer
  */
 
-#define MAX_TPDU_SIZE  2048
+#define MAX_TPDU_SIZE  4096
 #define MAX_TPDU_DATA  (MAX_TPDU_SIZE - 4)
 
 #define DATA_INDICATOR 0x80
@@ -957,7 +958,7 @@ static void ApplicationInformationOpen( access_t * p_access, int i_session_id )
  * Conditional Access
  */
 
-#define MAX_CASYSTEM_IDS 16
+#define MAX_CASYSTEM_IDS 64
 
 typedef struct
 {
@@ -967,7 +968,7 @@ typedef struct
 static bool CheckSystemID( system_ids_t *p_ids, uint16_t i_id )
 {
     int i = 0;
-    if( !p_ids ) return true;
+    if( !p_ids ) return true;      /* dummy session for high-level CI intf */
 
     while ( p_ids->pi_system_ids[i] )
     {
@@ -1237,6 +1238,9 @@ static void CAPMTAdd( access_t * p_access, int i_session_id,
         return;
     }
  
+#ifdef CAPMT_WAIT
+    msleep( CAPMT_WAIT * 1000 );
+#endif
  
     msg_Dbg( p_access, "adding CAPMT for SID %d on session %d",
              p_pmt->i_program_number, i_session_id );

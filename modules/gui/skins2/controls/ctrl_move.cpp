@@ -2,7 +2,7 @@
  * ctrl_move.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: e890d16e47a5cea427fce8a805807d687d3776d9 $
+ * $Id$
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

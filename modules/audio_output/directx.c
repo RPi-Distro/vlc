@@ -2,7 +2,7 @@
  * directx.c: Windows DirectX audio output method
  *****************************************************************************
  * Copyright (C) 2001 the VideoLAN team
- * $Id: c05d3cbdd0efc3c0cace60cc9188dd98b55bd7be $
+ * $Id$
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

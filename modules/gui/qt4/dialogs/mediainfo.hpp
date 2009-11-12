@@ -2,7 +2,7 @@
  * mediainfo.hpp : Information about a stream
  ****************************************************************************
  * Copyright (C) 2006-2007 the VideoLAN team
- * $Id: 8b591c793201cdf2a77933e53fa19a493359fdf5 $
+ * $Id$
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>

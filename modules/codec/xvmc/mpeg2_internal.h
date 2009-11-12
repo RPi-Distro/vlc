@@ -1,4 +1,4 @@
-/* $Id: 2191df3811785017612b0197ce36823dd801f500 $
+/* $Id$
  * mpeg2_internal.h
  * Copyright (C) 2000-2003 Michel Lespinasse <walken@zoy.org>
  * Copyright (C) 1999-2000 Aaron Holtzman <aholtzma@ess.engr.uvic.ca>
