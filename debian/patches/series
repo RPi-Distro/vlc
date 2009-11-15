@@ -6,4 +6,5 @@
 300_manpage_syntax.diff
 401_i420_mmx_pic.diff
 402_increase_pulseaudio_score.diff
+403_ugly-hack-to-prevent-qt4-x11-from-using-alpha-channel.diff
 501_decrease_alsa_buffer.diff

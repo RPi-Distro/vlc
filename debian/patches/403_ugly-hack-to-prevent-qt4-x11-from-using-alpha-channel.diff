@@ -1,0 +1,31 @@
+From: Rémi Denis-Courmont <remi@remlab.net>
+Date: Sun, 15 Nov 2009 15:03:17 +0000 (+0200)
+Subject: Ugly hack to prevent qt4-x11 from using alpha channel
+X-Git-Url: http://git.videolan.org/?p=vlc.git;a=commitdiff_plain;h=c0ec5be56e71c273eef4faea8d927eeb3cbc7ec5;hp=493ed6ef7ff138e7b93f31e962bb28dfa06d928b
+
+Ugly hack to prevent qt4-x11 from using alpha channel
+
+This breaks our current Xlib XVideo and plain X11 outputs.
+Qt4 would create an ARGB window for our embedded video. Then, the
+Xlib plugins would raise BadMatch errors and VLC aborts. Starting
+cairo-dock is an easy way to trigger this problem.
+(With XCB plugins, we fail safe to OpenGL/GLX instead of crashing.)
+
+We should instead handle ARGB visuals properly. But that would involve
+more efforts, and would only enable plain X11, not XVideo anyway.
+
+This should work around LP#416294.
+---
+
+diff --git a/modules/gui/qt4/qt4.cpp b/modules/gui/qt4/qt4.cpp
+index 49e7732..d005434 100644
+--- a/modules/gui/qt4/qt4.cpp
++++ b/modules/gui/qt4/qt4.cpp
+@@ -282,6 +282,7 @@ static int Open( vlc_object_t *p_this )
+         return VLC_EGENERIC;
+     }
+     XCloseDisplay( p_display );
++    putenv( "XLIB_SKIP_ARGB_VISUALS=1" );
+ #endif
+ 
+     /* Allocations of p_sys */
