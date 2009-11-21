@@ -1,8 +1,16 @@
 vlc (1.0.3-1ubuntu2) lucid; urgency=low
 
-  * prepare new upload
+  [ Reinhard Tartler ]
+  * don't crash when cairo-dock is running. LP: #416294
+    Very ugly patch from upstream to disable ARGB channel usage 
+    in libqt4
+  * enable and install the fb module on Linux systems. Closes: #556228
 
- -- Reinhard Tartler <siretart@tauware.de>  Sat, 21 Nov 2009 20:57:47 +0100
+  [ Whoopie ]
+  * enable CDDB in the CDDA module (LP: #439131) and enable
+    globalhotkeys module (LP: #439077)
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sat, 21 Nov 2009 22:11:48 +0100
 
 vlc (1.0.3-1ubuntu1) lucid; urgency=low
 
