@@ -42,7 +42,6 @@ confflags += \
 	--enable-fast-install \
 	--with-binary-version=$(DEBIAN_VERSION) \
 	--disable-update-check \
-	--disable-fb \
 	--enable-ggi \
 	--enable-sdl \
 	--enable-mad \
@@ -162,7 +161,7 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_prep
-	sed -e '/\(lib\|libaccess_\)\(alsa\|dvb\|v4l\|v4l2\|pvr\)_/d' \
+	sed -e '/\(lib\|libaccess_\)\(alsa\|dvb\|fb\|v4l\|v4l2\|pvr\)_/d' \
 	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd
 	sed -e '/\(lib\|libaccess_\)\(probe_hal\)_/d' \
 	 debian/vlc-nox.install.kfreebsd > debian/vlc-nox.install.hurd
