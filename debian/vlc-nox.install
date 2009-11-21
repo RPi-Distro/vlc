@@ -67,7 +67,16 @@ usr/lib/vlc/codec/libtelx_plugin.so
 usr/lib/vlc/codec/libtheora_plugin.so
 usr/lib/vlc/codec/libtwolame_plugin.so
 usr/lib/vlc/codec/libvorbis_plugin.so
-usr/lib/vlc/control
+usr/lib/vlc/control/libdbus_plugin.so
+usr/lib/vlc/control/libgestures_plugin.so
+usr/lib/vlc/control/libhotkeys_plugin.so
+usr/lib/vlc/control/libhttp_plugin.so
+usr/lib/vlc/control/liblirc_plugin.so
+usr/lib/vlc/control/libmotion_plugin.so
+usr/lib/vlc/control/librc_plugin.so
+usr/lib/vlc/control/libshowintf_plugin.so
+usr/lib/vlc/control/libsignals_plugin.so
+usr/lib/vlc/control/libtelnet_plugin.so
 usr/lib/vlc/demux
 usr/lib/vlc/gui/libncurses_plugin.so
 usr/lib/vlc/meta_engine
