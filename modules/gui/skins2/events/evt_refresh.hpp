@@ -2,7 +2,7 @@
  * evt_refresh.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 50936b6d5ffa566e18b6fde48bbb04dfe96b5838 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>

@@ -2,7 +2,7 @@
  * cmd_vars.hpp
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 608ee4e659a657e077fcc7b906e07d2269505f99 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

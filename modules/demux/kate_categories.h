@@ -2,7 +2,7 @@
  * kate_categories.h : maps well known category tags to translated strings.
  *****************************************************************************
  * Copyright (C) 2009 ogg.k.ogg.k@googlemail.com
- * $Id$
+ * $Id: f3118dfa3606ee2909274441a78b9081c34048f2 $
  *
  * Authors: ogg.k.ogg.k@googlemail.com
  *

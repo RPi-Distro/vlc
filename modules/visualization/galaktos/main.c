@@ -2,7 +2,7 @@
  * main.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 50be639e599cd33b298f26e6ff8b1c6e62644185 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Adapted from projectM (http://xmms-projectm.sourceforge.net/)

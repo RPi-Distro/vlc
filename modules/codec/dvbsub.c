@@ -4,7 +4,7 @@
  *****************************************************************************
  * Copyright (C) 2003 ANEVIA
  * Copyright (C) 2003-2005 the VideoLAN team
- * $Id$
+ * $Id: b102cd069c810500b6cc883c54448476fc9aeb69 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien LUCAS <damien.lucas@anevia.com>

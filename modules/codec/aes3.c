@@ -2,7 +2,7 @@
  * aes3.c: aes3 decoder/packetizer module
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id$
+ * $Id: 986fa787cd5923c81e965d47fa8e3980c96a0bee $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *

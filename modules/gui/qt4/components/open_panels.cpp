@@ -5,7 +5,7 @@
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
  *
- * $Id: f65d310b69234cc5b9a720acf972a4b5ef07c253 $
+ * $Id: 5f5778ba42696bcf51cf0fcbbae23a115d5b94cf $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -530,6 +530,17 @@ void NetOpenPanel::updateProtocol( int idx_proto ) {
 
     ui.portSpin->setEnabled( idx_proto == UDP_PROTO ||
                              idx_proto == RTP_PROTO );
+    switch( idx_proto )
+    {
+        case RTP_PROTO:
+            ui.portSpin->setValue(5004);
+            break;
+        case UDP_PROTO:
+            ui.portSpin->setValue(1234);
+            break;
+        default:
+            ui.portSpin->setValue(0);
+    }
 
     if( idx_proto == NO_PROTO ) return;
 
@@ -1140,8 +1151,7 @@ void CaptureOpenPanel::updateMRL()
         break;
 #else
     case V4L_DEVICE:
-        fileList << "v4l://";
-        mrl += " :v4l-vdev=" + v4lVideoDevice->text();
+        fileList << "v4l://" + v4lVideoDevice->text();
         mrl += " :input-slave=alsa://" + v4lAudioDevice->text();
         mrl += " :v4l-norm=" + QString::number( v4lNormBox->currentIndex() );
         mrl += " :v4l-frequency=" + QString::number( v4lFreq->value() );

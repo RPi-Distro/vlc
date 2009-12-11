@@ -2,7 +2,7 @@
  * vlc_stream.h: Stream (between access and demux) descriptor and methods
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id$
+ * $Id: e5cd0e0130b1702455042323b449b69204023763 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

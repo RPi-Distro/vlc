@@ -2,10 +2,10 @@ dnl Autoconf settings for vlc
 
 AC_COPYRIGHT([Copyright 2002-2009 the VideoLAN team])
 
-AC_INIT(vlc, 1.0.3)
+AC_INIT(vlc, 1.0.4)
 VERSION_MAJOR="1"
 VERSION_MINOR="0"
-VERSION_REVISION="3"
+VERSION_REVISION="4"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
@@ -442,6 +442,9 @@ m4_defun([AC_DEPLIBS_CHECK_METHOD],[])
 
 lt_cv_deplibs_check_method=pass_all
 
+AS_IF([test "${enable_shared}" = "no"], [
+  AC_MSG_ERROR([VLC is based on plugins. Shared libraries cannot be disabled.])
+])
 
 dnl
 dnl Gettext stuff
@@ -1949,6 +1952,9 @@ lternatively you can use --disable-live555 to disable the liveMedia plugin.])
       if test "${SYS}" = "mingw32"; then
         # add ws2_32 for closesocket, select, recv
         other_libs="$other_libs -lws2_32"
+      elif test "${SYS}" = "mingwce"; then
+        # add ws2 for closesocket, select, recv
+        other_libs="$other_libs -lws2"
       fi
     dnl We need to check for pic because live555 don't provide shared libs
     dnl and we want to build a plugins so we need -fPIC on some arch.
@@ -2002,10 +2008,10 @@ lternatively you can use --disable-live555 to disable the liveMedia plugin.])
         VLC_ADD_LIBS([live555],[-lws2_32])
       fi
 
-      VLC_ADD_LIBS([live555],[-L${real_live555_tree}/liveMedia -lliveMedia])
+      VLC_ADD_LIBS([live555],[-L${real_live555_tree}/UsageEnvironment -lUsageEnvironment])
       VLC_ADD_LIBS([live555],[-L${real_live555_tree}/BasicUsageEnvironment -lBasicUsageEnvironment])
       VLC_ADD_LIBS([live555],[-L${real_live555_tree}/groupsock -lgroupsock])
-      VLC_ADD_LIBS([live555],[-L${real_live555_tree}/UsageEnvironment -lUsageEnvironment])
+      VLC_ADD_LIBS([live555],[-L${real_live555_tree}/liveMedia -lliveMedia])
 
       VLC_ADD_CXXFLAGS([live555],[-I${real_live555_tree}/BasicUsageEnvironment/include])
       VLC_ADD_CXXFLAGS([live555],[-I${real_live555_tree}/groupsock/include])
@@ -4191,7 +4197,11 @@ AS_IF([test "${enable_xcb}" != "no"], [
   ])
 
   dnl xcb-utils
-  PKG_CHECK_MODULES(XCB_KEYSYMS, [xcb-keysyms])
+  PKG_CHECK_MODULES(XCB_KEYSYMS, [xcb-keysyms >= 0.3.4],
+    [true],
+    [PKG_CHECK_MODULES(XCB_KEYSYMS, [xcb-keysyms])
+    VLC_ADD_CFLAGS([globalhotkeys], [-DXCB_KEYSYM_OLD_API])]
+  )
 
   VLC_ADD_PLUGIN([xcb])
   VLC_ADD_PLUGIN([xcb_window])

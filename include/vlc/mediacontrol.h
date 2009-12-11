@@ -2,7 +2,7 @@
  * mediacontrol.h: global header for mediacontrol
  *****************************************************************************
  * Copyright (C) 2005-2008 the VideoLAN team
- * $Id$
+ * $Id: 7f044554b5d3b83dd51f79b59622297bf8b38abf $
  *
  * Authors: Olivier Aubert <olivier.aubert@liris.univ-lyon1.fr>
  *

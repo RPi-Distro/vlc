@@ -2,7 +2,7 @@
  * png.c: png decoder module making use of libpng.
  *****************************************************************************
  * Copyright (C) 1999-2001 the VideoLAN team
- * $Id$
+ * $Id: c604f014a1ad3be5274d34d27f3296cac213d286 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *

@@ -2,7 +2,7 @@
  * MacOSX_loop.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: f818d5454e060c943d105f4bfe097b9c809564b0 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

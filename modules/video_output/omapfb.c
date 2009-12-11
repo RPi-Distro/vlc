@@ -2,7 +2,7 @@
 * omapfb.c : omap framebuffer plugin for vlc
 *****************************************************************************
 * Copyright (C) 2008-2009 the VideoLAN team
-* $Id$
+* $Id: 95c2eaf2e604bbce6605bae621bab2979a0d1344 $
 *
 * Authors: Antoine Lejeune <phytos @ videolan.org>
 *          Based on fb.c and work of Siarhei Siamashka on mplayer for Maemo

@@ -2,7 +2,7 @@
  * demux.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: a6fe6d0169d354408f19aaf6176b84f75b072f4b $
+ * $Id: b939c101eb2fdb42bb26dd3b25ff70414bd8f31e $
  *
  * Author: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -99,7 +99,8 @@ demux_t *__demux_New( vlc_object_t *p_obj,
             { "flac", "flac" },
             { "dv",   "dv" },
             { "drc",  "dirac" },
-            { "m3u",  "playlist" },
+            { "m3u",  "m3u" },
+            { "m3u8", "m3u8" },
             { "mkv",  "mkv" }, { "mka",  "mkv" }, { "mks",  "mkv" },
             { "mp4",  "mp4" }, { "m4a",  "mp4" }, { "mov",  "mp4" }, { "moov", "mp4" },
             { "nsv",  "nsv" },

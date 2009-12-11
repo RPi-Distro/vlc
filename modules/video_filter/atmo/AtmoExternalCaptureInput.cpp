@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id$
+ * $Id: 1d77ee87ae0deab989cfa470451a0fc84ea3ac89 $
 */
 
 #include "AtmoExternalCaptureInput.h"

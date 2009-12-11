@@ -3,7 +3,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id$
+ * $Id: 91e41c7a11b939d64b3b4677349178a8c8404ce1 $
  */
 
 #include "AtmoTools.h"

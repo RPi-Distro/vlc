@@ -5,7 +5,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id$
+ * $Id: 4ce5ba02e59bad3e257bd7dc04e29b994d196905 $
  */
 #include "AtmoDefs.h"
 #include "AtmoLiveView.h"

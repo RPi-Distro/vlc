@@ -2,7 +2,7 @@
  * glx.c: GLX OpenGL provider
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id: 14ac5ed03ff4a8f00df1eda2aadfc1f75ccc2694 $
+ * $Id: b82984aafb589df770c7fa995fd17cf582cb8e8f $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -87,11 +87,6 @@ static void SwitchContext( vout_thread_t * );
 /*****************************************************************************
  * Module descriptor
  *****************************************************************************/
-#define ADAPTOR_TEXT N_("XVideo adaptor number")
-#define ADAPTOR_LONGTEXT N_( \
-    "If your graphics card provides several adaptors, you have " \
-    "to choose which one will be used (you shouldn't have to change this).")
-
 #define ALT_FS_TEXT N_("Alternate fullscreen method")
 #define ALT_FS_LONGTEXT N_( \
     "There are two ways to make a fullscreen window, unfortunately each one " \
@@ -105,10 +100,6 @@ static void SwitchContext( vout_thread_t * );
 #define DISPLAY_LONGTEXT N_( \
     "X11 hardware display to use. By default VLC will " \
     "use the value of the DISPLAY environment variable.")
-
-#define SHM_TEXT N_("Use shared memory")
-#define SHM_LONGTEXT N_( \
-    "Use shared memory to communicate between VLC and the X server.")
 
 #define SCREEN_TEXT N_("Screen for fullscreen mode.")
 #define SCREEN_LONGTEXT N_( \
@@ -124,10 +115,10 @@ vlc_module_begin ()
     set_callbacks( CreateOpenGL, DestroyOpenGL )
 
     add_string( "glx-display", NULL, NULL, DISPLAY_TEXT, DISPLAY_LONGTEXT, true )
-    add_integer( "glx-adaptor", -1, NULL, ADAPTOR_TEXT, ADAPTOR_LONGTEXT, true )
+    add_obsolete_integer( "glx-adaptor" ) /* Deprecated since 1.0.4 */
     add_bool( "glx-altfullscreen", 0, NULL, ALT_FS_TEXT, ALT_FS_LONGTEXT, true )
 #ifdef HAVE_SYS_SHM_H
-    add_bool( "glx-shm", 1, NULL, SHM_TEXT, SHM_LONGTEXT, true )
+    add_obsolete_bool( "glx-shm" ) /* Deprecated since 1.0.4 */
 #endif
 #ifdef HAVE_XINERAMA
     add_integer ( "glx-xineramascreen", -1, NULL, SCREEN_TEXT, SCREEN_LONGTEXT, true )

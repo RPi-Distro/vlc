@@ -2,7 +2,7 @@
  * old.c : Old playlist format import/export
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id$
+ * $Id: 2819cac1c9a38b0417de54ae9d5c3151ba74bce8 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

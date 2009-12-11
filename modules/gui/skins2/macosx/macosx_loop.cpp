@@ -2,7 +2,7 @@
  * macosx_loop.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: f36bad33411366079b7b561fdd24c27d60245f64 $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *

@@ -2,7 +2,7 @@
  * vout.h: Windows video output header file
  *****************************************************************************
  * Copyright (C) 2001-2009 the VideoLAN team
- * $Id: 0bf8b6e91b6b4d9c511ea03b9079c302b64c53e9 $
+ * $Id: ab76e2b110c73c5ac1a0f6245305c475a2f52efd $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Damien Fouilleul <damienf@videolan.org>
@@ -272,7 +272,7 @@ void Win32ToggleFullscreen ( vout_thread_t *p_vout );
  *****************************************************************************/
 #ifdef UNDER_CE
 
-#define AdjustWindowRect(a,b,c)
+#define AdjustWindowRect(a,b,c) AdjustWindowRectEx(a,b,c,0)
 
 #ifndef GCL_HBRBACKGROUND
 #   define GCL_HBRBACKGROUND (-10)

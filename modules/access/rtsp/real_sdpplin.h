@@ -17,7 +17,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
  *
- * $Id$
+ * $Id: 10d37b8247592ae3fb50873fce84c4dcbedb7b94 $
  *
  * sdp/sdpplin parser.
  *

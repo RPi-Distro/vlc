@@ -2,7 +2,7 @@
  * threads.c : threads implementation for the VideoLAN client
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id: 01a73bc751750ec0d04bfefe0b8adada87ace54a $
+ * $Id: 9f83c40d6b0b9f66dbe55d4eb492863b2554e433 $
  *
  * Authors: Jean-Marc Dressler <polux@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -37,9 +37,9 @@
 #ifdef HAVE_UNISTD_H
 # include <unistd.h>
 #endif
-#include <signal.h>
 
 #if defined( LIBVLC_USE_PTHREAD )
+# include <signal.h>
 # include <sched.h>
 # ifdef __linux__
 #  include <sys/syscall.h> /* SYS_gettid */

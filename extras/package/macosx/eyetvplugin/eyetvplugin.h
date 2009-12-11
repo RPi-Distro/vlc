@@ -2,7 +2,7 @@
 * eyetvplugin.h: Plug-In for the EyeTV software to connect to VLC
 *****************************************************************************
 * Copyright (C) 2006-2007 the VideoLAN team
-* $Id$
+* $Id: 8c9c26447ee1afa7401306381949965e8c51c840 $
 *
 * Authors: Felix Kühne <fkuehne at videolan dot org>
 *

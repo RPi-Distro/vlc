@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 1575ca007700e175b8dc3552c2b9738d94b197c9 $
+ * $Id: 37b95db4ae5d553ae24cf196486f14e787123bf6 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -105,7 +105,7 @@ inline void PluginDialog::FillTree()
         if( qs_item.at(1).isEmpty() ) continue;
 #endif
 
-        QTreeWidgetItem *item = new QTreeWidgetItem( qs_item );
+        QTreeWidgetItem *item = new PluginTreeItem( qs_item );
         treePlugins->addTopLevelItem( item );
     }
 }
@@ -130,3 +130,10 @@ PluginDialog::~PluginDialog()
                              treePlugins->header()->saveState() );
 }
 
+bool PluginTreeItem::operator< ( const QTreeWidgetItem & other ) const
+{
+    int col = treeWidget()->sortColumn();
+    if( col == 2 )
+        return text( col ).toInt() < other.text( col ).toInt();
+    return text( col ) < other.text( col );
+}

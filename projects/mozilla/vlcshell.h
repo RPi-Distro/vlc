@@ -2,7 +2,7 @@
  * vlcshell.hp:
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id$
+ * $Id: 6dd156158f4cc21c7e4305f00c4d058ec3b38d93 $
  *
  * Authors: Jean-Paul Saman <jpsaman@videolan.org>
  *

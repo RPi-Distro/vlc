@@ -2,7 +2,7 @@
  * mmap.c: memory-mapped file input
  *****************************************************************************
  * Copyright © 2007-2008 Rémi Denis-Courmont
- * $Id$
+ * $Id: 8a36040aad316eb673e62d5e9efda5c65f322080 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
