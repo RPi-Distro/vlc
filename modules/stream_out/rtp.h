@@ -2,7 +2,7 @@
  * rtp.h: rtp stream output module header
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id$
+ * $Id: b3da88459feba686dda5db7d5e1a1180b874779e $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Rémi Denis-Courmont
@@ -39,6 +39,7 @@ char *SDPGenerate( const sout_stream_t *p_stream, const char *rtsp_url );
 int rtp_add_sink( sout_stream_id_t *id, int fd, bool rtcp_mux );
 void rtp_del_sink( sout_stream_id_t *id, int fd );
 uint16_t rtp_get_seq( const sout_stream_id_t *id );
+uint32_t rtp_get_ts( const sout_stream_id_t *id );
 unsigned rtp_get_num( const sout_stream_id_t *id );
 
 /* RTP packetization */

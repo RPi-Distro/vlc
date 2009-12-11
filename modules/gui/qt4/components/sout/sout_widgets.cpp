@@ -4,7 +4,7 @@
  * Copyright (C) 2007-2009 the VideoLAN team
  * Copyright (C) 2007 Société des arts technologiques
  * Copyright (C) 2007 Savoir-faire Linux
- * $Id: 324acb8d0c3087b833f57b923809736ea6bd9565 $
+ * $Id: 7961c49b7b061074d1392094ccd2d8a770faf4ec $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *          Pierre-Luc Beaudoin <pierre-luc.beaudoin@savoirfairelinux.com>
@@ -196,7 +196,7 @@ MMSHDestBox::MMSHDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     MMSHPort->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     MMSHPort->setMinimum(1);
     MMSHPort->setMaximum(65535);
-    MMSHPort->setValue(1234);
+    MMSHPort->setValue(8080);
 
     layout->addWidget(MMSHEdit, 1, 1, 1, 1);
     layout->addWidget(MMSHPort, 2, 1, 1, 1);
@@ -286,7 +286,7 @@ RTPDestBox::RTPDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     RTPPort->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     RTPPort->setMinimum(1);
     RTPPort->setMaximum(65535);
-    RTPPort->setValue(1234);
+    RTPPort->setValue(5004);
 
     RTPPortAudio = new QSpinBox(this);
     RTPPortAudio->setMaximumSize(QSize(90, 16777215));
@@ -362,7 +362,7 @@ ICEDestBox::ICEDestBox( QWidget *_parent ) : VirtualDestBox( _parent )
     ICEPort->setAlignment(Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter);
     ICEPort->setMinimum(1);
     ICEPort->setMaximum(65535);
-    ICEPort->setValue(1234);
+    ICEPort->setValue(8000);
 
     layout->addWidget(ICEEdit, 1, 1, 1, 1);
     layout->addWidget(ICEPort, 2, 1, 1, 1);

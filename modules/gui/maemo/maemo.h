@@ -2,7 +2,7 @@
  * maemo.h: private Maemo Interface Description
  *****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id$
+ * $Id: 011a81b9b4ecc2c96133181d75d15a2504d79ab9 $
  *
  * Authors: Antoine Lejeune <phytos@videolan.org>
  *

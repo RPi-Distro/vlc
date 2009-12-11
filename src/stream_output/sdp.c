@@ -2,7 +2,7 @@
  * sdp.c : SDP creation helpers
  *****************************************************************************
  * Copyright © 2007 Rémi Denis-Courmont
- * $Id$
+ * $Id: 47bb16fd9ab3ad1bfab36f80e54a127acf6cd6e0 $
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -225,8 +225,7 @@ char *sdp_AddMedia (char **sdp,
 
     outlen += snprintf (NULL, 0,
                         "m=%s %u %s %d\r\n"
-                        "b=TIAS:%u\r\n"
-                        "b=RR:0\r\n",
+                        "b=TIAS:%u\r\n",
                         type, dport, protocol, pt, bw);
 
     newsdp = realloc (*sdp, outlen + 1);
@@ -240,7 +239,6 @@ char *sdp_AddMedia (char **sdp,
                          type, dport, protocol, pt);
     if (bw > 0)
         ptr += sprintf (ptr, "b=%s:%u\r\n", bw_indep ? "TIAS" : "AS", bw);
-    ptr += sprintf (ptr, "b=RR:0\r\n");
 
     /* RTP payload type map */
     if (ptname != NULL)

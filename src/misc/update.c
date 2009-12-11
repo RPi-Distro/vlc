@@ -2,7 +2,7 @@
  * update.c: VLC update checking and downloading
  *****************************************************************************
  * Copyright © 2005-2008 the VideoLAN team
- * $Id: d7e617926cd638562055edf7acd8a17eee32779a $
+ * $Id: e4e5d0161530771d5a09b3636eb87dab07794a27 $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *          Rémi Duraffort <ivoire at via.ecp.fr>
@@ -86,14 +86,6 @@
 #else
 #   define UPDATE_VLC_STATUS_URL "http://update.videolan.org/vlc/status"
 #endif
-
-
-/*****************************************************************************
- * Local Prototypes
- *****************************************************************************/
-static void EmptyRelease( update_t *p_update );
-static bool GetUpdateFile( update_t *p_update );
-static char * size_str( long int l_size );
 
 
 /*****************************************************************************
@@ -1442,7 +1434,9 @@ bool update_NeedUpgrade( update_t *p_update )
         *PACKAGE_VERSION_MAJOR - '0',
         *PACKAGE_VERSION_MINOR - '0',
         *PACKAGE_VERSION_REVISION - '0',
-        *PACKAGE_VERSION_EXTRA
+        /* extra string of development versions is "-git", "-rc" ..
+         * so make sure version a.b.c is newer than a.b.c-XXX */
+        (*PACKAGE_VERSION_EXTRA == '-') ? -1 : *PACKAGE_VERSION_EXTRA
     };
     int latest_version[] = {
         p_update->release.i_major,

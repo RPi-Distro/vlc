@@ -2,7 +2,7 @@
  * normvol.c: volume normalizer
  *****************************************************************************
  * Copyright (C) 2001, 2006 the VideoLAN team
- * $Id$
+ * $Id: 2257b078fba3af03b0c6ae58dc9fbd62642123c7 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -38,7 +38,6 @@
 
 #include <errno.h>                                                 /* ENOMEM */
 #include <ctype.h>
-#include <signal.h>
 
 #include <math.h>
 

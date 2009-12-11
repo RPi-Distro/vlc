@@ -2,7 +2,7 @@
  * mpls.c: BluRay Disc MPLS
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id$
+ * $Id: 4f597dd336dd0eed1bd49cae6aaf261b9fb08295 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

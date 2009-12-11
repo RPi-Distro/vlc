@@ -1,3 +1,986 @@
+commit 3fc9806ef16ebe4c94fdf1a063c41c3ec164a7fc
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Dec 10 19:45:13 2009 +0200
+
+    Sync PO files
+
+commit 24e3893c5b21c9d0c94b6f8f09a4fc4bfb71f7e3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Dec 10 19:46:48 2009 +0200
+
+    Ignore ChangeLog
+
+commit 958c68a3a20964369cff51a99307acf2729fbff0
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Thu Dec 10 19:42:59 2009 +0200
+
+    Japanese translation update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 95d15a831053651f7daeebfbe1fcb109bbaa260d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Dec 10 19:19:29 2009 +0200
+
+    Increment libvlccore revision for 1.0.4
+    
+    (but not libvlc, no changes)
+
+commit d10df85bc611340aba7ba071d204c0bfb7bb256c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Dec 10 19:09:51 2009 +0200
+
+    Change release version to 1.0.4
+
+commit d921b0941689346ef99c2a420e852d6e63cee64f
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Wed Dec 9 21:58:43 2009 +0000
+
+    l10n: Japan update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 09d6d49dfde8646cdb16df03a7366816068c801c
+Author: Gaëtan Rousseaux <garousseau@voo.be>
+Date:   Wed Dec 9 21:57:36 2009 +0000
+
+    l10n: Walloon update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit d7b2012d23e8f64c210b23eefa5ef1d07e46dfeb
+Author: Kaarlo Raiha <kaarlo.raiha@tut.fi>
+Date:   Sat May 16 16:12:19 2009 +0300
+
+    change nsis Play to Open
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 637aaf8bd366368f78a0238beaeb5b718714ed3d)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 7160721347805453782479d50a4b1e4660d3466a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 8 23:13:39 2009 +0200
+
+    signals: ignore SIGHUP if its handler is SIG_IGN
+    
+    This works around GNU coreutils nohup not working with VLC.
+    
+    Pointed-out-by: Gilles Chanteperdrix <gilles.chanteperdrix@xenomai.org>
+    (cherry picked from commit 7faec405d0b22f43e729e4fecac1302cbbe03015)
+
+commit 540f32bbbe14e21b475ec053a1462483d096acda
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 8 18:47:51 2009 +0200
+
+    Avoid warning (braindead putenv() prototype!)
+    
+    (cherry picked from commit d5618a759866f421981bc8817ab0e0a5e8d06a26)
+
+commit 10ea158619748d1a9625748aeb5084f5e37eda30
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 8 18:33:35 2009 +0200
+
+    Qt4: fix buffer overflow
+    
+    (cherry picked from commit 4488d196b33729f545a9d36aac53b90253279c82)
+
+commit f20ef4c0f6d9219fd031c85ddb99f5193c4467a4
+Author: Ivo Ivanov <bestran@mail.bg>
+Date:   Tue Dec 8 21:55:37 2009 +0000
+
+    l10n: Bulgarian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 291cea8836b7a5a9a453c9e3883f0700cee26bc2
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Tue Dec 8 19:51:34 2009 +0000
+
+    l10n: Japanese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 62c9e6852ca14d836360a79247abb641056b3c26
+Author: Matej Urbančič <mateju@svn.gnome.org>
+Date:   Tue Dec 8 19:49:45 2009 +0000
+
+    l10n: Slovenian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 5165c983df2d9ef893e82055c6887e131097cf89
+Author: Wei Mingzhi <whistler_wmz@users.sf.net>
+Date:   Mon Dec 7 22:38:38 2009 +0000
+
+    l10n: Chinese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 15a404858e226dc2c06e8ef7939ab8a37fb4ded3
+Author: Niels Fanøe <niels.f@noee.dk>
+Date:   Mon Dec 7 22:31:23 2009 +0000
+
+    l10n: Danish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit d2f630531baa24fc4f5447f85f31679f1c39fb59
+Author: Gaëtan Rousseaux <garousseau@voo.be>
+Date:   Mon Dec 7 22:29:26 2009 +0000
+
+    l10n: Some corrections in Walloon
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 83f86c206e9f0bf163997df93b3bb727e5309494
+Author: airplanez <airplanez@gmail.com>
+Date:   Mon Dec 7 22:28:39 2009 +0000
+
+    l10n: Korean update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit fafa9581f2301492465db878511dbf58f57a8f61
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Mon Dec 7 18:51:29 2009 +0100
+
+    SDP: don't disallow RTCP RR
+    
+    It does more harm than good, since some clients (RealPlayer) will
+    just throw out a "not enough bandwidth" error and fail to open the
+    stream.
+    (cherry picked from commit b377e1af8d5a0df8e9969655a2024b251724c83c)
+
+commit d69db7637ee79747c0517bada4d4469cfe5dd397
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sun Dec 6 16:50:43 2009 +0100
+
+    rtp sout: implement rtptime parameter
+    
+    This adds support for the rtptime parameter in the RTP-Info RTSP header.
+    It is needed by RealPlayer, otherwise it will start playing the stream
+    or not depending on the time of the day.
+    (cherry picked from commit ce7a4746ad10d451e5e2807be44181df9456d6f0)
+
+commit 8cdb041968935df1ca1c9b88686e75bcee3dbc81
+Author: Mindaugas Baranauskas <embar@super.lt>
+Date:   Sun Dec 6 20:26:31 2009 +0000
+
+    Add Lithuanian translation to .desktop
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+    (cherry picked from commit c57ca508520042309b5f522dcfc5857024e3a835)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 0b4ee0c016a54aa98f5ce02ea760de883c322bbd
+Author: Ilkka Ollakka <ileoo@iki.fi>
+Date:   Sun Nov 15 14:48:33 2009 +0200
+
+    x264.c: add option to adjust lookahead
+    
+    Limit range to 0..60 currently, as x264 tunes doesn't seem to use larger
+    values than that
+    
+    cherry-picked from df6af2ed88a5eef071ab92a6d5fba2df461252c0
+
+commit 38207349d4281747fc79b4ea392cdc72b975c749
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Tue Oct 20 13:05:15 2009 +0300
+
+    x264.c: add option to fiddle weighting for P-frames from x264_BUILD >= 79
+    
+    Cherry-picked from 85baa88705c2319c8716114f19cfadc836659c4d
+
+commit fbd07acc6e6ddb20c234c6c6c5521001785cce2a
+Author: Ilkka Ollakka <ileoo@iki.fi>
+Date:   Sun Nov 8 15:37:16 2009 +0200
+
+    contrib: add --enable-pthreads/--enable-w32threads to ffmpeg
+    
+    Should work in linux, no idea on win32 builds, so you're free to reverts
+    if it kills your kittens.
+    
+    cherry-picked from 4863c909f98a10736b994ca6c06d749e3cbeda44
+
+commit 9327b43e5c264e4ebe1816d4e970cfb8398a6c93
+Author: Ilkka Ollakka <ileoo@iki.fi>
+Date:   Sun Nov 8 15:34:35 2009 +0200
+
+    avcodec: drop own threading code and just let ffmpeg handle it own threading
+    
+    This means that multithread encoding with avcodec now needs
+    --enable-pthreads/--enable-w32threads.
+    (cherry picked from commit 0530b1850b04e2cabcdc69bb497fadc46b503dbf)
+
+commit 019894b208c4b548a749d5290de3c955328c58f0
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Tue Aug 4 13:29:07 2009 +0300
+
+    freetype: check xml-pointer before deleting it
+    
+    (cherry picked from commit ce7e4589b26d883f7f8e30d3289445038570a62d)
+
+commit e975a9a21a1258b85b7bf7c6c1b2452216c1ced3
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Tue Aug 4 00:23:45 2009 +0300
+
+    freetype: don't load/unload xml-module on every RenderHtml call
+    
+    hand cherry-picked from 3c777414c489f7b1e9a62a800f5167cf87ccc70a
+
+commit 090751175a2b47c8acb072ca438d042f9ef3f2e7
+Author: Gilles Chanteperdrix <gilles.chanteperdrix@xenomai.org>
+Date:   Sat Nov 14 18:29:27 2009 +0100
+
+    Fix live555media libraries link order
+    
+    Since at least vlc 1.0.2, compiling vlc with a static version of a
+    recent version of the live555media library (the version released on
+    2009/11/12 for instance) results in the following warning while loading
+    the liblive555_plugin.so module:
+    
+    [0x1901090] main libvlc warning: cannot load module `/usr/local/lib/vlc/demux/liblive555_plugin.so' (/usr/local/lib/vlc/demux/liblive555_plugin.so: undefined symbol: _ZTI9HashTable)
+    
+    This warning is due to an error in the link order of the
+    live555_plugin, fixed by the following patch.
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+    (cherry picked from commit 1d463ae8904bfbaa27bcde42de59623ac5f6e185)
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit dae75de10b0bdd3935563050ec71cc44bcea79ad
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Dec 6 13:45:13 2009 +0000
+
+    Add Walloon to LINGUAS
+
+commit e13dd46c05eafb587211ad73c7e813d9485a6ac6
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Dec 6 13:41:14 2009 +0000
+
+    Add tamil in LINGUAS
+    
+    Not yet activated on win and mac
+
+commit 490f0307fa97525b7eb3b2647ee6062b66483493
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Dec 6 13:19:09 2009 +0000
+
+    Add l10n to NEWS
+
+commit 8c9579d6bc7229f9e6df5af13c603e8a5151d581
+Author: Gaëtan Rousseaux <garousseau@voo.be>
+Date:   Sun Dec 6 13:18:31 2009 +0000
+
+    l10n: Walloon update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 7c89526ce1545befa57074aba2cd9c3160a7eb46
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Dec 5 16:43:05 2009 +0200
+
+    M3U: some people do use UTF-8 in m3u, revert to autodetect
+    
+    (cherry picked from commit 9a1a33f4fce950b8ebb32b3a60069792382add0f)
+
+commit 4404b2254a67acec2912ac0a3f78caedf484210a
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Dec 5 16:21:51 2009 +0200
+
+    News
+
+commit 1af53ae2fddb42e8579823f062dd973668de51a6
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Oct 31 15:10:13 2009 +0200
+
+    DVB: force m3u8 demux in scan mode
+    
+    (cherry picked from commit 90aa71ca584cbf721c06d3046e0afff795fa065c)
+
+commit 69423b362ebd48223ca1b80e2c569e3489e00e6d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Dec 5 16:19:43 2009 +0200
+
+    Recognize .m3u8 extension
+    
+    (cherry picked from commit 4c599fee36ab13203d54c6930ed4d2e775436f74)
+    
+    Conflicts:
+    
+    	include/vlc_interface.h
+
+commit 50e1eb7a6e74fad96763703d1a76367c6b083c12
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Oct 31 14:43:39 2009 +0200
+
+    M3U: add support for .m3u8 files (Apple invention)
+    
+    (cherry picked from commit 9d88d50a57fc5397c1323e8321f49d7085499260)
+
+commit da0e87336ed8f350b43592974216ad56b7092e74
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Oct 31 14:42:41 2009 +0200
+
+    M3U: add shortcut
+    
+    Otherwise, checking for forced demux does not make much sense.
+    (cherry picked from commit 7eb4785eb1798f1ce60a7f95df18e253e38a8442)
+
+commit 8b4124d4b92a2b5bfc95958801dc7b8431a10b66
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Thu Dec 3 12:35:40 2009 +0000
+
+    Activate Walloon on win and mac
+
+commit 88a59f4b0a609b638cf6df009540ce6c5af4b00c
+Author: Oleksandr Natalenko <pfactum@gmail.com>
+Date:   Thu Dec 3 12:31:09 2009 +0000
+
+    l10n: Ukranian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 945bfe2634f4b40161bf407d711b95ddf0ca7482
+Author: Gaëtan Rousseaux <garousseau@voo.be>
+Date:   Thu Dec 3 12:29:50 2009 +0000
+
+    l10n: Walloon update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 09adeeacdeac04ee1465d1514e911b536a99d491
+Author: Éric Lassauge <lassauge {AT} users {dot} sourceforge {dot} net>
+Date:   Thu Dec 3 12:29:04 2009 +0000
+
+    l10n: French update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit e8b386a6d040e40abd9ad067c4ceeea3d2740644
+Author: Mindaugas Baranauskas <embar@super.lt>
+Date:   Thu Dec 3 12:08:03 2009 +0000
+
+    l10n: Small fix in lithuanian translation
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 222d55dbc1328a3a8a26063bdb38e8584b4e9b14
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Wed Dec 2 01:55:22 2009 +0100
+
+    ncurses contrib
+    
+    update to 5.7
+    only build & install library & headers
+    configure with --prefix=/usr so library (newterm() at least) will look
+    at installed terminfo database (ncurses interface wouldn't work on OSX)
+    (cherry picked from commit f5e4501049baf2c1b37e85386931117407dddab2)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit 71fabed50daf94f0b62ac176af969f8a480b7cb6
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Tue Dec 1 21:10:44 2009 +0100
+
+    rc module: fix snapshot command
+
+commit 2b7da23919481c17f615c1a444e6072ec1e68ce4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 1 21:26:01 2009 +0200
+
+    News
+
+commit 4c86512456d56d84d1f74c4cd72e19757d26434f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 19 19:29:40 2009 +0200
+
+    decomp: add support for xz compressed streams (LZMA)
+    
+    (cherry picked from commit 25c5aee0ba1cddd7683eb2fbcb7471548e3b861c)
+
+commit 6099fa6e498e0c5912d7a2d65053c8fb87d9f053
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 1 21:21:29 2009 +0200
+
+    Some news for 1.0.4
+
+commit afbe18cb9ca22d517e9c730750c7cd8431fbd225
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Dec 1 21:21:07 2009 +0200
+
+    Don't try to read non-existent glx-shm config item
+
+commit 5fd887766ace1724f84b24de1839f2e3e56c7194
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 29 22:44:14 2009 +0200
+
+    GLX: remove silly --glx-shm option
+
+commit b96c4bbb75e8d4ad993d6d41b8cc97be06068b2f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 29 22:28:44 2009 +0200
+
+    GLX: remove nonsensical glx-adaptor
+    
+    This smells like fishy cut&paste from the former XV plugin.
+    (cherry picked from commit 547c0f4035e21e817bad04ff2b33ec2d0e4fc66d)
+    
+    Conflicts:
+    
+    	modules/video_output/x11/glx.c
+
+commit 553e55955c170e39faf6a35f21c7f85d985aa0a4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 29 18:22:51 2009 +0200
+
+    Fix previous commit
+    (cherry picked from commit b69d64d4abe24d01ceac7a02e2621454f10c49ba)
+
+commit fae61d7b665e0af6bde2c9d07dac3de90bf9dde1
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 29 18:10:33 2009 +0200
+
+    Fix another potential audio output dead lock
+    (cherry picked from commit 2852aba44c5127fea525f348d77fcd82cd326a3f)
+
+commit ebf3e8de0c47cf13a06d3e2377496697552e411c
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 29 13:16:51 2009 +0200
+
+    Fix potential deadlock when changing audio channels (fixes #2240)
+    (cherry picked from commit 66b2d87574e61f5bf293ffd29235819805d0fd96)
+
+commit 9f23b7b9d780717003287437ffd4391d3858a88f
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 29 13:06:53 2009 +0200
+
+    Lock order fix
+    (cherry picked from commit d23bca379e5eed844f90c74741f41d2107e1532b)
+
+commit f70264e67e9309f21980df26e63272e147d747c5
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Fri Nov 27 10:23:45 2009 +0100
+
+    lua_libs: use the right object.
+
+commit 585ccf6efaa547e09b7c56de875a3dbc2a6a1f49
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 26 19:20:21 2009 +0200
+
+    Qt4: set correct default port depending on the protocol
+
+commit b5140a939de965f67eaab72009fc7fe9853393fe
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Nov 26 17:24:06 2009 +0200
+
+    Qt4: fix default port numbers in streaming wizard
+    
+    (cherry picked from commit 5027135e7c8ccf026b93c95c9e4badb1a4d94a89)
+
+commit 7bcc7c28d3ea61f3d39bcbff016895e64da4c607
+Author: Jakob Leben <jleben@videolan.org>
+Date:   Wed Nov 25 08:44:58 2009 +0100
+
+    jack: replace deprecated jack_client_new with jack_client_open
+    (cherry picked from commit 82a66cf4c0e1745e8d8ea71a43d8076bf541c804)
+
+commit 8196669897517184bcc53f3fba9b116bb25a634b
+Author: Jakob Leben <jleben@videolan.org>
+Date:   Wed Nov 25 08:41:13 2009 +0100
+
+    jack: missing lock
+    (cherry picked from commit f4fff7791b52e689455147d42fb7bfbbdd8b48de)
+
+commit 0201453e065be0f0ecf1c7f49b38a3b3de786fe4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Mon Nov 23 18:50:44 2009 +0200
+
+    RC: make fastforward actually go faster
+
+commit 3b5aed12a8ee803adfc49d3bf9ced934b191aaa0
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Jul 9 21:54:13 2009 +0300
+
+    Missing #include
+    (cherry picked from commit 9ba4ee19c6b3580e86920b8a33625775ca27d473)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit b88e129f4a81f2a031f9ddc489295451f3d0e4d9
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Fri Nov 20 19:01:10 2009 +0100
+
+    WinCE: fix window size in wing{d,ap}i video output
+    (cherry picked from commit 64ebe1ee52f6eb5873f51f9d10059f0e22d36167)
+
+commit 3b5370b5d20771f75ea665b1a50051b06d0ca129
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Wed Nov 11 10:53:18 2009 +0100
+
+    ogg: Fix tiny bugger overflow.
+    (cherry picked from commit 02cd9bdfccbddfea3e66c4822abd4da4812a1c6e)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 789c4a6ff4027e43d0c16d7a67c5dba428d527a8
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Thu Nov 12 13:21:21 2009 +0100
+
+    lua_intf: fix memleak.
+    (cherry picked from commit cf015393d70b394b2ca2b622e7671d2aa4e1f97d)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 70cddaa6a7c7d8e3dc1c9fc91bddcb5320f614f3
+Author: Rémi Duraffort <ivoire@videolan.org>
+Date:   Mon Nov 16 22:17:00 2009 +0100
+
+    lua_libs: release the playlist object.
+    (cherry picked from commit 49d423b347d68396a5abe0faa86993c6069f5c76)
+    
+    Conflicts:
+    
+    	modules/misc/lua/libs/volume.c
+
+commit d5c210e768146dd11eacaa225bdb157182a9f334
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Mon Nov 16 22:14:16 2009 +0100
+
+    Revert "xcb hotkeys: Cherry pick [25cd592]"
+    
+    This reverts commit a3ed7240100c5d897c05f37ad25ec23d54f33439.
+
+commit f6201f23e744923964b3decdd7d6c238243fe44b
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Mon Nov 16 21:47:22 2009 +0100
+
+    Prepare for 1.0.4-rc, update NEWS
+
+commit ff79f2ae775c39385ea5f07a4086659f81c448aa
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Tue Nov 3 21:28:26 2009 +0200
+
+    XCB global hotkeys: fix X11 connection failure handling (cherry picked from commit ed769d221904d20062ec95648e774abd2a43297a)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit 489ee7975b8db2666005e00d27f5c3b01d466eae
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Fri Oct 9 02:39:20 2009 +0200
+
+    globalhotkeys xcb : fix modifiers with xcb-keysyms >= 0.3.4 (cherry picked from commit ba423412ed87bdfadfb09941500ee742c8cad8b1)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit fe553f472c7c3d9bbf5574c5e7579bc58c5d483a
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Fri Oct 9 02:16:12 2009 +0200
+
+    remove debug left over in [b3a591d0] (cherry picked from commit 0ee1c43ff0f4b3535b4d824e24a3de636bf6329d)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit 335ec24801c31a672653b2155f916788d1c28320
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Wed Oct 7 21:32:27 2009 +0200
+
+    Fixed globalhotkeys compilation with old xcb version. (cherry picked from commit d210da89ff1fdd4a658142f960b39efd6715de2d)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit fb84c353bd2b330b328820424fa269bd3d84ba08
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Wed Oct 7 19:57:48 2009 +0200
+
+    globalhotkeys : use new xcb-util API (>= 0.3.4)
+    
+    recent xcb_key_symbols_get_keycode() now returns a pointer
+    
+    Keep old API (as present in Debian Lenny for example) as requested by nefrir
+    GetModifier() is broken when using the new API, it might be broken as
+    well when using the old API.
+    
+    Documents / source code of functions used in GetModifier() are very
+    welcome, libxcb only ships XML descriptions and the generated source
+    code is very unreadable.
+    (cherry picked from commit b3a591d0bf921e373ea26ae3f14e0685c840ffda)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit a3ed7240100c5d897c05f37ad25ec23d54f33439
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Mon Nov 16 18:28:59 2009 +0100
+
+    xcb hotkeys: Cherry pick [25cd592]
+
+commit afa0866b3237c7f953f49e94123815e5fd99f3c2
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Wed Oct 7 18:10:10 2009 +0200
+
+    globalhotkeys/xcb.c : cosmetics, make all lines fit in 80 columns (cherry picked from commit fdd9531441f3ed75add7581934a8c64c3a7d013b)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit ceddc378d0a668f72181a3e69bc25e1fb13d8f81
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Wed Oct 7 18:01:36 2009 +0200
+
+    globalhotkeys/xcb.c : fix warnings (cherry picked from commit 700f57f24b5898aa9929d66d253dfc5eff4c606d)
+    
+    Signed-off-by: Rafaël Carré <rafael.carre@gmail.com>
+
+commit a956f6645d1b363ba957e5558c4243ea7d3ee35a
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Mon Nov 16 18:22:05 2009 +0100
+
+    XCB: missing #include <errno.h>
+
+commit 3e98ceee37754647c3a6d44fdd69ac4f83bb86af
+Author: Jean-Philippe André <jpeg@endymion.via.ecp.fr>
+Date:   Wed Nov 11 19:05:49 2009 +0100
+
+    Lua: release input thread
+    (cherry picked from commit 8433e306f6f1f0e00a7d0678fbd098cda74eb7b4)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 8de1e234b29f3ea781ac241cf3a22dcf976ae9b0
+Author: Jean-Philippe André <jpeg@endymion.via.ecp.fr>
+Date:   Wed Nov 11 22:17:48 2009 +0100
+
+    Lua: don't lock playlist before playlist_Play
+    (cherry picked from commit 1a881eeb4f5c869d5b894152901c57e867659127)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit 50a6062f74cc97166e9e0263587f76a12b3bb063
+Author: Jean-Philippe André <jpeg@endymion.via.ecp.fr>
+Date:   Wed Nov 11 21:29:43 2009 +0100
+
+    Lua: fix typo in rc.lua
+    (cherry picked from commit 0c0756dd88de0f14013d868ea0f622eef0b5d65b)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit a4241c2b74c4674d7020cfd4452f1e0ac17f0f89
+Author: Dylan Yudaken <dyudaken@gmail.com>
+Date:   Tue Oct 20 00:04:54 2009 +0200
+
+    Fix sorting of plugin scores in the QT plugin dialog.
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+    (cherry picked from commit 3554eedcce5f33711220578285aad015595c53c6)
+    
+    Signed-off-by: Rémi Duraffort <ivoire@videolan.org>
+
+commit c0ec5be56e71c273eef4faea8d927eeb3cbc7ec5
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sun Nov 15 17:03:17 2009 +0200
+
+    Ugly hack to prevent qt4-x11 from using alpha channel
+    
+    This breaks our current Xlib XVideo and plain X11 outputs.
+    Qt4 would create an ARGB window for our embedded video. Then, the
+    Xlib plugins would raise BadMatch errors and VLC aborts. Starting
+    cairo-dock is an easy way to trigger this problem.
+    (With XCB plugins, we fail safe to OpenGL/GLX instead of crashing.)
+    
+    We should instead handle ARGB visuals properly. But that would involve
+    more efforts, and would only enable plain X11, not XVideo anyway.
+    
+    This should work around LP#416294.
+
+commit 493ed6ef7ff138e7b93f31e962bb28dfa06d928b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Oct 28 23:34:15 2009 +0200
+
+    Pulse: don't spam if PulseAudio is not running
+    
+    (cherry picked from commit 8bfd40613ca0e3446d22495a62146a00eb7c843d)
+
+commit 7d578256413c3d038e1ccfe3b0918ae3eec382a4
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Sep 2 19:44:55 2009 +0300
+
+    PulseAudio: higher priority than ALSA
+    
+    Without this, the PulseAudio output is completely useless. PulseAudio
+    provides ALSA emulation, so VLC would always use ALSA. Now, it will use
+    ALSA if PulseAudio is not available, but avoid the PulseAudio ALSA
+    emulation which makes more sense. Either way, if your PulseAudio setup
+    is broken, you are screwed - this change makes no difference.
+    (cherry picked from commit 7c4ca246a6be1d76bca3482893d5e1b35c5c7fb9)
+
+commit eb31e0f623516e81a01600e5ef1237e01fe3cd47
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Nov 11 20:20:51 2009 +0200
+
+    Do not reparent after requesting fullscreen mode
+    
+    Some (all?) window managers will clear the fullscreen state when the window
+    reparents. Instead, always reparent first then ask for fullscreen.
+    
+    This hopefully fixes the taskbar over video bug with KDE 4.3.3.
+
+commit 393fde7391773e8a6e8ba260c79926f8e406a82b
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Wed Nov 11 20:20:31 2009 +0200
+
+    Fix EMWH fullscreen mode request
+
+commit 006708e1764b7a8e6c78b86de689ba2083c07d14
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Fri Nov 13 10:53:09 2009 +0100
+
+    contrib: fix live555 on WinCE
+    
+    Remove patch merged upstream
+    (cherry picked from commit 837bf32ec86bd696d7422a27fafb103f9d12474f)
+    
+    Conflicts:
+    
+    	extras/contrib/src/Makefile
+
+commit e4e10e99ff0f7f9268dc0b6a8b10a89a6d237cab
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Nov 12 08:24:04 2009 +0100
+
+    Include header only if needed
+    
+    This fixes compilation on WinCE, where signal.h is missing
+
+commit 8331be3aaab5cfb33ea96042f1b96826721f76dd
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Nov 12 06:03:56 2009 +0100
+
+    contrib: define _WIN32_WCE on mingw32ce
+    
+    Because you're supposed to
+    (cherry picked from commit cc352bcff484d45b27e78c07de3a58cbcbe06d6c)
+
+commit 286086d98be23960d58f8d6f9e1dce962da1bf81
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Nov 12 05:33:18 2009 +0100
+
+    contrib: something working for WinCE
+    
+    That is adding errno and live555, and disabling what currently
+    doesn't build
+    (cherry picked from commit 6ccccdf019234f13884f0bfd49c746016e59d518)
+
+commit 37c04448bb52ddb6752324c6910437d15d81c646
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Nov 12 03:05:56 2009 +0100
+
+    contrib: add minimal errno.h target (for WinCE)
+    
+    WinCE lacks errno support and thus doesn't have an errno.h header.
+    Since it is used like everywhere, contribs and VLC, we add a .errno
+    target in the contribs, that fetches a minimal errno.h that allows
+    everything to compile smoothly.
+    
+    This is how it was done before too.
+    (cherry picked from commit 181dbe9efe7917b2ba5f75f64bf07d11ca6ca0d2)
+
+commit c914eeaf2e6f7400f67ea561968e607f9e4125fb
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Nov 12 07:50:21 2009 +0100
+
+    contrib: hack to disable codecs for ffmpeg on WinCE
+
+commit caef4dbbf51ae286f8fb51f1119090a50afb6b66
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Thu Nov 12 07:43:48 2009 +0100
+
+    contrib: live555 for WinCE
+    
+    (cherry picked from commit 9dcb37114f572ae16f022ed4dcfff47d9b02e198)
+    
+    Conflicts:
+    
+    	extras/contrib/src/Makefile
+
+commit 1e90c0a875293198b9f40818853b023253d7d6f4
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Tue Nov 10 23:09:29 2009 +0100
+
+    WinCE: fix live555 detection/linkage
+    (cherry picked from commit 50052f5152de29744d9fbb7a0603f2788eaf8eee)
+
+commit 96724e8d8acfd23885f4fb853ddd698094e37049
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Tue Nov 10 08:35:24 2009 +0100
+
+    Include header only if needed
+    
+    This fixes compilation on WinCE, where signal.h is missing
+    (cherry picked from commit b6d44be792493f2ad9364d255d758df5d60d8ce6)
+
+commit 2f7ce55944602f96facf1e767dba09b10eadcec3
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Tue Nov 10 07:21:32 2009 +0100
+
+    Remove useless include
+    (cherry picked from commit 772baf99603c0d2bf7e7b500fe6641b24bf1ba29)
+
+commit 6d723745342030f5774da01862ffea373df6377e
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Tue Nov 10 06:58:37 2009 +0100
+
+    WinCE: guard against inclusion of missing header file
+    (cherry picked from commit a79ab1f65d837721fc83236d7aba0808c0c17c05)
+
+commit f3753b058867099acf1ccc28e57451f06ae4d177
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Mon Nov 9 21:13:17 2009 +0100
+
+    contrib: update ffmpeg compilation for WinCE
+    
+    Remove useless patch and update arch parameters
+    (cherry picked from commit cbe6005492c744d74cf1ecba377416d28258b70e)
+
+commit 230c93337d813ee26dabfa4f8902b0269bf8f132
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Fri Aug 21 22:35:56 2009 +0300
+
+    Unused #include
+    (cherry picked from commit bd3b41a5ae59621ae2232277831b53c5e6b513f6)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit a5c7457a2b36ca5ea0154903bbb944abac1092e4
+Author: Baptiste Coudurier <baptiste.coudurier@gmail.com>
+Date:   Sat Sep 19 12:12:07 2009 +0300
+
+    avformat: remove NOFILE hack, fix MXF seeking
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+    (cherry picked from commit 230af767388f9aea0d7edc5717c4abd342f2cd1a)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 0657d7289f21e8815893cb78e202a67923b31048
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Wed Nov 4 13:15:08 2009 +0100
+
+    WinCE: strip plugin DLLs when creating package
+    
+    This is quite important on devices where storage space is limited...
+    (cherry picked from commit 6ec51c9175d20d7ae9e3a525c3fde5330314faaf)
+
+commit eb357780901afb66e7aa6e59064cae5dc6138308
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Nov 7 11:54:53 2009 +0200
+
+    Qt4: fix V4L1 device node specification
+    
+    --v4l-vdev is obsolete.
+    (cherry picked from commit 323d19aa2710e1dc1d5f2dbdef32d7fa43e7909d)
+
+commit 0e1b49f9c724fa71d5924fc037810e003c5b7d5c
+Author: Gaëtan Rousseaux <garousseau@voo.be>
+Date:   Wed Nov 4 22:06:27 2009 +0000
+
+    l10n: Walloon update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 4598d7866b8323b3fb4b4e1ad28a6fdf581fed1f
+Author: Abdul Fousan <abdulfousan@gmail.com>
+Date:   Wed Nov 4 22:05:14 2009 +0000
+
+    l10n: Initial Tamil translation
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit aec4d0e68e9086aa3fd2ca800b7bd438e6bbc113
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Tue Nov 3 22:07:29 2009 +0100
+
+    Fix release doc for update file
+
+commit 3202948df4493fb74d9035d8923241828ace4f25
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Tue Nov 3 22:06:52 2009 +0100
+
+    Ignore dvdread.m4
+
+commit b258abce7a5d045abaa4185b5e9b085cab78086d
+Author: Rafaël Carré <rafael.carre@gmail.com>
+Date:   Tue Nov 3 22:05:56 2009 +0100
+
+    Update: make sure 1.0.4 >  1.0.4-rcX
+    
+    Also remove unneeded prototypes
+
+commit df26bfc692143d313b5cd5825a58fa035579fdf0
+Author: Erwan Tulou <erwan10@videolan.org>
+Date:   Tue Nov 3 21:22:08 2009 +0100
+
+    skins2: add a --[no]-skinned-video parameter (enabled by default)
+    
+    This parameter is intended to give old skins a chance to play back video even
+    though no video tag is provided in the theme.xml file.
+
+commit f863537eea5942dbfe180b496c9a2117d84d68e8
+Author: Oleksandr Natalenko <pfactum@gmail.com>
+Date:   Sun Nov 1 18:23:28 2009 +0000
+
+    l10n: Ukrainian update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 466e3f35b6850d26788bc4b911e234188260bab8
+Author: Gaëtan Rousseaux <garousseau@voo.be>
+Date:   Sat Oct 31 17:31:24 2009 +0000
+
+    l10n: Initial Walloon translation
+    
+    Not activated yet as only ~5% translated
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit bbd125f341d75d6aad4eee2b3b1f6105749ae80c
+Author: Daniel Nylander <po@danielnylander.se>
+Date:   Sat Oct 31 17:30:46 2009 +0000
+
+    l10n: Swedish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit c33e84af9b436a3f76f6adf01165c54b4f918d16
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Sat Oct 31 17:22:04 2009 +0200
+
+    Refuse to proceed with --disable-shared.
+    
+    This cannot work the way VLC links its plugins. Too many people shot
+    themselves in the foot with this option.
+    (cherry picked from commit 6b856a9d8f1301b387e1a73aa3c6213a5cddfc71)
+
+commit 2346b7f47ea16c55901eda0eb3231efbfa35a285
+Author: Ilkka Ollakka <ileoo@videolan.org>
+Date:   Thu Oct 8 23:41:14 2009 +0300
+
+    m3u.c: use input_item_SetTitle
+    
+    This allow to have channelnames on saved xspf-playlist from dvb-scanning.
+    (cherry picked from commit f428f72bdda60aee90958a0616b5b22ab0ab2c4b)
+
+commit d0290dfa33b718ce427ff7d3e4f01578b6f56048
+Author: Ilkka Ollakka <ileoo@iki.fi>
+Date:   Fri Oct 30 17:44:35 2009 +0200
+
+    dvb: set demux=ts only if we didn't do scan
+    
+    Without this when scanning, we would force demuxer to ts but outputted m3u-playlist.
+    (cherry picked from commit a45e7b566f754925d10a0d2a84bccf97c5c5957a)
+
 commit bbd0e216f9d1a7a1f59952433d4293847016f4b6
 Author: Jean-Baptiste Kempf <jb@videolan.org>
 Date:   Thu Oct 29 21:39:36 2009 +0100

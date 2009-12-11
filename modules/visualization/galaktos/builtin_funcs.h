@@ -2,7 +2,7 @@
  * builtin_funcs.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 8c6cb5767d1b12cc6c242b5c8fccba87c039528d $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

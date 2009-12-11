@@ -2,7 +2,7 @@
  * noise.c : "add grain to image" video filter
  *****************************************************************************
  * Copyright (C) 2000-2007 the VideoLAN team
- * $Id$
+ * $Id: 28f54eb813ffb07c3c3a5088f0ed5f671e99b48a $
  *
  * Authors: Antoine Cellerier <dionoea -at- videolan -dot- org>
  *

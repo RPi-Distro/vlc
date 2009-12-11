@@ -2,7 +2,7 @@
  * openurl.hpp: Open a MRL or clipboard content
  ****************************************************************************
  * Copyright © 2009 the VideoLAN team
- * $Id$
+ * $Id: 40bda54b46339e3ddc7d0b71d5ab93d6b9f8f5d5 $
  *
  * Authors: Jean-Philippe André <jpeg@videolan.org>
  *

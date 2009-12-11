@@ -2,7 +2,7 @@
  * plugins.hpp : Plug-ins and extensions listing
  ****************************************************************************
  * Copyright (C) 2008 the VideoLAN team
- * $Id: 1a243a8913e5ab058a066a506ce48234f33f0650 $
+ * $Id: 1245e9ca8c2206570c8e9569ea66518655343cf1 $
  *
  * Authors: Jean-Baptiste Kempf <jb (at) videolan.org>
  *
@@ -25,6 +25,8 @@
 #define QVLC_PLUGIN_DIALOG_H_ 1
 
 #include "util/qvlcframe.hpp"
+#include <QTreeWidget>
+#include <QStringList>
 
 class QTreeWidget;
 class QLineEdit;
@@ -55,6 +57,14 @@ private:
     SearchLineEdit *edit;
 private slots:
     void search( const QString& );
+};
+
+class PluginTreeItem : public QTreeWidgetItem
+{
+public:
+    PluginTreeItem(QStringList &qs_item, int Type = QTreeWidgetItem::Type) : QTreeWidgetItem (qs_item, Type)
+    { }
+    virtual bool operator< ( const QTreeWidgetItem & other ) const;
 };
 
 #endif

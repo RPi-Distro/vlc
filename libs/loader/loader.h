@@ -1,6 +1,6 @@
 /*
  * Win32 binary loader interface
- * $Id$
+ * $Id: ec29983d4bc65ed0b19e51587c4992ef4a8e97e9 $
  *
  * Copyright 2000 Eugene Kuznetsov (divx@euro.ru)
  * Copyright (C) the Wine project

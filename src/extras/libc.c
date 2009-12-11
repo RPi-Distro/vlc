@@ -2,7 +2,7 @@
  * libc.c: Extra libc function for some systems.
  *****************************************************************************
  * Copyright (C) 2002-2006 the VideoLAN team
- * $Id: 60c7139abfca8695a6635397cf6457a5463a11cd $
+ * $Id: ada9f6e2ed1b717e3009b9e0db50ca55e141d33d $
  *
  * Authors: Jon Lech Johansen <jon-vl@nanocrew.net>
  *          Samuel Hocevar <sam@zoy.org>
@@ -47,9 +47,8 @@
 #   include <dirent.h>
 #endif
 
-#include <signal.h>
-
 #ifdef HAVE_FORK
+#   include <signal.h>
 #   include <sys/time.h>
 #   include <unistd.h>
 #   include <errno.h>

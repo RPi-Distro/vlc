@@ -2,7 +2,7 @@
  * playlist_preparser.h:
  *****************************************************************************
  * Copyright (C) 1999-2008 the VideoLAN team
- * $Id$
+ * $Id: 2df0d1a932e6e5c48cdaa888dae62c22e3e5fb1b $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Clément Stenac <zorglub@videolan.org>

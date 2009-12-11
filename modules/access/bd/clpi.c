@@ -2,7 +2,7 @@
  * clpi.c: BluRay Disc CLPI
  *****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id$
+ * $Id: 5f88fa4227d0c0ca038f878bda56f5222fe83503 $
  *
  * Authors: Laurent Aimar <fenrir _AT_ videolan _DOT_ org>
  *

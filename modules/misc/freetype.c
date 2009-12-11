@@ -2,7 +2,7 @@
  * freetype.c : Put text on the video, using freetype2
  *****************************************************************************
  * Copyright (C) 2002 - 2007 the VideoLAN team
- * $Id: 9a8e74e9d32acbbdef07e42ade65c0c5dd857ed6 $
+ * $Id: a23b6aaf91774769008235793b0a6e5dfe613631 $
  *
  * Authors: Sigmund Augdal Helberg <dnumgis@videolan.org>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -265,6 +265,7 @@ struct filter_sys_t
 #ifdef HAVE_FONTCONFIG
     bool           b_fontconfig_ok;
     FcConfig      *p_fontconfig;
+    xml_t         *p_xml;
 #endif
 
     input_attachment_t **pp_font_attachments;
@@ -296,6 +297,9 @@ static int Create( vlc_object_t *p_this )
     p_filter->p_sys = p_sys = malloc( sizeof( filter_sys_t ) );
     if( !p_sys )
         return VLC_ENOMEM;
+ #ifdef HAVE_FONTCONFIG
+    p_sys->p_xml = NULL;
+#endif
     p_sys->p_face = 0;
     p_sys->p_library = 0;
     p_sys->i_font_size = 0;
@@ -421,6 +425,7 @@ static void Destroy( vlc_object_t *p_this )
 
 #ifdef HAVE_FONTCONFIG
     FontBuilderDetach( p_filter, p_sys->p_fontbuilder );
+    if( p_sys->p_xml ) xml_Delete( p_sys->p_xml );
 #endif
 
     /* FcFini asserts calling the subfunction FcCacheFini()
@@ -2230,7 +2235,6 @@ static int RenderHtml( filter_t *p_filter, subpicture_region_t *p_region_out,
 {
     int          rv = VLC_SUCCESS;
     stream_t     *p_sub = NULL;
-    xml_t        *p_xml = NULL;
     xml_reader_t *p_xml_reader = NULL;
 
     if( !p_region_in || !p_region_in->psz_html )
@@ -2245,12 +2249,12 @@ static int RenderHtml( filter_t *p_filter, subpicture_region_t *p_region_out,
                               true );
     if( p_sub )
     {
-        p_xml = xml_Create( p_filter );
-        if( p_xml )
+        if( !p_filter->p_sys->p_xml ) p_filter->p_sys->p_xml = xml_Create( p_filter );
+        if( p_filter->p_sys->p_xml )
         {
             bool b_karaoke = false;
 
-            p_xml_reader = xml_ReaderCreate( p_xml, p_sub );
+            p_xml_reader = xml_ReaderCreate( p_filter->p_sys->p_xml, p_sub );
             if( p_xml_reader )
             {
                 /* Look for Root Node */
@@ -2274,7 +2278,7 @@ static int RenderHtml( filter_t *p_filter, subpicture_region_t *p_region_out,
                     {
                         /* Only text and karaoke tags are supported */
                         msg_Dbg( p_filter, "Unsupported top-level tag '%s' ignored.", psz_node );
-                        xml_ReaderDelete( p_xml, p_xml_reader );
+                        xml_ReaderDelete( p_filter->p_sys->p_xml, p_xml_reader );
                         p_xml_reader = NULL;
                         rv = VLC_EGENERIC;
                     }
@@ -2345,9 +2349,8 @@ static int RenderHtml( filter_t *p_filter, subpicture_region_t *p_region_out,
                 }
                 FreeLines( p_lines );
 
-                xml_ReaderDelete( p_xml, p_xml_reader );
+                xml_ReaderDelete( p_filter->p_sys->p_xml, p_xml_reader );
             }
-            xml_Delete( p_xml );
         }
         stream_Delete( p_sub );
     }

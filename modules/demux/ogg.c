@@ -2,7 +2,7 @@
  * ogg.c : ogg stream demux module for vlc
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: 2b62be732d43aaeb9a975e2576082de68156e5bc $
+ * $Id: 78a39eb441ef755cde6f07d57eb2f2daf670f905 $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *          Andre Pang <Andre.Pang@csiro.au> (Annodex support)
@@ -1832,7 +1832,7 @@ static void Ogg_ReadAnnodexHeader( vlc_object_t *p_this,
             uint8_t *p = memchr( &p_oggpacket->packet[42], '\r',
                                  p_oggpacket->bytes - 1 );
             if( p && p[0] == '\r' && p[1] == '\n' )
-                sscanf( (char*)(&p_oggpacket->packet[42]), "%1024s\r\n",
+                sscanf( (char*)(&p_oggpacket->packet[42]), "%1023s\r\n",
                         content_type_string );
         }
 

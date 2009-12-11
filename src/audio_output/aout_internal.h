@@ -2,7 +2,7 @@
  * aout_internal.h : internal defines for audio output
  *****************************************************************************
  * Copyright (C) 2002 the VideoLAN team
- * $Id$
+ * $Id: ca2576e9d241c6a9c0aca9f019eba678625a43ad $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *

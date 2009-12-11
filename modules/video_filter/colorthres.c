@@ -2,7 +2,7 @@
  * colorthres.c: Theshold color based on similarity to reference color
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id$
+ * $Id: e847b706f8409dd6403ded3ed6e08dc4605affa7 $
  *
  * Authors: Sigmund Augdal <dnumgis@videolan.org>
  *

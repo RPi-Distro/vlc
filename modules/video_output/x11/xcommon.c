@@ -2,7 +2,7 @@
  * xcommon.c: Functions common to the X11 and XVideo plugins
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: 61ef9791067836781c239aa8ba35f2860718fbce $
+ * $Id: adc5e791cee026df57ea24f9863b536cff060a3c $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Sam Hocevar <sam@zoy.org>
@@ -2169,31 +2169,33 @@ static void ToggleFullScreen ( vout_thread_t *p_vout )
                                      p_vout->p_sys->p_win->base_window,
                                      CWOverrideRedirect,
                                      &attributes);
-
-            /* Make sure the change is effective */
-            XReparentWindow( p_vout->p_sys->p_display,
-                             p_vout->p_sys->p_win->base_window,
-                             DefaultRootWindow( p_vout->p_sys->p_display ),
-                             0, 0 );
         }
+
+        /* Make sure the change is effective */
+        XReparentWindow( p_vout->p_sys->p_display,
+                         p_vout->p_sys->p_win->base_window,
+                         DefaultRootWindow( p_vout->p_sys->p_display ), 0, 0 );
 
         if( p_vout->p_sys->b_net_wm_state_fullscreen )
         {
-            XClientMessageEvent event;
-
-            memset( &event, 0, sizeof( XClientMessageEvent ) );
-
-            event.type = ClientMessage;
-            event.message_type = p_vout->p_sys->net_wm_state;
-            event.display = p_vout->p_sys->p_display;
-            event.window = p_vout->p_sys->p_win->base_window;
-            event.format = 32;
-            event.data.l[ 0 ] = 1; /* set property */
-            event.data.l[ 1 ] = p_vout->p_sys->net_wm_state_fullscreen;
+            XClientMessageEvent event = {
+                .type = ClientMessage,
+                .window = p_vout->p_sys->p_win->base_window,
+                .message_type = p_vout->p_sys->net_wm_state,
+                .format = 32,
+                .data = {
+                    .l = {
+                        1, /* set property */
+                        p_vout->p_sys->net_wm_state_fullscreen,
+                        0,
+                        1,
+                    },
+                },
+            };
 
             XSendEvent( p_vout->p_sys->p_display,
                         DefaultRootWindow( p_vout->p_sys->p_display ),
-                        False, SubstructureRedirectMask,
+                        False, SubstructureNotifyMask|SubstructureRedirectMask,
                         (XEvent*)&event );
         }
 
@@ -2212,11 +2214,6 @@ static void ToggleFullScreen ( vout_thread_t *p_vout )
  * as really the wm should be deciding if, on fullscreening of a window
  * the focus should go there or not, so let the wm decided */
 #define APPFOCUS 0
-        /* Make sure the change is effective */
-        XReparentWindow( p_vout->p_sys->p_display,
-                         p_vout->p_sys->p_win->base_window,
-                         DefaultRootWindow( p_vout->p_sys->p_display ),
-                         0, 0 );
 
 #ifdef HAVE_XINERAMA
         if( XineramaQueryExtension( p_vout->p_sys->p_display, &i_d1, &i_d2 ) &&
@@ -2775,6 +2772,7 @@ static int InitDisplay( vout_thread_t *p_vout )
 #ifdef HAVE_SYS_SHM_H
     p_vout->p_sys->i_shm_opcode = 0;
 
+#ifndef MODULE_NAME_IS_glx
     if( config_GetInt( p_vout, MODULE_STRING "-shm" ) > 0 )
     {
         int major, evt, err;
@@ -2801,6 +2799,7 @@ static int InitDisplay( vout_thread_t *p_vout )
     }
     else
         msg_Dbg( p_vout, "XShm video extension disabled" );
+#endif
 #endif
 
 #ifdef MODULE_NAME_IS_xvideo

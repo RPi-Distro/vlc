@@ -2,7 +2,7 @@
  * cpu.c: CPU detection code
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: 7b10a04743688695672e2a4b1047e6b94ef7dc15 $
+ * $Id: 2a524269d405a8b85c951386e957712c1122c882 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -33,7 +33,6 @@
 #include <vlc_common.h>
 
 #include <sys/types.h>
-#include <signal.h>                            /* SIGHUP, SIGINT, SIGKILL */
 #ifndef WIN32
 #include <unistd.h>
 #include <sys/wait.h>

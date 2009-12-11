@@ -2,7 +2,7 @@
  * x264.c: h264 video encoder
  *****************************************************************************
  * Copyright (C) 2004-2006 the VideoLAN team
- * $Id: 6514d2dad4d2ccc1d5e6da601407dd7778ab5cd1 $
+ * $Id: 3b91a51be447a2924f114b0e29dbe29c8d21531f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -255,6 +255,12 @@ static void Close( vlc_object_t * );
 #define WEIGHTB_TEXT N_("Weighted prediction for B-frames")
 #define WEIGHTB_LONGTEXT N_( "Weighted prediction for B-frames.")
 
+#define WEIGHTP_TEXT N_("Weighted prediction for P-frames")
+#define WEIGHTP_LONGTEXT N_(" Weighted prediction for P-frames: "\
+    " - 0: Disabled\n"\
+    " - 1: Blind offset\n"\
+    " - 2: Smart analysis\n" )
+
 #define ME_TEXT N_("Integer pixel motion estimation method")
 #if X264_BUILD >= 58 /* r728 */
 #define ME_LONGTEXT N_( "Selects the motion estimation algorithm: "\
@@ -405,6 +411,11 @@ static const char *const enc_me_list[] =
 static const char *const enc_me_list_text[] =
   { N_("dia"), N_("hex"), N_("umh"), N_("esa") };
 #endif
+
+#define LOOKAHEAD_TEXT N_("Framecount to use on frametype lookahead")
+#define LOOKAHEAD_LONGTEXT N_("Framecount to use on frametype lookahead. " \
+    "Currently default is lower than x264 default because unmuxable output" \
+    "doesn't handle larger values that well yet" )
 
 #if X264_BUILD >= 58 /* r728 */
 static const char *const enc_me_list[] =
@@ -621,6 +632,12 @@ vlc_module_begin ()
               WEIGHTB_LONGTEXT, false )
 #endif
 
+#if X264_BUILD >= 79
+    add_integer( SOUT_CFG_PREFIX "weightp", 2, NULL, WEIGHTP_TEXT,
+              WEIGHTP_LONGTEXT, false )
+        change_integer_range( 0, 2 )
+#endif
+
 #if X264_BUILD >= 24 /* r221 */
     add_string( SOUT_CFG_PREFIX "me", "hex", NULL, ME_TEXT,
                 ME_LONGTEXT, false )
@@ -687,6 +704,13 @@ vlc_module_begin ()
     add_bool( SOUT_CFG_PREFIX "fast-pskip", 1, NULL, FAST_PSKIP_TEXT,
               FAST_PSKIP_LONGTEXT, false )
 #endif
+
+#if X264_BUILD >= 69
+    add_integer( SOUT_CFG_PREFIX "lookahead", 5, NULL, LOOKAHEAD_TEXT,
+                 LOOKAHEAD_LONGTEXT, false )
+        change_integer_range( 0, 60 )
+#endif
+
 
 #if X264_BUILD >= 46 /* r503 */
     add_bool( SOUT_CFG_PREFIX "dct-decimate", 1, NULL, DCT_DECIMATE_TEXT,
@@ -764,8 +788,8 @@ static const char *const ppsz_sout_options[] = {
     "pre-scenecut", "psnr", "qblur", "qp", "qcomp", "qpstep", "qpmax",
     "qpmin", "qp-max", "qp-min", "quiet", "ratetol", "ref", "scenecut",
     "sps-id", "ssim", "stats", "subme", "subpel", "tolerance", "trellis",
-    "verbose", "vbv-bufsize", "vbv-init", "vbv-maxrate", "weightb", "aq-mode",
-    "aq-strength", "profile", NULL
+    "verbose", "vbv-bufsize", "vbv-init", "vbv-maxrate", "weightb", "weightp", "aq-mode",
+    "aq-strength", "profile", "lookahead", NULL
 };
 
 static block_t *Encode( encoder_t *, picture_t * );
@@ -1152,6 +1176,11 @@ static int  Open ( vlc_object_t *p_this )
         p_sys->param.i_bframe_bias = val.i_int;
 #endif
 
+#if X264_BUILD >= 79
+    p_sys->param.analyse.i_weighted_pred = var_GetInteger( p_enc, SOUT_CFG_PREFIX "weightp" );
+#endif
+
+
 #if X264_BUILD >= 23
     var_Get( p_enc, SOUT_CFG_PREFIX "chroma-me", &val );
     p_sys->param.analyse.b_chroma_me = val.b_bool;
@@ -1313,6 +1342,9 @@ static int  Open ( vlc_object_t *p_this )
             p_sys->param.analyse.b_transform_8x8 = 0;
             p_sys->param.b_cabac = 0;
             p_sys->param.i_bframe = 0;
+#if X264_BUILD >= 79
+            p_sys->param.analyse.i_weighted_pred = X264_WEIGHTP_NONE;
+#endif
         }
         else if (!strcasecmp( val.psz_string, "main" ) )
         {
@@ -1400,7 +1432,7 @@ static int  Open ( vlc_object_t *p_this )
     /* Set lookahead value to lower than default,
      * as rtp-output without mux doesn't handle
      * difference that well yet*/
-    p_sys->param.rc.i_lookahead=5;
+    p_sys->param.rc.i_lookahead= var_GetInteger( p_enc, SOUT_CFG_PREFIX "lookahead" );
 #endif
 
     /* Open the encoder */

@@ -2,7 +2,7 @@
  * playlist.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id$
+ * $Id: f442fe2ed3829b7cb4a95cd4e52feca94213566d $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -87,9 +87,7 @@ static int vlclua_playlist_skip( lua_State * L )
 static int vlclua_playlist_play( lua_State * L )
 {
     playlist_t *p_playlist = vlclua_get_playlist_internal( L );
-    PL_LOCK;
     playlist_Play( p_playlist );
-    PL_UNLOCK;
     vlclua_release_playlist_internal( p_playlist );
     return 0;
 }

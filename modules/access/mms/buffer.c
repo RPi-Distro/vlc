@@ -2,7 +2,7 @@
  * buffer.c: MMS access plug-in
  *****************************************************************************
  * Copyright (C) 2001-2004 the VideoLAN team
- * $Id$
+ * $Id: 06115d35f1e1e259593fecc6ab1332ffc4b7dfac $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

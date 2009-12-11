@@ -2,7 +2,7 @@
  * tarkin.c: tarkin decoder module making use of libtarkin.
  *****************************************************************************
  * Copyright (C) 2001-2003 the VideoLAN team
- * $Id$
+ * $Id: 8c00db57632a8e8c4dc8642f74e835134011bfea $
  *
  * Authors: Gildas Bazin <gbazin@netcourrier.com>
  *

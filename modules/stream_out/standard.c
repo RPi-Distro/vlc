@@ -2,7 +2,7 @@
  * standard.c: standard stream output module
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id$
+ * $Id: 6f43cc673b7a53bc5dc0b4039223adc0bf996321 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *

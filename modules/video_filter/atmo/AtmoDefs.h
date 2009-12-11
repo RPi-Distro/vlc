@@ -4,7 +4,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id$
+ * $Id: 7ee1c4ed1237e7468ba1fe53e37a2e7b579cbefa $
  */
 
 #ifndef _AtmoDefs_h_

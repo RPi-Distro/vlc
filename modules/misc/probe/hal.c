@@ -2,7 +2,7 @@
  * hal.c :  HAL probing module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 7bb6dcbb5d72a0a6c22908d9ac159db47a645ad4 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *

@@ -1,7 +1,7 @@
 /*
  * Modified for use with MPlayer, detailed CVS changelog at
  * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
- * $Id$
+ * $Id: a6472355d3dd6b6b269ed2b96051cda4d4fa2e9c $
  */
 
 #ifndef AVIFILE_COM_H

@@ -2,7 +2,7 @@
  * cmd_minimize.hpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id$
+ * $Id: 14a72c372b209076e56edd2fc828c0bf84b4b1a4 $
  *
  * Authors: Mohammed Adnène Trojette     <adn@via.ecp.fr>
  *
