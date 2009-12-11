@@ -1,3 +1,12 @@
+vlc (1.0.4-1~1.gbpba8499) UNRELEASED; urgency=low
+
+  ** SNAPSHOT build @ba8499a37733efbf109fb65b30bcbe2452fcb57f **
+
+  * New upstream release
+  * libavutil50 seems to be troublesome. Add it to bugs/control
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Fri, 11 Dec 2009 19:53:50 +0000
+
 vlc (1.0.3-1) unstable; urgency=low
 
   * New upstream release
