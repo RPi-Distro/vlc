@@ -52,6 +52,7 @@ Build-Depends: debhelper (>= 7),
                libpostproc-dev (>= 0.cvs20060823),
                libpulse-dev,
                libqt4-dev,
+               librsvg2-dev,
                libschroedinger-dev (>= 1.0.7-1~),
                libsdl-image1.2-dev,
                libsdl1.2-dev (>= 1.2.7+1.2.8cvs20041007-5.3),
@@ -284,6 +285,21 @@ Description: PulseAudio plugin for VLC
  This plugin adds support for PulseAudio to the VLC media player. To
  activate the audio output module, use the `--aout pulse' flag or
  select the `pulse' audio output plugin from the preferences menu.
+ .
+ VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
+ DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
+ streams from various network sources.
+
+Package: vlc-plugin-svg
+Architecture: any
+Depends: vlc-nox (= ${binary:Version}),
+         ${shlibs:Depends},
+         ${misc:Depends}
+Description: SVG plugin for VLC
+ This plugin allows you to render SVG graphics on top of the video.It is a
+ text renderer, and  must be activated through the  '--text-renderer svg'
+ option. When sent non-SVG data, it will convert it to SVG using a template
+ that can be specified by the svg-template-file option.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia

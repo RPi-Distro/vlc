@@ -94,6 +94,7 @@ confflags += \
 	--disable-fluidsynth \
 	--disable-kate \
 	--disable-mtp \
+	--enable-svg \
 	$(NULL)
 
 
