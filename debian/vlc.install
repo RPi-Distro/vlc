@@ -2,6 +2,8 @@ usr/bin/qvlc
 usr/bin/svlc
 usr/lib/vlc/access/libx11_screen_plugin.so
 usr/lib/vlc/codec/libsdl_image_plugin.so
+usr/lib/vlc/control/libglobalhotkeys_plugin.so
+usr/lib/vlc/control/libhotkeys_plugin.so
 usr/lib/vlc/gui/libqt4_plugin.so
 usr/lib/vlc/gui/libskins2_plugin.so
 usr/lib/vlc/misc/libnotify_plugin.so
