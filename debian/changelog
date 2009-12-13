@@ -1,14 +1,25 @@
-vlc (1.0.4-1~2.gbpaf7f72) UNRELEASED; urgency=low
+vlc (1.0.4-1~5.gbp66bbfe) UNRELEASED; urgency=low
 
-  ** SNAPSHOT build @af7f72fc9a6887d4e26a1897437fdbb8f8edeff3 **
+  ** SNAPSHOT build @66bbfe75554967b405288e82164b10da534dffe6 **
 
-  * New upstream release
+  [ Christophe Mutricy ]
+
+  * New upstream release (LP: #453173)
   * libavutil50 seems to be troublesome. Add it to bugs/control
   * Add a vlc-plugin-svg package (Closes: #560009)
   * Switch to xulrunner-dev (Closes: #555915)
   * Activate the global hotkey module (Closes: #548916)
+  * Mention other maintainers and that the binaries are GPL v3 as we
+    link with LGPL v3 libraries (LP: #489093)
 
- -- Christophe Mutricy <xtophe@videolan.org>  Sun, 13 Dec 2009 17:54:53 +0100
+  [ Benjamin Drung ]
+  * Recommend vlc-plugin-pulse for vlc, so that pulse can be used as
+    default output.
+
+  [ Whoopie ]
+  * Enable CDDB in the CDDA module (LP: #439131)
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sun, 13 Dec 2009 23:01:19 +0100
 
 vlc (1.0.3-1) unstable; urgency=low
 
