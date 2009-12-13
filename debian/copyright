@@ -248,7 +248,7 @@ However, this package is linked to LGPL v3 libraries. So while the source is
 GPL v2 or later, this package is GPL v3
 
 On Debian GNU/Linux systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL'.
+Public License can be found in `/usr/share/common-licenses/GPL-3'.
 
 The NetBSD license:
 
