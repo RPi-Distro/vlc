@@ -93,7 +93,7 @@ Depends: vlc-nox (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends},
          ttf-dejavu-core
-Recommeds: vlc-plugin-pulse (= ${binary:Version})
+Recommends: vlc-plugin-pulse (= ${binary:Version})
 Suggests: mozilla-plugin-vlc,
           videolan-doc
 Replaces: vlc-nox (<< 1.0.3-1)
