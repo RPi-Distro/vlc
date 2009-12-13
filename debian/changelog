@@ -1,11 +1,14 @@
-vlc (1.0.4-1~1.gbpba8499) UNRELEASED; urgency=low
+vlc (1.0.4-1~2.gbpaf7f72) UNRELEASED; urgency=low
 
-  ** SNAPSHOT build @ba8499a37733efbf109fb65b30bcbe2452fcb57f **
+  ** SNAPSHOT build @af7f72fc9a6887d4e26a1897437fdbb8f8edeff3 **
 
   * New upstream release
   * libavutil50 seems to be troublesome. Add it to bugs/control
+  * Add a vlc-plugin-svg package (Closes: #560009)
+  * Switch to xulrunner-dev (Closes: #555915)
+  * Activate the global hotkey module (Closes: #548916)
 
- -- Christophe Mutricy <xtophe@videolan.org>  Fri, 11 Dec 2009 19:53:50 +0000
+ -- Christophe Mutricy <xtophe@videolan.org>  Sun, 13 Dec 2009 17:54:53 +0100
 
 vlc (1.0.3-1) unstable; urgency=low
 
