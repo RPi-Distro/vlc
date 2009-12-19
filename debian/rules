@@ -39,62 +39,62 @@ LDFLAGS = -Wl,--as-needed
 confflags += --disable-maintainer-mode --enable-release --prefix=/usr
 confflags += \
 	--config-cache \
-	--enable-fast-install \
-	--with-binary-version=$(DEBIAN_VERSION) \
-	--disable-update-check \
-	--disable-fb \
-	--enable-ggi \
-	--enable-sdl \
-	--enable-mad \
-	--enable-jack \
-	--enable-pulse \
-	--enable-lirc \
-	--enable-a52 \
-	--enable-aa \
-	--enable-dvbpsi \
-	--enable-mozilla \
-	--with-mozilla-pkg=libxul \
-	--enable-dvb \
-	--enable-ogg \
-	--enable-vorbis \
-	--enable-shout \
-	--enable-qt4 \
-	--enable-flac \
-	--enable-skins2 \
-	--enable-freetype \
-	--enable-mkv \
-	--enable-speex \
-	--enable-caca \
-	--enable-live555 \
-	--enable-libmpeg2 \
-	--enable-fribidi \
-	--enable-mod \
-	--enable-theora \
-	--enable-dvdnav \
-	--enable-gnutls \
-	--enable-ncurses \
-	--enable-smb \
-	--disable-gnomevfs \
-	--enable-bonjour \
-	--enable-mpc \
-	--enable-vcd \
-	--enable-vcdx \
-	--enable-notify \
-	--enable-twolame \
-	--enable-faad \
-	--disable-zvbi \
-	--enable-telx \
-	--disable-x264 \
 	--disable-atmo \
-	--enable-taglib \
-	--enable-libass \
-	--enable-dca \
-	--enable-realrtsp \
-	--enable-dv \
+	--disable-fb \
 	--disable-fluidsynth \
+	--disable-gnomevfs \
 	--disable-kate \
 	--disable-mtp \
+	--disable-update-check \
+	--disable-x264 \
+	--disable-zvbi \
+	--enable-a52 \
+	--enable-aa \
+	--enable-bonjour \
+	--enable-caca \
+	--enable-dca \
+	--enable-dv \
+	--enable-dvb \
+	--enable-dvbpsi \
+	--enable-dvdnav \
+	--enable-faad \
+	--enable-fast-install \
+	--enable-flac \
+	--enable-freetype \
+	--enable-fribidi \
+	--enable-ggi \
+	--enable-gnutls \
+	--enable-jack \
+	--enable-libass \
+	--enable-libmpeg2 \
+	--enable-lirc \
+	--enable-live555 \
+	--enable-mad \
+	--enable-mkv \
+	--enable-mod \
+	--enable-mozilla \
+	--enable-mpc \
+	--enable-ncurses \
+	--enable-notify \
+	--enable-ogg \
+	--enable-pulse \
+	--enable-qt4 \
+	--enable-realrtsp \
+	--enable-sdl \
+	--enable-shout \
+	--enable-skins2 \
+	--enable-smb \
+	--enable-speex \
 	--enable-svg \
+	--enable-taglib \
+	--enable-telx \
+	--enable-theora \
+	--enable-twolame \
+	--enable-vcd \
+	--enable-vcdx \
+	--enable-vorbis \
+	--with-binary-version=$(DEBIAN_VERSION) \
+	--with-mozilla-pkg=libxul \
 	$(NULL)
 
 
