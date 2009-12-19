@@ -90,7 +90,7 @@ confflags += \
 	--enable-libass \
 	--enable-dca \
 	--enable-realrtsp \
-	--disable-dv \
+	--enable-dv \
 	--disable-fluidsynth \
 	--disable-kate \
 	--disable-mtp \
