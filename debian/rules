@@ -36,16 +36,23 @@ include /usr/share/quilt/quilt.make
 LDFLAGS = -Wl,--as-needed
 
 # configure flags
-confflags += --disable-maintainer-mode --enable-release --prefix=/usr
 confflags += \
 	--config-cache \
+	--disable-maintainer-mode \
+	--disable-update-check \
+	--enable-fast-install \
+	--enable-release \
+	--prefix=/usr \
+	--with-binary-version=$(DEBIAN_VERSION) \
+	$(NULL)
+# configure features
+confflags += \
 	--disable-atmo \
 	--disable-fb \
 	--disable-fluidsynth \
 	--disable-gnomevfs \
 	--disable-kate \
 	--disable-mtp \
-	--disable-update-check \
 	--disable-x264 \
 	--disable-zvbi \
 	--enable-a52 \
@@ -58,7 +65,6 @@ confflags += \
 	--enable-dvbpsi \
 	--enable-dvdnav \
 	--enable-faad \
-	--enable-fast-install \
 	--enable-flac \
 	--enable-freetype \
 	--enable-fribidi \
@@ -93,7 +99,6 @@ confflags += \
 	--enable-vcd \
 	--enable-vcdx \
 	--enable-vorbis \
-	--with-binary-version=$(DEBIAN_VERSION) \
 	--with-mozilla-pkg=libxul \
 	$(NULL)
 
