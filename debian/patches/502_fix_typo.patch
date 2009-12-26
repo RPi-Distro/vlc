@@ -507,19 +507,6 @@ index 71a6fc7..b8ff044 100644
  
      /* 2 Basic Authentication Scheme */
      if( !strncasecmp( psz_header, "Basic ", strlen( "Basic " ) ) )
-diff --git a/modules/access/screen/screen.c b/modules/access/screen/screen.c
-index 95e23bc..e09806f 100644
---- a/modules/access/screen/screen.c
-+++ b/modules/access/screen/screen.c
-@@ -77,7 +77,7 @@
- #ifdef SCREEN_MOUSE
- #define MOUSE_TEXT N_( "Mouse pointer image" )
- #define MOUSE_LONGTEXT N_( \
--    "If specifed, will use the image to draw the mouse pointer on the " \
-+    "If specified, will use the image to draw the mouse pointer on the " \
-     "capture." )
- #endif
- 
 diff --git a/modules/audio_output/directx.c b/modules/audio_output/directx.c
 index 48097e8..3f65e60 100644
 --- a/modules/audio_output/directx.c
@@ -661,32 +648,6 @@ index a8e9edd..0b527bb 100644
                       "must be 1 and width the number of bytes in the string, "
                       "including the null terminator" );
              return VLC_EGENERIC;
-diff --git a/modules/video_filter/marq.c b/modules/video_filter/marq.c
-index d208db8..62dd9be 100644
---- a/modules/video_filter/marq.c
-+++ b/modules/video_filter/marq.c
-@@ -112,7 +112,7 @@ struct filter_sys_t
-                             "0 (remains forever).")
- #define REFRESH_TEXT N_("Refresh period in ms")
- #define REFRESH_LONGTEXT N_("Number of milliseconds between string updates. " \
--                            "This is mainly usefull when using meta data " \
-+                            "This is mainly useful when using meta data " \
-                             "or time format string sequences.")
- #define OPACITY_TEXT N_("Opacity")
- #define OPACITY_LONGTEXT N_("Opacity (inverse of transparency) of " \
-diff --git a/modules/video_filter/rss.c b/modules/video_filter/rss.c
-index fbb6cb4..3f532f1 100644
---- a/modules/video_filter/rss.c
-+++ b/modules/video_filter/rss.c
-@@ -127,7 +127,7 @@ struct filter_sys_t
- };
- 
- #define MSG_TEXT N_("Feed URLs")
--#define MSG_LONGTEXT N_("RSS/Atom feed '|' (pipe) seperated URLs.")
-+#define MSG_LONGTEXT N_("RSS/Atom feed '|' (pipe) separated URLs.")
- #define SPEED_TEXT N_("Speed of feeds")
- #define SPEED_LONGTEXT N_("Speed of the RSS/Atom feeds in microseconds (bigger is slower).")
- #define LENGTH_TEXT N_("Max length")
 diff --git a/modules/video_output/fb.c b/modules/video_output/fb.c
 index 47a102f..ae19945 100644
 --- a/modules/video_output/fb.c
@@ -839,43 +800,6 @@ index 63d535a..bcbcb32 100644
      if( b_record )
      {
          stream_t *p_filter = stream_FilterNew( p_source,
-diff --git a/src/libvlc-module.c b/src/libvlc-module.c
-index 3cd733c..17c6570 100644
---- a/src/libvlc-module.c
-+++ b/src/libvlc-module.c
-@@ -194,7 +194,7 @@ static const char *const ppsz_snap_formats[] =
-     "This is a ',' separated string, each objects should be prefixed by " \
-     "a '+' or a '-' to respectively enable or disable it. The keyword " \
-     "'all' refers to all objects. Objects can be refered to by their " \
--    "type or module name. Rules applying to named objects take precendence " \
-+    "type or module name. Rules applying to named objects take precedence " \
-     "over rules applying to object types. Note that you still need to " \
-     "use -vvv to actually display debug message.")
- 
-@@ -543,12 +543,12 @@ static const char *const ppsz_pos_descriptions[] =
- 
- #define CUSTOM_CROP_RATIOS_TEXT N_("Custom crop ratios list")
- #define CUSTOM_CROP_RATIOS_LONGTEXT N_( \
--    "Comma seperated list of crop ratios which will be added in the " \
-+    "Comma separated list of crop ratios which will be added in the " \
-     "interface's crop ratios list.")
- 
- #define CUSTOM_ASPECT_RATIOS_TEXT N_("Custom aspect ratios list")
- #define CUSTOM_ASPECT_RATIOS_LONGTEXT N_( \
--    "Comma seperated list of aspect ratios which will be added in the " \
-+    "Comma separated list of aspect ratios which will be added in the " \
-     "interface's aspect ratio list.")
- 
- #define HDTV_FIX_TEXT N_("Fix HDTV height")
-@@ -642,7 +642,7 @@ static const char *const ppsz_clock_descriptions[] =
- 
- #define MIFACE_ADDR_TEXT N_("IPv4 multicast output interface address")
- #define MIFACE_ADDR_LONGTEXT N_( \
--    "IPv4 adress for the default multicast interface. This overrides " \
-+    "IPv4 address for the default multicast interface. This overrides " \
-     "the routing table.")
- 
- #define DSCP_TEXT N_("DiffServ Code Point")
 diff --git a/src/network/tcp.c b/src/network/tcp.c
 index d06dcbd..43f2b53 100644
 --- a/src/network/tcp.c
