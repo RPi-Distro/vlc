@@ -27,7 +27,11 @@ vlc (1.0.4-1~6.gbp327dd9) UNRELEASED; urgency=low
   * Sort confflags in debian/rules
   * Split normal configure flags from feature configure flags
 
- -- Christophe Mutricy <xtophe@videolan.org>  Sat, 26 Dec 2009 18:05:37 +0100
+  [ Reinhard Tartler ]
+  * According to upstream, no longer overlaps kde and xfce panels in
+    fullscreen mode, Closes: #562601, LP: #453173
+
+ -- Reinhard Tartler <siretart@tauware.de>  Sun, 27 Dec 2009 00:49:51 +0100
 
 vlc (1.0.3-1) unstable; urgency=low
 
