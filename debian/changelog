@@ -1,16 +1,18 @@
-vlc (1.0.4-1~5.gbp66bbfe) UNRELEASED; urgency=low
+vlc (1.0.4-1~6.gbp327dd9) UNRELEASED; urgency=low
 
-  ** SNAPSHOT build @66bbfe75554967b405288e82164b10da534dffe6 **
+  ** SNAPSHOT build @327dd9b7948e96887f865f6beb049c69d6424eeb **
 
   [ Christophe Mutricy ]
 
-  * New upstream release (LP: #453173)
+  * New upstream release (Closes: #562601, LP: #453173)
   * libavutil50 seems to be troublesome. Add it to bugs/control
   * Add a vlc-plugin-svg package (Closes: #560009)
   * Switch to xulrunner-dev (Closes: #555915)
   * Activate the global hotkey module (Closes: #548916)
   * Mention other maintainers and that the binaries are GPL v3 as we
     link with LGPL v3 libraries (LP: #489093)
+  * Build-depend on a recent enough live555 to avoid comma vs. decimal
+    point problem (Closes: #539946)
 
   [ Benjamin Drung ]
   * Recommend vlc-plugin-pulse for vlc, so that pulse can be used as
@@ -18,8 +20,14 @@ vlc (1.0.4-1~5.gbp66bbfe) UNRELEASED; urgency=low
 
   [ Whoopie ]
   * Enable CDDB in the CDDA module (LP: #439131)
+  * Enable DV support (LP: #392115)
 
- -- Christophe Mutricy <xtophe@videolan.org>  Sun, 13 Dec 2009 23:01:19 +0100
+  [ Benjamin Drung ]
+  * Fix typos, that are reported by lintian.
+  * Sort confflags in debian/rules
+  * Split normal configure flags from feature configure flags
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 26 Dec 2009 18:05:37 +0100
 
 vlc (1.0.3-1) unstable; urgency=low
 
