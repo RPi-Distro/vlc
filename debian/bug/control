@@ -1,1 +1,1 @@
-report-with: vlc vlc-nox libvlc2 libvlccore0
+report-with: vlc vlc-nox libvlc2 libvlccore0 libavutil50

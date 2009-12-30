@@ -2,7 +2,7 @@
  * vlc_objects.h: vlc_object_t definition and manipulation methods
  *****************************************************************************
  * Copyright (C) 2002-2008 the VideoLAN team
- * $Id$
+ * $Id: e2fda545a74b1e2f687b8e5728e28c239950f7a4 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *

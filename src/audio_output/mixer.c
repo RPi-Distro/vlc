@@ -2,7 +2,7 @@
  * mixer.c : audio output mixing operations
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id$
+ * $Id: c8d31fac211cd86cfbebad954b27b72461abeb9e $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -98,8 +98,8 @@ static int MixBuffer( aout_instance_t * p_aout )
     }
 
 
-    aout_lock_output_fifo( p_aout );
     aout_lock_input_fifos( p_aout );
+    aout_lock_output_fifo( p_aout );
 
     /* Retrieve the date of the next buffer. */
     memcpy( &exact_start_date, &p_aout->output.fifo.end_date,

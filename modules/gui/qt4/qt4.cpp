@@ -2,7 +2,7 @@
  * qt4.cpp : QT4 interface
  ****************************************************************************
  * Copyright © 2006-2009 the VideoLAN team
- * $Id: 49e77329083d5b6bd7b4cf94c7fe8e28abb1bb2e $
+ * $Id: 25978af096d6276f8a006dc8c113b4f7555f39b6 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -282,6 +282,7 @@ static int Open( vlc_object_t *p_this )
         return VLC_EGENERIC;
     }
     XCloseDisplay( p_display );
+    putenv( (char *)"XLIB_SKIP_ARGB_VISUALS=1" );
 #endif
 
     /* Allocations of p_sys */
@@ -345,7 +346,7 @@ static void *Thread( void *obj )
     intf_thread_t *p_intf = (intf_thread_t *)obj;
     MainInterface *p_mi;
     char dummy[] = "vlc"; /* for WM_CLASS */
-    char *argv[] = { dummy, NULL, };
+    char *argv[4] = { dummy, NULL, };
     int argc = 1;
 
     Q_INIT_RESOURCE( vlc );

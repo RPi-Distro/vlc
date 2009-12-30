@@ -2,7 +2,7 @@
  * fftsg.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 779f011c1424368ad88ee067ee23f0b841b8a162 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

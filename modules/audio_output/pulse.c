@@ -97,7 +97,7 @@ static void uninit(aout_instance_t *p_aout);
 vlc_module_begin ()
     set_shortname( "Pulse Audio" )
     set_description( N_("Pulseaudio audio output") )
-    set_capability( "audio output", 40 )
+    set_capability( "audio output", 160 )
     set_category( CAT_AUDIO )
     set_subcategory( SUBCAT_AUDIO_AOUT )
     add_shortcut( "pulseaudio" )
@@ -224,7 +224,7 @@ static int Open ( vlc_object_t *p_this )
     pa_threaded_mainloop_wait(p_sys->mainloop);
 
     if (pa_context_get_state(p_sys->context) != PA_CONTEXT_READY) {
-        msg_Err(p_aout, "Failed to connect to server: %s", pa_strerror(pa_context_errno(p_sys->context)));
+        msg_Dbg(p_aout, "Failed to connect to server: %s", pa_strerror(pa_context_errno(p_sys->context)));
         goto unlock_and_fail;
     }
 
@@ -288,7 +288,7 @@ unlock_and_fail:
     if (p_sys->mainloop)
         pa_threaded_mainloop_unlock(p_sys->mainloop);
 fail:
-    msg_Err(p_aout, "Pulse initialization failed");
+    msg_Dbg(p_aout, "Pulse initialization failed");
     uninit(p_aout);
     return VLC_EGENERIC;
 }

@@ -2,7 +2,7 @@
  * jack : JACK audio output module
  *****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id$
+ * $Id: e6f26546d662f263492c7f90b645da2bd459f30b $
  *
  * Authors: Cyril Deguet <asmax _at_ videolan.org>
  *          Jon Griffiths <jon_p_griffiths _At_ yahoo _DOT_ com>
@@ -116,7 +116,9 @@ static int Open( vlc_object_t *p_this )
     /* Connect to the JACK server */
     snprintf( psz_name, sizeof(psz_name), "vlc_%d", getpid());
     psz_name[sizeof(psz_name) - 1] = '\0';
-    p_sys->p_jack_client = jack_client_new( psz_name );
+    p_sys->p_jack_client = jack_client_open( psz_name,
+                                             JackNullOption | JackNoStartServer,
+                                             NULL );
     if( p_sys->p_jack_client == NULL )
     {
         msg_Err( p_aout, "failed to connect to JACK server" );
@@ -248,7 +250,10 @@ int Process( jack_nframes_t i_frames, void *p_arg )
     jack_sample_t *p_src = NULL;
 
     /* Get the next audio data buffer */
+    vlc_mutex_lock( &p_aout->output_fifo_lock );
     aout_buffer_t *p_buffer = aout_FifoPop( p_aout, &p_aout->output.fifo );
+    vlc_mutex_unlock( &p_aout->output_fifo_lock );
+
     if( p_buffer != NULL )
     {
         p_src = (jack_sample_t *)p_buffer->p_buffer;

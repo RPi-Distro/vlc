@@ -2,7 +2,7 @@
  * demux.c: demuxer using ffmpeg (libavformat).
  *****************************************************************************
  * Copyright (C) 2004-2007 the VideoLAN team
- * $Id: 11cce6c62107065d318cf25ee335debf2897871f $
+ * $Id: 717f9d97b9ee24ea4dc4e58da3951c912277c5bb $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Gildas Bazin <gbazin@videolan.org>
@@ -110,7 +110,6 @@ int OpenDemux( vlc_object_t *p_this )
     AVProbeData   pd;
     AVInputFormat *fmt;
     unsigned int  i;
-    bool          b_avfmt_nofile;
     int64_t       i_start_time = -1;
 
     /* Init Probe data */
@@ -193,15 +192,11 @@ int OpenDemux( vlc_object_t *p_this )
     init_put_byte( &p_sys->io, p_sys->io_buffer, p_sys->io_buffer_size,
                    0, &p_sys->url, IORead, NULL, IOSeek );
 
-    b_avfmt_nofile = p_sys->fmt->flags & AVFMT_NOFILE;
-    p_sys->fmt->flags |= AVFMT_NOFILE; /* libavformat must not fopen/fclose */
-
     /* Open it */
     if( av_open_input_stream( &p_sys->ic, &p_sys->io, p_demux->psz_path,
                               p_sys->fmt, NULL ) )
     {
         msg_Err( p_demux, "av_open_input_stream failed" );
-        if( !b_avfmt_nofile ) p_sys->fmt->flags ^= AVFMT_NOFILE;
         CloseDemux( p_this );
         return VLC_EGENERIC;
     }
@@ -211,12 +206,10 @@ int OpenDemux( vlc_object_t *p_this )
     {
         vlc_avcodec_unlock();
         msg_Err( p_demux, "av_find_stream_info failed" );
-        if( !b_avfmt_nofile ) p_sys->fmt->flags ^= AVFMT_NOFILE;
         CloseDemux( p_this );
         return VLC_EGENERIC;
     }
     vlc_avcodec_unlock();
-    if( !b_avfmt_nofile ) p_sys->fmt->flags ^= AVFMT_NOFILE;
 
     for( i = 0; i < p_sys->ic->nb_streams; i++ )
     {
@@ -355,14 +348,10 @@ void CloseDemux( vlc_object_t *p_this )
 {
     demux_t     *p_demux = (demux_t*)p_this;
     demux_sys_t *p_sys = p_demux->p_sys;
-    bool b_avfmt_nofile;
 
     FREENULL( p_sys->tk );
 
-    b_avfmt_nofile = p_sys->fmt->flags & AVFMT_NOFILE;
-    p_sys->fmt->flags |= AVFMT_NOFILE; /* libavformat must not fopen/fclose */
-    if( p_sys->ic ) av_close_input_file( p_sys->ic );
-    if( !b_avfmt_nofile ) p_sys->fmt->flags ^= AVFMT_NOFILE;
+    if( p_sys->ic ) av_close_input_stream( p_sys->ic );
 
     for( int i = 0; i < p_sys->i_attachments; i++ )
         free( p_sys->attachments[i] );

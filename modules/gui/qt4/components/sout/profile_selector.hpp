@@ -2,7 +2,7 @@
  * profile_selector.hpp : A small profile selector and editor
  ****************************************************************************
  * Copyright (C) 2009 the VideoLAN team
- * $Id$
+ * $Id: 65ff9739682502ac4df066d714f94c5b9f3d8c54 $
  *
  * Authors: Jean-Baptiste Kempf <jb@videolan.org>
  *

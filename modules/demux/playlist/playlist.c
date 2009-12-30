@@ -2,7 +2,7 @@
  * playlist.c :  Playlist import module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 244bfcf1bde2d0d0475e43e01a16d369b398011f $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *
@@ -68,6 +68,8 @@ vlc_module_begin ()
     add_submodule ()
         set_description( N_("M3U playlist import") )
         add_shortcut( "playlist" )
+        add_shortcut( "m3u" )
+        add_shortcut( "m3u8" )
         add_shortcut( "m3u-open" )
         set_capability( "demux", 10 )
         set_callbacks( Import_M3U, Close_M3U )

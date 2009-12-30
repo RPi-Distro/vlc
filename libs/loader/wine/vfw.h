@@ -1,7 +1,7 @@
 /*
  * Modified for use with MPlayer, detailed CVS changelog at
  * http://www.mplayerhq.hu/cgi-bin/cvsweb.cgi/main/
- * $Id$
+ * $Id: 7957a83925afd2c6859183defb503ba3e6fd359d $
  */
 
 #ifndef __WINE_VFW_H

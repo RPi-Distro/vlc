@@ -2,7 +2,7 @@
 * maemo_interface.h : Interface creation header file for the maemo plugin.
 *****************************************************************************
 * Copyright (C) 2008 the VideoLAN team
-* $Id$
+* $Id: 87b535e4153d98537d3c69771ccef1a2d6c1bd88 $
 *
 * Authors: Antoine Lejeune <phytos@videolan.org>
 *

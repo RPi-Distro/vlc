@@ -2,7 +2,7 @@
  * upnp_cc.cpp :  UPnP discovery module
  *****************************************************************************
  * Copyright (C) 2004-2005 the VideoLAN team
- * $Id$
+ * $Id: aed508ba66a720f2d593176f5c4f7f392346c89a $
  *
  * Authors: Rémi Denis-Courmont <rem # videolan.org>
  *

@@ -2,7 +2,7 @@
  * rc.c : remote control stdin/stdout module for vlc
  *****************************************************************************
  * Copyright (C) 2004-2009 the VideoLAN team
- * $Id: f34a85c7b667aeec986a605a8167fc1d3a2220b2 $
+ * $Id: 2fb6fc81e312523f0018e50428835df85c7a7fc2 $
  *
  * Author: Peter Surda <shurdeek@panorama.sth.ac.at>
  *         Jean-Paul Saman <jpsaman #_at_# m2x _replaceWith#dot_ nl>
@@ -1085,7 +1085,7 @@ static int Input( vlc_object_t *p_this, char const *psz_cmd,
         if( var_GetBool( p_input, "can-rate" ) )
         {
             int i_rate = var_GetInteger( p_input, "rate" );
-            i_rate = (i_rate < 0) ? -i_rate : i_rate * 2;
+            i_rate = (i_rate < 0) ? -i_rate : i_rate / 2;
             var_SetInteger( p_input, "rate", i_rate );
         }
         else
@@ -1726,9 +1726,7 @@ static int VideoConfig( vlc_object_t *p_this, char const *psz_cmd,
     }
     else if( !strcmp( psz_cmd, "snapshot" ) )
     {
-        vlc_value_t val;
-        val.b_bool = true;
-        i_error = var_Set( p_vout, psz_variable, val );
+        var_TriggerCallback( p_vout, psz_variable );
     }
     else
     {

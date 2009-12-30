@@ -3,7 +3,7 @@
  *
  * See the README.txt file for copyright information and how to reach the author(s).
  *
- * $Id$
+ * $Id: d80ea0760bdf70ac2dfbf41aa72803e411b7e842 $
  */
 #ifndef _AtmoTools_h_
 #define _AtmoTools_h_

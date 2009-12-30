@@ -4,7 +4,7 @@
  * Copyright (C) 2003-2004 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
  *
- * $Id: 523a1d4afdb6700c9e1bf0741e66c6940ece43ce $
+ * $Id: 2e29e15089ae92efdf0cdbdee82c80c899b39d9f $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -635,7 +635,8 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
             {
                 /* FIXME: we really need to limit the number of tracks... */
                 char info[ses->trackc * ( strlen( control )
-                              + sizeof("url=/trackID=123;seq=65535, ") ) + 1];
+                              + sizeof("url=/trackID=123;seq=65535;"
+                                       "rtptime=4294967295, ") ) + 1];
                 size_t infolen = 0;
 
                 for( int i = 0; i < ses->trackc; i++ )
@@ -648,11 +649,15 @@ static int RtspHandler( rtsp_stream_t *rtsp, rtsp_stream_id_t *id,
                             tr->playing = true;
                             rtp_add_sink( tr->id, tr->fd, false );
                         }
+                        /* This is racy, as the first packets may have
+                         * already been sent before we fetch this info:
+                         * these extra packets might confuse the client. */
                         infolen += sprintf( info + infolen,
-                                            "url=%s/trackID=%u;seq=%u, ",
+                                    "url=%s/trackID=%u;seq=%u;rtptime=%u, ",
                                             control,
                                             rtp_get_num( tr->id ),
-                                            rtp_get_seq( tr->id ) );
+                                            rtp_get_seq( tr->id ),
+                                            rtp_get_ts( tr->id ) );
                     }
                 }
                 if( infolen > 0 )

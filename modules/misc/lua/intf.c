@@ -2,7 +2,7 @@
  * intf.c: Generic lua interface functions
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id$
+ * $Id: 9ee4b1b1a4380892df0fe3808cb98a77fcb18748 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *
@@ -151,7 +151,7 @@ int Open_LuaIntf( vlc_object_t *p_this )
 
     config_ChainParse( p_intf, "lua-", ppsz_intf_options, p_intf->p_cfg );
     char *psz_name = GetModuleName( p_intf );
-    const char *psz_config;
+    char *psz_config;
     bool b_config_set = false;
     if( !psz_name ) psz_name = strdup( "dummy" );
 
@@ -253,6 +253,8 @@ int Open_LuaIntf( vlc_object_t *p_this )
             }
         }
     }
+    free( psz_config );
+
     if( b_config_set == false )
     {
         lua_newtable( L );

@@ -2,7 +2,7 @@
  * xxmc.c : HW MPEG decoder thread
  *****************************************************************************
  * Copyright (C) 2000-2001 VideoLAN
- * $Id$
+ * $Id: edfe1cc27b2cbadc6219884dc98aed416fb33bb9 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Laurent Aimar <fenrir@via.ecp.fr>

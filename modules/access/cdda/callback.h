@@ -2,7 +2,7 @@
  * callback.h : Callbacks for CD digital audio input module
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: dc290141e21cd054ae5c1cce7f6a03525620cbab $
  *
  * Authors: Rocky Bernstein <rocky@panix.com>
  *

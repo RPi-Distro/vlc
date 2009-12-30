@@ -2,7 +2,7 @@
  * parser.c : OSD import module
  *****************************************************************************
  * Copyright (C) 2007-2008 M2X
- * $Id$
+ * $Id: f5d8704f050253abf496438ab47844fee79f7bc8 $
  *
  * Authors: Jean-Paul Saman
  *

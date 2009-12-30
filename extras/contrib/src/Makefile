@@ -121,7 +121,7 @@ endif
 
 ifdef HAVE_WINCE
 HOSTCONF+= --without-pic --disable-shared
-FFMPEGCONF+= --enable-mingwce --cpu=armv4l --disable-encoders --disable-muxers --disable-mpegaudio-hp --disable-decoder=snow --disable-decoder=vc9 --disable-decoder=wmv3 --disable-decoder=vorbis --disable-decoder=dvdsub --disable-decoder=dvbsub --disable-protocols
+FFMPEGCONF+= --arch=armv4l --cpu=armv4t --disable-encoders --disable-muxers --disable-mpegaudio-hp --disable-decoder=snow --disable-decoder=vc9 --disable-decoder=wmv3 --disable-decoder=vorbis --disable-decoder=dvdsub --disable-decoder=dvbsub --disable-protocols
 endif
 
 ifdef HAVE_UCLIBC
@@ -133,8 +133,10 @@ endif
 FFMPEGCONF+= --enable-small --disable-mpegaudio-hp
 FFMPEG_CFLAGS += -DHAVE_LRINTF --std=c99
 else
+ifndef HAVE_WINCE
 FFMPEGCONF+= --enable-libmp3lame --enable-libgsm
 #--enable-libfaac
+endif
 endif
 
 ifdef HAVE_BEOS
@@ -258,6 +260,22 @@ CLEAN_FILE += .perl
 CLEAN_PKG += perl
 DISTCLEAN_PKG += perl-$(PERL_VERSION).tar.gz
 endif
+
+# ***************************************************************************
+# errno
+# ***************************************************************************
+
+errno:
+	mkdir -p $@
+	$(WGET) $(ERRNO_URL)/errno.h -O $@/errno.h
+
+.errno: errno
+	mkdir -p $(PREFIX)/include
+	cp $</errno.h $(PREFIX)/include
+	touch $@
+
+CLEAN_FILE += .errno
+CLEAN_PKG += errno
 
 # ***************************************************************************
 # autoconf
@@ -1062,9 +1080,6 @@ endif
 ifdef HAVE_ISA_THUMB
 	patch -p0 < Patches/ffmpeg-avcodec-no-thumb.patch
 endif
-ifdef HAVE_WINCE
-	patch -p1 < Patches/ffmpeg-svn-wince.patch
-endif
 ifdef HAVE_BEOS
 	(cd $@; patch -p0 < ../Patches/ffmpeg-alignment.patch)
 endif
@@ -1107,7 +1122,9 @@ FFMPEGCONF += \
 	--disable-protocols \
 	--disable-network
 ifdef HAVE_WIN32
-FFMPEGCONF += --disable-bzlib --disable-decoder=dca
+FFMPEGCONF += --disable-bzlib --disable-decoder=dca --enable-w32threads
+else
+FFMPEGCONFG += --enable-pthreads
 endif
 
 ifdef HAVE_WINCE
@@ -1266,6 +1283,9 @@ live: live555-$(LIVEDOTCOM_VERSION).tar.gz
 ifdef HAVE_WIN32
 	(cd $<;./genMakefiles mingw && make $(HOSTCC))
 else
+ifdef HAVE_WINCE
+	(cd $<;./genMakefiles mingw && make $(HOSTCC))
+else
 ifdef HAVE_DARWIN_OS
 	(cd $<; sed -e 's%-DBSD=1%-DBSD=1\ $(EXTRA_CFLAGS)\ $(EXTRA_LDFLAGS)%' -e 's%cc%$(CC)%'  -e 's%c++%$(CXX)%' -i.orig  config.macosx)
 	(cd $<; ./genMakefiles macosx && make)
@@ -1278,6 +1298,7 @@ endif
 else
 	(cd $<; sed -e 's%-D_FILE_OFFSET_BITS=64%-D_FILE_OFFSET_BITS=64\ -fPIC\ -DPIC%' -i.orig config.linux)
 	(cd $<; ./genMakefiles linux && make $(HOSTCC))
+endif
 endif
 endif
 endif
@@ -2387,7 +2408,8 @@ ncurses: ncurses-$(NCURSES_VERSION).tar.gz
 	$(EXTRACT_GZ)
 
 .ncurses: ncurses
-	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=$(PREFIX) --without-debug --enable-widec --without-develop --without-shared && make && make install)
+	(cd $<; $(HOSTCC) ./configure $(HOSTCONF) --prefix=/usr --without-debug --enable-widec --without-develop --without-shared && make -C ncurses && make -C include && make -C ncurses DESTDIR=$(PREFIX) install && make -C include DESTDIR=$(PREFIX) install)
+	(cp -R $(PREFIX)/usr/* $(PREFIX) && rm -rf $(PREFIX)/usr)
 	touch $@
 
 CLEAN_FILE += .ncurses

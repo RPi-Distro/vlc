@@ -2,7 +2,7 @@
  * splaytree.c:
  *****************************************************************************
  * Copyright (C) 2004 the VideoLAN team
- * $Id$
+ * $Id: 5049cf4ff76de265e060c4ff91b45ef3b7b179a8 $
  *
  * Authors: Cyril Deguet <asmax@videolan.org>
  *          code from projectM http://xmms-projectm.sourceforge.net

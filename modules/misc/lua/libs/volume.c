@@ -2,7 +2,7 @@
  * volume.c
  *****************************************************************************
  * Copyright (C) 2007-2008 the VideoLAN team
- * $Id$
+ * $Id: 926046a5acd6a769ff4e2b2e1848ec3dd7cc2086 $
  *
  * Authors: Antoine Cellerier <dionoea at videolan tod org>
  *          Pierre d'Herbemont <pdherbemont # videolan.org>
@@ -45,46 +45,50 @@
 
 #include "../vlc.h"
 #include "../libs.h"
+#include "playlist.h"
 
 /*****************************************************************************
  * Volume related
  *****************************************************************************/
 static int vlclua_volume_set( lua_State *L )
 {
-    vlc_object_t *p_this = vlclua_get_this( L );
+    playlist_t *p_this = vlclua_get_playlist_internal( L );
     int i_volume = luaL_checkint( L, 1 );
     /* Do we need to check that i_volume is in the AOUT_VOLUME_MIN->MAX range?*/
-    return vlclua_push_ret( L, aout_VolumeSet( p_this, i_volume ) );
+    int i_ret = aout_VolumeSet( p_this, i_volume );
+    vlclua_release_playlist_internal( p_this );
+    return vlclua_push_ret( L, i_ret );
 }
 
 static int vlclua_volume_get( lua_State *L )
 {
-    vlc_object_t *p_this = vlclua_get_this( L );
     audio_volume_t i_volume;
+    playlist_t *p_this = vlclua_get_playlist_internal( L );
     if( aout_VolumeGet( p_this, &i_volume ) == VLC_SUCCESS )
         lua_pushnumber( L, i_volume );
     else
         lua_pushnil( L );
+    vlclua_release_playlist_internal( p_this );
     return 1;
 }
 
 static int vlclua_volume_up( lua_State *L )
 {
     audio_volume_t i_volume;
-    aout_VolumeUp( vlclua_get_this( L ),
-                   luaL_optint( L, 1, 1 ),
-                   &i_volume );
+    playlist_t *p_this = vlclua_get_playlist_internal( L );
+    aout_VolumeUp( p_this, luaL_optint( L, 1, 1 ), &i_volume );
     lua_pushnumber( L, i_volume );
+    vlclua_release_playlist_internal( p_this );
     return 1;
 }
 
 static int vlclua_volume_down( lua_State *L )
 {
     audio_volume_t i_volume;
-    aout_VolumeDown( vlclua_get_this( L ),
-                     luaL_optint( L, 1, 1 ),
-                     &i_volume );
+    playlist_t *p_this = vlclua_get_playlist_internal( L );
+    aout_VolumeDown( p_this, luaL_optint( L, 1, 1 ), &i_volume );
     lua_pushnumber( L, i_volume );
+    vlclua_release_playlist_internal( p_this );
     return 1;
 }
 

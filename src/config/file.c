@@ -2,7 +2,7 @@
  * file.c: configuration file handling
  *****************************************************************************
  * Copyright (C) 2001-2007 the VideoLAN team
- * $Id: e2c92ecb790af69e298750c4b79f1562ed1d9206 $
+ * $Id: 58a8d520036bd0e22a67c8905fc504a46eb88db2 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *
@@ -37,7 +37,7 @@
 #include <sys/stat.h>
 #ifdef __APPLE__
 #   include <xlocale.h>
-#else
+#elif defined(HAVE_USELOCALE)
 #include <locale.h>
 #endif
 

@@ -6,6 +6,7 @@ usr/bin/vlc-wrapper
 usr/lib/vlc/access/libaccess_alsa_plugin.so
 usr/lib/vlc/access/libaccess_bd_plugin.so
 usr/lib/vlc/access/libaccess_directory_plugin.so
+usr/lib/vlc/access/libaccess_dv_plugin.so
 usr/lib/vlc/access/libaccess_fake_plugin.so
 usr/lib/vlc/access/libaccess_file_plugin.so
 usr/lib/vlc/access/libaccess_ftp_plugin.so
@@ -69,7 +70,6 @@ usr/lib/vlc/codec/libtwolame_plugin.so
 usr/lib/vlc/codec/libvorbis_plugin.so
 usr/lib/vlc/control/libdbus_plugin.so
 usr/lib/vlc/control/libgestures_plugin.so
-usr/lib/vlc/control/libhotkeys_plugin.so
 usr/lib/vlc/control/libhttp_plugin.so
 usr/lib/vlc/control/liblirc_plugin.so
 usr/lib/vlc/control/libmotion_plugin.so

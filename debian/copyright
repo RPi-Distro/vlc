@@ -1,5 +1,8 @@
-This package was debianized by Sam Hocevar <sam@zoy.org> on
+This package was initially debianized by Sam Hocevar <sam@zoy.org> on
 Mon, 13 Mar 2000 02:21:45 +0100.
+
+Christophe Mutricy <xtophe@videolan.org>,  Reinhard Tartler, Mohammed
+Adnène Trojette, Reinhard Tartler have contributed to the packaging.
 
 It was taken from http://download.videolan.org/pub/vlc/
 
@@ -9,7 +12,7 @@ It was taken from http://download.videolan.org/pub/vlc/
 With the exception of other files mentioned in this document, all code and
 artwork belongs to members of the VideoLAN team <videolan@videolan.org>. See
 each file for precise details about its respective authors.
-  Copyright (c) 1996-2008 Laurent Aimar <fenrir@via.ecp.fr>
+  Copyright (c) 1996-2009 Laurent Aimar <fenrir@via.ecp.fr>
                           Marc Ariberti <marcari@via.ecp.fr>
                           Stephan Assmus <stippi@yellowbites.com>
                           Olivier Aubert <oaubert at lisi dot univ-lyon1 dot fr>
@@ -241,8 +244,11 @@ The blurb for the GNU General Publice License, version 2 or later:
  | along with this program; if not, write to the Free Software
  | Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301 USA
 
+However, this package is linked to LGPL v3 libraries. So while the source is
+GPL v2 or later, this package is GPL v3
+
 On Debian GNU/Linux systems, the complete text of the GNU General
-Public License can be found in `/usr/share/common-licenses/GPL-2'.
+Public License can be found in `/usr/share/common-licenses/GPL-3'.
 
 The NetBSD license:
 

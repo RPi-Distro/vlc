@@ -1,3 +1,34 @@
+vlc (1.0.4-1) unstable; urgency=low
+
+  * New upstream release
+    + According to upstream, no longer overlaps kde and xfce panels in
+      fullscreen mode, Closes: #562601, LP: #453173
+
+  [ Christophe Mutricy ]
+  * libavutil50 seems to be troublesome. Add it to bugs/control
+  * Add a vlc-plugin-svg package (Closes: #560009)
+  * Switch to xulrunner-dev (Closes: #555915)
+  * Activate the global hotkey module (Closes: #548916)
+  * Mention other maintainers and that the binaries are GPL v3 as we
+    link with LGPL v3 libraries (LP: #489093)
+  * Build-depend on a recent enough live555 to avoid comma vs. decimal
+    point problem (Closes: #539946)
+
+  [ Benjamin Drung ]
+  * Recommend vlc-plugin-pulse for vlc, so that pulse can be used as
+    default output.
+
+  [ Whoopie ]
+  * Enable CDDB in the CDDA module (LP: #439131)
+  * Enable DV support (LP: #392115)
+
+  [ Benjamin Drung ]
+  * Fix typos, that are reported by lintian.
+  * Sort confflags in debian/rules
+  * Split normal configure flags from feature configure flags
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 30 Dec 2009 12:56:49 +0100
+
 vlc (1.0.3-1ubuntu3) lucid; urgency=low
 
   * prepare new upload

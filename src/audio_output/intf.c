@@ -2,7 +2,7 @@
  * intf.c : audio output API towards the interface modules
  *****************************************************************************
  * Copyright (C) 2002-2007 the VideoLAN team
- * $Id$
+ * $Id: 3f517d787738c9fa8190c6fd348fc4d3eb2f29d7 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -371,15 +371,16 @@ static int aout_Restart( aout_instance_t * p_aout )
         return -1;
     }
 
-    /* Lock all inputs. */
-    aout_lock_input_fifos( p_aout );
-
     for ( i = 0; i < p_aout->i_nb_inputs; i++ )
     {
         aout_lock_input( p_aout, p_aout->pp_inputs[i] );
+        aout_lock_input_fifos( p_aout );
         aout_InputDelete( p_aout, p_aout->pp_inputs[i] );
+        aout_unlock_input_fifos( p_aout );
     }
 
+    /* Lock all inputs. */
+    aout_lock_input_fifos( p_aout );
     aout_MixerDelete( p_aout );
 
     /* Re-open the output plug-in. */

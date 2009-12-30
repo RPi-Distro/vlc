@@ -2,7 +2,7 @@
  * xvmc.c : Common acceleration definitions for XvMC
  *****************************************************************************
  * Copyright (C) 2006 VideoLAN
- * $Id$
+ * $Id: ecf7dbf30456e8c7ef2b71a0ca43b0399d3909c0 $
  *
  * Authors: Christophe Burgalat <c _dot_ burgalat _at_ broadcastavenue _dot_ com>
  *          Jean-Paul Saman <jpsaman _at_ videolan _dot_ org>

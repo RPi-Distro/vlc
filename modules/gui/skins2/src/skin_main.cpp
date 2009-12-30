@@ -2,7 +2,7 @@
  * skin_main.cpp
  *****************************************************************************
  * Copyright (C) 2003 the VideoLAN team
- * $Id: 44a195dfbcfe39398084d55f3443650fa2ac4710 $
+ * $Id: f5608699fbda8e87981a4e1f028965abaa751fda $
  *
  * Authors: Cyril Deguet     <asmax@via.ecp.fr>
  *          Olivier Teulière <ipkiss@via.ecp.fr>
@@ -337,6 +337,12 @@ static int WindowOpen( vlc_object_t *p_this )
     if( pIntf == NULL )
         return VLC_EGENERIC;
 
+    if( !config_GetInt( pIntf, "skinned-video") )
+    {
+        vlc_object_release( pIntf );
+        return VLC_EGENERIC;
+    }
+
     vlc_object_release( pIntf );
 
     pWnd->handle.hwnd = VoutManager::getWindow( pIntf, pWnd );
@@ -519,6 +525,10 @@ static int onTaskBarChange( vlc_object_t *pObj, const char *pVariable,
     " correctly.")
 #define SKINS2_PLAYLIST N_("Use a skinned playlist")
 #define SKINS2_PLAYLIST_LONG N_("Use a skinned playlist")
+#define SKINS2_VIDEO N_("Display video in a skinned window if any")
+#define SKINS2_VIDEO_LONG N_( \
+    "When set to 'no', this parameter is intended to give old skins a chance" \
+    " to play back video even though no video tag is implemented")
 
 vlc_module_begin ()
     set_category( CAT_INTERFACE )
@@ -541,6 +551,8 @@ vlc_module_begin ()
 
     add_bool( "skinned-playlist", true, NULL, SKINS2_PLAYLIST,
               SKINS2_PLAYLIST_LONG, false );
+    add_bool( "skinned-video", true, NULL, SKINS2_VIDEO,
+              SKINS2_VIDEO_LONG, false );
     set_shortname( N_("Skins"))
     set_description( N_("Skinnable Interface") )
     set_capability( "interface", 30 )

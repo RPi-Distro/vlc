@@ -2,7 +2,7 @@
  * output.c : internal management of output streams for the audio output
  *****************************************************************************
  * Copyright (C) 2002-2004 the VideoLAN team
- * $Id$
+ * $Id: 8728427586d2385eac3322f19d51537b19a0ca89 $
  *
  * Authors: Christophe Massiot <massiot@via.ecp.fr>
  *
@@ -338,6 +338,12 @@ aout_buffer_t * aout_OutputNextBuffer( aout_instance_t * p_aout,
 
     p_aout->output.b_starving = 0;
 
+    p_aout->output.fifo.p_first = p_buffer->p_next;
+    if ( p_buffer->p_next == NULL )
+    {
+        p_aout->output.fifo.pp_last = &p_aout->output.fifo.p_first;
+    }
+
     if ( !b_can_sleek &&
           ( (p_buffer->start_date - start_date > AOUT_PTS_TOLERANCE)
              || (start_date - p_buffer->start_date > AOUT_PTS_TOLERANCE) ) )
@@ -348,6 +354,9 @@ aout_buffer_t * aout_OutputNextBuffer( aout_instance_t * p_aout,
         msg_Warn( p_aout, "output date isn't PTS date, requesting "
                   "resampling (%"PRId64")", difference );
 
+        aout_FifoMoveDates( p_aout, &p_aout->output.fifo, difference );
+        aout_unlock_output_fifo( p_aout );
+
         aout_lock_input_fifos( p_aout );
         for ( i = 0; i < p_aout->i_nb_inputs; i++ )
         {
@@ -355,17 +364,10 @@ aout_buffer_t * aout_OutputNextBuffer( aout_instance_t * p_aout,
 
             aout_FifoMoveDates( p_aout, p_fifo, difference );
         }
-
-        aout_FifoMoveDates( p_aout, &p_aout->output.fifo, difference );
         aout_unlock_input_fifos( p_aout );
     }
+    else
+        aout_unlock_output_fifo( p_aout );
 
-    p_aout->output.fifo.p_first = p_buffer->p_next;
-    if ( p_buffer->p_next == NULL )
-    {
-        p_aout->output.fifo.pp_last = &p_aout->output.fifo.p_first;
-    }
-
-    aout_unlock_output_fifo( p_aout );
     return p_buffer;
 }
