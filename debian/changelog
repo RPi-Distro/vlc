@@ -1,3 +1,11 @@
+vlc (1.0.4-1ubuntu1) lucid; urgency=low
+
+  * merge from debian. Remaining changes:
+    - build and install the libx264 plugin
+    - add Xb-Npp header to vlc package
+
+ -- Reinhard Tartler <siretart@tauware.de>  Wed, 30 Dec 2009 18:23:36 +0100
+
 vlc (1.0.4-1) unstable; urgency=low
 
   * New upstream release
@@ -28,12 +36,6 @@ vlc (1.0.4-1) unstable; urgency=low
   * Split normal configure flags from feature configure flags
 
  -- Christophe Mutricy <xtophe@videolan.org>  Wed, 30 Dec 2009 12:56:49 +0100
-
-vlc (1.0.3-1ubuntu3) lucid; urgency=low
-
-  * prepare new upload
-
- -- Reinhard Tartler <siretart@tauware.de>  Sat, 21 Nov 2009 22:16:53 +0100
 
 vlc (1.0.3-1ubuntu2) lucid; urgency=low
 
