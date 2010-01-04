@@ -98,8 +98,8 @@ Depends: vlc-nox (= ${binary:Version}),
 Recommends: vlc-plugin-pulse (= ${binary:Version})
 Suggests: mozilla-plugin-vlc,
           videolan-doc
-Replaces: vlc-nox (<< 1.0.3-1)
-Conflicts: vlc-nox (<< 1.0.3-1)
+Replaces: vlc-nox (<< 1.0.4-2)
+Conflicts: vlc-nox (<< 1.0.4-2)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -135,8 +135,8 @@ Package: vlc-nox
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Replaces: vlc (<< 0.9.8a-3)
-Conflicts: vlc (<< 0.9.8a-3)
+Replaces: vlc (<< 1.0.4-2)
+Conflicts: vlc (<< 1.0.4-2)
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
