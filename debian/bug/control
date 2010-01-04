@@ -1,1 +1,2 @@
-report-with: vlc vlc-nox libvlc2 libvlccore0 libavutil50
+report-with: vlc vlc-nox libvlc2 libvlccore0
+package-status: libavutil50
