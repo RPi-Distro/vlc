@@ -104,12 +104,12 @@ confflags += \
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
 confflags += \
-	     --enable-alsa \
-	     --enable-dv \
-	     --enable-pvr \
-	     --enable-v4l \
-	     --enable-v4l2 \
-	     $(NULL)
+	--enable-alsa \
+	--enable-dv \
+	--enable-pvr \
+	--enable-v4l \
+	--enable-v4l2 \
+	$(NULL)
 endif
 
 # svgalib is only for x86 and x86-64 on Linux
