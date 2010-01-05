@@ -1,3 +1,16 @@
+vlc (1.0.4-2~2.gbpc1b35f) UNRELEASED; urgency=low
+
+  ** SNAPSHOT build @c1b35fb46615154c281f40851f9831d0070b832e **
+
+  * Report libavutil50 presence the correct way
+  * Move back hotkeys to vlc-nox (Closes: #563477)
+  * Fix Replaces/Conflicts version so that upgrade work (Closes:
+    #563476, #563483)
+  * Add patch taken from upstream to fix jack input with jack2 (Closes:
+    #532339) - thanks to Adrian Knoth
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Mon, 04 Jan 2010 21:47:16 +0100
+
 vlc (1.0.4-1) unstable; urgency=low
 
   * New upstream release
