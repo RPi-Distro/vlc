@@ -59,7 +59,6 @@ confflags += \
 	--enable-bonjour \
 	--enable-caca \
 	--enable-dca \
-	--enable-dv \
 	--enable-dvb \
 	--enable-dvbpsi \
 	--enable-dvdnav \
@@ -104,7 +103,13 @@ confflags += \
 
 # Linux specific flags
 ifeq ($(DEB_HOST_ARCH_OS),linux)
-confflags += --enable-alsa --enable-v4l --enable-v4l2 --enable-pvr
+confflags += \
+	--enable-alsa \
+	--enable-dv \
+	--enable-pvr \
+	--enable-v4l \
+	--enable-v4l2 \
+	$(NULL)
 endif
 
 # svgalib is only for x86 and x86-64 on Linux
@@ -167,7 +172,7 @@ install: build
 	dh_testdir
 	dh_testroot
 	dh_prep
-	sed -e '/\(lib\|libaccess_\)\(alsa\|dvb\|fb\|v4l\|v4l2\|pvr\)_/d' \
+	sed -e '/\(lib\|libaccess_\)\(alsa\|dv\|dvb\|fb\|v4l\|v4l2\|pvr\)_/d' \
 	 debian/vlc-nox.install > debian/vlc-nox.install.kfreebsd
 	sed -e '/\(lib\|libaccess_\)\(probe_hal\)_/d' \
 	 debian/vlc-nox.install.kfreebsd > debian/vlc-nox.install.hurd

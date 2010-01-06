@@ -70,6 +70,7 @@ usr/lib/vlc/codec/libtwolame_plugin.so
 usr/lib/vlc/codec/libvorbis_plugin.so
 usr/lib/vlc/control/libdbus_plugin.so
 usr/lib/vlc/control/libgestures_plugin.so
+usr/lib/vlc/control/libhotkeys_plugin.so
 usr/lib/vlc/control/libhttp_plugin.so
 usr/lib/vlc/control/liblirc_plugin.so
 usr/lib/vlc/control/libmotion_plugin.so

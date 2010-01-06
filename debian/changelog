@@ -1,3 +1,23 @@
+vlc (1.0.4-2ubuntu1) lucid; urgency=low
+
+  * Merge from Debian unstable, remaining changes:
+    - build and install the libx264 plugin
+    - add Xb-Npp header to vlc package
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Wed, 06 Jan 2010 18:35:23 +0100
+
+vlc (1.0.4-2) unstable; urgency=low
+
+  * Report libavutil50 presence the correct way
+  * Move back hotkeys to vlc-nox (Closes: #563477)
+  * Fix Replaces/Conflicts version so that upgrade work (Closes:
+    #563476, #563483)
+  * Add patch taken from upstream to fix jack input with jack2 (Closes:
+    #532339) - thanks to Adrian Knoth
+  * Disable access_dv on non-Linux archs
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Tue, 05 Jan 2010 23:31:56 +0100
+
 vlc (1.0.4-1ubuntu1) lucid; urgency=low
 
   * merge from debian. Remaining changes:

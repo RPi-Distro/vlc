@@ -19,7 +19,7 @@ Build-Depends: debhelper (>= 7),
                libasound2-dev (>= 0.9.0beta10a) [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libass-dev (>= 0.9.5-2),
                libavahi-client-dev,
-               libavc1394-dev,
+               libavc1394-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                libavcodec-dev (>= 0.cvs20060823),
                libavformat-dev (>= 0.cvs20060823),
                libcaca-dev (>= 0.99.beta4),
@@ -55,7 +55,7 @@ Build-Depends: debhelper (>= 7),
                libpostproc-dev (>= 0.cvs20060823),
                libpulse-dev,
                libqt4-dev,
-               libraw1394-dev,
+               libraw1394-dev [!kfreebsd-i386 !kfreebsd-amd64 !hurd-i386],
                librsvg2-dev,
                libschroedinger-dev (>= 1.0.7-1~),
                libsdl-image1.2-dev,
@@ -100,8 +100,8 @@ Depends: vlc-nox (= ${binary:Version}),
 Recommends: vlc-plugin-pulse (= ${binary:Version})
 Suggests: mozilla-plugin-vlc,
           videolan-doc
-Replaces: vlc-nox (<< 1.0.3-1)
-Conflicts: vlc-nox (<< 1.0.3-1)
+Replaces: vlc-nox (<< 1.0.4-2)
+Conflicts: vlc-nox (<< 1.0.4-2)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -137,8 +137,8 @@ Package: vlc-nox
 Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
-Replaces: vlc (<< 0.9.8a-3)
-Conflicts: vlc (<< 0.9.8a-3)
+Replaces: vlc (<< 1.0.4-2)
+Conflicts: vlc (<< 1.0.4-2)
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
