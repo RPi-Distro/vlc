@@ -1,3 +1,9 @@
+vlc (1.0.4-3) unstable; urgency=low
+
+  * prepare new upload
+
+ -- Reinhard Tartler <siretart@tauware.de>  Fri, 08 Jan 2010 21:42:54 +0100
+
 vlc (1.0.4-2) unstable; urgency=low
 
   * Report libavutil50 presence the correct way
