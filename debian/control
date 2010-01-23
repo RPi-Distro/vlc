@@ -85,7 +85,7 @@ Build-Depends: debhelper (>= 7),
                xulrunner-dev,
                zlib1g-dev
 Standards-Version: 3.8.3
-Homepage: http://www.videolan.org/vlc
+Homepage: http://www.videolan.org/vlc/
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/heads/sid
 
@@ -297,10 +297,10 @@ Depends: vlc-nox (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
 Description: SVG plugin for VLC
- This plugin allows you to render SVG graphics on top of the video.It is a
- text renderer, and  must be activated through the  '--text-renderer svg'
- option. When sent non-SVG data, it will convert it to SVG using a template
- that can be specified by the svg-template-file option.
+ This plugin allows you to render SVG graphics on top of the video. It is a text
+ renderer, and must be activated through the '--text-renderer svg' option. When
+ sent non-SVG data, it will convert it to SVG using a template that can be
+ specified by the svg-template-file option.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
