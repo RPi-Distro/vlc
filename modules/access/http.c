@@ -2,7 +2,7 @@
  * http.c: HTTP input module
  *****************************************************************************
  * Copyright (C) 2001-2008 the VideoLAN team
- * $Id: 94f36a5d778eabd0b6db8304bc18586dda98f88a $
+ * $Id: da8d80868270a0b863af8b73fb080a1e76851ba4 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -1394,12 +1394,14 @@ static int Request( access_t *p_access, int64_t i_tell )
         else if( !strcasecmp( psz, "Content-Encoding" ) )
         {
             msg_Dbg( p_access, "Content-Encoding: %s", p );
-            if( strcasecmp( p, "identity" ) )
+            if( !strcasecmp( p, "identity" ) )
+                ;
 #ifdef HAVE_ZLIB_H
+            else if( !strcasecmp( p, "gzip" ) || !strcasecmp( p, "deflate" ) )
                 p_sys->b_compressed = true;
-#else
-                msg_Warn( p_access, "Compressed content not supported. Rebuild with zlib support." );
 #endif
+            else
+                msg_Warn( p_access, "Unknown content coding: %s", p );
         }
         else if( !strcasecmp( psz, "Pragma" ) )
         {

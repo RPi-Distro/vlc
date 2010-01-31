@@ -3,7 +3,7 @@
  * Collection of useful common types and macros definitions
  *****************************************************************************
  * Copyright (C) 1998-2005 the VideoLAN team
- * $Id: 869bfc4945223fa15cd5eb9a1416461b07070eb7 $
+ * $Id: 6f4677bb7935bfc8294c242c82c7d75d2e7fe21f $
  *
  * Authors: Samuel Hocevar <sam@via.ecp.fr>
  *          Vincent Seguin <seguin@via.ecp.fr>
@@ -56,9 +56,29 @@
 # include <stdbool.h>
 #endif
 
+/* Try to fix format strings for all versions of mingw and mingw64 */
+#if defined( _WIN32 ) && defined( __USE_MINGW_ANSI_STDIO )
+ #undef PRId64
+ #define PRId64 "lld"
+ #undef PRIi64
+ #define PRIi64 "lli"
+ #undef PRIu64
+ #define PRIu64 "llu"
+ #undef PRIo64
+ #define PRIo64 "llo"
+ #undef PRIx64
+ #define PRIx64 "llx"
+ #define snprintf        __mingw_snprintf
+ #define vsnprintf       __mingw_vsnprintf
+#endif
+
 /* Format string sanity checks */
 #ifdef __GNUC__
-#   define LIBVLC_FORMAT(x,y) __attribute__ ((format(printf,x,y)))
+#   if defined( _WIN32 ) && (__GNUC__ > 4 || ( __GNUC__ == 4 && __GNUC_MINOR__ >= 4 ) )
+#     define LIBVLC_FORMAT(x,y) __attribute__ ((format(gnu_printf,x,y)))
+#   else
+#     define LIBVLC_FORMAT(x,y) __attribute__ ((format(printf,x,y)))
+#   endif
 #   define LIBVLC_USED __attribute__ ((warn_unused_result))
 #else
 #   define LIBVLC_FORMAT(x,y)

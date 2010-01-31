@@ -2,7 +2,7 @@
  * simple_preferences.cpp : "Simple preferences"
  ****************************************************************************
  * Copyright (C) 2006-2008 the VideoLAN team
- * $Id: 7e7cd39e6f9b6fb64e62ed8e8f493c1b4f9a1e34 $
+ * $Id: 1a861f0c3db772693a09e8919e3600a6e2a3db89 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Antoine Cellerier <dionoea@videolan.org>
@@ -519,8 +519,10 @@ SPrefsPanel::SPrefsPanel( intf_thread_t *_p_intf, QWidget *_parent,
             /* ONE INSTANCE options */
 #if defined( WIN32 ) || defined( HAVE_DBUS ) || defined(__APPLE__)
             CONFIG_GENERIC( "one-instance", Bool, NULL, OneInterfaceMode );
+#if 0
             CONFIG_GENERIC( "playlist-enqueue", Bool, NULL,
                     EnqueueOneInterfaceMode );
+#endif
 #else
             ui.OneInterfaceBox->hide();
 #endif
@@ -618,7 +620,7 @@ void SPrefsPanel::updateAudioOptions( int number)
     QString value = qobject_cast<QComboBox *>(optionWidgets[audioOutCoB])
                                             ->itemData( number ).toString();
 #ifdef WIN32
-    optionWidgets[directxW]->setVisible( ( value == "directx" ) );
+    optionWidgets[directxW]->setVisible( ( value == "aout_directx" ) );
 #else
     /* optionWidgets[ossW] can be NULL */
     if( optionWidgets[ossW] )
@@ -810,7 +812,7 @@ void SPrefsPanel::assoDialog()
     aTa( ".a52" ); aTa( ".aac" ); aTa( ".ac3" ); aTa( ".dts" ); aTa( ".flac" );
     aTa( ".m4a" ); aTa( ".m4p" ); aTa( ".mka" ); aTa( ".mod" ); aTa( ".mp1" );
     aTa( ".mp2" ); aTa( ".mp3" ); aTa( ".oma" ); aTa( ".oga" ); aTa( ".spx" );
-    aTa( ".wav" ); aTa( ".wma" ); aTa( ".xm" );
+    aTa( ".tta" ); aTa( ".wav" ); aTa( ".wma" ); aTa( ".xm" );
     audioType->setCheckState( 0, ( i_temp > 0 ) ?
                               ( ( i_temp == audioType->childCount() ) ?
                                Qt::Checked : Qt::PartiallyChecked )

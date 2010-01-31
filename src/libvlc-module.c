@@ -2,7 +2,7 @@
  * libvlc.h: Options for the main (libvlc itself) module
  *****************************************************************************
  * Copyright (C) 1998-2006 the VideoLAN team
- * $Id: 6d963af716f255b77c3a23221b1437963209ce2e $
+ * $Id: 62611eee891617587dcfcc6f30f314287ec2d0b8 $
  *
  * Authors: Vincent Seguin <seguin@via.ecp.fr>
  *          Samuel Hocevar <sam@zoy.org>
@@ -72,6 +72,7 @@ static const char *const ppsz_language[] =
     "lt",
     "mn",
     "ms",
+    "nn",
     "kk",
     "km",
     "oc",
@@ -123,6 +124,7 @@ static const char *const ppsz_language_text[] =
     "lietuvių",
     "Монгол хэл",
     "Melayu",
+    "Nynorsk",
     "Қазақ тілі",
     "ភាសាខ្មែរ",
     "Occitan",
@@ -284,14 +286,14 @@ static const char *const ppsz_snap_formats[] =
 #if !defined( __APPLE__ )
 #define AOUT_RESAMP_TEXT N_("High quality audio resampling")
 #define AOUT_RESAMP_LONGTEXT N_( \
-    "This uses a high quality audio resampling algorithm. High quality "\
+    "This uses a high quality audio resampling algorithm. High quality " \
     "audio resampling can be processor intensive so you can " \
     "disable it and a cheaper resampling algorithm will be used instead.")
 #endif
 
 #define DESYNC_TEXT N_("Audio desynchronization compensation")
 #define DESYNC_LONGTEXT N_( \
-    "This delays the audio output. The delay must be given in milliseconds." \
+    "This delays the audio output. The delay must be given in milliseconds. " \
     "This can be handy if you notice a lag between the video and the audio.")
 
 #define MULTICHA_TEXT N_("Audio output channels mode")
@@ -348,7 +350,7 @@ static const char *const ppsz_force_dolby_descriptions[] = {
 #define AUDIO_TIME_STRETCH_TEXT N_( \
     "Enable time streching audio" )
 #define AUDIO_TIME_STRETCH_LONGTEXT N_( \
-    "This allows to play audio at lower or higher speed without" \
+    "This allows to play audio at lower or higher speed without " \
     "affecting the audio pitch" )
 
 
@@ -482,7 +484,7 @@ static const char *const ppsz_pos_descriptions[] =
 #define VIDEO_FILTER_TEXT N_("Video filter module")
 #define VIDEO_FILTER_LONGTEXT N_( \
     "This adds post-processing filters to enhance the " \
-    "picture quality, for instance deinterlacing, or distort" \
+    "picture quality, for instance deinterlacing, or distort " \
     "the video.")
 
 #define SNAP_PATH_TEXT N_("Video snapshot directory (or filename)")
@@ -736,7 +738,7 @@ static const char *const ppsz_clock_descriptions[] =
 
 #define INPUT_RECORD_NATIVE_TEXT N_("Prefer native stream recording")
 #define INPUT_RECORD_NATIVE_LONGTEXT N_( \
-    "When possible, the input stream will be recorded instead of using" \
+    "When possible, the input stream will be recorded instead of using " \
     "the stream output module" )
 
 #define INPUT_TIMESHIFT_PATH_TEXT N_("Timeshift directory")
@@ -926,7 +928,7 @@ static const char *const ppsz_clock_descriptions[] =
 #define SOUT_TEXT N_("Default stream output chain")
 #define SOUT_LONGTEXT N_( \
     "You can enter here a default stream output chain. Refer to "\
-    "the documentation to learn how to build such chains." \
+    "the documentation to learn how to build such chains. " \
     "Warning: this chain will be enabled for all streams." )
 
 #define SOUT_ALL_TEXT N_("Enable streaming of all ES")
@@ -1693,6 +1695,7 @@ vlc_module_begin ()
     set_section( N_("Subtitles") , NULL )
     add_file( "sub-file", NULL, NULL, SUB_FILE_TEXT,
               SUB_FILE_LONGTEXT, false )
+        change_safe()
     add_bool( "sub-autodetect-file", true, NULL,
                  SUB_AUTO_TEXT, SUB_AUTO_LONGTEXT, false )
     add_integer( "sub-autodetect-fuzzy", 3, NULL,
@@ -2643,7 +2646,7 @@ vlc_module_begin ()
     N_("print a list of available modules with extra detail")
 #define MODULE_TEXT \
     N_("print help on a specific module (can be combined with --advanced " \
-       "and --help-verbose). Prefix the module name with = for strict" \
+       "and --help-verbose). Prefix the module name with = for strict " \
        "matches.")
 #define IGNORE_CONFIG_TEXT \
     N_("no configuration option will be loaded nor saved to config file")

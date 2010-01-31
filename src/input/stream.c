@@ -2,7 +2,7 @@
  * stream.c
  *****************************************************************************
  * Copyright (C) 1999-2004 the VideoLAN team
- * $Id: 4dfdf157e5c704e384a12d42ca19372830de697e $
+ * $Id: 8947f2393b8787829bcf414a1d757df8c3e45bba $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -1821,6 +1821,9 @@ static int ASeek( stream_t *s, int64_t i_pos )
 {
     stream_sys_t *p_sys = s->p_sys;
     access_t *p_access = p_sys->p_access;
+
+    if( i_pos < 0 )
+        return VLC_EGENERIC;
 
     /* Check which stream we need to access */
     if( p_sys->i_list )

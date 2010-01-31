@@ -1,3 +1,24 @@
+Changes between 1.0.4 and 1.0.5:
+--------------------------------
+
+Decoders:
+ * SubRip extra styles improvements
+ * Fix potential crashes in SSA and svg decoders
+
+Mac OS X Interface:
+ * Improved support for the 2009 Apple Remote
+
+Windows port:
+ * Use of gcc 4.4.2 to compile instead of gcc 4.2. This might slightly
+   increase performance and fix x264 issues
+
+Translations:
+ * Portuguese Brazilian, Lithunanian, Romanian, Ukranian, Japanese, Bengali,
+   Walloon, Galician, Danish, Khmer, Polish, Slovenian, Vietnamese, Finnish
+   Russian, Slovak translation updates
+ * New Malayalam, Macedoninan, Nynorsk translations
+
+
 Changes between 1.0.3 and 1.0.4:
 --------------------------------
 
@@ -26,7 +47,8 @@ Qt4 interface:
 
 Translations:
   * New Walloon translation
-  * Swedish, Ukrainian an French translation update 
+  * Swedish, Ukrainian and French translation updates
+
 
 Changes between 1.0.2 and 1.0.3:
 --------------------------------
@@ -60,6 +82,7 @@ Qt4 interface:
 
 Translations:
  * French, Galician, Korean, Polish, Russian, Romanian, Slovak and Ukrainian updates
+
 
 Changes between 1.0.1 and 1.0.2:
 --------------------------------
@@ -115,7 +138,8 @@ Unix builds:
 Translations:
  * New Kazakh and Croatian translations
  * Lithunanian translation is available on Windows
- * Galician, Korean, Nepali, Vietnamese, Ukrainian, Brazilian, Arabic and French translation updates
+ * Galician, Korean, Nepali, Vietnamese, Ukrainian, Portuguese Brazilian,
+   Arabic and French translation updates
 
 
 Changes between 1.0.0 and 1.0.1:
@@ -694,7 +718,7 @@ Interfaces:
      if libncursesw is available.
    * Some nice colors if the terminal supports it (most do)
  * Experimental Lua interface modules. See vlc -I lua and
-   share/lua/playlist/README.txt for more info.
+   share/lua/intf/README.txt for more info.
  * Unix
    * Option to allow only one running instance, using D-Bus interface.
    * D-Bus Interface implementing the MPRIS 
