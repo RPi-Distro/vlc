@@ -2,7 +2,7 @@
  * live555.cpp : LIVE555 Streaming Media support.
  *****************************************************************************
  * Copyright (C) 2003-2007 the VideoLAN team
- * $Id: 210636d30ed19e3d015b2723af4f8a21a5271c99 $
+ * $Id: 80a59a33d3fb8716e5c1ecc9c844143613629856 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *          Derk-Jan Hartman <hartman at videolan. org>
@@ -481,7 +481,6 @@ static int Connect( demux_t *p_demux )
 {
     demux_sys_t *p_sys = p_demux->p_sys;
     Authenticator authenticator;
-    bool b_firstpass  = true;
     char *psz_user    = NULL;
     char *psz_pwd     = NULL;
     char *psz_url     = NULL;
@@ -607,14 +606,6 @@ describe:
                 i_code = 0;
         }
         msg_Dbg( p_demux, "DESCRIBE failed with %d: %s", i_code, psz_error );
-
-        if( b_firstpass )
-        {   /* describeURL always returns an "RTSP/1.0 401 Unauthorized" the
-             * first time. This is a workaround to avoid asking for a
-             * user/passwd the first time the code passess here. */
-            i_code = 0;
-            b_firstpass = false;
-        }
 
         if( i_code == 401 )
         {

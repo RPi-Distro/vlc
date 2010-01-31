@@ -2,7 +2,7 @@
  * input_manager.cpp : Manage an input and interact with its GUI elements
  ****************************************************************************
  * Copyright (C) 2006 the VideoLAN team
- * $Id: 4140c38b2e0ef8c1089a858a122dccf00f1af7c3 $
+ * $Id: 4ff71feb6d4e7522b2026c5dc536e3cffeee748e $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -34,7 +34,7 @@
 
 InputSlider::InputSlider( QWidget *_parent ) : QSlider( _parent )
 {
-    InputSlider::InputSlider( Qt::Horizontal, _parent );
+    InputSlider( Qt::Horizontal, _parent );
 }
 
 InputSlider::InputSlider( Qt::Orientation q, QWidget *_parent ) :
@@ -56,7 +56,10 @@ InputSlider::InputSlider( Qt::Orientation q, QWidget *_parent ) :
 void InputSlider::setPosition( float pos, int a, int b )
 {
     if( pos == -1.0 )
+    {
         setEnabled( false );
+        b_isSliding = false;
+    }
     else
         setEnabled( true );
 

@@ -3,7 +3,7 @@
  ****************************************************************************
  * Copyright (C) 2007-2009 the VideoLAN team
  *
- * $Id: a72a4c5a9869deea3ea1e7f378bcdf04eadd43fc $
+ * $Id: c6950e7b19243519c8ba6480cfce0b9f0b1c6a42 $
  *
  * Authors: Clément Stenac <zorglub@videolan.org>
  *          Jean-Baptiste Kempf <jb@videolan.org>
@@ -87,7 +87,7 @@ SoutDialog::SoutDialog( QWidget *parent, intf_thread_t *_p_intf, const QString& 
 
     /* Misc */
     CB( soutAll ); CB( soutKeep );  CS( ttl ); CT( sapName ); CT( sapGroup );
-    CB( localOutput );
+    CB( localOutput ); CB( transcodeBox );
     CONNECT( ui.profileSelect, optionsChanged(), this, updateMRL() );
 
     okButton = new QPushButton( qtr( "&Stream" ) );

@@ -1,3 +1,192 @@
+commit 5ac5faa57d90a51b0bf0fe3b84e71e64421988fa
+Author: Jean-Baptiste Kempf <jb@videolan.org>
+Date:   Wed Dec 30 00:45:52 2009 +0100
+
+    Fix sout MRL generation in sout when transcode is deactivated
+    
+    Close #3213
+
+commit 0438337635650f81432cf0430a9a90668b9c9d06
+Author: Martin T. Sandsmark <sandsmark@samfundet.no>
+Date:   Tue Dec 29 16:31:33 2009 +0100
+
+    use _exit() instead of exit() when checking CPU capabilities
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 3e58be46ca77bb8e55cec5ef575911b8470048be
+Author: Laurent Aimar <fenrir@videolan.org>
+Date:   Thu Nov 12 20:20:37 2009 +0100
+
+    Ignored error when we cannot save our modified tuning space.
+    
+    It seems to work just fine and fix an error in windows 7 (it was
+    refused unless VLC wass run with admin rights).
+    (cherry picked from commit a39ed44cacd2e4294b2b794a1fdaa68ef64ff5a1)
+    
+    Signed-off-by: Jean-Baptiste Kempf <jb@videolan.org>
+
+commit 058b1f34599639a4afff4451ba9481abafa002b1
+Author: Jamil Ahmed <itsjamil@gmail.com>
+Date:   Thu Dec 24 15:29:05 2009 +0000
+
+    l10n: Bengali update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit ab5279637028955487b978a110ea5121502bedbe
+Author: Gaëtan Rousseaux <garousseau@voo.be>
+Date:   Tue Dec 22 23:54:35 2009 +0000
+
+    l10n: Walloon update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit cdeabf2470398110cae81e569aa8e6f7592ec7a5
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Dec 17 20:32:10 2009 +0100
+
+    Changes to header missing in previous commit
+
+commit 32d0b74fbbdb9ff0502400ae67f5e73ea402fda8
+Author: Felix Paul Kühne <fkuehne@videolan.org>
+Date:   Thu Dec 17 20:24:16 2009 +0100
+
+    added news about the apple remote 09 support
+
+commit 7e2883e08ead0748d7d06e112f61fce17af70eed
+Author: David K <coding@rotinaj.org>
+Date:   Fri Dec 11 18:55:45 2009 +0100
+
+    Add support for the new Apple Remote introduced in 2009
+    
+    Signed-off-by: Felix Paul Kühne <fkuehne@videolan.org>
+
+commit 4fbf471377e917091bc09757f18959e340ec3aaf
+Author: Gonçalo Cordeiro <gonzalo@tagenata.com>
+Date:   Mon Dec 14 23:21:03 2009 +0000
+
+    l10n: Galician update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 5aa612cfc4ff136d3ed1418b8807d27fbe6ec343
+Author: Niels Fanøe <niels.f@noee.dk>
+Date:   Mon Dec 14 23:18:35 2009 +0000
+
+    l10n: Danish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 6a214fdca6db8a179554085d46fa45fa34e8dc20
+Author: Khoem Sokhem <khoemsokhem@khmeros.info>
+Date:   Mon Dec 14 23:17:19 2009 +0000
+
+    l10n: Khmer update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 90de37ca2e956ea9aa2dfff065945f8d0c4644b8
+Author: Michał Trzebiatowski <hippie_1968@hotmail.com>
+Date:   Mon Dec 14 23:16:12 2009 +0000
+
+    l10n: Polish update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 6ace9087b0db8f256078874747f0b10200a0e68d
+Author: Gaëtan Rousseaux <garousseau@voo.be>
+Date:   Mon Dec 14 23:15:22 2009 +0000
+
+    l10n: Walloon update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 553a594d9ad65b1bb1fba275f38f1b71a54e9892
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Mon Dec 14 23:14:13 2009 +0000
+
+    l10n: Japanese update
+    
+    Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
+
+commit 0f4eb0b46596dde5e5dc3450df5c83b7ca91bec3
+Author: Pierre Ynard <linkfanel@yahoo.fr>
+Date:   Sat Dec 12 18:49:58 2009 +0100
+
+    configure: use pkg-config to detect libcaca
+    
+    ... instead of caca-config that breaks cross-compilation
+
+commit 2bcf6107fbf32de72a1bdcbfb74b3eee30f1c21e
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Tue Dec 8 23:25:24 2009 +0000
+
+    Don't append option to $PKG-CONFIG if it's empty
+    (cherry picked from commit f228216d9ed061f0be4ac206a80ec76ffbde5230)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit eb2ea62e87c0920c20dbaf3c3683712546b1199d
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Mon Oct 26 12:20:03 2009 +0100
+
+    Use eval to call programs
+    
+    Else we have troubles executing $FOO when FOO=prog --some-options
+    Should fix [5d6f80f267]
+    (cherry picked from commit a15d8784547b5bcc637cb0238e87ba4185b8836d)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 0fd11832d5269682a5789954315249e50cf3dca2
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Oct 25 22:07:06 2009 +0000
+
+    Typo
+    (cherry picked from commit 2d55ac821c1b75407cece163e9e20c19b49e4212)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit a6d3c4828c0640f780a27f49ffef45c830866e84
+Author: Christophe Mutricy <xtophe@videolan.org>
+Date:   Sun Oct 25 21:15:32 2009 +0000
+
+    Request flags for static linking on win32 and MacOS
+    
+    Only tested on a minimal win32 build. Please report configure/linking failure
+    (cherry picked from commit 5d6f80f267e3bfe000fa0d29f5056d889d045e58)
+    
+    Signed-off-by: Pierre Ynard <linkfanel@yahoo.fr>
+
+commit 3fc9806ef16ebe4c94fdf1a063c41c3ec164a7fc
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Dec 10 19:45:13 2009 +0200
+
+    Sync PO files
+
+commit 24e3893c5b21c9d0c94b6f8f09a4fc4bfb71f7e3
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Dec 10 19:46:48 2009 +0200
+
+    Ignore ChangeLog
+
+commit 958c68a3a20964369cff51a99307acf2729fbff0
+Author: Fumio Nakayama <fumio.n6a@gmail.com>
+Date:   Thu Dec 10 19:42:59 2009 +0200
+
+    Japanese translation update
+    
+    Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+
+commit 95d15a831053651f7daeebfbe1fcb109bbaa260d
+Author: Rémi Denis-Courmont <remi@remlab.net>
+Date:   Thu Dec 10 19:19:29 2009 +0200
+
+    Increment libvlccore revision for 1.0.4
+    
+    (but not libvlc, no changes)
+
 commit d10df85bc611340aba7ba071d204c0bfb7bb256c
 Author: Rémi Denis-Courmont <remi@remlab.net>
 Date:   Thu Dec 10 19:09:51 2009 +0200
