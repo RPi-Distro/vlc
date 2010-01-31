@@ -3,6 +3,7 @@ vlc (1.0.5-1~1.gbp4906c8) UNRELEASED; urgency=low
   ** SNAPSHOT build @4906c8051180d42dad50e65f955ed0c2c90c0427 **
 
   * New upstream version 1.0.5
+    + Closes: #556666, #565044
 
   [ Reinhard Tartler ]
   * Remove excessive replaces relationship
