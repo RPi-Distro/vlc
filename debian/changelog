@@ -1,6 +1,4 @@
-vlc (1.0.5-1~1.gbp4906c8) UNRELEASED; urgency=low
-
-  ** SNAPSHOT build @4906c8051180d42dad50e65f955ed0c2c90c0427 **
+vlc (1.0.5-1) unstable; urgency=low
 
   * New upstream version 1.0.5
     + Closes: #556666, #565044
@@ -13,12 +11,14 @@ vlc (1.0.5-1~1.gbp4906c8) UNRELEASED; urgency=low
   * NEWS.Debian: Use version present in Changelog
   * Add comments to overrides file
   * Add misc:Depends to vlc-data's Depends
+  * Refresh patches
 
   [ Benjamin Drung ]
   * Formatting improvements; thanks to Gerfried Fuchs for the patch
     (Closes: #566384).
+  * Bump Standards-Version to 3.8.4, no changes required.
 
- -- Christophe Mutricy <xtophe@videolan.org>  Sun, 31 Jan 2010 01:38:00 +0000
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 13 Feb 2010 15:52:30 +0000
 
 vlc (1.0.4-2) unstable; urgency=low
 
