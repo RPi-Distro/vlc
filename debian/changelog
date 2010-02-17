@@ -1,3 +1,12 @@
+vlc (1.0.5-2~1.gbp98a58d) UNRELEASED; urgency=low
+
+  ** SNAPSHOT build @98a58de94a815ce5d7984f96de8377303bd2ce7c **
+
+  * Install reportbug files also in vlc-data (LP: #472893)
+  * Fix symlinks
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Wed, 17 Feb 2010 15:24:04 +0100
+
 vlc (1.0.5-1) unstable; urgency=low
 
   * New upstream version 1.0.5
