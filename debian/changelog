@@ -1,3 +1,9 @@
+vlc (1.0.4-2ubuntu2) lucid; urgency=low
+
+  * rebuild for ffmpeg versioned symbols
+
+ -- Reinhard Tartler <siretart@tauware.de>  Tue, 19 Jan 2010 21:40:22 +0100
+
 vlc (1.0.4-2ubuntu1) lucid; urgency=low
 
   * Merge from Debian unstable, remaining changes:
