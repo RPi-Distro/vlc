@@ -28,15 +28,16 @@ The attached patch fixes this problem. It's been already fixed the same
 
     Signed-off-by: Christophe Mutricy <xtophe@videolan.org>
 
-diff --git a/modules/access/jack.c b/modules/access/jack.c
-index 217b6e4..1e08c4c 100644
---- a/modules/access/jack.c
-+++ b/modules/access/jack.c
-@@ -444,7 +444,7 @@ int Process( jack_nframes_t i_frames, void *p_arg )
-         }
+Index: vlc-debian/modules/access/jack.c
+===================================================================
+--- vlc-debian.orig/modules/access/jack.c	2010-02-13 15:44:11.000000000 +0000
++++ vlc-debian/modules/access/jack.c	2010-02-13 15:44:27.000000000 +0000
+@@ -405,7 +405,7 @@
+         es_out_Send( p_demux->out, p_es, p_block );
      }
-
+ 
 -    return 1;
 +    return 0;
  }
-
+ 
+ 

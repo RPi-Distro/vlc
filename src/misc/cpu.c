@@ -2,7 +2,7 @@
  * cpu.c: CPU detection code
  *****************************************************************************
  * Copyright (C) 1998-2004 the VideoLAN team
- * $Id: 2a524269d405a8b85c951386e957712c1122c882 $
+ * $Id: 964578335f69c431fd1e23323b76abe2a783e859 $
  *
  * Authors: Samuel Hocevar <sam@zoy.org>
  *          Christophe Massiot <massiot@via.ecp.fr>
@@ -172,7 +172,7 @@ uint32_t CPUCapabilities( void )
         {
             /* Test a SSE instruction */
             __asm__ __volatile__ ( "xorps %%xmm0,%%xmm0\n" : : );
-            exit(0);
+            _exit(0);
         }
         if( check_OS_capability( "SSE", pid ) )
             i_capabilities |= CPU_CAPABILITY_SSE;
@@ -188,7 +188,7 @@ uint32_t CPUCapabilities( void )
         {
             /* Test a SSE2 instruction */
             __asm__ __volatile__ ( "movupd %%xmm0, %%xmm0\n" : : );
-            exit(0);
+            _exit(0);
         }
         if( check_OS_capability( "SSE2", pid ) )
             i_capabilities |= CPU_CAPABILITY_SSE2;
@@ -212,7 +212,7 @@ uint32_t CPUCapabilities( void )
         {
             /* Test a 3D Now! instruction */
             __asm__ __volatile__ ( "pfadd %%mm0,%%mm0\n" "femms\n" : : );
-            exit(0);
+            _exit(0);
         }
         if( check_OS_capability( "3D Now!", pid ) )
             i_capabilities |= CPU_CAPABILITY_3DNOW;
@@ -252,7 +252,7 @@ out:
                       "vand %%v0, %%v0, %%v0"
                       :
                       : "r" (-1));
-        exit(0);
+        _exit(0);
     }
 
     if( check_OS_capability( "Altivec", pid ) )

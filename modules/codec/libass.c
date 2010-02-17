@@ -2,7 +2,7 @@
  * SSA/ASS subtitle decoder using libass.
  *****************************************************************************
  * Copyright (C) 2008-2009 the VideoLAN team
- * $Id: 019359b5a54f63ad8a225a70407743bc40bc68c3 $
+ * $Id: 4a33621166da3ea930fa76848d05a4277232c82a $
  *
  * Authors: Laurent Aimar <fenrir@videolan.org>
  *
@@ -471,7 +471,8 @@ static int BuildRegions( spu_t *p_spu, rectangle_t *p_region, int i_max_region, 
 #endif
 
     for( p_tmp = p_img_list, i_count = 0; p_tmp != NULL; p_tmp = p_tmp->next )
-        i_count++;
+        if( p_tmp->w > 0 && p_tmp->h > 0 )
+            i_count++;
     if( i_count <= 0 )
         return 0;
 
@@ -479,8 +480,9 @@ static int BuildRegions( spu_t *p_spu, rectangle_t *p_region, int i_max_region, 
     if( !pp_img )
         return 0;
 
-    for( p_tmp = p_img_list, i_count = 0; p_tmp != NULL; p_tmp = p_tmp->next, i_count++ )
-        pp_img[i_count] = p_tmp;
+    for( p_tmp = p_img_list, i_count = 0; p_tmp != NULL; p_tmp = p_tmp->next )
+        if( p_tmp->w > 0 && p_tmp->h > 0 )
+            pp_img[i_count++] = p_tmp;
 
     /* */
     const int i_w_inc = __MAX( ( i_width + 49 ) / 50, 32 );

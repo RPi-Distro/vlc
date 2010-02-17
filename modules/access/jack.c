@@ -445,7 +445,7 @@ int Process( jack_nframes_t i_frames, void *p_arg )
         }
     }
 
-    return 1;
+    return 0;
 }
 
 

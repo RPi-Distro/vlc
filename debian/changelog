@@ -1,3 +1,33 @@
+vlc (1.0.5-1ubuntu1) lucid; urgency=low
+
+  * Merge from Debian unstable, remaining changes:
+    - build and install the libx264 plugin
+    - add Xb-Npp header to vlc package
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Wed, 17 Feb 2010 13:38:29 +0100
+
+vlc (1.0.5-1) unstable; urgency=low
+
+  * New upstream version 1.0.5
+    + Closes: #556666, #565044
+
+  [ Reinhard Tartler ]
+  * Remove excessive replaces relationship
+  * Update for menu subpolicy, Closes: #564218
+
+  [ Christophe Mutricy ]
+  * NEWS.Debian: Use version present in Changelog
+  * Add comments to overrides file
+  * Add misc:Depends to vlc-data's Depends
+  * Refresh patches
+
+  [ Benjamin Drung ]
+  * Formatting improvements; thanks to Gerfried Fuchs for the patch
+    (Closes: #566384).
+  * Bump Standards-Version to 3.8.4, no changes required.
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 13 Feb 2010 15:52:30 +0000
+
 vlc (1.0.4-2ubuntu2) lucid; urgency=low
 
   * rebuild for ffmpeg versioned symbols

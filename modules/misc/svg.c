@@ -2,7 +2,7 @@
  * svg.c : Put SVG on the video
  *****************************************************************************
  * Copyright (C) 2002, 2003 the VideoLAN team
- * $Id: 28e1b77b89139201253d238b6d5c3f732a37cd44 $
+ * $Id: 46a5457620ec37a1396170a8ab350eee32f5d71c $
  *
  * Authors: Olivier Aubert <oaubert@lisi.univ-lyon1.fr>
  *
@@ -404,7 +404,7 @@ static void svg_RenderPicture( filter_t *p_filter,
 
     if( !p_handle )
     {
-        msg_Err( p_filter, "Error creating SVG reader: %s", error->message );
+        msg_Err( p_filter, "Error creating SVG reader" );
         return;
     }
 

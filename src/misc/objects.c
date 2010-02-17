@@ -52,6 +52,14 @@
 # include <io.h>
 # include <fcntl.h>
 # include <errno.h> /* ENOSYS */
+# include <winsock2.h>
+# include <ws2tcpip.h>
+# undef  read
+# define read( a, b, c )  recv (a, b, c, 0)
+# undef  write
+# define write( a, b, c ) send (a, b, c, 0)
+# undef  close
+# define close( a )       closesocket (a)
 #endif
 
 #include <assert.h>
@@ -305,9 +313,6 @@ static void vlc_object_destroy( vlc_object_t *p_this )
 
 
 #ifdef WIN32
-# include <winsock2.h>
-# include <ws2tcpip.h>
-
 /**
  * select()-able pipes emulated using Winsock
  */
@@ -348,13 +353,6 @@ error:
         closesocket (c);
     return -1;
 }
-
-#undef  read
-#define read( a, b, c )  recv (a, b, c, 0)
-#undef  write
-#define write( a, b, c ) send (a, b, c, 0)
-#undef  close
-#define close( a )       closesocket (a)
 #endif /* WIN32 */
 
 static vlc_mutex_t pipe_lock = VLC_STATIC_MUTEX;

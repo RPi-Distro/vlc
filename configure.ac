@@ -1,18 +1,18 @@
 dnl Autoconf settings for vlc
 
-AC_COPYRIGHT([Copyright 2002-2009 the VideoLAN team])
+AC_COPYRIGHT([Copyright 2002-2010 the VideoLAN team])
 
-AC_INIT(vlc, 1.0.4)
+AC_INIT(vlc, 1.0.5)
 VERSION_MAJOR="1"
 VERSION_MINOR="0"
-VERSION_REVISION="4"
+VERSION_REVISION="5"
 VERSION_EXTRA=""
 PKGDIR="vlc"
 AC_SUBST(PKGDIR)
 
 CONFIGURE_LINE="`echo "$0 $ac_configure_args" | sed -e 's/\\\/\\\\\\\/g'`"
 CODENAME="Goldeneye"
-COPYRIGHT_YEARS="1996-2009"
+COPYRIGHT_YEARS="1996-2010"
 
 AC_PREREQ(2.59c)
 AC_CONFIG_SRCDIR(src/libvlc.c)
@@ -839,7 +839,7 @@ if test "${THREAD_LIB}" = "error"; then
   THREAD_LIB=""
 fi
 
-VLC_ADD_LIBS([libvlccore libvlc plugin],[${THREAD_LIB}])
+VLC_ADD_LIBS([libvlccore libvlc vlc plugin],[${THREAD_LIB}])
 
 AC_CHECK_LIB(rt, clock_nanosleep, [
   VLC_ADD_LIBS([libvlccore],[-lrt])
@@ -938,6 +938,14 @@ dnl Make PKG_CONFIG_PATH precious so that it appears in the help and get saved
 AC_ARG_VAR(PKG_CONFIG_PATH,
 	   [Paths where to find .pc not at the default location])
 PKG_PROG_PKG_CONFIG()
+
+dnl On some OS we need static linking 
+       AS_IF([test -n "${PKG_CONFIG}" ],[
+	      AS_IF([test "${SYS}" = "mingw32" -o "${SYS}" = "mingwce" -o "${SYS}" = "darwin" ],[
+	          PKG_CONFIG="${PKG_CONFIG} --static"
+   	      ])
+       ])
+
 
 dnl
 dnl Check for zlib.h and -lz along with system -lminizip if available
@@ -4679,19 +4687,10 @@ AC_ARG_ENABLE(caca,
   [  --enable-caca           libcaca output (default disabled)])
 if test "${enable_caca}" = "yes"
 then
-  CACA_PATH="${PATH}"
-  AC_ARG_WITH(caca-config-path,
-    [    --with-caca-config-path=PATH caca-config path (default search in \$PATH)],
-    [ if test "${with_caca_config_path}" != "no"
-      then
-        CACA_PATH="${with_caca_config_path}:${PATH}"
-      fi ])
-  AC_PATH_PROG(CACA_CONFIG, caca-config, no, ${CACA_PATH})
-  if test "${CACA_CONFIG}" != "no"
-  then
+  PKG_CHECK_MODULES(CACA, caca, [
+    VLC_ADD_LIBS([caca],[$CACA_LIBS])
+    VLC_ADD_CFLAGS([caca],[$CACA_CFLAGS])
     VLC_ADD_PLUGIN([caca])
-    VLC_ADD_CFLAGS([caca],[`${CACA_CONFIG} --cflags`])
-    VLC_ADD_LIBS([caca],[`${CACA_CONFIG} --plugin-libs`])
     AC_COMPILE_IFELSE( [AC_LANG_PROGRAM([[#include <caca.h>
                                         caca_event_t ev;]],
                                         [[ev.type = 0;]]
@@ -4699,7 +4698,7 @@ then
                        [],
       [AC_DEFINE(CACA_EVENT_OPAQUE, [1], ["Define if struct caca_event is opaque and must not be accessed directly"])]
     )
-  fi
+  ], [])
 fi
 
 dnl
@@ -5077,12 +5076,12 @@ AS_IF([test "${enable_qt4}" != "no"], [
     ], [
         VLC_ADD_LIBS([qt4],[$QT4_LIBS])
     ])
-    QT4LOCALEDIR="$($PKG_CONFIG --variable=prefix QtCore)/share/qt4/translations/"
+    QT4LOCALEDIR="$(eval $PKG_CONFIG --variable=prefix QtCore)/share/qt4/translations/"
     AC_SUBST(QT4LOCALEDIR)
     VLC_ADD_CXXFLAGS([qt4],[$QT4_CFLAGS -DQT4LOCALEDIR=\\\\\\\"${QT4LOCALEDIR}\\\\\\\"])
-    AC_PATH_PROGS(MOC, [moc-qt4 moc], moc,`$PKG_CONFIG --variable=exec_prefix QtCore`/bin)
-    AC_PATH_PROG(RCC, rcc, rcc,`$PKG_CONFIG --variable=exec_prefix QtCore`/bin)
-    AC_PATH_PROGS(UIC, [uic-qt4 uic], uic,`$PKG_CONFIG --variable=exec_prefix QtCore`/bin)
+    AC_PATH_PROGS(MOC, [moc-qt4 moc], moc,`eval $PKG_CONFIG --variable=exec_prefix QtCore`/bin)
+    AC_PATH_PROG(RCC, rcc, rcc,`eval $PKG_CONFIG --variable=exec_prefix QtCore`/bin)
+    AC_PATH_PROGS(UIC, [uic-qt4 uic], uic,`eval $PKG_CONFIG --variable=exec_prefix QtCore`/bin)
   ], [
     AS_IF([test "${enable_qt4}" = "yes"],[
       AC_MSG_ERROR([Qt 4 library not found])
@@ -5633,8 +5632,8 @@ then
             echo "Using $i.pc files." >&5
             echo "Using $i.pc files." >&6
 	    found=1
-	    MOZILLA_CFLAGS=$( $PKG_CONFIG --cflags "$i" )
-	    MOZILLA_LIBS=$( $PKG_CONFIG --libs "$i" )
+	    MOZILLA_CFLAGS=$(eval $PKG_CONFIG --cflags "$i" )
+	    MOZILLA_LIBS=$(eval $PKG_CONFIG --libs "$i" )
 	    break
 	  fi
 	done

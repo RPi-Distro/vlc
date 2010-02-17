@@ -102,6 +102,7 @@ Douglas West <dwest at crystaldata dot com> - dynamicoverlay patch
 Dugal Harris - DirectShow fixes and MJPEG patches
 Dylan Aïssi <aissi dot dylan at free dot fr> - French translation
 Dylan Yudaken <dyudaken -- gmail # com> - hotkeys patch
+Eirik U. Birkeland <eirbir  at gmail  dot com> - Norwegian Nynorsk translation
 Emmanuel Blindauer <manu at agat.net> - aRts audio output
 Enrico Gueli <e_gueli at yahoo.it> - Brightness threshold in adjust video filter
 Enrique Osuna <enrique.osuna at gmail.com> - Various bug fixes in libvlc. Major Mac OS X Framework improvements.
@@ -124,6 +125,7 @@ Geoffroy Couprie <geo dot couprie -- gmail # com> - Podcast fix
 Georgi Chorbadzhiyski <gf at unixsol dot org> - HTTP access error handling fix, ASF output patches.
 Gisle Vanem <giva at bgnet dot no>  - gettimeoffay under win32
 Glen Gray <slaine at slaine do rog> - RTSP keepalive
+Goce Manevski <Goce92 at live dot com> - Macedonian translation
 Goetz Waschk <waschk at informatik.uni-rostock dot de> - Mandrake packages
 Gorana Milicevic <gorana.milicevic at gmail dot com> - Serbian localisation
 Greg Farrell <greg at gregfarell dot org> - rc interface "enqueue" command
@@ -272,6 +274,7 @@ Sebastien Chaumat <Sebastien.Chaumat at ens-lyon.fr> - YOPY port tests
 Sidney Doria <ssdoria qt gmail.com> - Brazilian Portuguese localisation
 Simon Damkjær Andersen <simondamkjaer at gmail.com> - playmode icons and the entire Fullscreen Panel design for the OSX GUI (v0.8.6)
 Søren Bøg <avacore at videolan dot org> - dynamicoverlays
+Sreejith P <sreejithpro at gmail dot com> - Malayalam translation
 Srikanth Raju - Chorus flanger audio filter
 Stefán Freyr Stefánsson <stefan.freyr -at- gmail.com> - Qt4 speed slider
 Steve Brown <sbrown at cortland.com> - fix for optional PES size bug

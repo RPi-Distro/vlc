@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: vlc\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2009-12-10 19:11+0200\n"
+"POT-Creation-Date: 2010-01-28 17:44+0100\n"
 "PO-Revision-Date: 2003-04-06 12:32+0200\n"
 "Last-Translator: Haakon Meland Eriksen <haakon.eriksen@far.no>\n"
 "Language-Team: vlc <>\n"
@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: include/vlc_common.h:869
+#: include/vlc_common.h:889
 #, fuzzy
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
@@ -61,7 +61,7 @@ msgstr "Meny grensesnitt"
 msgid "Settings for the main interface"
 msgstr "Instillinger for menyen grensesnitt"
 
-#: include/vlc_config_cat.h:45 src/libvlc-module.c:182
+#: include/vlc_config_cat.h:45 src/libvlc-module.c:184
 #, fuzzy
 msgid "Control interfaces"
 msgstr "Standard grensesnitt: "
@@ -77,7 +77,7 @@ msgid "Hotkeys settings"
 msgstr "Lyd"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2784 src/input/es_out.c:2818
-#: src/libvlc-module.c:1516 modules/gui/beos/InterfaceWindow.cpp:283
+#: src/libvlc-module.c:1518 modules/gui/beos/InterfaceWindow.cpp:283
 #: modules/gui/macosx/intf.m:660 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:179
 #: modules/gui/macosx/wizard.m:380
@@ -130,7 +130,7 @@ msgstr "Neste fil"
 msgid "General settings for audio output modules."
 msgstr "Standard grensesnitt:"
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:1952
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:1955
 #: modules/stream_out/transcode.c:232
 msgid "Miscellaneous"
 msgstr "Forskjellig"
@@ -141,7 +141,7 @@ msgid "Miscellaneous audio settings and modules."
 msgstr "Forskjellig"
 
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2787 src/input/es_out.c:2867
-#: src/libvlc-module.c:1569 modules/gui/macosx/intf.m:673
+#: src/libvlc-module.c:1571 modules/gui/macosx/intf.m:673
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:103
 #: modules/gui/macosx/simple_prefs.m:183 modules/gui/macosx/wizard.m:381
 #: modules/gui/qt4/components/info_panels.cpp:521
@@ -259,7 +259,7 @@ msgid "General input settings. Use with care..."
 msgstr "vis avanserte alternativer"
 
 # , fuzzy
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1879
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1882
 #, fuzzy
 msgid "Stream output"
 msgstr "Standard output:"
@@ -350,7 +350,7 @@ msgstr "DVD"
 msgid "VLC's implementation of Video On Demand"
 msgstr ""
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2013
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2016
 #: src/playlist/engine.c:119 modules/demux/playlist/playlist.c:66
 #: modules/demux/playlist/playlist.c:67
 #: modules/gui/beos/InterfaceWindow.cpp:232
@@ -385,7 +385,7 @@ msgid ""
 "playlist."
 msgstr ""
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1829
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1832
 #, fuzzy
 msgid "Advanced"
 msgstr "vis avanserte alternativer"
@@ -593,7 +593,7 @@ msgstr "Spilleliste..."
 msgid "Open Folder..."
 msgstr "_Åpne fil..."
 
-#: include/vlc_intf_strings.h:64 src/libvlc-module.c:1191
+#: include/vlc_intf_strings.h:64 src/libvlc-module.c:1193
 #, fuzzy
 msgid "Repeat all"
 msgstr "Velg fil"
@@ -607,7 +607,7 @@ msgstr "Valg"
 msgid "No repeat"
 msgstr ""
 
-#: include/vlc_intf_strings.h:68 src/libvlc-module.c:1407
+#: include/vlc_intf_strings.h:68 src/libvlc-module.c:1409
 #: modules/gui/macosx/controls.m:1051 modules/gui/macosx/intf.m:646
 msgid "Random"
 msgstr ""
@@ -777,7 +777,7 @@ msgid "The maximum number of filters (%d) was reached."
 msgstr "Naviger gjennom strømmen"
 
 #: src/audio_output/input.c:114 src/audio_output/input.c:160
-#: src/input/es_out.c:928 src/libvlc-module.c:620
+#: src/input/es_out.c:928 src/libvlc-module.c:622
 #: src/video_output/video_output.c:1770 modules/video_filter/postproc.c:236
 msgid "Disable"
 msgstr ""
@@ -807,7 +807,7 @@ msgstr "lydenhet"
 msgid "Equalizer"
 msgstr "Standard grensesnitt: "
 
-#: src/audio_output/input.c:179 src/libvlc-module.c:320
+#: src/audio_output/input.c:179 src/libvlc-module.c:322
 #, fuzzy
 msgid "Audio filters"
 msgstr "Lyd"
@@ -835,7 +835,7 @@ msgid "Stereo"
 msgstr "Stereo"
 
 #: src/audio_output/output.c:107 src/audio_output/output.c:143
-#: src/libvlc-module.c:414 src/libvlc-module.c:463
+#: src/libvlc-module.c:416 src/libvlc-module.c:465
 #: modules/audio_filter/channel_mixer/mono.c:96 modules/codec/dvbsub.c:75
 #: modules/codec/subtitles/subsdec.c:187 modules/codec/zvbi.c:79
 #: modules/control/gestures.c:91 modules/gui/fbosd.c:162
@@ -848,7 +848,7 @@ msgid "Left"
 msgstr "Venstre"
 
 #: src/audio_output/output.c:109 src/audio_output/output.c:145
-#: src/libvlc-module.c:414 src/libvlc-module.c:463
+#: src/libvlc-module.c:416 src/libvlc-module.c:465
 #: modules/audio_filter/channel_mixer/mono.c:96 modules/codec/dvbsub.c:75
 #: modules/codec/subtitles/subsdec.c:187 modules/codec/zvbi.c:79
 #: modules/control/gestures.c:91 modules/gui/fbosd.c:162
@@ -974,7 +974,7 @@ msgid ""
 "there is no way for you to fix this."
 msgstr ""
 
-#: src/input/es_out.c:949 src/input/es_out.c:954 src/libvlc-module.c:358
+#: src/input/es_out.c:949 src/input/es_out.c:954 src/libvlc-module.c:360
 #: modules/access/cdda/info.c:391 modules/access/vcdx/access.c:477
 #: modules/access/vcdx/info.c:290 modules/access/vcdx/info.c:291
 #: modules/gui/qt4/components/open_panels.cpp:383
@@ -988,7 +988,7 @@ msgid "%s [%s %d]"
 msgstr ""
 
 #: src/input/es_out.c:1157 src/input/es_out.c:1162 src/input/var.c:173
-#: src/libvlc-module.c:653 modules/gui/macosx/intf.m:653
+#: src/libvlc-module.c:655 modules/gui/macosx/intf.m:653
 #: modules/gui/macosx/intf.m:654
 #, fuzzy
 msgid "Program"
@@ -1035,7 +1035,7 @@ msgstr "skru på lyd"
 msgid "Codec"
 msgstr ""
 
-#: src/input/es_out.c:2808 src/input/meta.c:50 src/libvlc-module.c:209
+#: src/input/es_out.c:2808 src/input/meta.c:50 src/libvlc-module.c:211
 #: modules/gui/beos/InterfaceWindow.cpp:279
 #: modules/gui/macosx/simple_prefs.m:264
 #: modules/gui/qt4/ui/sprefs_interface.h:314
@@ -1152,7 +1152,7 @@ msgstr ""
 msgid "Copyright"
 msgstr "Crop?"
 
-#: src/input/meta.c:43 src/libvlc-module.c:358 modules/access/vcdx/info.c:94
+#: src/input/meta.c:43 src/libvlc-module.c:360 modules/access/vcdx/info.c:94
 #, fuzzy
 msgid "Album"
 msgstr "Om"
@@ -1209,7 +1209,7 @@ msgstr "Avbryt"
 msgid "Bookmark"
 msgstr ""
 
-#: src/input/var.c:178 src/libvlc-module.c:659
+#: src/input/var.c:178 src/libvlc-module.c:661
 #, fuzzy
 msgid "Programs"
 msgstr "Avslutt programmet"
@@ -1385,35 +1385,35 @@ msgstr ""
 "\n"
 "Trykk Retur-knappen for å fortsette...\n"
 
-#: src/libvlc.h:188 src/libvlc-module.c:1410 src/libvlc-module.c:1411
-#: src/libvlc-module.c:2544 src/video_output/vout_intf.c:278
+#: src/libvlc.h:188 src/libvlc-module.c:1412 src/libvlc-module.c:1413
+#: src/libvlc-module.c:2547 src/video_output/vout_intf.c:278
 msgid "Zoom"
 msgstr ""
 
-#: src/libvlc.h:189 src/libvlc-module.c:1330 src/video_output/vout_intf.c:172
+#: src/libvlc.h:189 src/libvlc-module.c:1332 src/video_output/vout_intf.c:172
 msgid "1:4 Quarter"
 msgstr ""
 
-#: src/libvlc.h:190 src/libvlc-module.c:1331 src/video_output/vout_intf.c:173
+#: src/libvlc.h:190 src/libvlc-module.c:1333 src/video_output/vout_intf.c:173
 msgid "1:2 Half"
 msgstr ""
 
-#: src/libvlc.h:191 src/libvlc-module.c:1332 src/video_output/vout_intf.c:174
+#: src/libvlc.h:191 src/libvlc-module.c:1334 src/video_output/vout_intf.c:174
 msgid "1:1 Original"
 msgstr ""
 
-#: src/libvlc.h:192 src/libvlc-module.c:1333 src/video_output/vout_intf.c:175
+#: src/libvlc.h:192 src/libvlc-module.c:1335 src/video_output/vout_intf.c:175
 msgid "2:1 Double"
 msgstr ""
 
-#: src/libvlc-module.c:99 src/libvlc-module.c:317 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:100 src/libvlc-module.c:319 modules/access/bda/bda.c:69
 #: modules/codec/subtitles/subsdec.c:97
 #: modules/gui/qt4/components/open_panels.cpp:1045
 #, fuzzy
 msgid "Auto"
 msgstr "Forfattere"
 
-#: src/libvlc-module.c:165
+#: src/libvlc-module.c:167
 #, fuzzy
 msgid ""
 "These options allow you to configure the interfaces used by VLC. You can "
@@ -1423,12 +1423,12 @@ msgstr ""
 "Du kan velge hvilket grensesnitt VLC skal bruke med dette alternativet. "
 "Standard innstillingen velger automatisk den beste tilgjengelige modulen."
 
-#: src/libvlc-module.c:169
+#: src/libvlc-module.c:171
 #, fuzzy
 msgid "Interface module"
 msgstr "grensesnittmodul"
 
-#: src/libvlc-module.c:171
+#: src/libvlc-module.c:173
 #, fuzzy
 msgid ""
 "This is the main interface used by VLC. The default behavior is to "
@@ -1437,12 +1437,12 @@ msgstr ""
 "Du kan velge hvilket grensesnitt VLC skal bruke med dette alternativet. "
 "Standard innstillingen velger automatisk den beste tilgjengelige modulen."
 
-#: src/libvlc-module.c:175 modules/control/ntservice.c:57
+#: src/libvlc-module.c:177 modules/control/ntservice.c:57
 #, fuzzy
 msgid "Extra interface modules"
 msgstr "ekstra grensesnittmoduler"
 
-#: src/libvlc-module.c:177
+#: src/libvlc-module.c:179
 #, fuzzy
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
@@ -1454,17 +1454,17 @@ msgstr ""
 "alternativet. Disse startes i bakgrunnen i tillegg til standard "
 "grensesnittet. Bruk en kommaseparert liste med grensesnittmoduler."
 
-#: src/libvlc-module.c:184
+#: src/libvlc-module.c:186
 #, fuzzy
 msgid "You can select control interfaces for VLC."
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:186
+#: src/libvlc-module.c:188
 #, fuzzy
 msgid "Verbosity (0,1,2)"
 msgstr "detaljnivå (0,1,2)"
 
-#: src/libvlc-module.c:188
+#: src/libvlc-module.c:190
 #, fuzzy
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
@@ -1473,11 +1473,11 @@ msgstr ""
 "Sett detaljnivået på beskjeder med dette alternativet (0=bare feil og "
 "standard meldinger, 1=advarsler, 2=feilretting)."
 
-#: src/libvlc-module.c:191
+#: src/libvlc-module.c:193
 msgid "Choose which objects should print debug message"
 msgstr ""
 
-#: src/libvlc-module.c:194
+#: src/libvlc-module.c:196
 msgid ""
 "This is a ',' separated string, each objects should be prefixed by a '+' or "
 "a '-' to respectively enable or disable it. The keyword 'all' refers to all "
@@ -1487,27 +1487,27 @@ msgid ""
 "message."
 msgstr ""
 
-#: src/libvlc-module.c:201
+#: src/libvlc-module.c:203
 #, fuzzy
 msgid "Be quiet"
 msgstr "vær stille"
 
-#: src/libvlc-module.c:203
+#: src/libvlc-module.c:205
 #, fuzzy
 msgid "Turn off all warning and information messages."
 msgstr ""
 "Skru av alle advarsler og informasjonsmeldinger med dette alternativet."
 
-#: src/libvlc-module.c:205
+#: src/libvlc-module.c:207
 #, fuzzy
 msgid "Default stream"
 msgstr "Slett"
 
-#: src/libvlc-module.c:207
+#: src/libvlc-module.c:209
 msgid "This stream will always be opened at VLC startup."
 msgstr ""
 
-#: src/libvlc-module.c:210
+#: src/libvlc-module.c:212
 #, fuzzy
 msgid ""
 "You can manually select a language for the interface. The system language is "
@@ -1516,12 +1516,12 @@ msgstr ""
 "Standard sti som grensesnittet benytter for å finne filer velger du med "
 "dette alternativet."
 
-#: src/libvlc-module.c:214
+#: src/libvlc-module.c:216
 #, fuzzy
 msgid "Color messages"
 msgstr "fargede beskjeder"
 
-#: src/libvlc-module.c:216
+#: src/libvlc-module.c:218
 #, fuzzy
 msgid ""
 "This enables colorization of the messages sent to the console Your terminal "
@@ -1530,12 +1530,12 @@ msgstr ""
 "Når dette alternativet er påskrudd fargelegges meldinger til konsolen. "
 "Terminalklienten trenger Linux-fargestøtte for at dette skal virke."
 
-#: src/libvlc-module.c:219
+#: src/libvlc-module.c:221
 #, fuzzy
 msgid "Show advanced options"
 msgstr "vis avanserte alternativer"
 
-#: src/libvlc-module.c:221
+#: src/libvlc-module.c:223
 #, fuzzy
 msgid ""
 "When this is enabled, the preferences and/or interfaces will show all "
@@ -1545,29 +1545,29 @@ msgstr ""
 "alternativet er påskrudd, inkludert de som de fleste brukere aldri burde "
 "røre."
 
-#: src/libvlc-module.c:225 modules/control/showintf.c:71
+#: src/libvlc-module.c:227 modules/control/showintf.c:71
 #, fuzzy
 msgid "Show interface with mouse"
 msgstr "_Gjem grensesnitt"
 
-#: src/libvlc-module.c:227
+#: src/libvlc-module.c:229
 msgid ""
 "When this is enabled, the interface is shown when you move the mouse to the "
 "edge of the screen in fullscreen mode."
 msgstr ""
 
-#: src/libvlc-module.c:230
+#: src/libvlc-module.c:232
 #, fuzzy
 msgid "Interface interaction"
 msgstr "grensesnittmodul"
 
-#: src/libvlc-module.c:232
+#: src/libvlc-module.c:234
 msgid ""
 "When this is enabled, the interface will show a dialog box each time some "
 "user input is required."
 msgstr ""
 
-#: src/libvlc-module.c:242
+#: src/libvlc-module.c:244
 msgid ""
 "These options allow you to modify the behavior of the audio subsystem, and "
 "to add audio filters which can be used for post processing or visual effects "
@@ -1575,12 +1575,12 @@ msgid ""
 "the \"audio filters\" modules section."
 msgstr ""
 
-#: src/libvlc-module.c:248
+#: src/libvlc-module.c:250
 #, fuzzy
 msgid "Audio output module"
 msgstr "Lyd-eksportmodul"
 
-#: src/libvlc-module.c:250
+#: src/libvlc-module.c:252
 #, fuzzy
 msgid ""
 "This is the audio output method used by VLC. The default behavior is to "
@@ -1590,13 +1590,13 @@ msgstr ""
 "alternativet. Standard innstillingen velger automatisk den beste "
 "tilgjengelige metoden. "
 
-#: src/libvlc-module.c:254 modules/gui/qt4/ui/sprefs_audio.h:333
+#: src/libvlc-module.c:256 modules/gui/qt4/ui/sprefs_audio.h:333
 #: modules/stream_out/display.c:41
 #, fuzzy
 msgid "Enable audio"
 msgstr "skru på lyd"
 
-#: src/libvlc-module.c:256
+#: src/libvlc-module.c:258
 #, fuzzy
 msgid ""
 "You can completely disable the audio output. The audio decoding stage will "
@@ -1605,46 +1605,46 @@ msgstr ""
 "Du kan skru av lydeksport fullstendig. Dekoding av lyd vil ikke bli gjort "
 "hvis du velger dette, og dette sparer litt prosessorkraft."
 
-#: src/libvlc-module.c:260
+#: src/libvlc-module.c:262
 #, fuzzy
 msgid "Force mono audio"
 msgstr "framtvinger monolyd"
 
-#: src/libvlc-module.c:261
+#: src/libvlc-module.c:263
 #, fuzzy
 msgid "This will force a mono audio output."
 msgstr "Dette framtvinger eksport av monolyd"
 
-#: src/libvlc-module.c:264
+#: src/libvlc-module.c:266
 #, fuzzy
 msgid "Default audio volume"
 msgstr "Slett"
 
-#: src/libvlc-module.c:266
+#: src/libvlc-module.c:268
 msgid ""
 "You can set the default audio output volume here, in a range from 0 to 1024."
 msgstr ""
 "Du velger standardvolum for lydekport i et område fra 0 til 1024 med dette "
 "alternativet."
 
-#: src/libvlc-module.c:269
+#: src/libvlc-module.c:271
 #, fuzzy
 msgid "Audio output saved volume"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:271
+#: src/libvlc-module.c:273
 #, fuzzy
 msgid ""
 "This saves the audio output volume when you use the mute function. You "
 "should not change this option manually."
 msgstr "Dette lagrer lydeksportvolumet når du skrur av lyden."
 
-#: src/libvlc-module.c:274
+#: src/libvlc-module.c:276
 #, fuzzy
 msgid "Audio output volume step"
 msgstr "Lydeksport volum"
 
-#: src/libvlc-module.c:276
+#: src/libvlc-module.c:278
 #, fuzzy
 msgid ""
 "The step size of the volume is adjustable using this option, in a range from "
@@ -1653,12 +1653,12 @@ msgstr ""
 "Du velger standardvolum for lydekport i et område fra 0 til 1024 med dette "
 "alternativet."
 
-#: src/libvlc-module.c:279
+#: src/libvlc-module.c:281
 #, fuzzy
 msgid "Audio output frequency (Hz)"
 msgstr "lydeksportens frekvens (Hz)"
 
-#: src/libvlc-module.c:281
+#: src/libvlc-module.c:283
 #, fuzzy
 msgid ""
 "You can force the audio output frequency here. Common values are -1 "
@@ -1667,37 +1667,37 @@ msgstr ""
 "Her kan du framtvinge lydeksportens frekvens. Vanlige verdier er 48000, "
 "44100, 32000, 22050, 16000, 11025, 8000."
 
-#: src/libvlc-module.c:285
+#: src/libvlc-module.c:287
 msgid "High quality audio resampling"
 msgstr ""
 
-#: src/libvlc-module.c:287
+#: src/libvlc-module.c:289
 msgid ""
 "This uses a high quality audio resampling algorithm. High quality audio "
 "resampling can be processor intensive so you can disable it and a cheaper "
 "resampling algorithm will be used instead."
 msgstr ""
 
-#: src/libvlc-module.c:292
+#: src/libvlc-module.c:294
 #, fuzzy
 msgid "Audio desynchronization compensation"
 msgstr "kompenserer for desynkronisering av lyd/bilde (i millisekunder)"
 
-#: src/libvlc-module.c:294
+#: src/libvlc-module.c:296
 #, fuzzy
 msgid ""
-"This delays the audio output. The delay must be given in milliseconds.This "
+"This delays the audio output. The delay must be given in milliseconds. This "
 "can be handy if you notice a lag between the video and the audio."
 msgstr ""
 "Du kan forsinke lydeksporten med dette alternativet. Hvis du oppdager "
 "tidsforsinkelse mellom lyd og bilde kan dette være svært kjekt."
 
-#: src/libvlc-module.c:297
+#: src/libvlc-module.c:299
 #, fuzzy
 msgid "Audio output channels mode"
 msgstr "velg foretrukket rekkefølge for lydinnkoding"
 
-#: src/libvlc-module.c:299
+#: src/libvlc-module.c:301
 #, fuzzy
 msgid ""
 "This sets the audio output channels mode that will be used by default when "
@@ -1707,13 +1707,13 @@ msgstr ""
 "Du kan bruke S/PDIF lydeksport som standard når maskinvaren din støtter "
 "dette i tillegg til lydstrømmen som avspilles."
 
-#: src/libvlc-module.c:303 modules/gui/macosx/simple_prefs.m:232
+#: src/libvlc-module.c:305 modules/gui/macosx/simple_prefs.m:232
 #: modules/gui/qt4/ui/sprefs_audio.h:340
 #, fuzzy
 msgid "Use S/PDIF when available"
 msgstr "bruk S/PDIF lydeksport når dette er tilgjengelig"
 
-#: src/libvlc-module.c:305
+#: src/libvlc-module.c:307
 #, fuzzy
 msgid ""
 "S/PDIF can be used by default when your hardware supports it as well as the "
@@ -1722,13 +1722,13 @@ msgstr ""
 "Du kan bruke S/PDIF lydeksport som standard når maskinvaren din støtter "
 "dette i tillegg til lydstrømmen som avspilles."
 
-#: src/libvlc-module.c:308 modules/gui/macosx/simple_prefs.m:222
+#: src/libvlc-module.c:310 modules/gui/macosx/simple_prefs.m:222
 #: modules/gui/qt4/ui/sprefs_audio.h:342
 #, fuzzy
 msgid "Force detection of Dolby Surround"
 msgstr "Velg en nettverksstrøm"
 
-#: src/libvlc-module.c:310
+#: src/libvlc-module.c:312
 msgid ""
 "Use this when you know your stream is (or is not) encoded with Dolby "
 "Surround but fails to be detected as such. Even if the stream is not "
@@ -1736,87 +1736,87 @@ msgid ""
 "your experience, especially when combined with the Headphone Channel Mixer."
 msgstr ""
 
-#: src/libvlc-module.c:317 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:319 modules/access/bda/bda.c:69
 #, fuzzy
 msgid "On"
 msgstr "Åpne fil"
 
-#: src/libvlc-module.c:317 modules/access/bda/bda.c:68
+#: src/libvlc-module.c:319 modules/access/bda/bda.c:68
 msgid "Off"
 msgstr ""
 
-#: src/libvlc-module.c:322
+#: src/libvlc-module.c:324
 msgid "This adds audio post processing filters, to modify the sound rendering."
 msgstr ""
 
-#: src/libvlc-module.c:325
+#: src/libvlc-module.c:327
 #, fuzzy
 msgid "Audio visualizations "
 msgstr "_Navigasjon"
 
-#: src/libvlc-module.c:327
+#: src/libvlc-module.c:329
 msgid "This adds visualization modules (spectrum analyzer, etc.)."
 msgstr ""
 
-#: src/libvlc-module.c:331 modules/gui/qt4/ui/sprefs_audio.h:352
+#: src/libvlc-module.c:333 modules/gui/qt4/ui/sprefs_audio.h:352
 #, fuzzy
 msgid "Replay gain mode"
 msgstr "Spill fortere"
 
-#: src/libvlc-module.c:333
+#: src/libvlc-module.c:335
 #, fuzzy
 msgid "Select the replay gain mode"
 msgstr "Velg fil"
 
-#: src/libvlc-module.c:335
+#: src/libvlc-module.c:337
 #, fuzzy
 msgid "Replay preamp"
 msgstr "Spill strøm"
 
-#: src/libvlc-module.c:337
+#: src/libvlc-module.c:339
 #, fuzzy
 msgid ""
 "This allows you to change the default target level (89 dB) for stream with "
 "replay gain information"
 msgstr "Du kan fastsette lydinnkoding her"
 
-#: src/libvlc-module.c:340
+#: src/libvlc-module.c:342
 #, fuzzy
 msgid "Default replay gain"
 msgstr "Slett"
 
-#: src/libvlc-module.c:342
+#: src/libvlc-module.c:344
 msgid "This is the gain used for stream without replay gain information"
 msgstr ""
 
-#: src/libvlc-module.c:344
+#: src/libvlc-module.c:346
 #, fuzzy
 msgid "Peak protection"
 msgstr "Valg"
 
-#: src/libvlc-module.c:346
+#: src/libvlc-module.c:348
 msgid "Protect against sound clipping"
 msgstr ""
 
-#: src/libvlc-module.c:349
+#: src/libvlc-module.c:351
 #, fuzzy
 msgid "Enable time streching audio"
 msgstr "skru på lyd"
 
-#: src/libvlc-module.c:351
+#: src/libvlc-module.c:353
 msgid ""
-"This allows to play audio at lower or higher speed withoutaffecting the "
+"This allows to play audio at lower or higher speed without affecting the "
 "audio pitch"
 msgstr ""
 
-#: src/libvlc-module.c:358 src/libvlc-module.c:590
+#: src/libvlc-module.c:360 src/libvlc-module.c:592
 #: modules/access/dshow/dshow.cpp:82 modules/access/dshow/dshow.cpp:84
 #: modules/codec/avcodec/avcodec.c:71 modules/codec/kate.c:204
 #: modules/gui/qt4/components/interface_widgets.cpp:255
 msgid "None"
 msgstr ""
 
-#: src/libvlc-module.c:366
+#: src/libvlc-module.c:368
 msgid ""
 "These options allow you to modify the behavior of the video output "
 "subsystem. You can for example enable video filters (deinterlacing, image "
@@ -1825,12 +1825,12 @@ msgid ""
 "options."
 msgstr ""
 
-#: src/libvlc-module.c:372
+#: src/libvlc-module.c:374
 #, fuzzy
 msgid "Video output module"
 msgstr "Videofremvisningsmodul"
 
-#: src/libvlc-module.c:374
+#: src/libvlc-module.c:376
 #, fuzzy
 msgid ""
 "This is the the video output method used by VLC. The default behavior is to "
@@ -1840,13 +1840,13 @@ msgstr ""
 "alternativet. Standard innstillingen velger automatisk den beste "
 "tilgjengelige metoden."
 
-#: src/libvlc-module.c:377 modules/gui/qt4/ui/sprefs_video.h:279
+#: src/libvlc-module.c:379 modules/gui/qt4/ui/sprefs_video.h:279
 #: modules/stream_out/display.c:43
 #, fuzzy
 msgid "Enable video"
 msgstr "skru på video"
 
-#: src/libvlc-module.c:379
+#: src/libvlc-module.c:381
 #, fuzzy
 msgid ""
 "You can completely disable the video output. The video decoding stage will "
@@ -1855,14 +1855,14 @@ msgstr ""
 "Du kan skru av videoeksport fullstendig. Videodekoding vil da ikke bli "
 "gjort, noe som sparer litt prosessorkraft."
 
-#: src/libvlc-module.c:382 modules/codec/fake.c:59
+#: src/libvlc-module.c:384 modules/codec/fake.c:59
 #: modules/stream_out/mosaic_bridge.c:140 modules/stream_out/transcode.c:77
 #: modules/visualization/visual/visual.c:46
 #, fuzzy
 msgid "Video width"
 msgstr "videobredde"
 
-#: src/libvlc-module.c:384
+#: src/libvlc-module.c:386
 #, fuzzy
 msgid ""
 "You can enforce the video width. By default (-1) VLC will adapt to the video "
@@ -1871,14 +1871,14 @@ msgstr ""
 "Her kan du sette videobredden. Standardinnstillingen er at VLC tilpasser seg "
 "til videoviseren."
 
-#: src/libvlc-module.c:387 modules/codec/fake.c:62
+#: src/libvlc-module.c:389 modules/codec/fake.c:62
 #: modules/stream_out/mosaic_bridge.c:143 modules/stream_out/transcode.c:80
 #: modules/visualization/visual/visual.c:50
 #, fuzzy
 msgid "Video height"
 msgstr "videohøyde"
 
-#: src/libvlc-module.c:389
+#: src/libvlc-module.c:391
 #, fuzzy
 msgid ""
 "You can enforce the video height. By default (-1) VLC will adapt to the "
@@ -1887,52 +1887,52 @@ msgstr ""
 "Her kan du sette videohøyden. Standardinnstillingen er at VLC tilpasser seg "
 "til videoviseren."
 
-#: src/libvlc-module.c:392
+#: src/libvlc-module.c:394
 #, fuzzy
 msgid "Video X coordinate"
 msgstr "lydenhet"
 
-#: src/libvlc-module.c:394
+#: src/libvlc-module.c:396
 msgid ""
 "You can enforce the position of the top left corner of the video window (X "
 "coordinate)."
 msgstr ""
 
-#: src/libvlc-module.c:397
+#: src/libvlc-module.c:399
 #, fuzzy
 msgid "Video Y coordinate"
 msgstr "lydenhet"
 
-#: src/libvlc-module.c:399
+#: src/libvlc-module.c:401
 msgid ""
 "You can enforce the position of the top left corner of the video window (Y "
 "coordinate)."
 msgstr ""
 
-#: src/libvlc-module.c:402
+#: src/libvlc-module.c:404
 #, fuzzy
 msgid "Video title"
 msgstr "lydenhet"
 
-#: src/libvlc-module.c:404
+#: src/libvlc-module.c:406
 msgid ""
 "Custom title for the video window (in case the video is not embedded in the "
 "interface)."
 msgstr ""
 
-#: src/libvlc-module.c:407
+#: src/libvlc-module.c:409
 #, fuzzy
 msgid "Video alignment"
 msgstr "_Innstillinger"
 
-#: src/libvlc-module.c:409
+#: src/libvlc-module.c:411
 msgid ""
 "Enforce the alignment of the video in its window. By default (0) it will be "
 "centered (0=center, 1=left, 2=right, 4=top, 8=bottom, you can also use "
 "combinations of these values, like 6=4+2 meaning top-right)."
 msgstr ""
 
-#: src/libvlc-module.c:414 src/libvlc-module.c:463
+#: src/libvlc-module.c:416 src/libvlc-module.c:465
 #: modules/audio_filter/channel_mixer/mono.c:96 modules/codec/dvbsub.c:75
 #: modules/codec/subtitles/subsdec.c:187 modules/codec/zvbi.c:79
 #: modules/gui/fbosd.c:162 modules/video_filter/logo.c:99
@@ -1942,7 +1942,7 @@ msgstr ""
 msgid "Center"
 msgstr "Kapittel"
 
-#: src/libvlc-module.c:414 src/libvlc-module.c:463 modules/codec/dvbsub.c:75
+#: src/libvlc-module.c:416 src/libvlc-module.c:465 modules/codec/dvbsub.c:75
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:162
 #: modules/gui/qt4/ui/video_effects.h:883
 #: modules/gui/qt4/ui/video_effects.h:939
@@ -1952,7 +1952,7 @@ msgstr "Kapittel"
 msgid "Top"
 msgstr ""
 
-#: src/libvlc-module.c:414 src/libvlc-module.c:463 modules/codec/dvbsub.c:75
+#: src/libvlc-module.c:416 src/libvlc-module.c:465 modules/codec/dvbsub.c:75
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:162
 #: modules/gui/qt4/ui/video_effects.h:889 modules/video_filter/logo.c:99
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1961,7 +1961,7 @@ msgstr ""
 msgid "Bottom"
 msgstr "Gå til:"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:464 modules/codec/dvbsub.c:76
+#: src/libvlc-module.c:417 src/libvlc-module.c:466 modules/codec/dvbsub.c:76
 #: modules/codec/zvbi.c:80 modules/gui/fbosd.c:163
 #: modules/video_filter/logo.c:100 modules/video_filter/marq.c:139
 #: modules/video_filter/mosaic.c:173 modules/video_filter/osdmenu.c:86
@@ -1970,7 +1970,7 @@ msgstr "Gå til:"
 msgid "Top-Left"
 msgstr "Venstre"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:464 modules/codec/dvbsub.c:76
+#: src/libvlc-module.c:417 src/libvlc-module.c:466 modules/codec/dvbsub.c:76
 #: modules/codec/zvbi.c:80 modules/gui/fbosd.c:163
 #: modules/video_filter/logo.c:100 modules/video_filter/marq.c:139
 #: modules/video_filter/mosaic.c:173 modules/video_filter/osdmenu.c:86
@@ -1979,7 +1979,7 @@ msgstr "Venstre"
 msgid "Top-Right"
 msgstr "Høyre"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:464 modules/codec/dvbsub.c:76
+#: src/libvlc-module.c:417 src/libvlc-module.c:466 modules/codec/dvbsub.c:76
 #: modules/codec/zvbi.c:80 modules/gui/fbosd.c:163
 #: modules/video_filter/logo.c:100 modules/video_filter/marq.c:139
 #: modules/video_filter/mosaic.c:173 modules/video_filter/osdmenu.c:86
@@ -1987,7 +1987,7 @@ msgstr "Høyre"
 msgid "Bottom-Left"
 msgstr ""
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:464 modules/codec/dvbsub.c:76
+#: src/libvlc-module.c:417 src/libvlc-module.c:466 modules/codec/dvbsub.c:76
 #: modules/codec/zvbi.c:80 modules/gui/fbosd.c:163
 #: modules/video_filter/logo.c:100 modules/video_filter/marq.c:139
 #: modules/video_filter/mosaic.c:173 modules/video_filter/osdmenu.c:86
@@ -1995,21 +1995,21 @@ msgstr ""
 msgid "Bottom-Right"
 msgstr ""
 
-#: src/libvlc-module.c:417
+#: src/libvlc-module.c:419
 #, fuzzy
 msgid "Zoom video"
 msgstr "xvideo"
 
-#: src/libvlc-module.c:419
+#: src/libvlc-module.c:421
 msgid "You can zoom the video by the specified factor."
 msgstr "Zoom videoen med den spesifiserte faktoren."
 
-#: src/libvlc-module.c:421
+#: src/libvlc-module.c:423
 #, fuzzy
 msgid "Grayscale video output"
 msgstr "videoeksport i gråtoner"
 
-#: src/libvlc-module.c:423
+#: src/libvlc-module.c:425
 #, fuzzy
 msgid ""
 "Output video in grayscale. As the color information aren't decoded, this can "
@@ -2018,184 +2018,184 @@ msgstr ""
 "Fargeinformasjon fra videoen blir ikke dekodet når dette alternativet er "
 "valgt. (Du sparer litt prosessorkraft)."
 
-#: src/libvlc-module.c:426
+#: src/libvlc-module.c:428
 #, fuzzy
 msgid "Embedded video"
 msgstr "QT Embedded videomodul"
 
-#: src/libvlc-module.c:428
+#: src/libvlc-module.c:430
 #, fuzzy
 msgid "Embed the video output in the main interface."
 msgstr "_Gjem grensesnitt"
 
-#: src/libvlc-module.c:430
+#: src/libvlc-module.c:432
 #, fuzzy
 msgid "Fullscreen video output"
 msgstr "Fullskjermdybde:"
 
-#: src/libvlc-module.c:432
+#: src/libvlc-module.c:434
 #, fuzzy
 msgid "Start video in fullscreen mode"
 msgstr "metode for å veksle til og fra fullskjerm"
 
-#: src/libvlc-module.c:434
+#: src/libvlc-module.c:436
 #, fuzzy
 msgid "Overlay video output"
 msgstr "Fullskjermdybde:"
 
-#: src/libvlc-module.c:436
+#: src/libvlc-module.c:438
 msgid ""
 "Overlay is the hardware acceleration capability of your video card (ability "
 "to render video directly). VLC will try to use it by default."
 msgstr ""
 
-#: src/libvlc-module.c:439 src/video_output/vout_intf.c:421
+#: src/libvlc-module.c:441 src/video_output/vout_intf.c:421
 #: modules/gui/macosx/simple_prefs.m:288 modules/gui/qt4/ui/sprefs_video.h:283
 msgid "Always on top"
 msgstr ""
 
-#: src/libvlc-module.c:441
+#: src/libvlc-module.c:443
 msgid "Always place the video window on top of other windows."
 msgstr ""
 
-#: src/libvlc-module.c:443 modules/gui/qt4/ui/sprefs_subtitles.h:210
+#: src/libvlc-module.c:445 modules/gui/qt4/ui/sprefs_subtitles.h:210
 #, fuzzy
 msgid "Show media title on video"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:445
+#: src/libvlc-module.c:447
 #, fuzzy
 msgid "Display the title of the video on top of the movie."
 msgstr "Vis xosd-eksporten på bunnen av skjermen i stedet for på toppen"
 
-#: src/libvlc-module.c:447
+#: src/libvlc-module.c:449
 #, fuzzy
 msgid "Show video title for x milliseconds"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:449
+#: src/libvlc-module.c:451
 #, fuzzy
 msgid "Show the video title for n milliseconds, default is 5000 ms (5 sec.)"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:451
+#: src/libvlc-module.c:453
 #, fuzzy
 msgid "Position of video title"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:453
+#: src/libvlc-module.c:455
 msgid "Place on video where to display the title (default bottom center)."
 msgstr ""
 
-#: src/libvlc-module.c:455
+#: src/libvlc-module.c:457
 msgid "Hide cursor and fullscreen controller after x milliseconds"
 msgstr ""
 
-#: src/libvlc-module.c:458
+#: src/libvlc-module.c:460
 msgid ""
 "Hide mouse cursor and fullscreen controller after n milliseconds, default is "
 "3000 ms (3 sec.)"
 msgstr ""
 
-#: src/libvlc-module.c:466
+#: src/libvlc-module.c:468
 msgid "Disable screensaver"
 msgstr ""
 
-#: src/libvlc-module.c:467
+#: src/libvlc-module.c:469
 msgid "Disable the screensaver during video playback."
 msgstr ""
 
-#: src/libvlc-module.c:469
+#: src/libvlc-module.c:471
 msgid "Inhibit the power management daemon during playback"
 msgstr ""
 
-#: src/libvlc-module.c:470
+#: src/libvlc-module.c:472
 msgid ""
 "Inhibits the power management daemon during any playback, to avoid the "
 "computer being suspended because of inactivity."
 msgstr ""
 
-#: src/libvlc-module.c:473 modules/gui/qt4/ui/sprefs_video.h:281
+#: src/libvlc-module.c:475 modules/gui/qt4/ui/sprefs_video.h:281
 msgid "Window decorations"
 msgstr ""
 
-#: src/libvlc-module.c:475
+#: src/libvlc-module.c:477
 msgid ""
 "VLC can avoid creating window caption, frames, etc... around the video, "
 "giving a \"minimal\" window."
 msgstr ""
 
-#: src/libvlc-module.c:478
+#: src/libvlc-module.c:480
 #, fuzzy
 msgid "Video output filter module"
 msgstr "Videofremvisningsmodul"
 
-#: src/libvlc-module.c:480
+#: src/libvlc-module.c:482
 msgid "This adds video output filters like clone or wall"
 msgstr ""
 
-#: src/libvlc-module.c:482
+#: src/libvlc-module.c:484
 #, fuzzy
 msgid "Video filter module"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:484
+#: src/libvlc-module.c:486
 #, fuzzy
 msgid ""
 "This adds post-processing filters to enhance the picture quality, for "
-"instance deinterlacing, or distortthe video."
+"instance deinterlacing, or distort the video."
 msgstr ""
 "Du kan legge til filtre for etterbehandling for å forbedre bildekvaliteten, "
 "for eksempel for å fjerne striper, eller for å klone eller forvrenge "
 "videovinduet. "
 
-#: src/libvlc-module.c:488
+#: src/libvlc-module.c:490
 #, fuzzy
 msgid "Video snapshot directory (or filename)"
 msgstr "XVimage chroma format"
 
-#: src/libvlc-module.c:490
+#: src/libvlc-module.c:492
 #, fuzzy
 msgid "Directory where the video snapshots will be stored."
 msgstr "Du kan fastsette videoinnkoding her"
 
-#: src/libvlc-module.c:492 src/libvlc-module.c:494
+#: src/libvlc-module.c:494 src/libvlc-module.c:496
 #, fuzzy
 msgid "Video snapshot file prefix"
 msgstr "XVimage chroma format"
 
-#: src/libvlc-module.c:496
+#: src/libvlc-module.c:498
 #, fuzzy
 msgid "Video snapshot format"
 msgstr "XVimage chroma format"
 
-#: src/libvlc-module.c:498
+#: src/libvlc-module.c:500
 msgid "Image format which will be used to store the video snapshots"
 msgstr ""
 
-#: src/libvlc-module.c:500
+#: src/libvlc-module.c:502
 #, fuzzy
 msgid "Display video snapshot preview"
 msgstr "Identifikator for visningsområde"
 
-#: src/libvlc-module.c:502
+#: src/libvlc-module.c:504
 msgid "Display the snapshot preview in the screen's top-left corner."
 msgstr ""
 
-#: src/libvlc-module.c:504
+#: src/libvlc-module.c:506
 msgid "Use sequential numbers instead of timestamps"
 msgstr ""
 
-#: src/libvlc-module.c:506
+#: src/libvlc-module.c:508
 msgid "Use sequential numbers instead of timestamps for snapshot numbering"
 msgstr ""
 
-#: src/libvlc-module.c:508
+#: src/libvlc-module.c:510
 #, fuzzy
 msgid "Video snapshot width"
 msgstr "Standard grensesnitt:"
 
-#: src/libvlc-module.c:510
+#: src/libvlc-module.c:512
 #, fuzzy
 msgid ""
 "You can enforce the width of the video snapshot. By default it will keep the "
@@ -2204,12 +2204,12 @@ msgstr ""
 "Her kan du sette videohøyden. Standardinnstillingen er at VLC tilpasser seg "
 "til videoviseren."
 
-#: src/libvlc-module.c:514
+#: src/libvlc-module.c:516
 #, fuzzy
 msgid "Video snapshot height"
 msgstr "Standard grensesnitt:"
 
-#: src/libvlc-module.c:516
+#: src/libvlc-module.c:518
 #, fuzzy
 msgid ""
 "You can enforce the height of the video snapshot. By default it will keep "
@@ -2219,23 +2219,23 @@ msgstr ""
 "Her kan du sette videohøyden. Standardinnstillingen er at VLC tilpasser seg "
 "til videoviseren."
 
-#: src/libvlc-module.c:520
+#: src/libvlc-module.c:522
 #, fuzzy
 msgid "Video cropping"
 msgstr "videohøyde"
 
-#: src/libvlc-module.c:522
+#: src/libvlc-module.c:524
 msgid ""
 "This forces the cropping of the source video. Accepted formats are x:y (4:3, "
 "16:9, etc.) expressing the global image aspect."
 msgstr ""
 
-#: src/libvlc-module.c:526
+#: src/libvlc-module.c:528
 #, fuzzy
 msgid "Source aspect ratio"
 msgstr "kildens bildeformat"
 
-#: src/libvlc-module.c:528
+#: src/libvlc-module.c:530
 #, fuzzy
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
@@ -2251,163 +2251,163 @@ msgstr ""
 "globale bildeformatet, eller som et desimaltall (1.25, 1.3333, etc.) som "
 "uttrykk for firkantetheten til pixlene."
 
-#: src/libvlc-module.c:535
+#: src/libvlc-module.c:537
 #, fuzzy
 msgid "Video Auto Scaling"
 msgstr "_Innstillinger"
 
-#: src/libvlc-module.c:537
+#: src/libvlc-module.c:539
 msgid "Let the video scale to fit a given window or fullscreen."
 msgstr ""
 
-#: src/libvlc-module.c:539
+#: src/libvlc-module.c:541
 #, fuzzy
 msgid "Video scaling factor"
 msgstr "_Innstillinger"
 
-#: src/libvlc-module.c:541
+#: src/libvlc-module.c:543
 msgid ""
 "Scaling factor used when Auto Scaling is disabled.\n"
 "Default value is 1.0 (original video size)."
 msgstr ""
 
-#: src/libvlc-module.c:544
+#: src/libvlc-module.c:546
 msgid "Custom crop ratios list"
 msgstr ""
 
-#: src/libvlc-module.c:546
+#: src/libvlc-module.c:548
 msgid ""
 "Comma seperated list of crop ratios which will be added in the interface's "
 "crop ratios list."
 msgstr ""
 
-#: src/libvlc-module.c:549
+#: src/libvlc-module.c:551
 #, fuzzy
 msgid "Custom aspect ratios list"
 msgstr "kildens bildeformat"
 
-#: src/libvlc-module.c:551
+#: src/libvlc-module.c:553
 msgid ""
 "Comma seperated list of aspect ratios which will be added in the interface's "
 "aspect ratio list."
 msgstr ""
 
-#: src/libvlc-module.c:554
+#: src/libvlc-module.c:556
 msgid "Fix HDTV height"
 msgstr ""
 
-#: src/libvlc-module.c:556
+#: src/libvlc-module.c:558
 msgid ""
 "This allows proper handling of HDTV-1080 video format even if broken encoder "
 "incorrectly sets height to 1088 lines. You should only disable this option "
 "if your video has a non-standard format requiring all 1088 lines."
 msgstr ""
 
-#: src/libvlc-module.c:561
+#: src/libvlc-module.c:563
 #, fuzzy
 msgid "Monitor pixel aspect ratio"
 msgstr "kildens bildeformat"
 
-#: src/libvlc-module.c:563
+#: src/libvlc-module.c:565
 msgid ""
 "This forces the monitor aspect ratio. Most monitors have square pixels "
 "(1:1). If you have a 16:9 screen, you might need to change this to 4:3 in "
 "order to keep proportions."
 msgstr ""
 
-#: src/libvlc-module.c:567 modules/gui/macosx/simple_prefs.m:290
+#: src/libvlc-module.c:569 modules/gui/macosx/simple_prefs.m:290
 #: modules/gui/qt4/ui/sprefs_video.h:286
 #, fuzzy
 msgid "Skip frames"
 msgstr "Fort"
 
-#: src/libvlc-module.c:569
+#: src/libvlc-module.c:571
 msgid ""
 "Enables framedropping on MPEG2 stream. Framedropping occurs when your "
 "computer is not powerful enough"
 msgstr ""
 
-#: src/libvlc-module.c:572
+#: src/libvlc-module.c:574
 #, fuzzy
 msgid "Drop late frames"
 msgstr "Fort"
 
-#: src/libvlc-module.c:574
+#: src/libvlc-module.c:576
 msgid ""
 "This drops frames that are late (arrive to the video output after their "
 "intended display date)."
 msgstr ""
 
-#: src/libvlc-module.c:577
+#: src/libvlc-module.c:579
 msgid "Quiet synchro"
 msgstr ""
 
-#: src/libvlc-module.c:579
+#: src/libvlc-module.c:581
 msgid ""
 "This avoids flooding the message log with debug output from the video output "
 "synchronization mechanism."
 msgstr ""
 
-#: src/libvlc-module.c:582
+#: src/libvlc-module.c:584
 msgid "key and mouse event handling at vout level."
 msgstr ""
 
-#: src/libvlc-module.c:584
+#: src/libvlc-module.c:586
 msgid ""
 "This parameter accepts values : 1 (full event handling support), 2 (event "
 "handling only for fullscreen) or 3 (No event handling). Full event handling "
 "support is the default value."
 msgstr ""
 
-#: src/libvlc-module.c:590
+#: src/libvlc-module.c:592
 #, fuzzy
 msgid "Full support"
 msgstr "skru på støtte for MMX i prosessoren"
 
-#: src/libvlc-module.c:590
+#: src/libvlc-module.c:592
 #, fuzzy
 msgid "Fullscreen-only"
 msgstr "_Fullskjerm"
 
-#: src/libvlc-module.c:598
+#: src/libvlc-module.c:600
 msgid ""
 "These options allow you to modify the behavior of the input subsystem, such "
 "as the DVD or VCD device, the network interface settings or the subtitle "
 "channel."
 msgstr ""
 
-#: src/libvlc-module.c:602
+#: src/libvlc-module.c:604
 msgid "Clock reference average counter"
 msgstr ""
 
-#: src/libvlc-module.c:604
+#: src/libvlc-module.c:606
 msgid ""
 "When using the PVR input (or a very irregular source), you should set this "
 "to 10000."
 msgstr ""
 
-#: src/libvlc-module.c:607
+#: src/libvlc-module.c:609
 #, fuzzy
 msgid "Clock synchronisation"
 msgstr "Varighet"
 
-#: src/libvlc-module.c:609
+#: src/libvlc-module.c:611
 msgid ""
 "It is possible to disable the input clock synchronisation for real-time "
 "sources. Use this if you experience jerky playback of network streams."
 msgstr ""
 
-#: src/libvlc-module.c:613 modules/control/netsync.c:77
+#: src/libvlc-module.c:615 modules/control/netsync.c:77
 msgid "Network synchronisation"
 msgstr ""
 
-#: src/libvlc-module.c:614
+#: src/libvlc-module.c:616
 msgid ""
 "This allows you to remotely synchronise clocks for server and client. The "
 "detailed settings are available in Advanced / Network Sync."
 msgstr ""
 
-#: src/libvlc-module.c:620 src/video_output/vout_intf.c:183
+#: src/libvlc-module.c:622 src/video_output/vout_intf.c:183
 #: src/video_output/vout_intf.c:201 modules/access/dshow/dshow.cpp:82
 #: modules/access/dshow/dshow.cpp:84 modules/access/dshow/dshow.cpp:87
 #: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:220
@@ -2422,29 +2422,29 @@ msgstr ""
 msgid "Default"
 msgstr "Slett"
 
-#: src/libvlc-module.c:620 modules/gui/macosx/equalizer.m:157
+#: src/libvlc-module.c:622 modules/gui/macosx/equalizer.m:157
 #: modules/gui/macosx/extended.m:96 modules/gui/macosx/wizard.m:354
 #: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 #, fuzzy
 msgid "Enable"
 msgstr "skru på video"
 
-#: src/libvlc-module.c:622 modules/misc/notify/growl_udp.c:66
+#: src/libvlc-module.c:624 modules/misc/notify/growl_udp.c:66
 #, fuzzy
 msgid "UDP port"
 msgstr "Port"
 
-#: src/libvlc-module.c:624
+#: src/libvlc-module.c:626
 #, fuzzy
 msgid "This is the default port used for UDP streams. Default is 1234."
 msgstr "Her er porten som brukes til UDP-strømmer. Som standard brukes 1234."
 
-#: src/libvlc-module.c:626
+#: src/libvlc-module.c:628
 #, fuzzy
 msgid "MTU of the network interface"
 msgstr "Grensesnitt"
 
-#: src/libvlc-module.c:628
+#: src/libvlc-module.c:630
 #, fuzzy
 msgid ""
 "This is the maximum application-layer packet size that can be transmitted "
@@ -2453,90 +2453,90 @@ msgstr ""
 "Her er pakkestørrelsen for UDP slik vi antar den vil være. I Ethernet er "
 "dette vanligvis 1500."
 
-#: src/libvlc-module.c:633 modules/stream_out/rtp.c:119
+#: src/libvlc-module.c:635 modules/stream_out/rtp.c:119
 msgid "Hop limit (TTL)"
 msgstr ""
 
-#: src/libvlc-module.c:635 modules/stream_out/rtp.c:121
+#: src/libvlc-module.c:637 modules/stream_out/rtp.c:121
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
 "in default)."
 msgstr ""
 
-#: src/libvlc-module.c:639
+#: src/libvlc-module.c:641
 #, fuzzy
 msgid "Multicast output interface"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:641
+#: src/libvlc-module.c:643
 msgid "Default multicast interface. This overrides the routing table."
 msgstr ""
 
-#: src/libvlc-module.c:643
+#: src/libvlc-module.c:645
 #, fuzzy
 msgid "IPv4 multicast output interface address"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:645
+#: src/libvlc-module.c:647
 msgid ""
 "IPv4 adress for the default multicast interface. This overrides the routing "
 "table."
 msgstr ""
 
-#: src/libvlc-module.c:648
+#: src/libvlc-module.c:650
 msgid "DiffServ Code Point"
 msgstr ""
 
-#: src/libvlc-module.c:649
+#: src/libvlc-module.c:651
 msgid ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
 "Service, or IPv6 Traffic Class). This is used for network Quality of Service."
 msgstr ""
 
-#: src/libvlc-module.c:655
+#: src/libvlc-module.c:657
 msgid ""
 "Choose the program to select by giving its Service ID. Only use this option "
 "if you want to read a multi-program stream (like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:661
+#: src/libvlc-module.c:663
 msgid ""
 "Choose the programs to select by giving a comma-separated list of Service "
 "IDs (SIDs). Only use this option if you want to read a multi-program stream "
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:667 modules/gui/qt4/ui/open_disk.h:305
+#: src/libvlc-module.c:669 modules/gui/qt4/ui/open_disk.h:305
 #, fuzzy
 msgid "Audio track"
 msgstr "Lyd"
 
-#: src/libvlc-module.c:669
+#: src/libvlc-module.c:671
 #, fuzzy
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr ""
 "Skriv inn nummeret på lydkanalen du ønsker å bruke for lydstrømmen fra en "
 "DVD (fra 1 til n)."
 
-#: src/libvlc-module.c:672 modules/gui/qt4/ui/open_disk.h:306
+#: src/libvlc-module.c:674 modules/gui/qt4/ui/open_disk.h:306
 #, fuzzy
 msgid "Subtitles track"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:674
+#: src/libvlc-module.c:676
 #, fuzzy
 msgid "Stream number of the subtitle track to use (from 0 to n)."
 msgstr ""
 "Skriv inn nummeret på undertekstkanalen du ønsker å bruke for tekststrømmen "
 "fra en DVD (fra 1 to n)."
 
-#: src/libvlc-module.c:677
+#: src/libvlc-module.c:679
 #, fuzzy
 msgid "Audio language"
 msgstr "Velg Kapittel"
 
-#: src/libvlc-module.c:679
+#: src/libvlc-module.c:681
 #, fuzzy
 msgid ""
 "Language of the audio track you want to use (comma separated, two or three "
@@ -2545,12 +2545,12 @@ msgstr ""
 "Skriv inn nummeret på lydkanalen du ønsker å bruke for lydstrømmen fra en "
 "DVD (fra 1 til n)."
 
-#: src/libvlc-module.c:682
+#: src/libvlc-module.c:684
 #, fuzzy
 msgid "Subtitle language"
 msgstr "Velg Kapittel"
 
-#: src/libvlc-module.c:684
+#: src/libvlc-module.c:686
 #, fuzzy
 msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
@@ -2559,151 +2559,151 @@ msgstr ""
 "Skriv inn nummeret på undertekstkanalen du ønsker å bruke for tekststrømmen "
 "fra en DVD (fra 1 to n)."
 
-#: src/libvlc-module.c:688
+#: src/libvlc-module.c:690
 #, fuzzy
 msgid "Audio track ID"
 msgstr "Lyd"
 
-#: src/libvlc-module.c:690
+#: src/libvlc-module.c:692
 #, fuzzy
 msgid "Stream ID of the audio track to use."
 msgstr ""
 "Skriv inn nummeret på lydkanalen du ønsker å bruke for lydstrømmen fra en "
 "DVD (fra 1 til n)."
 
-#: src/libvlc-module.c:692
+#: src/libvlc-module.c:694
 #, fuzzy
 msgid "Subtitles track ID"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:694
+#: src/libvlc-module.c:696
 #, fuzzy
 msgid "Stream ID of the subtitle track to use."
 msgstr ""
 "Skriv inn nummeret på undertekstkanalen du ønsker å bruke for tekststrømmen "
 "fra en DVD (fra 1 to n)."
 
-#: src/libvlc-module.c:696
+#: src/libvlc-module.c:698
 #, fuzzy
 msgid "Input repetitions"
 msgstr "Neste fil"
 
-#: src/libvlc-module.c:698
+#: src/libvlc-module.c:700
 msgid "Number of time the same input will be repeated"
 msgstr ""
 
-#: src/libvlc-module.c:700
+#: src/libvlc-module.c:702
 msgid "Start time"
 msgstr ""
 
-#: src/libvlc-module.c:702
+#: src/libvlc-module.c:704
 msgid "The stream will start at this position (in seconds)."
 msgstr ""
 
-#: src/libvlc-module.c:704
+#: src/libvlc-module.c:706
 #, fuzzy
 msgid "Stop time"
 msgstr "Stopp strøm"
 
-#: src/libvlc-module.c:706
+#: src/libvlc-module.c:708
 msgid "The stream will stop at this position (in seconds)."
 msgstr ""
 
-#: src/libvlc-module.c:708
+#: src/libvlc-module.c:710
 #, fuzzy
 msgid "Run time"
 msgstr "Lyd"
 
-#: src/libvlc-module.c:710
+#: src/libvlc-module.c:712
 msgid "The stream will run this duration (in seconds)."
 msgstr ""
 
-#: src/libvlc-module.c:712
+#: src/libvlc-module.c:714
 #, fuzzy
 msgid "Fast seek"
 msgstr "Fort"
 
-#: src/libvlc-module.c:714
+#: src/libvlc-module.c:716
 msgid "Favor speed over precision while seeking"
 msgstr ""
 
-#: src/libvlc-module.c:716
+#: src/libvlc-module.c:718
 #, fuzzy
 msgid "Input list"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:718
+#: src/libvlc-module.c:720
 #, fuzzy
 msgid ""
 "You can give a comma-separated list of inputs that will be concatenated "
 "together after the normal one."
 msgstr "Du kan fastsette videoinnkoding her"
 
-#: src/libvlc-module.c:721
+#: src/libvlc-module.c:723
 msgid "Input slave (experimental)"
 msgstr ""
 
-#: src/libvlc-module.c:723
+#: src/libvlc-module.c:725
 msgid ""
 "This allows you to play from several inputs at the same time. This feature "
 "is experimental, not all formats are supported. Use a '#' separated list of "
 "inputs."
 msgstr ""
 
-#: src/libvlc-module.c:727
+#: src/libvlc-module.c:729
 msgid "Bookmarks list for a stream"
 msgstr ""
 
-#: src/libvlc-module.c:729
+#: src/libvlc-module.c:731
 msgid ""
 "You can manually give a list of bookmarks for a stream in the form "
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
 "{...}\""
 msgstr ""
 
-#: src/libvlc-module.c:733 modules/gui/qt4/ui/sprefs_input.h:238
+#: src/libvlc-module.c:735 modules/gui/qt4/ui/sprefs_input.h:238
 #, fuzzy
 msgid "Record directory or filename"
 msgstr "XVimage chroma format"
 
-#: src/libvlc-module.c:735
+#: src/libvlc-module.c:737
 #, fuzzy
 msgid "Directory or filename where the records will be stored"
 msgstr "Du kan fastsette videoinnkoding her"
 
-#: src/libvlc-module.c:737
+#: src/libvlc-module.c:739
 #, fuzzy
 msgid "Prefer native stream recording"
 msgstr "Standard output:"
 
-#: src/libvlc-module.c:739
+#: src/libvlc-module.c:741
 msgid ""
-"When possible, the input stream will be recorded instead of usingthe stream "
+"When possible, the input stream will be recorded instead of using the stream "
 "output module"
 msgstr ""
 
-#: src/libvlc-module.c:742
+#: src/libvlc-module.c:744
 #, fuzzy
 msgid "Timeshift directory"
 msgstr "kildens bildeformat"
 
-#: src/libvlc-module.c:744
+#: src/libvlc-module.c:746
 msgid "Directory used to store the timeshift temporary files."
 msgstr ""
 
-#: src/libvlc-module.c:746
+#: src/libvlc-module.c:748
 #, fuzzy
 msgid "Timeshift granularity"
 msgstr "Startposisjon"
 
-#: src/libvlc-module.c:748
+#: src/libvlc-module.c:750
 #, fuzzy
 msgid ""
 "This is the maximum size in bytes of the temporary files that will be used "
 "to store the timeshifted streams."
 msgstr "Du kan fastsette lydinnkoding her"
 
-#: src/libvlc-module.c:753
+#: src/libvlc-module.c:755
 msgid ""
 "These options allow you to modify the behavior of the subpictures subsystem. "
 "You can for example enable subpictures filters (logo, etc.). Enable these "
@@ -2711,12 +2711,12 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:759 modules/gui/qt4/ui/sprefs_subtitles.h:221
+#: src/libvlc-module.c:761 modules/gui/qt4/ui/sprefs_subtitles.h:221
 #, fuzzy
 msgid "Force subtitle position"
 msgstr "Fastsett SPU posisjon"
 
-#: src/libvlc-module.c:761
+#: src/libvlc-module.c:763
 msgid ""
 "You can use this option to place the subtitles under the movie, instead of "
 "over the movie. Try several positions."
@@ -2724,67 +2724,67 @@ msgstr ""
 "Du kan plassere undertekstene under filmen med dette alternativet, i stedet "
 "for over filmen. Du kan også prøve andre posisjoner."
 
-#: src/libvlc-module.c:764
+#: src/libvlc-module.c:766
 #, fuzzy
 msgid "Enable sub-pictures"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:766
+#: src/libvlc-module.c:768
 msgid "You can completely disable the sub-picture processing."
 msgstr ""
 
-#: src/libvlc-module.c:768 src/libvlc-module.c:1684
+#: src/libvlc-module.c:770 src/libvlc-module.c:1686
 #: modules/gui/macosx/simple_prefs.m:279
 #: modules/gui/qt4/ui/sprefs_subtitles.h:208
 #: modules/stream_out/transcode.c:228
 msgid "On Screen Display"
 msgstr ""
 
-#: src/libvlc-module.c:770
+#: src/libvlc-module.c:772
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
 "Display)."
 msgstr ""
 
-#: src/libvlc-module.c:773
+#: src/libvlc-module.c:775
 #, fuzzy
 msgid "Text rendering module"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:775
+#: src/libvlc-module.c:777
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
 msgstr ""
 
-#: src/libvlc-module.c:777
+#: src/libvlc-module.c:779
 #, fuzzy
 msgid "Subpictures filter module"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:779
+#: src/libvlc-module.c:781
 msgid ""
 "This adds so-called \"subpicture filters\". These filters overlay some "
 "images or text over the video (like a logo, arbitrary text, ...)."
 msgstr ""
 
-#: src/libvlc-module.c:782
+#: src/libvlc-module.c:784
 #, fuzzy
 msgid "Autodetect subtitle files"
 msgstr "Velg teksting kanal"
 
-#: src/libvlc-module.c:784
+#: src/libvlc-module.c:786
 msgid ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
 "(based on the filename of the movie)."
 msgstr ""
 
-#: src/libvlc-module.c:787
+#: src/libvlc-module.c:789
 #, fuzzy
 msgid "Subtitle autodetection fuzziness"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:789
+#: src/libvlc-module.c:791
 msgid ""
 "This determines how fuzzy subtitle and movie filename matching will be. "
 "Options are:\n"
@@ -2795,33 +2795,33 @@ msgid ""
 "4 = subtitle file matching the movie name exactly"
 msgstr ""
 
-#: src/libvlc-module.c:797
+#: src/libvlc-module.c:799
 #, fuzzy
 msgid "Subtitle autodetection paths"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:799
+#: src/libvlc-module.c:801
 msgid ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
 "found in the current directory."
 msgstr ""
 
-#: src/libvlc-module.c:802
+#: src/libvlc-module.c:804
 #, fuzzy
 msgid "Use subtitle file"
 msgstr "Velg teksting kanal"
 
-#: src/libvlc-module.c:804
+#: src/libvlc-module.c:806
 msgid ""
 "Load this subtitle file. To be used when autodetect cannot detect your "
 "subtitle file."
 msgstr ""
 
-#: src/libvlc-module.c:807
+#: src/libvlc-module.c:809
 msgid "DVD device"
 msgstr "DVD-enhet"
 
-#: src/libvlc-module.c:810
+#: src/libvlc-module.c:812
 #, fuzzy
 msgid ""
 "This is the default DVD drive (or file) to use. Don't forget the colon after "
@@ -2830,259 +2830,259 @@ msgstr ""
 "Her fastsetter du standard enheten for DVD (stasjon eller fil) som skal "
 "brukes. Ikke glem kolon etter stasjonsbokstaven (for eksempel D:)"
 
-#: src/libvlc-module.c:814
+#: src/libvlc-module.c:816
 msgid "This is the default DVD device to use."
 msgstr "Dette er standard DVD-enhet som brukes."
 
-#: src/libvlc-module.c:817
+#: src/libvlc-module.c:819
 msgid "VCD device"
 msgstr "VCD-enhet"
 
-#: src/libvlc-module.c:820
+#: src/libvlc-module.c:822
 msgid ""
 "This is the default VCD device to use. If you don't specify anything, we'll "
 "scan for a suitable CD-ROM device."
 msgstr ""
 
-#: src/libvlc-module.c:824
+#: src/libvlc-module.c:826
 msgid "This is the default VCD device to use."
 msgstr "Dette er standard VCD-enhet som brukes."
 
-#: src/libvlc-module.c:827
+#: src/libvlc-module.c:829
 #, fuzzy
 msgid "Audio CD device"
 msgstr "lydenhet"
 
-#: src/libvlc-module.c:830
+#: src/libvlc-module.c:832
 msgid ""
 "This is the default Audio CD device to use. If you don't specify anything, "
 "we'll scan for a suitable CD-ROM device."
 msgstr ""
 
-#: src/libvlc-module.c:834
+#: src/libvlc-module.c:836
 #, fuzzy
 msgid "This is the default Audio CD device to use."
 msgstr "Dette er standard VCD-enhet som brukes."
 
-#: src/libvlc-module.c:837
+#: src/libvlc-module.c:839
 #, fuzzy
 msgid "Force IPv6"
 msgstr "fastsett IPv6"
 
-#: src/libvlc-module.c:839
+#: src/libvlc-module.c:841
 #, fuzzy
 msgid "IPv6 will be used by default for all connections."
 msgstr ""
 "Ved å sette hake i denne ruten brukes IPv6 som standard for alle "
 "forbindelser over UDP og HTTP."
 
-#: src/libvlc-module.c:841
+#: src/libvlc-module.c:843
 #, fuzzy
 msgid "Force IPv4"
 msgstr "fastsett IPv4"
 
-#: src/libvlc-module.c:843
+#: src/libvlc-module.c:845
 #, fuzzy
 msgid "IPv4 will be used by default for all connections."
 msgstr ""
 "Ved å sette hake i denne ruten brukes IPv4 som standard for alle "
 "forbindelser over UDP og HTTP."
 
-#: src/libvlc-module.c:845
+#: src/libvlc-module.c:847
 msgid "TCP connection timeout"
 msgstr ""
 
-#: src/libvlc-module.c:847
+#: src/libvlc-module.c:849
 msgid "Default TCP connection timeout (in milliseconds). "
 msgstr ""
 
-#: src/libvlc-module.c:849
+#: src/libvlc-module.c:851
 #, fuzzy
 msgid "SOCKS server"
 msgstr "Ingen tjener"
 
-#: src/libvlc-module.c:851
+#: src/libvlc-module.c:853
 #, fuzzy
 msgid ""
 "SOCKS proxy server to use. This must be of the form address:port. It will be "
 "used for all TCP connections"
 msgstr "Du kan fastsette lydinnkoding her"
 
-#: src/libvlc-module.c:854
+#: src/libvlc-module.c:856
 #, fuzzy
 msgid "SOCKS user name"
 msgstr "Spill strøm"
 
-#: src/libvlc-module.c:856
+#: src/libvlc-module.c:858
 #, fuzzy
 msgid "User name to be used for connection to the SOCKS proxy."
 msgstr "Du kan fastsette lydinnkoding her"
 
-#: src/libvlc-module.c:858
+#: src/libvlc-module.c:860
 #, fuzzy
 msgid "SOCKS password"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:860
+#: src/libvlc-module.c:862
 #, fuzzy
 msgid "Password to be used for connection to the SOCKS proxy."
 msgstr "Du kan fastsette lydinnkoding her"
 
-#: src/libvlc-module.c:862
+#: src/libvlc-module.c:864
 #, fuzzy
 msgid "Title metadata"
 msgstr "Fil"
 
-#: src/libvlc-module.c:864
+#: src/libvlc-module.c:866
 #, fuzzy
 msgid "Allows you to specify a \"title\" metadata for an input."
 msgstr "Du kan fastsette videoinnkoding her"
 
-#: src/libvlc-module.c:866
+#: src/libvlc-module.c:868
 msgid "Author metadata"
 msgstr ""
 
-#: src/libvlc-module.c:868
+#: src/libvlc-module.c:870
 #, fuzzy
 msgid "Allows you to specify an \"author\" metadata for an input."
 msgstr "Du kan fastsette lydinnkoding her"
 
-#: src/libvlc-module.c:870
+#: src/libvlc-module.c:872
 msgid "Artist metadata"
 msgstr ""
 
-#: src/libvlc-module.c:872
+#: src/libvlc-module.c:874
 msgid "Allows you to specify an \"artist\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:874
+#: src/libvlc-module.c:876
 msgid "Genre metadata"
 msgstr ""
 
-#: src/libvlc-module.c:876
+#: src/libvlc-module.c:878
 msgid "Allows you to specify a \"genre\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:878
+#: src/libvlc-module.c:880
 #, fuzzy
 msgid "Copyright metadata"
 msgstr "Crop?"
 
-#: src/libvlc-module.c:880
+#: src/libvlc-module.c:882
 msgid "Allows you to specify a \"copyright\" metadata for an input."
 msgstr ""
 
-#: src/libvlc-module.c:882
+#: src/libvlc-module.c:884
 #, fuzzy
 msgid "Description metadata"
 msgstr "Varighet"
 
-#: src/libvlc-module.c:884
+#: src/libvlc-module.c:886
 #, fuzzy
 msgid "Allows you to specify a \"description\" metadata for an input."
 msgstr "Du kan fastsette lydinnkoding her"
 
-#: src/libvlc-module.c:886
+#: src/libvlc-module.c:888
 msgid "Date metadata"
 msgstr ""
 
-#: src/libvlc-module.c:888
+#: src/libvlc-module.c:890
 #, fuzzy
 msgid "Allows you to specify a \"date\" metadata for an input."
 msgstr "Du kan fastsette videoinnkoding her"
 
-#: src/libvlc-module.c:890
+#: src/libvlc-module.c:892
 msgid "URL metadata"
 msgstr ""
 
-#: src/libvlc-module.c:892
+#: src/libvlc-module.c:894
 #, fuzzy
 msgid "Allows you to specify a \"url\" metadata for an input."
 msgstr "Du kan fastsette lydinnkoding her"
 
-#: src/libvlc-module.c:896
+#: src/libvlc-module.c:898
 msgid ""
 "This option can be used to alter the way VLC selects its codecs "
 "(decompression methods). Only advanced users should alter this option as it "
 "can break playback of all your streams."
 msgstr ""
 
-#: src/libvlc-module.c:900
+#: src/libvlc-module.c:902
 #, fuzzy
 msgid "Preferred decoders list"
 msgstr "velg foretrukket rekkefølge på kodek"
 
-#: src/libvlc-module.c:902
+#: src/libvlc-module.c:904
 msgid ""
 "List of codecs that VLC will use in priority. For instance, 'dummy,a52' will "
 "try the dummy and a52 codecs before trying the other ones. Only advanced "
 "users should alter this option as it can break playback of all your streams."
 msgstr ""
 
-#: src/libvlc-module.c:907
+#: src/libvlc-module.c:909
 #, fuzzy
 msgid "Preferred encoders list"
 msgstr "velg foretrukket rekkefølge på kodek"
 
-#: src/libvlc-module.c:909
+#: src/libvlc-module.c:911
 #, fuzzy
 msgid ""
 "This allows you to select a list of encoders that VLC will use in priority."
 msgstr ""
 "Her kan du velge rekkefølgen som VLC bruker når den skal velge pakkemetode."
 
-#: src/libvlc-module.c:912
+#: src/libvlc-module.c:914
 msgid "Prefer system plugins over VLC"
 msgstr ""
 
-#: src/libvlc-module.c:914
+#: src/libvlc-module.c:916
 msgid ""
 "Indicates whether VLC will prefer native plugins installed on system over "
 "VLC owns plugins whenever a choice is available."
 msgstr ""
 
-#: src/libvlc-module.c:923
+#: src/libvlc-module.c:925
 msgid ""
 "These options allow you to set default global options for the stream output "
 "subsystem."
 msgstr ""
 
-#: src/libvlc-module.c:926
+#: src/libvlc-module.c:928
 #, fuzzy
 msgid "Default stream output chain"
 msgstr "Spill strøm"
 
-#: src/libvlc-module.c:928
+#: src/libvlc-module.c:930
 msgid ""
 "You can enter here a default stream output chain. Refer to the documentation "
-"to learn how to build such chains.Warning: this chain will be enabled for "
+"to learn how to build such chains. Warning: this chain will be enabled for "
 "all streams."
 msgstr ""
 
-#: src/libvlc-module.c:932
+#: src/libvlc-module.c:934
 msgid "Enable streaming of all ES"
 msgstr ""
 
-#: src/libvlc-module.c:934
+#: src/libvlc-module.c:936
 #, fuzzy
 msgid "Stream all elementary streams (video, audio and subtitles)"
 msgstr "Du kan fastsette lydinnkoding her"
 
-#: src/libvlc-module.c:936
+#: src/libvlc-module.c:938
 msgid "Display while streaming"
 msgstr ""
 
-#: src/libvlc-module.c:938
+#: src/libvlc-module.c:940
 #, fuzzy
 msgid "Play locally the stream while streaming it."
 msgstr "Du kan fastsette videoinnkoding her"
 
-#: src/libvlc-module.c:940
+#: src/libvlc-module.c:942
 #, fuzzy
 msgid "Enable video stream output"
 msgstr "Fullskjermdybde:"
 
-#: src/libvlc-module.c:942
+#: src/libvlc-module.c:944
 #, fuzzy
 msgid ""
 "Choose whether the video stream should be redirected to the stream output "
@@ -3091,12 +3091,12 @@ msgstr ""
 "Du kan velge om videostrømmen skal omdirigeres til strømmens ut-enhet når "
 "denne er påskrudd."
 
-#: src/libvlc-module.c:945
+#: src/libvlc-module.c:947
 #, fuzzy
 msgid "Enable audio stream output"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:947
+#: src/libvlc-module.c:949
 #, fuzzy
 msgid ""
 "Choose whether the audio stream should be redirected to the stream output "
@@ -3105,12 +3105,12 @@ msgstr ""
 "Du kan velge om videostrømmen skal omdirigeres til strømmens ut-enhet når "
 "denne er påskrudd."
 
-#: src/libvlc-module.c:950
+#: src/libvlc-module.c:952
 #, fuzzy
 msgid "Enable SPU stream output"
 msgstr "Fullskjermdybde:"
 
-#: src/libvlc-module.c:952
+#: src/libvlc-module.c:954
 #, fuzzy
 msgid ""
 "Choose whether the SPU streams should be redirected to the stream output "
@@ -3119,94 +3119,94 @@ msgstr ""
 "Du kan velge om videostrømmen skal omdirigeres til strømmens ut-enhet når "
 "denne er påskrudd."
 
-#: src/libvlc-module.c:955 modules/gui/qt4/ui/sout.h:348
+#: src/libvlc-module.c:957 modules/gui/qt4/ui/sout.h:348
 #, fuzzy
 msgid "Keep stream output open"
 msgstr "Standard output:"
 
-#: src/libvlc-module.c:957
+#: src/libvlc-module.c:959
 msgid ""
 "This allows you to keep an unique stream output instance across multiple "
 "playlist item (automatically insert the gather stream output if not "
 "specified)"
 msgstr ""
 
-#: src/libvlc-module.c:961
+#: src/libvlc-module.c:963
 #, fuzzy
 msgid "Stream output muxer caching (ms)"
 msgstr "Lyd-eksportmodul"
 
-#: src/libvlc-module.c:963
+#: src/libvlc-module.c:965
 msgid ""
 "This allow you to configure the initial caching amount for stream output  "
 "muxer. This value should be set in milliseconds."
 msgstr ""
 
-#: src/libvlc-module.c:966
+#: src/libvlc-module.c:968
 #, fuzzy
 msgid "Preferred packetizer list"
 msgstr "velg foretrukket rekkefølge for pakking"
 
-#: src/libvlc-module.c:968
+#: src/libvlc-module.c:970
 msgid ""
 "This allows you to select the order in which VLC will choose its packetizers."
 msgstr ""
 "Her kan du velge rekkefølgen som VLC bruker når den skal velge pakkemetode."
 
-#: src/libvlc-module.c:971
+#: src/libvlc-module.c:973
 #, fuzzy
 msgid "Mux module"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:973
+#: src/libvlc-module.c:975
 msgid "This is a legacy entry to let you configure mux modules"
 msgstr ""
 "Dette er en gammel innføring som lar deg sette innstillinger for mux moduler."
 
-#: src/libvlc-module.c:975
+#: src/libvlc-module.c:977
 #, fuzzy
 msgid "Access output module"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:977
+#: src/libvlc-module.c:979
 msgid "This is a legacy entry to let you configure access output modules"
 msgstr ""
 "Dette er en gammel innføring som lar deg sette innstillinger i moduler for "
 "tilgangseksport"
 
-#: src/libvlc-module.c:979
+#: src/libvlc-module.c:981
 #, fuzzy
 msgid "Control SAP flow"
 msgstr "skrifttype"
 
-#: src/libvlc-module.c:981
+#: src/libvlc-module.c:983
 msgid ""
 "If this option is enabled, the flow on the SAP multicast address will be "
 "controlled. This is needed if you want to make announcements on the MBone."
 msgstr ""
 
-#: src/libvlc-module.c:985
+#: src/libvlc-module.c:987
 msgid "SAP announcement interval"
 msgstr ""
 
-#: src/libvlc-module.c:987
+#: src/libvlc-module.c:989
 msgid ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
 "between SAP announcements."
 msgstr ""
 
-#: src/libvlc-module.c:996
+#: src/libvlc-module.c:998
 msgid ""
 "These options allow you to enable special CPU optimizations. You should "
 "always leave all these enabled."
 msgstr ""
 
-#: src/libvlc-module.c:999
+#: src/libvlc-module.c:1001
 #, fuzzy
 msgid "Enable FPU support"
 msgstr "skru på støtte for MMX i prosessoren"
 
-#: src/libvlc-module.c:1001
+#: src/libvlc-module.c:1003
 #, fuzzy
 msgid ""
 "If your processor has a floating point calculation unit, VLC can take "
@@ -3215,12 +3215,12 @@ msgstr ""
 "VLC kan dra nytte av AltiVec instruksjonssettet hvis prosessoren din støtter "
 "dette dette."
 
-#: src/libvlc-module.c:1004
+#: src/libvlc-module.c:1006
 #, fuzzy
 msgid "Enable CPU MMX support"
 msgstr "skru på støtte for MMX i prosessoren"
 
-#: src/libvlc-module.c:1006
+#: src/libvlc-module.c:1008
 msgid ""
 "If your processor supports the MMX instructions set, VLC can take advantage "
 "of them."
@@ -3228,12 +3228,12 @@ msgstr ""
 "VLC kan dra nytte av MMX instruksjonssettet hvis prosessoren din støtter "
 "dette."
 
-#: src/libvlc-module.c:1009
+#: src/libvlc-module.c:1011
 #, fuzzy
 msgid "Enable CPU 3D Now! support"
 msgstr "skru på støtte for 3D Now! i prosessoren"
 
-#: src/libvlc-module.c:1011
+#: src/libvlc-module.c:1013
 msgid ""
 "If your processor supports the 3D Now! instructions set, VLC can take "
 "advantage of them."
@@ -3241,12 +3241,12 @@ msgstr ""
 "VLC kan dra nytte av 3D Now! instruksjonssettet hvis prosessoren din støtter "
 "dette."
 
-#: src/libvlc-module.c:1014
+#: src/libvlc-module.c:1016
 #, fuzzy
 msgid "Enable CPU MMX EXT support"
 msgstr "skru på støtte for MMX EXT i prosessoren "
 
-#: src/libvlc-module.c:1016
+#: src/libvlc-module.c:1018
 msgid ""
 "If your processor supports the MMX EXT instructions set, VLC can take "
 "advantage of them."
@@ -3254,12 +3254,12 @@ msgstr ""
 "VLC kan dra nytte av MMX EXT instruksjonssettet hvis prosessoren din støtter "
 "dette dette."
 
-#: src/libvlc-module.c:1019
+#: src/libvlc-module.c:1021
 #, fuzzy
 msgid "Enable CPU SSE support"
 msgstr "skru på støtte for SSE i prosessoren"
 
-#: src/libvlc-module.c:1021
+#: src/libvlc-module.c:1023
 msgid ""
 "If your processor supports the SSE instructions set, VLC can take advantage "
 "of them."
@@ -3267,12 +3267,12 @@ msgstr ""
 "VLC kan dra nytte av SSE instruksjonssettet hvis prosessoren din støtter "
 "dette dette."
 
-#: src/libvlc-module.c:1024
+#: src/libvlc-module.c:1026
 #, fuzzy
 msgid "Enable CPU SSE2 support"
 msgstr "skru på støtte for SSE i prosessoren"
 
-#: src/libvlc-module.c:1026
+#: src/libvlc-module.c:1028
 #, fuzzy
 msgid ""
 "If your processor supports the SSE2 instructions set, VLC can take advantage "
@@ -3281,12 +3281,12 @@ msgstr ""
 "VLC kan dra nytte av SSE instruksjonssettet hvis prosessoren din støtter "
 "dette dette."
 
-#: src/libvlc-module.c:1029
+#: src/libvlc-module.c:1031
 #, fuzzy
 msgid "Enable CPU AltiVec support"
 msgstr "skru på støtte for AltiVec i prosessoren"
 
-#: src/libvlc-module.c:1031
+#: src/libvlc-module.c:1033
 msgid ""
 "If your processor supports the AltiVec instructions set, VLC can take "
 "advantage of them."
@@ -3294,18 +3294,18 @@ msgstr ""
 "VLC kan dra nytte av AltiVec instruksjonssettet hvis prosessoren din støtter "
 "dette dette."
 
-#: src/libvlc-module.c:1036
+#: src/libvlc-module.c:1038
 msgid ""
 "These options allow you to select default modules. Leave these alone unless "
 "you really know what you are doing."
 msgstr ""
 
-#: src/libvlc-module.c:1039
+#: src/libvlc-module.c:1041
 #, fuzzy
 msgid "Memory copy module"
 msgstr "modul for minnekopiering"
 
-#: src/libvlc-module.c:1041
+#: src/libvlc-module.c:1043
 msgid ""
 "You can select which memory copy module you want to use. By default VLC will "
 "select the fastest one supported by your hardware."
@@ -3313,34 +3313,34 @@ msgstr ""
 "Du kan velge hvilken modul for minnekopiering du ønsker å bruke. "
 "Standardvalget til VLC er å velge den raskeste som støttes av din maskinvare."
 
-#: src/libvlc-module.c:1044
+#: src/libvlc-module.c:1046
 #, fuzzy
 msgid "Access module"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:1046
+#: src/libvlc-module.c:1048
 msgid ""
 "This allows you to force an access module. You can use it if the correct "
 "access is not automatically detected. You should not set this as a global "
 "option unless you really know what you are doing."
 msgstr ""
 
-#: src/libvlc-module.c:1050
+#: src/libvlc-module.c:1052
 #, fuzzy
 msgid "Stream filter module"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:1052
+#: src/libvlc-module.c:1054
 #, fuzzy
 msgid "Stream filters are used to modify the stream that is being read. "
 msgstr "Video filter er brukt til post prosess video stream."
 
-#: src/libvlc-module.c:1054
+#: src/libvlc-module.c:1056
 #, fuzzy
 msgid "Demux module"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:1056
+#: src/libvlc-module.c:1058
 msgid ""
 "Demultiplexers are used to separate the \"elementary\" streams (like audio "
 "and video streams). You can use it if the correct demuxer is not "
@@ -3348,12 +3348,12 @@ msgid ""
 "you really know what you are doing."
 msgstr ""
 
-#: src/libvlc-module.c:1061
+#: src/libvlc-module.c:1063
 #, fuzzy
 msgid "Allow real-time priority"
 msgstr "Sanntidsprioritet"
 
-#: src/libvlc-module.c:1063
+#: src/libvlc-module.c:1065
 msgid ""
 "Running VLC in real-time priority will allow for much more precise "
 "scheduling and yield better, especially when streaming content. It can "
@@ -3361,32 +3361,32 @@ msgid ""
 "only activate this if you know what you're doing."
 msgstr ""
 
-#: src/libvlc-module.c:1069
+#: src/libvlc-module.c:1071
 msgid "Adjust VLC priority"
 msgstr ""
 
-#: src/libvlc-module.c:1071
+#: src/libvlc-module.c:1073
 msgid ""
 "This option adds an offset (positive or negative) to VLC default priorities. "
 "You can use it to tune VLC priority against other programs, or against other "
 "VLC instances."
 msgstr ""
 
-#: src/libvlc-module.c:1075
+#: src/libvlc-module.c:1077
 msgid "(Experimental) Don't do caching at the access level."
 msgstr ""
 
-#: src/libvlc-module.c:1077
+#: src/libvlc-module.c:1079
 msgid ""
 "This option is useful if you want to lower the latency when reading a stream"
 msgstr ""
 
-#: src/libvlc-module.c:1080
+#: src/libvlc-module.c:1082
 #, fuzzy
 msgid "Modules search path"
 msgstr "søkesti for tilleggskomponenter"
 
-#: src/libvlc-module.c:1082
+#: src/libvlc-module.c:1084
 #, fuzzy
 msgid ""
 "Additional path for VLC to look for its modules. You can add several paths "
@@ -3395,70 +3395,70 @@ msgstr ""
 "Du kan spesifisere en ekstra sti der VLC kan se etter tilleggskomponenter "
 "med dette alternativet."
 
-#: src/libvlc-module.c:1085
+#: src/libvlc-module.c:1087
 #, fuzzy
 msgid "VLM configuration file"
 msgstr "vis avanserte alternativer"
 
-#: src/libvlc-module.c:1087
+#: src/libvlc-module.c:1089
 msgid "Read a VLM configuration file as soon as VLM is started."
 msgstr ""
 
-#: src/libvlc-module.c:1089
+#: src/libvlc-module.c:1091
 msgid "Use a plugins cache"
 msgstr ""
 
-#: src/libvlc-module.c:1091
+#: src/libvlc-module.c:1093
 msgid "Use a plugins cache which will greatly improve the startup time of VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1093
+#: src/libvlc-module.c:1095
 msgid "Collect statistics"
 msgstr ""
 
-#: src/libvlc-module.c:1095
+#: src/libvlc-module.c:1097
 #, fuzzy
 msgid "Collect miscellaneous statistics."
 msgstr "Forskjellig"
 
-#: src/libvlc-module.c:1097
+#: src/libvlc-module.c:1099
 msgid "Run as daemon process"
 msgstr ""
 
-#: src/libvlc-module.c:1099
+#: src/libvlc-module.c:1101
 msgid "Runs VLC as a background daemon process."
 msgstr ""
 
-#: src/libvlc-module.c:1101
+#: src/libvlc-module.c:1103
 msgid "Write process id to file"
 msgstr ""
 
-#: src/libvlc-module.c:1103
+#: src/libvlc-module.c:1105
 msgid "Writes process id into specified file."
 msgstr ""
 
-#: src/libvlc-module.c:1105
+#: src/libvlc-module.c:1107
 #, fuzzy
 msgid "Log to file"
 msgstr "Fil"
 
-#: src/libvlc-module.c:1107
+#: src/libvlc-module.c:1109
 msgid "Log all VLC messages to a text file."
 msgstr ""
 
-#: src/libvlc-module.c:1109
+#: src/libvlc-module.c:1111
 msgid "Log to syslog"
 msgstr ""
 
-#: src/libvlc-module.c:1111
+#: src/libvlc-module.c:1113
 msgid "Log all VLC messages to syslog (UNIX systems)."
 msgstr ""
 
-#: src/libvlc-module.c:1113
+#: src/libvlc-module.c:1115
 msgid "Allow only one running instance"
 msgstr ""
 
-#: src/libvlc-module.c:1116
+#: src/libvlc-module.c:1118
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3467,7 +3467,7 @@ msgid ""
 "running instance or enqueue it."
 msgstr ""
 
-#: src/libvlc-module.c:1123
+#: src/libvlc-module.c:1125
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3477,27 +3477,27 @@ msgid ""
 "active and the running instance of VLC to use D-Bus control interface."
 msgstr ""
 
-#: src/libvlc-module.c:1132
+#: src/libvlc-module.c:1134
 msgid "VLC is started from file association"
 msgstr ""
 
-#: src/libvlc-module.c:1134
+#: src/libvlc-module.c:1136
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 
-#: src/libvlc-module.c:1137
+#: src/libvlc-module.c:1139
 msgid "One instance when started from file"
 msgstr ""
 
-#: src/libvlc-module.c:1139
+#: src/libvlc-module.c:1141
 msgid "Allow only one running instance when started from file."
 msgstr ""
 
-#: src/libvlc-module.c:1141
+#: src/libvlc-module.c:1143
 msgid "Increase the priority of the process"
 msgstr ""
 
-#: src/libvlc-module.c:1143
+#: src/libvlc-module.c:1145
 msgid ""
 "Increasing the priority of the process will very likely improve your playing "
 "experience as it allows VLC not to be disturbed by other applications that "
@@ -3507,137 +3507,137 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1151
+#: src/libvlc-module.c:1153
 msgid "Enqueue items to playlist when in one instance mode"
 msgstr ""
 
-#: src/libvlc-module.c:1153
+#: src/libvlc-module.c:1155
 msgid ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "playing current item."
 msgstr ""
 
-#: src/libvlc-module.c:1162
+#: src/libvlc-module.c:1164
 msgid ""
 "These options define the behavior of the playlist. Some of them can be "
 "overridden in the playlist dialog box."
 msgstr ""
 
-#: src/libvlc-module.c:1165
+#: src/libvlc-module.c:1167
 msgid "Automatically preparse files"
 msgstr ""
 
-#: src/libvlc-module.c:1167
+#: src/libvlc-module.c:1169
 msgid ""
 "Automatically preparse files added to the playlist (to retrieve some "
 "metadata)."
 msgstr ""
 
-#: src/libvlc-module.c:1170
+#: src/libvlc-module.c:1172
 msgid "Album art policy"
 msgstr ""
 
-#: src/libvlc-module.c:1172
+#: src/libvlc-module.c:1174
 msgid "Choose how album art will be downloaded."
 msgstr ""
 
-#: src/libvlc-module.c:1178
+#: src/libvlc-module.c:1180
 msgid "Manual download only"
 msgstr ""
 
-#: src/libvlc-module.c:1179
+#: src/libvlc-module.c:1181
 msgid "When track starts playing"
 msgstr ""
 
-#: src/libvlc-module.c:1180
+#: src/libvlc-module.c:1182
 msgid "As soon as track is added"
 msgstr ""
 
-#: src/libvlc-module.c:1182
+#: src/libvlc-module.c:1184
 #, fuzzy
 msgid "Services discovery modules"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:1184
+#: src/libvlc-module.c:1186
 msgid ""
 "Specifies the services discovery modules to load, separated by semi-colons. "
 "Typical values are sap, hal, ..."
 msgstr ""
 
-#: src/libvlc-module.c:1187
+#: src/libvlc-module.c:1189
 #, fuzzy
 msgid "Play files randomly forever"
 msgstr "uendelig avspilling av filer i tilfeldig rekkefølge"
 
-#: src/libvlc-module.c:1189
+#: src/libvlc-module.c:1191
 #, fuzzy
 msgid "VLC will randomly play files in the playlist until interrupted."
 msgstr ""
 "Når dette alternativet er valgt, vil VLC spille filene i spillelisten i "
 "tilfeldig rekkefølge inntil den blir avbrutt."
 
-#: src/libvlc-module.c:1193
+#: src/libvlc-module.c:1195
 #, fuzzy
 msgid "VLC will keep playing the playlist indefinitely."
 msgstr ""
 "VLC kan avspille spillelisten i det uendelige ved å skru på dette "
 "alternativet."
 
-#: src/libvlc-module.c:1195
+#: src/libvlc-module.c:1197
 #, fuzzy
 msgid "Repeat current item"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1197
+#: src/libvlc-module.c:1199
 #, fuzzy
 msgid "VLC will keep playing the current playlist item."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1199
+#: src/libvlc-module.c:1201
 #, fuzzy
 msgid "Play and stop"
 msgstr "Spill fortere"
 
-#: src/libvlc-module.c:1201
+#: src/libvlc-module.c:1203
 msgid "Stop the playlist after each played playlist item."
 msgstr ""
 
-#: src/libvlc-module.c:1203
+#: src/libvlc-module.c:1205
 #, fuzzy
 msgid "Play and exit"
 msgstr "Spill fortere"
 
-#: src/libvlc-module.c:1205
+#: src/libvlc-module.c:1207
 msgid "Exit if there are no more items in the playlist."
 msgstr ""
 
-#: src/libvlc-module.c:1207
+#: src/libvlc-module.c:1209
 #, fuzzy
 msgid "Use media library"
 msgstr "Velg teksting kanal"
 
-#: src/libvlc-module.c:1209
+#: src/libvlc-module.c:1211
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
 msgstr ""
 
-#: src/libvlc-module.c:1212
+#: src/libvlc-module.c:1214
 #, fuzzy
 msgid "Display playlist tree"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1214
+#: src/libvlc-module.c:1216
 msgid ""
 "The playlist can use a tree to categorize some items, like the contents of a "
 "directory."
 msgstr ""
 
-#: src/libvlc-module.c:1223
+#: src/libvlc-module.c:1225
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 
-#: src/libvlc-module.c:1226 src/video_output/vout_intf.c:434
+#: src/libvlc-module.c:1228 src/video_output/vout_intf.c:434
 #: modules/gui/beos/VideoOutput.cpp:1058 modules/gui/macosx/controls.m:471
 #: modules/gui/macosx/controls.m:525 modules/gui/macosx/controls.m:1100
 #: modules/gui/macosx/controls.m:1131 modules/gui/macosx/embeddedwindow.m:66
@@ -3649,48 +3649,48 @@ msgstr ""
 msgid "Fullscreen"
 msgstr "_Fullskjerm"
 
-#: src/libvlc-module.c:1227
+#: src/libvlc-module.c:1229
 msgid "Select the hotkey to use to swap fullscreen state."
 msgstr ""
 
-#: src/libvlc-module.c:1228
+#: src/libvlc-module.c:1230
 #, fuzzy
 msgid "Leave fullscreen"
 msgstr "_Fullskjerm"
 
-#: src/libvlc-module.c:1229
+#: src/libvlc-module.c:1231
 #, fuzzy
 msgid "Select the hotkey to use to leave fullscreen state."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1230
+#: src/libvlc-module.c:1232
 #, fuzzy
 msgid "Play/Pause"
 msgstr "Spill fortere"
 
-#: src/libvlc-module.c:1231
-msgid "Select the hotkey to use to swap paused state."
-msgstr ""
-
-#: src/libvlc-module.c:1232
-#, fuzzy
-msgid "Pause only"
-msgstr "Pause"
-
 #: src/libvlc-module.c:1233
-msgid "Select the hotkey to use to pause."
+msgid "Select the hotkey to use to swap paused state."
 msgstr ""
 
 #: src/libvlc-module.c:1234
 #, fuzzy
+msgid "Pause only"
+msgstr "Pause"
+
+#: src/libvlc-module.c:1235
+msgid "Select the hotkey to use to pause."
+msgstr ""
+
+#: src/libvlc-module.c:1236
+#, fuzzy
 msgid "Play only"
 msgstr "Spill saktere"
 
-#: src/libvlc-module.c:1235
+#: src/libvlc-module.c:1237
 msgid "Select the hotkey to use to play."
 msgstr ""
 
-#: src/libvlc-module.c:1236 modules/control/hotkeys.c:718
+#: src/libvlc-module.c:1238 modules/control/hotkeys.c:718
 #: modules/gui/macosx/controls.m:1023 modules/gui/macosx/intf.m:642
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/components/controller.hpp:109
@@ -3698,11 +3698,11 @@ msgstr ""
 msgid "Faster"
 msgstr "Fort"
 
-#: src/libvlc-module.c:1237 src/libvlc-module.c:1243
+#: src/libvlc-module.c:1239 src/libvlc-module.c:1245
 msgid "Select the hotkey to use for fast forward playback."
 msgstr ""
 
-#: src/libvlc-module.c:1238 modules/control/hotkeys.c:724
+#: src/libvlc-module.c:1240 modules/control/hotkeys.c:724
 #: modules/gui/macosx/controls.m:1024 modules/gui/macosx/intf.m:643
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/components/controller.hpp:109
@@ -3710,31 +3710,31 @@ msgstr ""
 msgid "Slower"
 msgstr "Sakte"
 
-#: src/libvlc-module.c:1239 src/libvlc-module.c:1245
+#: src/libvlc-module.c:1241 src/libvlc-module.c:1247
 msgid "Select the hotkey to use for slow motion playback."
 msgstr ""
 
-#: src/libvlc-module.c:1240
+#: src/libvlc-module.c:1242
 #, fuzzy
 msgid "Normal rate"
 msgstr "Valgte"
 
-#: src/libvlc-module.c:1241
+#: src/libvlc-module.c:1243
 #, fuzzy
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1242 modules/gui/qt4/menus.cpp:751
+#: src/libvlc-module.c:1244 modules/gui/qt4/menus.cpp:751
 #, fuzzy
 msgid "Faster (fine)"
 msgstr "Fort"
 
-#: src/libvlc-module.c:1244 modules/gui/qt4/menus.cpp:759
+#: src/libvlc-module.c:1246 modules/gui/qt4/menus.cpp:759
 #, fuzzy
 msgid "Slower (fine)"
 msgstr "Sakte"
 
-#: src/libvlc-module.c:1246 modules/control/hotkeys.c:695
+#: src/libvlc-module.c:1248 modules/control/hotkeys.c:695
 #: modules/gui/macosx/about.m:185 modules/gui/macosx/controls.m:1044
 #: modules/gui/macosx/intf.m:598 modules/gui/macosx/intf.m:645
 #: modules/gui/macosx/intf.m:730 modules/gui/macosx/intf.m:738
@@ -3746,11 +3746,11 @@ msgstr "Sakte"
 msgid "Next"
 msgstr "Neste"
 
-#: src/libvlc-module.c:1247
+#: src/libvlc-module.c:1249
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr ""
 
-#: src/libvlc-module.c:1248 modules/control/hotkeys.c:701
+#: src/libvlc-module.c:1250 modules/control/hotkeys.c:701
 #: modules/gui/macosx/about.m:186 modules/gui/macosx/controls.m:1043
 #: modules/gui/macosx/intf.m:593 modules/gui/macosx/intf.m:644
 #: modules/gui/macosx/intf.m:731 modules/gui/macosx/intf.m:737
@@ -3760,11 +3760,11 @@ msgstr ""
 msgid "Previous"
 msgstr "Forrige fil"
 
-#: src/libvlc-module.c:1249
+#: src/libvlc-module.c:1251
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr ""
 
-#: src/libvlc-module.c:1250 modules/gui/macosx/controls.m:1035
+#: src/libvlc-module.c:1252 modules/gui/macosx/controls.m:1035
 #: modules/gui/macosx/intf.m:596 modules/gui/macosx/intf.m:641
 #: modules/gui/macosx/intf.m:729 modules/gui/macosx/intf.m:736
 #: modules/gui/pda/pda_interface.c:272 modules/gui/pda/pda_interface.c:273
@@ -3773,12 +3773,12 @@ msgstr ""
 msgid "Stop"
 msgstr "Stopp"
 
-#: src/libvlc-module.c:1251
+#: src/libvlc-module.c:1253
 #, fuzzy
 msgid "Select the hotkey to stop playback."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1252 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
+#: src/libvlc-module.c:1254 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:601
 #: modules/gui/qt4/ui/video_effects.h:928 modules/video_filter/marq.c:155
@@ -3787,128 +3787,128 @@ msgstr "Åpne spilleliste-vinduet"
 msgid "Position"
 msgstr "_Navigasjon"
 
-#: src/libvlc-module.c:1253
+#: src/libvlc-module.c:1255
 msgid "Select the hotkey to display the position."
 msgstr ""
 
-#: src/libvlc-module.c:1255
+#: src/libvlc-module.c:1257
 msgid "Very short backwards jump"
 msgstr ""
 
-#: src/libvlc-module.c:1257
+#: src/libvlc-module.c:1259
 #, fuzzy
 msgid "Select the hotkey to make a very short backwards jump."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1258
+#: src/libvlc-module.c:1260
 #, fuzzy
 msgid "Short backwards jump"
 msgstr "Gå tilbake"
 
-#: src/libvlc-module.c:1260
+#: src/libvlc-module.c:1262
 #, fuzzy
 msgid "Select the hotkey to make a short backwards jump."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1261
+#: src/libvlc-module.c:1263
 msgid "Medium backwards jump"
 msgstr ""
 
-#: src/libvlc-module.c:1263
+#: src/libvlc-module.c:1265
 #, fuzzy
 msgid "Select the hotkey to make a medium backwards jump."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1264
+#: src/libvlc-module.c:1266
 #, fuzzy
 msgid "Long backwards jump"
 msgstr "Gå tilbake"
 
-#: src/libvlc-module.c:1266
+#: src/libvlc-module.c:1268
 #, fuzzy
 msgid "Select the hotkey to make a long backwards jump."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1268
+#: src/libvlc-module.c:1270
 msgid "Very short forward jump"
 msgstr ""
 
-#: src/libvlc-module.c:1270
+#: src/libvlc-module.c:1272
 #, fuzzy
 msgid "Select the hotkey to make a very short forward jump."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1271
+#: src/libvlc-module.c:1273
 #, fuzzy
 msgid "Short forward jump"
 msgstr "Gå tilbake"
 
-#: src/libvlc-module.c:1273
+#: src/libvlc-module.c:1275
 #, fuzzy
 msgid "Select the hotkey to make a short forward jump."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1274
+#: src/libvlc-module.c:1276
 msgid "Medium forward jump"
 msgstr ""
 
-#: src/libvlc-module.c:1276
+#: src/libvlc-module.c:1278
 #, fuzzy
 msgid "Select the hotkey to make a medium forward jump."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1277
+#: src/libvlc-module.c:1279
 msgid "Long forward jump"
 msgstr ""
 
-#: src/libvlc-module.c:1279
+#: src/libvlc-module.c:1281
 #, fuzzy
 msgid "Select the hotkey to make a long forward jump."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1280 modules/control/hotkeys.c:712
+#: src/libvlc-module.c:1282 modules/control/hotkeys.c:712
 #, fuzzy
 msgid "Next frame"
 msgstr "Neste fil"
 
-#: src/libvlc-module.c:1282
+#: src/libvlc-module.c:1284
 #, fuzzy
 msgid "Select the hotkey to got to the next video frame."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1284
+#: src/libvlc-module.c:1286
 msgid "Very short jump length"
 msgstr ""
 
-#: src/libvlc-module.c:1285
+#: src/libvlc-module.c:1287
 msgid "Very short jump length, in seconds."
 msgstr ""
 
-#: src/libvlc-module.c:1286
+#: src/libvlc-module.c:1288
 msgid "Short jump length"
 msgstr ""
 
-#: src/libvlc-module.c:1287
+#: src/libvlc-module.c:1289
 msgid "Short jump length, in seconds."
 msgstr ""
 
-#: src/libvlc-module.c:1288
+#: src/libvlc-module.c:1290
 msgid "Medium jump length"
 msgstr ""
 
-#: src/libvlc-module.c:1289
+#: src/libvlc-module.c:1291
 msgid "Medium jump length, in seconds."
 msgstr ""
 
-#: src/libvlc-module.c:1290
+#: src/libvlc-module.c:1292
 msgid "Long jump length"
 msgstr ""
 
-#: src/libvlc-module.c:1291
+#: src/libvlc-module.c:1293
 msgid "Long jump length, in seconds."
 msgstr ""
 
-#: src/libvlc-module.c:1293 modules/control/hotkeys.c:209
+#: src/libvlc-module.c:1295 modules/control/hotkeys.c:209
 #: modules/gui/beos/InterfaceWindow.cpp:277 modules/gui/macosx/intf.m:379
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:114 modules/gui/qt4/menus.cpp:826
@@ -3917,125 +3917,125 @@ msgstr ""
 msgid "Quit"
 msgstr "Om"
 
-#: src/libvlc-module.c:1294
+#: src/libvlc-module.c:1296
 #, fuzzy
 msgid "Select the hotkey to quit the application."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1295
+#: src/libvlc-module.c:1297
 #, fuzzy
 msgid "Navigate up"
 msgstr "_Navigasjon"
 
-#: src/libvlc-module.c:1296
-msgid "Select the key to move the selector up in DVD menus."
-msgstr ""
-
-#: src/libvlc-module.c:1297
-#, fuzzy
-msgid "Navigate down"
-msgstr "_Navigasjon"
-
 #: src/libvlc-module.c:1298
-msgid "Select the key to move the selector down in DVD menus."
+msgid "Select the key to move the selector up in DVD menus."
 msgstr ""
 
 #: src/libvlc-module.c:1299
 #, fuzzy
-msgid "Navigate left"
+msgid "Navigate down"
 msgstr "_Navigasjon"
 
 #: src/libvlc-module.c:1300
-msgid "Select the key to move the selector left in DVD menus."
+msgid "Select the key to move the selector down in DVD menus."
 msgstr ""
 
 #: src/libvlc-module.c:1301
 #, fuzzy
-msgid "Navigate right"
+msgid "Navigate left"
 msgstr "_Navigasjon"
 
 #: src/libvlc-module.c:1302
+msgid "Select the key to move the selector left in DVD menus."
+msgstr ""
+
+#: src/libvlc-module.c:1303
+#, fuzzy
+msgid "Navigate right"
+msgstr "_Navigasjon"
+
+#: src/libvlc-module.c:1304
 #, fuzzy
 msgid "Select the key to move the selector right in DVD menus."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1303
+#: src/libvlc-module.c:1305
 msgid "Activate"
 msgstr ""
 
-#: src/libvlc-module.c:1304
+#: src/libvlc-module.c:1306
 msgid "Select the key to activate selected item in DVD menus."
 msgstr ""
 
-#: src/libvlc-module.c:1305
+#: src/libvlc-module.c:1307
 #, fuzzy
 msgid "Go to the DVD menu"
 msgstr "_Innstillinger"
 
-#: src/libvlc-module.c:1306
+#: src/libvlc-module.c:1308
 #, fuzzy
 msgid "Select the key to take you to the DVD menu"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1307
+#: src/libvlc-module.c:1309
 #, fuzzy
 msgid "Select previous DVD title"
 msgstr "Velg forrige tittel"
 
-#: src/libvlc-module.c:1308
+#: src/libvlc-module.c:1310
 #, fuzzy
 msgid "Select the key to choose the previous title from the DVD"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1309
+#: src/libvlc-module.c:1311
 #, fuzzy
 msgid "Select next DVD title"
 msgstr "Velg fil"
 
-#: src/libvlc-module.c:1310
+#: src/libvlc-module.c:1312
 #, fuzzy
 msgid "Select the key to choose the next title from the DVD"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1311
+#: src/libvlc-module.c:1313
 #, fuzzy
 msgid "Select prev DVD chapter"
 msgstr "Velg forrige kapittel"
 
-#: src/libvlc-module.c:1312
+#: src/libvlc-module.c:1314
 #, fuzzy
 msgid "Select the key to choose the previous chapter from the DVD"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1313
+#: src/libvlc-module.c:1315
 #, fuzzy
 msgid "Select next DVD chapter"
 msgstr "Velg neste Kapittel"
 
-#: src/libvlc-module.c:1314
+#: src/libvlc-module.c:1316
 #, fuzzy
 msgid "Select the key to choose the next chapter from the DVD"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1315
+#: src/libvlc-module.c:1317
 #, fuzzy
 msgid "Volume up"
 msgstr "Øk volum"
 
-#: src/libvlc-module.c:1316
+#: src/libvlc-module.c:1318
 msgid "Select the key to increase audio volume."
 msgstr ""
 
-#: src/libvlc-module.c:1317
+#: src/libvlc-module.c:1319
 #, fuzzy
 msgid "Volume down"
 msgstr "Senk volum"
 
-#: src/libvlc-module.c:1318
+#: src/libvlc-module.c:1320
 msgid "Select the key to decrease audio volume."
 msgstr ""
 
-#: src/libvlc-module.c:1319 modules/access/v4l2.c:167
+#: src/libvlc-module.c:1321 modules/access/v4l2.c:167
 #: modules/gui/macosx/controls.m:1090 modules/gui/macosx/intf.m:663
 #: modules/gui/macosx/intf.m:732 modules/gui/macosx/intf.m:741
 #: modules/gui/qt4/components/controller_widget.cpp:150
@@ -4043,472 +4043,472 @@ msgstr ""
 msgid "Mute"
 msgstr ""
 
-#: src/libvlc-module.c:1320
+#: src/libvlc-module.c:1322
 #, fuzzy
 msgid "Select the key to mute audio."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1321
+#: src/libvlc-module.c:1323
 #, fuzzy
 msgid "Subtitle delay up"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:1322
+#: src/libvlc-module.c:1324
 #, fuzzy
 msgid "Select the key to increase the subtitle delay."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1323
+#: src/libvlc-module.c:1325
 #, fuzzy
 msgid "Subtitle delay down"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:1324
+#: src/libvlc-module.c:1326
 #, fuzzy
 msgid "Select the key to decrease the subtitle delay."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1325
+#: src/libvlc-module.c:1327
 #, fuzzy
 msgid "Audio delay up"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:1326
+#: src/libvlc-module.c:1328
 #, fuzzy
 msgid "Select the key to increase the audio delay."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1327
+#: src/libvlc-module.c:1329
 #, fuzzy
 msgid "Audio delay down"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:1328
+#: src/libvlc-module.c:1330
 #, fuzzy
 msgid "Select the key to decrease the audio delay."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1335
+#: src/libvlc-module.c:1337
 msgid "Play playlist bookmark 1"
 msgstr ""
 
-#: src/libvlc-module.c:1336
+#: src/libvlc-module.c:1338
 msgid "Play playlist bookmark 2"
 msgstr ""
 
-#: src/libvlc-module.c:1337
+#: src/libvlc-module.c:1339
 msgid "Play playlist bookmark 3"
 msgstr ""
 
-#: src/libvlc-module.c:1338
+#: src/libvlc-module.c:1340
 msgid "Play playlist bookmark 4"
 msgstr ""
 
-#: src/libvlc-module.c:1339
+#: src/libvlc-module.c:1341
 msgid "Play playlist bookmark 5"
 msgstr ""
 
-#: src/libvlc-module.c:1340
+#: src/libvlc-module.c:1342
 msgid "Play playlist bookmark 6"
 msgstr ""
 
-#: src/libvlc-module.c:1341
+#: src/libvlc-module.c:1343
 msgid "Play playlist bookmark 7"
 msgstr ""
 
-#: src/libvlc-module.c:1342
+#: src/libvlc-module.c:1344
 msgid "Play playlist bookmark 8"
 msgstr ""
 
-#: src/libvlc-module.c:1343
+#: src/libvlc-module.c:1345
 msgid "Play playlist bookmark 9"
 msgstr ""
 
-#: src/libvlc-module.c:1344
+#: src/libvlc-module.c:1346
 msgid "Play playlist bookmark 10"
 msgstr ""
 
-#: src/libvlc-module.c:1345
+#: src/libvlc-module.c:1347
 #, fuzzy
 msgid "Select the key to play this bookmark."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1346
+#: src/libvlc-module.c:1348
 #, fuzzy
 msgid "Set playlist bookmark 1"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1347
+#: src/libvlc-module.c:1349
 #, fuzzy
 msgid "Set playlist bookmark 2"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1348
+#: src/libvlc-module.c:1350
 #, fuzzy
 msgid "Set playlist bookmark 3"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1349
+#: src/libvlc-module.c:1351
 #, fuzzy
 msgid "Set playlist bookmark 4"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1350
+#: src/libvlc-module.c:1352
 #, fuzzy
 msgid "Set playlist bookmark 5"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1351
+#: src/libvlc-module.c:1353
 #, fuzzy
 msgid "Set playlist bookmark 6"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1352
+#: src/libvlc-module.c:1354
 #, fuzzy
 msgid "Set playlist bookmark 7"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1353
+#: src/libvlc-module.c:1355
 #, fuzzy
 msgid "Set playlist bookmark 8"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1354
+#: src/libvlc-module.c:1356
 #, fuzzy
 msgid "Set playlist bookmark 9"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1355
+#: src/libvlc-module.c:1357
 #, fuzzy
 msgid "Set playlist bookmark 10"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1356
+#: src/libvlc-module.c:1358
 #, fuzzy
 msgid "Select the key to set this playlist bookmark."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1358
+#: src/libvlc-module.c:1360
 #, fuzzy
 msgid "Playlist bookmark 1"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1359
+#: src/libvlc-module.c:1361
 #, fuzzy
 msgid "Playlist bookmark 2"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1360
+#: src/libvlc-module.c:1362
 #, fuzzy
 msgid "Playlist bookmark 3"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1361
+#: src/libvlc-module.c:1363
 #, fuzzy
 msgid "Playlist bookmark 4"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1362
+#: src/libvlc-module.c:1364
 #, fuzzy
 msgid "Playlist bookmark 5"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1363
+#: src/libvlc-module.c:1365
 #, fuzzy
 msgid "Playlist bookmark 6"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1364
+#: src/libvlc-module.c:1366
 #, fuzzy
 msgid "Playlist bookmark 7"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1365
+#: src/libvlc-module.c:1367
 #, fuzzy
 msgid "Playlist bookmark 8"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1366
+#: src/libvlc-module.c:1368
 #, fuzzy
 msgid "Playlist bookmark 9"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1367
+#: src/libvlc-module.c:1369
 #, fuzzy
 msgid "Playlist bookmark 10"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1369
+#: src/libvlc-module.c:1371
 #, fuzzy
 msgid "This allows you to define playlist bookmarks."
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1371
+#: src/libvlc-module.c:1373
 msgid "Go back in browsing history"
 msgstr ""
 
-#: src/libvlc-module.c:1372
+#: src/libvlc-module.c:1374
 msgid ""
 "Select the key to go back (to the previous media item) in the browsing "
 "history."
 msgstr ""
 
-#: src/libvlc-module.c:1373
+#: src/libvlc-module.c:1375
 msgid "Go forward in browsing history"
 msgstr ""
 
-#: src/libvlc-module.c:1374
+#: src/libvlc-module.c:1376
 msgid ""
 "Select the key to go forward (to the next media item) in the browsing "
 "history."
 msgstr ""
 
-#: src/libvlc-module.c:1376
+#: src/libvlc-module.c:1378
 #, fuzzy
 msgid "Cycle audio track"
 msgstr "Lyd"
 
-#: src/libvlc-module.c:1377
+#: src/libvlc-module.c:1379
 msgid "Cycle through the available audio tracks(languages)."
 msgstr ""
 
-#: src/libvlc-module.c:1378
+#: src/libvlc-module.c:1380
 #, fuzzy
 msgid "Cycle subtitle track"
 msgstr "Velg tittel"
 
-#: src/libvlc-module.c:1379
+#: src/libvlc-module.c:1381
 #, fuzzy
 msgid "Cycle through the available subtitle tracks."
 msgstr "Velg tittel"
 
-#: src/libvlc-module.c:1380
+#: src/libvlc-module.c:1382
 #, fuzzy
 msgid "Cycle source aspect ratio"
 msgstr "kildens bildeformat"
 
-#: src/libvlc-module.c:1381
-msgid "Cycle through a predefined list of source aspect ratios."
-msgstr ""
-
-#: src/libvlc-module.c:1382
-#, fuzzy
-msgid "Cycle video crop"
-msgstr "videoeksport i gråtoner"
-
 #: src/libvlc-module.c:1383
-msgid "Cycle through a predefined list of crop formats."
+msgid "Cycle through a predefined list of source aspect ratios."
 msgstr ""
 
 #: src/libvlc-module.c:1384
 #, fuzzy
-msgid "Toggle autoscaling"
-msgstr "Grensesnitt"
+msgid "Cycle video crop"
+msgstr "videoeksport i gråtoner"
 
 #: src/libvlc-module.c:1385
-msgid "Activate or deactivate autoscaling."
+msgid "Cycle through a predefined list of crop formats."
 msgstr ""
 
 #: src/libvlc-module.c:1386
-msgid "Increase scale factor"
-msgstr ""
+#, fuzzy
+msgid "Toggle autoscaling"
+msgstr "Grensesnitt"
 
 #: src/libvlc-module.c:1387
-msgid "Increase scale factor."
+msgid "Activate or deactivate autoscaling."
 msgstr ""
 
 #: src/libvlc-module.c:1388
-msgid "Decrease scale factor"
+msgid "Increase scale factor"
 msgstr ""
 
 #: src/libvlc-module.c:1389
-msgid "Decrease scale factor."
+msgid "Increase scale factor."
 msgstr ""
 
 #: src/libvlc-module.c:1390
+msgid "Decrease scale factor"
+msgstr ""
+
+#: src/libvlc-module.c:1391
+msgid "Decrease scale factor."
+msgstr ""
+
+#: src/libvlc-module.c:1392
 #, fuzzy
 msgid "Cycle deinterlace modes"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:1391
+#: src/libvlc-module.c:1393
 #, fuzzy
 msgid "Cycle through deinterlace modes."
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:1392
+#: src/libvlc-module.c:1394
 #, fuzzy
 msgid "Show interface"
 msgstr "_Gjem grensesnitt"
 
-#: src/libvlc-module.c:1393
+#: src/libvlc-module.c:1395
 #, fuzzy
 msgid "Raise the interface above all other windows."
 msgstr "Skjul grensesnittvinduet"
 
-#: src/libvlc-module.c:1394
+#: src/libvlc-module.c:1396
 #, fuzzy
 msgid "Hide interface"
 msgstr "_Gjem grensesnitt"
 
-#: src/libvlc-module.c:1395
+#: src/libvlc-module.c:1397
 #, fuzzy
 msgid "Lower the interface below all other windows."
 msgstr "Skjul grensesnittvinduet"
 
-#: src/libvlc-module.c:1396
+#: src/libvlc-module.c:1398
 msgid "Take video snapshot"
 msgstr ""
 
-#: src/libvlc-module.c:1397
+#: src/libvlc-module.c:1399
 msgid "Takes a video snapshot and writes it to disk."
 msgstr ""
 
-#: src/libvlc-module.c:1399 modules/gui/qt4/components/controller.hpp:104
+#: src/libvlc-module.c:1401 modules/gui/qt4/components/controller.hpp:104
 #: modules/gui/qt4/components/controller.hpp:112
 #: modules/stream_out/record.c:60
 #, fuzzy
 msgid "Record"
 msgstr "Åpne fil"
 
-#: src/libvlc-module.c:1400
+#: src/libvlc-module.c:1402
 msgid "Record access filter start/stop."
 msgstr ""
 
-#: src/libvlc-module.c:1401
+#: src/libvlc-module.c:1403
 #, fuzzy
 msgid "Dump"
 msgstr "Hopp"
 
-#: src/libvlc-module.c:1402
+#: src/libvlc-module.c:1404
 msgid "Media dump access filter trigger."
 msgstr ""
 
-#: src/libvlc-module.c:1404
+#: src/libvlc-module.c:1406
 msgid "Normal/Repeat/Loop"
 msgstr ""
 
-#: src/libvlc-module.c:1405
+#: src/libvlc-module.c:1407
 msgid "Toggle Normal/Repeat/Loop playlist modes"
 msgstr ""
 
-#: src/libvlc-module.c:1408
+#: src/libvlc-module.c:1410
 msgid "Toggle random playlist playback"
 msgstr ""
 
-#: src/libvlc-module.c:1413 src/libvlc-module.c:1414
+#: src/libvlc-module.c:1415 src/libvlc-module.c:1416
 msgid "Un-Zoom"
 msgstr ""
 
-#: src/libvlc-module.c:1416 src/libvlc-module.c:1417
+#: src/libvlc-module.c:1418 src/libvlc-module.c:1419
 msgid "Crop one pixel from the top of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1418 src/libvlc-module.c:1419
+#: src/libvlc-module.c:1420 src/libvlc-module.c:1421
 msgid "Uncrop one pixel from the top of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1421 src/libvlc-module.c:1422
+#: src/libvlc-module.c:1423 src/libvlc-module.c:1424
 msgid "Crop one pixel from the left of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1423 src/libvlc-module.c:1424
+#: src/libvlc-module.c:1425 src/libvlc-module.c:1426
 msgid "Uncrop one pixel from the left of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1426 src/libvlc-module.c:1427
+#: src/libvlc-module.c:1428 src/libvlc-module.c:1429
 msgid "Crop one pixel from the bottom of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1428 src/libvlc-module.c:1429
+#: src/libvlc-module.c:1430 src/libvlc-module.c:1431
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1431 src/libvlc-module.c:1432
+#: src/libvlc-module.c:1433 src/libvlc-module.c:1434
 #, fuzzy
 msgid "Crop one pixel from the right of the video"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1433 src/libvlc-module.c:1434
+#: src/libvlc-module.c:1435 src/libvlc-module.c:1436
 msgid "Uncrop one pixel from the right of the video"
 msgstr ""
 
-#: src/libvlc-module.c:1436
+#: src/libvlc-module.c:1438
 #, fuzzy
 msgid "Toggle wallpaper mode in video output"
 msgstr "Fullskjermdybde:"
 
-#: src/libvlc-module.c:1438
+#: src/libvlc-module.c:1440
 msgid ""
 "Toggle wallpaper mode in video output. Only works with the directx video "
 "output for the time being."
 msgstr ""
 
-#: src/libvlc-module.c:1441 src/libvlc-module.c:1442
+#: src/libvlc-module.c:1443 src/libvlc-module.c:1444
 msgid "Display OSD menu on top of video output"
 msgstr ""
 
-#: src/libvlc-module.c:1443
+#: src/libvlc-module.c:1445
 #, fuzzy
 msgid "Do not display OSD menu on video output"
 msgstr "Valgt skrifttype for visning av tekst i xosd-eksport"
 
-#: src/libvlc-module.c:1444
+#: src/libvlc-module.c:1446
 #, fuzzy
 msgid "Do not display OSD menu on top of video output"
 msgstr "Valgt skrifttype for visning av tekst i xosd-eksport"
 
-#: src/libvlc-module.c:1445
+#: src/libvlc-module.c:1447
 msgid "Highlight widget on the right"
 msgstr ""
 
-#: src/libvlc-module.c:1447
+#: src/libvlc-module.c:1449
 msgid "Move OSD menu highlight to the widget on the right"
 msgstr ""
 
-#: src/libvlc-module.c:1448
+#: src/libvlc-module.c:1450
 msgid "Highlight widget on the left"
 msgstr ""
 
-#: src/libvlc-module.c:1450
+#: src/libvlc-module.c:1452
 msgid "Move OSD menu highlight to the widget on the left"
 msgstr ""
 
-#: src/libvlc-module.c:1451
+#: src/libvlc-module.c:1453
 msgid "Highlight widget on top"
 msgstr ""
 
-#: src/libvlc-module.c:1453
+#: src/libvlc-module.c:1455
 msgid "Move OSD menu highlight to the widget on top"
 msgstr ""
 
-#: src/libvlc-module.c:1454
+#: src/libvlc-module.c:1456
 msgid "Highlight widget below"
 msgstr ""
 
-#: src/libvlc-module.c:1456
+#: src/libvlc-module.c:1458
 msgid "Move OSD menu highlight to the widget below"
 msgstr ""
 
-#: src/libvlc-module.c:1457
+#: src/libvlc-module.c:1459
 #, fuzzy
 msgid "Select current widget"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:1459
+#: src/libvlc-module.c:1461
 msgid "Selecting current widget performs the associated action."
 msgstr ""
 
-#: src/libvlc-module.c:1461
+#: src/libvlc-module.c:1463
 #, fuzzy
 msgid "Cycle through audio devices"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:1462
+#: src/libvlc-module.c:1464
 #, fuzzy
 msgid "Cycle through available audio devices"
 msgstr "Velg tittel"
 
-#: src/libvlc-module.c:1464
+#: src/libvlc-module.c:1466
 #, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -4545,7 +4545,7 @@ msgid ""
 "  vlc://quit                     Special item to quit VLC\n"
 msgstr ""
 
-#: src/libvlc-module.c:1616 src/video_output/vout_intf.c:440
+#: src/libvlc-module.c:1618 src/video_output/vout_intf.c:440
 #: modules/gui/macosx/controls.m:509 modules/gui/macosx/controls.m:1099
 #: modules/gui/macosx/intf.m:680 modules/gui/macosx/intf.m:743
 #: modules/gui/qt4/components/controller.hpp:103
@@ -4554,17 +4554,17 @@ msgstr ""
 msgid "Snapshot"
 msgstr "Standard grensesnitt: "
 
-#: src/libvlc-module.c:1633
+#: src/libvlc-module.c:1635
 #, fuzzy
 msgid "Window properties"
 msgstr "Avslutt programmet"
 
-#: src/libvlc-module.c:1685
+#: src/libvlc-module.c:1687
 #, fuzzy
 msgid "Subpictures"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:1693 modules/codec/subtitles/subsdec.c:202
+#: src/libvlc-module.c:1695 modules/codec/subtitles/subsdec.c:202
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
 #: modules/demux/subtitle.c:74 modules/gui/beos/InterfaceWindow.cpp:280
 #: modules/gui/qt4/ui/profiles.h:495 modules/gui/qt4/ui/profiles.h:497
@@ -4572,143 +4572,143 @@ msgstr "_Teksting"
 msgid "Subtitles"
 msgstr "_Teksting"
 
-#: src/libvlc-module.c:1710 modules/stream_out/transcode.c:123
+#: src/libvlc-module.c:1713 modules/stream_out/transcode.c:123
 #, fuzzy
 msgid "Overlays"
 msgstr "Spill"
 
-#: src/libvlc-module.c:1718
+#: src/libvlc-module.c:1721
 #, fuzzy
 msgid "Track settings"
 msgstr "Lyd"
 
-#: src/libvlc-module.c:1748
+#: src/libvlc-module.c:1751
 #, fuzzy
 msgid "Playback control"
 msgstr "Pause"
 
-#: src/libvlc-module.c:1773
+#: src/libvlc-module.c:1776
 #, fuzzy
 msgid "Default devices"
 msgstr "Slett"
 
-#: src/libvlc-module.c:1782
+#: src/libvlc-module.c:1785
 #, fuzzy
 msgid "Network settings"
 msgstr "_Innstillinger"
 
-#: src/libvlc-module.c:1794
+#: src/libvlc-module.c:1797
 msgid "Socks proxy"
 msgstr ""
 
-#: src/libvlc-module.c:1803 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1806 modules/demux/kate_categories.c:47
 #, fuzzy
 msgid "Metadata"
 msgstr "Fil"
 
-#: src/libvlc-module.c:1851
+#: src/libvlc-module.c:1854
 msgid "Decoders"
 msgstr "Dekodere"
 
-#: src/libvlc-module.c:1858 modules/access/v4l2.c:78
+#: src/libvlc-module.c:1861 modules/access/v4l2.c:78
 #: modules/gui/macosx/playlistinfo.m:97
 #: modules/gui/qt4/components/info_panels.cpp:522
 #, fuzzy
 msgid "Input"
 msgstr "Spilleliste"
 
-#: src/libvlc-module.c:1897
+#: src/libvlc-module.c:1900
 msgid "VLM"
 msgstr ""
 
-#: src/libvlc-module.c:1929
+#: src/libvlc-module.c:1932
 #, fuzzy
 msgid "CPU"
 msgstr "RTP"
 
-#: src/libvlc-module.c:1951
+#: src/libvlc-module.c:1954
 #, fuzzy
 msgid "Special modules"
 msgstr "Valg"
 
-#: src/libvlc-module.c:1957
+#: src/libvlc-module.c:1960
 #, fuzzy
 msgid "Plugins"
 msgstr "Spill"
 
-#: src/libvlc-module.c:1965
+#: src/libvlc-module.c:1968
 #, fuzzy
 msgid "Performance options"
 msgstr "Pause strøm"
 
-#: src/libvlc-module.c:2115
+#: src/libvlc-module.c:2118
 #, fuzzy
 msgid "Hot keys"
 msgstr "Adresse"
 
-#: src/libvlc-module.c:2554
+#: src/libvlc-module.c:2557
 msgid "Jump sizes"
 msgstr ""
 
-#: src/libvlc-module.c:2631
+#: src/libvlc-module.c:2634
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 
-#: src/libvlc-module.c:2634
+#: src/libvlc-module.c:2637
 msgid "Exhaustive help for VLC and its modules"
 msgstr ""
 
-#: src/libvlc-module.c:2636
+#: src/libvlc-module.c:2639
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
 msgstr ""
 
-#: src/libvlc-module.c:2639
+#: src/libvlc-module.c:2642
 msgid "ask for extra verbosity when displaying help"
 msgstr ""
 
-#: src/libvlc-module.c:2641
+#: src/libvlc-module.c:2644
 msgid "print a list of available modules"
 msgstr "skriv ut liste av tilgjengelige moduler"
 
-#: src/libvlc-module.c:2643
+#: src/libvlc-module.c:2646
 #, fuzzy
 msgid "print a list of available modules with extra detail"
 msgstr "skriv ut liste av tilgjengelige moduler"
 
-#: src/libvlc-module.c:2645
+#: src/libvlc-module.c:2648
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
-"verbose). Prefix the module name with = for strictmatches."
+"verbose). Prefix the module name with = for strict matches."
 msgstr ""
 
-#: src/libvlc-module.c:2649
+#: src/libvlc-module.c:2652
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr ""
 
-#: src/libvlc-module.c:2651
+#: src/libvlc-module.c:2654
 msgid "save the current command line options in the config"
 msgstr ""
 
-#: src/libvlc-module.c:2653
+#: src/libvlc-module.c:2656
 msgid "reset the current config to the default values"
 msgstr ""
 
-#: src/libvlc-module.c:2655
+#: src/libvlc-module.c:2658
 msgid "use alternate config file"
 msgstr ""
 
-#: src/libvlc-module.c:2657
+#: src/libvlc-module.c:2660
 #, fuzzy
 msgid "resets the current plugins cache"
 msgstr "Åpne spilleliste-vinduet"
 
-#: src/libvlc-module.c:2659
+#: src/libvlc-module.c:2662
 msgid "print version information"
 msgstr "skriv ut versjonsinformasjon"
 
-#: src/libvlc-module.c:2715
+#: src/libvlc-module.c:2718
 msgid "main program"
 msgstr "hovedprogrammet"
 
@@ -10216,11 +10216,11 @@ msgstr "Standard grensesnitt: "
 msgid "Subtitle renderers using libass"
 msgstr "_Innstillinger"
 
-#: modules/codec/libass.c:726
+#: modules/codec/libass.c:728
 msgid "Building font cache"
 msgstr ""
 
-#: modules/codec/libass.c:727
+#: modules/codec/libass.c:729
 msgid ""
 "Please wait while your font cache is rebuild.\n"
 "This should take less than a minute."
@@ -12908,11 +12908,11 @@ msgstr "_Innstillinger"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr ""
 
-#: modules/demux/live555.cpp:626
+#: modules/demux/live555.cpp:617
 msgid "RTSP authentication"
 msgstr ""
 
-#: modules/demux/live555.cpp:627
+#: modules/demux/live555.cpp:618
 msgid "Please enter a valid login name and a password."
 msgstr ""
 
@@ -15577,7 +15577,7 @@ msgid "Subtitles & OSD"
 msgstr "_Teksting"
 
 #: modules/gui/macosx/simple_prefs.m:187
-#: modules/gui/qt4/components/simple_preferences.cpp:538
+#: modules/gui/qt4/components/simple_preferences.cpp:540
 #, fuzzy
 msgid "Subtitles & On Screen Display Settings"
 msgstr "_Innstillinger"
@@ -17846,35 +17846,35 @@ msgstr ""
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr ""
 
-#: modules/gui/qt4/components/simple_preferences.cpp:567
+#: modules/gui/qt4/components/simple_preferences.cpp:569
 #, fuzzy
 msgid "Configure Hotkeys"
 msgstr "vis avanserte alternativer"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:791
+#: modules/gui/qt4/components/simple_preferences.cpp:793
 #: modules/gui/qt4/dialogs_provider.hpp:49
 #, fuzzy
 msgid "Audio Files"
 msgstr "Lyd"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:792
+#: modules/gui/qt4/components/simple_preferences.cpp:794
 #: modules/gui/qt4/dialogs_provider.hpp:44
 #, fuzzy
 msgid "Video Files"
 msgstr "lydenhet"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:793
+#: modules/gui/qt4/components/simple_preferences.cpp:795
 #: modules/gui/qt4/dialogs_provider.hpp:54
 #, fuzzy
 msgid "Playlist Files"
 msgstr "Spilleliste"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:845
+#: modules/gui/qt4/components/simple_preferences.cpp:847
 #, fuzzy
 msgid "&Apply"
 msgstr "Bruk"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:846
+#: modules/gui/qt4/components/simple_preferences.cpp:848
 #: modules/gui/qt4/dialogs/convert.cpp:95
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/help.cpp:207 modules/gui/qt4/dialogs/open.cpp:109

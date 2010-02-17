@@ -4,7 +4,7 @@
  * Copyright (C) 2003-2004 the VideoLAN team
  * Copyright © 2007 Rémi Denis-Courmont
  *
- * $Id: 2e29e15089ae92efdf0cdbdee82c80c899b39d9f $
+ * $Id: adb5696af5d0d283214979ac9db98c8462e47e11 $
  *
  * Authors: Laurent Aimar <fenrir@via.ecp.fr>
  *
@@ -127,11 +127,11 @@ error:
 
 void RtspUnsetup( rtsp_stream_t *rtsp )
 {
-    while( rtsp->sessionc > 0 )
-        RtspClientDel( rtsp, rtsp->sessionv[0] );
-
     if( rtsp->url )
         httpd_UrlDelete( rtsp->url );
+
+    while( rtsp->sessionc > 0 )
+        RtspClientDel( rtsp, rtsp->sessionv[0] );
 
     if( rtsp->host )
         httpd_HostDelete( rtsp->host );
@@ -228,6 +228,8 @@ rtsp_stream_id_t *RtspAddId( rtsp_stream_t *rtsp, sout_stream_id_t *sid,
 
 void RtspDelId( rtsp_stream_t *rtsp, rtsp_stream_id_t *id )
 {
+    httpd_UrlDelete( id->url );
+
     vlc_mutex_lock( &rtsp->lock );
     for( int i = 0; i < rtsp->sessionc; i++ )
     {
@@ -238,14 +240,13 @@ void RtspDelId( rtsp_stream_t *rtsp, rtsp_stream_id_t *id )
             if( ses->trackv[j].id == id->sout_id )
             {
                 rtsp_strack_t *tr = ses->trackv + j;
-                net_Close( tr->fd );
+                rtp_del_sink( tr->id, tr->fd );
                 REMOVE_ELEM( ses->trackv, ses->trackc, j );
             }
         }
     }
 
     vlc_mutex_unlock( &rtsp->lock );
-    httpd_UrlDelete( id->url );
     free( id );
 }
 

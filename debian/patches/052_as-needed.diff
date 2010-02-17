@@ -3,10 +3,10 @@ later libtool version
 
 Index: vlc-debian/autotools/ltmain.sh
 ===================================================================
---- vlc-debian.orig/autotools/ltmain.sh	2009-07-09 00:21:18.000000000 +0200
-+++ vlc-debian/autotools/ltmain.sh	2009-07-09 00:23:16.000000000 +0200
-@@ -1807,6 +1807,11 @@
- 	arg=`$echo "X$arg" | $Xsed -e "s/^ //"`
+--- vlc-debian.orig/autotools/ltmain.sh	2010-02-13 15:44:10.000000000 +0000
++++ vlc-debian/autotools/ltmain.sh	2010-02-13 15:44:27.000000000 +0000
+@@ -4716,6 +4716,11 @@
+ 	arg=$func_stripname_result
  	;;
  
 +      -Wl,--as-needed)
@@ -15,9 +15,9 @@ Index: vlc-debian/autotools/ltmain.sh
 +	;;
 +      
        -Wl,*)
- 	args=`$echo "X$arg" | $Xsed -e "$sed_quote_subst" -e 's/^-Wl,//'`
- 	arg=
-@@ -2150,6 +2155,15 @@
+ 	func_stripname '-Wl,' '' "$arg"
+ 	args=$func_stripname_result
+@@ -5070,6 +5075,15 @@
  	lib=
  	found=no
  	case $deplib in

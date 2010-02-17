@@ -1,17 +1,17 @@
 # translation of lt.po to lietuvių
 # Lithuanian translation for vlc
-# Copyright (c) (c) 2006 Canonical Ltd, and Rosetta Contributors 2006
+# Copyright (c) 2006 Canonical Ltd, and Rosetta Contributors 2006
+#           (c) 2009-2010 Mindaugas Baranauska
 # This file is distributed under the same license as the vlc package.
 #
-# Mindaugas Baranauskas <embar@super.lt>, 2009.
-# Mindaugas Baranauskas <embar@micro.lt>, 2009.
+# Mindaugas Baranauskas <embar@users.berlios.de>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: lt\n"
 "Report-Msgid-Bugs-To: vlc-devel@videolan.org\n"
-"POT-Creation-Date: 2009-12-10 19:11+0200\n"
-"PO-Revision-Date: 2009-10-21 16:41+0300\n"
-"Last-Translator: Mindaugas Baranauskas <embar@micro.lt>\n"
+"POT-Creation-Date: 2010-01-28 17:44+0100\n"
+"PO-Revision-Date: 2010-01-03 18:01+0200\n"
+"Last-Translator: Mindaugas Baranauskas <embar@users.berlios.de>\n"
 "Language-Team: Lithuanian <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -20,7 +20,7 @@ msgstr ""
 "100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Lokalize 1.0\n"
 
-#: include/vlc_common.h:869
+#: include/vlc_common.h:889
 msgid ""
 "This program comes with NO WARRANTY, to the extent permitted by law.\n"
 "You may redistribute it under the terms of the GNU General Public License;\n"
@@ -63,7 +63,7 @@ msgstr "Pagrindinės sąsajos"
 msgid "Settings for the main interface"
 msgstr "Pagrindinių sąsajų nuostatos"
 
-#: include/vlc_config_cat.h:45 src/libvlc-module.c:182
+#: include/vlc_config_cat.h:45 src/libvlc-module.c:184
 msgid "Control interfaces"
 msgstr "Valdymo sąsajos"
 
@@ -77,7 +77,7 @@ msgid "Hotkeys settings"
 msgstr "Spartieji klavišai"
 
 #: include/vlc_config_cat.h:52 src/input/es_out.c:2784 src/input/es_out.c:2818
-#: src/libvlc-module.c:1516 modules/gui/beos/InterfaceWindow.cpp:283
+#: src/libvlc-module.c:1518 modules/gui/beos/InterfaceWindow.cpp:283
 #: modules/gui/macosx/intf.m:660 modules/gui/macosx/output.m:170
 #: modules/gui/macosx/playlistinfo.m:114 modules/gui/macosx/simple_prefs.m:179
 #: modules/gui/macosx/wizard.m:380
@@ -122,7 +122,7 @@ msgstr "Išvesties moduliai"
 msgid "General settings for audio output modules."
 msgstr "Garso išvesties modulių pagrindinės nuostatos."
 
-#: include/vlc_config_cat.h:66 src/libvlc-module.c:1952
+#: include/vlc_config_cat.h:66 src/libvlc-module.c:1955
 #: modules/stream_out/transcode.c:232
 msgid "Miscellaneous"
 msgstr "Kita"
@@ -132,7 +132,7 @@ msgid "Miscellaneous audio settings and modules."
 msgstr "Kitos garso nuostatos ir moduliai."
 
 #: include/vlc_config_cat.h:70 src/input/es_out.c:2787 src/input/es_out.c:2867
-#: src/libvlc-module.c:1569 modules/gui/macosx/intf.m:673
+#: src/libvlc-module.c:1571 modules/gui/macosx/intf.m:673
 #: modules/gui/macosx/output.m:160 modules/gui/macosx/playlistinfo.m:103
 #: modules/gui/macosx/simple_prefs.m:183 modules/gui/macosx/wizard.m:381
 #: modules/gui/qt4/components/info_panels.cpp:521
@@ -203,11 +203,11 @@ msgstr ""
 
 #: include/vlc_config_cat.h:108
 msgid "Demuxers"
-msgstr "Demultiplekseriai"
+msgstr "Išpynimo metodai"
 
 #: include/vlc_config_cat.h:109
 msgid "Demuxers are used to separate audio and video streams."
-msgstr "Demultiplekseriai naudojami norint atskirti garso ir vaizdo srautus."
+msgstr "Išpynimo metodai naudojami norint atskirti garso ir vaizdo srautus."
 
 #: include/vlc_config_cat.h:111
 msgid "Video codecs"
@@ -241,7 +241,7 @@ msgstr "Bendra įvestis"
 msgid "General input settings. Use with care..."
 msgstr "Įvesties bendrosios nuostatos. Naudokite atsargiai..."
 
-#: include/vlc_config_cat.h:124 src/libvlc-module.c:1879
+#: include/vlc_config_cat.h:124 src/libvlc-module.c:1882
 msgid "Stream output"
 msgstr "Srauto išvestis"
 
@@ -351,7 +351,7 @@ msgstr "VOD"
 msgid "VLC's implementation of Video On Demand"
 msgstr "Vaizdo pagal pareikalavimą (angl. Video On Demand) VLC grotuve"
 
-#: include/vlc_config_cat.h:175 src/libvlc-module.c:2013
+#: include/vlc_config_cat.h:175 src/libvlc-module.c:2016
 #: src/playlist/engine.c:119 modules/demux/playlist/playlist.c:66
 #: modules/demux/playlist/playlist.c:67
 #: modules/gui/beos/InterfaceWindow.cpp:232
@@ -389,7 +389,7 @@ msgid ""
 msgstr ""
 "Paslaugų aptikimo modulis leidžia automatiškai įkelti įrašus į grojaraštį."
 
-#: include/vlc_config_cat.h:186 src/libvlc-module.c:1829
+#: include/vlc_config_cat.h:186 src/libvlc-module.c:1832
 msgid "Advanced"
 msgstr "Sudėtingiau"
 
@@ -452,15 +452,15 @@ msgstr "Dialogo tiekėjai gali būti konfigūruojami čia."
 
 #: include/vlc_config_cat.h:218
 msgid "Subtitle demuxer settings"
-msgstr "Subtitrų demultiplekserių nuostatos"
+msgstr "Subtitrų išpynimo metodų nuostatos"
 
 #: include/vlc_config_cat.h:220
 msgid ""
 "In this section you can force the behavior of the subtitle demuxer, for "
 "example by setting the subtitles type or file name."
 msgstr ""
-"Šiame skydelyje galite nurodyti priverstinį subtitrų demultiplekserio "
-"elgesį, pavyzdžiui, nustatyti subtitrų tipą ar rinkmenos pavadinimą."
+"Šiame skydelyje galite nurodyti priverstinį subtitrų išpynimo metodų elgesį, "
+"pavyzdžiui, nustatyti subtitrų tipą ar rinkmenos pavadinimą."
 
 #: include/vlc_config_cat.h:227
 msgid "No help available"
@@ -574,7 +574,7 @@ msgstr "Įrašyti..."
 msgid "Open Folder..."
 msgstr "Atverti aplanką..."
 
-#: include/vlc_intf_strings.h:64 src/libvlc-module.c:1191
+#: include/vlc_intf_strings.h:64 src/libvlc-module.c:1193
 msgid "Repeat all"
 msgstr "Kartoti viską"
 
@@ -586,7 +586,7 @@ msgstr "Kartoti vieną"
 msgid "No repeat"
 msgstr "Nekartoti"
 
-#: include/vlc_intf_strings.h:68 src/libvlc-module.c:1407
+#: include/vlc_intf_strings.h:68 src/libvlc-module.c:1409
 #: modules/gui/macosx/controls.m:1051 modules/gui/macosx/intf.m:646
 msgid "Random"
 msgstr "Maišymo veiksena"
@@ -740,29 +740,29 @@ msgstr ""
 "<html><head><meta http-equiv=\"Content-Type\" content=\"text/html; "
 "charset=utf-8\" /></head><body><h2>Jus sveikina VLC grotuvo žinynas </"
 "h2><h3>Dokumentacija</h3><p>VLC dokumentaciją galite rasti VideoLAN <a href="
-"\"http://wiki.videolan.org\">wiki</a> svetainėje.</p><p>Jei esate pirmą "
-"kartą naudojatės VLC grotuvu, perskaitykite<br><a href=\"http://wiki."
-"videolan.org/Documentation:VLC_for_dummies\"><em>VLC grotuvo pradžiamokslį</"
-"em></a>.</p> <p>Šiek tiek informacijos, kaip naudotis grotuvu rasite "
-"dokumente<br><a href=\"http://wiki.videolan.org/Documentation:Play_HowTo"
-"\"><em>Kaip groti rinkmenas VLC grotuvu</em></a>.</p><p>Naudingos "
-"informacijos apie įrašymą, konvertavimą, perkodavimą, kodavimą, srauto "
-"tankinimą ir transliavimą turėtumėte rasti <a href=\"http://wiki.videolan."
-"org/Documentation:Streaming_HowTo\">transliavimo žinyne</a>.</p><p>Jei "
-"abejojate dėl terminologijos, žiūrėkite <a href=\"http://wiki.videolan.org/"
-"Knowledge_Base\">pagrindinių žinių puslapį</a>.</p><p> Norėdami suprasti "
-"pagrindinius sparčiuosius klavišus, skaitykite <a href=\"http://wiki."
-"videolan.org/Hotkeys\">klavišų susiejimų</a> puslapį.</p><h3>Pagalba</"
-"h3><p>Prieš užduodami bet kokį klausimą, pirmiausia ieškokite atsakymo <a "
-"href=\"http://www.videolan.org/support/faq.html\">dažniausiai užduodamų "
-"klausimų puslapyje</a>.</p><p>Pagalbos taip pat rasite <a href=\"http://"
-"forum.videolan.org\">forumuose</a>, <a href=\"http://www.videolan.org/vlc/"
-"lists.html\">elektroninio pašto grupėje</a> ar mūsų IRC kanale "
-"(<em>#videolan</em> adresu irc.freenode.net).</p><h3>Prisidėkite prie "
-"projekto </h3><p>Jūs galite prisidėti prie VideoLAN projekto padėdami VLC "
-"bendruomenei, kurdami apipavidalinimus, versdami dokumentaciją, išbandydami "
-"ir programuodami. Taip pat galite suteikti piniginę ir materialinę paramą. "
-"Be abejo, galite <b>reklamuoti</b> VLC grotuvą.</p></body></html>"
+"\"http://wiki.videolan.org\">wiki</a> svetainėje.</p><p>Jei pirmą kartą "
+"naudojatės VLC grotuvu, perskaitykite<br><a href=\"http://wiki.videolan.org/"
+"Documentation:VLC_for_dummies\"><em>VLC grotuvo pradžiamokslį</em></a>.</p> "
+"<p>Šiek tiek informacijos, kaip naudotis grotuvu rasite dokumente<br><a href="
+"\"http://wiki.videolan.org/Documentation:Play_HowTo\"><em>Kaip groti "
+"rinkmenas VLC grotuvu</em></a>.</p><p>Naudingos informacijos apie įrašymą, "
+"konvertavimą, perkodavimą, kodavimą, srauto tankinimą ir transliavimą "
+"turėtumėte rasti <a href=\"http://wiki.videolan.org/Documentation:"
+"Streaming_HowTo\">transliavimo žinyne</a>.</p><p>Jei abejojate dėl "
+"terminologijos, žiūrėkite <a href=\"http://wiki.videolan.org/Knowledge_Base"
+"\">pagrindinių žinių puslapį</a>.</p><p> Norėdami suprasti pagrindinius "
+"sparčiuosius klavišus, skaitykite <a href=\"http://wiki.videolan.org/Hotkeys"
+"\">klavišų susiejimų</a> puslapį.</p><h3>Pagalba</h3><p>Prieš užduodami bet "
+"kokį klausimą, pirmiausia ieškokite atsakymo <a href=\"http://www.videolan."
+"org/support/faq.html\">dažniausiai užduodamų klausimų puslapyje</a>.</"
+"p><p>Pagalbos taip pat rasite <a href=\"http://forum.videolan.org"
+"\">forumuose</a>, <a href=\"http://www.videolan.org/vlc/lists.html"
+"\">elektroninio pašto grupėje</a> ar mūsų IRC kanale (<em>#videolan</em> "
+"adresu irc.freenode.net).</p><h3>Prisidėkite prie projekto </h3><p>Jūs "
+"galite prisidėti prie VideoLAN projekto padėdami VLC bendruomenei, kurdami "
+"apipavidalinimus, versdami dokumentaciją, išbandydami ir programuodami. Taip "
+"pat galite suteikti piniginę ir materialinę paramą. Be abejo, galite "
+"<b>reklamuoti</b> VLC grotuvą.</p></body></html>"
 
 #: src/audio_output/filters.c:159 src/audio_output/filters.c:206
 #: src/audio_output/filters.c:229
@@ -776,7 +776,7 @@ msgid "The maximum number of filters (%d) was reached."
 msgstr "Pasiektas didžiausias filtrų skaičius (%d)."
 
 #: src/audio_output/input.c:114 src/audio_output/input.c:160
-#: src/input/es_out.c:928 src/libvlc-module.c:620
+#: src/input/es_out.c:928 src/libvlc-module.c:622
 #: src/video_output/video_output.c:1770 modules/video_filter/postproc.c:236
 msgid "Disable"
 msgstr "Išjungta"
@@ -802,7 +802,7 @@ msgstr "Spidometras"
 msgid "Equalizer"
 msgstr "Glodintuvas"
 
-#: src/audio_output/input.c:179 src/libvlc-module.c:320
+#: src/audio_output/input.c:179 src/libvlc-module.c:322
 msgid "Audio filters"
 msgstr "Garso filtrai"
 
@@ -827,7 +827,7 @@ msgid "Stereo"
 msgstr "Stereofininis"
 
 #: src/audio_output/output.c:107 src/audio_output/output.c:143
-#: src/libvlc-module.c:414 src/libvlc-module.c:463
+#: src/libvlc-module.c:416 src/libvlc-module.c:465
 #: modules/audio_filter/channel_mixer/mono.c:96 modules/codec/dvbsub.c:75
 #: modules/codec/subtitles/subsdec.c:187 modules/codec/zvbi.c:79
 #: modules/control/gestures.c:91 modules/gui/fbosd.c:162
@@ -840,7 +840,7 @@ msgid "Left"
 msgstr "Kairėje"
 
 #: src/audio_output/output.c:109 src/audio_output/output.c:145
-#: src/libvlc-module.c:414 src/libvlc-module.c:463
+#: src/libvlc-module.c:416 src/libvlc-module.c:465
 #: modules/audio_filter/channel_mixer/mono.c:96 modules/codec/dvbsub.c:75
 #: modules/codec/subtitles/subsdec.c:187 modules/codec/zvbi.c:79
 #: modules/control/gestures.c:91 modules/gui/fbosd.c:162
@@ -967,7 +967,7 @@ msgstr ""
 "Garso ar vaizdo formato „%4.4s“ VLC programa nepalaiko. Deja, negalime "
 "pasiūlyti, kaip išspręsti šią problemą."
 
-#: src/input/es_out.c:949 src/input/es_out.c:954 src/libvlc-module.c:358
+#: src/input/es_out.c:949 src/input/es_out.c:954 src/libvlc-module.c:360
 #: modules/access/cdda/info.c:391 modules/access/vcdx/access.c:477
 #: modules/access/vcdx/info.c:290 modules/access/vcdx/info.c:291
 #: modules/gui/qt4/components/open_panels.cpp:383
@@ -980,7 +980,7 @@ msgid "%s [%s %d]"
 msgstr "%s [%s %d]"
 
 #: src/input/es_out.c:1157 src/input/es_out.c:1162 src/input/var.c:173
-#: src/libvlc-module.c:653 modules/gui/macosx/intf.m:653
+#: src/libvlc-module.c:655 modules/gui/macosx/intf.m:653
 #: modules/gui/macosx/intf.m:654
 msgid "Program"
 msgstr "Programa"
@@ -1022,7 +1022,7 @@ msgstr "Originalus ID"
 msgid "Codec"
 msgstr "Kodavimas"
 
-#: src/input/es_out.c:2808 src/input/meta.c:50 src/libvlc-module.c:209
+#: src/input/es_out.c:2808 src/input/meta.c:50 src/libvlc-module.c:211
 #: modules/gui/beos/InterfaceWindow.cpp:279
 #: modules/gui/macosx/simple_prefs.m:264
 #: modules/gui/qt4/ui/sprefs_interface.h:314
@@ -1131,7 +1131,7 @@ msgstr "Stilius"
 msgid "Copyright"
 msgstr "Autorinės teisės"
 
-#: src/input/meta.c:43 src/libvlc-module.c:358 modules/access/vcdx/info.c:94
+#: src/input/meta.c:43 src/libvlc-module.c:360 modules/access/vcdx/info.c:94
 msgid "Album"
 msgstr "Albumas"
 
@@ -1180,7 +1180,7 @@ msgstr "Takelio Nr."
 msgid "Bookmark"
 msgstr "Žymelė"
 
-#: src/input/var.c:178 src/libvlc-module.c:659
+#: src/input/var.c:178 src/libvlc-module.c:661
 msgid "Programs"
 msgstr "Programos"
 
@@ -1348,34 +1348,34 @@ msgstr ""
 "\n"
 "Spauskite GRĮŽTI klavišą, norėdami tęsti...\n"
 
-#: src/libvlc.h:188 src/libvlc-module.c:1410 src/libvlc-module.c:1411
-#: src/libvlc-module.c:2544 src/video_output/vout_intf.c:278
+#: src/libvlc.h:188 src/libvlc-module.c:1412 src/libvlc-module.c:1413
+#: src/libvlc-module.c:2547 src/video_output/vout_intf.c:278
 msgid "Zoom"
 msgstr "Mastelis"
 
-#: src/libvlc.h:189 src/libvlc-module.c:1330 src/video_output/vout_intf.c:172
+#: src/libvlc.h:189 src/libvlc-module.c:1332 src/video_output/vout_intf.c:172
 msgid "1:4 Quarter"
 msgstr "1:4 ketvirtadalis"
 
-#: src/libvlc.h:190 src/libvlc-module.c:1331 src/video_output/vout_intf.c:173
+#: src/libvlc.h:190 src/libvlc-module.c:1333 src/video_output/vout_intf.c:173
 msgid "1:2 Half"
 msgstr "1:2 pusė"
 
-#: src/libvlc.h:191 src/libvlc-module.c:1332 src/video_output/vout_intf.c:174
+#: src/libvlc.h:191 src/libvlc-module.c:1334 src/video_output/vout_intf.c:174
 msgid "1:1 Original"
 msgstr "1:1 tikras dydis"
 
-#: src/libvlc.h:192 src/libvlc-module.c:1333 src/video_output/vout_intf.c:175
+#: src/libvlc.h:192 src/libvlc-module.c:1335 src/video_output/vout_intf.c:175
 msgid "2:1 Double"
 msgstr "2:1 dvigubas"
 
-#: src/libvlc-module.c:99 src/libvlc-module.c:317 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:100 src/libvlc-module.c:319 modules/access/bda/bda.c:69
 #: modules/codec/subtitles/subsdec.c:97
 #: modules/gui/qt4/components/open_panels.cpp:1045
 msgid "Auto"
 msgstr "Automatiškai"
 
-#: src/libvlc-module.c:165
+#: src/libvlc-module.c:167
 msgid ""
 "These options allow you to configure the interfaces used by VLC. You can "
 "select the main interface, additional interface modules, and define various "
@@ -1385,11 +1385,11 @@ msgstr ""
 "pagrindinę sąsają, papildomus sąsajos modulius ir aprašyti įvairias "
 "susijusias parinktis."
 
-#: src/libvlc-module.c:169
+#: src/libvlc-module.c:171
 msgid "Interface module"
 msgstr "Sąsajos modulis"
 
-#: src/libvlc-module.c:171
+#: src/libvlc-module.c:173
 msgid ""
 "This is the main interface used by VLC. The default behavior is to "
 "automatically select the best module available."
@@ -1397,11 +1397,11 @@ msgstr ""
 "Tai pagrindinė VLC naudojama sąsaja. Numatytoji elgsena automatiškam "
 "geriausiam modulių pasirinkimui."
 
-#: src/libvlc-module.c:175 modules/control/ntservice.c:57
+#: src/libvlc-module.c:177 modules/control/ntservice.c:57
 msgid "Extra interface modules"
 msgstr "Ypatingi sąsajos moduliai"
 
-#: src/libvlc-module.c:177
+#: src/libvlc-module.c:179
 msgid ""
 "You can select \"additional interfaces\" for VLC. They will be launched in "
 "the background in addition to the default interface. Use a comma separated "
@@ -1413,15 +1413,15 @@ msgstr ""
 "sąsajos modulių sąrašą. (bendru atveju galimos vertės: „rc“ (nuotolinis "
 "valdymas), „http“, „gestures“ ...)"
 
-#: src/libvlc-module.c:184
+#: src/libvlc-module.c:186
 msgid "You can select control interfaces for VLC."
 msgstr "Galite pasirinkti VLC valdymo sąsają."
 
-#: src/libvlc-module.c:186
+#: src/libvlc-module.c:188
 msgid "Verbosity (0,1,2)"
 msgstr "Detalumas (0, 1, 2)"
 
-#: src/libvlc-module.c:188
+#: src/libvlc-module.c:190
 msgid ""
 "This is the verbosity level (0=only errors and standard messages, "
 "1=warnings, 2=debug)."
@@ -1429,11 +1429,11 @@ msgstr ""
 "Tai detalumo lygis (0=tik klaidos ir įprasti pranešimai, 1=įspėjimai, "
 "2=derinimas)."
 
-#: src/libvlc-module.c:191
+#: src/libvlc-module.c:193
 msgid "Choose which objects should print debug message"
 msgstr "Pasirinkite, kurie pranešimai turėtų būti rodomi derinime"
 
-#: src/libvlc-module.c:194
+#: src/libvlc-module.c:196
 msgid ""
 "This is a ',' separated string, each objects should be prefixed by a '+' or "
 "a '-' to respectively enable or disable it. The keyword 'all' refers to all "
@@ -1449,23 +1449,23 @@ msgstr ""
 "turi pirmenybę prieš taisykles, pritaikytas objekto tipui. Pažymėtina, kad "
 "jums visvien reikia naudoti „-vvv“ norint matyti derinimo pranešimą."
 
-#: src/libvlc-module.c:201
+#: src/libvlc-module.c:203
 msgid "Be quiet"
 msgstr "Tylus"
 
-#: src/libvlc-module.c:203
+#: src/libvlc-module.c:205
 msgid "Turn off all warning and information messages."
 msgstr "Nerodyti pranešimų apie klaidas"
 
-#: src/libvlc-module.c:205
+#: src/libvlc-module.c:207
 msgid "Default stream"
 msgstr "Numatytasis srautas"
 
-#: src/libvlc-module.c:207
+#: src/libvlc-module.c:209
 msgid "This stream will always be opened at VLC startup."
 msgstr "Šis srautas bus automatiškai atveriamas paleidus VLC."
 
-#: src/libvlc-module.c:210
+#: src/libvlc-module.c:212
 msgid ""
 "You can manually select a language for the interface. The system language is "
 "auto-detected if \"auto\" is specified here."
@@ -1473,11 +1473,11 @@ msgstr ""
 "Galite patys išsirinkti norimą sąsajos kalbą. Sistemos kalba automatiškai "
 "aptinkama nustačius „auto“."
 
-#: src/libvlc-module.c:214
+#: src/libvlc-module.c:216
 msgid "Color messages"
 msgstr "Spalvoti pranešimai"
 
-#: src/libvlc-module.c:216
+#: src/libvlc-module.c:218
 msgid ""
 "This enables colorization of the messages sent to the console Your terminal "
 "needs Linux color support for this to work."
@@ -1485,11 +1485,11 @@ msgstr ""
 "Įgalina spalvotus pranešimus konsolėje Terminalui reikalingas Linux spalvų "
 "palaikymas."
 
-#: src/libvlc-module.c:219
+#: src/libvlc-module.c:221
 msgid "Show advanced options"
 msgstr "Rodyti sudėtingesnes nuostatas"
 
-#: src/libvlc-module.c:221
+#: src/libvlc-module.c:223
 msgid ""
 "When this is enabled, the preferences and/or interfaces will show all "
 "available options, including those that most users should never touch."
@@ -1497,28 +1497,28 @@ msgstr ""
 "Pasirinkus, pasirinkimai ir/arba sąsajos bus rodomi su visomis galimomis "
 "parinktimis, įskaitant ir tas, kurių vartotojui nederėtų keisti."
 
-#: src/libvlc-module.c:225 modules/control/showintf.c:71
+#: src/libvlc-module.c:227 modules/control/showintf.c:71
 msgid "Show interface with mouse"
 msgstr "Rodyti sąsają su pele"
 
-#: src/libvlc-module.c:227
+#: src/libvlc-module.c:229
 msgid ""
 "When this is enabled, the interface is shown when you move the mouse to the "
 "edge of the screen in fullscreen mode."
 msgstr ""
 "Pasirinkus, viso ekrano režime pelei pasiekus ekrano kraštą rodoma sąsaja."
 
-#: src/libvlc-module.c:230
+#: src/libvlc-module.c:232
 msgid "Interface interaction"
 msgstr "Sąsajos sąveika"
 
-#: src/libvlc-module.c:232
+#: src/libvlc-module.c:234
 msgid ""
 "When this is enabled, the interface will show a dialog box each time some "
 "user input is required."
 msgstr "Pasirinkus, sąsaja rodys langus, prireikus naudotojo įsikišimo."
 
-#: src/libvlc-module.c:242
+#: src/libvlc-module.c:244
 msgid ""
 "These options allow you to modify the behavior of the audio subsystem, and "
 "to add audio filters which can be used for post processing or visual effects "
@@ -1530,11 +1530,11 @@ msgstr ""
 "efektams (spektro analizatorius ir kt.). Įgalinkite šiuos filtrus čia, o "
 "derinkite juos modulių skydelyje „garso filtrai“."
 
-#: src/libvlc-module.c:248
+#: src/libvlc-module.c:250
 msgid "Audio output module"
 msgstr "Garso išvesties modulis"
 
-#: src/libvlc-module.c:250
+#: src/libvlc-module.c:252
 msgid ""
 "This is the audio output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -1542,12 +1542,12 @@ msgstr ""
 "Tai VLC naudojama garso išvedimo priemonė. Numatytoji elgsena yra "
 "automatiškai pasirinkti geriausią prieinamą priemonę."
 
-#: src/libvlc-module.c:254 modules/gui/qt4/ui/sprefs_audio.h:333
+#: src/libvlc-module.c:256 modules/gui/qt4/ui/sprefs_audio.h:333
 #: modules/stream_out/display.c:41
 msgid "Enable audio"
 msgstr "Įgalinti garsą"
 
-#: src/libvlc-module.c:256
+#: src/libvlc-module.c:258
 msgid ""
 "You can completely disable the audio output. The audio decoding stage will "
 "not take place, thus saving some processing power."
@@ -1555,29 +1555,29 @@ msgstr ""
 "Jūs galite visiškai atsisakyti garso išvesties. Nebeliks garso iškodavimo "
 "etapo, tad bus sutaupyta šiek tiek sistemos išteklių."
 
-#: src/libvlc-module.c:260
+#: src/libvlc-module.c:262
 msgid "Force mono audio"
 msgstr "Priverstinai naudoti monofoninį garsą"
 
-#: src/libvlc-module.c:261
+#: src/libvlc-module.c:263
 msgid "This will force a mono audio output."
 msgstr "Garso išvestis priverstinai bus perkoduota į monofoninį"
 
-#: src/libvlc-module.c:264
+#: src/libvlc-module.c:266
 msgid "Default audio volume"
 msgstr "Numatytasis garsumas"
 
-#: src/libvlc-module.c:266
+#: src/libvlc-module.c:268
 msgid ""
 "You can set the default audio output volume here, in a range from 0 to 1024."
 msgstr ""
 "Čia galite nurodyti numatytąjį garsumo lygį iš intervalo tarp 0 ir 1024."
 
-#: src/libvlc-module.c:269
+#: src/libvlc-module.c:271
 msgid "Audio output saved volume"
 msgstr "Garso išvesties įsimena garsumą"
 
-#: src/libvlc-module.c:271
+#: src/libvlc-module.c:273
 msgid ""
 "This saves the audio output volume when you use the mute function. You "
 "should not change this option manually."
@@ -1585,21 +1585,21 @@ msgstr ""
 "Prieš nutildant garsą, bus įsimenamas garsumo lygis. Nederėtų keisti šios "
 "parinkties."
 
-#: src/libvlc-module.c:274
+#: src/libvlc-module.c:276
 msgid "Audio output volume step"
 msgstr "Garso išvesties garsumo žingsnis"
 
-#: src/libvlc-module.c:276
+#: src/libvlc-module.c:278
 msgid ""
 "The step size of the volume is adjustable using this option, in a range from "
 "0 to 1024."
 msgstr "Garsumo žingsnio dydis tarp 0 ir 1024."
 
-#: src/libvlc-module.c:279
+#: src/libvlc-module.c:281
 msgid "Audio output frequency (Hz)"
 msgstr "Garso išvesties dažnumas (Hz)"
 
-#: src/libvlc-module.c:281
+#: src/libvlc-module.c:283
 msgid ""
 "You can force the audio output frequency here. Common values are -1 "
 "(default), 48000, 44100, 32000, 22050, 16000, 11025, 8000."
@@ -1607,11 +1607,11 @@ msgstr ""
 "Čia galite priverstinai nurodyti išvedamo garso dažnumą. Galimos vertės: -1 "
 "(numatyta), 48000, 44100, 32000, 22050, 16000, 11025, 8000."
 
-#: src/libvlc-module.c:285
+#: src/libvlc-module.c:287
 msgid "High quality audio resampling"
 msgstr "Aukštos kokybės garsas"
 
-#: src/libvlc-module.c:287
+#: src/libvlc-module.c:289
 msgid ""
 "This uses a high quality audio resampling algorithm. High quality audio "
 "resampling can be processor intensive so you can disable it and a cheaper "
@@ -1621,24 +1621,24 @@ msgstr ""
 "kokybės garso ruošimas reikalauja didesnių procesoriaus ištekli. "
 "Nepasirinkus šios parinkties, bus naudojamas paprastesnis algoritmas."
 
-#: src/libvlc-module.c:292
+#: src/libvlc-module.c:294
 msgid "Audio desynchronization compensation"
 msgstr "Garso neatitikimo kompensavimas"
 
-#: src/libvlc-module.c:294
+#: src/libvlc-module.c:296
 msgid ""
-"This delays the audio output. The delay must be given in milliseconds.This "
+"This delays the audio output. The delay must be given in milliseconds. This "
 "can be handy if you notice a lag between the video and the audio."
 msgstr ""
 "Tai garso išvesties užlaikymas. Uždelsimas turi būti nurodytas "
 "milisekundėmis. Jis gali būti naudingas, jei pastebite garso ir vaizdo "
 "neatitikimą."
 
-#: src/libvlc-module.c:297
+#: src/libvlc-module.c:299
 msgid "Audio output channels mode"
 msgstr "Garso išvesties kanalų režimas"
 
-#: src/libvlc-module.c:299
+#: src/libvlc-module.c:301
 msgid ""
 "This sets the audio output channels mode that will be used by default when "
 "possible (ie. if your hardware supports it as well as the audio stream being "
@@ -1648,12 +1648,12 @@ msgstr ""
 "įmanoma (pvz., jei jūsų aparatinė įranga jį palaiko garso srauto grojimo "
 "metu)."
 
-#: src/libvlc-module.c:303 modules/gui/macosx/simple_prefs.m:232
+#: src/libvlc-module.c:305 modules/gui/macosx/simple_prefs.m:232
 #: modules/gui/qt4/ui/sprefs_audio.h:340
 msgid "Use S/PDIF when available"
 msgstr "Naudoti S/PDIF kai tik įmanoma"
 
-#: src/libvlc-module.c:305
+#: src/libvlc-module.c:307
 msgid ""
 "S/PDIF can be used by default when your hardware supports it as well as the "
 "audio stream being played."
@@ -1661,12 +1661,12 @@ msgstr ""
 "S/PDIF gali būti naudojamas numatytuoju atveju, kai jūsų aparatinė įranga jį "
 "garso srauto grojimo metu."
 
-#: src/libvlc-module.c:308 modules/gui/macosx/simple_prefs.m:222
+#: src/libvlc-module.c:310 modules/gui/macosx/simple_prefs.m:222
 #: modules/gui/qt4/ui/sprefs_audio.h:342
 msgid "Force detection of Dolby Surround"
 msgstr "Dolby Surround aptikimas"
 
-#: src/libvlc-module.c:310
+#: src/libvlc-module.c:312
 msgid ""
 "Use this when you know your stream is (or is not) encoded with Dolby "
 "Surround but fails to be detected as such. Even if the stream is not "
@@ -1679,40 +1679,40 @@ msgstr ""
 "sustiprinti jūsų patiriamus pojūčius, ypač kai kartu naudojant Ausinių "
 "kanalo maišiklį."
 
-#: src/libvlc-module.c:317 modules/access/bda/bda.c:69
+#: src/libvlc-module.c:319 modules/access/bda/bda.c:69
 msgid "On"
 msgstr "Įjungta"
 
-#: src/libvlc-module.c:317 modules/access/bda/bda.c:68
+#: src/libvlc-module.c:319 modules/access/bda/bda.c:68
 msgid "Off"
 msgstr "Išjungta"
 
-#: src/libvlc-module.c:322
+#: src/libvlc-module.c:324
 msgid "This adds audio post processing filters, to modify the sound rendering."
 msgstr ""
 "Pridedami garso galutinio apdorojimo filtrai, keičiantys garso atkūrimą."
 
-#: src/libvlc-module.c:325
+#: src/libvlc-module.c:327
 msgid "Audio visualizations "
 msgstr "Garso vaizdiniai"
 
-#: src/libvlc-module.c:327
+#: src/libvlc-module.c:329
 msgid "This adds visualization modules (spectrum analyzer, etc.)."
 msgstr "Naudoti vaizdinių modulius (spektro analizatorių ir kt.)."
 
-#: src/libvlc-module.c:331 modules/gui/qt4/ui/sprefs_audio.h:352
+#: src/libvlc-module.c:333 modules/gui/qt4/ui/sprefs_audio.h:352
 msgid "Replay gain mode"
 msgstr "Kartojimo režimas"
 
-#: src/libvlc-module.c:333
+#: src/libvlc-module.c:335
 msgid "Select the replay gain mode"
 msgstr "Pasirinkite kartojimo veikseną"
 
-#: src/libvlc-module.c:335
+#: src/libvlc-module.c:337
 msgid "Replay preamp"
 msgstr "Kartoti pradinį stiprintuvą"
 
-#: src/libvlc-module.c:337
+#: src/libvlc-module.c:339
 msgid ""
 "This allows you to change the default target level (89 dB) for stream with "
 "replay gain information"
@@ -1720,42 +1720,42 @@ msgstr ""
 "Leidžia keisti numatytąjį paskirties lygį (89 dB) srautams su kartojimo "
 "informacija"
 
-#: src/libvlc-module.c:340
+#: src/libvlc-module.c:342
 msgid "Default replay gain"
 msgstr "Numatytasis kartojimo režimas"
 
-#: src/libvlc-module.c:342
+#: src/libvlc-module.c:344
 msgid "This is the gain used for stream without replay gain information"
 msgstr "Tai kartojimo režimas, naudojamas srautams be kartojimo informacijos"
 
-#: src/libvlc-module.c:344
+#: src/libvlc-module.c:346
 msgid "Peak protection"
 msgstr "Piko vengimas"
 
-#: src/libvlc-module.c:346
+#: src/libvlc-module.c:348
 msgid "Protect against sound clipping"
 msgstr "Apsaugoti nuo garso trūkinėjimo"
 
-#: src/libvlc-module.c:349
+#: src/libvlc-module.c:351
 msgid "Enable time streching audio"
 msgstr "Įgalinti tono pastovumą keičiant tempą"
 
-#: src/libvlc-module.c:351
+#: src/libvlc-module.c:353
 msgid ""
-"This allows to play audio at lower or higher speed withoutaffecting the "
+"This allows to play audio at lower or higher speed without affecting the "
 "audio pitch"
 msgstr ""
 " Leidžia groti garsus mažesniu ar didesniu greičiu, tačiau išlaikant "
 "originalų garso toną."
 
-#: src/libvlc-module.c:358 src/libvlc-module.c:590
+#: src/libvlc-module.c:360 src/libvlc-module.c:592
 #: modules/access/dshow/dshow.cpp:82 modules/access/dshow/dshow.cpp:84
 #: modules/codec/avcodec/avcodec.c:71 modules/codec/kate.c:204
 #: modules/gui/qt4/components/interface_widgets.cpp:255
 msgid "None"
 msgstr "Nieko"
 
-#: src/libvlc-module.c:366
+#: src/libvlc-module.c:368
 msgid ""
 "These options allow you to modify the behavior of the video output "
 "subsystem. You can for example enable video filters (deinterlacing, image "
@@ -1768,11 +1768,11 @@ msgstr ""
 "Čia šiuos filtrus įgalinkite, o juos derinkite skiltyje „vaizdo filtrai“. "
 "Taip pat galite nustatyti daugybę kitų vaizdo parinkčių."
 
-#: src/libvlc-module.c:372
+#: src/libvlc-module.c:374
 msgid "Video output module"
 msgstr "Vaizdo išvesties modulis"
 
-#: src/libvlc-module.c:374
+#: src/libvlc-module.c:376
 msgid ""
 "This is the the video output method used by VLC. The default behavior is to "
 "automatically select the best method available."
@@ -1780,12 +1780,12 @@ msgstr ""
 "Tai VLC naudojamas vaizdo išvesties būdas. Numatytuoju atveju automatiškai "
 "pasirenkamas geriausias galimas būdas."
 
-#: src/libvlc-module.c:377 modules/gui/qt4/ui/sprefs_video.h:279
+#: src/libvlc-module.c:379 modules/gui/qt4/ui/sprefs_video.h:279
 #: modules/stream_out/display.c:43
 msgid "Enable video"
 msgstr "Įgalinti vaizdą"
 
-#: src/libvlc-module.c:379
+#: src/libvlc-module.c:381
 msgid ""
 "You can completely disable the video output. The video decoding stage will "
 "not take place, thus saving some processing power."
@@ -1793,13 +1793,13 @@ msgstr ""
 "Galite visiškai atsisakyti vaizdo išvesties. Vaizdo iškodavimo etapo "
 "nebebus, taigi tausojami sistemos ištekliai."
 
-#: src/libvlc-module.c:382 modules/codec/fake.c:59
+#: src/libvlc-module.c:384 modules/codec/fake.c:59
 #: modules/stream_out/mosaic_bridge.c:140 modules/stream_out/transcode.c:77
 #: modules/visualization/visual/visual.c:46
 msgid "Video width"
 msgstr "Vaizdo plotis"
 
-#: src/libvlc-module.c:384
+#: src/libvlc-module.c:386
 msgid ""
 "You can enforce the video width. By default (-1) VLC will adapt to the video "
 "characteristics."
@@ -1807,13 +1807,13 @@ msgstr ""
 "Galite nustatyti priverstinai naudojamą vaizdo plotį. Numatytuoju atveju (-"
 "1) VLC prisitaikys prie vaizdo savybių."
 
-#: src/libvlc-module.c:387 modules/codec/fake.c:62
+#: src/libvlc-module.c:389 modules/codec/fake.c:62
 #: modules/stream_out/mosaic_bridge.c:143 modules/stream_out/transcode.c:80
 #: modules/visualization/visual/visual.c:50
 msgid "Video height"
 msgstr "Vaizdo aukštis"
 
-#: src/libvlc-module.c:389
+#: src/libvlc-module.c:391
 msgid ""
 "You can enforce the video height. By default (-1) VLC will adapt to the "
 "video characteristics."
@@ -1821,11 +1821,11 @@ msgstr ""
 "Galite nustatyti priverstinai naudojamą vaizdo aukštį. Numatytuoju atveju (-"
 "1) VLC prisitaikys prie vaizdo savybių."
 
-#: src/libvlc-module.c:392
+#: src/libvlc-module.c:394
 msgid "Video X coordinate"
 msgstr "Vaizdo X koordinatė"
 
-#: src/libvlc-module.c:394
+#: src/libvlc-module.c:396
 msgid ""
 "You can enforce the position of the top left corner of the video window (X "
 "coordinate)."
@@ -1833,11 +1833,11 @@ msgstr ""
 "Jūs galite privertinai nurodyti viršutinį kairį vaizdo lango kampą (X "
 "koordinatė)."
 
-#: src/libvlc-module.c:397
+#: src/libvlc-module.c:399
 msgid "Video Y coordinate"
 msgstr "Vaizdo Y koordinatė"
 
-#: src/libvlc-module.c:399
+#: src/libvlc-module.c:401
 msgid ""
 "You can enforce the position of the top left corner of the video window (Y "
 "coordinate)."
@@ -1845,11 +1845,11 @@ msgstr ""
 "Jūs galite privertinai nurodyti viršutinį kairį vaizdo lango kampą (Y "
 "koordinatė)."
 
-#: src/libvlc-module.c:402
+#: src/libvlc-module.c:404
 msgid "Video title"
 msgstr "Vaizdo pavadinimas"
 
-#: src/libvlc-module.c:404
+#: src/libvlc-module.c:406
 msgid ""
 "Custom title for the video window (in case the video is not embedded in the "
 "interface)."
@@ -1857,11 +1857,11 @@ msgstr ""
 "Pasirinktinis vaizdo lango pavadinimas (tuo atveju, kai vaizdas nėra rodomas "
 "pagrindiniame lange)."
 
-#: src/libvlc-module.c:407
+#: src/libvlc-module.c:409
 msgid "Video alignment"
 msgstr "Vaizdo lygiuotė"
 
-#: src/libvlc-module.c:409
+#: src/libvlc-module.c:411
 msgid ""
 "Enforce the alignment of the video in its window. By default (0) it will be "
 "centered (0=center, 1=left, 2=right, 4=top, 8=bottom, you can also use "
@@ -1872,7 +1872,7 @@ msgstr ""
 "pat galite naudoti šių verčių kombinacijas, pvz., 6=4+2 reiškia viršutinį "
 "dešinį kampą)."
 
-#: src/libvlc-module.c:414 src/libvlc-module.c:463
+#: src/libvlc-module.c:416 src/libvlc-module.c:465
 #: modules/audio_filter/channel_mixer/mono.c:96 modules/codec/dvbsub.c:75
 #: modules/codec/subtitles/subsdec.c:187 modules/codec/zvbi.c:79
 #: modules/gui/fbosd.c:162 modules/video_filter/logo.c:99
@@ -1881,7 +1881,7 @@ msgstr ""
 msgid "Center"
 msgstr "Centrinė"
 
-#: src/libvlc-module.c:414 src/libvlc-module.c:463 modules/codec/dvbsub.c:75
+#: src/libvlc-module.c:416 src/libvlc-module.c:465 modules/codec/dvbsub.c:75
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:162
 #: modules/gui/qt4/ui/video_effects.h:883
 #: modules/gui/qt4/ui/video_effects.h:939
@@ -1891,7 +1891,7 @@ msgstr "Centrinė"
 msgid "Top"
 msgstr "Viršuje"
 
-#: src/libvlc-module.c:414 src/libvlc-module.c:463 modules/codec/dvbsub.c:75
+#: src/libvlc-module.c:416 src/libvlc-module.c:465 modules/codec/dvbsub.c:75
 #: modules/codec/zvbi.c:79 modules/gui/fbosd.c:162
 #: modules/gui/qt4/ui/video_effects.h:889 modules/video_filter/logo.c:99
 #: modules/video_filter/marq.c:138 modules/video_filter/mosaic.c:172
@@ -1899,7 +1899,7 @@ msgstr "Viršuje"
 msgid "Bottom"
 msgstr "Apačioje"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:464 modules/codec/dvbsub.c:76
+#: src/libvlc-module.c:417 src/libvlc-module.c:466 modules/codec/dvbsub.c:76
 #: modules/codec/zvbi.c:80 modules/gui/fbosd.c:163
 #: modules/video_filter/logo.c:100 modules/video_filter/marq.c:139
 #: modules/video_filter/mosaic.c:173 modules/video_filter/osdmenu.c:86
@@ -1907,7 +1907,7 @@ msgstr "Apačioje"
 msgid "Top-Left"
 msgstr "Kairys viršutinis kampas"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:464 modules/codec/dvbsub.c:76
+#: src/libvlc-module.c:417 src/libvlc-module.c:466 modules/codec/dvbsub.c:76
 #: modules/codec/zvbi.c:80 modules/gui/fbosd.c:163
 #: modules/video_filter/logo.c:100 modules/video_filter/marq.c:139
 #: modules/video_filter/mosaic.c:173 modules/video_filter/osdmenu.c:86
@@ -1915,7 +1915,7 @@ msgstr "Kairys viršutinis kampas"
 msgid "Top-Right"
 msgstr "Dešinys viršutinis kampas"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:464 modules/codec/dvbsub.c:76
+#: src/libvlc-module.c:417 src/libvlc-module.c:466 modules/codec/dvbsub.c:76
 #: modules/codec/zvbi.c:80 modules/gui/fbosd.c:163
 #: modules/video_filter/logo.c:100 modules/video_filter/marq.c:139
 #: modules/video_filter/mosaic.c:173 modules/video_filter/osdmenu.c:86
@@ -1923,7 +1923,7 @@ msgstr "Dešinys viršutinis kampas"
 msgid "Bottom-Left"
 msgstr "Apatinis kairys kampas"
 
-#: src/libvlc-module.c:415 src/libvlc-module.c:464 modules/codec/dvbsub.c:76
+#: src/libvlc-module.c:417 src/libvlc-module.c:466 modules/codec/dvbsub.c:76
 #: modules/codec/zvbi.c:80 modules/gui/fbosd.c:163
 #: modules/video_filter/logo.c:100 modules/video_filter/marq.c:139
 #: modules/video_filter/mosaic.c:173 modules/video_filter/osdmenu.c:86
@@ -1931,19 +1931,19 @@ msgstr "Apatinis kairys kampas"
 msgid "Bottom-Right"
 msgstr "Apatinis dešinys kampas"
 
-#: src/libvlc-module.c:417
+#: src/libvlc-module.c:419
 msgid "Zoom video"
 msgstr "Vaizdo didinimas"
 
-#: src/libvlc-module.c:419
+#: src/libvlc-module.c:421
 msgid "You can zoom the video by the specified factor."
 msgstr "Jūs galite padidinti arba sumažinti rodomą vaizdą."
 
-#: src/libvlc-module.c:421
+#: src/libvlc-module.c:423
 msgid "Grayscale video output"
 msgstr "Nespalvoto vaizdo išvestis"
 
-#: src/libvlc-module.c:423
+#: src/libvlc-module.c:425
 msgid ""
 "Output video in grayscale. As the color information aren't decoded, this can "
 "save some processing power."
@@ -1951,27 +1951,27 @@ msgstr ""
 "Pilkų atspalvių išvestis. Kadangi spalvinė informacija nedekoduojama, tai "
 "gali tausoti jūsų sistemos išteklius."
 
-#: src/libvlc-module.c:426
+#: src/libvlc-module.c:428
 msgid "Embedded video"
 msgstr "Vaizdas pagrindiniame lange"
 
-#: src/libvlc-module.c:428
+#: src/libvlc-module.c:430
 msgid "Embed the video output in the main interface."
 msgstr "Vaizdą rodyti pagrindiniame grotuvo lange."
 
-#: src/libvlc-module.c:430
+#: src/libvlc-module.c:432
 msgid "Fullscreen video output"
 msgstr "Išvedimas visame ekrane"
 
-#: src/libvlc-module.c:432
+#: src/libvlc-module.c:434
 msgid "Start video in fullscreen mode"
 msgstr "Vaizdą rodyti per visą ekraną"
 
-#: src/libvlc-module.c:434
+#: src/libvlc-module.c:436
 msgid "Overlay video output"
 msgstr "Vaizdo perdangos išvestis"
 
-#: src/libvlc-module.c:436
+#: src/libvlc-module.c:438
 msgid ""
 "Overlay is the hardware acceleration capability of your video card (ability "
 "to render video directly). VLC will try to use it by default."
@@ -1980,46 +1980,46 @@ msgstr ""
 "(gebėjimas tiesiogiai atvaizduoti vaizdą). VLC mėgins naudoti pagal "
 "nutylėjimą."
 
-#: src/libvlc-module.c:439 src/video_output/vout_intf.c:421
+#: src/libvlc-module.c:441 src/video_output/vout_intf.c:421
 #: modules/gui/macosx/simple_prefs.m:288 modules/gui/qt4/ui/sprefs_video.h:283
 msgid "Always on top"
 msgstr "Visada viršuje"
 
-#: src/libvlc-module.c:441
+#: src/libvlc-module.c:443
 msgid "Always place the video window on top of other windows."
 msgstr "Visuomet vaizdo langą rodyti virš kitų langų."
 
-#: src/libvlc-module.c:443 modules/gui/qt4/ui/sprefs_subtitles.h:210
+#: src/libvlc-module.c:445 modules/gui/qt4/ui/sprefs_subtitles.h:210
 msgid "Show media title on video"
 msgstr "Rodyti pavadinimą ekrane"
 
-#: src/libvlc-module.c:445
+#: src/libvlc-module.c:447
 msgid "Display the title of the video on top of the movie."
 msgstr "Rodyti virš vaizdo įrašo rodyti jo pavadinimą."
 
-#: src/libvlc-module.c:447
+#: src/libvlc-module.c:449
 msgid "Show video title for x milliseconds"
 msgstr "Vaizdo įrašo pavadinimą rodyti x milisekundžių"
 
-#: src/libvlc-module.c:449
+#: src/libvlc-module.c:451
 msgid "Show the video title for n milliseconds, default is 5000 ms (5 sec.)"
 msgstr ""
 "Vaizdo įrašo pavadinimą rodyti n milisekundžių; numatytoji vertė 5000 ms (5 "
 "s)"
 
-#: src/libvlc-module.c:451
+#: src/libvlc-module.c:453
 msgid "Position of video title"
 msgstr "Vaizdo pavadinimo padėtis"
 
-#: src/libvlc-module.c:453
+#: src/libvlc-module.c:455
 msgid "Place on video where to display the title (default bottom center)."
 msgstr "Vaizdo įrašo vieta, kurioje rodomas pavadinimas (numatyta centre)."
 
-#: src/libvlc-module.c:455
+#: src/libvlc-module.c:457
 msgid "Hide cursor and fullscreen controller after x milliseconds"
 msgstr "Slėpti pelės žymeklį ir viso ekrano valdykę po x sekundžių"
 
-#: src/libvlc-module.c:458
+#: src/libvlc-module.c:460
 msgid ""
 "Hide mouse cursor and fullscreen controller after n milliseconds, default is "
 "3000 ms (3 sec.)"
@@ -2027,19 +2027,19 @@ msgstr ""
 "Slėpti pelės žymeklį ir viso ekrano valdykę po n sekundžių, numatytoji "
 "reikšmė 3000 ms (3 s)"
 
-#: src/libvlc-module.c:466
+#: src/libvlc-module.c:468
 msgid "Disable screensaver"
 msgstr "Išjungti ekrano užsklandą"
 
-#: src/libvlc-module.c:467
+#: src/libvlc-module.c:469
 msgid "Disable the screensaver during video playback."
 msgstr "Nepaleisti ekrano užsklandos rodant vaizdą"
 
-#: src/libvlc-module.c:469
+#: src/libvlc-module.c:471
 msgid "Inhibit the power management daemon during playback"
 msgstr "Uždrausti energijos valdymo tarnybos veiklą grojimo metu"
 
-#: src/libvlc-module.c:470
+#: src/libvlc-module.c:472
 msgid ""
 "Inhibits the power management daemon during any playback, to avoid the "
 "computer being suspended because of inactivity."
@@ -2047,11 +2047,11 @@ msgstr ""
 "Uždraudžia energijos valdymo tarnybos veiklą bet kokio grojimo metu. "
 "Naudojama siekiant išvengti kompiuterio darbo sustabdymo dėl neveiklumo."
 
-#: src/libvlc-module.c:473 modules/gui/qt4/ui/sprefs_video.h:281
+#: src/libvlc-module.c:475 modules/gui/qt4/ui/sprefs_video.h:281
 msgid "Window decorations"
 msgstr "Langų apipavidalinimai"
 
-#: src/libvlc-module.c:475
+#: src/libvlc-module.c:477
 msgid ""
 "VLC can avoid creating window caption, frames, etc... around the video, "
 "giving a \"minimal\" window."
@@ -2059,69 +2059,69 @@ msgstr ""
 "VLC gali vengti kurti langų antraštes, rėmelius ir kt. aplink rodomą vaizdą, "
 "rodant „minimalų“ langą."
 
-#: src/libvlc-module.c:478
+#: src/libvlc-module.c:480
 msgid "Video output filter module"
 msgstr "Vaizdo išvesties filtro moduliai"
 
-#: src/libvlc-module.c:480
+#: src/libvlc-module.c:482
 msgid "This adds video output filters like clone or wall"
 msgstr "Pridedami vaizdo išvesties filtrai, pvz., klonavimas ar siena"
 
-#: src/libvlc-module.c:482
+#: src/libvlc-module.c:484
 msgid "Video filter module"
 msgstr "Vaizdo filtro moduliai"
 
-#: src/libvlc-module.c:484
+#: src/libvlc-module.c:486
 msgid ""
 "This adds post-processing filters to enhance the picture quality, for "
-"instance deinterlacing, or distortthe video."
+"instance deinterlacing, or distort the video."
 msgstr ""
 "Galutinio apdorojimo filtrai naudojami vaizdo kokybės padidinimui, o "
 "perėjimo šalinimas – sumažinimui."
 
-#: src/libvlc-module.c:488
+#: src/libvlc-module.c:490
 msgid "Video snapshot directory (or filename)"
 msgstr "Vaizdo nuotraukų aplankas (arba rinkmenos pavadinimas)"
 
-#: src/libvlc-module.c:490
+#: src/libvlc-module.c:492
 msgid "Directory where the video snapshots will be stored."
 msgstr "Aplankas, kuriame bus talpinamos rodomo vaizdo nuotraukos."
 
-#: src/libvlc-module.c:492 src/libvlc-module.c:494
+#: src/libvlc-module.c:494 src/libvlc-module.c:496
 msgid "Video snapshot file prefix"
 msgstr "Nuotraukų rinkmenų pavadinimų pradžia"
 
-#: src/libvlc-module.c:496
+#: src/libvlc-module.c:498
 msgid "Video snapshot format"
 msgstr "Vaizdo nuotraukų formatas"
 
-#: src/libvlc-module.c:498
+#: src/libvlc-module.c:500
 msgid "Image format which will be used to store the video snapshots"
 msgstr "Paveikslėlių formatas, naudojamas įrašant rodomo vaizdo nuotraukas"
 
-#: src/libvlc-module.c:500
+#: src/libvlc-module.c:502
 msgid "Display video snapshot preview"
 msgstr "Parodyti vaizdo nuotraukas"
 
-#: src/libvlc-module.c:502
+#: src/libvlc-module.c:504
 msgid "Display the snapshot preview in the screen's top-left corner."
 msgstr ""
 "Trumpam paroryti padarytą ekrano nuotrauką viršutiniame kairiajame ekrano "
 "kampe."
 
-#: src/libvlc-module.c:504
+#: src/libvlc-module.c:506
 msgid "Use sequential numbers instead of timestamps"
 msgstr "Naudoti nuoseklų numeravimą vietoj laiko žymių"
 
-#: src/libvlc-module.c:506
+#: src/libvlc-module.c:508
 msgid "Use sequential numbers instead of timestamps for snapshot numbering"
 msgstr "Naudoti nuoseklų numeravimą vietoj laiko žymių numeruojant nuotraukas"
 
-#: src/libvlc-module.c:508
+#: src/libvlc-module.c:510
 msgid "Video snapshot width"
 msgstr "Vaizdo nuotraukos plotis"
 
-#: src/libvlc-module.c:510
+#: src/libvlc-module.c:512
 msgid ""
 "You can enforce the width of the video snapshot. By default it will keep the "
 "original width (-1). Using 0 will scale the width to keep the aspect ratio."
@@ -2130,11 +2130,11 @@ msgstr ""
 "atveju bus išlaikomas tikrasis vaizdo plotis (-1). Naudojant 0, plotis bus "
 "priderinamas prie nurodyto vaizdo dydžio santykio."
 
-#: src/libvlc-module.c:514
+#: src/libvlc-module.c:516
 msgid "Video snapshot height"
 msgstr "Vaizdo nuotraukos aukštis"
 
-#: src/libvlc-module.c:516
+#: src/libvlc-module.c:518
 msgid ""
 "You can enforce the height of the video snapshot. By default it will keep "
 "the original height (-1). Using 0 will scale the height to keep the aspect "
@@ -2144,11 +2144,11 @@ msgstr ""
 "atveju bus išlaikomas tikrasis vaizdo aukštis (-1). Naudojant 0, aukštis bus "
 "priderinamas prie nurodyto vaizdo dydžio santykio."
 
-#: src/libvlc-module.c:520
+#: src/libvlc-module.c:522
 msgid "Video cropping"
 msgstr "Vaizdo apkirpimas"
 
-#: src/libvlc-module.c:522
+#: src/libvlc-module.c:524
 msgid ""
 "This forces the cropping of the source video. Accepted formats are x:y (4:3, "
 "16:9, etc.) expressing the global image aspect."
@@ -2156,11 +2156,11 @@ msgstr ""
 "Šaltinio vaizdas priverstinai apkerpamas. Galimi formatai yra x:y (4:3; 16:9 "
 "ir kiti), reiškiantys bendrą paveikslėlio pločio ir ilgio santykį."
 
-#: src/libvlc-module.c:526
+#: src/libvlc-module.c:528
 msgid "Source aspect ratio"
 msgstr "Šaltinio vaizdo santykis"
 
-#: src/libvlc-module.c:528
+#: src/libvlc-module.c:530
 msgid ""
 "This forces the source aspect ratio. For instance, some DVDs claim to be "
 "16:9 while they are actually 4:3. This can also be used as a hint for VLC "
@@ -2175,21 +2175,21 @@ msgstr ""
 "paveikslėlio kraštinių santykį, arba dešimtainis skaičius (1.25, 1.3333 ir "
 "kiti), reiškiantys pikselių kvadratiškumą."
 
-#: src/libvlc-module.c:535
+#: src/libvlc-module.c:537
 msgid "Video Auto Scaling"
 msgstr "Automatinis vaizdo dydžio priderinimas"
 
-#: src/libvlc-module.c:537
+#: src/libvlc-module.c:539
 msgid "Let the video scale to fit a given window or fullscreen."
 msgstr ""
 "Leisti vaizdui automatiškai prisiderinti prie lango arba prie viso ekrano "
 "režimo."
 
-#: src/libvlc-module.c:539
+#: src/libvlc-module.c:541
 msgid "Video scaling factor"
 msgstr "Vaizdo dydžio priderinimo lygis"
 
-#: src/libvlc-module.c:541
+#: src/libvlc-module.c:543
 msgid ""
 "Scaling factor used when Auto Scaling is disabled.\n"
 "Default value is 1.0 (original video size)."
@@ -2197,11 +2197,11 @@ msgstr ""
 "Šis dydžio priderinimo lygis naudojamas uždraudus automatinį priderinimą.\n"
 "Numatytoji vertė yra 1.0 (tikrasis vaizdo dydis)."
 
-#: src/libvlc-module.c:544
+#: src/libvlc-module.c:546
 msgid "Custom crop ratios list"
 msgstr "Pasirinktinis apkirpimo santykių sąrašas"
 
-#: src/libvlc-module.c:546
+#: src/libvlc-module.c:548
 msgid ""
 "Comma seperated list of crop ratios which will be added in the interface's "
 "crop ratios list."
@@ -2209,11 +2209,11 @@ msgstr ""
 "Kableliais atskirtų vaizdo (pločio ir aukščio) santykių sąrašas, kuris bus "
 "įdedamas į sąsajos apkirpimo santykių sąrašą."
 
-#: src/libvlc-module.c:549
+#: src/libvlc-module.c:551
 msgid "Custom aspect ratios list"
 msgstr "Pasirinktų santykių sąrašas"
 
-#: src/libvlc-module.c:551
+#: src/libvlc-module.c:553
 msgid ""
 "Comma seperated list of aspect ratios which will be added in the interface's "
 "aspect ratio list."
@@ -2221,11 +2221,11 @@ msgstr ""
 "Kakleliais atskirtų vaizdo (pločio ir aukščio) santykių sąrašas, kuris bus "
 "įdedamas į sąsajos santykių sąrašą."
 
-#: src/libvlc-module.c:554
+#: src/libvlc-module.c:556
 msgid "Fix HDTV height"
 msgstr "Nurodyti HDTV aukštį"
 
-#: src/libvlc-module.c:556
+#: src/libvlc-module.c:558
 msgid ""
 "This allows proper handling of HDTV-1080 video format even if broken encoder "
 "incorrectly sets height to 1088 lines. You should only disable this option "
@@ -2236,11 +2236,11 @@ msgstr ""
 "parinktį, jei jūsų vaizdas nėra standartinis formatas, reikalaujantis 1088 "
 "linijų."
 
-#: src/libvlc-module.c:561
+#: src/libvlc-module.c:563
 msgid "Monitor pixel aspect ratio"
 msgstr "Vaizduoklio taškų santykis"
 
-#: src/libvlc-module.c:563
+#: src/libvlc-module.c:565
 msgid ""
 "This forces the monitor aspect ratio. Most monitors have square pixels "
 "(1:1). If you have a 16:9 screen, you might need to change this to 4:3 in "
@@ -2250,12 +2250,12 @@ msgstr ""
 "turi kvadratinius taškus (pikselius). Jei turite 16:9 ekraną, jums "
 "tikriausiai reikėtų nustatyti 4:3 tam, kad būtų išlaikytas santykis."
 
-#: src/libvlc-module.c:567 modules/gui/macosx/simple_prefs.m:290
+#: src/libvlc-module.c:569 modules/gui/macosx/simple_prefs.m:290
 #: modules/gui/qt4/ui/sprefs_video.h:286
 msgid "Skip frames"
 msgstr "Praleisti kadrus"
 
-#: src/libvlc-module.c:569
+#: src/libvlc-module.c:571
 msgid ""
 "Enables framedropping on MPEG2 stream. Framedropping occurs when your "
 "computer is not powerful enough"
@@ -2263,11 +2263,11 @@ msgstr ""
 "MPEG2 srautams įgalinti kadrų praleidinėjimą. Kadrai praleidžiami trūkstant "
 "jūsų kompiuterio išteklių."
 
-#: src/libvlc-module.c:572
+#: src/libvlc-module.c:574
 msgid "Drop late frames"
 msgstr "Rodyti vėluojančius kadrus"
 
-#: src/libvlc-module.c:574
+#: src/libvlc-module.c:576
 msgid ""
 "This drops frames that are late (arrive to the video output after their "
 "intended display date)."
@@ -2275,11 +2275,11 @@ msgstr ""
 "Leidžia rodyti vėluojančius kadrus (vaizdo išvestį pasiekia praėjus jų "
 "rodymo laikui)."
 
-#: src/libvlc-module.c:577
+#: src/libvlc-module.c:579
 msgid "Quiet synchro"
 msgstr "Tylus sinchronizavimas"
 
-#: src/libvlc-module.c:579
+#: src/libvlc-module.c:581
 msgid ""
 "This avoids flooding the message log with debug output from the video output "
 "synchronization mechanism."
@@ -2287,11 +2287,11 @@ msgstr ""
 "Tai leidžia išvengti detalių pranešimų žurnale derinimo išvestyje iš vaizdo "
 "išvesties sinchronizavimo mechanizmo."
 
-#: src/libvlc-module.c:582
+#: src/libvlc-module.c:584
 msgid "key and mouse event handling at vout level."
 msgstr "klavišų paspaudimų ir pelės elgesio apdorojimas „vout“ lygiu."
 
-#: src/libvlc-module.c:584
+#: src/libvlc-module.c:586
 msgid ""
 "This parameter accepts values : 1 (full event handling support), 2 (event "
 "handling only for fullscreen) or 3 (No event handling). Full event handling "
@@ -2301,15 +2301,15 @@ msgstr ""
 "viso ekrano režimu) ar 3 (jokio įvykių apdorojimo). Numatytuoju atveju yra "
 "visiškas palaikymas."
 
-#: src/libvlc-module.c:590
+#: src/libvlc-module.c:592
 msgid "Full support"
 msgstr "Visiškas palaikymas"
 
-#: src/libvlc-module.c:590
+#: src/libvlc-module.c:592
 msgid "Fullscreen-only"
 msgstr "Tik visame ekrane"
 
-#: src/libvlc-module.c:598
+#: src/libvlc-module.c:600
 msgid ""
 "These options allow you to modify the behavior of the input subsystem, such "
 "as the DVD or VCD device, the network interface settings or the subtitle "
@@ -2318,11 +2318,11 @@ msgstr ""
 "Šios parinktys leidžia keisti įvesties sistemų, pavyzdžiui, DVD ar VCD "
 "įrenginių, elgseną, tinklo sąsajos nuostatas ar subtitrų kanalą."
 
-#: src/libvlc-module.c:602
+#: src/libvlc-module.c:604
 msgid "Clock reference average counter"
 msgstr "Laiko nuorodų vidutinis skaitiklis"
 
-#: src/libvlc-module.c:604
+#: src/libvlc-module.c:606
 msgid ""
 "When using the PVR input (or a very irregular source), you should set this "
 "to 10000."
@@ -2330,11 +2330,11 @@ msgstr ""
 "Kai naudojama PVR įvestis (ar labai nereguliarus šaltinis), turėtumėte čia "
 "nurodyti vertę 10000."
 
-#: src/libvlc-module.c:607
+#: src/libvlc-module.c:609
 msgid "Clock synchronisation"
 msgstr "Laikrodžio sinchronizavimas"
 
-#: src/libvlc-module.c:609
+#: src/libvlc-module.c:611
 msgid ""
 "It is possible to disable the input clock synchronisation for real-time "
 "sources. Use this if you experience jerky playback of network streams."
@@ -2342,11 +2342,11 @@ msgstr ""
 "Galima uždrausti įvesties laikrodžio sinchronizavimą realaus laiko "
 "šaltiniams. Naudokite, jei jaučiate trūkčiojantį tinklo srautų grojimą."
 
-#: src/libvlc-module.c:613 modules/control/netsync.c:77
+#: src/libvlc-module.c:615 modules/control/netsync.c:77
 msgid "Network synchronisation"
 msgstr "Tinklo sinchronizavimas"
 
-#: src/libvlc-module.c:614
+#: src/libvlc-module.c:616
 msgid ""
 "This allows you to remotely synchronise clocks for server and client. The "
 "detailed settings are available in Advanced / Network Sync."
@@ -2355,7 +2355,7 @@ msgstr ""
 "klientui. Išsamūs nustatymai prieinami Sudėtingesni / Tinklo "
 "sinchronizavimas."
 
-#: src/libvlc-module.c:620 src/video_output/vout_intf.c:183
+#: src/libvlc-module.c:622 src/video_output/vout_intf.c:183
 #: src/video_output/vout_intf.c:201 modules/access/dshow/dshow.cpp:82
 #: modules/access/dshow/dshow.cpp:84 modules/access/dshow/dshow.cpp:87
 #: modules/access/dshow/dshow.cpp:93 modules/access/v4l2.c:220
@@ -2369,25 +2369,25 @@ msgstr ""
 msgid "Default"
 msgstr "Numatytasis"
 
-#: src/libvlc-module.c:620 modules/gui/macosx/equalizer.m:157
+#: src/libvlc-module.c:622 modules/gui/macosx/equalizer.m:157
 #: modules/gui/macosx/extended.m:96 modules/gui/macosx/wizard.m:354
 #: modules/gui/qt4/ui/equalizer.h:127 modules/gui/qt4/ui/vlm.h:290
 msgid "Enable"
 msgstr "Įgalinti"
 
-#: src/libvlc-module.c:622 modules/misc/notify/growl_udp.c:66
+#: src/libvlc-module.c:624 modules/misc/notify/growl_udp.c:66
 msgid "UDP port"
 msgstr "UDP prievadas"
 
-#: src/libvlc-module.c:624
+#: src/libvlc-module.c:626
 msgid "This is the default port used for UDP streams. Default is 1234."
 msgstr "Pagrindinis UDP srauto naudojamas prievadas. Numatytasis 1234."
 
-#: src/libvlc-module.c:626
+#: src/libvlc-module.c:628
 msgid "MTU of the network interface"
 msgstr "Tinklo sąsajos MTU"
 
-#: src/libvlc-module.c:628
+#: src/libvlc-module.c:630
 msgid ""
 "This is the maximum application-layer packet size that can be transmitted "
 "over the network (in bytes)."
@@ -2395,11 +2395,11 @@ msgstr ""
 "Tai didžiausias programos lygio paketo dydis, kuris perduotas tinkle "
 "(baitais)."
 
-#: src/libvlc-module.c:633 modules/stream_out/rtp.c:119
+#: src/libvlc-module.c:635 modules/stream_out/rtp.c:119
 msgid "Hop limit (TTL)"
 msgstr "Šuolio riba (TTL)"
 
-#: src/libvlc-module.c:635 modules/stream_out/rtp.c:121
+#: src/libvlc-module.c:637 modules/stream_out/rtp.c:121
 msgid ""
 "This is the hop limit (also known as \"Time-To-Live\" or TTL) of the "
 "multicast packets sent by the stream output (-1 = use operating system built-"
@@ -2409,21 +2409,21 @@ msgstr ""
 "šuolio limitas, riba (žinoma kaip „Time-To-Live“ arba TTL) (-1 = naudoti "
 "numatytąjį operacinėje sistemoje)."
 
-#: src/libvlc-module.c:639
+#: src/libvlc-module.c:641
 msgid "Multicast output interface"
 msgstr "Daugiaabonentinio transliavimo išvesties sąsaja"
 
-#: src/libvlc-module.c:641
+#: src/libvlc-module.c:643
 msgid "Default multicast interface. This overrides the routing table."
 msgstr ""
 "Numatytoji daugiaabonentinio transliavimo sąsaja. Ji nepaiso maršrutų "
 "lentelės."
 
-#: src/libvlc-module.c:643
+#: src/libvlc-module.c:645
 msgid "IPv4 multicast output interface address"
 msgstr "IPv4 daugiaabonentinio transliavimo sąsajos adresas"
 
-#: src/libvlc-module.c:645
+#: src/libvlc-module.c:647
 msgid ""
 "IPv4 adress for the default multicast interface. This overrides the routing "
 "table."
@@ -2431,50 +2431,50 @@ msgstr ""
 "IPv4 adresas numatytajai daugiaabonentinio transliavimo sąsajai. Nepaisoma "
 "maršrutų lentelės."
 
-#: src/libvlc-module.c:648
+#: src/libvlc-module.c:650
 msgid "DiffServ Code Point"
 msgstr ""
 
-#: src/libvlc-module.c:649
+#: src/libvlc-module.c:651
 msgid ""
 "Differentiated Services Code Point for outgoing UDP streams (or IPv4 Type Of "
 "Service, or IPv6 Traffic Class). This is used for network Quality of Service."
 msgstr ""
 
-#: src/libvlc-module.c:655
+#: src/libvlc-module.c:657
 msgid ""
 "Choose the program to select by giving its Service ID. Only use this option "
 "if you want to read a multi-program stream (like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:661
+#: src/libvlc-module.c:663
 msgid ""
 "Choose the programs to select by giving a comma-separated list of Service "
 "IDs (SIDs). Only use this option if you want to read a multi-program stream "
 "(like DVB streams for example)."
 msgstr ""
 
-#: src/libvlc-module.c:667 modules/gui/qt4/ui/open_disk.h:305
+#: src/libvlc-module.c:669 modules/gui/qt4/ui/open_disk.h:305
 msgid "Audio track"
 msgstr "Garso takelis"
 
-#: src/libvlc-module.c:669
+#: src/libvlc-module.c:671
 msgid "Stream number of the audio track to use (from 0 to n)."
 msgstr "Srauto garso takelio numeris (nuo 0 iki n)."
 
-#: src/libvlc-module.c:672 modules/gui/qt4/ui/open_disk.h:306
+#: src/libvlc-module.c:674 modules/gui/qt4/ui/open_disk.h:306
 msgid "Subtitles track"
 msgstr "Subtitrų takelis"
 
-#: src/libvlc-module.c:674
+#: src/libvlc-module.c:676
 msgid "Stream number of the subtitle track to use (from 0 to n)."
 msgstr "Srauto subtitrų takelio numeris (nuo 0 iki n)."
 
-#: src/libvlc-module.c:677
+#: src/libvlc-module.c:679
 msgid "Audio language"
 msgstr "Garso kalba"
 
-#: src/libvlc-module.c:679
+#: src/libvlc-module.c:681
 msgid ""
 "Language of the audio track you want to use (comma separated, two or three "
 "letter country code)."
@@ -2482,11 +2482,11 @@ msgstr ""
 "Norima naudoti garso takelio kalba (kelias kalbas atskirkite kableliais, "
 "dviejų arba trijų raidžių šalies kodas)."
 
-#: src/libvlc-module.c:682
+#: src/libvlc-module.c:684
 msgid "Subtitle language"
 msgstr "Subtitrų kalba"
 
-#: src/libvlc-module.c:684
+#: src/libvlc-module.c:686
 msgid ""
 "Language of the subtitle track you want to use (comma separated, two or "
 "three letters country code)."
@@ -2494,67 +2494,67 @@ msgstr ""
 "Norima naudoti subtitrų takelio kalba (kelias kalbas atskirkite kableliais, "
 "dviejų arba trijų raidžių šalies kodas)."
 
-#: src/libvlc-module.c:688
+#: src/libvlc-module.c:690
 msgid "Audio track ID"
 msgstr "Garso takelio ID"
 
-#: src/libvlc-module.c:690
+#: src/libvlc-module.c:692
 msgid "Stream ID of the audio track to use."
 msgstr "Naudotino srauto garso takelio ID."
 
-#: src/libvlc-module.c:692
+#: src/libvlc-module.c:694
 msgid "Subtitles track ID"
 msgstr "Subtitrų takelio ID"
 
-#: src/libvlc-module.c:694
+#: src/libvlc-module.c:696
 msgid "Stream ID of the subtitle track to use."
 msgstr "Naudotino srauto subtitrų takelio ID."
 
-#: src/libvlc-module.c:696
+#: src/libvlc-module.c:698
 msgid "Input repetitions"
 msgstr "Įvesties kartojimai"
 
-#: src/libvlc-module.c:698
+#: src/libvlc-module.c:700
 msgid "Number of time the same input will be repeated"
 msgstr "Skaičius kartų, kiek bus kartojama ta pati įvestis"
 
-#: src/libvlc-module.c:700
+#: src/libvlc-module.c:702
 msgid "Start time"
 msgstr "Pradžios laikas"
 
-#: src/libvlc-module.c:702
+#: src/libvlc-module.c:704
 msgid "The stream will start at this position (in seconds)."
 msgstr "Srautas bus pradedamas nuo šios padėties (sekundėmis)."
 
-#: src/libvlc-module.c:704
+#: src/libvlc-module.c:706
 msgid "Stop time"
 msgstr "Pabaigos laikas"
 
-#: src/libvlc-module.c:706
+#: src/libvlc-module.c:708
 msgid "The stream will stop at this position (in seconds)."
 msgstr "Šioje padėtyje srautas bus stabdomas (sekundėmis)."
 
-#: src/libvlc-module.c:708
+#: src/libvlc-module.c:710
 msgid "Run time"
 msgstr "Trukmė"
 
-#: src/libvlc-module.c:710
+#: src/libvlc-module.c:712
 msgid "The stream will run this duration (in seconds)."
 msgstr "Srautas trunks nurodytą laiką (sekundėmis)."
 
-#: src/libvlc-module.c:712
+#: src/libvlc-module.c:714
 msgid "Fast seek"
 msgstr "Greitas persukimas"
 
-#: src/libvlc-module.c:714
+#: src/libvlc-module.c:716
 msgid "Favor speed over precision while seeking"
 msgstr "Pirmenybė greičiui o ne tikslumui persukimo metu"
 
-#: src/libvlc-module.c:716
+#: src/libvlc-module.c:718
 msgid "Input list"
 msgstr "Įvesties sąrašas"
 
-#: src/libvlc-module.c:718
+#: src/libvlc-module.c:720
 msgid ""
 "You can give a comma-separated list of inputs that will be concatenated "
 "together after the normal one."
@@ -2562,11 +2562,11 @@ msgstr ""
 "Galite nurodyti įvestis (jas atskirdami kableliais), kurios bus sujungtos "
 "kartu į vieną."
 
-#: src/libvlc-module.c:721
+#: src/libvlc-module.c:723
 msgid "Input slave (experimental)"
 msgstr "Pagalbinė įvestis (eksperimentinė)"
 
-#: src/libvlc-module.c:723
+#: src/libvlc-module.c:725
 msgid ""
 "This allows you to play from several inputs at the same time. This feature "
 "is experimental, not all formats are supported. Use a '#' separated list of "
@@ -2576,11 +2576,11 @@ msgstr ""
 "eksperimentinė, ne visi formatai palaikomi. Naudokite „#“ simboliu atskirtų "
 "įvesčių sąrašą."
 
-#: src/libvlc-module.c:727
+#: src/libvlc-module.c:729
 msgid "Bookmarks list for a stream"
 msgstr "Žymelių sąrašas srautui"
 
-#: src/libvlc-module.c:729
+#: src/libvlc-module.c:731
 msgid ""
 "You can manually give a list of bookmarks for a stream in the form "
 "\"{name=bookmark-name,time=optional-time-offset,bytes=optional-byte-offset},"
@@ -2590,45 +2590,45 @@ msgstr ""
 "„{name=žymelės-pavadinimas,time=pasirinktas-laiko-dydis,bytes=pasirinktas-"
 "baitų-dydis},{...}“"
 
-#: src/libvlc-module.c:733 modules/gui/qt4/ui/sprefs_input.h:238
+#: src/libvlc-module.c:735 modules/gui/qt4/ui/sprefs_input.h:238
 msgid "Record directory or filename"
 msgstr "Aplankas ar rinkmena įrašams saugoti"
 
-#: src/libvlc-module.c:735
+#: src/libvlc-module.c:737
 msgid "Directory or filename where the records will be stored"
 msgstr "Aplankas arba pavadinimas rinkmenos, kur bus saugomi įrašai"
 
-#: src/libvlc-module.c:737
+#: src/libvlc-module.c:739
 msgid "Prefer native stream recording"
 msgstr "Pirmenybė savajam srauto įrašymui"
 
-#: src/libvlc-module.c:739
+#: src/libvlc-module.c:741
 msgid ""
-"When possible, the input stream will be recorded instead of usingthe stream "
+"When possible, the input stream will be recorded instead of using the stream "
 "output module"
 msgstr ""
 "Kai tik įmanoma, įvesties srautas bus įrašinėjamas, o ne naudojamas srauto "
 "išvesties modulis"
 
-#: src/libvlc-module.c:742
+#: src/libvlc-module.c:744
 msgid "Timeshift directory"
 msgstr ""
 
-#: src/libvlc-module.c:744
+#: src/libvlc-module.c:746
 msgid "Directory used to store the timeshift temporary files."
 msgstr ""
 
-#: src/libvlc-module.c:746
+#: src/libvlc-module.c:748
 msgid "Timeshift granularity"
 msgstr ""
 
-#: src/libvlc-module.c:748
+#: src/libvlc-module.c:750
 msgid ""
 "This is the maximum size in bytes of the temporary files that will be used "
 "to store the timeshifted streams."
 msgstr ""
 
-#: src/libvlc-module.c:753
+#: src/libvlc-module.c:755
 msgid ""
 "These options allow you to modify the behavior of the subpictures subsystem. "
 "You can for example enable subpictures filters (logo, etc.). Enable these "
@@ -2636,11 +2636,11 @@ msgid ""
 "section. You can also set many miscellaneous subpictures options."
 msgstr ""
 
-#: src/libvlc-module.c:759 modules/gui/qt4/ui/sprefs_subtitles.h:221
+#: src/libvlc-module.c:761 modules/gui/qt4/ui/sprefs_subtitles.h:221
 msgid "Force subtitle position"
 msgstr "Subtitrų padėtis"
 
-#: src/libvlc-module.c:761
+#: src/libvlc-module.c:763
 msgid ""
 "You can use this option to place the subtitles under the movie, instead of "
 "over the movie. Try several positions."
@@ -2648,22 +2648,22 @@ msgstr ""
 "Galite naudoti šią parinktį norėdami nurodyti sustitrų buvimo vietą po "
 "vaizdu, o ne virš vaizdo. Išmėginkite keletą padėčių."
 
-#: src/libvlc-module.c:764
+#: src/libvlc-module.c:766
 msgid "Enable sub-pictures"
 msgstr ""
 
-#: src/libvlc-module.c:766
+#: src/libvlc-module.c:768
 msgid "You can completely disable the sub-picture processing."
 msgstr ""
 
-#: src/libvlc-module.c:768 src/libvlc-module.c:1684
+#: src/libvlc-module.c:770 src/libvlc-module.c:1686
 #: modules/gui/macosx/simple_prefs.m:279
 #: modules/gui/qt4/ui/sprefs_subtitles.h:208
 #: modules/stream_out/transcode.c:228
 msgid "On Screen Display"
 msgstr "Ekrane Rodomi Pranešimai"
 
-#: src/libvlc-module.c:770
+#: src/libvlc-module.c:772
 msgid ""
 "VLC can display messages on the video. This is called OSD (On Screen "
 "Display)."
@@ -2671,11 +2671,11 @@ msgstr ""
 "VLC gali rodyti pranešimus tiesiai ant rodomo vaizdo ekrane. Tai vadinama "
 "ERP (Ekrane Rodomais Pranešimais)"
 
-#: src/libvlc-module.c:773
+#: src/libvlc-module.c:775
 msgid "Text rendering module"
 msgstr "Teksto vaizdavimo modulis"
 
-#: src/libvlc-module.c:775
+#: src/libvlc-module.c:777
 msgid ""
 "VLC normally uses Freetype for rendering, but this allows you to use svg for "
 "instance."
@@ -2683,21 +2683,21 @@ msgstr ""
 "VLC paprastai vaizdavimui naudoja Freetype, bet ši nuostata leidžia jums "
 "vietoj to naudoti SVG."
 
-#: src/libvlc-module.c:777
+#: src/libvlc-module.c:779
 msgid "Subpictures filter module"
 msgstr ""
 
-#: src/libvlc-module.c:779
+#: src/libvlc-module.c:781
 msgid ""
 "This adds so-called \"subpicture filters\". These filters overlay some "
 "images or text over the video (like a logo, arbitrary text, ...)."
 msgstr ""
 
-#: src/libvlc-module.c:782
+#: src/libvlc-module.c:784
 msgid "Autodetect subtitle files"
 msgstr "Automatiškai rasti subtitrus"
 
-#: src/libvlc-module.c:784
+#: src/libvlc-module.c:786
 msgid ""
 "Automatically detect a subtitle file, if no subtitle filename is specified "
 "(based on the filename of the movie)."
@@ -2705,11 +2705,11 @@ msgstr ""
 "Automatiškai aptikti subtitrų rinkmeną, jei nenurodyta konkreti rinkmena "
 "(ieškoma pagal rodomo vaizdo rinkmenos pavadinimą)."
 
-#: src/libvlc-module.c:787
+#: src/libvlc-module.c:789
 msgid "Subtitle autodetection fuzziness"
 msgstr "Subtitrų aptikimo tikslumas"
 
-#: src/libvlc-module.c:789
+#: src/libvlc-module.c:791
 msgid ""
 "This determines how fuzzy subtitle and movie filename matching will be. "
 "Options are:\n"
@@ -2727,11 +2727,11 @@ msgstr ""
 "3 = subtitrų rinkmena atitinka vaizdo pavadinimą su papildomais ženklais\n"
 "4 = subtitrų rinkmena ir vaizdo pavadinimas visiškai sutampa"
 
-#: src/libvlc-module.c:797
+#: src/libvlc-module.c:799
 msgid "Subtitle autodetection paths"
 msgstr "Keliai automatiniam subtitrų aptikimui"
 
-#: src/libvlc-module.c:799
+#: src/libvlc-module.c:801
 msgid ""
 "Look for a subtitle file in those paths too, if your subtitle file was not "
 "found in the current directory."
@@ -2739,11 +2739,11 @@ msgstr ""
 "Taip pat ieškoti subtitrų rinkmenos šiuose aplankuose, jei jūsų subtitrų "
 "rinkmena nerandama naudojamame aplanke."
 
-#: src/libvlc-module.c:802
+#: src/libvlc-module.c:804
 msgid "Use subtitle file"
 msgstr "Naudoti subtitrų rinkmeną"
 
-#: src/libvlc-module.c:804
+#: src/libvlc-module.c:806
 msgid ""
 "Load this subtitle file. To be used when autodetect cannot detect your "
 "subtitle file."
@@ -2751,11 +2751,11 @@ msgstr ""
 "Įkelti nurodytą subtitrų rinkmeną. Naudokite, kai automatiškai nepavyksta "
 "aptikti subtitrų rinkmenos."
 
-#: src/libvlc-module.c:807
+#: src/libvlc-module.c:809
 msgid "DVD device"
 msgstr "DVD įrenginys"
 
-#: src/libvlc-module.c:810
+#: src/libvlc-module.c:812
 msgid ""
 "This is the default DVD drive (or file) to use. Don't forget the colon after "
 "the drive letter (eg. D:)"
@@ -2763,15 +2763,15 @@ msgstr ""
 "Numatytoji naudoti DVD disko vieta (ar rinkmena). Nepamirškite dvitaškio po "
 "disko raidės (pvz., D:)"
 
-#: src/libvlc-module.c:814
+#: src/libvlc-module.c:816
 msgid "This is the default DVD device to use."
 msgstr "Numatytasis naudoti DVD įrenginys."
 
-#: src/libvlc-module.c:817
+#: src/libvlc-module.c:819
 msgid "VCD device"
 msgstr "VCD įrenginys"
 
-#: src/libvlc-module.c:820
+#: src/libvlc-module.c:822
 msgid ""
 "This is the default VCD device to use. If you don't specify anything, we'll "
 "scan for a suitable CD-ROM device."
@@ -2779,15 +2779,15 @@ msgstr ""
 "Numatytasis naudojimui VCD įrenginys. Jei nieko nenurodoma, VLC skenuoja "
 "tinkamus CD-ROM įrenginius."
 
-#: src/libvlc-module.c:824
+#: src/libvlc-module.c:826
 msgid "This is the default VCD device to use."
 msgstr "Numatytasis naudoti VCD įrenginys."
 
-#: src/libvlc-module.c:827
+#: src/libvlc-module.c:829
 msgid "Audio CD device"
 msgstr "Garso CD įrenginys"
 
-#: src/libvlc-module.c:830
+#: src/libvlc-module.c:832
 msgid ""
 "This is the default Audio CD device to use. If you don't specify anything, "
 "we'll scan for a suitable CD-ROM device."
@@ -2795,39 +2795,39 @@ msgstr ""
 "Tai numatytasis naudojimui garso CD įrenginys. Jei nenurodoma, VLC skenuoja "
 "tinkamus CD-ROM įrenginius."
 
-#: src/libvlc-module.c:834
+#: src/libvlc-module.c:836
 msgid "This is the default Audio CD device to use."
 msgstr "Tai numatytasis naudojimui garso CD įrenginys."
 
-#: src/libvlc-module.c:837
+#: src/libvlc-module.c:839
 msgid "Force IPv6"
 msgstr "Priverstinai naudoti IPv6"
 
-#: src/libvlc-module.c:839
+#: src/libvlc-module.c:841
 msgid "IPv6 will be used by default for all connections."
 msgstr "IPv6 bus naudojamas visiems ryšiams numatytuoju atveju."
 
-#: src/libvlc-module.c:841
+#: src/libvlc-module.c:843
 msgid "Force IPv4"
 msgstr "Priverstinai naudoti IPv4"
 
-#: src/libvlc-module.c:843
+#: src/libvlc-module.c:845
 msgid "IPv4 will be used by default for all connections."
 msgstr "IPv4 bus naudojamas visiems ryšiams numatytuoju atveju."
 
-#: src/libvlc-module.c:845
+#: src/libvlc-module.c:847
 msgid "TCP connection timeout"
 msgstr "TCP ryšio delsa"
 
-#: src/libvlc-module.c:847
+#: src/libvlc-module.c:849
 msgid "Default TCP connection timeout (in milliseconds). "
 msgstr "Numatytoji TCP ryšio delsa (milisekundėmis). "
 
-#: src/libvlc-module.c:849
+#: src/libvlc-module.c:851
 msgid "SOCKS server"
 msgstr "SOCKS serveris"
 
-#: src/libvlc-module.c:851
+#: src/libvlc-module.c:853
 msgid ""
 "SOCKS proxy server to use. This must be of the form address:port. It will be "
 "used for all TCP connections"
@@ -2835,88 +2835,88 @@ msgstr ""
 "Naudotinas SOCKS įgaliotasis serveris. Turi būti formatu „adresas:"
 "prievadas“. Bus naudojamas visiems TCP ryšiams."
 
-#: src/libvlc-module.c:854
+#: src/libvlc-module.c:856
 msgid "SOCKS user name"
 msgstr "SOCKS vartotojo vardas"
 
-#: src/libvlc-module.c:856
+#: src/libvlc-module.c:858
 msgid "User name to be used for connection to the SOCKS proxy."
 msgstr ""
 "Vartotojo vardas, naudojamas jungiantis prie SOCKS įgaliotojo serverio."
 
-#: src/libvlc-module.c:858
+#: src/libvlc-module.c:860
 msgid "SOCKS password"
 msgstr "SOCKS slaptažodis"
 
-#: src/libvlc-module.c:860
+#: src/libvlc-module.c:862
 msgid "Password to be used for connection to the SOCKS proxy."
 msgstr "Slaptažodis, naudojamas jungiantis prie SOCKS įgaliotojo serverio"
 
-#: src/libvlc-module.c:862
+#: src/libvlc-module.c:864
 msgid "Title metadata"
 msgstr "Pavadinimo metaduomenys"
 
-#: src/libvlc-module.c:864
+#: src/libvlc-module.c:866
 msgid "Allows you to specify a \"title\" metadata for an input."
 msgstr "Jums leidžia įvestyje nurodyti „pavadinimo“ metaduomenis."
 
-#: src/libvlc-module.c:866
+#: src/libvlc-module.c:868
 msgid "Author metadata"
 msgstr "Autoriaus metaduomenys"
 
-#: src/libvlc-module.c:868
+#: src/libvlc-module.c:870
 msgid "Allows you to specify an \"author\" metadata for an input."
 msgstr "Jums leidžia įvestyje nurodyti „autoriaus“ metaduomenis."
 
-#: src/libvlc-module.c:870
+#: src/libvlc-module.c:872
 msgid "Artist metadata"
 msgstr "Atlikėjo metaduomenys"
 
-#: src/libvlc-module.c:872
+#: src/libvlc-module.c:874
 msgid "Allows you to specify an \"artist\" metadata for an input."
 msgstr "Jums leidžia įvestyje nurodyti „atlikėjo“ metaduomenis."
 
-#: src/libvlc-module.c:874
+#: src/libvlc-module.c:876
 msgid "Genre metadata"
 msgstr "Stiliaus metaduomenys"
 
-#: src/libvlc-module.c:876
+#: src/libvlc-module.c:878
 msgid "Allows you to specify a \"genre\" metadata for an input."
 msgstr "Jums leidžia įvestyje nurodyti „stiliaus“ metaduomenis."
 
-#: src/libvlc-module.c:878
+#: src/libvlc-module.c:880
 msgid "Copyright metadata"
 msgstr "Autorinių teisių metaduomenys"
 
-#: src/libvlc-module.c:880
+#: src/libvlc-module.c:882
 msgid "Allows you to specify a \"copyright\" metadata for an input."
 msgstr "Jums leidžia įvestyje nurodyti „autorinių teisių“ metaduomenis."
 
-#: src/libvlc-module.c:882
+#: src/libvlc-module.c:884
 msgid "Description metadata"
 msgstr "Aprašymo metaduomenys"
 
-#: src/libvlc-module.c:884
+#: src/libvlc-module.c:886
 msgid "Allows you to specify a \"description\" metadata for an input."
 msgstr "Jums leidžia įvestyje nurodyti „aprašymo“ metaduomenis."
 
-#: src/libvlc-module.c:886
+#: src/libvlc-module.c:888
 msgid "Date metadata"
 msgstr "Datos metaduomenys"
 
-#: src/libvlc-module.c:888
+#: src/libvlc-module.c:890
 msgid "Allows you to specify a \"date\" metadata for an input."
 msgstr "Jums leidžia įvestyje nurodyti „datos“ metaduomenis."
 
-#: src/libvlc-module.c:890
+#: src/libvlc-module.c:892
 msgid "URL metadata"
 msgstr "URL metaduomenys"
 
-#: src/libvlc-module.c:892
+#: src/libvlc-module.c:894
 msgid "Allows you to specify a \"url\" metadata for an input."
 msgstr "Jums leidžia įvestyje nurodyti „URL“ metaduomenis."
 
-#: src/libvlc-module.c:896
+#: src/libvlc-module.c:898
 msgid ""
 "This option can be used to alter the way VLC selects its codecs "
 "(decompression methods). Only advanced users should alter this option as it "
@@ -2926,11 +2926,11 @@ msgstr ""
 "kodavimo priemones (išskleidimo būdus). Tik patyrę vartotojai turėtų keisti "
 "šią parinktį, kadangi ji gali sugadinti visų srutų grojimą."
 
-#: src/libvlc-module.c:900
+#: src/libvlc-module.c:902
 msgid "Preferred decoders list"
 msgstr "Pageidaujamų iškodavimo priemonių sąrašas"
 
-#: src/libvlc-module.c:902
+#: src/libvlc-module.c:904
 msgid ""
 "List of codecs that VLC will use in priority. For instance, 'dummy,a52' will "
 "try the dummy and a52 codecs before trying the other ones. Only advanced "
@@ -2941,21 +2941,21 @@ msgstr ""
 "turėtų keisti tik patyrę naudotojai, kadangi ji gali sugadinti visų jūsų "
 "srautų grojimą."
 
-#: src/libvlc-module.c:907
+#: src/libvlc-module.c:909
 msgid "Preferred encoders list"
 msgstr "Pageidaujamų įkodavimo priemonių sąrašas"
 
-#: src/libvlc-module.c:909
+#: src/libvlc-module.c:911
 msgid ""
 "This allows you to select a list of encoders that VLC will use in priority."
 msgstr ""
 "Galima sudaryti sąrašą įkodavimo priemonių, kurioms VLC teiks pirmenybę."
 
-#: src/libvlc-module.c:912
+#: src/libvlc-module.c:914
 msgid "Prefer system plugins over VLC"
 msgstr "Vietoj VLC įskiepių naudoti sistemos įskiepius"
 
-#: src/libvlc-module.c:914
+#: src/libvlc-module.c:916
 msgid ""
 "Indicates whether VLC will prefer native plugins installed on system over "
 "VLC owns plugins whenever a choice is available."
@@ -2963,7 +2963,7 @@ msgstr ""
 "Nurodo, ar VLC pirmenybę teiks sistemoje įdiegtiems įskiepiams, o ne VLC "
 "nuosaviems įskiepiams kai tik bus galima tarp jų rinktis."
 
-#: src/libvlc-module.c:923
+#: src/libvlc-module.c:925
 msgid ""
 "These options allow you to set default global options for the stream output "
 "subsystem."
@@ -2971,41 +2971,41 @@ msgstr ""
 "Šios parinktys leidžia nurodyti pagrindines bendras parinktis srauto "
 "išvedimo posistemei."
 
-#: src/libvlc-module.c:926
+#: src/libvlc-module.c:928
 msgid "Default stream output chain"
 msgstr "Numatytasis srauto išvesties kanalas"
 
-#: src/libvlc-module.c:928
+#: src/libvlc-module.c:930
 msgid ""
 "You can enter here a default stream output chain. Refer to the documentation "
-"to learn how to build such chains.Warning: this chain will be enabled for "
+"to learn how to build such chains. Warning: this chain will be enabled for "
 "all streams."
 msgstr ""
 "Čia galite įvesti pagrindinį srauto išvesties kanalą. Norėdami išmokti kurti "
 "tokius kanalus, skaitykite dokumentaciją. Įspėjimas: šis kanalas bus "
 "įgalintas visiems srautams."
 
-#: src/libvlc-module.c:932
+#: src/libvlc-module.c:934
 msgid "Enable streaming of all ES"
 msgstr "Įgalinti transliavimą iš visų ES"
 
-#: src/libvlc-module.c:934
+#: src/libvlc-module.c:936
 msgid "Stream all elementary streams (video, audio and subtitles)"
 msgstr "Transliuoti visus elementariuosius srautus (vaizdo, garso ir subtitrų)"
 
-#: src/libvlc-module.c:936
+#: src/libvlc-module.c:938
 msgid "Display while streaming"
 msgstr "Rodyti transliuojant"
 
-#: src/libvlc-module.c:938
+#: src/libvlc-module.c:940
 msgid "Play locally the stream while streaming it."
 msgstr "Srautą groti vietoje jo transliavimo metu."
 
-#: src/libvlc-module.c:940
+#: src/libvlc-module.c:942
 msgid "Enable video stream output"
 msgstr "Įgalinti vaizdo srauto išvestį"
 
-#: src/libvlc-module.c:942
+#: src/libvlc-module.c:944
 msgid ""
 "Choose whether the video stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3013,11 +3013,11 @@ msgstr ""
 "Pasirinkite, ar vaizdo srautas turėtų būti nukreiptas į srauto išvesties "
 "įrenginį, kai šis yra įjungtas."
 
-#: src/libvlc-module.c:945
+#: src/libvlc-module.c:947
 msgid "Enable audio stream output"
 msgstr "Įgalinti garso srauto išvestį"
 
-#: src/libvlc-module.c:947
+#: src/libvlc-module.c:949
 msgid ""
 "Choose whether the audio stream should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3025,11 +3025,11 @@ msgstr ""
 "Pasirinkite, ar garso srautas turėtų būti nukreiptas į srauto išvesties "
 "įrenginį, kai šis yra įjungtas."
 
-#: src/libvlc-module.c:950
+#: src/libvlc-module.c:952
 msgid "Enable SPU stream output"
 msgstr "Įgalinti SPU srauto išvestį"
 
-#: src/libvlc-module.c:952
+#: src/libvlc-module.c:954
 msgid ""
 "Choose whether the SPU streams should be redirected to the stream output "
 "facility when this last one is enabled."
@@ -3037,11 +3037,11 @@ msgstr ""
 "Pasirinkite, ar SPU srautai turėtų būti nukreipti į srauto išvesties "
 "įrenginį, kai šis yra įjungtas."
 
-#: src/libvlc-module.c:955 modules/gui/qt4/ui/sout.h:348
+#: src/libvlc-module.c:957 modules/gui/qt4/ui/sout.h:348
 msgid "Keep stream output open"
 msgstr "Išlaikyti atvertą srauto išvestį"
 
-#: src/libvlc-module.c:957
+#: src/libvlc-module.c:959
 msgid ""
 "This allows you to keep an unique stream output instance across multiple "
 "playlist item (automatically insert the gather stream output if not "
@@ -3050,11 +3050,11 @@ msgstr ""
 "Leidžia išlaikyti unikalią srauto išvestį daugialypiams grojaraščio įrašams "
 "(nenurodžius automatiškai renkamasi srauto išvestis)"
 
-#: src/libvlc-module.c:961
+#: src/libvlc-module.c:963
 msgid "Stream output muxer caching (ms)"
 msgstr "Srauto išvesties tankintuvo podėlis (ms)"
 
-#: src/libvlc-module.c:963
+#: src/libvlc-module.c:965
 msgid ""
 "This allow you to configure the initial caching amount for stream output  "
 "muxer. This value should be set in milliseconds."
@@ -3062,55 +3062,55 @@ msgstr ""
 "Leidžia keisti pradinio podėlio dydį srauto išvesties tankinimui. Ši vertė "
 "turi būti nurodyta milisekundėmis."
 
-#: src/libvlc-module.c:966
+#: src/libvlc-module.c:968
 msgid "Preferred packetizer list"
 msgstr "Pageidaujamų įpaketintuvų sąrašas"
 
-#: src/libvlc-module.c:968
+#: src/libvlc-module.c:970
 msgid ""
 "This allows you to select the order in which VLC will choose its packetizers."
 msgstr "Leidžia pasirinkti tvarką, kuria VLC rinksis savo įpaketintuvus."
 
-#: src/libvlc-module.c:971
+#: src/libvlc-module.c:973
 msgid "Mux module"
 msgstr "Tankintuvo modulis"
 
-#: src/libvlc-module.c:973
+#: src/libvlc-module.c:975
 msgid "This is a legacy entry to let you configure mux modules"
 msgstr ""
 "Tai pasenęs įrašas, leidžiantis konfigūruoti tankinimo modulius "
 "(multiplekserius)"
 
-#: src/libvlc-module.c:975
+#: src/libvlc-module.c:977
 msgid "Access output module"
 msgstr "Priėjimo išvesties moduliai"
 
-#: src/libvlc-module.c:977
+#: src/libvlc-module.c:979
 msgid "This is a legacy entry to let you configure access output modules"
 msgstr ""
 "Tai pasenęs įrašas, leidžiantis konfigūruoti išvesties prieigos modulius"
 
-#: src/libvlc-module.c:979
+#: src/libvlc-module.c:981
 msgid "Control SAP flow"
 msgstr "Valdyti SAP srautą"
 
-#: src/libvlc-module.c:981
+#: src/libvlc-module.c:983
 msgid ""
 "If this option is enabled, the flow on the SAP multicast address will be "
 "controlled. This is needed if you want to make announcements on the MBone."
 msgstr ""
 
-#: src/libvlc-module.c:985
+#: src/libvlc-module.c:987
 msgid "SAP announcement interval"
 msgstr "SAP skelbimų intervalas"
 
-#: src/libvlc-module.c:987
+#: src/libvlc-module.c:989
 msgid ""
 "When the SAP flow control is disabled, this lets you set the fixed interval "
 "between SAP announcements."
 msgstr ""
 
-#: src/libvlc-module.c:996
+#: src/libvlc-module.c:998
 msgid ""
 "These options allow you to enable special CPU optimizations. You should "
 "always leave all these enabled."
@@ -3118,21 +3118,23 @@ msgstr ""
 "Šios parinktys leidžia jums įgalinti specifinį AK optimizavimą. Visuomet "
 "turėtumėte jas palikti įjungtas."
 
-#: src/libvlc-module.c:999
+#: src/libvlc-module.c:1001
 msgid "Enable FPU support"
 msgstr "Įgalinti FPU palaikymą"
 
-#: src/libvlc-module.c:1001
+#: src/libvlc-module.c:1003
 msgid ""
 "If your processor has a floating point calculation unit, VLC can take "
 "advantage of it."
 msgstr ""
+"Jei procesorius turi matematinį koprocesorių, VLC gali išnaudoti jo "
+"galimybes."
 
-#: src/libvlc-module.c:1004
+#: src/libvlc-module.c:1006
 msgid "Enable CPU MMX support"
 msgstr "Įgalinti AK „MMX“ palaikymą"
 
-#: src/libvlc-module.c:1006
+#: src/libvlc-module.c:1008
 msgid ""
 "If your processor supports the MMX instructions set, VLC can take advantage "
 "of them."
@@ -3140,11 +3142,11 @@ msgstr ""
 "Jei procesorius palaiko „MMX“ instrukcijų rinkinį, VLC gali išnaudoti šį "
 "privalumą."
 
-#: src/libvlc-module.c:1009
+#: src/libvlc-module.c:1011
 msgid "Enable CPU 3D Now! support"
 msgstr "Įgalinti AK „3D Now!“ palaikymą"
 
-#: src/libvlc-module.c:1011
+#: src/libvlc-module.c:1013
 msgid ""
 "If your processor supports the 3D Now! instructions set, VLC can take "
 "advantage of them."
@@ -3152,11 +3154,11 @@ msgstr ""
 "Jei procesorius palaiko „3D Now“ instrukcijų rinkinį, VLC gali išnaudoti šį "
 "privalumą."
 
-#: src/libvlc-module.c:1014
+#: src/libvlc-module.c:1016
 msgid "Enable CPU MMX EXT support"
 msgstr "Įgalinti AK „MMX EXT“ palaikymą"
 
-#: src/libvlc-module.c:1016
+#: src/libvlc-module.c:1018
 msgid ""
 "If your processor supports the MMX EXT instructions set, VLC can take "
 "advantage of them."
@@ -3164,11 +3166,11 @@ msgstr ""
 "Jei procesorius palaiko „MMX EXT“ instrukcijų rinkinį, VLC gali išnaudoti šį "
 "privalumą."
 
-#: src/libvlc-module.c:1019
+#: src/libvlc-module.c:1021
 msgid "Enable CPU SSE support"
 msgstr "Įgalinti AK „SSE“ palaikymą"
 
-#: src/libvlc-module.c:1021
+#: src/libvlc-module.c:1023
 msgid ""
 "If your processor supports the SSE instructions set, VLC can take advantage "
 "of them."
@@ -3176,11 +3178,11 @@ msgstr ""
 "Jei procesorius palaiko „SSE“ instrukcijų rinkinį, VLC gali išnaudoti šį "
 "privalumą."
 
-#: src/libvlc-module.c:1024
+#: src/libvlc-module.c:1026
 msgid "Enable CPU SSE2 support"
 msgstr "Įgalinti AK „SSE2“ palaikymą"
 
-#: src/libvlc-module.c:1026
+#: src/libvlc-module.c:1028
 msgid ""
 "If your processor supports the SSE2 instructions set, VLC can take advantage "
 "of them."
@@ -3188,11 +3190,11 @@ msgstr ""
 "Jei procesorius palaiko „SSE2“ instrukcijų rinkinį, VLC gali išnaudoti šį "
 "privalumą."
 
-#: src/libvlc-module.c:1029
+#: src/libvlc-module.c:1031
 msgid "Enable CPU AltiVec support"
 msgstr "Įgalinti AK „AltiVec“ palaikymą"
 
-#: src/libvlc-module.c:1031
+#: src/libvlc-module.c:1033
 msgid ""
 "If your processor supports the AltiVec instructions set, VLC can take "
 "advantage of them."
@@ -3200,7 +3202,7 @@ msgstr ""
 "Jei procesorius palaiko „AltiVec“ instrukcijų rinkinį, VLC gali išnaudoti šį "
 "privalumą."
 
-#: src/libvlc-module.c:1036
+#: src/libvlc-module.c:1038
 msgid ""
 "These options allow you to select default modules. Leave these alone unless "
 "you really know what you are doing."
@@ -3208,11 +3210,11 @@ msgstr ""
 "Šios parinktys leidžia pasirinkti numatytuosius modulius. Nelieskite jų, "
 "nebent jūs iš tiesų žinote, ką darote."
 
-#: src/libvlc-module.c:1039
+#: src/libvlc-module.c:1041
 msgid "Memory copy module"
 msgstr "Atimties kopijavimo modulis"
 
-#: src/libvlc-module.c:1041
+#: src/libvlc-module.c:1043
 msgid ""
 "You can select which memory copy module you want to use. By default VLC will "
 "select the fastest one supported by your hardware."
@@ -3221,11 +3223,11 @@ msgstr ""
 "atveju VLC pasirinks greičiausią iš tų, kuriuos palaiko jūsų aparatinė "
 "įranga."
 
-#: src/libvlc-module.c:1044
+#: src/libvlc-module.c:1046
 msgid "Access module"
 msgstr "Priėjimo modulis"
 
-#: src/libvlc-module.c:1046
+#: src/libvlc-module.c:1048
 msgid ""
 "This allows you to force an access module. You can use it if the correct "
 "access is not automatically detected. You should not set this as a global "
@@ -3236,19 +3238,19 @@ msgstr ""
 "atveju neturėtumėte naudoti šios parinkties, nebent jūs iš tiesų žinote, ką "
 "darote."
 
-#: src/libvlc-module.c:1050
+#: src/libvlc-module.c:1052
 msgid "Stream filter module"
 msgstr "Srauto filtro modulis"
 
-#: src/libvlc-module.c:1052
+#: src/libvlc-module.c:1054
 msgid "Stream filters are used to modify the stream that is being read. "
 msgstr "Srauto filtrai naudojami srauto modifikavimui jo nuskaitymo metu."
 
-#: src/libvlc-module.c:1054
-msgid "Demux module"
-msgstr "Demultiplekserio modulis"
-
 #: src/libvlc-module.c:1056
+msgid "Demux module"
+msgstr "Išpynimo metodo modulis"
+
+#: src/libvlc-module.c:1058
 msgid ""
 "Demultiplexers are used to separate the \"elementary\" streams (like audio "
 "and video streams). You can use it if the correct demuxer is not "
@@ -3256,49 +3258,53 @@ msgid ""
 "you really know what you are doing."
 msgstr ""
 "Įtaisas, sudėtinį srautą (signalą), kurį iš atskirų srautų sukūrė "
-"multiplekseris, išskaidantis į pirminį pavidalą – atskirus "
+"tankintuvas (multiplekseris), išskaidantis į pirminį pavidalą – atskirus "
 "„elementariuosius“ srautus (signalus) (tokius kaip garso ir vaizdo srautus). "
-"Jį galite naudoti, jei tinkamas demultiplekseris neaptinkamas automatiškai. "
-"Bendruoju atveju neturėtumėte naudoti šios parinkties, nebent jūs iš tiesų "
-"žinote, ką darote."
+"Jį galite naudoti, jei tinkamas išpynimo metodas (demultiplekseris) "
+"neaptinkamas automatiškai. Bendruoju atveju neturėtumėte naudoti šios "
+"parinkties, nebent jūs iš tiesų žinote, ką darote."
 
-#: src/libvlc-module.c:1061
+#: src/libvlc-module.c:1063
 msgid "Allow real-time priority"
 msgstr "Leisti realaus laiko prioritetą"
 
-#: src/libvlc-module.c:1063
+#: src/libvlc-module.c:1065
 msgid ""
 "Running VLC in real-time priority will allow for much more precise "
 "scheduling and yield better, especially when streaming content. It can "
 "however lock up your whole machine, or make it very very slow. You should "
 "only activate this if you know what you're doing."
 msgstr ""
+"VLC paleidimas realaus laiko prioritetu leis žymiai tiksliau planuoti ir "
+"turėti pasiekti geresnę kokybę, ypač kuomet siunčiamas srautas. Tačiau tada "
+"gali užstrigti visas kompiuteris arba privers jį dirbti žymiai lėčiau. "
+"Aktyvuokite šią funkciją tik tuomet, jei suprantate, ką darote."
 
-#: src/libvlc-module.c:1069
+#: src/libvlc-module.c:1071
 msgid "Adjust VLC priority"
 msgstr "Nustatyti VLC prioritetą"
 
-#: src/libvlc-module.c:1071
+#: src/libvlc-module.c:1073
 msgid ""
 "This option adds an offset (positive or negative) to VLC default priorities. "
 "You can use it to tune VLC priority against other programs, or against other "
 "VLC instances."
 msgstr ""
 
-#: src/libvlc-module.c:1075
-msgid "(Experimental) Don't do caching at the access level."
-msgstr ""
-
 #: src/libvlc-module.c:1077
+msgid "(Experimental) Don't do caching at the access level."
+msgstr "(Eksperimentinis) Nedėti į podėlį prieigos lygiu."
+
+#: src/libvlc-module.c:1079
 msgid ""
 "This option is useful if you want to lower the latency when reading a stream"
 msgstr "Ši parinktis naudinga, jei norite sumažinti gaišatį skaitant srautą"
 
-#: src/libvlc-module.c:1080
+#: src/libvlc-module.c:1082
 msgid "Modules search path"
 msgstr "Kelias modulių paieškai"
 
-#: src/libvlc-module.c:1082
+#: src/libvlc-module.c:1084
 msgid ""
 "Additional path for VLC to look for its modules. You can add several paths "
 "by concatenating them using \" PATH_SEP \" as separator"
@@ -3306,69 +3312,69 @@ msgstr ""
 "Papildomas kelias, kuriame VLC ieškos savo modulių. Galite pridėti keletą "
 "kelių, tarpusavyje atskirtų „ PATH_SEP “ įrašu."
 
-#: src/libvlc-module.c:1085
+#: src/libvlc-module.c:1087
 msgid "VLM configuration file"
 msgstr "VLM konfigūracijos rinkmena"
 
-#: src/libvlc-module.c:1087
+#: src/libvlc-module.c:1089
 msgid "Read a VLM configuration file as soon as VLM is started."
 msgstr "VLM rinkmena nuskaitoma kaip galima greičiau po VLM paleidimo."
 
-#: src/libvlc-module.c:1089
+#: src/libvlc-module.c:1091
 msgid "Use a plugins cache"
 msgstr "Naudoti įskiepių podėlį"
 
-#: src/libvlc-module.c:1091
+#: src/libvlc-module.c:1093
 msgid "Use a plugins cache which will greatly improve the startup time of VLC."
 msgstr ""
 "Podėlio įskiepio naudojimas žymiai prailgina VLC programos paleidimo laiką."
 
-#: src/libvlc-module.c:1093
+#: src/libvlc-module.c:1095
 msgid "Collect statistics"
 msgstr "Rinkti statistiką"
 
-#: src/libvlc-module.c:1095
+#: src/libvlc-module.c:1097
 msgid "Collect miscellaneous statistics."
 msgstr "Įvairios statistikos rinkimas."
 
-#: src/libvlc-module.c:1097
+#: src/libvlc-module.c:1099
 msgid "Run as daemon process"
 msgstr "Paleisti kaip tarnybos procesą"
 
-#: src/libvlc-module.c:1099
+#: src/libvlc-module.c:1101
 msgid "Runs VLC as a background daemon process."
 msgstr "VLC paleisti kaip fonine veikiantį tarnybinį procesą."
 
-#: src/libvlc-module.c:1101
+#: src/libvlc-module.c:1103
 msgid "Write process id to file"
 msgstr "Rašyti proceso ID į rinkmeną"
 
-#: src/libvlc-module.c:1103
+#: src/libvlc-module.c:1105
 msgid "Writes process id into specified file."
 msgstr "Rašo proceso ID į nurodytą rinkmeną."
 
-#: src/libvlc-module.c:1105
+#: src/libvlc-module.c:1107
 msgid "Log to file"
 msgstr "Pranešimai į rinkmeną"
 
-#: src/libvlc-module.c:1107
+#: src/libvlc-module.c:1109
 msgid "Log all VLC messages to a text file."
 msgstr "Visus VLC pranešimus rašyti į tekstinę rinkmeną."
 
-#: src/libvlc-module.c:1109
+#: src/libvlc-module.c:1111
 msgid "Log to syslog"
 msgstr "Pranešimai į sistemos žurnalą"
 
-#: src/libvlc-module.c:1111
+#: src/libvlc-module.c:1113
 msgid "Log all VLC messages to syslog (UNIX systems)."
 msgstr ""
 "Visus VLC pranešimus rašyti į sistemos žurnalą (syslog; UNIX sistemoms)."
 
-#: src/libvlc-module.c:1113
+#: src/libvlc-module.c:1115
 msgid "Allow only one running instance"
 msgstr "Tik viena programa tuo pačiu metu"
 
-#: src/libvlc-module.c:1116
+#: src/libvlc-module.c:1118
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3382,7 +3388,7 @@ msgstr ""
 "jums dukart spragtelėjus ant rinkmenos naršyklėje. Ši parinktis leis jums "
 "groti rinkmeną su programa iš karto ar patalpinant į eilę."
 
-#: src/libvlc-module.c:1123
+#: src/libvlc-module.c:1125
 msgid ""
 "Allowing only one running instance of VLC can sometimes be useful, for "
 "example if you associated VLC with some media types and you don't want a new "
@@ -3399,29 +3405,29 @@ msgstr ""
 "aktyvios D-Bus sesijos tarnybos ir paleistos VLC, naudojančios D-Bus valdymo "
 "sąsają."
 
-#: src/libvlc-module.c:1132
+#: src/libvlc-module.c:1134
 msgid "VLC is started from file association"
 msgstr "VLC paleista pagal rinkmenų susiejimus"
 
-#: src/libvlc-module.c:1134
+#: src/libvlc-module.c:1136
 msgid "Tell VLC that it is being launched due to a file association in the OS"
 msgstr ""
 "VLC programai nurodyti, kad paleidžiama pagal rinkmenų susiejimus "
 "operacinėje sistemoje."
 
-#: src/libvlc-module.c:1137
+#: src/libvlc-module.c:1139
 msgid "One instance when started from file"
 msgstr "Tik viena programa kai paleista iš rinkmenos"
 
-#: src/libvlc-module.c:1139
+#: src/libvlc-module.c:1141
 msgid "Allow only one running instance when started from file."
 msgstr "Leisti tik vieną veikiančią programą kai paleidžiama iš rinkmenos."
 
-#: src/libvlc-module.c:1141
+#: src/libvlc-module.c:1143
 msgid "Increase the priority of the process"
 msgstr "Padidinti procesų prioritetą"
 
-#: src/libvlc-module.c:1143
+#: src/libvlc-module.c:1145
 msgid ""
 "Increasing the priority of the process will very likely improve your playing "
 "experience as it allows VLC not to be disturbed by other applications that "
@@ -3431,11 +3437,11 @@ msgid ""
 "machine."
 msgstr ""
 
-#: src/libvlc-module.c:1151
+#: src/libvlc-module.c:1153
 msgid "Enqueue items to playlist when in one instance mode"
 msgstr "Kai leidžiama viena programa, naujus įrašus dėti į eilę grojaraštyje"
 
-#: src/libvlc-module.c:1153
+#: src/libvlc-module.c:1155
 msgid ""
 "When using the one instance only option, enqueue items to playlist and keep "
 "playing current item."
@@ -3443,7 +3449,7 @@ msgstr ""
 "Kai naudojama tik vienos leidžiamos programos parinktis, naujus įrašus dėti "
 "į eilę grojaraštyje, nepertraukiant tuo metu atliekamo kūrinio."
 
-#: src/libvlc-module.c:1162
+#: src/libvlc-module.c:1164
 msgid ""
 "These options define the behavior of the playlist. Some of them can be "
 "overridden in the playlist dialog box."
@@ -3451,11 +3457,11 @@ msgstr ""
 "Šios parinktys aprašo grojaraščio elgseną. Kai kurios iš jų gali "
 "būtipakeistos grojaraščio lange."
 
-#: src/libvlc-module.c:1165
+#: src/libvlc-module.c:1167
 msgid "Automatically preparse files"
 msgstr "Automatiškai peržiūrėti rinkmenas"
 
-#: src/libvlc-module.c:1167
+#: src/libvlc-module.c:1169
 msgid ""
 "Automatically preparse files added to the playlist (to retrieve some "
 "metadata)."
@@ -3463,31 +3469,31 @@ msgstr ""
 "Automatiškai peržiūrėti rinkmenas, įkeltas į fonoteką (tam tikrų meta "
 "duomenų gavimui)."
 
-#: src/libvlc-module.c:1170
+#: src/libvlc-module.c:1172
 msgid "Album art policy"
 msgstr "Albumų viršelių atsiuntimas"
 
-#: src/libvlc-module.c:1172
+#: src/libvlc-module.c:1174
 msgid "Choose how album art will be downloaded."
 msgstr "Pasirinkite, kaip albumų viršeliai bus atsiunčiami."
 
-#: src/libvlc-module.c:1178
+#: src/libvlc-module.c:1180
 msgid "Manual download only"
 msgstr "Tik rankiniu būdu"
 
-#: src/libvlc-module.c:1179
+#: src/libvlc-module.c:1181
 msgid "When track starts playing"
 msgstr "Takelio grojimo metu"
 
-#: src/libvlc-module.c:1180
+#: src/libvlc-module.c:1182
 msgid "As soon as track is added"
 msgstr "Kaip galima greičiau po takelio įkėlimo"
 
-#: src/libvlc-module.c:1182
+#: src/libvlc-module.c:1184
 msgid "Services discovery modules"
 msgstr "Paslaugų aptikimo moduliai"
 
-#: src/libvlc-module.c:1184
+#: src/libvlc-module.c:1186
 msgid ""
 "Specifies the services discovery modules to load, separated by semi-colons. "
 "Typical values are sap, hal, ..."
@@ -3495,59 +3501,59 @@ msgstr ""
 "Nurodykite įkeltinus paslaugų aptikimo modulius. Juos atskirkite "
 "kabliataškiais. Paprastai naudojamos reikšmės: sap, hal..."
 
-#: src/libvlc-module.c:1187
+#: src/libvlc-module.c:1189
 msgid "Play files randomly forever"
 msgstr "Rinkmenas visada groti atsitiktine tvarka"
 
-#: src/libvlc-module.c:1189
+#: src/libvlc-module.c:1191
 msgid "VLC will randomly play files in the playlist until interrupted."
 msgstr ""
 "VLC atsitiktine tvarka gros grojaraštyje esančias rinkmenas iki nutraukimo"
 
-#: src/libvlc-module.c:1193
+#: src/libvlc-module.c:1195
 msgid "VLC will keep playing the playlist indefinitely."
 msgstr "VLC nuolatos gros grojaraščio turinį."
 
-#: src/libvlc-module.c:1195
+#: src/libvlc-module.c:1197
 msgid "Repeat current item"
 msgstr "Kartoti dabartinį kūrinį"
 
-#: src/libvlc-module.c:1197
+#: src/libvlc-module.c:1199
 msgid "VLC will keep playing the current playlist item."
 msgstr "VLC nuolatos gros dabartinį grojaraščio įrašą."
 
-#: src/libvlc-module.c:1199
+#: src/libvlc-module.c:1201
 msgid "Play and stop"
 msgstr "Groti ir stabdyti"
 
-#: src/libvlc-module.c:1201
+#: src/libvlc-module.c:1203
 msgid "Stop the playlist after each played playlist item."
 msgstr "Stabdyti grojimą po kiekvieno grojaraščio įrašo atlikimo."
 
-#: src/libvlc-module.c:1203
+#: src/libvlc-module.c:1205
 msgid "Play and exit"
 msgstr "Groti ir išeiti"
 
-#: src/libvlc-module.c:1205
+#: src/libvlc-module.c:1207
 msgid "Exit if there are no more items in the playlist."
 msgstr "Išeiti iš programos, baigus groti grojaraštyje esančiius kūrinius."
 
-#: src/libvlc-module.c:1207
+#: src/libvlc-module.c:1209
 msgid "Use media library"
 msgstr "Naudoti fonoteką"
 
-#: src/libvlc-module.c:1209
+#: src/libvlc-module.c:1211
 msgid ""
 "The media library is automatically saved and reloaded each time you start "
 "VLC."
 msgstr ""
 "Fonoteka automatiškai įrašoma ir atkuriama kas kart paleidus VLC grotuvą."
 
-#: src/libvlc-module.c:1212
+#: src/libvlc-module.c:1214
 msgid "Display playlist tree"
 msgstr "Rodyti grojaraščio struktūrą"
 
-#: src/libvlc-module.c:1214
+#: src/libvlc-module.c:1216
 msgid ""
 "The playlist can use a tree to categorize some items, like the contents of a "
 "directory."
@@ -3555,13 +3561,13 @@ msgstr ""
 "Grojaraštis gali naudoti medį kai kurių įrašų skirstymui į kategorijas, "
 "pavyzdžiui pagal aplanko turinį."
 
-#: src/libvlc-module.c:1223
+#: src/libvlc-module.c:1225
 msgid "These settings are the global VLC key bindings, known as \"hotkeys\"."
 msgstr ""
 "Tai VLC reagavimo į bendrų klavišų paspaudimus nuostatos, jie vadinami "
 "„sparčiaisiais klavišais“."
 
-#: src/libvlc-module.c:1226 src/video_output/vout_intf.c:434
+#: src/libvlc-module.c:1228 src/video_output/vout_intf.c:434
 #: modules/gui/beos/VideoOutput.cpp:1058 modules/gui/macosx/controls.m:471
 #: modules/gui/macosx/controls.m:525 modules/gui/macosx/controls.m:1100
 #: modules/gui/macosx/controls.m:1131 modules/gui/macosx/embeddedwindow.m:66
@@ -3572,81 +3578,81 @@ msgstr ""
 msgid "Fullscreen"
 msgstr "Visas ekranas"
 
-#: src/libvlc-module.c:1227
+#: src/libvlc-module.c:1229
 msgid "Select the hotkey to use to swap fullscreen state."
 msgstr "Pasirinkite spartųjį klavišą persijungimui į viso ekrano režimą."
 
-#: src/libvlc-module.c:1228
+#: src/libvlc-module.c:1230
 msgid "Leave fullscreen"
 msgstr "Išeiti iš viso ekrano režimo"
 
-#: src/libvlc-module.c:1229
+#: src/libvlc-module.c:1231
 msgid "Select the hotkey to use to leave fullscreen state."
 msgstr "Pasirinkite spartųjį klavišą išėjimui iš viso ekrano režimo."
 
-#: src/libvlc-module.c:1230
+#: src/libvlc-module.c:1232
 msgid "Play/Pause"
 msgstr "Groti/Pristabdyti"
 
-#: src/libvlc-module.c:1231
+#: src/libvlc-module.c:1233
 msgid "Select the hotkey to use to swap paused state."
 msgstr "Pasirinkite spartųjį klavišą pristabdymo būsenos keitimui."
 
-#: src/libvlc-module.c:1232
+#: src/libvlc-module.c:1234
 msgid "Pause only"
 msgstr "Tik pristabdyti"
 
-#: src/libvlc-module.c:1233
+#: src/libvlc-module.c:1235
 msgid "Select the hotkey to use to pause."
 msgstr "Pasirinkite spartųjį klavišą pristabdymui."
 
-#: src/libvlc-module.c:1234
+#: src/libvlc-module.c:1236
 msgid "Play only"
 msgstr "Tik groti"
 
-#: src/libvlc-module.c:1235
+#: src/libvlc-module.c:1237
 msgid "Select the hotkey to use to play."
 msgstr "Pasirinkite spartųjį klavišą kūrinio paleidimui."
 
-#: src/libvlc-module.c:1236 modules/control/hotkeys.c:718
+#: src/libvlc-module.c:1238 modules/control/hotkeys.c:718
 #: modules/gui/macosx/controls.m:1023 modules/gui/macosx/intf.m:642
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/components/controller.hpp:109
 msgid "Faster"
 msgstr "Greičiau"
 
-#: src/libvlc-module.c:1237 src/libvlc-module.c:1243
+#: src/libvlc-module.c:1239 src/libvlc-module.c:1245
 msgid "Select the hotkey to use for fast forward playback."
 msgstr "Pasirinkite spartųjį klavišą grojimo pageitinimui."
 
-#: src/libvlc-module.c:1238 modules/control/hotkeys.c:724
+#: src/libvlc-module.c:1240 modules/control/hotkeys.c:724
 #: modules/gui/macosx/controls.m:1024 modules/gui/macosx/intf.m:643
 #: modules/gui/qt4/components/controller.hpp:102
 #: modules/gui/qt4/components/controller.hpp:109
 msgid "Slower"
 msgstr "Lėčiau"
 
-#: src/libvlc-module.c:1239 src/libvlc-module.c:1245
+#: src/libvlc-module.c:1241 src/libvlc-module.c:1247
 msgid "Select the hotkey to use for slow motion playback."
 msgstr "Pasirinkite spartųjį klavišą grojimo sulėtinimui."
 
-#: src/libvlc-module.c:1240
+#: src/libvlc-module.c:1242
 msgid "Normal rate"
 msgstr "Įprastas greitis"
 
-#: src/libvlc-module.c:1241
+#: src/libvlc-module.c:1243
 msgid "Select the hotkey to set the playback rate back to normal."
 msgstr "Pasirinkite spartųjį klavišą normalaus grojimo greičio atstatymui."
 
-#: src/libvlc-module.c:1242 modules/gui/qt4/menus.cpp:751
+#: src/libvlc-module.c:1244 modules/gui/qt4/menus.cpp:751
 msgid "Faster (fine)"
 msgstr "Truputį greičiau"
 
-#: src/libvlc-module.c:1244 modules/gui/qt4/menus.cpp:759
+#: src/libvlc-module.c:1246 modules/gui/qt4/menus.cpp:759
 msgid "Slower (fine)"
 msgstr "Truputį lėčiau"
 
-#: src/libvlc-module.c:1246 modules/control/hotkeys.c:695
+#: src/libvlc-module.c:1248 modules/control/hotkeys.c:695
 #: modules/gui/macosx/about.m:185 modules/gui/macosx/controls.m:1044
 #: modules/gui/macosx/intf.m:598 modules/gui/macosx/intf.m:645
 #: modules/gui/macosx/intf.m:730 modules/gui/macosx/intf.m:738
@@ -3658,12 +3664,12 @@ msgstr "Truputį lėčiau"
 msgid "Next"
 msgstr "Toliau"
 
-#: src/libvlc-module.c:1247
+#: src/libvlc-module.c:1249
 msgid "Select the hotkey to use to skip to the next item in the playlist."
 msgstr ""
 "Pasirinkite spartųjį klavišą perėjimui prie sekančio kūrinio grojaraštyje."
 
-#: src/libvlc-module.c:1248 modules/control/hotkeys.c:701
+#: src/libvlc-module.c:1250 modules/control/hotkeys.c:701
 #: modules/gui/macosx/about.m:186 modules/gui/macosx/controls.m:1043
 #: modules/gui/macosx/intf.m:593 modules/gui/macosx/intf.m:644
 #: modules/gui/macosx/intf.m:731 modules/gui/macosx/intf.m:737
@@ -3672,12 +3678,12 @@ msgstr ""
 msgid "Previous"
 msgstr "Atgal"
 
-#: src/libvlc-module.c:1249
+#: src/libvlc-module.c:1251
 msgid "Select the hotkey to use to skip to the previous item in the playlist."
 msgstr ""
 "Pasirinkite spartųjį klavišą perėjimui prie ankstesnio kūrinio grojaraštyje."
 
-#: src/libvlc-module.c:1250 modules/gui/macosx/controls.m:1035
+#: src/libvlc-module.c:1252 modules/gui/macosx/controls.m:1035
 #: modules/gui/macosx/intf.m:596 modules/gui/macosx/intf.m:641
 #: modules/gui/macosx/intf.m:729 modules/gui/macosx/intf.m:736
 #: modules/gui/pda/pda_interface.c:272 modules/gui/pda/pda_interface.c:273
@@ -3686,11 +3692,11 @@ msgstr ""
 msgid "Stop"
 msgstr "Stabdyti"
 
-#: src/libvlc-module.c:1251
+#: src/libvlc-module.c:1253
 msgid "Select the hotkey to stop playback."
 msgstr "Pasirinkite spartųjį klavišą grojimo sustabdymui."
 
-#: src/libvlc-module.c:1252 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
+#: src/libvlc-module.c:1254 modules/gui/fbosd.c:127 modules/gui/fbosd.c:195
 #: modules/gui/macosx/bookmarks.m:96 modules/gui/macosx/bookmarks.m:105
 #: modules/gui/macosx/embeddedwindow.m:68 modules/gui/macosx/intf.m:601
 #: modules/gui/qt4/ui/video_effects.h:928 modules/video_filter/marq.c:155
@@ -3698,115 +3704,115 @@ msgstr "Pasirinkite spartųjį klavišą grojimo sustabdymui."
 msgid "Position"
 msgstr "Padėtis"
 
-#: src/libvlc-module.c:1253
+#: src/libvlc-module.c:1255
 msgid "Select the hotkey to display the position."
 msgstr "Pasirinkite spartųjį klavišą padėties parodymui."
 
-#: src/libvlc-module.c:1255
+#: src/libvlc-module.c:1257
 msgid "Very short backwards jump"
 msgstr "Ypač mažas peršokimas atgal"
 
-#: src/libvlc-module.c:1257
+#: src/libvlc-module.c:1259
 msgid "Select the hotkey to make a very short backwards jump."
 msgstr "Pasirinkite spartųjį klavišą ypač mažam peršokimui atgal."
 
-#: src/libvlc-module.c:1258
+#: src/libvlc-module.c:1260
 msgid "Short backwards jump"
 msgstr "Mažas peršokimas atgal"
 
-#: src/libvlc-module.c:1260
+#: src/libvlc-module.c:1262
 msgid "Select the hotkey to make a short backwards jump."
 msgstr "Pasirinkite spartųjį klavišą mažam peršokimui atgal."
 
-#: src/libvlc-module.c:1261
+#: src/libvlc-module.c:1263
 msgid "Medium backwards jump"
 msgstr "Vidutinis peršokimas atgal"
 
-#: src/libvlc-module.c:1263
+#: src/libvlc-module.c:1265
 msgid "Select the hotkey to make a medium backwards jump."
 msgstr "Pasirinkite spartųjį klavišą vidutiniam peršokimui atgal."
 
-#: src/libvlc-module.c:1264
+#: src/libvlc-module.c:1266
 msgid "Long backwards jump"
 msgstr "Didelis peršokimas atgal"
 
-#: src/libvlc-module.c:1266
+#: src/libvlc-module.c:1268
 msgid "Select the hotkey to make a long backwards jump."
 msgstr "Pasirinkite spartųjį klavišą dideliam peršokimui atgal."
 
-#: src/libvlc-module.c:1268
+#: src/libvlc-module.c:1270
 msgid "Very short forward jump"
 msgstr "Ypač mažas peršokimas į priekį"
 
-#: src/libvlc-module.c:1270
+#: src/libvlc-module.c:1272
 msgid "Select the hotkey to make a very short forward jump."
 msgstr "Pasirinkite spartųjį klavišą ypač mažam peršokimui į priekį."
 
-#: src/libvlc-module.c:1271
+#: src/libvlc-module.c:1273
 msgid "Short forward jump"
 msgstr "Mažas peršokimas į priekį"
 
-#: src/libvlc-module.c:1273
+#: src/libvlc-module.c:1275
 msgid "Select the hotkey to make a short forward jump."
 msgstr "Pasirinkite spartųjį klavišą mažam peršokimui į priekį."
 
-#: src/libvlc-module.c:1274
+#: src/libvlc-module.c:1276
 msgid "Medium forward jump"
 msgstr "Vidutinis peršokimas į priekį"
 
-#: src/libvlc-module.c:1276
+#: src/libvlc-module.c:1278
 msgid "Select the hotkey to make a medium forward jump."
 msgstr "Pasirinkite spartųjį klavišą vidutiniam peršokimui į priekį."
 
-#: src/libvlc-module.c:1277
+#: src/libvlc-module.c:1279
 msgid "Long forward jump"
 msgstr "Didelis peršokimas į priekį"
 
-#: src/libvlc-module.c:1279
+#: src/libvlc-module.c:1281
 msgid "Select the hotkey to make a long forward jump."
 msgstr "Pasirinkite spartųjį klavišą dideliam peršokimui į priekį."
 
-#: src/libvlc-module.c:1280 modules/control/hotkeys.c:712
+#: src/libvlc-module.c:1282 modules/control/hotkeys.c:712
 msgid "Next frame"
 msgstr "Kitas kadras"
 
-#: src/libvlc-module.c:1282
+#: src/libvlc-module.c:1284
 msgid "Select the hotkey to got to the next video frame."
 msgstr "Pasirinkite spartųjį klavišą ėjimui į sekantį vaizdo kadrą."
 
-#: src/libvlc-module.c:1284
+#: src/libvlc-module.c:1286
 msgid "Very short jump length"
 msgstr "Ypač mažo peršokimo dydis"
 
-#: src/libvlc-module.c:1285
+#: src/libvlc-module.c:1287
 msgid "Very short jump length, in seconds."
 msgstr "Ypač mažo peršokimo dydis, sekundėmis."
 
-#: src/libvlc-module.c:1286
+#: src/libvlc-module.c:1288
 msgid "Short jump length"
 msgstr "Mažo peršokimo dydis"
 
-#: src/libvlc-module.c:1287
+#: src/libvlc-module.c:1289
 msgid "Short jump length, in seconds."
 msgstr "Mažo peršokimo dydis, sekundėmis."
 
-#: src/libvlc-module.c:1288
+#: src/libvlc-module.c:1290
 msgid "Medium jump length"
 msgstr "Vidutinio peršokimo dydis"
 
-#: src/libvlc-module.c:1289
+#: src/libvlc-module.c:1291
 msgid "Medium jump length, in seconds."
 msgstr "Vidutinio peršokimo dydžis, sekundėmis."
 
-#: src/libvlc-module.c:1290
+#: src/libvlc-module.c:1292
 msgid "Long jump length"
 msgstr "Didelio peršokimo dydis"
 
-#: src/libvlc-module.c:1291
+#: src/libvlc-module.c:1293
 msgid "Long jump length, in seconds."
 msgstr "Didelio peršokimo dydis, sekundėmis."
 
-#: src/libvlc-module.c:1293 modules/control/hotkeys.c:209
+#: src/libvlc-module.c:1295 modules/control/hotkeys.c:209
 #: modules/gui/beos/InterfaceWindow.cpp:277 modules/gui/macosx/intf.m:379
 #: modules/gui/qt4/components/controller.hpp:105
 #: modules/gui/qt4/components/controller.hpp:114 modules/gui/qt4/menus.cpp:826
@@ -3814,107 +3820,107 @@ msgstr "Didelio peršokimo dydis, sekundėmis."
 msgid "Quit"
 msgstr "Baigti"
 
-#: src/libvlc-module.c:1294
+#: src/libvlc-module.c:1296
 msgid "Select the hotkey to quit the application."
 msgstr "Pasirinkite spartųjį klavišą išėjimui iš programos."
 
-#: src/libvlc-module.c:1295
+#: src/libvlc-module.c:1297
 msgid "Navigate up"
 msgstr "Judėti aukštyn"
 
-#: src/libvlc-module.c:1296
+#: src/libvlc-module.c:1298
 msgid "Select the key to move the selector up in DVD menus."
 msgstr "Pasirinkite spartųjį klavišą judėjimui aukštyn per DVD meniu."
 
-#: src/libvlc-module.c:1297
+#: src/libvlc-module.c:1299
 msgid "Navigate down"
 msgstr "Judėti žemyn"
 
-#: src/libvlc-module.c:1298
+#: src/libvlc-module.c:1300
 msgid "Select the key to move the selector down in DVD menus."
 msgstr "Pasirinkite spartųjį klavišą judėjimui žemyn per DVD meniu."
 
-#: src/libvlc-module.c:1299
+#: src/libvlc-module.c:1301
 msgid "Navigate left"
 msgstr "Judėti kairėn"
 
-#: src/libvlc-module.c:1300
+#: src/libvlc-module.c:1302
 msgid "Select the key to move the selector left in DVD menus."
 msgstr "Pasirinkite spartųjį klavišą judėjimui kairėn per DVD meniu."
 
-#: src/libvlc-module.c:1301
+#: src/libvlc-module.c:1303
 msgid "Navigate right"
 msgstr "Judėti dešinėn"
 
-#: src/libvlc-module.c:1302
+#: src/libvlc-module.c:1304
 msgid "Select the key to move the selector right in DVD menus."
 msgstr "Pasirinkite spartųjį klavišą judėjimui dešinėn per DVD meniu."
 
-#: src/libvlc-module.c:1303
+#: src/libvlc-module.c:1305
 msgid "Activate"
 msgstr "Aktyvuoti"
 
-#: src/libvlc-module.c:1304
+#: src/libvlc-module.c:1306
 msgid "Select the key to activate selected item in DVD menus."
 msgstr "Pasirinkite spartųjį klavišą pasirinkto DVD meniu punkto aktyvavimui."
 
-#: src/libvlc-module.c:1305
+#: src/libvlc-module.c:1307
 msgid "Go to the DVD menu"
 msgstr "Eiti į DVD meniu"
 
-#: src/libvlc-module.c:1306
+#: src/libvlc-module.c:1308
 msgid "Select the key to take you to the DVD menu"
 msgstr "Pasirinkite spartųjį klavišą ėjimui į DVD meniu."
 
-#: src/libvlc-module.c:1307
+#: src/libvlc-module.c:1309
 msgid "Select previous DVD title"
 msgstr "Pasirinkti ankstesnį DVD įrašą"
 
-#: src/libvlc-module.c:1308
+#: src/libvlc-module.c:1310
 msgid "Select the key to choose the previous title from the DVD"
 msgstr "Pasirinkite spartųjį klavišą ankstesnio DVD įrašo pasirinkimui."
 
-#: src/libvlc-module.c:1309
+#: src/libvlc-module.c:1311
 msgid "Select next DVD title"
 msgstr "Pasirinkti sekantį DVD įrašą"
 
-#: src/libvlc-module.c:1310
+#: src/libvlc-module.c:1312
 msgid "Select the key to choose the next title from the DVD"
 msgstr "Pasirinkite spartųjį klavišą sekančio DVD įrašo pasirinkimui."
 
-#: src/libvlc-module.c:1311
+#: src/libvlc-module.c:1313
 msgid "Select prev DVD chapter"
 msgstr "Pasirinkite ankstesnį DVD skyrių"
 
-#: src/libvlc-module.c:1312
+#: src/libvlc-module.c:1314
 msgid "Select the key to choose the previous chapter from the DVD"
 msgstr "Pasirinkite spartųjį klavišą ankstesnio DVD skyriaus pasirinkimui."
 
-#: src/libvlc-module.c:1313
+#: src/libvlc-module.c:1315
 msgid "Select next DVD chapter"
 msgstr "Pasirinkti sekantį DVD skyrių"
 
-#: src/libvlc-module.c:1314
+#: src/libvlc-module.c:1316
 msgid "Select the key to choose the next chapter from the DVD"
 msgstr "Pasirinkite spartųjį klavišą sekančio DVD skyriaus pasirinkimui."
 
-#: src/libvlc-module.c:1315
+#: src/libvlc-module.c:1317
 msgid "Volume up"
 msgstr "Pagarsinti"
 
-#: src/libvlc-module.c:1316
+#: src/libvlc-module.c:1318
 msgid "Select the key to increase audio volume."
 msgstr "Pasirinkite klavišą garsumo lygio padidinimui."
 
-#: src/libvlc-module.c:1317
+#: src/libvlc-module.c:1319
 msgid "Volume down"
 msgstr "Patylinti"
 
-#: src/libvlc-module.c:1318
+#: src/libvlc-module.c:1320
 msgid "Select the key to decrease audio volume."
 msgstr "Pasirinkite klavišą garsumo lygio sumažinimui."
 
-#: src/libvlc-module.c:1319 modules/access/v4l2.c:167
+#: src/libvlc-module.c:1321 modules/access/v4l2.c:167
 #: modules/gui/macosx/controls.m:1090 modules/gui/macosx/intf.m:663
 #: modules/gui/macosx/intf.m:732 modules/gui/macosx/intf.m:741
 #: modules/gui/qt4/components/controller_widget.cpp:150
@@ -3922,356 +3928,356 @@ msgstr "Pasirinkite klavišą garsumo lygio sumažinimui."
 msgid "Mute"
 msgstr "Nutildyti"
 
-#: src/libvlc-module.c:1320
+#: src/libvlc-module.c:1322
 msgid "Select the key to mute audio."
 msgstr "Pasirinkite klavišą garso išjungimui."
 
-#: src/libvlc-module.c:1321
+#: src/libvlc-module.c:1323
 msgid "Subtitle delay up"
 msgstr "Subtitrų vėlinimas"
 
-#: src/libvlc-module.c:1322
+#: src/libvlc-module.c:1324
 msgid "Select the key to increase the subtitle delay."
 msgstr "Pasirinkite klavišą subtitrų rodymo vėlinimui."
 
-#: src/libvlc-module.c:1323
+#: src/libvlc-module.c:1325
 msgid "Subtitle delay down"
 msgstr "Subtitrų ankstinimas"
 
-#: src/libvlc-module.c:1324
+#: src/libvlc-module.c:1326
 msgid "Select the key to decrease the subtitle delay."
 msgstr "Pasirinkite klavišą subtitrų rodymo paankstinimui."
 
-#: src/libvlc-module.c:1325
+#: src/libvlc-module.c:1327
 msgid "Audio delay up"
 msgstr "Garso vėlinimas"
 
-#: src/libvlc-module.c:1326
+#: src/libvlc-module.c:1328
 msgid "Select the key to increase the audio delay."
 msgstr "Pasirinkite klavišą garso grojimo pavėlinimui."
 
-#: src/libvlc-module.c:1327
+#: src/libvlc-module.c:1329
 msgid "Audio delay down"
 msgstr "Garso ankstinimas"
 
-#: src/libvlc-module.c:1328
+#: src/libvlc-module.c:1330
 msgid "Select the key to decrease the audio delay."
 msgstr "Pasirinkite klavišą garso grojimo paankstinimui."
 
-#: src/libvlc-module.c:1335
+#: src/libvlc-module.c:1337
 msgid "Play playlist bookmark 1"
 msgstr "Groti grojaraščio 1 žymelę"
 
-#: src/libvlc-module.c:1336
+#: src/libvlc-module.c:1338
 msgid "Play playlist bookmark 2"
 msgstr "Groti grojaraščio 2 žymelę"
 
-#: src/libvlc-module.c:1337
+#: src/libvlc-module.c:1339
 msgid "Play playlist bookmark 3"
 msgstr "Groti grojaraščio 3 žymelę"
 
-#: src/libvlc-module.c:1338
+#: src/libvlc-module.c:1340
 msgid "Play playlist bookmark 4"
 msgstr "Groti grojaraščio 4 žymelę"
 
-#: src/libvlc-module.c:1339
+#: src/libvlc-module.c:1341
 msgid "Play playlist bookmark 5"
 msgstr "Groti grojaraščio 5 žymelę"
 
-#: src/libvlc-module.c:1340
+#: src/libvlc-module.c:1342
 msgid "Play playlist bookmark 6"
 msgstr "Groti grojaraščio 6 žymelę"
 
-#: src/libvlc-module.c:1341
+#: src/libvlc-module.c:1343
 msgid "Play playlist bookmark 7"
 msgstr "Groti grojaraščio 7 žymelę"
 
-#: src/libvlc-module.c:1342
+#: src/libvlc-module.c:1344
 msgid "Play playlist bookmark 8"
 msgstr "Groti grojaraščio 8 žymelę"
 
-#: src/libvlc-module.c:1343
+#: src/libvlc-module.c:1345
 msgid "Play playlist bookmark 9"
 msgstr "Groti grojaraščio 9 žymelę"
 
-#: src/libvlc-module.c:1344
+#: src/libvlc-module.c:1346
 msgid "Play playlist bookmark 10"
 msgstr "Groti grojaraščio 10 žymelę"
 
-#: src/libvlc-module.c:1345
+#: src/libvlc-module.c:1347
 msgid "Select the key to play this bookmark."
 msgstr "Pasirinkite klavišą šios žymelės grojimui."
 
-#: src/libvlc-module.c:1346
+#: src/libvlc-module.c:1348
 msgid "Set playlist bookmark 1"
 msgstr "Nustatyti grojaraščio 1 žymelę"
 
-#: src/libvlc-module.c:1347
+#: src/libvlc-module.c:1349
 msgid "Set playlist bookmark 2"
 msgstr "Nustatyti grojaraščio 2 žymelę"
 
-#: src/libvlc-module.c:1348
+#: src/libvlc-module.c:1350
 msgid "Set playlist bookmark 3"
 msgstr "Nustatyti grojaraščio 3 žymelę"
 
-#: src/libvlc-module.c:1349
+#: src/libvlc-module.c:1351
 msgid "Set playlist bookmark 4"
 msgstr "Nustatyti grojaraščio 4 žymelę"
 
-#: src/libvlc-module.c:1350
+#: src/libvlc-module.c:1352
 msgid "Set playlist bookmark 5"
 msgstr "Nustatyti grojaraščio 5 žymelę"
 
-#: src/libvlc-module.c:1351
+#: src/libvlc-module.c:1353
 msgid "Set playlist bookmark 6"
 msgstr "Nustatyti grojaraščio 6 žymelę"
 
-#: src/libvlc-module.c:1352
+#: src/libvlc-module.c:1354
 msgid "Set playlist bookmark 7"
 msgstr "Nustatyti grojaraščio 7 žymelę"
 
-#: src/libvlc-module.c:1353
+#: src/libvlc-module.c:1355
 msgid "Set playlist bookmark 8"
 msgstr "Nustatyti grojaraščio 8 žymelę"
 
-#: src/libvlc-module.c:1354
+#: src/libvlc-module.c:1356
 msgid "Set playlist bookmark 9"
 msgstr "Nustatyti grojaraščio 9 žymelę"
 
-#: src/libvlc-module.c:1355
+#: src/libvlc-module.c:1357
 msgid "Set playlist bookmark 10"
 msgstr "Nustatyti grojaraščio 10 žymelę"
 
-#: src/libvlc-module.c:1356
+#: src/libvlc-module.c:1358
 msgid "Select the key to set this playlist bookmark."
 msgstr "Pasirinkite klavišą susiejimui su šia grojaraščio žymele."
 
-#: src/libvlc-module.c:1358
+#: src/libvlc-module.c:1360
 msgid "Playlist bookmark 1"
 msgstr "Grojaraščio 1 žymelė"
 
-#: src/libvlc-module.c:1359
+#: src/libvlc-module.c:1361
 msgid "Playlist bookmark 2"
 msgstr "Grojaraščio 2 žymelė"
 
-#: src/libvlc-module.c:1360
+#: src/libvlc-module.c:1362
 msgid "Playlist bookmark 3"
 msgstr "Grojaraščio 3 žymelė"
 
-#: src/libvlc-module.c:1361
+#: src/libvlc-module.c:1363
 msgid "Playlist bookmark 4"
 msgstr "Grojaraščio 4 žymelė"
 
-#: src/libvlc-module.c:1362
+#: src/libvlc-module.c:1364
 msgid "Playlist bookmark 5"
 msgstr "Grojaraščio 5 žymelė"
 
-#: src/libvlc-module.c:1363
+#: src/libvlc-module.c:1365
 msgid "Playlist bookmark 6"
 msgstr "Grojaraščio 6 žymelė"
 
-#: src/libvlc-module.c:1364
+#: src/libvlc-module.c:1366
 msgid "Playlist bookmark 7"
 msgstr "Grojaraščio 7 žymelė"
 
-#: src/libvlc-module.c:1365
+#: src/libvlc-module.c:1367
 msgid "Playlist bookmark 8"
 msgstr "Grojaraščio 8 žymelė"
 
-#: src/libvlc-module.c:1366
+#: src/libvlc-module.c:1368
 msgid "Playlist bookmark 9"
 msgstr "Grojaraščio 9 žymelė"
 
-#: src/libvlc-module.c:1367
+#: src/libvlc-module.c:1369
 msgid "Playlist bookmark 10"
 msgstr "Grojaraščio 10 žymelė"
 
-#: src/libvlc-module.c:1369
+#: src/libvlc-module.c:1371
 msgid "This allows you to define playlist bookmarks."
 msgstr "Tai leidžia jums aprašyti grojaraščio žymeles."
 
-#: src/libvlc-module.c:1371
+#: src/libvlc-module.c:1373
 msgid "Go back in browsing history"
 msgstr "Eiti atgal naršymo istorijoje"
 
-#: src/libvlc-module.c:1372
+#: src/libvlc-module.c:1374
 msgid ""
 "Select the key to go back (to the previous media item) in the browsing "
 "history."
 msgstr ""
 "Pasirinkite klavišą ėjimui atgal (į ankstesnį įrašą) naršymo istorijoje."
 
-#: src/libvlc-module.c:1373
+#: src/libvlc-module.c:1375
 msgid "Go forward in browsing history"
 msgstr "Eiti į pirmyn naršymo istorijoje"
 
-#: src/libvlc-module.c:1374
+#: src/libvlc-module.c:1376
 msgid ""
 "Select the key to go forward (to the next media item) in the browsing "
 "history."
 msgstr ""
 "Pasirinkite klavišą ėjimui pirmyn (į sekantį įrašą) naršymo istorijoje."
 
-#: src/libvlc-module.c:1376
+#: src/libvlc-module.c:1378
 msgid "Cycle audio track"
 msgstr "Eiti per garso takelius"
 
-#: src/libvlc-module.c:1377
+#: src/libvlc-module.c:1379
 msgid "Cycle through the available audio tracks(languages)."
 msgstr "Eiti per galimus garso takelius (kalbas)."
 
-#: src/libvlc-module.c:1378
+#: src/libvlc-module.c:1380
 msgid "Cycle subtitle track"
 msgstr "Eiti per subtitrų takelius"
 
-#: src/libvlc-module.c:1379
+#: src/libvlc-module.c:1381
 msgid "Cycle through the available subtitle tracks."
 msgstr "Eiti per galimus subtitrų takelius."
 
-#: src/libvlc-module.c:1380
+#: src/libvlc-module.c:1382
 msgid "Cycle source aspect ratio"
 msgstr "Eiti per šaltinio santykius"
 
-#: src/libvlc-module.c:1381
+#: src/libvlc-module.c:1383
 msgid "Cycle through a predefined list of source aspect ratios."
 msgstr "Eiti per iš anksto aprašytų šaltinio rodymo santykių sąrašą."
 
-#: src/libvlc-module.c:1382
+#: src/libvlc-module.c:1384
 msgid "Cycle video crop"
 msgstr "Eiti per vaizdo iškirpimus"
 
-#: src/libvlc-module.c:1383
+#: src/libvlc-module.c:1385
 msgid "Cycle through a predefined list of crop formats."
 msgstr "Eiti per iš anksto aprašytų vaizdo iškirpimo formatus."
 
-#: src/libvlc-module.c:1384
+#: src/libvlc-module.c:1386
 msgid "Toggle autoscaling"
 msgstr "Keisti dydžio auto-derinimo prie ekrano režimą"
 
-#: src/libvlc-module.c:1385
+#: src/libvlc-module.c:1387
 msgid "Activate or deactivate autoscaling."
 msgstr ""
 "Įjungti arba išjungti automatinį vaizdo dydžio derinimo prie ekrano režimą."
 
-#: src/libvlc-module.c:1386
+#: src/libvlc-module.c:1388
 msgid "Increase scale factor"
 msgstr "Priartinti vaizdą"
 
-#: src/libvlc-module.c:1387
+#: src/libvlc-module.c:1389
 msgid "Increase scale factor."
 msgstr "Priartinti rodomą vaizdą."
 
-#: src/libvlc-module.c:1388
+#: src/libvlc-module.c:1390
 msgid "Decrease scale factor"
 msgstr "Atitolinti vaizdą"
 
-#: src/libvlc-module.c:1389
+#: src/libvlc-module.c:1391
 msgid "Decrease scale factor."
 msgstr "Atitolinti rodomą vaizdą."
 
-#: src/libvlc-module.c:1390
+#: src/libvlc-module.c:1392
 msgid "Cycle deinterlace modes"
 msgstr "Keisti perėjimo šalinimą"
 
-#: src/libvlc-module.c:1391
+#: src/libvlc-module.c:1393
 msgid "Cycle through deinterlace modes."
 msgstr "Cikliškai eiti per perėjimo šalinimo režimus."
 
-#: src/libvlc-module.c:1392
+#: src/libvlc-module.c:1394
 msgid "Show interface"
 msgstr "Rodyti grafinę sąsają"
 
-#: src/libvlc-module.c:1393
+#: src/libvlc-module.c:1395
 msgid "Raise the interface above all other windows."
 msgstr "Sąsają kelti virš kitų langų."
 
-#: src/libvlc-module.c:1394
+#: src/libvlc-module.c:1396
 msgid "Hide interface"
 msgstr "Slėpti grafinę sąsają"
 
-#: src/libvlc-module.c:1395
+#: src/libvlc-module.c:1397
 msgid "Lower the interface below all other windows."
 msgstr "Sąsają slėpti po kitais lagais."
 
-#: src/libvlc-module.c:1396
+#: src/libvlc-module.c:1398
 msgid "Take video snapshot"
 msgstr "Padaryti nuotrauką"
 
-#: src/libvlc-module.c:1397
+#: src/libvlc-module.c:1399
 msgid "Takes a video snapshot and writes it to disk."
 msgstr "Padaryti rodomo vaizdo nuotrauką ir ją įrašyti į diską."
 
-#: src/libvlc-module.c:1399 modules/gui/qt4/components/controller.hpp:104
+#: src/libvlc-module.c:1401 modules/gui/qt4/components/controller.hpp:104
 #: modules/gui/qt4/components/controller.hpp:112
 #: modules/stream_out/record.c:60
 msgid "Record"
 msgstr "Įrašyti"
 
-#: src/libvlc-module.c:1400
+#: src/libvlc-module.c:1402
 msgid "Record access filter start/stop."
 msgstr "Įrašymo filtro paleidimas/sustabdymas."
 
-#: src/libvlc-module.c:1401
+#: src/libvlc-module.c:1403
 msgid "Dump"
 msgstr "Atminties išklotinė"
 
-#: src/libvlc-module.c:1402
+#: src/libvlc-module.c:1404
 msgid "Media dump access filter trigger."
 msgstr "Garso ir vaizdo atimties išklotinės priėjimo filtro paleidiklis."
 
-#: src/libvlc-module.c:1404
+#: src/libvlc-module.c:1406
 msgid "Normal/Repeat/Loop"
 msgstr "Kartojimo režimas"
 
-#: src/libvlc-module.c:1405
+#: src/libvlc-module.c:1407
 msgid "Toggle Normal/Repeat/Loop playlist modes"
 msgstr "Keisti normalaus grojaraščio atlikimo ir jo kartojimo veiksenas"
 
-#: src/libvlc-module.c:1408
+#: src/libvlc-module.c:1410
 msgid "Toggle random playlist playback"
 msgstr "Keisti grojaraščio maišymo veikseną"
 
-#: src/libvlc-module.c:1413 src/libvlc-module.c:1414
+#: src/libvlc-module.c:1415 src/libvlc-module.c:1416
 msgid "Un-Zoom"
 msgstr "Mastelio mažinimas"
 
-#: src/libvlc-module.c:1416 src/libvlc-module.c:1417
+#: src/libvlc-module.c:1418 src/libvlc-module.c:1419
 msgid "Crop one pixel from the top of the video"
 msgstr "Vaizdą apkirpti vienu pikseliu iš viršaus"
 
-#: src/libvlc-module.c:1418 src/libvlc-module.c:1419
+#: src/libvlc-module.c:1420 src/libvlc-module.c:1421
 msgid "Uncrop one pixel from the top of the video"
 msgstr "Atšaukti vaizdo atkirpimą pikseliu iš viršaus"
 
-#: src/libvlc-module.c:1421 src/libvlc-module.c:1422
+#: src/libvlc-module.c:1423 src/libvlc-module.c:1424
 msgid "Crop one pixel from the left of the video"
 msgstr "Vaizdą apkirpti vienu pikseliu iš kairės"
 
-#: src/libvlc-module.c:1423 src/libvlc-module.c:1424
+#: src/libvlc-module.c:1425 src/libvlc-module.c:1426
 msgid "Uncrop one pixel from the left of the video"
 msgstr "Atšaukti vaizdo atkirpimą pikseliu iš kairės"
 
-#: src/libvlc-module.c:1426 src/libvlc-module.c:1427
+#: src/libvlc-module.c:1428 src/libvlc-module.c:1429
 msgid "Crop one pixel from the bottom of the video"
 msgstr "Vaizdą apkirpti vienu pikseliu iš apačios"
 
-#: src/libvlc-module.c:1428 src/libvlc-module.c:1429
+#: src/libvlc-module.c:1430 src/libvlc-module.c:1431
 msgid "Uncrop one pixel from the bottom of the video"
 msgstr "Atšaukti vaizdo atkirpimą pikseliu iš apačios"
 
-#: src/libvlc-module.c:1431 src/libvlc-module.c:1432
+#: src/libvlc-module.c:1433 src/libvlc-module.c:1434
 msgid "Crop one pixel from the right of the video"
 msgstr "Vaizdą apkirpti vienu pikseliu iš dešinės"
 
-#: src/libvlc-module.c:1433 src/libvlc-module.c:1434
+#: src/libvlc-module.c:1435 src/libvlc-module.c:1436
 msgid "Uncrop one pixel from the right of the video"
 msgstr "Atšaukti vaizdo atkirpimą pikseliu iš dešinės"
 
-#: src/libvlc-module.c:1436
+#: src/libvlc-module.c:1438
 msgid "Toggle wallpaper mode in video output"
 msgstr "Keisti darbastalio fono išvesties režimą"
 
-#: src/libvlc-module.c:1438
+#: src/libvlc-module.c:1440
 msgid ""
 "Toggle wallpaper mode in video output. Only works with the directx video "
 "output for the time being."
@@ -4279,67 +4285,67 @@ msgstr ""
 "Keisti darbastalio fono išvesties režimą. Šiuo metu veikia tik su DirectX "
 "vaizdo išvestimi."
 
-#: src/libvlc-module.c:1441 src/libvlc-module.c:1442
+#: src/libvlc-module.c:1443 src/libvlc-module.c:1444
 msgid "Display OSD menu on top of video output"
 msgstr ""
 
-#: src/libvlc-module.c:1443
+#: src/libvlc-module.c:1445
 msgid "Do not display OSD menu on video output"
 msgstr ""
 
-#: src/libvlc-module.c:1444
+#: src/libvlc-module.c:1446
 msgid "Do not display OSD menu on top of video output"
 msgstr ""
 
-#: src/libvlc-module.c:1445
+#: src/libvlc-module.c:1447
 msgid "Highlight widget on the right"
 msgstr "Pažymėti valdiklį dešinėje"
 
-#: src/libvlc-module.c:1447
+#: src/libvlc-module.c:1449
 msgid "Move OSD menu highlight to the widget on the right"
 msgstr ""
 
-#: src/libvlc-module.c:1448
+#: src/libvlc-module.c:1450
 msgid "Highlight widget on the left"
 msgstr "Pažymėti valdiklį kairėje"
 
-#: src/libvlc-module.c:1450
+#: src/libvlc-module.c:1452
 msgid "Move OSD menu highlight to the widget on the left"
 msgstr ""
 
-#: src/libvlc-module.c:1451
+#: src/libvlc-module.c:1453
 msgid "Highlight widget on top"
 msgstr "Pažymėti valdiklį viršuje"
 
-#: src/libvlc-module.c:1453
+#: src/libvlc-module.c:1455
 msgid "Move OSD menu highlight to the widget on top"
 msgstr ""
 
-#: src/libvlc-module.c:1454
+#: src/libvlc-module.c:1456
 msgid "Highlight widget below"
 msgstr "Pažymėti valdiklį apačioje"
 
-#: src/libvlc-module.c:1456
+#: src/libvlc-module.c:1458
 msgid "Move OSD menu highlight to the widget below"
 msgstr ""
 
-#: src/libvlc-module.c:1457
+#: src/libvlc-module.c:1459
 msgid "Select current widget"
 msgstr "Pasirinkti pažymėtą valdiklį"
 
-#: src/libvlc-module.c:1459
+#: src/libvlc-module.c:1461
 msgid "Selecting current widget performs the associated action."
 msgstr ""
 
-#: src/libvlc-module.c:1461
+#: src/libvlc-module.c:1463
 msgid "Cycle through audio devices"
 msgstr "Eiti per garso įrenginius"
 
-#: src/libvlc-module.c:1462
+#: src/libvlc-module.c:1464
 msgid "Cycle through available audio devices"
 msgstr "Eiti per galimus garso įrenginius"
 
-#: src/libvlc-module.c:1464
+#: src/libvlc-module.c:1466
 #, c-format
 msgid ""
 "Usage: %s [options] [stream] ...\n"
@@ -4387,7 +4393,7 @@ msgstr ""
 "            jo atlikimą ir nustelbianti ankstesnes nuostatas.\n"
 "\n"
 "MRL srauto sintaksė:\n"
-"  [[prieiga][/demultiplekseris]://]URL[@[įrašas][:skyrius][-[įrašas][:"
+"  [[prieiga][/išpynimo metodas]://]URL[@[įrašas][:skyrius][-[įrašas][:"
 "skyrius]]] [:parametras=vertė ...]\n"
 "\n"
 "  Daug bendrų --parinkčių gali būti naudojamos kaip specifinės :parinktys.\n"
@@ -4409,7 +4415,7 @@ msgstr ""
 "pristabdymui nurodytam laikui\n"
 "  vlc://quit                     Specialus įrašas darbo su VLC baigimui\n"
 
-#: src/libvlc-module.c:1616 src/video_output/vout_intf.c:440
+#: src/libvlc-module.c:1618 src/video_output/vout_intf.c:440
 #: modules/gui/macosx/controls.m:509 modules/gui/macosx/controls.m:1099
 #: modules/gui/macosx/intf.m:680 modules/gui/macosx/intf.m:743
 #: modules/gui/qt4/components/controller.hpp:103
@@ -4417,98 +4423,98 @@ msgstr ""
 msgid "Snapshot"
 msgstr "Nuotrauka"
 
-#: src/libvlc-module.c:1633
+#: src/libvlc-module.c:1635
 msgid "Window properties"
 msgstr "Lango nuostatos"
 
-#: src/libvlc-module.c:1685
+#: src/libvlc-module.c:1687
 msgid "Subpictures"
 msgstr ""
 
-#: src/libvlc-module.c:1693 modules/codec/subtitles/subsdec.c:202
+#: src/libvlc-module.c:1695 modules/codec/subtitles/subsdec.c:202
 #: modules/demux/kate_categories.c:41 modules/demux/kate_categories.c:54
 #: modules/demux/subtitle.c:74 modules/gui/beos/InterfaceWindow.cpp:280
 #: modules/gui/qt4/ui/profiles.h:495 modules/gui/qt4/ui/profiles.h:497
 msgid "Subtitles"
 msgstr "Subtitrai"
 
-#: src/libvlc-module.c:1710 modules/stream_out/transcode.c:123
+#: src/libvlc-module.c:1713 modules/stream_out/transcode.c:123
 msgid "Overlays"
 msgstr "Perdangos"
 
-#: src/libvlc-module.c:1718
+#: src/libvlc-module.c:1721
 msgid "Track settings"
 msgstr "Takelio nuostatos"
 
-#: src/libvlc-module.c:1748
+#: src/libvlc-module.c:1751
 msgid "Playback control"
 msgstr "Grojimo valdymas"
 
-#: src/libvlc-module.c:1773
+#: src/libvlc-module.c:1776
 msgid "Default devices"
 msgstr "Numatytieji įrenginiai"
 
-#: src/libvlc-module.c:1782
+#: src/libvlc-module.c:1785
 msgid "Network settings"
 msgstr "Tinklo nuostatos"
 
-#: src/libvlc-module.c:1794
+#: src/libvlc-module.c:1797
 msgid "Socks proxy"
 msgstr "Socks įgaliotasis serveris"
 
-#: src/libvlc-module.c:1803 modules/demux/kate_categories.c:47
+#: src/libvlc-module.c:1806 modules/demux/kate_categories.c:47
 msgid "Metadata"
 msgstr "Metaduomenys"
 
-#: src/libvlc-module.c:1851
+#: src/libvlc-module.c:1854
 msgid "Decoders"
 msgstr "Iškodavimas"
 
-#: src/libvlc-module.c:1858 modules/access/v4l2.c:78
+#: src/libvlc-module.c:1861 modules/access/v4l2.c:78
 #: modules/gui/macosx/playlistinfo.m:97
 #: modules/gui/qt4/components/info_panels.cpp:522
 msgid "Input"
 msgstr "Įvestis"
 
-#: src/libvlc-module.c:1897
+#: src/libvlc-module.c:1900
 msgid "VLM"
 msgstr "VLM"
 
-#: src/libvlc-module.c:1929
+#: src/libvlc-module.c:1932
 msgid "CPU"
 msgstr "AK"
 
-#: src/libvlc-module.c:1951
+#: src/libvlc-module.c:1954
 msgid "Special modules"
 msgstr "Specialūs moduliai"
 
-#: src/libvlc-module.c:1957
+#: src/libvlc-module.c:1960
 msgid "Plugins"
 msgstr "Įskiepiai"
 
-#: src/libvlc-module.c:1965
+#: src/libvlc-module.c:1968
 msgid "Performance options"
 msgstr "Našumo nuostatos"
 
-#: src/libvlc-module.c:2115
+#: src/libvlc-module.c:2118
 msgid "Hot keys"
 msgstr "Spartieji klavišai"
 
-#: src/libvlc-module.c:2554
+#: src/libvlc-module.c:2557
 msgid "Jump sizes"
 msgstr "Peršokimo dydžiai"
 
-#: src/libvlc-module.c:2631
+#: src/libvlc-module.c:2634
 msgid "print help for VLC (can be combined with --advanced and --help-verbose)"
 msgstr ""
 "spausdina VLC pagalbą (gali būti naudojama kartu su  --advanced ir --help-"
 "verbose)"
 
-#: src/libvlc-module.c:2634
+#: src/libvlc-module.c:2637
 msgid "Exhaustive help for VLC and its modules"
 msgstr "Išplėstinė VLC pagalba ir moduliai"
 
-#: src/libvlc-module.c:2636
+#: src/libvlc-module.c:2639
 msgid ""
 "print help for VLC and all its modules (can be combined with --advanced and "
 "--help-verbose)"
@@ -4516,52 +4522,52 @@ msgstr ""
 "spausdinti VLC pagalbą ir visiems moduliams (gali būti naudojama kartu su  --"
 "advanced ir --help-verbose)"
 
-#: src/libvlc-module.c:2639
+#: src/libvlc-module.c:2642
 msgid "ask for extra verbosity when displaying help"
 msgstr "klausti apie ypatingą detalumą rodant pagalbą"
 
-#: src/libvlc-module.c:2641
+#: src/libvlc-module.c:2644
 msgid "print a list of available modules"
 msgstr "spausdinti galimų modulių sąrašą"
 
-#: src/libvlc-module.c:2643
+#: src/libvlc-module.c:2646
 msgid "print a list of available modules with extra detail"
 msgstr "spausdinti ypač detalų galimų modulių sąrašą"
 
-#: src/libvlc-module.c:2645
+#: src/libvlc-module.c:2648
 msgid ""
 "print help on a specific module (can be combined with --advanced and --help-"
-"verbose). Prefix the module name with = for strictmatches."
+"verbose). Prefix the module name with = for strict matches."
 msgstr ""
 "spausdinti pagalbą nurodytam noduliui (gali būti kartu naudojama su „--"
 "advanced“ ir --help-verbose). Priešdėlis modulio pavadinimui su = griežtam "
 "atitikimui."
 
-#: src/libvlc-module.c:2649
+#: src/libvlc-module.c:2652
 msgid "no configuration option will be loaded nor saved to config file"
 msgstr "neįkels ir neįrašys jokių konfigūracijos parinkčių"
 
-#: src/libvlc-module.c:2651
+#: src/libvlc-module.c:2654
 msgid "save the current command line options in the config"
 msgstr "dabartinę komandinę įrašyti į konfigūracijos rinkmeną"
 
-#: src/libvlc-module.c:2653
+#: src/libvlc-module.c:2656
 msgid "reset the current config to the default values"
 msgstr "atstatyti numatytąsias konfigūracijos vertes"
 
-#: src/libvlc-module.c:2655
+#: src/libvlc-module.c:2658
 msgid "use alternate config file"
 msgstr "naudoti kitą konfigūracijos rinkmeną"
 
-#: src/libvlc-module.c:2657
+#: src/libvlc-module.c:2660
 msgid "resets the current plugins cache"
 msgstr "atstato dabartinių įskiepių podėlį"
 
-#: src/libvlc-module.c:2659
+#: src/libvlc-module.c:2662
 msgid "print version information"
 msgstr "spausdinti informaciją apie versiją"
 
-#: src/libvlc-module.c:2715
+#: src/libvlc-module.c:2718
 msgid "main program"
 msgstr "pagrindinė programa"
 
@@ -4830,7 +4836,7 @@ msgstr ""
 
 #: modules/access/bda/bda.c:71 modules/access/dvb/access.c:101
 msgid "Probe DVB card for capabilities"
-msgstr ""
+msgstr "Tirti DVB plokštės galimybes"
 
 #: modules/access/bda/bda.c:72 modules/access/dvb/access.c:102
 msgid ""
@@ -5445,7 +5451,7 @@ msgstr ""
 
 #: modules/access/cdda/cdda.c:207
 msgid "If set cache CDDB information about this CD"
-msgstr ""
+msgstr "Jei nurodyta, CDDB informaciją apie CD dėti į podėlį"
 
 #: modules/access/cdda/cdda.c:211
 msgid "Contact CDDB via the HTTP protocol?"
@@ -5453,7 +5459,7 @@ msgstr "Prie CDDB jungtis HTTP protokolu?"
 
 #: modules/access/cdda/cdda.c:212
 msgid "If set, the CDDB server gets information via the CDDB HTTP protocol"
-msgstr ""
+msgstr "Jei nurodyta, CDDB serveris gaus informaciją CDDB HTTP protokolu"
 
 #: modules/access/cdda/cdda.c:217
 msgid "CDDB server timeout"
@@ -5465,7 +5471,7 @@ msgstr "Laikas (sekundėmis), skirtas atsako iš CDDB serverio laukimui"
 
 #: modules/access/cdda/cdda.c:223 modules/access/cdda/cdda.c:224
 msgid "Directory to cache CDDB requests"
-msgstr ""
+msgstr "Aplankas, kuriame talpinti CDDB užklausas"
 
 #: modules/access/cdda/cdda.c:228
 msgid "Prefer CD-Text info to CDDB info?"
@@ -5897,16 +5903,16 @@ msgstr "Sertifikato rinkmena"
 
 #: modules/access/dvb/access.c:180
 msgid "HTTP interface x509 PEM certificate file (enables SSL)"
-msgstr ""
+msgstr "HTTP sąsajos x509 PEM liudijimo rinkmena (įgalina SSL)"
 
 #: modules/access/dvb/access.c:183 modules/access_output/http.c:77
 #: modules/control/http/http.c:59
 msgid "Private key file"
-msgstr ""
+msgstr "Asmeninio rakto rinkmena"
 
 #: modules/access/dvb/access.c:184
 msgid "HTTP interface x509 PEM private key file"
-msgstr ""
+msgstr "HTTP sąsajos x509 PEM asmeninio rakto rinkmena"
 
 #: modules/access/dvb/access.c:186 modules/access_output/http.c:81
 #: modules/control/http/http.c:61
@@ -6978,11 +6984,11 @@ msgstr ""
 
 #: modules/access/v4l.c:120
 msgid "Decimation"
-msgstr ""
+msgstr "Decimacija"
 
 #: modules/access/v4l.c:122
 msgid "Decimation level for MJPEG streams"
-msgstr ""
+msgstr "Decimacijos lygis MJPEG srautams"
 
 #: modules/access/v4l.c:123
 msgid "Quality"
@@ -7047,7 +7053,7 @@ msgstr "IO metodas"
 
 #: modules/access/v4l2.c:86
 msgid "IO Method (READ, MMAP, USERPTR)."
-msgstr ""
+msgstr "IO metodas (READ, MMAP, USERPTR)."
 
 #: modules/access/v4l2.c:89
 msgid "Force width (-1 for autodetect, 0 for driver default)."
@@ -7079,7 +7085,7 @@ msgstr "Atstatyti v4l2 valdiklius"
 
 #: modules/access/v4l2.c:105
 msgid "Reset controls to defaults provided by the v4l2 driver."
-msgstr "Nustatyti v4l2 tvarkyklės numatytuosius valdyklius."
+msgstr "Nustatyti v4l2 tvarkyklės numatytuosius valdiklius."
 
 #: modules/access/v4l2.c:108
 msgid "Brightness of the video input (if supported by the v4l2 driver)."
@@ -7323,11 +7329,11 @@ msgstr ""
 
 #: modules/access/v4l2.c:225
 msgid "AUTO"
-msgstr ""
+msgstr "AUTO"
 
 #: modules/access/v4l2.c:225
 msgid "READ"
-msgstr ""
+msgstr "SKAITYTI"
 
 #: modules/access/v4l2.c:225
 msgid "MMAP"
@@ -7424,7 +7430,7 @@ msgstr "Segmentas"
 
 #: modules/access/vcdx/access.c:538
 msgid "LID"
-msgstr ""
+msgstr "LID"
 
 #: modules/access/vcdx/info.c:93
 msgid "VCD Format"
@@ -7626,7 +7632,7 @@ msgstr ""
 
 #: modules/access_output/http.c:75
 msgid "Path to the x509 PEM certificate file that will be used for HTTPS."
-msgstr ""
+msgstr "Kelias iki x509 PEM liudijimo rinkmenos, kuri bus naudojama HTTPS."
 
 #: modules/access_output/http.c:78
 msgid ""
@@ -8603,7 +8609,7 @@ msgstr "bitai"
 
 #: modules/codec/avcodec/avcodec.c:76
 msgid "simple"
-msgstr ""
+msgstr "paprasta"
 
 #: modules/codec/avcodec/avcodec.c:82
 msgid ""
@@ -8657,7 +8663,7 @@ msgstr ""
 
 #: modules/codec/avcodec/avcodec.h:75
 msgid "Workaround bugs"
-msgstr ""
+msgstr "Apeiti riktus"
 
 #: modules/codec/avcodec/avcodec.h:77
 msgid ""
@@ -8727,7 +8733,7 @@ msgstr "Nustatyti ffmpeg derinimo kaukę"
 
 #: modules/codec/avcodec/avcodec.h:112
 msgid "Visualize motion vectors"
-msgstr ""
+msgstr "Vaizduoti judesio vektorius"
 
 #: modules/codec/avcodec/avcodec.h:114
 msgid ""
@@ -8951,7 +8957,7 @@ msgstr ""
 
 #: modules/codec/avcodec/avcodec.h:227
 msgid "Border masking"
-msgstr ""
+msgstr "Rėmelio slėpimas"
 
 #: modules/codec/avcodec/avcodec.h:228
 msgid ""
@@ -9750,15 +9756,17 @@ msgstr "Kate tekstinių subtitrų įpaketintuvas"
 msgid "Subtitle renderers using libass"
 msgstr ""
 
-#: modules/codec/libass.c:726
+#: modules/codec/libass.c:728
 msgid "Building font cache"
-msgstr ""
+msgstr "Kuriamas šriftų podėlis"
 
-#: modules/codec/libass.c:727
+#: modules/codec/libass.c:729
 msgid ""
 "Please wait while your font cache is rebuild.\n"
 "This should take less than a minute."
 msgstr ""
+"Prašome palaukti, kol bus sukurtas šriftų podėlis.\n"
+"Tai turėtų trukti ne ilgiau kaip minutę."
 
 #: modules/codec/libmpeg2.c:127
 msgid "MPEG I/II video decoder (using libmpeg2)"
@@ -9814,7 +9822,7 @@ msgstr "Schroedinger vaizdo iškodavimas"
 
 #: modules/codec/sdl_image.c:60
 msgid "SDL Image decoder"
-msgstr ""
+msgstr "SDL paveikslėlių iškodavimas"
 
 #: modules/codec/sdl_image.c:61
 msgid "SDL_image video decoder"
@@ -9827,11 +9835,11 @@ msgstr ""
 #: modules/codec/speex.c:56 modules/codec/speex.c:844
 #: modules/gui/macosx/open.m:209 modules/gui/qt4/ui/video_effects.h:920
 msgid "Mode"
-msgstr "Režimas"
+msgstr "Veiksena"
 
 #: modules/codec/speex.c:58
 msgid "Enforce the mode of the encoder."
-msgstr ""
+msgstr "Priverstinai naudoti veiksena įkodavimui."
 
 #: modules/codec/speex.c:60 modules/codec/theora.c:95
 #: modules/codec/twolame.c:55 modules/codec/vorbis.c:165
@@ -9840,15 +9848,15 @@ msgstr "Įkodavimo kokybė"
 
 #: modules/codec/speex.c:62
 msgid "Enforce a quality between 0 (low) and 10 (high)."
-msgstr "Įkodavimo kodybė, tarp 0 (žema) ir 10 (aukšta)."
+msgstr "Įkodavimo kokybė, tarp 0 (žema) ir 10 (aukšta)."
 
 #: modules/codec/speex.c:64
 msgid "Encoding complexity"
-msgstr ""
+msgstr "Įkodavimo kompleksiškumas"
 
 #: modules/codec/speex.c:66
 msgid "Enforce the complexity of the encoder."
-msgstr ""
+msgstr "Stengtis naudoti kompleksinį kodavimą."
 
 #: modules/codec/speex.c:68
 msgid "Maximal bitrate"
@@ -9932,11 +9940,11 @@ msgstr "Unikodas (UTF-16)"
 
 #: modules/codec/subtitles/subsdec.c:100
 msgid "Universal (big endian UTF-16)"
-msgstr ""
+msgstr "Unikodas (didelio eiliškumo UTF-16)"
 
 #: modules/codec/subtitles/subsdec.c:101
 msgid "Universal (little endian UTF-16)"
-msgstr ""
+msgstr "Unikodas (mažo eiliškumo UTF-16)"
 
 #: modules/codec/subtitles/subsdec.c:102
 msgid "Universal, Chinese (GB18030)"
@@ -10274,7 +10282,7 @@ msgstr ""
 
 #: modules/codec/vorbis.c:177
 msgid "Force a constant bitrate encoding (CBR)."
-msgstr ""
+msgstr "Priverstinai naudoti pastovaus bitų dažnio kodavimą (CBR)."
 
 #: modules/codec/vorbis.c:181
 msgid "Vorbis audio decoder"
@@ -10290,7 +10298,7 @@ msgstr "Vorbis garso įkodavimas"
 
 #: modules/codec/wmafixed/wma.c:83
 msgid "WMA v1/v2 fixed point audio decoder"
-msgstr ""
+msgstr "WMA v1/v2 fiksuoto kablelio garso iškodavimas"
 
 #: modules/codec/x264.c:53
 msgid "Maximum GOP size"
@@ -10520,7 +10528,7 @@ msgstr ""
 
 #: modules/codec/x264.c:181
 msgid "Sets a maximum local bitrate (in kbits/s)."
-msgstr ""
+msgstr "Nurodyti didžiausią vietinį bitų dažnį (kbits/s)."
 
 #: modules/codec/x264.c:183
 msgid "VBV buffer"
@@ -10650,7 +10658,7 @@ msgstr ""
 
 #: modules/codec/x264.c:248
 msgid "Direct prediction size"
-msgstr ""
+msgstr "Tiesioginio tikslumo dydis"
 
 #: modules/codec/x264.c:249
 msgid ""
@@ -10658,6 +10666,9 @@ msgid ""
 " -  1: 8x8\n"
 " - -1: smallest possible according to level\n"
 msgstr ""
+"Tiesioginio tikslumo dydis:  -  0: 4x4\n"
+" -  1: 8x8\n"
+" - -1: mažiausias galimas pagal lygį\n"
 
 #: modules/codec/x264.c:255
 msgid "Weighted prediction for B-frames"
@@ -10668,9 +10679,8 @@ msgid "Weighted prediction for B-frames."
 msgstr "."
 
 #: modules/codec/x264.c:258
-#, fuzzy
 msgid "Weighted prediction for P-frames"
-msgstr "."
+msgstr ""
 
 #: modules/codec/x264.c:259
 msgid ""
@@ -10873,11 +10883,11 @@ msgstr "AK optimizavimas"
 
 #: modules/codec/x264.c:380
 msgid "Use assembler CPU optimizations."
-msgstr ""
+msgstr "AK optimizavimui naudoti asemblerį."
 
 #: modules/codec/x264.c:382
 msgid "Filename for 2 pass stats file"
-msgstr ""
+msgstr "Rinkmenos, skirtos 2 žingsnių statistikai, pavadinimas"
 
 #: modules/codec/x264.c:383
 msgid "Filename for 2 pass stats file for multi-pass encoding."
@@ -11012,7 +11022,7 @@ msgstr "Teleteksto puslapis"
 
 #: modules/codec/zvbi.c:60
 msgid "Open the indicated Teletext page.Default page is index 100"
-msgstr "Atverti nurodytą pagrindinį puspapį. Numatytasis yra 100."
+msgstr "Atverti nurodytą pagrindinį puslapį. Numatytasis yra 100."
 
 #: modules/codec/zvbi.c:63
 msgid "Text is always opaque"
@@ -11046,11 +11056,11 @@ msgstr ""
 
 #: modules/codec/zvbi.c:83
 msgid "VBI and Teletext decoder"
-msgstr ""
+msgstr "VBI ir Teleteksto iškodavimas"
 
 #: modules/codec/zvbi.c:84
 msgid "VBI & Teletext"
-msgstr ""
+msgstr "VBI ir Teletekstas"
 
 #: modules/codec/zvbi.c:687
 msgid "Subpage"
@@ -11429,7 +11439,7 @@ msgstr ""
 
 #: modules/control/rc.c:170
 msgid "Fake TTY"
-msgstr ""
+msgstr "Netikras TTY"
 
 #: modules/control/rc.c:171
 msgid "Force the rc module to use stdin as if it was a TTY."
@@ -11727,7 +11737,7 @@ msgstr "| @name logo-transparency #. . . . . . . . .  skaidrumas"
 
 #: modules/control/rc.c:920
 msgid "| @name mosaic-alpha # . . . . . . . . . . . . . . alpha"
-msgstr ""
+msgstr "| @name mosaic-alpha # . . . . . . . . . . . . . . alfa"
 
 #: modules/control/rc.c:921
 msgid "| @name mosaic-height #. . . . . . . . . . . . . .height"
@@ -11970,15 +11980,15 @@ msgstr "VLM nuotolinio valdymo sąsaja"
 
 #: modules/demux/aiff.c:49
 msgid "AIFF demuxer"
-msgstr "AIFF demultiplekseris"
+msgstr "AIFF išpynimo metodas"
 
 #: modules/demux/asf/asf.c:56
 msgid "ASF v1.0 demuxer"
-msgstr "ASF v1.0 demultiplekseris"
+msgstr "ASF v1.0 išpynimo metodas"
 
 #: modules/demux/asf/asf.c:178
 msgid "Could not demux ASF stream"
-msgstr ""
+msgstr "Nepavyksta išpinti ASF srauto"
 
 #: modules/demux/asf/asf.c:179
 msgid "VLC failed to load the ASF header."
@@ -11986,11 +11996,11 @@ msgstr "VLC programai nepavyko įkelti ASF antraštės."
 
 #: modules/demux/au.c:50
 msgid "AU demuxer"
-msgstr "AU demultiplekseris"
+msgstr "AU išpynimo metodas"
 
 #: modules/demux/avformat/avformat.c:52
 msgid "FFmpeg demuxer"
-msgstr "FFmpeg demultiplekseris"
+msgstr "FFmpeg išpynimo metodas"
 
 #: modules/demux/avformat/avformat.c:53
 msgid "Avformat"
@@ -12042,7 +12052,7 @@ msgstr "Niekada netaisyti"
 
 #: modules/demux/avi/avi.c:65
 msgid "AVI demuxer"
-msgstr "AVI demultiplekseris"
+msgstr "AVI išpynimo metodas"
 
 #: modules/demux/avi/avi.c:701
 msgid "AVI Index"
@@ -12074,7 +12084,7 @@ msgstr "Taisomas AVI turinys..."
 
 #: modules/demux/cdg.c:45
 msgid "CDG demuxer"
-msgstr "CDG demultiplekseris"
+msgstr "CDG išpynimo metodas"
 
 #: modules/demux/demuxdump.c:42
 msgid "Dump filename"
@@ -12098,11 +12108,11 @@ msgstr "Rinkmenos išklotinės pateikimas"
 
 #: modules/demux/flac.c:49
 msgid "FLAC demuxer"
-msgstr "FLAC demultiplekseris"
+msgstr "FLAC išpynimo metodas"
 
 #: modules/demux/gme.cpp:55
 msgid "GME demuxer (Game_Music_Emu)"
-msgstr "GME demultiplekseris (Game_Music_Emu)"
+msgstr "GME išpynimo metodas (Game_Music_Emu)"
 
 #: modules/demux/kate_categories.c:40
 msgid "Closed captions"
@@ -12138,7 +12148,7 @@ msgstr "Žodžiai"
 
 #: modules/demux/kate_categories.c:50
 msgid "Linguistic markup"
-msgstr ""
+msgstr "Kalbinė žymė"
 
 #: modules/demux/kate_categories.c:51
 msgid "Cue points"
@@ -12204,11 +12214,11 @@ msgstr "Leidžia jums keisti slaptažodį, kuris naudojamas prisijungimui."
 
 #: modules/demux/live555.cpp:93
 msgid "RTP/RTSP/SDP demuxer (using Live555)"
-msgstr "RTP/RTSP/SDP demultiplekseris (naudojama Live555)"
+msgstr "RTP/RTSP/SDP išpynimo metodas (naudojama Live555)"
 
 #: modules/demux/live555.cpp:103
 msgid "RTSP/RTP access and demux"
-msgstr "RTSP/RTP prieiga ir demultiplekseris"
+msgstr "RTSP/RTP prieiga ir išpynimo metodas"
 
 #: modules/demux/live555.cpp:111 modules/demux/live555.cpp:112
 #: modules/gui/macosx/simple_prefs.m:256 modules/gui/qt4/ui/sprefs_input.h:249
@@ -12239,11 +12249,11 @@ msgstr "HTTP tunelio prievadas"
 msgid "Port to use for tunneling the RTSP/RTP over HTTP."
 msgstr "Naudotinas RTSP/RTP vietoj HTTP prievadas tunelio naudojimui."
 
-#: modules/demux/live555.cpp:626
+#: modules/demux/live555.cpp:617
 msgid "RTSP authentication"
 msgstr "RTSP tapatumo atpažinimas"
 
-#: modules/demux/live555.cpp:627
+#: modules/demux/live555.cpp:618
 msgid "Please enter a valid login name and a password."
 msgstr "Prašome įvesti tinkamą vartotojo vardą ir slaptažodį."
 
@@ -12263,7 +12273,7 @@ msgstr ""
 
 #: modules/demux/mjpeg.c:54
 msgid "M-JPEG camera demuxer"
-msgstr "M-JPEG kameros demultiplekseris"
+msgstr "M-JPEG kameros išpynimo metodas"
 
 #: modules/demux/mkv/chapter_command.cpp:146
 msgid "---  DVD Menu"
@@ -12283,7 +12293,7 @@ msgstr "----- Takelis"
 
 #: modules/demux/mkv/mkv.cpp:44
 msgid "Matroska stream demuxer"
-msgstr "Matroska srauto demultiplekseris"
+msgstr "Matroska srauto išpynimo metodas"
 
 #: modules/demux/mkv/mkv.cpp:51
 msgid "Ordered chapters"
@@ -12371,7 +12381,7 @@ msgstr ""
 
 #: modules/demux/mod.c:73
 msgid "MOD demuxer (libmodplug)"
-msgstr "MOD demultiplekseris (libmodplug)"
+msgstr "MOD išpynimo metodas (libmodplug)"
 
 #: modules/demux/mod.c:81
 msgid "Reverb"
@@ -12411,7 +12421,7 @@ msgstr ""
 
 #: modules/demux/mp4/mp4.c:58
 msgid "MP4 stream demuxer"
-msgstr "MP4 srauto demultiplekseris"
+msgstr "MP4 srauto išpynimo metodas"
 
 #: modules/demux/mp4/mp4.c:59 modules/gui/pda/pda_interface.c:1053
 msgid "MP4"
@@ -12419,7 +12429,7 @@ msgstr "MP4"
 
 #: modules/demux/mpc.c:62
 msgid "MusePack demuxer"
-msgstr "MusePack demultiplekseris"
+msgstr "MusePack išpynimo metodas"
 
 #: modules/demux/mpeg/es.c:51
 msgid "MPEG-I/II/4 / A52 / DTS / MLP audio"
@@ -12431,7 +12441,7 @@ msgstr "Pageidaujamas kadrų dažnis H264 srautams."
 
 #: modules/demux/mpeg/h264.c:51
 msgid "H264 video demuxer"
-msgstr "H264 vaizdo demultiplekseris"
+msgstr "H264 vaizdo išpynimo metodas"
 
 #: modules/demux/mpeg/m4v.c:44
 msgid ""
@@ -12441,7 +12451,7 @@ msgstr ""
 
 #: modules/demux/mpeg/m4v.c:50
 msgid "MPEG-4 video demuxer"
-msgstr "MPEG-4 vaizdo demultiplekseris"
+msgstr "MPEG-4 vaizdo išpynimo metodas"
 
 #: modules/demux/mpeg/m4v.c:51
 msgid "MPEG-4 V"
@@ -12449,23 +12459,23 @@ msgstr "MPEG-4 V"
 
 #: modules/demux/mpeg/mpgv.c:46
 msgid "MPEG-I/II video demuxer"
-msgstr "MPEG-I/II vaizdo demultiplekseris"
+msgstr "MPEG-I/II vaizdo išpynimo metodas"
 
 #: modules/demux/nsc.c:46
 msgid "Windows Media NSC metademux"
-msgstr "Windows Media NSC meta demultiplekseris"
+msgstr "Windows Media NSC meta išpynimo metodas"
 
 #: modules/demux/nsv.c:49
 msgid "NullSoft demuxer"
-msgstr "NullSoft demultiplekseris"
+msgstr "NullSoft išpynimo metodas"
 
 #: modules/demux/nuv.c:49
 msgid "Nuv demuxer"
-msgstr "Nuv demultiplekseris"
+msgstr "Nuv išpynimo metodas"
 
 #: modules/demux/ogg.c:54
 msgid "OGG demuxer"
-msgstr "OGG demultiplekseris"
+msgstr "OGG išpynimo metodas"
 
 #: modules/demux/playlist/gvp.c:207
 msgid "Google Video"
@@ -12519,7 +12529,7 @@ msgstr "DVB grojaraščio importavimas"
 
 #: modules/demux/playlist/playlist.c:102
 msgid "Podcast parser"
-msgstr ""
+msgstr "Prenumerata"
 
 #: modules/demux/playlist/playlist.c:108
 msgid "XSPF playlist import"
@@ -12527,7 +12537,7 @@ msgstr "XSPF grojaraščio importavimas"
 
 #: modules/demux/playlist/playlist.c:114
 msgid "New winamp 5.2 shoutcast import"
-msgstr ""
+msgstr "Naujų winamp 5.2 tiesioginių laidų importavimas"
 
 #: modules/demux/playlist/playlist.c:122
 msgid "ASX playlist import"
@@ -12594,7 +12604,7 @@ msgstr ""
 
 #: modules/demux/ps.c:56 modules/demux/ps.c:69
 msgid "MPEG-PS demuxer"
-msgstr "MPEG-PS demultiplekseris"
+msgstr "MPEG-PS išpynimo metodas"
 
 #: modules/demux/ps.c:57 modules/gui/pda/pda_interface.c:1048
 msgid "PS"
@@ -12602,18 +12612,18 @@ msgstr "PS"
 
 #: modules/demux/pva.c:43
 msgid "PVA demuxer"
-msgstr "PVA demultiplekseris"
+msgstr "PVA išpynimo metodas"
 
 #: modules/demux/rawdv.c:41
 msgid ""
 "The demuxer will advance timestamps if the input can't keep up with the rate."
 msgstr ""
-"Demultiplekseris peržengs laiko žymes, jei įvestis negali jų išlaikyti kartu "
+"Išpynimo metodas peržengs laiko žymes, jei įvestis negali jų išlaikyti kartu "
 "su dažniu."
 
 #: modules/demux/rawdv.c:49
 msgid "DV (Digital Video) demuxer"
-msgstr "DV (skaitmeninio vaizdo) demultiplekseris"
+msgstr "DV (skaitmeninio vaizdo) išpynimo metodas"
 
 #: modules/demux/rawvid.c:46
 msgid ""
@@ -12649,15 +12659,15 @@ msgstr ""
 
 #: modules/demux/rawvid.c:66
 msgid "Raw video demuxer"
-msgstr "Neapdorotų duomenų demultiplekseris"
+msgstr "Neapdorotų duomenų išpynimo metodas"
 
 #: modules/demux/real.c:70
 msgid "Real demuxer"
-msgstr ""
+msgstr "Real išpynimo metodas"
 
 #: modules/demux/smf.c:43
 msgid "SMF demuxer"
-msgstr "SMF demultiplekseris"
+msgstr "SMF išpynimo metodas"
 
 #: modules/demux/subtitle.c:54 modules/demux/subtitle_asa.c:56
 msgid "Apply a delay to all subtitles (in 1/10s, eg 100 means 10s)."
@@ -12679,6 +12689,11 @@ msgid ""
 "\", \"realtext\", \"dks\", \"subviewer1\",  and \"auto\" (meaning "
 "autodetection, this should always work)."
 msgstr ""
+"Priverstinai naudoti subtitrų formatą. Galimos reikšmės : „microdvd“, "
+"„subrip“, „subviewer“, „ssa1“, „ssa2-4“, „ass“, „vplayer“, „sami“, "
+"„dvdsubtitle“, „mpl2“, „aqt“, „pjs“, „mpsub“, „jacosub“, „psb“,„realtext“, "
+"„dks“, „subviewer1“ ir „auto“ (reiškia  savaiminį aptikimą, turėtų visuomet "
+"veikti)."
 
 #: modules/demux/subtitle.c:75 modules/demux/subtitle_asa.c:65
 msgid "Text subtitles parser"
@@ -12709,7 +12724,7 @@ msgstr ""
 
 #: modules/demux/subtitle_asa.c:64
 msgid "Subtitles (asa demuxer)"
-msgstr "Subtitrai (asa demultiplekseris)"
+msgstr "Subtitrai (asa išpynimo metodas)"
 
 #: modules/demux/ts.c:98
 msgid "Extra PMT"
@@ -12740,11 +12755,11 @@ msgstr ""
 
 #: modules/demux/ts.c:112
 msgid "MTU for out mode"
-msgstr ""
+msgstr "MTU išvesties veiksenai"
 
 #: modules/demux/ts.c:113
 msgid "MTU for out mode."
-msgstr ""
+msgstr "MTU išvesties veiksenai."
 
 #: modules/demux/ts.c:115
 msgid "CSA ck"
@@ -12772,7 +12787,7 @@ msgstr "Tylus režimas"
 
 #: modules/demux/ts.c:123
 msgid "Do not complain on encrypted PES."
-msgstr ""
+msgstr "Neįspėti apie užšifruotą PES."
 
 #: modules/demux/ts.c:125
 msgid "CAPMT System ID"
@@ -12822,7 +12837,7 @@ msgstr ""
 
 #: modules/demux/ts.c:147
 msgid "MPEG Transport Stream demuxer"
-msgstr "MPEG perkeliamo srauto demultiplekseris"
+msgstr "MPEG perkeliamo srauto išpynimo metodas"
 
 #: modules/demux/ts.c:177 modules/gui/macosx/controls.m:1143
 #: modules/gui/macosx/intf.m:696 modules/gui/qt4/dialogs/toolbar.cpp:403
@@ -12863,7 +12878,7 @@ msgstr ""
 
 #: modules/demux/tta.c:45
 msgid "TTA demuxer"
-msgstr "TTA demultiplekseris"
+msgstr "TTA išpynimo metodas"
 
 #: modules/demux/ty.c:59
 msgid "TY"
@@ -12871,7 +12886,7 @@ msgstr "TY"
 
 #: modules/demux/ty.c:60
 msgid "TY Stream audio/video demux"
-msgstr "TY srauto garso/vaizdo demultiplekseris"
+msgstr "TY srauto garso/vaizdo išpynimo metodas"
 
 #: modules/demux/ty.c:771
 msgid "Closed captions 1"
@@ -12895,7 +12910,7 @@ msgstr ""
 
 #: modules/demux/vc1.c:50
 msgid "VC1 video demuxer"
-msgstr "VC1 vaizdo demultiplekseris"
+msgstr "VC1 vaizdo išpynimo metodas"
 
 #: modules/demux/vobsub.c:53
 msgid "Vobsub subtitles parser"
@@ -12903,15 +12918,15 @@ msgstr "Vobsub subtitrų analizatorius"
 
 #: modules/demux/voc.c:46
 msgid "VOC demuxer"
-msgstr "VOC demultiplekseris"
+msgstr "VOC išpynimo metodas"
 
 #: modules/demux/wav.c:45
 msgid "WAV demuxer"
-msgstr "WAV demultiplekseris"
+msgstr "WAV išpynimo metodas"
 
 #: modules/demux/xa.c:45
 msgid "XA demuxer"
-msgstr "XA demultiplekseris"
+msgstr "XA išpynimo metodas"
 
 #: modules/gui/beos/BeOS.cpp:55
 msgid "Use DVD Menus"
@@ -13602,7 +13617,7 @@ msgstr "Atstatyti mumatytuosius"
 
 #: modules/gui/macosx/extended.m:102 modules/gui/macosx/macosx.m:57
 msgid "Opaqueness"
-msgstr ""
+msgstr "Nepermatomumas"
 
 #: modules/gui/macosx/extended.m:172 modules/gui/macosx/extended.m:234
 msgid "Adjust Image"
@@ -13735,7 +13750,7 @@ msgstr "Išvalyti meniu"
 
 #: modules/gui/macosx/intf.m:630
 msgid "Streaming/Exporting Wizard..."
-msgstr "Srauto siuntimo vedlys..."
+msgstr "Srauto siuntimo vediklis..."
 
 #: modules/gui/macosx/intf.m:633
 msgid "Cut"
@@ -13825,7 +13840,7 @@ msgstr "VLC grotuvo žinynas..."
 
 #: modules/gui/macosx/intf.m:720
 msgid "ReadMe / FAQ..."
-msgstr ""
+msgstr "SkaitykMane / Dažniausiai užduodami klausimai..."
 
 #: modules/gui/macosx/intf.m:722
 msgid "Online Documentation..."
@@ -14037,22 +14052,26 @@ msgstr ""
 
 #: modules/gui/macosx/macosx.m:93 modules/gui/macosx/simple_prefs.m:267
 msgid "Control playback with media keys"
-msgstr ""
+msgstr "Grojimą valdyti medijos klavišais"
 
 #: modules/gui/macosx/macosx.m:94
 msgid ""
 "By default, VLC can be controlled using the media keys on modern Apple "
 "keyboards."
 msgstr ""
+"Numatytuoju atveju VLC gali būti valdomas naudojantis medijos klavišais, jei "
+"turite šiuolaikišką Apple klaviatūrą."
 
 #: modules/gui/macosx/macosx.m:97
 msgid "Use media key control when VLC is in background"
-msgstr ""
+msgstr "Naudoti medijos klavišus valdymui, kai VLC veikia fone"
 
 #: modules/gui/macosx/macosx.m:98
 msgid ""
 "By default, VLC will accept media key events also when being in background."
 msgstr ""
+"Numatytuoju atveju VLC reaguos į medijos klavišų paspaudimus ir tada, kai "
+"veikia fone."
 
 #: modules/gui/macosx/macosx.m:102
 msgid "Mac OS X interface"
@@ -14636,7 +14655,7 @@ msgid "Subtitles & OSD"
 msgstr "Subtitrai ir ERP"
 
 #: modules/gui/macosx/simple_prefs.m:187
-#: modules/gui/qt4/components/simple_preferences.cpp:538
+#: modules/gui/qt4/components/simple_preferences.cpp:540
 msgid "Subtitles & On Screen Display Settings"
 msgstr "Subtitrų ir ekrane rodomų pranešimų nuostatos"
 
@@ -14670,7 +14689,7 @@ msgstr "Pageidaujama garso kalba"
 
 #: modules/gui/macosx/simple_prefs.m:228
 msgid "Enable Last.fm submissions"
-msgstr ""
+msgstr "Įgalinti siuntimą į Last.fm"
 
 #: modules/gui/macosx/simple_prefs.m:233 modules/gui/qt4/ui/sprefs_audio.h:351
 msgid "Visualization"
@@ -14760,7 +14779,7 @@ msgstr "Privatumas / Tinklo sąveika"
 
 #: modules/gui/macosx/simple_prefs.m:268
 msgid "...when VLC is in background"
-msgstr ""
+msgstr "...kai VLC veikia fone"
 
 #: modules/gui/macosx/simple_prefs.m:271
 msgid "Default Encoding"
@@ -15066,7 +15085,7 @@ msgstr "Nesuspausto garso pavyzdys (naudojamas su WAV)"
 
 #: modules/gui/macosx/wizard.m:234
 msgid "MPEG Program Stream"
-msgstr ""
+msgstr "MPEG programos srautas"
 
 #: modules/gui/macosx/wizard.m:236
 msgid "MPEG Transport Stream"
@@ -15151,7 +15170,7 @@ msgstr "Atgal"
 #: modules/gui/macosx/wizard.m:322 modules/gui/macosx/wizard.m:325
 #: modules/gui/macosx/wizard.m:1270
 msgid "Streaming/Transcoding Wizard"
-msgstr "Srauto siuntimo/Perkodavimo vedlys"
+msgstr "Srauto siuntimo/Perkodavimo vediklis"
 
 #: modules/gui/macosx/wizard.m:326
 msgid "This wizard allows to configure simple streaming or transcoding setups."
@@ -16685,30 +16704,30 @@ msgstr ""
 msgid "This is VLC's skinnable interface. You can download other skins at"
 msgstr "Tai VLC sąsaja su keičiamais apipavidalinimais, kurių galite rasti"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:567
+#: modules/gui/qt4/components/simple_preferences.cpp:569
 msgid "Configure Hotkeys"
 msgstr "Nustatyti sparčiuosius klavišus"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:791
+#: modules/gui/qt4/components/simple_preferences.cpp:793
 #: modules/gui/qt4/dialogs_provider.hpp:49
 msgid "Audio Files"
 msgstr "Garso rinkmenos"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:792
+#: modules/gui/qt4/components/simple_preferences.cpp:794
 #: modules/gui/qt4/dialogs_provider.hpp:44
 msgid "Video Files"
 msgstr "Vaizdo rinkmenos"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:793
+#: modules/gui/qt4/components/simple_preferences.cpp:795
 #: modules/gui/qt4/dialogs_provider.hpp:54
 msgid "Playlist Files"
 msgstr "Grojaraščio rinkmenos"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:845
+#: modules/gui/qt4/components/simple_preferences.cpp:847
 msgid "&Apply"
 msgstr "Pri&taikyti"
 
-#: modules/gui/qt4/components/simple_preferences.cpp:846
+#: modules/gui/qt4/components/simple_preferences.cpp:848
 #: modules/gui/qt4/dialogs/convert.cpp:95
 #: modules/gui/qt4/dialogs/gototime.cpp:49
 #: modules/gui/qt4/dialogs/help.cpp:207 modules/gui/qt4/dialogs/open.cpp:109
@@ -17398,7 +17417,7 @@ msgstr "Atverti VLM konfigūraciją..."
 
 #: modules/gui/qt4/dialogs/vlm.cpp:535
 msgid "Broadcast: "
-msgstr ""
+msgstr "Transliacija: "
 
 #: modules/gui/qt4/dialogs/vlm.cpp:603
 msgid "Schedule: "
@@ -18356,7 +18375,7 @@ msgstr "Rinkmenų susiejimai:"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:318
 msgid "Enqueue files when in one instance mode"
-msgstr "ir tuomet naujas rinkmenas įtraukti į grojimo eilę"
+msgstr "ir tuomet naujas rinkmenas dėti įtraukti į grojimo eilę"
 
 #: modules/gui/qt4/ui/sprefs_interface.h:319
 msgid "Association Setup"
@@ -18702,7 +18721,7 @@ msgstr "Vaizdo filtrai"
 
 #: modules/gui/qt4/ui/video_effects.h:948
 msgid "Vout filters"
-msgstr ""
+msgstr "Vout filtrai"
 
 #: modules/gui/qt4/ui/video_effects.h:949
 msgid "Reset"
@@ -18846,7 +18865,7 @@ msgstr "Išvaizda su apipavidalinimais"
 
 #: modules/gui/skins2/src/skin_main.cpp:571
 msgid "Skins loader demux"
-msgstr "Apipavidalinimų įkėlimo demultiplekseris"
+msgstr "Apipavidalinimų įkėlimo išpynimo metodas"
 
 #: modules/gui/skins2/src/theme_repository.cpp:67
 msgid "Select skin"
@@ -19298,7 +19317,7 @@ msgstr "Tuščia prieigos funkcija"
 
 #: modules/misc/dummy/dummy.c:76
 msgid "Dummy demux function"
-msgstr "Tuščia demultiplekserio funkcija"
+msgstr "Tuščia išpynimo metodo funkcija"
 
 #: modules/misc/dummy/dummy.c:81
 msgid "Dummy decoder"
@@ -19435,7 +19454,7 @@ msgstr "Fonas"
 
 #: modules/misc/freetype.c:124
 msgid "Fat Outline"
-msgstr ""
+msgstr "Storas kontūras"
 
 #: modules/misc/freetype.c:136 modules/misc/win32text.c:93
 msgid "Text renderer"
@@ -19828,11 +19847,11 @@ msgstr "Statistika"
 
 #: modules/misc/stats/stats.c:49
 msgid "Stats encoder function"
-msgstr "Statistikos įkodavimo finkcija"
+msgstr "Įkodavimo statistikos funkcija"
 
 #: modules/misc/stats/stats.c:54
 msgid "Stats decoder"
-msgstr "Statistikos iškodavimas"
+msgstr "Iškodavimo statistika"
 
 #: modules/misc/stats/stats.c:55
 msgid "Stats decoder function"
@@ -19840,19 +19859,19 @@ msgstr "Statistikos iškodavimo funkcija"
 
 #: modules/misc/stats/stats.c:60
 msgid "Stats demux"
-msgstr ""
+msgstr "Išpynimo statistika"
 
 #: modules/misc/stats/stats.c:61
 msgid "Stats demux function"
-msgstr ""
+msgstr "Išpynimo statistikos funkcija"
 
 #: modules/misc/stats/stats.c:66
 msgid "Stats video output"
-msgstr "Statistikos vaizdo išvestis"
+msgstr "Vaizdo išvesties statistika"
 
 #: modules/misc/stats/stats.c:67
 msgid "Stats video output function"
-msgstr "Statistikos vaizdo išvesties funkcija"
+msgstr "Vaizdo išvesties statistikos funkcija"
 
 #: modules/misc/svg.c:70
 msgid "SVG template file"
@@ -19874,7 +19893,7 @@ msgstr ""
 
 #: modules/misc/win32text.c:94
 msgid "Win32 font renderer"
-msgstr ""
+msgstr "Win32 šriftų vaizdavimas"
 
 #: modules/misc/xml/libxml.c:45
 msgid "XML Parser (using libxml2)"
@@ -19995,7 +20014,7 @@ msgstr ""
 
 #: modules/mux/mpeg/ts.c:100
 msgid "Audio PID"
-msgstr ""
+msgstr "Garso PID"
 
 #: modules/mux/mpeg/ts.c:101
 msgid "Assign a fixed PID to the audio stream."
@@ -20479,7 +20498,7 @@ msgstr ""
 
 #: modules/stream_out/bridge.c:72
 msgid "Placeholder delay"
-msgstr ""
+msgstr "Vietaženklio užlaikymas"
 
 #: modules/stream_out/bridge.c:74
 msgid "Delay (in ms) before the placeholder kicks in."
@@ -20624,7 +20643,7 @@ msgstr "Nėra tinkamo „%s/%s://%s“ srauto išvesties prieigos modulio."
 
 #: modules/stream_out/gather.c:44
 msgid "Gathering stream output"
-msgstr ""
+msgstr "Renkama srauto išvestis"
 
 #: modules/stream_out/mosaic_bridge.c:138
 msgid "Specify an identifier string for this subpicture"

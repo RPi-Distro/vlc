@@ -2,7 +2,7 @@
  * subsdec.c : text subtitles decoder
  *****************************************************************************
  * Copyright (C) 2000-2006 the VideoLAN team
- * $Id: ad384d0f5c49aa254ab234cfa388d42701d9d914 $
+ * $Id: 6a3612f1d3ec233e382b2b80f19d2336e8b79636 $
  *
  * Authors: Gildas Bazin <gbazin@videolan.org>
  *          Samuel Hocevar <sam@zoy.org>
@@ -939,6 +939,31 @@ static char *CreateHtmlSubtitle( int *pi_align, char *psz_subtitle )
 
             /* Hide {\stupidity} */
             psz_subtitle = strchr( psz_subtitle, '}' ) + 1;
+        }
+        else if( psz_subtitle[0] == '{' && psz_subtitle[1] == 'Y'
+                && psz_subtitle[2] == ':' && strchr( psz_subtitle, '}' ) )
+        {
+            /* Hide {Y:stupidity} */
+            psz_subtitle = strchr( psz_subtitle, '}' ) + 1;
+        }
+        else if( psz_subtitle[0] == '\\' && psz_subtitle[1] )
+        {
+            if( psz_subtitle[1] == 'N' || psz_subtitle[1] == 'n' )
+            {
+                HtmlPut( &psz_html, "<br/>" );
+                psz_subtitle += 2;
+            }
+            else if( psz_subtitle[1] == 'h' )
+            {
+                /* Non breakable space */
+                HtmlPut( &psz_html, NO_BREAKING_SPACE );
+                psz_subtitle += 2;
+            }
+            else
+            {
+                HtmlPut( &psz_html, "\\" );
+                psz_subtitle++;
+            }
         }
         else
         {

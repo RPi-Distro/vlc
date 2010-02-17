@@ -86,8 +86,8 @@ Build-Depends: debhelper (>= 7),
                pkg-config,
                xulrunner-dev,
                zlib1g-dev
-Standards-Version: 3.8.3
-Homepage: http://www.videolan.org/vlc
+Standards-Version: 3.8.4
+Homepage: http://www.videolan.org/vlc/
 Vcs-Git: git://git.debian.org/git/pkg-multimedia/vlc.git
 Vcs-Browser: http://git.debian.org/?p=pkg-multimedia/vlc.git;a=shortlog;h=refs/heads/lucid
 
@@ -101,7 +101,6 @@ Recommends: vlc-plugin-pulse (= ${binary:Version})
 Suggests: mozilla-plugin-vlc,
           videolan-doc
 Replaces: vlc-nox (<< 1.0.4-2)
-Conflicts: vlc-nox (<< 1.0.4-2)
 Provides: mp3-decoder
 Description: multimedia player and streamer
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -138,7 +137,6 @@ Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Replaces: vlc (<< 1.0.4-2)
-Conflicts: vlc (<< 1.0.4-2)
 Provides: mp3-decoder
 Description: multimedia player and streamer (without X support)
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
@@ -179,7 +177,6 @@ Architecture: any
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Replaces: vlc (<< 0.8.6.c-6)
-Conflicts: vlc (<< 0.8.6.c-6)
 Description: multimedia player and streamer library
  This package contains the shared library required by applications using VLC
  features.
@@ -207,7 +204,6 @@ Architecture: any
 Depends: libvlc2 (= ${binary:Version}), libvlccore-dev, pkg-config,
          ${shlibs:Depends}, ${misc:Depends}
 Replaces: libvlc0-dev
-Conflicts: libvlc0-dev
 Description: development files for libvlc
  This package contains headers and a static library required to build 
  standalone applications that use VLC features.
@@ -334,18 +330,18 @@ Depends: vlc-nox (= ${binary:Version}),
          ${shlibs:Depends},
          ${misc:Depends}
 Description: SVG plugin for VLC
- This plugin allows you to render SVG graphics on top of the video.It is a
- text renderer, and  must be activated through the  '--text-renderer svg'
- option. When sent non-SVG data, it will convert it to SVG using a template
- that can be specified by the svg-template-file option.
+ This plugin allows you to render SVG graphics on top of the video. It is a text
+ renderer, and must be activated through the '--text-renderer svg' option. When
+ sent non-SVG data, it will convert it to SVG using a template that can be
+ specified by the svg-template-file option.
  .
  VLC is the VideoLAN project's media player. It plays MPEG, MPEG2, MPEG4,
  DivX, MOV, WMV, QuickTime, mp3, Ogg/Vorbis files, DVDs, VCDs, and multimedia
  streams from various network sources.
 
 Package: vlc-data
+Depends: ${misc:Depends}
 Architecture: all
-Conflicts: vlc-nox (<< 0.9.2-1), mozilla-plugin-vlc (<< 0.9.2-1)
 Replaces: vlc-nox (<< 0.9.2-1), mozilla-plugin-vlc (<< 0.9.2-1)
 Description: Common data for VLC
  Localisations, HTTP interface files, Lua scripts for VLC media player 
