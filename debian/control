@@ -309,7 +309,7 @@ Description: SVG plugin for VLC
 Package: vlc-data
 Depends: ${misc:Depends}
 Architecture: all
-Replaces: vlc-nox (<< 0.9.2-1), mozilla-plugin-vlc (<< 0.9.2-1)
+Replaces: vlc (<< 0.9.2-1), vlc-nox (<< 0.9.2-1), mozilla-plugin-vlc (<< 0.9.2-1)
 Description: Common data for VLC
  Localisations, HTTP interface files, Lua scripts for VLC media player 
  .
