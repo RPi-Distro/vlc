@@ -1,11 +1,12 @@
-vlc (1.0.5-2~1.gbp98a58d) UNRELEASED; urgency=low
+vlc (1.0.5-2~2.gbpf22894) UNRELEASED; urgency=medium
 
-  ** SNAPSHOT build @98a58de94a815ce5d7984f96de8377303bd2ce7c **
+  ** SNAPSHOT build @f22894db468768650f30828f0707bbc8cc22dad1 **
 
   * Install reportbug files also in vlc-data (LP: #472893)
   * Fix symlinks
+  * vlc-data Replaces very old vlc as well as vlc-nox (Closes: #570749)
 
- -- Christophe Mutricy <xtophe@videolan.org>  Wed, 17 Feb 2010 15:24:04 +0100
+ -- Christophe Mutricy <xtophe@videolan.org>  Sat, 27 Feb 2010 22:00:28 +0100
 
 vlc (1.0.5-1) unstable; urgency=low
 
