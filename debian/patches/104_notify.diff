@@ -16,7 +16,7 @@ Index: vlc-debian/modules/misc/notify/notify.c
 -            pix = gdk_pixbuf_new_from_file( psz_pixbuf, &p_error );
 -            free( psz_pixbuf );
 -        }
-+        pix = gdk_pixbuf_new_from_file( "/usr/share/pixmaps/vlc.png", &p_error );
++        pix = gdk_pixbuf_new_from_file( "/usr/share/icons/hicolor/48x48/vlc.png", &p_error );
      }
  
      free( psz_arturl );
