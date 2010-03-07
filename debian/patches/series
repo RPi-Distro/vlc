@@ -8,3 +8,5 @@
 501_decrease_alsa_buffer.diff
 502_fix_typo.patch
 503_jack_input.diff
+504-rtmp-crash.patch
+505-ftp-crash.patch

@@ -1,3 +1,26 @@
+vlc (1.0.5-2ubuntu1) lucid; urgency=low
+
+  * Merge from Debian unstable, remaining changes:
+    - build and install the libx264 plugin
+    - add Xb-Npp header to vlc package
+
+ -- Benjamin Drung <bdrung@ubuntu.com>  Sun, 07 Mar 2010 16:26:55 +0100
+
+vlc (1.0.5-2) unstable; urgency=medium
+
+  [ Christophe Mutricy ]
+  * Install reportbug files also in vlc-data (LP: #472893)
+  * Fix symlinks
+  * vlc-data Replaces very old vlc as well as vlc-nox (Closes: #570749)
+  * Set urgency to medium as we fix RC bug
+  * Fix crash on malformed rtmp stream. (Closes: #569151)
+  * Fix crash in FTP url handling (LP: #465560)
+
+  [ Benjamin Drung ]
+  * Install icons in all available sizes (LP: #521744).
+
+ -- Christophe Mutricy <xtophe@videolan.org>  Tue, 02 Mar 2010 00:30:56 +0100
+
 vlc (1.0.5-1ubuntu1) lucid; urgency=low
 
   * Merge from Debian unstable, remaining changes:
