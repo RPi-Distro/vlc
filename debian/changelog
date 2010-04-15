@@ -4,6 +4,7 @@ vlc (1.0.5-2ubuntu3) lucid; urgency=low
     thanks Ricardo Pérez López (LP: #534312).
   * Add apport hook to include more vlc dependencies in bug reports;
     thanks to Brian Murray for it (LP: #538719).
+  * Drop --sourcedir=debian/tmp from dh_install to install apport hook.
 
  -- Benjamin Drung <bdrung@ubuntu.com>  Thu, 15 Apr 2010 12:32:03 +0200
 
