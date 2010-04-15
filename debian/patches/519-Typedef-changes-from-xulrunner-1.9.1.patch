@@ -1,0 +1,151 @@
+From 46cdf014fe622a27d986acd859a70e91ec606cb1 Mon Sep 17 00:00:00 2001
+From: Nicolas Chauvet <kwizart@gmail.com>
+Date: Mon, 29 Mar 2010 23:45:48 +0200
+Subject: [PATCH] Typedef changes from xulrunner 1.9.1
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+---
+ projects/mozilla/vlcplugin.h  |    8 ++++++++
+ projects/mozilla/vlcshell.cpp |   20 +++++++++++++++++++-
+ projects/mozilla/vlcshell.h   |   19 +++++++++++++++++++
+ 3 files changed, 46 insertions(+), 1 deletions(-)
+
+diff --git a/projects/mozilla/vlcplugin.h b/projects/mozilla/vlcplugin.h
+index 754118b..a34fd69 100644
+--- a/projects/mozilla/vlcplugin.h
++++ b/projects/mozilla/vlcplugin.h
+@@ -173,7 +173,11 @@ private:
+ class VlcPlugin
+ {
+ public:
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+              VlcPlugin( NPP, uint16 );
++#else
++             VlcPlugin( NPP, uint16_t );
++#endif
+     virtual ~VlcPlugin();
+ 
+     NPError             init(int argc, char* const argn[], char* const argv[]);
+@@ -226,7 +230,11 @@ public:
+     vlc_toolbar_clicked_t getToolbarButtonClicked( int i_xpos, int i_ypos );
+ #endif
+ 
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+     uint16    i_npmode; /* either NP_EMBED or NP_FULL */
++#else
++    uint16_t  i_npmode; /* either NP_EMBED or NP_FULL */
++#endif
+ 
+     /* plugin properties */
+     int      b_stream;
+diff --git a/projects/mozilla/vlcshell.cpp b/projects/mozilla/vlcshell.cpp
+index 5de1ed0..774c0a7 100644
+--- a/projects/mozilla/vlcshell.cpp
++++ b/projects/mozilla/vlcshell.cpp
+@@ -284,7 +284,12 @@ void NPP_Shutdown( void )
+     ;
+ }
+ 
+-NPError NPP_New( NPMIMEType pluginType, NPP instance, uint16 mode, int16 argc,
++NPError NPP_New( NPMIMEType pluginType, NPP instance,
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
++                 uint16 mode, int16 argc,
++#else
++                 uint16_t mode, int16_t argc,
++#endif
+                  char* argn[], char* argv[], NPSavedData* saved )
+ {
+     NPError status;
+@@ -555,7 +560,11 @@ NPError NPP_SetWindow( NPP instance, NPWindow* window )
+ }
+ 
+ NPError NPP_NewStream( NPP instance, NPMIMEType type, NPStream *stream,
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+                        NPBool seekable, uint16 *stype )
++#else
++                       NPBool seekable, uint16_t *stype )
++#endif
+ {
+     if( NULL == instance  )
+     {
+@@ -584,14 +593,23 @@ NPError NPP_NewStream( NPP instance, NPMIMEType type, NPStream *stream,
+     return NPERR_GENERIC_ERROR;
+ }
+ 
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+ int32 NPP_WriteReady( NPP instance, NPStream *stream )
++#else
++int32_t NPP_WriteReady( NPP instance, NPStream *stream )
++#endif
+ {
+     /* TODO */
+     return 8*1024;
+ }
+ 
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+ int32 NPP_Write( NPP instance, NPStream *stream, int32 offset,
+                  int32 len, void *buffer )
++#else
++int32_t NPP_Write( NPP instance, NPStream *stream, int32_t offset,
++                 int32_t len, void *buffer )
++#endif
+ {
+     /* TODO */
+     return len;
+diff --git a/projects/mozilla/vlcshell.h b/projects/mozilla/vlcshell.h
+index 114865a..ecd868d 100644
+--- a/projects/mozilla/vlcshell.h
++++ b/projects/mozilla/vlcshell.h
+@@ -24,6 +24,11 @@
+ #ifndef __VLCSHELL_H__
+ #define __VLCSHELL_H__
+ 
++/* Mozilla stuff */
++#ifdef HAVE_MOZILLA_CONFIG_H
++#   include <mozilla-config.h>
++#endif
++
+ char * NPP_GetMIMEDescription( void );
+ 
+ NPError NPP_Initialize( void );
+@@ -43,20 +48,34 @@ NPError NPP_SetValue( NPP instance, NPNVariable variable, void *value );
+ NPError NPP_SetWindow( NPP instance, NPWindow* window );
+ 
+ NPError NPP_NewStream( NPP instance, NPMIMEType type, NPStream *stream,
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+                        NPBool seekable, uint16 *stype );
++#else
++                       NPBool seekable, uint16_t *stype );
++#endif
+ NPError NPP_DestroyStream( NPP instance, NPStream *stream, NPError reason );
+ void NPP_StreamAsFile( NPP instance, NPStream *stream, const char* fname );
+ 
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+ int32 NPP_WriteReady( NPP instance, NPStream *stream );
+ int32 NPP_Write( NPP instance, NPStream *stream, int32 offset,
+                  int32 len, void *buffer );
++#else
++int32_t NPP_WriteReady( NPP instance, NPStream *stream );
++int32_t NPP_Write( NPP instance, NPStream *stream, int32_t offset,
++                 int32_t len, void *buffer );
++#endif
+ 
+ void NPP_URLNotify( NPP instance, const char* url,
+                     NPReason reason, void* notifyData );
+ void NPP_Print( NPP instance, NPPrint* printInfo );
+ 
+ #ifdef XP_MACOSX
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+ int16 NPP_HandleEvent( NPP instance, void * event );
++#else
++int16_t NPP_HandleEvent( NPP instance, void * event );
++#endif
+ #endif
+ 
+ #endif
+-- 
+1.7.0
+

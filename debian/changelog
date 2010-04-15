@@ -1,3 +1,19 @@
+vlc (1.0.5-2ubuntu2) lucid; urgency=low
+
+  * Add patches to fix FTBFS with xulruner-1.9.2 from upstream (LP: #558981)
+    - add debian/patches/519-Typedef-changes-from-xulrunner-1.9.1.patch
+    - add debian/patches/520-Don-t-hardcode-OJI-define-deprecated-xith-libxul-1.9.patch
+    - add debian/patches/521-Untracked-API-change-utf8-to-UTF8.patch
+    - add debian/patches/522-Mozilla-do-not-hard-code-autoconf-file-descriptors.patch
+    - add debian/patches/523-Require-xul-1.9.2-explicitly.patch
+    - add debian/patches/524-Mozilla-More-fixes-for-XulRunner-1.9.2.patch
+    - add debian/patches/525-Mozilla-more-fixes.patch
+    - add debian/patches/526-Mozilla-More-final-Win32-compile-fixes-for-XulRunner.patch
+  * Add patch to drop OJI support as xulrunner-1.9.2 on Linux doesn't support it
+    - add debian/patches/600-drop-OJI-xul-192.patch
+
+ -- Micah Gersten <micahg@ubuntu.com>  Tue, 13 Apr 2010 10:09:58 -0500
+
 vlc (1.0.5-2ubuntu1) lucid; urgency=low
 
   * Merge from Debian unstable, remaining changes:

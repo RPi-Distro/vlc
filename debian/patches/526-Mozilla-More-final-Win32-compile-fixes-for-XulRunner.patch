@@ -1,0 +1,108 @@
+From 68a032f9ff344ee45e0ca7d0e75620d155ae1019 Mon Sep 17 00:00:00 2001
+From: Jean-Baptiste Kempf <jb@videolan.org>
+Date: Sat, 10 Apr 2010 16:50:02 +0200
+Subject: [PATCH 522/522] Mozilla: More (final?) Win32 compile fixes for XulRunner 1.9.2
+
+---
+ projects/mozilla/control/npolibvlc.cpp |   12 ++++++------
+ projects/mozilla/support/npwin.cpp     |    2 +-
+ projects/mozilla/vlcplugin.cpp         |    5 +++--
+ 3 files changed, 10 insertions(+), 9 deletions(-)
+
+diff --git a/projects/mozilla/control/npolibvlc.cpp b/projects/mozilla/control/npolibvlc.cpp
+index 4affd41..5bc8534 100644
+--- a/projects/mozilla/control/npolibvlc.cpp
++++ b/projects/mozilla/control/npolibvlc.cpp
+@@ -57,7 +57,7 @@ NPVariant copyNPVariant(const NPVariant& original)
+     NPVariant res;
+ 
+     if (NPVARIANT_IS_STRING(original))
+-        STRINGZ_TO_NPVARIANT(strdup(NPVARIANT_TO_STRING(original).utf8characters), res);
++        STRINGZ_TO_NPVARIANT(strdup(NPVARIANT_TO_STRING(original).UTF8Characters), res);
+     else if (NPVARIANT_IS_INT32(original))
+         INT32_TO_NPVARIANT(NPVARIANT_TO_INT32(original), res);
+     else if (NPVARIANT_IS_DOUBLE(original))
+@@ -1639,7 +1639,7 @@ LibvlcMarqueeNPObject::setProperty(int index, const NPVariant &value)
+ 
+     case ID_marquee_position:
+         if( !NPVARIANT_IS_STRING(value) ||
+-            !position_byname( NPVARIANT_TO_STRING(value).utf8characters, i ) )
++            !position_byname( NPVARIANT_TO_STRING(value).UTF8Characters, i ) )
+             return INVOKERESULT_INVALID_VALUE;
+ 
+         libvlc_video_set_marquee_int(p_md, libvlc_marquee_Position, i);
+@@ -1785,7 +1785,7 @@ LibvlcLogoNPObject::setProperty(int index, const NPVariant &value)
+ 
+     case ID_logo_position:
+         if( !NPVARIANT_IS_STRING(value) ||
+-            !position_byname( NPVARIANT_TO_STRING(value).utf8characters, i ) )
++            !position_byname( NPVARIANT_TO_STRING(value).UTF8Characters, i ) )
+             return INVOKERESULT_INVALID_VALUE;
+ 
+         libvlc_video_set_logo_int(p_md, libvlc_logo_position, i);
+@@ -1843,7 +1843,7 @@ LibvlcLogoNPObject::invoke(int index, const NPVariant *args,
+         {
+             if( !NPVARIANT_IS_STRING(args[i]) )
+                 return INVOKERESULT_INVALID_VALUE;
+-            len+=NPVARIANT_TO_STRING(args[i]).utf8length+1;
++            len+=NPVARIANT_TO_STRING(args[i]).UTF8Length+1;
+         }
+ 
+         buf = (char *)malloc( len+1 );
+@@ -1853,8 +1853,8 @@ LibvlcLogoNPObject::invoke(int index, const NPVariant *args,
+         for( h=buf,i=0;i<argCount;++i )
+         {
+             if(i) *h++=';';
+-            len=NPVARIANT_TO_STRING(args[i]).utf8length;
+-            memcpy(h,NPVARIANT_TO_STRING(args[i]).utf8characters,len);
++            len=NPVARIANT_TO_STRING(args[i]).UTF8Length;
++            memcpy(h,NPVARIANT_TO_STRING(args[i]).UTF8Characters,len);
+             h+=len;
+         }
+         *h='\0';
+diff --git a/projects/mozilla/support/npwin.cpp b/projects/mozilla/support/npwin.cpp
+index 4674194..77f540f 100644
+--- a/projects/mozilla/support/npwin.cpp
++++ b/projects/mozilla/support/npwin.cpp
+@@ -544,7 +544,7 @@ const char* NPN_UserAgent(NPP instance)
+ /* allocates memory from the Navigator's memory space.  Necessary so that
+  * saved instance data may be freed by Navigator when exiting.
+  */
+-void *NPN_MemAlloc(uint32 size)
++void *NPN_MemAlloc(uint32_t size)
+ {
+     return g_pNavigatorFuncs->memalloc(size);
+ }
+diff --git a/projects/mozilla/vlcplugin.cpp b/projects/mozilla/vlcplugin.cpp
+index 7e4a88d..b7794a4 100644
+--- a/projects/mozilla/vlcplugin.cpp
++++ b/projects/mozilla/vlcplugin.cpp
+@@ -36,6 +36,7 @@
+ #include "control/npolibvlc.h"
+ 
+ #include <ctype.h>
++
+ #if defined(XP_UNIX)
+ #   include <pthread.h>
+ #elif defined(XP_WIN)
+@@ -236,7 +237,7 @@ inline EventObj::event_t EventObj::find_event(const char *s) const
+ 
+ bool EventObj::insert(const NPString &s, NPObject *l, bool b)
+ {
+-    event_t e = find_event(s.utf8characters);
++    event_t e = find_event(s.UTF8Characters);
+     if( e>=maxbit() )
+         return false;
+ 
+@@ -261,7 +262,7 @@ bool EventObj::insert(const NPString &s, NPObject *l, bool b)
+ 
+ bool EventObj::remove(const NPString &s, NPObject *l, bool b)
+ {
+-    event_t e = find_event(s.utf8characters);
++    event_t e = find_event(s.UTF8Characters);
+     if( e>=maxbit() || !get(e) )
+         return false;
+ 
+-- 
+1.7.0
+

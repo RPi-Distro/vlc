@@ -1,0 +1,24 @@
+From 2903fb7906863ef1344f4b62228875952aa64497 Mon Sep 17 00:00:00 2001
+From: Jean-Baptiste Kempf <jb@videolan.org>
+Date: Sat, 10 Apr 2010 16:22:30 +0200
+Subject: [PATCH 521/522] Mozilla: more fixes
+
+---
+ projects/mozilla/vlcplugin.cpp |    1 +
+ 1 files changed, 1 insertions(+), 0 deletions(-)
+
+diff --git a/projects/mozilla/vlcplugin.cpp b/projects/mozilla/vlcplugin.cpp
+index 48a287b..7e4a88d 100644
+--- a/projects/mozilla/vlcplugin.cpp
++++ b/projects/mozilla/vlcplugin.cpp
+@@ -47,6 +47,7 @@
+ 
+ #include <stdio.h>
+ #include <assert.h>
++#include <stdlib.h>
+ 
+ /*****************************************************************************
+  * utilitiy functions
+-- 
+1.7.0
+

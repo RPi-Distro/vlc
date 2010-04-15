@@ -1,0 +1,51 @@
+---
+ configure    |    2 +-
+ configure.ac |    2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
+
+Index: vlc-1.0.5/configure.ac
+===================================================================
+--- vlc-1.0.5.orig/configure.ac
++++ vlc-1.0.5/configure.ac
+@@ -5653,17 +5653,17 @@
+            #endif
+           ])
+         if test "${MOZILLA_REQUIRED_HEADERS}" = "0"; then
+             AC_MSG_ERROR([Please install the Firefox development tools; plugin/npapi.h and/or plugin/npruntime.h were not found.])
+         fi
+         MOZILLA_REQUIRED_HEADERS=
+         mozilla=:
+         AS_IF([ test "${SYS}" != "mingw32" -a "${SYS}" != "mingwce"],[
+-	   VLC_ADD_CPPFLAGS([mozilla],[-DXP_UNIX -DOJI])
++	   VLC_ADD_CPPFLAGS([mozilla],[-DXP_UNIX])
+ 	   AS_IF([ test "${SYS}" != "darwin"],[
+ 	     PKG_CHECK_MODULES(XPM, [xpm xt],[
+ 		VLC_ADD_CPPFLAGS([mozilla],[-DMOZ_X11])
+ 	     ],[
+ 		AC_MSG_ERROR([Please install the libXpm and libXt development files.])
+ 	     ])
+           ])
+         ])
+Index: vlc-1.0.5/configure
+===================================================================
+--- vlc-1.0.5.orig/configure
++++ vlc-1.0.5/configure
+@@ -43187,17 +43187,17 @@
+             as_fn_error "Please install the Firefox development tools; mozilla-config.h, plugin/npapi.h and plugin/npruntime.h were not found." "$LINENO" 5
+         fi
+         MOZILLA_REQUIRED_HEADERS=
+         mozilla=:
+         if  test "${SYS}" != "mingw32" -a "${SYS}" != "mingwce"; then :
+ 
+ 
+   for element in mozilla; do
+-    eval "CPPFLAGS_${element}="'"$'"{CPPFLAGS_${element}} -DXP_UNIX -DOJI"'"'
++    eval "CPPFLAGS_${element}="'"$'"{CPPFLAGS_${element}} -DXP_UNIX"'"'
+     am_modules_with_cppflags="${am_modules_with_cppflags} ${element}"
+   done
+ 
+ 	   if  test "${SYS}" != "darwin"; then :
+ 
+ 
+ pkg_failed=no
+ { $as_echo "$as_me:${as_lineno-$LINENO}: checking for XPM" >&5

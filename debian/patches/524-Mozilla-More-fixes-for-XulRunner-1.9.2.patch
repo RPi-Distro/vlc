@@ -1,0 +1,72 @@
+From 4eea1289d83879fcafed7bb0e1f37966961f43e3 Mon Sep 17 00:00:00 2001
+Refreshed against vlc 1.0.5
+From: Jean-Baptiste Kempf <jb@videolan.org>
+Date: Sat, 10 Apr 2010 16:17:09 +0200
+Subject: [PATCH 520/522] Mozilla: More fixes for XulRunner 1.9.2
+
+---
+ projects/mozilla/vlcplugin.cpp |    5 +++++
+ projects/mozilla/vlcshell.h    |    7 +++++++
+ 2 files changed, 12 insertions(+)
+
+Index: vlc-1.0.5/projects/mozilla/vlcplugin.cpp
+===================================================================
+--- vlc-1.0.5.orig/projects/mozilla/vlcplugin.cpp
++++ vlc-1.0.5/projects/mozilla/vlcplugin.cpp
+@@ -31,21 +31,26 @@
+ #ifdef HAVE_MOZILLA_CONFIG_H
+ #   include <mozilla-config.h>
+ #endif
+ 
+ #include "vlcplugin.h"
+ #include "control/npolibvlc.h"
+ 
+ #include <ctype.h>
++#include <assert.h>
+ 
+ /*****************************************************************************
+  * VlcPlugin constructor and destructor
+  *****************************************************************************/
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+ VlcPlugin::VlcPlugin( NPP instance, uint16 mode ) :
++#else
++VlcPlugin::VlcPlugin( NPP instance, uint16_t mode ) :
++#endif
+     i_npmode(mode),
+     b_stream(0),
+     b_autoplay(1),
+     b_toolbar(0),
+     psz_target(NULL),
+     playlist_index(-1),
+     libvlc_instance(NULL),
+     libvlc_media_list(NULL),
+Index: vlc-1.0.5/projects/mozilla/vlcshell.h
+===================================================================
+--- vlc-1.0.5.orig/projects/mozilla/vlcshell.h
++++ vlc-1.0.5/projects/mozilla/vlcshell.h
+@@ -33,18 +33,25 @@
+ 
+ NPError NPP_Initialize( void );
+ 
+ #ifdef OJI 
+ jref NPP_GetJavaClass( void );
+ #endif
+ void NPP_Shutdown( void );
+ 
++#if (((NP_VERSION_MAJOR << 8) + NP_VERSION_MINOR) < 20)
+ NPError NPP_New( NPMIMEType pluginType, NPP instance, uint16 mode, int16 argc,
+                  char* argn[], char* argv[], NPSavedData* saved );
++#else
++NPError NPP_New( NPMIMEType pluginType, NPP instance, uint16_t mode, int16_t argc,
++                 char* argn[], char* argv[], NPSavedData* saved );
++#endif
++
++
+ NPError NPP_Destroy( NPP instance, NPSavedData** save );
+ 
+ NPError NPP_GetValue( NPP instance, NPPVariable variable, void *value );
+ NPError NPP_SetValue( NPP instance, NPNVariable variable, void *value );
+ 
+ NPError NPP_SetWindow( NPP instance, NPWindow* window );
+ 
+ NPError NPP_NewStream( NPP instance, NPMIMEType type, NPStream *stream,

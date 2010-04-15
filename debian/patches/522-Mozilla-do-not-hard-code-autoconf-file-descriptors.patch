@@ -1,0 +1,40 @@
+Original Patch From 9eb581755a1502c5d8fde90355c134fea9668f5d Mon Sep 17 00:00:00 2001
+Refreshed against vlc 1.0.5 by Micah Gersten <micahg@ubuntu.com>
+From: =?UTF-8?q?R=C3=A9mi=20Denis-Courmont?= <remi@remlab.net>
+Date: Sat, 10 Apr 2010 16:38:52 +0300
+Subject: [PATCH] Mozilla: do not hard-code autoconf file descriptors
+
+---
+ configure.ac |    8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+Index: vlc-1.0.5/configure.ac
+===================================================================
+--- vlc-1.0.5.orig/configure.ac
++++ vlc-1.0.5/configure.ac
+@@ -5621,21 +5621,21 @@
+     AC_MSG_NOTICE([Checking for Mozilla])
+     found=0
+     if test -n "$MOZILLA_CFLAGS" -a -n "$MOZILLA_LIBS"
+     then
+       found=1
+     else
+       if test -n "$PKG_CONFIG"; then
+ 	for i in "${with_mozilla_pkg}" libxul {seamonkey,iceape,xulrunner,firefox,iceweasel,mozilla}-plugin; do
+-	  echo "Trying to find $i.pc files" >&5
+-	  if $PKG_CONFIG --exists --print-errors "$i" 2>&5
++	  echo "Trying to find $i package" >&AS_MESSAGE_LOG_FD
++	  if $PKG_CONFIG --exists --print-errors "$i" 2>&AS_MESSAGE_LOG_FD
+ 	  then
+-            echo "Using $i.pc files." >&5
+-            echo "Using $i.pc files." >&6
++            echo "Using $i pkg-config package." >&AS_MESSAGE_LOG_FD
++            echo "Using $i package." >&AS_MESSAGE_FD
+ 	    found=1
+ 	    MOZILLA_CFLAGS=$(eval $PKG_CONFIG --cflags "$i" )
+ 	    MOZILLA_LIBS=$(eval $PKG_CONFIG --libs "$i" )
+ 	    break
+ 	  fi
+ 	done
+       fi
+     fi

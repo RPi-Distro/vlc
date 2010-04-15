@@ -10,3 +10,11 @@
 503_jack_input.diff
 504-rtmp-crash.patch
 505-ftp-crash.patch
+519-Typedef-changes-from-xulrunner-1.9.1.patch
+520-Don-t-hardcode-OJI-define-deprecated-xith-libxul-1.9.patch
+521-Untracked-API-change-utf8-to-UTF8.patch
+522-Mozilla-do-not-hard-code-autoconf-file-descriptors.patch
+523-Require-xul-1.9.2-explicitly.patch
+524-Mozilla-More-fixes-for-XulRunner-1.9.2.patch
+525-Mozilla-more-fixes.patch
+600-drop-OJI-xul-192.patch

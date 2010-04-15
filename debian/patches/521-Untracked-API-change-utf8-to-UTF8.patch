@@ -1,0 +1,89 @@
+From 9fa62a2c395d481e5df3667fc3d200e82e14b4b0 Mon Sep 17 00:00:00 2001
+From: Nicolas Chauvet <kwizart@gmail.com>
+Date: Sat, 10 Apr 2010 16:10:20 +0300
+Subject: [PATCH] Untracked API change utf8 to UTF8
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Signed-off-by: Rémi Denis-Courmont <remi@remlab.net>
+---
+ projects/mozilla/control/npolibvlc.cpp  |    4 ++--
+ projects/mozilla/control/nporuntime.cpp |    6 +++---
+ projects/mozilla/vlcplugin.cpp          |   10 +++++-----
+ 3 files changed, 10 insertions(+), 10 deletions(-)
+
+diff --git a/projects/mozilla/control/npolibvlc.cpp b/projects/mozilla/control/npolibvlc.cpp
+index 6fb6132..4affd41 100644
+--- a/projects/mozilla/control/npolibvlc.cpp
++++ b/projects/mozilla/control/npolibvlc.cpp
+@@ -967,7 +967,7 @@ LibvlcPlaylistNPObject::invoke(int index, const NPVariant *args,
+ void LibvlcPlaylistNPObject::parseOptions(const NPString &nps,
+                                          int *i_options, char*** ppsz_options)
+ {
+-    if( nps.utf8length )
++    if( nps.UTF8Length )
+     {
+         char *s = stringValue(nps);
+         char *val = s;
+@@ -979,7 +979,7 @@ void LibvlcPlaylistNPObject::parseOptions(const NPString &nps,
+             {
+                 int nOptions = 0;
+ 
+-                char *end = val + nps.utf8length;
++                char *end = val + nps.UTF8Length;
+                 while( val < end )
+                 {
+                     // skip leading blanks
+diff --git a/projects/mozilla/control/nporuntime.cpp b/projects/mozilla/control/nporuntime.cpp
+index b237fbd..cced74a 100644
+--- a/projects/mozilla/control/nporuntime.cpp
++++ b/projects/mozilla/control/nporuntime.cpp
+@@ -37,11 +37,11 @@
+ 
+ char* RuntimeNPObject::stringValue(const NPString &s)
+ {
+-    NPUTF8 *val = static_cast<NPUTF8*>(malloc((s.utf8length+1) * sizeof(*val)));
++    NPUTF8 *val = static_cast<NPUTF8*>(malloc((s.UTF8Length+1) * sizeof(*val)));
+     if( val )
+     {
+-        strncpy(val, s.utf8characters, s.utf8length);
+-        val[s.utf8length] = '\0';
++        strncpy(val, s.UTF8Characters, s.UTF8Length);
++        val[s.UTF8Length] = '\0';
+     }
+     return val;
+ }
+diff --git a/projects/mozilla/vlcplugin.cpp b/projects/mozilla/vlcplugin.cpp
+index 41ecab2..caeabda 100644
+--- a/projects/mozilla/vlcplugin.cpp
++++ b/projects/mozilla/vlcplugin.cpp
+@@ -449,8 +449,8 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
+         NPString script;
+         NPVariant result;
+ 
+-        script.utf8characters = docLocHref;
+-        script.utf8length = sizeof(docLocHref)-1;
++        script.UTF8Characters = docLocHref;
++        script.UTF8Length = sizeof(docLocHref)-1;
+ 
+         if( NPN_Evaluate(p_browser, plugin, &script, &result) )
+         {
+@@ -458,11 +458,11 @@ NPError VlcPlugin::init(int argc, char* const argn[], char* const argv[])
+             {
+                 NPString &location = NPVARIANT_TO_STRING(result);
+ 
+-                psz_baseURL = (char *) malloc(location.utf8length+1);
++                psz_baseURL = (char *) malloc(location.UTF8Length+1);
+                 if( psz_baseURL )
+                 {
+-                    strncpy(psz_baseURL, location.utf8characters, location.utf8length);
+-                    psz_baseURL[location.utf8length] = '\0';
++                    strncpy(psz_baseURL, location.UTF8Characters, location.UTF8Length);
++                    psz_baseURL[location.UTF8Length] = '\0';
+                 }
+             }
+             NPN_ReleaseVariantValue(&result);
+-- 
+1.7.0
+
