@@ -1,0 +1,17 @@
+Description: Add Spanish translations to desktop file
+Author: Ricardo Pérez López <ricardo@ubuntu.com>
+Bug-Ubuntu: https://launchpad.net/bugs/534312
+
+--- a/share/applications/vlc.desktop	2010-03-08 11:47:23.000000000 +0100
++++ b/share/applications/vlc.desktop	2010-03-08 11:52:22.000000000 +0100
+@@ -2,8 +2,10 @@
+ Version=1.0
+ Name=VLC media player
+ Name[fr]=Lecteur multimédia VLC
++Name[es]=Reproductor multimedia VLC
+ Comment=Read, capture, broadcast your multimedia streams
+ Comment[fr]=Lire, capturer, diffuser vos flux multimedia
++Comment[es]=Lea, capture y emita sus contenidos multimedia
+ Name[sv]=Mediaspelaren VLC
+ Comment[sv]=Allmän uppspelare av film och musik
+ Name[ru]=Медиаплеер VLC
