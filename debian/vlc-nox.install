@@ -151,3 +151,4 @@ usr/lib/vlc/video_output/libfb_plugin.so
 usr/lib/vlc/video_output/libvmem_plugin.so
 usr/lib/vlc/video_output/libyuv_plugin.so
 usr/lib/vlc/visualization/libvisual_plugin.so
+debian/source_vlc.py usr/share/apport/package-hooks/

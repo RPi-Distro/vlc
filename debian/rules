@@ -200,7 +200,7 @@ install: build
 	mv debian/tmp/$(VIDDIR)/vlc128x128-christmas.png debian/tmp/usr/share/icons/hicolor/128x128/apps/vlc-christmas.png
 	mv debian/tmp/$(VIDDIR)/vlc32x32.xpm debian/tmp/$(VIDDIR)/vlc.xpm
 	# Install stuff
-	dh_install -si --fail-missing --sourcedir=debian/tmp
+	dh_install -si --fail-missing
 	# move .hosts
 	mkdir -p debian/vlc-data/etc/vlc/http
 	mv debian/vlc-data/usr/share/vlc/http/.hosts debian/vlc-data/etc/vlc/http
